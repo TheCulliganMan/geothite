@@ -37,6 +37,7 @@ struct Args {
     map: Option<String>,
     maps: Vec<String>,
     all_maps: bool,
+    kanto_interiors: bool,
     tile_x: Option<i16>,
     tile_y: Option<i16>,
     view: ViewMode,
@@ -217,14 +218,26 @@ fn render_map_batch(args: &Args, runtime: &CrystalRuntime) -> Result<()> {
     std::fs::create_dir_all(output_dir)
         .with_context(|| format!("create batch output directory {}", output_dir.display()))?;
     let executable = env::current_exe().context("resolve render tester executable")?;
-    let maps = if args.all_maps {
+    let mut maps = if args.all_maps {
         runtime.map_ids().into_iter().collect::<Vec<_>>()
     } else {
         args.maps.clone()
     };
+    if args.kanto_interiors {
+        let mut selected = Vec::new();
+        for map in maps {
+            let region = &runtime.data().pokegear_landmark_for_map(&map)?.region;
+            let environment = runtime.data().map_environment(&map)?;
+            if region == "KANTO" && !matches!(environment, "TOWN" | "ROUTE") {
+                selected.push(map);
+            }
+        }
+        maps = selected;
+    }
     if maps.is_empty() {
         bail!("batch map selection is empty");
     }
+    println!("capturing {} selected maps at {}:00", maps.len(), args.hour);
 
     for map in maps {
         let (width, height) = runtime
@@ -397,6 +410,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
     let mut map = None;
     let mut maps = Vec::new();
     let mut all_maps = false;
+    let mut kanto_interiors = false;
     let mut tile_x = None;
     let mut tile_y = None;
     let mut view = ViewMode::TwoD;
@@ -419,6 +433,10 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
                     .map(str::to_owned),
             ),
             "--all-maps" => all_maps = true,
+            "--kanto-interiors" => {
+                all_maps = true;
+                kanto_interiors = true;
+            }
             "--live" => live = true,
             "--preview-flag" => preview_flag = Some(next_value(&mut values, "--preview-flag")?),
             "--x" => tile_x = Some(next_value(&mut values, "--x")?.parse::<i16>()?),
@@ -448,6 +466,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
         map,
         maps,
         all_maps,
+        kanto_interiors,
         tile_x,
         tile_y,
         view,
@@ -480,7 +499,7 @@ fn print_usage() {
          --pack <game.crystalpack> [--list-maps | --map <id> [--x <tile>] [--y <tile>] \
          [--view 2d|2.5d|both] [--hour <0..23>] [--screenshot <output-or-prefix.png>] [--live] [--walk RDLU] \
          [--preview-flag <verified-flag>] | \
-         (--maps <id,id,...> | --all-maps) --output-dir <directory> \
+         (--maps <id,id,...> | --all-maps | --kanto-interiors) --output-dir <directory> \
          [--view 2d|2.5d|both] [--hour <0..23>]]"#
     );
 }

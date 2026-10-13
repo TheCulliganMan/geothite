@@ -19,6 +19,7 @@ const RESTORE_RATE: f32 = 8.0;
 // A group ordinal can never reach usize::MAX in an allocated vertex table.
 // Avoid Option<usize>'s extra tag for every vertex in a large scene.
 const UNOWNED: usize = usize::MAX;
+const UNOWNED_VERTEX: u32 = u32::MAX;
 // Larger leaves reduce build passes and node storage. Every leaf still tests
 // all its original triangles exactly; no collision or render detail is removed.
 const BVH_LEAF_TRIANGLES: usize = 64;
@@ -44,6 +45,16 @@ struct PreparedLeaf {
     mesh: Mesh,
     center: Vec3,
     bounds: Aabb,
+}
+
+/// The caller must prove the owning material does not consume constant UV0.
+/// Linked textured overlays retain their own coordinates and material contract.
+pub(super) fn compact_palette_group_uv0(groups: &mut [PreparedGroup]) {
+    for group in groups {
+        for leaf in &mut group.leaves {
+            crate::compact_vertices::remove_unused_zero_uv0(&mut leaf.mesh);
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -97,20 +108,89 @@ struct TriangleTree {
     // Keep indexed source positions rather than storing three copied positions
     // for every triangle. This is exact collision geometry, not a proxy mesh.
     positions: Vec<Vec3>,
-    triangles: Vec<[u32; 3]>,
+    triangles: TriangleIndices,
     nodes: Vec<Node>,
+}
+// Collision ownership needs the original corners, but each complete grove
+// fits in 16-bit local indices. Keep large source objects lossless too.
+#[derive(Clone, Debug)]
+enum TriangleIndices {
+    Narrow(Vec<[u16; 3]>),
+    Wide(Vec<[u32; 3]>),
+}
+impl Default for TriangleIndices {
+    fn default() -> Self { Self::Narrow(Vec::new()) }
+}
+impl TriangleIndices {
+    fn new(indices: &[u32]) -> Self {
+        if indices.iter().all(|&i| i <= u16::MAX as u32) {
+            Self::Narrow(indices.chunks_exact(3).map(|t| t.try_into().unwrap())
+                .map(|t: [u32; 3]| t.map(|i| i as u16)).collect())
+        } else {
+            Self::Wide(indices.chunks_exact(3).map(|t| t.try_into().unwrap()).collect())
+        }
+    }
+    fn len(&self) -> usize {
+        match self { Self::Narrow(v) => v.len(), Self::Wide(v) => v.len() }
+    }
+    fn is_empty(&self) -> bool { self.len() == 0 }
+    fn triangle(&self, index: usize) -> [u32; 3] {
+        match self { Self::Narrow(v) => v[index].map(u32::from), Self::Wide(v) => v[index] }
+    }
+    #[cfg(test)]
+    fn iter(&self) -> impl Iterator<Item = [u32; 3]> + '_ {
+        (0..self.len()).map(|index| self.triangle(index))
+    }
+    #[cfg(test)]
+    fn storage_bytes(&self) -> usize {
+        match self {
+            Self::Narrow(v) => v.len() * std::mem::size_of::<[u16; 3]>(),
+            Self::Wide(v) => v.len() * std::mem::size_of::<[u32; 3]>(),
+        }
+    }
+    fn partition(&mut self, range: Range<usize>, positions: &[Vec3], axis: usize) {
+        fn partition<I: Copy + Into<u32>>(triangles: &mut [[I; 3]], positions: &[Vec3], axis: usize) {
+            triangles.select_nth_unstable_by(triangles.len() / 2, |a, b| {
+                let center = |t: &[I; 3]| {
+                    f64::from(positions[t[0].into() as usize][axis])
+                        + f64::from(positions[t[1].into() as usize][axis])
+                        + f64::from(positions[t[2].into() as usize][axis])
+                };
+                center(a).total_cmp(&center(b))
+            });
+        }
+        match self {
+            Self::Narrow(v) => partition(&mut v[range], positions, axis),
+            Self::Wide(v) => partition(&mut v[range], positions, axis),
+        }
+    }
 }
 impl TriangleTree {
     fn new(data: &SurfaceMeshData) -> Self {
+        // Face normals and colors require separate render vertices, but the
+        // collision tree can share positions with identical float bits.
+        // Keep signed zero and every original corner; never quantize geometry.
+        let mut unique = std::collections::HashMap::<[u32; 3], u32>::new();
+        let mut positions = Vec::new();
+        let mut remap = Vec::with_capacity(data.positions.len());
+        for &position in &data.positions {
+            let index = *unique.entry(position.map(f32::to_bits)).or_insert_with(|| {
+                let index = positions.len() as u32;
+                positions.push(Vec3::from_array(position));
+                index
+            });
+            remap.push(index);
+        }
+        let indices = data.indices.iter().map(|&i| remap[i as usize]).collect::<Vec<_>>();
+        drop(unique);
+        drop(remap);
+        positions.shrink_to_fit();
         let mut tree = Self {
-            positions: data.positions.iter().copied().map(Vec3::from_array).collect(),
-            triangles: data
-                .indices
-                .chunks_exact(3)
-                .map(|t| [t[0], t[1], t[2]])
-                .collect(),
+            positions,
+            triangles: TriangleIndices::new(&indices),
             nodes: Vec::new(),
         };
+        drop(indices);
         if !tree.triangles.is_empty() {
             tree.build(0..tree.triangles.len());
         }
@@ -118,8 +198,8 @@ impl TriangleTree {
     }
     fn build(&mut self, range: Range<usize>) -> usize {
         let mut bounds = Bounds::empty();
-        for triangle in &self.triangles[range.clone()] {
-            for &i in triangle {
+        for index in range.clone() {
+            for i in self.triangles.triangle(index) {
                 bounds.include(self.positions[i as usize]);
             }
         }
@@ -141,15 +221,7 @@ impl TriangleTree {
             // Only the median partition is needed for the two child bounds.
             // Sorting every descendant repeatedly adds work without improving
             // exact triangle intersection tests or the rendered geometry.
-            let positions = &self.positions;
-            self.triangles[range.clone()].select_nth_unstable_by(range.len() / 2, |a, b| {
-                let center = |t: &[u32; 3]| {
-                    f64::from(positions[t[0] as usize][axis])
-                        + f64::from(positions[t[1] as usize][axis])
-                        + f64::from(positions[t[2] as usize][axis])
-                };
-                center(a).total_cmp(&center(b))
-            });
+            self.triangles.partition(range.clone(), &self.positions, axis);
             let mid = range.start + range.len() / 2;
             let left = self.build(range.start..mid);
             let right = self.build(mid..range.end);
@@ -169,9 +241,8 @@ impl TriangleTree {
             self.hit_node(node.children[0], start, delta)
                 || self.hit_node(node.children[1], start, delta)
         } else {
-            self.triangles[node.triangles.clone()]
-                .iter()
-                .any(|&t| segment_triangle(start, delta, t.map(|i| self.positions[i as usize])))
+            node.triangles.clone().any(|index| segment_triangle(start, delta,
+                self.triangles.triangle(index).map(|i| self.positions[i as usize])))
         }
     }
 }
@@ -225,7 +296,7 @@ fn source_groups(data: &SurfaceMeshData) -> Vec<Range<usize>> {
 
 /// Called once on the terrain build worker, before static spatial batching.
 /// Copy indexed attributes exactly, retaining complete triangle order/winding.
-pub(super) fn prepare(source: SurfaceMeshData) -> (SurfaceMeshData, Vec<PreparedGroup>) {
+pub(super) fn prepare(mut source: SurfaceMeshData) -> (SurfaceMeshData, Vec<PreparedGroup>) {
     let n = source.positions.len();
     if source.indices.len() % 3 != 0
         || source.normals.len() != n
@@ -247,19 +318,31 @@ pub(super) fn prepare(source: SurfaceMeshData) -> (SurfaceMeshData, Vec<Prepared
     if ranges.is_empty() {
         return (source, Vec::new());
     }
-    let mut owner = vec![UNOWNED; n];
-    for (group, range) in ranges.iter().enumerate() {
-        owner[range.clone()].fill(group);
+    if ranges.len() >= UNOWNED_VERTEX as usize {
+        return (source, Vec::new());
     }
-    let mut buckets = vec![Vec::<u32>::new(); ranges.len() + 1];
-    for triangle in source.indices.chunks_exact(3) {
+    source.compact_build_storage();
+    // Source indices already use u32. Avoid a native-width owner ordinal per
+    // vertex: the connected outdoor halo can contain millions of vertices.
+    let mut owner = vec![UNOWNED_VERTEX; n];
+    for (group, range) in ranges.iter().enumerate() {
+        owner[range.clone()].fill(group as u32);
+    }
+    let bucket_for = |triangle: &[u32]| {
         let group = owner[triangle[0] as usize];
-        let index = if group != UNOWNED && triangle.iter().all(|&i| owner[i as usize] == group) {
-            group + 1
+        if group != UNOWNED_VERTEX && triangle.iter().all(|&i| owner[i as usize] == group) {
+            group as usize + 1
         } else {
             0
-        };
-        buckets[index].extend_from_slice(triangle);
+        }
+    };
+    let mut sizes = vec![0; ranges.len() + 1];
+    for triangle in source.indices.chunks_exact(3) {
+        sizes[bucket_for(triangle)] += 3;
+    }
+    let mut buckets: Vec<Vec<u32>> = sizes.into_iter().map(Vec::with_capacity).collect();
+    for triangle in source.indices.chunks_exact(3) {
+        buckets[bucket_for(triangle)].extend_from_slice(triangle);
     }
     let mut remap = vec![u32::MAX; n];
     let mut extracted = buckets
@@ -326,7 +409,7 @@ pub(super) fn prepare_linked(
 fn select(
     source: &SurfaceMeshData,
     // None means every vertex belongs to this whole authored fade object.
-    owner: Option<&[usize]>,
+    owner: Option<&[u32]>,
     remap: &mut [u32],
     mut indices: Vec<u32>,
 ) -> SurfaceMeshData {
@@ -357,7 +440,7 @@ fn select(
         data.normals.push(source.normals[old]);
         data.uvs.push(source.uvs[old]);
         data.colors.push(source.colors[old]);
-        if owner.is_none_or(|owners| owners[old] != UNOWNED) {
+        if owner.is_none_or(|owners| owners[old] != UNOWNED_VERTEX) {
             if let Some(range) = data.cutaway_ranges.last_mut()
                 && range.end == next
             {
@@ -372,8 +455,10 @@ fn select(
     }
     data
 }
-fn render_leaves(data: SurfaceMeshData) -> Vec<PreparedLeaf> {
-    let mut chunks = vec![data.indices.clone()];
+fn render_leaves(mut data: SurfaceMeshData) -> Vec<PreparedLeaf> {
+    // The source index buffer is no longer needed after the exact BVH build.
+    // Move it through sorting/splitting instead of keeping several full copies.
+    let mut chunks = vec![std::mem::take(&mut data.indices)];
     while chunks.len() < MAX_RENDER_LEAVES {
         let candidate = chunks
             .iter()
@@ -397,17 +482,15 @@ fn render_leaves(data: SurfaceMeshData) -> Vec<PreparedLeaf> {
         let Some(index) = candidate else {
             break;
         };
-        let indices = chunks.swap_remove(index);
+        let mut indices = chunks.swap_remove(index);
         let mut bounds = Bounds::empty();
         for &i in &indices {
             bounds.include(data.positions[i as usize].into());
         }
         let extent = bounds.max - bounds.min;
         let axis = if extent.x >= extent.z { 0 } else { 2 };
-        let mut triangles = indices
-            .chunks_exact(3)
-            .map(|t| [t[0], t[1], t[2]])
-            .collect::<Vec<_>>();
+        let (triangles, remainder) = indices.as_chunks_mut::<3>();
+        debug_assert!(remainder.is_empty());
         triangles.sort_unstable_by(|a, b| {
             let center = |t: &[u32; 3]| {
                 t.iter()
@@ -416,9 +499,10 @@ fn render_leaves(data: SurfaceMeshData) -> Vec<PreparedLeaf> {
             };
             center(a).total_cmp(&center(b))
         });
-        let right = triangles.split_off(triangles.len() / 2);
-        chunks.push(triangles.into_iter().flatten().collect());
-        chunks.push(right.into_iter().flatten().collect());
+        let split = (triangles.len() / 2) * 3;
+        let right = indices.split_off(split);
+        chunks.push(indices);
+        chunks.push(right);
     }
     let mut remap = vec![u32::MAX; data.positions.len()];
     chunks
@@ -739,13 +823,47 @@ mod tests {
         }
     }
     #[test]
+    fn early_palette_compaction_keeps_geometry_tags_and_linked_texture_coordinates() {
+        let material = crate::solid_terrain_material();
+        assert!(crate::compact_vertices::solid_uv0_is_unused(
+            &material.base, material.extension.water_enabled,
+        ));
+        for uv in [[0.0; 2], [82000.0, 1000.0]] {
+            let mut source = wall(0.0);
+            source.uvs.fill(uv);
+            let (_, mut groups) = prepare(source.clone());
+            let (_, mut overlay) = prepare(source);
+            groups[0].overlay = Some(Box::new(overlay.pop().unwrap()));
+            let leaf = &groups[0].leaves[0];
+            let before: Vec<_> = leaf.mesh.attributes()
+                .filter(|(attribute, _)| attribute.id != Mesh::ATTRIBUTE_UV_0.id)
+                .map(|(attribute, values)| (attribute.id, values.get_bytes().to_vec())).collect();
+            let indices = leaf.mesh.indices().cloned();
+            let center = leaf.center;
+            let bounds = leaf.bounds;
+            compact_palette_group_uv0(&mut groups);
+            let leaf = &groups[0].leaves[0];
+            let after: Vec<_> = leaf.mesh.attributes()
+                .filter(|(attribute, _)| attribute.id != Mesh::ATTRIBUTE_UV_0.id)
+                .map(|(attribute, values)| (attribute.id, values.get_bytes().to_vec())).collect();
+            assert_eq!(before, after);
+            assert_eq!(indices, leaf.mesh.indices().cloned());
+            assert_eq!(center, leaf.center);
+            assert_eq!(bounds, leaf.bounds);
+            assert_eq!(leaf.mesh.attribute(Mesh::ATTRIBUTE_UV_0).is_none(), uv == [0.0; 2]);
+            assert!(groups[0].overlay.as_ref().unwrap().leaves[0].mesh
+                .attribute(Mesh::ATTRIBUTE_UV_0).is_some());
+        }
+    }
+
+    #[test]
     fn selecting_reuses_indices_and_sizes_exact_attributes_without_changing_ownership() {
         let mut source = SurfaceMeshData::default();
         quad(&mut source, [[0.,0.,0.],[1.,0.,0.],[1.,1.,0.],[0.,1.,0.]], false);
         let indices = vec![3,0,1,3,1,2];
         let allocation = indices.as_ptr();
         let mut remap = vec![u32::MAX;4];
-        let selected = select(&source, Some(&[UNOWNED,0,UNOWNED,0]), &mut remap, indices);
+        let selected = select(&source, Some(&[UNOWNED_VERTEX,0,UNOWNED_VERTEX,0]), &mut remap, indices);
         assert_eq!(selected.indices.as_ptr(), allocation, "selection must reuse its large index bucket");
         assert_eq!(selected.indices, [0,1,2,0,2,3]);
         for (new,old) in [3,0,1,2].into_iter().enumerate() {
@@ -864,17 +982,65 @@ mod tests {
         };
         let mut expected: Vec<_> = source.indices.chunks_exact(3)
             .map(|t| key([t[0], t[1], t[2]])).collect();
-        let mut actual: Vec<_> = tree.triangles.iter().map(|&t| {
+        let mut actual: Vec<_> = tree.triangles.iter().map(|t| {
             t.into_iter().flat_map(|i| tree.positions[i as usize].to_array().map(f32::to_bits))
                 .collect::<Vec<_>>()
         }).collect();
         expected.sort_unstable();
         actual.sort_unstable();
         assert_eq!(actual, expected);
-        assert_eq!(tree.positions.len(), source.positions.len());
+        assert!(tree.positions.len() <= source.positions.len());
         let indexed_bytes = tree.positions.len() * std::mem::size_of::<Vec3>()
-            + tree.triangles.len() * std::mem::size_of::<[u32; 3]>();
+            + tree.triangles.storage_bytes();
         assert!(indexed_bytes < tree.triangles.len() * std::mem::size_of::<[Vec3; 3]>());
+    }
+
+    #[test]
+    fn collision_sharing_preserves_signed_zero_and_every_duplicate_corner() {
+        let mut data = SurfaceMeshData::default();
+        let corners = [[0.0, 0.0, 1.0], [-0.0, 0.0, 1.0],
+            [1.0, 0.0, 0.0], [-1.0, 0.0, 0.0]];
+        data.positions.extend(corners);
+        data.positions.extend(corners);
+        data.indices = vec![0, 2, 3, 4, 6, 7, 1, 2, 3, 5, 6, 7];
+        let tree = TriangleTree::new(&data);
+        assert_eq!(tree.positions.len(), 4);
+        let expected: Vec<_> = data.indices.iter().flat_map(|&i|
+            data.positions[i as usize].map(f32::to_bits)).collect();
+        let actual: Vec<_> = tree.triangles.iter().flatten().flat_map(|i|
+            tree.positions[i as usize].to_array().map(f32::to_bits)).collect();
+        assert_eq!(actual, expected);
+        assert!(tree.blocks(Vec3::Y, -Vec3::Y));
+    }
+
+    #[test]
+    fn collision_indices_are_narrow_only_when_every_original_corner_fits() {
+        let indices = [0, u16::MAX as u32, 42];
+        let narrow = TriangleIndices::new(&indices);
+        assert_eq!(narrow.triangle(0), indices);
+        assert_eq!(narrow.storage_bytes(), 6);
+        let mut data = SurfaceMeshData::default();
+        data.positions = vec![[0.0; 3]; u16::MAX as usize + 2];
+        data.positions[0] = [-1.0, 0.0, -1.0];
+        data.positions[u16::MAX as usize] = [1.0, 0.0, -1.0];
+        data.positions[u16::MAX as usize + 1] = [0.0, 0.0, 1.0];
+        data.indices = vec![0, u16::MAX as u32, u16::MAX as u32 + 1];
+        let tree = TriangleTree::new(&data);
+        assert_eq!(TriangleIndices::new(&data.indices).triangle(0), [0, 65535, 65536]);
+        assert_eq!(TriangleIndices::new(&data.indices).storage_bytes(), 12);
+        assert_eq!(tree.triangles.storage_bytes(), 6);
+        assert!(tree.blocks(Vec3::Y, -Vec3::Y));
+        assert!(!tree.blocks(Vec3::new(2.0, 1.0, 0.0), Vec3::new(2.0, -1.0, 0.0)));
+        // Unique positions retain their full local index range after sharing.
+        data.positions = (0..=u16::MAX as u32 + 1)
+            .map(|i| [i as f32, 2.0, 0.0]).collect();
+        data.positions[0] = [-1.0, 0.0, -1.0];
+        data.positions[u16::MAX as usize] = [1.0, 0.0, -1.0];
+        data.positions[u16::MAX as usize + 1] = [0.0, 0.0, 1.0];
+        let wide = TriangleTree::new(&data);
+        assert_eq!(wide.triangles.triangle(0), [0, 65535, 65536]);
+        assert_eq!(wide.triangles.storage_bytes(), 12);
+        assert!(wide.blocks(Vec3::Y, -Vec3::Y));
     }
 
     #[test]
@@ -1416,4 +1582,51 @@ Transform::from_xyz(0.0, 20.0, 80.0)
             "linking must neither drop nor duplicate source triangles"
         );
     }
+}
+
+#[cfg(test)]
+pub(crate) fn geometry_signature(
+    opaque: &SurfaceMeshData, groups: Vec<PreparedGroup>,
+) -> Vec<Vec<u32>> {
+    let mut result = Vec::new();
+    let mut add = |data: &SurfaceMeshData| {
+        for tri in data.indices.chunks_exact(3) {
+            let mut bits = Vec::new();
+            for &i in tri {
+                let i = i as usize;
+                bits.extend(data.positions[i].map(f32::to_bits));
+                bits.extend(data.normals[i].map(f32::to_bits));
+                bits.extend(data.uvs[i].map(f32::to_bits));
+                bits.extend(data.colors[i].map(f32::to_bits));
+            }
+            result.push(bits);
+        }
+    };
+    add(opaque);
+    for group in groups {
+        for leaf in group.leaves {
+            let bevy::mesh::VertexAttributeValues::Float32x3(positions) =
+                leaf.mesh.attribute(Mesh::ATTRIBUTE_POSITION).unwrap() else { panic!() };
+            let bevy::mesh::VertexAttributeValues::Float32x3(normals) =
+                leaf.mesh.attribute(Mesh::ATTRIBUTE_NORMAL).unwrap() else { panic!() };
+            // A compact palette leaf has implicit zero coordinates. Tagged
+            // finishes retain their attribute and must still match exactly.
+            let uvs = match leaf.mesh.attribute(Mesh::ATTRIBUTE_UV_0) {
+                Some(bevy::mesh::VertexAttributeValues::Float32x2(uvs)) => uvs.clone(),
+                None => vec![[0.0; 2]; positions.len()],
+                _ => panic!("unexpected UV0 representation"),
+            };
+            let bevy::mesh::VertexAttributeValues::Float32x4(colors) =
+                leaf.mesh.attribute(Mesh::ATTRIBUTE_COLOR).unwrap() else { panic!() };
+            let data = SurfaceMeshData {
+                positions: positions.iter().map(|&p| (Vec3::from_array(p) + leaf.center).to_array()).collect(),
+                normals: normals.clone(), uvs, colors: colors.clone(),
+                indices: leaf.mesh.indices().unwrap().iter().map(|i| i as u32).collect(),
+                ..Default::default()
+            };
+            add(&data);
+        }
+    }
+    result.sort_unstable();
+    result
 }

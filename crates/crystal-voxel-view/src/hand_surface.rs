@@ -28,6 +28,26 @@ pub(crate) fn smooth(
         })
         .collect();
     smooth_selection(mesh,ids,weights,&selected);
+    // Pinning the wrist geometry must not retain a stale normal on the hand
+    // side of that boundary. Shade the refined surface across geometric UV
+    // welds, while leaving every non-hand vertex's normal untouched.
+    let mut normals = BTreeMap::<[i32; 3], Vec3>::new();
+    for face in mesh.indices.chunks_exact(3) {
+        let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+        let n = (p[1]-p[0]).cross(p[2]-p[0]).normalize_or_zero();
+        for corner in 0..3 {
+            let a = (p[(corner+1)%3]-p[corner]).normalize_or_zero();
+            let b = (p[(corner+2)%3]-p[corner]).normalize_or_zero();
+            *normals.entry(key(p[corner].to_array())).or_default() += n * a.dot(b).clamp(-1.0,1.0).acos();
+        }
+    }
+    for i in 0..mesh.positions.len() {
+        let hand = (0..4).filter(|&slot| groups.contains(&(ids[i][slot] as usize)))
+            .map(|slot| weights[i][slot]).sum::<f32>() > 0.85;
+        if hand {
+            mesh.normals[i] = normals[&key(mesh.positions[i])].normalize_or_zero().to_array();
+        }
+    }
 }
 
 /// Round an isolated source surface while pinning its boundaries. Attribute

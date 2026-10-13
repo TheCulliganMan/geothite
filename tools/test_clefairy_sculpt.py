@@ -14,7 +14,7 @@ class ClefairyTests(unittest.TestCase):
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'clefairy':self.m})
  def test_finite_unit_normals_follow_winding(self):assert_model_shading(self,{'clefairy':self.m})
  def test_recipe_height_grounding_and_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),50000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),25000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for p in self.ps:
    if p['part'].startswith('Foot /'):self.assertEqual(min(p['positions'][1::3]),0)
  def test_distinct_ears_wings_hands_and_curled_tail(self):

@@ -23,7 +23,7 @@ bevy = { workspace = true, features = [
 ] }
 crystal-render-api.workspace = true
 serde = { workspace = true, features = ["derive"] }
-serde_json.workspace = true
+serde_json = { workspace = true, features = ["raw_value"] }
 base64.workspace = true
 flate2.workspace = true
 gltf = { version = "1.4.1", default-features = false, features = ["utils", "names", "extras"] }
@@ -33,6 +33,8 @@ image = { workspace = true, features = ["jpeg"] }
 [features]
 people-review = ["bevy/bevy_winit", "bevy/x11", "bevy/png"]
 operation-trace = []
+# Exact full-detail browser/native comparisons without a runtime environment.
+scenery-full-detail = []
 
 [build-dependencies]
 flate2.workspace = true

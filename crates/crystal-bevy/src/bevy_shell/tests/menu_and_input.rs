@@ -3565,6 +3565,7 @@ fn battle_tower_save_and_quit_updates_sram_save_then_reboots_to_the_intro() {
     advance_visible_title_to_main_menu(&mut runtime_shell).expect("open reboot title menu");
     select_visible_title_menu_option(&mut runtime_shell).expect("open Continue summary");
     assert!(runtime_shell.visible_continue_screen.is_some());
+    settle_visible_continue_summary_for_test(&mut runtime_shell);
     select_visible_title_menu_option(&mut runtime_shell).expect("continue Battle Tower save");
     assert_eq!(runtime_shell.shell.current_map_name(), "BattleTower1F");
     assert_eq!(

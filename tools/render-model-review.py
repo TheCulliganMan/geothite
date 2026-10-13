@@ -6,6 +6,7 @@ stored geometry, linear materials, normals and an orthographic depth buffer.
 GLB node transforms are applied; animations and the game camera are not sampled.
 """
 import argparse,json,math,struct
+from itertools import islice
 from pathlib import Path
 import numpy as np
 from PIL import Image,ImageDraw
@@ -84,11 +85,14 @@ def main():
     if 'target' not in a.out.parts:p.error('review output belongs under target/')
     files=[]
     for path in a.paths:files.extend(sorted(path.rglob('*.mesh.json'))+sorted(path.rglob('*.glb')) if path.is_dir() else [path])
-    models=[m for path in files for m in read_models(path)];a.out.mkdir(parents=True,exist_ok=True)
-    for first in range(0,len(models),24):
-        batch=models[first:first+24];columns=min(6,len(batch));sheet=Image.new('RGB',(a.size*columns,(a.size+24)*math.ceil(len(batch)/columns)),(238,233,224))
+    # Keep only one review sheet's geometry alive. A whole-catalog review can
+    # otherwise decode hundreds of large bodies before producing any evidence.
+    models=(m for path in files for m in read_models(path));a.out.mkdir(parents=True,exist_ok=True)
+    page=0
+    while batch:=list(islice(models,24)):
+        columns=min(6,len(batch));sheet=Image.new('RGB',(a.size*columns,(a.size+24)*math.ceil(len(batch)/columns)),(238,233,224))
         for i,(name,parts) in enumerate(batch):
             x=i%columns*a.size;y=i//columns*(a.size+24);sheet.paste(render(parts,a.size,a.yaw),(x,y));ImageDraw.Draw(sheet).text((x+8,y+a.size+3),name,fill=(30,30,30))
-        dest=a.out/f'review-{first//24:02d}.png';sheet.save(dest);print(dest,flush=True)
+        dest=a.out/f'review-{page:02d}.png';sheet.save(dest);print(dest,flush=True);page+=1
 
 if __name__=='__main__':main()

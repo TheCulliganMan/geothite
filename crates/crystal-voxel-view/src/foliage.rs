@@ -107,6 +107,14 @@ pub(crate) fn grove_trunk_offset(coordinates: [i32; 2], spacing: f32) -> Vec2 {
 
 fn append_broadleaf_tree(mesh: &mut TerrainMeshData, bounds: [f32;4], base: f32,
     tile: f32, coordinates: [i32;2], neighbors: [bool;4]) {
+    if mesh.solid.positions.is_empty() {
+        let (vertices, indices) = grove_geometry_size(coordinates, neighbors);
+        mesh.solid.positions.reserve_exact(vertices);
+        mesh.solid.normals.reserve_exact(vertices);
+        mesh.solid.uvs.reserve_exact(vertices);
+        mesh.solid.colors.reserve_exact(vertices);
+        mesh.solid.indices.reserve_exact(indices);
+    }
     let v=variation(coordinates[0],coordinates[1]);
     let interior=neighbors.iter().all(|&n| n);
     // A continuous interior grove gets one broad crown per four source plots.
@@ -174,6 +182,20 @@ fn append_broadleaf_tree(mesh: &mut TerrainMeshData, bounds: [f32;4], base: f32,
     }
     crate::understory::append(&mut mesh.solid,bounds,base,tile,coordinates);
     mesh.solid.cutaway_ranges.push(first..mesh.solid.positions.len());
+}
+
+fn grove_geometry_size(coordinates: [i32; 2], neighbors: [bool; 4]) -> (usize, usize) {
+    // Understory: 16x7 rosette leaves and 8x5x11 fern leaves, each four
+    // faceted triangles. A canopy adds trunk, twelve branches and 1,920 leaves.
+    let understory = (16 * 7 + 8 * 5 * 11) * 12;
+    if neighbors.iter().all(|&n| n)
+        && (coordinates[0].rem_euclid(4) != 0 || coordinates[1].rem_euclid(4) != 0)
+    {
+        (understory, understory)
+    } else {
+        (understory + 7 * 17 + 12 * 7 * 11 + 13 * 25 + 1920 * 9,
+         understory + 6 * 16 * 6 + 12 * 6 * 10 * 6 + 22 * 24 * 3 + 1920 * 8 * 3)
+    }
 }
 
 /// Curved, tapered branch sections, continuous at their shared rings.
@@ -476,6 +498,23 @@ fn append_tree_impl(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn grove_buffers_are_sized_for_every_original_leaf_branch_and_understory() {
+        for coordinates in [[0, 0], [2, 4], [-2, -4]] {
+            for neighbors in [[false; 4], [true; 4], [true, false, true, false]] {
+                let mut mesh = TerrainMeshData::default();
+                append_grove_tree(&mut mesh, [0., 16., 0., 16.], 0., 8., coordinates, neighbors);
+                let (vertices, indices) = grove_geometry_size(coordinates, neighbors);
+                assert_eq!(mesh.solid.positions.len(), vertices);
+                assert_eq!(mesh.solid.indices.len(), indices);
+                assert_eq!(mesh.solid.positions.capacity(), vertices);
+                assert_eq!(mesh.solid.normals.capacity(), vertices);
+                assert_eq!(mesh.solid.uvs.capacity(), vertices);
+                assert_eq!(mesh.solid.colors.capacity(), vertices);
+                assert_eq!(mesh.solid.indices.capacity(), indices);
+            }
+        }
+    }
     #[test]
     fn pointed_blades_keep_coverage_and_outward_fold_normals() {
         for n in [Vec3::Y,Vec3::Z,Vec3::NEG_X,Vec3::new(0.4,0.7,0.2).normalize()] {

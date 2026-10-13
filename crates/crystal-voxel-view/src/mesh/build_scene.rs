@@ -122,11 +122,13 @@ fn build_terrain_mesh_internal(
     images: Option<&TerrainImageSamples>,
     instance_hulls: bool,
     profiles: Option<&crate::live_profiles::Document>,
+    mut grove_sink: Option<&mut dyn FnMut(SurfaceMeshData)>,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
     // The runtime's bundled/live profile document enables the full authored
     // kit. Low-level samples-only calls retain their legacy mesher contract
     // for diagnostic comparisons and regression fixtures.
     let authored_enabled = profiles.is_some();
+    let mut detached_groves = Vec::new();
     let scenery_metrics = (new_bark::supports_map(frame.map_id.as_ref())
         && std::env::var_os("CRYSTAL_SCENERY_METRICS").is_some())
     .then(std::time::Instant::now);
@@ -1079,16 +1081,19 @@ fn build_terrain_mesh_internal(
         // Missing 3D trees retain exact source tiles. Never substitute the
         // legacy voxel hull for unavailable canonical tree assets.
         for placement in new_bark::tree_placements(frame.map_id.as_ref(), &cells, &geometry) {
-            if new_bark::append_tree(
-                &mut mesh,
-                &cells,
-                &shapes,
-                &geometry,
-                frame.map_id.as_ref(),
-                placement,
-                &mut claimed_by_tree,
-                frame.grid_origin.to_array(),
-            ) {
+            let appended = if grove_sink.is_some() {
+                if let Some(grove) = new_bark::claim_grove(&mut mesh, &cells, &shapes,
+                    &geometry, frame.map_id.as_ref(), placement, &mut claimed_by_tree,
+                    frame.grid_origin.to_array()) {
+                    detached_groves.push(grove);
+                    true
+                } else { false }
+            } else {
+                new_bark::append_tree(&mut mesh, &cells, &shapes, &geometry,
+                    frame.map_id.as_ref(), placement, &mut claimed_by_tree,
+                    frame.grid_origin.to_array())
+            };
+            if appended {
                 continue;
             }
             if authored_enabled
@@ -2259,6 +2264,7 @@ fn build_terrain_mesh_internal(
     if authored_enabled && let Some(images) = images {
         seafoam_palette::finish(&mut mesh,&frame.map_id,&original_cells,images);
     }
+    let grove_finish_claims = (!detached_groves.is_empty()).then(|| mesh.authored_cells.clone());
     ledge_approach::shape_approaches(&mut mesh, &original_cells, &geometry, &source_shapes, frame.grid_origin.to_array());
     // Finish normals once, after every outdoor rock deformation. Base contact
     // rounding must not erase the mineral cap fractures.
@@ -2273,6 +2279,20 @@ fn build_terrain_mesh_internal(
     }
     shore_ecology::append(&mut mesh, &frame.map_id, &original_cells,
         &shapes, &geometry, frame.grid_origin.to_array());
+    if let Some(sink) = grove_sink.as_mut() {
+        for grove in detached_groves {
+            // Grove leaves can cross a bank edge. Apply the same final bank
+            // shape and lip normal field using the completed source claims.
+            let mut object = TerrainMeshData {
+                authored_cells: grove_finish_claims.as_ref().unwrap().clone(),
+                ..Default::default()
+            };
+            grove.append(&mut object);
+            ledge_approach::finish_detached_grove(&mut object, &original_cells,
+                &geometry, &source_shapes, frame.grid_origin.to_array());
+            sink(object.solid);
+        }
+    }
     if let Some(started) = scenery_metrics {
         let surfaces = [
             &mesh.textured,

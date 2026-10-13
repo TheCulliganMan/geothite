@@ -16,6 +16,14 @@ fn read_loaded_compiled_game_pack(path: impl AsRef<Path>) -> Result<LoadedCompil
     })
 }
 
+/// Decode an uncertified pack for explicit intro timing diagnostics only.
+#[cfg(any(test, feature = "test-fixtures"))]
+pub fn read_unverified_compiled_game_pack_for_intro_timing_diagnostic(
+    path: impl AsRef<Path>,
+) -> Result<LoadedCompiledGamePack> {
+    read_loaded_compiled_game_pack(path)
+}
+
 pub fn read_verified_compiled_game_pack(path: impl AsRef<Path>) -> Result<CompiledGamePack> {
     let (_, _, pack) = read_loaded_verified_compiled_game_pack(path)?.into_parts();
     Ok(pack)

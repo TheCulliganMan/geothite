@@ -926,8 +926,8 @@ const DELETE_SAVE_PROMPT_BOX_X: usize = 1;
 const DELETE_SAVE_PROMPT_BOX_Y: usize = 6;
 const DELETE_SAVE_PROMPT_BOX_WIDTH: usize = 18;
 const DELETE_SAVE_PROMPT_BOX_HEIGHT: usize = 4;
-const DELETE_SAVE_OPTION_BOX_X: usize = 11;
-const DELETE_SAVE_OPTION_BOX_Y: usize = 9;
+const DELETE_SAVE_OPTION_BOX_X: usize = 14;
+const DELETE_SAVE_OPTION_BOX_Y: usize = 7;
 const DELETE_SAVE_OPTION_BOX_WIDTH: usize = 6;
 const DELETE_SAVE_OPTION_BOX_HEIGHT: usize = 4;
 
@@ -972,14 +972,14 @@ fn load_delete_save_frame(
     let selected = delete_save.selected_index.min(1);
     draw_time_set_text(
         &font,
-        if selected == 0 { "▶YES" } else { " YES" },
+        if selected == 0 { "▶NO" } else { " NO" },
         (DELETE_SAVE_OPTION_BOX_X + 1) * SOURCE_TILE_SIZE,
         (DELETE_SAVE_OPTION_BOX_Y + 1) * SOURCE_TILE_SIZE,
         &mut data,
     )?;
     draw_time_set_text(
         &font,
-        if selected == 1 { "▶NO" } else { " NO" },
+        if selected == 1 { "▶YES" } else { " YES" },
         (DELETE_SAVE_OPTION_BOX_X + 1) * SOURCE_TILE_SIZE,
         (DELETE_SAVE_OPTION_BOX_Y + 2) * SOURCE_TILE_SIZE,
         &mut data,
@@ -1932,14 +1932,14 @@ fn spawn_visible_clock_reset_screen(
     Ok(())
 }
 
-const CLOCK_RESET_PROMPT_BOX_X: usize = 1;
-const CLOCK_RESET_PROMPT_BOX_Y: usize = 6;
-const CLOCK_RESET_PROMPT_BOX_WIDTH: usize = 18;
-const CLOCK_RESET_PROMPT_BOX_HEIGHT: usize = 4;
+const CLOCK_RESET_PROMPT_BOX_X: usize = 0;
+const CLOCK_RESET_PROMPT_BOX_Y: usize = 12;
+const CLOCK_RESET_PROMPT_BOX_WIDTH: usize = 20;
+const CLOCK_RESET_PROMPT_BOX_HEIGHT: usize = 6;
 const CLOCK_RESET_YES_NO_BOX_X: usize = 14;
 const CLOCK_RESET_YES_NO_BOX_Y: usize = 7;
 const CLOCK_RESET_YES_NO_BOX_WIDTH: usize = 6;
-const CLOCK_RESET_YES_NO_BOX_HEIGHT: usize = 4;
+const CLOCK_RESET_YES_NO_BOX_HEIGHT: usize = 5;
 const CLOCK_RESET_VALUE_BOX_X: usize = 11;
 const CLOCK_RESET_VALUE_BOX_Y: usize = 9;
 const CLOCK_RESET_VALUE_BOX_WIDTH: usize = 6;
@@ -1971,7 +1971,7 @@ fn load_clock_reset_frame(
             draw_time_set_textbox(
                 &font,
                 &frame,
-                "Reset clock?",
+                clock_reset.prompt_pages.get(clock_reset.prompt_page).context("clock reset missing authored prompt")?,
                 CLOCK_RESET_PROMPT_BOX_X,
                 CLOCK_RESET_PROMPT_BOX_Y,
                 CLOCK_RESET_PROMPT_BOX_WIDTH,
@@ -1989,48 +1989,43 @@ fn load_clock_reset_frame(
             let selected = clock_reset.confirm_selection.min(1);
             draw_time_set_text(
                 &font,
-                if selected == 0 { "▶YES" } else { " YES" },
+                if selected == 0 { "▶NO" } else { " NO" },
                 (CLOCK_RESET_YES_NO_BOX_X + 1) * SOURCE_TILE_SIZE,
                 (CLOCK_RESET_YES_NO_BOX_Y + 1) * SOURCE_TILE_SIZE,
                 &mut data,
             )?;
             draw_time_set_text(
                 &font,
-                if selected == 1 { "▶NO" } else { " NO" },
+                if selected == 1 { "▶YES" } else { " YES" },
                 (CLOCK_RESET_YES_NO_BOX_X + 1) * SOURCE_TILE_SIZE,
                 (CLOCK_RESET_YES_NO_BOX_Y + 2) * SOURCE_TILE_SIZE,
                 &mut data,
             )?;
         }
-        VisibleClockResetPhase::SetDay => {
-            draw_clock_reset_value_prompt(
-                &font,
-                &frame,
-                "What day is it?",
-                &format!(
-                    "{}DAY",
-                    CLOCK_RESET_DAY_NAMES[usize::from(clock_reset.day % 7)]
-                ),
-                &mut data,
-            )?;
+        VisibleClockResetPhase::SetDay | VisibleClockResetPhase::SetHour | VisibleClockResetPhase::SetMinute => {
+            draw_visible_restart_clock_values(&font, &frame, clock_reset, &mut data)?;
         }
-        VisibleClockResetPhase::SetHour => {
-            draw_clock_reset_value_prompt(
-                &font,
-                &frame,
-                "What hour is it?",
-                &format!("{:02}", clock_reset.hour % 24),
-                &mut data,
-            )?;
-        }
-        VisibleClockResetPhase::SetMinute => {
-            draw_clock_reset_value_prompt(
-                &font,
-                &frame,
-                "What minute?",
-                &format!("{:02}", clock_reset.minute % 60),
-                &mut data,
-            )?;
+        VisibleClockResetPhase::Password | VisibleClockResetPhase::WrongPassword
+        | VisibleClockResetPhase::Requested | VisibleClockResetPhase::TimeConfirm
+        | VisibleClockResetPhase::TimeWarning | VisibleClockResetPhase::TimeResetDone => {
+            draw_time_set_textbox(&font, &frame,
+                clock_reset.prompt_pages.get(clock_reset.prompt_page).context("clock reset missing authored prompt")?,
+                0, 12, 20, 6, &mut data)?;
+            if clock_reset.phase == VisibleClockResetPhase::Password {
+                let digits = clock_reset.password_digits.iter().map(|digit| char::from(b'0' + digit)).collect::<String>();
+                draw_time_set_text(&font, &digits, 14 * SOURCE_TILE_SIZE, 15 * SOURCE_TILE_SIZE, &mut data)?;
+                draw_time_set_text(&font, "▲", (14 + clock_reset.password_cursor.min(4)) * SOURCE_TILE_SIZE,
+                    16 * SOURCE_TILE_SIZE, &mut data)?;
+            }
+            if clock_reset.phase == VisibleClockResetPhase::TimeResetDone {
+                draw_visible_restart_clock_values(&font, &frame, clock_reset, &mut data)?;
+            }
+            if clock_reset.phase == VisibleClockResetPhase::TimeConfirm {
+                draw_visible_restart_clock_values(&font, &frame, clock_reset, &mut data)?;
+                draw_time_set_window(&frame, 14, 7, 6, 5, &mut data)?;
+                draw_time_set_text(&font, if clock_reset.confirm_selection == 0 { "▶YES" } else { " YES" }, 15 * SOURCE_TILE_SIZE, 8 * SOURCE_TILE_SIZE, &mut data)?;
+                draw_time_set_text(&font, if clock_reset.confirm_selection == 1 { "▶NO" } else { " NO" }, 15 * SOURCE_TILE_SIZE, 9 * SOURCE_TILE_SIZE, &mut data)?;
+            }
         }
     }
 
@@ -4478,6 +4473,27 @@ fn render_playfield(
         fixed_battle_canvases,
     } = entity_queries;
     let mut queued_despawns = std::collections::HashSet::new();
+    if let Some(splash) = runtime_shell.splash_screen.as_ref() {
+        let key = shell_render_key(&runtime_shell);
+        if rendered.title_active && rendered.shell_render_key == Some(key) { return; }
+        match splash_screen_frame(&runtime_shell, splash, &mut images) {
+            Ok(frame) => {
+                for entity in tiles.iter().chain(players.iter()).chain(objects.iter()).chain(events.iter())
+                    .chain(prompts.iter()).chain(field_commands.iter()).chain(scene_dialogs.iter())
+                    .chain(pokemon_pictures.iter()).chain(title_markers.iter()).chain(battlers.iter()).chain(battle_commands.iter()) {
+                    queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
+                }
+                if let Err(error) = commit_presented_fullscreen_frame(&mut commands, &mut tileset_art, &frame,
+                    PresentedFullscreenFrameSource::Transient, PRESENTED_FULLSCREEN_BASE_Z, &mut images) {
+                    record_visible_render_error(&mut commands, &mut runtime_shell, error); return;
+                }
+                rendered.map_name = None; rendered.tile = None; rendered.state_hash = None;
+                rendered.title_active = true; rendered.shell_render_key = Some(key);
+            }
+            Err(error) => record_visible_render_error(&mut commands, &mut runtime_shell, error),
+        }
+        return;
+    }
     if let Some(current_intro) = runtime_shell.intro_screen.clone() {
         let mut intro = runtime_shell
             .intro_display_screen

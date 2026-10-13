@@ -2587,3 +2587,35 @@ fn field_dialogue_cursor_updates_retained_glyphs_at_asm_border_tile() {
         );
     }
 }
+#[cfg(feature = "location-tester")]
+#[test]
+fn passive_paired_capture_holds_authoritative_clock_and_input_then_resumes() {
+    let shell = initialized_mail_reader_shell("FLOWER_MAIL");
+    let mut app = App::new();
+    app.add_plugins(MinimalPlugins)
+        .insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            std::time::Duration::from_millis(100),
+        ))
+        .insert_resource(shell)
+        .insert_resource(native_rtc_source_for_test())
+        .insert_resource(RuntimeTickTimer::new(0.0))
+        .insert_resource(ButtonInput::<KeyCode>::default())
+        .insert_resource(render_capture::PairedCaptureHold { frozen: true })
+        .add_systems(Update, apply_keyboard_input);
+    app.world_mut().resource_mut::<Time<Virtual>>().pause();
+    app.world_mut().resource_mut::<ButtonInput<KeyCode>>().press(KeyCode::ArrowRight);
+    let before = app.world().resource::<BevyRuntimeShell>().shell.snapshot().unwrap();
+    let lcd = app.world().resource::<BevyRuntimeShell>().lcd_animation_frame;
+    for _ in 0..10 { app.update(); }
+    let held = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(held.shell.snapshot().unwrap().state_checksum, before.state_checksum);
+    assert_eq!(held.lcd_animation_frame, lcd);
+    assert!(held.pending_ui_button_presses.is_empty());
+    assert_eq!(app.world().resource::<Time<Virtual>>().elapsed(), std::time::Duration::ZERO);
+    app.world_mut().resource_mut::<render_capture::PairedCaptureHold>().frozen = false;
+    app.world_mut().resource_mut::<Time<Virtual>>().unpause();
+    app.update();
+    assert!(app.world().resource::<BevyRuntimeShell>().lcd_animation_frame > lcd);
+    assert_ne!(app.world().resource::<BevyRuntimeShell>().shell.snapshot().unwrap().state_checksum,
+        before.state_checksum, "ordinary authoritative time must resume outside the paired hold");
+}

@@ -836,7 +836,12 @@ mod tests {
             .join("../..")
             .canonicalize()
             .expect("repository root");
-        let pack_path = repo_root.join("content-packs/text-tui.crystalpack");
+        let explicit_pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let pack_path = explicit_pack
+            .as_ref()
+            .map(PathBuf::from)
+            .unwrap_or_else(|| repo_root.join("content-packs/text-tui.crystalpack"));
+        assert!(explicit_pack.is_none() || pack_path.is_file(), "CRYSTAL_RENDER_TEST_PACK must identify an existing pack: {}", pack_path.display());
         if !pack_path.exists() {
             eprintln!(
                 "skipping external-pack MCP regression; build {} first",

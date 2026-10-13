@@ -1003,6 +1003,7 @@ struct BevyRuntimeShell {
     runtime: CrystalRuntime,
     shell: RuntimeGameShell,
     latest_rtc_sample: Option<RuntimeRtcSample>,
+    splash_screen: Option<VisibleSplashScreen>,
     intro_screen: Option<VisibleIntroScreen>,
     /// LCD-visible intro state from the preceding VBlank. CrystalIntro writes
     /// registers and VRAM during the current CPU frame; those writes are not
@@ -2463,6 +2464,7 @@ struct TitleMenu {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct VisibleContinueScreen {
+    remaining_delay_frames: u16,
     save_path: PathBuf,
     player_name: String,
     badge_count: usize,
@@ -2870,18 +2872,33 @@ struct VisibleMysteryGiftScreen {
     awaiting_exchange: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Hash)]
 struct VisibleClockResetScreen {
+    time_division: usize,
     phase: VisibleClockResetPhase,
     confirm_selection: usize,
     day: u8,
     hour: u8,
     minute: u8,
+    password_digits: [u8; 5],
+    password_cursor: usize,
+    expected_password: Option<u16>,
+    saved_state_hash: Option<u32>,
+    continue_save_path: Option<PathBuf>,
+    prompt_pages: Vec<String>,
+    prompt_page: usize,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 enum VisibleClockResetPhase {
+    #[default]
     Confirm,
+    Password,
+    WrongPassword,
+    Requested,
+    TimeWarning,
+    TimeConfirm,
+    TimeResetDone,
     SetDay,
     SetHour,
     SetMinute,
@@ -7493,6 +7510,13 @@ fn settle_visible_shell_controller(
             advance_visible_walk_timers(runtime_shell, 1);
             continue;
         }
+        // Completing a tile tween does not complete an authored applymovement
+        // program. The graphical update loop also drains its remaining phases
+        // and resumes the script at movement_step_end; renderer-neutral hosts
+        // must cross that same boundary before accepting another joypad press.
+        if advance_visible_script_movement(runtime_shell)? {
+            continue;
+        }
         // Smoke execution has no Bevy `Time` system, but ASM delays, emotes,
         // and earthquakes still consume frames. Advance their presentation
         // clocks exactly one frame per settle iteration so script commands
@@ -8033,6 +8057,9 @@ fn initialize_bevy_runtime_shell(
             &runtime.data().runtime_title_screen.program,
         )?;
     }
+    let splash_screen = matches!(&start, BevyShellStart::Title { .. })
+        .then(|| VisibleSplashScreen::from_program(runtime.title_presentation_program()))
+        .transpose()?;
     let intro_display_screen = intro_screen.clone();
     let intro_sprite_bundle = intro_screen
         .as_ref()
@@ -8155,6 +8182,7 @@ fn initialize_bevy_runtime_shell(
         runtime,
         shell,
         latest_rtc_sample: None,
+        splash_screen,
         intro_screen,
         intro_display_screen,
         intro_sprite_bundle,
@@ -8581,6 +8609,8 @@ include!("bevy_shell/pc_input.rs");
 include!("bevy_shell/mailbox.rs");
 include!("bevy_shell/pokegear_exit.rs");
 include!("bevy_shell/title_menu.rs");
+include!("bevy_shell/clock_reset.rs");
+include!("bevy_shell/splash_screen.rs");
 include!("bevy_shell/credits.rs");
 include!("bevy_shell/hall_of_fame.rs");
 include!("bevy_shell/script_callbacks.rs");

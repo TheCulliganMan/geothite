@@ -202,21 +202,32 @@ mod tests {
     }
     #[test]
     fn production_rock_finish_keeps_fractures_after_rounding_the_contact_base() {
+        for origin in [[0, 0], [-31, -7], [17, 43], [64, -32]] {
+            check_production_rock_finish(origin);
+        }
+    }
+
+    fn check_production_rock_finish(origin: [i32; 2]) {
         let (frame, g, mut mesh) = fixture();
-        // The production renderer emits six subdivisions per source tile,
-        // rather than six across the whole four-tile diagnostic shelf.
+        // Match production's six subdivisions per source tile on both caps
+        // and walls, rather than six across the entire diagnostic shelf.
         let h = mesh.footing_heights[7];
-        mesh.solid.indices = mesh.solid.indices.chunks_exact(3)
-            .filter(|ids| {
-                let p = [ids[0], ids[1], ids[2]]
-                    .map(|i| Vec3::from_array(mesh.solid.positions[i as usize]));
-                (p[1] - p[0]).cross(p[2] - p[0]).y <= 0.
-            }).flatten().copied().collect();
+        mesh.solid = SurfaceMeshData::default();
         for row in 1..5 { for column in 1..5 {
             let (w, e, n, south) = g.bounds(column, row);
             outdoor_stone::append(&mut mesh.solid,
                 [[w, h, n], [w, h, south], [e, h, south], [e, h, n]],
                 Vec3::Y.to_array(), &g, [0, 0]);
+            for (exposed, points, normal) in [
+                (column == 1, [[w,0.,south],[w,h,south],[w,h,n],[w,0.,n]], Vec3::NEG_X),
+                (column == 4, [[e,0.,n],[e,h,n],[e,h,south],[e,0.,south]], Vec3::X),
+                (row == 1, [[w,0.,n],[w,h,n],[e,h,n],[e,0.,n]], Vec3::NEG_Z),
+                (row == 4, [[e,0.,south],[e,h,south],[w,h,south],[w,0.,south]], Vec3::Z),
+            ] {
+                if exposed {
+                    outdoor_stone::append(&mut mesh.solid, points, normal.to_array(), &g, [0,0]);
+                }
+            }
         }}
         let cells: Vec<_> = frame.tiles.iter().collect();
         let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
@@ -235,9 +246,61 @@ mod tests {
             mesh.solid.indices.extend([start, start + 1, start + 2]);
         }
         let footing = mesh.footing_heights.clone();
-        outdoor_stone::finish_rock_geometry(&mut mesh, "Route26", &cells, &shapes, &g, [0, 0]);
+        let claims = mesh.authored_cells.clone();
+        for uv in &mut mesh.solid.uvs {
+            if uv[0] < -9000. {
+                uv[0] -= origin[0] as f32 * g.tile_width;
+                uv[1] -= origin[1] as f32 * g.tile_height;
+            }
+        }
+        // UVs encode X/Z on walls too: weathered vertical faces can have a
+        // positive top projection without being caps. Retain the authored
+        // face classification before the final normal pass, including the
+        // corner caps and walls added by the sculptor.
+        let source_positions = mesh.solid.positions.clone();
+        let mut classified = mesh.clone();
+        outdoor_stone::sculpt_rock_rims(&mut classified, &cells, &shapes, &g, origin);
+        let sculpted_positions = classified.solid.positions.clone();
+        round_geometry(&mut classified, "Route26", &cells, &shapes, &g, origin);
+        outdoor_stone::finish_rock_geometry(&mut mesh, "Route26", &cells, &shapes, &g, origin);
+        assert_eq!(mesh.solid.positions, classified.solid.positions);
+        assert_eq!(mesh.solid.indices, classified.solid.indices);
+        let mut shared_source_positions = HashMap::new();
+        for (i, source_position) in source_positions.iter().enumerate() {
+            if mesh.solid.uvs[i][0] >= -9000. || source_position[0] > 100.
+                || sculpted_positions[i] == *source_position {
+                continue;
+            }
+            // Independent cap/wall interpolation can differ by one float ULP.
+            // Those shared authored samples must not become a visible crack
+            // after the steep shoulder deformation amplifies the difference.
+            let key = source_position.map(|value| (value * 10000.).round() as i64);
+            let changed = [0, 1, 2].map(|axis| sculpted_positions[i][axis] != source_position[axis]);
+            if let Some((previous, previous_changed)) = shared_source_positions.insert(key, (mesh.solid.positions[i], changed)) {
+                for axis in 0..3 {
+                    if changed[axis] && previous_changed[axis] {
+                        assert_eq!(previous[axis], mesh.solid.positions[i][axis],
+                            "coincident source samples must retain one deformed coordinate at {origin:?}: {source_position:?}, axis {axis}");
+                    }
+                }
+            }
+        }
+        // Optional neutral geometry review uses this same production result.
+        // Keep generated output in an ignored verification directory.
+        if origin == [0, 0] {
+            if let Some(path) = std::env::var_os("CRYSTAL_OUTDOOR_ROCK_FIXTURE_EXPORT") {
+                let geometry = serde_json::json!({
+                    "positions": mesh.solid.positions,
+                    "normals": mesh.solid.normals,
+                    "uvs": mesh.solid.uvs,
+                    "indices": mesh.solid.indices,
+                });
+                std::fs::write(path, serde_json::to_vec(&geometry).unwrap()).unwrap();
+            }
+        }
         assert!(mesh.solid.positions[corner][0] > 9.5);
         assert_eq!(mesh.footing_heights, footing);
+        assert_eq!(mesh.authored_cells, claims);
         for start in [first, first + 3] {
             let p = [start, start + 1, start + 2]
                 .map(|i| Vec3::from_array(mesh.solid.positions[i]));
@@ -248,18 +311,45 @@ mod tests {
         assert!(Vec3::from_array(mesh.solid.normals[first])
             .dot(Vec3::from_array(mesh.solid.normals[first + 3])) < 0.8);
         let mut caps = 0;
+        let mut walls = 0;
+        let mut reversed_wall_projections = 0;
         for ids in mesh.solid.indices.chunks_exact(3) {
             let ids = [ids[0] as usize, ids[1] as usize, ids[2] as usize];
-            let uv = ids.map(|i| Vec2::from_array(mesh.solid.uvs[i]));
-            if uv[0].x >= -9000. || (uv[1] - uv[0]).perp_dot(uv[2] - uv[0]) >= -0.001 {
+            if mesh.solid.uvs[ids[0]][0] >= -9000. {
                 continue;
             }
             let p = ids.map(|i| Vec3::from_array(mesh.solid.positions[i]));
-            assert!((p[1] - p[0]).cross(p[2] - p[0]).y >= -0.0001,
-                "the combined sculpt/base pass must not invert native cap triangles: {p:?}");
-            caps += 1;
+            let normal = Vec3::from_array(classified.solid.normals[ids[0]]);
+            let cross = (p[1] - p[0]).cross(p[2] - p[0]);
+            let sculpted = ids.map(|i| Vec3::from_array(sculpted_positions[i]));
+            let cap = normal.y > 0.9;
+            // A rounded corner legitimately rotates a wall away from its
+            // original cardinal normal. This convex fixture's interior is
+            // at (24,24); test walls against that interior, caps against Y.
+            let center = (p[0] + p[1] + p[2]) / 3.;
+            let outward = if cap { Vec3::Y } else {
+                Vec3::new(center.x - 24., 0., center.z - 24.).normalize()
+            };
+            assert!(cross.dot(outward) >= -0.0001,
+                "source phase {origin:?} must retain outward winding: {p:?}; cap: {cap}; before base rounding: {sculpted:?}");
+            if cap {
+                caps += 1;
+            } else {
+                walls += 1;
+                let uv = ids.map(|i| Vec2::from_array(mesh.solid.uvs[i]));
+                if (uv[1] - uv[0]).perp_dot(uv[2] - uv[0]) < -0.001
+                    && cross.y < -0.0001
+                {
+                    reversed_wall_projections += 1;
+                }
+            }
         }
         assert!(caps > 60);
+        assert!(walls > 60, "restored walls must be checked as well as caps");
+        if origin == [0, 0] {
+            assert!(reversed_wall_projections > 0,
+                "retain the wall projections that the old diagnostic mislabeled as inverted caps");
+        }
     }
 
     #[test]

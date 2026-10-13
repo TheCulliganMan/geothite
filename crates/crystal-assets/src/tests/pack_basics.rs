@@ -1734,6 +1734,22 @@ fn intro_presentation_parameters_are_read_from_exported_scene_dispatch_labels() 
             .expect("observed five-channel VBlank timing should compose"),
         2168
     );
+    let shadowed_sustain = RuntimeIntroActiveSoundChannelTiming {
+        class: RuntimeIntroActiveSoundChannelClass::MusicShadowedByActiveSfx,
+        update_channels_machine_cycles: None,
+        ..sfx_sustain
+    };
+    let shadowed_note_over = RuntimeIntroActiveSoundChannelTiming {
+        note_over: true,
+        parse_music_machine_cycles: Some(417),
+        ..shadowed_sustain
+    };
+    assert_eq!(
+        sound_timing.sound_update_machine_cycles(&[shadowed_note_over]).unwrap(),
+        sound_timing.sound_update_machine_cycles(&[shadowed_sustain]).unwrap()
+            + sound_timing.note_over_extra_before_parse_machine_cycles + 417,
+        "authored _UpdateSound parses a shadowed music note before suppressing its hardware write"
+    );
     assert!(
         sound_timing
             .sound_update_machine_cycles(&[RuntimeIntroActiveSoundChannelTiming {
@@ -6491,7 +6507,7 @@ fn verifier_rejects_duplicate_trainer_object_scripts() {
 }
 
 #[test]
-fn verifier_rejects_trainer_object_event_flags_that_mismatch_battle_request() {
+fn verifier_preserves_independent_trainer_visibility_and_defeat_flags() {
     let mut module = test_map_module("Start", "START_MAP", None);
     let mut trainer = test_object("START_TRAINER", "EVENT_HIDE_START_TRAINER", 1, 1);
     trainer.object_type = "OBJECTTYPE_TRAINER".to_string();
@@ -6512,12 +6528,12 @@ fn verifier_rejects_trainer_object_event_flags_that_mismatch_battle_request() {
         &PlayabilityRules::default(),
     );
 
-    assert!(report.diagnostics.iter().any(|diagnostic| {
+    assert!(!report.diagnostics.iter().any(|diagnostic| {
         diagnostic.code == "trainer_object_event_flag_mismatch"
-            && diagnostic.subject == "Start:START_TRAINER"
-            && diagnostic.message.contains("EVENT_HIDE_START_TRAINER")
-            && diagnostic.message.contains("EVENT_BEAT_START_TRAINER")
+            || diagnostic.code == "invalid_trainer_object_visibility_flag"
     }));
+    assert_eq!(data.maps["Start"].objects[0].event_flag, "EVENT_HIDE_START_TRAINER");
+    assert_eq!(data.maps["Start"].trainer_scripts["StartTrainerScript"].event_flag, "EVENT_BEAT_START_TRAINER");
 }
 
 #[test]
@@ -6902,12 +6918,12 @@ fn verifier_requires_field_key_item_rules_match_exact_item_payloads() {
     data.field_moves.blue_card = FieldItemRule {
         item_id: "MOD_BLUE_CARD".to_string(),
     };
-    data.field_moves.town_map = FieldItemRule {
+    data.field_moves.town_map = Some(FieldItemRule {
         item_id: "MOD_TOWN_MAP".to_string(),
-    };
-    data.field_moves.pokegear = FieldItemRule {
+    });
+    data.field_moves.pokegear = Some(FieldItemRule {
         item_id: "MOD_POKEGEAR".to_string(),
-    };
+    });
 
     let report = verify_game_data(
         &AssetRoot::new(repository_root_for_tests()),
@@ -6989,9 +7005,9 @@ fn verifier_rejects_story_key_rules_that_diverge_from_compiled_map_content() {
 #[test]
 fn runtime_field_pokegear_item_uses_exact_pack_rule_without_literal_fallback() {
     let mut data = GameDataSet::default();
-    data.field_moves.pokegear = FieldItemRule {
+    data.field_moves.pokegear = Some(FieldItemRule {
         item_id: "MOD_POKEGEAR".to_string(),
-    };
+    });
     let mut bad = test_item("POKEGEAR");
     bad.effect = "POKEGEAR".to_string();
     bad.field_menu = "ITEMMENU_CLOSE".to_string();

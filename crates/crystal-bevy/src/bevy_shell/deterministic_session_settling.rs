@@ -4654,6 +4654,10 @@ fn advance_visible_heal_machine(runtime_shell: &mut BevyRuntimeShell) -> Result<
     }
     if frame == ball_frames {
         if kind == 2 {
+            let cue = runtime_shell.runtime.title_presentation_program().host_effects.iter()
+                .find(|effect| effect["id"] == "field_animation_audio")
+                .and_then(|effect| effect["required_consumer"]["heal_machine_kind_2"].as_str())
+                .context("HealMachineAnim requires its authored kind 2 sound binding")?.to_owned();
             let BevyRuntimeShell {
                 shell,
                 pending_audio,
@@ -4664,7 +4668,7 @@ fn advance_visible_heal_machine(runtime_shell: &mut BevyRuntimeShell) -> Result<
                 shell.runtime().audio(),
                 pending_audio,
                 last_audio_events,
-                "SFX_GAME_FREAK_LOGO_GS",
+                &cue,
             )?;
         } else {
             queue_visible_heal_music(runtime_shell)?;

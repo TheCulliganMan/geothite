@@ -110,7 +110,18 @@ impl GameDataSet {
                 Some("MUSIC_BUG_CATCHING_CONTEST_RANKING".to_string())
             }
             MovementMode::Normal | MovementMode::Skate => {
-                self.checked_map_music(map_name, music_ids)?
+                let takeover = match map_name {
+                    "RadioTower1F" | "RadioTower2F" | "RadioTower3F" | "RadioTower4F" | "RadioTower5F"
+                        if self.map_music(map_name)? == Some("MUSIC_GOLDENROD_CITY") => Some(("ENGINE_ROCKETS_IN_RADIO_TOWER", "MUSIC_ROCKET_OVERTURE")),
+                    "MahoganyMart1F" if self.map_music(map_name)? == Some("MUSIC_CHERRYGROVE_CITY") => Some(("ENGINE_ROCKETS_IN_MAHOGANY", "MUSIC_ROCKET_HIDEOUT")),
+                    _ => None,
+                };
+                if let Some((flag, music)) = takeover
+                    && state.flags.is_engine_flag_set(flag).map_err(|error| anyhow::anyhow!("read map music takeover flag: {error}"))? {
+                    Some(music.to_owned())
+                } else {
+                    self.checked_map_music(map_name, music_ids)?
+                }
             }
         };
         if !music_ids.is_empty() {
@@ -3387,7 +3398,6 @@ impl GameDataSet {
         }
         let mut standard_pointer_labels = Vec::new();
         let mut standard_global_roots = Vec::new();
-        let mut standard_definitions = BTreeMap::new();
         if let Some(standard_catalog) = standard_catalog {
             let pointer_table = standard_catalog
                 .get("StdScripts")
@@ -3434,7 +3444,6 @@ impl GameDataSet {
                 if definitions.insert(label.clone(), body.clone()).is_some() {
                     anyhow::bail!("duplicate global script label {label}");
                 }
-                standard_definitions.insert(label, body);
             }
         }
 
@@ -3454,7 +3463,7 @@ impl GameDataSet {
         }
 
         let mut scripts = runtime_module_script_subset(
-            &standard_definitions,
+            &definitions,
             standard_pointer_labels
                 .iter()
                 .chain(&standard_global_roots)

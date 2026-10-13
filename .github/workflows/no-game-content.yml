@@ -23,3 +23,10 @@ jobs:
             printf 'Ignored files must not be tracked:\n%s\n' "$files"
             exit 1
           fi
+      - name: Check Rust source naming
+        shell: bash
+        run: |
+          if git grep -n -i -E 'game.?freak' -- '*.rs'; then
+            echo 'Rust presentation code must use neutral source-derived names.'
+            exit 1
+          fi

@@ -7,6 +7,16 @@ fn connection_trigger_tile(
     connection_trigger_tile_from_source(source, connection)
 }
 
+fn topology_script_closure(module: &MapModule) -> BTreeMap<String, Value> {
+    let roots = module.scenes.scenes.iter().filter_map(|scene| scene.script_name.as_deref())
+        .chain(module.objects.iter().map(|object| object.script.as_str()))
+        .chain(module.events.coord_events.iter().map(|event| event.script_name.as_str()))
+        .chain(module.events.bg_events.iter().map(|event| event.script.as_str()))
+        .chain(module.map_script_section_commands.iter().filter(|command|
+            command.command == "callback").filter_map(|command| command.args.get(1).map(String::as_str)));
+    runtime_module_script_subset(&module.scripts, roots, false)
+}
+
 fn verify_maps(
     _asset_root: &AssetRoot,
     data: &GameDataSet,
@@ -17,6 +27,7 @@ fn verify_maps(
     let constants = map_constants(data);
     let mut context_cache: BTreeMap<String, Option<Rc<MapPlayabilityContext>>> = BTreeMap::new();
     let mut graph = PlayabilityGraph::default();
+    let mut blocked_connections = BTreeMap::new();
     for map_name in map_names {
         let Some(module) = validation_map_for_playability(data, map_name, rules, diagnostics)
         else {
@@ -30,6 +41,15 @@ fn verify_maps(
             diagnostics,
         );
         if let Some(context) = &context {
+            for &(from_component, to_component) in &context.ledge_component_edges {
+                graph.edges.push(ComponentGraphEdge {
+                    from_map: map_name.clone(),
+                    from_component,
+                    to_map: map_name.clone(),
+                    to_component,
+                    kind: "ledge".to_string(),
+                });
+            }
             graph
                 .components
                 .insert(map_name.clone(), context.component_count);
@@ -154,56 +174,21 @@ fn verify_maps(
                 ));
                 continue;
             };
-            let Some((source_tile, source_component)) =
-                connection_source_tile_and_component_for_target(
-                    source_context,
-                    connection,
-                    &target_module.attributes,
-                )
-            else {
-                if connection_source_tile(source_context, connection).is_none() {
-                    diagnostics.push(transition_diagnostic(
-                        rules,
-                        "unreachable_connection",
-                        map_name,
-                        format!(
-                            "connection to '{}' has no reachable walkable border tile",
-                            connection.target_map
-                        ),
-                    ));
-                }
-                continue;
-            };
-            let Some(trigger_tile) = connection_trigger_tile_from_source(source_tile, connection)
-            else {
-                diagnostics.push(transition_diagnostic(
+            if connection_source_tile(source_context, connection).is_none() {
+                let diagnostic = transition_diagnostic(
                     rules,
                     "unreachable_connection",
                     map_name,
                     format!(
-                        "connection to '{}' has no reachable trigger tile",
+                        "connection to '{}' has no reachable walkable border tile",
                         connection.target_map
                     ),
-                ));
+                );
+                if rules.connection_warp_routes.get(map_name).is_some_and(|routes| routes.contains_key(&connection.target_map)) {
+                    blocked_connections.insert((map_name.clone(), connection.target_map.clone()), diagnostic);
+                } else { diagnostics.push(diagnostic); }
                 continue;
-            };
-            let destination_tile = match connection_destination_tile(
-                trigger_tile,
-                &connection.direction,
-                connection.offset,
-                &target_module.attributes,
-            ) {
-                Ok(tile) => tile,
-                Err(error) => {
-                    diagnostics.push(transition_diagnostic(
-                        rules,
-                        "invalid_connection_transition",
-                        map_name,
-                        error.to_string(),
-                    ));
-                    continue;
-                }
-            };
+            }
             let target_context = cached_map_playability_context_for_map(
                 &mut context_cache,
                 data,
@@ -211,11 +196,28 @@ fn verify_maps(
                 rules,
                 diagnostics,
             );
-            let Some(target_component) = target_context
-                .as_ref()
-                .and_then(|context| context.component_at(destination_tile))
-            else {
-                diagnostics.push(transition_diagnostic(
+            let Some(target_context) = target_context else { continue; };
+            // A connection spans a border. The first in-bounds source tile can
+            // face a wall while another pair connects two walkable components.
+            // Retain every valid pair so disconnected entrances are not lost.
+            let (width, height) = source_context.map.tile_bounds();
+            let mut pairs = BTreeSet::new();
+            for source_tile in connection_source_boundary_tiles(width, height, PLAYABILITY_RUNTIME_TILE_STRIDE, &connection.direction) {
+                let Some(source_component) = source_context.component_at(source_tile) else { continue; };
+                let Some(trigger_tile) = connection_trigger_tile_from_source(source_tile, connection) else { continue; };
+                if !connection_destination_tile_in_bounds(trigger_tile, &connection.direction, connection.offset, &target_module.attributes).unwrap_or(false) {
+                    continue;
+                }
+                let destination_tile = match connection_destination_tile(trigger_tile, &connection.direction, connection.offset, &target_module.attributes) {
+                    Ok(tile) => tile,
+                    Err(_) => continue,
+                };
+                if let Some(target_component) = target_context.component_at(destination_tile) {
+                    pairs.insert((source_component, target_component));
+                }
+            }
+            if pairs.is_empty() {
+                let diagnostic = transition_diagnostic(
                     rules,
                     "unreachable_connection_destination",
                     map_name,
@@ -223,16 +225,21 @@ fn verify_maps(
                         "connection to '{}' lands on an unwalkable tile",
                         connection.target_map
                     ),
-                ));
+                );
+                if rules.connection_warp_routes.get(map_name).is_some_and(|routes| routes.contains_key(&connection.target_map)) {
+                    blocked_connections.insert((map_name.clone(), connection.target_map.clone()), diagnostic);
+                } else { diagnostics.push(diagnostic); }
                 continue;
-            };
-            graph.edges.push(ComponentGraphEdge {
-                from_map: map_name.clone(),
-                from_component: source_component,
-                to_map: connection.target_map.clone(),
-                to_component: target_component,
-                kind: "connection".to_string(),
-            });
+            }
+            for (source_component, target_component) in pairs {
+                graph.edges.push(ComponentGraphEdge {
+                    from_map: map_name.clone(),
+                    from_component: source_component,
+                    to_map: connection.target_map.clone(),
+                    to_component: target_component,
+                    kind: "connection".to_string(),
+                });
+            }
         }
         let mut warp_indices = BTreeSet::new();
         let mut warp_tiles = BTreeSet::new();
@@ -303,6 +310,17 @@ fn verify_maps(
                 ));
                 continue;
             };
+            let mut certified_inaccessible = false;
+            if rules.inaccessible_dormant_warps.get(map_name)
+                .is_some_and(|indices| indices.contains(&(warp.index as i32))) {
+                let blocked = checked_runtime_map_event_tile(warp.x, warp.y)
+                    .is_some_and(|tile| context.as_ref()
+                        .is_some_and(|context| context.component_at(tile).is_none()));
+                if !blocked || !rules.dormant_maps.contains(target_map) {
+                    diagnostics.push(VerificationError::error("invalid_inaccessible_dormant_warp",
+                        map_name, format!("warp {} must be blocked by authored collision and target a dormant map", warp.index)));
+                } else { certified_inaccessible = true; }
+            }
             if warp.target_warp_id < 1 {
                 continue;
             }
@@ -332,9 +350,32 @@ fn verify_maps(
                 ));
                 continue;
             };
+            if rules.retired_gs_warps.get(map_name)
+                .is_some_and(|indices| indices.contains(&(warp.index as i32))) {
+                let source_blocked = context.as_ref().is_some_and(|context| {
+                    let (width, height) = context.map.tile_bounds();
+                    source_tile.x >= 0 && source_tile.y >= 0
+                        && (source_tile.x as u16) < width && (source_tile.y as u16) < height
+                        && context.component_at(source_tile).is_none()
+                });
+                let destination_context = cached_map_playability_context_for_map(
+                    &mut context_cache, data, target_map, rules, diagnostics);
+                let target_blocked = checked_runtime_map_event_tile(target_warp.x, target_warp.y)
+                    .is_some_and(|tile| destination_context.as_ref()
+                        .is_some_and(|context| {
+                            let (width, height) = context.map.tile_bounds();
+                            tile.x >= 0 && tile.y >= 0 && (tile.x as u16) < width
+                                && (tile.y as u16) < height && context.component_at(tile).is_none()
+                        }));
+                if source_blocked || target_blocked { continue; }
+                diagnostics.push(VerificationError::error("invalid_retired_gs_warp", map_name,
+                    format!("retired warp {} must have a physically blocked endpoint", warp.index)));
+            }
+            if certified_inaccessible || rules.dormant_maps.contains(map_name) { continue; }
             let Some(source_component) = context
                 .as_ref()
-                .and_then(|context| context.component_at(source_tile))
+                .and_then(|context| data.maps.get(map_name)
+                    .and_then(|module| scripted_warp_topology::component_at(module, context, source_tile)))
             else {
                 diagnostics.push(transition_diagnostic(
                     rules,
@@ -366,7 +407,8 @@ fn verify_maps(
             };
             let Some(target_component) = target_context
                 .as_ref()
-                .and_then(|context| context.component_at(target_tile))
+                .and_then(|context| data.maps.get(target_map)
+                    .and_then(|module| scripted_warp_topology::component_at(module, context, target_tile)))
             else {
                 diagnostics.push(transition_diagnostic(
                     rules,
@@ -388,7 +430,83 @@ fn verify_maps(
             });
         }
     }
+    // Authored scripts can transition maps without a warp-event tile (the
+    // Elite Four doors, elevators, and post-battle exits use this path).
+    // Include their explicit destinations in physical topology; progression
+    // requirements remain the separate solubility check below.
+    for (map_name, module) in &data.maps {
+        let Some(source) = cached_map_playability_context_for_map(
+            &mut context_cache, data, map_name, rules, diagnostics) else { continue; };
+        let callable = topology_script_closure(module);
+        for command in &module.script_map_commands {
+            if !callable.contains_key(&command.source_script) { continue; }
+            if !SCRIPT_MAP_WARP_COMMANDS.contains(&command.command.as_str())
+                && !SCRIPT_MAP_FACING_WARP_COMMANDS.contains(&command.command.as_str()) { continue; }
+            let (Some(target_map), Some(x), Some(y)) =
+                (command.target_map.as_deref(), command.x, command.y) else { continue; };
+            if target_map == "NONE" { continue; }
+            let target_map = constants.get(target_map).map(String::as_str).unwrap_or(target_map);
+            let Some(target_tile) = checked_runtime_map_event_tile(x, y) else { continue; };
+            let Some(target) = cached_map_playability_context_for_map(
+                &mut context_cache, data, target_map, rules, diagnostics) else { continue; };
+            let Some(target_component) = target.component_at(target_tile) else { continue; };
+            for component in 0..source.component_count {
+                graph.edges.push(ComponentGraphEdge {
+                    from_map: map_name.clone(), from_component: component,
+                    to_map: target_map.into(), to_component: target_component,
+                    kind: "script_warp".into(),
+                });
+            }
+        }
+    }
+    for (origin, routes) in &rules.connection_warp_routes {
+        for (destination, route) in routes {
+            let blocked = blocked_connections.remove(&(origin.clone(), destination.clone()));
+            let connection = data.maps.get(origin).and_then(|map| map.attributes.connections.iter()
+                .find(|connection| &connection.target_map == destination));
+            let offset_in_bounds = connection.and_then(|connection| {
+                let source = context_cache.get(origin)?.as_ref()?;
+                let target = data.maps.get(destination)?;
+                let (width, height) = source.map.tile_bounds();
+                Some(connection_source_boundary_tiles(width, height, PLAYABILITY_RUNTIME_TILE_STRIDE,
+                    &connection.direction).into_iter().any(|tile|
+                        connection_trigger_tile_from_source(tile, connection).is_some_and(|trigger|
+                            connection_destination_tile_in_bounds(trigger, &connection.direction,
+                                connection.offset, &target.attributes).unwrap_or(false))))
+            }).unwrap_or(false);
+            if blocked.is_none() || !offset_in_bounds
+                || route.len() < 3 || route.first() != Some(origin) || route.last() != Some(destination)
+                || !connection_route_has_component_path(&graph, route) {
+                diagnostics.push(VerificationError::error("invalid_connection_warp_route", origin,
+                    format!("blocked connection to {destination} requires an in-bounds border mapping and a complete authored warp component route")));
+                if let Some(diagnostic) = blocked { diagnostics.push(diagnostic); }
+            }
+        }
+    }
+    diagnostics.extend(blocked_connections.into_values());
     graph
+}
+
+fn connection_route_has_component_path(graph: &PlayabilityGraph, route: &[String]) -> bool {
+    let Some(origin) = route.first() else { return false; };
+    let mut queue = VecDeque::new();
+    for component in 0..graph.components.get(origin).copied().unwrap_or(0) {
+        queue.push_back((0, component));
+    }
+    let mut seen = BTreeSet::new();
+    while let Some((index, component)) = queue.pop_front() {
+        if !seen.insert((index, component)) { continue; }
+        if index + 1 == route.len() { return true; }
+        for edge in &graph.edges {
+            if edge.from_map != route[index] || edge.from_component != component { continue; }
+            if edge.kind == "ledge" && edge.to_map == route[index] {
+                queue.push_back((index, edge.to_component));
+            } else if edge.kind == "warp" && edge.to_map == route[index + 1] {
+                queue.push_back((index + 1, edge.to_component));
+            }
+        }
+    }
+    false
 }
 
 fn transition_diagnostic(
@@ -706,6 +824,7 @@ fn verify_solubility(
     }
     if rules.require_all_maps_reachable {
         for map_name in map_names {
+            if rules.dormant_maps.contains(map_name) { continue; }
             if !reachable.contains(map_name.as_str()) {
                 diagnostics.push(VerificationError::error(
                     "unreachable_map",

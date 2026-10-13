@@ -1,0 +1,58 @@
+name: Pinned content initialization
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'crates/crystal-assets/**'
+      - 'crates/crystal-audio/**'
+      - 'crates/crystal-core/**'
+      - 'crates/crystal-runtime/**'
+      - 'crates/crystal-bevy/**'
+      - 'crates/crystal-tui/**'
+      - 'tools/build-crystalpack.*'
+      - 'pret-source.lock.json'
+      - 'rust-toolchain.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/crystalpack-init.yml'
+  pull_request:
+    paths:
+      - 'crates/**'
+      - 'tools/build-crystalpack.*'
+      - 'pret-source.lock.json'
+      - 'rust-toolchain.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/crystalpack-init.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: content-init-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  initialize-and-play:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      CRYSTAL_PACK_BUILD_PROFILE: wasm-dev
+      CRYSTAL_PACK_BUILD_DIR: ${{ github.workspace }}/target
+      RUST_MIN_STACK: '67108864'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.99.0'
+      - name: Install native build dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential pkg-config git-lfs libudev-dev libasound2-dev libx11-dev libxkbcommon-dev libxi-dev libxrandr-dev
+      - uses: Swatinem/rust-cache@v2
+      - name: Build pinned source, verify audio, and exercise production input
+        run: bash tools/build-crystalpack.sh --jobs 2
+      - name: Confirm generated content remains outside Git
+        shell: bash
+        run: |
+          files=$(git ls-files -- 'content-packs/**' '*.crystalpack' '*.crystalpack.*' '*.gb' '*.gbc' 'vendor/pokecrystal/**' 'apps/web/assets/**')
+          test -z "$files" || { printf '%s\n' "$files"; exit 1; }

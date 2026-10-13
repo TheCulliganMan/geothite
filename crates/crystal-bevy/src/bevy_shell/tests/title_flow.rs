@@ -10,6 +10,19 @@ fn press_key_for_runtime_hotkey_app(app: &mut App, key: KeyCode) {
     }
 }
 
+fn settle_visible_continue_summary_for_test(runtime_shell: &mut BevyRuntimeShell) {
+    let remaining = runtime_shell
+        .visible_continue_screen
+        .as_ref()
+        .expect("Continue summary")
+        .remaining_delay_frames;
+    assert!(remaining <= 20, "Continue summary uses the authored twenty-frame delay");
+    for _ in 0..remaining {
+        tick_visible_title_screen_state(runtime_shell);
+    }
+    assert_eq!(runtime_shell.visible_continue_screen.as_ref().unwrap().remaining_delay_frames, 0);
+}
+
 fn skip_intro_for_test(app: &mut App) {
     if app
         .world()
@@ -900,6 +913,51 @@ fn visible_intro_scene18_executes_exported_scroll_stop_and_completion() {
             effects
         );
     }
+}
+
+#[test]
+fn visible_intro_suicune_xor_preserves_source_cadence_and_rejects_invalid_contracts() {
+    let operation = crystal_assets::RuntimePresentationOperation {
+        op: "conditional_tilemap_xor".into(),
+        source_span: Default::default(),
+        fields: serde_json::from_value(serde_json::json!({"clock":"wIntroSceneFrameCounter",
+            "clock_mask":3,"target":"wTilemap","xor_mask":8,"nonzero_only":true,
+            "unsigned_less_than":128,
+            "prepare_phase":{"equals":3,"write":{"target":"hBGMapMode","value":0}},
+            "swap_phase":{"equals":0,"completion_write":{"target":"hBGMapMode","value":1}}})).unwrap(),
+    };
+    let mut intro = VisibleIntroScreen::new();
+    intro.scene_frame_counter = 3;
+    apply_visible_intro_conditional_tilemap_xor(&mut intro, &operation).unwrap();
+    assert_eq!(intro.tilemap_xor_mask, 0);
+    assert_eq!(intro.callable_memory.get("hBGMapMode"), Some(&0));
+    intro.scene_frame_counter = 4;
+    apply_visible_intro_conditional_tilemap_xor(&mut intro, &operation).unwrap();
+    assert_eq!(intro.tilemap_xor_mask, 8);
+    assert_eq!(intro.callable_memory.get("hBGMapMode"), Some(&1));
+    intro.scene_frame_counter = 5;
+    apply_visible_intro_conditional_tilemap_xor(&mut intro, &operation).unwrap();
+    assert_eq!(intro.tilemap_xor_mask, 8);
+    intro.scene_frame_counter = 8;
+    apply_visible_intro_conditional_tilemap_xor(&mut intro, &operation).unwrap();
+    assert_eq!(intro.tilemap_xor_mask, 0);
+    for (field, invalid) in [
+        ("target", serde_json::json!("wAttrmap")),
+        ("nonzero_only", serde_json::json!(false)),
+        ("unsigned_less_than", serde_json::json!(129)),
+        ("xor_mask", serde_json::json!(256)),
+        ("clock_mask", serde_json::json!(7)),
+    ] {
+        let mut malformed = operation.clone();
+        malformed.fields.insert(field.into(), invalid);
+        let before = intro.clone();
+        assert!(apply_visible_intro_conditional_tilemap_xor(&mut intro, &malformed).is_err(), "{field}");
+        assert_eq!(intro.tilemap_xor_mask, before.tilemap_xor_mask);
+        assert_eq!(intro.callable_memory, before.callable_memory);
+    }
+    let mut malformed = operation.clone();
+    malformed.fields.get_mut("swap_phase").unwrap()["completion_write"]["target"] = serde_json::json!("hSCX");
+    assert!(apply_visible_intro_conditional_tilemap_xor(&mut intro, &malformed).is_err());
 }
 
 #[test]
@@ -1885,7 +1943,22 @@ fn visible_main_menu_continue_cancel_returns_through_the_exported_loop_jump() {
                 .is_some_and(|interpreter| interpreter.operation_index == 13)
     }));
 
-    press_visible_title_cancel_button(&mut runtime_shell).expect("cancel Continue summary");
+    assert_eq!(runtime_shell.visible_continue_screen.as_ref().unwrap().remaining_delay_frames, 20);
+    for elapsed in 0..20 {
+        if elapsed != 0 {
+            tick_visible_title_screen_state(&mut runtime_shell);
+        }
+        assert_eq!(runtime_shell.visible_continue_screen.as_ref().unwrap().remaining_delay_frames, 20 - elapsed);
+        press_visible_title_confirm_button(&mut runtime_shell, GameButton::A)
+            .expect("A is ignored during the source summary delay");
+        press_visible_title_cancel_button(&mut runtime_shell)
+            .expect("B is ignored during the source summary delay");
+        assert!(runtime_shell.visible_continue_screen.is_some(), "input cannot dismiss Continue before twenty frames");
+        assert!(runtime_shell.title_menu.is_some(), "input cannot load the save before twenty frames");
+    }
+    tick_visible_title_screen_state(&mut runtime_shell);
+    assert_eq!(runtime_shell.visible_continue_screen.as_ref().unwrap().remaining_delay_frames, 0);
+    press_visible_title_cancel_button(&mut runtime_shell).expect("cancel Continue after twenty frames");
     let title = runtime_shell.title_menu.as_ref().expect("returned title menu");
     assert!(runtime_shell.visible_continue_screen.is_none());
     assert!(visible_title_main_menu_ready(title));
@@ -2026,7 +2099,7 @@ fn visible_title_delete_save_combo_opens_prompt_from_press_start() {
             .pending_delete_save
             .as_ref()
             .map(|screen| screen.selected_index),
-        Some(1),
+        Some(0),
         "Up+B+Select should open the delete-save prompt with NO selected"
     );
     assert!(
@@ -2096,7 +2169,7 @@ fn delete_save_prompt_frame_uses_boot_window_and_default_no_cursor() {
     let mut images = Assets::<Image>::default();
     let frame = load_delete_save_frame(
         &runtime_shell.asset_root,
-        &VisibleDeleteSaveScreen { selected_index: 1 },
+        &VisibleDeleteSaveScreen { selected_index: 0 },
         &mut images,
     )
     .expect("render delete-save prompt");
@@ -2168,45 +2241,100 @@ fn visible_title_clock_reset_combo_opens_prompt_after_select_release() {
 }
 
 #[test]
-fn visible_clock_reset_flow_commits_manual_time_and_restarts_title() {
+fn visible_clock_reset_password_gate_preserves_save_until_correct_and_returns_to_title() {
     let mut runtime_shell = core_modular_title_shell_for_test();
     runtime_shell.latest_rtc_sample = Some(native_rtc_source_for_test().sample());
     finish_intro_for_test(&mut runtime_shell, "test");
     advance_visible_title_to_press_start(&mut runtime_shell);
 
-    open_visible_clock_reset_screen(&mut runtime_shell).expect("open clock reset");
-    move_visible_clock_reset_cursor(&mut runtime_shell, 1).expect("select YES");
-    confirm_visible_clock_reset_screen(&mut runtime_shell).expect("enter day phase");
-    assert!(
-        runtime_shell
-            .pending_clock_reset
-            .as_ref()
-            .is_some_and(|screen| matches!(screen.phase, VisibleClockResetPhase::SetDay))
-    );
-    move_visible_clock_reset_cursor(&mut runtime_shell, 1).expect("increment day");
-    confirm_visible_clock_reset_screen(&mut runtime_shell).expect("enter hour phase");
-    move_visible_clock_reset_cursor(&mut runtime_shell, 1).expect("increment hour");
-    confirm_visible_clock_reset_screen(&mut runtime_shell).expect("enter minute phase");
-    move_visible_clock_reset_cursor(&mut runtime_shell, 1).expect("increment minute");
-    confirm_visible_clock_reset_screen(&mut runtime_shell).expect("commit clock reset");
-
-    let snapshot = runtime_shell
-        .shell
-        .snapshot()
-        .expect("snapshot after clock reset");
-    assert_eq!(snapshot.progression.time.day_of_week, 1);
-    assert_eq!(snapshot.progression.time.registers.hours, 1);
-    assert_eq!(snapshot.progression.time.registers.minutes, 1);
-    assert_eq!(snapshot.progression.time.game_time_hours, 0);
-    assert_eq!(snapshot.progression.time.game_time_minutes, 0);
+    let path = std::env::temp_dir().join(format!("crystal-clock-password-{}.crystalsave", uuid::Uuid::new_v4()));
+    runtime_shell.shell.save(&path).unwrap();
+    let mut saved_state = runtime_shell.shell.runtime().load_save(&path).unwrap();
+    saved_state.player_name = "CHRISZZ".into();
+    saved_state.player_id = 0x1234;
+    saved_state.money = 0x010203;
+    crate::core::save::write_save_game_for_modpack(&path, saved_state,
+        runtime_shell.shell.runtime().modpack(), &runtime_shell.shell.runtime().pack_identity().content_hash).unwrap();
+    runtime_shell.title_menu.as_mut().unwrap().save_path = Some(path.clone());
+    let original = std::fs::read(&path).unwrap();
+    open_visible_clock_reset_screen(&mut runtime_shell).unwrap();
+    assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().confirm_selection, 0);
+    confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap();
     assert!(runtime_shell.pending_clock_reset.is_none());
-    assert!(
-        runtime_shell
-            .title_menu
-            .as_ref()
-            .is_some_and(|title| matches!(title.source_phase(), VisibleTitlePhase::Entrance)),
-        "clock reset confirmation should return through a fresh title entrance"
-    );
+    assert_eq!(std::fs::read(&path).unwrap(), original);
+    advance_visible_title_to_press_start(&mut runtime_shell);
+    open_visible_clock_reset_screen(&mut runtime_shell).unwrap();
+    move_visible_clock_reset_cursor(&mut runtime_shell, 1).unwrap();
+    confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap();
+    assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().password_cursor, 4);
+    assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().password_digits, [0;5]);
+    move_visible_clock_reset_horizontal(&mut runtime_shell, 1).unwrap();
+    assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().password_cursor, 4);
+    close_visible_clock_reset_screen(&mut runtime_shell, "cancel").unwrap();
+    assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().phase, VisibleClockResetPhase::Password,
+        "source password entry ignores B");
+    assert_eq!(std::fs::read(&path).unwrap(), original);
+    confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap();
+    assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().phase, VisibleClockResetPhase::WrongPassword);
+    assert_eq!(std::fs::read(&path).unwrap(), original);
+    confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap();
+    advance_visible_title_to_press_start(&mut runtime_shell);
+    open_visible_clock_reset_screen(&mut runtime_shell).unwrap();
+    move_visible_clock_reset_cursor(&mut runtime_shell, 1).unwrap();
+    confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap();
+    // Authored byte sum: 0x12+0x34+C/H/R/I/S+01/02/03 = 868.
+    for (index, digit) in [0,0,8,6,8].into_iter().enumerate().rev() {
+        assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().password_cursor, index);
+        for _ in 0..digit { move_visible_clock_reset_cursor(&mut runtime_shell, 1).unwrap(); }
+        move_visible_clock_reset_horizontal(&mut runtime_shell, -1).unwrap();
+    }
+    confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap();
+    assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().phase, VisibleClockResetPhase::Requested);
+    let accepted = runtime_shell.shell.runtime().load_save(&path).unwrap();
+    assert_eq!(accepted.time.rtc_status_flags, crate::core::systems::time::RTC_RESET);
+    let mut original_state = crate::core::save::read_save_game_bytes_for_modpack(&original, "clock-before",
+        runtime_shell.shell.runtime().modpack(), &runtime_shell.shell.runtime().pack_identity().content_hash).unwrap().into_state();
+    original_state.time.rtc_status_flags = crate::core::systems::time::RTC_RESET;
+    assert_eq!(accepted, original_state);
+    while runtime_shell.pending_clock_reset.is_some() { confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap(); }
+    let requested_bytes = std::fs::read(&path).unwrap();
+    open_visible_restart_clock(&mut runtime_shell, path.clone()).unwrap();
+    while runtime_shell.pending_clock_reset.as_ref().unwrap().phase == VisibleClockResetPhase::TimeWarning {
+        close_visible_clock_reset_screen(&mut runtime_shell, "cancel").unwrap();
+    }
+    close_visible_clock_reset_screen(&mut runtime_shell, "cancel").unwrap();
+    assert_eq!(std::fs::read(&path).unwrap(), requested_bytes, "cancelled Continue must retain RTC_RESET");
+    open_visible_restart_clock(&mut runtime_shell, path.clone()).unwrap();
+    while runtime_shell.pending_clock_reset.as_ref().unwrap().phase == VisibleClockResetPhase::TimeWarning {
+        confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap();
+    }
+    move_visible_clock_reset_horizontal(&mut runtime_shell, -1).unwrap();
+    assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().phase, VisibleClockResetPhase::SetDay);
+    move_visible_clock_reset_cursor(&mut runtime_shell, 1).unwrap();
+    move_visible_clock_reset_horizontal(&mut runtime_shell, 1).unwrap();
+    move_visible_clock_reset_cursor(&mut runtime_shell, 1).unwrap();
+    move_visible_clock_reset_horizontal(&mut runtime_shell, 1).unwrap();
+    move_visible_clock_reset_cursor(&mut runtime_shell, 1).unwrap();
+    move_visible_clock_reset_horizontal(&mut runtime_shell, 1).unwrap();
+    assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().phase, VisibleClockResetPhase::SetMinute);
+    let chosen = runtime_shell.pending_clock_reset.as_ref().unwrap().clone();
+    confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap();
+    assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().phase, VisibleClockResetPhase::TimeConfirm);
+    confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap();
+    assert_eq!(runtime_shell.pending_clock_reset.as_ref().unwrap().phase, VisibleClockResetPhase::TimeResetDone);
+    let restarted = runtime_shell.shell.runtime().load_save(&path).unwrap();
+    assert_eq!(restarted.time.rtc_status_flags, 0);
+    assert_eq!(restarted.time.day_of_week, chosen.day);
+    assert_eq!(restarted.time.registers.hours, chosen.hour);
+    assert_eq!(restarted.time.registers.minutes, chosen.minute);
+    assert_eq!(restarted.player_name, accepted.player_name);
+    assert_eq!(restarted.player_id, accepted.player_id);
+    assert_eq!(restarted.money, accepted.money);
+    while runtime_shell.pending_clock_reset.is_some() { confirm_visible_clock_reset_screen(&mut runtime_shell).unwrap(); }
+    assert!(runtime_shell.title_menu.is_none(), "accepted clock restart resumes the saved game");
+    std::fs::remove_file(&path).unwrap();
+    let backup = crate::core::save::save_backup_path(&path);
+    if backup.exists() { std::fs::remove_file(backup).unwrap(); }
 }
 
 #[test]
@@ -2214,11 +2342,13 @@ fn visible_clock_reset_refuses_to_invent_an_epoch_without_a_native_sample() {
     let mut runtime_shell = core_modular_title_shell_for_test();
     runtime_shell.latest_rtc_sample = None;
     runtime_shell.pending_clock_reset = Some(VisibleClockResetScreen {
-        phase: VisibleClockResetPhase::SetMinute,
+        phase: VisibleClockResetPhase::TimeConfirm,
         confirm_selection: 0,
         day: 1,
         hour: 20,
         minute: 30,
+        continue_save_path: Some(std::env::temp_dir().join("clock-reset-unused.crystalsave")),
+        ..Default::default()
     });
 
     let error = confirm_visible_clock_reset_screen(&mut runtime_shell)
@@ -2233,28 +2363,34 @@ fn visible_clock_reset_refuses_to_invent_an_epoch_without_a_native_sample() {
 
 #[test]
 fn clock_reset_prompt_frame_uses_boot_window_and_value_phases() {
-    let runtime_shell = core_modular_title_shell_for_test();
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = workspace_desktop_runtime(&asset_root);
     let mut images = Assets::<Image>::default();
     let confirm = load_clock_reset_frame(
-        &runtime_shell.asset_root,
+        &asset_root,
         &VisibleClockResetScreen {
             phase: VisibleClockResetPhase::Confirm,
-            confirm_selection: 1,
+            confirm_selection: 0,
             day: 0,
             hour: 0,
             minute: 0,
+            prompt_pages: visible_presentation_text_pages(runtime.title_presentation_program(), "PasswordAskResetClockText", "PLAYER").unwrap(),
+            ..Default::default()
         },
         &mut images,
     )
     .expect("render clock confirm prompt");
     let day = load_clock_reset_frame(
-        &runtime_shell.asset_root,
+        &asset_root,
         &VisibleClockResetScreen {
             phase: VisibleClockResetPhase::SetDay,
             confirm_selection: 0,
             day: 2,
             hour: 3,
             minute: 4,
+            prompt_pages: visible_presentation_text_pages(runtime.title_presentation_program(), "ClockSetWithControlPadText", "PLAYER").unwrap(),
+            ..Default::default()
         },
         &mut images,
     )
@@ -2376,6 +2512,109 @@ fn visible_intro_completes_to_title_within_typescript_frame_budget() {
         intro.scene_name(),
         intro.scene_frame_counter
     );
+}
+
+/// Explicit diagnostic: raw measurements remain uncertified. Run with both
+/// CRYSTAL_INTRO_DIAGNOSTIC_PACK and CRYSTAL_INTRO_DIAGNOSTIC_ROM_TRACE set.
+/// Execute the real visible intro continuously; never reseed from ROM hooks.
+#[test]
+#[ignore = "requires fresh source pack and independent pinned-ROM trace"]
+fn visible_intro_continuous_timeline_matches_independent_rom_trace() {
+    let pack_path = std::env::var_os("CRYSTAL_INTRO_DIAGNOSTIC_PACK")
+        .expect("explicit diagnostic pack path is required");
+    let trace_path = std::env::var_os("CRYSTAL_INTRO_DIAGNOSTIC_ROM_TRACE")
+        .expect("explicit independent ROM trace path is required");
+    let trace: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(trace_path).expect("read independent ROM trace"),
+    ).expect("decode independent ROM trace");
+    assert_eq!(trace["rom_sha1"].as_str(), Some("f4cd194bdee0d04ca4eac29e09b8e4e9d818c133"));
+    assert_eq!(trace["runner"].as_str(), Some("pack_core Rust intro oracle"));
+    let scenes = trace["scenes"].as_array().expect("independent scene boundaries");
+    assert_eq!(scenes.len(), 28);
+    let frame_cycles = trace["frame_t_cycles"].as_u64().expect("ROM frame duration");
+    let initial_frame = trace["first_input"]["lcd_t_cycles"].as_u64()
+        .expect("ROM first-input LCD clock") / frame_cycles;
+    // The visible clock is sampled before tick, at the input hook boundary.
+    // Pair each first dispatcher call with the preceding ROM input hook rather
+    // than comparing that clock to the later dispatcher PC's LCD phase.
+    let mut input_boundaries = BTreeMap::new();
+    let mut preceding_input = None;
+    for record in trace["records"].as_array().expect("independent raw hook records") {
+        if record["hook"].as_str() == Some("JoyTextDelay") {
+            preceding_input = Some((
+                record["start_frame"].as_u64().expect("ROM input frame"),
+                record["start_phase_t_cycles"].as_u64().expect("ROM input phase"),
+            ));
+        } else if record["hook"].as_str() == Some("IntroSceneJumper")
+            && record["dispatch_tick"].as_u64() == Some(1) {
+            input_boundaries.insert(
+                record["dispatcher_entry"].as_u64().expect("ROM dispatcher index"),
+                preceding_input.expect("ROM dispatcher must follow an input hook"),
+            );
+        }
+    }
+    assert_eq!(input_boundaries.len(), 28);
+    let asset_root = AssetRoot::new(
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."),
+    );
+    let loaded = crystal_assets::read_unverified_compiled_game_pack_for_intro_timing_diagnostic(
+        PathBuf::from(pack_path),
+    ).expect("decode diagnostic pack without certifying it");
+    let runtime = CrystalRuntime::from_unverified_compiled_pack_for_intro_timing_diagnostic(
+        &asset_root, loaded,
+    ).expect("construct diagnostic runtime");
+    let parameters = RuntimeIntroPresentationParameters::from_unverified_program_for_timing_diagnostic(
+        runtime.title_presentation_program(),
+    ).expect("parse actual raw intro measurements without changing provenance");
+    let mut intro = VisibleIntroScreen::from_program(parameters, runtime.title_presentation_program())
+        .expect("execute actual source entry initialization once");
+    apply_visible_intro_background_binding(&mut intro, runtime.title_presentation_program())
+        .expect("bind actual intro background");
+    let sprite_bundle = load_intro_sprite_anim_bundle(runtime.data().sprite_anim_bundle.as_str())
+        .expect("load actual intro sprite scheduler");
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().expect("actual spawn");
+    let mut shell = initialize_bevy_runtime_shell(
+        asset_root, runtime, BevyShellStart::NewGame { spawn_identifier },
+        BevyShellConfig::default(),
+    ).expect("initialize production shell for diagnostic");
+    shell.intro_sprite_bundle = Some(sprite_bundle);
+    shell.intro_display_screen = Some(intro.clone());
+    shell.intro_screen = Some(intro);
+    let mut observed = Vec::<(usize, u64, u32, u16)>::new();
+    for frame in 0..4000_u64 {
+        let Some(intro) = shell.intro_screen.as_ref() else { break };
+        if intro.cleanup_cursor.is_some() || intro.finished { break }
+        if intro.scene_block_frames == 0 && intro.scene_delay_frames == 0 {
+            if observed.last().is_none_or(|last| last.0 != intro.jumptable_index) {
+                observed.push((intro.jumptable_index, frame, intro.frame_clock.phase_t_cycles, 0));
+            }
+        }
+        let previous_scene = intro.jumptable_index;
+        let previous_dispatch_tick = intro.scene_dispatch_tick;
+        tick_visible_intro_screen(&mut shell).expect("tick actual visible source intro");
+        if let Some(last) = observed.last_mut() {
+            if last.0 == previous_scene {
+                last.3 = shell.intro_screen.as_ref()
+                    .filter(|intro| intro.jumptable_index == previous_scene)
+                    .map_or(previous_dispatch_tick.saturating_add(1), |intro| intro.scene_dispatch_tick);
+            }
+        }
+    }
+    assert_eq!(observed.len(), 28, "actual visible intro must traverse all scenes: {observed:?}");
+    let mut differences = Vec::new();
+    for (actual, expected) in observed.iter().zip(scenes) {
+        let expected_entry = expected["dispatcher_entry"].as_u64().expect("ROM scene index");
+        let (input_frame, expected_phase) = input_boundaries[&expected_entry];
+        let expected_frame = input_frame - initial_frame;
+        let expected_ticks = expected["dispatch_ticks"].as_u64().expect("ROM dispatcher ticks");
+        if (actual.0 as u64, actual.1, actual.2 as u64, actual.3 as u64)
+            != (expected_entry, expected_frame, expected_phase, expected_ticks) {
+            differences.push(format!(
+                "scene {expected_entry}: actual entry/frame/phase/ticks={actual:?}, ROM=({expected_entry}, {expected_frame}, {expected_phase}, {expected_ticks})"
+            ));
+        }
+    }
+    assert!(differences.is_empty(), "continuous visible timeline differs from independent ROM:\n{}", differences.join("\n"));
 }
 
 #[test]

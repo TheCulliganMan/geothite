@@ -21,6 +21,9 @@ pub(crate) fn supports_map(map: &str) -> bool {
 /// Diagnostic A/B override only. Default uses authored lower-complexity
 /// foliage in the outer source halo; no objects or source cells are removed.
 pub(crate) fn scenery_full_detail() -> bool {
+    if cfg!(feature = "scenery-full-detail") {
+        return true;
+    }
     static FULL: OnceLock<bool> = OnceLock::new();
     *FULL.get_or_init(|| std::env::var_os("CRYSTAL_SCENERY_FULL_DETAIL").is_some())
 }

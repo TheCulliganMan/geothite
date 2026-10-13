@@ -48,7 +48,7 @@ enum CaptureOutcome { Saved, Blank }
 #[derive(Resource)]
 struct ReviewTarget(Option<Handle<Image>>);
 
-pub fn run() {
+pub fn run() -> AppExit {
     let output = std::env::args()
         .nth(1)
         .map(PathBuf::from)
@@ -63,6 +63,16 @@ pub fn run() {
                 .any(|key| key == crate::npc_appearance::look(kind).texture_key)
         });
         assert!(!kinds.is_empty(), "filter selected no characters");
+    }
+    let expected: Vec<_> = kinds.iter().map(|&kind| {
+        output.join(format!("{}.png", crate::npc_appearance::look(kind).texture_key))
+    }).collect();
+    for path in &expected {
+        match std::fs::remove_file(path) {
+            Ok(()) => {},
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {},
+            Err(error) => panic!("remove stale review capture {}: {error}", path.display()),
+        }
     }
     let run_phase = std::env::args().nth(3).map(|value| {
         let phase: f32 = value.parse().expect("run phase must be a number from 0 to 1");
@@ -157,7 +167,16 @@ pub fn run() {
             .add_systems(bevy::render::Render,
                 trace_render_state.in_set(bevy::render::RenderSystems::PostCleanup));
     }
-    app.run();
+    let exit = app.run();
+    if matches!(exit, AppExit::Success) {
+        for path in expected {
+            if !path.is_file() {
+                eprintln!("NPC capture failed: renderer exited without {}", path.display());
+                return AppExit::error();
+            }
+        }
+    }
+    exit
 }
 
 /// One bounded diagnostic snapshot from the render world, opt-in and confined

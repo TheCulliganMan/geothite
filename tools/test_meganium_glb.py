@@ -6,10 +6,12 @@ local rotations, joint hierarchy and inverse binds. No Blender/pack is needed.
 """
 import collections
 import copy
+import hashlib
 import math
 import os
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 import meganium_glb as author
 import meganium_sculpt as sculpture
@@ -37,8 +39,10 @@ class MeganiumTests(unittest.TestCase):
 
     def test_deterministic_canonical_container_and_rejection(self):
         m=self.m;d=m.doc
-        self.assertEqual(author.export_meganium(),self.blob)
-        self.assertEqual(author.export_meganium(author.decode_meganium(self.blob)),self.blob)
+        regenerated=author.export_meganium()
+        self.assertEqual(author.export_meganium(),regenerated)
+        self.assertEqual(hashlib.sha256(self.blob).hexdigest(),author.REVIEWED_SHA256)
+        self.assertEqual(author.export_meganium(author.decode_meganium(self.blob)),regenerated)
         self.assertLess(len(self.blob),author.MAX_BYTES)
         self.assertEqual([len(d[k]) for k in ('meshes','skins','scenes','buffers')],[1,1,1,1])
         self.assertEqual(len(m.parts),33);self.assertEqual(len(set(m.names)),33)
@@ -58,6 +62,30 @@ class MeganiumTests(unittest.TestCase):
             with self.assertRaises(ValueError):author.decode_meganium(encode(changed,m.binary))
         with self.assertRaises(ValueError):author.decode_meganium(self.blob[:-4])
         with self.assertRaises(ValueError):author.decode_meganium(self.blob+b'\0\0\0\0')
+
+    def test_platform_export_keeps_reviewed_expanded_geometry(self):
+        regenerated=Model(author.export_meganium())
+        self.assertEqual(regenerated.names,self.m.names)
+        for part in range(len(self.m.parts)):
+            old,new=self.m.indices[part],regenerated.indices[part]
+            self.assertEqual(len(old),len(new))
+            for a,b in zip(old,new):
+                self.assertEqual(self.m.vertices[part][a],regenerated.vertices[part][b])
+                for x,y in zip(self.m.normals[part][a],regenerated.normals[part][b]):
+                    self.assertLessEqual(abs(x-y),1e-14)
+
+    def test_reviewed_hash_does_not_accept_a_changed_recipe(self):
+        for key in ('positions','normals','base_color'):
+            changed=copy.deepcopy(sculpture.sculpt())
+            changed['primitives'][0][key][0]+=.01
+            with patch.object(author,'sculpt',return_value=changed):
+                with self.assertRaisesRegex(ValueError,'recipe changed'):
+                    author.decode_meganium(self.blob)
+        for key,value in (('name','other'),('version',2),('coordinate_system','other')):
+            changed=copy.deepcopy(sculpture.sculpt());changed[key]=value
+            with patch.object(author,'sculpt',return_value=changed):
+                with self.assertRaisesRegex(ValueError,'recipe changed'):
+                    author.decode_meganium(self.blob)
 
     def test_species_proportions_palette_mature_silhouette_and_budget(self):
         m=self.m;lo,hi=bounds(m.vertices);blo,bhi=bounds([m.vertices[0]])

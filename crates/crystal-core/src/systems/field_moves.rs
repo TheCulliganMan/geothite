@@ -48,8 +48,14 @@ pub struct FieldMoveCatalog {
     pub basement_key: FieldStoryKeyRule,
     pub coin_case: FieldItemRule,
     pub blue_card: FieldItemRule,
-    pub town_map: FieldItemRule,
-    pub pokegear: FieldItemRule,
+    pub town_map: Option<FieldItemRule>,
+    /// Optional modded bag entry; the authored Pokegear is a Start-menu device.
+    pub pokegear: Option<FieldItemRule>,
+}
+
+fn required_optional_field_item_rule<'de, D>(deserializer: D) -> Result<Option<FieldItemRule>, D::Error>
+where D: serde::Deserializer<'de> {
+    Option::<FieldItemRule>::deserialize(deserializer)
 }
 
 impl<'de> Deserialize<'de> for FieldMoveCatalog {
@@ -81,8 +87,10 @@ impl<'de> Deserialize<'de> for FieldMoveCatalog {
             basement_key: FieldStoryKeyRule,
             coin_case: FieldItemRule,
             blue_card: FieldItemRule,
-            town_map: FieldItemRule,
-            pokegear: FieldItemRule,
+            #[serde(deserialize_with = "required_optional_field_item_rule")]
+            town_map: Option<FieldItemRule>,
+            #[serde(deserialize_with = "required_optional_field_item_rule")]
+            pokegear: Option<FieldItemRule>,
         }
 
         let raw = RawFieldMoveCatalog::deserialize(deserializer)?;
@@ -565,18 +573,12 @@ pub fn field_move_catalog_issues(
         items,
         &mut issues,
     );
-    collect_field_item_rule_issues(
-        "field_moves:town_map",
-        &catalog.town_map,
-        items,
-        &mut issues,
-    );
-    collect_field_item_rule_issues(
-        "field_moves:pokegear",
-        &catalog.pokegear,
-        items,
-        &mut issues,
-    );
+    if let Some(rule) = &catalog.town_map {
+        collect_field_item_rule_issues("field_moves:town_map", rule, items, &mut issues);
+    }
+    if let Some(rule) = &catalog.pokegear {
+        collect_field_item_rule_issues("field_moves:pokegear", rule, items, &mut issues);
+    }
     issues
 }
 
@@ -610,8 +612,12 @@ fn validate_field_move_catalog_pack_tokens(catalog: &FieldMoveCatalog) -> Result
     validate_story_key_rule_pack_tokens("field_moves.basement_key", &catalog.basement_key)?;
     validate_item_rule_pack_tokens("field_moves.coin_case", &catalog.coin_case)?;
     validate_item_rule_pack_tokens("field_moves.blue_card", &catalog.blue_card)?;
-    validate_item_rule_pack_tokens("field_moves.town_map", &catalog.town_map)?;
-    validate_item_rule_pack_tokens("field_moves.pokegear", &catalog.pokegear)?;
+    if let Some(rule) = &catalog.town_map {
+        validate_item_rule_pack_tokens("field_moves.town_map", rule)?;
+    }
+    if let Some(rule) = &catalog.pokegear {
+        validate_item_rule_pack_tokens("field_moves.pokegear", rule)?;
+    }
     Ok(())
 }
 
@@ -1729,14 +1735,14 @@ pub fn validate_town_map_item(
     catalog: &FieldMoveCatalog,
     item: &Item,
 ) -> Result<(), FieldMoveError> {
-    validate_field_item_id("town_map", &catalog.town_map, item)
+    validate_field_item_id("town_map", &catalog.town_map.clone().unwrap_or_default(), item)
 }
 
 pub fn validate_pokegear_item(
     catalog: &FieldMoveCatalog,
     item: &Item,
 ) -> Result<(), FieldMoveError> {
-    validate_field_item_id("pokegear", &catalog.pokegear, item)
+    validate_field_item_id("pokegear", &catalog.pokegear.clone().unwrap_or_default(), item)
 }
 
 pub fn blue_card_balance(state: &GameState) -> Result<u8, FieldMoveError> {
@@ -2239,6 +2245,35 @@ mod tests {
         replacements
     }
 
+    #[test]
+    fn pokegear_map_needs_no_bag_adapter_but_custom_map_items_stay_strict() {
+        let mut value = serde_json::to_value(catalog()).unwrap();
+        value["town_map"] = serde_json::Value::Null;
+        let decoded: FieldMoveCatalog = serde_json::from_value(value.clone()).unwrap();
+        assert!(decoded.town_map.is_none());
+        value["town_map"] = serde_json::json!({"item_id":" TOWN_MAP"});
+        assert!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).is_err());
+        value["town_map"] = serde_json::json!({"item_id":"CUSTOM_MAP"});
+        assert_eq!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).unwrap().town_map.unwrap().item_id, "CUSTOM_MAP");
+        value.as_object_mut().unwrap().remove("town_map");
+        assert!(serde_json::from_value::<FieldMoveCatalog>(value).is_err());
+    }
+
+    #[test]
+    fn start_menu_pokegear_needs_no_bag_item_but_optional_bag_rules_stay_strict() {
+        let mut value = serde_json::to_value(catalog()).unwrap();
+        value["pokegear"] = serde_json::Value::Null;
+        let decoded: FieldMoveCatalog = serde_json::from_value(value.clone()).unwrap();
+        assert!(decoded.pokegear.is_none());
+        value["pokegear"] = serde_json::json!({"item_id":" BAD"});
+        assert!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).is_err());
+        value["pokegear"] = serde_json::json!({"item_id":"CUSTOM_POKEGEAR"});
+        assert_eq!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).unwrap()
+            .pokegear.unwrap().item_id, "CUSTOM_POKEGEAR");
+        value.as_object_mut().unwrap().remove("pokegear");
+        assert!(serde_json::from_value::<FieldMoveCatalog>(value).is_err());
+    }
+
     fn catalog() -> FieldMoveCatalog {
         FieldMoveCatalog {
             cut: FieldMoveBlockRule {
@@ -2357,12 +2392,12 @@ mod tests {
             blue_card: FieldItemRule {
                 item_id: "BLUE_CARD".to_string(),
             },
-            town_map: FieldItemRule {
+            town_map: Some(FieldItemRule {
                 item_id: "TOWN_MAP".to_string(),
-            },
-            pokegear: FieldItemRule {
+            }),
+            pokegear: Some(FieldItemRule {
                 item_id: "POKEGEAR".to_string(),
-            },
+            }),
         }
     }
 
@@ -3744,14 +3779,14 @@ mod tests {
             ),
             (
                 "town_map",
-                |catalog| &mut catalog.town_map,
+                |catalog| catalog.town_map.as_mut().unwrap(),
                 validate_town_map_item,
                 "TOWN_MAP",
                 "MOD_TOWN_MAP_ITEM",
             ),
             (
                 "pokegear",
-                |catalog| &mut catalog.pokegear,
+                |catalog| catalog.pokegear.as_mut().unwrap(),
                 validate_pokegear_item,
                 "POKEGEAR",
                 "MOD_POKEGEAR_ITEM",

@@ -500,8 +500,14 @@ fn close_visible_credits_screen(
 }
 
 fn select_visible_title_menu_option(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.visible_continue_screen.as_ref()
+        .is_some_and(|screen| screen.remaining_delay_frames != 0) { return Ok(()); }
     if let Some(continue_screen) = runtime_shell.visible_continue_screen.take() {
         let save_path = continue_screen.save_path;
+        let saved = runtime_shell.shell.runtime().load_save(&save_path)?;
+        if saved.time.rtc_status_flags & (crate::core::systems::time::RTC_RESET | crate::core::systems::time::RTC_DAYS_EXCEED_255) != 0 {
+            return open_visible_restart_clock(runtime_shell, save_path);
+        }
         record_visible_runtime_action(
             runtime_shell,
             format!("title:continue:confirm:{}", save_path.display()),
@@ -571,7 +577,17 @@ fn select_visible_title_menu_option(runtime_shell: &mut BevyRuntimeShell) -> Res
                 .filter(|owned| **owned)
                 .count();
             let has_pokedex = state.flags.is_engine_flag_set("ENGINE_POKEDEX")?;
+            let program = runtime_shell.runtime.title_presentation_program();
+            let remaining_delay_frames = if let Some(entry) = program.entrypoints.get("continue") {
+                let block = program.blocks.get(entry).context("Continue entry has no block")?;
+                let summary = block.operations.iter().filter(|operation|
+                    operation.op == "present_continue_summary").collect::<Vec<_>>();
+                anyhow::ensure!(summary.len() == 1, "Continue requires one source summary operation");
+                u16::try_from(summary[0].fields.get("wait_frames")
+                    .and_then(serde_json::Value::as_u64).context("Continue summary has no frame delay")?)?
+            } else { 0 };
             runtime_shell.visible_continue_screen = Some(VisibleContinueScreen {
+                remaining_delay_frames,
                 save_path,
                 player_name: state.player_name,
                 badge_count,

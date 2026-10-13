@@ -4327,7 +4327,7 @@ fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Res
         return move_visible_delete_save_cursor(runtime_shell);
     }
     if runtime_shell.pending_clock_reset.is_some() {
-        return move_visible_clock_reset_cursor(runtime_shell, -1);
+        return move_visible_clock_reset_horizontal(runtime_shell, -1);
     }
     if runtime_shell.title_menu.is_some() {
         return move_visible_title_menu_cursor(runtime_shell, -1);
@@ -4600,7 +4600,7 @@ fn move_visible_primary_cursor_right(runtime_shell: &mut BevyRuntimeShell) -> Re
         return move_visible_delete_save_cursor(runtime_shell);
     }
     if runtime_shell.pending_clock_reset.is_some() {
-        return move_visible_clock_reset_cursor(runtime_shell, 1);
+        return move_visible_clock_reset_horizontal(runtime_shell, 1);
     }
     if runtime_shell.title_menu.is_some() {
         return move_visible_title_menu_cursor(runtime_shell, 1);

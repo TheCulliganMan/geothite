@@ -3578,6 +3578,7 @@ fn summarize_frame_activity(frame: &crate::RuntimeOverworldFrame) -> Option<Stri
 
 fn shell_render_key(runtime_shell: &BevyRuntimeShell) -> u64 {
     let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    runtime_shell.splash_screen.as_ref().map(|screen| screen.frame).hash(&mut hasher);
     hash_menu_cursor(&mut hasher, &runtime_shell.start_menu_cursor);
     hash_menu_cursor(&mut hasher, &runtime_shell.menu_cursor);
     hash_menu_cursor(&mut hasher, &runtime_shell.shop_top_cursor);

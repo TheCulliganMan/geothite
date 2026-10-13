@@ -5,7 +5,9 @@ use crate::model_storage::Source;
 const MAX_BYTES: u64 = 16 * 1024 * 1024;
 
 const MAX_BUNDLE_BYTES: usize = 64 * 1024 * 1024;
-static BUNDLE: std::sync::OnceLock<Option<std::collections::BTreeMap<String, String>>> =
+static BUNDLE: std::sync::OnceLock<
+    Option<std::sync::Mutex<std::collections::BTreeMap<String, String>>>,
+> =
     std::sync::OnceLock::new();
 
 /// Install optional external furniture and foliage before the first scenery lookup.
@@ -19,16 +21,19 @@ static BUNDLE: std::sync::OnceLock<Option<std::collections::BTreeMap<String, Str
 pub fn install_open_model_bundle(json: &str) -> Result<(), String> {
     let models = parse_bundle(json)?;
     BUNDLE
-        .set(Some(models))
+        .set(Some(std::sync::Mutex::new(models)))
         .map_err(|_| "scenery sources are already frozen; restart to refresh".into())
 }
 
 fn parse_bundle(json: &str) -> Result<std::collections::BTreeMap<String, String>, String> {
     #[derive(serde::Deserialize)]
     #[serde(deny_unknown_fields)]
-    struct Bundle {
+    struct Bundle<'a> {
         version: u32,
-        models: std::collections::BTreeMap<String, serde_json::Value>,
+        // Borrow each model's source rather than materializing every numeric
+        // array in the bundle as a second generic JSON geometry tree.
+        #[serde(borrow)]
+        models: std::collections::BTreeMap<String, &'a serde_json::value::RawValue>,
     }
     if json.len() > MAX_BUNDLE_BYTES {
         return Err("open scenery bundle exceeds 64 MiB".into());
@@ -42,17 +47,17 @@ fn parse_bundle(json: &str) -> Result<std::collections::BTreeMap<String, String>
         if !supported_path(&path) {
             return Err(format!("unsupported bundled scenery path: {path}"));
         }
-        let json = serde_json::to_string(&value).map_err(|e| e.to_string())?;
+        let json = value.get();
         if json.len() as u64 > MAX_BYTES {
             return Err(format!("open model exceeds 16 MiB: {path}"));
         }
         if path.starts_with("models/interiors/") {
-            crate::interior_models::Model::parse(json.as_str()).map(|_| ())
+            crate::interior_models::Model::parse(json).map(|_| ())
         } else {
-            crate::new_bark_models::Model::parse(json.as_str()).map(|_| ())
+            crate::new_bark_models::Model::parse(json).map(|_| ())
         }
         .map_err(|e| format!("invalid bundled scenery {path}: {e}"))?;
-        models.insert(path, json);
+        models.insert(path, json.to_owned());
     }
     Ok(models)
 }
@@ -95,12 +100,15 @@ fn read(root: &std::path::Path, path: &str) -> Result<Option<String>, String> {
 
 /// Load the designated external asset. Missing or invalid content stays missing;
 /// callers retain its original 2D source instead of selecting another 3D model.
+/// Called only by the selected model's OnceLock initializer. The typed cache
+/// owns decoded geometry afterward, so its redundant bundled JSON can be freed.
 pub(crate) fn load_required<T>(
     path: &str,
     parse: impl for<'a> Fn(Source<'a>) -> Result<T, String>,
 ) -> Option<T> {
     if let Some(bundle) = BUNDLE.get_or_init(|| None) {
-        return bundle.get(path).and_then(|json| parse(Source::Plain(json)).ok());
+        let json = bundle.lock().ok()?.remove(path)?;
+        return parse(Source::Plain(&json)).ok();
     }
     #[cfg(not(target_arch = "wasm32"))]
     {
@@ -139,6 +147,13 @@ fn trace(path: &str, error: &str) {
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod tests {
     use super::*;
+    #[test]
+    fn bundle_retains_exact_model_source_without_generic_json_expansion() {
+        let model = r#"{ "primitives": [{ "positions": [0,0,-0.0, 2,0,0, 0,3,0, 0,0,4], "normals": [0,1,0, 0,1,0, 0,1,0, 0,1,0], "indices": [0,2,1, 0,1,3, 0,3,2, 1,2,3], "base_color": [0.25,0.5,0.75,1] }] }"#;
+        let bundle = format!(r#"{{"version":1,"models":{{"models/interiors/television.mesh.json":{model}}}}}"#);
+        let models = parse_bundle(&bundle).unwrap();
+        assert_eq!(models["models/interiors/television.mesh.json"], model);
+    }
     #[test]
     fn bundles_validate_real_geometry_and_reject_partial_or_out_of_scope_installs() {
         let model: serde_json::Value = crate::model_storage::parse(
@@ -194,6 +209,11 @@ mod tests {
         assert!(load_required("models/new_bark/tree.mesh.json",
             |source| crate::new_bark_models::Model::parse(source)).is_none());
         let model = crate::interior_models::selected_model(crate::interior_models::ModelKind::Television).unwrap();
+        assert!(!BUNDLE.get().unwrap().as_ref().unwrap().lock().unwrap()
+            .contains_key("models/interiors/television.mesh.json"));
+        assert!(std::ptr::eq(model,
+            crate::interior_models::selected_model(crate::interior_models::ModelKind::Television).unwrap()),
+            "selected geometry remains cached after releasing redundant source JSON");
         let mut mesh = crate::mesh::SurfaceMeshData::default();
         model.append_fitted(&mut mesh, [0., 2., 0., 4.], 0., 3.);
         assert_eq!(mesh.positions.len(), 4);

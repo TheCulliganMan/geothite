@@ -790,6 +790,44 @@ pub fn write_save_game_for_modpack(
     write_save_game(path, &save)
 }
 
+/// Set the source `_ResetClock` SRAM status without running the ordinary
+/// SaveRTC boundary, which would clear the request again.
+pub fn request_saved_clock_reset_for_modpack(
+    path: impl AsRef<Path>,
+    expected: &SaveModpackIdentity,
+    expected_pack_content_hash: &str,
+    expected_state_hash: u32,
+) -> Result<(), SaveError> {
+    let path = path.as_ref();
+    let mut save = read_save_game_for_modpack(path, expected, expected_pack_content_hash)?;
+    if save.metadata.saved_state_hash != expected_state_hash {
+        return Err(SaveError::InvalidState("saved clock password data changed before confirmation".into()));
+    }
+    save.state.time.rtc_status_flags = crate::systems::time::RTC_RESET;
+    save.metadata.saved_state_hash = game_state_checksum(&save.state)
+        .map_err(|error| SaveError::InvalidState(format!("clock reset checksum: {error}")))?.hash();
+    save.validate()?;
+    write_save_game(path, &save)
+}
+
+pub fn restart_saved_clock_for_modpack(
+    path: impl AsRef<Path>, expected: &SaveModpackIdentity, expected_pack_content_hash: &str,
+    expected_state_hash: u32, now_date: crate::systems::time::GameDate,
+    now: crate::systems::time::ClockTime, target: crate::systems::time::ClockTime,
+) -> Result<(), SaveError> {
+    let path = path.as_ref();
+    let mut save = read_save_game_for_modpack(path, expected, expected_pack_content_hash)?;
+    if save.metadata.saved_state_hash != expected_state_hash {
+        return Err(SaveError::InvalidState("saved clock data changed before restart".into()));
+    }
+    save.state.time.set_manual_time(now_date, now.hour, now.minute, now.second, target);
+    save.state.time.normalize_rtc_for_save();
+    save.metadata.saved_state_hash = game_state_checksum(&save.state)
+        .map_err(|error| SaveError::InvalidState(format!("clock restart checksum: {error}")))?.hash();
+    save.validate()?;
+    write_save_game(path, &save)
+}
+
 fn read_save_game(path: impl AsRef<Path>) -> Result<SaveGame, SaveError> {
     let path = path.as_ref();
     validate_save_path(path)?;
@@ -1297,6 +1335,38 @@ mod tests {
         assert!(!loaded.state().game_timer_counting);
         assert!(!loaded.state().game_logic_paused);
         erase_save_game(&path).expect("erase save artifacts");
+    }
+
+    #[test]
+    fn clock_reset_request_preserves_save_and_rejects_changed_generation() {
+        let path = temp_save_path("clock-request.crystalsave");
+        let identity = SaveModpackIdentity::new("core", pack_content_hash()).unwrap();
+        let mut state = GameState::default();
+        state.player_name = "CHRIS".into();
+        state.player_id = 0x1234;
+        state.money = 0x010203;
+        write_save_game_for_modpack(&path, state, &identity, pack_content_hash()).unwrap();
+        let before = read_save_game_for_modpack(&path, &identity, pack_content_hash()).unwrap();
+        request_saved_clock_reset_for_modpack(&path, &identity, pack_content_hash(), before.metadata.saved_state_hash).unwrap();
+        let requested = read_save_game_for_modpack(&path, &identity, pack_content_hash()).unwrap();
+        let mut expected = before.clone();
+        expected.state.time.rtc_status_flags = crate::systems::time::RTC_RESET;
+        expected.metadata.saved_state_hash = game_state_checksum(&expected.state).unwrap().hash();
+        assert_eq!(requested, expected, "password confirmation may change only RTC status and checksum");
+        let bytes = std::fs::read(&path).unwrap();
+        assert!(request_saved_clock_reset_for_modpack(&path, &identity, pack_content_hash(), before.metadata.saved_state_hash).is_err());
+        assert_eq!(std::fs::read(&path).unwrap(), bytes, "stale password must not overwrite a newer save");
+        let target = crate::systems::time::ClockTime::new(2, 13, 27, 0);
+        let date = crate::systems::time::GameDate::new(2026, 10, 12);
+        let now = crate::systems::time::ClockTime::new(0, 9, 5, 18);
+        restart_saved_clock_for_modpack(&path, &identity, pack_content_hash(), requested.metadata.saved_state_hash, date, now, target).unwrap();
+        let restarted = read_save_game_for_modpack(&path, &identity, pack_content_hash()).unwrap();
+        expected.state.time.set_manual_time(date, now.hour, now.minute, now.second, target);
+        expected.state.time.normalize_rtc_for_save();
+        expected.metadata.saved_state_hash = game_state_checksum(&expected.state).unwrap().hash();
+        assert_eq!(restarted, expected, "Continue clock restart must preserve the trainer and world");
+        assert_eq!(restarted.state.time.rtc_status_flags, 0);
+        erase_save_game(&path).unwrap();
     }
 
     #[test]

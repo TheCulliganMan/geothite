@@ -1,63 +1,103 @@
-# Game content setup
+# Build and run game content
 
-Geothite does not distribute game packs or ROMs in Git. Download the source
-separately from [pret/pokecrystal](https://github.com/pret/pokecrystal) and
-follow its [assembly instructions](https://github.com/pret/pokecrystal/blob/master/INSTALL.md).
-Keep the disassembly and its build outputs outside this repository.
+Geothite's Rust builders generate the game content from the source and toolchain
+pinned in `pret-source.lock.json`. The initialization script assembles that source,
+exports runtime catalogs, compiles and verifies the packs, and publishes local
+agent inputs. Source checkouts, ROMs, intermediate exports, PCM, and packs stay
+outside tracked source.
 
-## Assemble the disassembly
+## Initialize once
 
-Install the tools specified by pret for your platform, then run outside Geothite:
+Install Git, Git LFS, and the Rust toolchain selected by `rust-toolchain.toml`.
+The build environment also needs Bash, curl, tar, make, a C compiler, and
+`sha1sum`/`sha256sum`. Windows uses the `Ubuntu-24.04` WSL distribution by default;
+install these tools and Rust inside that distribution, plus Git LFS on Windows.
+Native graphical play also needs the platform libraries listed in
+[cold-start-3d.md](cold-start-3d.md).
 
-```sh
-git clone https://github.com/pret/pokecrystal.git
-cd pokecrystal
-make
+From the checkout, run on Windows:
+
+```powershell
+.\tools\build-crystalpack.ps1
 ```
 
-This assembles a ROM. A ROM is not a `.crystalpack` and cannot be renamed into
-one. Pret supplies the disassembly, not a ready-made Geothite pack.
-
-## Compile a Geothite pack
-
-The existing Rust pack compiler expects an external export workspace containing:
-
-- `vendor/pokecrystal/`: the compatible disassembly source.
-- `apps/web/assets/`: exported runtime assets, including
-  `data/content-packs/index.json`, the generated core manifest, and all data,
-  graphics, and audio referenced by those manifests.
-
-From Geothite, compile an already prepared export workspace with:
+On Linux x86_64:
 
 ```sh
-cargo run --release -p crystal-assets --bin pack_core -- /path/to/export-workspace
+bash tools/build-crystalpack.sh
 ```
 
-The compiler writes `content-packs/core-modular.crystalpack` and
-`content-packs/core-modular.browser.crystalpack` inside that workspace.
+The external workspace defaults to `$HOME/.local/share/geothite/export-workspace`
+inside the Linux build environment. The script selects the exact pret commit and
+tree, downloads and checks RGBDS 1.0.4, and checks the assembled ROM identity.
+It initializes Git LFS and verifies artwork, then runs the repository's Rust
+exporters for game data, title and intro presentation, graphics, animation, and
+audio. It generates the manifest and source provenance in the external workspace.
 
-**Current limitation:** this repository does not contain a complete exporter
-that creates the intermediate runtime assets from a fresh pret checkout or ROM.
-The command above is the final packing step, not an end-to-end disassembly
-converter. A prepared compatible export workspace or a separately obtained
-compatible pack is required to play. A clean clone alone cannot build game
-content yet.
+Both browser and TUI audio verification check every program's PCM hash, frame
+count, and loop range. Controller tests exercise dialogue ownership, Mom, the
+New Bark exit gate, production menus, and a battle turn with PP mutation. MCP
+tests exercise the same input controller and require clean stderr. The local
+packs are replaced only after these checks and the text client build pass.
 
-## Supply content locally
+The published files are:
 
-For Docker/browser deployment, copy your compatible browser pack into the
-ignored local directory before running Docker Compose:
+| Client | Local pack |
+| --- | --- |
+| Native game | `content-packs/core-modular.crystalpack` |
+| Browser | `content-packs/core-modular.browser.crystalpack` |
+| Terminal and stdio MCP | `content-packs/text-tui.crystalpack` |
+
+All three remain ignored by Git.
+
+## Play
+
+The initialization script prints the built text executable's absolute path and
+its play command. For a native Windows terminal build:
+
+```powershell
+cargo build --release --locked -p geothite
+.\target\release\geothite.exe play content-packs/text-tui.crystalpack
+```
+
+The same executable supports the stdio MCP session:
+
+```powershell
+.\target\release\geothite.exe mcp content-packs/text-tui.crystalpack
+```
+
+Build and launch the graphical client with the production title and save flow:
 
 ```sh
-mkdir -p content-packs
-cp /path/to/export-workspace/content-packs/core-modular.browser.crystalpack content-packs/
+cargo run --release --locked -p crystal-bevy --features voxel-view -- \
+  --pack content-packs/core-modular.crystalpack \
+  --save-path content-packs/player.crystalsave
+```
+
+Press F3 to switch between 2D and 3D. To deploy the generated browser pack:
+
+```sh
 docker compose -f docker-compose.production.yml up -d --build
 ```
 
-Docker copies that local file into your deployment image. Missing content causes
-the Docker build to fail; it is not downloaded automatically. Native play accepts
-a separately supplied pack through `--pack /path/to/core-modular.crystalpack`.
+## Share packs and isolate builds
 
-Keep packs, ROMs, disassembly checkouts, and generated assets out of commits.
-After the history cleanup, use a fresh clone. Merging or pushing an old branch
-can reintroduce the removed history.
+Run pack initialization once for the checkout. Agents use the published packs;
+they do not regenerate exports independently or overwrite the shared workspace.
+Use a distinct Cargo target directory for each agent's client builds:
+
+```powershell
+$env:CARGO_TARGET_DIR = Join-Path $PWD 'target/agent-title'
+$env:CRYSTAL_RENDER_TEST_PACK = Join-Path $PWD 'content-packs/text-tui.crystalpack'
+```
+
+```sh
+export CARGO_TARGET_DIR="$PWD/target/agent-title"
+export CRYSTAL_RENDER_TEST_PACK="$PWD/content-packs/text-tui.crystalpack"
+```
+
+Choose a different target directory for every concurrent agent. The initializer's
+persistent cache defaults to `$HOME/.cache/geothite/pack-builder`; override it
+with `CRYSTAL_PACK_BUILD_DIR`. `CRYSTAL_PACK_BUILD_PROFILE` accepts `release`
+(default) or `wasm-dev`, and applies consistently to builders and tests. Windows
+forwards these two settings into WSL. Keep all generated packs and captures ignored.

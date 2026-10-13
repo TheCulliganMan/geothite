@@ -825,8 +825,12 @@ fn insert_field_move_catalog(
     validate_field_story_key_rule("field_moves:basement_key", &catalog.basement_key)?;
     validate_field_item_rule("field_moves:coin_case", &catalog.coin_case)?;
     validate_field_item_rule("field_moves:blue_card", &catalog.blue_card)?;
-    validate_field_item_rule("field_moves:town_map", &catalog.town_map)?;
-    validate_field_item_rule("field_moves:pokegear", &catalog.pokegear)?;
+    if let Some(rule) = &catalog.town_map {
+        validate_field_item_rule("field_moves:town_map", rule)?;
+    }
+    if let Some(rule) = &catalog.pokegear {
+        validate_field_item_rule("field_moves:pokegear", rule)?;
+    }
     *target = catalog;
     Ok(())
 }
@@ -870,7 +874,7 @@ fn insert_runtime_title_screen(
     Ok(())
 }
 
-fn validate_runtime_title_screen(title_screen: &RuntimeTitleScreen) -> Result<()> {
+pub fn validate_runtime_title_screen(title_screen: &RuntimeTitleScreen) -> Result<()> {
     let Some(title_music) = &title_screen.title_music else {
         anyhow::bail!("runtime_title_screen requires title_music");
     };

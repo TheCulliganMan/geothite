@@ -1141,9 +1141,18 @@ pub(crate) struct CostumeMesh {
 }
 
 pub(crate) fn costume_mesh(rig: &crate::open_people::PersonRig, look: Look) -> Option<CostumeMesh> {
+    costume_mesh_parts(rig, look, true)
+}
+
+#[cfg(test)]
+pub(crate) fn costume_shell_mesh(rig: &crate::open_people::PersonRig, look: Look) -> Option<CostumeMesh> {
+    costume_mesh_parts(rig, look, false)
+}
+
+fn costume_mesh_parts(rig: &crate::open_people::PersonRig, look: Look, details: bool) -> Option<CostumeMesh> {
     use bevy::prelude::*;
-    if let Some(cape) = crate::cape::build(rig,look) { return Some(cape); }
-    if let Some(uniform) = crate::uniform_details::build(rig,look) {return Some(uniform);}
+    if let Some(cape) = crate::cape::build(rig,look) { return details.then_some(cape); }
+    if let Some(uniform) = crate::uniform_details::build(rig,look) {return details.then_some(uniform);}
     let skirt = matches!(look.costume, "dress" | "kimono" | "robe") || look.accessories.contains("skirt");
     let coat = look.costume == "coat";
     if !skirt && !coat { return None; }
@@ -1197,7 +1206,7 @@ pub(crate) fn costume_mesh(rig: &crate::open_people::PersonRig, look: Look) -> O
     }
     sections.push(*profiles.last().unwrap());
     profile_shell(&mut mesh, 0.0, 0.05, &sections, arc, 0.018, color);
-    let seam_weights = crate::garment_fit::fit(&mut mesh, rig);
+    let seam_weights = crate::garment_fit::fit(&mut mesh, rig, look);
     crate::robe_drape::finish(&mut mesh, look, bottom);
     if look.texture_key == "elm" {
         // Fitting changes the waist slope. Retaining profile-shell normals
@@ -1260,7 +1269,12 @@ pub(crate) fn costume_mesh(rig: &crate::open_people::PersonRig, look: Look) -> O
             let total: f32 = nearest.iter().map(|(_,d)| 1.0/(d+0.0025)).sum();
             let mut merged = vec![0.0;rig.skin_nodes.len()];
             for &(j,w) in &influences { merged[j] += w*(1.0-transfer); }
-            let drape = if closed && p[1]<top {crate::garment_fit::waist_influences(rig,*p)} else {None};
+            // Nurse's fitted short skirt needs its local body-section skin
+            // weights as thighs move beneath it. Hanging it from the waist
+            // overrides those samples and lets the leg pierce the fabric.
+            let drape = if closed && p[1]<top && look.texture_key != "nurse" {
+                crate::garment_fit::waist_influences(rig,*p)
+            } else {None};
             if let Some(body) = drape.as_ref().or(seam_weights[vertex].as_ref()) {
                 for &(joint, weight) in body { merged[joint] += transfer*weight; }
             } else {
@@ -1276,7 +1290,7 @@ pub(crate) fn costume_mesh(rig: &crate::open_people::PersonRig, look: Look) -> O
         joints.push(std::array::from_fn(|i| influences[i].0 as u16));
         weights.push(std::array::from_fn(|i| influences[i].1/total));
     }
-    if matches!(look.texture_key, "erika" | "falkner" | "kimono_girl") {
+    if details && matches!(look.texture_key, "erika" | "falkner" | "kimono_girl") {
         if let Some(obi) = crate::kimono_obi::build(rig, look) {
             let offset=mesh.positions.len() as u32;
             mesh.positions.extend(obi.surface.positions);
@@ -1289,10 +1303,13 @@ pub(crate) fn costume_mesh(rig: &crate::open_people::PersonRig, look: Look) -> O
     }
     let mut costume = CostumeMesh { surface: mesh, joints, weights };
     if look.texture_key == "nurse" {
+        crate::garment_fit::smooth_fitted_skin(&mut costume, rig.skin_nodes.len());
         crate::garment_fit::finish_normals(&mut costume);
     }
-    crate::apron::append(&mut costume, look);
-    crate::uniform_details::append(&mut costume, rig, look);
+    if details {
+        crate::apron::append(&mut costume, look);
+        crate::uniform_details::append(&mut costume, rig, look);
+    }
     Some(costume)
 }
 

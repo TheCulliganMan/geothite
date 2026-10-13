@@ -17,6 +17,7 @@ serde.workspace = true
 serde_path_to_error = "0.1"
 serde_json.workspace = true
 sha2.workspace = true
+sha1 = "0.10.7"
 
 [features]
 test-fixtures = ["crystal-core/test-fixtures"]

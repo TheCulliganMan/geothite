@@ -276,6 +276,8 @@ fn finish_webmcp_request(
     multiplayer: Option<NonSend<MultiplayerRuntime>>,
     art: Res<RenderedTilesetArt>,
     glyphs: Query<(&Sprite, &Transform, &Visibility)>,
+    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+    voxel_status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
 ) {
     WEBMCP_BRIDGE.with_borrow_mut(|bridge| {
         let Some(pending) = bridge.pending.as_ref() else { return; };
@@ -303,6 +305,19 @@ fn finish_webmcp_request(
                         if let Some(line) = lines.last_mut() { line.push(character); }
                     }
                     value["observe"]["rendered_text"] = serde_json::json!(lines);
+                    // Read-only developer evidence; gameplay never consumes
+                    // this field or changes input settlement to wait for it.
+                    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+                    if let Some(status) = voxel_status.as_ref() {
+                        value["presentation"]["voxel"] = serde_json::json!({
+                            "active": status.active,
+                            "active_frames": status.active_frames,
+                            "terrain_builds": status.terrain_builds,
+                            "profiles_pending": status.profiles_pending,
+                            "inactive_reason": status.inactive_reason,
+                            "scenery_full_detail": crystal_voxel_view::scenery_full_detail_enabled(),
+                        });
+                    }
                     value
                 }, Err(error) => serde_json::json!({"error": error.to_string()}) } };
         bridge.result = Some((pending.id, result.to_string()));

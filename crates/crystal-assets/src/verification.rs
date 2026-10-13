@@ -5,6 +5,46 @@ fn verify_game_data(
 ) -> ModpackCompileReport {
     let mut diagnostics = Vec::new();
     let map_names = data.maps.keys().cloned().collect::<BTreeSet<_>>();
+    for (map, indices) in rules.inaccessible_dormant_warps.iter().chain(rules.retired_gs_warps.iter()) {
+        for index in indices {
+            if !data.maps.get(map).is_some_and(|module| module.events.warps.iter()
+                .any(|warp| warp.index as i32 == *index)) {
+                diagnostics.push(VerificationError::error("invalid_inaccessible_dormant_warp",
+                    map, format!("certificate references missing warp {index}")));
+            }
+        }
+    }
+    for map in &rules.dormant_maps {
+        if !map_names.contains(map) || !map.ends_with("Beta")
+            || rules.start_maps.contains(map) || rules.start_tiles.iter().any(|start| &start.map == map) {
+            diagnostics.push(VerificationError::error("invalid_dormant_map", map,
+                "dormant maps must be loaded authored Beta maps outside the configured starts"));
+        }
+        for (origin, module) in &data.maps {
+            if rules.dormant_maps.contains(origin) { continue; }
+            if module.attributes.connections.iter().any(|edge| &edge.target_map == map)
+                || module.events.warps.iter().any(|warp| (&warp.target_map == map
+                    || data.maps.get(map).and_then(|target| target.attributes.map_constant.as_deref())
+                        == Some(warp.target_map_constant.as_str()))
+                    && !rules.inaccessible_dormant_warps.get(origin)
+                        .is_some_and(|indices| indices.contains(&(warp.index as i32))))
+                || module.script_map_commands.iter().any(|command| command.target_map.as_ref() == Some(map)) {
+                diagnostics.push(VerificationError::error("active_ingress_to_dormant_map", map,
+                    format!("authored map {origin} has an ingress into the dormant map")));
+            }
+        }
+    }
+    for mode in &rules.topology_traversal_modes {
+        if !matches!(mode.as_str(), "Walk" | "Surf" | "Waterfall" | "Whirlpool" | "Cut") {
+            diagnostics.push(VerificationError::error("invalid_topology_traversal_mode",
+                "playability", format!("unsupported topology traversal mode {mode}")));
+        }
+        if mode == "Surf" && (data.field_moves.surf.move_id != "SURF"
+            || !data.moves.contains_key("SURF")) {
+            diagnostics.push(VerificationError::error("missing_topology_surf_rule",
+                "playability", "Surf topology requires a production Surf move and travel rule"));
+        }
+    }
 
     verify_species_and_moves(data, &mut diagnostics);
     verify_items(data, &mut diagnostics);
@@ -125,6 +165,32 @@ fn merged_playability_rules(
 }
 
 fn merge_playability_rules(target: &mut PlayabilityRules, source: &PlayabilityRules) -> Result<()> {
+    for (origin, routes) in &source.connection_warp_routes {
+        for (destination, route) in routes {
+            let entry = target.connection_warp_routes.entry(origin.clone()).or_default();
+            if let Some(previous) = entry.get(destination) {
+                anyhow::ensure!(previous == route, "conflicting connection warp route {origin} to {destination}");
+            }
+            entry.insert(destination.clone(), route.clone());
+        }
+    }
+    for (map, indices) in &source.retired_gs_warps {
+        let entry = target.retired_gs_warps.entry(map.clone()).or_default();
+        for index in indices { if !entry.contains(index) { entry.push(*index); } }
+    }
+    for (map, indices) in &source.inaccessible_dormant_warps {
+        let entry = target.inaccessible_dormant_warps.entry(map.clone()).or_default();
+        for index in indices { if !entry.contains(index) { entry.push(*index); } }
+    }
+    merge_token_string_vec(&mut target.dormant_maps, source.dormant_maps.clone(),
+        "playability dormant map")?;
+    target.topology_script_block_changes |= source.topology_script_block_changes;
+    for mode in &source.topology_traversal_modes {
+        anyhow::ensure!(matches!(mode.as_str(), "Walk" | "Surf" | "Waterfall" | "Whirlpool" | "Cut"),
+            "unsupported topology traversal mode {mode}");
+    }
+    merge_token_string_vec(&mut target.topology_traversal_modes,
+        source.topology_traversal_modes.clone(), "playability topology traversal mode")?;
     merge_token_string_vec(
         &mut target.start_maps,
         source.start_maps.clone(),
@@ -487,10 +553,10 @@ fn field_rule_item_ids(data: &GameDataSet) -> BTreeSet<String> {
         &data.field_moves.squirtbottle,
         &data.field_moves.coin_case,
         &data.field_moves.blue_card,
-        &data.field_moves.town_map,
-        &data.field_moves.pokegear,
     ]
     .into_iter()
+    .chain(data.field_moves.town_map.as_ref())
+    .chain(data.field_moves.pokegear.as_ref())
     .filter_map(|rule| (!rule.item_id.is_empty()).then(|| rule.item_id.clone()))
     .chain(
         [&data.field_moves.card_key, &data.field_moves.basement_key]
@@ -1577,11 +1643,13 @@ fn verify_trainer_object_scripts(
                     ),
                 ));
             }
-        } else if let Some(request) = module.trainer_scripts.get(*script) {
+        } else {
             for object in objects {
-                if object.event_flag != request.event_flag {
+                // object_event's final operand controls visibility; the trainer
+                // macro owns its independent defeat flag (e.g. Fast Ship crews).
+                if object.event_flag != "-1" && !object.event_flag.starts_with("EVENT_") {
                     diagnostics.push(VerificationError::error(
-                        "trainer_object_event_flag_mismatch",
+                        "invalid_trainer_object_visibility_flag",
                         format!(
                             "{map_name}:{}",
                             object
@@ -1590,8 +1658,8 @@ fn verify_trainer_object_scripts(
                                 .unwrap_or(object.script.as_str())
                         ),
                         format!(
-                            "trainer object script '{}' event flag '{}' does not match trainer battle request event flag '{}'",
-                            object.script, object.event_flag, request.event_flag
+                            "trainer object script '{}' visibility flag '{}' must be -1 or an authored EVENT_ identity",
+                            object.script, object.event_flag
                         ),
                     ));
                 }
@@ -10623,7 +10691,11 @@ struct MapPlayabilityContext {
     map: OverworldMapData,
     component_by_tile: BTreeMap<(i16, i16), usize>,
     component_count: usize,
+    ledge_component_edges: BTreeSet<(usize, usize)>,
 }
+
+#[path = "scripted_warp_topology.rs"]
+mod scripted_warp_topology;
 
 impl MapPlayabilityContext {
     fn component_at(&self, tile: TilePosition) -> Option<usize> {
@@ -10658,6 +10730,32 @@ fn map_playability_context_from_parts(
     diagnostics: &mut Vec<VerificationError>,
 ) -> Option<MapPlayabilityContext> {
     let map = OverworldMapData::from_attributes(map_name, attributes, blocks);
+    let mut geometry = vec![map.clone()];
+    if rules.topology_traversal_modes.iter().any(|mode| mode == "Cut")
+        && data.field_moves.cut.move_id == "CUT" && data.moves.contains_key("CUT") {
+        if let Some(replacements) = data.field_moves.cut.replacements.get(&attributes.tileset_name) {
+            let mut variant = map.clone();
+            for block in &mut variant.metatile_ids {
+                if let Some(replacement) = replacements.get(block) {
+                    *block = replacement.replacement_block_id;
+                }
+            }
+            geometry.push(variant);
+        }
+    }
+    if rules.topology_script_block_changes {
+        if let Some(module) = data.maps.get(map_name) {
+            let callable = topology_script_closure(module);
+            for change in &module.script_block_changes {
+                if !callable.contains_key(&change.source_script) { continue; }
+                let mut variant = map.clone();
+                if crystal_core::systems::script_blocks::apply_script_block_change(
+                    &mut variant, change.clone()).is_ok() {
+                    geometry.push(variant);
+                }
+            }
+        }
+    }
     let tileset = match data
         .tilesets
         .get(&attributes.tileset_name)
@@ -10703,6 +10801,27 @@ fn map_playability_context_from_parts(
         return None;
     };
     let mut component_by_tile = BTreeMap::new();
+    let traversal = if rules.topology_traversal_modes.iter().any(|mode| mode == "Surf")
+        && data.field_moves.surf.move_id == "SURF"
+        && data.moves.contains_key("SURF") {
+        PlayerTraversalState::Surf
+    } else { PlayerTraversalState::Walk };
+    let blocked_surf_permission = |permission: u8| {
+        data.field_moves.surf.blocked_collisions.contains(&permission)
+            && !(rules.topology_traversal_modes.iter().any(|mode| mode == "Waterfall")
+                && data.field_moves.waterfall.move_id == "WATERFALL"
+                && data.moves.contains_key("WATERFALL")
+                && data.field_moves.waterfall.target_collisions.contains(&permission))
+            && !(rules.topology_traversal_modes.iter().any(|mode| mode == "Whirlpool")
+                && data.field_moves.whirlpool.move_id == "WHIRLPOOL"
+                && data.moves.contains_key("WHIRLPOOL")
+                && data.field_moves.whirlpool.target_collisions.contains(&permission))
+    };
+    let traversable = |tile, direction| geometry.iter().any(|variant|
+        sample_collision(variant, &tileset, tile).is_some_and(|sample|
+            is_permission_passable(sample.permission, direction, traversal)
+                && (traversal != PlayerTraversalState::Surf
+                    || !blocked_surf_permission(sample.permission))));
     let mut component_count = 0_usize;
     let aligned_tile_step =
         usize::try_from(PLAYABILITY_RUNTIME_TILE_STRIDE).expect("runtime tile stride is positive");
@@ -10710,7 +10829,7 @@ fn map_playability_context_from_parts(
         for x in (0..width).step_by(aligned_tile_step) {
             let start = TilePosition::new(x, y);
             if component_by_tile.contains_key(&(x, y))
-                || !is_walkable_validation_tile(&map, &tileset, start)
+                || !traversable(start, Direction::Down)
             {
                 continue;
             }
@@ -10731,13 +10850,7 @@ fn map_playability_context_from_parts(
                         continue;
                     };
                     if component_by_tile.contains_key(&(next.x, next.y))
-                        || !can_enter_tile(
-                            &map,
-                            &tileset,
-                            next,
-                            direction,
-                            PlayerTraversalState::Walk,
-                        )
+                        || !traversable(next, direction)
                     {
                         continue;
                     }
@@ -10747,10 +10860,31 @@ fn map_playability_context_from_parts(
             }
         }
     }
+    let mut ledge_component_edges = BTreeSet::new();
+    for (&(x, y), &source_component) in &component_by_tile {
+        let tile = TilePosition::new(x, y);
+        for direction in [Direction::Down, Direction::Up, Direction::Left, Direction::Right] {
+            let Some(landing) = checked_move_by_stride(tile, direction,
+                PLAYABILITY_RUNTIME_TILE_STRIDE.checked_mul(2).expect("ledge stride fits")) else { continue; };
+            let Some(&target_component) = component_by_tile.get(&(landing.x, landing.y)) else { continue; };
+            if source_component == target_component { continue; }
+            if geometry.iter().any(|variant|
+                crystal_core::world::collision::can_jump_ledge(variant, &tileset, tile,
+                    direction, PLAYABILITY_RUNTIME_TILE_STRIDE)
+                    && crystal_core::world::collision::can_enter_tile(variant, &tileset,
+                        landing, direction, traversal)
+                    && (traversal != PlayerTraversalState::Surf
+                        || sample_collision(variant, &tileset, landing).is_some_and(|sample|
+                            !blocked_surf_permission(sample.permission)))) {
+                ledge_component_edges.insert((source_component, target_component));
+            }
+        }
+    }
     Some(MapPlayabilityContext {
         map,
         component_by_tile,
         component_count,
+        ledge_component_edges,
     })
 }
 

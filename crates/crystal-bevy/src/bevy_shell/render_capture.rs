@@ -6,6 +6,28 @@ use std::sync::{Arc, Mutex};
 
 type Completion = Arc<Mutex<Option<Result<(), String>>>>;
 
+// Only passive, paired visual verification holds simulation. Live reviews,
+// movement and same-view temporal checks keep the production clock running.
+#[derive(Resource, Default)]
+pub(super) struct PairedCaptureHold {
+    pub(super) frozen: bool,
+}
+
+#[derive(PartialEq)]
+struct PairedState {
+    checksum: StateChecksum,
+    lcd_frame: u64,
+    actors: Vec<crystal_render_api::VisualActor>,
+}
+
+fn paired_state(runtime: &BevyRuntimeShell, frame: &crystal_render_api::VisualWorldFrame) -> Result<PairedState> {
+    Ok(PairedState {
+        checksum: runtime.shell.snapshot()?.state_checksum,
+        lcd_frame: runtime.lcd_animation_frame,
+        actors: frame.actors.clone(),
+    })
+}
+
 #[derive(Resource)]
 pub(super) struct Capture {
     path: PathBuf,
@@ -27,6 +49,7 @@ pub(super) struct Capture {
     preserve_alpha: bool,
     image_target: Option<bevy::camera::ImageRenderTarget>,
     image_size: UVec2,
+    paired_state: Option<PairedState>,
 }
 
 pub(super) fn install(
@@ -73,7 +96,8 @@ pub(super) fn install(
         Ok(value) if value == "rgba" => true,
         _ => anyhow::bail!("CRYSTAL_RENDER_TEST_CAPTURE_CHANNELS must be rgb or rgba"),
     };
-    for path in std::iter::once(&path).chain(second.iter()) {
+    let state_receipt = path.with_extension("paired-state.txt");
+    for path in std::iter::once(&path).chain(second.iter()).chain(std::iter::once(&state_receipt)) {
         if let Some(parent) = path.parent().filter(|p| !p.as_os_str().is_empty()) {
             std::fs::create_dir_all(parent)?;
         }
@@ -91,7 +115,7 @@ pub(super) fn install(
             request_path.display()
         );
     }
-    app.insert_resource(Capture {
+    app.init_resource::<PairedCaptureHold>().insert_resource(Capture {
         live,
         idle: false,
         first_path: path.clone(),
@@ -103,6 +127,7 @@ pub(super) fn install(
         preserve_alpha,
         image_target: None,
         image_size: UVec2::ZERO,
+        paired_state: None,
         path,
         second,
         same_second_view,
@@ -112,7 +137,8 @@ pub(super) fn install(
         started: Instant::now(),
         timeout_seconds,
     })
-    .add_systems(Update, (prepare_image_target, capture).chain());
+    .add_systems(Update, (prepare_image_target, capture).chain()
+        .after(crystal_render_api::WorldRenderSet::RenderSync));
     Ok(())
 }
 
@@ -219,6 +245,8 @@ pub(super) fn prepare_image_target_for_cameras(
 
 fn capture(
     mut capture: ResMut<Capture>,
+    mut hold: ResMut<PairedCaptureHold>,
+    mut virtual_time: ResMut<Time<Virtual>>,
     runtime: Res<BevyRuntimeShell>,
     walk: Option<Res<render_walk::RenderWalk>>,
     keyboard: Res<ButtonInput<KeyCode>>,
@@ -235,6 +263,25 @@ fn capture(
         eprintln!("capture rejected after runtime error: {error}");
         exit.write(AppExit::error());
         return;
+    }
+    // Check throughout both readbacks, including their completion update.
+    // A late mutation must not be accepted just because requests matched.
+    if let Some(first) = &capture.paired_state {
+        match paired_state(&runtime, &frame) {
+            Ok(current) if first == &current => {}
+            Ok(current) => {
+                eprintln!("paired capture rejected: state changed during GPU readback; checksum {:?} -> {:?}; lcd {} -> {}; actors_equal={}, actor_count {} -> {}",
+                    first.checksum, current.checksum, first.lcd_frame, current.lcd_frame,
+                    first.actors == current.actors, first.actors.len(), current.actors.len());
+                exit.write(AppExit::error());
+                return;
+            }
+            Err(error) => {
+                eprintln!("paired capture rejected: state unavailable during GPU readback: {error}");
+                exit.write(AppExit::error());
+                return;
+            }
+        }
     }
     if capture.idle {
         let external = match std::fs::read_to_string(&capture.request_path) {
@@ -305,6 +352,17 @@ fn capture(
                 capture.started.elapsed().as_secs_f64()
             );
         } else {
+            if let Some(state) = &capture.paired_state {
+                let receipt = format!(
+                    "state_preserved=true\nchecksum={:?}\nlcd_animation_frame={}\nactors={}\nvirtual_seconds={}\n",
+                    state.checksum, state.lcd_frame, state.actors.len(), virtual_time.elapsed_secs_f64(),
+                );
+                if let Err(error) = std::fs::write(capture.first_path.with_extension("paired-state.txt"), receipt) {
+                    eprintln!("paired capture receipt failed: {error}");
+                    exit.write(AppExit::error());
+                    return;
+                }
+            }
             exit.write(AppExit::Success);
         }
         return;
@@ -347,6 +405,37 @@ fn capture(
         };
         Screenshot::window(window)
     };
+    if !capture.live && !capture.same_second_view && walk.is_none()
+        && (capture.second.is_some() || capture.paired_state.is_some())
+    {
+        // Do not strand entry callbacks or a startup transition. Hold only
+        // after the presentation has settled, immediately before readback.
+        if runtime.pending_scene_script.is_some() || runtime.visible_script_movement.is_some()
+            || runtime.screen_fade.is_some() || runtime.title_menu.is_some()
+            || runtime.intro_screen.is_some()
+        {
+            return;
+        }
+        let state = match paired_state(&runtime, &frame) {
+            Ok(state) => state,
+            Err(error) => {
+                eprintln!("paired capture state unavailable: {error}");
+                exit.write(AppExit::error());
+                return;
+            }
+        };
+        if let Some(first) = &capture.paired_state {
+            if first != &state {
+                eprintln!("paired capture rejected: authoritative state or actor presentation changed");
+                exit.write(AppExit::error());
+                return;
+            }
+        } else {
+            capture.paired_state = Some(state);
+            hold.frozen = true;
+            virtual_time.pause();
+        }
+    }
     if capture.identity.is_empty() {
         capture.identity = if battle_status.active {
             format!(
@@ -489,6 +578,7 @@ mod image_target_tests {
                 preserve_alpha: false,
                 image_target: None,
                 image_size: UVec2::ZERO,
+                paired_state: None,
             })
             .add_systems(Update, prepare_image_target);
         let window = app

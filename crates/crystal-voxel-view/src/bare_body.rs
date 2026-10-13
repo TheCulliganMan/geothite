@@ -138,12 +138,13 @@ pub(crate) fn sculpt(
     look: Look,
 ) {
     if look.texture_key == "nurse" {
-        // Round both sides of the sleeve cuff together. Refining the bare
-        // forearm alone leaves the elbow and cuff on the original coarse ring.
+        // Round the shoulder, cuff and forearm as one connected surface.
+        // Starting at x=.4 leaves long underarm triangles spanning the
+        // shoulder weight field; those triangles fold when the arm lowers.
         for _ in 0..2 {
             let arms: Vec<_> = mesh.positions.iter().zip(joints.iter()).zip(weights.iter())
                 .map(|((&p, ids), values)| {
-                    p[0].abs() > 0.4 && p[0].abs() < 1.20
+                    p[0].abs() > 0.25 && p[0].abs() < 1.20
                         && (2.0..2.55).contains(&p[1])
                         && !(0..4).any(|slot| values[slot] > 0.01
                             && rig.hand_joints.iter().flatten().any(|&j| j == ids[slot] as usize))

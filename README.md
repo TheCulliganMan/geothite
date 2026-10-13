@@ -18,24 +18,33 @@ for implementation status and remaining differences from the original game.
 
 ## Setup
 
-For your own server, you need **Docker with Compose** and a **compatible Geothite
-browser content pack**. Game packs and ROMs are not included. A fresh clone or a
-ROM alone is not enough: the repository does not yet include the complete content
-export pipeline. [Game content setup](docs/game-content.md) explains what is required.
+Generate local game content with the repository's Rust builders, then use Docker
+with Compose for your own server. [Game content setup](docs/game-content.md)
+contains the required tools, pinned source inputs, validation, and play commands.
 
-### 1. Clone and add your content pack
+### 1. Clone and initialize game content
 
 ```sh
 git clone https://github.com/TheCulliganMan/geothite.git
 cd geothite
 ```
 
-Copy your separately supplied browser pack into the ignored local directory:
+With Git LFS and Rust installed, initialize from Windows using WSL Ubuntu-24.04:
+
+```powershell
+.\tools\build-crystalpack.ps1
+```
+
+Or run in a Linux x86_64 build environment:
 
 ```sh
-mkdir -p content-packs
-cp /path/to/core-modular.browser.crystalpack content-packs/
+bash tools/build-crystalpack.sh
 ```
+
+The script assembles the pinned pret source outside the checkout, exports game
+content with Rust, verifies audio and gameplay, and publishes ignored native,
+browser, and TUI packs under `content-packs/`. Concurrent agents use these packs
+and separate Cargo target directories; see the [build runbook](docs/game-content.md#share-packs-and-isolate-builds).
 
 ### 2. Create your server secret
 
@@ -119,17 +128,28 @@ historical battles and trades were not stored.
 
 ### Desktop play
 
-For native play, install the Rust toolchain specified in `rust-toolchain.toml`
-and your platform's Bevy build dependencies. Supply a compatible game pack:
+Build the native client with the 3D overworld renderer enabled:
 
 ```sh
-cargo run -p crystal-bevy -- \
-  --pack /path/to/core-modular.crystalpack \
-  --save-path /path/to/player.crystalsave
+git lfs install --local
+git lfs pull
+cargo build --release --locked -p crystal-bevy --features voxel-view
 ```
 
-Add `--load-save /path/to/player.crystalsave` to load an existing save.
-Enable the optional renderer with `--features voxel-view` before `--`.
+The executable is `target/release/crystal-bevy` (`crystal-bevy.exe` on Windows).
+Press `F3` during play to switch between 2D and 3D. Game content is compiled
+with the Rust `pack_core` command in [Game content setup](docs/game-content.md).
+
+For native play, install the Rust toolchain specified in `rust-toolchain.toml`
+and your platform's Bevy build dependencies. Launch with the generated pack:
+
+```sh
+cargo run --release --locked -p crystal-bevy --features voxel-view -- \
+  --pack content-packs/core-modular.crystalpack \
+  --save-path content-packs/player.crystalsave
+```
+
+Add `--load-save content-packs/player.crystalsave` to load that save.
 Native controls use `Enter` for Start, alongside the arrow keys, `Z`, `X`,
 and Right Shift. Hold B (`X`) with a direction to run at twice walking speed;
 [running shoes](modpacks/running-shoes/README.md) are enabled by default.

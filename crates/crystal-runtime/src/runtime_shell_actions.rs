@@ -2201,7 +2201,7 @@ impl RuntimeGameShell {
     }
 
     pub fn is_bag_pokegear_item(&self, item_id: &str) -> bool {
-        self.runtime.data.field_moves.pokegear.item_id == item_id
+        self.runtime.data.field_moves.pokegear.as_ref().is_some_and(|rule| rule.item_id == item_id)
     }
 
     pub fn is_bag_box_item(&self, item_id: &str) -> bool {

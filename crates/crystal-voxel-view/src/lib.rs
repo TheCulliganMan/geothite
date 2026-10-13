@@ -363,6 +363,11 @@ fn project_actor_heads(
     }
 }
 
+/// Report the existing scenery-detail selection for read-only diagnostics.
+pub fn scenery_full_detail_enabled() -> bool {
+    new_bark_models::scenery_full_detail()
+}
+
 /// Observable presentation state for the developer location tester. Gameplay
 /// never reads this resource.
 #[derive(Resource, Clone, Debug, Default, PartialEq, Eq)]
@@ -1243,14 +1248,14 @@ fn sync_terrain(
             // vertex/index buffer. Keep that work on the compute task too;
             // doing it when polling the completed build caused a deterministic
             // 30-45 ms main-thread hitch several seconds into 2.5D movement.
-            let terrain = mesh::build_instanced_terrain_mesh_with_profiles(
+            let terrain = mesh::build_runtime_terrain_mesh_with_profiles(
                 &build_frame,
                 &samples,
                 &profile_document,
             )
-            .map(|mut terrain| {
-                // The public mesh stays complete until this explicit runtime
-                // partition. Both pieces are uploaded only with the revision.
+            .map(|mesh::RuntimeTerrainBuild { mut terrain, grove_groups, grove_opaque }| {
+                // Diagnostic builders retain complete meshes. Runtime groves
+                // arrive prepared; all pieces upload only with the revision.
                 // Whole-object translucency can expose every original join.
                 // Keep these triangles in their owning wall rather than applying
                 // the old capsule's camera-dependent hidden-face selection.
@@ -1271,8 +1276,10 @@ fn sync_terrain(
                     .map(|group| (group.mesh.into_mesh(), group.origins))
                     .collect();
                 let footing_heights = terrain.footing_heights.clone();
-                let (textured, solid, fade_textured_groups, fade_solid_groups) =
+                let (textured, solid, fade_textured_groups, mut fade_solid_groups) =
                     occluder_fade::prepare_linked(terrain.textured, terrain.solid, terrain.cutaway_links);
+                // Grove ownership is independent of linked wall/label anchors.
+                fade_solid_groups.extend(grove_groups);
                 let source_bounds = authentic_mesh_bounds(&build_frame);
                 let mut scenery = Vec::new();
                 let mut scenery_fades = Vec::new();
@@ -1294,11 +1301,14 @@ fn sync_terrain(
                     build_frame.tile_size,
                     source_bounds,
                 );
-                let solid_meshes = prepare_surfaces(
+                let mut solid_meshes = prepare_surfaces(
                     solid,
                     build_frame.tile_size,
                     source_bounds,
                 );
+                for opaque in grove_opaque {
+                    solid_meshes.extend(prepare_surfaces(opaque, build_frame.tile_size, source_bounds));
+                }
                 BuiltTerrain {
                     scenery,
                     scenery_fades,
@@ -2754,24 +2764,42 @@ mod renderer_tests {
 
     #[test]
     fn department_store_exit_retires_old_terrain_before_allocating_goldenrod() {
-        let old = VisualWorldFrame { map_id: "GoldenrodDeptStore1F".into(), ..default() };
+        let mut old = VisualWorldFrame { map_id: "GoldenrodDeptStore1F".into(), ..default() };
         let next = VisualWorldFrame { active: true, map_id: "GoldenrodCity".into(), ..default() };
         let mut app = App::new();
+        app.add_plugins((MinimalPlugins, bevy::asset::AssetPlugin::default()))
+            .init_asset::<Image>().init_asset::<Mesh>().init_asset::<VoxelMaterial>();
+        let atlas = app.world_mut().resource_mut::<Assets<Image>>().add(Image::default());
+        let atlas_id = atlas.id();
+        let material = app.world_mut().resource_mut::<Assets<VoxelMaterial>>()
+            .add(textured_terrain_material(atlas.clone()));
+        let material_id = material.id();
+        old.map_texture = atlas;
+        let mesh = app.world_mut().resource_mut::<Assets<Mesh>>()
+            .add(Mesh::from(Rectangle::new(8., 8.)));
+        let mesh_id = mesh.id();
         let root = app.world_mut().spawn((VoxelTerrain, Visibility::Visible, Transform::IDENTITY)).id();
-        let child = app.world_mut().spawn((ChildOf(root), Visibility::Inherited, Transform::IDENTITY)).id();
+        let child = app.world_mut().spawn((ChildOf(root), Visibility::Inherited, Transform::IDENTITY,
+            Mesh3d(mesh.clone()), MeshMaterial3d(material.clone()))).id();
         app.insert_resource(TerrainRevisionCache {
             key: Some(TerrainCacheKey::from_frame(&old)), built_frame: Some(old),
             instances_root: Some(root), built_footing_heights: vec![1.; 64], footing_heights: vec![1.; 64],
-            animated_solid_mesh: Some(Handle::default()), solid_material: Some(Handle::default()),
+            animated_solid_mesh: Some(mesh), solid_material: Some(material),
             ..default()
         }).insert_resource(next).init_resource::<TerrainBuildQueue>()
-            .init_resource::<Assets<Image>>().init_resource::<Assets<Mesh>>()
-            .init_resource::<Assets<VoxelMaterial>>()
-            .add_systems(Update, |frame: Res<VisualWorldFrame>, mut commands: Commands,
+            .add_systems(Update, move |frame: Res<VisualWorldFrame>, mut commands: Commands,
                 mut cache: ResMut<TerrainRevisionCache>, mut builds: ResMut<TerrainBuildQueue>,
                 mut images: ResMut<Assets<Image>>, mut meshes: ResMut<Assets<Mesh>>,
                 mut materials: ResMut<Assets<VoxelMaterial>>,
                 mut entities: Query<(&mut Visibility, &mut Transform), VoxelTerrainFilter>, mut calls: Local<u8>| {
+                if *calls == 2 {
+                    // Use real strong handles and Bevy's asset tracking, including
+                    // the material's atlas dependency. Check before allocating.
+                    assert!(meshes.get(mesh_id).is_none());
+                    assert!(materials.get(material_id).is_none());
+                    assert!(images.get(atlas_id).is_none());
+                    assert_eq!(builds.started, 0);
+                }
                 let result = sync_terrain(&frame, &live_profiles::LiveProfiles::default(), &mut commands,
                     &mut cache, &mut builds, &mut images, &mut meshes, &mut materials, &mut entities);
                 if *calls < 2 { assert_eq!(result, Ok(TerrainSyncState::Pending)); }

@@ -137,6 +137,10 @@ pub fn export(repository: &Path) -> Result<()> {
     let descriptions = source_descriptions(repository)?;
     let data = repository.join("apps/web/assets/data");
     let path = data.join("items.json");
+    if !path.exists() {
+        super::source_items::generate(repository, &names, &descriptions)
+            .context("generate item catalogs from pret source")?;
+    }
     let mut aggregate: Value = serde_json::from_slice(&std::fs::read(&path)?)?;
     let items = aggregate
         .as_array_mut()
@@ -167,11 +171,19 @@ pub fn export(repository: &Path) -> Result<()> {
     Ok(())
 }
 
+pub(super) fn export_source(repository: &Path) -> Result<()> {
+    let names = source_names(repository)?;
+    let descriptions = source_descriptions(repository)?;
+    super::source_items::generate(repository, &names, &descriptions)
+        .context("generate authored item catalog")?;
+    export(repository)
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
     fn item_names_preserve_source_tokens_and_tm_hm_slots() {
-        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let root = crate::source_syntax::test_workspace();
         let names = super::source_names(&root)
             .unwrap()
             .into_iter()
@@ -184,7 +196,7 @@ mod tests {
     }
     #[test]
     fn item_descriptions_preserve_source_next_lines_and_hyphens() {
-        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let root = crate::source_syntax::test_workspace();
         let descriptions = super::source_descriptions(&root).unwrap();
         assert_eq!(descriptions.len(), 255);
         assert_eq!(descriptions[0x12 - 1], "Restores #MON\nHP by 20.");
@@ -193,15 +205,13 @@ mod tests {
     }
     #[test]
     fn every_item_description_matches_the_pinned_rom_bytes() {
-        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../..");
+        let root = crate::source_syntax::test_workspace();
         let descriptions = super::source_descriptions(&root).unwrap();
-        let fixture: serde_json::Value = serde_json::from_str(include_str!(
-            "../../../../../../tools/asm-oracle/fixtures/item-descriptions.json"
-        ))
-        .unwrap();
-        let entries = fixture["entries"].as_array().unwrap();
-        assert_eq!(entries.len(), descriptions.len());
-        for (index, (description, entry)) in descriptions.iter().zip(entries).enumerate() {
+        let rom = std::fs::read(root.join("vendor/pokecrystal/pokecrystal.gbc")).unwrap();
+        let table = crate::source_syntax::test_rom_offset(&root, "ItemDescriptions");
+        for (index, description) in descriptions.iter().enumerate() {
+            let pointer = usize::from(u16::from_le_bytes([rom[table + index * 2], rom[table + index * 2 + 1]]));
+            let address = (table / 0x4000) * 0x4000 + pointer % 0x4000;
             assert!(crystal_core::models::item::is_exact_item_description(description),
                 "source description slot {} was rejected by item validation", index + 1);
             let mut bytes = Vec::new();
@@ -215,7 +225,7 @@ mod tests {
             let encoded: String = bytes.iter().map(|byte| format!("{byte:02x}")).collect();
             assert_eq!(
                 encoded,
-                entry["bytes"].as_str().unwrap(),
+                rom[address..address + bytes.len()].iter().map(|byte| format!("{byte:02x}")).collect::<String>(),
                 "item slot {}",
                 index + 1
             );

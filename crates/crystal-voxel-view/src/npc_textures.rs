@@ -1,11 +1,34 @@
 //! External generated NPC UV paintings. Pixels never enter the tracked catalog.
-use std::{collections::BTreeMap, sync::OnceLock};
+use std::{collections::BTreeMap, sync::{Mutex, OnceLock}};
 
 pub(crate) struct Texture {
     pub size: (u32, u32),
     pub rgba: Vec<u8>,
 }
-static TEXTURES: OnceLock<BTreeMap<String, Texture>> = OnceLock::new();
+pub(crate) struct CachedTexture {
+    png: Mutex<Option<Vec<u8>>>,
+    decoded: OnceLock<Texture>,
+}
+impl CachedTexture {
+    pub(crate) fn validate(bytes: Vec<u8>) -> Result<Self, String> {
+        // Validate every painting before publishing the catalog, but retain
+        // its compact source until an actor actually needs the pixels.
+        decode(&bytes)?;
+        Ok(Self { png: Mutex::new(Some(bytes)), decoded: OnceLock::new() })
+    }
+    fn get(&self) -> &Texture {
+        self.decoded.get_or_init(|| {
+            let bytes = self.png.lock().unwrap().take().expect("validated painting source");
+            // These bytes are immutable and were already fully validated.
+            decode(&bytes).expect("validated painting decodes identically")
+        })
+    }
+    #[cfg(test)]
+    fn loaded(texture: Texture) -> Self {
+        Self { png: Mutex::new(None), decoded: OnceLock::from(texture) }
+    }
+}
+static TEXTURES: OnceLock<BTreeMap<String, CachedTexture>> = OnceLock::new();
 
 pub(crate) fn decode(bytes: &[u8]) -> Result<Texture, String> {
     if bytes.len() > 4 * 1024 * 1024 { return Err("NPC texture exceeds 4 MiB".into()); }
@@ -21,11 +44,11 @@ pub(crate) fn decode(bytes: &[u8]) -> Result<Texture, String> {
     Ok(Texture { size: (512, 512), rgba: image.into_raw() })
 }
 
-pub(crate) fn install(textures: BTreeMap<String, Texture>) -> Result<(), String> {
+pub(crate) fn install(textures: BTreeMap<String, CachedTexture>) -> Result<(), String> {
     require_complete(&textures)?;
     TEXTURES.set(textures).map_err(|_| "NPC textures frozen; restart to refresh".into())
 }
-pub(crate) fn require_complete(textures: &BTreeMap<String, Texture>) -> Result<(), String> {
+pub(crate) fn require_complete<T>(textures: &BTreeMap<String, T>) -> Result<(), String> {
     let missing: Vec<_> = crate::open_people::npc_texture_names().into_iter()
         .filter(|name| !textures.contains_key(*name)).collect();
     if missing.is_empty() { Ok(()) } else {
@@ -52,13 +75,13 @@ pub(crate) fn get(name: &str) -> Option<&'static Texture> {
                     .unwrap_or_else(|error| panic!("read character painting {}: {error}", path.display()));
                 // A supplied painting must never silently revert to the old
                 // source face when the file is corrupt or incompatible.
-                let texture = decode(&bytes)
+                let texture = CachedTexture::validate(bytes)
                     .unwrap_or_else(|error| panic!("invalid character painting {}: {error}", path.display()));
                 out.insert(name.into(), texture);
             }
         }
         out
-    }).get(name)
+    }).get(name).map(CachedTexture::get)
 }
 
 /// Normalize resolution for upload/bundling without altering UV coordinates.
@@ -85,7 +108,8 @@ mod tests {
         textures.insert("unrecognized_role".into(), missing);
         assert_eq!(require_complete(&textures).unwrap_err(), "required character paintings missing: will");
         // Invalid input must fail before publishing the one-time cache.
-        assert!(install(textures).unwrap_err().contains("will"));
+        assert!(install(textures.into_iter().map(|(name, texture)|
+            (name, CachedTexture::loaded(texture))).collect()).unwrap_err().contains("will"));
     }
     fn png(width: u32, height: u32) -> Vec<u8> {
         use image::ImageEncoder;
@@ -94,6 +118,20 @@ mod tests {
         image::codecs::png::PngEncoder::new(&mut bytes)
             .write_image(&pixels, width, height, image::ExtendedColorType::Rgba8).unwrap();
         bytes
+    }
+    #[test]
+    fn validated_painting_decodes_only_on_use_and_keeps_every_pixel() {
+        let bytes = png(128, 128);
+        let expected = decode(&bytes).unwrap();
+        let cached = CachedTexture::validate(bytes.clone()).unwrap();
+        assert!(cached.decoded.get().is_none());
+        assert_eq!(cached.png.lock().unwrap().as_ref().unwrap(), &bytes);
+        let actual = cached.get();
+        assert_eq!(actual.size, expected.size);
+        assert_eq!(actual.rgba, expected.rgba);
+        assert!(cached.png.lock().unwrap().is_none(), "release redundant encoded bytes");
+        assert!(std::ptr::eq(actual, cached.get()), "reuse the decoded painting");
+        assert!(CachedTexture::validate(b"invalid PNG".to_vec()).is_err());
     }
     #[test]
     fn rejects_invalid_and_incompatible_uv_paintings() {

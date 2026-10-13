@@ -2230,12 +2230,12 @@ fn minimal_field_move_catalog() -> FieldMoveCatalog {
         blue_card: FieldItemRule {
             item_id: "BLUE_CARD".to_string(),
         },
-        town_map: FieldItemRule {
+        town_map: Some(FieldItemRule {
             item_id: "TOWN_MAP".to_string(),
-        },
-        pokegear: FieldItemRule {
+        }),
+        pokegear: Some(FieldItemRule {
             item_id: "POKEGEAR".to_string(),
-        },
+        }),
     }
 }
 

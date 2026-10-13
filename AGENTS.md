@@ -17,6 +17,31 @@
 
 ## Crystalpack build and local runbook
 
+### Pack-build requests are implementation work
+
+- When the user asks to build a crystalpack or make the game playable, do the
+  build work. A missing local `.crystalpack` is not, by itself, a reason to
+  stop and ask the user to supply one.
+- Read `docs/game-content.md`, `docs/cold-start-3d.md`, and the Rust
+  `crystal-assets` builders. If the user references a URL or another Git
+  revision, inspect that exact document/revision before drawing conclusions
+  from this checkout's documentation.
+- Trace and execute the documented Rust pack-build path. Investigate missing
+  source inputs, generated manifests, schema mismatches, and exporter steps;
+  repair or implement the required Rust build steps within the authorized
+  task. Keep pret checkouts and generated game content outside tracked source.
+- Do not infer that pack-generation code is absent merely because the pack,
+  an intermediate JSON file, or a prepared export workspace is absent. Any
+  blocker report must identify the actual attempted command, its concrete
+  failure, and the code path responsible. Do not add a README warning claiming
+  there is no build pipeline in place of doing this investigation.
+- A client executable, `--help`, a ROM, a render dump, or a running compiler
+  is not a generated pack or a playable game. Validate the actual resulting
+  pack, run the gameplay regressions below, and launch the production client
+  before reporting the user's playable-game request complete.
+- Document the verified build/run commands and required inputs in the README
+  and content guide. Never describe an unexecuted or failed build as working.
+
 ### Non-negotiable TUI/MCP architecture
 
 - The standalone text client must construct and drive
@@ -47,35 +72,33 @@
 - Never hand a user a `/path/to/...` placeholder when a runnable local pack is
   requested. First check the ignored `content-packs/` directory and validate the
   chosen pack with the Rust client.
-- The known-good base pack path in this checkout is
-  `content-packs/realtime-clock.browser.crystalpack`. Build the dedicated TUI
-  pack from it with Rust:
-
-  ```sh
-  cargo run --release --locked -p crystal-assets --bin pack_text_tui -- . \
-    content-packs/realtime-clock.browser.crystalpack \
-    content-packs/text-tui.crystalpack
-  ```
-
-  Packs remain ignored by Git and must never be staged or committed.
-- To build fresh packs, use a compatible external export workspace. It must
-  contain `vendor/pokecrystal/`, `apps/web/assets/`,
-  `apps/web/assets/data/content-packs/core-modular.generated.json`,
-  `asm-source.lock.json`, and the Rust-generated battle animation provenance
-  consumed by `pack_core`. From this Geothite checkout run:
-
-  ```sh
-  cargo run --release --locked -p crystal-assets --bin pack_core -- \
-    /absolute/path/to/compatible-export-workspace
-  ```
-
-  The builder writes `content-packs/core-modular.crystalpack` and
-  `content-packs/core-modular.browser.crystalpack` inside the external
-  workspace. Do not copy either into tracked source paths.
-- `/Users/ryanculligan/repos/pokecrystal-python` currently contains a legacy
-  export schema, not the compatible generated manifest. Do not claim a pack was
-  built from it unless `pack_core` finishes successfully; its present failure
-  starts with the missing explicit `MASTER_BALL` item identity.
+- Initialize fresh game content with `tools/build-crystalpack.ps1` on Windows
+  (WSL Ubuntu-24.04) or `bash tools/build-crystalpack.sh` on Linux x86_64.
+  Install the build tools listed in `docs/game-content.md` first. The script
+  initializes Git LFS, assembles the source/toolchain pinned in
+  `pret-source.lock.json`, runs the Rust exporters and compiler, verifies all
+  audio PCM hashes/frame counts/loop ranges, and runs the gameplay regressions
+  below before publishing packs. The external workspace defaults to
+  `$HOME/.local/share/geothite/export-workspace` in the Linux environment.
+- Use the completed shared packs in this checkout:
+  `content-packs/core-modular.crystalpack` for native play,
+  `content-packs/core-modular.browser.crystalpack` for browsers, and
+  `content-packs/text-tui.crystalpack` for the text client/MCP. Packs remain
+  ignored and must never be staged or committed.
+- One agent owns source export and pack publication. Other agents consume the
+  completed shared pack; do not run competing exporters against the shared
+  external workspace. Give every concurrent agent a distinct
+  `CARGO_TARGET_DIR`, for example `target/agent-title`, and set
+  `CRYSTAL_RENDER_TEST_PACK` to the absolute completed TUI pack path when testing.
+  Do not delete another agent's build cache to bypass a lock.
+- The initializer uses its own persistent Cargo cache. Set
+  `CRYSTAL_PACK_BUILD_DIR` to choose its Linux cache directory and
+  `CRYSTAL_PACK_BUILD_PROFILE` to `release` (default) or `wasm-dev`.
+  Windows forwards both settings into WSL.
+- Visually inspect production work against 2D at the same position, time,
+  facing, and game state. Critique composition, scale, materials, lighting,
+  readability, and character/scenery fidelity; fix defects and inspect again
+  before claiming visual acceptance.
 - Validate a pack and the text renderer without entering fullscreen mode:
 
   ```sh
@@ -88,13 +111,13 @@
   pack present:
 
   ```sh
-  CRYSTAL_RENDER_TEST_PACK="$PWD/content-packs/text-tui.crystalpack" \
-    cargo test -p crystal-bevy \
+  export CRYSTAL_RENDER_TEST_PACK="$PWD/content-packs/text-tui.crystalpack"
+    cargo test --locked -p crystal-bevy \
     renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn
-  cargo test -p crystal-bevy \
+  cargo test --locked -p crystal-bevy \
     renderer_neutral_controller_plays_mom_and_new_bark_gate
-  cargo test -p geothite mcp_drives_real_movement_and_production_start_menu
-  cargo test -p geothite --test stdio_clean
+  cargo test --locked -p geothite mcp_drives_real_movement_and_production_start_menu
+  cargo test --locked -p geothite --test stdio_clean
   ```
 
   The controller regression must prove all of the following: the game starts

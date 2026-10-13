@@ -23,6 +23,18 @@ impl CrystalRuntime {
         Self::from_verified_compiled_pack(asset_root, pack, modpack)
     }
 
+    /// Test-only construction for measuring an uncertified intro timeline.
+    /// This does not certify the pack or alter either production loader.
+    #[cfg(any(test, feature = "test-fixtures"))]
+    pub fn from_unverified_compiled_pack_for_intro_timing_diagnostic(
+        asset_root: &AssetRoot,
+        loaded: LoadedCompiledGamePack,
+    ) -> Result<Self> {
+        let modpack = loaded.save_modpack_identity()?;
+        let (_, _, pack) = loaded.into_parts();
+        Self::from_verified_compiled_pack(asset_root, pack, modpack)
+    }
+
     #[cfg(any(test, feature = "test-fixtures"))]
     fn from_compiled_pack(
         asset_root: &AssetRoot,
@@ -221,6 +233,23 @@ impl CrystalRuntime {
             .context("compiled pack missing source constant SPAWN_HOME")?;
         let identifier = u16::try_from(*value)
             .with_context(|| format!("compiled source constant SPAWN_HOME={value} is not a u16"))?;
+        let program = self.title_presentation_program();
+        if let Some(entry) = program.entrypoints.get("new_game") {
+            let block = program.blocks.get(entry)
+                .context("title New Game entry has no authored block")?;
+            let spawn_writes = block.operations.iter().filter(|operation| {
+                operation.op == "write_memory_byte"
+                    && operation.fields.get("target").and_then(serde_json::Value::as_str)
+                        == Some("wDefaultSpawnpoint")
+            }).collect::<Vec<_>>();
+            anyhow::ensure!(spawn_writes.len() == 1,
+                "title New Game must write exactly one default spawn point");
+            let authored = spawn_writes[0].fields.get("value")
+                .and_then(serde_json::Value::as_u64)
+                .context("title New Game default spawn point is invalid")?;
+            anyhow::ensure!(authored == u64::from(identifier),
+                "title New Game default spawn point disagrees with SPAWN_HOME");
+        }
         anyhow::ensure!(
             self.data
                 .runtime_spawn_points
@@ -4991,8 +5020,8 @@ fn field_move_item_ids(field_moves: &FieldMoveCatalog) -> BTreeSet<String> {
         field_moves.squirtbottle.item_id.as_str(),
         field_moves.coin_case.item_id.as_str(),
         field_moves.blue_card.item_id.as_str(),
-        field_moves.town_map.item_id.as_str(),
-        field_moves.pokegear.item_id.as_str(),
+        field_moves.town_map.as_ref().map_or("", |rule| rule.item_id.as_str()),
+        field_moves.pokegear.as_ref().map_or("", |rule| rule.item_id.as_str()),
     ]
     .into_iter()
     .filter(|item_id| !item_id.is_empty())
@@ -5058,10 +5087,10 @@ fn field_move_rule_keys(field_moves: &FieldMoveCatalog) -> BTreeSet<RuntimeField
         ),
         field_item_rule_key("coin_case", &field_moves.coin_case),
         field_item_rule_key("blue_card", &field_moves.blue_card),
-        field_item_rule_key("town_map", &field_moves.town_map),
-        field_item_rule_key("pokegear", &field_moves.pokegear),
     ]
     .into_iter()
+    .chain(field_moves.town_map.as_ref().map(|rule| field_item_rule_key("town_map", rule)))
+    .chain(field_moves.pokegear.as_ref().map(|rule| field_item_rule_key("pokegear", rule)))
     .collect()
 }
 

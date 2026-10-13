@@ -436,7 +436,6 @@ use flate2::{Compression, write::GzEncoder};
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use sha2::{Digest, Sha256};
 
 pub use crystal_core::battle::capture::CaptureRules;
 
@@ -451,6 +450,8 @@ mod nuzlocke;
 pub use nuzlocke::{NUZLOCKE_MANIFEST_ID, NuzlockeRules};
 mod realtime_clock_modpack;
 pub use realtime_clock_modpack::{REALTIME_CLOCK_MANIFEST_ID, build_realtime_clock_modpack};
+mod outdoor_terrain_modpack;
+pub use outdoor_terrain_modpack::build_outdoor_terrain_modpack;
 mod nuzlocke_modpack;
 pub use nuzlocke_modpack::build_nuzlocke_modpack;
 
@@ -530,6 +531,7 @@ pub mod modpack {
 }
 
 include!("content_pack.rs");
+mod cbor_identity_hash;
 include!("map_modules.rs");
 include!("runtime_pack.rs");
 include!("verification.rs");

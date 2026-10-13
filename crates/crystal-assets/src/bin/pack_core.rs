@@ -2,8 +2,80 @@
 mod nickname_text_export;
 #[path = "pack_core/item_name_export.rs"]
 mod item_name_export;
+#[path = "pack_core/source_items.rs"]
+mod source_items;
+#[path = "pack_core/source_scripts.rs"]
+mod source_scripts;
+#[path = "pack_core/source_global_scripts.rs"]
+mod source_global_scripts;
+#[path = "pack_core/source_species.rs"]
+mod source_species;
+#[path = "pack_core/source_progression.rs"]
+mod source_progression;
+#[path = "pack_core/source_manifest.rs"]
+mod source_manifest;
+#[path = "pack_core/source_playability.rs"]
+mod source_playability;
+#[path = "pack_core/source_special_tables.rs"]
+mod source_special_tables;
+#[path = "pack_core/source_roaming.rs"]
+mod source_roaming;
+#[path = "pack_core/source_metadata.rs"]
+mod source_metadata;
+#[path = "pack_core/source_economy.rs"]
+mod source_economy;
+#[path = "pack_core/source_fishing.rs"]
+mod source_fishing;
+#[path = "pack_core/source_gifts.rs"]
+mod source_gifts;
+#[path = "pack_core/source_presentation_data.rs"]
+mod source_presentation_data;
+#[path = "pack_core/source_title_screen.rs"]
+mod source_title_screen;
+#[path = "pack_core/source_title_catalog.rs"]
+mod source_title_catalog;
+#[path = "pack_core/source_asm_text.rs"]
+mod source_asm_text;
+#[path = "pack_core/source_trainers.rs"]
+mod source_trainers;
+#[path = "pack_core/source_pokegear.rs"]
+mod source_pokegear;
+#[path = "pack_core/source_wild.rs"]
+mod source_wild;
+#[path = "pack_core/source_animation_catalogs.rs"]
+mod source_animation_catalogs;
+#[path = "pack_core/source_phone.rs"]
+mod source_phone;
+#[path = "pack_core/source_tower_eggs.rs"]
+mod source_tower_eggs;
+#[path = "pack_core/source_battle_rules.rs"]
+mod source_battle_rules;
+#[path = "pack_core/source_npcs.rs"]
+mod source_npcs;
+#[path = "pack_core/source_map_geometry.rs"]
+mod source_map_geometry;
+#[path = "pack_core/source_world.rs"]
+mod source_world;
+#[path = "pack_core/source_expressions.rs"]
+mod source_expressions;
+#[path = "pack_core/source_syntax.rs"]
+mod source_syntax;
+#[path = "pack_core/source_audio.rs"]
+mod source_audio;
+#[path = "pack_core/source_rules.rs"]
+mod source_rules;
+#[path = "pack_core/source_field_moves.rs"]
+mod source_field_moves;
+#[path = "pack_core/source_field_encounters.rs"]
+mod source_field_encounters;
+#[path = "pack_core/source_tilesets.rs"]
+mod source_tilesets;
+#[path = "pack_core/source_constants.rs"]
+mod source_constants;
 #[path = "pack_core/battle_oam_export.rs"]
 mod battle_oam_export;
+#[path = "pack_core/source_battle_bundle.rs"]
+mod source_battle_bundle;
 #[path = "pack_core/frontpic_animation_export.rs"]
 mod frontpic_animation_export;
 #[path = "pack_core/radio_text_export.rs"]
@@ -25,20 +97,86 @@ const BROWSER_PACK_RELATIVE_PATH: &str = "content-packs/core-modular.browser.cry
 fn main() -> Result<()> {
     let mut args = std::env::args().skip(1);
     let repository_root = args.next().context("usage: pack_core <repository-root>")?;
-    if args.next().is_some() {
-        anyhow::bail!("usage: pack_core <repository-root>");
+    if let Some(stage) = args.next() {
+        anyhow::ensure!(args.next().is_none(), "usage: pack_core <repository-root> [--export-world|--export-battle]");
+        let root = PathBuf::from(repository_root);
+        verify_pret_source_pin(&root)?;
+        return match stage.as_str() {
+            "--export-world" => source_world::export(&root),
+            "--export-npcs" => source_npcs::export(&root),
+            "--export-items" => item_name_export::export_source(&root),
+            "--export-species" => source_species::export(&root),
+            "--export-constants" => source_constants::export(&root),
+            "--export-global-scripts" => source_global_scripts::export(&root),
+            "--export-progression" => source_progression::export(&root),
+            "--export-manifest" => source_manifest::export(&root),
+            "--export-playability" => source_playability::export(&root),
+            "--export-title" => source_title_screen::export(&root),
+            "--export-title-unvalidated" => source_title_screen::export_unvalidated(&root),
+            "--export-special-tables" => source_special_tables::export(&root),
+            "--export-roaming" => source_roaming::export(&root),
+            "--export-metadata" => source_metadata::export(&root),
+            "--export-economy" => source_economy::export(&root),
+            "--export-fishing" => source_fishing::export(&root),
+            "--export-gifts" => source_gifts::export(&root),
+            "--export-presentation-data" => source_presentation_data::export(&root),
+            "--export-asm-text" => source_asm_text::export(&root),
+            "--export-trainers" => source_trainers::export(&root),
+            "--export-pokegear" => source_pokegear::export(&root),
+            "--export-wild" => source_wild::export(&root),
+            "--export-animation-catalogs" => source_animation_catalogs::export(&root),
+            "--export-phone" => source_phone::export(&root),
+            "--export-tower-eggs" => source_tower_eggs::export(&root),
+            "--export-battle-rules" => source_battle_rules::export(&root),
+            "--export-battle" => battle_oam_export::export(&root),
+            "--export-audio" => source_audio::export(&root),
+            "--export-rules" => source_rules::export(&root),
+            "--export-field-moves" => source_field_moves::export(&root),
+            "--export-field-encounters" => source_field_encounters::export(&root),
+            _ => anyhow::bail!("unknown source export stage {stage}"),
+        };
     }
 
     export_core_pack(&PathBuf::from(repository_root))
 }
 
 fn export_core_pack(repository_root: &Path) -> Result<()> {
+    verify_pret_source_pin(repository_root)?;
+    source_constants::export(repository_root).context("export source numeric constants")?;
+    source_species::export(repository_root).context("export source Pokemon and moves")?;
+    item_name_export::export_source(repository_root).context("export source item names")?;
+    source_rules::export(repository_root).context("export source gameplay rules")?;
+    source_battle_rules::export(repository_root).context("export source battle multiplier rules")?;
+    source_field_moves::export(repository_root).context("export source field move rules")?;
+    source_progression::export(repository_root).context("export source species progression")?;
+    source_special_tables::export(repository_root).context("export authored special tables")?;
+    source_roaming::export(repository_root).context("export authored roaming Pokemon")?;
+    source_metadata::export(repository_root).context("export authored cries and initialization")?;
+    source_economy::export(repository_root).context("export authored shops and currency")?;
+    source_fishing::export(repository_root).context("export authored fishing tables")?;
+    source_gifts::export(repository_root).context("export authored gift and happiness tables")?;
+    source_tower_eggs::export(repository_root).context("export authored Battle Tower and Odd Eggs")?;
+    source_presentation_data::export(repository_root).context("export authored presentation data")?;
+    source_asm_text::export(repository_root).context("export authored global text")?;
+    source_trainers::export(repository_root).context("export authored trainers")?;
+    source_npcs::export(repository_root).context("export source map objects")?;
+    source_world::export(repository_root).context("export source map geometry and scripts")?;
+    source_pokegear::export(repository_root).context("export authored Pokegear metadata")?;
+    source_wild::export(repository_root).context("export authored wild encounter tables")?;
+    source_field_encounters::export(repository_root).context("export authored tree and rock encounters")?;
+    source_global_scripts::export(repository_root).context("export authored global scripts")?;
+    source_phone::export(repository_root).context("export authored phone catalogs")?;
+    source_tilesets::export(repository_root).context("export source terrain and graphics")?;
+    source_playability::export(repository_root).context("export authored playability start")?;
     export_pokegear_card_layouts(repository_root)?;
-    item_name_export::export(repository_root).context("export source item names")?;
     radio_text_export::export(repository_root).context("export source radio text commands")?;
     nickname_text_export::export(repository_root).context("export source nickname text commands")?;
     frontpic_animation_export::export(repository_root).context("export source main and idle frontpic animations")?;
     battle_oam_export::export(repository_root).context("export source battle OAM")?;
+    source_animation_catalogs::export(repository_root).context("export authored animation catalogs")?;
+    source_audio::export(repository_root).context("export source audio programs")?;
+    source_title_screen::export(repository_root).context("export authored title presentation")?;
+    source_manifest::export(repository_root).context("index authored exported catalogs")?;
     let asset_root = AssetRoot::new(repository_root);
     let compiler = ModpackCompiler::new(&asset_root);
     let core_manifest = ModpackManifest {
@@ -84,6 +222,32 @@ fn export_core_pack(repository_root: &Path) -> Result<()> {
     write_provenance(repository_root, &tracked_pack)?;
     println!("exported {}", tracked_pack.display());
     println!("exported {}", browser_pack.display());
+    Ok(())
+}
+
+fn verify_pret_source_pin(repository: &Path) -> Result<()> {
+    let pin: Value = serde_json::from_str(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../pret-source.lock.json")))?;
+    let vendor = repository.join("vendor/pokecrystal");
+    for (name, reference) in [("commit", "HEAD"), ("tree", "HEAD^{tree}")] {
+        let output = std::process::Command::new("git").arg("-C").arg(&vendor).args(["rev-parse", reference]).output().context("read pret source identity")?;
+        anyhow::ensure!(output.status.success(), "cannot read pret {name}");
+        let actual = String::from_utf8(output.stdout)?;
+        let expected = pin[name].as_str().context("pret source pin identity")?;
+        anyhow::ensure!(actual.trim() == expected, "pret {name} {} differs from pinned {expected}; check out the pinned source before exporting", actual.trim());
+    }
+    let status = std::process::Command::new("git").arg("-C").arg(&vendor).args(["status", "--porcelain", "--untracked-files=no"]).output()?;
+    anyhow::ensure!(status.status.success() && status.stdout.is_empty(), "pret tracked source differs from pinned checkout");
+    let rgbds = std::fs::read_to_string(vendor.join(".rgbds-version"))?;
+    anyhow::ensure!(Some(rgbds.trim()) == pin["rgbds"].as_str(), "pret RGBDS requirement differs from pin");
+    let rom = vendor.join("pokecrystal.gbc");
+    let hash = format!("{:x}", sha1::Sha1::digest(fs::read(&rom).context("build the pinned reference ROM before export")?));
+    anyhow::ensure!(Some(hash.as_str()) == pin["reference_rom_sha1"].as_str(), "assembled reference ROM differs from pinned Crystal ROM");
+    let lock = json!({
+        "repository":pin["repository"],"commit":pin["commit"],"tree":pin["tree"],
+        "input_manifest_sha256":hex_sha256(&serde_json::to_vec(&json!({"repository":pin["repository"],"commit":pin["commit"],"tree":pin["tree"]}))?),
+        "rom":{"sha1":hash},"rgbds":{"version":pin["rgbds"]},
+    });
+    fs::write(repository.join("asm-source.lock.json"), serde_json::to_vec_pretty(&lock)?)?;
     Ok(())
 }
 

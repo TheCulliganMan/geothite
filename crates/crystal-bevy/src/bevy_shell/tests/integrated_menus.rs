@@ -2564,11 +2564,7 @@ fn integrated_title_continue_schedule_loads_saved_game_with_live_keys() {
         std::process::id()
     ));
     let _ = std::fs::remove_file(&save_path);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &AssetRoot::new(repo_root.clone()),
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack for save");
+    let runtime = workspace_desktop_runtime(&AssetRoot::new(repo_root.clone()));
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -2617,11 +2613,7 @@ fn integrated_title_continue_schedule_loads_saved_game_with_live_keys() {
     let saved_pack_hash = saved_snapshot.boot.pack_content_hash.clone();
     drop(save_app);
 
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &AssetRoot::new(repo_root.clone()),
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack for continue");
+    let runtime = workspace_desktop_runtime(&AssetRoot::new(repo_root.clone()));
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -2674,6 +2666,10 @@ fn integrated_title_continue_schedule_loads_saved_game_with_live_keys() {
         let runtime_shell = continue_app.world().resource::<BevyRuntimeShell>();
         assert!(runtime_shell.title_menu.is_some());
         assert!(runtime_shell.visible_continue_screen.is_some());
+    }
+    {
+        let mut runtime_shell = continue_app.world_mut().resource_mut::<BevyRuntimeShell>();
+        settle_visible_continue_summary_for_test(&mut runtime_shell);
     }
     press_key_for_runtime_hotkey_app(&mut continue_app, KeyCode::KeyZ);
     {

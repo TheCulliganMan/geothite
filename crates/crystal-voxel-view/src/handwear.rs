@@ -1,4 +1,4 @@
-//! Keep glove material on complete hand faces, across the supplied UV islands.
+//! Keep hand material on complete faces, across the supplied UV islands.
 use crate::{mesh::SurfaceMeshData, npc_appearance::Look, open_people::PersonRig};
 use std::collections::{BTreeSet, HashMap};
 
@@ -9,11 +9,13 @@ pub(crate) fn adapt(
     weights: &mut Vec<[f32; 4]>,
     look: Look,
 ) {
-    if !look
+    let gloves = look
         .accessories
         .split(',')
-        .any(|item| item == "whitegloves")
-    {
+        .any(|item| item == "whitegloves");
+    // Dark and fingerless gloves carry their own authored hand painting.
+    // A plain bare-skin sample must not erase those outfit identities.
+    if !gloves && look.accessories.split(',').any(|item| item == "gloves") {
         return;
     }
     let hand_joints: BTreeSet<_> = rig.hand_joints.iter().flatten().copied().collect();
@@ -42,9 +44,10 @@ pub(crate) fn adapt(
                 mesh.positions.push(mesh.positions[i]);
                 mesh.normals.push(mesh.normals[i]);
                 mesh.colors.push(mesh.colors[i]);
-                // The authored white-glove island. Palm and finger UVs in
-                // the supplied rig otherwise reach the bare-arm strip.
-                mesh.uvs.push([0.87, 0.69]);
+                // Match the identity's authored glove or plain arm island.
+                // The supplied palm UVs stretch painted crease bands across
+                // the reshaped fingers; geometry supplies the pad shading.
+                mesh.uvs.push(if gloves { [0.87, 0.69] } else { [0.90, 0.31] });
                 joints.push(joints[i]);
                 weights.push(weights[i]);
                 copy
@@ -61,6 +64,40 @@ mod tests {
     #[test]
     #[ignore = "requires the supplied character rig"]
     fn white_glove_faces_keep_geometry_skin_and_nonhand_mapping() {
+        material_preserves_surface(crate::new_bark_actors::character_meshes::CharacterKind::Will);
+    }
+
+    #[test]
+    #[ignore = "requires the supplied character rig"]
+    fn bare_hand_faces_keep_geometry_skin_and_nonhand_mapping() {
+        material_preserves_surface(crate::new_bark_actors::character_meshes::CharacterKind::Trainer);
+    }
+
+    #[test]
+    #[ignore = "requires supplied character rigs"]
+    fn authored_dark_gloves_keep_their_complete_hand_painting() {
+        use crate::new_bark_actors::character_meshes::CharacterKind;
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for kind in [CharacterKind::Biker, CharacterKind::Clair, CharacterKind::Janine,
+            CharacterKind::Rocket, CharacterKind::RocketGirl] {
+            let look = crate::npc_appearance::look(kind);
+            let rig = PersonRig::parse(&std::fs::read(root.join(
+                format!("people/kenney/{}.glb", look.base))).unwrap()).unwrap();
+            let mut mesh = rig.mesh.clone();
+            let mut joints = rig.ids.clone();
+            let mut weights = rig.weights.clone();
+            adapt(&rig, &mut mesh, &mut joints, &mut weights, look);
+            assert_eq!(mesh.indices, rig.mesh.indices);
+            assert_eq!(mesh.positions, rig.mesh.positions);
+            assert_eq!(mesh.normals, rig.mesh.normals);
+            assert_eq!(mesh.uvs, rig.mesh.uvs);
+            assert_eq!(mesh.colors, rig.mesh.colors);
+            assert_eq!(joints, rig.ids);
+            assert_eq!(weights, rig.weights);
+        }
+    }
+
+    fn material_preserves_surface(kind: crate::new_bark_actors::character_meshes::CharacterKind) {
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
         let rig =
             PersonRig::parse(&std::fs::read(root.join("people/kenney/human-male.glb")).unwrap())
@@ -69,9 +106,10 @@ mod tests {
         let mut joints = rig.ids.clone();
         let mut weights = rig.weights.clone();
         let before = mesh.clone();
-        let look = crate::npc_appearance::look(
-            crate::new_bark_actors::character_meshes::CharacterKind::Will,
-        );
+        let look = crate::npc_appearance::look(kind);
+        let uv = if look.accessories.split(',').any(|a| a == "whitegloves") {
+            [0.87, 0.69]
+        } else { [0.90, 0.31] };
         adapt(&rig, &mut mesh, &mut joints, &mut weights, look);
         assert_eq!(mesh.indices.len(), before.indices.len());
         let hands: BTreeSet<_> = rig.hand_joints.iter().flatten().copied().collect();
@@ -98,7 +136,7 @@ mod tests {
                 assert_eq!(rig.weights[a], weights[b]);
                 assert_eq!(
                     mesh.uvs[b],
-                    if glove { [0.87, 0.69] } else { before.uvs[a] }
+                    if glove { uv } else { before.uvs[a] }
                 );
             }
         }

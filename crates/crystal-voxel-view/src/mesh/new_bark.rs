@@ -853,14 +853,47 @@ pub(super) fn append_tree(
     claimed: &mut [bool],
     map_origin: [i32; 2],
 ) -> bool {
-    let Some(ground) = modeled_tree_ground(map, cells, shapes, geometry, placement) else {
+    let Some(grove) = claim_grove(mesh, cells, shapes, geometry, map, placement, claimed, map_origin) else {
         return false;
+    };
+    grove.append(mesh);
+    true
+}
+
+/// Retain source placement parameters while the rest of the terrain establishes
+/// bank claims. Runtime construction expands one complete grove at a time.
+pub(super) struct GroveRecipe {
+    bounds: [f32; 4],
+    base_height: f32,
+    tile_height: f32,
+    coordinates: [i32; 2],
+    neighbors: [bool; 4],
+}
+impl GroveRecipe {
+    pub(super) fn append(self, mesh: &mut TerrainMeshData) {
+        crate::foliage::append_grove_tree(mesh, self.bounds, self.base_height,
+            self.tile_height, self.coordinates, self.neighbors);
+    }
+}
+
+pub(super) fn claim_grove(
+    mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile],
+    shapes: &[CellShape],
+    geometry: &GridGeometry,
+    map: &str,
+    placement: TreePlacement,
+    claimed: &mut [bool],
+    map_origin: [i32; 2],
+) -> Option<GroveRecipe> {
+    let Some(ground) = modeled_tree_ground(map, cells, shapes, geometry, placement) else {
+        return None;
     };
     if (0..placement.height).any(|y| {
         (0..placement.width)
             .any(|x| claimed[(placement.row + y) * geometry.width + placement.column + x])
     }) {
-        return false;
+        return None;
     }
     append_ground(
         mesh,
@@ -883,14 +916,6 @@ pub(super) fn append_tree(
         map_origin[1] + placement.row as i32,
     ];
     let neighbors = grove_neighbors(mesh, cells, geometry, map, placement);
-    crate::foliage::append_grove_tree(
-        mesh,
-        [west, west + width, south - depth, south],
-        placement.base_height,
-        geometry.tile_height,
-        coordinates,
-        neighbors,
-    );
     mark_authored_rect(
         mesh,
         geometry,
@@ -902,7 +927,13 @@ pub(super) fn append_tree(
         ],
         "johto/tree",
     );
-    true
+    Some(GroveRecipe {
+        bounds: [west, west + width, south - depth, south],
+        base_height: placement.base_height,
+        tile_height: geometry.tile_height,
+        coordinates,
+        neighbors,
+    })
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -2975,6 +3006,55 @@ pub(super) fn polish_world_surfaces(
 mod tests {
     use super::super::tests::{frame, source_with_tile};
     use super::*;
+    use bevy::prelude::IVec2;
+    #[test]
+    fn runtime_groves_preserve_completed_bank_geometry_claims_and_footing() {
+        fn same_geometry(expected: Vec<Vec<u32>>, actual: Vec<Vec<u32>>) {
+            assert_eq!(expected.len(), actual.len(), "retain every triangle");
+            if let Some(index) = expected.iter().zip(&actual).position(|(a, b)| a != b) {
+                assert_eq!(expected[index], actual[index], "triangle {index} differs");
+            }
+        }
+        let profiles: crate::live_profiles::Document = serde_json::from_str(include_str!(
+            "../../../../modpacks/voxel-view/profiles.json"
+        )).unwrap();
+        for (width, height) in [(8_u32, 8_u32), (10, 16)] {
+            for origin in [IVec2::ZERO, IVec2::new(-3, 4)] {
+                let sources = (0..height).flat_map(|y| (0..width).map(move |x| {
+                    if x < width - 4 {
+                        source_with_tile(0x05, (x % 2) as u8, (y % 4) as u8,
+                            (if y % 4 == 0 { 0x1e } else if y % 4 == 3 { 0x3e } else { 0x2e }) + (x % 2) as u16)
+                    } else if x >= width - 4 && y < 4 {
+                        source_with_tile(0x56, (x % 4) as u8, y as u8,
+                            if y == 3 { 0x4c } else { 0x06 })
+                    } else {
+                        source_with_tile(0x01, (x % 4) as u8, (y % 4) as u8, 0x05)
+                    }
+                })).collect();
+                let mut f = frame(width, height, sources);
+                f.map_id = std::sync::Arc::from("NewBarkTown");
+                f.grid_origin = origin;
+                let samples = TerrainImageSamples::default();
+                let reference = build_instanced_terrain_mesh_with_profiles(&f, &samples, &profiles).unwrap();
+                let runtime = build_runtime_terrain_mesh_with_profiles(&f, &samples, &profiles).unwrap();
+                assert!(!runtime.grove_groups.is_empty(), "fixture must exercise detached trees");
+                assert!(runtime.grove_opaque.is_empty(), "complete grove ownership must survive");
+                assert_eq!(reference.authored_cells, runtime.terrain.authored_cells);
+                assert_eq!(reference.footing_heights, runtime.terrain.footing_heights);
+                let (textured, solid, text_groups, solid_groups) = crate::occluder_fade::prepare_linked(
+                    reference.textured, reference.solid, reference.cutaway_links);
+                let (next_textured, next_solid, next_text_groups, mut next_solid_groups) =
+                    crate::occluder_fade::prepare_linked(runtime.terrain.textured,
+                        runtime.terrain.solid, runtime.terrain.cutaway_links);
+                next_solid_groups.extend(runtime.grove_groups);
+                assert_eq!(solid_groups.len(), next_solid_groups.len(), "retain each independent fade owner");
+                same_geometry(crate::occluder_fade::geometry_signature(&textured, text_groups),
+                    crate::occluder_fade::geometry_signature(&next_textured, next_text_groups));
+                same_geometry(crate::occluder_fade::geometry_signature(&solid, solid_groups),
+                    crate::occluder_fade::geometry_signature(&next_solid, next_solid_groups));
+            }
+        }
+    }
 
     #[test]
     fn forest_ledge_finish_uses_owned_hull_and_rejects_foreign_or_claimed_art() {

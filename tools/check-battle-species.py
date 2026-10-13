@@ -7,19 +7,21 @@ whose exports have not yet been installed as a coherent runtime increment.
 import argparse, ast, hashlib, json, math, re
 from pathlib import Path
 from model_asset_storage import read_model_json
-from battle_model_assets import read_species_model, species_paths
+from battle_model_assets import read_species_model, species_paths, STARTER_READERS
 ROOT=Path(__file__).resolve().parents[1]
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--models',type=Path,default=ROOT/'crates/crystal-voxel-view/models/battle_species');p.add_argument('--allow-pending',action='store_true');p.add_argument('--registry',type=Path,default=ROOT/'crates/crystal-voxel-view/src/battle_species_models.rs');a=p.parse_args()
  source=a.registry.read_text();registry=dict(re.findall(r'^\s*"([A-Z0-9_]+)" => "([a-z0-9_]+)",',source,re.M));assert registry,'empty exact species registry'
  tree=ast.parse((ROOT/'tools/build-battle-species.py').read_text());authored=[t.lower() for f in tree.body if isinstance(f,ast.FunctionDef) for d in f.decorator_list if isinstance(d,ast.Call) and isinstance(d.func,ast.Name) and d.func.id=='register' for t in d.args[0].value.split()];assert len(authored)==len(set(authored)),'duplicate authored species'
+ authored += [name.removeprefix('battle_').removesuffix('.glb') for name in STARTER_READERS]
+ assert len(authored)==len(set(authored)), 'duplicate canonical authoring source'
  assert all(name==species.lower() for species,name in registry.items());assert set(registry.values()) <= set(authored),'un-authored species registered'
  if not a.allow_pending:assert set(authored)==set(registry.values()),'pending authored exports; pass --allow-pending only for a reviewed partial increment'
- paths=species_paths(a.models)
+ paths=species_paths(a.models, include_starters=True)
  assert set(paths)==set(registry.values()),'runtime files and registry differ'
  geometric_hashes={};triangles=vertices=0
  for species,name in registry.items():
-  path=paths[name];d=read_species_model(path);assert d['name']==name and d['version']==1;assert d['coordinate_system']=='+Y up; front +Z; floor-centered root';points=[];count=0;geometry=[];parts=[]
+  path=paths[name];d=read_species_model(path);expected_name='battle_'+name if path.name in STARTER_READERS else name;assert d['name']==expected_name and d['version']==1;assert d['coordinate_system']=='+Y up; front +Z; floor-centered root';points=[];count=0;geometry=[];parts=[]
   for part in d['primitives']:
    parts.append(part['part']);pos=part['positions'];nor=part['normals'];ind=part['indices'];col=part['base_color'];tag=(name,part['part']);assert len(pos)>=9 and len(pos)%3==0 and len(nor)==len(pos),tag;assert all(math.isfinite(x) for x in pos+nor),tag;assert len(col)==4 and all(0<=v<=1 for v in col),tag;assert ind and len(ind)%3==0 and all(type(i)==int and 0<=i<len(pos)//3 for i in ind),tag
    ps=list(zip(*[iter(pos)]*3));ns=list(zip(*[iter(nor)]*3));points.extend(ps);volume=0

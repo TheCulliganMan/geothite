@@ -181,9 +181,12 @@ pub(super) fn append(
     let mut normals = vec![Vec3::ZERO; mesh.positions.len() - first_vertex];
     for face in mesh.indices[first_index..].chunks_exact(3) {
         let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
-        let normal = (p[1] - p[0]).cross(p[2] - p[0]);
-        for &i in face {
-            normals[i as usize - first_vertex] += normal;
+        let normal = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
+        for corner in 0..3 {
+            let a = (p[(corner + 1) % 3] - p[corner]).normalize();
+            let b = (p[(corner + 2) % 3] - p[corner]).normalize();
+            let angle = a.dot(b).clamp(-1.0, 1.0).acos();
+            normals[face[corner] as usize - first_vertex] += normal * angle;
         }
     }
     for (i, normal) in normals.into_iter().enumerate() {

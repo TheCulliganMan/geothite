@@ -716,6 +716,32 @@ fn verifier_builds_reachability_graph_and_rejects_unsolved_goals() {
 }
 
 #[test]
+fn verifier_checks_all_connection_border_pairs_before_rejecting_a_destination() {
+    let start = test_map_module("Start", "START_MAP", Some("Goal"));
+    let mut goal = test_map_module("Goal", "GOAL_MAP", None);
+    goal.blocks = vec![2];
+    let mut tileset = test_tileset_definition();
+    // The first east-boundary source tile faces a wall; the lower pair is open.
+    tileset.collision.insert("2".into(), ["WALL", "FLOOR", "FLOOR", "FLOOR"].map(str::to_string).to_vec());
+    let data = GameDataSet {
+        tilesets: [("johto".into(), tileset)].into_iter().collect(),
+        maps: [("Start".into(), start), ("Goal".into(), goal)].into_iter().collect(),
+        ..GameDataSet::default()
+    };
+    let rules = PlayabilityRules {
+        start_maps: vec!["Start".into()],
+        goal_maps: vec!["Goal".into()],
+        require_all_maps_reachable: true,
+        require_walkable_maps: true,
+        ..PlayabilityRules::default()
+    };
+    let report = verify_game_data(&AssetRoot::new(repository_root_for_tests()), &data, &rules);
+    assert!(report.reachable_maps.iter().any(|map| map == "Goal"));
+    assert!(report.graph_edges.iter().any(|edge| edge.from == "Start" && edge.to == "Goal" && edge.kind == "connection"));
+    assert!(!report.diagnostics.iter().any(|diagnostic| matches!(diagnostic.code.as_str(), "unreachable_connection_destination" | "unreachable_goal_map" | "unreachable_map")));
+}
+
+#[test]
 fn verifier_rejects_connection_that_exists_only_on_blocked_collision() {
     let mut known_species = species();
     known_species.tmhm_learnset.clear();
@@ -4828,7 +4854,7 @@ fn source_readvar_commands_derive_every_typed_overworld_value() {
         &mut state,
         &celadon,
         "CeladonMansion3F",
-        "GameFreakGameDesignerScript",
+        &data.map_module("CeladonMansion3F").expect("assemble Celadon module").script_variable_commands.iter().find(|command| command.command == "readvar" && command.command_index == 3 && command.target.as_deref() == Some("VAR_DEXCAUGHT")).expect("authored caught count command").source_script,
         3,
     )
     .expect("read exact caught Pokédex count");
@@ -6967,4 +6993,27 @@ fn consuming_map_music_requested_restores_current_map_music() {
             "{error:#}"
         );
     assert_eq!(missing_music_state, before_missing_music);
+}
+
+#[test]
+fn authored_rocket_takeover_music_changes_with_story_flags_and_preserves_surf() {
+    for (name, flag, base, takeover) in [
+        ("RadioTower1F", "ENGINE_ROCKETS_IN_RADIO_TOWER", "MUSIC_GOLDENROD_CITY", "MUSIC_ROCKET_OVERTURE"),
+        ("MahoganyMart1F", "ENGINE_ROCKETS_IN_MAHOGANY", "MUSIC_CHERRYGROVE_CITY", "MUSIC_ROCKET_HIDEOUT"),
+    ] {
+        let mut module = test_map_module(name, "TEST_MAP", None);
+        module.attributes.music = Some(base.to_owned());
+        let data = GameDataSet { maps: [(name.to_owned(), module)].into_iter().collect(), ..Default::default() };
+        let mut state = GameState::default();
+        let music = BTreeSet::from([base.to_owned(), takeover.to_owned(), "MUSIC_SURF".to_owned()]);
+        for active in [false, true, false] {
+            state.flags.set_engine_flag(flag, active).unwrap();
+            data.sync_current_map_music(&mut state, name, MovementMode::Normal, &music).unwrap();
+            assert_eq!(state.script_runtime.current_music.as_deref(), Some(if active { takeover } else { base }));
+        }
+        state.flags.set_engine_flag(flag, true).unwrap();
+        data.sync_current_map_music(&mut state, name, MovementMode::Surf, &music).unwrap();
+        assert_eq!(state.script_runtime.current_music.as_deref(), Some("MUSIC_SURF"));
+        assert!(data.sync_current_map_music(&mut state, name, MovementMode::Normal, &BTreeSet::from([base.to_owned()])).is_err());
+    }
 }

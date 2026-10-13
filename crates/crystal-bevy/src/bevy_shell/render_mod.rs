@@ -7,6 +7,7 @@ fn publish_visual_world_frame(
     rendered: Res<RenderedViewport>,
     runtime_shell: Res<BevyRuntimeShell>,
     #[cfg(feature = "voxel-view")] settings: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
+    #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
     map_sprites: Query<
         (&Sprite, &Transform),
         (With<PlayfieldTile>, Without<PlayfieldPriorityTile>),
@@ -49,7 +50,14 @@ fn publish_visual_world_frame(
     // isolation intentionally omit the settings resource.
     #[cfg(feature = "voxel-view")]
     {
-        if settings.as_ref().is_some_and(|settings| !settings.enabled) {
+        // A frozen passive pair still compares the same source actors while
+        // showing 2D. Rendering remains disabled; only this read-only extraction
+        // stays live so the normal disabled-frame clear cannot fake state drift.
+        #[cfg(feature = "location-tester")]
+        let paired_hold = capture_hold.as_ref().is_some_and(|hold| hold.frozen);
+        #[cfg(not(feature = "location-tester"))]
+        let paired_hold = false;
+        if settings.as_ref().is_some_and(|settings| !settings.enabled) && !paired_hold {
             clear_published_visual_world(&mut published);
             return;
         }

@@ -280,6 +280,23 @@ fn shape_surface(s: &mut SurfaceMeshData, cells: &[&VisualTile], g: &GridGeometr
     }
 }
 
+/// A detached grove has no shared vertices with the remaining terrain. Keep
+/// its final bank deformation identical without updating global footing twice
+/// or appending another copy of the bank's closure surfaces.
+pub(super) fn finish_detached_grove(
+    mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    shapes: &[CellShape],
+    origin: [i32; 2],
+) {
+    if !cells.iter().any(|cell| bank(&cell.source)) {
+        return;
+    }
+    shape_surface(&mut mesh.solid, cells, g);
+    soften_lips(mesh, cells, g, shapes, origin);
+}
+
 fn refresh_normals(s: &mut SurfaceMeshData, changed: &[bool]) {
     if !changed.iter().any(|&moved| moved) {
         return;

@@ -123,12 +123,18 @@ const SERVER_CLOCK_UNAVAILABLE: &str = "Server clock unavailable. Restore the co
 
 fn apply_keyboard_input(
     time: Res<Time>,
+    #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
     keys: Res<ButtonInput<KeyCode>>,
     #[cfg(not(target_arch = "wasm32"))] handheld: Option<Res<handheld_input::HandheldInput>>,
     rtc_source: Res<NativeRtcSource>,
     mut runtime_shell: ResMut<BevyRuntimeShell>,
     mut timer: ResMut<RuntimeTickTimer>,
 ) {
+    #[cfg(feature = "location-tester")]
+    if capture_hold.as_ref().is_some_and(|hold| hold.frozen) {
+        timer.stage_presentation_ticks(0);
+        return;
+    }
     #[cfg(not(target_arch = "wasm32"))]
     let keys = handheld.as_ref().map(|input| &input.keys).unwrap_or(&keys);
     let Some(rtc_sample) = (*rtc_source).try_sample() else {
@@ -4159,12 +4165,18 @@ fn apply_runtime_hotkeys(
     }
     if runtime_shell.pending_clock_reset.is_some() {
         if !alt_pressed && !ctrl_pressed {
-            if keys.just_pressed(KeyCode::ArrowUp) || keys.just_pressed(KeyCode::ArrowRight) {
+            if keys.just_pressed(KeyCode::ArrowRight) {
+                run_bevy_action(&mut runtime_shell, |shell| move_visible_clock_reset_horizontal(shell, 1));
+            }
+            if keys.just_pressed(KeyCode::ArrowLeft) {
+                run_bevy_action(&mut runtime_shell, |shell| move_visible_clock_reset_horizontal(shell, -1));
+            }
+            if keys.just_pressed(KeyCode::ArrowUp) {
                 run_bevy_action(&mut runtime_shell, |shell| {
                     move_visible_clock_reset_cursor(shell, 1)
                 });
             }
-            if keys.just_pressed(KeyCode::ArrowDown) || keys.just_pressed(KeyCode::ArrowLeft) {
+            if keys.just_pressed(KeyCode::ArrowDown) {
                 run_bevy_action(&mut runtime_shell, |shell| {
                     move_visible_clock_reset_cursor(shell, -1)
                 });

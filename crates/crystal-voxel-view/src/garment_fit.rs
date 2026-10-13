@@ -86,13 +86,18 @@ pub(crate) fn waist_influences(rig: &PersonRig, p: [f32; 3]) -> Option<Vec<(usiz
 
 /// Returns interpolated body influences for vertices in the fitted seam.
 /// The rest of the garment retains its authored profile and leg weight field.
-pub(crate) fn fit(mesh: &mut SurfaceMeshData, rig: &PersonRig) -> Vec<Option<Vec<(usize, f32)>>> {
+pub(crate) fn fit(mesh: &mut SurfaceMeshData, rig: &PersonRig, look: crate::npc_appearance::Look) -> Vec<Option<Vec<(usize, f32)>>> {
     let outer_vertices = mesh.positions.len() / 2;
+    // Nurse's short fitted skirt needs a gradual flare below the waist. The
+    // short generic seam blend makes a steep shelf that catches the light.
+    // Keep the fully fitted waist and leave other authored garments unchanged.
+    let fit_bottom = if look.texture_key == "nurse" { 1.10 } else { 1.46 };
+    let fit_span = if look.texture_key == "nurse" { 0.52 } else { 0.16 };
     mesh.positions
         .iter_mut()
         .enumerate()
         .map(|(i, p)| {
-            if p[1] < 1.46 {
+            if p[1] < fit_bottom {
                 return None;
             }
             let radial = Vec2::new(p[0], p[2] - 0.05);
@@ -102,7 +107,7 @@ pub(crate) fn fit(mesh: &mut SurfaceMeshData, rig: &PersonRig) -> Vec<Option<Vec
             }
             let direction = radial / radius;
             let sample = section(rig, p[1], direction)?;
-            let t = ((p[1] - 1.46) / 0.16).clamp(0.0, 1.0);
+            let t = ((p[1] - fit_bottom) / fit_span).clamp(0.0, 1.0);
             let blend = t * t * (3.0 - 2.0 * t);
             // The inside lies just over the body; fabric thickness is real mesh.
             let padding = if i < outer_vertices { 0.018 } else { 0.002 };
@@ -112,6 +117,78 @@ pub(crate) fn fit(mesh: &mut SurfaceMeshData, rig: &PersonRig) -> Vec<Option<Vec
             Some(sample.influences)
         })
         .collect()
+}
+
+/// Diffuse local fitted-body influences over the closed two-layer skirt.
+/// Both layers share a weight field below the pinned waist, so thickness and
+/// small body-section sampling changes cannot fold adjacent panels backwards.
+pub(crate) fn smooth_fitted_skin(cloth: &mut crate::npc_appearance::CostumeMesh, skin_count: usize) {
+    use std::collections::{BTreeMap, BTreeSet};
+    let layer = cloth.surface.positions.len() / 2;
+    assert_eq!(cloth.surface.positions.len(), layer * 2);
+    let ring = cloth.surface.positions[..layer].iter()
+        .take_while(|p| p[1] == cloth.surface.positions[0][1]).count();
+    assert!(ring > 0 && layer % ring == 0);
+    let bottom = cloth.surface.positions[layer - 1][1];
+    let hem_row = (0..layer / ring).min_by(|&a, &b| {
+        (cloth.surface.positions[a * ring][1] - bottom - 0.045).abs()
+            .total_cmp(&(cloth.surface.positions[b * ring][1] - bottom - 0.045).abs())
+    }).unwrap();
+    let key = |p: [f32; 3]| p.map(|v| (v * 100_000.0).round() as i32);
+    let mut welded = BTreeMap::new();
+    let canonical: Vec<_> = cloth.surface.positions[..layer].iter().enumerate()
+        .map(|(i, &p)| *welded.entry(key(p)).or_insert(i)).collect();
+    let mut neighbors = vec![BTreeSet::new(); layer];
+    for face in cloth.surface.indices.chunks_exact(3) {
+        let points = [face[0], face[1], face[2]].map(|i| canonical[i as usize % layer]);
+        for (a, b) in [(points[0], points[1]), (points[1], points[2]), (points[2], points[0])] {
+            if a != b { neighbors[a].insert(b); neighbors[b].insert(a); }
+        }
+    }
+    let mut fields = vec![vec![0.0; skin_count]; layer];
+    for i in 0..layer {
+        for vertex in [i, i + layer] {
+            for slot in 0..4 {
+                fields[i][cloth.joints[vertex][slot] as usize] += cloth.weights[vertex][slot] * 0.5;
+            }
+        }
+    }
+    for _ in 0..8 {
+        let mut next = fields.clone();
+        for i in 0..layer {
+            if canonical[i] != i || cloth.surface.positions[i][1] >= 1.62 || neighbors[i].is_empty() {
+                continue;
+            }
+            for joint in 0..skin_count {
+                let mean = neighbors[i].iter().map(|&j| fields[j][joint]).sum::<f32>() / neighbors[i].len() as f32;
+                next[i][joint] = fields[i][joint] * 0.5 + mean * 0.5;
+            }
+        }
+        fields = next;
+    }
+    for i in 0..layer {
+        if cloth.surface.positions[i][1] >= 1.62 { continue; }
+        let t = ((1.62 - cloth.surface.positions[i][1]) / 0.10).clamp(0.0, 1.0);
+        let blend = t * t * (3.0 - 2.0 * t);
+        // The narrow rolled hem moves with one ring field. Weight gradients
+        // across its .015-height fold can turn that fold inside out in Run.
+        let sample = if cloth.surface.positions[i][1] <= bottom + 0.04501 {
+            hem_row * ring + i % ring
+        } else { i };
+        let mut field = fields[canonical[sample]].clone();
+        for value in &mut field { *value *= blend; }
+        for slot in 0..4 {
+            field[cloth.joints[i][slot] as usize] += cloth.weights[i][slot] * (1.0 - blend);
+        }
+        let mut ranked: Vec<_> = field.into_iter().enumerate().collect();
+        ranked.sort_by(|a, b| b.1.total_cmp(&a.1).then(a.0.cmp(&b.0)));
+        let total: f32 = ranked[..4].iter().map(|(_, weight)| weight).sum();
+        assert!(total.is_finite() && total > 0.0);
+        for vertex in [i, i + layer] {
+            cloth.joints[vertex] = std::array::from_fn(|slot| ranked[slot].0 as u16);
+            cloth.weights[vertex] = std::array::from_fn(|slot| ranked[slot].1 / total);
+        }
+    }
 }
 
 /// Fitting changes the side slopes. The flat cloth rims need separate normal
@@ -204,9 +281,15 @@ mod tests {
             } else {
                 &male
             };
-            let Some(cloth) = crate::npc_appearance::costume_mesh(rig, look) else {
+            let Some(cloth) = crate::npc_appearance::costume_shell_mesh(rig, look) else {
                 continue;
             };
+            // This is a waist-attachment regression, not a clearance limit
+            // for raised collars, emblems or lapels elsewhere on the costume.
+            // Only credit roles that actually have geometry in the seam band.
+            if !cloth.surface.positions.iter().any(|p| (1.62..=1.67).contains(&p[1])) {
+                continue;
+            }
             count += 1;
             let mut pose = rig.nodes.clone();
             for step in 0..8 {
@@ -240,7 +323,7 @@ mod tests {
                     .zip(&cloth.joints)
                     .zip(&cloth.weights)
                 {
-                    if p[1] < 1.62 {
+                    if !(1.62..=1.67).contains(&p[1]) {
                         continue;
                     }
                     let point = deform(p, ids, weights);
@@ -259,7 +342,7 @@ mod tests {
                         .fold(f32::INFINITY, f32::min);
                     assert!(
                         distance < 0.035,
-                        "{} waist detaches at Run {step}/8: {distance}",
+                        "{} fitted seam detaches at Run {step}/8: distance={distance}; bind={p:?}; posed={point:?}; joints={ids:?}; weights={weights:?}",
                         look.texture_key
                     );
                 }

@@ -315,6 +315,11 @@ impl<'a> ModpackCompiler<'a> {
         Self { asset_root }
     }
 
+    /// Run the compiler's complete authored-data checks without producing a pack.
+    pub fn audit(&self, data: &GameDataSet) -> ModpackCompileReport {
+        verify_game_data(self.asset_root, data, &data.playability)
+    }
+
     pub fn compile(
         &self,
         manifests: &[ModpackManifest],

@@ -129,7 +129,7 @@ pub fn apply_trainer_smart_scores(
             }
             "TRAP_TARGET" => smart_trap_target_delta(state, rng),
             "CONFUSE" => smart_confuse_delta(state, rng),
-            "SP_DEF_UP_2" => smart_sp_def_up_2_delta(state, rng),
+            "SP_DEF_UP_2" | "SPECIAL_DEFENSE_UP_2" => smart_sp_def_up_2_delta(state, rng),
             "FLY" => {
                 if state.player_airborne_move.is_some() && smart_enemy_faster(state) {
                     -3

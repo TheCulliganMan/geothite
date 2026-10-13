@@ -28,11 +28,12 @@ pub fn npc_texture_names() -> Vec<&'static str> { crate::new_bark_actors::npc_te
 pub fn install_open_people_bundle(json: &str) -> Result<(), String> {
     #[derive(serde::Deserialize)]
     #[serde(deny_unknown_fields)]
-    struct Bundle {
+    struct Bundle<'a> {
         version: u32,
-        people: BTreeMap<String, String>,
-        #[serde(default)]
-        textures: BTreeMap<String, String>,
+        #[serde(borrow)]
+        people: BTreeMap<String, &'a serde_json::value::RawValue>,
+        #[serde(default, borrow)]
+        textures: BTreeMap<String, &'a serde_json::value::RawValue>,
     }
     if RIGS.get().is_some() || crate::npc_textures::frozen() {
         return Err("people sources frozen; restart to refresh".into());
@@ -46,11 +47,12 @@ pub fn install_open_people_bundle(json: &str) -> Result<(), String> {
     }
     let mut rigs = BTreeMap::new();
     for (name, encoded) in b.people {
+        let encoded = encoded_source(encoded)?;
         if !PEOPLE.contains(&name.as_str()) || encoded.len() > MAX_BYTES * 4 / 3 + 4 {
             return Err("unsupported person or size".into());
         }
         let bytes = base64::engine::general_purpose::STANDARD
-            .decode(encoded)
+            .decode(encoded.as_bytes())
             .map_err(|e| e.to_string())?;
         rigs.insert(name, Arc::new(PersonRig::parse(&bytes)?));
     }
@@ -60,16 +62,24 @@ pub fn install_open_people_bundle(json: &str) -> Result<(), String> {
     let names = npc_texture_names();
     let mut textures = BTreeMap::new();
     for (name, encoded) in b.textures {
+        let encoded = encoded_source(encoded)?;
         if !names.contains(&name.as_str()) || encoded.len() > MAX_BYTES * 4 / 3 + 4 {
             return Err("unsupported NPC texture name or size".into());
         }
-        let bytes = base64::engine::general_purpose::STANDARD.decode(encoded).map_err(|e| e.to_string())?;
-        textures.insert(name, crate::npc_textures::decode(&bytes)?);
+        let bytes = base64::engine::general_purpose::STANDARD.decode(encoded.as_bytes()).map_err(|e| e.to_string())?;
+        textures.insert(name, crate::npc_textures::CachedTexture::validate(bytes)?);
     }
     crate::npc_textures::require_complete(&textures)?;
     // Both payloads have been validated before either cache is published.
     RIGS.set(rigs).map_err(|_| "people sources frozen; restart to refresh".to_string())?;
     crate::npc_textures::install(textures)
+}
+
+fn encoded_source(value: &serde_json::value::RawValue) -> Result<std::borrow::Cow<'_, str>, String> {
+    #[derive(serde::Deserialize)]
+    struct Encoded<'a>(#[serde(borrow)] std::borrow::Cow<'a, str>);
+    serde_json::from_str::<Encoded<'_>>(value.get())
+        .map(|encoded| encoded.0).map_err(|error| error.to_string())
 }
 
 /// Native applications and review tools share the same default artwork root.
@@ -572,6 +582,19 @@ impl PersonRig {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn bundle_base64_is_borrowed_and_escaped_sources_keep_their_original_meaning() {
+        let plain: &serde_json::value::RawValue = serde_json::from_str(r#""Z2xURg==""#).unwrap();
+        let encoded = super::encoded_source(plain).unwrap();
+        assert!(matches!(encoded, std::borrow::Cow::Borrowed(_)));
+        assert_eq!(encoded, "Z2xURg==");
+        let escaped: &serde_json::value::RawValue = serde_json::from_str(r#""Z2x\u0055Rg==""#).unwrap();
+        assert_eq!(super::encoded_source(escaped).unwrap(), encoded);
+        for malformed in ["null", "42", "{}", "[]"] {
+            let value = serde_json::from_str(malformed).unwrap();
+            assert!(super::encoded_source(value).is_err());
+        }
+    }
     use super::*;
     #[test]
     fn missing_production_rigs_reject_bundle_before_freezing_sources() {

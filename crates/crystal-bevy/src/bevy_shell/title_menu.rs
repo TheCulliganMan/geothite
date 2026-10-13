@@ -3480,19 +3480,9 @@ fn apply_visible_intro_conditional_tilemap_xor(
         .get("swap_phase")
         .context("visible intro conditional tilemap XOR has no swap phase")?;
     anyhow::ensure!(
-        swap.get("target").and_then(serde_json::Value::as_str) == Some("wTilemap")
-            && swap
-                .get("byte_count")
-                .and_then(serde_json::Value::as_u64)
-                == Some(20 * 18)
-            && swap
-                .get("predicate")
-                .and_then(|predicate| predicate.get("nonzero"))
-                .and_then(serde_json::Value::as_bool)
-                == Some(true)
-            && swap
-                .get("predicate")
-                .and_then(|predicate| predicate.get("unsigned_less_than"))
+        operation.fields.get("target").and_then(serde_json::Value::as_str) == Some("wTilemap")
+            && operation.fields.get("nonzero_only").and_then(serde_json::Value::as_bool) == Some(true)
+            && operation.fields.get("unsigned_less_than")
                 .and_then(serde_json::Value::as_u64)
                 == Some(0x80),
         "visible intro conditional tilemap XOR has unsupported target semantics"
@@ -3502,13 +3492,34 @@ fn apply_visible_intro_conditional_tilemap_xor(
         .and_then(serde_json::Value::as_u64)
         .and_then(|value| u8::try_from(value).ok())
         .context("visible intro conditional tilemap XOR swap cadence is invalid")?;
-    if intro.scene_frame_counter & mask == swap_frame {
-        let xor = swap
-            .get("xor")
+    let prepare = operation.fields.get("prepare_phase")
+        .context("visible intro conditional tilemap XOR has no prepare phase")?;
+    let prepare_frame = prepare.get("equals").and_then(serde_json::Value::as_u64)
+        .and_then(|value| u8::try_from(value).ok())
+        .context("visible intro conditional tilemap XOR prepare cadence is invalid")?;
+    for (phase, write_name, value) in [(prepare, "write", 0), (swap, "completion_write", 1)] {
+        let write = phase.get(write_name)
+            .context("visible intro conditional tilemap XOR has no BG map mode write")?;
+        anyhow::ensure!(
+            write.get("target").and_then(serde_json::Value::as_str) == Some("hBGMapMode")
+                && write.get("value").and_then(serde_json::Value::as_u64) == Some(value),
+            "visible intro conditional tilemap XOR has unsupported BG map mode semantics"
+        );
+    }
+    let xor = operation.fields
+            .get("xor_mask")
             .and_then(serde_json::Value::as_u64)
             .and_then(|value| u8::try_from(value).ok())
             .context("visible intro conditional tilemap XOR value is invalid")?;
+    anyhow::ensure!(mask == 3 && prepare_frame == 3 && swap_frame == 0 && xor == 8,
+        "visible intro conditional tilemap XOR has unsupported source cadence");
+    let phase = intro.scene_frame_counter & mask;
+    if phase == prepare_frame {
+        intro.callable_memory.insert("hBGMapMode".into(), 0);
+    }
+    if phase == swap_frame {
         intro.tilemap_xor_mask ^= xor;
+        intro.callable_memory.insert("hBGMapMode".into(), 1);
     }
     Ok(())
 }
@@ -4190,6 +4201,13 @@ fn skip_visible_intro_screen(
     runtime_shell: &mut BevyRuntimeShell,
     input: GameButton,
 ) -> Result<()> {
+    if let Some(splash) = runtime_shell.splash_screen.as_mut() {
+        splash.pending_input = match input {
+            GameButton::A => 1, GameButton::B => 2, GameButton::Select => 4, GameButton::Start => 8,
+            _ => 0,
+        };
+        return Ok(());
+    }
     if runtime_shell
         .intro_screen
         .as_ref()
@@ -4430,7 +4448,12 @@ fn tick_visible_title_screen(
 ) {
     let frames = clock.consume_frames(time.delta_secs());
     for _ in 0..frames {
-        if runtime_shell.intro_screen.is_some() {
+        if runtime_shell.splash_screen.is_some() {
+            if let Err(error) = tick_visible_splash_screen(&mut runtime_shell) {
+                record_visible_runtime_system_error(&mut runtime_shell, error);
+                break;
+            }
+        } else if runtime_shell.intro_screen.is_some() {
             if let Err(error) = tick_visible_intro_screen(&mut runtime_shell) {
                 record_visible_runtime_system_error(&mut runtime_shell, error);
                 break;
@@ -4442,7 +4465,11 @@ fn tick_visible_title_screen(
 }
 
 fn tick_visible_title_screen_state(runtime_shell: &mut BevyRuntimeShell) {
-    if runtime_shell.intro_screen.is_some() {
+    if let Some(screen) = runtime_shell.visible_continue_screen.as_mut() {
+        screen.remaining_delay_frames = screen.remaining_delay_frames.saturating_sub(1);
+        return;
+    }
+    if runtime_shell.splash_screen.is_some() || runtime_shell.intro_screen.is_some() {
         return;
     }
     if runtime_shell.pending_delete_save.is_some() || runtime_shell.pending_clock_reset.is_some() {
@@ -4693,7 +4720,7 @@ fn dispatch_visible_title_option(
     match selected_option {
         0 => activate_visible_title_main_menu(runtime_shell),
         1 => open_visible_delete_save_screen(runtime_shell),
-        2 => {
+        2 | 3 => {
             let intro_parameters = match RuntimeIntroPresentationParameters::from_program(
                 runtime_shell.runtime.title_presentation_program(),
             ) {
@@ -4710,6 +4737,9 @@ fn dispatch_visible_title_option(
             )?;
             runtime_shell.intro_display_screen = Some(intro.clone());
             runtime_shell.intro_screen = Some(intro);
+            runtime_shell.splash_screen = Some(VisibleSplashScreen::from_program(
+                runtime_shell.runtime.title_presentation_program(),
+            )?);
             if let Some(title) = runtime_shell.title_menu.as_mut() {
                 reset_visible_title_program(title);
             }
@@ -6960,6 +6990,11 @@ fn advance_visible_title_to_press_start(runtime_shell: &mut BevyRuntimeShell) {
 }
 
 fn advance_visible_title_to_main_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    for _ in 0..4096 {
+        if runtime_shell.splash_screen.is_none() { break; }
+        tick_visible_splash_screen(runtime_shell)?;
+    }
+    anyhow::ensure!(runtime_shell.splash_screen.is_none(), "visible title helper did not reach SplashScreen return");
     for _ in 0..4_096 {
         if runtime_shell.intro_screen.is_none() {
             break;
@@ -7335,6 +7370,8 @@ fn press_visible_title_confirm_button(
 }
 
 fn press_visible_title_cancel_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.visible_continue_screen.as_ref()
+        .is_some_and(|screen| screen.remaining_delay_frames != 0) { return Ok(()); }
     if runtime_shell.visible_continue_screen.take().is_some() {
         record_visible_runtime_action(runtime_shell, "input:title:B:continue_back")?;
         resume_visible_main_menu_after_subprogram(runtime_shell)?;
@@ -7385,7 +7422,23 @@ fn open_visible_delete_save_screen(runtime_shell: &mut BevyRuntimeShell) -> Resu
         )?;
         return Ok(());
     }
-    runtime_shell.pending_delete_save = Some(VisibleDeleteSaveScreen { selected_index: 1 });
+    let program = runtime_shell.runtime.title_presentation_program();
+    let selected_index = if let Some(entry) = program.entrypoints.get("delete_save") {
+        let wrapper = program.blocks.get(entry).context("delete-save entry has no block")?;
+        let implementation = wrapper.operations.iter().find(|operation| operation.op == "call_block")
+            .and_then(|operation| operation.fields.get("block"))
+            .and_then(serde_json::Value::as_str).unwrap_or(entry);
+        let block = program.blocks.get(implementation).context("delete-save implementation has no block")?;
+        let operation = block.operations.iter().find(|operation| operation.op == "delete_save_data")
+            .context("delete-save block has no guarded save operation")?;
+        let menu = operation.fields.get("menu").context("delete-save operation has no menu")?;
+        anyhow::ensure!(menu["choices"] == serde_json::json!(["NO", "YES"]),
+            "delete-save menu must preserve authored NO/YES order");
+        let default = menu["default_option"].as_u64().context("delete-save default is invalid")?;
+        anyhow::ensure!(default == 1, "delete-save must default to NO");
+        usize::try_from(default - 1)?
+    } else { 0 };
+    runtime_shell.pending_delete_save = Some(VisibleDeleteSaveScreen { selected_index });
     record_visible_runtime_action(runtime_shell, "title:delete_save:open")?;
     set_shell_action_status(runtime_shell, "DELETE SAVE");
     runtime_shell
@@ -7420,9 +7473,9 @@ fn move_visible_delete_save_cursor(runtime_shell: &mut BevyRuntimeShell) -> Resu
     set_shell_action_status(
         runtime_shell,
         if selected == 0 {
-            "DELETE YES"
-        } else {
             "DELETE NO"
+        } else {
+            "DELETE YES"
         },
     );
     trim_event_log(&mut runtime_shell.last_audio_events);
@@ -7433,7 +7486,7 @@ fn confirm_visible_delete_save_screen(runtime_shell: &mut BevyRuntimeShell) -> R
     let Some(delete_save) = runtime_shell.pending_delete_save.as_ref() else {
         return handle_visible_no_active_title_menu(runtime_shell, "delete_save_confirm");
     };
-    if delete_save.selected_index.min(1) != 0 {
+    if delete_save.selected_index.min(1) != 1 {
         return close_visible_delete_save_screen(runtime_shell, "cancel");
     }
     let deleted = match runtime_shell
@@ -7464,11 +7517,19 @@ fn open_visible_clock_reset_screen(runtime_shell: &mut BevyRuntimeShell) -> Resu
     }
     let time = runtime_shell.shell.snapshot()?.progression.time;
     runtime_shell.pending_clock_reset = Some(VisibleClockResetScreen {
+        time_division: 0,
         phase: VisibleClockResetPhase::Confirm,
-        confirm_selection: 1,
+        confirm_selection: 0,
         day: time.day_of_week % 7,
         hour: time.registers.hours,
         minute: time.registers.minutes,
+        password_digits: [0; 5],
+        password_cursor: 4,
+        expected_password: None,
+        saved_state_hash: None,
+        continue_save_path: None,
+        prompt_pages: visible_presentation_text_pages(runtime_shell.runtime.title_presentation_program(), "PasswordAskResetClockText", "PLAYER")?,
+        prompt_page: 0,
     });
     if let Some(title) = runtime_shell.title_menu.as_mut() {
         title
@@ -7476,6 +7537,17 @@ fn open_visible_clock_reset_screen(runtime_shell: &mut BevyRuntimeShell) -> Resu
             .memory
             .insert("hClockResetTrigger".to_string(), 0);
     }
+    let program = runtime_shell.runtime.title_presentation_program();
+    let reset_entry = program.entrypoints.get("reset_clock").and_then(|entry| program.blocks.get(entry))
+        .context("clock reset requires authored startup block")?;
+    let source = reset_entry.operations.iter().find(|operation| operation.op == "reset_clock_with_password")
+        .context("clock reset requires authored password operation")?;
+    anyhow::ensure!(source.fields["menu"]["choices"] == serde_json::json!(["NO","YES"])
+        && source.fields["menu"]["default_option"] == 1,
+        "clock reset has unsupported source menu choices");
+    let music = source.fields.get("music").and_then(serde_json::Value::as_str)
+        .context("clock reset requires source music")?.to_owned();
+    queue_visible_intro_music(runtime_shell, &music)?;
     record_visible_runtime_action(runtime_shell, "title:clock_reset:open")?;
     set_shell_action_status(runtime_shell, "RESET CLOCK");
     runtime_shell
@@ -7489,9 +7561,24 @@ fn close_visible_clock_reset_screen(
     runtime_shell: &mut BevyRuntimeShell,
     reason: &'static str,
 ) -> Result<()> {
+    if reason == "cancel" {
+        match runtime_shell.pending_clock_reset.as_ref().map(|clock| clock.phase) {
+            Some(VisibleClockResetPhase::Password) => return Ok(()),
+            Some(VisibleClockResetPhase::TimeWarning) => return confirm_visible_clock_reset_screen(runtime_shell),
+            Some(VisibleClockResetPhase::TimeResetDone) => return finish_visible_restart_clock(runtime_shell),
+            Some(VisibleClockResetPhase::Requested | VisibleClockResetPhase::WrongPassword) => {
+                if advance_visible_clock_prompt(runtime_shell) { return Ok(()); }
+            }
+            _ => {}
+        }
+    }
+    let continuing = runtime_shell.pending_clock_reset.as_ref().is_some_and(|clock| clock.continue_save_path.is_some());
     runtime_shell.pending_clock_reset = None;
+    if continuing {
+        resume_visible_main_menu_after_subprogram(runtime_shell)?;
+    }
     if let Some(title) = runtime_shell.title_menu.as_mut() {
-        reset_visible_title_program(title);
+        if !continuing { reset_visible_title_program(title); }
         title.cursor.option_index = 0;
     }
     record_visible_runtime_action(runtime_shell, format!("clock_reset:{reason}:close"))?;
@@ -7508,6 +7595,15 @@ fn move_visible_clock_reset_cursor(runtime_shell: &mut BevyRuntimeShell, delta: 
         VisibleClockResetPhase::Confirm => {
             clock.confirm_selection = 1 - clock.confirm_selection.min(1);
         }
+        VisibleClockResetPhase::Password => {
+            let cursor = clock.password_cursor.min(4);
+            clock.password_digits[cursor] = wrap_visible_clock_value(clock.password_digits[cursor], delta, 10);
+        }
+        VisibleClockResetPhase::TimeConfirm => {
+            clock.confirm_selection = 1 - clock.confirm_selection.min(1);
+        }
+        VisibleClockResetPhase::WrongPassword | VisibleClockResetPhase::Requested
+        | VisibleClockResetPhase::TimeWarning | VisibleClockResetPhase::TimeResetDone => return Ok(()),
         VisibleClockResetPhase::SetDay => {
             clock.day = wrap_visible_clock_value(clock.day, delta, 7);
         }
@@ -7522,6 +7618,7 @@ fn move_visible_clock_reset_cursor(runtime_shell: &mut BevyRuntimeShell, delta: 
     let day = clock.day;
     let hour = clock.hour;
     let minute = clock.minute;
+    mark_runtime_presentation_dirty(runtime_shell);
     record_visible_runtime_action(
         runtime_shell,
         format!("clock_reset:cursor:{phase:?}:{day}:{hour}:{minute}"),
@@ -7541,23 +7638,31 @@ fn confirm_visible_clock_reset_screen(runtime_shell: &mut BevyRuntimeShell) -> R
     };
     match clock.phase {
         VisibleClockResetPhase::Confirm => {
-            if clock.confirm_selection.min(1) == 0 {
-                let Some(active) = runtime_shell.pending_clock_reset.as_mut() else {
-                    return Ok(());
-                };
-                active.phase = VisibleClockResetPhase::SetDay;
-                record_visible_runtime_action(runtime_shell, "clock_reset:confirm:yes")?;
-                trim_event_log(&mut runtime_shell.last_audio_events);
-                Ok(())
+            if clock.confirm_selection.min(1) == 1 {
+                begin_visible_clock_password(runtime_shell)
             } else {
                 close_visible_clock_reset_screen(runtime_shell, "cancel")
             }
         }
+        VisibleClockResetPhase::Password => confirm_visible_clock_password(runtime_shell),
+        VisibleClockResetPhase::WrongPassword | VisibleClockResetPhase::Requested => {
+            if advance_visible_clock_prompt(runtime_shell) { return Ok(()); }
+            close_visible_clock_reset_screen(runtime_shell, "password_result")
+        }
+        VisibleClockResetPhase::TimeConfirm => confirm_visible_restart_clock(runtime_shell),
+        VisibleClockResetPhase::TimeWarning => {
+            if advance_visible_clock_prompt(runtime_shell) { return Ok(()); }
+            runtime_shell.pending_clock_reset.as_mut().unwrap().phase = VisibleClockResetPhase::SetDay;
+            set_visible_clock_prompt(runtime_shell, "ClockSetWithControlPadText")
+        }
+        VisibleClockResetPhase::TimeResetDone => finish_visible_restart_clock(runtime_shell),
         VisibleClockResetPhase::SetDay => {
             let Some(active) = runtime_shell.pending_clock_reset.as_mut() else {
                 return Ok(());
             };
-            active.phase = VisibleClockResetPhase::SetHour;
+            active.phase = VisibleClockResetPhase::TimeConfirm;
+            active.confirm_selection = 0;
+            set_visible_clock_prompt(runtime_shell, "ClockIsThisOKText")?;
             record_visible_runtime_action(runtime_shell, "clock_reset:day:confirm")?;
             trim_event_log(&mut runtime_shell.last_audio_events);
             Ok(())
@@ -7566,25 +7671,19 @@ fn confirm_visible_clock_reset_screen(runtime_shell: &mut BevyRuntimeShell) -> R
             let Some(active) = runtime_shell.pending_clock_reset.as_mut() else {
                 return Ok(());
             };
-            active.phase = VisibleClockResetPhase::SetMinute;
+            active.phase = VisibleClockResetPhase::TimeConfirm;
+            active.confirm_selection = 0;
+            set_visible_clock_prompt(runtime_shell, "ClockIsThisOKText")?;
             record_visible_runtime_action(runtime_shell, "clock_reset:hour:confirm")?;
             trim_event_log(&mut runtime_shell.last_audio_events);
             Ok(())
         }
         VisibleClockResetPhase::SetMinute => {
-            let rtc = required_native_rtc_sample(runtime_shell)?;
-            let update = runtime_shell.shell.set_manual_clock_time(
-                rtc.date,
-                rtc.hour,
-                rtc.minute,
-                rtc.second,
-                ClockTime::new(clock.day, clock.hour, clock.minute, 0),
-            )?;
-            runtime_shell.last_audio_events.push(format!(
-                "clock reset day={} game={}:{} checksum={:?}",
-                update.day_of_week, update.hour, update.minute, update.state_checksum
-            ));
-            close_visible_clock_reset_screen(runtime_shell, "confirm")
+            let Some(active) = runtime_shell.pending_clock_reset.as_mut() else { return Ok(()); };
+            active.phase = VisibleClockResetPhase::TimeConfirm;
+            active.confirm_selection = 0;
+            set_visible_clock_prompt(runtime_shell, "ClockIsThisOKText")?;
+            Ok(())
         }
     }
 }

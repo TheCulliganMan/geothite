@@ -117,6 +117,7 @@ async fn run_browser() -> Result<()> {
         let preview = match params.get("preview").as_deref() {
             Some("new-bark") => Some(("NewBarkTown", 13, 6)),
             Some("bedroom") => Some(("PlayersHouse2F", 3, 4)),
+            Some("house-door") => Some(("PlayersHouse1F", 7, 6)),
             Some("goldenrod") => Some(("GoldenrodCity", 20, 18)),
             Some("department-store") => Some(("GoldenrodDeptStore1F", 8, 4)),
             Some("underground") => Some(("GoldenrodUnderground", 3, 18)),

@@ -458,8 +458,7 @@ fn partition(source: SurfaceMeshData, tile_size: Vec2) -> Vec<SurfaceMeshData> {
         return vec![source];
     }
     let batch_count = (count.x * count.y) as usize;
-    let mut buckets = vec![Vec::<u32>::new(); batch_count];
-    for triangle in source.indices.chunks_exact(3) {
+    let bucket_for = |triangle: &[u32]| {
         // f64 protects bucket selection for valid extreme f32 coordinates.
         // Stored geometry is copied bit-for-bit; it is never rebased or rounded.
         let center = |axis: usize| {
@@ -473,7 +472,17 @@ fn partition(source: SurfaceMeshData, tile_size: Vec2) -> Vec<SurfaceMeshData> {
             .min(count.x as usize - 1);
         let z = (((center(2) - f64::from(min.y)) / f64::from(width.y)).floor() as usize)
             .min(count.y as usize - 1);
-        buckets[z * count.x as usize + x].extend_from_slice(triangle);
+        z * count.x as usize + x
+    };
+    // Count first: growing large buckets can retain nearly twice the indices
+    // and briefly needs both old and new allocations in the browser heap.
+    let mut sizes = vec![0; batch_count];
+    for triangle in source.indices.chunks_exact(3) {
+        sizes[bucket_for(triangle)] += 3;
+    }
+    let mut buckets: Vec<Vec<u32>> = sizes.into_iter().map(Vec::with_capacity).collect();
+    for triangle in source.indices.chunks_exact(3) {
+        buckets[bucket_for(triangle)].extend_from_slice(triangle);
     }
     // One shared dense remap, reset only at touched vertices. No per-batch
     // full-grid scans or attribute hashing, and no work on retained frames.
@@ -991,12 +1000,31 @@ mod tests {
             assert_eq!(batch.normals.capacity(), batch.normals.len());
             assert_eq!(batch.uvs.capacity(), batch.uvs.len());
             assert_eq!(batch.colors.capacity(), batch.colors.len());
+            assert_eq!(batch.indices.capacity(), batch.indices.len());
             for (key, count) in triangles(batch) {
                 *actual.entry(key).or_insert(0) += count;
             }
         }
         assert_eq!(actual, expected);
         assert_eq!(batches, partition(source, Vec2::splat(8.0)));
+    }
+
+    #[test]
+    fn large_builder_slack_is_released_without_changing_any_surface_data() {
+        let mut source = fixture(4);
+        let expected = source.clone();
+        source.positions.reserve_exact(200_000);
+        source.normals.reserve_exact(200_000);
+        source.uvs.reserve_exact(200_000);
+        source.colors.reserve_exact(200_000);
+        source.indices.reserve_exact(400_000);
+        source.compact_build_storage();
+        assert_eq!(source, expected);
+        assert_eq!(source.positions.capacity(), source.positions.len());
+        assert_eq!(source.normals.capacity(), source.normals.len());
+        assert_eq!(source.uvs.capacity(), source.uvs.len());
+        assert_eq!(source.colors.capacity(), source.colors.len());
+        assert_eq!(source.indices.capacity(), source.indices.len());
     }
 
     #[test]

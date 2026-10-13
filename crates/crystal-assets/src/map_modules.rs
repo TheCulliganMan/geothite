@@ -137,6 +137,24 @@ impl Default for ModpackCompileOptions {
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct PlayabilityRules {
+    /// Eventual traversal capabilities used for physical topology only.
+    /// These do not grant moves, badges, items, or flags to a new game.
+    #[serde(default, deserialize_with = "required_pack_token_vec")]
+    pub topology_traversal_modes: Vec<String>,
+    #[serde(default)]
+    pub topology_script_block_changes: bool,
+    /// Authored inactive map data retained for rendering and asset validation.
+    #[serde(default, deserialize_with = "required_pack_token_vec")]
+    pub dormant_maps: Vec<String>,
+    /// Source-annotated inaccessible ingress, checked against loaded collision geometry.
+    #[serde(default)]
+    pub inaccessible_dormant_warps: BTreeMap<String, Vec<i32>>,
+    /// Retired G/S warp pairs whose origin or destination is physically blocked.
+    #[serde(default)]
+    pub retired_gs_warps: BTreeMap<String, Vec<i32>>,
+    /// Blocked border artwork connections whose authored gameplay route uses warps.
+    #[serde(default)]
+    pub connection_warp_routes: BTreeMap<String, BTreeMap<String, Vec<String>>>,
     #[serde(deserialize_with = "required_pack_token_vec")]
     pub start_maps: Vec<String>,
     pub start_tiles: Vec<PlayabilityStart>,
@@ -382,11 +400,6 @@ pub struct CompiledGamePackIdentity {
     pub cries: usize,
 }
 
-fn sha256_hex(bytes: &[u8]) -> String {
-    let digest = Sha256::digest(bytes);
-    digest.iter().map(|byte| format!("{byte:02x}")).collect()
-}
-
 fn derive_compiled_game_pack_identity(
     format_version: u16,
     data: &GameDataSet,
@@ -411,16 +424,13 @@ fn derive_compiled_game_pack_identity_from_manifest(
     runtime_files: &BTreeMap<String, Vec<u8>>,
     report: &ModpackCompileReport,
 ) -> Result<CompiledGamePackIdentity> {
-    let mut encoded = Vec::new();
-    ciborium::into_writer(
+    let content_hash = cbor_identity_hash::hash(
         &(format_version, data, manifest, runtime_files, report),
-        &mut encoded,
-    )
-    .context("encode compiled game pack identity")?;
+    )?;
     Ok(CompiledGamePackIdentity {
         format_version,
         runtime_modpack_id: compiled_game_pack_runtime_modpack_id(report)?,
-        content_hash: sha256_hex(&encoded),
+        content_hash,
         pokemon_species: data.pokemon.len(),
         maps: data.maps.len(),
         items: data.items.len(),

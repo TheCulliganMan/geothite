@@ -260,9 +260,19 @@ pub(crate) fn sculpt(
             .collect::<Vec<_>>();
         refine(mesh, j, w, &selected);
     }
+    // Measure the supplied terminal dome before reshaping it. Subtracting a
+    // lobe field from that dome retains its unequal outer finger heights.
+    // A vertical, monotone remap instead gives every pad its authored profile.
+    let roofs: Vec<Vec<[Vec3; 3]>> = hands.iter().map(|h| {
+        mesh.indices.chunks_exact(3).filter(|face| face.iter().any(|&i|
+            eligible(mesh.positions[i as usize], j[i as usize], w[i as usize], h, 0.19)))
+            .map(|face| [face[0], face[1], face[2]].map(|i|
+                h.bind.transform_point3(Vec3::from_array(mesh.positions[i as usize]))))
+            .collect()
+    }).collect();
     let mut changed = vec![false; mesh.positions.len()];
     for (i, p) in mesh.positions.iter_mut().enumerate() {
-        for h in &hands {
+        for (h, roof) in hands.iter().zip(&roofs) {
             if !eligible(*p, j[i], w[i], h, 0.22) {
                 continue;
             }
@@ -270,19 +280,18 @@ pub(crate) fn sculpt(
             let half = (h.right - h.left) * 0.5;
             let center = (h.right + h.left) * 0.5;
             let s = ((q.x - center) / half).clamp(-1., 1.);
-            // Give each finger a broad circular terminal pad. The previous
-            // cosine cut took too much height from the shoulders, producing
-            // four pointed claws in the actual mounted and resting renders.
+            // Rounded pads blend continuously into the webs. Normalize the
+            // source dome below before assigning this four-lobe silhouette.
             let cell = ((s + 1.) * 2.).floor().clamp(0., 3.);
             let lateral = ((s - (-0.75 + 0.5 * cell)) / 0.25).abs();
-            let radius = half * 0.25 * 0.82;
+            let pad_height = half * 0.54;
             // Smooth shoulders and a wider web avoid the circular profile's
             // vertical tangent, which creased the triangulated pad edges.
             let shoulder = lateral * lateral * (3. - 2. * lateral);
-            let cap_drop = radius * shoulder * shoulder;
+            let cap_drop = pad_height * shoulder;
             let web = ((lateral - 0.50) / 0.50).clamp(0., 1.);
             let web = web * web * (3. - 2. * web);
-            let lateral_drop = cap_drop + (0.105 - radius) * web;
+            let lateral_drop = cap_drop + (0.060 - pad_height) * web;
             let t = ((q.y - 0.22) / (h.tip - 0.22)).clamp(0., 1.);
             let activation = t * t * (3. - 2. * t);
             // Round the terminal pad through its depth too. A lateral arch
@@ -290,9 +299,18 @@ pub(crate) fn sculpt(
             // This bounded height field retains the connected surface and
             // uses the supplied slab's actual depth, without adding pieces.
             let depth = ((q.z - h.cap_center_z) / h.cap_depth).clamp(-1., 1.);
-            // The supplied cap already has a depth dome. A second deep
-            // carve sharpened its tip; retain that dome with a small blend.
-            q.y -= activation * (lateral_drop + 0.008 * depth * depth);
+            let source_top = roof.iter().filter_map(|tri| {
+                let [a,b,c] = *tri;
+                let denominator = (b.z-c.z)*(a.x-c.x)+(c.x-b.x)*(a.z-c.z);
+                if denominator.abs() < 1e-10 { return None; }
+                let u = ((b.z-c.z)*(q.x-c.x)+(c.x-b.x)*(q.z-c.z))/denominator;
+                let v = ((c.z-a.z)*(q.x-c.x)+(a.x-c.x)*(q.z-c.z))/denominator;
+                (u.min(v).min(1.-u-v) >= -1e-5)
+                    .then_some(u*a.y+v*b.y+(1.-u-v)*c.y)
+            }).fold(q.y, f32::max);
+            let target_top = h.tip - lateral_drop - 0.025 * depth * depth;
+            let scale = ((target_top - 0.22) / (source_top - 0.22)).clamp(0.45, 1.25);
+            q.y = 0.22 + (q.y - 0.22) * (1. + activation * (scale - 1.));
             // A rounded section across each pad replaces the shared flat
             // front/back plates. Retain a thin connected web in the valleys
             // and fade into the original palm rather than adding loose parts.
@@ -305,11 +323,34 @@ pub(crate) fn sculpt(
             let volume_t = ((q.y - 0.28) / (h.tip - 0.28)).clamp(0., 1.);
             let volume_activation = volume_t * volume_t * (3. - 2. * volume_t);
             let middle_z = h.cap_center_z;
-            q.z = middle_z + (q.z - middle_z) * (1. - 0.75 * (1. - section) * volume_activation);
+            q.z = middle_z + (q.z - middle_z) * (1. - 0.25 * (1. - section) * volume_activation);
             *p = h.bind.inverse().transform_point3(q).to_array();
             changed[i] = true;
             break;
         }
+    }
+    // Relax the small triangulation ripples without another subdivision or
+    // changing the UV/skin palette. Geometric welds share one target; the palm
+    // boundary is pinned wherever a neighboring face remains unsculpted.
+    let mut neighbors = BTreeMap::<[i32; 3], BTreeSet<[i32; 3]>>::new();
+    let mut points = BTreeMap::<[i32; 3], Vec3>::new();
+    let mut pinned = BTreeSet::new();
+    for face in mesh.indices.chunks_exact(3) {
+        let ids = [face[0],face[1],face[2]].map(|i| i as usize);
+        let keys = ids.map(|i| key(mesh.positions[i]));
+        if !ids.iter().all(|&i| changed[i]) { pinned.extend(keys); }
+        for corner in 0..3 {
+            points.insert(keys[corner], Vec3::from_array(mesh.positions[ids[corner]]));
+            neighbors.entry(keys[corner]).or_default()
+                .extend([keys[(corner+1)%3], keys[(corner+2)%3]]);
+        }
+    }
+    for (p, &changed) in mesh.positions.iter_mut().zip(&changed) {
+        let k = key(*p);
+        if !changed || pinned.contains(&k) { continue; }
+        let adjacent = &neighbors[&k];
+        let mean = adjacent.iter().map(|k| points[k]).sum::<Vec3>() / adjacent.len() as f32;
+        *p = points[&k].lerp(mean, 0.25).to_array();
     }
     let mut normals = HashMap::<[i32; 3], Vec3>::new();
     for f in mesh.indices.chunks_exact(3) {

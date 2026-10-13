@@ -406,11 +406,17 @@ pub(super) fn sculpt_rock_rims(
     }).collect();
     let edges = join_wall_edges(edges, &ledge_joints);
     let s = &mut mesh.solid;
+    let mut shared_positions = HashMap::<[i64; 3], ([f32; 3], [bool; 3])>::new();
     for i in 0..s.positions.len() {
         if s.uvs[i][0] >= -9000.0 {
             continue;
         }
         let p = Vec3::from_array(s.positions[i]);
+        // Cap and wall grids interpolate the same authored sample through
+        // different float expressions. A one-ULP difference can cross a steep
+        // shoulder constraint and open a slit. Reuse the position field at
+        // source precision, without joining the distinct material/normal data.
+        let source_key = s.positions[i].map(|value| (value * 10000.).round() as i64);
         let source_point = Vec3::new(
             p.x + origin[0] as f32 * g.tile_width - g.origin_x,
             p.y,
@@ -663,6 +669,22 @@ pub(super) fn sculpt_rock_rims(
                 t * t * (3. - 2. * t)
             }).fold(1.0_f32, f32::min);
         s.positions[i] = p.lerp(sculpted, join_weight).to_array();
+        // Exact source floor contacts, protected inside edges and unexposed
+        // viewport interiors keep their own authored coordinates. Only the
+        // deformed shoulder samples need a common evaluated position.
+        if s.positions[i] != p.to_array() {
+            let changed = [0, 1, 2].map(|axis| s.positions[i][axis] != p[axis]);
+            let (position, shared_axes) = shared_positions.entry(source_key)
+                .or_insert((s.positions[i], changed));
+            for axis in 0..3 {
+                if changed[axis] && shared_axes[axis] {
+                    s.positions[i][axis] = position[axis];
+                } else if changed[axis] {
+                    position[axis] = s.positions[i][axis];
+                    shared_axes[axis] = true;
+                }
+            }
+        }
     }
 }
 
