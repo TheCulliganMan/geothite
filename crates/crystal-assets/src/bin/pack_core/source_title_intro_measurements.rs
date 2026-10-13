@@ -590,6 +590,19 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
         .contains(&operation["op"].as_str().unwrap_or(""));
         let mut complete = true;
         for (_, line) in lines {
+            if let Some(routine) = line.strip_prefix("call ").filter(|routine| {
+                ["CrystalIntro_UnownFade", "Intro_Scene20_AppearUnown",
+                 "Intro_Scene24_ApplyPaletteFade", "Intro_FadeUnownWordPals"].contains(routine)
+            }) {
+                let body = source.body(routine)?;
+                let return_index = body.iter().position(|(_, instruction)| instruction == "ret")
+                    .context("intro palette helper has no source return")?;
+                ensure!(return_index >= 2 && body[return_index - 2].1 == "ld a, TRUE"
+                    && body[return_index - 1].1 == "ldh [hCGBPalUpdate], a",
+                    "intro palette helper update boundary changed: {routine}");
+                operation["source_memory_effects"] = json!({"hCGBPalUpdate":1});
+                operation["source_memory_effect_instruction_index_from_end"] = json!(2);
+            }
             if line == "call PlayMusic" || line == "call PlaySFX" {
                 let mut caller = normal.clone();
                 caller.push(6);
@@ -1139,6 +1152,23 @@ fn attach_byte_loop_costs(
 
 #[cfg(test)]
 mod byte_loop_cost_tests {
+    #[test]
+    fn palette_helpers_publish_the_store_boundary_before_return() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else { return; };
+        let vendor = Path::new(&vendor);
+        let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
+        for routine in ["CrystalIntro_UnownFade", "Intro_Scene20_AppearUnown",
+            "Intro_Scene24_ApplyPaletteFade", "Intro_FadeUnownWordPals"] {
+            let line = source.lines.iter().find(|(_, instruction)| instruction == &format!("call {routine}")).unwrap().0;
+            let mut operations = vec![json!({"op":"source_prefix", "source_helper_timing":{}, "source_span":{
+                "file":"engine/movie/intro.asm", "start_line":line - 1, "end_line":line - 1}}),
+                json!({"op":"palette_effect", "source_span":{
+                "file":"engine/movie/intro.asm", "start_line":line, "end_line":line}})];
+            attach_plain_instruction_costs(vendor, &mut operations).unwrap();
+            assert_eq!(operations[1]["source_memory_effects"], json!({"hCGBPalUpdate":1}));
+            assert_eq!(operations[1]["source_memory_effect_instruction_index_from_end"], json!(2));
+        }
+    }
     use super::*;
 
     #[test]
