@@ -156,6 +156,7 @@ fn export_core_pack(repository_root: &Path) -> Result<()> {
 // production presentation replay must certify it before compilation.
 fn export_source_workspace(repository_root: &Path, diagnostic_title: bool) -> Result<()> {
     verify_pret_source_pin(repository_root)?;
+    clear_builder_owned_catalogs(repository_root)?;
     source_constants::export(repository_root).context("export source numeric constants")?;
     source_species::export(repository_root).context("export source Pokemon and moves")?;
     item_name_export::export_source(repository_root).context("export source item names")?;
@@ -193,6 +194,14 @@ fn export_source_workspace(repository_root: &Path, diagnostic_title: bool) -> Re
         source_title_screen::export_unvalidated(repository_root).context("prepare authored title presentation for production replay")?;
     } else {
         source_title_screen::export(repository_root).context("export authored title presentation")?;
+    }
+    Ok(())
+}
+
+fn clear_builder_owned_catalogs(repository_root: &Path) -> Result<()> {
+    let catalogs = repository_root.join("apps/web/assets/data/content-packs/core-modular");
+    if catalogs.exists() {
+        fs::remove_dir_all(&catalogs).context("remove previous builder-owned modular catalogs")?;
     }
     Ok(())
 }
@@ -338,6 +347,35 @@ fn hex_sha256(bytes: &[u8]) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn fresh_preparation_clears_only_owned_catalogs_after_pin_validation() {
+        let root = std::env::temp_dir().join(format!("geothite-fresh-catalogs-{}-{}",std::process::id(),
+            std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos()));
+        let result = (|| -> Result<()> {
+            for path in ["apps/web/assets/data/content-packs/core-modular/stale.json",
+                "apps/web/assets/data/content-packs/user-pack/preserve.json",
+                "apps/web/assets/data/content-packs/core-modular.crystalpack",
+                "apps/web/assets/data/pokemon.json"] {
+                let path = root.join(path);
+                fs::create_dir_all(path.parent().unwrap())?;
+                fs::write(path,"preserve")?;
+            }
+            anyhow::ensure!(export_source_workspace(&root,true).is_err(),"missing pinned source unexpectedly accepted");
+            anyhow::ensure!(root.join("apps/web/assets/data/content-packs/core-modular/stale.json").exists(),
+                "pin failure cleared source catalogs");
+            clear_builder_owned_catalogs(&root)?;
+            anyhow::ensure!(!root.join("apps/web/assets/data/content-packs/core-modular").exists(),
+                "builder-owned stale catalogs remain");
+            for path in ["apps/web/assets/data/content-packs/user-pack/preserve.json",
+                "apps/web/assets/data/content-packs/core-modular.crystalpack","apps/web/assets/data/pokemon.json"] {
+                anyhow::ensure!(fs::read_to_string(root.join(path))? == "preserve","unrelated output changed");
+            }
+            Ok(())
+        })();
+        let _ = fs::remove_dir_all(root);
+        result.unwrap();
+    }
 
     #[test]
     fn hashes_pack_bytes_for_provenance() {

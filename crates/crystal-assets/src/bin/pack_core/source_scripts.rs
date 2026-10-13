@@ -283,13 +283,6 @@ fn expand_underground_doors(source: &str) -> Result<String> {
 pub(super) fn ensure_standard_catalog(repository: &Path) -> Result<()> {
     let data = repository.join("apps/web/assets/data");
     let aggregate = data.join("story_events/StandardScripts.json");
-    if aggregate.exists()
-        && data
-            .join("content-packs/core-modular.generated.json")
-            .exists()
-    {
-        return Ok(());
-    }
     let vendor = repository.join("vendor/pokecrystal");
     let standard = parse(&std::fs::read_to_string(
         vendor.join("engine/events/std_scripts.asm"),
@@ -341,4 +334,40 @@ pub(super) fn ensure_standard_catalog(repository: &Path) -> Result<()> {
         std::fs::write(path, &bytes)?;
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod rebuild_tests {
+    use super::*;
+
+    #[test]
+    fn standard_scripts_rebuild_with_stale_aggregate_and_missing_modular_file() {
+        let root = std::env::temp_dir().join(format!("geothite-standard-rebuild-{}-{}",std::process::id(),
+            std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos()));
+        let result = (|| -> Result<()> {
+            let source = root.join("vendor/pokecrystal/engine/events/std_scripts.asm");
+            std::fs::create_dir_all(source.parent().unwrap())?;
+            std::fs::create_dir_all(root.join("vendor/pokecrystal/data/text"))?;
+            std::fs::write(&source,"StdScripts:\n add_stdscript FreshScript\nFreshScript:\n return\n")?;
+            let data = root.join("apps/web/assets/data");
+            std::fs::create_dir_all(data.join("story_events"))?;
+            std::fs::create_dir_all(data.join("content-packs"))?;
+            std::fs::write(data.join("story_events/StandardScripts.json"),"stale")?;
+            std::fs::write(data.join("content-packs/core-modular.generated.json"),"stale")?;
+            ensure_standard_catalog(&root)?;
+            let aggregate = std::fs::read(data.join("story_events/StandardScripts.json"))?;
+            let modular = std::fs::read(data.join("content-packs/core-modular/story_events/StandardScripts.json"))?;
+            ensure!(aggregate == modular,"standard script copies differ");
+            let catalog: Value = serde_json::from_slice(&aggregate)?;
+            ensure!(catalog["StandardScripts"]["FreshScript"].is_array(),"fresh source standard script missing");
+            std::fs::write(&source,"StdScripts:\n add_stdscript ChangedScript\nChangedScript:\n end\n")?;
+            ensure_standard_catalog(&root)?;
+            let changed: Value = serde_json::from_slice(&std::fs::read(data.join("story_events/StandardScripts.json"))?)?;
+            ensure!(changed["StandardScripts"]["ChangedScript"].is_array()
+                && changed["StandardScripts"].get("FreshScript").is_none(),"existing outputs masked changed source");
+            Ok(())
+        })();
+        let _ = std::fs::remove_dir_all(root);
+        result.unwrap();
+    }
 }
