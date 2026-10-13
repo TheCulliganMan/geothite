@@ -340,6 +340,8 @@ fn scene_memory(cpu: &Cpu, symbols: &BTreeMap<String, (usize, u16)>) -> Value {
     if let Some((bank,address)) = symbols.get("wGameTimeHours") {
         memory.insert("wGameTimeHours+1".into(),json!(cpu.read_symbol(*bank,address.wrapping_add(1))));
     }
+    // Hardware register constants do not have entries in RGBDS's symbol file.
+    memory.insert("rWBK".into(), json!(cpu.read(0xff70)));
     if let Some((_, address)) = symbols.get("wLYOverrides") {
         memory.insert("wLYOverrides".into(), json!(cpu.read(*address)));
         memory.insert(
