@@ -181,7 +181,7 @@ fn certify_farcall_source(vendor: &Path) -> Result<()> {
 /// Plain SM83 source instructions retain their boundaries. Conditional control
 /// transfers have distinct taken and fallthrough paths; no ROM frame readings
 /// participate in this model.
-fn plain_instruction_cycles(instruction: &str, taken: bool) -> Option<Vec<u64>> {
+pub(super) fn plain_instruction_cycles(instruction: &str, taken: bool) -> Option<Vec<u64>> {
     let registers = ["a", "b", "c", "d", "e", "h", "l"];
     if instruction.starts_with("assert ")
         || instruction.starts_with('.')
@@ -492,6 +492,10 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
             "intro plain helper source changed: {routine}"
         );
     }
+    let audio=super::Source::read(vendor,"home/audio.asm")?;
+    ensure!(audio.body("SFXChannelsOff")?.iter().skip(1).map(|(_,line)|line.as_str()).collect::<Vec<_>>()
+        ==["xor a","ld [wChannel5Flags1], a","ld [wChannel6Flags1], a","ld [wChannel7Flags1], a","ld [wChannel8Flags1], a","ld [wPitchSweep], a","ret"],
+        "intro scheduled SFXChannelsOff instruction-model source changed");
     let mut previous_scene_end = 0u64;
     for operation in operations {
         let span = operation["source_span"].clone();
@@ -557,6 +561,24 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
         let mut taken = Vec::new();
         let mut complete = true;
         for (_, line) in lines {
+            if line == "call PlayMusic" || line == "call PlaySFX" {
+                let mut caller = normal.clone();
+                caller.push(6);
+                operation["source_audio_caller_instruction_machine_cycles"] = json!(caller);
+                complete = false;
+                break;
+            }
+            if line == "call .PlayUnownSound" {
+                let mut caller = normal.clone();
+                caller.push(6);
+                operation["source_scheduled_audio_caller_instruction_machine_cycles"] =
+                    json!(caller);
+                operation["source_scheduled_audio_timing"] = json!({"routine":"IntroScene12.PlayUnownSound",
+                    "source_file":"engine/movie/intro.asm","model":"source_table_search_v1","entry_count":8,
+                    "caller_call_included":false,"interrupts_included":false});
+                complete = false;
+                break;
+            }
             if line == "call Intro_ColoredSuicuneFrameSwap"
                 || line == "call Intro_Scene16_AnimateSuicune"
             {
@@ -651,16 +673,22 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
             if file == "home/tilemap.asm" && operation["op"] == "palette_transfer_request" {
                 // This effect returns from the CGB ClearPalettes branch before
                 // falling through ClearBGPalettes into WaitBGMap.
-                let following = current
+                let last = current
                     .lines
                     .iter()
-                    .find(|(line, _)| u64::from(*line) > end);
-                ensure!(
-                    following.is_some_and(|(_, line)| line == "ret"),
-                    "intro palette clear return source changed"
-                );
-                normal.push(4);
-                taken.push(4);
+                    .find(|(line, _)| u64::from(*line) == end);
+                if !last.is_some_and(|(_, line)| line == "ret") {
+                    let following = current
+                        .lines
+                        .iter()
+                        .find(|(line, _)| u64::from(*line) > end);
+                    ensure!(
+                        following.is_some_and(|(_, line)| line == "ret"),
+                        "intro palette clear return source changed at {file}:{start}..{end}; last {last:?}, following {following:?}"
+                    );
+                    normal.push(4);
+                    taken.push(4);
+                }
             }
             operation["source_instruction_machine_cycles"] = json!(normal);
             if normal != taken {
@@ -1379,6 +1407,389 @@ mod byte_loop_cost_tests {
                     .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
                     .collect::<Vec<_>>();
                 assert_eq!(predicted, actual, "{routine} frame {frame:?}");
+            }
+        }
+    }
+
+    #[test]
+    fn sprite_sine_macro_sign_and_amplitude_paths_match_source_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        for (routine, cosine, wrapper) in [
+            ("Sprites_Sine", false, false),
+            ("Sprites_Cosine", true, false),
+            ("AnimSeqs_Sine", false, true),
+            ("AnimSeqs_Cosine", true, true),
+        ] {
+            for angle in [0u8, 15, 16, 31, 32, 47, 48, 63, 255] {
+                for amplitude in [0u8, 1, 2, 32, 127, 128, 255] {
+                    let predicted =
+                        crystal_assets::runtime_intro_sprite_sine_instruction_machine_cycles(
+                            cosine, angle, amplitude, wrapper,
+                        );
+                    let measured = source_intro_oracle::measure_routine_state(
+                        vendor,
+                        routine,
+                        &[],
+                        &[("A", u16::from(angle)), ("DE", u16::from(amplitude) << 8)],
+                    )
+                    .unwrap();
+                    let actual = measured["instructions"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                        .collect::<Vec<_>>();
+                    assert_eq!(
+                        predicted, actual,
+                        "{routine} angle {angle} amplitude {amplitude}"
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn sprite_allocator_capacity_and_counter_paths_match_source_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        for occupied in 0u8..=10 {
+            for count in [0u8, 1, 254, 255] {
+                let predicted =
+                    crystal_assets::runtime_intro_sprite_init_instruction_machine_cycles(
+                        occupied, count,
+                    )
+                    .unwrap();
+                let mut writes = (0..occupied)
+                    .map(|slot| {
+                        (
+                            format!("wSpriteAnimationStructs + {}", u16::from(slot) * 16),
+                            1,
+                        )
+                    })
+                    .collect::<Vec<_>>();
+                writes.extend([
+                    ("wSpriteAnimCount".into(), count),
+                    ("hROMBank".into(), 0x25),
+                ]);
+                let measured = source_intro_oracle::measure_routine_state(
+                    vendor,
+                    "InitSpriteAnimStruct",
+                    &writes,
+                    &[("A", 0x29), ("DE", 0x5858)],
+                )
+                .unwrap();
+                let actual = measured["instructions"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                    .collect::<Vec<_>>();
+                assert_eq!(predicted, actual, "occupied {occupied} count {count}");
+            }
+        }
+    }
+
+    #[test]
+    fn unown_group_and_home_reinit_match_source_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        let predicted = crystal_assets::runtime_intro_sprite_reinit_instruction_machine_cycles();
+        let measured = source_intro_oracle::measure_routine_state(
+            vendor,
+            "ReinitSpriteAnimFrame",
+            &[("hROMBank".into(), 0x39)],
+            &[("BC", 0xc500), ("A", 0x49)],
+        )
+        .unwrap();
+        let actual = measured["instructions"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+            .collect::<Vec<_>>();
+        assert_eq!(predicted, actual, "home reinit");
+        for occupied in 0u8..=6 {
+            for count in [0u8, 254, 255] {
+                let predicted =
+                    crystal_assets::runtime_intro_sprite_group_instruction_machine_cycles(
+                        [occupied, occupied + 1, occupied + 2, occupied + 3],
+                        count,
+                    )
+                    .unwrap();
+                let mut writes = (0..occupied)
+                    .map(|slot| {
+                        (
+                            format!("wSpriteAnimationStructs + {}", u16::from(slot) * 16),
+                            1,
+                        )
+                    })
+                    .collect::<Vec<_>>();
+                writes.extend([
+                    ("wSpriteAnimCount".into(), count),
+                    ("hROMBank".into(), 0x39),
+                ]);
+                let measured = source_intro_oracle::measure_routine_state(
+                    vendor,
+                    "CrystalIntro_InitUnownAnim",
+                    &writes,
+                    &[("DE", 0x5858)],
+                )
+                .unwrap();
+                let actual = measured["instructions"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                    .collect::<Vec<_>>();
+                assert_eq!(
+                    predicted, actual,
+                    "Unown group occupied {occupied} count {count}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn sprite_frame_control_flip_and_oam_capacity_paths_match_source_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        let root = vendor.parent().unwrap().parent().unwrap();
+        let bundle: Value = serde_json::from_slice(
+            &std::fs::read(root.join("apps/web/assets/data/sprite_anim_bundle.json")).unwrap(),
+        )
+        .unwrap();
+        let constants =
+            std::fs::read_to_string(vendor.join("constants/sprite_anim_constants.asm")).unwrap();
+        let names = constants
+            .lines()
+            .filter_map(|line| {
+                line.trim()
+                    .split(';')
+                    .next()
+                    .unwrap()
+                    .trim()
+                    .strip_prefix("const ")
+                    .filter(|name| name.starts_with("SPRITE_ANIM_FRAMESET_"))
+                    .map(str::to_owned)
+            })
+            .collect::<Vec<_>>();
+        for (id, name) in names
+            .iter()
+            .enumerate()
+            .filter(|(_, name)| name.starts_with("SPRITE_ANIM_FRAMESET_INTRO_"))
+        {
+            let frames = bundle["framesets"][name]["steps"].as_array().unwrap();
+            for before in std::iter::once(255u8).chain(0..frames.len() as u8) {
+                for duration in [0u8, 1] {
+                    if duration == 0 && before != 255 && usize::from(before) + 1 >= frames.len() {
+                        continue;
+                    }
+                    if duration != 0
+                        && (before == 255
+                            || ["restart", "end"]
+                                .contains(&frames[before as usize]["command"].as_str().unwrap()))
+                    {
+                        continue;
+                    }
+                    let mut frame = before;
+                    let mut commands = Vec::new();
+                    let terminal;
+                    loop {
+                        if duration == 0 {
+                            frame = frame.wrapping_add(1);
+                        }
+                        let step = &frames[frame as usize];
+                        let command = step["command"].as_str().unwrap();
+                        commands.push(match command {
+                            "restart" => 254,
+                            "end" => 255,
+                            "wait" => 253,
+                            "delete" => 252,
+                            _ => 0,
+                        });
+                        match command {
+                            "restart" => frame = 255,
+                            "end" => frame = frame.wrapping_sub(2),
+                            _ => {
+                                terminal = step;
+                                break;
+                            }
+                        }
+                        assert!(commands.len() < 64);
+                    }
+                    let flags = (terminal["attr_flags"].as_u64().unwrap() as u8) >> 1;
+                    let count = terminal["oam_set"]
+                        .as_str()
+                        .map(|name| {
+                            bundle["oam_sets"][name]["pieces"].as_array().unwrap().len() as u8
+                        })
+                        .unwrap_or(0);
+                    for oam_addr in [0u8, 156, 160] {
+                        let predicted =
+                            crystal_assets::runtime_intro_sprite_update_instruction_machine_cycles(
+                                duration, &commands, flags, count, oam_addr,
+                            )
+                            .unwrap();
+                        let writes = vec![
+                            ("wSpriteAnimationStructs + 1".into(), id as u8),
+                            ("wSpriteAnimationStructs + 8".into(), duration),
+                            ("wSpriteAnimationStructs + 10".into(), before),
+                            ("wCurSpriteOAMAddr".into(), oam_addr),
+                        ];
+                        let measured = source_intro_oracle::measure_routine_state(
+                            vendor,
+                            "UpdateAnimFrame",
+                            &writes,
+                            &[("BC", 0xc314)],
+                        )
+                        .unwrap();
+                        let actual = measured["instructions"]
+                            .as_array()
+                            .unwrap()
+                            .iter()
+                            .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                            .collect::<Vec<_>>();
+                        let mismatch = predicted.iter().zip(&actual).position(|(a, b)| a != b);
+                        assert!(
+                            predicted == actual,
+                            "{name} before{before} duration{duration} oam{oam_addr} mismatch{mismatch:?} predicted{:?} actual{:?} lengths{}:{}",
+                            mismatch.map(|i| predicted[i]),
+                            mismatch.map(|i| actual[i]),
+                            predicted.len(),
+                            actual.len()
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn sprite_scheduler_source_slot_order_and_oam_clear_match_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        for mask in [0u16, 1, 2, 0x155, 0x2aa, 0x3ff] {
+            let callback = vec![4, 2, 5]; // IntroUnownF with source scene counter0.
+            let update = crystal_assets::runtime_intro_sprite_update_instruction_machine_cycles(
+                0,
+                &[253],
+                0,
+                0,
+                0,
+            )
+            .unwrap();
+            let slots = (0..10)
+                .map(|slot| {
+                    if mask & (1 << slot) != 0 {
+                        Some((callback.clone(), update.clone()))
+                    } else {
+                        None
+                    }
+                })
+                .collect::<Vec<_>>();
+            let predicted =
+                crystal_assets::runtime_intro_sprite_scheduler_instruction_machine_cycles(
+                    &slots, None, 0,
+                )
+                .unwrap();
+            let mut writes = vec![("wSlotsDelay".into(), 0)];
+            for slot in 0..10 {
+                if mask & (1 << slot) == 0 {
+                    continue;
+                }
+                for (offset, value) in [(0, 1), (1, 0x3f), (2, 0x21), (10, 255)] {
+                    writes.push((
+                        format!("wSpriteAnimationStructs + {}", slot * 16 + offset),
+                        value,
+                    ));
+                }
+            }
+            let measured =
+                source_intro_oracle::measure_routine(vendor, "PlaySpriteAnimations", &writes)
+                    .unwrap();
+            let actual = measured["instructions"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            let mismatch = predicted.iter().zip(&actual).position(|(a, b)| a != b);
+            assert!(
+                predicted == actual,
+                "scheduler mask{mask:x} mismatch{mismatch:?} predicted{:?} actual{:?} lengths{}:{}",
+                mismatch.map(|i| predicted[i]),
+                mismatch.map(|i| actual[i]),
+                predicted.len(),
+                actual.len()
+            );
+        }
+    }
+
+    #[test]
+    fn scheduled_unown_audio_search_and_nested_call_boundaries_match_sm83() {
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
+        let vendor = Path::new(&vendor);
+        let symbols = source_intro_oracle::symbols(
+            &std::fs::read_to_string(vendor.join("pokecrystal.sym")).unwrap(),
+        )
+        .unwrap();
+        for frame in [0u8, 1, 32, 64, 96, 128, 144, 160, 176, 177, 255] {
+            let matched = [0, 32, 64, 96, 128, 144, 160, 176]
+                .iter()
+                .position(|&entry| entry == frame);
+            let (prefix, suffix) =
+                crystal_assets::runtime_intro_scheduled_audio_instruction_machine_cycles(
+                    matched, 8,
+                )
+                .unwrap();
+            let measured = source_intro_oracle::measure_routine(
+                vendor,
+                "IntroScene12.PlayUnownSound",
+                &[
+                    ("wIntroSceneFrameCounter".into(), frame),
+                    ("hROMBank".into(), 0x39),
+                ],
+            )
+            .unwrap();
+            let instructions = measured["instructions"].as_array().unwrap();
+            let actual = instructions
+                .iter()
+                .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                .collect::<Vec<_>>();
+            if matched.is_none() {
+                assert_eq!(prefix, actual, "no sound frame{frame}");
+            } else {
+                let play = instructions
+                    .iter()
+                    .position(|instruction| {
+                        instruction["bank"].as_u64() == Some(0)
+                            && instruction["address"].as_u64()
+                                == Some(u64::from(symbols["PlaySFX"].1))
+                    })
+                    .unwrap();
+                assert_eq!(
+                    prefix,
+                    actual[..play],
+                    "scheduled sound frame{frame} prefix"
+                );
+                assert_eq!(
+                    suffix,
+                    actual[actual.len() - suffix.len()..],
+                    "scheduled sound frame{frame} suffix"
+                );
             }
         }
     }

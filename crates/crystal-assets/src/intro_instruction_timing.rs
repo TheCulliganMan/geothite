@@ -332,6 +332,321 @@ pub fn runtime_intro_tilemap_xor_instruction_machine_cycles(
     Ok(tape)
 }
 
+/// The calc_sine_wave source macro multiplies by shifting the actual amplitude
+/// until it becomes zero. Angle sign and amplitude bits select instruction
+/// paths independently of the lookup table's numeric sine values.
+pub fn runtime_intro_sprite_sine_instruction_machine_cycles(
+    cosine: bool,
+    angle: u8,
+    amplitude: u8,
+    animseq_wrapper: bool,
+) -> Vec<u64> {
+    let mut tape = Vec::new();
+    if animseq_wrapper {
+        tape.push(6);
+    }
+    let angle = if cosine {
+        tape.push(2);
+        angle.wrapping_add(16)
+    } else {
+        angle
+    };
+    let negative = angle & 63 >= 32;
+    tape.extend([2, 2, if negative { 3 } else { 2 }]);
+    if negative {
+        tape.push(2);
+    }
+    tape.push(6);
+    tape.extend([1, 1, 2, 3, 2, 2, 2, 2, 2, 3]);
+    let mut remaining = amplitude;
+    loop {
+        let odd = remaining & 1 != 0;
+        remaining >>= 1;
+        tape.extend([2, if odd { 2 } else { 3 }]);
+        if odd {
+            tape.push(2);
+        }
+        tape.extend([2, 2, 1, if remaining == 0 { 2 } else { 3 }]);
+        if remaining == 0 {
+            break;
+        }
+    }
+    tape.extend([4, 1]);
+    if negative {
+        tape.extend([2, 1]);
+    }
+    tape.push(4);
+    if animseq_wrapper {
+        tape.push(4);
+    }
+    tape
+}
+
+/// InitSpriteAnimStruct's bank-preserving home wrapper and engine body.
+/// Intro object definitions all use dictionary key0; that key occupies the
+/// first dictionary entry after the authored clears/away-scene write.
+pub fn runtime_intro_sprite_init_instruction_machine_cycles(
+    occupied_prefix: u8,
+    count_before: u8,
+) -> Result<Vec<u64>> {
+    ensure!(
+        occupied_prefix <= 10,
+        "intro sprite allocator exceeds its source capacity"
+    );
+    let mut tape = vec![4, 3, 4, 2, 4, 3, 4, 4, 4, 6, 4, 4, 3, 2];
+    for slot in 0..occupied_prefix {
+        tape.extend([2, 1, 2, 3, 2, 1, if slot == 9 { 2 } else { 3 }]);
+    }
+    if occupied_prefix == 10 {
+        tape.extend([3, 3, 1, 4]);
+    } else {
+        tape.extend([
+            2,
+            1,
+            3,
+            1,
+            1,
+            3,
+            3,
+            2,
+            1,
+            if count_before == 255 { 2 } else { 3 },
+        ]);
+        if count_before == 255 {
+            tape.push(3);
+        }
+        tape.extend([
+            3, 1, 2, 3, 2, 2, 2, 1, 1, 3, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 6,
+        ]);
+        // GetSpriteAnimVTile's first-entry dictionary match, including its RET.
+        tape.extend([4, 4, 3, 1, 2, 2, 1, 3, 2, 3, 3, 4]);
+        tape.extend([
+            2, 3, 3, 2, 1, 2, 1, 2, 1, 2, 2, 1, 2, 2, 1, 2, 1, 2, 2, 2, 2, 2, 1, 4, 1, 4, 4,
+        ]);
+    }
+    tape.extend([3, 4, 3, 4, 4, 4]);
+    Ok(tape)
+}
+
+/// The home wrapper used by source-authored Unown group frameset resets.
+pub fn runtime_intro_sprite_reinit_instruction_machine_cycles() -> Vec<u64> {
+    let mut tape = vec![4, 3, 4, 2, 4, 3, 4, 4, 4, 6];
+    tape.extend([3, 2, 2, 3, 2, 3, 3, 2, 3, 4]);
+    tape.extend([3, 4, 3, 4, 4, 4]);
+    tape
+}
+
+/// CrystalIntro_InitUnownAnim's four initializers, with their authored radius
+/// writes and home frameset resets. Caller coordinate setup/CALL is separate.
+/// The actual first-free slot before each allocation is supplied by the shared
+/// allocator; it cannot be inferred from a renderer's cursor or frame count.
+pub fn runtime_intro_sprite_group_instruction_machine_cycles(
+    occupied_prefixes: [u8; 4],
+    count_before: u8,
+) -> Result<Vec<u64>> {
+    let mut tape = Vec::new();
+    let mut count = count_before;
+    for (index, occupied) in occupied_prefixes.into_iter().enumerate() {
+        ensure!(
+            occupied < 10,
+            "intro Unown group has no free source sprite slot"
+        );
+        if index != 3 {
+            tape.push(4);
+        }
+        tape.extend([2, 6]);
+        tape.extend(runtime_intro_sprite_init_instruction_machine_cycles(
+            occupied, count,
+        )?);
+        count = count.wrapping_add(1);
+        if count == 0 {
+            count = 1;
+        }
+        tape.extend([3, 2, 3, 2, 6]);
+        tape.extend(runtime_intro_sprite_reinit_instruction_machine_cycles());
+        tape.push(if index == 3 { 4 } else { 3 });
+    }
+    Ok(tape)
+}
+
+/// UpdateAnimFrame's instruction paths selected by source animation state.
+/// Command bytes use the source oam control values: restart254/end255 may
+/// precede a terminal frame(<252), wait253 or delete252. Caller CALL excluded.
+pub fn runtime_intro_sprite_update_instruction_machine_cycles(
+    duration_before: u8,
+    frame_commands: &[u8],
+    frame_flags: u8,
+    object_count: u8,
+    oam_addr_before: u8,
+) -> Result<Vec<u64>> {
+    ensure!(
+        !frame_commands.is_empty() && frame_commands.len() <= 64,
+        "intro sprite frame control path is empty or unbounded"
+    );
+    let pointer = [3, 2, 2, 2, 3, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 4];
+    // CALL InitSpriteAnimBuffer, full body, CALL GetSpriteAnimFrame.
+    let mut tape = vec![6, 1, 4, 3, 2];
+    for _ in 0..5 {
+        tape.extend([2, 4]);
+    }
+    tape.extend([4, 6]);
+    let mut terminal = None;
+    for (index, &command) in frame_commands.iter().enumerate() {
+        let holding = index == 0 && duration_before != 0;
+        tape.extend([3, 2, 2, 1, if holding { 2 } else { 3 }]);
+        if holding {
+            ensure!(
+                frame_commands.len() == 1 && command < 254,
+                "holding sprite has a source control command"
+            );
+            tape.extend([3, 6]);
+            tape.extend(pointer);
+            tape.extend([2, 4, 3]);
+        } else {
+            tape.extend([3, 2, 3, 6]);
+            tape.extend(pointer);
+            tape.extend([2, 2, if command == 254 { 3 } else { 2 }]);
+            if command == 254 {
+                tape.extend([1, 3, 2, 2, 1, 3, 2, 2, 3]);
+                continue;
+            }
+            tape.extend([2, if command == 255 { 3 } else { 2 }]);
+            if command == 255 {
+                tape.extend([1, 3, 2, 2, 3, 2, 3, 3, 3]);
+                continue;
+            }
+            tape.extend([4, 2, 4, 2, 3, 2, 2, 3, 2, 2, 3]);
+        }
+        tape.extend([2, 2, 2, 4, 3, 4]);
+        ensure!(
+            index + 1 == frame_commands.len(),
+            "intro sprite path continues after its terminal frame"
+        );
+        terminal = Some(command);
+        break;
+    }
+    let command = terminal.context("intro sprite source control path has no terminal frame")?;
+    tape.extend([2, if command == 253 { 3 } else { 2 }]);
+    if command == 253 {
+        tape.extend([1, 4]);
+        return Ok(tape);
+    }
+    tape.extend([2, if command == 252 { 3 } else { 2 }]);
+    if command == 252 {
+        tape.extend([6, 3, 2, 3, 4, 1, 4]);
+        return Ok(tape);
+    }
+    tape.extend([6, 1, 2, 3, 2, 2, 2, 4]); // GetFrameOAMPointer including its RET.
+    tape.extend([4, 2, 4, 2, 2, 2, 1, 4, 4, 1, 2, 2, 1]);
+    let mut remaining = object_count;
+    let mut address = oam_addr_before;
+    for _ in 0..64 {
+        for flip in [64u8, 32] {
+            tape.extend([4, 1, 4, 1, 1, 4, 1, 1, 6]);
+            let flipped = frame_flags & flip != 0;
+            tape.extend([4, 2, 3, 3, if flipped { 2 } else { 3 }]);
+            if flipped {
+                tape.extend([2, 2, 1]);
+            }
+            tape.extend([3, 4, 1, 2, 2, 2]);
+        }
+        tape.extend([4, 2, 2, 2, 2]);
+        tape.extend([6, 4, 1, 2, 1, 2, 1, 2, 2, 1, 4]);
+        address = address.wrapping_add(4);
+        tape.extend([2, 2, 2, 1, 4, 2, if address >= 160 { 3 } else { 2 }]);
+        if address >= 160 {
+            tape.extend([3, 1, 4]);
+            return Ok(tape);
+        }
+        remaining = remaining.wrapping_sub(1);
+        tape.extend([1, if remaining == 0 { 2 } else { 3 }]);
+        if remaining == 0 {
+            tape.extend([3, 3, 1, 4]);
+            return Ok(tape);
+        }
+    }
+    anyhow::bail!("intro sprite OAM loop exceeds source capacity")
+}
+
+/// PlaySpriteAnimations's source slot scan, callback/update ordering and OAM
+/// clear loop. None denotes an inactive authoritative slot; each active slot
+/// carries its separately source-derived callback and UpdateAnimFrame tapes.
+/// The outer farcall wrapper remains separate from this callee's instructions.
+pub fn runtime_intro_sprite_scheduler_instruction_machine_cycles(
+    slots: &[Option<(Vec<u64>, Vec<u64>)>],
+    oam_limit_slot: Option<usize>,
+    final_oam_addr: u8,
+) -> Result<Vec<u64>> {
+    ensure!(
+        slots.len() == 10,
+        "intro scheduler slot count differs from source capacity"
+    );
+    ensure!(
+        oam_limit_slot.is_none_or(|slot| slot < 10 && slots[slot].is_some()),
+        "intro scheduler OAM limit is not an active source slot"
+    );
+    let mut tape = vec![4, 4, 4, 4, 2, 4, 6, 3, 2];
+    for (slot, active) in slots.iter().enumerate() {
+        tape.extend([2, 1, if active.is_some() { 2 } else { 3 }]);
+        if let Some((callback, update)) = active {
+            ensure!(
+                callback
+                    .iter()
+                    .chain(update)
+                    .all(|cost| (1..=6).contains(cost)),
+                "intro sprite nested tape has an invalid instruction"
+            );
+            tape.extend([1, 1, 4, 4, 6, 3, 2, 2, 2, 3, 2, 2, 2, 2, 1, 1]);
+            tape.extend_from_slice(callback);
+            tape.push(6);
+            tape.extend_from_slice(update);
+            tape.extend([3, 3, if oam_limit_slot == Some(slot) { 3 } else { 2 }]);
+            if oam_limit_slot == Some(slot) {
+                tape.extend([4, 3, 3, 3, 3, 4]);
+                return Ok(tape);
+            }
+        }
+        tape.extend([3, 2, 1, if slot == 9 { 2 } else { 3 }]);
+    }
+    tape.extend([4, 1, 2]);
+    let mut address = final_oam_addr;
+    loop {
+        tape.extend([1, 2, if address >= 160 { 3 } else { 2 }]);
+        if address >= 160 {
+            break;
+        }
+        tape.extend([1, 2, 3]);
+        address = address.wrapping_add(1);
+    }
+    tape.extend([4, 3, 3, 3, 3, 4]);
+    Ok(tape)
+}
+
+/// Scene12's source sound-table search, split around the nested PlaySFX call.
+/// The prefix includes CALL PlaySFX but not the outer CALL .PlayUnownSound.
+/// The no-match prefix returns directly after the table sentinel.
+pub fn runtime_intro_scheduled_audio_instruction_machine_cycles(
+    matched_entry: Option<usize>,
+    entry_count: usize,
+) -> Result<(Vec<u64>, Vec<u64>)> {
+    ensure!(
+        entry_count == 8 && matched_entry.is_none_or(|entry| entry < entry_count),
+        "intro Unown sound table differs from source"
+    );
+    let mut prefix = vec![4, 1, 3];
+    for _ in 0..matched_entry.unwrap_or(entry_count) {
+        prefix.extend([2, 2, 2, 1, 2, 2, 2, 3]);
+    }
+    if matched_entry.is_none() {
+        prefix.extend([2, 2, 5]);
+        return Ok((prefix, Vec::new()));
+    }
+    prefix.extend([2, 2, 2, 1, 3, 2, 2, 1, 4, 6]);
+    prefix.extend([1, 4, 4, 4, 4, 4, 4]); // SFXChannelsOff including its RET.
+    prefix.extend([3, 6]);
+    Ok((prefix, vec![4]))
+}
+
 /// Expand a source-certified compact helper descriptor without accepting
 /// precomputed frame positions or double-counted call/interrupt work.
 pub fn runtime_intro_helper_instruction_machine_cycles(descriptor: &Value) -> Result<Vec<u64>> {

@@ -88,7 +88,35 @@ fn callback(source: &Source, core: &Source, symbol: &str, target: &str) -> Resul
                 .context("intro callback reinit lacks symbolic frameset")?;
             reinitializations.push(json!({"frameset":frameset,"guard":{"kind":"authored_control_flow"},"application":"reset_frame_and_duration","source_span":span(source,*line_number-1,*line_number),"implementation_source_span":core.span("_ReinitSpriteAnimFrame")?}));
         }
-        instructions.push(json!({"opcode":opcode,"args":args,"source_span":span(source,*line_number,*line_number)}));
+        let mut instruction = json!({"opcode":opcode,"args":args,"source_span":span(source,*line_number,*line_number)});
+        if line == "call AnimSeqs_Sine" || line == "call AnimSeqs_Cosine" {
+            instruction["source_machine_cycles"] = json!([6]);
+            instruction["source_helper_timing"] = json!({"routine":line.strip_prefix("call ").unwrap(),
+                "source_file":"engine/sprite_anims/core.asm","model":"sine_amplitude_shift_v1",
+                "angle_register":"a","amplitude_register":"d","caller_call_included":false,"interrupts_included":false});
+        } else if line == "call _ReinitSpriteAnimFrame" {
+            let body = core.body("_ReinitSpriteAnimFrame")?;
+            let mut tape = vec![6];
+            for (_, line) in body.iter().skip(1) {
+                tape.extend(
+                    super::source_title_intro_measurements::plain_instruction_cycles(line, false)
+                        .context("unmodeled source sprite reinit instruction")?,
+                );
+            }
+            instruction["source_machine_cycles"] = json!(tape);
+        } else {
+            instruction["source_machine_cycles"] = json!(
+                super::source_title_intro_measurements::plain_instruction_cycles(line, false)
+                    .with_context(|| format!("unmodeled intro callback timing {line}"))?
+            );
+            let taken =
+                super::source_title_intro_measurements::plain_instruction_cycles(line, true)
+                    .context("intro callback taken timing")?;
+            if instruction["source_machine_cycles"] != json!(taken) {
+                instruction["source_machine_cycles_taken"] = json!(taken);
+            }
+        }
+        instructions.push(instruction);
     }
     for instruction in &instructions {
         if matches!(instruction["opcode"].as_str(), Some("jr" | "jp")) {
@@ -149,6 +177,35 @@ pub(super) fn export(vendor: &Path) -> Result<Value> {
     let movie = Source::read(vendor, "engine/movie/intro.asm")?;
     let functions = Source::read(vendor, "engine/sprite_anims/functions.asm")?;
     let core = Source::read(vendor, "engine/sprite_anims/core.asm")?;
+    {
+        use sha2::Digest;
+        for (file, expected) in [
+            (
+                "home/sprite_anims.asm",
+                "825ad2cf62c29504f900c222733c16c95ff7c404c8c6d682968c484e0eabf698",
+            ),
+            (
+                "engine/movie/intro.asm",
+                "4d55128b81014155450a8b1ba53f6972c04e0225cc9f05056cccf1e16cee8b90",
+            ),
+            (
+                "engine/sprite_anims/core.asm",
+                "1dc8847309147b1d9704d2e3c15dfcc6f4461623f93bad71e52d5c26399706a9",
+            ),
+            (
+                "macros/code.asm",
+                "560fd40cc7e1a2005cb4b9e81a02077833087d9698d35cff8dac6a47ffaafd57",
+            ),
+        ] {
+            ensure!(
+                format!(
+                    "{:x}",
+                    sha2::Sha256::digest(std::fs::read(vendor.join(file))?)
+                ) == expected,
+                "intro sprite instruction-model source changed: {file}"
+            );
+        }
+    }
     let objects = object_definitions(vendor)?;
     let constants = std::fs::read_to_string(vendor.join("constants/sprite_anim_constants.asm"))?;
     ensure!(
@@ -192,7 +249,11 @@ pub(super) fn export(vendor: &Path) -> Result<Value> {
         ram.contains("; slot machine\nwSlotsDelay:: db"),
         "slot delay no longer the first union byte"
     );
-    let scheduler = movie.operation("CrystalIntro", &["call IntroSceneJumper", "farcall PlaySpriteAnimations", "call DelayFrame"], "sprite_scheduler_step", json!({"call_order":["DoSpriteAnimFrame","UpdateAnimFrame"],"allocation_order":"first_free_slot","capacity":10,"implementation_source_span":core.span("DoNextFrameForAllSprites")?}))?;
+    let mut scheduler = movie.operation("CrystalIntro", &["call IntroSceneJumper", "farcall PlaySpriteAnimations", "call DelayFrame"], "sprite_scheduler_step", json!({"call_order":["DoSpriteAnimFrame","UpdateAnimFrame"],"allocation_order":"first_free_slot","capacity":10,"implementation_source_span":core.span("DoNextFrameForAllSprites")?}))?;
+    scheduler["source_scheduler_timing"] = json!({"routine":"PlaySpriteAnimations","source_file":"engine/sprite_anims/core.asm",
+        "model":"slot_callback_update_oam_v1","capacity":10,"structure_byte_count":16,"shadow_oam_byte_count":160,
+        "caller_call_included":false,"interrupts_included":false,"callback_costs":"source_machine_cycles",
+        "update_frame_model":"frame_command_flip_and_oam_counter_v1"});
     let initializer = core.span("_InitSpriteAnimStruct")?;
     core.operation(
         "_InitSpriteAnimStruct",
@@ -343,6 +404,15 @@ pub(super) fn export(vendor: &Path) -> Result<Value> {
         } else {
             json!({"dispatcher_entry":entry,"dispatch_tick":tick,"instance":instances[0],"lifetime":{"allocation_dispatcher_entry":entry,"allocation_dispatch_tick":tick}})
         };
+        let mut fields = fields;
+        fields["source_sprite_init_caller_instruction_machine_cycles"] = if group {
+            json!([3, 6])
+        } else {
+            json!([3, 2, 6])
+        };
+        fields["source_sprite_init_timing"] = json!({"routine":if group {"CrystalIntro_InitUnownAnim"} else {"InitSpriteAnimStruct"},
+            "source_file":"engine/sprite_anims/core.asm","model":"first_free_slot_and_count_v1","capacity":10,
+            "dictionary_first_key":0,"caller_call_included":false,"interrupts_included":false});
         operations.push(movie.operation(
             scene,
             &certificate,
