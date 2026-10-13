@@ -114,6 +114,15 @@ impl SourceAudioClock {
 
     /// Apply the authored SFXChannelsOff routine without resetting music or
     /// the drum sample pointer (the source routine leaves both untouched).
+    /// Commit one Flags1 store from the authored SFXChannelsOff routine.
+    pub fn stop_sfx_channel(&mut self, channel: u8) -> Result<()> {
+        ensure!((5..=8).contains(&channel), "SFX shutdown cannot clear music channel {channel}");
+        if let Some(channel) = self.channels[usize::from(channel - 1)].as_mut() {
+            channel.state.flags1 = 0;
+        }
+        Ok(())
+    }
+
     pub fn stop_sfx_channels(&mut self) {
         for channel in self.channels[4..].iter_mut().flatten() {
             channel.state.flags1 = 0;
@@ -705,7 +714,8 @@ mod tests {
         clock.update_vblank()?;
         let music_before = clock.channels().into_iter().find(|channel| channel.channel == 1).unwrap();
         clock.sample_pointer_present = true;
-        clock.stop_sfx_channels();
+        assert!(clock.stop_sfx_channel(1).is_err());
+        clock.stop_sfx_channel(5)?;
         let states = clock.channels();
         assert_eq!(states.iter().find(|channel| channel.channel == 1), Some(&music_before));
         assert_eq!(states.iter().find(|channel| channel.channel == 5).unwrap().flags1, 0);
