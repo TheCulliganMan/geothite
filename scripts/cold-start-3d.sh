@@ -26,7 +26,7 @@ case "$ACTION" in
 esac
 # Resolve user-supplied relative paths before changing the working directory.
 CALLER=$PWD
-PACK=${CRYSTAL_PACK:-$ROOT/content-packs/realtime-clock.browser.crystalpack}
+PACK=${CRYSTAL_PACK:-$ROOT/content-packs/core-modular.browser.crystalpack}
 ART=${CRYSTAL_OPEN_MODEL_ROOT:-$ROOT/assets/open-models}
 TARGET=${CARGO_TARGET_DIR:-$ROOT/target}
 PROFILE=${CRYSTAL_BUILD_PROFILE:-dev}
@@ -51,8 +51,8 @@ if [ "$ACTION" = setup-web ]; then
     exit 0
 fi
 [ -f "$PACK" ] || {
-    echo "Missing separately supplied pack: $PACK" >&2
-    echo 'Transfer content-packs/ from the old host or set CRYSTAL_PACK to your local pack.' >&2
+    echo "Missing generated pack: $PACK" >&2
+    echo 'Run just crystalpack to generate fresh content, or set CRYSTAL_PACK to a completed local pack.' >&2
     exit 1
 }
 case "$PACK" in *.crystalpack) ;; *) echo 'CRYSTAL_PACK must end in .crystalpack.' >&2; exit 1 ;; esac

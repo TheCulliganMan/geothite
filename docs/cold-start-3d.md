@@ -1,7 +1,9 @@
 # Move 3D work to a new host
 
-The source branch is `feat/connected-johto-3d`. Transfer its commits, the
-separately supplied ignored content pack, and any saves you want to keep.
+The source branch is `feat/connected-johto-3d`. Transfer its commits and any
+saves you want to keep. Generate fresh ignored content with `just crystalpack`
+after installing the tools in [game content setup](game-content.md), or transfer
+an already verified local pack separately.
 Tracked models, textures, editable Blender sources and Rust tools travel with
 Git. Do not copy `target/`, scratch captures, ROMs or disassembly into Git.
 
@@ -17,8 +19,8 @@ tar -C .git/lfs -czf /tmp/geothite-3d-lfs.tar.gz objects
 The bundle transfers local commits without requiring a push. Git bundles do
 not contain Git LFS artwork: the second command archives those local objects.
 Copy both files and `content-packs/` separately to the new host using your preferred file
-transfer tool. The known-good local pack is
-`content-packs/realtime-clock.browser.crystalpack`; `content-packs/` also holds
+transfer tool. The verified shared browser pack is
+`content-packs/core-modular.browser.crystalpack`; `content-packs/` also holds
 local saves and optional external models. Packs remain ignored on both hosts.
 Create the bundle only after the final commits, or regenerate it afterward.
 Uncommitted changes are not included in a Git bundle.
@@ -39,7 +41,10 @@ mkdir -p content-packs
 Install Git LFS before cloning and extracting the artwork. If you instead
 clone from GitHub after the source and LFS objects have been pushed, use
 `git lfs pull` to retrieve the artwork. LFS pointer files cannot render models.
-Restore the separately transferred `content-packs/` directory here. Install
+Generate the canonical packs with `just crystalpack`, or restore your separately
+transferred `content-packs/` directory here. The native and TUI packs are
+`content-packs/core-modular.crystalpack` and `content-packs/text-tui.crystalpack`.
+Install
 Rust using rustup; `rust-toolchain.toml` selects Rust 1.99.0 automatically.
 Native Linux builds require a C compiler, pkg-config, ALSA, udev and X11
 development libraries. On Debian/Ubuntu, install these before building:
