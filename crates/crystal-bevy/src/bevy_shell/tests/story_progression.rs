@@ -5344,6 +5344,51 @@ fn renderer_neutral_controller_plays_mom_and_new_bark_gate() {
 }
 
 #[test]
+fn renderer_neutral_controller_starts_research_center_with_scene_callback() {
+    let explicit_pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+    let pack = explicit_pack.as_ref().map(PathBuf::from).unwrap_or_else(|| {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../content-packs/text-tui.crystalpack")
+    });
+    assert!(explicit_pack.is_none() || pack.is_file(),
+        "CRYSTAL_RENDER_TEST_PACK must identify an existing pack: {}", pack.display());
+    if !pack.is_file() {
+        eprintln!("skipping external-pack Research Center regression; build {} first", pack.display());
+        return;
+    }
+    let asset_root = AssetRoot::new(pack.parent().expect("pack parent"));
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack)
+        .expect("verify external pack");
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)
+        .expect("load external pack");
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    // This location fixture uses normal startup callbacks. In particular the
+    // Scientist callback must evaluate its named scene operand even on scene 0.
+    let shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "RuinsOfAlphResearchCenter".into(),
+            tile_x: 4,
+            tile_y: 3,
+        },
+        BevyShellConfig::default(),
+    ).expect("Research Center startup must execute its scene callback");
+    let mut controller = VisibleShellController { shell };
+    settle_visible_shell_until_input(&mut controller.shell)
+        .expect("settle Research Center through the production controller");
+    let snapshot = controller.snapshot().unwrap();
+    assert_eq!(snapshot.overworld.map_name, "RuinsOfAlphResearchCenter");
+    assert_eq!(snapshot.overworld.tile, TilePosition { x: 4, y: 3 });
+    assert_eq!(snapshot.phase, RuntimeShellPhase::Overworld);
+    assert!(snapshot.ui.text.is_none());
+    controller.press(GameButton::Start).expect("Start input after scene callback");
+    assert!(controller.snapshot().unwrap().ui.menu.is_some(),
+        "completed startup must release input to the production Start menu");
+}
+
+#[test]
 fn elms_lab_callback_places_elm_at_asm_intro_position() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../..")
