@@ -81,6 +81,29 @@ byte-empty stderr regressions. All three published pack formats matched
 byte-for-byte between both runs and the shared checkout. Packs remain ignored;
 verification logs are external to the repository.
 
+### Source rebuild verification on 2026-10-14
+
+The follow-up source rebuild completed with exit code 0 using the existing
+pinned external workspace and an isolated cache:
+
+```sh
+CRYSTAL_PACK_BUILD_PROFILE=wasm-dev \
+CRYSTAL_PACK_BUILD_DIR="$HOME/.cache/geothite/agent-source-timing" \
+just crystalpack
+```
+
+All 28 intro scenes and 377 audio programs passed certification. The actual
+candidate passed battle execution, Mom/New Bark progression, Research Center
+startup, MCP movement/Start-menu, and byte-empty stderr regressions before all
+three canonical packs were published. The updated production TUI was launched
+successfully. This reused source and build caches; the independent cold-start
+proof remains the two runs described above.
+
+The packs now contain 159 additional authored scene constants and the authored
+Surf executable closure. Strict comparisons preserved every existing script
+record, all unrelated game data, and every runtime/audio byte. No generated
+packs or verification output are tracked.
+
 ## Play
 
 The initialization script prints the built text executable's absolute path and
