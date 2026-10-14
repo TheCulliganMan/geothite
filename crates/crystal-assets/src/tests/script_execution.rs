@@ -1,4 +1,96 @@
 #[test]
+fn scene_table_constants_resolve_all_external_pack_scenes_and_research_callback() {
+    let Some(path) = std::env::var_os("CRYSTAL_RENDER_TEST_PACK") else {
+        return;
+    };
+    let pack = read_compiled_game_pack(path).expect("read explicit external pack");
+    let data = pack.data();
+    let constants = data.script_numeric_constants();
+    let mut compared = 0;
+    for (map_name, module) in data.maps.iter() {
+        for (index, scene) in module.scenes.scenes.iter().enumerate() {
+            assert_eq!(
+                constants.get(&scene.scene_id),
+                Some(&(index as i32)),
+                "{map_name} scene {}",
+                scene.scene_id
+            );
+            compared += 1;
+        }
+    }
+    assert!(
+        compared > 100,
+        "full pack must include authored scene tables"
+    );
+    let map = "RuinsOfAlphResearchCenter";
+    let script = "RuinsOfAlphResearchCenterScientistCallback";
+    for (value, should_jump) in [("0", false), ("1", true)] {
+        let mut state = GameState::default();
+        state.script_runtime.script_value = Some(value.into());
+        let action = data
+            .apply_script_control_command(&mut state, map, map, script, 1)
+            .expect("execute real research-center callback branch");
+        assert_eq!(
+            matches!(action, ScriptControlAction::Jump { .. }),
+            should_jump
+        );
+    }
+}
+
+#[test]
+fn scene_table_constants_drive_research_center_callback_branches() {
+    let map_name = "RuinsOfAlphResearchCenter";
+    let script = "RuinsOfAlphResearchCenterScientistCallback";
+    let target = "RuinsOfAlphResearchCenterScientistCallback.ShowScientist";
+    let mut module = test_map_module(map_name, "RUINS_OF_ALPH_RESEARCH_CENTER", None);
+    module.scenes = MapSceneTable {
+        scenes: vec![
+            MapScene {
+                scene_id: "SCENE_RUINSOFALPHRESEARCHCENTER_NOOP".into(),
+                script_name: None,
+            },
+            MapScene {
+                scene_id: "SCENE_RUINSOFALPHRESEARCHCENTER_GET_UNOWN_DEX".into(),
+                script_name: None,
+            },
+        ],
+    };
+    module.scripts.insert(script.into(), serde_json::json!([]));
+    module.scripts.insert(target.into(), serde_json::json!([]));
+    module.script_control_commands.push(ScriptControlCommand {
+        command: "ifequal".into(),
+        compare_value: Some("SCENE_RUINSOFALPHRESEARCHCENTER_GET_UNOWN_DEX".into()),
+        target_label: Some(".ShowScientist".into()),
+        resolved_target_script: Some(target.into()),
+        source_script: script.into(),
+        command_index: 1,
+    });
+    let data = GameDataSet {
+        maps: map_payload(vec![module]),
+        ..GameDataSet::default()
+    };
+    // No duplicate numeric scene catalog: the authored scene table is enough.
+    for (value, should_jump) in [("0", false), ("1", true)] {
+        let mut state = GameState::default();
+        state.script_runtime.script_value = Some(value.into());
+        let action = data
+            .apply_script_control_command(&mut state, map_name, map_name, script, 1)
+            .expect("resolve scene ordinal in production control dispatch");
+        assert_eq!(
+            matches!(action, ScriptControlAction::Jump { .. }),
+            should_jump
+        );
+        assert_eq!(
+            state
+                .script_runtime
+                .next_script
+                .as_ref()
+                .map(|location| location.script.as_str()),
+            should_jump.then_some(target)
+        );
+    }
+}
+#[test]
 fn execute_next_queued_script_command_enters_target_script_runtime() {
     let mut module = test_map_module("RuntimeQueueTestMap", "RUNTIME_QUEUE_TEST_MAP", None);
     module

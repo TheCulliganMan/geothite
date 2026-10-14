@@ -1893,6 +1893,16 @@ impl GameDataSet {
                 }
             }
         }
+        // pret's scene_script macro defines each named scene as its table
+        // index. These map-local definitions need not appear in the shared
+        // constant catalog, but checkscene comparisons still consume them.
+        for module in self.maps.values() {
+            for (index, scene) in module.scenes.scenes.iter().enumerate() {
+                if let Ok(index) = i32::try_from(index) {
+                    constants.entry(scene.scene_id.clone()).or_insert(index);
+                }
+            }
+        }
         constants
     }
 

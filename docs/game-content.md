@@ -69,19 +69,17 @@ repository or game-content fixtures.
 
 ### Fresh-source verification on 2026-10-13
 
-`CRYSTAL_PACK_BUILD_PROFILE=wasm-dev just crystalpack` was executed on a clean
-clone on macOS with fresh pinned pret source, RGBDS 1.0.4, and the matching
-reference ROM SHA-1. Source export completed through audio, but `pack_core`
-failed in `source_title_catalog::assemble` when the production intro consumer
-rejected the uncertified decompression timing oracle. No production pack was
-published.
+Two independent fresh remote checkouts at `a55d3ea`, each with empty source,
+export, Cargo registry and build caches, completed the default `just crystalpack`
+command with exit code 0 and no prompts on macOS. Both initialized the pinned
+pret source and RGBDS 1.0.4 and assembled the reference ROM successfully.
 
-The source-control regression checked all 1,753 dispatcher calls successfully.
-The continuous production intro regression against the independent ROM trace
-failed across all 28 scenes: the frontend clock remains at phase 3,324 and the
-first setup returns at frame 65 rather than frame 66. Completing source export
-requires fixing and certifying that full runtime timeline; the initializer
-continues to reject the incomplete result.
+Each run certified the continuous production intro against all 28 pinned ROM
+scenes, verified all 377 audio programs' PCM hashes, frame counts and loop
+ranges, and passed the battle, Mom/New Bark, MCP movement/Start-menu and
+byte-empty stderr regressions. All three published pack formats matched
+byte-for-byte between both runs and the shared checkout. Packs remain ignored;
+verification logs are external to the repository.
 
 ## Play
 
