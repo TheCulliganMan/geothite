@@ -122,6 +122,7 @@ cargo run --profile "$profile" --locked -p geothite -- dump "$tui_candidate"
 export CRYSTAL_RENDER_TEST_PACK="$tui_candidate"
 cargo test --profile "$profile" --locked -p crystal-bevy renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn
 cargo test --profile "$profile" --locked -p crystal-bevy renderer_neutral_controller_plays_mom_and_new_bark_gate
+cargo test --profile "$profile" --locked -p crystal-bevy renderer_neutral_controller_starts_research_center_with_scene_callback
 cargo test --profile "$profile" --locked -p geothite mcp_drives_real_movement_and_production_start_menu
 cargo test --profile "$profile" --locked -p geothite --test stdio_clean
 cargo build --profile "$profile" --locked -p geothite
