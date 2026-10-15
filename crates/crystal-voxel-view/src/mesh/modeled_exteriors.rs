@@ -888,7 +888,7 @@ pub(super) fn append_tree_with_groves(
             }
             let neighbors = super::new_bark::grove_neighbors(mesh, cells, g, map, p);
             let recipe = super::new_bark::GroveRecipe {
-                family: crate::foliage::GroveFamily::from_tileset(
+                family: crate::foliage::GroveFamily::from_source(map,
                     cells[p.row*g.width+p.column].source.tileset_id.as_ref()),
                 bounds: b,
                 base_height: p.base_height,
@@ -908,7 +908,7 @@ pub(super) fn append_tree_with_groves(
         Asset::Johto(_) => unreachable!("buildings cannot be tree placements"),
     }
     let label=if kind==Asset::GroveTree {
-        crate::foliage::GroveFamily::from_tileset(cells[p.row*g.width+p.column].source.tileset_id.as_ref()).label()
+        crate::foliage::GroveFamily::from_source(map, cells[p.row*g.width+p.column].source.tileset_id.as_ref()).label()
     } else {kind.label()};
     mark_authored_rect(mesh, g, rect, label);
     true

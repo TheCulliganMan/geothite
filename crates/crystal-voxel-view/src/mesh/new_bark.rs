@@ -1065,7 +1065,7 @@ pub(super) fn claim_grove(
         map_origin[1] + placement.row as i32,
     ];
     let neighbors = grove_neighbors(mesh, cells, geometry, map, placement);
-    let family=crate::foliage::GroveFamily::from_tileset(
+    let family=crate::foliage::GroveFamily::from_source(map,
         cells[placement.row*geometry.width+placement.column].source.tileset_id.as_ref());
     mark_authored_rect(
         mesh,
@@ -3326,7 +3326,7 @@ mod tests {
     use super::*;
     use bevy::prelude::IVec2;
     #[test]
-    fn ancient_forest_recipe_requires_complete_source_art_and_keeps_footing() {
+    fn ilex_pine_recipe_requires_complete_source_art_and_keeps_footing() {
         let sources=(0..4).flat_map(|row|(0..4).map(move|column| {
             let tile=if row<2 && column<2 {0x26+row*16+column} else {1};
             let mut source=source_with_tile(0,column as u8,row as u8,tile);
@@ -3343,10 +3343,10 @@ mod tests {
         let mut claimed=vec![false;16];
         let recipe=claim_grove(&mut mesh,&cells,&shapes,&g,"IlexForest",p,&mut claimed,[0,0])
             .expect("complete native forest drawing");
-        assert_eq!(recipe.family,crate::foliage::GroveFamily::AncientForest);
+        assert_eq!(recipe.family,crate::foliage::GroveFamily::JohtoPine);
         assert_eq!(claimed.iter().filter(|&&c|c).count(),4);
         assert!(mesh.footing_heights.iter().all(|&height|height==0.));
-        assert_eq!(mesh.authored_cells[0],Some("forest/ancient_tree"));
+        assert_eq!(mesh.authored_cells[0],Some("johto/tree"));
         let mut changed=f.tiles.clone();changed[0].source.tile_index=1;
         assert!(modeled_tree_ground("IlexForest",&changed.iter().collect::<Vec<_>>(),&shapes,&g,p).is_none());
     }

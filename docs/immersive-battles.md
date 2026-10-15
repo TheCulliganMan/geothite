@@ -67,6 +67,9 @@ holes or clipped grass stumps around their feet. Grass behind the pair, the
 original floor, and overworld grass remain unchanged by this battle visibility
 rule. Grass encounters prefer staging anchors on the map's actual drawn grass
 cells; the same floor, complete-body and scenery proofs still apply.
+A native shader-review pair verifies the foreground rule with Cyndaquil and
+Sentret fully visible, with the same battle checksum in 3D and 2D. That capture
+does not validate the newer grass-height normalization or browser build.
 
 Streamed routes warm the existing grove recipes across the authentic encounter
 neighborhood before freezing it, using the normal bounded worker queue. Trees

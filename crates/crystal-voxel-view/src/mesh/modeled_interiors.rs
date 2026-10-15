@@ -3394,6 +3394,16 @@ mod tests {
                 assert!(mesh.solid.positions.is_empty());assert!(!mesh.textured.positions.is_empty());
                 assert_eq!(claimed.iter().filter(|&&v|v).count(),8);
                 assert_eq!(mesh.footing_heights,vec![2.75;tiles.len()]);
+                let top=p.height_pixels*g.tile_height/8.;
+                let vent_floor=top-0.22*g.tile_height/8.;
+                let dark=native_source_swatches(p,&g,[[0,8]])[0];
+                let wells=mesh.textured.indices.chunks_exact(3).filter(|tri|tri.iter().all(|&i| {
+                    let i=i as usize;
+                    (mesh.textured.positions[i][1]-vent_floor).abs()<0.001
+                        &&mesh.textured.normals[i][1]>0.999&&mesh.textured.uvs[i]==dark
+                })).count();
+                assert_eq!(wells,12,"six genuine recessed vent floors");
+                assert!(mesh.textured.indices.iter().all(|&i|mesh.textured.positions[i as usize][1]<=top+0.001));
                 for i in p.indices(g.width) {
                     let mut changed=tiles.clone();changed[i].source.tile_index^=1;
                     assert!(!native_store_vending_source(map,p,&changed.iter().collect::<Vec<_>>(),&g));

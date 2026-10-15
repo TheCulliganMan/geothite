@@ -13,6 +13,11 @@ pub(crate) use park_tree::append_park_tree;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum GroveFamily { JohtoPine, AncientForest }
 impl GroveFamily {
+    pub(crate) fn from_source(map: &str, tileset: &str) -> Self {
+        // Ilex keeps the pine appearance the user selected to match 2D.
+        // A separate source tileset does not require changing tree species.
+        if map == "IlexForest" { Self::JohtoPine } else { Self::from_tileset(tileset) }
+    }
     pub(crate) fn from_tileset(tileset: &str) -> Self {
         if tileset == "forest" { Self::AncientForest } else { Self::JohtoPine }
     }
