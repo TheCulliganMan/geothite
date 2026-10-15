@@ -6350,6 +6350,37 @@ fn verifier_rejects_invalid_trainer_encounter_music_id_before_lookup() {
 }
 
 #[test]
+fn saved_original_trainer_and_phone_rematch_each_require_one_complete_authored_request() {
+    let mut data = GameDataSet::default();
+    add_test_trainer(&mut data, "MUSIC_YOUNGSTER_ENCOUNTER");
+    let mut module = test_map_module("Start", "START_MAP", None);
+    let mut original = TrainerBattleRequest::new("YOUNGSTER", "YOUNGSTER_JOEY", "EVENT_BEAT_JOEY");
+    original.win_text = "OriginalWinText".into();
+    let mut rematch = original.clone();
+    rematch.event_flag.clear();
+    rematch.win_text = "RematchWinText".into();
+    module.trainer_scripts.insert("TrainerJoey".into(), original.clone());
+    module.scripted_trainer_battles.push(ScriptedTrainerBattle {
+        source_script: "TrainerJoey".into(), loadtrainer_command_index: 10,
+        startbattle_command_index: 11, request: rematch.clone(),
+    });
+    data.maps.insert("Start".into(), module);
+    data.asm_text.insert("OriginalWinText".into(), "Original win".into());
+    data.asm_text.insert("RematchWinText".into(), "Rematch win".into());
+    let trainer = data.trainers.get("YOUNGSTER_JOEY").unwrap();
+    let validate = |request: &TrainerBattleRequest| data.validate_saved_trainer_battle_origin_references(
+        trainer, &request.battle_type, &request.trainer_class, &request.event_flag,
+        &request.seen_text, &request.win_text, &request.loss_text, &request.callback, "TrainerJoey");
+    validate(&original).expect("the first challenge must not be shadowed by its rematch");
+    validate(&rematch).expect("the original phone rematch remains valid");
+    let mut hybrid = original.clone();
+    hybrid.win_text = rematch.win_text;
+    assert!(validate(&hybrid).is_err(), "fields from separate requests cannot be mixed");
+    hybrid.event_flag = "EVENT_STALE_JOEY".into();
+    assert!(validate(&hybrid).is_err(), "an undeclared event flag is still rejected");
+}
+
+#[test]
 fn verifier_rejects_scripted_battle_requests_without_runtime_fallbacks() {
     let mut data = GameDataSet::default();
     add_runtime_species_and_move(&mut data);

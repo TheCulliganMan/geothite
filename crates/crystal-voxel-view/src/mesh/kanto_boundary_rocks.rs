@@ -88,6 +88,7 @@ pub(super) fn append(
     shapes: &[CellShape],
     g: &GridGeometry,
     claimed: &mut [bool],
+    map_origin: [i32; 2],
 ) {
     for p in resolve(cells, shapes, g) {
         if !clear(claimed, g, p.rect) {
@@ -103,7 +104,7 @@ pub(super) fn append(
             north + g.tile_height * 0.09,
             south - g.tile_height * 0.09,
         ];
-        let m = model(p.kind);
+        let m = variant_model(p.kind, [map_origin[0] + p.rect[0] as i32, map_origin[1] + p.rect[1] as i32]);
         // Shared, cached material meshes append to the existing single solid
         // terrain batch. No per-rock render entities, image copies or textures.
         let rise = g.tile_height
@@ -187,6 +188,38 @@ mod tests {
             Kind::KantoBoundaryShore,
             Kind::KantoBoundaryPath,
         ]
+    }
+
+    #[test]
+    fn boundary_asset_selection_survives_a_shifted_camera_crop() {
+        for kind in kinds() {
+            let (tiles, shapes, mut g) = fixture(kind, 8.0);
+            let mut first = TerrainMeshData::default();
+            append(&mut first, &tiles.iter().collect::<Vec<_>>(), &shapes,
+                &g, &mut vec![false; tiles.len()], [10, 20]);
+            let mut shifted = Vec::new();
+            let mut shifted_shapes = Vec::new();
+            for row in 0..2 {
+                let mut ground = tiles[row * 3 + 2].clone();
+                ground.column = 0;
+                shifted.push(ground);
+                shifted_shapes.push(shapes[row * 3 + 2]);
+                for col in 0..3 {
+                    let mut tile = tiles[row * 3 + col].clone();
+                    tile.column += 1;
+                    shifted.push(tile);
+                    shifted_shapes.push(shapes[row * 3 + col]);
+                }
+            }
+            g.width += 1;
+            g.origin_x -= g.tile_width;
+            let mut second = TerrainMeshData::default();
+            append(&mut second, &shifted.iter().collect::<Vec<_>>(), &shifted_shapes,
+                &g, &mut vec![false; shifted.len()], [9, 20]);
+            assert!(!first.solid.indices.is_empty());
+            assert_eq!(first.solid, second.solid,
+                "camera cropping must retain the selected rock asset and placement");
+        }
     }
 
     #[test]
@@ -317,7 +350,7 @@ mod tests {
             authored_cells: vec![None; 6],
             ..Default::default()
         };
-        append(&mut mesh, &cells, &shapes, &g, &mut [false; 6]);
+        append(&mut mesh, &cells, &shapes, &g, &mut [false; 6], [0; 2]);
         assert!(mesh.textured.positions.iter().all(|v| v[1] == -4.0));
         assert!(mesh.solid.positions.iter().all(|v| v[1] >= -4.0));
         assert!(mesh.solid.positions.iter().any(|v| v[1] == -4.0));
@@ -338,7 +371,7 @@ mod tests {
             };
             let mut claimed = [false; 6];
             claimed[4] = true;
-            append(&mut mesh, &cells, &shapes, &g, &mut claimed);
+            append(&mut mesh, &cells, &shapes, &g, &mut claimed, [0; 2]);
             assert!(mesh.solid.indices.is_empty());
             assert!(mesh.textured.indices.is_empty());
             assert!(!mesh.authored_cells.iter().any(Option::is_some));

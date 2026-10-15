@@ -3,19 +3,20 @@
 import json,math,unittest
 from pathlib import Path
 from sunflower_sculpt import sculpture,SPECIES,HEIGHT
+from sunflower_glb import read_sunflower,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 from bovine_sculpt import reverse_front
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class SunflowerTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.ms={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def setUpClass(cls):cls.ms={s:read_sunflower(s,ROOT/(s+'.glb')) for s in SPECIES}
  def find(self,s,prefix):return next(p for p in self.ms[s]['primitives'] if p['part'].startswith(prefix))
  def test_closed_connected_outward_parts(self):assert_closed_models(self,self.ms)
  def test_finite_unit_normals_follow_real_winding(self):assert_model_shading(self,self.ms)
  def test_recipe_parity_height_budget_and_distinct_botanical_features(self):
   for s,m in self.ms.items():
-   self.assertEqual(m,sculpture(s));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
+   self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
    self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in ps),22000);self.assertEqual(len(ps),len({p['part'] for p in ps}))
   for s,counts in (('sunkern',(('Coat /',4),('Leaf /',2),('Eye /',2))),('sunflora',(('Petal /',8),('Bract /',8),('Leaf arm /',2),('Leg /',2),('Foot /',2)))):
    for prefix,n in counts:self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ms[s]['primitives']),n)

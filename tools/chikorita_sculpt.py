@@ -266,6 +266,11 @@ def sculpt():
     parts.append(tube(TAIL,'body',[(0.,.230,-.285),(0.,.236,-.343),(0.,.274,-.383),(0.,.293,-.381)],(.061,.055,.043,.026),8))
     parts.append(tube(STEM,'leaf',[(0.,.653,.165),(0.,.699,.157),(.0,.741,.139)],(.019,.017,.013),8))
     parts.append(leaf_mesh())
+    # Axis-aligned coordinates and normals can retain tiny rounding residuals.
+    # Serialize geometric zero consistently without changing visible anatomy.
+    for part in parts:
+        for key in ('positions','normals'):
+            part[key]=[0. if abs(v)<1e-12 else v for v in part[key]]
     return {'name':'battle_chikorita','version':1,'coordinate_system':COORDINATES,'primitives':parts}
 
 

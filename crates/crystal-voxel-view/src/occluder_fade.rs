@@ -11,6 +11,7 @@ use bevy::{
     camera::{primitives::Aabb, visibility::RenderLayers},
 };
 use std::ops::Range;
+use std::sync::{Arc, Mutex, OnceLock, Weak};
 
 const RESIDUAL_OPACITY: f32 = 0.20;
 const EXIT_HOLD_SECONDS: f32 = 0.12;
@@ -26,38 +27,229 @@ const BVH_LEAF_TRIANGLES: usize = 64;
 const MAX_RENDER_LEAVES: usize = 16;
 const RENDER_LEAF_TRIANGLES: usize = 2048;
 
+#[derive(SystemSet, Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub(super) struct FadeMeshes;
+
 pub(super) fn register(app: &mut App) {
     app.add_systems(
         PostUpdate,
-        sync.after(bevy::camera::CameraUpdateSystems)
+        sync.in_set(FadeMeshes).after(bevy::camera::CameraUpdateSystems)
             .after(bevy::transform::TransformSystems::Propagate)
+            .before(bevy::asset::AssetEventSystems)
             .before(bevy::camera::visibility::VisibilitySystems::VisibilityPropagate),
     );
 }
 
+#[derive(Clone)]
 pub(super) struct PreparedGroup {
     source_range: Range<usize>,
-    surface: TriangleTree,
+    surface: Arc<CollisionSurface>,
     leaves: Vec<PreparedLeaf>,
+    opaque_leaf: Option<PreparedLeaf>,
     overlay: Option<Box<PreparedGroup>>,
+    transform: Transform,
+    coverage_fade: bool,
+    depth_coverage_fade: bool,
+    residual_opacity: f32,
 }
+/// Layered palette foliage shares one visibility sample across all needles.
+/// Keep ordinary walls and their existing translucent reveal unchanged.
+pub(super) fn use_coverage_fade(groups: &mut [PreparedGroup]) {
+    set_coverage_fade(groups, true);
+}
+pub(super) fn set_coverage_fade(groups: &mut [PreparedGroup], coverage: bool) {
+    for group in groups {
+        group.coverage_fade = coverage;
+        if let Some(overlay) = &mut group.overlay {
+            set_coverage_fade(std::slice::from_mut(overlay.as_mut()), coverage);
+        }
+    }
+}
+/// Only exact authored opt-ins change reveal style; neighboring walls keep
+/// their existing blend. Linked captions inherit the owning object's sample.
+pub(super) fn use_source_coverage_fade(groups: &mut [PreparedGroup], ranges: &[Range<usize>], residual: f32) {
+    fn set_residual(group: &mut PreparedGroup, residual: f32) {
+        group.residual_opacity = residual;
+        if let Some(overlay) = &mut group.overlay { set_residual(overlay, residual); }
+    }
+    for group in groups {
+        if ranges.contains(&group.source_range) {
+            set_coverage_fade(std::slice::from_mut(group), true);
+            set_residual(group, residual);
+        }
+    }
+}
+/// Closed source cabinets retain depth ordering while a common pixel mask
+/// reveals the player. Opt in by exact owned range, preserving other fades.
+pub(super) fn use_source_depth_coverage_fade(groups: &mut [PreparedGroup], ranges: &[Range<usize>]) {
+    fn enable(group: &mut PreparedGroup) {
+        group.coverage_fade=true;
+        group.depth_coverage_fade=true;
+        if let Some(overlay)=&mut group.overlay {enable(overlay);}
+    }
+    for group in groups {
+        if ranges.contains(&group.source_range) {enable(group);}
+    }
+}
+/// Exact source bounds, available before any mesh is uploaded.
+pub(super) fn prepared_bounds(groups: &[PreparedGroup]) -> Option<(Vec3, Vec3)> {
+    let mut low = Vec3::splat(f32::INFINITY);
+    let mut high = Vec3::splat(f32::NEG_INFINITY);
+    fn include(group: &PreparedGroup, low: &mut Vec3, high: &mut Vec3) {
+        if let Some(bounds) = group.surface.bounds {
+            for i in 0..8 {
+                let p = Vec3::new(
+                    if i&1 == 0 { bounds.min.x } else { bounds.max.x },
+                    if i&2 == 0 { bounds.min.y } else { bounds.max.y },
+                    if i&4 == 0 { bounds.min.z } else { bounds.max.z });
+                let p = group.transform.transform_point(p);
+                *low = low.min(p); *high = high.max(p);
+            }
+        }
+        if let Some(overlay) = &group.overlay { include(overlay, low, high); }
+    }
+    for group in groups { include(group, &mut low, &mut high); }
+    (low.is_finite() && high.is_finite()).then_some((low, high))
+}
+#[derive(Clone)]
 struct PreparedLeaf {
     mesh: Mesh,
     uploaded: Option<Handle<Mesh>>,
     center: Vec3,
     bounds: Aabb,
+    shared: Option<Arc<Mutex<SharedLeaf>>>,
+}
+struct SharedLeaf { mesh: Option<Mesh>, uploaded: Option<Handle<Mesh>> }
+// Instances own their shared geometry. The recipe lookup cache holds only
+// weak references, so leaving a region releases its CPU/GPU resources.
+#[derive(Component)]
+struct SharedGeometry(#[allow(dead_code)] Arc<Mutex<SharedLeaf>>);
+// Sorted geometry is needed only while its object fades. Retain the exact
+// prepared mesh, but avoid uploading a second copy for every opaque object.
+#[derive(Component)]
+struct DeferredMesh(Option<PreparedLeaf>);
+pub(super) struct WeakPreparedGroup {
+    source_range: Range<usize>,
+    surface: Weak<CollisionSurface>,
+    leaves: Vec<(Vec3, Aabb, Weak<Mutex<SharedLeaf>>)>,
+    opaque_leaf: Option<(Vec3, Aabb, Weak<Mutex<SharedLeaf>>)>,
+    overlay: Option<Box<WeakPreparedGroup>>,
+    transform: Transform,
+    coverage_fade: bool,
+    depth_coverage_fade: bool,
+    residual_opacity: f32,
+}
+impl WeakPreparedGroup {
+    pub(super) fn new(group: &PreparedGroup) -> Self {
+        Self {
+            source_range: group.source_range.clone(),
+            surface: Arc::downgrade(&group.surface),
+            leaves: group.leaves.iter().map(|leaf| (leaf.center, leaf.bounds,
+                Arc::downgrade(leaf.shared.as_ref().expect("cached geometry is shared")))).collect(),
+            opaque_leaf: group.opaque_leaf.as_ref().map(|leaf| (leaf.center, leaf.bounds,
+                Arc::downgrade(leaf.shared.as_ref().expect("cached opaque geometry is shared")))),
+            overlay: group.overlay.as_ref().map(|group| Box::new(Self::new(group))),
+            transform: group.transform,
+            coverage_fade: group.coverage_fade,
+            depth_coverage_fade: group.depth_coverage_fade,
+            residual_opacity: group.residual_opacity,
+        }
+    }
+    pub(super) fn upgrade(&self) -> Option<PreparedGroup> {
+        Some(PreparedGroup {
+            source_range: self.source_range.clone(),
+            coverage_fade: self.coverage_fade,
+            depth_coverage_fade: self.depth_coverage_fade,
+            residual_opacity: self.residual_opacity,
+            surface: self.surface.upgrade()?,
+            leaves: self.leaves.iter().map(|(center, bounds, shared)| Some(PreparedLeaf {
+                mesh: empty_mesh(), uploaded: None, center: *center, bounds: *bounds,
+                shared: Some(shared.upgrade()?),
+            })).collect::<Option<Vec<_>>>()?,
+            opaque_leaf: match &self.opaque_leaf {
+                Some((center, bounds, shared)) => Some(PreparedLeaf {
+                    mesh: empty_mesh(), uploaded: None, center: *center, bounds: *bounds,
+                    shared: Some(shared.upgrade()?),
+                }),
+                None => None,
+            },
+            overlay: match &self.overlay {
+                Some(group) => Some(Box::new(group.upgrade()?)),
+                None => None,
+            },
+            transform: self.transform,
+        })
+    }
+}
+fn empty_mesh() -> Mesh {
+    Mesh::new(bevy::mesh::PrimitiveTopology::TriangleList, bevy::asset::RenderAssetUsages::RENDER_WORLD)
+}
+fn upload_leaf(leaf: &mut PreparedLeaf, meshes: &mut Assets<Mesh>) -> Handle<Mesh> {
+    if let Some(shared) = &leaf.shared {
+        let mut shared = shared.lock().unwrap();
+        let _trace = crate::loading_trace::span("tree.upload_or_reuse", || serde_json::json!({
+            "shared": true, "cache_hit": shared.uploaded.is_some(),
+            "vertices": shared.mesh.as_ref().map_or(0, Mesh::count_vertices)}));
+        if let Some(handle) = &shared.uploaded { return handle.clone(); }
+        let handle = meshes.add(shared.mesh.take().expect("shared mesh uploads once"));
+        shared.uploaded = Some(handle.clone());
+        return handle;
+    }
+    let _trace = crate::loading_trace::span("tree.upload_or_reuse", || serde_json::json!({
+        "shared": false, "cache_hit": leaf.uploaded.is_some(), "vertices": leaf.mesh.count_vertices()}));
+    leaf.uploaded.get_or_insert_with(|| meshes.add(std::mem::replace(&mut leaf.mesh, empty_mesh()))).clone()
+}
+/// Prepare the exact sorted alternatives for a frozen view without exposing
+/// them in the overworld. Shared prototype uploads remain shared and cached.
+pub(super) fn prepare_retention_meshes(world: &mut World, root: Entity) {
+    let mut pending = vec![root];
+    while let Some(entity) = pending.pop() {
+        if let Some(children) = world.get::<Children>(entity) {
+            pending.extend(children.iter());
+        }
+        let prepared = world.get_mut::<DeferredMesh>(entity).and_then(|mut deferred| deferred.0.take());
+        if let Some(mut prepared) = prepared {
+            upload_leaf(&mut prepared, &mut world.resource_mut::<Assets<Mesh>>());
+            if let Some(mut deferred) = world.get_mut::<DeferredMesh>(entity) {
+                deferred.0 = Some(prepared);
+            }
+        }
+    }
+}
+
+pub(super) fn retained_mesh(world: &World, entity: Entity) -> Option<Handle<Mesh>> {
+    if let Some(mesh) = world.get::<Mesh3d>(entity) { return Some(mesh.0.clone()); }
+    let prepared = world.get::<DeferredMesh>(entity)?.0.as_ref()?;
+    prepared.uploaded.clone().or_else(|| prepared.shared.as_ref()
+        .and_then(|shared| shared.lock().unwrap().uploaded.clone()))
+}
+
+/// Convert a canonical object to shared immutable geometry. Instance state and
+/// transforms remain independent; Bevy can batch equal mesh/material handles.
+pub(crate) fn share_groups(groups: &mut [PreparedGroup]) {
+    for group in groups {
+        for leaf in group.leaves.iter_mut().chain(group.opaque_leaf.iter_mut()) {
+            if leaf.shared.is_none() {
+                leaf.shared = Some(Arc::new(Mutex::new(SharedLeaf {
+                    mesh: Some(std::mem::replace(&mut leaf.mesh, empty_mesh())), uploaded: leaf.uploaded.take(),
+                })));
+            }
+        }
+        if let Some(overlay) = &mut group.overlay {
+            share_groups(std::slice::from_mut(overlay));
+        }
+    }
+}
+pub(crate) fn place_groups(groups: &mut [PreparedGroup], transform: Transform) {
+    for group in groups { group.transform = transform; }
 }
 
 /// Stage complete leaves for render extraction before the remaining groves build.
 /// Bounds, collision triangles and fade ownership remain with the source group.
 pub(crate) fn stage_group_meshes(groups: &mut [PreparedGroup], meshes: &mut Assets<Mesh>) {
     for group in groups {
-        for leaf in &mut group.leaves {
-            if leaf.uploaded.is_none() {
-                let empty = Mesh::new(bevy::mesh::PrimitiveTopology::TriangleList,
-                    bevy::asset::RenderAssetUsages::RENDER_WORLD);
-                leaf.uploaded = Some(meshes.add(std::mem::replace(&mut leaf.mesh, empty)));
-            }
+        for leaf in group.leaves.iter_mut().chain(group.opaque_leaf.iter_mut()) {
+            upload_leaf(leaf, meshes);
         }
         if let Some(overlay) = &mut group.overlay {
             stage_group_meshes(std::slice::from_mut(overlay), meshes);
@@ -69,7 +261,7 @@ pub(crate) fn stage_group_meshes(groups: &mut [PreparedGroup], meshes: &mut Asse
 /// Linked textured overlays retain their own coordinates and material contract.
 pub(super) fn compact_palette_group_uv0(groups: &mut [PreparedGroup]) {
     for group in groups {
-        for leaf in &mut group.leaves {
+        for leaf in group.leaves.iter_mut().chain(group.opaque_leaf.iter_mut()) {
             crate::compact_vertices::remove_unused_zero_uv0(&mut leaf.mesh);
         }
     }
@@ -121,6 +313,36 @@ struct Node {
     triangles: Range<usize>,
     children: [usize; 2],
 }
+struct CollisionSurface {
+    bounds: Option<Bounds>,
+    tree: OnceLock<TriangleTree>,
+    source: Mutex<Option<SurfaceMeshData>>,
+}
+impl CollisionSurface {
+    fn ready(tree: TriangleTree) -> Self {
+        Self { bounds: tree.nodes.first().map(|node| node.bounds),
+            tree: OnceLock::from(tree), source: Mutex::new(None) }
+    }
+    fn deferred(data: &SurfaceMeshData) -> Self {
+        let mut bounds = Bounds::empty();
+        for &i in &data.indices { bounds.include(data.positions[i as usize].into()); }
+        // Collision only consumes positions and indices. Retain those exact
+        // buffers, not duplicate painting/normal data, until a real ray needs
+        // the tree. Both buffers are released immediately after construction.
+        let source = SurfaceMeshData { positions: data.positions.clone(),
+            indices: data.indices.clone(), ..Default::default() };
+        Self { bounds: (!data.indices.is_empty()).then_some(bounds),
+            tree: OnceLock::new(), source: Mutex::new(Some(source)) }
+    }
+    fn blocks(&self, start: Vec3, end: Vec3) -> bool {
+        if !self.bounds.is_some_and(|bounds| bounds.segment(start, end - start)) { return false; }
+        self.tree.get_or_init(|| {
+            let source = self.source.lock().unwrap().take().expect("retained collision source");
+            TriangleTree::new(&source)
+        }).blocks(start, end)
+    }
+}
+
 #[derive(Clone, Debug, Default)]
 struct TriangleTree {
     // Keep indexed source positions rather than storing three copied positions
@@ -128,6 +350,10 @@ struct TriangleTree {
     positions: Vec<Vec3>,
     triangles: TriangleIndices,
     nodes: Vec<Node>,
+}
+struct BuildTriangle {
+    bounds: Bounds,
+    center: [f64; 3],
 }
 // Collision ownership needs the original corners, but each complete grove
 // fits in 16-bit local indices. Keep large source objects lossless too.
@@ -141,13 +367,24 @@ impl Default for TriangleIndices {
     fn default() -> Self { Self::Narrow(Vec::new()) }
 }
 impl TriangleIndices {
+    #[cfg(test)]
     fn new(indices: &[u32]) -> Self {
+        let mut result = Self::for_build(indices);
+        result.compact();
+        result
+    }
+    fn for_build(indices: &[u32]) -> Self {
         if indices.iter().all(|&i| i <= u16::MAX as u32) {
             let narrow: Vec<[u16; 3]> = indices.chunks_exact(3)
                 .map(|t| [t[0] as u16, t[1] as u16, t[2] as u16]).collect();
-            if let Some(packed) = Self::pack(&narrow) { packed } else { Self::Narrow(narrow) }
+            Self::Narrow(narrow)
         } else {
             Self::Wide(indices.chunks_exact(3).map(|t| t.try_into().unwrap()).collect())
+        }
+    }
+    fn compact(&mut self) {
+        if let Self::Narrow(source) = self {
+            if let Some(packed) = Self::pack(source) { *self = packed; }
         }
     }
     fn pack(source: &[[u16; 3]]) -> Option<Self> {
@@ -226,10 +463,14 @@ impl TriangleIndices {
 }
 impl TriangleTree {
     fn new(data: &SurfaceMeshData) -> Self {
+        let _trace = crate::loading_trace::span("occluder.collision_bvh", || serde_json::json!({"vertices": data.positions.len(), "triangles": data.indices.len()/3}));
         // Face normals and colors require separate render vertices, but the
         // collision tree can share positions with identical float bits.
         // Keep signed zero and every original corner; never quantize geometry.
-        let mut unique = std::collections::HashMap::<[u32; 3], u32>::new();
+        // Geometry keys are exact float bits, not network identifiers. Use
+        // Bevy's game-data hasher instead of hashing every corner with SipHash.
+        // Indices follow source insertion order, independent of hash buckets.
+        let mut unique = bevy::platform::collections::HashMap::<[u32; 3], u32>::new();
         let mut positions = Vec::new();
         let mut remap = Vec::with_capacity(data.positions.len());
         for &position in &data.positions {
@@ -246,15 +487,59 @@ impl TriangleTree {
         positions.shrink_to_fit();
         let mut tree = Self {
             positions,
-            triangles: TriangleIndices::new(&indices),
+            triangles: TriangleIndices::for_build(&indices),
             nodes: Vec::new(),
         };
         drop(indices);
         if !tree.triangles.is_empty() {
-            tree.build(0..tree.triangles.len());
+            tree.build_cached();
         }
+        // Build on direct indices. Decoding compressed triples at every
+        // partition comparison and bounds visit repeats work at each level.
+        // Retain the same compact representation once construction finishes.
+        tree.triangles.compact();
         tree
     }
+    fn build_cached(&mut self) {
+        // Every ancestor partition asks for the same triangle centroid and
+        // corner bounds. Calculate them once, then partition small index IDs.
+        // Scratch metadata is dropped before publishing the collision tree.
+        let metadata = (0..self.triangles.len()).map(|index| {
+            let points = self.triangles.triangle(index).map(|i| self.positions[i as usize]);
+            let mut bounds = Bounds::empty();
+            for point in points { bounds.include(point); }
+            BuildTriangle { bounds, center:std::array::from_fn(|axis|
+                f64::from(points[0][axis])+f64::from(points[1][axis])+f64::from(points[2][axis])) }
+        }).collect::<Vec<_>>();
+        let mut order = (0..self.triangles.len()).collect::<Vec<_>>();
+        self.build_cached_node(&mut order, &metadata, 0);
+        self.triangles = match &self.triangles {
+            TriangleIndices::Narrow(source) => TriangleIndices::Narrow(order.iter().map(|&i|source[i]).collect()),
+            TriangleIndices::Wide(source) => TriangleIndices::Wide(order.iter().map(|&i|source[i]).collect()),
+            TriangleIndices::Packed { .. } => unreachable!("construction starts with direct indices"),
+        };
+    }
+    fn build_cached_node(&mut self, order: &mut [usize], metadata: &[BuildTriangle], start: usize) -> usize {
+        let mut bounds = Bounds::empty();
+        for &index in order.iter() {
+            bounds.include(metadata[index].bounds.min);
+            bounds.include(metadata[index].bounds.max);
+        }
+        let node = self.nodes.len();
+        self.nodes.push(Node { bounds, triangles:start..start+order.len(), children:[UNOWNED;2] });
+        if order.len() > BVH_LEAF_TRIANGLES {
+            let size = bounds.max-bounds.min;
+            let axis = if size.x>=size.y && size.x>=size.z {0} else if size.y>=size.z {1} else {2};
+            let middle = order.len()/2;
+            order.select_nth_unstable_by(middle, |&a,&b| metadata[a].center[axis].total_cmp(&metadata[b].center[axis]));
+            let (left,right) = order.split_at_mut(middle);
+            let a = self.build_cached_node(left, metadata, start);
+            let b = self.build_cached_node(right, metadata, start+middle);
+            self.nodes[node].children = [a,b];
+        }
+        node
+    }
+    #[cfg(test)]
     fn build(&mut self, range: Range<usize>) -> usize {
         let mut bounds = Bounds::empty();
         for index in range.clone() {
@@ -355,7 +640,13 @@ fn source_groups(data: &SurfaceMeshData) -> Vec<Range<usize>> {
 
 /// Called once on the terrain build worker, before static spatial batching.
 /// Copy indexed attributes exactly, retaining complete triangle order/winding.
-pub(super) fn prepare(mut source: SurfaceMeshData) -> (SurfaceMeshData, Vec<PreparedGroup>) {
+pub(super) fn prepare(source: SurfaceMeshData) -> (SurfaceMeshData, Vec<PreparedGroup>) {
+    prepare_collision_mode(source, false)
+}
+pub(super) fn prepare_grove(source: SurfaceMeshData) -> (SurfaceMeshData, Vec<PreparedGroup>) {
+    prepare_collision_mode(source, true)
+}
+fn prepare_collision_mode(mut source: SurfaceMeshData, deferred: bool) -> (SurfaceMeshData, Vec<PreparedGroup>) {
     let n = source.positions.len();
     if source.indices.len() % 3 != 0
         || source.normals.len() != n
@@ -419,13 +710,20 @@ pub(super) fn prepare(mut source: SurfaceMeshData) -> (SurfaceMeshData, Vec<Prep
     drop(remap);
     let groups = selected.into_iter()
         .map(|(data, source_range)| {
-            let surface = TriangleTree::new(&data);
+            let surface = if deferred { CollisionSurface::deferred(&data) }
+                else { CollisionSurface::ready(TriangleTree::new(&data)) };
             let leaves = render_leaves(data);
+            let opaque_leaf = merged_opaque_leaf(&leaves);
             PreparedGroup {
                 source_range,
-                surface,
+                surface: Arc::new(surface),
                 leaves,
+                opaque_leaf,
                 overlay: None,
+                transform: Transform::default(),
+                coverage_fade: false,
+                depth_coverage_fade: false,
+                residual_opacity: RESIDUAL_OPACITY,
             }
         })
         .collect();
@@ -515,6 +813,7 @@ fn select(
     data
 }
 fn render_leaves(mut data: SurfaceMeshData) -> Vec<PreparedLeaf> {
+    let _trace = crate::loading_trace::span("occluder.prepare_draw_leaves", || serde_json::json!({"vertices": data.positions.len(), "triangles": data.indices.len()/3}));
     // The source index buffer is no longer needed after the exact BVH build.
     // Move it through sorting/splitting instead of keeping several full copies.
     let mut chunks = vec![std::mem::take(&mut data.indices)];
@@ -550,7 +849,11 @@ fn render_leaves(mut data: SurfaceMeshData) -> Vec<PreparedLeaf> {
         let axis = if extent.x >= extent.z { 0 } else { 2 };
         let (triangles, remainder) = indices.as_chunks_mut::<3>();
         debug_assert!(remainder.is_empty());
-        triangles.sort_unstable_by(|a, b| {
+        // Leaves need a spatial median, not a complete triangle ordering.
+        // Partition once in linear time; sorting each level made dense groves
+        // spend most of their loading time comparing the same triangle centers.
+        // Both halves retain every original triangle and attribute.
+        triangles.select_nth_unstable_by(triangles.len() / 2, |a, b| {
             let center = |t: &[u32; 3]| {
                 t.iter()
                     .map(|&i| f64::from(data.positions[i as usize][axis]))
@@ -584,21 +887,67 @@ fn render_leaves(mut data: SurfaceMeshData) -> Vec<PreparedLeaf> {
                 uploaded: None,
                 center,
                 bounds: local_bounds,
+                shared: None,
             }
         })
         .collect()
+}
+
+/// Opaque objects need one draw, not the distance-sorted draws required by
+/// transparency. Concatenate the existing leaves without changing their
+/// triangles or non-position attributes. Original leaf centers are restored
+/// into the group coordinate system; the complete collision BVH stays shared.
+fn merged_opaque_leaf(leaves: &[PreparedLeaf]) -> Option<PreparedLeaf> {
+    use bevy::mesh::{Indices, VertexAttributeValues};
+    if leaves.len() < 2 { return None; }
+    let mut merged: Option<Mesh> = None;
+    let mut low = Vec3::splat(f32::INFINITY);
+    let mut high = Vec3::splat(f32::NEG_INFINITY);
+    for leaf in leaves {
+        let mut mesh = leaf.mesh.clone();
+        let VertexAttributeValues::Float32x3(positions) = mesh.attribute_mut(Mesh::ATTRIBUTE_POSITION)? else { return None; };
+        for position in positions {
+            let point = Vec3::from_array(*position) + leaf.center;
+            low = low.min(point); high = high.max(point);
+            *position = point.to_array();
+        }
+        let indices = mesh.try_indices().ok()?.iter().map(|index| index as u32).collect();
+        mesh.insert_indices(Indices::U32(indices));
+        if let Some(merged) = &mut merged {
+            if !merged.attributes().map(|(attribute, _)| attribute.id)
+                .eq(mesh.attributes().map(|(attribute, _)| attribute.id)) { return None; }
+            merged.merge(&mesh).ok()?;
+        }
+        else { merged = Some(mesh); }
+    }
+    let mut merged = merged?;
+    // Mesh::merge needs a common index format while offsets accumulate. Restore
+    // the compact format afterward: the opaque draw is used in both the main
+    // and shadow passes, and merging must not double its index bandwidth.
+    if let Some(Indices::U32(indices)) = merged.indices()
+        && indices.iter().all(|&index| index <= u16::MAX as u32)
+    {
+        let Some(Indices::U32(indices)) = merged.remove_indices() else { unreachable!() };
+        merged.insert_indices(Indices::U16(indices.into_iter().map(|index| index as u16).collect()));
+        #[cfg(target_arch = "wasm32")]
+        crate::browser_memory::align_indices(&mut merged);
+    }
+    Some(PreparedLeaf { mesh: merged, uploaded: None, center: Vec3::ZERO,
+        bounds: Aabb::from_min_max(low, high), shared: None })
 }
 
 #[derive(Clone, Copy, Debug)]
 struct Fade {
     opacity: f32,
     hold: f32,
+    residual_opacity: f32,
 }
 impl Default for Fade {
     fn default() -> Self {
         Self {
             opacity: 1.0,
             hold: 0.0,
+            residual_opacity: RESIDUAL_OPACITY,
         }
     }
 }
@@ -612,25 +961,25 @@ impl Fade {
         };
         if blocked {
             self.hold = EXIT_HOLD_SECONDS;
-            self.opacity = ease(self.opacity, RESIDUAL_OPACITY, FADE_RATE, dt);
+            self.opacity = ease(self.opacity, self.residual_opacity, FADE_RATE, dt);
         } else {
             let held = dt.min(self.hold);
             self.hold = (self.hold - dt).max(0.0);
-            self.opacity = ease(self.opacity, RESIDUAL_OPACITY, FADE_RATE, held);
+            self.opacity = ease(self.opacity, self.residual_opacity, FADE_RATE, held);
             self.opacity = ease(self.opacity, 1.0, RESTORE_RATE, dt - held);
         }
         if (self.opacity - 1.0).abs() < 0.0001 {
             self.opacity = 1.0;
         }
-        if (self.opacity - RESIDUAL_OPACITY).abs() < 0.0001 {
-            self.opacity = RESIDUAL_OPACITY;
+        if (self.opacity - self.residual_opacity).abs() < 0.0001 {
+            self.opacity = self.residual_opacity;
         }
     }
 }
 #[derive(Component)]
 struct OccluderGroup {
-    surface: TriangleTree,
-    overlay_surface: Option<TriangleTree>,
+    surface: Arc<CollisionSurface>,
+    overlay_surface: Option<Arc<CollisionSurface>>,
     overlay_materials: Option<(Handle<VoxelMaterial>, Handle<VoxelMaterial>)>,
     fade: Fade,
     blocked: bool,
@@ -639,8 +988,34 @@ struct OccluderGroup {
     blending: bool,
 }
 
+#[derive(Clone)]
+pub(super) struct RetainedSurface {
+    surface: Arc<CollisionSurface>,
+    overlay: Option<Arc<CollisionSurface>>,
+}
+impl RetainedSurface {
+    pub(super) fn blocks(&self, pose: Transform, start: Vec3, end: Vec3) -> bool {
+        let inverse = pose.compute_affine().inverse();
+        let start = inverse.transform_point3(start);
+        let end = inverse.transform_point3(end);
+        self.surface.blocks(start, end)
+            || self.overlay.as_ref().is_some_and(|surface| surface.blocks(start, end))
+    }
+}
+pub(super) fn retained_surface(world: &World, entity: Entity) -> Option<RetainedSurface> {
+    let group = world.get::<OccluderGroup>(entity)?;
+    Some(RetainedSurface { surface: group.surface.clone(), overlay: group.overlay_surface.clone() })
+}
+
 #[derive(Component)]
 struct OverlayLeaf;
+
+#[derive(Component)]
+pub(super) struct OpaqueObjectLeaf;
+/// A sorted render alternative. These remain the retention leaves so battle
+/// border and omitted-shadow proofs keep their original spatial granularity.
+#[derive(Component)]
+pub(super) struct SortedObjectLeaf;
 
 pub(super) fn spawn_groups(
     commands: &mut Commands,
@@ -654,14 +1029,20 @@ pub(super) fn spawn_groups(
     fn blended(
         materials: &mut Assets<VoxelMaterial>,
         opaque: &Handle<VoxelMaterial>,
+        coverage_fade: bool,
+        depth_coverage_fade: bool,
     ) -> Handle<VoxelMaterial> {
         let mut material = materials
             .get(opaque)
             .expect("terrain material validated before group upload")
             .clone();
         // The stock shadow shader retains the original base alpha and geometry.
-        let cutoff = match material.base.alpha_mode { AlphaMode::Mask(v) => v, _ => 0.0 };
-        material.base.alpha_mode = AlphaMode::Blend;
+        let cutoff = match material.base.alpha_mode {
+            AlphaMode::Mask(v) => v,
+            _ if coverage_fade => -1.0,
+            _ => 0.0,
+        };
+        material.base.alpha_mode = if depth_coverage_fade {AlphaMode::Mask(0.5)}else{AlphaMode::Blend};
         material.extension.cutaway = CutawayUniform::default();
         material.extension.cutaway.fade.w = cutoff;
         materials.add(material)
@@ -676,29 +1057,34 @@ pub(super) fn spawn_groups(
         source_range: _,
         surface,
         leaves,
+        opaque_leaf,
         overlay,
+        transform,
+        coverage_fade,
+        depth_coverage_fade,
+        residual_opacity,
     } in groups
     {
-        let transparent = blended(materials, &opaque);
-        let (overlay_surface, overlay_leaves) = overlay
-            .map(|g| (Some(g.surface), g.leaves))
+        let transparent = blended(materials, &opaque, coverage_fade, depth_coverage_fade);
+        let (overlay_surface, overlay_leaves, overlay_opaque) = overlay
+            .map(|g| (Some(g.surface), g.leaves, g.opaque_leaf))
             .unwrap_or_default();
         let overlay_materials = overlay_surface.as_ref().map(|_| {
             let opaque = linked_opaque
                 .as_ref()
                 .expect("authored cross-domain link requires its material")
                 .clone();
-            let transparent = blended(materials, &opaque);
+            let transparent = blended(materials, &opaque, coverage_fade, depth_coverage_fade);
             (opaque, transparent)
         });
         let group = commands
             .spawn((
-                (Transform::default(), Visibility::default()),
+                (transform, Visibility::default()),
                 OccluderGroup {
                     surface,
                     overlay_surface,
                     overlay_materials: overlay_materials.clone(),
-                    fade: Fade::default(),
+                    fade: Fade { residual_opacity, ..Default::default() },
                     blocked: false,
                     opaque: opaque.clone(),
                     transparent,
@@ -706,7 +1092,7 @@ pub(super) fn spawn_groups(
                 },
             ))
             .id();
-        for (domain, leaves) in [leaves, overlay_leaves].into_iter().enumerate() {
+        for (domain, (leaves, opaque_leaf)) in [(leaves, opaque_leaf), (overlay_leaves, overlay_opaque)].into_iter().enumerate() {
             if leaves.is_empty() {
                 continue;
             }
@@ -715,29 +1101,38 @@ pub(super) fn spawn_groups(
             } else {
                 &overlay_materials.as_ref().unwrap().0
             };
-            for PreparedLeaf {
-                mut mesh,
-                uploaded,
-                center,
-                bounds,
-            } in leaves
-            {
+            let combined = opaque_leaf.is_some();
+            for (mut prepared, opaque_only) in leaves.into_iter().map(|leaf| (leaf, false))
+                .chain(opaque_leaf.into_iter().map(|leaf| (leaf, true))) {
                 if compact_uvs && materials.get(material).is_some_and(|material| {
                     crate::compact_vertices::solid_uv0_is_unused(
                         &material.base, material.extension.water_enabled,
                     )
                 }) {
-                    crate::compact_vertices::remove_unused_zero_uv0(&mut mesh);
+                    crate::compact_vertices::remove_unused_zero_uv0(&mut prepared.mesh);
                 }
+                let defer = combined && !opaque_only;
                 let mut leaf = commands.spawn((
-                    (Mesh3d(uploaded.unwrap_or_else(|| meshes.add(mesh))),
-MeshMaterial3d(material.clone()),
-Transform::from_translation(center),),
-                    bounds,
+                    (MeshMaterial3d(material.clone()),
+Transform::from_translation(prepared.center),),
+                    if combined && !opaque_only { Visibility::Hidden } else { Visibility::Inherited },
+                    prepared.bounds,
                     RenderLayers::layer(VOXEL_RENDER_LAYER),
                 ));
+                if defer {
+                    leaf.insert(DeferredMesh(Some(prepared)));
+                } else {
+                    leaf.insert(Mesh3d(upload_leaf(&mut prepared, meshes)));
+                    if let Some(shared) = prepared.shared {
+                        leaf.insert(SharedGeometry(shared));
+                    }
+                }
                 if domain == 1 {
                     leaf.insert(OverlayLeaf);
+                }
+                if combined {
+                    if opaque_only { leaf.insert(OpaqueObjectLeaf); }
+                    else { leaf.insert(SortedObjectLeaf); }
                 }
                 let leaf = leaf.id();
                 spawned_leaves.push(leaf);
@@ -770,15 +1165,27 @@ fn target_rays(uniform: CutawayUniform, camera: Mat4) -> Option<(Vec3, [Vec3; 9]
     Some((camera.w_axis.truncate(), targets))
 }
 fn sync(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
     status: Res<VoxelViewStatus>,
     cache: Res<TerrainRevisionCache>,
-    time: Res<Time>,
+    // Occluder opacity is presentation state. It must settle while virtual
+    // gameplay time is paused, including strict paired render captures.
+    time: Res<Time<Real>>,
     cameras: Query<(&Camera, &GlobalTransform), With<VoxelWorldCamera>>,
     mut materials: ResMut<Assets<VoxelMaterial>>,
     mut groups: Query<(&mut OccluderGroup, Ref<GlobalTransform>, &Children)>,
-    mut leaves: Query<(&mut MeshMaterial3d<VoxelMaterial>, Option<&OverlayLeaf>)>,
+    mut leaves: Query<(&mut MeshMaterial3d<VoxelMaterial>, Option<&OverlayLeaf>,
+        Option<&OpaqueObjectLeaf>, Option<&SortedObjectLeaf>, &mut Visibility,
+        Option<&mut DeferredMesh>)>,
     mut previous: Local<Option<(Mat4, CutawayUniform, bool)>>,
 ) {
+    let _trace = crate::loading_trace::span("frame.occluder_fades", || {
+        let (count, blocked, faded, deferred) = groups.iter().fold((0,0,0,0), |(count,blocked,faded,deferred), (group,_,_)|
+            (count+1, blocked+usize::from(group.blocked), faded+usize::from(group.fade.opacity < 1.),
+                deferred+usize::from(group.surface.tree.get().is_none())));
+        serde_json::json!({"groups":count,"blocked":blocked,"faded":faded,"deferred_collision":deferred})
+    });
     let (camera, active) = cameras
         .single()
         .map(|(c, t)| (t.to_matrix(), c.is_active))
@@ -835,7 +1242,24 @@ fn sync(
                 group.opaque.clone()
             };
             for child in children.iter() {
-                if let Ok((mut handle, overlay)) = leaves.get_mut(child) {
+                if let Ok((mut handle, overlay, opaque_only, sorted, mut visibility, deferred)) = leaves.get_mut(child) {
+                    if opaque_only.is_some() {
+                        *visibility = if blending { Visibility::Hidden } else { Visibility::Inherited };
+                    } else if sorted.is_some() {
+                        if blending {
+                            if let Some(mut deferred) = deferred {
+                                if let Some(mut prepared) = deferred.0.take() {
+                                    let mesh = upload_leaf(&mut prepared, &mut meshes);
+                                    let mut entity = commands.entity(child);
+                                    entity.insert(Mesh3d(mesh)).remove::<DeferredMesh>();
+                                    if let Some(shared) = prepared.shared {
+                                        entity.insert(SharedGeometry(shared));
+                                    }
+                                }
+                            }
+                        }
+                        *visibility = if blending { Visibility::Inherited } else { Visibility::Hidden };
+                    }
                     handle.0 = if overlay.is_some() {
                         let (opaque, transparent) = group.overlay_materials.as_ref().unwrap();
                         if blending {
@@ -865,6 +1289,126 @@ fn sync(
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn frozen_view_publishes_deferred_geometry_once_without_exposing_overworld_alternatives() {
+        for shared in [false, true] {
+            let mut world = World::new();
+            world.init_resource::<Assets<Mesh>>();
+            let source = Mesh::from(Cuboid::new(2., 5., 2.));
+            let expected = source.attribute(Mesh::ATTRIBUTE_POSITION).unwrap().clone();
+            let shared_mesh = shared.then(|| Arc::new(Mutex::new(SharedLeaf {
+                mesh: Some(source.clone()), uploaded: None,
+            })));
+            let root = world.spawn_empty().id();
+            let leaves: Vec<_> = (0..2).map(|_| world.spawn((
+                Visibility::Hidden,
+                DeferredMesh(Some(PreparedLeaf {
+                    mesh: source.clone(), uploaded: None, center: Vec3::ZERO,
+                    bounds: Aabb::from_min_max(Vec3::new(-1.,0.,-1.),Vec3::new(1.,5.,1.)),
+                    shared: shared_mesh.clone(),
+                })), SortedObjectLeaf,
+            )).id()).collect();
+            world.entity_mut(root).add_children(&leaves);
+            prepare_retention_meshes(&mut world, root);
+            let first: Vec<_> = leaves.iter().map(|&leaf| {
+                assert!(world.get::<Mesh3d>(leaf).is_none());
+                assert_eq!(world.get::<Visibility>(leaf), Some(&Visibility::Hidden));
+                let mesh = retained_mesh(&world, leaf).expect("retained sorted geometry is ready");
+                assert_eq!(world.resource::<Assets<Mesh>>().get(&mesh).unwrap()
+                    .attribute(Mesh::ATTRIBUTE_POSITION), Some(&expected));
+                mesh
+            }).collect();
+            assert_eq!(world.resource::<Assets<Mesh>>().len(), if shared { 1 } else { 2 });
+            prepare_retention_meshes(&mut world, root);
+            for (&leaf, original) in leaves.iter().zip(first) {
+                assert_eq!(retained_mesh(&world, leaf), Some(original));
+            }
+            assert_eq!(world.resource::<Assets<Mesh>>().len(), if shared { 1 } else { 2 });
+        }
+    }
+
+    #[test]
+    fn opaque_and_sorted_grove_draws_are_exclusive_through_fade_and_restore() {
+        use bevy::asset::AssetApp;
+        let mut source = crate::mesh::TerrainMeshData::default();
+        crate::foliage::append_grove_tree(&mut source, [0.0, 32.0, 0.0, 32.0],
+            3.0, 16.0, [4, 8], [false; 4]);
+        let (_, groups) = prepare(source.solid);
+        let mut app = App::new();
+        app.add_plugins((MinimalPlugins, bevy::transform::TransformPlugin,
+            bevy::asset::AssetPlugin::default()))
+            .init_asset::<Mesh>().init_asset::<VoxelMaterial>()
+            .init_resource::<TerrainRevisionCache>().init_resource::<VoxelViewStatus>()
+            .insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+                std::time::Duration::from_secs_f64(1.0 / 60.0)));
+        register(&mut app);
+        let root = app.world_mut().spawn((Transform::default(), Visibility::Inherited)).id();
+        let material = app.world_mut().resource_mut::<Assets<VoxelMaterial>>()
+            .add(crate::solid_terrain_material());
+        app.world_mut().resource_scope(|world, mut meshes: Mut<Assets<Mesh>>| {
+            world.resource_scope(|world, mut materials: Mut<Assets<VoxelMaterial>>| {
+                spawn_groups(&mut world.commands(), &mut meshes, &mut materials, root, groups, material, None);
+            });
+        });
+        app.world_mut().flush(); app.update();
+        let counts = |world: &mut World| {
+            let mut counts = (0, 0);
+            for (visibility, opaque, sorted) in world.query::<(&Visibility, Option<&OpaqueObjectLeaf>, Option<&SortedObjectLeaf>)>().iter(world) {
+                if *visibility != Visibility::Hidden {
+                    counts.0 += usize::from(opaque.is_some());
+                    counts.1 += usize::from(sorted.is_some());
+                }
+            }
+            counts
+        };
+        assert_eq!(counts(app.world_mut()), (1, 0));
+        let mesh_count = app.world().resource::<Assets<Mesh>>().len();
+        assert_eq!(mesh_count, 1, "hidden sorted leaves must not upload at spawn");
+        assert!(app.world_mut().query::<&DeferredMesh>().iter(app.world()).count() > 1);
+        let material_count = app.world().resource::<Assets<VoxelMaterial>>().len();
+        app.world_mut().resource_mut::<Messages<AssetEvent<Mesh>>>().clear();
+        {
+            let world = app.world_mut();
+            let mut query = world.query::<&mut OccluderGroup>();
+            for mut group in query.iter_mut(world) { group.fade.opacity = 0.5; }
+        }
+        app.update();
+        let fading = counts(app.world_mut());
+        assert_eq!(fading.0, 0); assert!(fading.1 > 1);
+        let fading_mesh_count = app.world().resource::<Assets<Mesh>>().len();
+        assert_eq!(fading_mesh_count, mesh_count + fading.1);
+        let mesh_events = app.world().resource::<Messages<AssetEvent<Mesh>>>();
+        assert_eq!(mesh_events.iter_current_update_messages()
+            .filter(|event| matches!(event, AssetEvent::Added { .. })).count(), fading.1,
+            "fade geometry must publish during the same update as its visibility");
+        assert_eq!(app.world_mut().query::<&DeferredMesh>().iter(app.world()).count(), 0);
+        assert_eq!(app.world_mut().query_filtered::<&Mesh3d, With<SortedObjectLeaf>>().iter(app.world()).count(), fading.1);
+        for _ in 0..180 { app.update(); }
+        assert_eq!(counts(app.world_mut()), (1, 0));
+        assert_eq!(app.world().resource::<Assets<Mesh>>().len(), fading_mesh_count);
+        assert_eq!(app.world().resource::<Assets<VoxelMaterial>>().len(), material_count);
+    }
+
+    #[test]
+    fn opaque_grove_batch_preserves_every_source_triangle_attribute_and_collision_surface() {
+        for coordinates in [[4, 8], [-3, 7]] {
+            let mut source = crate::mesh::TerrainMeshData::default();
+            crate::foliage::append_grove_tree(&mut source, [0.0, 32.0, 0.0, 32.0],
+                3.0, 16.0, coordinates, [false; 4]);
+            let (unowned, groups) = prepare(source.solid);
+            let expected = geometry_signature(&unowned, groups.clone());
+            let batches = groups.into_iter().map(|mut group| {
+                assert!(group.leaves.len() > 1, "fixture must exercise sorted-leaf consolidation");
+                let collision = group.surface.clone();
+                group.leaves = vec![group.opaque_leaf.take().expect("compatible source leaves must batch")];
+                assert!(Arc::ptr_eq(&collision, &group.surface));
+                group
+            }).collect();
+            assert_eq!(geometry_signature(&unowned, batches), expected,
+                "opaque batching must preserve complete source positions, normals, UVs, colors, winding and triangle multiplicity");
+        }
+    }
+
     use super::*;
     use bevy::mesh::VertexAttributeValues;
     use std::collections::BTreeMap;
@@ -883,6 +1427,45 @@ mod tests {
             data.cutaway_ranges.push(base..base + 4);
         }
     }
+    #[test]
+    fn opaque_merge_uses_narrow_indices_only_when_every_offset_fits() {
+        use bevy::mesh::Indices;
+        for first_count in [65_533, 65_534] {
+            let make_leaf = |count: usize, center: Vec3| {
+                let source = SurfaceMeshData {
+                    positions: vec![[0.25, -0.5, 0.75]; count],
+                    normals: vec![[0.0, 1.0, 0.0]; count],
+                    uvs: vec![[0.0; 2]; count],
+                    colors: vec![[0.137, 0.287, 0.863, 1.0]; count],
+                    indices: vec![0, (count - 2) as u32, (count - 1) as u32],
+                    ..Default::default()
+                };
+                PreparedLeaf { mesh: source.into_compact_mesh(), uploaded: None, center,
+                    bounds: Aabb::from_min_max(Vec3::ZERO, Vec3::ONE), shared: None }
+            };
+            let leaves = [make_leaf(first_count, Vec3::X), make_leaf(3, Vec3::Z)];
+            let merged = merged_opaque_leaf(&leaves).unwrap();
+            let indices = merged.mesh.indices().unwrap();
+            assert_eq!(matches!(indices, Indices::U16(_)), first_count == 65_533);
+            assert_eq!(indices.iter().collect::<Vec<_>>(),
+                [0, first_count - 2, first_count - 1, first_count, first_count + 1, first_count + 2]);
+            for (attribute, values) in merged.mesh.attributes() {
+                if attribute.id == Mesh::ATTRIBUTE_POSITION.id { continue; }
+                let expected = leaves.iter().flat_map(|leaf|
+                    leaf.mesh.attribute(attribute.id).unwrap().get_bytes().iter().copied()
+                ).collect::<Vec<_>>();
+                assert_eq!(values.get_bytes(), expected);
+            }
+            let Some(VertexAttributeValues::Float32x3(positions)) =
+                merged.mesh.attribute(Mesh::ATTRIBUTE_POSITION) else { panic!() };
+            for (index, position) in positions.iter().enumerate() {
+                let center = if index < first_count { Vec3::X } else { Vec3::Z };
+                assert_eq!(position.map(f32::to_bits),
+                    (Vec3::new(0.25, -0.5, 0.75) + center).to_array().map(f32::to_bits));
+            }
+        }
+    }
+
     #[test]
     fn early_palette_compaction_keeps_geometry_tags_and_linked_texture_coordinates() {
         let material = crate::solid_terrain_material();
@@ -963,6 +1546,88 @@ mod tests {
         assert_eq!(faded.extension.cutaway.fade.w, 0.63);
     }
 
+    #[test]
+    fn source_cabinet_depth_coverage_survives_cache_and_preserves_other_fades() {
+        for opt_in in [false,true] {
+            let mut world=World::new();
+            let root=world.spawn((Transform::default(),Visibility::default())).id();
+            let mut meshes=Assets::<Mesh>::default();
+            let mut materials=Assets::<VoxelMaterial>::default();
+            let original=crate::solid_terrain_material();
+            let handle=materials.add(original.clone());
+            let mut data=SurfaceMeshData::default();
+            quad(&mut data,[[0.,0.,0.],[0.,1.,0.],[1.,1.,0.],[1.,0.,0.]],true);
+            let (_,mut groups)=prepare(data);
+            let source=groups[0].source_range.clone();
+            use_source_depth_coverage_fade(&mut groups,&[0..999]);
+            assert!(!groups[0].depth_coverage_fade);
+            if opt_in {use_source_depth_coverage_fade(&mut groups,&[source]);}
+            share_groups(&mut groups);
+            let cached=WeakPreparedGroup::new(&groups[0]).upgrade().unwrap();
+            assert_eq!(cached.depth_coverage_fade,opt_in);
+            assert_eq!(cached.coverage_fade,opt_in);
+            let mut queue=bevy::ecs::world::CommandQueue::default();
+            {let mut commands=Commands::new(&mut queue,&world);
+                spawn_groups(&mut commands,&mut meshes,&mut materials,root,vec![cached],handle.clone(),None);}
+            queue.apply(&mut world);
+            let group=world.query::<&OccluderGroup>().single(&world).unwrap();
+            let faded=materials.get(&group.transparent).unwrap();
+            assert_eq!(faded.base.alpha_mode,if opt_in {AlphaMode::Mask(0.5)}else{AlphaMode::Blend});
+            assert_eq!(faded.extension.cutaway.fade.w,if opt_in {-1.}else{0.});
+            assert_eq!(materials.get(&handle).unwrap().base.alpha_mode,original.base.alpha_mode);
+        }
+    }
+    #[test]
+    fn palette_crown_coverage_survives_cache_and_keeps_opaque_material_unchanged() {
+        for coverage in [false, true] {
+            let mut world = World::new();
+            let root = world.spawn((Transform::default(), Visibility::default())).id();
+            let mut meshes = Assets::<Mesh>::default();
+            let mut materials = Assets::<VoxelMaterial>::default();
+            let original = crate::solid_terrain_material();
+            let handle = materials.add(original.clone());
+            let mut data = SurfaceMeshData::default();
+            quad(&mut data, [[0.,0.,0.],[0.,1.,0.],[1.,1.,0.],[1.,0.,0.]], true);
+            let (_, mut groups) = prepare(data);
+            if coverage { use_coverage_fade(&mut groups); }
+            share_groups(&mut groups);
+            let cached = WeakPreparedGroup::new(&groups[0]).upgrade().unwrap();
+            assert_eq!(cached.coverage_fade, coverage);
+            let mut queue = bevy::ecs::world::CommandQueue::default();
+            { let mut commands = Commands::new(&mut queue, &world);
+              spawn_groups(&mut commands, &mut meshes, &mut materials, root, vec![cached], handle.clone(), None); }
+            queue.apply(&mut world);
+            let mut query = world.query::<&OccluderGroup>();
+            let group = query.single(&world).unwrap();
+            let faded = materials.get(&group.transparent).unwrap();
+            assert_eq!(faded.extension.cutaway.fade.w, if coverage {-1.} else {0.});
+            let opaque = materials.get(&handle).unwrap();
+            assert_eq!(opaque.base.alpha_mode, original.base.alpha_mode);
+            assert_eq!(opaque.base.base_color, original.base.base_color);
+            assert_eq!(opaque.extension.cutaway.fade, original.extension.cutaway.fade);
+        }
+    }
+
+    #[test]
+    fn source_coverage_opt_in_preserves_neighboring_walls_and_cached_ownership() {
+        let mut data = SurfaceMeshData::default();
+        quad(&mut data, [[0.,0.,0.],[0.,1.,0.],[1.,1.,0.],[1.,0.,0.]], true);
+        quad(&mut data, [[2.,0.,0.],[2.,1.,0.],[3.,1.,0.],[3.,0.,0.]], true);
+        let (_, mut groups) = prepare(data);
+        assert_eq!(groups.len(), 2);
+        let ranges = groups.iter().map(|g| g.source_range.clone()).collect::<Vec<_>>();
+        use_source_coverage_fade(&mut groups, &[ranges[1].clone(), 0..999], 0.);
+        assert!(!groups[0].coverage_fade);
+        assert!(groups[1].coverage_fade);
+        share_groups(&mut groups);
+        for (index, group) in groups.iter().enumerate() {
+            let cached = WeakPreparedGroup::new(group).upgrade().unwrap();
+            assert_eq!(cached.source_range, ranges[index]);
+            assert_eq!(cached.coverage_fade, index == 1);
+            assert_eq!(cached.residual_opacity, if index == 1 {0.} else {RESIDUAL_OPACITY});
+        }
+    }
+
     fn wall(z: f32) -> SurfaceMeshData {
         let mut data = SurfaceMeshData::default();
         quad(
@@ -1003,6 +1668,56 @@ mod tests {
         data
     }
     #[test]
+    fn retained_battle_surface_reuses_real_triangles_and_transformed_openings() {
+        let tree = Arc::new(CollisionSurface::ready(TriangleTree::new(&u_wall())));
+        let retained = RetainedSurface { surface: tree.clone(), overlay: None };
+        assert!(Arc::ptr_eq(&tree, &retained.surface));
+        let pose = Transform::from_xyz(3.0, 1.0, -2.0)
+            .with_rotation(Quat::from_rotation_y(0.7)).with_scale(Vec3::splat(0.0625));
+        let target = pose.transform_point(Vec3::new(0., 10., 0.));
+        let opening = pose.transform_point(Vec3::new(0., 10., 80.));
+        assert!(!retained.blocks(pose, opening, target));
+        assert!(retained.blocks(pose, pose.transform_point(Vec3::new(80., 10., 0.)), target));
+        let linked = RetainedSurface { surface: tree, overlay: Some(Arc::new(CollisionSurface::ready(TriangleTree::new(&wall(16.))))) };
+        assert!(linked.blocks(pose, opening, target), "linked overlay surfaces remain blockers");
+    }
+
+    #[test]
+    fn deferred_collision_rejects_distant_rays_without_building_and_preserves_concave_openings() {
+        let data = u_wall();
+        let surface = CollisionSurface::deferred(&data);
+        assert!(surface.tree.get().is_none());
+        assert!(!surface.blocks(Vec3::splat(1000.), Vec3::splat(1100.)));
+        assert!(surface.tree.get().is_none(), "off-object rays must not prepare a tree");
+        assert!(surface.source.lock().unwrap().is_some());
+        let opening = (Vec3::new(0., 10., 80.), Vec3::new(0., 10., 0.));
+        assert!(!surface.blocks(opening.0, opening.1), "bounds are never a substitute for actual triangles");
+        let tree = surface.tree.get().expect("a nearby ray initializes exact triangles");
+        assert!(surface.source.lock().unwrap().is_none(), "release the redundant source buffers");
+        assert!(surface.blocks(Vec3::new(80., 10., 0.), opening.1));
+        assert!(std::ptr::eq(tree, surface.tree.get().unwrap()), "reuse the immutable tree");
+    }
+
+    #[test]
+    fn deferred_grove_collision_preserves_eager_rays_and_every_render_attribute() {
+        let mut source = crate::mesh::TerrainMeshData::default();
+        crate::foliage::append_grove_tree(&mut source, [0.,32.,0.,32.], 3.,16.,[4,8],[false;4]);
+        let (opaque, eager) = prepare(source.solid.clone());
+        let (deferred_opaque, deferred) = prepare_grove(source.solid);
+        assert_eq!(geometry_signature(&opaque, eager.clone()), geometry_signature(&deferred_opaque, deferred.clone()));
+        assert_eq!(prepared_bounds(&eager), prepared_bounds(&deferred));
+        assert!(deferred.iter().all(|group| group.surface.tree.get().is_none()));
+        for i in 0..2048 {
+            let x = (i % 64) as f32 - 16.;
+            let y = (i / 64) as f32 * 3.;
+            let start = Vec3::new(x,y,-40.);
+            let end = Vec3::new(32.-x,y,72.);
+            assert_eq!(eager.iter().any(|group| group.surface.blocks(start,end)),
+                deferred.iter().any(|group| group.surface.blocks(start,end)), "ray {i}");
+        }
+    }
+
+    #[test]
     fn concave_source_room_empty_space_does_not_fade_its_walls() {
         let tree = TriangleTree::new(&u_wall());
         let target = Vec3::new(0.0, 10.0, 0.0);
@@ -1026,6 +1741,37 @@ mod tests {
         );
     }
     #[test]
+    fn weak_templates_share_live_instances_and_release_retired_geometry() {
+        let (_, mut groups) = prepare(u_wall());
+        share_groups(&mut groups);
+        let weak: Vec<_> = groups.iter().map(WeakPreparedGroup::new).collect();
+        let mut world = World::new();
+        let root = world.spawn((Transform::default(), Visibility::default())).id();
+        let mut meshes = Assets::<Mesh>::default();
+        let mut materials = Assets::<VoxelMaterial>::default();
+        let material = materials.add(crate::solid_terrain_material());
+        let mut queue = bevy::ecs::world::CommandQueue::default();
+        {
+            let mut commands = Commands::new(&mut queue, &world);
+            spawn_groups(&mut commands, &mut meshes, &mut materials, root, groups, material.clone(), None);
+        }
+        queue.apply(&mut world);
+        let originals: Vec<_> = world.query::<&Mesh3d>().iter(&world).map(|mesh| mesh.0.id()).collect();
+        let original_count = meshes.len();
+        let copies = weak.iter().map(WeakPreparedGroup::upgrade).collect::<Option<Vec<_>>>().unwrap();
+        {
+            let mut commands = Commands::new(&mut queue, &world);
+            spawn_groups(&mut commands, &mut meshes, &mut materials, root, copies, material, None);
+        }
+        queue.apply(&mut world);
+        assert_eq!(meshes.len(), original_count, "a live copy reuses uploaded buffers");
+        assert!(world.query::<&Mesh3d>().iter(&world).all(|mesh| originals.contains(&mesh.0.id())));
+        world.despawn(root);
+        assert!(weak.iter().all(|group| group.upgrade().is_none()),
+            "weak recipe metadata must not retain retired geometry or mesh handles");
+    }
+
+    #[test]
     fn staging_preserves_exact_leaf_buffers_and_reuses_uploaded_handles() {
         let (_, mut groups) = prepare(u_wall());
         let before = groups[0].leaves[0].mesh.clone();
@@ -1047,6 +1793,32 @@ mod tests {
         stage_group_meshes(&mut groups, &mut meshes);
         assert_eq!(meshes.len(), count);
         assert_eq!(groups[0].leaves[0].uploaded.as_ref(), Some(&handle));
+    }
+    #[test]
+    fn repeated_tree_instances_share_geometry_but_keep_transforms_and_fades_independent() {
+        let (_, mut canonical) = prepare(u_wall());
+        let vertices = canonical[0].leaves[0].mesh.count_vertices();
+        share_groups(&mut canonical);
+        let surface = canonical[0].surface.clone();
+        let mut meshes = Assets::<Mesh>::default();
+        let mut handles = Vec::new();
+        for index in 0..1000 {
+            let mut instance = canonical.clone();
+            place_groups(&mut instance, Transform::from_xyz(index as f32*32., 0., 0.));
+            assert!(Arc::ptr_eq(&surface, &instance[0].surface));
+            assert_eq!(instance[0].transform.translation.x, index as f32*32.);
+            stage_group_meshes(&mut instance, &mut meshes);
+            handles.push(upload_leaf(&mut instance[0].leaves[0], &mut meshes));
+        }
+        assert!(handles.iter().all(|h| h == &handles[0]));
+        assert_eq!(meshes.len(), canonical[0].leaves.len());
+        assert_eq!(meshes.get(&handles[0]).unwrap().count_vertices(), vertices);
+        let mut blocked = Fade::default();
+        let mut clear = Fade::default();
+        blocked.advance(true, 1.);
+        clear.advance(false, 1.);
+        assert_eq!(blocked.opacity, RESIDUAL_OPACITY);
+        assert_eq!(clear.opacity, 1.);
     }
     #[test]
     fn bvh_keeps_source_corner_bits_and_sharing_instead_of_expanding_triangles() {
@@ -1146,6 +1918,35 @@ mod tests {
     }
 
     #[test]
+    fn direct_index_build_matches_legacy_packed_grove_intersections_and_retention() {
+        let mut source = crate::mesh::TerrainMeshData::default();
+        crate::foliage::append_grove_tree(&mut source, [-12.,8.,-9.,3.], 3., 8., [8,12], [true,false,true,false]);
+        let direct = TriangleTree::new(&source.solid);
+        let remap = direct.positions.iter().enumerate().map(|(i,p)|
+            (p.to_array().map(f32::to_bits), i as u32)).collect::<bevy::platform::collections::HashMap<_,_>>();
+        let original = source.solid.indices.iter().map(|&i|
+            remap[&source.solid.positions[i as usize].map(f32::to_bits)]).collect::<Vec<_>>();
+        let mut legacy = TriangleTree { positions:direct.positions.clone(),
+            triangles:TriangleIndices::new(&original), nodes:Vec::new() };
+        legacy.build(0..legacy.triangles.len());
+        let mut a = direct.triangles.iter().collect::<Vec<_>>();
+        let mut b = legacy.triangles.iter().collect::<Vec<_>>();
+        a.sort_unstable(); b.sort_unstable();
+        assert_eq!(a,b);
+        assert_eq!(direct.triangles.storage_bytes(),legacy.triangles.storage_bytes());
+        let mut seed = 731u32;
+        let mut coordinate = || {
+            seed = seed.wrapping_mul(1664525).wrapping_add(1013904223);
+            (seed >> 8) as f32 / 16777216. * 80. - 40.
+        };
+        for _ in 0..2048 {
+            let start = Vec3::new(coordinate(),coordinate()+42.,coordinate());
+            let end = Vec3::new(coordinate(),coordinate()+12.,coordinate());
+            assert_eq!(direct.blocks(start,end),legacy.blocks(start,end), "{start:?} -> {end:?}");
+        }
+    }
+
+    #[test]
     fn collision_exception_table_overflow_preserves_full_narrow_indices() {
         let source = vec![900, 0, 901].repeat(65537);
         let indices = TriangleIndices::new(&source);
@@ -1228,6 +2029,24 @@ mod tests {
                 previous = fade.opacity;
             }
             assert_eq!(fade.opacity, 1.0);
+        }
+    }
+    #[test]
+    fn full_gateway_reveal_settles_restores_and_keeps_default_wall_policy() {
+        for residual in [0., RESIDUAL_OPACITY] {
+            let mut fade = Fade { residual_opacity: residual, ..Default::default() };
+            for _ in 0..3 {
+                for _ in 0..120 {
+                    let previous = fade.opacity;
+                    fade.advance(true, 1. / 60.);
+                    assert!(fade.opacity <= previous && fade.opacity >= residual);
+                }
+                assert_eq!(fade.opacity, residual);
+                fade.advance(false, EXIT_HOLD_SECONDS / 2.);
+                assert_eq!(fade.opacity, residual);
+                for _ in 0..120 { fade.advance(false, 1. / 60.); }
+                assert_eq!(fade.opacity, 1.);
+            }
         }
     }
     #[test]
@@ -1473,9 +2292,14 @@ Transform::from_xyz(0.0, 20.0, 80.0)
             material_count, 4,
             "two shared opaque domains plus two cached blended materials"
         );
+        // Paired captures hold authoritative simulation while camera/material
+        // presentation settles. Exercise that real ECS condition here too.
+        app.world_mut().resource_mut::<Time<Virtual>>().pause();
+        let frozen_world_time = app.world().resource::<Time<Virtual>>().elapsed();
         for _ in 0..120 {
             app.update();
         }
+        assert_eq!(app.world().resource::<Time<Virtual>>().elapsed(), frozen_world_time);
         let state = app.world().get::<OccluderGroup>(group).unwrap();
         assert_eq!(state.fade.opacity, RESIDUAL_OPACITY);
         assert!(state.blending);
@@ -1716,27 +2540,41 @@ pub(crate) fn geometry_signature(
     add(opaque);
     for group in groups {
         for leaf in group.leaves {
+            // Shared instances keep their canonical CPU mesh in the shared
+            // leaf until upload; leaf.mesh is intentionally an empty placeholder.
+            let shared = leaf.shared.as_ref().map(|s| s.lock().unwrap());
+            let mesh = shared.as_ref().map_or(&leaf.mesh, |s|
+                s.mesh.as_ref().expect("geometry signature requires an unuploaded CPU mesh"));
             let bevy::mesh::VertexAttributeValues::Float32x3(positions) =
-                leaf.mesh.attribute(Mesh::ATTRIBUTE_POSITION).unwrap() else { panic!() };
+                mesh.attribute(Mesh::ATTRIBUTE_POSITION).unwrap() else { panic!() };
             let bevy::mesh::VertexAttributeValues::Float32x3(normals) =
-                leaf.mesh.attribute(Mesh::ATTRIBUTE_NORMAL).unwrap() else { panic!() };
+                mesh.attribute(Mesh::ATTRIBUTE_NORMAL).unwrap() else { panic!() };
             // A compact palette leaf has implicit zero coordinates. Tagged
             // finishes retain their attribute and must still match exactly.
-            let uvs = match leaf.mesh.attribute(Mesh::ATTRIBUTE_UV_0) {
+            let uvs = match mesh.attribute(Mesh::ATTRIBUTE_UV_0) {
                 Some(bevy::mesh::VertexAttributeValues::Float32x2(uvs)) => uvs.clone(),
                 None => vec![[0.0; 2]; positions.len()],
                 _ => panic!("unexpected UV0 representation"),
             };
-            let colors = match leaf.mesh.attribute(Mesh::ATTRIBUTE_COLOR).unwrap() {
+            let colors = match mesh.attribute(Mesh::ATTRIBUTE_COLOR).unwrap() {
                 bevy::mesh::VertexAttributeValues::Float32x4(colors) => colors.clone(),
                 bevy::mesh::VertexAttributeValues::Float32x3(colors) => colors.iter()
                     .map(|&[r, g, b]| [r, g, b, 1.0]).collect(),
                 _ => panic!("unexpected color representation"),
             };
             let data = SurfaceMeshData {
-                positions: positions.iter().map(|&p| (Vec3::from_array(p) + leaf.center).to_array()).collect(),
-                normals: normals.clone(), uvs, colors,
-                indices: leaf.mesh.indices().unwrap().iter().map(|i| i as u32).collect(),
+                positions: positions.iter().map(|&p| group.transform.transform_point(
+                    Vec3::from_array(p) + leaf.center).to_array()).collect(),
+                normals: if group.transform.rotation == Quat::IDENTITY
+                    && group.transform.scale.x > 0.
+                    && group.transform.scale.x == group.transform.scale.y
+                    && group.transform.scale.x == group.transform.scale.z {
+                    normals.clone()
+                } else {
+                    normals.iter().map(|&n| (group.transform.rotation
+                        * (Vec3::from_array(n) / group.transform.scale)).normalize().to_array()).collect()
+                }, uvs, colors,
+                indices: mesh.indices().unwrap().iter().map(|i| i as u32).collect(),
                 ..Default::default()
             };
             add(&data);

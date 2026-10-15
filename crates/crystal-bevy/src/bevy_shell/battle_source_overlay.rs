@@ -7,7 +7,7 @@ use bevy::{
     reflect::TypePath,
     render::render_resource::{AsBindGroup, ShaderType},
     shader::ShaderRef,
-    sprite_render::{Material2d, Material2dPlugin},
+    sprite_render::{AlphaMode2d, Material2d, Material2dPlugin},
 };
 use crystal_voxel_view::{BattleSourceBodyRegistrations, BattleSourceProjection};
 
@@ -53,6 +53,12 @@ pub(super) struct SourceMaterial {
 impl Material2d for SourceMaterial {
     fn fragment_shader() -> ShaderRef {
         SOURCE_SHADER.into()
+    }
+
+    fn alpha_mode(&self) -> AlphaMode2d {
+        // Source OAM uses transparent color zero, including inside each
+        // assembled object rectangle. Match the classic Sprite blend pass.
+        AlphaMode2d::Blend
     }
 }
 

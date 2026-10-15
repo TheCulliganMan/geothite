@@ -38,6 +38,19 @@ use std::{
 };
 
 const BATTLE_LAYER: usize = 29;
+const BATTLE_GRASS_MASK_LAYER: usize = 26;
+
+/// Current actor-only pixels, sharing the real posed entities and camera.
+/// Grass can reveal the silhouette without opening a broad floor clearing.
+#[derive(Resource, Default)]
+pub(super) struct BattleGrassMask {
+    pub image: Option<Handle<Image>>,
+    pub size: UVec2,
+    pub active: bool,
+    pub revision: u32,
+}
+#[derive(Component)]
+struct BattleGrassMaskCamera;
 // Both actor views are isolated only during the bounded source row phase.
 const BATTLE_ROW_LAYERS: [usize; 2] = [27, 28];
 // The arena image is drawn behind the native HUD in its existing pass.
@@ -63,12 +76,13 @@ mod capture_tiles;
 mod row_capture;
 #[path = "battle_skinning.rs"]
 mod skinning;
+#[path = "battle_camera.rs"]
+mod battle_camera;
 
 #[derive(Default)]
 pub struct BattleViewPlugin;
 impl Plugin for BattleViewPlugin {
     fn build(&self, app: &mut App) {
-        crate::scenery_surfaces::register_cue_material(app);
         if app.world().contains_resource::<AssetServer>() {
             app.add_plugins(Material2dPlugin::<BattleCompositeMaterial>::default());
             if let Some(render_app) = app.get_sub_app_mut(bevy::render::RenderApp) {
@@ -109,6 +123,7 @@ impl Plugin for BattleViewPlugin {
             .init_resource::<VisualBattleCanvas>()
             .init_resource::<BattleViewStatus>()
             .init_resource::<BattleScene>()
+            .init_resource::<BattleGrassMask>()
             .init_resource::<BattleSceneLayout>()
             .init_resource::<BattleUiBounds>()
             .init_resource::<BattleSourceBodyRegistrations>()
@@ -129,6 +144,9 @@ impl Plugin for BattleViewPlugin {
                     // SetMeshViewBindGroup panics on the missing view query.
                     .before(bevy::light::SimulationLightSystems::AssignLightsToClusters),
             )
+            .add_systems(PostUpdate, (sync_grass_mask, encounter_terrain::sync_grass_mask_materials)
+                .chain().after(sync_battle_target).before(CameraUpdateSystems)
+                .before(bevy::light::SimulationLightSystems::AssignLightsToClusters))
             .add_systems(
                 PostUpdate,
                 sync_battle_composite
@@ -144,8 +162,9 @@ impl Plugin for BattleViewPlugin {
                     capture_bridge::select_capture_bridge,
                     sync_battle_scene,
                     sync_battle_source_registration,
-                    encounter_terrain::sync,
                     skinning::sync,
+                    sync_grass_visibility,
+                    encounter_terrain::sync,
                     sync_source_objects,
                     sync_modeled_source_effects,
                 )
@@ -167,6 +186,11 @@ pub struct BattleViewStatus {
     pub modeled_species: Vec<String>,
     pub source_art_species: Vec<String>,
     pub last_error: Option<String>,
+    /// Literal retained map currently supplying the battle scenery.
+    pub map_scenery_id: Option<String>,
+    pub map_scenery_fallback_reason: Option<&'static str>,
+    /// Screen order only; the production player/enemy identities never swap.
+    pub player_on_right: bool,
     pub lighting: &'static str,
     pub quality: &'static str,
     pub software_renderer: bool,
@@ -240,6 +264,14 @@ struct BattleCompositeMaterial {
 impl Material2d for BattleCompositeMaterial {
     fn fragment_shader() -> ShaderRef {
         BATTLE_COMPOSITE_SHADER.into()
+    }
+
+    fn alpha_mode(&self) -> bevy::sprite_render::AlphaMode2d {
+        // The shared row quad covers the viewport but emits transparent pixels
+        // outside its extracted actor bands. Opaque rendering wrote those
+        // pixels as black over the arena. The background pass remains opaque
+        // through its own alpha, while the row pass preserves coverage edges.
+        bevy::sprite_render::AlphaMode2d::Blend
     }
 }
 
@@ -529,11 +561,10 @@ impl BattleModelBounds {
 
 #[derive(Resource, Default)]
 struct BattleScene {
-    arena: Option<Entity>,
-    arena_key: Option<VisualBattleEnvironment>,
-    arena_mesh: Option<Handle<Mesh>>,
-    arena_scenery: Vec<(Handle<Mesh>, Handle<crate::scenery_surfaces::BattleSceneryMaterial>, Handle<Image>)>,
-    arena_neutral_colors: Vec<[f32; 4]>,
+    // Actor/material unit tests run without a world producer. Production
+    // admission always requires the witnessed encounter map.
+    #[cfg(test)]
+    isolated_renderer_test: bool,
     surface_white_strength: Option<f32>,
     actors: [Option<ActorInstance>; 2],
     species_meshes: HashMap<Arc<str>, Option<Arc<SurfaceMeshData>>>,
@@ -605,6 +636,7 @@ fn sync_battle_layout(
     mut layout: ResMut<BattleSceneLayout>,
     mut scenery: ResMut<EncounterTerrain>,
     mut previous: Local<Option<([Option<BattleBody>; 2], Option<[Option<BattleBody>; 2]>, Vec2, Vec2, (Option<u64>, bool))>>,
+    mut establishing: Local<Option<BattleSceneLayout>>,
 ) {
     if !frame.active || frame.use_source_scene || frame.validate().is_err() {
         return;
@@ -624,20 +656,20 @@ fn sync_battle_layout(
                 .pokedex_size_m
                 .is_some_and(|v| v.is_finite() && v > 0.0)
         {
-            if !scene.species_meshes.contains_key(&battler.species_id) {
-                let mesh = crate::battle_species_models::mesh(&battler.species_id)
+            if !scene.species_meshes.contains_key(battler.model_id()) {
+                let mesh = crate::battle_species_models::mesh(battler.model_id())
                     .map(Arc::new);
                 if let Some(data) = &mesh {
                     scene.species_bounds.insert(
-                        battler.species_id.clone(),
+                        Arc::from(battler.model_id()),
                         BattleModelBounds::from_surface(data),
                     );
                 }
                 scene
                     .species_meshes
-                    .insert(battler.species_id.clone(), mesh);
+                    .insert(Arc::from(battler.model_id()), mesh);
             }
-            if let Some(bounds) = scene.species_bounds.get(&battler.species_id) {
+            if let Some(bounds) = scene.species_bounds.get(battler.model_id()) {
                 if let Some(scale) = crate::battle_layout::model_scale(
                     &battler.species_id,
                     battler.pokedex_size_m,
@@ -646,12 +678,12 @@ fn sync_battle_layout(
                 ) {
                     let mut body =
                         BattleBody::modeled(&battler.species_id, bounds.min, bounds.max, scale);
-                    if let Some(rig) = animated_species(&battler.species_id) {
+                    if let Some(rig) = animated_species(battler.model_id()) {
                         // Fit every wing pose once without changing the neutral
                         // height used for canonical size, feet or hit anchors.
                         body.visual_bounds = Some(rig.animated_bounds);
                     }
-                    if let Some(rig) = crate::species_rig::for_species(&battler.species_id) {
+                    if let Some(rig) = crate::species_rig::for_species(battler.model_id()) {
                         body.visual_bounds = Some(rig.animated_bounds);
                     }
                     return Some(body);
@@ -664,6 +696,16 @@ fn sync_battle_layout(
     });
     let supported = scenery.supported_bodies(bodies,
         std::array::from_fn(|index| frame.battlers[index].as_ref().map(|b| b.species_id.as_ref())));
+    let supported = supported.map(|pair| pair.map(|body| body.map(|mut body| {
+        if !body.modeled {
+            // A square horizontal envelope proves every upright billboard yaw.
+            // The actual source mesh remains the original textured flat card.
+            body.min.z = body.min.x;
+            body.max.z = body.max.x;
+            body.scale.z = body.scale.x;
+        }
+        body
+    })));
     let safe_y = ui_bounds.for_viewport(viewport);
     let key = (bodies, supported, viewport, safe_y, scenery.layout_key());
     if previous.as_ref() != Some(&key) {
@@ -673,11 +715,11 @@ fn sync_battle_layout(
                 return None;
             };
             scenery.reject_layout("battlers do not fit the checked encounter anchors");
-            BattleSceneLayout::for_anchored_bodies(supported, anchors, viewport)
+            BattleSceneLayout::for_map_bodies(supported, anchors, viewport)
                 .map(|layout| (layout.reserve_ui(supported, safe_y), supported))
         });
         let next = if let Some((mut anchored, supported)) = anchored {
-            if scenery.constrain_layout(&mut anchored, supported, viewport) {
+            if scenery.establish_camera(&mut anchored, supported, viewport) {
                 anchored
             } else {
                 BattleSceneLayout::for_bodies(bodies, viewport).reserve_ui(bodies, safe_y)
@@ -695,8 +737,40 @@ fn sync_battle_layout(
                 scenery.anchors()
             );
         }
+        let shot_bodies = if scenery.accepted() { supported.unwrap_or(bodies) } else { bodies };
+        let next = if shot_bodies.iter().flatten().any(|body| body.glyph_plane)
+            && let Some(mut readable) = next.readable_glyphs(shot_bodies)
+        {
+            if !scenery.accepted() || scenery.constrain_layout(&mut readable, shot_bodies, viewport) {
+                readable
+            } else {
+                let mut restored = next;
+                scenery.constrain_camera(&mut restored, shot_bodies, viewport);
+                restored
+            }
+        } else { next };
+        *establishing = Some(next.clone());
         layout.set_if_neq(next);
         *previous = Some(key);
+    }
+    if let Some(base) = establishing.as_ref() {
+        let shot_bodies = if scenery.accepted() { supported.unwrap_or(bodies) } else { bodies };
+        let next = battle_camera::shot(base, shot_bodies, &frame);
+        if next.camera == layout.camera { return; }
+        if scenery.accepted() {
+            if let Some(candidate) = battle_camera::constrain_shot(base, &next, shot_bodies,
+                |candidate| scenery.constrain_camera(candidate, shot_bodies, viewport)) {
+                layout.set_if_neq(candidate);
+            } else {
+                // Restore the complete previously proven map view, including
+                // its occlusion fades and fog, when a low shot cannot fit.
+                let mut restored = base.clone();
+                scenery.constrain_layout(&mut restored, shot_bodies, viewport);
+                layout.set_if_neq(restored);
+            }
+        } else {
+            layout.set_if_neq(next);
+        }
     }
 }
 
@@ -705,8 +779,13 @@ fn layout_actor_pose(
     bounds: Option<BattleModelBounds>,
     layout: &BattleSceneLayout,
 ) -> Transform {
-    layout.body_poses[battler.side.index()]
-        .unwrap_or_else(|| actor_pose(battler, &[], 0.0, bounds, None))
+    let mut pose = layout.body_poses[battler.side.index()]
+        .unwrap_or_else(|| actor_pose(battler, &[], 0.0, bounds, None));
+    if bounds.is_none() && pose.rotation == Quat::IDENTITY {
+        let back = layout.camera.rotation * Vec3::Z;
+        pose.rotation = Quat::from_rotation_y(back.x.atan2(back.z));
+    }
+    pose
 }
 
 fn setup_battle_scene(
@@ -716,6 +795,7 @@ fn setup_battle_scene(
     mut images: ResMut<Assets<Image>>,
     mut composite_materials: ResMut<Assets<BattleCompositeMaterial>>,
     mut scene: ResMut<BattleScene>,
+    mut grass_mask: ResMut<BattleGrassMask>,
     adapter: Option<Res<RenderAdapterInfo>>,
 ) {
     scene.software_renderer = adapter
@@ -741,11 +821,25 @@ fn setup_battle_scene(
     );
     scene.quality = quality;
     scene.vertex_lighting = vertex_lighting;
+    let mask_image = images.add(battle_row_target_image(UVec2::ONE));
+    grass_mask.image = Some(mask_image.clone());
+    grass_mask.size = UVec2::ONE;
+    commands.spawn((Camera3d::default(), AmbientLight { color: Color::WHITE, brightness: 5000.0, ..default() },
+        Msaa::Off, Camera { order: -3, is_active: false,
+            clear_color: ClearColorConfig::Custom(Color::NONE),
+            output_mode: bevy::camera::CameraOutputMode::Write {
+                blend_state: Some(bevy::render::render_resource::BlendState::REPLACE),
+                clear_color: ClearColorConfig::Custom(Color::NONE),
+            }, ..default() },
+        RenderTarget::Image(mask_image.into()),
+        Projection::Perspective(PerspectiveProjection { fov: BATTLE_CAMERA_FOV, near: 0.1, far: 100.0, ..default() }),
+        camera_pose(), Tonemapping::AcesFitted, bevy::camera::Exposure { ev100: 12.0 },
+        RenderLayers::layer(BATTLE_GRASS_MASK_LAYER), BattleGrassMaskCamera));
     scene.row_targets = std::array::from_fn(|_| images.add(battle_row_target_image(UVec2::ONE)));
     scene.row_sizes = [UVec2::ONE; 2];
     for index in 0..2 {
         commands.spawn((
-            (Camera3d::default(), Msaa::Off,
+            (Camera3d::default(), AmbientLight { color: Color::WHITE, brightness: 5000.0, ..default() }, Msaa::Off,
 (Camera {
                     order: -2,
 
@@ -797,7 +891,7 @@ Visibility::Hidden,),
     }
 
     commands.spawn((
-        (Camera3d::default(), Msaa::Off,
+        (Camera3d::default(), AmbientLight { color: Color::WHITE, brightness: 5000.0, ..default() }, Msaa::Off,
 (Camera {
                 order: -1,
 
@@ -1136,6 +1230,30 @@ fn sync_battle_target(
     }
 }
 
+fn sync_grass_mask(
+    scene: Res<BattleScene>,
+    mut mask: ResMut<BattleGrassMask>,
+    mut images: ResMut<Assets<Image>>,
+    main: Query<(&Camera, Ref<Projection>, &Transform), (With<BattleCamera>, Without<BattleGrassMaskCamera>)>,
+    mut cameras: Query<(&mut Camera, &mut Projection, &mut Transform), (With<BattleGrassMaskCamera>, Without<BattleCamera>)>,
+) {
+    let Ok((main, projection, transform)) = main.single() else { return; };
+    let Ok((mut camera, mut mask_projection, mut mask_transform)) = cameras.single_mut() else { return; };
+    if camera.is_active != main.is_active { camera.is_active = main.is_active; }
+    if mask.active != main.is_active { mask.active = main.is_active; }
+    mask_transform.set_if_neq(*transform);
+    if projection.is_changed() { *mask_projection = (*projection).clone(); }
+    if mask.active && mask.size != scene.render_size {
+        if let Some(image) = mask.image.as_ref() {
+            images.insert(image.id(), battle_row_target_image(scene.render_size))
+                .expect("retained actor mask target remains live");
+        }
+        mask.size = scene.render_size;
+        mask.revision = mask.revision.wrapping_add(1);
+        mask_projection.set_changed();
+    }
+}
+
 fn battle_composite_pose(
     projection: &OrthographicProjection,
     camera: &Transform,
@@ -1257,8 +1375,6 @@ fn sync_battle_scene(
         Res<capture_bridge::BattleCaptureBridge>,
         ResMut<Assets<SkinnedMeshInverseBindposes>>,
         Res<EncounterTerrain>,
-        ResMut<Assets<Image>>,
-        ResMut<Assets<crate::scenery_surfaces::BattleSceneryMaterial>>,
     ),
     flash_mode: Res<BattleFlashMode>,
     time: Res<Time>,
@@ -1350,7 +1466,7 @@ fn sync_battle_scene(
         ),
     >,
 ) {
-    let (settings, layout, captures, capture_bridge, mut inverse_binds, scenery, mut scenery_images, mut scenery_materials) = presentation;
+    let (settings, layout, captures, capture_bridge, mut inverse_binds, scenery) = presentation;
     #[cfg(feature = "operation-trace")]
     let _span = bevy::log::info_span!("crystal_battle_render_sync").entered();
     let valid = frame.validate();
@@ -1358,9 +1474,15 @@ fn sync_battle_scene(
         &layout,
         frame.source.as_ref().map_or([Vec2::ZERO; 2], |source| source.battler_offsets),
     );
+    let map_ready = scenery.accepted();
+    #[cfg(test)]
+    let map_ready = map_ready || scene.isolated_renderer_test;
     let active = settings.enabled
         && frame.active
         && !frame.use_source_scene
+        // Only the retained encounter map can supply a battle background.
+        // Keep original presentation while it prepares; never substitute an arena.
+        && map_ready
         && valid.is_ok()
         && capture_bridge.allows_scene()
         && ground_clearance;
@@ -1371,6 +1493,10 @@ fn sync_battle_scene(
         0
     };
     status.last_error = valid.err().map(str::to_owned);
+    status.player_on_right = active && (layout.origins[0] - layout.origins[1]).dot(*layout.camera.right()) > 0.0;
+    status.map_scenery_id = (active && scenery.accepted()).then(|| frame.map_id.to_string());
+    status.map_scenery_fallback_reason = (settings.enabled && frame.active && !scenery.accepted())
+        .then(|| scenery.reason().unwrap_or("no witnessed map geometry"));
     for (mut camera, mut transform, mut fog, mut projection) in &mut cameras {
         if camera.is_active != active {
             camera.is_active = active;
@@ -1408,13 +1534,8 @@ fn sync_battle_scene(
             Visibility::Hidden
         });
     }
-    for (mut visibility, mut transform) in &mut arenas {
-        transform.scale = Vec3::new(layout.arena_scale, 1.0, layout.arena_scale);
-        visibility.set_if_neq(if active && !scenery.accepted() {
-            Visibility::Visible
-        } else {
-            Visibility::Hidden
-        });
+    for (mut visibility, _) in &mut arenas {
+        visibility.set_if_neq(Visibility::Hidden);
     }
     if !active {
         for (_, mut visibility, _) in &mut actors {
@@ -1431,7 +1552,7 @@ fn sync_battle_scene(
         }
         scene.was_active = false;
         status.modeled_species.clear();
-        status.source_art_species = if frame.active && (frame.use_source_scene || !ground_clearance) {
+        status.source_art_species = if frame.active && (frame.use_source_scene || !ground_clearance || !map_ready) {
             frame
                 .battlers
                 .iter()
@@ -1461,96 +1582,13 @@ fn sync_battle_scene(
         material.base_color = base_color;
         material.emissive = emissive;
     }
-    let scenery_cue = Vec4::new(dark, light, 0., 0.);
-    for (_, handle, _) in &scene.arena_scenery {
-        if scenery_materials.get(handle).is_some_and(|m| m.extension.cue != scenery_cue) {
-            scenery_materials.get_mut(handle).unwrap().extension.cue = scenery_cue;
-        }
-    }
-    if scene.arena_key != Some(frame.environment) {
-        if let Some(entity) = scene.arena.take() {
-            commands.entity(entity).despawn();
-        }
-        if let Some(mesh) = scene.arena_mesh.take() {
-            meshes.remove(mesh.id());
-        }
-        for (mesh, material, image) in scene.arena_scenery.drain(..) {
-            meshes.remove(mesh.id()); scenery_materials.remove(material.id()); scenery_images.remove(image.id());
-        }
-        let mut data = arena_mesh(frame.environment);
-        if scene.vertex_lighting {
-            data.colors = vertex_lit_colors(&data, Quat::IDENTITY);
-            scene.arena_neutral_colors = data.colors.clone();
-        }
-        let mut mesh = data.into_mesh();
-        if scene.vertex_lighting {
-            mesh.asset_usage = bevy::asset::RenderAssetUsages::all();
-        }
-        let mesh = meshes.add(mesh);
-        scene.arena = Some(
-            commands
-                .spawn((
-                    (Mesh3d(mesh.clone()),
-MeshMaterial3d(scene.surface_material.clone()),
-Transform::from_scale(Vec3::new(
-                            layout.arena_scale,
-                            1.0,
-                            layout.arena_scale,
-                        )),
-if scenery.accepted() {
-                            Visibility::Hidden
-                        } else {
-                            Visibility::Visible
-                        },),
-                    RenderLayers::layer(BATTLE_LAYER),
-                    BattleArena,
-                ))
-                .id(),
-        );
-        for mut part in arena_scenery(frame.environment) {
-            let image = scenery_images.add(part.texture.image());
-            let mut material = materials.get(&scene.surface_material).unwrap().clone();
-            material.base_color_texture = Some(image.clone());
-            // Thin paper leaves keep the overworld finish rather than
-            // becoming black from self-shadowing on their reverse faces.
-            material.unlit = true;
-            material.alpha_mode = part.texture.alpha_mode();
-            material.double_sided = part.texture.double_sided;
-            if part.texture.double_sided { material.cull_mode = None; }
-            material.base_color = Color::WHITE;
-            material.emissive = LinearRgba::BLACK;
-            let material = scenery_materials.add(crate::scenery_surfaces::BattleSceneryMaterial {
-                base:material, extension:crate::scenery_surfaces::SceneryCue { cue:scenery_cue }
-            });
-            if scene.vertex_lighting {
-                part.mesh.colors = vertex_lit_colors(&part.mesh, Quat::IDENTITY);
-            }
-            let mut data = part.mesh.into_mesh();
-            if scene.vertex_lighting { data.asset_usage = RenderAssetUsages::all(); }
-            let handle = meshes.add(data);
-            let child = commands.spawn(((Mesh3d(handle.clone()),
-MeshMaterial3d(material.clone()),), RenderLayers::layer(BATTLE_LAYER))).id();
-            commands.entity(scene.arena.unwrap()).add_child(child);
-            scene.arena_scenery.push((handle, material, image));
-        }
-        scene.arena_mesh = Some(mesh);
-        scene.arena_key = Some(frame.environment);
-        scene.surface_white_strength = None;
-    }
     if scene.vertex_lighting && scene.surface_white_strength != Some(light) {
         // Unlit materials deliberately skip emissive. Apply the BGP white
-        // flash to these background surfaces explicitly, preserving both its
+        // flash to the capture ball explicitly, preserving both its
         // source cadence and reduced intensity. OBJ palettes remain separate.
-        for (handle, neutral) in [
-            (
-                scene.arena_mesh.as_ref().unwrap(),
-                &scene.arena_neutral_colors,
-            ),
-            (&scene.ball_mesh, &scene.ball_neutral_colors),
-        ] {
-            if let Some(mut mesh) = meshes.get_mut(handle) {
-                mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, surface_white_colors(neutral, light));
-            }
+        if let Some(mut mesh) = meshes.get_mut(&scene.ball_mesh) {
+            mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR,
+                surface_white_colors(&scene.ball_neutral_colors, light));
         }
         scene.surface_white_strength = Some(light);
     }
@@ -1564,18 +1602,18 @@ MeshMaterial3d(material.clone()),), RenderLayers::layer(BATTLE_LAYER))).id();
             }
             continue;
         };
-        if battler.allow_species_model && !scene.species_meshes.contains_key(&battler.species_id) {
-            let mesh = crate::battle_species_models::mesh(&battler.species_id)
+        if battler.allow_species_model && !scene.species_meshes.contains_key(battler.model_id()) {
+            let mesh = crate::battle_species_models::mesh(battler.model_id())
                 .map(Arc::new);
             if let Some(data) = &mesh {
                 scene.species_bounds.insert(
-                    battler.species_id.clone(),
+                    Arc::from(battler.model_id()),
                     BattleModelBounds::from_surface(data),
                 );
             }
             scene
                 .species_meshes
-                .insert(battler.species_id.clone(), mesh);
+                .insert(Arc::from(battler.model_id()), mesh);
         }
         let modeled_data = if battler.allow_species_model
             && (!battler.shiny || battler.model_palette.is_some())
@@ -1585,7 +1623,7 @@ MeshMaterial3d(material.clone()),), RenderLayers::layer(BATTLE_LAYER))).id();
         {
             scene
                 .species_meshes
-                .get(&battler.species_id)
+                .get(battler.model_id())
                 .cloned()
                 .flatten()
         } else {
@@ -1593,17 +1631,17 @@ MeshMaterial3d(material.clone()),), RenderLayers::layer(BATTLE_LAYER))).id();
         };
         let modeled = modeled_data.is_some();
         let rig = modeled
-            .then(|| animated_species(&battler.species_id))
+            .then(|| animated_species(battler.model_id()))
             .flatten();
         let skin_rig = modeled
-            .then(|| crate::species_rig::for_species(&battler.species_id))
+            .then(|| crate::species_rig::for_species(battler.model_id()))
             .flatten();
         let root_data = rig
             .map(|rig| &rig.groups[0].mesh)
             .or(modeled_data.as_deref());
         let modeled_bounds = modeled_data
             .as_ref()
-            .and_then(|_| scene.species_bounds.get(&battler.species_id))
+            .and_then(|_| scene.species_bounds.get(battler.model_id()))
             .copied();
         let source_texture = frame
             .source
@@ -1613,7 +1651,7 @@ MeshMaterial3d(material.clone()),), RenderLayers::layer(BATTLE_LAYER))).id();
             .filter(|texture| **texture != Handle::default())
             .unwrap_or(&battler.texture);
         let key = ActorKey {
-            species: battler.species_id.clone(),
+            species: Arc::from(battler.model_id()),
             party_index: battler.party_index,
             modeled,
             model_palette: battler.model_palette,
@@ -1905,7 +1943,7 @@ Visibility::Inherited,),
         if let Some(actor) = scene.actors[shadow.0.index()].as_ref() {
             if let Some(bounds) = scene
                 .species_bounds
-                .get(&battler.species_id)
+                .get(battler.model_id())
                 .filter(|_| actor.key.modeled)
             {
                 let extent = (bounds.max - bounds.min) * actor.base_pose.scale;
@@ -1935,6 +1973,35 @@ Visibility::Inherited,),
 
 /// Register verified source effects to a stable neutral sculpture. The cached
 /// footprint is independent of idle, attack, palette and clipping changes.
+fn sync_grass_visibility(
+    frame: Res<VisualBattleFrame>,
+    layout: Res<BattleSceneLayout>,
+    mut scene: ResMut<BattleScene>,
+    mut terrain: ResMut<encounter_terrain::EncounterTerrain>,
+    transforms: Query<&Transform, With<BattleActor>>,
+) {
+    let bodies = std::array::from_fn(|index| {
+        if !frame.battlers[index].as_ref().is_some_and(|body| body.visible) { return None; }
+        let actor = scene.actors[index].as_ref()?;
+        let bounds = scene.species_bounds.get(&actor.key.species).copied();
+        let actor = scene.actors[index].as_mut()?;
+        let pose = *transforms.get(actor.entity).ok()?;
+        let (min, max) = if let Some(skin) = &mut actor.skinned {
+            skin.visible_bounds()?
+        } else if let Some(animated) = &actor.animated {
+            // This authored wing rig remains bounded by its complete poses.
+            animated.rig.animated_bounds
+        } else if let Some(bounds) = bounds {
+            (bounds.min, bounds.max)
+        } else {
+            let body = BattleBody::source_card(1.0);
+            (body.min, body.max)
+        };
+        Some((BattleBody::modeled(&actor.key.species, min, max, 1.0), pose))
+    });
+    terrain.set_visible_apertures(layout.camera, bodies);
+}
+
 fn sync_battle_source_registration(
     layout: Res<BattleSceneLayout>,
     frame: Res<VisualBattleFrame>,
@@ -2130,9 +2197,9 @@ fn battle_actor_layers(frame: &VisualBattleFrame, index: usize, prewarm: bool) -
     } else if prewarm {
         // The arena keeps its ordinary actor during prewarm. Its private row
         // camera sees the same entity, so there is no duplicate mesh/entity.
-        RenderLayers::from_layers(&[BATTLE_LAYER, BATTLE_ROW_LAYERS[index]])
+        RenderLayers::from_layers(&[BATTLE_LAYER, BATTLE_ROW_LAYERS[index], BATTLE_GRASS_MASK_LAYER])
     } else {
-        RenderLayers::layer(BATTLE_LAYER)
+        RenderLayers::from_layers(&[BATTLE_LAYER, BATTLE_GRASS_MASK_LAYER])
     }
 }
 
@@ -2205,8 +2272,10 @@ fn vertex_lit_colors(data: &SurfaceMeshData, rotation: Quat) -> Vec<[f32; 4]> {
 /// encounter terrain. Bake only on actor creation; move palettes still replace
 /// these neutral colors through the unchanged source-flash path. Arena/ball
 /// lighting keeps its established values and hardware PBR is unaffected.
+/// The minimum fill retains 60% of the authored color on fully shaded faces;
+/// key and bounce light supply volume without raising the highlight exposure.
 fn actor_vertex_lit_colors(data: &SurfaceMeshData, rotation: Quat) -> Vec<[f32; 4]> {
-    diffuse_vertex_colors(data, rotation, [0.30, 0.31, 0.33], 0.60, 0.22)
+    diffuse_vertex_colors(data, rotation, [0.60, 0.61, 0.63], 0.34, 0.12)
 }
 
 fn diffuse_vertex_colors(
@@ -2577,24 +2646,7 @@ fn particle_pose(cues: &[VisualBattleCue], i: usize, elapsed: f32) -> Option<(Ve
     }
 }
 
-fn arena_scenery(environment: VisualBattleEnvironment) -> Vec<crate::scenery_surfaces::ScenerySurface> {
-    let mut terrain = crate::mesh::TerrainMeshData::default();
-    if !matches!(environment, VisualBattleEnvironment::Meadow | VisualBattleEnvironment::Forest) {
-        return terrain.scenery;
-    }
-    for i in 0..28 {
-        let angle = i as f32 / 28.0 * TAU;
-        let radius = 9.5 + (i % 3) as f32 * 1.9;
-        let center = Vec3::new(angle.cos() * radius, 0., angle.sin() * radius);
-        if center.z < 2.0 || center.x.abs() > 11.0 {
-            crate::foliage::append_tree(&mut terrain, crate::new_bark_models::ModelKind::TreeLod,
-                [center.x - 1.4, center.x + 1.4, center.z - 1.4, center.z + 1.4],
-                0., 3.5 + (i % 4) as f32 * 0.38, [i, 500]);
-        }
-    }
-    terrain.scenery
-}
-
+#[cfg(test)]
 fn arena_mesh(environment: VisualBattleEnvironment) -> SurfaceMeshData {
     let p = palette(environment);
     let mut mesh = SurfaceMeshData::default();
@@ -2631,18 +2683,12 @@ fn arena_mesh(environment: VisualBattleEnvironment) -> SurfaceMeshData {
         ) {
             // Preserve the foreground sightline. Distant tree silhouettes give
             // the arena geographic depth without obscuring either battler.
-            if (center.z < 2.0 || center.x.abs() > 11.0)
-                && let Some(tree) = crate::new_bark_models::required_tree_model(
-                    crate::new_bark_models::ModelKind::TreeLod)
-            {
-                let scale = (3.5 + (i % 4) as f32 * 0.38) / (tree.max[1] - tree.min[1]);
-                append_transformed(
-                    &mut mesh,
-                    &tree.surface_mesh(),
-                    center,
-                    Vec3::splat(scale),
-                    Quat::from_rotation_y(angle),
-                );
+            if center.z < 2.0 || center.x.abs() > 11.0 {
+                let mut trees = crate::mesh::TerrainMeshData::default();
+                crate::foliage::append_grove_tree(&mut trees,
+                    [center.x - 0.6, center.x + 0.6, center.z - 0.6, center.z + 0.6],
+                    0., 0.6, [i, 500], [false; 4]);
+                append_transformed(&mut mesh, &trees.solid, Vec3::ZERO, Vec3::ONE, Quat::IDENTITY);
             }
             for j in 0..3 {
                 let c = center + Vec3::new(j as f32 * 0.27, 0.0, 0.3);
@@ -2785,6 +2831,7 @@ fn append_cone(
         );
     }
 }
+#[cfg(test)]
 fn append_ring(mesh: &mut SurfaceMeshData, center: Vec3, inner: f32, outer: f32, color: [f32; 4]) {
     for i in 0..64 {
         let a = i as f32 / 64.0 * TAU;
@@ -2807,25 +2854,36 @@ fn append_ring(mesh: &mut SurfaceMeshData, center: Vec3, inner: f32, outer: f32,
         );
     }
 }
-/// One cheap translucent fan with a soft radial falloff, shared by both sides.
+/// A soft contact core and penumbra, shared by both sides.
 /// Grounding follows only presented actor visibility/pose, including fainting.
 fn contact_shadow_mesh() -> SurfaceMeshData {
     let mut mesh = SurfaceMeshData::default();
     for i in 0..48 {
         let a = i as f32 / 48.0 * TAU;
         let b = (i + 1) as f32 / 48.0 * TAU;
+        let a = Vec3::new(a.cos(), 0.0, a.sin());
+        let b = Vec3::new(b.cos(), 0.0, b.sin());
         let base = mesh.positions.len() as u32;
+        // Keep a visible soft edge beyond the feet. A center-to-zero fan
+        // contained inside the body footprint disappears beneath the model,
+        // especially against textured ground and the retained blade roots.
         for (point, alpha) in [
             (Vec3::ZERO, 0.40),
-            (Vec3::new(b.cos(), 0.0, b.sin()), 0.0),
-            (Vec3::new(a.cos(), 0.0, a.sin()), 0.0),
+            (b * 0.60, 0.22),
+            (a * 0.60, 0.22),
+            (a * 0.60, 0.22),
+            (b * 0.60, 0.22),
+            (b * 1.25, 0.0),
+            (a * 0.60, 0.22),
+            (b * 1.25, 0.0),
+            (a * 1.25, 0.0),
         ] {
             mesh.positions.push(point.to_array());
             mesh.normals.push(Vec3::Y.to_array());
             mesh.uvs.push([0.0, 0.0]);
             mesh.colors.push([0.015, 0.022, 0.012, alpha]);
         }
-        mesh.indices.extend([base, base + 1, base + 2]);
+        mesh.indices.extend((0..9).map(|offset| base + offset));
     }
     mesh
 }
@@ -2864,6 +2922,52 @@ fn capture_ball_mesh() -> SurfaceMeshData {
 #[cfg(test)]
 pub(super) mod tests {
     use super::*;
+
+    #[test]
+    fn grass_mask_tracks_the_real_camera_resizes_in_place_and_stops_with_the_arena() {
+        let mut app = App::new();
+        app.add_plugins(MinimalPlugins)
+            .init_resource::<Assets<Image>>()
+            .init_resource::<BattleScene>()
+            .init_resource::<BattleGrassMask>()
+            .add_systems(Update, sync_grass_mask);
+        let target = app.world_mut().resource_mut::<Assets<Image>>()
+            .add(battle_row_target_image(UVec2::ONE));
+        app.world_mut().resource_mut::<BattleGrassMask>().image = Some(target.clone());
+        app.world_mut().resource_mut::<BattleScene>().render_size = UVec2::new(320, 240);
+        let pose = Transform::from_xyz(2.0, 4.0, 12.0).looking_at(Vec3::Y, Vec3::Y);
+        let main = app.world_mut().spawn((Camera::default(), Projection::default(), pose, BattleCamera)).id();
+        let mask = app.world_mut().spawn((Camera { is_active: false, ..default() },
+            Projection::default(), Transform::default(), BattleGrassMaskCamera)).id();
+        app.update();
+        assert_eq!(*app.world().get::<Transform>(mask).unwrap(), pose);
+        assert!(app.world().get::<Camera>(mask).unwrap().is_active);
+        let image = app.world().resource::<Assets<Image>>().get(&target).unwrap();
+        assert_eq!(image.size(), UVec2::new(320, 240));
+        let image_count = app.world().resource::<Assets<Image>>().len();
+        let revision = app.world().resource::<BattleGrassMask>().revision;
+        let camera_change = app.world().entity(mask).get_ref::<Camera>().unwrap().last_changed();
+        app.update();
+        assert_eq!(app.world().resource::<BattleGrassMask>().revision, revision);
+        assert_eq!(app.world().entity(mask).get_ref::<Camera>().unwrap().last_changed(), camera_change,
+            "a held camera must not rerun camera initialization every frame");
+        app.world_mut().resource_mut::<BattleScene>().render_size = UVec2::new(640, 360);
+        app.update();
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), image_count);
+        assert_eq!(app.world().resource::<BattleGrassMask>().image.as_ref(), Some(&target));
+        assert_eq!(app.world().resource::<Assets<Image>>().get(&target).unwrap().size(), UVec2::new(640, 360));
+        app.world_mut().get_mut::<Camera>(main).unwrap().is_active = false;
+        app.update();
+        assert!(!app.world().get::<Camera>(mask).unwrap().is_active);
+        assert!(!app.world().resource::<BattleGrassMask>().active);
+        for side in 0..2 {
+            let layers = battle_actor_layers(&VisualBattleFrame::default(), side, true);
+            assert!(layers.intersects(&RenderLayers::layer(BATTLE_LAYER)));
+            assert!(layers.intersects(&RenderLayers::layer(BATTLE_GRASS_MASK_LAYER)));
+            assert!(layers.intersects(&RenderLayers::layer(BATTLE_ROW_LAYERS[side])));
+            assert!(!layers.intersects(&RenderLayers::layer(BATTLE_ROW_LAYERS[1-side])));
+        }
+    }
 
     fn pidgeotto_app(hz: u32) -> App {
         let mut app = headless_battle_app();
@@ -3632,7 +3736,10 @@ hud_transform,),
             let underside_gain = filled[1][0] / previous[1][0];
             assert!(underside_gain > top_gain, "lift shade more than highlights");
             assert!(top_gain < 1.15, "do not overexpose the lit paper planes");
-            assert!(filled[0][0] > filled[1][0] * 2.0, "retain directional volume");
+            assert!(filled[0][0] > filled[1][0] * 1.5, "retain directional volume");
+            for color in &filled {
+                assert!(color[0] >= 0.8 * 0.60, "shaded actor faces retain visible source color");
+            }
         }
         assert_eq!(data, original, "lighting never changes authored mesh data");
     }
@@ -3686,6 +3793,7 @@ hud_transform,),
         let battler = VisualBattleBattler {
             side: VisualBattleSide::Enemy,
             species_id: Arc::from("RATTATA"),
+            unown_form: None,
             pokedex_size_m: Some(1.0),
             party_index: Some(0),
             texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
@@ -3751,6 +3859,7 @@ hud_transform,),
         let battler = VisualBattleBattler {
             side: VisualBattleSide::Player,
             species_id: Arc::from("CHIKORITA"),
+            unown_form: None,
             pokedex_size_m: Some(1.0),
             party_index: Some(3),
             texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
@@ -3782,6 +3891,27 @@ hud_transform,),
             }
         }
     }
+    #[test]
+    fn outdoor_battle_arenas_include_the_shared_grove_geometry() {
+        let i = 14;
+        let angle = i as f32 / 28.0 * TAU;
+        let radius = 9.5 + (i % 3) as f32 * 1.9;
+        let center = Vec3::new(angle.cos() * radius, 0., angle.sin() * radius);
+        // The back tree at index fourteen remains outside the battlers' sightline.
+        let mut tree = crate::mesh::TerrainMeshData::default();
+        crate::foliage::append_grove_tree(&mut tree,
+            [center.x - 0.6, center.x + 0.6, center.z - 0.6, center.z + 0.6],
+            0., 0.6, [14, 500], [false; 4]);
+        assert!(!tree.solid.positions.is_empty());
+        assert!(tree.scenery.is_empty());
+        for environment in [VisualBattleEnvironment::Meadow, VisualBattleEnvironment::Forest] {
+            let arena = arena_mesh(environment);
+            assert!(arena.positions.windows(tree.solid.positions.len())
+                .any(|vertices| vertices == tree.solid.positions.as_slice()),
+                "battle trees must match the shared overworld producer");
+        }
+    }
+
     #[test]
     fn every_authored_arena_has_finite_grounded_geometry() {
         for environment in [
@@ -3857,6 +3987,7 @@ hud_transform,),
         let battler = |side, species: &str| VisualBattleBattler {
             side,
             species_id: Arc::from(species),
+            unown_form: None,
             pokedex_size_m: Some(if species == "CYNDAQUIL" { 0.508 } else { 1.0 }),
             party_index: Some(side.index()),
             texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(20 + side.index() as u128), std::marker::PhantomData),
@@ -3868,6 +3999,7 @@ hud_transform,),
             shiny: false,
             model_palette: None,
         };
+        app.world_mut().resource_mut::<BattleScene>().isolated_renderer_test = true;
         app.insert_resource(VisualBattleFrame {
             active: true,
             map_id: Arc::from("Route29"),
@@ -4751,13 +4883,28 @@ hud_transform,),
     }
 
     #[test]
-    fn immersive_scene_restores_arena_camera_and_contact_shadows() {
+    fn production_scene_requires_the_witnessed_map_and_never_allocates_an_arena() {
+        let mut app = headless_battle_app();
+        app.world_mut().resource_mut::<BattleScene>().isolated_renderer_test = false;
+        app.update();
+        let world = app.world_mut();
+        assert!(!world.resource::<BattleViewStatus>().active);
+        assert_eq!(world.query_filtered::<Entity, With<BattleArena>>().iter(world).count(), 0);
+        assert!(world.query_filtered::<&Camera, With<BattleCamera>>()
+            .iter(world).all(|camera| !camera.is_active));
+        assert!(world.query_filtered::<&Visibility, With<BattleActor>>()
+            .iter(world).all(|visibility| *visibility == Visibility::Hidden));
+        assert!(world.resource::<BattleViewStatus>().map_scenery_id.is_none());
+    }
+
+    #[test]
+    fn immersive_scene_restores_camera_and_contact_shadows_without_an_arena() {
         let mut app = headless_battle_app();
         app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source_test_frame(0xe4));
         app.update();
         let world = app.world_mut();
         let scene = world.resource::<BattleScene>();
-        assert!(scene.arena.is_some() && scene.arena_mesh.is_some());
+        assert!(scene.isolated_renderer_test);
         let actor = scene.actors[0].as_ref().unwrap().entity;
         let scale = world.get::<Transform>(actor).unwrap().scale;
         assert_eq!(scale, Vec3::splat(scale.x));
@@ -5170,7 +5317,7 @@ hud_transform,),
             world
                 .query_filtered::<&RenderLayers, With<BattleActor>>()
                 .iter(world)
-                .all(|layers| *layers == RenderLayers::layer(BATTLE_LAYER))
+                .all(|layers| *layers == RenderLayers::from_layers(&[BATTLE_LAYER, BATTLE_GRASS_MASK_LAYER]))
         );
         assert_eq!(
             (

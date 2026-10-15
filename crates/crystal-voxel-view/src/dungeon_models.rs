@@ -104,6 +104,9 @@ pub(crate) struct Model {
     pewter_guardian_pixels: Option<Vec<[usize; 2]>>,
     tower_timber_pixels: Option<Vec<[usize; 2]>>,
     gym_orb_pixels: Option<Vec<[usize; 2]>>,
+    mansion_hut_materials: Option<Vec<u8>>,
+    hall_terminal_pixels: Option<Vec<[usize;2]>>,
+    theater_stage_materials: Option<Vec<u8>>,
     min: [f32; 3],
     max: [f32; 3],
 }
@@ -118,7 +121,11 @@ impl Model {
         let mut timber_pixels = Vec::new();
         let mut named_timber = matches!(export.name.as_str(), "timber_wall" | "timber_column");
         let mut orb_pixels = Vec::new();
+        let mut hut_materials=Vec::new();let mut hut_valid=export.name=="roof_access_hut";
+        let mut hut_seen=0u8;
         let mut named_orb = export.name == "league_podium";
+        let mut hall_pixels=Vec::new();let mut hall_valid=export.name=="hall_of_fame_terminal";
+        let mut stage_roles=Vec::new();let mut stage_valid=matches!(export.name.as_str(),"theater_platform"|"theater_backdrop");
         let mut min = [f32::INFINITY; 3];
         let mut max = [f32::NEG_INFINITY; 3];
         for p in export.primitives {
@@ -228,6 +235,35 @@ impl Model {
             // added vertices rather than guessing ownership by original count.
             timber_pixels.extend(std::iter::repeat_n(
                 timber_pixel, surface.positions.len() - base as usize));
+            if export.name=="hall_of_fame_terminal" {
+                let pixel=match p.name.as_str() {
+                    "blue"|"cloth_light"=>Some([4,4]),
+                    "glass"|"ink"|"red"=>Some([4,12]),
+                    "ice_light"|"metal_light"=>Some([2,2]),
+                    "steel"=>Some([4,20]),_=>None,
+                };
+                if let Some(pixel)=pixel {hall_pixels.extend(std::iter::repeat_n(pixel,surface.positions.len()-base as usize));}
+                else {hall_valid=false;}
+            }
+            if matches!(export.name.as_str(),"theater_platform"|"theater_backdrop") {
+                let role=if export.name=="theater_backdrop" {match p.material.as_str() {
+                    "paper"|"paper_light"=>Some(1),"oak"|"oak_cut"|"edge"=>Some(0),
+                    "ink"|"plum"=>Some(2),_=>None,
+                }}else{match p.material.as_str() {
+                    "reed"|"reed_light"|"oak"=>Some(0),"oak_cut"=>Some(1),
+                    "walnut"|"edge"=>Some(2),_=>None,
+                }};
+                if let Some(role)=role {stage_roles.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));}
+                else {stage_valid=false;}
+            }
+            if export.name=="roof_access_hut" {
+                let role=match p.name.as_str() {"metal_light"=>Some(0),"cloth"=>Some(1),
+                    "cloth_light"=>Some(2),"wood"=>Some(3),"wood_dark"=>Some(4),
+                    "wood_light"=>Some(5),"brass"=>Some(6),_=>None};
+                if let Some(role)=role {hut_seen|=1<<role;
+                    hut_materials.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
+                }else {hut_valid=false;}
+            }
         }
         crate::scenery_finish::contain(&mut surface, min, max);
         if (0..3).any(|a| !min[a].is_finite() || !max[a].is_finite() || max[a] - min[a] <= 1e-6) {
@@ -243,7 +279,47 @@ impl Model {
             && timber_pixels.len() == surface.positions.len()).then_some(timber_pixels);
         let gym_orb_pixels = (named_orb
             && orb_pixels.len() == surface.positions.len()).then_some(orb_pixels);
-        Ok(Self { surface: surface.into(), gym_stone_pixels, pewter_guardian_pixels, tower_timber_pixels, gym_orb_pixels, min, max })
+        let mansion_hut_materials=(hut_valid && hut_seen==127 && hut_materials.len()==surface.positions.len()).then_some(hut_materials);
+        Ok(Self { theater_stage_materials:(stage_valid&&stage_roles.len()==surface.positions.len()).then_some(stage_roles), hall_terminal_pixels:(hall_valid&&hall_pixels.len()==surface.positions.len()).then_some(hall_pixels), mansion_hut_materials, surface: surface.into(), gym_stone_pixels, pewter_guardian_pixels, tower_timber_pixels, gym_orb_pixels, min, max })
+    }
+    pub(crate) fn append_native_theater_stage(&self,target:&mut SurfaceMeshData,bounds:[f32;4],
+        height:f32,swatches:[[f32;2];3])->bool {
+        let Some(roles)=&self.theater_stage_materials else{return false;};
+        let first=target.positions.len();self.append(target,bounds,0.,height);
+        for (i,&role) in roles.iter().enumerate() {
+            let j=first+i;let timber=target.normals[j][1]>0.5;
+            target.uvs[j]=swatches[if timber {0}else{usize::from(role)}];
+            target.colors[j]=crate::interior_models::authored_face_color([1.;4],
+                Vec3::from_array(target.normals[j]));
+            if timber {
+                let p=self.surface.positions[i];
+                let grain=0.97+0.025*(p[0]*39.+p[2]*251.).sin();
+                for channel in &mut target.colors[j][..3] {*channel*=grain;}
+            }
+        }
+        true
+    }
+    pub(crate) fn append_native_theater_backdrop(&self,target:&mut SurfaceMeshData,bounds:[f32;4],
+        base:f32,height:f32,swatches:[[f32;2];3])->bool {
+        let Some(roles)=&self.theater_stage_materials else{return false;};
+        let first=target.positions.len();self.append(target,bounds,base,height);
+        for (i,&role) in roles.iter().enumerate() {
+            let j=first+i;target.uvs[j]=swatches[usize::from(role)];
+            target.colors[j]=crate::interior_models::authored_face_color([1.;4],
+                Vec3::from_array(target.normals[j]));
+        }
+        true
+    }
+    pub(crate) fn has_native_mansion_hut_materials(&self)->bool {self.mansion_hut_materials.is_some()}
+    pub(crate) fn append_native_mansion_hut(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        source_uv:impl Fn(u8)->[f32;2])->bool {
+        let Some(roles)=&self.mansion_hut_materials else{return false;};
+        let first=target.positions.len();self.append(target,bounds,0.,height);
+        for (i,&role) in roles.iter().enumerate() {
+            target.uvs[first+i]=source_uv(role);
+            target.colors[first+i]=crate::interior_models::authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));
+        }
+        true
     }
     #[cfg(test)]
     pub(crate) fn shared_geometry(&self)->&std::sync::Arc<crate::shared_model_geometry::Geometry> {&self.surface.geometry}
@@ -307,6 +383,11 @@ impl Model {
     ) {
         let pixels = self.gym_orb_pixels.as_ref().expect("named gym orb and pedestal assemblies");
         self.append_source_colors(target, bounds, height, pixels, source_uv);
+    }
+    pub(crate) fn append_native_hall_terminal(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        source_uv:impl Fn([usize;2])->[f32;2])->bool {
+        let Some(pixels)=&self.hall_terminal_pixels else {return false;};
+        self.append_source_colors(target,bounds,height,pixels,source_uv);true
     }
     fn append_source_colors(
         &self, target: &mut SurfaceMeshData, bounds: [f32; 4], height: f32,
@@ -455,6 +536,61 @@ pub(crate) fn model(kind: Kind) -> &'static Model {
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn native_theater_backdrop_keeps_geometry_and_binds_every_material() {
+        let source=include_str!("../models/traditional_room/theater_backdrop.mesh.json");
+        let model=Model::parse(source).unwrap();let before=model.surface.clone();
+        let mut original=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
+        let bounds=[0.,192.,0.,4.];let swatches=[[0.1,0.2],[0.3,0.4],[0.5,0.6]];
+        model.append(&mut original,bounds,8.,16.);
+        assert!(model.append_native_theater_backdrop(&mut painted,bounds,8.,16.,swatches));
+        assert_eq!(original.positions,painted.positions);assert_eq!(original.normals,painted.normals);
+        assert_eq!(original.indices,painted.indices);assert_eq!(model.surface.colors,before.colors);
+        assert!(painted.uvs.iter().all(|uv|swatches.contains(uv)));
+        for name in ["paper","paper_light","oak","oak_cut","edge","ink","plum"] {
+            let changed=source.replace(&format!("\"material\":\"{name}\""),"\"material\":\"unknown\"");
+            let unknown=Model::parse(&changed).unwrap();let mut out=SurfaceMeshData::default();
+            assert!(!unknown.append_native_theater_backdrop(&mut out,bounds,8.,16.,swatches));
+            assert!(out.positions.is_empty());
+        }
+    }
+    #[test]
+    fn native_theater_stage_preserves_geometry_and_rejects_unknown_materials() {
+        let source=include_str!("../models/traditional_room/theater_platform.mesh.json");
+        let model=Model::parse(source).unwrap();let before=model.surface.clone();
+        let mut original=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
+        model.append(&mut original,[0.,192.,0.,80.],0.,8.);
+        let swatches=[[0.1,0.2],[0.3,0.4],[0.5,0.6]];
+        assert!(model.append_native_theater_stage(&mut painted,[0.,192.,0.,80.],8.,swatches));
+        assert_eq!(painted.positions,original.positions);assert_eq!(painted.normals,original.normals);
+        assert_eq!(painted.indices,original.indices);assert_eq!(model.surface.colors,before.colors);
+        assert!(painted.uvs.iter().all(|uv|swatches.contains(uv)));
+        for (normal,uv) in painted.normals.iter().zip(&painted.uvs) {
+            if normal[1]>0.5 {assert_eq!(*uv,swatches[0]);}
+        }
+        for name in ["reed","reed_light","oak","oak_cut","walnut","edge"] {
+            let changed=source.replace(&format!("\"material\":\"{name}\""),"\"material\":\"unknown\"");
+            let unknown=Model::parse(&changed).unwrap();let mut untouched=SurfaceMeshData::default();
+            assert!(!unknown.append_native_theater_stage(&mut untouched,[0.,192.,0.,80.],8.,swatches));
+            assert!(untouched.positions.is_empty());
+        }
+    }
+    #[test]
+    fn kanto_native_mansion_hut_requires_every_named_role_and_keeps_geometry() {
+        let source=include_str!("../models/special_rooms/roof_access_hut.mesh.json");
+        let model=Model::parse(source).unwrap();let before=model.surface.clone();
+        let mut original=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
+        model.append(&mut original,[0.,48.,0.,32.],0.,24.);
+        assert!(model.append_native_mansion_hut(&mut painted,[0.,48.,0.,32.],24.,|role|[role as f32/8.,0.5]));
+        assert_eq!(original.positions,painted.positions);assert_eq!(original.normals,painted.normals);
+        assert_eq!(original.indices,painted.indices);assert_eq!(model.surface.colors,before.colors);
+        for name in ["metal_light","cloth","cloth_light","wood","wood_dark","wood_light","brass"] {
+            let changed=source.replace(&format!("\"name\":\"{name}\""),"\"name\":\"unknown\"");
+            let unknown=Model::parse(&changed).unwrap();assert!(!unknown.has_native_mansion_hut_materials());
+            assert!(!unknown.append_native_mansion_hut(&mut SurfaceMeshData::default(),[0.,48.,0.,32.],24.,|_|[0.,0.]));
+        }
+    }
+
     use super::*;
     #[test]
     fn shared_assets_cave_and_ice_boulders_reuse_geometry_with_distinct_material_ownership() {

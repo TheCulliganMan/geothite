@@ -112,6 +112,12 @@ fn walking_anchor_eligibility_preserves_contact_and_rejects_unsupported_steps() 
         origin, original,
         "eligibility cannot rewrite the checked result"
     );
+    let mut running = origin.clone();
+    running.authoritative_step = Some(StepOutcome::Moved { from, to, speed_multiplier: 2 });
+    let running_before = running.clone();
+    assert_eq!(walking_origin_step(&running), Some((from, to)),
+        "running retains the same checked one-tile source corridor");
+    assert_eq!(running, running_before);
     for mode in [
         MovementMode::Bike,
         MovementMode::Skate,
@@ -134,7 +140,7 @@ fn walking_anchor_eligibility_preserves_contact_and_rejects_unsupported_steps() 
         Some(StepOutcome::Moved {
             from,
             to,
-            speed_multiplier: 2,
+            speed_multiplier: 3,
         }),
     ] {
         let mut other = origin.clone();
@@ -1335,6 +1341,39 @@ fn walking_anchor_cave_preview_starts_on_verified_floor_and_awaits_input() {
     }
 }
 
+
+#[cfg(feature = "location-tester")]
+#[test]
+fn walking_anchor_forest_preview_uses_real_floor_encounters_without_starting_a_battle() {
+    use crate::core::world::collision::{sample_collision, permissions};
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..").canonicalize().unwrap());
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let shell = initialize_bevy_runtime_shell(asset_root, runtime,
+        BevyShellStart::NewGameAtRuntimeTile { spawn_identifier,
+            map_name: "Route36".into(), tile_x: 20, tile_y: 8 },
+        BevyShellConfig { smoke_player_name: Some("CHRIS".into()),
+            quick_save_path: None, ..Default::default() }).unwrap();
+    let shell = prepare_walking_encounter_preview_at_map(shell,
+        WalkingEncounterPreviewMap::Route29Grass, Some("IlexForest"))
+        .expect("the original forest floor must be reviewable without grass artwork");
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert_eq!(snapshot.overworld.map_name, "IlexForest");
+    assert_eq!(snapshot.overworld.facing, Direction::Right);
+    assert!(snapshot.battle.is_none() && shell.battle_origin.published().is_none());
+    assert_eq!(shell.player_walk_frame_ticks, 0);
+    assert_eq!(shell.shell.session().state().wild_encounter_cooldown, 5);
+    assert_eq!(shell.shell.current_encounter_surface_checked().unwrap(),
+        Some(crate::core::world::encounters::EncounterSurface::Grass));
+    let overworld = shell.shell.session().overworld();
+    let from = snapshot.overworld.tile;
+    let to = TilePosition::new(from.x + 1, from.y);
+    for tile in [from, to] {
+        assert_eq!(sample_collision(&overworld.map, &overworld.tileset, tile)
+            .expect("original collision").permission, permissions::FLOOR);
+    }
+}
 
 #[cfg(feature = "location-tester")]
 #[test]

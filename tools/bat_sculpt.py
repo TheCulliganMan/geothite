@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Original Zubat/Golbat/Crobat anatomy, scalloped wings and fitted faces.
 
-Single canonical static JSON per species. No sprites, pack content or imported
+Single canonical standard-skin GLB per species. No sprites, pack content or imported
 meshes. Existing contour and hollow-shell helpers supply geometry only.
 """
-import argparse,json
+import argparse
 from pathlib import Path
 from sculpt_geometry import part,loft,tube,ellipsoid,curved_profiles,fitted_patch
 from abra_sculpt import surface
@@ -74,7 +74,7 @@ def ear_parts(side,color,large):
     return [shell,fitted_patch('Ear / inset rose membrane '+str(side),(.61,.36,.51),inside,surface(shell),.003)]
 
 
-def sculpture(species):
+def sculpture(species, *, normalize=True):
     if species not in SPECIES:raise ValueError('unsupported bat')
     crobat=species=='crobat';golbat=species=='golbat';color=PURPLE if crobat else BLUE
     p=wing_parts(species,color)
@@ -121,6 +121,7 @@ def sculpture(species):
                 y=.672 if direction==1 else .590;x=s*.054
                 points=[(x,y,skin(y,x)+.009),(x*.9,y-direction*.019,skin(y-direction*.019,x*.9)+.012),(x*.85,y-direction*.036,skin(y-direction*.036,x*.85)+.014)]
                 p.append(tube('Fang / fitted triangular canine '+str(s)+' '+str(direction),IVORY,points,[.014,.009,.0015],12))
+    if not normalize:return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0.))*scale,7) for i,v in enumerate(q['positions'])]
@@ -130,6 +131,9 @@ def sculpture(species):
 
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    for s in SPECIES:(args.output/(s+'.mesh.json')).write_text(json.dumps(sculpture(s),separators=(',',':')))
+    from bat_glb import export_bat
+    for s in SPECIES:
+        (args.output/(s+'.glb')).write_bytes(export_bat(s))
+        (args.output/(s+'.mesh.json')).unlink(missing_ok=True)
 
 if __name__=='__main__':main()

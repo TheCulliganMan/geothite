@@ -4118,6 +4118,16 @@ impl GameDataSet {
                             command.second_party_index
                         )
                     })?;
+                let surf_key = crystal_core::systems::field_moves::SURF_ACTOR_PARTY_MEMORY;
+                if let Some(index) = state.script_runtime.memory.get(surf_key)
+                    .and_then(|value| value.parse::<usize>().ok()) {
+                    let index = if index == command.first_party_index {
+                        command.second_party_index
+                    } else if index == command.second_party_index {
+                        command.first_party_index
+                    } else { index };
+                    state.script_runtime.memory.insert(surf_key.to_owned(), index.to_string());
+                }
                 RuntimeMutationResult::PartyPokemonSwapped(RuntimePartySwapOutcome {
                     first_party_index: command.first_party_index,
                     second_party_index: command.second_party_index,

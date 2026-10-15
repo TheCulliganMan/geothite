@@ -14,6 +14,8 @@ pub(super) enum Kind {
     MeetingTable,
     SideDesk,
     Chair,
+    Sofa,
+    ReceptionCounter,
 }
 impl Kind {
     pub(super) fn label(self) -> &'static str {
@@ -22,6 +24,8 @@ impl Kind {
             Self::MeetingTable => "facility:joined-meeting-table",
             Self::SideDesk => "facility:document-side-desk",
             Self::Chair => "facility:square-back-chair",
+            Self::Sofa => "facility:blue-lounge-sofa",
+            Self::ReceptionCounter => "facility:silph-reception-counter",
         }
     }
     pub(super) fn fitting(self) -> ([f32; 4], f32) {
@@ -33,6 +37,8 @@ impl Kind {
             Self::SideDesk => ([0., 32., 6., 24.], 12.15),
             // Native actor foot is (8,16); the full chair stays north of it.
             Self::Chair => ([2., 14., 0., 8.], 11.4),
+            Self::Sofa => ([1., 31., 1., 15.], 11.),
+            Self::ReceptionCounter => ([0.,96.,8.,64.],8.),
         }
     }
 }
@@ -60,6 +66,9 @@ pub(super) struct Match {
     origin: [i32; 2],
 }
 impl Match {
+    pub(super) fn native_silph_meeting_table(&self) -> bool {
+        self.rule.map == "SilphCo1F" && self.rule.kind == Kind::MeetingTable
+    }
     pub(super) fn kind(&self) -> Kind {
         self.rule.kind
     }

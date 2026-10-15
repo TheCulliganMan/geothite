@@ -14,7 +14,15 @@ def check_models():
  tris=stored=parts=0
  for a in kit.assets():
   path=ROOT/'crates/crystal-voxel-view/models/facility_tables'/f'{a.name}.mesh.json';doc=read_model(path)
-  assert doc==json.loads(json.dumps(kit.document(a))),'runtime/editable generator divergence'
+  expected=json.loads(json.dumps(kit.document(a)))
+  # Platform math can differ below float32 precision when normalizing vectors.
+  # The renderer stores normals as f32. All other geometry/material fields
+  # must remain exactly identical to the editable generator.
+  comparable=json.loads(json.dumps(doc))
+  for actual_part,expected_part in zip(comparable['primitives'],expected['primitives']):
+   actual_part['normals']=[struct.pack('<f',n).hex()for n in actual_part['normals']]
+   expected_part['normals']=[struct.pack('<f',n).hex()for n in expected_part['normals']]
+  assert comparable==expected,'runtime/editable generator divergence at rendered precision'
   assert doc['bounds']['min']==[0,0,0]
   for p in doc['primitives']:
    vs=[tuple(p['positions'][i:i+3])for i in range(0,len(p['positions']),3)];ns=[tuple(p['normals'][i:i+3])for i in range(0,len(p['normals']),3)]
@@ -63,8 +71,8 @@ class Decoder:
 def load_pack(path):
  raw=path.read_bytes();assert raw[:12]==b'CRYSTALPACK\0'and len(raw)-22==int.from_bytes(raw[14:18],'big');d=Decoder(raw[22:]);p=d.item();assert d.i==len(raw)-22;return p
 BODY=r'''
-fn counts(ps:&[source::Match],w:usize)->[usize;4]{let mut out=[0;4];for p in ps{out[p.kind()as usize]+=p.indices(w).count();}out}
-fn check(map:&str,cells:Vec<Identity<'static>>,w:usize,h:usize,expected:[usize;4],protected:&[(usize,usize)],warp:&[(usize,usize)]){
+fn counts(ps:&[source::Match],w:usize)->[usize;6]{let mut out=[0;6];for p in ps{out[p.kind()as usize]+=p.indices(w).count();}out}
+fn check(map:&str,cells:Vec<Identity<'static>>,w:usize,h:usize,expected:[usize;6],protected:&[(usize,usize)],warp:&[(usize,usize)]){
  let empty=vec![false;cells.len()];let out=source::resolve(map,&cells,w,h,[0,0],&empty,&empty);
  assert_eq!(counts(&out,w),expected,"{map}");
  let mut owned=vec![false;cells.len()];
@@ -124,9 +132,9 @@ fn check(map:&str,cells:Vec<Identity<'static>>,w:usize,h:usize,expected:[usize;4
  println!("PASS {map}: {:?}; complete art/atlas/phase/custom/crop/ground/actor/warp guards",expected);
 }
 '''
-CASES={'MrPokemonsHouse':[16,0,0,8], 'PowerPlant':[0,24,24,24],
- 'RuinsOfAlphResearchCenter':[0,0,12,0], 'SilphCo1F':[0,24,0,24],
- 'TeamRocketBaseB3F':[0,48,24,32]}
+CASES={'MrPokemonsHouse':[16,0,0,8,0,0], 'PowerPlant':[0,24,24,24,0,0],
+ 'RuinsOfAlphResearchCenter':[0,0,12,0,0,0], 'SilphCo1F':[0,24,0,24,24,34],
+ 'TeamRocketBaseB3F':[0,48,24,32,0,0]}
 def check_pack(path,rustc):
  pack=load_pack(path);module=ROOT/'crates/crystal-voxel-view/src/mesh/facility_tables_source.rs';code=f'#[path="{module}"]mod source;\nuse source::{{Identity,Kind}};\n'+BODY
  # Small runtime parsing avoids thousands of Rust struct initializers during
@@ -158,7 +166,7 @@ def check_pack(path,rustc):
  code+='}\n'
  with tempfile.TemporaryDirectory(prefix='geothite-facility-source-')as temp:
   tmp=Path(temp);(tmp/'check.rs').write_text(code);subprocess.run([rustc,'--edition=2024','-Copt-level=1','-A','dead_code',str(tmp/'check.rs'),'-o',str(tmp/'check')],check=True);subprocess.run([str(tmp/'check')],check=True)
- print(f'PASS native source: 5 maps, {states_checked} base/script states; 172 table and 88 chair cells, native floor/warps/actor positions retained')
+ print(f'PASS native source: 5 maps, {states_checked} base/script states; 172 table, 88 chair, 24 sofa and 34 reception-counter cells, native floor/warps/actor positions retained')
 def check_source():
  manifest=ROOT/'art/johto/source/manifest.json';entries_file=ROOT/'source-manifest-entries.json'
  if manifest.exists():entries=[s for s in json.loads(manifest.read_text())['sources']if s['file']in['facility-tables.blend']]

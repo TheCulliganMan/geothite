@@ -22,7 +22,7 @@ MAX_BYTES=640000
 # normal at signed near-zero without changing any expanded triangle position.
 # Keep that exact asset accepted; modified containers still require a fresh
 # deterministic authoring export rather than a permissive GLB comparison.
-REVIEWED_SHA256='65a99441673b538a66fa50e3771dcef7ddb67c78e0113b7f31f975f3fcb46877'
+REVIEWED_SHA256='c1b1396416dfb26c141402d9f9f77c1de841fa3431a945ab480810ef5ec7d347'
 JOINTS=(('root',None,(0.,0.,0.)),
         ('pelvis',0,(0.,.367,-.225)),('chest',1,(0.,.505,.157)),
         ('neck_base',2,(0.,.734,.141)),('neck_upper',3,(0.,.997,.310)),
@@ -92,13 +92,13 @@ def pose_angles(clip,t):
         pose.append((.014*breath,0.,0.))
         return pose
     if clip=='attack':
-        # A rooted brace lifts the neck, then the flower cups forward while
+        # An immediate rooted brace lifts the neck; the flower cups forward while
         # antenna tips lag behind. Fractions adapt to the existing move cue.
-        brace=envelope(t,((0.,0.),(.18,-.22),(.45,1.),(.61,.80),(.84,.04),(1.,0.)))
-        neck=envelope(t,((0.,0.),(.23,-.26),(.50,1.),(.65,.73),(.86,-.06),(1.,0.)))
-        head=envelope(t,((0.,0.),(.28,-.18),(.54,1.),(.70,.42),(.89,-.035),(1.,0.)))
-        bloom=envelope(t,((0.,0.),(.27,-.13),(.53,1.),(.69,.70),(.85,-.11),(1.,0.)))
-        trailing=envelope(t,((0.,0.),(.33,-.10),(.61,1.),(.79,-.18),(1.,0.)))
+        brace=envelope(t,((0.,0.),(.18,1.),(.39,.78),(.58,.36),(.80,.04),(1.,0.)))
+        neck=envelope(t,((0.,0.),(.18,1.),(.40,.76),(.62,.28),(.86,-.06),(1.,0.)))
+        head=envelope(t,((0.,0.),(.18,1.),(.40,.72),(.62,.24),(.89,-.035),(1.,0.)))
+        bloom=envelope(t,((0.,0.),(.25,1.),(.46,.70),(.69,.18),(.85,-.11),(1.,0.)))
+        trailing=envelope(t,((0.,0.),(.32,1.),(.52,.66),(.79,-.18),(1.,0.)))
         pose=[(0.,0.,0.),(.019*brace,0.,0.),(.044*brace,.010*brace,0.),
             (.061*neck,-.025*neck,0.),(.079*neck,-.021*neck,0.),(.052*head,.062*head,0.),
             (-.067*brace,0.,-.011*brace),(-.067*brace,0.,.011*brace),

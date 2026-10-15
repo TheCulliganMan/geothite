@@ -40,3 +40,19 @@ def assert_model_shading(self,models):
                     self.assertGreaterEqual(dot(n,avg),-1e-8,(name,p['part'],i//3))
 
 
+
+
+def ray_intersections(part, x, y):
+    """Independent +Z ray hits on stored triangles, without authoring surface math."""
+    positions = [part['positions'][i:i+3] for i in range(0, len(part['positions']), 3)]
+    hits = []
+    for i in range(0, len(part['indices']), 3):
+        a, b, c = [positions[j] for j in part['indices'][i:i+3]]
+        denominator = (b[1]-c[1])*(a[0]-c[0]) + (c[0]-b[0])*(a[1]-c[1])
+        if abs(denominator) < 1e-12:
+            continue
+        u = ((b[1]-c[1])*(x-c[0]) + (c[0]-b[0])*(y-c[1])) / denominator
+        v = ((c[1]-a[1])*(x-c[0]) + (a[0]-c[0])*(y-c[1])) / denominator
+        if min(u, v, 1-u-v) >= -1e-7:
+            hits.append(u*a[2] + v*b[2] + (1-u-v)*c[2])
+    return hits

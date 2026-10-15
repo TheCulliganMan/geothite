@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Articulate the reviewed Totodile sculpture without changing neutral geometry.
+"""Export the refined Totodile sculpture with a bounded articulated jaw and tail.
 
 Requires the existing tools/animated_glb.py and tools/gengar_glb.py on PYTHONPATH.
 Those provide storage/math only. Anatomy, attachment fields, and poses here are
@@ -17,7 +17,7 @@ from animated_glb import parse_glb
 from skin_glb import (COORDINATES, Glb, envelope, packed,
                         quantized_weights, quaternion_xyz, smoothstep)
 
-REST_DIGEST = '3e3f8de35f5d7cabcc889604baff4103f050f6abf2a24f6336f9ea3fea9a47d0'
+REST_DIGEST = 'e2e34e5ee22c9e86a70f23ec28511f2075b6d2a3f529d7996b3025288bb86a18'
 FILE = 'totodile.glb'
 PARTS = (
     'Shallow inset nostril.001', 'Shallow inset nostril',
@@ -33,7 +33,8 @@ PARTS = (
     'Ivory toe claw.002', 'Ivory toe claw.001', 'Ivory toe claw',
     'Ivory toe claw.003', 'Ivory toe claw.004', 'Ivory toe claw.005',
     'Small eye highlight.001', 'Inset ivory eye', 'Inset ivory eye.001',
-    'Small eye highlight',
+    'Small eye highlight', 'Rounded pink tongue',
+    'Lower ivory crocodile fang', 'Lower ivory crocodile fang.001',
 )
 # Measured from the real Blender runtime body's object transform. The staged
 # scene's presentation root is excluded. No source coordinate is written back
@@ -59,8 +60,8 @@ JOINTS = (
     ('tail_tip', 6, source_point(.069, .435, .175)),
 )
 CLIPS = (('idle', 3.0, 65), ('attack', 1., 49), ('hit', 1., 49))
-MATERIAL_NAMES = ('charcoal_insets', 'blue_paper_body', 'warm_iris',
-                  'red_dorsal_plates', 'golden_chest', 'ivory_details')
+MATERIAL_NAMES = ('charcoal_insets', 'mouth_interior', 'blue_paper_body', 'warm_iris',
+                  'red_dorsal_plates', 'golden_chest', 'ivory_details', 'pink_tongue')
 
 
 def geometry_digest(model):
@@ -76,7 +77,7 @@ def named_model(model):
     if model.get('name') not in ('battle_totodile', 'totodile') or model.get('version') != 1:
         raise ValueError('expected Totodile source schema version 1')
     if model.get('coordinate_system') != COORDINATES or len(model.get('primitives', [])) != len(PARTS):
-        raise ValueError('expected refined Totodile coordinates and 27 anatomy parts')
+        raise ValueError('expected refined Totodile coordinates and 30 anatomy parts')
     if geometry_digest(model) != REST_DIGEST:
         raise ValueError('unreviewed neutral geometry; anatomy mapping must be reviewed again')
     result = copy.deepcopy(model)
@@ -121,9 +122,9 @@ def body_weights(position):
 
 MOUTH_PROFILES = tuple((source_point(0., y, z)[2],
                        source_point(0., y, z)[1], SOURCE_SCALE*radius)
-                      for y, z, radius in ((-.087, .661, .039),
-                          (-.261, .632, .046), (-.426, .637, .041),
-                          (-.516, .641, .030)))
+                      for y, z, radius in ((-.087, .653, .040),
+                          (-.261, .639, .054), (-.426, .655, .067),
+                          (-.516, .672, .052)))
 
 
 def cavity_weights(position):
@@ -141,7 +142,7 @@ def cavity_weights(position):
 
 
 def skin_weights(part, position):
-    if part == 'Sculpted rounded lower jaw':
+    if part in ('Sculpted rounded lower jaw', 'Rounded pink tongue') or part.startswith('Lower ivory crocodile fang'):
         return [3, 0, 0, 0], [1., 0., 0., 0.]
     if part == 'Recessed shallow mouth cavity':
         return cavity_weights(position)
@@ -196,7 +197,7 @@ def pose_angles(clip, t):
 def export_totodile(model):
     model = named_model(model)
     glb = Glb()
-    glb.doc['asset']['generator'] = 'Geothite Totodile skin authoring v1'
+    glb.doc['asset']['generator'] = 'Geothite Totodile skin authoring v2'
     nodes, inverse = glb.doc['nodes'], []
     for name, parent, pivot in JOINTS:
         origin = JOINTS[parent][2] if parent is not None else (0., 0., 0.)
@@ -247,7 +248,7 @@ def export_totodile(model):
                 'purpose': 'grounded crocodile brace, articulated jaw and raised forepaws, low lateral tail; battle cues remain external'}})
     glb.doc['extras'] = {'coordinate_system': COORDINATES, 'source_name': model['name'],
         'source_sha256': geometry_digest(model),
-        'geometry_preservation': 'exact original primitive order, f32 geometry/colors and index order; names matched from Blender source',
+        'geometry_preservation': 'refined open-jaw silhouette, fitted larger eyes, broad chest chevron and pink tongue; pinned named Blender geometry',
         'animation_contract': 'identity root, planted feet and claws, rigid face and jaw, attached chest and dorsal plates, rotation-only joints'}
     return glb.bytes()
 

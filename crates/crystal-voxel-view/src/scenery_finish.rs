@@ -3,6 +3,10 @@
 use crate::mesh::SurfaceMeshData;
 use bevy::prelude::Vec3;
 
+// Live source paint already contains the current map's time-of-day palette.
+// Retain shadow/contact modulation without applying a second colored light.
+pub(crate) const SOURCE_PAINT_UV: [f32;2] = [85000.,0.];
+
 #[derive(Clone, Copy)]
 enum Material {
     Ceramic,

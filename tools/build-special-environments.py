@@ -93,19 +93,31 @@ box('Dark utility panel',(0,-.225,.53),(1.91,.055,.63),'dark_rock',.025)
 for x in [-.77,0,.77]:box('Wall joining rib',(x,-.275,.52),(.055,.04,.68),'metal_light',.006)
 for z in [.07,.91]:box('Steel wall edge cap',(0,-.01,z),(2.0,.48,.14),'metal_light',.02)
 
+def sculpture(n,p,s,mat):
+ o=ico(n,p,s,mat,2)
+ for f in o.data.polygons:f.use_smooth=True
+ return o
+
 begin('champion_dragon')
 box('Broad stepped statue base',(0,0,.11),(1.20,.80,.22),'stone',.07)
 box('Carved lower plinth',(0,0,.30),(.94,.63,.17),'stone_light',.045)
-cone('Faceted tapering pedestal',(0,.02,.57),.34,.28,.40,'stone',8)
-ico('Coiled dragon haunch',(0,.03,.95),(.43,.30,.42),'stone_light',1)
-rod('Long rising dragon neck',(0,-.06,1.14),(-.08,-.11,1.86),.16,'stone_light',7)
-ico('Dragon angular skull',(-.09,-.13,1.92),(.25,.22,.22),'stone_light',1)
-ico('Long dragon muzzle',(-.08,-.35,1.91),(.16,.25,.11),'stone',1)
+cone('Faceted tapering pedestal',(0,.02,.57),.34,.28,.40,'stone',12)
+sculpture('Coiled dragon haunch',(0,.03,.95),(.40,.30,.42),'stone_light')
+sculpture('Rising dragon neck root',(0,-.06,1.27),(.22,.20,.30),'stone_light')
+sculpture('Curved dragon neck',(-.035,-.09,1.55),(.16,.16,.31),'stone_light')
+sculpture('Dragon angular skull',(-.09,-.13,1.92),(.25,.22,.22),'stone_light')
+sculpture('Long dragon muzzle',(-.08,-.35,1.91),(.16,.25,.11),'stone')
+box('Incised dragon mouth',(-.08,-.565,1.885),(.21,.013,.024),'stone_dark',.004)
 for sign in [-1,1]:
- rod('Swept stone horn',(sign*.15,-.03,2.01),(sign*.25,.02,2.30),.06,'sand_light',5)
- ico('Recessed dragon eye',(sign*.15,-.31,1.99),(.035,.022,.028),'stone_dark',1)
- rod('Carved foreleg',(sign*.22,-.12,1.13),(sign*.26,-.23,.78),.10,'stone',6)
- poly('Angular folded dragon wing',[(sign*.14,.10,1.18),(sign*.66,.14,1.74),(sign*.54,.18,1.05),(sign*.22,.26,.90),(sign*.31,.22,1.36)],[(0,1,4),(1,2,4),(2,3,4),(3,0,4),(3,2,1,0)],'stone')
+ rod('Swept stone horn',(-.09+sign*.15,-.03,2.01),(-.09+sign*.25,.02,2.30),.06,'sand_light',5)
+ sculpture('Recessed dragon eye',(-.09+sign*.14,-.31,1.99),(.035,.022,.028),'stone_dark')
+ sculpture('Carved dragon brow',(-.09+sign*.14,-.29,2.025),(.065,.040,.025),'stone_light')
+ rod('Carved foreleg',(sign*.22,-.12,1.13),(sign*.26,-.23,.78),.10,'stone',10)
+ sculpture('Grounded dragon paw',(sign*.26,-.27,.78),(.13,.15,.07),'stone_light')
+ # Mirror the winding with the wing, so both front faces receive outward light.
+ faces=[(0,1,4),(1,2,4),(2,3,4),(3,0,4),(3,2,1,0)]
+ if sign<0:faces=[tuple(reversed(f)) for f in faces]
+ poly('Angular folded dragon wing',[(sign*.14,.10,1.18),(sign*.66,.14,1.74),(sign*.54,.18,1.05),(sign*.22,.26,.90),(sign*.31,.22,1.36)],faces,'stone')
  rod('Wing raised rib',(sign*.16,.092,1.19),(sign*.65,.133,1.73),.035,'stone_light',5)
 for i in range(3):cone('Dragon dorsal carved spine',(0,.23,1.20+i*.17),.07,0,.17,'sand_light',4)
 rod('Curved tail lower',(0,.13,.77),(.40,.21,.56),.11,'stone_light',6)
@@ -204,7 +216,8 @@ def export(name,col):
    normal=(normal_matrix@tri.normal).normalized()
    if normal.length_squared<.9:continue
    for vid in tri.vertices:
-    v=obj.matrix_world@me.vertices[vid].co;g['indices'].append(len(g['positions'])//3);g['positions'].extend(round(c,6) for c in (v.x,v.z,-v.y));g['normals'].extend(round(c,6) for c in (normal.x,normal.z,-normal.y))
+    n=(normal_matrix@me.vertices[vid].normal).normalized() if me.polygons[tri.polygon_index].use_smooth else normal
+    v=obj.matrix_world@me.vertices[vid].co;g['indices'].append(len(g['positions'])//3);g['positions'].extend(round(c,6) for c in (v.x,v.z,-v.y));g['normals'].extend(round(c,6) for c in (n.x,n.z,-n.y))
   obj_eval.to_mesh_clear()
  prim=[groups[n] for n in sorted(groups)];allp=[p['positions'] for p in prim];mins=[min(v[i] for p in allp for v in zip(*[iter(p)]*3)) for i in range(3)];maxs=[max(v[i] for p in allp for v in zip(*[iter(p)]*3)) for i in range(3)]
  data={'name':name,'coordinate_system':'right-handed; +Y up; front +Z','origin':'floor-center','bounds':{'min':mins,'max':maxs},'triangle_count':sum(len(p['indices'])//3 for p in prim),'primitives':prim}

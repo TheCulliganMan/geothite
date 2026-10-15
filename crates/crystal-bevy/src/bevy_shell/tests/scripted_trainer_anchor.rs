@@ -28,6 +28,22 @@ fn scripted_trainer_anchor_fresh_shell() -> BevyRuntimeShell {
     shell
 }
 
+#[test]
+fn scripted_trainer_preview_first_a_uses_the_authoritative_falkner_contact() {
+    let mut controller = VisibleShellController { shell: scripted_trainer_anchor_fresh_shell() };
+    let before = controller.shell.shell.session().snapshot();
+    assert_eq!(before.tile, TilePosition::new(4, 1));
+    assert_eq!(before.facing, Direction::Right);
+    controller.press(GameButton::A).unwrap();
+    let after = controller.snapshot().unwrap();
+    assert_eq!(after.overworld.tile, before.tile);
+    assert_eq!(after.overworld.facing, before.facing);
+    assert!(after.battle.is_none());
+    assert!(visible_field_dialog_text(&after, &controller.shell)
+        .is_some_and(|text| text.contains("FALKNER")),
+        "the first A must open the original trainer dialogue without a preparatory turn");
+}
+
 fn scripted_trainer_anchor_dialogue_app() -> App {
     let shell = scripted_trainer_anchor_fresh_shell();
     let mut app = menu_render_test_app(shell);

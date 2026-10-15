@@ -111,6 +111,7 @@ struct VisibleBattleOriginState {
     trainer_candidate: Option<VisibleTrainerEncounterCandidate>,
     scripted_trainer_candidate: Option<VisibleScriptedTrainerEncounterCandidate>,
     bound_trainer: Option<VisibleBoundTrainerEncounter>,
+    bound_scripted_ground: Option<VisibleBoundScriptedGround>,
     fishing_pack_scene: Option<VisibleFishingPackScene>,
 }
 
@@ -130,6 +131,7 @@ impl VisibleBattleOriginState {
         self.trainer_candidate = None;
         self.scripted_trainer_candidate = None;
         self.bound_trainer = None;
+        self.bound_scripted_ground = None;
         self.fishing_pack_scene = None;
         // Preserve the serial across reload so a renderer cannot alias a later
         // encounter with a scene it retained before the load.
@@ -255,11 +257,13 @@ fn take_visible_battle_origin_for_entry(
         None,
         None,
     );
-    shell
+    let origin = shell
         .battle_origin
         .pending
         .take()
-        .expect("origin just staged")
+        .expect("origin just staged");
+    bind_visible_scripted_ground(shell, &origin);
+    origin
 }
 
 fn publish_visible_battle_origin(

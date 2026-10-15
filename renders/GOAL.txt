@@ -1,0 +1,100 @@
+GEOTHITE — OUTDOOR 3D ART IMPLEMENTATION GOAL
+Handoff established 2026-10-13
+Repository: /Users/ryanculligan/GitHub/geothite
+Reference directory: /Users/ryanculligan/GitHub/geothite/renders
+
+COMMUNICATION RULE
+Do not send acknowledgements, replies, progress reports, completion messages
+or requests for acknowledgement to the originating art-reference thread.
+Read this handoff and work from it. Do not message other tasks merely to
+acknowledge receipt. Do not request that other agents acknowledge this thread.
+No agents were spawned or messaged to distribute this handoff. This file is
+the handoff; the human can give its path to an implementation owner.
+This rule cannot technically prevent unsolicited messages from unrelated
+threads, but every consumer of this goal must honor it.
+
+GOAL
+Bring the actual production 3D outdoor game up to the saved visual standard:
+spectacular, cohesive, fully finished environments that retain Pokemon Crystal
+identity and readable gameplay. Improve existing 3D scenes directly, using
+the actual 2D game as the authoritative reference. Preserve existing camera,
+building volumes, human proportions, source footprints and game state; do not
+replace scenes with near-top-down sprite reconstructions or toy miniatures.
+
+The quality target covers whole scenes and small props together: tree species
+and branching, grass/ground transitions, rock shape, water/shore contacts,
+roof/eave/facade detail, foundations, source white fence runs and joinery, signs,
+lighting, actor grounding and occlusion. Pretty foliage around placeholder
+geometry does not meet the goal.
+
+READ FIRST
+renders/ART-STANDARD.txt — material/form rules and production acceptance gate
+renders/PROMPTS.txt — exact prompts and input roles for seven approved images
+renders/RUINS-OF-ALPH-PROMPT.txt — exact Alph prompt and capture reproduction
+AGENTS.md — repository, source-pack, controller and verification constraints
+
+APPROVED ART REFERENCES
+The human said "those look good" about the revised set. These seven images
+are approved art-direction references, not implemented production screenshots:
+  renders/route38-3d-finished-v2.png
+  renders/ecruteak-city-3d-finished-v2.png
+  renders/ecruteak-burned-tower-3d-finished-v2.png
+  renders/olivine-city-3d-finished-v2.png
+  renders/cherrygrove-city-3d-finished-v2.png
+  renders/mahogany-town-3d-finished-v2.png
+  renders/blackthorn-city-3d-finished-v2.png
+
+NEW REVIEW CANDIDATE
+  renders/ruins-of-alph-3d-finished-v1.png
+Made from an actual paired local capture at RuinsOfAlphOutside (10,18),
+hour 11, orbit 2, zoom 1. User approval of this new image is not recorded.
+The target resolves huge blank extrusions/pixel cards into weathered rock
+terraces and finished chamber portals, with pine borders and research-building
+material identity. Source entrance shapes, occupancy and roof colors remain
+authoritative over generated framing, vegetation and silhouette adjustments.
+
+OUTSTANDING ILEX WORK
+The human explicitly requested Ilex Forest translated into finished 3D while
+using the actual 3D view too. No acceptable Ilex image was produced: the 2D-only
+reconstruction was rejected/deleted; four actual-3D edit attempts were rejected
+by the built-in image tool. Do not describe Ilex as complete or resurrect the
+rejected image. A finished Ilex target/review remains outstanding. Preserve
+its distinct ancient forest family, rooted substantial trunks, deep layered
+canopy, existing flower anchors and clear navigable clearing. Do not copy the
+current sparse pale birch plantation or force every forest into route pines.
+
+PRESERVE REGIONAL IDENTITY AND EXISTING WORK
+Most ordinary Johto route/town boundary trees should be pines with real
+asymmetric needle-bearing boughs and warm bark, not round cloned leaf balls.
+National Park retains distinctive broadleaf trees, its actual fountain shape
+and two source grass types. Fruit/Cut trees retain identity. Kanto and Ilex
+families require their own source-based treatment; no global tree replacement.
+An exterior-owner coordination report says Route26's canyon/grove finish is
+approved: preserve it and shared terrace/jump-direction/footing support. That
+report is context, not independent proof of current implementation acceptance.
+It also identifies Cerulean perimeter and Route8 variety/material work; inspect
+current captures if pursuing that scope. Do not overwrite another owner's
+foliage/build_scene/occluder_fade or shared CPU-mesh work. Verify current local
+ownership/handoff evidence before broad edits, without soliciting acknowledgements.
+
+CURRENT DELIVERED STATE
+Eight final concept PNGs, the standard, exact prompts and this goal are saved
+in renders/. Rejected references and task-created capture scratch were removed.
+This art-reference task changed no renderer source, gameplay or pack content.
+Other owners may have changed this shared worktree; inspect current source
+instead of treating this handoff as a snapshot of their implementation.
+Packs remain ignored. Do not commit packs, extracted source catalogs,
+generated PCM, exporter dumps, compiled artifacts or verification scratch.
+
+DONE MEANS PRODUCTION EVIDENCE
+Use the saved art references to improve production, then capture same-state
+2D/3D pairs at matching pack/map/position/facing/time and useful camera orbits.
+Review whole gameplay frames and tight crops of posts, fences, signs,
+doors/roofs/foundations, needles, rock contacts and water transitions. Preserve
+authored gameplay, source palette/landmarks, collisions, events and footing.
+Check motion, supported orbits, LOD/cutaway stability and runtime performance
+against an agreed device/budget. Run applicable AGENTS.md regressions after
+implementation changes. Fix defects and inspect again before acceptance.
+Generated art, a pack dump, one beautiful asset or a passing mesher test does
+not establish this whole-scene goal is complete. Report actual implementation
+and remaining limitations to the human, not to the originating reference thread.

@@ -109,11 +109,17 @@ pub struct VisualBattleDerivedTrainerPlacement {
     pub walkable_core_tiles: Arc<[IVec2]>,
 }
 
-/// Authoritative contact supplied by the encounter's checked production path.
+/// Checked contacts or explicitly derived positions supplied by the production path.
 /// A water target is a map contact, not a rendered actor or a claim that the
-/// selected species can swim. Missing target evidence is never synthesized.
+/// selected species can swim. A derived variant never fabricates contact evidence.
 #[derive(Clone, Debug, PartialEq)]
 pub enum VisualBattleTarget {
+    /// A committed scripted battle with a known source map but no witnessed
+    /// enemy contact. Both Pokémon positions use verified unoccupied floor;
+    /// this placement makes no claim about a trainer or encounter surface.
+    ScriptedGround {
+        presentation: VisualBattleDerivedTrainerPlacement,
+    },
     Object(VisualBattleObjectTarget),
     FishingWater {
         core_tile: IVec2,
@@ -139,6 +145,7 @@ pub enum VisualBattleTarget {
 impl VisualBattleTarget {
     pub fn core_tile(&self) -> IVec2 {
         match self {
+            Self::ScriptedGround { presentation } => presentation.presentation_core_tile,
             Self::Object(target) => target.core_tile,
             Self::FishingWater { core_tile }
             | Self::WalkingGrass { core_tile, .. }

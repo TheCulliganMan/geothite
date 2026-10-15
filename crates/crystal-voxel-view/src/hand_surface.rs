@@ -2,7 +2,9 @@
 //! Geometric welding crosses texture seams; attribute islands remain separate.
 use crate::{mesh::SurfaceMeshData, open_people::PersonRig};
 use bevy::prelude::*;
-use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::collections::{BTreeSet, HashMap, HashSet};
+#[cfg(test)]
+use std::collections::BTreeMap;
 fn key(p: [f32; 3]) -> [i32; 3] {
     p.map(|v| (v * 100_000.0).round() as i32)
 }
@@ -31,7 +33,7 @@ pub(crate) fn smooth(
     // Pinning the wrist geometry must not retain a stale normal on the hand
     // side of that boundary. Shade the refined surface across geometric UV
     // welds, while leaving every non-hand vertex's normal untouched.
-    let mut normals = BTreeMap::<[i32; 3], Vec3>::new();
+    let mut normals = HashMap::<[i32; 3], Vec3>::new();
     for face in mesh.indices.chunks_exact(3) {
         let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
         let n = (p[1]-p[0]).cross(p[2]-p[0]).normalize_or_zero();
@@ -80,15 +82,21 @@ fn refine_selection(
     selected: &[bool],
     join_boundary: bool,
 ) {
+    let _trace = crate::loading_trace::span("actor.refine_surface", || serde_json::json!({
+        "vertices":mesh.positions.len(), "triangles":mesh.indices.len()/3,
+        "selected":selected.iter().filter(|&&v|v).count(), "joined":join_boundary}));
     let old = mesh.indices.clone();
     let original = mesh.positions.clone();
-    let mut adjacent = BTreeMap::<[i32; 3], BTreeSet<[i32; 3]>>::new();
-    let mut pinned = BTreeSet::new();
-    let mut points = BTreeMap::new();
-    let mut edge_faces = BTreeMap::<([i32; 3], [i32; 3]), Vec<[i32; 3]>>::new();
+    let original_keys = original.iter().map(|&p|key(p)).collect::<Vec<_>>();
+    // Lookup order has no geometric meaning. Neighbor sums keep their ordered
+    // set so changing the outer tables cannot change floating-point results.
+    let mut adjacent = HashMap::<[i32; 3], BTreeSet<[i32; 3]>>::new();
+    let mut pinned = HashSet::new();
+    let mut points = HashMap::new();
+    let mut edge_faces = HashMap::<([i32; 3], [i32; 3]), Vec<[i32; 3]>>::new();
     for face in old.chunks_exact(3) {
         let face = [face[0] as usize, face[1] as usize, face[2] as usize];
-        let keys = face.map(|i| key(original[i]));
+        let keys = face.map(|i| original_keys[i]);
         if !face.iter().all(|&i| selected[i]) {
             pinned.extend(keys);
             continue;
@@ -112,7 +120,7 @@ fn refine_selection(
             pinned.extend([a, b]);
         }
     }
-    let mut rounded = BTreeMap::new();
+    let mut rounded = HashMap::new();
     for (&k, neighbors) in &adjacent {
         let p = points[&k];
         let n = neighbors.len();
@@ -133,7 +141,7 @@ fn refine_selection(
     }
     for (i, p) in mesh.positions.iter_mut().enumerate() {
         if selected[i] {
-            if let Some(q) = rounded.get(&key(*p)) {
+            if let Some(q) = rounded.get(&original_keys[i]) {
                 *p = q.to_array();
             }
         }
@@ -144,8 +152,8 @@ fn refine_selection(
         let [a, b, c] = [face[0], face[1], face[2]];
         let whole = [a, b, c].iter().all(|&i| selected[i as usize]);
         let split = [(a, b), (b, c), (c, a)].map(|(a, b)| {
-            let ka = key(original[a as usize]);
-            let kb = key(original[b as usize]);
+            let ka = original_keys[a as usize];
+            let kb = original_keys[b as usize];
             whole || (join_boundary && edge_faces.contains_key(&(ka.min(kb), ka.max(kb))))
         });
         if !split.iter().any(|&split| split) {
@@ -155,8 +163,8 @@ fn refine_selection(
         let mut midpoint = |a: u32, b: u32| -> u32 {
             *midpoints.entry((a.min(b), a.max(b))).or_insert_with(|| {
                 let (a, b) = (a as usize, b as usize);
-                let ka = key(original[a]);
-                let kb = key(original[b]);
+                let ka = original_keys[a];
+                let kb = original_keys[b];
                 let edge = &edge_faces[&(ka.min(kb), ka.max(kb))];
                 let straight =
                     (Vec3::from_array(original[a]) + Vec3::from_array(original[b])) * 0.5;
@@ -184,7 +192,7 @@ fn refine_selection(
                         .lerp(Vec4::from_array(mesh.colors[b]), 0.5)
                         .to_array(),
                 );
-                let mut blend = BTreeMap::<u16, f32>::new();
+                let mut blend = HashMap::<u16, f32>::new();
                 for i in [a, b] {
                     for slot in 0..4 {
                         *blend.entry(ids[i][slot]).or_default() += weights[i][slot] * 0.5;
@@ -236,7 +244,7 @@ fn refine_selection(
     }
     for i in 0..mesh.positions.len() {
         if (i >= selected.len() || selected[i])
-            && !pinned.contains(&key(original.get(i).copied().unwrap_or(mesh.positions[i])))
+            && !pinned.contains(&original_keys.get(i).copied().unwrap_or_else(||key(mesh.positions[i])))
         {
             if let Some(n) = normals.get(&key(mesh.positions[i])) {
                 if n.length_squared() > 1e-12 {

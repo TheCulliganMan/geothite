@@ -73,8 +73,15 @@ pub(super) fn resolve(
         &customized,
     )
     .into_iter()
+    .filter(|p| !p.native_silph_meeting_table() || native_meeting_model().is_some())
     .map(|resolved| Placement { resolved })
     .collect()
+}
+// Use the shared selected table and its strict material contract. Missing or
+// unknown selected materials leave the entire original source drawing intact.
+fn native_meeting_model() -> Option<&'static Model> {
+    crate::interior_models::selected_model(crate::interior_models::ModelKind::DiningTable)
+        .filter(|m| m.has_native_dining_table_materials())
 }
 /// Only the small original document ink face stays live on a physical page.
 /// Pixel clipping splits at source-cell boundaries so UVs do not cross tiles.
@@ -140,6 +147,10 @@ pub(super) fn append(
     if !p.coherent(&identities, g.width, g.height) {
         return false;
     }
+    let native = if p.native_silph_meeting_table() {
+        let Some(model) = native_meeting_model() else { return false; };
+        Some(model)
+    } else { None };
     let (west, _, north, _) = g.bounds(p.column, p.row);
     let sx = g.tile_width / 8.;
     let sy = g.tile_height / 8.;
@@ -154,7 +165,23 @@ pub(super) fn append(
     }
     let ([w, e, n, s], rise) = p.kind().fitting();
     let bounds = [west + w * sx, west + e * sx, north + n * sy, north + s * sy];
-    model(p.kind()).append_fitted(&mut mesh.solid, bounds, 0., rise * sy);
+    if p.kind() == Kind::ReceptionCounter {
+        append_reception_counter(&mut mesh.textured,g,p);
+    } else if p.kind() == Kind::Sofa {
+        let first=mesh.textured.positions.len();
+        append_sofa(&mut mesh.textured,g,p);
+        // A foreground back must reveal the player as one complete object;
+        // the already-appended native floor remains opaque and walkable.
+        mesh.textured.cutaway_ranges.push(first..mesh.textured.positions.len());
+    } else if let Some(model) = native {
+        // Pixel(4,4) of native tile $51 is the plain gold field. The match's
+        // complete 8x8 guard places that tile at local source cell(3,3).
+        let uv = g.uv(p.column + 3, p.row + 3);
+        let gold = [uv.0 + (uv.1-uv.0)*4.5/8., uv.2 + (uv.3-uv.2)*4.5/8.];
+        assert!(model.append_native_dining_table(&mut mesh.textured, bounds, rise * sy, [gold;2]));
+    } else {
+        model(p.kind()).append_fitted(&mut mesh.solid, bounds, 0., rise * sy);
+    }
     if matches!(p.kind(), Kind::SquareTable | Kind::SideDesk) {
         let (source_y, paper_z) = if p.kind() == Kind::SquareTable {
             (17., 18.36)
@@ -183,6 +210,85 @@ pub(super) fn append(
         }
     }
     true
+}
+
+/// Closed chamfered upholstery pieces, sampled from the complete native sofa.
+/// The sofa's source floor rows are guards only, never claimed or raised.
+fn append_sofa(out:&mut SurfaceMeshData,g:&GridGeometry,p:&source::Match) {
+    let (west,_,north,_)=g.bounds(p.column,p.row);
+    let sx=g.tile_width/8.;let sy=g.tile_height/8.;
+    let sample=|x:usize,y:usize| {
+        let uv=g.uv(p.column+x/8,p.row+y/8);
+        [uv.0+(uv.1-uv.0)*((x%8)as f32+0.5)/8.,
+            uv.2+(uv.3-uv.2)*((y%8)as f32+0.5)/8.]
+    };
+    let blue=sample(12,12);let light=sample(11,3);let ink=sample(0,8);
+    let mut piece=|b:[f32;4],bottom:f32,top:f32,r:f32,uv:[f32;2]| {
+        let [w,e,n,s]=b;
+        let ring=[[w+r,n],[w,n+r],[w,s-r],[w+r,s],
+            [e-r,s],[e,s-r],[e,n+r],[e-r,n]];
+        let pos=|a:[f32;2],y:f32|[west+a[0]*sx,y*sy,north+a[1]*sy];
+        // Three rectangular strips partition the chamfered top and bottom;
+        // the two end strips taper into the eight-sided perimeter.
+        for (points,normal) in [
+            ([ring[0],ring[1],ring[2],ring[3]], [0.,1.,0.]),
+            ([ring[0],ring[3],ring[4],ring[7]], [0.,1.,0.]),
+            ([ring[7],ring[4],ring[5],ring[6]], [0.,1.,0.]),
+        ] {
+            append_quad(out,points.map(|a|pos(a,top)),normal,[uv;4],TEXTURED_SHADE);
+            append_quad(out,[points[3],points[2],points[1],points[0]].map(|a|pos(a,bottom)),
+                [0.,-1.,0.],[uv;4],TEXTURED_SHADE);
+        }
+        for i in 0..8 {
+            let a=ring[i];let b=ring[(i+1)%8];
+            let normal=Vec3::new((a[1]-b[1])*sy,0.,(b[0]-a[0])*sx).normalize().to_array();
+            append_quad(out,[pos(a,bottom),pos(b,bottom),pos(b,top),pos(a,top)],normal,[uv;4],TEXTURED_SHADE);
+        }
+    };
+    for x in [3.,26.] {for z in [3.,12.] {
+        piece([x,x+2.,z,z+2.],0.,3.,0.2,ink);
+    }}
+    piece([1.,31.,1.,15.],2.,5.5,0.8,blue);
+    piece([2.,30.,1.,4.],5.,10.7,0.6,blue);
+    piece([2.,30.,1.,4.],10.7,11.,0.6,light);
+    piece([1.,4.,3.,15.],5.,8.5,0.6,blue);
+    piece([28.,31.,3.,15.],5.,8.5,0.6,blue);
+    for [w,e] in [[4.3,15.8],[16.2,27.7]] {
+        piece([w,e,4.3,14.7],5.5,7.,0.5,blue);
+    }
+}
+
+/// Two joined closed courses form the native L without filling the clerk aisle.
+fn append_reception_counter(out:&mut SurfaceMeshData,g:&GridGeometry,p:&source::Match) {
+    let (west,_,north,_)=g.bounds(p.column,p.row);
+    let sx=g.tile_width/8.;let sy=g.tile_height/8.;
+    let uv=g.uv(p.column,p.row+6);
+    let gold=[uv.0+(uv.1-uv.0)*4.5/8.,uv.2+(uv.3-uv.2)*4.5/8.];
+    // Native tile77 supplies the dark lower fascia; tile65 supplies its light rim.
+    // Sample the live atlas so palette changes remain authoritative.
+    let lower=g.uv(p.column,p.row+7);
+    let dark=[lower.0+(lower.1-lower.0)*4.5/8.,lower.2+(lower.3-lower.2)*1.5/8.];
+    let ink=[lower.0+(lower.1-lower.0)*4.5/8.,lower.2+(lower.3-lower.2)*4.5/8.];
+    let light=[uv.0+(uv.1-uv.0)*4.5/8.,uv.2+(uv.3-uv.2)*1.5/8.];
+    for [w,e,n,s] in [[0.,80.,48.,64.],[80.,96.,8.,64.]] {
+        let [w,e,n,s]=[west+w*sx,west+e*sx,north+n*sy,north+s*sy];
+        let height=8.*sy;
+        append_quad(out,[[w,height,n],[w,height,s],[e,height,s],[e,height,n]],
+            [0.,1.,0.],[gold;4],TEXTURED_SHADE);
+        append_quad(out,[[w,0.,n],[e,0.,n],[e,0.,s],[w,0.,s]],
+            [0.,-1.,0.],[dark;4],TEXTURED_SHADE);
+        for (bottom,top,paint) in [(0.,1.,ink),(1.,3.,dark),(3.,7.,gold),(7.,8.,light)] {
+            let bottom=bottom*sy;let top=top*sy;
+            for (points,normal) in [
+                ([[w,bottom,s],[e,bottom,s],[e,top,s],[w,top,s]],[0.,0.,1.]),
+                ([[e,bottom,n],[w,bottom,n],[w,top,n],[e,top,n]],[0.,0.,-1.]),
+                ([[w,bottom,n],[w,bottom,s],[w,top,s],[w,top,n]],[-1.,0.,0.]),
+                ([[e,bottom,s],[e,bottom,n],[e,top,n],[e,top,s]],[1.,0.,0.]),
+            ] {
+                append_quad(out,points,normal,[paint;4],TEXTURED_SHADE);
+            }
+        }
+    }
 }
 #[cfg(test)]
 mod tests {

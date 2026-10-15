@@ -37,6 +37,28 @@ class MeganiumTests(unittest.TestCase):
     def setUpClass(cls):
         cls.blob=ASSET.read_bytes();cls.m=Model(cls.blob)
 
+    def test_stored_attack_keys_match_author_recipe(self):
+        m=self.m
+        animation=next(a for a in m.doc['animations'] if a['name'].endswith('.attack'))
+        for channel in animation['channels']:
+            joint=channel['target']['node']
+            index=animation['samplers'][channel['sampler']]['output']
+            count=m.doc['accessors'][index]['count']
+            keys=[v for i in range(count)
+                  for v in author.quaternion_xyz(*author.pose_angles('attack',i/(count-1))[joint])]
+            self.assertEqual(raw_accessor(m.doc,m.binary,index),author.packed(keys,5126),joint)
+
+    def test_attack_braces_at_source_onset_with_follow_through(self):
+        m=self.m
+        for joint in (1, 2, 3, 4, 5):
+            samples=[m.rotations('attack',i/100)[joint][0] for i in range(101)]
+            for step in range(1,26):
+                self.assertGreater(samples[step],0.,(joint,step))
+            peak=max(samples)
+            self.assertGreater(samples[10],peak*.40,joint)
+            self.assertGreater(samples[20],peak*.90,joint)
+            self.assertLess(samples[80],peak*.25,joint)
+
     def test_deterministic_canonical_container_and_rejection(self):
         m=self.m;d=m.doc
         regenerated=author.export_meganium()
@@ -264,11 +286,11 @@ class MeganiumTests(unittest.TestCase):
         face=m.names.index('Eye / left fitted upright ink')
         for p,minimum in ((face,.08),(m.names.index(sculpture.ANTENNA_LEFT),.10),
                           (m.names.index('Flower / folded oval petal 5'),.015)):
-            movement=max(math.dist(v,pv) for v,pv in zip(m.vertices[p],m.posed(p,m.matrices('attack',.53))))
+            movement=max(math.dist(v,pv) for v,pv in zip(m.vertices[p],m.posed(p,m.matrices('attack',.25))))
             self.assertGreater(movement,minimum)
         # An independent jaw hinge opens relative to the moving head.
         jaw=m.names.index(sculpture.JAW);neutral=m.vertices[jaw]
-        mats=m.matrices('attack',.54);actual=m.posed(jaw,mats)
+        mats=m.matrices('attack',.18);actual=m.posed(jaw,mats)
         head_only=[transform(mats[5],v) for v in neutral]
         self.assertGreater(max(math.dist(a,b) for a,b in zip(actual,head_only)),.045)
         print('Meganium decoded animated bounds:',report)

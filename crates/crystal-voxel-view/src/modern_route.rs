@@ -6,7 +6,7 @@
 
 use crystal_render_api::VisualTileSource;
 
-use crate::profile::{CellShape, SolidKind};
+use crate::profile::{CellShape, LedgeFace, MOUNTAIN_CLIFF_HEIGHT, SolidKind};
 
 const TILESET: &str = "johto_modern";
 const GROUND: u16 = 0x06;
@@ -14,6 +14,57 @@ const GROUND: u16 = 0x06;
 pub(crate) fn modern_route_shape(source: &VisualTileSource) -> Option<CellShape> {
     if source.tileset_id.as_ref() != TILESET {
         return None;
+    }
+
+    // These hop-down drawings are shared byte-for-byte with the Johto atlas.
+    // Reuse its established profile rather than leaving modern-route ledges
+    // painted on the floor. Mixed fence/corner variants remain separate.
+    if matches!(source.metatile_id, 0x4b | 0x50..=0x53 | 0x56 | 0x57) {
+        let mut shared = source.clone();
+        shared.tileset_id = "johto".into();
+        return Some(crate::profile::shape_for_source(&shared));
+    }
+
+    // The modern atlas also owns the mountain family used on Route33.
+    // Resolve its mineral glyphs before generic modern-city decoration.
+    // Its corner grass and southeastern cave opening remain separate art.
+    if (0x68..=0x73).contains(&source.metatile_id) {
+        let face = match source.tile_index {
+            0x3b => Some((
+                LedgeFace::West,
+                0,
+                1_u8.saturating_sub(source.subtile_column),
+            )),
+            0x3d => Some((
+                LedgeFace::East,
+                4,
+                source.subtile_column.saturating_sub(2).min(1),
+            )),
+            0x4b | 0x4c | 0x4d => Some((
+                LedgeFace::South,
+                4,
+                source.subtile_row.saturating_sub(2).min(1),
+            )),
+            _ => None,
+        };
+        if let Some((face, plane_subtile, band_from_top)) = face {
+            return Some(CellShape::LedgeBand {
+                face,
+                plane_subtile,
+                band_from_top,
+                band_count: 2,
+                top_tile_index: 0x3c,
+                height: MOUNTAIN_CLIFF_HEIGHT,
+            });
+        }
+        return Some(if matches!(source.tile_index, 0x2b | 0x2c | 0x2d | 0x3c) {
+            CellShape::RaisedTop {
+                height: MOUNTAIN_CLIFF_HEIGHT,
+                solid: SolidKind::Bank,
+            }
+        } else {
+            CellShape::Flat
+        });
     }
 
     // Day-Care west plot: two independent 16x16 headbutt-tree drawings.
@@ -99,6 +150,62 @@ mod tests {
             subtile_row: row,
             tile_index,
         }
+    }
+
+    #[test]
+    fn modern_route_hop_down_edge_uses_the_shared_shallow_height() {
+        let top = modern_route_shape(&source(0x57, 1, 1, 0x05));
+        let face = modern_route_shape(&source(0x57, 1, 3, 0x4c));
+        assert!(matches!(
+            top,
+            Some(CellShape::RaisedTop {
+                height: crate::profile::JUMP_LEDGE_HEIGHT,
+                solid: SolidKind::Bank
+            })
+        ));
+        assert!(matches!(
+            face,
+            Some(CellShape::LedgeBand {
+                height: crate::profile::JUMP_LEDGE_HEIGHT,
+                face: LedgeFace::South,
+                ..
+            })
+        ));
+    }
+
+    #[test]
+    fn modern_mountain_sides_caps_and_cave_opening_have_distinct_roles() {
+        assert!(matches!(
+            modern_route_shape(&source(0x71, 2, 2, 0x3c)),
+            Some(CellShape::RaisedTop {
+                solid: SolidKind::Bank,
+                height: MOUNTAIN_CLIFF_HEIGHT
+            })
+        ));
+        assert!(matches!(
+            modern_route_shape(&source(0x68, 0, 1, 0x3b)),
+            Some(CellShape::LedgeBand {
+                face: LedgeFace::West,
+                ..
+            })
+        ));
+        assert!(matches!(
+            modern_route_shape(&source(0x72, 1, 3, 0x4c)),
+            Some(CellShape::LedgeBand {
+                face: LedgeFace::South,
+                ..
+            })
+        ));
+        for (x, y, tile) in [(2, 2, 0x45), (3, 2, 0x22), (2, 3, 0x27), (3, 3, 0x28)] {
+            assert_eq!(
+                modern_route_shape(&source(0x73, x, y, tile)),
+                Some(CellShape::Flat)
+            );
+        }
+        assert_eq!(
+            modern_route_shape(&source(0x6a, 0, 0, 0x05)),
+            Some(CellShape::Flat)
+        );
     }
 
     #[test]

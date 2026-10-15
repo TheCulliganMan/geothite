@@ -125,6 +125,10 @@ fn build_terrain_mesh_internal(
     mut grove_sink: Option<&mut dyn FnMut(SurfaceMeshData)>,
     deferred_groves: Option<&mut DeferredGroves>,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
+    let _trace = crate::loading_trace::span("region.build_source", || serde_json::json!({
+        "map": frame.map_id.as_ref(), "origin": frame.grid_origin.to_array(), "grid": frame.grid_size.to_array()}));
+    let mut trace_phase = None;
+    crate::loading_trace::phase(&mut trace_phase, "region.classify_and_reserve");
     // The runtime's bundled/live profile document enables the full authored
     // kit. Low-level samples-only calls retain their legacy mesher contract
     // for diagnostic comparisons and regression fixtures.
@@ -192,7 +196,9 @@ fn build_terrain_mesh_internal(
     cave_crowns::resolve(frame, &original_cells, &mut source_shapes, &geometry);
     resolve_rock_platform_tiers(&original_cells, &mut source_shapes, width);
     resolve_authored_mountain_tiers(&mut source_shapes, width, height);
-    taper_johto_ledge_ends(&original_cells, &mut source_shapes, width);
+    if frame.jump_ledges.is_empty() {
+        taper_johto_ledge_ends(&original_cells, &mut source_shapes, width);
+    }
     let mut interior_placements = if images.is_some() && authored_enabled {
         modeled_interiors::resolve(&frame.map_id, &original_cells, &geometry, profiles)
     } else {
@@ -527,6 +533,7 @@ fn build_terrain_mesh_internal(
             authored_reserved[index] = true;
         }
     }
+    crate::loading_trace::phase(&mut trace_phase, "region.resolve_profiles");
     let mut live_placements = live::resolve(
         &cells,
         width,
@@ -603,14 +610,15 @@ fn build_terrain_mesh_internal(
         }
     }
     resolve_rock_platform_tiers(&cells, &mut shapes, width);
-    // Blackthorn's closed `[6a 70 6b; 6c 72 6d]` drawing is a free-standing
-    // mound, not part of the surrounding mountain datum graph. Claim the
-    // complete drawing only; the same individual metatiles remain valid
-    // cliff pieces everywhere else.
-    for (column, row) in johto_closed_mound_origins(&cells, width, height) {
-        for local_row in 0..8 {
-            for local_column in 0..12 {
-                shapes[(row + local_row) * width + column + local_column] = CellShape::Flat;
+    // The production canyon owns complete Johto mounds as well as their
+    // partial/connected forms. Only the legacy samples-only diagnostic uses
+    // the old standalone object and needs its source cells flattened first.
+    if !authored_enabled {
+        for (column, row) in johto_closed_mound_origins(&cells, width, height) {
+            for local_row in 0..8 {
+                for local_column in 0..12 {
+                    shapes[(row + local_row) * width + column + local_column] = CellShape::Flat;
+                }
             }
         }
     }
@@ -669,8 +677,11 @@ fn build_terrain_mesh_internal(
     }
 
     resolve_authored_mountain_tiers(&mut shapes, width, height);
-    taper_johto_ledge_ends(&cells, &mut shapes, width);
+    if frame.jump_ledges.is_empty() {
+        taper_johto_ledge_ends(&cells, &mut shapes, width);
+    }
 
+    crate::loading_trace::phase(&mut trace_phase, "region.allocate_base");
     let mut mesh = TerrainMeshData {
         tree_cache: instance_hulls.then(HashMap::new),
         authored_cells: vec![None; cell_count],
@@ -679,7 +690,8 @@ fn build_terrain_mesh_internal(
     if let Some(tileset) = cells.first().map(|tile| tile.source.tileset_id.as_ref()) {
         if !crate::interior::has_back_wall(tileset)
             && !crate::interior_cutaway::is_cave(frame) {
-            background::append_repeating_background_apron(&mut mesh, &geometry, &cells, &shapes);
+            background::append_repeating_background_apron(
+                &mut mesh, &geometry, &original_cells, &source_shapes);
         }
     }
     mesh.cave_enclosure = cave_enclosure::build(frame, &geometry);
@@ -726,8 +738,33 @@ fn build_terrain_mesh_internal(
             _ => support_height(&tile.source, frame.tile_size.y),
         })
         .collect();
+    crate::loading_trace::phase(&mut trace_phase, "region.append_authored_assets");
     let mut claimed_by_building = vec![false; cell_count];
     let mut claimed_by_tree = live_claimed;
+    if authored_enabled && crate::cave_water::outdoor(frame.map_id.as_ref()) {
+        // Exterior Johto seas share the Den's exact complete whirlpool art.
+        // Native funnels retain the local water phase and authoritative tiles.
+        let native_whirlpools=den_whirlpool::append(&mut mesh,&original_cells,&geometry);
+        let _whirlpool_trace=crate::loading_trace::span("water.whirlpool_sources",|| {
+            let starts=original_cells.iter().enumerate().filter(|(_,t)|
+                t.source.tileset_id.as_ref()=="johto" && t.source.metatile_id==7
+                    && t.source.subtile_column==0 && t.source.subtile_row==0);
+            serde_json::json!({"native_cells":native_whirlpools.len(),"blocks":starts.take(24)
+                .map(|(i,_)|serde_json::json!({"origin":[i%width,i/width],
+                    "selected":native_whirlpools.contains(&i),
+                    "water": ([8,9,12,13].into_iter().filter_map(|j| {
+                        let index=i+(j/4)*width+j%4;
+                        original_cells.get(index).map(|t|serde_json::json!({
+                            "source":format!("{:?}",t.source),
+                            "frames":t.animation_frames.as_ref().map_or(0,|f|f.len()),
+                            "current_in_family":t.animation_frames.as_ref().is_some_and(|f|f.contains(&t.texture))}))
+                    }).collect::<Vec<_>>()) })).collect::<Vec<_>>()})
+        });
+        for i in native_whirlpools {
+            claimed_by_tree[i]=true;
+            mesh.authored_cells[i]=Some("johto/whirlpool");
+        }
+    }
     // Authenticated blank cave blocks belong to the surrounding rock mass.
     // Suppress their old black atlas planes beneath the new mineral bases.
     for i in cave_enclosure::void_cells(frame,&geometry) {
@@ -955,12 +992,22 @@ fn build_terrain_mesh_internal(
         debug_assert!(appended, "validated native ground binding must append");
     }
     if images.is_some() && authored_enabled {
-        modeled_exteriors::append_props(
+        slowpoke_well::append(
+            &mut mesh,
+            &original_cells,
+            &source_shapes,
+            &geometry,
+            &mut claimed_by_tree,
+            images.expect("checked image samples"),
+        );
+        modeled_exteriors::append_props_at_origin(
             &mut mesh,
             &cells,
             &shapes,
             &geometry,
             &mut claimed_by_tree,
+            images,
+            frame.grid_origin.to_array(),
         );
     }
     if let Some(images) = images {
@@ -1020,12 +1067,13 @@ fn build_terrain_mesh_internal(
     }
     if let Some(images) = images {
         let placements = if authored_enabled {
+            crate::loading_trace::phase(&mut trace_phase, "region.append_outdoor_objects");
             modeled_exteriors::building_placements(frame.map_id.as_ref(), &cells, &geometry)
         } else {
             new_bark::building_placements(frame.map_id.as_ref(), &cells, &geometry)
         };
         for placement in &placements {
-            if new_bark::append_building(
+            if new_bark::append_building_with_samples(
                 &mut mesh,
                 &cells,
                 &shapes,
@@ -1033,6 +1081,7 @@ fn build_terrain_mesh_internal(
                 frame.map_id.as_ref(),
                 *placement,
                 &mut claimed_by_building,
+                Some(images),
             ) {
                 continue;
             }
@@ -1098,7 +1147,7 @@ fn build_terrain_mesh_internal(
                 continue;
             }
             if authored_enabled
-                && modeled_exteriors::append_tree(
+                && modeled_exteriors::append_tree_with_groves(
                     &mut mesh,
                     &cells,
                     &shapes,
@@ -1107,13 +1156,53 @@ fn build_terrain_mesh_internal(
                     placement,
                     &mut claimed_by_tree,
                     frame.grid_origin.to_array(),
+                    (grove_sink.is_some() || deferred_groves.is_some()).then_some(&mut detached_groves),
                 )
             {
                 continue;
             }
+            let _fallback_trace = crate::loading_trace::span("tree.source_card", || {
+                let i = placement.row * geometry.width + placement.column;
+                let owned = (placement.row..placement.row + placement.height)
+                    .flat_map(|row| (placement.column..placement.column + placement.width)
+                        .map(move |column| row * geometry.width + column))
+                    .filter(|&index| claimed_by_tree[index]).count();
+                serde_json::json!({"plot":[placement.column,placement.row,placement.width,placement.height],
+                    "owned_cells":owned,"original_source":format!("{:?}", original_cells[i].source),
+                    "masked_source":format!("{:?}", cells[i].source)})
+            });
             modeled_exteriors::append_missing_tree_source(
                 &mut mesh, &geometry, placement, &mut claimed_by_tree);
         }
+        let _tree_ownership_trace = crate::loading_trace::span("tree.source_ownership", || {
+            let unclaimed = original_cells.iter().enumerate().filter(|(i, tile)| {
+                !claimed_by_tree[*i] && (source_shapes[*i].solid_kind() == SolidKind::Tree
+                    || (matches!(tile.source.tileset_id.as_ref(), "johto" | "johto_modern")
+                        && matches!(tile.source.tile_index, 0x1e | 0x1f | 0x2e | 0x2f | 0x3e | 0x3f)))
+            }).collect::<Vec<_>>();
+            let mut rows = std::collections::BTreeMap::<usize,usize>::new();
+            for (i,_) in &unclaimed { *rows.entry(i/width).or_default() += 1; }
+            let mut ground_samples = std::collections::BTreeMap::<usize,usize>::new();
+            for plot in new_bark::tree_placements(frame.map_id.as_ref(),&cells,&geometry) {
+                if let Some(i)=new_bark::modeled_tree_ground(frame.map_id.as_ref(),&cells,&shapes,&geometry,plot) {
+                    *ground_samples.entry(i).or_default() += 1;
+                }
+            }
+            serde_json::json!({"map":frame.map_id.as_ref(),"origin":frame.grid_origin.to_array(),
+                "ground_samples":ground_samples.iter().take(16).map(|(i,count)|serde_json::json!({
+                    "sample_cell":[i%width,i/width],"plots":count,
+                    "height":shapes[*i].surface_height(geometry.tile_height),
+                    "source":format!("{:?}",cells[*i].source)})).collect::<Vec<_>>(),
+                "unclaimed_count":unclaimed.len(),"rows":rows,
+                "interior_cells":unclaimed.iter().filter(|(i,_)|
+                    i%width > 0 && i%width+1 < width && i/width > 0 && i/width+1 < height)
+                    .take(24).map(|(i,tile)|serde_json::json!({"cell":[i%width,i/width],
+                        "source":format!("{:?}",tile.source)})).collect::<Vec<_>>(),
+                "first_cells":unclaimed.iter().take(24)
+                    .map(|(i,tile)| serde_json::json!({"cell":[i%width,i/width],
+                        "source":format!("{:?}",tile.source),"live_source":format!("{:?}",cells[*i].source)}))
+                    .collect::<Vec<_>>()})
+        });
         for placement in park_bench_placements(&cells, &geometry) {
             append_grouped_tree(
                 &mut mesh,
@@ -2065,6 +2154,7 @@ fn build_terrain_mesh_internal(
             .collect();
         let joined_shapes = modeled_dungeons::joined_surface_shapes(
             &dungeon_placements, &original_cells, &source_shapes, &geometry);
+        mountain_portals::append(&mut mesh, &original_cells, &joined_shapes, &geometry, &mut occupied, frame.grid_origin.to_array());
         modeled_dungeons::append_terrain(
             &mut mesh,
             &frame.map_id,
@@ -2078,7 +2168,14 @@ fn build_terrain_mesh_internal(
             *claimed |= occupied;
         }
     }
+    crate::loading_trace::phase(&mut trace_phase, "region.build_tiles");
     let bank_runs = bank_column_runs(&shapes, &geometry);
+    if frame.map_id.as_ref()=="UndergroundPath" && std::env::var_os("CRYSTAL_INTERIOR_FLOOR_TRACE").is_some() {
+        let floors=original_cells.iter().enumerate().filter(|(_,t)|t.source.tile_index==16).collect::<Vec<_>>();
+        eprintln!("interior-floor production tile={:?} live={} floor-claimed={} first={:?}",frame.tile_size,
+            live_placements.len(),floors.iter().filter(|(i,_)|claimed_by_tree[*i]||claimed_by_building[*i]).count(),
+            floors.iter().take(4).map(|(i,t)|(*i,t.column,t.row,shapes[*i],mesh.authored_cells[*i])).collect::<Vec<_>>());
+    }
 
     let native_falls=waterfall_placements(&cells,width,height);
     let native_upper_pool=crate::waterfall::tohjo_upstream_pool(frame.map_id.as_ref(),&cells,width,height,&native_falls);
@@ -2232,6 +2329,12 @@ fn build_terrain_mesh_internal(
         buoy_course::append(&mut mesh,&original_cells,&geometry,images,&claimed_by_tree);
     }
 
+    if authored_enabled && let Some(images) = images {
+        kanto_paving::finish(&mut mesh, &original_cells, &source_shapes, &geometry, images);
+        kanto_shore::finish(&mut mesh, &original_cells, &source_shapes, &geometry,
+            frame.grid_origin.to_array(), images);
+    }
+
     if dragons_den::finish(&mut mesh, &frame.map_id, &original_cells, &geometry,
         frame.grid_origin.to_array()) {
         // Johto's source art belongs to this cavern, not the outdoor meadow.
@@ -2254,6 +2357,9 @@ fn build_terrain_mesh_internal(
         );
     }
     if authored_enabled {
+        if let Some(images) = images {
+            source_forest_floor::finish(&mut mesh, &original_cells, images);
+        }
         modeled_interiors::finish_surfaces_with_profiles(
             &mut mesh,
             &frame.map_id,
@@ -2265,30 +2371,62 @@ fn build_terrain_mesh_internal(
     }
     if authored_enabled && let Some(images) = images {
         seafoam_palette::finish(&mut mesh,&frame.map_id,&original_cells,images);
+        modeled_interiors::trace_arcade_palette(&frame.map_id,&original_cells,&geometry,&interior_placements,images);
     }
-    let grove_finish_claims = (!detached_groves.is_empty()).then(|| mesh.authored_cells.clone());
-    ledge_approach::shape_approaches(&mut mesh, &original_cells, &geometry, &source_shapes, frame.grid_origin.to_array());
+    crate::loading_trace::phase(&mut trace_phase, "region.finish_terrain");
+    let grove_finish_claims = (!detached_groves.is_empty() && deferred_groves.is_none())
+        .then(|| mesh.authored_cells.clone());
+    if frame.jump_ledges.is_empty() {
+        let _trace = crate::loading_trace::span("region.finish_bank_approaches", || serde_json::json!({}));
+        ledge_approach::shape_approaches(&mut mesh, &original_cells, &geometry, &source_shapes, frame.grid_origin.to_array());
+    }
     // Finish normals once, after every outdoor rock deformation. Base contact
     // rounding must not erase the mineral cap fractures.
-    outdoor_stone::finish_rock_geometry(&mut mesh, &frame.map_id, &original_cells,
-        &source_shapes, &geometry, frame.grid_origin.to_array());
+    {
+        let _trace = crate::loading_trace::span("region.finish_rock_geometry", || serde_json::json!({}));
+        outdoor_stone::finish_rock_geometry(&mut mesh, &frame.map_id, &original_cells,
+            &source_shapes, &geometry, frame.grid_origin.to_array());
+    }
     if cave_crowns::enabled(frame.map_id.as_ref()) {
+        let _trace = crate::loading_trace::span("region.finish_cave_crowns", || serde_json::json!({}));
         cave_crowns::finish_stairs(&mut mesh,&original_cells,&source_shapes,&geometry);
         cave_crowns::finish_sides(&mut mesh,&source_shapes,&geometry,frame.grid_origin.to_array());
     }
     if authored_enabled && let Some(images)=images {
+        let _trace = crate::loading_trace::span("region.finish_cave_palette", || serde_json::json!({}));
         kanto_cave_palette::finish(&mut mesh,&frame.map_id,&original_cells,images,&geometry);
         kanto_cave_palette::finish_union(&mut mesh,&frame.map_id,&original_cells,images,&geometry);
     }
-    shore_ecology::append(&mut mesh, &frame.map_id, &original_cells,
-        &shapes, &geometry, frame.grid_origin.to_array());
+    {
+        let _trace = crate::loading_trace::span("region.finish_shore_ecology", || serde_json::json!({}));
+        shore_ecology::append(&mut mesh, &frame.map_id, &original_cells,
+            &shapes, &geometry, frame.grid_origin.to_array());
+    }
+    if !frame.jump_ledges.is_empty() {
+        let _trace = crate::loading_trace::span("region.finish_terraces", || serde_json::json!({}));
+        let edges=frame.jump_ledges.iter().filter(|edge|!traditional_room_placements.iter()
+            .any(|p|p.owns_jump_edge(edge,frame.grid_origin.to_array())))
+            .cloned().collect::<Vec<_>>();
+        terraces::finish(&mut mesh, &original_cells, &geometry,
+            frame.grid_origin.to_array(), &edges);
+    }
+    if authored_enabled {
+        let _trace = crate::loading_trace::span("region.finish_authored_landmarks", || serde_json::json!({}));
+        league_terraces::finish(&mut mesh,frame,&original_cells,&geometry,profiles);
+        lance_terraces::finish(&mut mesh,frame,&original_cells,&geometry,profiles);
+        hall_machine::finish(&mut mesh,frame,&original_cells,&geometry,profiles);
+        soul_offerings::finish(&mut mesh,frame,&original_cells,&geometry,profiles);
+    }
     if let Some(deferred) = deferred_groves {
         deferred.recipes = detached_groves.into();
-        deferred.cells = original_cells.iter().map(|tile| (*tile).clone()).collect();
-        deferred.shapes = source_shapes.clone();
         deferred.geometry = Some(geometry);
-        deferred.claims = grove_finish_claims.unwrap_or_default();
         deferred.origin = frame.grid_origin.to_array();
+        deferred.jump_ledges = frame.jump_ledges.clone();
+        if frame.jump_ledges.is_empty() {
+            deferred.cells=original_cells.iter().map(|t|(*t).clone()).collect();
+            deferred.shapes=source_shapes.clone();
+            deferred.claims=mesh.authored_cells.clone();
+        }
     } else if let Some(sink) = grove_sink.as_mut() {
         for grove in detached_groves {
             // Grove leaves can cross a bank edge. Apply the same final bank
@@ -2297,9 +2435,13 @@ fn build_terrain_mesh_internal(
                 authored_cells: grove_finish_claims.as_ref().unwrap().clone(),
                 ..Default::default()
             };
-            grove.append(&mut object);
-            ledge_approach::finish_detached_grove(&mut object, &original_cells,
-                &geometry, &source_shapes, frame.grid_origin.to_array());
+            if frame.jump_ledges.is_empty() {
+                grove.append(&mut object);
+                ledge_approach::finish_detached_grove(&mut object, &original_cells,
+                    &geometry, &source_shapes, frame.grid_origin.to_array());
+            } else {
+                grove.on_terrace(&frame.jump_ledges, &geometry, frame.grid_origin.to_array()).append(&mut object);
+            }
             sink(object.solid);
         }
     }
@@ -2400,6 +2542,7 @@ fn build_terrain_mesh_internal(
         }
     }
 
+    trace_phase.take();
     mesh.tree_neighborhood = None;
     Ok(mesh)
 }

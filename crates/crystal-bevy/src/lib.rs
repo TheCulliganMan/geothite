@@ -1,6 +1,14 @@
 //! Bevy frontend for the shared Geothite runtime.
 
 mod battle_anim_machine;
+#[cfg(feature = "browser-webgpu")]
+mod browser_shader;
+#[cfg(all(target_arch = "wasm32", feature = "browser-webgpu"))]
+pub mod browser_backend;
+#[cfg(all(target_arch = "wasm32", feature = "allocation-tester"))]
+mod browser_allocations;
+#[cfg(all(target_arch = "wasm32", feature = "allocation-tester"))]
+pub fn enable_loading_allocation_stacks() { browser_allocations::enable_stack_sampling(); }
 #[cfg(feature = "operation-trace")]
 pub mod operation_trace;
 

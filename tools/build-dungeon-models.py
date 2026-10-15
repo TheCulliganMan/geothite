@@ -15,6 +15,9 @@ PALETTE={'stone':(.43,.43,.36),'stone_light':(.63,.63,.52),'stone_dark':(.28,.30
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from violet_plaque_palette import PALETTE as VIOLET_PLAQUE_PALETTE
 PALETTE.update(VIOLET_PLAQUE_PALETTE)
+# Alph's gray guardians must stay readable against its pale patterned floor.
+# Keep this finish local: tower guardians retain their live gold/gray bindings.
+PALETTE.update({'guardian_stone':(.24,.24,.24),'guardian_light':(.42,.42,.42),'guardian_dark':(.07,.07,.07)})
 M={}
 for name,rgb in PALETTE.items():
  m=bpy.data.materials.new(name);m.diffuse_color=(*rgb,1);m.use_nodes=True;bs=m.node_tree.nodes.get('Principled BSDF');bs.inputs['Base Color'].default_value=(*rgb,1);bs.inputs['Roughness'].default_value=.87;M[name]=m
@@ -85,33 +88,45 @@ for x in [-.68,-.29,.22,.65]:
  poly('Glacial vertical fissure',[(x,-.704,.12),(x+.055,-.704,.21),(x-.02,-.665,.86),(x-.10,-.665,.72)],[(0,1,2),(0,2,3)],'ice_dark')
 for x in [-.52,.13,.59]:poly('Ice crown facet',[(x,-.49,1.002),(x+.16,-.25,1.002),(x+.07,.34,1.002)],[(0,1,2)],'ice_light')
 
-def guardian(name,stone,highlight,tall=False):
+def sculpture(n,p,s,mat):
+ # Rounded carved masses retain separate flat bevels on the architectural base.
+ o=ico(n,p,s,mat,2)
+ for f in o.data.polygons:f.use_smooth=True
+ return o
+
+def guardian(name,stone,highlight,dark='stone_dark'):
  begin(name)
  box('Chamfered stone plinth',(0,0,.10),(1.12,.78,.20),stone,.07)
  box('Plinth inset step',(0,0,.25),(.91,.65,.12),highlight,.035)
- cone('Tapered statue pedestal',(0,.035,.61),.38,.29,.64,stone,8)
- ico('Faceted guardian body',(0,0,1.11),(.41,.32,.49),stone,1)
- ico('Guardian head',(0,-.045,1.55),(.34,.29,.29),highlight,1)
- ico('Projecting squared muzzle',(0,-.27,1.45),(.22,.18,.13),stone,1)
+ cone('Tapered statue pedestal',(0,.035,.61),.38,.29,.64,stone,12)
+ sculpture('Faceted guardian body',(0,0,1.11),(.39,.30,.47),stone)
+ sculpture('Guardian head',(0,-.045,1.55),(.35,.29,.30),stone)
+ sculpture('Projecting squared muzzle',(0,-.29,1.45),(.235,.17,.14),stone)
+ box('Projecting squared muzzle mouth',(0,-.445,1.425),(.25,.014,.025),dark,.004)
+ sculpture('Projecting squared muzzle nose',(0,-.435,1.51),(.085,.035,.045),dark)
  for s in [-1,1]:
-  cone('Raised carved ear',(s*.22,-.02,1.79),.11,.025,.29,stone,5)
-  ico('Folded shoulder',(s*.33,.015,1.21),(.17,.24,.24),highlight,1)
-  rod('Foreleg carving',(s*.23,-.19,1.20),(s*.23,-.25,.75),.11,stone)
-  ico('Incised dark eye',(s*.15,-.283,1.59),(.040,.023,.036),'stone_dark',1)
- box('Small dedication inset',(0,-.338,.60),(.27,.02,.23),'stone_dark',.025)
+  cone('Raised carved ear',(s*.22,-.02,1.79),.11,.025,.29,stone,8)
+  sculpture('Folded shoulder',(s*.30,.015,1.21),(.17,.22,.24),highlight)
+  rod('Foreleg carving',(s*.23,-.19,1.20),(s*.23,-.25,.75),.11,stone,10)
+  sculpture('Foreleg carving paw',(s*.23,-.28,.77),(.145,.16,.085),highlight)
+  sculpture('Incised dark eye',(s*.15,-.295,1.59),(.045,.024,.033),dark)
+  sculpture('Guardian head brow',(s*.15,-.282,1.635),(.095,.045,.032),highlight)
+ box('Small dedication inset',(0,-.338,.60),(.27,.02,.23),dark,.025)
  box('Dedication stone relief',(0,-.352,.60),(.16,.016,.14),highlight,.02)
 
-guardian('tower_guardian','stone','stone_light');guardian('alph_guardian','sandstone','sand_light')
+guardian('tower_guardian','stone','stone_light');guardian('alph_guardian','guardian_stone','guardian_light','guardian_dark')
 begin('league_podium')
 box('Podium chamfered stone foot',(0,0,.10),(1.0,.75,.20),'stone',.06)
 box('Tall tapered podium body',(0,.01,.68),(.70,.55,1.08),'stone_light',.06)
 box('Inset dedication plaque',(0,-.281,.67),(.39,.022,.52),'stone_dark',.018)
 for x in [-.10,.10]:
  for z in [.51,.63,.75,.87]:box('Dedication relief',(x,-.297,z),(.10,.015,.035),'stone_light',.004)
-cone('Round podium cornice',(0,0,1.22),.47,.42,.16,'stone_light',10)
-ico('Faceted league orb',(0,0,1.60),(.47,.42,.43),'stone_dark',2)
-ring('Orb equatorial stone band',(0,0,1.60),.469,.419,.08,'stone_light',14)
-ico('Orb front seal',(0,-.426,1.59),(.105,.035,.10),'stone_light',1)
+cone('Round podium cornice',(0,0,1.22),.47,.42,.16,'stone_light',16)
+sculpture('Faceted league orb',(0,0,1.60),(.47,.42,.43),'stone_dark')
+# Elliptical belt follows the orb instead of intersecting it as a circular shelf.
+belt=ring('Orb equatorial stone band',(0,0,1.60),.475,.447,.065,'stone_light',32)
+belt.scale.y=.42/.47
+sculpture('Orb front seal',(0,-.426,1.60),(.105,.035,.10),'stone_light')
 begin('stone_tablet')
 box('Footed tablet base',(0,0,.09),(1.02,.67,.18),'sandstone',.065)
 box('Beveled upright tablet',(0,.045,.74),(.83,.25,1.23),'sandstone',.12)
@@ -124,8 +139,15 @@ for i in range(3):
 begin('gym_plaque')
 box('Stone marker foot',(0,0,.08),(.98,.48,.16),'stone_plaque_shadow',.045)
 box('Chiseled slate plaque panel',(0,0,.56),(.91,.17,.77),'stone_plaque_gray',.06)
-box('Pale stone relief field',(0,-.10,.59),(.71,.035,.51),'stone_plaque_light',.025)
-for i,w in enumerate([.46,.55,.35]):box('Dark carved marker stroke',(0,-.127,.71-i*.115),(w,.016,.028),'stone_plaque_ink',.005)
+box('Recessed gray heraldic field',(0,-.10,.59),(.71,.035,.51),'stone_plaque_shadow',.025)
+sculpture('Carved guardian relief head',(0,-.125,.72),(.08,.025,.08),'stone_plaque_light')
+box('Carved guardian relief shoulders',(0,-.132,.56),(.26,.045,.12),'stone_plaque_gray',.018)
+box('Carved guardian relief torso',(0,-.132,.46),(.14,.045,.17),'stone_plaque_light',.018)
+for sign in [-1,1]:
+ cone('Relief crown point',(sign*.05,-.125,.81),.025,0,.06,'stone_plaque_light',5)
+ rod('Relief arm',(sign*.11,-.145,.58),(sign*.11,-.145,.44),.024,'stone_plaque_gray',8)
+ rod('Relief leg',(sign*.04,-.145,.43),(sign*.04,-.145,.35),.025,'stone_plaque_light',8)
+ sculpture('Incised relief eye',(sign*.028,-.149,.73),(.014,.007,.012),'stone_plaque_ink')
 begin('warehouse_crate')
 box('Inner wood casing',(0,0,.54),(1.09,.86,1.03),'wood_dark',.025)
 for i in range(5):
@@ -232,7 +254,8 @@ def export(name,col):
     if ranges and ranges[-1][1]==start and ranges[-1][2]==region:ranges[-1][1]=start+3
     else:ranges.append([start,start+3,region])
    for vid in tri.vertices:
-    v=obj.matrix_world@me.vertices[vid].co;g['indices'].append(len(g['positions'])//3);g['positions'].extend(round(c,6) for c in (v.x,v.z,-v.y));g['normals'].extend(round(c,6) for c in (normal.x,normal.z,-normal.y))
+    n=(normal_matrix@me.vertices[vid].normal).normalized() if me.polygons[tri.polygon_index].use_smooth else normal
+    v=obj.matrix_world@me.vertices[vid].co;g['indices'].append(len(g['positions'])//3);g['positions'].extend(round(c,6) for c in (v.x,v.z,-v.y));g['normals'].extend(round(c,6) for c in (n.x,n.z,-n.y))
   obj_eval.to_mesh_clear()
  prim=[groups[n] for n in sorted(groups)];allp=[p['positions'] for p in prim];mins=[min(v[i] for p in allp for v in zip(*[iter(p)]*3)) for i in range(3)];maxs=[max(v[i] for p in allp for v in zip(*[iter(p)]*3)) for i in range(3)]
  data={'name':name,'coordinate_system':'right-handed; +Y up; front +Z','origin':'floor-center','bounds':{'min':mins,'max':maxs},'triangle_count':sum(len(p['indices'])//3 for p in prim),'primitives':prim}

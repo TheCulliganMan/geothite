@@ -10,6 +10,9 @@ enum Structure {
     Forecourt,
     Ice,
 }
+pub(super) fn native_mesa(cells: &[&VisualTile], g: &GridGeometry, p: BuildingPlacement) -> bool {
+    identify(cells, g, p) == Some(Structure::Mesa)
+}
 fn identify(cells: &[&VisualTile], g: &GridGeometry, p: BuildingPlacement) -> Option<Structure> {
     if !phases(cells, g, p) {
         return None;
@@ -420,6 +423,17 @@ mod tests {
             },
         )
     }
+    #[test]
+    fn complete_mesa_uses_native_rock_instead_of_a_fitted_building() {
+        let (tiles, g, p) = fixture("johto", &[&[0x6a, 0x70, 0x6b], &[0x6c, 0x72, 0x6d]]);
+        let cells = tiles.iter().collect::<Vec<_>>();
+        assert!(native_mesa(&cells, &g, p));
+        assert!(!super::building_placements("BlackthornCity", &cells, &g).contains(&p));
+        assert!(super::preferred_cells("BlackthornCity", &cells, &g)
+            .iter().enumerate().all(|(i, reserved)| !reserved ||
+                shape_for_source(&cells[i].source).solid_kind() == SolidKind::Tree));
+    }
+
     #[test]
     fn structural_source_groups_require_every_native_tile_and_phase() {
         for (t, rows, kind) in [

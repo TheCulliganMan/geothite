@@ -30,6 +30,70 @@ const SOURCE_CELL_SIZE: f32 = 32.0;
 const BORDER_MARGIN: f32 = 0.25;
 const RESIDUAL_OPACITY: f32 = 0.20;
 
+/// Reward the smaller visible silhouette first. A large partner must not hide
+/// a tiny opponent's poor framing behind its own screen coverage. Long, low
+/// animals count by their full silhouette rather than standing height alone.
+/// This only ranks already proven shots; feet, scale and map geometry stay fixed.
+fn actor_readability_score(extents: &[Vec2]) -> f32 {
+    let smallest = extents.iter().map(|extent| extent.max_element())
+        .fold(f32::INFINITY, f32::min);
+    if !smallest.is_finite() || smallest <= 0.0 { return 0.0; }
+    smallest.min(0.18) * 1000.0
+}
+
+// An upper bound, not a quality threshold: 32 backdrop cells, maximal
+// silhouette reward, readable-facing bonus and the lowest candidate elevation.
+// Every other score term is nonpositive. Keep this conservative if scoring changes.
+fn maximum_shot_score() -> f32 {
+    33.0_f32.ln() * 20.0 + 180.0 + 4.0 - 3.0
+}
+
+
+/// Screen coverage of actual tall scenery behind the fighters. A canopy may
+/// frame the shot even when its base/center is offscreen. Count a fixed grid
+/// once so huge distant walls and overlapping mesh batches cannot dominate.
+#[cfg(test)]
+fn backdrop_cells(bounds: Bounds, layout: &BattleSceneLayout, viewport: Vec2, pair_depth: f32) -> u32 {
+    backdrop_cells_projected(bounds, layout, viewport, pair_depth, layout.camera.to_matrix().inverse())
+}
+
+fn backdrop_cells_projected(bounds: Bounds, layout: &BattleSceneLayout, viewport: Vec2, pair_depth: f32, view: Mat4) -> u32 {
+    let forward = *layout.camera.forward();
+    let center = (bounds.min + bounds.max) * 0.5;
+    if (center - layout.camera.translation).dot(forward) <= pair_depth + 0.5 {
+        return 0;
+    }
+    let mut lo = Vec2::splat(f32::INFINITY);
+    let mut hi = Vec2::splat(f32::NEG_INFINITY);
+    for i in 0..8 {
+        let point = Vec3::new(
+            if i & 1 == 0 { bounds.min.x } else { bounds.max.x },
+            if i & 2 == 0 { bounds.min.y } else { bounds.max.y },
+            if i & 4 == 0 { bounds.min.z } else { bounds.max.z });
+        if (point - layout.camera.translation).dot(forward) <= 0.01 { return 0; }
+        let local = view.transform_point3(point);
+        let tangent = (CAMERA_FOV * 0.5).tan();
+        let point = Vec2::new(
+            0.5 + local.x / (-local.z * 2.0 * tangent * (viewport.x / viewport.y)),
+            0.5 - local.y / (-local.z * 2.0 * tangent));
+        if !point.is_finite() { return 0; }
+        lo = lo.min(point);
+        hi = hi.max(point);
+    }
+    let band = layout.visible_y_range();
+    let top = band.x;
+    let bottom = band.x + (band.y - band.x) * 0.60;
+    let mut cells = 0;
+    for row in 0..4 { for column in 0..8 {
+        let sample = Vec2::new(0.05 + (column as f32 + 0.5) * 0.90 / 8.,
+            top + (row as f32 + 0.5) * (bottom - top) / 4.);
+        if sample.cmpge(lo).all() && sample.cmple(hi).all() {
+            cells |= 1 << (row * 8 + column);
+        }
+    }}
+    cells
+}
+
 fn camera_trial_requested(value: Option<&str>) -> bool {
     value == Some("1")
 }
@@ -68,6 +132,105 @@ struct Bounds {
     min: Vec3,
     max: Vec3,
 }
+
+/// Immutable scenery bounds, indexed once when the encounter is frozen.
+/// Branch bounds only reject impossible hits; leaves retain the exact sight
+/// predicate used by the original flat scan.
+#[derive(Default)]
+struct StaticBlockers {
+    bounds: Vec<Bounds>,
+    indices: Vec<usize>,
+    nodes: Vec<BlockerNode>,
+}
+impl std::ops::Deref for StaticBlockers {
+    type Target = [Bounds];
+    fn deref(&self) -> &Self::Target { &self.bounds }
+}
+struct BlockerNode {
+    bounds: Bounds,
+    range: std::ops::Range<usize>,
+    children: Option<[usize; 2]>,
+}
+impl StaticBlockers {
+    fn visible_or_shadow(&self, camera: Transform, viewport: Vec2, far: f32, ground: f32) -> bool {
+        !self.nodes.is_empty() && self.query_view(0, camera, viewport, far, ground)
+    }
+
+    fn query_view(&self, index: usize, camera: Transform, viewport: Vec2, far: f32, ground: f32) -> bool {
+        let node = &self.nodes[index];
+        // A union contains every descendant and its shadow extrusion. Pad the
+        // broad phase so floating-point grazing cannot discard a real leaf.
+        // Final leaf checks are exactly the original admission predicate.
+        let pad = Vec3::splat(0.001);
+        let bounds = Bounds { min: node.bounds.min - pad, max: node.bounds.max + pad };
+        if !visible_bounds(bounds, camera, viewport, far)
+            && !visible_bounds(bounds.shadow_volume(ground), camera, viewport, far) { return false; }
+        if let Some([left, right]) = node.children {
+            return self.query_view(left, camera, viewport, far, ground)
+                || self.query_view(right, camera, viewport, far, ground);
+        }
+        self.indices[node.range.clone()].iter().any(|&index| {
+            let bounds = self.bounds[index];
+            visible_bounds(bounds, camera, viewport, far)
+                || visible_bounds(bounds.shadow_volume(ground), camera, viewport, far)
+        })
+    }
+
+    fn new(bounds: Vec<Bounds>) -> Self {
+        let indices = (0..bounds.len()).collect();
+        let mut out = Self { bounds, indices, nodes: Vec::new() };
+        if !out.bounds.is_empty() { out.build(0..out.bounds.len()); }
+        out
+    }
+
+    fn build(&mut self, range: std::ops::Range<usize>) -> usize {
+        let bounds = self.indices[range.clone()].iter().copied()
+            .map(|index| self.bounds[index]).reduce(Bounds::union).unwrap();
+        let node = self.nodes.len();
+        self.nodes.push(BlockerNode { bounds, range: range.clone(), children: None });
+        if range.len() > 16 {
+            let extent = bounds.max - bounds.min;
+            let axis = if extent.x >= extent.y && extent.x >= extent.z { 0 }
+                else if extent.y >= extent.z { 1 } else { 2 };
+            let boxes = &self.bounds;
+            self.indices[range.clone()].sort_unstable_by(|&a, &b| {
+                let center = |index: usize| (boxes[index].min[axis] + boxes[index].max[axis]) * 0.5;
+                center(a).total_cmp(&center(b)).then(a.cmp(&b))
+            });
+            let middle = range.start + range.len() / 2;
+            let left = self.build(range.start..middle);
+            let right = self.build(middle..range.end);
+            self.nodes[node].children = Some([left, right]);
+        }
+        node
+    }
+
+    fn blocker(&self, start: Vec3, end: Vec3, min_height: f32) -> Option<&Bounds> {
+        if self.nodes.is_empty() { return None; }
+        self.query(0, start, end, min_height)
+    }
+
+    fn query(&self, index: usize, start: Vec3, end: Vec3, min_height: f32) -> Option<&Bounds> {
+        let node = &self.nodes[index];
+        if node.bounds.max.y <= min_height || !node.bounds.segment(start, end) { return None; }
+        if let Some([left, right]) = node.children {
+            return self.query(left, start, end, min_height)
+                .or_else(|| self.query(right, start, end, min_height));
+        }
+        self.indices[node.range.clone()].iter().map(|&index| &self.bounds[index])
+            .find(|bounds| bounds.max.y > min_height && bounds.segment(start, end))
+    }
+
+    #[cfg(test)]
+    fn push(&mut self, bounds: Bounds) {
+        let mut all = std::mem::take(&mut self.bounds);
+        all.push(bounds);
+        *self = Self::new(all);
+    }
+
+    #[cfg(test)]
+    fn clear(&mut self) { *self = Self::default(); }
+}
 impl Bounds {
     fn from_aabb(aabb: Aabb, transform: Transform) -> Option<Self> {
         let min: Vec3 = (aabb.center - aabb.half_extents).into();
@@ -97,6 +260,13 @@ impl Bounds {
         }
     }
     fn segment(self, start: Vec3, end: Vec3) -> bool {
+        // Most retained scenery lies nowhere near this sight line. Reject its
+        // disjoint bounding box before the three-axis division/interval test.
+        // The complete segment envelope contains the clipped interval below,
+        // so this cannot turn a possible occluder into a clear sight line.
+        if self.max.cmplt(start.min(end)).any() || self.min.cmpgt(start.max(end)).any() {
+            return false;
+        }
         let delta = end - start;
         let mut near: f32 = 0.001;
         let mut far: f32 = 0.995;
@@ -143,6 +313,35 @@ impl AuthenticBounds {
         let max = Vec2::new(bounds.max.x, bounds.max.z);
         min.cmpge(self.min).all() && max.cmple(self.max).all()
     }
+    /// Partition coverage, never geometry. The complete GPU mesh stays intact;
+    /// every potentially observable exterior piece must still fail the view
+    /// or shadow proof. A crossing bound must not label its known interior as
+    /// missing terrain too.
+    fn partition_coverage(self, bounds: Bounds) -> (Option<Bounds>, Vec<Bounds>) {
+        let lo = Vec2::new(bounds.min.x, bounds.min.z).max(self.min);
+        let hi = Vec2::new(bounds.max.x, bounds.max.z).min(self.max);
+        if hi.cmplt(lo).any() { return (None, vec![bounds]); }
+        let mut outside = Vec::with_capacity(4);
+        for (low, high, present) in [
+            (Vec2::new(bounds.min.x, bounds.min.z), Vec2::new(lo.x, bounds.max.z), lo.x > bounds.min.x),
+            (Vec2::new(hi.x, bounds.min.z), Vec2::new(bounds.max.x, bounds.max.z), bounds.max.x > hi.x),
+            (Vec2::new(lo.x, bounds.min.z), Vec2::new(hi.x, lo.y), lo.y > bounds.min.z),
+            (Vec2::new(lo.x, hi.y), Vec2::new(hi.x, bounds.max.z), bounds.max.z > hi.y),
+        ] {
+            // A vertical wall has zero thickness in X or Z but still has a
+            // real surface and casts shadows. Do not lose those exterior slabs.
+            if present {
+                outside.push(Bounds {
+                    min: Vec3::new(low.x, bounds.min.y, low.y),
+                    max: Vec3::new(high.x, bounds.max.y, high.y),
+                });
+            }
+        }
+        (Some(Bounds {
+            min: Vec3::new(lo.x, bounds.min.y, lo.y),
+            max: Vec3::new(hi.x, bounds.max.y, hi.y),
+        }), outside)
+    }
     fn point(self, p: Vec3) -> bool {
         let p = Vec2::new(p.x, p.z);
         p.cmpge(self.min + Vec2::splat(BORDER_MARGIN)).all()
@@ -184,6 +383,9 @@ struct FrozenLeaf {
     aabb: Aabb,
     bounds: Bounds,
     object: Option<Entity>,
+    coverage: Option<std::sync::Arc<[Aabb]>>,
+    sight_coverage: Option<std::sync::Arc<[Aabb]>>,
+    grass_coverage: Option<std::sync::Arc<[Aabb]>>,
 }
 struct FrozenMaterial {
     alpha_cutoff: Option<f32>,
@@ -192,8 +394,16 @@ struct FrozenMaterial {
 }
 struct FrozenObject {
     bounds: Bounds,
+    backdrop: Vec<Bounds>,
+    surface: Option<(crate::occluder_fade::RetainedSurface, Transform)>,
     faded: bool,
     opacity: f32,
+}
+impl FrozenObject {
+    fn blocks(&self, start: Vec3, end: Vec3) -> bool {
+        self.bounds.segment(start, end) && self.surface.as_ref().map_or(true,
+            |(surface, pose)| surface.blocks(*pose, start, end))
+    }
 }
 
 fn advance_opacity(opacity: f32, faded: bool, seconds: f32) -> f32 {
@@ -221,11 +431,18 @@ fn opacity_mode(opacity: f32) -> AlphaMode {
     }
 }
 struct FrozenScene {
+    derived_stage: bool,
+    /// Original source feet remain immutable when Pokémon staging moves onto
+    /// another verified floor plot. Source actors and controller pose stay put.
+    source_anchors: [Vec3; 2],
     root: Entity,
     anchors: [Vec3; 2],
     authentic: AuthenticBounds,
-    omitted: Vec<Bounds>,
+    omitted: StaticBlockers,
+    static_blockers: StaticBlockers,
+    grass_lens_blockers: StaticBlockers,
     objects: HashMap<Entity, FrozenObject>,
+    backdrop_bounds: Vec<Bounds>,
     materials: Vec<FrozenMaterial>,
     images: Vec<Handle<Image>>,
     // Only encounter-owned copies of the two mutable flower domains.
@@ -234,10 +451,14 @@ struct FrozenScene {
     walking: Option<WalkingGround>,
     water: bool,
     bodies: [Option<BattleBody>; 2],
+    clearance: [Vec4; 2],
+    clearance_shape: [Vec4; 2],
+    grass_contact: [Vec4; 2],
 }
 
 #[derive(Resource, Default)]
 pub(super) struct EncounterTerrain {
+    shot_score: Option<f32>,
     generation: Option<u64>,
     frozen: Option<FrozenScene>,
     accepted: bool,
@@ -246,6 +467,16 @@ pub(super) struct EncounterTerrain {
     reason: Option<&'static str>,
 }
 impl EncounterTerrain {
+    pub(super) fn set_visible_apertures(&mut self, camera: Transform, bodies: [Option<(BattleBody, Transform)>; 2]) {
+        let Some(scene) = self.frozen.as_mut().filter(|_| self.accepted) else { return; };
+        for (index, body) in bodies.into_iter().enumerate() {
+            let (clearance, shape) = body.map_or((Vec4::ZERO, Vec4::ZERO),
+                |(body, pose)| grass_body_aperture(body, pose, camera));
+            scene.clearance[index] = clearance;
+            scene.clearance_shape[index] = shape;
+            scene.grass_contact[index] = body.map_or(Vec4::ZERO, |(body, pose)| grass_foot_contact(body, pose));
+        }
+    }
     pub(super) fn generation(&self) -> Option<u64> {
         self.generation
     }
@@ -312,10 +543,9 @@ impl EncounterTerrain {
         viewport: Vec2,
         trial: bool,
     ) -> bool {
-        // The lower composition has native Ember evidence, but has not been
-        // reviewed against every source move's projection. Keep ordinary play
-        // on the established camera; an explicit native startup flag enables
-        // the experiment through the exact same terrain/body/frustum proofs.
+        // Retain the older explicit camera trial as an additional fallback.
+        // Normal battle shots use `establish_camera` and the same terrain,
+        // complete-body and frustum proofs below.
         if trial
             && let Some(mut candidate) = layout.three_quarter_camera(bodies)
             && self.constrain_camera(&mut candidate, bodies, viewport)
@@ -341,7 +571,136 @@ impl EncounterTerrain {
         false
     }
 
-    fn constrain_camera(
+    /// Choose a proven low view that shows the existing location behind the
+    /// pair. Tall source geometry counts; flat ground and reeds cannot crowd
+    /// out a city's buildings. The chosen side stays fixed during this battle.
+    pub(super) fn establish_camera(&mut self, layout: &mut BattleSceneLayout, bodies: [Option<BattleBody>; 2], viewport: Vec2) -> bool {
+        let _trace = crate::loading_trace::span("battle.establish_camera", || serde_json::json!({
+            "derived_stage": self.frozen.as_ref().is_some_and(|scene| scene.derived_stage),
+            "viewport": [viewport.x, viewport.y],
+        }));
+        let mut best = if self.establish_camera_at(layout, bodies, viewport) {
+            let scene = self.frozen.as_ref().unwrap();
+            let grass = scene.walking.as_ref().map_or(0, |ground| ground.grass_contacts(scene.anchors));
+            Some((self.shot_score.unwrap() + grass as f32 * 40.0, layout.clone(), scene.anchors))
+        } else { None };
+        let pairs = self.frozen.as_ref().filter(|scene| scene.derived_stage)
+            .and_then(|scene| scene.walking.as_ref().map(|ground| ground.nearby_stage_pairs(scene.source_anchors)))
+            .unwrap_or_default();
+        for anchors in pairs {
+            let distance = anchors[0].distance(self.frozen.as_ref().unwrap().source_anchors[0]);
+            if best.as_ref().is_some_and(|(score, _, _)|
+                maximum_shot_score() + 80.0 - distance * 2.0 <= *score - 0.02) {
+                continue;
+            }
+            let Some(candidate) = BattleSceneLayout::for_map_bodies(bodies, anchors, viewport) else { continue; };
+            let mut candidate = candidate.reserve_ui(bodies, layout.visible_y_range());
+            let scene = self.frozen.as_mut().unwrap();
+            let Some(ground) = &scene.walking else { break; };
+            if !bodies.into_iter().zip(candidate.body_poses).zip(anchors)
+                .all(|((body, pose), anchor)| body.zip(pose).is_none_or(|(body, pose)| ground.contains(body, pose, anchor.y))) {
+                continue;
+            }
+            scene.anchors = anchors;
+            if self.establish_camera_at(&mut candidate, bodies, viewport) {
+                let scene = self.frozen.as_ref().unwrap();
+                let grass = scene.walking.as_ref().map_or(0, |ground| ground.grass_contacts(anchors));
+                let score = self.shot_score.unwrap() - distance * 2.0 + grass as f32 * 40.0;
+                if best.as_ref().is_none_or(|(previous, _, _)| score > *previous + 0.01) {
+                    best = Some((score, candidate, anchors));
+                }
+            }
+        }
+        if let Some((_, mut candidate, anchors)) = best {
+            self.frozen.as_mut().unwrap().anchors = anchors;
+            if self.constrain_camera(&mut candidate, bodies, viewport) {
+                *layout = candidate;
+                return true;
+            }
+        }
+        if let Some(scene) = &mut self.frozen { scene.anchors = scene.source_anchors; }
+        false
+    }
+
+    fn establish_camera_at(&mut self, layout: &mut BattleSceneLayout, bodies: [Option<BattleBody>; 2], viewport: Vec2) -> bool {
+        self.shot_score = None;
+        let mut best: Option<(f32, BattleSceneLayout)> = None;
+        for (yaw, elevation) in [6.0_f32, 12.0, 18.0, 24.0, 32.0, 40.0, 48.0].into_iter().flat_map(|elevation|
+            [70.0_f32, 90.0, 110.0, 140.0, -70.0, -90.0, -110.0, -140.0].map(|yaw| (yaw, elevation))) {
+            let mut compact = layout.clone();
+            compact.distance = 0.0;
+            let Some(original) = compact.battle_shot(bodies, yaw.to_radians(), elevation.to_radians()) else { continue; };
+            let readable = original.readable_facing(bodies);
+            // A readable body angle must not force a poorer backdrop. Score
+            // both poses; retain the original when it gives the clearer place.
+            for (mut candidate, facing_bonus) in std::iter::once((original, 0.0))
+                .chain(readable.into_iter().map(|layout| (layout, 4.0))) {
+            if !self.constrain_camera(&mut candidate, bodies, viewport) { continue; }
+            let actor_extents: Vec<Vec2> = bodies.into_iter().zip(candidate.body_poses)
+                .filter_map(|(body, pose)| body.zip(pose))
+                .map(|(mut body, pose)| {
+                    body.visual_bounds = None;
+                    let mut lo = Vec2::splat(f32::INFINITY);
+                    let mut hi = Vec2::splat(f32::NEG_INFINITY);
+                    for point in body.corners(pose) {
+                        let point = candidate.project_point(point, viewport);
+                        lo = lo.min(point);
+                        hi = hi.max(point);
+                    }
+                    hi - lo
+                }).collect();
+            let visible_height = actor_extents.iter().map(|extent| extent.y).fold(0.0_f32, f32::max);
+            if visible_height < 0.15 { continue; }
+            let scene = self.frozen.as_ref().unwrap();
+            let forward = *candidate.camera.forward();
+            let pair = (candidate.hit_anchors[0] + candidate.hit_anchors[1]) * 0.5;
+            let pair_depth = (pair - candidate.camera.translation).dot(forward);
+            // Projection is invariant across every source piece in this shot.
+            // Once all 32 cells are covered, further pieces cannot change its
+            // score. Keep the exhaustive shot/ground search and admission proof.
+            let view = candidate.camera.to_matrix().inverse();
+            let mut scenery_cells = 0_u32;
+            for bounds in scene.backdrop_bounds.iter().copied()
+                .chain(scene.objects.values().filter(|object| !object.faded
+                    && object.bounds.max.y - object.bounds.min.y > 0.8)
+                    .flat_map(|object| object.backdrop.iter().copied())) {
+                if visible_bounds(bounds, candidate.camera, viewport, candidate.far) {
+                    scenery_cells |= backdrop_cells_projected(bounds, &candidate, viewport, pair_depth, view);
+                    if scenery_cells == u32::MAX { break; }
+                }
+            }
+            let scenery_score = scenery_cells.count_ones() as f32;
+            // Never reward an architectural background at the cost of looking
+            // through a faded building or shrinking the pair into the distance.
+            let foreground = scene.objects.values().filter(|object| object.faded
+                && visible_bounds(object.bounds, candidate.camera, viewport, candidate.far)).count();
+            // Both animals face along the encounter corridor. A view far
+            // behind either one hides its face and foreshortens the fight;
+            // prefer readable profiles before rewarding more distant walls.
+            // Rear views remain available when the actual map requires them.
+            let rear_view = yaw.to_radians().cos().abs();
+            let score = scenery_score.ln_1p() * 20.0 - foreground as f32 * 1000.0
+                - rear_view * 50.0 - candidate.distance * 0.5 - elevation * 0.5 + facing_bonus
+                + actor_readability_score(&actor_extents);
+            if best.as_ref().is_none_or(|(previous, _)| score > *previous + 0.01) {
+                best = Some((score, candidate));
+            }
+            }
+        }
+        if let Some((score, mut candidate)) = best {
+            if self.constrain_camera(&mut candidate, bodies, viewport) {
+                self.shot_score = Some(score);
+                *layout = candidate;
+                return true;
+            }
+        }
+        self.accepted = false;
+        self.fog = None;
+        self.reason = Some("no readable low shot on checked ground");
+        false
+    }
+
+    pub(super) fn constrain_camera(
         &mut self,
         layout: &mut BattleSceneLayout,
         bodies: [Option<BattleBody>; 2],
@@ -352,10 +711,66 @@ impl EncounterTerrain {
         let Some(scene) = &mut self.frozen else {
             return false;
         };
+        // Body apertures do not make a camera embedded in blades readable.
+        // These bounds describe the actual built grass before CPU retirement.
+        if scene.grass_lens_blockers.blocker(layout.camera.translation,
+            layout.camera.translation + *layout.camera.forward() * 0.30, f32::NEG_INFINITY).is_some() {
+            self.reason = Some("battle camera intersects retained grass near the lens");
+            return false;
+        }
+        let composition = (layout.hit_anchors[0] + layout.hit_anchors[1]) * 0.5;
+        if scene.grass_lens_blockers.blocker(layout.camera.translation,
+            layout.camera.translation.lerp(composition, 0.60), f32::NEG_INFINITY).is_some() {
+            self.reason = Some("foreground grass obscures the battle composition");
+            return false;
+        }
         let Some(limit) = scene.authentic.camera_limit(layout.camera, viewport) else {
             self.reason = Some("battle camera leaves the authentic retained neighborhood");
             return false;
         };
+        if scene.derived_stage && (scene.static_blockers.blocker(
+            layout.hit_anchors[0], layout.hit_anchors[1],
+            scene.anchors[0].y.min(scene.anchors[1].y) + 0.25).is_some()
+            || scene.objects.values().any(|object| object.blocks(layout.hit_anchors[0], layout.hit_anchors[1]))) {
+            self.reason = Some("scenery separates the battlers");
+            return false;
+        }
+        for fraction in [0.25, 0.5, 0.75] {
+            let point = layout.hit_anchors[0].lerp(layout.hit_anchors[1], fraction);
+            if scene.static_blockers.blocker(layout.camera.translation, point, point.y * 0.5).is_some()
+                || scene.objects.values().any(|object| object.blocks(layout.camera.translation, point)) {
+                self.reason = Some("foreground scenery divides the battle composition");
+                return false;
+            }
+        }
+        for (index, body) in bodies.into_iter().enumerate() {
+            let Some(body) = body else { continue; };
+            let upper = layout.hit_anchors[index] + Vec3::Y * body.reference_height * body.scale.y * 0.25;
+            let mut sight_points = vec![layout.hit_anchors[index], upper,
+                layout.hit_anchors[index] + Vec3::Y * 0.5];
+            if let Some(pose) = layout.body_poses[index] {
+                // Center rays miss a shelf clipping a wing or tail. Check the
+                // neutral body's edges as well, above the contact floor.
+                let mut neutral = body;
+                neutral.visual_bounds = None;
+                sight_points.extend(neutral.corners(pose).into_iter()
+                    .filter(|point| point.y > scene.anchors[index].y + 0.25));
+            }
+            if scene.objects.values().any(|object|
+                object.bounds.max.y > scene.anchors[index].y + 0.25
+                    && sight_points.iter().any(|&point| object.blocks(layout.camera.translation, point))) {
+                self.reason = Some("foreground scenery obstructs the battle shot");
+                return false;
+            }
+            if let Some(bounds) = sight_points.iter().find_map(|&point|
+                scene.static_blockers.blocker(layout.camera.translation, point, scene.anchors[index].y + 0.25))
+            {
+                trace(format_args!("static sight rejection: actor={index} bounds={bounds:?} eye={:?} anchor={:?}",
+                    layout.camera.translation, layout.hit_anchors[index]));
+                self.reason = Some("static terrain occludes a battler");
+                return false;
+            }
+        }
         let view = layout.camera.rotation.inverse();
         let mut deepest: f32 = 0.0;
         let mut body_distance: f32 = 0.0;
@@ -375,46 +790,49 @@ impl EncounterTerrain {
                 }
             }
         }
-        let far = limit.min(body_distance + 8.0).min(layout.far);
+        let maximum_far = limit.min(body_distance + 32.0).min(layout.far);
+        if !deepest.is_finite() || deepest <= 0.0 || maximum_far < body_distance + 2.0 {
+            self.reason = Some("authentic terrain is too small for the complete battlers");
+            return false;
+        }
+        // Keep literal buildings, trees and cavern walls visible behind the
+        // pair. Prefer the deeper authentic view, reducing depth only when
+        // omitted source geometry or its shadow would enter that view.
+        let far = [32.0, 20.0, 8.0].into_iter()
+            .map(|depth| maximum_far.min(body_distance + depth))
+            .find(|&far| !scene.omitted.visible_or_shadow(layout.camera, viewport, far, scene.ground));
+        let Some(far) = far else {
+            self.reason = Some("omitted border or mutable terrain could affect the battle view");
+            return false;
+        };
         trace(format_args!(
             "fit camera={:?} authentic={:?} viewport={viewport:?} body_distance={body_distance} far={far}",
             layout.camera, scene.authentic
         ));
-        if !deepest.is_finite() || deepest <= 0.0 || far < body_distance + 2.0 {
-            self.reason = Some("authentic terrain is too small for the complete battlers");
-            return false;
-        }
-        if scene.omitted.iter().any(|bounds| {
-            let visible = visible_bounds(*bounds, layout.camera, viewport, far);
-            let shadow = visible_bounds(
-                bounds.shadow_volume(scene.ground),
-                layout.camera,
-                viewport,
-                far,
-            );
-            if visible || shadow {
-                trace(format_args!(
-                    "rejected omission bounds={bounds:?} visible={visible} shadow={shadow}"
-                ));
-            }
-            visible || shadow
-        }) {
-            self.reason = Some("omitted border or mutable terrain could affect the battle view");
-            return false;
-        }
         // Each instance or authored group owns one opacity. An AABB test is
         // conservative for outdoor trees; it never removes a surface fragment.
         for object in scene.objects.values_mut() {
             object.faded = layout.hit_anchors.iter().any(|&point| {
-                object.bounds.segment(layout.camera.translation, point)
+                object.blocks(layout.camera.translation, point)
                     || object
-                        .bounds
-                        .segment(layout.camera.translation, point + Vec3::Y * 0.5)
+                        .blocks(layout.camera.translation, point + Vec3::Y * 0.5)
             });
+        }
+        for index in 0..2 {
+            let aperture = match (bodies[index], layout.body_poses[index]) {
+                (Some(body), Some(pose)) => grass_body_aperture(body, pose, layout.camera),
+                _ => (Vec4::ZERO, Vec4::ZERO),
+            };
+            scene.clearance[index] = aperture.0;
+            scene.clearance_shape[index] = aperture.1;
+            scene.grass_contact[index] = match (bodies[index], layout.body_poses[index]) {
+                (Some(body), Some(pose)) => grass_foot_contact(body, pose),
+                _ => Vec4::ZERO,
+            };
         }
         scene.bodies = bodies;
         layout.far = far;
-        self.fog = Some((body_distance + 0.5, far - 0.1));
+        self.fog = Some(((body_distance + 8.0).min(far - 0.5), far - 0.1));
         self.reason = None;
         self.accepted = true;
         true
@@ -474,9 +892,18 @@ fn strict_foot(frame: &VisualWorldFrame, heights: &[f32], foot: Vec2) -> Option<
         .then(|| crate::visual_point_to_voxel(foot, height))
 }
 
+#[cfg(test)]
 fn resolve_context(
     location: &VisualBattleLocation,
     cache: &TerrainRevisionCache,
+) -> Result<([Vec3; 2], Transform, AuthenticBounds), &'static str> {
+    resolve_context_with_images(location, cache, None)
+}
+
+fn resolve_context_with_images(
+    location: &VisualBattleLocation,
+    cache: &TerrainRevisionCache,
+    images: Option<&Assets<Image>>,
 ) -> Result<([Vec3; 2], Transform, AuthenticBounds), &'static str> {
     let anchors = location
         .anchors
@@ -502,13 +929,13 @@ fn resolve_context(
     evidence.map_texture = built.map_texture.clone();
     let correspondence = if evidence.matches_built_frame(built) {
         None
-    } else if matches!(location.target, crystal_render_api::VisualBattleTarget::WalkingGrass { .. } | crystal_render_api::VisualBattleTarget::SurfWater { .. } | crystal_render_api::VisualBattleTarget::Trainer { .. }) {
-        // A scrolling overworld can retain an older mesh grid. Prove every
+    } else if matches!(location.target, crystal_render_api::VisualBattleTarget::WalkingGrass { .. } | crystal_render_api::VisualBattleTarget::SurfWater { .. } | crystal_render_api::VisualBattleTarget::Trainer { .. } | crystal_render_api::VisualBattleTarget::FishingWater { .. } | crystal_render_api::VisualBattleTarget::ScriptedGround { .. }) {
+        // A scrolling overworld or animated shoreline can retain an older mesh grid. Prove every
         // overlapping source cell against those actual built inputs, then use
         // the same rigid translation as the live terrain renderer. A desired
         // asynchronous cache key never participates in this correspondence.
-        Some(retained_correspondence::resolve_with_profiles(
-            &evidence, built, cache.built_profiles.as_deref(),
+        Some(retained_correspondence::resolve_with_images(
+            &evidence, built, cache.built_profiles.as_deref(), images,
         )?)
     } else {
         return Err("actual built terrain does not match encounter evidence");
@@ -571,6 +998,59 @@ fn resolve_context(
     ))
 }
 
+/// A projected envelope fits the actual complete animation more closely than
+/// a world bounding sphere, avoiding circular clearings around slender bodies.
+// Contact shading belongs on the retained blades too: a flat ground shadow
+// alone is hidden by tall grass, making a grounded body appear suspended.
+fn grass_foot_contact(mut body: BattleBody, pose: Transform) -> Vec4 {
+    body.visual_bounds = None;
+    let points = body.corners(pose);
+    let min = points.iter().copied().fold(Vec3::splat(f32::INFINITY), Vec3::min);
+    let max = points.iter().copied().fold(Vec3::splat(f32::NEG_INFINITY), Vec3::max);
+    let center = (min + max) * 0.5;
+    Vec4::new(center.x, min.y, center.z,
+        (Vec2::new(max.x - min.x, max.z - min.z).length() * 0.55).max(0.04))
+}
+
+fn grass_body_aperture(body: BattleBody, pose: Transform, camera: Transform) -> (Vec4, Vec4) {
+    let points = body.corners(pose);
+    let min = points.iter().copied().fold(Vec3::splat(f32::INFINITY), Vec3::min);
+    let max = points.iter().copied().fold(Vec3::splat(f32::NEG_INFINITY), Vec3::max);
+    let center = (min + max) * 0.5;
+    let radius = (max - min).length() * 0.5 + 0.25;
+    let view = camera.compute_affine().inverse();
+    let center_view = view.transform_point3(center);
+    let mut lo = Vec2::splat(f32::INFINITY);
+    let mut hi = Vec2::splat(f32::NEG_INFINITY);
+    let mut depth = 0.0_f32;
+    for point in points {
+        let point = view.transform_point3(point);
+        if !point.is_finite() || point.z >= -0.001 {
+            return (center.extend(radius), Vec4::ZERO);
+        }
+        let projected = point.truncate() * center_view.z / point.z;
+        depth = depth.max((point.z - center_view.z).abs());
+        lo = lo.min(projected);
+        hi = hi.max(projected);
+    }
+    let projected_center = (lo + hi) * 0.5;
+    let radii = ((hi - lo) * 0.5 + Vec2::splat(0.15)) * std::f32::consts::SQRT_2;
+    let center = camera.transform_point(Vec3::new(projected_center.x, projected_center.y, center_view.z));
+    // Keep grass behind the actual depth envelope. The old bounding sphere
+    // removed extra foliage behind slender, tall bodies. Preserve a shallow
+    // layer of existing blade roots rather than exposing a bare oval floor.
+    // Retain a real foreground fringe over the lower body. Compare its world
+    // height to the neutral feet, not height above each individual blade root:
+    // neighboring roots can have different elevations on the source terrain.
+    let mut neutral = body;
+    neutral.visual_bounds = None;
+    let neutral_points = neutral.corners(pose);
+    let foot = neutral_points.iter().map(|point| point.y).fold(f32::INFINITY, f32::min);
+    let top = neutral_points.iter().map(|point| point.y).fold(f32::NEG_INFINITY, f32::max);
+    let root_cover = ((top - foot) * 0.22).min(0.32);
+    (center.extend(radius), Vec4::new(radii.x, radii.y, depth + 0.15, foot + root_cover))
+}
+
 fn collect_leaves(
     world: &World,
     entity: Entity,
@@ -584,6 +1064,9 @@ fn collect_leaves(
     if world.get::<SyntheticTerrainApron>(entity).is_some() {
         return Ok(());
     }
+    if world.get::<crate::occluder_fade::OpaqueObjectLeaf>(entity).is_some() {
+        return Ok(());
+    }
     // The build-time clip proves that these triangles contain no actual source
     // acreage. Their aggregate AABB may span it, but their geometry never does.
     // They remain in the overworld and never become a battle caster or surface.
@@ -592,14 +1075,14 @@ fn collect_leaves(
     {
         return Ok(());
     }
-    if let Some(mesh) = world.get::<Mesh3d>(entity) {
+    if let Some(mesh) = crate::occluder_fade::retained_mesh(world, entity) {
         let material = world
             .get::<MeshMaterial3d<VoxelMaterial>>(entity)
             .ok_or("terrain leaf has no voxel material")?;
         let aabb = world.get::<Aabb>(entity).copied().or_else(|| {
             world
                 .get_resource::<Assets<Mesh>>()?
-                .get(&mesh.0)?
+                .get(&mesh)?
                 .get_aabb()
         });
         let Some(aabb) = aabb else {
@@ -607,12 +1090,21 @@ fn collect_leaves(
         };
         let bounds = Bounds::from_aabb(aabb, pose).ok_or("terrain leaf has nonfinite bounds")?;
         out.push(FrozenLeaf {
-            mesh: mesh.0.clone(),
+            mesh: mesh.clone(),
             material: material.0.clone(),
             transform: pose,
             aabb,
             bounds,
             object,
+            coverage: world.get::<crate::terrain_batches::TerrainBatchCoverage>(entity)
+                .filter(|coverage| coverage.mesh == mesh.id())
+                .map(|coverage| coverage.bounds.clone()),
+            grass_coverage: world.get::<crate::terrain_batches::TerrainBatchCoverage>(entity)
+                .filter(|coverage| coverage.mesh == mesh.id())
+                .map(|coverage| coverage.grass_bounds.clone()),
+            sight_coverage: world.get::<crate::terrain_batches::TerrainBatchCoverage>(entity)
+                .filter(|coverage| coverage.mesh == mesh.id())
+                .map(|coverage| coverage.sight_bounds.clone()),
         });
     }
     if let Some(children) = world.get::<Children>(entity) {
@@ -629,6 +1121,24 @@ fn collect_leaves(
 
 /// Exclusive only while pinning a new generation; held frames touch no assets.
 /// Schedule after sync_voxel_view and before the anchored layout selection.
+// Asset publication can complete without replacing the terrain roots. Do not
+// latch a temporary miss as a permanent rejection of this encounter's map.
+fn preparation_pending(reason: &str) -> bool {
+    matches!(reason,
+        "actual battle groves are warming"
+        | "actual terrain hierarchy is not ready"
+        | "terrain leaf bounds have not been published"
+        | "actual terrain instances are not ready"
+        | "actual static terrain is not ready"
+        | "actual animated terrain is not ready"
+        | "actual animated mesh handle is missing"
+        | "actual animated terrain CPU mesh is unavailable"
+        | "voxel materials are unavailable"
+        | "terrain images are unavailable"
+        | "retained terrain material is unavailable"
+        | "retained terrain image is unavailable")
+}
+
 pub(super) fn prepare(world: &mut World) {
     let location = world
         .get_resource::<BattleLocationFrame>()
@@ -677,8 +1187,8 @@ pub(super) fn prepare(world: &mut World) {
                 .get_resource::<TerrainRevisionCache>()
                 .ok_or("voxel terrain cache is unavailable")
                 .and_then(|cache| {
-                    resolve_context(&location, cache)?;
-                    Ok([
+                    let (_, pose, authentic) = resolve_context_with_images(&location, cache, world.get_resource::<Assets<Image>>())?;
+                    Ok(([
                         cache
                             .instances_root
                             .ok_or("terrain instances are not ready")?,
@@ -686,18 +1196,26 @@ pub(super) fn prepare(world: &mut World) {
                             .textured_entity
                             .ok_or("textured terrain is not ready")?,
                         cache.solid_entity.ok_or("solid terrain is not ready")?,
-                    ])
+                    ], pose, authentic))
                 });
             match ready {
-                Ok(roots) if state.attempted_roots != Some(roots) => {
-                    state.attempted_roots = Some(roots);
-                    match freeze(world, &location) {
+                Ok((roots, pose, authentic)) if state.attempted_roots != Some(roots) => {
+                    if warm_streamed_groves(world, pose, authentic) {
+                        state.reason = Some("actual battle groves are warming");
+                    } else {
+                        crate::occluder_fade::prepare_retention_meshes(world, roots[0]);
+                        state.attempted_roots = Some(roots);
+                        match freeze(world, &location) {
                         Ok(frozen) => {
                             state.frozen = Some(frozen);
                             state.reason = None;
                         }
                         Err(reason) => {
+                            if preparation_pending(reason) {
+                                state.attempted_roots = None;
+                            }
                             state.reason = Some(reason);
+                        }
                         }
                     }
                 }
@@ -711,12 +1229,34 @@ pub(super) fn prepare(world: &mut World) {
     world.insert_resource(state);
 }
 
-/// Select complete original triangles once from the two mutable CPU meshes.
+fn warm_streamed_groves(world: &mut World, pose: Transform, authentic: AuthenticBounds) -> bool {
+    let _trace = crate::loading_trace::span("battle.warm_groves", || serde_json::json!({}));
+    if !world.resource::<TerrainRevisionCache>().groves.is_some() { return false; }
+    let inverse = pose.to_matrix().inverse();
+    let local = |point: Vec2| {
+        let point = inverse.transform_point3(Vec3::new(point.x, 0.0, point.y));
+        Vec2::new(point.x, point.z)
+    };
+    let area = Rect::from_corners(local(authentic.min), local(authentic.max));
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    let pending = world.resource_scope(|world, mut cache: Mut<TerrainRevisionCache>| {
+        world.resource_scope(|world, mut meshes: Mut<Assets<Mesh>>| {
+            world.resource_scope(|world, mut materials: Mut<Assets<VoxelMaterial>>| {
+                let mut commands = Commands::new(&mut queue, world);
+                crate::grove_stream::warm_battle(&mut cache, area, &mut commands, &mut meshes, &mut materials)
+            })
+        })
+    });
+    queue.apply(world);
+    pending
+}
+
+/// Select complete original triangles from a source terrain batch.
 /// Vertex streams stay byte-identical, including UVs, normals and cutaway data.
 /// Unreferenced outside vertices cannot draw; the copied AABB uses selected
 /// indices only. A straddling triangle is omitted and remains in the existing
 /// view/shadow proof, so this never invents a clipped edge or fills missing land.
-fn select_authentic_animated(
+fn select_authentic_triangles(
     source: &Mesh,
     pose: Transform,
     authentic: AuthenticBounds,
@@ -730,11 +1270,11 @@ fn select_authentic_animated(
     let Some(VertexAttributeValues::Float32x3(positions)) =
         source.attribute(Mesh::ATTRIBUTE_POSITION)
     else {
-        return Err("animated terrain positions are unavailable");
+        return Err("terrain batch positions are unavailable");
     };
     let indices = source
         .indices()
-        .ok_or("animated terrain requires indexed triangles")?;
+        .ok_or("terrain batch requires indexed triangles")?;
     if source.primitive_topology() != PrimitiveTopology::TriangleList
         || indices.len() % 3 != 0
         || source
@@ -742,7 +1282,7 @@ fn select_authentic_animated(
             .any(|(_, values)| values.len() != positions.len())
         || indices.iter().any(|i| i >= positions.len())
     {
-        return Err("animated terrain has invalid triangle attributes");
+        return Err("terrain batch has invalid triangle attributes");
     }
     let mut kept = Vec::<u32>::new();
     let mut local = Bounds {
@@ -765,7 +1305,7 @@ fn select_authentic_animated(
         let points = triangle.map(|i| Vec3::from_array(positions[i]));
         let world = points.map(|p| pose.transform_point(p));
         if world.iter().any(|p| !p.is_finite()) {
-            return Err("animated terrain has nonfinite vertices");
+            return Err("terrain batch has nonfinite vertices");
         }
         let bounds = Bounds {
             min: world[0].min(world[1]).min(world[2]),
@@ -785,7 +1325,7 @@ fn select_authentic_animated(
                 .and_modify(|current| *current = current.union(bounds))
                 .or_insert(bounds);
             if excluded.len() > MAX_OMITTED_BUCKETS {
-                return Err("animated terrain omission coverage exceeds its bound");
+                return Err("terrain batch omission coverage exceeds its bound");
             }
         }
     }
@@ -799,23 +1339,36 @@ fn select_authentic_animated(
             Indices::U16(_) => Indices::U16(kept.into_iter().map(|i| i as u16).collect()),
             Indices::U32(_) => Indices::U32(kept),
         });
+        #[cfg(target_arch = "wasm32")]
+        crate::browser_memory::align_indices(&mut copy);
         copy.asset_usage = RenderAssetUsages::RENDER_WORLD;
         let aabb = Aabb::from_min_max(local.min, local.max);
         let bounds =
-            Bounds::from_aabb(aabb, pose).ok_or("selected animated terrain bounds are invalid")?;
+            Bounds::from_aabb(aabb, pose).ok_or("selected terrain batch bounds are invalid")?;
         Some((copy, aabb, bounds))
     };
     Ok((selected, excluded.into_values().collect()))
 }
 
 fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenScene, &'static str> {
+    let _trace = crate::loading_trace::span("battle.freeze_terrain", || serde_json::json!({
+        "map": location.source.map_id.as_ref(),
+        "generation": location.generation,
+    }));
     let cache = world
         .get_resource::<TerrainRevisionCache>()
         .ok_or("voxel terrain cache is unavailable")?;
-    let (anchors, root_pose, authentic) = resolve_context(location, cache)?;
+    let (anchors, root_pose, authentic) = resolve_context_with_images(location, cache, world.get_resource::<Assets<Image>>())?;
     let walking = WalkingGround::from_context(location, cache, root_pose)?;
     let mut leaves = Vec::new();
+    let mut object_surfaces = HashMap::new();
     let mut omitted = Vec::new();
+    if let Some(stream) = &cache.groves {
+        for (min, max) in stream.missing_bounds() {
+            omitted.push(Bounds::from_aabb(Aabb::from_min_max(min, max), root_pose)
+                .ok_or("unloaded source grove has invalid coverage")?);
+        }
+    }
     let instances = cache
         .instances_root
         .ok_or("actual terrain instances are not ready")?;
@@ -825,6 +1378,9 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
                 .get::<Transform>(child)
                 .copied()
                 .ok_or("terrain instance lacks a transform")?;
+            if let Some(surface) = crate::occluder_fade::retained_surface(world, child) {
+                object_surfaces.insert(child, (surface, root_pose.mul_transform(local)));
+            }
             collect_leaves(
                 world,
                 child,
@@ -875,7 +1431,7 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
             .get_resource::<Assets<Mesh>>()
             .and_then(|assets| assets.get(mesh))
             .ok_or("actual animated terrain CPU mesh is unavailable")?;
-        let (selected, excluded) = select_authentic_animated(source, root_pose, authentic)?;
+        let (selected, excluded) = select_authentic_triangles(source, root_pose, authentic)?;
         trace(format_args!(
             "animated selection kept={} omitted_buckets={}",
             selected.is_some(),
@@ -885,6 +1441,8 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
         let Some((copy, aabb, bounds)) = selected else {
             continue;
         };
+        let sight_coverage = crate::terrain_batches::triangle_sight_coverage(&copy);
+        let grass_coverage = crate::terrain_batches::triangle_grass_coverage(&copy);
         mutable_mesh_copies.insert(mesh.id(), copy);
         leaves.push(FrozenLeaf {
             mesh: mesh.clone(),
@@ -893,13 +1451,40 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
             aabb,
             bounds,
             object: None,
+            coverage: None,
+            sight_coverage,
+            grass_coverage,
         });
     }
     let mut kept = Vec::new();
-    for leaf in leaves {
+    for mut leaf in leaves {
         if authentic.contains(leaf.bounds) {
             kept.push(leaf);
         } else {
+            // A batch's union can cross the witnessed neighborhood even when
+            // its real near wall/floor is completely inside. Reuse the exact
+            // original GPU mesh. The small build-time coverage separates its
+            // uncertain pieces for the full frustum AND shadow proof below.
+            // If any such piece could affect this view, the camera is rejected.
+            // No faces are cut or redrawn, and object groups remain whole.
+            if leaf.object.is_none() && let Some(coverage) = &leaf.coverage {
+                let mut inside: Option<Bounds> = None;
+                for aabb in coverage.iter().copied() {
+                    let bounds = Bounds::from_aabb(aabb, leaf.transform)
+                        .ok_or("terrain batch coverage has nonfinite bounds")?;
+                    let (known, exterior) = authentic.partition_coverage(bounds);
+                    omitted.extend(exterior);
+                    if let Some(bounds) = known {
+                        inside = Some(inside.map_or(bounds, |previous| previous.union(bounds)));
+                    }
+                }
+                if let Some(bounds) = inside {
+                    trace(format_args!("retained original border batch mesh={:?} coverage={} bounds={bounds:?}", leaf.mesh.id(), coverage.len()));
+                    leaf.bounds = bounds;
+                    kept.push(leaf);
+                }
+                continue;
+            }
             trace(format_args!(
                 "omitted border mesh={:?} object={:?} bounds={:?}",
                 leaf.mesh.id(),
@@ -913,15 +1498,43 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
         return Err("no complete authentic terrain leaves are retained");
     }
     let mut objects = HashMap::<Entity, FrozenObject>::new();
+    let mut static_blockers = Vec::new();
+    let mut grass_lens_blockers = Vec::new();
     let mut ground = anchors[0].y.min(anchors[1].y);
     for leaf in &kept {
         ground = ground.min(leaf.bounds.min.y);
+        for aabb in leaf.grass_coverage.iter().flat_map(|coverage| coverage.iter()).copied() {
+            let bounds = Bounds::from_aabb(aabb, leaf.transform)
+                .ok_or("grass camera coverage has nonfinite bounds")?;
+            if let Some(bounds) = authentic.partition_coverage(bounds).0 {
+                let pad = Vec3::splat(0.15);
+                grass_lens_blockers.push(Bounds { min: bounds.min - pad, max: bounds.max + pad });
+            }
+        }
+        if leaf.object.is_none() {
+            if let Some(coverage) = &leaf.sight_coverage {
+                for aabb in coverage.iter().copied() {
+                    let bounds = Bounds::from_aabb(aabb, leaf.transform)
+                        .ok_or("terrain sight coverage has nonfinite bounds")?;
+                    if let Some(bounds) = authentic.partition_coverage(bounds).0 {
+                        static_blockers.push(bounds);
+                    }
+                }
+            } else {
+                static_blockers.push(leaf.bounds);
+            }
+        }
         if let Some(id) = leaf.object {
             objects
                 .entry(id)
-                .and_modify(|o| o.bounds = o.bounds.union(leaf.bounds))
+                .and_modify(|o| {
+                    o.bounds = o.bounds.union(leaf.bounds);
+                    o.backdrop.push(leaf.bounds);
+                })
                 .or_insert(FrozenObject {
                     bounds: leaf.bounds,
+                    backdrop: vec![leaf.bounds],
+                    surface: object_surfaces.get(&id).cloned(),
                     faded: false,
                     opacity: 1.0,
                 });
@@ -963,6 +1576,11 @@ fn freeze(world: &mut World, location: &VisualBattleLocation) -> Result<FrozenSc
             _ => None,
         };
         material.extension.cutaway = default();
+        // Terrain pixels include LCD display zoom; battler sculptures do not.
+        // Normalize only blade height, leaving source roots, ground and scenery intact.
+        material.extension.grass_rustle.contact = Vec4::ZERO;
+        material.extension.grass_rustle.height_scale = cache.built_frame.as_ref()
+            .map_or(Vec4::ZERO, |frame| crate::grass_rustle::retained_height_scale(frame.tile_size.y));
         material.base.alpha_mode = cutoff.map_or(AlphaMode::Opaque, AlphaMode::Mask);
         // Any transparency inherited from world reveal is reset. Whole-object
         // battle reveal is computed from this encounter camera independently.
@@ -1023,6 +1641,25 @@ Visibility::Hidden,),
             EncounterTerrainRoot,
         ))
         .id();
+    // Static draws may contain an entire room, including its floor, walls and
+    // small fixtures. Rank the original spatial coverage rather than that
+    // draw's enclosing box, so existing cans, pillars and rock formations can
+    // contribute to the shot. Geometry and collision evidence stay unchanged.
+    let mut backdrop_bounds = Vec::new();
+    for leaf in kept.iter().filter(|leaf| leaf.object.is_none()) {
+        if let Some(coverage) = &leaf.sight_coverage {
+            for aabb in coverage.iter().copied() {
+                let bounds = Bounds::from_aabb(aabb, leaf.transform)
+                    .ok_or("backdrop source coverage has invalid bounds")?;
+                if let Some(bounds) = authentic.partition_coverage(bounds).0
+                    && bounds.max.y - bounds.min.y > 0.8 {
+                    backdrop_bounds.push(bounds);
+                }
+            }
+        } else if leaf.bounds.max.y - leaf.bounds.min.y > 0.8 {
+            backdrop_bounds.push(leaf.bounds);
+        }
+    }
     for leaf in kept {
         let child = world
             .spawn((
@@ -1038,12 +1675,17 @@ leaf.transform,),
             .id();
         world.entity_mut(root).add_child(child);
     }
+    trace(format_args!("grass camera coverage: {} bounds, maximum world height {}",
+        grass_lens_blockers.len(), grass_lens_blockers.iter().map(|bounds| bounds.max.y).fold(f32::NEG_INFINITY, f32::max)));
     Ok(FrozenScene {
         root,
         anchors,
         authentic,
-        omitted,
+        omitted: StaticBlockers::new(omitted),
+        static_blockers: StaticBlockers::new(static_blockers),
+        grass_lens_blockers: StaticBlockers::new(grass_lens_blockers),
         objects,
+        backdrop_bounds,
         materials: frozen_materials,
         images: image_handles.into_values().collect(),
         meshes: mutable_mesh_handles.into_values().collect(),
@@ -1051,11 +1693,35 @@ leaf.transform,),
         walking,
         water: matches!(location.target, crystal_render_api::VisualBattleTarget::SurfWater { .. }),
         bodies: [None; 2],
+        derived_stage: matches!(location.target, crystal_render_api::VisualBattleTarget::ScriptedGround { .. } | crystal_render_api::VisualBattleTarget::Trainer { .. } | crystal_render_api::VisualBattleTarget::WalkingGrass { .. }),
+        source_anchors: anchors,
+        clearance: [Vec4::ZERO; 2],
+        clearance_shape: [Vec4::ZERO; 2], grass_contact: [Vec4::ZERO; 2],
     })
 }
 
 /// Schedule after the battle view has made its final source/model visibility
 /// decision. Source fallback hides this hierarchy without retiring its assets.
+pub(super) fn sync_grass_mask_materials(
+    state: Res<EncounterTerrain>,
+    mask: Res<crate::battle_view::BattleGrassMask>,
+    materials: Option<ResMut<Assets<VoxelMaterial>>>,
+) {
+    let Some(scene) = &state.frozen else { return; };
+    let Some(mut materials) = materials else { return; };
+    let info = Vec4::new(if mask.active && state.accepted { 1.0 } else { 0.0 }, mask.revision as f32, 0.0, 0.0);
+    for retained in &scene.materials {
+        if materials.get(&retained.handle).is_some_and(|material|
+            material.extension.battle_grass_mask_info != info
+                || material.extension.battle_grass_mask != mask.image) {
+            if let Some(mut material) = materials.get_mut(&retained.handle) {
+                material.extension.battle_grass_mask = mask.image.clone();
+                material.extension.battle_grass_mask_info = info;
+            }
+        }
+    }
+}
+
 pub(super) fn sync(
     mut state: ResMut<EncounterTerrain>,
     status: Res<BattleViewStatus>,
@@ -1097,10 +1763,13 @@ pub(super) fn sync(
         let alpha_mode = retained_alpha_mode(opacity, retained.alpha_cutoff);
         if materials
             .get(&retained.handle)
-            .is_some_and(|m| m.extension.cutaway.fade != value || m.base.alpha_mode != alpha_mode)
+            .is_some_and(|m| m.extension.cutaway.fade != value || m.base.alpha_mode != alpha_mode || m.extension.battle_clearance != scene.clearance || m.extension.battle_clearance_shape != scene.clearance_shape || m.extension.battle_grass_contact != scene.grass_contact)
         {
             if let Some(mut material) = materials.get_mut(&retained.handle) {
                 material.extension.cutaway.fade = value;
+                material.extension.battle_clearance = scene.clearance;
+                material.extension.battle_clearance_shape = scene.clearance_shape;
+                material.extension.battle_grass_contact = scene.grass_contact;
                 material.base.alpha_mode = alpha_mode;
             }
         }
@@ -1109,6 +1778,118 @@ pub(super) fn sync(
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn indexed_scenery_preserves_flat_sight_checks_and_fixture_retirement() {
+        let mut bounds = Vec::new();
+        for x in -8_i32..=8 {
+            for z in -8_i32..=8 {
+                let min = Vec3::new(x as f32 * 2.0, 0.0, z as f32 * 2.0);
+                bounds.push(Bounds { min, max: min + Vec3::new(1.0, 0.25 + (x * z).rem_euclid(7) as f32, 1.0) });
+            }
+        }
+        let mut indexed = StaticBlockers::new(bounds.clone());
+        for start in [Vec3::new(-20.0, 4.0, -20.0), Vec3::new(20.0, 0.5, 20.0), Vec3::new(0.0, 8.0, 0.0)] {
+            for x in -10..=10 {
+                for z in -10..=10 {
+                    let end = Vec3::new(x as f32 * 2.0 + 1.0, 1.0, z as f32 * 2.0);
+                    for height in [-1.0, 0.25, 1.0, 6.0, 10.0] {
+                        let flat = bounds.iter().any(|bounds| bounds.max.y > height && bounds.segment(start, end));
+                        assert_eq!(indexed.blocker(start, end, height).is_some(), flat,
+                            "indexed sight must retain every flat-scan obstruction: {start:?} -> {end:?}, height={height}");
+                    }
+                }
+            }
+        }
+        indexed.clear();
+        assert!(indexed.blocker(Vec3::NEG_X * 2.0, Vec3::X * 2.0, 0.0).is_none());
+        indexed.push(Bounds { min: Vec3::splat(-1.0), max: Vec3::splat(1.0) });
+        assert!(indexed.blocker(Vec3::NEG_X * 2.0, Vec3::X * 2.0, 0.0).is_some());
+    }
+
+    #[test]
+    fn sight_line_bounds_keep_grazing_hits_and_clipped_endpoints() {
+        let bounds = Bounds { min: Vec3::splat(-1.0), max: Vec3::splat(1.0) };
+        for (start, end, blocked) in [
+            (Vec3::new(-2.0, 0.0, 0.0), Vec3::new(2.0, 0.0, 0.0), true),
+            (Vec3::new(-2.0, 1.0, 0.0), Vec3::new(2.0, 1.0, 0.0), true),
+            (Vec3::new(-2.0, 1.001, 0.0), Vec3::new(2.0, 1.001, 0.0), false),
+            (Vec3::new(-2.0, 0.0, 0.0), Vec3::new(-1.0, 0.0, 0.0), false),
+            (Vec3::new(-2.0, 2.0, 0.0), Vec3::new(2.0, -2.0, 0.0), true),
+            (Vec3::new(-3.0, -3.0, -3.0), Vec3::splat(-2.0), false),
+            (Vec3::ZERO, Vec3::ZERO, true),
+        ] {
+            assert_eq!(bounds.segment(start, end), blocked, "{start:?} -> {end:?}");
+            assert_eq!(bounds.segment(end, start), blocked, "reversed {start:?} -> {end:?}");
+        }
+    }
+
+    #[test]
+    fn cached_backdrop_projection_matches_original_corner_projection() {
+        let viewport = Vec2::new(1280., 720.);
+        for yaw in [-2.4_f32, -1.2, 0., 1.2, 2.4] {
+            let mut layout = BattleSceneLayout::default();
+            layout.camera = Transform::from_translation(Vec3::new(yaw.sin() * 12., 3., yaw.cos() * 12.))
+                .looking_at(Vec3::Y, Vec3::Y);
+            let view = layout.camera.to_matrix().inverse();
+            for x in -8..8 { for z in -8..8 {
+                let bounds = Bounds { min: Vec3::new(x as f32 * 3., 0., z as f32 * 3.),
+                    max: Vec3::new(x as f32 * 3. + 2., 9., z as f32 * 3. + 2.) };
+                let forward = *layout.camera.forward();
+                let mut expected = 0_u32;
+                let corners: Vec<_> = (0..8).map(|i| Vec3::new(
+                    if i & 1 == 0 { bounds.min.x } else { bounds.max.x },
+                    if i & 2 == 0 { bounds.min.y } else { bounds.max.y },
+                    if i & 4 == 0 { bounds.min.z } else { bounds.max.z })).collect();
+                if (((bounds.min + bounds.max) * 0.5 - layout.camera.translation).dot(forward) > 5.5)
+                    && corners.iter().all(|&p| (p - layout.camera.translation).dot(forward) > 0.01) {
+                    let projected: Vec<_> = corners.into_iter().map(|p| layout.project_point(p, viewport)).collect();
+                    let lo = projected.iter().copied().fold(Vec2::splat(f32::INFINITY), Vec2::min);
+                    let hi = projected.iter().copied().fold(Vec2::splat(f32::NEG_INFINITY), Vec2::max);
+                    let band = layout.visible_y_range();
+                    for row in 0..4 { for column in 0..8 {
+                        let sample = Vec2::new(0.05 + (column as f32 + 0.5) * 0.90 / 8.,
+                            band.x + (row as f32 + 0.5) * (band.y - band.x) * 0.60 / 4.);
+                        if sample.cmpge(lo).all() && sample.cmple(hi).all() { expected |= 1 << (row * 8 + column); }
+                    }}
+                }
+                assert_eq!(backdrop_cells_projected(bounds, &layout, viewport, 5., view), expected,
+                    "cached scoring changed at yaw={yaw} box=({x},{z})");
+            }}
+        }
+    }
+
+    #[test]
+    fn backdrop_ranking_counts_visible_canopy_instead_of_offscreen_world_size() {
+        let mut layout = BattleSceneLayout::default();
+        layout.camera = Transform::from_xyz(0., 1., 5.)
+            .looking_at(Vec3::new(0., 1., 0.), Vec3::Y);
+        let viewport = Vec2::new(800., 600.);
+        let canopy = Bounds { min: Vec3::new(-20., 0., -7.), max: Vec3::new(-2., 8., -5.) };
+        let center = layout.project_point((canopy.min + canopy.max) * 0.5, viewport);
+        assert!(center.x < 0.05, "fixture canopy center is outside the shot");
+        let coverage = backdrop_cells(canopy, &layout, viewport, 5.);
+        assert!(coverage != 0, "visible canopy at the frame edge still supplies a background");
+        let distant = Bounds { min: canopy.min - Vec3::Z * 200., max: canopy.max - Vec3::Z * 200. };
+        assert!(coverage.count_ones() > backdrop_cells(distant, &layout, viewport, 5.).count_ones(),
+            "large world dimensions cannot substitute for visible scenery");
+        let offscreen = Bounds { min: canopy.min - Vec3::X * 100., max: canopy.max - Vec3::X * 100. };
+        assert_eq!(backdrop_cells(offscreen, &layout, viewport, 5.), 0);
+        let foreground = Bounds { min: Vec3::new(-2.,0.,2.), max: Vec3::new(2.,8.,3.) };
+        assert_eq!(backdrop_cells(foreground, &layout, viewport, 5.), 0,
+            "foreground occluders never earn a backdrop reward");
+    }
+
+    #[test]
+    fn shot_readability_rewards_the_small_opponent_before_an_already_large_partner() {
+        let distant = actor_readability_score(&[Vec2::new(0.25, 0.25), Vec2::new(0.05, 0.025)]);
+        let larger_partner = actor_readability_score(&[Vec2::new(0.50, 0.50), Vec2::new(0.05, 0.025)]);
+        let closer_pair = actor_readability_score(&[Vec2::new(0.25, 0.25), Vec2::new(0.10, 0.05)]);
+        assert_eq!(distant, larger_partner);
+        assert!(closer_pair > distant + 40.0);
+        assert_eq!(actor_readability_score(&[Vec2::splat(0.4); 2]),
+            actor_readability_score(&[Vec2::splat(0.8); 2]));
+        assert_eq!(actor_readability_score(&[]), 0.0);
+    }
     use super::*;
 use bevy::camera::primitives::MeshAabb;
     use crystal_render_api::{
@@ -1213,6 +1994,141 @@ use bevy::camera::primitives::MeshAabb;
         anchors.target_foot = Vec2::new(132.0, 4.0);
         (frame, location, heights)
     }
+    #[test]
+    fn indexed_omission_view_matches_flat_geometry_and_shadow_proof() {
+        let bounds: Vec<_> = (-12_i32..12).flat_map(|x| (-12_i32..12).map(move |z| Bounds {
+            min: Vec3::new(x as f32 * 4., -2., z as f32 * 4.),
+            max: Vec3::new(x as f32 * 4. + 0.1, (x + z).abs() as f32 + 0.1, z as f32 * 4. + 2.),
+        })).collect();
+        let index = StaticBlockers::new(bounds.clone());
+        for yaw in 0..24 { for far in [4., 12., 32., 80.] { for ground in [-8., 0., 4.] {
+            let angle = yaw as f32 * std::f32::consts::TAU / 24.;
+            let camera = Transform::from_xyz(angle.sin() * 60., 5., angle.cos() * 60.)
+                .looking_at(Vec3::new(0., 2., 0.), Vec3::Y);
+            let viewport = Vec2::new(1280., 720.);
+            let flat = bounds.iter().any(|&bounds| visible_bounds(bounds, camera, viewport, far)
+                || visible_bounds(bounds.shadow_volume(ground), camera, viewport, far));
+            assert_eq!(index.visible_or_shadow(camera, viewport, far, ground), flat,
+                "omission proof changed at yaw={yaw} far={far} ground={ground}");
+        }}}
+        assert!(!StaticBlockers::default().visible_or_shadow(Transform::IDENTITY, Vec2::splat(100.), 10., 0.));
+    }
+
+    #[test]
+    fn grass_foot_contact_uses_neutral_ground_and_ignores_animation_envelope() {
+        let mut body = BattleBody::modeled("TEST", Vec3::new(-0.2, -0.5, -0.1),
+            Vec3::new(0.2, 0.5, 0.1), 1.0);
+        for ground in [-4.0, 0.0, 3.0] {
+            let pose = Transform::from_xyz(2.0, ground + 0.5, -3.0);
+            let contact = grass_foot_contact(body, pose);
+            assert!((contact.y - ground).abs() < 0.00001);
+            assert_eq!(contact.x, 2.0);
+            assert_eq!(contact.z, -3.0);
+            assert!(contact.w > 0.2 && contact.w < 0.3);
+            body.visual_bounds = Some((Vec3::splat(-5.0), Vec3::splat(5.0)));
+            assert_eq!(contact, grass_foot_contact(body, pose),
+                "moving leaves and attack envelopes must not move the contact patch");
+        }
+    }
+
+    #[test]
+    fn grass_contact_fringe_tracks_world_feet_and_stays_below_small_bodies() {
+        let mut body = BattleBody::modeled("TEST", Vec3::new(-0.3, -0.5, -0.3), Vec3::new(0.3, 0.5, 0.3), 1.);
+        body.visual_bounds = Some((Vec3::splat(-2.), Vec3::splat(3.)));
+        let camera = Transform::from_xyz(0., 3., 10.).looking_at(Vec3::ZERO, Vec3::Y);
+        for ground in [-4., 0., 3.] {
+            let pose = Transform::from_xyz(0., ground + 0.5, 0.);
+            let (_, shape) = grass_body_aperture(body, pose, camera);
+            assert!((shape.w - (ground + 0.22)).abs() < 0.00001,
+                "the actual neutral feet, not the full animation envelope, set the overlap");
+            assert!(shape.w < ground + 0.5, "the fringe stays below the body's middle");
+        }
+    }
+
+    #[test]
+    fn grass_aperture_encloses_the_animation_without_a_large_round_clearing() {
+        let mut body = BattleBody::modeled("TEST", Vec3::new(-0.25, 0.0, -0.25), Vec3::new(0.25, 4.0, 0.25), 4.0);
+        body.visual_bounds = Some((Vec3::new(-0.4, -0.2, -0.5), Vec3::new(0.4, 4.5, 0.5)));
+        for yaw in [0.0_f32, 90.0, 180.0, 270.0] {
+            let rotation = Quat::from_rotation_y(yaw.to_radians());
+            let camera = Transform::from_translation(rotation * Vec3::new(0.0, 4.0, 12.0))
+                .looking_at(Vec3::Y * 2.0, Vec3::Y);
+            let pose = Transform::from_rotation(rotation);
+            let (clearance, shape) = grass_body_aperture(body, pose, camera);
+            let view = camera.compute_affine().inverse();
+            let center = view.transform_point3(clearance.truncate());
+            assert!(shape.x < clearance.w * 0.5, "slender bodies need narrower apertures");
+            for point in body.corners(pose) {
+                let point = view.transform_point3(point);
+                let projected = point.truncate() * center.z / point.z;
+                let normalized = (projected - center.truncate()) / shape.truncate().truncate();
+                assert!(normalized.length() <= 1.0, "the full animation remains clear");
+                assert!(point.z >= center.z - shape.z,
+                    "every animated point lies ahead of the retained grass depth boundary");
+            }
+            assert!(shape.z < clearance.w, "depth uses the real envelope, not its bounding sphere");
+            assert!((shape.w - 0.32).abs() < 0.00001,
+                "a tall rig keeps only a bounded fringe at its feet");
+            assert_eq!(pose.scale, Vec3::ONE);
+        }
+    }
+
+    #[test]
+    fn nearby_scripted_staging_keeps_full_bodies_on_real_floor_and_preserves_origin() {
+        let (frame, mut location, heights) = walking_fixture();
+        let unavailable = location.source.core_tile + IVec2::X;
+        let VisualBattleTarget::WalkingGrass { presentation, .. } = &location.target else { panic!() };
+        location.target = VisualBattleTarget::ScriptedGround {
+            presentation: crystal_render_api::VisualBattleDerivedTrainerPlacement {
+                presentation_core_tile: presentation.presentation_core_tile,
+                walkable_core_tiles: presentation.walkable_core_tiles.iter().copied()
+                    .filter(|tile| *tile != unavailable).collect::<Vec<_>>().into(),
+            },
+        };
+        let origin = location.clone();
+        let cache = cache(&frame, heights);
+        let (anchors, pose, _) = resolve_context(&location, &cache).unwrap();
+        let ground = WalkingGround::from_context(&location, &cache, pose).unwrap().unwrap();
+        let bodies = [Some(BattleBody::modeled("TEST", Vec3::new(-2.5, 0.0, -0.5), Vec3::new(2.5, 1.0, 0.5), 1.0)); 2];
+        let viewport = Vec2::new(800., 600.);
+        let original = BattleSceneLayout::for_map_bodies(bodies, anchors, viewport).unwrap();
+        assert!(!ground.contains(bodies[0].unwrap(), original.body_poses[0].unwrap(), anchors[0].y));
+        let pairs = ground.nearby_stage_pairs(anchors);
+        assert!(pairs.len() <= 968);
+        assert!(pairs.iter().any(|feet| (feet[1] - feet[0]).length() == 4.0),
+            "small bodies can use a closer real-floor pair without being rescaled");
+        assert!(pairs.into_iter().any(|feet| {
+            feet != anchors && BattleSceneLayout::for_map_bodies(bodies, feet, viewport).is_some_and(|layout|
+                (0..2).all(|index| ground.contains(bodies[index].unwrap(), layout.body_poses[index].unwrap(), feet[index].y)))
+        }), "an adjacent real floor plot fits the complete animation");
+        assert_eq!(location, origin, "derived staging never changes authoritative source metadata");
+    }
+
+    #[test]
+    fn scripted_ground_requires_real_floor_without_inventing_an_enemy_contact() {
+        let (frame, mut location, heights) = walking_fixture();
+        let VisualBattleTarget::WalkingGrass { presentation, .. } = &location.target else { panic!() };
+        location.target = VisualBattleTarget::ScriptedGround {
+            presentation: crystal_render_api::VisualBattleDerivedTrainerPlacement {
+                presentation_core_tile: presentation.presentation_core_tile,
+                walkable_core_tiles: presentation.walkable_core_tiles.clone(),
+            },
+        };
+        let cache = cache(&frame, heights);
+        let (_, pose, _) = resolve_context(&location, &cache).unwrap();
+        assert!(WalkingGround::from_context(&location, &cache, pose).unwrap().is_some());
+        let mut blocked = location.clone();
+        let VisualBattleTarget::ScriptedGround { presentation } = &mut blocked.target else { panic!() };
+        presentation.walkable_core_tiles = Arc::from([blocked.source.core_tile]);
+        assert!(WalkingGround::from_context(&blocked, &cache, pose).is_err());
+        let mut surf = location.clone();
+        surf.source.movement = crystal_render_api::VisualBattleSourceMovement::Surf;
+        assert!(WalkingGround::from_context(&surf, &cache, pose).is_err());
+        let mut stale = location.clone();
+        Arc::make_mut(stale.anchors.as_mut().unwrap()).target_foot += Vec2::X;
+        assert!(WalkingGround::from_context(&stale, &cache, pose).is_err());
+    }
+
     fn surf_fixture() -> (VisualWorldFrame, VisualBattleLocation, TerrainRevisionCache) {
         let (mut frame, mut location, mut heights) = walking_fixture();
         frame.tiles = (0..frame.grid_size.y).flat_map(|row| (0..frame.grid_size.x).map(move |column| {
@@ -1808,6 +2724,28 @@ MeshMaterial3d(material.clone()),),
         (app, leaf, mesh, material, image)
     }
     #[test]
+    fn map_preparation_retries_published_material_without_replacing_source_roots() {
+        let (mut app, _, _, material, _) = app_fixture();
+        let original = app.world_mut().resource_mut::<Assets<VoxelMaterial>>()
+            .remove(material.id()).unwrap();
+        prepare(app.world_mut());
+        let state = app.world().resource::<EncounterTerrain>();
+        assert!(state.frozen.is_none());
+        assert_eq!(state.reason(), Some("retained terrain material is unavailable"));
+        assert!(state.attempted_roots.is_none(), "pending assets must be retried on the same roots");
+        let generation = state.generation();
+        app.world_mut().resource_mut::<Assets<VoxelMaterial>>()
+            .insert(material.id(), original).unwrap();
+        prepare(app.world_mut());
+        let state = app.world().resource::<EncounterTerrain>();
+        assert!(state.frozen.is_some(), "published source material must admit the real map");
+        assert_eq!(state.generation(), generation);
+        assert!(state.reason().is_none());
+        assert!(!preparation_pending("actual built terrain does not match encounter evidence"));
+        assert!(!preparation_pending("terrain leaf has nonfinite bounds"));
+    }
+
+    #[test]
     fn retained_faded_world_crown_recovers_mask_and_keeps_it_through_opacity_updates() {
         let (mut app, _, _, material, _) = app_fixture();
         {
@@ -1992,9 +2930,9 @@ MeshMaterial3d(material.clone()),),
             frozen: Some(FrozenScene {
                 root: Entity::from_raw_u32(1).unwrap(), anchors,
                 authentic: AuthenticBounds { min: Vec2::new(-18.0, -12.0), max: Vec2::new(22.0, 52.0) },
-                omitted: Vec::new(), objects: HashMap::new(), materials: Vec::new(),
+                omitted: StaticBlockers::default(), static_blockers: StaticBlockers::default(), grass_lens_blockers: StaticBlockers::default(), objects: HashMap::new(), backdrop_bounds: Vec::new(), materials: Vec::new(),
                 images: Vec::new(), meshes: Vec::new(), ground: 0.0,
-                walking: None, water: false, bodies: [None, None],
+                walking: None, water: false, bodies: [None, None], clearance: [Vec4::ZERO; 2], clearance_shape: [Vec4::ZERO; 2], grass_contact: [Vec4::ZERO; 2], derived_stage: false, source_anchors: anchors,
             }),
             ..default()
         };
@@ -2026,6 +2964,28 @@ MeshMaterial3d(material.clone()),),
                 assert!(layout.far >= point.distance(layout.camera.translation) + 2.0);
             }
         }
+        // The shader's body aperture cannot justify putting the lens inside
+        // actual tall grass. The same shot is eligible above those blade tops.
+        let eye = layout.camera.translation;
+        state.frozen.as_mut().unwrap().grass_lens_blockers = StaticBlockers::new(vec![Bounds {
+            min: eye - Vec3::splat(0.5), max: eye + Vec3::new(0.5, 2.0, 0.5),
+        }]);
+        let mut grass_trial = layout.clone();
+        assert!(!state.constrain_camera(&mut grass_trial, bodies, viewport));
+        assert_eq!(state.reason(), Some("battle camera intersects retained grass near the lens"));
+        assert_eq!(grass_trial.body_poses, layout.body_poses);
+        state.frozen.as_mut().unwrap().grass_lens_blockers = StaticBlockers::new(vec![Bounds {
+            min: Vec3::new(eye.x - 0.5, -0.10, eye.z - 0.5),
+            max: Vec3::new(eye.x + 0.5, 0.04, eye.z + 0.5),
+        }]);
+        assert!(state.constrain_camera(&mut grass_trial, bodies, viewport));
+        let ahead = eye.lerp((layout.hit_anchors[0] + layout.hit_anchors[1]) * 0.5, 0.35);
+        state.frozen.as_mut().unwrap().grass_lens_blockers = StaticBlockers::new(vec![Bounds {
+            min: ahead - Vec3::splat(0.2), max: ahead + Vec3::splat(0.2),
+        }]);
+        assert!(!state.constrain_camera(&mut grass_trial, bodies, viewport));
+        assert_eq!(state.reason(), Some("foreground grass obscures the battle composition"));
+        state.frozen.as_mut().unwrap().grass_lens_blockers = StaticBlockers::default();
         // An omitted object crossing the entire scene blocks every view. No
         // alternate camera may turn that missing evidence into a visible hole.
         state.frozen.as_mut().unwrap().omitted.push(Bounds {
@@ -2051,6 +3011,71 @@ MeshMaterial3d(material.clone()),),
         assert_eq!(trial.camera, preferred.camera, "the explicit trial uses the proven lower view");
         assert_eq!(trial.body_poses, primary.body_poses);
         assert_eq!(trial.hit_anchors, primary.hit_anchors);
+        let body_distance = bodies.into_iter().zip(trial.body_poses)
+            .flat_map(|(body, pose)| body.unwrap().corners(pose.unwrap()))
+            .map(|point| point.distance(trial.camera.translation)).fold(0.0_f32, f32::max);
+        assert!(trial.far >= body_distance + 20.0, "complete map scenery should survive behind the battle");
+        let wall = trial.camera.translation.lerp(trial.hit_anchors[0], 0.5);
+        state.frozen.as_mut().unwrap().static_blockers.push(Bounds {
+            min: wall - Vec3::splat(0.3), max: wall + Vec3::splat(0.3),
+        });
+        let mut occluded = trial.clone();
+        assert!(!state.constrain_camera(&mut occluded, bodies, viewport),
+            "genuine terrain cannot be accepted while it hides a Pokémon");
+        assert_eq!(state.reason(), Some("static terrain occludes a battler"));
+        assert_eq!(occluded.body_poses, trial.body_poses);
+        state.frozen.as_mut().unwrap().static_blockers.clear();
+        assert!(state.constrain_camera(&mut trial, bodies, viewport));
+        let mut neutral = bodies[0].unwrap();
+        neutral.visual_bounds = None;
+        let corner = neutral.corners(trial.body_poses[0].unwrap()).into_iter()
+            .filter(|point| point.y > anchors[0].y + 0.25)
+            .max_by(|a, b| a.distance_squared(trial.hit_anchors[0])
+                .total_cmp(&b.distance_squared(trial.hit_anchors[0]))).unwrap();
+        let edge = trial.camera.translation.lerp(corner, 0.85);
+        let edge_blocker = Bounds { min: edge - Vec3::splat(0.02), max: edge + Vec3::splat(0.02) };
+        assert!(!edge_blocker.segment(trial.camera.translation, trial.hit_anchors[0]));
+        state.frozen.as_mut().unwrap().static_blockers.push(edge_blocker);
+        assert!(!state.constrain_camera(&mut trial, bodies, viewport),
+            "a clear center cannot excuse scenery clipping a body edge");
+        assert_eq!(state.reason(), Some("static terrain occludes a battler"));
+        state.frozen.as_mut().unwrap().static_blockers.clear();
+        assert!(state.constrain_camera(&mut trial, bodies, viewport));
+        state.frozen.as_mut().unwrap().objects.insert(Entity::from_raw_u32(2).unwrap(), FrozenObject {
+            bounds: Bounds { min: wall - Vec3::splat(0.3), max: wall + Vec3::splat(0.3) },
+            backdrop: Vec::new(),
+            surface: None,
+            faded: true, opacity: RESIDUAL_OPACITY,
+        });
+        assert!(!state.constrain_camera(&mut trial, bodies, viewport),
+            "a faded wall is still an obstruction to a readable battle shot");
+        assert_eq!(state.reason(), Some("foreground scenery obstructs the battle shot"));
+        state.frozen.as_mut().unwrap().objects.clear();
+        assert!(state.constrain_camera(&mut trial, bodies, viewport));
+        state.frozen.as_mut().unwrap().derived_stage = true;
+        let divider = (trial.hit_anchors[0] + trial.hit_anchors[1]) * 0.5;
+        state.frozen.as_mut().unwrap().static_blockers.push(Bounds {
+            min: divider - Vec3::splat(0.3), max: divider + Vec3::splat(0.3),
+        });
+        assert!(!state.constrain_camera(&mut trial, bodies, viewport));
+        assert_eq!(state.reason(), Some("scenery separates the battlers"));
+        state.frozen.as_mut().unwrap().static_blockers.clear();
+        state.frozen.as_mut().unwrap().derived_stage = false;
+        let foreground = trial.camera.translation.lerp(
+            (trial.hit_anchors[0] + trial.hit_anchors[1]) * 0.5, 0.5);
+        let divider = Bounds { min: foreground - Vec3::splat(0.3), max: foreground + Vec3::splat(0.3) };
+        assert!(trial.hit_anchors.iter().all(|point| !divider.segment(trial.camera.translation, *point)),
+            "both fighters remain individually visible in this fixture");
+        state.frozen.as_mut().unwrap().static_blockers.push(divider);
+        assert!(!state.constrain_camera(&mut trial, bodies, viewport));
+        assert_eq!(state.reason(), Some("foreground scenery divides the battle composition"));
+        state.frozen.as_mut().unwrap().static_blockers.clear();
+        let tiny = [Some(BattleBody::modeled("TEST", Vec3::new(-0.1, 0.0, -0.1), Vec3::new(0.1, 0.2, 0.1), 1.0)); 2];
+        let mut too_small = BattleSceneLayout::for_map_bodies(tiny, anchors, viewport).unwrap();
+        assert!(!state.establish_camera_at(&mut too_small, tiny, viewport),
+            "physical eligibility alone cannot accept an unreadably distant shot");
+        assert!(!state.accepted());
+        assert_eq!(state.reason(), Some("no readable low shot on checked ground"));
     }
 
     #[test]
@@ -2108,8 +3133,8 @@ MeshMaterial3d(material.clone()),),
         let world_material = crate::solid_terrain_material();
         assert_eq!(world_material.extension.cutaway.fade, Vec4::ZERO);
         let shader = include_str!("voxel_surface.wesl");
-        assert!(shader.contains("mix(shaded, vec3<f32>(0.0), clamp(cutaway.fade.y, 0.0, 1.0))"));
-        assert!(shader.contains("mix(darkened, vec3<f32>(1.0), clamp(cutaway.fade.z, 0.0, 1.0))"));
+        assert!(shader.contains("mix(shaded, vec3<f32>(0.0), clamp(terrain.cutaway.fade.y, 0.0, 1.0))"));
+        assert!(shader.contains("mix(darkened, vec3<f32>(1.0), clamp(terrain.cutaway.fade.z, 0.0, 1.0))"));
         let source = crystal_render_api::VisualBattleSourceFrame {
             frame: 0,
             bgp: 0,
@@ -2180,6 +3205,81 @@ MeshMaterial3d(material),),
             None => bytes.push(0),
         }
         bytes
+    }
+
+    #[test]
+    fn crossing_coverage_preserves_all_interior_and_exterior_volume_including_zero_thickness_walls() {
+        let authentic = AuthenticBounds { min: Vec2::splat(-2.0), max: Vec2::splat(2.0) };
+        for bounds in [
+            Bounds { min: Vec3::new(-5.0, -2.0, -4.0), max: Vec3::new(6.0, 12.0, 8.0) },
+            Bounds { min: Vec3::new(-5.0, -2.0, 1.0), max: Vec3::new(6.0, 12.0, 1.0) },
+            Bounds { min: Vec3::new(1.0, -2.0, -4.0), max: Vec3::new(1.0, 12.0, 8.0) },
+        ] {
+            let (known, exterior) = authentic.partition_coverage(bounds);
+            let known = known.unwrap();
+            assert!(authentic.contains(known));
+            assert!(!exterior.is_empty());
+            for x in 0..=20 {
+                for z in 0..=20 {
+                    for y in [bounds.min.y, bounds.max.y] {
+                        let point = Vec3::new(bounds.min.x + (bounds.max.x - bounds.min.x) * x as f32 / 20.0,
+                            y, bounds.min.z + (bounds.max.z - bounds.min.z) * z as f32 / 20.0);
+                        assert!(std::iter::once(&known).chain(exterior.iter())
+                            .any(|part| point.cmpge(part.min).all() && point.cmple(part.max).all()),
+                            "coverage lost a wall or caster at {point:?}");
+                    }
+                }
+            }
+            for part in exterior {
+                assert!(part.max.x <= authentic.min.x || part.min.x >= authentic.max.x
+                    || part.max.z <= authentic.min.y || part.min.z >= authentic.max.y);
+                assert_eq!(part.min.y, bounds.min.y);
+                assert_eq!(part.max.y, bounds.max.y);
+            }
+        }
+    }
+
+    #[test]
+    fn static_border_batch_reuses_gpu_geometry_after_cpu_retirement_with_separate_border_proof() {
+        use bevy::mesh::Indices;
+        use bevy::render::render_resource::PrimitiveTopology;
+        let (mut app, leaf, source, _, _) = app_fixture();
+        let location = app.world().resource::<BattleLocationFrame>().location.clone().unwrap();
+        let (anchors, pose, authentic) = resolve_context(
+            &location, app.world().resource::<TerrainRevisionCache>(),
+        ).unwrap();
+        let near = anchors[0] + Vec3::Y * 0.04;
+        let outside = Vec3::new(authentic.max.x + 20.0, near.y, near.z);
+        let positions: Vec<[f32; 3]> = [near, outside].into_iter().flat_map(|center|
+            [Vec3::new(-0.3, 0.0, -0.3), Vec3::new(0.3, 0.0, -0.3), Vec3::new(0.0, 0.0, 0.3)]
+                .map(|delta| pose.to_matrix().inverse().transform_point3(center + delta).to_array())
+        ).collect();
+        let mut mesh = Mesh::new(PrimitiveTopology::TriangleList, RenderAssetUsages::default());
+        mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, positions);
+        mesh.insert_attribute(Mesh::ATTRIBUTE_NORMAL, vec![[0.0, 1.0, 0.0]; 6]);
+        mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR, vec![[0.17, 0.29, 0.43, 1.0]; 6]);
+        mesh.insert_attribute(Mesh::ATTRIBUTE_UV_0, vec![[0.13, 0.91]; 6]);
+        mesh.insert_indices(Indices::U32((0..6).collect()));
+        let expected = mesh_bytes(&mesh);
+        let coverage = crate::terrain_batches::triangle_coverage(&mesh).unwrap();
+        app.world_mut().entity_mut(leaf).insert((mesh.get_aabb().unwrap(),
+            crate::terrain_batches::TerrainBatchCoverage { mesh: source.id(), sight_bounds: coverage.clone(), grass_bounds: Default::default(), bounds: coverage }));
+        app.world_mut().resource_mut::<Assets<Mesh>>().insert(source.id(), mesh);
+        let retired_cpu = app.world_mut().resource_mut::<Assets<Mesh>>().remove_untracked(source.id()).unwrap();
+        prepare(app.world_mut());
+        let frozen = app.world().resource::<EncounterTerrain>().frozen.as_ref().unwrap();
+        assert!(frozen.meshes.is_empty(), "reuse the actual GPU handle, without a second mesh");
+        assert!(app.world().get::<Children>(frozen.root).unwrap().iter().any(|child|
+            app.world().get::<Mesh3d>(child).is_some_and(|mesh| mesh.0 == source)));
+        assert!(app.world().resource::<Assets<Mesh>>().get(&source).is_none());
+        assert_eq!(mesh_bytes(&retired_cpu), expected);
+        assert_eq!(frozen.omitted.len(), 1);
+        assert!(frozen.omitted[0].min.x > authentic.max.x);
+        // A handle change cannot borrow an old batch's favorable coverage.
+        app.world_mut().get_mut::<crate::terrain_batches::TerrainBatchCoverage>(leaf).unwrap().mesh
+            = Handle::<Mesh>::default().id();
+        assert_eq!(freeze(app.world_mut(), &location).err(),
+            Some("no complete authentic terrain leaves are retained"));
     }
 
     #[test]
@@ -2341,7 +3441,7 @@ MeshMaterial3d(material),),
                 max: Vec2::splat(4.0),
             };
             let (selected, omitted) =
-                select_authentic_animated(&source, Transform::IDENTITY, authentic).unwrap();
+                select_authentic_triangles(&source, Transform::IDENTITY, authentic).unwrap();
             let (copy, aabb, bounds) = selected.unwrap();
             assert_eq!(
                 copy.indices().unwrap().iter().collect::<Vec<_>>(),
@@ -2386,7 +3486,7 @@ MeshMaterial3d(material),),
             min: Vec2::new(18.0, -12.0),
             max: Vec2::new(22.0, -8.0),
         };
-        let (selected, omitted) = select_authentic_animated(&source, pose, authentic).unwrap();
+        let (selected, omitted) = select_authentic_triangles(&source, pose, authentic).unwrap();
         let (copy, _, bounds) = selected.unwrap();
         assert_eq!(mesh_bytes(&copy), mesh_bytes(&source));
         assert!(omitted.is_empty());
@@ -2398,8 +3498,8 @@ MeshMaterial3d(material),),
         );
         invalid.insert_attribute(Mesh::ATTRIBUTE_POSITION, vec![[0.0, 0.0, 0.0]; 3]);
         invalid.insert_indices(Indices::U32(vec![0, 1, 7]));
-        assert!(select_authentic_animated(&invalid, pose, authentic).is_err());
+        assert!(select_authentic_triangles(&invalid, pose, authentic).is_err());
         invalid.insert_indices(Indices::U32(vec![0, 1]));
-        assert!(select_authentic_animated(&invalid, pose, authentic).is_err());
+        assert!(select_authentic_triangles(&invalid, pose, authentic).is_err());
     }
 }

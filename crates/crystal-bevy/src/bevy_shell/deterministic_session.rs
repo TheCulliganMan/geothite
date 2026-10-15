@@ -1019,6 +1019,8 @@ fn apply_keyboard_input(
                 jump.frame += 1;
             } else {
                 runtime_shell.visible_ledge_jump = None;
+                runtime_shell.player_walk_from = None;
+                runtime_shell.player_walk_frame_ticks = 0;
                 let overworld = &mut runtime_shell.shell.session_mut().overworld_mut();
                 overworld.player_last_runtime_tile = None;
                 overworld.player_last_tile_occupied_until_frame = 0;
@@ -1868,8 +1870,8 @@ fn apply_keyboard_input(
     }
     let direction_held = buttons.iter().any(|button| is_direction_button(*button));
     if ledge_jump_in_flight {
-        // STEP_LEDGE owns sixteen visible frames even though the ordinary
-        // walk interpolation timer reaches zero halfway through it. Keep a
+        // STEP_LEDGE owns sixteen visible frames independently of ordinary
+        // walk interpolation. Keep a
         // newly pressed corner queued for the landing instead of entering the
         // idle branch below, which would consume and discard it while input is
         // still locked. Empty frames may continue advancing independent NPCs
@@ -2333,6 +2335,13 @@ fn apply_keyboard_input(
                 runtime_shell.overworld_direction_repeat_ticks = step_ticks.saturating_sub(1);
             }
             if let Some(LedgeJumpOutcome::Jumped { from, to, .. }) = frame.ledge_jump {
+                // Keep the map's scrolling path active throughout the sixteen
+                // LCD ticks, even when ordinary walk timing would finish first.
+                // The hop's landing clears this host-frame timer so a slow
+                // renderer cannot replay the approach after the jump ends.
+                runtime_shell.player_walk_from = Some(from);
+                runtime_shell.player_walk_frame_ticks = 16;
+                runtime_shell.player_walk_total_ticks = 16;
                 runtime_shell.visible_ledge_jump = Some(VisibleLedgeJump {
                     from,
                     to,

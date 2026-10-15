@@ -81,6 +81,12 @@ pub(super) fn bounds(frame: &VisualWorldFrame) -> Vec4 {
 pub(super) fn style(frame: &VisualWorldFrame) -> Vec4 {
     if frame.map_id.as_ref() == "CeruleanGym" {
         Vec4::new(1.35, 0.10, 0.12, 0.12)
+    } else if frame.map_id.as_ref() == "IlexForest"
+        && frame.tiles.first().is_some_and(|tile| tile.source.tileset_id.as_ref() == "forest")
+    {
+        // A sheltered woodland pool has long low swells, almost no breaking
+        // wash and little open-sky reflection. Reuse the existing optical pass.
+        Vec4::new(0.55, 0.055, 0.035, 0.20)
     } else if crate::cave_water::outdoor(&frame.map_id) {
         if crate::environment_fx::coastal(frame)
             || matches!(
@@ -126,7 +132,19 @@ pub(super) fn shoreline(frame: &VisualWorldFrame) -> Option<Image> {
         let Some(tile) = tile else {
             continue;
         };
+        // The source buoy sprite floats at the water datum. Its retained
+        // horizontal plane is scenery, not an island that creates bank foam.
+        let buoy = matches!(tile.source.tileset_id.as_ref(), "johto" | "johto_modern")
+            && (0x30..=0x39).contains(&tile.source.metatile_id)
+            && tile.source.tile_index == 0x58
+            && tile.source.subtile_column < 4
+            && tile.source.subtile_row < 4;
         let wet = crate::cave_water::role_for_map(tile, &frame.map_id) != [0, 0]
+            || (buoy && matches!(
+                crate::profile::shape_for_source_on_map(&frame.map_id, &tile.source),
+                crate::profile::CellShape::PlaneAt { height }
+                    if height == crate::profile::WATER_HEIGHT
+            ))
             || matches!(
                 crate::profile::shape_for_source_on_map(&frame.map_id, &tile.source),
                 crate::profile::CellShape::Water | crate::profile::CellShape::Waterfall
@@ -255,6 +273,24 @@ mod tests {
     }
 
     #[test]
+    fn floating_buoys_do_not_create_square_shorelines() {
+        for tileset in ["johto", "johto_modern"] {
+            let mut f = frame(4, 4, |_, _| false);
+            let open_water = shoreline(&f).unwrap().data;
+            f.tiles[5].source.tileset_id = tileset.into();
+            f.tiles[5].source.metatile_id = 0x34;
+            f.tiles[5].source.tile_index = 0x58;
+            let original = f.clone();
+            assert_eq!(shoreline(&f).unwrap().data, open_water,
+                "a floating source buoy is surrounded by deep water");
+            assert_eq!(f, original, "optics retain source scenery and footing");
+            f.tiles[5].source.metatile_id = 0x01;
+            assert!(depth(&shoreline(&f).unwrap(), 5, 5) < 0.,
+                "the same byte outside the course still contributes a bank");
+        }
+    }
+
+    #[test]
     fn shore_registration_survives_scrolling_and_animation_updates() {
         let mut large = frame(16, 12, |x, _| x == 2);
         large.grid_origin = IVec2::new(20, 30);
@@ -293,6 +329,21 @@ mod tests {
         frame.tiles[0].column = 4;
         assert!(shoreline(&frame).is_none());
         assert!(shoreline(&VisualWorldFrame::default()).is_none());
+    }
+
+    #[test]
+    fn sheltered_forest_optics_require_both_map_and_source_family() {
+        let mut frame = frame(1, 1, |_, _| false);
+        frame.map_id = "IlexForest".into();
+        let ordinary = style(&frame);
+        frame.tiles[0].source.tileset_id = "forest".into();
+        let original = frame.clone();
+        let sheltered = style(&frame);
+        assert!(sheltered.x < ordinary.x && sheltered.y < ordinary.y);
+        assert!(sheltered.z < ordinary.z && sheltered.w < ordinary.w);
+        assert_eq!(frame, original);
+        frame.map_id = "UnionCave1F".into();
+        assert_eq!(style(&frame).w, 0.);
     }
 
     #[test]

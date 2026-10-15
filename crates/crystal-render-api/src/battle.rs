@@ -40,6 +40,9 @@ pub struct VisualBattleBattler {
     pub side: VisualBattleSide,
     /// Exact currently presented identity, including visible Transform.
     pub species_id: Arc<str>,
+    /// One-based A..Z form selected by the currently presented Unown's DVs.
+    /// None for other species or when the source does not establish a form.
+    pub unown_form: Option<u8>,
     /// Listed physical dimension from the currently presented species' Pokédex
     /// entry, in metres. Some long-bodied species are measured along the body.
     /// None means the content does not establish a physical size.
@@ -59,6 +62,27 @@ pub struct VisualBattleBattler {
     /// Actual normal and currently presented palettes from the supplied pack.
     /// A shiny model requires these anchors; absence retains source art.
     pub model_palette: Option<VisualPokemonModelPalette>,
+}
+
+impl VisualBattleBattler {
+    /// Exact geometry cache identity. Species names and Pokédex measurements
+    /// remain independent of this presentation-only form selection.
+    pub fn model_id(&self) -> &str {
+        const UNOWN: [&str; 26] = [
+            "UNOWN_A", "UNOWN_B", "UNOWN_C", "UNOWN_D", "UNOWN_E", "UNOWN_F",
+            "UNOWN_G", "UNOWN_H", "UNOWN_I", "UNOWN_J", "UNOWN_K", "UNOWN_L",
+            "UNOWN_M", "UNOWN_N", "UNOWN_O", "UNOWN_P", "UNOWN_Q", "UNOWN_R",
+            "UNOWN_S", "UNOWN_T", "UNOWN_U", "UNOWN_V", "UNOWN_W", "UNOWN_X",
+            "UNOWN_Y", "UNOWN_Z",
+        ];
+        if self.species_id.eq_ignore_ascii_case("UNOWN") {
+            self.unown_form.and_then(|form| form.checked_sub(1))
+                .and_then(|index| UNOWN.get(usize::from(index))).copied()
+                .unwrap_or("UNOWN_UNRESOLVED")
+        } else {
+            &self.species_id
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -359,6 +383,24 @@ impl VisualBattleFrame {
 mod tests {
     use super::*;
     #[test]
+    fn unown_geometry_keys_require_valid_forms_and_preserve_actual_species() {
+        let mut source = frame();
+        let battler = source.battlers[0].as_mut().unwrap();
+        battler.species_id = Arc::from("UNOWN");
+        for letter in 1..=26 {
+            battler.unown_form = Some(letter);
+            assert_eq!(battler.model_id(), format!("UNOWN_{}", char::from(b'A' + letter - 1)));
+            assert_eq!(battler.species_id.as_ref(), "UNOWN");
+        }
+        for unknown in [None, Some(0), Some(27), Some(u8::MAX)] {
+            battler.unown_form = unknown;
+            assert_eq!(battler.model_id(), "UNOWN_UNRESOLVED");
+        }
+        battler.species_id = Arc::from("CYNDAQUIL");
+        assert_eq!(battler.model_id(), "CYNDAQUIL");
+    }
+
+    #[test]
     fn physical_dimensions_reject_invalid_values_without_inventing_missing_data() {
         let mut valid = frame();
         assert_eq!(valid.validate(), Ok(()));
@@ -378,6 +420,7 @@ mod tests {
                 Some(VisualBattleBattler {
                     side: VisualBattleSide::Player,
                     species_id: Arc::from("CYNDAQUIL"),
+                    unown_form: None,
                     pokedex_size_m: Some(0.508),
                     party_index: Some(2),
                     texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(4), std::marker::PhantomData),

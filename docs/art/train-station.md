@@ -3,10 +3,10 @@
 Both `GoldenrodMagnetTrainStation` and `SaffronMagnetTrainStation` use the same
 complete five-block train drawing: `$10,$11,$15,$12,$13`, at source-cell `(8,8)`.
 The original faceted kit reconstructs the tapered double-ended train as one
-coherent 160×32-source-pixel object with a 26.2-pixel rise. Its ivory folded cab
+coherent 160×32-source-pixel object with a 26.2-pixel rise. Its ivory rounded cab
 ends, dark sloped windscreens, red lower belt, framed blue glazing, suspended
 magnetic shoes, rear maintenance sides and quiet roof vents have real closed
-geometry. All 82 named parts are independently editable. No source pixels,
+geometry. All 242 parts are independently editable. No source pixels,
 textures, imported meshes or game data are embedded in the asset.
 
 The earlier 128-cell residual was a plot count for the four end blocks across
@@ -34,11 +34,12 @@ append pass rechecks the complete guard and the native ground before mutation.
 
 The two actual door/warp positions are movement tiles `(6,5)` and `(11,5)`.
 Within the model these are the 16×16 footprints `x32..48` and `x112..128`, both
-`z16..32`. Every triangle is outside those footprints at every height. This
-includes the roof, underside and all jambs. The rear half continues behind the
-open recesses; the roof is deliberately cut back above the source door areas so
-that the original live door drawing stays visible. No solid threshold, opaque
-panel or glass spans either opening. The central gate/platform aisle is outside
+`z16..32`. Geometry stays outside these footprints below the 21-pixel door
+header. A continuous curved crown spans both portals, preserving the tubular
+body silhouette. Thin seals replace the old full-depth pillars. Four flush
+plug-door leaves sit slid sideways alongside the apertures on slim tracks;
+this is the stationary open-door pose, not timed opening/closing animation.
+No threshold or closed door panel covers either boarding opening. The central gate/platform aisle is outside
 ownership and geometry. Native door and rail textures pass through the ordinary
 source renderer at their original position; they are never baked into this kit.
 
@@ -52,15 +53,25 @@ The separate `VisibleMagnetTrain` travel animation is not changed or replaced.
 
 ## Files and checks
 
+Goldenrod's blue fixtures are four ticket boxes. The complete east-wall bank
+across source blocks `$2c/$2d` resolves as one guarded drawing, with four upright
+blue cabinets facing west into the waiting room. Screens, controls and ticket
+hatches use live source pigments; beverage bodies and labels are omitted from
+the shared cabinet geometry. An incomplete source drawing or unknown material
+keeps the original source rendering. Saffron does not acquire this bank.
+The paired Goldenrod capture in `target/kanto-resume/station-ticket-review/`
+shows the four cabinets and records `state_preserved=true`; footing and
+collision are unchanged.
+
 - `tools/build-train-station.py` generates the runtime model and editable scene
   from the same original parts, reusing the existing Cable Club geometry/export
-  infrastructure and deterministic gzip/base64 runtime format
+  infrastructure and canonical plain JSON model format
 - `crates/crystal-voxel-view/src/mesh/train_station_source.rs` is the pure matcher;
   `train_station_scenery.rs` handles custom profiles, reservation and mesh append
 - `crates/crystal-voxel-view/models/train_station/magnet_train_shell.mesh.json`
   is decoded and cached once by `train_station_models.rs`
-- `art/johto/source/manifest.json` stores the hash-verified editable
-  `train-station.blend` through bounded ordinary text chunks
+- `art/johto/source/manifest.json` records the hash-verified editable native
+  gzip `train-station.blend` file and its canonical runtime-model hash
 
 Run the focused geometry/source checks:
 
@@ -71,9 +82,17 @@ python tools/check-train-station-source.py \
 cargo test --locked -p crystal-voxel-view --lib train_station_scenery
 ```
 
-The geometry check proves 2,232 triangles, 82 positive-volume watertight named
-parts, both fully empty boarding footprints, generator/runtime identity and
-editable-source reconstruction. The external-pack check compiles the production
+The runtime geometry check proves 4,544 triangles, 242 positive-volume watertight
+named parts, clear boarding portals below the continuous crown, four sideways
+door leaves and generator/runtime identity. Run it with `--runtime-only` for
+the latest tubular model. The editable scene was regenerated and opened in
+Blender: all242 meshes, vertices, faces, material bindings and colors were
+verified against the generator. The generated runtime document differs only
+in float64 normal rounding (maximum2.23e-16); every runtime float32 normal is
+identical. The tracked runtime model is unchanged. The scene's native gzip
+archive and runtime-model hash pass the full checker. Timed door motion remains
+pending; the scene preserves the stationary open pose.
+The external-pack check compiles the production
 pure matcher with `rustc`, tests every guard cell against art, block, phase,
 atlas and reservation changes, and covers wrong maps, missing/custom-owned native
 ground, clipping, padding and source origin. It also verifies the actual source

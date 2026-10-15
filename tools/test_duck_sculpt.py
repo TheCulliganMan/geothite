@@ -3,20 +3,21 @@
 import json,unittest
 from pathlib import Path
 from duck_sculpt import sculpture,HEIGHT
+from duck_glb import read_psyduck,read_golduck,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 
 class DuckTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={n:json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in ('psyduck','golduck')}
+    def setUpClass(cls):cls.models={'psyduck':read_psyduck(ROOT/'psyduck.glb'),'golduck':read_golduck(ROOT/'golduck.glb')}
 
     def test_closed_connected_oriented_anatomy(self):assert_closed_models(self,self.models)
     def test_shading_matches_real_triangle_winding(self):assert_model_shading(self,self.models)
 
     def test_recipe_grounding_height_and_single_web_parts(self):
         for n,m in self.models.items():
-            self.assertEqual(m,sculpture(n));names=[p['part'] for p in m['primitives']]
+            self.assertEqual(geometry_digest(m),geometry_digest(sculpture(n)));names=[p['part'] for p in m['primitives']]
             self.assertEqual(len(names),len(set(names)))
             self.assertEqual(sum(x.startswith('Body /') for x in names),1)
             self.assertEqual(sum(x.startswith('Foot / single') for x in names),2)

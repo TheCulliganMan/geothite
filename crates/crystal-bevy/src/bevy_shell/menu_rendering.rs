@@ -4152,6 +4152,7 @@ struct RenderEntityQueries<'w, 's> {
     events: Query<'w, 's, Entity, With<EventMarker>>,
     prompts: Query<'w, 's, Entity, With<FieldPromptMarker>>,
     field_commands: Query<'w, 's, Entity, With<FieldCommandMarker>>,
+    healing_effects: Query<'w,'s,Entity,With<HealMachineWorldSprite>>,
     scene_dialogs: Query<'w, 's, Entity, With<SceneDialogMarker>>,
     dialog_glyphs: Query<
         'w,
@@ -4472,6 +4473,7 @@ fn render_playfield(
         events,
         prompts,
         field_commands,
+        healing_effects,
         scene_dialogs,
         mut dialog_glyphs,
         dialog_frame_tiles,
@@ -5355,7 +5357,9 @@ fn render_playfield(
     // sprites, and images) for each character was the source of the 100%+
     // CPU spikes and the apparent one-FPS runtime. Refresh only the dialog
     // layer when the world itself is unchanged.
-    let dialog_only_update = rendered.title_active == false
+    let stale_healing_effects=runtime_shell.visible_heal_machine.is_none()
+        &&healing_effects.iter().next().is_some();
+    let dialog_only_update = !stale_healing_effects && rendered.title_active == false
         && visual_world_mode_unchanged
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         && rendered.tile == Some(snapshot.overworld.tile)
@@ -5504,7 +5508,7 @@ fn render_playfield(
     // changing any pixels in the overworld. Retain the existing map, player,
     // and object entities in that case; rebuilding them here was the other
     // major source of frame stalls after the tile layer was composited.
-    let world_only_update = !rendered.title_active
+    let world_only_update = !stale_healing_effects && !rendered.title_active
         && visual_world_mode_unchanged
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         && rendered.tile == Some(snapshot.overworld.tile)
@@ -6246,6 +6250,18 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         });
     }
 
+    // Resolve immutable tileset art once per source map. The visual halo can
+    // contain thousands of subtiles; hashing the complete palette key for every
+    // texture, animation and priority lookup dominated walking CPU profiles.
+    // Keep exact palette/time identity at this boundary, then borrow that same
+    // art throughout this scan without changing source or animation selection.
+    let source_art_by_map: HashMap<_, _> = render_sources
+        .iter()
+        .map(|source| {
+            (source.map.map_name.as_str(), tileset_art.cache.get(&source.art_key))
+        })
+        .collect();
+
     // Keep the map layer as one retained sprite instead of 360 independent
     // Bevy entities.  The old per-tile entity churn was the dominant cost on
     // every camera step and was the reason the shell could fall to one FPS.
@@ -6290,6 +6306,10 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             let source_map = source.map;
             let source_tileset = source.tileset;
             let source_art_key = &source.art_key;
+            let source_art = source_art_by_map
+                .get(source.map.map_name.as_str())
+                .copied()
+                .flatten();
             let (block, sub_x, sub_y) = if source_x >= 0
                 && source_y >= 0
                 && source_x < source.width
@@ -6319,7 +6339,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                 )
             };
             let Some((source_tile_index, tile_handle)) =
-                tileset_art.cache.get(source_art_key).and_then(|art| {
+                source_art.and_then(|art| {
                     let offset = usize::from(block)
                         .checked_mul(METATILE_TILE_COUNT)?
                         .checked_add(sub_y.checked_mul(RENDER_METATILE_WIDTH as usize)?)?
@@ -6353,7 +6373,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             };
             if inside_scroll_surface {
                 viewport_tile_handles.push(tile_handle.clone());
-                if let Some(art) = tileset_art.cache.get(source_art_key) {
+                if let Some(art) = source_art {
                     let mut tile = art.transition_tiles[source_tile_index as usize].clone();
                     // Animated tiles retain their current frame. Prefer the
                     // source index for equal colours, including colour zero.
@@ -6435,7 +6455,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                         tile_index: u16::from(source_tile_index),
                     },
                     texture: tile_handle.clone(),
-                    animation_frames: tileset_art.cache.get(source_art_key).and_then(|art| {
+                    animation_frames: source_art.and_then(|art| {
                         art.animated_tiles
                             .get(&(source_tile_index as usize))
                             .filter(|animation| !animation.frames.is_empty())
@@ -6445,9 +6465,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                 });
             }
             let priority_spec = if priority {
-                let Some(handle) = tileset_art
-                    .cache
-                    .get(source_art_key)
+                let Some(handle) = source_art
                     .and_then(|art| art.priority_tile_handle(block, sub_x, sub_y))
                 else {
                     record_visible_render_error(
@@ -6593,6 +6611,14 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     }
     #[cfg(any(test, feature = "voxel-view"))]
     {
+        rendered.visual_jump_ledges = match terrain_ledges::collect(
+            &render_sources, runtime_shell.shell.runtime().data()) {
+            Ok(ledges) => ledges,
+            Err(error) => {
+                record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                return;
+            }
+        };
         rendered.visual_tiles_revision = visual_tile_grid_is_complete(&visual_tiles)
             .then(|| visual_terrain_revision(map_visual_key, (start_x, start_y), &visual_tiles));
         rendered.visual_tiles = visual_tiles;
@@ -7200,7 +7226,7 @@ next_transform,),
             }
             if runtime_debug_overlays_enabled() {
                 let (object_tile_x, object_tile_y) = render_tile_playfield_position(view_x, view_y);
-                spawn_object_label(&mut commands, object, object_tile_x, object_tile_y);
+                spawn_object_label(&mut commands, object, object_tile_x, object_tile_y, &model_source_id);
             }
         }
         if retain_object_sprites {
@@ -8275,6 +8301,10 @@ Transform::from_xyz(0.0, 0.0, z),),
     }
 
     rendered.map_name = Some(snapshot.overworld.map_name.clone());
+    rendered.visual_lighting = crystal_render_api::VisualWorldLighting::from_source_palette(effective_time_of_day);
+    rendered.visual_clock_enabled = map.attributes.time_of_day.is_none()
+        && map.attributes.environment.as_deref().is_some_and(|environment|
+            environment.eq_ignore_ascii_case("town") || environment.eq_ignore_ascii_case("route"));
     rendered.tile = Some(snapshot.overworld.tile);
     rendered.world_key = Some(world_key);
     rendered.position_key = Some(position_key);

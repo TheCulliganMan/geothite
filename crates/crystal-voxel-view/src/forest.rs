@@ -2,10 +2,35 @@
 
 use crystal_render_api::VisualTileSource;
 
-use crate::profile::{CellShape, JUMP_LEDGE_HEIGHT, LedgeFace, SolidKind};
+use crate::profile::{CellShape, LedgeFace, SolidKind, JUMP_LEDGE_HEIGHT};
 
 const FOREST_TILESET: &str = "forest";
 const FOREST_GROUND_TILE: u16 = 0x05;
+
+/// Exact dry samples of the forest pond rim verified against the local pack.
+/// The water and unknown art retain their original roles. Only presentation
+/// changes: the bank top stays at zero and its lip uses the existing water drop.
+pub(crate) fn forest_shore_shape(source: &VisualTileSource) -> Option<CellShape> {
+    if source.tileset_id.as_ref() != FOREST_TILESET
+        || source.subtile_column >= 4
+        || source.subtile_row >= 4
+    {
+        return None;
+    }
+    let tile = match (
+        source.metatile_id,
+        source.subtile_column,
+        source.subtile_row,
+    ) {
+        (0x03, _, 0) | (0x07, 1..=3, 0) | (0x0d, 0..=2, 0) => 0x2a,
+        (0x07, 0, 0) => 0x09,
+        (0x07, 0, 1..=3) | (0x0a, 0, _) => 0x1b,
+        (0x0b, 3, _) | (0x0d, 3, 1..=3) => 0x19,
+        (0x0d, 3, 0) => 0x0b,
+        _ => return None,
+    };
+    (source.tile_index == tile).then_some(CellShape::ShoreBand)
+}
 
 /// Resolve the connected `$18-$1c` Forest jump-ledge drawing.
 ///
@@ -90,6 +115,37 @@ mod tests {
             subtile_row: row,
             tile_index: FOREST_GROUND_TILE,
         }
+    }
+
+    #[test]
+    fn pond_rim_requires_exact_source_samples_and_keeps_water_unclaimed() {
+        for (block, x, y, tile) in [
+            (0x03, 2, 0, 0x2a),
+            (0x07, 0, 0, 0x09),
+            (0x07, 0, 2, 0x1b),
+            (0x0a, 0, 3, 0x1b),
+            (0x0b, 3, 1, 0x19),
+            (0x0d, 3, 0, 0x0b),
+            (0x0d, 2, 0, 0x2a),
+        ] {
+            let mut s = source(block, x, y);
+            s.tile_index = tile;
+            assert_eq!(forest_shore_shape(&s), Some(CellShape::ShoreBand));
+            assert_eq!(crate::profile::shape_for_source(&s), CellShape::ShoreBand);
+            s.tile_index = 0x14;
+            assert_eq!(forest_shore_shape(&s), None);
+            assert_eq!(crate::profile::shape_for_source(&s), CellShape::Water);
+            s.tile_index = tile;
+            s.tileset_id = "johto".into();
+            assert_eq!(forest_shore_shape(&s), None);
+        }
+        let mut s = source(0x03, 2, 1);
+        s.tile_index = 0x2a;
+        assert_eq!(
+            forest_shore_shape(&s),
+            None,
+            "same byte outside the rim is untouched"
+        );
     }
 
     #[test]

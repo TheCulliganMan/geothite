@@ -3,17 +3,18 @@
 import json,unittest
 from pathlib import Path
 from aipom_sculpt import sculpture,HEIGHT
+from aipom_glb import read_aipom,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class AipomTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'aipom.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_aipom(ROOT/'aipom.glb');cls.ps=cls.m['primitives']
  def find(self,prefix):return next(p for p in self.ps if p['part'].startswith(prefix))
  def test_closed_connected_oriented_parts(self):assert_closed_models(self,{'aipom':self.m})
  def test_normals_follow_stored_triangles(self):assert_model_shading(self,{'aipom':self.m})
  def test_regeneration_height_budget_and_distinct_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
   self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),35000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for prefix,n in (('Tail finger /',3),('Tail fingertip /',3),('Ear / large',2),('Tuft /',3),('Grin / fitted tooth division',4)):self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n)
  def overlap(self,a,b):

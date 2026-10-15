@@ -90,13 +90,13 @@ fn prepare_surf_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRun
         .as_ref()
         .context("Surf preview water encounter table")?;
     anyhow::ensure!(
-        encounters.water_rate == Some(2)
+        encounters.water_rate == Some(5)
             && [&water.morning, &water.day, &water.night]
                 .into_iter()
                 .all(|slots| slots
                     .iter()
                     .map(|slot| (slot.species.as_str(), slot.level))
-                    .eq([("POLIWAG", 25), ("POLIWAG", 20), ("REMORAID", 20)])),
+                    .eq([("POLIWAG", 25), ("POLIWAG", 20), ("POLIWHIRL", 25)])),
         "Surf preview requires the unchanged source water slots and rate"
     );
     shell.shell.add_party_pokemon(

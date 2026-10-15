@@ -31,6 +31,40 @@ class ChikoritaTests(unittest.TestCase):
     def setUpClass(cls):
         cls.blob=ASSET.read_bytes();cls.m=Model(cls.blob)
 
+    def test_axis_aligned_geometry_serializes_geometric_zero(self):
+        # The stored asset and recipe must agree despite tiny floating-point residuals.
+        model = sculpture.sculpt()
+        self.assertEqual(self.blob, author.export_chikorita(model))
+        for part in model['primitives']:
+            for key in ('positions', 'normals'):
+                self.assertTrue(all(value == 0. or abs(value) >= 1e-12
+                                    for value in part[key]), (part['part'], key))
+        for points in self.m.vertices + self.m.normals:
+            self.assertTrue(all(value == 0. or abs(value) >= 1e-12
+                                for point in points for value in point))
+
+    def test_stored_attack_keys_match_author_recipe(self):
+        m=self.m
+        animation=next(a for a in m.doc['animations'] if a['name'].endswith('.attack'))
+        for channel in animation['channels']:
+            joint=channel['target']['node']
+            index=animation['samplers'][channel['sampler']]['output']
+            count=m.doc['accessors'][index]['count']
+            keys=[v for i in range(count)
+                  for v in author.quaternion_xyz(*author.pose_angles('attack',i/(count-1))[joint])]
+            self.assertEqual(raw_accessor(m.doc,m.binary,index),author.packed(keys,5126),joint)
+
+    def test_attack_braces_at_source_onset_with_follow_through(self):
+        m=self.m
+        for joint in (1, 2):
+            samples=[m.rotations('attack',i/100)[joint][0] for i in range(101)]
+            for step in range(1,26):
+                self.assertGreater(samples[step],0.,(joint,step))
+            peak=max(samples)
+            self.assertGreater(samples[10],peak*.40,joint)
+            self.assertGreater(samples[20],peak*.90,joint)
+            self.assertLess(samples[80],peak*.25,joint)
+
     def test_canonical_rebuild_and_bounded_complete_schema(self):
         m=self.m;d=m.doc
         self.assertEqual(author.export_chikorita(),self.blob)

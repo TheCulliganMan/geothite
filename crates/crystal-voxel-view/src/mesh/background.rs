@@ -108,6 +108,11 @@ fn dominant_flat_source(
                 continue;
             }
             let source = &cells[index].source;
+            // Object masking changes its classification to Flat but retains
+            // the original atlas pixels. That is never a ground sample.
+            if source.tile_index == u16::MAX {
+                continue;
+            }
             let key = (
                 source.metatile_id,
                 source.subtile_column,
@@ -188,6 +193,21 @@ fn repeated_edge_coordinate(coordinate: isize, length: usize) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn masked_tree_art_cannot_become_the_dominant_ground_tile() {
+        let mut frame = test_frame_with_grid(40, 40);
+        for tile in &mut frame.tiles {
+            tile.source = super::super::tests::source_with_tile(u16::MAX, 0, 0, u16::MAX);
+        }
+        frame.tiles[799].source = super::super::tests::source_with_tile(2, 0, 0, 5);
+        let cells = frame.tiles.iter().collect::<Vec<_>>();
+        let shapes = vec![CellShape::Flat; cells.len()];
+        assert_eq!(dominant_flat_source(40, 40, &cells, &shapes), Some((39, 19)));
+        frame.tiles[799].source.tile_index = u16::MAX;
+        assert_eq!(dominant_flat_source(40, 40,
+            &frame.tiles.iter().collect::<Vec<_>>(), &shapes), None);
+    }
 
     #[test]
     fn dominant_source_ties_are_stable_and_retain_ground_identity() {
@@ -354,6 +374,7 @@ mod tests {
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_id: Arc::from("test"),
             source_map_size_core_tiles: None,
+            jump_ledges: Default::default(),
             map_texture: Handle::default(),
             center: Vec2::ZERO,
             viewport_size: Vec2::new(width as f32 * 8.0, height as f32 * 8.0),

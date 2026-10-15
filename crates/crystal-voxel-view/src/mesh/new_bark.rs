@@ -3,6 +3,7 @@
 //! The pack remains authoritative: source cells place scenery, the original
 //! ground/footing stays in place, and this module never reads or edits collision.
 use super::*;
+use bevy::prelude::Vec2;
 use crate::new_bark_models::{ModelKind, model};
 
 const MAP: &str = "NewBarkTown";
@@ -11,7 +12,7 @@ pub(super) use crate::new_bark_models::supports_map;
 /// Outdoor grove coverage is independent of the narrower verified building kit.
 pub(super) fn supports_grove(map: &str) -> bool {
     map.starts_with("Route") || map.ends_with("City") || map.ends_with("Town")
-        || matches!(map, "LakeOfRage" | "RuinsOfAlphOutside" | "SilverCaveOutside")
+        || matches!(map, "LakeOfRage" | "RuinsOfAlphOutside" | "SilverCaveOutside" | "IlexForest")
 }
 
 
@@ -411,6 +412,41 @@ pub(super) fn append_building(
     placement: BuildingPlacement,
     claimed: &mut [bool],
 ) -> bool {
+    append_building_with_samples(mesh,cells,shapes,geometry,map,placement,claimed,None)
+}
+
+pub(super) fn service_wall_color(cells: &[&VisualTile], g: &GridGeometry, p: BuildingPlacement,
+    images: &TerrainImageSamples) -> Option<[[f32;4];2]> {
+    let mut colors=std::collections::BTreeMap::<[u8;3],usize>::new();
+    // Only the two complete brick courses above the door/plaque. Exclude
+    // timber edge posts, roof paint, signage and the floor/doorway palette.
+    for row in p.row+p.roof_rows..p.row+p.roof_rows+2 {
+        for column in p.column+2..p.column+p.width-2 {
+            for pixel in tile_rgba(images,cells[row*g.width+column]).ok()?.chunks_exact(4) {
+                if pixel[3]==255 {*colors.entry([pixel[0],pixel[1],pixel[2]]).or_default()+=1;}
+            }
+        }
+    }
+    if !(2..=4).contains(&colors.len()) {return None;}
+    // The colored brick field, rather than its pale mortar, supplies paint.
+    // Neutral source walls remain neutral; no town-specific RGB is invented.
+    let (&color,_)=colors.iter().max_by_key(|(c,n)| {
+        (c.iter().max().unwrap()-c.iter().min().unwrap(),**n)
+    })?;
+    let (&mortar,_)=colors.iter().max_by_key(|(c,_)|
+        u32::from(c[0])*2126+u32::from(c[1])*7152+u32::from(c[2])*722)?;
+    let linear=|color:[u8;3]| {
+        let rgb=color.map(|v| {let s=f32::from(v)/255.;if s<=0.04045 {s/12.92} else {((s+0.055)/1.055).powf(2.4)}});
+        [rgb[0],rgb[1],rgb[2],1.]
+    };
+    Some([linear(color),linear(mortar)])
+}
+
+pub(super) fn append_building_with_samples(
+    mesh: &mut TerrainMeshData, cells: &[&VisualTile], shapes: &[CellShape],
+    geometry: &GridGeometry, map: &str, placement: BuildingPlacement,
+    claimed: &mut [bool], images: Option<&TerrainImageSamples>,
+) -> bool {
     if map == "VioletCity" && sprout_platform(cells, geometry, placement) {
         let appended = append_sprout_platform(mesh, cells, shapes, geometry, placement, claimed);
         if appended {
@@ -431,6 +467,30 @@ pub(super) fn append_building(
     let Some(descriptor) = building_model(map, cells, geometry, placement) else {
         return false;
     };
+    let source_colors=if matches!(descriptor.kind,ModelKind::House|ModelKind::Pokecenter|ModelKind::Mart) {
+        if let Some(images)=images {
+            let roof=modeled_exteriors::cabin_roof_palette(cells,geometry,placement,images);
+            let colors=if descriptor.kind==ModelKind::House {
+                roof.map(|roof|(roof,None))
+            } else {
+                roof.zip(service_wall_color(cells,geometry,placement,images))
+                    .map(|(roof,wall)|(roof,Some(wall)))
+            };
+            let Some(colors)=colors else {
+                // Unavailable source paint stays visible as its original drawing.
+                // Never replace it with a guessed red roof or cream facade.
+                for row in placement.row..placement.row+placement.height {
+                    for column in placement.column..placement.column+placement.width {
+                        let (w,e,n,s)=geometry.bounds(column,row);
+                        append_top(&mut mesh.textured,[w,e,n,s],0.,geometry.uv(column,row));
+                        claimed[row*geometry.width+column]=true;
+                    }
+                }
+                return true;
+            };
+            Some(colors)
+        } else {None}
+    } else {None};
     let Some(ground) = authored_ground_cell(cells, shapes, placement.ground_tile_index) else {
         return false;
     };
@@ -457,8 +517,19 @@ pub(super) fn append_building(
         geometry.tile_height * 2.0,
         Some(west + descriptor.door_column as f32 * geometry.tile_width),
     );
+    if let Some((roof,wall))=source_colors {
+        model(descriptor.kind).recolor_fitted_roof(&mut mesh.solid,cutaway_start,roof);
+        if let Some(wall)=wall {
+            model(descriptor.kind).recolor_fitted_service_wall(&mut mesh.solid,cutaway_start,wall);
+        }
+    }
     // Mark only the successfully appended building. The backing was emitted
     // above; later terrain, trees and props must keep their ordinary depth.
+    mesh.rigid_buildings.push(super::rigid_buildings::Building {
+        vertices: cutaway_start..mesh.solid.positions.len(),
+        doorway: Vec2::new(west + descriptor.door_column as f32 * geometry.tile_width,
+            south - geometry.tile_height * 0.5),
+    });
     mesh.solid
         .cutaway_ranges
         .push(cutaway_start..mesh.solid.positions.len());
@@ -632,7 +703,9 @@ fn sign_box(mesh: &mut SurfaceMeshData, bounds: [f32; 6], color: [f32; 4]) {
 fn mixed_tree_origins(metatile: u16) -> &'static [(u8, u8)] {
     match metatile {
         0x3c => &[(0, 0)],
+        0x3d => &[(2, 0)],
         0x3e => &[(0, 2)],
+        0x3f => &[(2, 2)],
         0x5b => &[(0, 0)],
         0x5c => &[(0, 0), (2, 0), (0, 2)],
         0x5d => &[(0, 0), (2, 0)],
@@ -666,10 +739,13 @@ fn complete_mixed_tree(
         return false;
     }
     let first = &cells[placement.row * geometry.width + placement.column].source;
-    if first.tileset_id.as_ref() != "johto"
-        || !mixed_tree_origins(first.metatile_id)
-            .contains(&(first.subtile_column, first.subtile_row))
-    {
+    let origins: &[(u8, u8)] = match (first.tileset_id.as_ref(), first.metatile_id) {
+        ("johto", block) => mixed_tree_origins(block),
+        ("johto_modern", 0x2f) => &[(0, 0), (2, 0)],
+        ("johto_modern", 0x3b) => &[(0, 2), (2, 2)],
+        _ => &[],
+    };
+    if !origins.contains(&(first.subtile_column, first.subtile_row)) {
         return false;
     }
     let art = [[0x1e, 0x1f], [0x3e, 0x3f]];
@@ -723,13 +799,28 @@ pub(super) fn tree_placements(
     result
 }
 
-fn modeled_tree_ground(
+pub(super) fn modeled_tree_ground(
     map: &str,
     cells: &[&VisualTile],
     shapes: &[CellShape],
     geometry: &GridGeometry,
     placement: TreePlacement,
 ) -> Option<usize> {
+    if supports_grove(map) && complete_mixed_tree(cells, geometry, placement) {
+        return grove_ground_sample(cells, shapes, geometry, placement);
+    }
+    // Ilex uses its own source drawing, but the same production grove recipe
+    // and shared geometry as Johto. Validate all four cells before claiming it.
+    if map == "IlexForest" && placement.width == 2 && placement.height == 2
+        && placement.column + 2 <= geometry.width && placement.row + 2 <= geometry.height
+        && (0..2).all(|y| (0..2).all(|x| {
+            let source = &cells[(placement.row + y) * geometry.width + placement.column + x].source;
+            source.tileset_id.as_ref() == "forest"
+                && source.tile_index == 0x26 + y as u16 * 0x10 + x as u16
+        }))
+    {
+        return modeled_exteriors::tree_ground(map, cells, shapes, geometry, placement);
+    }
     if !supports_grove(map)
         || placement.width != 2
         || !matches!(placement.height, 2 | 4)
@@ -753,7 +844,19 @@ fn modeled_tree_ground(
     {
         return None;
     }
-    authored_ground_cell(cells, shapes, placement.ground_tile_index)
+    grove_ground_sample(cells, shapes, geometry, placement)
+}
+
+fn grove_ground_sample(cells: &[&VisualTile], shapes: &[CellShape],
+    geometry: &GridGeometry, placement: TreePlacement) -> Option<usize> {
+    let tileset=&cells[placement.row*geometry.width+placement.column].source.tileset_id;
+    cells.iter().zip(shapes).enumerate()
+        .filter(|(_, (tile,shape))| tile.source.tileset_id==*tileset
+            && tile.source.tile_index==placement.ground_tile_index
+            && (matches!(shape,CellShape::Flat)
+                || matches!(shape,CellShape::RaisedTop {solid:SolidKind::Bank,..})))
+        .min_by_key(|(_, (tile,shape))| (!matches!(shape,CellShape::Flat),tile.row,tile.column))
+        .map(|(i,_)|i)
 }
 
 /// Reserve complete source trees and signboards that can actually be replaced.
@@ -862,17 +965,59 @@ pub(super) fn append_tree(
 
 /// Retain source placement parameters while the rest of the terrain establishes
 /// bank claims. Runtime construction expands one complete grove at a time.
+#[derive(Clone)]
 pub(super) struct GroveRecipe {
-    bounds: [f32; 4],
-    base_height: f32,
-    tile_height: f32,
-    coordinates: [i32; 2],
-    neighbors: [bool; 4],
+    pub(super) family: crate::foliage::GroveFamily,
+    pub(super) bounds: [f32; 4],
+    pub(super) base_height: f32,
+    pub(super) tile_height: f32,
+    pub(super) coordinates: [i32; 2],
+    pub(super) neighbors: [bool; 4],
+    pub(super) coverage_fade: bool,
 }
 impl GroveRecipe {
+    pub(super) fn coordinates_for_trace(&self) -> [i32;2] { self.coordinates }
+    pub(super) fn conservative_bounds(&self) -> (bevy::prelude::Vec3, bevy::prelude::Vec3) {
+        let [w, e, n, s] = self.bounds;
+        let sparse = self.neighbors.iter().all(|&n| n)
+            && (self.coordinates[0].rem_euclid(4) != 0 || self.coordinates[1].rem_euclid(4) != 0);
+        // Understory stems reach at most 0.396 tile, including their leaf
+        // width, from centers inside 0.29 plot spacing. Do not treat those
+        // short fern plots as full-height canopies when selecting visibility.
+        let spacing = (e - w).min(s - n);
+        let understory_margin = (self.tile_height * 0.5 - spacing * 0.2).max(0.);
+        let margin = if sparse { understory_margin }
+            else if self.family == crate::foliage::GroveFamily::JohtoPine {
+                // Pine generation proportionally fits every crown vertex
+                // inside a 0.75-spacing margin. Keep the understory bound
+                // and allow the bank lip's <= 0.113-tile recession as well.
+                (spacing * 0.75 + self.tile_height * 0.125).max(understory_margin)
+            } else { (e - w).max(s - n) * 2. };
+        (bevy::prelude::Vec3::new(w - margin, self.base_height - self.tile_height, n - margin),
+         bevy::prelude::Vec3::new(e + margin, self.base_height + self.tile_height * if sparse { 1. } else { 9. }, s + margin))
+    }
+    pub(super) fn prepare_shared(self) -> Vec<crate::occluder_fade::PreparedGroup> {
+        let mut groups = crate::shared_groves::prepare_family(self.bounds, self.base_height, self.tile_height,
+            self.coordinates, self.neighbors, self.family);
+        crate::occluder_fade::set_coverage_fade(&mut groups, self.coverage_fade);
+        groups
+    }
+    pub(super) fn prepare_instanced(self, library: &crate::forest_instances::Library) -> Vec<crate::occluder_fade::PreparedGroup> {
+        let mut groups = library.prepare(self.bounds, self.base_height,
+            self.tile_height, self.coordinates, self.neighbors, self.family);
+        crate::occluder_fade::set_coverage_fade(&mut groups, self.coverage_fade);
+        groups
+    }
+    pub(super) fn on_terrace(mut self, edges: &[crystal_render_api::VisualJumpLedge],
+        g: &GridGeometry, origin: [i32;2]) -> Self {
+        let [w,e,n,s]=self.bounds;
+        self.base_height += super::terraces::Field::new(edges,g,origin)
+            .height(bevy::prelude::Vec2::new((w+e)*0.5,(n+s)*0.5));
+        self
+    }
     pub(super) fn append(self, mesh: &mut TerrainMeshData) {
-        crate::foliage::append_grove_tree(mesh, self.bounds, self.base_height,
-            self.tile_height, self.coordinates, self.neighbors);
+        crate::foliage::append_family_grove(mesh, self.bounds, self.base_height,
+            self.tile_height, self.coordinates, self.neighbors, self.family);
     }
 }
 
@@ -895,6 +1040,7 @@ pub(super) fn claim_grove(
     }) {
         return None;
     }
+    let ground_start = mesh.textured.positions.len();
     append_ground(
         mesh,
         cells,
@@ -907,6 +1053,9 @@ pub(super) fn claim_grove(
         ground,
         claimed,
     );
+    // A borrowed atlas cell supplies paint, not the elevation of this plot.
+    // In a connected halo its first lawn sample may live on a raised bank.
+    for p in &mut mesh.textured.positions[ground_start..] { p[1]=placement.base_height; }
     let (west, _, north, _) = geometry.bounds(placement.column, placement.row);
     let width = placement.width as f32 * geometry.tile_width;
     let south = north + placement.height as f32 * geometry.tile_height;
@@ -916,6 +1065,8 @@ pub(super) fn claim_grove(
         map_origin[1] + placement.row as i32,
     ];
     let neighbors = grove_neighbors(mesh, cells, geometry, map, placement);
+    let family=crate::foliage::GroveFamily::from_tileset(
+        cells[placement.row*geometry.width+placement.column].source.tileset_id.as_ref());
     mark_authored_rect(
         mesh,
         geometry,
@@ -925,14 +1076,17 @@ pub(super) fn claim_grove(
             placement.width,
             placement.height,
         ],
-        "johto/tree",
+        family.label(),
     );
     Some(GroveRecipe {
+        family,
         bounds: [west, west + width, south - depth, south],
         base_height: placement.base_height,
-        tile_height: geometry.tile_height,
+        tile_height: geometry.tile_height
+            * if complete_mixed_tree(cells, geometry, placement) { 0.5 } else { 1. },
         coordinates,
         neighbors,
+        coverage_fade: true,
     })
 }
 
@@ -1006,8 +1160,8 @@ pub(super) fn append_grove_water_contacts(
     let bottom = CellShape::Water.surface_height(g.tile_height);
     for (i, tile) in cells.iter().enumerate() {
         if !matches!(mesh.authored_cells.get(i).copied().flatten(),
-            Some("johto/tree" | "johto/small_tree" | "world-exterior/kanto_canopy"
-                | "world-exterior/forest_tree" | "world-exterior/park_tree"))
+            Some("johto/tree" | "johto/small_tree" | "forest/ancient_tree" | "world-exterior/kanto_canopy"
+                | "world-exterior/park_tree"))
             || mesh.footing_heights.get(i).is_none_or(|h| h.abs() > 0.001)
             || !matches!(tile.source.tileset_id.as_ref(),
                 "johto" | "johto_modern" | "kanto" | "forest" | "park" | "battle_tower_outside")
@@ -1072,15 +1226,11 @@ pub(super) fn append_connected_grass(
         return false;
     }
     let (w, e, n, s) = geometry.bounds(tile.column as usize, tile.row as usize);
-    let seed = lattice(
-        map_origin[0] + tile.column as i32,
-        map_origin[1] + tile.row as i32,
-    );
     crate::grass_blades::append_patch(
         target,
         [w, e, n, s],
         base_height,
-        geometry.tile_height * (0.90 + seed * 0.18),
+        crate::grass_blades::PatchKind::Meadow.height(geometry.tile_height),
         [
             map_origin[0] + tile.column as i32,
             map_origin[1] + tile.row as i32,
@@ -1305,11 +1455,19 @@ fn ground_material(source: &VisualTileSource) -> Option<GroundMaterial> {
                     kanto_plaza_material(source)
                 }
                 ("ice_path", _) => ice_path_ground_material(source),
+                ("kanto", 0x11) if source.metatile_id == 0x29
+                    && source.subtile_column < 2 && source.subtile_row < 4 =>
+                {
+                    Some(GroundMaterial::Stone)
+                }
                 ("johto" | "johto_modern" | "forest" | "battle_tower_outside", 0x05)
                 | ("kanto", 0x2c)
                 | ("park", 0x01) => Some(GroundMaterial::Lawn),
                 ("johto" | "johto_modern" | "battle_tower_outside", 0x06)
-                | ("kanto", 0x0d | 0x39) => Some(GroundMaterial::Path),
+                // Kanto's quiet path alternates blank $23 and speckled $39.
+                // Both samples are the same ground; finishing only the
+                // speckles leaves pale source-cell patches across the path.
+                | ("kanto", 0x0d | 0x23 | 0x39) => Some(GroundMaterial::Path),
                 ("johto_modern", 0x2f) if matches!(source.metatile_id, 0x06 | 0x66 | 0x77) => {
                     Some(GroundMaterial::Pavers)
                 }
@@ -1368,7 +1526,7 @@ fn ground_color_with_path_palette(
     let (base, variation) = match material {
         GroundMaterial::Lawn => ([0.24, 0.37, 0.105], broad * 0.19 + fine * 0.085),
         GroundMaterial::Path => (path_palette.unwrap_or([0.68, 0.52, 0.31]),
-            broad * 0.090 + fine * 0.050),
+            broad * 0.195 + fine * 0.100),
         GroundMaterial::Water => ([0.095, 0.30, 0.32], broad * 0.036 + fine * 0.010),
         GroundMaterial::Shore => ([0.45, 0.46, 0.37], broad * 0.032 + fine * 0.024),
         GroundMaterial::Bank => ([0.39, 0.37, 0.29], broad * 0.035 + fine * 0.020),
@@ -1397,7 +1555,7 @@ pub(super) fn sampled_cell(uvs: &[[f32; 2]], geometry: &GridGeometry) -> Option<
 }
 
 pub(super) fn shallow_bank_source(source: &VisualTileSource) -> bool {
-    if source.tileset_id.as_ref() != "johto"
+    if !matches!(source.tileset_id.as_ref(), "johto" | "johto_modern")
         || source.subtile_column >= 4
         || source.subtile_row >= 4
     {
@@ -1413,18 +1571,18 @@ pub(super) fn shallow_bank_source(source: &VisualTileSource) -> bool {
                 0x05
             }
         }
-        0x4e => {
+        0x4c | 0x4e => {
             if x == 0 {
                 0x3b
             } else {
-                0x05
+                if source.metatile_id == 0x4c { 0x06 } else { 0x05 }
             }
         }
-        0x4f => {
+        0x4d | 0x4f => {
             if x == 3 {
                 0x3d
             } else {
-                0x05
+                if source.metatile_id == 0x4d { 0x06 } else { 0x05 }
             }
         }
         0x50 | 0x52 => {
@@ -1475,12 +1633,12 @@ pub(super) fn shallow_bank_source(source: &VisualTileSource) -> bool {
     source.tile_index == expected
 }
 
-/// Require the complete native $07/$1a/$2f drawing, including $2f's flat
+/// Require the complete native jump-ledge drawing, including $2f's flat
 /// eastern half. A clipped or changed block cannot authorize a bank finish.
 fn complete_kanto_shallow_bank(index: usize, cells: &[&VisualTile], g: &GridGeometry) -> bool {
     let source = &cells[index].source;
     if source.tileset_id.as_ref() != "kanto"
-        || !matches!(source.metatile_id, 0x07 | 0x1a | 0x2f)
+        || !matches!(source.metatile_id, 0x07 | 0x1a | 0x2f | 0x58..=0x5b)
         || source.subtile_column >= 4
         || source.subtile_row >= 4
     {
@@ -1497,7 +1655,13 @@ fn complete_kanto_shallow_bank(index: usize, cells: &[&VisualTile], g: &GridGeom
         && (0..4).all(|y| {
             (0..4).all(|x| {
                 let candidate = &cells[(north + y) * g.width + west + x].source;
-                let expected = if y < 3 {
+                let expected = if matches!(source.metatile_id, 0x58..=0x5b) {
+                    let west = matches!(source.metatile_id, 0x58 | 0x5a);
+                    let side = if west { x == 0 } else { x == 3 };
+                    if matches!(source.metatile_id, 0x5a | 0x5b) && y == 3 {
+                        if side { if west { 0x36 } else { 0x34 } } else { 0x37 }
+                    } else if side { if west { 0x27 } else { 0x24 } } else { 0x2c }
+                } else if y < 3 {
                     if source.metatile_id == 0x1a {
                         0x39
                     } else {
@@ -1552,6 +1716,21 @@ fn kanto_shallow_bank_surface(
         return None;
     }
     let height = g.tile_height * crate::profile::JUMP_LEDGE_HEIGHT / SOURCE_TILE_HEIGHT;
+    // The native bank also retains a flat source underlay beneath its front
+    // course. Its old $37/$34 ink remained visible along the finished 3D lip.
+    // Replace only this exact, complete bank-cell quad with its cap ground.
+    if normal == [0., 1., 0.] && matches!(cells[sample].source.tile_index, 0x37 | 0x34 | 0x36 | 0x27 | 0x24) {
+        let (w, e, n, s) = g.bounds(world % g.width, world / g.width);
+        let (u0, u1, v0, v1) = g.uv(sample % g.width, sample / g.width);
+        if positions == [[w, 0., n], [w, 0., s], [e, 0., s], [e, 0., n]]
+            && uvs == [[u0, v0], [u0, v1], [u1, v1], [u1, v0]]
+            && shape_for_source(&cells[world].source).surface_height(g.tile_height) == height
+        {
+            return Some(if cells[world].source.metatile_id == 0x1a {
+                GroundMaterial::Path
+            } else { GroundMaterial::Lawn });
+        }
+    }
     if shape_for_source(&cells[world].source).surface_height(g.tile_height) != height {
         return None;
     }
@@ -1568,14 +1747,16 @@ fn kanto_shallow_bank_surface(
                 [e, height, n],
             ]
             && uvs == [[u0, v0], [u0, v1], [u1, v1], [u1, v0]]
-            && cells[sample].source.subtile_row < 3)
+            && (cells[sample].source.subtile_row < 3
+                || matches!(cells[sample].source.metatile_id, 0x58 | 0x59)))
             .then_some(match tile {
                 0x2c => GroundMaterial::Lawn,
                 0x39 => GroundMaterial::Path,
                 _ => return None,
             });
     }
-    if !matches!(tile, 0x37 | 0x34) {
+    if !matches!(tile, 0x37 | 0x34 | 0x36 | 0x27 | 0x24)
+        && !(tile == 0x2c && matches!(cells[sample].source.metatile_id, 0x58..=0x5b)) {
         return None;
     }
     // append_bank_run_side crops the one native course to JUMP_LEDGE_HEIGHT.
@@ -1613,7 +1794,7 @@ fn shallow_bank_surface(
     cells: &[&VisualTile],
     g: &GridGeometry,
 ) -> Option<GroundMaterial> {
-    if sample.tileset_id.as_ref() != "johto" {
+    if !matches!(sample.tileset_id.as_ref(), "johto" | "johto_modern") {
         return None;
     }
     let center = positions.iter().fold([0.0; 3], |mut sum, p| {
@@ -2204,6 +2385,18 @@ impl<'a> GroundFinish<'a> {
             .fold(0.0, f32::max)
     }
 
+    fn tree_darkness(&self, p: [f32; 3]) -> f32 {
+        if let Some(index) = &self.shadow_cells {
+            return cell_at(self.geometry, p[0], p[2]).map_or(0., |cell| {
+                index[cell].iter().filter(|&&i| self.shadows[i].tree)
+                    .map(|&i| self.shadows[i].darkness(p, self.geometry))
+                    .fold(0., f32::max)
+            });
+        }
+        self.shadows.iter().filter(|s| s.tree)
+            .map(|s| s.darkness(p, self.geometry)).fold(0., f32::max)
+    }
+
     fn color(&self, material: GroundMaterial, p: [f32; 3]) -> [f32; 4] {
         // Stable map coordinates prevent grain/grass from swimming when the
         // renderer's published grid scrolls by one source cell.
@@ -2226,12 +2419,12 @@ impl<'a> GroundFinish<'a> {
         if self.forest && material == GroundMaterial::Lawn {
             let x = map_p[0] / self.geometry.tile_width;
             let z = map_p[2] / self.geometry.tile_height;
-            let moss = meadow_noise(x * 0.29, z * 0.29);
+            let moss = meadow_noise(x * 0.18, z * 0.18);
             let litter = meadow_noise(x * 1.7 + 19.0, z * 1.7 - 7.0);
-            let t = ((moss - 0.40) * 5.0).clamp(0.0, 1.0);
+            let t = ((moss + 0.16) * 2.8).clamp(0.0, 1.0);
             let t = t * t * (3.0 - 2.0 * t);
-            let soil = [0.25, 0.18, 0.105];
-            let green = [0.16, 0.29, 0.10];
+            let soil = [0.31, 0.205, 0.105];
+            let green = [0.13, 0.34, 0.075];
             for c in 0..3 {
                 color[c] = (soil[c] * (1.0 - t) + green[c] * t) * (0.90 + litter * 0.18);
             }
@@ -2268,7 +2461,7 @@ impl<'a> GroundFinish<'a> {
                 // the dense trunk contact stays dark and cast shadows remain real.
                 darkness = (darkness - 0.30).max(0.0) + darkness.min(0.30) * (1.0 - fleck * 0.48);
             }
-            if material==GroundMaterial::Lawn {
+            if matches!(material, GroundMaterial::Lawn | GroundMaterial::Path) {
                 color=self.shore.color(p,self.geometry,self.map_origin,color);
             }
             for c in &mut color[..3] {
@@ -2304,12 +2497,34 @@ impl<'a> GroundFinish<'a> {
         cover * 0.22 * (1. - light * 0.70)
     }
 
+    // Only the verified floor is tagged; accent meshes retain their own
+    // pigments. A map-space projection survives scrolling and native steps.
+    fn tag_floor(&self, mesh: &mut SurfaceMeshData, first: usize, material: GroundMaterial) {
+        let role = match material {
+            GroundMaterial::Path => 6.0,
+            GroundMaterial::Lawn if self.forest => 7.0,
+            GroundMaterial::Pavers => 8.0,
+            GroundMaterial::Lawn => 9.0,
+            _ => return,
+        };
+        for i in first..mesh.positions.len() {
+            let p = mesh.positions[i];
+            mesh.uvs[i] = [
+                66000.0 + (p[0] - self.geometry.origin_x) / self.geometry.tile_width
+                    + self.map_origin[0] as f32,
+                -role * 10000.0 + (p[2] - self.geometry.origin_z) / self.geometry.tile_height
+                    + self.map_origin[1] as f32,
+            ];
+        }
+    }
+
     fn append_surface(
         &self,
         mesh: &mut SurfaceMeshData,
         material: GroundMaterial,
         positions: [[f32; 3]; 4],
     ) {
+        let first_floor = mesh.positions.len();
         let [w, e, n, s] = face_bounds(&positions);
         let full_cell = (e - w - self.geometry.tile_width).abs() < 0.001
             && (s - n - self.geometry.tile_height).abs() < 0.001;
@@ -2344,6 +2559,8 @@ impl<'a> GroundFinish<'a> {
                         }
                     }
                 }
+                self.tag_floor(mesh, first_floor, GroundMaterial::Pavers);
+                self.append_accents(mesh, material, positions);
                 return;
             }
         }
@@ -2381,6 +2598,8 @@ impl<'a> GroundFinish<'a> {
                     },
                 );
             }
+            self.tag_floor(mesh, first_floor, material);
+            self.append_accents(mesh, material, positions);
             return;
         }
         let level_rectangle = positions == [
@@ -2395,6 +2614,7 @@ impl<'a> GroundFinish<'a> {
                 [[0.0; 2]; 4],
                 positions.map(|p| self.color(material, p)),
             );
+            self.tag_floor(mesh, first_floor, material);
             return;
         }
         // Two subdivisions capture a soft contact shadow around a trunk
@@ -2455,7 +2675,29 @@ impl<'a> GroundFinish<'a> {
                 );
             }
         }
+        self.tag_floor(mesh, first_floor, material);
         self.append_grain(mesh, material, positions);
+    }
+
+    fn append_accents(
+        &self,
+        mesh: &mut SurfaceMeshData,
+        material: GroundMaterial,
+        positions: [[f32; 3]; 4],
+    ) {
+        if positions.iter().any(|p| (p[1] - positions[0][1]).abs() > 0.001) {
+            return;
+        }
+        let [w, _, n, _] = face_bounds(&positions);
+        let column = ((w - self.geometry.origin_x) / self.geometry.tile_width).round() as i32
+            + self.map_origin[0];
+        let row = ((n - self.geometry.origin_z) / self.geometry.tile_height).round() as i32
+            + self.map_origin[1];
+        forest_floor::append_scatter(
+            mesh, positions, self.geometry, [column, row],
+            self.forest || self.sunlit_grove || self.darkness(positions[0]) > 0.1,
+            material == GroundMaterial::Lawn,
+        );
     }
 
     fn append_grain(
@@ -2470,9 +2712,12 @@ impl<'a> GroundFinish<'a> {
         let row = ((n - self.geometry.origin_z) / self.geometry.tile_height).round() as i32
             + self.map_origin[1];
         if self.forest && material == GroundMaterial::Lawn {
-            forest_floor::append(mesh, positions, self.geometry, [column, row]);
+            let canopy = (self.tree_darkness([(w+e)*0.5, positions[0][1], (n+s)*0.5])
+                / 0.30).clamp(0., 1.);
+            forest_floor::append_with_canopy(mesh, positions, self.geometry, [column, row], canopy);
             return;
         }
+        self.append_accents(mesh, material, positions);
         // Irregular gravel and small lawn clumps. Stable, uneven positions
         // give grass a soft surface without changing the walking datum.
         let samples = if material == GroundMaterial::Lawn {
@@ -2522,7 +2767,7 @@ impl<'a> GroundFinish<'a> {
             append_solid_quad(mesh, p, [0.0, 1.0, 0.0], color);
             if material == GroundMaterial::Lawn {
                 let root = Vec3::new(cx, y, cz);
-                let height = self.geometry.tile_height * (0.060 + seed * 0.040);
+                let height = self.geometry.tile_height * (0.040 + seed * 0.030);
                 for blade in 0..3 {
                     let a = angle + blade as f32 * 2.094395;
                     let side = Vec3::new(a.cos(), 0., a.sin()) * self.geometry.tile_width * 0.023;
@@ -2842,6 +3087,50 @@ pub(super) fn polish_world_surfaces_with_shapes(
             let painted_start = mesh.solid.positions.len();
             if material == GroundMaterial::Shore
                 && sampled_cell(&uvs, geometry).is_some_and(|i|
+                    crate::forest::forest_shore_shape(&cells[i].source).is_some())
+            {
+                // The forest pond's exact rocky rim uses a damp native mineral
+                // finish, sharing the existing closed water-face geometry.
+                let first = mesh.solid.positions.len();
+                outdoor_stone::append_coast(&mut mesh.solid, positions, normal,
+                    geometry, map_origin, [[0.30,0.33,0.28],[0.18,0.21,0.16]]);
+                if normal[1] > 0.999 {
+                    let owner = sampled_cell(&uvs, geometry).unwrap();
+                    let source = &cells[owner].source;
+                    let (w,e,n,s) = geometry.bounds(owner % geometry.width, owner / geometry.width);
+                    for vertex in first..mesh.solid.positions.len() {
+                        let p = mesh.solid.positions[vertex];
+                        let x = ((p[0]-w)/(e-w)).clamp(0.,1.);
+                        let z = ((p[2]-n)/(s-n)).clamp(0.,1.);
+                        let across = match source.tile_index {
+                            0x1b => x, 0x19 => 1.-x, 0x2a => z,
+                            0x09 => x*z, 0x0b => (1.-x)*z,
+                            _ => 1.,
+                        };
+                        let mx = (p[0]-geometry.origin_x)/geometry.tile_width + map_origin[0] as f32;
+                        let mz = (p[2]-geometry.origin_z)/geometry.tile_height + map_origin[1] as f32;
+                        let rough = meadow_noise(mx*2.1+31.,mz*2.1-17.)*0.16;
+                        let t = ((across+rough-0.12)/0.62).clamp(0.,1.);
+                        let stone = t*t*(3.-2.*t);
+                        let humus = finish.color(GroundMaterial::Lawn,p);
+                        for c in 0..3 {
+                            mesh.solid.colors[vertex][c] = humus[c]*(1.-stone)
+                                + mesh.solid.colors[vertex][c]*stone;
+                        }
+                    }
+                    // The dry shoulder shares the forest floor's material
+                    // projection, keeping its pigment continuous at the seam.
+                    finish.tag_floor(&mut mesh.solid, first, GroundMaterial::Lawn);
+                    // Small stones and fallen leaves are retained in the dry
+                    // source bank cell. Nothing is placed on swimmable water.
+                    forest_floor::append_scatter(&mut mesh.solid, positions, geometry,
+                        [owner as i32 % geometry.width as i32 + map_origin[0],
+                            owner as i32 / geometry.width as i32 + map_origin[1]], true, false);
+                }
+                continue;
+            }
+            if material == GroundMaterial::Shore
+                && sampled_cell(&uvs, geometry).is_some_and(|i|
                     matches!(cells[i].source.tileset_id.as_ref(), "johto" | "johto_modern"))
             {
                 // Native Johto coasts are ochre rock, not a concrete strip.
@@ -2852,19 +3141,20 @@ pub(super) fn polish_world_surfaces_with_shapes(
             if material == GroundMaterial::Stone
                 && (owned_rock_surface(&positions, normal, cells, geometry)
                     || sampled_cell(&uvs, geometry).is_some_and(|i|
-                    matches!(cells[i].source.tileset_id.as_ref(), "johto" | "johto_modern")
-                        && cells[i].source.metatile_id == 0x0a))
+                    (matches!(cells[i].source.tileset_id.as_ref(), "johto" | "johto_modern")
+                        && cells[i].source.metatile_id == 0x0a)
+                    || (cells[i].source.tileset_id.as_ref() == "kanto"
+                        && cells[i].source.metatile_id == 0x29
+                        && cells[i].source.tile_index == 0x11
+                        && cells[i].source.subtile_column < 2
+                        && cells[i].source.subtile_row < 4)))
             {
                 // The byte-identical $0a drawing shares one mineral finish
                 // across towns and routes, including coastal copies.
-                let native_platform = sampled_cell(&uvs, geometry).is_some_and(|i|
-                    matches!(cells[i].source.tileset_id.as_ref(), "johto" | "johto_modern")
-                        && cells[i].source.metatile_id == 0x0a);
-                if native_platform || map == "Route26" {
-                    outdoor_stone::append_canyon(&mut mesh.solid, positions, normal, geometry, map_origin);
-                } else {
-                    outdoor_stone::append(&mut mesh.solid, positions, normal, geometry, map_origin);
-                }
+                // Mountain cap/face samples belong to the same ochre source
+                // family. A map-name-dependent slate finish left dark gravel
+                // strips through Blackthorn's otherwise joined canyon walls.
+                outdoor_stone::append_canyon(&mut mesh.solid, positions, normal, geometry, map_origin);
                 continue;
             }
             if map.starts_with("IcePath") && normal[1] > 0.999
@@ -2888,7 +3178,8 @@ pub(super) fn polish_world_surfaces_with_shapes(
                     shallow_bank_source(source)
                         && matches!(source.tile_index,0x3b|0x3d)
                         && matches!(shape_for_source(source),CellShape::Flat
-                            |CellShape::RaisedTop {solid:SolidKind::Bank,..})
+                            |CellShape::RaisedTop {solid:SolidKind::Bank,..}
+                            |CellShape::LedgeBand {..})
                 });
             if bank_verge {
                 finish.append_surface(&mut mesh.solid,GroundMaterial::Lawn,positions);
@@ -2914,6 +3205,12 @@ pub(super) fn polish_world_surfaces_with_shapes(
                     cells[i].source.tileset_id.as_ref() == "johto"
                         && shallow_bank_source(&cells[i].source)
                 });
+                if sampled_cell(&uvs, geometry).is_some_and(|i|
+                    complete_kanto_shallow_bank(i, cells, geometry))
+                    && ledge_finish::append(&mut mesh.solid, positions, normal, geometry, map_origin)
+                {
+                    continue;
+                }
                 if let Some(owner) = owner {
                     let first = mesh.solid.positions.len();
                     if ledge_finish::append(&mut mesh.solid, positions, normal, geometry, map_origin) {
@@ -3028,6 +3325,142 @@ mod tests {
     use super::super::tests::{frame, source_with_tile};
     use super::*;
     use bevy::prelude::IVec2;
+    #[test]
+    fn ancient_forest_recipe_requires_complete_source_art_and_keeps_footing() {
+        let sources=(0..4).flat_map(|row|(0..4).map(move|column| {
+            let tile=if row<2 && column<2 {0x26+row*16+column} else {1};
+            let mut source=source_with_tile(0,column as u8,row as u8,tile);
+            source.tileset_id="forest".into();source
+        })).collect();
+        let f=frame(4,4,sources);let g=geometry(&f);
+        let cells=f.tiles.iter().collect::<Vec<_>>();
+        let shapes=vec![CellShape::Flat;16];
+        let p=TreePlacement {column:0,row:0,width:2,height:2,ground_tile_index:1,
+            ground_metatile_id:None,base_height:0.,rounded:true,outline_mask:true,
+            remove_all_ground:false,card_thickness:0.};
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;16],footing_heights:vec![0.;16],
+            ..Default::default()};
+        let mut claimed=vec![false;16];
+        let recipe=claim_grove(&mut mesh,&cells,&shapes,&g,"IlexForest",p,&mut claimed,[0,0])
+            .expect("complete native forest drawing");
+        assert_eq!(recipe.family,crate::foliage::GroveFamily::AncientForest);
+        assert_eq!(claimed.iter().filter(|&&c|c).count(),4);
+        assert!(mesh.footing_heights.iter().all(|&height|height==0.));
+        assert_eq!(mesh.authored_cells[0],Some("forest/ancient_tree"));
+        let mut changed=f.tiles.clone();changed[0].source.tile_index=1;
+        assert!(modeled_tree_ground("IlexForest",&changed.iter().collect::<Vec<_>>(),&shapes,&g,p).is_none());
+    }
+    #[test]
+    fn grove_ground_borrows_paint_without_borrowing_a_bank_height() {
+        let f=frame(4,4,(0..4).flat_map(|y|(0..4).map(move|x| {
+            if x>=2 {source_with_tile(0x05,x,y,
+                (if y==0 {0x1e} else if y==3 {0x3e} else {0x2e})+(x-2) as u16)}
+            else {source_with_tile(if x==0 && y==0 {0x57} else {0x00},x,y,5)}
+        })).collect());
+        let g=geometry(&f);
+        for foreign in [false,true] {
+            let mut tiles=f.tiles.clone();
+            if foreign {for tile in &mut tiles {
+                if tile.column<2 && !(tile.column==0 && tile.row==0) {
+                    tile.source.tileset_id="johto_modern".into();
+                }
+            }}
+            let cells=tiles.iter().collect::<Vec<_>>();
+            let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+            assert_eq!(shapes[0].surface_height(g.tile_height),6.);
+            let plot=tree_placements("Route46",&cells,&g)[0];
+            let ground=modeled_tree_ground("Route46",&cells,&shapes,&g,plot).unwrap();
+            assert_eq!(ground,if foreign {0} else {1},"prefer level same-atlas lawn");
+            let mut mesh=TerrainMeshData {authored_cells:vec![None;16],footing_heights:vec![0.;16],..Default::default()};
+            let mut claimed=vec![false;16];
+            claim_grove(&mut mesh,&cells,&shapes,&g,"Route46",plot,&mut claimed,[0,0]).unwrap();
+            assert!(mesh.textured.positions.iter().all(|p|p[1]==plot.base_height));
+            assert!(mesh.footing_heights.iter().all(|&h|h==0.));
+            let (u0,u1,v0,v1)=g.uv(ground%4,ground/4);
+            assert!(mesh.textured.uvs.iter().all(|uv|
+                (u0..=u1).contains(&uv[0]) && (v0..=v1).contains(&uv[1])));
+        }
+    }
+
+    #[test]
+    fn mixed_small_tree_corner_variants_replace_complete_art_only() {
+        for (block, column, row) in [(0x3c,0,0),(0x3d,2,0),(0x3e,0,2),(0x3f,2,2)] {
+            let f = frame(4,4,(0..4).flat_map(|y|(0..4).map(move|x| {
+                let tile = if (column..column+2).contains(&x) && (row..row+2).contains(&y) {
+                    [[0x1e,0x1f],[0x3e,0x3f]][(y-row) as usize][(x-column) as usize]
+                } else { 5 };
+                source_with_tile(block,x,y,tile)
+            })).collect());
+            let g=geometry(&f);
+            let cells=f.tiles.iter().collect::<Vec<_>>();
+            let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+            let plots=tree_placements("Route36",&cells,&g);
+            assert_eq!(plots.len(),1,"block {block:02x}");
+            let mut mesh=TerrainMeshData { authored_cells:vec![None;16],
+                footing_heights:vec![0.;16],..Default::default() };
+            let mut claimed=vec![false;16];
+            let recipe=claim_grove(&mut mesh,&cells,&shapes,&g,"Route36",plots[0],
+                &mut claimed,[0,0]).expect("complete mixed corner crown");
+            assert_eq!(recipe.tile_height,g.tile_height*0.5);
+            assert_eq!(claimed.iter().filter(|&&v|v).count(),4);
+            recipe.append(&mut mesh);
+            assert!(mesh.solid.positions.iter().any(|p| p[1] > 12.));
+            assert!(mesh.footing_heights.iter().all(|&height| height == 0.));
+            // All four crown cells become native foliage; the source texture
+            // retained underneath it must be lawn, never the old tree card.
+            let lawn = f.tiles.iter().position(|tile| tile.source.tile_index == 5).unwrap();
+            let (u0,u1,v0,v1) = g.uv(lawn % 4,lawn / 4);
+            assert!(mesh.textured.positions.iter().all(|p| p[1] == 0.));
+            assert!(mesh.textured.uvs.iter().all(|uv|
+                (u0..=u1).contains(&uv[0]) && (v0..=v1).contains(&uv[1])));
+            let mut changed=f.tiles.clone();
+            changed[row as usize*4+column as usize].source.tile_index=5;
+            assert!(!complete_mixed_tree(&changed.iter().collect::<Vec<_>>(),&g,plots[0]));
+        }
+    }
+    #[test]
+    fn modern_mixed_small_trees_replace_both_complete_phases_without_source_cards() {
+        let sources = (0..4).flat_map(|y| (0..8).map(move |x| {
+            let block = if x < 4 { 0x2f } else { 0x3b };
+            let crown = if x < 4 { y < 2 } else { y >= 2 };
+            let tile = if crown { [[0x1e, 0x1f], [0x3e, 0x3f]][y % 2][x % 2] } else { 5 };
+            let mut source = source_with_tile(block, (x % 4) as u8, y as u8, tile);
+            source.tileset_id = "johto_modern".into();
+            source
+        })).collect();
+        let f = frame(8, 4, sources);
+        let g = geometry(&f);
+        let cells = f.tiles.iter().collect::<Vec<_>>();
+        let shapes = cells.iter().map(|c| shape_for_source(&c.source)).collect::<Vec<_>>();
+        let plots = tree_placements("AzaleaTown", &cells, &g);
+        assert_eq!(plots.len(), 4);
+        let mut mesh = TerrainMeshData { authored_cells: vec![None; 32],
+            footing_heights: vec![0.; 32], ..Default::default() };
+        let mut claimed = vec![false; 32];
+        for plot in &plots {
+            let recipe = claim_grove(&mut mesh, &cells, &shapes, &g, "AzaleaTown",
+                *plot, &mut claimed, [0, 0]).expect("complete native small tree");
+            assert_eq!(recipe.tile_height, g.tile_height * 0.5);
+            recipe.append(&mut mesh);
+        }
+        assert_eq!(claimed.iter().filter(|&&c| c).count(), 16);
+        assert!(mesh.footing_heights.iter().all(|&h| h == 0.));
+        assert!(mesh.solid.positions.iter().any(|p| p[1] > 12.));
+        // Original crown glyphs must not remain underneath the native foliage.
+        let (u0, u1, v0, v1) = g.uv(4, 0);
+        assert!(mesh.textured.positions.iter().all(|p| p[1] == 0.));
+        assert!(mesh.textured.uvs.iter().all(|uv|
+            (u0..=u1).contains(&uv[0]) && (v0..=v1).contains(&uv[1])));
+        let lower = *plots.iter().find(|p| p.row == 2 && p.column == 4).unwrap();
+        let mut changed = f.tiles.clone();
+        changed[2 * 8 + 5].source.tile_index = 5;
+        assert!(!complete_mixed_tree(&changed.iter().collect::<Vec<_>>(), &g, lower));
+        changed = f.tiles.clone();
+        changed[2 * 8 + 4].source.subtile_row = 0;
+        assert!(!complete_mixed_tree(&changed.iter().collect::<Vec<_>>(), &g, lower));
+        let clipped = GridGeometry { height: 3, ..g };
+        assert!(!complete_mixed_tree(&cells, &clipped, lower));
+    }
     #[test]
     fn runtime_groves_preserve_completed_bank_geometry_claims_and_footing() {
         fn same_geometry(expected: Vec<Vec<u32>>, actual: Vec<Vec<u32>>) {
@@ -3277,6 +3710,89 @@ mod tests {
     }
 
     #[test]
+    fn compact_house_source_roof_tracks_live_paint_without_changing_plot_or_door() {
+        let original=drawing(&[&[0x14,0x15]],3);
+        let mut sources:Vec<_>=original.tiles.into_iter().map(|t|t.source).collect();
+        sources.extend((0..8).map(|_|source_with_tile(0x01,0,0,0x06)));
+        let f=frame(8,5,sources);let g=geometry(&f);
+        let cells:Vec<_>=f.tiles.iter().collect();
+        let p=building_placements("CherrygroveCity",&cells,&g)[0];
+        let shapes:Vec<_>=cells.iter().map(|t|shape_for_source(&t.source)).collect();
+        let mut baseline=TerrainMeshData {footing_heights:vec![0.;cells.len()],..Default::default()};
+        let mut base_claims=vec![false;cells.len()];
+        assert!(append_building(&mut baseline,&cells,&shapes,&g,"CherrygroveCity",p,&mut base_claims));
+        let mut paints=Vec::new();
+        for field in [[55,200,230,255],[180,135,45,255]] {
+            let mut images=TerrainImageSamples::default();
+            let pixels:Vec<_>=(0..64).flat_map(|i|if i%3==0 {[25,25,25,255]}
+                else if i%3==1 {field}else {[235,245,235,255]}).collect();
+            for tile in &cells {images.pixels.insert(tile.texture.id(),TileImageSample::Rgba(pixels.clone()));}
+            let mut painted=TerrainMeshData {footing_heights:vec![0.;cells.len()],..Default::default()};
+            let mut claims=vec![false;cells.len()];
+            assert!(append_building_with_samples(&mut painted,&cells,&shapes,&g,"CherrygroveCity",p,&mut claims,Some(&images)));
+            assert_eq!(painted.solid.positions,baseline.solid.positions);
+            assert_eq!(painted.solid.normals,baseline.solid.normals);
+            assert_eq!(painted.solid.indices,baseline.solid.indices);
+            assert_eq!(painted.footing_heights,baseline.footing_heights);
+            assert_eq!(claims,base_claims);
+            assert_ne!(painted.solid.colors,baseline.solid.colors);
+            paints.push(painted.solid.colors);
+        }
+        assert_ne!(paints[0],paints[1],"source swatches, not a fixed town RGB, select roof paint");
+        let mut fallback=TerrainMeshData::default();let mut claims=vec![false;cells.len()];
+        assert!(append_building_with_samples(&mut fallback,&cells,&shapes,&g,"CherrygroveCity",p,&mut claims,Some(&TerrainImageSamples::default())));
+        assert!(fallback.solid.positions.is_empty());
+        assert_eq!(fallback.textured.quad_count(),p.width*p.height);
+    }
+
+    #[test]
+    fn service_source_colors_cover_roof_and_masonry_without_changing_claims_or_footing() {
+        for last in [0x17,0x1b] {
+            let original=drawing(&[&[0x18,0x19],&[0x1a,last]],3);
+            let mut sources:Vec<_>=original.tiles.into_iter().map(|t|t.source).collect();
+            sources.extend((0..8).map(|_|source_with_tile(0x01,0,0,0x06)));
+            let f=frame(8,9,sources);
+            let g=geometry(&f);
+            let cells:Vec<_>=f.tiles.iter().collect();
+            let p=building_placements("CherrygroveCity",&cells,&g)[0];
+            let shapes:Vec<_>=cells.iter().map(|t|shape_for_source(&t.source)).collect();
+            let mut images=TerrainImageSamples::default();
+            let roof:Vec<_>=(0..64).flat_map(|i|match i%4 {
+                0=>[20,35,55,255],1=>[30,130,230,255],
+                2=>[100,230,240,255],_=>[245,245,245,255]}).collect();
+            let wall:Vec<_>=(0..64).flat_map(|i|if i%3==0 {
+                [220,240,205,255]} else {[250,145,195,255]}).collect();
+            for tile in &cells {images.pixels.insert(tile.texture.id(),TileImageSample::Rgba(
+                if (tile.row as usize)<p.roof_rows {roof.clone()} else {wall.clone()}));}
+            assert!(modeled_exteriors::cabin_roof_palette(&cells,&g,p,&images).is_some());
+            let paint=service_wall_color(&cells,&g,p,&images).unwrap();
+            let brick=paint[0];
+            assert!(brick[0]>brick[2] && brick[2]>brick[1]);
+            assert!(paint[1][1]>paint[1][0] && paint[1][0]>paint[1][2],"source mortar stays separate from pink clay");
+            let mut before=TerrainMeshData {footing_heights:vec![0.;cells.len()],..Default::default()};
+            let mut before_claimed=vec![false;cells.len()];
+            assert!(append_building(&mut before,&cells,&shapes,&g,"CherrygroveCity",p,&mut before_claimed));
+            let mut after=TerrainMeshData {footing_heights:vec![0.;cells.len()],..Default::default()};
+            let mut claimed=vec![false;cells.len()];
+            assert!(append_building_with_samples(&mut after,&cells,&shapes,&g,"CherrygroveCity",p,&mut claimed,Some(&images)));
+            assert_eq!(before.solid.positions,after.solid.positions);
+            assert_eq!(before.solid.indices,after.solid.indices);
+            assert_eq!(before.solid.normals,after.solid.normals);
+            assert_eq!(before.textured,after.textured);
+            assert_ne!(before.solid.colors,after.solid.colors);
+            assert_eq!(before_claimed,claimed);
+            assert_eq!(before.footing_heights,after.footing_heights);
+            assert_eq!(before.solid.cutaway_ranges,after.solid.cutaway_ranges);
+            images.pixels.remove(&cells[(p.row+p.roof_rows)*g.width+p.column+2].texture.id());
+            let mut fallback=TerrainMeshData::default();
+            let mut claimed=vec![false;cells.len()];
+            assert!(append_building_with_samples(&mut fallback,&cells,&shapes,&g,"CherrygroveCity",p,&mut claimed,Some(&images)));
+            assert!(fallback.solid.positions.is_empty(),"missing swatches must not introduce guessed paint");
+            assert_eq!(fallback.textured.quad_count(),p.width*p.height);
+        }
+    }
+
+    #[test]
     fn connected_city_models_require_native_complete_signatures_and_doors() {
         for (map, blocks, door, kind) in [
             (
@@ -3440,7 +3956,7 @@ mod tests {
     }
 
     #[test]
-    fn grass_is_source_scoped_low_and_contained_without_footing_changes() {
+    fn grass_is_source_scoped_tall_and_contained_without_footing_changes() {
         let mut f = frame(1, 1, vec![source_with_tile(0x03, 1, 2, 0x04)]);
         let g = geometry(&f);
         let mut mesh = SurfaceMeshData::default();
@@ -3458,7 +3974,8 @@ mod tests {
             && p[2] > -40.0
             && p[2] < -32.0
             && p[1] >= 0.0
-            && p[1] < 8.0 * 1.08));
+            && p[1] < 8.0 * 3.0));
+        assert!(mesh.positions.iter().any(|p| p[1] > 16.0));
         assert!(
             mesh.normals
                 .iter()
@@ -3625,6 +4142,10 @@ mod tests {
                                 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c, 0x2c,
                                 0x2c, 0x37, 0x34, 0x04, 0x04,
                             ],
+                            0x58 => [0x27,0x2c,0x2c,0x2c,0x27,0x2c,0x2c,0x2c,0x27,0x2c,0x2c,0x2c,0x27,0x2c,0x2c,0x2c],
+                            0x59 => [0x2c,0x2c,0x2c,0x24,0x2c,0x2c,0x2c,0x24,0x2c,0x2c,0x2c,0x24,0x2c,0x2c,0x2c,0x24],
+                            0x5a => [0x27,0x2c,0x2c,0x2c,0x27,0x2c,0x2c,0x2c,0x27,0x2c,0x2c,0x2c,0x36,0x37,0x37,0x37],
+                            0x5b => [0x2c,0x2c,0x2c,0x24,0x2c,0x2c,0x2c,0x24,0x2c,0x2c,0x2c,0x24,0x37,0x37,0x37,0x34],
                             _ => unreachable!(),
                         };
                         let sx = x - 1;
@@ -3645,11 +4166,50 @@ mod tests {
     }
 
     #[test]
+    fn kanto_mineral_barrier_bases_finish_native_fill_and_owned_rock_underlays() {
+        let f = frame(4, 4, (0..4).flat_map(|y| (0..4).map(move |x|
+            material_source("kanto", 0x29, x, y, if x < 2 { 0x11 } else { 0x24 })
+        )).collect());
+        let g = kanto_bank_geometry(&f);
+        let cells = f.tiles.iter().collect::<Vec<_>>();
+        let shapes = cells.iter().map(|t| shape_for_source(&t.source)).collect::<Vec<_>>();
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![0.; 16], authored_cells: vec![None; 16],
+            ..Default::default()
+        };
+        let mut claimed = vec![false; 16];
+        modeled_exteriors::append_props(&mut mesh, &cells, &shapes, &g, &mut claimed);
+        for (i, occupied) in claimed.iter().enumerate() {
+            if !occupied {
+                let (w, e, n, s) = g.bounds(i % 4, i / 4);
+                append_top(&mut mesh.textured, [w, e, n, s], 0., g.uv(i % 4, i / 4));
+            }
+        }
+        let feet = mesh.footing_heights.clone();
+        let claims = mesh.authored_cells.clone();
+        assert_eq!(claims.iter().filter(|c| **c == Some("world-exterior/kanto_boundary_path")).count(), 8);
+        assert!(!mesh.textured.positions.is_empty());
+        polish_world_surfaces(&mut mesh, "Route4", &cells, &g, [0, 0]);
+        assert!(mesh.textured.positions.is_empty(), "both the exposed fill and the replacement rock bed lose pixel ink");
+        assert_eq!(mesh.footing_heights, feet);
+        assert_eq!(mesh.authored_cells, claims);
+        assert!(mesh.solid.colors.iter().any(|c| c[0] > c[2] * 1.6));
+        for (block, x, y, tile) in [(0x28, 0, 0, 0x11), (0x29, 2, 0, 0x11),
+            (0x29, 0, 4, 0x11), (0x29, 0, 0, 0x24)] {
+            assert_eq!(ground_material(&material_source("kanto", block, x, y, tile)), None);
+        }
+    }
+
+    #[test]
     fn kanto_shallow_banks_finish_actual_mesher_caps_and_all_four_sides() {
         for (block, cap, top_count, side_count) in [
             (0x07, GroundMaterial::Lawn, 16, 16),
             (0x1a, GroundMaterial::Path, 16, 16),
             (0x2f, GroundMaterial::Lawn, 8, 12),
+            (0x58, GroundMaterial::Lawn, 16, 16),
+            (0x59, GroundMaterial::Lawn, 16, 16),
+            (0x5a, GroundMaterial::Lawn, 16, 16),
+            (0x5b, GroundMaterial::Lawn, 16, 16),
         ] {
             let f = kanto_bank_fixture(&[block]);
             let g = kanto_bank_geometry(&f);
@@ -3668,7 +4228,10 @@ mod tests {
                 let sample = sampled_cell(uv, &g).unwrap();
                 let material = kanto_shallow_bank_surface(p, n, uv, sample, &cells, &g, &[]);
                 if p.iter().all(|v| v[1] == 0.0) {
-                    assert_eq!(material, None, "flat ground, including $2f's east half");
+                    let front_underlay = n == [0., 1., 0.]
+                        && matches!(cells[sample].source.tile_index, 0x37 | 0x34 | 0x36 | 0x27 | 0x24);
+                    assert_eq!(material, front_underlay.then_some(cap),
+                        "only the complete raised front's underlay loses its pixel bank ink");
                     continue;
                 }
                 assert_eq!(
@@ -3709,13 +4272,25 @@ mod tests {
             assert_eq!(counts[1..].iter().sum::<usize>(), side_count);
             assert!(counts.iter().all(|&count| count > 0));
             // Apply the real finish to every original bank quad together.
-            // The existing flat-ground subdivision pass is outside this change.
+            // Caps retain their support plane; the earthen side finish adds
+            // bounded relief and rim grass instead of retaining flat gray walls.
             let before = mesh.clone();
             polish_world_surfaces(&mut mesh, "Route4", &cells, &g, [0, 0]);
             assert!(mesh.textured.positions.is_empty());
-            assert_eq!(mesh.solid.positions, before.textured.positions);
-            assert_eq!(mesh.solid.normals, before.textured.normals);
-            assert_eq!(mesh.solid.indices, before.textured.indices);
+            for (&point,&normal) in before.textured.positions.iter().zip(&before.textured.normals) {
+                if normal == [0.,1.,0.] {
+                    assert!(mesh.solid.positions.iter().zip(&mesh.solid.normals)
+                        .any(|(p,n)|*p==point && *n==normal), "native cap support stays exact");
+                }
+            }
+            let min=before.textured.positions.iter().fold([f32::INFINITY;3],|a,p|
+                std::array::from_fn(|i|a[i].min(p[i])));
+            let max=before.textured.positions.iter().fold([f32::NEG_INFINITY;3],|a,p|
+                std::array::from_fn(|i|a[i].max(p[i])));
+            assert!(mesh.solid.positions.iter().all(|p|p.iter().all(|v|v.is_finite())
+                && p[0]>=min[0]-g.tile_width*0.2 && p[0]<=max[0]+g.tile_width*0.2
+                && p[2]>=min[2]-g.tile_height*0.2 && p[2]<=max[2]+g.tile_height*0.2),
+                "soil relief stays close to the original face footprint");
             assert_eq!(mesh.footing_heights, before.footing_heights);
             assert_eq!(mesh.authored_cells, before.authored_cells);
             assert!(mesh.animated_textured.positions.is_empty());
@@ -3764,7 +4339,7 @@ mod tests {
 
     #[test]
     fn kanto_shallow_bank_finish_rejects_changed_clipped_unknown_and_claimed_sources() {
-        for block in [0x07, 0x1a, 0x2f] {
+        for block in [0x07, 0x1a, 0x2f, 0x58, 0x59, 0x5a, 0x5b] {
             let f = kanto_bank_fixture(&[block]);
             let g = kanto_bank_geometry(&f);
             let source_index = 7;
@@ -4109,7 +4684,7 @@ mod tests {
             "verified crown art must not remain as bright sprite fragments"
         );
         assert!(
-            mesh.solid.positions.len() >= model(ModelKind::Tree).surface_mesh().positions.len() * 3
+            mesh.solid.positions.len() >= 3 * 1000
         );
         assert!(mesh.footing_heights.iter().all(|h| *h == 0.0));
         let canopy_height = mesh.solid.positions.iter().map(|p| p[1])
@@ -4667,12 +5242,68 @@ mod tests {
                     && p[1] > 0.0
                     && p[1]
                         < if material == GroundMaterial::Lawn {
-                            0.6
+                            0.9
                         } else {
-                            0.02
+                            // Pebble relief stays below ankle height; the
+                            // underlying source plane remains at zero.
+                            0.9
                         }));
             }
             assert!(count > 0, "expected some irregular surface detail");
+        }
+    }
+
+    #[test]
+    fn forest_pond_rim_uses_native_mineral_without_moving_source_support() {
+        let mut rim = source_with_tile(0x0a,0,0,0x1b);
+        rim.tileset_id = "forest".into();
+        let mut water = source_with_tile(0x0a,1,0,0x14);
+        water.tileset_id = "forest".into();
+        let mut f = frame(2,1,vec![rim,water]);
+        f.map_id = "IlexForest".into();
+        let original = f.clone();
+        let g = geometry(&f);
+        let cells: Vec<_> = f.tiles.iter().collect();
+        let mut mesh = TerrainMeshData { footing_heights: vec![0.,-2.],
+            authored_cells: vec![None;2], ..Default::default() };
+        let (w,e,n,s) = g.bounds(0,0);
+        let corners = [[w,0.,n],[w,0.,s],[e,0.,s],[e,0.,n]];
+        append_top(&mut mesh.textured,[w,e,n,s],0.,g.uv(0,0));
+        polish_world_surfaces(&mut mesh,"IlexForest",&cells,&g,[0,0]);
+        assert!(mesh.textured.positions.is_empty(), "verified rim must not remain pixel art");
+        assert_eq!(mesh.footing_heights,vec![0.,-2.]);
+        assert_eq!(mesh.authored_cells,vec![None;2]);
+        assert!(corners.iter().all(|p| mesh.solid.positions.contains(p)));
+        assert!((level_floor_area(&mesh.solid) - f64::from(g.tile_width*g.tile_height)).abs() < 0.001,
+            "native bank must retain complete source support beneath its accents");
+        assert!(mesh.solid.positions.iter().all(|p| (0. ..0.9).contains(&p[1])));
+        assert_eq!(f,original,"source tiles and gameplay state remain authoritative");
+    }
+
+    #[test]
+    fn outdoor_floor_material_coordinates_are_stable_and_exclude_accents() {
+        let f = frame(2, 2, vec![source_with_tile(0x01, 0, 0, 0x05); 4]);
+        let g = geometry(&f);
+        let cells: Vec<_> = f.tiles.iter().collect();
+        let floor = GroundFinish::new("NewBarkTown", &cells, &g, [-7, 11]);
+        let shifted_g = GridGeometry { origin_x: g.origin_x + 64., origin_z: g.origin_z - 32., ..g };
+        let shifted = GroundFinish::new("NewBarkTown", &cells, &shifted_g, [-7, 11]);
+        for material in [GroundMaterial::Lawn, GroundMaterial::Path, GroundMaterial::Pavers] {
+            let (w,e,n,s) = g.bounds(0,0);
+            let p = [[w,0.,n],[w,0.,s],[e,0.,s],[e,0.,n]];
+            let mut a = SurfaceMeshData::default();
+            let mut b = SurfaceMeshData::default();
+            floor.append_surface(&mut a, material, p);
+            shifted.append_surface(&mut b, material, p.map(|v| [v[0]+64.,v[1],v[2]-32.]));
+            assert_eq!(a.uvs, b.uvs, "material grain must not swim with the camera");
+            assert_eq!(a.indices, b.indices);
+            for (p, uv) in a.positions.iter().zip(&a.uvs) {
+                if p[1] == 0. {
+                    assert!((65000. ..69000.).contains(&uv[0]) && uv[1] < -55000.);
+                } else {
+                    assert_eq!(*uv, [0.,0.], "flowers and stones retain their own pigments");
+                }
+            }
         }
     }
 
@@ -4690,6 +5321,11 @@ mod tests {
         );
         let near = floor.color(GroundMaterial::Lawn, [-28.0001, 0.0, -36.0]);
         assert!(soil.iter().zip(near).all(|(a, b)| (a - b).abs() < 0.001));
+        // Litter accumulates at tree contacts; an empty clearing may be bare.
+        // Keep the existing litter/footing assertions on an explicit canopy.
+        floor.shadows.push(GroundShadow { bounds: [-32.,-24.,-40.,-32.],
+            tree: true, trunk_center: Some([-28.,-36.]) });
+        floor.shadow_cells = None;
         let mut mesh = SurfaceMeshData::default();
         floor.append_surface(
             &mut mesh,
@@ -4701,7 +5337,7 @@ mod tests {
                 [-24.0, 0.0, -40.0],
             ],
         );
-        assert!(mesh.positions.iter().all(|p| p[1] >= 0.0 && p[1] < 2.0));
+        assert!(mesh.positions.iter().all(|p| p[1] >= 0.0 && p[1] < 3.0));
         assert!(
             mesh.positions.iter().any(|p| p[1] > 0.0),
             "forest must include leaf litter"
@@ -4851,21 +5487,32 @@ mod tests {
             b,
             build_terrain_mesh_with_samples(&frame, &TerrainImageSamples::default()).unwrap()
         );
-        // The shared grove crown may overlap adjacent plots. Its trunk and
-        // supporting limbs must stay inside the original blocked footprint.
+        // The shared pine's elevated limbs and needles may overlap adjacent
+        // crowns. Its 13-by-13 fluted trunk stays in the blocked source plot;
+        // the former broadleaf generator's vertex count included crown faces.
         assert!(
-            a.solid.positions[..119 + 4 * 3 * 77].iter()
-                .chain(&b.solid.positions[..119 + 4 * 3 * 77])
+            a.solid.positions[..13 * 13].iter()
+                .chain(&b.solid.positions[..13 * 13])
                 .all(|p| p[0] >= -12.001
                     && p[0] <= 4.001
                     && p[2] >= -0.001
                     && p[2] <= 16.001
                     && p[1] >= 0.)
         );
-        assert!(a.solid.positions.iter().chain(&b.solid.positions)
+        // Ground flowers can rise above 0.6 outside the blocked tree plot.
+        // The pine owns explicit cutaway ranges; measure that geometry rather
+        // than treating every elevated ground accent as part of its crown.
+        assert!(!a.solid.cutaway_ranges.is_empty() && !b.solid.cutaway_ranges.is_empty());
+        let crowns = || [&a.solid, &b.solid].into_iter().flat_map(|mesh|
+            mesh.cutaway_ranges.iter().flat_map(|range| mesh.positions[range.clone()].iter()));
+        assert!(crowns()
             .filter(|p| p[1] > 0.6)
             .all(|p| p[0] >= -24. && p[0] <= 16.
-                && p[2] >= -12. && p[2] <= 28. && p[1] <= 64.));
+                && p[2] >= -12. && p[2] <= 28. && p[1] <= 64.),
+            "crown exceeds the readable plot margin: {:?}",
+            crowns()
+                .filter(|p| p[1] > 0.6 && (p[0] < -24. || p[0] > 16.
+                    || p[2] < -12. || p[2] > 28. || p[1] > 64.)).take(3).collect::<Vec<_>>());
         assert_eq!(a.footing_heights, b.footing_heights);
 
         let mut shared = None;
@@ -4925,6 +5572,35 @@ mod tests {
         );
         non_johto.tileset_id = std::sync::Arc::from("unknown_mod");
         assert_eq!(ground_material(&non_johto), None);
+    }
+
+    #[test]
+    fn kanto_quiet_path_finishes_blank_and_speckled_samples_together() {
+        let f = frame(4, 4, (0..16).map(|i|
+            material_source("kanto", 0x01, i % 4, i / 4,
+                if i == 4 || i == 14 { 0x39 } else { 0x23 })
+        ).collect());
+        let g = geometry(&f);
+        let cells = f.tiles.iter().collect::<Vec<_>>();
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![0.; 16], authored_cells: vec![None; 16],
+            ..Default::default()
+        };
+        for (i, tile) in cells.iter().enumerate() {
+            assert_eq!(ground_material(&tile.source), Some(GroundMaterial::Path));
+            let (w, e, n, s) = g.bounds(i % 4, i / 4);
+            append_top(&mut mesh.textured, [w, e, n, s], 0., g.uv(i % 4, i / 4));
+        }
+        let feet = mesh.footing_heights.clone();
+        let claims = mesh.authored_cells.clone();
+        let corners = mesh.textured.positions.clone();
+        polish_world_surfaces(&mut mesh, "Route22", &cells, &g, [0, 0]);
+        assert!(mesh.textured.positions.is_empty(), "blank path cells must not retain raster paint");
+        assert!(corners.iter().all(|p| mesh.solid.positions.contains(p)));
+        assert_eq!(mesh.footing_heights, feet);
+        assert_eq!(mesh.authored_cells, claims);
+        assert_eq!(ground_material(&material_source("unknown_mod", 0x01, 0, 0, 0x23)), None);
+        assert_eq!(ground_material(&material_source("kanto", 0x01, 0, 0, 0x24)), None);
     }
 
     #[test]
@@ -5128,7 +5804,7 @@ mod tests {
     }
 
     #[test]
-    fn runtime_path_uses_authored_geometry_without_sampling_building_pixels() {
+    fn runtime_path_uses_authored_geometry_with_live_source_roof_paint() {
         let source_frame = drawing(&[&[0x14, 0x15]], 3);
         let mut sources: Vec<_> = source_frame
             .tiles
@@ -5138,10 +5814,20 @@ mod tests {
         sources.extend((0..8).map(|_| source_with_tile(0x01, 0, 0, 0x06)));
         let mut frame = frame(8, 5, sources);
         frame.map_id = std::sync::Arc::from(MAP);
-        // An empty image sampler is intentional: authored replacement geometry
-        // needs source identity plus the ground atlas slot, not raster pixels.
+        // Replacement geometry keeps the live roof paint. Missing paint must
+        // preserve the original drawing rather than invent a building color.
+        let missing = build_terrain_mesh_with_samples(&frame, &TerrainImageSamples::default()).unwrap();
+        assert_eq!(missing.textured.quad_count(), 32);
+        let mut images = TerrainImageSamples::default();
+        let roof: Vec<_> = (0..64).flat_map(|i| match i % 4 {
+            0 => [20,35,55,255], 1 => [30,130,230,255],
+            2 => [100,230,240,255], _ => [245,245,245,255],
+        }).collect();
+        for tile in &frame.tiles {
+            images.pixels.insert(tile.texture.id(), TileImageSample::Rgba(roof.clone()));
+        }
         let mesh =
-            build_terrain_mesh_with_samples(&frame, &TerrainImageSamples::default()).unwrap();
+            build_terrain_mesh_with_samples(&frame, &images).unwrap();
         assert_eq!(mesh.textured.quad_count(), 0);
         assert!(
             mesh.solid.indices.len()
@@ -5202,7 +5888,7 @@ mod tests {
         .unwrap();
         assert!(
             mesh.solid.indices.len()
-                >= model(ModelKind::Tree).surface_mesh().indices.len() + 12 * 24
+                >= 1000 + 12 * 24
         );
         assert_eq!(mesh.textured.quad_count(), 0);
         assert!(mesh.tree_instances.is_empty());
@@ -5343,7 +6029,7 @@ mod tests {
     }
 
     #[test]
-    fn route26_rock_shoulders_share_canyon_pigment_without_changing_support() {
+    fn native_rock_shoulders_share_source_pigment_across_routes_without_changing_support() {
         let f = frame(1,1,vec![material_source("johto",0x0a,1,1,0x3c)]);
         let cells: Vec<_> = f.tiles.iter().collect();
         let g = GridGeometry { width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0. };
@@ -5358,7 +6044,10 @@ mod tests {
         assert_eq!(gray.solid.normals,ochre.solid.normals);
         assert!(!ochre.solid.uvs.is_empty());
         assert!(ochre.solid.uvs.iter().all(|uv| uv[0] < -9000. && uv[1] < -30000.));
-        assert!(gray.solid.uvs.iter().all(|uv| uv[0] < -9000. && uv[1] > -30000.));
+        // The byte-identical native drawing owns the material family.
+        // A map name alone must not recolor the same shoulder gray.
+        assert_eq!(gray.solid.uvs, ochre.solid.uvs);
+        assert_eq!(gray.solid.colors, ochre.solid.colors);
     }
 
     #[test]
@@ -5488,11 +6177,11 @@ mod tests {
         polish_world_surfaces(&mut mesh,"NationalPark",&cells,&g,[0,0]);
         assert!(mesh.textured.positions.is_empty(),"no checker or pixel-art pavement remains");
         assert!(!mesh.solid.positions.is_empty());
-        assert!(mesh.solid.positions.iter().all(|p| p[1]==0.
+        assert!(mesh.solid.positions.iter().all(|p| (0. ..0.9).contains(&p[1])
             && (0. ..=32.).contains(&p[0]) && (0. ..=32.).contains(&p[2])));
-        let area: f64 = mesh.solid.positions.chunks_exact(4)
-            .map(|p| (f64::from(p[2][0])-f64::from(p[0][0]))
-                *(f64::from(p[2][2])-f64::from(p[0][2]))).sum();
+        // Decorations sit above the plane; indexed floor triangles must
+        // still partition exactly the original plaza at its original height.
+        let area = level_floor_area(&mesh.solid);
         assert!((area-32.*32.).abs()<0.001,
             "staggered park masonry must cover exactly the original plaza");
         assert_eq!(mesh.footing_heights,vec![0.;16]);
@@ -5515,6 +6204,15 @@ mod tests {
         assert_eq!(mesh.solid.positions,wall);
         assert_eq!(mesh.solid.normals,vec![[-1.,0.,0.];4]);
         assert_eq!(mesh.footing_heights,vec![0.]);
+    }
+
+    fn level_floor_area(mesh: &SurfaceMeshData) -> f64 {
+        mesh.indices.chunks_exact(3).filter_map(|indices| {
+            let p = [indices[0], indices[1], indices[2]]
+                .map(|i| Vec3::from_array(mesh.positions[i as usize]));
+            p.iter().all(|p| p.y == 0.0).then(||
+                f64::from((p[1] - p[0]).cross(p[2] - p[0]).y.abs()) * 0.5)
+        }).sum()
     }
 
     fn material_source(tileset: &str, block: u16, x: u8, y: u8, tile: u16) -> VisualTileSource {
@@ -5736,7 +6434,10 @@ mod tests {
         }
         assert_eq!(mesh.footing_heights, before.footing_heights);
         assert_eq!(mesh.authored_cells, before.authored_cells);
-        assert!(mesh.solid.positions.iter().all(|p| p[1] == 0.0));
+        assert!(mesh.solid.positions.iter().all(|p| (0.0..0.9).contains(&p[1])));
+        assert!((level_floor_area(&mesh.solid)
+            - 12.0 * f64::from(g.tile_width * g.tile_height)).abs() < 0.001,
+            "decoration must retain the full source floor outside the prop quadrant");
         for p in &before.textured.positions {
             assert!(mesh.solid.positions.contains(p) || mesh.textured.positions.contains(p));
         }
@@ -5941,6 +6642,36 @@ mod tests {
                     .iter()
                     .all(|p| (p[1] - water).abs() < 0.001)
             );
+        }
+    }
+}
+
+#[cfg(test)]
+mod streamed_grove_bounds_tests {
+    use super::*;
+    #[test]
+    fn streaming_bounds_contain_every_source_leaf_and_branch() {
+        for coordinates in [[-7, 3], [0, 0], [4, 8], [15, -19], [1, 2], [3, 5]] {
+            for mask in 0u32..16 {
+                let neighbors = std::array::from_fn(|i| mask & (1 << i) != 0);
+                for tile_height in [8.,32.] {
+                    for plot in [[2.,2.], [1.,4.], [4.,1.]] {
+                    for family in [crate::foliage::GroveFamily::JohtoPine,crate::foliage::GroveFamily::AncientForest] {
+                    let recipe = GroveRecipe { family,
+                        bounds:[-tile_height*plot[0],0.,0.,tile_height*plot[1]],
+                        base_height:13.,tile_height,coordinates,neighbors,coverage_fade:true };
+                    let (low, high) = recipe.conservative_bounds();
+                    let mut mesh = TerrainMeshData::default();
+                    recipe.append(&mut mesh);
+                    for p in mesh.solid.positions {
+                        let p = bevy::prelude::Vec3::from_array(p);
+                        assert!(p.cmpge(low).all() && p.cmple(high).all(),
+                            "{coordinates:?} {neighbors:?} {family:?} {plot:?}: {p:?} outside {low:?}..{high:?}");
+                    }
+                    }
+                    }
+                }
+            }
         }
     }
 }

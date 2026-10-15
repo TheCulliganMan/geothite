@@ -4,7 +4,7 @@
 //! placement module maps them onto complete, source-identified map drawings.
 use std::sync::OnceLock;
 
-use bevy::prelude::Vec3;
+use bevy::prelude::{Vec2, Vec3};
 use serde::Deserialize;
 
 use crate::mesh::SurfaceMeshData;
@@ -41,8 +41,6 @@ pub(crate) enum ModelKind {
     SproutTower,
     Grass,
     GrassLod,
-    Tree,
-    TreeLod,
     Flowers,
 }
 
@@ -59,7 +57,6 @@ impl ModelKind {
             Self::VioletGym => "johto/violet_gym",
             Self::SproutTower => "johto/sprout_tower",
             Self::Grass | Self::GrassLod => "johto/tall_grass",
-            Self::Tree | Self::TreeLod => "johto/tree",
             Self::Flowers => "johto/flowers",
         }
     }
@@ -99,6 +96,7 @@ impl Model {
     pub(crate) fn parse<'a>(
         json: impl Into<crate::model_storage::Source<'a>>,
     ) -> Result<Self, String> {
+        let _trace = crate::loading_trace::span("asset.decode_scenery_model", || serde_json::json!({}));
         let export: Export = crate::model_storage::parse(json)?;
         let mut surface = SurfaceMeshData::default();
         let mut solid_materials = Vec::new();
@@ -173,7 +171,7 @@ impl Model {
                 .extend(primitive.indices.into_iter().map(|i| base + i));
             if texture.is_none()
                 && !crate::roof_tiles::refine(target, base as usize, index_start, &primitive.material)
-                && !(export.name == "traditional_house"
+                && !(matches!(export.name.as_str(), "traditional_house" | "violet_gym")
                     && crate::roof_tiles::refine_traditional(target, base as usize, index_start,
                         &primitive.material, primitive.base_color))
             {
@@ -256,9 +254,9 @@ impl Model {
         let light: [f32;4] = std::array::from_fn(|i| field[i]*0.82+palette[2][i]*0.18);
         for (material, range, original) in &self.solid_materials {
             let color = match material.as_str() {
-                "violet_dark" | "roof_red_dark" => palette[0],
-                "violet" | "violet_warm" | "roof_red" | "roof_red_warm" => field,
-                "violet_light" | "roof_red_light" => light,
+                "violet_dark" | "roof_red_dark" | "roof_blue_dark" => palette[0],
+                "violet" | "violet_warm" | "roof_red" | "roof_red_warm" | "roof_blue" | "roof_blue_warm" => field,
+                "violet_light" | "roof_red_light" | "roof_blue_light" => light,
                 _ => continue,
             };
             for index in range.clone() {
@@ -266,6 +264,24 @@ impl Model {
                     target.colors[first+index][channel] = color[channel]
                         * target.colors[first+index][channel] / original[channel].max(0.0001);
                 }
+                target.uvs[first+index]=crate::scenery_finish::SOURCE_PAINT_UV;
+            }
+        }
+    }
+
+    pub(crate) fn recolor_fitted_service_wall(&self, target: &mut SurfaceMeshData,
+        first: usize, palette: [[f32;4];2]) {
+        for (material,range,original) in &self.solid_materials {
+            let color=match material.as_str() {
+                "plaster_service_wall"=>palette[0],
+                "plaster_service_mortar"=>palette[1],
+                _=>continue,
+            };
+            for index in range.clone() {
+                let old=target.colors[first+index];
+                let shade=(old[0]+old[1]+old[2])/(original[0]+original[1]+original[2]);
+                for channel in 0..3 {target.colors[first+index][channel]=color[channel]*shade;}
+                target.uvs[first+index]=crate::scenery_finish::SOURCE_PAINT_UV;
             }
         }
     }
@@ -374,21 +390,7 @@ fn fit_horizontal(
     }
 }
 
-pub(crate) fn required_tree_model(kind: ModelKind) -> Option<&'static Model> {
-    static TREE: OnceLock<Option<Model>> = OnceLock::new();
-    static TREE_LOD: OnceLock<Option<Model>> = OnceLock::new();
-    let (cache, path) = match kind {
-        ModelKind::Tree => (&TREE, "models/new_bark/tree.mesh.json"),
-        ModelKind::TreeLod => (&TREE_LOD, "models/johto/tree_lod.mesh.json"),
-        _ => return None,
-    };
-    cache.get_or_init(|| crate::open_models::load_required(path, |source| Model::parse(source))).as_ref()
-}
-
 pub(crate) fn model(kind: ModelKind) -> &'static Model {
-    if matches!(kind, ModelKind::Tree | ModelKind::TreeLod) {
-        return required_tree_model(kind).expect("required tree asset; renderer must retain 2D when missing");
-    }
     static HOUSE: OnceLock<Model> = OnceLock::new();
     static PLAYER_HOUSE: OnceLock<Model> = OnceLock::new();
     static LAB: OnceLock<Model> = OnceLock::new();
@@ -448,7 +450,6 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
             &GRASS_LOD,
             crate::model_storage::include_model!("models/johto/grass_lod.mesh.json"),
         ),
-        ModelKind::Tree | ModelKind::TreeLod => unreachable!("handled required assets above"),
         ModelKind::Flowers => (
             &FLOWERS,
             crate::model_storage::include_model!("models/new_bark/flowers.mesh.json"),
@@ -462,10 +463,118 @@ mod tests {
     use super::*;
 
     #[test]
+    fn compact_house_visible_end_caps_keep_wall_material_when_roof_paint_changes() {
+        let m=model(ModelKind::House);
+        let mut sides=[false;2];
+        for (material,range,_) in &m.solid_materials {
+            if !matches!(material.as_str(),"plaster_light"|"roof_red_dark") {continue;}
+            for i in range.clone() {
+                let p=m.surface.positions[i];let n=m.surface.normals[i];
+                if p[0].abs()>1.9 && p[1]>=2.17999 && n[0].abs()>0.99 {
+                    assert_eq!(material,"plaster_light","source outline black must not paint a visible gable wall");
+                    assert!(n[0]*p[0]>0.);
+                    sides[usize::from(p[0]>0.)]=true;
+                }
+            }
+        }
+        assert_eq!(sides,[true,true]);
+    }
+
+    #[test]
+    fn civic_brick_faces_have_shallow_relief_over_separate_mortar_backing() {
+        for kind in [ModelKind::Pokecenter,ModelKind::Mart] {
+            let m=model(kind);
+            let mut face_z=f32::NEG_INFINITY;let mut mortar_z=f32::NEG_INFINITY;
+            for (material,range,_) in &m.solid_materials {
+                if !matches!(material.as_str(),"plaster_service_wall"|"plaster_service_mortar") {continue;}
+                for i in range.clone() {
+                    let p=m.surface.positions[i];let n=m.surface.normals[i];
+                    if n[2]>0.99 {
+                        if material=="plaster_service_wall" && (0.67..2.23).contains(&p[1]) {
+                            face_z=face_z.max(p[2]);
+                        } else if material=="plaster_service_mortar" {
+                            // A continuous backing quad has vertices only at
+                            // its outer corners, not at each brick-course height.
+                            mortar_z=mortar_z.max(p[2]);
+                        }
+                    }
+                }
+            }
+            assert!(face_z.is_finite() && mortar_z.is_finite());
+            assert!((0.01..0.05).contains(&(face_z-mortar_z)),"{kind:?} brick must have restrained physical relief");
+            assert_eq!(m.min,[-2.,0.,-2.]);
+            assert_eq!(m.max,[2.,3.448,2.]);
+            assert_eq!(m.door_anchor,Some([0.,0.,2.]));
+        }
+    }
+
+    #[test]
+    fn service_gable_end_walls_face_outward_and_share_source_masonry() {
+        for kind in [ModelKind::Pokecenter,ModelKind::Mart] {
+            let m=model(kind);
+            let mut sides=[false;2];
+            for (material,range,_) in &m.solid_materials {
+                // Fascia/roof timber has legitimate inward-facing sides of
+                // closed beams at this height. Only wall roles are end caps.
+                if !matches!(material.as_str(),"plaster_service_wall"|"plaster"|"roof_red_dark"|"roof_blue_dark") {continue;}
+                for i in range.clone() {
+                    let p=m.surface.positions[i];let n=m.surface.normals[i];
+                    if p[1]>=2.41999 && p[0].abs()>1.7 && n[0].abs()>0.99 {
+                        assert!(n[0]*p[0]>0.,"{kind:?} gable faces into the building: {p:?}/{n:?}");
+                        assert_eq!(material,"plaster_service_wall","gable must share source wall paint");
+                        sides[usize::from(p[0]>0.)]=true;
+                    }
+                }
+            }
+            assert_eq!(sides,[true,true],"both authored gable ends must close {kind:?}");
+        }
+    }
+
+    #[test]
+    fn service_source_paint_preserves_trim_geometry_and_door_alignment() {
+        for kind in [ModelKind::Pokecenter,ModelKind::Mart] {
+            let m=model(kind);
+            let mut mesh=SurfaceMeshData::default();
+            m.append_fitted(&mut mesh,[0.,64.,0.,64.],0.,16.,Some(24.));
+            let original=mesh.clone();
+            m.recolor_fitted_roof(&mut mesh,0,[[0.01,0.02,0.05,1.],
+                [0.05,0.4,0.5,1.],[0.2,0.8,0.9,1.]]);
+            m.recolor_fitted_service_wall(&mut mesh,0,[[0.8,0.2,0.4,1.],[0.7,0.75,0.65,1.]]);
+            assert_eq!(mesh.positions,original.positions);
+            assert_eq!(mesh.normals,original.normals);
+            assert_eq!(mesh.indices,original.indices);
+            let (mut roofs,mut walls)=(0,0);
+            for (material,range,_) in &m.solid_materials {
+                if material.starts_with("roof_red")||material.starts_with("roof_blue") {
+                    for c in &mesh.colors[range.clone()] {assert!(c[2]>c[0],"source cyan roof: {c:?}");}
+                    assert!(mesh.uvs[range.clone()].iter().all(|uv|*uv==crate::scenery_finish::SOURCE_PAINT_UV));
+                    roofs+=range.len();
+                } else if material=="plaster_service_wall" {
+                    for c in &mesh.colors[range.clone()] {assert!(c[0]>c[2] && c[2]>c[1],"source pink wall: {c:?}");}
+                    assert!(mesh.uvs[range.clone()].iter().all(|uv|*uv==crate::scenery_finish::SOURCE_PAINT_UV));
+                    walls+=range.len();
+                } else if material=="plaster_service_mortar" {
+                    for c in &mesh.colors[range.clone()] {assert!(c[1]>c[0] && c[0]>c[2],"source mortar: {c:?}");}
+                    assert!(mesh.uvs[range.clone()].iter().all(|uv|*uv==crate::scenery_finish::SOURCE_PAINT_UV));
+                } else {
+                    assert_eq!(&mesh.colors[range.clone()],&original.colors[range.clone()],
+                        "service paint must preserve {material}");
+                    assert_eq!(&mesh.uvs[range.clone()],&original.uvs[range.clone()]);
+                }
+            }
+            assert!(roofs>0 && walls>0);
+        }
+    }
+
+    #[test]
     fn cabin_source_roof_color_preserves_shared_geometry_and_other_materials() {
         for source in [
             crate::model_storage::include_model!("models/johto/traditional_house.mesh.json"),
             crate::model_storage::include_model!("models/new_bark/house.mesh.json"),
+            crate::model_storage::include_model!("models/new_bark/player_house.mesh.json"),
+            crate::model_storage::include_model!("models/johto/pokecenter.mesh.json"),
+            crate::model_storage::include_model!("models/johto/mart.mesh.json"),
+            crate::model_storage::include_model!("models/johto/violet_gym.mesh.json"),
         ] {
         let m=Model::parse(source).unwrap();
         let mut mesh=SurfaceMeshData::default();
@@ -475,14 +584,15 @@ mod tests {
         assert_eq!(mesh.positions,original.positions);
         assert_eq!(mesh.normals,original.normals);
         assert_eq!(mesh.indices,original.indices);
-        assert_eq!(mesh.uvs,original.uvs);
         let mut changed=0;
         for (material,range,_) in &m.solid_materials {
-            if material.starts_with("violet") || material.starts_with("roof_red") {
+            if material.starts_with("violet") || material.starts_with("roof_red") || material.starts_with("roof_blue") {
                 assert!(range.clone().any(|i|mesh.colors[i]!=original.colors[i]));
                 changed+=range.len();
+                assert!(mesh.uvs[range.clone()].iter().all(|uv|*uv==crate::scenery_finish::SOURCE_PAINT_UV));
             } else {
                 assert_eq!(&mesh.colors[range.clone()],&original.colors[range.clone()],"{material} is not roof paint");
+                assert_eq!(&mesh.uvs[range.clone()],&original.uvs[range.clone()]);
             }
         }
         assert!(changed>0);
@@ -490,7 +600,76 @@ mod tests {
     }
 
     #[test]
-    fn textured_trees_preserve_uvs_fit_source_bounds_and_share_material_groups() {
+    fn refined_roof_panels_stay_above_the_structural_deck() {
+        for source in [
+            crate::model_storage::include_model!("models/new_bark/house.mesh.json"),
+            crate::model_storage::include_model!("models/johto/pokecenter.mesh.json"),
+            crate::model_storage::include_model!("models/johto/mart.mesh.json"),
+            crate::model_storage::include_model!("models/johto/violet_gym.mesh.json"),
+        ] {
+            let export:Export=crate::model_storage::parse(source).unwrap();
+            let model=Model::parse(source).unwrap();
+            let mut eave=f32::INFINITY;
+            for ids in model.surface.indices.chunks_exact(3) {
+                let Some((material,_,_))=model.solid_materials.iter().find(|(_,range,_)|
+                    range.contains(&(ids[0] as usize))) else {continue;};
+                if !material.ends_with("_dark") {continue;}
+                let p=[ids[0],ids[1],ids[2]].map(|i|Vec3::from_array(model.surface.positions[i as usize]));
+                let face=(p[1]-p[0]).cross(p[2]-p[0]);
+                if face.length()*0.5>=0.8 && (0.35..0.98).contains(&face.normalize_or_zero().y) {
+                    for point in p {eave=eave.min(point.y);}
+                }
+            }
+            assert!(eave.is_finite(),"{} has no pitched structural deck",export.name);
+            let mut sampled=0;
+            for primitive in &export.primitives {
+                if !(primitive.material.starts_with("roof_") || primitive.material.starts_with("violet"))
+                    || primitive.material.ends_with("_dark") {continue;}
+                for ids in primitive.indices.chunks_exact(3) {
+                    let normal=Vec3::from_slice(&primitive.normals[ids[0] as usize*3..]);
+                    if !(0.35..0.98).contains(&normal.y) {continue;}
+                    let corners=[ids[0],ids[1],ids[2]].map(|i|
+                        Vec3::from_slice(&primitive.positions[i as usize*3..]));
+                    // Entry shelters share the roof paint but sit below it.
+                    if corners.iter().any(|point|point.y<eave-0.00001) {continue;}
+                    let area=(corners[1]-corners[0]).cross(corners[2]-corners[0]).length()*0.5;
+                    if !(0.01..0.4).contains(&area) {continue;}
+                    let center=corners.into_iter().sum::<Vec3>()/3.;
+                    let q=Vec2::new(center.x,center.z);
+                    let mut nearest:Option<(f32,&str)>=None;
+                    for triangle in model.surface.indices.chunks_exact(3) {
+                        let Some((material,_,_))=model.solid_materials.iter().find(|(_,range,_)|
+                            range.contains(&(triangle[0] as usize))) else {continue;};
+                        if !(material.starts_with("roof_") || material.starts_with("violet")) {continue;}
+                        let p=[triangle[0],triangle[1],triangle[2]].map(|i|
+                            Vec3::from_array(model.surface.positions[i as usize]));
+                        let face=(p[1]-p[0]).cross(p[2]-p[0]);
+                        // Vents and ridge caps legitimately sit above tiles.
+                        // Only the broad pitched dark faces are the deck.
+                        if material.ends_with("_dark")
+                            && (face.length()*0.5<0.8 || !(0.35..0.98).contains(&face.normalize_or_zero().y)) {continue;}
+                        let a=Vec2::new(p[0].x,p[0].z);
+                        let ab=Vec2::new(p[1].x,p[1].z)-a;
+                        let ac=Vec2::new(p[2].x,p[2].z)-a;
+                        let det=ab.perp_dot(ac);
+                        if det.abs()<0.000001 {continue;}
+                        let u=(q-a).perp_dot(ac)/det;
+                        let v=ab.perp_dot(q-a)/det;
+                        if u< -0.00001 || v< -0.00001 || u+v>1.00001 {continue;}
+                        let height=p[0].y+u*(p[1].y-p[0].y)+v*(p[2].y-p[0].y);
+                        if nearest.is_none_or(|(old,_)|height>old) {nearest=Some((height,material));}
+                    }
+                    let (height,material)=nearest.expect("authored roof panel disappeared");
+                    assert!(!material.ends_with("_dark") && height>=center.y-0.00001,
+                        "{} panel at {center:?} lies below {material} at {height}",export.name);
+                    sampled+=1;
+                }
+            }
+            assert!(sampled>=40,"{} needs coverage of both roof slopes",export.name);
+        }
+    }
+    #[test]
+    fn textured_models_preserve_uvs_fit_source_bounds_and_share_material_groups() {
         use base64::Engine as _;
         let fixture = serde_json::json!({"primitives":[{
             "positions":[0,0,0, 2,0,0, 0,3,0, 0,0,4],
@@ -542,8 +721,6 @@ mod tests {
             ModelKind::SproutTower,
             ModelKind::Grass,
             ModelKind::GrassLod,
-            ModelKind::Tree,
-            ModelKind::TreeLod,
             ModelKind::Flowers,
         ] {
             let model = model(kind);

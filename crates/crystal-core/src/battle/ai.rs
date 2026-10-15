@@ -1486,6 +1486,13 @@ pub fn trainer_ai_damage(
         _ => {}
     }
 
+    // Match the damage engine's non-damaging path before resolving a type
+    // category. Curse's source CURSE_TYPE deliberately has no physical/special
+    // category; estimating a zero-power move must not reject the whole turn.
+    if move_data.power == 0 {
+        return Ok(0);
+    }
+
     let mut attacker = trainer_ai_effective_pokemon(state, true);
     let defender = trainer_ai_effective_pokemon(state, false);
     if attacker.status.as_deref() == Some("BURN") {
@@ -2190,6 +2197,32 @@ mod tests {
             0,
         );
         assert!(rng.0.is_empty());
+    }
+
+    #[test]
+    fn ai_zero_power_curse_needs_no_damage_category_and_consumes_no_rng() {
+        let state = ai_test_state();
+        let move_data = Move {
+            source_index: 174, name: "CURSE".into(), move_type: pokemon_type("CURSE_TYPE"),
+            power: 0, accuracy: 100, pp: 10, effect: "CURSE".into(),
+            effect_chance: 0, stat: None, amount: None,
+        };
+        let mut rng = ScriptedRandom(VecDeque::from([42]));
+        let before = state.clone();
+        let categories = TypeCategories { physical: vec!["NORMAL".into()],
+            special: vec!["PSYCHIC".into()], ..Default::default() };
+        assert_eq!(trainer_ai_damage(&state, &move_data,
+            &BattleStatMultiplierTables::default(), &categories,
+            &TypeEffectivenessTable::default(), &WeatherModifiers::default(), 0, &mut rng).unwrap(), 0);
+        assert_eq!(rng.0, VecDeque::from([42]));
+        assert_eq!(state, before);
+        let mut damaging = move_data;
+        damaging.power = 40;
+        assert_eq!(trainer_ai_damage(&state, &damaging,
+            &BattleStatMultiplierTables::default(), &categories,
+            &TypeEffectivenessTable::default(), &WeatherModifiers::default(), 0, &mut rng),
+            Err(DamageCalculationError::MissingTypeCategory { move_type: "CURSE_TYPE".into() }),
+            "damaging moves still require the real damage category table");
     }
 
     #[test]

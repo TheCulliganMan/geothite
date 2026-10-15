@@ -59,7 +59,7 @@ enum Form {
     Model(Kind),
     GymBoulder,
     SeafoamBoulder,
-    PewterGuardian,
+    NativeGymGuardian,
     SproutGuardian,
     TowerTimber,
     GymOrb,
@@ -68,7 +68,8 @@ enum Form {
     LighthouseChamber(lighthouse_chamber::Asset),
     CaveCorner(crate::cave::DiagonalCorner),
     CaveHatch,
-    NativeCaveWarp,
+    CaveShaft,
+    CavePortal,
     CaveSill,
     CaveRim,
     IceHatch,
@@ -90,7 +91,7 @@ pub(super) struct Placement {
 }
 impl Placement {
     pub(super) fn cuts_foundation(&self) -> bool {
-        matches!(self.form, Form::IcePit)
+        matches!(self.form, Form::IcePit | Form::CaveShaft)
     }
     pub(super) fn floor_sample_and_label(&self) -> (usize, &'static str) {
         (self.ground, self.kind_label())
@@ -106,14 +107,15 @@ impl Placement {
             Form::Special(detail) => detail.label(),
             Form::Model(k) => k.label(),
             Form::GymBoulder | Form::SeafoamBoulder => Kind::CaveBoulder.label(),
-            Form::PewterGuardian | Form::SproutGuardian => Kind::TowerGuardian.label(),
+            Form::NativeGymGuardian | Form::SproutGuardian => Kind::TowerGuardian.label(),
             Form::TowerTimber => Kind::TimberWall.label(),
             Form::GymOrb => Kind::LeaguePodium.label(),
             Form::RocketWall { .. } => "dungeon:rocket-wall-network",
             Form::Lighthouse(detail) => detail.label(),
             Form::LighthouseChamber(asset) => asset.label(),
             Form::CaveCorner(_) => "dungeon:cave-diagonal-corner",
-            Form::CaveHatch | Form::NativeCaveWarp => "dungeon:cave-floor-hatch",
+            Form::CaveHatch | Form::CaveShaft => "dungeon:cave-floor-hatch",
+            Form::CavePortal => "dungeon:cave-daylight-exit",
             Form::CaveSill => "dungeon:cave-exit-sill",
             Form::CaveRim => "dungeon:cave-rock-rim",
             Form::IceHatch => "dungeon:ice-floor-hatch",
@@ -155,6 +157,10 @@ fn live_gym_orb(map: &str, tileset: &str) -> bool {
         "tower" => matches!(map, "PewterGym" | "CianwoodGym" | "EcruteakGym"),
         _ => false,
     }
+}
+fn tin_tower_guardian_map(map:&str)->bool {
+    matches!(map,"TinTower1F"|"TinTower2F"|"TinTower3F"|"TinTower4F"|"TinTower5F"
+        |"TinTower6F"|"TinTower7F"|"TinTower8F"|"TinTower9F")
 }
 struct Resolver<'a> {
     map: &'a str,
@@ -205,8 +211,10 @@ impl Resolver<'_> {
                     && matches!(self.map, "OlivineGym" | "PewterGym" | "CianwoodGym" | "BlackthornGym1F")
                     && p.width == 2 && p.height == 2 {
                     Form::GymBoulder
-                } else if kind == Kind::TowerGuardian && self.map == "PewterGym" {
-                    Form::PewterGuardian
+                } else if kind == Kind::TowerGuardian && (matches!(self.map,
+                    "PewterGym"|"FuchsiaGym"|"ViridianGym"|"CeruleanGym"|"CeladonGym"|"VermilionGym")
+                    || tin_tower_guardian_map(self.map)) {
+                    Form::NativeGymGuardian
                 } else if kind == Kind::TowerGuardian
                     && matches!(self.map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
                     Form::SproutGuardian
@@ -275,8 +283,18 @@ pub(super) fn resolve(
             front_rows: 1.0,
         });
     }
-    // Complete overhead warp drawings retain their floor footprint. Native
-    // Kanto rooms use shallow source relief; legacy rooms keep upright rails.
+    for p in grouped_flat_card_placements(cells, g, 0x16, false, |s| {
+        crate::cave::daylight_exit_local(s).map(|(x, y)| (x, y, 2, 2))
+    }) {
+        if !phase_consistent(cells, g, p) { continue; }
+        let tileset = cells[p.row*g.width+p.column].source.tileset_id.as_ref();
+        let Some(ground) = ground(map, cells, tileset, 0x16) else { continue; };
+        r.add(Placement { column:p.column, row:p.row, width:2, height:2,
+            ground, form:Form::CavePortal, rise_pixels:0., depth_pixels:16., front_rows:2. });
+
+    }
+    // Complete drawings own the original footprint and support. Upward
+    // rails stand above it; downward flights enter a recessed shaft.
     for p in grouped_flat_card_placements(cells, g, 0x16, false, |s| {
         crate::cave::flat_ladder_local(s).map(|(x, y)| (x, y, 2, 2))
     }) {
@@ -293,9 +311,8 @@ pub(super) fn resolve(
             width: 2,
             height: 2,
             ground,
-            form: if matches!(map, "DiglettsCave" | "MountMoon" | "RockTunnel1F"
-                | "RockTunnelB1F" | "TohjoFalls" | "VictoryRoad") {
-                Form::NativeCaveWarp
+            form: if matches!(cells[p.row*g.width+p.column].source.metatile_id, 0x0b | 0x15 | 0x1f) {
+                Form::CaveShaft
             } else { Form::CaveHatch },
             rise_pixels: 0.0,
             depth_pixels: 16.0,
@@ -414,14 +431,14 @@ pub(super) fn resolve(
             tower_boulder_placements(cells, g),
         );
     }
-    if matches!(map, "CianwoodGym" | "EcruteakGym" | "PewterGym") {
+    if matches!(map, "CianwoodGym" | "EcruteakGym" | "PewterGym") || tin_tower_guardian_map(map) {
         let guardians = grouped_flat_card_placements(cells,g,crate::tower::TOWER_FLOOR_TILE,false,|s| {
             if s.tileset_id.as_ref()!="tower" || s.subtile_row>=4 { return None; }
-            let (ox, lower) = match (map, s.metatile_id) {
-                ("PewterGym", 0x19) => (0, [0x26, 0x27]),
-                ("PewterGym", 0x1a) => (2, [0x26, 0x27]),
-                ("CianwoodGym" | "EcruteakGym", 0x21) => (0, [0x12, 0x13]),
-                ("CianwoodGym" | "EcruteakGym", 0x22) => (2, [0x12, 0x13]),
+            let (ox, lower) = match s.metatile_id {
+                0x19 if map=="PewterGym" => (0, [0x26, 0x27]),
+                0x1a if map=="PewterGym" => (2, [0x26, 0x27]),
+                0x21 if map!="PewterGym" => (0, [0x12, 0x13]),
+                0x22 if map!="PewterGym" => (2, [0x12, 0x13]),
                 _ => return None,
             };
             if s.subtile_column<ox || s.subtile_column>=ox+2 {return None;}
@@ -811,6 +828,37 @@ pub(super) fn joined_surface_shapes(
     joined
 }
 
+fn append_open_gym_bin(out:&mut SurfaceMeshData,b:[f32;4],height:f32) {
+    let [w,e,n,s]=b;let center=[(w+e)*0.5,(n+s)*0.5];
+    let radius=(e-w).min(s-n)*0.5;let scale=height/12.;let thickness=0.7*scale;
+    let bottom=radius*0.83;let floor=scale;
+    let inner_bottom=bottom+(radius-bottom)*floor/height-thickness;
+    let ring=|r:f32,y:f32| (0..16).map(|j| {
+        let angle=j as f32*std::f32::consts::TAU/16.;
+        [center[0]+r*angle.cos(),y,center[1]+r*angle.sin()]
+    }).collect::<Vec<_>>();
+    let outer_low=ring(bottom,0.);let outer_high=ring(radius,height);
+    let inner_low=ring(inner_bottom,floor);let inner_high=ring(radius-thickness,height);
+    let mut face=|points:[[f32;3];4],color:[f32;4]| {
+        let p=points.map(Vec3::from_array);let normal=(p[1]-p[0]).cross(p[2]-p[0]).normalize().to_array();
+        append_quad(out,points,normal,[[0.;2];4],color);
+    };
+    for j in 0..16 {let k=(j+1)%16;
+        face([outer_low[k],outer_low[j],outer_high[j],outer_high[k]],[0.34,0.39,0.40,1.]);
+        face([inner_low[j],inner_low[k],inner_high[k],inner_high[j]],[0.11,0.13,0.14,1.]);
+        face([outer_high[k],outer_high[j],inner_high[j],inner_high[k]],[0.47,0.52,0.54,1.]);
+    }
+    drop(face);
+    for j in 0..16 {let k=(j+1)%16;
+        for (points,normal,color) in [
+            ([[center[0],0.,center[1]],outer_low[j],outer_low[k]],[0.,-1.,0.],[0.34,0.39,0.40,1.]),
+            ([[center[0],floor,center[1]],inner_low[k],inner_low[j]],[0.,1.,0.],[0.045,0.055,0.06,1.]),
+        ] {let first=out.positions.len()as u32;out.positions.extend(points);
+            out.normals.extend([normal;3]);out.uvs.extend([[0.;2];3]);out.colors.extend([color;3]);
+            out.indices.extend([first,first+1,first+2]);}
+    }
+}
+
 pub(super) fn append(
     mesh: &mut TerrainMeshData,
     g: &GridGeometry,
@@ -853,10 +901,14 @@ fn append_internal(
         ice_pit::append(&mut mesh.solid, g, p);
         return;
     }
-    if matches!(p.form, Form::CaveHatch | Form::NativeCaveWarp | Form::IceHatch) {
+    if matches!(p.form, Form::CavePortal) {
+        cave_hatch::append_portal(mesh, g, p, cells, origin);
+        return;
+    }
+    if matches!(p.form, Form::CaveHatch | Form::CaveShaft | Form::IceHatch) {
         let datum = crate::cave::cave_shape(&cells[p.row*g.width+p.column].source)
             .map(|shape|shape.surface_height(g.tile_height)).unwrap_or(0.);
-        for i in p.indices(g.width) {
+        for i in p.indices(g.width).filter(|_| !matches!(p.form, Form::CaveShaft)) {
             let (w,e,n,s)=g.bounds(i%g.width,i/g.width);
             let floor=[[w,datum,n],[w,datum,s],[e,datum,s],[e,datum,n]];
             if matches!(p.form,Form::IceHatch) {
@@ -865,8 +917,8 @@ fn append_internal(
                 new_bark::cave_finish::append(&mut mesh.solid,floor,[0.,1.,0.],&cells[p.ground].source,g,origin);
             }
         }
-        if matches!(p.form, Form::NativeCaveWarp) {
-            cave_hatch::append_native_warp(&mut mesh.textured,g,p,datum);
+        if matches!(p.form, Form::CaveShaft) {
+            cave_hatch::append_shaft(mesh, g, p, cells, datum, origin);
             return;
         }
         let first=mesh.solid.positions.len();
@@ -937,7 +989,7 @@ fn append_internal(
             matches!(p.form,Form::IceSill),
             origin,
         ),
-        Form::CaveHatch | Form::NativeCaveWarp | Form::IceHatch | Form::IcePit => {
+        Form::CaveHatch | Form::CaveShaft | Form::CavePortal | Form::IceHatch | Form::IcePit => {
             unreachable!("floor recesses handled above")
         }
         Form::Room(..) => unreachable!("room placements handled above"),
@@ -968,7 +1020,7 @@ fn append_internal(
                 mesh.solid.uvs[i]=cave_cliff::stone_uv(Vec3::from_array(mesh.solid.positions[i]),g,origin,matches!(kind,Kind::IceBoulder));
             }
         }
-        Form::PewterGuardian | Form::SproutGuardian => {
+        Form::NativeGymGuardian | Form::SproutGuardian => {
             let bounds = [w, e, s - p.depth_pixels * g.tile_height / SOURCE_TILE_HEIGHT, s];
             let source_uv = |pixel: [usize; 2]| {
                 let uv = g.uv(p.column + pixel[0] / 8, p.row + pixel[1] / 8);
@@ -976,7 +1028,7 @@ fn append_internal(
                  uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
             };
             if matches!(p.form, Form::SproutGuardian) {
-                model(Kind::TowerGuardian).append_sprout_guardian(
+                extension::append_sprout_guardian(
                     &mut mesh.textured, bounds, rise, source_uv);
             } else {
                 model(Kind::TowerGuardian).append_pewter_guardian(
@@ -1036,6 +1088,8 @@ fn append_internal(
                 for point in &mut mesh.textured.positions[first..] {point[1]+=base;}
             }
         },
+        Form::Model(Kind::GymBin) => append_open_gym_bin(&mut mesh.solid,
+            [w,e,s-p.depth_pixels*g.tile_height/SOURCE_TILE_HEIGHT,s],rise),
         Form::Model(kind) => model(kind).append(
             &mut mesh.solid,
             [
@@ -1476,8 +1530,12 @@ pub(super) fn append_terrain(
         let cliff = matches!(tile.source.tileset_id.as_ref(), "cave" | "dark_cave")
             && h >= 16.0 * g.tile_height / SOURCE_TILE_HEIGHT;
         let canyon = (map.starts_with("Route") || map.ends_with("Town") || map.ends_with("City"))
-            && matches!(tile.source.tileset_id.as_ref(), "johto" | "johto_modern")
-            && (0x68..=0x73).contains(&tile.source.metatile_id);
+            && match tile.source.tileset_id.as_ref() {
+                "johto" | "johto_modern" => (0x68..=0x73).contains(&tile.source.metatile_id),
+                "kanto" => crate::kanto_cliff::kanto_cliff_shape(&tile.source).is_some()
+                    && h >= crate::kanto_cliff::KANTO_CLIFF_HEIGHT * g.tile_height / SOURCE_TILE_HEIGHT,
+                _ => false,
+            };
         let cap = [[w, h, n], [w, h, s], [e, h, s], [e, h, n]];
         if modeled_floor {
             // The owning model already emitted this exact floor cap.
@@ -1612,16 +1670,44 @@ mod tests {
     use super::*;
     use std::sync::Arc;
     #[test]
-    fn kanto_native_cave_warps_keep_source_footprint_and_authored_datum() {
+    fn kanto_outdoor_cliffs_use_ochre_mineral_without_mutating_footing() {
+        for block in [0x2a, 0x2c] {
+            let mut t = tiles(4, 4, "kanto");
+            for tile in &mut t {
+                tile.source.metatile_id = block;
+                tile.source.tile_index = 0x11;
+            }
+            let cells = t.iter().collect::<Vec<_>>();
+            let g = grid(4, 4);
+            let shapes = cells.iter().map(|t| shape_for_source(&t.source)).collect::<Vec<_>>();
+            for map in ["Route3", "Route4", "Route9", "LavenderTown"] {
+                let mut mesh = TerrainMeshData::default();
+                mesh.authored_cells = vec![None; 16];
+                mesh.footing_heights = vec![16.; 16];
+                let mut claimed = vec![false; 16];
+                append_terrain(&mut mesh, map, &cells, &shapes, &g, &mut claimed, [13, 20]);
+                assert_eq!(mesh.footing_heights, vec![16.; 16]);
+                assert!(claimed.iter().all(|v| *v));
+                assert!(mesh.textured.positions.is_empty());
+                assert!(!mesh.solid.indices.is_empty());
+                assert!(mesh.solid.colors.iter().any(|c| c[0] > c[2] * 1.6),
+                    "outdoor Kanto rock must retain ochre rather than pale gray paint");
+                assert!(mesh.solid.positions.iter().flatten().all(|v| v.is_finite()));
+            }
+        }
+    }
+
+    #[test]
+    fn kanto_cave_warps_distinguish_upward_flights_and_downward_shafts() {
         let g=grid(4,4);
         for tileset in ["cave","dark_cave"] {
-            for (block,art,datum) in [
-                (0x07,[[0x2a,0x2b],[0x3a,0x3b]],0.),
-                (0x14,[[0x2a,0x2b],[0x3a,0x3b]],0.),
-                (0x0b,[[0x22,0x23],[0x32,0x33]],0.),
-                (0x15,[[0x22,0x23],[0x32,0x33]],0.),
-                (0x1b,[[0x28,0x29],[0x38,0x39]],6.),
-                (0x1f,[[0x20,0x21],[0x30,0x31]],6.),
+            for (block,art,datum,down) in [
+                (0x07,[[0x2a,0x2b],[0x3a,0x3b]],0.,false),
+                (0x14,[[0x2a,0x2b],[0x3a,0x3b]],0.,false),
+                (0x0b,[[0x22,0x23],[0x32,0x33]],0.,true),
+                (0x15,[[0x22,0x23],[0x32,0x33]],0.,true),
+                (0x1b,[[0x28,0x29],[0x38,0x39]],6.,false),
+                (0x1f,[[0x20,0x21],[0x30,0x31]],6.,true),
             ] {
                 let mut t=tiles(4,4,tileset);
                 for tile in &mut t {tile.source.metatile_id=0x02;tile.source.tile_index=0x16;}
@@ -1630,41 +1716,35 @@ mod tests {
                     source.metatile_id=block;source.tile_index=art[y][x];
                 }}
                 for map in ["DiglettsCave","MountMoon","RockTunnel1F",
-                    "RockTunnelB1F","TohjoFalls","VictoryRoad"] {
+                    "RockTunnelB1F","TohjoFalls","VictoryRoad","UnionCave1F"] {
                     let cells:Vec<_>=t.iter().collect();
                     let placements=resolve(map,&cells,&g,None);
-                    let p=placements.iter().find(|p|matches!(p.form,Form::NativeCaveWarp)).unwrap();
+                    let p=placements.iter().find(|p|p.kind_label()=="dungeon:cave-floor-hatch").unwrap();
                     assert_eq!((p.column,p.row,p.width,p.height),(2,2,2,2));
-                    assert_eq!(p.kind_label(),"dungeon:cave-floor-hatch");
+                    assert_eq!(p.cuts_foundation(),down);
                     let mut mesh=TerrainMeshData{footing_heights:vec![datum;16],..Default::default()};
                     append(&mut mesh,&g,p,&cells,[0,0]);
                     assert_eq!(mesh.footing_heights,vec![datum;16]);
-                    assert_eq!(mesh.textured.indices.len(),mesh.textured.positions.len()/4*6,
-                        "native hatch must preserve the room finishing face layout");
-                    for (face,indices) in mesh.textured.indices.chunks_exact(6).enumerate() {
-                        let base=face as u32*4;
-                        assert_eq!(indices,[base,base+1,base+2,base,base+2,base+3]);
-                    }
-                    assert!(mesh.solid.positions.iter().chain(&mesh.textured.positions)
-                        .all(|p|p[1]>=datum && p[1]<=datum+1.25));
-                    let top_area=mesh.textured.indices.chunks_exact(3).filter(|tri|
-                        tri.iter().all(|i|mesh.textured.positions[*i as usize][1]==datum+1.25))
-                        .map(|tri|{let p=tri.iter().map(|i|Vec3::from_array(mesh.textured.positions[*i as usize])).collect::<Vec<_>>();
-                            (p[1]-p[0]).cross(p[2]-p[0]).y*0.5}).sum::<f32>();
-                    assert!((top_area-256.).abs()<0.001,"source cap must close original 16px footprint");
-                    for i in p.indices(g.width) {let uv=g.uv(i%g.width,i/g.width);
-                        for expected in [[uv.0,uv.2],[uv.0,uv.3],[uv.1,uv.3],[uv.1,uv.2]] {
-                            assert!(mesh.textured.uvs.contains(&expected),"every original source corner must remain");
+                    assert!(mesh.textured.positions.is_empty());
+                    let min=mesh.solid.positions.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min);
+                    let max=mesh.solid.positions.iter().map(|p|p[1]).fold(f32::NEG_INFINITY,f32::max);
+                    if down {
+                        assert_eq!(min,datum-13.);
+                        assert!(max>=datum+5. && max<datum+5.2);
+                        // Neither the lip nor a substrate cap can bridge the shaft.
+                        let center=Vec3::new(24.,datum,24.);
+                        for face in mesh.solid.positions.chunks_exact(4) {
+                            if face.iter().all(|p|p[1]==datum) {
+                                let lo=face.iter().fold(Vec3::splat(f32::INFINITY),|v,p|v.min(Vec3::from_array(*p)));
+                                let hi=face.iter().fold(Vec3::splat(f32::NEG_INFINITY),|v,p|v.max(Vec3::from_array(*p)));
+                                assert!(!(center.x>lo.x && center.x<hi.x && center.z>lo.z && center.z<hi.z));
+                            }
                         }
-                    }
+                    } else { assert_eq!(min,datum); assert!(max>datum+26. && max<datum+28.); }
                 }
-                let cells:Vec<_>=t.iter().collect();
-                let other=resolve("UnionCave1F",&cells,&g,None);
-                assert!(other.iter().any(|p|matches!(p.form,Form::CaveHatch)));
-                assert!(!other.iter().any(|p|matches!(p.form,Form::NativeCaveWarp)));
-                drop(cells);t[10].source.tile_index^=1;
+                t[10].source.tile_index^=1;
                 assert!(!resolve("MountMoon",&t.iter().collect::<Vec<_>>(),&g,None)
-                    .iter().any(|p|matches!(p.form,Form::NativeCaveWarp)));
+                    .iter().any(|p|p.kind_label()=="dungeon:cave-floor-hatch"));
             }
         }
     }
@@ -1760,6 +1840,32 @@ mod tests {
                 }
             }
         }
+    }
+    #[test]
+    fn tin_tower_guardians_require_the_actual_complete_drawing_and_preserve_floor() {
+        let g=grid(4,4);let mut t=tiles(4,4,"tower");
+        for tile in &mut t {tile.source.metatile_id=9;tile.source.tile_index=2;}
+        let art=[[0x22,0x23],[0x32,0x33],[0x12,0x13],[0x36,0x37]];
+        for y in 0..4 {for x in 0..2 {
+            let s=&mut t[y*4+x].source;s.metatile_id=0x21;s.tile_index=art[y][x];
+        }}
+        let refs:Vec<_>=t.iter().collect();
+        for map in ["TinTower1F","TinTower2F","TinTower3F","TinTower4F","TinTower5F",
+            "TinTower6F","TinTower7F","TinTower8F","TinTower9F"] {
+            let selected=resolve(map,&refs,&g,None);
+            let p=selected.iter().find(|p|matches!(p.form,Form::NativeGymGuardian)).unwrap();
+            assert_eq!(p.indices(4).count(),8);
+            let mut mesh=TerrainMeshData {footing_heights:vec![0.;16],..Default::default()};
+            append(&mut mesh,&g,p,&refs,[0,0]);
+            assert_eq!(mesh.footing_heights,vec![0.;16]);
+            assert!(mesh.textured.positions.iter().any(|p|p[1]>20.));
+        }
+        for map in ["TinTowerRoof","SproutTower1F","PlayersHouse1F"] {
+            assert!(!resolve(map,&refs,&g,None).iter().any(|p|matches!(p.form,Form::NativeGymGuardian)));
+        }
+        t[0].source.tile_index^=1;
+        assert!(!resolve("TinTower1F",&t.iter().collect::<Vec<_>>(),&g,None).iter()
+            .any(|p|matches!(p.form,Form::NativeGymGuardian)));
     }
     #[test]
     fn sprout_true_statues_exclude_entrance_carpet_and_require_complete_source() {
@@ -2062,13 +2168,14 @@ mod tests {
                     "complete hatch replaces all pixel planes"
                 );
                 let datum = if matches!(block,0x1b|0x1f) { 6. } else { 0. };
-                assert!(mesh.solid.positions.iter().all(|p| p[1] >= datum));
+                let down = matches!(block,0x0b|0x15|0x1f);
+                assert!(mesh.solid.positions.iter().all(|p| p[1] >= datum-if down {13.} else {0.}));
                 let top=mesh.solid.positions.iter().map(|p|p[1]).fold(datum,f32::max);
-                assert!(top>datum+34. && top<datum+36.);
+                if down {assert!(top>=datum+5. && top<datum+5.2);} else {assert!(top>datum+26. && top<datum+28.);}
                 assert!(mesh.solid.positions.iter().any(|p|p[1]==datum));
                 assert!(mesh.solid.normals.iter().all(|n| Vec3::from_array(*n).is_finite()
                     && (Vec3::from_array(*n).length()-1.).abs()<1e-5));
-                assert!(!p[0].cuts_foundation(),"upright ladder keeps its continuous floor");
+                assert_eq!(p[0].cuts_foundation(),down,"only descending ladders cut the foundation");
                 t[15].source.tile_index = 0xff;
                 assert!(resolve("UnionCave1F", &t.iter().collect::<Vec<_>>(), &g, None).is_empty());
             }
@@ -2107,7 +2214,10 @@ mod tests {
             append(&mut mesh, &g, &p[0], &cells, [0, 0]);
             assert_eq!(mesh.footing_heights, vec![0.0; 16]);
             assert!(mesh.solid.positions.iter().all(|p| p[1] >= 0.0));
-            assert!(mesh.solid.positions.iter().any(|p| p[1] > 34.));
+            let top=mesh.solid.positions.iter().map(|p|p[1]).fold(0.,f32::max);
+            assert!(top>26. && top<28.,"the ice flight shares the reviewed cave ladder scale");
+            assert!(mesh.solid.positions.iter().all(|p|p[0]>=16. && p[0]<=32.
+                && p[2]>=16. && p[2]<=32.),"keep the complete native hatch footprint");
             t[15].source.metatile_id = 0xff;
             assert!(resolve("IcePathB3F", &t.iter().collect::<Vec<_>>(), &g, None).is_empty());
         }
@@ -2403,16 +2513,24 @@ mod tests {
         append_terrain(&mut m, "UnionCave1F", &c, &shapes, &g, &mut claimed, [0, 0]);
         assert_eq!(claimed, vec![true, true, false]);
         assert_eq!(m.footing_heights, before);
-        assert_eq!(
-            m.solid.indices.len() / 3,
-            210,
-            "two caps, two exposed east faces and one enclosing-bank substrate"
-        );
+        // Count the rock domain separately from the floor substrate. Floor
+        // refinement may change without adding hidden sides or viewport skirts.
+        let domain = |tri: &[u32], tag: f32| tri.iter().all(|&i|
+            (m.solid.uvs[i as usize][1] / 100000.).round() == tag);
+        assert_eq!(m.solid.indices.chunks_exact(3).filter(|tri| domain(tri, 2.)).count(),
+            192, "two caps and two exposed east faces; no hidden or viewport sides");
+        assert!(m.solid.indices.chunks_exact(3).any(|tri| domain(tri, 4.)
+            && tri.iter().all(|&i| m.solid.positions[i as usize][1] == 0.)),
+            "the enclosing-bank substrate remains on the lower floor datum");
         assert!(m.solid.positions.iter().all(|p| p[1] >= 0.0));
     }
     #[test]
     fn enclosing_bank_keeps_relief_even_when_footing_cache_records_its_cap() {
-        let t = tiles(3, 1, "dark_cave");
+        let mut t = tiles(3, 1, "dark_cave");
+        // Native ceiling rock is bank evidence. Tile16 is a walking floor
+        // and intentionally keeps an exact cap under the current crown rules.
+        t[0].source.metatile_id = 0x2e;
+        t[0].source.tile_index = 0x26;
         let c = t.iter().collect::<Vec<_>>();
         let g = grid(3, 1);
         let shapes = [
@@ -2476,6 +2594,35 @@ mod tests {
         assert!(m.solid.positions.is_empty());
     }
     #[test]
+    fn kanto_fuchsia_guardians_own_the_real_blocks_in_the_complete_builder() {
+        use bevy::prelude::{Assets,Image,Vec2,UVec2};
+        use crystal_render_api::VisualWorldFrame;
+        for (block,left) in [(26,2),(27,0)] {
+            let mut t=tiles(4,4,"lab");let art=[[76,77],[92,93],[78,79],[94,95]];
+            let mut assets=Assets::<Image>::default();let texture=assets.add(Image::default());
+            for (i,tile) in t.iter_mut().enumerate() {let x=i%4;let y=i/4;
+                tile.texture=texture.clone();tile.source.metatile_id=block;
+                tile.source.tile_index=if (left..left+2).contains(&x) {art[y][x-left]}else{16};}
+            let refs=t.iter().collect::<Vec<_>>();let g=grid(4,4);
+            assert!(super::super::modeled_interiors::resolve("FuchsiaGym",&refs,&g,None).is_empty(),
+                "blank walking floor and guardian art cannot become lab machines");
+            let placements=resolve("FuchsiaGym",&refs,&g,None);
+            let guardian=placements.iter().find(|p|matches!(p.form,Form::NativeGymGuardian)).unwrap();
+            assert_eq!(guardian.indices(4).count(),8);
+            let mut surface=TerrainMeshData{footing_heights:vec![3.;16],..Default::default()};
+            append(&mut surface,&g,guardian,&refs,[0,0]);assert!(surface.solid.indices.is_empty());
+            assert_eq!(surface.footing_heights,vec![3.;16]);
+            let frame=VisualWorldFrame{active:true,map_id:"FuchsiaGym".into(),map_texture:texture,
+                tile_size:Vec2::splat(8.),viewport_size:Vec2::splat(32.),grid_size:UVec2::new(4,4),tiles:t,
+                ..Default::default()};
+            let samples=TerrainImageSamples::default();
+            let mesh=super::super::build_terrain_mesh_internal(&frame,Some(&samples),true,
+                Some(super::super::modeled_interiors::built_in_profiles()),None,None).unwrap();
+            for i in 0..16 {assert_eq!(mesh.authored_cells[i],
+                if (left..left+2).contains(&(i%4)) {Some("dungeon:tower-guardian")}else{None});}
+        }
+    }
+    #[test]
     fn vermilion_entrance_guardians_require_complete_drawings_and_keep_neighbor_floor() {
         for (block, left) in [(0x1d, 2), (0x1e, 0)] {
             let mut t = tiles(4, 4, "game_corner");
@@ -2495,6 +2642,27 @@ mod tests {
             assert!(resolve("GoldenrodGameCorner", &t.iter().collect::<Vec<_>>(), &g, None).is_empty());
             t[left].source.tile_index ^= 1;
             assert!(resolve("VermilionGym", &t.iter().collect::<Vec<_>>(), &g, None).is_empty());
+        }
+    }
+    #[test]
+    fn kanto_puzzle_cans_have_hollow_interiors_and_closed_thin_walls() {
+        for scale in [0.5,1.,2.] {
+            let mut mesh=SurfaceMeshData::default();
+            append_open_gym_bin(&mut mesh,[0.,16.*scale,0.,12.*scale],12.*scale);
+            let mut edges=std::collections::BTreeMap::new();
+            for tri in mesh.indices.chunks_exact(3) {
+                let points=[tri[0],tri[1],tri[2]].map(|i|mesh.positions[i as usize]);
+                let [a,b,c]=points.map(Vec3::from_array);
+                assert!((b-a).cross(c-a).dot(Vec3::from_array(mesh.normals[tri[0]as usize]))>0.);
+                for j in 0..3 {let mut edge=[points[j].map(f32::to_bits),points[(j+1)%3].map(f32::to_bits)];
+                    edge.sort();*edges.entry(edge).or_insert(0usize)+=1;}
+                if points.iter().all(|p|p[1]==12.*scale) {
+                    assert!(points.iter().all(|p|((p[0]-8.*scale).powi(2)+(p[2]-6.*scale).powi(2)).sqrt()>5.*scale),
+                        "the top is a rim, with an open centre");
+                }
+            }
+            assert!(edges.values().all(|&n|n==2),"the hollow wall and bottom form a closed shell");
+            assert!(mesh.positions.iter().any(|p|*p==[8.*scale,scale,6.*scale]),"interior bottom stays deep inside the can");
         }
     }
     #[test]

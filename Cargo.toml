@@ -12,8 +12,13 @@ members = [
     "crates/crystal-tui",
     "crates/crystal-voxel-view",
     "crates/crystal-web-server",
+    "crates/offset-allocator",
 ]
 resolver = "3"
+
+[patch.crates-io]
+# Preserve Bevy's allocator contract while materializing metadata on demand.
+offset-allocator = { path = "crates/offset-allocator" }
 
 # The shipped Bevy binary is a real-time renderer.  Keep release builds
 # optimized across crate boundaries and avoid spending runtime CPU on unwind

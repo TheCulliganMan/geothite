@@ -6,6 +6,9 @@ use crystal_runtime::CrystalRuntime;
 use std::path::PathBuf;
 
 fn main() -> Result<()> {
+    if std::env::var_os("CRYSTAL_LOADING_TRACE").is_some() {
+        crystal_voxel_view::loading_trace::start();
+    }
     let mut args = std::env::args().skip(1).peekable();
     let pack = args
         .next_if(|arg| !arg.starts_with('-'))
@@ -15,6 +18,7 @@ fn main() -> Result<()> {
     let mut tile_x = None;
     let mut tile_y = None;
     let mut screenshot = None;
+    let mut save_path = None;
     let mut second_screenshot = None;
     let mut modeled = true;
     let mut preview_flag = None;
@@ -24,6 +28,7 @@ fn main() -> Result<()> {
     let mut seconds = 30;
     let mut zoom = 0;
     let mut orbit = -1;
+    let mut hour = 16;
     let mut window_size = None;
     while let Some(flag) = args.next() {
         if flag == "--classic" {
@@ -43,6 +48,7 @@ fn main() -> Result<()> {
             "--x" => tile_x = Some(value.parse::<i16>()?),
             "--y" => tile_y = Some(value.parse::<i16>()?),
             "--screenshot" => screenshot = Some(PathBuf::from(value)),
+            "--save-path" => save_path = Some(PathBuf::from(value)),
             "--second" => second_screenshot = Some(PathBuf::from(value)),
             "--record" => record = Some(PathBuf::from(value)),
             "--walk" => walk = Some(value),
@@ -50,6 +56,7 @@ fn main() -> Result<()> {
             "--seconds" => seconds = value.parse::<u32>()?,
             "--zoom" => zoom = value.parse::<u8>()?,
             "--orbit" => orbit = value.parse::<i8>()?,
+            "--hour" => hour = value.parse::<u8>()?,
             "--size" => {
                 let (width, height) = value
                     .split_once('x')
@@ -59,6 +66,7 @@ fn main() -> Result<()> {
             _ => anyhow::bail!("unknown option {flag}"),
         }
     }
+    anyhow::ensure!(hour < 24, "--hour expects 0 through 23");
     anyhow::ensure!(
         second_screenshot.is_none() || screenshot.is_some(),
         "--second needs --screenshot"
@@ -84,8 +92,14 @@ fn main() -> Result<()> {
         .canonicalize()
         .context("find compatible local Crystalpack")?;
     let root = AssetRoot::new(pack.parent().context("pack directory")?);
-    let loaded = read_loaded_verified_compiled_game_pack(&pack)?;
-    let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded)?;
+    let loaded = {
+        let _trace = crystal_voxel_view::loading_trace::span("pack.verify", || serde_json::json!({"path": pack}));
+        read_loaded_verified_compiled_game_pack(&pack)?
+    };
+    let runtime = {
+        let _trace = crystal_voxel_view::loading_trace::span("pack.load_runtime", || serde_json::json!({}));
+        CrystalRuntime::from_loaded_compiled_pack(&root, loaded)?
+    };
     let (width, height) = runtime
         .data()
         .saved_map_tile_bounds(&map)
@@ -123,7 +137,7 @@ fn main() -> Result<()> {
         "preview coordinate is outside {map} ({width} by {height})"
     );
     let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
-    crystal_bevy::run_bevy_shell(
+    let result = crystal_bevy::run_bevy_shell(
         root,
         runtime,
         BevyShellStart::NewGameAtRuntimeTile {
@@ -139,7 +153,7 @@ fn main() -> Result<()> {
             window_title: Some(format!(
                 "Geothite | {map} 3D | Q/E orbit, PgUp/PgDn zoom, F3 2D/3D"
             )),
-            render_test_hour: Some(16),
+            render_test_hour: Some(hour),
             render_test_preview_flag: preview_flag,
             render_test_screenshot: screenshot,
             render_test_second_screenshot: second_screenshot,
@@ -149,8 +163,10 @@ fn main() -> Result<()> {
             render_test_record: record.map(|path| (path, seconds)),
             #[cfg(not(target_arch = "wasm32"))]
             render_test_measure: measure.map(|path| (path, seconds)),
-            quick_save_path: None,
+            quick_save_path: save_path,
             ..Default::default()
         },
-    )
+    );
+    crystal_voxel_view::loading_trace::flush_native();
+    result
 }

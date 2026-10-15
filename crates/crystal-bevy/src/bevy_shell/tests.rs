@@ -1,4 +1,6 @@
 include!("tests/shell_basics.rs");
+#[cfg(feature = "location-tester")]
+include!("tests/party_follower.rs");
 include!("tests/multiplayer_rendering.rs");
 include!("tests/overworld_rendering.rs");
 include!("tests/character_source.rs");
@@ -19,6 +21,7 @@ include!("tests/encounter_anchor.rs");
 include!("tests/battle_origin_fishing.rs");
 include!("tests/fishing_anchor.rs");
 include!("tests/walking_anchor.rs");
+include!("tests/kanto_interior_states.rs");
 include!("tests/surf_anchor.rs");
 include!("tests/trainer_anchor.rs");
 include!("tests/scripted_trainer_anchor.rs");
@@ -140,3 +143,6 @@ include!("tests/runtime_frontend_smoke.rs");
 include!("tests/immersive_battle.rs");
 #[cfg(feature = "voxel-view")]
 include!("tests/queued_source_scene.rs");
+
+#[cfg(feature = "location-tester")]
+include!("tests/day_cycle.rs");

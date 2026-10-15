@@ -117,9 +117,9 @@ export function mountTouchControls({ document, window, canvas, onInput = () => {
       });
     }
   };
-  bind(dpad, event => directionAt(dpad.getBoundingClientRect(), event.clientX, event.clientY));
+  if (dpad) bind(dpad, event => directionAt(dpad.getBoundingClientRect(), event.clientX, event.clientY));
   for (const button of pad.querySelectorAll('[data-game-button]')) {
-    if (!dpad.contains(button)) bind(button, () => button.dataset.gameButton);
+    if (!dpad?.contains(button)) bind(button, () => button.dataset.gameButton);
     // Keyboard / assistive activation emits a short press; pointer input uses holds.
     button.addEventListener('click', event => {
       if (event.detail !== 0 || pad.disabled || blocked()) return;

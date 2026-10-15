@@ -95,6 +95,7 @@ mod tests {
             // authored scenery/material override. Map-specific tests opt in.
             map_id: Arc::from("UnmodeledTestMap"),
             source_map_size_core_tiles: None,
+            jump_ledges: Default::default(),
             terrain_revision: 1,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
@@ -3482,7 +3483,7 @@ mod tests {
     }
 
     #[test]
-    fn tree_art_forms_a_closed_pixel_voxel_hull() {
+    fn unmodeled_tree_art_retains_exact_source_tiles_without_a_hull_substitute() {
         let mut sources = Vec::new();
         for row in 0..4 {
             sources.push(source_with_tile(0x05, 0, row, 0x1e + row as u16 * 0x10));
@@ -3505,36 +3506,33 @@ mod tests {
                 .pixels
                 .insert(tile.texture.id(), TileImageSample::Rgba(rgba.repeat(64)));
         }
-        let mesh = build_terrain_mesh_with_samples(&frame, &samples)
-            .expect("tree group should mesh as an upright 2D card");
-        let upright = mesh
-            .textured
-            .normals
-            .chunks_exact(4)
-            .filter(|face| face[0] == [0.0, 0.0, 1.0])
-            .count();
-        let backs = mesh
-            .textured
-            .normals
-            .chunks_exact(4)
-            .filter(|face| face[0] == [0.0, 0.0, -1.0])
-            .count();
-        assert!(upright > 0);
-        assert!(backs > 0, "tree hulls must have back faces");
-        let mut front_depths: Vec<_> = mesh
-            .textured
-            .positions
-            .chunks_exact(4)
-            .zip(mesh.textured.normals.chunks_exact(4))
-            .filter(|(_, normals)| normals[0] == [0.0, 0.0, 1.0])
-            .map(|(positions, _)| (positions[0][2] * 1000.0).round() as i32)
-            .collect();
-        front_depths.sort_unstable();
-        front_depths.dedup();
-        assert!(
-            front_depths.len() > 1,
-            "tree crowns must occupy multiple depth voxels"
-        );
+        let mesh = build_terrain_mesh_with_samples(&frame, &samples).unwrap();
+        assert_exact_unmodeled_tree_tiles(&mesh, &frame);
+    }
+
+    fn assert_exact_unmodeled_tree_tiles(mesh: &TerrainMeshData, frame: &VisualWorldFrame) {
+        // An unmodeled source drawing is allowed to reveal missing coverage
+        // in exact 2D. It must never silently become an extruded pixel hull.
+        assert!(mesh.solid.positions.is_empty());
+        assert!(mesh.tree_instances.is_empty());
+        assert_eq!(mesh.textured.positions.len(), frame.tiles.len() * 4);
+        assert!(mesh.textured.normals.iter().all(|n| *n == Vec3::Y.to_array()));
+        let g = GridGeometry { width: frame.grid_size.x as usize,
+            height: frame.grid_size.y as usize, tile_width: 8., tile_height: 8.,
+            origin_x: -(frame.grid_size.x as f32) * 4.,
+            origin_z: -(frame.grid_size.y as f32) * 4. };
+        let mut seen = std::collections::HashSet::new();
+        for (positions, uvs) in mesh.textured.positions.chunks_exact(4)
+            .zip(mesh.textured.uvs.chunks_exact(4)) {
+            let i = new_bark::sampled_cell(uvs, &g).expect("every retained drawing uses original atlas UVs");
+            assert!(seen.insert(i), "source tile {i} was duplicated");
+            let tile = &frame.tiles[i];
+            let (w,e,n,s) = g.bounds(tile.column as usize, tile.row as usize);
+            let (u0,u1,v0,v1) = g.uv(tile.column as usize, tile.row as usize);
+            assert_eq!(uvs, [[u0,v0],[u0,v1],[u1,v1],[u1,v0]]);
+            assert_eq!(positions, [[w,0.,n],[w,0.,s],[e,0.,s],[e,0.,n]]);
+        }
+        assert_eq!(seen.len(), frame.tiles.len());
     }
 
     #[test]
@@ -3612,7 +3610,7 @@ mod tests {
     }
 
     #[test]
-    fn runtime_repeated_scenery_has_a_fixed_geometry_budget() {
+    fn unmodeled_repeated_tree_source_has_a_fixed_geometry_budget() {
         let width = 65;
         let height = 64;
         let sources = (0..height)
@@ -3648,12 +3646,7 @@ mod tests {
                 .insert(tile.texture.id(), TileImageSample::Rgba(rgba));
         }
         let mesh = build_instanced_terrain_mesh_with_samples(&frame, &samples).unwrap();
-        assert_eq!(mesh.tree_instances.len(), 1);
-        assert_eq!(
-            mesh.tree_instances[0].origins.len(),
-            512,
-            "every tree remains present"
-        );
+        assert_exact_unmodeled_tree_tiles(&mesh, &frame);
         let bytes =
             |surface: &SurfaceMeshData| surface.positions.len() * 48 + surface.indices.len() * 4;
         let total = bytes(&mesh.textured)
@@ -3671,7 +3664,7 @@ mod tests {
     }
 
     #[test]
-    fn repeated_tree_metatile_becomes_two_complete_two_tile_tall_sprites() {
+    fn repeated_unmodeled_tree_drawings_preserve_source_geometry_and_palette_sampling() {
         let mut sources = Vec::new();
         for row in 0..4 {
             for column in 0..5 {
@@ -3756,19 +3749,12 @@ mod tests {
                 .pixels
                 .insert(tile.texture.id(), TileImageSample::Rgba(rgba));
         }
-        let mesh = build_terrain_mesh_with_samples(&frame, &samples)
-            .expect("complete repeated tree drawing should mesh as upright sprites");
+        let mesh = build_terrain_mesh_with_samples(&frame, &samples).unwrap();
         let instanced = build_instanced_terrain_mesh_with_samples(&frame, &samples).unwrap();
-        assert_eq!(
-            instanced.tree_instances.len(),
-            1,
-            "identical painted hulls share one mesh"
-        );
-        assert_eq!(instanced.tree_instances[0].origins.len(), 2);
-        assert!(instanced.textured.positions.len() < mesh.textured.positions.len() / 4);
-        // Expand instances only in the test and compare every position, normal,
-        // shade, and sampled source texel against the original complete mesh.
-        let face_signatures = |surface: &SurfaceMeshData, offset: [f32; 3]| {
+        assert_exact_unmodeled_tree_tiles(&mesh, &frame);
+        assert_exact_unmodeled_tree_tiles(&instanced, &frame);
+        // Compare the live source texels addressed by both mesher paths.
+        let face_signatures = |surface: &SurfaceMeshData, offset: [f32; 3], images: &TerrainImageSamples| {
             surface
                 .positions
                 .iter()
@@ -3779,7 +3765,7 @@ mod tests {
                     let x = (uv[0] * frame.grid_size.x as f32 * 8.0).floor() as usize;
                     let y = (uv[1] * frame.grid_size.y as f32 * 8.0).floor() as usize;
                     let tile = &frame.tiles[(y.min(31) / 8) * 5 + x.min(39) / 8];
-                    let TileImageSample::Rgba(bytes) = &samples.pixels[&tile.texture.id()] else {
+                    let TileImageSample::Rgba(bytes) = &images.pixels[&tile.texture.id()] else {
                         panic!()
                     };
                     let pixel = ((y % 8) * 8 + x % 8) * 4;
@@ -3792,11 +3778,11 @@ mod tests {
                 })
                 .collect::<Vec<_>>()
         };
-        let mut expected = face_signatures(&mesh.textured, [0.0; 3]);
-        let mut actual = face_signatures(&instanced.textured, [0.0; 3]);
+        let mut expected = face_signatures(&mesh.textured, [0.0; 3], &samples);
+        let mut actual = face_signatures(&instanced.textured, [0.0; 3], &samples);
         for group in &instanced.tree_instances {
             for &origin in &group.origins {
-                actual.extend(face_signatures(&group.mesh, origin));
+                actual.extend(face_signatures(&group.mesh, origin, &samples));
             }
         }
         expected.sort();
@@ -3813,55 +3799,15 @@ mod tests {
         else {
             panic!()
         };
-        pixels[4..8].copy_from_slice(&[0, 0, 80, 255]);
+        // Change the addressed corner texel, not an unsampled interior pixel.
+        pixels[0..4].copy_from_slice(&[0, 0, 80, 255]);
         let distinct = build_instanced_terrain_mesh_with_samples(&frame, &recolored).unwrap();
-        assert_eq!(
-            distinct.tree_instances.len(),
-            2,
-            "different palettes must never share a prototype"
-        );
-
-        let is_tree_card_normal = |normal: [f32; 3]| normal == [0.0, 0.0, 1.0];
-        let (min_y, max_y) = mesh
-            .textured
-            .positions
-            .chunks_exact(4)
-            .zip(mesh.textured.normals.chunks_exact(4))
-            .filter(|(_, normals)| is_tree_card_normal(normals[0]))
-            .flat_map(|(positions, _)| positions)
-            .fold(
-                (f32::INFINITY, f32::NEG_INFINITY),
-                |(min, max), position| (min.min(position[1]), max.max(position[1])),
-            );
-        let expected_world_y_span = 32.0;
-        let normal_samples: Vec<_> = mesh
-            .textured
-            .normals
-            .chunks_exact(4)
-            .map(|quad| quad[0])
-            .collect();
-        assert!(
-            (max_y - min_y - expected_world_y_span).abs() < 0.001,
-            "headbutt trees are two map tiles tall: measured {}..{} (span {}), expected {}; normals {:?}",
-            min_y,
-            max_y,
-            max_y - min_y,
-            expected_world_y_span,
-            normal_samples,
-        );
-        assert!(!normal_samples.is_empty());
-        let (min_z, max_z) = mesh
-            .textured
-            .positions
-            .chunks_exact(4)
-            .zip(mesh.textured.normals.chunks_exact(4))
-            .filter(|(_, normals)| is_tree_card_normal(normals[0]))
-            .flat_map(|(positions, _)| positions)
-            .fold(
-                (f32::INFINITY, f32::NEG_INFINITY),
-                |(min, max), position| (min.min(position[2]), max.max(position[2])),
-            );
-        assert!(max_z > min_z, "isolated canopies must have real depth");
+        assert_exact_unmodeled_tree_tiles(&distinct, &frame);
+        assert_eq!(distinct.textured, instanced.textured,
+            "changing source pixels must retain exact source geometry and atlas addresses");
+        assert_ne!(face_signatures(&distinct.textured, [0.;3], &recolored),
+            face_signatures(&instanced.textured, [0.;3], &samples),
+            "the live source pixels own their palette independently of geometry");
     }
 
     #[test]

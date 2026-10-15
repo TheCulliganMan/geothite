@@ -171,4 +171,7 @@ def sculpt():
         for cz in (.285,-.355):parts += [toe_claw(cx,cz,i) for i in range(3)]
     parts.append(tube(TAIL,'body',[(0.,.460,-.441),(.013,.492,-.567),(.035,.467,-.704),(.062,.376,-.822),(.078,.288,-.892)],(.084,.068,.050,.027,.004),10))
     parts += [antenna(-1),antenna(1)]
+    # Stabilize sub-femtometre axis residues after topology construction.
+    for part in parts:
+        part['positions']=[0.0 if abs(v)<1e-15 else v for v in part['positions']]
     return {'name':'meganium','version':1,'coordinate_system':COORDINATES,'primitives':parts}

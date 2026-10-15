@@ -4458,9 +4458,8 @@ fn resolve_visible_object_sprite_asset_id(
         .unwrap_or_else(|| normalized.replace('-', "_"))
 }
 
-/// Preserve the verified identity of the lighthouse's named Amphy object.
-/// Its compiled script uses AMPHAROS for both sick and healthy cries, although
-/// its source art is the shared SPRITE_MONSTER. Keep this exception at the
+/// Preserve named NPC identities verified against the pack's dialogue and cries.
+/// Their sprite names can refer to shared icon art. Keep these exceptions at the
 /// publisher boundary: the model renderer must not guess from generic art.
 fn visible_map_object_model_source_id(
     map: &str,
@@ -4470,6 +4469,75 @@ fn visible_map_object_model_source_id(
     variable_sprites: &BTreeMap<String, String>,
     menu_icons: &BTreeMap<String, String>,
 ) -> String {
+    // These authored NPCs reuse species-named menu-icon art, but their text
+    // and cry identify different Pokemon. Preserve the bitmap and resolve identity here,
+    // with the same replacement guards as Amphy below.
+    let named_pokemon = match (
+        map,
+        object.object_identifier.as_deref(),
+        object.script.as_str(),
+    ) {
+        ("CopycatsHouse2F", Some("COPYCATSHOUSE2F_DODRIO"), "CopycatsDodrio") => {
+            Some(("DODRIO", "SPRITE_MOLTRES", "moltres"))
+        }
+        ("MrFujisHouse", Some("MRFUJISHOUSE_PIDGEY"), "MrFujisPidgey") => {
+            Some(("PIDGEY", "SPRITE_MOLTRES", "moltres"))
+        }
+        ("Route28SteelWingHouse", Some("ROUTE28STEELWINGHOUSE_FEAROW"), "CelebritysFearow") => {
+            Some(("FEAROW", "SPRITE_MOLTRES", "moltres"))
+        }
+        ("MrFujisHouse", Some("MRFUJISHOUSE_PSYDUCK"), "MrFujisPsyduck") => {
+            Some(("PSYDUCK", "SPRITE_RHYDON", "rhydon"))
+        }
+        ("MrFujisHouse", Some("MRFUJISHOUSE_NIDORINO"), "MrFujisNidorino") => {
+            Some(("NIDORINO", "SPRITE_GROWLITHE", "growlithe"))
+        }
+        ("CharcoalKiln", Some("CHARCOALKILN_MOLTRES"), "CharcoalKilnFarfetchd") => {
+            Some(("FARFETCH_D", "SPRITE_MOLTRES", "moltres"))
+        }
+        ("TeamRocketBaseB3F", Some("TEAMROCKETBASEB3F_MOLTRES"), "RocketBaseMurkrow") => {
+            Some(("MURKROW", "SPRITE_MOLTRES", "moltres"))
+        }
+        ("ViridianNicknameSpeechHouse", Some("VIRIDIANNICKNAMESPEECHHOUSE_SPEARY"), "Speary") => {
+            Some(("SPEAROW", "SPRITE_MOLTRES", "moltres"))
+        }
+        ("ViridianNicknameSpeechHouse", Some("VIRIDIANNICKNAMESPEECHHOUSE_RATTEY"), "Rattey") => {
+            Some(("RATTATA", "SPRITE_GROWLITHE", "growlithe"))
+        }
+        (
+            "PewterNidoranSpeechHouse",
+            Some("PEWTERNIDORANSPEECHHOUSE_NIDORAN_M"),
+            "PewterNidoran",
+        ) => Some(("NIDORAN_M", "SPRITE_GROWLITHE", "growlithe")),
+        ("NationalPark", Some("NATIONALPARK_PERSIAN"), "NationalParkPersian") => {
+            Some(("PERSIAN", "SPRITE_GROWLITHE", "growlithe"))
+        }
+        ("RadioTower4F", Some("RADIOTOWER4F_GROWLITHE"), "RadioTowerMeowth") => {
+            Some(("MEOWTH", "SPRITE_GROWLITHE", "growlithe"))
+        }
+        ("CeladonMansion1F", Some("CELADONMANSION1F_GROWLITHE1"), "CeladonMansion1FMeowth") => {
+            Some(("MEOWTH", "SPRITE_GROWLITHE", "growlithe"))
+        }
+        ("CeladonMansion1F", Some("CELADONMANSION1F_GROWLITHE2"), "CeladonMansion1FNidoranF") => {
+            Some(("NIDORAN_F", "SPRITE_GROWLITHE", "growlithe"))
+        }
+        ("CeruleanTradeSpeechHouse", Some("CERULEANTRADESPEECHHOUSE_RHYDON"), "CeruleanTradeSpeechHouseRhydonScript") => Some(("KANGASKHAN", "SPRITE_RHYDON", "rhydon")),
+        _ => None,
+    };
+    if let Some((species, sprite, bitmap)) = named_pokemon {
+        if object.object_type == "OBJECTTYPE_SCRIPT"
+            && object.sprite == sprite
+            && visible_sprite == sprite
+            && (bitmap_source == bitmap
+                || menu_icons
+                    .get(sprite.strip_prefix("SPRITE_").unwrap_or(sprite))
+                    .is_some_and(|icon| icon.to_ascii_lowercase() == bitmap_source))
+            && !variable_sprites.contains_key(visible_sprite)
+            && menu_icons.contains_key(species)
+        {
+            return format!("species:{species}:{bitmap_source}");
+        }
+    }
     // A replaced sprite wins over the named source identity. Do not turn a
     // modded actor, a different shared monster, or an icon into Ampharos.
     if map == "OlivineLighthouse6F"
@@ -5038,6 +5106,8 @@ mod named_object_species_source_tests {
             source("OlivineLighthouse6F", &object, "SPRITE_MONSTER", "monster"),
             "species:AMPHAROS:monster"
         );
+        assert_eq!(resolved_object_scene_label(&object, "species:AMPHAROS:monster"), "AMPHAROS");
+        assert_eq!(resolved_object_scene_label(&object, "monster"), object_scene_label(&object));
         assert_eq!(
             object, before,
             "presentation must not change the source object"
@@ -5111,6 +5181,14 @@ mod named_object_species_source_tests {
                 ),
                 expected
             );
+            let label = resolved_object_scene_label(&object, expected);
+            if replacement == "SPRITE_GENGAR" {
+                assert_eq!(label, "GENGAR");
+                assert_eq!(field_object_prompt_for_source(&object, expected), "A GENGAR");
+            } else {
+                assert_eq!(label, object_scene_label(&object));
+            }
+
         }
     }
 }
@@ -5118,6 +5196,270 @@ mod named_object_species_source_tests {
 #[cfg(test)]
 mod compiled_amphy_identity_tests {
     use super::*;
+
+    #[test]
+    fn compiled_named_pokemon_match_dialogue_and_cry_instead_of_shared_icon_art() {
+        let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .unwrap();
+        let pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| root.join("content-packs/core-modular.browser.crystalpack"));
+        let assets = AssetRoot::new(root);
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack).unwrap();
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&assets, loaded).unwrap();
+        let assets = runtime.materialize_runtime_files().unwrap();
+        let variables = BTreeMap::new();
+        let icons = &runtime.data().menu_icons;
+        for (map_name, identifier, script, text, species) in [
+            (
+                "CopycatsHouse2F",
+                "COPYCATSHOUSE2F_DODRIO",
+                "CopycatsDodrio",
+                "CopycatsDodrioText1",
+                "DODRIO",
+            ),
+            (
+                "MrFujisHouse",
+                "MRFUJISHOUSE_PSYDUCK",
+                "MrFujisPsyduck",
+                "MrFujisPsyduckText",
+                "PSYDUCK",
+            ),
+            (
+                "MrFujisHouse",
+                "MRFUJISHOUSE_NIDORINO",
+                "MrFujisNidorino",
+                "MrFujisNidorinoText",
+                "NIDORINO",
+            ),
+            (
+                "MrFujisHouse",
+                "MRFUJISHOUSE_PIDGEY",
+                "MrFujisPidgey",
+                "MrFujisPidgeyText",
+                "PIDGEY",
+            ),
+            (
+                "Route28SteelWingHouse",
+                "ROUTE28STEELWINGHOUSE_FEAROW",
+                "CelebritysFearow",
+                "CelebritysFearowText",
+                "FEAROW",
+            ),
+            (
+                "CharcoalKiln",
+                "CHARCOALKILN_MOLTRES",
+                "CharcoalKilnFarfetchd",
+                "FarfetchdText",
+                "FARFETCH_D",
+            ),
+            (
+                "TeamRocketBaseB3F",
+                "TEAMROCKETBASEB3F_MOLTRES",
+                "RocketBaseMurkrow",
+                "RocketBaseMurkrowText",
+                "MURKROW",
+            ),
+            (
+                "ViridianNicknameSpeechHouse",
+                "VIRIDIANNICKNAMESPEECHHOUSE_SPEARY",
+                "Speary",
+                "SpearyText",
+                "SPEAROW",
+            ),
+            (
+                "ViridianNicknameSpeechHouse",
+                "VIRIDIANNICKNAMESPEECHHOUSE_RATTEY",
+                "Rattey",
+                "RatteyText",
+                "RATTATA",
+            ),
+            (
+                "PewterNidoranSpeechHouse",
+                "PEWTERNIDORANSPEECHHOUSE_NIDORAN_M",
+                "PewterNidoran",
+                "PewterNidoranText",
+                "NIDORAN_M",
+            ),
+            (
+                "NationalPark",
+                "NATIONALPARK_PERSIAN",
+                "NationalParkPersian",
+                "NationalParkPersianText",
+                "PERSIAN",
+            ),
+            (
+                "RadioTower4F",
+                "RADIOTOWER4F_GROWLITHE",
+                "RadioTowerMeowth",
+                "RadioTowerMeowthText",
+                "MEOWTH",
+            ),
+            (
+                "CeladonMansion1F",
+                "CELADONMANSION1F_GROWLITHE1",
+                "CeladonMansion1FMeowth",
+                "CeladonMansion1FMeowthText",
+                "MEOWTH",
+            ),
+            (
+                "CeladonMansion1F",
+                "CELADONMANSION1F_GROWLITHE2",
+                "CeladonMansion1FNidoranF",
+                "CeladonMansion1FNidoranFText",
+                "NIDORAN_F",
+            ),
+            ("CeruleanTradeSpeechHouse", "CERULEANTRADESPEECHHOUSE_RHYDON", "CeruleanTradeSpeechHouseRhydonScript", "CeruleanTradeSpeechHouseRhydonText", "KANGASKHAN"),
+        ] {
+            let map = &runtime.data().maps[map_name];
+            let object = map
+                .objects
+                .iter()
+                .find(|o| o.object_identifier.as_deref() == Some(identifier))
+                .unwrap();
+            assert_eq!(object.script, script);
+            let cries: Vec<_> = map
+                .script_audio_commands
+                .iter()
+                .filter(|c| c.source_script == script && c.command == "cry")
+                .collect();
+            if species == "MURKROW" {
+                assert!(cries.is_empty());
+            } else {
+                assert!(cries.iter().any(|c| c.audio_id.as_deref() == Some(species)));
+            }
+            assert!(
+                map.script_text_commands
+                    .iter()
+                    .any(|c| c.source_script == script
+                        && c.command == "writetext"
+                        && c.text_label.as_deref() == Some(text))
+            );
+            let body = runtime
+                .data()
+                .script_text_body_for_map(map_name, text)
+                .unwrap();
+            let text_name = match species {
+                "FARFETCH_D" => "FARFETCH'D",
+                "NIDORAN_M" | "NIDORAN_F" => "NIDORAN",
+                "SPEAROW" => "SPEARY",
+                "RATTATA" => "RATTEY",
+                other => other,
+            };
+            assert!(
+                body.commands
+                    .iter()
+                    .flat_map(|c| &c.args)
+                    .any(|arg| arg.contains(&format!("{text_name}:")))
+            );
+            let bitmap =
+                resolve_visible_object_sprite_asset_id(&assets, &object.sprite, &variables, icons);
+            let original_species = object.sprite.strip_prefix("SPRITE_").unwrap();
+            assert_eq!(bitmap, icons[original_species].to_ascii_lowercase());
+            let original_model = format!("species:{original_species}:{bitmap}");
+            let resolved = visible_map_object_model_source_id(
+                map_name, object, &object.sprite, &bitmap, &variables, icons,
+            );
+            let display = crate::core::models::pokemon_species_display_name(species);
+            assert_eq!(resolved_object_scene_label(object, &resolved), display);
+            assert_eq!(field_object_prompt_for_source(object, &resolved), format!("A {display}"));
+            let before = object.clone();
+            assert_eq!(
+                visible_map_object_model_source_id(
+                    map_name,
+                    object,
+                    &object.sprite,
+                    &bitmap,
+                    &variables,
+                    icons
+                ),
+                format!("species:{species}:{bitmap}")
+            );
+            assert_eq!(object, &before);
+            let replacement = BTreeMap::from([(object.sprite.clone(), object.sprite.clone())]);
+            assert_eq!(
+                visible_map_object_model_source_id(
+                    map_name,
+                    object,
+                    &object.sprite,
+                    &bitmap,
+                    &replacement,
+                    icons
+                ),
+                original_model
+            );
+            let mut changed = object.clone();
+            changed.script = "UnrelatedBird".into();
+            assert_eq!(
+                visible_map_object_model_source_id(
+                    map_name,
+                    &changed,
+                    &object.sprite,
+                    &bitmap,
+                    &variables,
+                    icons
+                ),
+                original_model
+            );
+        }
+        let mut changed = Vec::new();
+        for (map_name, map) in &runtime.data().maps {
+            for object in map.objects.iter().filter(|o| {
+                matches!(
+                    o.sprite.as_str(),
+                    "SPRITE_MOLTRES" | "SPRITE_RHYDON" | "SPRITE_GROWLITHE"
+                )
+            }) {
+                let bitmap = resolve_visible_object_sprite_asset_id(
+                    &assets,
+                    &object.sprite,
+                    &variables,
+                    icons,
+                );
+                let generic = visible_object_model_source_id(
+                    map_name,
+                    &object.sprite,
+                    &object.sprite,
+                    &bitmap,
+                    &variables,
+                    icons,
+                );
+                let named = visible_map_object_model_source_id(
+                    map_name,
+                    object,
+                    &object.sprite,
+                    &bitmap,
+                    &variables,
+                    icons,
+                );
+                if named != generic {
+                    changed.push((map_name.as_str(), object.script.as_str()));
+                }
+            }
+        }
+        let mut expected = vec![
+            ("CeruleanTradeSpeechHouse", "CeruleanTradeSpeechHouseRhydonScript"),
+            ("CopycatsHouse2F", "CopycatsDodrio"),
+            ("MrFujisHouse", "MrFujisPsyduck"),
+            ("MrFujisHouse", "MrFujisNidorino"),
+            ("MrFujisHouse", "MrFujisPidgey"),
+            ("Route28SteelWingHouse", "CelebritysFearow"),
+            ("CharcoalKiln", "CharcoalKilnFarfetchd"),
+            ("TeamRocketBaseB3F", "RocketBaseMurkrow"),
+            ("ViridianNicknameSpeechHouse", "Speary"),
+            ("ViridianNicknameSpeechHouse", "Rattey"),
+            ("PewterNidoranSpeechHouse", "PewterNidoran"),
+            ("NationalPark", "NationalParkPersian"),
+            ("RadioTower4F", "RadioTowerMeowth"),
+            ("CeladonMansion1F", "CeladonMansion1FMeowth"),
+            ("CeladonMansion1F", "CeladonMansion1FNidoranF"),
+        ];
+        changed.sort_unstable();
+        expected.sort_unstable();
+        assert_eq!(changed, expected);
+    }
 
     #[test]
     fn compiled_amphy_script_confirms_species_and_only_its_object_is_reidentified() {

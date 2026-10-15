@@ -84,6 +84,92 @@ fn parse_model<'a>(
 // their canonical GLB. The rig also exposes an exact neutral surface to callers
 // that only need immutable bounds or an overworld prop.
 macro_rules! species_mesh {
+    ("jumpluff") => { Some(crate::species_rig::rig(crate::species_rig::Species::Jumpluff).neutral.clone()) };
+    ("sunkern") => { Some(crate::species_rig::rig(crate::species_rig::Species::Sunkern).neutral.clone()) };
+    ("sunflora") => { Some(crate::species_rig::rig(crate::species_rig::Species::Sunflora).neutral.clone()) };
+    ("aipom") => { Some(crate::species_rig::rig(crate::species_rig::Species::Aipom).neutral.clone()) };
+    ("skiploom") => { Some(crate::species_rig::rig(crate::species_rig::Species::Skiploom).neutral.clone()) };
+    ("hoppip") => { Some(crate::species_rig::rig(crate::species_rig::Species::Hoppip).neutral.clone()) };
+    ("quagsire") => { Some(crate::species_rig::rig(crate::species_rig::Species::Quagsire).neutral.clone()) };
+    ("spinarak") => { Some(crate::species_rig::rig(crate::species_rig::Species::Spinarak).neutral.clone()) };
+    ("ariados") => { Some(crate::species_rig::rig(crate::species_rig::Species::Ariados).neutral.clone()) };
+    ("unown_i") => { Some(crate::species_rig::rig(crate::species_rig::Species::Unown(8)).neutral.clone()) };
+    ("entei") => { Some(crate::species_rig::rig(crate::species_rig::Species::Entei).neutral.clone()) };
+    ("raikou") => { Some(crate::species_rig::rig(crate::species_rig::Species::Raikou).neutral.clone()) };
+    ("ledyba") => { Some(crate::species_rig::rig(crate::species_rig::Species::Ledyba).neutral.clone()) };
+    ("ledian") => { Some(crate::species_rig::rig(crate::species_rig::Species::Ledian).neutral.clone()) };
+    ("noctowl") => { Some(crate::species_rig::rig(crate::species_rig::Species::Noctowl).neutral.clone()) };
+    ("furret") => { Some(crate::species_rig::rig(crate::species_rig::Species::Furret).neutral.clone()) };
+    ("suicune") => { Some(crate::species_rig::rig(crate::species_rig::Species::Suicune).neutral.clone()) };
+    ("slowpoke") => { Some(crate::species_rig::rig(crate::species_rig::Species::Slowpoke).neutral.clone()) };
+    ("diglett") => { Some(crate::species_rig::rig(crate::species_rig::Species::Diglett).neutral.clone()) };
+    ("onix") => { Some(crate::species_rig::rig(crate::species_rig::Species::Onix).neutral.clone()) };
+    ("voltorb") => { Some(crate::species_rig::rig(crate::species_rig::Species::Voltorb).neutral.clone()) };
+    ("staryu") => { Some(crate::species_rig::rig(crate::species_rig::Species::Staryu).neutral.clone()) };
+    ("sentret") => { Some(crate::species_rig::rig(crate::species_rig::Species::Sentret).neutral.clone()) };
+    ("hoothoot") => { Some(crate::species_rig::rig(crate::species_rig::Species::Hoothoot).neutral.clone()) };
+    ("butterfree") => { Some(crate::species_rig::rig(crate::species_rig::Species::Butterfree).neutral.clone()) };
+    ("beedrill") => { Some(crate::species_rig::rig(crate::species_rig::Species::Beedrill).neutral.clone()) };
+    ("zubat") => { Some(crate::species_rig::rig(crate::species_rig::Species::Zubat).neutral.clone()) };
+    ("golbat") => { Some(crate::species_rig::rig(crate::species_rig::Species::Golbat).neutral.clone()) };
+    ("crobat") => { Some(crate::species_rig::rig(crate::species_rig::Species::Crobat).neutral.clone()) };
+    ("psyduck") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Psyduck).neutral.clone())
+    };
+    ("golduck") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Golduck).neutral.clone())
+    };
+    ("raticate") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Raticate).neutral.clone())
+    };
+    ("rattata") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Rattata).neutral.clone())
+    };
+    ("jigglypuff") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Jigglypuff).neutral.clone())
+    };
+    ("clefairy") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Clefairy).neutral.clone())
+    };
+    ("poliwag") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Poliwag).neutral.clone())
+    };
+    ("oddish") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Oddish).neutral.clone())
+    };
+    ("pidgey") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Pidgey).neutral.clone())
+    };
+    ("geodude") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Geodude).neutral.clone())
+    };
+    ("squirtle") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Squirtle).neutral.clone())
+    };
+    ("charmander") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Charmander).neutral.clone())
+    };
+    ("bulbasaur") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Bulbasaur).neutral.clone())
+    };
+    ("pikachu") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Pikachu).neutral.clone())
+    };
+    ("snorlax") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Snorlax).neutral.clone())
+    };
+    ("lapras") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Lapras).neutral.clone())
+    };
+    ("sudowoodo") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Sudowoodo).neutral.clone())
+    };
+    ("gyarados") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Gyarados).neutral.clone())
+    };
+    ("wooper") => {
+        Some(crate::species_rig::rig(crate::species_rig::Species::Wooper).neutral.clone())
+    };
     ("chikorita") => {
         Some(crate::species_rig::rig(crate::species_rig::Species::Chikorita).neutral.clone())
     };
@@ -134,6 +220,9 @@ macro_rules! species_models {
             [$( $id ),+].into_iter()
         }
         pub(crate) fn mesh(species: &str) -> Option<SurfaceMeshData> {
+            if species.len() == 7 && species.as_bytes()[..6].eq_ignore_ascii_case(b"UNOWN_") {
+                return crate::species_rig::for_species(species).map(|rig| rig.neutral.clone());
+            }
             match species.to_ascii_uppercase().as_str() { $(
                 $id => species_mesh!($file),
             )+ _ => None }
@@ -175,6 +264,12 @@ species_models! {
     "CYNDAQUIL" => "cyndaquil",
     "DELIBIRD" => "delibird",
     "DEWGONG" => "dewgong",
+    "DIGLETT" => "diglett",
+    "SLOWPOKE" => "slowpoke",
+    "UNOWN" => "unown_i",
+    "ENTEI" => "entei",
+    "RAIKOU" => "raikou",
+    "SUICUNE" => "suicune",
     "DITTO" => "ditto",
     "DODRIO" => "dodrio",
     "DODUO" => "doduo",
@@ -213,11 +308,13 @@ species_models! {
     "GRAVELER" => "graveler",
     "GRIMER" => "grimer",
     "GROWLITHE" => "growlithe",
+    "GYARADOS" => "gyarados",
     "HAUNTER" => "haunter",
     "HERACROSS" => "heracross",
     "HITMONCHAN" => "hitmonchan",
     "HITMONLEE" => "hitmonlee",
     "HITMONTOP" => "hitmontop",
+    "HOOTHOOT" => "hoothoot",
     "HO_OH" => "ho_oh",
     "HOPPIP" => "hoppip",
     "HORSEA" => "horsea",
@@ -281,6 +378,7 @@ species_models! {
     "OCTILLERY" => "octillery",
     "OMANYTE" => "omanyte",
     "OMASTAR" => "omastar",
+    "ONIX" => "onix",
     "PARAS" => "paras",
     "PARASECT" => "parasect",
     "PERSIAN" => "persian",
@@ -316,6 +414,7 @@ species_models! {
     "SEADRA" => "seadra",
     "SEAKING" => "seaking",
     "SEEL" => "seel",
+    "SENTRET" => "sentret",
     "SHELLDER" => "shellder",
     "SHUCKLE" => "shuckle",
     "SKARMORY" => "skarmory",
@@ -331,6 +430,21 @@ species_models! {
     "SPINARAK" => "spinarak",
     "STANTLER" => "stantler",
     "STARMIE" => "starmie",
+    "STARYU" => "staryu",
+    "SUDOWOODO" => "sudowoodo",
+    "LAPRAS" => "lapras",
+    "SNORLAX" => "snorlax",
+    "PIKACHU" => "pikachu",
+    "BULBASAUR" => "bulbasaur",
+    "CHARMANDER" => "charmander",
+    "SQUIRTLE" => "squirtle",
+    "GEODUDE" => "geodude",
+    "PIDGEY" => "pidgey",
+    "ODDISH" => "oddish",
+    "POLIWAG" => "poliwag",
+    "RATTATA" => "rattata",
+    "CLEFAIRY" => "clefairy",
+    "JIGGLYPUFF" => "jigglypuff",
     "STEELIX" => "steelix",
     "SUNFLORA" => "sunflora",
     "SUNKERN" => "sunkern",
@@ -354,6 +468,7 @@ species_models! {
     "VENUSAUR" => "venusaur",
     "VICTREEBEL" => "victreebel",
     "VILEPLUME" => "vileplume",
+    "VOLTORB" => "voltorb",
     "VULPIX" => "vulpix",
     "WARTORTLE" => "wartortle",
     "WEEDLE" => "weedle",

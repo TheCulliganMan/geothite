@@ -20,11 +20,28 @@ struct PairedState {
     actors: Vec<crystal_render_api::VisualActor>,
 }
 
+#[derive(Default)]
+struct StablePairedState {
+    last: Option<PairedState>,
+    repetitions: u8,
+}
+impl StablePairedState {
+    fn observe(&mut self,state:PairedState)->Option<PairedState> {
+        self.repetitions=if self.last.as_ref()==Some(&state) {self.repetitions.saturating_add(1)}else{1};
+        if self.repetitions>=3 {self.last=None;Some(state)}else{self.last=Some(state);None}
+    }
+}
+
 fn paired_state(runtime: &BevyRuntimeShell, frame: &crystal_render_api::VisualWorldFrame) -> Result<PairedState> {
     Ok(PairedState {
         checksum: runtime.shell.snapshot()?.state_checksum,
         lcd_frame: runtime.lcd_animation_frame,
-        actors: frame.actors.clone(),
+        // Compare the source actors shared by both views. The optional 3D
+        // companion has no 2D entity or authoritative state to compare.
+        actors: frame.actors.iter()
+            .filter(|actor| !matches!(actor.id, crystal_render_api::VisualActorId::PartyFollower
+                | crystal_render_api::VisualActorId::SurfMount))
+            .cloned().collect(),
     })
 }
 
@@ -46,10 +63,12 @@ pub(super) struct Capture {
     previous: Option<(String, image::RgbImage)>,
     identity: String,
     image_target_mode: bool,
+    recording_target_only: bool,
     preserve_alpha: bool,
     image_target: Option<bevy::camera::ImageRenderTarget>,
     image_size: UVec2,
     paired_state: Option<PairedState>,
+    paired_stability: StablePairedState,
 }
 
 pub(super) fn install(
@@ -58,6 +77,12 @@ pub(super) fn install(
     second: Option<PathBuf>,
     live: bool,
 ) -> Result<()> {
+    if let Ok(value) = std::env::var("CRYSTAL_RENDER_TEST_CAMERA") {
+        let camera = parse_camera_request(&value)?;
+        app.add_systems(Startup, move |mut settings: ResMut<crystal_voxel_view::VoxelViewSettings>| {
+            settings.camera = camera;
+        });
+    }
     let timeout_seconds = match std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS") {
         Err(std::env::VarError::NotPresent) => 60,
         Ok(value) => {
@@ -124,10 +149,12 @@ pub(super) fn install(
         previous: None,
         identity: String::new(),
         image_target_mode,
+        recording_target_only: false,
         preserve_alpha,
         image_target: None,
         image_size: UVec2::ZERO,
         paired_state: None,
+        paired_stability: StablePairedState::default(),
         path,
         second,
         same_second_view,
@@ -139,6 +166,14 @@ pub(super) fn install(
     })
     .add_systems(Update, (prepare_image_target, capture).chain()
         .after(crystal_render_api::WorldRenderSet::RenderSync));
+    Ok(())
+}
+
+// A recording needs the explicit GPU image route, but must not start a
+// one-shot capture that freezes the move or waits for the input route to end.
+pub(super) fn install_recording_target(app: &mut App, path: PathBuf) -> Result<()> {
+    install(app, path, None, false)?;
+    app.world_mut().resource_mut::<Capture>().recording_target_only = true;
     Ok(())
 }
 
@@ -273,6 +308,12 @@ fn capture(
                 eprintln!("paired capture rejected: state changed during GPU readback; checksum {:?} -> {:?}; lcd {} -> {}; actors_equal={}, actor_count {} -> {}",
                     first.checksum, current.checksum, first.lcd_frame, current.lcd_frame,
                     first.actors == current.actors, first.actors.len(), current.actors.len());
+                for before in &first.actors {
+                    let after=current.actors.iter().find(|actor|actor.id==before.id);
+                    if after!=Some(before) {
+                        eprintln!("paired capture actor changed: before={before:?}; after={after:?}");
+                    }
+                }
                 exit.write(AppExit::error());
                 return;
             }
@@ -283,6 +324,7 @@ fn capture(
             }
         }
     }
+    if capture.recording_target_only { return; }
     if capture.idle {
         let external = match std::fs::read_to_string(&capture.request_path) {
             Ok(value) => {
@@ -353,9 +395,17 @@ fn capture(
             );
         } else {
             if let Some(state) = &capture.paired_state {
+                let actor_sources=state.actors.iter().map(|actor|serde_json::json!({
+                    "id":format!("{:?}",actor.id),
+                    "source":actor.source_id.as_ref(),
+                    "center":[actor.center.x,actor.center.y],
+                    "size":[actor.size.x,actor.size.y],
+                    "facing":actor.facing.map(|f|[f.x,f.y]),
+                })).collect::<Vec<_>>();
                 let receipt = format!(
-                    "state_preserved=true\nchecksum={:?}\nlcd_animation_frame={}\nactors={}\nvirtual_seconds={}\n",
+                    "state_preserved=true\nchecksum={:?}\nlcd_animation_frame={}\nactors={}\nvirtual_seconds={}\nactor_sources={}\n",
                     state.checksum, state.lcd_frame, state.actors.len(), virtual_time.elapsed_secs_f64(),
+                    serde_json::Value::Array(actor_sources),
                 );
                 if let Err(error) = std::fs::write(capture.first_path.with_extension("paired-state.txt"), receipt) {
                     eprintln!("paired capture receipt failed: {error}");
@@ -388,10 +438,21 @@ fn capture(
         // can observe an actual pose change rather than two identical poses.
         || capture.frame < if capture.same_second_view && capture.second.is_none() {43} else {12}
         || !settled
+        // Existing source groves stream asynchronously. An active battle
+        // alone does not mean its retained location has finished loading.
+        || (settings.enabled && battle_status.active
+            && battle_status.map_scenery_fallback_reason == Some("actual battle groves are warming"))
         || walk.as_ref().is_some_and(|walk| !walk.settled())
     {
         return;
     }
+    // A uniform original background palette is a transient battle flash,
+    // unsuitable for comparing scenery. Wait for the next visible source
+    // frame before freezing; never advance it after taking the baseline.
+    if capture.second.is_some() && battle_frame.active && battle_frame.source.as_ref().is_some_and(|source| {
+        let tone = source.bgp & 3;
+        (0..4).all(|index| (source.bgp >> (index * 2)) & 3 == tone)
+    }) { return; }
     let screenshot = if capture.image_target_mode {
         let Some(target) = capture.image_target.as_ref() else {
             return;
@@ -405,7 +466,8 @@ fn capture(
         };
         Screenshot::window(window)
     };
-    if !capture.live && !capture.same_second_view && walk.is_none()
+    if !capture.live && !capture.same_second_view
+        && walk.as_ref().is_none_or(|walk| walk.settled())
         && (capture.second.is_some() || capture.paired_state.is_some())
     {
         // Do not strand entry callbacks or a startup transition. Hold only
@@ -439,6 +501,10 @@ fn capture(
                 return;
             }
         } else {
+            // Enabling read-only actor extraction can reconcile newly spawned
+            // NPC sprites one update later at the frozen movement subframe.
+            // Wait for that presentation to stabilize before either readback.
+            let Some(state)=capture.paired_stability.observe(state) else{return;};
             capture.paired_state = Some(state);
             hold.frozen = true;
             virtual_time.pause();
@@ -493,12 +559,18 @@ fn parse_camera_request(value: &str) -> Result<crystal_voxel_view::VoxelCameraCo
         .map(str::parse::<f32>)
         .collect::<std::result::Result<Vec<_>, _>>()?;
     anyhow::ensure!(
-        values.len() == 2 && values.iter().all(|value| value.is_finite()),
-        "expected finite zoom and orbit, e.g. 1.0 0.5"
+        (2..=4).contains(&values.len()) && values.iter().all(|value| value.is_finite()),
+        "expected finite zoom, orbit, optional pitch and first-person (0/1), e.g. 1.0 0.5 5.0 0"
     );
-    Ok(crystal_voxel_view::VoxelCameraControls::new(
-        values[0], values[1],
-    ))
+    let mut camera = crystal_voxel_view::VoxelCameraControls::new(values[0], values[1]);
+    if let Some(first_person) = values.get(3) {
+        anyhow::ensure!(*first_person == 0.0 || *first_person == 1.0, "first-person must be 0 or 1");
+        camera.first_person = *first_person == 1.0;
+    }
+    if let Some(pitch) = values.get(2) {
+        camera.pitch_degrees = pitch.clamp(if camera.first_person { -85.0 } else { 5.0 }, 85.0);
+    }
+    Ok(camera)
 }
 
 fn live_comparison(capture: &mut Capture) -> Result<()> {
@@ -563,6 +635,26 @@ mod image_target_tests {
             .unwrap().0, RenderTarget::Window(WindowRef::Entity(entity)) if entity == window));
     }
 
+    #[test]
+    fn paired_baseline_waits_for_npc_interpolation_reconciliation() {
+        let state=|x|PairedState {
+            checksum:StateChecksum::new(12,3691618926),lcd_frame:16,
+            actors:vec![crystal_render_api::VisualActor {
+                id:crystal_render_api::VisualActorId::Object(2),source_id:Arc::from("cooltrainer_f"),
+                model_palette:None,texture:default(),center:Vec2::new(x,128.),size:Vec2::splat(64.),
+                flip_x:false,above_priority:false,facing:Some(Vec2::X),
+            }],
+        };
+        let mut stable=StablePairedState::default();
+        assert!(stable.observe(state(160.)).is_none());
+        // Same authoritative state, but the newly reconciled source sprite
+        // moves to its correct frozen interpolation point before capture.
+        assert!(stable.observe(state(157.84944)).is_none());
+        assert!(stable.observe(state(157.84944)).is_none());
+        let baseline=stable.observe(state(157.84944)).unwrap();
+        assert!(baseline==state(157.84944));assert!(baseline!=state(160.));
+    }
+
     fn fixture(enabled: bool) -> (App, Entity, Entity, Entity, Entity, Handle<Image>) {
         let mut app = App::new();
         app.init_resource::<Assets<Image>>()
@@ -583,10 +675,12 @@ mod image_target_tests {
                 previous: None,
                 identity: String::new(),
                 image_target_mode: enabled,
+                recording_target_only: false,
                 preserve_alpha: false,
                 image_target: None,
                 image_size: UVec2::ZERO,
                 paired_state: None,
+        paired_stability: StablePairedState::default(),
             })
             .add_systems(Update, prepare_image_target);
         let window = app

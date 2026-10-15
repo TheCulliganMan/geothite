@@ -21,7 +21,8 @@ use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 type Completions = Arc<Mutex<Vec<CaptureCompletion>>>;
-const MAX_READBACKS: usize = 8;
+// Keep GPU/PNG pressure bounded while the production renderer is active.
+const MAX_READBACKS: usize = 2;
 const DEFAULT_CAPTURE_HZ: u32 = 30;
 const DEFAULT_ARM_TIMEOUT_SECONDS: u32 = 180;
 const CAPTURE_TIME_EPSILON: f64 = 1.0e-9;
@@ -391,6 +392,12 @@ pub(super) fn install(
     let capture_hz = requested_capture_hz(std::env::var("CRYSTAL_CAPTURE_FPS").ok().as_deref())?;
     let arm_timeout_seconds =
         requested_arm_timeout(std::env::var("CRYSTAL_CAPTURE_ARM_SECONDS").ok().as_deref())?;
+    if capture_images
+        && std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TARGET").as_deref() == Ok("image")
+        && !app.world().contains_resource::<super::render_capture::Capture>()
+    {
+        super::render_capture::install_recording_target(app, directory.join("target-only.png"))?;
+    }
     std::fs::create_dir_all(directory)?;
     anyhow::ensure!(
         std::fs::read_dir(directory)?.next().is_none(),
@@ -412,7 +419,7 @@ pub(super) fn install(
         frames: vec![],
         trace: header.into(),
         update_trace: header.into(),
-        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art,source_frame,bgp,source_objects,flash_mode,image_assets,mesh_assets,material_assets,lighting,quality,software_renderer,scene_width,scene_height,window_width,window_height,requested_capture_hz,view_mode,source_line_x,source_line_y,player_size_m,enemy_size_m,row_capture_ready,row_capture_pending,capture_ball,capture_frame,capture_caught,capture_blocked,capture_shakes,capture_started,capture_complete,capture_image_active,capture_fallback_reason\n"
+        battle_trace: "frame,seconds,map,player_species,enemy_species,cues,modeled,source_art,source_frame,bgp,source_objects,flash_mode,image_assets,mesh_assets,material_assets,lighting,quality,software_renderer,scene_width,scene_height,window_width,window_height,requested_capture_hz,view_mode,source_line_x,source_line_y,player_size_m,enemy_size_m,row_capture_ready,row_capture_pending,capture_ball,capture_frame,capture_caught,capture_blocked,capture_shakes,capture_started,capture_complete,capture_image_active,capture_fallback_reason,map_scenery_id,map_scenery_fallback_reason\n"
             .into(),
         update_times: vec![],
         outstanding: 0,
@@ -476,24 +483,34 @@ fn row(
     )
 }
 
+#[derive(bevy::ecs::system::SystemParam)]
+struct RecordingAssets<'w> {
+    images: Res<'w, Assets<Image>>,
+    meshes: Res<'w, Assets<Mesh>>,
+    materials: Res<'w, Assets<StandardMaterial>>,
+}
+
 fn record(
     mut recording: ResMut<Recording>,
     validation: Option<Res<super::render_measure_validation::TimingValidation>>,
     time: Res<Time<Real>>,
     status: Res<crystal_voxel_view::VoxelViewStatus>,
+    settings: Res<crystal_voxel_view::VoxelViewSettings>,
     battle_status: Res<crystal_voxel_view::BattleViewStatus>,
     battle_frame: Res<crystal_render_api::VisualBattleFrame>,
     flash_mode: Res<crystal_render_api::BattleFlashMode>,
     frame: Res<crystal_render_api::VisualWorldFrame>,
     runtime: Res<BevyRuntimeShell>,
-    walk: Option<Res<super::render_walk::RenderWalk>>,
+    review: (Option<Res<super::render_walk::RenderWalk>>, Option<Res<super::render_capture::Capture>>),
     windows: Query<(Entity, &Window), With<PrimaryWindow>>,
     mut commands: Commands,
-    images: Res<Assets<Image>>,
-    meshes: Res<Assets<Mesh>>,
-    materials: Res<Assets<StandardMaterial>>,
+    assets: RecordingAssets,
     mut exit: MessageWriter<AppExit>,
 ) {
+    let images = &assets.images;
+    let meshes = &assets.meshes;
+    let materials = &assets.materials;
+    let (walk, capture_target) = review;
     if let Some(error) = runtime.render_test_error.as_ref() {
         eprintln!("capture rejected after runtime error: {error}");
         exit.write(AppExit::error());
@@ -551,7 +568,11 @@ fn record(
         if recording.capture_images && walk.as_ref().is_some_and(|walk| !walk.started()) {
             return;
         }
-        let world_ready = status.active && status.active_frames >= 30 && !status.profiles_pending;
+        // The ordinary walk helper warms the classic renderer before its
+        // first input as well. Waiting for a 3D status in classic mode skipped
+        // the entire introduction and smoke before recording could begin.
+        let world_ready = (status.active && status.active_frames >= 30 && !status.profiles_pending)
+            || (!settings.enabled && walk.as_ref().is_some_and(|walk| walk.started()));
         let battle_ready = recording_battle_ready(
             battle_frame.active,
             recording.presented_battle_frames,
@@ -747,7 +768,7 @@ fn record(
         };
         let flags = |values: [bool; 2]| format!("{}|{}", u8::from(values[0]), u8::from(values[1]));
         recording.battle_trace.push_str(&format!(
-            "{index},{elapsed:.6},{},{},{},{},{},{},{},{},{},{:?},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
+            "{index},{elapsed:.6},{},{},{},{},{},{},{},{},{},{:?},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n",
             battle_frame.map_id,
             species(0),
             species(1),
@@ -779,6 +800,8 @@ fn record(
             capture_csv_fields(runtime.visible_capture_animation.as_ref()),
             battle_status.capture_image_active,
             format!("\"{}\"", battle_status.capture_fallback_reason.unwrap_or("").replace('"', "\"\"")),
+            format!("\"{}\"", battle_status.map_scenery_id.as_deref().unwrap_or("").replace('"', "\"\"")),
+            format!("\"{}\"", battle_status.map_scenery_fallback_reason.unwrap_or("").replace('"', "\"\"")),
         ));
     }
     if !recording.capture_images
@@ -817,8 +840,9 @@ fn record(
         });
     // Screenshot callbacks already run on Bevy's async compute pool. Allow a
     // bounded pipeline rather than waiting 2–3 render frames after each one.
+    let Some(screenshot) = super::render_capture::moving_screenshot(capture_target.as_deref(), window) else { return; };
     commands
-        .spawn(Screenshot::window(window))
+        .spawn(screenshot)
         .observe(move |event: On<ScreenshotCaptured>| {
             let completion = save_capture(event.image.clone(), path.clone(), ticket);
             completions.lock().unwrap().push(completion);

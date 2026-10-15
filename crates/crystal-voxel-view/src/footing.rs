@@ -79,7 +79,43 @@ pub fn resolved_footing_height(
         .checked_mul(width)?
         .checked_add(usize::try_from(coordinate.x).ok()?)?;
     let resolved = resolved_heights.get(index).copied()?;
-    Some(resolved)
+    Some(resolved + crate::mesh::terrace_support_correction(frame,coordinate,foot)
+        + crate::mesh::league_stair_support_correction(frame,coordinate,foot,resolved_heights)
+        + crate::mesh::hall_stair_support_correction(frame,coordinate,foot,resolved_heights))
+}
+
+/// Lift only an accepted uphill step or authored ledge jump. Sampling both
+/// endpoints avoids snapping to the upper terrace midway through the step.
+pub(crate) fn traversal_height(
+    frame: &VisualWorldFrame,
+    actor: &VisualActor,
+    heights: &[f32],
+    traversal: Option<&crystal_render_api::VisualPlayerTraversal>,
+) -> Option<(f32, f32)> {
+    let ground = resolved_footing_height(frame, actor_foot(actor), heights)?;
+    let Some(traversal) = traversal.filter(|t| t.map_id == frame.map_id) else {
+        return Some((ground, 0.0));
+    };
+    let Some(step) = traversal.step.filter(|_| actor.id == crystal_render_api::VisualActorId::Player
+        && !actor.source_id.ends_with("_bike") && !actor.source_id.starts_with("surf")) else {
+        return Some((ground, 0.0));
+    };
+    if tile_at_visual_point(frame, step.from + Vec2::Y * FOOTING_SAMPLE_EPSILON).is_none()
+        || tile_at_visual_point(frame, step.to + Vec2::Y * FOOTING_SAMPLE_EPSILON).is_none()
+    {
+        return Some((ground, 0.0));
+    }
+    let from = resolved_footing_height(frame, step.from, heights)?;
+    let to = resolved_footing_height(frame, step.to, heights)?;
+    let rise = to - from;
+    // Stairs and shallow ramps keep their ordinary gait.
+    if !step.ledge_jump && rise < frame.tile_size.y * 0.4 {
+        return Some((ground, 0.0));
+    }
+    let p = step.progress.clamp(0.0, 1.0);
+    let arc = 4.0 * p * (1.0 - p);
+    let clearance = rise.abs().max(frame.tile_size.y * 0.75);
+    Some((from + rise * p + clearance * arc, arc))
 }
 
 pub fn visual_point_to_voxel(point: Vec2, height: f32) -> Vec3 {
@@ -110,6 +146,7 @@ mod tests {
             active: true,
             map_id: Arc::from("NewBarkTown"),
             source_map_size_core_tiles: None,
+            jump_ledges: Default::default(),
             terrain_revision: 1,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
@@ -178,6 +215,43 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[test]
+    fn uphill_hop_clears_the_terrace_and_lands_on_its_exact_height() {
+        use crystal_render_api::{VisualPlayerTraversal, VisualTraversalStep};
+        let frame = frame();
+        let from = Vec2::new(-20.0, 16.0);
+        let to = Vec2::new(-12.0, 16.0);
+        let mut actor = VisualActor {
+            id: VisualActorId::Player, source_id: "player".into(), model_palette: None,
+            texture: Handle::default(), center: from + Vec2::Y * 8.0,
+            size: Vec2::new(8.0, 16.0), flip_x: false, above_priority: false, facing: Some(Vec2::X),
+        };
+        let mut traversal = VisualPlayerTraversal {
+            map_id: frame.map_id.clone(),
+            step: Some(VisualTraversalStep { from, to, progress: 0.0, ledge_jump: false }),
+        };
+        for (progress, expected) in [(0.0, 0.0), (0.5, 9.0), (1.0, 6.0)] {
+            traversal.step.as_mut().unwrap().progress = progress;
+            actor.center = from.lerp(to, progress) + Vec2::Y * 8.0;
+            let (height, _) = traversal_height(&frame, &actor, &[0.0, 6.0], Some(&traversal)).unwrap();
+            assert_eq!(height, expected);
+            assert_eq!(actor_foot(&actor), from.lerp(to, progress), "hop never moves the ground foot");
+        }
+        traversal.step.as_mut().unwrap().progress = 0.5;
+        actor.center = from.lerp(to, 0.5) + Vec2::Y * 8.0;
+        for heights in [[0.0, 0.0], [0.0, 2.0], [6.0, 0.0]] {
+            assert_eq!(traversal_height(&frame, &actor, &heights, Some(&traversal)).unwrap().1, 0.0,
+                "flat ground, stairs, and ordinary descent keep their gait");
+        }
+        traversal.step.as_mut().unwrap().ledge_jump = true;
+        assert!(traversal_height(&frame, &actor, &[6.0, 0.0], Some(&traversal)).unwrap().0 > 6.0);
+        actor.id = VisualActorId::Object(1);
+        assert_eq!(traversal_height(&frame, &actor, &[0.0, 6.0], Some(&traversal)).unwrap().1, 0.0);
+        actor.id = VisualActorId::Player;
+        traversal.map_id = "OtherMap".into();
+        assert_eq!(traversal_height(&frame, &actor, &[0.0, 6.0], Some(&traversal)).unwrap().1, 0.0);
     }
 
     #[test]

@@ -1,34 +1,34 @@
-//! Source-scoped damp soil on the land side of ordinary Johto water edges.
+//! Source-scoped damp soil and wet sand on the dry side of Johto water edges.
 use super::*;
 use bevy::prelude::Vec2;
 
 #[derive(Clone, Default)]
 pub(super) struct ShoreBlend {
-    edges: Vec<([f32; 2], [f32; 2])>,
+    edges: Vec<([f32; 2], [f32; 2], bool)>,
     candidates: Vec<Vec<usize>>,
-    lawn: Vec<bool>,
+    land: Vec<bool>,
 }
 impl ShoreBlend {
     pub(super) fn new(map: &str, cells: &[&VisualTile], g: &GridGeometry) -> Self {
         if !ordinary_lawn_map(map) {
             return Self::default();
         }
-        let lawn: Vec<_> = cells
+        let land: Vec<_> = cells
             .iter()
             .map(|t| {
                 matches!(t.source.tileset_id.as_ref(), "johto" | "johto_modern")
-                    && ground_material(&t.source) == Some(GroundMaterial::Lawn)
+                    && matches!(ground_material(&t.source), Some(GroundMaterial::Lawn | GroundMaterial::Path))
             })
             .collect();
         let mut result = Self {
             edges: Vec::new(),
             candidates: vec![Vec::new(); cells.len()],
-            lawn,
+            land,
         };
         for row in 0..g.height {
             for col in 0..g.width {
                 let i = row * g.width + col;
-                if !result.lawn[i] {
+                if !result.land[i] {
                     continue;
                 }
                 let (w, e, n, s) = g.bounds(col, row);
@@ -52,7 +52,8 @@ impl ShoreBlend {
                         Direction::East => ([e, n], [e, s]),
                     };
                     let index = result.edges.len();
-                    result.edges.push(edge);
+                    result.edges.push((edge.0, edge.1,
+                        ground_material(&cells[i].source) == Some(GroundMaterial::Path)));
                     for y in row.saturating_sub(1)..=(row + 1).min(g.height - 1) {
                         for x in col.saturating_sub(1)..=(col + 1).min(g.width - 1) {
                             result.candidates[y * g.width + x].push(index);
@@ -65,7 +66,7 @@ impl ShoreBlend {
     }
     pub(super) fn near(&self, p: [f32; 3], g: &GridGeometry) -> bool {
         cell_at(g, p[0], p[2]).is_some_and(|i| {
-            self.lawn.get(i).copied().unwrap_or(false)
+            self.land.get(i).copied().unwrap_or(false)
                 && self.candidates.get(i).is_some_and(|v| !v.is_empty())
         })
     }
@@ -87,30 +88,37 @@ impl ShoreBlend {
             // ground finish must remain a no-op instead of indexing it.
             return base;
         };
-        let owned = self.lawn.get(i).copied().unwrap_or(false);
+        let owned = self.land.get(i).copied().unwrap_or(false);
         let x = (p[0] - g.origin_x) / g.tile_width + origin[0] as f32;
         let z = (p[2] - g.origin_z) / g.tile_height + origin[1] as f32;
-        let width = g.tile_width.min(g.tile_height)
-            * (0.55 + meadow_noise(x * 2.1 + 37., z * 2.1 - 17.) * 0.22);
+        let roughness = meadow_noise(x * 2.1 + 37., z * 2.1 - 17.);
         let mut amount = 0.0_f32;
+        let mut sandy = false;
         for &index in candidates {
-            let (a, b) = self.edges[index];
+            let (a, b, sand) = self.edges[index];
+            let width = g.tile_width.min(g.tile_height)
+                * (if sand { 1.15 } else { 0.55 } + roughness * 0.22);
             let a = Vec2::from_array(a);
             let b = Vec2::from_array(b);
             let q = Vec2::new(p[0], p[2]);
             let d = b - a;
             let t = ((q - a).dot(d) / d.length_squared()).clamp(0., 1.);
             let distance = (q - a - d * t).length();
-            // A shared lawn vertex can lie exactly on the water cell's
+            // A shared dry vertex can lie exactly on the water cell's
             // half-open grid boundary. Retain its bank color on that line,
             // without painting any point inside the water or unknown cells.
             if !owned && distance > g.tile_width.min(g.tile_height) * 0.0001 {
                 continue;
             }
             let weight = (1. - distance / width).clamp(0., 1.);
-            amount = amount.max(weight * weight * (3. - 2. * weight) * 0.62);
+            let strength = weight * weight * (3. - 2. * weight) * 0.62;
+            if strength > amount {
+                amount = strength;
+                sandy = sand;
+            }
         }
-        let soil = ledge_finish::soil_color(x, z, 0.45);
+        let soil = if sandy { [0.28, 0.205, 0.12] }
+            else { ledge_finish::soil_color(x, z, 0.45) };
         [
             base[0] + (soil[0] - base[0]) * amount,
             base[1] + (soil[1] - base[1]) * amount,
@@ -148,6 +156,28 @@ mod tests {
             origin_z: 0.,
         }
     }
+    #[test]
+    fn sand_has_a_wider_damp_transition_without_painting_the_water() {
+        let mut f = fixture();
+        for tile in &mut f.tiles {
+            if tile.column == 0 { tile.source.tile_index = 0x06; }
+        }
+        let g = grid();
+        let cells: Vec<_> = f.tiles.iter().collect();
+        let sand = ShoreBlend::new("CherrygroveCity", &cells, &g);
+        assert_eq!(sand.edges.len(), 2);
+        let base = [0.68, 0.52, 0.31, 1.];
+        let wet = sand.color([7., 0., 4.], &g, [0, 0], base);
+        let inland = sand.color([0., 0., 4.], &g, [0, 0], base);
+        assert!(wet[0] < inland[0] && wet[1] < inland[1]);
+        assert_ne!(sand.color([3., 0., 4.], &g, [0, 0], base), base);
+        assert_eq!(sand.color([8.1, 0., 4.], &g, [0, 0], base), base);
+        assert_eq!(sand.color([7., 2., 4.], &g, [0, 0], base), base);
+        let moved = GridGeometry { origin_x: -80., origin_z: 48., ..g };
+        let shifted = ShoreBlend::new("CherrygroveCity", &cells, &moved);
+        assert_eq!(wet, shifted.color([-73., 0., 52.], &moved, [0, 0], base));
+    }
+
     #[test]
     fn excluded_maps_leave_ground_colors_unchanged_at_in_bounds_cells() {
         let f = fixture();

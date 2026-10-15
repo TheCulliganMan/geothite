@@ -37,5 +37,8 @@ def sculpture():
  for q in p:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':'icon_clefairy','version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'icon_clefairy.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ from clefairy_glb import main_export
+ parser=argparse.ArgumentParser(description=__doc__)
+ parser.add_argument('--output',type=Path,required=True)
+ main_export(parser.parse_args().output)
 if __name__=='__main__':main()

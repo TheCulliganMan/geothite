@@ -126,19 +126,67 @@ fn main() {
 
 #[cfg(target_arch = "wasm32")]
 async fn run_browser() -> Result<()> {
+    #[cfg(all(feature = "voxel-view", feature = "location-tester"))]
+    {
+        let params = web_sys::UrlSearchParams::new_with_str(
+            &web_sys::window().context("browser window is unavailable")?.location().search().unwrap_or_default(),
+        ).ok();
+        let tree_depth = params.as_ref().and_then(|params| params.get("tree-depth-prepass")).as_deref() == Some("on");
+        crystal_voxel_view::configure_tree_depth_prepass_diagnostics(tree_depth)
+            .map_err(anyhow::Error::msg)?;
+        let legacy_discard = params.as_ref().and_then(|params| params.get("surface-discard")).as_deref() == Some("legacy");
+        crystal_voxel_view::configure_surface_discard_diagnostics(legacy_discard)
+            .map_err(anyhow::Error::msg)?;
+        let shadow_receivers = params.as_ref().and_then(|params| params.get("shadow-receivers")).as_deref() == Some("on");
+        crystal_voxel_view::configure_shadow_receiver_diagnostics(shadow_receivers)
+            .map_err(anyhow::Error::msg)?;
+        let eager = params.and_then(|params| params.get("loading-collision")).as_deref() == Some("eager");
+        crystal_voxel_view::configure_grove_collision_diagnostics(eager)
+            .map_err(anyhow::Error::msg)?;
+    }
+    #[cfg(feature = "allocation-tester")]
+    if web_sys::UrlSearchParams::new_with_str(
+        &web_sys::window().context("browser window is unavailable")?.location().search().unwrap_or_default(),
+    ).ok().and_then(|params| params.get("allocation-stacks")).as_deref() == Some("on") {
+        crystal_bevy::enable_loading_allocation_stacks();
+    }
+    #[cfg(feature = "voxel-view")]
+    if web_sys::UrlSearchParams::new_with_str(
+        &web_sys::window().context("browser window is unavailable")?.location().search().unwrap_or_default(),
+    ).ok().and_then(|params| params.get("loading-trace")).as_deref() == Some("on") {
+        crystal_voxel_view::loading_trace::start();
+    }
+    #[cfg(feature = "browser-webgpu")]
+    if !crystal_bevy::browser_backend::probe().await {
+        crystal_bevy::browser_backend::fallback_to_webgl()
+            .map_err(|error| anyhow::anyhow!("reload compatible WebGL renderer: {error:?}"))?;
+        return Ok(());
+    }
     wait_for_browser_meshtastic().await?;
-    let pack_bytes = fetch_browser_pack().await?;
+    let pack_bytes = {
+        #[cfg(feature = "voxel-view")]
+        let _trace = crystal_voxel_view::loading_trace::span("pack.fetch", || serde_json::json!({}));
+        fetch_browser_pack().await?
+    };
+    let loaded = {
+        #[cfg(feature = "voxel-view")]
+        let _trace = crystal_voxel_view::loading_trace::span("pack.verify", || serde_json::json!({}));
+        crystal_assets::load_verified_compiled_game_pack_bytes(DEFAULT_BROWSER_PACK_FILENAME, pack_bytes)?
+    };
+    let asset_root = AssetRoot::new(".");
+    let runtime = {
+        #[cfg(feature = "voxel-view")]
+        let _trace = crystal_voxel_view::loading_trace::span("pack.load_runtime", || serde_json::json!({}));
+        CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?
+    };
+    // Complete pack decoding before installing scenery. The pack decoder's
+    // temporary buffers can then be reused for artwork instead of overlapping
+    // both allocation peaks in WebAssembly's non-shrinking linear memory.
     #[cfg(feature = "voxel-view")]
     {
         let _ = fetch_browser_open_models("open-models.json", false).await;
         fetch_browser_open_models("open-people.json", true).await?;
     }
-    let loaded = crystal_assets::load_verified_compiled_game_pack_bytes(
-        DEFAULT_BROWSER_PACK_FILENAME,
-        pack_bytes,
-    )?;
-    let asset_root = AssetRoot::new(".");
-    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?;
     let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
     // Explicit local location-test entry, compiled out of normal browser builds.
     // This uses the same production shell and content pack as normal play.
@@ -158,6 +206,9 @@ async fn run_browser() -> Result<()> {
             Some("route26") => Some(("Route26", 10, 54)),
             Some("route26-canyon") => Some(("Route26", 10, 28)),
             Some("route29") => Some(("Route29", 50, 9)),
+            Some("route29-battle") => Some(("Route29", 50, 9)),
+            Some("azalea-well") => Some(("AzaleaTown", 33, 9)),
+            Some("falkner-battle") => Some(("VioletGym", 4, 1)),
             Some("national-park") => Some(("NationalPark", 20, 40)),
             Some("national-park-pool") => Some(("NationalPark", 20, 24)),
             Some("union-cave") => Some(("UnionCave1F", 4, 17)),
@@ -196,14 +247,17 @@ async fn run_browser() -> Result<()> {
                     smoke_player_name: Some("CHRIS".to_string()),
                     voxel_view_enabled: Some(true),
                     voxel_camera: Some(match params.get("preview").as_deref() {
+                        Some("azalea-well") => (1, 2),
                         Some("union-cave") => (4, 0),
                         Some("ice-path" | "mount-silver") => (1, 0),
                         Some("whirl-islands") => (0, 0),
-                        Some("route26" | "route26-canyon" | "route29"
+                        Some("route26" | "route26-canyon" | "route29" | "route29-battle"
                             | "national-park" | "national-park-pool") => (0, 1),
                         _ => (0, -1),
                     }),
-                    render_test_hour: Some(16),
+                    render_test_hour: Some(if params.get("preview").as_deref() == Some("azalea-well") { 12 } else { 16 }),
+                    render_test_walking_encounter: params.get("preview").as_deref() == Some("route29-battle"),
+                    render_test_falkner_encounter: params.get("preview").as_deref() == Some("falkner-battle"),
                     // No persistence: an art preview must not overwrite a save.
                     quick_save_path: None,
                     ..Default::default()
@@ -351,6 +405,7 @@ async fn wait_for_browser_meshtastic() -> Result<()> {
 async fn fetch_browser_open_models(url: &str, people: bool) -> Result<()> {
     use wasm_bindgen::JsCast as _;
     use wasm_bindgen_futures::JsFuture;
+    let _trace = crystal_voxel_view::loading_trace::span("asset.fetch_install_bundle", || serde_json::json!({"url":url}));
     let window = web_sys::window().context("browser window is unavailable")?;
     let mut callback = None;
     let mut timer = None;

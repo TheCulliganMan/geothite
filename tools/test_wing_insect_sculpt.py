@@ -2,6 +2,7 @@
 """Check stored insect anatomy, curved wings and membrane placement."""
 import json,unittest
 from pathlib import Path
+from wing_insect_glb import decode_insect,geometry_digest
 from wing_insect_sculpt import sculpture,SPECIES,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
 
@@ -9,18 +10,18 @@ ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battl
 
 class InsectTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+    def setUpClass(cls):cls.models={s:decode_insect((ROOT/(s+'.glb')).read_bytes(),s) for s in SPECIES}
     def test_closed_connected_oriented_parts(self):assert_closed_models(self,self.models)
     def test_normals_match_winding(self):assert_model_shading(self,self.models)
 
     def test_canonical_recipe_bounds_and_budget(self):
         for s,m in self.models.items():
-            self.assertEqual(m,sculpture(s));parts=m['primitives'];names=[p['part'] for p in parts]
+            self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));parts=m['primitives'];names=[p['part'] for p in parts]
             self.assertEqual(len(names),len(set(names)))
             self.assertEqual(min(v for p in parts for v in p['positions'][1::3]),0.)
             self.assertAlmostEqual(max(v for p in parts for v in p['positions'][1::3]),HEIGHT,places=6)
             self.assertLess(sum(len(p['indices'])//3 for p in parts),10000)
-            self.assertLess(len(json.dumps(m,separators=(',',':'))),500000)
+            self.assertLess((ROOT/(s+'.glb')).stat().st_size,500000)
 
     def test_four_curved_wings_with_membranes_visible_on_both_faces(self):
         for s,m in self.models.items():

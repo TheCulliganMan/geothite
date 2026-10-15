@@ -67,7 +67,7 @@ def wings(bee):
     return p
 
 
-def sculpture(species):
+def sculpture(species, *, normalize=True):
     if species not in SPECIES:raise ValueError('unsupported wing insect')
     bee=species=='beedrill';color=GOLD if bee else PURPLE;p=wings(bee)
     if bee:
@@ -117,6 +117,7 @@ def sculpture(species):
         p.append(ellipsoid('Muzzle / short blue proboscis',BLUE,(0,.726,.169),(.032,.038,.031),16,10))
     else:
         p.append(tube('Mouth / quiet facial seam',INK,[(-.023,.75,.168),(0,.742,.172),(.023,.75,.168)],[.002]*3,8))
+    if not normalize:return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0.))*scale,7) for i,v in enumerate(q['positions'])]
@@ -126,6 +127,9 @@ def sculpture(species):
 
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    for s in SPECIES:(args.output/(s+'.mesh.json')).write_text(json.dumps(sculpture(s),separators=(',',':')))
+    from wing_insect_glb import export_insect
+    for s in SPECIES:
+        (args.output/(s+'.glb')).write_bytes(export_insect(s))
+        (args.output/(s+'.mesh.json')).unlink(missing_ok=True)
 
 if __name__=='__main__':main()

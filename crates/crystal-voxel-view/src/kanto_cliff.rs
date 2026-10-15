@@ -70,6 +70,40 @@ pub(crate) fn kanto_cliff_shape(source: &VisualTileSource) -> Option<CellShape> 
     }
 
     match source.metatile_id {
+        // Side and corner ends of the grass jump-ledge family. The single
+        // ink column is one exposed face, not a flat stripe or tall mountain.
+        0x58..=0x5b if source.subtile_column < 4 && source.subtile_row < 4 => {
+            let x = source.subtile_column;
+            let y = source.subtile_row;
+            let west = matches!(source.metatile_id, 0x58 | 0x5a);
+            let front = matches!(source.metatile_id, 0x5a | 0x5b) && y == 3;
+            let side = if west { x == 0 } else { x == 3 };
+            let expected = if front {
+                if side { if west { 0x36 } else { 0x34 } } else { 0x37 }
+            } else if side { if west { 0x27 } else { 0x24 } } else { 0x2c };
+            if source.tile_index != expected { return None; }
+            if front || side {
+                Some(CellShape::LedgeBand {
+                    face: if front { LedgeFace::South } else if west { LedgeFace::West } else { LedgeFace::East },
+                    plane_subtile: if front || !west { 4 } else { 0 },
+                    band_from_top: 0, band_count: 1, top_tile_index: 0x2c,
+                    height: JUMP_LEDGE_HEIGHT,
+                })
+            } else {
+                Some(CellShape::RaisedTop { height: JUMP_LEDGE_HEIGHT, solid: SolidKind::Bank })
+            }
+        }
+        // `$2c` fills the mountain interior between the authored edge
+        // blocks. Its sixteen `$11` cells share their plateau datum; keeping
+        // this fill flat leaves a pixel-art hole through otherwise 3D rock.
+        0x2c if source.tile_index == 0x11
+            && source.subtile_column < 4 && source.subtile_row < 4 =>
+        {
+            Some(CellShape::RaisedTop {
+                height: KANTO_CLIFF_HEIGHT,
+                solid: SolidKind::Bank,
+            })
+        }
         // `$2a/$2b` are Crystal's mirrored southwest/southeast cliff-corner
         // transitions. Twelve `$11` cells carry plateau paint and one lower
         // 2x2 corner carries directional boundary ink. Each block is one
@@ -424,6 +458,25 @@ mod tests {
                         solid: SolidKind::Bank,
                     })
                 );
+            }
+        }
+    }
+
+    #[test]
+    fn mountain_interior_fill_shares_the_edge_plateau_without_claiming_other_art() {
+        for row in 0..4 {
+            for column in 0..4 {
+                let mut fill = source(0x2c, row);
+                fill.subtile_column = column;
+                fill.tile_index = 0x11;
+                assert_eq!(kanto_cliff_shape(&fill), Some(CellShape::RaisedTop {
+                    height: KANTO_CLIFF_HEIGHT, solid: SolidKind::Bank,
+                }));
+                fill.tile_index = 0x2c;
+                assert_eq!(kanto_cliff_shape(&fill), None);
+                fill.tile_index = 0x11;
+                fill.tileset_id = "johto".into();
+                assert_eq!(kanto_cliff_shape(&fill), None);
             }
         }
     }

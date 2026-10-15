@@ -7,8 +7,45 @@ use crystal_render_api::{VisualActorId, VisualBattleTarget};
 pub(super) struct WalkingGround {
     origin: Vec2,
     cells: HashMap<IVec2, f32>,
+    grass_cells: std::collections::HashSet<IVec2>,
 }
 impl WalkingGround {
+    pub(super) fn grass_contacts(&self, anchors: [Vec3; 2]) -> usize {
+        anchors.into_iter().filter(|point| {
+            let cell = ((Vec2::new(point.x, point.z) - self.origin)
+                / (SOURCE_CELL_SIZE * RETAINED_SCALE) - Vec2::splat(0.00001)).floor().as_ivec2();
+            self.grass_cells.contains(&cell)
+        }).count()
+    }
+    pub(super) fn nearby_stage_pairs(&self, original: [Vec3; 2]) -> Vec<[Vec3; 2]> {
+        let tile_size = SOURCE_CELL_SIZE * RETAINED_SCALE * 2.0;
+        let delta = original[1] - original[0];
+        let direction = Vec3::new(delta.x, 0.0, delta.z).normalize_or_zero();
+        if direction == Vec3::ZERO { return Vec::new(); }
+        let right = Vec3::new(-direction.z, 0.0, direction.x);
+        let height = |point: Vec3| {
+            let cell = ((Vec2::new(point.x, point.z) - self.origin)
+                / (tile_size * 0.5) - Vec2::splat(0.00001)).floor().as_ivec2();
+            self.cells.get(&cell).copied()
+        };
+        let mut offsets: Vec<_> = (-5_i32..=5).flat_map(|z|
+            (-5_i32..=5).map(move |x| (x, z))).collect();
+        offsets.sort_by_key(|&(x, z)| (x * x + z * z, z, x));
+        let mut pairs = Vec::new();
+        for (x, z) in offsets {
+            let source = original[0] + Vec3::new(x as f32, 0.0, z as f32) * tile_size;
+            for facing in [direction, right, -right, -direction] {
+                for separation in [2.0, 1.0] {
+                    let target = source + facing * tile_size * separation;
+                    if let (Some(a), Some(b)) = (height(source), height(target)) {
+                        pairs.push([Vec3::new(source.x, a, source.z), Vec3::new(target.x, b, target.z)]);
+                    }
+                }
+            }
+        }
+        pairs
+    }
+
     pub(super) fn from_context(
         location: &VisualBattleLocation,
         cache: &TerrainRevisionCache,
@@ -23,7 +60,8 @@ impl WalkingGround {
                 presentation.presentation_core_tile,
                 &presentation.water_core_tiles,
             ),
-            VisualBattleTarget::Trainer { presentation, .. } => (
+            VisualBattleTarget::Trainer { presentation, .. }
+            | VisualBattleTarget::ScriptedGround { presentation } => (
                 presentation.presentation_core_tile,
                 &presentation.walkable_core_tiles,
             ),
@@ -54,10 +92,12 @@ impl WalkingGround {
             return Err(invalid);
         }
         let delta = target - source;
+        let radius = if matches!(location.target,
+            VisualBattleTarget::ScriptedGround { .. }) { 5 } else { 3 };
         if delta.abs().element_sum() != 2
             || (delta.x != 0 && delta.y != 0)
             || tiles.is_empty()
-            || tiles.len() > 49
+            || tiles.len() > ((radius * 2 + 1) * (radius * 2 + 1)) as usize
             || anchors.source_actor != VisualActorId::Player
             || anchors.target_actor.is_some()
             || !tiles.contains(&source)
@@ -84,6 +124,11 @@ impl WalkingGround {
             return Err(invalid);
         }
         match &location.target {
+            VisualBattleTarget::ScriptedGround { .. } => {
+                if location.source.movement != crystal_render_api::VisualBattleSourceMovement::Normal {
+                    return Err(invalid);
+                }
+            }
             VisualBattleTarget::WalkingGrass {
                 core_tile,
                 presentation,
@@ -164,10 +209,11 @@ impl WalkingGround {
         }
         let origin = pose.transform_point(Vec3::new(local_zero.x, 0.0, local_zero.y));
         let mut cells = HashMap::new();
+        let mut grass_cells = std::collections::HashSet::new();
         for &tile in tiles.iter() {
             if tile.cmplt(IVec2::ZERO).any()
                 || tile.cmpge(map).any()
-                || (tile - source).abs().max_element() > 3
+                || (tile - source).abs().max_element() > radius
             {
                 return Err(invalid);
             }
@@ -179,6 +225,12 @@ impl WalkingGround {
                     continue;
                 }
                 let index = grid.y as usize * frame.grid_size.x as usize + grid.x as usize;
+                if matches!(location.target, VisualBattleTarget::WalkingGrass { .. }) {
+                    if frame.tiles.iter().find(|tile| tile.column == grid.x as u32 && tile.row == grid.y as u32)
+                        .is_some_and(|tile| crate::grass::grass_shape(&tile.source).is_some()) {
+                        grass_cells.insert(cell);
+                    }
+                }
                 if water {
                     let at_cell = |tile: &&crystal_render_api::VisualTile| {
                         tile.column == grid.x as u32 && tile.row == grid.y as u32
@@ -210,6 +262,7 @@ impl WalkingGround {
         Ok(Some(Self {
             origin: Vec2::new(origin.x, origin.z),
             cells,
+            grass_cells,
         }))
     }
 

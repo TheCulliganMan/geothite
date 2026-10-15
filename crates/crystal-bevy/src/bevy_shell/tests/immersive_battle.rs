@@ -157,6 +157,70 @@ fn immersive_battle_closes_for_world_and_waits_for_existing_intro() {
 }
 
 #[test]
+fn immersive_battle_send_out_keeps_arena_and_source_reveal_clock() {
+    let mut shell = immersive_battle_fixture();
+    let snapshot = shell.shell.snapshot().unwrap();
+    for side in [crate::core::battle::turn::BattleSide::Player,
+                 crate::core::battle::turn::BattleSide::Enemy] {
+        let index = usize::from(side == crate::core::battle::turn::BattleSide::Enemy);
+        for tick in [0, 3, 4, 5, 6, 11, 12, 35] {
+            shell.visible_send_out_animation = Some(VisibleSendOutAnimation {
+                side, frame: tick, shiny: false,
+            });
+            let before = shell.visible_send_out_animation.clone();
+            let frame = extract_immersive_battle_fixture(&shell, &snapshot, true);
+            assert!(frame.active && !frame.use_source_scene, "send-out frame {tick}");
+            let battler = frame.battlers[index].as_ref().unwrap();
+            assert_eq!(battler.visible, tick >= 4);
+            assert_eq!(battler.allow_species_model, tick != 4 && tick != 5);
+            let source = frame.source.as_ref().unwrap();
+            assert_eq!(source.frame, u16::from(tick));
+            assert_eq!(source.objects.len(), usize::from(tick < 12));
+            if let Some(smoke) = source.objects.first() {
+                assert_eq!(smoke.size, Vec2::splat(40.0));
+                assert!(matches!(smoke.placement,
+                    Some(crystal_render_api::VisualBattleSourcePlacement::BattlerLocal { side: smoke_side })
+                    if smoke_side.index() == index));
+            }
+            assert_eq!(shell.visible_send_out_animation, before);
+            assert_eq!(shell.shell.snapshot().unwrap().battle, snapshot.battle);
+        }
+    }
+    for tick in [36, 40, 60, 99] {
+        shell.visible_send_out_animation = Some(VisibleSendOutAnimation {
+            side: crate::core::battle::turn::BattleSide::Player,
+            frame: tick, shiny: true,
+        });
+        let frame = extract_immersive_battle_fixture(&shell, &snapshot, true);
+        assert!(frame.active && !frame.use_source_scene);
+        assert_eq!(frame.source.as_ref().unwrap().frame, u16::from(tick - 36));
+        assert!(frame.battlers[0].as_ref().unwrap().visible);
+    }
+}
+
+#[test]
+fn immersive_battle_send_out_smoke_registers_the_production_overlay_slot() {
+    let mut shell = immersive_battle_fixture();
+    shell.visible_send_out_animation = Some(VisibleSendOutAnimation {
+        side: crate::core::battle::turn::BattleSide::Player,
+        frame: 7, shiny: false,
+    });
+    let mut world = World::new();
+    let mut queue = bevy::ecs::world::CommandQueue::default();
+    spawn_visible_send_out_poof(
+        &mut Commands::new(&mut queue, &world), &shell,
+        &mut RenderedTilesetArt::default(), &shell.asset_root,
+        &mut Assets::<Image>::default(),
+    ).unwrap();
+    queue.apply(&mut world);
+    let mut query = world.query::<(&ImmersiveBattleSourceObject, &ImmersiveBattleReplaced)>();
+    let (slot, _) = query.single(&world).unwrap();
+    let frame = extract_immersive_battle_fixture(&shell, &shell.shell.snapshot().unwrap(), true);
+    assert_eq!(frame.source.as_ref().unwrap().objects[0].slot, slot.0,
+        "the source sprite must register the slot consumed by the real 3D overlay");
+}
+
+#[test]
 fn immersive_battle_substitute_keeps_honest_source_art() {
     let shell = immersive_battle_fixture();
     let mut snapshot = shell.shell.snapshot().unwrap();
@@ -802,6 +866,7 @@ fn immersive_battle_starter_preview_controller(
         poke_ball_failure,
         starter,
         false,
+        None,
     )
     .unwrap();
     VisibleShellController { shell }
@@ -1749,6 +1814,7 @@ fn immersive_row_prototype_rejects_other_moves_and_unsupported_appearances() {
         Some(VisualBattleBattler {
             side,
             species_id: Arc::from("GENGAR"),
+            unown_form: None,
             pokedex_size_m: Some(1.4986),
             party_index: None,
             texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(15), std::marker::PhantomData),
@@ -1767,11 +1833,15 @@ fn immersive_row_prototype_rejects_other_moves_and_unsupported_appearances() {
     ];
     for move_id in ["TACKLE", "WATER_GUN"] {
         let mut animation = battler_row_regression_animation(&snapshot, move_id, true);
+        assert_eq!(immersive_modeled_rows_enabled(&animation, false), move_id == "TACKLE",
+            "only the visually verified Tackle program is enabled without a preview flag");
+        assert!(immersive_modeled_rows_enabled(&animation, true));
         assert!(immersive_row_prototype_supported(&animation, &battlers));
         animation.animation_label = format!(
             "BattleAnim_SubstituteLower -> {}",
             animation.animation_label
         );
+        assert!(!immersive_modeled_rows_enabled(&animation, false));
         assert!(!immersive_row_prototype_supported(&animation, &battlers));
     }
     let animation = battler_row_regression_animation(&snapshot, "TACKLE", true);
@@ -1790,9 +1860,14 @@ fn immersive_row_prototype_rejects_other_moves_and_unsupported_appearances() {
     battlers[1].as_mut().unwrap().visible = false;
     assert!(!immersive_row_prototype_supported(&animation, &battlers));
     battlers[1].as_mut().unwrap().visible = true;
+    // An unrelated move must stay unsupported even if it borrows a valid
+    // Tackle timeline. This admission check must not require compiling every
+    // unrelated move's effects before it can reject that move.
     for move_id in ["GROWL", "BODY_SLAM", "SURF"] {
+        let mut unrelated = animation.clone();
+        unrelated.move_id = move_id.into();
         assert!(!immersive_row_prototype_supported(
-            &battler_row_regression_animation(&snapshot, move_id, true),
+            &unrelated,
             &battlers
         ));
     }
@@ -2101,5 +2176,82 @@ fn immersive_model_previews_use_pack_species_and_read_only_real_battle() {
         assert_eq!(battle.enemy_pokemon.species.id, "PIDGEOTTO");
         assert!(controller.shell.battle_action_cursor.is_some());
         assert!(controller.shell.battle_messages.is_empty());
+    }
+}
+
+#[test]
+fn immersive_unown_forms_follow_presented_dvs_without_changing_species() {
+    let shell = immersive_battle_fixture();
+    let original = shell.shell.session().state().clone();
+    let mut models = std::collections::HashSet::new();
+    for letter in 0..26_u8 {
+        let packed = letter * 10;
+        let dvs = Dv { attack: ((packed >> 6) & 3) << 1,
+            defense: ((packed >> 4) & 3) << 1, speed: ((packed >> 2) & 3) << 1,
+            special: (packed & 3) << 1, hp: 0 };
+        assert_eq!(dvs.unown_letter(), letter + 1);
+        let mut snapshot = shell.shell.snapshot().unwrap();
+        snapshot.battle.as_mut().unwrap().enemy_pokemon = shell.runtime.data()
+            .create_pokemon("UNOWN", 30, dvs).unwrap();
+        let frame = extract_immersive_battle_fixture(&shell, &snapshot, true);
+        let enemy = frame.battlers[VisualBattleSide::Enemy.index()].as_ref().unwrap();
+        assert_eq!(enemy.species_id.as_ref(), "UNOWN");
+        assert_eq!(enemy.unown_form, Some(letter + 1));
+        assert_eq!(enemy.model_id(), format!("UNOWN_{}", char::from(b'A' + letter)));
+        assert!(models.insert(enemy.model_id().to_owned()), "geometry cache identities must remain form-specific");
+        assert!(enemy.pokedex_size_m.is_some());
+    }
+    assert_eq!(shell.shell.session().state(), &original);
+}
+
+#[test]
+fn immersive_unown_transform_publishes_the_selected_form_at_picture_boundary() {
+    let mut shell = immersive_battle_fixture();
+    let target_dvs = Dv::from_non_hp(14, 10, 10, 10);
+    for player_move in [true, false] {
+        let mut snapshot = shell.shell.snapshot().unwrap();
+        let active = snapshot.battle.as_ref().unwrap().active_player_party_index.unwrap();
+        let player = &mut snapshot.party.slots.iter_mut().find(|slot| slot.index == active).unwrap().pokemon;
+        if player_move {
+            *player = shell.runtime.data().create_pokemon("DITTO", 30, Dv::from_non_hp(0,0,0,0)).unwrap();
+            let battle = snapshot.battle.as_mut().unwrap();
+            battle.enemy_pokemon = shell.runtime.data().create_pokemon("UNOWN", 30, target_dvs).unwrap();
+            battle.player_transformed_species = Some("UNOWN".into());
+            battle.player_transformed_dvs = Some(target_dvs);
+        } else {
+            *player = shell.runtime.data().create_pokemon("UNOWN", 30, target_dvs).unwrap();
+            let battle = snapshot.battle.as_mut().unwrap();
+            battle.enemy_pokemon = shell.runtime.data().create_pokemon("DITTO", 30, Dv::from_non_hp(0,0,0,0)).unwrap();
+            battle.enemy_transformed_species = Some("UNOWN".into());
+            battle.enemy_transformed_dvs = Some(target_dvs);
+        }
+        for frame in [Some(47), Some(48), None] {
+            shell.visible_move_animations.clear();
+            if let Some(frame) = frame {
+                shell.visible_move_animations.push_back(VisibleMoveAnimation {
+                    trigger_message: String::new(), move_id: "TRANSFORM".into(),
+                    animation_label: "BattleAnim_Transform".into(), player_move,
+                    started: true, waiting_for_hp: false, frame, total_frames: 104,
+                    sound_events: vec![], next_sound_event: 0, cry_events: vec![], next_cry_event: 0,
+                    object_events: vec![], bg_events: vec![
+                        VisibleMoveBgEvent { frame: 0, effect_id: "BATTLE_ACTOR_TRANSFORM".into(), duration: 0, target: "BG_EFFECT_USER".into(), param: 0, incremented: false },
+                        VisibleMoveBgEvent { frame: 48, effect_id: "BATTLE_ACTOR_UPDATEACTORPIC".into(), duration: 0, target: "BG_EFFECT_USER".into(), param: 0, incremented: false },
+                    ], actor_species_override: None, actor_shiny_override: None,
+                });
+            }
+            let presented = extract_immersive_battle_fixture(&shell, &snapshot, true);
+            let side = if player_move {VisualBattleSide::Player} else {VisualBattleSide::Enemy};
+            let actor = presented.battlers[side.index()].as_ref().unwrap();
+            if frame == Some(47) {
+                assert_eq!(actor.species_id.as_ref(), "DITTO");
+                assert_eq!(actor.unown_form, None);
+                assert_eq!(actor.model_id(), "DITTO");
+            } else {
+                assert_eq!(actor.species_id.as_ref(), "UNOWN");
+                assert_eq!(actor.unown_form, Some(22));
+                assert_eq!(actor.model_id(), "UNOWN_V");
+                assert!(actor.shiny);
+            }
+        }
     }
 }

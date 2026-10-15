@@ -5187,6 +5187,12 @@ fn dispatch_visible_overworld_interaction(
     ));
     trim_event_log(&mut runtime_shell.last_audio_events);
     take_visible_next_script(runtime_shell)?;
+    // Direct A challenges have the same settled trainer contact as sight
+    // challenges. Retain it after the original intro has faced the trainer
+    // toward the player; otherwise these battles lose their literal map.
+    if runtime_shell.pending_trainer_intro.is_some() {
+        stage_visible_trainer_candidate(runtime_shell, &interaction);
+    }
     // `take_visible_next_script` already runs the compiled entry through its
     // first authored boundary and integrates that boundary's presentation.
     // Advancing again here races the renderer that creates the typewriter

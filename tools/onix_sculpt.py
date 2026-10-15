@@ -7,12 +7,14 @@ from bovine_sculpt import curved_tube,oval
 from raptor_bird_sculpt import paint
 from murkrow_sculpt import bill
 from skin_glb import COORDINATES
-HEIGHT=1.72;STONE=(.57,.59,.62);LIGHT=(.65,.67,.70);DARK=(.41,.43,.47)
-IVORY=(.97,.97,.93);INK=(.065,.07,.09)
+HEIGHT=1.72
+# Verified Crystal normal/front/back RGB555 stone (17,15,20), shadow (9,6,11).
+STONE=(140/255,123/255,165/255);DARK=(74/255,49/255,90/255)
+LIGHT=tuple(v*.85+.15 for v in STONE);IVORY=(1.,1.,1.);INK=(0.,0.,0.)
 CHAIN=((.17,.028,.20,.027),(.105,.047,.21,.049),(0,.066,.21,.070),(-.12,.109,.16,.088),(-.22,.135,.055,.110),(-.32,.168,-.015,.130),(-.37,.232,-.20,.148),(-.27,.359,-.35,.169),(-.045,.533,-.42,.197),(.17,.748,-.38,.220),(.28,.980,-.26,.240),(.22,1.210,-.11,.249),(-.025,1.330,-.005,.251))
 
 def rock(j,c):
- x,y,z,r=c;color=(STONE,DARK,LIGHT,STONE)[j%4]
+ x,y,z,r=c;color=STONE
  base=ellipsoid('Rock segment / original irregular Onix boulder '+str(j),color,(x,y,z),(r,r*.94,r*1.02),12,7);vv=[]
  for i in range(0,len(base['positions']),3):
   px,py,pz=base['positions'][i:i+3];a=math.atan2(pz-z,px-x);q=(py-y)/(r*.94);bump=1+.075*math.sin(3*a+j*.71)*max(0,1-q*q)+.035*math.cos(5*a-j)*max(0,1-q*q)
@@ -49,5 +51,7 @@ def sculpture():
  return {'name':'big_onix','version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'big_onix.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
+ from onix_glb import export_onix
+ (args.output/'onix.glb').write_bytes(export_onix())
 if __name__=='__main__':main()

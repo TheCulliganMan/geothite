@@ -150,6 +150,32 @@ Press F3 to switch between 2D and 3D. To deploy the generated browser pack:
 docker compose -f docker-compose.production.yml up -d --build
 ```
 
+## Serve a prepared browser copy
+
+`just serve` starts the Rust server on `127.0.0.1:3003` using the existing
+ignored `.local/desktop-3d-runtime/crystal-web-server` executable and `web/`
+bundle, including its local browser pack, Wasm modules, and model assets.
+Server data stays under that runtime's `data/` directory. Open
+[localhost:3003](http://localhost:3003/?multiplayer=off); Ctrl-C stops serving.
+Use `just serve 3004` for another port, or `just serve 3004 /absolute/runtime`
+for another prepared directory with the same layout.
+
+This command reuses a prepared build. For source rebuilding, run
+`sh scripts/cold-start-3d.sh setup-web` once, then
+`CRYSTAL_PACK=content-packs/core-modular.browser.crystalpack sh scripts/cold-start-3d.sh web`.
+The source path is documented in [the host runbook](cold-start-3d.md).
+On 2026-10-13, the source-built loading test client completed three 3D
+house-exit/re-entry cycles with production movement and Start-menu input in
+Chromium/WebGPU, without rendering errors or context loss. A separate
+WebKit/WebGL bundle also completed an exit/re-entry, movement and menu check
+without render errors or context loss. Its 2D bedroom/house
+renderer remains available; the captured 2D house frame matched the WebGL frame
+pixel for pixel. The controller, battle/PP, stdio-MCP movement/menu and clean
+stderr regressions passed against the external TUI pack. Browser memory is
+reported as an observation; no fixed memory budget is an acceptance requirement. See the
+[loading diagnostics](cold-start-3d.md#loading-waterfall-diagnostics) for commands
+and the measured limits.
+
 ## Share packs and isolate builds
 
 Run pack initialization once for the checkout. Agents use the published packs;

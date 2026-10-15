@@ -75,6 +75,9 @@ pub(crate) const BUILDING_TEMPLATES: &[BuildingTemplate] = &[
         0x06,
     ),
     template("johto", &[&[0x18, 0x19], &[0x16, 0x1e]], 4, 0x06),
+    // Mahogany's north-edge house straddles the Route43 connection: its
+    // roof is the 08/09 pair and its facade is 16/1e.
+    template("johto", &[&[0x08, 0x09], &[0x16, 0x1e]], 4, 0x06),
     template("johto", &[&[0x18, 0x19], &[0x1a, 0x17]], 4, 0x06),
     template("johto", &[&[0x18, 0x19], &[0x1a, 0x1b]], 4, 0x06),
     template("johto", &[&[0x18, 0x19], &[0x1a, 0x11]], 4, 0x06),

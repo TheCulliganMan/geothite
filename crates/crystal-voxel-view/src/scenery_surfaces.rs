@@ -150,33 +150,6 @@ pub(crate) fn append_group(groups: &mut Vec<ScenerySurface>, part: ScenerySurfac
         .extend(part.mesh.indices.into_iter().map(|i| base + i));
 }
 
-use bevy::{
-    pbr::{ExtendedMaterial, MaterialExtension},
-    reflect::TypePath,
-    render::render_resource::AsBindGroup,
-    shader::ShaderRef,
-};
-pub(crate) type BattleSceneryMaterial = ExtendedMaterial<StandardMaterial, SceneryCue>;
-#[derive(Asset, AsBindGroup, TypePath, Clone, Default)]
-pub(crate) struct SceneryCue {
-    #[uniform(100)]
-    pub cue: Vec4,
-}
-const CUE_SHADER: Handle<Shader> =
-    Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(0x7988_20fb_1192_42ab_81c5_c178_5343_8c02), std::marker::PhantomData);
-impl MaterialExtension for SceneryCue {
-    fn fragment_shader() -> ShaderRef {
-        CUE_SHADER.into()
-    }
-}
-pub(crate) fn register_cue_material(app: &mut App) {
-    app.init_resource::<Assets<BattleSceneryMaterial>>();
-    if app.world().contains_resource::<AssetServer>() {
-        bevy::asset::load_internal_asset!(app, CUE_SHADER, "scenery_cue.wesl", Shader::from_wesl);
-        app.add_plugins(bevy::pbr::MaterialPlugin::<BattleSceneryMaterial>::default());
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

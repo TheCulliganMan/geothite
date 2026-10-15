@@ -77,10 +77,10 @@ pub(crate) fn shape(map_id: &str, source: &VisualTileSource) -> Option<CellShape
     match source.metatile_id {
         // `$14` is the complete braided north apron used across the Elite
         // Four rooms and the Underground switch room. All sixteen source
-        // cells are drawn from above and tile as one boundary surface; the
-        // WALL permission keeps actors out but is not visual elevation.
-        // Preserve the exact artwork on the room plane instead of creating
-        // sixteen false blocks across doors and stairs.
+        // cells tile as one boundary surface.
+        // This is the baseline source plane. The guarded league_terraces pass
+        // raises the complete room cap/landing/stair assembly together; do not
+        // create sixteen independent boxes across its door and stair courses.
         0x14 => Some(CellShape::PlaneAt { height: 0.0 }),
 
         // Shared straight wall module.

@@ -60,11 +60,13 @@ fn walking_origin_step(origin: &BattlePresentationOrigin) -> Option<(TilePositio
     let Some(StepOutcome::Moved {
         from,
         to,
-        speed_multiplier: 1,
+        speed_multiplier: 1 | 2,
     }) = &origin.authoritative_step
     else {
         return None;
     };
+    // Running on foot changes tween speed, not the authoritative one-tile
+    // corridor. The same witnessed footing and terrain checks apply below.
     if *to != origin.source.tile
         || crate::core::world::movement::checked_move_by_stride(*from, origin.source.facing, 1)
             != Some(*to)

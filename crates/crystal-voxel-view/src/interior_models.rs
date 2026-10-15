@@ -276,6 +276,12 @@ pub(crate) struct Model {
     olivine_materials: Option<Vec<u8>>,
     store_display_materials: Option<Vec<u8>>,
     store_counter_body_indices: Option<Vec<u32>>,
+    native_store_counter_materials: Option<Vec<u8>>,
+    native_arcade_materials: Option<Vec<u8>>,
+    native_workstation_materials: Option<Vec<u8>>,
+    native_link_seat_materials: Option<Vec<u8>>,
+    native_low_table_materials: Option<Vec<u8>>,
+    native_display_flower_materials: Option<Vec<u8>>,
     native_bookcase_materials: Option<Vec<Option<u8>>>,
     native_gate_counter_materials: Option<Vec<u8>>,
     native_cafe_table_materials: Option<Vec<u8>>,
@@ -284,6 +290,15 @@ pub(crate) struct Model {
     native_dining_table_materials: Option<Vec<u8>>,
     native_television_materials: Option<Vec<u8>>,
     native_trashcan_materials: Option<Vec<u8>>,
+    native_home_fixture_materials: Option<Vec<u8>>,
+    native_gift_materials:Option<Vec<u8>>,
+    native_safari_plant_materials:Option<Vec<u8>>,
+    native_bed_materials: Option<Vec<u8>>,
+    native_station_plant_materials: Option<Vec<u8>>,
+    native_station_bloom_materials: Option<Vec<Option<u8>>>,
+    native_train_materials: Option<Vec<u8>>,
+    native_station_chair_material: bool,
+    native_ticket_materials: Option<Vec<Option<u8>>>,
     min: [f32; 3],
     max: [f32; 3],
     preserve_aspect: bool,
@@ -294,7 +309,14 @@ impl Model {
     pub(crate) fn parse<'a>(
         json: impl Into<crate::model_storage::Source<'a>>,
     ) -> Result<Self, String> {
-        let export: Export = crate::model_storage::parse(json)?;
+        let mut export: Export = crate::model_storage::parse(json)?;
+        if export.name=="closed_u_display" {
+            // Keep the complete lower display in one visibility group while
+            // rear rails, side returns and their trim remain opaque. Stable
+            // partition changes storage order only, never authored triangles.
+            export.primitives.sort_by_key(|p|p.name.starts_with("Closed lower display ")
+                ||p.name.starts_with("Display ")||p.name=="Continuous closed front toe");
+        }
         let mut surface = SurfaceMeshData::default();
         let mut room_finishes = Vec::new();
         let mut room_palette = Vec::new();
@@ -307,6 +329,19 @@ impl Model {
         let mut store_display_valid = export.name == "closed_u_display";
         let mut store_display_seen = 0u16;
         let mut counter_body = Vec::new();
+        let mut native_store_counter_materials=Vec::new();
+        let mut native_arcade_materials=Vec::new();let mut native_arcade_seen=0u16;
+        let mut native_arcade_valid=matches!(export.name.as_str(),"arcade_machine"|"arcade_pair");
+        let mut native_workstation_materials=Vec::new();
+        let mut native_workstation_valid=export.name=="lab_workstation";
+        let mut native_workstation_seen=0u16;
+        let mut native_link_seat_materials=Vec::new();
+        let mut native_link_seat_valid=export.name=="link_seat";
+        let mut native_link_seat_seen=0u16;
+        let mut native_low_table_materials=Vec::new();let mut native_low_table_valid=export.name=="low_table";
+        let mut native_low_table_seen=0u16;
+        let mut native_display_flower_materials=Vec::new();let mut native_display_flower_valid=export.name=="flower_stand";
+        let mut native_display_flower_seen=0u16;
         let mut counter_valid = export.name == "reception_counter";
         let mut counter_seen = 0u8;
         let mut native_bookcase_materials = Vec::new();
@@ -333,11 +368,35 @@ impl Model {
         let mut native_television_valid=export.name=="television";
         let mut native_television_seen=0u8;
         let mut native_dining_table_materials=Vec::new();
-        let mut native_dining_table_valid=export.name=="tableCrossCloth";
+        let mut native_dining_table_valid=matches!(export.name.as_str(),"tableCrossCloth"|"dining_table");
         let mut native_dining_table_seen=0u8;
         let mut native_computer_materials=Vec::new();
         let mut native_computer_valid=export.name=="computer";
         let mut native_computer_seen=0u8;
+        let mut native_home_fixture_materials = Vec::new();
+        let mut native_gift_materials=Vec::new();
+        let mut native_safari_plant_materials=Vec::new();
+        let mut native_safari_plant_valid=export.name=="potted_plant";
+        let mut native_safari_plant_seen=0u8;
+        let mut native_gift_valid=matches!(export.name.as_str(),"pendulum_clock"|"cushion");
+        let mut native_home_fixture_valid = matches!(export.name.as_str(), "cabinet" | "drawer_cabinet" | "game_console" | "kitchen_stove" | "kitchen_sink" | "refrigerator" | "bed_feathery" | "radio");
+        let mut native_home_fixture_seen = 0u8;
+        let mut native_bed_materials = Vec::new();
+        let mut native_bed_valid = export.name == "bedSingle";
+        let mut native_bed_seen = 0u8;
+        let mut native_station_plant_materials=Vec::new();
+        let mut native_station_plant_valid=export.name=="long_planter";
+        let mut native_station_plant_seen=0u8;
+        let mut native_station_bloom_materials=Vec::new();
+        let mut native_station_bloom_valid=export.name=="flower_stand";
+        let mut native_station_bloom_seen=0u8;
+        let mut native_train_materials=Vec::new();
+        let mut native_train_valid=export.name=="magnet_train_shell";
+        let mut native_train_seen=0u8;
+        let mut native_station_chair_material=export.name=="chairRounded";
+        let mut native_ticket_materials=Vec::new();
+        let mut native_ticket_valid=export.name=="vending_machine";
+        let mut native_ticket_seen=0u8;
         let mut min = [f32::INFINITY; 3];
         let mut max = [f32::NEG_INFINITY; 3];
         for p in export.primitives {
@@ -376,7 +435,9 @@ impl Model {
                 };
                 if let Some(material) = material {
                     store_display_seen |= 1 << material;
-                    store_display_materials.extend(std::iter::repeat_n(material, n));
+                    let front=p.name.starts_with("Closed lower display ")
+                        ||p.name.starts_with("Display ")||p.name=="Continuous closed front toe";
+                    store_display_materials.extend(std::iter::repeat_n(material|if front {16}else{0}, n));
                 } else { store_display_valid = false; }
             }
             if export.name=="olivine_stage" {
@@ -442,6 +503,161 @@ impl Model {
                 native_bookcase_materials.extend(std::iter::repeat_n(role,
                     surface.positions.len() - base as usize));
             }
+            if matches!(export.name.as_str(),"pendulum_clock"|"cushion") {
+                let role=match (export.name.as_str(),p.material.as_str()) {
+                    ("pendulum_clock","timber")=>Some(0),("pendulum_clock","timber_gold"|"brass")=>Some(1),
+                    ("pendulum_clock","timber_light"|"linen")=>Some(2),("pendulum_clock","ink")=>Some(3),
+                    ("cushion","purple")=>Some(1),("cushion","linen_shadow")=>Some(0),_=>None,
+                };
+                if let Some(role)=role {native_gift_materials.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));}
+                else {native_gift_valid=false;}
+            }
+            if export.name=="potted_plant" {
+                let role=match p.material.as_str() {"leaf"=>Some(0),"leaf_dark"|"leaf_gold"=>Some(1),
+                    "leaf_light"=>Some(2),"roof_red"=>Some(3),"roof_red_light"=>Some(4),"soil"=>Some(5),_=>None};
+                if let Some(role)=role {native_safari_plant_seen|=1<<role;
+                    native_safari_plant_materials.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
+                }else{native_safari_plant_valid=false;}
+            }
+            if matches!(export.name.as_str(), "cabinet" | "drawer_cabinet" | "game_console" | "kitchen_stove" | "kitchen_sink" | "refrigerator" | "bed_feathery" | "radio") {
+                // Roles belong to these canonical assets, including vertices
+                // added by refinement. Another model cannot inherit them.
+                let role = match (export.name.as_str(), p.material.as_str()) {
+                    ("cabinet" | "drawer_cabinet", "timber") | ("game_console", "rubber") => Some(0),
+                    ("cabinet" | "drawer_cabinet", "timber_gold") | ("game_console", "blue") => Some(1),
+                    ("cabinet" | "drawer_cabinet", "timber_light") | ("game_console", "enamel") => Some(2),
+                    ("cabinet" | "drawer_cabinet", "brass") | ("game_console", "red") => Some(3),
+                    ("kitchen_stove" | "kitchen_sink" | "refrigerator", "enamel") => Some(0),
+                    ("kitchen_stove" | "kitchen_sink" | "refrigerator", "metal" | "brass") => Some(1),
+                    ("kitchen_stove" | "kitchen_sink" | "refrigerator", "enamel_light") => Some(2),
+                    ("kitchen_stove" | "kitchen_sink" | "refrigerator", "rubber" | "screen" | "ink" | "coral" | "yellow") => Some(3),
+                    ("radio", "timber") => Some(0),
+                    ("radio", "timber_gold" | "linen_shadow") => Some(1),
+                    ("radio", "metal" | "brass" | "coral") => Some(2),
+                    ("radio", "screen") => Some(3),
+                    ("bed_feathery", "timber") => Some(0),
+                    ("bed_feathery", "timber_gold" | "rubber") => Some(1),
+                    ("bed_feathery", "timber_light") => Some(2),
+                    ("bed_feathery", "linen" | "linen_shadow") => Some(3),
+                    _ => None,
+                };
+                if let Some(role) = role {
+                    native_home_fixture_seen |= 1 << role;
+                    native_home_fixture_materials.extend(std::iter::repeat_n(
+                        role, surface.positions.len() - base as usize));
+                } else { native_home_fixture_valid = false; }
+            }
+            if export.name=="bedSingle" {
+                let role = match (p.name.as_str(),p.material.as_str()) {
+                    ("bedSingle(Clone)","wood") => Some(0),
+                    ("bedSingle(Clone)","metal") => Some(1),
+                    ("cover","carpet") => Some(2),
+                    ("bedSingle(Clone)"|"cover"|"pillow","carpetWhite") => Some(3),
+                    _ => None,
+                };
+                if let Some(role) = role {
+                    native_bed_seen |= 1 << role;
+                    native_bed_materials.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
+                } else {native_bed_valid=false;}
+            }
+            if export.name=="long_planter" {
+                let role=match p.material.as_str() {
+                    "leaf"=>Some(0),"leaf_dark"=>Some(1),"leaf_gold"=>Some(2),"leaf_light"=>Some(3),
+                    "plaster"=>Some(4),"plaster_light"=>Some(5),"soil"=>Some(6),_=>None,
+                };
+                if let Some(role)=role {
+                    native_station_plant_seen|=1<<role;
+                    native_station_plant_materials.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
+                }else{native_station_plant_valid=false;}
+            }
+            if export.name=="flower_stand" {
+                let role=match p.material.as_str() {
+                    "coral"=>Some(0),"pink"=>Some(1),"yellow"=>Some(2),
+                    "leaf"|"leaf_dark"|"leaf_gold"|"leaf_light"|"roof_red"|"roof_red_light"
+                        |"rubber"|"soil"|"timber_light"=>None,
+                    _=>{native_station_bloom_valid=false;None},
+                };
+                if let Some(role)=role {native_station_bloom_seen|=1<<role;}
+                native_station_bloom_materials.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
+            }
+            if export.name=="reception_counter" {
+                let role=match p.material.as_str() {"plaster"=>Some(0),"roof_red"=>Some(1),
+                    "timber"=>Some(2),"enamel_light"=>Some(3),"timber_light"=>Some(4),_=>None};
+                if let Some(role)=role {native_store_counter_materials.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));}
+            }
+            if matches!(export.name.as_str(),"arcade_machine"|"arcade_pair") {
+                let role=match p.material.as_str() {"purple"=>Some(0),"yellow"=>Some(1),
+                    "rubber"=>Some(2),"screen"=>Some(3),"linen"=>Some(4),
+                    "metal"=>Some(5),"red"=>Some(6),"blue"=>Some(7),"leaf"=>Some(8),_=>None};
+                if let Some(role)=role {native_arcade_seen|=1<<role;
+                    native_arcade_materials.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
+                }else {native_arcade_valid=false;}
+            }
+            for (name,names,valid,seen,materials) in [
+                ("lab_workstation",&["blue","brass","enamel","enamel_light","metal","rubber","screen","screen_light"][..],
+                    &mut native_workstation_valid,&mut native_workstation_seen,&mut native_workstation_materials),
+                ("link_seat",&["blue","blue_light","metal","rubber"][..],
+                    &mut native_link_seat_valid,&mut native_link_seat_seen,&mut native_link_seat_materials),
+                ("low_table",&["rubber","timber_gold","timber_light"][..],
+                    &mut native_low_table_valid,&mut native_low_table_seen,&mut native_low_table_materials),
+                ("flower_stand",&["coral","leaf","leaf_dark","leaf_gold","leaf_light","pink",
+                    "roof_red","roof_red_light","rubber","soil","timber_light","yellow"][..],
+                    &mut native_display_flower_valid,&mut native_display_flower_seen,&mut native_display_flower_materials),
+            ] {
+                if export.name==name {
+                    if let Some(role)=names.iter().position(|&name|name==p.material) {
+                        *seen|=1<<role;
+                        materials.extend(std::iter::repeat_n(role as u8,surface.positions.len()-base as usize));
+                    } else {*valid=false;}
+                }
+            }
+            if export.name=="vending_machine" {
+                let role=match p.material.as_str() {
+                    "blue"=>Some(0),"screen"=>Some(1),"rubber"=>Some(2),
+                    "metal"=>Some(3),"brass"|"enamel"=>Some(4),
+                    // Beverage bodies and labels are not ticket-machine geometry.
+                    "coral"|"leaf"|"linen"=>None,
+                    _=>{native_ticket_valid=false;None},
+                };
+                if let Some(r)=role {native_ticket_seen|=1<<r;}
+                native_ticket_materials.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
+            }
+            if export.name=="chairRounded" && (p.name!="chairRounded(Clone)"||p.material!="wood") {
+                native_station_chair_material=false;
+            }
+            if export.name=="magnet_train_shell" {
+                let name=p.name.as_str();
+                let numbered=|prefix:&str|name.strip_prefix(prefix).is_some_and(|v|
+                    v.parse::<f32>().is_ok_and(|v|v.is_finite()));
+                let pair_numbered=|prefix:&str|name.strip_prefix(prefix).is_some_and(|v|
+                    v.split_whitespace().count()==2 && v.split_whitespace().all(|n|n.parse::<u16>().is_ok()));
+                let envelope=numbered("West streamlined cab folded segment ")
+                    ||numbered("East streamlined cab folded segment ")
+                    ||numbered("Long central passenger coach folded segment ")
+                    ||numbered("Rear boarding envelope folded segment ")
+                    ||pair_numbered("Sliding door leaf ");
+                let role=if envelope||numbered("Ivory boarding jamb "){Some(1)}
+                    else if numbered("Continuous tubular crown folded segment ")||name=="Recess rear chamfered crown"||name=="Crown highlight strip"
+                        ||numbered("Boarding jamb bright edge "){Some(0)}
+                    else if matches!(name,"Recess rear structural sill"|"Platform brushed lower edge"
+                        |"Track brushed lower edge"|"West service inset"|"East service inset")
+                        ||numbered("Door sliding track ")||numbered("Silver guide shoe face ")||numbered("Low rooftop ventilation plinth ")
+                        ||name.strip_prefix("Roof vent folded blade ").is_some_and(|v|
+                            v.split_whitespace().count()==2 && v.split_whitespace().all(|n|n.parse::<u16>().is_ok())) {Some(2)}
+                    else if numbered("Platform window rubber reveal ")||numbered("Track window rubber reveal ")
+                        ||numbered("Suspended magnetic shoe ")||pair_numbered("Sliding door seam "){Some(3)}
+                    else if matches!(name,"Platform recessed lower red belt"|"Track recessed lower red belt"
+                        |"West amber cab marker"|"East amber cab marker")||pair_numbered("Sliding door belt "){Some(4)}
+                    else if ["Platform inset blue window ","Track inset blue window ",
+                        "West angled cab windshield ","East angled cab windshield ",
+                        "Platform folded sky reflection ","Track folded sky reflection "].into_iter().any(numbered)||pair_numbered("Sliding door glass ") {Some(5)}else{None};
+                if let Some(role)=role {
+                    for normal in &surface.normals[base as usize..] {
+                        let role=if envelope&&normal[1]>0.5 {0}else{role};
+                        native_train_seen|=1<<role;native_train_materials.push(role);
+                    }
+                }else{native_train_valid=false;}
+            }
             if export.name=="gym_bin" {
                 let role=match (p.name.as_str(),p.material.as_str()) {
                     ("ink","")=>Some(0),("metal_light","")=>Some(1),("steel","")=>Some(2),_=>None,
@@ -465,10 +681,12 @@ impl Model {
                         surface.positions.len()-base as usize));
                 } else {native_television_valid=false;}
             }
-            if export.name=="tableCrossCloth" {
-                let role=match (p.name.as_str(),p.material.as_str()) {
-                    ("tableCrossCloth(Clone)","wood")=>Some(0),
-                    ("tableCrossCloth(Clone)","carpet")=>Some(1),_=>None,
+            if matches!(export.name.as_str(),"tableCrossCloth"|"dining_table") {
+                let role=match (export.name.as_str(),p.name.as_str(),p.material.as_str()) {
+                    ("tableCrossCloth","tableCrossCloth(Clone)","wood")=>Some(0),
+                    ("tableCrossCloth","tableCrossCloth(Clone)","carpet")=>Some(1),
+                    ("dining_table","","rubber"|"timber_light")=>Some(0),
+                    ("dining_table","","timber_gold")=>Some(1),_=>None,
                 };
                 if let Some(role)=role {
                     native_dining_table_seen|=1<<role;
@@ -653,7 +871,37 @@ impl Model {
         let native_trashcan_materials=(native_trashcan_valid && native_trashcan_seen==7
             && native_trashcan_materials.len()==surface.positions.len()).then_some(native_trashcan_materials);
         Ok(Self {
+            native_station_chair_material,
+            native_ticket_materials:(native_ticket_valid && native_ticket_seen==31
+                && native_ticket_materials.len()==surface.positions.len()).then_some(native_ticket_materials),
+            native_train_materials:(native_train_valid && native_train_seen==63
+                && native_train_materials.len()==surface.positions.len()).then_some(native_train_materials),
+            native_station_bloom_materials:(native_station_bloom_valid && native_station_bloom_seen==7
+                && native_station_bloom_materials.len()==surface.positions.len()).then_some(native_station_bloom_materials),
+            native_station_plant_materials:(native_station_plant_valid && native_station_plant_seen==127
+                && native_station_plant_materials.len()==surface.positions.len()).then_some(native_station_plant_materials),
+            native_bed_materials: (native_bed_valid && native_bed_seen==15
+                && native_bed_materials.len()==surface.positions.len()).then_some(native_bed_materials),
+            native_home_fixture_materials: (native_home_fixture_valid
+                && native_home_fixture_seen == 15
+                && native_home_fixture_materials.len() == surface.positions.len())
+                .then_some(native_home_fixture_materials),
+            native_gift_materials:(native_gift_valid&&native_gift_materials.len()==surface.positions.len()).then_some(native_gift_materials),
+            native_safari_plant_materials:(native_safari_plant_valid&&native_safari_plant_seen==63
+                &&native_safari_plant_materials.len()==surface.positions.len()).then_some(native_safari_plant_materials),
             native_trashcan_materials,
+            native_store_counter_materials:(counter_valid && counter_seen==0x1f
+                && native_store_counter_materials.len()==surface.positions.len()).then_some(native_store_counter_materials),
+            native_arcade_materials:(native_arcade_valid && native_arcade_seen==511
+                && native_arcade_materials.len()==surface.positions.len()).then_some(native_arcade_materials),
+            native_workstation_materials:(native_workstation_valid && native_workstation_seen==255
+                && native_workstation_materials.len()==surface.positions.len()).then_some(native_workstation_materials),
+            native_link_seat_materials:(native_link_seat_valid && native_link_seat_seen==15
+                && native_link_seat_materials.len()==surface.positions.len()).then_some(native_link_seat_materials),
+            native_low_table_materials:(native_low_table_valid && native_low_table_seen==7
+                && native_low_table_materials.len()==surface.positions.len()).then_some(native_low_table_materials),
+            native_display_flower_materials:(native_display_flower_valid && native_display_flower_seen==4095
+                && native_display_flower_materials.len()==surface.positions.len()).then_some(native_display_flower_materials),
             surface: surface.into(),
             room_finishes,
             room_palette,
@@ -675,6 +923,244 @@ impl Model {
             align_footprint: export.align_footprint,
             fit_footprint: export.fit_footprint,
         })
+    }
+    pub(crate) fn has_native_home_fixture_materials(&self) -> bool {
+        self.native_home_fixture_materials.is_some()
+    }
+    pub(crate) fn has_native_bed_materials(&self) -> bool {self.native_bed_materials.is_some()}
+    pub(crate) fn has_native_station_plant_materials(&self)->bool {self.native_station_plant_materials.is_some()}
+    pub(crate) fn has_native_train_materials(&self)->bool {self.native_train_materials.is_some()}
+    pub(crate) fn has_native_station_chair_material(&self)->bool {self.native_station_chair_material}
+    pub(crate) fn append_native_station_chair(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        swatches:[[f32;2];2])->bool {
+        if !self.native_station_chair_material {return false;}
+        let first=target.positions.len();self.append_fitted(target,bounds,0.,height);
+        for i in first..target.positions.len() {
+            target.uvs[i]=swatches[usize::from(target.normals[i][1]>0.5)];
+            target.colors[i]=authored_face_color([1.;4],Vec3::from_array(target.normals[i]));
+        }
+        true
+    }
+    pub(crate) fn append_native_train(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        swatches:[[f32;2];6])->bool {
+        let Some(roles)=&self.native_train_materials else{return false;};
+        let first=target.positions.len();self.append_fitted(target,bounds,0.,height);
+        for (i,&role) in roles.iter().enumerate() {
+            target.uvs[first+i]=swatches[role as usize];
+            target.colors[first+i]=authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));
+        }
+        true
+    }
+    pub(crate) fn has_native_arcade_materials(&self)->bool {self.native_arcade_materials.is_some()}
+    pub(crate) fn has_native_workstation_materials(&self)->bool {self.native_workstation_materials.is_some()}
+    pub(crate) fn has_native_link_seat_materials(&self)->bool {self.native_link_seat_materials.is_some()}
+    pub(crate) fn has_native_low_table_materials(&self)->bool {self.native_low_table_materials.is_some()}
+    pub(crate) fn has_native_display_flower_materials(&self)->bool {self.native_display_flower_materials.is_some()}
+    pub(crate) fn append_native_low_table(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        swatches:[[f32;2];3])->bool {
+        let Some(roles)=&self.native_low_table_materials else{return false;};
+        self.append_native_roles(target,bounds,height,roles,&swatches);true
+    }
+    pub(crate) fn append_native_traditional_table(&self,target:&mut SurfaceMeshData,
+        bounds:[f32;4],height:f32,swatches:[[f32;2];3])->bool {
+        let Some(roles)=&self.native_low_table_materials else{return false;};
+        let first=target.positions.len();
+        if !self.append_native_low_table(target,bounds,height,swatches) {return false;}
+        for (i,&role) in roles.iter().enumerate() {
+            if role>0&&self.surface.normals[i][1]>0.5 {
+                // The source top has one gold field. Light timber belongs on
+                // edge trim, rather than alternate whole tabletop boards.
+                target.uvs[first+i]=swatches[1];
+                let grain=1.+0.03*crate::scenery_finish::timber_grain(self.surface.positions[i]);
+                target.colors[first+i]=authored_face_color([grain,grain,grain,1.],
+                    Vec3::from_array(target.normals[first+i]));
+            }
+        }
+        true
+    }
+    pub(crate) fn append_native_display_flower(&self,target:&mut SurfaceMeshData,bounds:[f32;4],base:f32,height:f32,
+        swatches:[[f32;2];12])->bool {
+        let Some(roles)=&self.native_display_flower_materials else{return false;};
+        let first=target.positions.len();self.append_fitted(target,bounds,base,height);
+        for (i,&role) in roles.iter().enumerate() {
+            target.uvs[first+i]=swatches[role as usize];
+            target.colors[first+i]=authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));
+        }true
+    }
+    /// The published desk's enamel worktop spans y=0.73..0.85. The tower,
+    /// keyboard and monitor keep their equipment roles even below desk height.
+    /// Paint whole faces from live source swatches so atlas regions never interpolate.
+    pub(crate) fn append_native_lab_workstation(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        swatches:[[f32;2];8],desk:[[f32;2];2])->bool {
+        let Some(roles)=&self.native_workstation_materials else{return false;};
+        let mut fitted=SurfaceMeshData::default();self.append_fitted(&mut fitted,bounds,0.,height);
+        for tri in fitted.indices.chunks_exact(3) {
+            let worktop=roles[tri[0]as usize]==2 && tri.iter().all(|&i|
+                (0.72..=0.855).contains(&self.surface.positions[i as usize][1]));
+            let desk_uv=desk[usize::from(tri.iter().map(|&i|fitted.normals[i as usize][1]).sum::<f32>()>1.5)];
+            let first=target.positions.len()as u32;
+            for &i in tri {
+                let j=i as usize;let role=roles[j]as usize;
+                let uv=if worktop {desk_uv}else{swatches[role]};
+                target.positions.push(fitted.positions[j]);target.normals.push(fitted.normals[j]);target.uvs.push(uv);
+                target.colors.push(authored_face_color([1.;4],Vec3::from_array(fitted.normals[j])));
+            }
+            target.indices.extend([first,first+1,first+2]);
+        }true
+    }
+    pub(crate) fn append_native_workstation(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        swatches:[[f32;2];8])->bool {
+        let Some(roles)=&self.native_workstation_materials else{return false;};
+        self.append_native_roles(target,bounds,height,roles,&swatches);true
+    }
+    pub(crate) fn append_native_link_seat(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        swatches:[[f32;2];4])->bool {
+        let Some(roles)=&self.native_link_seat_materials else{return false;};
+        self.append_native_roles(target,bounds,height,roles,&swatches);true
+    }
+    fn append_native_roles(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        roles:&[u8],swatches:&[[f32;2]]) {
+        let first=target.positions.len();self.append_fitted(target,bounds,0.,height);
+        for (i,&role) in roles.iter().enumerate() {
+            target.uvs[first+i]=swatches[role as usize];
+            target.colors[first+i]=authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));
+        }
+    }
+    pub(crate) fn append_native_arcade(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        swatches:[[f32;2];9])->bool {
+        let Some(roles)=&self.native_arcade_materials else{return false;};
+        let first=target.positions.len();self.append_fitted(target,bounds,0.,height);
+        for (i,&role) in roles.iter().enumerate() {
+            target.uvs[first+i]=swatches[role as usize];
+            target.colors[first+i]=authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));
+        }
+        true
+    }
+    pub(crate) fn has_native_ticket_materials(&self)->bool {self.native_ticket_materials.is_some()}
+    pub(crate) fn append_native_beverage_machine(&self,target:&mut SurfaceMeshData,bounds:[f32;4],
+        height:f32,swatches:[[f32;2];5])->bool {
+        let Some(roles)=&self.native_ticket_materials else{return false;};
+        let first=target.positions.len();self.append_fitted(target,bounds,0.,height);
+        for (i,role) in roles.iter().enumerate() {
+            let j=first+i;
+            target.uvs[j]=swatches[usize::from(role.unwrap_or(1))];
+            target.colors[j]=authored_face_color([1.;4],Vec3::from_array(target.normals[j]));
+        }
+        true
+    }
+    pub(crate) fn append_native_ticket_box(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        swatches:[[f32;2];5])->bool {
+        let Some(roles)=&self.native_ticket_materials else{return false;};
+        let mut full=SurfaceMeshData::default();self.append_fitted(&mut full,bounds,0.,height);
+        for (i,role) in roles.iter().enumerate() {if let Some(role)=role {
+            full.uvs[i]=swatches[*role as usize];
+            full.colors[i]=authored_face_color([1.;4],Vec3::from_array(full.normals[i]));
+        }}
+        let selected=crate::mesh::select_surface_indices(&full,&vec![false;full.positions.len()],
+            &mut vec![u32::MAX;full.positions.len()],full.indices.iter().copied().filter(|i|roles[*i as usize].is_some()));
+        let base=target.positions.len()as u32;
+        target.positions.extend(selected.positions);target.normals.extend(selected.normals);
+        target.uvs.extend(selected.uvs);target.colors.extend(selected.colors);
+        target.indices.extend(selected.indices.into_iter().map(|i|i+base));true
+    }
+    pub(crate) fn has_native_station_bloom_materials(&self)->bool {self.native_station_bloom_materials.is_some()}
+    pub(crate) fn append_native_station_blooms(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        swatches:[[f32;2];3])->bool {
+        let Some(roles)=&self.native_station_bloom_materials else{return false;};
+        let mut full=SurfaceMeshData::default();self.append_fitted(&mut full,bounds,0.,height);
+        for (i,role) in roles.iter().enumerate() {if let Some(role)=role {
+            full.uvs[i]=swatches[*role as usize];
+            full.colors[i]=authored_face_color([1.;4],Vec3::from_array(full.normals[i]));
+        }}
+        let blooms=crate::mesh::select_surface_indices(&full,&vec![false;full.positions.len()],
+            &mut vec![u32::MAX;full.positions.len()],full.indices.iter().copied().filter(|i|roles[*i as usize].is_some()));
+        let base=target.positions.len()as u32;
+        target.positions.extend(blooms.positions);target.normals.extend(blooms.normals);
+        target.uvs.extend(blooms.uvs);target.colors.extend(blooms.colors);
+        target.indices.extend(blooms.indices.into_iter().map(|i|i+base));
+        true
+    }
+    pub(crate) fn append_native_station_plant(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        swatches:[[f32;2];7])->bool {
+        let Some(roles)=&self.native_station_plant_materials else{return false;};
+        let first=target.positions.len();self.append_fitted(target,bounds,0.,height);
+        for (i,&role) in roles.iter().enumerate() {
+            target.uvs[first+i]=swatches[role as usize];
+            target.colors[first+i]=authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));
+        }
+        true
+    }
+    pub(crate) fn append_native_bed(&self,target:&mut SurfaceMeshData,bounds:[f32;4],
+        base:f32,height:f32,swatches:[[f32;2];4])->bool {
+        let Some(roles)=&self.native_bed_materials else {return false;};
+        let first=target.positions.len();self.append_fitted(target,bounds,base,height);
+        for (i,&role) in roles.iter().enumerate() {
+            target.uvs[first+i]=swatches[role as usize];
+            target.colors[first+i]=authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));
+        }
+        true
+    }
+    pub(crate) fn has_native_gift_fixture_materials(&self)->bool {self.native_gift_materials.is_some()}
+    pub(crate) fn has_native_safari_plant_materials(&self)->bool {self.native_safari_plant_materials.is_some()}
+    pub(crate) fn append_native_safari_plant(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,swatches:[[f32;2];6])->bool {
+        let Some(roles)=&self.native_safari_plant_materials else{return false;};
+        let first=target.positions.len();self.append_fitted(target,bounds,0.,height);
+        for (i,&role) in roles.iter().enumerate() {target.uvs[first+i]=swatches[role as usize];
+            target.colors[first+i]=authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));}
+        true
+    }
+    /// Facility drawings have a dense crown. Reuse the selected closed leaves
+    /// in two smaller rotated clusters, retaining one original pot and soil.
+    pub(crate) fn append_native_facility_plant(&self,target:&mut SurfaceMeshData,
+        bounds:[f32;4],height:f32,swatches:[[f32;2];6])->bool {
+        let Some(roles)=&self.native_safari_plant_materials else{return false;};
+        let mut fitted=SurfaceMeshData::default();
+        if !self.append_native_safari_plant(&mut fitted,bounds,height,swatches) {return false;}
+        let first=target.positions.len() as u32;
+        target.positions.extend_from_slice(&fitted.positions);target.normals.extend_from_slice(&fitted.normals);
+        target.uvs.extend_from_slice(&fitted.uvs);target.colors.extend_from_slice(&fitted.colors);
+        target.indices.extend(fitted.indices.iter().map(|i|i+first));
+        let [w,e,n,s]=bounds;let cx=(w+e)*0.5;let cz=(n+s)*0.5;
+        let rx=(e-w)*0.5;let rz=(s-n)*0.5;
+        for angle in [std::f32::consts::FRAC_PI_3,2.*std::f32::consts::FRAC_PI_3] {
+            let (sin,cos)=angle.sin_cos();let mut remap=vec![u32::MAX;roles.len()];
+            for (i,role) in roles.iter().enumerate() {if *role<4 {
+                remap[i]=target.positions.len() as u32;
+                let [x,y,z]=fitted.positions[i];let x=(x-cx)/rx;let z=(z-cz)/rz;
+                target.positions.push([cx+rx*0.68*(cos*x-sin*z),height*0.08+y*0.85,
+                    cz+rz*0.68*(sin*x+cos*z)]);
+                let [nx,ny,nz]=fitted.normals[i];
+                let normal=Vec3::new((cos*nx*rx-sin*nz*rz)/(0.68*rx),ny/0.85,
+                    (sin*nx*rx+cos*nz*rz)/(0.68*rz)).normalize_or_zero();
+                target.normals.push(normal.to_array());target.uvs.push(fitted.uvs[i]);
+                target.colors.push(authored_face_color([1.;4],normal));
+            }}
+            for tri in fitted.indices.chunks_exact(3) {
+                if tri.iter().all(|i|roles[*i as usize]<4) {
+                    target.indices.extend(tri.iter().map(|i|remap[*i as usize]));
+                }
+            }
+        }
+        true
+    }
+    pub(crate) fn append_native_gift_fixture(&self,target:&mut SurfaceMeshData,bounds:[f32;4],base:f32,height:f32,swatches:[[f32;2];4])->bool {
+        let Some(roles)=&self.native_gift_materials else{return false;};
+        let first=target.positions.len();self.append_fitted(target,bounds,base,height);
+        for (i,&role) in roles.iter().enumerate() {target.uvs[first+i]=swatches[role as usize];
+            target.colors[first+i]=authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));}
+        true
+    }
+    pub(crate) fn append_native_home_fixture(&self, target: &mut SurfaceMeshData,
+        bounds: [f32; 4], base: f32, height: f32, swatches: [[f32; 2]; 4]) -> bool {
+        let Some(roles) = &self.native_home_fixture_materials else { return false; };
+        let first = target.positions.len();
+        self.append_fitted(target, bounds, base, height);
+        for (i, &role) in roles.iter().enumerate() {
+            target.uvs[first + i] = swatches[role as usize];
+            target.colors[first + i] = authored_face_color([1.; 4],
+                Vec3::from_array(target.normals[first + i]));
+        }
+        true
     }
     pub(crate) fn has_native_trashcan_materials(&self)->bool {self.native_trashcan_materials.is_some()}
     pub(crate) fn append_native_trashcan(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,swatches:[[f32;2];3])->bool {
@@ -833,16 +1319,35 @@ impl Model {
         let first = target.positions.len();
         self.append_fitted(target, bounds, 0., height);
         for (i, &material) in materials.iter().enumerate() {
-            target.uvs[first + i] = source_uv(material);
+            target.uvs[first + i] = source_uv(material&15);
             target.colors[first + i] = authored_face_color(
                 [1.; 4], Vec3::from_array(target.normals[first + i]),
             );
         }
         true
     }
+    pub(crate) fn store_display_front_start(&self)->Option<usize> {
+        let roles=self.store_display_materials.as_ref()?;
+        let first=roles.iter().position(|role|role&16!=0)?;
+        roles[first..].iter().all(|role|role&16!=0).then_some(first)
+    }
 
     /// The canonical store cabinet keeps its body and panel finish; a joined
     /// countertop is authored separately in map space. Unknown roles reject.
+    pub(crate) fn has_native_store_counter_materials(&self)->bool {self.native_store_counter_materials.is_some()}
+    pub(crate) fn append_native_store_counter(&self,target:&mut SurfaceMeshData,bounds:[f32;4],
+        height:f32,swatches:[[f32;2];5],body_only:bool)->bool {
+        let Some(roles)=&self.native_store_counter_materials else{return false;};
+        let first=target.positions.len();
+        if body_only {
+            if !self.append_store_counter_body(target,bounds,height) {return false;}
+        }else {self.append_fitted(target,bounds,0.,height);}
+        for (i,&role) in roles.iter().enumerate() {
+            target.uvs[first+i]=swatches[role as usize];
+            target.colors[first+i]=authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));
+        }
+        true
+    }
     pub(crate) fn append_store_counter_body(&self, target: &mut SurfaceMeshData,
         bounds: [f32;4], height:f32) -> bool {
         let Some(body)=&self.store_counter_body_indices else {return false;};
@@ -858,6 +1363,13 @@ impl Model {
         target.indices.extend(body.iter().map(|i|i+first));
         true
     }
+    /// Height of the broad upward cushion surface in the selected seat mesh.
+    /// Reading geometry here keeps replacement furniture and its rider aligned.
+    pub(crate) fn seat_height_fraction(&self) -> f32 {
+        let height = crate::seating::cushion_height(&self.surface.positions, &self.surface.indices).unwrap_or(self.max[1]);
+        ((height - self.min[1]) / (self.max[1] - self.min[1])).clamp(0., 1.)
+    }
+
     pub(crate) fn append_fitted(
         &self,
         target: &mut SurfaceMeshData,
@@ -1107,7 +1619,7 @@ pub(crate) fn selected_model(kind: ModelKind) -> Option<&'static Model> {
     }
     match kind {
         ModelKind::Bookcase => required!(BOOKCASE, "models/interiors/bookcase.mesh.json"),
-        ModelKind::DiningTable => required!(DINING_TABLE, "models/interiors/dining_table.mesh.json"),
+        ModelKind::DiningTable => required!(DINING_TABLE, "models/interiors/domestic_table.mesh.json"),
         ModelKind::BedRed => required!(BED_RED, "models/interiors/bed_red.mesh.json"),
         ModelKind::Chair => required!(CHAIR, "models/interiors/chair.mesh.json"),
         ModelKind::Television => required!(TELEVISION, "models/interiors/television.mesh.json"),
@@ -1277,6 +1789,301 @@ pub(crate) fn model(kind: ModelKind) -> &'static Model {
 mod tests {
     use super::*;
     #[test]
+    fn kanto_native_arcade_paint_keeps_canonical_geometry_and_requires_all_roles() {
+        for source in [include_str!("../models/interiors/arcade_machine.mesh.json"),
+            include_str!("../models/interiors/arcade_pair.mesh.json")] {
+            let model=Model::parse(source).unwrap();let before=model.surface.clone();
+            let swatches=std::array::from_fn(|i|[i as f32/10.,0.5]);
+            let mut old=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
+            model.append_fitted(&mut old,[0.,32.,0.,14.],0.,21.);
+            assert!(model.append_native_arcade(&mut painted,[0.,32.,0.,14.],21.,swatches));
+            assert_eq!(old.positions,painted.positions);assert_eq!(old.normals,painted.normals);
+            assert_eq!(old.indices,painted.indices);assert_eq!(model.surface.colors,before.colors);
+            assert!(painted.uvs.iter().all(|uv|swatches.contains(uv)));
+            for material in ["purple","yellow","rubber","screen","linen","metal","red","blue","leaf"] {
+                let changed=source.replace(&format!("\"material\":\"{material}\""),"\"material\":\"unknown\"");
+                assert!(!Model::parse(&changed).unwrap().has_native_arcade_materials());
+            }
+        }
+    }
+    #[test]
+    fn kanto_native_office_and_link_seat_paint_preserves_geometry_and_requires_all_roles() {
+        for (source,names,workstation) in [
+            (include_str!("../models/interiors/lab_workstation.mesh.json"),
+                & ["blue","brass","enamel","enamel_light","metal","rubber","screen","screen_light"][..],true),
+            (include_str!("../models/interiors/link_seat.mesh.json"),
+                & ["blue","blue_light","metal","rubber"][..],false),
+        ] {
+            let model=Model::parse(source).unwrap();let before=model.surface.clone();
+            let mut old=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
+            model.append_fitted(&mut old,[0.,32.,0.,12.],0.,22.);
+            if workstation {
+                assert!(model.append_native_workstation(&mut painted,[0.,32.,0.,12.],22.,
+                    std::array::from_fn(|i|[i as f32/10.,0.5])));
+            } else {
+                assert!(model.append_native_link_seat(&mut painted,[0.,32.,0.,12.],22.,
+                    std::array::from_fn(|i|[i as f32/10.,0.5])));
+            }
+            assert_eq!(old.positions,painted.positions);assert_eq!(old.normals,painted.normals);
+            assert_eq!(old.indices,painted.indices);assert_eq!(model.surface.colors,before.colors);
+            assert!(painted.uvs.iter().all(|uv|uv[1]==0.5));
+            for name in names {
+                let changed=source.replace(&format!("\"material\":\"{name}\""),"\"material\":\"unknown\"");
+                let changed=Model::parse(&changed).unwrap();
+                assert!(!if workstation {changed.has_native_workstation_materials()}
+                    else {changed.has_native_link_seat_materials()});
+            }
+        }
+    }
+    #[test]
+    fn kanto_native_display_composition_preserves_canonical_geometry_and_rejects_unknown_roles() {
+        for (source,names,flower) in [
+            (include_str!("../models/interiors/low_table.mesh.json"),&["rubber","timber_gold","timber_light"][..],false),
+            (include_str!("../models/interiors/flower_stand.mesh.json"),
+                &["coral","leaf","leaf_dark","leaf_gold","leaf_light","pink","roof_red","roof_red_light",
+                    "rubber","soil","timber_light","yellow"][..],true),
+        ] {
+            let model=Model::parse(source).unwrap();let before=model.surface.clone();
+            let mut old=SurfaceMeshData::default();let mut native=SurfaceMeshData::default();
+            let base=if flower {6.}else{0.};let height=if flower {8.}else{6.};
+            model.append_fitted(&mut old,[0.,12.,0.,12.],base,height);
+            if flower {assert!(model.append_native_display_flower(&mut native,[0.,12.,0.,12.],base,height,
+                std::array::from_fn(|i|[i as f32/16.,0.5])));}
+            else {assert!(model.append_native_low_table(&mut native,[0.,12.,0.,12.],height,
+                std::array::from_fn(|i|[i as f32/16.,0.5])));}
+            assert_eq!(old.positions,native.positions);assert_eq!(old.normals,native.normals);
+            assert_eq!(old.indices,native.indices);assert_eq!(model.surface.colors,before.colors);
+            for name in names {
+                let changed=source.replace(&format!("\"material\":\"{name}\""),"\"material\":\"unknown\"");
+                let changed=Model::parse(&changed).unwrap();
+                assert!(!if flower {changed.has_native_display_flower_materials()}else{changed.has_native_low_table_materials()});
+            }
+        }
+    }
+    #[test]
+    fn traditional_table_has_one_gold_cap_without_changing_geometry_or_edge_trim() {
+        let source=include_str!("../models/interiors/low_table.mesh.json");
+        let model=Model::parse(source).unwrap();let before=model.surface.clone();
+        let swatches=[[0.1,0.5],[0.2,0.5],[0.3,0.5]];
+        let mut original=SurfaceMeshData::default();let mut native=SurfaceMeshData::default();
+        model.append_fitted(&mut original,[0.,32.,0.,32.],0.,4.);
+        assert!(model.append_native_traditional_table(&mut native,[0.,32.,0.,32.],4.,swatches));
+        assert_eq!(native.positions,original.positions);assert_eq!(native.normals,original.normals);
+        assert_eq!(native.indices,original.indices);assert_eq!(model.surface.colors,before.colors);
+        let cap:Vec<_>=native.positions.iter().enumerate().filter(|&(i,p)|
+            (p[1]-4.).abs()<1e-5&&native.normals[i][1]>0.99).map(|(i,_)|i).collect();
+        assert!(!cap.is_empty());assert!(cap.iter().all(|&i|native.uvs[i]==swatches[1]));
+        for (i,&role) in model.native_low_table_materials.as_ref().unwrap().iter().enumerate() {
+            if role>0&&native.normals[i][1]>0.5 {assert_eq!(native.uvs[i],swatches[1]);}
+        }
+        assert!(native.uvs.iter().enumerate().any(|(i,&uv)|uv==swatches[2]&&native.normals[i][1]<0.5));
+        for role in ["rubber","timber_gold","timber_light"] {
+            let altered=source.replace(&format!("\"material\":\"{role}\""),
+                "\"material\":\"unknown\"" );
+            let changed=Model::parse(altered.as_str()).unwrap();
+            let mut rejected=SurfaceMeshData::default();
+            assert!(!changed.append_native_traditional_table(&mut rejected,[0.,32.,0.,32.],4.,swatches));
+            assert!(rejected.positions.is_empty());
+        }
+    }
+    #[test]
+    fn kanto_native_store_counter_paint_preserves_full_and_body_geometry_and_cache() {
+        let source=include_str!("../models/interiors/reception_counter.mesh.json");
+        let model=Model::parse(source).unwrap();let before=model.surface.clone();
+        let swatches=std::array::from_fn(|i|[i as f32/8.,0.5]);
+        for body in [false,true] {
+            let mut original=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
+            if body {assert!(model.append_store_counter_body(&mut original,[0.,16.,0.,8.],9.));}
+            else {model.append_fitted(&mut original,[0.,16.,0.,8.],0.,9.);}
+            assert!(model.append_native_store_counter(&mut painted,[0.,16.,0.,8.],9.,swatches,body));
+            assert_eq!(original.positions,painted.positions);assert_eq!(original.normals,painted.normals);
+            assert_eq!(original.indices,painted.indices);assert!(painted.uvs.iter().all(|uv|swatches.contains(uv)));
+        }
+        assert_eq!(model.surface.colors,before.colors);
+        for material in ["plaster","roof_red","timber","enamel_light","timber_light"] {
+            let changed=source.replace(&format!("\"material\":\"{material}\""),"\"material\":\"unknown\"");
+            let unknown=Model::parse(&changed).unwrap();assert!(!unknown.has_native_store_counter_materials());
+        }
+    }
+    #[test]
+    fn kanto_native_ticket_box_keeps_cabinet_and_omits_drinks_with_strict_materials() {
+        let source=include_str!("../models/interiors/vending_machine.mesh.json");
+        let model=Model::parse(source).unwrap();let before=model.surface.clone();
+        let swatches=std::array::from_fn(|i|[i as f32/8.,0.5]);
+        let mut painted=SurfaceMeshData::default();
+        assert!(model.append_native_ticket_box(&mut painted,[0.,14.,0.,10.],20.,swatches));
+        assert!(!painted.indices.is_empty());assert!(painted.indices.len()<before.indices.len());
+        assert!(painted.uvs.iter().all(|v|swatches.contains(v)));
+        assert_eq!(model.surface.indices,before.indices);assert_eq!(model.surface.colors,before.colors);
+        let unknown=Model::parse(&source.replace(r#""material":"blue""#,r#""material":"unknown""#)).unwrap();
+        assert!(!unknown.has_native_ticket_materials());
+    }
+    #[test]
+    fn native_beverage_machine_keeps_all_geometry_and_rejects_unknown_casing() {
+        let source=include_str!("../models/interiors/vending_machine.mesh.json");
+        let model=Model::parse(source).unwrap();let before=model.surface.clone();
+        let swatches=std::array::from_fn(|i|[i as f32/8.,0.5]);
+        let mut original=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
+        model.append_fitted(&mut original,[0.,16.,0.,10.],0.,30.);
+        assert!(model.append_native_beverage_machine(&mut painted,[0.,16.,0.,10.],30.,swatches));
+        assert_eq!(original.positions,painted.positions);assert_eq!(original.normals,painted.normals);
+        assert_eq!(original.indices,painted.indices);assert_eq!(model.surface.colors,before.colors);
+        assert!(painted.uvs.iter().all(|v|swatches.contains(v)));
+        let unknown=Model::parse(&source.replace(r#""material":"blue""#,r#""material":"unknown""#)).unwrap();
+        let mut out=SurfaceMeshData::default();
+        assert!(!unknown.append_native_beverage_machine(&mut out,[0.,16.,0.,10.],30.,swatches));
+        assert!(out.positions.is_empty());
+    }
+    #[test]
+    fn kanto_native_station_chair_retains_required_geometry_with_independent_local_paint() {
+        let source=include_str!("../../../assets/open-models/interiors/chair.mesh.json");
+        let chair=Model::parse(source).unwrap();let before=chair.surface.clone();
+        let mut original=SurfaceMeshData::default();let mut native=SurfaceMeshData::default();
+        chair.append_fitted(&mut original,[0.,8.,0.,8.],0.,11.);
+        let swatches=[[0.1,0.2],[0.3,0.4]];
+        assert!(chair.append_native_station_chair(&mut native,[0.,8.,0.,8.],11.,swatches));
+        assert_eq!(original.positions,native.positions);assert_eq!(original.normals,native.normals);
+        assert_eq!(original.indices,native.indices);assert_eq!(chair.surface.colors,before.colors);
+        assert!(native.uvs.iter().all(|uv|swatches.contains(uv)));
+        let unknown=Model::parse(&source.replace("\"wood\"","\"unknown_finish\"")).unwrap();
+        assert!(!unknown.append_native_station_chair(&mut SurfaceMeshData::default(),[0.,8.,0.,8.],11.,swatches));
+    }
+    #[test]
+    fn kanto_native_train_keeps_selected_geometry_and_rejects_unknown_paint_roles() {
+        let source=include_str!("../models/train_station/magnet_train_shell.mesh.json");
+        let train=Model::parse(source).unwrap();let before=train.surface.clone();
+        let swatches=std::array::from_fn(|i|[i as f32/8.,0.5]);
+        let mut original=SurfaceMeshData::default();let mut native=SurfaceMeshData::default();
+        train.append_fitted(&mut original,[0.,160.,0.,32.],0.,26.2);
+        assert!(train.append_native_train(&mut native,[0.,160.,0.,32.],26.2,swatches));
+        assert_eq!(original.positions,native.positions);assert_eq!(original.normals,native.normals);
+        assert_eq!(original.indices,native.indices);assert_eq!(train.surface.colors,before.colors);
+        assert!(native.uvs.iter().all(|uv|swatches.contains(uv)));
+        let unknown=Model::parse(&source.replace("West streamlined cab folded segment 1","unknown cab paint")).unwrap();
+        assert!(!unknown.append_native_train(&mut SurfaceMeshData::default(),[0.,160.,0.,32.],26.2,swatches));
+    }
+    #[test]
+    fn kanto_native_station_plant_retains_canonical_geometry_and_requires_all_materials() {
+        let source=include_str!("../models/interiors/long_planter.mesh.json");
+        let plant=Model::parse(source).unwrap();let before=plant.surface.clone();
+        let swatches=std::array::from_fn(|i|[i as f32/8.,0.5]);
+        let mut original=SurfaceMeshData::default();let mut native=SurfaceMeshData::default();
+        plant.append_fitted(&mut original,[1.,13.,2.,14.],0.,23.);
+        assert!(plant.append_native_station_plant(&mut native,[1.,13.,2.,14.],23.,swatches));
+        assert_eq!(original.positions,native.positions);assert_eq!(original.normals,native.normals);
+        assert_eq!(original.indices,native.indices);assert_eq!(plant.surface.colors,before.colors);
+        assert!(native.uvs.iter().all(|uv|swatches.contains(uv)));
+        let unknown=Model::parse(&source.replace("leaf_dark","unknown_leaf")).unwrap();
+        let mut rejected=SurfaceMeshData::default();
+        assert!(!unknown.append_native_station_plant(&mut rejected,[1.,13.,2.,14.],23.,swatches));
+        assert!(rejected.positions.is_empty());
+        let flower_source=include_str!("../models/interiors/flower_stand.mesh.json");
+        let flowers=Model::parse(flower_source).unwrap();let before=flowers.surface.clone();
+        let mut blooms=SurfaceMeshData::default();let palette=[[0.1,0.2],[0.3,0.4],[0.5,0.6]];
+        assert!(flowers.append_native_station_blooms(&mut blooms,[1.,13.,2.,14.],22.,palette));
+        assert!(blooms.uvs.iter().all(|uv|palette.contains(uv)));
+        assert!(blooms.positions.iter().all(|v|v[1]>14.),"only canonical blossoms, no stand or pot");
+        assert_eq!(flowers.surface.colors,before.colors);
+        let unknown=Model::parse(&flower_source.replace("coral","unknown_petal")).unwrap();
+        assert!(!unknown.append_native_station_blooms(&mut SurfaceMeshData::default(),[1.,13.,2.,14.],22.,palette));
+    }
+    #[test]
+    fn kanto_safari_plant_uses_source_leaf_and_pot_roles_without_changing_geometry() {
+        let source=include_str!("../models/interiors/potted_plant.mesh.json");
+        let plant=Model::parse(source).unwrap();
+        let mut original=SurfaceMeshData::default();let mut native=SurfaceMeshData::default();
+        let swatches=std::array::from_fn(|i|[i as f32/6.,0.5]);
+        plant.append_fitted(&mut original,[0.,12.,0.,12.],0.,28.);
+        assert!(plant.append_native_safari_plant(&mut native,[0.,12.,0.,12.],28.,swatches));
+        assert_eq!(original.positions,native.positions);assert_eq!(original.normals,native.normals);
+        assert_eq!(original.indices,native.indices);assert!(native.uvs.iter().all(|u|swatches.contains(u)));
+        let unknown=Model::parse(&source.replace("\"leaf_gold\"","\"unknown_leaf\"")).unwrap();
+        assert!(!unknown.has_native_safari_plant_materials());
+        assert!(!unknown.append_native_safari_plant(&mut SurfaceMeshData::default(),[0.,12.,0.,12.],28.,swatches));
+    }
+    #[test]
+    fn kanto_native_bed_preserves_selected_geometry_and_requires_every_named_role() {
+        let source=include_str!("../../../assets/open-models/interiors/bed_red.mesh.json");
+        let bed=Model::parse(source).unwrap();let before=bed.surface.clone();
+        let swatches=[[0.1,0.2],[0.3,0.4],[0.5,0.6],[0.7,0.8]];
+        let mut original=SurfaceMeshData::default();let mut native=SurfaceMeshData::default();
+        bed.append_fitted(&mut original,[1.,15.,2.,34.],0.,11.);
+        assert!(bed.append_native_bed(&mut native,[1.,15.,2.,34.],0.,11.,swatches));
+        assert_eq!(native.positions,original.positions);assert_eq!(native.normals,original.normals);
+        assert_eq!(native.indices,original.indices);assert_eq!(bed.surface,before);
+        for uv in swatches {assert!(native.uvs.contains(&uv));}
+        let unknown=Model::parse(source.replace("\"cover\"","\"unknown_cover\"").as_str()).unwrap();
+        let mut rejected=SurfaceMeshData::default();
+        assert!(!unknown.append_native_bed(&mut rejected,[1.,15.,2.,34.],0.,11.,swatches));
+        assert!(rejected.positions.is_empty());
+        let mut cached=SurfaceMeshData::default();bed.append_fitted(&mut cached,[1.,15.,2.,34.],0.,11.);
+        assert_eq!(cached,original);
+    }
+    #[test]
+    fn kanto_facility_plant_dense_crown_retains_one_pot_and_source_bounds() {
+        let plant=model(ModelKind::PottedPlant);let cached=plant.surface.clone();
+        let swatches=std::array::from_fn(|i|[i as f32*0.1,0.9]);
+        for scale in [0.5,1.,2.] {
+            let b=[2.*scale,16.*scale,3.*scale,27.*scale];let h=23.*scale;
+            let mut original=SurfaceMeshData::default();let mut dense=SurfaceMeshData::default();
+            assert!(plant.append_native_safari_plant(&mut original,b,h,swatches));
+            assert!(plant.append_native_facility_plant(&mut dense,b,h,swatches));
+            assert_eq!(&dense.positions[..original.positions.len()],original.positions.as_slice());
+            assert_eq!(&dense.indices[..original.indices.len()],original.indices.as_slice());
+            assert!(dense.indices.len()>original.indices.len());
+            for p in &dense.positions {
+                assert!(p[0]>=b[0]-0.001 && p[0]<=b[1]+0.001);
+                assert!(p[2]>=b[2]-0.001 && p[2]<=b[3]+0.001);
+                assert!(p[1]>=-0.001 && p[1]<=h+0.001);
+            }
+            for tri in dense.indices[original.indices.len()..].chunks_exact(3) {
+                assert!(tri.iter().all(|i|swatches[..4].contains(&dense.uvs[*i as usize])),
+                    "extra crown cannot duplicate pot or soil");
+                let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(dense.positions[i as usize]));
+                let normal=Vec3::from_array(dense.normals[tri[0]as usize]);
+                assert!((b-a).cross(c-a).dot(normal)>=-0.001);
+            }
+            assert_eq!(plant.surface,cached);
+        }
+    }
+
+    #[test]
+    fn kanto_native_home_fixtures_keep_shared_geometry_and_reject_incomplete_roles() {
+        for (kind, source, material) in [
+            (ModelKind::Cabinet, include_str!("../models/interiors/cabinet.mesh.json"), "brass"),
+            (ModelKind::GameConsole, include_str!("../models/interiors/game_console.mesh.json"), "red"),
+            (ModelKind::DrawerCabinet, include_str!("../models/interiors/drawer_cabinet.mesh.json"), "brass"),
+            (ModelKind::KitchenStove, include_str!("../models/interiors/kitchen_stove.mesh.json"), "enamel"),
+            (ModelKind::KitchenSink, include_str!("../models/interiors/kitchen_sink.mesh.json"), "enamel"),
+            (ModelKind::Refrigerator, include_str!("../models/interiors/refrigerator.mesh.json"), "enamel"),
+            (ModelKind::BedFeathery, include_str!("../models/interiors/bed_feathery.mesh.json"), "linen"),
+            (ModelKind::Radio, include_str!("../models/interiors/radio.mesh.json"), "screen"),
+        ] {
+            let fixture = model(kind);
+            let before = fixture.surface.clone();
+            let swatches = [[0.1, 0.2], [0.3, 0.4], [0.5, 0.6], [0.7, 0.8]];
+            let mut original = SurfaceMeshData::default();
+            let mut native = SurfaceMeshData::default();
+            fixture.append_fitted(&mut original, [2., 18., 4., 17.], 3., 22.);
+            assert!(fixture.append_native_home_fixture(&mut native,
+                [2., 18., 4., 17.], 3., 22., swatches));
+            assert_eq!(original.positions, native.positions);
+            assert_eq!(original.normals, native.normals);
+            assert_eq!(original.indices, native.indices);
+            assert_eq!(fixture.surface, before);
+            for uv in swatches { assert!(native.uvs.contains(&uv)); }
+            let altered = source.replace(&format!("\"{material}\""), "\"unknown_role\"");
+            let unknown = Model::parse(altered.as_str()).unwrap();
+            let mut rejected = SurfaceMeshData::default();
+            assert!(!unknown.append_native_home_fixture(&mut rejected,
+                [2., 18., 4., 17.], 3., 22., swatches));
+            assert!(rejected.positions.is_empty());
+            let mut cached = SurfaceMeshData::default();
+            fixture.append_fitted(&mut cached, [2., 18., 4., 17.], 3., 22.);
+            assert_eq!(cached, original);
+        }
+    }
+    #[test]
     fn kanto_native_screen_only_television_reuses_crt_without_cabinet_triangles() {
         let tv=Model::parse(include_str!("../../../assets/open-models/interiors/television.mesh.json")).unwrap();
         let swatches=[[0.1,0.2],[0.2,0.3],[0.3,0.4],[0.4,0.5],[0.5,0.6]];
@@ -1346,8 +2153,40 @@ mod tests {
     }
 
     #[test]
+    fn kanto_domestic_table_has_four_corner_supports_and_clear_knee_space() {
+        let source=include_str!("../../../assets/open-models/interiors/domestic_table.mesh.json");
+        let table=Model::parse(source).unwrap();let cached=table.surface.clone();
+        for scale in [0.5,1.,2.] {
+            let mut fitted=SurfaceMeshData::default();
+            assert!(table.append_native_dining_table(&mut fitted,[0.,32.*scale,0.,16.*scale],10.*scale,
+                [[0.1,0.2],[0.3,0.4]]));
+            let mut corners=[false;4];
+            for p in &fitted.positions {
+                assert!(p[0]>=-0.001 && p[0]<=32.*scale+0.001);
+                assert!(p[2]>=-0.001 && p[2]<=16.*scale+0.001);
+                if p[1]<0.5*scale {
+                    assert!(p[0]<8.*scale || p[0]>24.*scale);
+                    assert!(p[2]<4.*scale || p[2]>12.*scale);
+                    corners[usize::from(p[0]>16.*scale)+2*usize::from(p[2]>8.*scale)]=true;
+                }
+            }
+            assert!(corners.into_iter().all(|corner|corner));
+            for tri in fitted.indices.chunks_exact(3) {
+                let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(fitted.positions[i as usize]));
+                let center=(a+b+c)/3.;
+                assert!(!(center.y<6.5*scale && center.x>9.6*scale && center.x<22.4*scale
+                    && center.z>4.8*scale && center.z<11.2*scale),"no crossed brace in knee space");
+                assert!((b-a).cross(c-a).dot(Vec3::from_array(fitted.normals[tri[0]as usize]))>=-0.00001);
+            }
+            assert_eq!(table.surface,cached);
+        }
+        let unknown=Model::parse(source.replace("\"timber_gold\"","\"unknown_top\"").as_str()).unwrap();
+        assert!(!unknown.has_native_dining_table_materials());
+    }
+
+    #[test]
     fn kanto_native_dining_table_keeps_selected_geometry_and_rejects_unknown_roles() {
-        let source=include_str!("../../../assets/open-models/interiors/dining_table.mesh.json");
+        let source=include_str!("../../../assets/open-models/interiors/domestic_table.mesh.json");
         let table=Model::parse(source).unwrap();let before=table.surface.clone();
         let swatches=[[0.2,0.3],[0.4,0.5]];
         let mut native=SurfaceMeshData::default();let mut original=SurfaceMeshData::default();
@@ -1366,7 +2205,7 @@ mod tests {
         }
         assert_eq!(table.surface,before);for uv in swatches {assert!(native.uvs.contains(&uv));}
         assert!(native.colors.iter().all(|c|c[0]==c[1] && c[1]==c[2]));
-        let unknown=Model::parse(source.replace("\"carpet\"","\"unknown_cloth\"").as_str()).unwrap();
+        let unknown=Model::parse(source.replace("\"timber_gold\"","\"unknown_top\"").as_str()).unwrap();
         let mut rejected=SurfaceMeshData::default();
         assert!(!unknown.append_native_dining_table(&mut rejected,[0.,32.,0.,32.],10.,swatches));
         assert!(rejected.positions.is_empty());

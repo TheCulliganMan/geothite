@@ -36,7 +36,8 @@ pub(crate) fn small_rock_local(source: &VisualTileSource) -> Option<(u8, u8)> {
 /// directly above and occupy the southeast collision quadrant of their
 /// metatile. Unlike the Gen 1 reference profile's staircase cells, these
 /// pictures do not provide a shelf transition. Their support stays on the
-/// authored floor datum; the optional view models upright rails above it.
+/// authored floor datum; the optional view distinguishes ascending rails
+/// from a descending shaft without changing that support.
 pub(crate) fn flat_ladder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
     if !matches!(source.tileset_id.as_ref(), "cave" | "dark_cave")
         || !(2..4).contains(&source.subtile_column)
@@ -57,6 +58,15 @@ pub(crate) fn flat_ladder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
     let column = source.subtile_column - 2;
     let row = source.subtile_row - 2;
     (source.tile_index == expected[usize::from(row)][usize::from(column)]).then_some((column, row))
+}
+
+/// The southeast walk-off quadrant of the complete native cave exit block.
+/// Unlike inter-floor ladders this opens to the outdoor approach.
+pub(crate) fn daylight_exit_local(s: &VisualTileSource) -> Option<(u8, u8)> {
+    (matches!(s.tileset_id.as_ref(), "cave" | "dark_cave")
+        && s.metatile_id == 0x24 && s.tile_index == 0x01
+        && (2..4).contains(&s.subtile_column) && (2..4).contains(&s.subtile_row))
+        .then_some((s.subtile_column.saturating_sub(2), s.subtile_row.saturating_sub(2)))
 }
 
 /// The paired lower-row exit motif is a sill, not a complete ladder flight.
@@ -199,8 +209,8 @@ fn authored_cave_shape(source: &VisualTileSource) -> Option<CellShape> {
     }
 
     if flat_ladder_local(source).is_some() {
-        // The light-floor hatch belongs to the same six-pixel shelf as its
-        // surrounding $01 cells; it is not a hole down to the lower datum.
+        // The light-floor hatch starts on the same six-pixel shelf as its
+        // surrounding $01 cells. Rendered shaft depth never lowers support.
         return Some(CellShape::PlaneAt { height: if matches!(source.metatile_id, 0x1b | 0x1f) { CAVE_SHELF_HEIGHT } else { 0.0 } });
     }
 

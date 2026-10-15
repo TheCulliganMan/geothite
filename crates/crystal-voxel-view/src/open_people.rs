@@ -126,6 +126,7 @@ pub(crate) fn get(name: &str) -> Option<&'static Arc<PersonRig>> {
 }
 
 pub(crate) struct PersonRig {
+    refined_body: OnceLock<RefinedBody>,
     pub nodes: Vec<Transform>,
     pub parents: Vec<Option<usize>>,
     pub skin_nodes: Vec<usize>,
@@ -153,6 +154,12 @@ pub(crate) struct PersonRig {
     clips: BTreeMap<String, Clip>,
     order: Vec<usize>,
 }
+#[derive(Clone)]
+pub(crate) struct RefinedBody {
+    pub mesh: SurfaceMeshData,
+    pub ids: Vec<[u16; 4]>,
+    pub weights: Vec<[f32; 4]>,
+}
 struct Clip {
     duration: f32,
     tracks: Vec<Track>,
@@ -166,7 +173,18 @@ struct Track {
 }
 
 impl PersonRig {
+    pub(crate) fn refined_body(&self) -> RefinedBody {
+        self.refined_body.get_or_init(|| {
+            let _trace = crate::loading_trace::span("actor.refine_shared_body", || serde_json::json!({}));
+            let mut body = RefinedBody { mesh:self.mesh.clone(), ids:self.ids.clone(), weights:self.weights.clone() };
+            crate::hand_surface::smooth(self, &mut body.mesh, &mut body.ids, &mut body.weights);
+            crate::hand_digits::sculpt(self, &mut body.mesh, &mut body.ids, &mut body.weights);
+            crate::head_surface::smooth(self, &mut body.mesh, &mut body.ids, &mut body.weights);
+            body
+        }).clone()
+    }
     pub fn parse(bytes: &[u8]) -> Result<Self, String> {
+        let _trace = crate::loading_trace::span("actor.load_person", || serde_json::json!({"bytes":bytes.len()}));
         if bytes.len() > MAX_BYTES || !bytes.starts_with(b"glTF") {
             return Err("person needs bounded GLB".into());
         }
@@ -498,6 +516,7 @@ impl PersonRig {
             ..default()
         };
         let mut rig = Self {
+            refined_body: OnceLock::new(),
             nodes,
             parents,
             skin_nodes,
@@ -535,13 +554,17 @@ impl PersonRig {
                         * pose[n].to_matrix();
                 }
                 let mesh_inv = world[rig.mesh_node].inverse();
+                // Every vertex using a joint shares this exact matrix. Keep
+                // multiplication order unchanged, but calculate it once per
+                // sampled pose rather than four times per render vertex.
+                let skin_matrices = rig.skin_nodes.iter().zip(&rig.inverse_binds)
+                    .map(|(&node, inverse)| mesh_inv * world[node] * *inverse)
+                    .collect::<Vec<_>>();
                 for ((p, ids), weights) in rig.mesh.positions.iter().zip(&rig.ids).zip(&rig.weights)
                 {
                     let mut v = Vec3::ZERO;
                     for j in 0..4 {
-                        v += (mesh_inv
-                            * world[rig.skin_nodes[ids[j] as usize]]
-                            * rig.inverse_binds[ids[j] as usize])
+                        v += skin_matrices[ids[j] as usize]
                             .transform_point3(Vec3::from_array(*p))
                             * weights[j];
                     }
@@ -604,6 +627,68 @@ mod tests {
         }
     }
     use super::*;
+    #[test]
+    #[ignore = "requires the supplied external character GLBs"]
+    fn shared_body_refinement_preserves_source_bits_and_independent_costumes() {
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for name in ["human-male", "human-female"] {
+            let rig = PersonRig::parse(&std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap()).unwrap();
+            let mut expected = RefinedBody { mesh:rig.mesh.clone(), ids:rig.ids.clone(), weights:rig.weights.clone() };
+            crate::hand_surface::smooth(&rig, &mut expected.mesh, &mut expected.ids, &mut expected.weights);
+            crate::hand_digits::sculpt(&rig, &mut expected.mesh, &mut expected.ids, &mut expected.weights);
+            crate::head_surface::smooth(&rig, &mut expected.mesh, &mut expected.ids, &mut expected.weights);
+            let actual = rig.refined_body();
+            macro_rules! exact {
+                ($left:expr, $right:expr) => { assert_eq!($left.iter().flatten().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                    $right.iter().flatten().map(|v| v.to_bits()).collect::<Vec<_>>(), "{name}"); };
+            }
+            exact!(expected.mesh.positions, actual.mesh.positions);
+            exact!(expected.mesh.normals, actual.mesh.normals);
+            exact!(expected.mesh.uvs, actual.mesh.uvs);
+            exact!(expected.mesh.colors, actual.mesh.colors);
+            exact!(expected.weights, actual.weights);
+            assert_eq!(expected.ids, actual.ids);
+            assert_eq!(expected.mesh.indices, actual.mesh.indices);
+            assert_eq!(expected.mesh.cutaway_ranges, actual.mesh.cutaway_ranges);
+            let mut costume = actual;
+            costume.mesh.positions[0][0] += 100.;
+            costume.ids[0][0] = u16::MAX;
+            let next = rig.refined_body();
+            exact!(expected.mesh.positions, next.mesh.positions);
+            assert_eq!(expected.ids, next.ids);
+        }
+    }
+    #[test]
+    #[ignore = "requires the supplied external character GLBs"]
+    fn person_envelope_matrix_cache_matches_legacy_vertex_bits() {
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for name in ["human-male", "human-female"] {
+            let rig = PersonRig::parse(&std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap()).unwrap();
+            let mut bounds = (Vec3::splat(f32::INFINITY), Vec3::splat(f32::NEG_INFINITY));
+            let mut pose = rig.nodes.clone();
+            let mut world = vec![Mat4::IDENTITY; pose.len()];
+            for (clip, relaxed) in [("Idle",false),("Run",false),("Jump",false),("Idle",true),("Run",true)] {
+                for i in 0..=60 {
+                    rig.sample(clip, rig.duration(clip) * i as f32 / 60., &mut pose);
+                    if relaxed { crate::hand_pose::relax(&rig, &mut pose); }
+                    for &n in &rig.order {
+                        world[n] = rig.parents[n].map(|p| world[p]).unwrap_or(Mat4::IDENTITY) * pose[n].to_matrix();
+                    }
+                    let mesh_inv = world[rig.mesh_node].inverse();
+                    for ((p, ids), weights) in rig.mesh.positions.iter().zip(&rig.ids).zip(&rig.weights) {
+                        let mut v = Vec3::ZERO;
+                        for j in 0..4 {
+                            v += (mesh_inv * world[rig.skin_nodes[ids[j] as usize]] * rig.inverse_binds[ids[j] as usize])
+                                .transform_point3(Vec3::from_array(*p)) * weights[j];
+                        }
+                        bounds.0 = bounds.0.min(v); bounds.1 = bounds.1.max(v);
+                    }
+                }
+            }
+            assert_eq!(bounds.0.to_array().map(f32::to_bits), rig.bounds.0.to_array().map(f32::to_bits), "{name}");
+            assert_eq!(bounds.1.to_array().map(f32::to_bits), rig.bounds.1.to_array().map(f32::to_bits), "{name}");
+        }
+    }
     #[test]
     fn missing_production_rigs_reject_bundle_before_freezing_sources() {
         let frozen = crate::npc_textures::frozen();

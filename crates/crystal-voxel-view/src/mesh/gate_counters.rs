@@ -3,6 +3,31 @@
 use super::*;
 use crate::live_profiles::Document;
 
+pub(super) const JOHTO_GATE_ROOMS: &[&str] = &[
+    "IlexForestAzaleaGate",
+    "Route29Route46Gate",
+    "Route31VioletGate",
+    "Route32RuinsOfAlphGate",
+    "Route34IlexForestGate",
+    "Route35GoldenrodGate",
+    "Route35NationalParkGate",
+    "Route36NationalParkGate",
+    "Route36RuinsOfAlphGate",
+    "Route38EcruteakGate",
+    "Route40BattleTowerGate",
+    "Route42EcruteakGate",
+    "Route43Gate",
+    "Route43MahoganyGate",
+];
+
+pub(super) fn reviewed_gate_map(map: &str) -> bool {
+    JOHTO_GATE_ROOMS.contains(&map) || matches!(map,
+        "Route15FuchsiaGate"|"Route16Gate"|"Route17Route18Gate"
+        |"Route19FuchsiaGate"|"Route2Gate"|"Route5SaffronGate"|"Route6SaffronGate"
+        |"Route5UndergroundPathEntrance"|"Route6UndergroundPathEntrance"
+        |"Route7SaffronGate"|"Route8SaffronGate"|"SafariZoneFuchsiaGateBeta"|"VictoryRoadGate")
+}
+
 struct Network {
     maps: &'static [&'static str],
     // Verified original-map dimensions in source 8px cells, never canvas size.
@@ -169,10 +194,7 @@ fn resolve_networks(
                     native_palette_sources: None,
                 };
                 let mut p=p;
-                if matches!(map,"Route15FuchsiaGate"|"Route16Gate"|"Route17Route18Gate"
-                    |"Route19FuchsiaGate"|"Route2Gate"|"Route5SaffronGate"|"Route6SaffronGate"
-                    |"Route5UndergroundPathEntrance"|"Route6UndergroundPathEntrance"
-                    |"Route7SaffronGate"|"Route8SaffronGate"|"SafariZoneFuchsiaGateBeta"|"VictoryRoadGate") {
+                if reviewed_gate_map(map) {
                     let top=p.indices(g.width).find(|&i|cells[i].source.tile_index==0x07);
                     let side=p.indices(g.width).find(|&i|matches!(cells[i].source.tile_index,0x24|0x25));
                     let (Some(top),Some(side))=(top,side) else {continue;};
@@ -237,7 +259,12 @@ pub(super) fn append(
     }) {return false;}
     let ground = cells[p.ground];
     let uv = g.uv(ground.column as usize, ground.row as usize);
-    let height = if cafe {crate::cafe::SERVICE_COUNTER_HEIGHT}else{12.0} * g.tile_height / 8.0;
+    // The native civic drawing has one eight-pixel front course. A 12px
+    // body hides the guard's torso; source plot depth is not extra height.
+    // Only verified civic palette bindings use this fit. Legacy rooms keep
+    // their existing dimensions and the cafe retains its own counter height.
+    let height = if cafe {crate::cafe::SERVICE_COUNTER_HEIGHT}
+        else if native.is_some() {8.0}else{12.0} * g.tile_height / 8.0;
     for i in p.indices(g.width) {
         let x = i % g.width;
         let y = i / g.width;
@@ -397,8 +424,9 @@ mod tests {
         assert!(!crate::interior_models::model(crate::interior_models::ModelKind::Chair)
             .append_native_gate_counter(&mut unknown,[0.,8.,0.,8.],12.,[[0.1,0.2];4]));
         assert!(unknown.positions.is_empty());
-        let (cells,g,mut n)=fixture();n.maps=&["Route5SaffronGate",
-            "Route5UndergroundPathEntrance","Route6UndergroundPathEntrance"];
+        let (cells,g,mut n)=fixture();n.maps=Box::leak(JOHTO_GATE_ROOMS.iter().copied().chain([
+            "Route5SaffronGate","Route5UndergroundPathEntrance","Route6UndergroundPathEntrance"
+        ]).collect::<Vec<_>>().into_boxed_slice());
         let networks=Box::leak(vec![n].into_boxed_slice());
         let refs=cells.iter().collect::<Vec<_>>();
         for map in networks[0].maps {
@@ -416,6 +444,7 @@ mod tests {
         assert!(mesh.solid.indices.is_empty());
         assert!(mesh.footing_heights.iter().all(|h|*h==2.25));
         assert_eq!(claims.iter().filter(|&&c|c).count(),8);
+        assert_eq!(mesh.textured.positions.iter().map(|p|p[1]).fold(0.,f32::max),8.);
         let texel=|x:usize,y:usize,px:f32,py:f32| {
             let uv=g.uv(x,y);[uv.0+(uv.1-uv.0)*px/8.,uv.2+(uv.3-uv.2)*py/8.]
         };
@@ -425,8 +454,10 @@ mod tests {
         let mut original=TerrainMeshData::default();
         let legacy=Placement{native_palette_sources:None,..p};
         assert!(append(&mut original,&refs,&g,&legacy,&mut vec![false;cells.len()]));
+        assert_eq!(original.solid.positions.iter().map(|p|p[1]).fold(0.,f32::max),12.);
         // Floor precedes the palette model; conserve every original model triangle
-        // and fitted vertex, with only material routing/UV/paint changing.
+        // and vertex count. Kanto bodies fit the native8px course, while the
+        // legacy12px fit above remains available to unrelated rooms.
         assert_eq!(mesh.textured.indices.len(),original.textured.indices.len()+original.solid.indices.len());
         assert_eq!(mesh.textured.positions.len(),original.textured.positions.len()+original.solid.positions.len());
         let forged=Placement{native_palette_sources:Some([0,12]),..legacy};

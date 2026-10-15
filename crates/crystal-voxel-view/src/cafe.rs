@@ -20,10 +20,23 @@ pub(crate) fn is_cafe_map(map_id: &str) -> bool {
 pub(crate) fn celadon_table_local(map:&str,s:&VisualTileSource)->Option<(u8,u8)> {
     const ART:[u16;16]=[0x1c,0x20,0x21,0x1d,0x1c,0x30,0x31,0x1d,
         0x3e,0x50,0x50,0x3f,0xa8,0x4e,0x4f,0xa9];
-    (map=="CeladonCafe" && s.tileset_id.as_ref()=="game_corner" && s.metatile_id==0x2e
-        && s.subtile_column<4 && s.subtile_row<4
+    if map!="CeladonCafe" || s.tileset_id.as_ref()!="game_corner"
+        || s.subtile_column>=4 || s.subtile_row>=4 {return None;}
+    if matches!(s.metatile_id,0x2c|0x2d) && s.subtile_row==3
+        && s.tile_index==[0x2e,0x0d,0x0d,0x2f][s.subtile_column as usize] {
+        return Some((s.subtile_column,0));
+    }
+    (s.metatile_id==0x2e
         && s.tile_index==ART[s.subtile_row as usize*4+s.subtile_column as usize])
-        .then_some((s.subtile_column,s.subtile_row))
+        .then_some((s.subtile_column,s.subtile_row+1))
+}
+
+/// The front counter has two complete stools in the upper half of block19.
+pub(crate) fn celadon_counter_stool_local(map:&str,s:&VisualTileSource)->Option<(u8,u8)> {
+    if map!="CeladonCafe" || s.tileset_id.as_ref()!="game_corner" || s.metatile_id!=0x19
+        || s.subtile_column>=4 || s.subtile_row>=2 {return None;}
+    let x=s.subtile_column%2;let y=s.subtile_row;
+    (s.tile_index==[[0x0a,0x0b],[0x1a,0x1b]][y as usize][x as usize]).then_some((x,y))
 }
 
 /// The two cafés draw the same complete 32x32 octagonal table with different

@@ -108,6 +108,25 @@ fn visible_trainer_floor_placement(
     UVec2,
     crystal_render_api::VisualBattleDerivedTrainerPlacement,
 )> {
+    visible_battle_floor_placement(shell, source, Some(target_tile))
+}
+
+fn stationary_battle_floor_support(permission: u8) -> bool {
+    // Battle staging does not execute an overworld step. Original ice is a
+    // solid stationary surface; its sliding rules remain owned by movement.
+    // Saffron's original teleport panels likewise remain real floor without
+    // executing an overworld step or warp from a presentation-only placement.
+    // Actual built heights and full-body coverage are still checked later.
+    walking_plain_support(permission)
+        || permission == crate::core::world::collision::permissions::ICE
+        || permission == crate::core::world::collision::permissions::WARP_PANEL
+}
+
+fn visible_battle_floor_placement(
+    shell: &BevyRuntimeShell,
+    source: &crate::core::world::session::OverworldSnapshot,
+    excluded: Option<TilePosition>,
+) -> Option<(UVec2, crystal_render_api::VisualBattleDerivedTrainerPlacement)> {
     let overworld = shell.shell.session().overworld();
     let Some((width, height)) = overworld.map.checked_tile_bounds() else {
         return None;
@@ -117,9 +136,9 @@ fn visible_trainer_floor_placement(
     }
     let map_size = UVec2::new(u32::from(width), u32::from(height));
     use crate::core::world::collision::sample_collision;
-    if ![source.tile, target_tile].into_iter().all(|tile| {
+    if !std::iter::once(source.tile).chain(excluded).all(|tile| {
         sample_collision(&overworld.map, &overworld.tileset, tile)
-            .is_some_and(|sample| walking_plain_support(sample.permission))
+            .is_some_and(|sample| stationary_battle_floor_support(sample.permission))
     }) {
         return None;
     }
@@ -128,19 +147,18 @@ fn visible_trainer_floor_placement(
     };
     let core = IVec2::new(i32::from(source.tile.x), i32::from(source.tile.y));
     let mut walkable = Vec::new();
-    // Same fixed 7x7 source occupancy budget as ordinary walking encounters.
-    // The settled trainer remains occupied and cannot be a Pokémon support.
-    for y in -3..=3 {
-        for x in -3..=3 {
+    let radius = if excluded.is_none() { 5 } else { 3 };
+    for y in -radius..=radius {
+        for x in -radius..=radius {
             let p = core + IVec2::new(x, y);
             if p.cmplt(IVec2::ZERO).any() || p.cmpge(map_size.as_ivec2()).any() {
                 continue;
             }
             let tile = TilePosition::new(p.x as i16, p.y as i16);
-            if tile != target_tile
+            if Some(tile) != excluded
                 && !occupied.iter().any(|entry| entry.tile == tile)
                 && sample_collision(&overworld.map, &overworld.tileset, tile)
-                    .is_some_and(|sample| walking_plain_support(sample.permission))
+                    .is_some_and(|sample| stationary_battle_floor_support(sample.permission))
             {
                 walkable.push(p);
             }
@@ -602,6 +620,9 @@ fn publish_visible_trainer_location(
 /// no forced battle, trainer movement, flag, encounter roll or journal edit.
 #[cfg(any(test, feature = "location-tester"))]
 fn prepare_gym_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRuntimeShell> {
+    if let Ok(map_name) = std::env::var("CRYSTAL_RENDER_TEST_TRAINER_MAP") {
+        return prepare_map_trainer_encounter_preview(shell, &map_name);
+    }
     anyhow::ensure!(
         shell.quick_save_path.is_none(),
         "gym preview cannot write a user save"
@@ -699,5 +720,180 @@ fn prepare_gym_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRunt
         "gym preview must await ordinary Up before an unbeaten trainer"
     );
     mark_runtime_snapshot_dirty(&mut shell);
+    Ok(shell)
+}
+
+/// Review another original gym or map through ordinary A interaction with a
+/// compiled ordinary trainer or scripted leader that stands or turns in place.
+/// Only the disposable initial position is selected;
+/// the original trainer, script, party, flags and battle engine stay in charge.
+#[cfg(any(test, feature = "location-tester"))]
+fn prepare_map_trainer_encounter_preview(shell: BevyRuntimeShell, map_name: &str) -> Result<BevyRuntimeShell> {
+    let requested = std::env::var("CRYSTAL_RENDER_TEST_TRAINER_OBJECT").ok();
+    prepare_map_trainer_encounter_preview_for_object(shell, map_name, requested.as_deref())
+}
+
+#[cfg(any(test, feature = "location-tester"))]
+fn prepare_map_trainer_encounter_preview_for_object(mut shell: BevyRuntimeShell, map_name: &str, requested: Option<&str>) -> Result<BevyRuntimeShell> {
+    use crate::core::world::collision::sample_collision;
+    anyhow::ensure!(shell.quick_save_path.is_none(), "trainer preview cannot write a user save");
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS"))?;
+    let initial = shell.shell.snapshot()?;
+    anyhow::ensure!(initial.party.slots.is_empty() && initial.battle.is_none(),
+        "trainer preview requires a fresh empty-party field session");
+    if map_name == "OlivineGym" {
+        shell = prepare_jasmine_review_quest(shell)?;
+    }
+    let runtime = shell.shell.runtime().clone();
+    let data = runtime.data();
+    let module = data.maps.get(map_name).context("compiled trainer review map")?;
+    let map = data.overworld_map(map_name).context("compiled trainer review terrain")?;
+    let tileset = data.tileset_collision(data.map_tileset_name(map_name)?)?;
+    let occupied: std::collections::HashSet<_> = module.objects.iter()
+        .filter_map(object_tile_position_checked).collect();
+    let plain = |tile| !occupied.contains(&tile)
+        && sample_collision(&map, &tileset, tile)
+            .is_some_and(|sample| walking_plain_support(sample.permission))
+        && !module.events.warps.iter().any(|warp| warp_tile_position_checked(warp) == Some(tile));
+    let mut best: Option<((bool, usize), TilePosition, Direction, String)> = None;
+    for object in &module.objects {
+        if !matches!(object.object_type.as_str(), "OBJECTTYPE_TRAINER" | "OBJECTTYPE_SCRIPT")
+            || !(object.spritemovedata.starts_with("SPRITEMOVEDATA_STANDING_")
+                || matches!(object.spritemovedata.as_str(),
+                    "SPRITEMOVEDATA_SPINCLOCKWISE" | "SPRITEMOVEDATA_SPINCOUNTERCLOCKWISE"
+                    | "SPRITEMOVEDATA_SPINRANDOM_SLOW" | "SPRITEMOVEDATA_SPINRANDOM_FAST"))
+            || requested.as_deref().is_some_and(|id| object.object_identifier.as_deref() != Some(id)) {
+            continue;
+        }
+        let Some(target) = object_tile_position_checked(object) else { continue; };
+        let command_index = if object.object_type == "OBJECTTYPE_SCRIPT" {
+            let Some(battle) = module.scripted_trainer_battles.iter()
+                .find(|battle| battle.source_script == object.script) else { continue; };
+            battle.startbattle_command_index
+        } else { 0 };
+        let request = data.scripted_trainer_battle_request(map_name, &object.script, command_index)?;
+        anyhow::ensure!(data.trainers.get(&request.trainer_id).is_some(), "compiled trainer party is missing");
+        for facing in [Direction::Up, Direction::Right, Direction::Down, Direction::Left] {
+            let (dx, dy) = facing.delta();
+            let from = TilePosition::new(target.x - dx, target.y - dy);
+            if !plain(from) { continue; }
+            let score = (-3..=3).flat_map(|y| (-3..=3).map(move |x| (x, y)))
+                .filter(|&(x, y)| plain(TilePosition::new(from.x + x, from.y + y))).count();
+            // Keep the existing ordinary-trainer selection when a map has
+            // both types. An explicit object request can select its gym leader.
+            let rank = (object.object_type == "OBJECTTYPE_TRAINER", score);
+            if best.as_ref().is_none_or(|(old, _, _, _)| rank > *old) {
+                best = Some((rank, from, facing, request.event_flag.clone()));
+            }
+        }
+    }
+    let (_, from, facing, event_flag) = best.context("map has no checked stationary-trainer contact")?;
+    anyhow::ensure!(event_flag.is_empty() || !shell.shell.session().state().flags.is_event_flag_set(&event_flag)
+        .map_err(|error| anyhow::anyhow!("check trainer event: {error}"))?,
+        "trainer review requires an unbeaten original trainer");
+    shell.shell.add_party_pokemon("CYNDAQUIL", 20, None, None,
+        &initial.trainer.player_name, initial.trainer.player_id, Dv::from_non_hp(9, 9, 9, 9))?;
+    {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        data.transition_overworld_session(state, overworld, map_name, from,
+            crate::core::systems::map_context::SpawnMemoryUpdate::Preserve, &runtime.music_ids())?;
+        overworld.set_player_facing(facing);
+        state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+    }
+    reset_visible_navigation_state(&mut shell);
+    mark_runtime_snapshot_dirty(&mut shell);
+    settle_visible_shell_smoke_until_idle(&mut shell)?;
+    let ready = shell.shell.snapshot()?;
+    anyhow::ensure!(ready.battle.is_none() && ready.overworld.map_name == map_name
+        && ready.overworld.tile == from && ready.overworld.facing == facing
+        && ready.overworld.mode == MovementMode::Normal
+        && shell.pending_trainer_intro.is_none() && shell.pending_trainer_sight.is_none(),
+        "trainer review must await ordinary A at its source contact");
+    let interaction = shell.shell.current_overworld_interaction_checked()?;
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::var_os("CRYSTAL_ENCOUNTER_TRACE").is_some() {
+        eprintln!("trainer review contact: map={map_name} from={from:?} facing={facing:?} interaction={interaction:?}");
+    }
+    anyhow::ensure!(interaction.as_ref().is_some_and(|contact|
+        matches!(contact.target, crate::core::world::session::OverworldInteractionTarget::Object { .. })),
+        "trainer review has no authoritative A contact at {map_name}:{from:?} facing {facing:?}");
+    if interaction.as_ref().is_some_and(|contact| matches!(&contact.target,
+        crate::core::world::session::OverworldInteractionTarget::Object { object_type, .. }
+            if object_type == "OBJECTTYPE_SCRIPT")) {
+        let mut controller = VisibleShellController { shell };
+        controller.press(match facing {
+            Direction::Up => GameButton::Up,
+            Direction::Right => GameButton::Right,
+            Direction::Down => GameButton::Down,
+            Direction::Left => GameButton::Left,
+        })?;
+        shell = controller.shell;
+        let ready = shell.shell.snapshot()?;
+        anyhow::ensure!(ready.overworld.tile == from && ready.overworld.facing == facing
+            && ready.battle.is_none(), "scripted leader setup must retain its blocked source contact");
+    }
+    mark_runtime_snapshot_dirty(&mut shell);
+    Ok(shell)
+}
+
+/// Establish Jasmine's original prerequisite in a disposable review session.
+/// The fixture selects each initial NPC contact; all dialogue, medicine and
+/// visibility flags then come from original scripts driven by the production
+/// controller. It never grants medicine or changes quest flags itself.
+#[cfg(any(test, feature = "location-tester"))]
+fn prepare_jasmine_review_quest(mut shell: BevyRuntimeShell) -> Result<BevyRuntimeShell> {
+    anyhow::ensure!(shell.quick_save_path.is_none(), "Jasmine review cannot write a user save");
+    for (map_name, identifier, script, flag) in [
+        ("OlivineLighthouse6F", "OLIVINELIGHTHOUSE6F_JASMINE", "OlivineLighthouseJasmine", "EVENT_JASMINE_EXPLAINED_AMPHYS_SICKNESS"),
+        ("CianwoodPharmacy", "CIANWOODPHARMACY_PHARMACIST", "CianwoodPharmacist", "EVENT_GOT_SECRETPOTION_FROM_PHARMACY"),
+        ("OlivineLighthouse6F", "OLIVINELIGHTHOUSE6F_JASMINE", "OlivineLighthouseJasmine", "EVENT_JASMINE_RETURNED_TO_GYM"),
+    ] {
+        let runtime = shell.shell.runtime().clone();
+        let data = runtime.data();
+        let module = data.maps.get(map_name).context("compiled Jasmine quest map")?;
+        let object = module.objects.iter().find(|object|
+            object.object_identifier.as_deref() == Some(identifier))
+            .context("compiled Jasmine quest object")?;
+        anyhow::ensure!(object.script == script && object.object_type == "OBJECTTYPE_SCRIPT",
+            "Jasmine review requires the original quest object");
+        let target = object_tile_position_checked(object).context("original Jasmine quest tile")?;
+        let from = TilePosition::new(target.x, target.y + 1);
+        let map = data.overworld_map(map_name)?;
+        let tileset = data.tileset_collision(data.map_tileset_name(map_name)?)?;
+        anyhow::ensure!(crate::core::world::collision::sample_collision(&map, &tileset, from)
+            .is_some_and(|sample| walking_plain_support(sample.permission)),
+            "Jasmine quest contact lacks original walkable floor");
+        {
+            let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+            data.transition_overworld_session(state, overworld, map_name, from,
+                crate::core::systems::map_context::SpawnMemoryUpdate::Preserve, &runtime.music_ids())?;
+        }
+        reset_visible_navigation_state(&mut shell);
+        mark_runtime_snapshot_dirty(&mut shell);
+        let mut controller = VisibleShellController { shell };
+        controller.press(GameButton::Up)?;
+        anyhow::ensure!(controller.shell.shell.current_overworld_interaction_checked()?
+            .is_some_and(|contact| contact.script == script && contact.player_tile == from),
+            "Jasmine quest has no original controller contact at {map_name}");
+        controller.press(GameButton::A)?;
+        let mut complete = false;
+        for _ in 0..128 {
+            let done = controller.shell.shell.session().state().flags.is_event_flag_set(flag)
+                .map_err(|error| anyhow::anyhow!("Jasmine quest flag {flag}: {error}"))?;
+            if done && !controller.has_pending_script_work()
+                && !controller.shell.shell.session().state().script_runtime.text_window_open
+                && controller.shell.field_notice.is_none()
+                && controller.shell.visible_script_movement.is_none() {
+                complete = true;
+                break;
+            }
+            controller.press(GameButton::A)?;
+        }
+        anyhow::ensure!(complete, "original Jasmine quest did not finish {script}");
+        shell = controller.shell;
+    }
+    anyhow::ensure!(!shell.shell.session().state().flags.is_event_flag_set("EVENT_OLIVINE_GYM_JASMINE")
+        .map_err(|error| anyhow::anyhow!("Jasmine gym visibility: {error}"))?,
+        "original medicine quest must reveal Jasmine in her gym");
     Ok(shell)
 }

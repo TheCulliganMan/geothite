@@ -40,8 +40,8 @@ pub(crate) fn append_park_tree(
         base,
         (bounds[2] + bounds[3]) * 0.5,
     );
-    let height = tile * (4.8 + v.height * 0.5);
-    let width = spacing * (0.92 + v.width * 0.12);
+    let height = tile * (4.8 + v.height * 0.5) * [0.96, 1.04, 1.0][v.index];
+    let width = spacing * (0.92 + v.width * 0.12) * [1.04, 0.94, 1.0][v.index];
     let phase = v.turn + v.height * 5.31;
     let radius = spacing * 0.11;
     let first = mesh.solid.positions.len();
@@ -124,9 +124,10 @@ pub(crate) fn append_park_tree(
     // A single radial body, even with lobes, kept the entire tree looking
     // like a solid green cap. The lower boughs surround the authored forks;
     // an offset leader supplies the higher, asymmetric crown.
-    for bough in 0..6 {
+    let boughs = [6, 7, 5][v.index];
+    for bough in 0..boughs {
         let turn = phase + bough as f32 * 2.399963;
-        let leader = bough == 5;
+        let leader = bough == boughs - 1;
         let reach = width * if leader { 0.065 } else {
             0.25 + 0.025 * (turn * 1.7).sin()
         };
@@ -144,7 +145,7 @@ pub(crate) fn append_park_tree(
         town_crown(&mut mesh.solid, crown,
             Vec3::new(span, height * if leader { 0.16 } else { 0.20 }, span * 0.92),
             turn + v.height * 0.7,
-            v.tint.map(|c| c * brightness), CrownStyle::Park);
+            v.tint.map(|c| c * brightness));
     }
     // Park trees have a cooler mature-leaf palette than the route groves.
     // Keep sun/shade variation, but temper the uniformly yellow-green crown
@@ -304,7 +305,7 @@ mod tests {
         for phase in [0., 1.3, 3.8] {
             let mut mesh = SurfaceMeshData::default();
             town_crown(&mut mesh, Vec3::ZERO, Vec3::new(17., 15., 16.),
-                phase, [1.; 3], CrownStyle::Park);
+                phase, [1.; 3]);
             for ids in mesh.indices.chunks_exact(3) {
                 let [a, b, c] = [ids[0], ids[1], ids[2]]
                     .map(|i| Vec3::from_array(mesh.positions[i as usize]));
@@ -325,7 +326,7 @@ mod tests {
         for phase in [0., 1.3, 3.8] {
             let mut mesh = SurfaceMeshData::default();
             town_crown(&mut mesh, Vec3::ZERO, Vec3::new(17., 15., 16.),
-                phase, [1.; 3], CrownStyle::Park);
+                phase, [1.; 3]);
             let mut hits = 0;
             for row in 0..16 { for column in 0..16 {
                 let origin = sun * 60. + side * (column as f32 - 7.5) * 0.75

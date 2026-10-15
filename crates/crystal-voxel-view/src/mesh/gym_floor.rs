@@ -587,6 +587,8 @@ mod gym_floor_tests {
         quad(&mut m, &g, 1, 1);
         let neighbor_positions = m.textured.positions[4..].to_vec();
         let neighbor_uvs = m.textured.uvs[4..].to_vec();
+        let neighbor_normals = m.textured.normals[4..].to_vec();
+        let neighbor_colors = m.textured.colors[4..].to_vec();
         assert_eq!(
             finish_surfaces(
                 &mut m,
@@ -597,8 +599,18 @@ mod gym_floor_tests {
             ),
             1
         );
-        assert!(m.textured.positions.ends_with(&neighbor_positions));
-        assert!(m.textured.uvs.ends_with(&neighbor_uvs));
+        // Compaction may reorder vertex storage; the unknown neighbor must
+        // retain every attribute and both original indexed triangles.
+        let start=m.textured.positions.windows(4)
+            .position(|v|v==neighbor_positions).expect("unknown neighbor geometry retained");
+        assert_eq!(&m.textured.uvs[start..start+4],neighbor_uvs);
+        assert_eq!(&m.textured.normals[start..start+4],neighbor_normals);
+        assert_eq!(&m.textured.colors[start..start+4],neighbor_colors);
+        for triangle in [[0,1,2],[0,2,3]] {
+            let ids=triangle.map(|v|(start+v)as u32);
+            assert!(m.textured.indices.chunks_exact(3).any(|v|v==ids),
+                "unknown neighbor indexed triangle retained");
+        }
     }
     #[test]
     fn gym_floor_finish_preserves_adjacent_geometry_and_support() {

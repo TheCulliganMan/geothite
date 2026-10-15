@@ -2,7 +2,7 @@
 //! The original wrist, palm base, thumb, UV islands and joint palette stay intact.
 use crate::{mesh::SurfaceMeshData, open_people::PersonRig};
 use bevy::prelude::*;
-use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 
 fn key(p: [f32; 3]) -> [i32; 3] {
     p.map(|v| (v * 100_000.).round() as i32)
@@ -62,15 +62,16 @@ fn refine(
 ) {
     let old = std::mem::take(&mut mesh.indices);
     let edge = |a: [i32; 3], b: [i32; 3]| (a.min(b), a.max(b));
-    let mut cuts = BTreeSet::new();
+    let keys = mesh.positions.iter().copied().map(key).collect::<Vec<_>>();
+    let mut cuts = HashSet::new();
     for f in old.chunks_exact(3) {
         if !f.iter().all(|&i| selected[i as usize]) {
             continue;
         }
         for n in 0..3 {
             cuts.insert(edge(
-                key(mesh.positions[f[n] as usize]),
-                key(mesh.positions[f[(n + 1) % 3] as usize]),
+                keys[f[n] as usize],
+                keys[f[(n + 1) % 3] as usize],
             ));
         }
     }
@@ -82,8 +83,8 @@ fn refine(
             let a = v[n];
             let b = v[(n + 1) % 3];
             if cuts.contains(&edge(
-                key(mesh.positions[a as usize]),
-                key(mesh.positions[b as usize]),
+                keys[a as usize],
+                keys[b as usize],
             )) {
                 mid[n] = Some(
                     *cache
@@ -123,6 +124,7 @@ fn refine(
 
 struct Hand {
     bind: Mat4,
+    inverse_bind: Mat4,
     index: BTreeSet<usize>,
     left: f32,
     right: f32,
@@ -220,6 +222,7 @@ fn hands(rig: &PersonRig) -> Vec<Hand> {
             );
             result.push(Hand {
                 bind,
+                inverse_bind: bind.inverse(),
                 index,
                 left: cap_left,
                 right: cap_right,
@@ -240,12 +243,59 @@ fn eligible(p: [f32; 3], j: [u16; 4], w: [f32; 4], hand: &Hand, cut: f32) -> boo
         && hand.bind.transform_point3(Vec3::from_array(p)).y > cut
 }
 
+/// Conservative broad phase for the unchanged projected barycentric test.
+/// Candidate lists retain source face order, so the final max has the same
+/// floating-point behavior as scanning every roof triangle.
+struct Roof {
+    triangles: Vec<[Vec3; 3]>,
+    min: Vec2,
+    scale: Vec2,
+    bins: Vec<Vec<usize>>,
+}
+impl Roof {
+    const SIDE: usize = 16;
+    fn new(triangles: Vec<[Vec3; 3]>) -> Self {
+        let mut min = Vec2::splat(f32::INFINITY);
+        let mut max = Vec2::splat(f32::NEG_INFINITY);
+        for p in triangles.iter().flatten() {
+            let p = Vec2::new(p.x, p.z);
+            min = min.min(p);
+            max = max.max(p);
+        }
+        if triangles.is_empty() { min = Vec2::ZERO; max = Vec2::ONE; }
+        let scale = Vec2::splat(Self::SIDE as f32) / (max - min).max(Vec2::splat(1e-6));
+        let mut roof = Self { triangles, min, scale, bins: vec![Vec::new(); Self::SIDE * Self::SIDE] };
+        for (i, triangle) in roof.triangles.iter().enumerate() {
+            let mut lo = Vec2::splat(f32::INFINITY);
+            let mut hi = Vec2::splat(f32::NEG_INFINITY);
+            for p in triangle { let p = Vec2::new(p.x, p.z); lo = lo.min(p); hi = hi.max(p); }
+            // The acceptance threshold permits barycentric coordinates down
+            // to -1e-5. Include that fringe and arithmetic rounding in bins.
+            let padding = (hi - lo) * 4e-5 + lo.abs().max(hi.abs()).max(Vec2::ONE) * (32. * f32::EPSILON);
+            let a = roof.cell(lo - padding);
+            let b = roof.cell(hi + padding);
+            for z in a[1]..=b[1] { for x in a[0]..=b[0] {
+                roof.bins[z * Self::SIDE + x].push(i);
+            }}
+        }
+        roof
+    }
+    fn cell(&self, p: Vec2) -> [usize; 2] {
+        ((p - self.min) * self.scale).floor().clamp(Vec2::ZERO, Vec2::splat((Self::SIDE - 1) as f32)).to_array().map(|v| v as usize)
+    }
+    fn candidates(&self, p: Vec3) -> impl Iterator<Item = &[Vec3; 3]> {
+        let [x, z] = self.cell(Vec2::new(p.x, p.z));
+        self.bins[z * Self::SIDE + x].iter().map(|&i| &self.triangles[i])
+    }
+}
+
 pub(crate) fn sculpt(
     rig: &PersonRig,
     mesh: &mut SurfaceMeshData,
     j: &mut Vec<[u16; 4]>,
     w: &mut Vec<[f32; 4]>,
 ) {
+    let _trace = crate::loading_trace::span("actor.sculpt_digits", || serde_json::json!({"vertices": mesh.positions.len(), "triangles": mesh.indices.len() / 3}));
     let hands = hands(rig);
     if hands.is_empty() {
         return;
@@ -263,12 +313,13 @@ pub(crate) fn sculpt(
     // Measure the supplied terminal dome before reshaping it. Subtracting a
     // lobe field from that dome retains its unequal outer finger heights.
     // A vertical, monotone remap instead gives every pad its authored profile.
-    let roofs: Vec<Vec<[Vec3; 3]>> = hands.iter().map(|h| {
+    let roofs: Vec<Roof> = hands.iter().map(|h| {
+        Roof::new(
         mesh.indices.chunks_exact(3).filter(|face| face.iter().any(|&i|
             eligible(mesh.positions[i as usize], j[i as usize], w[i as usize], h, 0.19)))
             .map(|face| [face[0], face[1], face[2]].map(|i|
                 h.bind.transform_point3(Vec3::from_array(mesh.positions[i as usize]))))
-            .collect()
+            .collect())
     }).collect();
     let mut changed = vec![false; mesh.positions.len()];
     for (i, p) in mesh.positions.iter_mut().enumerate() {
@@ -303,7 +354,7 @@ pub(crate) fn sculpt(
             // This bounded height field retains the connected surface and
             // uses the supplied slab's actual depth, without adding pieces.
             let depth = ((q.z - h.cap_center_z) / h.cap_depth).clamp(-1., 1.);
-            let source_top = roof.iter().filter_map(|tri| {
+            let source_top = roof.candidates(q).filter_map(|tri| {
                 let [a,b,c] = *tri;
                 let denominator = (b.z-c.z)*(a.x-c.x)+(c.x-b.x)*(a.z-c.z);
                 if denominator.abs() < 1e-10 { return None; }
@@ -328,7 +379,7 @@ pub(crate) fn sculpt(
             let volume_activation = volume_t * volume_t * (3. - 2. * volume_t);
             let middle_z = h.cap_center_z;
             q.z = middle_z + (q.z - middle_z) * (1. - 0.25 * (1. - section) * volume_activation);
-            *p = h.bind.inverse().transform_point3(q).to_array();
+            *p = h.inverse_bind.transform_point3(q).to_array();
             changed[i] = true;
             break;
         }
@@ -336,9 +387,10 @@ pub(crate) fn sculpt(
     // Relax the small triangulation ripples without another subdivision or
     // changing the UV/skin palette. Geometric welds share one target; the palm
     // boundary is pinned wherever a neighboring face remains unsculpted.
-    let mut neighbors = BTreeMap::<[i32; 3], BTreeSet<[i32; 3]>>::new();
-    let mut points = BTreeMap::<[i32; 3], Vec3>::new();
-    let mut pinned = BTreeSet::new();
+    // Neighbor order controls floating-point summation; keep each set sorted.
+    let mut neighbors = HashMap::<[i32; 3], BTreeSet<[i32; 3]>>::new();
+    let mut points = HashMap::<[i32; 3], Vec3>::new();
+    let mut pinned = HashSet::new();
     for face in mesh.indices.chunks_exact(3) {
         let ids = [face[0],face[1],face[2]].map(|i| i as usize);
         let keys = ids.map(|i| key(mesh.positions[i]));
@@ -387,6 +439,27 @@ pub(crate) fn sculpt(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn roof_bins_preserve_barycentric_hits_and_source_order() {
+        let triangles = (0..24).flat_map(|z| (0..24).map(move |x| {
+            let x = x as f32 * 0.031 - 0.4;
+            let z = z as f32 * 0.019 - 0.2;
+            [Vec3::new(x, 0.2, z), Vec3::new(x + 0.031, 0.3, z), Vec3::new(x, 0.4, z + 0.019)]
+        })).collect::<Vec<_>>();
+        let roof = Roof::new(triangles.clone());
+        for (index, &[a, b, c]) in triangles.iter().enumerate() {
+            for [u, v] in [[0., 0.], [0.5, 0.5], [1., 0.], [-0.000009, 0.5], [0.5, -0.000009], [0.5, 0.500009]] {
+                let p = a * u + b * v + c * (1. - u - v);
+                let candidates = roof.candidates(p).collect::<Vec<_>>();
+                assert!(candidates.iter().any(|&&triangle| triangle == triangles[index]), "accepted fringe must remain a candidate");
+                let indices = candidates.iter().map(|&&triangle| triangles.iter().position(|t| *t == triangle).unwrap()).collect::<Vec<_>>();
+                assert!(indices.windows(2).all(|pair| pair[0] < pair[1]));
+                assert!(candidates.len() < triangles.len() / 4, "broad phase must reject unrelated triangles");
+            }
+        }
+        assert_eq!(Roof::new(Vec::new()).candidates(Vec3::ZERO).count(), 0);
+    }
+
     #[test]
     #[ignore = "requires supplied Kenney rigs in CRYSTAL_OPEN_MODEL_ROOT"]
     fn supplied_digits_preserve_wrists_attributes_and_animation_bounds() {

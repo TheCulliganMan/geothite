@@ -366,7 +366,7 @@ fn field_prompt_context_checked(
                         {
                             return Ok(Some((
                                 interaction.target_tile,
-                                field_object_prompt_label(object),
+                                field_object_prompt_label(runtime_shell, snapshot, object),
                             )));
                         }
                     }
@@ -402,7 +402,7 @@ fn field_prompt_context_checked(
         )? {
             return Ok(Some((
                 TilePosition::new(front_x, front_y),
-                field_object_prompt_label(object),
+                field_object_prompt_label(runtime_shell, snapshot, object),
             )));
         }
     }
@@ -434,7 +434,36 @@ fn field_prompt_context_checked(
     Ok(None)
 }
 
-fn field_object_prompt_label(object: &crate::core::map::ObjectEvent) -> String {
+fn field_object_prompt_label(
+    runtime_shell: &BevyRuntimeShell,
+    snapshot: &RuntimeShellSnapshot,
+    object: &crate::core::map::ObjectEvent,
+) -> String {
+    let resident = match object.sprite.as_str() {
+        "SPRITE_DAY_CARE_MON_1" => Some(&snapshot.day_care.man),
+        "SPRITE_DAY_CARE_MON_2" => Some(&snapshot.day_care.lady),
+        _ => None,
+    };
+    let visible_sprite = resident
+        .filter(|resident| resident.active)
+        .and_then(|resident| resident.pokemon.as_ref())
+        .map(|pokemon| pokemon.species.id.as_str())
+        .unwrap_or(&object.sprite);
+    let bitmap = resolve_visible_object_sprite_asset_id(
+        &runtime_shell.asset_root, visible_sprite,
+        &snapshot.script_events.variable_sprites, &snapshot.presentation.menu_icons,
+    );
+    let source = visible_map_object_model_source_id(
+        &snapshot.overworld.map_name, object, visible_sprite, &bitmap,
+        &snapshot.script_events.variable_sprites, &snapshot.presentation.menu_icons,
+    );
+    field_object_prompt_for_source(object, &source)
+}
+
+fn field_object_prompt_for_source(object: &crate::core::map::ObjectEvent, source: &str) -> String {
+    if let Some(species) = resolved_object_species_label(source) {
+        return format!("A {species}");
+    }
     let label = object_scene_label(object);
     let kind = match visible_object_kind(object) {
         VisibleObjectKind::ItemBall => "ITEM",
@@ -6721,7 +6750,7 @@ fn composite_visible_magnet_train_player(
 }
 
 #[derive(Component)]
-struct HealMachineWorldSprite;
+struct HealMachineWorldSprite(crystal_render_api::VisualEffectId);
 
 fn spawn_visible_heal_machine(
     commands: &mut Commands,
@@ -6812,7 +6841,7 @@ fn spawn_visible_heal_machine(
     if animation.kind != 2 {
         let elm_x = if animation.kind == 1 { 16.0 } else { 0.0 };
         let elm_y = if animation.kind == 1 { 32.0 } else { 0.0 };
-        for (source_x, source_y) in [(26.0, 16.0), (30.0, 16.0)] {
+        for (slot,(source_x, source_y)) in [(26.0, 16.0), (30.0, 16.0)].into_iter().enumerate() {
             let (x, y) = battle_hud_tile_origin(
                 (source_x + elm_x + camera_x) / SOURCE_TILE_SIZE as f32,
                 (source_y + elm_y + camera_y) / SOURCE_TILE_SIZE as f32,
@@ -6824,13 +6853,13 @@ fn spawn_visible_heal_machine(
                     },
 Transform::from_xyz(x, y, 3.8),),
                 FieldCommandMarker,
-                HealMachineWorldSprite,
+                HealMachineWorldSprite(crystal_render_api::VisualEffectId::HealMachineLamp(slot as u8)),
             ));
         }
     }
     let elm_x = if animation.kind == 1 { 16.0 } else { 0.0 };
     let elm_y = if animation.kind == 1 { 32.0 } else { 0.0 };
-    for &(source_x, source_y, flip_x) in positions.iter().take(visible_count.min(positions.len())) {
+    for (slot,&(source_x, source_y, flip_x)) in positions.iter().take(visible_count.min(positions.len())).enumerate() {
         let (x, y) = battle_hud_tile_origin(
             (source_x + elm_x + camera_x) / SOURCE_TILE_SIZE as f32,
             (source_y + elm_y + camera_y) / SOURCE_TILE_SIZE as f32,
@@ -6843,7 +6872,7 @@ Transform::from_xyz(x, y, 3.8),),
                 },
 Transform::from_xyz(x, y, 3.8),),
             FieldCommandMarker,
-                HealMachineWorldSprite,
+                HealMachineWorldSprite(crystal_render_api::VisualEffectId::HealMachineBall(slot as u8)),
         ));
     }
     Ok(())

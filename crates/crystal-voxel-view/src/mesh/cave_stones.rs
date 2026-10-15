@@ -120,13 +120,17 @@ fn fractured_mass(
     let [w, e, n, s] = bounds;
     let [x, z] = coords;
     let phase = hash(x, z, 0) * std::f32::consts::TAU;
-    let family = hash(x, z, 9);
+    // Low slab, upright shoulder, and swept fracture recipes.
+    let asset = crate::scenery_variants::index(coords, 6);
+    let family = [0.15, 0.52, 0.88][asset];
     let height = height
         * if !ice {
             if family < 0.25 {
                 0.40 + hash(x, z, 4) * 0.20
+            } else if asset == 1 {
+                0.72 + hash(x, z, 4) * 0.28
             } else {
-                0.62 + hash(x, z, 4) * 0.38
+                0.60 + hash(x, z, 4) * 0.22
             }
         } else if family < 0.34 {
             0.26 + hash(x, z, 4) * 0.14
@@ -134,7 +138,7 @@ fn fractured_mass(
             0.48 + hash(x, z, 4) * 0.34
         };
     let tilt = if !ice {
-        0.26 + hash(x, z, 6) * 0.28
+        [0.26, 0.34, 0.46][asset] + hash(x, z, 6) * 0.08
     } else if family > 0.70 {
         0.32
     } else {
@@ -149,7 +153,7 @@ fn fractured_mass(
         (Vec3::Z, 0.98),
         (Vec3::NEG_Z, 0.98),
     ];
-    let sides = 5 + (hash(x, z, 8) * 3.99) as usize;
+    let sides = [7, 5, 6][asset];
     for i in 0..sides {
         let angle = phase
             + std::f32::consts::TAU * (i as f32 + (hash(x, z, 10 + i as u32) - 0.5) * 0.22)

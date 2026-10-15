@@ -57,9 +57,18 @@ export function gamepadCamera(pads) {
   return { yaw: 0, zoom: 0 };
 }
 
-export function mountGamepadControls({ document, window, canvas, controls, onInput, onCamera = () => false }) {
+export function mountGamepadControls({ document, window, canvas, controls, onInput, onCamera = () => false, onCameraSelect = () => false }) {
   if (!window.navigator.getGamepads) return;
+  let cameraSelectOwned = false;
   const input = createGamepadInput((button, down) => {
+    if (button === 'select') {
+      if (down) cameraSelectOwned = Boolean(onCameraSelect());
+      if (cameraSelectOwned) {
+        if (down) { onInput(); canvas.focus({ preventScroll: true }); document.body.classList.add('controller-active'); }
+        else cameraSelectOwned = false;
+        return;
+      }
+    }
     if (down) {
       onInput();
       canvas.focus({ preventScroll: true });

@@ -3,7 +3,9 @@
 import json,unittest
 from pathlib import Path
 from axolotl_sculpt import sculpture,SPECIES,HEIGHT
+from battle_model_assets import read_species_model,species_paths
 from sculpt_test_support import assert_closed_models,assert_model_shading
+from wooper_glb import geometry_digest
 
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 
@@ -23,19 +25,21 @@ def ray_intersections(p,x,y):
 
 class AxolotlTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+    def setUpClass(cls):cls.models={s:read_species_model(species_paths(ROOT)[s]) for s in SPECIES}
     def test_closed_connected_oriented_parts(self):assert_closed_models(self,self.models)
     def test_normals_agree_with_real_winding(self):assert_model_shading(self,self.models)
 
     def test_canonical_recipe_dimensions_and_budget(self):
         for s,m in self.models.items():
-            self.assertEqual(m,sculpture(s));parts=m['primitives'];names=[p['part'] for p in parts]
+            recipe=sculpture(s)
+            self.assertEqual(geometry_digest(m),geometry_digest(recipe));parts=m['primitives'];names=[p['part'] for p in parts]
+            self.assertEqual(names,[p['part'] for p in recipe['primitives']])
             self.assertEqual(len(names),len(set(names)))
             self.assertEqual(sum(n.startswith('Body /') for n in names),1)
             self.assertEqual(min(v for p in parts for v in p['positions'][1::3]),0.)
             self.assertAlmostEqual(max(v for p in parts for v in p['positions'][1::3]),HEIGHT[s],places=6)
             self.assertLess(sum(len(p['indices'])//3 for p in parts),7000)
-            self.assertLess(len(json.dumps(m,separators=(',',':'))),400000)
+            self.assertLess(len(json.dumps(recipe,separators=(',',':'))),400000)
 
     def test_facial_dots_and_belly_bars_follow_actual_skin(self):
         for s,m in self.models.items():
@@ -86,5 +90,22 @@ class AxolotlTests(unittest.TestCase):
             self.assertGreater(width_x/depth_y,1.65)
         self.assertGreater(ratios['wooper'],1.35)
         self.assertLess(ratios['quagsire'],1.14)
+
+    def test_adult_pads_have_volume_and_digit_folds_follow_actual_skin(self):
+        m=self.models['quagsire'];parts={p['part']:p for p in m['primitives']}
+        for side in (-1,1):
+            foot=parts[f'Foot / grounded three-lobed pad {side}']
+            self.assertGreater(max(foot['positions'][1::3]),.035)
+            upper=dict(foot);upper['positions']=[v for i in range(0,len(foot['positions']),3)
+                for v in (foot['positions'][i],foot['positions'][i+2],foot['positions'][i+1])]
+            arm=parts[f'Arm / fleshy hanging paddle {side}']
+            for j in range(2):
+                for name,parent,swap in [(f'Toe crease / fitted pad fold {side} {j}',upper,True),
+                                         (f'Finger crease / short palm fold {side} {j}',arm,False)]:
+                    fold=parts[name]
+                    for i in range(0,len(fold['positions']),3):
+                        x,y,z=fold['positions'][i:i+3]
+                        hits=ray_intersections(parent,x,z if swap else y);self.assertTrue(hits,name)
+                        self.assertLess(abs((y if swap else z)-max(hits)),.006,name)
 
 if __name__=='__main__':unittest.main()

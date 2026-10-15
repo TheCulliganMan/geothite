@@ -401,6 +401,9 @@ pub struct BevyShellConfig {
     /// Fresh Violet Gym side contact; ordinary A runs Falkner's authored script.
     #[cfg(feature = "location-tester")]
     pub render_test_falkner_encounter: bool,
+    /// Fresh Cherrygrove source scene; Right triggers the authored rival event.
+    #[cfg(feature = "location-tester")]
+    pub render_test_rival_encounter: bool,
     /// Legal Gengar/TM30 fixture in the disposable battle preview only.
     #[cfg(feature = "location-tester")]
     pub render_test_shadow_ball: bool,
@@ -425,6 +428,9 @@ pub struct BevyShellConfig {
     pub render_test_battle_starter: Option<String>,
     #[cfg(feature = "location-tester")]
     pub render_test_battle_shiny: bool,
+    /// One-based A..Z DVs for the disposable Unown model preview.
+    #[cfg(feature = "location-tester")]
+    pub render_test_unown_form: Option<u8>,
     /// One deterministic ordinary failed throw in the fresh Route36 preview.
     /// Supplies hardware DIV samples only; the real PACK action resolves capture.
     #[cfg(feature = "location-tester")]
@@ -4650,6 +4656,9 @@ impl VisibleSequenceTickClock {
 #[derive(Resource, Default)]
 struct RenderedViewport {
     map_name: Option<String>,
+    /// Effective palette period of the retained successfully rendered map.
+    visual_lighting: crystal_render_api::VisualWorldLighting,
+    visual_clock_enabled: bool,
     tile: Option<TilePosition>,
     map_texture: Option<Handle<Image>>,
     map_priority_texture: Option<Handle<Image>>,
@@ -4661,6 +4670,8 @@ struct RenderedViewport {
     /// `map_texture`; they never participate in collision or movement.
     #[cfg(any(test, feature = "voxel-view"))]
     visual_tiles: Vec<crystal_render_api::VisualTile>,
+    #[cfg(any(test, feature = "voxel-view"))]
+    visual_jump_ledges: std::sync::Arc<[crystal_render_api::VisualJumpLedge]>,
     /// Validated terrain identity, rebuilt with the tile grid rather than
     /// rehashing every source tile during camera/actor interpolation.
     visual_tiles_revision: Option<u64>,
@@ -5749,6 +5760,8 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let render_test_battle_shiny = config.render_test_battle_shiny;
     #[cfg(feature = "location-tester")]
+    let render_test_unown_form = config.render_test_unown_form;
+    #[cfg(feature = "location-tester")]
     let render_test_route36_encounter = config.render_test_route36_encounter;
     #[cfg(feature = "location-tester")]
     let render_test_fishing_encounter = config.render_test_fishing_encounter;
@@ -5764,6 +5777,8 @@ pub fn run_bevy_shell(
     let render_test_gym_encounter = config.render_test_gym_encounter;
     #[cfg(feature = "location-tester")]
     let render_test_falkner_encounter = config.render_test_falkner_encounter;
+    #[cfg(feature = "location-tester")]
+    let render_test_rival_encounter = config.render_test_rival_encounter;
     #[cfg(feature = "location-tester")]
     let render_test_shadow_ball = config.render_test_shadow_ball;
     #[cfg(feature = "location-tester")]
@@ -5786,7 +5801,7 @@ pub fn run_bevy_shell(
     let battle_reduced_flashes = config.battle_reduced_flashes;
     #[cfg(feature = "location-tester")]
     anyhow::ensure!(
-        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter || render_test_gym_encounter || render_test_falkner_encounter)
+        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter || render_test_gym_encounter || render_test_falkner_encounter || render_test_rival_encounter)
             || matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. }),
         "battle preview only supports a fresh disposable location session"
     );
@@ -5820,7 +5835,13 @@ pub fn run_bevy_shell(
         initialize_bevy_runtime_shell(asset_root, runtime, start, config)?
     };
     #[cfg(feature = "location-tester")]
-    let runtime_shell = if render_test_surf_encounter {
+    let runtime_shell = if render_test_rival_encounter {
+        anyhow::ensure!(!(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter
+            || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter
+            || render_test_ice_encounter || render_test_gym_encounter || render_test_falkner_encounter),
+            "field and direct battle fixtures are mutually exclusive");
+        prepare_rival_encounter_preview(runtime_shell)?
+    } else if render_test_surf_encounter {
         anyhow::ensure!(!(render_test_battle || render_test_route36_encounter
             || render_test_fishing_encounter || render_test_walking_encounter
             || render_test_cave_encounter || render_test_ice_encounter
@@ -5879,6 +5900,7 @@ pub fn run_bevy_shell(
             render_test_poke_ball_failure,
             render_test_battle_starter.as_deref(),
             render_test_battle_shiny,
+            render_test_unown_form,
         )?
     } else {
         runtime_shell
@@ -5951,6 +5973,11 @@ pub fn run_bevy_shell(
         window
     };
     let plugins = DefaultPlugins.build();
+    #[cfg(all(target_arch = "wasm32", feature = "browser-webgpu"))]
+    let plugins = plugins.set(bevy::render::RenderPlugin {
+        render_creation: bevy::render::settings::RenderCreation::Automatic(Box::new(crate::browser_backend::settings())),
+        ..default()
+    });
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     let plugins = if render_test_screenshot.is_some() && !render_test_live {
         // One-shot capture exits from the image-save callback. Keeping its
@@ -6110,6 +6137,9 @@ pub fn run_bevy_shell(
     dev_tools::install(&mut app);
     source_sprite_renderer::install(&mut app);
     #[cfg(feature = "voxel-view")]
+    app.add_systems(Update,sync_native_healing_sprite_visibility
+        .after(crystal_render_api::WorldRenderSet::RenderSync));
+    #[cfg(feature = "voxel-view")]
     app.add_plugins(crystal_render_api::VisualWorldRenderPlugin)
         .add_systems(
             Update,
@@ -6133,7 +6163,13 @@ pub fn run_bevy_shell(
                 .after(sync_visible_stationary_movement_effect)
                 .after(apply_visible_battle_screen_offset)
                 .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
-        );
+        )
+        .add_systems(Update, publish_party_follower
+            .after(publish_visual_world_frame)
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract))
+        .add_systems(Update, publish_surf_mount
+            .after(publish_party_follower)
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract));
     #[cfg(feature = "voxel-view")]
     app.add_systems(
         PostUpdate,
@@ -6171,6 +6207,8 @@ pub fn run_bevy_shell(
     )
     .add_systems(PostUpdate, finish_webmcp_request)
     .add_systems(PostUpdate, autosave_browser_progress);
+    #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
+    app.add_systems(PostUpdate, trace_browser_render_memory);
     #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
     app.add_systems(
         Update,
@@ -6278,7 +6316,9 @@ pub fn run_bevy_shell(
                 .map(|(path, _)| path.join("walk.png"))
         });
         #[cfg(not(target_arch = "wasm32"))]
-        let capture_steps = render_test_measure.is_none();
+        // A recording already owns bounded frame readbacks. Independent
+        // per-step screenshots compete for the same GPU callback pipeline.
+        let capture_steps = render_test_measure.is_none() && render_test_record.is_none();
         #[cfg(target_arch = "wasm32")]
         let capture_steps = true;
         render_walk::install(
@@ -6318,6 +6358,34 @@ pub fn run_bevy_shell(
     }
 
     Ok(())
+}
+
+#[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
+fn trace_browser_render_memory(
+    time: Res<Time<Real>>,
+    mut last: Local<f64>,
+    mut enabled: Local<Option<bool>>,
+    meshes: Res<Assets<Mesh>>,
+    draws: Query<&ViewVisibility, With<Mesh3d>>,
+) {
+    use wasm_bindgen::JsCast;
+    let enabled = enabled.get_or_insert_with(|| web_sys::window()
+        .and_then(|window| window.location().search().ok())
+        .and_then(|search| web_sys::UrlSearchParams::new_with_str(&search).ok())
+        .and_then(|params| params.get("loading-trace"))
+        .as_deref() == Some("on"));
+    if !*enabled || time.elapsed_secs_f64() - *last < 5.0 { return; }
+    *last = time.elapsed_secs_f64();
+    let memory = wasm_bindgen::memory().unchecked_into::<js_sys::WebAssembly::Memory>();
+    let bytes = memory.buffer().unchecked_into::<js_sys::ArrayBuffer>().byte_length();
+    #[wasm_bindgen::prelude::wasm_bindgen]
+    extern "C" {
+        #[wasm_bindgen(js_namespace = console, js_name = info)]
+        fn report_render_memory(message: &str);
+    }
+    report_render_memory(&format!("geothite render memory: wasm_mib={} meshes={} entities={} visible={}",
+        bytes / (1024 * 1024), meshes.len(), draws.iter().count(),
+        draws.iter().filter(|visible| visible.get()).count()));
 }
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "voxel-view"))]
@@ -7736,15 +7804,12 @@ fn settle_visible_shell_controller(
         // joypad presses. Smoke sessions must advance that same presentation
         // clock or every A press is discarded against an eternally unrevealed
         // item notice or script page.
-        if let Some(notice) = runtime_shell
-            .field_notice
-            .clone()
-            .or_else(|| runtime_shell.pc_notice.clone())
-        {
+        if runtime_shell.field_notice.is_some() || runtime_shell.pc_notice.is_some() {
             if tick_visible_field_text_reveal(runtime_shell, false)? {
                 mark_runtime_presentation_dirty(runtime_shell);
             }
-            if !visible_field_text_reveal_is_complete_for_text(runtime_shell, &notice) {
+            let presentation = runtime_shell.shell.presentation_snapshot()?;
+            if !visible_field_dialogue_is_fully_revealed(runtime_shell, &presentation) {
                 continue;
             }
             if runtime_shell.visible_wait_sfx_boundary {
@@ -7763,6 +7828,13 @@ fn settle_visible_shell_controller(
                 if advanced {
                     continue;
                 }
+            }
+            // Item notifications can retain an authored script cursor without
+            // a core WaitButton command. Once their printer is ready, the
+            // production controller must return ownership to the next A/B
+            // press instead of repeatedly trying the blocked continuation.
+            if !auto_input && !runtime_shell.visible_wait_sfx_boundary {
+                return Ok(());
             }
         }
         // The graphical host advances the source text printer on every
@@ -7948,7 +8020,7 @@ fn settle_visible_shell_controller(
                 .and_then(|commands| commands.get(cursor.next_command_index).cloned())
         });
     anyhow::bail!(
-        "visible shell smoke exceeded idle settle limit {MAX_IDLE_SETTLE_STEPS}: cursor={:?} cursor_command={active_cursor_command:?} special_boundary={:?} next_script={:?} command_queue={} deferred={} ended={:?} pending_text_label={:?} pending_text_wait={:?} text_window={} window={} runtime_flag={:?} non_audio_events={} recent_audio={:?}",
+        "visible shell smoke exceeded idle settle limit {MAX_IDLE_SETTLE_STEPS}: cursor={:?} cursor_command={active_cursor_command:?} special_boundary={:?} next_script={:?} command_queue={} deferred={} ended={:?} pending_text_label={:?} pending_text_wait={:?} text_window={} window={} runtime_flag={:?} non_audio_events={} field_notice={:?} wait_sfx={} item_notify_core={} item_notify_snapshot={} recent_audio={:?}",
         runtime_shell.active_script_cursor,
         runtime_shell.special_boundary,
         snapshot.script_events.next_script,
@@ -7961,6 +8033,10 @@ fn settle_visible_shell_controller(
         snapshot.ui.window_open,
         visible_auto_runtime_flag(&snapshot),
         has_visible_pending_non_audio_script_events(&snapshot),
+        runtime_shell.field_notice,
+        runtime_shell.visible_wait_sfx_boundary,
+        runtime_shell.shell.session().state().script_runtime.item_notify_queued,
+        snapshot.script_events.item_notify_queued,
         runtime_shell.last_audio_events
     )
 }
@@ -8187,6 +8263,10 @@ fn initialize_bevy_runtime_shell(
             .as_deref()
             .filter(|name| !name.is_empty())
             .unwrap_or("RENDER");
+        let party_size=std::env::var("CRYSTAL_RENDER_TEST_PARTY_SIZE")
+            .map_or(Ok(1usize),|v|v.parse::<usize>().context("render party size must be an integer"))?;
+        anyhow::ensure!((1..=6).contains(&party_size),"render party size must be between 1 and 6");
+        for _ in 0..party_size {
         shell.add_party_pokemon(
             "TOTODILE",
             30,
@@ -8194,8 +8274,10 @@ fn initialize_bevy_runtime_shell(
             None,
             owner_name,
             trainer.player_id,
-            Dv::from_non_hp(10, 10, 10, 10),
+            Dv::from_non_hp(9, 9, 9, 9),
         )?;
+        }
+
     }
     if let Some(save_path) = title_menu
         .as_ref()
@@ -8702,6 +8784,7 @@ include!("bevy_shell/surf_anchor.rs");
 include!("bevy_shell/surf_anchor_preview.rs");
 include!("bevy_shell/trainer_anchor.rs");
 include!("bevy_shell/scripted_trainer_anchor.rs");
+include!("bevy_shell/scripted_ground_anchor.rs");
 include!("bevy_shell/battle_entry.rs");
 include!("bevy_shell/battle_sliding_intro.rs");
 #[cfg(feature = "voxel-view")]
@@ -8710,11 +8793,24 @@ mod projected_source_oam;
 #[cfg(feature = "voxel-view")]
 include!("bevy_shell/battle_3d.rs");
 #[cfg(feature = "voxel-view")]
+include!("bevy_shell/party_follower.rs");
+#[cfg(feature = "voxel-view")]
+include!("bevy_shell/surf_mount.rs");
+#[cfg(feature = "voxel-view")]
 include!("bevy_shell/battle_source_placement.rs");
 include!("bevy_shell/menu_rendering.rs");
 include!("bevy_shell/stats_screen.rs");
 #[cfg(any(test, feature = "voxel-view"))]
 include!("bevy_shell/render_mod.rs");
+#[path = "bevy_shell/terrain_ledges.rs"]
+mod terrain_ledges;
+/// Read-only authored ledge metadata shared by native rendering and pack
+/// verification. Collision remains authoritative in the production controller.
+pub fn authored_visual_jump_ledges(width:u16,blocks:&[u16],
+    collision:&crystal_core::world::collision::TilesetCollision,origin:IVec2)
+    ->anyhow::Result<std::sync::Arc<[crystal_render_api::VisualJumpLedge]>> {
+    terrain_ledges::from_map(width,blocks,collision,origin)
+}
 include!("bevy_shell/overworld_rendering.rs");
 include!("bevy_shell/start_menu.rs");
 include!("bevy_shell/bitmap_font.rs");

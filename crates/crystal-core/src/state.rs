@@ -3976,8 +3976,9 @@ impl ScriptRuntimeMemory {
                 &format!("map_events[{index}].target_map"),
                 event.target_map.as_deref(),
             )?;
-            validate_optional_script_runtime_token(
+            validate_optional_script_map_setup_token(
                 &format!("map_events[{index}].map_setup"),
+                &event.command,
                 event.map_setup.as_deref(),
             )?;
             validate_script_runtime_label(
@@ -4005,8 +4006,9 @@ impl ScriptRuntimeMemory {
         }
         if let Some(refresh) = &self.pending_map_refresh {
             validate_script_runtime_token("pending_map_refresh.command", &refresh.command)?;
-            validate_optional_script_runtime_token(
+            validate_optional_script_map_setup_token(
                 "pending_map_refresh.map_setup",
+                &refresh.command,
                 refresh.map_setup.as_deref(),
             )?;
             validate_script_runtime_label(
@@ -7812,6 +7814,20 @@ fn validate_optional_script_runtime_token(field: &str, value: Option<&str>) -> R
         validate_script_runtime_token(field, value)?;
     }
     Ok(())
+}
+
+fn validate_optional_script_map_setup_token(
+    field: &str, command: &str, value: Option<&str>,
+) -> Result<(), String> {
+    // Native reanchormap operands can be literal bytes (the Elite Four uses
+    // $86). Keep that operand verbatim; refresh events do not dispatch a named
+    // map-setup callback. Other commands retain their identifier contract.
+    if command == "reanchormap" && value.is_some_and(|value|
+        value.strip_prefix('$').is_some_and(|digits|
+            (1..=2).contains(&digits.len()) && digits.bytes().all(|b| b.is_ascii_hexdigit()))) {
+        return Ok(());
+    }
+    validate_optional_script_runtime_token(field, value)
 }
 
 fn validate_empty_or_script_runtime_token(field: &str, value: &str) -> Result<(), String> {

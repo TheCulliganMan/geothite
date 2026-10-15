@@ -83,13 +83,13 @@ def pose_angles(clip,t):
                 (.015*lag(.35),0.,.032*lag(.4)),(.015*lag(.50),0.,-.032*lag(.55))]
     if clip=='attack':
         # Cue-relative fractions preserve the move's authoritative duration.
-        # A brief rearward preparation, planted forward neck drive, and delayed
+        # An immediate planted forward neck drive and delayed
         # blade/collar settle read across the species' different source moves.
-        brace=envelope(t,((0.,0.),(.16,-.19),(.44,1.),(.58,.82),(.82,.08),(1.,0.)))
-        neck=envelope(t,((0.,0.),(.21,-.20),(.49,1.),(.65,.60),(.86,-.045),(1.,0.)))
-        blade=envelope(t,((0.,0.),(.27,-.12),(.55,1.),(.74,-.16),(.91,.035),(1.,0.)))
-        tip=envelope(t,((0.,0.),(.33,-.07),(.62,1.),(.81,-.18),(1.,0.)))
-        ruff=envelope(t,((0.,0.),(.25,-.14),(.52,1.),(.75,-.20),(1.,0.)))
+        brace=envelope(t,((0.,0.),(.18,1.),(.39,.78),(.58,.36),(.80,.04),(1.,0.)))
+        neck=envelope(t,((0.,0.),(.18,1.),(.40,.76),(.62,.28),(.86,-.045),(1.,0.)))
+        blade=envelope(t,((0.,0.),(.25,1.),(.46,.65),(.74,-.16),(.91,.035),(1.,0.)))
+        tip=envelope(t,((0.,0.),(.32,1.),(.51,.65),(.81,-.18),(1.,0.)))
+        ruff=envelope(t,((0.,0.),(.24,1.),(.45,.68),(.75,-.20),(1.,0.)))
         return [(0.,0.,0.),(.028*brace,0.,0.),(.066*brace,.010*brace,0.),
                 (.092*neck,-.020*neck,0.),(.072*neck,.044*neck,0.),
                 (-.080*brace,0.,-.014*brace),(-.080*brace,0.,.014*brace),

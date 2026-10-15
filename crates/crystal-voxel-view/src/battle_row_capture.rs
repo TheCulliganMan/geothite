@@ -91,12 +91,22 @@ struct CaptureKey {
     // Camera3d, exposure, tonemapping, color grading and static deband settings.
     camera_changes: [u32; 5],
     light: (Entity, u32, Mat4),
-    ambient: Option<(Color, f32)>,
+    ambient: Option<(Color, f32, bool)>,
     palette: (u8, BattleFlashMode),
     unlit: bool,
     render_size: UVec2,
     output_size: UVec2,
     msaa_samples: u32,
+}
+
+/// A camera's fill overrides the global resource in Bevy. Preserve every
+/// lighting value in the image receipt so a later fill change cannot reuse it.
+pub(super) fn effective_ambient(
+    camera: Option<&AmbientLight>,
+    global: Option<&GlobalAmbientLight>,
+) -> Option<(Color, f32, bool)> {
+    camera.map(|light| (light.color, light.brightness, light.affects_lightmapped_meshes))
+        .or_else(|| global.map(|light| (light.color, light.brightness, light.affects_lightmapped_meshes)))
 }
 
 #[derive(Resource)]
@@ -137,7 +147,7 @@ pub(super) struct SettledActorImage {
     pub projection: [f32; 4],
     pub camera_changes: [u32; 5],
     pub light: (Entity, u32, Mat4),
-    pub ambient: Option<(Color, f32)>,
+    pub ambient: Option<(Color, f32, bool)>,
 }
 
 impl ActorCaptures {
@@ -236,7 +246,6 @@ fn sync_actor_captures(
             With<bevy::pbr::ScreenSpaceAmbientOcclusion>,
             With<bevy::pbr::ScreenSpaceReflections>,
             With<bevy::light::EnvironmentMapLight>,
-            With<AmbientLight>,
         )>,
     >,
     other_cameras: Query<(&Camera, &RenderTarget), Without<BattleRowCamera>>,
@@ -256,7 +265,7 @@ fn sync_actor_captures(
             &RenderLayers,
             Option<&Fxaa>,
             Option<&DistanceFog>,
-            (&RenderTarget, &Msaa, Has<bevy::camera::Hdr>),
+            (&RenderTarget, &Msaa, Has<bevy::camera::Hdr>, Option<&AmbientLight>),
         ),
         With<BattleRowCamera>,
     >,
@@ -303,7 +312,7 @@ fn sync_actor_captures(
         layers,
         fxaa,
         fog,
-        (target, msaa, hdr),
+        (target, msaa, hdr, camera_ambient),
     ) in &mut cameras
     {
         let index = row.0;
@@ -411,9 +420,7 @@ fn sync_actor_captures(
                     light.last_changed().get(),
                     light_pose.to_matrix(),
                 ),
-                ambient: ambient
-                    .as_ref()
-                    .map(|light| (light.color, light.brightness)),
+                ambient: effective_ambient(camera_ambient, ambient.as_deref()),
                 palette: actor.palette_key,
                 unlit: material.unlit,
                 render_size: scene.row_sizes[index],
@@ -668,15 +675,18 @@ mod tests {
         });
         let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
         frame.source = Some(source);
-        // Static-image cache tests use a static species. The starter skins
-        // have live joints and must never be frozen by this cache.
-        frame.battlers[0].as_mut().unwrap().species_id = Arc::from("SUDOWOODO");
-        frame.battlers[1].as_mut().unwrap().species_id = Arc::from("RATICATE");
+        // Static-image cache tests use static species. Live joint rigs,
+        // including Sudowoodo and Raticate, must never be frozen by this cache.
+        frame.battlers[0].as_mut().unwrap().species_id = Arc::from("RAICHU");
+        frame.battlers[1].as_mut().unwrap().species_id = Arc::from("SEEL");
         app.update();
         // AssetPlugin can publish initial internal shader events after the
         // first update. Drain those before tests simulate a settled receipt,
         // so later invalidation assertions isolate the input they change.
         app.update();
+        assert!(app.world().resource::<BattleScene>().actors.iter().all(|actor|
+            actor.as_ref().is_some_and(|actor| !actor.is_articulated())),
+            "static-cache fixtures must remain actual static models");
         app
     }
 
@@ -772,7 +782,7 @@ mod tests {
 
     #[test]
     fn weighted_skins_keep_live_row_targets_and_never_acquire_static_captures() {
-        for species in ["CYNDAQUIL", "TOTODILE", "GENGAR"] {
+        for species in ["CYNDAQUIL", "TOTODILE", "GENGAR", "SUDOWOODO", "RATICATE"] {
             let mut app = capture_app();
             app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0]
                 .as_mut()
@@ -994,7 +1004,32 @@ mod tests {
             ..default()
         });
         app.update();
+        assert_eq!(active(&mut app), [false; 2],
+            "camera fill overrides changes to global ambient light");
+        {
+            let world = app.world_mut();
+            for (row, mut fill) in world.query::<(&BattleRowCamera, &mut AmbientLight)>().iter_mut(world) {
+                if row.0 == 0 { fill.brightness += 1.0; }
+            }
+        }
+        app.update();
+        assert_eq!(active(&mut app), [true, false],
+            "changing one camera's fill invalidates only its captured image");
+        submit(&mut app);
+        app.update();
+        {
+            let world = app.world_mut();
+            let entities: Vec<_> = world.query_filtered::<Entity, With<BattleRowCamera>>().iter(world).collect();
+            for entity in entities { world.entity_mut(entity).remove::<AmbientLight>(); }
+        }
+        app.update();
         assert_eq!(active(&mut app), [true; 2]);
+        submit(&mut app);
+        app.update();
+        app.world_mut().resource_mut::<GlobalAmbientLight>().brightness = 80.0;
+        app.update();
+        assert_eq!(active(&mut app), [true; 2],
+            "without camera overrides, global light changes invalidate both images");
         submit(&mut app);
         app.update();
         {
@@ -1166,11 +1201,20 @@ mod tests {
         submit(&mut app);
         app.update();
         let before_camera = app.world().resource::<BattleSceneLayout>().camera;
-        app.world_mut()
-            .resource_mut::<BattleSceneLayout>()
-            .camera
-            .translation
-            .x += 1.0;
+        // The layout system owns its final transform. Exercise a genuine
+        // attack-camera request instead of a direct edit that it restores.
+        {
+            let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+            frame.source = None;
+            frame.cues = vec![crystal_render_api::VisualBattleCue {
+                kind: crystal_render_api::VisualBattleCueKind::Move,
+                side: VisualBattleSide::Player,
+                move_id: Arc::from("LEER"),
+                element: Arc::from("NORMAL"),
+                progress: 0.5,
+                damaging: false,
+            }];
+        }
         app.update();
         let expected_camera = app.world().resource::<BattleSceneLayout>().camera;
         assert_ne!(expected_camera, before_camera);

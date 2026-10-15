@@ -1,4 +1,113 @@
-fn trainer_anchor_fresh_shell() -> BevyRuntimeShell {
+#[test]
+fn controller_completes_original_medicine_quest_and_reaches_jasmine_battle() {
+    let mut shell = trainer_anchor_fresh_shell();
+    let party = shell.shell.snapshot().unwrap().party;
+    assert!(!shell.shell.session().state().flags
+        .is_event_flag_set("EVENT_JASMINE_RETURNED_TO_GYM").unwrap());
+    shell = prepare_jasmine_review_quest(shell).unwrap();
+    let runtime = shell.shell.runtime().clone();
+    for flag in ["EVENT_JASMINE_EXPLAINED_AMPHYS_SICKNESS",
+        "EVENT_GOT_SECRETPOTION_FROM_PHARMACY", "EVENT_JASMINE_RETURNED_TO_GYM"] {
+        assert!(shell.shell.session().state().flags.is_event_flag_set(flag).unwrap());
+    }
+    assert!(!shell.shell.session().state().flags
+        .is_event_flag_set("EVENT_OLIVINE_GYM_JASMINE").unwrap());
+    assert_eq!(shell.shell.session().state().bag.quantity(&runtime.data().items["SECRETPOTION"]), 0);
+    assert_eq!(shell.shell.snapshot().unwrap().party, party);
+    {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        runtime.data().transition_overworld_session(state, overworld, "OlivineGym", TilePosition::new(5, 4),
+            crate::core::systems::map_context::SpawnMemoryUpdate::Preserve, &runtime.music_ids()).unwrap();
+    }
+    reset_visible_navigation_state(&mut shell);
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut controller = VisibleShellController { shell };
+    controller.press(GameButton::Up).unwrap();
+    let contact = controller.shell.shell.current_overworld_interaction_checked().unwrap().unwrap();
+    assert_eq!(contact.script, "OlivineGymJasmineScript");
+    assert_eq!(contact.player_tile, TilePosition::new(5, 4));
+    assert_eq!(contact.target_tile, TilePosition::new(5, 3));
+    controller.press(GameButton::A).unwrap();
+    assert!(controller.snapshot().unwrap().battle.is_none(), "original leader introduction must retain input");
+    assert_eq!(controller.shell.shell.session().state().script_runtime.active_text_label.as_deref(),
+        Some("Jasmine_SteelTypeIntro"));
+    for _ in 0..128 {
+        if controller.snapshot().unwrap().battle.is_some() { break; }
+        controller.press(GameButton::A).unwrap();
+    }
+    let snapshot = controller.snapshot().unwrap();
+    let battle = snapshot.battle.as_ref().expect("original Jasmine script must start the real battle");
+    let expected: Vec<_> = runtime.data().trainers.get("JASMINE1").unwrap().party.iter()
+        .map(|pokemon| (pokemon.species.as_str(), pokemon.level)).collect();
+    assert_eq!(battle.enemy_party.iter().map(|pokemon| (pokemon.species.id.as_str(), pokemon.level))
+        .collect::<Vec<_>>(), expected);
+    assert!(!controller.shell.shell.session().state().flags
+        .is_event_flag_set("EVENT_BEAT_JASMINE").unwrap());
+}
+
+#[test]
+fn direct_saffron_trainer_challenge_retains_the_original_map_contact() {
+    let mut shell = trainer_anchor_fresh_shell();
+    let runtime = shell.shell.runtime().clone();
+    {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        runtime.data().transition_overworld_session(state, overworld, "SaffronGym", TilePosition::new(3, 5),
+            crate::core::systems::map_context::SpawnMemoryUpdate::Preserve, &runtime.music_ids()).unwrap();
+        overworld.set_player_facing(Direction::Up);
+        state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+    }
+    reset_visible_navigation_state(&mut shell);
+    mark_runtime_snapshot_dirty(&mut shell);
+    let interaction = shell.shell.current_overworld_interaction_checked().unwrap().unwrap();
+    assert_eq!(interaction.script, "TrainerMediumDoris");
+    dispatch_visible_overworld_interaction(&mut shell, interaction, "current_interaction").unwrap();
+    assert!(shell.pending_trainer_intro.is_some(), "the original trainer owns the seen text");
+    assert!(shell.shell.snapshot().unwrap().battle.is_none(), "A must not skip the original intro");
+    let snapshot = shell.shell.snapshot().unwrap();
+    let overworld = shell.shell.session().overworld();
+    let permissions = [TilePosition::new(3, 5), TilePosition::new(3, 4)].map(|tile|
+        crate::core::world::collision::sample_collision(&overworld.map, &overworld.tileset, tile)
+            .map(|sample| sample.permission));
+    assert!(visible_trainer_floor_placement(&shell, &snapshot.overworld, TilePosition::new(3, 4)).is_some(),
+        "source and trainer floor permissions must be checked: {permissions:?}");
+    assert!(!walking_plain_support(crate::core::world::collision::permissions::WARP_PANEL),
+        "battle floor support must not change ordinary teleport movement");
+    assert_eq!(snapshot.visible_object_facings.get("SAFFRONGYM_GRANNY2"), Some(&Direction::Down),
+        "the authored trainer intro must face its contact");
+    let candidate = shell.battle_origin.trainer_candidate.as_ref().expect("direct A retains original-map evidence");
+    assert_eq!(candidate.source.map_name, "SaffronGym");
+    assert_eq!(candidate.target_identifier, "SAFFRONGYM_GRANNY2");
+    assert_eq!(candidate.target_tile, TilePosition::new(3, 4));
+    assert!(trainer_candidate_matches_snapshot(candidate, &shell.shell.snapshot().unwrap()));
+}
+
+#[test]
+fn stationary_trainer_floor_retains_real_mahogany_ice_without_changing_movement_or_state() {
+    let mut shell = trainer_anchor_fresh_shell();
+    let runtime = shell.shell.runtime().clone();
+    let data = runtime.data();
+    {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        data.transition_overworld_session(state, overworld, "MahoganyGym", TilePosition::new(0, 16),
+            crate::core::systems::map_context::SpawnMemoryUpdate::Preserve, &runtime.music_ids()).unwrap();
+        overworld.set_player_facing(Direction::Down);
+        state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+    }
+    let source = shell.shell.session().snapshot();
+    let before = shell.shell.state_checksum().unwrap();
+    let (_, placement) = visible_battle_floor_placement(&shell, &source, Some(TilePosition::new(0, 17)))
+        .expect("the original stationary ice gym must retain a checked battle plot");
+    let overworld = shell.shell.session().overworld();
+    let ice = crate::core::world::collision::permissions::ICE;
+    assert!(placement.walkable_core_tiles.iter().any(|tile|
+        crate::core::world::collision::sample_collision(&overworld.map, &overworld.tileset,
+            TilePosition::new(tile.x as i16, tile.y as i16)).is_some_and(|sample| sample.permission == ice)));
+    assert!(!walking_plain_support(ice), "a stationary battle must not turn ice into ordinary walking support");
+    assert!(!placement.walkable_core_tiles.contains(&IVec2::new(0, 17)), "the trainer's occupied tile stays excluded");
+    assert_eq!(shell.shell.state_checksum().unwrap(), before);
+}
+
+fn trainer_anchor_initial_shell() -> BevyRuntimeShell {
     let asset_root = AssetRoot::new(
         PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("../..")
@@ -7,7 +116,7 @@ fn trainer_anchor_fresh_shell() -> BevyRuntimeShell {
     );
     let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
-    let shell = initialize_bevy_runtime_shell(
+    initialize_bevy_runtime_shell(
         asset_root,
         runtime,
         BevyShellStart::NewGameAtRuntimeTile {
@@ -22,10 +131,32 @@ fn trainer_anchor_fresh_shell() -> BevyRuntimeShell {
             ..Default::default()
         },
     )
-    .unwrap();
-    let mut shell = prepare_gym_encounter_preview(shell).unwrap();
+    .unwrap()
+}
+
+fn trainer_anchor_fresh_shell() -> BevyRuntimeShell {
+    let mut shell = prepare_gym_encounter_preview(trainer_anchor_initial_shell()).unwrap();
     shell.shell.set_runtime_journal_enabled(true);
     shell
+}
+
+#[test]
+fn scripted_leader_review_first_a_opens_original_surge_intro_at_blocked_contact() {
+    let shell = prepare_map_trainer_encounter_preview_for_object(
+        trainer_anchor_initial_shell(), "VermilionGym", Some("VERMILIONGYM_SURGE")).unwrap();
+    let mut controller = VisibleShellController { shell };
+    let before = controller.snapshot().unwrap();
+    let contact = controller.shell.shell.current_overworld_interaction_checked().unwrap().unwrap();
+    assert_eq!(contact.script, "VermilionGymSurgeScript");
+    assert_eq!(contact.target_tile, TilePosition::new(5, 2));
+    controller.press(GameButton::A).unwrap();
+    let after = controller.snapshot().unwrap();
+    assert_eq!(after.overworld.tile, before.overworld.tile);
+    assert!(after.battle.is_none(), "first A must retain the original introduction");
+    assert_eq!(controller.shell.shell.session().state().script_runtime.active_text_label.as_deref(),
+        Some("LtSurgeIntroText"));
+    assert!(!controller.shell.shell.session().state().flags
+        .is_event_flag_set("EVENT_BEAT_LTSURGE").unwrap());
 }
 
 fn trainer_anchor_seen_text_app() -> App {
@@ -82,6 +213,67 @@ fn trainer_anchor_seen_text_app() -> App {
         }
     }
     panic!("ordinary trainer approach never reached seen text");
+}
+
+#[test]
+fn scripted_ground_entry_retains_the_source_scene_when_contact_is_unavailable() {
+    let mut app = trainer_anchor_seen_text_app();
+    // Remove only optional renderer contact evidence. The authored sight,
+    // dialogue, trainer request, and battle still run through production input.
+    app.world_mut().resource_mut::<BevyRuntimeShell>().battle_origin.trainer_candidate = None;
+    for _ in 0..600 {
+        if app.world().resource::<BevyRuntimeShell>().battle_origin.bound_scripted_ground.is_some() { break; }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    }
+    app.update();
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.shell.snapshot().unwrap().battle.is_some());
+    let origin = shell.battle_origin.published().unwrap();
+    assert!(origin.contact.is_none());
+    let location = app.world().resource::<crystal_render_api::BattleLocationFrame>()
+        .location.as_ref().expect("retain exact preceding scene");
+    assert_eq!(location.generation, origin.generation);
+    assert_eq!(location.source.map_id.as_ref(), "VioletGym");
+    assert_eq!(location.source.core_tile, IVec2::new(5, 10));
+    assert!(matches!(location.target, crystal_render_api::VisualBattleTarget::ScriptedGround { .. }));
+    assert!(location.anchors.is_some());
+}
+
+#[test]
+fn scripted_ground_binding_requires_a_committed_battle_and_preserves_game_state() {
+    let mut shell = trainer_anchor_fresh_shell();
+    let make_origin = |shell: &BevyRuntimeShell| Arc::new(BattlePresentationOrigin {
+        generation: 99, source: shell.shell.session().snapshot(),
+        kind: BattleOriginKind::Trainer, battle_type: "BATTLETYPE_TRAINER".into(),
+        contact: None, authoritative_step: None,
+        visual_step: BattleOriginVisualStep {
+            walk_from: None, walk_ticks_remaining: 0, walk_total_ticks: 0, ledge_jump: None,
+        },
+    });
+    let origin = make_origin(&shell);
+    bind_visible_scripted_ground(&mut shell, &origin);
+    assert!(shell.battle_origin.bound_scripted_ground.is_none(), "field alone is not a battle");
+    let mut app = trainer_anchor_seen_text_app();
+    for _ in 0..600 {
+        if app.world().resource::<BevyRuntimeShell>().shell.snapshot().unwrap().battle.is_some() { break; }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    }
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    assert!(shell.shell.snapshot().unwrap().battle.is_some());
+    let state = shell.shell.session().state().clone();
+    let origin = make_origin(&shell);
+    bind_visible_scripted_ground(&mut shell, &origin);
+    let bound = shell.battle_origin.bound_scripted_ground.as_ref().expect("real map floor");
+    assert!(Arc::ptr_eq(&origin, &bound.origin));
+    assert!(bound.origin.contact.is_none());
+    assert!(bound.placement.walkable_core_tiles.contains(&IVec2::new(5, 10)));
+    assert!(!bound.placement.walkable_core_tiles.contains(&IVec2::new(4, 10)), "settled trainer stays occupied");
+    assert_eq!(shell.shell.session().state(), &state, "renderer cannot change engine state or RNG");
+    let mut stale = (*origin).clone();
+    stale.source.map_name = "NewBarkTown".into();
+    shell.battle_origin.bound_scripted_ground = None;
+    bind_visible_scripted_ground(&mut shell, &Arc::new(stale));
+    assert!(shell.battle_origin.bound_scripted_ground.is_none(), "a later map cannot replace the origin");
 }
 
 #[test]

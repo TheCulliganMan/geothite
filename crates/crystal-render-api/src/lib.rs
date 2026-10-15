@@ -54,9 +54,51 @@ pub struct VisualWorldRenderPlugin;
 impl Plugin for VisualWorldRenderPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<VisualWorldFrame>()
+            .init_resource::<VisualSurfRider>()
+            .init_resource::<VisualPlayerTraversal>()
+            .init_resource::<VisualWorldLighting>()
+            .init_resource::<VisualWorldClock>()
             .init_resource::<VisualTileAnimationFrame>();
         configure_world_render_sets(app);
         streamed_images::install(app);
+    }
+}
+
+/// The palette period of the successfully rendered classic map. This is
+/// presentation metadata; optional renderers never advance a game clock.
+#[derive(Resource, Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum VisualWorldLighting {
+    Morning,
+    #[default]
+    Day,
+    Night,
+    /// Authored unlit map without Flash; terrain is hidden, sprites remain visible.
+    Dark,
+}
+
+impl VisualWorldLighting {
+    pub fn from_source_palette(period: &str) -> Self {
+        match period {
+            "morn" => Self::Morning,
+            "nite" => Self::Night,
+            "dark" | "darkness" => Self::Dark,
+            _ => Self::Day,
+        }
+    }
+}
+
+/// Read-only local clock for maps using PALETTE_AUTO. `None` keeps fixed
+/// indoor/cave palettes and producers without a clock on their source period.
+#[derive(Resource, Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct VisualWorldClock {
+    pub minute_of_day: Option<u16>,
+    pub second_of_minute: u8,
+}
+
+impl VisualWorldClock {
+    pub fn seconds_of_day(self) -> Option<u32> {
+        self.minute_of_day
+            .map(|minute| u32::from(minute) * 60 + u32::from(self.second_of_minute.min(59)))
     }
 }
 
@@ -115,6 +157,10 @@ pub struct VisualTileAnimationFrame {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum VisualActorId {
     Player,
+    /// First party member, presented only by the optional 3D overworld.
+    PartyFollower,
+    /// The actual Surf user, underneath the separately posed trainer.
+    SurfMount,
     RemotePlayer(u64),
     Object(u32),
     /// Presentation-only card emitted by the faithful world renderer. These
@@ -125,6 +171,30 @@ pub enum VisualActorId {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum VisualEffectId {
     GrassRustle,
+    HealMachineBall(u8),
+    HealMachineLamp(u8),
+}
+
+/// 3D rider appearance without replacing the source Surf actor identity.
+#[derive(Resource, Default, Clone, Copy)]
+pub struct VisualSurfRider {
+    pub female: bool,
+}
+
+/// Read-only endpoints and timing of the player's currently presented step.
+/// Coordinates are ground feet in the current visual frame, without sprite lift.
+#[derive(Resource, Default, Clone, Debug)]
+pub struct VisualPlayerTraversal {
+    pub map_id: Arc<str>,
+    pub step: Option<VisualTraversalStep>,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub struct VisualTraversalStep {
+    pub from: Vec2,
+    pub to: Vec2,
+    pub progress: f32,
+    pub ledge_jump: bool,
 }
 
 /// Presentation state for one actor visible in the world pass.
@@ -149,6 +219,16 @@ pub struct VisualActor {
     pub facing: Option<Vec2>,
 }
 
+/// Authored one-way jump edge in map-aligned 8x8 visual-tile coordinates.
+/// `descent` points from the jumpable upper side toward the lower landing side.
+/// These edges describe presentation only; the runtime owns movement permission.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct VisualJumpLedge {
+    pub start: bevy::prelude::IVec2,
+    pub end: bevy::prelude::IVec2,
+    pub descent: bevy::prelude::IVec2,
+}
+
 /// Immutable-by-convention snapshot consumed by optional world renderers.
 ///
 /// An inactive frame is intentionally empty and valid. When `active` is true,
@@ -165,6 +245,9 @@ pub struct VisualWorldFrame {
     /// None preserves legacy/unknown evidence; never infer bounds from grid_size.
     /// Consumers must include this value in built-terrain cache compatibility.
     pub source_map_size_core_tiles: Option<UVec2>,
+    /// Complete active-map/connection ledges, retained independently of the
+    /// camera crop so terrace elevation cannot reset while walking.
+    pub jump_ledges: Arc<[VisualJumpLedge]>,
     /// Changes whenever the visible tile sources or their live art change.
     pub terrain_revision: u64,
     /// Map tile coordinate of the grid northwest corner; independent of camera interpolation.
@@ -367,6 +450,7 @@ mod tests {
 
     fn active_frame() -> VisualWorldFrame {
         VisualWorldFrame {
+            jump_ledges: Default::default(),
             active: true,
             map_id: Arc::from("NewBarkTown"),
             source_map_size_core_tiles: None,

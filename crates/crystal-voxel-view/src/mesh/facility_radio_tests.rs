@@ -260,3 +260,30 @@ fn radio_round_stool_is_complete_source_contained_and_keeps_native_footing() {
     let custom: Document = serde_json::from_str(r#"{"objects":[{"name":"My round stool","map":"RadioTower3F","tileset":"radio_tower","metatile":39,"origin":[2,0],"tiles":[[44,45],[60,61]],"ground":1,"top_pixels":8,"depth_pixels":12}]}"#).unwrap();
     assert!(resolve("RadioTower3F", &cells.iter().collect::<Vec<_>>(), &g, [0,0], Some(&custom), &empty).is_empty());
 }
+
+#[test]
+fn kanto_basement_instrument_lid_is_horizontal_and_controls_fill_the_front() {
+    let (mut tiles,g)=workbench_fixture();
+    for y in 0..4 {for x in 0..4 {
+        let s=&mut tiles[y*4+x].source;
+        s.metatile_id=if x<2 {2}else{7};
+        s.tile_index=if x<2 {[[64,66],[10,11],[10,11],[26,27]][y][x]} else if (x+y)%2==0 {1}else{38};
+    }}
+    let cells=tiles.iter().collect::<Vec<_>>();let mut claimed=vec![false;16];
+    let placements=resolve("TrainerHouseB1F",&cells,&g,[0,0],None,&claimed);
+    let p=placements.iter().find(|p|p.resolved.kind()==Kind::InstrumentBank).unwrap();
+    let mut mesh=TerrainMeshData{footing_heights:vec![1.25;16],authored_cells:vec![None;16],..Default::default()};
+    assert!(append(&mut mesh,&cells,&g,p,&mut claimed));
+    assert_eq!(mesh.footing_heights,vec![1.25;16]);assert_eq!(claimed.iter().filter(|&&x|x).count(),8);
+    assert!(mesh.solid.indices.is_empty());
+    let lid=mesh.textured.positions.iter().zip(&mesh.textured.normals).zip(&mesh.textured.uvs)
+        .filter(|((p,n),_)|p[1]>24.&&*n==&[0.,1.,0.]).collect::<Vec<_>>();
+    assert_eq!(lid.len(),8);assert!(lid.iter().all(|(_,uv)|uv[1]<=0.25));
+    let front=mesh.textured.positions.iter().zip(&mesh.textured.normals).zip(&mesh.textured.uvs)
+        .filter(|((p,n),_)|p[2]>32.&&*n==&[0.,0.,1.]).collect::<Vec<_>>();
+    assert_eq!(front.len(),24);assert!(front.iter().all(|(_,uv)|uv[1]>=0.25));
+    assert!(front.iter().any(|((p,_),_)|p[1]==24.));assert!(front.iter().any(|((p,_),_)|p[1]==0.));
+    for i in p.indices(g.width) {let mut changed=tiles.clone();changed[i].source.tile_index^=128;
+        assert!(!resolve("TrainerHouseB1F",&changed.iter().collect::<Vec<_>>(),&g,[0,0],None,&[false;16])
+            .iter().any(|p|p.resolved.kind()==Kind::InstrumentBank));}
+}

@@ -326,3 +326,20 @@ fn finish_webmcp_request(
         bridge.pending = None;
     });
 }
+#[cfg(feature = "voxel-view")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub fn crystal_loading_trace_start() { crystal_voxel_view::loading_trace::start(); }
+
+#[cfg(feature = "voxel-view")]
+#[cfg_attr(target_arch = "wasm32", wasm_bindgen::prelude::wasm_bindgen)]
+pub fn crystal_loading_trace_read() -> String { crystal_voxel_view::loading_trace::snapshot() }
+
+#[cfg(all(target_arch = "wasm32", feature = "allocation-tester"))]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn crystal_loading_memory_read() -> String { crate::browser_allocations::snapshot() }
+
+#[cfg(all(target_arch = "wasm32", feature = "browser-webgpu"))]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn crystal_normalize_webgpu_shader(source: &str) -> Result<String, wasm_bindgen::JsValue> {
+    crate::browser_shader::normalize(source).map_err(|error| wasm_bindgen::JsValue::from_str(&error))
+}

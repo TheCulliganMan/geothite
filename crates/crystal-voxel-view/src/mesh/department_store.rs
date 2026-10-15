@@ -106,6 +106,7 @@ pub(super) struct Placement {
     row: usize,
     ground: usize,
     grid_origin: [i32; 2],
+    native_kanto: bool,
 }
 impl Placement {
     pub(super) fn indices(&self, width: usize) -> impl Iterator<Item = usize> + '_ {
@@ -235,6 +236,7 @@ fn resolve_networks(
             row,
             ground,
             grid_origin: origin,
+            native_kanto: map.starts_with("CeladonDeptStore"),
         };
         if p.indices(g.width).any(|i| blocked[i]) {
             continue;
@@ -293,6 +295,21 @@ pub(super) fn append(
     {
         return false;
     }
+    let counter_swatches=if p.native_kanto {
+        p.indices(g.width).find_map(|i|super::modeled_interiors::mart_counter_swatches(g,i,cells[i].source.tile_index))
+    }else {None};
+    if p.native_kanto && p.network.parts.iter().any(|part|matches!(part.asset,
+        Asset::CounterPlain|Asset::CounterRegister|Asset::CounterNorth|Asset::CounterWest))
+        && (counter_swatches.is_none() || !Asset::CounterPlain.model().has_native_store_counter_materials()) {
+        // Material failure must not re-enter a legacy 3D counter extrusion.
+        // Preserve the complete sparse drawing at its original 2D datum.
+        for i in p.indices(g.width) {
+            append_top(&mut mesh.textured,g.bounds(i%g.width,i/g.width).into(),0.,g.uv(i%g.width,i/g.width));
+            claimed[i]=true;
+            if mesh.authored_cells.len()==cells.len() {mesh.authored_cells[i]=None;}
+        }
+        return true;
+    }
     let uv = g.uv(
         cells[p.ground].column as usize,
         cells[p.ground].row as usize,
@@ -326,7 +343,9 @@ pub(super) fn append(
             part.asset,
             Asset::CounterPlain | Asset::CounterRegister | Asset::CounterNorth | Asset::CounterWest
         ) {
-            append_service_counter(&mut mesh.solid, part.asset, [w, e, n, s], sy);
+            if let Some(swatches)=counter_swatches {
+                append_native_service_counter(&mut mesh.textured,part.asset,[w,e,n,s],sy,swatches);
+            }else {append_service_counter(&mut mesh.solid, part.asset, [w, e, n, s], sy);}
             if part.asset == Asset::CounterRegister {
                 append_cash_register(&mut mesh.solid, [w, e, n, s], sy);
             }
@@ -373,6 +392,7 @@ pub(super) fn append(
             continue;
         }
         if is_display {
+            let display_start=mesh.textured.positions.len();
             // All ten named materials sample this complete authenticated
             // drawing, including its distinct gray case and blue glass palettes.
             assert!(part.asset.model().append_store_display(
@@ -391,6 +411,12 @@ pub(super) fn append(
                      uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
                 },
             ), "canonical store display requires all named materials");
+            // The canonical model exports rear rail, side returns, then the
+            // closed lower display. Only that last contiguous volume blocks
+            // the trainer standing in the native floor inset.
+            if let Some(front)=part.asset.model().store_display_front_start() {
+                mesh.textured.cutaway_ranges.push(display_start+front..mesh.textured.positions.len());
+            }
             continue;
         }
         let north = s - 3. * sy;
@@ -422,8 +448,9 @@ pub(super) fn append(
             );
         }
     }
-    // Waist-high service furniture and the display island stay opaque. Wall
-    // reveal would otherwise wash out furniture near the player.
+    // Ordinary service counters stay opaque. The closed display island can
+    // hide a trainer in its small floor inset, so it participates in the
+    // existing blocker fade without changing geometry or source ownership.
     let reveal = !matches!(
         p.network.label,
         "mart/department_store_counter_end"
@@ -459,7 +486,7 @@ fn append_service_counter(out: &mut SurfaceMeshData, asset: Asset, b: [f32; 4], 
         _ => b,
     };
     let first = out.positions.len();
-    assert!(asset.model().append_store_counter_body(out,bounds,9.*sy),
+    assert!(asset.model().append_store_counter_body(out,bounds,7.*sy),
         "canonical store counter requires all five named material roles");
     let rotate = |[x, y, z]: [f32; 3]| match asset {
         Asset::CounterNorth => [-x, y, -z],
@@ -485,8 +512,22 @@ fn append_service_counter(out: &mut SurfaceMeshData, asset: Asset, b: [f32; 4], 
     // Every bay shares this exact worktop height and perimeter. No separate
     // privacy lip turns across an adjoining top, and no rounded end leaves
     // a trench between two touching cabinet plots.
-    super::modeled_interiors::architecture_box(out,[w,e,9.*sy,10.*sy,n,s],
+    super::modeled_interiors::architecture_box(out,[w,e,7.*sy,8.*sy,n,s],
         [0.76,0.75,0.65]);
+}
+fn append_native_service_counter(out:&mut SurfaceMeshData,asset:Asset,b:[f32;4],sy:f32,swatches:[[f32;2];5]) {
+    let [w,e,n,s]=b;let bounds=match asset {Asset::CounterNorth=>[-e,-w,-s,-n],
+        Asset::CounterWest=>[n,s,-e,-w],_=>b};
+    let first=out.positions.len();
+    assert!(asset.model().append_native_store_counter(out,bounds,7.*sy,swatches,true));
+    let rotate=|[x,y,z]:[f32;3]|match asset {Asset::CounterNorth=>[-x,y,-z],Asset::CounterWest=>[-z,y,x],_=>[x,y,z]};
+    for v in &mut out.positions[first..] {*v=rotate(*v);}
+    for v in &mut out.normals[first..] {*v=rotate(*v);}
+    for (normal,color) in out.normals[first..].iter().zip(&mut out.colors[first..]) {
+        *color=crate::interior_models::authored_face_color([1.;4],Vec3::from_array(*normal));
+    }
+    let first=out.positions.len();super::modeled_interiors::architecture_box(out,[w,e,7.*sy,8.*sy,n,s],[1.;3]);
+    for i in first..out.positions.len() {out.uvs[i]=swatches[if out.normals[i][1]>0.5 {3}else{4}];}
 }
 fn append_lift_threshold(out: &mut SurfaceMeshData, b: [f32; 4], sx: f32, sy: f32) {
     let [w, e, n, s] = b;
@@ -546,7 +587,7 @@ fn append_cash_register(out: &mut SurfaceMeshData, b: [f32; 4], sy: f32) {
     // width/depth. Keep the drawer seated on the same countertop datum.
     let point = |x: f32, y: f32, z: f32| [
         w + (e - w) * (8. + (x - 8.) * 0.65) / 16.,
-        (10. + (y - 10.) * 0.70) * sy,
+        (8. + (y - 10.) * 0.70) * sy,
         n + (s - n) * (8. + (z - 8.) * 0.65) / 16.,
     ];
     let mut prism =
@@ -641,4 +682,20 @@ mod tests {
     use super::*;
     use std::sync::Arc;
     include!("department_store_tests.rs");
+}
+
+#[cfg(test)]
+mod native_counter_tests {
+    use super::*;
+    #[test]
+    fn kanto_native_service_counter_rotations_keep_identical_geometry() {
+        let swatches=std::array::from_fn(|i|[i as f32/8.,0.5]);
+        for asset in [Asset::CounterPlain,Asset::CounterNorth,Asset::CounterWest] {
+            let mut old=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
+            append_service_counter(&mut old,asset,[4.,20.,8.,24.],1.);
+            append_native_service_counter(&mut painted,asset,[4.,20.,8.,24.],1.,swatches);
+            assert_eq!(old.positions,painted.positions);assert_eq!(old.normals,painted.normals);
+            assert_eq!(old.indices,painted.indices);assert!(painted.uvs.iter().all(|uv|swatches.contains(uv)));
+        }
+    }
 }

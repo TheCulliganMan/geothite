@@ -99,10 +99,15 @@ def door(y,z=1.02,w=.82,h=1.55,lab=False):
   facade_cube('Door lower panel',0,z-.40,w-.24,.42,y-.162,.025,'timber_gold',bevel=.01)
   facade_cube('Brass door knob',w*.31,z-.1,.07,.07,y-.184,.07,'yellow',bevel=.023)
 
-def roof(width,depth,eave,ridge,palette,rows):
+def roof(width,depth,eave,ridge,palette,rows,gable_material=None):
  # Closed gable with rich fascia; independent roof panels overlap like handmade clay courses.
  x=width/2;d=depth/2
- mesh('Roof closed gable', [(-x,-d,eave),(x,-d,eave),(x,0,ridge),(-x,0,ridge),(-x,d,eave),(x,d,eave)],[(0,1,2,3),(3,2,5,4),(0,4,5,1),(0,3,4),(1,5,2)],palette+'_dark')
+ vs=[(-x,-d,eave),(x,-d,eave),(x,0,ridge),(-x,0,ridge),(-x,d,eave),(x,d,eave)]
+ faces=[(0,1,2,3),(3,2,5,4),(0,4,5,1)]
+ if gable_material:
+  mesh('Source-painted roof gable',[vs[i] for i in [0,3,4,1,5,2]],[(0,1,2),(3,4,5)],gable_material)
+ else:faces.extend([(0,3,4),(1,5,2)])
+ mesh('Roof closed gable',vs,faces,palette+'_dark')
  for side in [-1,1]:
   for r in range(rows):
    t0=r/rows;t1=(r+1)/rows
@@ -146,7 +151,7 @@ def make_house():
  # Side gables fill the volume behind roof, visible from every angle.
  for xx in [-1.761,1.761]:
   mesh('Cream gable end',[(xx,-1.245,2.17),(xx,1.245,2.17),(xx,0,3.17)],[(0,1,2)] if xx<0 else [(2,1,0)],'plaster_light')
- roof(3.935,2.93,2.18,3.29,'roof_red',6)
+ roof(3.935,2.93,2.18,3.29,'roof_red',6,gable_material='plaster_light')
  fy=-1.252;door(fy-.016,z=1.02,w=.69,h=1.51)
  for x in [-1.13,1.13]:window(x,1.30,fy,w=.64,h=.70,shutters=True)
  # side walls: local y=-halfwidth rotated +/-90
@@ -338,9 +343,6 @@ def export_asset(name,col):
   tri_count+=len(indices)//3
  data={'name':name,'coordinate_system':'right-handed; +Y up; front +Z','origin':'floor-center','bounds':{'min':minv,'max':maxv},'dimensions':[round(maxv[i]-minv[i],6) for i in range(3)],'triangle_count':tri_count,'primitive_count':len(primitives),'primitives':primitives}
  if name in ['house','lab']:data['door_anchor']=[0,0,maxv[2]]
- if name in ('tree','tree_lod'):
-     from foliage_contours import prepare as prepare_foliage_contours
-     data=prepare_foliage_contours(data)
  (P/f'{name}.mesh.json').write_text(json.dumps(data,separators=(',',':')))
  bpy.ops.object.select_all(action='DESELECT')
  for obj in objects:obj.select_set(True)
@@ -351,7 +353,7 @@ STATS={name:export_asset(name,col) for name,col in ASSETS.items()}
 (P/'asset-stats.json').write_text(json.dumps(STATS,indent=2))
 # Beautiful overview only in the source .blend, laid out as a real art kit.
 # Model exports above stay centered; montage offsets are applied after export.
-offsets={'house':(-3.40,1.10,0),'lab':(3.00,1.65,0),'tree':(-5.0,-3.1,0),'flowers':(-1.65,-3.4,0),'trainer':(.3,-3.4,0),'teacher':(1.4,-3.4,0),'scientist':(2.5,-3.4,0)}
+offsets={'house':(-3.40,1.10,0),'lab':(3.00,1.65,0),'flowers':(-1.65,-3.4,0),'trainer':(.3,-3.4,0),'teacher':(1.4,-3.4,0),'scientist':(2.5,-3.4,0)}
 for name,col in ASSETS.items():
  for obj in col.objects:obj.location+=Vector(offsets[name])
 begin('PRESENTATION only')

@@ -151,12 +151,71 @@ def stone(boulder=False):
   for i,(p,s) in enumerate([((0,0,.22),(.34,.29,.25)),((-.16,.06,.40),(.20,.18,.23)),((.19,-.05,.16),(.17,.19,.17)),((.02,-.20,.10),(.20,.12,.10))]):ico('Broken rock shard',p,s,'stone_light' if i==1 else 'stone',1)
 
 def fruit_tree():
- rod('Main tapered trunk',(0,0,0),(0,0,.64),.09,.052,'wood')
- for x,y,z,r in [(-.25,.0,.78,.28),(.24,.06,.80,.29),(.0,.02,1.00,.27),(0,-.21,.75,.30),(0,.23,.78,.25)]:
-  rod('Branch fork',(0,0,.39),(x,y,z),.035,.016,'wood');ico('Orchard leaf lobe',(x,y,z),(r,r*.93,r*.86),'green',2)
- for x,y,z in [(-.20,-.435,.79),(.18,-.42,.82),(.02,-.41,.95),(-.46,-.08,.76),(.47,-.08,.84),(-.12,.435,.81),(.14,.405,.88),(.035,-.15,1.215),(.02,.40,1.00)]:
-  sphere('Berry fruit',(x,y,z),(.048,.048,.053),'red',12,6);rod('Fruit stem',(x,y,z+.045),(x+.008,y,z+.079),.009,.006,'wood')
-  leaf('Fruit leaf',(x,y,z+.066),(x+.073,y-.015,z+.083),.019)
+ # An orchard sapling: one rooted fork, open branch saddles and cupped leaves.
+ # Geometry stays within the previous source footprint after normalization.
+ PALETTE.update({'orchard_bark':(.39,.25,.14),'orchard_bark_dark':(.25,.16,.10),
+  'orchard_shade':(.15,.32,.18),'orchard_leaf':(.25,.48,.23),
+  'orchard_leaf_sun':(.40,.61,.28),'orchard_berry':(.78,.12,.18),
+  'orchard_berry_blush':(.86,.17,.18)})
+ def limb(name,points,radii):
+  points=[Vector(p) for p in points];vertices=[];sides=14
+  for row,(point,radius) in enumerate(zip(points,radii)):
+   axis=Vector((0,0,1)) if row==0 else (points[min(row+1,len(points)-1)]-points[row-1]).normalized()
+   across=(Vector((1,0,0))-axis*axis.x).normalized();side=axis.cross(across)
+   for ring in range(sides):
+    turn=ring*math.tau/sides;flute=1+.045*math.sin(turn*5)+.025*math.cos(turn*9+row*.25)
+    vertices.append(point+(across*math.cos(turn)+side*math.sin(turn))*radius*flute)
+  faces=[tuple(reversed(range(sides))),tuple((len(points)-1)*sides+i for i in range(sides))]
+  for row in range(len(points)-1):
+   for ring in range(sides):
+    a=row*sides+ring;b=row*sides+(ring+1)%sides;faces.append((a,b,b+sides,a+sides))
+  me=bpy.data.meshes.new(name);me.from_pydata(vertices,[],faces);me.update()
+  o=bpy.data.objects.new(name,me);COL.objects.link(o);me.materials.append(material('orchard_bark'))
+  for face in me.polygons:face.use_smooth=len(face.vertices)==4
+ trunk=[(0,0,0),(-.012,.008,.12),(-.025,.015,.26),(-.005,.021,.35),(.018,.025,.43),(.003,.020,.53),(-.015,.015,.63)]
+ limb('Continuous fluted orchard trunk',trunk,[.095,.073,.060,.052,.046,.036,.025])
+ # Staggered boughs leave real openings between the foliage masses.
+ crowns=[(-.235,-.015,.76,(.235,.22,.22)),(.225,.025,.83,(.23,.22,.23)),
+  (-.035,.045,1.045,(.225,.205,.19)),(.035,-.205,.755,(.235,.205,.19)),
+  (-.045,.225,.84,(.225,.19,.21))]
+ for cluster,(x,y,z,radius) in enumerate(crowns):
+  end=Vector((x,y,z));fork=Vector((.014,.024,.41+cluster*.024))
+  elbow=fork.lerp(end,.56)+Vector((.025*math.sin(cluster*2.4),0,.035))
+  limb('Continuous orchard bough / '+str(cluster),[fork,elbow,end],[.034,.023,.010])
+  # A recessed dark inner cluster catches real shadows through the leaf gaps.
+  core=ico('Recessed foliage / '+str(cluster),end,tuple(v*.82 for v in radius),'orchard_shade',2)
+  for i,v in enumerate(core.data.vertices):v.co*=1+.065*math.sin(i*2.399963+cluster)
+  for blade in range(60):
+   t=(blade+.5)/60;h=1.-2.*t;angle=blade*2.399963+cluster*1.17
+   radial=Vector((math.sqrt(1-h*h)*math.cos(angle),math.sqrt(1-h*h)*math.sin(angle),h))
+   scatter=.82+.16*(.5+.5*math.sin(blade*4.17+cluster*1.9))
+   center=end+Vector(tuple(radial[k]*radius[k]*scatter for k in range(3)))
+   normal=Vector(tuple(radial[k]/radius[k] for k in range(3))).normalized()
+   tangent=normal.cross(Vector((0,0,1)) if abs(normal.z)<.9 else Vector((0,1,0))).normalized()
+   turn=blade*1.31+cluster;along=tangent*math.cos(turn)+normal.cross(tangent)*math.sin(turn)
+   across=normal.cross(along);length=.12+.035*(.5+.5*math.sin(blade*1.73+cluster));width=length*.31
+   outline=[(-.5,0),(-.30,-.78),(0,-1),(.31,-.72),(.5,0),(.31,.78),(0,1),(-.30,.72)]
+   vertices=[center+along*(u*length)+across*(v*width) for u,v in outline]
+   vertices.extend([center+normal*width*.21,center-normal*width*.08])
+   faces=[]
+   for edge in range(8):faces.extend([(edge,(edge+1)%8,8),((edge+1)%8,edge,9)])
+   me=bpy.data.meshes.new('Cupped orchard leaf');me.from_pydata(vertices,[],faces);me.update()
+   o=bpy.data.objects.new('Orchard leaf / %d / %02d'%(cluster,blade),me);COL.objects.link(o)
+   me.materials.append(material('orchard_leaf_sun' if radial.z>.30 and blade%3 else 'orchard_leaf'))
+ # Fruit hangs below outer shoots, with a dimple, slender stem and one leaf.
+ berries=[(-.25,-.235,.69),(.245,-.215,.77),(-.055,-.365,.73),(.08,-.29,.84),
+  (-.39,-.045,.74),(.395,.045,.81),(-.20,.285,.76),(.13,.305,.82),(.015,-.155,1.025)]
+ for i,(x,y,z) in enumerate(berries):
+  anchor=Vector((x*.86,y*.86,z+.12));stem=Vector((x,y,z+.050))
+  rod('Hanging berry stem / '+str(i),anchor,stem,.007,.0045,'orchard_bark_dark',8)
+  o=sphere('Ripe berry / '+str(i),(x,y,z),(.057,.055,.064),'orchard_berry_blush' if i%3==0 else 'orchard_berry',16,8)
+  # Depressed top and faint unequal lobes avoid perfectly spherical candy dots.
+  for v in o.data.vertices:
+   q=v.co;polar=(q.z/.064+1)*.5
+   q.z-=.010*max(0.,(polar-.80)/.20)**2
+   q.x*=1+.035*math.sin(math.atan2(q.y,q.x)*5+i)
+  o.data.update()
+  leaf('Berry shoot leaf / '+str(i),anchor,anchor+Vector((.072,-.025,.018)),.018,'orchard_leaf')
 
 def paper():
  o=box('Thick paper folio',(0,0,.055),(.46,.62,.06),'cream',.009)
@@ -264,14 +323,7 @@ def dragon():
  rod('Tail flame tongue',(.30,.44,.40),(.28,.43,.59),.06,.001,'orange')
 
 def slowpoke():
- sphere('Long low body',(0,.06,.24),(.28,.39,.23),'pink')
- for x in (-.21,.21):
-  for y in (-.16,.28):sphere('Stubby planted leg',(x,y,.105),(.105,.13,.105),'pink')
- sphere('Broad sleepy head',(0,-.25,.39),(.28,.23,.23),'pink');muzzle((0,-.453,.30),(.27,.105,.13),'cream')
- eyes(0,-.438,.43,.017,.14)
- for s in (-1,1):sphere('Round little ear',(s*.23,-.17,.56),(.078,.078,.072),'pink')
- tube('Thick curved tail',[(0,.33,.28),(.10,.52,.26),(.22,.62,.37),(.25,.61,.53)],.085,'pink');sphere('Pale tail tip',(.25,.61,.55),(.086,.086,.11),'cream')
- smile(-.553,.25,.12)
+ raise ValueError('Slowpoke shares its canonical sleepy quadruped GLB')
 
 def sudowoodo():
  # One sculpted silhouette carries the face, shoulders, branch crown and roots.
@@ -473,37 +525,7 @@ def onix():
  raise ValueError('Onix uses its original pure rock-chain sculpture')
 
 def beast(kind):
- color={'entei':'brown','raikou':'yellow','suicune':'blue'}[kind]
- sphere('Powerful feline body',(0,.10,.44),(.25,.37,.25),color)
- for s in (-1,1):
-  for y in (-.12,.35):
-   rod('Beast planted leg',(s*.185,y,.40),(s*.205,y-.025,.08),.090,.065,color)
-   sphere('Broad paw',(s*.205,y-.09,.065),(.095,.14,.067),'cream' if kind=='entei' else color)
-   for dx in (-.03,.03):tube('Toe division',[(s*.205+dx,y-.21,.056),(s*.205+dx,y-.16,.083)],.007,'ink')
- sphere('Neck',(0,-.18,.64),(.22,.21,.24),color);sphere('Legendary beast head',(0,-.30,.78),(.22,.19,.20),color)
- muzzle((0,-.448,.70),(.16,.075,.08),'cream');eyes(0,-.451,.827,.028,.090,True);sphere('Dark nose',(0,-.514,.747),(.055,.02,.030),'ink')
- if kind=='entei':
-  for i in range(9):
-   a=i*math.tau/9;ico('Lion mane lobe',(.27*math.cos(a),-.115,.69+.28*math.sin(a)),(.15,.16,.16),'cream' if i<5 else 'tan',1)
-  prism('Red forehead crest',[(-.16,.88),(-.25,1.02),(-.10,1.02),(0,.94),(.10,1.02),(.25,1.02),(.16,.88)],-.43,.07,'red')
-  prism('Golden muzzle mask',[(-.15,.79),(-.08,.85),(0,.77),(.08,.85),(.15,.79),(.12,.68),(0,.72),(-.12,.68)],-.475,.035,'gold')
-  for side in (-1,1):rod('White cheek blade',(side*.17,-.32,.82),(side*.35,-.29,.91),.080,.002,'white')
-  for i in range(4):sphere('Rolling smoke plume',((i-1.5)*.085,.24+i*.09,.71),(.13,.19,.105),'stone_light')
-  tube('Heavy tail',[(0,.38,.40),(0,.58,.42),(.08,.61,.70)],.06,'brown')
- elif kind=='raikou':
-  for s in (-1,1):
-   ear(s,(.17,-.25,.96),(.09,.07,.13),'yellow','ink')
-   rod('Sabre tooth',(s*.095,-.492,.69),(s*.094,-.486,.49),.037,.008,'white')
-   for y in (-.02,.18,.36):prism('Jagged tiger flank stripe',[(s*.17,.63),(s*.24,.52),(s*.17,.43),(s*.26,.40),(s*.28,.52),(s*.23,.63)],y,.040,'ink')
-  for i in range(5):sphere('Purple storm mane',((i%2-.5)*.15,.10+i*.07,.77),(.16,.17,.11),'purple')
-  prism('Black face mask',[(-.20,.90),(-.06,.91),(0,.84),(.06,.91),(.20,.90),(.14,.76),(.05,.79),(0,.75),(-.05,.79),(-.14,.76)],-.445,.022,'ink')
-  prism('Lightning tail',[(.03,.4),(.16,.42),(.20,.66),(.38,.62),(.33,.90),(.23,.87),(.27,.73),(.12,.75)],.48,.045,'blue')
- else:
-  for s in (-1,1):
-   prism('Diamond crown',[(s*.04,.92),(s*.19,1.13),(s*.08,1.34),(s*.04,1.24),(s*.12,1.12),(s*.01,.98)],-.30,.07,'teal')
-   for j in range(2):prism('Diamond flank spot',[(s*.23,.48+j*.12),(s*.265,.54+j*.12),(s*.23,.60+j*.12),(s*.20,.54+j*.12)],.15+j*.13,.028,'white')
-   tube('Streaming ribbon tail',[(s*.14,.39,.46),(s*.43,.50,.43),(s*.48,.68,.61),(s*.34,.74,.76),(s*.36,.91,.66)],.027,'white')
-  for i in range(6):sphere('Flowing purple mane',(math.sin(i)*.10,.04+i*.105,.79-i*.04),(.21,.17,.16),'purple')
+ raise ValueError('Entei, Raikou and Suicune share their canonical battle skins')
 
 def bat():
  sphere('Bat pear body',(0,0,.30),(.10,.11,.17),'blue');sphere('Bat head',(0,-.012,.47),(.12,.12,.12),'blue')
@@ -560,9 +582,7 @@ def charmander():
  sphere('Flame',( .36,.22,.54),(.080,.060,.15),'orange');sphere('Inner flame',(.36,.175,.53),(.045,.025,.10),'yellow');rod('Flame tip',(.36,.22,.62),(.33,.22,.76),.052,.002,'yellow')
 
 def diglett():
- for i in range(8):
-  a=i*math.tau/8;ico('Disturbed soil clod',(.23*math.cos(a),.20*math.sin(a),.055),(.11,.095,.065),'wood',1)
- sphere('Emerging capsule body',(0,0,.27),(.19,.17,.27),'brown');eyes(0,-.162,.38,.017,.068);sphere('Oval pink nose',(0,-.184,.28),(.068,.033,.040),'pink')
+ raise ValueError('Diglett shares its canonical capsule and fixed-soil GLB')
 
 def egg():
  o=sphere('Egg shell',(0,0,.34),(.25,.25,.34),'cream',24,12)
@@ -719,17 +739,10 @@ def squirtle():
  tube('Curled turtle tail',[(0,.19,.16),(.17,.26,.15),(.26,.25,.23),(.21,.24,.32),(.15,.23,.29)],.030,'blue')
 
 def staryu():
- outline=[]
- for i in range(10):
-  a=math.pi/2+i*math.pi/5;r=.40 if i%2==0 else .175;outline.append((math.cos(a)*r,.39+math.sin(a)*r))
- prism('Five pointed star body',outline,0,.12,'tan')
- for i in range(5):
-  a=math.pi/2+i*math.tau/5;rod('Star raised radial ridge',(0,-.069,.39),(.31*math.cos(a),-.069,.39+.31*math.sin(a)),.045,.011,'gold',6)
- rod('Gem gold surround',(0,-.065,.39),(0,-.12,.39),.15,.15,'gold',10);ico('Ruby central gem',(0,-.14,.39),(.10,.045,.10),'red',2)
+ raise ValueError('Staryu shares the canonical battle-species radial skin')
 
 def unown():
- torus('Unown eye ring',(0,0,.43),.165,.045,'ink',(math.pi/2,0,0));sphere('Large white eye',(0,-.010,.43),(.13,.047,.13),'white');sphere('Single pupil',(0,-.06,.43),(.055,.018,.061),'ink')
- rod('Upper stalk',(0,0,.61),(0,0,.83),.029,.029,'ink');rod('Lower stalk',(0,0,.25),(0,0,.08),.029,.029,'ink');rod('Letter foot',(-.12,0,.06),(.12,0,.06),.03,.03,'ink')
+ raise ValueError('Unown shares its canonical glyph family; the generic world icon uses I')
 
 def surf_mount():
  # The source is the generic aquatic mount, not an inferred species or rider.
@@ -779,9 +792,9 @@ def totodile():
  # crocodile muzzle and inset facial planes follow the hero-sculpture kit.
  # These original surfaces read no game pixels, packs or external meshes.
  import bmesh
- PALETTE.update({'totodile_blue':(.25,.64,.76),'totodile_throat':(.22,.58,.70),
+ PALETTE.update({'totodile_blue':(.29,.70,.78),'totodile_throat':(.22,.58,.70),
   'totodile_red':(.86,.27,.23),'totodile_eye':(.15,.18,.23),
-  'totodile_iris':(.62,.19,.15),'totodile_ochre':(.96,.80,.37)})
+  'totodile_iris':(.84,.20,.22), 'totodile_mouth':(.35,.12,.19), 'totodile_tongue':(.86,.43,.49),'totodile_ochre':(.96,.80,.37)})
  blue='totodile_blue'
  def mesh_part(name,vertices,faces,color,smooth=True):
   me=bpy.data.meshes.new(name);me.from_pydata(vertices,[],faces);me.update()
@@ -789,13 +802,14 @@ def totodile():
   o=bpy.data.objects.new(name,me);COL.objects.link(o);me.materials.append(material(color))
   for f in me.polygons:f.use_smooth=smooth
   return o
- def loft(name,profiles,color,axis='Z',seg=20,exponent=.78):
+ def loft(name,profiles,color,axis='Z',seg=20,exponent=.78,open_end=False):
   vertices=[]
   for x,y,z,w,d in profiles:
    for i in range(seg):
     a=math.tau*i/seg;c=math.copysign(abs(math.cos(a))**exponent,math.cos(a));s=math.copysign(abs(math.sin(a))**exponent,math.sin(a))
     vertices.append((x+w*c,y+d*s,z) if axis=='Z' else (x+w*c,y,z+d*s))
-  faces=[tuple(range(seg-1,-1,-1)),tuple(range((len(profiles)-1)*seg,len(profiles)*seg))]
+  faces=[tuple(range(seg-1,-1,-1))]
+  if not open_end:faces.append(tuple(range((len(profiles)-1)*seg,len(profiles)*seg)))
   for j in range(len(profiles)-1):
    for i in range(seg):a=j*seg+i;b=j*seg+(i+1)%seg;faces.append((a,b,b+seg,a+seg))
   return mesh_part(name,vertices,faces,color)
@@ -837,16 +851,16 @@ def totodile():
   for i in range(n):a=1+3*n+i;b=1+3*n+(i+1)%n;f.append((a,b,b+layer,a+layer))
   return mesh_part(name,v,f,color,False)
  head=[(0,.005,.590,.160,.130),(0,.005,.660,.247,.179),
-  (0,.005,.750,.292,.209),(0,.005,.850,.291,.201),
-  (0,.010,.943,.249,.165),(0,.016,1.015,.167,.119),
-  (0,.018,1.042,.058,.052),(0,.018,1.045,.010,.012)]
+  (0,-.025,.750,.278,.178),(0,-.040,.850,.258,.151),
+  (0,-.045,.943,.217,.122),(0,-.040,1.015,.150,.075),
+  (0,-.040,1.042,.068,.038),(0,-.040,1.045,.010,.010)]
  clay=[loft('Broad shaped cranium and cheeks',head,blue),
   loft('Compact pear shaped torso',[(0,.025,.13,.10,.10),(0,.018,.20,.19,.16),
-    (0,.008,.34,.211,.173),(0,0,.46,.181,.147),(0,.018,.59,.155,.132),(0,.02,.66,.13,.115)],blue),
+    (0,.008,.34,.238,.195),(0,0,.46,.201,.162),(0,.018,.59,.155,.132),(0,.02,.66,.13,.115)],blue),
   loft('Continuous flattened upper crocodile muzzle',[
    (0,.02,.735,.245,.105),(0,-.14,.736,.254,.105),
-   (0,-.29,.727,.255,.088),(0,-.43,.718,.247,.071),
-   (0,-.515,.704,.199,.050),(0,-.534,.704,.144,.035)],blue,'Y',24,.56)]
+   (0,-.29,.727,.255,.088),(0,-.43,.744,.233,.070),
+   (0,-.515,.750,.186,.047),(0,-.534,.750,.135,.031)],blue,'Y',24,.56)]
  # Splayed, connected thighs and long planted feet, with a strong three-toe edge.
  for s in (-1,1):
   clay.extend([sphere('Connected haunch',(s*.155,.030,.215),(.117,.136,.162),blue,24,12),
@@ -857,63 +871,76 @@ def totodile():
   # dropping separate cylinders vertically against the belly.
   clay.extend([rod('Upper reaching arm',(s*.160,.005,.490),(s*.286,-.042,.405),.068,.060,blue,16),
    sphere('Rounded elbow',(s*.284,-.041,.413),(.065,.067,.068),blue,16,8),
-   rod('Forearm',(s*.282,-.040,.419),(s*.345,-.134,.453),.062,.065,blue,16),
-   sphere('Broad small palm',(s*.351,-.138,.459),(.071,.070,.059),blue,16,8)])
+   rod('Forearm',(s*.282,-.040,.419),(s*.325,-.124,.494),.062,.065,blue,16),
+   sphere('Broad small palm',(s*.331,-.128,.500),(.068,.067,.056),blue,16,8)])
   for j in (-1,0,1):
-   clay.append(rod('Three tapered hand digits',(s*(.349+j*.021),-.160,.446+j*.025),(s*(.390+j*.019),-.223,.438+j*.033),.026,.010,blue,10))
+   clay.append(rod('Three tapered hand digits',(s*(.329+j*.023),-.150,.490+j*.025),(s*(.365+j*.021),-.213,.480+j*.033),.022,.008,blue,10))
  # A tapered rear tail is deliberately visible from both battle perspectives.
  clay.append(loft('Broad curved crocodile tail',[
   (0,.100,.198,.124,.102),(0,.239,.169,.113,.085),
-  (.035,.359,.155,.093,.068),(.089,.485,.184,.068,.061),
-  (.125,.584,.243,.038,.043),(.123,.640,.296,.009,.010)],blue,'Y',18,.82))
+  (.012,.359,.155,.103,.068),(.025,.485,.154,.074,.051),
+  (.032,.584,.156,.041,.029),(.035,.660,.155,.003,.004)],blue,'Y',18,.82))
  body=joined('Totodile / continuous head muzzle torso limbs and tail',clay)
  high_body_mesh=body.data.copy();body.data.calc_loop_triangles()
  mod=body.modifiers.new('Bounded connected sculpture topology','DECIMATE');mod.ratio=min(1,3600/len(body.data.loop_triangles));mod.use_collapse_triangulate=True;bpy.context.view_layer.objects.active=body;bpy.ops.object.modifier_apply(modifier=mod.name)
  canonical(body)
 
- # The lower jaw shares the body blue. A shaped charcoal cavity gives the
- # two ivory fangs a shallow crocodile grin instead of a rectangular box mouth.
+ # Lift the snout over an open grin. The hollow maroon interior is uncapped
+ # at the lips, exposing the pink tongue and four ivory fangs.
  loft('Sculpted rounded lower jaw',[(0,.012,.610,.226,.077),(0,-.165,.601,.239,.064),
-  (0,-.332,.559,.245,.041),(0,-.447,.576,.215,.030),(0,-.511,.598,.143,.019)],blue,'Y',24,.64)
- loft('Recessed shallow mouth cavity',[(0,-.087,.661,.194,.039),(0,-.261,.632,.246,.046),
-  (0,-.426,.637,.239,.041),(0,-.516,.641,.150,.030)],'totodile_eye','Y',24,.63)
+  (0,-.332,.566,.236,.039),(0,-.447,.578,.210,.031),(0,-.511,.611,.135,.022)],blue,'Y',24,.64)
+ loft('Recessed shallow mouth cavity',[(0,-.087,.653,.194,.040),(0,-.261,.639,.238,.054),
+  (0,-.426,.655,.222,.067),(0,-.516,.672,.137,.052)],'totodile_mouth','Y',24,.63,open_end=True)
+ sphere('Rounded pink tongue',(0,-.465,.619),(.133,.067,.019),'totodile_tongue',24,12)
  for s in (-1,1):
-  rod('Upper ivory crocodile fang',(s*.184,-.475,.678),(s*.184,-.486,.601),.023,.002,'white',10)
+  rod('Upper ivory crocodile fang',(s*.175,-.475,.716),(s*.175,-.486,.653),.023,.002,'white',10)
+  rod('Lower ivory crocodile fang',(s*.154,-.450,.597),(s*.154,-.455,.634),.019,.002,'white',10)
   hit,point,normal,index=body.ray_cast(Vector((s*.147,-.487,2)),Vector((0,0,-1)))
   if not hit:raise ValueError('Totodile nostril missed the muzzle')
   nostril=sphere('Shallow inset nostril',point+normal*.003,(.013,.020,.0035),'totodile_eye',12,6);nostril.rotation_euler=normal.to_track_quat('Z','Y').to_euler()
   # Restrained claws retain the three-digit silhouette at gameplay scale.
   for j in (-1,0,1):rod('Ivory toe claw',(s*.165+j*.069,-.255-.016*(j==0),.052),(s*.165+j*.069,-.295-.016*(j==0),.037),.018,.002,'white',10)
- def head_surface(x,z,offset=.0):
-  # Fit the inset to the connected sculpt instead of an approximate sphere.
-  hit,point,normal,index=body.ray_cast(Vector((x,-2,z)),Vector((0,1,0)))
-  if not hit:raise ValueError('Totodile facial detail missed the head')
-  return point.y-offset
- for s in (-1,1):
-  # A tapered eye polygon sits inside the upper cheek. Blue lids meet the
-  # sclera edges; nothing is perched on the head as a separate eyeball.
-  outline=[(s*.095,.847),(s*.104,.916),(s*.146,.970),(s*.190,.979),(s*.238,.939),(s*.263,.867),(s*.227,.837),(s*.160,.831)]
-  patch('Inset ivory eye',outline,lambda x,z:head_surface(x,z,.008),'white',.007)
-  pupil=[(s*.176,.934),(s*.192,.948),(s*.209,.926),(s*.218,.874),(s*.204,.855),(s*.184,.862)]
-  patch('Warm narrow iris',pupil,lambda x,z:head_surface(x,z,.015),'totodile_iris',.005)
-  pupil=[(s*.184,.931),(s*.195,.938),(s*.207,.913),(s*.210,.872),(s*.199,.861),(s*.188,.872)]
-  patch('Tapered dark pupil',pupil,lambda x,z:head_surface(x,z,.022),'totodile_eye',.004)
-  patch('Small eye highlight',[(s*.192,.919),(s*.198,.924),(s*.204,.917),(s*.200,.904)],lambda x,z:head_surface(x,z,.027),'white',.003)
+ def eye_surface(side,front,z,offset):
+  hit,point,normal,index=body.ray_cast(Vector((side*2,front,z)),Vector((-side,0,0)))
+  if not hit:raise ValueError('Totodile side eye missed the cheek')
+  return abs(point.x)+offset
+ def side_eye(name,outline,side,color,offset,depth):
+  o=patch(name,outline,lambda front,z:eye_surface(side,front,z,offset),color,depth)
+  for v in o.data.vertices:
+   front,cheek,z=v.co;v.co=(side*cheek,front,z)
+  return o
+ for side in (-1,1):
+  # Broad slanted eyes wrap the cheeks, rather than facing the viewer as
+  # two buttons on a spherical forehead. The red iris fills the tall sclera.
+  outline=[(-.157,.807),(-.152,.903),(-.107,.969),(-.049,.981),
+   (.044,.940),(.083,.850),(.047,.775),(-.071,.783)]
+  side_eye('Inset ivory eye',outline,side,'white',.005,.005)
+  iris=[(-.121,.898),(-.092,.949),(-.059,.952),(-.023,.915),
+   (-.009,.827),(-.048,.797),(-.094,.821)]
+  side_eye('Warm narrow iris',iris,side,'totodile_iris',.012,.004)
+  pupil=[(-.099,.901),(-.077,.936),(-.057,.930),(-.036,.893),
+   (-.030,.832),(-.054,.815),(-.078,.834)]
+  side_eye('Tapered dark pupil',pupil,side,'totodile_eye',.019,.003)
+  side_eye('Small eye highlight',[(-.103,.911),(-.087,.931),
+   (-.074,.916),(-.087,.896)],side,'white',.024,.003)
  # The pointed chest marking follows the belly, rather than floating as a slab.
- chest=[(-.137,.461),(-.094,.486),(0,.418),(.094,.486),(.137,.461),(.105,.300),(0,.265),(-.105,.300)]
- def chest_surface(x,z):return -.170*math.sqrt(max(.04,1-(x/.218)**2-((z-.335)/.315)**2))-.008
+ chest=[(-.166,.485),(-.104,.509),(0,.447),(.104,.509),(.166,.485),(.142,.385),(0,.315),(-.142,.385)]
+ def chest_surface(x,z):
+  hit,point,normal,index=body.ray_cast(Vector((x,-2,z)),Vector((0,1,0)))
+  if not hit:raise ValueError('Totodile chest marking missed the torso')
+  return point.y-.006
  patch('Golden chest chevron',chest,chest_surface,'totodile_ochre',.009)
  # A single centered row of thick red dorsal plates is legible from the rear.
  # Their swept triangle silhouettes are fins, with a raised central ridge.
  for i,(outline,thick) in enumerate([
-  ([( .100,1.016),(.327,.973),(.191,.861)],.045),
-  ([(.187,.850),(.389,.754),(.187,.655)],.048),
+  ([( .100,1.016),(.377,.973),(.191,.861)],.045),
+  ([(.187,.850),(.435,.754),(.187,.655)],.048),
   ([(.150,.624),(.355,.510),(.163,.407)],.047),
   ([(.243,.211),(.361,.336),(.422,.168)],.037),
-  ([(.446,.226),(.552,.330),(.596,.253)],.025)]):
+  ([(.446,.185),(.543,.280),(.615,.161)],.025)]):
   # Dorsal fin outline lies in the Y/Z plane and tapers to a crisp outer edge.
   cy=sum(y for y,z in outline)/3;cz=sum(z for y,z in outline)/3
-  x=0 if i<3 else (.049 if i==3 else .119)
+  x=0 if i<3 else (.009 if i==3 else .030)
   vertices=[(x,y,z) for y,z in outline]+[(x-thick,cy,cz),(x+thick,cy,cz)]
   mesh_part('Swept red dorsal plate '+str(i+1),vertices,[(0,1,3),(1,2,3),(2,0,3),(1,0,4),(2,1,4),(0,2,4)],'totodile_red',False)
  # Retain editable detailed anatomy, and simplify only the runtime copy.
@@ -989,6 +1016,7 @@ def canonical_primitive(primitive):
   t=tuple(remap[v] for v in primitive['indices'][i:i+3]);triangles.append(min(t,t[1:]+t[:1],t[2:]+t[:2]))
  result={'positions':[v for p in unique for v in p[:3]],'normals':[v for p in unique for v in p[3:]],'indices':[v for t in sorted(triangles) for v in t],'base_color':primitive['base_color']}
  if 'material' in primitive:result['material']=primitive['material']
+ if 'part' in primitive:result['part']=primitive['part']
  return result
 
 def canonical_primitives(primitives):
@@ -1023,11 +1051,16 @@ def export(name,objects):
    if idx:
     primitive={'positions':pos,'normals':nor,'indices':idx,'base_color':[round(v,6) for v in mat.diffuse_color]}
     if name=='boulder':primitive['material']=mat.name
+    if name in ('battle_totodile','fruit_tree'):primitive['part']=o.name
     primitives.append(primitive);tri_count+=len(idx)//3
  data={'name':name,'version':1,'coordinate_system':'+Y up; front +Z; floor-centered root','primitives':canonical_primitives(primitives)}
  if name=='battle_totodile':
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from totodile_glb import export_totodile
+  from totodile_glb import export_totodile, PARTS
+  data['primitives'].sort(key=lambda p:PARTS.index(p['part']))
+  if '--neutral-only' in ARGS:
+   (OUT/(name+'.mesh.json')).write_text(json.dumps(data,separators=(',',':')))
+   return
   blob=export_totodile(data)
   (OUT/(name+'.glb')).write_bytes(blob)
  else:(OUT/(name+'.mesh.json')).write_text(json.dumps(data,separators=(',',':')))
@@ -1042,6 +1075,11 @@ def normalize(name,objects):
  if name in ('paper','pokedex'):scale=1
  center=Vector(((lo.x+hi.x)/2,(lo.y+hi.y)/2,lo.z))
  for o in objects:o.location=(o.location-center)*scale;o.scale*=scale
+ if name=='fruit_tree':
+  bpy.context.view_layer.update();points=[o.matrix_world@v.co for o in objects for v in o.data.vertices]
+  width=max(p.x for p in points)-min(p.x for p in points);depth=max(p.y for p in points)-min(p.y for p in points)
+  fit=min(1.,.87476/width,.802672/depth)
+  for o in objects:o.matrix_world=Matrix.Diagonal((fit,fit,1.,1.))@o.matrix_world
 
 def sudowoodo_runtime_lod(name,objects):
  # Preserve editable detailed anatomy, then produce bounded game geometry.
@@ -1103,25 +1141,78 @@ ONLY=next((set(a.split('=',1)[1].split(',')) for a in ARGS if a.startswith('--on
 if ONLY and not ONLY.issubset(BUILDERS):raise ValueError('Unknown --only asset identity')
 if ONLY is None or 'big_onix' in ONLY:
  sys.path.insert(0,str(Path(__file__).resolve().parent))
- from onix_sculpt import sculpture as onix_sculpture
- (OUT/'big_onix.mesh.json').write_text(json.dumps(onix_sculpture(),separators=(',',':')))
- print('big_onix: original long connected rock chain and wedge-shaped face',flush=True)
+ from onix_glb import export_onix
+ canonical=OUT.parent/'battle_species/onix.glb'
+ canonical.parent.mkdir(parents=True,exist_ok=True);canonical.write_bytes(export_onix())
+ (OUT/'big_onix.mesh.json').unlink(missing_ok=True)
+ print('big_onix: shared canonical connected rock-chain GLB',flush=True)
 if ONLY is None or 'icon_clefairy' in ONLY:
  sys.path.insert(0,str(Path(__file__).resolve().parent))
- from clefairy_sculpt import sculpture as clefairy_sculpture
- (OUT/'icon_clefairy.mesh.json').write_text(json.dumps(clefairy_sculpture(),separators=(',',':')))
- print('icon_clefairy: original shared fairy sculpture with fitted face and curled tail',flush=True)
+ from clefairy_glb import export_clefairy
+ (OUT/'icon_clefairy.glb').write_bytes(export_clefairy())
+ (OUT/'icon_clefairy.mesh.json').unlink(missing_ok=True)
+ print('icon_clefairy: canonical shared fairy GLB with articulated appendages',flush=True)
 if ONLY is None or 'icon_jigglypuff' in ONLY:
  sys.path.insert(0,str(Path(__file__).resolve().parent))
- from jigglypuff_sculpt import sculpture as jigglypuff_sculpture
- (OUT/'icon_jigglypuff.mesh.json').write_text(json.dumps(jigglypuff_sculpture(),separators=(',',':')))
- print('icon_jigglypuff: original shared balloon sculpture with rounded ears and blue eyes',flush=True)
+ from jigglypuff_glb import export_jigglypuff
+ (OUT/'icon_jigglypuff.glb').write_bytes(export_jigglypuff())
+ (OUT/'icon_jigglypuff.mesh.json').unlink(missing_ok=True)
+ print('icon_jigglypuff: canonical shared balloon GLB with articulated arms, ears and forelock',flush=True)
+if ONLY is None or 'icon_staryu' in ONLY:
+ sys.path.insert(0,str(Path(__file__).resolve().parent))
+ from staryu_glb import export_staryu
+ canonical=OUT.parent/'battle_species/staryu.glb'
+ canonical.parent.mkdir(parents=True,exist_ok=True);canonical.write_bytes(export_staryu())
+ (OUT/'icon_staryu.mesh.json').unlink(missing_ok=True)
+ print('icon_staryu: shared canonical battle starfish GLB',flush=True)
 if ONLY is None or 'icon_voltorb' in ONLY:
  sys.path.insert(0,str(Path(__file__).resolve().parent))
- from orb_sculpt import sculpture as orb_sculpture
- (OUT/'icon_voltorb.mesh.json').write_text(json.dumps(orb_sculpture('voltorb'),separators=(',',':')))
- print('icon_voltorb: original smooth shared orb with fitted angular eyes',flush=True)
-MODELS=[(name,builder) for name,builder in BUILDERS.items() if name not in ('big_onix','icon_clefairy','icon_jigglypuff','icon_voltorb') and (ONLY is None or name in ONLY)]
+ from voltorb_glb import export_voltorb
+ canonical=OUT.parent/'battle_species/voltorb.glb'
+ canonical.parent.mkdir(parents=True,exist_ok=True);canonical.write_bytes(export_voltorb())
+ (OUT/'icon_voltorb.mesh.json').unlink(missing_ok=True)
+ print('icon_voltorb: shared canonical grounded orb GLB',flush=True)
+if ONLY is None or 'entei' in ONLY:
+ from entei_glb import export_entei
+ canonical=OUT.parent/'battle_species/entei.glb'
+ canonical.parent.mkdir(parents=True,exist_ok=True);canonical.write_bytes(export_entei())
+ (OUT/'entei.mesh.json').unlink(missing_ok=True)
+ print('entei: shared canonical armored volcano-beast GLB',flush=True)
+if ONLY is None or 'raikou' in ONLY:
+ sys.path.insert(0,str(Path(__file__).resolve().parent))
+ from raikou_glb import export_raikou
+ canonical=OUT.parent/'battle_species/raikou.glb'
+ canonical.parent.mkdir(parents=True,exist_ok=True);canonical.write_bytes(export_raikou())
+ (OUT/'raikou.mesh.json').unlink(missing_ok=True)
+ print('raikou: shared canonical armored thunder-beast GLB',flush=True)
+if ONLY is None or 'suicune' in ONLY:
+ sys.path.insert(0,str(Path(__file__).resolve().parent))
+ from suicune_glb import export_suicune
+ canonical=OUT.parent/'battle_species/suicune.glb'
+ canonical.parent.mkdir(parents=True,exist_ok=True);canonical.write_bytes(export_suicune())
+ (OUT/'suicune.mesh.json').unlink(missing_ok=True)
+ print('suicune: shared canonical open-crested aurora-beast GLB',flush=True)
+if ONLY is None or 'icon_unown' in ONLY:
+ from unown_glb import export_unown
+ canonical=OUT.parent/'battle_species'
+ canonical.mkdir(parents=True,exist_ok=True)
+ for letter in 'abcdefghijklmnopqrstuvwxyz':(canonical/('unown_'+letter+'.glb')).write_bytes(export_unown(letter))
+ (OUT/'icon_unown.mesh.json').unlink(missing_ok=True)
+ print('icon_unown: shared canonical A..Z glyph family, generic I icon',flush=True)
+if ONLY is None or any(name in ONLY for name in ('slowpoke','icon_slowpoke')):
+ from slowpoke_glb import export_slowpoke
+ canonical=OUT.parent/'battle_species/slowpoke.glb'
+ canonical.parent.mkdir(parents=True,exist_ok=True);canonical.write_bytes(export_slowpoke())
+ for name in ('slowpoke','icon_slowpoke'):(OUT/(name+'.mesh.json')).unlink(missing_ok=True)
+ print('slowpoke: shared canonical sleepy quadruped GLB',flush=True)
+if ONLY is None or 'icon_diglett' in ONLY:
+ sys.path.insert(0,str(Path(__file__).resolve().parent))
+ from diglett_glb import export_diglett
+ canonical=OUT.parent/'battle_species/diglett.glb'
+ canonical.parent.mkdir(parents=True,exist_ok=True);canonical.write_bytes(export_diglett())
+ (OUT/'icon_diglett.mesh.json').unlink(missing_ok=True)
+ print('icon_diglett: shared canonical emerging capsule GLB',flush=True)
+MODELS=[(name,builder) for name,builder in BUILDERS.items() if name not in ('suicune','raikou','entei','icon_unown','slowpoke','icon_slowpoke','big_onix','icon_clefairy','icon_jigglypuff','icon_voltorb','icon_staryu','icon_diglett') and (ONLY is None or name in ONLY)]
 for batch_start in range(0,len(MODELS),BATCH_SIZE):
  selected=next((int(a.split('=',1)[1]) for a in ARGS if a.startswith('--batch=')),None)
  if selected is not None and selected != batch_start//BATCH_SIZE+1:continue

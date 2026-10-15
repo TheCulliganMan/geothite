@@ -16,6 +16,7 @@ bevy = { workspace = true, optional = true, features = [
     "bevy_sprite_render",
     "bevy_log",
     "bevy_text",
+    "default_font",
     "bevy_ui",
     "bevy_ui_render",
     "bevy_winit",
@@ -33,6 +34,7 @@ image.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
+naga = { version = "30.0.1", features = ["wgsl-in", "wgsl-out"], optional = true }
 uuid = { workspace = true, features = ["js"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
@@ -70,7 +72,11 @@ fullscreen-scaling = ["bevy-shell"]
 # Installed Windows app: no console window; startup errors get a native dialog.
 desktop-app = ["bevy-shell"]
 voxel-view = ["bevy-shell", "dep:crystal-voxel-view"]
+# Automatic adapter selection keeps WebGL available when WebGPU is absent.
+browser-webgpu = ["bevy-shell", "bevy/webgpu", "dep:naga"]
 location-tester = ["crystal-runtime/location-tester", "crystal-runtime/test-fixtures", "voxel-view", "crystal-assets/test-fixtures"]
+# Normal previews use System directly; allocation diagnostics are explicit.
+allocation-tester = ["location-tester"]
 # Opt-in per-system and render tracing; native captures use TRACE_CHROME.
 operation-trace = ["crystal-runtime/operation-trace", "bevy-shell", "bevy/trace_chrome", "bevy/detailed_trace", "crystal-voxel-view?/operation-trace"]
 # Select tools individually: Bevy's `dev` group enables file watching,
@@ -82,6 +88,10 @@ meshtastic = ["crystal-net/meshtastic"]
 
 [[example]]
 name = "render_at_location"
+required-features = ["location-tester"]
+
+[[example]]
+name = "render_saved_session"
 required-features = ["location-tester"]
 
 [[example]]

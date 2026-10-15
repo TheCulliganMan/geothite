@@ -60,6 +60,12 @@ fn accessory_mesh_gpu(mesh: Mesh, meshes: &mut Assets<Mesh>,
 }
 pub(crate) struct Person {
     pub bicycle: bool,
+    pub surfing: bool,
+    /// Accepted step progress and airborne blend; root lift belongs to terrain presentation.
+    pub hop_step: Option<(f32, f32)>,
+    hop: Vec<Transform>,
+    pub sitting: crate::seating::Sitting,
+    seated: Vec<Transform>,
     pub rig: Arc<PersonRig>,
     model_scale: Vec3,
     head_scale: f32,
@@ -93,15 +99,14 @@ impl PeopleGpu {
     ) -> Person {
         let textures = &mut self.1;
         let gpu = self.0.entry((name, kind)).or_insert_with(|| {
+            let _trace = crate::loading_trace::span("actor.build_body", || serde_json::json!({
+                "rig":name,"kind":format!("{kind:?}")}));
             let look = crate::npc_appearance::look(kind);
             let painting = crate::npc_textures::get(look.texture_key)
                 .expect("required production character painting");
-            let mut body = rig.mesh.clone();
-            let mut body_joints = rig.ids.clone();
-            let mut body_weights = rig.weights.clone();
-            crate::hand_surface::smooth(&rig,&mut body,&mut body_joints,&mut body_weights);
-            crate::hand_digits::sculpt(&rig,&mut body,&mut body_joints,&mut body_weights);
-            crate::head_surface::smooth(&rig,&mut body,&mut body_joints,&mut body_weights);
+            let crate::open_people::RefinedBody {
+                mesh: mut body, ids: mut body_joints, weights: mut body_weights,
+            } = rig.refined_body();
             crate::head_surface::bald_crown(&rig,&mut body,&mut body_joints,&mut body_weights,look);
             crate::npc_appearance::child_head(&rig,&mut body,&mut body_joints,&mut body_weights,look);
             crate::npc_appearance::soften_jaw_normals(&rig,&mut body,&body_joints,&body_weights);
@@ -341,6 +346,11 @@ MeshMaterial3d(if remote { costume.remote.clone() } else { costume.material.clon
         }
         Person {
             bicycle,
+            surfing: false,
+            hop_step: None,
+            hop: Vec::new(),
+            sitting: Default::default(),
+            seated: idle.clone(),
             model_scale,
             head_scale,
             hand_scale,
@@ -415,11 +425,19 @@ impl Person {
                 * self.rig.duration("Run"),
             &mut self.run,
         );
+        if let Some((progress, _)) = self.hop_step {
+            self.hop.resize(self.idle.len(), Transform::IDENTITY);
+            self.rig.sample("Jump", progress.clamp(0.0, 1.0) * self.rig.duration("Jump"), &mut self.hop);
+            crate::hand_pose::relax(&self.rig, &mut self.hop);
+        }
         if !self.bicycle {
             crate::hand_pose::relax(&self.rig, &mut self.idle);
             crate::hand_pose::relax(&self.rig, &mut self.run);
         }
-        if self.bicycle {
+        if self.surfing {
+            crate::bicycle::surf_pose(&self.rig, &mut self.idle, self.model_scale);
+            self.run.clone_from(&self.idle);
+        } else if self.bicycle {
             // Mounted riders use the same updated mesh and skin, seated rather
             // than replaying a walking clip through a baked legacy figure.
             crate::bicycle::pose(&self.rig, &mut self.idle, phase, self.model_scale);
@@ -440,13 +458,29 @@ impl Person {
                 }
             }
         }
-        for ((&entity, a), b) in self.nodes.iter().zip(&self.idle).zip(&self.run) {
+        let sitting = if self.bicycle || self.surfing { 0. } else { self.sitting.eased_weight() };
+        if sitting > 0. {
+            self.seated.clone_from(&self.idle);
+            crate::bicycle::seat_pose(&self.rig, &mut self.seated, self.model_scale, self.sitting.height);
+        }
+        for (index, ((&entity, a), b)) in self.nodes.iter().zip(&self.idle).zip(&self.run).enumerate() {
             if let Ok(mut t) = transforms.get_mut(entity) {
                 *t = Transform {
                     translation: a.translation.lerp(b.translation, weight),
                     rotation: a.rotation.slerp(b.rotation, weight).normalize(),
                     scale: a.scale.lerp(b.scale, weight),
                 };
+                if let Some((_, hop_weight)) = self.hop_step {
+                    // Reuse authored limb articulation without importing its
+                    // root translations on top of the terrain hop arc.
+                    t.rotation = t.rotation.slerp(self.hop[index].rotation, hop_weight.clamp(0.0, 1.0)).normalize();
+                }
+                if sitting > 0. {
+                    let seated = &self.seated[index];
+                    t.translation = t.translation.lerp(seated.translation, sitting);
+                    t.rotation = t.rotation.slerp(seated.rotation, sitting).normalize();
+                    t.scale = t.scale.lerp(seated.scale, sitting);
+                }
             }
         }
         // Apply after rebuilding every local transform from animation, so

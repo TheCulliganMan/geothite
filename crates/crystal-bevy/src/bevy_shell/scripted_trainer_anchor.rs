@@ -475,11 +475,12 @@ fn prepare_falkner_encounter_preview(mut shell: BevyRuntimeShell) -> Result<Bevy
         initial.trainer.player_id,
         Dv::from_non_hp(9, 9, 9, 9),
     )?;
-    {
-        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
-        overworld.set_player_facing(Direction::Right);
-        state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
-    }
+    // Establish the initial facing through the same blocked NPC-facing input
+    // as gameplay. Updating only facing memory can leave the initial input
+    // transaction stale until the user turns, making the first A a no-op.
+    let mut controller = VisibleShellController { shell };
+    controller.press(GameButton::Right)?;
+    shell = controller.shell;
     reset_visible_navigation_state(&mut shell);
     mark_runtime_snapshot_dirty(&mut shell);
     settle_visible_shell_smoke_until_idle(&mut shell)?;

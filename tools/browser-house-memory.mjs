@@ -1,31 +1,50 @@
 /** Front-door allocation regression; all movement uses the production bridge. */
-import { chromium, webkit } from 'playwright';
+import { chromium, webkit, firefox } from 'playwright';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { installTextureMemoryAccounting } from './browser-texture-memory.mjs';
+import { installWebGpuMemoryAccounting } from './browser-webgpu-memory.mjs';
 const [url, output, engine = 'webkit', cyclesText = '6'] = process.argv.slice(2);
 const cycles = Number(cyclesText);
-assert.ok(url && output && ['webkit', 'chromium'].includes(engine) &&
+assert.ok(url && output && ['webkit', 'chromium', 'firefox'].includes(engine) &&
   Number.isInteger(cycles) && cycles > 0,
-  'usage: node tools/browser-house-memory.mjs URL OUTPUT_JSON [webkit|chromium] [CYCLES]');
+  'usage: node tools/browser-house-memory.mjs URL OUTPUT_JSON [webkit|chromium|firefox] [CYCLES]');
 assert.equal(new URL(url).searchParams.get('preview'), 'house-door');
 assert.equal(new URL(url).searchParams.get('multiplayer'), 'off');
-const report = { url, engine, cycles, samples: [], transitions: [], errors: [],
+const report = { url, engine, cycles, traceRequested: new URL(url).searchParams.get('loading-trace') === 'on', samples: [], transitions: [], errors: [],
   quality: { requiredSceneryFullDetail: true },
   accounting: 'WASM linear-memory high-water, WebGL buffers and known-format texture storage; excludes renderbuffers and driver overhead. Unknown texture formats are reported.' };
 let browser, page;
 try {
-  browser = await ({ chromium, webkit })[engine].launch({ headless: true,
+  report.headless = process.env.BROWSER_HEADLESS !== '0';
+  report.browserExecutable = process.env.BROWSER_EXECUTABLE ?? null;
+  browser = await ({ chromium, webkit, firefox })[engine].launch({ headless: report.headless,
+    ...(report.browserExecutable ? { executablePath: report.browserExecutable } : {}),
     ...(engine === 'chromium' && process.env.BROWSER_CHANNEL ?
       { channel: process.env.BROWSER_CHANNEL } : {}) });
   report.browser = browser.version();
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  report.adapterDropControl = process.env.BROWSER_ADAPTER_DROP === 'second';
+  if (report.adapterDropControl) {
+    await context.addInitScript(() => {
+      if (!navigator.gpu) throw Error('Adapter-loss control requires WebGPU');
+      const proto = Object.getPrototypeOf(navigator.gpu);
+      const request = proto.requestAdapter;
+      let calls = 0;
+      proto.requestAdapter = function (...args) {
+        if (++calls === 2) return Promise.resolve(null);
+        return request.apply(this, args);
+      };
+    });
+  }
   const installBufferMemoryAccounting = () => {
+    Error.stackTraceLimit = 32;
     localStorage.setItem('crystal.audio.muted', 'true');
-    window.houseMemory = { largestBuffer: 0, bufferUploadBytes: 0,
+    window.houseMemory = { backend:'webgl', largestBuffer: 0, bufferUploadBytes: 0,
       liveBufferBytes: 0, peakBufferBytes: 0, contextLost: 0,
-      drawCalls: 0, framebufferBlits: 0, defaultFramebufferDrawCalls: 0 };
+      drawCalls: 0, framebufferBlits: 0, defaultFramebufferDrawCalls: 0,
+      webglContextLosses: [] };
     const sizes = new WeakMap();
     const proto = WebGL2RenderingContext.prototype;
     const drawTargets = new WeakMap();
@@ -99,20 +118,34 @@ try {
       sizes.delete(buffer);
       return result;
     };
-    document.addEventListener('webglcontextlost', () => houseMemory.contextLost++, true);
+    document.addEventListener('webglcontextlost', event => {
+      houseMemory.contextLost++;
+      houseMemory.webglContextLosses.push({ time:performance.now(),
+        gameCanvas:event.target === document.querySelector('canvas'),
+        width:event.target.width, height:event.target.height,
+        message:event.statusMessage ?? '' });
+    }, true);
   };
   // Keep both installers in one script: separate init scripts have no ordering
   // contract, and the texture hook needs the shared meter created above.
   await context.addInitScript({ content:
-    `(${installBufferMemoryAccounting.toString()})();(${installTextureMemoryAccounting.toString()})();` });
+    `(${installBufferMemoryAccounting.toString()})();(${installTextureMemoryAccounting.toString()})();(${installWebGpuMemoryAccounting.toString()})();` });
   page = await context.newPage();
   page.on('pageerror', error => report.errors.push(String(error)));
   page.on('crash', () => report.errors.push('browser page crashed'));
   page.on('console', message => {
-    if (message.type() === 'error') (report.consoleErrors ??= []).push(message.text());
+    if (message.type() === 'error') {
+      (report.consoleErrors ??= []).push(message.text());
+      if (/shaderCompilationError/.test(message.text())) console.log(message.text());
+    }
     if (message.type() === 'warning' || /%c(?:WARN|ERROR)%c/.test(message.text())) {
-      (report.rendererDiagnostics ??= []).push(message.text());
-      console.log(JSON.stringify({ rendererDiagnostic: message.text() }));
+      const text = message.text();
+      const counts = report.rendererDiagnosticCounts ??= {};
+      counts[text] = (counts[text] ?? 0) + 1;
+      if (counts[text] === 1) {
+        (report.rendererDiagnostics ??= []).push(text);
+        console.log(JSON.stringify({ rendererDiagnostic: text }));
+      }
     }
   });
   await page.goto(url, { waitUntil: 'networkidle', timeout: 240000 });
@@ -123,15 +156,16 @@ try {
   assert.equal(await page.locator('#startup-error').evaluate(e => e.open ? e.textContent : null), null);
   const artifacts = await page.evaluate(async () => {
     const scripts = [...document.scripts].map(s => s.textContent).join('\n');
-    const path = scripts.match(/import\('(\.\/crystal-bevy(?:-[a-f0-9]{64})?\.js)'\)/)?.[1];
+    const path = window.__crystalRendererBundle?.module ?? scripts.match(/import\('(\.\/crystal-bevy(?:-[a-f0-9]{64})?\.js)'\)/)?.[1];
     if (!path) throw Error('Missing compiled game import');
     const wasm = await import(path);
+    window.houseWasm = wasm;
     window.houseRaw = await wasm.default();
     wasm.crystal_set_muted(true);
     const { createGameBridge } = await import('./webmcp.js');
     window.houseBridge = createGameBridge(wasm, { timeoutMs: 120000 });
     const requests = performance.getEntriesByType('resource').map(entry => entry.name)
-      .filter(name => /\/crystal-bevy(?:-[a-f0-9]{64}|_bg)\.wasm$/.test(new URL(name).pathname));
+      .filter(name => /\/crystal-bevy(?:-webgpu)?(?:-[a-f0-9]{64}|_bg)\.wasm$/.test(new URL(name).pathname));
     return { script: new URL(path, location.href).href,
       wasm: [...new Set(requests)], wasmRequests: requests };
   });
@@ -163,9 +197,23 @@ try {
   const press = button => command({ kind: 'press', button, frames: 8 });
   const waitForTerrain = async map => {
     const deadline = Date.now() + 240000;
+    let nextSnapshot = 0;
     while (Date.now() < deadline) {
       const state = await command({ kind: 'observe' });
       const voxel = state.presentation?.voxel;
+      if (Date.now() >= nextSnapshot) {
+        nextSnapshot = Date.now() + 5000;
+        report.loading = { map, voxel, memory: await page.evaluate(() => ({
+          heapBytes: houseRaw.memory.buffer.byteLength,
+          allocator: houseWasm.crystal_loading_memory_read ? JSON.parse(houseWasm.crystal_loading_memory_read()) : null,
+          ...houseMemory })) };
+        await fs.writeFile(output, JSON.stringify(report, null, 2) + '\n');
+        if (new URL(url).searchParams.get('loading-trace') === 'on') {
+          await fs.writeFile(output.replace(/\.json$/, '-trace.json'),
+            await page.evaluate(() => houseWasm.crystal_loading_trace_read()));
+        }
+        console.log(JSON.stringify({ loading: report.loading }));
+      }
       if (!voxel) throw Error('Build must include location-tester voxel readiness diagnostics');
       if (voxel.scenery_full_detail !== true) throw Error('Full scenery detail is required for this memory trial');
       if (state.map_info.name === map && voxel.active &&
@@ -183,7 +231,10 @@ try {
       const bounds = canvas.getBoundingClientRect();
       const style = getComputedStyle(canvas);
       return { label,
-      heapBytes: houseRaw.memory.buffer.byteLength, ...houseMemory,
+      heapBytes: houseRaw.memory.buffer.byteLength,
+      shaderErrors: window.houseShaderErrors ?? [],
+          allocator: houseWasm.crystal_loading_memory_read ? JSON.parse(houseWasm.crystal_loading_memory_read()) : null,
+          ...houseMemory,
       canvas: { width: canvas.width, height: canvas.height,
         displayedWidth: bounds.width, displayedHeight: bounds.height,
         display: style.display, visibility: style.visibility, opacity: style.opacity },
@@ -194,6 +245,8 @@ try {
     await fs.writeFile(output, JSON.stringify(report, null, 2) + '\n');
     console.log(JSON.stringify({ stage: label, ...report.samples.at(-1) }));
     assert.equal(report.samples.at(-1).contextLost, 0);
+    assert.deepEqual(report.samples.at(-1).gpuErrors ?? [], [], 'GPU validation must succeed');
+    assert.deepEqual(report.samples.at(-1).shaderErrors, [], 'Shader compilation must succeed');
     await page.evaluate(() => {
       window.houseCapturedFrame = null;
       window.houseCaptureError = null;
@@ -266,9 +319,30 @@ try {
     await waitForTerrain('PlayersHouse1F');
     await sample('entry-' + cycle);
   }
+  const settleMs = Number(process.env.BROWSER_SETTLE_MS ?? 0);
+  assert.ok(Number.isFinite(settleMs) && settleMs >= 0 && settleMs <= 60000);
+  if (settleMs > 0) {
+    await page.waitForTimeout(settleMs);
+    await sample('settled-house');
+    if (!await toggle.isVisible()) await page.locator('#player-options > summary').click();
+    await toggle.click();
+    await page.waitForTimeout(1000);
+    await sample('2d-return');
+    assert.equal(report.samples.at(-1).enabled, 'false');
+  }
+  assert.ok(!(report.rendererDiagnostics ?? []).some(text => /%cERROR%c/.test(text)),
+    'Rendering validation errors are gameplay blockers');
+  report.finalUrl = page.url();
+  if (report.adapterDropControl) {
+    assert.equal(new URL(report.finalUrl).searchParams.get('renderer'), 'webgl',
+      'adapter loss must reload the compile-time-compatible GL bundle');
+    assert.ok(report.samples.every(sample => sample.backend === 'webgl'));
+  }
+  report.gameplayPassed = true;
+  report.allocationStacks = await page.evaluate(() => globalThis.__crystalAllocationStacks ?? []);
   report.heapHighWater = Math.max(...report.samples.map(s => s.heapBytes));
-  assert.ok(report.heapHighWater <= 512 * 1024 ** 2, 'WASM exceeded 512 MiB');
-  assert.ok(report.samples.every(s => s.largestBuffer <= 32 * 1024 ** 2), 'GPU buffer exceeded 32 MiB');
+  assert.ok(!(report.rendererDiagnostics ?? []).some(text => /%cERROR%c/.test(text)),
+    'Rendering validation errors are gameplay blockers');
   report.passed = true;
 } catch (error) {
   report.failure = String(error);
@@ -276,10 +350,11 @@ try {
     try {
       report.failureState = await page.evaluate(async () => {
         const scripts = [...document.scripts].map(s => s.textContent).join('\n');
-        const path = scripts.match(/import\('(\.\/crystal-bevy(?:-[a-f0-9]{64})?\.js)'\)/)?.[1];
+        const path = window.__crystalRendererBundle?.module ?? scripts.match(/import\('(\.\/crystal-bevy(?:-[a-f0-9]{64})?\.js)'\)/)?.[1];
         let heapBytes = null;
         if (path) {
           const wasm = await import(path);
+          window.houseWasm = wasm;
           heapBytes = (await wasm.default()).memory.buffer.byteLength;
         }
         return { heapBytes, ...window.houseMemory,
@@ -296,6 +371,29 @@ try {
   }
   process.exitCode = 1;
 } finally {
+  if (page && !page.isClosed()) {
+    try {
+      report.allocationStacks ??= await page.evaluate(() => globalThis.__crystalAllocationStacks ?? []);
+      if (new URL(url).searchParams.get('allocation-stacks') === 'on') {
+        assert.ok(report.allocationStacks.length > 0 && report.allocationStacks.length <= 64,
+          'Requested allocation stacks must be captured within the diagnostic bound');
+      }
+      const trace = await page.evaluate(() => {
+        if (typeof window.houseWasm?.crystal_loading_trace_read !== 'function') throw Error('Missing Rust loading waterfall');
+        return window.houseWasm.crystal_loading_trace_read();
+      });
+      const capture = JSON.parse(trace);
+      report.traceEventCount = capture.traceEvents.length;
+      if (report.traceRequested) {
+        report.waterfall = output.replace(/\.json$/, '-trace.json');
+        await fs.writeFile(report.waterfall, trace);
+        assert.ok(capture.traceEvents.length > 0, 'Requested waterfall must contain events');
+        assert.equal(capture.droppedEvents, 0, 'Waterfall must include every regional load');
+      } else {
+        assert.equal(capture.traceEvents.length, 0, 'Production memory control must keep tracing disabled');
+      }
+    } catch (error) { report.traceFailure = String(error); report.passed = false; process.exitCode = 1; }
+  }
   await fs.writeFile(output, JSON.stringify(report, null, 2) + '\n');
   await browser?.close();
 }

@@ -120,6 +120,18 @@ pub(crate) fn gold_gym_boulder_mesh() -> SurfaceMeshData {
 }
 
 macro_rules! prop_mesh {
+    ("icon_unown") => { crate::species_rig::rig(crate::species_rig::Species::Unown(8)).neutral.clone() };
+    ("entei") => { crate::species_rig::rig(crate::species_rig::Species::Entei).neutral.clone() };
+    ("raikou") => { crate::species_rig::rig(crate::species_rig::Species::Raikou).neutral.clone() };
+    ("suicune") => { crate::species_rig::rig(crate::species_rig::Species::Suicune).neutral.clone() };
+    ("slowpoke") => { crate::species_rig::rig(crate::species_rig::Species::Slowpoke).neutral.clone() };
+    ("icon_slowpoke") => { crate::species_rig::rig(crate::species_rig::Species::Slowpoke).neutral.clone() };
+    ("icon_diglett") => { crate::species_rig::rig(crate::species_rig::Species::Diglett).neutral.clone() };
+    ("big_onix") => { crate::species_rig::rig(crate::species_rig::Species::Onix).neutral.clone() };
+    ("icon_voltorb") => { crate::species_rig::rig(crate::species_rig::Species::Voltorb).neutral.clone() };
+    ("icon_staryu") => { crate::species_rig::rig(crate::species_rig::Species::Staryu).neutral.clone() };
+    ("icon_jigglypuff") => { crate::species_rig::rig(crate::species_rig::Species::Jigglypuff).neutral.clone() };
+    ("icon_clefairy") => { crate::species_rig::rig(crate::species_rig::Species::Clefairy).neutral.clone() };
     ("chris_bike") => { crate::bicycle::mesh(false) };
     ("kris_bike") => { crate::bicycle::mesh(true) };
     ("battle_chikorita") => {
@@ -254,7 +266,14 @@ pub(crate) fn prop_kind_for_source(source: &str) -> Option<PropKind> {
         if art.contains(':') || art.contains('/') {
             return None;
         }
-        let known_art = art == species.to_ascii_lowercase() || prop_kind_for_source(art).is_some();
+        // The production publisher verifies these named NPCs against their
+        // authored dialogue/cry; Crystal gives them shared species-named art.
+        let shared_npc_art = matches!((species, art),
+            ("DODRIO" | "PIDGEY" | "FEAROW" | "FARFETCH_D" | "MURKROW" | "SPEAROW", "moltres")
+                | ("PSYDUCK" | "KANGASKHAN", "rhydon") | ("NIDORINO" | "NIDORAN_M" | "NIDORAN_F" | "PERSIAN" | "MEOWTH" | "RATTATA", "growlithe"));
+        let known_art = art == species.to_ascii_lowercase()
+            || prop_kind_for_source(art).is_some()
+            || shared_npc_art;
         if !known_art {
             return None;
         }
@@ -370,7 +389,7 @@ mod tests {
 
     #[test]
     fn exact_species_props_share_canonical_bodies_without_icon_substitution() {
-        for species in ["CHIKORITA", "CYNDAQUIL", "TOTODILE"] {
+        for species in ["CHIKORITA", "CYNDAQUIL", "TOTODILE", "PIDGEY", "CLEFAIRY", "JIGGLYPUFF", "RATTATA"] {
             assert_eq!(mesh(PropKind::ExactSpecies(species)),
                 crate::battle_species_models::mesh(species).unwrap());
             assert!(crate::has_authored_battle_species(species));
@@ -379,9 +398,10 @@ mod tests {
             assert!(!crate::has_authored_battle_species(source));
         }
         assert_eq!(prop_kind_for_source("species:UNKNOWN:icon_fish"),None);
-        for (species, icon) in [("PIDGEY", "icon_bird"), ("RATTATA", "icon_monster"), ("STARYU", "icon_staryu")] {
-            assert!(!crate::has_authored_battle_species(species));
-            assert_eq!(prop_kind_for_source(&format!("species:{species}:{icon}")), None);
+        for (species, icon, kind) in [("STARYU", "icon_staryu", PropKind::IconStaryu), ("VOLTORB", "icon_voltorb", PropKind::IconVoltorb), ("ONIX", "big_onix", PropKind::BigOnix), ("DIGLETT", "icon_diglett", PropKind::IconDiglett), ("SLOWPOKE", "slowpoke", PropKind::Slowpoke), ("SLOWPOKE", "icon_slowpoke", PropKind::IconSlowpoke), ("UNOWN", "icon_unown", PropKind::IconUnown), ("ENTEI", "entei", PropKind::Entei), ("RAIKOU", "raikou", PropKind::Raikou), ("SUICUNE", "suicune", PropKind::Suicune)] {
+            assert!(crate::has_authored_battle_species(species));
+            assert_eq!(prop_kind_for_source(&format!("species:{species}:{icon}")), Some(PropKind::ExactSpecies(species)));
+            assert_eq!(mesh(kind), mesh(PropKind::ExactSpecies(species)));
         }
     }
 
@@ -467,6 +487,35 @@ mod exact_visible_species_tests {
     }
 
     #[test]
+    fn published_named_pokemon_use_their_species_with_shared_bitmap() {
+        for (species, art) in [
+            ("DODRIO", "moltres"),
+            ("PIDGEY", "moltres"),
+            ("FEAROW", "moltres"),
+            ("PSYDUCK", "rhydon"),
+            ("KANGASKHAN", "rhydon"),
+            ("NIDORINO", "growlithe"),
+            ("RATTATA", "growlithe"),
+            ("FARFETCH_D", "moltres"),
+            ("MURKROW", "moltres"),
+            ("SPEAROW", "moltres"),
+            ("NIDORAN_M", "growlithe"),
+            ("NIDORAN_F", "growlithe"),
+            ("PERSIAN", "growlithe"),
+            ("MEOWTH", "growlithe"),
+        ] {
+            let kind = prop_kind_for_source(&format!("species:{species}:{art}")).unwrap();
+            assert_eq!(kind, PropKind::ExactSpecies(species));
+            let model = mesh(kind);
+            let expected = crate::battle_species_models::mesh(species).unwrap();
+            assert_eq!(model.positions, expected.positions);
+            assert_eq!(model.indices, expected.indices);
+        }
+        assert_eq!(prop_kind_for_source("species:PIKACHU:moltres"), None);
+        assert_eq!(prop_kind_for_source("moltres"), None);
+    }
+
+    #[test]
     fn published_amphy_identity_reuses_exact_ampharos_mesh_and_keeps_monsters_generic() {
         let kind = prop_kind_for_source("species:AMPHAROS:monster").unwrap();
         assert_eq!(kind, PropKind::ExactSpecies("AMPHAROS"));
@@ -517,12 +566,32 @@ mod exact_visible_species_tests {
         }
     }
     #[test]
+    fn gyarados_uses_the_dedicated_serpent_and_keeps_generic_icon_routing() {
+        assert_eq!(prop_kind_for_source("species:GYARADOS:icon_gyarados"), Some(PropKind::ExactSpecies("GYARADOS")));
+        assert_eq!(prop_kind_for_source("icon_gyarados"), Some(PropKind::IconGyarados));
+        let exact = mesh(PropKind::ExactSpecies("GYARADOS"));
+        let battle = crate::battle_species_models::mesh("GYARADOS").unwrap();
+        assert_eq!(exact.positions, battle.positions);
+        assert_eq!(exact.indices, battle.indices);
+    }
+
+    #[test]
+    fn sudowoodo_exact_source_shares_battle_body_and_preserves_legacy_source() {
+        assert_eq!(prop_kind_for_source("species:SUDOWOODO:sudowoodo"), Some(PropKind::ExactSpecies("SUDOWOODO")));
+        assert_eq!(prop_kind_for_source("sudowoodo"), Some(PropKind::Sudowoodo));
+        let visible = mesh(PropKind::ExactSpecies("SUDOWOODO"));
+        let battle = crate::battle_species_models::mesh("SUDOWOODO").unwrap();
+        assert_eq!(visible.positions, battle.positions);
+        assert_eq!(visible.indices, battle.indices);
+    }
+
+    #[test]
     fn every_canonical_species_has_a_bounded_reusable_visible_model() {
         let mut species: Vec<_> = crate::battle_species_models::supported_species()
             .collect();
         species.sort_unstable();
         species.dedup();
-        assert_eq!(species.len(), 225);
+        assert_eq!(species.len(), 251);
         for name in species {
             let source = format!("species:{name}:icon_monster");
             assert_eq!(

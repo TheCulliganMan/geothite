@@ -32,20 +32,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let value: serde_json::Value = serde_json::from_slice(&std::fs::read(entry.path())?)?;
         models.insert(format!("models/interiors/{name}"), value);
     }
-    for path in ["new_bark/tree.mesh.json", "johto/tree_lod.mesh.json",
-        "johto/tree_variants/tree_2.mesh.json", "johto/tree_variants/tree_3.mesh.json",
-        "johto/tree_variants/tree_4.mesh.json", "johto/tree_variants/tree_5.mesh.json"] {
-        let file = root.join(path);
-        if file.is_file() {
-            if file.metadata()?.len() > 16 * 1024 * 1024 {
-                return Err("model exceeds 16 MiB".into());
-            }
-            models.insert(
-                format!("models/{path}"),
-                serde_json::from_slice(&std::fs::read(file)?)?,
-            );
-        }
-    }
     if models.is_empty() {
         return Err("no converted scenery meshes found".into());
     }

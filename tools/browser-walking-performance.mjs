@@ -1,5 +1,6 @@
 /** Real browser input, frame intervals and GPU upload accounting. No gameplay shortcuts. */
 import { chromium } from 'playwright';
+import { installWebGpuTiming } from './browser-webgpu-timing.mjs';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import os from 'node:os';
@@ -7,8 +8,9 @@ const [url, storage, mode, output] = process.argv.slice(2);
 assert.ok(url && storage && ['2d', '2.5d'].includes(mode) && output,
   'usage: node tools/browser-walking-performance.mjs URL STORAGE_JSON 2d|2.5d OUTPUT_JSON');
 const scenario = process.env.SCENARIO ?? 'walking';
-assert.ok(['walking', 'lab-exit', 'route-exit'].includes(scenario));
-const browserServer = await chromium.launchServer({ headless: false, args: ['--mute-audio'],
+assert.ok(['walking', 'stationary', 'lab-exit', 'route-exit'].includes(scenario));
+const headless = process.env.BROWSER_HEADLESS === '1';
+const browserServer = await chromium.launchServer({ headless, args: ['--mute-audio'],
   ...(process.env.BROWSER_CHANNEL ? { channel: process.env.BROWSER_CHANNEL } : {}) });
 const browser = await chromium.connect(browserServer.wsEndpoint());
 // Host deadline survives a renderer blocked in a synchronous geometry build.
@@ -23,10 +25,38 @@ const watchdog = setTimeout(() => {
 }, Number(process.env.PROBE_TIMEOUT_MS ?? 300000));
 try {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, storageState: storage });
+  if (process.env.GPU_WATERFALL === '1') await context.addInitScript(installWebGpuTiming);
   await context.addInitScript(() => {
     localStorage.setItem('crystal.audio.muted', 'true');
     window.walkingMetrics = { active: false, last: 0, frames: [], uploads: [], allocations: 0, longTasks: [],
-      drawCalls: 0, bindBufferRanges: 0, textureParameterCalls: 0, bufferUploadBytes: 0 };
+      drawCalls: 0, bindBufferRanges: 0, textureParameterCalls: 0, bufferUploadBytes: 0,
+      startupLongTasks: [], startupComplete: false,
+      contextLosses: [], deviceLosses: [], gpuErrors: [], shaderErrors: [] };
+    document.addEventListener('webglcontextlost', event => {
+      walkingMetrics.contextLosses.push({ time: performance.now(),
+        gameCanvas: event.target === document.querySelector('canvas') });
+    }, true);
+    if (typeof GPUAdapter !== 'undefined') {
+      const requestDevice = GPUAdapter.prototype.requestDevice;
+      GPUAdapter.prototype.requestDevice = function (...args) {
+        return requestDevice.apply(this, args).then(device => {
+          device.lost.then(info => walkingMetrics.deviceLosses.push({ reason: info.reason, message: info.message }));
+          device.addEventListener('uncapturederror', event => walkingMetrics.gpuErrors.push({
+            type: event.error.constructor.name, message: event.error.message }));
+          return device;
+        });
+      };
+      const createShaderModule = GPUDevice.prototype.createShaderModule;
+      GPUDevice.prototype.createShaderModule = function (...args) {
+        const module = createShaderModule.apply(this, args);
+        module.getCompilationInfo().then(info => {
+          for (const message of info.messages) if (message.type === 'error') {
+            walkingMetrics.shaderErrors.push(message.message);
+          }
+        });
+        return module;
+      };
+    }
     function frame(t) {
       if (walkingMetrics.active && walkingMetrics.last) walkingMetrics.frames.push(t - walkingMetrics.last);
       walkingMetrics.last = walkingMetrics.active ? t : 0;
@@ -34,7 +64,12 @@ try {
     }
     requestAnimationFrame(frame);
     new PerformanceObserver(list => {
-      if (walkingMetrics.active) walkingMetrics.longTasks.push(...list.getEntries().map(e => e.duration));
+      for (const entry of list.getEntries()) {
+        if (walkingMetrics.active) walkingMetrics.longTasks.push(entry.duration);
+        else if (!walkingMetrics.startupComplete) {
+          walkingMetrics.startupLongTasks.push({ start: entry.startTime, duration: entry.duration });
+        }
+      }
     }).observe({ type: 'longtask' });
     const proto = WebGL2RenderingContext.prototype;
     for (const name of ['drawArrays', 'drawElements', 'drawArraysInstanced', 'drawElementsInstanced',
@@ -74,15 +109,19 @@ try {
   page.on('console', message => {
     if (/%cERROR%c|Caught rendering error|Quitting the application/.test(message.text())) errors.push(message.text());
   });
+  const navigationStartedAt = Date.now();
+  report.navigationLoadBefore = os.loadavg();
   await page.goto(url);
   await page.waitForFunction(() => document.querySelector('#loading').hidden
     || document.querySelector('#startup-error').open, null, { timeout: 180000 });
   assert.equal(await page.locator('#startup-error').evaluate(e => e.open ? e.textContent : null), null);
+  report.startupReadyMs = Date.now() - navigationStartedAt;
   await page.evaluate(async synchronousAudio => {
     const scripts = [...document.scripts].map(script => script.textContent).join('\n');
-    const bundle = scripts.match(/import\('(\.\/crystal-bevy(?:-[a-f0-9]{64})?\.js)'\)/)?.[1];
+    const bundle = window.__crystalRendererBundle?.module ?? scripts.match(/import\('(\.\/crystal-bevy(?:-[a-f0-9]{64})?\.js)'\)/)?.[1];
     if (!bundle) throw new Error('Missing compiled bundle import');
     const wasm = await import(bundle);
+    window.walkingWasm = wasm;
     const { createGameBridge } = await import('./webmcp.js');
     window.walkingBridge = createGameBridge(wasm, { timeoutMs: 120000 });
     if (synchronousAudio) {
@@ -112,6 +151,10 @@ try {
     if (Date.now() - lastProgress > 10000) {
       lastProgress = Date.now();
       console.log(JSON.stringify({ phase: 'observation', frame: state.frame, voxel: state.presentation?.voxel }));
+      if (new URL(url).searchParams.get('loading-trace') === 'on') {
+        await fs.writeFile(output.replace(/\.json$/, '-trace.json'),
+          await page.evaluate(() => walkingWasm.crystal_loading_trace_read()));
+      }
     }
     return state;
   };
@@ -126,8 +169,19 @@ try {
     for (let i = 0; i < 4 && state.status.screen !== 'overworld'; i++) state = await press('a');
   }
   const preview = new URL(url).searchParams.get('preview');
-  assert.equal(state.map_info.name, preview === 'route29' ? 'Route29' : scenario === 'lab-exit' ? 'ElmsLab' : 'NewBarkTown', 'unexpected fixture map');
+  assert.equal(state.map_info.name, preview === 'azalea-well' ? 'AzaleaTown' : preview === 'route29' ? 'Route29' : scenario === 'lab-exit' ? 'ElmsLab' : 'NewBarkTown', 'unexpected fixture map');
   assert.equal(state.status.screen, 'overworld');
+  if (process.env.PROBE_STARTUP_INPUT === '1') {
+    const started = Date.now();
+    const pendingBeforeInput = state.presentation?.voxel?.terrain_pending;
+    const menu = await press('start');
+    assert.ok((menu.observe.menus ?? []).length || /POK.MON|PACK|SAVE/.test(JSON.stringify(menu.observe)),
+      'production Start menu must respond during startup');
+    report.firstControllableMs = Date.now() - navigationStartedAt;
+    report.startupInput = { latencyMs: Date.now() - started, pendingBeforeInput,
+      voxel: menu.presentation?.voxel };
+    state = await press('b');
+  }
   const toggle = page.locator('#view-toggle');
   if ((await toggle.getAttribute('aria-pressed') === 'true') !== (mode === '2.5d')) {
     const settings = page.locator('#player-options > summary');
@@ -137,26 +191,56 @@ try {
   }
   assert.equal(await toggle.getAttribute('aria-pressed'), String(mode === '2.5d'));
   await page.bringToFront();
-  await page.waitForTimeout(5000);
+  if (process.env.PROBE_STARTUP_INPUT !== '1') await page.waitForTimeout(5000);
   await page.locator('canvas').focus();
   state = await observe();
   if (mode === '2.5d') {
     const deadline = Date.now() + 180000;
+    let probed = false;
     while (!state.presentation?.voxel?.active || state.presentation.voxel.profiles_pending
         || state.presentation.voxel.terrain_pending === true
         || ('terrain_map' in state.presentation.voxel && state.presentation.voxel.terrain_map !== state.map_info.name)
         || state.presentation.voxel.active_frames < 30) {
       assert.ok(Date.now() < deadline, '3D warmup timed out');
+      if (!probed && process.env.PROBE_STARTUP_INPUT === '1' && state.presentation?.voxel?.active) {
+        const started = Date.now();
+        const menu = await press('start');
+        assert.ok((menu.observe.menus ?? []).length || /POK.MON|PACK|SAVE/.test(JSON.stringify(menu.observe)),
+          'production Start menu must respond with the 3D camera active');
+        report.first3dControllableMs = Date.now() - navigationStartedAt;
+        report.startup3dInput = { latencyMs: Date.now() - started,
+          pendingBeforeInput: state.presentation.voxel.terrain_pending, voxel: menu.presentation?.voxel };
+        state = await press('b');
+        probed = true;
+      }
       await page.waitForTimeout(250); state = await observe();
     }
     assert.equal(state.presentation.voxel.scenery_full_detail, true, 'preserve full-detail models');
   }
+  report.fullTerrainReadyMs = Date.now() - navigationStartedAt;
+  report.startupResources = await page.evaluate(() => performance.getEntriesByType('resource')
+    .filter(entry => new URL(entry.name).origin === location.origin)
+    .map(entry => ({ name: new URL(entry.name).pathname, initiator: entry.initiatorType,
+      start: entry.startTime, responseStart: entry.responseStart, responseEnd: entry.responseEnd,
+      duration: entry.duration, transferBytes: entry.transferSize,
+      encodedBytes: entry.encodedBodySize, decodedBytes: entry.decodedBodySize })));
   const loadBefore = os.loadavg();
-  await page.evaluate(() => { walkingMetrics.active = true; });
+  const beginTraceWindow = () => page.evaluate(() => {
+    const trace = JSON.parse(walkingWasm.crystal_loading_trace_read());
+    const frame = Math.max(0, ...trace.traceEvents
+      .filter(e => e.name === 'render.frame' && !e.inProgress)
+      .map(e => e.args.frame));
+    if (window.gpuFrameTiming?.supported) window.gpuFrameTiming.start(30);
+    return frame;
+  });
+  if (scenario === 'stationary') report.walkTraceStartFrame = await beginTraceWindow();
+  await page.evaluate(() => { walkingMetrics.startupComplete = true; walkingMetrics.active = true; });
+  if (scenario === 'stationary') await page.waitForTimeout(10000);
   let midpoint = null;
   let leg = 0;
-  for (const key of (scenario === 'lab-exit' ? ['ArrowDown', 'ArrowDown', 'ArrowDown'] : scenario === 'route-exit' ? Array(3).fill('ArrowLeft') : ['ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft'])) {
+  for (const key of (scenario === 'stationary' ? [] : scenario === 'lab-exit' ? ['ArrowDown', 'ArrowDown', 'ArrowDown'] : scenario === 'route-exit' ? Array(3).fill('ArrowLeft') : ['ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft'])) {
     await page.keyboard.down(key);
+    if (leg === 0) report.walkTraceStartFrame = await beginTraceWindow();
     await page.waitForTimeout(1000);
     await page.keyboard.up(key);
     ++leg;
@@ -177,16 +261,50 @@ try {
   });
   const after = await observe();
   const times = [...metrics.frames].sort((a, b) => a - b);
-  report = { ...report, url, mode, scenario, audioControl: process.env.AUDIO_PREPARATION ?? 'default', loadBefore, loadAfter: os.loadavg(), platform: os.platform(), arch: os.arch(), browser: browser.version(), before: state.map_info, after: after.map_info, midpoint: midpoint?.map_info,
+  report = { ...report, url, mode, scenario, headless, audioControl: process.env.AUDIO_PREPARATION ?? 'default', loadBefore, loadAfter: os.loadavg(), platform: os.platform(), arch: os.arch(), browser: browser.version(), before: state.map_info, after: after.map_info, midpoint: midpoint?.map_info,
     error: after.recent_events.error, errors, rendererBefore: state.presentation?.voxel,
     rendererAfter: after.presentation?.voxel,
     timingMeaning: 'visible focused requestAnimationFrame intervals; not GPU timestamps or presented FPS', ...metrics,
     median: times[Math.floor(times.length / 2)], p95: times[Math.floor(times.length * .95)],
     max: times.at(-1), uploadBytes: metrics.uploads.reduce((n, p) => n + p.width * p.height * 4, 0) };
+  const diagnostics = await page.evaluate(() => ({
+    rendererModule: window.__crystalRendererBundle?.module ?? null,
+    memory: typeof walkingWasm.crystal_loading_memory_read === 'function'
+      ? JSON.parse(walkingWasm.crystal_loading_memory_read()) : null,
+    trace: typeof walkingWasm.crystal_loading_trace_read === 'function'
+      ? walkingWasm.crystal_loading_trace_read() : null,
+  }));
+  if (process.env.GPU_WATERFALL === '1') {
+    report.gpuTiming = await page.evaluate(() => window.gpuFrameTiming.finish());
+    const finalGpuValidation = await page.evaluate(() => ({
+      gpuErrors: walkingMetrics.gpuErrors, deviceLosses: walkingMetrics.deviceLosses,
+      contextLosses: walkingMetrics.contextLosses, shaderErrors: walkingMetrics.shaderErrors,
+    }));
+    Object.assign(metrics, finalGpuValidation);
+    Object.assign(report, finalGpuValidation);
+  }
+  report.memory = diagnostics.memory;
+  report.rendererModule = diagnostics.rendererModule;
+  if (diagnostics.trace) {
+    report.waterfall = output.replace(/\.json$/, '-trace.json');
+    await fs.writeFile(report.waterfall, diagnostics.trace);
+    report.droppedTraceEvents = JSON.parse(diagnostics.trace).droppedEvents;
+  }
   await fs.writeFile(output, JSON.stringify(report, null, 2));
   await page.screenshot({ path: output.replace(/\.json$/, '.png') });
   assert.deepEqual(errors, []);
-  if (scenario === 'lab-exit') assert.equal(after.map_info.name, 'NewBarkTown');
+  assert.deepEqual(metrics.contextLosses, [], 'walking must not lose a WebGL context');
+  assert.deepEqual(metrics.deviceLosses, [], 'walking must not lose a WebGPU device');
+  assert.deepEqual(metrics.gpuErrors, [], 'walking must not cause GPU validation errors');
+  assert.deepEqual(metrics.shaderErrors, [], 'walking shaders must compile');
+  if (new URL(url).searchParams.get('loading-trace') === 'on') {
+    assert.equal(report.droppedTraceEvents, 0, 'walking waterfall must retain every regional load');
+  }
+  if (scenario === 'stationary') {
+    assert.equal(after.map_info.name, state.map_info.name);
+    assert.deepEqual(after.map_info.player, state.map_info.player,
+      'stationary comparison must retain position and facing');
+  } else if (scenario === 'lab-exit') assert.equal(after.map_info.name, 'NewBarkTown');
   else if (scenario === 'route-exit') assert.equal(after.map_info.name, 'Route29');
   else assert.ok([midpoint, after, ...(report.walkObservations ?? []).map(sample => ({ map_info: sample.map }))].some(sample => sample &&
     (sample.map_info.player.x !== state.map_info.player.x || sample.map_info.player.y !== state.map_info.player.y)),

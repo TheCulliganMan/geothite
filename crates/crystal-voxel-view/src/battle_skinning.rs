@@ -20,6 +20,49 @@ pub(super) struct SkinnedActor {
     pub rig: &'static SpeciesRig,
     joints: Vec<Entity>,
     pose: BodyPose,
+    visibility_parts: Vec<Option<(Vec3, Vec3)>>,
+    visibility_matrices: Vec<Mat4>,
+}
+
+impl SkinnedActor {
+    pub(super) fn visible_bounds(&mut self) -> Option<(Vec3, Vec3)> {
+        self.rig.skin_matrices_into(&self.pose.current, &mut self.visibility_matrices).ok()?;
+        posed_visibility_bounds(&self.visibility_parts, &self.visibility_matrices)
+    }
+}
+
+// Cache influence boxes once. A weighted skin vertex lies in the convex hull
+// of its transformed influences, so their union bounds it without rescanning
+// vertices, altering GPU playback, or reserving all future animation poses.
+fn influence_bounds(rig: &SpeciesRig) -> Vec<Option<(Vec3, Vec3)>> {
+    let mut parts = vec![None; rig.joints.len()];
+    for (index, point) in rig.neutral.positions.iter().enumerate() {
+        let point = Vec3::from_array(*point);
+        for (&joint, weight) in rig.joint_indices[index].iter().zip(rig.joint_weights[index]) {
+            if weight <= 0.0 { continue; }
+            let bounds = &mut parts[joint as usize];
+            *bounds = Some(bounds.map_or((point, point), |(min, max): (Vec3, Vec3)|
+                (min.min(point), max.max(point))));
+        }
+    }
+    parts
+}
+
+fn posed_visibility_bounds(parts: &[Option<(Vec3, Vec3)>], matrices: &[Mat4]) -> Option<(Vec3, Vec3)> {
+    let mut min = Vec3::splat(f32::INFINITY);
+    let mut max = Vec3::splat(f32::NEG_INFINITY);
+    for (bounds, matrix) in parts.iter().zip(matrices) {
+        let Some((lo, hi)) = bounds else { continue; };
+        for index in 0..8 {
+            let point = matrix.transform_point3(Vec3::new(
+                if index & 1 == 0 { lo.x } else { hi.x },
+                if index & 2 == 0 { lo.y } else { hi.y },
+                if index & 4 == 0 { lo.z } else { hi.z }));
+            min = min.min(point);
+            max = max.max(point);
+        }
+    }
+    (min.is_finite() && max.is_finite()).then_some((min, max))
 }
 
 /// Only allocated at actor creation. A frame updates small local transforms,
@@ -210,6 +253,8 @@ joint.bind,),
         rig,
         joints,
         pose: BodyPose::new(rig),
+        visibility_parts: influence_bounds(rig),
+        visibility_matrices: vec![Mat4::IDENTITY; rig.joints.len()],
     }
 }
 
@@ -235,7 +280,7 @@ pub(super) fn sync(
         };
         let shown = status.active
             && frame.battlers[index].as_ref().is_some_and(|b| {
-                b.visible && b.allow_species_model && b.species_id == actor.key.species
+                b.visible && b.allow_species_model && b.model_id() == actor.key.species.as_ref()
             });
         // Observe semantic transitions even in classic view, so returning with
         // F3 cannot replay a stale hit. Idle time pauses while the body is hidden.

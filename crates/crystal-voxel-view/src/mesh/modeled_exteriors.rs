@@ -1,8 +1,14 @@
 //! Source-complete world exterior kits. Authoritative tiles, phases, native
 //! ground and door seams select art; collision and simulation are never read.
 use super::*;
+use bevy::prelude::Vec2;
 #[path = "city_facades.rs"]
 mod city_facades;
+#[path = "ecruteak_houses.rs"]
+mod ecruteak_houses;
+pub(super) fn portal_block(mesh: &mut SurfaceMeshData, b: [f32; 6], color: [f32; 3]) {
+    city_facades::block(mesh, b, color);
+}
 #[path = "folded_roofs.rs"]
 pub(super) mod folded_roofs;
 #[path = "kanto_boundary_rocks.rs"]
@@ -15,7 +21,7 @@ pub(super) mod park_hoop_fence;
 mod structure_extensions;
 #[path = "park_flowers.rs"]
 pub(super) mod park_flowers;
-use crate::exterior_models::{Kind, model};
+use crate::exterior_models::{Kind, model, variant_model};
 use crate::new_bark_models::{ModelKind as Johto, model as johto_model};
 
 // Share the existing planting producer through its owning module boundary.
@@ -29,13 +35,13 @@ pub(super) fn append_park_underplanting(mesh: &mut SurfaceMeshData,
 enum Asset {
     World(Kind),
     Johto(Johto),
-    ForestTree,
+    GroveTree,
 }
 impl Asset {
     fn label(self) -> &'static str {
         match self {
             Self::World(k) => k.label(),
-            Self::ForestTree => "world-exterior/forest_tree",
+            Self::GroveTree => "johto/tree",
             Self::Johto(k) => match k {
                 Johto::House => "johto/house",
                 Johto::PlayerHouse => "johto/player_house",
@@ -46,7 +52,6 @@ impl Asset {
                 Johto::TraditionalHouse => "johto/traditional_house",
                 Johto::VioletGym => "johto/violet_gym",
                 Johto::SproutTower => "johto/sprout_tower",
-                Johto::Tree | Johto::TreeLod => "johto/tree",
                 Johto::Grass | Johto::GrassLod => "johto/grass",
                 Johto::Flowers => "johto/flowers",
             },
@@ -291,6 +296,8 @@ fn descriptor(
                 Asset::Johto(House)
             } else if first.metatile_id == 0x1a && p.width == 8 && p.height == 4 && door.is_some() {
                 Asset::Johto(RouteGate)
+            } else if drawing(cells, g, p, "johto", &[&[0x08, 0x09], &[0x16, 0x1e]], 0) {
+                Asset::Johto(PlayerHouse)
             } else if first.metatile_id == 0x08 && p.height == 8 && at(0, 4) == 0x1c {
                 Asset::World(Kind::JohtoBarn)
             } else if first.metatile_id == 0x18 && p.height == 8 {
@@ -353,6 +360,7 @@ fn descriptor(
                     }
                 }
                 0x68 => Kind::KantoCenter,
+                0x0c if drawing(cells,g,p,"kanto",&[&[0x0c,0x0e],&[0x10,0x66]],0) => Kind::KantoHouse,
                 0x0c => {
                     if map == "Route10North" {
                         Kind::PowerPlant
@@ -415,6 +423,10 @@ pub(super) fn building_placements(
     g: &GridGeometry,
 ) -> Vec<BuildingPlacement> {
     let mut out = new_bark::building_placements(map, cells, g);
+    // A complete native rock drawing must join the surrounding canyon. The
+    // old fitted mesa kit turned Blackthorn's ochre formation into a pale
+    // isolated pedestal and prevented the shared rock finish from touching it.
+    out.retain(|p| !structure_extensions::native_mesa(cells, g, *p));
     for tile in cells {
         let s = &tile.source;
         if s.tileset_id.as_ref() != "johto"
@@ -454,13 +466,21 @@ pub(super) fn append_building(
     append_building_with_samples(mesh,cells,shapes,g,map,p,claimed,map_origin,None)
 }
 
-fn cabin_roof_palette(cells: &[&VisualTile], g: &GridGeometry,
+pub(super) fn cabin_roof_palette(cells: &[&VisualTile], g: &GridGeometry,
     p: BuildingPlacement, images: &TerrainImageSamples) -> Option<[[f32;4];3]> {
     let mut colors = std::collections::BTreeSet::new();
     // Complete source roof interior, excluding its transparent/ground corners.
     for row in p.row..p.row+p.roof_rows {
         for column in p.column+2..p.column+p.width-2 {
-            for pixel in tile_rgba(images,cells[row*g.width+column]).ok()?.chunks_exact(4) {
+            let tile = cells[row*g.width+column];
+            // Kanto roof blocks also contain blank ground/window cells.
+            // Only the pitched/flat roof-art courses authorize roof paint.
+            if tile.source.tileset_id.as_ref() == "kanto"
+                && !matches!(tile.source.tile_index, 0x05..=0x09 | 0x15..=0x19
+                    | 0x4c..=0x4e | 0x5a..=0x5f) {
+                continue;
+            }
+            for pixel in tile_rgba(images,tile).ok()?.chunks_exact(4) {
                 if pixel[3] == 255 { colors.insert([pixel[0],pixel[1],pixel[2]]); }
             }
         }
@@ -482,6 +502,34 @@ fn cabin_roof_palette(cells: &[&VisualTile], g: &GridGeometry,
     Some([dark,mid,light])
 }
 
+fn forest_gate_wall_palette(cells: &[&VisualTile], g: &GridGeometry,
+    p: BuildingPlacement, images: &TerrainImageSamples) -> Option<[[f32;4];4]> {
+    // Exact masonry and window drawings in the authenticated forest gate.
+    // Sampling the complete facade indiscriminately mixes two source palettes.
+    let sample = |index| -> Option<Vec<[u8;3]>> {
+        let mut colors=std::collections::BTreeSet::new();
+        for row in p.row..p.row+p.height {for column in p.column..p.column+p.width {
+            let tile=cells[row*g.width+column];
+            if tile.source.tileset_id.as_ref()!="forest" || tile.source.tile_index!=index {continue;}
+            for pixel in tile_rgba(images,tile).ok()?.chunks_exact(4) {
+                if pixel[3]!=255 {return None;}
+                colors.insert([pixel[0],pixel[1],pixel[2]]);
+            }
+        }}
+        if !(2..=4).contains(&colors.len()) {return None;}
+        let mut colors:Vec<_>=colors.into_iter().collect();
+        colors.sort_by_key(|c|u32::from(c[0])*2126+u32::from(c[1])*7152+u32::from(c[2])*722);
+        Some(colors)
+    };
+    let wall=sample(0x24)?;let window=sample(0x04)?;
+    let linear=|c:[u8;3]| {
+        let rgb=c.map(|v| {let s=f32::from(v)/255.;if s<=0.04045 {s/12.92} else {((s+0.055)/1.055).powf(2.4)}});
+        [rgb[0],rgb[1],rgb[2],1.]
+    };
+    Some([linear(wall[usize::from(wall.len()>2)]),linear(*wall.last()?),
+        linear(*window.last()?),linear(window[0])])
+}
+
 pub(super) fn append_building_with_samples(
     mesh: &mut TerrainMeshData, cells: &[&VisualTile], shapes: &[CellShape],
     g: &GridGeometry, map: &str, p: BuildingPlacement, claimed: &mut [bool],
@@ -497,10 +545,36 @@ pub(super) fn append_building_with_samples(
     if !clear(claimed, g, rect) {
         return false;
     }
-    let roof_palette = if d.asset == Asset::Johto(Johto::TraditionalHouse)
-        || (map == "LakeOfRage" && d.asset == Asset::Johto(Johto::House)) {
+    let world_roof = matches!(d.asset, Asset::World(Kind::KantoHouse | Kind::KantoFlatHouse
+        | Kind::KantoMart | Kind::KantoBlank | Kind::ForestGate | Kind::ForestGateClosed));
+    let world_roof_palette = if world_roof {
+        images.and_then(|images| cabin_roof_palette(cells,g,p,images))
+    } else {None};
+    let forest_gate=matches!(d.asset,Asset::World(Kind::ForestGate | Kind::ForestGateClosed));
+    let forest_wall_palette=if forest_gate {
+        images.and_then(|images|forest_gate_wall_palette(cells,g,p,images))
+    } else {None};
+    if forest_gate && images.is_some()
+        && (world_roof_palette.is_none() || forest_wall_palette.is_none()) {
+        for row in p.row..p.row+p.height {for column in p.column..p.column+p.width {
+            let (w,e,n,s)=g.bounds(column,row);
+            append_top(&mut mesh.textured,[w,e,n,s],0.,g.uv(column,row));
+            claimed[row*g.width+column]=true;
+        }}
+        return true;
+    }
+    let source_roof = matches!(d.asset, Asset::Johto(Johto::TraditionalHouse
+        | Johto::House | Johto::PlayerHouse | Johto::Pokecenter | Johto::Mart | Johto::VioletGym));
+    let service = matches!(d.asset, Asset::Johto(Johto::Pokecenter | Johto::Mart));
+    let (roof_palette, wall_palette) = if source_roof {
         if let Some(images)=images {
-            let Some(palette)=cabin_roof_palette(cells,g,p,images) else {
+            let paint=cabin_roof_palette(cells,g,p,images).and_then(|roof| {
+                if service {
+                    super::new_bark::service_wall_color(cells,g,p,images)
+                        .map(|wall|(roof,Some(wall)))
+                } else {Some((roof,None))}
+            });
+            let Some((roof,wall))=paint else {
                 // Missing material coverage is shown as exact 2D, never purple
                 // prototype paint or a legacy voxel-building substitute.
                 for row in p.row..p.row+p.height {for column in p.column..p.column+p.width {
@@ -510,9 +584,9 @@ pub(super) fn append_building_with_samples(
                 }}
                 return true;
             };
-            Some(palette)
-        } else {None}
-    } else {None};
+            (Some(roof),wall)
+        } else {(None,None)}
+    } else {(None,None)};
     let tileset = cells[p.row * g.width + p.column].source.tileset_id.as_ref();
     let Some(sample) = ground(cells, shapes, tileset, p.ground_tile_index, None) else {
         return false;
@@ -531,15 +605,38 @@ pub(super) fn append_building_with_samples(
     });
     let cutaway_start = mesh.solid.positions.len();
     match d.asset {
+        Asset::World(Kind::BurnedTower) if map == "EcruteakCity" => {
+            ecruteak_houses::append_burned(&mut mesh.solid, b, g.tile_height, door);
+        }
+        Asset::World(Kind::TinTower) if map == "EcruteakCity" && p.height == 6 => {
+            ecruteak_houses::append_temple(&mut mesh.solid, b, g.tile_height, door);
+        }
         Asset::World(kind) => {
-            model(kind).append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * 2.0, door)
+            let m = model(kind);
+            let scale = if kind == Kind::KantoHouse { 1.25 } else { 2.0 };
+            m.append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * scale, door);
+            if let Some(palette) = world_roof_palette {
+                m.recolor_fitted_roof(&mut mesh.solid, cutaway_start, palette);
+            }
+            if let Some(palette)=forest_wall_palette {
+                m.recolor_fitted_forest_wall(&mut mesh.solid,cutaway_start,palette);
+            }
         }
         Asset::Johto(kind) => {
-            let m=johto_model(kind);
-            m.append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * 2.0, door);
-            if let Some(palette)=roof_palette {m.recolor_fitted_roof(&mut mesh.solid,cutaway_start,palette);}
+            if map == "EcruteakCity" && kind == Johto::TraditionalHouse {
+                if drawing(cells, g, p, "johto", &[&[0x2c,0x2d], &[0x26,0x2f]], 2) {
+                    ecruteak_houses::append_gate(&mut mesh.solid, b, g.tile_height);
+                } else {
+                    ecruteak_houses::append(&mut mesh.solid, b, g.tile_height, door);
+                }
+            } else {
+                let m=johto_model(kind);
+                m.append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * 2.0, door);
+                if let Some(palette)=roof_palette {m.recolor_fitted_roof(&mut mesh.solid,cutaway_start,palette);}
+                if let Some(palette)=wall_palette {m.recolor_fitted_service_wall(&mut mesh.solid,cutaway_start,palette);}
+            }
         }
-        Asset::ForestTree => unreachable!("trees cannot be building placements"),
+        Asset::GroveTree => unreachable!("trees cannot be building placements"),
     }
     if map == "GoldenrodCity"
         && let Asset::World(kind @ (Kind::ModernBlank | Kind::ModernHouse)) = d.asset
@@ -581,6 +678,17 @@ pub(super) fn append_building_with_samples(
     }
     // Eligibility belongs only to this successful authored building append.
     // Ground backing and the earlier cave/mesa/forecourt/ice branch stay opaque.
+    if matches!(d.asset, Asset::World(Kind::ForestGate | Kind::ForestGateClosed)) {
+        mesh.coverage_fade_ranges.push(cutaway_start..mesh.solid.positions.len());
+    }
+    mesh.rigid_buildings.push(super::rigid_buildings::Building {
+        vertices: cutaway_start..mesh.solid.positions.len(),
+        doorway: if d.east {
+            Vec2::new(b[1] - g.tile_width * 0.5, door.unwrap_or((b[2]+b[3])*0.5))
+        } else {
+            Vec2::new(door.unwrap_or((b[0]+b[1])*0.5), b[3] - g.tile_height * 0.5)
+        },
+    });
     mesh.solid
         .cutaway_ranges
         .push(cutaway_start..mesh.solid.positions.len());
@@ -594,15 +702,15 @@ fn tree_kind(cells: &[&VisualTile], g: &GridGeometry, p: TreePlacement) -> Optio
     }
     let s = &cells[p.row * g.width + p.column].source;
     Some(match s.tileset_id.as_ref() {
-        "johto" | "johto_modern" => Asset::Johto(Johto::Tree),
+        "johto" | "johto_modern" => Asset::GroveTree,
         "kanto" => Asset::World(Kind::KantoCanopy),
-        "forest" => Asset::ForestTree,
+        "forest" => Asset::GroveTree,
         "park" => Asset::World(if p.width == 4 {
             Kind::KantoCanopy
         } else {
             Kind::ParkHedge
         }),
-        "battle_tower_outside" => Asset::ForestTree,
+        "battle_tower_outside" => Asset::GroveTree,
         _ => return None,
     })
 }
@@ -659,6 +767,9 @@ pub(super) fn append_missing_tree_source(mesh: &mut TerrainMeshData,
     for row in p.row..p.row + p.height {
         for column in p.column..p.column + p.width {
             let i = row * g.width + column;
+            if claimed[i] {
+                continue;
+            }
             let (w,e,n,s) = g.bounds(column,row);
             append_top(&mut mesh.textured,[w,e,n,s],p.base_height,g.uv(column,row));
             claimed[i] = true;
@@ -675,6 +786,20 @@ pub(super) fn append_tree(
     p: TreePlacement,
     claimed: &mut [bool],
     map_origin: [i32; 2],
+) -> bool {
+    append_tree_with_groves(mesh, cells, shapes, g, map, p, claimed, map_origin, None)
+}
+
+pub(super) fn append_tree_with_groves(
+    mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile],
+    shapes: &[CellShape],
+    g: &GridGeometry,
+    map: &str,
+    p: TreePlacement,
+    claimed: &mut [bool],
+    map_origin: [i32; 2],
+    groves: Option<&mut Vec<super::new_bark::GroveRecipe>>,
 ) -> bool {
     let Some(kind) = tree_kind(cells, g, p) else {
         return false;
@@ -706,11 +831,6 @@ pub(super) fn append_tree(
     let Some(sample) = tree_ground(map, cells, shapes, g, p) else {
         return false;
     };
-    if kind == Asset::ForestTree && !crate::foliage::world_tree_available([
-        map_origin[0] + p.column as i32, map_origin[1] + p.row as i32]) {
-        append_missing_tree_source(mesh, g, p, claimed);
-        return true;
-    }
     floor(mesh, cells, shapes, g, rect, sample, claimed);
     if park_tree {
         crate::foliage::append_park_tree(mesh, bounds(g, rect), p.base_height, g.tile_height,
@@ -732,26 +852,22 @@ pub(super) fn append_tree(
     let depth = (b[1] - b[0]).min(b[3] - b[2]);
     b[2] = b[3] - depth;
     let h = p.height as f32 * g.tile_height;
-    if kind == Asset::ForestTree {
-        let neighbors = super::new_bark::grove_neighbors(mesh, cells, g, map, p);
-        crate::foliage::append_world_tree(
-            mesh,
-            Johto::Tree,
-            b,
-            p.base_height,
-            g.tile_height,
-            [
-                map_origin[0] + p.column as i32,
-                map_origin[1] + p.row as i32,
-            ],
-            neighbors,
-        );
-        mark_authored_rect(mesh, g, rect, kind.label());
-        return true;
-    }
     match kind {
         Asset::World(k) => {
-            let m = model(k);
+            // Park trees return above and retain their formal planting grid.
+            // Give ordinary Kanto canopies the same stable planting variation
+            // as Johto groves without changing their source ground claims.
+            if k == Kind::KantoCanopy {
+                let offset = crate::foliage::grove_trunk_offset(
+                    [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32],
+                    depth,
+                );
+                b[0] += offset.x;
+                b[1] += offset.x;
+                b[2] += offset.y;
+                b[3] += offset.y;
+            }
+            let m = variant_model(k, [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32]);
             m.append_fitted(
                 &mut mesh.solid,
                 b,
@@ -760,23 +876,41 @@ pub(super) fn append_tree(
                 None,
             )
         }
-        Asset::ForestTree => unreachable!("forest tree handled before catalog append"),
-        Asset::Johto(_) => {
+        Asset::GroveTree => {
+            // Forest's four-cell source drawings reserve a larger blocked plot,
+            // not a double-width Johto crown spilling across the walking paths.
+            if cells[p.row * g.width + p.column].source.tileset_id.as_ref() == "forest"
+                && p.width > 2
+            {
+                let center = [(b[0] + b[1]) * 0.5, (b[2] + b[3]) * 0.5];
+                b = [center[0] - g.tile_width, center[0] + g.tile_width,
+                    center[1] - g.tile_height, center[1] + g.tile_height];
+            }
             let neighbors = super::new_bark::grove_neighbors(mesh, cells, g, map, p);
-            crate::foliage::append_grove_tree(
-                mesh,
-                b,
-                p.base_height,
-                g.tile_height,
-                [
+            let recipe = super::new_bark::GroveRecipe {
+                family: crate::foliage::GroveFamily::from_tileset(
+                    cells[p.row*g.width+p.column].source.tileset_id.as_ref()),
+                bounds: b,
+                base_height: p.base_height,
+                tile_height: g.tile_height,
+                coordinates: [
                     map_origin[0] + p.column as i32,
                     map_origin[1] + p.row as i32,
                 ],
                 neighbors,
-            );
+                // Dense leaves retain coverage reveal without alpha stacks.
+                coverage_fade: map == "IlexForest"
+                    && cells[p.row * g.width + p.column].source.tileset_id.as_ref() == "forest",
+            };
+            if let Some(groves) = groves { groves.push(recipe); }
+            else { recipe.append(mesh); }
         }
+        Asset::Johto(_) => unreachable!("buildings cannot be tree placements"),
     }
-    mark_authored_rect(mesh, g, rect, kind.label());
+    let label=if kind==Asset::GroveTree {
+        crate::foliage::GroveFamily::from_tileset(cells[p.row*g.width+p.column].source.tileset_id.as_ref()).label()
+    } else {kind.label()};
+    mark_authored_rect(mesh, g, rect, label);
     true
 }
 
@@ -894,7 +1028,7 @@ fn props(cells: &[&VisualTile], g: &GridGeometry) -> Vec<Prop> {
                     && next.metatile_id == s.metatile_id
                     && next.subtile_column == s.subtile_column
                     && next.subtile_row == s.subtile_row + 1
-                    && matches!(
+                    && (matches!(
                         crate::johto_fence::johto_fence_shape(next)
                             .or_else(|| crate::modern_route::modern_route_shape(next)),
                         Some(CellShape::FacadeBand {
@@ -902,7 +1036,8 @@ fn props(cells: &[&VisualTile], g: &GridGeometry) -> Vec<Prop> {
                             solid: SolidKind::Fence,
                             ..
                         })
-                    )
+                    ) || (next.tile_index==0x4a && next.subtile_row==1
+                        && matches!(next.metatile_id,0x40|0x42)))
                 {
                     out.push(Prop {
                         rect: [x, y, 1, 2],
@@ -913,17 +1048,9 @@ fn props(cells: &[&VisualTile], g: &GridGeometry) -> Vec<Prop> {
                 }
             }
         }
-        if matches!(s.tileset_id.as_ref(), "johto" | "johto_modern")
-            && s.tile_index == 0x4a
-            && matches!(s.metatile_id, 0x40 | 0x42 | 0x44 | 0x46 | 0x48 | 0x4a)
-        {
-            out.push(Prop {
-                rect: [x, y, 1, 1],
-                kind: Kind::StonePost,
-                ground: 0x06,
-                height: 1.35,
-            });
-        }
+        // $4a is the plan-view north/south stripe of this same fence.
+        // append_johto_vertical_fences owns it, including its source elbows.
+        // It must never be claimed as a row of disconnected stone posts.
     }
     for p in park_bench_placements(cells, g) {
         out.push(Prop {
@@ -942,11 +1069,64 @@ pub(super) fn append_props(
     g: &GridGeometry,
     claimed: &mut [bool],
 ) {
-    kanto_boundary_rocks::append(mesh, cells, shapes, g, claimed);
+    append_props_with_samples(mesh,cells,shapes,g,claimed,None);
+}
+
+pub(super) fn fence_palette(images: &TerrainImageSamples, tiles: &[&VisualTile]) -> Option<[[f32;4];3]> {
+    let mut colors=std::collections::BTreeSet::new();
+    for tile in tiles {
+        for px in tile_rgba(images,tile).ok()?.chunks_exact(4) {
+            if px[3]==255 {colors.insert([px[0],px[1],px[2]]);}
+        }
+    }
+    if !(2..=4).contains(&colors.len()) {return None;}
+    let mut colors:Vec<_>=colors.into_iter().collect();
+    colors.sort_by_key(|c|u32::from(c[0])*2126+u32::from(c[1])*7152+u32::from(c[2])*722);
+    let linear=|c:[u8;3]| {
+        let rgb=c.map(|v| {let s=f32::from(v)/255.;if s<=0.04045 {s/12.92} else {((s+0.055)/1.055).powf(2.4)}});
+        [rgb[0],rgb[1],rgb[2],1.]
+    };
+    Some([linear(colors[0]),linear(colors[colors.len()-2]),linear(colors[colors.len()-1])])
+}
+
+pub(super) fn append_vertical_fence(mesh: &mut TerrainMeshData, g: &GridGeometry,
+    index: usize, z: [f32;2], x: f32, palette: [[f32;4];3]) {
+    let m=model(Kind::TimberFence);
+    let first=mesh.solid.positions.len();
+    let depth=g.tile_width*0.12;
+    m.append_fitted(&mut mesh.solid,[z[0],z[1],-depth,depth],0.,
+        1.35*g.tile_height/(m.max[1]-m.min[1]),None);
+    m.recolor_fitted_fence(&mut mesh.solid,first,palette);
+    // Rotate the same authored rail bay by 90 degrees; preserve winding.
+    for p in &mut mesh.solid.positions[first..] { *p=[x-p[2],p[1],p[0]]; }
+    for n in &mut mesh.solid.normals[first..] { *n=[-n[2],n[1],n[0]]; }
+    mark_authored_rect(mesh,g,[index%g.width,index/g.width,1,1],Kind::TimberFence.label());
+}
+
+pub(super) fn append_props_with_samples(
+    mesh: &mut TerrainMeshData, cells: &[&VisualTile], shapes: &[CellShape],
+    g: &GridGeometry, claimed: &mut [bool], images: Option<&TerrainImageSamples>,
+) {
+    append_props_at_origin(mesh, cells, shapes, g, claimed, images, [0; 2]);
+}
+
+pub(super) fn append_props_at_origin(
+    mesh: &mut TerrainMeshData, cells: &[&VisualTile], shapes: &[CellShape],
+    g: &GridGeometry, claimed: &mut [bool], images: Option<&TerrainImageSamples>,
+    map_origin: [i32; 2],
+) {
+    kanto_boundary_rocks::append(mesh, cells, shapes, g, claimed, map_origin);
     kanto_capped_posts::append(mesh, cells, shapes, g, claimed);
     for p in props(cells, g) {
         if !clear(claimed, g, p.rect) {
             continue;
+        }
+        let palette=if p.kind==Kind::TimberFence {
+            images.and_then(|images| fence_palette(images,
+                &[cells[p.rect[1]*g.width+p.rect[0]],cells[(p.rect[1]+1)*g.width+p.rect[0]]]))
+        } else {None};
+        if p.kind==Kind::TimberFence && images.is_some() && palette.is_none() {
+            continue; // Keep source drawing when live color coverage is unavailable.
         }
         let s = &cells[p.rect[1] * g.width + p.rect[0]].source;
         let Some(sample) = ground(cells, shapes, s.tileset_id.as_ref(), p.ground, None) else {
@@ -969,7 +1149,8 @@ pub(super) fn append_props(
             b[0] = center - g.tile_width * 0.825;
             b[1] = center + g.tile_width * 0.825;
         }
-        let m = model(p.kind);
+        let m = variant_model(p.kind, [map_origin[0] + p.rect[0] as i32, map_origin[1] + p.rect[1] as i32]);
+        let first=mesh.solid.positions.len();
         m.append_fitted(
             &mut mesh.solid,
             b,
@@ -977,6 +1158,7 @@ pub(super) fn append_props(
             p.height * g.tile_height / (m.max[1] - m.min[1]),
             None,
         );
+        if let Some(palette)=palette {m.recolor_fitted_fence(&mut mesh.solid,first,palette);}
         mark_authored_rect(mesh, g, p.rect, p.kind.label());
     }
 }
@@ -1111,7 +1293,7 @@ pub(super) fn append_live(
         mark_authored_rect(mesh, g, rect, "johto/small_tree");
         return true;
     }
-    let m = model(kind);
+    let m = variant_model(kind, [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32]);
     if kind == Kind::RouteSign {
         let center = b[3] - g.tile_height * 0.35;
         b[2] = center - g.tile_height * 0.12;
@@ -1167,7 +1349,7 @@ pub(super) fn append_connected_grass(
         target,
         [w, e, n, s],
         base_height,
-        g.tile_height * if tall { 1.25 } else if park { 0.82 } else { 1.0 },
+        kind.height(g.tile_height),
         [
             _origin[0] + tile.column as i32,
             _origin[1] + tile.row as i32,
@@ -1218,6 +1400,24 @@ pub(super) fn append_flower(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn fallback_tree_cards_never_overwrite_owned_native_ground() {
+        let g = GridGeometry { width:2,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0. };
+        let p = TreePlacement {column:0,row:0,width:2,height:2,ground_tile_index:5,
+            ground_metatile_id:None,base_height:0.,rounded:true,outline_mask:true,
+            remove_all_ground:false,card_thickness:0.};
+        let mut mesh = TerrainMeshData {authored_cells:vec![Some("johto/tree");4],
+            footing_heights:vec![0.;4],..Default::default()};
+        let mut owned = vec![true;4];
+        append_missing_tree_source(&mut mesh,&g,p,&mut owned);
+        assert!(mesh.textured.positions.is_empty());
+        owned = vec![true,true,false,false];
+        append_missing_tree_source(&mut mesh,&g,p,&mut owned);
+        assert_eq!(mesh.textured.indices.len(),12);
+        assert!(mesh.textured.positions.iter().all(|p|p[2]>=8.));
+        assert_eq!(mesh.footing_heights,vec![0.;4]);
+        assert_eq!(mesh.authored_cells,vec![Some("johto/tree");4]);
+    }
     #[test]
     fn park_flower_cluster_requires_native_flower_and_keeps_contest_appearance() {
         let mut source = super::super::tests::source_with_tile(0x3c, 1, 1, 3);
@@ -1315,6 +1515,42 @@ mod tests {
             }
         }
     }
+    #[test]
+    fn johto_fence_stripe_retains_rails_and_live_source_color_in_both_directions() {
+        let sources=[(0,0x5a),(1,0x59),(2,0x4a),(3,0x06)].into_iter()
+            .map(|(row,tile)| super::super::tests::source_with_tile(0x44,0,row,tile)).collect();
+        // $44 owns a straight vertical run; the horizontal donor samples are
+        // selected from their own source-complete $40 rail drawing.
+        let mut frame=super::super::tests::frame(1,4,sources);
+        frame.tiles[0].source.metatile_id=0x40;
+        frame.tiles[1].source.metatile_id=0x40;
+        let cells:Vec<_>=frame.tiles.iter().collect();
+        let g=GridGeometry {width:1,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        assert!(props(&cells,&g).iter().all(|p|p.rect[1]!=2),
+            "the vertical rail stripe must not become a disconnected post");
+        let mut images=TerrainImageSamples::default();
+        let pixels:Vec<_>=(0..64).flat_map(|i| match i%3 {
+            0=>[40,40,40,255],1=>[130,130,130,255],_=>[230,230,230,255]}).collect();
+        for tile in &cells {images.pixels.insert(tile.texture.id(),TileImageSample::Rgba(pixels.clone()));}
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;4],footing_heights:vec![0.;4],..Default::default()};
+        let mut claimed=vec![false;4];
+        let shapes=vec![CellShape::Flat;4];
+        append_props_with_samples(&mut mesh,&cells,&shapes,&g,&mut claimed,Some(&images));
+        let horizontal=mesh.solid.positions.len();
+        super::super::append_johto_vertical_fences(&mut mesh,&images,&cells,&g,&mut claimed).unwrap();
+        assert_eq!(claimed,[true,true,true,false]);
+        assert_eq!(mesh.authored_cells[2],Some("world-exterior/timber_fence"));
+        assert!(mesh.solid.positions.len()>horizontal);
+        assert_eq!(mesh.footing_heights,[0.;4]);
+        for c in &mesh.solid.colors {assert!((c[0]-c[1]).abs()<0.01 && (c[1]-c[2]).abs()<0.01,
+            "neutral source rails cannot become brown timber: {c:?}");}
+        for p in &mesh.solid.positions[horizontal..] {
+            assert!(p[0]>=3.039 && p[0]<=4.961 && p[2]>=16. && p[2]<=24.,"{p:?}");
+        }
+        for n in &mesh.solid.normals[horizontal..] {assert!((Vec3::from_array(*n).length()-1.).abs()<0.001);}
+        assert!(fence_palette(&TerrainImageSamples::default(),&cells[..2]).is_none());
+    }
+
     #[test]
     fn park_bench_replaces_all_three_source_rows_without_stretching_or_claiming_backing() {
         let drawing=[7,8,9,10, 0x17,0x18,0x19,0x1a,
@@ -1429,11 +1665,70 @@ mod tests {
     }
 
     #[test]
-    fn missing_forest_asset_retains_exact_2d_tiles_without_substitute_geometry() {
-        const CHILD: &str = "GEOTHITE_MISSING_FOREST_TEST_CHILD";
+    fn common_johto_building_paint_follows_live_source_without_map_exceptions() {
+        for (blocks,height,roof_rows,kind) in [
+            (vec![vec![0x14,0x15]],4,2,Johto::House),
+            (vec![vec![0x18,0x19],vec![0x16,0x1e]],8,4,Johto::PlayerHouse),
+            (vec![vec![0x2c,0x2d],vec![0x26,0x2f]],6,2,Johto::TraditionalHouse),
+            (vec![vec![0x2c,0x2a,0x2d],vec![0x26,0x27,0x2f]],6,4,Johto::VioletGym),
+            (vec![vec![0x18,0x19],vec![0x1a,0x1b]],8,4,Johto::Pokecenter),
+            (vec![vec![0x18,0x19],vec![0x1a,0x17]],8,4,Johto::Mart),
+        ] {
+            let rows=blocks.iter().map(Vec::as_slice).collect::<Vec<_>>();
+            let (mut tiles,mut g,mut p)=drawing_cells("johto",&rows);
+            p.height=height;p.roof_rows=roof_rows;
+            if height==6 {p.row=2;}
+            for x in 0..g.width {
+                let mut tile=tiles[x].clone();
+                tile.column=x as u32;tile.row=g.height as u32;
+                tile.source=super::super::tests::source_with_tile(0x01,0,0,6);
+                tiles.push(tile);
+            }
+            g.height+=1;
+            let mut handles=bevy::prelude::Assets::<bevy::prelude::Image>::default();
+            let roof_handle=handles.add(bevy::prelude::Image::default());
+            let wall_handle=handles.add(bevy::prelude::Image::default());
+            for tile in &mut tiles {tile.texture=if (p.row..p.row+roof_rows).contains(&(tile.row as usize)) {
+                roof_handle.clone()} else {wall_handle.clone()};}
+            let mut images=TerrainImageSamples::default();
+            images.pixels.insert(roof_handle.id(),TileImageSample::Rgba((0..64).flat_map(|i|[
+                [57,57,57,255],[41,140,255,255],[123,255,255,255],[222,255,222,255],
+            ][i%4]).collect()));
+            images.pixels.insert(wall_handle.id(),TileImageSample::Rgba((0..64).flat_map(|i|
+                if i%3==0 {[220,240,205,255]} else {[250,145,195,255]}).collect()));
+            let cells=tiles.iter().collect::<Vec<_>>();
+            let shapes=cells.iter().map(|tile|shape_for_source(&tile.source)).collect::<Vec<_>>();
+            for map in ["CianwoodCity","OlivineCity","AzaleaTown"] {
+                assert_eq!(descriptor(map,&cells,&g,p).unwrap_or_else(||panic!("invalid source fixture {kind:?} on {map}")).asset,Asset::Johto(kind));
+                let mut before=TerrainMeshData {footing_heights:vec![0.;cells.len()],..Default::default()};
+                let mut before_claims=vec![false;cells.len()];
+                assert!(append_building(&mut before,&cells,&shapes,&g,map,p,&mut before_claims,[0,0]));
+                let mut after=TerrainMeshData {footing_heights:vec![0.;cells.len()],..Default::default()};
+                let mut claims=vec![false;cells.len()];
+                assert!(append_building_with_samples(&mut after,&cells,&shapes,&g,map,p,&mut claims,[0,0],Some(&images)));
+                assert_eq!(after.solid.positions,before.solid.positions);
+                assert_eq!(after.solid.normals,before.solid.normals);
+                assert_eq!(after.solid.indices,before.solid.indices);
+                assert_eq!(after.footing_heights,before.footing_heights);
+                assert_eq!(claims,before_claims);
+                assert_ne!(after.solid.colors,before.solid.colors);
+                assert!(after.solid.uvs.iter().zip(&after.solid.colors).any(|(uv,color)|
+                    *uv==crate::scenery_finish::SOURCE_PAINT_UV && color[0]<color[1] && color[1]<color[2]),
+                    "{kind:?} must use source cyan on {map}");
+                let mut fallback=TerrainMeshData::default();
+                let mut claims=vec![false;cells.len()];
+                assert!(append_building_with_samples(&mut fallback,&cells,&shapes,&g,map,p,&mut claims,[0,0],Some(&TerrainImageSamples::default())));
+                assert!(fallback.solid.positions.is_empty());
+                assert_eq!(fallback.textured.quad_count(),p.width*p.height);
+            }
+        }
+    }
+    #[test]
+    fn forest_uses_shared_johto_grove_without_external_sprite_assets() {
+        const CHILD: &str = "GEOTHITE_SHARED_FOREST_TEST_CHILD";
         if std::env::var_os(CHILD).is_none() {
             let output = std::process::Command::new(std::env::current_exe().unwrap())
-                .args(["--exact", "mesh::modeled_exteriors::tests::missing_forest_asset_retains_exact_2d_tiles_without_substitute_geometry", "--nocapture"])
+                .args(["--exact", "mesh::modeled_exteriors::tests::forest_uses_shared_johto_grove_without_external_sprite_assets", "--nocapture"])
                 .env(CHILD, "1")
                 .env("CRYSTAL_OPEN_MODEL_ROOT", std::env::temp_dir().join(format!("geothite-missing-trees-{}",std::process::id())))
                 .output().unwrap();
@@ -1452,23 +1747,82 @@ mod tests {
         let p=TreePlacement {column:0,row:0,width:2,height:2,ground_tile_index:0x05,
             ground_metatile_id:None,base_height:0.,rounded:true,outline_mask:true,
             remove_all_ground:false,card_thickness:0.};
-        assert!(!crate::foliage::world_tree_available([0,0]));
         let mut mesh=TerrainMeshData {footing_heights:vec![0.;6],authored_cells:vec![None;6],..Default::default()};
         let mut claimed=vec![false;6];
         assert!(append_tree(&mut mesh,&cells,&shapes,&g,"IlexForest",p,&mut claimed,[0,0]));
-        assert!(mesh.solid.positions.is_empty());
-        assert!(mesh.scenery.is_empty());
-        assert_eq!(mesh.authored_cells,vec![None;6]);
+        assert!(!mesh.solid.positions.is_empty());
+        assert!(mesh.scenery.is_empty(), "forest must not load the textured sprite tree catalog");
+        assert_eq!(mesh.authored_cells,vec![Some("johto/tree"),Some("johto/tree"),None,
+            Some("johto/tree"),Some("johto/tree"),None]);
         assert_eq!(mesh.footing_heights,vec![0.;6]);
         assert_eq!(claimed,vec![true,true,false,true,true,false]);
-        let mut expected=SurfaceMeshData::default();
-        for row in 0..2 {for column in 0..2 {
-            let (w,e,n,s)=g.bounds(column,row);
-            append_top(&mut expected,[w,e,n,s],0.,g.uv(column,row));
-        }}
-        assert_eq!(mesh.textured.positions,expected.positions);
-        assert_eq!(mesh.textured.uvs,expected.uvs);
-        assert_eq!(mesh.textured.indices,expected.indices);
+        let mut expected=TerrainMeshData::default();
+        crate::foliage::append_grove_tree(&mut expected,[0.,16.,0.,16.],0.,8.,[0,0],[false;4]);
+        assert_eq!(mesh.solid.positions,expected.solid.positions);
+        assert_eq!(mesh.solid.colors,expected.solid.colors);
+        assert_eq!(mesh.solid.indices,expected.solid.indices);
+        // The production deferred path must select this same shared recipe.
+        let mut deferred=TerrainMeshData {footing_heights:vec![0.;6],authored_cells:vec![None;6],..Default::default()};
+        let mut deferred_claimed=vec![false;6];
+        let recipe=super::new_bark::claim_grove(&mut deferred,&cells,&shapes,&g,
+            "IlexForest",p,&mut deferred_claimed,[0,0]).expect("shared forest grove");
+        recipe.append(&mut deferred);
+        assert_eq!(deferred.solid.positions,expected.solid.positions);
+        assert_eq!(deferred_claimed,claimed);
+        assert_eq!(deferred.authored_cells,mesh.authored_cells);
+        let mut incomplete=frame.clone();
+        incomplete.tiles[4].source.tile_index=0x05;
+        let incomplete_cells:Vec<_>=incomplete.tiles.iter().collect();
+        assert!(super::new_bark::claim_grove(&mut TerrainMeshData::default(),
+            &incomplete_cells,&shapes,&g,"IlexForest",p,&mut vec![false;6],[0,0]).is_none(),
+            "partial tree drawings must not acquire a shared grove claim");
+    }
+
+    #[test]
+    fn large_forest_drawings_keep_their_full_plot_and_use_johto_crown_scale() {
+        let sources=(0..4).flat_map(|y| (0..5).map(move |x| {
+            let mut source=super::super::tests::source_with_tile(
+                if x < 4 {0x05} else {0x01},x as u8,y as u8,
+                if x < 4 {0x26 + (y % 2) * 0x10 + x % 2} else {0x05});
+            source.tileset_id="forest".into(); source
+        })).collect();
+        let frame=super::super::tests::frame(5,4,sources);
+        let g=GridGeometry {width:5,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let cells:Vec<_>=frame.tiles.iter().collect();
+        let shapes:Vec<_>=cells.iter().map(|t|shape_for_source(&t.source)).collect();
+        let p=TreePlacement {column:0,row:0,width:4,height:4,ground_tile_index:0x05,
+            ground_metatile_id:None,base_height:0.,rounded:true,outline_mask:true,
+            remove_all_ground:false,card_thickness:0.};
+        let mut mesh=TerrainMeshData {footing_heights:vec![0.;20],authored_cells:vec![None;20],..Default::default()};
+        let mut claimed=vec![false;20];
+        assert!(append_tree(&mut mesh,&cells,&shapes,&g,"IlexForest",p,&mut claimed,[0,0]));
+        let mut expected=TerrainMeshData::default();
+        crate::foliage::append_grove_tree(&mut expected,[8.,24.,8.,24.],0.,8.,[0,0],[false;4]);
+        assert_eq!(mesh.solid.positions,expected.solid.positions);
+        assert_eq!(mesh.textured.quad_count(),16,"the entire original plot retains ground backing");
+        assert_eq!(claimed,(0..20).map(|i|i%5<4).collect::<Vec<_>>());
+        assert_eq!(mesh.footing_heights,vec![0.;20]);
+        assert!(mesh.scenery.is_empty());
+        let mut deferred = TerrainMeshData { footing_heights: vec![0.;20],
+            authored_cells: vec![None;20], ..Default::default() };
+        let mut deferred_claimed = vec![false;20];
+        let mut recipes = Vec::new();
+        assert!(append_tree_with_groves(&mut deferred, &cells, &shapes, &g,
+            "IlexForest", p, &mut deferred_claimed, [0,0], Some(&mut recipes)));
+        assert_eq!(recipes.len(), 1);
+        assert!(deferred.solid.positions.is_empty(), "defer the complete crown, not its source ground");
+        assert!(recipes[0].coverage_fade, "forest foliage must use the same coverage reveal as Johto");
+        recipes.pop().unwrap().append(&mut deferred);
+        assert_eq!(deferred.solid.positions, mesh.solid.positions);
+        assert_eq!(deferred.solid.normals, mesh.solid.normals);
+        assert_eq!(deferred.solid.colors, mesh.solid.colors);
+        assert_eq!(deferred.solid.indices, mesh.solid.indices);
+        assert_eq!(deferred.solid.cutaway_ranges, mesh.solid.cutaway_ranges);
+        assert_eq!(deferred.textured.positions, mesh.textured.positions);
+        assert_eq!(deferred.textured.indices, mesh.textured.indices);
+        assert_eq!(deferred.authored_cells, mesh.authored_cells);
+        assert_eq!(deferred.footing_heights, mesh.footing_heights);
+        assert_eq!(deferred_claimed, claimed);
     }
 
     #[test]
@@ -1529,6 +1883,34 @@ mod tests {
         let p = complete_tree_placements(&cells, &g)[0];
         assert!(tree_ground("Route40", &cells, &shapes, &g, p).is_none());
     }
+    #[test]
+    fn kanto_underground_entrance_recognizes_its_complete_doorway_facade() {
+        for roof in [[0x38,0x39],[0x0c,0x0e]] {
+        let (mut tiles, g, p) = drawing_cells("kanto", &[&roof, &[0x10, 0x66]]);
+        for (dy, art) in [[0x0b, 0x0c], [0x1b, 0x1c]].into_iter().enumerate() {
+            for (dx, tile) in art.into_iter().enumerate() {
+                tiles[(6 + dy) * g.width + 4 + dx].source.tile_index = tile;
+            }
+        }
+        let cells = tiles.iter().collect::<Vec<_>>();
+        assert!(outdoor_building_placements(&cells, &g).contains(&p));
+        assert_eq!(descriptor("CeladonCity", &cells, &g, p).unwrap().asset,
+                   Asset::World(Kind::KantoHouse));
+        tiles[g.width * 4].source.metatile_id = 0x3c;
+        assert!(descriptor("CeladonCity", &tiles.iter().collect::<Vec<_>>(), &g, p).is_none());
+        }
+    }
+
+    #[test]
+    fn mahogany_connection_house_recognizes_its_complete_roof_and_facade() {
+        let (mut tiles, g, p) = drawing_cells("johto", &[&[0x08, 0x09], &[0x16, 0x1e]]);
+        let d = descriptor("MahoganyTown", &tiles.iter().collect::<Vec<_>>(), &g, p).unwrap();
+        assert_eq!(d.asset, Asset::Johto(Johto::PlayerHouse));
+        assert!(!d.east);
+        tiles[0].source.metatile_id = 0x18;
+        assert!(descriptor("MahoganyTown", &tiles.iter().collect::<Vec<_>>(), &g, p).is_none());
+    }
+
     #[test]
     fn east_gate_keeps_side_entry_and_rejects_a_broken_native_phase() {
         let (mut tiles, g, p) = drawing_cells("johto", &[&[0x08, 0x09], &[0x10, 0x11]]);
@@ -1711,6 +2093,67 @@ mod tests {
         object.tiles[0][0] ^= 1;
         assert!(!canonical_live(&object));
         assert!(!native_stone_profile(&object));
+    }
+    #[test]
+    fn forest_gate_roof_follows_live_source_without_changing_its_door_or_plot() {
+        for last in [0x24,0x25] {
+            let (mut tiles,g,mut p)=drawing_cells("forest",
+                &[&[0x1d,0x1e,0x1f],&[0x21,0x22,0x23],&[last,0x26,0x27]]);
+            p.ground_tile_index=5;tiles.last_mut().unwrap().source.tile_index=5;
+            let wall=6*g.width+2;let window=7*g.width+2;
+            for (index,tile_id,handle_id) in [(wall,0x24,8201),(window,0x04,8202)] {
+                tiles[index].source.tile_index=tile_id;
+                tiles[index].texture=Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(handle_id),std::marker::PhantomData);
+            }
+            let cells=tiles.iter().collect::<Vec<_>>();let shapes=vec![CellShape::Flat;cells.len()];
+            let desc=descriptor("IlexForest",&cells,&g,p).unwrap();
+            let Asset::World(kind)=desc.asset else {panic!("forest gate source binding");};
+            let mut images=TerrainImageSamples::default();
+            let colors=[[10,5,25,255],[70,40,120,255],[130,80,180,255]];
+            images.pixels.insert(tiles[0].texture.id(),TileImageSample::Rgba(
+                (0..64).flat_map(|i|colors[i%3]).collect()));
+            images.pixels.insert(tiles[wall].texture.id(),TileImageSample::Rgba(
+                [[35,55,105,255],[110,150,210,255]].repeat(32).into_iter().flatten().collect()));
+            images.pixels.insert(tiles[window].texture.id(),TileImageSample::Rgba(
+                [[0,0,0,255],[245,220,60,255]].repeat(32).into_iter().flatten().collect()));
+            let mut before=TerrainMeshData {authored_cells:vec![None;cells.len()],footing_heights:vec![0.;cells.len()],..Default::default()};
+            let mut after=before.clone();
+            let mut claimed_before=vec![false;cells.len()];let mut claimed_after=claimed_before.clone();
+            assert!(append_building_with_samples(&mut before,&cells,&shapes,&g,"IlexForest",p,&mut claimed_before,[0,0],None));
+            assert!(append_building_with_samples(&mut after,&cells,&shapes,&g,"IlexForest",p,&mut claimed_after,[0,0],Some(&images)));
+            assert_eq!(before.solid.positions,after.solid.positions);
+            assert_eq!(before.solid.normals,after.solid.normals);
+            assert_eq!(before.solid.indices,after.solid.indices);
+            assert_eq!(before.footing_heights,after.footing_heights);
+            assert_eq!(claimed_before,claimed_after);
+            assert_eq!(after.coverage_fade_ranges, vec![0..after.solid.positions.len()]);
+            let m=model(kind);
+            for (i,&color) in after.solid.colors.iter().enumerate() {
+                let material=m.vertex_material(i);
+                if material.starts_with("roof_") {
+                    assert_eq!(after.solid.uvs[i],crate::scenery_finish::SOURCE_PAINT_UV);
+                } else if matches!(material,"forest_gate_door"|"yellow") {
+                    assert_eq!(color,before.solid.colors[i],"door and insignia keep authored paint");
+                } else {
+                    assert_eq!(after.solid.uvs[i],crate::scenery_finish::SOURCE_PAINT_UV);
+                    if material=="plaster" {assert!(color[2]>color[0]*3.,"live blue masonry");}
+                    if material=="glass" {assert!(color[0]>color[2]*3.,"separate yellow window palette");}
+                }
+            }
+            if kind==Kind::ForestGate {
+                assert!((0..after.solid.positions.len()).any(|i|m.vertex_material(i)=="forest_gate_door"));
+            }
+            for missing in [None,Some(wall),Some(window)] {
+                let mut incomplete=images.clone();
+                if let Some(index)=missing {incomplete.pixels.remove(&tiles[index].texture.id());}
+                else {incomplete=TerrainImageSamples::default();}
+                let mut fallback=TerrainMeshData {authored_cells:vec![None;cells.len()],footing_heights:vec![0.;cells.len()],..Default::default()};
+                assert!(append_building_with_samples(&mut fallback,&cells,&shapes,&g,"IlexForest",p,&mut vec![false;cells.len()],[0,0],Some(&incomplete)));
+                assert!(fallback.solid.positions.is_empty());
+                assert!(fallback.coverage_fade_ranges.is_empty());
+                assert!(!fallback.textured.positions.is_empty());
+            }
+        }
     }
     #[test]
     fn forest_door_block_change_selects_a_closed_gateway_without_a_new_door() {

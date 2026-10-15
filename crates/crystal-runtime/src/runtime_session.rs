@@ -4336,7 +4336,7 @@ fn validate_save_references_for_runtime_pack(state: &GameState, data: &GameDataS
     data.validate_saved_pending_field_moves(state)?;
     validate_saved_script_runtime_references(data, state)?;
     data.validate_saved_overworld_references(&state.overworld)?;
-    validate_saved_overworld_walkable_for_runtime_pack(&state.overworld, data)?;
+    validate_saved_overworld_walkable_for_runtime_pack(state, data)?;
     data.validate_saved_scene_references(&state.scenes)?;
     data.validate_saved_flag_references(&state.flags)?;
     if let Some(item_id) = &state.active_repel_item {
@@ -4452,7 +4452,7 @@ fn validate_saved_dig_warp_destination(data: &GameDataSet, state: &GameState) ->
 }
 
 fn validate_saved_overworld_walkable_for_runtime_pack(
-    overworld: &OverworldMemory,
+    state: &GameState,
     data: &GameDataSet,
 ) -> Result<()> {
     let OverworldMemory::Active {
@@ -4460,11 +4460,11 @@ fn validate_saved_overworld_walkable_for_runtime_pack(
         tile,
         mode,
         ..
-    } = overworld
+    } = &state.overworld
     else {
         return Ok(());
     };
-    data.overworld_session_for_traversal(map_name, *tile, 0, mode.traversal_state())
+    data.overworld_session_for_traversal_with_state(map_name, *tile, 0, mode.traversal_state(),Some(state))
         .with_context(|| {
             format!(
                 "saved overworld.active tile ({}, {}) is invalid on compiled map {map_name} for {:?}",

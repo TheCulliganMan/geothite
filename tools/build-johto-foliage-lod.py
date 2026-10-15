@@ -1,7 +1,7 @@
 """Build the designated authored grass LOD only.
 
-Tree prototypes have been removed. Required trees come from the canonical
-external tree catalog and are never regenerated as alternate placeholder meshes.
+Tree prototypes have been removed. Trees use the shared Rust grove renderer
+and are never regenerated as alternate placeholder meshes.
 Run blender -b --python tools/build-johto-foliage-lod.py -- target/johto-foliage-lod.
 """
 from pathlib import Path
@@ -143,9 +143,6 @@ def export_asset(name, col):
             'origin':'floor-center','bounds':{'min':lo,'max':hi},
             'dimensions':reference['dimensions'],'triangle_count':triangles,
             'primitive_count':len(primitives),'primitives':primitives}
-    if name in ('tree','tree_lod'):
-        from foliage_contours import prepare as prepare_foliage_contours
-        data=prepare_foliage_contours(data)
     (P / f'{name}.mesh.json').write_text(json.dumps(data,separators=(',',':')))
     bpy.ops.object.select_all(action='DESELECT')
     for obj in objects:

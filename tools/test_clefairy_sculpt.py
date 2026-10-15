@@ -3,13 +3,14 @@
 import json,os,unittest
 from pathlib import Path
 from clefairy_sculpt import sculpture,HEIGHT
+from clefairy_glb import read_clefairy
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 import test_donphan_sculpt as joins
-ROOT=Path(os.environ.get('CLEFAIRY_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/actor_props/icon_clefairy.mesh.json'))
+ROOT=Path(os.environ.get('CLEFAIRY_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/actor_props/icon_clefairy.glb'))
 class ClefairyTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads(ROOT.read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_clefairy(ROOT) if ROOT.suffix=='.glb' else json.loads(ROOT.read_bytes());cls.m['name']='icon_clefairy';cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'clefairy':self.m})
  def test_finite_unit_normals_follow_winding(self):assert_model_shading(self,{'clefairy':self.m})

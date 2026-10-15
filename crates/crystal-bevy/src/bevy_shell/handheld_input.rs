@@ -19,6 +19,8 @@ pub(super) struct HandheldInput {
     direction: Option<KeyCode>,
     unfocused: bool,
     wait_for_neutral: bool,
+    camera_rotation: Option<f32>,
+    camera_field_blocked: bool,
 }
 
 pub(super) fn install(app: &mut App) {
@@ -36,7 +38,12 @@ pub(super) fn install(app: &mut App) {
     #[cfg(feature = "fullscreen-scaling")]
     app.add_systems(Update, fit_initial_window.before(toggle_fullscreen));
     #[cfg(feature = "voxel-view")]
-    app.add_systems(Update, controller_camera.after(gather_input));
+    app.add_systems(
+        Update,
+        controller_camera
+            .after(gather_input)
+            .before(apply_keyboard_input),
+    );
 }
 
 fn stick_direction(x: f32, y: f32, previous: Option<KeyCode>) -> Option<KeyCode> {
@@ -146,6 +153,18 @@ fn sample_pad(pad: &Gamepad, previous: Option<KeyCode>) -> Vec<KeyCode> {
     result
 }
 
+fn camera_relative_direction(key: KeyCode, yaw: f32) -> KeyCode {
+    let local = match key {
+        KeyCode::ArrowUp => Vec2::Y,
+        KeyCode::ArrowDown => Vec2::NEG_Y,
+        KeyCode::ArrowLeft => Vec2::NEG_X,
+        KeyCode::ArrowRight => Vec2::X,
+        _ => return key,
+    };
+    let world = Vec2::from_angle(yaw).rotate(local);
+    stick_direction(world.x, world.y, None).unwrap_or(key)
+}
+
 impl HandheldInput {
     fn update<'a>(
         &mut self,
@@ -177,10 +196,9 @@ impl HandheldInput {
             .unwrap_or_default();
         // Keep a held controller; an idle built-in pad must not steal a docked controller.
         if current.is_empty() {
-            if let Some((id, _)) = pads
-                .iter()
-                .find(|(_, pad)| !sample_pad(pad, None).is_empty())
-            {
+            if let Some((id, _)) = pads.iter().find(|(_, pad)| {
+                !sample_pad(pad, None).is_empty() || pad.right_stick().length() > 0.2
+            }) {
                 if self.active != Some(*id) {
                     self.direction = None;
                 }
@@ -193,11 +211,32 @@ impl HandheldInput {
             .map(|(_, pad)| sample_pad(pad, self.direction))
             .unwrap_or_default();
         self.direction = mapped.iter().find(|key| DIRECTIONS.contains(key)).copied();
+        if let Some(yaw) = self.camera_rotation {
+            // Only the analog stick follows the view. D-pad remains world-cardinal.
+            let dpad = pads
+                .iter()
+                .find(|(id, _)| Some(*id) == self.active)
+                .is_some_and(|(_, pad)| {
+                    [
+                        GamepadButton::DPadUp,
+                        GamepadButton::DPadDown,
+                        GamepadButton::DPadLeft,
+                        GamepadButton::DPadRight,
+                    ]
+                    .into_iter()
+                    .any(|b| pad.pressed(b))
+                });
+            if !dpad {
+                for key in &mut mapped {
+                    *key = camera_relative_direction(*key, yaw);
+                }
+            }
+        }
         if self.wait_for_neutral {
             // Require every connected pad to be released after an overlay/suspend.
-            let neutral = pads
-                .iter()
-                .all(|(_, pad)| sample_pad(pad, self.direction).is_empty());
+            let neutral = pads.iter().all(|(_, pad)| {
+                sample_pad(pad, self.direction).is_empty() && pad.right_stick().length() <= 0.2
+            });
             if neutral && !self.unfocused && !blocked {
                 self.wait_for_neutral = false;
             }
@@ -256,6 +295,9 @@ pub(super) fn gather_input(
     pads: Query<(Entity, &Gamepad)>,
     mut focus: MessageReader<WindowFocused>,
     mut input: ResMut<HandheldInput>,
+    #[cfg(feature = "voxel-view")] frame: Option<Res<crystal_render_api::VisualWorldFrame>>,
+    #[cfg(feature = "voxel-view")] settings: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
+    #[cfg(feature = "voxel-view")] mut shell: Option<ResMut<BevyRuntimeShell>>,
 ) {
     let events = focus.read().map(|event| event.focused).collect::<Vec<_>>();
     if events.iter().any(|focused| !focused) {
@@ -263,6 +305,17 @@ pub(super) fn gather_input(
         input.direction = None;
     }
     let focused = events.last().copied();
+    #[cfg(feature = "voxel-view")]
+    {
+        input.camera_field_blocked = shell
+            .as_mut()
+            .is_some_and(|shell| has_visible_shell_direction_action(shell));
+        input.camera_rotation = settings
+            .as_ref()
+            .filter(|s| s.enabled)
+            .filter(|_| !input.camera_field_blocked && frame.as_ref().is_some_and(|f| f.active))
+            .map(|s| s.camera.rotation_step * std::f32::consts::FRAC_PI_4);
+    }
     input.update(
         &keyboard,
         pads.iter(),
@@ -326,10 +379,15 @@ fn toggle_fullscreen(
 
 #[cfg(feature = "voxel-view")]
 fn controller_camera(
-    input: Res<HandheldInput>,
+    mut input: ResMut<HandheldInput>,
     keyboard: Res<ButtonInput<KeyCode>>,
     frame: Option<Res<crystal_render_api::VisualWorldFrame>>,
     settings: Option<ResMut<crystal_voxel_view::VoxelViewSettings>>,
+    pads: Query<(Entity, &Gamepad)>,
+    time: Option<Res<Time>>,
+    mouse: Option<Res<bevy::input::mouse::AccumulatedMouseMotion>>,
+    buttons: Option<Res<ButtonInput<MouseButton>>>,
+    ui: Query<&bevy::ui::Interaction>,
 ) {
     let (Some(frame), Some(mut settings)) = (frame, settings) else {
         return;
@@ -343,10 +401,49 @@ fn controller_camera(
     if settings.allow_f3_toggle && pressed(KeyCode::F3) {
         settings.enabled = !settings.enabled;
     }
-    if !frame.active || !settings.enabled {
+    if !frame.active || !settings.enabled || input.camera_field_blocked {
         return;
     }
     let mut camera = settings.camera;
+    let select = !input.unfocused
+        && !input.wait_for_neutral
+        && (keyboard.just_pressed(KeyCode::ShiftRight)
+            || input.controller_keys.just_pressed(KeyCode::ShiftRight));
+    // Select owns the camera only while the 3D overworld is visible.
+    if select {
+        let facing = frame
+            .actors
+            .iter()
+            .find(|a| a.id == crystal_render_api::VisualActorId::Player)
+            .and_then(|a| a.facing)
+            .unwrap_or(Vec2::NEG_Y);
+        camera.cycle_view(facing);
+    }
+    if !input.unfocused && !input.wait_for_neutral {
+        let pad = pads
+            .iter()
+            .find(|(id, _)| Some(*id) == input.active)
+            .or_else(|| pads.iter().find(|(_, p)| p.right_stick().length() > 0.2));
+        if let Some((_, pad)) = pad {
+            let stick = pad.right_stick();
+            let magnitude = stick.length();
+            if magnitude.is_finite() && magnitude > 0.2 {
+                let look = stick / magnitude * ((magnitude.min(1.0) - 0.2) / 0.8);
+                let dt = time.as_ref().map_or(0.0, |t| t.delta_secs().min(0.1));
+                camera.steer(-look.x * dt * 2.5, -look.y * dt * 2.0);
+            }
+        }
+        if buttons
+            .as_ref()
+            .is_some_and(|b| b.pressed(MouseButton::Right)
+                || (cfg!(not(target_arch = "wasm32")) && b.pressed(MouseButton::Left)
+                    && !ui.iter().any(|interaction| *interaction != bevy::ui::Interaction::None)))
+        {
+            if let Some(mouse) = mouse {
+                camera.steer(-mouse.delta.x * 0.003, mouse.delta.y * 0.003);
+            }
+        }
+    }
     // Only controller edges: the voxel plugin already handles physical keyboard edges.
     // Handheld shoulders are not synthesized into the physical keyboard resource.
     if pressed(KeyCode::KeyQ) {
@@ -361,8 +458,14 @@ fn controller_camera(
     if pressed(KeyCode::PageDown) {
         camera.zoom_step -= 1.0;
     }
-    settings.camera =
+    let bounded =
         crystal_voxel_view::VoxelCameraControls::new(camera.zoom_step, camera.rotation_step);
+    camera.zoom_step = bounded.zoom_step;
+    camera.rotation_step = bounded.rotation_step;
+    if settings.camera != camera {
+        settings.camera = camera;
+    }
+    input.keys.reset(KeyCode::ShiftRight);
 }
 
 #[cfg(test)]
@@ -370,6 +473,146 @@ mod tests {
     use super::*;
     fn id(index: u32) -> Entity {
         Entity::from_raw_u32(index).unwrap()
+    }
+
+    #[test]
+    fn camera_relative_stick_keeps_dpad_and_keyboard_directions() {
+        let mut pad = Gamepad::default();
+        pad.analog_mut().set(GamepadAxis::LeftStickY, 1.0);
+        let mut input = HandheldInput::default();
+        input.camera_rotation = Some(-std::f32::consts::FRAC_PI_2);
+        let mut keyboard = ButtonInput::default();
+        input.update(&keyboard, [(id(0), &pad)], None, false);
+        assert!(input.keys.pressed(KeyCode::ArrowRight));
+        pad.digital_mut().press(GamepadButton::DPadUp);
+        input.update(&keyboard, [(id(0), &pad)], None, false);
+        assert!(input.keys.pressed(KeyCode::ArrowUp));
+        assert!(!input.keys.pressed(KeyCode::ArrowRight));
+        keyboard.press(KeyCode::ArrowLeft);
+        input.update(&keyboard, [(id(0), &pad)], None, false);
+        assert!(input.keys.pressed(KeyCode::ArrowLeft));
+        assert!(!input.keys.pressed(KeyCode::ArrowUp));
+    }
+
+    #[cfg(feature = "voxel-view")]
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn camera_left_drag_looks_without_buttons_and_stops_over_ui() {
+        let mut app = App::new();
+        app.init_resource::<HandheldInput>()
+            .init_resource::<ButtonInput<KeyCode>>()
+            .init_resource::<ButtonInput<MouseButton>>()
+            .insert_resource(bevy::input::mouse::AccumulatedMouseMotion { delta: Vec2::new(30., -10.) })
+            .insert_resource(crystal_render_api::VisualWorldFrame { active: true, ..default() })
+            .insert_resource(crystal_voxel_view::VoxelViewSettings { enabled: true, ..default() })
+            .add_systems(Update, controller_camera);
+        app.world_mut().resource_mut::<ButtonInput<MouseButton>>().press(MouseButton::Left);
+        let before = app.world().resource::<crystal_voxel_view::VoxelViewSettings>().camera;
+        app.update();
+        let after = app.world().resource::<crystal_voxel_view::VoxelViewSettings>().camera;
+        assert_ne!(after.rotation_step, before.rotation_step);
+        assert_ne!(after.pitch_degrees, before.pitch_degrees);
+        app.world_mut().spawn(bevy::ui::Interaction::Hovered);
+        app.update();
+        assert_eq!(app.world().resource::<crystal_voxel_view::VoxelViewSettings>().camera, after);
+    }
+
+    #[cfg(feature = "voxel-view")]
+    #[test]
+    fn first_person_select_and_right_stick_obey_edges_focus_and_world_ownership() {
+        use crystal_render_api::VisualWorldFrame;
+        use crystal_voxel_view::VoxelViewSettings;
+        let mut app = App::new();
+        app.init_resource::<HandheldInput>()
+            .init_resource::<ButtonInput<KeyCode>>()
+            .insert_resource(VisualWorldFrame {
+                active: true,
+                ..default()
+            })
+            .insert_resource(VoxelViewSettings {
+                enabled: true,
+                ..default()
+            })
+            .init_resource::<Time>()
+            .add_systems(Update, controller_camera);
+        let mut pad = Gamepad::default();
+        pad.digital_mut().press(GamepadButton::Select);
+        let entity = app.world_mut().spawn(pad).id();
+        let keyboard = ButtonInput::default();
+        app.world_mut()
+            .resource_scope(|world, mut input: Mut<HandheldInput>| {
+                input.update(
+                    &keyboard,
+                    [(entity, world.get::<Gamepad>(entity).unwrap())],
+                    None,
+                    false,
+                );
+            });
+        app.update();
+        assert!(
+            app.world()
+                .resource::<VoxelViewSettings>()
+                .camera
+                .first_person
+        );
+        assert!(
+            !app.world()
+                .resource::<HandheldInput>()
+                .keys
+                .pressed(KeyCode::ShiftRight)
+        );
+        app.world_mut()
+            .get_mut::<Gamepad>(entity)
+            .unwrap()
+            .digital_mut()
+            .clear();
+        app.world_mut()
+            .resource_scope(|world, mut input: Mut<HandheldInput>| {
+                input.update(
+                    &keyboard,
+                    [(entity, world.get::<Gamepad>(entity).unwrap())],
+                    None,
+                    false,
+                );
+            });
+        app.update();
+        assert!(
+            app.world()
+                .resource::<VoxelViewSettings>()
+                .camera
+                .first_person,
+            "held Select cannot toggle repeatedly"
+        );
+        let before_look = app.world().resource::<VoxelViewSettings>().camera;
+        {
+            let mut pad = app.world_mut().get_mut::<Gamepad>(entity).unwrap();
+            pad.analog_mut().set(GamepadAxis::RightStickX, 1.0);
+            pad.analog_mut().set(GamepadAxis::RightStickY, 1.0);
+        }
+        app.world_mut()
+            .resource_mut::<Time>()
+            .advance_by(std::time::Duration::from_secs_f32(1.0 / 60.0));
+        app.update();
+        let moved = app.world().resource::<VoxelViewSettings>().camera;
+        assert_ne!(moved.rotation_step, before_look.rotation_step);
+        assert!(moved.pitch_degrees < before_look.pitch_degrees);
+        app.world_mut().resource_mut::<HandheldInput>().unfocused = true;
+        app.update();
+        assert_eq!(app.world().resource::<VoxelViewSettings>().camera, moved);
+        let mut input = app.world_mut().resource_mut::<HandheldInput>();
+        input.unfocused = false;
+        input.camera_field_blocked = true;
+        input.controller_keys.press(KeyCode::ShiftRight);
+        input.keys.press(KeyCode::ShiftRight);
+        app.update();
+        assert_eq!(app.world().resource::<VoxelViewSettings>().camera, moved);
+        assert!(
+            app.world()
+                .resource::<HandheldInput>()
+                .keys
+                .pressed(KeyCode::ShiftRight),
+            "menus retain Select"
+        );
     }
 
     #[test]

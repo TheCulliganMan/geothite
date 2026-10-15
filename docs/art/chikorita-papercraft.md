@@ -40,3 +40,25 @@ The disposable native fixture accepts `--enemy-gust --starter chikorita`.
 It retains the natural level-25 learnset: Razor Leaf responds to the original
 trainer AI's Gust, through the production controller and real PP/HP updates.
 The fixture has no save destination.
+
+
+## Canonical rebuild repair (2026-10-13)
+
+A direct comparison found a writer/asset mismatch in tiny axis-aligned position
+and normal components. The largest pre-repair discrepancy was approximately
+`1.24e-15`. The final neutral recipe serializes any position or normal component
+with absolute value below `1e-12` as exact positive zero. This keeps otherwise
+identical authored geometry from depending on floating-point residuals.
+
+A guarded old/new payload audit required each changed position or normal to
+be below that threshold and become zero. All other positions and normals,
+triangle indices, materials, joint assignments, skin weights, hierarchy and
+animation payloads stayed unchanged. Vertex/triangle/part/joint counts, the
+320,824-byte GLB, full/body reference heights and physical scale are unchanged.
+The current material-inclusive neutral digest is
+`f2a79d3d20fc56f5584b35c3e7655b0d0654ba12273775dc0e62cca7a8bd9774`.
+
+The stored-geometry regression now checks exact writer reproduction and absence
+of nonzero components below the threshold. This repairs canonical authoring;
+it does not claim new anatomical or animation work. Production visual and
+regression evidence is recorded in `animated-models.md`.

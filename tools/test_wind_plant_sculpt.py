@@ -3,23 +3,27 @@
 import json,unittest
 from pathlib import Path
 from wind_plant_sculpt import sculpture,SPECIES,HEIGHT
+from hoppip_glb import read_hoppip,geometry_digest
+from skiploom_glb import read_skiploom
+from jumpluff_glb import read_jumpluff
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class WindPlantTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+    def setUpClass(cls):cls.models={s:(read_hoppip(ROOT/'hoppip.glb') if s=='hoppip' else read_skiploom(ROOT/'skiploom.glb') if s=='skiploom' else read_jumpluff(ROOT/'jumpluff.glb')) for s in SPECIES}
     def test_closed_connected_oriented_parts(self):assert_closed_models(self,self.models)
     def test_normals_match_stored_triangles(self):assert_model_shading(self,self.models)
     def test_regeneration_heights_and_budget(self):
         for s,m in self.models.items():
-            self.assertEqual(m,sculpture(s));ps=m['primitives']
+            self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s))) if s in ('hoppip','skiploom','jumpluff') else self.assertEqual(m,sculpture(s));ps=m['primitives']
             self.assertEqual(len(ps),len({p['part'] for p in ps}))
             self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
             self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6)
             self.assertLess(sum(len(p['indices'])//3 for p in ps),11500)
-            self.assertLess(len(json.dumps(m,separators=(',',':'))),550000)
+            if s in ('hoppip','skiploom','jumpluff'):self.assertLess((ROOT/(s+'.glb')).stat().st_size,512000)
+            else:self.assertLess(len(json.dumps(m,separators=(',',':'))),550000)
     def test_distinct_crown_and_eye_anatomy(self):
         for s,m in self.models.items():
             names=[p['part'] for p in m['primitives']]
@@ -55,7 +59,11 @@ class WindPlantTests(unittest.TestCase):
                 self.assertTrue(overlap,(s,p['part']))
         ps=self.models['jumpluff']['primitives']
         for suffix in ('lower -1','lower 1','crown'):
-            globe=next(p for p in ps if p['part']==f'Seed head / {suffix} / continuous seed sphere')
+            regions=[p for p in ps if p['part'] in (f'Seed head / {suffix} / continuous seed sphere',f'Seed head / {suffix} / scalloped underside shade')]
+            globe={'positions':[],'indices':[]}
+            for region in regions:
+                offset=len(globe['positions'])//3
+                globe['positions'].extend(region['positions']);globe['indices'].extend(i+offset for i in region['indices'])
             stem=next(p for p in ps if p['part']==('Seed stem / lower globe '+suffix.split()[-1] if suffix!='crown' else 'Seed stem / tall crown peduncle'))
             x=(max(min(globe['positions'][::3]),min(stem['positions'][::3]))+min(max(globe['positions'][::3]),max(stem['positions'][::3])))/2
             lo=max(min(globe['positions'][1::3]),min(stem['positions'][1::3]));hi=min(max(globe['positions'][1::3]),max(stem['positions'][1::3]));overlap=False

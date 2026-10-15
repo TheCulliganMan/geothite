@@ -6,6 +6,20 @@ use crate::profile::CellShape;
 
 pub(crate) const FLOOR_TILE: u16 = 0x01;
 
+/// Red's desk spans the lower two rows of block20 and the feet in block12.
+/// Keep this distinct from the player's radio cabinet and dining table.
+pub(crate) fn red_desk_local(source: &VisualTileSource) -> Option<(u8,u8)> {
+    if source.tileset_id.as_ref()!="players_house" || source.subtile_column>=4 {return None;}
+    let row=match (source.metatile_id,source.subtile_row) {
+        (0x20,2..=3)=>source.subtile_row-2,
+        (0x12,0)=>2,
+        _=>return None,
+    };
+    let column=source.subtile_column;
+    const DRAWING:[[u16;4];3]=[[0x23,0x22,0x22,0x24],[0x33,0x32,0x32,0x34],[0x1c,0x40,0x40,0x1d]];
+    (source.tile_index==DRAWING[row as usize][column as usize]).then_some((column,row))
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum StairKind {
     UpEast,
@@ -160,6 +174,7 @@ pub(crate) fn bed_local(source: &VisualTileSource) -> Option<(u8, u8)> {
     if source.tileset_id.as_ref() != "players_house"
         || source.metatile_id != 0x22
         || source.subtile_column >= 2
+        || source.subtile_row >= 4
     {
         return None;
     }

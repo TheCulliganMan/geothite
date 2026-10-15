@@ -13,6 +13,21 @@ fn bank(source: &VisualTileSource) -> bool {
             if height == crate::profile::JUMP_LEDGE_HEIGHT)
 }
 
+/// Broad phase for detached source groves. The shaping pass can inspect the
+/// adjacent cell, half-unit base probes and the quarter-cell south lip. Two
+/// full cells conservatively contain all of those lookups and tolerances.
+pub(super) fn grove_bank_regions(cells: &[VisualTile], g: &GridGeometry) -> Vec<[f32;4]> {
+    cells.iter().enumerate().filter(|(_,cell)| bank(&cell.source)).map(|(i,_)| {
+        let (w,e,n,s) = g.bounds(i%g.width,i/g.width);
+        [w-g.tile_width*2.,e+g.tile_width*2.,n-g.tile_height*2.,s+g.tile_height*2.]
+    }).collect()
+}
+pub(super) fn grove_may_touch_bank(bounds: (Vec3,Vec3), regions: &[[f32;4]]) -> bool {
+    if !bounds.0.is_finite() || !bounds.1.is_finite() { return true; }
+    regions.iter().any(|&[w,e,n,s]|
+        bounds.1.x>=w && bounds.0.x<=e && bounds.1.z>=n && bounds.0.z<=s)
+}
+
 /// Heights at west/north, west/south, east/south, east/north after the
 /// authored four-row rise and optional terminal taper.
 pub(super) fn cap_heights(
@@ -129,7 +144,7 @@ pub(super) fn shape_approaches(
 
 // Temporary source ownership for relieved earth and its grass. The slope
 // pass consumes this marker before meshes reach material or batching code.
-const BANK_OWNER_UV: f32 = -4096.;
+pub(super) const BANK_OWNER_UV: f32 = -4096.;
 
 pub(super) fn mark_bank_surface(s: &mut SurfaceMeshData, first: usize, owner: usize) {
     s.uvs[first..].fill([BANK_OWNER_UV, owner as f32]);
@@ -437,6 +452,34 @@ mod normal_fields {
     use super::*;
 
     #[test]
+    fn grove_bank_broad_phase_keeps_exact_near_and_far_surfaces() {
+        let frame = super::super::tests::frame(4,4,(0..4).flat_map(|row|
+            (0..4).map(move |column| super::super::tests::source_with_tile(
+                0x56,column,row,if row==3 {0x4c} else {0x06}))).collect());
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|cell|shape_for_source(&cell.source)).collect::<Vec<_>>();
+        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:-16.,origin_z:-16.};
+        let regions=grove_bank_regions(&frame.tiles,&g);
+        assert!(!regions.is_empty());
+        for bounds in [[-8.,8.,-8.,8.],[1000.,1016.,1000.,1016.]] {
+            let mut raw=TerrainMeshData::default();
+            crate::foliage::append_grove_tree(&mut raw,bounds,3.,8.,[8,12],[true,false,true,false]);
+            let low=raw.solid.positions.iter().map(|p|Vec3::from_array(*p)).fold(Vec3::splat(f32::INFINITY),Vec3::min);
+            let high=raw.solid.positions.iter().map(|p|Vec3::from_array(*p)).fold(Vec3::splat(f32::NEG_INFINITY),Vec3::max);
+            let touches=grove_may_touch_bank((low,high),&regions);
+            assert_eq!(touches,bounds[0]<100.);
+            let mut reference=raw.clone();
+            finish_detached_grove(&mut reference,&cells,&g,&shapes,[0,0]);
+            if touches {finish_detached_grove(&mut raw,&cells,&g,&shapes,[0,0]);}
+            assert_eq!(raw.solid.positions.iter().flatten().map(|v|v.to_bits()).collect::<Vec<_>>(),
+                reference.solid.positions.iter().flatten().map(|v|v.to_bits()).collect::<Vec<_>>());
+            assert_eq!(raw.solid.normals.iter().flatten().map(|v|v.to_bits()).collect::<Vec<_>>(),
+                reference.solid.normals.iter().flatten().map(|v|v.to_bits()).collect::<Vec<_>>());
+            assert_eq!(raw.solid.indices,reference.solid.indices);
+        }
+    }
+
+    #[test]
     fn shared_cap_normals_do_not_depend_on_material_tessellation() {
         let frame = super::super::tests::frame(4, 4, (0..4).flat_map(|row| {
             (0..4).map(move |column| super::super::tests::source_with_tile(
@@ -494,14 +537,13 @@ mod tests {
     use super::*;
 
     #[test]
-    fn relieved_bank_grass_follows_its_source_even_outside_the_grid() {
+    fn relieved_bank_sod_follows_its_source_without_extra_upright_foliage() {
         let frame = super::super::tests::frame(2, 4, (0..4).flat_map(|row| {
             [super::super::tests::source_with_tile(0x56, 1, row,
                 if row == 3 { 0x4c } else { 0x06 }),
              super::super::tests::source_with_tile(0x01, 0, 0, 0x01)]
         }).collect());
         let cells: Vec<_> = frame.tiles.iter().collect();
-        let mut elevated_blades = 0;
         for (ox, oz) in [(0., 0.), (-80., 120.)] {
             let g = GridGeometry { width: 2, height: 4, tile_width: 8., tile_height: 8.,
                 origin_x: ox, origin_z: oz };
@@ -514,7 +556,8 @@ mod tests {
                     if normal[0] < 0. { p.reverse(); }
                     assert!(new_bark::ledge_finish::append(&mut surface, p, normal, &g, [10, -7]));
                     let original = surface.positions.clone();
-                    elevated_blades += original.iter().skip(640).filter(|p| p[1] > 6.).count();
+                    assert!(original.iter().all(|p| (0. ..=6.).contains(&p[1])),
+                        "ledge finish must not add a second upright grass curtain");
                     mark_bank_surface(&mut surface, 0, row * 2);
                     shape_surface(&mut surface, &cells, &g);
                     for (before, after) in original.iter().zip(&surface.positions) {
@@ -529,7 +572,6 @@ mod tests {
                 }
             }
         }
-        assert!(elevated_blades > 0, "fixture must exercise blades above the native rim");
     }
 
     #[test]

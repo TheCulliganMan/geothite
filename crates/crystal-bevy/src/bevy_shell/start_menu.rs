@@ -5396,6 +5396,38 @@ fn visible_battle_object_clip(top_left: Vec2, size: Vec2) -> Option<VisibleBattl
     })
 }
 
+fn visible_send_out_shiny_source_animation(send_out: &VisibleSendOutAnimation) -> VisibleMoveAnimation {
+    let sparkle_frame = u16::from(send_out.frame - VisibleSendOutAnimation::NORMAL_FRAMES);
+    VisibleMoveAnimation {
+        trigger_message: String::new(),
+        move_id: "SEND_OUT_SHINY".to_string(),
+        animation_label: "BattleAnim_SendOutMon.Shiny".to_string(),
+        player_move: send_out.side == crate::core::battle::turn::BattleSide::Player,
+        started: true,
+        waiting_for_hp: false,
+        frame: sparkle_frame,
+        total_frames: u16::from(VisibleSendOutAnimation::SHINY_FRAMES),
+        sound_events: Vec::new(),
+        next_sound_event: 0,
+        cry_events: Vec::new(),
+        next_cry_event: 0,
+        object_events: (0_u8..8)
+            .map(|index| VisibleMoveObjectEvent {
+                frame: u16::from(index) * 4,
+                command: VisibleMoveObjectCommand::Spawn {
+                    object_id: "BATTLE_ANIM_OBJ_SHINY".to_string(),
+                    x: 48,
+                    y: 96,
+                    param: index * 8,
+                },
+            })
+            .collect(),
+        bg_events: Vec::new(),
+        actor_species_override: None,
+        actor_shiny_override: None,
+    }
+}
+
 fn spawn_visible_move_animation_objects(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
@@ -5419,35 +5451,7 @@ fn spawn_visible_move_animation_objects(
                 animation.shiny && animation.frame >= VisibleSendOutAnimation::NORMAL_FRAMES
             })
     {
-        let sparkle_frame = u16::from(send_out.frame - VisibleSendOutAnimation::NORMAL_FRAMES);
-        synthetic_shiny = VisibleMoveAnimation {
-            trigger_message: String::new(),
-            move_id: "SEND_OUT_SHINY".to_string(),
-            animation_label: "BattleAnim_SendOutMon.Shiny".to_string(),
-            player_move: send_out.side == crate::core::battle::turn::BattleSide::Player,
-            started: true,
-            waiting_for_hp: false,
-            frame: sparkle_frame,
-            total_frames: u16::from(VisibleSendOutAnimation::SHINY_FRAMES),
-            sound_events: Vec::new(),
-            next_sound_event: 0,
-            cry_events: Vec::new(),
-            next_cry_event: 0,
-            object_events: (0_u8..8)
-                .map(|index| VisibleMoveObjectEvent {
-                    frame: u16::from(index) * 4,
-                    command: VisibleMoveObjectCommand::Spawn {
-                        object_id: "BATTLE_ANIM_OBJ_SHINY".to_string(),
-                        x: 48,
-                        y: 96,
-                        param: index * 8,
-                    },
-                })
-                .collect(),
-            bg_events: Vec::new(),
-            actor_species_override: None,
-            actor_shiny_override: None,
-        };
+        synthetic_shiny = visible_send_out_shiny_source_animation(send_out);
         &synthetic_shiny
     } else if let Some(capture) = runtime_shell
         .visible_capture_animation
@@ -6694,6 +6698,8 @@ Transform::from_xyz(x, y, 4.15),),
         BattleCommandMarker,
         #[cfg(feature = "voxel-view")]
         ImmersiveBattleReplaced,
+        #[cfg(feature = "voxel-view")]
+        ImmersiveBattleSourceObject(0),
     ));
     Ok(())
 }

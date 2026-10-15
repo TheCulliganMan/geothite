@@ -113,32 +113,17 @@ fn standalone_town_map_frame_matches_the_asm_header_tiles() {
 #[test]
 fn town_map_frame_reserves_the_two_row_landmark_label_panel() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
-    let palette_map: serde_json::Value = serde_json::from_slice(
-        &crate::read_runtime_asset(
-            asset_root
-                .runtime_assets()
-                .join("data/pokegear_town_map_palette_map.json"),
-        )
-        .expect("read Pokégear palette map"),
-    )
-    .expect("decode Pokégear palette map");
-    let tokens = |key: &str| {
-        palette_map[key]
-            .as_array()
-            .expect("palette token array")
-            .iter()
-            .map(|token| token.as_str().expect("palette token").to_string())
-            .collect::<Vec<_>>()
-    };
-    let town = tokens("town_map");
-    let pokegear = tokens("pokegear");
+    let runtime = workspace_desktop_runtime(&AssetRoot::new(repo_root));
+    let asset_root = runtime.materialize_runtime_files().expect("mount external pack artwork");
+    let palette_map = &runtime.data().pokegear_town_map_palette_map;
+    let town = palette_map.get("town_map").expect("Town Map palette tokens");
+    let pokegear = palette_map.get("pokegear").expect("Pokégear palette tokens");
     let mut images = Assets::<Image>::default();
 
-    let frame = load_town_map_frame(&asset_root, "johto", 0, &town, &pokegear, false, 0xf, &mut images)
+    let frame = load_town_map_frame(&asset_root, "johto", 0, town, pokegear, false, 0xf, &mut images)
         .expect("render Johto Town Map");
     let image = images.get(&frame.handle).expect("Town Map image");
     let pixel = |x: usize, y: usize| {

@@ -48,6 +48,7 @@ pub(crate) fn is_game_corner_map(map_id: &str) -> bool {
 /// opaque plane; splitting the lower rows into a box lets the counter top
 /// occlude the windows under the pitched camera.
 pub(crate) fn casino_shape_on_map(map_id: &str, source: &VisualTileSource) -> Option<CellShape> {
+    if safari_office_floor(map_id,source) {return Some(CellShape::Flat);}
     if map_id == "CeladonGameCornerPrizeRoom"
         && source.tileset_id.as_ref() == "game_corner"
         && matches!(source.metatile_id, 0x10 | 0x11)
@@ -61,6 +62,39 @@ pub(crate) fn casino_shape_on_map(map_id: &str, source: &VisualTileSource) -> Op
         });
     }
     casino_shape(source)
+}
+
+/// The unused Safari office repeats the same four-phase floor around seats
+/// and a side partition; these floor phases never become generic prop slabs.
+pub(crate) fn safari_office_floor(map:&str,s:&VisualTileSource)->bool {
+    if map!="SafariZoneMainOffice"||s.tileset_id.as_ref()!="game_corner"
+        ||s.subtile_column>=4||s.subtile_row>=4 {return false;}
+    let mask=match s.metatile_id {
+        1=>0xffff,2|25=>0xff00,6|22|42=>0xcccc,12=>0x00ff,
+        19=>0xcc00,23=>0x00cc,_=>0,
+    };
+    let phase=s.subtile_row*4+s.subtile_column;
+    mask&(1<<phase)!=0&&s.tile_index==[1,16,1,16,17,18,17,18][phase as usize%8]
+}
+
+#[cfg(test)]
+#[test]
+fn kanto_safari_floor_phases_are_flat_and_guarded_against_altered_art() {
+    use std::sync::Arc;
+    let blocks=[(1,0xffffu16),(2,0xff00),(25,0xff00),(6,0xcccc),(22,0xcccc),
+        (42,0xcccc),(12,0x00ff),(19,0xcc00),(23,0x00cc),(21,0)];
+    for (block,mask) in blocks {for phase in 0..16 {
+        let mut s=VisualTileSource{tileset_id:Arc::from("game_corner"),metatile_id:block,
+            subtile_column:phase%4,subtile_row:phase/4,tile_index:[1,16,1,16,17,18,17,18][phase as usize%8]};
+        let expected=mask&(1<<phase)!=0;
+        assert_eq!(safari_office_floor("SafariZoneMainOffice",&s),expected);
+        if expected {
+            assert_eq!(casino_shape_on_map("SafariZoneMainOffice",&s),Some(CellShape::Flat));
+            assert_eq!(crate::profile::shape_for_source_on_map("SafariZoneMainOffice",&s),CellShape::Flat);
+        }
+        assert!(!safari_office_floor("CeladonGameCorner",&s));
+        s.tile_index^=1;assert!(!safari_office_floor("SafariZoneMainOffice",&s));
+    }}
 }
 
 /// Block $08 packs two independent 16x16 front-facing terminals. Return the

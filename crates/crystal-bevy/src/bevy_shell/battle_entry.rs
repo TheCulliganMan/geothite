@@ -31,6 +31,8 @@ fn prepare_visible_battle_entry_with_music_reset(
         .filter(|bound| bound.origin.generation == origin.generation);
     let bound_trainer = runtime_shell.battle_origin.bound_trainer.take()
         .filter(|bound| bound.origin.generation == origin.generation);
+    let bound_scripted_ground = runtime_shell.battle_origin.bound_scripted_ground.take()
+        .filter(|bound| bound.origin.generation == origin.generation);
     reset_visible_battle_presentation(runtime_shell);
     runtime_shell.battle_origin.active = Some(origin);
     runtime_shell.battle_origin.bound_static = bound_static;
@@ -38,6 +40,7 @@ fn prepare_visible_battle_entry_with_music_reset(
     runtime_shell.battle_origin.bound_walking = bound_walking;
     runtime_shell.battle_origin.bound_surf = bound_surf;
     runtime_shell.battle_origin.bound_trainer = bound_trainer;
+    runtime_shell.battle_origin.bound_scripted_ground = bound_scripted_ground;
     if reset_music {
         reset_visible_music_state(runtime_shell);
     }

@@ -170,6 +170,17 @@ pub(super) fn append(
     let ([w, e, n, s], rise) = p.kind().fitting();
     let bounds = [west + w * sx, west + e * sx, north + n * sy, north + s * sy];
     match p.kind() {
+        Kind::InstrumentBank if p.map()=="TrainerHouseB1F" => {
+            let [w,e,n,s]=bounds;let h=rise*sy;
+            let first=mesh.textured.positions.len();
+            super::modeled_interiors::architecture_box(&mut mesh.textured,[w,e,0.,h,n,s],[1.;3]);
+            mesh.textured.uvs[first..].fill(pixel_uv(g,p,2.5,2.5));
+            // The source's first row is a horizontal lid, not blank front height.
+            live_panel(mesh,g,p,[0.,0.,16.,8.],
+                [[w,h+0.002*sy,n],[e,h+0.002*sy,n],[e,h+0.002*sy,s],[w,h+0.002*sy,s]],[0.,1.,0.]);
+            live_panel(mesh,g,p,[0.,8.,16.,24.],
+                [[w,h,s+0.002*sy],[e,h,s+0.002*sy],[e,0.,s+0.002*sy],[w,0.,s+0.002*sy]],[0.,0.,1.]);
+        }
         Kind::InstrumentBank => crate::dungeon_models::room_model(
             crate::dungeon_models::RoomAsset::FacilityInstrumentBank,
         )

@@ -28,6 +28,35 @@ fn close_pose(a: &[Transform], b: &[Transform]) {
 }
 
 #[test]
+fn current_visibility_bounds_enclose_weighted_vertices_without_future_pose_padding() {
+    for species in [Species::Cyndaquil, Species::Totodile] {
+        let rig = species_rig::rig(species);
+        let parts = influence_bounds(rig);
+        let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+        let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+        for clip in Clip::ALL {
+            for progress in [0.0, 0.25, 0.5, 1.0] {
+                rig.sample_into(clip, progress * rig.clip(clip).duration, Playback::Clamp, &mut pose).unwrap();
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let (min, max) = posed_visibility_bounds(&parts, &matrices).unwrap();
+                for (index, point) in rig.neutral.positions.iter().enumerate() {
+                    let point = Vec3::from_array(*point);
+                    let skinned = rig.joint_indices[index].iter().zip(rig.joint_weights[index])
+                        .fold(Vec3::ZERO, |sum, (&joint, weight)|
+                            sum + matrices[joint as usize].transform_point3(point) * weight);
+                    assert!(skinned.cmpge(min - Vec3::splat(0.001)).all());
+                    assert!(skinned.cmple(max + Vec3::splat(0.001)).all());
+                }
+            }
+        }
+        rig.sample_into(Clip::Idle, 0.0, Playback::Clamp, &mut pose).unwrap();
+        rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+        let (min, max) = posed_visibility_bounds(&parts, &matrices).unwrap();
+        assert!((max - min).length() < (rig.animated_bounds.1 - rig.animated_bounds.0).length());
+    }
+}
+
+#[test]
 fn body_pose_uses_elapsed_idle_time_and_exact_current_attack_progress() {
     for species in Species::ALL {
         let rig = species_rig::rig(species);
@@ -263,6 +292,51 @@ fn meganium_instances_activate_generic_gpu_skinning_at_pack_size() {
     assert_species_gpu_at_pack_size("MEGANIUM", Species::Meganium, 23, 1.8034);
 }
 
+#[test]
+fn wooper_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("WOOPER", Species::Wooper, 9, 0.4064);
+}
+
+#[test]
+fn gyarados_instances_activate_generic_gpu_skinning_at_pack_length() {
+    assert_species_gpu_at_pack_size("GYARADOS", Species::Gyarados, 9, 6.5024);
+}
+
+#[test]
+fn sudowoodo_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("SUDOWOODO", Species::Sudowoodo, 9, 1.1938);
+}
+
+#[test]
+fn lapras_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("LAPRAS", Species::Lapras, 9, 2.4892);
+}
+
+#[test]
+fn snorlax_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("SNORLAX", Species::Snorlax, 9, 2.1082);
+}
+
+#[test]
+fn pikachu_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("PIKACHU", Species::Pikachu, 11, 0.4064);
+}
+
+#[test]
+fn bulbasaur_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("BULBASAUR", Species::Bulbasaur, 9, 0.7112);
+}
+
+#[test]
+fn charmander_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("CHARMANDER", Species::Charmander, 11, 0.6096);
+}
+
+#[test]
+fn squirtle_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("SQUIRTLE", Species::Squirtle, 9, 0.508);
+}
+
 fn assert_species_gpu_at_pack_size(
     species_name: &'static str, species: Species, joint_count: usize, size_m: f32,
 ) {
@@ -274,7 +348,8 @@ fn assert_species_gpu_at_pack_size(
         .iter_mut()
         .flatten()
     {
-        battler.species_id = Arc::from(species_name);
+        battler.species_id = Arc::from(if matches!(species, Species::Unown(_)) {"UNOWN"} else {species_name});
+        battler.unown_form = if let Species::Unown(form) = species {Some(form + 1)} else {None};
         battler.pokedex_size_m = Some(size_m);
     }
     app.update();
@@ -296,7 +371,7 @@ fn assert_species_gpu_at_pack_size(
         let pose = world.get::<Transform>(actor.entity).unwrap();
         let (min, max) = skin.rig.neutral_bounds;
         assert!(
-            ((max.y - min.y) * pose.scale.y / crate::battle_layout::WORLD_UNITS_PER_METER - size_m)
+            (crate::battle_layout::reference_span(species_name, min, max) * pose.scale.y / crate::battle_layout::WORLD_UNITS_PER_METER - size_m)
                 .abs()
                 < 0.000001
         );
@@ -444,4 +519,199 @@ fn switching_species_retires_joint_entities_and_keeps_inverse_bind_assets_bounde
             initial
         );
     }
+}
+
+#[test]
+fn geodude_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("GEODUDE", Species::Geodude, 8, 0.4064);
+}
+
+#[test]
+fn pidgey_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("PIDGEY", Species::Pidgey, 10, 0.3048);
+}
+
+#[test]
+fn oddish_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("ODDISH", Species::Oddish, 12, 0.508);
+}
+
+#[test]
+fn poliwag_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("POLIWAG", Species::Poliwag, 5, 0.6096);
+}
+
+#[test]
+fn clefairy_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("CLEFAIRY", Species::Clefairy, 11, 0.6096);
+}
+
+#[test]
+fn jigglypuff_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("JIGGLYPUFF", Species::Jigglypuff, 7, 0.508);
+}
+
+#[test]
+fn rattata_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("RATTATA", Species::Rattata, 9, 0.3048);
+}
+
+#[test]
+fn raticate_instances_activate_generic_gpu_skinning_at_pack_size() {
+    assert_species_gpu_at_pack_size("RATICATE", Species::Raticate, 8, 0.7112);
+}
+
+#[test]
+fn ducks_activate_generic_gpu_skinning_at_pack_sizes() {
+    assert_species_gpu_at_pack_size("PSYDUCK", Species::Psyduck, 10, 0.7874);
+    assert_species_gpu_at_pack_size("GOLDUCK", Species::Golduck, 11, 1.7018);
+}
+
+#[test]
+fn bats_activate_generic_gpu_skinning_at_verified_pack_heights() {
+    assert_species_gpu_at_pack_size("ZUBAT", Species::Zubat, 10, 0.7874);
+    assert_species_gpu_at_pack_size("GOLBAT", Species::Golbat, 10, 1.6002);
+    assert_species_gpu_at_pack_size("CROBAT", Species::Crobat, 14, 1.8034);
+}
+
+#[test]
+fn wing_insects_activate_generic_gpu_skinning_at_verified_pack_heights() {
+    assert_species_gpu_at_pack_size("BUTTERFREE", Species::Butterfree, 18, 1.0922);
+    assert_species_gpu_at_pack_size("BEEDRILL", Species::Beedrill, 20, 0.9906);
+}
+
+#[test]
+fn hoothoot_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("HOOTHOOT", Species::Hoothoot, 12, 0.7112);
+}
+
+#[test]
+fn sentret_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("SENTRET", Species::Sentret, 13, 0.7874);
+}
+
+#[test]
+fn staryu_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("STARYU", Species::Staryu, 12, 0.7874);
+}
+
+#[test]
+fn voltorb_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("VOLTORB", Species::Voltorb, 2, 0.5080);
+}
+
+#[test]
+fn onix_activates_generic_gpu_skinning_at_verified_pack_body_length() {
+    assert_species_gpu_at_pack_size("ONIX", Species::Onix, 12, 8.7884);
+}
+
+#[test]
+fn diglett_activates_generic_gpu_skinning_at_verified_pack_capsule_height() {
+    assert_species_gpu_at_pack_size("DIGLETT", Species::Diglett, 2, 0.2032);
+}
+
+#[test]
+fn slowpoke_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("SLOWPOKE", Species::Slowpoke, 11, 1.1938);
+}
+
+#[test]
+fn unown_all_26_forms_activate_distinct_gpu_skins_at_verified_pack_height() {
+    for form in 0..26 {
+        let species = Species::Unown(form);
+        assert_species_gpu_at_pack_size(species.name(), species, 3, 0.5080);
+    }
+}
+
+#[test]
+fn unown_form_change_replaces_gpu_geometry_without_changing_species_or_party_slot() {
+    let mut app = pair_app(60);
+    for form in [1,26,9,22] {
+        for battler in app.world_mut().resource_mut::<VisualBattleFrame>().battlers.iter_mut().flatten() {
+            battler.species_id = Arc::from("UNOWN");
+            battler.unown_form = Some(form);
+            battler.pokedex_size_m = Some(0.5080);
+        }
+        app.update();app.update();
+        let frame = app.world().resource::<VisualBattleFrame>();
+        let scene = app.world().resource::<BattleScene>();
+        for (side,actor) in scene.actors.iter().enumerate() {
+            let actor = actor.as_ref().unwrap();
+            assert_eq!(actor.skinned.as_ref().unwrap().rig.species, Species::Unown(form-1));
+            assert_eq!(actor.key.species.as_ref(), frame.battlers[side].as_ref().unwrap().model_id());
+            assert_eq!(frame.battlers[side].as_ref().unwrap().species_id.as_ref(), "UNOWN");
+            assert_eq!(actor.key.party_index, frame.battlers[side].as_ref().unwrap().party_index);
+        }
+    }
+    for battler in app.world_mut().resource_mut::<VisualBattleFrame>().battlers.iter_mut().flatten() { battler.unown_form = None; }
+    app.update();app.update();
+    assert!(app.world().resource::<BattleScene>().actors.iter().flatten().all(|a| !a.key.modeled));
+}
+
+#[test]
+fn entei_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("ENTEI",Species::Entei,16,2.0066);
+}
+
+#[test]
+fn raikou_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("RAIKOU",Species::Raikou,16,1.9050);
+}
+
+#[test]
+fn suicune_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("SUICUNE",Species::Suicune,18,2.0066);
+}
+
+#[test]
+fn furret_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("FURRET", Species::Furret, 14, 1.8034);
+}
+
+#[test]
+fn noctowl_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("NOCTOWL", Species::Noctowl, 14, 1.6002);
+}
+
+#[test]
+fn ladybirds_activate_generic_gpu_skinning_at_verified_pack_heights() {
+    assert_species_gpu_at_pack_size("LEDYBA",Species::Ledyba,14,0.9906);
+    assert_species_gpu_at_pack_size("LEDIAN",Species::Ledian,16,1.3970);
+}
+
+#[test]
+fn spiders_activate_generic_gpu_skinning_at_verified_pack_heights() {
+    assert_species_gpu_at_pack_size("SPINARAK",Species::Spinarak,18,0.5080);
+    assert_species_gpu_at_pack_size("ARIADOS",Species::Ariados,18,1.0922);
+}
+
+#[test]
+fn quagsire_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("QUAGSIRE",Species::Quagsire,13,1.3970);
+}
+
+#[test]
+fn hoppip_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("HOPPIP",Species::Hoppip,11,0.4064);
+}
+
+#[test]
+fn skiploom_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("SKIPLOOM",Species::Skiploom,18,0.6096);
+}
+
+#[test]
+fn jumpluff_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("JUMPLUFF",Species::Jumpluff,13,0.7874);
+}
+
+#[test]
+fn aipom_activates_generic_gpu_skinning_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("AIPOM",Species::Aipom,20,0.7874);
+}
+
+#[test]
+fn sunflower_family_activates_generic_gpu_skinning_at_verified_pack_heights() {
+    assert_species_gpu_at_pack_size("SUNKERN",Species::Sunkern,7,0.3048);
+    assert_species_gpu_at_pack_size("SUNFLORA",Species::Sunflora,25,0.7874);
 }

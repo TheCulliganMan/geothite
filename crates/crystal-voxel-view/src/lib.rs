@@ -4,6 +4,10 @@
 
 use bevy::camera::primitives::MeshAabb;
 
+#[cfg(not(target_arch = "wasm32"))]
+mod camera_toolbar;
+mod day_cycle;
+mod sky;
 mod azalea_gym;
 mod painted_stone;
 mod battle_layout;
@@ -25,6 +29,7 @@ mod open_models;
 mod open_people;
 mod open_people_skin;
 mod bicycle;
+mod seating;
 #[cfg(feature = "people-review")]
 mod people_review;
 #[cfg(feature = "people-review")]
@@ -33,6 +38,13 @@ mod npc_appearance;
 mod hair_shapes;
 mod npc_textures;
 mod browser_memory;
+#[cfg(target_arch = "wasm32")]
+mod mesh_buffer_retirement;
+pub mod loading_trace;
+mod shared_groves;
+mod forest_instances;
+pub use shared_groves::configure_grove_collision_diagnostics;
+mod grove_stream;
 
 mod painted_torso;
 mod bare_body;
@@ -42,6 +54,7 @@ pub use open_people::{install_open_people_bundle, PEOPLE as OPEN_PEOPLE};
 mod scenery_surfaces;
 mod scenery_finish;
 mod grass_blades;
+mod grass_rustle;
 mod garment_fit;
 mod garment_body;
 mod hand_surface;
@@ -66,6 +79,7 @@ mod apron;
 mod robe_drape;
 mod roof_tiles;
 mod foliage;
+mod scenery_variants;
 mod understory;
 pub use open_models::install_open_model_bundle;
 pub use battle_layout::{BattleSceneLayout, BattleUiBounds};
@@ -77,6 +91,7 @@ mod camera;
 mod casino;
 mod cave;
 mod cave_water;
+mod cave_lighting;
 mod water_surface;
 mod celadon_gym;
 mod cerulean_gym;
@@ -153,8 +168,8 @@ mod render_metrics;
 mod shadow_bounds;
 #[cfg(not(target_arch = "wasm32"))]
 mod shadow_fit;
-#[cfg(not(target_arch = "wasm32"))]
 mod shadow_receivers;
+pub use shadow_receivers::configure_shadow_receiver_diagnostics;
 #[cfg(not(target_arch = "wasm32"))]
 mod gpu_culling;
 mod compact_vertices;
@@ -189,6 +204,8 @@ use bevy::{
         view::{DebandDither, Tonemapping},
     },
 };
+mod healing_effects;
+pub use healing_effects::{native_clinic_healing_map, native_clinic_healing_supported};
 use crystal_render_api::{VisualActor, VisualActorId, VisualWorldFrame, WorldRenderSet};
 
 pub use camera::{CAMERA_PITCH_DEGREES, VoxelCameraControls, VoxelCameraPose, camera_pose};
@@ -239,15 +256,16 @@ pub struct VoxelViewPlugin;
 impl Plugin for VoxelViewPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(BattleViewPlugin);
-        #[cfg(target_arch = "wasm32")]
         browser_memory::register(app);
+        #[cfg(target_arch = "wasm32")]
+        mesh_buffer_retirement::register(app);
+        loading_trace::register(app);
         #[cfg(not(target_arch = "wasm32"))]
         render_metrics::register(app);
         #[cfg(not(target_arch = "wasm32"))]
         shadow_bounds::register(app);
         #[cfg(not(target_arch = "wasm32"))]
         shadow_fit::register(app);
-        #[cfg(not(target_arch = "wasm32"))]
         shadow_receivers::register(app);
         #[cfg(not(target_arch = "wasm32"))]
         gpu_culling::register(app);
@@ -255,6 +273,12 @@ impl Plugin for VoxelViewPlugin {
             app,
             VOXEL_SURFACE_SHADER_HANDLE,
             "voxel_surface.wesl",
+            Shader::from_wesl
+        );
+        load_internal_asset!(
+            app,
+            GRASS_VERTEX_SHADER_HANDLE,
+            "grass_vertex.wesl",
             Shader::from_wesl
         );
         // Native visual review can iterate the same source shader without
@@ -270,7 +294,10 @@ impl Plugin for VoxelViewPlugin {
         }
         app.add_plugins(MaterialPlugin::<VoxelMaterial>::default());
         #[cfg(not(target_arch = "wasm32"))]
-        app.add_systems(Update, native_model_camera.before(sync_voxel_view));
+        {
+            app.add_systems(Update, native_model_camera.before(sync_voxel_view));
+            camera_toolbar::register(app);
+        }
         load_internal_asset!(
             app,
             SILHOUETTE_SHADER_HANDLE,
@@ -278,6 +305,7 @@ impl Plugin for VoxelViewPlugin {
             Shader::from_wesl
         );
         app.add_plugins(MaterialPlugin::<OcclusionSilhouetteMaterial>::default());
+        sky::register(app);
         app.init_resource::<new_bark_actors::ModeledActors>()
             .add_systems(
                 Update,
@@ -287,6 +315,7 @@ impl Plugin for VoxelViewPlugin {
             )
             .init_resource::<VoxelViewSettings>()
             .init_resource::<VoxelViewStatus>()
+            .init_resource::<NativeHealingEffectsStatus>()
             .init_resource::<live_profiles::LiveProfiles>()
             .add_systems(Update, live_profiles::reload.before(sync_voxel_view))
             .init_resource::<ActorScreenHeads>()
@@ -320,6 +349,7 @@ impl Plugin for VoxelViewPlugin {
                     .after(sync_voxel_view)
                     .in_set(WorldRenderSet::RenderSync),
             );
+        grass_rustle::register(app);
         occluder_fade::register(app);
     }
 }
@@ -386,6 +416,9 @@ pub fn scenery_full_detail_enabled() -> bool {
 /// Observable presentation state for the developer location tester. Gameplay
 /// never reads this resource.
 #[derive(Resource, Clone, Debug, Default, PartialEq, Eq)]
+pub struct NativeHealingEffectsStatus { pub consumed:bool }
+
+#[derive(Resource,Default,Clone,Debug,PartialEq,Eq)]
 pub struct VoxelViewStatus {
     pub active: bool,
     pub active_frames: u32,
@@ -448,6 +481,7 @@ struct VoxelScene {
 struct TerrainCacheKey {
     map_id: std::sync::Arc<str>,
     source_map_size_core_tiles: Option<UVec2>,
+    jump_ledges: std::sync::Arc<[crystal_render_api::VisualJumpLedge]>,
     grid_origin: IVec2,
     revision: u64,
     profiles_revision: u64,
@@ -461,6 +495,7 @@ impl TerrainCacheKey {
         Self {
             map_id: frame.map_id.clone(),
             source_map_size_core_tiles: frame.source_map_size_core_tiles,
+            jump_ledges: frame.jump_ledges.clone(),
             grid_origin: frame.grid_origin,
             revision: frame.terrain_revision,
             profiles_revision: 0,
@@ -476,6 +511,8 @@ impl TerrainCacheKey {
 
 #[derive(Resource, Default)]
 struct TerrainRevisionCache {
+    forest_library: std::sync::Arc<forest_instances::Library>,
+    groves: Option<grove_stream::Stream>,
     painted_stone: Option<Handle<Image>>,
     painted_bedrock: Option<Handle<Image>>,
     built_frame: Option<VisualWorldFrame>,
@@ -535,10 +572,12 @@ fn prepare_runtime_terrain(
     runtime: mesh::RuntimeTerrainBuild,
     build_frame: &VisualWorldFrame,
 ) -> BuiltTerrain {
+    let _trace = loading_trace::span("region.prepare_render_meshes", || serde_json::json!({"map": build_frame.map_id.as_ref()}));
     let mesh::RuntimeTerrainBuild {
         mut terrain,
         grove_groups,
         grove_opaque,
+        streamed_groves,
     } = runtime;
     // Runtime groves arrive prepared; a revision publishes only once complete.
     // Whole-object translucency can expose every original join.
@@ -560,8 +599,13 @@ fn prepare_runtime_terrain(
         .map(|group| (group.mesh.into_mesh(), group.origins))
         .collect();
     let footing_heights = std::mem::take(&mut terrain.footing_heights);
-    let (textured, solid, fade_textured_groups, mut fade_solid_groups) =
+    let (textured, solid, mut fade_textured_groups, mut fade_solid_groups) =
         occluder_fade::prepare_linked(terrain.textured, terrain.solid, terrain.cutaway_links);
+    occluder_fade::use_source_depth_coverage_fade(&mut fade_textured_groups,
+        &terrain.depth_coverage_textured_ranges);
+    // A blocked forest gateway must reveal the clearing completely. Retaining
+    // stippled roof/wall fragments across it obscures the playable scene.
+    occluder_fade::use_source_coverage_fade(&mut fade_solid_groups, &terrain.coverage_fade_ranges, 0.);
     // Grove ownership is independent of linked wall/label anchors.
     fade_solid_groups.extend(grove_groups);
     let source_bounds = authentic_mesh_bounds(&build_frame);
@@ -602,6 +646,7 @@ fn prepare_runtime_terrain(
         ));
     }
     BuiltTerrain {
+        streamed_groves,
         scenery,
         scenery_fades,
         background,
@@ -620,6 +665,7 @@ fn prepare_runtime_terrain(
 }
 
 struct BuiltTerrain {
+    streamed_groves: Option<std::sync::Arc<mesh::StreamedGroves>>,
     scenery_fades: Vec<(Vec<occluder_fade::PreparedGroup>, std::sync::Arc<crate::scenery_surfaces::SceneryTexture>, terrain_batches::AuthenticDomain)>,
     scenery: Vec<(terrain_batches::PreparedBatch, std::sync::Arc<crate::scenery_surfaces::SceneryTexture>)>,
     background: Option<(Mesh, Handle<Image>)>,
@@ -729,7 +775,8 @@ fn setup_voxel_view(
     mut meshes: ResMut<Assets<Mesh>>,
     mut scene: ResMut<VoxelScene>,
     adapter: Option<Res<RenderAdapterInfo>>,
-) {    #[cfg(not(target_arch = "wasm32"))]
+) {
+    #[cfg(not(target_arch = "wasm32"))]
     if std::env::var_os("CRYSTAL_SCENERY_METRICS").is_some() {
         if let Some(adapter) = adapter.as_ref() {
             eprintln!(
@@ -795,6 +842,9 @@ DebandDither::Disabled,),
             VoxelWorldCamera,
         ))
         .id();
+    if TREE_DEPTH_PREPASS.get().copied().unwrap_or(false) {
+        commands.entity(camera).insert(bevy::core_pipeline::prepass::DepthPrepass);
+    }
     // Short-radius indirect occlusion grounds trunks, roof courses and rocks.
     // The browser renderer retains its authored contact shading: Bevy SSAO
     // requires native compute support and is unavailable on WebGL/WebGPU.
@@ -839,12 +889,13 @@ Transform::from_xyz(180.0, 320.0, 220.0).looking_at(Vec3::ZERO, Vec3::Y),),
     ));
 
     scene.camera = Some(camera);
-    scene.actor_quad = Some(meshes.add(actor_quad_mesh()));}
+    scene.actor_quad = Some(meshes.add(actor_quad_mesh()));
+}
 
 #[allow(clippy::too_many_arguments)]
 fn sync_voxel_view(
     frame: Res<VisualWorldFrame>,
-    presentation: (Res<VoxelViewSettings>, Res<live_profiles::LiveProfiles>),
+    presentation: (Res<VoxelViewSettings>, Res<live_profiles::LiveProfiles>, Query<(&DirectionalLight, &Transform), (With<VoxelSun>, Without<VoxelWorldCamera>, Without<VoxelTerrain>, Without<VoxelActorCard>)>, ResMut<NativeHealingEffectsStatus>, Option<Res<crystal_render_api::VisualPlayerTraversal>>),
     mut status: ResMut<VoxelViewStatus>,
     mut last_failure: Local<Option<String>>,
     mut validated_frame_key: Local<Option<TerrainCacheKey>>,
@@ -873,7 +924,8 @@ fn sync_voxel_view(
         ),
     >,
 ) {
-    let (settings, profiles) = presentation;
+    let (settings, profiles, sun,mut healing_status, traversal) = presentation;
+    let _trace = loading_trace::span("frame.sync_3d", || serde_json::json!({"map": frame.map_id.as_ref(), "enabled": settings.enabled}));
     status.profiles_pending = terrain_cache
         .key
         .as_ref()
@@ -882,11 +934,13 @@ fn sync_voxel_view(
         status.active_frames = 0;
     }
     if status.active
+        && !status.terrain_pending
         && !profiles.is_changed()
         && !status.profiles_pending
         && !frame.is_changed()
         && !settings.is_changed()
         && terrain_builds.key.is_none()
+        && terrain_cache.groves.is_none()
     {
         // The published frame is retained and Bevy change detection proves
         // there is no camera, actor, texture, or terrain work to synchronize.
@@ -895,6 +949,7 @@ fn sync_voxel_view(
         status.active_frames = status.active_frames.saturating_add(1);
         return;
     }
+    healing_status.consumed=false;
     let failure = if !settings.enabled {
         Some("disabled")
     } else if !frame.active {
@@ -917,9 +972,9 @@ fn sync_voxel_view(
         // cells on every display refresh.
         *validated_frame_key = Some(TerrainCacheKey::from_frame(&frame));
     }
-    let pose = settings.camera.pose(frame.viewport_size);
+    let pose = settings.camera.world_pose_with_traversal(&frame, &terrain_cache.footing_heights, traversal.as_deref());
     let valid = failure.is_none();
-    let output_ready = set_output_active(&scene, valid, &mut cameras, &frame, pose);
+    let output_ready = set_output_active(&scene, valid, &mut cameras, pose);
     if valid && !output_ready {
         let failure = "voxel world camera is unavailable";
         status.active = false;
@@ -955,7 +1010,7 @@ fn sync_voxel_view(
             status.active_frames = 0;
             status.inactive_reason = Some(failure.clone());
             report_inactive_change(&mut last_failure, &failure);
-            set_output_active(&scene, false, &mut cameras, &frame, pose);
+            set_output_active(&scene, false, &mut cameras, pose);
             return;
         }
     };
@@ -965,6 +1020,19 @@ fn sync_voxel_view(
         status.terrain_map = applied_map.map(str::to_owned);
     }
     status.terrain_pending = matches!(terrain_state, TerrainSyncState::Pending);
+    if matches!(terrain_state, TerrainSyncState::Ready) {
+        let projection = cameras.iter().find_map(|(_, projection, _)| match projection {
+            Projection::Perspective(p) => Some(Mat4::perspective_rh(pose.vertical_fov_radians, p.aspect_ratio, pose.near, pose.far)),
+            _ => None,
+        });
+        if let Some(projection) = projection {
+            let view_projection = projection * Mat4::look_at_rh(pose.eye, pose.target, Vec3::Y);
+            let sun = sun.iter().find_map(|(light, transform)|
+                (light.shadow_maps_enabled && light.illuminance > 0.).then(|| -transform.forward().as_vec3()));
+            status.terrain_pending |= grove_stream::sync(&frame, view_projection, sun,
+                &mut terrain_cache, &mut commands, &mut meshes, &mut materials);
+        }
+    }
     if status.terrain_pending {
         status.active_frames = 0;
     }
@@ -977,7 +1045,7 @@ fn sync_voxel_view(
         status.active = false;
         status.active_frames = 0;
         status.inactive_reason = Some("building authored terrain".to_owned());
-        set_output_active(&scene, false, &mut cameras, &frame, pose);
+        set_output_active(&scene, false, &mut cameras, pose);
         return;
     }
 
@@ -986,13 +1054,16 @@ fn sync_voxel_view(
         status.active_frames = 0;
         status.inactive_reason = Some("actor card mesh is unavailable".to_owned());
         report_inactive_change(&mut last_failure, "actor card mesh is unavailable");
-        set_output_active(&scene, false, &mut cameras, &frame, pose);
+        set_output_active(&scene, false, &mut cameras, pose);
         return;
     };
+    let healing_allowed=frame.actors.iter().any(healing_effects::is_healing)
+        &&healing_effects::profile_allows(&frame,&profiles.document);
     if let Err(error) = sync_actor_cards(
         &frame,
         &terrain_cache.footing_heights,
         pose,
+        healing_allowed,
         actor_quad,
         &mut commands,
         &mut actor_cache,
@@ -1005,9 +1076,17 @@ fn sync_voxel_view(
         status.active_frames = 0;
         status.inactive_reason = Some(failure.clone());
         report_inactive_change(&mut last_failure, &failure);
-        set_output_active(&scene, false, &mut cameras, &frame, pose);
+        set_output_active(&scene, false, &mut cameras, pose);
         return;
     }
+    if let Some(entity) = actor_cache.entities.get(&VisualActorId::Player) {
+        commands.entity(*entity).insert(if settings.camera.first_person {
+            Visibility::Hidden
+        } else {
+            Visibility::Visible
+        });
+    }
+    healing_status.consumed=healing_allowed&&frame.actors.iter().any(healing_effects::is_healing);
     status.active = true;
     status.active_frames = status.active_frames.saturating_add(1);
     status.inactive_reason = None;
@@ -1027,7 +1106,6 @@ fn set_output_active(
     scene: &VoxelScene,
     active: bool,
     cameras: &mut Query<(&mut Camera, &mut Projection, &mut Transform), VoxelWorldCameraFilter>,
-    frame: &VisualWorldFrame,
     pose: VoxelCameraPose,
 ) -> bool {
     let mut camera_ready = false;
@@ -1041,14 +1119,6 @@ fn set_output_active(
             camera.is_active = active;
         }
         if active {
-            let next_clear_color = voxel_clear_color(frame);
-            let clear_color_changed = !matches!(
-                camera.clear_color,
-                ClearColorConfig::Custom(current) if current == next_clear_color
-            );
-            if clear_color_changed {
-                camera.clear_color = ClearColorConfig::Custom(next_clear_color);
-            }
             let next_transform = pose.transform();
             if *transform != next_transform {
                 *transform = next_transform;
@@ -1133,14 +1203,35 @@ fn sync_cave_water_phases(
 
 fn sync_voxel_atmosphere(
     frame: Res<VisualWorldFrame>,
+    lighting: Option<Res<crystal_render_api::VisualWorldLighting>>,
+    clock: Option<Res<crystal_render_api::VisualWorldClock>>,
     profiles: Res<live_profiles::LiveProfiles>,
     settings: Res<VoxelViewSettings>,
     adapter: Option<Res<RenderAdapterInfo>>,
-    mut lights: Query<(&mut DirectionalLight, &mut bevy::light::CascadeShadowConfig), With<VoxelSun>>,
-    mut cameras: Query<(&mut DistanceFog, &mut Fxaa), With<VoxelWorldCamera>>,
+    mut lights: Query<(&mut DirectionalLight, &mut bevy::light::CascadeShadowConfig, Option<&mut Transform>), With<VoxelSun>>,
+    mut cameras: Query<(&mut DistanceFog, &mut Fxaa, Option<&mut Camera>), With<VoxelWorldCamera>>,
     mut ambient: Option<ResMut<GlobalAmbientLight>>,
 ) {
-    if !frame.is_changed() && !profiles.is_changed() && !settings.is_changed() {
+    let cycle = clock.as_ref().and_then(|clock| clock.seconds_of_day())
+        .filter(|_| !interior_cutaway::is_cave(&frame)
+            && !frame.tiles.first().is_some_and(|tile| crate::interior::has_back_wall(&tile.source.tileset_id)))
+        .map(day_cycle::DayCycle::at_seconds);
+    let unlit_map = lighting.as_ref().is_some_and(|period|
+        **period == crystal_render_api::VisualWorldLighting::Dark);
+    let horizon = if unlit_map { Color::BLACK }
+        else { cycle.map_or_else(|| voxel_clear_color(&frame), |cycle| cycle.horizon) };
+    // Atmosphere owns the clear color, including the clock-only updates that
+    // do not rebuild terrain or move the camera. Preserve idle change ticks.
+    for (_, _, camera) in &mut cameras {
+        if let Some(mut camera) = camera {
+            if !matches!(camera.clear_color, ClearColorConfig::Custom(color) if color == horizon) {
+                camera.clear_color = ClearColorConfig::Custom(horizon);
+            }
+        }
+    }
+    if !frame.is_changed() && !profiles.is_changed() && !settings.is_changed()
+        && !clock.as_ref().is_some_and(|clock| clock.is_changed())
+        && !lighting.as_ref().is_some_and(|period| period.is_changed()) {
         return;
     }
     let atmosphere = profiles.document.atmosphere.as_ref().filter(|atmosphere| {
@@ -1166,12 +1257,37 @@ fn sync_voxel_atmosphere(
             | "RockTunnel1F" | "RockTunnelB1F" | "TohjoFalls" | "VictoryRoad")
         && frame.tiles.first().is_some_and(|tile|
             matches!(tile.source.tileset_id.as_ref(), "cave" | "dark_cave"));
-    let (ambient_gain, sun_gain) = if native_kanto_cave { (1.0, 0.65) }
+    // Forest uses a fixed night source palette, even at noon. Its paint already
+    // carries that cool temperature; a second blue scene light erases foliage,
+    // earth and actor separation. Filtered neutral fill preserves that paint.
+    let woodland = frame.map_id.as_ref() == "IlexForest"
+        && frame.tiles.first().is_some_and(|tile| tile.source.tileset_id.as_ref() == "forest");
+    let (ambient_gain, sun_gain) = if woodland { (0.90, 0.90) }
+        else if native_kanto_cave { (1.0, 0.65) }
         else if dark { (0.36, 0.28) }
         else if cavern_lit { (0.60, 0.48) } else { (1.0, 1.0) };
+    // Indoor and cave palettes are published as Day by the classic renderer.
+    // Unknown/test producers retain the established daylight appearance.
+    let period = if cave || woodland { crystal_render_api::VisualWorldLighting::Day }
+        else { lighting.as_ref().map(|v| **v).unwrap_or_default() };
+    let temperature = match period {
+        crystal_render_api::VisualWorldLighting::Morning => [1.18, 1.03, 0.70],
+        crystal_render_api::VisualWorldLighting::Day => [1.0, 1.0, 1.0],
+        crystal_render_api::VisualWorldLighting::Night => [0.40, 0.55, 2.0],
+        crystal_render_api::VisualWorldLighting::Dark => [1.0, 1.0, 1.0],
+    };
+    // Temperature is the primary palette shift. The latest source comparison
+    // also requires a darker night, with enough fill to retain scenery detail.
+    let luminance = temperature[0] * 0.2126 + temperature[1] * 0.7152 + temperature[2] * 0.0722;
+    let period_color = Color::linear_rgb(temperature[0] / luminance,
+        temperature[1] / luminance, temperature[2] / luminance);
+    let period_gain = if period == crystal_render_api::VisualWorldLighting::Night { 0.50 } else { 1.0 };
     if let Some(ambient) = ambient.as_mut() {
-        let brightness = GlobalAmbientLight::default().brightness * ambient_gain;
+        let brightness = GlobalAmbientLight::default().brightness * ambient_gain
+            * cycle.map_or(period_gain, |cycle| cycle.ambient_gain);
         if ambient.brightness != brightness { ambient.brightness = brightness; }
+        let color = cycle.map_or(period_color, |cycle| cycle.ambient);
+        if ambient.color != color { ambient.color = color; }
     }
     // CPU rasterizers pay for the entire broad terrain halo again in the
     // shadow pass. Authored contact shading already grounds these scenes;
@@ -1181,6 +1297,10 @@ fn sync_voxel_atmosphere(
         .as_ref()
         .is_some_and(|adapter| software_renderer(&adapter.name));
     let mut shadows = !new_bark_models::supports_map(&frame.map_id) || !software;
+    // The miniature world's roofs and leaf cards produce oversized moon
+    // silhouettes. Retain authored contact shading at night; daylight keeps
+    // actual geometry shadows, with low-energy contrast eased in the shader.
+    if cycle.is_some_and(|cycle| cycle.direct_gain <= 0.42) { shadows = false; }
     #[cfg(not(target_arch = "wasm32"))]
     {
         match std::env::var("CRYSTAL_MODELED_SHADOWS").as_deref() {
@@ -1189,16 +1309,32 @@ fn sync_voxel_atmosphere(
             _ => {}
         }
     }
-    for (mut light, mut cascade) in &mut lights {
-        let illuminance = 3_000.0 * sun_gain;
+    for (mut light, mut cascade, transform) in &mut lights {
+        if let Some(mut transform) = transform {
+            let direction = cycle.map_or(Vec3::new(180.0, 320.0, 220.0), |cycle| cycle.direction);
+            let desired = Transform::from_translation(direction).looking_at(Vec3::ZERO, Vec3::Y);
+            if *transform != desired { *transform = desired; }
+        }
+        let illuminance = 3_000.0 * sun_gain * cycle.map_or(period_gain, |cycle| cycle.direct_gain);
         if light.illuminance != illuminance { light.illuminance = illuminance; }
-        let color = if environment_fx::frozen(&frame) {
+        let regional_color = if environment_fx::frozen(&frame) {
             Color::srgb(0.68, 0.85, 1.0)
+        } else if woodland {
+            Color::srgb(1.0, 0.95, 0.82)
         } else if matches!(frame.map_id.as_ref(), "Route29" | "NewBarkTown") {
             Color::srgb(1.0, 0.94, 0.82)
         } else if environment_fx::coastal(&frame) {
             Color::srgb(0.89, 0.96, 1.0)
         } else { Color::WHITE };
+        let color = if let Some(cycle) = cycle {
+            // Keep the authored regional daylight at noon; the clock adds
+            // dawn/moon temperature rather than erasing coastal/ice lighting.
+            let base = Color::WHITE.mix(&regional_color, cycle.regional_tint_gain).to_linear();
+            let tint = cycle.direct.to_linear();
+            Color::linear_rgb(base.red * tint.red, base.green * tint.green, base.blue * tint.blue)
+        } else if period != crystal_render_api::VisualWorldLighting::Day {
+            period_color
+        } else { regional_color };
         if light.color != color { light.color = color; }
         if light.shadow_maps_enabled != shadows { light.shadow_maps_enabled = shadows; }
         let desired_cascade = if matches!(frame.map_id.as_ref(), "Route29" | "Route26" | "NewBarkTown"
@@ -1229,7 +1365,7 @@ fn sync_voxel_atmosphere(
         { *cascade = desired_cascade; }
         if light.shadow_normal_bias != 2.5 { light.shadow_normal_bias = 2.5; }
     }
-    for (mut fog, mut fxaa) in &mut cameras {
+    for (mut fog, mut fxaa, _) in &mut cameras {
         let enabled = frame.active
             && settings.enabled
             && (cave || new_bark_models::supports_map(&frame.map_id));
@@ -1237,7 +1373,7 @@ fn sync_voxel_atmosphere(
         if let Some((start_tiles, end_tiles, opacity)) = atmosphere {
             let pose = settings.camera.pose(frame.viewport_size);
             let target_distance = pose.eye.distance(pose.target);
-            let color = voxel_clear_color(&frame).with_alpha(opacity);
+            let color = horizon.with_alpha(opacity);
             if fog.color != color { fog.color = color; }
             let start = target_distance + start_tiles * frame.tile_size.y;
             let end = target_distance + end_tiles * frame.tile_size.y;
@@ -1358,7 +1494,8 @@ fn sync_terrain(
     {
         cache.key = Some(next_key.clone());
     }
-    if should_start_terrain_build(cache.key.as_ref(), builds.key.as_ref(), &next_key) {        builds.started += 1;
+    if should_start_terrain_build(cache.key.as_ref(), builds.key.as_ref(), &next_key) {
+        builds.started += 1;
         let mut build_frame = frame.clone();
         let source_texture = frame.map_texture.clone();
         // The host overwrites its viewport image during every scroll. Own an
@@ -1368,22 +1505,24 @@ fn sync_terrain(
             .ok_or(TerrainSyncError::SourceTextureUnavailable)?
             .clone();
         build_frame.map_texture = images.add(atlas);
-        let samples = TerrainImageSamples::capture(frame, images);        let build_key = next_key.clone();
+        let samples = TerrainImageSamples::capture(frame, images);
+        let build_key = next_key.clone();
         let profile_document = profiles.document.clone();
         builds.key = Some(next_key.clone());
         #[cfg(not(target_arch = "wasm32"))]
-        let build = async move {            #[cfg(feature = "operation-trace")]
+        let build = async move {
+            #[cfg(feature = "operation-trace")]
             let _span = bevy::log::info_span!("crystal_terrain_build").entered();
             // SurfaceMeshData -> Bevy Mesh conversion walks and moves every
             // vertex/index buffer. Keep that work on the compute task too;
             // doing it when polling the completed build caused a deterministic
             // 30-45 ms main-thread hitch several seconds into 2.5D movement.
-            let terrain = mesh::build_runtime_terrain_mesh_with_profiles(
+            let terrain = mesh::begin_runtime_terrain_mesh_with_profiles(
                 &build_frame,
                 &samples,
                 &profile_document,
             )
-            .map(|terrain| prepare_runtime_terrain(terrain, &build_frame));
+            .map(|terrain| prepare_runtime_terrain(terrain.into_streamed(), &build_frame));
             TerrainBuildResult {
                 key: build_key,
                 frame: build_frame,
@@ -1413,11 +1552,10 @@ fn sync_terrain(
         .as_mut()
         .and_then(|task| future::block_on(future::poll_once(task)));
     #[cfg(target_arch = "wasm32")]
-    let completed = if builds.pending.as_mut().is_some_and(|pending|
-        pending.terrain.as_mut().map_or(true, |terrain| terrain.advance_uploaded(1, meshes))) {
+    let completed = if builds.pending.is_some() {
         let pending = builds.pending.take().expect("completed browser build");
         let terrain = pending.terrain.map(|terrain|
-            prepare_runtime_terrain(terrain.finish(), &pending.frame));
+            prepare_runtime_terrain(terrain.into_streamed(), &pending.frame));
         Some(TerrainBuildResult {
             key: pending.key, frame: pending.frame,
             source_texture: pending.source_texture, profiles: pending.profiles, terrain,
@@ -1532,7 +1670,9 @@ fn apply_built_terrain(
     materials: &mut Assets<VoxelMaterial>,
     images: &mut Assets<Image>,
 ) -> Result<(), TerrainSyncError> {
+    let _trace = loading_trace::span("region.publish_assets", || serde_json::json!({"map": frame.map_id.as_ref(), "origin": frame.grid_origin.to_array()}));
     cache.footing_origin = None;
+    cache.groves = terrain.streamed_groves.map(|source| grove_stream::Stream::new(source, cache.forest_library.clone()));
     cache.built_frame = Some(frame.clone());
     cache.built_profiles = None;
     cache.built_source_texture = Some(frame.map_texture.clone());
@@ -1599,8 +1739,9 @@ fn apply_built_terrain(
         let dark = frame.tiles.first().is_some_and(|tile| tile.source.tileset_id.as_ref() == "dark_cave")
             && std::env::var_os("CRYSTAL_CAVE_GEOMETRY_REVIEW").is_none();
         Vec4::new(1.0, if dark { 1.0 } else { 0.0 }, 0.0, 0.0)
-    } else if matches!(frame.map_id.as_ref(), "NewBarkTown" | "Route29" | "Route26"
-        | "NationalPark" | "NationalParkBugContest") {
+    } else if cave_water::outdoor(frame.map_id.as_ref()) && frame.tiles.first().is_some_and(|tile|
+        matches!(tile.source.tileset_id.as_ref(), "johto" | "johto_modern" | "kanto"
+            | "forest" | "park" | "battle_tower_outside" | "port")) {
         // The existing environment vector's Z channel selects exterior
         // daylight; X/Y retain cave reveal and darkness ownership.
         Vec4::Z
@@ -1680,8 +1821,10 @@ Visibility::Inherited,),
             if texture.double_sided { material.base.cull_mode = None; }
             materials.add(material)
         }).clone();
-        let mut child = commands.spawn(((Mesh3d(meshes.add(batch.mesh)),
+        let mesh = meshes.add(batch.mesh);
+        let mut child = commands.spawn(((Mesh3d(mesh.clone()),
 MeshMaterial3d(handle),), RenderLayers::layer(VOXEL_RENDER_LAYER), batch.authentic_domain));
+        if let Some(bounds) = batch.coverage { child.insert(terrain_batches::TerrainBatchCoverage { mesh: mesh.id(), sight_bounds: batch.sight_coverage.unwrap_or_else(|| bounds.clone()), grass_bounds: batch.grass_coverage.unwrap_or_default(), bounds }); }
         if let Some(bounds) = batch.bounds { child.insert(bounds); }
         let child=child.id();
         commands.entity(root).add_child(child);
@@ -1781,14 +1924,21 @@ terrain_transform(frame),),
         mesh,
         bounds,
         authentic_domain,
+        coverage,
+        sight_coverage,
+        grass_coverage,
     } in batches {
+        let mesh = meshes.add(mesh);
         let mut child = commands.spawn((
-            (Mesh3d(meshes.add(mesh)),
+            (Mesh3d(mesh.clone()),
 MeshMaterial3d(material.clone()),
 Visibility::Inherited,),
             RenderLayers::layer(VOXEL_RENDER_LAYER),
             authentic_domain,
         ));
+        if let Some(bounds) = coverage {
+            child.insert(terrain_batches::TerrainBatchCoverage { mesh: mesh.id(), sight_bounds: sight_coverage.unwrap_or_else(|| bounds.clone()), grass_bounds: grass_coverage.unwrap_or_default(), bounds });
+        }
         if let Some(bounds) = bounds {
             child.insert(bounds);
         }
@@ -1890,7 +2040,11 @@ type VoxelMaterial = ExtendedMaterial<StandardMaterial, VoxelSurface>;
 const VOXEL_SURFACE_SHADER_HANDLE: Handle<Shader> =
     Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(0xf1d7_662b_5b61_49b2_a221_6f89195c8542), std::marker::PhantomData);
 
+const GRASS_VERTEX_SHADER_HANDLE: Handle<Shader> =
+    Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(0x2fbd_8b33_1fe1_487b_b4e4_c368af150abb), std::marker::PhantomData);
+
 #[derive(Asset, AsBindGroup, Reflect, Debug, Clone, Default)]
+#[bind_group_data(VoxelSurfaceKey)]
 // Pack surface values into one binding to fit WebGL2 fragment uniform limits.
 struct VoxelSurface {
     #[uniform(100)]
@@ -1923,8 +2077,81 @@ struct VoxelSurface {
     water_phase: Vec4,
     #[uniform(100)]
     water_contact: Vec4,
+    #[uniform(100)]
+    cave_exits: [Vec4; 4],
+    #[uniform(100)]
+    cave_sky: Vec4,
+    /// Battle-only clearance around the complete bodies; zero in the overworld.
+    #[uniform(100)]
+    battle_clearance: [Vec4; 2],
+    #[uniform(100)]
+    battle_clearance_shape: [Vec4; 2],
+    /// World-space foot contact (XZ center, ground Y, footprint radius).
+    #[uniform(100)]
+    battle_grass_contact: [Vec4; 2],
+    #[texture(109)]
+    #[sampler(110)]
+    battle_grass_mask: Option<Handle<Image>>,
+    #[uniform(100)]
+    battle_grass_mask_info: Vec4,
+    #[uniform(111)]
+    grass_rustle: grass_rustle::GrassUniform,
+    // CPU-only constructor proof; no new GPU uniform/binding. Current opacity
+    // and mesh attributes are checked again before any camera depth write.
+    depth_prepass_palette: bool,
+}
+// Opaque palette surfaces must not carry the fragment-discard instructions
+// used only by their separate fading material. In particular, dense crowns
+// can then use the GPU's ordinary early depth rejection. Uniform animation
+// never creates pipeline variants: only the fixed coverage/cutoff mode does.
+static LEGACY_SURFACE_DISCARD: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+static TREE_DEPTH_PREPASS: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+
+/// Startup-only selective-tree depth QA. Defaults off while exact image and
+/// hardware timing comparisons establish whether the extra pass is worthwhile.
+pub fn configure_tree_depth_prepass_diagnostics(enabled: bool) -> Result<(), String> {
+    TREE_DEPTH_PREPASS.set(enabled)
+        .map_err(|_| "tree depth prepass diagnostics already configured".to_owned())
+}
+
+
+/// Startup-only QA control: retain the original uniform-guarded discard
+/// instructions for a same-binary GPU timing and visual comparison.
+pub fn configure_surface_discard_diagnostics(legacy: bool) -> Result<(), String> {
+    LEGACY_SURFACE_DISCARD.set(legacy)
+        .map_err(|_| "surface discard diagnostics already configured".to_owned())
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+struct VoxelSurfaceKey {
+    source_alpha_cutoff: bool,
+    coverage_fade: bool,
+    depth_prepass_palette: bool,
+}
+impl From<&VoxelSurface> for VoxelSurfaceKey {
+    fn from(surface: &VoxelSurface) -> Self {
+        Self::for_mode(surface, LEGACY_SURFACE_DISCARD.get().copied().unwrap_or(false))
+    }
+}
+impl VoxelSurfaceKey {
+    fn for_mode(surface: &VoxelSurface, legacy: bool) -> Self {
+        Self {
+            source_alpha_cutoff: legacy || surface.cutaway.fade.w > 0.0,
+            coverage_fade: legacy || surface.cutaway.fade.w != 0.0,
+            depth_prepass_palette: TREE_DEPTH_PREPASS.get().copied().unwrap_or(false)
+                && surface.depth_prepass_palette && surface.cutaway.fade.x == 0.0,
+        }
+    }
 }
 impl MaterialExtension for VoxelSurface {
+    fn vertex_shader() -> ShaderRef {
+        GRASS_VERTEX_SHADER_HANDLE.into()
+    }
+
+    fn prepass_vertex_shader() -> ShaderRef {
+        GRASS_VERTEX_SHADER_HANDLE.into()
+    }
+
     fn fragment_shader() -> ShaderRef {
         VOXEL_SURFACE_SHADER_HANDLE.into()
     }
@@ -1932,9 +2159,19 @@ impl MaterialExtension for VoxelSurface {
     fn specialize(
         _pipeline: &bevy::pbr::MaterialExtensionPipeline,
         descriptor: &mut RenderPipelineDescriptor,
-        _layout: &MeshVertexBufferLayoutRef,
+        layout: &MeshVertexBufferLayoutRef,
         key: bevy::pbr::MaterialExtensionKey<Self>,
     ) -> Result<(), SpecializedMeshPipelineError> {
+        if let Some(fragment) = descriptor.fragment.as_mut() {
+            fragment.shader_defs.push(bevy::shader::ShaderDefVal::Bool(
+                "VOXEL_SOURCE_ALPHA_CUTOFF".into(), key.bind_group_data.source_alpha_cutoff));
+            fragment.shader_defs.push(bevy::shader::ShaderDefVal::Bool(
+                "VOXEL_COVERAGE_FADE".into(), key.bind_group_data.coverage_fade));
+        }
+        configure_tree_depth_prepass_pipeline(
+            descriptor, key.mesh_key, key.bind_group_data, layout,
+            TREE_DEPTH_PREPASS.get().copied().unwrap_or(false),
+        );
         if std::env::var_os("CRYSTAL_VOXEL_PIPELINE_TRACE").is_some() {
             eprintln!("voxel pipeline: key={:?} fragment_defs={:?}", key.mesh_key,
                 descriptor.fragment.as_ref().map(|fragment| &fragment.shader_defs));
@@ -1943,10 +2180,61 @@ impl MaterialExtension for VoxelSurface {
     }
 }
 
+fn depth_prepass_palette_base(base: &StandardMaterial) -> bool {
+    base.unlit && matches!(base.alpha_mode, AlphaMode::Opaque)
+        && base.base_color_texture.is_none() && base.normal_map_texture.is_none()
+        && base.depth_map.is_none() && base.emissive_texture.is_none()
+        && base.metallic_roughness_texture.is_none() && base.occlusion_texture.is_none()
+}
+
 fn voxel_material(base: StandardMaterial) -> VoxelMaterial {
-    ExtendedMaterial {
-        base,
-        extension: VoxelSurface::default(),
+    let extension = VoxelSurface {
+        depth_prepass_palette: depth_prepass_palette_base(&base),
+        ..default()
+    };
+    ExtendedMaterial { base, extension }
+}
+
+/// Prepass and main forward pipelines both carry DEPTH_PREPASS. Only Bevy's
+/// actual prepass descriptor has PREPASS_PIPELINE; shadow descriptors also
+/// carry explicit VIEW_PROJECTION bits (directional also has UNCLIPPED_DEPTH_ORTHO).
+/// The camera-prepass view key carries no projection bits, even for perspective
+/// cameras; suppress depth only in that ordinary camera pass.
+fn configure_tree_depth_prepass_pipeline(
+    descriptor: &mut RenderPipelineDescriptor,
+    mesh_key: bevy::pbr::MeshPipelineKey,
+    surface: VoxelSurfaceKey,
+    layout: &MeshVertexBufferLayoutRef,
+    enabled: bool,
+) {
+    use bevy::pbr::MeshPipelineKey as Key;
+    if !enabled || !mesh_key.contains(Key::DEPTH_PREPASS)
+        || mesh_key.intersects(Key::VIEW_PROJECTION_RESERVED_BITS | Key::UNCLIPPED_DEPTH_ORTHO | Key::NORMAL_PREPASS
+            | Key::MOTION_VECTOR_PREPASS | Key::DEFERRED_PREPASS)
+        || !descriptor.vertex.shader_defs.iter().any(|def| matches!(def,
+            bevy::shader::ShaderDefVal::Bool(name, true) if name == "PREPASS_PIPELINE")) {
+        return;
+    }
+    // Runtime tree prototypes omit UVs only after proving all source UVs are
+    // zero and the owning palette material cannot consume them. The main
+    // vertex shader bends only UV-tagged grass; these static meshes use the
+    // same position_world_to_clip expression as Bevy's stock prepass vertex.
+    // UV-bearing cave walls/grass and every fading/masked object write no depth
+    // here, so their forward-only apertures and alpha retain full control.
+    let eligible = surface.depth_prepass_palette
+        && !surface.source_alpha_cutoff && !surface.coverage_fade
+        && mesh_key.intersection(Key::BLEND_RESERVED_BITS) == Key::BLEND_OPAQUE
+        && !mesh_key.intersects(Key::MAY_DISCARD | Key::MORPH_TARGETS | Key::VISIBILITY_RANGE_DITHER)
+        && layout.0.contains(Mesh::ATTRIBUTE_POSITION)
+        && !layout.0.contains(Mesh::ATTRIBUTE_UV_0)
+        && !layout.0.contains(Mesh::ATTRIBUTE_UV_1)
+        && !layout.0.contains(Mesh::ATTRIBUTE_JOINT_INDEX)
+        && !layout.0.contains(Mesh::ATTRIBUTE_JOINT_WEIGHT);
+    if !eligible {
+        if let Some(depth) = descriptor.depth_stencil.as_mut() {
+            depth.depth_write_enabled = Some(false);
+            depth.depth_compare = Some(CompareFunction::Never);
+        }
     }
 }
 
@@ -1954,8 +2242,10 @@ fn voxel_material(base: StandardMaterial) -> VoxelMaterial {
 /// It uses the current propagated camera and cached authored triangles.
 fn sync_interior_cutaway(
     frame: Res<VisualWorldFrame>,
+    lighting: Option<Res<crystal_render_api::VisualWorldLighting>>,
     status: Res<VoxelViewStatus>,
     cache: Res<TerrainRevisionCache>,
+    images: Res<Assets<Image>>,
     mut materials: ResMut<Assets<VoxelMaterial>>,
 ) {
     let Some(handle) = cache.solid_material.as_ref() else {
@@ -1980,6 +2270,22 @@ fn sync_interior_cutaway(
     } else {
         interior_cutaway::CutawayUniform::default()
     };
+    let dark = lighting.as_ref().is_some_and(|period|
+        **period == crystal_render_api::VisualWorldLighting::Dark);
+    let exits = if status.active && !dark { cave_lighting::exits(&frame) } else { [Vec4::ZERO; 4] };
+    let sky = if dark { Vec4::ZERO } else { cave_lighting::sky_tint(&frame, &images) };
+    // Update terrain and actors together, so entering the daylight spill also
+    // lights the trainer. Exits are cleared on every non-cave frame.
+    let light_changed: Vec<_> = materials.iter().filter_map(|(id, material)|
+        (material.extension.cave_exits != exits || material.extension.cave_sky != sky
+            || material.extension.cave_reveal.y != if dark { 1.0 } else { 0.0 }).then_some(id)).collect();
+    for id in light_changed {
+        if let Some(mut material) = materials.get_mut(id) {
+            material.extension.cave_exits = exits;
+            material.extension.cave_sky = sky;
+            material.extension.cave_reveal.y = if dark { 1.0 } else { 0.0 };
+        }
+    }
     // Terrain groups clone the base material. Only cave terrain clones whose
     // capsule moved need an update; actor materials keep reveal disabled.
     let changed: Vec<_> = materials.iter().filter_map(|(id, material)| {
@@ -2009,6 +2315,7 @@ fn sync_actor_cards(
     frame: &VisualWorldFrame,
     footing_heights: &[f32],
     pose: VoxelCameraPose,
+    healing_allowed:bool,
     actor_quad: &Handle<Mesh>,
     commands: &mut Commands,
     cache: &mut ActorIdCache,
@@ -2034,6 +2341,9 @@ fn sync_actor_cards(
     // retiring the whole optional world here caused a 2D flash while walking.
     let mut prepared = Vec::with_capacity(frame.actors.len());
     for actor in &frame.actors {
+        // Native blades consume this event; the source sprite belongs to 2D.
+        if grass_rustle::is_rustle(actor) { continue; }
+        if healing_effects::is_healing(actor)&&!healing_allowed {continue;}
         if !images.contains(&actor.texture) {
             return Err(ActorSyncError::TextureUnavailable(actor.id));
         }
@@ -2144,7 +2454,7 @@ fn sync_player_silhouette_system(
     };
     // A card silhouette would be occluded by the player's own 3D body and
     // incorrectly paint the old pixel sprite across its front.
-    if !status.active || new_bark_actors::has_modeled_player(&frame) {
+    if !status.active || settings.camera.first_person || new_bark_actors::has_modeled_player(&frame) {
         if let Some(entity) = cache.entity
             && let Ok((_, mut visibility, _)) = entities.get_mut(entity)
         {
@@ -2296,6 +2606,9 @@ fn actor_transform(
     footing_heights: &[f32],
     pose: VoxelCameraPose,
 ) -> Option<Transform> {
+    if healing_effects::is_healing(actor) {
+        return healing_effects::transform(frame,actor);
+    }
     let foot = actor_foot(actor);
     let height = resolved_footing_height(frame, foot, footing_heights)?;
     let mut position = visual_point_to_voxel(foot, height + 0.05);
@@ -2437,6 +2750,160 @@ mod renderer_tests {
     use super::*;
 
     #[test]
+    fn surface_discard_specialization_retains_source_cutoffs_and_fade_animation() {
+        let mut surface = VoxelSurface::default();
+        assert_eq!(VoxelSurfaceKey::for_mode(&surface, false), VoxelSurfaceKey {
+            source_alpha_cutoff: false, coverage_fade: false, depth_prepass_palette: false,
+        });
+        for cutoff in [-1.0, 0.0, 0.63, f32::NAN] {
+            surface.cutaway.fade.w = cutoff;
+            let key = VoxelSurfaceKey::for_mode(&surface, false);
+            assert_eq!(key.source_alpha_cutoff, cutoff > 0.0);
+            assert_eq!(key.coverage_fade, cutoff != 0.0);
+            for fade in [0.0, 0.25, 1.0] {
+                surface.cutaway.fade.x = fade;
+                assert_eq!(key, VoxelSurfaceKey::for_mode(&surface, false));
+                assert_eq!(VoxelSurfaceKey::for_mode(&surface, true), VoxelSurfaceKey {
+                    source_alpha_cutoff: true, coverage_fade: true, depth_prepass_palette: false,
+                });
+            }
+        }
+    }
+
+    fn depth_qa_descriptor(prepass: bool) -> RenderPipelineDescriptor {
+        let mut descriptor = RenderPipelineDescriptor {
+            depth_stencil: Some(DepthStencilState {
+                format: TextureFormat::Depth32Float,
+                depth_write_enabled: Some(true),
+                depth_compare: Some(CompareFunction::GreaterEqual),
+                stencil: StencilState::default(), bias: DepthBiasState::default(),
+            }),
+            ..default()
+        };
+        if prepass {
+            descriptor.vertex.shader_defs.push("PREPASS_PIPELINE".into());
+        }
+        descriptor
+    }
+
+    fn depth_qa_layout(uvs: bool, skin: bool) -> MeshVertexBufferLayoutRef {
+        let mut mesh = Mesh::from(Cuboid::default());
+        if !uvs { mesh.remove_attribute(Mesh::ATTRIBUTE_UV_0); }
+        if skin {
+            mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, vec![[1.0, 0.0, 0.0, 0.0]; mesh.count_vertices()]);
+        }
+        mesh.get_mesh_vertex_buffer_layout(&mut bevy::mesh::MeshVertexBufferLayouts::default())
+    }
+
+    #[test]
+    fn selective_tree_depth_qa_preserves_forward_shadow_and_other_prepass_descriptors() {
+        use bevy::pbr::MeshPipelineKey as Key;
+        let layout = depth_qa_layout(false, false);
+        let palette = VoxelSurfaceKey { source_alpha_cutoff: false,
+            coverage_fade: false, depth_prepass_palette: true };
+        for (prepass, mesh_key, enabled) in [
+            (false, Key::DEPTH_PREPASS, true), // Actual forward view also has this bit.
+            (true, Key::DEPTH_PREPASS | Key::VIEW_PROJECTION_ORTHOGRAPHIC | Key::UNCLIPPED_DEPTH_ORTHO, true),
+            (true, Key::DEPTH_PREPASS | Key::VIEW_PROJECTION_PERSPECTIVE, true), // Point/spot shadows.
+            (true, Key::DEPTH_PREPASS | Key::NORMAL_PREPASS, true),
+            (true, Key::DEPTH_PREPASS | Key::MOTION_VECTOR_PREPASS, true),
+            (true, Key::DEPTH_PREPASS | Key::DEFERRED_PREPASS, true),
+            (true, Key::DEPTH_PREPASS, false), // Existing native opt-in prepass is unaffected.
+            (true, Key::NONE, true),
+            (true, Key::DEPTH_PREPASS, true), // Eligible static palette tree keeps exact depth state.
+        ] {
+            let mut descriptor = depth_qa_descriptor(prepass);
+            let original = descriptor.clone();
+            configure_tree_depth_prepass_pipeline(&mut descriptor, mesh_key, palette, &layout, enabled);
+            assert_eq!(descriptor, original, "forward/shadow/other pass descriptors must remain byte-for-byte equivalent");
+        }
+    }
+
+    #[test]
+    fn selective_tree_depth_qa_never_occludes_forward_cutaway_masked_or_deformed_surfaces() {
+        use bevy::pbr::MeshPipelineKey as Key;
+        let tree = depth_qa_layout(false, false);
+        let tagged = depth_qa_layout(true, false);
+        let skinned = depth_qa_layout(false, true);
+        let palette = VoxelSurfaceKey { source_alpha_cutoff: false,
+            coverage_fade: false, depth_prepass_palette: true };
+        let base = Key::DEPTH_PREPASS;
+        for (surface, key, layout) in [
+            (palette, base, &tagged), // Cave/grass tags and texture coordinates retained.
+            (palette, base, &skinned),
+            (palette, base | Key::MORPH_TARGETS, &tree),
+            (palette, base | Key::MAY_DISCARD, &tree),
+            (palette, base | Key::VISIBILITY_RANGE_DITHER, &tree),
+            (palette, base | Key::BLEND_ALPHA, &tree),
+            (VoxelSurfaceKey { source_alpha_cutoff: true, ..palette }, base, &tree),
+            (VoxelSurfaceKey { coverage_fade: true, ..palette }, base, &tree),
+            (VoxelSurfaceKey { depth_prepass_palette: false, ..palette }, base, &tree),
+        ] {
+            let mut descriptor = depth_qa_descriptor(true);
+            let original = descriptor.clone();
+            configure_tree_depth_prepass_pipeline(&mut descriptor, key, surface, layout, true);
+            let depth = descriptor.depth_stencil.as_ref().unwrap();
+            assert_eq!(depth.depth_write_enabled, Some(false));
+            assert_eq!(depth.depth_compare, Some(CompareFunction::Never));
+            descriptor.depth_stencil = original.depth_stencil.clone();
+            assert_eq!(descriptor, original, "only camera-prepass depth state may change");
+        }
+    }
+
+    #[test]
+    fn tree_depth_constructor_contract_rejects_textures_alpha_and_lit_materials() {
+        let palette = solid_terrain_material();
+        assert!(palette.extension.depth_prepass_palette);
+        for base in [
+            StandardMaterial { unlit: false, ..palette.base.clone() },
+            StandardMaterial { alpha_mode: AlphaMode::Blend, ..palette.base.clone() },
+            StandardMaterial { alpha_mode: AlphaMode::Mask(0.5), ..palette.base.clone() },
+            StandardMaterial { base_color_texture: Some(Handle::default()), ..palette.base.clone() },
+            StandardMaterial { normal_map_texture: Some(Handle::default()), ..palette.base.clone() },
+            StandardMaterial { depth_map: Some(Handle::default()), ..palette.base.clone() },
+        ] {
+            assert!(!voxel_material(base).extension.depth_prepass_palette);
+        }
+    }
+
+    #[test]
+    fn source_palette_period_changes_lighting_without_rebuilding_terrain() {
+        use crystal_render_api::VisualWorldLighting;
+        let mut app = App::new();
+        app.init_resource::<VisualWorldFrame>()
+            .init_resource::<VisualWorldLighting>()
+            .init_resource::<live_profiles::LiveProfiles>()
+            .init_resource::<VoxelViewSettings>()
+            .init_resource::<GlobalAmbientLight>()
+            .add_systems(Update, sync_voxel_atmosphere);
+        let sun = app.world_mut().spawn((DirectionalLight::default(),
+            bevy::light::CascadeShadowConfig::default(), VoxelSun)).id();
+        app.update();
+        let day = app.world().get::<DirectionalLight>(sun).unwrap().illuminance;
+        let ambient = app.world().resource::<GlobalAmbientLight>().brightness;
+        let frame = app.world().resource::<VisualWorldFrame>().clone();
+        *app.world_mut().resource_mut::<VisualWorldLighting>() = VisualWorldLighting::Night;
+        app.update();
+        assert_eq!(app.world().get::<DirectionalLight>(sun).unwrap().illuminance, day * 0.50);
+        assert_eq!(app.world().resource::<GlobalAmbientLight>().brightness, ambient * 0.50);
+        let night = app.world().get::<DirectionalLight>(sun).unwrap().color.to_linear();
+        assert!(night.blue > night.red && night.blue > night.green);
+        assert_eq!(*app.world().resource::<VisualWorldFrame>(), frame);
+        *app.world_mut().resource_mut::<VisualWorldLighting>() = VisualWorldLighting::Morning;
+        app.update();
+        assert_eq!(app.world().get::<DirectionalLight>(sun).unwrap().illuminance, day);
+        let morning = app.world().get::<DirectionalLight>(sun).unwrap().color.to_linear();
+        assert!(morning.red > morning.green && morning.green > morning.blue);
+        *app.world_mut().resource_mut::<VisualWorldLighting>() = VisualWorldLighting::Day;
+        app.update();
+        assert_eq!(app.world().get::<DirectionalLight>(sun).unwrap().illuminance, day);
+        assert_eq!(app.world().resource::<GlobalAmbientLight>().brightness, ambient);
+        assert_eq!(VisualWorldLighting::from_source_palette("indoor"), VisualWorldLighting::Day);
+        assert_eq!(VisualWorldLighting::from_source_palette("darkness"), VisualWorldLighting::Dark);
+        assert_eq!(VisualWorldLighting::from_source_palette("dark"), VisualWorldLighting::Dark);
+    }
+
+    #[test]
     fn atmosphere_animation_updates_do_not_dirty_unchanged_light_or_shadow_settings() {
         #[derive(Resource, Default)]
         struct Changes(usize);
@@ -2482,6 +2949,45 @@ mod renderer_tests {
         assert!(app.world().resource::<Changes>().0 > 0,
             "actual map lighting changes must still reach Bevy");
         assert_eq!(app.world().get::<bevy::light::CascadeShadowConfig>(sun).unwrap().bounds.len(), 1);
+    }
+
+    #[test]
+    fn fixed_forest_palette_does_not_receive_a_second_blue_night_light() {
+        use crystal_render_api::{VisualTile, VisualTileSource, VisualWorldLighting};
+        let mut app = App::new();
+        app.init_resource::<VisualWorldFrame>()
+            .init_resource::<VisualWorldLighting>()
+            .init_resource::<live_profiles::LiveProfiles>()
+            .init_resource::<VoxelViewSettings>()
+            .init_resource::<GlobalAmbientLight>()
+            .add_systems(Update, sync_voxel_atmosphere);
+        app.world_mut().resource_mut::<VoxelViewSettings>().enabled = true;
+        *app.world_mut().resource_mut::<VisualWorldLighting>() = VisualWorldLighting::Night;
+        let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+        frame.active = true;
+        frame.map_id = "IlexForest".into();
+        frame.tiles = vec![VisualTile { column: 0, row: 0, priority: false,
+            animation_frames: None, texture: Default::default(),
+            source: VisualTileSource { tileset_id: "forest".into(), metatile_id: 0x01,
+                tile_index: 0x05, subtile_column: 0, subtile_row: 0 } }];
+        drop(frame);
+        let sun = app.world_mut().spawn((DirectionalLight::default(),
+            bevy::light::CascadeShadowConfig::default(), VoxelSun)).id();
+        let before = app.world().resource::<VisualWorldFrame>().clone();
+        app.update();
+        assert_eq!(app.world().resource::<GlobalAmbientLight>().color.to_linear(), Color::WHITE.to_linear());
+        assert!((app.world().resource::<GlobalAmbientLight>().brightness - 72.).abs() < 0.001);
+        let light = app.world().get::<DirectionalLight>(sun).unwrap();
+        assert_eq!(light.illuminance, 2700.);
+        assert!(light.color.to_linear().red > light.color.to_linear().blue);
+        assert_eq!(*app.world().resource::<VisualWorldFrame>(), before);
+        assert_eq!(*app.world().resource::<VisualWorldLighting>(), VisualWorldLighting::Night);
+        // Ordinary outdoor night still has its actual blue light and energy.
+        app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "Route29".into();
+        app.update();
+        let light = app.world().get::<DirectionalLight>(sun).unwrap();
+        assert_eq!(light.illuminance, 1500.);
+        assert!(light.color.to_linear().blue > light.color.to_linear().red);
     }
 
     #[test]
@@ -2589,11 +3095,18 @@ mod renderer_tests {
         let mut cache = TerrainRevisionCache::default();
         let actor_material = materials.add(solid_terrain_material());
         let mut previous = Vec::new();
-        for (map, tileset, reveal) in [("DarkCaveVioletEntrance", "dark_cave", true),
-            ("UnionCave1F", "cave", true),
-            ("IcePath1F", "ice_path", true), ("HallOfFame", "ice_path", false),
-            ("NewBarkTown", "johto", false), ("Route29", "johto", false), ("Route26", "johto", false),
-            ("GoldenrodCity", "johto", false)] {
+        for (map, tileset, reveal, daylight) in [
+            ("DarkCaveVioletEntrance", "dark_cave", true, false),
+            ("UnionCave1F", "cave", true, false),
+            ("IcePath1F", "ice_path", true, false), ("HallOfFame", "ice_path", false, false),
+            ("NewBarkTown", "johto", false, true), ("Route29", "johto", false, true),
+            ("Route26", "johto", false, true), ("Route36", "johto", false, true),
+            ("Route38", "johto_modern", false, true), ("GoldenrodCity", "johto", false, true),
+            ("BlackthornCity", "johto", false, true), ("CherrygroveCity", "johto", false, true),
+            ("NationalPark", "park", false, true), ("IlexForest", "forest", false, true),
+            ("CeruleanCity", "kanto", false, true), ("OlivinePort", "port", false, true),
+            ("PlayersHouse1F", "house", false, false), ("Route36", "house", false, false),
+            ("Route36", "cave", true, false), ("NewBarkTown", "johto", false, true)] {
             let frame = VisualWorldFrame {
                 map_id: map.into(),
                 tiles: vec![crystal_render_api::VisualTile {
@@ -2607,6 +3120,7 @@ mod renderer_tests {
             let mut queue = bevy::ecs::world::CommandQueue::default();
             let mut commands = Commands::new(&mut queue, &world);
             let terrain = BuiltTerrain {
+                streamed_groves: None,
                 scenery: Vec::new(),
                 scenery_fades: Vec::new(),
                 background: None,
@@ -2637,7 +3151,7 @@ mod renderer_tests {
                 let environment = materials.get(handle).unwrap().extension.cave_reveal;
                 assert_eq!(environment.x > 0.5, reveal);
                 assert_eq!(environment.y > 0.5, tileset == "dark_cave");
-                assert_eq!(environment.z > 0.5, matches!(map, "NewBarkTown" | "Route29" | "Route26"));
+                assert_eq!(environment.z > 0.5, daylight, "surface light in {map}/{tileset}");
             }
             assert_eq!(materials.get(&actor_material).unwrap().extension.cave_reveal, Vec4::ZERO);
             queue.apply(&mut world);
@@ -3200,6 +3714,7 @@ Visibility::Hidden,))).id();
         cache.key = Some(TerrainCacheKey {
             map_id: Default::default(),
             source_map_size_core_tiles: None,
+            jump_ledges: Default::default(),
             grid_origin: IVec2::ZERO,
             revision: 1,
             profiles_revision: 0,
@@ -3230,6 +3745,7 @@ Visibility::Hidden,))).id();
         let key = |revision| TerrainCacheKey {
             map_id: Default::default(),
             source_map_size_core_tiles: None,
+            jump_ledges: Default::default(),
             grid_origin: IVec2::ZERO,
             revision,
             profiles_revision: 0,
@@ -3304,7 +3820,9 @@ Visibility::Hidden,))).id();
             ..default()
         };
         let mut app = App::new();
-        app.insert_resource(frame).insert_resource(materials)
+        app.init_resource::<Assets<Image>>()
+            .init_resource::<crystal_render_api::VisualWorldLighting>()
+            .insert_resource(frame).insert_resource(materials)
             .insert_resource(VoxelViewStatus { active: true, ..default() })
             .insert_resource(TerrainRevisionCache { solid_material: Some(solid.clone()),
                 footing_heights: vec![6.0; 16], ..default() })
@@ -3323,6 +3841,36 @@ Visibility::Hidden,))).id();
             assert_eq!(assets.get(&actor).unwrap().extension.cutaway, actor_original);
             assert_eq!(app.world().resource::<TerrainRevisionCache>().footing_heights, vec![height; 16]);
         }
+        // The same live palette transition used by Flash hides terrain and
+        // disables doorway fill without changing actor geometry or support.
+        app.world_mut().resource_mut::<VisualWorldFrame>().tiles = (0..4).map(|i|
+            crystal_render_api::VisualTile {
+                column: i % 2, row: i / 2, texture: Handle::default(),
+                animation_frames: None, priority: false,
+                source: crystal_render_api::VisualTileSource {
+                    tileset_id: "cave".into(), metatile_id: 0x24,
+                    subtile_column: 2 + (i % 2) as u8,
+                    subtile_row: 2 + (i / 2) as u8, tile_index: 0x01,
+                },
+            }).collect();
+        app.update();
+        assert!(app.world().resource::<Assets<VoxelMaterial>>().get(&solid).unwrap()
+            .extension.cave_exits[0].w > 0.0);
+        *app.world_mut().resource_mut::<crystal_render_api::VisualWorldLighting>() =
+            crystal_render_api::VisualWorldLighting::Dark;
+        app.update();
+        let assets = app.world().resource::<Assets<VoxelMaterial>>();
+        assert_eq!(assets.get(&solid).unwrap().extension.cave_reveal.y, 1.0);
+        assert_eq!(assets.get(&solid).unwrap().extension.cave_exits, [Vec4::ZERO; 4]);
+        assert_eq!(assets.get(&actor).unwrap().extension.cave_reveal.x, 0.0);
+        assert_eq!(assets.get(&actor).unwrap().extension.cutaway, actor_original);
+        *app.world_mut().resource_mut::<crystal_render_api::VisualWorldLighting>() =
+            crystal_render_api::VisualWorldLighting::Night;
+        app.update();
+        assert_eq!(app.world().resource::<Assets<VoxelMaterial>>().get(&solid).unwrap()
+            .extension.cave_reveal.y, 0.0);
+        assert!(app.world().resource::<Assets<VoxelMaterial>>().get(&solid).unwrap()
+            .extension.cave_exits[0].w > 0.0);
         app.world_mut().resource_mut::<VoxelViewStatus>().active = false;
         app.update();
         assert_eq!(app.world().resource::<Assets<VoxelMaterial>>().get(&fade).unwrap()
@@ -3519,7 +4067,9 @@ fn native_model_camera(
     if keyboard.just_pressed(KeyCode::PageDown) {
         camera.zoom_step -= 1.0;
     }
-    let camera = VoxelCameraControls::new(camera.zoom_step, camera.rotation_step);
+    let bounded = VoxelCameraControls::new(camera.zoom_step, camera.rotation_step);
+    camera.zoom_step = bounded.zoom_step;
+    camera.rotation_step = bounded.rotation_step;
     if settings.camera != camera {
         settings.camera = camera;
     }

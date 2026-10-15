@@ -176,6 +176,16 @@ fn capture_presented_battle(
         } else {
             source_frame
         };
+        let send_out = shell.visible_send_out_animation.as_ref().filter(|animation| {
+            (animation.side == crate::core::battle::turn::BattleSide::Player) == is_player
+        });
+        let reveal_tiles = send_out.and_then(VisibleSendOutAnimation::battler_clip_tiles);
+        let source_frame = if let Some(tiles) = reveal_tiles {
+            battle_pic_resize_frame(art, images, &source_frame,
+                if is_player { PokemonSpriteSide::Back } else { PokemonSpriteSide::Front }, tiles)?
+        } else {
+            source_frame
+        };
         let size = if minimize || substitute {
             Vec2::splat(16.0)
         } else {
@@ -243,6 +253,7 @@ fn capture_presented_battle(
                 || visible_move_controls_battler_visibility(animation, is_player))
             && !send_out_pending
             && !exiting
+            && send_out.is_none_or(|animation| animation.battler_scale() > 0.0)
             && (is_player
                 || !shell
                     .visible_capture_animation
@@ -257,6 +268,7 @@ fn capture_presented_battle(
         frame.battlers[side.index()] = Some(VisualBattleBattler {
             side,
             species_id: Arc::from(species),
+            unown_form: species.eq_ignore_ascii_case("UNOWN").then(|| dvs.unown_letter()),
             pokedex_size_m,
             party_index: if is_player {
                 battle.active_player_party_index
@@ -268,7 +280,8 @@ fn capture_presented_battle(
             source_rect,
             source_opaque_rect,
             visible,
-            allow_species_model: !substitute && !minimize && pokedex_size_m.is_some(),
+            allow_species_model: !substitute && !minimize && reveal_tiles.is_none()
+                && pokedex_size_m.is_some(),
             shiny,
             model_palette: if shiny && !substitute && !minimize {
                 let asset_id = pokemon_asset_id_for_dvs(species, dvs);
@@ -302,7 +315,7 @@ fn capture_presented_battle(
         } else {
             None
         };
-        if immersive_row_prototype_enabled()
+        if immersive_modeled_rows_enabled(animation, immersive_row_prototype_enabled())
             && immersive_row_prototype_supported(animation, &frame.battlers)
             && art.battle_object_runtime.as_ref().is_some_and(|playback| {
                 immersive_row_prototype_oam_supported(&playback.battler_rows)
@@ -368,6 +381,16 @@ fn capture_presented_battle(
         )?);
     }
     if let Some(send_out) = shell.visible_send_out_animation.as_ref() {
+        if !send_out.shiny || send_out.frame < VisibleSendOutAnimation::NORMAL_FRAMES {
+            frame.source = Some(capture_immersive_send_out_frame(
+                send_out, &frame.battlers, art, &shell.asset_root, images,
+            )?);
+        } else {
+            frame.source = Some(capture_immersive_source_frame(
+                snapshot, &visible_send_out_shiny_source_animation(send_out),
+                &frame.battlers, art, &shell.asset_root, images,
+            )?);
+        }
         frame.cues.push(VisualBattleCue {
             kind: VisualBattleCueKind::SendOut,
             side: if send_out.side == crate::core::battle::turn::BattleSide::Player {
@@ -444,6 +467,48 @@ fn capture_presented_battle(
     debug_assert!(frame.validate().is_ok());
     commands.insert_resource(frame);
     Ok(())
+}
+
+/// The same four smoke frames and two picture-bank reveals as the classic
+/// renderer, projected over the retained arena. No second animation clock.
+fn capture_immersive_send_out_frame(
+    animation: &VisibleSendOutAnimation,
+    battlers: &[Option<VisualBattleBattler>; 2],
+    art: &mut RenderedTilesetArt,
+    root: &AssetRoot,
+    images: &mut Assets<Image>,
+) -> Result<VisualBattleSourceFrame> {
+    let mut source = VisualBattleSourceFrame {
+        frame: u16::from(animation.frame),
+        bgp: 0xe4,
+        battler_bgps: [0xe4; 2],
+        battler_palettes: [[[1.0; 4]; 4]; 2],
+        battler_textures: std::array::from_fn(|index| battlers[index].as_ref()
+            .map_or_else(Handle::default, |battler| battler.texture.clone())),
+        battler_offsets: [Vec2::ZERO; 2],
+        screen_offset: Vec2::ZERO,
+        line_x_offsets: None,
+        line_y_offsets: None,
+        objects: Vec::new(),
+        battler_rows: [None; 2],
+    };
+    let index = usize::from(animation.frame / 3);
+    if index < 4 {
+        let smoke = battle_send_out_poof_frames(art, root, images)?[index].clone();
+        let player = animation.side == crate::core::battle::turn::BattleSide::Player;
+        let side = if player { VisualBattleSide::Player } else { VisualBattleSide::Enemy };
+        source.objects.push(VisualBattleSourceObject {
+            slot: 0,
+            object_id: Arc::from("SEND_OUT_POOF"),
+            texture: smoke.handle.clone(),
+            neutral_texture: smoke.handle,
+            center: if player { Vec2::new(32.0, 84.0) } else { Vec2::new(112.0, 20.0) },
+            size: smoke.size,
+            uv_rect: Rect::new(0.0, 0.0, 1.0, 1.0),
+            placement: Some(crystal_render_api::VisualBattleSourcePlacement::BattlerLocal { side }),
+        });
+    }
+    Ok(source)
 }
 
 /// Adapt only the interpreter's current presented frame. The source object
@@ -524,7 +589,7 @@ fn capture_immersive_source_frame_with_capture(
         line_x_offsets: visible_battle_line_x_offsets(Some(animation)),
         line_y_offsets: visible_battle_line_y_offsets(Some(animation)),
         objects: Vec::with_capacity(10),
-        battler_rows: if immersive_row_prototype_enabled()
+        battler_rows: if immersive_modeled_rows_enabled(animation, immersive_row_prototype_enabled())
             && immersive_row_prototype_supported(animation, battlers)
         {
             immersive_row_prototype_rows(animation, &live_battler_rows, oam_layer)
@@ -752,12 +817,16 @@ fn sync_immersive_battle_layers(
     // eraser would resurrect the erased HUD. Apply the same source-space
     // mask to the underlying HUD entities before parking the eraser itself.
     let mut cleared = shell.battle_fainted_hud;
-    if let Some(animation) = shell.visible_move_animations.front().filter(|animation| {
+    if shell.visible_move_animations.front().is_some_and(|animation| {
         animation.started
             && shell.visible_move_audio_wait.is_none()
             && shell.runtime.data().moves.contains_key(&animation.move_id)
     }) {
-        cleared[usize::from(!animation.player_move)] = true;
+        // Let the complete presented move breathe. The classic animation
+        // clears HUD glyphs transiently; retaining a backing creates blank
+        // cards over the scene. Values and source transforms remain owned
+        // by the controller and return with the normal post-move redraw.
+        cleared = [true; 2];
     }
     for (entity, transform, source, layers) in &hud {
         let source_transform = source.map_or(*transform, |source| source.0);
@@ -946,7 +1015,21 @@ fn prepare_immersive_battle_preview(
     poke_ball_failure: bool,
     starter: Option<&str>,
     shiny: bool,
+    unown_form: Option<u8>,
 ) -> Result<BevyRuntimeShell> {
+    anyhow::ensure!(unown_form.is_none() || starter == Some("UNOWN"), "--unown-form requires --species UNOWN");
+    let model_dvs = if let Some(form) = unown_form {
+        anyhow::ensure!((1..=26).contains(&form), "Unown form must be A..Z");
+        if shiny {
+            anyhow::ensure!(matches!(form, 9 | 22), "Crystal shiny Unown DVs select I or V");
+            Dv::from_non_hp(if form == 9 {2} else {14}, 10, 10, 10)
+        } else {
+            let packed = (form - 1) * 10;
+            Dv::from_non_hp(((packed >> 6) & 3) << 1, ((packed >> 4) & 3) << 1,
+                ((packed >> 2) & 3) << 1, (packed & 3) << 1)
+        }
+    } else if shiny { Dv::from_non_hp(2, 10, 10, 10) } else { Dv::from_non_hp(9, 9, 9, 9) };
+
     anyhow::ensure!(
         starter.is_none()
             || (starter.is_some_and(crystal_voxel_view::has_authored_battle_species)
@@ -1019,7 +1102,7 @@ fn prepare_immersive_battle_preview(
             None,
             &trainer.player_name,
             trainer.player_id,
-            if shiny { Dv::from_non_hp(2, 10, 10, 10) } else { Dv::from_non_hp(9, 9, 9, 9) },
+            model_dvs,
         )?;
         if evolved_grass {
             // A legal retained learnset represents declining Body Slam at 31
@@ -1035,7 +1118,7 @@ fn prepare_immersive_battle_preview(
             };
             shell.shell.add_party_pokemon(
                 "MEGANIUM", 32, None, None, &trainer.player_name,
-                trainer.player_id, if shiny { Dv::from_non_hp(2, 10, 10, 10) } else { Dv::from_non_hp(9, 9, 9, 9) },
+                trainer.player_id, model_dvs,
             )?;
             let state = shell.shell.session_mut().state_mut();
             state.storage.party.pokemon[0].as_mut()
@@ -1254,6 +1337,23 @@ fn prepare_immersive_battle_preview(
     anyhow::bail!("production battle introduction did not reach a command menu in preview fixture")
 }
 
+#[cfg(feature = "location-tester")]
+fn field_model_review_party(shell: &BevyRuntimeShell) -> Result<(String, Dv)> {
+    // Model review may choose the disposable party lead while the actual
+    // checked bottle use, authored script and encounter remain unchanged.
+    let species = std::env::var("CRYSTAL_RENDER_TEST_PARTY_SPECIES")
+        .unwrap_or_else(|_| "CYNDAQUIL".into()).to_ascii_uppercase();
+    anyhow::ensure!(crystal_voxel_view::has_authored_battle_species(&species)
+        && shell.shell.runtime().data().pokemon.contains_key(&species),
+        "CRYSTAL_RENDER_TEST_PARTY_SPECIES requires a packed, authored species");
+    let shiny = match std::env::var("CRYSTAL_RENDER_TEST_PARTY_SHINY").as_deref() {
+        Err(std::env::VarError::NotPresent) | Ok("0") => false,
+        Ok("1") => true,
+        _ => anyhow::bail!("CRYSTAL_RENDER_TEST_PARTY_SHINY must be 0 or 1"),
+    };
+    Ok((species, if shiny { Dv::from_non_hp(2, 10, 10, 10) } else { Dv::from_non_hp(9, 9, 9, 9) }))
+}
+
 /// Disposable source-location setup. All watering, narration and battle entry
 /// remain ordinary controller actions; this helper never starts a battle.
 #[cfg(feature = "location-tester")]
@@ -1271,16 +1371,15 @@ fn prepare_route36_encounter_preview(mut shell: BevyRuntimeShell) -> Result<Bevy
             && initial.battle.is_none(),
         "encounter preview requires a fresh empty-party Route36 path session"
     );
-    // DVs 10/10/10/10 are shiny and correctly use the source-art fallback.
-    // Use the same ordinary appearance as the other modeled native fixtures.
+    let (species, dvs) = field_model_review_party(&shell)?;
     shell.shell.add_party_pokemon(
-        "CYNDAQUIL",
+        &species,
         20,
         None,
         None,
         &initial.trainer.player_name,
         initial.trainer.player_id,
-        Dv::from_non_hp(9, 9, 9, 9),
+        dvs,
     )?;
     shell.shell.add_bag_item("SQUIRTBOTTLE", 1)?;
     shell.shell.register_key_item("SQUIRTBOTTLE")?;
@@ -1319,8 +1418,12 @@ fn prepare_fishing_encounter_preview(mut shell: BevyRuntimeShell) -> Result<Bevy
     );
     let runtime = shell.shell.runtime().clone();
     let data = runtime.data();
-    let map = data.overworld_map("Route32").context("compiled fishing map")?;
-    let tileset = data.tileset_collision(data.map_tileset_name("Route32")?)
+    // Review the actual shoreline of a chosen city without replacing its art
+    // or forcing an encounter. The ordinary fixture still defaults to Route32.
+    let review_map = std::env::var("CRYSTAL_RENDER_TEST_FISHING_MAP").ok();
+    let map_name = review_map.as_deref().unwrap_or("Route32");
+    let map = data.overworld_map(map_name).context("compiled fishing map")?;
+    let tileset = data.tileset_collision(data.map_tileset_name(map_name)?)
         .context("compiled shoreline collision")?;
     let (width, height) = map.tile_bounds();
     let mut shoreline = None;
@@ -1329,7 +1432,7 @@ fn prepare_fishing_encounter_preview(mut shell: BevyRuntimeShell) -> Result<Bevy
             let shore = TilePosition::new(x as i16, y as i16);
             if !sample_collision(&map, &tileset, shore).is_some_and(|sample| {
                 sample.permission == crate::core::world::collision::permissions::FLOOR
-            }) || data.maps["Route32"].objects.iter().any(|object| {
+            }) || data.maps[map_name].objects.iter().any(|object| {
                 object_tile_position_checked(object) == Some(shore)
             }) {
                 continue;
@@ -1347,7 +1450,7 @@ fn prepare_fishing_encounter_preview(mut shell: BevyRuntimeShell) -> Result<Bevy
             }
         }
     }
-    let (shore, facing) = shoreline.context("Route32 has no unoccupied land/water edge")?;
+    let (shore, facing) = shoreline.with_context(|| format!("{map_name} has no unoccupied land/water edge"))?;
     shell.shell.add_party_pokemon(
         "CYNDAQUIL", 20, None, None, &initial.trainer.player_name,
         initial.trainer.player_id, Dv::from_non_hp(9, 9, 9, 9),
@@ -1355,7 +1458,7 @@ fn prepare_fishing_encounter_preview(mut shell: BevyRuntimeShell) -> Result<Bevy
     {
         let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
         data.transition_overworld_session(
-            state, overworld, "Route32", shore,
+            state, overworld, map_name, shore,
             crate::core::systems::map_context::SpawnMemoryUpdate::Preserve,
             &runtime.music_ids(),
         )?;
@@ -1384,8 +1487,20 @@ enum WalkingEncounterPreviewMap {
 /// ordinary movement input must pass the real step and encounter rules.
 #[cfg(feature = "location-tester")]
 fn prepare_walking_encounter_preview(
+    shell: BevyRuntimeShell,
+    preview: WalkingEncounterPreviewMap,
+) -> Result<BevyRuntimeShell> {
+    let review_map = if matches!(preview, WalkingEncounterPreviewMap::Route29Grass) {
+        std::env::var("CRYSTAL_RENDER_TEST_WALKING_MAP").ok()
+    } else { None };
+    prepare_walking_encounter_preview_at_map(shell, preview, review_map.as_deref())
+}
+
+#[cfg(feature = "location-tester")]
+fn prepare_walking_encounter_preview_at_map(
     mut shell: BevyRuntimeShell,
     preview: WalkingEncounterPreviewMap,
+    review_map: Option<&str>,
 ) -> Result<BevyRuntimeShell> {
     use crate::core::world::collision::{is_grass_encounter_permission, sample_collision};
     anyhow::ensure!(
@@ -1401,13 +1516,26 @@ fn prepare_walking_encounter_preview(
     let runtime = shell.shell.runtime().clone();
     let data = runtime.data();
     let map_name = match preview {
-        WalkingEncounterPreviewMap::Route29Grass => "Route29",
+        WalkingEncounterPreviewMap::Route29Grass => review_map.unwrap_or("Route29"),
         WalkingEncounterPreviewMap::UnionCaveFloor => "UnionCave1F",
         WalkingEncounterPreviewMap::IcePathFloor => "IcePath1F",
     };
+    let approach = if matches!(preview, WalkingEncounterPreviewMap::UnionCaveFloor) {
+        match std::env::var("CRYSTAL_RENDER_TEST_CAVE_APPROACH").as_deref() {
+            Err(std::env::VarError::NotPresent) | Ok("right") => Direction::Right,
+            Ok("left") => Direction::Left,
+            _ => anyhow::bail!("CRYSTAL_RENDER_TEST_CAVE_APPROACH must be left or right"),
+        }
+    } else { Direction::Right };
     let map = data
         .overworld_map(map_name)
         .context("compiled walking encounter map")?;
+    // Use the production metadata rule for land encounters. Forest maps such
+    // as Ilex use ordinary floor with CAVE metadata, rather than grass tiles.
+    // This selects only the disposable starting step; gameplay rolls the battle.
+    let encounter_environment = &data.runtime_map_metadata_for_name(map_name)?.environment;
+    let floor_encounters = encounter_environment.eq_ignore_ascii_case("cave")
+        || encounter_environment.eq_ignore_ascii_case("dungeon");
     let tileset = data.tileset_collision(data.map_tileset_name(map_name)?)?;
     let (width, height) = map
         .checked_tile_bounds()
@@ -1506,8 +1634,11 @@ fn prepare_walking_encounter_preview(
                 );
             }
         }
-        let from = TilePosition::new(8, 26);
-        let to = TilePosition::new(9, 26);
+        let (from, to) = if approach == Direction::Left {
+            (TilePosition::new(11, 26), TilePosition::new(10, 26))
+        } else {
+            (TilePosition::new(8, 26), TilePosition::new(9, 26))
+        };
         anyhow::ensure!(
             !data.maps[map_name].objects.iter().any(|object| {
                 object.object_type == "OBJECTTYPE_TRAINER"
@@ -1535,7 +1666,9 @@ fn prepare_walking_encounter_preview(
                 if !plain(from)
                     || !plain(to)
                     || !sample_collision(&map, &tileset, to)
-                        .is_some_and(|sample| is_grass_encounter_permission(sample.permission))
+                        .is_some_and(|sample| is_grass_encounter_permission(sample.permission)
+                            || (floor_encounters
+                                && sample.permission == crate::core::world::collision::permissions::FLOOR))
                 {
                     continue;
                 }
@@ -1583,14 +1716,15 @@ fn prepare_walking_encounter_preview(
             })?
             .1
     };
+    let (species, dvs) = field_model_review_party(&shell)?;
     shell.shell.add_party_pokemon(
-        "CYNDAQUIL",
+        &species,
         20,
         None,
         None,
         &initial.trainer.player_name,
         initial.trainer.player_id,
-        Dv::from_non_hp(9, 9, 9, 9),
+        dvs,
     )?;
     {
         let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
@@ -1602,7 +1736,7 @@ fn prepare_walking_encounter_preview(
             crate::core::systems::map_context::SpawnMemoryUpdate::Preserve,
             &runtime.music_ids(),
         )?;
-        overworld.set_player_facing(Direction::Right);
+        overworld.set_player_facing(approach);
         state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
     }
     reset_visible_navigation_state(&mut shell);
@@ -1613,17 +1747,15 @@ fn prepare_walking_encounter_preview(
         ready.battle.is_none()
             && ready.overworld.map_name == map_name
             && ready.overworld.tile == from
-            && ready.overworld.facing == Direction::Right
+            && ready.overworld.facing == approach
             && ready.overworld.mode == MovementMode::Normal,
         "walking fixture must await an ordinary step at its checked source tile"
     );
-    if matches!(preview, WalkingEncounterPreviewMap::UnionCaveFloor | WalkingEncounterPreviewMap::IcePathFloor) {
-        anyhow::ensure!(
-            shell.shell.current_encounter_surface_checked()?
-                == Some(crate::core::world::encounters::EncounterSurface::Grass),
-            "cave fixture requires verified source land-encounter classification"
-        );
-    }
+    anyhow::ensure!(
+        shell.shell.current_encounter_surface_checked()?
+            == Some(crate::core::world::encounters::EncounterSurface::Grass),
+        "walking fixture requires verified source land-encounter classification"
+    );
     mark_runtime_snapshot_dirty(&mut shell);
     Ok(shell)
 }
@@ -1686,8 +1818,7 @@ fn immersive_battle_requires_source_scene_supported(
     let clips = visible_move_battler_clip_tiles(animation);
     let remove = visible_remove_mon_clips(animation);
     let rows = visible_move_battler_row_extractions(animation);
-    shell.visible_send_out_animation.is_some()
-        || (!allow_capture && shell.visible_capture_animation.is_some())
+    (!allow_capture && shell.visible_capture_animation.is_some())
         || shell.visible_trainer_exit_animation.is_some()
         || visible_beta_send_out_mon1_line_bgps(animation).is_some()
         || clips.0.is_some()
@@ -1886,11 +2017,26 @@ Visibility::Hidden,),
     #[cfg(not(feature = "fullscreen-scaling"))]
     let pixels_per_unit = (physical / Vec2::new(640.0, 576.0)).min_element();
     let view = physical / pixels_per_unit;
-    let preferred = ((view.x - 48.0) / 720.0).min(1.0);
+    // Leave the battle itself room between the native panels. Filling the
+    // entire width with enlarged source glyphs squeezed small Pokémon into
+    // a narrow strip, especially on the 4:3 native viewport.
+    // The web canvas can retain a 1x Winit scale override while its backing
+    // store is Retina-sized. Use the real CSS ratio for this font cap; the
+    // compositor's world-unit projection still uses its own window scale.
+    #[cfg(target_arch = "wasm32")]
+    let display_dpi = web_sys::window().map(|browser| browser.device_pixel_ratio() as f32)
+        .filter(|dpi| dpi.is_finite() && *dpi > 0.0).unwrap_or(window.scale_factor());
+    #[cfg(not(target_arch = "wasm32"))]
+    let display_dpi = window.scale_factor();
+    #[cfg(not(target_arch = "wasm32"))]
+    let preferred = ((view.x - 48.0) / 720.0).min(0.62);
+    #[cfg(target_arch = "wasm32")]
+    let preferred = ((view.x - 48.0) / 720.0)
+        .min(3.0 * display_dpi / (4.0 * pixels_per_unit));
     // Keep source glyphs at about 24 CSS pixels even when the host was
     // compiled without fullscreen-scaling and its LCD camera magnifies units.
     let source_pixels = (4.0 * pixels_per_unit * preferred)
-        .min(3.0 * window.scale_factor())
+        .min(3.0 * display_dpi)
         .floor()
         .max(1.0);
     let scale = (source_pixels / (4.0 * pixels_per_unit)).min(preferred);
@@ -1918,6 +2064,9 @@ Visibility::Hidden,),
         ui_bounds.reserve(physical, top, bottom);
     }
     let panel_center = |side: usize, rect: Rect| {
+        // Keep each production HP/name panel above its own Pokémon when the
+        // map's clear establishing view is on the opposite camera side.
+        let side = side ^ usize::from(status.player_on_right);
         let size = rect.size() * scale;
         Vec2::new(
             if side == 0 {
@@ -1989,12 +2138,16 @@ Visibility::Hidden,),
         }
     }
     let mut cleared = shell.battle_fainted_hud;
-    if let Some(animation) = shell.visible_move_animations.front().filter(|animation| {
+    if shell.visible_move_animations.front().is_some_and(|animation| {
         animation.started
             && shell.visible_move_audio_wait.is_none()
             && shell.runtime.data().moves.contains_key(&animation.move_id)
     }) {
-        cleared[usize::from(!animation.player_move)] = true;
+        // Let the complete presented move breathe. The classic animation
+        // clears HUD glyphs transiently; retaining a backing creates blank
+        // cards over the scene. Values and source transforms remain owned
+        // by the controller and return with the normal post-move redraw.
+        cleared = [true; 2];
     }
     for (panel, mut sprite, mut transform, mut visibility) in &mut panels {
         let Some(rect) = bounds[panel.side] else {

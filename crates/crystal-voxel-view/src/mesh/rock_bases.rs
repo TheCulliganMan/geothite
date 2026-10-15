@@ -207,6 +207,50 @@ mod tests {
         }
     }
 
+    #[test]
+    fn production_rock_finish_preserves_contacts_across_route_mineral_phases() {
+        // Different routes sample different mineral beds even when they share
+        // the same source drawing. Four favourable offsets cannot establish
+        // that the combined rim/base deformation stays closed and outward.
+        // Exercise negative coordinates too: connected-map views can cross
+        // the local origin while retaining the same authored rock placement.
+        for z in -3..=3 {
+            for x in -3..=3 {
+                check_production_rock_finish([x * 17, z * 19]);
+            }
+        }
+    }
+
+    #[test]
+    fn indexed_rock_fields_match_the_full_scan_with_distant_source_masses() {
+        let (original, mut g, mesh) = fixture();
+        let width = 16;
+        let flat = super::super::tests::source_with_tile(0, 0, 0, 5);
+        let mut sources = vec![flat; width * g.height];
+        for z in 0..g.height {
+            for x in 0..g.width {
+                sources[z * width + x] = original.tiles[z * g.width + x].source.clone();
+                if (1..5).contains(&x) {
+                    sources[z * width + x + 9] = original.tiles[z * g.width + x].source.clone();
+                }
+            }
+        }
+        g.width = width;
+        let frame = super::super::tests::frame(width as u32, g.height as u32, sources);
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
+        for origin in [[0,0], [-31,-7], [17,43]] {
+            let mut indexed = mesh.clone();
+            indexed.footing_heights = shapes.iter().map(|s| s.surface_height(g.tile_height)).collect();
+            indexed.authored_cells = vec![None; cells.len()];
+            let mut reference = indexed.clone();
+            outdoor_stone::sculpt_rock_rims(&mut indexed, &cells, &shapes, &g, origin);
+            outdoor_stone::sculpt_rock_rims_reference(&mut reference, &cells, &shapes, &g, origin);
+            assert_eq!(indexed, reference,
+                "discarding distant zero-influence edges must preserve every output at {origin:?}");
+        }
+    }
+
     fn check_production_rock_finish(origin: [i32; 2]) {
         let (frame, g, mut mesh) = fixture();
         // Match production's six subdivisions per source tile on both caps
@@ -260,6 +304,10 @@ mod tests {
         let source_positions = mesh.solid.positions.clone();
         let mut classified = mesh.clone();
         outdoor_stone::sculpt_rock_rims(&mut classified, &cells, &shapes, &g, origin);
+        let mut reference = mesh.clone();
+        outdoor_stone::sculpt_rock_rims_reference(&mut reference, &cells, &shapes, &g, origin);
+        assert_eq!(classified.solid, reference.solid,
+            "local edge candidates must preserve the full mineral field exactly at {origin:?}");
         let sculpted_positions = classified.solid.positions.clone();
         round_geometry(&mut classified, "Route26", &cells, &shapes, &g, origin);
         outdoor_stone::finish_rock_geometry(&mut mesh, "Route26", &cells, &shapes, &g, origin);
@@ -288,15 +336,24 @@ mod tests {
         assert!(mesh.solid.positions[corner][0] > 9.5);
         assert_eq!(mesh.footing_heights, footing);
         assert_eq!(mesh.authored_cells, claims);
-        for start in [first, first + 3] {
+        let faces = [first, first + 3].map(|start| {
             let p = [start, start + 1, start + 2]
                 .map(|i| Vec3::from_array(mesh.solid.positions[i]));
-            let face = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
-            assert!(Vec3::from_array(mesh.solid.normals[start]).dot(face) > 0.99999,
-                "the production base pass must not erase the cap's fracture plane");
+            (p[1] - p[0]).cross(p[2] - p[0]).normalize()
+        });
+        // World-phase erosion changes the injected planes' final angle too.
+        // Preserve fractures beyond the real crease threshold; shallow joins
+        // should instead share a normal, rather than keep an arbitrary 50°
+        // source-space separation after the geometry has actually changed.
+        if faces[0].dot(faces[1]) < 25_f32.to_radians().cos() {
+            for (start, face) in [first, first + 3].into_iter().zip(faces) {
+                assert!(Vec3::from_array(mesh.solid.normals[start]).dot(face) > 0.99999,
+                    "the production base pass must not erase the cap's fracture plane at {origin:?}");
+            }
+        } else {
+            assert_eq!(mesh.solid.normals[first], mesh.solid.normals[first + 3],
+                "shallow deformed planes must share their production normal at {origin:?}");
         }
-        assert!(Vec3::from_array(mesh.solid.normals[first])
-            .dot(Vec3::from_array(mesh.solid.normals[first + 3])) < 0.8);
         let mut caps = 0;
         let mut walls = 0;
         let mut reversed_wall_projections = 0;

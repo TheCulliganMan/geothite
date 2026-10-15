@@ -32,6 +32,28 @@ class BayleefTests(unittest.TestCase):
     def setUpClass(cls):
         cls.blob=ASSET.read_bytes();cls.m=Model(cls.blob)
 
+    def test_stored_attack_keys_match_author_recipe(self):
+        m=self.m
+        animation=next(a for a in m.doc['animations'] if a['name'].endswith('.attack'))
+        for channel in animation['channels']:
+            joint=channel['target']['node']
+            index=animation['samplers'][channel['sampler']]['output']
+            count=m.doc['accessors'][index]['count']
+            keys=[v for i in range(count)
+                  for v in author.quaternion_xyz(*author.pose_angles('attack',i/(count-1))[joint])]
+            self.assertEqual(raw_accessor(m.doc,m.binary,index),author.packed(keys,5126),joint)
+
+    def test_attack_braces_at_source_onset_with_follow_through(self):
+        m=self.m
+        for joint in (1, 2, 3, 4):
+            samples=[m.rotations('attack',i/100)[joint][0] for i in range(101)]
+            for step in range(1,26):
+                self.assertGreater(samples[step],0.,(joint,step))
+            peak=max(samples)
+            self.assertGreater(samples[10],peak*.40,joint)
+            self.assertGreater(samples[20],peak*.90,joint)
+            self.assertLess(samples[80],peak*.25,joint)
+
     def test_deterministic_canonical_container_and_rejection(self):
         m=self.m;d=m.doc
         self.assertEqual(author.export_bayleef(),self.blob)
@@ -218,7 +240,7 @@ class BayleefTests(unittest.TestCase):
             report[clip]=[[round(v,6) for v in lo],[round(v,6) for v in hi]]
         face=m.names.index('Eye / left fitted upright ink');leaf=m.names.index(sculpture.LEAF)
         for p,minimum in ((face,.06),(leaf,.09)):
-            movement=max(math.dist(v,pv) for v,pv in zip(m.vertices[p],m.posed(p,m.matrices('attack',.49))))
+            movement=max(math.dist(v,pv) for v,pv in zip(m.vertices[p],m.posed(p,m.matrices('attack',.25))))
             self.assertGreater(movement,minimum)
         print('Bayleef decoded animated bounds:',report)
 

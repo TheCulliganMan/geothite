@@ -76,8 +76,9 @@ fn spawn_object_label(
     object: &crate::core::map::ObjectEvent,
     x: f32,
     y: f32,
+    model_source_id: &str,
 ) {
-    let label = compact_scene_label(&object_scene_label(object), 18);
+    let label = compact_scene_label(&resolved_object_scene_label(object, model_source_id), 18);
     commands.spawn((
         (Text2d::new(
                 label),
@@ -86,6 +87,19 @@ TextColor(Color::srgb(0.98, 0.98, 0.86)),
 Transform::from_xyz(x - TILE_SIZE * 0.62, y + TILE_SIZE * 0.78, 2.6),),
         ObjectMarker,
     ));
+}
+
+/// Labels share the renderer's resolved species identity, including shared NPC art.
+fn resolved_object_scene_label(
+    object: &crate::core::map::ObjectEvent,
+    model_source_id: &str,
+) -> String {
+    resolved_object_species_label(model_source_id).unwrap_or_else(|| object_scene_label(object))
+}
+
+fn resolved_object_species_label(model_source_id: &str) -> Option<String> {
+    let (species, _) = model_source_id.strip_prefix("species:")?.split_once(':')?;
+    Some(crate::core::models::pokemon_species_display_name(species))
 }
 
 fn object_scene_label(object: &crate::core::map::ObjectEvent) -> String {

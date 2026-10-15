@@ -7,6 +7,11 @@ cd "$(dirname "$0")/.."
 PACK="${CRYSTAL_PACK:-content-packs/core-modular.browser.crystalpack}"
 OUT="${CRYSTAL_WEB_OUT:-target/new-bark-3d-web}"
 TARGET="${CARGO_TARGET_DIR:-target}"
+PROFILE="${CRYSTAL_WEB_PROFILE:-wasm-dev}"
+case "$PROFILE" in
+    wasm-dev|web-release) ;;
+    *) echo 'CRYSTAL_WEB_PROFILE must be wasm-dev or web-release.' >&2; exit 1 ;;
+esac
 [ -f "$PACK" ] || { echo "Missing compatible content pack: $PACK" >&2; exit 1; }
 BINDGEN="${WASM_BINDGEN:-wasm-bindgen}"
 command -v "$BINDGEN" >/dev/null 2>&1 || { echo 'Install official wasm-bindgen-cli 0.2.128.' >&2; exit 1; }
@@ -14,21 +19,34 @@ command -v "$BINDGEN" >/dev/null 2>&1 || { echo 'Install official wasm-bindgen-c
     echo 'This Cargo.lock requires wasm-bindgen-cli 0.2.128; set WASM_BINDGEN to its executable.' >&2
     exit 1
 }
-export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-2}"
+export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-1}"
 FEATURES=fullscreen-scaling,voxel-view,location-tester
+if [ "${CRYSTAL_ALLOCATIONS:-0}" = 1 ]; then
+    FEATURES=$FEATURES,allocation-tester
+fi
 if [ "${CRYSTAL_SCENERY_FULL_DETAIL:-0}" = 1 ]; then
     FEATURES=$FEATURES,crystal-voxel-view/scenery-full-detail
 fi
-cargo build --locked --profile wasm-dev -p crystal-bevy --bin crystal-bevy \
+cargo build --locked --profile "$PROFILE" -p crystal-bevy --bin crystal-bevy \
     --features "$FEATURES" --target wasm32-unknown-unknown
-cargo rustc --locked --profile wasm-dev -p crystal-audio --lib --crate-type cdylib \
+cargo rustc --locked --profile "$PROFILE" -p crystal-audio --lib --crate-type cdylib \
     --features browser-synth --target wasm32-unknown-unknown
 cargo build --locked -p crystal-web-server --bin crystal-web-server
 mkdir -p "$OUT"
-"$BINDGEN" --target web --no-typescript --out-dir "$OUT" --out-name crystal-bevy \
-    "$TARGET/wasm32-unknown-unknown/wasm-dev/crystal-bevy.wasm"
-"$BINDGEN" --target web --no-typescript --out-dir "$OUT" --out-name crystal-audio \
-    "$TARGET/wasm32-unknown-unknown/wasm-dev/crystal_audio.wasm"
+"$BINDGEN" --target web --no-typescript --remove-name-section --out-dir "$OUT" --out-name crystal-bevy \
+    "$TARGET/wasm32-unknown-unknown/$PROFILE/crystal-bevy.wasm"
+# Optional modern backend; the existing artifact remains the WebGL fallback.
+if [ "${CRYSTAL_WEBGPU:-0}" = 1 ]; then
+    cargo build --locked --profile "$PROFILE" -p crystal-bevy --bin crystal-bevy \
+        --features "$FEATURES,browser-webgpu" --target wasm32-unknown-unknown
+    "$BINDGEN" --target web --no-typescript --remove-name-section --out-dir "$OUT" --out-name crystal-bevy-webgpu \
+        "$TARGET/wasm32-unknown-unknown/$PROFILE/crystal-bevy.wasm"
+    printf '%s\n' '{"webgpu":{"module":"./crystal-bevy-webgpu.js","binary":"./crystal-bevy-webgpu_bg.wasm"}}' > "$OUT/renderer-bundles.json"
+else
+    rm -f "$OUT/renderer-bundles.json"
+fi
+"$BINDGEN" --target web --no-typescript --remove-name-section --out-dir "$OUT" --out-name crystal-audio \
+    "$TARGET/wasm32-unknown-unknown/$PROFILE/crystal_audio.wasm"
 cp web-client/*.js web-client/*.css web-client/index.html "$OUT/"
 # The server derives its clock/customization pack from the core-named input;
 # the browser-named copy also makes a static disposable preview self-contained.

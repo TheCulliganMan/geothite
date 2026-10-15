@@ -403,19 +403,29 @@ impl GameDataSet {
         trainer_id: &str,
     ) -> Option<&TrainerBattleRequest> {
         self.maps.values().find_map(|module| {
+            module.scripted_trainer_battles.iter()
+                .find(|battle| battle.source_script == source_script
+                    && battle.request.trainer_id == trainer_id)
+                .map(|battle| &battle.request)
+                .or_else(|| module.trainer_scripts.get(source_script)
+                    .filter(|request| request.trainer_id == trainer_id))
+        })
+    }
+
+    /// A trainer's original challenge and phone rematch can share both the
+    /// script label and party ID. Retain each complete authored request so save
+    /// validation can distinguish them without mixing their fields.
+    pub fn saved_trainer_battle_requests<'a>(
+        &'a self, source_script: &'a str, trainer_id: &'a str,
+    ) -> impl Iterator<Item = &'a TrainerBattleRequest> + 'a {
+        self.maps.values().flat_map(move |module| {
             module
                 .scripted_trainer_battles
                 .iter()
-                .find(|battle| {
-                    battle.source_script == source_script && battle.request.trainer_id == trainer_id
-                })
+                .filter(move |battle| battle.source_script == source_script)
                 .map(|battle| &battle.request)
-                .or_else(|| {
-                    module
-                        .trainer_scripts
-                        .get(source_script)
-                        .filter(|request| request.trainer_id == trainer_id)
-                })
+                .chain(module.trainer_scripts.get(source_script))
+                .filter(move |request| request.trainer_id == trainer_id)
         })
     }
 

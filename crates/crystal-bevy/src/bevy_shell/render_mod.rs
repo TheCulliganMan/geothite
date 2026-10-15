@@ -29,6 +29,7 @@ fn publish_visual_world_frame(
         ( &Sprite, &Transform),
         (With<GrassRustleMarker>, Without<PlayerMarker>),
     >,
+    healing: Query<(&HealMachineWorldSprite,&Sprite,&Transform)>,
     objects: Query<(&VisibleObjectSprite,  &Sprite, &Transform), With<ObjectMarker>>,
     battle_entities: Query<
         (),
@@ -42,8 +43,54 @@ fn publish_visual_world_frame(
     >,
     fullscreen_entities: Query<(), Or<(With<TitleScreenMarker>, With<VisibleIntroSurface>)>>,
     mut published: ResMut<crystal_render_api::VisualWorldFrame>,
+    presentation: (
+        Option<ResMut<crystal_render_api::VisualWorldLighting>>,
+        Option<Res<RuntimeTickTimer>>,
+        Option<ResMut<crystal_render_api::VisualPlayerTraversal>>,
+    ),
     phases: Option<ResMut<crystal_render_api::VisualTileAnimationFrame>>,
+    clock: Option<ResMut<crystal_render_api::VisualWorldClock>>,
 ) {
+    let (lighting, tick_timer, mut traversal) = presentation;
+    #[cfg(feature = "voxel-view")]
+    let _trace = crystal_voxel_view::loading_trace::span("frame.publish_world", || serde_json::json!({"map": rendered.map_name.as_deref()}));
+    if let Some(mut lighting) = lighting {
+        if *lighting != rendered.visual_lighting {
+            *lighting = rendered.visual_lighting;
+        }
+    }
+    if let Some(mut clock) = clock {
+        let next_clock = if rendered.visual_clock_enabled {
+            runtime_shell.cached_snapshot.as_ref()
+                .filter(|(_, snapshot)| {
+                    rendered.map_name.as_deref() == Some(snapshot.overworld.map_name.as_str())
+                })
+                .map(|_| {
+                    // RTC ticks can leave the retained presentation snapshot
+                    // unchanged. Read the live authoritative clock so idle
+                    // lighting still progresses without a terrain rebuild.
+                    let registers = &runtime_shell.shell.session().state().time.registers;
+                    crystal_render_api::VisualWorldClock {
+                        minute_of_day: Some(
+                            u16::from(registers.hours) * 60 + u16::from(registers.minutes),
+                        ),
+                        second_of_minute: registers.seconds,
+                    }
+                })
+                // A warp can commit before its destination is rendered.
+                // Keep the retained field's light until that render succeeds.
+                .unwrap_or(*clock)
+        } else {
+            Default::default()
+        };
+        if *clock != next_clock {
+            *clock = next_clock;
+        }
+    }
+    if let Some(traversal) = traversal.as_mut() {
+        traversal.step = None;
+    }
+
     // A feature-enabled browser normally starts in classic 2D mode. Do not
     // enumerate, sort, and clone every visible actor for an optional renderer
     // the player has not selected. Tests that exercise extraction in
@@ -67,7 +114,8 @@ fn publish_visual_world_frame(
     // Keep the last complete optional-renderer frame underneath them instead
     // of clearing it: clearing deactivates the optional world and visibly
     // interrupts a manually selected 2.5D view for the duration of an
-    // emote, jump, fishing motion, or dust puff. The screen-space effect still
+    // emote, scripted jump, fishing motion, or dust puff. Ledge traversal
+    // publishes its ground endpoints and lift separately. The screen-space effect still
     // composites above the retained world through the normal layer-0 camera.
     // Pack hides the world before USE. If fishing starts from that inactive
     // publication, there is no complete frame to retain yet. Extract the actual
@@ -82,7 +130,9 @@ fn publish_visual_world_frame(
                 && rendered.player_sprite_facing == Some(scene.overworld.facing)
                 && rendered.player_sprite_mode == Some(scene.overworld.mode)
         });
-    if !voxel_spatial_effects_supported(&runtime_shell) && !restore_fishing_field {
+    let mounted_ledge_jump = runtime_shell.visible_ledge_jump.is_some()
+        && rendered.player_sprite_mode == Some(MovementMode::Bike);
+    if (!voxel_spatial_effects_supported(&runtime_shell) || mounted_ledge_jump) && !restore_fishing_field {
         return;
     }
 
@@ -216,6 +266,47 @@ fn publish_visual_world_frame(
         actor.facing = Some(visual_facing(
             rendered.player_sprite_facing.unwrap_or(Direction::Down),
         ));
+        // Strip source LCD lift from the ground coordinate before pitching it
+        // into 3D. Height is rendered independently from map displacement.
+        actor.center.y -= visible_ledge_jump_y_offset(runtime_shell.visible_ledge_jump);
+        if runtime_shell.visible_ledge_jump.is_some() {
+            // The classic jump presenter samples integer LCD ticks. Align its
+            // ground with the actually rendered terrain center, which may be a
+            // retained camera sample, rather than recomputing another subframe.
+            actor.center += center
+                - visible_overworld_camera_offset(&rendered, &runtime_shell, 0.0);
+        }
+        if let Some(traversal) = traversal.as_mut() {
+            if traversal.map_id.as_ref() != map_id {
+                traversal.map_id = Arc::from(map_id);
+            }
+            let jump = runtime_shell.visible_ledge_jump;
+            let from = jump.map(|jump| jump.from).or(runtime_shell.player_walk_from);
+            let to = jump.map(|jump| jump.to).or(rendered.tile);
+            let (remaining, total) = jump.map_or(
+                (runtime_shell.player_walk_frame_ticks, runtime_shell.player_walk_total_ticks),
+                |jump| (16_u8.saturating_sub(jump.frame), 16),
+            );
+            if let (Some(from), Some(to)) = (from, to) {
+                if remaining > 0 {
+                    let progress = jump.map_or_else(
+                        || visible_movement_progress_with_subframe(
+                            remaining, total, tick_timer.as_ref().map_or(0.0, |timer| timer.presentation_subframe()),
+                        ),
+                        |jump| f32::from(jump.frame) / 16.0,
+                    );
+                    let delta = Vec2::new(f32::from(to.x - from.x), -f32::from(to.y - from.y))
+                        * (TILE_SIZE * f32::from(RENDER_TILES_PER_RUNTIME_TILE));
+                    let foot = actor.center - Vec2::Y * actor.size.y * 0.5;
+                    traversal.step = Some(crystal_render_api::VisualTraversalStep {
+                        from: foot - delta * progress,
+                        to: foot + delta * (1.0 - progress),
+                        progress,
+                        ledge_jump: jump.is_some(),
+                    });
+                }
+            }
+        }
         actors.push(actor);
     }
 
@@ -357,9 +448,31 @@ fn publish_visual_world_frame(
         }
     }
 
+    #[cfg(feature="voxel-view")]
+    if crystal_voxel_view::native_clinic_healing_map(map_id) {
+        for (marker,sprite,transform) in &healing {
+            let source=match marker.0 {
+                crystal_render_api::VisualEffectId::HealMachineBall(_)=>"effect_heal_ball",
+                crystal_render_api::VisualEffectId::HealMachineLamp(_)=>"effect_heal_lamp",
+                _=>continue,
+            };
+            if let Some(effect)=visual_actor(crystal_render_api::VisualActorId::Effect(marker.0),
+                Arc::from(source),&sprite.image,sprite,transform,false) {
+                actors.push(effect);
+            }
+        }
+    }
+
+    // The downstream 3D follower publisher owns this presentation actor.
+    // Retain it during extraction so an idle follower does not invalidate
+    // otherwise identical terrain/actor publications every host frame.
+    #[cfg(feature = "voxel-view")]
+    actors.extend(published.actors.iter().filter(|actor| matches!(actor.id,
+        crystal_render_api::VisualActorId::PartyFollower | crystal_render_api::VisualActorId::SurfMount)).cloned());
     let terrain_unchanged = published.active
         && published.map_id.as_ref() == map_id
         && published.source_map_size_core_tiles == rendered.source_map_size_core_tiles
+        && published.jump_ledges == rendered.visual_jump_ledges
         && published.terrain_revision == terrain_revision
         && published.map_texture == published_map_texture
         && published.viewport_size == Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)
@@ -400,6 +513,7 @@ fn publish_visual_world_frame(
         active: true,
         map_id: Arc::from(map_id),
         source_map_size_core_tiles: rendered.source_map_size_core_tiles,
+        jump_ledges: rendered.visual_jump_ledges.clone(),
         terrain_revision,
         grid_origin: {
             let (x, y) = rendered
@@ -449,7 +563,7 @@ fn naming_screen_blocks_world_presentation(input: Option<&PendingNameInput>) -> 
     input.is_some()
 }
 
-/// Effects in this list are still authored in classic screen coordinates.
+/// Scripted effects in this list are still authored in classic screen coordinates.
 /// Publishing a displaced actor against an undisplaced ground point would
 /// turn a jump into motion across the pitched floor. Callers retain the last
 /// complete world frame while these screen-space overlays run; they must not
@@ -465,8 +579,7 @@ fn voxel_spatial_effects_supported(runtime_shell: &BevyRuntimeShell) -> bool {
                     || movement.stationary_y_offset != 0
             });
 
-    runtime_shell.visible_ledge_jump.is_none()
-        && !scripted_actor_displacement
+    !scripted_actor_displacement
         && runtime_shell.visible_fishing_animation.is_none()
         && runtime_shell.visible_strength_boulder_dust.is_none()
         && runtime_shell.visible_overworld_emote.is_none()
@@ -694,5 +807,18 @@ mod render_mod_tests {
             baseline,
             visual_terrain_revision(7, (-4, 12), &changed_texture)
         );
+    }
+}
+
+#[cfg(feature="voxel-view")]
+fn sync_native_healing_sprite_visibility(
+    frame:Res<crystal_render_api::VisualWorldFrame>,
+    status:Res<crystal_voxel_view::VoxelViewStatus>,
+    healing:Option<Res<crystal_voxel_view::NativeHealingEffectsStatus>>,
+    mut sprites:Query<&mut Visibility,With<HealMachineWorldSprite>>,
+) {
+    let consumed=frame.active&&status.active&&healing.is_some_and(|h|h.consumed);
+    for mut visibility in &mut sprites {
+        *visibility=if consumed {Visibility::Hidden}else{Visibility::Inherited};
     }
 }

@@ -44,6 +44,17 @@ pub(crate) enum PatchKind {
     ParkLong,
 }
 
+impl PatchKind {
+    /// Source-pixel height before deterministic taper. Shared by the overworld
+    /// and retained battle scenery (whose world scale is one sixteenth).
+    pub(crate) fn height(self, tile_height: f32) -> f32 {
+        tile_height * match self {
+            Self::Meadow | Self::ParkShort => 3.0,
+            Self::ParkLong => 4.75,
+        }
+    }
+}
+
 pub(crate) fn append_styled_patch(
     out: &mut SurfaceMeshData,
     bounds: [f32; 4],
@@ -68,8 +79,8 @@ pub(crate) fn append_styled_patch(
     };
     for blade in 0..count {
         let seed = random(coordinates[0], coordinates[1], blade * 7);
-        // Reserve evenly spaced blades for each shared edge so continuity does
-        // not depend on random roots happening to land near a tile boundary.
+        // Distribute shared-edge coverage without planting a straight row.
+        // Stagger roots in a band while keeping both seam endpoints covered.
         let edge_count = if detailed { 8 } else { 4 };
         let edge = joined
             .iter()
@@ -84,7 +95,7 @@ pub(crate) fn append_styled_patch(
                 -std::f32::consts::FRAC_PI_2,
                 std::f32::consts::FRAC_PI_2,
             ][edge]
-                + (random(coordinates[0], coordinates[1], blade * 7 + 1) - 0.5) * 0.4
+                + (random(coordinates[0], coordinates[1], blade * 7 + 1) - 0.5) * 1.5
         } else {
             random(coordinates[0], coordinates[1], blade * 7 + 1) * std::f32::consts::TAU
         };
@@ -108,23 +119,26 @@ pub(crate) fn append_styled_patch(
             };
             let lo = if a { 0.04 } else { 0.18 };
             let hi = if b { 0.96 } else { 0.82 };
-            let along =
-                unit * (lo + (blade % edge_count) as f32 / (edge_count - 1) as f32 * (hi - lo));
+            let slot = blade % edge_count;
+            let stagger = if slot == 0 || slot == edge_count - 1 { 0. } else { (seed - 0.5) * 0.7 };
+            let along = unit * (lo + (slot as f32 + stagger)
+                / (edge_count - 1) as f32 * (hi - lo));
+            let inset = unit * (0.015 + random(coordinates[0], coordinates[1], blade * 7 + 4) * 0.035);
             match edge {
                 0 => {
-                    root.x = unit * 0.012;
+                    root.x = inset;
                     root.z = along;
                 }
                 1 => {
-                    root.x = unit * 0.988;
+                    root.x = unit - inset;
                     root.z = along;
                 }
                 2 => {
-                    root.z = unit * 0.012;
+                    root.z = inset;
                     root.x = along;
                 }
                 _ => {
-                    root.z = unit * 0.988;
+                    root.z = unit - inset;
                     root.x = along;
                 }
             }
@@ -140,22 +154,37 @@ pub(crate) fn append_styled_patch(
         ].into_iter().flatten().fold(unit, f32::min);
         let edge_height = if park {
             let t = (edge_distance / (unit * 0.30)).clamp(0., 1.);
-            0.72 + 0.28 * t * t * (3. - 2. * t)
+            0.90 + 0.10 * t * t * (3. - 2. * t)
         } else { 1. };
-        let h = height * (0.65 + seed * 0.35) * edge_height;
+        let h = height * (0.80 + seed * 0.20) * edge_height;
         let width = unit * match kind {
-            PatchKind::Meadow => 0.042 + seed * 0.025,
+            PatchKind::Meadow => 0.035 + seed * 0.025,
             PatchKind::ParkShort => 0.030 + seed * 0.016,
             PatchKind::ParkLong => 0.062 + seed * 0.025,
         };
-        let bend = if kind == PatchKind::ParkLong { 0.24 } else { 0.17 };
+        let bend = match kind {
+            PatchKind::Meadow => 0.10 + random(coordinates[0], coordinates[1], blade * 7 + 5) * 0.08,
+            PatchKind::ParkLong => 0.24,
+            PatchKind::ParkShort => 0.17,
+        };
+        // Taller leaves need a proportionate arch. Keep outer-edge tips inside
+        // their authored patch instead of clipping a long leaf into a flat wall.
+        let mut reach = h * bend;
+        for (axis, low, high) in [(0, joined[0], joined[1]), (2, joined[2], joined[3])] {
+            let direction = forward[axis];
+            if direction > 0.001 && !high {
+                reach = reach.min((unit - root[axis]) / direction * 0.75);
+            } else if direction < -0.001 && !low {
+                reach = reach.min(-root[axis] / direction * 0.75);
+            }
+        }
         let point = |row: usize, col: usize| {
             let t = row as f32 / 4.;
             let taper = (1. - t).powf(0.7);
             let across = col as f32 - 1.;
             let mut p = root
                 + Vec3::Y * (h * (t - 0.10 * t * t))
-                + forward * (unit * bend * t * t)
+                + forward * (reach * t * t)
                 + side * (across * width * taper)
                 + forward * (if col == 1 { width * 0.30 * taper } else { 0. });
             if !joined[0] {
@@ -197,7 +226,10 @@ pub(crate) fn append_styled_patch(
                                 .push((p[i] + Vec3::new(w, base, n)).to_array());
                             out.normals
                                 .push((if reverse { -normal } else { normal }).to_array());
-                            out.uvs.push([0.; 2]);
+                            // Native foliage plus its height above its actual
+                            // root, for battle-only trimming. Shape and pigment
+                            // remain the original map geometry.
+                            out.uvs.push([84000.0, p[i].y]);
                             let color = match kind {
                                 PatchKind::Meadow => [0.055 + seed * 0.045 + t * 0.22,
                                     0.18 + seed * 0.05 + t * 0.27, 0.065 + t * 0.035],
@@ -220,13 +252,43 @@ pub(crate) fn append_styled_patch(
 mod tests {
     use super::*;
     #[test]
+    fn tall_grass_reaches_trainer_chest_height_in_retained_battles() {
+        // Retained scenery uses 16 source pixels per battle world unit. Even
+        // the shortest edge blades reach an adult trainer's chest (1.38 * .68).
+        let chest = 1.38_f32 * 0.68;
+        for kind in [PatchKind::Meadow, PatchKind::ParkShort, PatchKind::ParkLong] {
+            for (coordinates, tile_height) in [([0, 0], 8.), ([20, 24], 32.), ([-17, 31], 64.)] {
+                let mut mesh = SurfaceMeshData::default();
+                append_styled_patch(&mut mesh, [0., tile_height, 0., tile_height], 2.,
+                    kind.height(tile_height), coordinates, true, [false; 4], kind);
+                // Find actual leaf tips through shared geometric neighbors;
+                // two-sided triangles and clipped edges need not have fixed counts.
+                let mut peaks = std::collections::HashMap::new();
+                for triangle in mesh.positions.chunks_exact(3) {
+                    for p in triangle {
+                        let entry = peaks.entry(p.map(f32::to_bits)).or_insert((p[1] - 2., false));
+                        entry.1 |= triangle.iter().any(|q| q[1] > p[1]);
+                    }
+                }
+                let tips: Vec<_> = peaks.values().filter(|(_, higher)| !higher).collect();
+                assert!(tips.len() >= 16);
+                for &&(tip, _) in &tips {
+                    let world_tip = tip / 16. * crate::grass_rustle::retained_height_scale(tile_height).x;
+                    assert!(world_tip >= chest, "blade tip {world_tip} falls below battle chest height");
+                }
+                assert!(mesh.positions.iter().any(|p| p[1] == 2.), "taller blades retain their roots");
+            }
+        }
+    }
+
+    #[test]
     fn park_grasses_have_distinct_leaf_shapes_and_palette_with_rooted_edges() {
         for coordinates in [[0,0],[20,24],[-17,31]] {
             let mut short = SurfaceMeshData::default();
             let mut long = SurfaceMeshData::default();
             for (mesh, kind, height) in [
-                (&mut short,PatchKind::ParkShort,8.*0.82),
-                (&mut long,PatchKind::ParkLong,8.*1.25),
+                (&mut short,PatchKind::ParkShort,PatchKind::ParkShort.height(8.)),
+                (&mut long,PatchKind::ParkLong,PatchKind::ParkLong.height(8.)),
             ] {
                 append_styled_patch(mesh,[0.,8.,0.,8.],2.,height,coordinates,true,[false;4],kind);
                 assert!(!mesh.positions.is_empty());
@@ -364,6 +426,12 @@ mod tests {
             assert_eq!(a.indices, b.indices);
             assert_eq!(a.colors, b.colors);
             assert_eq!(a.normals, b.normals);
+            assert_eq!(a.uvs, b.uvs, "blade-root metadata stays fixed while the grid scrolls");
+            for (point, uv) in a.positions.iter().zip(&a.uvs) {
+                assert_eq!(uv[0], 84000.0);
+                assert!((uv[1] - (point[1] - 2.0)).abs() < 0.00001,
+                    "trimming must measure from the original blade root");
+            }
             for (p, q) in a.positions.iter().zip(&b.positions) {
                 assert!((p[0] - q[0] - 8.).abs() < 0.00001);
                 assert!((p[2] - q[2] - 16.).abs() < 0.00001);

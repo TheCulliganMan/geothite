@@ -99,7 +99,7 @@ pub(super) fn append(
             let xw = w + col as f32 * bw + offset;
             let xe = xw + bw;
             let variation = (lattice(cell_x * columns + col, world_row) - 0.5)
-                * if park { 0.075 } else { 0.045 };
+                * if park { 0.12 } else { 0.095 };
             let base = if park {
                 [0.64, 0.57, 0.43]
             } else if road {
@@ -107,7 +107,12 @@ pub(super) fn append(
             } else {
                 [0.72, 0.69, 0.60]
             };
-            let color = base.map(|c| c + variation);
+            let warmth = (lattice(cell_x * columns + col + 317, world_row - 79) - 0.5) * 0.035;
+            let color = [
+                base[0] + variation + warmth,
+                base[1] + variation,
+                base[2] + variation - warmth,
+            ];
             let seam = if park {
                 [0.48, 0.43, 0.33]
             } else if road {

@@ -108,3 +108,32 @@ test('a gentle deliberate stick tilt starts walking and hysteresis sustains the 
   input.update([pad([], [.2, 0])]);
   assert.deepEqual(events.at(-1), ['right', false]);
 });
+
+
+test('Select cycles the camera once per press and retains gameplay Select outside 3D', () => {
+  const window = new EventTarget();
+  let frame, pads = [pad([8])], owned = true, cycles = 0;
+  window.requestAnimationFrame = callback => { frame = callback; };
+  window.navigator = { getGamepads: () => pads };
+  const document = new EventTarget();
+  document.body = { classList: { add() {}, remove() {} } };
+  document.hasFocus = () => true;
+  document.querySelector = selector => selector === '#touch-controls' ? { disabled: false } : null;
+  const events = [];
+  mountGamepadControls({ document, window, canvas: { focus() {} }, onInput() {},
+    controls: { setButton: (...event) => events.push(event) },
+    onCameraSelect: () => { if (owned) cycles++; return owned; } });
+  frame(0); frame(16); frame(32);
+  assert.equal(cycles, 1);
+  assert.deepEqual(events, []);
+  pads = [pad()]; frame(48);
+  pads = [pad([8])]; frame(64);
+  assert.equal(cycles, 2);
+  window.dispatchEvent(new Event('blur'));
+  assert.deepEqual(events, []);
+  owned = false;
+  pads = [pad()]; frame(80);
+  pads = [pad([8])]; frame(96);
+  pads = [pad()]; frame(112);
+  assert.deepEqual(events, [['gamepad:select', 'select'], ['gamepad:select', null]]);
+});

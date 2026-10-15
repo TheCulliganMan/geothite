@@ -2,16 +2,29 @@
 """Original playful Aipom with a curled tail and radial three-fingered tail hand."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,fitted_contour as mask
+from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,fitted_contour as mask,crease_normals
 from abra_sculpt import surface
 from bovine_sculpt import oval,curved_tube
 from wing_insect_sculpt import contour
 from skin_glb import COORDINATES
 SPECIES=('aipom',);HEIGHT=1.02
-PURPLE=(.58,.40,.68);CREAM=(.97,.89,.61);WHITE=(.98,.98,.95);INK=(.14,.13,.19);IRIS=(.37,.54,.58)
+PURPLE=(99/255,33/255,115/255);CREAM=(239/255,189/255,99/255);WHITE=(.98,.98,.95);INK=(.14,.13,.19);IRIS=(.37,.54,.58)
 
 
-def sculpture(species='aipom'):
+def tail_hand_point(point,inverse=False,vector=False):
+    # Turn the complete hand about the unchanged end of the supporting tail.
+    x,y,z=point;ox,oz=(0.,0.) if vector else (-.48,-.20)
+    angle=math.radians(35 if inverse else -35);c=math.cos(angle);ss=math.sin(angle)
+    return (ox+c*(x-ox)+ss*(z-oz),y,oz-ss*(x-ox)+c*(z-oz))
+
+def turned_tail_hand(p):
+    out=dict(p)
+    for field in ('positions','normals'):
+        out[field]=[v for i in range(0,len(p[field]),3) for v in tail_hand_point(p[field][i:i+3],vector=field=='normals')]
+    return out
+
+
+def sculpture(species='aipom',normalize=True):
     if species not in SPECIES:raise ValueError('unsupported monkey')
     body=loft('Body / slim rounded monkey torso',PURPLE,curved_profiles(((.20,.04,.05,0),(.28,.135,.112,0),(.38,.13,.118,-.01),(.48,.115,.098,-.006),(.56,.097,.084,0),(.60,.06,.05,.015)),4),32)
     neck=ellipsoid('Neck / short soft supporting neck',PURPLE,(0,.581,.006),(.089,.093,.078),28,16)
@@ -65,9 +78,16 @@ def sculpture(species='aipom'):
         dx,dy=math.cos(a),math.sin(a);path=[(-.48+dx*.072,1.055+dy*.069,-.20),(-.48+dx*.155,1.055+dy*.155,-.196),(-.48+dx*.203,1.055+dy*.203,-.191)]
         p.append(curved_tube('Tail finger / short radiating cream digit '+str(j),CREAM,path,[.024,.027,.029],18))
         p.append(ellipsoid('Tail fingertip / soft bulbous cream pad '+str(j),CREAM,path[-1],(.053,.051,.045),26,18))
-    lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
+    p=[turned_tail_hand(q) if q['part'].startswith(('Tail hand /','Tail finger /','Tail fingertip /')) else q for q in p]
+    # Smooth connected fitted surfaces without changing their triangles or fit.
+    p=[crease_normals(q) if q['part'].startswith(('Belly /','Face /','Ear / fitted','Eye /','Pupil /','Hand / fitted','Grin / fitted dark','Grin / single')) else q for q in p]
+    lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo) if normalize else 1.
     for q in p:
-        q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+        q['positions']=[round((v-(lo if normalize and i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+        # Exact patch-center zeros must serialize identically in Blender and
+        # standalone Python; this leaves every nonzero coordinate untouched.
+        if q['part'].startswith(('Belly /','Grin / single')):
+            q['positions']=[0. if v==0. else v for v in q['positions']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'aipom.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))

@@ -94,12 +94,12 @@ class TotodileTests(unittest.TestCase):
         cls.blob = ASSET.read_bytes()
         cls.model = Model(cls.blob)
 
-    def test_original_geometry_bits_colors_names_and_index_order(self):
+    def test_refined_geometry_bits_colors_names_and_index_order(self):
         model = self.model.neutral_model()
         self.assertEqual(author.geometry_digest(model), author.REST_DIGEST)
         self.assertEqual(self.model.names, list(author.PARTS))
-        self.assertEqual(sum(len(p) for p in self.model.vertices), 5714)
-        self.assertEqual(sum(len(p['indices'])//3 for p in model['primitives']), 6374)
+        self.assertEqual(sum(len(p) for p in self.model.vertices), 7531)
+        self.assertEqual(sum(len(p['indices'])//3 for p in model['primitives']), 7078)
         source_path = os.environ.get('TOTODILE_MESH_SOURCE')
         if source_path:
             source = json.loads(Path(source_path).read_bytes())
@@ -112,7 +112,7 @@ class TotodileTests(unittest.TestCase):
 
     def test_standard_bounded_schema_one_skin_and_identity_root(self):
         doc = self.model.doc
-        self.assertLess(len(self.blob), 300000)
+        self.assertLess(len(self.blob), 350000)
         self.assertEqual(doc['asset']['version'], '2.0')
         self.assertFalse(doc.get('extensionsRequired'))
         self.assertEqual((len(doc['meshes']), len(doc['skins']), len(doc['scenes']), len(doc['buffers'])), (1, 1, 1, 1))
@@ -120,7 +120,7 @@ class TotodileTests(unittest.TestCase):
         self.assertEqual(doc['nodes'][0]['translation'], [0., 0., 0.])
         self.assertEqual(doc['nodes'][8], {'name': 'totodile', 'mesh': 0, 'skin': 0})
         self.assertEqual(doc['skins'][0]['joints'], list(range(8)))
-        self.assertEqual(len(doc['materials']), 6)
+        self.assertEqual(len(doc['materials']), 8)
         self.assertLessEqual(len(author.JOINTS), 32)
         self.assertNotIn('uri', doc['buffers'][0])
         for view in doc['bufferViews']:
@@ -132,6 +132,20 @@ class TotodileTests(unittest.TestCase):
                 accessor = doc['accessors'][part['attributes'][key]]
                 self.assertEqual((accessor['type'], accessor['componentType']), ('VEC4', 5121))
                 self.assertEqual(accessor.get('normalized', False), key == 'WEIGHTS_0')
+
+    def test_visible_surfaces_have_consistent_winding_and_unit_normals(self):
+        m = self.model
+        for part, points, normals in zip(m.parts, m.vertices, m.normals):
+            for n in normals:
+                self.assertAlmostEqual(sum(v*v for v in n), 1., places=5)
+            indices = values(m.doc, m.binary, part['indices'])
+            for i in range(0, len(indices), 3):
+                ids = indices[i:i+3]
+                a, b, c = (points[j] for j in ids)
+                u, v = ([b[k]-a[k] for k in range(3)], [c[k]-a[k] for k in range(3)])
+                cross = [u[1]*v[2]-u[2]*v[1], u[2]*v[0]-u[0]*v[2], u[0]*v[1]-u[1]*v[0]]
+                avg = [sum(normals[j][k] for j in ids) for k in range(3)]
+                self.assertGreaterEqual(sum(cross[k]*avg[k] for k in range(3)), -1e-7)
 
     def test_all_influences_normalized_bounded_and_nonzero_joints_used(self):
         used = set()
@@ -210,6 +224,25 @@ class TotodileTests(unittest.TestCase):
                     posed = self.model.posed(i, mats)
                     self.assertAlmostEqual(math.dist(posed[0], posed[-1]),
                                            math.dist(self.model.vertices[i][0], self.model.vertices[i][-1]), places=7)
+
+    def test_open_grin_tongue_and_lower_teeth_follow_the_jaw(self):
+        # The defining grin must survive real decoded animation, with the
+        # tongue and lower teeth attached to the lower jaw during a bite.
+        m = self.model
+        for name in ('Rounded pink tongue', 'Lower ivory crocodile fang',
+                     'Lower ivory crocodile fang.001'):
+            i = m.names.index(name)
+            self.assertTrue(all(js == [3, 0, 0, 0] for js in m.ids[i]))
+            self.assertTrue(all(ws == [1., 0., 0., 0.] for ws in m.weights[i]))
+            for clip in m.clips:
+                for t in (.19, .43, .66):
+                    posed = m.posed(i, m.matrices(clip, t))
+                    self.assertAlmostEqual(math.dist(posed[0], posed[-1]),
+                        math.dist(m.vertices[i][0], m.vertices[i][-1]), places=7)
+        tongue = m.vertices[m.names.index('Rounded pink tongue')]
+        upper = m.vertices[m.names.index('Upper ivory crocodile fang')]
+        self.assertGreater(max(p[1] for p in upper) - max(p[1] for p in tongue), .06)
+        self.assertEqual(len([n for n in m.names if 'ivory crocodile fang' in n]), 4)
 
     def test_shared_continuous_body_inlay_and_plate_field(self):
         signatures = {}

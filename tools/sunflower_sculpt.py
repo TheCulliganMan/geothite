@@ -9,8 +9,8 @@ from wing_insect_sculpt import contour,membrane
 from skarmory_sculpt import blade
 from skin_glb import COORDINATES
 SPECIES=('sunkern','sunflora');HEIGHT=.95
-GOLD=(.98,.82,.32);FACE=(.99,.90,.48);PETAL=(.98,.77,.29);BRAC=(.90,.67,.22);BROWN=(.34,.31,.28)
-GREEN=(.43,.69,.40);LEAF=(.50,.73,.44);VEIN=(.24,.45,.25);INK=(.08,.10,.09);WHITE=(.95,.96,.89);PINK=(.89,.52,.58)
+GOLD=(239/255,231/255,8/255);FACE=(1.,1.,1.);PETAL=(214/255,181/255,24/255);BRAC=PETAL
+GREEN=(82/255,173/255,0.);LEAF=GREEN;SEED_GREEN=(107/255,148/255,66/255);VEIN=(.24,.45,.25);INK=(0.,0.,0.);WHITE=(1.,1.,1.);MOUTH_INSET=WHITE
 
 def seed_shell():
     n=64;rows=curved_profiles(((.08,.017,.015,0),(.13,.129,.098,0),(.24,.219,.158,0),(.39,.234,.178,0),(.52,.207,.164,0),(.548,.190,.152,0)),4);v=[]
@@ -50,8 +50,8 @@ def sunkern():
     panel=[(-.205,.445),(-.185,.505),(-.157,.477),(-.126,.509),(-.106,.476),(-.073,.508),(-.070,.390),(-.045,.240),(-.014,.108),(-.052,.125),(-.141,.178),(-.202,.275)]
     fronts=[]
     for s in (-1,1):
-        xy=[(-s*x,y) for x,y in panel];coat=fitted_contour('Coat / broad fitted dark front seed stripe '+str(s),BROWN,xy,bs,.008,subdivisions=3);p.append(coat);fronts.append(coat)
-        back=fitted_contour('Coat / broad fitted dark rear seed stripe '+str(s),BROWN,xy,surface(reverse_front(body)),.008,subdivisions=3);p.append(reverse_front(back))
+        xy=[(-s*x,y) for x,y in panel];coat=fitted_contour('Coat / broad fitted dark front seed stripe '+str(s),SEED_GREEN,xy,bs,.008,subdivisions=3);p.append(coat);fronts.append(coat)
+        back=fitted_contour('Coat / broad fitted dark rear seed stripe '+str(s),SEED_GREEN,xy,surface(reverse_front(body)),.008,subdivisions=3);p.append(reverse_front(back))
     skin=union_skin([body]+fronts)
     for s in (-1,1):
         x=s*.127;eye=fitted_patch('Eye / large black seed button '+str(s),INK,oval(x,.367,.040,.048,32),skin,.007);p.append(eye);es=surface(eye)
@@ -60,11 +60,11 @@ def sunkern():
     smile=contour([((-.072,.309),(-.022,.285),(.031,.301),(.080,.309)),((.080,.309),(.055,.251),(.037,.234),(0,.239)),((0,.239),(-.033,.237),(-.061,.280),(-.072,.309))],10)
     mouth=fitted_contour('Mouth / fitted playful seed grin',INK,smile,skin,.009);p.append(mouth)
     tongue=contour([((-.050,.293),(-.025,.283),(.028,.293),(.054,.300)),((.054,.300),(.038,.253),(.026,.246),(0,.245)),((0,.245),(-.020,.244),(-.042,.265),(-.050,.293))],10)
-    p.append(fitted_contour('Tongue / rosy seed smile',PINK,tongue,surface(mouth),.003,subdivisions=3))
-    p.append(curved_tube('Sprout / thin green central stem',GREEN,[(0,.518,0),(0,.628,-.006),(0,.718,-.008)],[.014,.013,.012],18))
+    p.append(fitted_contour('Tongue / rosy seed smile',MOUTH_INSET,tongue,surface(mouth),.003,subdivisions=3))
+    p.append(curved_tube('Sprout / thin green central stem',SEED_GREEN,[(0,.518,0),(0,.628,-.006),(0,.718,-.008)],[.014,.013,.012],18))
     leaf_outline=contour([((0,.704),(.104,.820),(.235,.861),(.335,.817)),((.335,.817),(.297,.704),(.121,.650),(0,.704))],12)
     for s in (-1,1):
-        leaf=membrane('Leaf / broad curved seed sprout '+str(s),LEAF,leaf_outline,s,root_z=-.008,thickness=.015);p.append(leaf)
+        leaf=membrane('Leaf / broad curved seed sprout '+str(s),SEED_GREEN,leaf_outline,s,root_z=-.008,thickness=.015);p.append(leaf)
         midrib(p,leaf,'Leaf vein / fitted seed sprout midrib '+str(s),[(s*x,y) for x,y in ((.018,.712),(.128,.763),(.266,.804))])
     return p
 
@@ -72,7 +72,7 @@ def petal_outline(angle,small):
     if small:
         local=contour([((-.041,.119),(-.055,.195),(-.027,.257),(0,.293)),((0,.293),(.040,.252),(.052,.186),(.040,.120)),((.040,.120),(.014,.111),(-.015,.111),(-.041,.119))],8)
     else:
-        local=contour([((-.068,.138),(-.093,.231),(-.062,.303),(.007,.337)),((.007,.337),(.020,.360),(.025,.379),(.027,.391)),((.027,.391),(.041,.325),(.095,.282),(.096,.220)),((.096,.220),(.089,.155),(.035,.134),(-.068,.138))],10)
+        local=contour([((-.068,.138),(-.100,.205),(-.110,.310),(-.070,.355)),((-.070,.355),(-.050,.385),(.003,.391),(.027,.391)),((.027,.391),(.075,.391),(.113,.342),(.100,.275)),((.100,.275),(.102,.190),(.035,.134),(-.068,.138))],10)
     c=math.cos(angle);s=math.sin(angle);return [(x*c-y*s,.885+x*s+y*c) for x,y in local]
 
 def sunflora():
@@ -92,7 +92,7 @@ def sunflora():
     mouth=fitted_contour('Mouth / fitted broad laughing sunflower grin',INK,smile,fs,.006);p.append(mouth)
     cx=sum(x for x,y in smile)/len(smile);cy=sum(y for x,y in smile)/len(smile)
     tongue=[(x*.85,y-.015 if k<12 else y+.011*math.sin(math.pi*(k-12)/12)-.015*abs(2*(k-12)/12-1)**2) for k,(x,y) in enumerate(smile)]
-    p.append(fitted_contour('Tongue / fitted rosy sunflower smile',PINK,tongue,surface(mouth),.003))
+    p.append(fitted_contour('Tongue / fitted rosy sunflower smile',MOUTH_INSET,tongue,surface(mouth),.003))
     left=contour([((-.070,.430),(-.200,.510),(-.380,.470),(-.530,.300)),((-.530,.300),(-.360,.290),(-.230,.250),(-.070,.430))],14)
     right=contour([((.075,.450),(.200,.500),(.330,.400),(.460,.530)),((.460,.530),(.490,.580),(.500,.610),(.490,.650)),((.490,.650),(.570,.410),(.340,.300),(.075,.450))],12)
     for s,outline,xy in ((-1,left,[(-.110,.429),(-.260,.397),(-.430,.331)]),(1,right,[(.100,.451),(.220,.451),(.360,.441),(.494,.560)])):
@@ -101,12 +101,13 @@ def sunflora():
         foot=ellipsoid('Foot / grounded broad green root pad '+str(s),GREEN,(s*.195,.033,.052),(.110,.033,.076),32,20);p.append(foot)
     return p
 
-def sculpture(species):
+def sculpture(species,normalize=True):
     if species not in SPECIES:raise ValueError('unsupported sunflower')
     p=sunkern() if species=='sunkern' else sunflora();p=[crease_normals(q,35.) if q['part'].startswith(('Coat /','Eye /','Eye glint /','Mouth /','Tongue /')) else q for q in p]
-    lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
+    lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo) if normalize else 1.
     for q in p:
-        q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+        q['positions']=[round((v-(lo if normalize and i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+        q['positions']=[0. if v==0. else v for v in q['positions']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)

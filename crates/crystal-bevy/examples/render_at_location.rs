@@ -1,7 +1,7 @@
 use std::{env, path::PathBuf, process::Command};
 
-use anyhow::{Context, Result, bail};
-use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
+use anyhow::{bail, Context, Result};
+use crystal_assets::{read_loaded_verified_compiled_game_pack, AssetRoot};
 use crystal_bevy::{BevyShellConfig, BevyShellStart};
 use crystal_runtime::CrystalRuntime;
 
@@ -38,6 +38,8 @@ struct Args {
     maps: Vec<String>,
     all_maps: bool,
     kanto_interiors: bool,
+    outdoors: bool,
+    perimeter: bool,
     tile_x: Option<i16>,
     tile_y: Option<i16>,
     view: ViewMode,
@@ -58,21 +60,32 @@ fn main() -> Result<()> {
     // without a visible-window readback. Normal single-view captures stay single.
     let temporal_3d = args.view == ViewMode::TwoPointFiveD
         && env::var("CRYSTAL_RENDER_TEST_SECOND_VIEW").as_deref() == Ok("same");
-    if temporal_3d && (args.map.is_none() || args.screenshot.is_none()
-        || args.all_maps || !args.maps.is_empty() || args.live || args.walk.is_some()) {
+    if temporal_3d
+        && (args.map.is_none()
+            || args.screenshot.is_none()
+            || args.all_maps
+            || !args.maps.is_empty()
+            || args.live
+            || args.walk.is_some())
+    {
         bail!("same-view 3D temporal capture requires one --map and --screenshot, without --live or --walk");
     }
 
-    if args.preview_flag.is_some() && (args.map.is_none() || args.all_maps || !args.maps.is_empty() || args.screenshot.is_none()) {
-        bail!("--preview-flag requires one --map and --screenshot; it seeds a disposable visual fixture");
-    }
-    if args.walk.is_some()
-        && (args.view != ViewMode::TwoPointFiveD
+    if args.preview_flag.is_some()
+        && (args.map.is_none()
             || args.all_maps
             || !args.maps.is_empty()
             || args.screenshot.is_none())
     {
-        bail!("--walk requires a single map, --view 2.5d and --screenshot");
+        bail!("--preview-flag requires one --map and --screenshot; it seeds a disposable visual fixture");
+    }
+    if args.walk.is_some()
+        && (args.view == ViewMode::TwoD
+            || args.all_maps
+            || !args.maps.is_empty()
+            || args.screenshot.is_none())
+    {
+        bail!("--walk requires a single map, --view 2.5d or both and --screenshot");
     }
     if args.live
         && (args.view != ViewMode::Both
@@ -147,7 +160,7 @@ fn main() -> Result<()> {
     let pair = args.view == ViewMode::Both || temporal_3d;
     let first = args.screenshot.as_ref().map(|path| {
         if pair {
-            suffixed_output(path, if temporal_3d {"3d-start"} else {"2d"})
+            suffixed_output(path, if temporal_3d { "3d-start" } else { "2d" })
         } else {
             path.clone()
         }
@@ -156,12 +169,13 @@ fn main() -> Result<()> {
         .screenshot
         .as_ref()
         .filter(|_| pair)
-        .map(|path| suffixed_output(path, if temporal_3d {"3d-end"} else {"2.5d"}));
+        .map(|path| suffixed_output(path, if temporal_3d { "3d-end" } else { "2.5d" }));
     let identity = format!(
         "{}|{:?}|{map}|{tile_x}|{tile_y}|{}|{:?}",
         pack_path.display(),
         std::fs::metadata(&pack_path)?.modified()?,
-        args.hour, args.preview_flag
+        args.hour,
+        args.preview_flag
     );
     let previous = second
         .as_ref()
@@ -184,13 +198,17 @@ fn main() -> Result<()> {
         },
         BevyShellConfig {
             smoke_player_name: Some("RENDER".to_string()),
-            voxel_view_enabled: Some(args.view == ViewMode::TwoPointFiveD),
+            // Warm the native scene before freezing a paired baseline. A
+            // source-first startup can read back a uniform initial frame,
+            // despite valid runtime state. Logical output labels and
+            // comparison order remain 2D reference / native.
+            voxel_view_enabled: Some(args.view != ViewMode::TwoD),
             window_title: Some(format!(
                 "Crystal Render Tester — {map} ({tile_x}, {tile_y}) — {} — F3 toggles",
                 args.view.label()
             )),
-            render_test_screenshot: first.clone(),
-            render_test_second_screenshot: second.clone(),
+            render_test_screenshot: if args.view==ViewMode::Both {second.clone()} else {first.clone()},
+            render_test_second_screenshot: if args.view==ViewMode::Both {first.clone()} else {second.clone()},
             render_test_live: args.live,
             render_test_walk: args.walk,
             render_test_hour: Some(args.hour),
@@ -200,7 +218,13 @@ fn main() -> Result<()> {
         },
     )?;
     if let (Some(first), Some(second)) = (first, second) {
-        write_comparison(&first, &second, previous, args.screenshot.as_ref().unwrap(), temporal_3d)?;
+        write_comparison(
+            &first,
+            &second,
+            previous,
+            args.screenshot.as_ref().unwrap(),
+            temporal_3d,
+        )?;
         std::fs::write(second.with_extension("identity"), identity)?;
     }
     println!(
@@ -234,6 +258,15 @@ fn render_map_batch(args: &Args, runtime: &CrystalRuntime) -> Result<()> {
         }
         maps = selected;
     }
+    if args.outdoors {
+        let mut selected = Vec::new();
+        for map in maps {
+            if matches!(runtime.data().map_environment(&map)?, "TOWN" | "ROUTE") {
+                selected.push(map);
+            }
+        }
+        maps = selected;
+    }
     if maps.is_empty() {
         bail!("batch map selection is empty");
     }
@@ -244,33 +277,61 @@ fn render_map_batch(args: &Args, runtime: &CrystalRuntime) -> Result<()> {
             .data()
             .saved_map_tile_bounds(&map)
             .with_context(|| format!("unknown or dimensionless map {map}"))?;
-        let (tile_x, tile_y) = nearest_walkable_tile(runtime, &map, width, height)
-            .with_context(|| format!("find a walkable batch location on {map}"))?;
-        let output = output_dir.join(format!("{}.png", safe_file_stem(&map)));
-        let view = match args.view {
-            ViewMode::TwoD => "2d",
-            ViewMode::TwoPointFiveD => "2.5d",
-            ViewMode::Both => "both",
+        let locations = if args.perimeter {
+            let east = width.saturating_sub(3);
+            let south = height.saturating_sub(3);
+            vec![
+                ("northwest", 2, 2),
+                ("north", width / 2, 2),
+                ("northeast", east, 2),
+                ("east", east, height / 2),
+                ("southeast", east, south),
+                ("south", width / 2, south),
+                ("southwest", 2, south),
+                ("west", 2, height / 2),
+            ]
+        } else {
+            vec![("center", width / 2, height / 2)]
         };
-        let status = Command::new(&executable)
-            .arg("--pack")
-            .arg(&args.pack)
-            .arg("--map")
-            .arg(&map)
-            .arg("--x")
-            .arg(tile_x.to_string())
-            .arg("--y")
-            .arg(tile_y.to_string())
-            .arg("--view")
-            .arg(view)
-            .arg("--hour")
-            .arg(args.hour.to_string())
-            .arg("--screenshot")
-            .arg(&output)
-            .status()
-            .with_context(|| format!("launch batch render for {map}"))?;
-        if !status.success() {
-            bail!("batch render for {map} exited with {status}");
+        let mut captured = std::collections::BTreeSet::new();
+        for (label, target_x, target_y) in locations {
+            let (tile_x, tile_y) =
+                nearest_walkable_tile(runtime, &map, width, height, target_x, target_y)
+                    .with_context(|| format!("find a walkable {label} location on {map}"))?;
+            if !captured.insert((tile_x, tile_y)) {
+                continue;
+            }
+            let stem = if args.perimeter {
+                format!("{}-{label}-{tile_x}-{tile_y}", safe_file_stem(&map))
+            } else {
+                safe_file_stem(&map)
+            };
+            let output = output_dir.join(format!("{stem}.png"));
+            let view = match args.view {
+                ViewMode::TwoD => "2d",
+                ViewMode::TwoPointFiveD => "2.5d",
+                ViewMode::Both => "both",
+            };
+            let status = Command::new(&executable)
+                .arg("--pack")
+                .arg(&args.pack)
+                .arg("--map")
+                .arg(&map)
+                .arg("--x")
+                .arg(tile_x.to_string())
+                .arg("--y")
+                .arg(tile_y.to_string())
+                .arg("--view")
+                .arg(view)
+                .arg("--hour")
+                .arg(args.hour.to_string())
+                .arg("--screenshot")
+                .arg(&output)
+                .status()
+                .with_context(|| format!("launch batch render for {map}"))?;
+            if !status.success() {
+                bail!("batch render for {map} exited with {status}");
+            }
         }
     }
     Ok(())
@@ -281,9 +342,11 @@ fn nearest_walkable_tile(
     map: &str,
     width: u16,
     height: u16,
+    target_x: u16,
+    target_y: u16,
 ) -> Result<(i16, i16)> {
-    let center_x = i32::from(width / 2);
-    let center_y = i32::from(height / 2);
+    let center_x = i32::from(target_x.min(width.saturating_sub(1)));
+    let center_y = i32::from(target_y.min(height.saturating_sub(1)));
     let mut candidates = (0..height)
         .flat_map(|y| (0..width).map(move |x| (x, y)))
         .collect::<Vec<_>>();
@@ -296,8 +359,19 @@ fn nearest_walkable_tile(
         let x = i16::try_from(x)?;
         let y = i16::try_from(y)?;
         let tile = crystal_runtime::core::world::map::TilePosition::new(x, y);
-        if runtime.data().overworld_session(map, tile, 0).is_ok() {
-            return Ok((x, y));
+        if let Ok(session)=runtime.data().overworld_session(map,tile,0) {
+            // Session initialization also permits connection-source exceptions.
+            // Perimeter review needs a standable source tile, not a wall that
+            // happens to share the connection's coordinate range.
+            use crystal_runtime::core::world::collision::{can_enter_tile,is_warp_permission,sample_collision,allows_ledge_direction,PlayerTraversalState};
+            use crystal_runtime::core::world::map::Direction;
+            let directions=[Direction::Down,Direction::Up,Direction::Left,Direction::Right];
+            if sample_collision(&session.map,&session.tileset,tile).is_some_and(|s|
+                !is_warp_permission(s.permission)
+                && !directions.iter().any(|&d|allows_ledge_direction(s.permission,d)))
+                && directions.into_iter().any(|d|can_enter_tile(&session.map,&session.tileset,tile,d,PlayerTraversalState::Walk)) {
+                return Ok((x,y));
+            }
         }
     }
     bail!("map has no walkable runtime tile")
@@ -362,10 +436,7 @@ fn write_comparison(
             "<!doctype html><meta charset=\"utf-8\"><title>Render comparison</title><style>body{{margin:24px;background:#141b19;color:#e7eee8;font:16px system-ui}}img{{max-width:100%;image-rendering:pixelated}}p{{color:#aebeb4}}</style><h2>{labels}</h2><p>Left to right. Open the PNG at full size to inspect pixel edges. Rerun the same command after each Rust edit, then reload this page.</p><img src=\"{filename}\" alt=\"{labels}\">"
         ),
     )?;
-    println!(
-        "review {} — left to right: {labels}",
-        output.display(),
-    );
+    println!("review {} — left to right: {labels}", output.display(),);
     Ok(())
 }
 
@@ -411,6 +482,8 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
     let mut maps = Vec::new();
     let mut all_maps = false;
     let mut kanto_interiors = false;
+    let mut outdoors = false;
+    let mut perimeter = false;
     let mut tile_x = None;
     let mut tile_y = None;
     let mut view = ViewMode::TwoD;
@@ -433,6 +506,11 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
                     .map(str::to_owned),
             ),
             "--all-maps" => all_maps = true,
+            "--perimeter" => perimeter = true,
+            "--outdoors" => {
+                all_maps = true;
+                outdoors = true;
+            }
             "--kanto-interiors" => {
                 all_maps = true;
                 kanto_interiors = true;
@@ -467,6 +545,8 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
         maps,
         all_maps,
         kanto_interiors,
+        outdoors,
+        perimeter,
         tile_x,
         tile_y,
         view,
@@ -499,7 +579,7 @@ fn print_usage() {
          --pack <game.crystalpack> [--list-maps | --map <id> [--x <tile>] [--y <tile>] \
          [--view 2d|2.5d|both] [--hour <0..23>] [--screenshot <output-or-prefix.png>] [--live] [--walk RDLU] \
          [--preview-flag <verified-flag>] | \
-         (--maps <id,id,...> | --all-maps | --kanto-interiors) --output-dir <directory> \
+         (--maps <id,id,...> | --all-maps | --outdoors | --kanto-interiors) --output-dir <directory> [--perimeter] \
          [--view 2d|2.5d|both] [--hour <0..23>]]"#
     );
 }

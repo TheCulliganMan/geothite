@@ -1,12 +1,31 @@
-// Experimental until native actor silhouettes, alpha edges and source OAM
-// allocation/budget are independently verified. Production fallback stays on.
+// Tackle has native and WebGPU silhouette/alpha/resize inspection. Other row
+// programs remain opt-in. The complete source OAM/signature proof below still
+// decides whether a requested modeled-row presentation can actually be used.
+fn immersive_modeled_rows_enabled(animation: &VisibleMoveAnimation, experimental: bool) -> bool {
+    experimental || matches!(
+        (animation.move_id.as_str(), animation.animation_label.as_str()),
+        ("TACKLE", "BattleAnim_Tackle")
+    )
+}
+
 fn immersive_row_prototype_enabled() -> bool {
     #[cfg(not(target_arch = "wasm32"))]
     {
         static ENABLED: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
         *ENABLED.get_or_init(|| std::env::var("CRYSTAL_BATTLE_ROW_PROTOTYPE").as_deref() == Ok("1"))
     }
-    #[cfg(target_arch = "wasm32")]
+    #[cfg(all(target_arch = "wasm32", feature = "location-tester"))]
+    {
+        static ENABLED: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+        *ENABLED.get_or_init(|| {
+            web_sys::window()
+                .and_then(|window| window.location().search().ok())
+                .and_then(|search| web_sys::UrlSearchParams::new_with_str(&search).ok())
+                .and_then(|params| params.get("battle-row-prototype"))
+                .as_deref() == Some("on")
+        })
+    }
+    #[cfg(all(target_arch = "wasm32", not(feature = "location-tester")))]
     {
         false
     }

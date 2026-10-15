@@ -60,6 +60,7 @@ pub(super) fn append(
     let p = &placement.resolved;
     let identities: Vec<_> = cells.iter().map(|c| identity(&c.source)).collect();
     if claimed.len() != cells.len()
+        || !crate::train_station_models::train().has_native_train_materials()
         || !p.coherent(&identities, g.width, g.height)
         || claimed[p.ground]
         || p.guard_indices(g.width).any(|i| claimed[i])
@@ -76,17 +77,24 @@ pub(super) fn append(
         );
     }
     let (west, _, north, _) = g.bounds(p.column, p.row);
-    crate::train_station_models::train().append_fitted(
-        &mut mesh.solid,
+    let sample=|pixel:[usize;2]| {
+        let uv=g.uv(p.column+pixel[0]/8,p.row+pixel[1]/8);
+        [uv.0+(uv.1-uv.0)*((pixel[0]%8)as f32+0.5)/8.,
+         uv.2+(uv.3-uv.2)*((pixel[1]%8)as f32+0.5)/8.]
+    };
+    assert!(crate::train_station_models::train().append_native_train(
+        &mut mesh.textured,
         [
             west,
             west + 20. * g.tile_width,
             north,
             north + 4. * g.tile_height,
         ],
-        0.,
         26.2 * g.tile_height / SOURCE_TILE_HEIGHT,
-    );
+        // Verified packed pigments: tile0a cream, tile1a gray/dark glass,
+        // tile27 ink, and tile28's orange band at native pixel(80,22).
+        [[28,1],[28,10],[28,10],[28,17],[80,22],[28,15]].map(sample),
+    ));
     for i in p.indices(g.width) {
         claimed[i] = true;
         if mesh.authored_cells.len() == cells.len() {
@@ -162,7 +170,7 @@ mod tests {
         (tiles, g)
     }
     #[test]
-    fn train_model_has_two_completely_empty_boarding_footprints() {
+    fn train_model_keeps_open_boarding_portals_below_continuous_roof() {
         let mut surface = SurfaceMeshData::default();
         crate::train_station_models::train().append_fitted(
             &mut surface,
@@ -171,6 +179,14 @@ mod tests {
             26.2,
         );
         assert!(!surface.indices.is_empty());
+        for (left,right) in [(32.,48.),(112.,128.)] {
+            assert!(surface.indices.chunks_exact(3).any(|tri| {
+                let vs=tri.iter().map(|&i|surface.positions[i as usize]).collect::<Vec<_>>();
+                vs.iter().all(|v|v[1]>=20.9999)
+                    && vs.iter().any(|v|v[0]<=left)
+                    && vs.iter().any(|v|v[0]>=right)
+            }),"curved roof must continue across each boarding portal");
+        }
         for tri in surface.indices.chunks_exact(3) {
             let vs = tri
                 .iter()
@@ -180,14 +196,15 @@ mod tests {
                 assert!(
                     vs.iter().all(|v| v[0] <= left + 0.0001)
                         || vs.iter().all(|v| v[0] >= right - 0.0001)
-                        || vs.iter().all(|v| v[2] <= 16.0001),
+                        || vs.iter().all(|v| v[2] <= 16.0001)
+                        || vs.iter().all(|v| v[1] >= 20.9999),
                     "solid covers a native train door"
                 );
             }
         }
     }
     #[test]
-    fn train_appends_body_once_and_preserves_live_doors_rail_and_footing() {
+    fn kanto_native_train_appends_body_once_and_preserves_live_doors_rail_and_footing() {
         let (tiles, g) = fixture();
         let cells = tiles.iter().collect::<Vec<_>>();
         let mut claimed = vec![false; cells.len()];
@@ -209,8 +226,13 @@ mod tests {
             mesh.authored_cells.iter().filter(|v| v.is_some()).count(),
             60
         );
-        assert_eq!(mesh.textured.positions.len(), 60 * 4);
-        assert!(mesh.textured.positions.iter().all(|v| v[1] == 0.));
+        assert!(mesh.solid.positions.is_empty(),"native train uses its live source palette");
+        assert!(mesh.textured.positions.len()>60*4);
+        assert!(mesh.textured.positions[..60*4].iter().all(|v| v[1] == 0.));
+        assert!(mesh.textured.positions[60*4..].iter().any(|v|v[1]>20.));
+        let uv=g.uv(p[0].resolved.column+10,p[0].resolved.row+2);
+        let orange=[uv.0+(uv.1-uv.0)*0.5/8.,uv.2+(uv.3-uv.2)*6.5/8.];
+        assert!(mesh.textured.uvs[60*4..].contains(&orange),"native tile28 orange band, never a generic red stripe");
         assert!(mesh.footing_heights.iter().all(|&v| v == 2.5));
         assert!(mesh.solid.cutaway_ranges.is_empty());
         for y in 10..12 {

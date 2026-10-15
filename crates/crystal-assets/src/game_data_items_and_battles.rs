@@ -1135,6 +1135,17 @@ impl GameDataSet {
             .to_string(),
         );
         staged_state.script_runtime.pending_surf_field_move = Some(outcome.clone());
+        staged_state.script_runtime.memory.insert(
+            crystal_core::systems::field_moves::SURF_ACTOR_PARTY_MEMORY.to_owned(),
+            party_index.to_string());
+        let actor = storage.party.pokemon[party_index].as_ref()
+            .context("validated SURF user is absent from party")?;
+        staged_state.script_runtime.memory.insert(
+            crystal_core::systems::field_moves::SURF_ACTOR_SPECIES_MEMORY.to_owned(),
+            outcome.actor_species.clone());
+        staged_state.script_runtime.memory.insert(
+            crystal_core::systems::field_moves::SURF_ACTOR_DVS_MEMORY.to_owned(),
+            serde_json::to_string(&actor.dvs)?);
         *state = staged_state;
         Ok(outcome)
     }

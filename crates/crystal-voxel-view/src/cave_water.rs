@@ -35,7 +35,9 @@ pub(crate) fn den_whirlpool_cells(cells: &[&VisualTile], width: usize, height: u
 }
 
 fn den_whirlpool_water(frame: &VisualWorldFrame) -> std::collections::HashMap<(u32,u32),&VisualTile> {
-    if frame.map_id.as_ref()!="DragonsDenB1F" {return Default::default();}
+    if frame.map_id.as_ref()!="DragonsDenB1F" && !outdoor(frame.map_id.as_ref()) {
+        return Default::default();
+    }
     let (width,height)=(frame.grid_size.x as usize,frame.grid_size.y as usize);
     let mut ordered=vec![None;width.saturating_mul(height)];
     for tile in &frame.tiles {
@@ -426,6 +428,20 @@ mod tests {
             t.texture=first.clone();t.animation_frames=Some(vec![first.clone(),second.clone()].into());t
         }).collect();
         assert_eq!(den_whirlpool_water(&frame).len(),4);
+        {
+            let mut exterior=frame.clone();
+            exterior.map_id="Route41".into();
+            assert_eq!(den_whirlpool_water(&exterior).len(),4,
+                "the same complete Johto drawing animates on exterior ocean routes");
+            let mut ocean_images=Assets::<Image>::default();
+            let ocean_mask=ocean_images.add(mask(&exterior).unwrap());
+            assert_eq!(&ocean_images.get(&ocean_mask).unwrap().data.as_ref().unwrap()[..3],&[255,128,0]);
+            exterior.tiles[8].texture=second.clone();
+            assert!(refresh_mask_phases(&exterior,&ocean_mask,&mut ocean_images));
+            assert_eq!(&ocean_images.get(&ocean_mask).unwrap().data.as_ref().unwrap()[..3],&[255,128,127]);
+            exterior.tiles[0].source.tile_index=0x31;
+            assert!(den_whirlpool_water(&exterior).is_empty());
+        }
         let mut images=Assets::<Image>::default();
         let h=images.add(mask(&frame).unwrap());
         assert_eq!(&images.get(&h).unwrap().data.as_ref().unwrap()[..3],&[255,128,0]);

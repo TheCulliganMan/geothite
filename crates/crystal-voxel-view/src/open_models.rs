@@ -10,11 +10,8 @@ static BUNDLE: std::sync::OnceLock<
 > =
     std::sync::OnceLock::new();
 
-/// Install optional external furniture and foliage before the first scenery lookup.
+/// Install optional external furniture before the first scenery lookup.
 /// The versioned JSON bundle is `{ "version": 1, "models": { "models/interiors/…": mesh } }`.
-/// Foliage also accepts `models/new_bark/tree.mesh.json` and
-/// `models/johto/tree_lod.mesh.json` and four whitelisted tree variant paths;
-/// other scenery paths are unsupported.
 /// Downloads and converted geometry belong in ignored external content, never
 /// in the source catalog. A malformed bundle is rejected atomically; already
 /// cached model choices cannot be changed without restarting the client.
@@ -51,11 +48,7 @@ fn parse_bundle(json: &str) -> Result<std::collections::BTreeMap<String, String>
         if json.len() as u64 > MAX_BYTES {
             return Err(format!("open model exceeds 16 MiB: {path}"));
         }
-        if path.starts_with("models/interiors/") {
-            crate::interior_models::Model::parse(json).map(|_| ())
-        } else {
-            crate::new_bark_models::Model::parse(json).map(|_| ())
-        }
+        crate::interior_models::Model::parse(json).map(|_| ())
         .map_err(|e| format!("invalid bundled scenery {path}: {e}"))?;
         models.insert(path, json.to_owned());
     }
@@ -63,11 +56,7 @@ fn parse_bundle(json: &str) -> Result<std::collections::BTreeMap<String, String>
 }
 
 fn supported_path(path: &str) -> bool {
-    (path.starts_with("models/interiors/")
-        || matches!(
-            path,
-            "models/new_bark/tree.mesh.json" | "models/johto/tree_lod.mesh.json"
-        ) || crate::foliage::VARIANT_PATHS.contains(&path))
+    path.starts_with("models/interiors/")
         && !path
             .split('/')
             .any(|p| matches!(p, ".." | ".") || p.is_empty())
@@ -170,6 +159,9 @@ mod tests {
         for path in [
             "models/interiors/../television.mesh.json",
             "models/battle_species/pidgeotto.mesh.json",
+            "models/new_bark/tree.mesh.json",
+            "models/johto/tree_lod.mesh.json",
+            "models/johto/tree_variants/tree_2.mesh.json",
         ] {
             let mut invalid = valid.clone();
             invalid["models"][path] = model.clone();
@@ -203,7 +195,7 @@ mod tests {
         install_open_model_bundle(&bundle).unwrap();
         // An installed bundle is the selected source. Missing bundle entries
         // cannot silently be filled from another local asset directory.
-        assert!(load_required("models/new_bark/tree.mesh.json",
+        assert!(load_required("models/interiors/missing.mesh.json",
             |source| crate::new_bark_models::Model::parse(source)).is_none());
         let model = crate::interior_models::selected_model(crate::interior_models::ModelKind::Television).unwrap();
         assert!(!BUNDLE.get().unwrap().as_ref().unwrap().lock().unwrap()

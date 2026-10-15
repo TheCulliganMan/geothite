@@ -700,6 +700,16 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         ground: 0x11,
         kind: ModelKind::Bookcase,
     },
+    // The third-floor desk block packs the same bookcase on its west half.
+    AuthoredInteriorDrawing {
+        tileset: "mansion",
+        block: 0x18,
+        origin: [0, 1],
+        size: [2, 3],
+        tiles: &[0x36, 0x38, 0x22, 0x23, 0x32, 0x33],
+        ground: 0x11,
+        kind: ModelKind::Bookcase,
+    },
     // mansion 11 2,2 PottedPlant
     AuthoredInteriorDrawing {
         tileset: "mansion",
@@ -779,26 +789,6 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         tiles: &[0x20, 0x21, 0x30, 0x31],
         ground: 0x10,
         kind: ModelKind::WindowWall,
-    },
-    // lab 1a 0,0 LabRestorationMachine
-    AuthoredInteriorDrawing {
-        tileset: "lab",
-        block: 0x1a,
-        origin: [0, 0],
-        size: [2, 4],
-        tiles: &[0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10],
-        ground: 0x10,
-        kind: ModelKind::LabRestorationMachine,
-    },
-    // lab 1b 0,0 LabRestorationMachine
-    AuthoredInteriorDrawing {
-        tileset: "lab",
-        block: 0x1b,
-        origin: [0, 0],
-        size: [2, 4],
-        tiles: &[0x4c, 0x4d, 0x5c, 0x5d, 0x4e, 0x4f, 0x5e, 0x5f],
-        ground: 0x10,
-        kind: ModelKind::LabRestorationMachine,
     },
     // radio_tower 04 0,0 WallAcoustic
     AuthoredInteriorDrawing {
@@ -1422,6 +1412,10 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         tiles: &[0x38, 0x39, 0x05, 0x06, 0x05, 0x06, 0x15, 0x16],
         ground: 0x01, kind: ModelKind::LongPlanter,
     },
+    AuthoredInteriorDrawing {tileset:"underground",block:41,origin:[2,0],size:[2,3],
+        tiles:&[30,31,46,47,62,63],ground:16,kind:ModelKind::PottedPlant},
+    AuthoredInteriorDrawing {tileset:"underground",block:42,origin:[0,0],size:[2,3],
+        tiles:&[30,31,46,47,62,63],ground:16,kind:ModelKind::PottedPlant},
     // gate 02 0,0 WallClinical
     AuthoredInteriorDrawing {
         tileset: "gate",
@@ -1444,7 +1438,10 @@ fn append_signature_candidates(
     out: &mut Vec<Placement>,
 ) {
     for drawing in INTERIOR_DRAWINGS {
-        if kanto_native_room(map) && drawing.tileset=="players_house"
+        if drawing.tileset=="underground"&&map!="VermilionPortPassage" {continue;}
+
+        if reviewed_native_room(map) && !matches!(map,"PlayersHouse1F"|"PlayersHouse2F")
+            && drawing.tileset=="players_house"
             && drawing.kind==ModelKind::WallDomestic
             && drawing.tiles.iter().all(|tile|*tile==0x44) {
             // This native black void is room framing, not a cream wall panel.
@@ -1651,13 +1648,50 @@ mod signature_tests {
             "the unrelated Johto drawing retains its existing interpretation");
     }
     #[test]
+    fn kanto_port_plants_are_complete_volumes_with_source_pots_and_unchanged_footing() {
+        for drawing in INTERIOR_DRAWINGS.iter().filter(|d|d.tileset=="underground") {
+            let (tiles,g)=source_fixture(drawing);let refs=tiles.iter().collect::<Vec<_>>();
+            let p=resolve("VermilionPortPassage",&refs,&g,None).into_iter().find(|p|p.kind==ModelKind::PottedPlant).unwrap();
+            assert!(native_port_plant("VermilionPortPassage",&p,&refs,&g));
+            assert!(!native_port_plant("OlivinePortPassage",&p,&refs,&g));
+            let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],..Default::default()};
+            let mut claimed=vec![false;tiles.len()];
+            assert!(append(&mut mesh,"VermilionPortPassage",&refs,&g,&p,&mut claimed,[0,0]));
+            assert!(mesh.solid.indices.is_empty());assert_eq!(claimed.iter().filter(|&&x|x).count(),6);
+            assert_eq!(mesh.footing_heights,vec![1.25;tiles.len()]);
+            assert!(mesh.textured.positions.iter().any(|p|p[1]>20.));
+            let swatches=native_source_swatches(&p,&g,[[3,3],[4,4],[0,0],[4,19],[4,20],[3,19]]);
+            assert!(swatches.iter().all(|uv|mesh.textured.uvs.contains(uv)));
+            for i in p.indices(g.width) {let mut changed=tiles.clone();changed[i].source.tile_index^=128;
+                assert!(!resolve("VermilionPortPassage",&changed.iter().collect::<Vec<_>>(),&g,None).iter().any(|p|p.kind==ModelKind::PottedPlant));}
+        }
+    }
+    #[test]
     fn selected_signatures_are_complete_bounded_drawings() {
-        assert_eq!(INTERIOR_DRAWINGS.len(), 144);
+        assert_eq!(INTERIOR_DRAWINGS.len(), 145);
         for d in INTERIOR_DRAWINGS {
             assert_eq!(d.tiles.len(), d.size[0] * d.size[1]);
             assert!(d.origin[0] as usize + d.size[0] <= 4);
             assert!(d.origin[1] as usize + d.size[1] <= 4);
             assert!(d.size.iter().all(|&v| v > 0));
+        }
+    }
+    #[test]
+    fn kanto_native_mansion_bookcases_keep_both_complete_packed_occurrences() {
+        for block in [0x11,0x18] {
+            let d=INTERIOR_DRAWINGS.iter().find(|d|d.tileset=="mansion" && d.block==block
+                && d.kind==ModelKind::Bookcase).unwrap();
+            let (tiles,g)=source_fixture(d);let refs=tiles.iter().collect::<Vec<_>>();
+            let p=resolve("CeladonMansion3F",&refs,&g,None).into_iter().find(|p|p.kind==ModelKind::Bookcase).unwrap();
+            assert_eq!(p.indices(g.width).count(),6);
+            let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],..Default::default()};
+            assert!(append(&mut mesh,"CeladonMansion3F",&refs,&g,&p,&mut vec![false;tiles.len()],[0,0]));
+            assert_eq!(mesh.footing_heights,vec![1.25;tiles.len()]);
+            assert!(!mesh.solid.indices.is_empty() && !mesh.textured.indices.is_empty());
+            for i in p.indices(g.width) {let mut changed=tiles.clone();changed[i].source.tile_index^=0x80;
+                assert!(!resolve("CeladonMansion3F",&changed.iter().collect::<Vec<_>>(),&g,None)
+                    .iter().any(|p|p.kind==ModelKind::Bookcase));
+            }
         }
     }
     #[test]

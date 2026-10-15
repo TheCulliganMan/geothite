@@ -135,12 +135,22 @@ pub(super) fn valid_ground(map: &str, s: &Identity<'_>) -> bool {
         _ => false,
     }
 }
+pub(super) const TATAMI_ROOMS: &[&str] = &[
+    "DanceTheater",
+    "KurtsHouse",
+    "EcruteakItemfinderHouse",
+    "EcruteakLugiaSpeechHouse",
+    "MahoganyMart1F",
+    "VioletKylesHouse",
+    "VioletNicknameSpeechHouse",
+];
 pub(super) fn tatami_cell(map: &str, s: &Identity<'_>) -> bool {
-    matches!(map, "DanceTheater" | "KurtsHouse")
+    TATAMI_ROOMS.contains(&map)
         && s.tileset == "traditional_house"
-        && s.metatile == 0x04
         && s.column < 4
         && s.row < 4
+        && tatami_drawing(s.metatile)
+            .is_some_and(|drawing| drawing[usize::from(s.row)][usize::from(s.column)] == s.tile)
         && s.tile
             == [
                 [0x44, 0x45, 0x45, 0x46],
@@ -148,6 +158,79 @@ pub(super) fn tatami_cell(map: &str, s: &Identity<'_>) -> bool {
                 [0x45, 0x46, 0x44, 0x45],
                 [0x55, 0x56, 0x54, 0x55],
             ][usize::from(s.row)][usize::from(s.column)]
+}
+pub(super) fn tatami_drawing(block: u16) -> Option<[[u16; 4]; 4]> {
+    let mut drawing = [
+        [0x44, 0x45, 0x45, 0x46],
+        [0x54, 0x55, 0x55, 0x56],
+        [0x45, 0x46, 0x44, 0x45],
+        [0x55, 0x56, 0x54, 0x55],
+    ];
+    match block {
+        0x04 => {}
+        0x0c => drawing = [[0x23,0x24,0x51,0x26],[0x33,0x34,0x55,0x56],
+            [0x25,0x26,0x44,0x45],[0x55,0x56,0x54,0x55]],
+        0x14 => drawing = [[0x47,0x48,0x49,0x4a],[0x57,0x58,0x59,0x5a],
+            [0x45,0x46,0x44,0x45],[0x55,0x56,0x54,0x55]],
+        0x23 => drawing = [[0x11;4],[0x11;4],[0x0a,0x0b,0x44,0x45],
+            [0x1a,0x1b,0x54,0x55]],
+        0x33 => drawing = [[0x42,0x15,0x15,0x32],[0x23,0x24,0x51,0x51],
+            [0x33,0x34,0x44,0x45],[0x33,0x34,0x54,0x55]],
+        0x35 => drawing = [[0x32,0x1c,0x1d,0x43],[0x51,0x51,0x51,0x26],
+            [0x02,0x03,0x44,0x45],[0x12,0x13,0x54,0x55]],
+        0x36 => drawing = [[0x33,0x34,0x45,0x46],[0x33,0x34,0x55,0x56],
+            [0x25,0x26,0x44,0x45],[0x55,0x56,0x54,0x55]],
+        0x0e => {
+            drawing[0][..2].copy_from_slice(&[0x02, 0x03]);
+            drawing[1][..2].copy_from_slice(&[0x12, 0x13]);
+        }
+        0x10 => {
+            drawing[0][2..].copy_from_slice(&[0x02, 0x03]);
+            drawing[1][2..].copy_from_slice(&[0x12, 0x13]);
+        }
+        0x11 => {
+            drawing[0][..2].copy_from_slice(&[0x2d, 0x4b]);
+            drawing[1][..2].copy_from_slice(&[0x3d, 0x5b]);
+            drawing[2][..2].copy_from_slice(&[0x51, 0x26]);
+        }
+        0x15 => {
+            drawing[0][2..].copy_from_slice(&[0x2b, 0x2c]);
+            drawing[1][2..].copy_from_slice(&[0x3b, 0x3c]);
+            drawing[2][2..].copy_from_slice(&[0x25, 0x51]);
+        }
+        0x2e => {
+            drawing[0] = [0x50; 4];
+            drawing[1] = [0x0f, 0x0f, 0x5f, 0x5f];
+        }
+        0x18 => {
+            drawing[0][2..].copy_from_slice(&[0x42, 0x15]);
+            drawing[1][2..].copy_from_slice(&[0x33, 0x32]);
+            drawing[2][2..].copy_from_slice(&[0x25, 0x51]);
+        }
+        0x19 => {
+            drawing[0] = [0x15, 0x43, 0x02, 0x03];
+            drawing[1] = [0x32, 0x34, 0x12, 0x13];
+            drawing[2][..2].copy_from_slice(&[0x51, 0x26]);
+        }
+        0x1b => {
+            drawing[2] = [0x02, 0x03, 0x23, 0x22];
+            drawing[3] = [0x12, 0x13, 0x42, 0x15];
+        }
+        0x1c => {
+            drawing[2][..2].copy_from_slice(&[0x22, 0x24]);
+            drawing[3][..2].copy_from_slice(&[0x15, 0x43]);
+        }
+        0x2f => {
+            drawing[0] = [0x50; 4];
+            drawing[1] = [0x5f, 0x5f, 0x0f, 0x0f];
+        }
+        0x30 => {
+            drawing[0] = [0x50; 4];
+            drawing[1] = [0x0f; 4];
+        }
+        _ => return None,
+    }
+    Some(drawing)
 }
 pub(super) fn resolve(
     map: &str,

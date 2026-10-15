@@ -6,11 +6,15 @@ pub(super) const LABEL: &str = "outdoor/buoy-course";
 
 pub(super) fn source(s: &VisualTileSource) -> bool {
     matches!(s.tileset_id.as_ref(), "johto" | "johto_modern")
-        && (0x30..=0x39).contains(&s.metatile_id)
         && s.tile_index == 0x58
         && s.subtile_column < 4
         && s.subtile_row < 4
-        && matches!(shape_for_source(s),CellShape::PlaneAt {height} if height == crate::profile::WATER_HEIGHT)
+        && (((0x30..=0x39).contains(&s.metatile_id)
+            && matches!(shape_for_source(s),CellShape::PlaneAt {height} if height == crate::profile::WATER_HEIGHT))
+            || (s.tileset_id.as_ref()=="johto" && s.metatile_id==0x07
+                && s.subtile_column>=2 && matches!(shape_for_source(s),CellShape::Flat))
+            || (s.metatile_id==0x3a && (s.subtile_column>=2 || s.subtile_row>=2)
+                && matches!(shape_for_source(s),CellShape::Flat)))
 }
 
 // The dominant color is the water background. Keep only the largest connected
@@ -112,7 +116,9 @@ pub(super) fn append(
             continue;
         }
         let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
-        let expected = [[w, water, s], [e, water, s], [e, water, n], [w, water, n]];
+        let original_height=shape_for_source(&cells[i].source).surface_height(g.tile_height);
+        let expected = [[w, original_height, s], [e, original_height, s],
+            [e, original_height, n], [w, original_height, n]];
         if !p.iter().all(|v| expected.contains(v)) || expected.iter().any(|v| !p.contains(v)) {
             continue;
         }
@@ -161,13 +167,74 @@ pub(super) fn append(
         float(&mut mesh.textured, center, radius, g.tile_height, swatches);
         let (a, b, c, d) = g.uv(donor % g.width, donor / g.width);
         mesh.textured.uvs[q * 4..q * 4 + 4].copy_from_slice(&[[a, d], [b, d], [b, c], [a, c]]);
+        for p in &mut mesh.textured.positions[q*4..q*4+4] {p[1]=water;}
         mesh.authored_cells[i] = Some(LABEL);
         consumed.insert(i);
+    }
+    let raised=consumed.iter().copied().filter(|&i|
+        shape_for_source(&cells[i].source).surface_height(g.tile_height)>water+0.001)
+        .collect::<std::collections::HashSet<_>>();
+    retire_raised_banks(&mut mesh.textured,&raised,cells,g,water);
+    if !raised.is_empty() {
+        let old=std::mem::take(&mut mesh.solid.indices);
+        for tri in old.chunks_exact(3) {
+            let p=[mesh.solid.positions[tri[0] as usize],mesh.solid.positions[tri[1] as usize],
+                mesh.solid.positions[tri[2] as usize]];
+            if !raised_bank_face(&p,mesh.solid.normals[tri[0] as usize],&raised,cells,g,water) {
+                mesh.solid.indices.extend_from_slice(tri);
+            }
+        }
+    }
+}
+
+fn raised_bank_face(p: &[[f32;3]], normal: [f32;3], raised: &std::collections::HashSet<usize>,
+    cells: &[&VisualTile], g: &GridGeometry, water: f32) -> bool {
+    if normal[1].abs()>0.0001 {return false;}
+    let center=p.iter().map(|p|Vec3::from_array(*p)).sum::<Vec3>()/p.len() as f32
+        -Vec3::from_array(normal)*0.001;
+    let col=((center.x-g.origin_x)/g.tile_width).floor() as i32;
+    let row=((center.z-g.origin_z)/g.tile_height).floor() as i32;
+    if col<0 || row<0 || col>=g.width as i32 || row>=g.height as i32 {return false;}
+    let i=row as usize*g.width+col as usize;
+    if !raised.contains(&i) {return false;}
+    let (w,e,n,s)=g.bounds(col as usize,row as usize);
+    let top=shape_for_source(&cells[i].source).surface_height(g.tile_height);
+    p.iter().all(|p|p[0]>=w-0.001 && p[0]<=e+0.001 && p[2]>=n-0.001 && p[2]<=s+0.001
+        && p[1]>=water-0.001 && p[1]<=top+0.001)
+        && p.iter().any(|p|p[1]>water+0.001)
+}
+
+fn retire_raised_banks(surface: &mut SurfaceMeshData, raised: &std::collections::HashSet<usize>,
+    cells: &[&VisualTile], g: &GridGeometry, water: f32) {
+    if raised.is_empty() {return;}
+    let mut remove=std::collections::HashSet::new();
+    for (q,p) in surface.positions.chunks_exact(4).enumerate() {
+        if raised_bank_face(p,surface.normals[q*4],raised,cells,g,water) {remove.insert(q);}
+    }
+    if remove.is_empty() {return;}
+    let old=std::mem::take(surface);
+    let mut remap=vec![u32::MAX;old.positions.len()];
+    for (i,index) in remap.iter_mut().enumerate() {
+        if remove.contains(&(i/4)) {continue;}
+        *index=surface.positions.len() as u32;
+        surface.positions.push(old.positions[i]);surface.normals.push(old.normals[i]);
+        surface.uvs.push(old.uvs[i]);surface.colors.push(old.colors[i]);
+    }
+    for tri in old.indices.chunks_exact(3) {
+        let ids=[remap[tri[0] as usize],remap[tri[1] as usize],remap[tri[2] as usize]];
+        if ids.iter().all(|&i|i!=u32::MAX) {surface.indices.extend(ids);}
+    }
+    for range in old.cutaway_ranges {
+        let mut kept=remap[range].iter().copied().filter(|&i|i!=u32::MAX);
+        if let Some(start)=kept.next() {
+            let end=kept.last().unwrap_or(start)+1;
+            surface.cutaway_ranges.push(start as usize..end as usize);
+        }
     }
 }
 
 fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint: [[f32; 2]; 2]) {
-    let levels = [(-0.08, 0.70), (0.05, 1.0), (0.30, 0.30)];
+    let levels = [(-0.10, 0.65), (0.02, 1.0), (0.14, 0.70)];
     let rings: Vec<[Vec3; 12]> = levels
         .into_iter()
         .map(|(y, r)| {
@@ -181,7 +248,9 @@ fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint:
         for side in 0..12 {
             let next = (side + 1) % 12;
             let outward = (rings[row][side] - center).with_y(0.);
-            let uv = paint[1];
+            // The dark source outline belongs only to the mostly submerged
+            // lower rim; the broad exposed shoulder keeps its pale paint.
+            let uv = if row==0 {paint[1]} else {paint[0]};
             face(
                 out,
                 [rings[row][side], rings[row + 1][side], rings[row + 1][next]],
@@ -201,7 +270,7 @@ fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint:
             out,
             [
                 rings[2][side],
-                center + Vec3::Y * tile * 0.34,
+                center + Vec3::Y * tile * 0.20,
                 rings[2][(side + 1) % 12],
             ],
             Vec3::Y,
@@ -211,7 +280,7 @@ fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint:
             out,
             [
                 rings[0][side],
-                center - Vec3::Y * tile * 0.08,
+                center - Vec3::Y * tile * 0.10,
                 rings[0][(side + 1) % 12],
             ],
             Vec3::NEG_Y,
@@ -225,8 +294,7 @@ fn face(out: &mut SurfaceMeshData, mut p: [Vec3; 3], outward: Vec3, uv: [f32; 2]
         p.swap(1, 2);
     }
     let normal = (p[1] - p[0]).cross(p[2] - p[0]).normalize().to_array();
-    // Reuse the native prop face lighting. The original middle swatch owns
-    // the broad body; white is confined to the small crown above it.
+    // Reuse the native prop face lighting on the source-painted surface.
     let n = Vec3::from_array(normal);
     let x = direction_shade(if n.x < 0. {
         Direction::West
@@ -324,6 +392,64 @@ mod tests {
         (f.tiles, g, samples, mesh)
     }
     #[test]
+    fn final_buoy_corner_block_uses_both_verified_johto_atlases() {
+        for atlas in ["johto","johto_modern"] {
+            let (mut tiles,g,samples,mut mesh)=fixture();
+            tiles[0].source.tileset_id=atlas.into();
+            tiles[1].source.tileset_id=atlas.into();
+            tiles[0].source.metatile_id=0x3a;
+            tiles[0].source.subtile_row=2;
+            assert!(source(&tiles[0].source));
+            for p in &mut mesh.textured.positions[..4] {p[1]=0.;}
+            let footing=mesh.footing_heights.clone();
+            append(&mut mesh,&tiles.iter().collect::<Vec<_>>(),&g,&samples,&[false;2]);
+            assert_eq!(mesh.authored_cells[0],Some(LABEL));
+            assert_eq!(mesh.footing_heights,footing);
+            assert!(mesh.textured.positions[..4].iter().all(|p|p[1]==-2.));
+            tiles[0].source.subtile_row=0;
+            assert!(!source(&tiles[0].source),"the water quadrant is not a float");
+        }
+    }
+
+    #[test]
+    fn whirlpool_block_buoys_replace_their_flat_art_without_moving_footing() {
+        let (mut tiles,g,samples,mut mesh)=fixture();
+        tiles[0].source.metatile_id=0x07;
+        tiles[0].source.subtile_column=2;
+        assert!(source(&tiles[0].source));
+        for p in &mut mesh.textured.positions[..4] {p[1]=0.;}
+        append_textured_shoreline(&mut mesh.textured,&g,0,0,Direction::East,
+            [0.,8.,0.,8.],-2.,0.);
+        append_top(&mut mesh.textured,[24.,32.,0.,8.],3.,g.uv(1,0));
+        mesh.textured.cutaway_ranges.push(12..16);
+        append_quad_colors(&mut mesh.solid,[[0.,-2.,8.],[0.,0.,8.],[0.,0.,0.],[0.,-2.,0.]],
+            [-1.,0.,0.],[[0.;2];4],[[0.3,0.2,0.1,1.];4]);
+        append_quad_colors(&mut mesh.solid,[[24.,3.,8.],[32.,3.,8.],[32.,3.,0.],[24.,3.,0.]],
+            [0.,1.,0.],[[0.;2];4],[[0.4,0.4,0.4,1.];4]);
+        mesh.solid.cutaway_ranges.push(4..8);
+        let solid_kept=mesh.solid.indices[6..].to_vec();
+        let footing=mesh.footing_heights.clone();
+        append(&mut mesh,&tiles.iter().collect::<Vec<_>>(),&g,&samples,&[false;2]);
+        assert_eq!(mesh.authored_cells[0],Some(LABEL));
+        assert_eq!(mesh.footing_heights,footing);
+        assert!(mesh.textured.positions[..4].iter().all(|p|p[1]==-2.));
+        assert!(mesh.textured.positions.len()>8,"a native float replaces the source glyph");
+        assert_eq!(mesh.textured.cutaway_ranges,vec![8..12],"unrelated cutaways survive compaction");
+        assert_eq!(mesh.solid.indices,solid_kept,"only the false solid bank is retired");
+        assert_eq!(mesh.solid.cutaway_ranges,vec![4..8]);
+        assert!(mesh.textured.positions.contains(&[24.,3.,8.]));
+        assert!(!mesh.textured.positions.chunks_exact(4).enumerate().any(|(q,p)|
+            mesh.textured.normals[q*4][1].abs()<0.0001
+                && p.iter().all(|p|p[0]==8.) && p.iter().any(|p|p[1]>-2.)),
+            "the old buoy tile cannot leave a vertical raster bank");
+        tiles[0].source.subtile_column=0;
+        assert!(!source(&tiles[0].source),"the whirlpool quadrant is not a buoy");
+        tiles[0].source.subtile_column=2;
+        tiles[0].source.tileset_id="johto_modern".into();
+        assert!(!source(&tiles[0].source),"do not infer Modern block07 art");
+    }
+
+    #[test]
     fn native_course_reuses_water_bed_and_source_paint_without_moving_footing() {
         let (tiles, g, samples, mut mesh) = fixture();
         let refs: Vec<_> = tiles.iter().collect();
@@ -339,7 +465,7 @@ mod tests {
                 .all(|p| p[0] > 0. && p[0] < 8. && p[2] > 0. && p[2] < 8.)
         );
         assert!(float.iter().any(|p| p[1] < -2.));
-        assert!(float.iter().any(|p| p[1] > 0.));
+        assert!(float.iter().any(|p| p[1] > -1.5),"the float emerges above its water bed");
         assert!(
             mesh.textured.uvs[8..]
                 .iter()
@@ -365,7 +491,7 @@ mod tests {
         );
         assert_eq!(mesh.footing_heights, vec![0., -2.]);
         assert!(
-            mesh.textured.positions.iter().any(|p| p[1] > 0.),
+            mesh.textured.positions.iter().any(|p| p[1] > -1.5),
             "the float survives ground finishing"
         );
     }

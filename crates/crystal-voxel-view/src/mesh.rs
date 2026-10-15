@@ -9,6 +9,10 @@ mod live;
 
 #[path = "mesh/buoy_course.rs"]
 mod buoy_course;
+#[path = "mesh/kanto_paving.rs"]
+mod kanto_paving;
+#[path = "mesh/kanto_shore.rs"]
+mod kanto_shore;
 #[path = "mesh/shore_ecology.rs"]
 mod shore_ecology;
 
@@ -85,14 +89,64 @@ mod city_gardens;
 mod city_railway;
 #[path = "mesh/modeled_exteriors.rs"]
 mod modeled_exteriors;
+#[path = "mesh/mountain_portals.rs"]
+mod mountain_portals;
 #[path = "mesh/modeled_interiors.rs"]
 mod modeled_interiors;
 #[path = "mesh/new_bark.rs"]
 mod new_bark;
+#[path = "mesh/source_forest_floor.rs"]
+mod source_forest_floor;
 #[path = "mesh/ledge_approach.rs"]
 mod ledge_approach;
+#[path = "mesh/terraces.rs"]
+mod terraces;
+#[path = "mesh/rigid_buildings.rs"]
+mod rigid_buildings;
+#[path = "mesh/league_terraces.rs"]
+mod league_terraces;
+#[path = "mesh/lance_terraces.rs"]
+mod lance_terraces;
+#[path = "mesh/hall_machine.rs"]
+mod hall_machine;
+#[path = "mesh/soul_offerings.rs"]
+mod soul_offerings;
+pub(crate) fn native_healing_owner_allows(frame:&VisualWorldFrame,profiles:&crate::live_profiles::Document,column:usize,row:usize)->bool {
+    let cells=frame.tiles.iter().collect::<Vec<_>>();
+    let g=GridGeometry{width:frame.grid_size.x as usize,height:frame.grid_size.y as usize,
+        tile_width:frame.tile_size.x,tile_height:frame.tile_size.y,origin_x:0.,origin_z:0.};
+    modeled_interiors::native_healing_owner_allows(&frame.map_id,&cells,&g,profiles,column,row)
+}
+pub(crate) fn native_clinic_map(map:&str)->bool {
+    modeled_interiors::kanto_native_floor_map(map)&&map.ends_with("Pokecenter1F")
+}
+pub(crate) fn traditional_tabletop_height(frame:&VisualWorldFrame,
+    profiles:Option<&crate::live_profiles::Document>,point:bevy::prelude::Vec2)->Option<f32> {
+    let cell=crate::tile_at_visual_point(frame,point)?;
+    let cells=frame.tiles.iter().collect::<Vec<_>>();
+    let g=GridGeometry{width:frame.grid_size.x as usize,height:frame.grid_size.y as usize,
+        tile_width:frame.tile_size.x,tile_height:frame.tile_size.y,origin_x:0.,origin_z:0.};
+    modeled_interiors::traditional_tabletop_height(&frame.map_id,&cells,&g,profiles,
+        cell.x as usize,cell.y as usize)
+}
+pub(crate) fn hall_stair_support_correction(frame:&VisualWorldFrame,
+    cell:bevy::prelude::UVec2,foot:bevy::prelude::Vec2,resolved:&[f32])->f32 {
+    hall_machine::support_correction(frame,cell,foot,resolved)
+}
+pub(crate) fn league_stair_support_correction(frame:&VisualWorldFrame,
+    cell:bevy::prelude::UVec2,foot:bevy::prelude::Vec2,resolved:&[f32])->f32 {
+    league_terraces::support_correction(frame,cell,foot,resolved)
+}
+#[path = "mesh/terrace_levels.rs"]
+mod terrace_levels;
+pub(crate) fn terrace_support_correction(frame: &VisualWorldFrame, cell: bevy::prelude::UVec2,
+    foot: bevy::prelude::Vec2) -> f32 {
+    terraces::support_correction(frame,cell,foot)
+}
 #[path = "mesh/outdoor_stone.rs"]
 mod outdoor_stone;
+#[path = "mesh/slowpoke_well.rs"]
+mod slowpoke_well;
 #[path = "mesh/rock_bases.rs"]
 mod rock_bases;
 #[path = "mesh/ordinary_house.rs"]
@@ -260,6 +314,8 @@ impl SurfaceMeshData {
         self.cutaway_ranges.clear();
         let mut mesh = self.into_mesh();
         mesh.insert_indices(indices);
+        #[cfg(target_arch = "wasm32")]
+        crate::browser_memory::align_indices(&mut mesh);
         crate::compact_vertices::remove_constant_color_alpha(&mut mesh);
         mesh
     }
@@ -299,6 +355,14 @@ impl SurfaceMeshData {
 /// generated thickness, so source artwork can never be stretched down a wall.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct TerrainMeshData {
+    /// Layered forest gateways share one visibility sample when they fade.
+    pub(crate) coverage_fade_ranges: Vec<std::ops::Range<usize>>,
+    /// Source-authored cabinets use depth-writing coverage during reveal;
+    /// their closed faces must not blend over one another during restoration.
+    pub(crate) depth_coverage_textured_ranges: Vec<std::ops::Range<usize>>,
+    /// Authored structures translate at their doorway support; terrain grades
+    /// must not bend roof decks through independently tessellated tiles.
+    pub(crate) rigid_buildings: Vec<rigid_buildings::Building>,
     pub(crate) scenery: Vec<crate::scenery_surfaces::ScenerySurface>,
     pub(crate) background: Option<RepeatingBackground>,
     pub(crate) tree_instances: Vec<TreeMeshInstance>,
@@ -511,6 +575,7 @@ pub(crate) struct RuntimeTerrainBuild {
     pub terrain: TerrainMeshData,
     pub grove_groups: Vec<crate::occluder_fade::PreparedGroup>,
     pub grove_opaque: Vec<SurfaceMeshData>,
+    pub streamed_groves: Option<std::sync::Arc<StreamedGroves>>,
 }
 
 /// Prepare completed grove objects individually. Each source buffer is released
@@ -521,54 +586,49 @@ pub(crate) fn build_runtime_terrain_mesh_with_profiles(
     samples: &TerrainImageSamples,
     profiles: &crate::live_profiles::Document,
 ) -> Result<RuntimeTerrainBuild, TerrainMeshError> {
-    let mut grove_groups = Vec::new();
-    let mut grove_opaque = Vec::new();
-    let compact_grove_uvs = {
-            let material = crate::solid_terrain_material();
-            crate::compact_vertices::solid_uv0_is_unused(
-                &material.base, material.extension.water_enabled,
-            )
-        };
-    let mut sink = |source: SurfaceMeshData| {
-        let (opaque, mut groups) = crate::occluder_fade::prepare(source);
-        // Stock grove palettes have no UV-driven textures or water effects.
-        // All-zero coordinates enable no tagged shader branch; release them
-        // per grove, while nonzero/tagged coordinates remain untouched.
-        if compact_grove_uvs {
-            crate::occluder_fade::compact_palette_group_uv0(&mut groups);
-        }
-        grove_groups.extend(groups);
-        // Preserve uncertain geometry too, using the ordinary static domain.
-        if !opaque.indices.is_empty() {
-            grove_opaque.push(opaque);
-        }
-    };    let terrain = build_terrain_mesh_internal(
-        frame, Some(samples), true, Some(profiles), Some(&mut sink), None,
-    )?;    Ok(RuntimeTerrainBuild { terrain, grove_groups, grove_opaque })
+    let _trace = crate::loading_trace::span("region.build_runtime", || serde_json::json!({"map": frame.map_id.as_ref()}));
+    let mut pending = begin_runtime_terrain_mesh_with_profiles(frame, samples, profiles)?;
+    while !pending.advance(64) {}
+    Ok(pending.finish())
 }
 
 /// Exact source context for groves whose expansion is deferred across updates.
-#[derive(Default)]
+#[derive(Default, Clone)]
 struct DeferredGroves {
+    bank_regions: std::sync::OnceLock<Vec<[f32;4]>>,
     recipes: std::collections::VecDeque<new_bark::GroveRecipe>,
+    geometry: Option<GridGeometry>,
+    origin: [i32; 2],
+    jump_ledges: std::sync::Arc<[crystal_render_api::VisualJumpLedge]>,
     cells: Vec<VisualTile>,
     shapes: Vec<CellShape>,
-    geometry: Option<GridGeometry>,
     claims: Vec<Option<&'static str>>,
-    origin: [i32; 2],
 }
 impl DeferredGroves {
-    fn next(&mut self) -> Option<SurfaceMeshData> {
+    fn next(&mut self) -> Option<Vec<crate::occluder_fade::PreparedGroup>> {
         let recipe = self.recipes.pop_front()?;
-        let cells: Vec<_> = self.cells.iter().collect();
-        let mut object = TerrainMeshData {
-            authored_cells: self.claims.clone(), ..Default::default()
-        };
-        recipe.append(&mut object);
-        ledge_approach::finish_detached_grove(&mut object, &cells,
-            self.geometry.as_ref().expect("deferred source geometry"),
-            &self.shapes, self.origin);
-        Some(object.solid)
+        Some(self.prepare_recipe(recipe, None))
+    }
+    fn prepare_recipe(&self, recipe: new_bark::GroveRecipe, library: Option<&crate::forest_instances::Library>) -> Vec<crate::occluder_fade::PreparedGroup> {
+        let _trace = crate::loading_trace::span("tree.prepare_exact_instance", || serde_json::json!({"coordinates":recipe.coordinates_for_trace()}));
+        let g=self.geometry.as_ref().expect("deferred source geometry");
+        if self.jump_ledges.is_empty() {
+            let regions = self.bank_regions.get_or_init(|| ledge_approach::grove_bank_regions(&self.cells,g));
+            if !ledge_approach::grove_may_touch_bank(recipe.conservative_bounds(),regions) {
+                return if let Some(library) = library { recipe.prepare_instanced(library) } else { recipe.prepare_shared() };
+            }
+            let coverage = recipe.coverage_fade;
+            let mut object=TerrainMeshData {authored_cells:self.claims.clone(),..Default::default()};
+            recipe.append(&mut object);
+            let cells=self.cells.iter().collect::<Vec<_>>();
+            ledge_approach::finish_detached_grove(&mut object,&cells,g,&self.shapes,self.origin);
+            let mut groups = crate::shared_groves::prepare_surface(object.solid);
+            crate::occluder_fade::set_coverage_fade(&mut groups, coverage);
+            groups
+        } else {
+            let recipe = recipe.on_terrace(&self.jump_ledges,g,self.origin);
+            if let Some(library) = library { recipe.prepare_instanced(library) } else { recipe.prepare_shared() }
+        }
     }
 }
 
@@ -576,7 +636,25 @@ pub(crate) struct PendingRuntimeTerrain {
     result: RuntimeTerrainBuild,
     groves: DeferredGroves,
 }
+pub(crate) struct StreamedGroves { source: DeferredGroves }
+impl StreamedGroves {
+    pub(crate) fn bounds(&self, index: usize) -> (Vec3, Vec3) {
+        let recipe = self.source.recipes[index].clone().on_terrace(&self.source.jump_ledges,
+            self.source.geometry.as_ref().unwrap(), self.source.origin);
+        recipe.conservative_bounds()
+    }
+    pub(crate) fn len(&self) -> usize { self.source.recipes.len() }
+    pub(crate) fn prepare(&self, index: usize, library: &crate::forest_instances::Library) -> Vec<crate::occluder_fade::PreparedGroup> {
+        self.source.prepare_recipe(self.source.recipes[index].clone(), Some(library))
+    }
+}
 impl PendingRuntimeTerrain {
+    pub(crate) fn into_streamed(mut self) -> RuntimeTerrainBuild {
+        if !self.groves.recipes.is_empty() {
+            self.result.streamed_groves = Some(std::sync::Arc::new(StreamedGroves { source: self.groves }));
+        }
+        self.result
+    }
     /// Prepare at most this many complete source objects; no geometry is skipped.
     pub(crate) fn advance(&mut self, objects: usize) -> bool {
         self.advance_inner(objects, None)
@@ -585,18 +663,19 @@ impl PendingRuntimeTerrain {
         self.advance_inner(objects, Some(meshes))
     }
     fn advance_inner(&mut self, objects: usize, mut meshes: Option<&mut Assets<Mesh>>) -> bool {
-        let palette = crate::solid_terrain_material();
-        let compact_uvs = crate::compact_vertices::solid_uv0_is_unused(
-            &palette.base, palette.extension.water_enabled);
+        let started = bevy::platform::time::Instant::now();
+        let interactive = meshes.is_some();
+        let _trace = crate::loading_trace::span("region.prepare_tree_instances", || serde_json::json!({"remaining": self.groves.recipes.len(), "budget": objects}));
         for _ in 0..objects {
-            let Some(source) = self.groves.next() else { break; };
-            let (opaque, mut groups) = crate::occluder_fade::prepare(source);
-            if compact_uvs { crate::occluder_fade::compact_palette_group_uv0(&mut groups); }
+            let Some(mut groups) = self.groves.next() else { break; };
             if let Some(meshes) = meshes.as_deref_mut() {
                 crate::occluder_fade::stage_group_meshes(&mut groups, meshes);
             }
             self.result.grove_groups.extend(groups);
-            if !opaque.indices.is_empty() { self.result.grove_opaque.push(opaque); }
+            // Warm regions can place many shared trees in one frame. Stop at
+            // the time budget after each whole object, rather than imposing an
+            // eight-second one-tree-per-frame wait on a large source halo.
+            if interactive && started.elapsed().as_secs_f64() >= 0.004 { break; }
         }
         self.groves.recipes.is_empty()
     }
@@ -619,7 +698,7 @@ pub(crate) fn begin_runtime_terrain_mesh_with_profiles(
     terrain.animated_solid.compact_build_storage();
     terrain.animated_textured.compact_build_storage();
     Ok(PendingRuntimeTerrain {
-        result: RuntimeTerrainBuild { terrain, grove_groups: Vec::new(), grove_opaque: Vec::new() },
+        result: RuntimeTerrainBuild { terrain, grove_groups: Vec::new(), grove_opaque: Vec::new(), streamed_groves: None },
         groves,
     })
 }
@@ -828,6 +907,16 @@ fn append_johto_vertical_fences(
                 } else {
                     1
                 };
+            if let Some(palette)=modeled_exteriors::fence_palette(images,
+                &[cells[upper],cells[lower]]) {
+                for segment in 0..segments {
+                    let za=z0+segment as f32*geometry.tile_height;
+                    modeled_exteriors::append_vertical_fence(mesh,geometry,index,
+                        [za,za+geometry.tile_height],plane_x,palette);
+                }
+                claimed[index]=true;
+                continue;
+            }
             for segment in 0..segments {
                 let segment_z = z0 + segment as f32 * geometry.tile_height;
                 for (band, source_index) in courses.iter().copied().enumerate() {
@@ -2370,14 +2459,18 @@ fn traditional_house_radio_placements(
     placements
 }
 
+pub(crate) fn traditional_tatami_floor_source(map: &str, source: &VisualTileSource) -> bool {
+    traditional_room::tatami_source(map, source)
+}
+
 fn traditional_house_cushion_placements(
     map: &str,
     cells: &[&VisualTile],
     geometry: &GridGeometry,
 ) -> Vec<TreePlacement> {
-    // Native block 04 is continuous FLOOR in these two maps. Keep this
+    // Native block 04 is continuous FLOOR in the reviewed traditional rooms. Keep this
     // explicit even if a future scene happens to supply flat source 50.
-    if traditional_room::floor_map(map) { return Vec::new(); }
+    if traditional_room::floor_map(map)||map=="MountMoonGiftShop" { return Vec::new(); }
     grouped_flat_card_placements(
         cells,
         geometry,
@@ -4665,10 +4758,18 @@ fn append_kanto_building_placements(
                 }
             }
         }
+        // Route8's underground entrance uses the alternate hipped roof,
+        // with the same exact $10/$66 doorway facade as Route7.
+        if first == 0x0c && at(x+4,y)==Some(0x0e)
+            && at(x,y+4)==Some(0x10) && at(x+4,y+4)==Some(0x66) {
+            add(x,y,2,2,4);
+        }
+        // Underground entrances at the city/route joins share the blue roof
+        // but use their own complete doorway facade (Route7: $10/$66).
         if first == 0x38
             && at(x + 4, y) == Some(0x39)
-            && at(x, y + 4) == Some(0x3c)
-            && at(x + 4, y + 4) == Some(0x3d)
+            && matches!((at(x, y + 4), at(x + 4, y + 4)),
+                (Some(0x3c), Some(0x3d)) | (Some(0x10), Some(0x66)))
         {
             add(x, y, 2, 2, 4);
         }
@@ -9732,3 +9833,41 @@ mod cutaway_tests;
 #[cfg(test)]
 #[path = "mesh/reveal_batch_tests.rs"]
 mod reveal_batch_tests;
+
+/// Complete furniture claims shared with the scenery mesher. Coordinates use
+/// source-grid cells, so camera motion cannot start or stop a sitting animation.
+pub(crate) fn seating_surfaces(frame: &VisualWorldFrame, profiles: Option<&crate::live_profiles::Document>) -> Vec<crate::seating::Seat> {
+    let width = frame.grid_size.x as usize;
+    let height = frame.grid_size.y as usize;
+    if width == 0 || height == 0 { return Vec::new(); }
+    let mut cells = vec![None; width * height];
+    for tile in &frame.tiles {
+        if tile.column < frame.grid_size.x && tile.row < frame.grid_size.y {
+            cells[tile.row as usize * width + tile.column as usize] = Some(tile);
+        }
+    }
+    let Some(cells) = cells.into_iter().collect::<Option<Vec<_>>>() else { return Vec::new(); };
+    let geometry = GridGeometry { width, height, tile_width: frame.tile_size.x,
+        tile_height: frame.tile_size.y, origin_x: 0., origin_z: 0. };
+    let mut seats = Vec::new();
+    for p in modeled_interiors::resolve(&frame.map_id, &cells, &geometry, profiles) {
+        let source = &cells[p.row * width + p.column].source;
+        if let Some(height) = p.seat_height_pixels(&frame.map_id, source) {
+            let yaw = if source.tileset_id.as_ref() == "gate" {
+                match source.metatile_id { 0x32 => -std::f32::consts::FRAC_PI_2,
+                    0x35 => std::f32::consts::FRAC_PI_2, _ => 0. }
+            } else { 0. };
+            seats.push(crate::seating::Seat { rect: [p.column as f32, p.row as f32,
+                p.width as f32, p.height as f32], height: height * frame.tile_size.y / 8.,
+                yaw: matches!(p.kind, crate::interior_models::ModelKind::Chair | crate::interior_models::ModelKind::LinkSeat | crate::interior_models::ModelKind::StationBench).then_some(yaw) });
+        }
+    }
+    let bench = crate::exterior_models::model(crate::exterior_models::Kind::ParkBench);
+    let cushion = crate::seating::cushion_height(&bench.surface.positions, &bench.surface.indices).unwrap_or(bench.max[1]);
+    let bench_height = (cushion - bench.min[1]) * 1.5 * frame.tile_size.y / (bench.max[1] - bench.min[1]);
+    for p in park_bench_placements(&cells, &geometry) {
+        seats.push(crate::seating::Seat { rect: [p.column as f32, p.row as f32,
+            p.width as f32, 2.], height: bench_height, yaw: Some(0.) });
+    }
+    seats
+}

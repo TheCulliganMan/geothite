@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Validate canonical bat topology, anatomy and stored face contact."""
-import json,unittest
+import unittest
 from pathlib import Path
+from bat_glb import decode_bat
 from bat_sculpt import SPECIES,HEIGHT,sculpture
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
@@ -10,17 +11,18 @@ ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battl
 
 class BatTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+    def setUpClass(cls):cls.models={s:decode_bat((ROOT/(s+'.glb')).read_bytes(),s) for s in SPECIES}
     def test_closed_connected_oriented_solids(self):assert_closed_models(self,self.models)
     def test_normals_match_actual_triangles(self):assert_model_shading(self,self.models)
     def test_recipe_dimensions_and_budget(self):
         for s,m in self.models.items():
-            self.assertEqual(m,sculpture(s));ps=m['primitives']
+            from bat_glb import geometry_digest
+            self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));ps=m['primitives']
             self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
             self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6)
             self.assertEqual(len(ps),len({p['part'] for p in ps}))
             self.assertLess(sum(len(p['indices'])//3 for p in ps),6000)
-            self.assertLess(len(json.dumps(m,separators=(',',':'))),500000)
+            self.assertLess((ROOT/(s+'.glb')).stat().st_size,500000)
     def test_distinct_wing_and_face_anatomy(self):
         for s,m in self.models.items():
             ps=m['primitives'];names=[p['part'] for p in ps]

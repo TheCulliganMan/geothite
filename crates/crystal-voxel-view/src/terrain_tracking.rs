@@ -11,6 +11,7 @@ pub(super) fn offset(built: &VisualWorldFrame, live: &VisualWorldFrame) -> Vec2 
 pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bool {
     if built.map_id != live.map_id
         || built.source_map_size_core_tiles != live.source_map_size_core_tiles
+        || built.jump_ledges != live.jump_ledges
         || built.grid_size != live.grid_size
         || built.tile_size != live.tile_size
         || built.viewport_size != live.viewport_size
@@ -39,8 +40,11 @@ pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bo
             if a.source != b.source || a.priority != b.priority {
                 return false;
             }
+            let well_paint = b.source.tileset_id.as_ref() == "johto_modern"
+                && (0x5b..=0x5e).contains(&b.source.metatile_id)
+                && matches!(b.source.tile_index, 0x29 | 0x5b);
             if a.texture != b.texture
-                && !matches!(
+                && (well_paint || !matches!(
                     crate::profile::shape_for_source_on_map(live.map_id.as_ref(), &b.source),
                     crate::profile::CellShape::Flat
                         | crate::profile::CellShape::Water
@@ -49,7 +53,7 @@ pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bo
                             solid: crate::profile::SolidKind::Flower,
                             ..
                         }
-                )
+                ))
             {
                 return false;
             }
@@ -167,6 +171,52 @@ mod tests {
         frame
     }
     #[test]
+    fn source_painted_johto_fences_and_roofs_refresh_when_palette_handles_change() {
+        for (metatile,row,tile) in [(0x40,0,0x5a),(0x40,1,0x59),(0x18,0,0x20)] {
+            let mut built=frame(IVec2::ZERO);
+            built.map_id="CherrygroveCity".into();
+            built.tiles[400].source=VisualTileSource {
+                tileset_id:"johto".into(),metatile_id:metatile,
+                subtile_column:0,subtile_row:row,tile_index:tile,
+            };
+            let mut live=built.clone();
+            assert!(can_reuse(&built,&live));
+            // The source renderer publishes a different paletted image handle
+            // at a time-of-day boundary. Baked source paint must be resampled,
+            // even though the map layout and authoritative footing are identical.
+            live.tiles[400].texture=Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(999999),std::marker::PhantomData);
+            assert!(!can_reuse(&built,&live),"stale source paint for {metatile:x}/{tile:x}");
+            assert_eq!(built.grid_origin,live.grid_origin);
+            assert_eq!(built.tiles[400].source,live.tiles[400].source);
+        }
+    }
+
+    #[test]
+    fn well_stone_and_stair_palette_changes_rebuild_baked_paint() {
+        for (block, column, row, tile) in [(0x5b, 0, 0, 0x29), (0x5d, 2, 0, 0x5b)] {
+            let mut built = frame(IVec2::ZERO);
+            built.map_id = "AzaleaTown".into();
+            built.tiles[400].source = VisualTileSource {
+                tileset_id: "johto_modern".into(), metatile_id: block,
+                subtile_column: column, subtile_row: row, tile_index: tile,
+            };
+            assert!(matches!(crate::profile::shape_for_source(&built.tiles[400].source),
+                crate::profile::CellShape::Flat));
+            let mut live = built.clone();
+            assert!(can_reuse(&built, &live));
+            live.tiles[400].texture = Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(999999), std::marker::PhantomData);
+            assert!(!can_reuse(&built, &live));
+            assert_eq!(built.tiles[400].source, live.tiles[400].source);
+            // Flat lawn animation still follows the atlas-only refresh path.
+            built.tiles[400].source.tile_index = 0x05;
+            live.tiles[400].source = built.tiles[400].source.clone();
+            assert!(can_reuse(&built, &live));
+        }
+    }
+
+    #[test]
     fn walking_reuses_geometry_but_changes_and_halo_exhaustion_rebuild() {
         let built = frame(IVec2::ZERO);
         for direction in [IVec2::X, IVec2::NEG_X, IVec2::Y, IVec2::NEG_Y] {
@@ -184,6 +234,11 @@ mod tests {
         changed = frame(IVec2::new(2, 0));
         changed.source_map_size_core_tiles = Some(UVec2::splat(20));
         assert!(!can_reuse(&built, &changed), "changed source acreage requires a new partition");
+        changed = frame(IVec2::new(2, 0));
+        changed.jump_ledges = vec![crystal_render_api::VisualJumpLedge {
+            start: IVec2::new(0,4), end: IVec2::new(8,4), descent: IVec2::Y,
+        }].into();
+        assert!(!can_reuse(&built, &changed), "changed authored jump levels require new terrain support");
     }
     #[test]
     fn flower_animation_does_not_rebuild_static_terrain() {

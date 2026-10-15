@@ -169,7 +169,31 @@ pub(super) fn parse_planter<'a>(
         }
         filtered
     });
+    let hall_terminal_pixels = original.hall_terminal_pixels.map(|pixels| {
+        let mut filtered = vec![[0; 2]; surface.positions.len()];
+        for (old, &new) in remap.iter().enumerate() {
+            if new != u32::MAX { filtered[new as usize] = pixels[old]; }
+        }
+        filtered
+    });
+    let mansion_hut_materials = original.mansion_hut_materials.map(|roles| {
+        let mut filtered = vec![0; surface.positions.len()];
+        for (old, &new) in remap.iter().enumerate() {
+            if new != u32::MAX { filtered[new as usize] = roles[old]; }
+        }
+        filtered
+    });
+    let theater_stage_materials = original.theater_stage_materials.map(|roles| {
+        let mut filtered = vec![0; surface.positions.len()];
+        for (old, &new) in remap.iter().enumerate() {
+            if new != u32::MAX { filtered[new as usize] = roles[old]; }
+        }
+        filtered
+    });
     Ok(Model {
+        theater_stage_materials,
+        hall_terminal_pixels,
+        mansion_hut_materials,
         surface: surface.into(),
         gym_stone_pixels,
         pewter_guardian_pixels,

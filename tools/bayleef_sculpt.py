@@ -251,6 +251,11 @@ def sculpt():
     parts.append(tube(TAIL,'body',[(0.,.336,-.313),(.007,.343,-.382),(.015,.385,-.454),(.020,.448,-.486),(.022,.465,-.475)],(.051,.044,.031,.014,.003),8))
     parts.append(tube(STEM,'leaf',[(0.,.962,.245),(0.,.994,.282),(.002,1.032,.278)],(.018,.017,.014),8))
     parts.append(leaf_mesh())
+    # Axis points from trigonometric cage construction can retain platform-
+    # dependent residues around 1e-18. Snap only sub-femtometre positions,
+    # after topology construction, so the stored neutral bytes are portable.
+    for part in parts:
+        part['positions']=[0.0 if abs(v)<1e-15 else v for v in part['positions']]
     return {'name':'bayleef','version':1,'coordinate_system':COORDINATES,'primitives':parts}
 
 

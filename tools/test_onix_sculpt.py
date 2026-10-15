@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Long connected Onix rock chain, fitted eyes and grounded tail supports."""
-import copy,json,os,re,unittest
+import copy,json,os,re,struct,unittest
 from pathlib import Path
 from onix_sculpt import sculpture,HEIGHT,CHAIN,body_reference_span
+from onix_glb import read_onix
 from sculpt_geometry import translate
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_kingdra_sculpt import crossed_faces
@@ -10,7 +11,7 @@ import test_nidorina_sculpt as attachment_checks
 ROOT=Path(os.environ.get('CRYSTAL_ONIX_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/actor_props'))
 class OnixTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'big_onix.mesh.json').read_bytes())
+ def setUpClass(cls):cls.model=read_onix(ROOT/'onix.glb' if os.environ.get('CRYSTAL_ONIX_TEST_MODELS') else ROOT.parent/'battle_species/onix.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachment_checks.NidorinaTests.find
  overlap=attachment_checks.NidorinaTests.overlap
@@ -19,7 +20,11 @@ class OnixTests(unittest.TestCase):
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'onix':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'onix':self.m})
  def test_recipe_parity_bounds_and_long_chain(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),45000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  expected=sculpture()
+  for a,b in zip(self.ps,expected['primitives']):
+   self.assertEqual(a['part'],b['part']);self.assertEqual(a['indices'],b['indices']);self.assertEqual(a['base_color'],b['base_color'])
+   for key in ('positions','normals'):self.assertEqual(struct.pack('<'+'f'*len(a[key]),*a[key]),struct.pack('<'+'f'*len(b[key]),*b[key]))
+  self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),45000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for label,n in (('Rock segment /',13),('Joint /',12),('Head /',1),('Eye /',2),('Pupil /',2),('Nose ridge /',1),('Jaw /',1),('Horn /',1)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
  def test_every_adjacent_boulder_and_buried_joint_has_a_volume_root(self):
   for j in range(len(CHAIN)-1):

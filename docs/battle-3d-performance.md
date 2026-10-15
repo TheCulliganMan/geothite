@@ -40,10 +40,12 @@ The physical-size/shared-camera integration has no new performance certification
 The measurements above describe the earlier renderer and cannot establish the
 cost of the current framing or optional extracted-row path.
 
-`CRYSTAL_BATTLE_ROW_PROTOTYPE=1` enables only the native Tackle/Water Gun pilot
-listed in [immersive battles](immersive-battles.md). An additional
+Tackle requests modeled rows by default, with the source-program and complete-OAM
+checks listed in [immersive battles](immersive-battles.md). Water Gun remains
+experimental: native review uses `CRYSTAL_BATTLE_ROW_PROTOTYPE=1`, and
+location-tester browser builds accept `battle-row-prototype=on`. An additional
 `CRYSTAL_BATTLE_ROW_CAPTURE_CACHE=1` enables static actor-capture reuse for that
-pilot. Both switches are off by default and disabled in WebAssembly. Readiness
+path. Capture reuse is off by default and disabled in WebAssembly. Readiness
 requires a matching successful draw, output blit and submitted frame; a fixed
 frame delay never makes a capture valid. Appearance, camera, lighting, material,
 image and target-size changes invalidate the relevant capture. Pending or

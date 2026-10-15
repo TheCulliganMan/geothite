@@ -8,7 +8,7 @@ from pathlib import Path
 source = Path(__file__).with_name('build-new-bark-models.py').read_text()
 exec(compile(source.split('\nmake_house();')[0], 'new_bark_modeling_vocabulary', 'exec'))
 from mathutils import Matrix
-for n,c in {'roof_blue':(.18,.34,.55),'roof_blue_light':(.31,.48,.69),'roof_blue_dark':(.11,.22,.37),'roof_blue_warm':(.23,.40,.61),'violet':(.38,.29,.45),'violet_light':(.53,.44,.59),'violet_dark':(.24,.19,.32),'violet_warm':(.44,.34,.49)}.items():
+for n,c in {'roof_blue':(.18,.34,.55),'roof_blue_light':(.31,.48,.69),'roof_blue_dark':(.11,.22,.37),'roof_blue_warm':(.23,.40,.61),'violet':(.38,.29,.45),'violet_light':(.53,.44,.59),'violet_dark':(.24,.19,.32),'violet_warm':(.44,.34,.49),'plaster_service_wall':(.98,.91,.73),'plaster_service_mortar':(.88,.86,.77)}.items():
  m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True
  m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*c,1)
  m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=.86
@@ -18,25 +18,69 @@ def beam(n,a,b,w,d,mat):
  a=Vector(a);b=Vector(b);o=cube(n,(a+b)/2,(w,d,(b-a).length),mat,.012)
  o.rotation_euler=(b-a).to_track_quat('Z','Y').to_euler();return o
 
-def medallion(y,z,palette='roof_red'):
- # A carved circular healing emblem, assembled from original solid geometry.
- o=cone('Round service insignia',(0,y,z),.265,.265,.075,'plaster_light',20);o.rotation_euler.x=math.pi/2
- o=cone('Inset service insignia',(0,y-.045,z),.214,.214,.026,palette,20);o.rotation_euler.x=math.pi/2
- facade_cube('Insignia horizontal band',0,z,.43,.060,y-.065,.024,'plaster_light')
- o=cone('Insignia round center',(0,y-.083,z),.087,.087,.027,'plaster_light',14);o.rotation_euler.x=math.pi/2
- o=cone('Insignia center inset',(0,y-.101,z),.040,.040,.015,palette,12);o.rotation_euler.x=math.pi/2
+def source_service_letters(text,y,z,height):
+ # Original solid stroke lettering, matching the words visible on the source
+ # storefronts. Each stroke is a closed prism; no font/texture dependency.
+ glyphs={
+  'M':[((0,0),(0,1)),((0,1),(.375,.48)),((.375,.48),(.75,1)),((.75,1),(.75,0))],
+  'A':[((0,0),(.375,1)),((.375,1),(.75,0)),((.18,.42),(.57,.42))],
+  'R':[((0,0),(0,1)),((0,1),(.75,1)),((.75,1),(.75,.55)),((.75,.55),(0,.55)),((.30,.55),(.75,0))],
+  'T':[((0,1),(.75,1)),((.375,1),(.375,0))],
+  'P':[((0,0),(0,1)),((0,1),(.75,1)),((.75,1),(.75,.55)),((.75,.55),(0,.55))],
+  'O':[((0,0),(0,1)),((0,1),(.75,1)),((.75,1),(.75,0)),((.75,0),(0,0))],
+  'K':[((0,0),(0,1)),((0,.45),(.75,1)),((0,.45),(.75,0))],
+  'G':[((.75,1),(0,1)),((0,1),(0,0)),((0,0),(.75,0)),((.75,0),(.75,.5)),((.75,.5),(.40,.5))],
+  'Y':[((0,1),(.375,.5)),((.75,1),(.375,.5)),((.375,.5),(.375,0))],
+  'é':[((0,.38),(.75,.38)),((.75,.38),(.75,.72)),((.75,.72),(0,.72)),((0,.72),(0,0)),((0,0),(.75,0)),((.28,.93),(.59,1.20))],
+ }
+ advance=.98;left=-((len(text)-1)*advance+.75)*height/2
+ for index,char in enumerate(text):
+  for a,b in glyphs[char]:
+   a=Vector((left+(index*advance+a[0])*height,y,z+(a[1]-.5)*height))
+   b=Vector((left+(index*advance+b[0])*height,y,z+(b[1]-.5)*height))
+   o=cube('Source service letter '+char,(a+b)/2,(height*.105,.025,(b-a).length),'ink')
+   o.rotation_euler=(b-a).to_track_quat('Z','Y').to_euler()
+
+def civic_bricks():
+ # All four walls have the same restrained running bond. Half bricks at
+ # alternating ends preserve full coverage behind the original corner trim.
+ for angle,span,distance,count in [(0,3.46,1.605,5),(180,3.46,1.605,5),(90,3.17,1.75,4),(-90,3.17,1.75,4)]:
+  step=span/count
+  for row in range(6):
+   starts=[-span/2+i*step for i in range(count+1)] if row%2==0 else [-span/2]+[-span/2+(i+.5)*step for i in range(count)]+[span/2]
+   for column,(left,right) in enumerate(zip(starts,starts[1:])):
+    width=right-left-.020;height=.260-.018;z=.665+(row+.5)*.260
+    if width<step*.7:
+     o=cube('Civic half brick',((left+right)/2,-distance-.012,z),(width,.022,height),'plaster_service_wall')
+    else:
+     # Two softly clipped arrises make a closed six-sided shallow brick,
+     # rather than a flat texture card or an expensive bevel on every edge.
+     cut=.012+.004*((row+column)%3);w=width/2;h=height/2
+     outline=[(-w+cut,-h),(w,-h),(w,h-cut),(w-cut,h),(-w,h),(-w,-h+cut)]
+     vs=[(u+(left+right)/2,-distance-depth,v+z) for depth in [.001,.023] for u,v in outline]
+     faces=[tuple(range(5,-1,-1)),tuple(range(6,12))]+[(i,(i+1)%6,(i+1)%6+6,i+6) for i in range(6)]
+     o=mesh('Dressed civic brick',vs,faces,'plaster_service_wall')
+    o.rotation_euler.z=math.radians(angle)
+    if angle:
+     # Rotation applies to the complete face-local coordinates around the
+     # unchanged building center, including half-brick object placement.
+     a=math.radians(angle);x,y=o.location.x,o.location.y
+     o.location.x=x*math.cos(a)-y*math.sin(a);o.location.y=x*math.sin(a)+y*math.cos(a)
 
 def service_building(kind):
  begin(kind);palette='roof_red' if kind=='pokecenter' else 'roof_blue'
  foundation(3.67,3.37)
- cube('Cream civic masonry',(0,0,1.35),(3.5,3.21,2.22),'plaster_light',.045)
+ # This wall has a distinct role: live source brick colors must not repaint
+ # the same model's pale window borders, jambs or fascia.
+ cube('Recessed civic mortar backing',(0,0,1.35),(3.5,3.21,2.22),'plaster_service_mortar',.045)
+ civic_bricks()
  building_trim(3.51,3.22,1.37,2.14)
  for y in [-1.614,1.614]:
-  cube('Terracotta or blue base course',(0,y,.54),(3.5,.065,.20),palette)
+  cube('Warm service base course',(0,y,.54),(3.5,.065,.20),'timber_gold')
   cube('Pale upper string course',(0,y,2.34),(3.61,.11,.14),'plaster')
- for x in [-1.765,1.765]:cube('Side colored base course',(x,0,.54),(.065,3.20,.20),palette)
- for xx in [-1.751,1.751]:mesh('Pale civic gable',[(xx,-1.605,2.42),(xx,1.605,2.42),(xx,0,3.28)],[(0,1,2)] if xx<0 else [(2,1,0)],'plaster')
- roof(3.96,3.70,2.46,3.35,palette,6)
+ for x in [-1.765,1.765]:cube('Side warm base course',(x,0,.54),(.065,3.20,.20),'timber_gold')
+ for xx in [-1.751,1.751]:mesh('Source-painted civic gable',[(xx,-1.605,2.42),(xx,1.605,2.42),(xx,0,3.28)],[(2,1,0)] if xx<0 else [(0,1,2)],'plaster_service_wall')
+ roof(3.96,3.70,2.46,3.35,palette,6,gable_material='plaster_service_wall')
  fy=-1.615;door(fy-.03,z=1.16,w=1.02,h=1.75,lab=True)
  for x in [-1.13,1.13]:window(x,1.34,fy,w=.68,h=1.0)
  for a in [-90,90]:
@@ -47,9 +91,8 @@ def service_building(kind):
  if kind=='pokecenter':
   cube('Red entry shelter',(0,-1.87,2.16),(1.40,.66,.15),palette,.04)
   cube('Entry shelter cream edge',(0,-2.186,2.135),(1.44,.06,.09),'plaster_light',.014)
-  # Small raised badge sits on a broad readable panel instead of tiny raster text.
-  facade_cube('Center badge mounting',0,2.58,.82,.57,fy-.14,.14,palette+'_dark',bevel=.035)
-  medallion(fy-.24,2.60,palette)
+  facade_cube('Source Poke plaque mounting',0,2.58,.82,.57,fy-.14,.14,'cream',bevel=.035)
+  source_service_letters('POKé',fy-.24,2.58,.19)
   for x in [-.70,.70]:
    facade_cube('Warm entrance lamp',x,1.87,.095,.16,fy-.095,.12,'yellow',bevel=.015)
  else:
@@ -58,9 +101,8 @@ def service_building(kind):
    x=-1.62+i*.405
    o=cube('Tailored striped shop awning',(x,-1.86,2.105),(.402,.58,.068),palette if i%2==0 else 'plaster_light',.008);o.rotation_euler.x=.14
    cube('Scalloped awning valance',(x,-2.139,2.034),(.402,.035,.17),palette if i%2==0 else 'plaster_light',.022)
-  facade_cube('Shop signboard',0,2.64,1.17,.36,fy-.12,.12,palette+'_dark',bevel=.025)
-  # Clear geometric M, large enough to read at the actual camera.
-  for a,b in [((-.26,-1.81,2.51),(-.26,-1.81,2.76)),((-.26,-1.81,2.76),(0,-1.81,2.58)),((0,-1.81,2.58),(.26,-1.81,2.76)),((.26,-1.81,2.76),(.26,-1.81,2.51))]:beam('Carved shop letter',a,b,.055,.035,'cream')
+  facade_cube('Source Mart signboard',0,2.64,1.17,.36,fy-.12,.12,'cream',bevel=.025)
+  source_service_letters('MART',fy-.21,2.64,.25)
  # A restrained roof vent gives each roof a readable scale.
  cube('Roof vent base',(.99,.65,2.98),(.44,.43,.24),'plaster_shadow',.018)
  cube('Roof vent cap',(.99,.65,3.14),(.53,.52,.11),palette+'_dark',.022)
@@ -91,8 +133,8 @@ def make_traditional(kind):
  building_trim(w,d,1.29,1.92)
  for y in [-d/2-.025,d/2+.025]:
   for x in [-w*.4,-w*.2,0,w*.2,w*.4]:cube('Exposed timber rhythm',(x,y,1.28),(.09,.095,1.85),'timber_light')
- for xx in [-w/2,w/2]:mesh('Traditional pale gable',[(xx,-d/2,2.23),(xx,d/2,2.23),(xx,0,3.0)],[(0,1,2)] if xx<0 else [(2,1,0)],'plaster')
- roof(w+.48,d+.51,2.25,3.08,'violet',6)
+ for xx in [-w/2,w/2]:mesh('Traditional pale gable',[(xx,-d/2,2.23),(xx,d/2,2.23),(xx,0,3.0)],[(2,1,0)] if xx<0 else [(0,1,2)],'plaster_light')
+ roof(w+.48,d+.51,2.25,3.08,'violet',6,gable_material='plaster_light')
  fy=-d/2-.035;door(fy,z=1.03,w=.88,h=1.56)
  for x in [-w*.32,w*.32]:
   window(x,1.28,fy,w=.79 if wide else .60,h=.78)
@@ -100,12 +142,8 @@ def make_traditional(kind):
  for a in [-90,90]:window(0,1.27,-w/2-.02,w=.9,h=.76,angle=a)
  cube('Traditional stone threshold',(0,-1.925,.10),(1.28,.69,.20),'stone_light',.024)
  if wide:
-  facade_cube('Gym nameboard',0,2.07,1.32,.37,fy-.11,.12,'violet_dark',bevel=.027)
-  for x in [-.41,0,.41]:
-   facade_cube('Gym plaque gold lettering',x,2.07,.14,.19,fy-.19,.025,'yellow',bevel=.012)
-  for s in [-1,1]:
-   # Original wing-like wooden crests support the gym's bird theme.
-   for i in range(3):beam('Wing crest',(s*.22,fy-.17,2.52+i*.04),(s*(.48+i*.17),fy-.17,2.68+i*.12),.07,.04,'plaster_light')
+  facade_cube('Source Gym nameboard',0,2.07,1.32,.37,fy-.11,.12,'cream',bevel=.027)
+  source_service_letters('GYM',fy-.19,2.07,.25)
 
 
 def make_tower():
@@ -166,6 +204,14 @@ for name,col in list(ASSETS.items()):
  for o in objects:
   bpy.ops.object.select_all(action='DESELECT');o.select_set(True);bpy.context.view_layer.objects.active=o
   bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.mesh.normals_make_consistent(inside=False);bpy.ops.object.mode_set(mode='OBJECT')
+  if o.name.startswith(('Source-painted civic gable','Source-painted roof gable','Traditional pale gable')):
+   # An isolated open triangle has no closed-volume "outside" for Blender's
+   # consistency operator. Resolve this authored end wall explicitly.
+   import bmesh
+   bm=bmesh.new();bm.from_mesh(o.data);bm.normal_update()
+   for face in bm.faces:
+    if face.normal.x*face.calc_center_median().x<0:face.normal_flip()
+   bm.to_mesh(o.data);bm.free();o.data.update()
   me=o.data;me.calc_loop_triangles()
   mat=me.materials[0];group=groups.setdefault(mat.name,{'name':name+'__'+mat.name,'material':mat.name,'base_color':[round(v,5) for v in mat.diffuse_color],'positions':[],'normals':[],'indices':[],'lookup':{}})
   for tri in me.loop_triangles:

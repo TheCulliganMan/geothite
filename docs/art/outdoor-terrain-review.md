@@ -1,3 +1,229 @@
+## New Route22 perimeter defects — 2026-10-14
+
+All eight perimeter source/native pairs are inspected with preserved state
+under `target/outdoor-route22-perimeter/`. East retains pale path-cell patches;
+south and southeast cliffs hide most of the trainer. Some shallow caps and
+brick courses retain flat source ink, and outer rock plateaus lack visual
+interest. The path classification now includes blank Kanto23 as well as
+speckled39, matching their shared source ground; its regression and all7
+focused Kanto ground tests pass. Final production day/morning7/night22 east
+pairs are inspected with preserved state (`target/outdoor-route22-quiet-path-final-*`):
+the pale day / bright blue night patchwork is gone, leaving a continuous path.
+This scoped repair is verified. Night brick courses remain too royal blue;
+some shallow caps retain flat ink and foreground cliffs still hide the trainer.
+An exterior body-reveal experiment was rejected and removed: it exposed sky
+through the rock, while its tightened boundary clipped boots. This route is rejected
+pending those repairs; perimeter coverage is evidence, not acceptance.
+
+## Buoy cards and legacy bank seams removed — 2026-10-14
+
+Final production pairs at Route41 close/wide and Cianwood southeast are
+personally inspected against matching2D, all with preserved state. Rounded
+low native floats replace the omitted buoy families, and both textured cards
+and old solid brown bank seams are gone in these views. The whirlpool funnel
+and mostly submerged female swimmer remain readable. All6 buoy regressions
+pass; source audit covers all152 formerly raster cells. Receipts:
+`target/outdoor-buoy-solid-final-*`. Water remains too teal against the blue
+source; broad rock caps and angular coasts are still rejected. Route46's two
+distant ground gaps remain unresolved. Route22 perimeter coverage is underway
+to extend inspection beyond the current ocean and cliff fixtures.
+
+## Cliff contacts closed in reviewed views; grove and ocean fixes pending — 2026-10-14
+
+The expanded cap/wall mapping passes15 terrace and21 mineral tests (one ignored).
+Native build succeeded in13m58. Matching-state Route46 east and Blackthorn
+south pairs are inspected: their large cliff-contact slits are closed. Two
+distant Route46 ground gaps and Blackthorn's black roof faces remain open.
+The Route46 grove underlay correction is now verified in production: all961
+plots select height0, the bright forest raster strip is gone, and the paired
+state is preserved (`outdoor-grove-datum-route46*`).
+New Route41 QA verifies female swimmer submersion and exposes flat whirlpool
+cards / placeholder buoys. The existing guarded native funnel/current producer
+now supports exterior Johto whirlpools; all12 water tests pass. Combined build31008 succeeded in10m23; the fresh72-map/2457-jump audit has
+zero errors. Remaining ocean raster is buoy art in omitted `$07/$3a` cases,
+not a failed whirlpool clock guard. The expanded adapter and old-bank cleanup
+pass6 buoy tests and are awaiting final native proof. Floats retain their
+footprint, use a lower broader pale shoulder and thin submerged dark rim, and
+add no vertices. See `outdoor-buoy-bank-cleanup-native-build.log`. See the latest handoff for receipts and exact pending actions.
+
+## New route and city rejection fixtures — 2026-10-14
+
+All eight Blackthorn perimeter pairs are inspected and state-preserved. They
+expose roof and cliff occlusion, rock contact gaps and incorrect roof hues;
+these remain open. Route46's fresh fallback-ownership pair retains both its
+pixel strip and sky gaps. Its trace has no fallback tree-card events, ruling
+that path out for this view. The background identity and fallback ownership
+regressions pass, but neither is visual acceptance of the remaining strip.
+The mineral corner correction now passes14 terrace and21 mineral tests
+(one ignored). Its native build succeeded; fresh Route46 and Blackthorn pairs
+remain visually rejected because sky gaps persist. Route46 clear-color pixel
+count decreases7642 to6433 at the same pose, which is partial improvement, not
+terrain acceptance. The global72-map/2457-jump audit has zero errors. Route44
+now has guarded mirrored small-crown bindings with a passing four-variant test;
+its production day/morning/night proof is now inspected and state-preserved,
+with four more native tree cells verified by the refreshed source audit.
+Route46 has zero unclaimed interior tree glyphs; only clipped outer-row art
+remains. A new sculpted cap/wall mid-edge repro fails21.60 vs21.36. Its expanded
+contact-edge correction now passes15 terrace and21 mineral tests (one ignored),
+with native visual proof pending build34529. The next trace records native
+grove ground source/height to locate the remaining bright strip. See the handoff for
+receipts and exact current status.
+
+## Flat small-tree strip repaired — 2026-10-14
+
+Azalea's four flat `$3b` small-tree crowns are replaced through the shared native
+grove pipeline, with exact phase/art guards and no source cards underneath.
+Final day/morning/night pairs are inspected and state-preserved; source audit
+confirms all16 newly modeled cells. The source-painted well now avoids the
+second night tint and retains source purple stone. See the latest handoff for
+receipts. Whole-scene acceptance remains open: new Cianwood perimeter checks
+show roof/coast/water defects, and Route46 still exposes rock slits and a border
+pixel-tree strip. A broader tree suite has three failures reported to the
+outside-art owner; the focused new binding regression passes.
+
+## Slowpoke Well native replacement — 2026-10-14
+
+The complete flat exterior drawing is replaced by a guarded square stone
+well, recessed courses, source-painted pale steps and an open shaft. Three
+focused tests pass. The final source audit confirms36 native well cells, and
+hour12/7/22 Azalea `(33,9)` pairs are inspected with preserved state. Circular
+shape, hidden courses and stairs covering the aperture were rejected and
+corrected before these final captures. Night grading still makes the well and
+stairs too cobalt compared with the source; this is a material/lighting
+rejection, not completion of time-of-day fidelity. See the handoff for final
+receipts and remaining regional defects.
+
+## Junction proof and new route diagnostics — 2026-10-14
+
+Fresh preserved-state Route13 `(54,6)` and Route24 `(2,9)` pairs are inspected.
+The Route13 `$78/$31` raster junction strip is replaced by the native mineral
+bank, and the repaired graded brick cap remains clean. Route24 still exposes
+a separate checker patch and pale water rim; whole shoreline acceptance stays
+open.
+
+New hour12 matching-state diagnostics cover Route36 `(30,8)`, Route37 `(9,9)`
+and Azalea `(20,9)`. Route36's trainer is obscured by pine crowns, Route37 has
+flat flowers, and Azalea's architecture/materials remain unfaithful. A fresh
+Route36 fitted-pine pair confirms that bounds alone do not solve occlusion.
+These rejection fixtures were shared with the active outside-art goal, which
+owns further pine finishing. See the handoff for exact ignored receipts.
+
+The nearly horizontal mineral-wall shoulder now has a source-axis/contact
+regression, and all13 terrace tests pass. The full mesh suite passes780 tests
+with zero failures and six ignored. The native shoulder build succeeded, but its inspected fresh Route26 pair
+still shows tiny sky-blue slits. Horizontal wall-ring matching and shared-corner
+remapping diagnostics are now under investigation; no continuity acceptance
+is claimed. Slowpoke Well now has a guarded native replacement pending tests
+and paired production inspection.
+
+## Native brick decks and graded-bed correction — 2026-10-14
+
+Kanto `$05`/`$4b` decks now use live source-painted staggered bricks and
+water-facing masonry without changing LADDER permissions or footing. The
+first native Route13 view exposed mortar triangles through the graded caps
+despite green tests. Splitting the caps at the source terrain's diagonal
+eliminates the overlap; the new folded-grade regression passes. The corrected
+Route13 `(54,6)` source/native pair is inspected and state-preserved, with the
+previous white patch visibly gone. The bridge walk still reaches `(8,14)`
+from `(8,10)` in Route24. Fifteen new paired edge views in Route13/Route24 are
+inspected and state-preserved; source drawings still expose repetitive stones,
+pale trees and wrong gray post shafts.
+
+The residual junction strip belongs to shoreline `$78`/`$31`, not brick `$4b`.
+Its exact guarded coast extension passes the focused tests and current 774-test
+mesh suite, with six ignored. Native rebuild/visual proof remains pending;
+the live handle and receipts are recorded in the handoff. Whole exterior
+acceptance remains open, including nighttime grading and remaining props.
+
+## Native Kanto shoreline and new edge review — 2026-10-14
+
+The complete native pond/coast drawings now replace the retained gold checker
+caps and shallow water faces with source-painted mineral geometry. Exact art,
+phase, floor/water geometry and ownership guards preserve unrelated scenery;
+water levels, collision and footing remain unchanged. The finish covers 1,500
+cells across 22 maps in the 77-map audit, with all 2,003 jumps still descending.
+All three shoreline regressions and the full 764-test mesh suite pass; six
+tests remain ignored. The production native build succeeds.
+
+Five close hour12 pairs in Fuchsia, Route12, Route17, Viridian and Vermilion
+are inspected with preserved source/native state. Fifteen distinct new edge
+pairs cover Fuchsia and Route12; Route12's south and southeast targets resolve
+to one walkable position. The checker stripe is gone and mineral contacts sit
+at the original shallow water drop. Fuchsia morning/night pairs preserve that
+geometry and follow the live pigment, but whole nighttime grading remains too
+blue and the water too bright compared with 2D. Extensive brick surfaces,
+gray/faceted posts, oversized/boxy scenery, pale trees and phase/view-dependent
+missing flowers still fail whole exterior acceptance. Exact receipts and next
+work are recorded in the outdoor-terrain handoff.
+
+## Native Kanto paving and new edge review — 2026-10-14
+
+Nine complete ordinary-FLOOR road drawings now use source-painted native
+beveled flags and rounded curb junction inlays. No collision, input, standing
+height or source footprint changes occur. Complete art/phase/geometry guards
+preserve unfamiliar, cropped, claimed or elevated drawings. Morning/night
+paint uses the live source palette. The first render's crowded tile grid and
+dark junction backing were rejected; the refined flags are larger and the
+junctions have pale centers, gray rims and shaded chamfers.
+
+The refined Route11 `(10,7)`, Saffron `(18,7)` and Route17 `(8,16)` source/native
+pairs are inspected and state-preserved. Production Route11 curb walking
+reaches `(11,7)->(12,7)->(13,7)->(14,7)->(15,7)`. All eight Route11 and eight
+Saffron perimeter pairs are inspected, with sixteen preserved-state receipts.
+All three paving regressions and the full 761-test mesh suite pass; six tests
+remain ignored. The 77-map audit retains 2,003 descending jumps and zero errors,
+with 4,592 native paving cells across seven maps. Commands, coordinates and
+receipts are recorded in the outdoor-terrain handoff.
+
+Whole exterior acceptance remains open. Route11 hour7 follows the source
+yellow temperature, but hour22 is overly cobalt blue versus lavender source
+art and has poor character readability. The lighting task is archived; its
+notice failed and it was not reopened. Saffron building scale/occlusion and
+retained yellow brick strips, checker plazas, repeated posts/pale trees and
+Route17's retained gold shoreline pixels still need work.
+
+## Kanto boundary-stone and expanded edge review — 2026-10-13
+
+The exact land, paving and shore boundary models now use cached geometry
+fairing with pinned ground contact and smooth welded normals/pigments. This
+removes the triangular cap patches observed after the first smoothing pass.
+No triangles, game content or support changes are introduced; the closed-volume
+and under-500-triangle checks pass. Current full mesh suite: 757 passed, zero
+failures, six ignored. Native build and close paired Pewter `(2,18)`, Route15
+`(20,2)` and Route19 `(10,11)` views are validated and inspected. Rounded volume,
+smooth cap shading and seated contact are verified for these component views.
+
+All eight Pewter and all eight Route15 edge pairs are also inspected, with 16
+preserved-state receipts. Whole scenery acceptance remains open: flat paving,
+retained cliff ink, sparse flowers, pale repeated ordinary trees, northern
+building occlusion, mismatched shoreline edging and separate angular capped
+posts remain. Exact locations, receipts and next work are in the handoff.
+
+## Current macOS terrain continuation — 2026-10-13
+
+The old-host winding FAIL below is historical. Current production mesher tests
+pass it along with the full 728-test mesh suite. The shared directed-terrace
+renderer now follows the human's permitted-jump high-to-low rule, including
+consecutive courses and joined corners. Current paired Route6/Route4 movement
+views confirm lower landings and closed cliff/corner contacts. Route8's alternate
+underground entrance is now modeled with its live cyan-blue roof; Cerulean
+Mart and Route6 flat roofs now match the source gray. Cerulean's eight
+perimeter pairs are all validated and inspected. The shared-grove cache now preserves exact source coordinates, directional
+neighbors and completed bank geometry; both exact preservation regressions
+pass. The latest combined directed-terrace, foot-boundary and directional-face
+snapshot passes 753 mesh tests with zero failures and six ignored. Actual jump
+position auditing exposed additional opposing-course, landing-boundary and
+tower-course-end defects; those now have focused regressions. The compiled outdoor audit verifies all 2,003 jumps in 77 maps, and the
+broader app audit verifies all 2,457 jumps in 72 authored-jump maps, both with
+zero errors. The tower jump contact is visually inspected; its retained pixel
+floors and floor/wall distortion remain unaccepted. The final timber-support
+material pair is inspected and confirms removal of the outdoor grass rim. Viridian's eight additional standable
+perimeter pairs are inspected and expose remaining paving, flower and fence
+shape defects. These are
+concrete improvements, not acceptance of every exterior. Current receipts,
+paired images, outstanding source-road borders and city-edge coverage are in
+`docs/handoff/outdoor-terrain.md`; keep the full visual scope described below.
+
 ## Final rock normal pipeline — 2026-10-12
 
 The actual production order explained the weak fracture-normal result: `rock_bases::round` recomputed smooth normals for every tagged rock after the cap sculptor had assigned fracture-aware normals. The final renderer therefore erased those cap distinctions whenever a native base corner qualified. Geometry stages now compose through `outdoor_stone::finish_rock_geometry`: sculpt mineral rims, round native base contacts, then calculate mineral normals once. Source cap/wall classification remains intact until that final calculation. The existing 25-degree crease rule is retained; the brief tighter-threshold experiment was superseded by this integration correction before visual acceptance.
@@ -2313,3 +2539,12 @@ and `target/outdoor-broad-cap-clefts-direct-muted-tests.log`.
 The wider-cleft 90-degree capture exited 1 at its timeout and produced no
 image; no side-view conclusion is drawn. User priority now expands the visual
 review to the complete New Bark–Route29–Cherrygrove outdoor stretch.
+
+
+## Forest palette separation and sheltered water — 2026-10-14
+
+The normal 45-degree IlexForest `(10,12)` review exposed a second blue nighttime light over its fixed night source palette. Native forest lighting now uses neutral fill with restrained warm direct light, retaining the source frame and classic palette unchanged. Verified forest floors use cooler humus/moss modulation and broad filtered warmth through the existing texture read; mild directional response gives exterior folds and raised surfaces more form. Sheltered forest water has lower normal strength, little breaking wash, reduced open-sky reflection and a subdued blue-green depth palette. Outdoor reflected streaks and caustics are softer. Verified Johto path cells adjoining water receive a wider damp-sand transition without painting water, changing heights or moving source support.
+
+Native build passed. The exact test executable passed 37 distinct targeted lighting, water, shoreline, forest, material-registration and cave-restoration tests; one existing opt-in forest benchmark remains ignored. Matching source-state 2D/native captures were inspected at IlexForest `(10,12)` and CherrygroveCity `(9,8)`, hour 12, normal 45-degree camera. A first forest render was too yellow; the final shader reduces that floor cast and cools the pond. The final shader was compiled and inspected through the existing native shader-review override on the current optimized client. Opt-zero capture attempts timed out under concurrent build load; those attempts are not visual or performance evidence.
+
+No new lights, draw passes or texture reads were introduced in this pass. Damp shoreline cells reuse bounded floor subdivisions; other ground geometry is unchanged. FPS remains unbenchmarked. Forest canopy repetition, sparse-looking needle crowns and rigid bank outlines still limit composition and source-scenery fidelity; whole-scene/reference acceptance remains open. Review scratch outputs were removed; content packs and other build caches were preserved.

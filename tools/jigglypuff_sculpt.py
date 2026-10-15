@@ -40,8 +40,11 @@ def sculpture():
  for i,q in enumerate(p):
   if q['part'].startswith(('Eye border /','Eye white /','Iris /','Iris sheen /','Eye glint /','Ear lining /','Mouth /')):p[i]=crease_normals(q,35)
  low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
- for q in p:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+ for q in p:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[0.0 if q['part'].startswith('Ear /') and i%3==1 and round(v,7)==0. else round(v,7) for i,v in enumerate(q['normals'])]
  return {'name':'icon_jigglypuff','version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'icon_jigglypuff.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ from jigglypuff_glb import main_export
+ parser=argparse.ArgumentParser(description=__doc__)
+ parser.add_argument('--output',type=Path,required=True)
+ main_export(parser.parse_args().output)
 if __name__=='__main__':main()

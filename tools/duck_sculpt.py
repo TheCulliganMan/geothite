@@ -3,7 +3,7 @@
 
 Psyduck's broad confused head/temple hands and egg body contrast with Golduck's
 streamlined swimmer, splayed hands, long tail, cranial fins and forehead ruby.
-Static canonical JSON only; no imported meshes, sprites or duplicate catalog.
+Canonical GLB neutral recipe; no imported meshes, sprites or duplicate catalog.
 """
 import argparse,json,math
 from pathlib import Path
@@ -11,7 +11,8 @@ from sculpt_geometry import loft,tube,part,ellipsoid,translate,fitted_patch
 from skin_glb import COORDINATES
 
 HEIGHT=1.03
-PALETTE={'psyduck':(.97,.76,.20),'golduck':(.22,.57,.73),'bill':(.92,.83,.57),
+# Body colours match the normal RGB555 palette anchors in the local pack.
+PALETTE={'psyduck':(1.,1.,0.),'golduck':(66/255,90/255,198/255),'bill':(.92,.83,.57),
          'ink':(.065,.057,.038),'white':(.98,.97,.87),'ruby':(.87,.15,.23),
          'iris':(.71,.22,.31),'glint':(1.,.77,.67),'web':(.94,.87,.67)}
 
@@ -146,6 +147,8 @@ def sculpture(species):
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--only',choices=('psyduck','golduck'));p.add_argument('--out',type=Path,default=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species');a=p.parse_args()
     for n in ([a.only] if a.only else ('psyduck','golduck')):
-        m=sculpture(n);(a.out/(n+'.mesh.json')).write_text(json.dumps(m,separators=(',',':')));print(n,len(m['primitives']),sum(len(q['indices'])//3 for q in m['primitives']))
+        from duck_glb import export_duck
+        a.out.mkdir(parents=True,exist_ok=True);m=sculpture(n);(a.out/(n+'.glb')).write_bytes(export_duck(n,m))
+        (a.out/(n+'.mesh.json')).unlink(missing_ok=True);print(n,len(m['primitives']),sum(len(q['indices'])//3 for q in m['primitives']))
 
 if __name__=='__main__':main()

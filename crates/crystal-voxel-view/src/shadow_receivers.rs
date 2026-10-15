@@ -1,16 +1,63 @@
 //! Conservative camera-receiver shadow culling. No cascade or mesh changes.
-//! Native experiment; disabled until image and timing comparisons establish a gain.
-use crate::{shadow_bounds, VoxelSun, VoxelWorldCamera, VOXEL_RENDER_LAYER};
+//! Opt-in experiment; disabled until image and timing comparisons establish a gain.
+use crate::{VoxelMaterial, VoxelSun, VoxelWorldCamera, VOXEL_RENDER_LAYER};
 use bevy::{
     camera::{
         primitives::{Aabb, Frustum},
         visibility::{CascadesVisibleEntities, RenderLayers},
     },
+    light::ShadowFilteringMethod,
     math::DVec3,
     prelude::*,
 };
 use crystal_render_api::VisualWorldFrame;
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::OnceLock};
+
+static DIAGNOSTIC_ENABLED: OnceLock<bool> = OnceLock::new();
+
+/// Startup-only QA control for same-build shadow comparisons. It never enables
+/// reduced geometry, different cascades or a different shadow filtering method.
+pub fn configure_shadow_receiver_diagnostics(enabled: bool) -> Result<(), String> {
+    DIAGNOSTIC_ENABLED.set(enabled)
+        .map_err(|_| "shadow receiver diagnostics already configured".to_owned())
+}
+
+fn enabled() -> bool {
+    DIAGNOSTIC_ENABLED.get().copied().unwrap_or_else(|| {
+        #[cfg(not(target_arch = "wasm32"))]
+        { std::env::var("CRYSTAL_SHADOW_RECEIVERS").as_deref() == Ok("on") }
+        #[cfg(target_arch = "wasm32")]
+        { false }
+    })
+}
+
+// Gaussian uses a fixed 5x5 footprint; Hardware2x2 is smaller. Temporal uses
+// a texel-size-dependent randomized radius and needs its own proof bound.
+fn supported_filter(filter: Option<&ShadowFilteringMethod>) -> bool {
+    matches!(filter.copied().unwrap_or_default(),
+        ShadowFilteringMethod::Hardware2x2 | ShadowFilteringMethod::Gaussian)
+}
+
+fn corners(bounds: &Aabb, transform: &GlobalTransform) -> [Vec3; 8] {
+    std::array::from_fn(|i| {
+        let sign = Vec3::new(
+            if i & 1 == 0 { -1.0 } else { 1.0 },
+            if i & 2 == 0 { -1.0 } else { 1.0 },
+            if i & 4 == 0 { -1.0 } else { 1.0 },
+        );
+        transform.affine().transform_point3(
+            Vec3::from(bounds.center) + Vec3::from(bounds.half_extents) * sign)
+    })
+}
+
+fn proven_empty(mesh: Option<&Mesh>) -> bool {
+    mesh.is_some_and(|mesh| {
+        mesh.try_attributes().is_ok_and(|mut attributes|
+            attributes.all(|(_, values)| values.is_empty()))
+            && mesh.try_indices_option().is_ok_and(|indices|
+                indices.is_none_or(|indices| indices.is_empty()))
+    })
+}
 
 #[derive(Clone, Copy, PartialEq)]
 struct ReceiverInput {
@@ -71,7 +118,7 @@ struct DecisionCache {
 }
 
 pub(super) fn register(app: &mut App) {
-    if std::env::var("CRYSTAL_SHADOW_RECEIVERS").as_deref() != Ok("on") {
+    if !enabled() {
         return;
     }
     app.add_systems(
@@ -162,15 +209,17 @@ fn cascade_planes(
 
 fn prune(
     frame: Res<VisualWorldFrame>,
-    cameras: Query<(Entity, &Camera, &Frustum, &GlobalTransform), With<VoxelWorldCamera>>,
+    cameras: Query<(Entity, &Camera, &Frustum, &GlobalTransform, Option<&ShadowFilteringMethod>), With<VoxelWorldCamera>>,
     receivers: Query<(
         &Mesh3d,
         Option<&Aabb>,
         &GlobalTransform,
         Option<&RenderLayers>,
         &InheritedVisibility,
+        Has<bevy::mesh::morph::MeshMorphWeights>,
     )>,
     meshes: Res<Assets<Mesh>>,
+    materials: Option<Res<Assets<VoxelMaterial>>>,
     mut lights: Query<
         (
             Entity,
@@ -190,29 +239,47 @@ fn prune(
         cache.cascades.clear();
         return;
     }
-    let Ok((camera_entity, camera, frustum, camera_transform)) = cameras.single() else {
+    let Ok((camera_entity, camera, frustum, camera_transform, filter)) = cameras.single() else {
         return;
     };
-    if !camera.is_active {
+    if !camera.is_active || !supported_filter(filter) {
+        cache.cascades.clear();
+        return;
+    }
+    let _trace = crate::loading_trace::span("render.shadow_receivers", || serde_json::json!({
+        "map": frame.map_id.as_ref(),
+    }));
+    // The rooted-grass vertex shader can move a receiver outside its stored
+    // Aabb. Until those meshes publish swept bounds, keep stock shadow lists
+    // throughout the spring, including its rebound after the source card ends.
+    if materials.as_ref().is_some_and(|materials| materials.iter().any(|(_, material)| {
+        let contact = material.extension.grass_rustle.contact;
+        !contact.is_finite() || (contact.z > 0.0 && contact.w != 0.0)
+    })) {
+        cache.cascades.clear();
         return;
     }
     let layer = RenderLayers::layer(VOXEL_RENDER_LAYER);
+    #[cfg(not(target_arch = "wasm32"))]
     let started = std::time::Instant::now();
     cache.frame = cache.frame.wrapping_add(1);
     let stamp = cache.frame;
     let mut bottom = f64::INFINITY;
     let mut top = f64::NEG_INFINITY;
-    for (mesh, bounds, transform, layers, visible) in &receivers {
+    for (mesh, bounds, transform, layers, visible, morph) in &receivers {
         if !visible.get() || !layers.unwrap_or_default().intersects(&layer) {
             continue;
         }
+        // Morph bounds are not guaranteed to include the active target.
+        // Skinned production actors explicitly provide animated sweep bounds.
+        if morph { return; }
         let Some(bounds) = bounds else {
-            if shadow_bounds::proven_empty(meshes.get(&mesh.0)) {
+            if proven_empty(meshes.get(&mesh.0)) {
                 continue;
             }
             return; // Unknown geometry cannot prove a global receiver-height bound.
         };
-        for p in shadow_bounds::corners(bounds, transform) {
+        for p in corners(bounds, transform) {
             if !p.is_finite() {
                 return;
             }
@@ -286,11 +353,11 @@ fn prune(
             );
             before += cascade.entities.len();
             cascade.entities.retain(|entity| {
-                let Ok((_, Some(bounds), transform, _, _)) = receivers.get(*entity) else {
+                let Ok((_, Some(bounds), transform, _, _, _)) = receivers.get(*entity) else {
                     return true;
                 };
                 let (keep, hit) =
-                    cached.keep(*entity, shadow_bounds::corners(bounds, transform), stamp);
+                    cached.keep(*entity, corners(bounds, transform), stamp);
                 if hit {
                     hits += 1;
                 } else {
@@ -303,9 +370,16 @@ fn prune(
         }
     }
     cache.cascades.retain(|_, cascade| cascade.seen == stamp);
+    // Bevy allocates cascades per camera. Only the exact world-camera key
+    // above was changed; retained battle and image-capture views retain their
+    // own caster lists even when they happen to share the same directional sun.
+    drop(crate::loading_trace::span("shadow.receivers", || serde_json::json!({
+        "before": before, "after": after, "cache_hits": hits, "cache_misses": misses,
+    })));
     let now = time.elapsed_secs_f64();
     if now >= *next_report {
         *next_report = now + 2.0;
+        #[cfg(not(target_arch = "wasm32"))]
         eprintln!(
             "shadow_receiver_culling map={} before={} after={} cache_hits={} cache_misses={} system_ms={:.3}",
             frame.map_id, before, after, hits, misses, started.elapsed().as_secs_f64() * 1000.0
@@ -326,6 +400,96 @@ mod tests {
             [0., 0., -1., 1.],
         ]
     }
+    struct Fixture {
+        app: App,
+        sun: Entity,
+        camera: Entity,
+        capture_camera: Entity,
+        reachable: Entity,
+        offscreen: Entity,
+    }
+
+    fn fixture() -> Fixture {
+        use bevy::camera::visibility::VisibleMeshEntities;
+        let mut app = App::new();
+        app.insert_resource(VisualWorldFrame { active: true, map_id: "Route29".into(), ..default() })
+            .insert_resource(Assets::<Mesh>::default())
+            .insert_resource(Time::<Real>::default())
+            .add_systems(Update, prune);
+        let mut frustum = Frustum::default();
+        frustum.half_spaces = planes().map(|p|
+            bevy::shape::HalfSpace::new(Vec4::from_array(p.map(|v| v as f32))));
+        let camera = app.world_mut().spawn((Camera::default(), frustum,
+            GlobalTransform::IDENTITY, VoxelWorldCamera)).id();
+        let capture_camera = app.world_mut().spawn(Camera::default()).id();
+        let mesh = app.world_mut().resource_mut::<Assets<Mesh>>().add(Mesh::from(Cuboid::default()));
+        let spawn = |app: &mut App, position| app.world_mut().spawn((
+            Mesh3d(mesh.clone()), Aabb::from_min_max(Vec3::splat(-0.1), Vec3::splat(0.1)),
+            GlobalTransform::from_translation(position),
+            InheritedVisibility::VISIBLE, RenderLayers::layer(VOXEL_RENDER_LAYER),
+        )).id();
+        // A visible ground receiver is below the offscreen overhead caster.
+        spawn(&mut app, Vec3::new(0.0, 0.0, -0.5));
+        let reachable = spawn(&mut app, Vec3::new(0.0, 10.0, -0.5));
+        let offscreen = spawn(&mut app, Vec3::new(100.0, 10.0, -0.5));
+        let mut cascades = bevy::light::Cascades::default();
+        for camera in [camera, capture_camera] {
+            cascades.cascades.insert(camera, vec![bevy::light::cascade::Cascade { texel_size: 0.01, ..default() }]);
+        }
+        let mut visible = CascadesVisibleEntities::default();
+        for camera in [camera, capture_camera] {
+            visible.entities.insert(camera, vec![VisibleMeshEntities { entities: vec![reachable, offscreen] }]);
+        }
+        let sun = app.world_mut().spawn((VoxelSun, DirectionalLight {
+            shadow_maps_enabled: true, shadow_normal_bias: 0.0, shadow_depth_bias: 0.0, ..default()
+        }, GlobalTransform::from(Transform::from_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2))),
+            bevy::light::CascadeShadowConfigBuilder { num_cascades: 1, maximum_distance: 2.0, ..default() }.build(),
+            cascades, visible)).id();
+        Fixture { app, sun, camera, capture_camera, reachable, offscreen }
+    }
+
+    #[test]
+    fn production_system_prunes_only_world_camera_and_preserves_capture_cascades() {
+        let mut f = fixture();
+        f.app.update();
+        let visible = f.app.world().get::<CascadesVisibleEntities>(f.sun).unwrap();
+        assert_eq!(visible.entities[&f.camera][0].entities, [f.reachable]);
+        assert_eq!(visible.entities[&f.capture_camera][0].entities, [f.reachable, f.offscreen],
+            "retained battle/image camera lists must not inherit world-camera pruning");
+    }
+
+    #[test]
+    fn unsupported_filter_and_unknown_receiver_bounds_keep_stock_shadow_lists() {
+        for unknown_bounds in [false, true] {
+            let mut f = fixture();
+            if unknown_bounds {
+                let mesh = f.app.world_mut().resource_mut::<Assets<Mesh>>().add(Mesh::from(Cuboid::default()));
+                f.app.world_mut().spawn((Mesh3d(mesh), GlobalTransform::IDENTITY,
+                    InheritedVisibility::VISIBLE, RenderLayers::layer(VOXEL_RENDER_LAYER)));
+            } else {
+                f.app.world_mut().entity_mut(f.camera).insert(ShadowFilteringMethod::Temporal);
+            }
+            f.app.update();
+            let visible = f.app.world().get::<CascadesVisibleEntities>(f.sun).unwrap();
+            assert_eq!(visible.entities[&f.camera][0].entities, [f.reachable, f.offscreen]);
+        }
+    }
+
+    #[test]
+    fn active_grass_spring_keeps_stock_shadow_lists_including_rebound() {
+        for spring in [-0.3, 0.6] {
+            let mut f = fixture();
+            let mut materials = Assets::<VoxelMaterial>::default();
+            let mut material = crate::solid_terrain_material();
+            material.extension.grass_rustle.contact = Vec4::new(0.0, 0.0, 12.0, spring);
+            materials.add(material);
+            f.app.insert_resource(materials);
+            f.app.update();
+            let visible = f.app.world().get::<CascadesVisibleEntities>(f.sun).unwrap();
+            assert_eq!(visible.entities[&f.camera][0].entities, [f.reachable, f.offscreen]);
+        }
+    }
+
     #[test]
     fn cache_revalidates_casters_and_receiver_inputs_and_removes_stale_entries() {
         let input = ReceiverInput {

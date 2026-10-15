@@ -32,5 +32,7 @@ fn fragment(mesh: VertexOutput) -> @location(0) vec4<f32> {
     if any(texel < vec2<i32>(0)) || any(texel >= dimensions) { discard; }
     // textureLoad explicitly selects one texel: no linear sampling, fourfold
     // source scale, hardware OAM offsets, BG scroll or screen shake here.
-    return textureLoad(source_texture, texel, 0);
+    let color = textureLoad(source_texture, texel, 0);
+    if color.a == 0.0 { discard; }
+    return color;
 }

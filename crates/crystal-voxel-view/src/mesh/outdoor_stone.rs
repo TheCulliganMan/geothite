@@ -43,11 +43,18 @@ fn mineral_bevel(inward: f32, distance: f32, along: f32, depth: f32, width: f32)
     let inward = if along == 0. || along == 1. {
         inward.max(distance)
     } else { inward };
-    let radial = Vec2::new(inward - width, width - depth);
-    let length = radial.x.abs().max(radial.y.abs()).max(
-        (radial.x.abs() + radial.y.abs()) * std::f32::consts::FRAC_1_SQRT_2,
-    );
-    if length > width { radial * (width / length - 1.) * fade } else { Vec2::ZERO }
+    // Project onto the mineral cut itself. Scaling a radial vector by an
+    // octagonal distance still gives a curved mapping inside each octant:
+    // neighbouring height rings bow into the padded shoulders seen in the
+    // side view. One diagonal plane keeps those rings on a straight facet.
+    // Match the previous edge's recession, retaining the broad cap bed.
+    let cut = width * (2. - std::f32::consts::SQRT_2);
+    let mut projected = Vec2::new(inward.max(0.), depth);
+    if projected.x + projected.y < cut {
+        let along_cut = ((inward - depth + cut) * 0.5).clamp(0., cut);
+        projected = Vec2::new(along_cut, cut - along_cut);
+    }
+    Vec2::new(projected.x - inward, depth - projected.y) * fade
 }
 
 fn combined_rim_shift(rim: [f32; 4]) -> Vec2 {
@@ -70,9 +77,18 @@ fn adjoining_support(distance: f32, reach: f32, floor: f32) -> f32 {
 /// Exposed rims erode; floor contacts and planted-tree seats stay anchored.
 pub(super) fn finish_rock_geometry(mesh: &mut TerrainMeshData, map: &str,
     cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32; 2]) {
-    sculpt_rock_rims(mesh, cells, shapes, g, origin);
-    super::rock_bases::round_geometry(mesh, map, cells, shapes, g, origin);
-    mineral_normals(&mut mesh.solid);
+    {
+        let _trace = crate::loading_trace::span("region.rock_sculpt_rims", || serde_json::json!({}));
+        sculpt_rock_rims(mesh, cells, shapes, g, origin);
+    }
+    {
+        let _trace = crate::loading_trace::span("region.rock_round_contacts", || serde_json::json!({}));
+        super::rock_bases::round_geometry(mesh, map, cells, shapes, g, origin);
+    }
+    {
+        let _trace = crate::loading_trace::span("region.rock_finish_normals", || serde_json::json!({}));
+        mineral_normals(&mut mesh.solid);
+    }
 }
 
 pub(super) fn sculpt_rock_rims(
@@ -82,12 +98,84 @@ pub(super) fn sculpt_rock_rims(
     g: &GridGeometry,
     origin: [i32; 2],
 ) {
+    sculpt_rock_rims_with_edge_index(mesh, cells, shapes, g, origin, true);
+}
+
+#[cfg(test)]
+pub(super) fn sculpt_rock_rims_reference(mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32; 2]) {
+    sculpt_rock_rims_with_edge_index(mesh, cells, shapes, g, origin, false);
+}
+
+struct CapTriangle {
+    indices: [u32; 3],
+    center: [f32; 3],
+    retained: bool,
+}
+#[derive(Default)]
+struct CapTriangleIndex {
+    triangles: Vec<CapTriangle>,
+    cells: bevy::platform::collections::HashMap<(isize, isize), Vec<usize>>,
+}
+impl CapTriangleIndex {
+    fn absorb(&mut self, surface: &mut SurfaceMeshData, g: &GridGeometry) {
+        let indices = std::mem::take(&mut surface.indices);
+        for triangle in indices.chunks_exact(3) {
+            let ids = [triangle[0], triangle[1], triangle[2]];
+            let eligible = surface.uvs[ids[0] as usize][0] < -9000.;
+            let mut center = [0.; 3];
+            if eligible {
+                // Preserve the reference pass's division and accumulation order.
+                for i in ids {
+                    for axis in 0..3 { center[axis] += surface.positions[i as usize][axis] / 3.; }
+                }
+                if center[0].is_finite() && center[2].is_finite() {
+                    let cell = (((center[0] - g.origin_x) / g.tile_width).floor() as isize,
+                        ((center[2] - g.origin_z) / g.tile_height).floor() as isize);
+                    self.cells.entry(cell).or_default().push(self.triangles.len());
+                }
+            }
+            self.triangles.push(CapTriangle { indices: ids, center, retained: true });
+        }
+    }
+    fn remove_cap(&mut self, surface: &SurfaceMeshData, g: &GridGeometry,
+        x: usize, z: usize, h: f32) {
+        let (w, e, n, south) = g.bounds(x, z);
+        // Neighbor buckets keep cell-boundary rounding conservative. The
+        // original strict bounds and height tests still decide every removal.
+        for dz in -1..=1 {
+            for dx in -1..=1 {
+                if let Some(candidates) = self.cells.get(&(x as isize + dx, z as isize + dz)) {
+                    for &i in candidates {
+                        let triangle = &mut self.triangles[i];
+                        if !triangle.retained { continue; }
+                        let center = triangle.center;
+                        if center[0] > w && center[0] < e && center[2] > n && center[2] < south
+                            && triangle.indices.iter().all(|&i|
+                                (surface.positions[i as usize][1] - h).abs() < 0.001) {
+                            triangle.retained = false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    fn finish(self) -> Vec<u32> {
+        self.triangles.into_iter().filter(|triangle| triangle.retained)
+            .flat_map(|triangle| triangle.indices).collect()
+    }
+}
+
+fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry,
+    origin: [i32; 2], indexed: bool) {
     if !mesh.solid.uvs.iter().any(|uv| uv[0] < -9000.0) {
         return;
     }
     // Native cap chamfers leave tiny triangular openings when their square
     // side walls are sculpted. Complete the cap before the shared rim warp;
     // its restored corners are then eroded together with their wall vertices.
+    let mut cap_triangles: Option<CapTriangleIndex> = None;
     for (i, cell) in cells.iter().enumerate() {
         if !matches!(cell.source.tileset_id.as_ref(), "johto" | "johto_modern")
             || cell.source.metatile_id != 0x0a
@@ -121,36 +209,45 @@ pub(super) fn sculpt_rock_rims(
         // even when their original endpoints coincide. Replace this corner
         // cell with one regular cap before sculpting both surfaces.
         let surface = &mut mesh.solid;
-        let positions = &surface.positions;
-        let uvs = &surface.uvs;
-        let indices = surface
-            .indices
-            .chunks_exact(3)
-            .filter(|tri| {
-                // Most scene triangles are foliage or ground. They cannot
-                // belong to this native rock cap; avoid loading their points
-                // and calculating a centroid for every restored corner.
-                if !(uvs[tri[0] as usize][0] < -9000.) {
-                    return true;
-                }
-                let q = [tri[0], tri[1], tri[2]].map(|i| positions[i as usize]);
-                if !q.iter().all(|p| (p[1] - h).abs() < 0.001) {
-                    return true;
-                }
-                let center = q.iter().fold([0.; 3], |mut a, p| {
-                    for axis in 0..3 {
-                        a[axis] += p[axis] / 3.;
+        if indexed {
+            let triangles = cap_triangles.get_or_insert_with(|| {
+                let mut triangles = CapTriangleIndex::default();
+                triangles.absorb(surface, g);
+                triangles
+            });
+            triangles.remove_cap(surface, g, x, z, h);
+        } else {
+            let positions = &surface.positions;
+            let uvs = &surface.uvs;
+            let indices = surface
+                .indices
+                .chunks_exact(3)
+                .filter(|tri| {
+                    // Most scene triangles are foliage or ground. They cannot
+                    // belong to this native rock cap; avoid loading their points
+                    // and calculating a centroid for every restored corner.
+                    if !(uvs[tri[0] as usize][0] < -9000.) {
+                        return true;
                     }
-                    a
-                });
-                !(center[0] > w
-                    && center[0] < e
-                    && center[2] > n
-                    && center[2] < south)
-            })
-            .flat_map(|tri| tri.iter().copied())
-            .collect();
-        surface.indices = indices;
+                    let q = [tri[0], tri[1], tri[2]].map(|i| positions[i as usize]);
+                    if !q.iter().all(|p| (p[1] - h).abs() < 0.001) {
+                        return true;
+                    }
+                    let center = q.iter().fold([0.; 3], |mut a, p| {
+                        for axis in 0..3 {
+                            a[axis] += p[axis] / 3.;
+                        }
+                        a
+                    });
+                    !(center[0] > w
+                        && center[0] < e
+                        && center[2] > n
+                        && center[2] < south)
+                })
+                .flat_map(|tri| tri.iter().copied())
+                .collect();
+            surface.indices = indices;
+        }
         append_corner(
             surface,
             [[w, h, n], [w, h, south], [e, h, south], [e, h, n]],
@@ -224,7 +321,11 @@ pub(super) fn sculpt_rock_rims(
                 origin,
             );
         }
+        if let Some(triangles) = &mut cap_triangles {
+            triangles.absorb(&mut mesh.solid, g);
+        }
     }
+    if let Some(triangles) = cap_triangles { mesh.solid.indices = triangles.finish(); }
     let rock_height = |i: usize, cell: &VisualTile| {
         if !matches!(cell.source.tileset_id.as_ref(), "johto" | "johto_modern")
             || !(cell.source.metatile_id == 0x0a
@@ -409,6 +510,8 @@ pub(super) fn sculpt_rock_rims(
             .then(|| g.bounds(i % g.width, i / g.width))
     }).collect();
     let edges = join_wall_edges(edges, &ledge_joints);
+    let edge_candidates = if indexed { rock_edge_candidates(&edges, g) } else { Vec::new() };
+    let all_edges: Vec<_> = (0..edges.len()).collect();
     let s = &mut mesh.solid;
     let mut shared_positions = HashMap::<[i64; 3], ([f32; 3], [bool; 3])>::new();
     for i in 0..s.positions.len() {
@@ -416,6 +519,14 @@ pub(super) fn sculpt_rock_rims(
             continue;
         }
         let p = Vec3::from_array(s.positions[i]);
+        let candidates = if indexed {
+            let x = ((p.x - g.origin_x) / g.tile_width).floor()
+                .clamp(0., g.width as f32 - 1.) as usize;
+            let z = ((p.z - g.origin_z) / g.tile_height).floor()
+                .clamp(0., g.height as f32 - 1.) as usize;
+            &edge_candidates[z * g.width + x]
+        } else { &all_edges };
+        let nearby_edges = candidates.iter().map(|&i| &edges[i]);
         // Cap and wall grids interpolate the same authored sample through
         // different float expressions. A one-ULP difference can cross a steep
         // shoulder constraint and open a slit. Reuse the position field at
@@ -428,8 +539,7 @@ pub(super) fn sculpt_rock_rims(
         );
         // The nearest adjoining floor constrains every part of the warp,
         // including a perpendicular rim reaching around a convex corner.
-        let support = edges
-            .iter()
+        let support = nearby_edges.clone()
             .map(|&(a, b, _, _, bottom, _)| {
                 let along = ((p.xz() - a).dot(b - a) / (b - a).length_squared()).clamp(0., 1.);
                 // The bevel reaches well beyond the thin wall relief skin.
@@ -443,7 +553,7 @@ pub(super) fn sculpt_rock_rims(
         let mut rim_drop = [0.0_f32; 4];
         let mut wall_inset = [0.0_f32; 4];
         let mut wall_weather = None;
-        for &(a, b, normal, height, bottom, rim_scale) in &edges {
+        for &(a, b, normal, height, bottom, rim_scale) in nearby_edges.clone() {
             let along = ((p.xz() - a).dot(b - a) / (b - a).length_squared()).clamp(0.0, 1.0);
             let distance = p.xz().distance(a.lerp(b, along));
             // Choose form from the source edge, not the vertex material.
@@ -480,9 +590,9 @@ pub(super) fn sculpt_rock_rims(
             } else {
                 3
             };
-            // Project the cap/wall corner onto one convex mineral bevel.
-            // Octagonal planes keep the shared radial ordering of the former
-            // circular fillet while breaking its soft, rolled-earth shoulder.
+            // Project the cap/wall corner onto one convex mineral plane.
+            // The shared cut keeps straight height rings instead of a rolled
+            // shoulder while preserving the authored edge recession.
             let depth = height - p.y;
             let delta = mineral_bevel((p.xz() - a).dot(-normal), distance,
                 along, depth, rim_width);
@@ -604,7 +714,7 @@ pub(super) fn sculpt_rock_rims(
         let mut crest_inset = [0.0_f32; 4];
         let mut crest_relief = 0.0_f32;
         let mut crest_erosion = None;
-        for &(a, b, normal, height, bottom, _) in &edges {
+        for &(a, b, normal, height, bottom, _) in nearby_edges {
             let along = ((rounded.xz() - a).dot(b - a) / (b - a).length_squared()).clamp(0., 1.);
             let distance = rounded.xz().distance(a.lerp(b, along));
             let datum = (crate::profile::JUMP_LEDGE_HEIGHT * g.tile_height / SOURCE_TILE_HEIGHT)
@@ -719,6 +829,30 @@ fn soften_rock_rims(mesh: &mut TerrainMeshData, cells: &[&VisualTile],
 }
 
 type RockEdge = (Vec2, Vec2, Vec2, f32, f32, f32);
+
+fn rock_edge_candidates(edges: &[RockEdge], g: &GridGeometry) -> Vec<Vec<usize>> {
+    let mut candidates = vec![Vec::new(); g.width * g.height];
+    // The longest edge field reaches 1.2 tiles from the rounded position.
+    // Include four source tiles to cover the preceding rim, wall inset and
+    // convex-corner shifts as well. Remote edges contribute exactly zero;
+    // scanning every map edge at every vertex made broad route reviews slow.
+    let reach = g.tile_width.max(g.tile_height) * 4.;
+    for (i, &(a, b, ..)) in edges.iter().enumerate() {
+        let low = a.min(b) - Vec2::splat(reach);
+        let high = a.max(b) + Vec2::splat(reach);
+        let column = |x: f32| ((x - g.origin_x) / g.tile_width).floor()
+            .clamp(0., g.width as f32 - 1.) as usize;
+        let row = |z: f32| ((z - g.origin_z) / g.tile_height).floor()
+            .clamp(0., g.height as f32 - 1.) as usize;
+        for z in row(low.y)..=row(high.y) {
+            for x in column(low.x)..=column(high.x) {
+                // Preserve the original edge order for identical floats.
+                candidates[z * g.width + x].push(i);
+            }
+        }
+    }
+    candidates
+}
 
 /// Join only collinear, touching source edges with identical rock and floor
 /// datums and shoulder profiles. Height changes and material contacts remain
@@ -886,13 +1020,32 @@ pub(super) fn append_canyon(
     append_with_pigment(s, p, n, g, origin, canyon_color, 40000.0);
 }
 
+/// Bare water-edge mineral keeps its authenticated source pigment. Reuse the
+/// existing closed wall relief and world-height rings, without meadow moss.
+pub(in crate::mesh) fn append_coast(
+    s: &mut SurfaceMeshData, p: [[f32; 3]; 4], n: [f32; 3],
+    g: &GridGeometry, origin: [i32; 2], palette: [[f32; 3]; 2],
+) {
+    append_with_pigment(s,p,n,g,origin,|p,n| {
+        let broad=noise(p/14.);
+        let grain=noise(p/1.8);
+        let strata=noise(Vec3::new(p.x/20.,p.y/1.7,p.z/20.));
+        let wet=(-p.y/(g.tile_height*0.25)).clamp(0.,1.);
+        let mut c=Vec3::from_array(palette[1]).lerp(Vec3::from_array(palette[0]),
+            0.22+broad*0.38+strata*0.12);
+        c *= (0.88+grain*0.16)*(1.-wet*0.18);
+        c *= 0.65+0.35*n.dot(Vec3::new(0.45,0.8,0.55).normalize()).max(0.);
+        [c.x,c.y,c.z,1.]
+    },40000.);
+}
+
 fn append_with_pigment(
     s: &mut SurfaceMeshData,
     p: [[f32; 3]; 4],
     n: [f32; 3],
     g: &GridGeometry,
     origin: [i32; 2],
-    pigment: fn(Vec3, Vec3) -> [f32; 4],
+    pigment: impl Fn(Vec3, Vec3) -> [f32; 4],
     texture_tag: f32,
 ) {
     let mut p = p.map(Vec3::from_array);
@@ -929,16 +1082,39 @@ fn append_with_pigment(
     let low = p.iter().map(|q| q.y).fold(f32::INFINITY, f32::min);
     let high = p.iter().map(|q| q.y).fold(f32::NEG_INFINITY, f32::max);
     let first = (low / ring).floor() as i32;
+    // A merged wall can span several source cells. Six samples for its
+    // entire width leave T-junctions against the six-per-cell cap borders.
+    // Partition aligned walls at shared world-coordinate rings as well.
+    let axis = if (p[3].x - p[0].x).abs() >= (p[3].z - p[0].z).abs() { 0 } else { 2 };
+    let aligned = wall && (p[0][axis] - p[1][axis]).abs() < 0.0001
+        && (p[3][axis] - p[2][axis]).abs() < 0.0001;
+    let a = p[0][axis] + offset[axis];
+    let b = p[3][axis] + offset[axis];
+    let horizontal_ring = (if axis == 0 { g.tile_width } else { g.tile_height }) / 6.;
+    let mut columns = vec![(0., a), (1., b)];
+    if aligned && (b - a).abs() > 0.0001 {
+        for k in (a.min(b) / horizontal_ring).floor() as i32 + 1
+            ..(a.max(b) / horizontal_ring).ceil() as i32 {
+            let level = k as f32 * horizontal_ring;
+            let u = (level - a) / (b - a);
+            if u > 0.00001 && u < 0.99999 { columns.push((u, level)); }
+        }
+        columns.sort_by(|a, b| a.0.total_cmp(&b.0));
+    } else {
+        columns = (0..=6).map(|i| {
+            let u = i as f32 / 6.;
+            (u, a + (b - a) * u)
+        }).collect();
+    }
     let rows = if wall {
         (high / ring).ceil() as i32 - first
     } else {
         6
     };
     for row in 0..rows {
-        for column in 0..6 {
-            let u = column as f32 / 6.0;
-            let step = 1.0 / 6.0;
-            let at = |u: f32, level: f32| {
+        for interval in columns.windows(2) {
+            let [(u, along), (end_u, end_along)] = [interval[0], interval[1]];
+            let at = |u: f32, along: f32, level: f32| {
                 let bottom = p[0].lerp(p[3], u).y;
                 let top = p[1].lerp(p[2], u).y;
                 let v = if (top - bottom).abs() > 0.0001 {
@@ -947,6 +1123,7 @@ fn append_with_pigment(
                     0.0
                 };
                 let mut q = point(u, v);
+                if aligned { q[axis] = along - offset[axis]; }
                 // Preserve the shared world ring exactly. Reconstructing Y
                 // through differently based lerps yields unequal seam bits.
                 q.y = level.clamp(bottom.min(top), bottom.max(top));
@@ -961,18 +1138,19 @@ fn append_with_pigment(
                     (upper, lower)
                 };
                 [
-                    at(u, start),
-                    at(u, end),
-                    at(u + step, end),
-                    at(u + step, start),
+                    at(u, along, start),
+                    at(u, along, end),
+                    at(end_u, end_along, end),
+                    at(end_u, end_along, start),
                 ]
             } else {
                 let v = row as f32 / 6.0;
+                let step = 1. / 6.;
                 [
                     point(u, v),
                     point(u, v + step),
-                    point(u + step, v + step),
-                    point(u + step, v),
+                    point(end_u, v + step),
+                    point(end_u, v),
                 ]
             };
             let area = (quad[1] - quad[0]).cross(quad[2] - quad[0])
@@ -998,6 +1176,112 @@ fn append_with_pigment(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn merged_wall_border_matches_both_source_cell_caps() {
+        let g = GridGeometry { width: 2, height: 1, tile_width: 8., tile_height: 8.,
+            origin_x: 0., origin_z: 0. };
+        let mut caps = SurfaceMeshData::default();
+        for west in [0., 8.] {
+            append_canyon(&mut caps, [[west,16.,0.], [west,16.,8.],
+                [west+8.,16.,8.], [west+8.,16.,0.]], [0.,1.,0.], &g, [0,0]);
+        }
+        let mut wall = SurfaceMeshData::default();
+        append_canyon(&mut wall, [[16.,6.,8.], [16.,16.,8.],
+            [0.,16.,8.], [0.,6.,8.]], [0.,0.,1.], &g, [0,0]);
+        for point in caps.positions.iter().filter(|p| (p[2]-8.).abs()<0.0001) {
+            assert!(wall.positions.iter().any(|q|
+                (Vec3::from_array(*point)-Vec3::from_array(*q)).length()<0.00001),
+                "merged wall omits cap-border sample {point:?}");
+        }
+        assert!(wall.positions.iter().all(|p| p[1]>=6. && p[1]<=16.));
+    }
+
+    #[test]
+    #[ignore = "requires a completed external CRYSTAL_RENDER_TEST_PACK"]
+    fn external_route_rock_caps_retain_winding_after_the_combined_finish() {
+        let path = std::env::var("CRYSTAL_RENDER_TEST_PACK")
+            .expect("set CRYSTAL_RENDER_TEST_PACK to a completed local pack");
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let pack = loaded.pack();
+        let mut total_caps = 0;
+        // Include both rocky routes and the early-game town/route chain.
+        // These are actual source layouts, rather than repeats of Route26.
+        for map in ["NewBarkTown", "Route29", "CherrygroveCity", "Route30",
+            "Route31", "VioletCity", "Route26", "Route27", "Route43",
+            "Route45", "Route46", "LakeOfRage"] {
+            let module = &pack.data().maps[map];
+            let tileset = &module.attributes.tileset_name;
+            let layout = &pack.runtime_files()[&format!("data/tilesets/{tileset}_metatiles.bin")];
+            let width = module.attributes.width as usize * 4;
+            let height = module.attributes.height as usize * 4;
+            let sources = (0..height).flat_map(|z| (0..width).map(move |x| {
+                let block = module.blocks[z / 4 * (width / 4) + x / 4];
+                VisualTileSource {
+                    tileset_id: tileset.as_str().into(), metatile_id: block,
+                    subtile_column: (x % 4) as u8, subtile_row: (z % 4) as u8,
+                    tile_index: layout[block as usize * 16 + z % 4 * 4 + x % 4] as u16,
+                }
+            })).collect();
+            let frame = super::super::tests::frame(width as u32, height as u32, sources);
+            let cells: Vec<_> = frame.tiles.iter().collect();
+            let mut shapes: Vec<_> = cells.iter().map(|c|
+                shape_for_source_on_map(map, &c.source)).collect();
+            resolve_rock_platform_tiers(&cells, &mut shapes, width);
+            resolve_authored_mountain_tiers(&mut shapes, width, height);
+            let g = GridGeometry { width, height, tile_width: 16., tile_height: 16.,
+                origin_x: 0., origin_z: 0. };
+            let mut mesh = TerrainMeshData::default();
+            mesh.authored_cells = vec![None; cells.len()];
+            mesh.footing_heights = shapes.iter().map(|s| s.surface_height(g.tile_height)).collect();
+            for (i, cell) in cells.iter().enumerate() {
+                if !matches!(cell.source.tileset_id.as_ref(), "johto" | "johto_modern")
+                    || !(cell.source.metatile_id == 0x0a || (0x68..=0x73).contains(&cell.source.metatile_id)) {
+                    continue;
+                }
+                let h = shapes[i].surface_height(g.tile_height);
+                if h <= 0. { continue; }
+                let (x, z) = (i % width, i / width);
+                let (w, e, n, south) = g.bounds(x, z);
+                let append_face = if cell.source.metatile_id == 0x0a { append } else { append_canyon };
+                append_face(&mut mesh.solid, [[w,h,n],[w,h,south],[e,h,south],[e,h,n]],
+                    Vec3::Y.to_array(), &g, [0,0]);
+                for (nx, nz, a, b, normal) in [
+                    (x.wrapping_sub(1),z,[w,h,south],[w,h,n],Vec3::NEG_X),
+                    (x+1,z,[e,h,n],[e,h,south],Vec3::X),
+                    (x,z.wrapping_sub(1),[w,h,n],[e,h,n],Vec3::NEG_Z),
+                    (x,z+1,[e,h,south],[w,h,south],Vec3::Z),
+                ] {
+                    if nx >= width || nz >= height { continue; }
+                    let floor = shapes[nz*width+nx].surface_height(g.tile_height).max(0.);
+                    if floor >= h { continue; }
+                    let mut low_a = a; low_a[1] = floor;
+                    let mut low_b = b; low_b[1] = floor;
+                    append_face(&mut mesh.solid, [low_a,a,b,low_b], normal.to_array(), &g, [0,0]);
+                }
+            }
+            // Keep authored face classification through sculpting. UV winding
+            // alone mislabels weathered vertical wall projections as caps.
+            let mut classified = mesh.clone();
+            sculpt_rock_rims(&mut classified, &cells, &shapes, &g, [0,0]);
+            let footing = mesh.footing_heights.clone();
+            finish_rock_geometry(&mut mesh, map, &cells, &shapes, &g, [0,0]);
+            assert_eq!(mesh.footing_heights, footing, "{map} source support changed");
+            assert!(mesh.authored_cells.iter().all(Option::is_none), "{map} claims changed");
+            let mut caps = 0;
+            for ids in mesh.solid.indices.chunks_exact(3) {
+                if mesh.solid.uvs[ids[0] as usize][0] >= -9000. { continue; }
+                if classified.solid.normals[ids[0] as usize][1] <= 0.9 { continue; }
+                let p = [ids[0],ids[1],ids[2]].map(|i| Vec3::from_array(mesh.solid.positions[i as usize]));
+                let cross = (p[1]-p[0]).cross(p[2]-p[0]);
+                assert!(cross.y >= -0.0001, "{map} inverted native cap: {p:?}");
+                caps += 1;
+            }
+            total_caps += caps;
+            println!("{map}: {caps} source rock cap triangles checked");
+        }
+        assert!(total_caps > 100_000, "the external layouts must exercise substantial rock geometry");
+    }
     #[test]
     fn cap_mineral_clefts_have_resolved_valleys_between_broad_planes() {
         let tile = 8.;
@@ -1139,6 +1423,23 @@ mod tests {
         assert!(mineral_bevel(0., 0., 0.5, -7.999, 8.).length() < 0.001);
         assert_eq!(mineral_bevel(0., 0., 0.5, -8., 8.), Vec2::ZERO);
         assert_eq!(mineral_bevel(0., 0., 0.5, -16., 8.), Vec2::ZERO);
+    }
+
+    #[test]
+    fn mineral_shoulder_height_rings_follow_one_planar_cut() {
+        let width = 8.;
+        let cut = width * (2. - std::f32::consts::SQRT_2);
+        for inward in [0., 0.5, 1., 2.] {
+            for depth in [0., 0.5, 1., 2.] {
+                let delta = mineral_bevel(inward, inward, 0.5, depth, width);
+                let projected = Vec2::new(inward + delta.x, depth - delta.y);
+                assert!((projected.x + projected.y - cut).abs() < 0.00001,
+                    "height rings must describe a mineral plane, not a rolled fillet: {projected:?}");
+                assert!(projected.x >= inward && projected.y >= depth);
+            }
+        }
+        assert_eq!(mineral_bevel(5., 5., 0.5, 2., width), Vec2::ZERO);
+        assert_eq!(mineral_bevel(0., width, 0.5, 0., width), Vec2::ZERO);
     }
 
     #[test]

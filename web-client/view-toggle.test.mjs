@@ -3,13 +3,11 @@ import assert from 'node:assert/strict';
 import { JSDOM } from 'jsdom';
 import { mountViewToggle } from './view-toggle.js';
 
-function mount(saved, savedCamera = {}, startIn2D = false, startIn3D = false) {
+function mount(saved, savedCamera = {}, startIn2D = false, startIn3D = false, supportsPose = false) {
   const values = new Map(saved === undefined ? [] : [['crystal.display.voxel', saved]]);
   for (const [key, value] of Object.entries(savedCamera)) values.set(key, value);
   const calls = [];
   const cameraCalls = [];
-  const control = () => ({ disabled: true, setAttribute() {}, addEventListener(type, handler) { this.click = handler; } });
-  const cameraControls = { group: { hidden: true }, zoomOut: control(), zoomIn: control(), rotateLeft: control(), rotateRight: control(), reset: control() };
   const attributes = new Map();
   let click;
   let focused = false;
@@ -28,19 +26,26 @@ function mount(saved, savedCamera = {}, startIn2D = false, startIn3D = false) {
   canvas.getBoundingClientRect = () => ({ width: 400, height: 400 });
   const pointer = (type, x, y, id = 1, pointerType = 'touch') => {
     const event = new dom.window.Event(type, { cancelable: true });
-    Object.assign(event, { clientX: x, clientY: y, pointerId: id, pointerType });
+    Object.assign(event, { clientX: x, clientY: y, pointerId: id, pointerType, button: 0 });
     canvas.dispatchEvent(event);
     return event;
   };
-  const controller = mountViewToggle({ crystal_set_voxel_view: value => calls.push(value), crystal_set_voxel_camera: (...args) => cameraCalls.push(args) }, {
-    cameraControls,
+  const wasm = { crystal_set_voxel_view: value => calls.push(value), crystal_set_voxel_camera: (...args) => cameraCalls.push(args) };
+  if (supportsPose) {
+    wasm.crystal_set_voxel_camera_pose = (...args) => cameraCalls.push(args);
+    wasm.crystal_cycle_voxel_camera = () => {
+      const [zoom, rotation] = cameraCalls.at(-1);
+      return JSON.stringify({ zoom, rotation, pitch: 0, firstPerson: true });
+    };
+  }
+  const controller = mountViewToggle(wasm, {
     startIn2D,
     startIn3D,
     button,
     canvas,
     storage: { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) },
   });
-  return { pointer, dom, controller, cameraControls, cameraCalls, button, attributes, values, calls, click: () => click(), focused: () => focused };
+  return { pointer, dom, controller, cameraCalls, button, attributes, values, calls, click: () => click(), focused: () => focused };
 }
 
 test('starts in 2D, toggles the renderer both ways, and returns keyboard focus to the game', () => {
@@ -67,35 +72,6 @@ test('restores the selected renderer on reload', () => {
   assert.equal(ui.button.title, 'Switch to 2D view');
 });
 
-
-test('camera controls are shown only in 3D and clamp zoom, wrap rotation, and reset', () => {
-  const ui = mount();
-  const controls = ui.cameraControls;
-  assert.equal(controls.group.hidden, true);
-  assert.equal(controls.zoomIn.disabled, true);
-  ui.click();
-  assert.equal(controls.group.hidden, false);
-  for (let i = 0; i < 10; i++) controls.zoomIn.click();
-  assert.deepEqual(ui.cameraCalls.at(-1), [5, 0]);
-  assert.equal(controls.zoomIn.disabled, true);
-  assert.equal(controls.reset.textContent, '200%');
-  for (let i = 0; i < 10; i++) controls.zoomOut.click();
-  assert.deepEqual(ui.cameraCalls.at(-1), [0, 0]);
-  assert.equal(controls.zoomOut.disabled, true);
-  controls.rotateLeft.click();
-  assert.deepEqual(ui.cameraCalls.at(-1), [0, 7]);
-  controls.rotateRight.click();
-  assert.deepEqual(ui.cameraCalls.at(-1), [0, 0]);
-  for (let i = 0; i < 8; i++) controls.rotateRight.click();
-  assert.deepEqual(ui.cameraCalls.at(-1), [0, 0]);
-  controls.reset.click();
-  assert.deepEqual(ui.cameraCalls.at(-1), [1, 0]);
-  assert.equal(ui.values.get('crystal.display.zoom'), '1');
-  assert.equal(ui.values.get('crystal.display.rotation'), '0');
-  assert.equal(ui.focused(), true);
-  ui.click();
-  assert.equal(controls.group.hidden, true);
-});
 
 test('camera preferences survive reload and invalid saved values are sanitized', () => {
   const ui = mount('true', { 'crystal.display.zoom': '4', 'crystal.display.rotation': '6' });
@@ -133,17 +109,17 @@ test('touch drag orbits and zooms only in 3D and persists on release', () => {
   assert.deepEqual(ui.cameraCalls.at(-1), [2.25, 2]);
 });
 
-test('drag ignores mouse and extra fingers and stops on cancellation, blur, and mode switch', () => {
+test('drag ignores secondary mouse buttons and stops on cancellation, blur, and mode switch', () => {
   const ui = mount('true');
-  ui.pointer('pointerdown', 0, 0, 1, 'mouse');
+  const rightClick = new ui.dom.window.Event('pointerdown');
+  Object.assign(rightClick, { pointerId: 1, pointerType: 'mouse', button: 2 });
+  ui.dom.window.document.querySelector('canvas').dispatchEvent(rightClick);
   ui.pointer('pointermove', 100, 0, 1, 'mouse');
   assert.deepEqual(ui.cameraCalls.at(-1), [1, 0]);
   for (const stop of [() => ui.pointer('pointercancel', 0, 0),
     () => ui.dom.window.dispatchEvent(new ui.dom.window.Event('blur')),
     () => ui.click()]) {
     ui.pointer('pointerdown', 0, 0);
-    ui.pointer('pointerdown', 10, 0, 2);
-    ui.pointer('pointermove', 100, 0, 2);
     assert.deepEqual(ui.cameraCalls.at(-1), [1, 0]);
     stop();
     ui.pointer('pointermove', 100, 0);
@@ -155,11 +131,9 @@ test('drag ignores mouse and extra fingers and stops on cancellation, blur, and 
 test('Flygon starts in 2D despite saved 3D and still permits a manual switch', () => {
   const ui = mount('true', {}, true);
   assert.deepEqual(ui.calls, [false]);
-  assert.equal(ui.cameraControls.group.hidden, true);
   assert.equal(ui.values.get('crystal.display.voxel'), 'true');
   ui.click();
   assert.deepEqual(ui.calls, [false, true]);
-  assert.equal(ui.cameraControls.group.hidden, false);
   assert.deepEqual(mount('true', {}, true).calls, [false]);
   assert.deepEqual(mount('true').calls, [true]);
 });
@@ -171,4 +145,56 @@ test('explicit local modeled preview starts in 3D without rewriting saved prefer
   assert.equal(ui.values.get('crystal.display.voxel'), 'false');
   assert.deepEqual(ui.cameraCalls[0], [0, 7.5]);
   assert.deepEqual(mount('false', {}, true, true).calls, [false]);
+});
+
+
+test('primary mouse drag looks, touch looks in first person, and wheel zoom respects overlays', () => {
+  const ui = mount('true', {}, false, false, true);
+  ui.pointer('pointerdown', 0, 100, 1, 'mouse');
+  ui.pointer('pointermove', 100, 0, 1, 'mouse');
+  assert.deepEqual(ui.cameraCalls.at(-1), [1, 6, 15, false]);
+  ui.pointer('pointerup', 100, 0);
+  ui.controller.cycleCamera();
+  ui.pointer('pointerdown', 0, 100);
+  ui.pointer('pointermove', 100, 0);
+  assert.deepEqual(ui.cameraCalls.at(-1), [1, 4, -30, true]);
+  ui.pointer('pointerup', 100, 0);
+  const canvas = ui.dom.window.document.querySelector('canvas');
+  const wheel = () => {
+    const e = new ui.dom.window.WheelEvent('wheel', { deltaY: -100, cancelable: true });
+    canvas.dispatchEvent(e);
+    return e;
+  };
+  assert.equal(wheel().defaultPrevented, true);
+  assert.deepEqual(ui.cameraCalls.at(-1), [1.5, 4, -30, true]);
+  const dialog = ui.dom.window.document.createElement('dialog');
+  dialog.setAttribute('open', '');
+  ui.dom.window.document.body.append(dialog);
+  const count = ui.cameraCalls.length;
+  assert.equal(wheel().defaultPrevented, false);
+  assert.equal(ui.controller.moveCamera({ yaw: 1 }, 0.05), false);
+  assert.equal(ui.cameraCalls.length, count);
+});
+
+
+test('two-finger pinch and trackpad wheel gestures zoom and rotate without buttons', () => {
+  const ui = mount('true', {}, false, false, true);
+  ui.pointer('pointerdown', 0, 100, 1);
+  ui.pointer('pointerdown', 100, 100, 2);
+  ui.pointer('pointermove', 200, 100, 2);
+  assert.ok(ui.cameraCalls.at(-1)[0] > 3);
+  ui.pointer('pointerup', 200, 100, 2);
+  const before = ui.cameraCalls.length;
+  ui.pointer('pointermove', 250, 100, 1);
+  assert.equal(ui.cameraCalls.length, before);
+  const canvas = ui.dom.window.document.querySelector('canvas');
+  const scroll = new ui.dom.window.WheelEvent('wheel', { deltaX: 100, deltaY: 0, cancelable: true });
+  canvas.dispatchEvent(scroll);
+  assert.equal(scroll.defaultPrevented, true);
+  assert.equal(ui.cameraCalls.at(-1)[1], 7.5);
+  const pinch = new ui.dom.window.WheelEvent('wheel', { deltaY: -20, ctrlKey: true, cancelable: true });
+  const zoom = ui.cameraCalls.at(-1)[0];
+  canvas.dispatchEvent(pinch);
+  assert.equal(pinch.defaultPrevented, true);
+  assert.ok(ui.cameraCalls.at(-1)[0] > zoom);
 });

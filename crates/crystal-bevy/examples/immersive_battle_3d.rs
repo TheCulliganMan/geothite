@@ -30,6 +30,7 @@ fn main() -> Result<()> {
     let mut cave_encounter = false;
     let mut gym_encounter = false;
     let mut falkner_encounter = false;
+    let mut rival_encounter = false;
     let mut ice_encounter = false;
     let mut shadow_ball = false;
     let mut psychic = false;
@@ -41,6 +42,7 @@ fn main() -> Result<()> {
     let mut wild_species = false;
     let mut starter = None;
     let mut shiny = false;
+    let mut unown_form = None;
     let mut poke_ball_failure = false;
     let mut window_size = None;
     let mut reduced_flashes = false;
@@ -58,6 +60,7 @@ fn main() -> Result<()> {
             "--cave-encounter" => cave_encounter = true,
             "--gym-encounter" => gym_encounter = true,
             "--falkner-encounter" => falkner_encounter = true,
+            "--rival-encounter" => rival_encounter = true,
             "--ice-encounter" => ice_encounter = true,
             "--shadow-ball" => shadow_ball = true,
             "--psychic" => psychic = true,
@@ -67,6 +70,11 @@ fn main() -> Result<()> {
             "--pidgeotto" => pidgeotto = true,
             "--enemy-gust" => enemy_gust = true,
             "--shiny" => shiny = true,
+            "--unown-form" => {
+                let letter = args.next().context("--unown-form A..Z")?.to_ascii_uppercase();
+                anyhow::ensure!(letter.len() == 1 && letter.as_bytes()[0].is_ascii_uppercase(), "--unown-form expects A..Z");
+                unown_form = Some(letter.as_bytes()[0] - b'A' + 1);
+            }
             "--starter" => {
                 anyhow::ensure!(starter.is_none(), "choose only one --starter or --species");
                 let name = args
@@ -119,6 +127,7 @@ fn main() -> Result<()> {
             cave_encounter,
             gym_encounter,
             falkner_encounter,
+            rival_encounter,
             ice_encounter,
             shadow_ball,
             psychic,
@@ -146,8 +155,9 @@ fn main() -> Result<()> {
             .into_iter()
             .filter(|active| *active)
             .count()
-            <= 1,
-        "choose screenshot, recording or measurement"
+            <= 1 || (screenshot.is_some() && record.is_some() && measure.is_none()
+                && std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TARGET").is_ok_and(|value| value == "image")),
+        "choose screenshot, recording or measurement; image recording may also supply its capture target"
     );
     anyhow::ensure!(
         second.is_none() || screenshot.is_some(),
@@ -180,16 +190,18 @@ fn main() -> Result<()> {
             .map(String::as_str)
             .collect();
         println!(
-            "{} packed species; {} dedicated battle bodies; {} missing bodies",
+            "{} packed species; {} dedicated catalog bodies; {} outside this catalog",
             runtime.data().pokemon.len(),
             runtime.data().pokemon.len() - missing.len(),
             missing.len()
         );
-        println!("Missing: {}", missing.join(", "));
+        println!("Shared or fallback bodies: {}", missing.join(", "));
         return Ok(());
     }
     let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
-    let (map_name, tile_x, tile_y) = if surf_encounter {
+    let (map_name, tile_x, tile_y) = if rival_encounter {
+        ("CherrygroveCity", 32, 7)
+    } else if surf_encounter {
         ("Route44", 38, 3)
     } else if falkner_encounter {
         ("VioletGym", 4, 1)
@@ -259,7 +271,7 @@ fn main() -> Result<()> {
             } else {
                 "Geothite | 3D battle | Arrows / Z confirm / X cancel / F3 view / F4 flashes".into()
             }),
-            render_test_battle: !(route36_encounter || fishing_encounter || walking_encounter || surf_encounter || cave_encounter || gym_encounter || falkner_encounter || ice_encounter),
+            render_test_battle: !(route36_encounter || fishing_encounter || walking_encounter || surf_encounter || cave_encounter || gym_encounter || falkner_encounter || rival_encounter || ice_encounter),
             render_test_route36_encounter: route36_encounter,
             render_test_fishing_encounter: fishing_encounter,
             render_test_walking_encounter: walking_encounter,
@@ -267,6 +279,7 @@ fn main() -> Result<()> {
             render_test_cave_encounter: cave_encounter,
             render_test_gym_encounter: gym_encounter,
             render_test_falkner_encounter: falkner_encounter,
+            render_test_rival_encounter: rival_encounter,
             render_test_ice_encounter: ice_encounter,
             render_test_shadow_ball: shadow_ball,
             render_test_psychic: psychic,
@@ -277,6 +290,7 @@ fn main() -> Result<()> {
             render_test_enemy_gust: enemy_gust,
             render_test_battle_starter: starter,
             render_test_battle_shiny: shiny,
+            render_test_unown_form: unown_form,
             render_test_poke_ball_failure: poke_ball_failure,
             render_test_window_size: window_size,
             battle_reduced_flashes: reduced_flashes,

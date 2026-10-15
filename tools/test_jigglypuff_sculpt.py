@@ -3,13 +3,14 @@
 import json,os,unittest
 from pathlib import Path
 from jigglypuff_sculpt import sculpture,HEIGHT
+from jigglypuff_glb import read_jigglypuff
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 import test_donphan_sculpt as joins
-ROOT=Path(os.environ.get('JIGGLYPUFF_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/actor_props/icon_jigglypuff.mesh.json'))
+ROOT=Path(os.environ.get('JIGGLYPUFF_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/actor_props/icon_jigglypuff.glb'))
 class JigglypuffTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads(ROOT.read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_jigglypuff(ROOT) if ROOT.suffix=='.glb' else json.loads(ROOT.read_bytes());cls.m['name']='icon_jigglypuff';cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'jigglypuff':self.m})
  def test_finite_unit_normals_follow_winding(self):assert_model_shading(self,{'jigglypuff':self.m})

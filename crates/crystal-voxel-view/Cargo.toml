@@ -19,6 +19,10 @@ bevy = { workspace = true, features = [
     "bevy_render",
     "bevy_sprite",
     "bevy_sprite_render",
+    "bevy_text",
+    "bevy_ui",
+    "bevy_ui_render",
+    "default_font",
     "multi_threaded",
 ] }
 crystal-render-api.workspace = true

@@ -292,34 +292,93 @@ def shrine():
  ico('Shrine bronze bell',(0,-1.10,2.30),(.18,.18,.20),'yellow',2)
 
 
+def forest_gate_roof():
+ # Preserve the closed deck, ridge and structural edges. The source's small
+ # roof courses need overlapping ceramic pieces, rather than seven broad slabs.
+ width,depth,eave,ridge=5.95,5.72,3.22,4.48
+ roof(width,depth,eave,ridge,'roof_teal',6)
+ for o in list(COL.objects):
+  if o.name.startswith('Individual roof course'):
+   bpy.data.objects.remove(o,do_unlink=True)
+ columns,rows=17,12
+ half=width/2;run=depth/2;step=width/columns
+ for side in [-1,1]:
+  for row in range(rows):
+   # Alternate half pieces close the verge; staggered seams never form gutters.
+   cuts=[-half]+[-half+(j+(0.5 if row%2 else 1))*step
+    for j in range(columns) if -half+(j+(0.5 if row%2 else 1))*step<half]+[half]
+   t0=max(0.,row/rows-0.012);t1=(row+1)/rows
+   y0=side*run*(1-t0);y1=side*run*(1-t1)
+   z0=eave+(ridge-eave)*t0+.035;z1=eave+(ridge-eave)*t1+.020
+   for column,(left,right) in enumerate(zip(cuts,cuts[1:])):
+    # Adjacent closed pieces meet at the verge instead of exposing dark slots.
+    # The visible crown is unchanged; a triangular-prism underside eliminates
+    # hidden parallel layers and leaves geometry budget for the masonry.
+    vs=[]
+    for y,z in [(y0,z0),(y1,z1)]:
+     for t,lift in [(0,0),(.5,.009),(1,0)]:
+      vs.append((left+(right-left)*t,y,z+lift))
+    faces=[(0,1,4,3),(1,2,5,4),(0,3,5,2),(0,2,1),(3,4,5)]
+    color=['roof_teal','roof_teal_warm','roof_teal','roof_teal_light'][(column+row*3)%4]
+    mesh('Forest gate overlapping ceramic shingle',vs,faces,color)
+
+def forest_gate_shell(closed):
+ w,d,h=5.48,5.25,2.95
+ if 'plaster_forest_mortar' not in MATS:
+  m=MATS['plaster_light'].copy();m.name='plaster_forest_mortar';MATS[m.name]=m
+ foundation(w,d)
+ cube('Complete forest masonry body',(0,0,.25+h/2),(w-.14,d-.14,h),'plaster_forest_mortar',.025)
+ for x in [-w/2+.08,w/2-.08]:
+  for y in [-d/2+.08,d/2-.08]:
+   cube('Forest masonry corner pier',(x,y,.25+h/2),(.17,.17,h+.05),'plaster_light',.018)
+ for angle,span,face in [(0,w-.34,-(d-.14)/2),(180,w-.34,-(d-.14)/2),
+   (90,d-.34,-(w-.14)/2),(-90,d-.34,-(w-.14)/2)]:
+  step=span/8
+  for row in range(12):
+   cuts=[-span/2]+[-span/2+(j+(.5 if row%2 else 1))*step
+    for j in range(8) if -span/2+(j+(.5 if row%2 else 1))*step<span/2]+[span/2]
+   for column,(left,right) in enumerate(zip(cuts,cuts[1:])):
+    z=.43+(row+.5)*2.71/12
+    if not closed and angle==0 and left<.72 and right>-.72 and z<1.87:continue
+    depth=.024+.002*((row+column)%3)
+    facade_cube('Forest running-bond masonry', (left+right)/2,z,right-left-.014,
+     2.71/12-.014,face-.005,depth,'plaster',angle)
+  window_span=w if angle in [0,180] else d
+  for x in [-window_span/3,0,window_span/3]:
+   z=2.48;width=1.04;height=.57;y=face-.052
+   facade_cube('Forest recessed window frame',x,z,width+.12,height+.12,y,.10,'stone_dark',angle)
+   pane=(width-.10-.035*3)/4
+   for part in range(4):
+    dx=-width/2+.05+pane/2+part*(pane+.035)
+    facade_cube('Forest yellow window pane',x+dx,z,pane,height-.10,y-.058,.016,'glass',angle)
+   facade_cube('Forest dressed window sill',x,z-height/2-.065,width+.20,.07,y-.014,.18,'plaster_light',angle)
+
 def forest_gate(closed=False):
  name='forest_gate_closed' if closed else 'forest_gate'
  start(name,6.0,6.0,'none' if closed else 'south')
- full_shell(5.48,5.25,2.95,wall='plaster',cols=4)
- roof(5.95,5.72,3.22,4.48,'roof_teal',6)
+ forest_gate_shell(closed)
+ forest_gate_roof()
  building_trim(5.50,5.27,1.63,2.70)
- if closed:
-  panel('Closed forest gateway shutter',0,1.10,1.35,1.62,-2.67,mat='timber')
-  for dx in [-.52,-.26,0,.26,.52]:facade_cube('Gateway shutter lath',dx,1.10,.045,1.62,-2.76,.03,'timber_light')
- else:
+ for o in list(COL.objects):
+  if o.name.startswith('Timber corner upright'):bpy.data.objects.remove(o,do_unlink=True)
+ if not closed:
   front_entry(5.25,1.12)
+  # The doorway shares the old teal pigment but is not roof paint.
+  if 'forest_gate_door' not in MATS:
+   m=MATS['roof_teal_dark'].copy();m.name='forest_gate_door';MATS['forest_gate_door']=m
+  for o in COL.objects:
+   if o.type=='MESH' and o.name.startswith('Door leaf'):
+    o.data.materials[0]=MATS['forest_gate_door']
+  # Retain this doorway assembly and its original projection/fit envelope.
   awning(1.95,5.25,2.14,'roof_teal')
- for x in [-2.18,2.18]:
-  cube('Forest gate stone pier',(x,-2.66,.54),(.33,.36,1.08),'stone_light',.03)
-  rod('Forest gate timber brace',(x,-2.7,1.06),(x*.82,-2.7,2.88),.065,'timber')
- facade_cube('Forest gate timber nameboard',0,2.77,1.74,.36,-2.71,.14,'timber',bevel=.025)
- for x in [-.45,0,.45]:ico('Forest gate carved crest',(x,-2.81,2.77),(.13,.05,.13),'yellow',1)
 
 def nature(name,kind):
- start(name,2,{'sign':.32,'bench':1.05,'fence':.30,'post':.70}.get(kind,2),'none')
- if kind=='post':TARGETS[name]=(.70,.70)
- if kind in ['conifer','canopy','cut','hedge']:
+ start(name,2,{'sign':.32,'bench':1.05,'fence':.30}.get(kind,2),'none')
+ if kind in ['canopy','cut','hedge']:
   if kind!='hedge':
    cone('Tapered tree trunk',(0,0,.72),.18,.11,1.44,'timber_light',7)
    for a in [0,2.1,4.2]:rod('Visible trunk root',(0,0,.22),(math.cos(a)*.52,math.sin(a)*.52,.045),.09,'timber',6)
-  if kind=='conifer':
-   for i in range(4):cone('Layered needle whorl',(0,0,1.2+i*.59),.94-i*.18,.07,1.0,'leaf' if i%2 else 'leaf_dark',9)
-  elif kind=='canopy':
+  if kind=='canopy':
    for i,(x,y,z,s) in enumerate([(-.52,0,1.78,.72),(.52,0,1.86,.75),(0,.46,2.14,.80),(0,-.44,2.13,.83),(0,0,2.58,.72)]):
     rod('Bough',(0,0,.95),(x,y,z),.075,'timber_light');ico('Faceted broadleaf crown',(x,y,z),(s,s*.86,s),['leaf','leaf_light','leaf_dark'][i%3],2)
   elif kind=='cut':
@@ -354,15 +413,20 @@ def nature(name,kind):
   for z in [1.00,1.22,1.44]:cube('Bench back plank',(0,.44,z),(1.92,.10,.15),'park_slats',.019)
   for x in [-.82,.82]:cube('Bench armrest',(x,-.02,1.03),(.11,.84,.09),'park_frame',.02)
  elif kind=='fence':
-  for x in [-.85,.85]:
-   cube('Fence squared post',(x,0,.60),(.20,.22,1.2),'timber_light',.025)
-   cone('Fence pointed post cap',(x,0,1.24),.17,0,.23,'timber_gold',4)
-  for z in [.36,.83]:cube('Fence horizontal rail',(0,0,z),(1.95,.12,.15),'timber_gold',.018)
-  for x in [-.45,0,.45]:cube('Fence upright picket',(x,-.04,.69),(.10,.10,.97),'timber_light',.015)
- elif kind=='post':
-  cube('Stone route post',(0,0,.64),(.54,.54,1.28),'stone_light',.06)
-  cube('Post recessed band',(0,0,.89),(.57,.57,.13),'stone_dark',.025)
-  cone('Post pyramidal cap',(0,0,1.40),.44,0,.29,'stone',4)
+  for x in [0]:
+   cube('Buried square fence post',(x,0,.66),(.38,.28,1.32),'timber_light',.024)
+   cube('Worn flat end grain',(x,0,1.319),(.34,.24,.012),'timber_gold',.004)
+   # Narrow longitudinal checks follow the grain, rather than crosswise stripes.
+   for dx,z,h in [(-.045,.62,.72),(.039,.91,.46)]:
+    cube('Post weathering check',(x+dx,-.141,z),(.008,.006,h),'timber',.002)
+  for z in [.37,.88]:
+   cube('Tenoned horizontal rail',(0,.025,z),(2,.14,.19),'timber_gold',.018)
+   for x in [0]:
+    # Flush dowels secure the two rail mortises without floating metal discs.
+    peg=cone('Rail joint timber peg',(x,-.146,z),.022,.022,.012,'timber',8)
+    peg.rotation_euler.x=math.pi/2
+   for x,length,dz in [(-.43,.49,.033),(.39,.61,-.037)]:
+    cube('Restrained rail grain',(x,-.048,z+dz),(length,.004,.006),'timber_light',.001)
 
 builders={
 'forest_gate':forest_gate,'forest_gate_closed':lambda:forest_gate(True),'east_gate':east_gate,'tin_tower':lambda:pagoda('tin_tower'),'burned_tower':lambda:pagoda('burned_tower',True),'lighthouse':lighthouse,'johto_barn':barn,'forest_shrine':shrine,'radio_tower':radio_tower,'battle_tower':battle_tower,
@@ -372,7 +436,7 @@ for prefix in ['modern','kanto']:
  for style in ['center','mart','gym','station','department','arcade']:
   name=prefix+'_'+style;builders[name]=lambda n=name,s=style,p=prefix:civic(n,s,w=5.45 if p=='modern' else 5.9,d=3.3 if p=='modern' else 3.65)
 for name,style,w,d in [('kanto_museum','museum',7.3,3.8),('silph','silph',5.6,3.8),('kanto_mansion','mansion',5.3,3.8),('power_plant','power',7.6,4.3),('modern_daycare','house',4.4,3.6)]:builders[name]=lambda n=name,s=style,w=w,d=d:civic(n,s,w,d)
-for name,kind in [('kanto_canopy','canopy'),('cut_tree','cut'),('park_hedge','hedge'),('shore_boulder','boulder'),('route_sign','sign'),('park_bench','bench'),('timber_fence','fence'),('stone_post','post')]:builders[name]=lambda n=name,k=kind:nature(n,k)
+for name,kind in [('kanto_canopy','canopy'),('cut_tree','cut'),('park_hedge','hedge'),('shore_boulder','boulder'),('route_sign','sign'),('park_bench','bench'),('timber_fence','fence')]:builders[name]=lambda n=name,k=kind:nature(n,k)
 only=next((a.split('=',1)[1].split(',') for a in args if a.startswith('--only=')),None)
 for name,build in builders.items():
  if only is None or name in only:build()

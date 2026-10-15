@@ -205,6 +205,7 @@ pub(super) struct CaptureViewInputs<'w, 's> {
                 &'static RenderTarget,
                 &'static Msaa,
                 Has<bevy::camera::Hdr>,
+                Option<&'static AmbientLight>,
             ),
         ),
         With<BattleRowCamera>,
@@ -223,7 +224,6 @@ pub(super) struct CaptureViewInputs<'w, 's> {
             With<bevy::pbr::ScreenSpaceAmbientOcclusion>,
             With<bevy::pbr::ScreenSpaceReflections>,
             With<bevy::light::EnvironmentMapLight>,
-            With<AmbientLight>,
         )>,
     >,
 }
@@ -247,7 +247,6 @@ impl CaptureViewInputs<'_, '_> {
         };
         if lights.next().is_some() || parent || light.shadow_maps_enabled
             || (entity, light.last_changed().get(), pose.to_matrix()) != stamp.light
-            || self.ambient.as_ref().map(|light| (light.color, light.brightness)) != stamp.ambient
             || self.other_lights.iter().any(|(light_layers, probe)| probe
                 || light_layers.cloned().unwrap_or_default().intersects(&layers))
             || self.other_cameras.iter().any(|(camera, target)| camera.is_active
@@ -271,20 +270,21 @@ impl CaptureViewInputs<'_, '_> {
             camera_layers,
             fxaa,
             fog,
-            (parent, target, msaa, hdr),
+            (parent, target, msaa, hdr, camera_ambient),
         )) = self.views.iter().find(|(_, row, ..)| row.0 == 1)
         else {
             return false;
         };
         // Check every other row view by entity, not only the expected player
         // index. A second active writer cannot share this held image target.
-        if self.views.iter().any(|(other, _, camera, _, _, _, _, _, _, _, _, _, _, _, ( _, target, _, _))| other != entity && camera.is_active
+        if self.views.iter().any(|(other, _, camera, _, _, _, _, _, _, _, _, _, _, _, ( _, target, _, _, _))| other != entity && camera.is_active
             && matches!(target, RenderTarget::Image(target) if target.handle.id() == stamp.target))
         { return false; }
         let Projection::Perspective(projection) = projection else {
             return false;
         };
         !parent
+            && row_capture::effective_ambient(camera_ambient, self.ambient.as_deref()) == stamp.ambient
             && !self.unsupported.contains(entity)
             && msaa.samples() == stamp.msaa_samples
             && *camera_layers == layers

@@ -2551,6 +2551,36 @@ fn overworld_session_rejects_player_tiles_outside_runtime_bounds() {
 }
 
 #[test]
+fn overworld_session_validates_saved_block_edits_before_occupancy() {
+    let mut module=test_map_module("RuntimeMap","RUNTIME_MAP",None);
+    module.attributes.width=1;module.attributes.height=1;module.blocks=vec![0];
+    let data=GameDataSet {
+        maps:map_payload(vec![module]),
+        tilesets:BTreeMap::from([("johto".into(),TilesetDefinition {
+            collision:BTreeMap::from([("0".into(),vec!["WALL".into();4]),
+                ("1".into(),vec!["FLOOR".into();4])]),
+            palette_map:vec![0,0],
+        })]),..GameDataSet::default()
+    };
+    let tile=TilePosition::new(0,0);
+    assert!(data.overworld_session("RuntimeMap",tile,0).is_err());
+    let mut state=GameState::default();
+    state.map_block_overrides.insert("RuntimeMap".into(),BTreeMap::from([((0,0),1)]));
+    let session=data.overworld_session_for_traversal_with_state("RuntimeMap",tile,0,
+        PlayerTraversalState::Walk,Some(&state)).expect("earned open floor must be occupiable");
+    assert_eq!(session.map.metatile_ids,vec![1]);
+    state.map_block_overrides.get_mut("RuntimeMap").unwrap().insert((0,0),0);
+    assert!(data.overworld_session_for_traversal_with_state("RuntimeMap",tile,0,
+        PlayerTraversalState::Walk,Some(&state)).is_err(),"closed edit remains blocked");
+    state.map_block_overrides.insert("RuntimeMap".into(),BTreeMap::from([((1,0),1)]));
+    assert!(data.overworld_session_for_traversal_with_state("RuntimeMap",tile,0,
+        PlayerTraversalState::Walk,Some(&state)).is_err(),"out-of-bounds edit rejected before indexing");
+    state.map_block_overrides.insert("RuntimeMap".into(),BTreeMap::from([((0,0),255)]));
+    assert!(data.overworld_session_for_traversal_with_state("RuntimeMap",tile,0,
+        PlayerTraversalState::Walk,Some(&state)).is_err(),"undeclared block rejected");
+}
+
+#[test]
 fn overworld_session_passability_uses_requested_traversal_state() {
     let mut module = test_map_module("RuntimeMap", "RUNTIME_MAP", None);
     module.attributes.width = 1;

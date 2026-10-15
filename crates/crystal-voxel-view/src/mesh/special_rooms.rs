@@ -27,6 +27,7 @@ pub(super) enum FloorStyle {
     Default,
     Roof,
     StoreLift,
+    MansionRoof,
     Dojo,
 }
 #[derive(Clone, Copy, Debug)]
@@ -197,6 +198,7 @@ fn add(
         ground,
         form: Form::Room(detail, match r.map {
             "GoldenrodDeptStoreRoof" => FloorStyle::Roof,
+            "CeladonMansionRoof"=>FloorStyle::MansionRoof,
             "GoldenrodDeptStoreElevator" | "CeladonDeptStoreElevator" => FloorStyle::StoreLift,
             "FightingDojo" => FloorStyle::Dojo,
             _ => FloorStyle::Default,
@@ -460,7 +462,7 @@ fn underlay(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement, kind: S
             mesh.solid.indices.extend(rest.chunks_exact(3)
                 .filter(|tri| mesh.solid.normals[tri[0] as usize][1] < 0.5)
                 .flatten().copied());
-            let sample = if matches!(p.form, Form::Room(Detail::Surface(_), FloorStyle::Roof | FloorStyle::StoreLift)) { i } else { p.ground };
+            let sample = if matches!(p.form, Form::Room(Detail::Surface(_), FloorStyle::Roof | FloorStyle::StoreLift | FloorStyle::MansionRoof)) { i } else { p.ground };
             append_top(&mut mesh.textured, bounds.into(), 0.,
                 g.uv(sample % g.width, sample / g.width));
             continue;
@@ -654,6 +656,7 @@ pub(super) fn append_with_floor(
     cells: &[&VisualTile], detail: Detail, floor_style: FloorStyle,
 ) {
     let roof_tiles = floor_style == FloorStyle::Roof;
+    let mansion_roof=floor_style==FloorStyle::MansionRoof;
     let (w, _, n, _) = g.bounds(p.column, p.row);
     let e = w + p.width as f32 * g.tile_width;
     let s = n + p.height as f32 * g.tile_height;
@@ -661,8 +664,14 @@ pub(super) fn append_with_floor(
     let rise = p.rise_pixels * k;
     let depth = p.depth_pixels * k;
     let b = [w, e, n, s];
+    if mansion_roof && matches!(detail,Detail::Asset(Asset::RoofAccessHut))
+        && !room_model(Asset::RoofAccessHut).has_native_mansion_hut_materials() {
+        // Unknown authored materials retain the complete original 2D plot.
+        for i in p.indices(g.width) {append_top(&mut mesh.textured,g.bounds(i%g.width,i/g.width).into(),0.,g.uv(i%g.width,i/g.width));}
+        return;
+    }
     let room_floor = if floor_style==FloorStyle::Dojo {Surface::DojoNative}
-    else if roof_tiles { Surface::RoofTile } else if floor_style == FloorStyle::StoreLift {
+    else if roof_tiles || mansion_roof { Surface::RoofTile } else if floor_style == FloorStyle::StoreLift {
         Surface::StoreTile
     } else { match cells[p.ground].source.tileset_id.as_ref() {
         "lab" => Surface::Timber,
@@ -787,6 +796,11 @@ pub(super) fn append_with_floor(
             sampled_room_asset(mesh,g,p,Asset::GymStonePartition,[0,0],
                 [w,e,s-depth,s],0.,rise);
         }
+        Detail::Asset(Asset::RoofAccessHut) if mansion_roof => {
+            let pixels=[[10,3],[10,33],[10,32],[20,35],[17,33],[19,34],[27,41]];
+            assert!(room_model(Asset::RoofAccessHut).append_native_mansion_hut(&mut mesh.textured,
+                [w,e,s-depth,s],rise,|role|source_texel_uv(g,p,pixels[role as usize])));
+        }
         Detail::Asset(a) => room_model(a).append(&mut mesh.solid, [w, e, s - depth, s], 0., rise),
         Detail::RoofSeat => {
             let first = mesh.solid.positions.len();
@@ -811,6 +825,7 @@ pub(super) fn append_with_floor(
         }
         Detail::Surface(kind) => underlay(mesh, g, p,
             if matches!(kind,Surface::Tatami) && floor_style==FloorStyle::Dojo {Surface::DojoNative}
+            else if mansion_roof {Surface::RoofTile}
             else if matches!(kind, Surface::Ceramic) && roof_tiles { Surface::RoofTile }
             else if matches!(kind, Surface::Ceramic) && floor_style == FloorStyle::StoreLift {
                 Surface::StoreTile
@@ -1323,6 +1338,25 @@ pub(super) fn append_with_floor(
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn kanto_native_mansion_roof_paving_keeps_live_uvs_and_actor_datum() {
+        let (w,h)=(4,4);let g=grid(w,h);let mut tiles=cells(w,h);
+        for tile in &mut tiles {tile.source.tileset_id=Arc::from("mansion");tile.source.tile_index=0x0d;}
+        let p=Placement {column:0,row:0,width:w,height:h,ground:0,
+            form:Form::Room(Detail::Surface(Surface::Stone),FloorStyle::MansionRoof),
+            rise_pixels:8.,depth_pixels:8.,front_rows:0.};
+        let mut mesh=TerrainMeshData {footing_heights:vec![1.25;w*h],..Default::default()};
+        append_with_floor(&mut mesh,&g,&p,&tiles.iter().collect::<Vec<_>>(),
+            Detail::Surface(Surface::Stone),FloorStyle::MansionRoof);
+        assert_eq!(mesh.footing_heights,vec![1.25;w*h]);
+        assert!(mesh.textured.positions.iter().all(|v|v[1]==0.));
+        assert!(mesh.solid.positions.iter().all(|v|v[1]<=0.));
+        for y in 0..h {for x in 0..w {let uv=g.uv(x,y);
+            assert!(mesh.textured.uvs.contains(&[uv.0,uv.2]));
+            assert!(mesh.textured.uvs.contains(&[uv.1,uv.3]));
+        }}
+    }
+
     use super::*;
     use std::sync::Arc;
     fn grid(w: usize, h: usize) -> GridGeometry {

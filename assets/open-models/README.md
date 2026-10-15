@@ -24,11 +24,15 @@ Game content packs, ROMs, saves, source download archives, generated bundles,
 and review renders remain external and ignored. A compatible user-supplied
 content pack is still required; this directory does not contain game content.
 
+Outdoor trees use the shared Rust grove renderer. The retired imported tree
+meshes and texture cards are no longer bundled or loaded.
+
 ## Provenance
 
-- `interiors/`: converted Kenney Furniture Kit geometry (CC0).
-- `new_bark/` and `johto/`: adapted Quaternius Ultimate Nature geometry (CC0),
-  including runtime tree variants.
+- `interiors/`: converted Kenney Furniture Kit geometry (CC0), plus the original
+  four-leg `domestic_table.mesh.json`. Its editable source is
+  `art/johto/source/domestic-table.blend`; regenerate with
+  `tools/build-domestic-table.py`.
 - `people/kenney/`: adapted Kenney Animated Characters Protagonists and Retro
   rigs (version 1.1, CC0), retaining authored animation clips.
 - `people/npc-textures/`: project-specific image-generated costume paintings.

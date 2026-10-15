@@ -24,6 +24,12 @@ pub const FLASH_AERODACTYL_CHAMBER_MAP: &str = "RuinsOfAlphAerodactylChamber";
 pub const FLASH_AERODACTYL_CHAMBER_FLAG: &str = "EVENT_WALL_OPENED_IN_AERODACTYL_CHAMBER";
 pub const FLASH_DARK_MAP_PALETTE: &str = "dark";
 
+/// Persist the actual Surf user independently of the mutable party order.
+/// These presentation identities travel with ordinary script memory in saves.
+pub const SURF_ACTOR_SPECIES_MEMORY: &str = "geothiteSurfActorSpecies";
+pub const SURF_ACTOR_DVS_MEMORY: &str = "geothiteSurfActorDvs";
+pub const SURF_ACTOR_PARTY_MEMORY: &str = "geothiteSurfActorPartySlot";
+
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct FieldMoveCatalog {

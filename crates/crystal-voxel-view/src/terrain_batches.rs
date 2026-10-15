@@ -31,6 +31,77 @@ pub(super) struct PreparedBatch {
     pub mesh: Mesh,
     pub bounds: Option<Aabb>,
     pub authentic_domain: AuthenticDomain,
+    pub coverage: Option<std::sync::Arc<[Aabb]>>,
+    pub sight_coverage: Option<std::sync::Arc<[Aabb]>>,
+    pub grass_coverage: Option<std::sync::Arc<[Aabb]>>,
+}
+
+/// Bounded original-triangle coverage, published before CPU geometry retires.
+/// The handle ties this evidence to exactly the immutable GPU mesh it describes.
+#[derive(Component, Clone)]
+pub(super) struct TerrainBatchCoverage {
+    pub mesh: bevy::asset::AssetId<Mesh>,
+    pub bounds: std::sync::Arc<[Aabb]>,
+    pub sight_bounds: std::sync::Arc<[Aabb]>,
+    pub grass_bounds: std::sync::Arc<[Aabb]>,
+}
+
+pub(super) fn triangle_coverage(mesh: &Mesh) -> Option<std::sync::Arc<[Aabb]>> {
+    triangle_coverage_inner(mesh, 0)
+}
+pub(super) fn triangle_sight_coverage(mesh: &Mesh) -> Option<std::sync::Arc<[Aabb]>> {
+    triangle_coverage_inner(mesh, 1)
+}
+
+pub(super) fn triangle_grass_coverage(mesh: &Mesh) -> Option<std::sync::Arc<[Aabb]>> {
+    triangle_coverage_inner(mesh, 2)
+}
+
+fn triangle_coverage_inner(mesh: &Mesh, kind: u8) -> Option<std::sync::Arc<[Aabb]>> {
+    let sight = kind != 0;
+    use bevy::mesh::VertexAttributeValues;
+    use std::collections::BTreeMap;
+    if mesh.primitive_topology() != bevy::render::render_resource::PrimitiveTopology::TriangleList {
+        return None;
+    }
+    let Some(VertexAttributeValues::Float32x3(positions)) = mesh.attribute(Mesh::ATTRIBUTE_POSITION) else { return None; };
+    let indices = mesh.indices()?;
+    if indices.is_empty() || indices.len() % 3 != 0 { return None; }
+    let uvs = match mesh.attribute(Mesh::ATTRIBUTE_UV_0) {
+        Some(VertexAttributeValues::Float32x2(uvs)) => Some(uvs),
+        _ => None,
+    };
+    // One core tile per bucket. A long triangle retains its whole bound,
+    // rather than pretending its center proves all of its source acreage.
+    let mut buckets = BTreeMap::<(i32, i32, i32), (Vec3, Vec3)>::new();
+    let mut indices = indices.iter();
+    while let Some(a) = indices.next() {
+        let triangle = [a, indices.next()?, indices.next()?];
+        // The battle shader opens its proven full-body aperture in tagged
+        // native grass. It cannot hide opaque cavern walls or architecture.
+        let grass = uvs.is_some_and(|uvs| triangle.iter().all(|index|
+            uvs.get(*index).is_some_and(|uv| uv[0] == 84000.0)));
+        if (kind == 1 && grass) || (kind == 2 && !grass) { continue; }
+        let points = triangle.map(|index| positions.get(index).map(|p| Vec3::from_array(*p)));
+        let points = [points[0]?, points[1]?, points[2]?];
+        if points.iter().any(|p| !p.is_finite()) { return None; }
+        let min = points[0].min(points[1]).min(points[2]);
+        let max = points[0].max(points[1]).max(points[2]);
+        // Sight needs narrower, height-separated bounds: merging a low bank
+        // with a wall in the same ground tile invents an opaque volume above
+        // the water. Every original triangle still contributes its whole AABB.
+        let cell = if sight { Vec3::new(16.0, 8.0, 16.0) } else { Vec3::splat(64.0) };
+        let center = (min * 0.5 + max * 0.5) / cell;
+        let key = (center.x.floor() as i32,
+            if sight { center.y.floor() as i32 } else { 0 },
+            center.z.floor() as i32);
+        buckets.entry(key).and_modify(|bounds| {
+            bounds.0 = bounds.0.min(min);
+            bounds.1 = bounds.1.max(max);
+        }).or_insert((min, max));
+        if buckets.len() > 4096 { return None; }
+    }
+    Some(buckets.into_values().map(|(min, max)| Aabb::from_min_max(min, max)).collect())
 }
 
 impl From<Mesh> for PreparedBatch {
@@ -38,16 +109,22 @@ impl From<Mesh> for PreparedBatch {
         // Compute on the terrain worker, before render extraction moves the
         // CPU buffers. Never scan full vertex buffers when applying a build.
         let bounds = mesh.get_aabb();
+        let coverage = triangle_coverage(&mesh);
+        let sight_coverage = triangle_sight_coverage(&mesh);
+        let grass_coverage = triangle_grass_coverage(&mesh);
         Self {
             mesh,
             bounds,
             authentic_domain: AuthenticDomain::Unspecified,
+            coverage,
+            sight_coverage,
+            grass_coverage,
         }
     }
 }
 
-const CELLS_PER_BATCH: f32 = 16.0;
-const MAX_BATCHES_PER_AXIS: usize = 8;
+const CELLS_PER_BATCH: f32 = 8.0;
+const MAX_BATCHES_PER_AXIS: usize = 16;
 const MIN_TRIANGLES: usize = 4096;
 
 pub(super) fn prepare(source: SurfaceMeshData, tile_size: Vec2) -> Vec<PreparedBatch> {
@@ -57,7 +134,7 @@ pub(super) fn prepare(source: SurfaceMeshData, tile_size: Vec2) -> Vec<PreparedB
 /// Split only source-map boundary crossings, then spatially batch each domain
 /// separately. All three domains still render in the overworld; battle scenery
 /// can omit proven Outside batches without mistaking Unresolved for padding.
-/// At most three domains, each with at most 8 x 8 spatial batches, are produced.
+/// At most three domains, each with at most 16 x 16 spatial batches, are produced.
 /// CPU geometry still moves into render-only assets through into_mesh().
 pub(super) fn prepare_with_authentic_bounds(
     source: SurfaceMeshData,
@@ -652,6 +729,68 @@ mod tests {
         append_triangle(&mut data, [a, d, c], true);
         data.normals.fill([0.125, 1.0, -0.0]);
         data
+    }
+
+    #[test]
+    fn coverage_encloses_every_original_corner_including_long_crossing_faces() {
+        let mut data = large_plane();
+        append_triangle(&mut data, [[-320.0, 2.0, 0.0], [320.0, 12.0, 0.0], [0.0, 3.0, 40.0]], false);
+        append_triangle(&mut data, [[512.0, -4.0, 512.0], [520.0, -2.0, 512.0], [512.0, -4.0, 520.0]], false);
+        let mesh = data.clone().into_compact_mesh();
+        let coverage = triangle_coverage(&mesh).unwrap();
+        for triangle in data.indices.chunks_exact(3) {
+            assert!(coverage.iter().any(|bounds| triangle.iter().all(|index| {
+                let point = Vec3::from_array(data.positions[*index as usize]);
+                let min: Vec3 = (bounds.center - bounds.half_extents).into();
+                let max: Vec3 = (bounds.center + bounds.half_extents).into();
+                point.cmpge(min).all() && point.cmple(max).all()
+            })), "a center bucket must still enclose the entire original face");
+        }
+        assert_eq!(mesh.asset_usage, bevy::asset::RenderAssetUsages::RENDER_WORLD);
+        let mut invalid = data.clone();
+        invalid.positions[0][0] = f32::NAN;
+        assert!(triangle_coverage(&invalid.into_mesh()).is_none());
+        data.indices.push(0);
+        assert!(triangle_coverage(&data.into_mesh()).is_none());
+    }
+
+    #[test]
+    fn sight_coverage_does_not_join_a_low_bank_to_a_neighboring_wall() {
+        let mut data = SurfaceMeshData::default();
+        append_triangle(&mut data, [[0., 0., 0.], [10., 4., 0.], [0., 0., 10.]], false);
+        append_triangle(&mut data, [[32., 0., 0.], [32., 40., 0.], [40., 0., 0.]], false);
+        let mesh = data.into_compact_mesh();
+        assert_eq!(triangle_coverage(&mesh).unwrap().len(), 1);
+        let sight = triangle_sight_coverage(&mesh).unwrap();
+        assert_eq!(sight.len(), 2);
+        let bank = sight.iter().find(|bounds| bounds.center.x < 16.).unwrap();
+        assert_eq!(bank.center.y + bank.half_extents.y, 4.);
+        let wall = sight.iter().find(|bounds| bounds.center.x > 16.).unwrap();
+        assert_eq!(wall.center.y + wall.half_extents.y, 40.);
+    }
+
+    #[test]
+    fn sight_coverage_keeps_opaque_walls_and_full_geometry_proof_keeps_revealed_grass() {
+        let mut data = SurfaceMeshData::default();
+        append_triangle(&mut data, [[0., 0., 0.], [0., 20., 0.], [20., 0., 0.]], false);
+        append_triangle(&mut data, [[128., 0., 128.], [128., 20., 128.], [148., 0., 128.]], false);
+        data.uvs[3..].fill([84000.0, 0.0]);
+        let mesh = data.into_compact_mesh();
+        let full = triangle_coverage(&mesh).unwrap();
+        let sight = triangle_sight_coverage(&mesh).unwrap();
+        assert_eq!(full.len(), 2, "grass remains in authentic geometry and shadow coverage");
+        assert_eq!(sight.len(), 1, "only the shader's body aperture avoids a sight blocker");
+        let grass = triangle_grass_coverage(&mesh).unwrap();
+        assert_eq!(grass.len(), 1, "lens evidence includes only original grass triangles");
+        assert_eq!(grass[0].center.y + grass[0].half_extents.y, 20.);
+        assert_eq!(grass[0].center.x - grass[0].half_extents.x, 128.);
+        let prepared = PreparedBatch::from(mesh.clone());
+        assert_eq!(prepared.grass_coverage.unwrap().len(), 1);
+        assert_eq!(mesh.asset_usage, bevy::asset::RenderAssetUsages::RENDER_WORLD);
+        let min: Vec3 = (sight[0].center - sight[0].half_extents).into();
+        let max: Vec3 = (sight[0].center + sight[0].half_extents).into();
+        assert_eq!(min, Vec3::ZERO);
+        assert_eq!(max, Vec3::new(20., 20., 0.));
     }
 
     #[test]

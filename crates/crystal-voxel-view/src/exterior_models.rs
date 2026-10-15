@@ -44,7 +44,6 @@ pub(crate) enum Kind {
     RouteSign,
     ParkBench,
     TimberFence,
-    StonePost,
     KantoBlank,
     ForestGate,
     ForestGateClosed,
@@ -110,7 +109,6 @@ impl Kind {
             Self::RouteSign => "world-exterior/route_sign",
             Self::ParkBench => "world-exterior/park_bench",
             Self::TimberFence => "world-exterior/timber_fence",
-            Self::StonePost => "world-exterior/stone_post",
             Self::KantoBlank => "world-exterior/kanto_blank",
             Self::ForestGate => "world-exterior/forest_gate",
             Self::ForestGateClosed => "world-exterior/forest_gate_closed",
@@ -177,7 +175,6 @@ pub(crate) const ALL: &[Kind] = &[
     Kind::RouteSign,
     Kind::ParkBench,
     Kind::TimberFence,
-    Kind::StonePost,
     Kind::KantoBlank,
     Kind::ForestGate,
     Kind::ForestGateClosed,
@@ -241,7 +238,6 @@ const JSON: &[crate::model_storage::Source<'static>] = &[
     crate::model_storage::include_model!("models/world_exteriors/route_sign.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/park_bench.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/timber_fence.mesh.json"),
-    crate::model_storage::include_model!("models/world_exteriors/stone_post.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/kanto_blank.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/forest_gate.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/forest_gate_closed.mesh.json"),
@@ -285,13 +281,77 @@ struct Export {
     door_anchor: Option<[f32; 3]>,
     door_face: Option<String>,
 }
+#[derive(Clone)]
 pub(crate) struct Model {
-    materials: Vec<(std::ops::Range<usize>, String)>,
+    materials: Vec<(std::ops::Range<usize>, String, [f32; 4])>,
     pub(crate) surface: SurfaceMeshData,
     pub(crate) min: [f32; 3],
     pub(crate) max: [f32; 3],
     pub(crate) anchor: Option<[f32; 3]>,
     east: bool,
+}
+
+/// Fair the authored closed stone volume without adding render triangles.
+/// Welding by position keeps material-band seams closed. The underside stays
+/// seated; paired positive/negative smoothing avoids shrinking the whole rock.
+fn round_boundary_stone(surface: &mut SurfaceMeshData, min: [f32; 3], max: [f32; 3]) {
+    let mut unique = std::collections::BTreeMap::new();
+    let mut points = Vec::<Vec3>::new();
+    let mut remap = Vec::with_capacity(surface.positions.len());
+    for &p in &surface.positions {
+        let key = p.map(f32::to_bits);
+        let id = *unique.entry(key).or_insert_with(|| {
+            let id = points.len();
+            points.push(Vec3::from_array(p));
+            id
+        });
+        remap.push(id);
+    }
+    let mut neighbors = vec![std::collections::BTreeSet::new(); points.len()];
+    for tri in surface.indices.chunks_exact(3) {
+        let ids = [tri[0], tri[1], tri[2]].map(|i| remap[i as usize]);
+        for (a, b) in [(ids[0], ids[1]), (ids[1], ids[2]), (ids[2], ids[0])] {
+            neighbors[a].insert(b);
+            neighbors[b].insert(a);
+        }
+    }
+    let seated = points
+        .iter()
+        .map(|p| (p.y - min[1]).abs() < 0.00001)
+        .collect::<Vec<_>>();
+    for weight in [0.32, -0.34, 0.32, -0.34] {
+        let old = points.clone();
+        for (i, p) in points.iter_mut().enumerate() {
+            if seated[i] || neighbors[i].is_empty() {
+                continue;
+            }
+            let average =
+                neighbors[i].iter().map(|&j| old[j]).sum::<Vec3>() / neighbors[i].len() as f32;
+            *p = (old[i] + (average - old[i]) * weight)
+                .clamp(Vec3::from_array(min), Vec3::from_array(max));
+        }
+    }
+    let mut normals = vec![Vec3::ZERO; points.len()];
+    let mut pigments = vec![Vec3::ZERO; points.len()];
+    let mut weights = vec![0.0; points.len()];
+    for tri in surface.indices.chunks_exact(3) {
+        let ids = [tri[0], tri[1], tri[2]].map(|i| remap[i as usize]);
+        let normal = (points[ids[1]] - points[ids[0]]).cross(points[ids[2]] - points[ids[0]]);
+        let area = normal.length();
+        for (corner, i) in ids.into_iter().enumerate() {
+            normals[i] += normal;
+            let color = surface.colors[tri[corner] as usize];
+            pigments[i] += Vec3::new(color[0], color[1], color[2]) * area;
+            weights[i] += area;
+        }
+    }
+    for (i, &id) in remap.iter().enumerate() {
+        surface.positions[i] = points[id].to_array();
+        surface.normals[i] = normals[id].normalize_or_zero().to_array();
+        if weights[id] > 0.0 {
+            surface.colors[i][..3].copy_from_slice(&(pigments[id] / weights[id]).to_array());
+        }
+    }
 }
 impl Model {
     fn parse<'a>(json: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
@@ -335,7 +395,20 @@ impl Model {
             surface
                 .indices
                 .extend(p.indices.into_iter().map(|i| i + base));
-            if !crate::roof_tiles::refine(&mut surface, base as usize, index_start, &p.material) {
+            // These gates already contain closed, overlapping ceramic shingles.
+            // Re-tessellating their half faces as old slab courses destroys the
+            // authored profile and multiplies their runtime triangle cost.
+            let authored_roof = matches!(export.name.as_str(), "forest_gate" | "forest_gate_closed")
+                && p.material.starts_with("roof_");
+            if authored_roof {
+                let sun = Vec3::new(0.45, 0.8, 0.55).normalize();
+                for i in base as usize..surface.positions.len() {
+                    let light = 0.78 + 0.22 * Vec3::from_array(surface.normals[i]).dot(sun).max(0.);
+                    for channel in 0..3 { surface.colors[i][channel] *= light; }
+                }
+            }
+            if !authored_roof
+                && !crate::roof_tiles::refine(&mut surface, base as usize, index_start, &p.material) {
                 crate::scenery_finish::refine(
                     &mut surface,
                     base as usize,
@@ -344,9 +417,19 @@ impl Model {
                     &export.name,
                 );
             }
-            materials.push((base as usize..surface.positions.len(), p.material));
+            materials.push((
+                base as usize..surface.positions.len(),
+                p.material,
+                p.base_color,
+            ));
         }
         crate::scenery_finish::contain(&mut surface, min, max);
+        if matches!(
+            export.name.as_str(),
+            "kanto_boundary_land" | "kanto_boundary_shore" | "kanto_boundary_path"
+        ) {
+            round_boundary_stone(&mut surface, min, max);
+        }
         if (0..3).any(|i| !min[i].is_finite() || max[i] <= min[i]) {
             return Err("empty exterior mesh".into());
         }
@@ -374,8 +457,85 @@ impl Model {
     pub(crate) fn vertex_material(&self, vertex: usize) -> &str {
         self.materials
             .iter()
-            .find(|(range, _)| range.contains(&vertex))
-            .map_or("", |(_, name)| name.as_str())
+            .find(|(range, _, _)| range.contains(&vertex))
+            .map_or("", |(_, name, _)| name.as_str())
+    }
+    /// Keep the modeled joinery, but derive fence paint from the live atlas.
+    pub(crate) fn recolor_fitted_fence(&self, target: &mut SurfaceMeshData,
+        first: usize, palette: [[f32;4];3]) {
+        for (range, name, original) in &self.materials {
+            let color: [f32;4] = match name.as_str() {
+                "timber_light" => std::array::from_fn(|i| palette[2][i]*0.65+palette[1][i]*0.35),
+                "timber_gold" => std::array::from_fn(|i| palette[2][i]*0.45+palette[1][i]*0.55),
+                "timber" => std::array::from_fn(|i| palette[0][i]*0.75+palette[1][i]*0.25),
+                _ => continue,
+            };
+            for index in range.clone() {
+                let existing=target.colors[first+index];
+                let shade=(existing[0]+existing[1]+existing[2])/
+                    (original[0]+original[1]+original[2]).max(0.0001);
+                for channel in 0..3 {
+                    target.colors[first+index][channel]=color[channel]*shade;
+                }
+                target.uvs[first+index]=crate::scenery_finish::SOURCE_PAINT_UV;
+            }
+        }
+    }
+    /// Forest masonry, pale structural trim and yellow window paint each come
+    /// from their own live drawing. Roof, door and insignia retain their roles.
+    pub(crate) fn recolor_fitted_forest_wall(&self, target: &mut SurfaceMeshData,
+        first: usize, palette: [[f32;4];4]) {
+        for (range,name,original) in &self.materials {
+            let (paint,shade)=match name.as_str() {
+                "plaster" => (palette[0],1.),
+                "plaster_forest_mortar" => (palette[1],0.82),
+                "plaster_shadow" => (palette[0],0.78),
+                "plaster_light" | "timber_light" | "stone_light" => (palette[1],1.),
+                "timber" | "timber_gold" | "stone" => (palette[0],0.76),
+                "stone_dark" => (palette[3],1.),
+                "glass" => (palette[2],0.9),
+                "glass_light" => (palette[2],1.),
+                "glass_dark" => (palette[2],0.65),
+                _ => continue,
+            };
+            for index in range.clone() {
+                for channel in 0..3 {
+                    target.colors[first+index][channel] *= paint[channel]*shade/original[channel].max(0.0001);
+                }
+                target.uvs[first+index]=crate::scenery_finish::SOURCE_PAINT_UV;
+            }
+        }
+    }
+    /// Source swatches replace only named roof paint. Keep the existing
+    /// weather grain, fitted geometry and facet shading of each placement.
+    pub(crate) fn recolor_fitted_roof(
+        &self,
+        target: &mut SurfaceMeshData,
+        first: usize,
+        palette: [[f32; 4]; 3],
+    ) {
+        let field: [f32; 4] = std::array::from_fn(|i| palette[1][i] * 0.7 + palette[2][i] * 0.3);
+        let light: [f32; 4] = std::array::from_fn(|i| field[i] * 0.82 + palette[2][i] * 0.18);
+        for (range, name, original) in &self.materials {
+            if !name.starts_with("roof_") {
+                continue;
+            }
+            let color = if name.ends_with("_dark") {
+                palette[0]
+            } else if name.ends_with("_light") {
+                light
+            } else {
+                field
+            };
+            for index in range.clone() {
+                for channel in 0..3 {
+                    target.colors[first + index][channel] = color[channel]
+                        * target.colors[first + index][channel]
+                        / original[channel].max(0.0001);
+                }
+                target.uvs[first+index]=crate::scenery_finish::SOURCE_PAINT_UV;
+            }
+        }
     }
     /// Fit only authored geometry. The native source plot edges and door seam
     /// stay exact. East entrances stretch along Z rather than inventing a south door.
@@ -474,9 +634,56 @@ pub(crate) fn model(kind: Kind) -> &'static Model {
             .collect()
     })[kind as usize]
 }
+#[path = "exterior_variants.rs"]
+mod variants;
+pub(crate) use variants::variant_model;
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn fitted_house_roof_palette_preserves_geometry_and_non_roof_materials() {
+        for kind in [
+            Kind::KantoHouse,
+            Kind::KantoFlatHouse,
+            Kind::KantoMart,
+            Kind::KantoBlank,
+            Kind::ForestGate,
+            Kind::ForestGateClosed,
+        ] {
+            let m = model(kind);
+            let mut out = SurfaceMeshData::default();
+            m.append_fitted(&mut out, [0., 64., 0., 64.], 0., 10., None);
+            let before = out.clone();
+            m.recolor_fitted_roof(
+                &mut out,
+                0,
+                [
+                    [0.03, 0.03, 0.03, 1.],
+                    [0.04, 0.2, 0.9, 1.],
+                    [0.1, 0.7, 1., 1.],
+                ],
+            );
+            assert_eq!(out.positions, before.positions);
+            assert_eq!(out.normals, before.normals);
+            assert_eq!(out.indices, before.indices);
+            let mut changed = 0;
+            for (i, (&old, &new)) in before.colors.iter().zip(&out.colors).enumerate() {
+                let material = m.vertex_material(i);
+                if material.starts_with("roof_") {
+                    assert_eq!(out.uvs[i],crate::scenery_finish::SOURCE_PAINT_UV);
+                    changed += usize::from(old != new);
+                    if !material.ends_with("_dark") {
+                        assert!(new[2] > new[0] * 3.);
+                    }
+                } else {
+                    assert_eq!(new, old, "walls, doorway and trim keep authored paint");
+                    assert_eq!(out.uvs[i],before.uvs[i]);
+                }
+            }
+            assert!(changed > 0);
+        }
+    }
     #[test]
     fn exterior_models_have_closed_volume_valid_normals_and_budget() {
         assert_eq!(ALL.len(), JSON.len());
@@ -527,6 +734,57 @@ mod tests {
     #[test]
     fn malformed_exterior_mesh_is_rejected() {
         assert!(Model::parse(r#"{"primitives":[]}"#).is_err());
+    }
+
+    #[test]
+    fn rounded_boundary_stones_keep_contacts_and_share_normals_across_material_seams() {
+        for kind in [
+            Kind::KantoBoundaryLand,
+            Kind::KantoBoundaryShore,
+            Kind::KantoBoundaryPath,
+        ] {
+            let export: Export = crate::model_storage::parse(JSON[kind as usize]).unwrap();
+            let original = export
+                .primitives
+                .iter()
+                .flat_map(|p| p.positions.chunks_exact(3).map(|p| [p[0], p[1], p[2]]))
+                .collect::<Vec<_>>();
+            let m = model(kind);
+            assert_eq!(m.surface.positions.len(), original.len());
+            assert!(
+                original
+                    .iter()
+                    .zip(&m.surface.positions)
+                    .any(|(a, b)| a != b),
+                "rounding must change the coarse silhouette, not just its paint"
+            );
+            let mut normals = std::collections::BTreeMap::new();
+            let mut pigments = std::collections::BTreeMap::new();
+            for (i, (&p, &normal)) in m
+                .surface
+                .positions
+                .iter()
+                .zip(&m.surface.normals)
+                .enumerate()
+            {
+                if original[i][1] == 0. {
+                    assert_eq!(p, original[i], "the seated perimeter must remain fixed");
+                }
+                assert!((Vec3::from_array(normal).length() - 1.).abs() < 0.0001);
+                if let Some(previous) = pigments.insert(p.map(f32::to_bits), m.surface.colors[i]) {
+                    assert_eq!(
+                        previous, m.surface.colors[i],
+                        "the cap cannot retain triangular pigment seams"
+                    );
+                }
+                if let Some(previous) = normals.insert(p.map(f32::to_bits), normal) {
+                    assert_eq!(
+                        previous, normal,
+                        "material boundaries cannot create a hard normal seam"
+                    );
+                }
+            }
+        }
     }
 
     #[test]

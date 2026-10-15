@@ -530,11 +530,30 @@ impl GameDataSet {
         frame: u64,
         traversal_state: PlayerTraversalState,
     ) -> Result<OverworldSession> {
+        self.overworld_session_for_traversal_with_state(map_name,player_tile,frame,traversal_state,None)
+    }
+
+    /// Validate occupancy against the same saved block edits used by gameplay.
+    /// Overrides are checked before indexing; closed or malformed layouts still fail.
+    pub fn overworld_session_for_traversal_with_state(
+        &self,
+        map_name: &str,
+        player_tile: TilePosition,
+        frame: u64,
+        traversal_state: PlayerTraversalState,
+        state: Option<&GameState>,
+    ) -> Result<OverworldSession> {
         let module = self.map_module(map_name)?;
         let tileset = self.tileset_collision(&module.attributes.tileset_name)?;
         validate_runtime_overworld_map_blocks(map_name, module)?;
-        let map =
+        let mut map =
             OverworldMapData::from_attributes(map_name, &module.attributes, module.blocks.clone());
+        if let Some(overrides)=state.and_then(|s|s.map_block_overrides.get(map_name)) {
+            self.validate_saved_block_overrides(map_name,overrides)?;
+            for (&(x,y),&block) in overrides {
+                map.metatile_ids[usize::from(y)*usize::from(module.attributes.width)+usize::from(x)]=block;
+            }
+        }
         let (width, height) = map.checked_tile_bounds().with_context(|| {
             format!(
                 "compiled map {map_name} runtime tile bounds overflow supported coordinate range"
@@ -868,11 +887,12 @@ impl GameDataSet {
             .snapshot_identity()
             .with_context(|| "cannot resume overworld session from inactive GameState")?;
         let map_name = map_name.to_string();
-        let mut overworld = self.overworld_session_for_traversal(
+        let mut overworld = self.overworld_session_for_traversal_with_state(
             &map_name,
             tile,
             state.frame_counter,
             mode.traversal_state(),
+            Some(&state),
         )?;
         overworld.player.facing = facing;
         overworld.player.mode = mode;
@@ -2768,7 +2788,7 @@ impl GameDataSet {
             anyhow::bail!("saved {path} warpcheck transition requires an active overworld map");
         };
         let mut session = self
-            .overworld_session_for_traversal(map_name, *tile, 0, mode.traversal_state())
+            .overworld_session_for_traversal_with_state(map_name, *tile, 0, mode.traversal_state(),Some(state))
             .with_context(|| format!("rebuild saved {path} warpcheck source session"))?;
         session.player.facing = *facing;
         session.player.mode = *mode;
@@ -3105,7 +3125,7 @@ impl GameDataSet {
     ) -> Result<()> {
         if let Some(request) = self.saved_trainer_battle_request(source_script, &trainer.trainer_id)
         {
-            validate_saved_trainer_battle_request_fields(
+            let validate = |request: &TrainerBattleRequest| validate_saved_trainer_battle_request_fields(
                 SavedTrainerBattleFields {
                     battle_type,
                     trainer_class,
@@ -3125,8 +3145,11 @@ impl GameDataSet {
                     callback: &request.callback,
                 },
                 source_script,
-            )
-            .map_err(|error| anyhow::anyhow!("{error}"))?;
+            );
+            if !self.saved_trainer_battle_requests(source_script, &trainer.trainer_id)
+                .any(|request| validate(request).is_ok()) {
+                validate(request).map_err(|error| anyhow::anyhow!("{error}"))?;
+            }
             self.validate_saved_optional_text_reference("battle.trainer.seen_text", seen_text)?;
             self.validate_saved_optional_text_reference("battle.trainer.win_text", win_text)?;
             self.validate_saved_optional_text_reference("battle.trainer.loss_text", loss_text)?;
@@ -3484,7 +3507,12 @@ impl GameDataSet {
             standard_pointer_labels
                 .iter()
                 .chain(&standard_global_roots)
-                .map(String::as_str),
+                .map(String::as_str)
+                // Surf is entered by the field-move dispatcher rather than
+                // StdScripts or PlayerEventScriptPointers. Its authored body
+                // and movement/local definitions already live in the pack.
+                .chain(["UsedSurfScript"].into_iter()
+                    .filter(|label| definitions.contains_key(*label))),
             false,
         );
         for (label, body) in decoration_description_scripts() {

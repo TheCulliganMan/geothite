@@ -7,7 +7,8 @@ use crate::profile::{CellShape, SolidKind};
 pub(crate) const FLOOR_TILE: u16 = 0x3d;
 
 pub(crate) fn statue_local(map_id: &str, source: &VisualTileSource) -> Option<(u8, u8)> {
-    if map_id != "ViridianGym" || source.tileset_id.as_ref() != "train_station" {
+    if map_id != "ViridianGym" || source.tileset_id.as_ref() != "train_station"
+        || source.subtile_column>=4 || source.subtile_row>=4 {
         return None;
     }
     let local_column = match source.metatile_id {
@@ -59,6 +60,13 @@ mod tests {
         }
     }
 
+    #[test]
+    fn kanto_viridian_guardian_rejects_out_of_range_source_phases() {
+        for block in [49,50] {for (x,y) in [(4,0),(255,0),(0,4),(2,255)] {
+            let mut s=source(72,0);s.metatile_id=block;s.subtile_column=x;s.subtile_row=y;
+            assert_eq!(statue_local("ViridianGym",&s),None);
+        }}
+    }
     #[test]
     fn each_visible_maze_cell_is_exactly_one_native_course() {
         assert_eq!(

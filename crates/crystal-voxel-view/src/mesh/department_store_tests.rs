@@ -13,7 +13,7 @@ fn joined_service_counter_tops_are_continuous_and_registers_fit_the_bay() {
         let mut area=0.;
         for triangle in mesh.indices.chunks_exact(3) {
             let points=[triangle[0],triangle[1],triangle[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
-            if points.iter().all(|p|(p.y-10.*scale).abs()<0.0001) {
+            if points.iter().all(|p|(p.y-8.*scale).abs()<0.0001) {
                 let normal=(points[1]-points[0]).cross(points[2]-points[0]);
                 if normal.y>0. {area+=normal.y*0.5;}
             }
@@ -22,8 +22,8 @@ fn joined_service_counter_tops_are_continuous_and_registers_fit_the_bay() {
         let mut register=SurfaceMeshData::default();
         append_cash_register(&mut register,[0.,16.*scale,0.,16.*scale],scale);
         assert!(register.positions.iter().all(|p|p[0]>3.9*scale && p[0]<12.*scale
-            && p[2]>4.*scale && p[2]<12.*scale && p[1]>=10.*scale && p[1]<13.2*scale));
-        assert!(register.positions.iter().any(|p|(p[1]-10.*scale).abs()<0.0001),"drawer must sit on top");
+            && p[2]>4.*scale && p[2]<12.*scale && p[1]>=8.*scale && p[1]<11.2*scale));
+        assert!(register.positions.iter().any(|p|(p[1]-8.*scale).abs()<0.0001),"drawer must sit on top");
     }
 }
 fn fixture(
@@ -130,8 +130,11 @@ fn department_store_display_native_palette_preserves_geometry_glazing_and_footin
         assert_eq!(color, crate::interior_models::authored_face_color([1.;4],Vec3::from_array(normal)));
     }
     assert!(mesh.solid.positions.is_empty());
-    assert!(mesh.textured.cutaway_ranges.is_empty());
-    assert!(mesh.solid.cutaway_ranges.is_empty());
+    assert_eq!(mesh.textured.cutaway_ranges.len(),1);
+    let front=&mesh.textured.cutaway_ranges[0];
+    assert!(front.start>first);
+    assert!(mesh.textured.positions[front.clone()].iter().all(|v|v[2]>=n+32.-0.001));
+    assert!(mesh.solid.cutaway_ranges.iter().all(|range|range.is_empty()));
     assert!(mesh.footing_heights.iter().all(|&height| height == 72.0));
     assert_eq!(claimed.iter().filter(|&&v| v).count(), 56);
 }
@@ -468,7 +471,7 @@ fn reserved_cells_custom_profiles_and_missing_ground_keep_whole_object_fallback(
     assert!(resolve_fixture(n, &missing, &g, [0, 0], None, &reserved).is_empty());
 }
 #[test]
-fn append_is_atomic_preserves_footing_owned_bounds_and_opaque_display_island() {
+fn append_is_atomic_preserves_footing_owned_bounds_and_display_reveal() {
     for which in 0..NETWORKS.len() {
         let origin = [-25, -27];
         let (cells, mut g, n) = fixture(which, origin, [84, 82]);
@@ -494,13 +497,21 @@ fn append_is_atomic_preserves_footing_owned_bounds_and_opaque_display_island() {
             p[0].network.label,
             "mart/department_store_counter_end"
                 | "mart/department_store_service_loop"
-                | "mart/department_store_closed_u"
         ) {
             assert!(
                 mesh.solid.cutaway_ranges.is_empty(),
-                "waist-high counters and display islands must stay opaque"
+                "ordinary service counters must stay opaque"
             );
             assert!(mesh.textured.cutaway_ranges.is_empty());
+            assert!(mesh.cutaway_links.is_empty());
+        } else if p[0].network.label=="mart/department_store_closed_u" {
+            assert!(mesh.solid.cutaway_ranges.is_empty());
+            assert_eq!(mesh.textured.cutaway_ranges.len(),1);
+            let range=&mesh.textured.cutaway_ranges[0];
+            assert!(range.start>0);
+            let middle=g.origin_z+(p[0].row+4)as f32*g.tile_height;
+            assert!(mesh.textured.positions[range.clone()].iter().all(|v|
+                v[2]>=middle-0.001&&v[1]<=g.tile_height+0.001));
             assert!(mesh.cutaway_links.is_empty());
         } else {
             assert_eq!(

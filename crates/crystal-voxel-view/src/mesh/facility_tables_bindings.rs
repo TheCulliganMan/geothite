@@ -1,6 +1,17 @@
 // Complete source identities, not copied artwork or map data.
 const RULES: &[Rule] = &[
     Rule {
+        map: "SilphCo1F", tileset: "facility", anchor: Some([0,0]),
+        width: 12, height: 8, fingerprint: 0xe82ff23cabd17f4c,
+        rows: &[0,0xc00,0xc00,0xc00,0xc00,0xc00,0xfff,0xfff],
+        kind: Kind::ReceptionCounter, ground: Ground::Checker,
+    },
+    Rule {
+        map: "SilphCo1F", tileset: "facility", anchor: None,
+        width: 4, height: 4, fingerprint: 0xacbc052fa2a280a5,
+        rows: &[0xf, 0xf, 0, 0], kind: Kind::Sofa, ground: Ground::Checker,
+    },
+    Rule {
         map: "MrPokemonsHouse",
         tileset: "facility",
         anchor: None,

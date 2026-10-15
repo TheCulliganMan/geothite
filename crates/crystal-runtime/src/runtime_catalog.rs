@@ -46,7 +46,8 @@ impl CrystalRuntime {
     }
 
     // Both entry points above verify the owned pack before entering here.
-    // No mutation occurs between verification and consuming its parts.
+    // Source programs remain pack-backed. Older packs can omit a derived
+    // field-move entry while retaining its complete authored definition.
     fn from_verified_compiled_pack(
         asset_root: &AssetRoot,
         pack: CompiledGamePack,
@@ -73,6 +74,13 @@ impl CrystalRuntime {
             _,
             pack_identity,
         ) = pack.into_parts();
+        if data.compiled_script_body("UsedSurfScript").is_none()
+            && data.story_events.iter().any(|payload|
+                payload.get("OverworldEvents")
+                    .and_then(|catalog| catalog.get("UsedSurfScript")).is_some()) {
+            data.materialize_global_scripts()
+                .context("materialize the pack-backed Surf entry")?;
+        }
         outdoor_mods::apply(&mut data);
         let audio_manifest = if audio_compression.is_none()
             && audio_manifest.music.is_empty()

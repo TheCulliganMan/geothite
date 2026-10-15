@@ -104,6 +104,22 @@ proxying, upgrades, health checks, persistence, and cleanup.
 
 ## Playing
 
+For the prepared browser copy in this checkout, run `just serve` and open
+[localhost:3003](http://localhost:3003/?multiplayer=off). Use `just serve 3004`
+to select another port; Ctrl-C stops the server. This quick command reuses the
+ignored `.local/desktop-3d-runtime` server and browser bundle without rebuilding.
+See [local browser serving](docs/game-content.md#serve-a-prepared-browser-copy)
+for input requirements and rebuilding from source.
+
+`just play-3d` launches the prepared Bevy desktop client directly in the
+bedroom with 3D enabled. For the same entry in the browser, open
+[the 3D bedroom](http://localhost:3003/?preview=bedroom&multiplayer=off).
+The prepared browser build selects an available WebGPU adapter and falls back
+to WebGL when one is unavailable. `just trace-3d` records the native loading
+waterfall in `.local/loading-trace.json`; browser tracing uses
+`&loading-trace=on`. See [loading diagnostics](docs/cold-start-3d.md#loading-waterfall-diagnostics).
+
+
 | Action | Keyboard |
 | --- | --- |
 | Move | Arrow keys or WASD |
@@ -172,6 +188,18 @@ The executable is `target/release/crystal-bevy` (`crystal-bevy.exe` on Windows).
 Press `F3` during play to switch between 2D and 3D. Game content is compiled
 with the Rust `pack_core` command in [Game content setup](docs/game-content.md).
 
+In the 3D overworld, the first Pokémon in the party follows the trainer's
+trail. Reordering the party changes the companion, and it stays with the
+trainer across map transitions. Surf shows the trainer seated on the Pokémon
+that used the move. That Pokémon remains the mount when the party is reordered;
+when it is the lead, it accompanies the trainer by carrying them.
+
+In 3D, stop on a chair, bench, or stool, or face an empty seat directly ahead.
+After a short pause, the trainer sits automatically. Moving away makes them stand.
+Human NPCs placed on recognized seats use the same seated pose. The shared animation
+blends the hips, legs, hands, and body position smoothly, including interrupted transitions.
+This animation preserves the game’s movement and collision rules.
+
 For native play, install the Rust toolchain specified in `rust-toolchain.toml`
 and your platform's Bevy build dependencies. Launch with the generated pack:
 
@@ -198,8 +226,26 @@ Steam Input's gamepad output; keyboard mappings remain available alongside it.
 | Game menu / Select | Start / Back |
 | Toggle borderless fullscreen | X (west), or keyboard `F11` |
 | Toggle optional 2.5D view | Y (north) |
+| Steer 3D camera | Right stick (yaw and pitch), or hold either mouse button and drag |
+| Cycle close orbit / wide orbit / first person | Select / Back, or keyboard right Shift |
 | Rotate optional 2.5D camera | LB / RB |
 | Zoom optional 2.5D camera out / in | LT / RT |
+
+Drag the game to rotate and tilt: use either mouse button on desktop, or the
+left button in the browser. Two-finger trackpad scrolling rotates horizontally
+and zooms vertically; pinch zooms. Gamepad Select / Back cycles **close orbit
+(150%) → wide orbit (75%) → first person**, aligning first person with the
+trainer's facing direction. The right stick looks around in first person.
+Touch dragging rotates horizontally and zooms vertically in orbit view, and
+looks vertically in first person; two fingers pinch to zoom.
+
+The optional on-screen camera toolbar provides zoom, rotate, tilt, first person,
+and reset controls. **Orbit view** restores the previous orbit after using the
+first-person button; the zoom percentage resets the camera.
+
+In the 3D overworld, the left stick moves relative to the camera; the D-pad
+keeps compass directions. The first-person preset switches to the trainer’s eye level and hides
+the local player model. Menus and 2D retain the original Select action.
 
 Sticks use a deadzone and stable cardinal directions. Disconnecting a controller
 releases its inputs; a docked controller can take over from an idle built-in pad.

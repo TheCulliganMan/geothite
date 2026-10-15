@@ -100,7 +100,7 @@ pub(super) fn append(
                     0.,
                     rise,
                 );
-                append_maze_cap_detail(&mut mesh.solid,cutaway_start,bounds.into(),rise);
+                finish_maze_cap(&mut mesh.solid,cutaway_start,bounds.into(),rise);
                 let joins = crate::dungeon_models::gym_wall_join_triangles(
                     exposed, p.covered_join_mask(x, y),
                 );
@@ -151,32 +151,18 @@ pub(super) fn append(
     }
     true
 }
-/// Inlaid olive stones share the wall mesh and its cutaway range. Recessing
-/// the old cap keeps the exact top datum; cached prototypes and join ordinals
-/// remain intact. Grooves reveal the original native green coping beneath.
-fn append_maze_cap_detail(mesh:&mut SurfaceMeshData,start:usize,b:[f32;4],rise:f32) {
-    let [w,e,n,s]=b;let scale=(e-w).min(s-n)/8.;let depth=0.12*scale;
-    for p in &mut mesh.positions[start..] {
-        if (p[1]-rise).abs()<0.00001 {p[1]-=depth;}
+/// The authored coping already has beveled corners. Keep that closed geometry
+/// and its shared joins, using a continuous stone finish instead of raised studs.
+fn finish_maze_cap(mesh:&mut SurfaceMeshData,start:usize,b:[f32;4],rise:f32) {
+    let scale=(b[1]-b[0]).min(b[3]-b[2])/8.;
+    for i in start..mesh.positions.len() {
+        let p=mesh.positions[i];
+        if mesh.normals[i][1]<0.5||p[1]<rise-0.2*scale {continue;}
+        let color=&mut mesh.colors[i];let mean=(color[0]+color[1]+color[2])/3.;
+        let x=p[0]/scale;let z=p[2]/scale;
+        let grain=0.96+0.025*((x*0.21+z*0.17).sin()+(x*0.071-z*0.113).sin());
+        for c in &mut color[..3] {*c=(*c*0.86+mean*0.14)*grain;}
     }
-    let linear=|v:f32| {let v=v/255.;if v<=0.04045 {v/12.92} else {((v+0.055)/1.055).powf(2.4)}};
-    for y in 0..2 {for x in 0..2 {
-        let a=w+(e-w)*(x as f32*0.5+0.045);
-        let c=w+(e-w)*(x as f32*0.5+0.455);
-        let d=n+(s-n)*(y as f32*0.5+0.045);
-        let f=n+(s-n)*(y as f32*0.5+0.455);
-        let lo=rise-depth;let hi=rise;
-        let rgb=if (x+y)%2==0 {[123.,165.,8.]} else {[148.,198.,74.]};
-        let color=[linear(rgb[0]),linear(rgb[1]),linear(rgb[2]),1.];
-        for (points,normal) in [
-            ([[a,hi,d],[a,hi,f],[c,hi,f],[c,hi,d]],[0.,1.,0.]),
-            ([[a,lo,f],[a,lo,d],[c,lo,d],[c,lo,f]],[0.,-1.,0.]),
-            ([[a,lo,d],[a,lo,f],[a,hi,f],[a,hi,d]],[-1.,0.,0.]),
-            ([[c,lo,f],[c,lo,d],[c,hi,d],[c,hi,f]],[1.,0.,0.]),
-            ([[c,lo,d],[a,lo,d],[a,hi,d],[c,hi,d]],[0.,0.,-1.]),
-            ([[a,lo,f],[c,lo,f],[c,hi,f],[a,hi,f]],[0.,0.,1.]),
-        ] {append_quad(mesh,points,normal,[[0.;2];4],color);}
-    }}
 }
 #[path = "celadon_flowerbed.rs"]
 mod blue_flowerbed;
@@ -185,40 +171,23 @@ mod tests {
     use super::*;
     use std::sync::Arc;
     #[test]
-    fn maze_cap_inlays_preserve_join_ordinals_height_and_cached_models() {
+    fn kanto_maze_coping_keeps_authored_bevels_closed_joins_and_cached_models() {
         for mask in 0..16 {for scale in [0.5,1.,2.] {
             let model=crate::dungeon_models::gym_model(4+mask);
             let mut mesh=SurfaceMeshData::default();
             model.append(&mut mesh,[0.,8.*scale,0.,8.*scale],0.,12.*scale);
-            let baseline=mesh.indices.clone();let start=mesh.positions.len();
-            append_maze_cap_detail(&mut mesh,0,[0.,8.*scale,0.,8.*scale],12.*scale);
-            assert_eq!(&mesh.indices[..baseline.len()],baseline.as_slice());
-            assert_eq!(mesh.indices.len(),baseline.len()+4*36);
-            assert!(mesh.positions.iter().all(|p|p[0]>=0.&&p[0]<=8.*scale
-                &&p[2]>=0.&&p[2]<=8.*scale&&p[1]>=0.&&p[1]<=12.*scale));
-            assert!(mesh.positions[start..].iter().any(|p|p[1]==12.*scale));
-            for part in mesh.positions[start..].chunks_exact(24) {
-                let mut edges=std::collections::BTreeMap::new();
-                for face in part.chunks_exact(4) {
-                    for k in 0..4 {
-                        let mut edge=[face[k].map(f32::to_bits),face[(k+1)%4].map(f32::to_bits)];
-                        edge.sort();*edges.entry(edge).or_insert(0usize)+=1;
-                    }
-                }
-                assert!(edges.values().all(|&count|count==2),"closed inlay stone");
-            }
-            for tri in mesh.indices[baseline.len()..].chunks_exact(3) {
+            let baseline=mesh.clone();
+            finish_maze_cap(&mut mesh,0,[0.,8.*scale,0.,8.*scale],12.*scale);
+            assert_eq!(mesh.indices,baseline.indices,"covered join ordinals stay authoritative");
+            assert_eq!(mesh.positions,baseline.positions,"continuous coping adds no checkerboard studs or gaps");
+            assert_eq!(mesh.normals,baseline.normals);assert_ne!(mesh.colors,baseline.colors);
+            for tri in mesh.indices.chunks_exact(3) {
                 let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
-                let normal=Vec3::from_array(mesh.normals[tri[0] as usize]);
-                assert!((b-a).cross(c-a).dot(normal)>0.,"outward closed faces");
+                let normal=Vec3::from_array(mesh.normals[tri[0]as usize]);
+                assert!((b-a).cross(c-a).dot(normal)>0.,"authored faces retain outward winding");
             }
-            for &ordinal in crate::dungeon_models::gym_wall_join_triangles(mask as u8,15) {
-                assert!(ordinal*3<baseline.len());
-            }
-            let mut cached=SurfaceMeshData::default();
-            model.append(&mut cached,[0.,8.*scale,0.,8.*scale],0.,12.*scale);
-            assert_eq!(cached.positions.len(),start);
-            assert_eq!(cached.indices,baseline);
+            let mut cached=SurfaceMeshData::default();model.append(&mut cached,[0.,8.*scale,0.,8.*scale],0.,12.*scale);
+            assert_eq!(cached,baseline);
         }}
     }
     fn fixture() -> (Vec<VisualTile>, GridGeometry) {

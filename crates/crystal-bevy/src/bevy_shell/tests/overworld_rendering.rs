@@ -1137,6 +1137,64 @@ fn host_frames_interpolate_between_authoritative_walk_ticks() {
 
 #[cfg(feature = "voxel-view")]
 #[test]
+fn ledge_hop_lands_without_replaying_a_walk_at_slow_host_cadences() {
+    for host_hz in [60.0, 30.0, 9.0] {
+        let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../..").canonicalize().unwrap());
+        let runtime = workspace_desktop_runtime(&asset_root);
+        let shell = initialize_bevy_runtime_shell(asset_root, runtime,
+            BevyShellStart::NewGameAtRuntimeTile {
+                spawn_identifier: 14, map_name: "Route29".into(), tile_x: 25, tile_y: 8,
+            }, BevyShellConfig::default()).unwrap();
+        let mut app = menu_render_test_app(shell);
+        app.init_resource::<crystal_render_api::VisualWorldFrame>()
+            .init_resource::<crystal_render_api::VisualPlayerTraversal>()
+            .add_systems(Update, sync_visible_ledge_jump.after(render_playfield).after(sync_visible_player_sprite))
+            .add_systems(Update, publish_visual_world_frame.after(sync_visible_ledge_jump));
+        app.update();
+        app.update();
+        app.insert_resource(RuntimeTickTimer::new(f64::from(GAME_TICK_SECONDS)));
+        app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            Duration::from_secs_f64(1.0 / host_hz)));
+        app.world_mut().resource_mut::<ButtonInput<KeyCode>>().press(KeyCode::ArrowDown);
+        let mut saw_jump = false;
+        let mut previous_y = None;
+        let mut landed = false;
+        for _ in 0..40 {
+            app.update();
+            let world = app.world();
+            let shell = world.resource::<BevyRuntimeShell>();
+            assert_eq!(shell.last_error, None);
+            let frame = world.resource::<crystal_render_api::VisualWorldFrame>();
+            assert!(frame.active);
+            let player = frame.actors.iter().find(|a| a.id == crystal_render_api::VisualActorId::Player).unwrap();
+            let foot = player.center - Vec2::Y * player.size.y * 0.5;
+            let map_y = foot.y - frame.center.y - frame.grid_origin.y as f32 * TILE_SIZE;
+            if let Some(previous) = previous_y {
+                assert!(map_y <= previous + 0.001, "{host_hz} Hz hop rewound its ground position: {previous} -> {map_y}");
+            }
+            previous_y = Some(map_y);
+            if shell.visible_ledge_jump.is_some() {
+                saw_jump = true;
+                assert!(shell.player_walk_frame_ticks > 0, "the camera scroll stays active during the hop");
+                assert!(world.resource::<crystal_render_api::VisualPlayerTraversal>().step.unwrap().ledge_jump);
+            } else if saw_jump {
+                assert_eq!(shell.shell.session().overworld().player.tile, TilePosition::new(25, 10));
+                assert_eq!(shell.player_walk_frame_ticks, 0);
+                assert!(world.resource::<crystal_render_api::VisualPlayerTraversal>().step.is_none());
+                landed = true;
+                break;
+            }
+            if saw_jump {
+                app.world_mut().resource_mut::<ButtonInput<KeyCode>>().reset_all();
+            }
+        }
+        assert!(saw_jump && landed, "{host_hz} Hz must complete the production pack's ledge hop");
+    }
+}
+
+#[cfg(feature = "voxel-view")]
+#[test]
 fn expanded_world_walk_publishes_every_host_frame_at_60_30_and_9_hz() {
     for host_hz in [60.0, 30.0, 9.0] {
         let asset_root = AssetRoot::new(
@@ -1160,6 +1218,7 @@ fn expanded_world_walk_publishes_every_host_frame_at_60_30_and_9_hz() {
         .unwrap();
         let mut app = integrated_shell_test_app(shell);
         app.init_resource::<crystal_render_api::VisualWorldFrame>()
+            .init_resource::<crystal_render_api::VisualPlayerTraversal>()
             .add_systems(
                 Update,
                 publish_visual_world_frame
@@ -1192,6 +1251,17 @@ fn expanded_world_walk_publishes_every_host_frame_at_60_30_and_9_hz() {
             let subframe = world.resource::<RuntimeTickTimer>().presentation_subframe();
             let expected = visible_overworld_camera_offset(rendered, shell, subframe);
             assert!(published.active);
+            let traversal = world.resource::<crystal_render_api::VisualPlayerTraversal>();
+            if shell.player_walk_frame_ticks > 0 && shell.player_walk_from.is_some() {
+                let step = traversal.step.expect("accepted walk publishes its hop endpoints");
+                let player = published.actors.iter().find(|a| a.id == crystal_render_api::VisualActorId::Player).unwrap();
+                let foot = player.center - Vec2::Y * player.size.y * 0.5;
+                assert!(step.from.lerp(step.to, step.progress).abs_diff_eq(foot, 0.001));
+                assert!(!step.ledge_jump);
+                assert!(((step.to - step.from).length() - TILE_SIZE * f32::from(RENDER_TILES_PER_RUNTIME_TILE)).abs() < 0.001);
+                assert_eq!(traversal.map_id, published.map_id);
+            }
+
             assert!(
                 published.center.abs_diff_eq(expected, 0.001),
                 "{host_hz} Hz frame {host_frame}: movement timer advanced to {}, but published camera froze at {:?} instead of {expected:?}",
