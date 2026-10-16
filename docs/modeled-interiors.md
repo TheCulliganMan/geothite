@@ -275,3 +275,11 @@ Native third-floor default/east/west views and the first-floor entrance view
 verify these joins. Tin Tower's timber-barrier hops keep a level floor, as
 specified by the production terrace model; the audit checks level endpoints
 there and descending endpoints for other ledges.
+
+The PokéCom admin-office map retains its native blue patterned floor and shaded
+fixture aprons at the original texture scale and walking height. Exact source
+phases distinguish those surfaces from equipment and the solid-black void
+between its two rooms; the void no longer receives generic gray paving.
+Custom floor profiles retain ownership. Paired lobby/office views and an
+ordinary left/right walk verify this floor correction. Its chairs, counters,
+equipment and broader room reconstruction remain separate work.

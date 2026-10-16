@@ -231,12 +231,10 @@ pub(crate) fn sync(
     clock: Option<Res<crystal_render_api::VisualWorldClock>>,
     status: Res<crate::VoxelViewStatus>,
     cache: Res<crate::TerrainRevisionCache>,
-    neighbors: Option<Res<crate::neighbor_scenes::Scenes>>,
     mut materials: ResMut<Assets<crate::VoxelMaterial>>,
 ) {
     if !frame.is_changed()
         && !cache.is_changed()
-        && !neighbors.as_ref().is_some_and(|neighbors| neighbors.is_changed())
         && !status.is_changed()
         && !clock.as_ref().is_some_and(|clock| clock.is_changed())
     {
@@ -271,14 +269,17 @@ pub(crate) fn sync(
             crate::visual_point_to_voxel(crate::footing::actor_ground_point(&frame, a), 0.)
         });
     let (positions, directions) = if strength > 0. {
-        let emitters: Vec<_> = cache.city_emitters.iter().map(|emitter| Emitter {
-            position: (emitter.position.truncate() + offset).extend(emitter.position.w),
-            direction: emitter.direction,
-        }).chain(neighbors.iter().flat_map(|neighbors| neighbors.world_emitters())).collect();
-        nearest(&emitters, player)
+        nearest(&cache.city_emitters, player - offset)
     } else {
         ([Vec4::ZERO; MAX_LIGHTS], [Vec4::ZERO; MAX_LIGHTS])
     };
+    let positions = positions.map(|p| {
+        if p.w > 0. {
+            (p.truncate() + offset).extend(p.w)
+        } else {
+            p
+        }
+    });
     let changed: Vec<_> = materials
         .iter()
         .filter_map(|(id, m)| {

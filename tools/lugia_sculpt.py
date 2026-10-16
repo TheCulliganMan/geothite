@@ -61,47 +61,8 @@ def feet(p):
    p.append(ellipsoid(f'Toe / three blunt white guardian digits {s} {j}',WHITE,(s*.25+dx,.028,.253 if j==1 else .239),(.038,.027,.081),24,14))
 
 def belly_patch(outline,parent):
- # Conforming local refinement preserves the outline while resolving only the
- # cap faces whose chords would cut through the stored pear-shaped breast.
- from abra_sculpt import polygon_caps
- skin=surface(parent);xy=list(outline);caps=polygon_caps(outline);th=.012
- def refine(marked):
-  nonlocal caps
-  mids={}
-  for a,b in sorted(marked):
-   mids[(a,b)]=len(xy);xy.append(((xy[a][0]+xy[b][0])/2,(xy[a][1]+xy[b][1])/2))
-  refined=[]
-  for face in caps:
-   flags=[tuple(sorted((face[i],face[(i+1)%3]))) in marked for i in range(3)];count=sum(flags)
-   if not count:refined.append(face);continue
-   if count==1:shift=flags.index(True)
-   elif count==2:shift=(flags.index(False)+1)%3
-   else:shift=0
-   a,b,c=face[shift:]+face[:shift];ab=mids[tuple(sorted((a,b)))]
-   if count==1:refined.extend(((a,ab,c),(ab,b,c)));continue
-   bc=mids[tuple(sorted((b,c)))]
-   if count==2:refined.extend(((ab,b,bc),(a,ab,c),(ab,bc,c)));continue
-   ca=mids[tuple(sorted((c,a)))];refined.extend(((a,ab,ca),(ab,b,bc),(ca,bc,c),(ab,bc,ca)))
-  caps=refined
- for step in range(3):refine({tuple(sorted((f[i],f[(i+1)%3]))) for f in caps for i in range(3)})
- for step in range(6):
-  zs=[skin(y,x)+th for x,y in xy];marked=set()
-  for face in caps:
-   samples=[tuple(sum(xy[i][j] for i in face)/3 for j in range(2))]
-   gaps=[sum(zs[i] for i in face)/3-skin(samples[0][1],samples[0][0])]
-   for a,b in zip(face,face[1:]+face[:1]):
-    x,y=((xy[a][j]+xy[b][j])/2 for j in range(2));gaps.append((zs[a]+zs[b])/2-skin(y,x))
-   if min(gaps)<.001:marked.update(tuple(sorted((face[i],face[(i+1)%3]))) for i in range(3))
-  if not marked:break
-  refine(marked)
- else:raise ValueError('Lugia belly did not clear its stored parent')
- count=len(xy);v=[(x,y,skin(y,x)+offset) for offset in (th,-th*.35) for x,y in xy];faces=list(caps)+[tuple(i+count for i in reversed(f)) for f in caps];edges={}
- for f in caps:
-  for a,b in zip(f,f[1:]+f[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append((a,b))
- for uses in edges.values():
-  if len(uses)==1:
-   a,b=uses[0];faces.append((b,a,a+count,b+count))
- return crease_normals(part('Belly / supported broad pale-blue breast shield',BLUE,v,faces),35)
+ from sculpt_geometry import fitted_adaptive_contour
+ return fitted_adaptive_contour('Belly / supported broad pale-blue breast shield',BLUE,outline,parent,.012)
 
 @lru_cache(maxsize=1)
 def raw_sculpture(species='lugia'):

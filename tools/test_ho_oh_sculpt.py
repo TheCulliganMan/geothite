@@ -3,6 +3,7 @@
 import copy,json,os,unittest
 from pathlib import Path
 from ho_oh_sculpt import sculpture,HEIGHT
+from ho_oh_glb import read_ho_oh,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_slime_sculpt import ray_intersections
 from test_kingdra_sculpt import crossed_faces
@@ -12,7 +13,7 @@ ROOT=Path(os.environ.get('CRYSTAL_HO_OH_TEST_MODELS',Path(__file__).resolve().pa
 
 class HoOhTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'ho_oh.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_ho_oh(ROOT/'ho_oh.glb');cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def overlap(self,a,b):
   xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
@@ -25,7 +26,7 @@ class HoOhTests(unittest.TestCase):
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'ho_oh':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'ho_oh':self.m})
  def test_recipe_parity_height_floor_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),120000)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000);self.assertLessEqual(sum(len(p['indices']) for p in self.ps),120000)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   for prefix,n in (('Wing /',2),('Flight /',24),('Flight color /',96),('Covert /',12),('Tail /',9),('Tail color /',18),('Crown /',5),('Haunch /',2),('Toe /',8),('Talon /',8)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)
@@ -88,7 +89,9 @@ class HoOhTests(unittest.TestCase):
    top=min(uh);bottom=max(lh)
    if top-bottom<.020:return False
    for p in rotated:
-    hits=sorted(-y for y in ray_intersections(p,0,z))
+    raw=sorted(-y for y in ray_intersections(p,0,z));hits=[]
+    for h in raw:
+     if not hits or h-hits[-1]>1e-7:hits.append(h)
     for low,high in zip(hits[::2],hits[1::2]):
      if min(high,top-.0002)-max(low,bottom+.0002)>.0001:return False
   return True

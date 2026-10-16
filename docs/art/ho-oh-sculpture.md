@@ -1,5 +1,68 @@
 # Ho-Oh rainbow phoenix sculpture
 
+## Canonical phoenix skin (2026-10-15)
+
+The canonical source is now `models/battle_species/ho_oh.glb`, authored by
+`tools/ho_oh_sculpt.py` and `tools/ho_oh_glb.py`. The obsolete static JSON was
+removed. All 207 source parts remain recoverable in order from 38 runtime
+primitives. Same-carrier red flight vanes, ivory bands, green tips and warm
+coverts pack into separate coherent banks. Gold tail vanes and their pale
+terminals, crest petals, fixed digits and talons also pack by carrier/color.
+No third-party geometry is used.
+
+The model has 19,747 vertices and 25,200 triangles, down from 81,715 and
+118,516. Outlines retain their authored curve sampling while interior feather
+subdivision is reduced. Head, crest, mouth, haunch, shin, digit and talon
+sampling is reduced selectively. The ivory belly uses conforming local cap
+refinement at its original thickness: a coarse candidate clipped the breast
+and was rejected. The shared helper was extracted from Lugia without changing
+Lugia's generated GLB bytes. Body, neck, both beaks and both feet preserve all
+six original source parts exactly after float32 conversion: positions,
+normals, triangles and colors. Their retained geometry SHA-256 is
+`ff91b55266642639ceff0b02e907dd38191e49dcc3724b9060c18a9e0dc4d529`.
+
+The ten-joint skin fixes feet, eight gripping digits and all ivory talons on
+the identity floor root. Supported shins and haunches bridge to the yawing
+breast. Neck and gaze articulate independently. Each complete wing bank moves
+with its own shoulder, preserving both painted faces. The lower beak has an
+opening joint, and the entire golden fan has a separate yawing tail carrier.
+Idle, attack and recoil contain rotation keys only and return literally to
+neutral. Authoring height remains 1.45. The verified local pack supplies
+height digits 1206 (12 feet 6 inches), or 3.81 metres, classification RAINBOW.
+
+The source geometry pin is
+`67e4806121613127491e740385e7974e9afdb7b32f52dbe8722674ffa277214b`;
+the packed runtime pin is
+`4e246f222c484ed35240a4bd22ce63b024b482e85b707d9968dbea9da3fac218`.
+The skin uses 179 accessors within unchanged renderer limits. The common
+Blender builder exports the same canonical GLB. Neutral, idle, attack and
+recoil front/rear software views were inspected against the original static
+model. No detached paint or visible loss of the tricolor silhouette was seen.
+
+Thirteen stored anatomy checks, seven decoded-skin checks and three focused
+Rust routing/rig/GPU checks passed. They cover closed solids, normals,
+self-intersections, actual fitted-layer clearance, occupied roots, a real
+open jaw with a filler negative control, coherent carriers, fixed floor
+contacts, tail height, posed winding/strain, neutral endpoints and culling
+bounds. The jaw-volume oracle merges duplicate shared-edge crossings before
+pairing occupied intervals. The wider grounding/volume and source-cue timing
+regressions passed. Shiny verification remains skipped as requested.
+
+The final canonical GLB is 800,780 bytes. Blender regeneration is byte-identical
+and the production native executable built successfully. Current full-scale
+walking-encounter staging remains unresolved: Route 29 found 78 supported
+ground candidates but rejected every camera composition; Route 38 found no
+supported complete-body candidates. A wider 1400 by 700 Route 29 viewport
+still rejected the camera. These are actual native rejections, not accepted
+visual captures. No full-size native 3D/2D acceptance is claimed for this skin.
+Source dimensions, animated footprint, terrain admission and grass height were
+kept intact. The previously recorded static-era arena capture is historical evidence
+for the earlier model only. Large-bird native staging and browser acceptance
+remain open.
+
+
+## Initial static sculpture history
+
 `tools/ho_oh_sculpt.py` authors an original individual battle sculpture. Its reviewed
 candidate is installed as a dedicated battle model and dispatched by the pure
 battle-species builder. Ho-Oh enters the exact registry and leaves the shared
@@ -11,7 +74,7 @@ its fresh muted native GPU capture has passed and been inspected. The original
 The [official Ho-Oh artwork](https://sg.portal-pokemon.com/pokedex/0250/)
 was visually inspected in an image-only background browser tab, then closed.
 The [Space Bird source review](legendary-bird-rig-research.md) yielded no
-accessible model file or validated skeleton. This sculpture is original and
+accessible model file or validated skeleton. The initial sculpture was original and
 static; no third-party geometry or reference pixels were imported.
 
 A tapered red body supports a fitted broad ivory belly, long curved red
@@ -35,7 +98,7 @@ preserved its silhouette while bringing it below that limit. A test code
 error was also corrected before the final full run; it supplies no geometry
 passing evidence.
 
-The installed source has 207 parts and 118,516 triangles, height 1.45 and
+The initial static source had 207 parts and 118,516 triangles, height 1.45 and
 floor zero. Its SHA-256 is
 `01a2f59baf066890372fa1d76bffb0b94776841ed0881da045611f290cceec2b`.
 Final front, oblique and rear software renders exited zero and were individually

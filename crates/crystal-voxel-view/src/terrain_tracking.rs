@@ -5,11 +5,7 @@ use bevy::prelude::*;
 use crystal_render_api::VisualWorldFrame;
 
 pub(super) fn offset(built: &VisualWorldFrame, live: &VisualWorldFrame) -> Vec2 {
-    // A retained map patch and the active camera grid can have different
-    // extents. Their centers, rather than only their northwest corners,
-    // determine where the same authored source coordinate appears.
-    (built.grid_origin.as_vec2() + built.grid_size.as_vec2() * 0.5
-        - live.grid_origin.as_vec2() - live.grid_size.as_vec2() * 0.5) * live.tile_size
+    (built.grid_origin - live.grid_origin).as_vec2() * live.tile_size
 }
 
 pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bool {
@@ -144,16 +140,6 @@ pub(super) fn align_footings(
 mod tests {
     use super::*;
     use crystal_render_api::{VisualTile, VisualTileSource};
-    #[test]
-    fn resized_retained_patches_keep_the_same_source_point_in_world_space() {
-        let built = frame(IVec2::new(10, 12));
-        let mut live = frame(IVec2::new(4, 6));
-        live.grid_size = UVec2::new(40, 48);
-        let source_point = Vec2::new(19.5, 22.5);
-        let point = |frame: &VisualWorldFrame| (source_point - frame.grid_origin.as_vec2()
-            - frame.grid_size.as_vec2() * 0.5) * frame.tile_size;
-        assert_eq!(point(&built) + offset(&built, &live), point(&live));
-    }
     fn frame(origin: IVec2) -> VisualWorldFrame {
         let width = 28;
         let mut frame = VisualWorldFrame {

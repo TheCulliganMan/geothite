@@ -1021,3 +1021,8 @@ fn articuno_activates_generic_gpu_at_verified_pack_height() {
 fn lugia_activates_generic_gpu_at_verified_pack_height() {
     assert_species_gpu_at_pack_size("LUGIA",Species::Lugia,13,5.207);
 }
+
+#[test]
+fn ho_oh_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("HO_OH",Species::HoOh,10,3.81);
+}

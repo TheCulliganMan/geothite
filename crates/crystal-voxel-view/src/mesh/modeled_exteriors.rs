@@ -2053,7 +2053,7 @@ mod tests {
 
     #[test]
     fn doorless_kanto_brick_annex_uses_shared_office_and_keeps_all_ten_source_panes() {
-        let (mut tiles,g,p)=drawing_cells("kanto",&[&[0x20,0x54,0x21],&[0x37,0x7d,0x7e]]);
+        let (mut tiles,mut g,p)=drawing_cells("kanto",&[&[0x20,0x54,0x21],&[0x37,0x7d,0x7e]]);
         let mut assets=Assets::<Image>::default();let mut images=TerrainImageSamples::default();
         let mut texture=|colors:[[u8;4];2]| {
             let h=assets.add(Image::default());images.pixels.insert(h.id(),TileImageSample::Rgba(
@@ -2070,6 +2070,12 @@ mod tests {
             let tile=&mut tiles[4*g.width+1+i];tile.source.tile_index=index;
             tile.texture=if index==0x32 {unlit.clone()} else {lit.clone()};
         }
+        for x in 0..g.width {
+            let mut tile=tiles[0].clone();tile.column=x as u32;tile.row=8;
+            tile.source=VisualTileSource{tileset_id:"kanto".into(),metatile_id:0x01,
+                subtile_column:0,subtile_row:0,tile_index:KANTO_GROUND_TILE_INDEX};tiles.push(tile);
+        }
+        g.height=9;
         let cells=tiles.iter().collect::<Vec<_>>();
         assert!(outdoor_building_placements(&cells,&g).contains(&p));
         for map in ["PewterCity","UnseenTown","CeladonCity"] {
@@ -2083,7 +2089,8 @@ mod tests {
         let empty=||TerrainMeshData{authored_cells:vec![None;cells.len()],footing_heights:vec![0.;cells.len()],..Default::default()};
         let mut mesh=empty();let mut claims=vec![false;cells.len()];
         assert!(append_building_with_samples(&mut mesh,&cells,&shapes,&g,"PewterCity",p,&mut claims,[0,0],Some(&images)));
-        assert!(claims.iter().all(|&v|v));assert!(mesh.authored_cells.iter().all(|&v|v==Some("outdoor/kanto_brick_office")));
+        assert!(claims[..96].iter().all(|&v|v));assert!(claims[96..].iter().all(|&v|!v));
+        assert!(mesh.authored_cells[..96].iter().all(|&v|v==Some("outdoor/kanto_brick_office")));
         assert!(mesh.footing_heights.iter().all(|&v|v==0.));
         images.pixels.remove(&unlit.id());let mut rejected=empty();let mut claims=vec![false;cells.len()];
         assert!(!append_building_with_samples(&mut rejected,&cells,&shapes,&g,"PewterCity",p,&mut claims,[0,0],Some(&images)));

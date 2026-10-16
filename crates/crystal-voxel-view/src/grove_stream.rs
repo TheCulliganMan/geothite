@@ -159,15 +159,15 @@ pub(super) fn sync(
     meshes: &mut Assets<Mesh>,
     materials: &mut Assets<VoxelMaterial>,
 ) -> bool {
-    let (Some(_built), Some(_), Some(_)) = (
+    let (Some(built), Some(_), Some(_)) = (
         &cache.built_frame,
         cache.instances_root,
         cache.solid_material.as_ref(),
     ) else {
         return false;
     };
-    let offset = crate::retained_terrain_transform(frame, cache)
-        .map_or(Vec3::ZERO, |transform| transform.translation);
+    let offset = crate::terrain_tracking::offset(built, frame);
+    let offset = Vec3::new(offset.x, 0., offset.y);
     let ground = cache
         .built_footing_heights
         .iter()

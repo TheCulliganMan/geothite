@@ -84,13 +84,6 @@ fn cancel(id: u32) {
 fn message(value: JsValue) -> String {
     value.as_string().unwrap_or_else(|| format!("{value:?}"))
 }
-/// The active map and independently retained neighbors share one transport.
-/// Wait for its owner to poll completion rather than treating contention as a
-/// worker failure and disabling the existing browser path.
-pub(crate) fn busy() -> bool {
-    PENDING.with(|cell| cell.borrow().is_some())
-}
-
 pub(crate) fn submit(
     frame: &crystal_render_api::VisualWorldFrame,
     samples: &crate::mesh::TerrainImageSamples,

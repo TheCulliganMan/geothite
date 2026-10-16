@@ -96,10 +96,9 @@ pub(crate) fn plant_local(map_id: &str, source: &VisualTileSource) -> Option<(u8
         .then_some((local_column, local_row))
 }
 
-/// Block $2e packs two independent 16x16 chair drawings into its upper half.
-/// Keep each chair as a separate zero-depth card; joining the four columns
-/// creates a bench, while extruding them creates the same can-like artifact as
-/// the old casino machine geometry.
+/// Block $2e packs two independent 16x16 upholstered-seat drawings into its
+/// upper half. Each complete drawing owns one compact cushion and its feet;
+/// the lower source rows remain the floor apron.
 pub(crate) fn chair_local(map_id: &str, source: &VisualTileSource) -> Option<(u8, u8)> {
     if map_id != ADMIN_OFFICE
         || source.tileset_id.as_ref() != "pokecom_center"

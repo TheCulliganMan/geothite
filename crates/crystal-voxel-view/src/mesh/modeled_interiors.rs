@@ -32,6 +32,9 @@ impl Placement {
         })
     }
     pub(super) fn seat_height_pixels(&self, map: &str, source: &VisualTileSource) -> Option<f32> {
+        if self.kind==ModelKind::Chair && crate::pokecom::chair_local(map,source).is_some() {
+            return Some(7.);
+        }
         if map=="EarlsPokemonAcademy"&&self.kind==ModelKind::LinkSeat
             &&source.tileset_id.as_ref()=="lab"&&source.metatile_id==0x16 {return Some(5.2);}
         if map == "CeladonCafe" && self.kind == ModelKind::ArcadeStool
@@ -60,6 +63,10 @@ impl Placement {
 }
 #[path = "native_clinic.rs"]
 mod native_clinic;
+#[path = "native_pokecom_seats.rs"]
+mod native_pokecom_seats;
+#[path = "native_pokecom_equipment.rs"]
+mod native_pokecom_equipment;
 #[path = "native_clinic_fixtures.rs"]
 mod native_clinic_fixtures;
 #[path="native_gift_shop.rs"]
@@ -552,7 +559,10 @@ pub(super) fn resolve(
             else {
                 continue;
             };
-            let (depth_pixels, height_pixels) = if kind == ModelKind::Cushion
+            let (depth_pixels, height_pixels) = if kind == ModelKind::Chair
+                && crate::pokecom::chair_local(map,source).is_some() {
+                (8.,7.)
+            } else if kind == ModelKind::Cushion
                 && source.tileset_id.as_ref() == "mart" {
                 (12.0,7.0)
             } else if kind==ModelKind::DrawerCabinet && reviewed_native_room(map)
@@ -1665,6 +1675,9 @@ pub(super) fn append_with_tables(
         append_missing_source(mesh,geometry,p,claimed);
         return true;
     }
+    if native_pokecom_equipment::computer(map,p,cells,geometry) && !selected.has_native_computer_materials() {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
     if (native_home_stair::source(map,p,cells,geometry).is_some()
         ||native_mansion_architecture::stair(map,p,cells,geometry).is_some()
         ||native_radio_stair::stair(map,p,cells,geometry).is_some())&&!selected.has_native_stair_materials() {
@@ -1907,6 +1920,11 @@ pub(super) fn append_with_tables(
             assert!(flower.append_native_display_flower(&mut mesh.textured,[cx-hx,cx+hx,cz-hz,cz+hz],6.*scale,8.*scale,
                 native_source_swatches(p,geometry,[[2,2],[11,2],[11,3],[2,2],[11,2],[2,2],
                     [2,9],[2,8],[0,8],[0,8],[2,8],[2,2]])));
+        } else if native_pokecom_equipment::computer(map,p,cells,geometry) {
+            assert!(selected.append_native_computer(&mut mesh.textured,
+                [left+inset,right-inset,north,south],p.base_pixels*geometry.tile_height/8.,
+                p.height_pixels*geometry.tile_height/8.,
+                native_source_swatches(p,geometry,native_pokecom_equipment::PAINT)));
         } else if native_radio_studio::handled(map,p,cells,geometry) {
             native_radio_studio::append(&mut mesh.textured,map,p,cells,geometry,[left+inset,right-inset,north,south],selected,tables);
         } else if native_radio_studio::computer(map,p,cells,geometry) {
@@ -2095,7 +2113,8 @@ pub(super) fn append_with_tables(
                     ("house",0) | ("players_house",0x11|0x32|0x33|0x34) | ("players_room",0x02))
             }) {
             append_kanto_house_wall(&mut mesh.textured,geometry,p,[left,right,north,south]);
-        } else if kanto_native_floor_map(map) && map.ends_with("Pokecenter1F")
+        } else if native_pokecom_seats::matches(map,p,cells,geometry)
+            || kanto_native_floor_map(map) && map.ends_with("Pokecenter1F")
             && p.kind==ModelKind::LinkSeat && p.width==2 && p.height==2
             && p.indices(geometry.width).enumerate().all(|(j,i)| {
                 let source=&cells[i].source;
@@ -2104,7 +2123,8 @@ pub(super) fn append_with_tables(
                     && source.tile_index==[0x48,0x49,0x58,0x59][j]
             }) {
             append_native_center_lounge_seat(&mut mesh.textured,geometry,p,
-                [left+inset,right-inset,north,south]);
+                [left+inset,right-inset,north,south],
+                if native_pokecom_seats::matches(map,p,cells,geometry) {[2,12]}else{[7,12]});
         } else if map=="CeladonCafe" && p.kind==ModelKind::ArcadeStool && p.width==2 && p.height==2
             && p.indices(geometry.width).enumerate().all(|(j,i)| {
                 let s=&cells[i].source;
@@ -2846,14 +2866,14 @@ fn append_native_rectangular_stool(out:&mut SurfaceMeshData,g:&GridGeometry,p:&P
 }
 
 fn append_native_center_lounge_seat(out: &mut SurfaceMeshData,g: &GridGeometry,
-    p: &Placement,bounds: [f32;4]) {
+    p: &Placement,bounds: [f32;4],foot_pixel: [usize;2]) {
     let [w,e,n,s]=bounds;let scale=g.tile_height/8.;
     let texel=|x:usize,y:usize| {
         let uv=g.uv(p.column+x/8,p.row+y/8);
         [uv.0+(uv.1-uv.0)*((x%8) as f32+0.5)/8.,
          uv.2+(uv.3-uv.2)*((y%8) as f32+0.5)/8.]
     };
-    let foot=texel(7,12);let side=texel(1,3);
+    let foot=texel(foot_pixel[0],foot_pixel[1]);let side=texel(1,3);
     for x in [w+scale,e-3.*scale] {for z in [n+scale,s-3.*scale] {
         let first=out.positions.len();
         architecture_box(out,[x,x+2.*scale,0.,3.*scale,z,z+2.*scale],[1.;3]);

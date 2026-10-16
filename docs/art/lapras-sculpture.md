@@ -119,3 +119,51 @@ The catalogue-wide elapsed-idle/source-attack timing regression also passed.
 This closes the added battle-hover/contact defect only. Lapras's broader
 shape and detailed face/flipper refinement, legacy world props and browser
 visual acceptance remain open. No grass-height or shiny changes were made.
+
+
+## Lapras fitted face refinement (2026-10-15)
+
+The round staring eyes were replaced with rising almond outlines, smaller
+upright pupils and fitted highlights. Brows now follow that gaze. Two small
+nostril solids and a shallow curved mouth crease complete the muzzle. The
+crease follows the actual stored head triangles; it does not span the face
+as a floating straight chord. Its back is shallowly embedded while the front
+stays visible. The almond caps needed conforming subdivision to avoid cutting
+through the strongly curved outer eye corners; the first coarse candidate
+failed an independent stored-triangle clearance check and was replaced.
+
+All gaze, brow, nostril and mouth geometry follows the existing head joint.
+The other 34 source parts preserve every position, normal, triangle, color and
+skin influence exactly. Their geometry SHA-256 is
+`04b4c4324b15652e0a1c9d26b0299374318a80bbf1e02330e50d0cfd77070cba`.
+A before/after binary audit also proves identical hierarchy and all animation
+key times and rotation values. The seated battle contact correction remains.
+Height is still 1.50 authoring units and pack size remains 2.4892 metres.
+
+The canonical GLB now has 45 parts, 19,471 vertices, 23,332 triangles, nine
+joints, 253 accessors and 843,872 bytes. Its neutral/source pin is
+`e783b1adb22c94e3a0914dde725c5eef44c4197fc93e4736edc49e24e455548e`.
+All allocation limits stay unchanged. The common Blender builder previously
+silently omitted Lapras; its dedicated registration and canonical export path
+now regenerate the byte-identical GLB through the real builder.
+
+Nine stored-model Python checks and four focused Rust checks passed, including
+closed outward solids, smooth normals, eye/pupil/highlight attachment at
+triangle centers and edge midpoints, visible fitted mouth clearance, retained
+source geometry, rigid head ownership, animation winding/strain, seated belly,
+contact shading and GPU activation at pack size. The complete exact-species
+grounding/volume regression passed. Fixed-camera before/after front and oblique
+face views, plus idle, attack and recoil views, were inspected. Shiny checks
+remain skipped as requested.
+
+
+The rebuilt production Route 29 pair `lapras-face-final-3d.png` /
+`lapras-face-final-2d.png` was inspected at core frame 2312, checksum
+1402440659, LCD animation frame 2990 and virtual time 54.018008459.
+The receipt confirms `state_preserved=true`; terrain admission is
+`accepted=true`. Against Sentret, the narrow white eye, fitted pupil, small
+nostril and curved mouth crease remain visible, while the shell, flippers,
+blue/tan palette and seated belly stay readable. The original terrain is
+retained and no shader errors were reported. Native acceptance here covers
+this face refinement and retained contact, not complete model or browser
+fidelity. Broader flipper/shell refinement and legacy world props remain open.

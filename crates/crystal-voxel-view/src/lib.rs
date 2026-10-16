@@ -56,8 +56,6 @@ pub use forest_instances::configure_lazy_tree_entities_diagnostics;
 pub use occluder_fade::configure_tree_vertex_weld_diagnostics;
 pub use shared_groves::configure_grove_collision_diagnostics;
 mod grove_stream;
-mod neighbor_scenes;
-mod backdrop_clip;
 
 mod painted_torso;
 mod bare_body;
@@ -357,8 +355,6 @@ impl Plugin for VoxelViewPlugin {
             .init_resource::<VoxelScene>()
             .init_resource::<TerrainRevisionCache>()
             .init_resource::<TerrainBuildQueue>()
-            .init_resource::<crystal_render_api::VisualWorldNeighborhood>()
-            .init_resource::<neighbor_scenes::Scenes>()
             .init_resource::<ActorIdCache>()
             .init_resource::<PlayerSilhouetteCache>()
             .add_systems(
@@ -370,9 +366,6 @@ impl Plugin for VoxelViewPlugin {
             .add_systems(Startup, setup_voxel_view)
             .add_systems(Update, toggle_voxel_view.before(sync_voxel_view))
             .add_systems(Update, sync_voxel_view.in_set(WorldRenderSet::RenderSync))
-            .add_systems(Update, neighbor_scenes::sync.after(sync_voxel_view)
-                .before(terrain_animation::sync).before(city_lights::sync)
-                .in_set(WorldRenderSet::RenderSync))
             .add_systems(Update, sync_voxel_atmosphere.after(sync_voxel_view))
             .add_systems(Update, city_lights::sync.after(new_bark_actors::sync)
                 .after(sync_interior_cutaway).in_set(WorldRenderSet::RenderSync))
@@ -558,10 +551,6 @@ impl TerrainCacheKey {
 
 #[derive(Resource, Default)]
 struct TerrainRevisionCache {
-    /// Independent neighbors share the active scene's backdrop; each keeps
-    /// its own authored geometry, palette and water registration.
-    neighbor: bool,
-    backdrop: Option<backdrop_clip::Backdrop>,
     city_emitters: Vec<city_lights::Emitter>,
     forest_library: std::sync::Arc<forest_instances::Library>,
     groves: Option<grove_stream::Stream>,
@@ -1002,7 +991,7 @@ Transform::from_xyz(180.0, 320.0, 220.0).looking_at(Vec3::ZERO, Vec3::Y),),
 #[allow(clippy::too_many_arguments)]
 fn sync_voxel_view(
     frame: Res<VisualWorldFrame>,
-    presentation: (Res<VoxelViewSettings>, Res<live_profiles::LiveProfiles>, Query<(&DirectionalLight, &Transform), (With<VoxelSun>, Without<VoxelWorldCamera>, Without<VoxelTerrain>, Without<VoxelActorCard>)>, ResMut<NativeHealingEffectsStatus>, Option<Res<crystal_render_api::VisualPlayerTraversal>>, Option<ResMut<neighbor_scenes::Scenes>>),
+    presentation: (Res<VoxelViewSettings>, Res<live_profiles::LiveProfiles>, Query<(&DirectionalLight, &Transform), (With<VoxelSun>, Without<VoxelWorldCamera>, Without<VoxelTerrain>, Without<VoxelActorCard>)>, ResMut<NativeHealingEffectsStatus>, Option<Res<crystal_render_api::VisualPlayerTraversal>>),
     mut status: ResMut<VoxelViewStatus>,
     mut last_failure: Local<Option<String>>,
     mut validated_frame_key: Local<Option<TerrainCacheKey>>,
@@ -1031,13 +1020,7 @@ fn sync_voxel_view(
         ),
     >,
 ) {
-    let (settings, profiles, sun,mut healing_status, traversal, neighbors) = presentation;
-    if settings.enabled && frame.active {
-        if let Some(mut neighbors) = neighbors {
-            neighbor_scenes::promote(&frame, profiles.revision, &mut neighbors, &mut terrain_cache,
-                &mut terrain_builds, &mut commands);
-        }
-    }
+    let (settings, profiles, sun,mut healing_status, traversal) = presentation;
     let _trace = loading_trace::span("frame.sync_3d", || serde_json::json!({"map": frame.map_id.as_ref(), "enabled": settings.enabled}));
     status.profiles_pending = terrain_cache
         .key
@@ -1663,10 +1646,6 @@ fn sync_terrain(
     }
     if should_start_terrain_build(cache.key.as_ref(), builds.key.as_ref(), &next_key) {
         #[cfg(all(target_arch = "wasm32", feature = "terrain-worker-browser"))]
-        if terrain_worker::browser::busy() {
-            return Ok(TerrainSyncState::Pending);
-        }
-        #[cfg(all(target_arch = "wasm32", feature = "terrain-worker-browser"))]
         if terrain_worker::browser::availability() == terrain_worker::browser::Availability::Initializing {
             return Ok(TerrainSyncState::Pending);
         }
@@ -1842,7 +1821,7 @@ fn sync_terrain(
         }
     }
     if !ready&&retain_lighthouse_room(frame,cache) {return Ok(TerrainSyncState::Pending);}
-    if cache.footing_origin != Some(frame.grid_origin) || cache.footing_heights.len() != frame.tiles.len() {
+    if cache.footing_origin != Some(frame.grid_origin) {
         if let Some(built) = &cache.built_frame {
             terrain_tracking::align_footings(
                 built,
@@ -1892,7 +1871,7 @@ fn sync_terrain(
 fn apply_built_terrain(
     frame: &VisualWorldFrame,
     key: TerrainCacheKey,
-    mut terrain: BuiltTerrain,
+    terrain: BuiltTerrain,
     commands: &mut Commands,
     cache: &mut TerrainRevisionCache,
     meshes: &mut Assets<Mesh>,
@@ -1900,7 +1879,6 @@ fn apply_built_terrain(
     images: &mut Assets<Image>,
     prepared_water: Option<water_surface::PreparedImages>,
 ) -> Result<(), TerrainSyncError> {
-    if cache.neighbor { terrain.background = None; }
     let _trace = loading_trace::span("region.publish_assets", || serde_json::json!({"map": frame.map_id.as_ref(), "origin": frame.grid_origin.to_array()}));
     let publish_setup = loading_trace::span("region.publish_setup", || serde_json::json!({}));
     cache.city_emitters = terrain.city_emitters;
@@ -2037,7 +2015,6 @@ terrain_transform(frame),),
 MeshMaterial3d(materials.add(material)),), RenderLayers::layer(VOXEL_RENDER_LAYER), encounter_terrain::SyntheticTerrainApron)).id();
         commands.entity(root).add_child(child);
     }
-    cache.backdrop = None;
     if let Some((mesh, source)) = terrain.background {
         use bevy::image::{ImageAddressMode, ImageSampler, ImageSamplerDescriptor};
         let mut image = {
@@ -2053,17 +2030,15 @@ MeshMaterial3d(materials.add(material)),), RenderLayers::layer(VOXEL_RENDER_LAYE
         let mut material = textured_terrain_material(add_terrain_image(images, image, "background"));
         material.extension.cave_reveal = cave_reveal;
         let material = materials.add(material);
-        let handle = meshes.add(mesh.clone());
         let child = commands
             .spawn((
-                (Mesh3d(handle.clone()),
+                (Mesh3d(meshes.add(mesh)),
 MeshMaterial3d(material),),
                 RenderLayers::layer(VOXEL_RENDER_LAYER),
                 encounter_terrain::SyntheticTerrainApron,
             ))
             .id();
         commands.entity(root).add_child(child);
-        cache.backdrop = Some(backdrop_clip::Backdrop::new(&mesh, handle, child));
     }
     for (mesh, batch) in terrain.reveal_join_batches {
         let child = commands.spawn((

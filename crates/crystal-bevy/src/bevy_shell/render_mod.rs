@@ -47,12 +47,11 @@ fn publish_visual_world_frame(
         Option<ResMut<crystal_render_api::VisualWorldLighting>>,
         Option<Res<RuntimeTickTimer>>,
         Option<ResMut<crystal_render_api::VisualPlayerTraversal>>,
-        Option<ResMut<crystal_render_api::VisualWorldNeighborhood>>,
     ),
     phases: Option<ResMut<crystal_render_api::VisualTileAnimationFrame>>,
     clock: Option<ResMut<crystal_render_api::VisualWorldClock>>,
 ) {
-    let (lighting, tick_timer, mut traversal, neighborhood) = presentation;
+    let (lighting, tick_timer, mut traversal) = presentation;
     #[cfg(feature = "voxel-view")]
     let _trace = crystal_voxel_view::loading_trace::span("frame.publish_world", || serde_json::json!({"map": rendered.map_name.as_deref()}));
     if let Some(mut lighting) = lighting {
@@ -470,33 +469,6 @@ fn publish_visual_world_frame(
     #[cfg(feature = "voxel-view")]
     actors.extend(published.actors.iter().filter(|actor| matches!(actor.id,
         crystal_render_api::VisualActorId::PartyFollower | crystal_render_api::VisualActorId::SurfMount)).cloned());
-    #[cfg(feature = "voxel-view")]
-    if let Some(mut neighborhood) = neighborhood {
-        let (x, y) = rendered.viewport_origin.expect("validated viewport origin");
-        let viewport_center = Vec2::new(x as f32 + VIEWPORT_TILES_X as f32 * 0.5,
-            y as f32 + VIEWPORT_TILES_Y as f32 * 0.5);
-        let placement = |map: &map_neighborhood::RetainedMap| {
-            let source_center = (map.origin + map.frame.grid_origin).as_vec2()
-                + map.frame.grid_size.as_vec2() * 0.5;
-            let delta = (source_center - viewport_center) * TILE_SIZE;
-            center + Vec2::new(delta.x, -delta.y)
-        };
-        let unchanged = neighborhood.active_map_id.as_ref() == map_id
-            && neighborhood.maps.len() == rendered.visual_neighbors.len()
-            && neighborhood.maps.iter().zip(&rendered.visual_neighbors).all(|(old, map)|
-                Arc::ptr_eq(&old.frame, &map.frame) && Arc::ptr_eq(&old.phases, &map.phases)
-                    && old.center == placement(map));
-        if !unchanged {
-            *neighborhood = crystal_render_api::VisualWorldNeighborhood {
-                active_map_id: map_id.into(),
-                maps: rendered.visual_neighbors.iter().map(|map| crystal_render_api::VisualNeighborMap {
-                    frame: map.frame.clone(), center: placement(map), phases: map.phases.clone(),
-                }).collect(),
-            };
-        }
-    }
-    #[cfg(not(feature = "voxel-view"))]
-    let _ = neighborhood;
     let terrain_unchanged = published.active
         && published.map_id.as_ref() == map_id
         && published.source_map_size_core_tiles == rendered.source_map_size_core_tiles
@@ -668,11 +640,14 @@ fn visual_actor_intersects_grid(
     delta.x.abs() <= half_grid.x + half_actor.x && delta.y.abs() <= half_grid.y + half_actor.y
 }
 
-fn visual_tile_grid_is_complete(tiles: &[crystal_render_api::VisualTile], grid: UVec2) -> bool {
-    let (Ok(width), Ok(height)) = (usize::try_from(grid.x), usize::try_from(grid.y)) else {
+fn visual_tile_grid_is_complete(tiles: &[crystal_render_api::VisualTile]) -> bool {
+    let Ok(width) = usize::try_from(VISUAL_WORLD_TILES_X) else {
         return false;
     };
-    width > 0 && height > 0 && width.checked_mul(height) == Some(tiles.len())
+    let Ok(height) = usize::try_from(VISUAL_WORLD_TILES_Y) else {
+        return false;
+    };
+    tiles.len() == width * height
         && tiles.iter().enumerate().all(|(index, tile)| {
             usize::try_from(tile.column).ok() == Some(index % width)
                 && usize::try_from(tile.row).ok() == Some(index / width)
@@ -743,24 +718,14 @@ mod render_mod_tests {
     #[test]
     fn visual_tile_grid_requires_one_row_major_cell_per_terrain_position() {
         let mut tiles = complete_visual_grid();
-        assert!(visual_tile_grid_is_complete(&tiles, UVec2::new(VISUAL_WORLD_TILES_X as u32, VISUAL_WORLD_TILES_Y as u32)));
+        assert!(visual_tile_grid_is_complete(&tiles));
 
         tiles.pop();
-        assert!(!visual_tile_grid_is_complete(&tiles, UVec2::new(VISUAL_WORLD_TILES_X as u32, VISUAL_WORLD_TILES_Y as u32)));
+        assert!(!visual_tile_grid_is_complete(&tiles));
 
         let mut tiles = complete_visual_grid();
         tiles.swap(0, 1);
-        assert!(!visual_tile_grid_is_complete(&tiles, UVec2::new(VISUAL_WORLD_TILES_X as u32, VISUAL_WORLD_TILES_Y as u32)));
-
-        let mut tiles = complete_visual_grid();
-        tiles.truncate(4);
-        for (i, tile) in tiles.iter_mut().enumerate() {
-            tile.column = i as u32 % 2;
-            tile.row = i as u32 / 2;
-        }
-        assert!(visual_tile_grid_is_complete(&tiles, UVec2::new(2, 2)));
-        assert!(!visual_tile_grid_is_complete(&tiles, UVec2::new(2, 3)));
-        assert!(!visual_tile_grid_is_complete(&[], UVec2::ZERO));
+        assert!(!visual_tile_grid_is_complete(&tiles));
     }
 
     #[test]
@@ -813,7 +778,7 @@ mod render_mod_tests {
         let iterations = 10_000;
         let start = Instant::now();
         for _ in 0..iterations {
-            assert!(visual_tile_grid_is_complete(black_box(&tiles), UVec2::new(VISUAL_WORLD_TILES_X as u32, VISUAL_WORLD_TILES_Y as u32)));
+            assert!(visual_tile_grid_is_complete(black_box(&tiles)));
             black_box(visual_terrain_revision(7, (-4, 12), black_box(&tiles)));
         }
         let uncached = start.elapsed();

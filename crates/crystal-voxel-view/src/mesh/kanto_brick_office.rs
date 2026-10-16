@@ -24,6 +24,14 @@ fn linear(c: [u8; 3]) -> [f32; 3] {
         }
     })
 }
+fn mark_source_light(out: &mut SurfaceMeshData, first: usize, glass: [f32;3]) {
+    // Native 32 panes remain dark at night while 0a panes become yellow.
+    // Source-paint emission must not relight the deliberately dark glass.
+    let luminance=glass[0]*0.2126+glass[1]*0.7152+glass[2]*0.0722;
+    if luminance>0.45 {
+        crate::city_lights::mark_window(out,first..out.positions.len(),first,true);
+    }
+}
 pub(super) fn paint(
     cells: &[&VisualTile],
     g: &GridGeometry,
@@ -307,7 +315,7 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, door: Op
             -1.,
             unit,
         );
-        crate::city_lights::mark_window(out,light_first..out.positions.len(),light_first,true);
+        mark_source_light(out,light_first,glass);
         for xx in [x - width * 0.5, x + width * 0.5] {
             block(
                 out,
@@ -444,7 +452,7 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, door: Op
         -1.,
         unit,
     );
-    crate::city_lights::mark_window(out,light_first..out.positions.len(),light_first,true);
+    mark_source_light(out,light_first,p.glass);
     block(
         out,
         [
@@ -507,6 +515,11 @@ mod tests {
         append(&mut changed,[0.,96.,0.,64.],8.,None,paint);
         assert_eq!(mesh.positions,changed.positions);assert_eq!(mesh.indices,changed.indices);
         assert_ne!(mesh.colors,changed.colors);
+        for i in [0,4,7,9] {paint.windows[i]=[0.12,0.08,0.24];}
+        let mut night=SurfaceMeshData::default();append(&mut night,[0.,96.,0.,64.],8.,None,paint);
+        let lit=night.uvs.iter().filter(|&&uv|crate::city_lights::source_window_tag(uv))
+            .map(|uv|uv[0].to_bits()).collect::<std::collections::BTreeSet<_>>();
+        assert_eq!(lit.len(),6,"only the six source-lit panes emit");
     }
 
     #[test]

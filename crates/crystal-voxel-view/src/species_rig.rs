@@ -142,6 +142,7 @@ pub(crate) enum Species {
     Moltres,
     Zapdos,
     Articuno,
+    HoOh,
     Lugia,
     Corsola,
     Mantine,
@@ -176,7 +177,7 @@ pub(crate) enum Species {
 }
 
 impl Species {
-    pub const ALL: [Self; 140] = [
+    pub const ALL: [Self; 141] = [
         Self::Chikorita,
         Self::Bayleef,
         Self::Meganium,
@@ -261,6 +262,7 @@ impl Species {
         Self::Moltres,
         Self::Zapdos,
         Self::Articuno,
+        Self::HoOh,
         Self::Lugia,
         Self::Corsola,
         Self::Mantine,
@@ -409,6 +411,7 @@ impl Species {
             Self::Moltres => "moltres",
             Self::Zapdos => "zapdos",
             Self::Articuno => "articuno",
+            Self::HoOh => "ho_oh",
             Self::Lugia => "lugia",
             Self::Corsola => "corsola",
             Self::Mantine => "mantine",
@@ -497,6 +500,7 @@ impl Species {
             Self::Moltres => &["root", "torso", "neck", "head", "wing_left", "wing_right", "fire_left", "fire_right", "crown", "tail", "leg_left", "leg_right"],
             Self::Zapdos => &["root", "torso", "neck", "head", "wing_left", "wing_right", "tail", "leg_left", "leg_right"],
             Self::Articuno => &["root", "torso", "neck", "head", "wing_left", "wing_right", "tail_root", "tail_curve", "tail_tip", "leg_left", "leg_right"],
+            Self::HoOh => &["root", "torso", "neck", "head", "wing_left", "wing_right", "tail", "mandible", "leg_left", "leg_right"],
             Self::Lugia => &["root", "torso", "neck", "head", "wing_left", "palm_left", "wing_right", "palm_right", "mandible", "tail_root", "tail_tip", "leg_left", "leg_right"],
             Self::Corsola => &["root", "body", "coral_left", "coral_right", "coral_rear", "coral_rear_right", "coral_rear_left", "arm_left", "arm_right"],
             Self::Mantine => &["root", "body", "wing_left_base", "wing_left_tip", "wing_right_base", "wing_right_tip", "cephalic_left", "cephalic_right", "tail_base", "tail_tip", "remora", "remora_tail", "remora_tail_fin"],
@@ -699,6 +703,7 @@ impl Species {
             Self::Moltres => &[None, Some(0), Some(1), Some(2), Some(1), Some(1), Some(4), Some(5), Some(3), Some(1), Some(0), Some(0)],
             Self::Zapdos => &[None, Some(0), Some(1), Some(2), Some(1), Some(1), Some(1), Some(0), Some(0)],
             Self::Articuno => &[None, Some(0), Some(1), Some(2), Some(1), Some(1), Some(1), Some(6), Some(7), Some(0), Some(0)],
+            Self::HoOh => &[None, Some(0), Some(1), Some(2), Some(1), Some(1), Some(1), Some(3), Some(0), Some(0)],
             Self::Lugia => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(1), Some(6), Some(3), Some(1), Some(9), Some(0), Some(0)],
             Self::Corsola => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1)],
             Self::Mantine => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(1), Some(1), Some(1), Some(8), Some(4), Some(10), Some(11)],
@@ -896,6 +901,7 @@ impl Species {
             Self::Moltres => 46,
             Self::Zapdos => 54,
             Self::Articuno => 49,
+            Self::HoOh => 38,
             Self::Lugia => 34,
             Self::Corsola => 37,
             Self::Mantine => 32,
@@ -1017,6 +1023,7 @@ impl Species {
             Self::Moltres => "bc2c5af3c85515bb49c4773acaf16f96232104ac36d08b59681ba4eba064bc33",
             Self::Zapdos => "75512d822cf34c6097ea7c8421a159f7bad0291a985a4ae20ab5ae2642ba041f",
             Self::Articuno => "e38af1c0bb7982e268d4de9841a4722458a42d6d8f23e5abb82d697d7f0b377c",
+            Self::HoOh => "4e246f222c484ed35240a4bd22ce63b024b482e85b707d9968dbea9da3fac218",
             Self::Lugia => "8bfe309e8e03304e4547f34346df87add36f0706bed92b5cc7b589b57cf4001b",
             Self::Corsola => "70a819e196fadc5fade144ed07e3483aa3a404f9c1a373f572975adb9d9f65d2",
             Self::Mantine => "712a8adc15f3cc0fde8aab46912528e87185c6ea8c953ec4283a9f00db1dd7b7",
@@ -1260,6 +1267,7 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
     static MOLTRES: OnceLock<SpeciesRig> = OnceLock::new();
     static ZAPDOS: OnceLock<SpeciesRig> = OnceLock::new();
     static ARTICUNO: OnceLock<SpeciesRig> = OnceLock::new();
+    static HO_OH: OnceLock<SpeciesRig> = OnceLock::new();
     static LUGIA: OnceLock<SpeciesRig> = OnceLock::new();
     static CORSOLA: OnceLock<SpeciesRig> = OnceLock::new();
     static MANTINE: OnceLock<SpeciesRig> = OnceLock::new();
@@ -1388,6 +1396,7 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
         Species::Moltres => &MOLTRES,
         Species::Zapdos => &ZAPDOS,
         Species::Articuno => &ARTICUNO,
+        Species::HoOh => &HO_OH,
         Species::Lugia => &LUGIA,
         Species::Corsola => &CORSOLA,
         Species::Mantine => &MANTINE,
@@ -1505,6 +1514,7 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
             Species::Moltres => { crate::model_storage::include_model!("models/battle_species/moltres.glb") }
             Species::Zapdos => { crate::model_storage::include_model!("models/battle_species/zapdos.glb") }
             Species::Articuno => { crate::model_storage::include_model!("models/battle_species/articuno.glb") }
+            Species::HoOh => { crate::model_storage::include_model!("models/battle_species/ho_oh.glb") }
             Species::Lugia => { crate::model_storage::include_model!("models/battle_species/lugia.glb") }
             Species::Corsola => { crate::model_storage::include_model!("models/battle_species/corsola.glb") }
             Species::Mantine => { crate::model_storage::include_model!("models/battle_species/mantine.glb") }
@@ -1629,6 +1639,8 @@ pub(crate) fn authored_for_species(species: &str) -> Option<&'static SpeciesRig>
         Some(rig(Species::Skarmory))
     } else if species.eq_ignore_ascii_case("SMEARGLE") {
         Some(rig(Species::Smeargle))
+    } else if species.eq_ignore_ascii_case("HO_OH") || species.eq_ignore_ascii_case("HO-OH") {
+        Some(rig(Species::HoOh))
     } else if species.eq_ignore_ascii_case("LUGIA") {
         Some(rig(Species::Lugia))
     } else if species.eq_ignore_ascii_case("ARTICUNO") {

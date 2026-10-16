@@ -1474,8 +1474,9 @@ def run():
   print('lapras: canonical seated shell, fitted almond gaze and articulated swimming body',flush=True)
  if 'ho_oh' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from ho_oh_sculpt import sculpture as ho_oh_sculpture
-  (OUT/'ho_oh.mesh.json').write_text(json.dumps(ho_oh_sculpture(),separators=(',',':')))
+  from ho_oh_glb import export_ho_oh
+  (OUT/'ho_oh.glb').write_bytes(export_ho_oh())
+  (OUT/'ho_oh.mesh.json').unlink(missing_ok=True)
   names.remove('ho_oh')
   print('ho_oh: original rainbow phoenix with tricolor flight vanes and golden tail fan',flush=True)
  if 'lugia' in names:

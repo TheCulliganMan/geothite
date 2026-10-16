@@ -178,6 +178,30 @@ fn prism(out: &mut SurfaceMeshData, top: Vec<Vec3>, thick: f32, color: [f32; 3],
         );
     }
 }
+/// A closed shallow barrel tile, with three physical ceramic shoulders.
+/// The two sections may narrow independently to follow a hip without cards
+/// or exposed undersides at the ends of a course.
+fn ceramic_tile(out: &mut SurfaceMeshData, ends: [[Vec3;2];2], unit: f32,
+    crown: f32, color: [f32;3]) {
+    let sections=ends.map(|[a,b]| {
+        let mut ring=Vec::new();
+        for i in 0..4 {
+            let t=i as f32/3.;
+            ring.push(a+(b-a)*t+Vec3::Y*(std::f32::consts::PI*t).sin()*crown);
+        }
+        ring.push(b-Vec3::Y*unit*0.035);
+        ring.push(a-Vec3::Y*unit*0.035);
+        ring
+    });
+    let center=sections.iter().flatten().copied().sum::<Vec3>()/12.;
+    face(out,sections[0].clone(),center,color,0.,unit);
+    face(out,sections[1].clone(),center,color,0.,unit);
+    for i in 0..6 {
+        let j=(i+1)%6;
+        face(out,vec![sections[0][i],sections[0][j],sections[1][j],sections[1][i]],
+            center,color,0.,unit);
+    }
+}
 fn roof(out: &mut SurfaceMeshData, width: f32, depth: f32, unit: f32, p: &Paint) {
     let mid = depth * 0.5;
     let inset = unit * 1.5;
@@ -215,29 +239,30 @@ fn roof(out: &mut SurfaceMeshData, width: f32, depth: f32, unit: f32, p: &Paint)
             mix(p.roof[0], p.ink, 0.25),
             unit,
         );
-        let cols = ((plane[1] - plane[0]).length() / (unit * 0.72)).ceil() as usize;
-        for row in 0..6 {
-            for col in 0..cols {
-                let at = |u: f32, t: f32| {
+        let rows=9;
+        for row in 0..rows {
+            let c=row as f32/rows as f32;
+            let d=((row as f32+1.08)/rows as f32).min(0.995);
+            let at = |u: f32, t: f32| {
                     let upper = if plane.len() == 4 {
-                        plane[3].lerp(plane[2], u)
+                        plane[3]+(plane[2]-plane[3])*u
                     } else {
                         plane[2]
                     };
-                    plane[0].lerp(plane[1], u).lerp(upper, t) + Vec3::Y * unit * 0.025
+                    let lower=plane[0]+(plane[1]-plane[0])*u;
+                    lower+(upper-lower)*t
+                        + Vec3::Y * unit * (0.025+row as f32*0.003)
                 };
-                let a = (col as f32 + 0.018) / cols as f32;
-                let b = (col as f32 + 0.982) / cols as f32;
-                let c = (row as f32 + 0.02) / 6.;
-                let d = (row as f32 + 0.98) / 6.;
+            let span=(at(1.,(c+d)*0.5)-at(0.,(c+d)*0.5)).length();
+            let cols=(span/(unit*0.62)).ceil().max(1.) as usize;
+            for col in 0..=cols {
+                let stagger=if row%2==0 {0.} else {0.5};
+                let a=((col as f32-stagger)/cols as f32).max(0.)+0.009/cols as f32;
+                let b=((col as f32+1.-stagger)/cols as f32).min(1.)-0.009/cols as f32;
+                if b<=a {continue;}
                 let gain = 0.91 + ((row * 3 + col * 7 + side) % 5) as f32 * 0.016;
-                prism(
-                    out,
-                    vec![at(a, c), at(b, c), at(b, d), at(a, d)],
-                    unit * 0.045,
-                    ceramic.map(|v| v * gain),
-                    unit,
-                );
+                ceramic_tile(out,[[at(a,c),at(b,c)],[at(a,d),at(b,d)]],unit,
+                    unit*0.045,ceramic.map(|v|v*gain));
             }
         }
     }
@@ -247,7 +272,7 @@ fn roof(out: &mut SurfaceMeshData, width: f32, depth: f32, unit: f32, p: &Paint)
             inset - unit * 0.08,
             width - inset + unit * 0.08,
             high,
-            high + unit * 0.10,
+            high + unit * 0.06,
             mid - unit * 0.10,
             mid + unit * 0.10,
         ],
@@ -256,6 +281,14 @@ fn roof(out: &mut SurfaceMeshData, width: f32, depth: f32, unit: f32, p: &Paint)
         0.,
         unit,
     );
+    let count=((width-2.*inset)/(unit*0.70)).ceil().max(1.) as usize;
+    for i in 0..count {
+        let a=inset+(width-2.*inset)*i as f32/count as f32;
+        let b=inset+(width-2.*inset)*(i+1) as f32/count as f32-unit*0.012;
+        ceramic_tile(out,[[v(a,high+unit*0.06,mid-unit*0.12),v(a,high+unit*0.06,mid+unit*0.12)],
+            [v(b,high+unit*0.06,mid-unit*0.12),v(b,high+unit*0.06,mid+unit*0.12)]],
+            unit,unit*0.07,ceramic);
+    }
 }
 fn masonry(out: &mut SurfaceMeshData, width: f32, depth: f32, unit: f32, p: &Paint) {
     // Eight quiet running-bond courses below the continuous clerestory.
@@ -590,6 +623,29 @@ mod tests {
         assert!(paint(&cells, &g, p, &images).is_none());
     }
     #[test]
+    fn ceramic_courses_are_closed_curved_volumes_even_at_narrow_hips() {
+        for narrow in [1.,0.35,0.04] {
+            let mut mesh=SurfaceMeshData::default();
+            ceramic_tile(&mut mesh,[[Vec3::ZERO,Vec3::X],
+                [Vec3::new(0.5-narrow*0.5,0.4,0.8),Vec3::new(0.5+narrow*0.5,0.4,0.8)]],
+                1.,0.045,[0.3,0.6,0.8]);
+            assert_eq!(mesh.indices.len()/3,20);
+            let mut edges=std::collections::BTreeMap::new();let mut volume=0.;
+            for tri in mesh.indices.chunks_exact(3) {
+                let p=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
+                assert!((p[1]-p[0]).cross(p[2]-p[0]).length()>0.000001);
+                volume+=p[0].dot(p[1].cross(p[2]))/6.;
+                for i in 0..3 {let mut e=[p[i].to_array().map(f32::to_bits),p[(i+1)%3].to_array().map(f32::to_bits)];
+                    e.sort();*edges.entry(e).or_insert(0)+=1;}
+            }
+            assert!(volume>0.);assert!(edges.values().all(|&n|n==2));
+            let shoulders=mesh.normals.iter().filter(|n|n[1]>0.5)
+                .map(|n|n.map(|v|(v*1000.).round() as i32)).collect::<std::collections::BTreeSet<_>>();
+            assert!(shoulders.len()>=3,"curved shoulders must be real geometry");
+        }
+    }
+
+    #[test]
     fn museum_geometry_is_closed_bounded_and_translation_stable() {
         let (tiles, g, p, images) = fixture(16);
         let cells = tiles.iter().collect::<Vec<_>>();
@@ -602,7 +658,7 @@ mod tests {
         assert_eq!(a.colors, b.colors);
         assert_eq!(a.uvs, b.uvs);
         assert!(
-            a.indices.len() / 3 > 4000 && a.indices.len() / 3 < 16000,
+            a.indices.len() / 3 > 4000 && a.indices.len() / 3 < 24000,
             "{} triangles",
             a.indices.len() / 3
         );
@@ -614,7 +670,8 @@ mod tests {
                     && a[2] >= 0.
                     && a[2] <= 96.
                     && a[1] >= 0.
-                    && a[1] < 8. * 7.
+                    && a[1] < 8. * 7.,
+                "museum vertex outside native plot: {a:?}"
             );
             assert!(
                 (a[0] - 216. - b[0]).abs() < 0.0001

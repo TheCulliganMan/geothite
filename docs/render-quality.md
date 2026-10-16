@@ -50,6 +50,24 @@ night windows, instead of blurring daylight paint. SMAA uses Bevy's bundled
 lookup textures with the Rust zstd decoder. TAA is not enabled: animated grass,
 skinning and camera apertures need a separate motion-vector and ghosting review.
 
+Balanced and high also apply a gentle miniature-style depth of field to the
+3D orbit camera. Bevy's two-pass Gaussian DOF uses scene depth to soften near
+and distant scenery while keeping the trainer's body in focus. Focus follows
+the rendered camera, interpolated player position, terrain height and jumps;
+the lens scales with focus distance so camera zoom and world scale do not
+change the intended softness. The maximum blur diameter is 1.8% of the output
+height (about thirteen pixels at 720p), bounded to 3–28 pixels. This gives the pitched
+camera a tilt-shift appearance without applying a blur strip to UI text.
+
+First-person view, 2D, low/legacy presets, software adapters and WebGL retain
+their sharp output. WebGPU uses the same DOF as native. Set
+`CRYSTAL_TILT_SHIFT=off` at native launch to disable it independently for a
+comparison. Battle actor capture cameras and the UI camera do not receive DOF.
+The implementation uses Bevy's existing
+[depth-of-field component](https://github.com/bevyengine/bevy/blob/v0.20.0/crates/bevy_post_process/src/dof/mod.rs);
+Gaussian uses less memory bandwidth than its hexagonal bokeh mode and needs
+no extra bokeh color target.
+
 The SSAO normal prepass uses the visible surface shader's source cutouts,
 coverage fades and cave apertures. It writes geometry normals for unlit painted
 materials, which Bevy's standard unlit prepass intentionally omits. Shadow and

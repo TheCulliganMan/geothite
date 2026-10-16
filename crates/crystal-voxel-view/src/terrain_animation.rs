@@ -119,38 +119,44 @@ pub(super) fn sync(
     if phases.map_id != frame.map_id || phases.tiles.is_empty() {
         return;
     }
-    if let Err(error) = sync_cache(&phases, &mut cache, &mut images, &mut meshes, &mut materials) {
-        status.active = false;
-        status.inactive_reason = Some(error);
-    }
-}
-
-pub(super) fn sync_cache(
-    phases: &VisualTileAnimationFrame,
-    cache: &mut TerrainRevisionCache,
-    images: &mut Assets<Image>,
-    meshes: &mut Assets<Mesh>,
-    materials: &mut Assets<VoxelMaterial>,
-) -> Result<(), String> {
     let selected = cache.built_animated_pillars.clone();
-    let Some(built) = cache.built_frame.as_mut() else { return Ok(()); };
-    let change = refresh(built, phases, &selected, images)
-        .map_err(|()| "terrain animation: SourceTextureUnavailable".to_owned())?;
-    if change == Change::None { return Ok(()); }
+    let Some(built) = cache.built_frame.as_mut() else {
+        return;
+    };
+    let change = match refresh(built, &phases, &selected, &mut images) {
+        Ok(change) => change,
+        Err(()) => {
+            status.active = false;
+            status.inactive_reason = Some("terrain animation: SourceTextureUnavailable".into());
+            return;
+        }
+    };
+    if change == Change::None {
+        return;
+    }
     if change == Change::Geometry {
-        let (textured, solid) = mesh::build_animated_flowers(built, images, &selected)
-            .map_err(|error| format!("terrain animation: {error:?}"))?;
+        let (textured, solid) = match mesh::build_animated_flowers(built, &images, &selected) {
+            Ok(meshes) => meshes,
+            Err(error) => {
+                status.active = false;
+                status.inactive_reason = Some(format!("terrain animation: {error:?}"));
+                return;
+            }
+        };
         cache.built_animated_bounds = [textured.get_aabb(), solid.get_aabb()];
-        update_domain(meshes, &mut cache.animated_textured_mesh, textured);
-        update_domain(meshes, &mut cache.animated_solid_mesh, solid);
+        update_domain(&mut meshes, &mut cache.animated_textured_mesh, textured);
+        update_domain(&mut meshes, &mut cache.animated_solid_mesh, solid);
     }
     // Atlas uploads replace their GPU texture. Refresh every bound material,
     // including cutaway/reveal clones, without rebuilding static geometry.
     let atlas = cache.built_frame.as_ref().unwrap().map_texture.clone();
-    let users: Vec<_> = materials.iter().filter_map(|(id, m)|
-        (m.base.base_color_texture.as_ref() == Some(&atlas)).then_some(id)).collect();
-    for id in users { let _ = materials.get_mut(id); }
-    Ok(())
+    let users: Vec<_> = materials
+        .iter()
+        .filter_map(|(id, m)| (m.base.base_color_texture.as_ref() == Some(&atlas)).then_some(id))
+        .collect();
+    for id in users {
+        let _ = materials.get_mut(id);
+    }
 }
 
 #[cfg(test)]

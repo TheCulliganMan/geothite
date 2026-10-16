@@ -4252,3 +4252,113 @@ The catalogue-wide elapsed-idle/source-attack timing regression also passed.
 This closes the added battle-hover/contact defect only. Lapras's broader
 shape and detailed face/flipper refinement, legacy world props and browser
 visual acceptance remain open. No grass-height or shiny changes were made.
+
+
+## Lapras fitted face refinement (2026-10-15)
+
+The round staring eyes were replaced with rising almond outlines, smaller
+upright pupils and fitted highlights. Brows now follow that gaze. Two small
+nostril solids and a shallow curved mouth crease complete the muzzle. The
+crease follows the actual stored head triangles; it does not span the face
+as a floating straight chord. Its back is shallowly embedded while the front
+stays visible. The almond caps needed conforming subdivision to avoid cutting
+through the strongly curved outer eye corners; the first coarse candidate
+failed an independent stored-triangle clearance check and was replaced.
+
+All gaze, brow, nostril and mouth geometry follows the existing head joint.
+The other 34 source parts preserve every position, normal, triangle, color and
+skin influence exactly. Their geometry SHA-256 is
+`04b4c4324b15652e0a1c9d26b0299374318a80bbf1e02330e50d0cfd77070cba`.
+A before/after binary audit also proves identical hierarchy and all animation
+key times and rotation values. The seated battle contact correction remains.
+Height is still 1.50 authoring units and pack size remains 2.4892 metres.
+
+The canonical GLB now has 45 parts, 19,471 vertices, 23,332 triangles, nine
+joints, 253 accessors and 843,872 bytes. Its neutral/source pin is
+`e783b1adb22c94e3a0914dde725c5eef44c4197fc93e4736edc49e24e455548e`.
+All allocation limits stay unchanged. The common Blender builder previously
+silently omitted Lapras; its dedicated registration and canonical export path
+now regenerate the byte-identical GLB through the real builder.
+
+Nine stored-model Python checks and four focused Rust checks passed, including
+closed outward solids, smooth normals, eye/pupil/highlight attachment at
+triangle centers and edge midpoints, visible fitted mouth clearance, retained
+source geometry, rigid head ownership, animation winding/strain, seated belly,
+contact shading and GPU activation at pack size. The complete exact-species
+grounding/volume regression passed. Fixed-camera before/after front and oblique
+face views, plus idle, attack and recoil views, were inspected. Shiny checks
+remain skipped as requested.
+
+
+The rebuilt production Route 29 pair `lapras-face-final-3d.png` /
+`lapras-face-final-2d.png` was inspected at core frame 2312, checksum
+1402440659, LCD animation frame 2990 and virtual time 54.018008459.
+The receipt confirms `state_preserved=true`; terrain admission is
+`accepted=true`. Against Sentret, the narrow white eye, fitted pupil, small
+nostril and curved mouth crease remain visible, while the shell, flippers,
+blue/tan palette and seated belly stay readable. The original terrain is
+retained and no shader errors were reported. Native acceptance here covers
+this face refinement and retained contact, not complete model or browser
+fidelity. Broader flipper/shell refinement and legacy world props remain open.
+
+
+## Canonical phoenix skin (2026-10-15)
+
+The canonical source is now `models/battle_species/ho_oh.glb`, authored by
+`tools/ho_oh_sculpt.py` and `tools/ho_oh_glb.py`. The obsolete static JSON was
+removed. All 207 source parts remain recoverable in order from 38 runtime
+primitives. Same-carrier red flight vanes, ivory bands, green tips and warm
+coverts pack into separate coherent banks. Gold tail vanes and their pale
+terminals, crest petals, fixed digits and talons also pack by carrier/color.
+No third-party geometry is used.
+
+The model has 19,747 vertices and 25,200 triangles, down from 81,715 and
+118,516. Outlines retain their authored curve sampling while interior feather
+subdivision is reduced. Head, crest, mouth, haunch, shin, digit and talon
+sampling is reduced selectively. The ivory belly uses conforming local cap
+refinement at its original thickness: a coarse candidate clipped the breast
+and was rejected. The shared helper was extracted from Lugia without changing
+Lugia's generated GLB bytes. Body, neck, both beaks and both feet preserve all
+six original source parts exactly after float32 conversion: positions,
+normals, triangles and colors. Their retained geometry SHA-256 is
+`ff91b55266642639ceff0b02e907dd38191e49dcc3724b9060c18a9e0dc4d529`.
+
+The ten-joint skin fixes feet, eight gripping digits and all ivory talons on
+the identity floor root. Supported shins and haunches bridge to the yawing
+breast. Neck and gaze articulate independently. Each complete wing bank moves
+with its own shoulder, preserving both painted faces. The lower beak has an
+opening joint, and the entire golden fan has a separate yawing tail carrier.
+Idle, attack and recoil contain rotation keys only and return literally to
+neutral. Authoring height remains 1.45. The verified local pack supplies
+height digits 1206 (12 feet 6 inches), or 3.81 metres, classification RAINBOW.
+
+The source geometry pin is
+`67e4806121613127491e740385e7974e9afdb7b32f52dbe8722674ffa277214b`;
+the packed runtime pin is
+`4e246f222c484ed35240a4bd22ce63b024b482e85b707d9968dbea9da3fac218`.
+The skin uses 179 accessors within unchanged renderer limits. The common
+Blender builder exports the same canonical GLB. Neutral, idle, attack and
+recoil front/rear software views were inspected against the original static
+model. No detached paint or visible loss of the tricolor silhouette was seen.
+
+Thirteen stored anatomy checks, seven decoded-skin checks and three focused
+Rust routing/rig/GPU checks passed. They cover closed solids, normals,
+self-intersections, actual fitted-layer clearance, occupied roots, a real
+open jaw with a filler negative control, coherent carriers, fixed floor
+contacts, tail height, posed winding/strain, neutral endpoints and culling
+bounds. The jaw-volume oracle merges duplicate shared-edge crossings before
+pairing occupied intervals. The wider grounding/volume and source-cue timing
+regressions passed. Shiny verification remains skipped as requested.
+
+
+The final canonical GLB is 800,780 bytes. Blender regeneration is byte-identical
+and the production native executable built successfully. Current full-scale
+walking-encounter staging remains unresolved: Route 29 found 78 supported
+ground candidates but rejected every camera composition; Route 38 found no
+supported complete-body candidates. A wider 1400 by 700 Route 29 viewport
+still rejected the camera. These are actual native rejections, not accepted
+visual captures. No full-size native 3D/2D acceptance is claimed for this skin.
+Source dimensions, animated footprint, terrain admission and grass height were
+kept intact. The previously recorded static-era arena capture is historical evidence
+for the earlier model only. Large-bird native staging and browser acceptance
+remain open.

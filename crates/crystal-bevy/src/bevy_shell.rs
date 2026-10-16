@@ -4692,10 +4692,6 @@ struct RenderedViewport {
     /// must not pay to compose the 84x82 terrain source on every camera step.
     #[cfg(feature = "voxel-view")]
     visual_world_enabled: bool,
-    #[cfg(feature = "voxel-view")]
-    visual_neighbors: Vec<map_neighborhood::RetainedMap>,
-    #[cfg(feature = "voxel-view")]
-    visual_neighborhood_view: Option<(crystal_voxel_view::VoxelCameraControls, f32)>,
     viewport_origin: Option<(i16, i16)>,
     /// The viewport origin shown immediately before a committed walking step.
     /// Retaining it lets the renderer scroll the replacement texture over the
@@ -8839,8 +8835,6 @@ include!("bevy_shell/stats_screen.rs");
 include!("bevy_shell/render_mod.rs");
 #[path = "bevy_shell/terrain_ledges.rs"]
 mod terrain_ledges;
-#[path = "bevy_shell/map_neighborhood.rs"]
-mod map_neighborhood;
 /// Read-only authored ledge metadata shared by native rendering and pack
 /// verification. Collision remains authoritative in the production controller.
 pub fn authored_visual_jump_ledges(width:u16,blocks:&[u16],

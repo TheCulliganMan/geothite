@@ -42,6 +42,7 @@ from smeargle_glb import read_smeargle
 from moltres_glb import read_moltres
 from zapdos_glb import read_zapdos
 from articuno_glb import read_articuno
+from ho_oh_glb import read_ho_oh
 from lugia_glb import read_lugia
 from corsola_glb import read_corsola
 from mantine_glb import read_mantine
@@ -129,6 +130,7 @@ def validate_imported_mesh_reference(path):
         assert len(color) == 4 and all(math.isfinite(v) and 0 <= v <= 1 for v in color), path
 
 weighted_skins = {
+    models / 'battle_species/ho_oh.glb': (read_ho_oh, 207),
     models / 'battle_species/lugia.glb': (read_lugia, 56),
     models / 'battle_species/articuno.glb': (read_articuno, 109),
     models / 'battle_species/zapdos.glb': (read_zapdos, 54),

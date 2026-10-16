@@ -2200,7 +2200,6 @@ fn build_terrain_mesh_internal(
     for row in 0..height {
         for column in 0..width {
             let index = row * width + column;
-            if original_cells[index].source.metatile_id == u16::MAX { continue; }
             if claimed_by_building[index]
                 || claimed_by_tree[index]
                 || claimed_by_casino_stool[index]
