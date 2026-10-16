@@ -4,44 +4,12 @@ import json,os,unittest,math
 from pathlib import Path
 from kingdra_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_slime_sculpt import ray_intersections
+from sculpt_test_support import indexed_ray_intersections as ray_intersections
 from bovine_sculpt import reverse_front
-import test_magnet_sculpt as joins
+from sculpt_test_support import parts_overlap
 ROOT=Path(os.environ.get('KINGDRA_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 
-def crossed_faces(p):
- """Independent spatially culled proper segment/triangle intersection test."""
- def sub(a,b):return tuple(x-y for x,y in zip(a,b))
- def cross(a,b):return (a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0])
- def dot(a,b):return sum(x*y for x,y in zip(a,b))
- def hits(a,b,tri):
-  v,e,f=tri[0],sub(tri[1],tri[0]),sub(tri[2],tri[0]);d=sub(b,a);h=cross(d,f);det=dot(e,h)
-  if abs(det)<1e-12:return False
-  s=sub(a,v);u=dot(s,h)/det
-  if u<1e-8 or u>1-1e-8:return False
-  q=cross(s,e);w=dot(d,q)/det;t=dot(f,q)/det
-  return w>1e-8 and u+w<1-1e-8 and 1e-8<t<1-1e-8
- xyz=[tuple(p['positions'][i:i+3]) for i in range(0,len(p['positions']),3)]
- tris=[tuple(xyz[i] for i in p['indices'][j:j+3]) for j in range(0,len(p['indices']),3)]
- lo=[min(v[k] for v in xyz) for k in range(3)];span=[max(v[k] for v in xyz)-lo[k] for k in range(3)];bins={};bounds=[]
- for j,tri in enumerate(tris):
-  low=[min(v[k] for v in tri) for k in range(3)];high=[max(v[k] for v in tri) for k in range(3)];bounds.append((low,high))
-  ranges=[range(max(0,min(11,math.floor((low[k]-lo[k])/span[k]*12))),min(11,math.floor((high[k]-lo[k])/span[k]*12))+1) for k in range(3)]
-  for x in ranges[0]:
-   for y in ranges[1]:
-    for z in ranges[2]:bins.setdefault((x,y,z),[]).append(j)
- seen=set()
- for ids in bins.values():
-  for i,a in enumerate(ids):
-   for b in ids[i+1:]:
-    key=(a,b)
-    if key in seen:continue
-    seen.add(key);ta,tb=tris[a],tris[b]
-    if set(ta)&set(tb):continue
-    la,ha=bounds[a];lb,hb=bounds[b]
-    if any(ha[k]<lb[k] or hb[k]<la[k] for k in range(3)):continue
-    if any(hits(t[k],t[(k+1)%3],other) for t,other in ((ta,tb),(tb,ta)) for k in range(3)):return a,b
- return None
+from sculpt_test_support import crossed_faces
 
 class KingdraTests(unittest.TestCase):
  @classmethod
@@ -62,7 +30,7 @@ class KingdraTests(unittest.TestCase):
    crown=self.find('Crown /',sign);spine=self.find('Dorsal horn /',sign)
    pairs += [(head,crown),(head,self.find('Cheek /',sign)),(head,self.find('Neck fin /',sign)),(body,self.find('Dorsal fin /',sign)),(body,spine),(spine,self.find('Dorsal fin /',sign)),(spine,self.find('Dorsal fork /',sign))]
    pairs += [(crown,self.find('Crown branch /',str(sign)+' '+str(j))) for j in range(2)]
-  for a,b in pairs:self.assertTrue(joins.MagnetTests.overlap(self,a,b),(a['part'],b['part']))
+  for a,b in pairs:self.assertTrue(parts_overlap(a,b),(a['part'],b['part']))
  def markings(self):
   for p in self.ps:
    name=p['part'];last=name.split()[-1];parent=None

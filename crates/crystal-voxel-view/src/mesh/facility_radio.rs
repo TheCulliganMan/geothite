@@ -3,6 +3,7 @@ use super::*;
 use crate::interior_models::{Model, ModelKind};
 use crate::live_profiles::Document;
 use std::sync::OnceLock;
+use crate::interior_models::RadioFurniturePart;
 #[path = "facility_radio_source.rs"]
 mod source;
 use source::{Identity, Kind};
@@ -90,6 +91,26 @@ fn pixel_uv(g: &GridGeometry, p: &source::Match, x: f32, y: f32) -> [f32; 2] {
         uv.0 + (uv.1 - uv.0) * (x - tx as f32 * 8.) / 8.,
         uv.2 + (uv.3 - uv.2) * (y - ty as f32 * 8.) / 8.,
     ]
+}
+
+fn radio_affine(kind:Kind,part:RadioFurniturePart)->[f32;4] {
+    use RadioFurniturePart::*;
+    let counter=matches!(kind,Kind::ReceptionU|Kind::ReceptionL);
+    let old_top=if counter {12.}else{10.};
+    match part {
+        Rail=>[2./3.,0.,0.5,8.],
+        Return=>[2./3.,0.,1.,0.],
+        Corner=>[2./3.,0.,5./6.,8.],
+        Desk=>[0.8,0.,0.5,8.],
+        Telephone=>[0.65,8.-old_top*0.65,0.5,10.5],
+        Memo=>[0.8,8.-old_top*0.8,0.5,8.],
+        Terminal=>[1.,0.,0.5,12.],
+    }
+}
+
+fn radio_point(kind:Kind,part:RadioFurniturePart,point:[f32;3])->[f32;3] {
+    let [ys,yo,zs,zo]=radio_affine(kind,part);
+    [point[0],point[1]*ys+yo,point[2]*zs+zo]
 }
 /// Only the source readout/memo face stays live, never a copied cabinet skin.
 /// Pixel clipping splits at source-cell boundaries so UVs do not cross tiles.
@@ -187,11 +208,25 @@ pub(super) fn append(
         .append_source_sampled(&mut mesh.textured, bounds, 0., rise * sy, |v| {
             pixel_uv(g, p, v[0] + 0.5, v[1] + 0.5)
         }),
-        Kind::Stool | Kind::RoundStool => crate::interior_models::model(ModelKind::ArcadeStool)
-            .append_fitted(&mut mesh.solid, bounds, 0., rise * sy),
+        Kind::Stool | Kind::RoundStool => {
+            let source_y=if p.kind()==Kind::Stool {16.}else{0.};
+            let top=pixel_uv(g,p,8.5,source_y+5.5);
+            let side=pixel_uv(g,p,3.5,source_y+9.5);
+            crate::interior_models::model(ModelKind::ArcadeStool)
+                .append_native_stool(&mut mesh.textured,bounds,rise*sy,top,side);
+        }
+        kind @ (Kind::PhoneDesk|Kind::MemoDesk|Kind::ReceptionU|Kind::ReceptionL|Kind::CounterExtension) => {
+            let front=if matches!(kind,Kind::ReceptionU|Kind::ReceptionL) {[20.,10.]}else{[3.,10.]};
+            let swatches=[[3.,3.],front,[1.,1.],[0.,0.]].map(|v|pixel_uv(g,p,v[0]+0.5,v[1]+0.5));
+            assert!(model(kind.model_index()).append_native_radio(&mut mesh.textured,bounds,rise*sy,sy,
+                |part|radio_affine(kind,part),swatches),"canonical radio furniture requires its named material parts");
+        }
         kind => model(kind.model_index()).append_fitted(&mut mesh.solid, bounds, 0., rise * sy),
     }
     let point = |x: f32, y: f32, z: f32| [west + x * sx, y * sy, north + z * sy];
+    let native_point=|part,x,y,z| {
+        let v=radio_point(p.kind(),part,[x,y,z]);point(v[0],v[1],v[2])
+    };
     match p.kind() {
         Kind::Workbench => live_panel(
             mesh,
@@ -210,12 +245,12 @@ pub(super) fn append(
             mesh,
             g,
             p,
-            [84., 2., 8., 4.],
+            [83., 5., 10., 5.],
             [
-                point(82.8, 16.2, 20.02),
-                point(93.2, 16.2, 20.02),
-                point(93.2, 13.2, 20.02),
-                point(82.8, 13.2, 20.02),
+                native_point(RadioFurniturePart::Terminal,82.8,16.2,20.02),
+                native_point(RadioFurniturePart::Terminal,93.2,16.2,20.02),
+                native_point(RadioFurniturePart::Terminal,93.2,13.2,20.02),
+                native_point(RadioFurniturePart::Terminal,82.8,13.2,20.02),
             ],
             [0., 0., 1.],
         ),
@@ -231,10 +266,10 @@ pub(super) fn append(
                 p,
                 [source_x, 1., 4., 5.],
                 [
-                    point(x, base + 0.27, 2.3),
-                    point(x + 4.5, base + 0.27, 2.3),
-                    point(x + 4.5, base + 0.27, 7.1),
-                    point(x, base + 0.27, 7.1),
+                    native_point(RadioFurniturePart::Memo,x,base+0.27,2.3),
+                    native_point(RadioFurniturePart::Memo,x+4.5,base+0.27,2.3),
+                    native_point(RadioFurniturePart::Memo,x+4.5,base+0.27,7.1),
+                    native_point(RadioFurniturePart::Memo,x,base+0.27,7.1),
                 ],
                 [0., 1., 0.],
             );

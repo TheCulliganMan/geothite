@@ -4440,6 +4440,53 @@ fn runtime_applies_script_swarm_commands_with_exact_pack_rows() {
 }
 
 #[test]
+fn runtime_walking_encounters_require_a_usable_party_before_battle_commit() {
+    let root = temp_repository_root("walking-encounter-party-eligibility");
+    write_grass_tileset(&root, "johto");
+    write_pcm(&root.join("apps/web/assets/data/content-packs/test/music/MUSIC_ROUTE_29.pcm"));
+    let asset_root = AssetRoot::new(&root);
+    let runtime = CrystalRuntime::from_compiled_pack(
+        &asset_root,
+        CompiledGamePack::new_unchecked_for_tests(
+            minimal_runtime_data_with_grass_encounter(), report()),
+        identity(),
+    ).unwrap();
+    for party in ["empty", "fainted", "starter"] {
+        let mut session = runtime.start_overworld_session(&asset_root, 0).unwrap();
+        if party != "empty" {
+            add_runtime_party_pokemon(&runtime, &mut session);
+            if party == "fainted" {
+                session.state.storage.party.pokemon[0].as_mut().unwrap().hp = 0;
+                session.state.sync_party_from_storage();
+            }
+        }
+        session.divider = crystal_core::random::RuntimeDividerSource::replay(vec![0; 4096]);
+        let mut moved = false;
+        let mut battle_started = false;
+        for _ in 0..16 {
+            let before = session.overworld.player.tile;
+            let direction = if before.x == 0 {GameButton::Right} else {GameButton::Left};
+            let frame = session.apply_buttons(&runtime, &asset_root, [direction]).unwrap();
+            moved |= frame.snapshot.tile != before;
+            if party == "starter" && frame.wild_battle.is_some() {
+                assert!(frame.wild_encounter.is_some());
+                assert!(RuntimeBattleSnapshot::from_state(&session.state).unwrap().is_some());
+                assert_eq!(session.state.battle_active_party_index, Some(0));
+                battle_started = true;
+                break;
+            }
+            assert!(frame.wild_encounter.is_none(), "{party}");
+            assert!(frame.wild_battle.is_none(), "{party}");
+            assert!(RuntimeBattleSnapshot::from_state(&session.state).unwrap().is_none());
+            assert_eq!(session.state.battle_active_party_index, None);
+        }
+        assert!(moved, "{party}: eligibility must not block ordinary walking");
+        assert_eq!(battle_started, party == "starter");
+    }
+    let _ = std::fs::remove_dir_all(root);
+}
+
+#[test]
 fn runtime_overworld_checks_wild_encounters_after_successful_grass_step() {
     let root = temp_repository_root("overworld-encounter");
     write_grass_tileset(&root, "johto");

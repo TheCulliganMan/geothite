@@ -243,7 +243,17 @@ fn radio_round_stool_is_complete_source_contained_and_keeps_native_footing() {
         let mut cached = SurfaceMeshData::default();
         crate::interior_models::model(ModelKind::ArcadeStool)
             .append_fitted(&mut cached, [w + 2., w + 14., n, n + 12.], 0., 7.);
-        assert_eq!(mesh.solid, cached);
+        assert!(mesh.solid.indices.is_empty());
+        let first=out[0].indices(g.width).count()*4;
+        assert_eq!(mesh.textured.positions[first..],cached.positions);
+        assert_eq!(mesh.textured.normals[first..],cached.normals);
+        assert_eq!(mesh.textured.indices[out[0].indices(g.width).count()*6..].iter()
+            .map(|i|i-first as u32).collect::<Vec<_>>(),cached.indices);
+        let top=pixel_uv(&g,&out[0].resolved,8.5,5.5);
+        let side=pixel_uv(&g,&out[0].resolved,3.5,9.5);
+        for (n,uv) in mesh.textured.normals[first..].iter().zip(&mesh.textured.uvs[first..]) {
+            assert_eq!(*uv,if n[1]>0.5 {top}else{side});
+        }
         for y in 0..2 { for x in 0..2 {
             let i = (2 + y) * g.width + 2 + x;
             cells[i].source.tile_index ^= 1;
@@ -286,4 +296,148 @@ fn kanto_basement_instrument_lid_is_horizontal_and_controls_fill_the_front() {
     for i in p.indices(g.width) {let mut changed=tiles.clone();changed[i].source.tile_index^=128;
         assert!(!resolve("TrainerHouseB1F",&changed.iter().collect::<Vec<_>>(),&g,[0,0],None,&[false;16])
             .iter().any(|p|p.resolved.kind()==Kind::InstrumentBank));}
+}
+
+#[test]
+fn radio_native_materials_reject_renamed_missing_and_unknown_parts_without_appending() {
+    let original:serde_json::Value=crate::model_storage::parse(
+        crate::model_storage::include_model!("models/facility_radio/radio_phone_desk.mesh.json")).unwrap();
+    for mode in 0..3 {
+        let mut changed=original.clone();
+        match mode {
+            0=>changed["name"]="Custom desk".into(),
+            1=>changed["primitives"][0]["name"]="Unclassified new material part".into(),
+            _=>changed["primitives"].as_array_mut().unwrap().retain(|p|
+                !p["name"].as_str().unwrap().starts_with("Telephone ")),
+        }
+        let text=changed.to_string();let model=crate::interior_models::Model::parse(text.as_str()).unwrap();
+        let mut mesh=SurfaceMeshData::default();let before=mesh.clone();
+        assert!(!model.append_native_radio(&mut mesh,[0.,32.,0.,16.],14.1,1.,
+            |part|radio_affine(Kind::PhoneDesk,part),[[0.1;2];4]));
+        assert_eq!(mesh,before);
+    }
+}
+
+fn radio_top_covers(mesh:&SurfaceMeshData,point:[f32;2])->bool {
+    mesh.indices.chunks_exact(3).any(|tri| {
+        let p=[0,1,2].map(|j|mesh.positions[tri[j]as usize]);
+        if mesh.normals[tri[0]as usize][1]<0.99||p.iter().any(|v|(v[1]-8.).abs()>0.001){return false;}
+        let edge=|a:[f32;3],b:[f32;3]|(b[0]-a[0])*(point[1]-a[2])-(b[2]-a[2])*(point[0]-a[0]);
+        let sides=[edge(p[0],p[1]),edge(p[1],p[2]),edge(p[2],p[0])];
+        sides.iter().all(|s|*s>=-0.001)||sides.iter().all(|s|*s<=0.001)
+    })
+}
+
+#[test]
+fn external_radio_native_counters_and_desks_keep_eight_pixel_tops_source_palette_and_staff_space() {
+    let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+    let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+    assert!(explicit.is_none()||path.is_file());if !path.is_file(){return;}
+    let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();let pack=loaded.pack();
+    let art=&pack.runtime_files()["data/tilesets/radio_tower_metatiles.bin"];
+    let png=image::load_from_memory(&pack.runtime_files()["gfx/tilesets/radio_tower.png"]).unwrap().to_luma8();
+    let mut counts=[0usize;5];let mut stool_counts=[0usize;2];
+    for map in ["RadioTower1F","RadioTower3F","RadioTower4F","RadioTower5F","LavRadioTower1F"] {
+        let data=&pack.data().maps[map];let (w,h)=(data.attributes.width as usize*4,data.attributes.height as usize*4);
+        let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let tiles=(0..w*h).map(|i| {
+            let (x,y)=(i%w,i/w);let b=data.blocks[y/4*(w/4)+x/4];
+            VisualTile{column:x as u32,row:y as u32,texture:Default::default(),priority:false,animation_frames:None,
+                source:VisualTileSource{tileset_id:"radio_tower".into(),metatile_id:b,subtile_column:(x%4)as u8,
+                    subtile_row:(y%4)as u8,tile_index:art[b as usize*16+y%4*4+x%4]as u16}}
+        }).collect::<Vec<_>>();
+        let refs=tiles.iter().collect::<Vec<_>>();let empty=vec![false;w*h];
+        for p in resolve(map,&refs,&g,[0,0],None,&empty) {
+            let kind=p.resolved.kind();
+            if matches!(kind,Kind::Stool|Kind::RoundStool) {
+                stool_counts[usize::from(kind==Kind::RoundStool)]+=1;
+                let mut mesh=TerrainMeshData{footing_heights:vec![2.5;w*h],..Default::default()};
+                let mut claimed=empty.clone();assert!(append(&mut mesh,&refs,&g,&p,&mut claimed));
+                assert!(mesh.solid.indices.is_empty());assert_eq!(mesh.footing_heights,vec![2.5;w*h]);
+                let y=if kind==Kind::Stool {16}else{0};
+                for (pixel,gray) in [([8,y+5],170),([3,y+9],85)] {
+                    let s=&tiles[(p.resolved.row+pixel[1]/8)*w+p.resolved.column+pixel[0]/8].source;
+                    assert_eq!(png.get_pixel(s.tile_index as u32%16*8+(pixel[0]%8)as u32,
+                        s.tile_index as u32/16*8+(pixel[1]%8)as u32).0[0],gray);
+                }
+                continue;
+            }
+            let index=match kind {
+                Kind::PhoneDesk=>0,Kind::MemoDesk=>1,Kind::ReceptionU=>2,Kind::ReceptionL=>3,
+                Kind::CounterExtension=>4,_=>continue,
+            };counts[index]+=1;
+            let mut claimed=empty.clone();let mut mesh=TerrainMeshData{footing_heights:vec![2.5;w*h],
+                authored_cells:vec![None;w*h],..Default::default()};
+            assert!(append(&mut mesh,&refs,&g,&p,&mut claimed));
+            assert!(mesh.solid.indices.is_empty(),"native furniture cannot keep cream/teal paint");
+            assert_eq!(mesh.footing_heights,vec![2.5;w*h]);
+            assert_eq!(claimed.iter().filter(|v|**v).count(),p.indices(w).count());
+            assert_eq!(mesh.authored_cells.iter().filter(|v|v.is_some()).count(),p.indices(w).count());
+            let (west,_,north,_)=g.bounds(p.resolved.column,p.resolved.row);
+            let start=p.indices(w).count()*4;
+            let front=if matches!(kind,Kind::ReceptionU|Kind::ReceptionL) {[20usize,10]}else{[3,10]};
+            let probes=[[3,3],front,[1,1],[0,0]];
+            for (pixel,gray) in probes.into_iter().zip([170,85,255,0]) {
+                let s=&tiles[(p.resolved.row+pixel[1]/8)*w+p.resolved.column+pixel[0]/8].source;
+                assert_eq!(png.get_pixel(s.tile_index as u32%16*8+(pixel[0]%8)as u32,
+                    s.tile_index as u32/16*8+(pixel[1]%8)as u32).0[0],gray,
+                    "native gray/white/ink roles require their actual source pixels");
+                let uv=pixel_uv(&g,&p.resolved,pixel[0]as f32+0.5,pixel[1]as f32+0.5);
+                assert!(mesh.textured.uvs[start..].contains(&uv));
+            }
+            assert!(mesh.textured.positions[start..].iter().all(|v|v[1]>=0.&&v[1]<=if kind==Kind::ReceptionU {18.001}else{11.001}));
+            let mut broad_top=false;
+            for tri in mesh.textured.indices.chunks_exact(3).filter(|tri|tri.iter().all(|i|*i as usize>=start)) {
+                let a=Vec3::from_array(mesh.textured.positions[tri[0]as usize]);
+                let b=Vec3::from_array(mesh.textured.positions[tri[1]as usize]);
+                let c=Vec3::from_array(mesh.textured.positions[tri[2]as usize]);
+                let cross=(b-a).cross(c-a);let n=Vec3::from_array(mesh.textured.normals[tri[0]as usize]);
+                assert!(cross.dot(n)>0.);
+                if n.y>0.99&&cross.length()*0.5>12. {
+                    let terminal=kind==Kind::ReceptionU&&[a,b,c].iter().all(|v|
+                        (80.-0.001..=96.001).contains(&(v.x-west))&&(18.-0.001..=24.001).contains(&(v.z-north)));
+                    assert!(a.y<=8.001||terminal,"projected front height cannot become extra counter height");
+                    broad_top|=(a.y-8.).abs()<0.001;
+                }
+            }
+            assert!(broad_top,"{map} must contain a real eight-pixel worktop");
+            if matches!(kind,Kind::ReceptionU|Kind::ReceptionL) {
+                for z in [12.,18.,24.,32.,40.,47.] {
+                    assert!(radio_top_covers(&mesh.textured,[west+8.,north+z]),"west corner/worktop must join");
+                    if kind==Kind::ReceptionU {
+                        assert!(radio_top_covers(&mesh.textured,[west+152.,north+z]),"east corner/worktop must join");
+                    }
+                }
+                if kind==Kind::ReceptionU {
+                    for (pixel,gray) in [([83usize,5usize],0),([84,6],85),([84,8],85)] {
+                        let src=&refs[(p.resolved.row+pixel[1]/8)*w+p.resolved.column+pixel[0]/8].source;
+                        assert_eq!(png.get_pixel(src.tile_index as u32%16*8+(pixel[0]%8)as u32,
+                            src.tile_index as u32/16*8+(pixel[1]%8)as u32).0[0],gray,"actual LCD rows, not white cap");
+                    }
+                    for pixel in [[83.,5.],[93.,10.],[88.,8.]] {
+                        assert!(mesh.textured.uvs.contains(&pixel_uv(&g,&p.resolved,pixel[0],pixel[1])),"LCD art crosses both source rows");
+                    }
+                    let mut old_gap=SurfaceMeshData::default();
+                    assert!(model(3).append_native_radio(&mut old_gap,[0.,160.,0.,48.],18.,1.,|part|
+                        if part==RadioFurniturePart::Return {[2./3.,0.,5./6.,8.]}
+                        else {radio_affine(kind,part)},[[0.1;2];4]));
+                    assert!(!radio_top_covers(&old_gap,[8.,18.]),"coverage check must detect a separated return");
+                }
+            }
+            for v in &mesh.textured.positions[start..] {
+                let (x,z)=(v[0]-west,v[2]-north);
+                assert!(z>=7.999&&z<=if matches!(kind,Kind::ReceptionU|Kind::ReceptionL) {48.001}else{16.001});
+                if kind==Kind::ReceptionL {assert!(x<=16.001||z<=16.001);}
+                if kind==Kind::ReceptionU {assert!(x<=16.001||x>=143.999||z<=16.001
+                    ||((79.999..=96.001).contains(&x)&&z<=24.001));}
+            }
+            assert!(mesh.textured.normals.iter().all(|n|(Vec3::from_array(*n).length()-1.).abs()<0.001));
+            for warp in &data.events.warps {for dy in 0..2 {for dx in 0..2 {
+                assert!(!claimed[(warp.y as usize*2+dy)*w+warp.x as usize*2+dx]);
+            }}}
+        }
+    }
+    assert_eq!(counts,[6,3,1,1,1],"every actual source desk/reception variant must be exercised");
+    assert_eq!(stool_counts,[3,6],"both guarded operator stool families retain native gray paint");
 }

@@ -1,21 +1,26 @@
 #!/usr/bin/env python3
 """Stored dragonfly wing coatings, six forked feet and continuous abdomen checks."""
-import json,unittest
+import json,math,unittest
 from pathlib import Path
 from yanma_sculpt import sculpture,HEIGHT
+from yanma_glb import read_yanma,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 def vertical(p,lower=False):
- q=dict(p);v=p['positions'];q['positions']=[a for i in range(0,len(v),3) for a in (v[i],-v[i+2],-v[i+1] if lower else v[i+1])];return q
+ # Project along the actual wing normal, undoing its rigid resting dihedral.
+ # World-vertical rays can miss the sail near the raised panel's boundary.
+ tokens=p['part'].split();sign,rear=map(int,tokens[-3:-1] if p['part'].startswith('Wing vein /') else tokens[-2:])
+ angle=-sign*math.radians(18 if rear else 12);c=math.cos(angle);s=math.sin(angle)
+ q=dict(p);v=p['positions'];q['positions']=[a for i in range(0,len(v),3) for a in (v[i]*c-v[i+1]*s,-v[i+2],(-1 if lower else 1)*(v[i]*s+v[i+1]*c))];return q
 class YanmaTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'yanma.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_yanma(ROOT/'yanma.glb');cls.ps=cls.m['primitives']
  def find(self,prefix):return next(p for p in self.ps if p['part'].startswith(prefix))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'yanma':self.m})
  def test_finite_unit_normals_follow_winding(self):assert_model_shading(self,{'yanma':self.m})
  def test_recipe_parity_height_budget_and_dragonfly_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
   self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for prefix,n in (('Head /',2),('Wing /',4),('Wing band /',8),('Wing vein /',12),('Leg /',6),('Foot /',12),('Abdomen collar /',3),('Tail fin /',2),('Tail tip /',2)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n)

@@ -11,6 +11,14 @@ pub fn actor_foot(actor: &VisualActor) -> Vec2 {
     actor.center - Vec2::new(0.0, actor.size.y * 0.5)
 }
 
+/// Ground-rooted 3D characters stand in the center of their gameplay tile.
+/// The source sprite's bottom is on its south edge, one 8px render cell away.
+/// Use the map scale rather than sprite height: followers and large icons can
+/// have different image sizes while occupying the same gameplay tile.
+pub(crate) fn actor_ground_point(frame: &VisualWorldFrame, actor: &VisualActor) -> Vec2 {
+    actor_foot(actor) + Vec2::Y * frame.tile_size.y
+}
+
 pub fn tile_at_visual_point(frame: &VisualWorldFrame, point: Vec2) -> Option<UVec2> {
     if !point.is_finite() || !frame.center.is_finite() || !frame.viewport_size.is_finite() {
         return None;
@@ -81,7 +89,8 @@ pub fn resolved_footing_height(
     let resolved = resolved_heights.get(index).copied()?;
     Some(resolved + crate::mesh::terrace_support_correction(frame,coordinate,foot)
         + crate::mesh::league_stair_support_correction(frame,coordinate,foot,resolved_heights)
-        + crate::mesh::hall_stair_support_correction(frame,coordinate,foot,resolved_heights))
+        + crate::mesh::hall_stair_support_correction(frame,coordinate,foot,resolved_heights)
+        + crate::mesh::radio_stair_support_correction(frame,coordinate,foot,resolved_heights))
 }
 
 /// Lift only an accepted uphill step or authored ledge jump. Sampling both
@@ -92,7 +101,7 @@ pub(crate) fn traversal_height(
     heights: &[f32],
     traversal: Option<&crystal_render_api::VisualPlayerTraversal>,
 ) -> Option<(f32, f32)> {
-    let ground = resolved_footing_height(frame, actor_foot(actor), heights)?;
+    let ground = resolved_footing_height(frame, actor_ground_point(frame, actor), heights)?;
     let Some(traversal) = traversal.filter(|t| t.map_id == frame.map_id) else {
         return Some((ground, 0.0));
     };
@@ -100,13 +109,16 @@ pub(crate) fn traversal_height(
         && !actor.source_id.ends_with("_bike") && !actor.source_id.starts_with("surf")) else {
         return Some((ground, 0.0));
     };
-    if tile_at_visual_point(frame, step.from + Vec2::Y * FOOTING_SAMPLE_EPSILON).is_none()
-        || tile_at_visual_point(frame, step.to + Vec2::Y * FOOTING_SAMPLE_EPSILON).is_none()
+    let offset = Vec2::Y * frame.tile_size.y;
+    let from_point = step.from + offset;
+    let to_point = step.to + offset;
+    if tile_at_visual_point(frame, from_point + Vec2::Y * FOOTING_SAMPLE_EPSILON).is_none()
+        || tile_at_visual_point(frame, to_point + Vec2::Y * FOOTING_SAMPLE_EPSILON).is_none()
     {
         return Some((ground, 0.0));
     }
-    let from = resolved_footing_height(frame, step.from, heights)?;
-    let to = resolved_footing_height(frame, step.to, heights)?;
+    let from = resolved_footing_height(frame, from_point, heights)?;
+    let to = resolved_footing_height(frame, to_point, heights)?;
     let rise = to - from;
     // Stairs and shallow ramps keep their ordinary gait.
     if !step.ledge_jump && rise < frame.tile_size.y * 0.4 {
@@ -147,6 +159,7 @@ mod tests {
             map_id: Arc::from("NewBarkTown"),
             source_map_size_core_tiles: None,
             jump_ledges: Default::default(),
+            boundary_warps: Default::default(),
             terrain_revision: 1,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
@@ -221,8 +234,8 @@ mod tests {
     fn uphill_hop_clears_the_terrace_and_lands_on_its_exact_height() {
         use crystal_render_api::{VisualPlayerTraversal, VisualTraversalStep};
         let frame = frame();
-        let from = Vec2::new(-20.0, 16.0);
-        let to = Vec2::new(-12.0, 16.0);
+        let from = Vec2::new(-20.0, 8.0);
+        let to = Vec2::new(-12.0, 8.0);
         let mut actor = VisualActor {
             id: VisualActorId::Player, source_id: "player".into(), model_palette: None,
             texture: Handle::default(), center: from + Vec2::Y * 8.0,
@@ -267,6 +280,41 @@ mod tests {
             facing: None,
         };
         assert_eq!(actor_foot(&actor), Vec2::new(10.0, 12.0));
+    }
+
+    #[test]
+    fn modeled_ground_point_centers_edge_tiles_at_every_map_scale() {
+        for scale in [1., 4.] {
+            let mut frame = frame();
+            frame.center = Vec2::new(-37., 29.);
+            frame.tile_size = Vec2::splat(8. * scale);
+            frame.grid_size = UVec2::new(12, 8);
+            frame.viewport_size = frame.grid_size.as_vec2() * frame.tile_size;
+            frame.source_map_size_core_tiles = Some(UVec2::new(6, 4));
+            let west = frame.center.x - frame.viewport_size.x * 0.5;
+            let north = frame.center.y + frame.viewport_size.y * 0.5;
+            for (x, y) in [(0, 0), (5, 0), (0, 3), (5, 3)] {
+                let expected = Vec2::new(west + (x as f32 * 2. + 1.) * frame.tile_size.x,
+                    north - (y as f32 * 2. + 1.) * frame.tile_size.y);
+                for height in [16., 32.] {
+                    let mut actor = VisualActor {
+                        id: VisualActorId::Player, source_id: "chris".into(), model_palette: None,
+                        texture: Handle::default(), center: expected + Vec2::Y * (height * scale * 0.5 - frame.tile_size.y),
+                        size: Vec2::new(16., height) * scale, flip_x: false,
+                        above_priority: false, facing: Some(Vec2::NEG_Y),
+                    };
+                    let source = actor.clone();
+                    for facing in [Vec2::X, Vec2::Y, Vec2::NEG_X, Vec2::NEG_Y] {
+                        actor.facing = Some(facing);
+                        assert_eq!(actor_ground_point(&frame, &actor), expected);
+                        assert_eq!(tile_at_visual_point(&frame, actor_ground_point(&frame, &actor)),
+                            Some(UVec2::new(x * 2 + 1, y * 2 + 1)));
+                    }
+                    actor.facing = source.facing;
+                    assert_eq!(actor, source, "centering never changes the source sprite");
+                }
+            }
+        }
     }
 
     #[test]

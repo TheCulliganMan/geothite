@@ -20,11 +20,11 @@ def upper_skin(mesh):
         for v in (mesh['positions'][i],mesh['positions'][i+2],mesh['positions'][i+1])]
     return surface(m)
 
-def dorsal_patch(name,color,outline,skin):
+def dorsal_patch(name,color,outline,skin,*,patch=fitted_patch):
     dense=[]
     for a,b in zip(outline,outline[1:]+outline[:1]):
         dense.extend((a[0]+(b[0]-a[0])*i/5,a[1]+(b[1]-a[1])*i/5) for i in range(5))
-    p=fitted_patch(name,color,dense,skin,.007)
+    p=patch(name,color,dense,skin,.007)
     p['positions']=[v for i in range(0,len(p['positions']),3)
         for v in (p['positions'][i],p['positions'][i+2],p['positions'][i+1])]
     # Swapping axes is a reflection: keep winding and normals consistent.

@@ -2,7 +2,7 @@
 """Original Miltank milk-cow and Tauros three-tailed bull sculptures."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,crease_normals,translate
+from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch as _fitted_patch,crease_normals,translate
 from abra_sculpt import surface
 from wing_insect_sculpt import membrane
 from skin_glb import COORDINATES
@@ -12,6 +12,15 @@ GOLD=(.73,.54,.33);MANE=(.43,.41,.40);HORN=(.63,.68,.76);HOOF=(.29,.34,.43)
 BROWN=(.39,.30,.25);BLUE=(.26,.52,.70);INK=(.07,.10,.13);TONGUE=(.75,.43,.46)
 
 def oval(x,y,w,h,n=20):return [(x+w*math.cos(k*math.tau/n),y+h*math.sin(k*math.tau/n)) for k in range(n)]
+
+def fitted_patch(name,color,outline,skin,thickness=.008):
+    # Preserve the original centroid and signed zeros in newer Blender Python.
+    outline=list(outline);area=0.
+    for a,b in zip(outline,outline[1:]+outline[:1]):area+=a[0]*b[1]-b[0]*a[1]
+    if area<0:outline.reverse()
+    cx=cy=0.
+    for x,y in outline:cx+=x;cy+=y
+    return _fitted_patch(name,color,outline,skin,thickness,center=(cx/len(outline),cy/len(outline)))
 
 def smooth(points,radii,steps=4):
     p=[];r=[]
@@ -127,13 +136,22 @@ def tauros():
         p.append(membrane('Tail / pointed blue-gray tuft '+str(j),HOOF,outline,1,root_z=root,thickness=.015))
     return p
 
-def sculpture(species):
+def sculpture(species,normalize=True):
     if species not in SPECIES:raise ValueError('unsupported bovine')
     p=miltank() if species=='miltank' else tauros()
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[species]/(high-low)
+    from sculpt_geometry import linear
     for q in p:
-        q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
-        q['normals']=[round(v,7) for v in q['normals']]
+        name=q['part']
+        if species=='miltank':
+            rgb=(0,0,0) if name.startswith(('Eye / fitted dark','Eye / dark','Mouth / fitted cheerful','Hand / fitted','Foot / fitted','Ear / pale')) else (49,49,107) if name.startswith(('Head /','Nose /','Spot /','Hand / dark','Foot / grounded','Eye / fitted blue','Ear / broad','Tail / rounded')) else (255,255,255) if name.startswith(('Udder /','Horn /','Eye / fitted ivory','Eye / white')) else (222,123,148)
+        else:
+            rgb=(0,0,0) if name.startswith(('Eye / fitted dark','Eye / dark','Nostril /','Rivet / dark','Hoof groove /','Mane crease /')) else (255,255,255) if name.startswith(('Horn /','Rivet / gray','Eye / fitted ivory')) else (82,57,33) if name.startswith(('Mane /','Nose /','Hoof /','Tail / pointed')) else (206,123,41)
+        q['base_color']=linear(tuple(v/255 for v in rgb))
+    if normalize:
+        for q in p:
+            q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
+            q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

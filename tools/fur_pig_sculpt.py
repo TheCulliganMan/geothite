@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Original low striped Swinub and tall shaggy Piloswine anatomy."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
-from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,translate,fitted_patch,crease_normals
+from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,translate,crease_normals
+from bovine_sculpt import fitted_patch
 from abra_sculpt import surface
 from spider_sculpt import dorsal_patch,upper_skin
 from skin_glb import COORDINATES
@@ -27,7 +30,8 @@ def mantle():
             a=j*n+i;b=j*n+(i+1)%n;f.append((a,b,b+n,a+n))
     return crease_normals(part('Body / continuous shaggy humped mantle',LONG_FUR,v,f),40.)
 
-def sculpture(species):
+@lru_cache(maxsize=2)
+def raw_sculpture(species):
     if species not in SPECIES:raise ValueError('unsupported fur pig')
     big=species=='piloswine';color=LONG_FUR if big else FUR
     body=mantle() if big else loft('Body / continuous low elongated fur loaf',FUR,
@@ -60,12 +64,17 @@ def sculpture(species):
         top=upper_skin(body)
         for i,(z,w) in enumerate(((-.02,.27),(-.17,.25),(-.30,.20),(-.40,.12))):
             outline=[(-w,z-.02),(w,z-.02),(w*.78,z+.028),(0,z+.070),(-w*.78,z+.028)]
-            p.append(dorsal_patch('Stripe / tapered fitted dorsal wedge '+str(i),STRIPE,outline,top))
+            p.append(dorsal_patch('Stripe / tapered fitted dorsal wedge '+str(i),STRIPE,outline,top,patch=fitted_patch))
         for side in (-1,1):
             points=[(side*x,yy,skin(yy,side*x)+.002) for x,yy in ((.09,.262),(.135,.255),(.177,.268))]
             p.append(tube('Eye / fitted sleepy arc '+str(side),INK,points,[.0028,.0032,.0024],10))
         for i,x in enumerate((-.095,-.04,.035,.09)):
             p.append(tube('Fur fringe / tapered rear wisp '+str(i),FUR,[(x,.143,-.416),(x*1.12,.117,-.486),(x*1.22,.101,-.533)],[.021,.012,.001],10))
+    return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+def sculpture(species,normalize=True):
+    model=deepcopy(raw_sculpture(species))
+    if not normalize:return model
+    p=model['primitives']
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0.))*scale,7) for i,v in enumerate(q['positions'])]
@@ -73,7 +82,7 @@ def sculpture(species):
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
+    from fur_pig_glb import export_fur_pig
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    for s in SPECIES:(args.output/(s+'.mesh.json')).write_text(json.dumps(sculpture(s),separators=(',',':')))
-
+    for s in SPECIES:(args.output/(s+'.glb')).write_bytes(export_fur_pig(s))
 if __name__=='__main__':main()

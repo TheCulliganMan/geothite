@@ -8,12 +8,12 @@ from bovine_sculpt import oval,curved_tube
 from wing_insect_sculpt import contour
 from skin_glb import COORDINATES
 HEIGHT=.95
-GREEN=(.61,.77,.43);LEAF=(.30,.57,.37);GOLD=(.97,.83,.38);UNDER=(.23,.43,.33)
-CORAL=(.94,.37,.25);ORANGE=(.99,.48,.30);CENTER=(.99,.85,.40);OLIVE=(.40,.38,.17)
-INK=(.07,.11,.13);WHITE=(.98,.98,.91);PINK=(.92,.63,.67);CHEEK=(.89,.45,.26)
+GREEN=(49/255,140/255,66/255);LEAF=(222/255,66/255,49/255);GOLD=(1.,1.,1.);UNDER=tuple(v*.65 for v in LEAF)
+CORAL=LEAF;ORANGE=LEAF;CENTER=GREEN;WELL=GREEN
+INK=(0.,0.,0.);WHITE=(1.,1.,1.);PINK=WHITE;CHEEK=GREEN
 
 def skirt_leaf(name,color,angle,root_y,length,reach,width):
-    n=20;rows=25;v=[];c=math.cos(angle);s=math.sin(angle)
+    n=16;rows=21;v=[];c=math.cos(angle);s=math.sin(angle)
     for k in range(rows):
         t=k/(rows-1);r=.052+reach*t**.82;y=root_y-length*t+.025*math.sin(math.pi*t)
         w=.004+width*math.sin(math.pi*t)**.85;d=.003+.014*math.sin(math.pi*t)
@@ -33,16 +33,16 @@ def flower_center(sign):
     f=[tuple(reversed(range(n))),tuple(4*n+j for j in range(n))]
     for k in range(4):
         for j in range(n):a=k*n+j;b=k*n+(j+1)%n;f.append((a,b,b+n,a+n))
-    return crease_normals(part('Flower center / recessed golden crown cup '+str(sign),CENTER,v,f,True),40.)
+    return crease_normals(part('Flower center / recessed green crown cup '+str(sign),CENTER,v,f,True),40.)
 
-def sculpture():
+def sculpture(normalize=True):
     body=loft('Body / small continuous dancing green torso',GREEN,curved_profiles(((.160,.043,.042,0),(.239,.143,.112,0),(.350,.154,.121,0),(.438,.096,.087,.001),(.537,.061,.066,0),(.602,.077,.075,0)),4),36)
-    head=ellipsoid('Head / broad pale green rounded dancer face',GREEN,(0,.661,.008),(.228,.190,.156),48,28);p=[body,head];hs=surface(head)
+    head=ellipsoid('Head / broad green rounded dancer face',GREEN,(0,.661,.008),(.228,.190,.156),48,28);p=[body,head];hs=surface(head)
     for j in range(5):
         a=j*math.tau/5
         p.append(skirt_leaf('Skirt / dark rear underskirt leaf '+str(j),UNDER,a+.18,.338,.323,.300,.115))
-        p.append(skirt_leaf('Skirt / curved golden inner leaf '+str(j),GOLD,a+math.pi/5,.368,.322,.370,.138))
-        p.append(skirt_leaf('Skirt / broad green outer leaf '+str(j),LEAF,a,.395,.350,.410,.175))
+        p.append(skirt_leaf('Skirt / curved white inner leaf '+str(j),GOLD,a+math.pi/5,.368,.322,.370,.138))
+        p.append(skirt_leaf('Skirt / broad red outer leaf '+str(j),LEAF,a,.395,.350,.410,.175))
     # Short rounded leaf-like arms, one raised and one crossing the torso.
     p.append(curved_tube('Arm / raised right dancing leaf',GREEN,[(.081,.480,.005),(.179,.482,.024),(.281,.516,.060),(.337,.550,.074)],[.060,.065,.053,.007],24))
     p.append(curved_tube('Arm / curved left leaf across chest',GREEN,[(-.084,.482,.014),(-.180,.452,.082),(-.152,.415,.164),(-.059,.414,.184),(.023,.437,.184)],[.055,.060,.059,.049,.006],24))
@@ -50,11 +50,11 @@ def sculpture():
         x=sign*.089;eye=fitted_patch('Eye / glossy dark oval '+str(sign),INK,oval(x,.693,.038,.052,36),hs,.005);p.append(eye);es=surface(eye)
         p.append(fitted_patch('Eye glint / ivory upper catchlight '+str(sign),WHITE,oval(x-.008,.715,.014,.017,24),es,.002))
         p.append(fitted_patch('Eye glint / tiny lower catchlight '+str(sign),WHITE,oval(x+.011,.670,.006,.007,18),es,.0015))
-        p.append(fitted_patch('Cheek / fitted orange blush '+str(sign),CHEEK,oval(sign*.135,.632,.033,.010,32),hs,.003))
+        p.append(fitted_patch('Cheek / fitted green cheek '+str(sign),CHEEK,oval(sign*.135,.632,.033,.010,32),hs,.003))
     smile=contour([((-.054,.627),(-.016,.620),(.025,.624),(.054,.634)),((.054,.634),(.068,.550),(-.039,.551),(-.054,.627))],12)
     mouth=fitted_contour('Mouth / cheerful open fitted smile',INK,smile,hs,.006);p.append(mouth)
     tongue=contour([((-.039,.617),(-.012,.611),(.017,.616),(.042,.622)),((.042,.622),(.049,.565),(-.026,.565),(-.039,.617))],12)
-    p.append(fitted_contour('Tongue / rosy dancer smile',PINK,tongue,surface(mouth),.003))
+    p.append(fitted_contour('Tongue / white dancer smile inset',PINK,tongue,surface(mouth),.003))
     # Six broad rounded petals on each crown flower, with gently curled tips.
     local=contour([((-.030,.038),(-.075,.066),(-.083,.172),(-.046,.196)),((-.046,.196),(-.017,.215),(.023,.203),(.056,.181)),((.056,.181),(.073,.123),(.064,.066),(.028,.038)),((.028,.038),(.008,.028),(-.010,.028),(-.030,.038))],9)
     for sign in (-1,1):
@@ -62,13 +62,14 @@ def sculpture():
         for j in range(6):
             a=j*math.tau/6+sign*.15;c=math.cos(a);s=math.sin(a)
             xy=[(cx+x*c-y*s,cy+x*s+y*c) for x,y in local]
-            p.append(fitted_contour('Flower petal / broad curled coral ray '+str(sign)+' '+str(j),CORAL if j%2 else ORANGE,xy,lambda y,x:.034-.055*(math.hypot(x-cx,y-cy)-.08),.030,subdivisions=1))
+            p.append(fitted_contour('Flower petal / broad curled red ray '+str(sign)+' '+str(j),CORAL if j%2 else ORANGE,xy,lambda y,x:.034-.055*(math.hypot(x-cx,y-cy)-.08),.030,subdivisions=1))
         cup=flower_center(sign);p.append(cup)
-        p.append(fitted_patch('Flower well / deep olive center '+str(sign),OLIVE,oval(cx,cy,.034,.034,36),surface(cup),.0015))
-    p=[crease_normals(q,35.) if q['part'].startswith(('Eye /','Eye glint /','Cheek /','Mouth /','Tongue /','Flower well /')) else q for q in p]
-    low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
+        p.append(fitted_patch('Flower well / dark recessed center '+str(sign),WELL,oval(cx,cy,.034,.034,36),surface(cup),.0015))
+    p=[crease_normals(q,35.) if q['part'].startswith(('Eye /','Eye glint /','Cheek /','Mouth /','Tongue /','Flower well /','Flower petal /')) else q for q in p]
+    low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low) if normalize else 1.
     for q in p:
-        q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+        q['positions']=[round((v-(low if normalize and i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+        q['positions']=[0. if v==0. else v for v in q['positions']]
     return {'name':'bellossom','version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

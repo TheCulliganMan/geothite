@@ -2282,8 +2282,7 @@ fn player_event_warps_select_the_exact_source_map_setup() {
     );
 }
 
-#[test]
-fn directional_carpet_requires_a_second_matching_input_after_turning() {
+fn blocked_warp_fixture(permission: &str) -> GameDataSet {
     let mut source = test_map_module("CarpetSource", "CARPET_SOURCE", None);
     source.events.warps = vec![WarpEvent {
         index: 1,
@@ -2307,13 +2306,13 @@ fn directional_carpet_requires_a_second_matching_input_after_turning() {
     tileset.collision.insert(
         "1".to_string(),
         vec![
-            "WARP_CARPET_RIGHT".to_string(),
+            permission.to_string(),
             "WALL".to_string(),
             "FLOOR".to_string(),
             "FLOOR".to_string(),
         ],
     );
-    let data = GameDataSet {
+    GameDataSet {
         maps: map_payload(vec![source, destination.clone()]),
         map_attributes: BTreeMap::from([(
             "CarpetDestination".to_string(),
@@ -2345,7 +2344,12 @@ fn directional_carpet_requires_a_second_matching_input_after_turning() {
             "CarpetDestination",
         ]),
         ..GameDataSet::default()
-    };
+    }
+}
+
+#[test]
+fn directional_carpet_requires_a_second_matching_input_after_turning() {
+    let data = blocked_warp_fixture("WARP_CARPET_RIGHT");
     let mut state = GameState::default();
     let mut session = data
         .overworld_session("CarpetSource", TilePosition::new(0, 0), 0)
@@ -2376,6 +2380,46 @@ fn directional_carpet_requires_a_second_matching_input_after_turning() {
         .expect("enter directional carpet after matching turn");
     assert!(warp.warp.is_some());
     assert_eq!(session.map.name, "CarpetDestination");
+}
+
+#[test]
+fn blocked_steps_do_not_reactivate_stairs_ladders_or_warp_panels() {
+    for permission in ["STAIRCASE", "STAIRCASE_73", "LADDER", "WARP_PANEL"] {
+        let mut data = blocked_warp_fixture(permission);
+        if permission == "STAIRCASE" {
+            // CheckTile forces Down on 7a and ignores terrain collision.
+            // An occupied landing blocks that step; other cases bump a wall.
+            data.maps.get_mut("CarpetSource").unwrap().objects.push(
+                test_object("STAIR_BLOCKER", "-1", 0, 1));
+        }
+        let mut state = GameState::default();
+        let mut session = data.overworld_session("CarpetSource", TilePosition::new(0,0),0).unwrap();
+        session.player.facing = Direction::Right;
+        for _ in 0..8 {
+            let frame = data.apply_overworld_input(&mut state,&mut session,[GameButton::Right],
+                &BTreeSet::new(),&mut ReplayDivider::new([])).unwrap();
+            assert!(matches!(frame.movement,Some(StepOutcome::Blocked{..}|StepOutcome::BlockedByObject{..})),"{permission}: {:?}",frame.movement);
+            assert!(frame.warp.is_none(),"blocked input reactivated {permission}");
+            assert_eq!(session.map.name,"CarpetSource");
+            assert_eq!(session.player.tile,TilePosition::new(0,0));
+        }
+        // Unforced stairs/ladders/panels can be left and reentered. The 7a
+        // fixture deliberately blocks its mandatory step with an NPC.
+        if permission == "STAIRCASE" { continue; }
+        for _ in 0..2 {
+            data.apply_overworld_input(&mut state,&mut session,[GameButton::Down],
+                &BTreeSet::new(),&mut ReplayDivider::new([])).unwrap();
+        }
+        assert_eq!(session.player.tile,TilePosition::new(0,1));
+        let mut warped = false;
+        for _ in 0..2 {
+            let frame = data.apply_overworld_input(&mut state,&mut session,[GameButton::Up],
+                &BTreeSet::new(),&mut ReplayDivider::new([])).unwrap();
+            warped |= frame.warp.is_some();
+        }
+        assert!(warped,"reentry into {permission} did not warp");
+        assert_eq!(session.map.name,"CarpetDestination");
+    }
 }
 
 #[test]

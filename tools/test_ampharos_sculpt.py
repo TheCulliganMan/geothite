@@ -3,17 +3,18 @@
 import json,math,unittest
 from collections import Counter,defaultdict
 from pathlib import Path
+from electric_sheep_glb import read_ampharos,geometry_digest
 from ampharos_sculpt import sculpture,HEIGHT
 from chikorita_sculpt import sub,cross,dot
 
-ASSET=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/ampharos.mesh.json'
+ASSET=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/ampharos.glb'
 
 class AmpharosTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.model=json.loads(ASSET.read_bytes());cls.parts=cls.model['primitives']
+    def setUpClass(cls):cls.model=read_ampharos(ASSET);cls.parts=cls.model['primitives']
 
     def test_canonical_recipe_and_grounded_physical_datum(self):
-        self.assertEqual(self.model,sculpture())
+        self.assertEqual(geometry_digest(self.model),geometry_digest(sculpture()))
         points=[tuple(p['positions'][i:i+3]) for p in self.parts for i in range(0,len(p['positions']),3)]
         self.assertEqual(min(p[1] for p in points),0.)
         self.assertAlmostEqual(max(p[1] for p in points),HEIGHT,places=6)

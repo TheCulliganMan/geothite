@@ -1,47 +1,70 @@
-# Yanma dragonfly sculpture
+# Yanma dragonfly sculpture and standard skin
 
-`tools/yanma_sculpt.py` authors the original canonical Yanma asset. The battle
-species builder dispatches it before Blender batching. Yanma retains its 0.95
-presentation height and floor origin. The asset contains 66 closed parts and
-27,036 triangles.
+`tools/yanma_sculpt.py` authors the anatomy and `tools/yanma_glb.py` exports
+canonical `models/battle_species/yanma.glb`. The species builder emits the GLB
+and removes duplicate static JSON. There are 66 individually named source parts,
+packed into 58 runtime primitives by joining each wing's three same-material
+veins. Top-level source ranges recover every closed tube and its original order
+for authoring checks. Primitive metadata retains the production loader's strict
+`part` schema; no loader limit or validation rule is relaxed.
 
-Two large green compound-eye housings join a red elongated thorax. Dark glossy
-eye lenses carry two ivory catchlights each. Swept red forehead points rise
-from a fitted central V saddle. Two rounded red mandibles carry a fitted dark
-smile. Six angular jointed legs terminate in twelve pointed forked toes.
+The original 20,268 vertices exceeded the skin loader's 20,000-vertex limit.
+Reducing the small thorax's radial sampling and the tiny vein cross-sections
+produces 19,976 vertices and 26,452 triangles. The 41 non-wing, non-thorax parts preserve exact
+stored f32 positions, normals and triangle order. All twelve toes retain their
+original geometry and ground contact. Shared identical normal, skin and
+animation accessors keep the GLB at 243 accessors, below the existing 256 limit.
+The final file is 755,228 bytes, with 16 joints and rest digest
+`53cceeb9aa5759c6c8bace4f6e9dcb73b4f0d839dd6657e14b814d767c2c9711`.
+The separately reviewed packed-runtime digest is
+`85a1c4865714a1dd738973cce3244a9b4708e155890fe20061208182eed8114b`.
+The loader hashes the 58 packed primitives; source reconstruction retains the
+66-part source digest. Both forms remain independently pinned and checked.
 
-Four long curved ivory wings have rounded tips, closed thin sections and three
-slender gray veins each. Orange panels fit both the upper and lower wing faces,
-leaving ivory tips and a small boundary inset. The veins follow the actual
-stored wing surfaces. These use opaque native base colors; transparency,
-rigging and animation are not claimed.
+Actual local Crystal front/back sprites and normal palettes were inspected.
+RGB555 green (9,26,10) becomes sRGB8 (74,214,82), red (20,7,7) becomes
+(165,57,57), with white and black. Head housings and limbs use green; the body,
+wing bands and terminal paddles use red. Wings and glints are white, with black
+lenses, veins, mouth and abdomen collars. Historical names retain gray/orange
+labels for migration continuity. Geometry helpers convert sRGB to linear once.
 
-A continuous abdomen rises behind the thorax into a rounded terminal cap. Three
-closed annular dark-red collars fit the segment joints instead of the original
-floating cream rings. Two broad red steering fins and two small ivory terminal
-prongs attach to the cap.
+The fitted head, lenses, glints, crown, mandibles and mouth share one owner.
+Each of four complete wings, both fitted panels and its three veins share a
+rigid wing owner, preserving their surface fit while flapping. Six leg middles
+articulate between fixed forked toes and the yawing thorax. Three abdomen stages
+carry the fitted collars and coherent terminal cap, fins and prongs. Idle,
+attack and hit clips have an identity root, rotations only, neutral endpoints,
+and delayed rear-wing/abdomen response. Authoritative battle cues own timing.
 
-Silhouette and palette were checked against the
-[official Yanma artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/193.png).
-External research found a CC Attribution
-[Yanma listing](https://sketchfab.com/3d-models/yanma-0a85cd3a23514b9695e859a24f6d0536),
-whose metadata did not establish a usable original rig. No external mesh or
-textures were imported.
+The local pack's size 311 means 3′11″ (1.1938 m). The renderer now uses Yanma's
+nose-to-tail Z reference, following the long-body layout rule used by other
+long-bodied species. This avoids applying that listed body dimension to the
+raised-tail vertical span. The normalized 0.95 vertical span and floor origin
+remain unchanged; scaling remains uniform and ratio-preserving.
 
-`python3 -m unittest discover -s tools -p test_yanma_sculpt.py` checks closed
-connected topology, winding, finite unit normals, deterministic recipe parity,
-height, budget, anatomy counts, fitted eye/forehead/mouth vertices and triangle
-clearance, both orange wing faces, all twelve vein paths, wing and head roots,
-six leg roots and twelve toe roots, actual annular collar/body intersections,
-and the terminal cap, fins and prongs. Root checks compare actual occupied ray
-intervals, retaining the empty interiors of annular collars.
+Seven independent stored-skin and nine migrated anatomy checks pass, including
+canonical reconstruction of all source parts, bind identity, source colors,
+coherent wing coatings, fixed toes, clip endpoints, winding/edge strain, closed
+geometry, actual surface fitting, six leg/twelve toe roots and collar contacts.
+Neutral front and rear software views were inspected. Final focused Blender output is byte-identical and emits no duplicate JSON.
+Both final production Rust checks pass: GPU skinning at the pack length and
+off-grid sampling for coated wings, fixed toes, tail motion and culling bounds.
+The native build passes. Matched normal 3D/2D review against Pidgey
+shows the upward wing pairs and red panels clearly; the green head/legs, red
+segmented tail and fixed toe contacts remain coherent. Near-side wings still
+foreshorten at this angle. The paired receipt preserves core frame 2398, hash
+469961496, LCD frame 3092 and virtual time 59.517074416
+(`state_preserved=true`). Captures are ignored local QA artifacts. Exact
+sprite-frame wingbeats, flight/field gaits and browser review remain open.
+Shiny-specific checks and captures remain skipped at the user's request.
 
-Software views from above, in front and behind and the native battle capture
-assess model presentation rather than gameplay behavior.
+The two wider model regressions also pass on the corrected packed asset:
+`every_exact_species_is_grounded_and_volumetric` and
+`body_pose_uses_elapsed_idle_time_and_exact_current_attack_progress`. These
+cover neutral geometry and elapsed pose sampling; they do not establish visual
+acceptance for the whole catalog.
 
-Final verification passed all nine Yanma geometry regressions. The final front,
-rear and elevated software views and the native battle capture were visually
-inspected. The Rust catalog regression passed for the 220-species battle catalog; it verifies
-grounding and volume rather than visual quality. Layout and storage validation
-passed for all 571 JSON assets. Temporary reference artwork, review renders and
-logs were removed after inspection.
+The front wings rest at 12 degrees and rear wings at 18 degrees of upward
+dihedral. Every sail, both fitted panels and all three veins rotate together;
+surface-fitting checks project along each actual wing normal. This exposes the
+panels at low production camera elevations while retaining the floor origin.

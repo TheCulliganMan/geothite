@@ -1340,7 +1340,12 @@ impl GameDataSet {
                     // input after the player has finished turning.
                     Ok(None)
                 } else {
-                    staged_session.check_warp_checked()
+                    // PlayerMovement.CheckWarp only handles directional edge
+                    // carpets after a failed step. CheckWarpTile owns stairs,
+                    // ladders, pits and panels when actually entering a tile;
+                    // a wall bump on an arrival must not trigger them again.
+                    staged_session.check_warp_checked().map(|warp| warp.filter(|trigger|
+                        crystal_core::world::collision::directional_warp_facing(trigger.permission).is_some()))
                 }
                 .with_context(|| format!("check current warp on {}", staged_session.map.name))?;
             }
@@ -1448,7 +1453,13 @@ impl GameDataSet {
                                             && !events.egg_hatched
                                             && events.poison_result.is_none()
                                     });
-                                if count_step_completed {
+                                // A field preview can legitimately start before obtaining
+                                // a first Pokemon. Walking must not commit a wild battle
+                                // without a usable player slot; scripted battle entry keeps
+                                // its separate authored validation and lifecycle.
+                                if count_step_completed
+                                    && first_available_battle_party_index(&staged_state).is_some()
+                                {
                                     wild_encounter = self.check_wild_encounter_after_step(
                                         &mut staged_state,
                                         &staged_session,

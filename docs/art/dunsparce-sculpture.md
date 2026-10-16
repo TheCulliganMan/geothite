@@ -1,25 +1,50 @@
-# Dunsparce land-snake sculpture
+# Dunsparce land-snake sculpture and standard skin
 
-`tools/dunsparce_sculpt.py` authors the canonical Dunsparce mesh directly. The catalog authoring entry point dispatches only this species to the recipe. The mesh is an original static sculpture, with no imported rig or authored animation.
+`tools/dunsparce_sculpt.py` authors the anatomy and `tools/dunsparce_glb.py`
+exports canonical `models/battle_species/dunsparce.glb`. The focused species
+builder now has a dedicated canonical-GLB branch and removes duplicate static
+JSON. All 19 parts retain the previous asset's exact stored f32 positions,
+normals and triangle order: 11,833 vertices and 12,248 triangles. The normalized
+0.85 vertical span and floor origin remain unchanged.
 
-The old model used overlapping body and head ellipsoids, tiny line eyes, white fangs, angular wing shards, raised blue strips and an ungrooved cone. The replacement has a continuous broad rounded head and tapering trunk, a blue underside sharing its side seams with the yellow body, large blue oval eye rings with pale closed lids and diagonal creases, two pointed blue jaw barbs, two small curved ivory feather wings, fitted blue back ribbons, and a raised yellow tail ending in a three-turn spiral drill.
+The continuous rounded head and tapering trunk share exact seam vertices with
+the blue belly. Fitted oval eye rings, closed eyelids and creases, pointed jaw
+barbs, small feather wings, back ribbons and the raised three-turn drill retain
+their actual surface support. Local Crystal front/back sprites and normal
+palettes were inspected: RGB555 gold (31,24,6), blue (8,15,23), white and black.
+Gold is now sRGB8 (255,198,49), blue is (66,123,189), feather wings and eyelids
+are white, and the drill groove/fitted feather folds use source blue. Geometry
+helpers perform the sole conversion to linear material colors.
 
-The body color regions share exact boundary vertices along the full trunk. Back ribbons use a dense grid sampled from the stored body triangles, avoiding the breaks observed with a broad patch fan in the first native render. Pale eyelids have sufficient shell depth to avoid the blue ring showing through at oblique native viewing angles. The drill spiral follows the authored cone profiles; its proximity to actual stored cone triangles is verified independently.
+Seven joints use the common GPU skinning path. Yaw-only body motion keeps the
+whole belly at its authored supporting height; the fitted face, jaw and back
+ribbons share its rigid owner. Each complete feather wing and fitted fold share
+one wing joint. An initial blended feather chain inverted a thin edge during
+attack; rigid feather ownership preserves the actual feather shape while
+retaining flapping motion. Three tail stages bend the stem and turn the drill
+around the authored tilted base-to-tip axis. The cone and its complete spiral
+share one owner. Idle/attack/hit clips have an identity root, neutral endpoints
+and rotations only, with authoritative battle cues owning playback timing.
 
-The official [Dunsparce artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/206.png) was inspected for proportions, colors and features. The reference image is temporary and is not shipped. Searches of downloadable models, rigged-model listings and printable assets did not establish an available original rigged Dunsparce suitable for import. No extracted game geometry was adopted.
+The local pack's height field 411 is 4′11″ (1.4986 m). The existing shared
+`battle_layout::reference_span` rule measures Dunsparce along nose-to-tail Z;
+this migration preserves that length interpretation and ratio-preserving scale.
+The listed size is not applied as a vertical-height override.
 
-## Verification
-
-```sh
-python3 -m unittest discover -s tools -p test_dunsparce_sculpt.py
-python3 tools/check-model-layout.py
-python3 tools/model_asset_storage.py validate crates/crystal-voxel-view/models
-cargo test --locked -p crystal-voxel-view every_exact_species_is_grounded_and_volumetric --lib
-cargo build --locked -p crystal-bevy --example immersive_battle_3d --features location-tester
-```
-
-Eight independent stored-geometry tests cover closed oriented connected parts, normals, deterministic regeneration and scale, anatomy counts, exact body/belly seams, grounded belly, wing/jaw/tail/drill contacts, fitted eyes and feather creases, ribbons on the actual roof, and the spiral's surface proximity and coverage across several heights.
-
-The final asset has 19 material parts and 12,248 triangles, below its 14,000-triangle regression budget. The previous catalog height of 0.85 is preserved. Front/oblique and rear software views and native battle presentation are inspected for silhouette, colors, depth rendering, grounding and camera fit. The existing ignored `content-packs/realtime-clock.browser.crystalpack` is used only for native rendering. These screenshots do not establish gameplay or TUI/MCP behavior.
-
-Temporary renders and reference images are removed after verification. No content pack, game export, command dump, PCM or build product is delivered. The full 251-species visual review remains in progress; the Rust catalog bounds regression does not establish visual quality for all species.
+The GLB is 460,848 bytes, with 99 accessors and seven joints, within existing
+loader limits. Its rest digest is
+`97c7da81fb99f3363b601244efa047a94585dd0fa8c4b6faad88f5537b4fde4f`.
+Seven independent stored-skin and eight migrated anatomy checks pass, including
+bind identity, canonical regeneration, source colors, grounded belly height,
+fitted owners, wing/tail motion, tilted drill axis, winding/edge strain, closed
+topology and actual surface support. Focused Blender builder output is
+byte-identical and emits no static JSON. Neutral front and side software views
+were inspected. Both focused production Rust checks pass: GPU skinning at the pack length and
+off-grid clip sampling for grounded support, fitted owners and culling bounds.
+The native build and matched normal Dunsparce/Pidgey review pass: core 2245,
+checksum 2951808166, LCD 2916, time 52.583664208, state preserved. The full
+longitudinal silhouette, grounded belly, fitted back bands, both feathers and
+tilted spiral drill remain readable without clipping. Native rest-pose/rig/color
+integration is accepted; exact source-frame motion remains open.
+Exact source-frame eye/body motion, field gaits and browser review remain open.
+Shiny-specific checks and captures are skipped at the user's request.

@@ -15,10 +15,10 @@ caught hollow donut ears; closed fleshy backing fills both curls. Materials are
 matte. Shininess uses the existing battler flag and pack palette on the same
 geometry, skin and clips; no shiny asset or alternate rig is introduced.
 
-The stored GLB has 42 named closed parts, 19,298 vertices and 21,720 triangles.
+The stored GLB has 45 named closed parts, 19,471 vertices and 23,332 triangles.
 Floor minimum is zero and neutral height is 1.50 authoring units; pack dimensions
 own world scale. Its neutral digest is
-`8695d9198539d60d3aaaaea4daf8dfb27f129c3a57c6ef5259af9fa807ec217e`.
+`e783b1adb22c94e3a0914dde725c5eef44c4197fc93e4736edc49e24e455548e`.
 The nine joints keep torso, underside and shell fixed while the two neck joints,
 head, four flippers and tail respond to source battle cues. Face, horn and ears
 share the head joint. The throat/markings share neck weights. Idle surveys over
@@ -77,3 +77,45 @@ face, shell and flippers remain attached and readable. This verifies the
 palette correction in the held native view; broader shape/composition, detailed
 source-frame motion, legacy world props and browser fidelity remain open.
 Temporary source sprites and the pack-reading helper were removed after review.
+
+
+## Seated battle contact correction (2026-10-15)
+
+A fresh production Route 29 walking encounter reproduced Lapras hovering
+above the source grass. The accepted native 3D/2D baseline preserved state
+at core frame 3182, checksum 673262487, LCD animation frame 3994 and virtual
+time 80.012000502. The renderer's generic floating-battler adjustment added
+0.24 authoring units (16% of its height), despite the canonical skin's fixed
+belly and shell. This is separate from grass height and source geometry.
+
+`pokemon_motion::battle_hovers` now distinguishes Lapras's seated battle
+presentation from its swimming locomotion. Battle sampling no longer adds
+the artificial root lift to Lapras. Ground contact uses the existing cached
+floor-connected belly region, excluding the extended flipper tips. Swimming
+locomotion, authored geometry, weights, clips, pack dimensions and palette
+remain unchanged. Actual hovering species retain their existing clearance.
+
+An independent stored-vertex regression first failed at idle time zero with
+floor 0.24. After correction it passes for 33 samples of each idle, attack
+and recoil clip. The same regression checks unchanged Cloyster and Porygon
+clearance. Four focused Rust checks pass for seated vertices, the production
+contact-shadow cache, dedicated Lapras registry and GPU activation at pack
+size. The existing complete-shell Cloyster locomotion regression also passes.
+Shiny verification remains skipped at the user's request.
+
+
+The rebuilt native Route 29 pair `lapras-grounded-3d.png` /
+`lapras-grounded-2d.png` passes terrain admission (`accepted=true`) on the
+original ground. The receipt preserves state at core frame 1453, checksum
+1571462043, LCD animation frame 2091, virtual time 36.800318958. The pair was
+visually inspected: the tan belly meets the field, the contact shadow sits
+under the seated body, and the blue neck, face, shell spikes, curled ears and
+four flippers remain readable at unchanged pack size. No shader errors were
+reported. This run encountered Pidgey; the earlier baseline encountered Rattata,
+so each native view is paired with its own identical-state 2D view rather than
+claimed as a frame-identical cross-run comparison.
+
+The catalogue-wide elapsed-idle/source-attack timing regression also passed.
+This closes the added battle-hover/contact defect only. Lapras's broader
+shape and detailed face/flipper refinement, legacy world props and browser
+visual acceptance remain open. No grass-height or shiny changes were made.

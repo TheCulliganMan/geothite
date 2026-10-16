@@ -79,44 +79,28 @@ def lift_side():
  return a
 def u_display():
  a=Asset('closed_u_display')
- # The 4x2-cell native floor inset is x=16..48,z=16..32. No shell or trim
- # crosses it. The entire lower source half z=32..64 is solid WALL.
- rects=[('North sales rail',(0,64,0,16)),('West return',(0,16,16,32)),('East return',(48,64,16,32)),('Closed lower display',(0,64,32,64))]
- for label,r in rects:
+ # Staff enclosure: three counter runs and a thin glass wall toward +Z.
+ # Keep original map claims/collision; the native open staff inset is unchanged.
+ for label,r in [('North sales rail',(0,64,0,16)),('West return',(0,16,16,64)),('East return',(48,64,16,64))]:
   x0,x1,z0,z1=r
-  body=(x0+.4 if x0==0 else x0,x1-.4 if x1==64 else x1,z0,z1-.5 if z1==64 else z1)
-  a.prism(label+' sealed body',body,0,7.6,'warm_ivory',.08)
-  a.prism(label+' inset copper top',(x0+.3,x1-.3,z0+.3,z1-.3),7.55,7.8,'countertop_enamel',.12)
-  # Thin raised copper edging breaks up the broad cream furniture surface.
-  for edge in [(x0+.45,x1-.45,z0+.45,z0+.75),
-               (x0+.45,x1-.45,z1-.75,z1-.45)]:
-   a.prism(label+' copper countertop bead',edge,7.8,8,'ochre_trim',.04)
- # Four recessed, closed glazing sections echo the four native blue fronts.
- # They stay entirely over the lower supporting body, outside the clerk inset.
+  a.prism(label+' sealed body',(x0,x1,z0,z1),0,7.6,'warm_ivory',.08)
+  a.prism(label+' flat countertop',(x0,x1,z0,z1),7.6,8,'countertop_enamel',.08)
+  a.prism(label+' side inset',(x0+.1,x1-.1,z1-.2,z1),1,6.8,'drawer_face',.04)
+  a.prism(label+' copper edge',(x0+.2,x1-.2,z0+.1,z0+.3),7.8,8,'copper',.02)
+ # Glazing is a vertical wall, never an opaque display lid or lower body.
  for i in range(4):
   x=i*16
-  a.prism(f'Display {i+1} closed recessed presentation lid',(x+.9,x+15.1,34,59.3),7.75,7.9,'deep_teal',.3)
-  a.prism(f'Display {i+1} glass lid facet',(x+1.6,x+14.4,34.7,58.6),7.85,7.94,'blue_glass',.2)
-  a.horizontal_facet(f'Display {i+1} lid diagonal sky reflection',
-   [(x+2.2,35.3),(x+3.4,35.3),(x+13.8,58),(x+12.6,58)],7.95,7.98,'blue_reflection')
-  a.horizontal_facet(f'Display {i+1} lid narrow glazing glint',
-   [(x+5.2,35.3),(x+5.7,35.3),(x+13.8,53),(x+13.8,54)],7.985,8,'blue_glint')
- # Four crafted drawer and glazing fronts reflect the repeated source facade.
- for i in range(4):
-  x=i*16
-  a.prism(f'Display {i+1} inset glass frontage',(x+1.1,x+14.9,63.5,63.8),1.5,5.5,'blue_glass',.18)
+  a.prism(f'Display {i+1} glass pane',(x+.6,x+15.4,63.6,63.8),.8,7.6,'blue_glass',.02)
   a.facet(f'Display {i+1} diagonal sky reflection',
-   [(x+1.8,1.9),(x+3.8,1.9),(x+14.2,5.1),(x+12.2,5.1)],63.81,63.85,'blue_reflection')
+   [(x+1.2,1.3),(x+2.0,1.3),(x+14.8,7.1),(x+14.0,7.1)],63.81,63.83,'blue_reflection')
   a.facet(f'Display {i+1} narrow glazing glint',
-   [(x+1.8,3.2),(x+2.6,3.2),(x+8.8,5.1),(x+8.0,5.1)],63.86,63.89,'blue_glint')
-  a.prism(f'Display {i+1} shallow drawer face',(x+1.1,x+14.9,63.55,63.9),5.9,7.4,'drawer_face',.18)
-  a.prism(f'Display {i+1} copper pull',(x+6,x+10,63.87,64),6.4,6.8,'copper',.04)
-  a.prism(f'Display {i+1} folded front stile',(x+.3,x+.85,63.5,64),.8,7.8,'ochre_trim',.06)
- a.prism('Continuous closed front toe',(0,64,63.5,64),0,.8,'walnut_plinth',.08)
- for label,x0,x1 in[('west',0,.4),('east',63.6,64)]:
-  a.prism(label+' return toe',(x0,x1,0,64),0,.8,'walnut_plinth',.04)
-  a.prism(label+' return side inset',(x0,x1,2,62),1.8,6.8,'drawer_face',.04)
+   [(x+3,1.3),(x+3.3,1.3),(x+14.8,6.6),(x+14.8,6.9)],63.84,63.86,'blue_glint')
+  a.prism(f'Display {i+1} flat upright',(x,x+.6,63.5,64),.8,7.6,'ochre_trim',.02)
+ a.prism('Display east end upright',(63.4,64,63.5,64),.8,7.6,'ochre_trim',.02)
+ a.prism('Display continuous top rail',(0,64,63.5,64),7.6,8,'deep_teal',.02)
+ a.prism('Continuous closed front toe',(0,64,63.5,64),0,.8,'walnut_plinth',.02)
  return a
+
 def assets():return [wall(n)for n in[1,2,4,8,10]]+[lift_side(),directory(),u_display()]
 def document(a):
  ps=[]

@@ -25,7 +25,7 @@ def neck_weights(position):
 
 def skin_weights(part,position):
     x,y,z=position
-    if part.startswith(('Head /','Eye /','Brow /','Jaw /','Ear /','Horn /')):
+    if part.startswith(('Head /','Eye /','Brow /','Jaw /','Ear /','Horn /','Nostril /','Mouth /')):
         return [3,0,0,0],[1.,0.,0.,0.]
     if part.startswith(('Neck /','Throat /','Neck spot /')):return neck_weights(position)
     if part.startswith(('Fore flipper /','Rear flipper /')):

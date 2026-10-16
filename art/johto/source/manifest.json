@@ -68,10 +68,10 @@
     {
       "file": "actor-props-fruit-tree-refinement.blend",
       "encoding": "gzip-blend",
-      "bytes": 289716,
-      "sha256": "13c346c9faa3c914f2a1c12e9add3a5bb3e83f6f7db389f4989d9205bfee3514",
-      "uncompressed_bytes": 2826152,
-      "uncompressed_sha256": "8874417766f818e89bf84ca0110f49dd29c9bf407ffea2e6b777009d768882d6"
+      "bytes": 554580,
+      "sha256": "4868a34cfdbfabedf4ac34cc918371687e1fdc10d7d7263545ea50c446928d1b",
+      "uncompressed_bytes": 5978320,
+      "uncompressed_sha256": "53004f2f7f58d23f36b4a5a340cbb1b3e57aaff655278ebf790c8c641157e529"
     },
     {
       "file": "actor-props-sudowoodo-refinement.blend",
@@ -274,20 +274,68 @@
       "uncompressed_sha256": "43ccd19ab5e6019482c574da2ba57230737dd974a0ba90b135ab11bfce5375f4"
     },
     {
+      "file": "city-window-johto.blend",
+      "encoding": "gzip-blend",
+      "bytes": 629891,
+      "sha256": "d252d2a7eb265216bdf19faf3c4581f6af0b94825f33376f2d34d307e1502777",
+      "uncompressed_bytes": 7796585,
+      "uncompressed_sha256": "1c125b0c8179bef2045fb74c787f91a5e3cac79fc7a3be93cdcf2beffc83241e"
+    },
+    {
+      "file": "city-window-kanto.blend",
+      "encoding": "gzip-blend",
+      "bytes": 809483,
+      "sha256": "a4088c228d0cd1e3f2ed898191979240b856617da49aaa6f1d197f16af9e6261",
+      "uncompressed_bytes": 11931312,
+      "uncompressed_sha256": "774e3983edf4fbc0bc46aa04d3b4426c62a94f8d1e08591c7c2dfc3f4a8983c4"
+    },
+    {
+      "file": "city-window-landmarks.blend",
+      "encoding": "gzip-blend",
+      "bytes": 786001,
+      "sha256": "a23aee2bcd7ddbfe039b8899ede62207ba3cdfd9d52b781c0b13768026446642",
+      "uncompressed_bytes": 11444957,
+      "uncompressed_sha256": "729ed374d36ce340774be50da9950e3aef81e10e397c53ca17be44878c0e5f86"
+    },
+    {
+      "file": "city-window-modern.blend",
+      "encoding": "gzip-blend",
+      "bytes": 759119,
+      "sha256": "2aa8e906a4abb9c6dcb7ee9c3f80422427d1376ba6487d835a19576675c3aac8",
+      "uncompressed_bytes": 11197265,
+      "uncompressed_sha256": "9e245e90f37c43072f9eaaaa29bbf4587eff1b8346112a897f794616b1955f5f"
+    },
+    {
+      "file": "city-window-services.blend",
+      "encoding": "gzip-blend",
+      "bytes": 671335,
+      "sha256": "0a5358ce8fd04fd572f5a247e6cd0798c7192f0f4f20230468d53f6cf37c74d8",
+      "uncompressed_bytes": 8333628,
+      "uncompressed_sha256": "c433bff36352d639ae8fa23c318ca1594d79a7eb22676e714154f6652c5e21a5"
+    },
+    {
+      "file": "city-window-towers.blend",
+      "encoding": "gzip-blend",
+      "bytes": 650486,
+      "sha256": "86ef2e07bd8658ecc85a1249e951900d49ec462c90791cc35e5a1e086c92c03b",
+      "uncompressed_bytes": 8905522,
+      "uncompressed_sha256": "c6e4a697e61e5e620023657cb7a35d2a70eafb6a8545a3e2b92720dd19076d95"
+    },
+    {
       "file": "connected-johto.blend",
       "encoding": "gzip-blend",
-      "bytes": 793496,
-      "sha256": "1e36e7b6619d6dc3e45821fe87a8dfcbcf5744232f55398a2e91c1762721b394",
-      "uncompressed_bytes": 10495742,
-      "uncompressed_sha256": "59e232f70d21f3c4d03d0604c1307d03b0704c448416e010e786321bad4158e3"
+      "bytes": 1218950,
+      "sha256": "cecc87845f2a299c49b3e8e5925da881eb09e1e9f5695371c0a0ba802ced3e2c",
+      "uncompressed_bytes": 17829124,
+      "uncompressed_sha256": "de6c212f3b453fd77e768b6ac2151d1ca873f32e00d6589bfa3975b1f6a3578d"
     },
     {
       "file": "department-store.blend",
       "encoding": "gzip-blend",
-      "bytes": 176525,
-      "sha256": "f173fedb6d0fb4085317daeba8353c5f7f90da2032c07dd5fb9b8037a974e50b",
-      "uncompressed_bytes": 1982674,
-      "uncompressed_sha256": "bd9c9173cb808fb5fd8a7e3c68a81dd925a69ca50d1e58d31866add9972dc54d"
+      "bytes": 189465,
+      "sha256": "83da2afe477c3889f2d8d0c5d27e40106610d2d5c8e149930222a01d531496a1",
+      "uncompressed_bytes": 2028556,
+      "uncompressed_sha256": "626cdb1e1ef6f0b9572910050de0b4f6d1e772c0e6c5baa9fe1aee0052bbcb15"
     },
     {
       "file": "domestic-table.blend",
@@ -388,10 +436,10 @@
     {
       "file": "new-bark-kit.blend",
       "encoding": "gzip-blend",
-      "bytes": 263442,
-      "sha256": "df4f5635b814d52c1ffe65274c8174d6e6e9d416baaa3ad5772dff2190bcf23e",
-      "uncompressed_bytes": 2051149,
-      "uncompressed_sha256": "f1d329613619d3f14906e0e3bbb657c88085ce9bfc5d6ea1ae41c654a68e1cdf"
+      "bytes": 310716,
+      "sha256": "6f98688dbad7776cbdde59d1026d00b5c1f2b4bb3a6d4aa73dc89048e3ab294d",
+      "uncompressed_bytes": 2248774,
+      "uncompressed_sha256": "5be9ed47112d8b1ed4e8f81249edd377cfa835de0f5c474a54d0f647b943a1a6"
     },
     {
       "file": "outdoor-sign-frames.blend",
@@ -412,10 +460,10 @@
     {
       "file": "player-house.blend",
       "encoding": "gzip-blend",
-      "bytes": 233604,
-      "sha256": "f2a864d22e3eeee39f4087b71dee4886722271cc5822288a64e83ad165c5db25",
-      "uncompressed_bytes": 2816324,
-      "uncompressed_sha256": "004f2efb5e9a45ece5682c46bc72528a75a60b3f305e8fa56e534431838e992f"
+      "bytes": 304834,
+      "sha256": "6adfd1846ad1252579de4598155fee0ec818e7c91d65e511142defca88fae852",
+      "uncompressed_bytes": 3353915,
+      "uncompressed_sha256": "30fe351acf013d42295435cf97ff6010e4a361a8db92a988706b4641ffe9ca36"
     },
     {
       "file": "radio-desks.blend",
@@ -485,10 +533,10 @@
     {
       "file": "world-exteriors.blend",
       "encoding": "gzip-blend",
-      "bytes": 3794134,
-      "sha256": "8ec955829193c8d1b5045945debaf1812be95a1aba22e37c4b6e81f3782f7790",
-      "uncompressed_bytes": 53128278,
-      "uncompressed_sha256": "bbb758a57669062c366ed66f30a7bcd4f721b0dd214201cdb520c76f576aea18"
+      "bytes": 4012962,
+      "sha256": "bfed2124e05afb511308488a3237fb4ede05790d0ccfb669ec25786db2d0155b",
+      "uncompressed_bytes": 58273182,
+      "uncompressed_sha256": "227f96bf3414d6ddf9662a3f7f36d55afb1aac2cead3cc4cdb7ea05791bd1c97"
     }
   ]
 }

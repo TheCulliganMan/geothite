@@ -2,6 +2,7 @@
 """Stored headless fighter, continuous spring solids and fitted face checks."""
 import copy,json,os,unittest
 from pathlib import Path
+from hitmonlee_glb import read_hitmonlee,geometry_digest
 from hitmonlee_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_kingdra_sculpt import crossed_faces
@@ -13,7 +14,7 @@ ROOT=Path(os.environ.get('CRYSTAL_HITMONLEE_TEST_MODELS',Path(__file__).resolve(
 
 class HitmonleeTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'hitmonlee.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_hitmonlee(ROOT/'hitmonlee.glb');cls.ps=cls.m['primitives']
  find=attachment_checks.NidorinaTests.find
  overlap=attachment_checks.NidorinaTests.overlap
  test_fitted_layers_follow_actual_stored_parent=attachment_checks.NidorinaTests.test_fitted_layers_follow_actual_stored_parent
@@ -21,7 +22,7 @@ class HitmonleeTests(unittest.TestCase):
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'hitmonlee':self.m})
  def test_shading_tracks_actual_faces(self):assert_model_shading(self,{'hitmonlee':self.m})
  def test_parity_floor_size_budget_and_headless_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),80000)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),80000)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   self.assertFalse(any(p['part'].startswith(('Head /','Mouth /','Ring /')) for p in self.ps))
   for prefix,n in (('Body /',1),('Eye /',2),('Pupil /',2),('Pupil core /',2),('Hip /',2),('Leg spring /',2),('Foot /',2),('Toe claw /',6),('Foot mark /',2),('Arm /',2),('Wrist spring /',2),('Hand /',2),('Finger /',6)):

@@ -18,6 +18,8 @@ pub(crate) fn divider_local(
     }
 
     match source.metatile_id {
+        0x03 if source.subtile_column < 4 && source.subtile_row < 2
+            && source.tile_index == 0x11 => Some((source.subtile_column,source.subtile_row,4,2)),
         0x28 if source.subtile_row < 2 => expected_course_tile(source).then_some((
             source.subtile_column,
             source.subtile_row,

@@ -2,6 +2,8 @@
 """Original sea guardian with five-digit paddle wings and an actually open jaw."""
 import argparse,json,math
 from pathlib import Path
+from copy import deepcopy
+from functools import lru_cache
 from sculpt_geometry import part,loft,curved_profiles,ellipsoid,crease_normals
 from bovine_sculpt import smooth,curved_tube,oval,reverse_front
 from raptor_bird_sculpt import sheet,paint
@@ -25,8 +27,8 @@ def paddle(name,color,points,widths,depths,*,segments=28,steps=6):
 
 def wings(p):
  for s in (-1,1):
-  p.append(paddle('Wing arm / broad bent white shoulder '+str(s),WHITE,[(s*.16,.714,-.012),(s*.46,.906,-.047),(s*.70,1.093,-.080),(s*.83,1.139,-.092)],[.101,.092,.090,.128],[.090,.067,.051,.052]))
-  palm=ellipsoid('Wing palm / rounded five-finger white fan '+str(s),WHITE,(s*.84,1.145,-.095),(.169,.183,.058),40,26);p.append(palm)
+  p.append(paddle('Wing arm / broad bent white shoulder '+str(s),WHITE,[(s*.16,.714,-.012),(s*.46,.906,-.047),(s*.70,1.093,-.080),(s*.83,1.139,-.092)],[.101,.092,.090,.128],[.090,.067,.051,.052],segments=24,steps=4))
+  palm=ellipsoid('Wing palm / rounded five-finger white fan '+str(s),WHITE,(s*.84,1.145,-.095),(.169,.183,.058),28,18);p.append(palm)
   paths=[[(.735,1.17),(.727,1.30),(.77,1.43),(.823,1.46)],
          [(.814,1.22),(.84,1.35),(.94,1.48),(1.026,1.50)],
          [(.897,1.19),(1.012,1.29),(1.15,1.365),(1.23,1.344)],
@@ -34,7 +36,7 @@ def wings(p):
          [(.883,1.047),(.987,1.033),(1.13,.972),(1.18,.91)]]
   for j,path in enumerate(paths):
    pp=[(s*x,y,-.095-.060*(x-.84)) for x,y in path]
-   p.append(paddle(f'Wing digit / broad blunt white finger {s} {j}',WHITE,pp,[.066,.065,.061,.037],[.049,.043,.035,.022]))
+   p.append(paddle(f'Wing digit / broad blunt white finger {s} {j}',WHITE,pp,[.066,.065,.061,.037],[.049,.043,.035,.022],segments=28 if j==1 else 20,steps=6 if j==1 else 4))
 
 def back_plates(p,body):
  back=surface(reverse_front(body))
@@ -52,25 +54,69 @@ def tail(p):
 
 def feet(p):
  for s in (-1,1):
-  p.append(ellipsoid('Haunch / powerful rooted white guardian thigh '+str(s),WHITE,(s*.21,.264,.016),(.122,.182,.148),40,26))
+  p.append(ellipsoid('Haunch / powerful rooted white guardian thigh '+str(s),WHITE,(s*.21,.264,.016),(.122,.182,.148),28,18))
   p.append(curved_tube('Leg / broad white guardian ankle '+str(s),WHITE,[(s*.23,.226,.058),(s*.25,.116,.095),(s*.25,.053,.159)],[.071,.062,.049],28))
-  p.append(ellipsoid('Foot / grounded broad white guardian pad '+str(s),WHITE,(s*.25,.041,.160),(.106,.041,.142),40,24))
+  p.append(ellipsoid('Foot / grounded broad white guardian pad '+str(s),WHITE,(s*.25,.041,.160),(.106,.041,.142),28,16))
   for j,dx in enumerate((-.062,0,.062)):
-   p.append(ellipsoid(f'Toe / three blunt white guardian digits {s} {j}',WHITE,(s*.25+dx,.028,.253 if j==1 else .239),(.038,.027,.081),32,20))
+   p.append(ellipsoid(f'Toe / three blunt white guardian digits {s} {j}',WHITE,(s*.25+dx,.028,.253 if j==1 else .239),(.038,.027,.081),24,14))
 
-def sculpture(species='lugia'):
+def belly_patch(outline,parent):
+ # Conforming local refinement preserves the outline while resolving only the
+ # cap faces whose chords would cut through the stored pear-shaped breast.
+ from abra_sculpt import polygon_caps
+ skin=surface(parent);xy=list(outline);caps=polygon_caps(outline);th=.012
+ def refine(marked):
+  nonlocal caps
+  mids={}
+  for a,b in sorted(marked):
+   mids[(a,b)]=len(xy);xy.append(((xy[a][0]+xy[b][0])/2,(xy[a][1]+xy[b][1])/2))
+  refined=[]
+  for face in caps:
+   flags=[tuple(sorted((face[i],face[(i+1)%3]))) in marked for i in range(3)];count=sum(flags)
+   if not count:refined.append(face);continue
+   if count==1:shift=flags.index(True)
+   elif count==2:shift=(flags.index(False)+1)%3
+   else:shift=0
+   a,b,c=face[shift:]+face[:shift];ab=mids[tuple(sorted((a,b)))]
+   if count==1:refined.extend(((a,ab,c),(ab,b,c)));continue
+   bc=mids[tuple(sorted((b,c)))]
+   if count==2:refined.extend(((ab,b,bc),(a,ab,c),(ab,bc,c)));continue
+   ca=mids[tuple(sorted((c,a)))];refined.extend(((a,ab,ca),(ab,b,bc),(ca,bc,c),(ab,bc,ca)))
+  caps=refined
+ for step in range(3):refine({tuple(sorted((f[i],f[(i+1)%3]))) for f in caps for i in range(3)})
+ for step in range(6):
+  zs=[skin(y,x)+th for x,y in xy];marked=set()
+  for face in caps:
+   samples=[tuple(sum(xy[i][j] for i in face)/3 for j in range(2))]
+   gaps=[sum(zs[i] for i in face)/3-skin(samples[0][1],samples[0][0])]
+   for a,b in zip(face,face[1:]+face[:1]):
+    x,y=((xy[a][j]+xy[b][j])/2 for j in range(2));gaps.append((zs[a]+zs[b])/2-skin(y,x))
+   if min(gaps)<.001:marked.update(tuple(sorted((face[i],face[(i+1)%3]))) for i in range(3))
+  if not marked:break
+  refine(marked)
+ else:raise ValueError('Lugia belly did not clear its stored parent')
+ count=len(xy);v=[(x,y,skin(y,x)+offset) for offset in (th,-th*.35) for x,y in xy];faces=list(caps)+[tuple(i+count for i in reversed(f)) for f in caps];edges={}
+ for f in caps:
+  for a,b in zip(f,f[1:]+f[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append((a,b))
+ for uses in edges.values():
+  if len(uses)==1:
+   a,b=uses[0];faces.append((b,a,a+count,b+count))
+ return crease_normals(part('Belly / supported broad pale-blue breast shield',BLUE,v,faces),35)
+
+@lru_cache(maxsize=1)
+def raw_sculpture(species='lugia'):
  if species not in SPECIES:raise ValueError('unsupported sea guardian')
  body=crease_normals(loft('Body / smooth ivory sea-guardian pear',WHITE,curved_profiles(((.162,.055,.067,-.035),(.270,.223,.215,-.021),(.449,.284,.249,-.008),(.625,.249,.205,.011),(.77,.163,.128,.019),(.867,.069,.063,.029)),5),48),45)
  neck=paddle('Neck / long forward-curving ivory sea throat',WHITE,[(0,.740,.020),(0,.92,.096),(0,1.115,.203),(0,1.279,.280)],[.091,.077,.070,.061],[.089,.075,.070,.064])
  head=ellipsoid('Head / streamlined ivory guardian cranium',WHITE,(0,1.313,.294),(.129,.132,.140),48,28);p=[body,neck,head]
  xy=[(0,.820),(.081,.778),(.162,.670),(.229,.492),(.195,.329),(.103,.234),(0,.209),(-.103,.234),(-.195,.329),(-.229,.492),(-.162,.670),(-.081,.778)]
- p.append(paint('Belly / supported broad pale-blue breast shield',BLUE,xy,body,.012,4))
+ p.append(belly_patch(xy,body))
  for s in (-1,1):
   xy=[(s*x,y) for x,y in ((.025,1.367),(.077,1.399),(.115,1.34),(.061,1.313),(.022,1.332))]
-  mask=paint('Mask / fitted navy pointed eye shield '+str(s),NAVY,xy,head,.009,3);p.append(mask)
+  mask=paint('Mask / fitted navy pointed eye shield '+str(s),NAVY,xy,head,.009,2);p.append(mask)
   xy=[(s*x,y) for x,y in ((.041,1.360),(.084,1.363),(.098,1.341),(.061,1.322),(.036,1.333))]
-  eye=paint('Eye / fitted ivory angular sea-guardian lens '+str(s),IVORY,xy,mask,.005,3);p.append(eye)
-  pupil=paint('Pupil / small dark guardian stare '+str(s),INK,oval(s*.071,1.345,.007,.010,20),eye,.004,3);p.append(pupil)
+  eye=paint('Eye / fitted ivory angular sea-guardian lens '+str(s),IVORY,xy,mask,.005,2);p.append(eye)
+  pupil=paint('Pupil / small dark guardian stare '+str(s),INK,oval(s*.071,1.345,.007,.010,20),eye,.004,1);p.append(pupil)
   xy=[(s*x,y) for x,y in ((.026,1.337),(.045,1.422),(.120,1.475),(.103,1.372),(.061,1.315))]
   p.append(sheet('Eye flag / rooted rising navy head vane '+str(s),NAVY,xy,lambda y,x:.377-2.90*(y-1.33),.030,2))
  # A white swept point is part of the head silhouette behind the paired eye flags.
@@ -78,14 +124,21 @@ def sculpture(species='lugia'):
  p.append(zy(sheet('Head crest / swept ivory occipital point',WHITE,xy,lambda y,x:0,.043,2)))
  p.append(bill('Jaw / hooked ivory upper sea beak',WHITE,[(.354,.093,1.265,1.332),(.444,.078,1.229,1.300),(.530,.031,1.242,1.264),(.559,.0015,1.232,1.242)]))
  p.append(bill('Jaw / open ivory lower mandible',WHITE,[(.312,.091,1.184,1.232),(.401,.082,1.109,1.161),(.490,.034,1.151,1.171),(.541,.0015,1.217,1.224)]))
- p.append(ellipsoid('Mouth / recessed dark oral floor',INK,(0,1.237,.420),(.074,.065,.012),40,26))
- p.append(ellipsoid('Tongue / supported small pink sea-guardian tongue',PINK,(0,1.153,.449),(.055,.019,.055),36,24))
+ p.append(ellipsoid('Mouth / recessed dark oral floor',INK,(0,1.237,.420),(.074,.065,.012),32,20))
+ p.append(ellipsoid('Tongue / supported small pink sea-guardian tongue',PINK,(0,1.153,.449),(.055,.019,.055),28,18))
  wings(p);back_plates(p,body);tail(p);feet(p)
+ return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+
+def sculpture(species='lugia',normalize=True):
+ model=deepcopy(raw_sculpture(species));p=model['primitives']
+ if not normalize:return model
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
  for q in p:
   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
- return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+ return model
 
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'lugia.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ from lugia_glb import export_lugia
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
+ (args.output/'lugia.glb').write_bytes(export_lugia())
 if __name__=='__main__':main()

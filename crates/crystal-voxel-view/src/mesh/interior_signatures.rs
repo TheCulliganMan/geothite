@@ -840,46 +840,6 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         ground: 0x01,
         kind: ModelKind::Bookcase,
     },
-    // radio_tower 0b 0,0 ArcadeStool
-    AuthoredInteriorDrawing {
-        tileset: "radio_tower",
-        block: 0x0b,
-        origin: [0, 0],
-        size: [2, 2],
-        tiles: &[0x46, 0x47, 0x48, 0x49],
-        ground: 0x01,
-        kind: ModelKind::ArcadeStool,
-    },
-    // radio_tower 0b 2,0 ArcadeStool
-    AuthoredInteriorDrawing {
-        tileset: "radio_tower",
-        block: 0x0b,
-        origin: [2, 0],
-        size: [2, 2],
-        tiles: &[0x46, 0x47, 0x48, 0x49],
-        ground: 0x01,
-        kind: ModelKind::ArcadeStool,
-    },
-    // radio_tower 0b 0,2 ArcadeStool
-    AuthoredInteriorDrawing {
-        tileset: "radio_tower",
-        block: 0x0b,
-        origin: [0, 2],
-        size: [2, 2],
-        tiles: &[0x44, 0x45, 0x4a, 0x4b],
-        ground: 0x01,
-        kind: ModelKind::ArcadeStool,
-    },
-    // radio_tower 0b 2,2 ArcadeStool
-    AuthoredInteriorDrawing {
-        tileset: "radio_tower",
-        block: 0x0b,
-        origin: [2, 2],
-        size: [2, 2],
-        tiles: &[0x44, 0x45, 0x4a, 0x4b],
-        ground: 0x01,
-        kind: ModelKind::ArcadeStool,
-    },
     // radio_tower 14 0,0 ArcadeStool
     AuthoredInteriorDrawing {
         tileset: "radio_tower",
@@ -982,7 +942,7 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         ground: 0x01,
         kind: ModelKind::BroadcastConsole,
     },
-    // radio_tower 1c 2,1 BroadcastConsole
+    // radio_tower 1c 2,1 Computer
     AuthoredInteriorDrawing {
         tileset: "radio_tower",
         block: 0x1c,
@@ -990,7 +950,7 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         size: [2, 3],
         tiles: &[0x56, 0x57, 0x58, 0x59, 0x4c, 0x4d],
         ground: 0x01,
-        kind: ModelKind::BroadcastConsole,
+        kind: ModelKind::Computer,
     },
     // radio_tower 2b 2,2 BroadcastConsole
     AuthoredInteriorDrawing {
@@ -1001,16 +961,6 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         tiles: &[0x56, 0x57, 0x58, 0x59],
         ground: 0x01,
         kind: ModelKind::BroadcastConsole,
-    },
-    // radio_tower 19 2,0 WindowWall
-    AuthoredInteriorDrawing {
-        tileset: "radio_tower",
-        block: 0x19,
-        origin: [2, 0],
-        size: [2, 2],
-        tiles: &[0x20, 0x21, 0x25, 0x26],
-        ground: 0x01,
-        kind: ModelKind::WindowWall,
     },
     // radio_tower 1a 0,0 WindowWall
     AuthoredInteriorDrawing {
@@ -1031,16 +981,6 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         tiles: &[0x20, 0x21, 0x29, 0x2a],
         ground: 0x01,
         kind: ModelKind::WindowWall,
-    },
-    // radio_tower 19 2,2 PottedPlant
-    AuthoredInteriorDrawing {
-        tileset: "radio_tower",
-        block: 0x19,
-        origin: [2, 2],
-        size: [2, 2],
-        tiles: &[0x35, 0x36, 0x08, 0x19],
-        ground: 0x01,
-        kind: ModelKind::PottedPlant,
     },
     // radio_tower 1e 0,0 WindowWall
     AuthoredInteriorDrawing {
@@ -1452,7 +1392,12 @@ fn append_signature_candidates(
         // cropped courses retain live source artwork without this substitute.
         if map == "CeladonGameCornerPrizeRoom" && drawing.tileset == "game_corner"
             && matches!(drawing.block, 0x10 | 0x11) { continue; }
-        let Some(ground) = ground_sample(cells, map, drawing.tileset, drawing.ground) else {
+        let ground=ground_sample(cells,map,drawing.tileset,drawing.ground).or_else(|| {
+            (drawing.kind==ModelKind::Bookcase&&drawing.tileset=="traditional_house"
+                &&traditional_room::floor_map(map))
+                .then(||ground_sample(cells,map,"traditional_house",0x11)).flatten()
+        });
+        let Some(ground) = ground else {
             continue;
         };
         let [w, h] = drawing.size;
@@ -1668,7 +1613,10 @@ mod signature_tests {
     }
     #[test]
     fn selected_signatures_are_complete_bounded_drawings() {
-        assert_eq!(INTERIOR_DRAWINGS.len(), 145);
+        assert!(!INTERIOR_DRAWINGS.iter().any(|d|d.tileset=="radio_tower"
+            && (d.block==0x0b&&d.kind==ModelKind::ArcadeStool
+                ||d.block==0x19&&d.kind==ModelKind::PottedPlant)),
+            "plant crowns and the broadcast panel cannot regain the old stool/plant roles");
         for d in INTERIOR_DRAWINGS {
             assert_eq!(d.tiles.len(), d.size[0] * d.size[1]);
             assert!(d.origin[0] as usize + d.size[0] <= 4);
@@ -1687,7 +1635,8 @@ mod signature_tests {
             let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],..Default::default()};
             assert!(append(&mut mesh,"CeladonMansion3F",&refs,&g,&p,&mut vec![false;tiles.len()],[0,0]));
             assert_eq!(mesh.footing_heights,vec![1.25;tiles.len()]);
-            assert!(!mesh.solid.indices.is_empty() && !mesh.textured.indices.is_empty());
+            assert!(mesh.solid.indices.is_empty() && !mesh.textured.indices.is_empty());
+            assert!(mesh.textured.colors.iter().all(|c|c[0]==c[1]&&c[1]==c[2]));
             for i in p.indices(g.width) {let mut changed=tiles.clone();changed[i].source.tile_index^=0x80;
                 assert!(!resolve("CeladonMansion3F",&changed.iter().collect::<Vec<_>>(),&g,None)
                     .iter().any(|p|p.kind==ModelKind::Bookcase));

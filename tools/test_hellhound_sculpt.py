@@ -3,17 +3,18 @@
 import json,unittest
 from pathlib import Path
 from hellhound_sculpt import sculpture,SPECIES,HEIGHT
+from hellhound_glb import read_hellhound,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class HellhoundTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+    def setUpClass(cls):cls.models={s:read_hellhound(ROOT/(s+'.glb'),s) for s in SPECIES}
     def test_closed_connected_oriented_parts(self):assert_closed_models(self,self.models)
     def test_normals_match_stored_triangles(self):assert_model_shading(self,self.models)
     def test_regeneration_height_budget_and_distinct_anatomy(self):
         for s,m in self.models.items():
-            self.assertEqual(m,sculpture(s));ps=m['primitives'];big=s=='houndoom'
+            self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));ps=m['primitives'];big=s=='houndoom'
             self.assertEqual(len(ps),len({p['part'] for p in ps}))
             self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
             self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6)

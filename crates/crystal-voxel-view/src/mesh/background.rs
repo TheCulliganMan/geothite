@@ -59,6 +59,27 @@ pub(super) fn append_repeating_background_apron(
                 (left as f32, right as f32, top as f32, bottom as f32),
             );
         }
+        // Perspective demand can include gaps between real map rectangles.
+        // The host marks those cells without source art; fill each row run
+        // with this same low-cost ground backdrop, never repeated scenery.
+        for row in 0..geometry.height {
+            let mut column = 0;
+            while column < geometry.width {
+                let empty = |x: usize| {
+                    let source = &cells[row * geometry.width + x].source;
+                    source.metatile_id == u16::MAX && source.tile_index == u16::MAX
+                };
+                if !empty(column) { column += 1; continue; }
+                let start = column;
+                while column < geometry.width && empty(column) { column += 1; }
+                append_top(&mut surface, [
+                    geometry.origin_x + start as f32 * geometry.tile_width,
+                    geometry.origin_x + column as f32 * geometry.tile_width,
+                    geometry.origin_z + row as f32 * geometry.tile_height,
+                    geometry.origin_z + (row + 1) as f32 * geometry.tile_height,
+                ], BACKGROUND_HEIGHT, (start as f32, column as f32, row as f32, (row + 1) as f32));
+            }
+        }
         mesh.background = Some(RepeatingBackground {
             mesh: surface,
             source: cells[background_row * geometry.width + background_column]
@@ -110,7 +131,7 @@ fn dominant_flat_source(
             let source = &cells[index].source;
             // Object masking changes its classification to Flat but retains
             // the original atlas pixels. That is never a ground sample.
-            if source.tile_index == u16::MAX {
+            if source.tile_index == u16::MAX || source.metatile_id == u16::MAX {
                 continue;
             }
             let key = (
@@ -193,6 +214,40 @@ fn repeated_edge_coordinate(coordinate: isize, length: usize) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn unmapped_camera_area_gets_flat_backdrop_without_covering_real_map_cells() {
+        let mut frame = test_frame_with_grid(40, 40);
+        let mut empty = vec![false; frame.tiles.len()];
+        for (i, tile) in frame.tiles.iter_mut().enumerate() {
+            empty[i] = (tile.column < 5 && tile.row < 9)
+                || ((20..28).contains(&tile.column) && (25..32).contains(&tile.row));
+            tile.source = super::super::tests::source_with_tile(
+                if empty[i] { u16::MAX } else { 2 }, 0, 0,
+                if empty[i] { u16::MAX } else { 5 });
+        }
+        let geometry = GridGeometry { width: 40, height: 40, tile_width: 8., tile_height: 8., origin_x: 0., origin_z: 0. };
+        let cells = frame.tiles.iter().collect::<Vec<_>>();
+        let shapes = vec![CellShape::Flat; cells.len()];
+        let mut mesh = TerrainMeshData { tree_cache: Some(HashMap::new()), ..Default::default() };
+        append_repeating_background_apron(&mut mesh, &geometry, &cells, &shapes);
+        let backdrop = mesh.background.unwrap();
+        assert_eq!(backdrop.source.tile_index, 5);
+        assert!(mesh.solid.positions.is_empty());
+        assert!(backdrop.mesh.positions.iter().all(|p| p[1] == BACKGROUND_HEIGHT));
+        for (i, &empty) in empty.iter().enumerate() {
+            let x = (i % 40) as f32 * 8. + 4.;
+            let z = (i / 40) as f32 * 8. + 4.;
+            let coverage = backdrop.mesh.positions.chunks_exact(4).filter(|q| {
+                let west = q.iter().map(|p| p[0]).fold(f32::INFINITY, f32::min);
+                let east = q.iter().map(|p| p[0]).fold(f32::NEG_INFINITY, f32::max);
+                let north = q.iter().map(|p| p[2]).fold(f32::INFINITY, f32::min);
+                let south = q.iter().map(|p| p[2]).fold(f32::NEG_INFINITY, f32::max);
+                x > west && x < east && z > north && z < south
+            }).count();
+            assert_eq!(coverage, usize::from(empty), "backdrop coverage at {i}");
+        }
+    }
 
     #[test]
     fn masked_tree_art_cannot_become_the_dominant_ground_tile() {
@@ -375,6 +430,7 @@ mod tests {
             map_id: Arc::from("test"),
             source_map_size_core_tiles: None,
             jump_ledges: Default::default(),
+            boundary_warps: Default::default(),
             map_texture: Handle::default(),
             center: Vec2::ZERO,
             viewport_size: Vec2::new(width as f32 * 8.0, height as f32 * 8.0),

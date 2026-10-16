@@ -2,6 +2,7 @@
 """Validate original interior runtime exports without a content pack or Blender."""
 import json
 import math
+import re
 from pathlib import Path
 from model_asset_storage import read_model_bytes, read_model_json, read_model_text, validate_storage
 
@@ -11,14 +12,24 @@ IMPORTER = ROOT / 'crates/crystal-voxel-view/src/interior_models.rs'
 
 def validate():
     paths = sorted(MODELS.glob('*.mesh.json'))
-    assert len(paths) == 69, f'Expected 69 original assets, got {len(paths)}'
     importer = IMPORTER.read_text()
+    expected = set(re.findall(
+        r'load!\(\s*\w+,\s*"models/interiors/([^"/]+\.mesh\.json)"\s*\)', importer))
+    actual = {path.name for path in paths}
+    assert expected, 'No embedded interior model declarations found'
+    assert actual == expected, (
+        f'Interior export inventory mismatch: missing {sorted(expected - actual)}, '
+        f'undeclared {sorted(actual - expected)}')
     total_triangles = 0
     total_vertices = 0
     for path in paths:
         data = read_model_json(path)
         assert f'/interiors/{path.name}' in importer, path
-        assert data['coordinate_system'] == 'right-handed; +Y up; front +Z', path
+        assert data['coordinate_system'] in {
+            'right-handed; +Y up; front +Z',
+            'right-handed Y-up; front +Z',
+            'right-handed Y-up',
+        }, path
         lo = [float('inf')] * 3
         hi = [-float('inf')] * 3
         triangles = 0

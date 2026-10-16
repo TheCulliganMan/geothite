@@ -1663,8 +1663,13 @@ fn prepare_walking_encounter_preview_at_map(
                 else {
                     continue;
                 };
+                // The initial observation must already classify as a land
+                // encounter surface, before the real step rolls an encounter.
                 if !plain(from)
                     || !plain(to)
+                    || (!floor_encounters
+                        && !sample_collision(&map, &tileset, from)
+                            .is_some_and(|sample| is_grass_encounter_permission(sample.permission)))
                     || !sample_collision(&map, &tileset, to)
                         .is_some_and(|sample| is_grass_encounter_permission(sample.permission)
                             || (floor_encounters

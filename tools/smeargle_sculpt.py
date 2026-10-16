@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Original painter-dog sculpture with a held looping tail and green brush."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
-from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,crease_normals,translate
+from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,crease_normals,translate
 from abra_sculpt import surface
-from bovine_sculpt import oval,curved_tube
+from bovine_sculpt import oval,curved_tube,fitted_patch
 from wing_insect_sculpt import membrane,contour
 from spider_sculpt import banded_limb
 from skin_glb import COORDINATES
@@ -34,7 +36,8 @@ def brush():
         return crease_normals(part(name,color,v,f),38.)
     return [shell('Brush / cream bristles beneath scalloped paint',CREAM,cream),shell('Brush / tapered green paint tuft',GREEN,green)]
 
-def sculpture(species='smeargle'):
+@lru_cache(maxsize=1)
+def raw_sculpture(species='smeargle'):
     if species not in SPECIES:raise ValueError('unsupported painter dog')
     body=loft('Body / continuous slim cream painter torso',CREAM,curved_profiles(((.19,.04,.05,0),(.25,.13,.115,-.012),(.34,.145,.125,-.012),(.46,.12,.105,-.008),(.57,.13,.10,0),(.64,.095,.085,.005),(.69,.033,.034,.005)),4),32)
     neck=ellipsoid('Neck / brown canine collar',BROWN,(0,.646,.002),(.106,.072,.087),28,16)
@@ -81,12 +84,18 @@ def sculpture(species='smeargle'):
     tail=[(0,.29,-.09),(-.08,.34,-.22),(-.30,.45,-.22),(-.47,.56,.02),(-.42,.59,.28),(-.15,.52,.37),(.13,.53,.355),(.31,.63,.27),(.397,.77,.18),(.447,.909,.142)]
     p.append(curved_tube('Tail / continuous looping cream paintbrush handle',CREAM,tail,[.025,.026,.027,.027,.026,.025,.024,.023,.026,.033],18))
     p.extend(brush())
+    return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+def sculpture(species='smeargle',normalize=True):
+    model=deepcopy(raw_sculpture(species))
+    if not normalize:return model
+    p=model['primitives']
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
+    from smeargle_glb import export_smeargle
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    (args.output/'smeargle.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+    (args.output/'smeargle.glb').write_bytes(export_smeargle())
 if __name__=='__main__':main()

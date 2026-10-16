@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export the authored folded-paper Cyndaquil with its ten-joint skin.
+"""Export the authored rounded quadrupedal Cyndaquil with its twelve-joint skin.
 
 Geometry is reproducible from cyndaquil_sculpt.py without Blender, inputs or
 third-party packages. The bounded canonical reader rejects unreviewed geometry
@@ -17,7 +17,7 @@ from animated_glb import parse_glb
 from skin_glb import (COORDINATES, Glb, envelope, packed,
                         quantized_weights, quaternion_xyz, smoothstep)
 
-REST_DIGEST = '551051e53987f2461c2e5ed22187b44b336be64f300b469950d381b5b174b397'
+REST_DIGEST = '343dc219a6151db3baa8b52459f911b33746aa2cac61ad77497efd434bd4d9ea'
 FILE = 'cyndaquil.glb'
 PARTS = (
     'Small soft charcoal nose',
@@ -50,6 +50,10 @@ PARTS = (
     'Upper right flame quill / back golden heart',
     'Lower left flame quill / front golden heart',
     'Upper left flame quill / front golden heart',
+    'Foreleg / left',
+    'Foreleg / right',
+    'Hindleg / left',
+    'Hindleg / right',
 )
 
 # Keep the original source-to-runtime rig datum. The three lower flame roots
@@ -64,21 +68,23 @@ def source_point(x, y, z):
                                      SOURCE_OFFSET[2] - SOURCE_SCALE * y))
 
 
-QUILLS = (
-    ('Upper left flame quill', (-.071, .060, .604)),
-    ('Upper right flame quill', (.071, .060, .604)),
-    ('Lower left flame quill', (-.138, .123, .450)),
-    ('Lower right flame quill', (.138, .123, .450)),
-    ('Central rear flame quill', (0., .183, .432)),
-)
+QUILLS = tuple((name,((x-SOURCE_OFFSET[0])/SOURCE_SCALE,
+                    (SOURCE_OFFSET[2]-z)/SOURCE_SCALE,(y-SOURCE_OFFSET[1])/SOURCE_SCALE))
+    for name,(x,y,z) in (
+        ('Upper left flame quill',(-.10,.59,-.10)),
+        ('Upper right flame quill',(.10,.59,-.10)),
+        ('Lower left flame quill',(-.10,.51,-.35)),
+        ('Lower right flame quill',(.10,.51,-.35)),
+        ('Central rear flame quill',(0.,.46,-.49))))
 JOINTS = (
     ('root', None, (0., 0., 0.)),
-    ('torso', 0, (.002550, .175, -.025)),
-    ('head', 1, (.002550, .435, .075)),
-    ('foreleg_left', 1, source_point(-.181, -.085, .385)),
-    ('foreleg_right', 1, source_point(.181, -.085, .385)),
+    ('torso', 0, (0., .35, -.28)),
+    ('head', 1, (0., .49, .035)),
+    ('foreleg_left', 1, (-.16, .18, .02)),
+    ('foreleg_right', 1, (.16, .18, .02)),
 ) + tuple((name.lower().replace(' ', '_'), 1, source_point(*root))
-          for name, root in QUILLS)
+          for name, root in QUILLS) + (
+    ('hindleg_left',1,(-.19,.18,-.38)),('hindleg_right',1,(.19,.18,-.38)))
 CLIPS = (('idle', 3.2, 65), ('attack', 1., 49), ('hit', 1., 49))
 
 
@@ -96,7 +102,7 @@ def named_model(model):
     if model.get('name') not in ('battle_cyndaquil', 'cyndaquil') or model.get('version') != 1:
         raise ValueError('expected Cyndaquil source schema version 1')
     if model.get('coordinate_system') != COORDINATES or len(model.get('primitives', [])) != len(PARTS):
-        raise ValueError('expected refined Cyndaquil coordinates and 30 anatomy parts')
+        raise ValueError('expected refined Cyndaquil coordinates and 34 anatomy parts')
     if geometry_digest(model) != REST_DIGEST:
         raise ValueError('unreviewed neutral geometry; anatomy mapping must be reviewed again')
     result = copy.deepcopy(model)
@@ -110,27 +116,28 @@ def named_model(model):
 def body_weights(position):
     """One continuous field on skin, fitted coat, nose, and closed eyelids.
 
-    Grounded rear paws stay on the identity root. Raised forepaws have their own
-    shoulder hinges. The head field is rigid over both facial patches and their
+    Separate leg parts own the four limb hinges, with their soles on the
+    identity root. The head field stays rigid over the facial patches and their
     underlying cheeks, then smoothly meets the nape. Coincident corner vertices
     receive identical influences regardless of primitive or normal splits.
     """
-    x, y, z = position
-    side = 3 if x < .002550 else 4
-    arm = (smoothstep(.130, .182, abs(x - .002550))
-           * smoothstep(.040, .110, z) * smoothstep(.130, .178, y)
-           * (1. - smoothstep(.265, .360, y)))
-    upper = max(smoothstep(.105, .200, y), arm)
-    head = smoothstep(-.140, .030, z) * smoothstep(.310, .430, y)
+    _, y, z = position
+    head = smoothstep(-.10, .015, z) * smoothstep(.08, .16, y)
+    upper = max(smoothstep(.105, .200, y),head)
     active = [(j, w) for j, w in ((0, 1. - upper),
-               (1, upper * (1. - head) * (1. - arm)),
-               (2, upper * head * (1. - arm)), (side, upper * arm)) if w > 0.]
+               (1, upper * (1. - head)),
+               (2, upper * head)) if w > 0.]
     ids = [j for j, _ in active]
     values = [w for _, w in active]
     return ids + [0] * (4 - len(ids)), values + [0.] * (4 - len(values))
 
 
 def skin_weights(part, position):
+    if part.startswith(('Foreleg / ','Hindleg / ')):
+        joint=(3 if part.startswith('Foreleg') else 10)+(0 if part.endswith('left') else 1)
+        weight=smoothstep(.035,.14,position[1])
+        if weight == 0.:return [0,0,0,0],[1.,0.,0.,0.]
+        return [joint,0,0,0],[weight,1.-weight,0.,0.]
     # Each five-layer folded quill is a single rigid paper assembly. A root
     # embedded in the torso prevents an opening seam at these tiny amplitudes.
     for i, (name, _) in enumerate(QUILLS, 5):
@@ -152,14 +159,14 @@ def pose_angles(clip, t):
         # other. Root and rear contact never bob to simulate breathing.
         pose = [(0., 0., 0.), (.014 * a, 0., .009 * b),
                 (-.065 * breathe, .085 * a, .020 * a),
-                (-.075 * breathe, .018 * b, -.033 * a),
-                (-.055 * breathe, -.015 * b, .029 * a)]
+                (-.035 * breathe, .018 * b, -.020 * a),
+                (-.030 * breathe, -.015 * b, .020 * a)]
         pose += [(.035 * a + .012 * b, .008 * b, -.031 * a),
                  (.026 * a - .012 * b, -.008 * b, .037 * a),
                  (.030 * b, .016 * a, -.025 * b),
                  (-.027 * b, -.016 * a, .025 * b),
                  (.040 * a, .015 * b, .016 * b)]
-        return pose
+        return pose+[(.018*a,0.,0.),(-.015*a,0.,0.)]
     if clip == 'attack':
         # Immediate planted chest brace and settle. This curve is sampled
         # only by normalized source cue progress; it schedules no effect.
@@ -167,32 +174,32 @@ def pose_angles(clip, t):
         flare = envelope(t, ((0., 0.), (.07, .45), (.18, 1.), (.62, .34), (1., 0.)))
         pose = [(0., 0., 0.), (.110 * brace, 0., 0.),
                 (.120 * brace, .023 * brace, 0.),
-                (.218 * brace, -.025 * brace, -.080 * brace),
-                (.198 * brace, .025 * brace, .069 * brace)]
+                (.110 * brace, -.015 * brace, -.040 * brace),
+                (.100 * brace, .015 * brace, .035 * brace)]
         pose += [(-.095 * flare, -.030 * flare, -.082 * flare),
                  (-.078 * flare, .030 * flare, .076 * flare),
                  (-.104 * flare, -.025 * flare, -.061 * flare),
                  (-.087 * flare, .025 * flare, .063 * flare),
                  (-.129 * flare, .025 * flare, 0.)]
-        return pose
+        return pose+[(.05*brace,0.,0.),(.045*brace,0.,0.)]
     recoil = envelope(t, ((0., 0.), (.17, 1.), (.40, .32), (.65, -.16), (1., 0.)))
     trail = envelope(t, ((0., 0.), (.24, 1.), (.49, .17), (.72, -.09), (1., 0.)))
     pose = [(0., 0., 0.), (-.098 * recoil, .014 * recoil, .023 * recoil),
             (-.120 * recoil, -.045 * recoil, -.035 * recoil),
-            (-.194 * recoil, .039 * recoil, .067 * recoil),
-            (-.161 * recoil, -.033 * recoil, -.060 * recoil)]
+            (-.095 * recoil, .020 * recoil, .035 * recoil),
+            (-.085 * recoil, -.020 * recoil, -.030 * recoil)]
     pose += [(.116 * trail, .018 * trail, .051 * trail),
              (.094 * trail, -.018 * trail, -.046 * trail),
              (.080 * trail, .020 * trail, .045 * trail),
              (.099 * trail, -.020 * trail, -.045 * trail),
              (.138 * trail, 0., .027 * trail)]
-    return pose
+    return pose+[(-.045*recoil,0.,0.),(-.05*recoil,0.,0.)]
 
 
 def export_cyndaquil(model):
     model = named_model(model)
     glb = Glb()
-    glb.doc['asset']['generator'] = 'Geothite Cyndaquil folded-paper authoring v2'
+    glb.doc['asset']['generator'] = 'Geothite Cyndaquil rounded quadruped authoring v3'
     nodes = glb.doc['nodes']
     inverse = []
     for name, parent, pivot in JOINTS:
@@ -241,10 +248,10 @@ def export_cyndaquil(model):
                 'purpose': 'nose-led sniff, planted chest brace and delayed folded-quill recoil; battle cue clocks remain external'}})
     glb.doc['extras'] = {'coordinate_system': COORDINATES, 'source_name': model['name'],
         'source_sha256': geometry_digest(model),
-        'body_reference_height': .716729, 'full_silhouette_height': .91,
+        'body_reference_height': .716729, 'full_silhouette_height': 1.25,
         'geometry_source': 'tools/cyndaquil_sculpt.py',
-        'geometry_preservation': 'explicit authored panels regenerated by tools/cyndaquil_sculpt.py; retained anatomy identities and physical height datum',
-        'animation_contract': 'identity root, planted rear feet, attached face/coat, five rigid folded quills, rotation-only joints'}
+        'geometry_preservation': 'rounded low body and four separate planted legs regenerated by tools/cyndaquil_sculpt.py; retained face and quill identities and physical height datum',
+        'animation_contract': 'identity root, four planted soles, independently articulated legs, fitted face and coat, five attached fire quills, rotation-only joints'}
     return glb.bytes()
 
 

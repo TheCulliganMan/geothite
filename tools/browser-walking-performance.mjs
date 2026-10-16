@@ -1,6 +1,7 @@
 /** Real browser input, frame intervals and GPU upload accounting. No gameplay shortcuts. */
 import { chromium } from 'playwright';
 import { installWebGpuTiming } from './browser-webgpu-timing.mjs';
+import { mergeTerrainWorkerTrace, mergeActorWorkerTrace } from './terrain-worker-trace.mjs';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import os from 'node:os';
@@ -25,6 +26,14 @@ const watchdog = setTimeout(() => {
 }, Number(process.env.PROBE_TIMEOUT_MS ?? 300000));
 try {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, storageState: storage });
+  const networkRequests = [];
+  const networkTasks = [];
+  context.on('requestfinished', request => {
+    if (!/\.wasm(?:\?|$)|\/(?:actor|terrain)-worker\.js|open-(?:people|models)\.json/.test(request.url())) return;
+    networkTasks.push(request.sizes().then(sizes => {
+      networkRequests.push({ url: request.url(), resourceType: request.resourceType(), ...sizes });
+    }, () => {}));
+  });
   if (process.env.GPU_WATERFALL === '1') await context.addInitScript(installWebGpuTiming);
   await context.addInitScript(() => {
     localStorage.setItem('crystal.audio.muted', 'true');
@@ -122,6 +131,7 @@ try {
     if (!bundle) throw new Error('Missing compiled bundle import');
     const wasm = await import(bundle);
     window.walkingWasm = wasm;
+    window.walkingRaw = await wasm.default();
     const { createGameBridge } = await import('./webmcp.js');
     window.walkingBridge = createGameBridge(wasm, { timeoutMs: 120000 });
     if (synchronousAudio) {
@@ -169,8 +179,13 @@ try {
     for (let i = 0; i < 4 && state.status.screen !== 'overworld'; i++) state = await press('a');
   }
   const preview = new URL(url).searchParams.get('preview');
-  assert.equal(state.map_info.name, preview === 'azalea-well' ? 'AzaleaTown' : preview === 'route29' ? 'Route29' : scenario === 'lab-exit' ? 'ElmsLab' : 'NewBarkTown', 'unexpected fixture map');
+  const expectedMap = process.env.EXPECTED_MAP ?? (preview === 'ilex' ? 'IlexForest' : preview === 'azalea-well' ? 'AzaleaTown' : preview === 'route29' ? 'Route29' : scenario === 'lab-exit' ? 'ElmsLab' : 'NewBarkTown');
+  assert.equal(state.map_info.name, expectedMap, 'unexpected fixture map');
   assert.equal(state.status.screen, 'overworld');
+  if (process.env.REQUIRE_EMPTY_PARTY === '1') {
+    assert.deepEqual(state.status.party, [], 'regression must start with the original empty party');
+    report.emptyPartyBefore = state.status.party;
+  }
   if (process.env.PROBE_STARTUP_INPUT === '1') {
     const started = Date.now();
     const pendingBeforeInput = state.presentation?.voxel?.terrain_pending;
@@ -191,30 +206,39 @@ try {
   }
   assert.equal(await toggle.getAttribute('aria-pressed'), String(mode === '2.5d'));
   await page.bringToFront();
-  if (process.env.PROBE_STARTUP_INPUT !== '1') await page.waitForTimeout(5000);
+  if (process.env.PROBE_STARTUP_INPUT !== '1') {
+    const settleMs = Number(process.env.WARMUP_SETTLE_MS ?? 5000);
+    assert.ok(Number.isFinite(settleMs) && settleMs >= 0 && settleMs <= 60000);
+    report.warmupSettleMs = settleMs;
+    await page.waitForTimeout(settleMs);
+  }
   await page.locator('canvas').focus();
   state = await observe();
   if (mode === '2.5d') {
     const deadline = Date.now() + 180000;
     let probed = false;
+    const probe3dInput = async () => {
+      const started = Date.now();
+      const menu = await press('start');
+      assert.ok((menu.observe.menus ?? []).length || /POK.MON|PACK|SAVE/.test(JSON.stringify(menu.observe)),
+        'production Start menu must respond with the 3D camera active');
+      report.first3dControllableMs = Date.now() - navigationStartedAt;
+      report.startup3dInput = { latencyMs: Date.now() - started,
+        pendingBeforeInput: state.presentation.voxel.terrain_pending, voxel: menu.presentation?.voxel };
+      state = await press('b');
+      probed = true;
+    };
     while (!state.presentation?.voxel?.active || state.presentation.voxel.profiles_pending
         || state.presentation.voxel.terrain_pending === true
         || ('terrain_map' in state.presentation.voxel && state.presentation.voxel.terrain_map !== state.map_info.name)
         || state.presentation.voxel.active_frames < 30) {
       assert.ok(Date.now() < deadline, '3D warmup timed out');
       if (!probed && process.env.PROBE_STARTUP_INPUT === '1' && state.presentation?.voxel?.active) {
-        const started = Date.now();
-        const menu = await press('start');
-        assert.ok((menu.observe.menus ?? []).length || /POK.MON|PACK|SAVE/.test(JSON.stringify(menu.observe)),
-          'production Start menu must respond with the 3D camera active');
-        report.first3dControllableMs = Date.now() - navigationStartedAt;
-        report.startup3dInput = { latencyMs: Date.now() - started,
-          pendingBeforeInput: state.presentation.voxel.terrain_pending, voxel: menu.presentation?.voxel };
-        state = await press('b');
-        probed = true;
+        await probe3dInput();
       }
       await page.waitForTimeout(250); state = await observe();
     }
+    if (!probed && process.env.PROBE_STARTUP_INPUT === '1') await probe3dInput();
     assert.equal(state.presentation.voxel.scenery_full_detail, true, 'preserve full-detail models');
   }
   report.fullTerrainReadyMs = Date.now() - navigationStartedAt;
@@ -224,6 +248,10 @@ try {
       start: entry.startTime, responseStart: entry.responseStart, responseEnd: entry.responseEnd,
       duration: entry.duration, transferBytes: entry.transferSize,
       encodedBytes: entry.encodedBodySize, decodedBytes: entry.decodedBodySize })));
+  await Promise.allSettled(networkTasks);
+  report.networkRequests = networkRequests;
+  const actorSubmissionsBeforeWalk = await page.evaluate(() => globalThis.__crystalActorWorkerMetrics?.submitted ?? 0);
+  const workerSubmissionsBeforeWalk = await page.evaluate(() => globalThis.__crystalTerrainWorkerMetrics?.submitted ?? 0);
   const loadBefore = os.loadavg();
   const beginTraceWindow = () => page.evaluate(() => {
     const trace = JSON.parse(walkingWasm.crystal_loading_trace_read());
@@ -260,8 +288,14 @@ try {
     return { ...walkingMetrics, audioPreparation, visible: !document.hidden, focused: document.hasFocus() };
   });
   const after = await observe();
+  if (process.env.REQUIRE_EMPTY_PARTY === '1') {
+    assert.deepEqual(after.status.party, [], 'walking must preserve the empty party without an automatic starter');
+    assert.equal(after.status.screen, 'overworld', 'empty-party walking must remain playable in the overworld');
+    report.emptyPartyAfter = after.status.party;
+  }
   const times = [...metrics.frames].sort((a, b) => a - b);
   report = { ...report, url, mode, scenario, headless, audioControl: process.env.AUDIO_PREPARATION ?? 'default', loadBefore, loadAfter: os.loadavg(), platform: os.platform(), arch: os.arch(), browser: browser.version(), before: state.map_info, after: after.map_info, midpoint: midpoint?.map_info,
+    graphicsContext: process.env.GRAPHICS_CONTEXT ?? 'Concurrent graphics workload not inventoried; no isolation established.',
     error: after.recent_events.error, errors, rendererBefore: state.presentation?.voxel,
     rendererAfter: after.presentation?.voxel,
     timingMeaning: 'visible focused requestAnimationFrame intervals; not GPU timestamps or presented FPS', ...metrics,
@@ -269,6 +303,21 @@ try {
     max: times.at(-1), uploadBytes: metrics.uploads.reduce((n, p) => n + p.width * p.height * 4, 0) };
   const diagnostics = await page.evaluate(() => ({
     rendererModule: window.__crystalRendererBundle?.module ?? null,
+    mainLinearMemoryBytes: walkingRaw.memory.buffer.byteLength,
+    jsHeapApproximate: performance.memory ? {
+      usedBytes: performance.memory.usedJSHeapSize, totalBytes: performance.memory.totalJSHeapSize,
+      limitBytes: performance.memory.jsHeapSizeLimit,
+      meaning: 'Chromium nonstandard approximate main JavaScript heap; excludes worker heaps and cannot be added to Wasm high-water as a process-memory total.',
+    } : null,
+    actorWorker: typeof globalThis.__crystalActorWorkerReady === 'function' ? {
+      readiness: globalThis.__crystalActorWorkerReady(), metrics: globalThis.__crystalActorWorkerMetrics,
+      traces: globalThis.__crystalActorWorkerTraces,
+    } : null,
+    terrainWorker: typeof globalThis.__crystalTerrainWorkerReady === 'function' ? {
+      readiness: globalThis.__crystalTerrainWorkerReady(),
+      metrics: globalThis.__crystalTerrainWorkerMetrics,
+      traces: globalThis.__crystalTerrainWorkerTraces,
+    } : null,
     memory: typeof walkingWasm.crystal_loading_memory_read === 'function'
       ? JSON.parse(walkingWasm.crystal_loading_memory_read()) : null,
     trace: typeof walkingWasm.crystal_loading_trace_read === 'function'
@@ -284,14 +333,108 @@ try {
     Object.assign(report, finalGpuValidation);
   }
   report.memory = diagnostics.memory;
+  report.mainLinearMemoryBytes = diagnostics.mainLinearMemoryBytes;
+  report.jsHeapApproximate = diagnostics.jsHeapApproximate;
   report.rendererModule = diagnostics.rendererModule;
+  if (diagnostics.terrainWorker || new URL(url).searchParams.get('terrainWorker') === '1') {
+    report.terrainWorker = diagnostics.terrainWorker;
+    if (report.terrainWorker && diagnostics.trace) {
+      const events = JSON.parse(diagnostics.trace).traceEvents.filter(e => e.ph === 'X' && !e.inProgress
+        && (e.name.startsWith('worker.') || e.name === 'region.publish_assets'));
+      report.terrainWorker.mainStages = Object.groupBy(events, e => e.name);
+      report.terrainWorker.mainStages = Object.fromEntries(Object.entries(report.terrainWorker.mainStages)
+        .map(([name, samples]) => [name, { count: samples.length,
+          totalMs: samples.reduce((sum, e) => sum + e.dur, 0) / 1000,
+          maxMs: Math.max(...samples.map(e => e.dur)) / 1000 }]));
+    }
+    assert.ok(report.terrainWorker, 'terrainWorker=1 requires the compiled QA bridge');
+    assert.equal(report.terrainWorker.metrics.fallback, 0, 'worker QA must not silently use synchronous fallback');
+    assert.equal(report.terrainWorker.metrics.initFailures, 0, 'worker QA initialization must succeed');
+    assert.equal(report.terrainWorker.metrics.failed, 0, 'worker QA must not fail transport or restoration');
+    if (mode === '2.5d') {
+      assert.ok(report.terrainWorker.metrics.completed > 0, 'worker must actually complete a terrain job');
+      assert.ok(report.terrainWorker.metrics.successfulJobIds.length > 0, 'worker must report successful job IDs');
+    } else {
+      assert.equal(report.terrainWorker.metrics.submitted, workerSubmissionsBeforeWalk,
+        '2D walking must not submit terrain jobs');
+    }
+  }
+  if (diagnostics.actorWorker || new URL(url).searchParams.get('actorWorker') === '1') {
+    report.actorWorker = diagnostics.actorWorker;
+    assert.ok(report.actorWorker, 'actorWorker=1 requires the compiled actor QA bridge');
+    for (const counter of ['fallback', 'initFailures', 'failed']) {
+      assert.equal(report.actorWorker.metrics[counter], 0, `actor worker ${counter} must remain zero`);
+    }
+    if (mode === '2.5d') assert.ok(report.actorWorker.metrics.completed > 0, 'actor worker must actually finish appearances');
+    else assert.equal(report.actorWorker.metrics.submitted, actorSubmissionsBeforeWalk, '2D walking must not submit actor jobs');
+    const stages = JSON.parse(diagnostics.trace ?? '{"traceEvents":[]}').traceEvents
+      .filter(e => e.ph === 'X' && !e.inProgress && e.name.startsWith('actor_worker.'));
+    report.actorWorker.mainStages = Object.fromEntries(Object.entries(Object.groupBy(stages, e => e.name))
+      .map(([name, samples]) => [name, { count: samples.length,
+        totalMs: samples.reduce((sum, e) => sum + e.dur, 0) / 1000,
+        maxMs: Math.max(...samples.map(e => e.dur)) / 1000 }]));
+    report.combinedLinearMemoryHighWaterBytes = diagnostics.mainLinearMemoryBytes
+      + (diagnostics.terrainWorker?.metrics.workerMemory?.peakBytes ?? 0)
+      + (diagnostics.actorWorker?.metrics.workerMemory?.peakBytes ?? 0);
+    report.combinedMemoryMeaning = 'Sum of main/worker WebAssembly linear-memory high-water; excludes JavaScript, driver and browser overhead.';
+    report.actorWorker.overlapWithTerrainMs = Math.max(0, ...(report.actorWorker.traces ?? []).flatMap(actor =>
+      (report.terrainWorker?.traces ?? []).map(terrain => Math.min(actor.cpuEnd, terrain.cpuEnd) - Math.max(actor.cpuStart, terrain.cpuStart))));
+  }
+  if (process.env.REQUIRE_DEFAULT_WORKERS === '1') {
+    assert.ok(report.terrainWorker && report.actorWorker, 'default candidate must install both compiled bridges');
+  }
+  if (process.env.REQUIRE_DORMANT_WORKERS === '1') {
+    assert.equal(mode, '2d');
+    for (const name of ['terrainWorker', 'actorWorker']) {
+      assert.ok(report[name], name + ' dormant bridge must exist');
+      assert.equal(report[name].metrics.initializations, 0, name + ' must not initialize in never-3D session');
+      assert.equal(report[name].metrics.submitted, 0, name + ' must not submit in never-3D session');
+      assert.equal(report[name].metrics.workerMemory ?? null, null, name + ' must not allocate a Wasm instance');
+    }
+    assert.deepEqual(networkRequests.filter(request => /(?:actor|terrain)[-_]worker.*\.wasm(?:\?|$)/.test(request.url)), [],
+      'never-3D session must not download worker Wasm');
+  }
   if (diagnostics.trace) {
+    if (report.terrainWorker?.traces?.length) {
+      const merged = mergeTerrainWorkerTrace(JSON.parse(diagnostics.trace), report.terrainWorker.traces);
+      diagnostics.trace = JSON.stringify(merged.trace);
+      report.terrainWorker.traceAlignment = merged.alignments;
+    }
+    if (report.actorWorker?.traces?.length) {
+      const merged = mergeActorWorkerTrace(JSON.parse(diagnostics.trace), report.actorWorker.traces);
+      diagnostics.trace = JSON.stringify(merged.trace);
+      report.actorWorker.traceAlignment = merged.alignments;
+    }
     report.waterfall = output.replace(/\.json$/, '-trace.json');
     await fs.writeFile(report.waterfall, diagnostics.trace);
     report.droppedTraceEvents = JSON.parse(diagnostics.trace).droppedEvents;
   }
   await fs.writeFile(output, JSON.stringify(report, null, 2));
   await page.screenshot({ path: output.replace(/\.json$/, '.png') });
+  if (process.env.RENDERER_PAIR === '1') {
+    const pairState = snapshot => ({ map: snapshot.map_info, status: snapshot.status,
+      flow: snapshot.flow_state, text: snapshot.observe.text, menus: snapshot.observe.menus });
+    const initial = pairState(await observe());
+    report.rendererPair = { state: initial, hour: new URL(url).searchParams.get('preview') ? 16 : null, images: {} };
+    for (const renderer of ['2d', '3d']) {
+      const options = page.locator('#player-options > summary');
+      if (!await toggle.isVisible()) await options.click();
+      if ((await toggle.getAttribute('aria-pressed') === 'true') !== (renderer === '3d')) await toggle.click();
+      if (await options.isVisible()) await options.click();
+      await page.waitForTimeout(1000);
+      const snapshot = await observe();
+      assert.deepEqual(pairState(snapshot), initial, 'renderer pair must preserve authoritative game state');
+      const image = output.replace(/\.json$/, `-pair-${renderer}.png`);
+      await page.screenshot({ path: image });
+      report.rendererPair.images[renderer] = image;
+    }
+    const pairGpuValidation = await page.evaluate(() => ({
+      contextLosses: walkingMetrics.contextLosses, deviceLosses: walkingMetrics.deviceLosses,
+      gpuErrors: walkingMetrics.gpuErrors, shaderErrors: walkingMetrics.shaderErrors,
+    }));
+    Object.assign(metrics, pairGpuValidation);
+    Object.assign(report, pairGpuValidation);
+  }
   assert.deepEqual(errors, []);
   assert.deepEqual(metrics.contextLosses, [], 'walking must not lose a WebGL context');
   assert.deepEqual(metrics.deviceLosses, [], 'walking must not lose a WebGPU device');

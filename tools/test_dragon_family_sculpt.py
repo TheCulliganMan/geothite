@@ -7,28 +7,7 @@ from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_slime_sculpt import ray_intersections
 from test_kingdra_sculpt import crossed_faces
 ROOT=Path(os.environ.get('CRYSTAL_DRAGON_FAMILY_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
-def surface_distances(parent,points,limit):
- # Independent point/triangle distance over actual stored geometry. Axis rays
- # can miss a nearby tilted end cap; a vertex was 2.1 mm from its parent while
- # the closest axis ray reported 21 mm. No recipe frame or radius is used.
- from chikorita_sculpt import sub,dot,cross
- vs=[tuple(parent['positions'][i:i+3]) for i in range(0,len(parent['positions']),3)];bins={};cell=limit*2
- def key(p):return tuple(int(v//cell) for v in p)
- for i in range(0,len(parent['indices']),3):
-  tri=tuple(vs[j] for j in parent['indices'][i:i+3]);lo=key(tuple(min(v[k] for v in tri)-limit for k in range(3)));hi=key(tuple(max(v[k] for v in tri)+limit for k in range(3)))
-  for x in range(lo[0],hi[0]+1):
-   for y in range(lo[1],hi[1]+1):
-    for z in range(lo[2],hi[2]+1):bins.setdefault((x,y,z),[]).append(tri)
- def distance2(p,tri):
-  a,b,c=tri;e=sub(b,a);f=sub(c,a);v=sub(p,a);n=cross(e,f);nn=dot(n,n);ee=dot(e,e);ff=dot(f,f);ef=dot(e,f);ve=dot(v,e);vf=dot(v,f);den=ee*ff-ef*ef
-  if den>1e-24:
-   u=(ve*ff-vf*ef)/den;w=(vf*ee-ve*ef)/den
-   if u>=0 and w>=0 and u+w<=1:return dot(v,n)**2/nn
-  best=float('inf')
-  for a,b in ((a,b),(b,c),(c,a)):
-   d=sub(b,a);v=sub(p,a);t=max(0,min(1,dot(v,d)/dot(d,d)));best=min(best,sum((v[k]-t*d[k])**2 for k in range(3)))
-  return best
- for p in points:yield min((distance2(p,t)**.5 for t in bins.get(key(p),[])),default=float('inf'))
+from sculpt_test_support import surface_distances
 
 class DragonFamilyTests(unittest.TestCase):
  @classmethod

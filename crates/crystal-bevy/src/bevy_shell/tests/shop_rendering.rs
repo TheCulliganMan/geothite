@@ -555,3 +555,67 @@ fn mart_poke_ball_tokens_render_consistently_in_list_and_confirmation() {
         }
     }
 }
+
+#[test]
+fn renderer_neutral_controller_opens_and_closes_both_department_store_clerks() {
+    let repo=PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+    let pack=explicit.as_ref().map(PathBuf::from)
+        .unwrap_or_else(||repo.join("content-packs/text-tui.crystalpack"));
+    assert!(explicit.is_none()||pack.is_file(),"explicit external pack must exist");
+    if !pack.is_file() {return;}
+    let asset_root=AssetRoot::new(pack.parent().unwrap());
+    let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&pack).expect("verified external pack");
+    let runtime=CrystalRuntime::from_loaded_compiled_pack(&asset_root,loaded).expect("external runtime");
+    let spawn=runtime.title_new_game_spawn_identifier().unwrap();
+    for map in ["GoldenrodDeptStore5F","CeladonDeptStore5F"] {
+        let shell=initialize_bevy_runtime_shell(asset_root.clone(),runtime.clone(),
+            BevyShellStart::NewGameAtRuntimeTile{spawn_identifier:spawn,map_name:map.into(),tile_x:8,tile_y:2},
+            BevyShellConfig{smoke_player_name:Some("CHRIS".into()),..Default::default()}).unwrap();
+        let mut controller=VisibleShellController{shell};
+        settle_visible_shell_until_input(&mut controller.shell).unwrap();
+        let money=controller.shell.shell.session().state().money;
+        for _ in 0..12 {
+            if controller.snapshot().unwrap().overworld.tile==TilePosition::new(8,3) {break;}
+            controller.press(GameButton::Down).unwrap();
+        }
+        assert_eq!(controller.snapshot().unwrap().overworld.tile,TilePosition::new(8,3),"{map}: approach counter");
+        for _ in 0..8 {
+            if controller.snapshot().unwrap().pending_shop.is_some() {break;}
+            controller.press(GameButton::A).unwrap();
+        }
+        let snapshot=controller.snapshot().unwrap();
+        let shop=snapshot.pending_shop.expect("authored clerk opens real shop");
+        let clerk_script=if map=="CeladonDeptStore5F" {"CeladonDeptStore5FClerk2Script"} else {"GoldenrodDeptStore5FClerkScript"};
+        assert_eq!(shop.source_script.rsplit('@').next(),Some(clerk_script),"{map}: authored clerk");
+        assert!(!shop.inventory.is_empty());
+        let mut buy_menu=false;
+        for _ in 0..8 {
+            // Shop surfaces own their production cursor outside the generic script menu.
+            buy_menu=controller.shell.shop_top_cursor.is_some();
+            if buy_menu {break;}
+            controller.press(GameButton::A).unwrap();
+        }
+        assert!(buy_menu,"{map}: production BUY/SELL/QUIT surface");
+        for _ in 0..8 {
+            if controller.shell.shop_top_cursor.is_none() {break;}
+            controller.press(GameButton::A).unwrap();
+        }
+        assert!(controller.shell.shop_top_cursor.is_none(),"{map}: BUY opens inventory");
+        assert!(controller.snapshot().unwrap().pending_shop.is_some());
+        for _ in 0..12 {
+            let snapshot=controller.snapshot().unwrap();
+            if snapshot.pending_shop.is_none()&&!snapshot.ui.text_window_open&&snapshot.ui.menu.is_none() {break;}
+            controller.press(GameButton::B).unwrap();
+        }
+        let closed=controller.snapshot().unwrap();
+        assert!(closed.pending_shop.is_none(),"{map}: shop actually closes");
+        assert!(!closed.ui.text_window_open&&closed.ui.menu.is_none(),"{map}: modal input released");
+        assert_eq!(controller.shell.shell.session().state().money,money,"browse without buying");
+        for _ in 0..12 {
+            controller.press(GameButton::Up).unwrap();
+            if controller.snapshot().unwrap().overworld.tile==TilePosition::new(8,2) {break;}
+        }
+        assert_eq!(controller.snapshot().unwrap().overworld.tile,TilePosition::new(8,2),"{map}: movement resumes");
+    }
+}

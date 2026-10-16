@@ -174,7 +174,7 @@ fn mist_pixels() -> Vec<u8> {
     }
     pixels
 }
-fn leaf_mesh() -> Mesh {
+pub(super) fn leaf_mesh() -> Mesh {
     // A folded, pointed lamina rather than a flat quad or green sphere.
     let positions = vec![
         [-1.0, 0.0, 0.0],

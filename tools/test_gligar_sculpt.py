@@ -3,17 +3,18 @@
 import json,math,unittest
 from pathlib import Path
 from gligar_sculpt import sculpture,HEIGHT
+from gligar_glb import read_gligar,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class GligarTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'gligar.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_gligar(ROOT/'gligar.glb');cls.ps=cls.m['primitives']
  def find(self,prefix):return next(p for p in self.ps if p['part'].startswith(prefix))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'gligar':self.m})
  def test_finite_unit_normals_follow_winding(self):assert_model_shading(self,{'gligar':self.m})
  def test_recipe_parity_height_budget_and_distinct_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
   self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000)
   self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for prefix,n in (('Ear /',2),('Pincer /',2),('Wing /',2),('Wing spar /',2),('Foot claw /',2),('Fang /',2),('Tongue /',1),('Stinger /',1)):

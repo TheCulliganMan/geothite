@@ -8,6 +8,10 @@ use crate::interior_models::{ModelKind, model};
 use crate::live_profiles::{Document, Object};
 use std::sync::OnceLock;
 
+#[path = "room_perimeter.rs"]
+mod room_perimeter;
+pub(super) use room_perimeter::append as append_room_perimeter;
+
 #[derive(Clone, Debug)]
 pub(super) struct Placement {
     pub(super) kind: ModelKind,
@@ -28,6 +32,8 @@ impl Placement {
         })
     }
     pub(super) fn seat_height_pixels(&self, map: &str, source: &VisualTileSource) -> Option<f32> {
+        if map=="EarlsPokemonAcademy"&&self.kind==ModelKind::LinkSeat
+            &&source.tileset_id.as_ref()=="lab"&&source.metatile_id==0x16 {return Some(5.2);}
         if map == "CeladonCafe" && self.kind == ModelKind::ArcadeStool
             && source.tileset_id.as_ref() == "game_corner" && matches!(source.metatile_id, 5 | 6 | 0x19) {
             return Some(5.);
@@ -54,12 +60,35 @@ impl Placement {
 }
 #[path = "native_clinic.rs"]
 mod native_clinic;
+#[path = "native_clinic_fixtures.rs"]
+mod native_clinic_fixtures;
 #[path="native_gift_shop.rs"]
 mod native_gift_shop;
 #[path="traditional_wood_wall.rs"]
 mod traditional_wood_wall;
 #[path="native_safari_office.rs"]
 mod native_safari_office;
+#[path="native_classroom.rs"]
+mod native_classroom;
+#[path="native_radio_room.rs"]
+mod native_radio_room;
+#[path="native_radio_studio.rs"]
+mod native_radio_studio;
+#[path="native_radio_stair.rs"]
+mod native_radio_stair;
+pub(super) fn radio_stair_support_correction(frame:&VisualWorldFrame,cell:bevy::prelude::UVec2,foot:bevy::prelude::Vec2,resolved:&[f32])->f32 {
+    native_radio_stair::support_correction(frame,cell,foot,resolved)
+}
+#[path="native_house_plant.rs"]
+mod native_house_plant;
+#[path = "native_tabletop.rs"]
+mod native_tabletop;
+#[path = "native_table_centerpiece.rs"]
+mod native_table_centerpiece;
+#[path = "native_home_stair.rs"]
+mod native_home_stair;
+#[path = "native_mansion_architecture.rs"]
+mod native_mansion_architecture;
 pub(super) fn built_in_profiles() -> &'static Document {
     static DOCUMENT: OnceLock<Document> = OnceLock::new();
     DOCUMENT.get_or_init(|| {
@@ -208,7 +237,7 @@ fn proportions(kind: ModelKind, width: usize, height: usize) -> (f32, f32) {
         }
         PottedPlant | PlantMagna | PlantTropic | PlantJumbo => (12.0, 23.0),
         WallDomestic | WallTraditional | WallClinical | WallAcoustic | ArcadeWall => {
-            (3.0, source_depth.max(24.0))
+            (3.0, source_depth.max(32.0))
         }
         PictureFrame => (2.0, source_depth),
         ArcadePrizeRack => (10.0, 28.0),
@@ -235,7 +264,7 @@ fn proportions(kind: ModelKind, width: usize, height: usize) -> (f32, f32) {
         ReceptionCounter | LabCounter => (8.0, 10.0),
         HealingMachine => (12.0, 30.0),
         HealingConsole => (13.0, 13.0),
-        ClinicalPartition | TimberPartition => (source_depth, 20.0),
+        ClinicalPartition | TimberPartition => (source_depth, 32.0),
         LabRestorationMachine => (12.0, 22.0),
         LabDisplayTable => (source_depth, 13.0),
         ArcadeMachine => (10.0, 29.0),
@@ -245,7 +274,7 @@ fn proportions(kind: ModelKind, width: usize, height: usize) -> (f32, f32) {
         StationTurnstile => (18.0, 16.0),
         GateTerminal => (9.0, 21.0),
         BroadcastConsole => (14.0, 19.0),
-        WallPanel | WindowWall | RadioWall | GateDoorFrame => (3.0, source_depth),
+        WallPanel | WindowWall | RadioWall | GateDoorFrame => (3.0, source_depth.max(32.0)),
         OpenBook => (13.0, 4.0),
         Memorial => (5.0, 14.0),
     };
@@ -297,14 +326,56 @@ fn ground_sample(
 /// rows or geometry retain the user's live renderer instead of being replaced.
 pub(super) fn traditional_tabletop_height(map:&str,cells:&[&VisualTile],g:&GridGeometry,
     profiles:Option<&Document>,column:usize,row:usize)->Option<f32> {
-    if !traditional_room::floor_map(map)||column>=g.width||row>=g.height
+    if !(traditional_room::floor_map(map)||reviewed_native_room(map)||matches!(map,"ElmsLab"|"EarlsPokemonAcademy"))||column>=g.width||row>=g.height
         ||g.width.checked_mul(g.height)!=Some(cells.len()) {return None;}
-    let selected=crate::interior_models::selected_model(ModelKind::LowTable)?;
-    if !selected.has_native_low_table_materials() {return None;}
+    // Stationary book/Pokedex props rest on the modeled tabletop. This is
+    // presentation support only; the player's walking footing stays unchanged.
     resolve(map,cells,g,profiles).into_iter().find(|p|
-        native_gift_shop::traditional_table(map,p,cells,g)
-        &&column>=p.column&&column<p.column+p.width&&row>=p.row&&row<p.row+p.height)
+        ((native_gift_shop::traditional_table(map,p,cells,g)
+            && crate::interior_models::selected_model(ModelKind::LowTable)
+                .is_some_and(|m|m.has_native_low_table_materials()))
+        || ((native_house_dining_table(map,cells,g,p)||native_classroom::matches(map,p,cells,g)&&p.kind==ModelKind::DiningTable)
+            && crate::interior_models::selected_model(ModelKind::DiningTable)
+                .is_some_and(|m|m.has_native_dining_table_materials())))
+        &&column>=p.column&&column<p.column+p.width&&row>=p.row
+        &&row<p.row+if p.kind==ModelKind::DiningTable {native_dining_table_rows(p)}else{p.height})
         .map(|p|(p.base_pixels+p.height_pixels)*g.tile_height/8.)
+}
+
+// The apron is part of the complete source claim, beyond the actual tabletop.
+fn native_dining_table_rows(p:&Placement)->usize {
+    match (p.width,p.height) {(4,5)=>4,(4,3)=>2,_=>p.height}
+}
+
+/// A conservative seat candidate test, derived from the same profile kinds
+/// and source classifiers as resolve(). It never filters ownership within a
+/// candidate scene: the complete resolver still decides overlaps and claims.
+pub(super) fn has_seating_source_candidate(map: &str, cells: &[&VisualTile],
+    profiles: Option<&Document>) -> bool {
+    let seat_kind = |kind| matches!(kind, ModelKind::Stool | ModelKind::ArcadeStool
+        | ModelKind::Chair | ModelKind::LinkSeat | ModelKind::StationBench | ModelKind::Cushion);
+    let atlases: std::collections::HashSet<&str> = cells.iter()
+        .map(|tile|tile.source.tileset_id.as_ref()).collect();
+    if built_in_profiles().objects.iter()
+        .chain(profiles.into_iter().flat_map(|document|document.objects.iter()))
+        .any(|object| profile_kind(object).is_some_and(seat_kind)
+            && atlases.contains(object.tileset.as_str())) { return true; }
+    // Independent authored seat classifiers are not all profile entries.
+    // A single possible source cell is sufficient; exact complete-drawing,
+    // map, ground and overlap checks remain in the full resolver below.
+    cells.iter().any(|tile| {
+        let source=&tile.source;
+        crate::house::furniture_local(source).is_some_and(|(_,_,kind)|
+            kind==crate::house::FurnitureKind::Stool)
+            || crate::house::traditional_cushion_local(source).is_some()
+            || crate::cafe::celadon_counter_stool_local(map,source).is_some()
+            || crate::pokecenter::link_floor_seat_local(map,source).is_some()
+            || crate::pokecom::chair_local(map,source).is_some()
+            || crate::train_station::seat_local(map,source).is_some()
+            || crate::house::mansion_office_seat_local(map,source).is_some()
+            || (native_radio_room::is_map(map)&&native_radio_studio::gold_local(source).is_some())
+            || mart_display_model(source).is_some_and(seat_kind)
+    })
 }
 
 pub(super) fn resolve(
@@ -332,7 +403,11 @@ pub(super) fn resolve(
                             || kanto_native_floor_map(map)
                             || reviewed_retail_room(map)
                             || traditional_room::floor_map(map)
-                            || map == "CianwoodGym")
+                            || native_bookcase_room(map)
+                            || map == "CianwoodGym" || map=="GoldenrodUnderground" || map=="BurnedTower1F"
+                            || native_radio_room::is_map(map)
+                            || super::modeled_dungeons::tin_tower_guardian_map(map)
+                            || super::modeled_dungeons::lighthouse_map(map))
                             && !built_in_profiles().objects.iter().any(|canonical| canonical == *object))
                 })
                 .cloned()
@@ -351,16 +426,25 @@ pub(super) fn resolve(
             }
         }
     }
+    native_clinic_fixtures::candidates(map,cells,geometry,&mut claimed,&mut out);
     native_safari_office::candidates(map,cells,geometry,&mut claimed,&mut out);
+    native_classroom::candidates(map,cells,geometry,&mut claimed,&mut out);
+    native_radio_room::candidates(map,cells,geometry,&mut claimed,&mut out);
+    native_radio_studio::candidates(map,cells,geometry,&mut claimed,&mut out);
+    native_radio_stair::candidates(map,cells,geometry,&mut claimed,&mut out);
     append_prize_booth_candidate(map, cells, geometry, &mut claimed, &mut out);
     for object in &built_in_profiles().objects {
         let Some(kind) = profile_kind(object) else {
             continue;
         };
+        // This room's solid plank course uses its own complete native drawing.
+        if map=="WiseTriosRoom"&&object.tileset=="traditional_house"
+            &&object.metatile==3&&kind==ModelKind::WallTraditional {continue;}
         let kind=if kind==ModelKind::FlowerStand && reviewed_native_room(map) && object.tileset=="house"
             && matches!(object.metatile,0x30|0x31) {ModelKind::LowTable}else{kind};
-        // Oak's blank timber desk has no specimen displays in the source.
-        let kind=if map=="OaksLab" && object.name=="Shared lab display table" {
+        // Elm's balls are authoritative objects, not fixed display specimens.
+        // Oak's matching desk is empty. Both need the bare source table.
+        let kind=if matches!(map,"OaksLab"|"ElmsLab") && object.name=="Shared lab display table" {
             ModelKind::DiningTable
         } else {kind};
         let cable_fixture = cable_club_fixture(object, map);
@@ -422,7 +506,7 @@ pub(super) fn resolve(
                     && object.tileset=="players_room" && object.name=="Player bedroom table" && w==4 && h==3 {
                     (16.,10.)
                 } else {(depth_pixels,height_pixels)};
-                let p = Placement {
+                let mut p = Placement {
                     kind,
                     column,
                     row,
@@ -437,6 +521,9 @@ pub(super) fn resolve(
                     base_pixels: 0.0,
                     footing_pixels: object.footing_pixels,
                 };
+                if native_elm_fixture_source(map,&p,cells,geometry).is_some() {
+                    p.depth_pixels=24.;p.height_pixels=8.;
+                }
                 if reviewed_arcade_room(map) && matches!(kind,ModelKind::ArcadeMachine|ModelKind::ArcadePair)
                     && native_arcade_source(map,&p,cells,geometry).is_none() {continue;}
                 if kind==ModelKind::LinkSeat && kanto_native_floor_map(map) && map.ends_with("Pokecenter2FBeta")
@@ -471,6 +558,9 @@ pub(super) fn resolve(
             } else if kind==ModelKind::DrawerCabinet && reviewed_native_room(map)
                 && source.tileset_id.as_ref()=="players_house" && source.metatile_id==0x11 {
                 (8.0,16.0)
+            } else if kind==ModelKind::Radio && reviewed_native_room(map)
+                && source.tileset_id.as_ref()=="house" && source.metatile_id==0x1d {
+                (8.,16.)
             } else if map=="RedsHouse2F" && kind==ModelKind::DiningTable
                 && source.tileset_id.as_ref()=="players_house" && source.metatile_id==0x20 {
                 (16.0,10.0)
@@ -637,6 +727,9 @@ pub(super) fn resolve(
     add(grouped_flat_card_placements(cells,geometry,crate::train_station::FLOOR_TILE,true,|s| {
         crate::train_station::planter_drawing_local(map,s)
     }),&|_|ModelKind::LongPlanter);
+    add(grouped_flat_card_placements(cells,geometry,0x01,false,|s| {
+        mirrored_gate_planter_local(map,s)
+    }),&|_|ModelKind::LongPlanter);
     add(grouped_flat_card_placements(cells,geometry,crate::train_station::FLOOR_TILE,true,|s| {
         crate::train_station::ticket_box_local(map,s)
     }),&|_|ModelKind::VendingMachine);
@@ -679,6 +772,7 @@ pub(super) fn resolve(
             crate::players_house::red_desk_local(s).map(|(x,y)|(x,y,4,3))
         }),&|_|ModelKind::DiningTable);
     }
+    add(wise_trios_divider_placements(map,cells,geometry),&|_|ModelKind::WallTraditional);
     drop(add);
     // Complete dining drawings that cross metatile boundaries are already
     // validated by the established table matcher (including native corners).
@@ -722,11 +816,26 @@ pub(super) fn resolve(
     append_casino_candidates(map, cells, geometry, &mut claimed, &mut out);
     append_cafe_architecture_candidates(map,cells,geometry,&mut claimed,&mut out);
     append_cianwood_walls(map, cells, geometry, &mut claimed, &mut out);
+    native_mansion_architecture::candidates(map,cells,geometry,&mut claimed,&mut out);
     append_signature_candidates(map, cells, geometry, &mut claimed, &mut out);
     native_clinic::append_mirrored_wall(map,cells,geometry,&mut claimed,&mut out);
     native_clinic::append_pc_headers(map,cells,geometry,&mut claimed,&mut out);
     append_stair_candidates(map, cells, geometry, &mut claimed, &mut out);
     append_player_house_wall_fragments(map, cells, geometry, &mut claimed, &mut out);
+    if let Some(ground)=ground_sample(cells,map,"mansion",0x11) {
+        for p in &mut out {
+            if native_mansion_corridor_furniture(map,p,cells,geometry) {
+                // These complete furnishings stand in the pink room inset,
+                // including block0f's cabinet/clock beside the gold hallway.
+                p.ground=ground;
+            }
+        }
+    }
+    for p in &mut out {
+        if let Some((depth,height))=native_radio_studio::equipment_size(map,p,cells,geometry) {
+            p.depth_pixels=depth;p.height_pixels=height;
+        }
+    }
     out
 }
 
@@ -992,7 +1101,7 @@ fn native_mansion_lounge_table(map:&str,p:&Placement,cells:&[&VisualTile],g:&Gri
             ==Some(((j%4)as u8,(j/4)as u8,4,4)))
 }
 fn native_oak_table(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
-    map=="OaksLab" && p.kind==ModelKind::DiningTable && p.width==6 && p.height==3
+    matches!(map,"OaksLab"|"ElmsLab") && p.kind==ModelKind::DiningTable && p.width==6 && p.height==3
         && p.indices(g.width).enumerate().all(|(j,i)| {
             let x=j%6;let y=j/6;let s=&cells[i].source;
             s.tileset_id.as_ref()=="lab"
@@ -1029,6 +1138,53 @@ fn native_port_plant(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)
             &&s.subtile_column==first.subtile_column+(j%2)as u8&&s.subtile_row==(j/2)as u8
             &&s.tile_index==[30,31,46,47,62,63][j]})
 }
+
+fn mirrored_gate_planter_local(map:&str,s:&VisualTileSource)->Option<(u8,u8,usize,usize)> {
+    if map!="GoldenrodUnderground"||s.tileset_id.as_ref()!="gate"||s.metatile_id!=0x3a
+        ||s.subtile_column<2||s.subtile_column>3||s.subtile_row>3 {return None;}
+    let x=s.subtile_column-2;let y=s.subtile_row;
+    let tile=match y {0=>[0x38,0x39][x as usize],3=>[0x15,0x16][x as usize],_=>[0x05,0x06][x as usize]};
+    (s.tile_index==tile).then_some((x,y,2,4))
+}
+
+fn native_gate_plant_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
+    if !(super::gate_counters::reviewed_gate_map(map)||map=="GoldenrodUnderground")
+        ||p.base_pixels!=0.||p.width!=2||cells.len()!=g.width*g.height
+        ||p.column+2>g.width||p.row+p.height>g.height {return false;}
+    let first=&cells[p.row*g.width+p.column].source;
+    let long=p.kind==ModelKind::LongPlanter&&p.height==4&&map=="GoldenrodUnderground"
+        &&matches!((first.metatile_id,first.subtile_column,first.subtile_row),(0x38,0,0)|(0x3a,2,0));
+    let small=p.kind==ModelKind::PottedPlant&&p.height==2&&match first.metatile_id {
+        0x39=>matches!((first.subtile_column,first.subtile_row),(0,2)|(2,2)),
+        0x33=>map=="GoldenrodUnderground"&&(first.subtile_column,first.subtile_row)==(2,2),
+        _=>false,
+    };
+    if !small&&!long{return false;}
+    p.indices(g.width).enumerate().all(|(j,i)| {
+        let source=&cells[i].source;let row=j/2;
+        source.tileset_id.as_ref()=="gate"&&source.metatile_id==first.metatile_id
+            &&source.subtile_column==first.subtile_column+(j%2)as u8
+            &&usize::from(source.subtile_row)==usize::from(first.subtile_row)+row
+            &&source.tile_index==if row==0 {[0x38,0x39][j%2]}
+                else if row==p.height-1 {[0x15,0x16][j%2]}else{[0x05,0x06][j%2]}
+    })
+}
+
+// Mansion block11 has a compact dense green crown above a gold pot, not
+// the tall pale imported foliage. Only the complete native four-cell drawing
+// owns this adaptation; edited/custom/other-family plants keep their paths.
+fn native_mansion_plant(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
+    matches!(map,"CeladonMansion1F"|"CeladonMansion2F")
+        &&p.kind==ModelKind::PottedPlant&&p.width==2&&p.height==2&&p.base_pixels==0.
+        &&p.column+2<=g.width&&p.row+2<=g.height&&cells.len()==g.width*g.height
+        &&p.indices(g.width).enumerate().all(|(j,i)| {
+            let s=&cells[i].source;
+            s.tileset_id.as_ref()=="mansion"&&s.metatile_id==0x11
+                &&s.subtile_column==2+(j%2)as u8&&s.subtile_row==2+(j/2)as u8
+                &&s.tile_index==[0x2e,0x2f,0x5e,0x5f][j]
+        })
+}
+const MANSION_PLANT_PIXELS:[[usize;2];6]=[[1,3],[3,3],[2,0],[4,9],[5,9],[2,8]];
 
 fn native_facility_plant(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
     if !matches!(map,"TrainerHouseB1F"|"SilphCo1F")||p.kind!=ModelKind::PottedPlant||p.width!=2||p.height!=4 {return false;}
@@ -1099,7 +1255,7 @@ fn native_store_shelf_neighbors(map:&str,p:&Placement,cells:&[&VisualTile],g:&Gr
     })
 }
 fn native_lab_workstation_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->Option<([[f32;2];8],[[f32;2];2])> {
-    if map!="OaksLab"||p.kind!=ModelKind::LabWorkstation||p.width!=4||p.height!=3 {return None;}
+    if !matches!(map,"OaksLab"|"ElmsLab")||p.kind!=ModelKind::LabWorkstation||p.width!=4||p.height!=3 {return None;}
     if !p.indices(g.width).enumerate().all(|(j,i)| {
         let s=&cells[i].source;let row=j/4;
         s.tileset_id.as_ref()=="lab"&&s.metatile_id==if row<2 {8}else{12}
@@ -1108,6 +1264,130 @@ fn native_lab_workstation_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&G
     }) {return None;}
     Some((native_source_swatches(p,g,[[24,5],[9,9],[9,9],[0,1],[24,5],[4,4],[4,4],[0,1]]),
         native_source_swatches(p,g,[[2,17],[0,19]])))
+}
+fn native_elm_fixture_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->Option<[[f32;2];4]> {
+    if map!="ElmsLab"||p.width!=4||p.height!=4||p.kind!=ModelKind::LabRestorationMachine {return None;}
+    let name="Lab restoration machine";
+    let object=built_in_profiles().objects.iter().find(|o|o.name==name)?;
+    if !p.indices(g.width).enumerate().all(|(j,i)| {
+        let s=&cells[i].source;let y=j/4;let x=j%4;
+        s.tileset_id.as_ref()=="lab"&&s.metatile_id==if p.kind==ModelKind::LabRestorationMachine&&y>=2{0x18}else{object.metatile}
+            &&s.subtile_column==x as u8&&s.subtile_row==((object.origin[1]as usize+y)%4)as u8
+            &&s.tile_index==object.tiles[y][x]
+    }) {return None;}
+    let [dark,shade,gray,white]=[[1,8],[0,8],[14,8],[14,9]];
+    Some(native_source_swatches(p,g,[dark,shade,gray,white]))
+}
+fn append_native_elm_healing_machine(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,
+    b:[f32;4],swatches:[[f32;2];4]) {
+    let [w,e,_,s]=b;let scale=g.tile_height/8.;let n=s-24.*scale;
+    let ring=|inset:f32| {
+        let [w,e,n,s]=[w+inset*scale,e-inset*scale,n+inset*scale,s-inset*scale];
+        let c=0.8*scale;
+        [[w+c,n],[e-c,n],[e,n+c],[e,s-c],[e-c,s],[w+c,s],[w,s-c],[w,n+c]]
+    };
+    let mut triangle=|points:[[f32;3];3],uv:[f32;2]| {
+        let [a,b,c]=points.map(Vec3::from_array);let cross=(b-a).cross(c-a);
+        if cross.length_squared()<0.000001 {return;}
+        let normal=cross.normalize();let first=out.positions.len()as u32;
+        out.positions.extend(points);out.normals.extend([normal.to_array();3]);out.uvs.extend([uv;3]);
+        out.colors.extend([crate::interior_models::authored_face_color([1.;4],normal);3]);
+        out.indices.extend([first,first+1,first+2]);
+    };
+    // Low rounded chassis: the source's last eight rows are its front, not a
+    // tall pair of cylinders. Beveled rings avoid hard block-shaped corners.
+    for (a,ya,b,yb,uv) in [(ring(0.4),0.,ring(0.),0.4,swatches[1]),
+        (ring(0.),0.4,ring(0.),7.4,swatches[2]),(ring(0.),7.4,ring(0.6),8.,swatches[3])] {
+        for i in 0..8 {
+            if i==4&&ya==0.4 {continue;}
+            let j=(i+1)%8;
+            let points=[[b[j][0],yb*scale,b[j][1]],[b[i][0],yb*scale,b[i][1]],
+                [a[i][0],ya*scale,a[i][1]],[a[j][0],ya*scale,a[j][1]]];
+            // Reverse winding so all exterior normals point out/up.
+            triangle([points[0],points[2],points[1]],uv);triangle([points[0],points[3],points[2]],uv);
+        }
+    }
+    let outer=ring(0.6);
+    let inner=[[w+scale,n+scale],[e-scale,n+scale],[e-scale,n+scale],[e-scale,s-scale],
+        [e-scale,s-scale],[w+scale,s-scale],[w+scale,s-scale],[w+scale,n+scale]];
+    for i in 0..8 {let j=(i+1)%8;
+        let p=|v:[f32;2]|[v[0],8.*scale,v[1]];
+        triangle([p(outer[j]),p(outer[i]),p(inner[i])],swatches[3]);
+        triangle([p(outer[j]),p(inner[i]),p(inner[j])],swatches[3]);
+    }
+    drop(triangle);
+    let (left,right,north,south)=(w+scale,e-scale,n+scale,s-scale);
+    let x_at=|x:f32|left+(right-left)*x/32.;let z_at=|y:f32|north+(south-north)*y/24.;
+    for y in 0..3 {for x in 0..4 {
+        let low=if matches!(x,1|2)&&y>=1 {if y==1 {continue;}23.}else{y as f32*8.};
+        let high=(y+1)as f32*8.;let uv=g.uv(p.column+x,p.row+y);
+        let v0=uv.2+(uv.3-uv.2)*(low-y as f32*8.)/8.;
+        append_top(out,[x_at(x as f32*8.),x_at((x+1)as f32*8.),z_at(low),z_at(high)],8.*scale,
+            (uv.0,uv.1,v0,uv.3));
+    }}
+    let bay=[x_at(8.),x_at(24.),z_at(8.),z_at(23.)];
+    let first=out.positions.len();append_top(out,bay,5.5*scale,(0.,0.,0.,0.));out.uvs[first..].fill(swatches[0]);
+    let [a,b,c,d]=bay;
+    for (points,normal) in [
+        ([[a,5.5*scale,c],[b,5.5*scale,c],[b,8.*scale,c],[a,8.*scale,c]],Vec3::Z),
+        ([[b,5.5*scale,d],[a,5.5*scale,d],[a,8.*scale,d],[b,8.*scale,d]],Vec3::NEG_Z),
+        ([[a,5.5*scale,d],[a,5.5*scale,c],[a,8.*scale,c],[a,8.*scale,d]],Vec3::X),
+        ([[b,5.5*scale,c],[b,5.5*scale,d],[b,8.*scale,d],[b,8.*scale,c]],Vec3::NEG_X)] {
+        append_quad(out,points,normal.to_array(),[swatches[1];4],
+            crate::interior_models::authored_face_color([1.;4],normal));
+    }
+    for x in 0..4 {
+        let uv=g.uv(p.column+x,p.row+3);let a=w+0.8*scale+(e-w-1.6*scale)*x as f32/4.;
+        let b=w+0.8*scale+(e-w-1.6*scale)*(x+1)as f32/4.;
+        append_quad(out,[[b,0.4*scale,s],[b,7.4*scale,s],[a,7.4*scale,s],[a,0.4*scale,s]],
+            Vec3::Z.to_array(),[[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2],[uv.0,uv.3]],
+            crate::interior_models::authored_face_color([1.;4],Vec3::Z));
+    }
+}
+fn native_elm_central_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->Option<[[f32;2];8]> {
+    if map!="ElmsLab"||p.kind!=ModelKind::LabCounter||p.width!=4||p.height!=4 {return None;}
+    let object=built_in_profiles().objects.iter().find(|o|o.name=="Lab central desk assembly")?;
+    if !p.indices(g.width).enumerate().all(|(j,i)| {let s=&cells[i].source;
+        s.tileset_id.as_ref()=="lab"&&s.metatile_id==0x21&&s.subtile_column==(j%4)as u8
+            &&s.subtile_row==(j/4)as u8&&s.tile_index==object.tiles[j/4][j%4]
+    }) {return None;}
+    // These source tiles select VRAM bank one: raw81 is PNG61, not PNG81.
+    let [dark,shade,gray,white]=[[18,8],[28,8],[0,8],[19,8]];
+    Some(native_source_swatches(p,g,[shade,gray,gray,white,gray,dark,dark,white]))
+}
+fn append_native_elm_desk(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4],swatches:[[f32;2];8]) {
+    let [w,e,_,s]=b;let scale=g.tile_height/8.;let n=s-16.*scale;let top=10.*scale;
+    let first=out.positions.len();let indices=out.indices.len();
+    architecture_box(out,[w,e,0.,top,n,s],[1.;3]);out.uvs[first..].fill(swatches[2]);
+    out.indices.drain(indices..indices+12);
+    // Source rows12..27 describe the phone/console worktop; the final four
+    // pixels describe its dark front apron. Floor and the figure above it
+    // are not stretched onto the physical desk or turned into a chair.
+    for (a,b) in [(12,16),(16,24),(24,28)] {for x in 0..4 {
+        let uv=g.uv(p.column+x,p.row+a/8);
+        let v0=uv.2+(uv.3-uv.2)*(a%8)as f32/8.;
+        let v1=v0+(uv.3-uv.2)*(b-a)as f32/8.;
+        append_top(out,[w+(e-w)*x as f32/4.,w+(e-w)*(x+1)as f32/4.,
+            n+(a-12)as f32*scale,n+(b-12)as f32*scale],top,(uv.0,uv.1,v0,v1));
+    }}
+    for x in 0..4 {
+        let uv=g.uv(p.column+x,p.row+3);let a=w+(e-w)*x as f32/4.;let b=w+(e-w)*(x+1)as f32/4.;
+        append_quad(out,[[b,0.,s],[b,top,s],[a,top,s],[a,0.,s]],[0.,0.,1.],
+            [[uv.1,uv.3],[uv.1,(uv.2+uv.3)*0.5],[uv.0,(uv.2+uv.3)*0.5],[uv.0,uv.3]],
+            crate::interior_models::authored_face_color([1.;4],Vec3::Z));
+    }
+    let mut piece=|rect:[f32;6],uv:[f32;2]| {
+        let first=out.positions.len();
+        architecture_box(out,[w+rect[0]*scale,w+rect[1]*scale,top+rect[2]*scale,top+rect[3]*scale,
+            n+rect[4]*scale,n+rect[5]*scale],[1.;3]);out.uvs[first..].fill(uv);
+    };
+    piece([3.,12.,0.,0.8,3.,10.],swatches[2]);
+    for r in [[4.,11.,0.8,1.5,3.,5.],[3.,5.,0.8,1.5,4.,8.],[10.,12.,0.8,1.5,4.,8.]] {piece(r,swatches[0]);}
+    piece([18.,30.,0.,1.3,2.,12.],swatches[2]);
+    piece([20.,28.,1.3,1.5,3.,6.],swatches[5]);
+    for y in 0..2 {for x in 0..5 {
+        piece([19.+x as f32*1.8,20.+x as f32*1.8,1.3,1.5,8.+y as f32*1.5,9.+y as f32*1.5],swatches[3]);
+    }}
 }
 fn native_mansion_workstation_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->Option<[[f32;2];8]> {
     let block=cells[p.row*g.width+p.column].source.metatile_id;
@@ -1125,6 +1405,26 @@ fn native_mansion_workstation_source(map:&str,p:&Placement,cells:&[&VisualTile],
         }) {return None;}
     Some(native_source_swatches(p,g,[[20,5],[1,2],[3,10],[1,1],[9,10],[0,1],[21,6],[24,5]]))
 }
+const MANSION_CLOCK_PIXELS:[[usize;2];4]=[[1,8],[3,5],[7,12],[3,10]];
+fn native_mansion_clock_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->Option<[[f32;2];4]> {
+    if !matches!(map,"CeladonMansion1F"|"CeladonMansion2F"|"CeladonMansion3F")
+        ||p.kind!=ModelKind::PendulumClock||p.width!=2||p.height!=4||p.base_pixels!=0.
+        ||p.column+2>g.width||p.row+4>g.height||cells.len()!=g.width*g.height{return None;}
+    p.indices(g.width).enumerate().all(|(j,i)| {
+        let s=&cells[i].source;
+        s.tileset_id.as_ref()=="mansion"&&s.metatile_id==0xf
+            &&s.subtile_column==2+(j%2)as u8&&s.subtile_row==(j/2)as u8
+            &&s.tile_index==[0x36,0x38,0x24,0x25,0x34,0x35,0x32,0x33][j]
+    }).then(||native_source_swatches(p,g,MANSION_CLOCK_PIXELS))
+}
+fn native_mansion_corridor_furniture(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
+    matches!(map,"CeladonMansion1F"|"CeladonMansion2F"|"CeladonMansion3F")
+        &&cells[p.row*g.width+p.column].source.tileset_id.as_ref()=="mansion"
+        &&(native_bookcase_source(map,p,cells,g).is_some()
+            ||native_mansion_workstation_source(map,p,cells,g).is_some()
+            ||native_mansion_clock_source(map,p,cells,g).is_some())
+}
+
 fn native_link_seat_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->Option<[[f32;2];4]> {
     if p.kind!=ModelKind::LinkSeat || p.width!=2 || p.height!=2 {return None;}
     let block=cells[p.row*g.width+p.column].source.metatile_id;
@@ -1278,6 +1578,15 @@ pub(super) fn append(
     claimed: &mut [bool],
     world_origin: [i32; 2],
 ) -> bool {
+    append_with_tables(mesh,map,cells,geometry,p,claimed,world_origin,&[])
+}
+
+/// Production supplies the complete resolved furnishings, so a seat can face
+/// its actual adjacent table without guessing from an individual tile's paint.
+pub(super) fn append_with_tables(
+    mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTile],geometry:&GridGeometry,
+    p:&Placement,claimed:&mut[bool],world_origin:[i32;2],tables:&[Placement],
+) -> bool {
     if p.indices(geometry.width).any(|i| claimed[i]) {
         return false;
     }
@@ -1286,6 +1595,17 @@ pub(super) fn append(
         return true;
     };
     let piece_source=&cells[p.row*geometry.width+p.column].source;
+    if (native_clinic_fixtures::station(map,p,cells,geometry) && !selected.has_native_television_materials())
+        || (native_clinic_fixtures::stair(map,p,cells,geometry).is_some() && !selected.has_native_stair_materials()) {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
+    if native_classroom::matches(map,p,cells,geometry)&&!native_classroom::materials(p.kind,selected) {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
+    if native_radio_room::matches(map,p,cells,geometry)&&p.kind==ModelKind::PottedPlant
+        &&!selected.has_native_safari_plant_materials() {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
     if native_gift_shop::traditional_table(map,p,cells,geometry)
         && !selected.has_native_low_table_materials() {
         append_missing_source(mesh,geometry,p,claimed);return true;
@@ -1315,7 +1635,8 @@ pub(super) fn append(
         && !selected.has_native_ticket_materials() {
         append_missing_source(mesh,geometry,p,claimed);return true;
     }
-    if native_station_chair_source(map,p,cells,geometry) && !selected.has_native_station_chair_material() {
+    if (native_station_chair_source(map,p,cells,geometry)||native_radio_room::chair_source(map,p,cells,geometry))
+        && !selected.has_native_station_chair_material() {
         append_missing_source(mesh,geometry,p,claimed);return true;
     }
     if native_station_plant_source(map,p,cells,geometry) && (!selected.has_native_station_plant_materials()
@@ -1326,30 +1647,41 @@ pub(super) fn append(
         && !selected.has_native_bed_materials() {
         append_missing_source(mesh,geometry,p,claimed);return true;
     }
+    if reviewed_native_room(map) && native_house_radio_source(p,cells,geometry)
+        && (!selected.has_native_house_radio_materials()
+            || crate::interior_models::selected_model(ModelKind::DrawerCabinet)
+                .is_none_or(|m|!m.has_native_home_fixture_materials())) {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
     if reviewed_native_room(map) && native_home_fixture_source(p, cells, geometry).is_some()
         && !selected.has_native_home_fixture_materials() {
         append_missing_source(mesh, geometry, p, claimed);
         return true;
     }
     if reviewed_native_room(map) && native_computer_source(p,cells,geometry).is_some()
-        && !selected.has_native_computer_materials() {
+        && (!selected.has_native_computer_materials()
+            || piece_source.tileset_id.as_ref()=="house" && crate::interior_models::selected_model(ModelKind::DrawerCabinet)
+                .is_none_or(|m|!m.has_native_home_fixture_materials())) {
         append_missing_source(mesh,geometry,p,claimed);
         return true;
     }
-    if reviewed_native_room(map)
-        && matches!(p.kind,ModelKind::Bookcase|ModelKind::LabBookcase)
-        && matches!((piece_source.tileset_id.as_ref(),piece_source.tile_index),
-            ("house",0x32)|("players_house",0x0e)|("players_room",0x05)|("lab",0x05)|("mansion",0x36))
-        && p.width%2==0 && p.height>=2
+    if (native_home_stair::source(map,p,cells,geometry).is_some()
+        ||native_mansion_architecture::stair(map,p,cells,geometry).is_some()
+        ||native_radio_stair::stair(map,p,cells,geometry).is_some())&&!selected.has_native_stair_materials() {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
+    if native_mansion_clock_source(map,p,cells,geometry).is_some()&&!selected.has_native_gift_fixture_materials() {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
+    if native_bookcase_source(map,p,cells,geometry).is_some()
         && selected.native_bookcase_structural_mask().is_none() {
-        append_missing_source(mesh,geometry,p,claimed);
-        return true;
+        append_missing_source(mesh,geometry,p,claimed);return true;
     }
     if reviewed_native_room(map) && native_house_television_source(p,cells,geometry).is_some()
         && !selected.has_native_television_materials() {
         append_missing_source(mesh,geometry,p,claimed);return true;
     }
-    if native_house_dining_table(map,cells,geometry,p) && !selected.has_native_dining_table_materials() {
+    if (native_house_dining_table(map,cells,geometry,p)||native_radio_studio::table(map,p,cells,geometry)) && !selected.has_native_dining_table_materials() {
         append_missing_source(mesh,geometry,p,claimed);return true;
     }
     if p.kind==ModelKind::TrashCan && !selected.has_native_trashcan_materials() {
@@ -1373,8 +1705,26 @@ pub(super) fn append(
             append_missing_source(mesh,geometry,p,claimed);return true;
         }
     }
-    if p.kind==ModelKind::PottedPlant&&(native_safari_office::matches(map,p,cells,geometry)||native_facility_plant(map,p,cells,geometry)||native_port_plant(map,p,cells,geometry)||native_store_plant_source(map,p,cells,geometry))
+    if p.kind==ModelKind::PottedPlant&&(native_house_plant::source(map,p,cells,geometry)||native_mansion_plant(map,p,cells,geometry)||native_safari_office::matches(map,p,cells,geometry)||native_facility_plant(map,p,cells,geometry)||native_port_plant(map,p,cells,geometry)||native_store_plant_source(map,p,cells,geometry)||native_gate_plant_source(map,p,cells,geometry))
         &&!selected.has_native_safari_plant_materials() {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
+    if p.kind==ModelKind::LongPlanter&&native_gate_plant_source(map,p,cells,geometry)
+        &&!selected.has_native_station_plant_materials() {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
+    if (native_radio_studio::computer(map,p,cells,geometry)&&!selected.has_native_radio_terminal_materials())
+        || (native_radio_studio::equipment_size(map,p,cells,geometry).is_some()
+            &&!native_radio_studio::computer(map,p,cells,geometry)&&!selected.has_native_radio_equipment_materials()) {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
+    if native_radio_studio::cap(map,p,cells,geometry)&&!native_radio_studio::cap_ready(map,p,cells,geometry,tables) {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
+    if native_radio_studio::grille_foot(map,p,cells,geometry)&&!native_radio_studio::grille_foot_ready(map,p,cells,geometry,tables) {
+        append_missing_source(mesh,geometry,p,claimed);return true;
+    }
+    if native_radio_studio::side_missing_context(map,p,cells,geometry,tables) {
         append_missing_source(mesh,geometry,p,claimed);return true;
     }
     let source = &cells[p.ground];
@@ -1384,9 +1734,9 @@ pub(super) fn append(
         if traditional_wood_wall::source(map,p,cells,geometry) {
             let floor=geometry.uv(p.column+2,p.row+2);
             let field=[floor.0+(floor.1-floor.0)*0.5/8.,floor.2+(floor.3-floor.2)*2.5/8.];
-            native_house_floor_fields(&mut mesh.textured,
+            native_house_wood_floor_field(&mut mesh.textured,
                 geometry.bounds(i%geometry.width,i/geometry.width).into(),0.,
-                [i as i32%geometry.width as i32,i as i32/geometry.width as i32],true,[field;2]);
+                [i as i32%geometry.width as i32,i as i32/geometry.width as i32],field);
             continue;
         }
         // The tall source wall is a perspective drawing, not eight rows of
@@ -1402,7 +1752,15 @@ pub(super) fn append(
             } else {
                 0.0
             },
-            ground_uv,
+            if p.kind==ModelKind::StairFlight&&cells[i].source.tileset_id.as_ref()=="facility"
+                &&native_home_stair::source(map,p,cells,geometry).is_some() {
+                // Continue the authored two-color checker under raised flights.
+                let s=&cells[i].source;
+                let tile=if (s.subtile_column+s.subtile_row)%2==0 {1}else{0x26};
+                ground_sample(cells,map,"facility",tile).map(|i|
+                    geometry.uv(i%geometry.width,i/geometry.width)).unwrap_or(ground_uv)
+            }else if let Some(uv)=native_radio_stair::well_uv(map,p,cells,geometry) {uv}
+            else{native_radio_studio::floor_sample(map,p,cells,geometry,i).map(|j|geometry.uv(j%geometry.width,j/geometry.width)).unwrap_or(ground_uv)},
         );
     }
     let west = geometry.origin_x + p.column as f32 * geometry.tile_width;
@@ -1430,7 +1788,10 @@ pub(super) fn append(
     let native_player_wall=reviewed_native_room(map) && p.kind==ModelKind::WallDomestic
         && piece_source.tileset_id.as_ref()=="players_house"
         && p.indices(geometry.width).all(|i|cells[i].source.tile_index==0x11);
-    let south_row = if p.kind==ModelKind::ArcadeWall&&native_safari_office::matches(map,p,cells,geometry) {
+    let south_row = if native_radio_studio::panel(map,p,cells,geometry) {p.row+4}
+    else if p.kind==ModelKind::WallAcoustic&&native_radio_room::matches(map,p,cells,geometry) {
+        p.row+2
+    } else if p.kind==ModelKind::ArcadeWall&&native_safari_office::matches(map,p,cells,geometry) {
         p.row+2-usize::from(piece_source.subtile_row)
     } else if native_gift_shop::source(map,p,cells,geometry)==Some(ModelKind::GiftShelf) {
         p.row+2
@@ -1444,10 +1805,8 @@ pub(super) fn append(
         p.row+2
     } else if native_cafe_wall {
         p.row-usize::from(piece_source.subtile_row)+2
-    } else if native_house_dining_table(map,cells,geometry,p) && p.height==5 {
-        p.row+4
-    } else if native_house_dining_table(map,cells,geometry,p) && p.height==3 && p.width==4 {
-        p.row+2
+    } else if native_house_dining_table(map,cells,geometry,p) {
+        p.row+native_dining_table_rows(p)
     } else if native_player_wall {
         p.row-usize::from(piece_source.subtile_row)+2
     } else if native_gate_wall {
@@ -1467,11 +1826,12 @@ pub(super) fn append(
     let mut north = south - p.depth_pixels * geometry.tile_height / 8.0;
     if p.height==2 && matches!(p.kind,ModelKind::GameConsole|ModelKind::Stool|ModelKind::ArcadeStool
         |ModelKind::Chair|ModelKind::LinkSeat) {
-        let center=geometry.origin_z+(p.row as f32+1.)*geometry.tile_height;
+        let center=geometry.origin_z+(p.row as f32+
+            if native_radio_room::chair_source(map,p,cells,geometry) {1.5}else{1.})*geometry.tile_height;
         north=center-p.depth_pixels*geometry.tile_height/16.;
         south=center+p.depth_pixels*geometry.tile_height/16.;
     }
-    let inset = if matches!(
+    let inset = if native_radio_stair::stair(map,p,cells,geometry).is_some() || native_radio_studio::computer(map,p,cells,geometry) || native_radio_studio::handled(map,p,cells,geometry)&&p.kind!=ModelKind::ArcadeStool || native_radio_room::matches(map,p,cells,geometry)&&p.kind!=ModelKind::PottedPlant || matches!(
         p.kind,
         ModelKind::CarpetCloth
             | ModelKind::PrizeBooth
@@ -1515,6 +1875,9 @@ pub(super) fn append(
     } else {
         1
     };
+    let corridor_furniture_first=mesh.textured.positions.len();
+    let object_solid_first=mesh.solid.positions.len();
+    native_radio_room::append_bookcase_backing(&mut mesh.textured,geometry,p,cells,world_origin,map);
     for unit in 0..repeats {
         let mut left = west + (east - west) * unit as f32 / repeats as f32;
         let mut right = west + (east - west) * (unit + 1) as f32 / repeats as f32;
@@ -1528,6 +1891,7 @@ pub(super) fn append(
             left=center-half;right=center+half;
         }
         let first = mesh.solid.positions.len();
+        let texture_first=mesh.textured.positions.len();
         if native_gift_shop::traditional_table(map,p,cells,geometry) {
             assert!(selected.append_native_traditional_table(&mut mesh.textured,
                 [left+inset,right-inset,north,south],p.height_pixels*geometry.tile_height/8.,
@@ -1543,14 +1907,48 @@ pub(super) fn append(
             assert!(flower.append_native_display_flower(&mut mesh.textured,[cx-hx,cx+hx,cz-hz,cz+hz],6.*scale,8.*scale,
                 native_source_swatches(p,geometry,[[2,2],[11,2],[11,3],[2,2],[11,2],[2,2],
                     [2,9],[2,8],[0,8],[0,8],[2,8],[2,2]])));
+        } else if native_radio_studio::handled(map,p,cells,geometry) {
+            native_radio_studio::append(&mut mesh.textured,map,p,cells,geometry,[left+inset,right-inset,north,south],selected,tables);
+        } else if native_radio_studio::computer(map,p,cells,geometry) {
+            native_radio_studio::append_computer(&mut mesh.textured,p,cells,geometry,[left+inset,right-inset,north,south],selected);
+        } else if native_radio_studio::equipment_size(map,p,cells,geometry).is_some() {
+            native_radio_studio::append_equipment(&mut mesh.textured,p,geometry,[left+inset,right-inset,north,south],selected);
+        } else if native_radio_room::stool_source(map,p,cells,geometry) {
+            let paint=native_source_swatches(p,geometry,[[8,5],[3,9]]);
+            selected.append_native_stool(&mut mesh.textured,[left+inset,right-inset,north,south],
+                p.height_pixels*geometry.tile_height/8.,paint[0],paint[1]);
+        } else if native_radio_room::matches(map,p,cells,geometry) {
+            native_radio_room::append(&mut mesh.textured,geometry,p,cells,
+                [left+inset,right-inset,north,south],selected,world_origin);
+        } else if native_house_plant::source(map,p,cells,geometry) {
+            native_house_plant::append(&mut mesh.textured,geometry,p,[left+inset,right-inset,north,south],selected);
         } else if native_port_plant(map,p,cells,geometry) {
             assert!(selected.append_native_safari_plant(&mut mesh.textured,
                 [left+inset,right-inset,north,south],p.height_pixels*geometry.tile_height/8.,
                 native_source_swatches(p,geometry,[[3,3],[4,4],[0,0],[4,19],[4,20],[3,19]])));
+        } else if native_gate_plant_source(map,p,cells,geometry) {
+            let pot_y=(p.height-1)*8;
+            let swatches=native_source_swatches(p,geometry,
+                [[3,1],[6,1],[3,1],[3,pot_y+1],[1,pot_y],[3,pot_y]]);
+            if p.kind==ModelKind::PottedPlant {
+                // The native two-cell drawing is a compact leafy crown over a pot.
+                assert!(selected.append_native_facility_plant(&mut mesh.textured,
+                    [left+inset,right-inset,north,south],16.*geometry.tile_height/8.,swatches));
+            } else {
+                assert!(selected.append_native_gate_planter(&mut mesh.textured,
+                    [left+inset,right-inset,north,south],p.height_pixels*geometry.tile_height/8.,
+                    [swatches[0],swatches[1],swatches[1],swatches[2],swatches[3],swatches[4],swatches[5]]));
+            }
+        } else if native_mansion_plant(map,p,cells,geometry) {
+            assert!(selected.append_native_facility_plant(&mut mesh.textured,
+                [left+inset,right-inset,north,south],16.*geometry.tile_height/8.,
+                native_source_swatches(p,geometry,MANSION_PLANT_PIXELS)));
         } else if native_facility_plant(map,p,cells,geometry) {
             assert!(selected.append_native_facility_plant(&mut mesh.textured,
                 [left+inset,right-inset,north,south],p.height_pixels*geometry.tile_height/8.,
                 native_source_swatches(p,geometry,[[2,2],[2,7],[6,4],[3,25],[4,25],[6,16]])));
+        } else if native_classroom::matches(map,p,cells,geometry) {
+            native_classroom::append(&mut mesh.textured,geometry,p,[left,right,north,south],selected);
         } else if native_safari_office::matches(map,p,cells,geometry) {
             native_safari_office::append(&mut mesh.textured,geometry,p,
                 [left+inset,right-inset,north,south]);
@@ -1559,22 +1957,38 @@ pub(super) fn append(
         } else if native_gift_shop::traditional_cushion(map,p,cells,geometry) {
             native_gift_shop::append(&mut mesh.textured,geometry,p,ModelKind::Cushion,selected,
                 [left+inset,right-inset,north,south]);
+        } else if let Some(paint)=native_mansion_clock_source(map,p,cells,geometry) {
+            assert!(selected.append_native_gift_fixture(&mut mesh.textured,
+                [left+inset,right-inset,north,south],p.base_pixels*geometry.tile_height/8.,
+                p.height_pixels*geometry.tile_height/8.,paint));
         } else if let Some(kind)=native_gift_shop::source(map,p,cells,geometry) {
             native_gift_shop::append(&mut mesh.textured,geometry,p,kind,selected,
                 [left+inset,right-inset,north,south]);
+        } else if native_clinic_fixtures::station(map,p,cells,geometry) {
+            native_clinic_fixtures::append_station(&mut mesh.textured,geometry,p,selected);
+        } else if let Some(down)=native_clinic_fixtures::stair(map,p,cells,geometry) {
+            native_clinic_fixtures::append_stair(&mut mesh.textured,geometry,p,
+                [left,right,north,south],down,selected);
         } else if native_clinic::healing_source(map,p,cells,geometry) {
+            native_clinic_fixtures::append_backing(&mut mesh.textured,map,p,cells,geometry,tables);
             native_clinic::append_healing(&mut mesh.textured,geometry,p,[left+inset,right-inset,north,south],
                 p.height_pixels*geometry.tile_height/8.);
         } else if native_clinic::wall_source(map,p,cells,geometry) {
             native_clinic::append_wall(&mut mesh.textured,geometry,p,[left,right,north,south],
                 p.height_pixels*geometry.tile_height/8.);
         } else if native_clinic::cabinet_source(map,p,cells,geometry) {
+            native_clinic_fixtures::append_backing(&mut mesh.textured,map,p,cells,geometry,tables);
             native_clinic::append_cabinet(&mut mesh.textured,geometry,p,
                 [left+inset,right-inset,south-6.*geometry.tile_height/8.,south],
                 16.*geometry.tile_height/8.);
         } else if native_clinic::pc_source(map,p,cells,geometry) || native_clinic::console_source(map,p,cells,geometry) {
+            native_clinic_fixtures::append_backing(&mut mesh.textured,map,p,cells,geometry,tables);
             native_clinic::append_terminal(&mut mesh.textured,geometry,p,[left+inset,right-inset,north,south],
                 p.height_pixels*geometry.tile_height/8.);
+        } else if let Some(swatches)=native_elm_central_source(map,p,cells,geometry) {
+            append_native_elm_desk(&mut mesh.textured,geometry,p,[left,right,north,south],swatches);
+        } else if let Some(swatches)=native_elm_fixture_source(map,p,cells,geometry) {
+            append_native_elm_healing_machine(&mut mesh.textured,geometry,p,[left,right,north,south],swatches);
         } else if let Some((swatches,desk))=native_lab_workstation_source(map,p,cells,geometry) {
             assert!(selected.append_native_lab_workstation(&mut mesh.textured,[left+inset,right-inset,north,south],
                 p.height_pixels*geometry.tile_height/8.,swatches,desk));
@@ -1586,9 +2000,12 @@ pub(super) fn append(
             let center_x=left+geometry.tile_width;
             let center_z=geometry.origin_z+(p.row+3)as f32*geometry.tile_height;
             let half_x=geometry.tile_width*0.5;let half_z=geometry.tile_height*0.5;
+            let seat_first=mesh.textured.positions.len();
             assert!(crate::interior_models::selected_model(ModelKind::LinkSeat).expect("selected office seat").append_native_link_seat(&mut mesh.textured,
                 [center_x-half_x,center_x+half_x,center_z-half_z,center_z+half_z],
                 11.*geometry.tile_height/8.,swatches));
+            // This chair sits south of its own desk, facing the desktop.
+            turn_chair_half(&mut mesh.textured,seat_first,[center_x,center_z]);
         } else if let Some(swatches)=native_link_seat_source(map,p,cells,geometry) {
             assert!(selected.append_native_link_seat(&mut mesh.textured,[left+inset,right-inset,north,south],
                 p.height_pixels*geometry.tile_height/8.,swatches));
@@ -1628,13 +2045,19 @@ pub(super) fn append(
             && p.indices(geometry.width).enumerate().all(|(j,i)|
                 crate::train_station::railing_local(map,&cells[i].source)==Some(((j%p.width)as u8,(j/p.width)as u8,p.width,2))) {
             append_native_station_railing(&mut mesh.textured,geometry,p,[left,right,north,south]);
+        } else if native_wise_divider(map,p,cells,geometry) {
+            append_wise_divider(&mut mesh.textured,geometry,p,cells,[left,right,north,south]);
         } else if p.kind == ModelKind::WallTraditional
             && cells[p.row * geometry.width + p.column].source.tileset_id.as_ref() == "tower" {
             let source = &cells[p.row * geometry.width + p.column].source;
             let source_uv = |pixel: [usize; 2]| {
-                let pixel = if source.tile_index == 0x41 { pixel } else {
+                let pixel = if source.tile_index == 0x41 {
+                    // Row2's white dash is a tiny source glint, not paint for
+                    // the whole timber frame. Keep framing on native gold170.
+                    if pixel==[0,2] {[1,3]}else{pixel}
+                } else {
                     match pixel {
-                        [0, 0] => [0, 0], [0, 2] => [1, 3],
+                        [0, 0] => [0, 0], [0, 2] => if source.tile_index==0x11 {[2,3]}else{[1,3]},
                         [0, 1] => [0, 1], [4, 0] => [2, 0],
                         _ => unreachable!("validated timber materials"),
                     }
@@ -1650,7 +2073,7 @@ pub(super) fn append(
                     facing, geometry.tile_width, source_uv);
             } else {
                 crate::dungeon_models::model(crate::dungeon_models::Kind::TimberWall).append_tower_timber(
-                    &mut mesh.textured, [left, right, north, south],
+                    &mut mesh.textured, guardian_wall_bounds(map,p,cells,geometry,[left, right, north, south]),
                     p.height_pixels * geometry.tile_height / 8.0, source_uv);
             }
         } else if native_gate_wall || native_gate_doors {
@@ -1664,7 +2087,7 @@ pub(super) fn append(
             assert!(p.height<=2 && p.base_pixels>=0.,"native cafe wall requires source course bounds");
             append_kanto_house_wall(&mut mesh.textured,geometry,p,[left,right,north,south]);
         } else if reviewed_native_room(map) && native_house_window_source(p,cells,geometry) {
-            append_native_house_window(&mut mesh.textured,geometry,p,[left,right,north,south]);
+            append_native_house_window(&mut mesh.textured,geometry,p,cells,[left,right,north,south]);
         } else if reviewed_native_room(map) && p.kind==ModelKind::WallDomestic
             && (p.height==2 || native_player_wall) && p.indices(geometry.width).all(|i| {
                 let s=&cells[i].source;
@@ -1699,8 +2122,13 @@ pub(super) fn append(
                 crate::house::furniture_local(&cells[i].source)
                     ==Some(((j%2) as u8,(j/2) as u8,crate::house::FurnitureKind::Stool))
             }) {
-            append_native_rectangular_stool(&mut mesh.textured,geometry,p,
-                [left+inset,right-inset,north,south]);
+            if piece_source.tileset_id.as_ref()=="players_house" {
+                append_native_round_wood_stool(&mut mesh.textured,geometry,p,
+                    [left+inset,right-inset,north,south]);
+            } else {
+                append_native_rectangular_stool(&mut mesh.textured,geometry,p,
+                    [left+inset,right-inset,north,south]);
+            }
         } else if map=="SoulHouse" && p.kind==ModelKind::Memorial
             && p.width==2 && p.height==2 && p.indices(geometry.width).enumerate().all(|(j,i)| {
                 crate::house::soul_house_bench_local(&cells[i].source)
@@ -1757,12 +2185,12 @@ pub(super) fn append(
         } else if p.kind == ModelKind::DiningTable && p.width == 4 && p.height == 3
             && piece_source.tileset_id.as_ref() == "game_corner" && piece_source.metatile_id == 0x2f {
             append_arcade_game_table(&mut mesh.textured, geometry, p, [left,right,north,south]);
-        } else if native_station_chair_source(map,p,cells,geometry) {
+        } else if native_station_chair_source(map,p,cells,geometry)||native_radio_room::chair_source(map,p,cells,geometry) {
             let uv=geometry.uv(p.column,p.row);
             let sample=|x:f32,y:f32|[uv.0+(uv.1-uv.0)*(x+0.5)/8.,uv.2+(uv.3-uv.2)*(y+0.5)/8.];
             assert!(selected.append_native_station_chair(&mut mesh.textured,
                 [left+inset,right-inset,north,south],p.height_pixels*geometry.tile_height/8.,
-                [sample(4.,2.),sample(4.,7.)]));
+                [sample(4.,2.),if native_radio_room::chair_source(map,p,cells,geometry) {sample(4.,2.)}else{sample(4.,7.)}]));
         } else if native_station_plant_source(map,p,cells,geometry) {
             let sample=|pixel:[usize;2]| {
                 let uv=geometry.uv(p.column+pixel[0]/8,p.row+pixel[1]/8);
@@ -1802,6 +2230,8 @@ pub(super) fn append(
             } else {selected.append_native_television(&mut mesh.textured,bounds,height,swatches.map(sample))};
             assert!(appended,"native television requires cabinet and CRT material roles");
         } else if native_house_dining_table(map,cells,geometry,p) {
+            let table_first=mesh.textured.positions.len();
+            let table_index=mesh.textured.indices.len();
             // Verified table tile26: medium-gold timber and darker gold cloth.
             // Use the complete object's palette, retaining its selected geometry.
             let uv=geometry.uv(p.column,p.row);
@@ -1822,17 +2252,23 @@ pub(super) fn append(
                 } else if piece_source.tileset_id.as_ref()=="players_house" {
                     [sample([10,12]);2]
                 } else {[sample([7,2]),sample([5,2])]}),"native complete square dining table requires named wood and cloth roles");
-            if p.width==8 {
-                // The source does not identify a selected 3D centerpiece.
-                // Keep its six exact drawings on the authored tabletop.
-                let h=(p.height_pixels+0.002)*geometry.tile_height/8.;
-                for y in 2..5 {for x in 3..5 {
-                    let w=left+(right-left)*x as f32/8.;let e=left+(right-left)*(x+1)as f32/8.;
-                    let n=north+(south-north)*y as f32/8.;let s=north+(south-north)*(y+1)as f32/8.;
-                    let uv=geometry.uv(p.column+x,p.row+y);
-                    append_top(&mut mesh.textured,[w,e,n,s],h,uv);
-                }}
+            // Each accepted house/bedroom/lab/mansion drawing ends with its
+            // perspective apron. Paint only the remaining source top rows.
+            native_tabletop::append(&mut mesh.textured,table_index,geometry,p,
+                [left+inset,right-inset,north,south],native_large_house_table(map,p,cells,geometry));
+            if native_large_house_table(map,p,cells,geometry) {
+                native_table_centerpiece::append(&mut mesh.textured,geometry,p,
+                    [left+inset,right-inset,north,south]);
             }
+            // Reveal only this complete table (including its source centerpiece),
+            // retaining opaque floor backing and the original physical dimensions.
+            let table=table_first..mesh.textured.positions.len();
+            if native_large_house_table(map,p,cells,geometry) {
+                mesh.layered_alpha_textured_ranges.push(table.clone());
+            }
+            // A table has few overlapping surfaces. Use the existing smooth
+            // sorted transparency path instead of cabinet coverage dithering.
+            mesh.textured.cutaway_ranges.push(table);
         } else if p.kind == ModelKind::ArcadeStool {
             let cx = (left + right) * 0.5;
             let cz = geometry.origin_z + (p.row as f32 + p.height as f32 * 0.5) * geometry.tile_height;
@@ -1876,6 +2312,15 @@ pub(super) fn append(
                 p.base_pixels*geometry.tile_height/8.,p.height_pixels*geometry.tile_height/8.,
                 [[2,4],[1,4],[3,19],[3,10]].map(sample)),
                 "native Red bed requires named frame, hardware, cover and linen roles");
+        } else if reviewed_native_room(map) && native_house_radio_source(p,cells,geometry) {
+            let scale=geometry.tile_height/8.;
+            let b=[left+inset,right-inset,north,south];
+            let cabinet=crate::interior_models::selected_model(ModelKind::DrawerCabinet).unwrap();
+            // The lower source row is a gold cabinet, below the blue/gray radio.
+            assert!(cabinet.append_native_home_fixture(&mut mesh.textured,b,0.,8.*scale,
+                native_source_swatches(p,geometry,[[1,16],[4,19],[4,18],[4,19]])));
+            assert!(selected.append_native_house_radio(&mut mesh.textured,b,8.*scale,8.*scale,
+                native_source_swatches(p,geometry,[[2,13],[0,0],[4,4],[0,8],[4,12]])));
         } else if reviewed_native_room(map)
             && let Some(swatches) = native_home_fixture_source(p, cells, geometry) {
             let sample = |pixel: [usize; 2]| {
@@ -1895,16 +2340,17 @@ pub(super) fn append(
                 [uv.0+(uv.1-uv.0)*(pixel[0]%8)as f32/8.+(uv.1-uv.0)/16.,
                  uv.2+(uv.3-uv.2)*(pixel[1]%8)as f32/8.+(uv.3-uv.2)/16.]
             };
-            assert!(selected.append_native_computer(&mut mesh.textured,
-                [left+inset,right-inset,north,south],p.base_pixels*geometry.tile_height/8.,
-                p.height_pixels*geometry.tile_height/8.,
-                swatches.map(sample)),
-                "designated native computer source requires named material roles");
-        } else if reviewed_native_room(map)
-            && matches!(p.kind, ModelKind::Bookcase | ModelKind::LabBookcase)
-            && matches!((piece_source.tileset_id.as_ref(),piece_source.tile_index),
-                ("house",0x32) | ("players_house",0x0e) | ("players_room",0x05) | ("lab",0x05) | ("mansion",0x36))
-            && p.width % 2 == 0 && p.height >= 2 {
+            let b=[left+inset,right-inset,north,south];
+            let base=p.base_pixels*geometry.tile_height/8.;let height=p.height_pixels*geometry.tile_height/8.;
+            let appended=if piece_source.tileset_id.as_ref()=="house" {
+                selected.append_native_cabinet_computer(&mut mesh.textured,b,base,height,swatches.map(sample),
+                    crate::interior_models::selected_model(ModelKind::DrawerCabinet).unwrap(),
+                    native_source_swatches(p,geometry,[[1,16],[4,20],[3,17],[4,20]]))
+            } else {selected.append_native_computer(&mut mesh.textured,b,base,height,swatches.map(sample))};
+            assert!(appended,"designated native computer source requires complete model material roles");
+        } else if let Some(book_pixels)=native_bookcase_source(map,p,cells,geometry) {
+            let bookcase_first=mesh.textured.positions.len();
+            let bookcase_indices=mesh.textured.indices.len();
             // Swatches belong to this repeated cabinet's top and front, not
             // to a global guessed wood palette or a neighboring floor tile.
             let uv_at = |pixel: [usize;2]| {
@@ -1914,38 +2360,24 @@ pub(super) fn append(
                  uv.2+(uv.3-uv.2)*(pixel[1]%8) as f32/8.+(uv.3-uv.2)/16.]
             };
             let light = match piece_source.tileset_id.as_ref() {"players_house"=>[1,8],"players_room"=>[1,7],_=>[3,3]};
-            let mut cabinet=SurfaceMeshData::default();
-            let appended = selected.append_native_bookcase(&mut cabinet,
+            assert!(selected.append_native_bookcase_with_books(&mut mesh.textured,
                 [left+inset,right-inset,north,south],
                 p.base_pixels*geometry.tile_height/8.,p.height_pixels*geometry.tile_height/8.,
-                [uv_at([0,8]),uv_at([2,8]),uv_at(light)]);
-            assert!(appended,"canonical cabinet must retain all named structural materials");
-            let mut structural=selected.native_bookcase_structural_mask().unwrap();
-            if map=="PlayersHouse2F" && piece_source.tileset_id.as_ref()=="players_room" {
-                // This drawing contains gray and white book spines; its authored
-                // shelf geometry must not introduce pastel pigments.
-                for i in 0..structural.len() {if !structural[i] {
-                    cabinet.uvs[i]=uv_at([3,3]);
-                    cabinet.colors[i]=crate::interior_models::authored_face_color([1.;4],
-                        Vec3::from_array(cabinet.normals[i]));
-                    structural[i]=true;
-                }}
-            }
-            let mut remap=vec![u32::MAX;cabinet.positions.len()];
-            let marked=vec![false;cabinet.positions.len()];
-            // Only structural triangles sample the map atlas. Authored books
-            // use the untextured material, preserving their individual colors.
-            for (textured,target) in [(true,&mut mesh.textured),(false,&mut mesh.solid)] {
-                let selected=select_surface_indices(&cabinet,&marked,&mut remap,
-                    cabinet.indices.chunks_exact(3).filter(|tri| {
-                        assert!(tri.iter().all(|i|structural[*i as usize]==structural[tri[0]as usize]));
-                        structural[tri[0]as usize]==textured
-                    }).flatten().copied());
-                let offset=target.positions.len() as u32;
-                target.positions.extend(selected.positions);target.normals.extend(selected.normals);
-                target.uvs.extend(selected.uvs);target.colors.extend(selected.colors);
-                target.indices.extend(selected.indices.into_iter().map(|i|i+offset));
-            }
+                [uv_at([0,8]),uv_at([2,8]),uv_at(light)],book_pixels.map(uv_at)),
+                "native cabinet and books require authenticated material ownership");
+            append_native_bookcase_base(&mut mesh.textured,geometry,p,cells,unit,
+                bookcase_first,bookcase_indices,uv_at([2,8]));
+        } else if native_radio_stair::stair(map,p,cells,geometry).is_some() {
+            native_radio_stair::append(mesh,map,p,cells,geometry,[left,right,north,south],selected);
+        } else if native_mansion_architecture::stair(map,p,cells,geometry).is_some() {
+            native_mansion_architecture::append_stair(&mut mesh.textured,map,p,cells,geometry,
+                [left,right,north,south],selected);
+        } else if native_mansion_architecture::wall(map,p,cells,geometry) {
+            native_mansion_architecture::append_wall(mesh,geometry,p,cells,[left,right,north,south]);
+        } else if let Some(pixels)=native_home_stair::source(map,p,cells,geometry) {
+            assert!(selected.append_native_stair(&mut mesh.textured,
+                [left+inset,right-inset,north,south],p.base_pixels*geometry.tile_height/8.,
+                p.height_pixels*geometry.tile_height/8.,native_source_swatches(p,geometry,pixels)));
         } else {
             selected.append_fitted(
                 &mut mesh.solid,
@@ -1985,6 +2417,22 @@ pub(super) fn append(
                 [world_origin[0] + p.column as i32, world_origin[1] + p.row as i32],
                 [(left + right) * 0.5, (north + south) * 0.5]);
         }
+        if let Some(facing)=chair_table_facing(p,tables,chair_source_phase(p,piece_source)) {
+            let old=if p.kind==ModelKind::LinkSeat&&native_classroom::matches(map,p,cells,geometry) {2}
+            else if piece_source.tileset_id.as_ref()=="gate" {
+                match piece_source.metatile_id {0x32=>3,0x35=>1,_=>0}
+            }else{0};
+            let turns=(facing+4-old)%4;
+            let center=[(left+right)*0.5,(north+south)*0.5];
+            let half=[(right-left)*0.5-inset,(south-north)*0.5];
+            for (surface,start) in [(&mut mesh.solid,first),(&mut mesh.textured,texture_first)] {
+                if turns==2 {
+                    turn_chair_half(surface,start,center);
+                }else if turns!=0 {
+                    turn_counter_chair(surface,start,center,half,if turns==1 {1.}else{-1.});
+                }
+            }
+        }
     }
     if p.kind == ModelKind::PrizeBooth { append_prize_booth_art(mesh, cells, geometry, p); }
     if p.kind == ModelKind::CarpetCloth {
@@ -1992,6 +2440,25 @@ pub(super) fn append(
     }
     if p.kind == ModelKind::PictureFrame {
         append_framed_source_art(mesh, geometry, p, [west, east, north, south], repeats);
+        if reviewed_native_room(map)&&matches!(piece_source.tileset_id.as_ref(),"house"|"mansion") {
+            // Mount the frame on the connected wall instead of embedding its
+            // recessed artwork inside the newly restored backing volume.
+            let relief=p.depth_pixels*geometry.tile_height/8.;
+            for v in &mut mesh.solid.positions[object_solid_first..] {v[2]+=relief;}
+            for v in &mut mesh.textured.positions[corridor_furniture_first..] {v[2]+=relief;}
+        }
+    }
+    if native_mansion_corridor_furniture(map,p,cells,geometry) {
+        // Own the complete furniture assembly, including books/clock face and
+        // workstation chair. The source floor was emitted before this range.
+        let range=corridor_furniture_first..mesh.textured.positions.len();
+        mesh.textured.cutaway_ranges.push(range.clone());
+        mesh.depth_coverage_textured_ranges.push(range);
+    }
+    if native_wise_divider(map,p,cells,geometry) {
+        let range=corridor_furniture_first..mesh.textured.positions.len();
+        mesh.textured.cutaway_ranges.push(range.clone());
+        mesh.layered_alpha_textured_ranges.push(range);
     }
     for i in p.indices(geometry.width) {
         claimed[i] = true;
@@ -2005,6 +2472,48 @@ pub(super) fn append(
         }
     }
     true
+}
+
+/// +Z is the authored chair front. Only aligned, nearby complete table/counter
+/// placements establish a relationship; distant or diagonal furniture does not.
+pub(super) fn chair_source_phase(seat:&Placement,source:&VisualTileSource)->[usize;2] {
+    [(source.subtile_column as usize+4-seat.column%4)%4,
+     (source.subtile_row as usize+4-seat.row%4)%4]
+}
+pub(super) fn chair_table_facing(seat:&Placement,placements:&[Placement],phase:[usize;2])->Option<u8> {
+    if !matches!(seat.kind,ModelKind::Chair|ModelKind::LinkSeat) {return None;}
+    let rect=|p:&Placement|[p.column as i32,(p.column+p.width)as i32,
+        p.row as i32,(p.row+p.height)as i32];
+    let [w,e,n,s]=rect(seat);
+    placements.iter().filter(|p|matches!(p.kind,ModelKind::DiningTable|ModelKind::LowTable
+        |ModelKind::CafeTable|ModelKind::ReceptionCounter|ModelKind::LabCounter
+        |ModelKind::Computer|ModelKind::LabWorkstation|ModelKind::LabDisplayTable))
+        .filter_map(|p| {
+            let [tw,te,tn,ts]=rect(p);
+            let (gap,face)=if w<te&&e>tw {
+                if s<=tn {(tn-s,0)}else if n>=ts {(n-ts,2)}else{return None;}
+            }else if n<ts&&s>tn {
+                if e<=tw {(tw-e,1)}else if w>=te {(w-te,3)}else{return None;}
+            }else{return None;};
+            // Packed classroom rows can put the next desk immediately behind
+            // a chair. Prefer its own source block when both edges touch.
+            let same_block=(p.column+phase[0])/4==(seat.column+phase[0])/4
+                &&(p.row+phase[1])/4==(seat.row+phase[1])/4;
+            (gap<=4).then_some((gap,!same_block,face))
+        }).min_by_key(|&(gap,other,face)|(gap,other,face)).map(|(_,_,face)|face)
+}
+
+fn turn_chair_half(surface:&mut SurfaceMeshData,start:usize,center:[f32;2]) {
+    for i in start..surface.positions.len() {
+        let v=&mut surface.positions[i];v[0]=2.*center[0]-v[0];v[2]=2.*center[1]-v[2];
+        let n=&mut surface.normals[i];
+        let old=crate::interior_models::authored_face_color([1.;4],Vec3::from_array(*n));
+        n[0]=-n[0];n[2]=-n[2];
+        let new=crate::interior_models::authored_face_color([1.;4],Vec3::from_array(*n));
+        if let Some(color)=surface.colors.get_mut(i) {
+            for c in 0..3 {color[c]*=new[c]/old[c];}
+        }
+    }
 }
 
 include!("cafe_table.rs");
@@ -2094,14 +2603,109 @@ fn native_home_fixture_source(p: &Placement, cells: &[&VisualTile], g: &GridGeom
     }
 }
 
-fn native_computer_source(p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->Option<[[usize;2];3]> {
+fn native_bookcase_room(map:&str)->bool {
+    reviewed_native_room(map)||traditional_room::floor_map(map)
+        ||matches!(map,"DragonShrine"|"EarlsPokemonAcademy"|"ElmsLab"|"FuchsiaGym"|"OaksLab")
+}
+
+fn native_bookcase_closed_base(p:&Placement,cells:&[&VisualTile],g:&GridGeometry,unit:usize)->bool {
+    let i=(p.row+p.height-1)*g.width+p.column+unit*2;
+    match cells[i].source.tileset_id.as_ref() {
+        "house"|"players_house"|"traditional_house"=>true,
+        "lab"=>cells[i].source.tile_index==0x13&&cells[i+1].source.tile_index==0x14,
+        _=>false,
+    }
+}
+
+/// The fitted cabinet supplies the exact footprint and upper shelves. Only a
+/// complete source drawing can replace its lowest shelf with the source's own
+/// cupboard/drawer front; Oak's three-row shelves retain the original mesh.
+fn append_native_bookcase_base(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,
+    cells:&[&VisualTile],unit:usize,first:usize,indices:usize,wood:[f32;2]) {
+    if !native_bookcase_closed_base(p,cells,g,unit) {return;}
+    let mut low=[f32::INFINITY;3];let mut high=[f32::NEG_INFINITY;3];
+    for v in &out.positions[first..] {for axis in 0..3 {
+        low[axis]=low[axis].min(v[axis]);high[axis]=high[axis].max(v[axis]);
+    }}
+    // The lower shelf ends at the first horizontal divider in both supported
+    // canonical models. Retain upper vertices and triangles at their fitted
+    // positions, including the full-height side frames.
+    let top=low[1]+(high[1]-low[1])*0.4;
+    let triangles=out.indices.split_off(indices);
+    out.indices.extend(triangles.chunks_exact(3).filter(|tri|
+        !tri.iter().all(|&i|out.positions[i as usize][1]<top-0.001))
+        .flatten().copied());
+    let body=out.positions.len();let body_indices=out.indices.len();
+    // Sit inside the surviving side frames, avoiding coincident side faces.
+    let inset=(high[0]-low[0])*0.025;
+    architecture_box(out,[low[0]+inset,high[0]-inset,low[1],top,low[2]+inset,high[2]],[1.;3]);
+    out.uvs[body..].fill(wood);
+    // Replace the body's front with the two actual source cells. This retains
+    // cupboard seams/handles and the distinct horizontal drawer fronts.
+    out.indices.drain(body_indices+6..body_indices+12);
+    for x in 0..2 {
+        let uv=g.uv(p.column+unit*2+x,p.row+p.height-1);
+        let w=low[0]+inset+(high[0]-low[0]-2.*inset)*x as f32/2.;
+        let e=low[0]+inset+(high[0]-low[0]-2.*inset)*(x+1)as f32/2.;
+        append_quad(out,[[e,low[1],high[2]],[e,top,high[2]],[w,top,high[2]],[w,low[1],high[2]]],
+            [0.,0.,1.],[[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2],[uv.0,uv.3]],
+            crate::interior_models::authored_face_color([1.;4],Vec3::Z));
+    }
+}
+
+fn native_bookcase_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->Option<[[usize;2];2]> {
+    if !matches!(p.kind,ModelKind::Bookcase|ModelKind::LabBookcase)||p.width==0||p.height==0||p.width%2!=0
+        ||g.width.checked_mul(g.height)!=Some(cells.len())
+        ||p.width>g.width||p.height>g.height||p.column>g.width-p.width||p.row>g.height-p.height {return None;}
+    let atlas=cells[p.row*g.width+p.column].source.tileset_id.as_ref();
+    if atlas=="radio_tower" {
+        return native_radio_room::bookcase_source(map,p,cells,g).then_some([[3,11],[3,12]]);
+    }
+    if !p.indices(g.width).all(|i|cells[i].source.tileset_id.as_ref()==atlas) {return None;}
+    if atlas=="traditional_house" {
+        if !traditional_room::floor_map(map) {return None;}
+    } else if !native_bookcase_room(map) {return None;}
+    let complete=match atlas {
+        "house"=>p.height==4&&p.indices(g.width).enumerate().all(|(j,i)|
+            crate::house::bookcase_local(&cells[i].source)==Some(((j%p.width%2)as u8,(j/p.width)as u8))),
+        "players_house"=>p.height==4&&p.indices(g.width).enumerate().all(|(j,i)|
+            crate::players_house::bookcase_local(&cells[i].source)==Some(((j%p.width%2)as u8,(j/p.width)as u8))),
+        "lab"=>built_in_profiles().objects.iter().any(|o|o.tileset=="lab"&&profile_kind(o)==Some(ModelKind::LabBookcase)
+            &&p.height==o.tiles.len()&&p.width==o.tiles[0].len()
+            &&p.indices(g.width).enumerate().all(|(j,i)| {
+                let s=&cells[i].source;
+                s.metatile_id==o.metatile&&s.subtile_column as usize==o.origin[0]as usize+j%p.width
+                    &&s.subtile_row as usize==o.origin[1]as usize+j/p.width&&s.tile_index==o.tiles[j/p.width][j%p.width]
+            })),
+        "players_room"|"mansion"|"traditional_house"=> (0..p.width/2).all(|unit|
+            INTERIOR_DRAWINGS.iter().any(|d|d.kind==ModelKind::Bookcase&&d.tileset==atlas
+                &&d.size==[2,p.height]&&(0..p.height).all(|y|(0..2).all(|x| {
+                    let s=&cells[(p.row+y)*g.width+p.column+unit*2+x].source;
+                    s.metatile_id==d.block&&s.subtile_column as usize==d.origin[0]as usize+x
+                        &&s.subtile_row as usize==d.origin[1]as usize+y&&s.tile_index==d.tiles[y*2+x]
+                })))),
+        _=>false,
+    };
+    complete.then_some([if matches!(atlas,"lab"|"mansion"){[3,11]}else{[3,10]},[3,12]])
+}
+
+fn native_house_radio_source(p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
+    p.kind==ModelKind::Radio && p.width==2 && p.height==3
+        && p.indices(g.width).enumerate().all(|(j,i)| {
+            let s=&cells[i].source;
+            s.metatile_id==0x1d && crate::house::upright_fixture_local(s)
+                ==Some(((j%2)as u8,(j/2)as u8,2,3))
+        })
+}
+
+fn native_computer_source(p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->Option<[[usize;2];5]> {
     if p.kind!=ModelKind::Computer {return None;}
     let source=&cells[p.row*g.width+p.column].source;
     if source.tileset_id.as_ref()=="players_room" && p.width==2 && p.height==3
         && p.indices(g.width).enumerate().all(|(j,i)| {
             if j<4 {crate::interior::player_room_pc_monitor_local(&cells[i].source)==Some(((j%2)as u8,(j/2)as u8))}
             else {crate::interior::player_room_pc_keyboard_local(&cells[i].source)==Some(((j%2)as u8,0))}
-        }) {return Some([[3,0],[0,0],[3,1]]);}
+        }) {return Some([[3,0],[0,0],[3,1],[0,0],[0,0]]);}
     let drawing=INTERIOR_DRAWINGS.iter().find(|d|d.kind==ModelKind::Computer
         && matches!(d.tileset,"house"|"players_house") && source.tileset_id.as_ref()==d.tileset
         && d.size==[p.width,p.height] && source.metatile_id==d.block
@@ -2111,7 +2715,13 @@ fn native_computer_source(p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->Op
                 && s.subtile_column==d.origin[0]+(j%p.width)as u8
                 && s.subtile_row==d.origin[1]+(j/p.width)as u8 && s.tile_index==d.tiles[j]
         }))?;
-    Some(if drawing.tiles[0]==0x11 {[[7,0],[0,0],[14,0]]}else{[[3,0],[0,0],[3,1]]})
+    Some(if drawing.tileset=="house" {
+        // Tile40 has a blue cap, tile20 gray electronics, tile42 gold timber.
+        // Sample each part's own palette rather than painting the stand blue.
+        [[3,0],[3,8],[3,1],[4,20],[0,0]]
+    } else if drawing.tiles[0]==0x11 {
+        [[7,0],[0,0],[14,0],[0,0],[0,0]]
+    } else {[[3,0],[0,0],[3,1],[0,0],[0,0]]})
 }
 
 fn append_native_station_ticket_boxes(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,
@@ -2166,6 +2776,41 @@ fn append_native_station_railing(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Pla
         architecture_box(out,[w,e,y*scale,(y+1.)*scale,n,s],[1.;3]);
     }
     out.uvs[first..].fill(paint);
+}
+
+// The player-home seat is a round wooden stool: a beveled solid seat and
+// four timber feet, using the gold/brown texels from its own complete drawing.
+fn append_native_round_wood_stool(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,
+    bounds:[f32;4]) {
+    let [w,e,n,s]=bounds;let scale=g.tile_height/8.;
+    let center=Vec3::new((w+e)*0.5,0.,(n+s)*0.5);
+    let paint=native_source_swatches(p,g,[[4,2],[6,9]]);
+    for x in [-2.2,2.2] {for z in [-2.2,2.2] {
+        let first=out.positions.len();
+        architecture_box(out,[center.x+(x-0.5)*scale,center.x+(x+0.5)*scale,
+            0.,3.3*scale,center.z+(z-0.5)*scale,center.z+(z+0.5)*scale],[1.;3]);
+        out.uvs[first..].fill(paint[1]);
+    }}
+    let radius=((e-w)*0.5).min((s-n)*0.5-scale);
+    let rings=[(0.,3.),(radius-0.3*scale,3.),(radius,3.3),
+        (radius,4.7),(radius-0.3*scale,5.),(0.,5.)];
+    for pair in rings.windows(2) {for i in 0..32 {
+        let point=|(r,y):(f32,f32),step:usize| {
+            let a=std::f32::consts::TAU*step as f32/32.;
+            center+Vec3::new(r*a.cos(),y*scale,r*a.sin())
+        };
+        let a=point(pair[0],i);let b=point(pair[1],i);
+        let c=point(pair[1],i+1);let d=point(pair[0],i+1);
+        for points in [[a,b,c],[a,c,d]] {
+            let normal=(points[1]-points[0]).cross(points[2]-points[0]);
+            if normal.length_squared()<1e-12 {continue;}
+            let normal=normal.normalize();let first=out.positions.len() as u32;
+            out.positions.extend(points.map(|v|v.to_array()));
+            out.normals.extend([normal.to_array();3]);out.uvs.extend([paint[0];3]);
+            out.colors.extend([crate::interior_models::authored_face_color([1.;4],normal);3]);
+            out.indices.extend([first,first+1,first+2]);
+        }
+    }}
 }
 
 fn append_native_rectangular_stool(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,
@@ -2239,14 +2884,86 @@ fn append_native_center_lounge_seat(out: &mut SurfaceMeshData,g: &GridGeometry,
     }}
 }
 
+fn native_wise_divider(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
+    p.kind==ModelKind::WallTraditional&&p.indices(g.width).enumerate().all(|(j,i)|
+        crate::wise_trios::divider_local(map,&cells[i].source)
+            ==Some(((j%p.width)as u8,(j/p.width)as u8,p.width,p.height)))
+}
+
+fn append_wise_divider(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,cells:&[&VisualTile],[w,e,n,s]:[f32;4]) {
+    // The two source rows draw a short post in perspective. Extend its timber
+    // construction, not the entire post picture repeated up the wall.
+    let source=&cells[p.row*g.width+p.column].source;
+    let paint=native_source_swatches(p,g,if source.metatile_id==3 {
+        [[1,0],[2,0],[3,1],[3,0]]
+    }else{[[0,0],[2,0],[3,1],[3,0]]});
+    let k=g.tile_height/8.;let height=32.*k;
+    if p.width==2 {
+        // These paired post pictures describe a north/south return. Join its
+        // authored segments across the intervening perspective floor rows.
+        let mut start=p.row;
+        if source.metatile_id==0x38&&p.row>=4 {
+            let previous=&cells[(p.row-4)*g.width+p.column].source;
+            let gap=(p.row-2..p.row).all(|y|(p.column..p.column+2).all(|x| {
+                let s=&cells[y*g.width+x].source;
+                s.tileset_id.as_ref()=="traditional_house"&&s.metatile_id==0x38&&s.tile_index==0x50
+            }));
+            if gap&&crate::wise_trios::divider_local("WiseTriosRoom",previous)==Some((0,0,2,2)) {
+                start-=2;
+            }
+        }
+        let mut end=p.row+p.height;
+        if source.metatile_id==0x38&&end+2<=g.height&&p.column>=2 {
+            let closes=(0..2).all(|y|(0..4).all(|x| {
+                crate::wise_trios::divider_local("WiseTriosRoom",&cells[(end+y)*g.width+p.column-2+x].source)
+                    ==Some((x as u8,y as u8,4,2))
+            }));
+            if closes {end+=2;}
+        }
+        let back=g.origin_z+end as f32*g.tile_height;
+        let first=out.positions.len();let front=g.origin_z+start as f32*g.tile_height;
+        architecture_box(out,[e-3.*k,e,0.,height,front,back],[1.;3]);
+        out.uvs[first..].fill(paint[0]);
+        for (low,high) in [(0.,1.2),(30.8,32.)] {
+            let first=out.positions.len();architecture_box(out,[e-3.1*k,e+0.05*k,low*k,high*k,front,back],[1.;3]);
+            out.uvs[first..].fill(paint[1]);
+        }
+        return;
+    }
+    let timber=|out:&mut SurfaceMeshData,bounds,uv| {
+        let first=out.positions.len();architecture_box(out,bounds,[1.;3]);
+        out.uvs[first..].fill(uv);
+    };
+    let indices=out.indices.len();
+    timber(out,[w,e,1.2*k,30.8*k,n,s-0.35*k],paint[0]);
+    out.indices.drain(indices+6..indices+12);
+    let xs=(0..=32).map(|i|i as f32/32.).collect::<Vec<_>>();
+    let ys=(0..=12).map(|i|i as f32/12.).collect::<Vec<_>>();
+    native_source_surface_patches(out,&xs,&ys,
+        |x,y|[w+(e-w)*x,(30.8-29.6*y)*k,s-0.35*k],|_,_|paint[0],
+        |x,y|1.+0.055*crate::scenery_finish::timber_grain([x*(e-w)/k,y*32.,0.]),true);
+    for column in (0..=p.width).step_by(2) {
+        let x=w+column as f32*g.tile_width;
+        timber(out,[(x-0.6*k).max(w),(x+0.6*k).min(e),0.,height,n,s],paint[1]);
+    }
+    for (low,high) in [(0.,1.2),(30.8,32.)] {
+        timber(out,[w,e,low*k,high*k,n,s+0.05*k],paint[1]);
+    }
+    // Fine vertical board seams remain continuous between the frame rails.
+    for column in 1..p.width {
+        let x=w+column as f32*g.tile_width;
+        timber(out,[x-0.08*k,x+0.08*k,1.2*k,30.8*k,s-0.35*k,s-0.32*k],paint[1]);
+    }
+}
+
 /// Closed native domestic wall course, selected only from complete house art.
 fn append_kanto_house_wall(out: &mut SurfaceMeshData,g: &GridGeometry,p: &Placement,
     bounds: [f32;4]) {
     let [west,east,north,south]=bounds;
-    // The native two-row wall and adjacent window are one 16-pixel course.
-    // Keep a closed volume behind its actual horizontal banded drawing.
+    // Source rows describe the finish, not the room's physical ceiling height.
+    // Repeat native material courses rather than stretching their texels.
     let base=p.base_pixels*g.tile_height/8.;
-    let height=base+p.height as f32*g.tile_height;
+    let height=(p.base_pixels+p.height_pixels).max(32.)*g.tile_height/8.;
     let first=out.positions.len();let index_first=out.indices.len();
     architecture_box(out,[west,east,base,height,north,south],[1.;3]);
     let uv=g.uv(p.column,p.row);
@@ -2254,10 +2971,11 @@ fn append_kanto_house_wall(out: &mut SurfaceMeshData,g: &GridGeometry,p: &Placem
     out.uvs[first..].fill(body);
     // Replace the plain front with the source tiles, without coplanar faces.
     out.indices.drain(index_first+6..index_first+12);
-    for y in 0..p.height {for x in 0..p.width {
+    let rows=((height-base)/g.tile_height).ceil()as usize;
+    for y in 0..rows {for x in 0..p.width {
         let left=west+x as f32*g.tile_width;let right=left+g.tile_width;
-        let top=height-y as f32*g.tile_height;let bottom=top-g.tile_height;
-        let uv=g.uv(p.column+x,p.row+y);
+        let top=height-y as f32*g.tile_height;let bottom=(top-g.tile_height).max(base);
+        let uv=g.uv(p.column+x,p.row+y%p.height);
         append_quad(out,[[right,bottom,south],[right,top,south],
             [left,top,south],[left,bottom,south]],[0.,0.,1.],
             [[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2],[uv.0,uv.3]],
@@ -2265,20 +2983,29 @@ fn append_kanto_house_wall(out: &mut SurfaceMeshData,g: &GridGeometry,p: &Placem
     }}
 }
 
-fn append_native_house_window(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4]) {
+fn append_native_house_window(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,cells:&[&VisualTile],b:[f32;4]) {
     let [w,e,n,s]=b;let index=out.indices.len();
     // Reuse the closed domestic wall volume and replace only its front course.
     append_kanto_house_wall(out,g,p,[w,e,n,s]);
     out.indices.truncate(index+5*6);
     let (u0,_,v0,_)=g.uv(p.column,p.row);
     let (_,u1,_,v1)=g.uv(p.column+p.width-1,p.row+p.height-1);
-    let height=p.height as f32*g.tile_height;
+    let course=p.height as f32*g.tile_height;
+    let height=(p.base_pixels+p.height_pixels).max(32.)*g.tile_height/8.;
+    // Keep one window at its source size near the ceiling, with wall below.
+    let atlas=&cells[p.row*g.width+p.column].source.tileset_id;
+    let wall_tile=if atlas.as_ref()=="house"{0}else if atlas.as_ref()=="players_house"{0x11}else{2};
+    let donor=cells.iter().position(|cell|cell.source.tileset_id==*atlas&&cell.source.tile_index==wall_tile);
+    let uv=donor.map(|i|g.uv(i%g.width,i/g.width)).unwrap_or_else(||g.uv(p.column,p.row+p.height-1));
+    let body=[uv.0+(uv.1-uv.0)*4.5/8.,uv.2+(uv.3-uv.2)*2.5/8.];
+    append_quad(out,[[e,0.,s],[e,height-course,s],[w,height-course,s],[w,0.,s]],
+        [0.,0.,1.],[body;4],crate::interior_models::authored_face_color([1.;4],Vec3::Z));
     let relief=g.tile_height*0.06;
     assert!(height>0. && e>w && s>n,"native curtain wall requires complete source bounds");
     let point=|x:f32,y:f32| {
         let inset=if x==0.||x==1.||y==0.||y==1. {0.}
             else {relief*(0.75+0.25*(x*std::f32::consts::TAU*4.).cos())};
-        [w+(e-w)*x,height*(1.-y),s-inset]
+        [w+(e-w)*x,height-course*y,s-inset]
     };
     // The original curtains and neighboring frame keep their exact UVs,
     // while recessed folds add depth without detaching from the wall course.
@@ -2290,20 +3017,114 @@ fn append_native_house_window(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placem
 mod kanto_native_wall_tests {
     use super::*;
     #[test]
+    fn chairs_face_aligned_nearby_tables_without_turning_backless_stools() {
+        let seat=Placement{kind:ModelKind::Chair,column:8,row:8,width:2,height:2,
+            ground:0,depth_pixels:8.,height_pixels:11.,base_pixels:0.,footing_pixels:None};
+        for (column,row,facing) in [(8,12,0),(12,8,1),(8,2,2),(2,8,3)] {
+            let table=Placement{kind:ModelKind::DiningTable,column,row,width:4,height:4,..seat.clone()};
+            assert_eq!(chair_table_facing(&seat,&[table.clone()],[0,0]),Some(facing));
+            let stool=Placement{kind:ModelKind::Stool,..seat.clone()};
+            assert_eq!(chair_table_facing(&stool,&[table],[0,0]),None);
+        }
+        let distant=Placement{kind:ModelKind::DiningTable,row:20,..seat.clone()};
+        let diagonal=Placement{kind:ModelKind::DiningTable,row:12,column:12,..seat.clone()};
+        let cabinet=Placement{kind:ModelKind::Cabinet,row:12,..seat.clone()};
+        assert_eq!(chair_table_facing(&seat,&[distant,diagonal,cabinet],[0,0]),None);
+        let student=Placement{row:10,..seat.clone()};
+        let own=Placement{kind:ModelKind::DiningTable,row:8,width:4,height:2,..seat.clone()};
+        let next=Placement{row:12,..own.clone()};
+        assert_eq!(chair_table_facing(&student,&[next.clone(),own.clone()],[0,0]),Some(2));
+        // Camera grids can begin at any source phase. Translating the same
+        // packed rows must never pair a chair with the next student's desk.
+        for x in 0..4 {for y in 0..4 {
+            let shift=|mut p:Placement|{p.column+=x;p.row+=y;p};
+            let moved=shift(student.clone());
+            let phase=[(4-x)%4,(4-y)%4];
+            let source=VisualTileSource{tileset_id:"lab".into(),metatile_id:0x16,
+                subtile_column:0,subtile_row:2,tile_index:0x40};
+            assert_eq!(chair_source_phase(&moved,&source),phase);
+            assert_eq!(chair_table_facing(&moved,&[shift(next.clone()),shift(own.clone())],phase),Some(2));
+        }}
+    }
+    #[test]
+    fn external_wise_room_has_connected_ceiling_height_timber_returns() {
+        let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(std::path::PathBuf::from)
+            .unwrap_or_else(||std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let module=&pack.pack().data().maps["WiseTriosRoom"];
+        let art=&pack.pack().runtime_files()["data/tilesets/traditional_house_metatiles.bin"];
+        let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+        let tiles=(0..w*h).map(|i| {
+            let (x,y)=(i%w,i/w);let b=module.blocks[y/4*(w/4)+x/4];
+            VisualTile{column:x as u32,row:y as u32,texture:Default::default(),priority:false,animation_frames:None,
+                source:VisualTileSource{tileset_id:"traditional_house".into(),metatile_id:b,
+                    subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,
+                    tile_index:art[b as usize*16+y%4*4+x%4]as u16}}
+        }).collect::<Vec<_>>();
+        let cells=tiles.iter().collect::<Vec<_>>();
+        let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let placements=resolve("WiseTriosRoom",&cells,&g,None);
+        let walls=placements.iter().filter(|p|native_wise_divider("WiseTriosRoom",p,&cells,&g)).collect::<Vec<_>>();
+        assert_eq!(walls.len(),10,"four north courses, four crosspieces and two returns");
+        for p in walls {
+            let mut mesh=TerrainMeshData{footing_heights:vec![7.;w*h],..Default::default()};
+            let mut claimed=vec![false;w*h];
+            assert!(append(&mut mesh,"WiseTriosRoom",&cells,&g,p,&mut claimed,[0,0]));
+            assert_eq!(mesh.footing_heights,vec![7.;w*h]);
+            let object=&mesh.textured.positions[p.width*p.height*4..];
+            assert_eq!(object.iter().map(|v|v[1]).fold(0.,f32::max),32.);
+            if p.width==2 {
+                let min_z=object.iter().map(|v|v[2]).fold(f32::INFINITY,f32::min);
+                let max_z=object.iter().map(|v|v[2]).fold(f32::NEG_INFINITY,f32::max);
+                assert_eq!((min_z,max_z),if p.row==6 {(48.,64.)}else{(64.,112.)});
+                assert!(object.iter().all(|v|v[0]>=60.8&&v[0]<=64.1));
+            }
+        }
+    }
+    #[test]
+    fn wise_divider_reaches_ceiling_with_native_source_and_unchanged_opening() {
+        let g=GridGeometry{width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let tiles=(0..16).map(|i|VisualTile{column:(i%4)as u32,row:(i/4)as u32,
+            texture:Default::default(),animation_frames:None,priority:false,
+            source:VisualTileSource{tileset_id:"traditional_house".into(),metatile_id:0x28,
+                subtile_column:(i%4)as u8,subtile_row:(i/4)as u8,
+                tile_index:if i<4 {0x40}else if i<8 {0x41}else{0x50}}}).collect::<Vec<_>>();
+        let cells=tiles.iter().collect::<Vec<_>>();let placements=resolve("WiseTriosRoom",&cells,&g,None);
+        let p=placements.iter().find(|p|native_wise_divider("WiseTriosRoom",p,&cells,&g)).unwrap();
+        assert_eq!((p.width,p.height,p.height_pixels),(4,2,32.));
+        let mut mesh=TerrainMeshData{footing_heights:vec![72.;16],..Default::default()};
+        let mut claimed=vec![false;16];assert!(append(&mut mesh,"WiseTriosRoom",&cells,&g,p,&mut claimed,[0,0]));
+        assert!(mesh.textured.positions.iter().any(|v|v[1]==32.));
+        assert_eq!(mesh.footing_heights,vec![72.;16]);
+        assert_eq!(claimed,(0..16).map(|i|i<8).collect::<Vec<_>>());
+        let range=p.width*p.height*4..mesh.textured.positions.len();
+        assert_eq!(mesh.textured.cutaway_ranges,vec![range.clone()]);
+        assert_eq!(mesh.layered_alpha_textured_ranges,vec![range]);
+        assert!(mesh.depth_coverage_textured_ranges.is_empty(),"timber reveal must not become a wire fence");
+        assert!(resolve("DanceTheater",&cells,&g,None).iter().all(|p|!native_wise_divider("DanceTheater",p,&cells,&g)));
+        for i in 0..8 {
+            let mut altered=tiles.clone();altered[i].source.tile_index=0xff;
+            let refs=altered.iter().collect::<Vec<_>>();
+            assert!(!resolve("WiseTriosRoom",&refs,&g,None).iter().any(|p|native_wise_divider("WiseTriosRoom",p,&refs,&g)));
+        }
+    }
+    #[test]
     fn kanto_native_house_wall_keeps_closed_source_course_and_shared_seams() {
         let g=GridGeometry{width:8,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
         let p=Placement{kind:ModelKind::WallDomestic,column:0,row:0,width:4,height:2,
             ground:0,depth_pixels:3.,height_pixels:24.,base_pixels:0.,footing_pixels:None};
         let mut wall=SurfaceMeshData::default();
         append_kanto_house_wall(&mut wall,&g,&p,[0.,32.,13.,16.]);
-        assert_eq!(wall.indices.len(),(5+8)*6,"five closed sides and eight source front tiles");
+        assert_eq!(wall.indices.len(),(5+16)*6,"five closed sides and sixteen source front tiles");
         for ids in wall.indices.chunks_exact(3) {
             let [a,b,c]=[ids[0],ids[1],ids[2]].map(|i|Vec3::from_array(wall.positions[i as usize]));
             let normal=Vec3::from_array(wall.normals[ids[0]as usize]);
             assert!((b-a).cross(c-a).dot(normal)>0.,"outward closed faces");
         }
-        assert!(wall.positions.iter().all(|v|v[1]>=0. && v[1]<=16.));
-        assert_eq!(proportions(ModelKind::WindowWall,2,2).1,16.);
+        assert!(wall.positions.iter().all(|v|v[1]>=0. && v[1]<=32.));
+        assert!(wall.positions.iter().any(|v|v[1]==32.));
+        assert_eq!(proportions(ModelKind::WindowWall,2,2).1,32.);
         let mut adjacent=p.clone();adjacent.column=4;
         let mut other=SurfaceMeshData::default();
         append_kanto_house_wall(&mut other,&g,&adjacent,[32.,64.,13.,16.]);
@@ -2381,7 +3202,13 @@ fn append_store_vending_roof(mesh:&mut SurfaceMeshData,first:usize,height:f32,sc
 }
 
 fn append_native_retail_display(mesh:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4],blue_case:bool) {
-    let [w,e,n,s]=b;let height=p.height_pixels*g.tile_height/8.;
+    if blue_case {
+        append_native_blue_case(mesh,g,p,b);
+        return;
+    }
+    // The first eight source pixels describe the visible roof, including its
+    // vents. Only the remaining three rows form the vertical door/display.
+    let [w,e,n,s]=b;let height=p.height_pixels*0.75*g.tile_height/8.;
     let sample=|x:usize,y:usize| {
         let uv=g.uv(p.column+x/8,p.row+y/8);
         [uv.0+(uv.1-uv.0)*((x%8)as f32+0.5)/8.,
@@ -2400,21 +3227,26 @@ fn append_native_retail_display(mesh:&mut SurfaceMeshData,g:&GridGeometry,p:&Pla
     for i in first..mesh.positions.len() {mesh.uvs[i]=casing;}
     let faces=mesh.indices.split_off(index);
     mesh.indices.extend(faces.chunks_exact(3)
-        .filter(|tri|mesh.normals[tri[0]as usize][2]<0.5).flatten().copied());
-    // Four recessed bays meet raised shelf lips and a beveled outer frame.
+        .filter(|tri|mesh.normals[tri[0]as usize][2]<0.5
+            &&mesh.normals[tri[0]as usize][1]<0.5).flatten().copied());
+    for x in 0..p.width {
+        append_top(mesh,[w+(e-w)*x as f32/p.width as f32,
+            w+(e-w)*(x+1)as f32/p.width as f32,n,s],height,g.uv(p.column+x,p.row));
+    }
+    // Recessed bays meet raised shelf lips and a beveled outer frame.
     // All shared knots coincide: the inset front seals the same casing rather
     // than putting floating graphics or intersecting boxes in front of it.
     let xs=[0.,0.06,0.12,0.5,0.88,0.94,1.];
     let ys:&[f32]=if p.kind==ModelKind::RetailRefrigerator {
-        &[0.,0.04,0.20,0.25,0.29,0.5,0.75,0.95,1.]
-    } else {&[0.,0.04,0.20,0.25,0.29,0.45,0.5,0.54,0.70,0.75,0.79,0.95,1.]};
+        &[0.25,0.29,0.5,0.75,0.95,1.]
+    } else {&[0.25,0.29,0.45,0.5,0.54,0.70,0.75,0.79,0.95,1.]};
     let (u0,_,v0,_)=g.uv(p.column,p.row);
     let (_,u1,_,v1)=g.uv(p.column+p.width-1,p.row+p.height-1);
     let point=|x:f32,y:f32| {
         let recessed=if p.kind==ModelKind::RetailRefrigerator {y>0.25 && y<1.}
             else {![0.,0.25,0.5,0.75,1.].contains(&y)};
         let inset=if x>=0.12 && x<=0.88 && recessed {0.8*g.tile_height/8.} else {0.};
-        [w+(e-w)*x,height*(1.-y),s-inset]
+        [w+(e-w)*x,height*(1.-y)/0.75,s-inset]
     };
     for y in 0..ys.len()-1 {for x in 0..xs.len()-1 {
         let corners=[[xs[x],ys[y]],[xs[x],ys[y+1]],
@@ -2430,6 +3262,35 @@ fn append_native_retail_display(mesh:&mut SurfaceMeshData,g:&GridGeometry,p:&Pla
             mesh.indices.extend([first,first+1,first+2]);
         }
     }}
+}
+
+fn append_native_blue_case(mesh:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4]) {
+    let [w,e,_,s]=b;let scale=g.tile_height/8.;let n=s-24.*scale;
+    let height=8.*scale;
+    let sample=|x:usize,y:usize| {
+        let uv=g.uv(p.column+x/8,p.row+y/8);
+        [uv.0+(uv.1-uv.0)*((x%8)as f32+0.5)/8.,
+         uv.2+(uv.3-uv.2)*((y%8)as f32+0.5)/8.]
+    };
+    let first=mesh.positions.len();let index=mesh.indices.len();
+    architecture_box(mesh,[w,e,0.,height,n,s],[1.;3]);
+    mesh.uvs[first..].fill(sample(6,3));
+    let faces=mesh.indices.split_off(index);
+    mesh.indices.extend(faces.chunks_exact(3).filter(|tri|
+        mesh.normals[tri[0]as usize][1]<0.5).flatten().copied());
+    // Three source rows describe the long lid. The remaining perspective
+    // strip must not turn into a tall ribbed cabinet door or corrugated side.
+    for y in 0..3 {for x in 0..2 {
+        append_top(mesh,[w+(e-w)*x as f32/2.,w+(e-w)*(x+1)as f32/2.,
+            n+8.*scale*y as f32,n+8.*scale*(y+1)as f32],height,
+            g.uv(p.column+x,p.row+y));
+    }}
+    // The two narrow ridges belong entirely above the lid datum.
+    for [a,b] in [[w,w+(e-w)*0.065],[e-(e-w)*0.065,e]] {
+        let first=mesh.positions.len();
+        architecture_box(mesh,[a,b,height,height+0.6*scale,n,s],[1.;3]);
+        mesh.uvs[first..].fill(sample(1,1));
+    }
 }
 
 /// Reserve missing furniture against legacy extrusion, displaying its exact
@@ -2533,7 +3394,57 @@ fn append_side_arcade(mesh: &mut SurfaceMeshData, bounds: [f32; 4], base: f32, r
 #[cfg(test)]
 mod tests {
     use super::*;
+    use bevy::prelude::{UVec2, Vec2};
     use std::sync::Arc;
+    #[test]
+    fn seating_candidate_guard_matches_full_resolver_for_authored_and_edited_profiles() {
+        let bits=|seats:Vec<crate::seating::Seat>| seats.into_iter().map(|seat|
+            (seat.rect.map(f32::to_bits),seat.height.to_bits(),seat.yaw.map(f32::to_bits)))
+            .collect::<Vec<_>>();
+        let mut checked=0;
+        for object in built_in_profiles().objects.iter().filter(|object|
+            profile_kind(object).is_some_and(|kind| matches!(kind,ModelKind::Stool
+                |ModelKind::ArcadeStool|ModelKind::Chair|ModelKind::LinkSeat
+                |ModelKind::StationBench|ModelKind::Cushion))) {
+            let (tiles,g)=fixture(object);
+            let mut frame=VisualWorldFrame::default();
+            frame.map_id=object.map.as_deref()
+                .or_else(||object.maps.as_ref().and_then(|maps|maps.first().map(String::as_str)))
+                .unwrap_or(match object.tileset.as_str() {
+                    "lab"=>"ElmsLab","pokecenter"=>"UnreviewedPokecenter1F",
+                    "train_station"=>"GoldenrodMagnetTrainStation","game_corner"=>"GoldenrodGameCorner",
+                    "mart"=>"GoldenrodDeptStore5F","traditional_house"=>"EcruteakItemfinderHouse",
+                    _=>"UnreviewedSeatFixture",
+                }).into();
+            frame.grid_size=UVec2::new(g.width as u32,g.height as u32);
+            frame.tile_size=Vec2::splat(8.);frame.tiles=tiles;
+            let refs=frame.tiles.iter().collect::<Vec<_>>();
+            assert!(has_seating_source_candidate(&frame.map_id,&refs,None),"{}",object.name);
+            let guarded=bits(super::super::seating_surfaces_with_candidate_guard(&frame,None,true));
+            let full=bits(super::super::seating_surfaces_with_candidate_guard(&frame,None,false));
+            assert_eq!(guarded,full,"{}",object.name);
+            // Edited live selectors retain the full ownership resolver; they
+            // can invalidate canonical chairs or claim overlapping drawings.
+            let mut edited=object.clone();edited.tiles[0][0]^=0x80;
+            let live=Document {objects:vec![edited],atmosphere:None};
+            assert!(has_seating_source_candidate(&frame.map_id,&refs,Some(&live)));
+            assert_eq!(bits(super::super::seating_surfaces_with_candidate_guard(&frame,Some(&live),true)),
+                bits(super::super::seating_surfaces_with_candidate_guard(&frame,Some(&live),false)),
+                "edited {}",object.name);
+            // Matching metatile/tile numbers in an outdoor atlas never prove
+            // a furniture drawing. This tests the useful skip against the old
+            // exhaustive path, including live-profile ownership inputs.
+            for tile in &mut frame.tiles {tile.source.tileset_id="johto".into();}
+            let refs=frame.tiles.iter().collect::<Vec<_>>();
+            assert!(!has_seating_source_candidate(&frame.map_id,&refs,Some(&live)));
+            let full=bits(super::super::seating_surfaces_with_candidate_guard(&frame,Some(&live),false));
+            assert!(full.is_empty());
+            assert_eq!(bits(super::super::seating_surfaces_with_candidate_guard(&frame,Some(&live),true)),full);
+            checked+=1;
+        }
+        assert!(checked>=16,"all authored seating profile families must be covered");
+    }
+
     #[test]
     fn kanto_native_large_tables_use_external_whole_drawings_and_keep_centerpiece_and_footing() {
         let path=std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
@@ -2541,6 +3452,12 @@ mod tests {
         if !path.exists() {return;}
         let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
         let layout=&loaded.pack().runtime_files()["data/tilesets/house_metatiles.bin"];
+        let bitmap=image::load_from_memory(&loaded.pack().runtime_files()["gfx/tilesets/house.png"]).unwrap().to_luma8();
+        let palette=&loaded.pack().data().tilesets["house"].palette_map;
+        let colors=std::str::from_utf8(&loaded.pack().runtime_files()["gfx/tilesets/house.pal"]).unwrap()
+            .lines().filter_map(|line|line.trim().strip_prefix("RGB "))
+            .map(|line|line.split(',').map(|v|v.trim().parse::<u8>().unwrap()).collect::<Vec<_>>())
+            .collect::<Vec<_>>();
         for map in ["PokemonFanClub","SafariZoneWardensHome","TrainerHouse1F"] {
             let module=&loaded.pack().data().maps[map];
             let w=module.attributes.width as usize*4;let h=module.attributes.height as usize*4;
@@ -2560,8 +3477,22 @@ mod tests {
             assert!(append(&mut mesh,map,&refs,&g,&p,&mut claims,[0,0]));
             assert_eq!(claims.iter().filter(|&&v|v).count(),64);
             assert_eq!(mesh.footing_heights,vec![1.25;tiles.len()]);
-            for y in 2..5 {for x in 3..5 {let uv=g.uv(p.column+x,p.row+y);
-                assert!(mesh.textured.uvs.contains(&[uv.0,uv.2]));}}
+            assert!(!native_large_house_table("UnreviewedHouse",&p,&refs,&g));
+            assert_native_tabletop_projection(&mesh.textured,&g,&p);
+            let decoration=mesh.textured.indices.iter().map(|&i|i as usize)
+                .filter(|&i|mesh.textured.positions[i][1]>p.height_pixels+0.001).collect::<Vec<_>>();
+            assert!(!decoration.is_empty());
+            assert!(decoration.iter().all(|&i|mesh.textured.cutaway_ranges[0].contains(&i)));
+            assert!(decoration.iter().all(|&i|mesh.textured.positions[i][1]<=p.height_pixels+18.));
+            for (pixel,gray) in native_table_centerpiece::PIXELS.into_iter()
+                .zip([255,170,85,0,170,255,85]) {
+                let raw=refs[(p.row+pixel[1]/8)*w+p.column+pixel[0]/8].source.tile_index as usize;
+                assert_eq!(palette[raw],5,"centerpiece owns its native brown palette and bank");
+                assert_eq!(bitmap.get_pixel((raw%16*8+pixel[0]%8)as u32,
+                    (raw/16*8+pixel[1]%8)as u32).0[0],gray);
+                assert_eq!(colors[20+usize::from((255-gray)/85)],
+                    [[26,24,17],[21,17,7],[16,13,3],[7,7,7]][usize::from((255-gray)/85)]);
+            }
             for i in p.indices(w) {let mut changed=tiles.clone();changed[i].source.tile_index^=0x80;
                 assert!(!resolve(map,&changed.iter().collect::<Vec<_>>(),&g,None).iter()
                     .any(|p|p.kind==ModelKind::DiningTable && p.width==8));}
@@ -2580,7 +3511,7 @@ mod tests {
             assert_eq!(claims.iter().filter(|&&v|v).count(),4);
             assert_eq!(mesh.footing_heights,vec![1.25;tiles.len()]);
             assert!(mesh.textured.positions.iter().all(|p|p[1]<=14.001));
-            assert!(resolve("PlayersNeighborsHouse",&refs,&g,None).iter().any(|p|p.kind==ModelKind::FlowerStand));
+            assert!(resolve("UnreviewedHouse",&refs,&g,None).iter().any(|p|p.kind==ModelKind::FlowerStand));
         }
     }
     #[test]
@@ -2667,6 +3598,82 @@ mod tests {
             }
         }
     }
+    #[test]
+    fn native_gate_plants_cover_every_external_pack_crown_including_mirrored_planters() {
+        // Validate the production catalog even when the optional pack is absent.
+        Document::parse(include_bytes!("../../../../modpacks/voxel-view/profiles.json")).unwrap();
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file(),"explicit external pack must exist");
+        if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let layout=&pack.pack().runtime_files()["data/tilesets/gate_metatiles.bin"];
+        let mut total=0;let mut mirrored=0;
+        for (map,module) in &pack.pack().data().maps {
+            if !(super::super::gate_counters::reviewed_gate_map(map)||map=="GoldenrodUnderground"){continue;}
+            let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+            let mut tiles=Vec::new();
+            for y in 0..h {for x in 0..w {
+                let block=module.blocks[y/4*(w/4)+x/4];
+                tiles.push(VisualTile{animation_frames:None,column:x as u32,row:y as u32,texture:Default::default(),priority:false,
+                    source:VisualTileSource{tileset_id:Arc::from("gate"),metatile_id:block,subtile_column:(x%4)as u8,
+                        subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+y%4*4+x%4]as u16}});
+            }}
+            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let refs=tiles.iter().collect::<Vec<_>>();
+            let expected=tiles.iter().filter(|t|t.source.tile_index==0x38).count();
+            let plants=resolve(map,&refs,&g,None).into_iter().filter(|p|native_gate_plant_source(map,p,&refs,&g)).collect::<Vec<_>>();
+            assert_eq!(plants.len(),expected,"{map}: every source crown must be bound");
+            for p in plants {
+                total+=1;
+                if tiles[p.row*w+p.column].source.metatile_id==0x3a {mirrored+=1;}
+                let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
+                let mut claimed=vec![false;tiles.len()];assert!(append(&mut mesh,map,&refs,&g,&p,&mut claimed,[0,0]));
+                assert!(mesh.solid.positions.is_empty());
+                assert_eq!(claimed.iter().filter(|&&v|v).count(),p.width*p.height);
+                assert!(mesh.footing_heights.iter().all(|&v|v==2.75));
+            }
+        }
+        assert_eq!(total,52);assert_eq!(mirrored,3);
+    }
+
+    #[test]
+    fn native_gate_plants_keep_green_crowns_gold_pots_and_exact_source_claims() {
+        for name in ["Shared gate planter 0","Shared gate planter 2","Shared gate corridor planter","Shared gate long planter","Shared gate mirrored long planter"] {
+            let object=if name=="Shared gate mirrored long planter" {
+                let mut o=profile("Shared gate long planter");o.name=name.into();o.metatile=0x3a;o.origin=[2,0];o
+            } else {profile(name)};
+            let (tiles,g)=fixture(&object);let refs=tiles.iter().collect::<Vec<_>>();
+            let map=if name.contains("corridor")||name.contains("long") {"GoldenrodUnderground"}else{"Route31VioletGate"};
+            let p=resolve(map,&refs,&g,None).into_iter().find(|p|matches!(p.kind,ModelKind::PottedPlant|ModelKind::LongPlanter)).unwrap();
+            assert!(native_gate_plant_source(map,&p,&refs,&g),"{name}");
+            assert!(!native_gate_plant_source("UnreviewedGate",&p,&refs,&g));
+            let mut raised=p.clone();raised.base_pixels=4.;
+            assert!(!native_gate_plant_source(map,&raised,&refs,&g));
+            let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
+            let mut claims=vec![false;tiles.len()];
+            assert!(append(&mut mesh,map,&refs,&g,&p,&mut claims,[0,0]));
+            assert!(mesh.solid.indices.is_empty());assert_eq!(claims.iter().filter(|&&v|v).count(),p.width*p.height);
+            assert!(mesh.footing_heights.iter().all(|&v|v==2.75));
+            let top=if p.kind==ModelKind::PottedPlant {16.}else{17.};
+            assert!(mesh.textured.positions.iter().all(|v|v[1]<=top+1e-4));
+            let pot_y=(p.height-1)*8;
+            for uv in native_source_swatches(&p,&g,[[3,1],[6,1],[3,pot_y+1],[1,pot_y],[3,pot_y]]) {
+                assert!(mesh.textured.uvs.contains(&uv));
+            }
+            for i in p.indices(g.width) {for field in 0..4 {
+                let mut changed=tiles.clone();let source=&mut changed[i].source;
+                match field {0=>source.tile_index^=128,1=>source.metatile_id^=128,
+                    2=>source.subtile_column^=1,_=>source.subtile_row^=1}
+                assert!(!native_gate_plant_source(map,&p,&changed.iter().collect::<Vec<_>>(),&g),"{name}: cell{i} field{field}");
+            }}
+            let mut changed=object.clone();changed.top_pixels+=1;
+            let active=Document{objects:vec![changed],atmosphere:None};
+            assert!(!resolve(map,&refs,&g,Some(&active)).iter().any(|p|native_gate_plant_source(map,p,&refs,&g)),"{name}: live custom owner");
+        }
+    }
+
     #[test]
     fn kanto_basement_plants_keep_source_gold_pots_and_complete_art_ownership() {
         for name in ["Shared facility potted plant 0d","Shared facility potted plant 0e"] {
@@ -3058,7 +4065,7 @@ mod tests {
     }
 
     #[test]
-    fn kanto_native_selected_house_bookcase_uses_wood_source_and_keeps_authored_books() {
+    fn native_house_bookcase_uses_own_cover_and_page_source_without_pastel_paint() {
         let mut object=profile("Shared facility paired bookcases 06");
         object.map=None;object.maps=None;object.parts.clear();object.metatiles=None;
         object.tileset="house".into();object.metatile=4;object.origin=[0,0];object.ground=1;
@@ -3074,9 +4081,9 @@ mod tests {
             assert!(append(&mut mesh,"BluesHouse",&refs,&g,p,&mut claimed,[0,0]));
             assert!(p.indices(g.width).all(|i|mesh.authored_cells[i]==Some("interior/bookcase")));
         }
-        assert!(!mesh.solid.positions.is_empty(),"selected books retain authored materials");
-        assert!(!mesh.textured.positions.is_empty(),"cabinet uses its source wood swatch");
-        assert!(mesh.solid.colors.iter().any(|c|c[0]!=c[1] && c[1]!=c[2]));
+        assert!(mesh.solid.positions.is_empty(),"books must use the house palette instead of pastel paint");
+        assert!(!mesh.textured.positions.is_empty());
+        assert!(mesh.textured.colors.iter().all(|c|c[0]==c[1]&&c[1]==c[2]));
         assert_eq!(mesh.footing_heights,vec![2.5;tiles.len()]);
     }
     #[test]
@@ -3164,7 +4171,10 @@ mod tests {
         assert!(mesh.solid.positions.is_empty());
         assert!(mesh.textured.positions.iter().all(|v|v[1]<=10.001));
         let swatch=native_source_swatches(&p,&g,[[12,12]])[0];
-        assert!(mesh.textured.uvs.iter().skip(16*4).all(|uv|*uv==swatch));
+        assert_native_tabletop_projection(&mesh.textured,&g,&p);
+        assert!(mesh.textured.indices.iter().map(|&i|i as usize)
+            .filter(|&i|i>=16*4 && mesh.textured.normals[i][1]<0.99)
+            .all(|i|mesh.textured.uvs[i]==swatch));
         for i in p.indices(g.width) {
             let mut changed=tiles.clone();changed[i].source.tile_index^=0x80;
             assert!(!resolve("CeladonMansion1F",&changed.iter().collect::<Vec<_>>(),&g,None)
@@ -3185,20 +4195,24 @@ mod tests {
             .find(|p|native_oak_table("OaksLab",p,&refs,&g)).unwrap();
         assert_eq!(p.height_pixels,10.);
         assert_eq!(p.footing_pixels,object.footing_pixels);
-        assert!(resolve("ElmsLab",&refs,&g,None).iter().any(|p|p.kind==ModelKind::LabDisplayTable));
+        let elm=resolve("ElmsLab",&refs,&g,None).into_iter().find(|p|p.kind==ModelKind::DiningTable).unwrap();
+        assert_eq!(traditional_tabletop_height("ElmsLab",&refs,&g,None,elm.column,elm.row),Some(10.));
         let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],..Default::default()};
         let mut claimed=vec![false;tiles.len()];
         assert!(append(&mut mesh,"OaksLab",&refs,&g,&p,&mut claimed,[0,0]));
         assert_eq!(claimed.iter().filter(|&&v|v).count(),18);
-        let ordinary=resolve("ElmsLab",&refs,&g,None).into_iter()
+        let ordinary=resolve("UnreviewedLab",&refs,&g,None).into_iter()
             .find(|p|p.kind==ModelKind::LabDisplayTable).unwrap();
         let mut old=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],..Default::default()};
-        assert!(append(&mut old,"ElmsLab",&refs,&g,&ordinary,&mut vec![false;tiles.len()],[0,0]));
+        assert!(append(&mut old,"UnreviewedLab",&refs,&g,&ordinary,&mut vec![false;tiles.len()],[0,0]));
         assert_eq!(mesh.footing_heights,old.footing_heights);
         assert!(mesh.solid.positions.is_empty());
         assert!(mesh.textured.positions.iter().all(|v|v[1]<=10.001));
         let swatch=native_source_swatches(&p,&g,[[10,4]])[0];
-        assert!(mesh.textured.uvs.iter().skip(18*4).all(|uv|*uv==swatch));
+        assert_native_tabletop_projection(&mesh.textured,&g,&p);
+        assert!(mesh.textured.indices.iter().map(|&i|i as usize)
+            .filter(|&i|i>=18*4 && mesh.textured.normals[i][1]<0.99)
+            .all(|i|mesh.textured.uvs[i]==swatch));
         for i in p.indices(g.width) {
             let mut changed=tiles.clone();changed[i].source.tile_index^=0x80;
             assert!(!resolve("OaksLab",&changed.iter().collect::<Vec<_>>(),&g,None)
@@ -3207,6 +4221,142 @@ mod tests {
         let mut custom=object.clone();custom.name="Custom desk".into();
         assert!(!resolve("OaksLab",&refs,&g,Some(&Document{objects:vec![custom],atmosphere:None}))
             .iter().any(|p|p.kind==ModelKind::DiningTable && p.width==6));
+    }
+    #[test]
+    fn elm_external_pack_has_native_table_workstation_and_both_gray_fixtures() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file());if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let module=&pack.pack().data().maps["ElmsLab"];
+        let layout=&pack.pack().runtime_files()["data/tilesets/lab_metatiles.bin"];
+        let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+        let mut tiles=Vec::new();
+        for y in 0..h {for x in 0..w {
+            let block=module.blocks[y/4*(w/4)+x/4];
+            tiles.push(VisualTile{column:x as u32,row:y as u32,texture:Default::default(),priority:false,animation_frames:None,
+                source:VisualTileSource{tileset_id:"lab".into(),metatile_id:block,subtile_column:(x%4)as u8,
+                    subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+y%4*4+x%4]as u16}});
+        }}
+        let refs=tiles.iter().collect::<Vec<_>>();
+        let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let placements=resolve("ElmsLab",&refs,&g,None);
+        for kind in [ModelKind::DiningTable,ModelKind::LabWorkstation,ModelKind::LabRestorationMachine,ModelKind::LabCounter] {
+            let found=placements.iter().filter(|p|p.kind==kind).collect::<Vec<_>>();
+            assert_eq!(found.len(),1,"{kind:?}");
+            for p in found {
+            match kind {
+                ModelKind::DiningTable=>{assert!(native_oak_table("ElmsLab",p,&refs,&g));
+                    for column in [12,14,16] {assert_eq!(traditional_tabletop_height("ElmsLab",&refs,&g,None,column,6),Some(10.));}},
+                ModelKind::LabWorkstation=>assert!(native_lab_workstation_source("ElmsLab",p,&refs,&g).is_some()),
+                ModelKind::LabCounter=>assert!(native_elm_central_source("ElmsLab",p,&refs,&g).is_some()),
+                _=>assert!(native_elm_fixture_source("ElmsLab",p,&refs,&g).is_some()),
+            }
+            let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
+            let mut claims=vec![false;tiles.len()];assert!(append(&mut mesh,"ElmsLab",&refs,&g,p,&mut claims,[0,0]));
+            assert!(mesh.solid.indices.is_empty(),"{kind:?}: imported substitute colour remains");
+            assert_eq!(claims.iter().filter(|&&x|x).count(),p.width*p.height);
+            let mut support=vec![2.75;tiles.len()];
+            if let Some(height)=p.footing_pixels {for i in p.indices(w){support[i]=height;}}
+            assert_eq!(mesh.footing_heights,support);
+            if kind==ModelKind::LabCounter {
+                assert!(mesh.textured.positions.iter().all(|v|v[1]<=11.501),"low phone/console, not a full monitor and invented chair");
+                let bitmap=image::load_from_memory(&pack.pack().runtime_files()["gfx/tilesets/lab.png"]).unwrap().to_luma8();
+                let count=(bitmap.width()/8)*(bitmap.height()/8);
+                for (pixel,value) in [([18,8],0),([28,8],85),([0,8],170),([19,8],255)] {
+                    let source=&refs[(p.row+pixel[1]/8)*w+p.column+pixel[0]/8].source;
+                    let packed=pack.pack().data().tilesets["lab"].palette_map[source.tile_index as usize];
+                    let tile=(source.tile_index as u32&127)+if packed&8!=0{count/2}else{0};
+                    assert_eq!(bitmap.get_pixel(tile%16*8+(pixel[0]%8)as u32,tile/16*8+(pixel[1]%8)as u32).0[0],value,
+                        "central desk swatches must resolve the source VRAM bank");
+                }
+            }
+            assert!(mesh.textured.positions.iter().all(|v|v[0]>=p.column as f32*8.-0.001
+                &&v[0]<=(p.column+p.width)as f32*8.+0.001&&v[2]>=p.row as f32*8.-0.001
+                &&v[2]<=(p.row+p.height)as f32*8.+0.001),"{kind:?}: geometry must stay inside its source footprint");
+            }
+        }
+        assert!(!placements.iter().any(|p|p.kind==ModelKind::LabDisplayTable),"fixed specimens must not duplicate live starter balls");
+    }
+    #[test]
+    fn elm_equipment_uses_complete_sources_and_preserves_support_and_custom_ownership() {
+        for name in ["Lab restoration machine","Lab central desk assembly"] {
+            let object=profile(name);let (mut tiles,g)=fixture(&object);let refs=tiles.iter().collect::<Vec<_>>();
+            let p=resolve("ElmsLab",&refs,&g,None).into_iter().find(|p|
+                matches!(p.kind,ModelKind::LabRestorationMachine|ModelKind::LabCounter)).unwrap();
+            let swatches=if p.kind==ModelKind::LabCounter {
+                native_elm_central_source("ElmsLab",&p,&refs,&g).unwrap().to_vec()
+            }else{native_elm_fixture_source("ElmsLab",&p,&refs,&g).unwrap().to_vec()};
+            let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],..Default::default()};
+            let mut claims=vec![false;tiles.len()];assert!(append(&mut mesh,"ElmsLab",&refs,&g,&p,&mut claims,[0,0]));
+            assert!(mesh.solid.indices.is_empty());assert_eq!(claims.iter().filter(|&&x|x).count(),16);
+            assert_eq!(mesh.footing_heights,vec![1.25;tiles.len()]);
+            if p.kind==ModelKind::LabRestorationMachine {
+                assert!(mesh.textured.uvs.contains(&swatches[0]),"dark recessed bed");
+                assert!(mesh.textured.positions.iter().all(|v|v[1]<=8.001));
+            }else{
+                assert!(mesh.textured.positions.iter().all(|v|v[1]<=11.501));
+                assert!(mesh.textured.positions.iter().any(|v|v[1]>10.));
+            }
+            assert!(native_elm_fixture_source("OaksLab",&p,&refs,&g).is_none());
+            let mut custom=object.clone();custom.name="User lab equipment".into();
+            assert!(!resolve("ElmsLab",&refs,&g,Some(&Document{objects:vec![custom],atmosphere:None}))
+                .iter().any(|q|q.kind==p.kind));
+            drop(refs);
+            for i in p.indices(g.width) {
+                let old=tiles[i].source.tile_index;tiles[i].source.tile_index=0xffff;
+                let changed=tiles.iter().collect::<Vec<_>>();
+                assert!(native_elm_fixture_source("ElmsLab",&p,&changed,&g).is_none());
+                assert!(native_elm_central_source("ElmsLab",&p,&changed,&g).is_none());
+                tiles[i].source.tile_index=old;
+            }
+        }
+    }
+    #[test]
+    fn elm_healing_machine_has_open_recess_low_front_and_correct_face_winding() {
+        let object=profile("Lab restoration machine");let (tiles,mut g)=fixture(&object);
+        let refs=tiles.iter().collect::<Vec<_>>();
+        let p=resolve("ElmsLab",&refs,&g,None).into_iter().find(|p|p.kind==ModelKind::LabRestorationMachine).unwrap();
+        assert_eq!((p.depth_pixels,p.height_pixels),(24.,8.));
+        for scale in [0.5,1.,2.] {
+            g.tile_width=8.*scale;g.tile_height=8.*scale;
+            let swatches=native_elm_fixture_source("ElmsLab",&p,&refs,&g).unwrap();
+            let mut out=SurfaceMeshData::default();
+            append_native_elm_healing_machine(&mut out,&g,&p,[10.,10.+32.*scale,20.,20.+32.*scale],swatches);
+            assert_eq!(out.positions.iter().map(|v|v[1]).fold(0.,f32::max),8.*scale);
+            let depth=out.positions.iter().map(|v|v[2]).fold(f32::NEG_INFINITY,f32::max)
+                -out.positions.iter().map(|v|v[2]).fold(f32::INFINITY,f32::min);
+            assert!((depth-24.*scale).abs()<0.001);
+            let sample=Vec2::new(10.+16.1*scale,20.+22.3*scale);let mut hits=Vec::new();
+            for tri in out.indices.chunks_exact(3) {
+                let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(out.positions[i as usize]));
+                let normal=Vec3::from_array(out.normals[tri[0]as usize]);
+                assert!((b-a).cross(c-a).dot(normal)>0.,"outward nondegenerate faces");
+                if normal.y>0.99 {
+                    let [a2,b2,c2]=[a,b,c].map(|p|Vec2::new(p.x,p.z));
+                    let area=(b2-a2).perp_dot(c2-a2);
+                    let u=(b2-sample).perp_dot(c2-sample)/area;
+                    let v=(c2-sample).perp_dot(a2-sample)/area;
+                    if u>0.&&v>0.&&u+v<1. {hits.push(a.y);}
+                }
+            }
+            assert_eq!(hits.len(),1,"recess must have one floor and no lid covering it");
+            assert!((hits[0]-5.5*scale).abs()<0.001);
+            let front=g.uv(p.column,p.row+3);
+            assert!(out.uvs.iter().zip(&out.normals).zip(&out.positions).any(|((uv,n),v)|
+                *uv==[front.0,front.2]&&n[2]>0.99&&(v[1]-7.4*scale).abs()<0.001),"last source row belongs on front");
+            let roof=g.uv(p.column,p.row);
+            assert!(out.uvs.iter().zip(&out.normals).zip(&out.positions).any(|((uv,n),v)|
+                *uv==[roof.0,roof.2]&&n[1]>0.99&&(v[1]-8.*scale).abs()<0.001),"source roof belongs on top");
+        }
+        let mut legacy=TerrainMeshData::default();
+        // The canonical source profile is Elm-only. Exercise the generic model
+        // fallback directly, without inventing a machine placement in Oak's lab.
+        assert!(!resolve("OaksLab",&refs,&g,None).iter().any(|p|p.kind==ModelKind::LabRestorationMachine));
+        let legacy_p=Placement{depth_pixels:12.,height_pixels:22.,..p.clone()};
+        assert!(append(&mut legacy,"UnreviewedLab",&refs,&g,&legacy_p,&mut vec![false;tiles.len()],[0,0]));
+        assert!(!legacy.solid.indices.is_empty(),"other room callers retain their authored restoration model");
     }
     #[test]
     fn kanto_native_lab_cabinet_routes_structure_to_atlas_and_respects_source_ownership() {
@@ -3220,13 +4370,23 @@ mod tests {
             assert!(append(&mut mesh,map,&refs,&g,cabinet,&mut vec![false;tiles.len()],[0,0]));
             mesh
         };
-        let native=build("OaksLab");let ordinary=build("ElmsLab");
+        let native=build("OaksLab");let ordinary=build("UnreviewedLab");
         assert!(native.textured.indices.len()>ordinary.textured.indices.len());
         assert!(native.solid.indices.len()<ordinary.solid.indices.len());
         assert_eq!(native.textured.indices.len()+native.solid.indices.len(),
             ordinary.textured.indices.len()+ordinary.solid.indices.len());
         assert_eq!(native.footing_heights,ordinary.footing_heights);
-        assert!(native.solid.uvs.iter().all(|uv|*uv==[0.,0.]),"books must retain untextured paint");
+        assert!(native.solid.indices.is_empty(),"native lab books must use their source palette");
+        assert!(native.textured.colors.iter().all(|c|c[0]==c[1]&&c[1]==c[2]));
+        for map in ["ElmsLab","EarlsPokemonAcademy","DragonShrine"] {
+            let johto=build(map);
+            assert_eq!(johto.textured.uvs,native.textured.uvs);
+            assert_eq!(johto.textured.positions,native.textured.positions);
+            assert!(johto.solid.indices.is_empty());
+            let mut custom=object.clone();custom.name="User lab shelf".into();
+            assert!(!resolve(map,&refs,&g,Some(&Document{objects:vec![custom],atmosphere:None}))
+                .iter().any(|p|p.kind==ModelKind::LabBookcase));
+        }
         object.name="User cabinet".into();
         assert!(!resolve("OaksLab",&refs,&g,Some(&Document{objects:vec![object],atmosphere:None}))
             .iter().any(|p|p.kind==ModelKind::LabBookcase));
@@ -3365,8 +4525,9 @@ mod tests {
                     volume+=points[0].dot(points[1].cross(points[2]))/6.;
                     if mesh.normals[tri[0]as usize][2]>0.5 {front_area+=cross.z/2.;}
                 }
-                assert!(volume>16.*10.*30.*0.90 && volume<16.*10.*30.);
-                assert!((front_area-16.*30.).abs()<0.01);
+                assert!(volume>16.*10.*22.5*0.90 && volume<16.*10.*22.5,
+                    "closed cabinet volume excludes the perspective roof row");
+                assert!((front_area-16.*22.5).abs()<0.01);
                 assert!(mesh.positions.iter().any(|p|p[2]>9. && p[2]<10.));
                 for y in 0..4 {for x in 0..2 {
                     let uv=g.uv(p.column+x,p.row+y);
@@ -3588,8 +4749,9 @@ mod tests {
             assert!(p.indices(g.width).all(|i|claimed[i]));assert!(mesh.footing_heights.iter().all(|h|*h==1.25));
             if kind==ModelKind::ArcadeWall {
                 assert!(mesh.solid.positions.is_empty());
-                assert!(mesh.textured.positions.iter().all(|p|p[0]>=0.&&p[0]<=32.&&p[1]<=16.));
-                assert_eq!(mesh.textured.indices.len(),4*2*6+(5+4*2)*6,"one closed course, no repeated overlapping panels");
+                assert!(mesh.textured.positions.iter().all(|p|p[0]>=0.&&p[0]<=32.&&p[1]<=32.));
+                assert!(mesh.textured.positions.iter().any(|p|p[1]==32.));
+                assert_eq!(mesh.textured.indices.len(),4*2*6+(5+4*4)*6,"one ceiling-height closed wall, no overlapping panels");
             } else {assert!(!mesh.solid.indices.is_empty(),"complete shelf must be a real shared cabinet");}
             tiles[0].source.tile_index=0xffff;
             assert!(resolve("CeladonCafe",&tiles.iter().collect::<Vec<_>>(),&g,None).iter().all(|p|p.kind!=kind));
@@ -3614,7 +4776,8 @@ mod tests {
             let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],authored_cells:vec![None;tiles.len()],..Default::default()};
             assert!(append(&mut mesh,map,&refs,&g,p,&mut vec![false;tiles.len()],[0,0]));
             assert!(mesh.solid.positions.is_empty(),"aqua substitute cannot remain");
-            assert!(mesh.textured.positions.iter().all(|p|p[1]>=0.&&p[1]<=16.));
+            assert!(mesh.textured.positions.iter().all(|p|p[1]>=0.&&p[1]<=32.));
+            assert!(mesh.textured.positions.iter().any(|p|p[1]==32.));
             assert!(mesh.textured.positions.iter().any(|p|p[2]>15.&&p[2]<16.),"curtain relief must remain inside closed wall");
             for ids in mesh.textured.indices[4*6..].chunks_exact(3) {
                 let [a,b,c]=[ids[0],ids[1],ids[2]].map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
@@ -3662,6 +4825,357 @@ mod tests {
     }
 
     #[test]
+    fn traditional_bookcase_finish_preserves_custom_and_unreviewed_drawings() {
+        let drawing=INTERIOR_DRAWINGS.iter().find(|d|d.tileset=="traditional_house"&&d.kind==ModelKind::Bookcase).unwrap();
+        let mut object=profile("Shared facility paired bookcases 06");object.name="Custom traditional shelf".into();
+        object.tileset=drawing.tileset.into();object.metatile=drawing.block;object.origin=drawing.origin;
+        object.metatiles=None;object.map=None;object.maps=None;object.parts.clear();object.ground=0x11;
+        object.tiles=drawing.tiles.chunks_exact(2).map(|row|row.to_vec()).collect();
+        let (tiles,g)=fixture(&object);let refs=tiles.iter().collect::<Vec<_>>();
+        for map in ["KurtsHouse","EcruteakItemfinderHouse","VioletKylesHouse"] {
+            let p=resolve(map,&refs,&g,None).into_iter().find(|p|p.kind==ModelKind::Bookcase).unwrap();
+            assert_eq!(native_bookcase_source(map,&p,&refs,&g),Some([[3,10],[3,12]]));
+            let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
+            let mut claims=vec![false;tiles.len()];assert!(append(&mut mesh,map,&refs,&g,&p,&mut claims,[0,0]));
+            assert!(mesh.solid.indices.is_empty());assert_eq!(claims.iter().filter(|&&v|v).count(),8);
+            assert_eq!(mesh.footing_heights,vec![2.75;tiles.len()]);
+            let custom=Document{objects:vec![object.clone()],atmosphere:None};
+            assert!(!resolve(map,&refs,&g,Some(&custom)).iter().any(|p|p.kind==ModelKind::Bookcase));
+            assert!(native_bookcase_source("UnreviewedTraditionalHouse",&p,&refs,&g).is_none());
+        }
+    }
+
+    #[test]
+    fn source_bookcase_finishes_cover_external_pack_and_keep_claims_and_support() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file());if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let mut maps=std::collections::BTreeMap::new();let mut atlases=std::collections::BTreeSet::new();
+        let mut bitmaps=std::collections::BTreeMap::new();
+        for (map,module) in &pack.pack().data().maps {
+            let atlas=module.attributes.tileset_name.as_str();
+            if !native_bookcase_room(map)
+                ||!matches!(atlas,"house"|"players_house"|"players_room"|"lab"|"mansion"|"traditional_house"){continue;}
+            let layout=&pack.pack().runtime_files()[&format!("data/tilesets/{atlas}_metatiles.bin")];
+            let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+            let mut tiles=Vec::new();
+            for y in 0..h {for x in 0..w {
+                let block=module.blocks[y/4*(w/4)+x/4];
+                tiles.push(VisualTile{animation_frames:None,column:x as u32,row:y as u32,texture:Default::default(),priority:false,
+                    source:VisualTileSource{tileset_id:Arc::from(atlas),metatile_id:block,subtile_column:(x%4)as u8,
+                        subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+y%4*4+x%4]as u16}});
+            }}
+            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let refs=tiles.iter().collect::<Vec<_>>();
+            for p in resolve(map,&refs,&g,None).into_iter().filter(|p|matches!(p.kind,ModelKind::Bookcase|ModelKind::LabBookcase)) {
+                let pixels=native_bookcase_source(map,&p,&refs,&g).unwrap_or_else(||panic!("{map}: complete source bookcase missing native finish"));
+                *maps.entry(map.clone()).or_insert(0usize)+=1;atlases.insert(atlas.to_string());
+                let bitmap=bitmaps.entry(atlas.to_string()).or_insert_with(||
+                    image::load_from_memory(&pack.pack().runtime_files()[&format!("gfx/tilesets/{atlas}.png")]).unwrap().to_luma8());
+                for unit in 0..p.width/2 {for (role,pixel) in pixels.iter().enumerate() {
+                    let source=&refs[(p.row+pixel[1]/8)*g.width+p.column+unit*2+pixel[0]/8].source;
+                    let value=bitmap.get_pixel(source.tile_index as u32%16*8+(pixel[0]%8)as u32,
+                        source.tile_index as u32/16*8+(pixel[1]%8)as u32).0[0];
+                    if role==0 {assert!(matches!(value,85|170),"{map}: cover pixel must be a source middle shade");}
+                    else {assert_eq!(value,255,"{map}: page top must use the source light shade");}
+                    assert_eq!(pack.pack().data().tilesets[atlas].palette_map[source.tile_index as usize],
+                        if atlas=="players_room" {0}else{5},"{map}: books sample their own palette");
+                }}
+                let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
+                let mut claims=vec![false;tiles.len()];assert!(append(&mut mesh,map,&refs,&g,&p,&mut claims,[0,0]));
+                assert!(mesh.solid.indices.is_empty(),"{map}: pastel books remain");
+                for unit in 0..p.width/2 {
+                    let selected=crate::interior_models::selected_model(p.kind).unwrap();
+                    let mut original=SurfaceMeshData::default();
+                    assert!(selected.append_native_bookcase_with_books(&mut original,[0.,16.,0.,8.],0.,29.,[[0.1;2];3],[[0.2;2];2]));
+                    let mut adapted=original.clone();
+                    append_native_bookcase_base(&mut adapted,&g,&p,&refs,unit,0,0,[0.1;2]);
+                    if native_bookcase_closed_base(&p,&refs,&g,unit) {
+                        assert_eq!(&adapted.positions[..original.positions.len()],original.positions.as_slice(),"{map}: upper shelf positions");
+                        let high=original.positions.iter().map(|v|v[1]).fold(f32::NEG_INFINITY,f32::max);
+                        let top=high*0.4;
+                        let roles=selected.native_bookcase_structural_mask().unwrap();
+                        let mut removed_books=0;
+                        for tri in original.indices.chunks_exact(3) {
+                            if tri.iter().all(|&i|!roles[i as usize]&&original.positions[i as usize][1]<top-0.001) {
+                                assert!(!adapted.indices.chunks_exact(3).any(|t|t==tri),"{map}: lowest books must be removed");
+                                removed_books+=1;
+                            } else if tri.iter().any(|&i|original.positions[i as usize][1]>=top) {
+                                assert!(adapted.indices.chunks_exact(3).any(|t|t==tri),"{map}: upper shelves must remain");
+                            }
+                        }
+                        assert!(removed_books>0);
+                        for x in 0..2 {
+                            let uv=g.uv(p.column+unit*2+x,p.row+p.height-1);
+                            assert!(adapted.uvs[original.positions.len()..].contains(&[uv.0,uv.2]),"{map}: own cupboard/drawer front");
+                            assert!(adapted.uvs[original.positions.len()..].contains(&[uv.1,uv.3]));
+                        }
+                    } else {assert_eq!(adapted,original,"{map}: open shelves must stay unchanged");}
+                }
+                assert_eq!(claims.iter().filter(|&&v|v).count(),p.width*p.height);
+                assert!(mesh.textured.colors.iter().all(|c|c[0]==c[1]&&c[1]==c[2]));
+                let mut support=vec![2.75;tiles.len()];
+                if let Some(height)=p.footing_pixels {for i in p.indices(w){support[i]=height;}}
+                assert_eq!(mesh.footing_heights,support,"{map}: authored support");
+                assert!(native_bookcase_source("UnreviewedHouse",&p,&refs,&g).is_none());
+                for i in p.indices(w) {
+                    let mut changed=tiles.clone();changed[i].source.tile_index=0xffff;
+                    assert!(native_bookcase_source(map,&p,&changed.iter().collect::<Vec<_>>(),&g).is_none(),"{map}: damaged source");
+                }
+            }
+        }
+        assert!(maps.contains_key("BillsHouse"));assert!(maps.contains_key("PlayersHouse2F"));
+        assert!(maps.contains_key("RedsHouse2F"));assert!(maps.contains_key("OaksLab"));
+        assert!(maps.contains_key("ElmsLab"));assert!(maps.contains_key("EarlsPokemonAcademy"));
+        assert!(maps.contains_key("KurtsHouse"),"timber-floor ground sample must enable the actual traditional shelves");
+        println!("Source bookcase atlases: {atlases:?}");
+        println!("Source bookcase maps: {}",maps.keys().cloned().collect::<Vec<_>>().join(","));
+    }
+
+    #[test]
+    fn native_house_cabinet_computers_require_complete_drawings_and_preserve_custom_ownership() {
+        for (map,block,origin,drawing) in [
+            ("DayCare",0x10,[0,0],vec![vec![0x40,0x41],vec![0x20,0x21],vec![0x42,0x43],vec![0x1e,0x1f]]),
+            ("TrainerHouse1F",0x1c,[2,1],vec![vec![0x40,0x41],vec![0x20,0x21],vec![0x42,0x43]]),
+        ] {
+            let mut object=profile("Shared lab round stool");object.name="Custom PC cabinet".into();
+            object.tileset="house".into();object.metatile=block;object.metatiles=None;object.origin=origin;
+            object.ground=1;object.tiles=drawing;object.map=None;object.maps=None;object.parts.clear();
+            let (mut tiles,g)=fixture(&object);let refs=tiles.iter().collect::<Vec<_>>();
+            let p=resolve(map,&refs,&g,None).into_iter().find(|p|p.kind==ModelKind::Computer).unwrap();
+            let swatches=native_computer_source(&p,&refs,&g).unwrap();
+            assert_eq!((p.depth_pixels,p.height_pixels),(12.,22.));
+            let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
+            let mut claims=vec![false;tiles.len()];assert!(append(&mut mesh,map,&refs,&g,&p,&mut claims,[0,0]));
+            assert!(mesh.solid.indices.is_empty());assert_eq!(claims.iter().filter(|&&v|v).count(),p.width*p.height);
+            assert_eq!(mesh.footing_heights,vec![2.75;tiles.len()]);
+            let blue=native_source_swatches(&p,&g,[swatches[4]])[0];let mut roof=0;
+            for ((v,n),uv) in mesh.textured.positions.iter().zip(&mesh.textured.normals).zip(&mesh.textured.uvs) {
+                if (uv[0]-blue[0]).abs()<1e-6&&(uv[1]-blue[1]).abs()<1e-6 {
+                    assert!(n[1]>0.5);assert!((v[1]-22.).abs()<1e-4);roof+=1;
+                }
+            }
+            assert!(roof>0,"source blue must remain on the monitor roof");
+            let custom=Document{objects:vec![object.clone()],atmosphere:None};
+            assert!(!resolve(map,&refs,&g,Some(&custom)).iter().any(|p|p.kind==ModelKind::Computer));
+            let mut old=TerrainMeshData::default();
+            assert!(append(&mut old,"UnreviewedHouse",&refs,&g,&p,&mut vec![false;tiles.len()],[0,0]));
+            assert!(!old.solid.indices.is_empty(),"unreviewed computer geometry stays on its original path");
+            drop(refs);
+            for i in p.indices(g.width) {
+                let before=tiles[i].source.tile_index;tiles[i].source.tile_index=0xffff;
+                assert!(!resolve(map,&tiles.iter().collect::<Vec<_>>(),&g,None).iter().any(|p|p.kind==ModelKind::Computer));
+                tiles[i].source.tile_index=before;
+            }
+        }
+    }
+
+    #[test]
+    fn native_house_electronics_cover_external_pack_and_keep_claims_and_support() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file());if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let mut radios=std::collections::BTreeSet::new();let mut computers=std::collections::BTreeSet::new();
+        for (map,module) in &pack.pack().data().maps {
+            let atlas=module.attributes.tileset_name.as_str();
+            if !reviewed_native_room(map)||!matches!(atlas,"house"|"players_house"|"players_room"){continue;}
+            let layout=&pack.pack().runtime_files()[&format!("data/tilesets/{atlas}_metatiles.bin")];
+            let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+            let mut tiles=Vec::new();
+            for y in 0..h {for x in 0..w {
+                let block=module.blocks[y/4*(w/4)+x/4];
+                tiles.push(VisualTile{animation_frames:None,column:x as u32,row:y as u32,texture:Default::default(),priority:false,
+                    source:VisualTileSource{tileset_id:Arc::from(atlas),metatile_id:block,subtile_column:(x%4)as u8,
+                        subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+y%4*4+x%4]as u16}});
+            }}
+            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let refs=tiles.iter().collect::<Vec<_>>();
+            for p in resolve(map,&refs,&g,None) {
+                if native_house_radio_source(&p,&refs,&g) {radios.insert(map.clone());}
+                else if native_computer_source(&p,&refs,&g).is_some() {computers.insert(map.clone());}
+                else {continue;}
+                let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
+                let mut claims=vec![false;tiles.len()];assert!(append(&mut mesh,map,&refs,&g,&p,&mut claims,[0,0]));
+                assert!(mesh.solid.indices.is_empty(),"{map}: generic electronics paint remains");
+                assert_eq!(claims.iter().filter(|&&v|v).count(),p.width*p.height);
+                let mut support=vec![2.75;tiles.len()];
+                if let Some(height)=p.footing_pixels {for i in p.indices(w){support[i]=height;}}
+                assert_eq!(mesh.footing_heights,support,"{map}: original support");
+                if let Some(swatches)=native_computer_source(&p,&refs,&g) {
+                    if atlas!="house" {assert_eq!(swatches[3],swatches[1]);assert_eq!(swatches[4],swatches[1]);}
+                    for uv in native_source_swatches(&p,&g,swatches) {
+                        assert!(mesh.textured.uvs.iter().any(|v|(v[0]-uv[0]).abs()<1e-6&&(v[1]-uv[1]).abs()<1e-6),
+                            "{map}: missing source computer swatch {uv:?}");
+                    }
+                }
+            }
+        }
+        assert!(radios.contains("BluesHouse"));assert!(radios.contains("PlayersNeighborsHouse"));
+        assert!(computers.contains("DayCare"));assert!(computers.contains("PlayersHouse2F"));
+        println!("Native radio maps: {}",radios.into_iter().collect::<Vec<_>>().join(","));
+        println!("Native computer maps: {}",computers.into_iter().collect::<Vec<_>>().join(","));
+    }
+
+    #[test]
+    fn house_radio_cabinet_uses_complete_stack_and_respects_custom_ownership() {
+        let mut object=profile("Shared lab round stool");
+        object.name="Custom radio cabinet".into();object.tileset="house".into();
+        object.metatile=0x1d;object.metatiles=None;object.origin=[2,1];object.ground=1;
+        object.tiles=vec![vec![0x0c,0x0d],vec![0x1c,0x1d],vec![0x1e,0x1f]];
+        object.map=None;object.maps=None;object.parts.clear();
+        let (mut tiles,g)=fixture(&object);let refs=tiles.iter().collect::<Vec<_>>();
+        for &map in WOVEN_HOUSE_MAPS {
+            let p=resolve(map,&refs,&g,None).into_iter().find(|p|p.kind==ModelKind::Radio).unwrap();
+            assert!(native_house_radio_source(&p,&refs,&g));
+            assert_eq!((p.depth_pixels,p.height_pixels),(8.,16.));
+            let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
+            let mut claims=vec![false;tiles.len()];assert!(append(&mut mesh,map,&refs,&g,&p,&mut claims,[0,0]));
+            assert!(mesh.solid.indices.is_empty());assert_eq!(claims.iter().filter(|&&v|v).count(),6);
+            assert_eq!(mesh.footing_heights,vec![2.75;tiles.len()]);
+            assert!(mesh.textured.positions.iter().all(|v|v[1]>=0. && v[1]<=16.001));
+            let floor=6*4;
+            assert!(mesh.textured.positions[floor..].iter().any(|v|v[1]<8.));
+            assert!(mesh.textured.positions[floor..].iter().any(|v|v[1]>8.));
+            for uv in native_source_swatches(&p,&g,[[1,16],[4,19],[0,0],[4,12]]) {
+                assert!(mesh.textured.uvs[floor..].contains(&uv));
+            }
+            let custom=Document{objects:vec![object.clone()],atmosphere:None};
+            assert!(!resolve(map,&refs,&g,Some(&custom)).iter().any(|p|p.kind==ModelKind::Radio));
+        }
+        let old=resolve("UnreviewedHouse",&refs,&g,None).into_iter().find(|p|p.kind==ModelKind::Radio).unwrap();
+        assert_eq!(old.height_pixels,12.);
+        drop(refs);tiles[0].source.tile_index=0xffff;
+        for &map in WOVEN_HOUSE_MAPS {
+            assert!(!resolve(map,&tiles.iter().collect::<Vec<_>>(),&g,None).iter().any(|p|p.kind==ModelKind::Radio));
+        }
+    }
+
+    #[test]
+    fn johto_and_kanto_house_finishes_use_complete_source_drawings_and_custom_ownership() {
+        for (kind,block,origin,drawing) in [
+            (ModelKind::Stool,0x0c,[0,0],vec![vec![2,3],vec![0x12,0x13]]),
+            (ModelKind::WindowWall,5,[2,0],vec![vec![0x24,0x4a],vec![0x34,0x2c]]),
+            (ModelKind::Television,0x1e,[0,1],vec![vec![6,7],vec![0x16,0x17],vec![0x1e,0x1f]]),
+        ] {
+            let mut object=profile("Shared lab round stool");
+            object.name="Custom house drawing".into();object.tileset="house".into();
+            object.metatile=block;object.metatiles=None;object.origin=origin;object.ground=1;
+            object.tiles=drawing;object.map=None;object.maps=None;object.parts.clear();
+            let (mut tiles,g)=fixture(&object);
+            let refs=tiles.iter().collect::<Vec<_>>();
+            for &map in WOVEN_HOUSE_MAPS {
+                let p=resolve(map,&refs,&g,None).into_iter().find(|p|p.kind==kind)
+                    .unwrap_or_else(||panic!("{map}: complete {kind:?} must resolve"));
+                let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
+                let mut claims=vec![false;tiles.len()];
+                assert!(append(&mut mesh,map,&refs,&g,&p,&mut claims,[0,0]));
+                assert!(mesh.solid.indices.is_empty(),"{map}: generic {kind:?} paint remains");
+                assert!(!mesh.textured.indices.is_empty());
+                assert_eq!(claims.iter().filter(|&&v|v).count(),p.width*p.height);
+                assert_eq!(mesh.footing_heights,vec![2.75;tiles.len()]);
+                let custom=Document{objects:vec![object.clone()],atmosphere:None};
+                assert!(!resolve(map,&refs,&g,Some(&custom)).iter().any(|p|p.kind==kind),
+                    "{map}: custom drawing must retain ownership");
+            }
+            drop(refs);tiles[0].source.tile_index=0xffff;
+            for &map in WOVEN_HOUSE_MAPS {
+                assert!(!resolve(map,&tiles.iter().collect::<Vec<_>>(),&g,None)
+                    .iter().any(|p|p.kind==kind),"{map}: damaged drawing must not resolve");
+            }
+        }
+    }
+
+    fn assert_native_tabletop_projection(mesh:&SurfaceMeshData,g:&GridGeometry,p:&Placement) {
+        let first=p.width*p.height*4;
+        let positions=&mesh.positions[first..];
+        let w=positions.iter().map(|v|v[0]).fold(f32::INFINITY,f32::min);
+        let e=positions.iter().map(|v|v[0]).fold(f32::NEG_INFINITY,f32::max);
+        let n=positions.iter().map(|v|v[2]).fold(f32::INFINITY,f32::min);
+        let s=positions.iter().map(|v|v[2]).fold(f32::NEG_INFINITY,f32::max);
+        let tw=(e-w)/p.width as f32;let th=(s-n)/(p.height-1)as f32;
+        let mut seen=std::collections::BTreeSet::new();
+        for ids in mesh.indices.chunks_exact(3).filter(|ids|ids.iter().all(|&i| {
+            let i=i as usize;i>=first&&mesh.normals[i][1]>0.999
+                &&mesh.positions[i][1]>p.height_pixels*g.tile_height/8.*0.95
+                &&mesh.positions[i][1]<=p.height_pixels*g.tile_height/8.+0.001
+        })) {
+            let center=ids.iter().fold(Vec3::ZERO,|a,&i|a+Vec3::from_array(mesh.positions[i as usize]))/3.;
+            let x=((center.x-w)/tw).floor()as usize;let y=((center.z-n)/th).floor()as usize;
+            assert!(x<p.width&&y<p.height-1,"apron cannot enter the native top");
+            seen.insert((x,y));let uv=g.uv(p.column+x,p.row+y);
+            for &i in ids {
+                let v=mesh.positions[i as usize];
+                let expected=if p.width==8&&(3..5).contains(&x)&&(2..5).contains(&y) {
+                    native_source_swatches(p,g,[[17,9]])[0]
+                } else {[uv.0+(uv.1-uv.0)*(v[0]-w-x as f32*tw)/tw,
+                    uv.2+(uv.3-uv.2)*(v[2]-n-y as f32*th)/th]};
+                for axis in 0..2 {assert!((mesh.uvs[i as usize][axis]-expected[axis]).abs()<1e-5);}
+            }
+        }
+        assert_eq!(seen.len(),p.width*(p.height-1));
+    }
+
+    #[test]
+    fn native_house_table_reveal_owns_each_complete_table_without_floor_or_support() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file(),"explicit external pack must exist");
+        if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let mut maps=std::collections::BTreeMap::new();
+        for (map,module) in &pack.pack().data().maps {
+            let tileset=module.attributes.tileset_name.as_str();
+            if !matches!(tileset,"house"|"players_house"|"players_room"|"lab"|"mansion"){continue;}
+            let layout=&pack.pack().runtime_files()[&format!("data/tilesets/{tileset}_metatiles.bin")];
+            let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+            let mut tiles=Vec::new();
+            for y in 0..h {for x in 0..w {
+                let block=module.blocks[y/4*(w/4)+x/4];
+                tiles.push(VisualTile{animation_frames:None,column:x as u32,row:y as u32,texture:Default::default(),priority:false,
+                    source:VisualTileSource{tileset_id:Arc::from(tileset),metatile_id:block,subtile_column:(x%4)as u8,
+                        subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+y%4*4+x%4]as u16}});
+            }}
+            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let refs=tiles.iter().collect::<Vec<_>>();
+            for p in resolve(map,&refs,&g,None) {
+                if !native_house_dining_table(map,&refs,&g,&p){continue;}
+                *maps.entry(map.clone()).or_insert(0usize)+=1;
+                let tabletop=(p.base_pixels+p.height_pixels)*g.tile_height/8.;
+                for y in p.row..p.row+p.height {for x in p.column..p.column+p.width {
+                    let expected=(y<p.row+native_dining_table_rows(&p)).then_some(tabletop);
+                    assert_eq!(traditional_tabletop_height(map,&refs,&g,None,x,y),expected,
+                        "{map}: stationary decorations must rest on the actual table");
+                }}
+                assert_eq!(traditional_tabletop_height(map,&refs,&g,None,g.width,g.height),None);
+                let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
+                let mut claims=vec![false;tiles.len()];assert!(append(&mut mesh,map,&refs,&g,&p,&mut claims,[0,0]));
+                assert_eq!(mesh.textured.cutaway_ranges,vec![p.width*p.height*4..mesh.textured.positions.len()],"{map}");
+                assert!(mesh.depth_coverage_textured_ranges.is_empty(),"{map}: tables use smooth transparency");
+                assert_eq!(mesh.layered_alpha_textured_ranges,if p.width==8 {
+                    mesh.textured.cutaway_ranges.clone()
+                }else{Vec::new()},"{map}: only the layered centerpiece needs fine sorting");
+                assert!(mesh.textured.positions[..p.width*p.height*4].iter().all(|v|v[1]==0.));
+                assert_eq!(claims.iter().filter(|&&v|v).count(),p.width*p.height);
+                let mut expected=vec![2.75;tiles.len()];
+                if let Some(height)=p.footing_pixels {
+                    for i in p.indices(w) {expected[i]=height*g.tile_height/8.;}
+                }
+                assert_eq!(mesh.footing_heights,expected,"{map}: authored support remains authoritative");
+                assert_native_tabletop_projection(&mesh.textured,&g,&p);
+            }
+        }
+        assert_eq!(maps.get("PlayersHouse1F"),Some(&1));assert_eq!(maps.get("PlayersHouse2F"),Some(&1));
+        assert_eq!(maps.get("DayOfWeekSiblingsHouse"),Some(&1));
+        assert!(maps.len()>10);
+        println!("Native table reveal maps: {}",maps.keys().cloned().collect::<Vec<_>>().join(","));
+    }
+
+    #[test]
     fn johto_player_home_tables_use_complete_source_and_preserve_footing() {
         for (name,map) in [("PlayersHouse1F dining table","PlayersHouse1F"),
             ("Player bedroom table","PlayersHouse2F")] {
@@ -3678,6 +5192,10 @@ mod tests {
             assert!(mesh.solid.positions.is_empty(),"generic pink table must be replaced");
             assert!(p.indices(g.width).all(|i|claimed[i]));
             assert!(mesh.footing_heights.iter().all(|h|*h==2.5));
+            let table_start=p.width*p.height*4;
+            assert_eq!(mesh.textured.cutaway_ranges,vec![table_start..mesh.textured.positions.len()]);
+            assert!(mesh.depth_coverage_textured_ranges.is_empty(),"tables use smooth transparency");
+            assert!(mesh.textured.positions[..table_start].iter().all(|v|v[1]==0.));
             if map=="PlayersHouse2F" {
                 let table=&mesh.textured.positions[p.width*p.height*4..];
                 assert!(!table.is_empty());
@@ -3774,6 +5292,152 @@ mod tests {
     }
 
     #[test]
+    fn external_mansion_corridor_furniture_reveal_owns_whole_objects_but_not_floor_or_neighbors() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file());if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let files=pack.pack().runtime_files();let layout=&files["data/tilesets/mansion_metatiles.bin"];
+        let png=image::load_from_memory(&files["gfx/tilesets/mansion.png"]).unwrap().to_luma8();
+        let palette=&pack.pack().data().tilesets["mansion"].palette_map;
+        let mut counts=[0usize;3];
+        for map in ["CeladonMansion1F","CeladonMansion2F","CeladonMansion3F"] {
+            let module=&pack.pack().data().maps[map];
+            let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let tiles=(0..w*h).map(|i| {let x=i%w;let y=i/w;
+                let block=module.blocks[y/4*(w/4)+x/4];
+                VisualTile{column:x as u32,row:y as u32,texture:Default::default(),priority:false,animation_frames:None,
+                    source:VisualTileSource{tileset_id:"mansion".into(),metatile_id:block,
+                        subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,
+                        tile_index:layout[block as usize*16+y%4*4+x%4]as u16}}
+            }).collect::<Vec<_>>();let refs=tiles.iter().collect::<Vec<_>>();
+            for p in resolve(map,&refs,&g,None) {
+                let owns=native_mansion_corridor_furniture(map,&p,&refs,&g);
+                let mut mesh=TerrainMeshData{footing_heights:vec![2.75;w*h],..Default::default()};
+                let mut claims=vec![false;w*h];
+                assert!(append(&mut mesh,map,&refs,&g,&p,&mut claims,[0,0]));
+                if !owns {
+                    if !native_house_dining_table(map,&refs,&g,&p) {
+                        assert!(mesh.depth_coverage_textured_ranges.is_empty(),"neighbor style unchanged");
+                    }
+                    continue;
+                }
+                let kind=match p.kind {ModelKind::Bookcase=>0,ModelKind::LabWorkstation=>1,
+                    ModelKind::PendulumClock=>2,_=>unreachable!()};counts[kind]+=1;
+                assert!(!native_mansion_corridor_furniture("MobileTradeRoom",&p,&refs,&g));
+                assert_eq!(refs[p.ground].source.tile_index,0x11,
+                    "revealed furnishings keep the native pink room backing");
+                let floor=p.width*p.height*4;
+                let range=floor..mesh.textured.positions.len();
+                assert_eq!(mesh.textured.cutaway_ranges,vec![range.clone()]);
+                assert_eq!(mesh.depth_coverage_textured_ranges,vec![range]);
+                assert!(mesh.layered_alpha_textured_ranges.is_empty(),"retain cabinet coverage reveal");
+                assert!(mesh.solid.indices.is_empty());
+                assert_eq!(claims.iter().filter(|&&c|c).count(),p.width*p.height);
+                assert_eq!(mesh.footing_heights,vec![2.75;w*h]);
+                if p.kind==ModelKind::PendulumClock {
+                    let paint=native_source_swatches(&p,&g,MANSION_CLOCK_PIXELS);
+                    assert!(mesh.textured.uvs[floor..].iter().all(|uv|paint.contains(uv)));
+                    let mut original=SurfaceMeshData::default();
+                    model(ModelKind::PendulumClock).append_fitted(&mut original,[0.,16.,0.,7.],0.,30.);
+                    assert_eq!(mesh.textured.indices.len(),original.indices.len()+p.width*p.height*6);
+                    for (pixel,value) in MANSION_CLOCK_PIXELS.into_iter().zip([85,170,255,0]) {
+                        let raw=refs[(p.row+pixel[1]/8)*w+p.column+pixel[0]/8].source.tile_index as usize;
+                        assert_eq!(palette[raw],5);
+                        assert_eq!(png.get_pixel((raw%16*8+pixel[0]%8)as u32,
+                            (raw/16*8+pixel[1]%8)as u32).0[0],value);
+                    }
+                }
+                let (opaque,_,groups,solid_groups)=crate::occluder_fade::prepare_linked(
+                    mesh.textured,mesh.solid,Vec::new());
+                assert_eq!(groups.len(),1,"complete furniture is one reveal owner");
+                assert!(solid_groups.is_empty());
+                assert_eq!(opaque.positions.len(),floor,"all source floor stays opaque");
+                assert_eq!(opaque.indices.len(),p.width*p.height*6);
+                for i in p.indices(w) {
+                    let mut changed=tiles.clone();changed[i].source.tile_index=0xffff;
+                    assert!(!native_mansion_corridor_furniture(map,&p,&changed.iter().collect::<Vec<_>>(),&g));
+                }
+            }
+        }
+        assert_eq!(counts,[4,4,1],"cover every native Mansion bookcase/workstation/clock");
+    }
+
+    #[test]
+    fn external_mansion_plant_source_anchors_use_native_green_and_gold_palettes() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file());if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let files=pack.pack().runtime_files();
+        let layout=&files["data/tilesets/mansion_metatiles.bin"];
+        let png=image::load_from_memory(&files["gfx/tilesets/mansion.png"]).unwrap().to_luma8();
+        let palette=&pack.pack().data().tilesets["mansion"].palette_map;
+        let mut counts=std::collections::BTreeMap::new();
+        for (map,module) in &pack.pack().data().maps {
+            if module.attributes.tileset_name!="mansion"{continue;}
+            let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let tiles=(0..w*h).map(|i| {let x=i%w;let y=i/w;
+                let block=module.blocks[y/4*(w/4)+x/4];
+                VisualTile{column:x as u32,row:y as u32,texture:Default::default(),priority:false,animation_frames:None,
+                    source:VisualTileSource{tileset_id:"mansion".into(),metatile_id:block,
+                        subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,
+                        tile_index:layout[block as usize*16+y%4*4+x%4]as u16}}
+            }).collect::<Vec<_>>();let refs=tiles.iter().collect::<Vec<_>>();
+            for p in resolve(map,&refs,&g,None).into_iter().filter(|p|native_mansion_plant(map,p,&refs,&g)) {
+                *counts.entry(map.clone()).or_insert(0usize)+=1;
+                for (role,pixel) in MANSION_PLANT_PIXELS.into_iter().enumerate() {
+                    let raw=refs[(p.row+pixel[1]/8)*w+p.column+pixel[0]/8].source.tile_index as usize;
+                    assert_eq!(palette[raw],if role<3 {2}else{5});
+                    assert_eq!(png.get_pixel((raw%16*8+pixel[0]%8)as u32,
+                        (raw/16*8+pixel[1]%8)as u32).0[0],[170,85,0,85,170,0][role]);
+                }
+            }
+        }
+        assert_eq!(counts.len(),2);
+        for map in ["CeladonMansion1F","CeladonMansion2F"] {assert_eq!(counts.get(map),Some(&1));}
+    }
+
+    #[test]
+    fn mansion_plants_are_compact_dense_native_green_and_gold_with_exact_ownership() {
+        let mut object=profile("Shared lab round stool");
+        object.name="Source mansion plant".into();object.tileset="mansion".into();
+        object.metatile=0x11;object.metatiles=None;object.origin=[2,2];object.ground=0x11;
+        object.map=None;object.maps=None;object.parts.clear();
+        object.tiles=vec![vec![0x2e,0x2f],vec![0x5e,0x5f]];
+        let (tiles,g)=fixture(&object);
+        for map in ["CeladonMansion1F","CeladonMansion2F"] {
+            let refs=tiles.iter().collect::<Vec<_>>();
+            let plant=resolve(map,&refs,&g,None).into_iter().find(|p|native_mansion_plant(map,p,&refs,&g)).unwrap();
+            let mut mesh=TerrainMeshData{footing_heights:vec![1.75;tiles.len()],..Default::default()};
+            let mut claims=vec![false;tiles.len()];
+            assert!(append(&mut mesh,map,&refs,&g,&plant,&mut claims,[0,0]));
+            assert!(mesh.solid.indices.is_empty());
+            assert_eq!(claims.iter().filter(|&&v|v).count(),4);
+            assert!(mesh.footing_heights.iter().all(|h|*h==1.75));
+            assert!(mesh.textured.positions.iter().all(|v|v[1]>=0.&&v[1]<=16.001));
+            assert!(mesh.textured.positions.iter().any(|v|v[1]>15.));
+            let paint=native_source_swatches(&plant,&g,MANSION_PLANT_PIXELS);
+            // Skip the four source floor quads; every plant face uses own-source
+            // sampled pigments and no pale imported material survives.
+            assert!(mesh.textured.uvs[16..].iter().all(|uv|paint.contains(uv)));
+            let mut original=SurfaceMeshData::default();
+            model(ModelKind::PottedPlant).append_fitted(&mut original,[0.,8.,0.,8.],0.,16.);
+            assert!(mesh.textured.indices.len()>original.indices.len()+24,
+                "dense rotated foliage clusters replace the sparse imported crown");
+            assert!(!native_mansion_plant("CeladonMansion3F",&plant,&refs,&g));
+            for index in plant.indices(g.width) {
+                let mut damaged=tiles.clone();damaged[index].source.tile_index^=1;
+                assert!(!native_mansion_plant(map,&plant,&damaged.iter().collect::<Vec<_>>(),&g));
+            }
+        }
+    }
+
+    #[test]
     fn johto_player_home_stools_use_complete_source_drawing_and_preserve_footing() {
         let mut object=profile("Shared lab round stool");
         object.name="Player home stool".into();object.tileset="players_house".into();
@@ -3790,6 +5454,15 @@ mod tests {
         assert_eq!(claimed.iter().filter(|&&v|v).count(),4);
         assert!(mesh.footing_heights.iter().all(|h|*h==1.75));
         assert!(mesh.textured.positions.iter().all(|p|p[1]>=0. && p[1]<=5.));
+        let top_vertices=mesh.textured.positions.iter().filter(|v|v[1]==5.).collect::<Vec<_>>();
+        let cx=top_vertices.iter().map(|v|v[0]).sum::<f32>()/top_vertices.len() as f32;
+        let cz=top_vertices.iter().map(|v|v[2]).sum::<f32>()/top_vertices.len() as f32;
+        let rim=top_vertices.iter().map(|v|((v[0]-cx).powi(2)+(v[2]-cz).powi(2)).sqrt())
+            .filter(|r|*r>0.01).collect::<Vec<_>>();
+        let radius=rim.iter().sum::<f32>()/rim.len() as f32;
+        assert!(radius>2. && radius<4. && rim.len()>32
+            && rim.iter().all(|r|(*r-radius).abs()<0.01),
+            "home stool has a circular beveled wood seat, not rectangular upholstery");
         drop(refs);tiles[0].source.tile_index^=1;
         assert!(!resolve("PlayersHouse1F",&tiles.iter().collect::<Vec<_>>(),&g,None).iter().any(|p|p.kind==ModelKind::Stool));
     }
@@ -3925,6 +5598,40 @@ mod tests {
             assert!(mesh.solid.indices.is_empty(),"native source fronts replace generic merchandise paint");
             assert!(mesh.footing_heights.iter().all(|h|*h==2.5));
             assert_eq!(claims.iter().filter(|&&c|c).count(),8);
+            let blue_case=tiles[cabinet.row*g.width+cabinet.column].source.tile_index==0x26;
+            if blue_case {
+                let scale=g.tile_height/8.;
+                let vertices=&mesh.textured.positions;
+                assert!((vertices.iter().map(|v|v[1]).fold(0.,f32::max)-8.6*scale).abs()<0.001);
+                let min_z=vertices.iter().filter(|v|v[1]>0.001).map(|v|v[2]).fold(f32::INFINITY,f32::min);
+                let max_z=vertices.iter().filter(|v|v[1]>0.001).map(|v|v[2]).fold(f32::NEG_INFINITY,f32::max);
+                assert!((max_z-min_z-24.*scale).abs()<0.001,"long case follows its source plot");
+                for i in mesh.textured.indices.iter().map(|&i|i as usize) {
+                    let v=vertices[i];
+                    if v[1]<8.*scale-0.001 && mesh.textured.normals[i][1].abs()<0.001 {
+                        assert!(v[1].abs()<0.001,"sides stay flat from floor to lid; ridges never descend them");
+                    }
+                }
+            } else {
+            let top=cabinet.height_pixels*0.75*g.tile_height/8.;
+            let (_,_,v0,_)=g.uv(cabinet.column,cabinet.row);
+            let (_,_,_,v1)=g.uv(cabinet.column+1,cabinet.row+3);
+            let door_v=v0+(v1-v0)*0.25;
+            assert!(mesh.textured.positions.iter().all(|v|v[1]<=top+0.001),
+                "roof perspective must not add another eight pixels to the cabinet front");
+            for i in mesh.textured.indices.iter().map(|&i|i as usize) {
+                if mesh.textured.normals[i][2]>0.5 {
+                    assert!(mesh.textured.uvs[i][1]>=door_v-0.00001,
+                        "vent header belongs on the roof, never on the door face");
+                }
+            }
+            for x in 0..2 {
+                let uv=g.uv(cabinet.column+x,cabinet.row);
+                assert!((0..mesh.textured.positions.len()).any(|i|
+                    (mesh.textured.positions[i][1]-top).abs()<0.001
+                        &&mesh.textured.normals[i][1]>0.999
+                        &&mesh.textured.uvs[i]==[uv.0,uv.2]),"source roof faces upward");
+            }
             for y in 0..4 {for x in 0..2 {
                 let uv=g.uv(x,y);
                 assert!(mesh.textured.uvs.contains(&[uv.0,uv.2]));
@@ -3932,6 +5639,7 @@ mod tests {
             }}
             let front=(cabinet.row+cabinet.height) as f32*g.tile_height;
             assert!(mesh.textured.positions.iter().any(|p|p[2]>front-1. && p[2]<front),"recessed front volume");
+            }
             let mut johto=TerrainMeshData::default();
             assert!(append(&mut johto,"UnreviewedJohtoMart",&refs,&g,cabinet,&mut vec![false;tiles.len()],[0,0]));
             assert!(!johto.solid.indices.is_empty(),"unrelated model treatments stay unchanged");
@@ -4115,7 +5823,7 @@ mod tests {
         assert_eq!(claims.iter().filter(|&&v|v).count(),12);
         assert!(mesh.footing_heights.iter().all(|&h|h==1.25));assert!(mesh.solid.positions.is_empty());
         let mut other=TerrainMeshData::default();
-        assert!(append(&mut other,"ElmsLab",&refs,&g,&p,&mut vec![false;tiles.len()],[0,0]));
+        assert!(append(&mut other,"UnreviewedLab",&refs,&g,&p,&mut vec![false;tiles.len()],[0,0]));
         let floor_indices=other.textured.indices.len();
         let source_geometry=|surface:&SurfaceMeshData,skip:usize|surface.indices[skip..].iter()
             .map(|&i|(surface.positions[i as usize],surface.normals[i as usize])).collect::<Vec<_>>();
@@ -4328,7 +6036,7 @@ mod tests {
         let refs=tiles.iter().collect::<Vec<_>>();let placements=resolve("PewterPokecenter1F",&refs,&g,None);
         let p=placements.iter().find(|p|p.kind==ModelKind::WallClinical&&p.height==1).unwrap();
         assert!(native_clinic::wall_source("PewterPokecenter1F",p,&refs,&g));
-        assert_eq!((p.row,p.height,p.base_pixels,p.height_pixels),(0,1,12.,12.));
+        assert_eq!((p.row,p.height,p.base_pixels,p.height_pixels),(0,1,16.,16.));
         let pc=placements.iter().find(|p|p.kind==ModelKind::Computer).unwrap();
         assert!(p.indices(g.width).all(|i|!pc.indices(g.width).any(|j|j==i)));
         let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],..Default::default()};
@@ -4336,8 +6044,8 @@ mod tests {
         assert_eq!(claims.iter().filter(|&&v|v).count(),2);
         assert!(mesh.footing_heights.iter().all(|&h|h==1.25));
         let body=&mesh.textured.positions[2*4..];
-        assert_eq!(body.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min),12.);
-        assert_eq!(body.iter().map(|p|p[1]).fold(0.,f32::max),24.);
+        assert_eq!(body.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min),16.);
+        assert_eq!(body.iter().map(|p|p[1]).fold(0.,f32::max),32.);
         assert_eq!(body.iter().map(|p|p[2]).fold(0.,f32::max),16.);
         drop(refs);
         tiles[0].source.tile_index=3;
@@ -4372,7 +6080,7 @@ mod tests {
                 assert!(cross.dot(normal)>0.);
                 if normal==Vec3::Z {area+=cross.length()*0.5;}
             }
-            assert!((area-16.*24.).abs()<0.001,"exactly one complete front, no layered face");
+            assert!((area-16.*32.).abs()<0.001,"exactly one complete ceiling-height front, no layered face");
             for y in 0..2 {for x in 0..2 {let uv=g.uv(p.column+x,p.row+y);
                 assert!(mesh.textured.uvs[4*4..].contains(&[uv.0,uv.2]));}}
             assert!(!native_clinic::wall_source("UnreviewedPokecenter1F",&p,&refs,&g));

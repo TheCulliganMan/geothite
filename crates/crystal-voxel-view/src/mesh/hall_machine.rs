@@ -149,7 +149,7 @@ mod tests {
   }}
   mesh.footing_heights=vec![0.;240];mesh.authored_cells=vec![None;240];
   let frame=VisualWorldFrame {active:true,map_id:"HallOfFame".into(),source_map_size_core_tiles:Some(UVec2::new(10,14)),
-   jump_ledges:Default::default(),terrain_revision:0,grid_origin:IVec2::ZERO,map_texture:Default::default(),
+   boundary_warps:Default::default(),jump_ledges:Default::default(),terrain_revision:0,grid_origin:IVec2::ZERO,map_texture:Default::default(),
    center:Vec2::ZERO,viewport_size:Vec2::new(160.,96.),tile_size:Vec2::splat(8.),grid_size:UVec2::new(20,12),tiles,actors:Vec::new()};
   (frame,g,mesh)
  }

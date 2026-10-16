@@ -855,7 +855,7 @@ fn use_visible_field_bag_item_by_id(
             ),
         );
         close_visible_field_pack_without_log(runtime_shell);
-        runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "UseEscapeRopeText")?);
+        runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".UseEscapeRopeText@EscapeRopeOrDig")?);
         retain_visible_field_notice_scene(runtime_shell, &snapshot);
         runtime_shell.pending_field_travel_arrival = true;
         runtime_shell.pending_field_travel_delay_frames = None;
@@ -910,7 +910,7 @@ fn use_visible_field_bag_item_by_id(
                 .active_engine_flags
                 .contains("ENGINE_ALWAYS_ON_BIKE")
         {
-            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "CantGetOffBikeText")?);
+            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".CantGetOffBikeText@Script_CantGetOffBike")?);
             mark_runtime_snapshot_dirty(runtime_shell);
             set_shell_action_status(runtime_shell, "CAN'T GET OFF HERE");
             return Ok(());

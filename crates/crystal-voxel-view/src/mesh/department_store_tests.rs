@@ -116,9 +116,12 @@ fn department_store_display_native_palette_preserves_geometry_glazing_and_footin
     let first = mesh.textured.positions.windows(authored.positions.len())
         .position(|v| v == authored.positions.as_slice()).unwrap();
     assert_eq!(&mesh.textured.normals[first..], authored.normals.as_slice());
-    let index_first = mesh.textured.indices.len() - authored.indices.len();
-    assert_eq!(mesh.textured.indices[index_first..].iter().map(|i|i-first as u32)
-        .collect::<Vec<_>>(), authored.indices);
+    assert_eq!(mesh.scenery.len(),1);
+    let glass=&mesh.scenery[0];
+    assert_eq!(glass.texture.alpha_mode(),bevy::prelude::AlphaMode::Blend);
+    assert!(glass.mesh.colors.iter().all(|c|c[3]>0. && c[3]<1.));
+    assert!(glass.mesh.positions.iter().all(|v|v[2]>=n+63.5));
+    assert_eq!(mesh.textured.indices.len()+glass.mesh.indices.len(),56*6+authored.indices.len());
     for pixel in [[1,1],[9,2],[0,0],[3,54],[3,49],[0,48]] {
         let uv = g.uv(p.column + pixel[0]/8, p.row + pixel[1]/8);
         assert!(mesh.textured.uvs[first..].contains(&[
@@ -130,11 +133,8 @@ fn department_store_display_native_palette_preserves_geometry_glazing_and_footin
         assert_eq!(color, crate::interior_models::authored_face_color([1.;4],Vec3::from_array(normal)));
     }
     assert!(mesh.solid.positions.is_empty());
-    assert_eq!(mesh.textured.cutaway_ranges.len(),1);
-    let front=&mesh.textured.cutaway_ranges[0];
-    assert!(front.start>first);
-    assert!(mesh.textured.positions[front.clone()].iter().all(|v|v[2]>=n+32.-0.001));
-    assert!(mesh.solid.cutaway_ranges.iter().all(|range|range.is_empty()));
+    assert!(mesh.textured.cutaway_ranges.is_empty());
+    assert!(mesh.solid.cutaway_ranges.is_empty());
     assert!(mesh.footing_heights.iter().all(|&height| height == 72.0));
     assert_eq!(claimed.iter().filter(|&&v| v).count(), 56);
 }
@@ -199,13 +199,39 @@ fn resolve_fixture(
     resolve_networks(
         n,
         n[0].floor,
-        n[0].map.unwrap_or("GoldenrodDeptStore5F"),
+        n[0].map.unwrap_or("GenericStoreFixture"),
         &cells.iter().collect::<Vec<_>>(),
         g,
         origin,
         doc,
         reserved,
     )
+}
+#[test]
+fn both_store_counter_adapters_use_their_owned_source_palette() {
+    for which in 0..NETWORKS.len() {
+        if !NETWORKS[which].parts.iter().any(|part|counter_part(part.asset)) {continue;}
+        let (cells,g,n)=fixture(which,[0,0],[40,40]);
+        let refs=cells.iter().collect::<Vec<_>>();
+        for prefix in ["Goldenrod","Celadon"] {
+            let map=format!("{prefix}DeptStore{}F",n[0].floor);
+            let mut claimed=vec![false;cells.len()];
+            let placements=resolve_networks(n,n[0].floor,&map,&refs,&g,[0,0],None,&claimed);
+            assert_eq!(placements.len(),1);
+            let p=&placements[0];assert!(p.native_store);
+            let sample=p.indices(g.width).find_map(|i|
+                super::modeled_interiors::mart_counter_swatches(&g,i,cells[i].source.tile_index)).unwrap();
+            let mut mesh=TerrainMeshData{footing_heights:vec![2.75;cells.len()],..Default::default()};
+            assert!(append(&mut mesh,&refs,&g,p,&mut claimed));
+            assert_eq!(claimed.iter().filter(|&&v|v).count(),p.indices(g.width).count());
+            assert_eq!(mesh.footing_heights,vec![2.75;cells.len()]);
+            assert_eq!(mesh.depth_coverage_textured_ranges.len(),p.network.parts.len());
+            for uv in sample {
+                assert!(mesh.textured.indices.iter().any(|&i|mesh.textured.uvs[i as usize]==uv),
+                    "{map}: native roles must use this cabinet's source swatches");
+            }
+        }
+    }
 }
 #[test]
 fn all_exact_drawings_reject_every_changed_source_and_missing_guard() {
@@ -498,20 +524,50 @@ fn append_is_atomic_preserves_footing_owned_bounds_and_display_reveal() {
             "mart/department_store_counter_end"
                 | "mart/department_store_service_loop"
         ) {
-            assert!(
-                mesh.solid.cutaway_ranges.is_empty(),
-                "ordinary service counters must stay opaque"
-            );
+            let bays=p[0].network.parts.iter().filter(|part|matches!(part.asset,
+                Asset::CounterPlain|Asset::CounterRegister|Asset::CounterNorth|Asset::CounterWest)).count();
+            assert_eq!(mesh.solid.cutaway_ranges.len(),bays);
+            assert_eq!(mesh.depth_coverage_solid_ranges,mesh.solid.cutaway_ranges);
+            let mut end=0;
+            for range in &mesh.solid.cutaway_ranges {
+                assert_eq!(range.start,end,"each independently revealed bay owns its geometry");
+                assert!(range.end>range.start);
+                end=range.end;
+            }
+            assert_eq!(end,mesh.solid.positions.len());
+            for (part,range) in p[0].network.parts.iter().filter(|part|counter_part(part.asset))
+                .zip(&mesh.solid.cutaway_ranges) {
+                let (w,_,n,_)=g.bounds(p[0].column+part.x,p[0].row+part.y);
+                let e=w+part.width as f32*g.tile_width;
+                let s=n+part.depth as f32*g.tile_height;
+                for (side,(axis,plane,normal)) in [(0,w,-1.),(0,e,1.),(2,n,-1.),(2,s,1.)].into_iter().enumerate() {
+                    let faces=mesh.solid.indices.chunks_exact(3).filter(|tri|tri.iter().all(|&i|
+                        range.contains(&(i as usize))
+                            &&(mesh.solid.positions[i as usize][axis]-plane).abs()<0.0001
+                            &&mesh.solid.normals[i as usize][axis]*normal>0.999)).count();
+                    if counter_joins(part,p[0].network.parts)[side] {
+                        assert_eq!(faces,0,"buried bay ends must not show during reveal");
+                        assert!(mesh.solid.indices.iter().any(|&i| {
+                            let i=i as usize;let v=mesh.solid.positions[i];
+                            range.contains(&i)&&(v[axis]-plane).abs()<0.0001
+                                &&v[1]>0.001&&v[1]<=7.*g.tile_height/8.+0.0001
+                                &&mesh.solid.normals[i][if axis==0 {2}else{0}].abs()>0.999
+                        }),"body must meet the shared edge below the overhanging cap");
+                    }else {assert!(faces>0,"exposed bay ends must remain closed");}
+                }
+            }
+            // Synthetic fixture uses solid counters. Source-textured floor
+            // backing must never enter a bay's reveal range.
             assert!(mesh.textured.cutaway_ranges.is_empty());
             assert!(mesh.cutaway_links.is_empty());
         } else if p[0].network.label=="mart/department_store_closed_u" {
             assert!(mesh.solid.cutaway_ranges.is_empty());
-            assert_eq!(mesh.textured.cutaway_ranges.len(),1);
-            let range=&mesh.textured.cutaway_ranges[0];
-            assert!(range.start>0);
-            let middle=g.origin_z+(p[0].row+4)as f32*g.tile_height;
-            assert!(mesh.textured.positions[range.clone()].iter().all(|v|
-                v[2]>=middle-0.001&&v[1]<=g.tile_height+0.001));
+            assert!(mesh.textured.cutaway_ranges.is_empty());
+            assert_eq!(mesh.scenery.len(),1);
+            let glass=&mesh.scenery[0];
+            assert_eq!(glass.texture.alpha_mode(),bevy::prelude::AlphaMode::Blend);
+            let front=g.origin_z+(p[0].row as f32+63.5/8.)*g.tile_height;
+            assert!(glass.mesh.positions.iter().all(|v|v[2]>=front-0.001));
             assert!(mesh.cutaway_links.is_empty());
         } else {
             assert_eq!(

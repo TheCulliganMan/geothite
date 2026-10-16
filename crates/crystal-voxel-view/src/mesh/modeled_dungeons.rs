@@ -46,6 +46,10 @@ mod ice_pit;
 mod lighthouse;
 #[path = "lighthouse_chamber.rs"]
 mod lighthouse_chamber;
+#[path = "lighthouse_stairs.rs"]
+mod lighthouse_stairs;
+#[path = "rocket_persian.rs"]
+mod rocket_persian;
 #[path = "special_rooms.rs"]
 mod rooms;
 use crate::dungeon_models::{Kind, model};
@@ -61,11 +65,13 @@ enum Form {
     SeafoamBoulder,
     NativeGymGuardian,
     SproutGuardian,
+    RocketPersian,
     TowerTimber,
     GymOrb,
-    RocketWall { open: [bool; 4] },
+    RocketWall { open: [bool; 4], blue:usize },
     Lighthouse(lighthouse::Detail),
     LighthouseChamber(lighthouse_chamber::Asset),
+    LighthouseStair { down: bool },
     CaveCorner(crate::cave::DiagonalCorner),
     CaveHatch,
     CaveShaft,
@@ -90,6 +96,35 @@ pub(super) struct Placement {
     front_rows: f32,
 }
 impl Placement {
+    pub(super) fn room_wall(&self) -> bool {
+        matches!(self.form,
+            Form::Model(Kind::TimberWall | Kind::PortholeBulkhead) | Form::TowerTimber
+            | Form::Room(rooms::Detail::Wall(_) | rooms::Detail::WallSegment { .. }, _)
+            | Form::Special(extension::Detail::VioletWall | extension::Detail::VermilionPanel
+                | extension::Detail::SaffronWall | extension::Detail::MahoganyWall
+                | extension::Detail::FuchsiaWall
+                | extension::Detail::PassageNetwork { .. }
+                | extension::Detail::SaffronNetwork { .. }
+                | extension::Detail::Model(crate::dungeon_models::ExtensionKind::LeagueWall
+                    | crate::dungeon_models::ExtensionKind::ShipBulkhead))
+            | Form::Lighthouse(_) | Form::RocketWall { .. })
+    }
+    pub(super) fn source_row(&self) -> usize { self.row }
+    pub(super) fn append_room_wall(&self, mesh:&mut TerrainMeshData,g:&GridGeometry,
+        cells:&[&VisualTile],origin:[i32;2]) {
+        let mut p=self.clone();
+        p.form=match p.form {
+            Form::Room(rooms::Detail::WallSegment { material, .. },style)=>
+                Form::Room(rooms::Detail::WallSegment { material,open:[true;4] },style),
+            Form::Special(extension::Detail::PassageNetwork { basement,fade,.. })=>
+                Form::Special(extension::Detail::PassageNetwork { basement,fade,open:[true;4] }),
+            Form::Special(extension::Detail::SaffronNetwork { .. })=>
+                Form::Special(extension::Detail::SaffronNetwork { open:[true;4] }),
+            Form::RocketWall { blue,.. }=>Form::RocketWall { open:[true;4],blue },
+            other=>other,
+        };
+        append(mesh,g,&p,cells,origin);
+    }
     pub(super) fn cuts_foundation(&self) -> bool {
         matches!(self.form, Form::IcePit | Form::CaveShaft)
     }
@@ -108,11 +143,14 @@ impl Placement {
             Form::Model(k) => k.label(),
             Form::GymBoulder | Form::SeafoamBoulder => Kind::CaveBoulder.label(),
             Form::NativeGymGuardian | Form::SproutGuardian => Kind::TowerGuardian.label(),
+            Form::RocketPersian => "dungeon:rocket-persian-statue",
             Form::TowerTimber => Kind::TimberWall.label(),
             Form::GymOrb => Kind::LeaguePodium.label(),
             Form::RocketWall { .. } => "dungeon:rocket-wall-network",
             Form::Lighthouse(detail) => detail.label(),
             Form::LighthouseChamber(asset) => asset.label(),
+            Form::LighthouseStair { down: false } => "lighthouse:stone-stairs-up",
+            Form::LighthouseStair { down: true } => "lighthouse:stone-stairs-down",
             Form::CaveCorner(_) => "dungeon:cave-diagonal-corner",
             Form::CaveHatch | Form::CaveShaft => "dungeon:cave-floor-hatch",
             Form::CavePortal => "dungeon:cave-daylight-exit",
@@ -158,10 +196,11 @@ fn live_gym_orb(map: &str, tileset: &str) -> bool {
         _ => false,
     }
 }
-fn tin_tower_guardian_map(map:&str)->bool {
+pub(super) fn tin_tower_guardian_map(map:&str)->bool {
     matches!(map,"TinTower1F"|"TinTower2F"|"TinTower3F"|"TinTower4F"|"TinTower5F"
         |"TinTower6F"|"TinTower7F"|"TinTower8F"|"TinTower9F")
 }
+pub(super) fn lighthouse_map(map:&str)->bool {lighthouse::applies(map)}
 struct Resolver<'a> {
     map: &'a str,
     cells: &'a [&'a VisualTile],
@@ -213,15 +252,19 @@ impl Resolver<'_> {
                     Form::GymBoulder
                 } else if kind == Kind::TowerGuardian && (matches!(self.map,
                     "PewterGym"|"FuchsiaGym"|"ViridianGym"|"CeruleanGym"|"CeladonGym"|"VermilionGym")
-                    || tin_tower_guardian_map(self.map)) {
+                    || tin_tower_guardian_map(self.map) || self.map=="BurnedTower1F") {
                     Form::NativeGymGuardian
                 } else if kind == Kind::TowerGuardian
                     && matches!(self.map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
                     Form::SproutGuardian
                 } else if kind == Kind::LeaguePodium && live_gym_orb(self.map, tileset) {
                     Form::GymOrb
+                } else if kind == Kind::WarningBeacon && self.map == "TeamRocketBaseB1F"
+                    && tileset == "underground" {
+                    Form::RocketPersian
                 } else if kind == Kind::TimberWall
-                    && matches!(self.map, "CianwoodGym" | "EcruteakGym" | "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
+                    && (tin_tower_guardian_map(self.map)
+                        ||matches!(self.map, "CianwoodGym" | "EcruteakGym" | "SproutTower1F" | "SproutTower2F" | "SproutTower3F" | "BurnedTower1F")) {
                     Form::TowerTimber
                 } else {
                     Form::Model(kind)
@@ -431,7 +474,7 @@ pub(super) fn resolve(
             tower_boulder_placements(cells, g),
         );
     }
-    if matches!(map, "CianwoodGym" | "EcruteakGym" | "PewterGym") || tin_tower_guardian_map(map) {
+    if matches!(map, "CianwoodGym" | "EcruteakGym" | "PewterGym" | "BurnedTower1F") || tin_tower_guardian_map(map) {
         let guardians = grouped_flat_card_placements(cells,g,crate::tower::TOWER_FLOOR_TILE,false,|s| {
             if s.tileset_id.as_ref()!="tower" || s.subtile_row>=4 { return None; }
             let (ox, lower) = match s.metatile_id {
@@ -601,12 +644,13 @@ pub(super) fn resolve(
     r.groups(
         Kind::TimberWall,
         crate::tower::TOWER_FLOOR_TILE,
-        16.0,
+        32.0,
         3.0,
         timber_walls,
     );
     lighthouse::resolve_into(&mut r);
     lighthouse_chamber::resolve_into(&mut r);
+    lighthouse_stairs::resolve_into(&mut r);
     // Reuse live whole-drawing resolution rather than copy/export its catalog.
     // Shape-specific vocabulary below guards the semantic conversion; profile
     // names alone are never authority to reinterpret a user-edited drawing.
@@ -670,13 +714,14 @@ pub(super) fn resolve(
             });
         }
     }
-    // The alarm is a complete four-row source drawing; its wall-contact rows
-    // continue to close neighboring wall ends without filling its floor rows.
+    // The alarm sensor is a Persian statue on a pedestal, not a warning lamp.
+    // Its upper source rows also close the neighboring wall ends.
     let alarm = grouped_flat_card_placements(cells, g, 0x10, false, |s| {
         if map != "TeamRocketBaseB1F"
             || s.tileset_id.as_ref() != "underground"
             || s.metatile_id != 0x04
             || s.subtile_column >= 2
+            || s.subtile_row >= 4
         {
             return None;
         }
@@ -689,7 +734,9 @@ pub(super) fn resolve(
         ))
     });
     r.groups(Kind::WarningBeacon, 0x10, 28.0, 8.0, alarm);
-    if let Some(ground) = ground(map, cells, "underground", crate::rocket_base::FLOOR_TILE) {
+    if let (Some(ground),Some(blue)) = (ground(map,cells,"underground",crate::rocket_base::FLOOR_TILE),
+        cells.iter().position(|t|crate::rocket_base::is_wall_cell(map,&t.source)
+            &&crate::rocket_base::is_lower_face(&t.source))) {
         let wall: Vec<_> = cells
             .iter()
             .map(|t| crate::rocket_base::is_wall_cell(map, &t.source))
@@ -716,8 +763,8 @@ pub(super) fn resolve(
                 width: 1,
                 height: 1,
                 ground,
-                form: Form::RocketWall { open },
-                rise_pixels: 16.0,
+                form: Form::RocketWall { open,blue },
+                rise_pixels: crate::rocket_base::WALL_HEIGHT,
                 depth_pixels: 8.0,
                 front_rows: 1.0,
             });
@@ -739,7 +786,7 @@ pub(super) fn resolve(
             });
         }
     }
-    if matches!(map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
+    if tin_tower_guardian_map(map)||matches!(map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
         if let Some(ground) = ground(map, cells, "tower", crate::tower::TOWER_FLOOR_TILE) {
             let ladders = grouped_flat_card_placements(cells, g, crate::tower::TOWER_FLOOR_TILE, false, |s| {
                 if s.tileset_id.as_ref() != "tower" || s.subtile_column >= 4 || s.subtile_row >= 4 { return None; }
@@ -881,6 +928,10 @@ fn append_internal(
         lighthouse_chamber::append(mesh, g, p, asset);
         return;
     }
+    if let Form::LighthouseStair { down } = p.form {
+        lighthouse_stairs::append(mesh,g,p,down);
+        return;
+    }
     if let Form::Lighthouse(detail) = p.form {
         lighthouse::append(mesh, g, p, detail);
         return;
@@ -981,6 +1032,8 @@ fn append_internal(
     let s = n + p.front_rows * g.tile_height;
     let rise = p.rise_pixels * g.tile_height / SOURCE_TILE_HEIGHT;
     match p.form {
+        Form::RocketPersian => rocket_persian::append(&mut mesh.textured,g,p,
+            [w,e,s-p.depth_pixels*g.tile_height/SOURCE_TILE_HEIGHT,s]),
         Form::CaveSill | Form::IceSill => cave_sill::append(
             &mut mesh.solid,
             g,
@@ -1028,6 +1081,23 @@ fn append_internal(
                  uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
             };
             if matches!(p.form, Form::SproutGuardian) {
+                // The rear guardians are painted over the north wall. Their
+                // foreground source claim must not punch a hole in that wall.
+                let source=&cells[p.row*g.width+p.column].source;
+                let wall_column=match source.metatile_id {
+                    0x2e=>Some(p.column+2),
+                    0x2f=>p.column.checked_sub(1),
+                    _=>None,
+                };
+                if let Some(column)=wall_column.filter(|&x|x<g.width) {
+                    let wall=&cells[p.row*g.width+column].source;
+                    if wall.tileset_id==source.tileset_id && wall.metatile_id==source.metatile_id
+                        && wall.subtile_row==0 && wall.tile_index==0x11 {
+                        let south=s-2.*g.tile_height;
+                        append_tower_backing(&mut mesh.textured,g,column,p.row,
+                            [w,e,south-3.*g.tile_height/SOURCE_TILE_HEIGHT,south]);
+                    }
+                }
                 extension::append_sprout_guardian(
                     &mut mesh.textured, bounds, rise, source_uv);
             } else {
@@ -1051,7 +1121,7 @@ fn append_internal(
             rise,
             |pixel| {
                 let pixel = match pixel {
-                    [0, 0] => [0, 0], [0, 2] => [1, 3],
+                    [0, 0] => [0, 0], [0, 2] => if cells[p.row*g.width+p.column].source.tile_index==0x11 {[2,3]}else{[1,3]},
                     [0, 1] => [0, 1], [4, 0] => [2, 0],
                     _ => unreachable!("validated timber materials"),
                 };
@@ -1101,12 +1171,18 @@ fn append_internal(
             0.0,
             rise,
         ),
-        Form::RocketWall { open } => {
-            append_connected_wall(&mut mesh.solid, [w, e, n, s], rise, open)
+        Form::RocketWall { open,blue } => {
+            let texel=|column,row,x:f32,y:f32| {
+                let uv=g.uv(column,row);
+                [uv.0+(uv.1-uv.0)*(x+0.5)/8.,uv.2+(uv.3-uv.2)*(y+0.5)/8.]
+            };
+            append_native_rocket_wall(&mut mesh.textured,[w,e,n,s],rise,open,
+                texel(p.column,p.row,0.,0.),texel(blue%g.width,blue/g.width,3.,3.));
         }
         Form::CaveRim => unreachable!("cave rims handled above"),
         Form::Lighthouse(_) => unreachable!("lighthouse placements handled above"),
         Form::LighthouseChamber(_) => unreachable!("lighthouse chamber handled above"),
+        Form::LighthouseStair { .. } => unreachable!("lighthouse stairs handled above"),
         Form::CaveCorner(corner) => append_corner(
             &mut mesh.solid,
             [w, e, n, s],
@@ -1118,6 +1194,21 @@ fn append_internal(
             Some(cells),
         ),
     }
+}
+
+/// Match the adjoining ceiling-height timber using a verified native 11 swatch.
+pub(super) fn append_tower_backing(mesh:&mut SurfaceMeshData,g:&GridGeometry,
+    column:usize,row:usize,bounds:[f32;4]) {
+    let uv=g.uv(column,row);
+    model(Kind::TimberWall).append_tower_timber(mesh,bounds,
+        32.*g.tile_height/SOURCE_TILE_HEIGHT,|pixel| {
+            let pixel=match pixel {
+                [0,0]=>[0,0], [0,2]=>[2,3], [0,1]=>[0,1], [4,0]=>[2,0],
+                _=>unreachable!("validated timber materials"),
+            };
+            [uv.0+(uv.1-uv.0)*(pixel[0] as f32+0.5)/8.,
+             uv.2+(uv.3-uv.2)*(pixel[1] as f32+0.5)/8.]
+        });
 }
 
 /// Four fixed perimeter vertices and a recessed centre form hand-cut facets.
@@ -1164,6 +1255,25 @@ fn faceted_face(
         out.indices.extend([base, base + 1, base + 2]);
     }
 }
+fn append_native_rocket_wall(out:&mut SurfaceMeshData,[w,e,n,s]:[f32;4],h:f32,
+    open:[bool;4],cap:[f32;2],blue:[f32;2]) {
+    let first=out.positions.len();
+    faceted_face(out,[[w,h,n],[w,h,s],[e,h,s],[e,h,n]],Vec3::Y.to_array(),[1.;4],0.);
+    out.uvs[first..].fill(cap);
+    for (enabled,points,normal) in [
+        (open[0],[[e,0.,n],[w,0.,n],[w,h,n],[e,h,n]],-Vec3::Z),
+        (open[1],[[e,0.,s],[e,0.,n],[e,h,n],[e,h,s]],Vec3::X),
+        (open[2],[[w,0.,s],[e,0.,s],[e,h,s],[w,h,s]],Vec3::Z),
+        (open[3],[[w,0.,n],[w,0.,s],[w,h,s],[w,h,n]],-Vec3::X),
+    ] {
+        if !enabled {continue;}
+        let first=out.positions.len();
+        faceted_face(out,points,normal.to_array(),
+            crate::interior_models::authored_face_color([1.;4],normal),0.);
+        out.uvs[first..].fill(blue);
+    }
+}
+
 fn append_connected_wall(out: &mut SurfaceMeshData, b: [f32; 4], h: f32, open: [bool; 4]) {
     let [w, e, n, s] = b;
     let cap = [0.45, 0.53, 0.51, 1.0];
@@ -1851,7 +1961,7 @@ mod tests {
         }}
         let refs:Vec<_>=t.iter().collect();
         for map in ["TinTower1F","TinTower2F","TinTower3F","TinTower4F","TinTower5F",
-            "TinTower6F","TinTower7F","TinTower8F","TinTower9F"] {
+            "TinTower6F","TinTower7F","TinTower8F","TinTower9F","BurnedTower1F"] {
             let selected=resolve(map,&refs,&g,None);
             let p=selected.iter().find(|p|matches!(p.form,Form::NativeGymGuardian)).unwrap();
             assert_eq!(p.indices(4).count(),8);
@@ -1866,6 +1976,40 @@ mod tests {
         t[0].source.tile_index^=1;
         assert!(!resolve("TinTower1F",&t.iter().collect::<Vec<_>>(),&g,None).iter()
             .any(|p|matches!(p.form,Form::NativeGymGuardian)));
+    }
+    #[test]
+    fn sprout_rear_statues_keep_ceiling_wall_behind_them_without_claiming_neighbors() {
+        for (block,offset) in [(0x2e,0),(0x2f,2)] {
+            let g=grid(4,4);let mut t=tiles(4,4,"tower");
+            let art=if offset==0 {
+                [[0x42,0x43,0x11,0x48],[0x5a,0x5b,0x21,0x58],
+                 [0x4c,0x5c,2,2],[0x36,0x37,2,2]]
+            } else {
+                [[0x49,0x11,0x42,0x43],[0x59,0x21,0x5a,0x5b],
+                 [2,2,0x4c,0x5c],[2,2,0x36,0x37]]
+            };
+            for y in 0..4 {for x in 0..4 {
+                t[y*4+x].source.metatile_id=block;t[y*4+x].source.tile_index=art[y][x];
+            }}
+            let refs=t.iter().collect::<Vec<_>>();
+            let placements=resolve("SproutTower3F",&refs,&g,None);
+            let p=placements.iter().find(|p|matches!(p.form,Form::SproutGuardian)).unwrap();
+            assert_eq!(p.indices(4).count(),8);
+            assert!(p.indices(4).all(|i|(offset..offset+2).contains(&(i%4))));
+            let mut mesh=TerrainMeshData{footing_heights:vec![2.5;16],..Default::default()};
+            append(&mut mesh,&g,p,&refs,[0,0]);
+            let south=g.bounds(offset,1).3;
+            assert!(mesh.textured.positions.iter().any(|v|v[1]>31.9));
+            assert!(mesh.textured.positions.iter().filter(|v|v[1]>24.)
+                .any(|v|v[2]>south-3.1));
+            assert!(mesh.textured.positions.iter().filter(|v|v[1]>24.).all(|v|v[2]<=south+0.01));
+            assert_eq!(mesh.footing_heights,vec![2.5;16]);
+            // A changed adjacent drawing cannot supply invented wall paint.
+            let wall_column=if offset==0 {2}else{1};t[wall_column].source.tile_index=2;
+            let refs=t.iter().collect::<Vec<_>>();
+            let mut changed=TerrainMeshData::default();append(&mut changed,&g,p,&refs,[0,0]);
+            assert!(changed.textured.positions.iter().all(|v|v[1]<=24.));
+        }
     }
     #[test]
     fn sprout_true_statues_exclude_entrance_carpet_and_require_complete_source() {
@@ -2062,6 +2206,35 @@ mod tests {
         assert!(resolve("SproutTower1F", &cells, &g, None).is_empty());
         t[0].source.tile_index = 0xff;
         assert_eq!(resolve("CianwoodGym", &t.iter().collect::<Vec<_>>(), &g, None).len(), 1);
+    }
+    #[test]
+    fn rocket_persian_requires_its_complete_sensor_drawing_and_preserves_support() {
+        let mut t=tiles(4,4,"underground");
+        for tile in &mut t {tile.source.tile_index=0x10;}
+        let art=[[0x45,0x46],[0x55,0x56],[0x09,0x19],[0x30,0x31]];
+        for y in 0..4 {for x in 0..2 {
+            let s=&mut t[y*4+x].source;s.metatile_id=4;s.tile_index=art[y][x];
+        }}
+        let g=grid(4,4);let refs=t.iter().collect::<Vec<_>>();
+        let placements=resolve("TeamRocketBaseB1F",&refs,&g,None);
+        let statue=placements.iter().find(|p|matches!(p.form,Form::RocketPersian)).unwrap();
+        assert_eq!(statue.indices(4).count(),8);
+        assert_eq!((statue.rise_pixels,statue.depth_pixels),(28.,8.));
+        let mut surface=TerrainMeshData{footing_heights:vec![72.;16],..Default::default()};
+        append(&mut surface,&g,statue,&refs,[0,0]);
+        assert!(surface.solid.positions.is_empty());
+        assert_eq!(surface.footing_heights,vec![72.;16]);
+        assert!(surface.textured.positions.iter().any(|v|v[1]==28.));
+        for i in statue.indices(4) {for field in 0..5 {
+            let mut altered=t.clone();let s=&mut altered[i].source;
+            match field {0=>s.metatile_id^=0x80,1=>s.tile_index^=0x80,
+                2=>s.subtile_column^=0x80,3=>s.subtile_row^=0x80,_=>s.tileset_id="other".into()}
+            assert!(!resolve("TeamRocketBaseB1F",&altered.iter().collect::<Vec<_>>(),&g,None)
+                .iter().any(|p|matches!(p.form,Form::RocketPersian)));
+        }}
+        for map in ["TeamRocketBaseB2F","GoldenrodUnderground","PlayersHouse1F"] {
+            assert!(!resolve(map,&refs,&g,None).iter().any(|p|matches!(p.form,Form::RocketPersian)));
+        }
     }
     #[test]
     fn pewter_guardians_require_all_eight_source_cells_and_preserve_adjacent_floor() {
@@ -2421,6 +2594,13 @@ mod tests {
                     .iter()
                     .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 1e-4)
             );
+            let mut native=SurfaceMeshData::default();
+            append_native_rocket_wall(&mut native,[0.,8.,0.,8.],32.,open,[0.1,0.2],[0.3,0.4]);
+            assert_eq!(native.indices.len()/3,4+4*mask.count_ones()as usize);
+            for (normal,uv) in native.normals.iter().zip(&native.uvs) {
+                assert_eq!(*uv,if normal[1]>0.9 {[0.1,0.2]}else{[0.3,0.4]},
+                    "black cap and blue exposed vertical faces have distinct native source roles");
+            }
         }
     }
     #[test]
@@ -2732,6 +2912,132 @@ mod tests {
         );
     }
     #[test]
+    fn external_burned_tower_perimeter_is_upright_and_keeps_fall_openings_free() {
+        let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(std::path::PathBuf::from)
+            .unwrap_or_else(||std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        if !path.is_file(){return;}
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();let pack=loaded.pack();
+        let map=&pack.data().maps["BurnedTower1F"];
+        let art=&pack.runtime_files()["data/tilesets/tower_metatiles.bin"];
+        let (w,h)=(map.attributes.width as usize*4,map.attributes.height as usize*4);
+        let t=(0..w*h).map(|i| {
+            let (x,y)=(i%w,i/w);let b=map.blocks[y/4*(w/4)+x/4];
+            VisualTile{column:x as u32,row:y as u32,texture:Default::default(),priority:false,animation_frames:None,
+                source:VisualTileSource{tileset_id:"tower".into(),metatile_id:b,subtile_column:(x%4)as u8,
+                    subtile_row:(y%4)as u8,tile_index:art[b as usize*16+y%4*4+x%4]as u16}}
+        }).collect::<Vec<_>>();
+        let g=grid(w,h);let refs=t.iter().collect::<Vec<_>>();
+        let walls=super::super::modeled_interiors::resolve("BurnedTower1F",&refs,&g,None);
+        let mut claimed=vec![false;w*h];let mut mesh=TerrainMeshData{footing_heights:vec![3.;w*h],..Default::default()};
+        for p in walls.iter().filter(|p|p.kind==crate::interior_models::ModelKind::WallTraditional) {
+            assert!(super::super::modeled_interiors::append(&mut mesh,"BurnedTower1F",&refs,&g,p,&mut claimed,[0,0]));
+        }
+        let side=t.iter().enumerate().filter(|(_,t)|t.source.tile_index==0x41).map(|(i,_)|i).collect::<Vec<_>>();
+        assert!(!side.is_empty());assert!(side.into_iter().all(|i|claimed[i]));
+        assert!(mesh.textured.positions.iter().any(|p|p[1]>=32.));
+        assert_eq!(mesh.footing_heights,vec![3.;w*h]);
+        for warp in map.events.warps.iter().filter(|w|w.target_map.contains("BURNED_TOWER_B1F")) {
+            for dy in 0..2 {for dx in 0..2 {
+                assert!(!claimed[(warp.y as usize*2+dy)*w+warp.x as usize*2+dx],"fall opening stays free");
+            }}
+        }
+        let objects=resolve("BurnedTower1F",&refs,&g,None);
+        assert_eq!(objects.iter().filter(|p|matches!(p.form,Form::NativeGymGuardian)).count(),2);
+        assert!(objects.iter().filter(|p|p.kind_label()==Kind::TimberWall.label()).all(|p|matches!(p.form,Form::TowerTimber)));
+    }
+    #[test]
+    fn external_tin_tower_native_walls_ladders_and_custom_ownership_cover_all_nine_floors() {
+        let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(std::path::PathBuf::from)
+            .unwrap_or_else(||std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        if !path.is_file(){return;}
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();let pack=loaded.pack();
+        let art=&pack.runtime_files()["data/tilesets/tower_metatiles.bin"];
+        let png=image::load_from_memory(&pack.runtime_files()["gfx/tilesets/tower.png"]).unwrap().to_luma8();
+        for level in 1..=9 {
+            let name=format!("TinTower{level}F");let map=&pack.data().maps[&name];
+            let (w,h)=(map.attributes.width as usize*4,map.attributes.height as usize*4);
+            let t=(0..w*h).map(|i| {
+                let (x,y)=(i%w,i/w);let b=map.blocks[y/4*(w/4)+x/4];
+                VisualTile{column:x as u32,row:y as u32,texture:Default::default(),priority:false,animation_frames:None,
+                    source:VisualTileSource{tileset_id:"tower".into(),metatile_id:b,subtile_column:(x%4)as u8,
+                        subtile_row:(y%4)as u8,tile_index:art[b as usize*16+y%4*4+x%4]as u16}}
+            }).collect::<Vec<_>>();
+            let refs=t.iter().collect::<Vec<_>>();let g=grid(w,h);let placements=resolve(&name,&refs,&g,None);
+            let pillars=placements.iter().filter(|p|matches!(p.form,Form::Special(extension::Detail::TinPillar))).collect::<Vec<_>>();
+            assert_eq!(pillars.len(),1,"{name} must model its complete center pillar");
+            let mut pillar_mesh=TerrainMeshData{footing_heights:vec![5.;w*h],..Default::default()};
+            append(&mut pillar_mesh,&g,pillars[0],&refs,[0,0]);
+            assert_eq!(pillars[0].indices(w).count(),24);
+            assert!(!pillar_mesh.animated_textured.indices.is_empty());
+            assert_eq!(pillar_mesh.animated_pillars,vec![[pillars[0].column,pillars[0].row]]);
+            assert_eq!(pillar_mesh.footing_heights,vec![5.;w*h]);
+            let interiors=super::super::modeled_interiors::resolve(&name,&refs,&g,None);
+            let mut reserved=vec![false;w*h];for p in &interiors {for i in p.indices(w){reserved[i]=true;}}
+            let mut expected=0;
+            for warp in &map.events.warps {
+                let (x,y)=(warp.x as usize*2,warp.y as usize*2);let s=&t[y*w+x].source;
+                if matches!(s.metatile_id,2|3|0x1f|0x20)&&matches!(s.tile_index,0x0c|0x0e) {
+                    expected+=1;
+                    assert!(placements.iter().any(|p|p.column==x&&p.row==y
+                        &&matches!(p.form,Form::Room(rooms::Detail::TowerLadder{..},_))),"{name} warp {},{}",warp.x,warp.y);
+                }
+            }
+            let ladders=placements.iter().filter(|p|matches!(p.form,Form::Room(rooms::Detail::TowerLadder{..},_))).collect::<Vec<_>>();
+            assert_eq!(expected,[1,2,2,4,4,2,1,0,1][level-1],"{name}: upper-floor teleport pads are not ladders");
+            assert_eq!(ladders.len(),expected);
+            for p in ladders {
+                assert!(p.indices(w).all(|i|!reserved[i]),"perimeters cannot steal a stair warp");
+                let down=matches!(p.form,Form::Room(rooms::Detail::TowerLadder{down:true},_));
+                let samples=if down {[[0,0],[0,1],[2,2]]}else{[[1,5],[2,11],[0,0]]};
+                for (pixel,value) in samples.into_iter().zip([170,85,0]) {
+                    let s=&t[(p.row+pixel[1]/8)*w+p.column+pixel[0]/8].source;
+                    assert_eq!(png.get_pixel((s.tile_index as u32%16)*8+(pixel[0]%8)as u32,
+                        (s.tile_index as u32/16)*8+(pixel[1]%8)as u32)[0],value,"own ladder palette role");
+                }
+                let mut mesh=TerrainMeshData{footing_heights:vec![5.;w*h],..Default::default()};
+                append(&mut mesh,&g,p,&refs,[0,0]);assert!(mesh.solid.positions.is_empty());
+                assert_eq!(mesh.footing_heights,vec![5.;w*h]);
+                assert_eq!(mesh.textured.positions.iter().any(|v|v[1]<0.),down);
+            }
+            if let Some(p)=interiors.iter().find(|p|p.kind==crate::interior_models::ModelKind::WallTraditional) {
+                let s=&t[p.row*w+p.column].source;
+                let mut custom=super::super::modeled_interiors::built_in_profiles().objects[0].clone();
+                custom.name="Custom Tin perimeter".into();custom.map=Some(name.clone());custom.maps=None;
+                custom.tileset="tower".into();custom.metatile=s.metatile_id;custom.metatiles=None;
+                custom.origin=[s.subtile_column,s.subtile_row];custom.ground=2;custom.top_pixels=0;
+                custom.depth_pixels=3.;custom.footing_pixels=None;custom.parts.clear();
+                custom.tiles=(0..p.height).map(|y|(0..p.width).map(|x|t[(p.row+y)*w+p.column+x].source.tile_index).collect()).collect();
+                let doc=Document{objects:vec![custom],atmosphere:None};
+                assert!(!super::super::modeled_interiors::resolve(&name,&refs,&g,Some(&doc)).iter()
+                    .any(|v|v.indices(w).any(|i|p.indices(w).any(|j|i==j))),"custom source keeps ownership");
+            }
+        }
+    }
+    #[test]
+    fn tin_tower_threshold_and_grating_wall_courses_join_without_claiming_floor() {
+        let mut t=tiles(12,4,"tower");
+        for y in 0..4 {for x in 0..12 {
+            let s=&mut t[y*12+x].source;
+            s.metatile_id=[0x05,0x18,0x3b][x/4];
+            s.subtile_column=(x%4)as u8;s.subtile_row=y as u8;
+            s.tile_index=if y<2 {[0x11,0x21][y]}else{2};
+        }}
+        let g=grid(12,4);let refs=t.iter().collect::<Vec<_>>();
+        let p=resolve("TinTower6F",&refs,&g,None);
+        assert_eq!(p.len(),3);
+        for (n,p) in p.iter().enumerate() {
+            assert!(matches!(p.form,Form::TowerTimber));
+            assert_eq!((p.column,p.row,p.width,p.height),(n*4,0,4,2));
+            assert_eq!((p.rise_pixels,p.depth_pixels,p.front_rows),(32.,3.,2.));
+            assert!(p.indices(12).all(|i|i/12<2));
+        }
+        // A changed native face must not be silently filled over a profile.
+        t[4].source.tile_index=2;
+        let changed=resolve("TinTower6F",&t.iter().collect::<Vec<_>>(),&g,None);
+        assert_eq!(changed.len(),2);
+        assert!(changed.iter().all(|p|p.column!=4));
+    }
+    #[test]
     fn tower_timber_live_palette_consumes_two_face_rows_and_leaves_floor_free() {
         let mut t = tiles(4, 4, "tower");
         for y in 0..4 {
@@ -2765,16 +3071,22 @@ mod tests {
         let mut mesh = TerrainMeshData { footing_heights: vec![0.; 16], ..Default::default() };
         append(&mut mesh, &g, &p[0], &refs, [0, 0]);
         assert!(!mesh.textured.indices.is_empty());
-        assert!(mesh.textured.positions.iter().any(|v| v[1] > 15.9));
+        assert!(mesh.textured.positions.iter().any(|v| v[1] > 31.9));
         assert_eq!(mesh.footing_heights, vec![0.; 16]);
         let uv = g.uv(0, 0);
-        for pixel in [[0, 0], [1, 3], [0, 1], [2, 0]] {
+        for pixel in [[0, 0], [2, 3], [0, 1], [2, 0]] {
             assert!(mesh.textured.uvs.contains(&[
                 uv.0 + (uv.1 - uv.0) * (pixel[0] as f32 + 0.5) / 8.,
                 uv.2 + (uv.3 - uv.2) * (pixel[1] as f32 + 0.5) / 8.,
             ]));
         }
-        let ordinary = resolve("TinTower1F", &refs, &g, None);
+        assert!(!mesh.textured.uvs.contains(&[uv.0+(uv.1-uv.0)*1.5/8.,
+            uv.2+(uv.3-uv.2)*3.5/8.]),"native white glint cannot paint the full rail");
+        for name in (1..=9).map(|level|format!("TinTower{level}F")).chain(["BurnedTower1F".into()]) {
+            let tin=resolve(&name,&refs,&g,None);
+            assert_eq!(tin.len(),1);assert!(matches!(tin[0].form,Form::TowerTimber));
+        }
+        let ordinary = resolve("TinTowerRoof", &refs, &g, None);
         assert!(ordinary.iter().all(|p| !matches!(p.form, Form::TowerTimber)));
     }
     #[test]
@@ -2794,11 +3106,17 @@ mod tests {
                 let mut mesh=TerrainMeshData::default(); mesh.footing_heights=vec![0.;16];
                 append(&mut mesh,&g,&p[0],&cells,[0,0]);
                 assert_eq!(mesh.footing_heights,vec![0.;16]);
-                assert!(mesh.solid.positions.iter().all(|v| v[0]>=0. && v[0]<=16. && v[2]>=0. && v[2]<=16.));
-                assert_eq!(mesh.solid.positions.iter().any(|v|v[1]<0.),down);
-                assert_eq!(mesh.solid.positions.iter().any(|v|v[1]>20.),!down);
+                assert!(mesh.solid.positions.is_empty(),"ladder uses its own native palette");
+                assert!(mesh.textured.positions.iter().all(|v| v[0]>=0. && v[0]<=16. && v[2]>=0. && v[2]<=16.));
+                assert_eq!(mesh.textured.positions.iter().any(|v|v[1]<0.),down);
+                assert_eq!(mesh.textured.positions.iter().any(|v|v[1]>20.),!down);
             }
-            assert!(resolve("TinTower1F",&t.iter().collect::<Vec<_>>(),&g,None).is_empty());
+            for level in 1..=9 {
+                let tin=resolve(&format!("TinTower{level}F"),&t.iter().collect::<Vec<_>>(),&g,None);
+                assert_eq!(tin.iter().filter(|p|matches!(p.form,Form::Room(rooms::Detail::TowerLadder{..},_))).count(),1);
+            }
+            assert!(resolve("TinTowerRoof",&t.iter().collect::<Vec<_>>(),&g,None).iter()
+                .all(|p|!matches!(p.form,Form::Room(rooms::Detail::TowerLadder{..},_))));
             for i in [0,1,4,5] {
                 let mut changed=t.clone(); changed[i].source.tile_index^=0x80;
                 assert!(resolve("SproutTower1F",&changed.iter().collect::<Vec<_>>(),&g,None).is_empty());

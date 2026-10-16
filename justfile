@@ -20,8 +20,8 @@ serve port="3003" runtime=".local/desktop-3d-runtime":
 
 # Launch the prepared native 3D client in the bedroom, without the intro.
 play-3d runtime=".local/desktop-3d-runtime":
-    '{{runtime}}/new_bark_3d' content-packs/core-modular.browser.crystalpack --map PlayersHouse2F --x 3 --y 3 --save-path content-packs/desktop-3d-test.crystalsave
+    CRYSTAL_CLUSTERING="${CRYSTAL_CLUSTERING:-cpu}" '{{runtime}}/new_bark_3d' content-packs/core-modular.browser.crystalpack --map PlayersHouse2F --x 3 --y 3 --save-path content-packs/desktop-3d-test.crystalsave
 
 # Capture every render stage and regional load while playing the native client.
 trace-3d trace=".local/loading-trace.json" runtime=".local/desktop-3d-runtime":
-    CRYSTAL_LOADING_TRACE='{{trace}}' '{{runtime}}/new_bark_3d' content-packs/core-modular.browser.crystalpack --map PlayersHouse2F --x 3 --y 3
+    CRYSTAL_CLUSTERING="${CRYSTAL_CLUSTERING:-cpu}" CRYSTAL_LOADING_TRACE='{{trace}}' '{{runtime}}/new_bark_3d' content-packs/core-modular.browser.crystalpack --map PlayersHouse2F --x 3 --y 3

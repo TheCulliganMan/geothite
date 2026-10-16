@@ -1,29 +1,78 @@
-# Miltank and Tauros sculptures
+# Miltank and Tauros sculptures and standard skins
 
-These original, reproducible sculptures replace the generic cow and bull in the canonical battle-species catalog. `tools/bovine_sculpt.py` uses the existing stored triangle-mesh schema; the Blender authoring entry point dispatches these two species to that recipe. Girafarig and Stantler retain their existing assets.
+`tools/bovine_sculpt.py` authors the cow and three-tailed bull, and
+`tools/bovine_glb.py` exports canonical standard skins. The species builder
+explicitly emits these GLBs and removes duplicate static JSON. Production
+neutral mesh lookup and GPU animation share the same geometry.
 
-Miltank has a plump pink body, dark cow hood and broad ears, cream ear insets, short ivory horns, blue eyes, raised forelimbs with dark hoof hands, grounded hind hooves, a broad cream udder with four attached pink teats, fitted rear spots, and a cream whip ending in a dark ball. The face mask has sufficient shell depth to remain visible over the curved head in the native renderer.
+Miltank retains all 45 parts, 17,281 vertices and 17,976 triangles. Its GLB is
+651,592 bytes with 14 joints and 210 accessors. Digest:
+`cab41187fb7632ada815e8d5ef241e6ed3e56af5ba964d6195e44cf5a09e851c`.
+Tauros retains all 42 parts, 14,025 vertices and 16,504 triangles. Its GLB is
+567,740 bytes with 17 joints and 194 accessors. Digest:
+`9c7a80af7788de4b71e74f6217e1abc0eced54d06e9a6280dbd6fabd57da2edc`.
+Every original f32 position, normal and triangle order remains exact. Both fit
+the existing skin loader budgets without simplification or relaxed validation.
 
-Tauros has a heavy golden quadruped trunk, a continuous gray shoulder mane with a scalloped lower edge, a tapered lowered forehead, swept gray horns, three fitted forehead studs, narrow eyes, gray muzzle, four curved supporting legs with cloven blue-gray hooves, and three individually curved brown tails with pointed blue-gray tufts.
+Actual local normal front/back sprites and RGB555 palettes were inspected.
+Miltank uses pink (222,123,148), navy (49,49,107), white and black. Its tail
+shaft is pink and its udder white; eyes, hood, cloven hooves and rear markings
+use the source palette. Tauros uses gold (206,123,41), brown (82,57,33), white
+and black, replacing invented gray mane/horns/hooves. Whips are gold and tufts
+brown. Historical part labels retain cream/blue/gray wording.
 
-Reference images were inspected locally from the official [Miltank artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/241.png) and [Tauros artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/128.png). Those images are not shipped.
+Pack heights 311 and 407 give uniform production references of 1.1938 m and
+1.397 m. Normalized full silhouette heights remain 1.12 and 1.28. Tauros's
+body reference is 1.1175279, measured from ground to its highest horn point;
+raised tail tufts remain in full fit/culling bounds. The shared layout applies
+the pack height to this horn/body reference instead of the raised tail, keeping
+the bull's body from shrinking. Miltank uses its full standing height.
 
-## External model research
+An identity root fixes all hooves and fitted cloven grooves. Leg middles yaw
+above those supports and blend into the torso. Miltank's body, udder, four
+teats and rear spots share one owner; the fitted face and horns share the head.
+Its arms blend through wrists to coherent forehooves/grooves, paired ears carry
+their fitted inner panels, and a three-stage tail carries the terminal ball. Tauros's
+mane and fitted strands share a mane owner; facial layers, horns and all six
+forehead rivet layers remain rigid to the head. Each of three tails has its own
+base, bend and tuft joint, with shared positional weights near the shaft/tuft
+join. Idle, attack and hit use rotations only, neutral endpoints and
+source-battle-cue timing. Delayed tail stages have distinct branch motion.
 
-[Eleanie's Tauros](https://sketchfab.com/3d-models/tauros-de524ca243b642149ecca49d1a840d2d) is listed as an original fully rigged model under CC Attribution. The official Sketchfab download endpoint returned HTTP 401 without an authenticated account during this pass. No viewer geometry was extracted and no external model was imported. These canonical JSON sculptures are static meshes; they do not claim skeletal rigs or animation support.
+Original left-to-right patch centroids keep native and Blender geometry bytes
+identical across Python versions. Seven stored-skin and eight migrated anatomy
+checks pass, including canonical reconstruction, bind identity, budgets, source
+colors, coherent feature ownership, independent tail chains, planted hooves,
+winding and edge strain, real contacts and fitted markings. The additional
+Tauros body-reference regression and final canonical roundtrip also pass after
+the metadata-only reference adjustment. Front/rear software views were
+inspected. Focused Blender outputs are byte-identical with no static JSON.
+Both focused production Rust checks pass: GPU skinning at pack sizes, Tauros
+body-reference scaling, coherent feature ownership, fixed hooves, tail motion
+and off-grid culling bounds. Matched normal native 3D/2D reviews pass.
+Exact sprite-frame motion, field gaits and browser review remain open. Shiny
+checks/captures remain skipped at the user's request.
 
-## Verification
+The wider `every_exact_species_is_grounded_and_volumetric` and
+`body_pose_uses_elapsed_idle_time_and_exact_current_attack_progress` regressions
+also pass. These cover catalog geometry and elapsed-pose sampling, without
+claiming visual acceptance for unrelated models. The native client build passes.
 
-```sh
-python3 -m unittest discover -s tools -p test_bovine_sculpt.py
-python3 tools/check-model-layout.py
-python3 tools/model_asset_storage.py validate crates/crystal-voxel-view/models
-cargo test --locked -p crystal-voxel-view every_exact_species_is_grounded_and_volumetric --lib
-cargo build --locked -p crystal-bevy --example immersive_battle_3d --features location-tester
-```
+Tauros's matched normal 3D/2D review against Pidgey passes: grounded cloven
+hooves, the mane and all three tail shafts/tufts are visible at the corrected
+body scale. The far horn and some forehead details are obscured at this angle;
+front/rear software views cover those details. The paired receipt preserves
+core frame 2102, hash 1577348228, LCD frame 2719 and time 48.875408417
+(`state_preserved=true`). Miltank's first view exposed incorrect white inner
+ears. A magnified actual source frame shows dark interiors; both inner panels
+now use black. The binary geometry/weights, nodes, skins, clips, accessors and
+materials are identical; only two primitive material assignments and the source
+hash changed. Final canonical/palette checks pass.
 
-Eight independent stored-geometry tests cover closed oriented connected parts, normals, reproducible assets and preserved height, species-specific anatomy counts, actual udder/teat contact, grounded hoof/leg and arm support, head/mane/horn/tail connections, ears and muzzles, rear markings, and fitted eyes and forehead studs. Both meshes stay below 21,000 triangles: Miltank has 17,976 and Tauros 16,504. Their previous catalog heights remain 1.12 and 1.28 respectively.
-
-Front/oblique and rear software views were inspected, followed by native battle screenshots using the existing ignored `content-packs/realtime-clock.browser.crystalpack`. Native checks assess the stored art, depth rendering, grounding, silhouette and camera fit; they are not gameplay or TUI/MCP regressions. Scratch screenshots and downloaded reference images are removed after verification. No content pack, PCM, exported game commands, or build products are delivered.
-
-The full 251-species visual review remains in progress. Catalog bounds and normals checks do not establish visual quality for every species.
+Miltank's final matched normal 3D/2D review against Pidgey passes. The dark
+inner ears now match the source; planted hooves, raised forehooves, udder and
+tail remain coherent. The paired receipt preserves core frame 2044, hash
+873632486, LCD frame 2639 and time 46.967535708 (`state_preserved=true`).
+Both focused Rust checks and the native rebuild pass after the material-only
+correction; the final Blender export is byte-identical. Shiny checks remain
+skipped at the user's request.

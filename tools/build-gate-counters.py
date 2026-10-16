@@ -143,7 +143,10 @@ def export(name,col):
    for idx in tri.vertices:
     v=obj.matrix_world@me.vertices[idx].co;g['indices'].append(len(g['positions'])//3);g['positions'].extend(round(c,6) for c in [v.x,v.z,-v.y]);g['normals'].extend(round(c,6) for c in [n.x,n.z,-n.y])
   ev.to_mesh_clear()
- ps=list(groups.values());coords=[p['positions'][i:i+3] for p in ps for i in range(0,len(p['positions']),3)];lo=[min(v[i] for v in coords) for i in range(3)];hi=[max(v[i] for v in coords) for i in range(3)]
+ ps=list(groups.values())
+ if name=='phone_console':
+  for primitive in ps:primitive['material']=primitive['name']
+ coords=[p['positions'][i:i+3] for p in ps for i in range(0,len(p['positions']),3)];lo=[min(v[i] for v in coords) for i in range(3)];hi=[max(v[i] for v in coords) for i in range(3)]
  d=dict(name=name,coordinate_system='right-handed; +Y up; front +Z',origin='floor-center',bounds=dict(min=lo,max=hi),triangle_count=sum(len(p['indices'])//3 for p in ps),primitives=ps)
  raw=(json.dumps(d,separators=(',',':'))+'\n').encode()
  path=out/(name+'.mesh.json');path.write_bytes(raw);validate_model(path);return dict(name=name,triangles=d['triangle_count'],bounds=d['bounds'],objects=len(col.objects),materials=len(ps))

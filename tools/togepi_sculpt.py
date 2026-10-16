@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Original joyful Togepi with a real hollow broken shell and open ring markings."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
 from sculpt_geometry import part,curved_profiles,ellipsoid,fitted_patch,fitted_contour,crease_normals
 from abra_sculpt import surface
@@ -57,7 +59,8 @@ def ring(name,color,outline,skin):
         b=(j+1)%n;f.extend(((j,b,b+back,j+back),(3*n+b,3*n+j,3*n+j+back,3*n+b+back)))
     return crease_normals(part(name,color,v,f),35.)
 
-def sculpture():
+@lru_cache(maxsize=1)
+def raw_sculpture():
     egg=shell();star=head();p=[egg,star];ss=surface(egg);hs=surface(star)
     designs=[('large blue front triangle',BLUE,[(-.104,.494),(.053,.400),(-.071,.311)],False),('small red front lozenge',RED,[(.129,.509),(.201,.505),(.201,.426),(.146,.419)],False),('lower blue front triangle',BLUE,[(.095,.245),(.181,.339),(.179,.240)],False),('lower red front lozenge',RED,[(-.184,.296),(-.094,.236),(-.113,.193),(-.197,.256)],False),('large blue rear triangle',BLUE,[(-.075,.517),(.089,.426),(-.057,.332)],True),('small red rear lozenge',RED,[(-.199,.345),(-.124,.322),(-.104,.263),(-.174,.271)],True),('small blue rear triangle',BLUE,[(.055,.244),(.137,.299),(.137,.232)],True)]
     for name,color,xy,rear in designs:
@@ -82,11 +85,17 @@ def sculpture():
     tongue=[(x*.62,y+.051) for x,y in tongue]
     p.append(fitted_contour('Tongue / rosy lower smile',PINK,tongue,surface(mouth),.003))
     p=[crease_normals(q,35.) if q['part'].startswith(('Eye /','Eye glint /','Eye crease /','Foot crease /','Mouth /','Tongue /','Shell fleck /')) else q for q in p]
+    return {'name':'togepi','version':1,'coordinate_system':COORDINATES,'primitives':p}
+def sculpture(normalize=True):
+    model=deepcopy(raw_sculpture())
+    if not normalize:return model
+    p=model['primitives']
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':'togepi','version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
+    from egg_fairy_glb import export_egg_fairy
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    (args.output/'togepi.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+    (args.output/'togepi.glb').write_bytes(export_egg_fairy('togepi'))
 if __name__=='__main__':main()

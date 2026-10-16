@@ -88,6 +88,50 @@ struct Part {
     depth: usize,
     asset: Asset,
 }
+fn counter_part(asset:Asset)->bool {
+    matches!(asset,Asset::CounterPlain|Asset::CounterRegister|Asset::CounterNorth|Asset::CounterWest)
+}
+fn counter_joins(part:&Part,parts:&[Part])->[bool;4] {
+    let mut joined=[false;4];
+    for other in parts.iter().filter(|other|counter_part(other.asset)) {
+        let spans_z=other.y<=part.y&&other.y+other.depth>=part.y+part.depth;
+        let spans_x=other.x<=part.x&&other.x+other.width>=part.x+part.width;
+        joined[0]|=spans_z&&other.x+other.width==part.x;
+        joined[1]|=spans_z&&other.x==part.x+part.width;
+        joined[2]|=spans_x&&other.y+other.depth==part.y;
+        joined[3]|=spans_x&&other.y==part.y+part.depth;
+    }
+    joined
+}
+fn omit_counter_join_faces(out:&mut SurfaceMeshData,vertex_first:usize,index_first:usize,b:[f32;4],joined:[bool;4]) {
+    // The cabinet body is inset beneath its overhanging cap. Extend that
+    // hidden body edge to the shared plane before omitting its end wall, so
+    // adjacent bays form one shell rather than leaving a slit under the top.
+    for ((axis,plane,normal),joined) in [(0,b[0],-1.),(0,b[1],1.),(2,b[2],-1.),(2,b[3],1.)]
+        .into_iter().zip(joined) {
+        if !joined {continue;}
+        let body=out.indices[index_first..].chunks_exact(3).filter(|tri|tri.iter().all(|&i|
+            out.normals[i as usize][axis]*normal>0.999)).map(|tri| {
+                let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(out.positions[i as usize]));
+                ((b-a).cross(c-a).length_squared(),a[axis])
+            }).max_by(|a,b|a.0.total_cmp(&b.0)).map(|(_,body)|body);
+        if let Some(body)=body {
+            for v in &mut out.positions[vertex_first..] {
+                if (v[axis]-body)*normal>=-0.0001&&(plane-v[axis])*normal>=-0.0001 {
+                    v[axis]=plane;
+                }
+            }
+        }
+    }
+    let faces=out.indices.split_off(index_first);
+    out.indices.extend(faces.chunks_exact(3).filter(|tri| {
+        ![(0,b[0],-1.),(0,b[1],1.),(2,b[2],-1.),(2,b[3],1.)]
+            .into_iter().zip(joined).any(|((axis,plane,normal),joined)|joined&&tri.iter().all(|&i| {
+                let i=i as usize;
+                (out.positions[i][axis]-plane).abs()<0.0001&&out.normals[i][axis]*normal>0.999
+            }))
+    }).flatten().copied());
+}
 struct Network {
     map: Option<&'static str>,
     floor: u8,
@@ -106,7 +150,7 @@ pub(super) struct Placement {
     row: usize,
     ground: usize,
     grid_origin: [i32; 2],
-    native_kanto: bool,
+    native_store: bool,
 }
 impl Placement {
     pub(super) fn indices(&self, width: usize) -> impl Iterator<Item = usize> + '_ {
@@ -195,6 +239,19 @@ pub(super) fn resolve(
     };
     resolve_networks(NETWORKS, floor, map, cells, g, origin, profiles, reserved)
 }
+pub(super) fn perimeter_template(mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTile],
+    g:&GridGeometry,origin:[i32;2],profiles:Option<&Document>)->Option<usize> {
+    let placements=resolve(map,cells,g,origin,profiles,&vec![false;cells.len()]);
+    let (p,part)=placements.iter().flat_map(|p|p.network.parts.iter().map(move|part|(p,part)))
+        .filter(|(_,part)|matches!(part.asset,Asset::Window1|Asset::Window2|Asset::Window4
+            |Asset::Window8|Asset::Window10))
+        .min_by_key(|(p,part)|(p.row+part.y,p.column+part.x))?;
+    let row=p.row+part.y;let (w,_,n,_)=g.bounds(p.column+part.x,row);
+    let s=n+part.depth as f32*g.tile_height;
+    part.asset.model().append_fitted(&mut mesh.solid,
+        [w,w+part.width as f32*g.tile_width,s-3.*g.tile_height/8.,s],0.,16.*g.tile_height/8.);
+    Some(row)
+}
 fn resolve_networks(
     networks: &'static [Network],
     floor: u8,
@@ -236,7 +293,7 @@ fn resolve_networks(
             row,
             ground,
             grid_origin: origin,
-            native_kanto: map.starts_with("CeladonDeptStore"),
+            native_store: map.starts_with("CeladonDeptStore") || map.starts_with("GoldenrodDeptStore"),
         };
         if p.indices(g.width).any(|i| blocked[i]) {
             continue;
@@ -295,10 +352,10 @@ pub(super) fn append(
     {
         return false;
     }
-    let counter_swatches=if p.native_kanto {
+    let counter_swatches=if p.native_store {
         p.indices(g.width).find_map(|i|super::modeled_interiors::mart_counter_swatches(g,i,cells[i].source.tile_index))
     }else {None};
-    if p.native_kanto && p.network.parts.iter().any(|part|matches!(part.asset,
+    if p.native_store && p.network.parts.iter().any(|part|matches!(part.asset,
         Asset::CounterPlain|Asset::CounterRegister|Asset::CounterNorth|Asset::CounterWest))
         && (counter_swatches.is_none() || !Asset::CounterPlain.model().has_native_store_counter_materials()) {
         // Material failure must not re-enter a legacy 3D counter extrusion.
@@ -343,11 +400,34 @@ pub(super) fn append(
             part.asset,
             Asset::CounterPlain | Asset::CounterRegister | Asset::CounterNorth | Asset::CounterWest
         ) {
+            let solid_start=mesh.solid.positions.len();
+            let painted_start=mesh.textured.positions.len();
+            let solid_indices=mesh.solid.indices.len();
+            let painted_indices=mesh.textured.indices.len();
             if let Some(swatches)=counter_swatches {
                 append_native_service_counter(&mut mesh.textured,part.asset,[w,e,n,s],sy,swatches);
             }else {append_service_counter(&mut mesh.solid, part.asset, [w, e, n, s], sy);}
+            let joined=counter_joins(part,p.network.parts);
+            omit_counter_join_faces(&mut mesh.solid,solid_start,solid_indices,[w,e,n,s],joined);
+            omit_counter_join_faces(&mut mesh.textured,painted_start,painted_indices,[w,e,n,s],joined);
             if part.asset == Asset::CounterRegister {
                 append_cash_register(&mut mesh.solid, [w, e, n, s], sy);
+            }
+            // Reveal only the bay blocking the trainer. The floor backing was
+            // emitted before these ranges; other bays and the clerk's return
+            // remain independently opaque as the trainer walks along the desk.
+            let solid=solid_start..mesh.solid.positions.len();
+            let painted=painted_start..mesh.textured.positions.len();
+            if !solid.is_empty() {
+                mesh.solid.cutaway_ranges.push(solid.clone());
+                mesh.depth_coverage_solid_ranges.push(solid.clone());
+            }
+            if !painted.is_empty() {
+                mesh.textured.cutaway_ranges.push(painted.clone());
+                mesh.depth_coverage_textured_ranges.push(painted.clone());
+            }
+            if !solid.is_empty()&&!painted.is_empty() {
+                mesh.cutaway_links.push((solid.start,painted.start));
             }
             continue;
         }
@@ -411,12 +491,11 @@ pub(super) fn append(
                      uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
                 },
             ), "canonical store display requires all named materials");
-            // The canonical model exports rear rail, side returns, then the
-            // closed lower display. Only that last contiguous volume blocks
-            // the trainer standing in the native floor inset.
-            if let Some(front)=part.asset.model().store_display_front_start() {
-                mesh.textured.cutaway_ranges.push(display_start+front..mesh.textured.positions.len());
-            }
+            let glass=part.asset.model().take_store_display_glass(&mut mesh.textured,display_start)
+                .expect("validated store glazing roles");
+            mesh.scenery.push(crate::scenery_surfaces::ScenerySurface {
+                mesh:glass,texture:crate::scenery_surfaces::SceneryTexture::glass_panel(),
+            });
             continue;
         }
         let north = s - 3. * sy;
@@ -448,9 +527,8 @@ pub(super) fn append(
             );
         }
     }
-    // Ordinary service counters stay opaque. The closed display island can
-    // hide a trainer in its small floor inset, so it participates in the
-    // existing blocker fade without changing geometry or source ownership.
+    // Counters own individual bay ranges above; the closed display owns only
+    // its front. Architecture keeps its existing whole-object reveal.
     let reveal = !matches!(
         p.network.label,
         "mart/department_store_counter_end"

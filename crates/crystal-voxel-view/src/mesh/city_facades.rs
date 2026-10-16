@@ -85,7 +85,8 @@ pub(super) fn finish(
         } else {
             None
         };
-        if let Some(new) = replacement {
+        if let Some(new) = replacement
+            && mesh.uvs[first+i]!=crate::scenery_finish::SOURCE_PAINT_UV {
             for c in 0..3 {
                 mesh.colors[first + i][c] *= new[c] / color[c];
             }

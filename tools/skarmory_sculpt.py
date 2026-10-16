@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Original Skarmory steel armor, swept blade wings and angular avian head."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
-from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,crease_normals
+from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,crease_normals
+from bovine_sculpt import fitted_patch
 from abra_sculpt import surface,polygon_caps
 from wing_insect_sculpt import contour
 from skin_glb import COORDINATES
@@ -32,7 +35,8 @@ def skull():
         for i in range(n):a=j*n+i;b=j*n+(i+1)%n;f.append((a,b,b+n,a+n))
     return crease_normals(part('Head / joined angular skull and sharp upper bill',LIGHT,v,f),38.)
 
-def sculpture(species='skarmory'):
+@lru_cache(maxsize=1)
+def raw_sculpture(species='skarmory'):
     if species not in SPECIES:raise ValueError('unsupported steel bird')
     body=loft('Body / continuous steel breast shoulder and rising neck',STEEL,curved_profiles(((.22,.026,.035,-.025),(.31,.13,.13,-.01),(.47,.205,.175,-.015),(.62,.214,.19,-.025),(.73,.16,.145,.005),(.84,.09,.078,.06),(.95,.070,.071,.11),(1.07,.063,.068,.16),(1.13,.060,.062,.17)),3),12)
     body=crease_normals(body,38.);head=skull();p=[body,head]
@@ -64,7 +68,9 @@ def sculpture(species='skarmory'):
     for side in (-1,1):
         outline=[(side*.033,1.190),(side*.087,1.207),(side*.084,1.171),(side*.039,1.162)]
         eye=fitted_patch('Eye / fitted dark angular socket '+str(side),INK,outline,hs,.003);p.append(eye)
-        cx=sum(x for x,y in outline)/4;cy=sum(y for x,y in outline)/4
+        cx=cy=0.
+        for x0,y0 in outline:cx+=x0;cy+=y0
+        cx/=4;cy/=4
         inset=[(cx+(x-cx)*.77,cy+(y-cy)*.72) for x,y in outline]
         p.append(fitted_patch('Eye / fitted yellow slit '+str(side),GOLD,inset,surface(eye),.002))
         pupil=[(cx-.004,cy-.010),(cx+.004,cy-.010),(cx+.004,cy+.010),(cx-.004,cy+.010)]
@@ -72,6 +78,11 @@ def sculpture(species='skarmory'):
     # Closed lower bill plate leaves a visible dark seam under the upper edge.
     p.append(blade('Bill / tapered lower steel mandible',STEEL,[(.17,1.074),(.425,1.105),(.30,1.055),(.17,1.050)],lambda z,y:0.,.021,vertical=True))
     p.append(tube('Bill / dark lower mouth seam',INK,[(0,1.078,.20),(0,1.089,.30),(0,1.102,.41)],[.005,.004,.001],10))
+    return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+def sculpture(species='skarmory',normalize=True):
+    model=deepcopy(raw_sculpture(species))
+    if not normalize:return model
+    p=model['primitives']
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
@@ -79,6 +90,7 @@ def sculpture(species='skarmory'):
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
+    from skarmory_glb import export_skarmory
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    (args.output/'skarmory.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+    (args.output/'skarmory.glb').write_bytes(export_skarmory())
 if __name__=='__main__':main()

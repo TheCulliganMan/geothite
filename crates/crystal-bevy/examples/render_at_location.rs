@@ -212,6 +212,14 @@ fn main() -> Result<()> {
             render_test_live: args.live,
             render_test_walk: args.walk,
             render_test_hour: Some(args.hour),
+            render_test_window_size: env::var("CRYSTAL_RENDER_TEST_WINDOW_SIZE")
+                .ok()
+                .map(|size| {
+                    let (width, height) = size.split_once('x')
+                        .context("CRYSTAL_RENDER_TEST_WINDOW_SIZE must be WIDTHxHEIGHT")?;
+                    Ok::<_, anyhow::Error>((width.parse::<u32>()?, height.parse::<u32>()?))
+                })
+                .transpose()?,
             render_test_preview_flag: args.preview_flag,
             render_test_party: true,
             ..Default::default()

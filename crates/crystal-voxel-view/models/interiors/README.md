@@ -1,6 +1,6 @@
 # Original full-volume interior kit
 
-69 independently authored reusable assets for domestic, care, retail and civic
+68 independently authored reusable assets for domestic, care, retail and civic
 interiors. Models contain only original geometry and flat material colors. They
 contain no game pixels, source textures, animation commands or content-pack data.
 

@@ -4,7 +4,7 @@ use super::*;
 use bevy::math::{Vec2, Vec4};
 
 pub(super) fn enabled(map: &str) -> bool {
-    matches!(map, "VictoryRoad" | "SilverCaveRoom2" | "SilverCaveRoom3")
+    matches!(map, "VictoryRoad" | "SilverCaveRoom2" | "SilverCaveRoom3" | "BurnedTowerB1F")
 }
 
 pub(super) fn resolve(
@@ -120,7 +120,8 @@ pub(super) fn resolve(
             _ => {}
         }
     }
-    resolve_descents_with_regions(cells, shapes, g, frame.map_id.as_ref()=="SilverCaveRoom3");
+    resolve_descents_with_regions(cells, shapes, g,
+        matches!(frame.map_id.as_ref(),"SilverCaveRoom3"|"BurnedTowerB1F"));
     #[cfg(not(target_arch = "wasm32"))]
     trace_stair_neighbors(frame, cells, shapes, g);
 }
@@ -897,6 +898,47 @@ mod tests {
         let mut enclosing=crown; enclosing[0]=CellShape::RaisedTop {height:40.,solid:SolidKind::Bank};
         let mut tall=initial.clone(); finish_sides(&mut tall,&enclosing,&g,[0,0]);
         assert_eq!(tall.solid.uvs,initial.solid.uvs,"lower enclosing courses retain gradual reveal");
+    }
+    #[test]
+    fn external_burned_basement_has_two_joined_source_stairs_and_bounded_landings() {
+        let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(std::path::PathBuf::from)
+            .unwrap_or_else(||std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        if !path.is_file(){return;}
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();let pack=loaded.pack();
+        let map=&pack.data().maps["BurnedTowerB1F"];
+        let (w,h)=(map.attributes.width as usize*4,map.attributes.height as usize*4);
+        let art=&pack.runtime_files()["data/tilesets/cave_metatiles.bin"];
+        let sources=(0..w*h).map(|i| {
+            let (x,y)=(i%w,i/w);let b=map.blocks[y/4*(w/4)+x/4];
+            source(b,(x%4)as u8,(y%4)as u8,art[b as usize*16+y%4*4+x%4]as u16)
+        }).collect();
+        let mut frame=super::super::tests::frame(w as u32,h as u32,sources);
+        frame.map_id="BurnedTowerB1F".into();frame.source_map_size_core_tiles=Some(bevy::math::UVec2::new((w/2)as u32,(h/2)as u32));
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let raw=cells.iter().map(|t|shape_for_source_on_map(&frame.map_id,&t.source)).collect::<Vec<_>>();
+        let mut shapes=raw.clone();resolve(&frame,&cells,&mut shapes,&g);
+        let mut stairs=0;
+        for (i,t) in cells.iter().enumerate() {
+            let s=&t.source;
+            if s.metatile_id==0x30&&s.subtile_column==0&&s.subtile_row==2 {
+                stairs+=1;
+                let top=shapes[i-w].surface_height(8.);let bottom=shapes[i+2*w].surface_height(8.);
+                assert!(top>bottom,"source stair {},{}: {top} -> {bottom}",i%w,i/w);
+                for dx in 0..2 {
+                    assert!(matches!(shapes[i+dx],CellShape::RampNorth{north_height,south_height}
+                        if north_height==top&&south_height==(top+bottom)*0.5));
+                    assert!(matches!(shapes[i+w+dx],CellShape::RampNorth{north_height,south_height}
+                        if north_height==(top+bottom)*0.5&&south_height==bottom));
+                }
+            }
+        }
+        assert_eq!(stairs,2);
+        assert_eq!(shapes[(5*2)*w+10*2].surface_height(8.),16.,"beasts' platform");
+        let outer=raw[(13*2)*w+10*2].surface_height(8.);
+        assert_eq!(outer,crate::cave::CAVE_SHELF_HEIGHT);
+        assert_eq!(shapes[(9*2)*w+10*2].surface_height(8.),(16.+outer)*0.5,"intermediate courtyard");
+        assert_eq!(shapes[(13*2)*w+10*2].surface_height(8.),raw[(13*2)*w+10*2].surface_height(8.),"outer floor");
     }
     fn exported_cave_frame(map: &str, block_width: usize, block_height: usize) -> VisualWorldFrame {
         let root = std::path::PathBuf::from(

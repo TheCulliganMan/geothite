@@ -1,71 +1,88 @@
-# Lugia sea guardian sculpture
+# Lugia hand wings, open roar and planted pads
 
-`tools/lugia_sculpt.py` supplies an original dedicated battle model. The pure
-recipe is dispatched by the battle-species builder. Lugia enters the exact
-battle registry and leaves the shared-species list; direct `icon_lugia` routing
-and the original icon mesh remain intact. A Rust regression checks both paths
-and confirms the dedicated battle geometry differs from the icon.
+`tools/lugia_sculpt.py` authors the original sea guardian.
+`tools/lugia_glb.py` exports the canonical skin; the battle-species builder
+regenerates the same GLB. No third-party geometry is included.
 
-The [official Lugia artwork](https://sg.portal-pokemon.com/pokedex/0249/)
-was visually inspected as reference. No reference pixels or third-party geometry
-were imported. The [Free3D listing](https://free3d.com/3d-model/lugia-pokemon-43982.html)
-is unrigged, unanimated and under a personal-use license. The previously
-reviewed downloadable CC BY Lugia listing did not provide an accessible model
-or a validated skeleton. This original sculpture is static; usable open rig
-research remains incomplete.
+A smooth ivory pear-shaped body carries a fitted pale-blue breast shield and
+long forward-curving neck. The streamlined head has navy eye shields, narrow
+lenses, small pupils, rising eye flags and a swept occipital crest. The hooked
+upper beak and open lower mandible surround a recessed dark oral back and
+small pink tongue. Both broad bent wing arms end in rounded palms with five
+blunt digits. Ten navy dorsal plates follow the back. A swept ivory tail ends
+in two navy lances. Powerful haunches and ankles lead to broad white pads and
+three blunt toes per foot.
 
-A pear-shaped white body carries a fitted pale blue belly, long curved neck,
-compact head, narrow fitted eyes, backward-swept navy eye vanes and a white
-occipital crest. Two bent wing arms support broad palms and five rounded,
-volumetric digits each. Five pairs of rooted navy plates follow the back.
-The continuous swept white tail ends with two navy fins. Powerful haunches,
-ankles, feet and six blunt white toes ground the sculpture. The open roaring
-jaw has a dark recessed lining and pink tongue with an actual empty gap.
+The source has 56 recoverable parts packed into 34 runtime primitives,
+19,823 vertices, 34,796 triangles and 13 joints. The GLB occupies 852,748 bytes
+and 182 accessors, within the unchanged renderer limits. The former static
+source had 34,165 vertices and 61,688 triangles. Paddle and ellipsoid sampling
+were reduced selectively; the highest fingers retain their original sampling.
+The 25 retained core meshes preserve topology, normals and colors. Their
+normalized coordinates differ from the former source by at most 0.000000375
+units because resampling the rounded pads changes the tiny raw floor datum.
+The body, neck, head, jaws, crest, eye flags, dorsal plates, ankles, longest
+fingers, tail and fins retain their original surfaces.
 
-Review corrected upright eye vanes to sweep backward and moved the recessed
-mouth lining forward from inside the head. The final front, oblique and rear
-software views were individually inspected. They show the mouth opening,
-hand fans, back plates and tail from complementary angles.
+The breast shield keeps its original thickness. Conforming local cap
+refinement resolves the stored body's curved shoulder where uniform coarse
+triangles cut into it. Midpoint splits propagate to adjacent triangles,
+keeping the surface closed. All fitted markings retain actual stored-surface
+support and triangle-center/edge clearance.
 
-The final source has 56 parts and 61,688 triangles, height 1.45 and floor zero.
-Its SHA-256 is
-`e1fa3b6aff4c09f956c5307960a1f03f4129ddbc583b528871a2eeede55e8990`.
-The installed source is byte-identical to the reviewed candidate. The original
-icon hash remains
-`11728ee754b25b52dad479653c8d632e3788c4ae783a59ac50778f0613c1ad7b`.
+The canonical source geometry SHA-256 is
+`00a71d50c07f0307e3638ddd0bfe10bbc8b839f24c4061020d41f4029cc7afa9`;
+the packed runtime pin is
+`8bfe309e8e03304e4547f34346df87add36f0706bed92b5cc7b589b57cf4001b`.
+Strict decoding recovers all 56 source parts in order. Same-carrier fingers,
+toes and dorsal plates pack together without changing their geometry.
 
-Thirteen candidate tests passed in 6.701 seconds; all thirteen canonical tests
-passed again in 5.256 seconds. Tests inspect stored triangles for closed
-connected outward solids, face normals, recipe parity, height, grounding,
-budgets and anatomical counts. Independent intersection and volume checks
-cover body, neck, wing arms, fingers, eye vanes, crest, back plates, tail and
-terminal fins. All hand digits must join palms, arms and body; all feet and
-toes must have real roots and remain grounded. Fitted belly, mask, eyes and
-pupils must follow actual parent skin at vertices, triangle centers and edges.
-The mouth-gap check pairs stored ray crossings into occupied intervals and
-rejects filler between upper jaw and lower jaw/tongue. It also rejects a
-detached hand and requires the dark mouth lining to be visible ahead of the
-head while recessed behind the upper beak.
+The identity root fixes both pads and all six toes. Blended haunches and
+ankles bridge to a yawing torso. The belly and dorsal plates follow the body;
+neck, head and complete gaze articulate independently. Wing arms blend toward
+separate palm joints; each palm carries its complete five-digit fan. The
+lower mandible and tongue share an opening joint. Two yawing tail joints
+carry the paired terminal fins and preserve vertical clearance. Rotation-only
+idle, attack and recoil clips return exactly to neutral.
 
-The Lugia Rust routing regression passed with one matching test and zero
-failures (0.02 seconds); other package targets contained no matching tests.
-The current all-251 Rust regression also passed: one matching test, zero
-failures, 1.16 seconds and 1,266 filtered tests. Its compiled test binary
-contains the full current Moltres, Lugia and Ho-Oh source hashes. The fresh
-production build exited zero after 21 minutes 40 seconds including cache waits.
+Authoring height stays 1.45 with the floor at zero. The verified local pack
+supplies height digits 1701, or 5.207 metres.
 
-The production executable contains the full canonical Lugia fingerprint and
-compiled mute switch. The muted owned-image GPU capture exited zero in 2.65
-seconds, with a 0.86-second renderer write. The 2,000 by 1,400 image has 16,072
-colors and was inspected in full. Lugia's actual broad hand fans, head vanes,
-open jaw and tongue, blue belly, feet, back plates and curving tail are visible
-with the arena, opponent and battle HUD. The tail partly overlaps the body in
-this angle; complementary software views cover its complete shape. Executable
-inode, size and modification time and canonical model hash stayed unchanged
-through all three replacement captures.
+Thirteen anatomy and nine decoded-skin checks passed for closed solids,
+shading, fitted surfaces, occupied roots, coherent owners, fixed pads and toes,
+physical edge strain, outward winding, independent motion and a real mouth
+void through the posed roar. The mouth-volume oracle now merges duplicate
+crossings on shared triangle edges before pairing occupied intervals. Its
+filled-mouth negative control and the stronger posed-void check were rerun
+successfully on decoded float32 geometry. Blender regeneration is
+byte-identical. Fixed-camera front and rear neutral, idle, attack and recoil
+software views were inspected. Shiny checks are skipped at the user's request.
 
-Every trial set `CRYSTAL_PREVIEW_MUTE=1` before process creation for both music
-and effects. The backend sets new sinks to zero before source append and keeps
-music refreshes at zero. No system volume or other app was changed. The separate
-live-window capture issue and full 251-species appearance objective remain open.
-Images and logs are ignored verification scratch, not model deliverables.
+Three focused Rust checks passed for dedicated-model routing, GPU activation
+at verified pack height, fixed pads and toes, coherent carriers, tail
+clearance, independent palms/mandible/fins and animation culling bounds.
+
+The wider exact-species grounding/volume and elapsed-animation timing
+regressions passed. The production native client built successfully with:
+
+```sh
+CARGO_TARGET_DIR=target/pokemon-models cargo build --locked -p crystal-bevy \
+  --features location-tester,bevy/zstd_rust --example immersive_battle_3d -j1 \
+  --config profile.dev.package.crystal-voxel-view.opt-level=0 \
+  --config profile.dev.package.crystal-bevy.opt-level=0
+```
+
+The initial Route 29 native review rejected staging because the complete
+animated body did not fit supported ground. Scale and full-body terrain
+admission remain intact. The alternate-map walking preview now requires
+its outdoor starting tile, as well as the destination, to be actual source
+grass. The Route 35 regression passed: both approach tiles are source grass,
+and setup leaves battle absent until ordinary gameplay triggers it.
+
+Native acceptance remains open. Route 35 and Route 38 also rejected the
+complete animated footprint on the source ground (zero supported staging
+candidates). A first Route 38 movement-only run stopped at battle intro text;
+the subsequent ordinary A-input run reached Lugia's battle and confirmed the
+terrain rejection. No size clamp, source-floor change, footprint relaxation
+or grass-height change was introduced. The latest native build and the
+Route 35 fixture regression passed. No paired native acceptance is claimed.

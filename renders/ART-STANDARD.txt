@@ -1,6 +1,12 @@
 GEOTHITE — FINISHED 3D ART STANDARD v2
 2026-10-13 / Revised images approved by the user: "those look good"
 
+Latest user direction, 2026-10-15: "aim for quality of scene not fidelity
+against that render". Judge composition, materials, lighting and readability
+across the whole production scene. Concept renders supply inspiration, not
+an exact finish to reproduce. Preserve recognizable game layout and landmarks,
+shared asset types, completed Center/Mart craft and the forest boundary below.
+
 The actual existing 3D game is the starting point.
 Use production 3D captures as edit targets, with 2D supplying authoritative
 content, colors and local identity. Preserve the 3D camera, perspective,
@@ -13,6 +19,24 @@ are not runtime renders, implemented assets or evidence of performance.
 Earlier references were rejected and removed. Exact selected prompts and
 reference roles are saved in PROMPTS.txt. Original pack/capture files stay
 external or ignored; no copied game-content catalog is included.
+
+User review, 2026-10-15: the Olivine source-faithful-v4 generated concept
+improved texture but made layout worse. It is rejected as a composition target.
+Preserve actual production framing, building positions, paths and actor placement;
+material craft must not introduce generated layout changes.
+
+Current user priority, 2026-10-15: broaden location coverage and work on
+previously unseen places. The user called repeated detail work in the same
+locations yak shaving. New Cianwood, Goldenrod and Azalea production/source
+pairs are recorded in docs/handoff/outdoor-terrain.md. Prioritize whole-scene
+coverage, source identity and visible structural gaps over repeated tiny
+material adjustments in Blackthorn or Olivine.
+
+Shared-asset requirement, 2026-10-15: one source sprite/drawing maps to one
+shared asset type unless the user explicitly specifies an exception. Do not
+build town-specific copies or use map-name switches to repair common sprites.
+Use the approved renders as the quality target. Check existing Marts and
+Centers after shared changes; retain their identity and completed craft.
 
 QUALITY BAR: EVERY VISIBLE ASSET IS FINISHED
 Vegetation and lighting cannot disguise placeholder geometry. Inspect the
@@ -54,6 +78,11 @@ relationship, damp grounded shore contact and source occupancy retained.
 No rectangular glints, dry floating swimmers or invented bodies of water.
 
 JOHTO TREE IDENTITY
+Current user boundary, 2026-10-14: ancient forest trees were restored to
+3.20 height scale. The user then instructed us to leave the forest alone.
+Historical Ilex work below is not authorization for further forest changes;
+that requires a new explicit user request. Preserve the restored tree height.
+
 Most ordinary route/town boundary trees are PINES. Model real irregular
 needle-bearing boughs and branches, asymmetry, tapering silhouettes, warm
 fissured trunks and blue-green interior depth. Rotation and tint alone do

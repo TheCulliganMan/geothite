@@ -13,6 +13,7 @@ fn read_loaded_compiled_game_pack(path: impl AsRef<Path>) -> Result<LoadedCompil
         path: path.to_path_buf(),
         bytes,
         pack,
+        runtime_verified: false,
     })
 }
 
@@ -32,8 +33,9 @@ pub fn read_verified_compiled_game_pack(path: impl AsRef<Path>) -> Result<Compil
 pub fn read_loaded_verified_compiled_game_pack(
     path: impl AsRef<Path>,
 ) -> Result<LoadedCompiledGamePack> {
-    let loaded = read_loaded_compiled_game_pack(path)?;
+    let mut loaded = read_loaded_compiled_game_pack(path)?;
     verify_compiled_game_pack_for_runtime(loaded.pack())?;
+    loaded.runtime_verified = true;
     Ok(loaded)
 }
 
@@ -45,7 +47,7 @@ pub fn load_verified_compiled_game_pack_bytes(
     validate_compiled_game_pack_path(&path)?;
     let pack = decode_compiled_game_pack(&bytes, &path)?;
     verify_compiled_game_pack_for_runtime(&pack)?;
-    Ok(LoadedCompiledGamePack { path, bytes, pack })
+    Ok(LoadedCompiledGamePack { path, bytes, pack, runtime_verified: true })
 }
 
 /// A complete, already-materialized runtime map addition for an existing
@@ -855,13 +857,20 @@ pub fn verify_compiled_game_pack_for_runtime(pack: &CompiledGamePack) -> Result<
         );
     }
     validate_compiled_game_pack_identity(pack)?;
-    validate_compiled_report_manifest_identity(&pack.report)?;
-    validate_compiled_report_data_counts(&pack.report, &pack.data)?;
-    validate_compiled_report_map_references(&pack.report, &pack.data)?;
-    validate_compiled_report_progression_outputs(&pack.report, &pack.data)?;
-    validate_compiled_runtime_game_data(&pack.data)?;
-    validate_compiled_audio_payloads(pack)?;
+    {
+        let _trace = pack_load_trace::Span::new("pack.semantic_validation");
+        validate_compiled_report_manifest_identity(&pack.report)?;
+        validate_compiled_report_data_counts(&pack.report, &pack.data)?;
+        validate_compiled_report_map_references(&pack.report, &pack.data)?;
+        validate_compiled_report_progression_outputs(&pack.report, &pack.data)?;
+        validate_compiled_runtime_game_data(&pack.data)?;
+    }
+    {
+        let _trace = pack_load_trace::Span::new("pack.audio_validation");
+        validate_compiled_audio_payloads(pack)?;
+    }
 
+    let _trace = pack_load_trace::Span::new("pack.runtime_diagnostics");
     let mut diagnostics = pack
         .report
         .diagnostics
@@ -901,6 +910,7 @@ fn validate_compiled_game_pack_identity(pack: &CompiledGamePack) -> Result<()> {
         counts.set((runtime, identity + 1));
     });
     validate_compiled_runtime_files(&pack.runtime_files)?;
+    let identity_trace = pack_load_trace::Span::new("pack.identity_hash");
     let derived = if matches!(
         pack.audio_compression.as_deref(),
         Some(PACK_AUDIO_COMPRESSION_GZIP | PACK_AUDIO_COMPRESSION_MIDI)
@@ -921,6 +931,7 @@ fn validate_compiled_game_pack_identity(pack: &CompiledGamePack) -> Result<()> {
             &pack.report,
         )?
     };
+    drop(identity_trace);
     if pack.identity != derived {
         anyhow::bail!(
             "compiled game pack identity {} does not match derived identity {}",
@@ -1321,6 +1332,7 @@ fn compiled_game_pack_runtime_modpack_id(report: &ModpackCompileReport) -> Resul
 }
 
 fn decode_compiled_game_pack(bytes: &[u8], path: &Path) -> Result<CompiledGamePack> {
+    let _trace = pack_load_trace::Span::new("pack.decode");
     if !bytes.starts_with(COMPILED_GAME_PACK_MAGIC) {
         anyhow::bail!("{} is not a compiled Crystal game pack", path.display());
     }
@@ -1366,7 +1378,10 @@ fn decode_compiled_game_pack(bytes: &[u8], path: &Path) -> Result<CompiledGamePa
         bytes[COMPILED_GAME_PACK_PAYLOAD_HASH_OFFSET + 3],
     ]);
     let payload = &bytes[COMPILED_GAME_PACK_HEADER_LEN..];
-    let actual_hash = fnv1a32_bytes(payload);
+    let actual_hash = {
+        let _trace = pack_load_trace::Span::new("pack.frame_hash");
+        fnv1a32_bytes(payload)
+    };
     if actual_hash != expected_hash {
         anyhow::bail!(
             "compiled game pack {} payload hash {actual_hash:#010x} does not match declared {expected_hash:#010x}",
@@ -1374,8 +1389,11 @@ fn decode_compiled_game_pack(bytes: &[u8], path: &Path) -> Result<CompiledGamePa
         );
     }
     let mut cursor = std::io::Cursor::new(payload);
-    let pack: CompiledGamePack = ciborium::from_reader(&mut cursor)
-        .with_context(|| format!("decode compiled game pack {}", path.display()))?;
+    let pack: CompiledGamePack = {
+        let _trace = pack_load_trace::Span::new("pack.decode_cbor");
+        ciborium::from_reader(&mut cursor)
+            .with_context(|| format!("decode compiled game pack {}", path.display()))?
+    };
     if cursor.position() as usize != payload.len() {
         anyhow::bail!(
             "compiled game pack {} has {} trailing bytes",

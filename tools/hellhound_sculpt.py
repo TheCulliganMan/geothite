@@ -2,9 +2,9 @@
 """Original Houndour puppy and lean horned Houndoom canine sculptures."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,crease_normals,translate
+from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch as _fitted_patch,crease_normals,translate
 from abra_sculpt import surface
-from spider_sculpt import upper_skin,dorsal_patch
+from spider_sculpt import upper_skin
 from wing_insect_sculpt import membrane
 from skin_glb import COORDINATES
 SPECIES=('houndour','houndoom');HEIGHT=1.20
@@ -12,6 +12,25 @@ COAT=(.23,.24,.25);BONE=(.88,.88,.83);ORANGE=(.80,.43,.27);INK=(.085,.095,.105)
 WHITE=(.96,.96,.91);RUBY=(.76,.28,.28);TONGUE=(.80,.43,.47)
 
 def oval(x,y,w,h,n=20):return [(x+w*math.cos(k*math.tau/n),y+h*math.sin(k*math.tau/n)) for k in range(n)]
+
+def fitted_patch(name,color,outline,skin,thickness=.008):
+    # Keep the original left-to-right centroid across Python versions.
+    outline=list(outline);area=0.
+    for a,b in zip(outline,outline[1:]+outline[:1]):area+=a[0]*b[1]-b[0]*a[1]
+    if area<0:outline.reverse()
+    cx=cy=0.
+    for x,y in outline:cx+=x;cy+=y
+    return _fitted_patch(name,color,outline,skin,thickness,center=(cx/len(outline),cy/len(outline)))
+
+def dorsal_patch(name,color,outline,skin):
+    dense=[]
+    for a,b in zip(outline,outline[1:]+outline[:1]):
+        dense.extend((a[0]+(b[0]-a[0])*i/5,a[1]+(b[1]-a[1])*i/5) for i in range(5))
+    p=fitted_patch(name,color,dense,skin,.007)
+    for field in ('positions','normals'):
+        p[field]=[v for i in range(0,len(p[field]),3) for v in (p[field][i],p[field][i+2],p[field][i+1])]
+    p['indices']=[v for i in range(0,len(p['indices']),3) for v in (p['indices'][i],p['indices'][i+2],p['indices'][i+1])]
+    return p
 
 def trunk(big):
     knots=((- .38,.02,.03,.52),(-.28,.125,.15,.52),(-.12,.155,.155,.53),(.07,.14,.16,.53),(.20,.11,.14,.56),(.28,.035,.05,.59)) if big else ((-.32,.015,.025,.38),(-.26,.145,.16,.39),(-.08,.175,.185,.41),(.12,.16,.17,.43),(.22,.105,.13,.47),(.26,.02,.03,.50))
@@ -34,7 +53,7 @@ def center_at(rows,y):
             t=(y-a[0])/(b[0]-a[0]);return tuple(a[k]*(1-t)+b[k]*t for k in (2,3))
     raise ValueError('cuff outside leg centerline')
 
-def sculpture(species):
+def sculpture(species,normalize=True):
     if species not in SPECIES:raise ValueError('unsupported bone-armored canine')
     big=species=='houndoom';body=trunk(big)
     neck=loft('Neck / contoured upright canine chest',COAT,curved_profiles(((.42,.105,.12,.19),(.56,.095,.11,.24),(.72,.093,.105,.28),(.88,.091,.10,.30)) if big else ((.39,.11,.115,.17),(.50,.10,.115,.22),(.62,.105,.115,.265),(.73,.095,.10,.28)),4),28)
@@ -121,10 +140,17 @@ def sculpture(species):
         cs=surface(cap)
         p.append(fitted_patch('Armor / dark forehead inset',INK,oval(0,.832,.031,.015),cs,.0015))
     p.append(fitted_patch('Chest / fitted warm orange marking',ORANGE,oval(0,.55 if big else .515,.055,.09,24),ns,.004))
-    low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
+    p=[crease_normals(q,35.) if q['part'].startswith(('Armor / broad','Chest /')) else q for q in p]
+    from sculpt_geometry import linear
     for q in p:
-        q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
-        q['normals']=[round(v,7) for v in q['normals']]
+        name=q['part']
+        rgb=(0,0,0) if name.startswith(('Nose /','Mouth / recessed','Mouth / fitted closed','Eye / fitted dark','Eye / thin','Armor / dark','Charm / fitted','Paw crease /')) else (255,99,0) if name.startswith(('Muzzle /','Jaw /','Chest /','Eye / fitted red','Mouth / pink')) or (not big and name.startswith('Paw /')) else (255,255,255) if name.startswith(('Horn /','Fang /','Claw /','Cuff /','Armor /','Collar /','Charm /','Eye / fitted ivory')) else ((74,33,140) if big else (49,66,82))
+        q['base_color']=linear(tuple(v/255 for v in rgb))
+    low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
+    if normalize:
+        for q in p:
+            q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
+            q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

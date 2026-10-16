@@ -378,3 +378,175 @@ fn kanto_native_nurse_input_publishes_live_healing_art_and_hides_only_consumed_o
     assert_eq!(sprites.iter(world).count(),0,"source effects must retire after the authored sequence");
 
 }
+
+#[test]
+fn lighthouse_stair_arrivals_ignore_blocked_steps_and_allow_reentry() {
+    let path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../content-packs/text-tui.crystalpack"));
+    if !path.is_file() {
+        assert!(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").is_none(), "missing explicit test pack");
+        return;
+    }
+    let root = AssetRoot::new(path.parent().unwrap());
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded).unwrap();
+    for (source, destination) in [("OlivineLighthouse5F", "OlivineLighthouse6F"),
+        ("OlivineLighthouse6F", "OlivineLighthouse5F")] {
+        let shell = initialize_bevy_runtime_shell(root.clone(), runtime.clone(),
+            BevyShellStart::NewGameAtRuntimeTile {
+                spawn_identifier: runtime.title_new_game_spawn_identifier().unwrap(),
+                map_name: source.into(), tile_x: 9, tile_y: 14,
+            }, BevyShellConfig::default()).unwrap();
+        let mut controller = VisibleShellController { shell };
+        for _ in 0..4 {
+            controller.press(GameButton::Down).unwrap();
+            if controller.snapshot().unwrap().overworld.map_name == destination { break; }
+        }
+        let landing = controller.snapshot().unwrap().overworld;
+        assert_eq!(landing.map_name, destination, "stair entry from {source}");
+        assert_eq!(landing.tile, TilePosition::new(9, 15));
+        for _ in 0..8 {
+            controller.press(GameButton::Down).unwrap();
+            let blocked = controller.snapshot().unwrap().overworld;
+            assert_eq!(blocked.map_name, destination, "blocked arrival step must not reactivate stair from {source}");
+            assert_eq!(blocked.tile, landing.tile);
+        }
+        for _ in 0..4 {
+            controller.press(GameButton::Up).unwrap();
+            if controller.snapshot().unwrap().overworld.tile == TilePosition::new(9, 14) { break; }
+        }
+        let away = controller.snapshot().unwrap().overworld;
+        assert_eq!(away.map_name, destination);
+        assert_eq!(away.tile, TilePosition::new(9, 14), "arrival must allow walking away");
+        for _ in 0..4 {
+            controller.press(GameButton::Down).unwrap();
+            if controller.snapshot().unwrap().overworld.map_name == source { break; }
+        }
+        let returned = controller.snapshot().unwrap().overworld;
+        assert_eq!(returned.map_name, source, "walking back onto the stair must still warp");
+        assert_eq!(returned.tile, landing.tile);
+    }
+}
+
+#[cfg(feature = "voxel-view")]
+#[test]
+fn warp_fade_waits_for_destination_terrain_and_actor_preparation() {
+    use crystal_voxel_view::{VoxelViewSettings, VoxelViewStatus};
+    let path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(PathBuf::from)
+        .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../content-packs/text-tui.crystalpack"));
+    if !path.is_file() {
+        assert!(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").is_none());
+        return;
+    }
+    let root = AssetRoot::new(path.parent().unwrap());
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded).unwrap();
+    let mut shell = initialize_bevy_runtime_shell(root, runtime.clone(),
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier: runtime.title_new_game_spawn_identifier().unwrap(),
+            map_name: "OlivineLighthouse6F".into(), tile_x: 9, tile_y: 15,
+        }, BevyShellConfig::default()).unwrap();
+    let arm = |shell: &mut BevyRuntimeShell| {
+        shell.visible_walk_warp_phase = Some(VisibleWalkWarpPhase::FadeIn);
+        shell.screen_fade = Some(VisibleScreenFade::new(ScriptFadeColor::White,
+            ScriptFadeDirection::In, 8));
+    };
+    arm(&mut shell);
+    let mut time = Time::<()>::default();
+    time.advance_by(std::time::Duration::from_secs_f32(GAME_TICK_SECONDS));
+    let mut app = App::new();
+    app.insert_resource(time).insert_resource(shell)
+        .insert_resource(VoxelViewSettings {enabled:true,..Default::default()})
+        .insert_resource(VoxelViewStatus {active:true,
+            terrain_map:Some("OlivineLighthouse5F".into()),..Default::default()})
+        .add_systems(Update,tick_visible_screen_fade);
+    // Catch the first update before a destination build has reported pending.
+    for _ in 0..16 { app.update(); }
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert_eq!(shell.screen_fade.unwrap().elapsed_frames,0);
+    assert_eq!(shell.screen_fade.unwrap().alpha,255);
+    assert_eq!(shell.visible_walk_warp_phase,Some(VisibleWalkWarpPhase::FadeIn));
+    {
+        let mut status = app.world_mut().resource_mut::<VoxelViewStatus>();
+        status.terrain_map=Some("OlivineLighthouse6F".into());
+        status.terrain_pending=true; // Terrain installed, bodies still preparing.
+    }
+    for _ in 0..16 { app.update(); }
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().screen_fade.unwrap().elapsed_frames,0);
+    app.world_mut().resource_mut::<VoxelViewStatus>().terrain_pending=false;
+    app.world_mut().resource_mut::<Time>().advance_by(std::time::Duration::from_millis(200));
+    app.update();
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().screen_fade.unwrap().elapsed_frames,0,
+        "publication stall belongs to the loading hold, not the fade");
+    app.world_mut().resource_mut::<Time>().advance_by(
+        std::time::Duration::from_secs_f32(GAME_TICK_SECONDS));
+    app.update();
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().screen_fade.unwrap().elapsed_frames,1);
+    for _ in 0..7 { app.update(); }
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().visible_walk_warp_phase,None);
+    assert!(app.world().resource::<BevyRuntimeShell>().screen_fade.is_none());
+    // Classic presentation and the renderer-neutral controller have no wait.
+    arm(&mut app.world_mut().resource_mut::<BevyRuntimeShell>());
+    app.world_mut().resource_mut::<VoxelViewSettings>().enabled=false;
+    app.world_mut().resource_mut::<VoxelViewStatus>().terrain_pending=true;
+    app.update();
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().screen_fade.unwrap().elapsed_frames,1);
+    arm(&mut app.world_mut().resource_mut::<BevyRuntimeShell>());
+    app.world_mut().resource_mut::<VoxelViewSettings>().enabled=true;
+    app.world_mut().remove_resource::<VoxelViewStatus>();
+    app.update();
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().screen_fade.unwrap().elapsed_frames,1);
+    // A failed renderer reports inactive output, not a perpetual loading wait.
+    arm(&mut app.world_mut().resource_mut::<BevyRuntimeShell>());
+    app.insert_resource(VoxelViewStatus {terrain_map:Some("OlivineLighthouse5F".into()),
+        inactive_reason:Some("terrain sync failed".into()),..Default::default()});
+    app.update();
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().screen_fade.unwrap().elapsed_frames,1);
+}
+
+#[test]
+fn radio_tower_all_twelve_stairs_keep_authored_step_off_and_allow_reentry() {
+    let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(PathBuf::from)
+        .unwrap_or_else(||PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+    if !path.is_file(){assert!(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").is_none());return;}
+    let root=AssetRoot::new(path.parent().unwrap());
+    let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+    let runtime=CrystalRuntime::from_loaded_compiled_pack(&root,loaded).unwrap();
+    for (source,x,destination,arrival_x) in [
+        ("RadioTower1F",15,"RadioTower2F",15),
+        ("RadioTower2F",0,"RadioTower3F",0),("RadioTower2F",15,"RadioTower1F",15),
+        ("RadioTower3F",0,"RadioTower2F",0),("RadioTower3F",7,"RadioTower4F",9),("RadioTower3F",17,"RadioTower4F",17),
+        ("RadioTower4F",0,"RadioTower5F",0),("RadioTower4F",9,"RadioTower3F",7),
+        ("RadioTower4F",12,"RadioTower5F",12),("RadioTower4F",17,"RadioTower3F",17),
+        ("RadioTower5F",0,"RadioTower4F",0),("RadioTower5F",12,"RadioTower4F",12),
+    ] {
+        let mut shell=initialize_bevy_runtime_shell(root.clone(),runtime.clone(),
+            BevyShellStart::NewGameAtRuntimeTile{spawn_identifier:runtime.title_new_game_spawn_identifier().unwrap(),
+                map_name:source.into(),tile_x:x,tile_y:1},BevyShellConfig::default()).unwrap();
+        // Authored post-clear visibility state opens the 2F stair approach.
+        shell.shell.session_mut().state_mut().flags.set_event_flag("EVENT_RADIO_TOWER_BLACKBELT_BLOCKS_STAIRS",true).unwrap();
+        let mut controller=VisibleShellController{shell};
+        for _ in 0..4 {
+            controller.press(GameButton::Up).unwrap();
+            if controller.snapshot().unwrap().overworld.map_name==destination{break;}
+        }
+        let landing=controller.snapshot().unwrap().overworld;
+        assert_eq!(landing.map_name,destination,"stair entry {source}({x},0)");
+        assert_eq!(landing.tile,TilePosition::new(arrival_x,0));
+        // STAIRCASE overrides the requested northward input with Crystal's
+        // authored Down step. It must step off once on the destination map.
+        controller.press(GameButton::Up).unwrap();
+        let away=controller.snapshot().unwrap().overworld;
+        assert_eq!(away.map_name,destination,"arrival step must stay in {destination}");
+        assert_eq!(away.tile,TilePosition::new(arrival_x,1));
+        for _ in 0..4 {
+            controller.press(GameButton::Up).unwrap();
+            if controller.snapshot().unwrap().overworld.map_name==source{break;}
+        }
+        let returned=controller.snapshot().unwrap().overworld;
+        assert_eq!(returned.map_name,source,"reentry must return from {destination}");
+        assert_eq!(returned.tile,TilePosition::new(x,0));
+    }
+}

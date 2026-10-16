@@ -8,8 +8,9 @@ from bovine_sculpt import oval,smooth,curved_tube
 from wing_insect_sculpt import contour
 from skin_glb import COORDINATES
 SPECIES=('misdreavus',);HEIGHT=1.02
-BLUE=(.29,.49,.58);HAIR=(.27,.45,.54);PINK=(.76,.45,.57);RUBY=(.90,.27,.40);CORD=(.47,.19,.30)
-CREAM=(.99,.82,.49);IRIS=(.87,.30,.44);INK=(.065,.085,.105);WHITE=(.99,.97,.91);GLOW=(.99,.64,.71)
+# Local Crystal normal RGB555: blue (9,9,17), pink (30,6,19).
+BLUE=(74/255,74/255,140/255);HAIR=BLUE;PINK=(247/255,49/255,156/255)
+RUBY=PINK;CORD=(0.,0.,0.);WHITE=(1.,1.,1.);CREAM=WHITE;IRIS=PINK;INK=CORD;GLOW=PINK
 
 def lock_sections(points,widths,depths):
     path,ws=smooth(points,widths,6);ds=smooth(points,depths,6)[1];rows=[];n=24
@@ -38,7 +39,7 @@ def dress():
     f.append(tuple(len(rows)*n+j for j in range(n)))
     return crease_normals(part('Body / continuous five-lobed flowing ghost hem and neck',BLUE,v,f,True),38.)
 
-def sculpture(species='misdreavus'):
+def sculpture(species='misdreavus',normalize=True):
     if species not in SPECIES:raise ValueError('unsupported flowing ghost')
     body=dress();head=ellipsoid('Head / broad rounded spectral face',BLUE,(0,.760,.020),(.282,.235,.199),40,26);p=[body,head];hs=surface(head)
     recipes=[
@@ -73,8 +74,9 @@ def sculpture(species='misdreavus'):
     p.append(curved_tube('Necklace cord / fitted rear loop',CORD,[gems[0],(-.176,.609,-.019),(-.129,.610,-.105),(0,.611,-.135),(.129,.610,-.105),(.176,.609,-.019),gems[-1]],[.010]*7,14))
     p=[crease_normals(q,35.) if q['part'].startswith(('Eye /','Iris /','Pupil /','Eye glint /','Mouth /','Gem glint /')) else q for q in p]
     lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
-    for q in p:
-        q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+    if normalize:
+        for q in p:
+            q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'misdreavus.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))

@@ -4440,13 +4440,14 @@ fn render_playfield(
         Res<crystal_voxel_view::VoxelViewSettings>,
     >,
     #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
+    #[cfg(feature = "voxel-view")] windows: Query<&Window>,
 ) {
     let movement_subframe = tick_timer.map_or(0.0, |timer| timer.presentation_subframe());
     #[cfg(feature = "voxel-view")]
     // Production always installs the setting. Feature-gated extraction tests
     // that invoke this system in isolation intentionally request the complete
     // optional frame by omitting it.
-    let visual_world_enabled = voxel_settings.map_or(true, |settings| settings.enabled) || {
+    let visual_world_enabled = voxel_settings.as_ref().map_or(true, |settings| settings.enabled) || {
         // A passive comparison needs the same source atlas and actor extraction
         // in both views. Preparing that read-only atlas does not enable 3D.
         #[cfg(feature = "location-tester")]
@@ -4457,7 +4458,18 @@ fn render_playfield(
     #[cfg(not(feature = "voxel-view"))]
     let visual_world_enabled = false;
     #[cfg(feature = "voxel-view")]
-    let visual_world_mode_unchanged = rendered.visual_world_enabled == visual_world_enabled;
+    let neighborhood_view = visual_world_enabled.then(|| (
+        voxel_settings.as_ref().map_or_else(Default::default, |settings| settings.camera),
+        windows.iter().next().map(|w| w.width() / w.height().max(1.0))
+            .unwrap_or(PLAYFIELD_WIDTH / PLAYFIELD_HEIGHT)));
+    #[cfg(feature = "voxel-view")]
+    let requested_halo = if visual_world_enabled { VISUAL_WORLD_HALO_TILES } else { CLASSIC_SCROLL_HALO_TILES };
+    #[cfg(feature = "voxel-view")]
+    let visual_world_mode_unchanged = rendered.visual_world_enabled == visual_world_enabled
+        && rendered.visual_neighborhood_view == neighborhood_view
+        && rendered.visual_world_grid_size == UVec2::new(
+            (VIEWPORT_TILES_X + requested_halo * 2) as u32,
+            (VIEWPORT_TILES_Y + requested_halo * 2) as u32);
     #[cfg(not(feature = "voxel-view"))]
     let visual_world_mode_unchanged = true;
     let RenderEntityQueries {
@@ -5294,7 +5306,9 @@ fn render_playfield(
     let state_hash = snapshot.visual_state_hash;
     runtime_shell.battle_lcd_animation_active = snapshot.battle.is_some();
     let shell_render_key = battle_animated_shell_render_key(&snapshot, &runtime_shell);
-    let map_block_identity = visible_map_block_identity(&snapshot);
+    let map_block_identity = if visual_world_enabled {
+        map_neighborhood::block_identity(&snapshot)
+    } else { visible_map_block_identity(&snapshot) };
     let position_key = overworld_render_position_key(&snapshot);
     let appearance_key = overworld_render_appearance_key(&snapshot);
     let world_key = overworld_render_world_key_from_parts(
@@ -5933,7 +5947,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     // the camera by a tile.  Retain the already-created LCD sprite in both
     // cases: despawning it before a replacement GPU texture is available
     // makes macOS present the clear (black) surface for one frame.
-    let can_update_positions_in_place = !rendered.title_active
+    let can_update_positions_in_place = visual_world_mode_unchanged && !rendered.title_active
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         // Position-only retention cannot choose new directional sprite art.
         // A turn must fall through to the retained-player redraw below, which
@@ -6006,7 +6020,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                 runtime_shell.lcd_animation_frame >= *offset
                     && (runtime_shell.lcd_animation_frame - *offset) % (*period).max(1) == 0
             });
-    let facing_only_update = !rendered.title_active
+    let facing_only_update = visual_world_mode_unchanged && !rendered.title_active
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         && rendered.tile == Some(snapshot.overworld.tile)
         && rendered.viewport_origin == Some((start_x, start_y))
@@ -6250,6 +6264,59 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         });
     }
 
+    let classic_source_count = render_sources.len();
+    #[cfg(feature = "voxel-view")]
+    if visual_world_enabled {
+        let min = IVec2::new(i32::from(start_x), i32::from(start_y))
+            - IVec2::splat(i32::from(requested_halo));
+        let max = min + IVec2::new(i32::from(VIEWPORT_TILES_X + requested_halo * 2), i32::from(VIEWPORT_TILES_Y + requested_halo * 2));
+        for placement in map_neighborhood::connected(&map.map_name, &snapshot.maps) {
+            let selected = neighborhood_view.is_some_and(|(camera, aspect)| map_neighborhood::visible_crop(
+                placement.origin, placement.size, camera, aspect, IVec2::new(start_x as i32, start_y as i32)).is_some());
+            if (!placement.intersects(min, max) && !selected) || render_sources.iter()
+                .any(|source| source.map.map_name == snapshot.maps[placement.index].map_name) { continue; }
+            let target_map = &snapshot.maps[placement.index];
+            let Some(target_tileset) = snapshot.tilesets.iter()
+                .find(|t| t.tileset_id == target_map.attributes.tileset_name) else { continue; };
+            let key = TilesetArtKey {
+                tileset_id: target_tileset.tileset_id.clone(),
+                time_of_day: visible_effective_map_time_of_day(target_map, live_time_of_day, flash_active).into(),
+                palette_map: target_tileset.palette_map.clone(),
+            };
+            if !tileset_art.cache.contains_key(&key) {
+                match load_tileset_art(&runtime_shell.asset_root, &key.tileset_id,
+                    &key.time_of_day, &key.palette_map, &mut images) {
+                    Ok(art) => { tileset_art.cache.insert(key.clone(), art); }
+                    Err(error) => {
+                        record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                        return;
+                    }
+                }
+            }
+            render_sources.push(ResolvedRenderSource {
+                map: target_map, tileset: target_tileset, art_key: key,
+                origin_x: placement.origin.x, origin_y: placement.origin.y,
+                width: placement.size.x, height: placement.size.y,
+            });
+        }
+    }
+
+    #[cfg(feature = "voxel-view")]
+    if let Some((camera, aspect)) = neighborhood_view {
+        match map_neighborhood::retain_maps(&rendered.visual_neighbors, &render_sources,
+            &tileset_art, &mut images, runtime_shell.shell.runtime().data(), camera, aspect,
+            IVec2::new(start_x as i32, start_y as i32), runtime_shell.lcd_animation_frame,
+            snapshot.progression.active_engine_flags.contains("ENGINE_FOREST_IS_RESTLESS")) {
+            Ok(maps) => rendered.visual_neighbors = maps,
+            Err(error) => {
+                record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                return;
+            }
+        }
+    } else {
+        rendered.visual_neighbors.clear();
+    }
+
     // Resolve immutable tileset art once per source map. The visual halo can
     // contain thousands of subtiles; hashing the complete palette key for every
     // texture, animation and priority lookup dominated walking CPU profiles.
@@ -6273,15 +6340,19 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     let mut priority_viewport_tiles = Vec::with_capacity(
         usize::try_from(CLASSIC_SCROLL_TILES_X * CLASSIC_SCROLL_TILES_Y).unwrap_or_default(),
     );
+    #[cfg(feature = "voxel-view")]
+    let (visual_world_halo, visual_world_tiles_x, visual_world_tiles_y) =
+        (requested_halo, VIEWPORT_TILES_X + requested_halo * 2, VIEWPORT_TILES_Y + requested_halo * 2);
+    #[cfg(not(feature = "voxel-view"))]
     let (visual_world_halo, visual_world_tiles_x, visual_world_tiles_y) =
         visual_world_grid_dimensions(visual_world_enabled);
     #[cfg(any(test, feature = "voxel-view"))]
     let mut visual_tiles = Vec::with_capacity(
-        usize::try_from(visual_world_tiles_x * visual_world_tiles_y).unwrap_or_default(),
+        (visual_world_tiles_x as usize) * (visual_world_tiles_y as usize),
     );
     #[cfg(feature = "voxel-view")]
     let mut visual_world_tile_handles = Vec::with_capacity(if visual_world_enabled {
-        usize::try_from(visual_world_tiles_x * visual_world_tiles_y).unwrap_or_default()
+        (visual_world_tiles_x as usize) * (visual_world_tiles_y as usize)
     } else {
         0
     });
@@ -6302,7 +6373,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             let map_x = i32::from(start_x) + i32::from(x);
             let map_y = i32::from(start_y) + i32::from(y);
             let (source, source_x, source_y) =
-                resolved_render_source_at(&render_sources, map_x, map_y);
+                resolved_render_source_at(&render_sources[..classic_source_count], map_x, map_y);
             let source_map = source.map;
             let source_tileset = source.tileset;
             let source_art_key = &source.art_key;
@@ -6500,6 +6571,15 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             }
         }
     }
+    #[cfg(feature = "voxel-view")]
+    if visual_world_enabled {
+        map_neighborhood::apply_visual_tiles(
+            &mut visual_tiles, &render_sources,
+            IVec2::new(i32::from(start_x), i32::from(start_y)) - IVec2::splat(i32::from(visual_world_halo)),
+            IVec2::new(i32::from(start_x), i32::from(start_y)) - IVec2::splat(i32::from(VISUAL_WORLD_HALO_TILES)),
+            IVec2::new(i32::from(start_x) + i32::from(VISUAL_WORLD_TILES_X - VISUAL_WORLD_HALO_TILES),
+                i32::from(start_y) + i32::from(VISUAL_WORLD_TILES_Y - VISUAL_WORLD_HALO_TILES)));
+    }
     let previous_viewport_origin = rendered.viewport_origin;
     let tile_frame_key = {
         let mut hasher = std::collections::hash_map::DefaultHasher::new();
@@ -6517,7 +6597,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         }
         hasher.finish()
     };
-    let facing_only_redraw = rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
+    let facing_only_redraw = visual_world_mode_unchanged && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         && previous_viewport_origin == Some((start_x, start_y))
         && rendered.map_visual_key == Some(map_visual_key)
         && rendered.position_key == Some(position_key)
@@ -6525,7 +6605,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         && rendered.player_sprite_mode == Some(snapshot.overworld.mode)
         && rendered.player_sprite_facing != Some(snapshot.overworld.facing)
         && !ambient_tile_frame_due;
-    let retained_texture_content = rendered.map_texture.is_some()
+    let retained_texture_content = visual_world_mode_unchanged && rendered.map_texture.is_some()
         && rendered.map_priority_texture.is_some()
         && rendered.tile_frame_key == Some(tile_frame_key);
     let active_camera_walk = rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
@@ -6608,6 +6688,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         rendered.visual_world_grid_size =
             UVec2::new(visual_world_tiles_x as u32, visual_world_tiles_y as u32);
         rendered.visual_world_enabled = visual_world_enabled;
+        rendered.visual_neighborhood_view = neighborhood_view;
     }
     #[cfg(any(test, feature = "voxel-view"))]
     {
@@ -6619,7 +6700,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                 return;
             }
         };
-        rendered.visual_tiles_revision = visual_tile_grid_is_complete(&visual_tiles)
+        rendered.visual_tiles_revision = visual_tile_grid_is_complete(&visual_tiles, UVec2::new(visual_world_tiles_x as u32, visual_world_tiles_y as u32))
             .then(|| visual_terrain_revision(map_visual_key, (start_x, start_y), &visual_tiles));
         rendered.visual_tiles = visual_tiles;
         // Capture the verified bounds of the map used for THIS terrain build.
@@ -6634,29 +6715,8 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     rendered.walk_viewport_origin = next_walk_viewport_origin;
     rendered.map_visual_key = Some(map_visual_key);
     rendered.tile_frame_key = Some(tile_frame_key);
-    let mut visible_tileset_art_keys = vec![tileset_art_key.clone()];
-    for connection in &map.attributes.connections {
-        if let Some(target_map) = snapshot
-            .maps
-            .iter()
-            .find(|candidate| candidate.map_name == connection.target_map)
-            && let Some(target_tileset) = snapshot
-                .tilesets
-                .iter()
-                .find(|candidate| candidate.tileset_id == target_map.attributes.tileset_name)
-        {
-            visible_tileset_art_keys.push(TilesetArtKey {
-                tileset_id: target_tileset.tileset_id.clone(),
-                time_of_day: visible_effective_map_time_of_day(
-                    target_map,
-                    live_time_of_day,
-                    flash_active,
-                )
-                .to_string(),
-                palette_map: target_tileset.palette_map.clone(),
-            });
-        }
-    }
+    let mut visible_tileset_art_keys = render_sources.iter()
+        .map(|source| source.art_key.clone()).collect::<Vec<_>>();
     visible_tileset_art_keys.sort_by(|left, right| {
         left.tileset_id
             .cmp(&right.tileset_id)

@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Original rounded Chinchou and Lanturn with fitted eyes and soft light stalks."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
 from sculpt_geometry import part,ellipsoid,loft,curved_profiles,translate,fitted_patch,tube
 from abra_sculpt import surface
-from bovine_sculpt import oval,curved_tube
+from bovine_sculpt import oval,curved_tube,fitted_patch
+from sculpt_geometry import crease_normals
 from wing_insect_sculpt import membrane,contour
 from skin_glb import COORDINATES
 SPECIES=('chinchou','lanturn');HEIGHT=.95
@@ -12,7 +15,9 @@ BLUE=(.39,.47,.70);PALE=(.78,.83,.92);STALK=(.29,.37,.59);YELLOW=(.98,.87,.42);L
 
 def dense_mask(outline,skin):
     # Twelve radial rings keep the broad mask's chords above the actual cheek.
-    n=len(outline);cx=sum(x for x,y in outline)/n;cy=sum(y for x,y in outline)/n
+    n=len(outline);cx=cy=0.
+    for x,y in outline:cx+=x;cy+=y
+    cx/=n;cy/=n
     xy=[(cx,cy)]+[(cx+(x-cx)*r/12,cy+(y-cy)*r/12) for r in range(1,13) for x,y in outline]
     count=len(xy);v=[(x,y,skin(y,x)+offset) for offset in (.008,-.0028) for x,y in xy]
     f=[(0,1+i,1+(i+1)%n) for i in range(n)]
@@ -21,7 +26,7 @@ def dense_mask(outline,skin):
             a=1+ring*n+i;b=1+ring*n+(i+1)%n;f.append((a,a+n,b+n,b))
     f += [tuple(i+count for i in reversed(face)) for face in list(f)]
     last=1+11*n;f += [(last+(i+1)%n,last+i,last+i+count,last+(i+1)%n+count) for i in range(n)]
-    return part('Mask / broad golden eye saddle',YELLOW,v,f)
+    return crease_normals(part('Mask / broad golden eye saddle',YELLOW,v,f),35.)
 
 def fin(name,outline,z,color=PALE,thickness=.025):
     return membrane(name,color,outline,1,root_z=z+.06*abs(outline[0][0])-.025*(outline[0][1]-.7)**2,thickness=thickness)
@@ -76,13 +81,17 @@ def lanturn():
         p.append(fitted_patch('Lure / pale '+label+' light center',LIGHT,oval(center[0],center[1],r*.78,r*.78,28),surface(bulb),.004))
     return p
 
-def sculpture(species):
+@lru_cache(maxsize=2)
+def raw_sculpture(species):
     if species not in SPECIES:raise ValueError('unsupported angler fish')
-    p=chinchou() if species=='chinchou' else lanturn();lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
+    return chinchou() if species=='chinchou' else lanturn()
+def sculpture(species,normalize=True):
+    p=deepcopy(raw_sculpture(species));lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo) if normalize else 1.
     for q in p:
-        q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+        q['positions']=[round((v-(lo if normalize and i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    for s in SPECIES:(args.output/(s+'.mesh.json')).write_text(json.dumps(sculpture(s),separators=(',',':')))
+    from angler_glb import export_angler
+    for s in SPECIES:(args.output/(s+'.glb')).write_bytes(export_angler(s))
 if __name__=='__main__':main()

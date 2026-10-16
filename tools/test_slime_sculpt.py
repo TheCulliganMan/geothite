@@ -4,35 +4,12 @@ import json,os,unittest
 from pathlib import Path
 from slime_sculpt import sculpture,SPECIES,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_axolotl_sculpt import ray_intersections as unindexed_ray_intersections
+from sculpt_test_support import ray_intersections as unindexed_ray_intersections
 from bovine_sculpt import reverse_front
-import test_donphan_sculpt as joins
+from sculpt_test_support import parts_overlap
 ROOT=Path(os.environ.get('SLIME_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 
-_RAY_INDEX={}
-def ray_intersections(parent,x,y):
- # Independent projection index over stored triangles. Every candidate keeps
- # the same barycentric test as the original unindexed ray oracle.
- key=id(parent)
- if key not in _RAY_INDEX:
-  vs=[parent['positions'][i:i+3] for i in range(0,len(parent['positions']),3)]
-  xmin=min(v[0] for v in vs)-1e-6;xmax=max(v[0] for v in vs)+1e-6;ymin=min(v[1] for v in vs)-1e-6;ymax=max(v[1] for v in vs)+1e-6
-  nx=12;ny=20;bins=[[] for _ in range(nx*ny)]
-  for k in range(0,len(parent['indices']),3):
-   a,b,c=[vs[i] for i in parent['indices'][k:k+3]];den=(b[1]-c[1])*(a[0]-c[0])+(c[0]-b[0])*(a[1]-c[1])
-   if abs(den)<1e-12:continue
-   ix0=max(0,min(nx-1,int((min(a[0],b[0],c[0])-1e-6-xmin)/(xmax-xmin)*nx)));ix1=max(0,min(nx-1,int((max(a[0],b[0],c[0])+1e-6-xmin)/(xmax-xmin)*nx)))
-   iy0=max(0,min(ny-1,int((min(a[1],b[1],c[1])-1e-6-ymin)/(ymax-ymin)*ny)));iy1=max(0,min(ny-1,int((max(a[1],b[1],c[1])+1e-6-ymin)/(ymax-ymin)*ny)))
-   for ix in range(ix0,ix1+1):
-    for iy in range(iy0,iy1+1):bins[ix*ny+iy].append((a,b,c,den))
-  _RAY_INDEX[key]=(parent,xmin,xmax,ymin,ymax,nx,ny,bins)
- _,xmin,xmax,ymin,ymax,nx,ny,bins=_RAY_INDEX[key]
- if not xmin<=x<=xmax or not ymin<=y<=ymax:return []
- ix=min(nx-1,int((x-xmin)/(xmax-xmin)*nx));iy=min(ny-1,int((y-ymin)/(ymax-ymin)*ny));hits=[]
- for a,b,c,den in bins[ix*ny+iy]:
-  u=((b[1]-c[1])*(x-c[0])+(c[0]-b[0])*(y-c[1]))/den;v=((c[1]-a[1])*(x-c[0])+(a[0]-c[0])*(y-c[1]))/den
-  if min(u,v,1-u-v)>=-1e-7:hits.append(u*a[2]+v*b[2]+(1-u-v)*c[2])
- return hits
+from sculpt_test_support import indexed_ray_intersections as ray_intersections
 class SlimeTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
@@ -81,9 +58,9 @@ class SlimeTests(unittest.TestCase):
   for s in ('grimer','muk'):
    ps=self.models[s]['primitives'];b=self.find(ps,'Body /')
    for sign in (-1,1):
-    arm=self.find(ps,'Arm /',sign);hand=self.find(ps,'Hand /',sign);self.assertTrue(joins.DonphanTests.overlap(self,b,arm),(s,arm['part']));self.assertTrue(joins.DonphanTests.overlap(self,arm,hand),(s,hand['part']))
+    arm=self.find(ps,'Arm /',sign);hand=self.find(ps,'Hand /',sign);self.assertTrue(parts_overlap(b,arm),(s,arm['part']));self.assertTrue(parts_overlap(arm,hand),(s,hand['part']))
     for p in ps:
-     if p['part'].startswith('Finger /') and p['part'].split()[-2]==str(sign):self.assertTrue(joins.DonphanTests.overlap(self,hand,p),(s,p['part']))
+     if p['part'].startswith('Finger /') and p['part'].split()[-2]==str(sign):self.assertTrue(parts_overlap(hand,p),(s,p['part']))
  def test_sludge_mouth_rims_have_true_open_centers(self):
   for s in ('grimer','muk'):
    ps=self.models[s]['primitives'];p=self.find(ps,'Lip /');x=sum(p['positions'][::3])/(len(p['positions'])//3);y=sum(p['positions'][1::3])/(len(p['positions'])//3)

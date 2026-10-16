@@ -1472,3 +1472,108 @@ fn surf_anchor_retained_player_art_tracks_normal_surf_normal_with_actual_footing
             .is_none()
     );
 }
+
+#[test]
+fn renderer_neutral_route29_cut_denial_resolves_authored_text_without_cutting() {
+    let repository=PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
+    let asset_root=AssetRoot::new(repository);
+    let runtime=workspace_desktop_runtime(&asset_root);
+    let spawn_identifier=runtime.title_new_game_spawn_identifier().unwrap();
+    let mut shell=initialize_bevy_runtime_shell(asset_root,runtime,
+        BevyShellStart::NewGameAtRuntimeTile {spawn_identifier,map_name:"Route29".into(),tile_x:46,tile_y:10},
+        BevyShellConfig {smoke_player_name:Some("CHRIS".into()),quick_save_path:None,..default()}).unwrap();
+    {
+        let (state,overworld)=shell.shell.session_mut().state_and_overworld_mut();
+        overworld.set_player_facing(Direction::Left);
+        state.overworld=crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+    }
+    reset_visible_navigation_state(&mut shell);
+    mark_runtime_snapshot_dirty(&mut shell);
+    settle_visible_shell_smoke_until_idle(&mut shell).unwrap();
+    let mut controller=VisibleShellController {shell};
+    let before=controller.snapshot().unwrap();
+    let blocks_before=controller.shell.shell.session().overworld().map.metatile_ids.clone();
+    assert_eq!(before.overworld.map_name,"Route29");
+    assert!(!before.presentation.asm_text.contains_key("CanCutText"),"keep the source alias unflattened");
+    assert_eq!(before.presentation.asm_text_for_label("CanCutText").unwrap(),"This tree can be\nCUT!");
+    controller.press(GameButton::A).expect("production A at authored cut tree must not crash");
+    assert_eq!(controller.shell.field_notice.as_deref(),Some("This tree can be\nCUT!"));
+    let after=controller.snapshot().unwrap();
+    assert_eq!(after.overworld.tile,before.overworld.tile);
+    assert!(after.battle.is_none());
+    assert_eq!(after.party,before.party);
+    assert_eq!(controller.shell.shell.session().overworld().map.metatile_ids,blocks_before);
+    // The notice owns input and cannot turn a denied field move into movement.
+    controller.press(GameButton::Left).unwrap();
+    assert_eq!(controller.snapshot().unwrap().overworld.tile,before.overworld.tile);
+    controller.press(GameButton::A).unwrap();
+    controller.press(GameButton::B).unwrap();
+    assert!(controller.shell.last_error.is_none());
+}
+
+#[test]
+fn renderer_neutral_waterfall_and_whirlpool_denials_use_exact_authored_scopes() {
+    use crate::core::world::collision::{Terrain,describe_collision,sample_collision};
+    for (map_name,rule,label) in [
+        ("TohjoFalls","waterfall",".HugeWaterfallText@Script_CantDoWaterfall"),
+        ("DragonsDenB1F","whirlpool",".MayPassWhirlpoolText@Script_MightyWhirlpool"),
+    ] {
+        let mut controller=VisibleShellController {shell:surf_anchor_preview_shell()};
+        controller.press(GameButton::A).unwrap();
+        for _ in 0..12 {
+            controller.press(GameButton::A).unwrap();
+            if controller.shell.shell.session().snapshot().mode==MovementMode::Surf {break;}
+        }
+        assert_eq!(controller.shell.shell.session().snapshot().mode,MovementMode::Surf);
+        let runtime=controller.shell.shell.runtime().clone();
+        let data=runtime.data();
+        let map=data.overworld_map(map_name).unwrap();
+        let tileset=data.tileset_collision(data.map_tileset_name(map_name).unwrap()).unwrap();
+        let (width,height)=map.tile_bounds();
+        let mut shore=None;
+        'find: for y in 0..height {for x in 0..width {
+            let origin=TilePosition::new(x as i16,y as i16);
+            if !sample_collision(&map,&tileset,origin).is_some_and(|sample|
+                describe_collision(sample.permission).terrain==Terrain::Water) {continue;}
+            if data.maps[map_name].objects.iter().any(|object|
+                crate::core::world::session::object_tile_position_checked(object)==Some(origin)) {continue;}
+            for facing in [Direction::Up,Direction::Right,Direction::Down,Direction::Left] {
+                let Some(target)=crate::core::world::movement::checked_move_by_stride(origin,facing,
+                    crate::core::world::movement::StepOptions::default().stride_tiles) else {continue;};
+                let Some(sample)=sample_collision(&map,&tileset,target) else {continue;};
+                if field_move_rule_contains_target_collision(&controller.shell.shell,rule,sample.permission).unwrap() {
+                    shore=Some((origin,facing));break 'find;
+                }
+            }
+        }}
+        let (origin,facing)=shore.expect("authored swimming tile adjoining field obstacle");
+        let land=(0..height).flat_map(|y|(0..width).map(move |x|TilePosition::new(x as i16,y as i16)))
+            .find(|tile|data.overworld_session_for_traversal(map_name,*tile,0,
+                crate::core::world::collision::PlayerTraversalState::Walk).is_ok())
+            .expect("authored map has a legal walking arrival for fixture setup");
+        {
+            let (state,overworld)=controller.shell.shell.session_mut().state_and_overworld_mut();
+            data.transition_overworld_session(state,overworld,map_name,land,
+                crate::core::systems::map_context::SpawnMemoryUpdate::Preserve,&runtime.music_ids()).unwrap();
+            // Restore the Surf capability entered through production A/YES;
+            // the fixture changes only its authored map position, not moves/badges.
+            overworld.player.mode=MovementMode::Surf;
+            overworld.player.tile=origin;
+            overworld.set_player_facing(facing);
+            state.overworld=crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+        }
+        reset_visible_navigation_state(&mut controller.shell);
+        mark_runtime_snapshot_dirty(&mut controller.shell);
+        settle_visible_shell_smoke_until_idle(&mut controller.shell).unwrap();
+        let before=controller.snapshot().unwrap();
+        assert!(!snapshot_has_field_move_actor_and_badge(&before,&controller.shell.shell,rule).unwrap());
+        let expected=before.presentation.asm_text_for_label(label).unwrap().to_owned();
+        controller.press(GameButton::A).expect("denied field action is a notice, never a missing-label crash");
+        assert_eq!(controller.shell.field_notice.as_deref(),Some(expected.as_str()),"{map_name}");
+        let after=controller.snapshot().unwrap();
+        assert_eq!(after.overworld.tile,before.overworld.tile);
+        assert_eq!(after.party,before.party);
+        assert!(after.battle.is_none());
+        assert!(controller.shell.last_error.is_none());
+    }
+}

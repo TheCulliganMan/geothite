@@ -404,7 +404,7 @@ Complete drawings extend beyond several old selectors:
 | Game Corner rear architecture and counters | 288 rear-course + 88 counter / 2 | `casino.rs`; source-specific walls, payout equipment, pillars, doorways and connected counters |
 | Power Plant equipment/track courses | 192 plot cells / 1 | Six block `12` plus six `16` plots; reconstruct connected equipment and track surfaces. Only 48 cells match the existing B2F west-half track drawing exactly |
 | Facility divider networks | 948 / 3 | PowerPlant 116, TeamRocketBaseB3F 670, TrainerHouseB1F 162; `facility_divider.rs`; replace/refine the existing closed 16-pixel network |
-| Radio studio side-wall edges | 12 / 2 | LavRadioTower1F 4 and RadioTower2F 8; block `20`, rightmost column `8a/8b`; preserve the thin wall role rather than treating these as desks or floor |
+| Radio studio side-wall edges | 24 / 3 | Complete `3d`/`20`/`3e` cap runs: RadioTower2F 10, RadioTower5F 10, LavRadioTower1F 4. Native ceiling-height glass follows the actual cap strip; the fifth-floor entrance stays open. Three entrance walks and six paired east/west views verified. |
 | Underground switch-room walls/gates | 904 / 1 | `elite_four_room.rs`, blocks `2a/37/3d/3e/3f`; validate all script-controlled gate and switch states |
 | Warehouse side walls | 288 / 2 | GoldenrodDeptStoreB1F and GoldenrodUndergroundWarehouse; `underground_boundary.rs`, block `0c` west halves and `0e` east halves |
 | Center lobby counter ends and PC headers | 44 counter + 44 header / 22 | `pokecenter.rs`; narrow block `03` right-column `0f/25` return and two block `08` wall cells above each PC |

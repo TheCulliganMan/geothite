@@ -3,18 +3,19 @@
 import json,unittest
 from pathlib import Path
 from sea_sculpt import sculpture,SPECIES,HEIGHTS,underside
-import test_donphan_sculpt as joins
+from mantine_glb import read_mantine,geometry_digest
+from corsola_glb import read_corsola
 from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_axolotl_sculpt import ray_intersections
+from sculpt_test_support import ray_intersections,parts_overlap
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class SeaTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+    def setUpClass(cls):cls.models={s:read_mantine(ROOT/'mantine.glb') if s=='mantine' else read_corsola(ROOT/'corsola.glb') for s in SPECIES}
     def test_closed_oriented_parts(self):assert_closed_models(self,self.models)
     def test_stored_normals(self):assert_model_shading(self,self.models)
     def test_regeneration_bounds_and_budget(self):
         for s,m in self.models.items():
-            self.assertEqual(m,sculpture(s));ps=m['primitives']
+            self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));ps=m['primitives']
             self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0)
             self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHTS[s],places=6)
             self.assertEqual(len(ps),len({p['part'] for p in ps}))
@@ -56,7 +57,7 @@ class SeaTests(unittest.TestCase):
                 if a and b and min(max(a),max(b))-max(min(a),min(b))>.005:overlap=True
             self.assertTrue(overlap,p['part'])
     def test_ray_paddles_tail_and_remora_have_actual_physical_joins(self):
-        ps=self.models['mantine']['primitives'];find=lambda prefix:next(p for p in ps if p['part'].startswith(prefix));overlap=lambda a,b:joins.DonphanTests.overlap(self,a,b)
+        ps=self.models['mantine']['primitives'];find=lambda prefix:next(p for p in ps if p['part'].startswith(prefix));overlap=parts_overlap
         body=ps[0];tail=find('Tail /');leaf=find('Tail leaf /');fish=find('Remora / attached');nose=find('Remora nose /');fork=find('Remora tail /');stalk=find('Remora / slender');attachment=find('Remora / dorsal')
         self.assertTrue(overlap(body,tail));self.assertTrue(overlap(tail,leaf));self.assertTrue(overlap(leaf,find('Tail leaf back /')))
         for p in ps:

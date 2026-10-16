@@ -11,7 +11,7 @@ fn linear(value: u8) -> f32 {
 /// Match a modeled region to its closest normal Crystal palette anchor, then
 /// transfer that anchor's appearance. Keep authored tone variations, ink,
 /// cream and highlights rather than tinting the entire creature one color.
-fn color(color: [f32; 4], palette: VisualPokemonModelPalette) -> [f32; 4] {
+pub(crate) fn color(color: [f32; 4], palette: VisualPokemonModelPalette) -> [f32; 4] {
     if palette.normal == palette.appearance { return color; }
     let normal = palette.normal.map(|rgb| rgb.map(linear));
     let index = (0..4).min_by(|a, b| {

@@ -2,6 +2,7 @@
 """Rooted tire tread, broad ears, ivory tusks and armored elephant supports."""
 import json,math,unittest
 from pathlib import Path
+from elephant_glb import read_donphan,geometry_digest
 from donphan_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
@@ -9,12 +10,12 @@ from bovine_sculpt import reverse_front
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class DonphanTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'donphan.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_donphan(ROOT/'donphan.glb');cls.ps=cls.m['primitives']
  def find(self,prefix):return next(p for p in self.ps if p['part'].startswith(prefix))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'donphan':self.m})
  def test_finite_unit_normals_follow_winding(self):assert_model_shading(self,{'donphan':self.m})
  def test_recipe_parity_height_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   self.assertLess(sum(len(p['indices'])//3 for p in self.ps),50000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for prefix,n in (('Head /',1),('Tire /',1),('Tread /',9),('Ear /',2),('Tusk /',2),('Ankle armor /',4),('Leg /',4),('Foot /',4),('Toenail /',12)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n)

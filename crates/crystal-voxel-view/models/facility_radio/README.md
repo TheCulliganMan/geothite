@@ -5,6 +5,15 @@ faceted parts. Their muted paper, enamel and teal palette uses the shared
 interior face-light bake after runtime fitting. No original game art, actor,
 collision or event data is embedded in a model.
 
+Radio placement adapts the named parts in Rust to the live source palette and
+projected proportions: worktops are eight pixels high and eight pixels deep;
+service returns keep their full length and join the rail. Phones, memo faces,
+and the attached terminal keep separate fitting transforms. Native gray, white,
+and ink swatches replace the authored preview colors. Operator stools retain
+their geometry and support while sampling their own cap and dark-side source
+swatches through the room’s live palette.
+The facility workbench and instrument-bank presentation paths are unchanged.
+
 - `facility_workbench`: observed offset monitor and keyboard on the left,
   upright secondary apparatus on the right, common bench with open legs
 - `radio_phone_desk` and `radio_memo_desk`: physical telephone, shallow drawer,
@@ -36,3 +45,11 @@ Editable `facility-workbench.blend` and `radio-desks.blend` sources use the
 repository's hash-verified 64 KiB chunk format. They retain named geometric parts,
 materials, hidden canonical asset collections and separate front/rear preview
 arrangements. Runtime exports and editable objects share the same generator.
+
+Radio terminal finishing uses complete source drawings separately from the mixing
+desk model. The standalone `1c` terminal and rear `12` PCs reuse the selected
+computer's CRT and keyboard over a closed eight-pixel cabinet, with native gray,
+white and ink. The rear drawing's keyboard stays upward; only its bottom plinth
+art faces forward. The U reception monitor remains owned by the complete counter.
+Its LCD uses the actual source display across two tile rows, below the white cap.
+Unknown materials or a missing display/desktop retain source-art fallback.

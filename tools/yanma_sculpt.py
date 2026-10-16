@@ -9,8 +9,9 @@ from wing_insect_sculpt import contour
 from skarmory_sculpt import blade
 from skin_glb import COORDINATES
 HEIGHT=.95
-RED=(.89,.36,.27);DARK_RED=(.66,.26,.24);ORANGE=(.96,.45,.23);GREEN=(.51,.75,.36)
-IVORY=(.96,.97,.94);VEIN=(.62,.67,.70);INK=(.06,.10,.14);LEG=(.31,.30,.38)
+# Local Crystal normal RGB555: green (9,26,10), red (20,7,7).
+RED=(165/255,57/255,57/255);ORANGE=RED;GREEN=(74/255,214/255,82/255)
+IVORY=(1.,1.,1.);INK=(0.,0.,0.);VEIN=INK;DARK_RED=INK;LEG=GREEN
 
 def horizontal(p):
     q=dict(p)
@@ -45,7 +46,21 @@ def wing_parts(sign,rear):
     lower=fitted_contour('Wing band / fitted orange lower tip panel '+name,ORANGE,band,surface(underside),.003)
     lower['positions']=[-v if i%3==2 else v for i,v in enumerate(lower['positions'])];lower['normals']=[-v if i%3==2 else v for i,v in enumerate(lower['normals'])];lower['indices']=[j for i in range(0,len(lower['indices']),3) for j in (lower['indices'][i],lower['indices'][i+2],lower['indices'][i+1])];p.append(horizontal(lower))
     for j,path in enumerate(paths):
-        points=[(sign*x,y,skin(y,sign*x)+.001) for x,y in path];p.append(horizontal(tube('Wing vein / fitted slender gray spar '+name+' '+str(j),VEIN,points,[.0016]*len(points),10)))
+        points=[(sign*x,y,skin(y,sign*x)+.001) for x,y in path];p.append(horizontal(tube('Wing vein / fitted slender gray spar '+name+' '+str(j),VEIN,points,[.0016]*len(points),6)))
+    # Keep both pairs readable at the production camera's low elevations.
+    # A rigid unit preserves coatings and veins, including the underside panel.
+    angle=sign*math.radians(18 if rear else 12);c=math.cos(angle);s=math.sin(angle)
+    pivot=(sign*.036,.396,-(.159 if rear else .026))
+    for q in p:
+        for field in ('positions','normals'):
+            values=[]
+            for i in range(0,len(q[field]),3):
+                x,y,z=q[field][i:i+3]
+                if field=='positions':x-=pivot[0];y-=pivot[1]
+                xx=x*c-y*s;yy=x*s+y*c
+                if field=='positions':xx+=pivot[0];yy+=pivot[1]
+                values.extend((xx,yy,z))
+            q[field]=values
     return p
 
 def collar(index,center,previous,following,radius):
@@ -69,8 +84,8 @@ def combined_surface(parts):
         return max(hits)
     return at
 
-def sculpture():
-    thorax=ellipsoid('Thorax / elongated red dragonfly engine',RED,(0,.373,-.094),(.091,.078,.194),36,24);p=[thorax];heads=[]
+def sculpture(normalize=True):
+    thorax=ellipsoid('Thorax / elongated red dragonfly engine',RED,(0,.373,-.094),(.091,.078,.194),32,24);p=[thorax];heads=[]
     for sign in (-1,1):
         head=ellipsoid('Head / huge green compound eye housing '+str(sign),GREEN,(sign*.084,.439,.150),(.123,.138,.106),40,28);heads.append(head);p.append(head);skin=surface(head)
         eye=fitted_patch('Eye / glossy dark dragonfly lens '+str(sign),INK,oval(sign*.151,.434,.031,.047,32),skin,.006);p.append(eye);es=surface(eye)
@@ -97,8 +112,9 @@ def sculpture():
         p.append(curved_tube('Tail tip / tiny ivory posterior prong '+str(sign),IVORY,[(sign*.025,.694,-.848),(sign*.033,.707,-.901)],[.011,.001],12))
     p=[crease_normals(q,35.) if q['part'].startswith(('Eye /','Eye glint /','Forehead /','Mouth /')) else q for q in p]
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
-    for q in p:
-        q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+    if normalize:
+        for q in p:
+            q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':'yanma','version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)

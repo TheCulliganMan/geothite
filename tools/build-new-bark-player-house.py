@@ -5,6 +5,8 @@ No imported sprites, textures, or Nintendo models. All meshes authored here.
 import bpy, math, random, json, sys
 from pathlib import Path
 from mathutils import Vector, Matrix
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from window_recess import carve_window_pocket, build_window_ring
 args = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 P=Path(next((a for a in args if not a.startswith('--')), 'target/new-bark-player-house')); P.mkdir(parents=True, exist_ok=True)
 random.seed(2017)
@@ -71,14 +73,19 @@ def facade_cube(n,x,z,w,h,y,depth,mat,angle=0,bevel=0):
  a=math.radians(angle);o=cube(n,(x*math.cos(a)-y*math.sin(a),x*math.sin(a)+y*math.cos(a),z),(w,depth,h),mat,bevel);o.rotation_euler.z=a;return o
 
 def window(x,z,y,w=.68,h=.73,angle=0,shutters=False):
+ carve_window_pocket(COL,x,z,w-.07,h-.07,y,angle)
  f=lambda n,dx,dz,ww,hh,off,dd,mat,bevel=0:facade_cube(n,x+dx,z+dz,ww,hh,y+off,dd,mat,angle,bevel)
- f('Recessed window surround',0,0,w+.15,h+.15,-.015,.13,'timber')
- f('Painted window border',0,0,w+.09,h+.09,-.09,.035,'plaster_light')
- f('Cool glass',0,0,w-.07,h-.07,-.115,.025,'glass')
- f('Glass upper reflection',-.12*w,.19*h,w*.46,.06,-.132,.014,'glass_light')
- f('Window vertical bar',0,0,.055,h-.05,-.143,.04,'plaster_light')
- f('Window horizontal bar',0,0,w-.05,.052,-.144,.04,'plaster_light')
- f('Window ledge',0,-h/2-.055,w+.28,.10,-.10,.32,'timber_light')
+ def ring(name,width,height,off,depth,thickness,material):
+  build_window_ring(COL,MATS[material],name,x,z,width,height,y+off,depth,thickness,angle)
+ ring('Recessed window surround',w+.15,h+.15,.07,.13,.09,'timber')
+ ring('Painted window border',w+.09,h+.09,.0925,.035,.08,'plaster_light')
+ f('Cool glass',0,0,w-.07,h-.07,.14,.025,'glass')
+ f('Glass upper reflection',-.12*w,.19*h,w*.46,.06,.123,.014,'glass_light')
+ f('Glass lower reflection',.19*w,-.19*h,w*.21,.035,.122,.014,'glass_light')
+ f('Window vertical bar',0,0,.035,h-.05,.115,.025,'plaster_light')
+ f('Window horizontal bar',0,0,w-.05,.035,.114,.025,'plaster_light')
+ f('Window ledge',0,-h/2-.055,w+.20,.07,.035,.12,'timber_light',.012)
+
  if shutters:
   for s in [-1,1]:
    f('Open wooden shutter',s*(w/2+.17),0,.17,h+.08,-.045,.045,'timber_light')
@@ -283,7 +290,8 @@ def export_asset(name,source):
 STATS=export_asset('player_house',ASSETS['player_house'])
 assert STATS['dimensions'][0]==4 and STATS['dimensions'][2]==4
 assert STATS['dimensions'][1]<=4.2
-assert STATS['triangle_count']<5000,STATS['triangle_count']
+# Closed window pockets and hollow reveals add real facade depth.
+assert STATS['triangle_count']<7500,STATS['triangle_count']
 (P/'asset-stats.json').write_text(json.dumps(STATS,indent=2))
 # Presentation only: never included in exports. The editable home stays floor-centered.
 begin('PRESENTATION only')
@@ -303,5 +311,5 @@ for screen in bpy.data.screens:
  for area in screen.areas:
   if area.type=='VIEW_3D':area.spaces.active.region_3d.view_perspective='CAMERA'
 bpy.ops.wm.save_as_mainfile(filepath=str(P/'player-house-editable.blend'))
-bpy.ops.render.render(write_still=True)
+if '--skip-preview' not in args:bpy.ops.render.render(write_still=True)
 print('FINAL_STATS='+json.dumps(STATS))

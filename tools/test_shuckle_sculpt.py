@@ -3,17 +3,18 @@
 import json,math,unittest
 from pathlib import Path
 from shuckle_sculpt import sculpture,HEIGHT,HOLES,project,FACES,CENTER
+from shuckle_glb import read_shuckle,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class ShuckleTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'shuckle.mesh.json').read_bytes());cls.ps=cls.model['primitives']
+ def setUpClass(cls):cls.model=read_shuckle(ROOT/'shuckle.glb');cls.ps=cls.model['primitives']
  def find(self,prefix):return next(p for p in self.ps if p['part'].startswith(prefix))
  def test_closed_connected_oriented_parts(self):assert_closed_models(self,{'shuckle':self.model})
  def test_normals_match_stored_triangles(self):assert_model_shading(self,{'shuckle':self.model})
  def test_regeneration_height_and_anatomy(self):
-  self.assertEqual(self.model,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
+  self.assertEqual(geometry_digest(self.model),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
   self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   self.assertLess(sum(len(p['indices'])//3 for p in self.ps),21000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for prefix,n in (('Shell /',1),('Rim /',6),('Limb /',4),('Foot /',4),('Neck /',1),('Head /',1),('Eye /',2),('Spot /',6)):

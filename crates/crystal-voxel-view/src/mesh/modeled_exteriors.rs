@@ -6,6 +6,16 @@ use bevy::prelude::Vec2;
 mod city_facades;
 #[path = "ecruteak_houses.rs"]
 mod ecruteak_houses;
+#[path = "kanto_brick_office.rs"]
+mod kanto_brick_office;
+#[path = "kanto_craft.rs"]
+mod kanto_craft;
+#[path = "kanto_gym.rs"]
+mod kanto_gym;
+#[path = "kanto_house.rs"]
+mod kanto_house;
+#[path = "kanto_museum.rs"]
+mod kanto_museum;
 pub(super) fn portal_block(mesh: &mut SurfaceMeshData, b: [f32; 6], color: [f32; 3]) {
     city_facades::block(mesh, b, color);
 }
@@ -36,11 +46,19 @@ enum Asset {
     World(Kind),
     Johto(Johto),
     GroveTree,
+    KantoBrickOffice,
+    KantoGym,
+    KantoHouse,
+    KantoMuseum,
 }
 impl Asset {
     fn label(self) -> &'static str {
         match self {
             Self::World(k) => k.label(),
+            Self::KantoBrickOffice => "outdoor/kanto_brick_office",
+            Self::KantoGym => "outdoor/kanto_gym",
+            Self::KantoHouse => "outdoor/kanto_house",
+            Self::KantoMuseum => "outdoor/kanto_museum",
             Self::GroveTree => "johto/tree",
             Self::Johto(k) => match k {
                 Johto::House => "johto/house",
@@ -81,6 +99,16 @@ fn ground(
     tile: u16,
     metatile: Option<u16>,
 ) -> Option<usize> {
+    if tileset=="kanto" {
+        // A bank cap can share the lawn tile but is not a native floor paint
+        // source. Prefer real flat ground so its underlay also gets finished.
+        if let Some(index)=cells.iter().zip(shapes).position(|(c,s)|
+            c.source.tileset_id.as_ref()==tileset && c.source.tile_index==tile
+                && metatile.is_none_or(|m|c.source.metatile_id==m)
+                && matches!(s,CellShape::Flat|CellShape::PlaneAt{height:0.}|CellShape::Water)) {
+            return Some(index);
+        }
+    }
     cells
         .iter()
         .zip(shapes)
@@ -139,7 +167,11 @@ fn floor(
             append_top(
                 &mut mesh.textured,
                 [w, e, n, s],
-                shapes[sample].surface_height(g.tile_height),
+                // A remote Kanto bank supplies lawn paint, never the height
+                // of a building's replacement floor. The terrace field owns it.
+                if cells[sample].source.tileset_id.as_ref()=="kanto"
+                    && matches!(shapes[sample],CellShape::RaisedTop {solid:SolidKind::Bank,..}|CellShape::LedgeBand{..}) {0.}
+                    else{shapes[sample].surface_height(g.tile_height)},
                 uv,
             );
             claimed[yy * g.width + xx] = true;
@@ -271,6 +303,9 @@ fn descriptor(
             {
                 east = true;
                 Asset::World(Kind::EastGate)
+            } else if drawing(cells,g,p,"johto",&[&[0x08,0x09],&[0x1a,0x11]],0)
+                && door.is_some() {
+                Asset::Johto(RouteGate)
             } else if first.metatile_id == 0x08 && p.height == 28 {
                 depth = Some(3.0);
                 Asset::World(Kind::Lighthouse)
@@ -316,6 +351,18 @@ fn descriptor(
             }
         }
         "johto_modern" => {
+            if drawing(cells,g,p,"johto_modern",&[&[0x08,0x09],&[0x1c,0x1e]],0) {
+                east=true;
+                Asset::World(Kind::EastGate)
+            } else if door.is_some()
+                && drawing(cells,g,p,"johto_modern",&[&[0x18,0x19],&[0x1a,0x1b]],0) {
+                Asset::Johto(Johto::Pokecenter)
+            } else if door.is_some()
+                && drawing(cells,g,p,"johto_modern",&[&[0x18,0x19],&[0x1a,0x33]],0) {
+                Asset::Johto(Johto::Mart)
+            } else if drawing(cells,g,p,"johto_modern",&[&[0x14,0x15]],0) && door.is_some() {
+                Asset::Johto(Johto::House)
+            } else {
             let kind = match (first.metatile_id, p.width, p.height) {
                 (0x25, 8, 12) => Kind::RadioTower,
                 (0x18, 12, 16) => Kind::ModernDepartment,
@@ -343,13 +390,22 @@ fn descriptor(
                 _ => return None,
             };
             Asset::World(kind)
+            }
         }
+        "kanto" if kanto_museum::matches(cells,g,p) && door.is_none() => Asset::KantoMuseum,
+        "kanto" if kanto_house::matches(cells,g,p) && door==Some(3.) => Asset::KantoHouse,
+        "kanto" if drawing(cells,g,p,"kanto",&[&[0x0c,0x0d,0x0e],&[0x10,0x11,0x12]],0)
+            && door==Some(9.) => Asset::KantoGym,
+        "kanto" if drawing(cells,g,p,"kanto",&[&[0x20,0x54,0x21],&[0x37,0x3a,0x7e]],0)
+            && door.is_some() => Asset::KantoBrickOffice,
+        "kanto" if drawing(cells,g,p,"kanto",&[&[0x20,0x54,0x21],&[0x37,0x7d,0x7e]],0)
+            && door.is_none() => Asset::KantoBrickOffice,
         "kanto" => {
             let kind = match first.metatile_id {
-                0x02 => Kind::KantoHouse,
+                0x02 => return None, // This drawing has one authenticated shared producer.
                 0x30 => Kind::KantoFlatHouse,
                 0x38 => Kind::KantoHouse,
-                0x75 => Kind::KantoMuseum,
+                0x75 => return None, // One complete source-bound museum producer.
                 0x68 if p.height > 8 => {
                     if map == "CeladonCity" {
                         Kind::KantoMansion
@@ -360,6 +416,7 @@ fn descriptor(
                     }
                 }
                 0x68 => Kind::KantoCenter,
+                0x0c if p.height==12 && at(0,4)==0x75 => return None,
                 0x0c if drawing(cells,g,p,"kanto",&[&[0x0c,0x0e],&[0x10,0x66]],0) => Kind::KantoHouse,
                 0x0c => {
                     if map == "Route10North" {
@@ -448,6 +505,14 @@ pub(super) fn building_placements(
             out.push(p);
         }
     }
+    // A connected complete gate supersedes the old facade-only placement.
+    // Keep one asset instance when both sides of the map seam are visible.
+    let whole_gates=out.iter().copied().filter(|&p|
+        drawing(cells,g,p,"johto",&[&[0x08,0x09],&[0x1a,0x11]],0)
+        || drawing(cells,g,p,"johto",&[&[0x18,0x19],&[0x1a,0x11]],0))
+        .collect::<Vec<_>>();
+    out.retain(|p| !whole_gates.iter().any(|whole|
+        p.column==whole.column && p.row==whole.row+4 && p.width==8 && p.height==4));
     out.sort_by_key(|p| (p.row, p.column));
     out.dedup();
     out
@@ -471,7 +536,8 @@ pub(super) fn cabin_roof_palette(cells: &[&VisualTile], g: &GridGeometry,
     let mut colors = std::collections::BTreeSet::new();
     // Complete source roof interior, excluding its transparent/ground corners.
     for row in p.row..p.row+p.roof_rows {
-        for column in p.column+2..p.column+p.width-2 {
+        let inset=if p.width>4 {2}else{1};
+        for column in p.column+inset..p.column+p.width-inset {
             let tile = cells[row*g.width+column];
             // Kanto roof blocks also contain blank ground/window cells.
             // Only the pitched/flat roof-art courses authorize roof paint.
@@ -502,8 +568,32 @@ pub(super) fn cabin_roof_palette(cells: &[&VisualTile], g: &GridGeometry,
     Some([dark,mid,light])
 }
 
+fn ecruteak_facade_paint(cells: &[&VisualTile], g: &GridGeometry,
+    p: BuildingPlacement, images: &TerrainImageSamples) -> Option<ecruteak_houses::FacadePaint> {
+    let mut colors=std::collections::BTreeSet::new();
+    // Complete central facade only. Roof, outside ground and transparent
+    // corner art cannot supply plaster or timber roles.
+    for row in p.row+p.roof_rows..p.row+p.height {
+        for column in p.column+2..p.column+p.width-2 {
+            let tile=cells[row*g.width+column];
+            if tile.source.tileset_id.as_ref()!="johto" {return None;}
+            for pixel in tile_rgba(images,tile).ok()?.chunks_exact(4) {
+                if pixel[3]==255 {colors.insert([pixel[0],pixel[1],pixel[2]]);}
+            }
+        }
+    }
+    if !(3..=4).contains(&colors.len()) {return None;}
+    let mut colors=colors.into_iter().collect::<Vec<_>>();
+    colors.sort_by_key(|c|u32::from(c[0])*2126+u32::from(c[1])*7152+u32::from(c[2])*722);
+    let linear=|c:[u8;3]|c.map(|v| {let s=f32::from(v)/255.;if s<=0.04045 {s/12.92}else{((s+0.055)/1.055).powf(2.4)}});
+    Some(ecruteak_houses::FacadePaint {
+        wall:linear(colors[colors.len()-1]),timber:linear(colors[colors.len()-2]),
+        shadow:linear(colors[colors.len()-3]),window:linear(colors[0]),
+    })
+}
+
 fn forest_gate_wall_palette(cells: &[&VisualTile], g: &GridGeometry,
-    p: BuildingPlacement, images: &TerrainImageSamples) -> Option<[[f32;4];4]> {
+    p: BuildingPlacement, images: &TerrainImageSamples, open: bool) -> Option<[[f32;4];6]> {
     // Exact masonry and window drawings in the authenticated forest gate.
     // Sampling the complete facade indiscriminately mixes two source palettes.
     let sample = |index| -> Option<Vec<[u8;3]>> {
@@ -522,12 +612,14 @@ fn forest_gate_wall_palette(cells: &[&VisualTile], g: &GridGeometry,
         Some(colors)
     };
     let wall=sample(0x24)?;let window=sample(0x04)?;
+    let door=if open {sample(0x17)?} else {wall.clone()};
     let linear=|c:[u8;3]| {
         let rgb=c.map(|v| {let s=f32::from(v)/255.;if s<=0.04045 {s/12.92} else {((s+0.055)/1.055).powf(2.4)}});
         [rgb[0],rgb[1],rgb[2],1.]
     };
     Some([linear(wall[usize::from(wall.len()>2)]),linear(*wall.last()?),
-        linear(*window.last()?),linear(window[0])])
+        linear(*window.last()?),linear(window[0]),linear(window[window.len()-2]),
+        linear(door[usize::from(door.len()>2)])])
 }
 
 pub(super) fn append_building_with_samples(
@@ -545,14 +637,44 @@ pub(super) fn append_building_with_samples(
     if !clear(claimed, g, rect) {
         return false;
     }
-    let world_roof = matches!(d.asset, Asset::World(Kind::KantoHouse | Kind::KantoFlatHouse
+    let office_paint=if d.asset==Asset::KantoBrickOffice {
+        let Some(paint)=images.and_then(|images|kanto_brick_office::paint(cells,g,p,images)) else{return false;};
+        Some(paint)
+    }else{None};
+    let gym_paint=if d.asset==Asset::KantoGym {
+        let Some(paint)=images.and_then(|images|kanto_gym::paint(cells,g,p,images)) else{return false;};
+        Some(paint)
+    }else{None};
+    let house_paint=if d.asset==Asset::KantoHouse {
+        let Some(paint)=images.and_then(|images|kanto_house::paint(cells,g,p,images)) else{return false;};
+        Some(paint)
+    }else{None};
+    let museum_paint=if d.asset==Asset::KantoMuseum {
+        let Some(paint)=images.and_then(|images|kanto_museum::paint(cells,g,p,images)) else{return false;};
+        Some(paint)
+    }else{None};
+    let modern_source_roof=matches!(map,"GoldenrodCity"|"AzaleaTown") && matches!(d.asset,
+        Asset::World(Kind::ModernHouse | Kind::ModernBlank | Kind::ModernShop
+            | Kind::ModernCenter | Kind::ModernMart | Kind::ModernGym
+            | Kind::ModernStation | Kind::ModernDaycare | Kind::ModernArcade));
+    let world_roof = modern_source_roof || d.asset==Asset::World(Kind::EastGate)
+        || matches!(d.asset, Asset::World(Kind::KantoHouse | Kind::KantoFlatHouse
         | Kind::KantoMart | Kind::KantoBlank | Kind::ForestGate | Kind::ForestGateClosed));
+    let ecruteak_roof_palette = if map=="EcruteakCity" && matches!(d.asset,
+        Asset::Johto(Johto::TraditionalHouse) | Asset::World(Kind::TinTower)) {
+        images.and_then(|images|cabin_roof_palette(cells,g,p,images))
+    } else {None};
+    let ecruteak_facade = if map=="EcruteakCity" && matches!(d.asset,
+        Asset::Johto(Johto::TraditionalHouse) | Asset::World(Kind::TinTower)) {
+        images.and_then(|images|ecruteak_facade_paint(cells,g,p,images))
+    } else {None};
     let world_roof_palette = if world_roof {
         images.and_then(|images| cabin_roof_palette(cells,g,p,images))
     } else {None};
     let forest_gate=matches!(d.asset,Asset::World(Kind::ForestGate | Kind::ForestGateClosed));
     let forest_wall_palette=if forest_gate {
-        images.and_then(|images|forest_gate_wall_palette(cells,g,p,images))
+        images.and_then(|images|forest_gate_wall_palette(cells,g,p,images,
+            matches!(d.asset,Asset::World(Kind::ForestGate))))
     } else {None};
     if forest_gate && images.is_some()
         && (world_roof_palette.is_none() || forest_wall_palette.is_none()) {
@@ -564,16 +686,24 @@ pub(super) fn append_building_with_samples(
         return true;
     }
     let source_roof = matches!(d.asset, Asset::Johto(Johto::TraditionalHouse
-        | Johto::House | Johto::PlayerHouse | Johto::Pokecenter | Johto::Mart | Johto::VioletGym));
-    let service = matches!(d.asset, Asset::Johto(Johto::Pokecenter | Johto::Mart));
+        | Johto::House | Johto::PlayerHouse | Johto::Pokecenter | Johto::Mart | Johto::VioletGym | Johto::RouteGate));
+    let service = matches!(d.asset, Asset::Johto(Johto::Pokecenter | Johto::Mart | Johto::RouteGate));
+    let compact = map!="IlexForest" && matches!(d.asset, Asset::Johto(Johto::House));
+    let entrance_kind=matches!(d.asset,Asset::Johto(Johto::House|Johto::Pokecenter|Johto::Mart|Johto::RouteGate)) && d.door.is_some();
+    let entrance_palette=if entrance_kind {
+        images.and_then(|images| super::new_bark::entrance_source_colors(cells,g,p,d.door.unwrap() as usize,images))
+    } else {None};
     let (roof_palette, wall_palette) = if source_roof {
         if let Some(images)=images {
             let paint=cabin_roof_palette(cells,g,p,images).and_then(|roof| {
                 if service {
                     super::new_bark::service_wall_color(cells,g,p,images)
                         .map(|wall|(roof,Some(wall)))
+                } else if compact {
+                    super::new_bark::compact_wall_colors(cells,g,p,images)
+                        .map(|wall|(roof,Some(wall)))
                 } else {Some((roof,None))}
-            });
+            }).filter(|_| !entrance_kind || entrance_palette.is_some());
             let Some((roof,wall))=paint else {
                 // Missing material coverage is shown as exact 2D, never purple
                 // prototype paint or a legacy voxel-building substitute.
@@ -592,6 +722,18 @@ pub(super) fn append_building_with_samples(
         return false;
     };
     floor(mesh, cells, shapes, g, rect, sample, claimed);
+    if d.asset==Asset::World(Kind::EastGate) {
+        for y in p.row+p.height-4..p.row+p.height {
+            for x in p.column+p.width..(p.column+p.width+4).min(g.width) {
+                let i=y*g.width+x;let source=&cells[i].source;
+                if !claimed[i] && source.tileset_id.as_ref()=="johto_modern"
+                    && source.metatile_id==0x0b && matches!(source.tile_index,0x40|0x00|0x06) {
+                    floor(mesh,cells,shapes,g,[x,y,1,1],sample,claimed);
+                    mesh.authored_cells[i]=Some("world-exterior/east_gate");
+                }
+            }
+        }
+    }
     let mut b = bounds(g, rect);
     if let Some(depth) = d.depth_cells {
         b[2] = b[3] - depth * g.tile_height;
@@ -605,35 +747,62 @@ pub(super) fn append_building_with_samples(
     });
     let cutaway_start = mesh.solid.positions.len();
     match d.asset {
+        Asset::KantoMuseum => kanto_museum::append(&mut mesh.solid,b,g.tile_width,
+            museum_paint.expect("authenticated museum paint")),
+        Asset::KantoHouse => kanto_house::append(&mut mesh.solid,b,g.tile_width,
+            door.expect("authenticated cottage door"),house_paint.expect("authenticated cottage paint")),
+        Asset::KantoGym => kanto_gym::append(&mut mesh.solid,b,g.tile_width,
+            door.expect("authenticated gym door"),gym_paint.expect("authenticated gym paint")),
+        Asset::KantoBrickOffice => kanto_brick_office::append(&mut mesh.solid,b,g.tile_width,
+            door,office_paint.expect("authenticated office paint")),
         Asset::World(Kind::BurnedTower) if map == "EcruteakCity" => {
             ecruteak_houses::append_burned(&mut mesh.solid, b, g.tile_height, door);
         }
         Asset::World(Kind::TinTower) if map == "EcruteakCity" && p.height == 6 => {
-            ecruteak_houses::append_temple(&mut mesh.solid, b, g.tile_height, door);
+            ecruteak_houses::append_temple(&mut mesh.solid, b, g.tile_height, door, ecruteak_roof_palette, ecruteak_facade);
         }
         Asset::World(kind) => {
             let m = model(kind);
             let scale = if kind == Kind::KantoHouse { 1.25 } else { 2.0 };
             m.append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * scale, door);
-            if let Some(palette) = world_roof_palette {
-                m.recolor_fitted_roof(&mut mesh.solid, cutaway_start, palette);
+            if let Some(mut palette) = world_roof_palette {
+                if kind==Kind::EastGate {
+                    // The sprite's outline is not black paint on the exposed
+                    // backing between the gate's ceramic courses.
+                    palette[0]=std::array::from_fn(|i|if i==3 {1.}else{
+                        (palette[1][i]*0.7+palette[2][i]*0.3)*0.55});
+                }
+                if modern_source_roof {
+                    m.recolor_fitted_modern_roof(&mut mesh.solid,cutaway_start,palette);
+                } else {m.recolor_fitted_roof(&mut mesh.solid, cutaway_start, palette);}
             }
             if let Some(palette)=forest_wall_palette {
                 m.recolor_fitted_forest_wall(&mut mesh.solid,cutaway_start,palette);
+            }
+            if crate::city_lights::enabled(map) {
+                crate::city_lights::mark(&mut mesh.solid,cutaway_start,m,kind);
             }
         }
         Asset::Johto(kind) => {
             if map == "EcruteakCity" && kind == Johto::TraditionalHouse {
                 if drawing(cells, g, p, "johto", &[&[0x2c,0x2d], &[0x26,0x2f]], 2) {
-                    ecruteak_houses::append_gate(&mut mesh.solid, b, g.tile_height);
+                    ecruteak_houses::append_gate(&mut mesh.solid, b, g.tile_height, ecruteak_roof_palette, ecruteak_facade);
                 } else {
-                    ecruteak_houses::append(&mut mesh.solid, b, g.tile_height, door);
+                    ecruteak_houses::append(&mut mesh.solid, b, g.tile_height, door, ecruteak_roof_palette, ecruteak_facade);
                 }
             } else {
                 let m=johto_model(kind);
                 m.append_fitted(&mut mesh.solid, b, 0.0, g.tile_height * 2.0, door);
                 if let Some(palette)=roof_palette {m.recolor_fitted_roof(&mut mesh.solid,cutaway_start,palette);}
-                if let Some(palette)=wall_palette {m.recolor_fitted_service_wall(&mut mesh.solid,cutaway_start,palette);}
+                if let Some(palette)=wall_palette {
+                    if compact {m.recolor_fitted_compact_wall(&mut mesh.solid,cutaway_start,palette);}
+                    else {m.recolor_fitted_service_wall(&mut mesh.solid,cutaway_start,palette);}
+                }
+                if let Some(palette)=entrance_palette {m.recolor_fitted_entrance(&mut mesh.solid,cutaway_start,palette);}
+                if super::new_bark::ordinary_lawn_map(map) {
+                    m.light_fitted_source_paint(&mut mesh.solid,cutaway_start);
+                }
+                if crate::city_lights::enabled(map) {m.mark_city_lights(&mut mesh.solid,cutaway_start);}
             }
         }
         Asset::GroveTree => unreachable!("trees cannot be building placements"),
@@ -678,6 +847,10 @@ pub(super) fn append_building_with_samples(
     }
     // Eligibility belongs only to this successful authored building append.
     // Ground backing and the earlier cave/mesa/forecourt/ice branch stay opaque.
+    if map!="IlexForest" && matches!(tileset,"johto"|"johto_modern"|"kanto") {
+        mesh.coverage_fade_ranges.push(cutaway_start..mesh.solid.positions.len());
+        mesh.depth_coverage_solid_ranges.push(cutaway_start..mesh.solid.positions.len());
+    }
     if matches!(d.asset, Asset::World(Kind::ForestGate | Kind::ForestGateClosed)) {
         mesh.coverage_fade_ranges.push(cutaway_start..mesh.solid.positions.len());
     }
@@ -868,13 +1041,28 @@ pub(super) fn append_tree_with_groves(
                 b[3] += offset.y;
             }
             let m = variant_model(k, [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32]);
+            let height_factor = if k == Kind::KantoCanopy {
+                crate::foliage::non_ancient_height_factor(
+                    [map_origin[0]+p.column as i32,map_origin[1]+p.row as i32])
+            } else { 1. };
+            let foliage_start = mesh.solid.positions.len();
             m.append_fitted(
                 &mut mesh.solid,
                 b,
                 p.base_height,
-                h / (m.max[1] - m.min[1]),
+                h * height_factor / (m.max[1] - m.min[1]),
                 None,
-            )
+            );
+            if k == Kind::KantoCanopy {
+                for i in foliage_start..mesh.solid.positions.len() {
+                    let color = &mut mesh.solid.colors[i];
+                    if color[1] > color[0]*1.2 && color[1] > color[2]*1.1 {
+                        let pigment = crate::foliage::leaf_pigment(
+                            Vec3::from_array(mesh.solid.positions[i]),g.tile_height*1.5);
+                        for channel in 0..3 { color[channel] *= pigment[channel]; }
+                    }
+                }
+            }
         }
         Asset::GroveTree => {
             // Forest's four-cell source drawings reserve a larger blocked plot,
@@ -886,18 +1074,24 @@ pub(super) fn append_tree_with_groves(
                 b = [center[0] - g.tile_width, center[0] + g.tile_width,
                     center[1] - g.tile_height, center[1] + g.tile_height];
             }
-            let neighbors = super::new_bark::grove_neighbors(mesh, cells, g, map, p);
+            let small_forest = cells[p.row*g.width+p.column].source.tileset_id.as_ref() == "forest"
+                && p.width == 2 && p.height == 2;
+            let neighbors = if small_forest { [false;4] }
+                else { super::new_bark::grove_neighbors(mesh, cells, g, map, p) };
             let recipe = super::new_bark::GroveRecipe {
-                family: crate::foliage::GroveFamily::from_source(map,
-                    cells[p.row*g.width+p.column].source.tileset_id.as_ref()),
+                family: crate::foliage::GroveFamily::from_drawing(
+                    cells[p.row*g.width+p.column].source.tileset_id.as_ref(), p.width, p.height),
                 bounds: b,
                 base_height: p.base_height,
-                tile_height: g.tile_height,
+                tile_height: g.tile_height * if small_forest { 0.5 } else { 1. },
                 coordinates: [
                     map_origin[0] + p.column as i32,
                     map_origin[1] + p.row as i32,
                 ],
                 neighbors,
+                understory_bounds: if cells[p.row*g.width+p.column].source.tileset_id.as_ref() == "forest" {
+                    super::new_bark::ancient_understory_join(map,cells,g,p).then_some(bounds(g,rect))
+                } else { None },
                 // Dense leaves retain coverage reveal without alpha stacks.
                 coverage_fade: map == "IlexForest"
                     && cells[p.row * g.width + p.column].source.tileset_id.as_ref() == "forest",
@@ -905,10 +1099,10 @@ pub(super) fn append_tree_with_groves(
             if let Some(groves) = groves { groves.push(recipe); }
             else { recipe.append(mesh); }
         }
-        Asset::Johto(_) => unreachable!("buildings cannot be tree placements"),
+        Asset::Johto(_) | Asset::KantoMuseum | Asset::KantoHouse | Asset::KantoBrickOffice | Asset::KantoGym => unreachable!("buildings cannot be tree placements"),
     }
     let label=if kind==Asset::GroveTree {
-        crate::foliage::GroveFamily::from_source(map, cells[p.row*g.width+p.column].source.tileset_id.as_ref()).label()
+        crate::foliage::GroveFamily::from_drawing(cells[p.row*g.width+p.column].source.tileset_id.as_ref(), p.width, p.height).label()
     } else {kind.label()};
     mark_authored_rect(mesh, g, rect, label);
     true
@@ -1124,8 +1318,11 @@ pub(super) fn append_props_at_origin(
         let palette=if p.kind==Kind::TimberFence {
             images.and_then(|images| fence_palette(images,
                 &[cells[p.rect[1]*g.width+p.rect[0]],cells[(p.rect[1]+1)*g.width+p.rect[0]]]))
+        } else if p.kind==Kind::RouteSign {
+            let tiles=[0,1,g.width,g.width+1].map(|offset| cells[p.rect[1]*g.width+p.rect[0]+offset]);
+            images.and_then(|images| fence_palette(images,&tiles))
         } else {None};
-        if p.kind==Kind::TimberFence && images.is_some() && palette.is_none() {
+        if matches!(p.kind,Kind::TimberFence|Kind::RouteSign) && images.is_some() && palette.is_none() {
             continue; // Keep source drawing when live color coverage is unavailable.
         }
         let s = &cells[p.rect[1] * g.width + p.rect[0]].source;
@@ -1158,7 +1355,10 @@ pub(super) fn append_props_at_origin(
             p.height * g.tile_height / (m.max[1] - m.min[1]),
             None,
         );
-        if let Some(palette)=palette {m.recolor_fitted_fence(&mut mesh.solid,first,palette);}
+        if let Some(palette)=palette {
+            if p.kind==Kind::RouteSign { m.recolor_fitted_sign(&mut mesh.solid,first,palette); }
+            else { m.recolor_fitted_fence(&mut mesh.solid,first,palette); }
+        }
         mark_authored_rect(mesh, g, p.rect, p.kind.label());
     }
 }
@@ -1373,12 +1573,14 @@ pub(super) fn append_flower(
     {
         return false;
     }
+    let start = target.positions.len();
     let (w, e, n, s) = g.bounds(tile.column as usize, tile.row as usize);
     if matches!(_map, "NationalPark" | "NationalParkBugContest")
         && tile.source.tileset_id.as_ref() == "park"
     {
         park_flowers::append(target, [w, e, n, s], base_height,
             [origin[0] + tile.column as i32, origin[1] + tile.row as i32]);
+        crate::flower::mark_sway(target, start, base_height);
         return true;
     }
     let m = johto_model(Johto::Flowers);
@@ -1394,6 +1596,7 @@ pub(super) fn append_flower(
         g.tile_height * 0.65 / (m.max[1] - m.min[1]),
         None,
     );
+    crate::flower::mark_sway(target, start, base_height);
     true
 }
 
@@ -1418,6 +1621,26 @@ mod tests {
         assert_eq!(mesh.footing_heights,vec![0.;4]);
         assert_eq!(mesh.authored_cells,vec![Some("johto/tree");4]);
     }
+    #[test]
+    fn flowers_stay_modeled_without_source_animation_pixels_and_keep_roots_planted() {
+        let g = GridGeometry { width: 1, height: 1, tile_width: 8., tile_height: 8.,
+            origin_x: 0., origin_z: 0. };
+        for tileset in ["johto", "johto_modern", "kanto", "forest", "park"] {
+            let mut source = super::super::tests::source_with_tile(4, 1, 1, 3);
+            source.tileset_id = tileset.into();
+            let frame = super::super::tests::frame(1, 1, vec![source]);
+            let mut flowers = SurfaceMeshData::default();
+            assert!(append_flower(&mut flowers, "Route35", &frame.tiles[0], &g, 0., [0, 0]));
+            assert!(!flowers.positions.is_empty());
+            assert!(flowers.uvs.iter().all(|uv| uv[0] == 86000.));
+            assert!(flowers.uvs.iter().any(|uv| uv[1] < 0.001));
+            assert!(flowers.uvs.iter().any(|uv| uv[1] > 1.));
+            for (p, uv) in flowers.positions.iter().zip(&flowers.uvs) {
+                assert!((p[1] - uv[1]).abs() < 0.001);
+            }
+        }
+    }
+
     #[test]
     fn park_flower_cluster_requires_native_flower_and_keeps_contest_appearance() {
         let mut source = super::super::tests::source_with_tile(0x3c, 1, 1, 3);
@@ -1665,6 +1888,400 @@ mod tests {
     }
 
     #[test]
+    fn ecruteak_facade_roles_use_only_complete_live_wall_art_at_each_clock() {
+        let (mut tiles,g,mut p)=drawing_cells("johto",&[&[0x2c,0x2d],&[0x26,0x2f]]);
+        p.row=2;p.height=6;p.roof_rows=2;
+        let mut handles=bevy::prelude::Assets::<bevy::prelude::Image>::default();
+        let wall=handles.add(bevy::prelude::Image::default());
+        let poison=handles.add(bevy::prelude::Image::default());
+        for tile in &mut tiles {tile.texture=if tile.row>=4 && (2..6).contains(&tile.column) {wall.clone()}else{poison.clone()};}
+        let cells=tiles.iter().collect::<Vec<_>>();let mut images=TerrainImageSamples::default();
+        images.pixels.insert(poison.id(),TileImageSample::Rgba((0..64).flat_map(|i|[i as u8,0,255,255]).collect()));
+        let linear=|c:[u8;3]|c.map(|v| {let s=f32::from(v)/255.;if s<=0.04045 {s/12.92}else{((s+0.055)/1.055).powf(2.4)}});
+        for colors in [
+            [[0,0,0],[57,57,57],[165,123,24],[222,255,222]],
+            [[0,0,0],[57,57,57],[165,123,24],[255,255,132]],
+            [[0,0,0],[24,16,24],[66,33,41],[123,115,189]],
+        ] {
+            images.pixels.insert(wall.id(),TileImageSample::Rgba((0..64).flat_map(|i|{
+                let c=colors[i%4];[c[0],c[1],c[2],255]
+            }).collect()));
+            let paint=ecruteak_facade_paint(&cells,&g,p,&images).unwrap();
+            assert_eq!(paint.wall,linear(colors[3]));assert_eq!(paint.timber,linear(colors[2]));
+            assert_eq!(paint.shadow,linear(colors[1]));assert_eq!(paint.window,linear(colors[0]));
+        }
+        images.pixels.insert(wall.id(),TileImageSample::Rgba((0..64).flat_map(|i|[i as u8,0,0,255]).collect()));
+        assert!(ecruteak_facade_paint(&cells,&g,p,&images).is_none(),"unknown source art cannot acquire guessed facade paint");
+        images.pixels.remove(&wall.id());assert!(ecruteak_facade_paint(&cells,&g,p,&images).is_none());
+    }
+
+    #[test]
+    fn shared_kanto_museum_owns_only_the_complete_doorless_hall_on_any_map() {
+        for width in [8,12,16,20] {
+            let (mut tiles,g,p,mut images)=kanto_museum::fixture(width);
+            let cells=tiles.iter().collect::<Vec<_>>();
+            assert!(outdoor_building_placements(&cells,&g).contains(&p));
+            for map in ["PewterCity","UnseenTown"] {
+                let d=descriptor(map,&cells,&g,p).unwrap();
+                assert_eq!(d.asset,Asset::KantoMuseum);assert_eq!(d.door,None);
+            }
+            let shapes=vec![CellShape::Flat;cells.len()];
+            let empty=||TerrainMeshData {authored_cells:vec![None;cells.len()],footing_heights:vec![0.;cells.len()],..Default::default()};
+            let mut mesh=empty();let mut claimed=vec![false;cells.len()];
+            assert!(append_building_with_samples(&mut mesh,&cells,&shapes,&g,"UnseenTown",p,&mut claimed,[0,0],Some(&images)));
+            assert!(claimed[..width*12].iter().all(|&v|v));assert!(claimed[width*12..].iter().all(|&v|!v));
+            assert!(mesh.authored_cells[..width*12].iter().all(|&v|v==Some("outdoor/kanto_museum")));
+            assert!(mesh.footing_heights.iter().all(|&v|v==0.));assert_eq!(mesh.rigid_buildings.len(),1);
+            assert_eq!(mesh.solid.cutaway_ranges.len(),1);
+            images.pixels.remove(&cells[4*width+2].texture.id());let mut rejected=empty();let mut claims=vec![false;cells.len()];
+            assert!(!append_building_with_samples(&mut rejected,&cells,&shapes,&g,"UnseenTown",p,&mut claims,[0,0],Some(&images)));
+            assert!(rejected.solid.indices.is_empty() && rejected.textured.indices.is_empty());assert!(claims.iter().all(|&v|!v));
+            drop(cells);
+            for i in 0..width*12 {
+                let saved=tiles[i].source.clone();tiles[i].source.tile_index^=1;
+                assert!(descriptor("UnseenTown",&tiles.iter().collect::<Vec<_>>(),&g,p).is_none());tiles[i].source=saved;
+            }
+        }
+    }
+
+    #[test]
+    fn shared_kanto_house_binds_complete_narrow_and_extended_drawings_on_any_map() {
+        for width in [8,12,16] {
+            let (mut tiles,g,p,mut images)=kanto_house::fixture(width);
+            let cells=tiles.iter().collect::<Vec<_>>();
+            assert!(outdoor_building_placements(&cells,&g).contains(&p));
+            for map in ["LavenderTown","CeruleanCity","PewterCity","UnseenTown"] {
+                let d=descriptor(map,&cells,&g,p).unwrap();
+                assert_eq!(d.asset,Asset::KantoHouse);assert_eq!(d.door,Some(3.));
+            }
+            let shapes=vec![CellShape::Flat;cells.len()];
+            let empty=||TerrainMeshData {authored_cells:vec![None;cells.len()],footing_heights:vec![0.;cells.len()],..Default::default()};
+            let mut mesh=empty();let mut claimed=vec![false;cells.len()];
+            assert!(append_building_with_samples(&mut mesh,&cells,&shapes,&g,"UnseenTown",p,&mut claimed,[0,0],Some(&images)));
+            assert!(claimed[..width*4].iter().all(|&v|v));assert!(claimed[width*4..].iter().all(|&v|!v));
+            assert!(mesh.authored_cells[..width*4].iter().all(|&v|v==Some("outdoor/kanto_house")));
+            assert!(mesh.footing_heights.iter().all(|&v|v==0.));assert_eq!(mesh.rigid_buildings.len(),1);
+            assert_eq!(mesh.solid.cutaway_ranges.len(),1);
+            images.pixels.remove(&cells[width+2].texture.id());
+            let mut rejected=empty();let mut claims=vec![false;cells.len()];
+            assert!(!append_building_with_samples(&mut rejected,&cells,&shapes,&g,"UnseenTown",p,&mut claims,[0,0],Some(&images)));
+            assert!(rejected.solid.indices.is_empty() && rejected.textured.indices.is_empty());assert!(claims.iter().all(|&v|!v));
+            drop(cells);
+            for i in 0..width*4 {
+                let saved=tiles[i].source.clone();tiles[i].source.tile_index^=1;
+                assert!(descriptor("UnseenTown",&tiles.iter().collect::<Vec<_>>(),&g,p).is_none());
+                tiles[i].source=saved;
+            }
+        }
+    }
+
+    #[test]
+    fn shared_kanto_gym_preserves_source_drawing_ownership_and_support() {
+        let (mut tiles,g,p,mut images)=kanto_gym::fixture();
+        let cells=tiles.iter().collect::<Vec<_>>();
+        assert!(outdoor_building_placements(&cells,&g).contains(&p));
+        for map in ["PewterCity","VermilionCity","SaffronCity","CeladonCity","FuchsiaCity","ViridianCity","UnseenTown"] {
+            let d=descriptor(map,&cells,&g,p).unwrap();assert_eq!(d.asset,Asset::KantoGym);assert_eq!(d.door,Some(9.));
+        }
+        let shapes=vec![CellShape::Flat;cells.len()];
+        let empty=||TerrainMeshData {authored_cells:vec![None;cells.len()],footing_heights:vec![0.;cells.len()],..Default::default()};
+        let mut mesh=empty();let mut claimed=vec![false;cells.len()];
+        assert!(append_building_with_samples(&mut mesh,&cells,&shapes,&g,"VermilionCity",p,&mut claimed,[0,0],Some(&images)));
+        assert!(claimed[..96].iter().all(|&v|v));assert!(claimed[96..].iter().all(|&v|!v));
+        assert!(mesh.authored_cells[..96].iter().all(|&v|v==Some("outdoor/kanto_gym")));
+        assert!(mesh.footing_heights.iter().all(|&v|v==0.));assert_eq!(mesh.rigid_buildings.len(),1);
+        images.pixels.remove(&cells[4+g.width].texture.id());
+        let mut rejected=empty();let mut claims=vec![false;cells.len()];
+        assert!(!append_building_with_samples(&mut rejected,&cells,&shapes,&g,"UnseenTown",p,&mut claims,[0,0],Some(&images)));
+        assert!(claims.iter().all(|&v|!v));assert!(rejected.solid.indices.is_empty());
+        drop(cells);tiles[1].source.subtile_column=0;
+        assert!(descriptor("VermilionCity",&tiles.iter().collect::<Vec<_>>(),&g,p).is_none());
+    }
+
+    #[test]
+    fn kanto_brick_office_keeps_source_ownership_support_and_missing_paint_fallback() {
+        let (mut tiles,mut g,p)=drawing_cells("kanto",&[&[0x20,0x54,0x21],&[0x37,0x3a,0x7e]]);
+        let mut assets=Assets::<Image>::default();
+        let roof=assets.add(Image::default());let wall=assets.add(Image::default());
+        let glass=assets.add(Image::default());let door=assets.add(Image::default());
+        let unlit=assets.add(Image::default());
+        for (dy,row) in [[0x0b,0x0c],[0x1b,0x1c]].iter().enumerate() {
+            for (dx,&tile) in row.iter().enumerate() {tiles[(6+dy)*g.width+4+dx].source.tile_index=tile;}
+        }
+        for (x,y,index,texture) in [(5,1,0x5e,roof.clone()),(2,5,0x4b,wall.clone()),
+            (2,4,0x0a,glass.clone()),(4,7,0x1b,door.clone())] {
+            let tile=&mut tiles[y*g.width+x];tile.source.tile_index=index;tile.texture=texture;
+        }
+        for (x,y,index) in [(1,4,0x32),(2,4,0x0a),(3,4,0x0a),(4,4,0x32),
+            (7,4,0x32),(8,4,0x32),(9,4,0x0a),(10,4,0x32),(6,6,0x0a),(7,6,0x0a),(4,6,0x0b)] {
+            let tile=&mut tiles[y*g.width+x];tile.source.tile_index=index;
+            tile.texture=if index==0x32 {unlit.clone()}else{glass.clone()};
+        }
+        for x in 0..g.width {
+            let mut tile=tiles[0].clone();tile.column=x as u32;tile.row=8;
+            tile.source=VisualTileSource {tileset_id:"kanto".into(),metatile_id:0x01,subtile_column:0,subtile_row:0,tile_index:KANTO_GROUND_TILE_INDEX};
+            tiles.push(tile);
+        }
+        g.height=9;
+        let mut images=TerrainImageSamples::default();
+        for (h,colors) in [(roof,[[70,70,70,255],[150,150,150,255]]),
+            (wall.clone(),[[160,110,30,255],[222,255,222,255]]),
+            (glass,[[57,57,57,255],[222,255,222,255]]),
+            (door,[[160,110,30,255],[160,110,30,255]])] {
+            images.pixels.insert(h.id(),TileImageSample::Rgba((0..64).flat_map(|i|colors[i%2]).collect()));
+        }
+        images.pixels.insert(unlit.id(),TileImageSample::Rgba((0..64).flat_map(|_|[50,40,100,255]).collect()));
+        let cells=tiles.iter().collect::<Vec<_>>();let shapes=vec![CellShape::Flat;cells.len()];
+        let pane_paint=kanto_brick_office::paint(&cells,&g,p,&images).unwrap();
+        assert!(pane_paint.windows[0][2]>pane_paint.windows[0][1]);
+        assert!(pane_paint.windows[1][1]>pane_paint.windows[1][2]);
+        assert_eq!(pane_paint.windows[0],pane_paint.windows[3]);
+        assert_eq!(pane_paint.windows[1],pane_paint.windows[8]);
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;cells.len()],footing_heights:vec![0.;cells.len()],..Default::default()};
+        let mut claimed=vec![false;cells.len()];
+        assert!(append_building_with_samples(&mut mesh,&cells,&shapes,&g,"PalletTown",p,&mut claimed,[0,0],Some(&images)));
+        assert!(claimed[..96].iter().all(|&v|v));assert!(claimed[96..].iter().all(|&v|!v));
+        assert!(mesh.authored_cells[..96].iter().all(|&v|v==Some("outdoor/kanto_brick_office")));
+        assert!(mesh.footing_heights.iter().all(|&v|v==0.));
+        assert_eq!(mesh.rigid_buildings.len(),1);
+        images.pixels.remove(&wall.id());
+        let mut rejected=TerrainMeshData {authored_cells:vec![None;cells.len()],footing_heights:vec![0.;cells.len()],..Default::default()};
+        let mut claims=vec![false;cells.len()];
+        assert!(!append_building_with_samples(&mut rejected,&cells,&shapes,&g,"FuchsiaCity",p,&mut claims,[0,0],Some(&images)));
+        assert!(claims.iter().all(|&v|!v));assert!(rejected.solid.indices.is_empty());
+    }
+
+    #[test]
+    fn doorless_kanto_brick_annex_uses_shared_office_and_keeps_all_ten_source_panes() {
+        let (mut tiles,g,p)=drawing_cells("kanto",&[&[0x20,0x54,0x21],&[0x37,0x7d,0x7e]]);
+        let mut assets=Assets::<Image>::default();let mut images=TerrainImageSamples::default();
+        let mut texture=|colors:[[u8;4];2]| {
+            let h=assets.add(Image::default());images.pixels.insert(h.id(),TileImageSample::Rgba(
+                (0..64).flat_map(|i|colors[i%2]).collect()));h
+        };
+        let roof=texture([[70,70,70,255],[150,150,150,255]]);
+        let wall=texture([[160,110,30,255],[222,255,222,255]]);
+        let lit=texture([[57,57,57,255],[222,255,222,255]]);
+        let unlit=texture([[57,57,57,255],[80,70,140,255]]);
+        for (x,y,index,h) in [(5,1,0x5e,roof),(2,5,0x4b,wall)] {
+            tiles[y*g.width+x].source.tile_index=index;tiles[y*g.width+x].texture=h;
+        }
+        for (i,index) in [0x32,0x0a,0x0a,0x0a,0x32,0x0a,0x0a,0x32,0x0a,0x32].into_iter().enumerate() {
+            let tile=&mut tiles[4*g.width+1+i];tile.source.tile_index=index;
+            tile.texture=if index==0x32 {unlit.clone()} else {lit.clone()};
+        }
+        let cells=tiles.iter().collect::<Vec<_>>();
+        assert!(outdoor_building_placements(&cells,&g).contains(&p));
+        for map in ["PewterCity","UnseenTown","CeladonCity"] {
+            let d=descriptor(map,&cells,&g,p).unwrap();
+            assert_eq!(d.asset,Asset::KantoBrickOffice);assert_eq!(d.door,None);
+        }
+        let paint=kanto_brick_office::paint(&cells,&g,p,&images).unwrap();
+        for i in 0..10 {assert_eq!(paint.windows[i],paint.windows[if [0,4,7,9].contains(&i) {0}else{1}]);}
+        assert_ne!(paint.windows[0],paint.windows[1]);
+        let shapes=vec![CellShape::Flat;cells.len()];
+        let empty=||TerrainMeshData{authored_cells:vec![None;cells.len()],footing_heights:vec![0.;cells.len()],..Default::default()};
+        let mut mesh=empty();let mut claims=vec![false;cells.len()];
+        assert!(append_building_with_samples(&mut mesh,&cells,&shapes,&g,"PewterCity",p,&mut claims,[0,0],Some(&images)));
+        assert!(claims.iter().all(|&v|v));assert!(mesh.authored_cells.iter().all(|&v|v==Some("outdoor/kanto_brick_office")));
+        assert!(mesh.footing_heights.iter().all(|&v|v==0.));
+        images.pixels.remove(&unlit.id());let mut rejected=empty();let mut claims=vec![false;cells.len()];
+        assert!(!append_building_with_samples(&mut rejected,&cells,&shapes,&g,"PewterCity",p,&mut claims,[0,0],Some(&images)));
+        assert!(claims.iter().all(|&v|!v));assert!(rejected.solid.indices.is_empty());
+        drop(cells);tiles[4*g.width+4].source.subtile_column=1;
+        assert!(descriptor("PewterCity",&tiles.iter().collect::<Vec<_>>(),&g,p).is_none());
+    }
+
+    #[test]
+    fn shared_kanto_brick_office_uses_the_complete_drawing_across_four_cities() {
+        let (mut tiles,g,p)=drawing_cells("kanto",&[&[0x20,0x54,0x21],&[0x37,0x3a,0x7e]]);
+        for (dy,row) in [[0x0b,0x0c],[0x1b,0x1c]].iter().enumerate() {
+            for (dx,&tile) in row.iter().enumerate() {tiles[(6+dy)*g.width+4+dx].source.tile_index=tile;}
+        }
+        let cells=tiles.iter().collect::<Vec<_>>();
+        assert!(outdoor_building_placements(&cells,&g).contains(&p));
+        for map in ["PalletTown","CeladonCity","SaffronCity","FuchsiaCity","UnseenTown"] {
+            let d=descriptor(map,&cells,&g,p).unwrap();
+            assert_eq!(d.asset,Asset::KantoBrickOffice);assert_eq!(d.door,Some(5.));
+        }
+        let changed=tiles[0].source.metatile_id;
+        tiles[0].source.metatile_id=0x30;
+        assert!(descriptor("FuchsiaCity",&tiles.iter().collect::<Vec<_>>(),&g,p).is_none());
+        tiles[0].source.metatile_id=changed;
+        tiles[6*g.width+4].source.tile_index=0xffff;
+        assert_ne!(descriptor("FuchsiaCity",&tiles.iter().collect::<Vec<_>>(),&g,p).map(|d|d.asset),Some(Asset::KantoBrickOffice));
+    }
+
+    #[test]
+    fn connected_north_south_gate_uses_one_asset_and_keeps_its_native_door() {
+        for roof in [[0x08,0x09],[0x18,0x19]] {
+            let (mut tiles,g,p)=drawing_cells("johto",&[&roof,&[0x1a,0x11]]);
+            for (dy,row) in [[0x37,0x38],[0x39,0x3a]].iter().enumerate() {
+                for (dx,&tile) in row.iter().enumerate() {tiles[(6+dy)*g.width+2+dx].source.tile_index=tile;}
+            }
+            let cells=tiles.iter().collect::<Vec<_>>();
+            assert!(outdoor_building_placements(&cells,&g).contains(&p));
+            for map in ["Route29","Route46","TestTown"] {
+                let d=descriptor(map,&cells,&g,p).unwrap();
+                assert_eq!(d.asset,Asset::Johto(Johto::RouteGate));
+                assert_eq!(d.door,Some(3.));assert!(!d.east);
+                let all=building_placements(map,&cells,&g);
+                assert_eq!(all,vec![p],"one complete shared gate for {map}");
+            }
+            tiles[0].source.subtile_column=1;
+            assert!(descriptor("Route29",&tiles.iter().collect::<Vec<_>>(),&g,p).is_none());
+        }
+    }
+
+    #[test]
+    fn shared_civic_reference_assets_do_not_depend_on_the_town() {
+        for (last,asset) in [(0x1b,Asset::Johto(Johto::Pokecenter)),(0x33,Asset::Johto(Johto::Mart))] {
+            let (mut tiles,g,p)=drawing_cells("johto_modern",&[&[0x18,0x19],&[0x1a,last]]);
+            for (dy,row) in [[0x37,0x38],[0x39,0x3a]].iter().enumerate() {
+                for (dx,&tile) in row.iter().enumerate() {tiles[(6+dy)*g.width+2+dx].source.tile_index=tile;}
+            }
+            let cells=tiles.iter().collect::<Vec<_>>();
+            for map in ["AzaleaTown","GoldenrodCity","Route34","TestTown"] {
+                let d=descriptor(map,&cells,&g,p).unwrap();
+                assert_eq!(d.asset,asset);assert_eq!(d.door,Some(3.));
+            }
+        }
+        let (tiles,g,p)=drawing_cells("johto_modern",&[&[0x08,0x09],&[0x1c,0x1e]]);
+        let cells=tiles.iter().collect::<Vec<_>>();
+        for map in ["AzaleaTown","Route34","TestTown"] {
+            let d=descriptor(map,&cells,&g,p).unwrap();
+            assert_eq!(d.asset,Asset::World(Kind::EastGate));assert!(d.east);assert_eq!(d.door,Some(6.));
+        }
+    }
+
+    #[test]
+    fn modern_compact_pair_is_one_house_with_one_source_entrance() {
+        let (mut tiles,mut g,p)=drawing_cells("johto_modern",&[&[0x14,0x15]]);
+        let p=BuildingPlacement {roof_rows:2,..p};
+        let art=[
+            [[0x10,0x11,0x11,0x11],[0x0a,0x0b,0x0b,0x0b],
+                [0x1a,0x1b,0x37,0x38],[0x01,0x02,0x39,0x3a]],
+            [[0x11,0x11,0x11,0x12],[0x0b,0x0b,0x0b,0x0c],
+                [0x1b,0x1b,0x1b,0x1c],[0x02,0x02,0x02,0x16]],
+        ];
+        for tile in &mut tiles {
+            tile.source.tile_index=art[tile.column as usize/4][tile.row as usize][tile.column as usize%4];
+        }
+        for x in 0..g.width {
+            let mut tile=tiles[x].clone();tile.row=4;
+            tile.source=super::super::tests::source_with_tile(0x01,0,0,6);
+            tile.source.tileset_id="johto_modern".into();tiles.push(tile);
+        }
+        g.height+=1;
+        let mut handles=bevy::prelude::Assets::<bevy::prelude::Image>::default();
+        let roof=handles.add(bevy::prelude::Image::default());
+        let wall=handles.add(bevy::prelude::Image::default());
+        let light=handles.add(bevy::prelude::Image::default());
+        let leaf=handles.add(bevy::prelude::Image::default());
+        for tile in &mut tiles {tile.texture=match tile.source.tile_index {
+            0x37|0x38=>light.clone(),0x39|0x3a=>leaf.clone(),
+            _ if tile.row<2=>roof.clone(),_=>wall.clone(),
+        };}
+        let cells=tiles.iter().collect::<Vec<_>>();
+        assert_eq!(building_placements("AzaleaTown",&cells,&g),vec![p]);
+        let d=descriptor("AzaleaTown",&cells,&g,p).unwrap();
+        assert_eq!(d.asset,Asset::Johto(Johto::House));assert_eq!(d.door,Some(3.));
+        let shapes=cells.iter().map(|t|shape_for_source(&t.source)).collect::<Vec<_>>();
+        let mut images=TerrainImageSamples::default();
+        images.pixels.insert(roof.id(),TileImageSample::Rgba((0..64).flat_map(|i|
+            [[57,57,57,255],[41,140,255,255],[123,255,255,255]][i%3]).collect()));
+        for (plaster,ochre,glass,door) in [
+            ([222,255,222,255],[165,123,24,255],[222,255,222,255],[165,123,24,255]),
+            ([123,115,189,255],[66,33,41,255],[255,255,132,255],[100,40,95,255]),
+        ] {
+            images.pixels.insert(wall.id(),TileImageSample::Rgba((0..64).flat_map(|i|
+                if i%2==0 {plaster}else{ochre}).collect()));
+            images.pixels.insert(light.id(),TileImageSample::Rgba(glass.repeat(64)));
+            images.pixels.insert(leaf.id(),TileImageSample::Rgba(door.repeat(64)));
+            let mut mesh=TerrainMeshData {footing_heights:vec![0.;cells.len()],
+                authored_cells:vec![None;cells.len()],..Default::default()};
+            let mut claimed=vec![false;cells.len()];
+            assert!(append_building_with_samples(&mut mesh,&cells,&shapes,&g,"AzaleaTown",p,
+                &mut claimed,[0,0],Some(&images)));
+            assert_eq!(mesh.rigid_buildings.len(),1);
+            assert_eq!(mesh.rigid_buildings[0].doorway,Vec2::new(24.,28.));
+            assert!(mesh.authored_cells[..32].iter().all(|label|label.as_deref()==Some("johto/house")));
+            assert!(claimed[..32].iter().all(|&c|c));assert!(claimed[32..].iter().all(|&c|!c));
+            assert_eq!(mesh.footing_heights,vec![0.;cells.len()]);
+            assert_eq!(mesh.coverage_fade_ranges.len(),1);
+            assert!(mesh.solid.uvs.iter().any(|&uv|crate::scenery_finish::town_glass_coordinates(uv).is_some()));
+            assert!(mesh.solid.positions.iter().all(|p|p[0]>=0. && p[0]<=64. && p[2]>=0. && p[2]<=32.));
+        }
+        let mut changed=tiles.clone();changed[2*g.width+3].source.tile_index=0;
+        let cells=changed.iter().collect::<Vec<_>>();
+        assert!(descriptor("AzaleaTown",&cells,&g,p).is_none(),"a missing door cannot acquire a guessed house");
+    }
+
+    #[test]
+    fn modern_compact_pair_does_not_join_goldenrods_independent_square_neighbors() {
+        for blocks in [&[&[0x14,0x13][..]][..],&[&[0x12,0x13][..]][..]] {
+            let (tiles,g,_)=drawing_cells("johto_modern",blocks);
+            let cells=tiles.iter().collect::<Vec<_>>();
+            let placements=building_placements("GoldenrodCity",&cells,&g);
+            assert_eq!(placements.len(),2);
+            assert!(placements.iter().all(|p|p.width==4 && p.height==4));
+        }
+    }
+
+    #[test]
+    fn unseen_modern_town_roofs_follow_source_paint_without_changing_the_layout() {
+        for (blocks,roof_rows) in [
+            (vec![vec![0x18,0x19],vec![0x1a,0x1b]],4),
+            (vec![vec![0x18,0x19],vec![0x16,0x1e]],4),
+            (vec![vec![0x12]],2),
+        ] {
+            let blocks=blocks.iter().map(Vec::as_slice).collect::<Vec<_>>();
+            let (mut tiles,mut g,mut p)=drawing_cells("johto_modern",&blocks);
+            p.roof_rows=roof_rows;
+            for x in 0..g.width {
+                let mut tile=tiles[x].clone();tile.row=g.height as u32;
+                tile.source.metatile_id=0x01;tile.source.tile_index=6;
+                tiles.push(tile);
+            }
+            g.height+=1;
+            let mut handles=bevy::prelude::Assets::<bevy::prelude::Image>::default();
+            let roof=handles.add(bevy::prelude::Image::default());
+            let poison=handles.add(bevy::prelude::Image::default());
+            for tile in &mut tiles {tile.texture=if (tile.row as usize)<roof_rows {
+                roof.clone()}else{poison.clone()};}
+            let mut images=TerrainImageSamples::default();
+            images.pixels.insert(roof.id(),TileImageSample::Rgba((0..64).flat_map(|i|
+                [[57,57,57,255],[41,140,255,255],[123,255,255,255]][i%3]).collect()));
+            images.pixels.insert(poison.id(),TileImageSample::Rgba((0..64).flat_map(|i|
+                [i as u8,0,0,255]).collect()));
+            let cells=tiles.iter().collect::<Vec<_>>();
+            let shapes=cells.iter().map(|tile|shape_for_source(&tile.source)).collect::<Vec<_>>();
+            for map in ["GoldenrodCity","AzaleaTown"] {
+                let render=|samples| {
+                    let mut mesh=TerrainMeshData {footing_heights:vec![0.;cells.len()],..Default::default()};
+                    let mut claims=vec![false;cells.len()];
+                    assert!(append_building_with_samples(&mut mesh,&cells,&shapes,&g,map,p,
+                        &mut claims,[0,0],samples));
+                    (mesh,claims)
+                };
+                let (before,claims)=render(None);
+                let (after,new_claims)=render(Some(&images));
+                assert_eq!(after.solid.positions,before.solid.positions);
+                assert_eq!(after.solid.normals,before.solid.normals);
+                assert_eq!(after.solid.indices,before.solid.indices);
+                assert_eq!(after.footing_heights,before.footing_heights);
+                assert_eq!(after.rigid_buildings,before.rigid_buildings);
+                assert_eq!(new_claims,claims);
+                let live=after.solid.uvs.iter().zip(&after.solid.colors)
+                    .filter(|(uv,_)|**uv==crate::scenery_finish::SOURCE_PAINT_UV).collect::<Vec<_>>();
+                assert!(!live.is_empty(),"source paint must reach the real modern kit");
+                assert!(live.iter().any(|(_,c)|c[2]>c[0]*2. && c[1]>c[0]),
+                    "source cyan must survive Goldenrod's facade variants and roof folds");
+            }
+        }
+    }
+
+    #[test]
     fn common_johto_building_paint_follows_live_source_without_map_exceptions() {
         for (blocks,height,roof_rows,kind) in [
             (vec![vec![0x14,0x15]],4,2,Johto::House),
@@ -1685,10 +2302,23 @@ mod tests {
                 tiles.push(tile);
             }
             g.height+=1;
+            let entrance=matches!(kind,Johto::House|Johto::Pokecenter|Johto::Mart);
+            if entrance {
+                for (row,art) in [[0x37,0x38],[0x39,0x3a]].into_iter().enumerate() {
+                    for (column,tile) in art.into_iter().enumerate() {
+                        tiles[(p.row+p.height-2+row)*g.width+p.column+2+column].source.tile_index=tile;
+                    }
+                }
+            }
             let mut handles=bevy::prelude::Assets::<bevy::prelude::Image>::default();
             let roof_handle=handles.add(bevy::prelude::Image::default());
             let wall_handle=handles.add(bevy::prelude::Image::default());
-            for tile in &mut tiles {tile.texture=if (p.row..p.row+roof_rows).contains(&(tile.row as usize)) {
+            let light_handle=handles.add(bevy::prelude::Image::default());
+            let leaf_handle=handles.add(bevy::prelude::Image::default());
+            for tile in &mut tiles {tile.texture=if entrance && matches!(tile.source.tile_index,0x37|0x38) {
+                light_handle.clone()
+            } else if entrance && matches!(tile.source.tile_index,0x39|0x3a) {leaf_handle.clone()}
+            else if (p.row..p.row+roof_rows).contains(&(tile.row as usize)) {
                 roof_handle.clone()} else {wall_handle.clone()};}
             let mut images=TerrainImageSamples::default();
             images.pixels.insert(roof_handle.id(),TileImageSample::Rgba((0..64).flat_map(|i|[
@@ -1696,6 +2326,8 @@ mod tests {
             ][i%4]).collect()));
             images.pixels.insert(wall_handle.id(),TileImageSample::Rgba((0..64).flat_map(|i|
                 if i%3==0 {[220,240,205,255]} else {[250,145,195,255]}).collect()));
+            images.pixels.insert(light_handle.id(),TileImageSample::Rgba([245,245,80,255].repeat(64)));
+            images.pixels.insert(leaf_handle.id(),TileImageSample::Rgba([100,40,95,255].repeat(64)));
             let cells=tiles.iter().collect::<Vec<_>>();
             let shapes=cells.iter().map(|tile|shape_for_source(&tile.source)).collect::<Vec<_>>();
             for map in ["CianwoodCity","OlivineCity","AzaleaTown"] {
@@ -1711,9 +2343,20 @@ mod tests {
                 assert_eq!(after.solid.indices,before.solid.indices);
                 assert_eq!(after.footing_heights,before.footing_heights);
                 assert_eq!(claims,before_claims);
+                assert_eq!(after.coverage_fade_ranges,vec![0..after.solid.positions.len()]);
+                assert_eq!(after.depth_coverage_solid_ranges,after.coverage_fade_ranges);
+                assert_eq!(before.coverage_fade_ranges,after.coverage_fade_ranges);
                 assert_ne!(after.solid.colors,before.solid.colors);
+                if entrance {
+                    assert!(after.solid.colors.iter().any(|c|c[0]>0.7 && c[1]>0.7 && c[2]<0.15),
+                        "{kind:?} must use the source entrance light on {map}");
+                    if kind!=Johto::House {
+                        assert!(after.solid.colors.iter().any(|c|c[0]>c[1]*4. && c[2]>c[1]*4.),
+                            "{kind:?} must retain the source plum door leaf on {map}");
+                    }
+                }
                 assert!(after.solid.uvs.iter().zip(&after.solid.colors).any(|(uv,color)|
-                    *uv==crate::scenery_finish::SOURCE_PAINT_UV && color[0]<color[1] && color[1]<color[2]),
+                    crate::scenery_finish::town_paint_kind(*uv).is_some() && color[0]<color[1] && color[1]<color[2]),
                     "{kind:?} must use source cyan on {map}");
                 let mut fallback=TerrainMeshData::default();
                 let mut claims=vec![false;cells.len()];
@@ -1724,11 +2367,11 @@ mod tests {
         }
     }
     #[test]
-    fn forest_uses_shared_johto_grove_without_external_sprite_assets() {
+    fn forest_small_headbutt_keeps_authored_plot_and_small_shared_recipe() {
         const CHILD: &str = "GEOTHITE_SHARED_FOREST_TEST_CHILD";
         if std::env::var_os(CHILD).is_none() {
             let output = std::process::Command::new(std::env::current_exe().unwrap())
-                .args(["--exact", "mesh::modeled_exteriors::tests::forest_uses_shared_johto_grove_without_external_sprite_assets", "--nocapture"])
+                .args(["--exact", "mesh::modeled_exteriors::tests::forest_small_headbutt_keeps_authored_plot_and_small_shared_recipe", "--nocapture"])
                 .env(CHILD, "1")
                 .env("CRYSTAL_OPEN_MODEL_ROOT", std::env::temp_dir().join(format!("geothite-missing-trees-{}",std::process::id())))
                 .output().unwrap();
@@ -1757,7 +2400,7 @@ mod tests {
         assert_eq!(mesh.footing_heights,vec![0.;6]);
         assert_eq!(claimed,vec![true,true,false,true,true,false]);
         let mut expected=TerrainMeshData::default();
-        crate::foliage::append_grove_tree(&mut expected,[0.,16.,0.,16.],0.,8.,[0,0],[false;4]);
+        crate::foliage::append_grove_tree(&mut expected,[0.,16.,0.,16.],0.,4.,[0,0],[false;4]);
         assert_eq!(mesh.solid.positions,expected.solid.positions);
         assert_eq!(mesh.solid.colors,expected.solid.colors);
         assert_eq!(mesh.solid.indices,expected.solid.indices);
@@ -1779,11 +2422,11 @@ mod tests {
     }
 
     #[test]
-    fn large_forest_drawings_keep_their_full_plot_and_use_johto_crown_scale() {
+    fn large_forest_drawings_keep_ancient_tree_identity_and_full_plot() {
         let sources=(0..4).flat_map(|y| (0..5).map(move |x| {
             let mut source=super::super::tests::source_with_tile(
                 if x < 4 {0x05} else {0x01},x as u8,y as u8,
-                if x < 4 {0x26 + (y % 2) * 0x10 + x % 2} else {0x05});
+                if x < 4 {0x0c + y * 0x10 + x} else {0x05});
             source.tileset_id="forest".into(); source
         })).collect();
         let frame=super::super::tests::frame(5,4,sources);
@@ -1797,7 +2440,8 @@ mod tests {
         let mut claimed=vec![false;20];
         assert!(append_tree(&mut mesh,&cells,&shapes,&g,"IlexForest",p,&mut claimed,[0,0]));
         let mut expected=TerrainMeshData::default();
-        crate::foliage::append_grove_tree(&mut expected,[8.,24.,8.,24.],0.,8.,[0,0],[false;4]);
+        crate::foliage::append_family_canopy(&mut expected,[8.,24.,8.,24.],0.,8.,[0,0],[false;4],
+            crate::foliage::GroveFamily::AncientForest);
         assert_eq!(mesh.solid.positions,expected.solid.positions);
         assert_eq!(mesh.textured.quad_count(),16,"the entire original plot retains ground backing");
         assert_eq!(claimed,(0..20).map(|i|i%5<4).collect::<Vec<_>>());
@@ -2100,8 +2744,9 @@ mod tests {
             let (mut tiles,g,mut p)=drawing_cells("forest",
                 &[&[0x1d,0x1e,0x1f],&[0x21,0x22,0x23],&[last,0x26,0x27]]);
             p.ground_tile_index=5;tiles.last_mut().unwrap().source.tile_index=5;
-            let wall=6*g.width+2;let window=7*g.width+2;
-            for (index,tile_id,handle_id) in [(wall,0x24,8201),(window,0x04,8202)] {
+            let wall=6*g.width+2;let window=7*g.width+2;let door=10*g.width+2;
+            for (index,tile_id,handle_id) in [(wall,0x24,8201),(window,0x04,8202),(door,0x17,8203)] {
+                if index==door && last==0x25 {continue;}
                 tiles[index].source.tile_index=tile_id;
                 tiles[index].texture=Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(handle_id),std::marker::PhantomData);
             }
@@ -2115,7 +2760,13 @@ mod tests {
             images.pixels.insert(tiles[wall].texture.id(),TileImageSample::Rgba(
                 [[35,55,105,255],[110,150,210,255]].repeat(32).into_iter().flatten().collect()));
             images.pixels.insert(tiles[window].texture.id(),TileImageSample::Rgba(
-                [[0,0,0,255],[245,220,60,255]].repeat(32).into_iter().flatten().collect()));
+                [[0,0,0,255],[70,60,90,255],[140,130,160,255],[245,220,60,255]]
+                    .repeat(16).into_iter().flatten().collect()));
+            if kind==Kind::ForestGate {
+                images.pixels.insert(tiles[door].texture.id(),TileImageSample::Rgba(
+                    [[0,0,0,255],[110,40,70,255],[140,80,120,255],[190,130,170,255]]
+                        .repeat(16).into_iter().flatten().collect()));
+            }
             let mut before=TerrainMeshData {authored_cells:vec![None;cells.len()],footing_heights:vec![0.;cells.len()],..Default::default()};
             let mut after=before.clone();
             let mut claimed_before=vec![false;cells.len()];let mut claimed_after=claimed_before.clone();
@@ -2132,18 +2783,25 @@ mod tests {
                 let material=m.vertex_material(i);
                 if material.starts_with("roof_") {
                     assert_eq!(after.solid.uvs[i],crate::scenery_finish::SOURCE_PAINT_UV);
-                } else if matches!(material,"forest_gate_door"|"yellow") {
-                    assert_eq!(color,before.solid.colors[i],"door and insignia keep authored paint");
+                } else if material=="yellow" {
+                    assert_eq!(color,before.solid.colors[i],"unrelated hardware keeps authored paint");
                 } else {
-                    assert_eq!(after.solid.uvs[i],crate::scenery_finish::SOURCE_PAINT_UV);
+                    if matches!(material,"glass"|"glass_light"|"glass_dark") {
+                        assert!(crate::city_lights::source_window_tag(after.solid.uvs[i]));
+                    } else {
+                        assert_eq!(after.solid.uvs[i],crate::scenery_finish::SOURCE_PAINT_UV);
+                    }
                     if material=="plaster" {assert!(color[2]>color[0]*3.,"live blue masonry");}
                     if material=="glass" {assert!(color[0]>color[2]*3.,"separate yellow window palette");}
+                    if material=="forest_gate_door" {assert!(color[0]>color[2]*2.,"separate live door pigment");}
                 }
             }
             if kind==Kind::ForestGate {
                 assert!((0..after.solid.positions.len()).any(|i|m.vertex_material(i)=="forest_gate_door"));
             }
-            for missing in [None,Some(wall),Some(window)] {
+            let mut missing_samples=vec![None,Some(wall),Some(window)];
+            if kind==Kind::ForestGate {missing_samples.push(Some(door));}
+            for missing in missing_samples {
                 let mut incomplete=images.clone();
                 if let Some(index)=missing {incomplete.pixels.remove(&tiles[index].texture.id());}
                 else {incomplete=TerrainImageSamples::default();}
@@ -2214,6 +2872,31 @@ mod structure_underlay_tests {
             priority: false,
         }
     }
+    #[test]
+    fn kanto_ground_prefers_flat_lawn_over_the_same_tile_on_a_remote_bank() {
+        let bank=tile("kanto",0x07,0x2c);let lawn=tile("kanto",0x0a,0x2c);
+        let shapes=[CellShape::RaisedTop{height:6.,solid:SolidKind::Bank},CellShape::Flat];
+        assert_eq!(ground(&[&bank,&lawn],&shapes,"kanto",0x2c,None),Some(1));
+        assert_eq!(ground(&[&bank,&lawn],&shapes,"kanto",0x2c,Some(0x07)),Some(0));
+        assert_eq!(ground(&[&bank],&shapes[..1],"kanto",0x2c,None),Some(0));
+    }
+
+    #[test]
+    fn kanto_building_underlay_borrows_bank_paint_without_borrowing_remote_elevation() {
+        let g=GridGeometry{width:2,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        for (family,shape,expected) in [
+            ("kanto",CellShape::RaisedTop{height:6.,solid:SolidKind::Bank},0.),
+            ("johto",CellShape::RaisedTop{height:6.,solid:SolidKind::Bank},6.),
+            ("kanto",CellShape::Water,CellShape::Water.surface_height(8.))] {
+            let a=tile(family,0x07,0x2c);let b=tile(family,0x02,0x05);
+            let mut mesh=TerrainMeshData{footing_heights:vec![0.;2],..Default::default()};
+            let mut claims=vec![false;2];floor(&mut mesh,&[&a,&b],&[shape,CellShape::Flat],&g,[1,0,1,1],0,&mut claims);
+            assert!(mesh.textured.positions.iter().all(|p|(p[1]-expected).abs()<0.001));
+            assert_eq!(mesh.footing_heights,vec![0.;2]);assert_eq!(claims,[false,true]);
+            assert_eq!(mesh.textured.uvs,vec![[0.,0.],[0.,1.],[0.5,1.],[0.5,0.]]);
+        }
+    }
+
     #[test]
     fn native_grass_and_kanto_paving_rescue_complete_buildings_without_path_samples() {
         let lawn = tile("johto", 0x02, 0x05);

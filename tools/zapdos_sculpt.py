@@ -2,6 +2,8 @@
 """Original thunder bird with angular gold wings and black lightning underfeathers."""
 import argparse,json,math
 from pathlib import Path
+from copy import deepcopy
+from functools import lru_cache
 from sculpt_geometry import loft,curved_profiles,ellipsoid,crease_normals
 from raptor_bird_sculpt import sheet,paint,feet
 from murkrow_sculpt import bill
@@ -37,7 +39,8 @@ def tail(p):
  p.append(sheet('Tail / black five-point lightning underfan',BLACK,black,lambda y,x:depth(y,x)-.024,.031,3))
  p.append(sheet('Tail / gold five-point lightning fan',GOLD,gold,depth,.037,3))
 
-def sculpture(species='zapdos'):
+@lru_cache(maxsize=1)
+def raw_sculpture(species='zapdos'):
  if species not in SPECIES:raise ValueError('unsupported thunder bird')
  body=crease_normals(loft('Body / lean tapering thunder-bird breast',GOLD,curved_profiles(((.204,.028,.036,-.028),(.303,.076,.090,-.020),(.427,.123,.128,-.004),(.564,.150,.130,.008),(.690,.089,.083,.014),(.739,.029,.030,.013)),4),40),45)
  neck=crease_normals(loft('Neck / upright narrow gold throat',GOLD,curved_profiles(((.64,.072,.069,.011),(.78,.065,.066,.016),(.872,.076,.070,.020)),4),32),45)
@@ -45,9 +48,11 @@ def sculpture(species='zapdos'):
  for s in (-1,1):
   xy=[(s*x,y) for x,y in ((.030,.994),(.117,1.011),(.123,.973),(.074,.947),(.044,.955))]
   socket=paint('Eye socket / sharp fitted black thunder gaze '+str(s),BLACK,xy,head,.009,3);p.append(socket)
-  cx=sum(x for x,y in xy)/len(xy);cy=sum(y for x,y in xy)/len(xy)
+  cx=cy=0.
+  for x,y in xy:cx+=x;cy+=y
+  cx/=len(xy);cy/=len(xy)
   white=paint('Eye / fitted narrow ivory lens '+str(s),IVORY,[(cx+.77*(x-cx),cy+.72*(y-cy)) for x,y in xy],socket,.005,3);p.append(white)
-  pupil=paint('Pupil / small dark thunder stare '+str(s),BLACK,oval(s*.083,.978,.007,.015,20),white,.004,3);p.append(pupil)
+  pupil=paint('Pupil / small dark thunder stare '+str(s),BLACK,oval(s*.083,.978,.007,.015,20),white,.004,2);p.append(pupil)
   # Rooted crown points sweep back as their altitude rises.
  crowns=[ [(-.045,1.017),(-.090,1.114),(-.136,1.327),(-.010,1.149),(.008,1.022)],
           [(-.027,1.022),(-.035,1.173),(-.034,1.405),(.060,1.171),(.045,1.021)],
@@ -73,11 +78,18 @@ def sculpture(species='zapdos'):
  xy=[(-.049,.703),(-.039,.809),(0,.828),(.039,.809),(.049,.703),(.030,.723),(.022,.675),(0,.702),(-.020,.675),(-.030,.723)]
  p.append(paint('Throat / fitted jagged feather fringe',LIGHT,xy,neck,.008,3))
  tail(p)
+ return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+
+def sculpture(species='zapdos',normalize=True):
+ model=deepcopy(raw_sculpture(species));p=model['primitives']
+ if not normalize:return model
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
  for q in p:
   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
- return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+ return model
 
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'zapdos.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ from zapdos_glb import export_zapdos
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
+ (args.output/'zapdos.glb').write_bytes(export_zapdos())
 if __name__=='__main__':main()

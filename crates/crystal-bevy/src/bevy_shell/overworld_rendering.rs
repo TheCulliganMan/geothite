@@ -12358,13 +12358,7 @@ fn push_visible_save_dialog_entries(
 }
 
 fn visible_asm_text(snapshot: &RuntimeShellSnapshot, label: &str) -> Result<String> {
-    let text = snapshot
-        .presentation
-        .asm_text
-        .get(label)
-        .with_context(|| {
-            format!("ASM text label {label} is missing from the presentation catalog")
-        })?
+    let text = snapshot.presentation.asm_text_for_label(label)?
         .replace("<PLAYER>", &snapshot.trainer.player_name)
         .replace("<PLAY_G>", &snapshot.trainer.player_name);
     Ok(text)

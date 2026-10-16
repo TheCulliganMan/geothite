@@ -126,9 +126,14 @@ pub(crate) fn tower_shape(source: &VisualTileSource) -> Option<CellShape> {
         return Some(CellShape::PlaneAt { height: 0.0 });
     }
 
-    let north_wall = matches!(source.metatile_id, 0x04..=0x06)
+    // The upper tower courses use the same complete timber face above the
+    // threshold (18) and grating (3b). Their lower rows remain floor art.
+    let north_wall = (matches!(source.metatile_id, 0x04..=0x06)
         && source.subtile_row < 2
-        && matches!(source.tile_index, 0x11 | 0x20..=0x23 | 0x40);
+        && matches!(source.tile_index, 0x11 | 0x20..=0x23 | 0x40))
+        || (matches!(source.metatile_id, 0x18 | 0x3b)
+            && source.subtile_column < 4 && source.subtile_row < 2
+            && source.tile_index == [0x11, 0x21][source.subtile_row as usize]);
     let partition = matches!(source.metatile_id, 0x0c..=0x0e | 0x16 | 0x17)
         && source.subtile_row >= 2
         && matches!(source.tile_index, 0x11 | 0x20 | 0x21 | 0x40);

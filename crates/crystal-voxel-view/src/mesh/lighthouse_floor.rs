@@ -209,10 +209,11 @@ mod lighthouse_floor_tests {
             let footing = owned.footing_heights.clone();
             let authorship = owned.authored_cells.clone();
             assert_eq!(finish_surfaces(&mut owned, MAP, &refs, &g, [0, 0]), 1);
-            assert!(owned.textured.indices.is_empty());
+            assert_eq!(owned.textured.indices.len(),6);
+            assert!(owned.solid.positions.is_empty());
             assert_eq!(owned.footing_heights, footing);
             assert_eq!(owned.authored_cells, authorship);
-            assert!(owned.solid.positions.iter().all(|p| p[1] == 3.5));
+            assert!(owned.textured.positions.iter().all(|p| p[1] == 3.5));
             // Sampling the wall itself, or an incomplete atlas rectangle, does
             // not gain floor permission from its successful-model destination.
             let mut wrong_sample = mesh(&g, 1);
@@ -282,20 +283,15 @@ mod lighthouse_floor_tests {
         assert_eq!(finished.authored_cells, before.authored_cells);
         assert_eq!(finished.animated_solid, before.animated_solid);
         assert_eq!(finished.animated_textured, before.animated_textured);
-        let mut area = 0.0;
-        for quad in finished.solid.positions[4..].chunks_exact(4) {
-            assert!(quad.iter().all(|p| p[1] == 3.5
-                && (0.0..=8.0).contains(&p[0])
-                && (-4.0..=4.0).contains(&p[2])));
-            area += (quad[3][0] - quad[0][0]) * (quad[1][2] - quad[0][2]);
+        assert_eq!(finished.textured.indices.len(),6);
+        assert_eq!(finished.solid.positions.len(),4,"floor adds no generic solid slab");
+        let expected=g.uv(1,0);
+        for &i in &finished.textured.indices {
+            let v=finished.textured.positions[i as usize];let uv=finished.textured.uvs[i as usize];
+            assert!(v[1]==3.5&&(0.0..=8.0).contains(&v[0])&&(-4.0..=4.0).contains(&v[2]));
+            assert!((near(uv[0],expected.0)||near(uv[0],expected.1))
+                &&(near(uv[1],expected.2)||near(uv[1],expected.3)),"native stone UV unchanged");
         }
-        assert!((area - 64.0).abs() < 0.0001);
-        assert!(
-            finished.solid.normals[4..]
-                .iter()
-                .all(|n| *n == [0.0, 1.0, 0.0])
-        );
-        assert!(finished.solid.uvs[4..].iter().all(|uv| *uv == [0.0; 2]));
     }
 
     #[test]

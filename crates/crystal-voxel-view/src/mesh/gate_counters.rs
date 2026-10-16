@@ -257,6 +257,14 @@ pub(super) fn append(
         !crate::gate_counter_models::segment(exposed(p.network,i%g.width-p.column,i/g.width-p.row))
             .has_native_gate_counter_materials()
     }) {return false;}
+    let native_phone=native.is_some() && !cafe && !p.network.phones.is_empty();
+    if native_phone && (!crate::gate_counter_models::phone().has_native_gate_phone_materials()
+        || p.network.phones.iter().any(|&(dx,dy)| {
+            [0x0e,0x0f,0x20,0x21].iter().enumerate().any(|(offset,&tile)| {
+                let i=(p.row+dy+offset/2)*g.width+p.column+dx+offset%2;
+                cells[i].source.tile_index!=tile
+            })
+        })) {return false;}
     let ground = cells[p.ground];
     let uv = g.uv(ground.column as usize, ground.row as usize);
     // The native civic drawing has one eight-pixel front course. A 12px
@@ -289,17 +297,18 @@ pub(super) fn append(
         let (west, _, north, _) = g.bounds(p.column + dx, p.row + dy);
         // The receiver remains on the two-by-two source phone plot, on top of
         // the joined counter. Its handset, keys and coiled cord are solid art.
-        crate::gate_counter_models::phone().append_fitted(
-            &mut mesh.solid,
-            [
-                west + g.tile_width * 0.25,
-                west + g.tile_width * 1.75,
-                north + g.tile_height * 0.5,
-                north + g.tile_height * 1.5,
-            ],
-            height,
-            12.0 * g.tile_height / 8.0,
-        );
+        let bounds=[west+g.tile_width*0.25,west+g.tile_width*1.75,
+            north+g.tile_height*0.5,north+g.tile_height*1.5];
+        let phone=crate::gate_counter_models::phone();
+        let phone_height=12.0*g.tile_height/8.0;
+        if native_phone {
+            let uv=g.uv(p.column+dx,p.row+dy);
+            let sample=|x:f32,y:f32|[uv.0+(uv.1-uv.0)*(x+0.5)/8.,uv.2+(uv.3-uv.2)*(y+0.5)/8.];
+            assert!(phone.append_native_gate_phone(&mut mesh.textured,bounds,height,phone_height,
+                [sample(2.,4.),sample(3.,0.),sample(0.,0.),sample(1.,0.)]));
+        } else {
+            phone.append_fitted(&mut mesh.solid,bounds,height,phone_height);
+        }
     }
     for i in p.indices(g.width) {
         claimed[i] = true;
@@ -369,6 +378,52 @@ mod tests {
         };
         (cells, g, n)
     }
+    #[test]
+    fn native_gate_phone_palette_uses_only_its_complete_plot_across_reviewed_rooms() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file(),"explicit external pack must exist");
+        if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let layout=&pack.pack().runtime_files()["data/tilesets/gate_metatiles.bin"];
+        let mut phones=0;
+        for (map,module) in &pack.pack().data().maps {
+            if !reviewed_gate_map(map) {continue;}
+            let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+            let mut tiles=Vec::new();
+            for y in 0..h {for x in 0..w {
+                let block=module.blocks[y/4*(w/4)+x/4];
+                tiles.push(VisualTile{animation_frames:None,column:x as u32,row:y as u32,texture:Default::default(),priority:false,
+                    source:VisualTileSource{tileset_id:Arc::from("gate"),metatile_id:block,subtile_column:(x%4)as u8,
+                        subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+y%4*4+x%4]as u16}});
+            }}
+            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let refs=tiles.iter().collect::<Vec<_>>();let blank=vec![false;tiles.len()];
+            let expected=tiles.iter().filter(|t|t.source.tile_index==0x0e).count();
+            let mut room_phones=0;
+            for p in resolve(map,&refs,&g,[0,0],None,&blank) {
+                if p.network.phones.is_empty(){continue;}
+                let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
+                let mut claims=blank.clone();assert!(append(&mut mesh,&refs,&g,&p,&mut claims),"{map}");
+                assert!(mesh.solid.positions.is_empty(),"{map}: native phone avoids cyan solid paint");
+                assert_eq!(claims.iter().filter(|&&v|v).count(),p.indices(w).count());
+                assert!(mesh.footing_heights.iter().all(|&v|v==2.75));
+                for &(dx,dy) in p.network.phones {
+                    phones+=1;
+                    room_phones+=1;
+                    let uv=g.uv(p.column+dx,p.row+dy);
+                    for (x,y) in [(2.,4.),(3.,0.),(0.,0.),(1.,0.)] {
+                        let sample=[uv.0+(uv.1-uv.0)*(x+0.5)/8.,uv.2+(uv.3-uv.2)*(y+0.5)/8.];
+                        assert!(mesh.textured.uvs.contains(&sample),"{map}: own phone swatch");
+                    }
+                }
+            }
+            assert_eq!(room_phones,expected,"{map}: every native phone drawing is bound");
+        }
+        assert!(phones>=20,"must exercise shared Kanto and Johto phone plots, got {phones}");
+    }
+
     #[test]
     fn kanto_native_cafe_counter_reuses_connected_modules_and_native_palette() {
         let path=std::env::var("CRYSTAL_RENDER_TEST_PACK").unwrap_or_else(|_|"content-packs/realtime-clock.browser.crystalpack".into());

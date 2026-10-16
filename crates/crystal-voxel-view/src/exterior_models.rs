@@ -32,7 +32,6 @@ pub(crate) enum Kind {
     KantoStation,
     KantoDepartment,
     KantoArcade,
-    KantoMuseum,
     Silph,
     KantoMansion,
     PowerPlant,
@@ -97,7 +96,6 @@ impl Kind {
             Self::KantoStation => "world-exterior/kanto_station",
             Self::KantoDepartment => "world-exterior/kanto_department",
             Self::KantoArcade => "world-exterior/kanto_arcade",
-            Self::KantoMuseum => "world-exterior/kanto_museum",
             Self::Silph => "world-exterior/silph",
             Self::KantoMansion => "world-exterior/kanto_mansion",
             Self::PowerPlant => "world-exterior/power_plant",
@@ -163,7 +161,6 @@ pub(crate) const ALL: &[Kind] = &[
     Kind::KantoStation,
     Kind::KantoDepartment,
     Kind::KantoArcade,
-    Kind::KantoMuseum,
     Kind::Silph,
     Kind::KantoMansion,
     Kind::PowerPlant,
@@ -226,7 +223,6 @@ const JSON: &[crate::model_storage::Source<'static>] = &[
     crate::model_storage::include_model!("models/world_exteriors/kanto_station.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/kanto_department.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/kanto_arcade.mesh.json"),
-    crate::model_storage::include_model!("models/world_exteriors/kanto_museum.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/silph.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/kanto_mansion.mesh.json"),
     crate::model_storage::include_model!("models/world_exteriors/power_plant.mesh.json"),
@@ -398,7 +394,7 @@ impl Model {
             // These gates already contain closed, overlapping ceramic shingles.
             // Re-tessellating their half faces as old slab courses destroys the
             // authored profile and multiplies their runtime triangle cost.
-            let authored_roof = matches!(export.name.as_str(), "forest_gate" | "forest_gate_closed")
+            let authored_roof = matches!(export.name.as_str(), "forest_gate" | "forest_gate_closed" | "east_gate")
                 && p.material.starts_with("roof_");
             if authored_roof {
                 let sun = Vec3::new(0.45, 0.8, 0.55).normalize();
@@ -454,6 +450,9 @@ impl Model {
             east,
         })
     }
+    pub(crate) fn material_ranges(&self) -> impl Iterator<Item = (std::ops::Range<usize>, &str)> {
+        self.materials.iter().map(|(range, name, _)| (range.clone(), name.as_str()))
+    }
     pub(crate) fn vertex_material(&self, vertex: usize) -> &str {
         self.materials
             .iter()
@@ -481,10 +480,34 @@ impl Model {
             }
         }
     }
+    /// Notice-board paint follows the live source, including the dark marks.
+    pub(crate) fn recolor_fitted_sign(&self, target: &mut SurfaceMeshData,
+        first: usize, palette: [[f32;4];3]) {
+        for (range,name,original) in &self.materials {
+            let paint = match name.as_str() {
+                "cream" => palette[2],
+                "timber" | "yellow" => palette[1],
+                "timber_light" => palette[1],
+                _ => continue,
+            };
+            for index in range.clone() {
+                // This material combines the posts and raised notice marks.
+                // Only the marks lie in front of the recessed panel.
+                let paint=if name=="timber_light" && self.surface.positions[index][2] > self.max[2]*0.5 {
+                    palette[0]
+                } else { paint };
+                let color=target.colors[first+index];
+                let shade=(color[0]+color[1]+color[2]) /
+                    (original[0]+original[1]+original[2]).max(0.0001);
+                for channel in 0..3 { target.colors[first+index][channel]=paint[channel]*shade; }
+                target.uvs[first+index]=crate::scenery_finish::SOURCE_PAINT_UV;
+            }
+        }
+    }
     /// Forest masonry, pale structural trim and yellow window paint each come
     /// from their own live drawing. Roof, door and insignia retain their roles.
     pub(crate) fn recolor_fitted_forest_wall(&self, target: &mut SurfaceMeshData,
-        first: usize, palette: [[f32;4];4]) {
+        first: usize, palette: [[f32;4];6]) {
         for (range,name,original) in &self.materials {
             let (paint,shade)=match name.as_str() {
                 "plaster" => (palette[0],1.),
@@ -493,6 +516,9 @@ impl Model {
                 "plaster_light" | "timber_light" | "stone_light" => (palette[1],1.),
                 "timber" | "timber_gold" | "stone" => (palette[0],0.76),
                 "stone_dark" => (palette[3],1.),
+                "forest_gate_door_frame" => (palette[4],1.),
+                "forest_gate_door" => (palette[5],1.),
+                "forest_gate_door_panel" => (palette[5],0.72),
                 "glass" => (palette[2],0.9),
                 "glass_light" => (palette[2],1.),
                 "glass_dark" => (palette[2],0.65),
@@ -514,6 +540,19 @@ impl Model {
         first: usize,
         palette: [[f32; 4]; 3],
     ) {
+        self.recolor_roof_above(target,first,palette,f32::NEG_INFINITY);
+    }
+
+    pub(crate) fn recolor_fitted_modern_roof(&self, target: &mut SurfaceMeshData,
+        first: usize, palette: [[f32;4];3]) {
+        // front_entry's closed door leaf ends at1.735 in authored model space.
+        // It shares roof_teal_dark with upper architecture; the material name
+        // alone must not turn that entrance into the source roof's dark outline.
+        self.recolor_roof_above(target,first,palette,1.75);
+    }
+
+    fn recolor_roof_above(&self, target: &mut SurfaceMeshData, first: usize,
+        palette: [[f32;4];3], minimum_height: f32) {
         let field: [f32; 4] = std::array::from_fn(|i| palette[1][i] * 0.7 + palette[2][i] * 0.3);
         let light: [f32; 4] = std::array::from_fn(|i| field[i] * 0.82 + palette[2][i] * 0.18);
         for (range, name, original) in &self.materials {
@@ -528,6 +567,7 @@ impl Model {
                 field
             };
             for index in range.clone() {
+                if self.surface.positions[index][1]<minimum_height {continue;}
                 for channel in 0..3 {
                     target.colors[first + index][channel] = color[channel]
                         * target.colors[first + index][channel]
@@ -642,6 +682,37 @@ pub(crate) use variants::variant_model;
 mod tests {
     use super::*;
     #[test]
+    fn modern_town_roof_paint_preserves_shared_material_entrances() {
+        let mut preserved_doors=0;
+        for kind in [Kind::ModernHouse,Kind::ModernBlank,Kind::ModernShop,
+            Kind::ModernCenter,Kind::ModernMart,Kind::ModernGym,Kind::ModernStation,
+            Kind::ModernDaycare,Kind::ModernArcade] {
+            let m=model(kind);let mut mesh=SurfaceMeshData::default();
+            m.append_fitted(&mut mesh,[0.,96.,0.,64.],0.,16.,None);
+            let before=mesh.clone();
+            m.recolor_fitted_modern_roof(&mut mesh,0,[[0.03,0.03,0.03,1.],
+                [0.04,0.2,0.9,1.],[0.1,0.7,1.,1.]]);
+            assert_eq!(mesh.positions,before.positions);
+            assert_eq!(mesh.normals,before.normals);
+            assert_eq!(mesh.indices,before.indices);
+            let mut roof=0;
+            for i in 0..mesh.positions.len() {
+                let material=m.vertex_material(i);
+                if material.starts_with("roof_") && m.surface.positions[i][1]>1.75 {
+                    roof+=1;
+                    assert_eq!(mesh.uvs[i],crate::scenery_finish::SOURCE_PAINT_UV);
+                } else {
+                    assert_eq!(mesh.colors[i],before.colors[i],"retain {kind:?} {material}");
+                    assert_eq!(mesh.uvs[i],before.uvs[i]);
+                    preserved_doors+=usize::from(material=="roof_teal_dark");
+                }
+            }
+            assert!(roof>0);
+        }
+        assert!(preserved_doors>100,"exercise the real authored door leaves");
+    }
+
+    #[test]
     fn fitted_house_roof_palette_preserves_geometry_and_non_roof_materials() {
         for kind in [
             Kind::KantoHouse,
@@ -685,11 +756,57 @@ mod tests {
         }
     }
     #[test]
+    fn forest_gate_left_door_fits_the_warp_without_squeezing_its_windows() {
+        let m=model(Kind::ForestGate);
+        let anchor=m.anchor.expect("source left entrance");
+        assert!((anchor[0]+1.5).abs()<0.01);
+        let mut out=SurfaceMeshData::default();
+        m.append_fitted(&mut out,[0.,96.,0.,96.],0.,1.,Some(24.));
+        for (original,fitted) in m.surface.positions.iter().zip(&out.positions) {
+            let linear=(original[0]-m.min[0])*96./(m.max[0]-m.min[0]);
+            assert!((fitted[0]-linear).abs()<0.12,"source facade spacing must remain regular");
+        }
+        assert!((fit_door_axis(anchor[0],[m.min[0],m.max[0]],[0.,96.],anchor[0],24.).0-24.).abs()<0.0001);
+    }
+    #[test]
+    fn forest_gate_front_has_three_high_four_pane_windows_and_no_closed_door() {
+        for kind in [Kind::ForestGate,Kind::ForestGateClosed] {
+            let m=model(kind);
+            let mut x:Vec<_>=m.surface.positions.iter().zip(&m.surface.normals).enumerate()
+                .filter(|(i,(p,n))|m.vertex_material(*i)=="glass" && p[1]>2.1 && p[2]>2.5 && n[2]>0.99)
+                .map(|(_, (p,_))|p[0]).collect();
+            x.sort_by(f32::total_cmp);x.dedup_by(|a,b|(*a-*b).abs()<0.00001);
+            let mut groups=vec![Vec::new()];
+            for v in x {
+                if groups.last().unwrap().last().is_some_and(|last:&f32|v-last>0.3) {groups.push(Vec::new());}
+                groups.last_mut().unwrap().push(v);
+            }
+            assert_eq!(groups.len(),3,"source has three high windows: {kind:?}");
+            assert!(groups.iter().all(|window|window.len()==8),"four separate panes per window");
+            if kind==Kind::ForestGateClosed {
+                assert!(m.anchor.is_none());
+                assert!(m.materials.iter().all(|(_,name,_)|!name.starts_with("forest_gate_door") && name!="yellow"),
+                    "closed masonry front has neither an invented door nor gold crests");
+            }
+        }
+    }
+    #[test]
     fn exterior_models_have_closed_volume_valid_normals_and_budget() {
         assert_eq!(ALL.len(), JSON.len());
         for &kind in ALL {
             let m = model(kind);
-            assert!(m.surface.indices.len() / 3 < 12000, "{kind:?}");
+            // Mansion courses gain the existing curved ceramic tessellation
+            // after import; keep its authored mesh and runtime budgets distinct.
+            let budget = match kind {
+                Kind::TinTower => 13000,
+                Kind::KantoMansion => 17000,
+                _ => 12000,
+            };
+            let export: Export = crate::model_storage::parse(JSON[kind as usize]).unwrap();
+            let authored: usize = export.primitives.iter().map(|p| p.indices.len() / 3).sum();
+            assert!(authored < if kind==Kind::TinTower {13000}else{12000}, "{kind:?}: {authored} authored triangles");
+            let runtime = m.surface.indices.len() / 3;
+            assert!(runtime < budget, "{kind:?}: {runtime} runtime triangles");
             assert!(m.surface.indices.len() / 3 > 24, "{kind:?}");
             assert_eq!(m.surface.positions.len(), m.surface.normals.len());
             assert_eq!(m.surface.positions.len(), m.surface.colors.len());
@@ -701,6 +818,36 @@ mod tests {
             }
         }
     }
+    #[test]
+    fn east_gate_closed_courses_cover_the_deck_after_side_door_fitting() {
+        let m=model(Kind::EastGate);
+        for depth in [32.,64.,96.] {
+            let door=depth*0.75;
+            let mut fitted=SurfaceMeshData::default();
+            m.append_fitted(&mut fitted,[0.,64.,0.,depth],0.,16.,Some(door));
+            // Stay inside the ceramic fields, away from intentional narrow
+            // vertical joints between columns.
+            for x in [8.37,16.37,24.37,32.37,40.37,48.37,56.37] {for z in (4..61).step_by(2) {
+                let z=z as f32*depth/64.;let mut top=None;
+                for tri in fitted.indices.chunks_exact(3) {
+                    let p=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(fitted.positions[i as usize]));
+                    let a=p[0];let b=p[1];let c=p[2];
+                    let den=(b.z-c.z)*(a.x-c.x)+(c.x-b.x)*(a.z-c.z);
+                    if den.abs()<0.00001 {continue;}
+                    let u=((b.z-c.z)*(x-c.x)+(c.x-b.x)*(z-c.z))/den;
+                    let v=((c.z-a.z)*(x-c.x)+(a.x-c.x)*(z-c.z))/den;
+                    if u.min(v).min(1.-u-v)< -0.00001 {continue;}
+                    let height=u*a.y+v*b.y+(1.-u-v)*c.y;
+                    if top.is_none_or(|(y,_)|height>y) {top=Some((height,tri[0] as usize));}
+                }
+                let (height,index)=top.expect("the gate roof must be closed");
+                let (_,name,_)=m.materials.iter().find(|(range,_,_)|range.contains(&index)).unwrap();
+                assert!(height>16.*2.3 && !name.ends_with("_dark"),
+                    "exposed roof backing at({x},{z}), door{door}: {name}, height{height}");
+            }}
+        }
+    }
+
     #[test]
     fn east_entry_is_a_side_seam_with_real_open_passage() {
         let m = model(Kind::EastGate);

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Original tapered Remoraid and eight-armed Octillery anatomy."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
 from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,crease_normals
 from abra_sculpt import surface,polygon_caps
@@ -108,9 +110,15 @@ def octillery():
     p.append(funnel('Siphon / dark inner lining',INK,[(.255,.066,.064),(.33,.050,.048),(.365,.037,.035)],(0,.766,0),tilt=-.70,thickness=.004,segments=32))
     return p
 
-def sculpture(species):
+@lru_cache(maxsize=2)
+def raw_sculpture(species):
     if species not in SPECIES:raise ValueError('unsupported jet fish')
     p=remoraid() if species=='remoraid' else octillery()
+    return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+def sculpture(species,normalize=True):
+    model=deepcopy(raw_sculpture(species))
+    if not normalize:return model
+    p=model['primitives']
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
@@ -118,6 +126,7 @@ def sculpture(species):
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
+    from jet_fish_glb import export_jet_fish
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    for s in SPECIES:(args.output/(s+'.mesh.json')).write_text(json.dumps(sculpture(s),separators=(',',':')))
+    for s in SPECIES:(args.output/(s+'.glb')).write_bytes(export_jet_fish(s))
 if __name__=='__main__':main()

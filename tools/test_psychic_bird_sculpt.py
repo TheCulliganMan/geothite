@@ -2,6 +2,7 @@
 """Actual fitted symbolism, wing coatings and psychic-bird anatomy checks."""
 import json,unittest
 from pathlib import Path
+from psychic_bird_glb import read_psychic_bird,geometry_digest
 from psychic_bird_sculpt import sculpture,SPECIES,HEIGHT,transform
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
@@ -9,13 +10,13 @@ from bovine_sculpt import reverse_front
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class PsychicBirdTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.ms={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def setUpClass(cls):cls.ms={s:read_psychic_bird(ROOT/(s+'.glb'),s) for s in SPECIES}
  def find(self,s,prefix):return next(p for p in self.ms[s]['primitives'] if p['part'].startswith(prefix))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,self.ms)
  def test_finite_unit_normals_follow_winding(self):assert_model_shading(self,self.ms)
  def test_recipe_parity_height_budget_and_distinct_anatomy(self):
   for s,m in self.ms.items():
-   self.assertEqual(m,sculpture(s));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
+   self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
    self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in ps),60000);self.assertEqual(len(ps),len({p['part'] for p in ps}))
   for s,counts in (('natu',(('Crest /',1),('Wing gold /',4),('Wing red /',12),('Tail /',2))),('xatu',(('Streamer /',2),('Wing hem /',4),('Wing hem red /',4),('Wing badge /',2),('Chest symbol /',2),('Back stripe /',3)))):
    for prefix,n in counts:self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ms[s]['primitives']),n)

@@ -1,3 +1,2091 @@
+## Tin Tower left gap closed; full311 geometry audit passes
+
+Final native build49149 completed (1m43), both production render_at_location and
+audit_authored_assets. Fresh capture94251 completed4paired comparisons, all0,
+noERROR, statespreserved, all individually viewed: TinTower3F default/east/west
+and TinTower1F near the exit in target/kanto-resume/tin-wall-joined-review/.
+The left perimeter now meets the room floor and guardian rear wall, with no
+black padding band between them. Opposite wall and first-floor entrance also
+reviewed. Camera cutaway still opens viewing sections; that is distinct from
+the corrected geometry offset. Final donor regression16497 passed (2.56s):
+all9floor inner boundaries, edited-source rejection, Sprout isolation,
+unchanged support/source ownership, normals/cutaway metadata and exits.
+ receipts/tin-wall-final-tests.log
+Tin level-hop production regression passed1; receipts/tin-level-hop-controls.log.
+
+Final full311 audit35952 passed, noerrors:311/311base maps,225declared block
+states, including all original16 Kanto combinations. 162states are exhaustive
+small-room combinations;63are explicitly bounded switch-room script prefixes.
+All298production jump samples satisfy their renderer's floor relation.
+Tin3F..9F sample counts20/28/43/6/15/2/6 keep level hops. Wall-only origins are
+excluded using production occupancy, with rejected counts exposed permap.
+Report/receipt: full311-alternatives-final-audit.json and
+ receipts/full311-alternatives-final-audit.log (ignored verification output).
+This supersedes the163errors from the former audit assumptions, and does NOT
+prove script reachability or full311/original16 native visual acceptance.
+
+Exit walkthrough33201 completed successfully with two ordinary downward inputs:
+TinTower1F10,14 ->10,15 -> EcruteakCity37,7 ->37,8 (authored arrival step).
+Both moving samples and the final paired comparison were individually viewed;
+the doorway is open, source state preserved, captureexit0/noERROR. A preceding
+one-input fixture stopped on the exit carpet and correctly failed its expected
+map assertion; it is superseded by this completed walkthrough, not a production
+warp defect. Final Radio controls34475 passed25/25 in6.06s after perimeter changes.
+No task-owned process remains live. Broad room/furniture, reachable variant and
+Radio stair traversal requirements remain active. Next: complete ordinary
+Radio stair up/down walkthroughs and resume remaining clinic/facility/furniture
+visual findings in the full-scope acceptance list. Keep full311 and all original16
+native/reachability requirements. Do not mark the whole goal complete.
+
+## Tin Tower left-wall correction and broader audit work in progress
+
+Human reports a remaining gap on the left and confirmed Tin Tower. Native
+TinTower3F comparison and a real left hop (5,2)->(3,2) show a black band between
+the generic perimeter and floor. All nine floors have a complete 4-source-cell
+blank block01/tile01 border; the generic wall stood at the far map edge.
+New tin_room_bounds.rs authenticates that blank border and moves the west,
+east and south perimeter to its inner edge. First-floor exit openings are
+measured from the inset boundary. Other rooms, source claims and support stay
+unchanged; altered boundary source rejects the inset. Native visual acceptance
+is PENDING. Final build handle49149 remains live; receipts/tin-wall-joined-native-build.log.
+The first pack-backed room donor regression96729 passed including all nine
+inner-edge assertions and unchanged support/claims/exit checks. Additional
+altered-source/isolation assertions were added afterward and need rerun.
+
+The audit now represents multiple replacement blocks at one coordinate. Small
+rooms retain exhaustive mixed-radix combinations (all original binary masks
+preserved); large switch rooms explicitly report declared-script-prefixes,
+not exhaustive or reachable-state coverage. New helper tests80256 passed2.
+Fresh nine affected-map audit89577 passed:9maps/178states/zeroerrors, including
+63 explicit switch-room prefixes and all26 combinations in each ruins chamber.
+Full311 and original16 verification must be repeated with the final executable.
+
+Tin Tower hop audit failures were traced further: production terraces already
+keep all nine floors level for timber barrier hops (existing regression), and
+native TinTower3F production left input successfully hopped5,2 to3,2 on that
+floor. The audit incorrectly required all jumps to descend, sampled sprite
+bottoms instead of production actor ground centers, and included wall origins
+that production session startup rejects. It now shares the renderer's
+jump_changes_floor_level predicate, requires equal Tin Tower hop endpoints,
+retains descent checks elsewhere, samples ground centers, and counts rejected
+unoccupiable origins. Final full311 rerun is still required; no blanket green
+claim. Current native evidence: tin-tower-jump-review/ and
+tin-tower-jump-walk-review/, paired states unchanged and images viewed.
+
+## Radio entrance correction verified; broader interior work remains active
+
+Human clarified that the misplaced glass was the pane across the radio studio
+entrance. The fifth-floor inferred return at source column 32 is removed;
+the actual pale cap at column 35 supplies the side wall. The doorway remains
+clear even when altered or cropped cap art falls back to the source drawing.
+This supersedes the older fifth-floor inferred-return acceptance below.
+
+Current native build 86497 completed successfully (both render_at_location and
+audit_authored_assets), receipt radio-side-glass-perimeter-native-build.log.
+Confirmed native glass now excludes the overlapping opaque east room perimeter
+only over its own span. Missing/unconfirmed geometry keeps the perimeter.
+Pack-backed final studio regression 15701 passed; room donor control 39805
+passed. The final Radio control run passed 25/25 in 3.43s with the absolute
+CRYSTAL_RENDER_TEST_PACK. An initial invocation omitted that environment variable
+and failed pack path validation; it was rerun with the documented input.
+
+Native entrance batch 22098 completed three production synthetic-input walks:
+RadioTower5F (16,3) -> (16,4) -> (16,5), RadioTower2F (12,3) -> (12,4) -> (12,5),
+LavRadioTower1F (10,4) -> (10,5) -> (10,6). All three final paired comparisons
+and all six moving samples were individually viewed. No glass crosses those
+paths. Files: target/kanto-resume/radio-glass-entrance-review/.
+Fresh final six paired east/west views of those three maps completed with no
+errors, unchanged paired source states, and were individually viewed:
+target/kanto-resume/radio-side-glass-final-review/. Glass follows the marked
+strip, with native faces on both sides and the source white cap on top.
+These are acceptance evidence for this wall/entrance correction, not whole-room
+or full311 acceptance.
+
+Broader audit 81515 completed with exit 1: all 311 base maps meshed and 47
+block-substitution combinations were reported, but 163 audit errors remain.
+Nine maps hit the auditor's single-alternative-per-coordinate restriction:
+BurnedTower1F/B1F, GoldenrodUnderground, its SwitchRoomEntrances, the four
+RuinsOfAlph chambers and TinTower1F. These require auditing multiple declared
+alternatives; they are not evidence that production meshing failed.
+The remaining 154 errors report equal approach/landing heights for Tin Tower
+jumps. Investigate the production support path and actual native views before
+calling these false positives or claiming tower acceptance. Exact failing
+command: audit_authored_assets content-packs/core-modular.browser.crystalpack
+ target/kanto-resume/full311-current-audit.json --script-block-variants
+ followed by the explicit 311 non-TOWN/ROUTE map IDs. Read-only source inventory
+selected 208 INDOOR, 39 DUNGEON, 39 CAVE and 25 GATE maps.
+
+Six adjacent-position downward-stair captures 35770 completed successfully, all
+six paired states preserved and comparisons individually viewed:
+radio-stair-down-adjacent-review/. The gray descending treads remain small in
+the normal view; a static picture alone does not complete contact/warp visual
+acceptance. Ordinary up/down production warp walkthroughs are still required.
+No task-owned process remains live. Full311/original16 visual work stays active;
+do not treat this corrected doorway as completion of the broader goal.
+No packs, audio, exports, staging, commits or agent messages were involved.
+
+## New human glass-wall identification; standing side runs implemented
+
+Latest human attached /tmp/codex-remote-attachments/01a13610-e7d4-77e2-9157-21f9c9747a0a/59E88FF6-D820-4607-B8E9-91AF7E8900FC/1-Pasted-Image-1.jpg and said pale studio edge is another glass wall.
+Inspected attachment. Exact source: Radio2F block3d(5,1) lower col3 +20(5,2/3)
+col3,10cells; Radio5F3d(8,1)+3e(8,2/3),10cells; Lavender20(4,3),4cells.
+White8a/8b caps are source palette8. New Rust native_radio_side.rs (source
+DELIVERABLE, not build output) owns complete24cap cells across3maps, closed
+32px glass, source white cap on top, live front-pane glass on both sides and
+upright mullions. Native studio integration keeps source/floor ownership,
+footing/collision unchanged; missing complete pane context retains source art.
+
+5F's real east wall is beyond the doorway,5source columns after its final pane.
+Removed inferred return across that doorway whenever this map owns the authored
+side-wall role, including altered/custom/cropped cap fallback. The new side
+geometry uses the actual cap column35; source doorway32..34 remains clear.
+2F marked strip is col23, rows6..15; Lavender col19, rows12..15. Other inferred
+outer returns remain. Narrow inserted append context guard in modeled_interiors.
+
+Final source test13627 terminal0,1 passed0.74s:
+ receipts/radio-side-glass-doorway-tests.log
+Covers all4studios, shifted/padded grids,24whole cap cells, ceiling height,
+white top, both side faces/outward winding, all-source-cell atomic reservation,
+missing-context source fallback, unchanged support/warps and5Fdoorway fallback.
+First side test24245 failed test fixture missing authored_cells (production
+frame always has it); fixture corrected.61105 then passed1 before hardening.
+Final broad direct Radio controls40467 terminal0,25passed9.56s.
+
+Native build21876 LIVE, receipts/radio-side-glass-native-build.log, builds BOTH
+render_at_location and audit_authored_assets using own target/kanto-resume/jobs1,
+wasm-dev with voxel/bevy opt-level0, features location-tester. Poll SAME handle;
+no capture/audit currently live. Need fresh native side/default views of all3
+side runs plus ordinary entry walks before accepting this latest human fix.
+
+Before human steering, fixed Radio flight vertical overstretch in
+native_radio_stair.rs: full rail envelope12px instead22.4, support scales identically,
+down base-16*(12/22.4). Selected model/cache and other rooms unchanged. New
+actual-rendered-stone regression requires8flat treads,~1px risers/2pxrun and
+>0.6px projected tread strip at normal45degree camera.66253 passed all5pack-backed
+stair tests;97366 native passed. Batch19115 completed12pairs, all exit0/noERROR,
+all12state-preserved, individually viewed all12. Folder radio-stair-pitch-native-review/.
+Up flights look proportionate. Down approaches partly hidden behind player/pet;
+DO NOT claim visual stair acceptance yet. Re-capture down six flights from adjacent
+walkable x (2F14,2;3F1,2;4F8,2 &16,2;5F1,2 &13,2) and ordinary warp walks.
+
+Source inventory from current browser pack confirms FULL311 non-town/route maps:
+208INDOOR,39DUNGEON,39CAVE,25GATE. Native headless audit binary is being built;
+run311 explicit names + --script-block-variants after visual batch. This is
+geometry/support evidence only, not visual/gameplay acceptance. Full311/original16
+objective remains active/incomplete. Prior turn was verified progress (walls).
+No agents/messages, pack/audio exports, staging/commits or foreign source edits.
+
+## Both reported wall gaps fixed and visually verified
+
+Latest human request handled: Sprout halfway-back gaps closed in east/west native
+views; Radio east glass return present and closed in east/west views. Sprout
+side strips now extend two source rows through verified transverse wall course,
+with no enlarged claims or support changes. Existing column animation retained:
+fresh temporal native comparison viewed, rooted base/upper motion,3 tests pass.
+
+Final Radio source follows the entire contiguous pane run beyond desk/grille,
+not terminal33 or padded grid edge. Anchor requires complete33/table/footer34;
+cropped/custom raw glass continuation prevents an early cap. Both +/-X glass
+faces have outward winding, native tiled glass art, closed body and thin cap.
+
+Final native69994 terminal0 (1m39):
+ receipts/wall-side-connected-glass-native-build.log
+Final pack-backed studio test96341 terminal0,1 passed0.48s:
+ receipts/wall-side-connected-glass-final-tests.log
+Also checks shifted/padded frames, exactly1 return perstudio, rightmost pane,
+missing table context, both face extents/winding, original claims/support/fallback.
+Final direct controls50907 terminal0,31 distinct: radio24, walls4, column3.
+ receipts/wall-side-final-{radio,walls,column}-controls.log
+Includes new Sprout east/west join regression and all previous stair controls.
+
+Native final5 Radio comparisons individually viewed:
+ target/kanto-resume/wall-radio-final-review/
+ radio2-east / radio4-east / radio4-west / radio5-east / lav-east
+All child exits0/noERROR, all5 paired source states preserved. 5F initial spawn
+12,5 was correctly rejected as unwalkable; retried known walkable10,7. Lavender
+14,7; other maps12,5. Same noon/orbit2 or6/pitch35/zoom0 in paired2D/3D.
+Batch22592 stopped at bad5F fixture, corrected batch12069 completed0. No runtime
+collision or source edits to work around spawn rejection.
+Sprout accepted paired east/west and temporal column remain in
+ wall-side-review-after/. Rejected intermediate Radio images there removed;
+final Radio evidence above replaces them. Before views in wall-side-review-before/.
+No task-owned process live. No foreign code edited/staging/commits/packs/audio.
+
+Full311/original16 goal remains ACTIVE/INCOMPLETE; descending Radio stairs remain
+visually too black at default45degree camera (fullscene test proves no opaque
+floor over tread samples). Resume that issue, then remaining whole-room coverage.
+Historical logs/status below are superseded by this verified result.
+
+## Follow whole glass run (current production source, not yet reverified)
+
+Review of previous accepted 5F overview showed front glass extends east beyond
+terminal33/table. Corrected east_return to authenticate anchor33/table/footer,
+then follow contiguous complete pane placements to the last pane. Reject a
+missing/custom/cropped continuation if next raw source is still header15/30.
+Return end remains row+10, geometry independent of padded grid. New external
+regression additionally requires returned column be the rightmost pane.
+
+Earlier studio test39550 passed1 (ordinary+padded frames) before this connected
+run refinement; cianwood_wall_tests4passed and sprout_pillar3passed from same
+binary27b91dde034d44b3; broad radio24passed11.09s (includes full-scene stair test).
+The earlier missing battle_aura file appeared; next attempt19209 failed foreign
+AssetMut borrow errors; those were subsequently fixed by their owner. No foreign
+files edited. Own native80978 LIVE (wall-side-radio-final-native-build.log), but
+its source snapshot PREDATES latest connected-run refinement. After terminal,
+rerun studio test then rebuild native and render all4 studio east views +4Fwest.
+Do not capture80978 as final glass proof. Sprout accepted side images and column
+are unchanged by these Radio-only edits. Full311/original16 and down-stair visual
+issue remain open. No goal completion claim.
+
+## Latest wall verification status (supersedes notes below)
+
+Native63879 terminal0 (2m54), then43763 terminal0 (1m50). Side batch13518
+terminal0: all4 paired states preserved plus column temporal capture. Fresh
+Sprout east/west images individually viewed: BOTH two-row corner gaps closed.
+Column comparison viewed: rooted base/live upper movement retained. Folder
+`wall-side-review-after/`. Radio images from that batch use an intermediate
+incorrect GRID-edge condition; no Radio acceptance. Production pads the map grid.
+
+Corrected Radio east return in native_radio_studio.rs: authenticates complete
+pane33 + matching table at pane.column-4,row+4 + footer34 row3 tiles42/43.
+End is pane.row+10, independent of grid height/origin. Live drawing tiled on
+both +/-X surfaces with outward winding. New tests require exactly1 return in
+all4 studio maps and in padded/shifted frame; missing table context rejects;
+checks both face extents/winding. Added Sprout east/west join/source ownership
+regression in cianwood_walls.rs. All latest source needs fresh compile/test/render.
+
+Verification command attempted cargo test --locked --config
+'profile.test.package.crystal-voxel-view.opt-level=0' -p crystal-voxel-view --lib
+external_radio_studios_keep_full_panels_tables_floor_and_claims with explicit
+external TUI pack/target/kanto-resume/jobs1. FAILED101 immediately because unrelated
+battle_view.rs82 now declares missing battle_aura.rs. Receipt wall-side-radio-tests.log.
+Preserve that work; do not stub/remove unrelated aura module or use prior binary
+as proof of latest Radio fix. Check for file completion then retry same command.
+Rustfmt parse-only checks latest two edited modules. Pack source audit confirms
+one footer-bound return perstudio: Radio2/4/Lav pane34,6 table30,10; Radio5
+pane26,6 table22,10. Footers all34 columns2/3 row3 tiles42/43. No pack edits.
+
+## Side-wall gaps: Sprout and Radio, active native verification
+
+Latest human clarification: BOTH walls; Radio east glass return missing, Sprout
+wall missing halfway back. Before captures in
+`target/kanto-resume/wall-side-review-before/` viewed all four comparisons,
+east/west at orbit2/6, pitch35, zoom0. All paired states preserved. Sprout
+longitudinal strips stop two source rows before folded transverse face; added
+source-verified north_join depth extension in mesh/cianwood_walls.rs without
+claim/support changes. Radio complete terminal pane33 at actual east grid edge
+now emits closed glass return to south room edge, with both +/-X source glass
+faces and thin cap. Production native build63879 currently live:
+`receipts/wall-side-native-build.log`. Must inspect fresh side captures and run
+focused regressions; do not claim visual acceptance yet. Column motion must stay.
+
+Previous native stair build78236 completed0 (12m23s); capture batch91880
+completed0. All13 comparison images individually viewed, all12 paired states
+preserved: `radio-stair-native-review/` covers every stair endpoint and live
+Sprout column. Up flights visible; DOWN flights mostly black slots, NOT visually
+accepted. New full-scene production-mesh vertical-ray regression40600 passed1
+(2m46compile,1.35s test): all8 down tread samples clear of any opaque floor
+overlay. Likely 45degree camera vs near45degree stair slope occlusion; no stair
+production changes made this turn. Fresh column temporal capture shows upper
+shift with rooted base. No idle/controller parity claim from this capture.
+
+Updated docs/modeled-interiors.md actual append_with_tables signature, native
+PC/studio/stair support and live column implementation. Full311/original16 still
+incomplete. Older LIVE status below is historical and superseded here.
+
+## Radio stair geometry/contact and12 controller routes pass; native build live
+
+This goal turn made progress: fixed an actual beveled-nosing support defect,
+passed fresh pack-backed geometry tests and74 distinct voxel controls, corrected
+controller fixture assumptions to authored STAIRCASE behavior and passed all12
+round trips. Full311/original16 is active/incomplete. No visual stair acceptance
+before fresh production renders. Preserve unrelated changes; no agents/messages,
+exports, pack/audio edits, staging or commits. Own target/kanto-resume/jobs1.
+
+LIVE native build session78236:
+ receipts/radio-stair-native-build.log
+ CARGO_TARGET_DIR=target/kanto-resume CARGO_BUILD_JOBS=1 cargo build --locked
+ --profile wasm-dev --config 'profile.wasm-dev.package.crystal-voxel-view.opt-level=0'
+ --config 'profile.wasm-dev.package.crystal-bevy.opt-level=0'
+ -p crystal-bevy --features location-tester --example render_at_location
+Last launch was compiling twox-hash/ruzstd for this profile after updated
+rendering features. Poll SAME handle; don't restart on observation timeout.
+No capture batch is running. All earlier test jobs below are terminal.
+
+Session26008 terminal101: model directory scan/read race during unrelated
+Zapdos JSON->GLB migration, build.rs172. Current GLB exists; no foreign file
+restored/edited. Exact retry87107 compiled in about1m, then ran3 actual tests:
+1passed/2failed. Failure was real: only flat stone tops were sampled, leaving no
+support at beveled riser/nosing boundaries (coarse centers could returnNone).
+Fixed Model::native_stair_treads to select upward-facing stone surfaces including
+beveled nosings, excluding rails/stringers/vertical faces. Independent rendered
+triangle contact check now interpolates Y on those sloped triangles. Expanded
+model regression checks eight flat top levels plus walkable bevel normals and
+unknown-material rejection; original selected geometry/cache remains unchanged.
+
+Final geometry/contact session41002 terminal0,63s compile;3passed in3.44s:
+ receipts/radio-stair-bevel-tests.log
+Actual external TUI pack supplied explicitly. Covers all12 flights across five
+maps, three tile scales, exact source/palette/warp identities, four-cell ownership,
+fallback/crop/custom/source-corruption, normals, point support against actual
+rendered upward-facing stone, reordered/partial frames and unchanged other cells.
+No production geometry changes afterward; only controller test fixture edits.
+
+Same final voxel test executable
+ target/kanto-resume/debug/deps/crystal_voxel_view-27b91dde034d44b3
+controls terminal0 (driver29537): models51pass0.84s, radio23pass8.80s,
+columns3pass0.03s, bookcase3pass0.03s. Exactly74 distinct passing names after
+deduplicating all4 logs, not80. Includes the expanded native_stair_paint and all3
+new radio_stair checks. Receipts radio-stair-{models,radio,column,bookcase}-controls.log.
+Export checker68/73392tris and negative controls from previous turn still valid.
+No full-suite/all-features claim.
+
+Final production controller test session21857 terminal0: compile2m26s,1test
+passed7.59s, all12 routes. Receipt radio-stair-controller-press-tests.log; name:
+ radio_tower_all_twelve_stairs_keep_authored_step_off_and_allow_reentry
+Uses VisibleShellController::press throughout; source->destination warp0, authored
+south step off arrival despite requested Up, then Up reentry returns to source0.
+Authored post-clear EVENT_RADIO_TOWER_BLACKBELT_BLOCKS_STAIRS=true opens2F0,1.
+No production controller/core/collision edits.
+
+Two earlier fixture attempts failed and are superseded, not counted as passes:
+42762 expected a blocked Up at the staircase; core forced_movement_direction
+(session.rs1614ff) explicitly makes STAIRCASE step Down, so that expectation was
+incorrect.61168 used wait_frames, whose neutral helper advances presentation
+without an empty overworld tick; this route regression now uses press consistently.
+Final test asserts the actual authored forced-step behavior, then real reentry.
+No universal idle-wait/controller-parity claim. Prior Lighthouse blocked-ladder
+regression and production paths remain unchanged.
+
+NEXT: complete native78236; then capture actual same-state/noon2D/3D up/down
+flights across all5 floors, include all12 contexts if cropped views conceal some
+endpoints, and production walks/fades for actor contact/arrival. Fix visually,
+repeat and inspect before accepting. Run fresh live column temporal control with
+final native binary as user requested. Do not run old binary as new-stair proof.
+Access strips/instrument banks and original full311/16-variant work remain open.
+Consider using the exact tread-contact adapter for other native stair rooms only
+after this visual pass; current Radio guard intentionally does not affect them.
+
+## Radio test build terminal; asset migration race, retry launched
+
+IMPORTANT supersedes next live-status notes: session26008 is terminal101.
+All updated Bevy dependencies compiled, then crystal-voxel-view build.rs172
+failed reading raw model. Its final emitted path was battle_species/zapdos.mesh.json;
+current authoritative tree has removed that JSON and has zapdos.glb (729848 bytes,
+17:44), no migration process found. This is an observed directory-scan/read race
+with unrelated ongoing asset migration, not a stair test result. No foreign model
+was restored or modified. Retrying exact Cargo command against current inventory;
+receipt receipts/radio-stair-tests-retry.log. Inspect new tool handle/status in
+conversation; continue this retry, do not restart on timeout. No full acceptance.
+
+## Radio stair query/fixture guards tightened; same build live, 2026-10-15
+
+Previous turn was progress: repaired export validation and verified68 exports
+with three negative controls. This turn revalidated SAME tool session26008;
+Cargo PID31415 remains live, last log phase bevy_pbr0.20 after UI/post-process.
+No test result yet. Do not restart or assume timeout means stopped. Log remains
+receipts/radio-stair-tests.log. Current build is progressing through newly
+changed dependency features, not blocked. Own target/kanto-resume/jobs1; no other
+jobs were launched this turn. No agents/messages, pack/audio changes or commits.
+Full311/original16 remains active/incomplete.
+
+Two source fixes in native_radio_stair.rs while dependencies compiled, before
+our crate was read:
+- Point footing rejects ordinary floor via source lookup before allocating the
+  dense frame view. Direct row-major lookup has coordinate validation and a
+  shuffled-frame fallback. Full source/support/duplicate validation still gates
+  all stair point corrections.
+- All3 external-pack regressions now skip absent optional local packs, matching
+  existing repository tests, but explicitly selected missing packs hard-fail.
+  Current live Cargo command sets CRYSTAL_RENDER_TEST_PACK to the completed TUI
+  pack, so those checks must actually run. No skipped test counts as acceptance.
+Rustfmt and targeted diff --check passed; no compiled/visual stair claim.
+
+Read AGENTS/current handoff and inspected integration again. Native Radio claims
+remain four cells, Model tread extraction selects only actual horizontal stone,
+footing values travel through existing mesh fields. No column/actor/collision/
+warp/clock edits. Controller regression still awaits compilation/execution.
+NEXT: poll26008, fix actual results, run native_stair_paint + radio/model/column
+controls and controller12-route test, normal native build, inspect actual paired
+up/down/all5 floors and walks/fades. Scope and earlier pending work unchanged.
+
+## Radio verification/export-checker repair, 2026-10-15
+
+Previous turn made source progress (12 native Radio flights and tread support,
+plus unrun regressions). This turn revalidated the SAME running test handle26008;
+last poll still live, currently compiling bevy_sprite0.20 after image/camera/
+render/light/core-pipeline/text updates. Do not restart; receipts/radio-stair-tests.log.
+No stair test or visual acceptance claim yet. Full311/original16 stays active.
+No source geometry/animation edits this turn; no agents/messages, packs/audio,
+staging or commits. Preserve unrelated changes.
+
+Actual documented export checker initially failed: expected69 vs68 files.
+Current HEAD also has68 files, and the Rust embedded load! declarations name
+exactly those68 with no missing/extra files. Replaced the stale count in
+ tools/check-interior-models.py with exact importer/file-set equality, rejecting
+both missing and undeclared assets. README asset count corrected to68. Next
+checker failure exposed4 historical coordinate metadata spellings: three civic
+assets say right-handed Y-up, Olivine stage adds front+Z, other64 use canonical
+right-handed;+Yup;front+Z. Checker now accepts precisely those3 existing labels,
+retaining every finite position/index/unit normal/material/bounds/volume/triangle
+check. No model source or generator changes.
+
+Final checker session85872 terminal0:
+ radio-stair-model-export-check.log:68 assets,73392 triangles,172923 vertices.
+Independent negative controls (in-memory paths/reader, no source mutation) reject
+missing file, undeclared file, left-handed basis; receipt
+ radio-stair-export-negative-controls.log. This verifies exports, not rendered
+stair fitting or gameplay. Initial failed runs are acknowledged above; final log
+contains the passing checker. git diff --check passed these2 edited files.
+
+While compilation ran, inspected raw Radio atlas and the accepted Radio2F14,7
+noon pair again. External pack placement audit for access strips:
+ Radio2F block3d at block(5,1),20 at(5,2),(5,3).
+ Radio5F block3d at(8,1),3e at(8,2),(8,3).
+ Neither Radio1F nor3F/4F uses those strips in base layout. Black23 room separator
+is at Radio3F block(7,0),(7,3), Radio4F x5 rows0..3, Radio5F x3 rows0..3.
+The thin white boundary is adjacent to the studio's different floor finish;
+height/role still needs complete-source judgment, not a new invented wall.
+Removed the temporary raw atlas PNG after inspection. Pack inspection45291
+terminal0; no raw programs/dumps/catalogs saved. No new capture jobs.
+
+NEXT remains poll26008; fix concrete compile/test failures, then normal native
+build/controller regressions/actual all5-floor up/down pairs and walks/fades.
+New controller test and expanded native_stair_paint regression are still unrun.
+Column motion remains proven by the fresh accepted live temporal comparison and
+three cached regressions from the earlier turn. No genuine blocker; build active.
+
+## Radio stair implementation in progress, 2026-10-15
+
+Previous goal turn was progress: freshly verified live column sway and3 passing
+cached controls. This turn adds source/native stair implementation and relevant
+regressions; it is NOT compiled or visually accepted yet. Full311/original16
+remains active/incomplete. Preserve unrelated dirty tree; no agents/messages,
+exports, pack/audio changes, staging or commits. Own target/kanto-resume/jobs1.
+
+LIVE verification: tool session26008, Cargo PID31415 at launch. Last authoritative
+poll confirmed live; log receipts/radio-stair-tests.log was compiling bevy_render
+0.20 after updated image/camera/zstd dependencies. Poll the SAME handle; don't
+restart on observation timeout. Command:
+ CRYSTAL_RENDER_TEST_PACK="$PWD/content-packs/text-tui.crystalpack"
+ CARGO_TARGET_DIR=target/kanto-resume CARGO_BUILD_JOBS=1 cargo test --locked
+ --config 'profile.test.package.crystal-voxel-view.opt-level=0'
+ -p crystal-voxel-view --lib radio_stair
+No passing/failing result yet. Last source edits happened during dependency
+compilation, before this crate was read. All capture/pack-inspection jobs from
+previous context are terminal; baseline files exist and were individually viewed.
+
+New mesh/native_radio_stair.rs authenticates complete2x2 up03/right,0c/left and
+down0d/right,1d/left drawings on exactly RadioTower1..5F. Reserves only4cells per
+flight; default sourcefloor01, height22.4/depth16/base0 or-16. Uses existing
+selected StairFlight with northward orientation, own gray/white/ink samples and
+black bottom under descending wells. No model JSON or Blender changes. Missing
+native stair materials retain the source fallback. Parent modeled_interiors
+registers candidates, material guard, underlay and append branch; no inset.
+
+New Model::native_stair_treads selects actual horizontal stone tops from the
+same fitted model, excluding rails/stringers. Python inspection of canonical
+JSON confirmed16 top triangles/eight levels: fitted Y2.7878,4.6714,6.5550,8.4386,
+10.3222,12.2058,14.0894,15.9731 (base0,height22.4). Native append updates only its
+four coarse footing entries. footing.rs/root mesh forwarding adds point contact
+correction: revalidates complete source and all4 expected support samples, then
+intersects selected tread triangles. Custom/altered/cropped/ordinary-map fallback
+gets no correction. No global Radio ramp classification, collision/controller/
+actor/clock/column changes. Normals rotate with geometry.
+
+Three new radio_stair regressions (not yet run) cover all12 flights/counts
+1,2,3,4,2; three unequal tile scales; only4 claims/support entries; source
+corruption/custom reservation/crop rejection; own palette pixels and12 actual
+warp endpoints excluding exit carpets; point support against independently
+intersected rendered faces; fallback support, shuffled/partial frames, altered
+source/ownership and unknown maps. Existing native_stair_paint model regression
+now also checks eight real tops and missing-material rejection. Run that filter
+and all radio/model/column controls after compilation.
+
+Added production-controller regression in kanto_interior_states.rs:
+ radio_tower_all_twelve_stair_arrivals_ignore_blocked_steps_and_allow_reentry
+It uses VisibleShellController::press for12 source/destination/return routes,
+blocked Up on arrival and real Down-away/Up-reentry. NOT run yet. Source pack
+inspection proves Radio2F BlackBelt at0,1 has authored visibility event
+EVENT_RADIO_TOWER_BLACKBELT_BLOCKS_STAIRS; test sets this true to open the
+post-clear approach (no production script changes).
+
+Baseline capture jobs are terminal: radio-stair-baseline-review/up-1 and guard-2,
+Radio1F15,1 and Radio2F1,2 noon. Both actual2D/3D pairs viewed; state_preserved=true,
+no reported ERROR; source stairs are flat in old binary. These are BEFORE images,
+not new implementation evidence. Column current live review remains accepted.
+
+NEXT: poll26008, fix actual errors/failures; do not assume new tests pass. Then
+run relevant controls and controller test, build normal location-tester native
+with established wasm-dev overrides, capture all5 floors/up/down and production
+walks/fades, inspect and fix visuals. Consider descending tread depth coloration
+only if actual source/render comparison calls for it. Then update acceptance.
+Radio access strips20/3d/3e,23separator void and remaining instrument banks still
+need complete interpretation; preserve the entire full311/original16 scope.
+No genuine blocker: dependency compilation is active.
+
+## Column movement rechecked, 2026-10-15
+
+Latest user steering: keep column movement. No animation or geometry edits were
+needed. Fresh production same-view capture at SproutTower3F(10,10), noon,
+`target/kanto-resume/column-motion-current-review/column-compare.png`, was visually
+inspected: the upper timber shifts between live frames while its base remains
+rooted. Capture session67674 completed0 with no ERROR lines. The source-frame
+pose and production `terrain_animation::sync` geometry update remain active.
+All3 cached `sprout_pillar` regressions pass; receipt
+`target/kanto-resume/receipts/column-motion-current-tests.log`.
+This verifies retained column sway, not whole-room or full311 acceptance.
+
+## Radio CRT/cabinet fixtures visually verified, 2026-10-15
+
+Previous goal turn was progress: four studios accepted,68 controls passed, and
+standalone terminal mismatch identified. This continuation completed the three
+standalone/rear CRT fixtures and U reception LCD source correction. Read current
+AGENTS/handoff. Full311/original16 remains active/incomplete. Preserve unrelated
+changes; no agents/messages, exports, pack/audio edits, staging or commits. Own
+cache target/kanto-resume/jobs1. All task-owned processes are terminal.
+
+Radio5F block1c origin2,1 size2x3 now uses Computer, not BroadcastConsole. Its
+16px-high,8px-deep CRT/keyboard uses the existing selected model above a closed
+8px cabinet, meeting the8px adjoining counter with no inset gap. Monitor roof
+uses its white cap; case and hardware use native gray/white/ink. Cabinet4c/4d
+face retains source art. Open timber stand is removed; upper selected parts fit
+above the cabinet, with corrected normals and retained LCD/keyboard placement.
+Source/model JSON and Blender files are unchanged. New material-screen masks
+identify only the canonical computer's actual display; missing/unknown materials,
+LCD or desktop reject adaptation before append. Generic computer paths elsewhere
+retain their existing geometry and finishing.
+
+Exactly three standalone PCs occur across the6 Radio maps:1F and Lavender block12
+(source2e/2f,3e/3f,3a/3b), and5F block1c (56/57,58/59,4c/4d). Each keeps six
+source cells and unchanged support. Rear keyboard art in the lower source row
+belongs upward: modeled keys stay on top, only the final three plinth rows face
+forward. The lobby block2b monitor remains owned by the full U reception fixture,
+all4 cells; legacy block16 is absent from these base maps. PC LCD is below the
+white cap:1c usesx3..13,y5..10; rear12 usesx4..12,y5..10. Both cross two source
+atlas rows. U monitor source rectangle corrected from84,2,8,4 to83,5,10,5;
+original joined counter and terminal geometry remain unchanged. This fixes its
+old white-cap sample being shown as a display.
+
+Final tests58396 terminal0:20 radio checks0.56s, radio-all-terminal-tests.log.
+Same final binary controls: models47, columns3, bookcase3, signatures1, all pass;
+71 distinct test names across those5 filters. Receipts radio-all-terminal-*
+controls. Includes all6-map PC counts, every changed source cell rejected,
+reception source ownership, exact LCD pixels/both rows, no vertical rear-keyboard
+art, closed cabinet/counter join, case-cap orientation, unknown/missing selected
+parts, normalized normals, cache preservation, support and warp clearance. An
+initial signature filter matched0; corrected exact filter matched1, only that
+passing run is counted. No broad-suite success claim.
+
+Native60182 terminal0 in33.03s (radio-all-terminal-native-build.log), normal
+production location-tester configuration. No production code edits afterward;
+only README/handoff and scratch cleanup. Source/model checker17360 terminal0
+(radio-terminal-source-control.log):11 maps and every relevant authored block
+change,526 claims,6 deterministic unchanged models/227 closed positive-volume
+parts/6356 triangles, both hash-verified editable sources. No pack publication.
+
+Final capture58690 terminal0: all4 child0/no ERROR, all state_preserved=true.
+All4 final noon pairs individually viewed in
+ target/kanto-resume/radio-all-terminal-review/:
+ terminal-5 Radio5F2,7; rear-1 Radio1F1,3; reception-1 Radio1F3,6;
+ rear-lav LavRadio1F3,3. Accepted at PC-fixture scope: correct CRT/keyboard and
+closed-cabinet silhouettes, gray native finishes, white upward caps, native LCD
+glyph/glint, keys upward, retained low counter and rear wall backing. No actor,
+collision, script, warp, clock or authoritative PC-menu changes. This is visual
+fixture acceptance, not whole-room, all-PC-gameplay or full311 acceptance.
+
+Initial5F-only tests71239/19 pass, native55017/44.45s and capture77235 passed;
+viewing1F control then exposed rear wood/blue PCs and the U white-cap/LCD issue,
+which the final broader pass fixes. Removed12 superseded PNG/HTML files and the
+terminal source-sheet scratch. Retained final4 comparisons plus logs/state.
+Radio studios from the preceding pass remain unchanged. Column animation paths
+untouched; final3 source-frame/base/normal/ownership controls pass. Latest live
+same-view sway proof remains radio-studio-refined-review/column-compare.png.
+
+NEXT:12 Radio stair warp endpoints across floors1..5 (1,2,3,4,2), currently flat;
+source-authenticated flights/support need production walk/warp and paired review.
+Up flights are block03/right or0c/left (tiles0c/0d,1c/1d); down flights are0d/right
+or1d/left (0e/0f,1e/1f). All at row0, STAIRCASE collision. Do not confuse tile1c
+with standalone-terminal block1c. Access strips20/3d/3e are narrow8a/8b drawings;
+23 is black room-separator void. Determine wall/counter meaning from complete
+source before assigning heights. Also finish other workbench/instrument banks
+and the full311/original16 scope. No genuine blocker; native previews work.
+
+## Radio studio fixtures visually verified; standalone terminal remains, 2026-10-15
+
+Previous goal turn was progress (corrected source/fallbacks and67 controls).
+This continuation completed native review/refinement of the4 actual studios.
+Full311/original16 remains active/incomplete. No agents/messages, exports,
+pack/audio edits, staging or commits; preserve unrelated changes. Own cache
+is target/kanto-resume/jobs1. All task-owned processes are terminal.
+
+Final native36568 terminal0 in49.52s, receipts/radio-studio-glass-complete-native-build.log.
+No production code edits afterward (documentation/cleanup only). Final test15934
+terminal0:18 radio checks0.65s. Same final binary controls: models46, columns3,
+bookcase3, all pass;68 distinct names across those four filters. Receipts
+radio-studio-glass-complete-tests.log and
+radio-studio-glass-complete-{models,column,bookcase}-controls.log. No full-suite
+or all-features success claim. Normal production location-tester configuration
+was used; the historical all-features worker-field failure belongs to other work.
+
+Final capture87208 terminal0: all4 child0/no ERROR, all paired-state receipts
+state_preserved=true. All4 final noon comparisons individually viewed in
+ target/kanto-resume/radio-studio-final-review/:
+ Radio2F14,7;Radio4F14,7;Radio5F10,7;LavRadioTower1F14,7.
+Accepted at fixture scope: complete ceiling-height reflective glass with its
+native cap facing upward/thin fascia; uninterrupted glass behind racks/tables;
+low gray8px worktops with retained native insert art; round angled microphones;
+24px source-painted equipment racks; native gold stools; four standing16px grille
+posts with own cap/face texture and no flat grille foot on walking floor.
+Claims exclude adjacent floor, support stays unchanged, custom/cropped/altered
+art and absent table/grille context retain source fallbacks; warp cells clear.
+The full-front coverage check prevents the observed cyan block above racks.
+This does not accept whole rooms or the standalone console described below.
+
+Fresh live Sprout3F10,10 temporal view was inspected twice during this pass,
+most recently radio-studio-refined-review/column-compare.png (capture20534,
+child0/no ERROR). Upper column pose changes while its base stays fixed; source-
+frame animation, footing and normals retained. The last subsequent code change
+only extends Radio glass UV coverage behind apparatus; Sprout paths unchanged.
+Final3 column regressions pass. Column movement is preserved.
+
+Rejected initial studio renders, corrected them, inspected intermediate renders,
+then fixed their remaining cyan filler and inspected the final4. Removed36
+superseded PNG/HTML scratch files, retaining final studio images, latest accepted
+column images, all logs/state receipts. Removed4 more obstructed-console image/
+HTML files after the clear reference below superseded them. No source-content
+sheet or generated pack added to tracked source.
+
+IMPORTANT NEXT: standalone Radio5F source1c (origin2,1, size2x3; tiles56/57,
+58/59,4c/4d) is still misclassified as BroadcastConsole. Close view31438 at3,6
+accidentally overlapped Gentleman; clear replacement94981 at2,7 is terminal0,
+state preserved/no ERROR and individually viewed:
+ radio-studio-final-review/console-5-clear-compare.png.
+The native mixing-desk model has top faders where the2D source has a tall CRT/
+terminal case. Its gray finish/fitting does not fix this silhouette. It is NOT
+visually accepted. Start the remaining PC pass here: inspect complete source,
+use an appropriate selected Computer model/adapter rather than polishing the
+mixing board. Existing Computer has native material guards/5-swatch adapter;
+canonical computer bounds[-.69,.0175,-.475]..[.69,1.605,.475]. No classification
+or computer-geometry change has been made yet. Also inspect other rear PCs/
+workbench/instrument banks; their old shapes/finishes remain outside acceptance.
+
+Then finish Radio stairs/access strips and remaining full311/original16 work.
+Read-only external-pack audit94766 found12 stair warp endpoints across Radio
+floors1..5 (1,2,3,4,2 respectively); Lavender has only exit carpets. Up-flight
+source blocks03/right or0c/left use0c/0d,1c/1d; down-flight0d/right or1d/left
+use0e/0f,1e/1f. All are at row0 with STAIRCASE collision; map-source1c terminal
+above is a different block context, do not confuse tile IDs with block IDs.
+Current house_stair_local does not include radio_tower, so those flights remain
+flat and need source-authenticated geometry/support, production walk/warp and
+paired visual verification. Access strips20/3d/3e are narrow8a/8b drawings;
+23 is black room-separator void. Inspect their meaning before assigning a full
+wall/counter height. No genuine blocker; normal native build/captures work.
+
+## Radio studio visual refinement, 2026-10-15
+
+Previous goal turn was progress: corrected source paint/projection and fallback
+coupling,67 distinct checks passed. This turn read current AGENTS/handoff and
+waited on exact native63512 until terminal0 (17m38s), without restarting on an
+observation timeout. Full311/original16 objective remains active/incomplete.
+No agents/messages, source exports, packs/audio edits, staging or commits; own
+cache target/kanto-resume/jobs1. Preserve unrelated changes.
+
+Capture16107 terminal0; all5 children0/no ERROR. Four studio pairs in
+ target/kanto-resume/radio-studio-corrected-review/ preserve state and were
+individually viewed at noon: Radio2F14,7;4F14,7;5F10,7;Lavender14,7. Also viewed
+Sprout3F10,10 earlier/later live3D: upper column pose moves while its base stays
+fixed. Fresh production evidence retains column sway; those paths are untouched.
+
+REJECTED the4 studio views for visual acceptance: table model's material roles
+put white on the broad work surface; the projected glass cap faced forward as
+an8px beam; mic was three boxes and too far forward; four grille posts still
+had cap/stem fragments painted on glass and a final grille cell flat on floor.
+No whole-room/studio acceptance from passing earlier tests.
+
+Current Rust refinement keeps selected table geometry/indices/normals and8px
+height, maps gray170 to every upward worktop face and white255 to its frame.
+Printed insert keeps exact source art on shallow gray support. Mic now has
+closed12-sided beveled round base, round stem and angled rounded head, using
+own black0/gray85; moved into first16px of the worktop to follow the drawing.
+Glass cap30/31 now faces upward on a6px cap, with thin2px gray fascia; glass
+stands30px below the32px ceiling. Native fronts, lower rail and source finishes
+remain. Exact source36 grille assembly has its8px top at16px height and two
+upright8px face rows; clean glass behind it. A guarded zero-height1x1 marker
+owns only the extra40 grille foot, never adjacent43 floor. Full composition,
+custom ownership and absent-context fallbacks remain authoritative. No collision,
+footing, actor, script, warp or column-animation changes.
+
+Initial refined test24674 terminal0:4 pass1.43s after2m31 compile,
+radio-studio-refined-tests.log. Includes source pixels, cap/top orientation,
+gray table tops with identical selected geometry, four grille counts/claims,
+normalized normals, custom foot protection, orphan foot fallback and closed
+positive-volume round mic geometry at3 scales. Added explicit warp clearance
+and present/absent grille-context art controls afterward. Refined tests40173 terminal0:4pass1.42s, radio-studio-refined-complete-tests.log.
+Refined native5766 terminal0 in2m32s, radio-studio-refined-native-build.log.
+Current refined cached controls43526 terminal0: radio18pass1.58s, models46pass0.72s,
+columns3pass0.03s, bookcase3pass0.03s;68 distinct test names. Receipts
+radio-studio-refined-{radio,models,column,bookcase}-controls.log.
+Capture20534 terminal0: all5 child0/no ERROR; all4 studio pairs state preserved.
+All5 images individually viewed in radio-studio-refined-review. Gray tops,
+upward caps, rounded mic and four upright grille posts are improved; live column
+sway is again visible with fixed base. One actual remaining defect: a cyan
+flat-color gap shows above the rack, because abbreviated pane drawings only
+painted their claimed rows. Now repeat the own20/21 glass art across the full
+physical front, without expanding claims or changing support. Added480px²
+full-front coverage control. Final radio tests15934 terminal0:18pass0.65s,
+radio-studio-glass-complete-tests.log. Native36568 terminal0 in49.52s,
+radio-studio-glass-complete-native-build.log. All task-owned jobs are terminal.
+Final4-pair capture driver stored as radioStudioFinalCapturePython, output
+radio-studio-final-review. The last change is scoped only to Radio studio glass;
+Sprout paths/source remain unchanged from the inspected temporal capture.
+Need fresh accepted4 studio comparisons after these complete; current rejected
+studio PNG/HTML scratch can be removed once superseded, preserving logs/state.
+Accepted column capture can remain. Then continue Radio access-terminal walls,
+stairs/rear PC and larger full311/original16 work. No genuine blocker.
+
+## Radio studio reconstruction in progress, 2026-10-15
+
+Previous goal turn yielded fresh evidence: column source/production update path
+is intact and the cached3 column regressions pass; fresh compile temporarily
+failed during unrelated Slugma/Magcargo model migration. That catalog migration
+now compiles. Full311/original16 objective remains active/incomplete.
+No agents/messages, exports, pack/audio edits, staging or commits. Own cache
+remains target/kanto-resume/jobs1; preserve unrelated dirty files.
+
+New source mesh/native_radio_studio.rs is registered in modeled_interiors.
+It authenticates complete studio glass across block rows15→19/33/36, including
+short drawing fragments above equipment/table without claiming the neighboring
+objects. Deleted the old19-right partial wooden-window signature. Guards keep
+striped42/43 fields as floor. Complete four-by-six table composition is guarded;
+a twenty-cell main table and two-cell cap own only its22 table cells, leaving
+its two upper glass cells with the pane. Main physical table is8px high; source
+insert remains on top, with a small microphone stand. Gold operator stools use
+their own source swatches; native gold floor UV phase continues under fixtures.
+Exact rack/console sources fit24px/18px heights (two-row console10px), retaining
+selected geometry with guarded canonical material roles and live finish/display.
+No collision, footing, actor or animation path edits.
+
+Fresh test60898 terminal0, radio-studio-combined-tests.log:3 tests pass0.65s,
+including external-pack4 studios,24 panes,4 tables/caps,12 gold stools,4 racks,
+source mutation/ownership/support checks and unknown equipment-paint rejection.
+Same current binary passes17 radio checks0.74s and all3 column checks0.01s;
+receipts radio-studio-{radio,column}-controls.log. Source/model checker94619
+terminal0: all11 facility/radio maps and authored changes,526 claims,6 unchanged
+models/227 closed parts; radio-studio-furniture-source-control.log.
+
+VISUAL ACCEPTANCE PENDING. First all-features native build7284 failed on missing
+city_emitters initializers in terrain_worker/{response,response_restore}.rs;
+do not alter that other work here. Normal location-tester production preview
+build86356 was explicitly interrupted with SIGINT/terminal130 to apply newly
+identified source fixes; this was not an observation timeout/restart. The cache
+retains its completed dependencies. Corrected native24522 was explicitly interrupted/SIGINT130 to add newly found
+fallback coupling before compilation, retaining completed dependencies. Current
+native63512 terminal0 in17m38s, radio-studio-fallback-native-build.log. Current test89171
+terminal0: corrected3 tests pass1.11s after1m41 build, radio-studio-fallback-tests.log.
+Baseline build is now superseded by the visual refinement above. Corrected cached controls49152
+terminal0: radio17pass2.75s, interior_models46pass0.85s, columns3pass0.03s,
+native_bookcase3pass0.03s;67 distinct passing tests counted from actual names.
+Receipts radio-studio-final-{radio,models,column,bookcase}-controls.log.
+Earlier corrected tests98187 failed while pokemon_motion.rs was referenced but
+not yet written; file then appeared and retry46867 was attempted. That retry
+terminal101 had214 errors during the species-catalog migration (old embedded JSON
+paths and non-exhaustive Species::Procedural matches). Those source files have
+since changed, including explicit GLB branches and enum test arms, justifying
+fresh89171, which now passes. Do not alter that other owner's files.
+
+Corrected mic donors now use own black0/gray85 rather than gray170; glass lower
+continuation uses own cyan170 instead of white255. The projected mic overlaps
+the lower glass source25/26; render clean own20/21 glass there and give the
+physical pane a thin dark lower rail, so the3D microphone is not duplicated on
+the glass. New regression checks source pixels and excludes that dirty glass
+UV. Tightened base guards on gold/rack/console/cap and added a custom-base
+negative control. New fallback coupling uses production's complete furnishings
+list: erase the projected mic on glass only when its complete native table and
+selected table materials are present. Restore orphan-cap art if the selected
+table is unavailable; cap marker also requires zero height/depth. New controls
+cover present/absent table context, native/fallback mic art and orphan cap cells.
+Fixed the glass negative UV probe to use the dirty row's bottom edge (its top
+edge legitimately coincides with the preceding source row). Current native/model
+controls46pass0.50s on the previous
+compiled studio source (before these corrections), radio-studio-model-controls.log.
+Corrected tests now pass; need finished native build and all4 paired studio reviews (walkable poses:
+Radio2F14,7;Radio4F14,7;Radio5F10,7;Lavender14,7, all noon). Diagnostic access
+source sheet inspected (all3 task source-sheet PNG scratch files now removed):23 is black separator/void;20/3d/3e contain narrow post
+strips, not a generic full-block wall. No architecture edits there yet.
+Capture driver is stored in functions store radioStudioCapturePython: sequential
+four studio pairs plus Sprout3F10,10 live two-frame3D comparison; do not run it
+while a build is live. Continue
+access-terminal walls/stairs/rear PC afterward; full311/original16 remains open.
+
+## Radio counter/desk proportions and source finishes, 2026-10-15
+
+Previous goal turn was progress: six Radio Tower/lobby rooms gained native
+floors, connected rear backing and corrected plants/seats. This continuation
+read AGENTS/current handoff and completed the reception/office-furniture pass.
+Full311/original16 objective remains active/incomplete. No agents/messages,
+exports, packs/audio edits, staging or commits. Preserve unrelated dirty tree;
+own cache target/kanto-resume/jobs1. All task processes are terminal.
+
+Reviewed actual current paired views and the complete U/L/phone/memo source
+drawings. The16px top-plus-front drawing was treated as16px of physical desk
+depth, while authored bodies rose10/12px; generic cream/teal paint further
+hid the native gray/white/ink design. Rust now adapts only the five canonical
+radio furniture models through named primitive parts and live source swatches.
+New src/native_radio_materials.rs is a source deliverable, not build output.
+Model parsing requires exact canonical identity, known part names, all required
+sections and complete vertex roles. Unknown/renamed/missing sections reject
+adaptation without appending. No model JSON, Blender source or manifest edits.
+
+Native worktops are8px high and8px deep, spanning localZ8..16. U/L returns
+retain their16..48 length and join the rail at16. Corner stiles have their own
+fit; do not apply the corner Z transform to whole returns, which would open a
+5.33px gap. Negative geometry control reproduces that old gap, and positive
+surface-coverage checks test both joined returns at six depths. Each original
+closed primitive keeps its topology; inverse-transpose normals follow fitting.
+Phones, memo faces and the attached U terminal use separate transforms, with
+native glyph faces moved with their supports. Counter extensions and all six
+phone/three memo desks use the same source-proven finish. Source gray170,
+fascia85, white255 and ink0 come from each own complete drawing. Counter body
+height/depth changes do not alter source claims, collisions, support or events.
+
+Both facility_radio operator-stool families and the older complete radio
+stool signatures now use their own cap/side atlas swatches. Their positions,
+indices, normals, height and footprint remain byte-equivalent to prior fitted
+geometry; actor anchors and support stay unchanged. Swatches are native
+monochrome170/85 inputs, interpreted through the live CGB palette: final stools
+retain the room's actual pink/red where authored, not neutral gray paint.
+The unchanged facility workbench/instrument paths retain their presentation.
+Updated facility_radio model README explains runtime fitting/source paint.
+
+Final combined test60954 passes15 radio-related checks0.58s, including the new
+external-pack regression: all12 furniture placements (six phone, three memo,
+one U, one L, one extension), three guarded desk stools and six guarded round
+stools; material pixels, eight-pixel tops, joined returns, empty staff space,
+normal/winding, exact support/claims, warp clearance and unknown-model rejection.
+Raw-signature stools are exercised by the six-map room regression too.
+Additional current cached controls: interior_models::tests45pass0.24s,
+Sprout pillar3pass0.02s, native_bookcase3pass0.02s.65 distinct passing tests
+across these four filters (one overlap), counted from actual receipt names.
+Receipts radio-native-furniture-combined-tests.log and
+radio-combined-{model,column,bookcase}-controls.log. No full-suite success claim.
+
+Executed python3 tools/check-facility-radio.py --pack
+content-packs/text-tui.crystalpack; terminal0, receipt
+radio-native-counter-source-check.log. It validates all11 supported maps plus
+relevant authored block-change states,526 source claims, custom/crop/ground/
+actor/warp guards; six deterministic unchanged meshes,227 closed positive-volume
+parts,6356 triangles; both hash-verified editable sources. This source/model
+check supplements, and does not replace, native production review.
+
+Final native26924 terminal0 in53.25s, radio-native-furniture-combined-build.log.
+No production edits afterward (only README/handoff prose). Capture16203 terminal0:
+all6 children0, all state_preserved=true, no ERROR logs. All6 noon pairs in
+ target/kanto-resume/radio-native-furniture-combined-review/
+individually inspected: Radio1F3,6;2F10,6;3F/4F/5F9,6;Lavender3,6.
+Lower/narrower gray rails/desks, joined returns, aligned phones/memos/terminal,
+source-colored stools, retained native floor/backing and clear staff space are
+accepted at this scope. Early eight-test build passed before explicit corner
+coverage was added; no visual acceptance claimed for that superseded build.
+First five counter-only pairs were inspected before stool finishing and are
+superseded. Diagnostic source sheets and superseded PNG/HTML scratch removed;
+final accepted comparisons and logs/state receipts retained.
+
+Next: Radio Tower broadcast consoles/glass studio fronts, access-terminal wall,
+source stair flights and rear PC finish; those still include generic or flat
+source forms and need complete-source interpretation, production movement and
+paired visual acceptance. Counter/desk/stool acceptance does not establish whole
+room, script-state or full311/original16 completion. Sprout column movement
+remains unchanged, with all3 focused regressions passing. No genuine blocker.
+
+## Radio Tower floors, plants and connected rear walls, 2026-10-15
+
+Previous goal turn was progress: restored Sprout native floors, retained rear
+backing/sway. This turn read AGENTS and current handoff, inspected current source
+and five fresh Goldenrod Radio Tower floor pairs. Full311/original16 scope stays
+active/incomplete; no blocker. No agents/messages, exports, packs/audio edits,
+staging or commits. Preserve unrelated dirty source; own cache target/kanto-resume.
+
+Baseline target/kanto-resume/radio-tower-current-review/: Radio1F3,6;2F10,6;
+3F/4F/5F9,6, all noon. All5 child0/state_preserved=true/no ERROR, individually
+viewed. Actual defects: native pink floor replaced by generic gray; blue wall
+fields remained flat around tall beige substitutes; four stool fragments stood
+in for each pair of tall plants; a broadcast-console panel became a spurious
+potted plant. Rear books used generic pastel colors. Native stairs/consoles and
+reception geometry still need further work.
+
+Added mesh/native_radio_room.rs (new source deliverable, not build output),
+registered under modeled_interiors. Exact six-map guard covers RadioTower1..5F
+and LavRadioTower1F. Complete native blue wall/sign courses reach32px; one-row
+courses behind seats/PC align with neighboring two-row courses. Native signs
+retain their own16px drawing mounted high on the closed wall. Full-width wall
+backing continues behind north-perimeter plants and exact complete bookcases.
+Interior plants/bookcases never gain inferred perimeter walls. Stair/warp
+cells stay free; backing does not expand source claims or change support.
+
+Complete plant matchers cover blocks0b/31 and the live upper-slot variants
+1f/2f/37/3c as full2x4 drawings. Native green/light/dark lower-crown swatches
+and own gray/white pot feed the existing dense plant geometry. No invented
+animation clock/pose; the Sprout column animation path is untouched. Removed four
+incorrect0b stool signatures and the incorrect19 console-panel-as-plant signature.
+Renamed/custom source profiles retain authority before these native candidates.
+Damaged full drawings cannot fall back into the deleted stool fragments.
+
+Native floor01 now retains original pink pattern/UV phase on a continuous plane
+at its existing datum. Rear bookcases reuse native material roles with their
+own source cabinet/book swatches. Rear white seats retain original claims and
+support, move half a render cell forward to meet the wall, and use actual white
+source fill on sides and upward faces. Both source seat variants (52/53 and
+52/34) are authenticated; round studio operator stools stay on their own path.
+No game collision, script, warp, player, actor or column-animation changes.
+
+External-pack test checks all6 actual maps: complete plant counts; no plant
+stools; claims, support and warp clearance; native floor UV/datum/quad count;
+normalized normals; exact bookcase backing; full-width backing despite plant
+insets; both seat counts/variants and geometry in front of wall; white upward
+seat material; renamed custom ownership and every altered plant cell rejected.
+Final test38712 passes1 in0.47s (radio-white-seat-tests.log). Final cached controls
+all pass: facility_radio6, selected signatures1, Kanto service floor1, native
+bookcase3, Sprout pillar3, station chair material1.16 distinct checks total.
+Receipts radio-white-{fixture-controls,signature-control,kanto-floor-control,
+bookcase-controls,sway-controls,chair-material-control}.log. No broad-suite claim.
+
+Intermediate production views were rejected and repaired: plant insets left
+narrow wall seams; rear seats overlapped the new wall; right-hand52/34 seat
+missed the first pose guard; upward seat faces sampled a black outline. A
+signature-table check also failed its old145 count after deleting5 wrong roles;
+replaced that count with a semantic guard forbidding their return, keeping all
+bounds checks. Intermediate focused tests/builds passed except that documented
+count assertion. Superseded intermediate PNG/HTML scratch removed; logs/state
+receipts retained. Diagnostic atlas/source sheets were removed.
+
+Final native41105 terminal0 in1m01s, radio-white-seat-build.log. No source edits
+afterward. Final accepted comparison set: Radio1F/3F/4F/5F in
+ target/kanto-resume/radio-verified-room-review/ (57340 all6 children0;
+ same-state receipts true, no ERROR; only those4 images retained), plus Radio2F
+ and Lavender in target/kanto-resume/radio-white-seat-review/ (73491 both0,
+ state_preserved=true, no ERROR). All6 accepted-scope comparisons individually
+viewed. The last edit changed only upward paint for the two rear-seat rooms;
+remaining four captures share the unchanged production paths. Blue rear runs
+connect around signs, plants and PC; native pink floor and green/gray plants
+are distinct; all three2F/two Lavender rear white seats are visible in front of
+wall; bookcases retain source colors. Acceptance covers these changes, not
+whole Radio Tower rooms, actor art, every script state or all311 interiors.
+
+Next: continue Radio Tower reception/counter size and source finishes (large
+pale U/L tops remain), phone/memo workdesks, broadcast consoles/glass studio
+fronts and source stair flights/access terminal wall. Start from actual current
+paired views and complete source drawings; do not mislabel console trim as
+plants again. Then continue remaining tower/lighthouse and full311/original16
+scope. Sprout column movement remains unchanged and its3 regressions pass.
+
+## Sprout Tower native board floors verified, 2026-10-15
+
+Previous goal turn was progress: closed the rear wall behind both statues and
+altar, verified retained sway. This continuation read AGENTS and current handoff.
+Full311/original16 objective remains active/incomplete. No agents/messages,
+exports, pack/audio changes, staging or commits; unrelated dirty tree preserved.
+Own cache target/kanto-resume/jobs1; all task processes now terminal.
+
+Replaced the generic AmberTimber finish only for exact SproutTower1F/2F/3F
+native tower floor02 cells with NativeRoom. The finishing pass keeps their
+native atlas UVs, source speckled gold board pattern and pale horizontal joints,
+using a continuous plane at the existing datum. No invented per-cell bevels,
+new texture asset, collision/support change, source mask expansion, pillar
+animation edits or object claims. Cianwood/Ecruteak/Pewter retain AmberTimber.
+Native void/grating, stairs, carpet and pillar source remain excluded by the
+existing exact masks. Rear wall backing from previous turn remains intact.
+
+Updated floor-style and custom-floor/support regression; the latter now checks
+actual referenced UVs and retained3.5px datum instead of expecting solid paint.
+New external-pack regression examines all3 actual Sprout map drawings, excludes
+modeled object claims, requires >100 walking cells per room, verifies unchanged
+native quad counts, own-source UV phase, floor datum, support and ownership.
+No skipped external fixture: completed text-tui pack supplied by absolute env.
+Floor family51119:12pass1.12s (sprout-native-floor-tests.log). Current cached
+binary controls:13 Sprout checks1.50s including external floor, source frame
+motion/anchored base and rear statue backing; altar architecture1pass0.13s.
+Receipts sprout-native-floor-sway-controls.log / sprout-native-floor-altar-control.log.
+25 distinct focused tests (external floor test appears in both filter runs).
+No full-suite success claim; known unrelated broad failures below remain.
+
+Native build75928 terminal0 in4m32s, receipts/sprout-native-floor-build.log.
+No source edits after build. Capture21204 terminal0: five children0, no ERROR
+logs. Four same-state noon pairs preserve state: Sprout1F9,14;2F6,4;3F10,14;
+3F rear close-up10,4. Plus3F10,10 earlier/later live3D sway comparison.
+All5 comparisons individually inspected in
+ target/kanto-resume/sprout-native-floor-review/.
+Board pattern now matches source on all3 floors, grating remains distinct,
+rear wall continuous behind both statues and altar. Temporal comparison shows
+column upper pose changing with rooted base. Accept these floors, retained
+backing and sway only; actor art/camera and whole-room/global acceptance remain
+separate. Earlier Sprout floor pending note immediately below is superseded.
+
+Next: continue towers/lighthouse whole-room review, then remaining311/original16
+requirements. RadioTower1F pack inspected (18x8 game tiles, entrance2/3,7,
+upstairs15,0), but no native capture or acceptance yet. No genuine blocker.
+
+## Sprout rear wall behind statues; column sway retained, 2026-10-15
+
+Latest human steering: rear wall must continue behind statues; preserve column
+movement. No agents/messages, exports, pack/audio edits, staging or commits.
+Full311/original16 goal remains active; preserve unrelated dirty tree.
+
+Fresh baseline all3 Sprout floors captured at noon and individually inspected
+in target/kanto-resume/sprout-current-room-review/ (1F9,14;2F6,4;3F10,14).
+All3 childexit0, state_preserved=true, no ERROR logs. The 3F rear statues
+replace the north wall drawing in blocks2e/2f; the framed altar previously
+closed only16px of the neighboring32px timber. Added rear backing to exact
+SproutGuardian placements for those two blocks, using their adjacent native11
+swatch only when that source still matches. Backing sits at source row2,
+behind the statue volume, and reaches32px. Entrance30/31 stays freestanding.
+Altar now uses the same full-height native timber backing behind its existing
+16px ornament. Claims remain the original8cells per drawing; no collisions,
+footings, pillar source/animation ownership, clocks or controller edits.
+
+New regression checks both rear statue halves: backing above24px is behind
+the statue, reaches ceiling, does not claim neighboring floor/wall, retains
+footing, and rejects changed neighboring wall paint. Existing altar regression
+now checks ceiling-height backing. Initial Sprout run:11pass/1fail because
+new assertion demanded a top-height vertex on the beveled front corner;
+corrected to test height and backing depth independently. Retry12pass0.25s,
+receipts/sprout-backing-tests-retry.log. Includes actual source-frame motion,
+anchored base, normalized normals, unchanged support and override ownership.
+Final-source altar architecture regression also passes1test0.08s,
+receipts/sprout-altar-backing-tests.log. Final cached binary rerun also passes
+all12 Sprout checks0.33s (sprout-backing-final-tests.log);13 focused checks
+total. No broad-suite success claim.
+
+Native build terminal0 in2m32s, receipts/sprout-backing-native-build.log.
+Only test assertions changed afterward. Fresh captures in
+ target/kanto-resume/sprout-backed-wall-review/:
+ rear Sprout3F10,4 and whole Sprout3F10,14 noon paired2D/3D,
+ sway Sprout3F10,10 noon two live same-view3D readbacks.
+All3 childexit0, no ERROR logs; paired captures state_preserved=true.
+All3 comparisons individually inspected: rear wall continuous through both
+statues and altar, matching adjoining ceiling; whole-room view agrees.
+Temporal3D comparison visibly changes the column upper pose with fixed base;
+existing pack-driven animation unchanged. Acceptance is this rear backing and
+retained sway, not whole-room art/actors/full311 completion.
+
+Sprout floor cleanup remains pending: baseline original speckled gold boards
+are replaced with generic smooth planks. Restore exact native floor pattern
+on Sprout1/2/3 without changing Cianwood/Ecruteak/Pewter styles, native voids,
+ladder/warp/pillar ownership or support. No floor edits made this turn.
+
+## Destination presentation readiness fence, 2026-10-15
+
+Previous goal turn fixed repeated5/6 stair warps and shared wind prepass binding;
+this turn read AGENTS/current handoff and continues full311/original16 objective.
+No blocker, agents/messages, exports, packs/audio, staging or commits. Preserve
+unrelated dirty source. Own cache target/kanto-resume/jobs1.
+
+The destination frame publishes at the end of FadeOut (navigation reset clears
+pending_overworld_warp_scene), but the eight-frame FadeIn previously ran while
+asynchronous terrain/body work was still pending. Added graphical-only wait in
+production tick_visible_screen_fade: during walk-warp FadeIn with enabled voxel
+presentation, retain its white palette/input-owning phase while terrain_pending
+or an active scene still reports a different terrain_map from authoritative
+runtime map. No fixed loading timer, scene/warp/collision changes, new controller
+or command dispatcher. Once ready, the existing eight-frame fade runs normally;
+scene callbacks still start afterward. Classic/absent renderer and renderer-
+neutral controller retain their existing presentation path. Renderer failures
+now clear stale terrain_pending in all five failure exits, leaving actual
+initial terrain preparation pending so fatal output cannot leave this fence
+waiting forever. Initial/retained room policy and shader/wind unchanged.
+
+Added feature=voxel-view production-system regression: stale source scene before
+pending reported; destination terrain with bodies pending; full-white phase
+held across16+16 updates; ready output completes original eight frames; disabled
+classic and absent status resource each advance without waiting. Extended
+existing renderer retention test to disable its frame after three pending
+updates and require pending=false on inactive output. Movement QA CSV now adds
+terrain_map,terrain_pending,terrain_active,fade_alpha,warp_phase,runtime_map;
+existing columns retained. Final capture must check actual ready map when
+FadeIn first reveals anything, plus inspect the images, not just childexit.
+
+Unchanged pre-fence binary baseline33934 terminal0, up5->6 DD2.5D trace in
+warp-readiness-baseline-trace/. Opt-in CRYSTAL_LOADING_TRACE confirms actual
+6F source build1.63s + render mesh prep0.81s, with human asset preparation
+spans9.24/8.48s. These are one traced, unoptimized-dev, concurrently loaded
+run, not production performance promises or independent benchmark results.
+No raw pack source exported; trace is ignored verification output.
+
+First feature-enabled source verification47527 terminal101 after cold Bevy
+render dependency compilation: build.rs collect/read raced another model
+conversion, printing hitmonchan.glb then removed hitmonchan.mesh.json before
+fs::read failed at169. Confirmed current canonical hitmonchan.glb present and
+Species::Hitmonchan arm updated. No model restoration/deletion/builder workaround.
+Exact retry78915 passed:1test1.11s, warp-destination-readiness-retry-tests.log,
+feature=voxel-view test binary crystal_bevy-9e310335cd7930ed. Renderer family68424
+terminal0:39pass0.12s, warp-loading-status-renderer-tests.log, including stale
+pending cleanup after invalidating a held frame. Cached current-feature binary
+also passes all5 renderer_neutral_controller_ controls2.52s, lighthouse blocked
+arrival/reentry1test1.04s, held-direction reset1test0.87s. Receipts
+warp-readiness-production-controller-controls.log / warp-readiness-stair-control.log /
+warp-readiness-held-input-control.log.47 focused checks total; no broad-suite
+success claim (earlier unrelated mesh/legacy fixture/topology failures remain).
+
+Native56524 passed1m42 for initial fence. Native8390 passed32.96s with extra
+QA first-arrival-reveal capture (rearmed at FadeOut, saved at first FadeIn
+alpha<255), preserving regular moving samples. Extended32D capture52369 then
+FAILED its fade acceptance assertion: first childup5->6 exit0, no ERROR logs,
+state preserved/final proper6F pair individually viewed, but no partial reveal.
+CSV FadeIn rows14..179,165 pending white rows; at179 actor publication reports
+ready with186.213ms frame, and180 was already None/alpha0. Existing12-frame
+catch-up could consume the entire8-frame fade from that loading interval.
+This is concrete evidence; do not call that capture smooth fade acceptance.
+
+Production fade system now uses a graphical Local<bool> to remember the wait
+and discard the first ready update's elapsed interval. No persistent/gameplay
+state field, new timer or render-specific controller. The original eight-frame
+clock starts after the loading/publication interval. Regression now injects
+200ms on release, requires elapsed0, then eight normal ticks to completion;
+classic/absent/fatal renderer controls advance normally. Extra failure-control
+case added. Final native37193 terminal0,1m25s:
+warp-readiness-clock-native-build.log. Only leading Rust indentation changed
+afterward; asserted per-line text identical before/after. No behavior edits.
+Final extended paired capture90396 terminal0 in warp-readiness-clock-native-review/:
+all3 childexit0, all3 state_preserved=true, no ERROR logs. Both lighthouse
+directions and Tin3->2 use ordinary held32D/1024updates. Each has exactly one
+authoritative map change (at1), stable destination rows40..end; lighthouse
+landings stay9,15, Tin ends2F10,15. All partial FadeIn rows have destination
+terrain active/pending=false; each reaches None/alpha0 without rewarping.
+Actual pending full-white rows: up231, down93, Tin16. First partial reveal
+frames248 /109 /31. Up's218.355ms ready publication remains atalpha255, then
+223/191/159/127 steps appear rather than the earlier skipped fade.
+
+Individually inspected all3 final same-state/noon2D+3D pairs; all3 first-reveal
+captures (arrival-reveal-248 /109 /31); and six retained moving samples:
+up01(full-white hold)/08(clear6F keeper/checker room), down01(full-white hold)/
+04(clear5F sailor room), Tin00(white)/01(clear2F ladder/wood). First-reveal images
+already show the proper destination architecture and actors under the fading
+white palette. No old source room exposed after that reveal in these reviewed
+samples. Removed122 unused temporary moving PNGs from this turn's failed/final
+runs; retained the six individually viewed moving samples, first reveals,
+paired comparisons, CSVs and logs as ignored verification evidence.
+
+Scoped acceptance: fixes the observed late retained-room exposure and skipped
+fade on these three real keyboard routes, including cold actor preparation.
+Loading may remain white while expensive dev-build preparation finishes; this
+is an actual readiness fence, not a fixed delay or hidden QA frame. No claim
+of production-speed timing, all-map transition acceptance, or whole-room art /
+actor fidelity. Classic and renderer-neutral paths stay covered by controls.
+
+Next: wider tower/interior composition, remaining311/original16/shared furniture
+and script-state acceptance, plus recorded broad failures. Full goal active /
+incomplete, not blocked. All task-owned test/build/capture handles terminal;
+no pack/audio/export changes, staging, commits, agents or cross-chat messages.
+Scoped whitespace check passes.
+
+## Blocked stair arrival fix and verification, 2026-10-15
+
+Previous goal turn made verified native lighthouse moss/rock progress. Current
+turn read AGENTS and handoff; full311/original16 objective remains active.
+No exporter, pack, audio, actor ownership, staging, commit, agent or cross-chat
+message changes. Own cache target/kanto-resume/jobs1. Preserve unrelated edits.
+
+Found5F<->6F bounce in GameDataSet::apply_overworld_input: after a blocked step,
+check_warp_checked accepted every current warp permission. Original external
+player_movement.asm .CheckWarp only compares directional edge carpets at that
+point; ordinary stairs/ladders/panels enter through successful movement's
+CheckWarpTile. Fallback now filters to directional_warp_facing permissions.
+No map-name exception, arrival timer, held-input clearing, collision or warp
+metadata changes. A real step off and back onto the stair still uses the
+ordinary warp path.
+
+Added production VisibleShellController regression for both5F->6F and6F->5F:
+enter from9,14; require9,15 landing; eight Down presses must stay on destination;
+Up must leave to9,14; Down reentry must return through original source warp.
+Baseline10173 terminal101, lighthouse-stair-bounce-baseline.log: failed exactly
+on blocked arrival step, expected6F but observed5F (0pass/1fail,1.04s;4m33build).
+Assets dependency had completed compiling before applying runtime fix, so this
+was the unchanged-runtime regression. Fixed17740 terminal0:1pass1.55s,
+3m17build, lighthouse-stair-bounce-fixed.log. Cached current test binary also
+passes all5 renderer_neutral_controller_ checks (Mom/NewBark gate, battle turn,
+Research Center callback, running/menu ownership and department clerks),4.62s;
+held-direction reset control1pass1.46s. Receipts lighthouse-warp-production-
+controller-controls.log and lighthouse-warp-held-input-control.log.
+
+Assets fixture reused by existing directional-carpet control (1pass0s) and new
+four-permission blocked check (STAIRCASE/STAIRCASE_73/LADDER/WARP_PANEL). The
+three unforced cases also require actual movement away and reentry. Initial
+synthetic7a fixture incorrectly assumed requested Right/wall collision could
+block CheckTile's forcedDown. Corrected it to use an occupied southern landing
+and require BlockedByObject; other cases use a wall. Final57844 terminal0:
+1pass0.02s, lighthouse-blocked-warp-final-tests.log. No runtime policy change
+while correcting these fixtures. Native37611 terminal0,8m17build:
+lighthouse-stair-bounce-native-build.log. No runtime source edits afterward.
+
+Broader assets warp filter was12pass13fail. Eleven failures load old source /
+pack fixture locations outside this checkout; one static scripted_warp_topology
+forced-reception endpoint assertion is None vs Some(0), outside the changed
+input fallback; final one was the now-corrected new synthetic fixture above.
+No isolated pre-change baseline for the other failures, so do not claim those
+preexisting or broad suite green. Receipt lighthouse-warp-asset-tests.log.
+Separate legacy bedroom-warp control also fails loading apps/web/assets/data/
+content-packs/core-modular.crystalpack; the current external-pack Mom controller
+regression DOES cover bedroom->ground floor/house exit and passes. No pack
+copies/symlinks or exporter runs to work around those legacy test paths.
+
+Closed outstanding historical Tin capture review: individually viewed
+both tin-level-floor-review/tin-down-3-compare.png and moving00. CSV32rows
+starts3F10,13, enters10,14, ends2F10,15; state_preserved=true. Final pair shows
+upright wood architecture/flat floor and low ladder. Early moving00 is full
+white authored fade, so cannot establish seamless terrain rendering. This
+closes its pending image/CSV review only; whole Tin maze/camera/room acceptance
+still open. Also viewed tin-up-2 moving00: white fade; CSV2F10,13->3F10,15.
+No fresh Tin geometry source change or whole-room acceptance.
+
+Native held-input capture72755 failed first childup5->6 before screenshots:
+pbr_prepass_pipeline vertex requests group0 binding11 absent from prepass view
+layout. Receipt stair-blocked-arrival-native-review/up-5-6.log preserved. Traced
+to current foliage wind addition in grass_vertex.wesl using forward
+mesh_view_bindings::globals.time in every pass. Installed Bevy0.20 prepass/mod.rs
+binds GlobalsUniform at1; forward view uses11. Shader now selects prepass
+Globals binding1 under PREPASS_PIPELINE and forward globals11 otherwise,
+keeping identical wind clock/deformation in forward/depth/shadow passes.
+No motion/geometry removal, shadow disabling or CPU material update workaround.
+Build23754 passed1m46, but retry64830 exposed WESL import ordering: my new
+uniform declaration preceded later IO imports. Child processes returned0 and
+CSV proved one stable floor change each, but the first pair had actors against
+black/no terrain. Those images FAIL visual acceptance despite exit0 and
+state_preserved=true. All four logs retain the shader parser error. Moved the
+uniform declaration after all imports. Direct parser check using cached wesl
+syntax::TranslationUnit now passes; temporary Rust checker source/binary removed.
+Final build18361 terminal0 in2m07: lighthouse-stair-prepass-final-build.log.
+No task runtime source changes after that build. Final GPU retry72069 terminal0
+in stair-blocked-arrival-pipeline-review/: all4 childexit0, state_preserved=true,
+and no ERROR logs. Individually inspected all4 same-state/noon2D+3D comparisons
+and all6 moving samples (00 and01 for three DD routes). Outdoor NewBark5,8 is
+only a pipeline/shadow/foliage control, not acceptance of its separate art work.
+Native terrain, masonry/green rubble, keeper furniture and Tin wood all render.
+
+Each64-frame held-DD CSV has exactly one map change:
+- up5F9,14 ->6F9,15 at11; all rows40..63 remain6F9,15.
+- down6F9,14 ->5F9,15 at12; all rows40..63 remain5F9,15.
+- Tin3F10,13 ->2F10,14 at9; final2F10,15, stable destination rows40..63.
+Thus the old repeated5/6 warp is fixed through real held production input.
+Settled final comparisons show correct destination rooms. However, BOTH
+lighthouse moving01 images still display retained SOURCE rooms after the
+white fade has cleared (Sailor/5F room while going up; checker/6F room while
+going down). CSV already reports destination and builds2 by12 through63;
+that build counter proves submissions, not publication/GPU readiness. Treat
+this as unresolved readiness/coherent room handoff, not seamless acceptance.
+Early lighthouse00 samples show authored white fade over a complete old room;
+Tin00 is white and Tin01/final show the proper room. No hidden/masked-frame QA.
+
+Next: resolve the late retained-room presentation relative to authored fade
+and terrain/actor readiness, then continue tower/lighthouse whole-room and
+remaining311/original16/shared furniture review. Whole objective is active /
+incomplete, not blocked. Nine focused/controller/control tests pass as above;
+legacy fixture/topology and earlier broad mesh failures remain recorded.
+All task-owned test/build/capture handles are terminal. Scoped whitespace
+checks pass. No exports, pack/audio changes, staging, commits or messages.
+
+## Lighthouse moss and coherent stair handoff, 2026-10-15
+
+Human steering: "Those are missing the green moss/rock." Continue full311 /
+original16 interior objective; no blocker or scope-complete claim. Native
+lighthouse masonry had sampled charcoal over the entire original model,
+erasing green rubble. Exact complete source blocks29/3c/3d now retain their
+own4c/4d green rubble; plain3c includes5a/5b above it. Bare double-brick3e
+stays bare. Low uneven rock faces/crowns use the actual source atlas/palette,
+with16px native band on plain rock and8px below windows. Same32px ceiling,
+owned footprint, joined-side culling, opaque floor and actor footing. Recessed
+stone backing is continuous; normals recomputed after deformation for narrow
+window reveals. Rock ranges share successful masonry's cutaway ownership.
+No pack/export/audio/collision/controller changes or generated source assets.
+
+New test checks native band selection, bare brick exclusion, joined-face
+culling and low rock heights; existing all-six-floor pack matcher and full
+geometry winding/support/ownership checks retained. Initial verification found
+out-of-plot experimental vertices and stale deformed reveal normals; corrected
+both. Final lighthouse-moss-normal-tests.log:26pass0.64s. Final cached
+renderer_tests family:39pass0.06s (lighthouse-moss-renderer-tests.log). Final
+native build74160 terminal0 in1m21s, lighthouse-moss-normal-build.log. No
+runtime source edits after that build. Broad mesh failures recorded farther
+below remain unresolved; these are scoped passes.
+
+Also completed lighthouse-only room retention while destination atlas/terrain
+uploads: keep completed immutable old atlas/terrain, camera, footing and actor
+cards until publication. Reuses existing build-time atlas copy. No second
+snapshot cache. Initial/invalid/non-lighthouse map transitions retain their
+normal retirement behavior. New three-update renderer regression checks old
+room/camera/card/footing survival with missing destination atlas. Existing
+non-lighthouse control now expects actual Pending+despawn behavior. Earlier
+transition filter12pass and renderer39pass. new_bark_actors sync now permits
+background model preparation but holds instances with the retained room until
+terrain publication. This guard IS included in the final native build above.
+
+Previous transition-landing-review comparisons exposed overlapping cards in
+late down2->1 frame, prompting that actor guard. They also expose an independent
+unresolved5F<->6F repeated warp when holding D into the blocked stair landing:
+9,15 alternates floors. Four state-preserved comparisons alone do not prove
+stable5/6 landings. Ordinary1F<->2F travel is proven. Authored8-frame white
+FadeIn is real controller behavior; bright warp frames must not be mistaken
+for absence of terrain or masked out. Earlier up/down final pairs and late
+up/down moving01 frames were individually inspected. No claim that every
+transition is accepted. Full interior/tower/actor review remains active.
+
+Final capture68888 terminal0: all7 childexit0, all7 state_preserved=true.
+Every pair individually viewed in target/kanto-resume/lighthouse-moss-native-review/:
+f1 at3,11;f2 at5,3;f3 at9,5;f4 at9,7;f5 at9,7;f6 at9,15, plus down-2-1
+from2F3,12 usingUU. All same production state/noon. Green native rubble now
+visible at low wall bases and under blue windows across six floors; ordinary
+brick and furniture retained. Both moving00 and01 down2->1 frames individually
+viewed: no previous giant overlapping sprite cards in those samples. Final
+CSV reaches1F3,7 byframe61, confirming normal travel. Authored fade policy is retained; this narrow capture does not establish
+every transition.
+Preflight6F pair was also viewed before the final normal correction. No native
+source edits after final build. No task build/test/capture remains live.
+Temporary extracted tile-role sheet removed. No staging, commits or exports.
+Next: unresolved5/6 held-input bounce, wall caps/room composition and broader
+interior/tower/actor review. Full objective remains active/incomplete.
+
+## Native lighthouse stair flights and wells, 2026-10-15
+
+Previous goal turn made concrete Burned basement platform/stair progress.
+Read AGENTS and current handoff; continue full311/original16 goal unchanged.
+No blocker, pack/export/audio changes, staging, commits, agents or messages to
+other tasks. Another unrelated Cargo test was live at entry; used own existing
+CARGO_TARGET_DIR=target/kanto-resume/jobs1 and did not touch its cache/process.
+
+Added Rust source module mesh/lighthouse_stairs.rs (untracked source deliverable,
+not a build artifact). All six exact lighthouse maps now resolve complete31
+(descending27/28/37/38) and3a (ascending29/2a/39/3a) southeast2x2 drawings. Same
+block phase, exact four native cells and own2e floor sample required. Fourteen
+actual plots total [1,2,3,4,3,1],7up/7down, no floor/pit/carpet warp promoted.
+Ascending closed stone flight rises16px in six treads with side cheeks;
+descending closed well reaches-16px (-17base) with open west approach and shaft
+cheeks. Native170stone/85edge/0shadow samples from each drawing. Same16x16
+footprint and actor support; no new controller, collision, warps or puzzle data.
+Pits and cave foundation logic unchanged. No generic underlay across the well.
+Shared rooms::slab exposed at pub(super) to reuse closed shaded box geometry.
+New Form delegates append before generic floor restoration. Lighthouse identity
+helper reuses masonry's exact six-map guard. Unknown custom source profiles now
+get first interior ownership on those maps; normal dungeon reservation filter
+continues yielding to already owned cells.
+
+External-pack test proves all14 native stair plots against actual warp source,
+excludes ordinary floor/pit/carpet warps, validates own PNG170/85/0 roles,
+nonempty native geometry/negative descent, unchanged foot/support vector,
+and rejects each changed cell in each complete drawing. Focused30554:
+24pass0.76s, receipts/lighthouse-stairs-source-tests.log. Native36002 passed0
+in1m00s, receipts/lighthouse-stairs-native-build.log; no runtime source edits
+afterward. Cached modeled family23447:393pass14.52s, external TUI pack env set,
+receipts/lighthouse-stairs-modeled-tests.log. Broad mesh five failures recorded
+below remain unresolved; do not imply full suite green. Whitespace checks pass.
+
+Capture81978 terminal0, all14 childexit0 and all14 state_preserved=true. Every
+comparison individually viewed in target/kanto-resume/lighthouse-stairs-native-review/:
+1F3,11;2F3,11+5,3;3F13,3+5,3+9,5;4F13,3+3,5+9,7+9,5;
+5F9,15+3,5+9,7;6F9,15. All noon/same production2D+3D state. Both directions
+now have geometric stone stairs/wells, fitting source-scale plots; masonry
+and native floor/checker/furniture retained. Player remains visible at all
+plots. Some descending plots are partially covered by player at exact warp;
+additional well-clear2F3,12 pair was viewed below to inspect the opening.
+
+Travel capture83662 terminal0: all3 childexit0 and all3 state_preserved=true;
+all3 final pairs and both moving00 samples individually viewed in
+lighthouse-stair-travel-review/. Ordinary input1F3,10 D CSV32rows proves
+1F3,11 ->2F3,11 ->2F3,12. Reverse2F3,12 U proves2F3,11 ->1F3,11.
+Final corresponding pairs show correct landing rooms. Static well-clear2F3,12
+shows uncovered descending geometry. Downward moving00 shows readable scene;
+upward moving00 is blankgray and DOES NOT prove seamless transition rendering.
+Do not mask or claim acceptance of that early frame. Need determine rendering
+readiness/warp behavior in future review. No frame-timing performance claim.
+Settling continues after CSV, so final endpoints must come from runtime state,
+not trace inference. Shared sideways walking actor orientation still open.
+
+Baseline up pose1F3,12 failed because compiled map makes it a wall. Inspected
+source collisions and used verified3,10; baseline up-valid and down2F3,12 pairs
+both viewed. Do not reuse failed initial pose. Up/down graphics were native
+flat cards/shallow relief before this change. The new maps/source resolver
+intentionally leaves reused FastShip/unknown lighthouse atlas maps alone.
+
+Next: remaining transition readiness/occlusion, lighthouse roof/cap/moss and
+actor fidelity, remaining towers/interiors/shared furniture. Full original
+objective remains active/incomplete; this accepts native stair geometry/source
+matching and1F<->2F gameplay route, not every transition/whole-room criterion.
+No current task build/test/capture remains running.
+
+## Burned basement platforms and stairs, 2026-10-15
+
+Previous goal turn made verified timber/fixed-palette progress. Full objective
+remains unchanged, active/incomplete, no blocker. Read AGENTS/current handoff;
+no task process live at entry. Preserve unrelated dirty work. No export, pack,
+audio, staging, commits, cross-chat messages or agents.
+
+BurnedTowerB1F now opts into the existing complete-source cave_crowns resolver
+and its single-incoming/single-outgoing broad-landing chain. The actual layout
+has two complete30 stair drawings between bounded plain-dust regions. Instead
+of mistaking their front walls for enclosing ceiling masses, the beasts' crown
+now sits16px, the broad courtyard11px, and existing outer shelf stays6px. Both
+stair flights interpolate their exact two source rows:16->13.5->11 and
+11->8.5->6. Existing closed tread meshes/socket trimming and native floor/side
+finishes apply. Actor render support follows those landings; game coordinates,
+collision, events, warps, scripts, source ownership and other maps stay intact.
+No blanket height change to cave ceilings or unrelated cave maps.
+
+Implementation is only mesh/cave_crowns.rs: exact map enable + broad-chain
+permission, and new actual-external-pack full-map regression. Test authenticates
+both complete stair pictures, each adjoining landing/ramp edge, crown16,
+intermediate midpoint, unchanged outer datum6. Initial source test44623 failed
+because test assumed outer0/intermediate8; source actually retains6 shelf, so
+correct expectation is11. Geometry already passed both complete-stair checks.
+Fixed test to derive midpoint from existing outer shelf and explicitly require6.
+Crown scoped tests96729:9pass/3ignored0.28s, log
+`target/kanto-resume/receipts/burned-basement-crowns-tests.log`. Ignored3 require
+separate Victory/Silver external export root; do not claim they ran.
+
+Native build64770 completed0 in53.62s, receipt
+`receipts/burned-basement-crowns-build.log`; no source edits afterward. Capture
+76528 completed0, five childexit0, all five state_preserved=true. All five pairs
+AND both moving00 samples individually viewed in
+`target/kanto-resume/burned-basement-crowns-review/`: courtyard10,10; beasts10,6;
+outer10,13; lower-up10,12 U; upper-up10,8 U. All noon/production2D+3D. Both
+stairs and all3 beasts visible from courtyard, replacing rejected distant view
+where an oversized central wall mass hid the chamber. Upper/lower landing and
+player grounding reviewed at all three static poses and both movement samples.
+Walking actor still faces sideways mid-stride (shared actor issue; untouched).
+Both32row CSVs prove ordinary same-controller movement: lower10,12 ->10,11
+->10,10 ->10,9; upper10,8 ->10,7 ->10,6. Settling continues beyond CSV; don't
+infer final endpoints from trace. No 1F->B1F fall/story transition is proven.
+
+Broad mesh94253 finished101:917pass/5fail/7ignored27.76s, log
+`receipts/burned-basement-mesh-tests.log`. Five failures outside edited paths:
+- native_ground_bindings::rock_binding_reuses_existing_geometry_and_palette_at_both_tile_scales,
+  native_ground_bindings_tests.rs321 (Route10South native rock geometry equality).
+- new_bark::forest_pond_rim_uses_native_mineral_without_moving_source_support,
+  new_bark.rs5606 (native bank support beneath accents).
+- new_bark::kanto_shallow_banks_finish_actual_mesher_caps_and_all_four_sides,
+  new_bark.rs4537 (soil relief footprint).
+- new_bark::modeled_grove_keeps_closed_water_contacts_without_changing_floor_or_claims,
+  new_bark.rs5765 (water-contact height bounds).
+- new_bark::runtime_path_uses_authored_geometry_with_live_source_roof_paint,
+  new_bark.rs6165 (32 vs0).
+These correspond to the five previously unresolved areas, but no isolated
+baseline proves provenance. Do not call full suite green or silently change
+unrelated geometry/tests. All current crown-specific tests pass; whitespace
+check passes. No live task process remains.
+
+Next: remaining tower/lighthouse transitions and geometry/material/camera
+acceptance, then all remaining interiors/shared furniture. Source 1F rival
+state fall remains unproven as described below; do not alter flags to force it.
+The room-wide acceptance still includes actors/floor fidelity/camera/lighting,
+so this verifies the basement platform/stair correction, not every scene detail.
+
+## Burned Tower timber and fixed palette, 2026-10-15
+
+Previous goal turn was concrete verified lighthouse material progress. This
+turn continues the full311/original16 scope with the user's tower priority.
+Read current AGENTS/handoff; no task build/capture live at entry. No exports,
+pack/audio edits, staging, commits, agents or other-chat messages.
+
+BurnedTower1F now uses the existing exact native perimeter resolver for its
+complete side strips, joining the already modeled horizontal courses. Native
+TowerTimber paint replaces generic pale exported paint. Its two complete native
+northern guardian drawings use NativeGymGuardian; the matching wall courses
+continue behind each statue without taking statue source ownership. Unknown
+custom profiles on this map get first ownership. Same ceiling32px height,
+closed geometry/source masks, footing, collision/events and fall plots retained.
+Actual burned/rubble interruptions stay damaged; no inferred wall behind every
+blocked tile. Did not invent ladders: upper-floor source warps are fall points.
+
+Fresh paired images exposed double night tint on 1F: the source already uses
+its fixed purple night palette, then scene light shifted it deep blue again.
+sync_voxel_atmosphere now uses neutral scene light for exact BurnedTower1F +
+tower atlas. Keeps VisualWorldLighting::Night and all source/world state intact;
+other maps retain their lighting. Basement cave lighting is unchanged. New
+renderer regression proves neutral ambient/sun, real3000 energy, unchanged
+source/world lighting, and outdoor night remains blue when leaving this map.
+
+Final build22254 completed0 in55.39s:
+`target/kanto-resume/receipts/burned-native-light-build.log`. No runtime source
+changed afterward. Focused burned tests5694:4pass0.32s, including actual external
+pack perimeter/guardian/fall-claim audit. Refreshed cached modeled-family53536:
+392pass4.46s (`receipts/burned-native-light-modeled-tests.log`), with external TUI
+pack env set. This is scoped evidence, not a full-suite green claim. First new
+external test26153 failed to compile because interior Placement.height_pixels
+is private; repaired it to verify actual emitted32px mesh and support instead.
+Initial pre-light modeled391pass8.21s; superseded by final above. Whitespace
+checks pass for all touched Rust files.
+
+Final capture95657 completed0, all3 childexit0/state_preserved=true. Every pair
+and moving00 individually viewed in `burned-native-light-review/`:1F entrance
+9,14; north9,3; ordinary-input10,10 U. Connected side returns and native purple
+wall/floor pigment verified at both static poses, northern statue backing
+visible. Source2D/3D use same noon/game state. Moving actor can face sideways
+(existing shared actor issue); no actor code changed. The U CSV32rows records
+1F10,10 ->1F10,9 ONLY, no basement transition. Final pair also remains1F.
+Do not call this a verified fall or playable-transition proof. Source has
+HoleAndLadder callback and rival-scene block changes at10,8; correct normal
+story-state fall validation remains open. Never change flags to force it.
+
+Baseline76329 both floors completed0 and both pairs viewed, state flags true.
+Initial 1F timber-native build40146 completed1m10; all3 pairs in
+burned-timber-native-review/ viewed, all3 flags true (1F9,14 and9,3;
+B1F10,6). Rejected 1F's extra-blue lighting, corrected above. Basement geometry
+was not changed: at10,10 the distant inner chamber is largely hidden by high
+cave walls; at10,6 the three beasts are visible through existing reveal. Neither
+view proves full basement visual acceptance. Initial baselines atB1F10,10 and
+current closer10,6 remain useful for that next review.
+
+Next concrete work: Burned basement chamber/stairs/camera and normal story
+fall transition; remaining lighthouse stair transitions/roof/moss/actors and
+all remaining interior acceptance. Full objective remains active, incomplete;
+no blocker. No current build/test/capture task remains running.
+
+## Lighthouse keeper furniture source colors, 2026-10-15
+
+Previous goal turn was concrete progress: missing Tin courses and statue-row
+backing implemented and verified. This turn continues the full unchanged scope;
+no blocker, no other-chat messages, no export/audio/pack changes or commits.
+Read current AGENTS and handoff; no live task process at entry.
+
+Corrected Lighthouse6F furniture in mesh/lighthouse_chamber.rs. Original exported
+muted walnut/linen/sage paints no longer override the live source palette. The
+same geometry now uses its own native source UV swatches: cyan/blue table and
+rim, gold teapot, pale cup with dark tea, pale cot bedding and red/pink stool.
+Primitive material AND part names distinguish Cup from Teapot; their shared
+sea_glaze/glaze_light labels cannot paint the cup gold. Source shape matching,
+source claims, dimensions, foot/support heights, room masks, opacity and meshes'
+triangle topology remain unchanged. No new asset or pack data.
+
+Native final build93162 completed0 in59.24s, receipt
+`target/kanto-resume/receipts/lighthouse-cup-native-final-build.log`. Test-only
+UV assertion repair after that build does not change runtime code. Fresh final
+capture63516 completed0; both childexit0 and both state_preserved=true. All pairs
+individually inspected in `target/kanto-resume/lighthouse-cup-native-review/`:
+entrance9,15 and furniture9,9, both noon/2D+3D. Cup now pale; table cyan/blue,
+teapot gold, cot pale and stool pink match native colors. This is acceptance
+of the furniture material correction, not all lighthouse geometry/camera.
+
+New external-pack source-pixel regression checks actual lighthouse PNG roles,
+including pale cup versus gold pot and every mapped furniture role. Existing
+complete-source mutation, profile/claim, crop, bounds, opaque floor and footing
+checks retained; tests now check the textured model surface with native UVs.
+Initial material tests23pass0.64s and scoped dungeon127pass3.39s. After Cup-part
+correction the old generic tea-UV assertion failed (22pass/1fail); repaired it
+to require actual cup-local tea UV. Repaired test12720 passes23checks0.65s:
+`receipts/lighthouse-cup-native-repaired-tests.log`. Final scoped dungeon
+regression52014 passes127checks6.53s (`receipts/lighthouse-cup-dungeons-tests.log`).
+Whitespace check passes. Prior native material build73241 passed1m20s
+and both initial renders were viewed, then rejected because cup was gold;
+final current build above supersedes it. Earlier build71384 passed59.46s but
+stool shade changed during it, so it was never accepted as final.
+
+Additional verification: latest level-floor Tin2F10,13 D CSV32rows proves
+2F10,14 ->3F10,14 ->3F10,15; reverse3F10,13 D proves3F10,14 ->2F10,14 ->2F10,15.
+Down3->2 final comparison now viewed. Tin-up moving00 was blank and does not
+prove visual transition quality; do not claim moving-capture acceptance.
+No controller behavior changes were made. Do not infer final endpoint from
+CSV because settling continues afterward.
+
+Next: tower variants (Burned Tower) and lighthouse stairs/whole transition visibility,
+roof/cap massing/camera/moss/actors as already required. Full311/original16
+scope remains active. Do not mark complete from these narrow material checks.
+
+## Tin Tower architecture and continuous statue backing, 2026-10-15
+
+Latest user requirements: walls must connect; walls behind statues are always
+required. Added missing exact tower timber courses 18/3b to tower_shape (native
+11/21 rows only). Threshold/grating rows retain their original ownership.
+Tin guardian wall blocks21/22 now span their full block behind the complete
+native foreground guardian drawing. Source claims still cover only the wall;
+statue ownership, warps, collisions and actor support remain untouched.
+
+Current native binary built successfully in50.34s; log
+`target/kanto-resume/receipts/tin-connected-backing-build.log`. Fresh noon pairs
+in `target/kanto-resume/tin-connected-wall-review/`: Tin6F3,9;9F12,3;7F3,9.
+All3 childexit0, state_preserved=true, and all3 pairs individually inspected.
+Tin6 long missing courses now upright;9F statue-row backing continuous.
+Tin7 foreground courses remain subject to existing camera cutaway. Five focused
+checks pass0.54s with external TUI pack (`tin-connected-backing-tests.log`),
+including all-nine-floor actual17ladder/warp matching, native guardians, flat
+indoor support, missing courses and backing without stealing statue cells.
+Initial new backing test did not compile (VisualTile has no Default); repaired
+its fixture using the existing explicit native-tile construction.
+
+Earlier this turn: native Tin timber/side walls, complete source ladders on
+Tin1..9, native gold170/dark85/ink0 swatches, and custom profile first ownership.
+Tin center pillars now use existing upright native Sprout pillar mesh and its
+actual pack-selected animation; no invented sway. Exact Tin indoor guard in
+terraces::finish_on_map/support_correction stops outdoor cumulative HOP terrace
+height from bending the upper floors. Original one-way hop metadata remains.
+Roof/teleport pads retain their owners. Correct ladder counts by floor are
+[1,2,2,4,4,2,1,0,1],17total; initial incorrect18 assumption was corrected from
+actual source (7F/8F teleport pads). Initial roof negative test was too broad;
+roof has legitimate models, so it now excludes only native TowerLadder.
+
+Previous level-floor native build86911 passed1m06. Fourteen final captures in
+`tin-level-floor-review/` completed0 and all14 state_preserved flags true. All9
+Tin pairs and all3 Sprout pairs individually viewed; Tin up2->3 pair viewed.
+Down3->2 final pair and moving samples still need review. Earlier same-input
+warp CSVs proved2F<->3F transitions; fresh route CSVs remain to audit. Original
+architecture batch was rejected for flat pillars and wavy floors, now fixed.
+Hop capture: rightward held input advances from6,12 through the hop to10,12;
+reverse blocked test panicked because capture QA insists on translation.
+Do not call that blocked capture a renderer regression or completed QA. Its CSV
+and source/controller tests must be used if verifying the blocked direction.
+
+Scoped level-floor checks before latest wall edits: dungeon125pass,interior200,
+terraces20,pillars3. Latest scoped regressions pass with the external pack: dungeon126,interior201,
+tower7 (334total); logs `tin-connected-*-regressions.log`. First cached direct
+run omitted CRYSTAL_RENDER_TEST_PACK and failed3 tests requiring that env; rerun
+with the absolute shared TUI pack. No pack export/audio changes, staging or
+commits. Preserve unrelated dirty source. Full311/original16 goal active;
+remaining whole-family camera/maze/hop geometry and visual acceptance are open.
+
+## Tower/lighthouse material pass verified, 2026-10-15
+
+User sequencing: after current cleanup, prioritize towers and lighthouses. This
+turn moved to that family. Full311/original16 goal remains active and incomplete;
+no blocker. Preserve all unrelated dirty source, packs, audio and model catalogs.
+No export, pack rebuild, staging or commit. Cache target/kanto-resume, jobs1.
+
+Implemented and verified at material scope:
+- All six Olivine Lighthouse floors retain their own worn stone floor2e/2f UVs,
+  replacing generic plain slate slabs.6F also keeps its own pink/green0d/1d
+  checker instead of near-white generic checks. Exact source masks, floor datum,
+  whole-model underlay ownership, pits/stairs and custom exclusions retained.
+- Complete masonry/window blocks29/3c/3d/3e use their own source charcoal for
+  stone faces/caps, gray85 on thin oblique bevels, and own window glass/frame
+  palette instead of the exported cream paint. Original32px geometry/topology,
+  all sixteen claims, neighbor culling, orientation, support and collision stay
+  unchanged. Geometry now lives in textured surface; cutaway excludes the opaque
+  restored floor. Gray recess material stays dark, only blue glass uses glass UV.
+- Sprout1F/2F/3F side and horizontal timber frames now use gold170 source fields,
+  rather than magnifying tiny white255 glints into whole pale frames. Source41
+  light role is pixel1,3; source11 light role2,3. Applies through existing exact
+  native source paths, retaining Cianwood/Ecruteak joins and all source claims.
+  Added source-UV role regressions; unchanged walls remain ceiling-height32px.
+
+Visual proof: final native63531 completed0 in2m22s, log
+receipts/tower-lighthouse-bevel-gold-build.log. No production source changed
+since it began. Final capture62623 terminal0, all12 children exited0, all12
+paired-state flags individually audited true. Every final comparison AND both
+moving00 samples individually viewed in tower-lighthouse-bevel-gold-review/:
+Lighthouse1F10,16;2F3,11;3F/4F13,3;5F/6F9,15; Sprout1F9,14;2F6,4;3F10,14;
+Cianwood4,17; Lighthouse1F10,16 U and4F13,3 D. All noon, same production state.
+Dark stone with narrow gray joints removes the rejected checker-like masonry;
+6F native checker restored; all three Sprout floors and Cianwood show gold
+framing with no oversized white strips. Player stays visible by masonry and
+foreground cutaway in movement samples. Both32-update CSVs prove real same-map
+movement (1F10,16 ->10,15 ->10,14;4F13,3 ->13,4 ->13,5). Settling continues
+beyond CSV, so do not claim a final route endpoint from it. No FPS claim.
+
+Tests: current completed scoped dungeon124 checks11.24s and interior200 checks
+7.48s (60784, receipts/tower-lighthouse-bevel-gold-{dungeons,interiors}-tests.log).
+Includes actual external-pack all-six-floor masonry ownership/source-pixel test,
+all topology/rotation/winding bounds, no foot changes, exact protected floor
+masks, native floor/checker UVs, and gold frame rather than white glint roles.
+Earlier lighthouse22 checks0.60s and0.57s passed; final scoped checks include
+latest gray bevel/principal dark-face assertions. Diff whitespace checks pass.
+
+Broader run90418 terminal101:385pass/1fail15.52s. Failure outside changed paths:
+mesh::modeled_exteriors::tests::modern_compact_pair_is_one_house_with_one_source_entrance,
+modeled_exteriors.rs:1837 range end32 on empty slice. No baseline establishes
+pre-existing failure; did not edit exterior source. Earlier full-mesh failures
+below remain unproven/resolved only where explicitly recorded. Never claim a
+full green suite from these scoped results.
+
+Rejected/superseded evidence: tower-lighthouse-current-review/ baselines all3
+state flags true and viewed (Sprout1F/Tin1F/Lighthouse1F). Initial Sprout default
+10,8 was non-walkable; actual9,14 worked. lighthouse-native-stone-review/ all6
+pairs viewed/state true but stone too uniform and6F checker still white.
+tower-lighthouse-native-final-review/ (89203) all12 exits0/state true, all pairs
+and both moving00 viewed; whole gray bricks looked checker-like and horizontal
+rails still white, so do not use for current material acceptance. Build2944
+passed3m13s,91075 passed5m11s but superseded by63531. No live build/test/capture
+handles remain. Ignored original receipts retained; no source art dumps saved.
+
+Next concrete work: TinTower's generic brown timber (native source conversion
+still explicitly excluded by tower_timber_live_palette test), all nine Tin
+floors/maze/guardians/stairs; Burned Tower and other tower variants. Sprout
+material correction is accepted only at this scope, not whole room/ladder warps,
+central pillar pose/silhouette, actors or camera/layout. Lighthouse6F pale table
+and cot are still wrong against the bright source furniture; inspect source
+semantics/palette before accepting the existing TeaTable/KeeperCot labels.
+Lighthouse stairs still include flat source strips, and whole stair transitions,
+roof/cap massing/occlusion, camera composition, moss details and actor motion
+remain open. Walking actor can still face sideways; no actor subsystem edits.
+Continue this family priority, then remaining311/original16 work below.
+
+## Current interior corrections, 2026-10-15
+
+Full 311-interior/original16 scope remains active and unfinished. Latest human
+priority: WiseTriosRoom elder room needs contiguous timber walls and a floor
+closer to 2D; classroom chairs also need better form/proportions. Preserve all
+unrelated dirty source, packs, audio and model catalogs. No exports, staging or
+commits were performed. Build cache is target/kanto-resume, jobs1.
+
+Latest user sequencing: finish the current interior cleanup, then prioritize
+towers and lighthouses. Move to that family next instead of another general
+house/station pass. Review every floor against its corresponding 2D state,
+including connected timber/walls, stairs, floor materials, scale and visibility.
+
+Implemented and visually checked before the latest elder-room request:
+- Rocket B1F sensor drawing now has a seated gold Persian on its native gray
+  pedestal instead of a red warning lamp. Exact complete source guards, original
+  alarm ownership, support and eight claimed cells retained. Native Rust geometry
+  lives in mesh/rocket_persian.rs (untracked source deliverable, not build output).
+- Wall kinds, domestic windows, Cianwood posts, Tower timber, facility/Rocket
+  partitions and classroom walls reach32px. Source blackboards/windows keep one
+  native-size upper drawing with wall below, rather than stretching the art.
+- Rocket walls have black caps and blue faces. Fixed legacy wall-network duplicate
+  rendering on already claimed native walls, removing the striped pale fringe.
+- Mansion1/2/3 exact horizontal AND vertical wall strips have neutral gray caps and
+  blue native85 faces. Palette3's170 is blue, so cap uses neutral19/31 architectural
+  gray in solid geometry. All existing stair/source support retained.
+- Source-owned wall backing now joins behind cabinets, TV, radio, picture and
+  window courses. BluesHouse west run is continuous. The first connected render
+  hid recessed picture art; latest mounting shift moves complete frames/art2px
+  forward. Fresh elder-connected-review/blues-compare.png confirms portrait artwork is
+  restored in front of the continuous wall; state flag true.
+- Classroom office armchairs were replaced with compact rounded school seats,
+  shallow backs, four metal legs and rubber feet, depth8 instead of stretched16,
+  seat5.2. Own blue source palette and original source claims/support retained.
+  Shared chair/table facing resolves aligned nearby tables, preferring own source
+  block on equal gaps. Seated yaw metadata uses that same relationship. Fresh
+  classroom capture confirmed a camera-phase bug: equal-gap selection
+  used viewport grid division and could select the next desk after a two-cell
+  crop shift. Latest fix derives block phase from the actual seat source and
+  applies it to shared geometry/yaw selection. Test covers all16 grid phases.
+  Final chair-source-phase-review captures at4,7 and2,5 both exited0, preserved
+  paired state and were individually viewed: backs sit away from the desks and
+  seated people face their own desktops at both camera positions.
+- Wise timber panels use closed32px boards/posts with continuous grain instead
+  of repeated short-post pictures. Smooth layered-alpha player reveal replaces
+  the rejected white stipple/wire-fence effect.
+
+Latest elder-room source changes (verified at the requested wall/floor scope):
+- Exact block03 north timber course is resolved natively; own gold wood replaces
+  the pale paper-panel fallback.
+- Two source post cards form one north/south timber return at their shared east
+  edge,3px thick, connected across intervening source perspective floor rows.
+  Lower segment additionally joins the complete lower crosswall, with unchanged
+  source claims, collision and support. Render-only extent spans z48..112 in the
+  native16x16 room; no closure across the passage on its east side.
+- Wise source tile50 now keeps its own gold horizontal plank drawing at native
+  UV scale and original floor datum, instead of generic pale ceramic slabs.
+  Custom profile exclusion remains respected. No global palette change.
+- Current elder north walls, continuous return and source plank floor passed all7
+  focused checks0.28s and383 modeled checks8.60s. Native build30584 completed0
+  in59.08s. Five elder-connected-review captures44671 all exited0; all five final
+  pairs individually viewed and state flags true. Wise3,4 reveal and4,4 UD,
+  Blues5,4 portrait and Mansion1F4,5 control look correct in their scoped changes.
+  Both Wise moving samples viewed: return visibly joins both crosswalls, floor
+  matches gold source pattern, player visible beside it. Global actor facing
+  can still look sideways while moving north; no actor subsystem edits made.
+- Final source-phase modeled suite46220 passed383 checks5.56s. Follow-up55878
+  passed the focused all16-phase/derived-source-phase regression after its last
+  assertion was added. Native98954 completed0 in59.34s. Two final classroom
+  captures92861 both exited0 and preserve paired state; each comparison viewed.
+  Compact chair shape, depth, desk-facing geometry and seated yaw are now verified
+  at both4,7 and2,5. Prior elder-connected-review classroom is superseded.
+  No active build, test or capture handles remain. No production source changed
+  after the final build began. Diff whitespace check passes for changed files.
+
+Verification/evidence retained:
+- Mounted-picture381 checks9.55s; prior modeled381 checks14.41s; cached Rocket
+  ownership regression separately1pass. No full-mesh green claim.
+- native-wall-return-review/: all8 paired-state flags true and all8 final paired
+  images individually viewed. Both Wise UD AND Mansion corridor UD moving00/01
+  now viewed. Rocket clean black/blue with gold Persian; Mansion1/3 gray/blue
+  returns. Blues blank portrait and Wise pale floor/paper wall from this older
+  folder are superseded by elder-connected-review. Every capture exited0.
+- Earlier full mesh suite900pass6fail7ignored. Earl desk tie failure fixed;
+ 5 remaining failures outside changed interior paths (rock binding equality,
+  forest pond rim, Kanto shallow bank bounds, grove water contacts, roof quads).
+  No baseline proves they pre-existed. Do not claim full suite green.
+
+Elder requested wall/floor scope and classroom chair form/facing now have fresh
+paired proof; broader room/game acceptance remains open. Next prioritize remaining
+interior materials/objects from the human requests and handoff below, avoiding
+another station-only pass. Global actor motion can still face sideways and needs
+its own investigation; this turn changed shared seat metadata, not actor code.
+Task-generated stair audit contact sheets were removed; ignored original capture
+receipts remain for inspection. No source art dump or generated pack was added.
+
+Earlier shared-stair work is complete at source/paint/warp scope:18 flights,
+11 maps, source checks195+27+9+1;7 static pairs viewed;12 ordinary-input warp
+routes verified first endpoints and final state preservation. All final pairs
+and24 moving samples viewed (many transition fades do not prove whole animation).
+Trainer1F/B1F, Wise and9 RocketB2/3 flights keep native gold/blue paint. Original
+controller, collision, events and pack unchanged. Logs/evidence remain ignored.
+
+Broader unfinished work includes all311/original16 acceptance, other Johto
+materials, facility/Pokecom gray floors and pale apparatus, rooftop occlusion,
+clinic/mart/service movement/animation, actor poses/settling and other handoff
+rooms below. Shinkansen timed boarding was deferred by the user's request to
+move beyond the station. Goal remains active; no blocker and no global acceptance.
+
+## Shared domestic/facility stair finishes, 2026-10-15
+
+Previous turn made verified progress on Mansion furniture reveal, native clock
+paint and pink backing. Full311/original16 scope remains active and unfinished.
+Source inspection found remaining gray imported flights in TrainerHouse1F,
+WiseTriosRoom and TrainerHouseB1F. The same exact facility stair drawings are
+also real warp endpoints in Rocket Base: B2F has one up/four down, B3F four up.
+Those nine Rocket flights were still unmodeled; block05 descending drawing is
+[30,31;18,19], block04 ascending is [10,11;20,21], both NE2x2.
+
+Expanded native_home_stair source paint to strict house/traditional/facility
+families: gold palette5 for TrainerHouse1F/WiseTriosRoom, own palette6 for facility.
+All five material roles sample their own complete drawing. Facility down art has
+no white pixels: its tread role keeps170 rather than borrowing255 from up art.
+Existing six player/Red/Copycat flights retain their previous palettes/geometry.
+New map/phase/drawing-guarded facility matcher models the nine Rocket flights,
+adds their render ramps and retains TrainerHouseB1F's existing support. Also
+added WiseTriosRoom's missing negative render ramp to match its existing sunken
+geometry. Logical collision/warps/input remain unchanged. Existing ground01/26
+checker donors alternate under native facility flights at the original datum;
+down backing stays at its original -16 base. No global palette or new asset,
+profile/catalog/pack/audio/export change.
+
+Expanded external regression covers18 domestic/facility flights across11 maps,
+all own palette/PNG pixels, exact selected geometry/normals, four claims, unknown
+maps and every damaged source cell, unchanged append support and real profile
+ramps/checker phases. Initial test87244 and native79546 live in shared-stair-source-
+tests.log / shared-stair-source-build.log. Final source assertions added after
+the initial test invocation; rerun once terminal before final acceptance. Fresh
+paired views and ordinary-input routes on both Trainer floors, WiseTrios and
+both Rocket floors remain required. Do not call visual acceptance from tests.
+
+## Mansion northern corridor furniture reveal, 2026-10-15
+
+Previous turn made verified progress: ten north-facing Mansion flights, native
+blue courses, all ten production-input destinations,194 interior/27 profile checks.
+Full311/original16 scope is unfinished. The northern entry poses showed furniture
+hiding the player's lower body; bookcases/workstations had no reveal owner.
+
+Complete native Mansion bookcases, desk/chair assemblies and clock now each
+register one furniture-only cutaway + existing depth/coverage reveal range.
+Source floor backing is emitted before the range and stays opaque. Exact source
+checks/map scope and named-material guards remain authoritative. Other family
+reveal styles stay unchanged, and no new global renderer/fade defaults are used.
+Clock block0f origin2,0 also gets its own gold/cream/ink source UVs via existing
+four-role adapter; anchors [[1,8],[3,5],[7,12],[3,10]] are actual palette5 pixels
+[85,170,255,0]. Selected geometry/height/footprint/claims/support are retained.
+
+Added external-pack regression covering all4 bookcases/4 workstations/1 clock,
+all damaged-cell rejections, source pigments, exact whole-object ranges, opaque
+floor after real fade preparation, unchanged support and unaffected neighbors.
+First suite passed195 checks4.01s (mansion-corridor-reveal-tests.log); all37 fade
+checks passed1.09s (mansion-corridor-reveal-fade-tests.log). First native build
+passed1m56s. All three initial near pairs in mansion-corridor-reveal-near inspected:
+player/follower readability improves, but1F reveals an old wrong gold hallway
+backing under block0f's clock/bookcase. This intermediate is rejected for final
+floor acceptance. Resolve now selects the existing native pink tile11 backing
+for complete Mansion corridor furnishings when available. Geometry/support stay
+unchanged; the other furnished inset sources already use tile11. Regression
+requires actual packed tile11 on all nine objects. Final floor tests/build live:
+mansion-corridor-reveal-floor-tests.log / mansion-corridor-reveal-floor-build.log.
+Fresh near-landing pairs, opaque/control views and corridor walking still required
+before accepting readability. No new asset/profile/catalog/pack/audio edit,
+export, staging, commit or cross-chat message.
+
+Final floor suite passed195 checks7.84s; final native build passed2m32s. Final
+near pairs in mansion-corridor-reveal-final-near (1F0,1 /2F0,1 /3F1,1) all
+individually inspected: player/follower visible through only the complete blocking
+furniture, pink inset continuous under the former gold patch. All four ordinary/
+control pairs in mansion-corridor-reveal-final-review inspected (three Mansion
+floors, PlayersHouse1F): furniture recovers opaque, source gold clock matches
+adjacent timber, neighboring stairs/walls/plants and home control retained.
+
+Keyboard17115 completed0: mansion-corridor-reveal-walk,3F RLR96,
+(1,1)->(4,1)->(0,1)->(3,1). All three moving images and final paired image
+individually inspected. Player/follower remain readable, source floor stays
+opaque/continuous, whole desks/chairs and bookshelf recover independently as
+the occlusion moves. Existing depth/coverage cabinet style retained; no generic
+renderer mode change. All eight final paired states preserved. Scoped complete
+Mansion furnishing reveal/backing/clock-paint acceptance only, not all rooms,
+actor-animation/story, roof scenery or presented FPS acceptance. Rejected initial
+near folder removed after final replacement review; its three logs retained as
+receipts/mansion-corridor-reveal-initial-*.log. All task-owned handles terminal;
+scoped diff check passes. No export/audio/staging/commit/chat messages.
+
+Next source fidelity gap: remaining ordinary-house/traditional/facility stair
+paint, including WiseTriosRoom's gray flight against its native gold drawing.
+Preserve existing verified support/warps and use per-source role samples. Also
+retain roof return enclosures and broader shared-furniture/room/actor/camera/story
+findings. Full311 interiors/original16 scope stays active and unfinished.
+
+## Mansion north-facing flights and native wall courses, 2026-10-15
+
+Previous goal turn made verified progress on the two compact native Mansion
+plants and home-stair transition review. Current source investigation proves ten
+missing north-facing flights across Mansion1F/2F/3F: blocks05/06 up drawing
+[0a,0b;1a,1b], blocks15/16 pair it with down [08,09;18,19]. Existing warp events
+point to these exact source quadrants. Palette0 gray belongs to stairs; palette3
+blue belongs to neighboring wall strips, including tile12. Prior flattened
+stairs/pale clinical columns are rejected geometry/material interpretations.
+
+New native_mansion_architecture.rs resolves complete, unclaimed 2x2 sources only
+in the three Mansion floors. Reuses the existing named-role StairFlight, fitted
+in rotated axes then rotated north (up) or south (down), preserving winding and
+normal transform under unequal tile axes. Bases0/-16, rise16/rails22.4; own source
+gray samples [85,85,255,170,170]. Native source north ramps add the missing
+render support only on exact stair phases; runtime collision/warp/input unchanged.
+Blue complete WallClinical source fragments use their actual two-row/16px course
+and own UVs, instead of generic pale24px columns. No new model/profile/catalog,
+pack, export or audio edit. Selected named-material validation precedes claims.
+
+All194 interior checks passed3.31s (mansion-north-stair-tests.log); all27 profile
+checks passed (mansion-north-stair-profile-tests.log). Native build passed2m05s
+(mansion-north-stair-build.log). External regression checks exact10 flights,
+palette/PNG roles, damaged-cell rejection, ownership/support retention, bounds
+and winding at three scales including unequal tile axes. All five actual static
+pairs in mansion-north-stair-review inspected: three changed floors, roof-house
+and player-home controls. Every paired state preserved. North-facing rising
+flights and recessed descending flights read correctly; native blue wall courses
+replace the pale columns. Adjacent compact native plants/furniture retained.
+
+Ten-route production-input batch22955 completed0 in mansion-north-stair-walk;
+all ten final actual paired images individually inspected, every state preserved.
+U32 endpoint coverage: 1F west/east(0/7,1)->2F(0/7,1), 2F west/east down
+(0/7,1)->1F(0/7,1), 2F inner up(1/6,1)->3F(1/6,1), 3F inner down
+(1/6,1)->2F(1/6,1), 3F outer up(0/7,1)->Roof(1/6,2).
+Nine32-update traces include the final tile. The tenth east-roof trace stopped
+at(6,1) during the automatic exit step, while its later settled paired image
+shows(6,2). Extended ordinary UB64 route62651 completed0 in mansion-north-stair-
+settle and proves the final authoritative Roof(6,2) in its trace; B only supplies
+ordinary cancel input after U, no renderer/controller bypass or harness edit.
+Its final pair inspected/state preserved. Do not call the short trace a failed
+warp or infer an endpoint from map change alone.
+
+All ten moving samples reviewed in contact sheets; full-size1F-east ascent and
+3F-east-down departure also inspected. Several samples are uniform transition
+frames. These show scoped geometry/support during motion and final routing,
+not whole transition-animation/actor-pose acceptance. All16 static/walk/extended
+paired receipts preserve state. Native stair shape/orientation/source paint and
+blue course material/height accepted for these exact sources only. Scratch
+contact sheets removed after inspection, actual QA captures/receipts retained.
+All task-owned test/build/capture handles terminal; scoped diff check passes.
+No export/audio/profile catalog/asset generation/staging/commit/chat messages.
+North corridor actor lower-body occlusion behind bookcases/desks is visible in
+these entry views and remains a separate readability defect. Roof arrival also
+shows existing pale enclosure/stair materials and roof blocking part of the
+player. Do not infer whole-room/camera/actor or roof acceptance from this stair
+work. Next investigate complete native bookcase/workstation reveal ownership at
+these northern corridor landing poses, preserving source geometry/support and
+other family defaults. Roof return enclosures and traditional/facility/ordinary
+house stair paint remain open. Broader311/original16/story scope is unfinished.
+
+## Celadon Mansion compact native plants, 2026-10-15
+
+Fresh baseline mansion-current-material-review completed; all four actual pairs
+(1F/2F/3F/RoofHouse) inspected. Both lower mansion floors retain a tall pale,
+sparse crown/terracotta pot against the source compact green bush/gold pot.
+The 3F/roof controls show separate unresolved architecture/room issues; current
+plant work does not claim those accepted.
+
+Added exact native_mansion_plant guard for 1F/2F, block11 origin2,2, four source
+tiles [2e,2f;5e,5f], PottedPlant/base0. Reuses existing closed dense foliage
+adapter with a16px whole height (source two rows), own-source green palette2 and
+gold palette5. Pixel anchors [[1,3],[3,3],[2,0],[4,9],[5,9],[2,8]] have actual
+grays [170,85,0,85,170,0]. Named material validation still precedes source claims;
+unknown/edited/other-map sources stay on prior paths. No new asset/profile/pack.
+Added complete/damaged source, four-cell ownership, unchanged support, compact
+bounds, own pigments and denser crown checks, plus actual external two-map
+palette/PNG coverage. Tests/build pending at this checkpoint:
+mansion-native-plant-tests.log / mansion-native-plant-build.log.
+First suite passed192 checks; final suite passed193 including actual packed
+palette/PNG coverage (mansion-native-plant-final-tests.log). Native build passed
+in3m58s (mansion-native-plant-build.log). Final mansion-native-plant-review
+contains both changed floors and3F control; all three actual paired comparisons
+inspected, all states preserved. Compact dense green crowns/gold pots now match
+the source family and sit below adjacent bookcases. Existing controls retained.
+Keyboard DU64 in mansion-native-plant-walk, 2F(3,4)->(3,7)->(3,4): both moving
+images and final paired image inspected; source collision blocks upward progress
+at the plant, actor/follower/floor remain readable, state preserved. Scoped plant
+shape/paint/scale acceptance for these two complete sources only. Whole Mansion
+walls, corridors, stair architecture, camera, actor and story acceptance remain
+open. All task-owned test/build/capture handles are terminal. Scoped diff check
+passes. No exports/audio/profile/catalog/staging/commit/cross-chat messages.
+
+Next concrete issue visible in current Mansion pairs: north stair drawings are
+still flattened beside tall pale WallClinical fragments; inspect blocks04..08
+source phases before interpreting them as walls. Keep shared-owner and partial
+source guards, and verify stair support/warps separately. Remaining traditional/
+facility stair palettes (including WiseTriosRoom) and full311/original16 scope
+remain required. This checkpoint is progress, not goal completion or a blocker.
+
+## Home stair source finish and transition review, 2026-10-15
+
+Previous turn made progress on round home stools/full-height divider; this turn
+completed missing review of the earlier source-painted stair implementation.
+All 311 interiors and original 16 combinations remain in scope and unfinished.
+
+native_home_stair.rs guards complete 2x2 own-source flights, reviewed rooms,
+exact atlas/phase/drawing/base/depth/height and existing five named mesh roles.
+The imported stair positions/normals/indices and cached asset remain unchanged;
+its metal/plaster/stone/light-stone/timber roles receive only its own source UVs.
+The players_house flights use source palette5 wood/cream; PlayersHouse2F keeps
+its actual players_room palette0 gray. Five existing flights keep their geometry
+and support. CopycatsHouse1F block23 now recognizes its actual west-origin up
+flight [4c,4d;5c,5d], instead of a flat stair picture in the wall. That missing
+flight intentionally receives the existing rendered ramp support; logical
+collision and authoritative warp/input are unchanged. Other block23 mixed cells
+remain unclaimed. No model/catalog/profile/pack/audio edits for this work.
+
+Current direct regressions passed: exact external six-map coverage1, strict model
+role/cache/geometry1, player-house source and architecture10. The 191 interior
+suite from the stool turn includes the stair coverage check. Earlier dedicated
+receipts home-stair-final-* remain valid. Six required maps: both floors of
+PlayersHouse, RedsHouse and CopycatsHouse. Final eight static comparisons in
+home-stair-final-review now all inspected, including the previously unreviewed
+TrainerHouse1F/WiseTriosRoom controls. All eight paired states preserved. Control
+review is not whole-room acceptance: WiseTriosRoom still visibly has pale surfaces
+and stair material distinct from its gold source; keep that source-family gap open.
+
+Both Copycat U32 routes and final pairs in home-stair-copycat-walk inspected:
+1F(2,1)->2F(3,1), reverse2F(3,1)->1F(2,1). Single moving samples are uniform
+transition frames; they alone do not establish whole animation. Primary home
+paired U32 routes likewise preserve 1F(9,1)->2F(7,1) and its reverse.
+
+Recovered terminal ascent recorder home-stair-record-up-full: 32 movement updates,
+69 captured actual frames over4.08s, endpoint2F(7,1). All69 frames reviewed in
+12-frame contact sheets. Current recorder rebuilt in1m18s, receipt
+home-stair-current-recorder-native.log. Descent home-stair-record-down-full
+completed32 movement updates,44 captured actual frames over4.08s,
+endpoint1F(9,1). All44 frames reviewed. Both contain departure, uniform palette
+transition, destination arrival/settling. Records use existing fixed diagnostic
+camera/player-only setup, not the identical actor/party setup of paired captures;
+no follower-animation, camera-quality, presented-FPS or whole-game acceptance.
+Failed12Hz attempt and too-short1second recording remain rejected diagnostics;
+the incomplete1second frame directory was removed after full-frame review, logs retained.
+30Hz is only a requested capture cap. No recorder/harness edits were needed.
+
+Next: fresh Celadon Mansion family material review (mansion-current-material-review,
+receipt mansion-current-material-capture.log, now terminal and all four pairs reviewed). Address native
+plant/wall source semantics, then remaining house/traditional/facility stairs and
+broader room composition/scale/actor/story requirements. Preserve all older scope.
+
+## Player-home round stool and full-height divider, 2026-10-15
+
+Human correction: the home stool is round wood and the divider is full height.
+The complete players_house stool drawing now gets a closed 32-sided beveled
+wood seat and four timber feet, using its own source gold/brown texels. It keeps
+its 5px seat height, four-cell ownership and existing footing. Other stool
+families retain their current geometry. The exact eight-row kitchen partition
+now rises 32px, matching the four-row north-wall course, with its two source
+wood bands repeated down the closed sides. Its footprint and source guard stay
+unchanged. The visible cap/sides stop at the north-wall plane, avoiding a
+rear protrusion discovered in the first render. Source claims still cover the
+same original cells. Initial test used an incorrect fixed radius expectation;
+it now verifies a consistent circular rim within the compact source footprint.
+Final interior suite passed 191 checks (home-round-stool-final-tests.log), and
+all three architecture checks passed after the junction fix
+(home-divider-final-tests.log). Final native build passed in 1m53s
+(home-round-stool-final-native.log). Reviewed actual paired home, bedroom and
+Red-house comparisons in home-round-stool-review; final home junction pair in
+home-round-stool-final-review supersedes the initial home pair. All four paired
+states preserved. Final view confirms round wood seats and full-height divider
+meeting the north wall cleanly. Broader interior scope remains open.
+
 # Kanto interiors: checkpoint and restart
 
 The user expanded the active goal on2026-10-14 to Johto and all interiors,
@@ -6,7 +2094,1775 @@ maps:191 Johto and the original120 Kanto. The original16 Kanto block combination
 and all unresolved findings remain in scope. The goal is not complete.
 Authored-family counts and successful mesh audits do not establish visual completion.
 
+## Current continuation: layered centerpiece reveal, 2026-10-15
 
+Previous turn made progress: three source-coloured 3D centerpieces and settled
+opaque/control views verified,190 checks passed; transient layered alpha remained
+open. All311 interiors/original16 combinations remain required and unfinished.
+
+Added exact source-owner opt-in layered_alpha_textured_ranges to TerrainMeshData,
+remapped during textured compaction, and passed to prepare_linked_with_layered_alpha.
+Only the three native large tables opt in; all other table/cabinet/grove defaults
+remain unchanged. Selected groups retain the same complete BVH/source range,
+opacity state and one merged opaque draw. Fading leaves split vertically as well
+as laterally, at64 triangles/max256 leaves instead of default2048/max16.
+37983 passed36 fade checks0.54s,15864 passed190 interior checks1.53s, explicit
+compaction regression passed1 (table-centerpiece-sort-* receipts).
+Native45609 completed47.16s. Capture95538 DU64 and48185 six-room batch completed.
+Only exact old/new moving01 images were compared: finer sorting helps, but dark
+petal/hidden-face bleed remains. This intermediate is NOT visually accepted;
+other batch images are unreviewed and must not be reported as accepted.
+
+Extended the same closed-layered opt-in to smooth depth-writing alpha: the
+existing independent depth flag can be true while coverage remains false.
+Cabinets still use depth+coverage Mask; ordinary surfaces still use Blend without
+depth. New CPU-only VoxelSurface/key flag specializes depth_write_enabled only
+for the opted-in forward BLEND_ALPHA pipeline. No GPU binding/uniform or WESL
+change, no worker wire schema/fields changed; existing depth/coverage flags carry
+this combination through weak caches and worker transport. Opaque/mask/shadow/
+camera-prepass pipelines remain exact. All source geometry, palettes, ownership,
+footing, input and source colors remain unchanged.
+37900 passed37 fade checks0.52s (table-centerpiece-depth-sort-tests.log), including
+material mode/opaque-cache preservation.85080 aggregate completed0: forward-depth
+specialization1, source-discard1, selective-tree-prepass2, compaction1 and190
+interior checks1.48s. Receipts table-centerpiece-depth-*.log. Native24022 completed0 in48.72s (table-centerpiece-depth-native.log).
+
+Final keyboard13033 completed0 in table-centerpiece-depth-walk/ (matching receipt):
+FanClub DU64, (7,4)->(7,7)->(7,4). Both moving images and final paired comparison
+individually inspected, state preserved. Moving01 is clean: petal/hidden-face
+artifacts AND exposed table braces removed; moving00 retains smooth translucency
+and player/follower/floor readability. No grainy coverage mask introduced.
+Static39728 completed0 in table-centerpiece-depth-review/: all six comparisons
+individually inspected (three changed rooms, both home floors, BillsHouse).
+Opaque31147/65288 completed0 at(1,7) for FanClub/Warden, both comparison images
+inspected in table-centerpiece-depth-opaque/. All nine paired receipts preserve
+state. Dense source-coloured centerpieces, native frame/ground and live room
+props retained, opaque recovery clean. Scoped shape/paint/moving-reveal acceptance
+for these three complete sources only; not whole-room/story/actor/FPS acceptance.
+Removed rejected finer-sort capture/walk folders after verified replacements;
+diagnostic logs retained. All recorded build/test/capture handles terminal.
+
+Next: return to player-home stairs, finish/material/scale and whole transition
+animation. Preserve both verified native warp directions and authoritative
+controller input; use paired2D/3D at identical positions/time/facing. Entry points
+are append_house_stairs in mesh.rs and modeled StairFlight candidates in
+mesh/interior_signatures.rs. The white imported flight/rails need source-bound
+inspection, not a blind global palette swap. Mansion pale plant/wall variants
+and every broader311/original16 gap remain in scope.
+
+All broader311/original16, home stairs/scale and recorded room gaps remain open.
+No export/audio edit/profile/catalog/stage/commit/cross-chat message. No other
+agent/cache touched.
+
+## Previous checkpoint: large-table centerpieces, 2026-10-15
+
+Previous turn made progress: native border/corner art accepted across all63 table
+rooms after full visual review, including home, lab and mansion variants. All311
+interiors/original16 combinations and all unresolved findings remain required.
+
+New native_table_centerpiece.rs replaces the six source center drawings with a
+closed flared pot, recessed soil, two asymmetric rounded overlapping crowns,
+seven broad joining leaves and connecting stems. Geometry remains within the
+table plot and18px above its top. Brown/gold/cream/dark anchors belong to the
+complete six-tile source drawing; actual pack palette/bank/gray/RGB are tested.
+The projector clears only those six top cells with adjacent native gold field;
+all border/corner art remains exact. Only complete native8x8 tables in
+PokemonFanClub, SafariZoneWardensHome and TrainerHouse1F select this geometry.
+The whole object stays in the same smooth reveal owner. Floor backing, original
+table height/footprint/claims/footing, input and live decorations are retained.
+No new model/profile/catalog entry, pack/export or audio edit.
+
+79070 completed101:189 passed/one failed, actual source check found85 instead
+of0 for an outline anchor. Corrected its one-pixel offset.82713 completed0:190
+checks1.67s (table-centerpiece-source-tests.log). Native31685 completed47.24s.
+First capture21004 completed0; all three affected pairs/full Trainer detail
+inspected. Pot was rounded and duplicate gone, but crowns were sparse exposed
+flowers. Rejected intermediate.80701 keyboard completed but images unreviewed;
+not final evidence. Added broad joining leaves and enlarged/thickened crowns.
+50604 completed0:190 tests1.46s (table-centerpiece-dense-tests.log). Tests cover
+closed edge pairs, positive volume and outward normals at three scales; exact
+three-room source pigment, all64 damaged-cell rejections per room, same claims/
+support/owner and erased center ink. Full63-room top frame assertions still pass.
+Native9188 completed0 in45.60s (table-centerpiece-dense-native.log).
+
+Final capture52618 completed0: all six actual comparisons individually inspected
+in table-centerpiece-dense-review/ (matching capture receipt): all three changed
+rooms, both player-home floors and BillsHouse. Full TrainerHouse3D inspected.
+Dense asymmetric crowns now meet the pot, source paint/scale and frame retained,
+no duplicate flat drawing. Opaque9700/3733 completed0 at(1,7) for FanClub/Warden;
+both paired images inspected in table-centerpiece-dense-opaque/. All eight
+static paired states preserved. Settled shape/paint improvement verified only.
+Keyboard75655 completed0 in table-centerpiece-dense-walk/ (matching receipt):
+DU64, FanClub(7,4)->(7,7)->(7,4). Both moving images and final pair inspected,
+state preserved. Player/follower readable and entire table/prop fade together;
+opaque views recover cleanly. Moving01 exposes an unresolved transient: petals
+blend over each other and show internal shapes during restoration, alongside
+known table-member bleed. Do NOT accept the complete moving reveal yet.
+Removed only rejected first capture/walk folders after verified replacements;
+kept diagnostic receipts. All recorded handles terminal; no FPS claim.
+
+Next required fix: improve transparent sorting for the layered centerpiece while
+preserving the accepted smooth table fade and its complete source owner. The
+current occluder_fade.rs uses RENDER_LEAF_TRIANGLES=2048/MAX_RENDER_LEAVES=16;
+the new layered object has far more overlapping faces than the previous flat
+six-quad drawing. Investigate a source-specific finer sorting contract rather
+than changing shared renderer defaults or making the entire table grainy again.
+No renderer/material edit has been made for this transient. Re-run the exact
+near-table walk, opaque recovery and three-room/control views after a fix.
+
+Next home-fidelity work remains stair finish/scale. Source investigation located
+append_house_stairs in mesh.rs:2609 and modeled StairFlight candidates in
+mesh/interior_signatures.rs:1505. Existing production warp routes are verified;
+finish/whole-animation/composition acceptance is still open. Mansion pale plants/
+walls and every other311/original16 outstanding criterion remain required.
+No files staged, shared caches deleted, exports run or other tasks messaged.
+
+## Previous checkpoint: native tabletop borders, 2026-10-15
+
+Previous goal turn verified the existing blue cases/front-glazed enclosure; this
+turn completed the remaining house-plant review and nearby walk (see below).
+All311 interiors and original16 combinations remain required and incomplete.
+
+New native_tabletop.rs projects each complete source house top (excluding the
+final perspective apron row) onto the selected model's upper horizontal faces.
+It clips existing triangles along source-cell boundaries rather than placing a
+second floating surface. Legs, sides, height/footprint, source claims, support,
+collision, input and cached model are retained. Source border/corner artwork
+and large-table center drawings now share one continuous native projection.
+Canonical player-home bedroom/1F and Red's matching tables are also included;
+other native lab/mansion table paths retain their prior finish. All source and
+named-material guards remain authoritative, including custom object ownership.
+
+native-tabletop-tests.log:189 modeled-interior checks passed1.43s. After adding
+home variants, native-tabletop-home-tests.log also passed189 in1.43s. New test
+checks exact top area, outward winding, source UV cell boundaries and unchanged
+side triangles at three scales. Existing external-pack regression still covers
+all63 native table rooms and unchanged claims/support/floor/reveal ownership;
+its standalone first-pass receipt is native-tabletop-coverage.log.
+First native build completed46.47s; final home-inclusive build2878 completed0
+in46.35s (native-tabletop-home-native.log). Capture28616 completed0 in native-
+tabletop-review/ (native-tabletop-capture.log). All six comparisons individually
+inspected: PlayersHouse1F/2F, BillsHouse, PokemonFanClub, TrainerHouse1F,
+CopycatsHouse1F; all paired states preserved. Frames/corner inlay restored;
+large centerpiece remains a flat source drawing and still needs actual relief.
+Keyboard90412 completed0 in native-tabletop-home-walk/ (matching receipt):
+DULR128, (4,2)->(4,3)->(4,2)->(0,2)->(3,2). All four moving images and final
+pair individually inspected, state preserved. Smooth reveal/player/follower
+readability retained; intermediate recovery exposes underlying table members,
+as before. Idle75764 completed0 at(0,2) in native-tabletop-home-recovery/:
+full3D inspected, fully opaque framed top clean, state preserved. No FPS claim.
+Remaining57 native table rooms plus store/shrine controls now capture in
+native-tabletop-remaining-review/ (native-tabletop-remaining-capture.log).
+Capture59548 completed0; all59 comparisons individually inspected, completing
+63 native table rooms plus two controls across the two folders. All65 paired
+states preserved. Native corner/edge patterns match; large centerpieces remain
+flat source drawings. DayOfWeekSiblingsHouse retains its orange tabletop book.
+The three lab/mansion baseline captures show the remaining unframed tops.
+
+Extended the same projection to the three exact native lab/mansion paths after
+inspecting their own atlas drawings in memory: the last source row is likewise
+an apron, while the top rows carry the black/pale edge. Removed the now-obsolete
+six-cell floating centerpiece overlay. No change to the already-reviewed house
+projection. First extension test10559 completed101:187 passed/two failed because
+old mansion/lab tests required every UV to be one uniform swatch. Replaced these
+obsolete assertions with exact per-triangle source projection assertions and
+retained side-paint checks. The same exact source/apron assertion now runs on
+all63 external-pack table rooms. Unit test now covers all five source sizes
+(4x2/4x3/4x4/6x2/8x7 tops), three scales, area/winding/unchanged sides.
+63016 completed0:189 tests2.07s (native-tabletop-all-source-tests.log).
+Native74689 completed0 in48.02s (native-tabletop-all-native.log). Capture96266
+completed0 in native-tabletop-all-review/ (native-tabletop-all-capture.log).
+All eight actual comparisons individually inspected: Elm/Oak/CeladonMansion1F,
+PlayersHouse1F/2F, BillsHouse, store and shrine controls. All eight paired states
+preserved. Three newly included tables now have their own source frames; home,
+Bill and control finishes retained. Together with the earlier complete review,
+scoped native top border/corner acceptance now spans all63 table rooms. The
+three old lab/mansion comparisons in the prior batch are baselines, superseded
+by these final captures. All recorded test/build/capture/walk handles terminal.
+
+Next concrete shared-furniture defect: the large-table centerpiece in FanClub,
+Warden and TrainerHouse1F is still flat. Its own complete six-tile house drawing
+(22/23,52/53,25/35) was inspected in memory: rounded bloom/leaf mass above an
+outlined pot; implement faithful relief/volume and remove that projected ink
+without repainting the frame. Preserve source palette, exact table claim,
+cutaway ownership, footing and live decorations. Source interpretation still
+needs care; don't substitute a palm or invent differently colored flowers.
+Home stairs/scale, mansion pale plants/walls and all broader311/original16 gaps
+remain open. No pack exported, files staged, shared caches deleted or other
+tasks messaged.
+
+## Previous checkpoint: native house plant silhouette and pigment, 2026-10-15
+
+Previous goal turn made progress: shrine red entry mat and production exit warp
+verified; native table fades switched to smooth Blend across63 actual rooms,
+186 interior checks and all65 paired captures plus bedroom moving/recovery QA
+verified. All311 interiors/original16 requirements and other defects remain open.
+
+Current work corrects house plants' pale broad leaves and terracotta pots. Exact
+house block6/7 complete2x4 drawings now select native_house_plant only in already
+reviewed native house maps. Existing selected pot/soil geometry is retained and
+compacted by named roles; old leaves own no vertices/bounds. Gold body/rim/soil
+and green dark/shade/light sample their own source pixels, with PNG palette/bank
+verification. Narrow closed curved blades form three nine-leaf tiers and three
+upright tips around a visible source-gold stem. Physical height/depth, original
+claims/footing/collision/input and imported cached model remain unchanged. Other
+plant families are untouched. Unknown materials/drawings retain source fallback;
+custom profiles keep their complete drawing ownership. No new catalog/profile.
+
+96685 completed0:186 existing interior tests1.40s. Added actual-pack plant pixel,
+claim, per-cell damage, custom ownership and blade volume/winding tests.86110
+completed101:187 passed, one failed on a blade tip extending above the23px bound.
+Tapered blade end thickness and moved upright tip inside its closed bound;
+43772 completed0:188 interior checks passed1.44s (house-plant-bound-tests.log).
+Separate authored-pot/cache/unknown-material regression passed1 in0.01s
+(house-plant-pot-tests.log). Current external-pack test passed and reports109
+placements in54 maps (house-plant-coverage.log), with every source texel pigment,
+phase, claim, damaged cell and custom ownership checked. Native82491 completed0
+in47.24s (house-plant-blades-native.log). First capture writes house-plant-blades-
+capture.log in house-plant-blades-review/: Bill,DayCare,TrainerHouse1F,Goldenrod
+FlowerShop and SilphCo1F control. Inspect silhouette/colours/ground and then all54
+rooms before accepting. 50700 completed0. Bill comparison/full detail inspected: narrow green leaves improve
+silhouette, but pot rim is pink. This is a rejected intermediate. House palette6
+contains both the pot's brown/gold85 and the floor's pink170; a grayscale-only
+anchor assertion was insufficient. Rim now shares the actual gold85 sample.
+The regression reads the actual house.pal RGB entries too, requiring green
+leaf/dark outline/gold pot/soil colours rather than floor checkerboard colours.
+Crown has three nine-leaf tiers plus three tips for a denser narrow canopy.
+91021 writes house-plant-gold-tests.log. Rebuild and fresh representative images
+required before the all54-room review. 91021 completed0:188 tests1.44s including the RGB assertion. Native61854
+completed0 in46.47s (house-plant-gold-native.log).89241 completed0 in house-plant-
+gold-review/ (house-plant-gold-capture.log). All five comparisons individually
+inspected plus full Bill detail: gold pots, narrow green crowns, preserved source
+floor/furniture; Silph facility control retains its prior appearance. Accepted
+representative shape/paint only, pending all54 coverage and near-plant walk.
+Remaining50 capture88624 completed0 in house-plant-gold-remaining-review/ with
+receipt house-plant-gold-remaining-capture.log. All50 comparisons individually
+inspected, completing54 affected rooms plus SilphCo1F control. All55 paired-state
+receipts preserve state. The last two previously truncated images were re-viewed.
+Near-plant keyboard66790 completed0: BillsHouse DU64, (1,5)->(1,7)->(1,3),
+both moving images and final pair inspected, state preserved; player/follower
+readable beside the narrow green crowns and gold pots. house-plant-near-walk.log.
+Accepted canonical house6/7 plant shape/paint only (109 placements in54 maps);
+other plants and whole-room issues remain open. Removed the rejected pink-rim
+house-plant-blades-review/ after verifying replacements; retained diagnostics. The accepted table fade pass does not need repeating. Table borders/
+centerpieces, home stairs/scale and all other311/original16 gaps remain required.
+
+## Previous checkpoint: shrine entrance and player-home table reveal, 2026-10-15
+
+Previous goal turn made progress: shrine small light fixtures, upright blue
+wall/drapery and native blue inward-facing dragon reliefs verified after fixing
+streaming placement and east-variant palette bugs. All311 interiors/original16
+combinations and all unresolved findings remain required.
+
+Shrine Threshold now retains each original red mat cell at zero height instead
+of generic gray slabs. No input/collision/warp/support change.94371 completed0:
+121 dungeon checks3.24s (shrine-entrance-tests.log), including all eight native
+entry cells, exact UVs and unchanged footing. Native68043 completed0 in49.57s
+(shrine-entrance-native.log). Static76672 completed0 at(4,8), shrine-entrance-review/
+and shrine-entrance-capture.log. Pair inspected: red border/checker motif restored;
+default camera still crops the extreme foreground. State preserved.
+
+Keyboard80332 completed0 in shrine-exit-walk/ (shrine-exit-walk.log). D32frames
+from(4,7) crosses the native entrance warp to DragonsDenB1F(19,29). Moving image
+and final paired comparison inspected, state preserved. This proves exiting the
+shrine in this state; whole cave palette/Flash and shrine quiz/story remain open.
+No presented-FPS claim. No live shrine task handles.
+
+Returned to player-home priority: grainy bedroom table reveal is the explicit
+cabinet-style depth-coverage opt-in on native dining tables. These tables have
+few overlapping surfaces. Removed only their depth_coverage_textured_ranges
+entry, retaining the same complete table/centerpiece cutaway owner and opaque
+floor backing. They now use the existing sorted smooth Blend path. Cabinets,
+foliage, other reveals, shaders, geometry, source UVs, table support, collision
+and actor state are unchanged. Covers63 exact native table rooms; custom source
+ownership retained. Fresh visual verification is recorded below.
+
+29880 completed0:186 modeled-interior checks1.60s (home-table-smooth-tests.log).
+Fresh exact-pack coverage test passed (home-table-smooth-coverage.log), preserving
+all63 maps' claims/support and excluding floor vertices from each reveal.
+Existing cabinet opt-in/opt-out material/cache regression passed1, preserving
+Mask coverage for cabinets and Blend for ordinary reveal (home-table-smooth-fade-controls.log).
+Native55283 completed0 in48.16s (home-table-smooth-native.log).99000 completed0:
+DULR128frames in home-table-smooth-walk/ (home-table-smooth-walk.log), all four
+moving images and final pair individually inspected. Smooth transparency replaces
+the visible coverage noise; player/follower readable and floor opaque. Separate
+idle92225 at(0,2), home-table-smooth-recovery/ and matching receipt, completed0;
+full3D inspected, tabletop is fully opaque again with no sorting patches.
+Fresh pack coverage lists63 rooms, not the historical35: Johto additions are
+included. Batch33385 completed0, all63 plus GoldenrodDeptStore2F/DragonShrine
+controls in home-table-smooth-review/ (home-table-smooth-capture.log). All65 actual
+paired images were individually inspected; all65 paired states preserved. Player
+home's static/moving table reveal is smooth, large FanClub/Warden tables no longer
+show coverage noise, TrainerHouse retains its opaque top/source ornament, and
+cabinet/shrine controls retain their previous finishes. This accepts only the
+shared-table fade change, not those rooms' entire artistic/gameplay criteria.
+
+DULR's actual controller positions are(4,2)->(4,3)->(4,2)->(0,2)->(3,2). All four
+moving frames, final pair and separate idle recovery were inspected. Both walk
+and idle paired states preserved. No presented-FPS or exact NPC animation-pose
+claim from captures. All task handles terminal; scoped diff --check passed.
+No source packs, profile additions, new compiled assets, exports, audio edits,
+staging, commits or cross-chat messages. Unrelated work remains intact.
+
+Next player-home/shared-furniture work: native tabletop border/corner artwork is
+still missing, large source centerpieces remain poorly readable flat drawings,
+and house plants retain pale broad leaves/terracotta pots instead of source
+narrow green foliage/gold pots (visible across these captures). Home stair/scale
+and composition criteria remain open as well. Address these actual defects;
+do not repeat the accepted fade pass or mark all311/original16 complete.
+
+## Previous checkpoint: Dragon Shrine small light fixtures, 2026-10-15
+
+Previous goal turn made progress: restored source-blue floor and flat green mat;
+121 dungeon tests, four static pairs and UD mat traversal verified. All311 rooms,
+original16 combinations and other recorded defects remain required.
+
+Source block2c contains a small three-armed light stand within a white patch
+that retains floor plank seams. The old32px-wide paper-lantern fit made that
+whole plot into a broad opaque drum. New native_shrine Rust geometry keeps the
+32px patch on the floor, restores the illuminated plank under the projected
+stand silhouette from the same drawing's row22, and fits a narrow three-armed
+stand6.5px wide/4px deep/11.5px high. Own source samples supply dark metal,
+blue highlight and white tips. All other pool texels retain exact native UVs.
+No artwork copied/exported; existing source fingerprint/claims remain unchanged.
+Only FloorStyle::Shrine selects this path; other uses of the existing imported
+lantern model remain unchanged. Collision/actors/footing are not modified.
+
+65332 failed on Vec3::to_array taking a reference in a function-pointer map;
+fixed with an explicit closure.37715 completed0:121 dungeon checks passed3.18s
+(shrine-fixture-guarded-tests.log), including two actual-pack light placements,
+0.5/1/2 scale physical bounds, one1024px-square floor patch per light, outward
+winding and unchanged footing. Source identity mutation/crop/map guards also
+pass. Native66364 completed0 in47.15s (shrine-fixture-native.log); capture80860
+completed0 in shrine-fixture-review/ (shrine-fixture-capture.log). All four actual
+pairs individually inspected: shrine,Dojo,Earl,player bedroom. Small light stands
+and flat white pools replace drums; source floor/mat/control finishes retained.
+Accept this idle fixture shape/paint scope, not all lighting/story/whole-room QA.
+
+Current continuation also replaces the36 north-wall source cells with three
+upright8px courses on a3px-deep wall at native row3. Exact source UVs preserve
+blue drapery, replacing full-height brown/white cubes. Two masks mount atZ22..28
+against the24px wall plane. Canonical mask/rail materials now have a strict named
+four-role adapter: own-source black/shade/blue/white for masks, blue maximum for
+rails whose source has no white. Existing sculpt geometry stays cached and
+unchanged; east rail turns180degrees so its relief faces inward like the west.
+Unknown materials retain the complete source drawing. No new model/catalog.
+
+77650 completed0:121 tests3.19s including wall course mapping.52785 failed because
+the existing gym_scenery_occlusion Model constructor lacked the new optional
+material field; added the same vertex-remapping preservation as its other role
+arrays.80958 now writes shrine-blue-wall-final-tests.log. Run the separate current
+binary shrine adapter/cache/mutation/turn regression after compilation; then
+build and visually inspect the final blue walls/reliefs and light pools together.
+80958 completed0:121 dungeon tests3.18s. Separate material/cache/unknown-role/
+turn regression passed1 in0.10s (shrine-role-adapter-tests.log);10 planter controls
+passed0.09s (shrine-model-planter-controls.log). Native40559 completed0 in46.81s.
+
+Capture36702 failed before any image: native_shrine wall asserted p.row<3 in a
+padded production streaming grid. The unit fixture had used an unpadded map.
+This was an actual renderer bug, not a winit/environment failure. Wall placement
+now uses immutable source subtile_row and its placement-relative north edge;
+masks use their own local north; east-rail orientation uses its source block24,
+not the padded grid midpoint. Added a seven-cell grid translation regression
+requiring identical world positions/normals/indices on every shrine wall/dragon/
+light fixture.27854 writes shrine-streaming-tests.log; build/recapture required.
+Failed empty shrine-blue-wall-review/ was removed; its receipt is retained.
+27854 completed0:121 checks3.17s including streaming translation; native83098
+completed0 in46.08s. Capture15994 completed0 in shrine-streaming-review/; shrine
+comparison/full detail inspected. Wall/drapery/mask placement is improved, but
+east rail is black: using west texel anchors on a different source drawing was
+wrong. This is a rejected intermediate, not accepted final shrine paint.
+
+East rail now samples its own0/85/170 pigments at(0,0)/(18,0)/(17,0). Both masks
+retain their matching0/85/170/255 anchors; west rail anchors are unchanged. The
+external-pack regression now decodes the actual lab PNG and resolves its VRAM
+bank/palette map in memory, verifying each role's pigment and emitted UV for
+both rails and masks.43019 completed0:121 tests3.29s (shrine-east-pigment-tests.log).
+Native51798 completed0 in49.06s (shrine-east-pigment-native.log). Capture21259
+completed0 in shrine-east-pigment-review/ (shrine-east-pigment-capture.log).
+Individually inspected all four comparisons and full shrine detail: both rails
+are blue and face inward, masks meet the upright drapery wall, small stands sit
+inside flat native light pools. All four paired states preserved. The rejected
+black-east-rail shrine-streaming-review/ was removed after this verified result;
+its failure/intermediate receipt remains for diagnosis.
+
+Keyboard33996 completed0 in shrine-blue-wall-walk/ (shrine-blue-wall-walk.log).
+Both moving images and final pair individually inspected; state preserved.
+UD64frames walks(4,5)->(4,2)->(4,5), crossing the mat without the old screen or
+round drums. This verifies the furnished aisle/mat traversal, not elder dialogue,
+quiz/story completion, dynamic light emission or every actor pose. Capture
+latencies are not presented FPS. No live task handles remain.
+
+Accept the shrine's scoped floor/mat/light geometry, upright drapery and native
+blue dragon paint/mounting/orientation. Whole-room acceptance still open: default
+camera crops its entry/foreground, and Threshold still routes the red entrance
+mat to generic gray slabs in special_rooms.rs. Next correct that source mat,
+inspect the entrance and warp, then return to player-home grainy table reveal,
+stairs/scale and plants. Preserve every other311/original16 requirement.
+Whole-room composition, remaining actor/story QA and all311/original16 stay open. Preserve unrelated changes; no messages/exports,
+profile additions, audio, staging or commits.
+
+## Previous checkpoint: Dragon Shrine source floor and green mat, 2026-10-15
+
+Previous goal turn made progress: Earl's wall/blackboard made upright,186 tests
+and five static pairs plus a production bookshelf walk verified. No claim of
+whole-room camera/actor acceptance. All311 interiors/original16 combinations
+and unresolved findings remain required.
+
+Current source inspection confirms every fingerprinted DragonShrine timber
+surface is lab tile8a, with palette3's blue plank drawing. The existing brown
+Surface(Timber) path discarded that pigment. Complete block2d's4x3 drawing is a
+green floor mat (ae/af/ad rows, palette2); the old19px screen was incorrect.
+FloorStyle::Shrine now scopes native floor UVs to DragonShrine, retaining exact
+source cell mapping and zero actor datum. Object underlays use the authenticated
+8a donor. The mat has one native top per cell at zero,32x24px, no brown screen or
+duplicate donor beneath it. Binding rise0/depth24 and presentation label now
+agree. No pack/art exports, new profiles, collision/input/audio changes.
+
+40595 completed0:21 room tests passed0.28s (shrine-floor-mat-tests.log), including
+actual external-pack room coverage, all surfaces' exact UVs and unchanged footing,
+complete green mat rows/no raised geometry, and ordinary timber path control.
+Native16903 completed0 in47.55s (shrine-floor-mat-native.log). Broader121 dungeon
+regressions passed3.25s (shrine-dungeon-regressions.log), including the room tests.
+Capture67086 completed0 in shrine-floor-mat-review/ (shrine-floor-mat-capture.log).
+Individually inspected all four actual paired images: DragonShrine,FightingDojo,
+Earl and PlayersHouse2F. All states preserved. The source-blue planks and flat
+green mat read correctly; controls retain their existing finishes. Accept only
+these floor/mat surfaces, not the shrine's still-brown reliefs/walls or fixtures.
+
+Keyboard33289 completed0 in shrine-mat-walk/ (shrine-mat-walk.log). Both moving
+images and the final comparison inspected, state preserved. UD64frames walks
+(4,5)->(4,1)->(4,4), crossing green mat tiles(4,3)/(4,2) without a rendered screen
+or obstruction. This proves traversal, not elder dialogue/story completion.
+No presented-FPS claim. All task handles terminal; scoped diff --check passed.
+
+Next concrete shrine work is to fix its physical fixture footprint and source
+pool, then restore native blue material/shape on the walls and dragon reliefs.
+Do not accept the whole shrine: generic brown walls/dragon reliefs remain, and
+source block2c white circles retain plank seams under a tiny central fixture.
+The current broad round lantern models improperly treat that whole32px source
+plot as a physical fixture diameter. Inspect/correct their meaning and scale;
+source floor restoration alone does not finish these objects.
+
+## Previous checkpoint: Earl's classroom furniture and upright wall, 2026-10-15
+
+Previous goal turn made progress: rechecked the corrected long blue cases and
+front-glazed staff enclosures against the paired renders;14 department checks
+and one blue-case regression passed. Fixed a missing Vec2 test import in the
+earlier classroom work. No store geometry was changed again.
+
+Earl's complete block16 drawings now yield eight4x2 desk sections and sixteen
+2x2 chairs; block15 supplies one2x2 closed lectern. native_classroom uses existing
+DiningTable/LinkSeat/Cabinet models and their own lab gold/blue palettes, with
+source storage aprons. Chair fronts and seat yaw face north. The existing book
+prop rests at its actual8px desktop. Lectern uses explicit footprint fitting;
+legacy home fitting and walking support remain unchanged. No catalog additions.
+
+The first five-map capture completed successfully (earl-furniture-review/,
+earl-furniture-capture.log). Individually inspected Earl,Elm,Oak,PlayersHouse2F
+and DayCare comparisons. Desk/chair/book alignment is improved; the classroom
+still had its green blackboard and red wall lying flat on the floor. That is
+not an acceptable whole-room result. Player-home table reveal still looks grainy,
+and the pale plant leaf/pot fidelity issue remains visible in DayCare.
+
+Current correction authenticates the complete12x3 lab wall drawing across
+blocks11/12/13, raises its36 original cells into three upright8px courses, and
+uses a3px physical wall depth. The blackboard stays in its own source artwork;
+no board is fabricated or stretched. Neighboring shelves, ground claims, input,
+collision and actor footing are unchanged. Custom profiles retain ownership.
+The186 modeled-interior tests passed1.39s (earl-wall-tests.log), including all26
+classroom objects, damaged-cell rejection, custom ownership, chair supports,
+heights and winding. Added test-only precise wall depth/upright UV checks after
+that run; rerun them. Current native build99867 writes earl-wall-native.log.
+Verified outcome: native99867 completed0 in52.40s. Five-map capture85614
+completed0 in earl-wall-review/ (earl-wall-capture.log). Individually inspected
+all five actual comparison images; every paired state says state_preserved=true.
+The green board is upright on the red wall next to the shelves, with its original
+border and writing. Accept this wall's source placement/colour and the earlier
+classroom furniture scope; the long classroom is still cropped by this camera,
+so this does not establish whole-room camera or all actor fidelity acceptance.
+
+Final19544 completed0:186 tests passed1.42s (earl-wall-final-tests.log), including
+all36 upright wall-cell UVs and3px depth. The preceding UV run43797 failed one
+test-only depth assertion because it included the required floor underlay at
+height0; measuring above-floor wall vertices fixes that assertion. Production
+geometry is unchanged from the successful native build/capture.
+
+Keyboard75781 completed0 in earl-wall-approach/, receipt earl-wall-approach.log.
+All three moving images and the final paired comparison were inspected. LUA is
+held32frames per letter: it walks from(5,3) left to(1,3), then up to(1,2), and A
+shows "It's full of difficult books." in both views. State preserved. This is a
+bookshelf approach/interaction, not a conversation with Earl; Earl is absent in
+this scene state. Do not claim his story/spinning lesson from this capture.
+No presented-FPS claim from capture times. All task handles are terminal.
+
+Next: DragonShrine's beige/brown floor/walls, central tall box and oversized round
+foreground forms do not match its blue planks/walls and green mat. Existing
+special_room_bindings identifies ShrineDragonRail(3x18), ShrineDragonMask(2x4),
+ShrinePaperLantern(4x4), ShrineAltar(4x3), Wall(Timber) and Surface(Timber).
+Inspect source meaning/geometry before repainting or resizing those bindings.
+Player-home table reveal/stairs, plants and every other recorded gap remain open.
+Keep all311 interiors/original16 combinations and every unresolved finding in
+scope; preserve unrelated edits and the existing no-message constraint.
+
+## Previous checkpoint: Elm's low healing cradle, 2026-10-15
+
+Previous turn made progress on live balls/desk/paint; this turn completed the
+remaining two-cylinder shape correction. Elm's exact complete machine drawing
+now uses a chamfered low32px-wide/24px-deep chassis,8px front and5.5px recessed
+dark bed. Source roof0..23 stays on top and front24..31 faces the player.
+Placement metadata agrees with geometry. Claims, source/custom guards, ground
+and walking support remain unchanged. Original imported model/catalog stays
+untouched; the now-unused10-role paint adapter/test were removed.
+
+54014 completed0:185 interior checks passed2.63s, elm-cradle-guarded-tests.log;
+native1m22s, elm-cradle-native.log. Geometry checks at0.5/1/2 scale prove depth,
+height, open recess with one floor/no lid, face winding and roof/front UVs.
+Existing actual-pack coverage, every damaged source cell and custom ownership
+checks pass. The canonical machine profile is Elm-only; a generic-model fallback
+fixture does not establish an actual placement in Oak or another room.
+
+66241 completed0 in elm-cradle-review/, receipt elm-cradle-capture.log. All five
+actual comparisons individually inspected: Elm,Oak,Earl,PlayersHouse2F,DayCare,
+plus full Elm detail. All five paired states preserved. Low dark cradle reads
+as the source machine; no tall cylinders. Prior live balls, table, desk and
+control finishes remain visible. Accept this machine's idle source shape/paint,
+not whole lab or all operating/healing states. Source-top details remain textures
+on physical beveled/recessed geometry; no new extracted or generated art assets.
+
+6789 completed0:64 keyboard frames UA in elm-healer-approach/ take(2,3)->(2,2)
+and A produces "I wonder what this does?" in both views. Both moving images and
+final comparison inspected; state preserved. This verifies approach/interaction
+only. Earned HP/PP healing, operating lights and the full lab story remain open.
+No presented-FPS/actor-pose or whole-room acceptance claim.
+
+No task handles remain live. Scoped diff --check passes; no exports, profile
+additions, audio, staging, commits or cross-chat messages. Other goals' edits
+preserved. Next concrete furniture work: Earl's still-flat desks/chairs/lectern
+(no matching existing lab profiles; do not merely swap its blue ground donor),
+then DragonShrine's source meaning/colour/scale problems. House plants, table
+artwork/grainy reveal, home/stairs and all remaining311/original16 criteria stay
+required. Overall goal is active and unfinished.
+
+## Elm healing cradle implementation and verification history
+
+Previous turn made progress on live starter props, central desk and equipment
+paint, leaving the two-cylinder healing-machine interpretation explicitly open.
+Current complete-source Elm matcher now builds a low32px-wide/24px-deep chassis
+with8px front height and a recessed dark bed at5.5px. Roof source rows0..23 stay
+on top; row24..31 is on the front. Chamfered body/frame rings and inward walls
+replace the cylinders, retaining exact source palette, claims and walking support.
+Other room callers retain the original imported restoration model. No assets or
+profiles added. Removed the now-unused10-role restoration-paint adapter and its
+adapter-only test; source/geometry checks replace that superseded path.
+
+Test89386 live, receipt elm-cradle-tests.log. New geometric checks cover0.5/1/2
+scale,24px depth/8px height, one recessed floor with no lid, face winding and
+roof/front UV orientation. Existing pack/custom/damaged-cell/support checks still
+apply. Native build and visual review remain required; no shape acceptance yet.
+89386 completed0:185 interior tests passed2.01s. Aligned the source-complete
+placement metadata with its new24px depth/8px height as well; non-Elm source
+callers retain12px/22px metadata and the original imported model. Final test/
+build55535 live, elm-cradle-final-tests.log and elm-cradle-native.log. Recheck
+the final build before capturing. Source claims/ground donor/footing unchanged.
+55535 completed101:184 passed and the new regression failed because it tried
+to resolve a machine in Oak's lab. The canonical profile is explicitly Elm-only;
+that assumed placement does not exist. Corrected the regression to verify no
+Oak placement, then directly exercise an unreviewed generic-model fallback.
+54014 final tests passed185 in2.63s, elm-cradle-guarded-tests.log; native step
+remains live, elm-cradle-native.log. No production repair was needed for that
+test-only assumption. Reinspect machine geometry and existing table/desk controls
+after native completion; no visual acceptance yet.
+54014 completed0; native build1m22s. Fresh static five-map capture now running
+in elm-cradle-review/ (receipt elm-cradle-capture.log), plus a64-frame production
+UA approach from(2,3) toward the healing control in elm-healer-approach/ with
+matching receipt. Inspect all pairs and moving images; do not infer earned
+HP/PP healing from a dialogue/approach image. No code changes during final QA.
+All311/original16 scope remains active and unfinished. No messages/exports/
+staging/commits. Preserve unrelated shared edits.
+
+## Previous checkpoint: Elm's live balls, desk and equipment paint, 2026-10-15
+
+Previous goal turn made progress (shelf-family review and two lab floors); this
+turn corrected Elm's starter display ownership, rear workstation/machine paint
+and central desktop. Three permanent white specimens are gone. The complete
+source table now uses the existing bare gold DiningTable at10px. The original
+three PokeBall object props rest at its surface; walking footing stays6px.
+Renderer support changes only Elm's live ball objects. Unit checks prove all
+three props are supported, frame/footing unchanged, and removing one published
+object removes its prop; ordinary ground-ball anchor/scale stays unchanged.
+
+Central source bank was initially misread; the invented full monitor/chair was
+rejected and removed. Final central counter is a10px physical body with its
+own phone/console top art and raised receiver/low console/keycaps(max11.5px).
+VRAM-bank-aware source pixels restore actual dark/gray/white contrast. Front
+art comes from source rows28..31, worktop12..27; floor/figure above the desk
+are excluded. Exact complete drawings/custom ownership/claims and original
+walking support remain. Rear computer is source gray/gold; restoration model
+uses its own gray source shades via strict10-role material ownership.
+
+Final60422 completed0:184 interior checks passed2.42s, elm-desk-bank-tests.log;
+native1m10s, elm-desk-bank-native.log. Earlier focused correct-binary tests each
+passed: live-ball actor0.10s, fixture materials0.06s, ground-ball control5.98s.
+Do not count stale zero-test filter runs as passing coverage. Exact Cargo test
+binary after dependency changes is crystal_voxel_view-3b60652a14af2244.
+
+11891 completed0: all five paired comparisons individually inspected in
+elm-desk-bank-review/ (receipt elm-desk-bank-capture.log): Elm,Oak,Earl,
+PlayersHouse2F,DayCare. All five states preserved. Accept live ball support,
+bare table, low phone/console desk distinction and gray equipment paint only.
+The two-cylinder restoration sculpture still mismatches the source's broad dark
+rectangular machine/cradle; its geometry is the next specific correction.
+
+Initial58319 UA from(6,4) failed101 solely because the harness requires actual
+movement: U was blocked by the ball, A did show Cyndaquil's portrait. Reran from
+(6,5);22719 completed0 in elm-ball-moving-approach/, matching receipt. Both
+moving images and final paired comparison inspected;64 keyboard frames take
+(6,5)->(6,4) and A opens the source Cyndaquil portrait in both views. State
+preserved. This proves approach/interaction, not completed starter selection or
+event-driven ball removal in a real pickup. No FPS/whole-room acceptance claim.
+
+No live handles remain. Rejected first static/failed-motion image folders were
+removed after final verification; diagnostic receipts remain. Scoped diff check
+passes. No exports, assets/profile additions, staging, commits or messages.
+Other source/shape/material/composition findings, Earl's flat furniture,
+DragonShrine, house plants/table reveal and all311/original16 requirements remain
+open. Goal stays active and unfinished.
+
+## Elm equipment implementation and verification history
+
+Previous goal turn made progress:66 shelf-room review and two verified floor
+fixes. Continued Elm's cyan/white equipment and fixed specimen-table mismatch.
+Authoritative pack objects at(6,3)/(7,3)/(8,3) are SPRITE_POKE_BALL controlled by
+individual starter event flags. The imported LabDisplayTable incorrectly adds
+three permanent white specimens while live actors sit below it on6px footing.
+Elm now resolves the same complete6x3 drawing as Oak to the existing bare gold
+DiningTable (10px), retaining source claims and6px walking footing. The existing
+presentation tabletop support also supports live Elm ball objects at10px, so
+their visibility stays object-owned. No hard-coded replacement balls. Minimal
+new_bark_actors condition extends only Elm PokeBall objects; other ground balls
+keep their original anchor/scale. Actor test covers three supported props,
+unchanged visual frame/footing and removal of one object despawning its prop.
+
+Elm's complete computer-workstation source reuses the existing gray/gold finish.
+New strict material roles for lab_restoration_machine/lab_counter sample their
+own grayscale source drawings (palette0/8). Exact4x4 guards and custom ownership
+remain required; original geometry/heights stay unchanged. Material tests cover
+positions/normals/indices/cache and unknown-role rejection. External pack test
+requires exactly one native table/workstation/machine/counter and no fixed
+LabDisplayTable. Source fixture tests damage every cell and check custom claims.
+
+Initial test11872 is live; receipt elm-equipment-first-tests.log. It is rebuilding
+upstream dependencies after shared changes. Do not restart a quiet live build.
+Some tests were added after launch, so rerun the final interior/actor/material
+filters after it finishes, then native build and paired Elm/Oak/home/Earl controls.
+No new visual acceptance yet. No exports, new assets/profiles, staging, commits
+or cross-chat messages. All311/original16 scope remains unfinished.
+
+11872 completed0:184 interior checks passed3.83s, but source inspection then
+identified that block21's central drawing is an office desk/computer/chair,
+not a counter. Superseded the counter paint adapter with a complete-source
+Workstation+LinkSeat composite in Elm only. Reused existing models; gray source
+palette8 supplies all parts, source lower-left chair stays in its own footprint.
+Restoration machine alone keeps the new10-role material adapter. External
+coverage now requires two workstations, one bare table, one restoration machine,
+and no LabCounter/DisplayTable. Source fixtures cover every damaged cell/custom
+ownership for both assemblies. Final test16686 live, elm-equipment-final-tests.log.
+No native build or new captures yet; do not accept the new geometry from tests.
+16686 completed0:184 final interior checks passed5.26s. Test binary changed to
+crystal_voxel_view-3b60652a14af2244 after shared dependency changes; stale8dd
+direct filters selected0 tests and were replaced with checks against the exact
+binary printed by Cargo. The correct binary passes one live-ball actor test
+(0.10s), one strict fixture-material check(0.06s) and the existing ground-ball
+anchor/scale control(5.98s). Receipts elm-live-ball-tests.log,
+elm-fixture-material-tests.log,elm-ground-ball-control-tests.log. Native37080
+live, elm-equipment-native.log; wait before paired review. All claims remain
+scoped, with no visual acceptance from these unit checks.
+Added explicit claimed-footprint bounds verification and corrected the composite
+desk's north edge to the source upper half (not the old counter's compressed
+south-anchored body bounds). Final test45372 passed184 in5.94s,
+elm-equipment-footprint-tests.log. Its final native step currently waits for
+the first native37080's build lock, elm-equipment-final-native.log.37080 remains
+live and is progressing through upstream packages; do not kill/restart it.
+Consume the final native result before captures, because the first native was
+started before the last geometry correction. No code changes during final QA.
+37080 completed0 in8m18s.45372 completed0, final native5m41s after waiting and
+rechecking changed source. Fresh static capture now running in
+elm-equipment-review/ with receipt elm-equipment-capture.log: Elm,Oak,Earl,
+PlayersHouse2F,DayCare. Inspect all five, especially live red/white balls on the
+bare table and central workstation/chair. No geometry/paint acceptance yet.
+
+First static Elm/Oak pair and full Elm2D/3D inspected: live red/white balls,
+gold bare table, gray rear workstation/restoration machine improve as intended.
+Central desktop was rejected: uniform gray and an invented full monitor/chair.
+Root cause: palette_map bit3 selects VRAM bank1; with192 PNG tiles, raw81 maps
+to PNG61. Initial inspection incorrectly read raw81. Correctly bank-resolved
+source and full 2D reference show telephone/low console on a counter, not a chair.
+Removed that workstation/chair substitution. Central source remains LabCounter,
+now a10px physical desk with source worktop rows12..27/front28..31, raised small
+telephone/low console/keycaps (max11.5px), no tall monitor/chair. Floor/figure
+pixels above the desk are not stretched onto it. Correct source dark/shade/
+gray/white pixels are(18,8)/(28,8)/(0,8)/(19,8). New pack test resolves bank and
+asserts actual grayscale0/85/170/255 plus low height/claimed bounds. Earlier
+two-workstation/counter-adapter claims above are superseded. Correct external
+counts: one each bare table, rear workstation, restoration machine and central
+counter. First capture50012 terminal; final test/build now running with receipts
+elm-desk-bank-tests.log and elm-desk-bank-native.log. Reinspect fresh controls
+before acceptance; old elm-equipment-review images are rejected/superseded.
+60422 completed0:184 bank/desk tests passed2.42s and final native1m10s. Fresh
+five-map capture elm-desk-bank-review/ and production UA ball approach from(6,4)
+in elm-ball-approach/ now live, matching receipt names. Inspect final counter
+phone/low console contrast, no invented chair/monitor, three live starter props,
+and all controls. The existing two-cylinder restoration sculpture still differs
+from the source's broad dark rectangular machine/cradle; its gray pigment pass
+cannot establish geometric acceptance. Keep that explicit shape correction open
+along with windows/stool, Earl's furniture, DragonShrine and wider311 scope.
+
+## Previous checkpoint: bookshelf variants and Johto lab floors, 2026-10-15
+
+Previous goal turn made progress; this continuation finished the66-room shelf
+colour/base-variant visual pass and fixed Elm's/Earl's incorrect wood floors.
+All58 remaining shelf comparisons were individually reviewed after6870 completed0;
+all58 states preserved. Earlier nine pairs cover the other eight shelf rooms and
+the house control. This accepts source book pigments and lower open/cupboard/
+drawer distinctions, not whole-room artistic or gameplay completion.
+
+Floor production/tests are in interior_surfaces.rs. Exact lab metatile/phase
+masks and source UVs restore Elm's gray strips and Earl's blue pattern, retaining
+datum, footing and custom ownership.182 tests passed in2.69s (13743,
+johto-lab-floor-owned-tests.log); native71595 completed0 in47.63s. All seven static
+floor/control pairs individually inspected after18045 completed0, all state
+preserved. Two keyboard UD walks74357/69144 completed0: both moving images and
+final pairs individually inspected.64 frames each: Elm(1,10)->(1,8)->(1,11),
+Earl(0,10)->(0,7)->(0,10); source floors remain continuous while moving. Elm's
+final player is cropped near the bottom edge, so this is not camera acceptance.
+Both final paired-state receipts preserve state. No presented-FPS claim.
+
+No task handles remain live. No exports, audio changes, profile/catalog additions,
+staging, commits or cross-chat messages. Scoped diff --check passes. Ignored
+target/kanto-resume QA receipts retain the reviewed evidence for continuation.
+
+Next concrete work: Elm's equipment and Pokeball table still have cyan/white
+substitutions instead of their source gray/gold/red; Earl's chairs/desks are flat
+source substitutes; DragonShrine is beige/brown with oversized foreground round
+forms and a tall central box despite blue source scenery/green mat. Inspect the
+source meaning/geometry before changing these. House plant fidelity, table
+artwork/grainy reveal (confirmed PokemonFanClub/SafariZoneWardensHome), home
+composition/stairs and every other311/original16 outstanding criterion remain
+required. The overall goal remains active and unfinished.
+
+## Source bookshelf finish and floor verification history
+
+Current continuation classifies previous turn as progress: source-specific bases
+implemented,180 tests passed and nine paired views reviewed. Remaining58-room
+capture6870 is live in bookcase-base-remaining-review/ with receipt
+bookcase-base-remaining-capture.log. It consumes the native base build51.50s;
+do not rebuild that executable while its batch still spawns child captures.
+Review is in progress; no blanket acceptance from capture completion alone.
+
+Meanwhile source-only floor implementation is being tested: ElmsLab gray tile10
+and EarlsPokemonAcademy blue tile24 now use native UV floor quads, preserving
+their strips/weave without invented boards/beveled slabs. Exact metatile/phase
+masks cover288/320 actual source cells and exclude furniture/wall phases. This
+does not broaden other furniture paint gates. Added profile/exclusion handling
+for both rooms. Initial test25687 mistakenly selected no tests;18205 ran14:
+13 passed, the new excluded-cell assertion failed and exposed the missing room
+eligibility in the existing exclusion gate. Fixed that gate and the profile
+first-refusal path; full interior test61688 live, receipt
+johto-lab-floor-complete-tests.log. No floor native build/captures yet. Do not
+use current bookshelf screenshots as evidence of the new floor correction.
+
+Verified shelf-family outcome:6870 completed0. All58 remaining compare images
+individually inspected; all58 paired receipts preserve state. Together with
+the earlier eight shelf-room views plus PlayersHouse1F control,66 actual
+shelf rooms/six source families now have scoped colour/base-variant evidence.
+No imported pastel book colours or inappropriate third book rows in those
+views. Accept this source finish/base distinction, not entire rooms or overall
+artistic completion. Plants still differ from source. PokemonFanClub and
+SafariZoneWardensHome confirm the known grainy table fade and poorly readable
+centre ornaments; these remain required work. No presented-FPS/actor-pose claims.
+
+61688 completed0:182 interior checks passed2.39s. Added a direct custom-profile
+ownership check as well as the excluded-cell check;13743 completed0:182 passed
+2.69s, johto-lab-floor-owned-tests.log. Native71595 completed0 in47.63s,
+johto-lab-floor-native.log. Fresh seven-map floor capture now running in
+johto-lab-floor-review/ with receipt johto-lab-floor-capture.log: ElmsLab,
+EarlsPokemonAcademy,OaksLab,FuchsiaGym,DragonShrine,PlayersHouse2F,BillsHouse.
+First two floors changed, other five are controls. Inspect all before accepting
+floor appearance; no production changes during this capture. Scoped diff check
+passes; no staging, commits, exports or cross-chat messages.
+
+Floor capture18045 completed0; all seven actual comparisons individually
+inspected and all seven paired receipts preserve state. Elm's continuous gray
+strips and Earl's blue pattern now match their source floors; prior brown boards
+are absent. Oak/Fuchsia/DragonShrine/player bedroom/Bill controls retain their
+prior visible materials. Accept these two floors only. Elm's equipment and
+white substitute Pokeballs/table paint, Earl's flat chairs/desks, house plants,
+grainy table reveal and other room architecture remain open. DragonShrine
+control confirms a major existing mismatch: source blue plank/wall artwork and
+green mat become beige/brown geometry, with huge round foreground forms and
+a tall central box. This deserves a dedicated source/meaning/scale correction;
+unchanged does not mean acceptable. Fuchsia entrance statuary is outside the
+3D crop, so the floor control does not verify guardian coverage.
+
+Two production keyboard UD floor walks started after static review, Elm from
+(1,10) and Earl from(0,10), each64 held frames. Outputs johto-lab-elm-walk/ and
+johto-lab-earl-walk/, matching receipt names. Poll their handles and inspect
+moving frames plus final pairs/CSV before recording walking verification.
+
+Current base-geometry continuation: previous turn made progress (Johto lab
+eligibility,180 tests, nine reviewed paired captures). Complete authenticated
+house/players_house/traditional shelves now replace their lowest book row with
+their own two source front cells. Lab13/14 lower fronts close; lab35/36 remains
+three book rows. Thus Red's cupboard and drawers differ without a global lab
+closure. Adapter computes actual fitted bounds, removes complete lower
+triangles, retains upper triangle/vertex positions and full-height frames, and
+fits an inset closed body with source cupboard/drawer frontage. No asset/catalog
+changes or source export. Source claims/support and altered/custom fallbacks
+remain unchanged. First production test51911 passed180 in1.51s. Expanded actual
+pack checks additionally require removal of lower books, retention of all upper
+triangles/positions, own-front UVs and byte-identical open-shelf output. Combined
+test/build52079 live; receipts bookcase-base-final-tests.log and
+bookcase-base-native.log. Poll before fresh paired review. Geometry still awaits
+visual verification; first-review folder below predates the base change.
+52079 completed0:180 tests passed in2.46s and native build finished51.50s.
+Fresh base capture is live in bookcase-base-first-review/ with receipt
+bookcase-base-first-capture.log; inspect all nine pairs and record terminal handle
+and outcome before starting the remaining58 rooms. First base material/geometry
+verification must pass before broadening review. No production changes during
+capture.
+Verified base outcome:64337 completed0. All nine paired compare images individually
+inspected, plus full Red's bedroom detail. Bill's decorated/cupboard fronts,
+Red's distinct cupboard/drawers, Elm's cupboard bases and Kurt's cupboard bases
+replace the extra lower book row. Oak's, Earl's, mansion and the player's white
+bedroom shelves retain their open lower book rows; PlayersHouse1F remains the
+unchanged control. All nine state receipts preserve state. Accept only this
+source base distinction and the previously reviewed colours in these eight
+shelf rooms; remaining58 actual shelf rooms still need paired review. Fine
+source pixel fronts remain on physical inset base bodies, not full cabinet
+billboards. No claim of complete shelf/room artistic acceptance or presented
+FPS. Lab floors/equipment and all other311/original16 requirements remain open.
+No live task handles, exports, profile additions, staging, commits or messages.
+Scoped diff --check passes. Next: remaining58 rooms from the exact66-map list
+in bookcase-johto-coverage.log (exclude the eight shelf rooms above), using the
+current native binary and fresh directory. Fix new findings before acceptance;
+then address the lab floor/material differences and other open families.
+
+Previous goal turn rechecked the already corrected long blue cases and front
+glazing; it made no implementation changes. Continued the unfinished shelf
+pigments rather than returning to the train station. Current bookcase adapter
+samples cover and page colours from each complete source drawing instead of
+retaining imported pastel book paint. Structural swatches and original geometry
+remain; legacy model callers retain their palette. Six source families are
+covered: house, players_house, players_room, lab, mansion, traditional_house.
+The complete traditional shelf can use timber ground tile11 when its old tile50
+sample is absent, enabling Kurt's actual shelves. Exact drawing guards, custom
+ownership, claims and authored support remain required.
+
+Recovered terminal99594 is no longer registered; authoritative receipts show
+180 modeled-interior tests passed in2.23s and native build finished in47.34s.
+Logs are under target/kanto-resume/receipts/bookcase-source-timber-*.log.
+No new bookshelf images have yet been inspected, so colours are not visually
+accepted. Lower cupboard/drawer geometry differences remain open.
+
+Current continuation extends only bookcase finish eligibility to the five
+actual lab-atlas maps, including ElmsLab and EarlsPokemonAcademy. This avoids
+leaving Johto shelves pastel behind the older Kanto gate. Custom lab drawings
+retain first refusal. Test79346 writes bookcase-johto-tests.log; poll this handle
+before rebuilding or capturing. Next: external-pack coverage, material check,
+native build and paired source comparisons. All311/original16 scope remains
+unfinished. No exports, staging, commits or cross-chat messages.
+
+79346 completed0:180 modeled-interior checks passed in1.33s. Explicit external
+pack coverage passed:66 rooms/six atlases, including both Johto labs and Kurt's;
+bookcase-johto-coverage.log lists the exact maps. Separate material test passed
+in0.01s, proving unchanged positions/normals/indices/cache and legacy palette,
+cover/page UV routing and rejection without partial mutation. Native6626
+completed0 in36.69s, bookcase-johto-native.log. First paired capture95017 is live
+in bookcase-source-first-review/ (receipt bookcase-source-first-capture.log):
+BillsHouse, both player bedrooms, OaksLab, ElmsLab, EarlsPokemonAcademy,
+CeladonMansion1F, KurtsHouse and unchanged PlayersHouse1F control. Inspect each
+before accepting finishes or proceeding to the remaining58 shelf rooms.
+
+Verified outcome:95017 completed0. All nine actual compare images individually
+inspected; all nine paired-state receipts say state_preserved=true. Source
+gold/white book colours replace the old pastels in these eight shelf rooms;
+PlayersHouse1F is the unchanged control. This is pigment evidence only, not
+whole-shelf acceptance. Bill's and Kurt's lower cupboards are currently extra
+book rows; Red's two shelves require different cupboard/drawer lower fronts.
+Elm's source shelves have lower cupboards whereas Oak's source shelves have
+three book rows. Do not close all lab shelves with one global geometry change.
+Player bedroom white shelves, mansion and Earl's retain book rows. Inspect each
+complete drawing's last source row before choosing a base variant; retain
+existing upper shape/source ownership. Fix these base variants before spending
+another58 captures on the current wrong shape, then recheck the first group and
+finish the complete66-room family. Elm's/Earl's floors remain wrong generic
+boards against gray strips/blue pattern respectively; their other equipment,
+plants and full room composition also remain open. No FPS claims from capture
+timings, no claim of exact actor animation pose, no remaining live handles.
+Scoped diff whitespace check passes. Goal remains active and unfinished.
+
+## Closed house PC cabinets, 2026-10-15
+
+Previous goal turn verified all51 house radios, four PC paints and one traditional
+control. Continued the remaining PC open-stand defect. The canonical computer
+has an open timber desk, rubber feet and separate tower below its desktop. New
+append_native_cabinet_computer reuses the fitted monitor/keyboard positions,
+omits timber and complete triangles below the authenticated desktop, and fits
+the existing closed drawer-cabinet model up to that exact height. Total22px
+height and12px depth stay unchanged. House source only; player-room/player-house
+PCs retain the old geometry and materials. Cabinet dependency requires native
+material roles before mutation, with the existing source fallback if unavailable.
+Blue belongs only on the monitor's upward roof; keyboard keys use the light
+electronics sample. No original asset geometry/catalog entry/content export.
+
+External pack confirms both actual house computers use block1c, source anchor
+(14,1) in DayCare and(6,1) in TrainerHouse1F. The separate block10 variant is also
+covered by the drawing fixture; do not confuse fixture coverage with actual
+pack occurrence. Source collision at both computers is PC (although neither
+has an explicit PC background event). Approach coordinates are(7,2)/(3,2).
+Do not infer that no interaction exists merely from the absent background event.
+
+9114 completed0:178 modeled-interior tests passed in2.22s, receipt
+`house-pc-cabinet-interior-tests.log`. Two direct cabinet_computer checks passed
+in0.04s, `house-pc-cabinet-model-tests.log` (one overlaps the suite). The model
+test proves closure of the old knee opening, removal of feet/tower/old wood,
+unchanged upper positions and canonical models, roof-only blue, and rejection
+of an unauthenticated cabinet without partial output. Source tests cover full
+drawings, every damaged cell, claims/support, custom ownership and unchanged
+unreviewed path; existing external-pack coverage still spans all four PC rooms.
+Native build32342 live, `house-pc-cabinet-native-build.log`. Paired visual and
+walking verification still required; no acceptance of the new shape yet.
+All311/original16 requirements and other furniture findings remain open.
+
+Verified outcome:32342 completed0, native build46.68s. Capture63179 completed0
+in `house-pc-cabinet-review/` (`house-pc-cabinet-capture.log`); all six actual
+paired comparisons inspected: DayCare,TrainerHouse1F,PlayersHouse2F,RedsHouse2F,
+BillsHouse,KurtsHouse. Both changed PCs have closed gold cabinets, gray front,
+white keyboard and blue upward monitor roof. The two bedroom computers and
+radio/traditional controls retain their prior geometry/finishes. No code edits
+during captures. This verifies the two house-PC cabinet adapters, not whole rooms.
+
+Approach1770 completed0 in `house-pc-daycare-approach/`, receipt
+`house-pc-daycare-approach.log`:64 keyboard frames UA take(7,3) to(7,2), retain
+that position and show the original turned-on-PC dialogue in both views. Both
+moving images and the final pair inspected; cabinet, player and follower stay
+readable. Collision PC correctly invokes the production interaction despite
+the absent explicit background event.
+Further walks23265/13280 completed0, receipts `house-pc-daycare-menu-walk.log`
+and `house-pc-trainer-menu-walk.log`, matching output folders. Each192-frame
+UAABBD route opens the production BILL'S PC/RENDER'S PC/TURN OFF hub, closes it
+and retreats. Actual menu moving02 images and final pairs inspected for both;
+Trainer moving00 approach and DayCare moving04 cleared menu also inspected.
+CSV DayCare(7,3)->(7,2)->(7,5); TrainerHouse1F(3,3)->(3,2)->(3,3).
+No claim of storage transfer or complete PC workflows from hub boot/exit alone.
+All nine paired-state receipts (six static and three walk finals) preserve state.
+Image-target timings are not presented FPS.178 interior tests and the two
+cabinet_computer checks passed as above; one test overlaps, so do not sum totals.
+No live handles, new assets, profiles, runtime/actor changes, exports, audio,
+staging, commits or cross-chat messages. Bookshelf pigments, plant fidelity,
+table artwork/reveal and the rest of the311/original16 scope remain unfinished.
+
+## House computer and radio/cabinet finishes, 2026-10-15
+
+Previous goal turn completed33 native Johto/control comparisons, restoring the
+siblings' tabletop book. Continued on the visible DayCare blue-PC and pale-radio
+defects. External pack bitmap/palette inspection confirms house tile40 palette3
+(blue cap),20 palette0(gray electronics),42/1e palette5(gold timber); previous
+PC swatches sampled the cap for casing and stand. Canonical computer materials
+now separate dark/casing/highlight/timber/blue roles. House swatches sample each
+source part; existing player-home arrays repeat their old casing sample for the
+two newly separated roles, preserving those finishes. Geometry is unchanged.
+
+Complete house block1d is a blue/gray radio above a gold cabinet, not one short
+pale radio. The guarded2x3 native placement now fits22px high/8px deep, composing
+the existing drawer-cabinet model (14px) and radio model (8px) above it. Separate
+radio speaker-fabric and blue-case roles prevent blue speakers. All six source
+cells, floor backing, collision/custom ownership and authored walking support
+remain unchanged. No new assets, profile entry, export or actor code.
+
+First compile93619 failed on a concurrent unrelated new_bark_models test calling
+missing solid_mesh. It was corrected in the shared tree to surface_mesh before
+the attempted narrow fix could apply; this task made no new_bark_models edit.
+Next native-filter30256 completed101:242 passed, two unrelated outdoor
+rock/pond assertions failed, and new electronics coverage failed exact floating
+UV equality. UV checks now use1e-6 tolerance for equivalent sampling arithmetic
+and identify the exact room/swatch on failure. The full interior suite is live
+in11459, receipt `house-electronics-interior-tests.log`. Broad native receipt is
+`house-electronics-native-final-tests.log`; it is not a passing suite claim.
+Native build and fresh paired captures still required. Radio shape and PC
+palette remain unaccepted until actual review; full311/original16 goal open.
+
+11459 completed0:177 modeled-interior tests passed in2.40s. Direct fresh-binary
+checks passed: three house_radio matches (one overlaps the interior suite), one
+native computer material test, and the external-pack electronics coverage test.
+Receipts `house-electronics-material-tests.log` and
+`house-electronics-source-coverage.log` list exact51 house-radio and four PC rooms
+(DayCare,TrainerHouse1F,PlayersHouse2F,RedsHouse2F). Radio test requires six claims,
+unchanged support, both stacked models, all native source pigments, all57 custom
+overrides/malformed source rejection and unchanged unreviewed12px radio. Material
+tests preserve canonical positions/indices/normals and reject unknown materials.
+Build38292 live, receipt `house-electronics-native-build.log`; capture only after
+terminal success. First paired review must validate the composite silhouette
+before all remaining51 radio occurrences are accepted.
+
+First build38292 completed0 in1m10s. Capture43533 completed0; all seven actual
+comparisons inspected in `house-electronics-first-review/`: all four PC rooms,
+BillsHouse/PlayersNeighborsHouse radios and KurtsHouse control. PC gray casing
+and gold timber are corrected; bedroom finishes retained. PC geometry still has
+an open table stand rather than the source cabinet and is not fully accepted.
+First radio stack is rejected: it gave the lower cabinet14px and wrapped roof
+blue onto its front. Source drawing is8px roof,8px gray front,8px cabinet.
+Corrected production stack is16px high (8px cabinet plus8px radio),8px deep;
+blue radio body paint applies only to upward faces, gray on the front/sides.
+Tests now require blue UV normals to point upward, source claims and support
+unchanged. Queue55691 is running the tightened177 interior suite, three
+house_radio checks and native build. Receipts `house-radio-roof-interior-tests.log`,
+`house-radio-roof-material-tests.log`, `house-radio-roof-native-build.log`.
+Broad first-radio capture68874 was deliberately stopped143 after rejecting
+the shape; only this task's verified parent57625 was terminated, no other task.
+Its child had already exited. `house-radio-room-review/` is incomplete and
+unaccepted. Fresh final radio captures still required after terminal build.
+
+55691 completed0:177 interior tests in1.51s, three house_radio checks in0.04s,
+native build35.91s. Capture50154 completed0; all seven fresh actual comparisons
+individually inspected in `house-electronics-final-review/`, receipt
+`house-electronics-final-capture.log`. Both representative radios now have the
+short gold cabinet, gray front and blue roof. All four PC paints and unchanged
+Kurt's control rechecked; all seven paired-state receipts preserved. PC open-stand
+geometry remains open despite its corrected pigments. Family acceptance still
+requires the remaining49 exact radio maps. They are live in40880,
+`house-radio-roof-room-review/`, receipt `house-radio-roof-room-capture.log`.
+Reuse BillsHouse and PlayersNeighborsHouse final comparisons above; no need to
+duplicate them. No code edits during this final visual verification.
+
+Verified final outcome:40880 completed0; all49 remaining radio comparisons
+individually inspected. Combined with the two final representatives, all51
+actual radio rooms are reviewed, plus all four actual PC rooms and Kurt's
+traditional-radio control. All56 paired-state receipts preserve state. Final
+radio stack is16px high with separate8px cabinet/radio and8px depth: gold lower
+cabinet, gray front/speaker, blue upward roof only. No code edits during these
+captures. Source book support, fine carpet and surrounding furniture remain
+as before. This accepts the radio stack/paint and PC material correction only.
+PCs still use open stands rather than the source closed cabinets; bookshelves'
+pastel spines, plant shapes/pigments, table borders and grainy reveal remain open,
+as do all other311/original16 requirements. No new radio interaction/walk route
+was exercised; source ownership and authored support were regression-tested.
+The177 interior suite, three radio checks and final native build passed as
+recorded above; the broad native-filter outdoor failures remain separate and
+are not claimed fixed. Superseded rejected `house-electronics-first-review/`
+and incomplete `house-radio-room-review/` scratch images were removed after
+final verification; their logs remain. Accepted final56 comparisons remain in
+the two final folders above. No live handles, content exports, audio changes,
+asset files, profile additions, actor edits, staging, commits or cross-chat
+messages from this pass. Full goal remains active.
+
+## Johto house native furniture and stationary tabletop props, 2026-10-14
+
+Previous goal turn completed the60-room carpet comparison and four wood/tatami
+controls. Continued actual Johto screenshots expose generic cream walls, pale
+tables/stools and teal electronics despite sharing the complete Kanto drawings.
+The existing native room gate now includes the exact57 house-atlas rooms already
+verified for carpet. This adds28 Johto room names to source-matched wall/window,
+seat/table/cabinet/TV finishes and respects existing custom-profile first refusal.
+Unknown maps, malformed drawings, original source masks and authored support
+remain authoritative. No profile catalog entry, new asset or content export.
+
+The missing orange book in DayOfWeekSiblingsHouse is SPRITE_POKEDEX, a stationary
+object at(3,3), not missing table artwork. The production actor path already asks
+traditional_tabletop_height for this prop; the helper only accepted traditional
+tables. It now also accepts complete native dining tables with authenticated
+material roles, returning actual tabletop height without mutating walking
+footing. No actor renderer edits. All external-pack native table cells are now
+covered by the support regression; all57 house rooms have complete/malformed
+TV/window/stool and custom-ownership checks. First test22444 completed101:
+174 passed and one older test used PlayersNeighborsHouse as an unreviewed
+control. That control is now UnreviewedHouse; no production failure was hidden.
+Final tests27500 and native build12976 are live, with receipts
+`house-native-finishes-final-tests.log` and `house-native-finishes-build.log`.
+No visual acceptance yet. Capture all28 newly native rooms, siblings-book
+case and player-home/traditional/Kanto controls after terminal success.
+Full311/original16 scope remains open; no stage/commit/cross-chat messages.
+
+27500 completed0:175 tests passed;12976 completed0: native build1m14s. Further
+inspection found that bedroom/player dining drawings claim an apron row beyond
+the table surface. Shared native_dining_table_rows now supplies both mesh bounds
+and prop support (four of five rows, or two of three); the external-pack test
+requires no support on those apron cells. Queue26103 reran175 tests successfully
+in2.69s and is building the tightened production code. Its receipts are
+`house-native-finishes-surface-tests.log` and
+`house-native-finishes-surface-build.log`; do not capture the superseded binary.
+
+26103 completed0; final native build1m03s. Tightened external-pack table support
+coverage passed separately (62 actual native table rooms), receipt
+`house-native-table-surface-coverage.log`. Capture50076 is live in
+`house-native-finishes-review/`, receipt `house-native-finishes-capture.log`:
+28 newly native Johto rooms, siblings-book case, both player-home floors,
+KurtsHouse and BluesHouse (33 comparisons). The siblings book now visibly rests
+on the tabletop in its actual paired view. First22 comparisons have been
+individually reviewed; wall/window, stool, TV and table finishes now follow their
+source. DayCare's PC remains incorrectly blue rather than gray/gold; its generic
+native computer material mapping combines timber and casing in one role. Keep
+this a known defect, along with pale radios, pastel books, broad-leaf plants,
+tabletop border artwork and grainy reveal. No whole-room acceptance.
+Walk91111 completed0 in `house-native-neighbor-walk/` (receipt
+`house-native-neighbor-walk.log`). All three moving images and final paired view
+inspected:96 production-keyboard frames ULR take PlayersNeighborsHouse from
+(5,5) to(5,1), then(3,1), then(6,1). Floor pattern remains stable and the player
+and follower readable; no scrolling proof (the room fits the fixed view).
+Final paired state is preserved. Image-target timings are not presented FPS.
+
+Final outcome:50076 completed0 and all33 paired comparisons individually
+inspected, including the final KurtsHouse/BluesHouse controls and both player-home
+floors. All33 paired-state receipts report state_preserved=true. Newly native
+Johto wall/window, stool, table and TV finishes follow the same complete-source
+path as the reviewed Kanto rooms. The siblings' stationary book support is now
+visually verified; both player-home floors retain their previous wood, furniture
+and bedroom table reveal, and Kurt's tatami/table/cushion composition is retained.
+Scope accepted is those finishes and book presentation, not all house furniture
+or whole-room quality. DayCare PC blue casing/stand, pale radios, pastel books,
+plants, tabletop borders and grainy reveals above remain open. Full311/original16
+goal remains active. No live handles from this pass; no actor code/assets,
+pack publication, audio, staging, commits or cross-chat messages were changed.
+
+## Native woven house floors, 2026-10-14
+
+Previous goal turn made progress: native-table owner/reveal verified across35
+room captures, home DULR recovery and both stair directions inspected,172
+interior/35 fade/controller Mom-gate regressions passed. Current source mismatch
+is the large pink ceramic checker replacing the native one-pixel weave.
+Pack bitmap inspection confirms house01 alternates medium/white each pixel;
+mansion11 has the opposite phase. Both must retain their full source tile.
+
+Current implementation uses one opaque, flat, full-UV source quad per carpet
+cell. No invented large checks, grout, extra vertices or new walking relief.
+Wood board geometry/grain is separated into native_house_wood_floor_field and
+retained. Exact57 house-atlas room names now cover both Johto and Kanto; custom
+source profiles/exclusions have first refusal in those added Johto rooms.
+Existing CeladonMansion1F/2F/3F pink fields use the same source-scale weave;
+their separate gold ornament floor remains unchanged. No profile-catalog entry,
+bitmap/source duplication, geometry asset or pack export.
+
+New tests cover all57 custom floor owners, scrolling/negative-coordinate source
+UV scale, flat datum, source-phase/wrong-art/unknown-map rejection, plus all60
+actual external-pack carpet rooms with exact quad counts/support/claims. Initial
+60624 completed101:171 passed, two older tests expected the removed two-swatch
+checker. They now assert the full source UV mapping and flat datum instead.
+Final test/native queue is live: `house-carpet-final-interior-tests.log`, then
+`house-carpet-native-build.log`. Consume terminal; inspect representative Johto,
+Kanto, mixed mansion and unchanged wood controls before all60 paired rooms.
+No visual acceptance yet. Full311/original16 scope remains unfinished. Preserve
+unrelated source; no audio/export/stage/commit/cross-chat messages.
+
+Final queue58677 live, tests completed0:174 modeled-interior tests passed in1.41s,
+including exact all60 external-pack carpet rooms. Existing mansion/house tests
+now require full source UV scale (not the removed two sampled checker colors).
+Native build still running in the same handle. Direct source-coverage test also
+prints the precise60 map names in `house-carpet-source-coverage-tests.log`.
+Consume build terminal before captures; no visual acceptance yet.
+
+58677 completed0, native build1m30s. Direct all60 coverage test passed again
+and prints exact names in the source-coverage receipt. First capture26502 live
+(`house-carpet-first-review/`, `house-carpet-first-capture.log`): BillsHouse,
+GoldenrodNameRater, CeladonMansion1F, CianwoodPharmacy plus unchanged wood controls
+PlayersHouse1F/2F, KurtsHouse, EcruteakItemfinderHouse. Inspect before broadening
+to the remaining56 carpet rooms. No new code edits during visual verification.
+
+26502 completed0. All8 first comparisons actually inspected: four carpet
+representatives match the fine source pattern; four wood/tatami controls retain
+their prior geometry/materials and bedroom table reveal. Johto ordinary-house
+cream walls, pale furniture and blue source cabinet mismatches remain open;
+this accepts no whole room. Remaining56 exact carpet names are capturing in
+42804, `house-carpet-room-review/`, `house-carpet-room-capture.log`. Reuse the
+four inspected carpet representatives above rather than duplicating them.
+Final family scope is60 carpets plus4 controls, all still requires inspection.
+
+Verified outcome:42804 completed0; all56 remaining paired comparisons individually
+inspected, including the three views re-opened after an earlier tool output was
+truncated. Together with the first four carpet representatives, all60 carpet
+rooms have now been reviewed. All64 paired-state receipts (60 carpets and four
+wood/tatami controls) report state_preserved=true. The source-scale pink weave
+is continuous and flat throughout; mansion gold corridors remain separate.
+174 modeled-interior tests and the explicit all60 external-pack coverage test
+passed; native build completed before these captures. No production edits were
+made during this visual review. This is floor acceptance only, not whole-room
+acceptance or proof of identical actor animation poses. Johto cream walls/pale
+furniture/teal electronics, house plant pigments/shapes, the missing orange book
+in DayOfWeekSiblingsHouse, and grainy table reveal (especially PokemonFanClub
+and SafariZoneWardensHome) remain open. No new carpet walking route was tested.
+The latest human blue-case/front-glass correction was also rechecked against
+the existing Goldenrod2F/5F paired captures: long flat sides/top-only ridges and
+front glazing with counters on the other three sides are present. Broader311
+interior/original16 scope remains unfinished; no packs exported or files staged.
+
+## Home return and native table readability, 2026-10-14
+
+Previous goal turn made progress: all52 gate/GU plants corrected and24 paired
+views inspected. Returned to the user's player-home priority. Both baseline
+home comparisons and the full bedroom image were inspected in
+`player-home-return-review/` (95985 completed0, `player-home-return-capture.log`).
+The bedroom table hid the player's legs and nearly all of the follower.
+
+Native source-bound dining tables now register only their model and existing
+source centerpiece as one local cutaway owner, opting into the existing
+source depth-coverage fade. Floor backing remains opaque. Physical dimensions,
+geometry, palettes, claims, collision and authored per-cell support unchanged.
+Unknown/custom source paths unchanged. This is shared across35 actual native
+house/lab table rooms; the exact names are in the coverage receipt and capture
+filenames, not an invented room-family alias.
+
+Verified evidence:
+- Both home fixture table tests passed (`home-table-reveal-tests.log`). Coverage
+  test spans all35 external-pack rooms, excludes all floor vertices from each
+  owner, and preserves each existing footing_pixels value and exact claims.
+  `home-table-source-coverage-tests.log` passed. Its initial failure was the
+  test wrongly assuming every table had no authored support; production support
+  was retained, and the assertion now checks that exact existing behavior.
+- `home-table-all-interior-tests.log`:172 modeled-interior tests passed.
+  `home-table-fade-regressions.log`:35 fade/cache/recovery regressions passed.
+  Do not add these counts to other overlapping historical suite totals.
+- Native build passed34.75s (`home-table-reveal-native-build.log`).
+- Capture11173 completed0: all4 bedroom moving images and final comparison
+  individually inspected in `home-table-walk-review/`. DULR,128frames:
+  (4,2)->(4,3)->(4,2)->(0,2)->(3,2). Player/follower visible through table;
+  table returns opaque on retreat; floor remains opaque. Coverage is visibly
+  grainy during fade, still a visual polish item. `home-table-walk-capture.log`.
+- Both stair final pairs and moving00 frames inspected in
+  `home-stair-walk-review/`:1F(9,1)->2F(7,1), reverse2F(7,1)->1F(9,1),32frames
+  each. Ascent shows the player on the real flight. Descent moving00 is a uniform
+  transition frame; route verified, full animation polish remains open.
+  `home-stair-walk-capture.log`. CSV scene labels lag target tiles for one warp
+  boundary row; do not interpret that as walking target coordinates on old map.
+  Diagnostic1F->2F state has no bed in both2D/3D; not a renderer deletion.
+- Production controller36220 passed in1.28s: actual fresh-game bedroom/ground
+  warp, Mom dialogue/page advancement/input lock, New Bark gate and return
+  position. `home-return-controller-tests.log`. Diagnostic starts alone do not
+  prove earned story; the production regression proves that flow separately.
+- Capture71000 completed0: all35 actual pairs individually inspected in
+  `native-table-reveal-room-review/`, `native-table-reveal-room-capture.log`.
+  Tables remain opaque beside clear player positions; bedroom and large-table
+  blocked poses reveal the player. Tabletop source pieces share their owner.
+  All35 paired states preserved, checksum/LCD offsets0/2/4/7 frames: scenery/
+  readability scope, not exact animation-pose acceptance or all35 walk-throughs.
+
+Scoped table owner/reveal acceptance only. Overall room/furniture completion
+remains unproved. Current comparisons reconfirm oversized pink checker floors
+replacing fine source weave, pale/terracotta ordinary-house plants, and a missing
+book on DayOfWeekSiblingsHouse's table. TrainerHouse1F's separate open book is
+visible, so do not treat every book drawing as broken. These source details,
+home composition/electronics/stair finish, other routes/interactions and all
+previous311-interior/original16-variant requirements remain open. Next changes
+should address these observed source mismatches, with fresh paired review.
+No live handles remain. No exports/audio changes/stages/commits/cross-chat
+messages. Source edits stay narrow; unrelated dirty work preserved.
+
+## Gate plants and underground planters, 2026-10-14
+
+Previous goal turn made progress: shared gate phones verified across27 civic
+rooms. This turn corrected the pale sparse plant/terracotta-pot family with
+owned source-green crowns and gold pots. Exact bindings cover40 small plants
+in10 civic rooms and12 GoldenrodUnderground plots: three small0x33, six long0x38,
+three mirrored long0x3a. All52 are asserted against the external pack.
+
+Small plants now have a dense leafy crown at16px instead of generic23px; long
+planters retain17px height and original depth, and gain dense foliage. Every full drawing,
+source phase, ground backing and claim is retained; support/collision unchanged.
+Unknown, raised or customized sources retain ownership. Mirrored GU planters use
+an exact map/tile/phase matcher through the existing grouped placement path;
+new GU custom profiles take precedence. No catalog entry or capacity change.
+The shared density helper previously duplicated pot role3 with leaves; it now
+copies only true foliage, retaining exactly one original pot/soil. Store and
+facility plants therefore received explicit regression and visual controls.
+
+Final evidence:
+- `gate-plant-final-parser-tests.log`:171 modeled-interior tests passed, including
+  every52 source crowns, five fixture variants, exact claims/support, every
+  changed tile/metatile/phase and live custom-owner negatives.
+- `gate-plant-final-filter-tests.log`:62 matching `plant` tests passed (includes
+  planted actor names; overlaps the suite above, do not sum). Indexed triangles
+  prove three foliage copies and one pot/soil for both plant forms. The older
+  facility predicate now correctly allows only three leaf roles.
+- `gate-plant-final-coverage-tests.log`: final2 focused tests passed in0.51s.
+  Production Document::parse runs even without the optional content pack; pack
+  coverage remains verified with the completed external TUI pack present.
+- `gate-plant-final-parser-build.log`: native build passed34.47s. Subsequent
+  source change only moved the test's parser check before its pack guard.
+- Capture67080 completed0: `gate-plant-complete-review/`, all20 comparisons
+  individually inspected: GU(5,4),(5,14),(5,23), all10 civic plant rooms,
+  Route35NationalParkGate no-plant control, TrainerHouseB1F, SilphCo1F, both
+  department stores1F/6F. Receipts `gate-plant-complete-underground-capture.log`
+  and `gate-plant-complete-room-capture.log`.
+- Capture35631 completed0: both stores1F/6F at(1,4) in
+  `gate-plant-west-controls/`; all4 comparisons individually inspected with
+  both pots fully visible. Partial stdout `gate-plant-west-capture.log` (initial
+  setup lines remain in tool transcript). No duplicate/intersecting pot copies.
+All24 paired receipts preserve state, checksum/LCD offsets0/4/8 frames. Accept
+this scenery plant/one-pot correction; exact NPC animation poses are not proved.
+
+Rejected history retained ignored: `gate-plant-before/` is the pale baseline;
+`gate-plant-native-review/` missed mirrored GU planters. Adding a257th profile
+then passed mesh tests but failed actual LiveProfiles::default before rendering;
+`gate-plant-profile-cap-failure.log` records that failure. The temporary catalog
+entry was removed completely (profiles.json has no diff); production parser is
+now included in the regression. Do not restore the extra entry/increase the cap.
+
+No live handles remain. Scoped diff check clean. No packs/audio/exported source,
+compiled deliverables, stages, commits or cross-chat messages. Full311 interiors
+and original16 Kanto variants remain unfinished. Home furniture/stairs/readability
+remain a user priority. National Park PC pigments, GU counters/walls/floor,
+room composition/scale, earned clinic healing, towers/caves/gyms and all other
+previous open requirements remain. This family acceptance is not room completion.
+
+## Gate phone source palette, 2026-10-14
+
+Previous goal turn made progress: long flat-sided blue cases/top-only ridges,
+screen-facing glass and three counter sides verified visually; both store
+controller shop regressions passed (see receipts below). Current next family is
+the cyan/cream gate phone identified in the earlier27-room source-floor review.
+Local-pack bitmap inspection confirms its four native cells0e/0f/20/21; source
+0e supplies green(2,4), dark green(3,0), black(0,0), white(1,0).
+
+Phone exporter now explicitly exports all nine existing material names. Canonical
+phone mesh adds only those role fields; parsed JSON comparison against HEAD proves
+all geometry, original colours and other metadata unchanged. No Blender geometry
+or source scene changes required. Strict parser requires all nine named roles;
+native append uses source atlas swatches while preserving the handset, keypad,
+cord, normals, indices, bounds and original legacy solid paint. Only complete
+reviewed native gate counter networks use this treatment; cafe and other rooms
+keep their prior material path. Phone plot identity and roles are validated before
+any geometry/claims mutate. No support/collision changes.
+
+Test85875 live in `receipts/gate-phone-palette-tests.log`: two focused tests cover
+all material-role rejection/immutable geometry and external-pack shared native
+phone plots with exact claims and unchanged2.75 support. The optional default-pack
+guard was improved while compiling; consume85875 then test latest source again
+if needed. Native build and fresh paired visual review are still required before
+acceptance. Full311/original16 scope remains unfinished; home/stairs/scale and
+all earlier open requirements remain. No pack export, staging, commits or
+cross-chat messages. Shared files changed narrowly.
+
+Tests85875 completed0 (2 focused tests,0.93s after1m compile). Final-source
+network suite15659 completed0 (12 tests,0.53s); native build in the same handle
+completed0 in1m02s. Receipts `gate-phone-network-tests.log` and
+`gate-phone-native-build.log`. All27 exact civic map names from the previous
+source-floor review are now capturing into fresh `gate-phone-native-review/`,
+`receipts/gate-phone-native-capture.log`; visual acceptance still pending.
+Final test59189 completed0 (2 passed,0.87s after1m07s compile). It additionally
+requires every0e phone source drawing in each reviewed room to have a resolved
+native phone, not merely a minimum aggregate count. Capture21608 live; first
+nine comparisons actually inspected (IlexForestAzaleaGate through
+Route32RuinsOfAlphGate in alphabetical capture order). Phone source pigments
+improve; full phone-family acceptance awaits the remaining18 views. Plants
+still have sparse pale foliage and terracotta pots instead of dense green/gold
+source drawings; that independent gate fixture remains open.
+
+Capture21608 completed0. All27 final comparisons individually inspected, plus
+Route31VioletGate full native image for handset/keypad/cord detail. Accept the
+native phone material correction within those source-bound layouts. Shape and
+fit unchanged; no phone is added to rooms without a native drawing. All27 paired
+receipts report state_preserved=true; checksum/LCD offsets are0 or4 frames,
+so this establishes scenery pigment fidelity, not exact NPC animation poses.
+Source floor, counter footprints/openings and support remain unchanged. Gate
+plants, National Park PC pigments, room composition/scale, stair/door walking
+and Route40 NPC detail remain open. Full311 interiors/original16 variants are
+still required. No active handles remain from this pass. Scoped diff check is
+clean; no exports, audio changes, stages or commits.
+
+
+
+## Goldenrod source counter colours, 2026-10-14
+
+Latest verification: capture14609 completed0. Goldenrod4F recovery moving00–02
+and final comparison individually reviewed: route(11,3)->(15,3)->(8,3),96frames,
+player/follower remain readable and counter returns opaque. Coverage remains
+visibly grainy during fade; this is not whole-room visual acceptance. Both
+directory traces move(14,2)->(14,1),192frames each. Both moving01 images show
+the authored1F service directory beginning to print. Both final comparisons were
+also inspected: text remains open on5F TM CORNER /5F: DRUG STORE respectively,
+matching each paired2D view. UABBBB advances the directory but does not dismiss
+the complete sign. Remaining pages/dismissal are open; do not claim completion.
+Rechecked Goldenrod2F blue cases and5F front-glass comparison from the south:
+long low flat-sided cases/top-only ridges and three counter runs/glazed screen
+front match the human correction. Existing visual receipts retained ignored.
+
+Controller66458 failed a test assumption: authored source is local-label-qualified
+`.neither@GoldenrodDeptStore5FClerkScript`, not a map-prefixed string. Corrected
+the assertion to the exact enclosing clerk script. Rerun50254 then exposed a
+second test assumption: production shops own shop_top_cursor outside generic
+script-menu snapshot layout. Test now observes that production cursor without
+mutating it. Rerun73298 reached the next assertion: the welcome dialogue must
+be advanced before BUY can confirm. Rerun85339 passed Goldenrod's full shop,
+unchanged-money and resumed-movement checks, then failed the expected Celadon
+clerk name: this coordinate correctly opens CeladonDeptStore5FClerk2Script.
+Use that exact authored script. Final rerun53254 completed0:1 regression passed
+in2.12s after41.96s rebuild, both stores independently proved authored shop,
+inventory entry, B dismissal, unchanged money and authoritative movement
+resumption through VisibleShellController::press. Same receipt above. No
+production gameplay code changed for these assertions. Full311 scope unfinished.
+
+Previous goal turn made progress: buried joins removed, depth reveal fixed in
+both domains, native-floor compaction now remaps metadata/labels, both4F
+approach-retreat and both2F controls visually verified. Current next source
+revision enables own-source counter swatches for Goldenrod as well as Celadon.
+Private flag renamed native_store; complete existing network/source/custom guards
+remain unchanged. No height, footprint, source claims, support, collision or
+register geometry changes. Generic geometry fixtures now explicitly use
+GenericStoreFixture (resolve_networks accepts supplied fixture floor), preserving
+their original solid-domain assertions. A separate both-store adapter test
+requires native flag, indexed own-source swatches, every bay's depth range and
+unchanged claims/footing across all counter networks.
+
+Test67955 `store-goldenrod-palette-tests.log` and native41142
+`store-goldenrod-palette-native.log` live. Wait terminal; inspect Goldenrod1F/2F/
+3F/4F plus Celadon control, and repeat Goldenrod4F reveal after moving it into
+the textured/compacted path. No new palette acceptance until actual review.
+Existing capture driver supports A/B through production dispatcher. Planned
+shop fixture:5F(8,2),DAAABBB approaches native north counter then opens/closes
+shop surfaces; confirm actual pages/menu/trace, do not infer outcome from plan.
+Source guide requires shop(8,3) facing south to clerk(8,5), directory(14,1),
+lift panel(3,1) north, lift(2,0), every stair/roof route; these remain open beyond
+the verified two1F->2F stair transitions. Full311/original16 scope active.
+No pack export, staging, commits or cross-chat messages. Preserve shared source.
+Tests67955 completed0:26 passed including both-store native adapters; native41142
+completed0 in3m57s. Capture53569 completed0 (`store-goldenrod-native-palette/`,
+`store-goldenrod-palette-capture.log`): all five comparisons individually inspected,
+Goldenrod1F–4F plus Celadon4F. Own-source counter pigment accepted within this
+scope; heights/geometry unchanged. Native Goldenrod reveal still needs its repeat.
+
+Shop capture83330 completed0, both5F(8,2),DAAABBBBB through production synthetic
+keys, `store-clerk-shop-review/`, receipt `store-clerk-shop-capture.log`.
+Goldenrod moving01 welcome, both moving02 BUY/SELL/QUIT, both moving03 native
+inventory and both final comparisons actually inspected. Goldenrod sells TMs,
+Celadon battle items; final world view has no shop overlay. Both288frames/two
+origins/zero additional terrain builds, contended image-target diagnostic only.
+These visual surfaces do not alone establish authoritative close/money behavior.
+New external-pack regression in bevy_shell/tests/shop_rendering.rs constructs
+the production controller from a diagnostic start, approaches counter using
+press, opens authored shop and BUY, closes through B, checks money unchanged
+and authoritative movement back to(8,2). No manually injected shop or lower-level
+tick dispatcher. Test66458 live (`store-clerk-controller-tests.log`), compiling
+Bevy test dependencies; final tiny test-only trim normalization edited while
+dependencies compile. Wait known handle and consume terminal result.
+
+Independent current-native recovery/directory capture14609 live: Goldenrod4F
+(11,3),RLL in `store-goldenrod-native-recovery/` then both1F(14,2),UABBBB in
+`store-directory-review/`. Receipts `store-goldenrod-native-recovery.log`,
+`store-directory-capture.log`. Inspect exact traces/pages/final images; directory
+outcomes are unproven until that review. No gameplay/whole-store acceptance yet.
+
+## Service-counter buried joins, 2026-10-14
+
+Previous goal turn made progress: corrected blue-case shape and front-glazed5F
+enclosure, verified actual both stores and relevant tests. Remaining ordinary
+counter reveal exposes gray internal bay ends. Current source validates neighbor
+bays inside an already authenticated complete network, independently resolves
+four shared edges, extends hidden inset cabinet-body edges beneath overhanging
+caps to each shared plane, then removes only the buried outward triangles.
+Exposed ends, source palettes, top heights, register links, source claims/floor
+backing, collision and support remain. Largest outward face derives the body
+plane from existing geometry rather than a guessed model inset. Existing atomic
+regression now requires no buried end faces, retained exposed ends and body
+meeting the join beneath the cap (so omitting caps cannot hide an unsealed gap).
+
+Initial25tests21021 and native86791 completed0; they predate the final hidden-body
+extension/extra regression, so are not final evidence. Final current tests/build
+started next, logs `store-counter-sealed-join-tests.log` and
+`store-counter-sealed-join-native.log`. Wait known handles; fresh both4F walk and
+2F/1F/3F counter controls required. No visual acceptance of final joins yet.
+Pack read in memory confirms both1F stair(15,0) to2F and lift(2,0); Goldenrod6F
+roof stair(13,0), down stair(15,0). Entrance/flight walks remain to execute using
+production input. Updated art acceptance text to reflect human's glass/front
+correction, superseding old lower-body interpretation. Full311/original16 scope
+remains active; no pack exports/staging/commits or cross-chat messages.
+Final sealed-body tests47776 completed0:25 passed; native3032 completed0 in1m17s.
+Fresh both4F walk35342 completed0, `store-sealed-join-walk/`, receipt same stem.
+Goldenrod final and moving02, Celadon moving02 individually inspected. Buried
+end walls improved, but moving02 still shows triangular cap layers during alpha
+blending. Thus geometry-only fix is not accepted as complete reveal appearance.
+Do not infer all moving images were inspected; those named are the actual review.
+
+Current next revision routes only these authenticated counter bays through the
+existing depth-writing coverage reveal, in both domains: new
+TerrainMeshData.depth_coverage_solid_ranges parallels existing painted ranges;
+lib prepares solid groups with the same exact-range opt-in. Textured counters,
+solid Goldenrod bodies and linked registers receive their own ranges. Existing
+glass/other scenery, trees and architecture fades remain unchanged. Atomic
+counter regression checks solid metadata matches owned per-bay cutaway ranges.
+Tests50262 `store-counter-depth-tests.log`, native60878
+`store-counter-depth-native.log` live. Wait terminal; repeat actual both4F walks,
+all moving/final views and counter controls before accepting. Existing shader
+already uses stable coverage with depth; no shader edit made. Preserve shared
+lib.rs/mesh.rs changes. No exports/staging/commits/messages; full goal active.
+Depth-test50262 and native60878 repeatedly confirmed live under compiler
+contention; no restart. Independent unchanged first-floor stair verification
+88776 live (`store-first-stair-walk/`, receipt same stem), both stores start
+(15,1), production synthetic U. It starts from last completed3032 binary while
+depth revision compiles; stair source unchanged, so this is route evidence only,
+not new counter-reveal evidence. Inspect actual trace/maps and images before
+claiming either stair transition. No task-owned export or pack mutation.
+Additional implementation finding: department_store::resolve_networks currently
+sets native_kanto only for Celadon prefix; Goldenrod service bodies retain the
+generic solid palette, which is why both domains need the depth opt-in. Native
+Goldenrod counter pigment parity remains a separate source/visual check after
+reveal, rather than silently assuming all store bodies already sample source.
+Both first-stair88776 completed0. CSV proves1F(15,1)->(15,0)->2F(15,0)->(15,1)
+for Goldenrod and Celadon. Both final comparisons and both moving00 inspected:
+Goldenrod shows visible trainer ascending; Celadon sample caught a uniform dark
+transition at frame12/1F(15,0), then final2F renders correctly. Route accepted,
+not full transition animation/actor-pose fidelity. Remaining22-flight/elevator/
+roof/entrance/shop gates still open. No earned story progression claim.
+
+Depth-tests50262 completed0:25 passed. Native60878 completed0 in13m39s under
+contention; no restart. Fresh same-binary fade suite passed35. Final both4F walk
+and both2F control process70352 live: `store-counter-depth-walk/`,
+`store-counter-depth-controls/`. Controls receipt is
+`store-counter-depth-controls.log`; walk stdout currently retained in live exec
+output and must be saved as `store-counter-depth-walk.log` after collecting all
+chunks (initial launch had no output, so no lost first chunk). No visual
+acceptance of latest depth revision yet. Do not restart live capture for silence.
+Capture70352 completed0; all walk stdout chunks saved to
+`store-counter-depth-walk.log` via ignored-file patch. Goldenrod moving02/final
+and Celadon final inspected: Goldenrod now uses depth-writing pixel coverage,
+no blended cap triangles; Celadon still blends/layers. These are NOT both-store
+acceptance. Other moving/control images from this revision not yet inspected.
+
+Root cause found in interior_surfaces::compact_surface: the textured floor pass
+repacks vertices and remaps cutaway owners but left depth-coverage ranges and
+cross-domain caption/register anchors at their previous indices. Solid Goldenrod
+data avoids that repack. Current compact_textured wrapper derives new owned
+ranges from the exact mapping and remaps linked anchors, including removed
+anchors via their live owner. Empty removed ownership drops its metadata.
+Existing geometry-signature regression expanded with unused owner vertices,
+painted depth range, live+unused anchors, solid-range/footing preservation.
+Temporary opt-in trace instrumentation was added but never needed to render;
+removed after identifying the deterministic remap bug. Its native26063 completed0
+and predates final fix. Current test54044 `store-counter-compaction-tests.log`
+and native31841 `store-counter-compaction-native.log` live. Wait terminal; repeat
+both4F approach AND retreat (start11,3,RLL) to prove reveal/restoration, inspect
+all moving/final frames and both2F controls. New behavior still unaccepted until
+that review. Preserve shared interior_surfaces.rs changes; no shader edit.
+Current verified result: compaction54044 passed1, native31841 completed0 in48.59s.
+Same fresh test binary:169 modeled-interior/floor checks passed and25 department
+checks passed (`store-counter-remap-interiors-suite.log`,
+`store-counter-remap-department-suite.log`); earlier depth-material suite35 passed.
+Do not add overlapping filter counts as a unique total.
+Final process38826 completed0. Fresh both4F approach/retreat from(11,3),RLL in
+`store-counter-recovery-final/` and both2F controls in
+`store-counter-remap-controls/` all reviewed: all six moving frames, both final
+comparisons and both control comparisons individually inspected. Traces in each
+store reachx15 then return tox8 atrow3. Player/follower readable at counter;
+no earlier gray layered triangles, outer ends/tops intact, final counter restored
+opaque. Celadon now correctly uses the same depth-writing reveal after remap.
+Scoped join/reveal/restoration defect accepted. Existing pixel coverage is visibly
+grainy during fade; material polish and overall room/player scale remain open.
+Both96frames/four origins/zero extra terrain builds. Image-target diagnostics
+20.81ms median/179.10ms p95 Goldenrod,16.62/126.80 Celadon are not presented FPS.
+State preserved Goldenrod474/LCD490, Celadon357/LCD362:16/5frame offsets support
+scenery review only, not exact actor-pose acceptance. All current job handles
+terminal; no task-owned process remains. Final receipts are
+`store-counter-recovery-final.log`, `store-counter-remap-controls.log`.
+
+Full311/original16 goal remains unfinished. Next source check: Goldenrod counter
+palette parity (native flag currently Celadon-only), then remaining store
+entrance/directory/lift/roof/every-stair/shop interactions and room scale. First
+stair routes alone do not satisfy those gates. Previously listed Johto home,
+clinics/gates/traditional rooms, Kanto gyms/caves/Flash/ceremony and other family
+findings remain. No completion or blocked audit passed. No exports, staging,
+commits or cross-chat messages; source/content pack unchanged outside render
+code and documentation, unrelated shared work preserved.
+
+## Long blue cases and front-glazed staff enclosure, 2026-10-14
+
+Latest human correction: blue boxes need longer bodies, flat sides and ridges
+only on top; staffed enclosure has glass toward the screen and counters on the
+other three sides. Prior fridge-style blue-case shape and sealed lower5F body
+are rejected, regardless of earlier scoped paint/roof acceptance.
+
+Current source separates source-complete blue cases from tall retail fronts:
+24px long,8px high,0.6px ridges only above lid; flat source-blue sides, first
+three source rows on lid. Claims/footing/source guards preserved, within32px plot.
+Existing blue drawing regression now checks long low bounds and flat sides.
+Rebuilt original `u_display` editable generator and only its runtime mesh: three
+8px counters north/west/east, thin +Z front glass panels and reflection relief,
+no broad lower body/lid. Blender22333 completed0; stored updated existing native
+gzip source/manifest entry via verified helper. No game artwork/programs copied.
+`check-department-store.py --pack content-packs/core-modular.browser.crystalpack`
+handle63982 completed0: deterministic closed positive-volume parts, three runs,
+thin glass, unchanged source masks/warps/collision/staff inset and editable hash.
+
+Renderer extracts authenticated material roles4/5/6 from the opaque mesh into
+scenery glazing with alpha0.22/0.35/0.55. New shared1px neutral glass texture uses
+explicit Blend/double-sided mode; decoded existing scenery remains unchanged
+opaque/masked. Counter/frame geometry stays opaque; no whole-front reveal needed.
+Updated department regression requires transparent front-only glazing and exact
+combined triangle count, unchanged56claims/support; original material validator
+still requires all ten roles. No visual acceptance of this latest shape/glass yet.
+Test25105 logs `store-long-blue-glass-tests.log`; native33951 logs
+`store-long-blue-glass-native.log`, both live. Wait terminal, run current placement
+and native display tests, then fresh bothstores2F/3F blue cases, both5F glass and
+ordinary-Mart/fridge controls. Source model check receipt `store-glass-model-check.log`.
+
+Prior family38125 completed0, all ten actual comparisons inspected (Celadon4F,
+both2F, Ecruteak, both1F/3F/5F). It predates this latest correction and cannot
+prove new blue/glass shape. Fridge vent orientation/shorter fronts remain verified;
+ordinarycounter joins, full scale/readability and311/original16 scope remain open.
+No exports, staging, commits or cross-chat messages. Latest changes include
+scenery_surfaces.rs and interior_models.rs; preserve unrelated shared edits.
+Test25105 completed0:25 department-store checks passed. Placement57487 completed0:
+69 passed, including long low blue cases, flat side bounds, guarded complete
+drawings and unchanged footing. Native33951 completed0 in5m48s. Fresh capture73678
+live: `store-long-blue-glass-review/`, receipt `store-long-blue-glass-capture.log`,
+both2F/3F/5F and Ecruteak control. Material regression53929 live, receipt
+`store-glazing-material-tests.log`, checks shared neutral Blend glass and unchanged
+decoded Opaque/Mask modes. It adds test-only code after native build; production
+source unchanged. Inspect every fresh compare/full detail before accepting shapes.
+Verified outcome: capture73678 completed0; all seven actual comparisons individually
+inspected, plus full Goldenrod2F and5F details. Blue cases in both2F/3F are now
+long, low, flat-sided with ridges only on lids. Both5F show three opaque counter
+runs, empty visible lower enclosure and thin transparent +Z wall with reflected
+streaks. Ecruteak control preserves its shorter fridge/roof correction. Scoped
+blue-case shape and5F enclosure semantics accepted; whole-room scale, actor
+fidelity and interactions are not established by these static views.
+Material53929 completed0:3 passed, including shared glass Blend and unchanged
+imported Opaque/Mask modes (`store-glazing-material-tests.log`).
+
+Additional south-side capture79480 completed0 at valid(11,7), output
+`store-glass-south-review/`, receipt `store-glass-south-capture.log`. Both full
+images and comparisons individually inspected: see-through front panel and
+three counters read clearly, floor visible through glass, no former lower body.
+States preserved Goldenrod131/LCD137, Celadon480/LCD480. Earlier requested(8,9)
+diagnostic failed immediately because bounds are0..15 x0..7; no images produced,
+empty output directory removed, failure receipt retained. Primary seven views
+all state-preserved with0..9frame LCD offsets, so scenery acceptance does not
+claim exact actor poses. No task-owned live processes remain at this checkpoint.
+Scoped `git diff --check` passes. No exports/staging/commits/messages. Keep ignored
+QA receipts for continuing goal. Full311/original16 scope is not complete.
+
+Next known store defect remains ordinary service-counter reveal joins: internal
+transparent faces appeared in previous walk; fix and repeat walking/control views.
+The5F front is now actual glass and needs no proximity fade. General scale,
+stairs/lift/entrance architecture, seat interaction and earlier Johto/Kanto
+family/gameplay/Flash gates remain open. No completion or blocked audit passed.
+
+## Cabinet roof perspective correction, 2026-10-14
+
+Previous goal turn made progress: vending roofs finished and visually verified.
+Next fresh walk76360 completed0: `store-joined-waist-walk/`, receipt
+`store-joined-waist-walk.log`. All three moving images and final comparison
+individually inspected. Internal shelf triangles are absent in these sampled
+recovery poses; player/follower visible across bank. Counter still hides player's
+lower body at endpoint. State preserved364/LCD370;96frames, seven origins,
+zero additional terrain builds. Timing20.51ms median/118.98ms p95 is contended
+image-target diagnostic, not presented FPS. Full walking acceptance remains open.
+
+Human correction: cabinet vents above fridge doors are roof perspective, not
+another vertical front panel, and cabinets are too tall. Updated shared native
+retail builder: first8px source row maps upward across roof; only remaining24px
+map to vertical front, reducing actual cabinet height25% (30 to22.5px for default
+profiles). Removed old flat roof indices; retained closed back/sides, recessed
+doors/handles and exact source claims, floor backing and footing. This applies
+only to existing validated native retail paths, including blue glass/equipment
+and ordinary-Mart refrigerators. New assertions check reduced maximum height,
+upward source header and exclusion of header UVs from front faces.
+
+Separately enabled independent service-counter bay reveal, with register linked
+to its own painted bay and floor backing excluded. Other bays restore separately;
+updated existing counter atomic/ownership regression checks partitions. Test86182
+`store-counter-bay-reveal-tests.log` started before roof correction; wait terminal
+then compile current roof assertions. Native73692 `store-roof-perspective-native.log`
+includes both current changes. Both confirmed live at this checkpoint. Fresh
+fridge/aisle and service-family comparisons still required; no visual acceptance
+of this height/roof revision or counter reveal yet. No export/staging/commits or
+cross-chat messages. All311 interiors/original16 variants remain active.
+Counter test86182 completed0:25 passed, including independent bay partition and
+unchanged floor/claims/support checks. Current placement test52872 logs
+`store-roof-perspective-tests.log`; native73692 logs
+`store-roof-perspective-native.log`. Both re-polled live; native progressed from
+crystal-assets to crystal-voxel-view, while test still compiles shared assets.
+Do not restart these jobs for quiet output. Source changes remain unchanged
+since launch; no roof/height/counter-reveal capture or visual acceptance yet.
+Placement52872 completed101:68 passed, one old electronics volume/front-area
+assertion still required30px tall geometry. Corrected that assertion to22.5px;
+final rerun5955 completed0 with69 passed (`store-roof-perspective-final-tests.log`).
+New roof-oriented UV/height checks passed in both runs. Native73692 completed0
+in16m32s. Fresh walk47640 completed0 (`store-roof-perspective-walk/`, receipt
+same stem); all three moving images and final comparison individually inspected:
+roof strips now upward, fronts25% shorter, no old shelf internal triangles,
+player/follower readable across aisle. Trace traverses x2through14 atrow3 (held
+production input; endpoint differs from previous x13),96frames/seven origins/no
+additional terrain builds. State666/LCD689 preserved,23frame capture offset;
+scenery comparison only.45.27ms median/179.55ms p95 under contention is notFPS.
+Counter reveal improves visibility but transparent internal faces remain at bay
+joins, so counter reveal appearance is NOT accepted. Fresh family capture38125
+live, `store-roof-perspective-family/`, receipt same stem. Celadon4F and Goldenrod2F
+actual comparisons inspected: upward roof details and shorter fronts accepted
+for those cabinets; remaining eight images still need inspection. Do not rebuild
+or replace the active capture simply for quiet output. All311 scope remains.
+
+## Vending roof finish requested, 2026-10-14
+
+Verified roof outcome: fresh direct capture41450 completed0, receipt
+`target/kanto-resume/receipts/store-vented-roofs-final.log`, output
+`target/kanto-resume/store-vented-roofs-final/`. Individually inspected both
+Goldenrod/Celadon6F compare images and full 2.5D images: six dark recessed slots
+read clearly in each flush metal service panel, with narrow border seam and
+original beveled shoulder. No visible raised cap, detached roof or roof overlap.
+Roof finish accepted within this scope; broader machine front/readability,
+room proportions and all311 interiors remain open. Final roof regression passed1;
+same-binary placement69, counter25 and fade33 checks passed (overlapping filters,
+not a unique aggregate). Both pair receipts preserve state; LCD capture offsets
+are4/8 frames, so comparison establishes scenery rather than exact actor pose.
+
+Graphics policy was verified from the human message in the performance thread:
+captures may run concurrently; no graphics-lease wait required. During that
+transition our queued88772 began and an accidental duplicate21388 targeted its
+same directory. Only our duplicate was terminated143; original88772 completed0.
+Do not accept the mixed `store-vented-roofs-review/` output. Fresh41450 above is
+the reviewed result. No other process/window was stopped and no cross-chat
+message was sent. Latest shelf-join/waist walking and service controls still
+require their own fresh review; roof acceptance does not establish those fixes.
+
+Latest human steering: finish/vent the vending-machine tops. Source-complete
+Goldenrod/Celadon6F beverage cabinets now replace only their flat highest roof
+faces with a flush inset service panel, narrow seam and six true recessed vent
+slots (0.22px deep), using existing own gray/metal/dark swatches. Beveled original
+outer shoulder retained, max height unchanged; slots have floors and four side
+walls. Station blue ticket cabinets remain on their separate existing path.
+New sixth-floor regression requires twelve vent-floor triangles and no height
+increase, plus existing drawing/phase, claims and support checks. Initial roof
+test13678 logs `store-vending-roof-tests.log`, live but predates final assertion
+edit; rerun current tests after terminal. Earlier waist native44991 still live,
+predates shelf joins/roof; build latest only after terminal and then capture both
+6F roofs, aisle walking/recovery and service-counter family controls.
+No visual acceptance of roof or current joins/waist yet. Full311/original16
+scope active; no exports/staging/commits or cross-chat messages.
+Prior waist native44991 completed0 in12m46s, superseded by joins/roof. Join81580
+passed1; initial roof13678 passed1 before the final vent-floor assertion was
+compiled. Latest targeted roof test handle in next update logs
+`store-vending-roof-final-tests.log`. Combined current native28000 logs
+`store-roof-joins-native.log`; same production renderer, local visual iteration
+overrides both crystal-voxel-view and crystal-bevy to opt-level0 (prior voxel1
+builds heavily contended). No geometry/detail settings lowered, no presented
+performance claim. Wait these known handles; fresh both6F roof views plus exact
+aisle repeat/service-family views required before roof/joins/waist acceptance.
+Current final roof test handle53204 and native28000 confirmed live; both
+progressed through rebuilt shared render/core-pipeline/sprite/UI dependencies
+to bevy_pbr. This is verified build wait, not a failed/stopped job. Do not restart
+quiet compilers. No final roof test or graphical acceptance asserted yet.
+Native28000 completed0 in20m11s after shared-dependency rebuild; final roof53204
+passed1 including twelve recessed-floor triangles/six slots and max-height check.
+Canonical mesh inspected: highest flat roof is two blue-material triangles at
+modelY2.02 (bounds maxY2.02), confirming roof selection. Fresh both6F capture
+now live, handle in next update, `store-vented-roofs-capture.log`, output
+`store-vented-roofs-review/`, through shared graphics wrapper. Current binary
+includes waist8px, join culling, depth-mask opt-in and roof finish. Actual views
+required; no visual acceptance until inspection. No active exports or messages.
+Roof capture handle88772 confirmed live, queued on graphics lease. Owner text
+identifies a browser tree-review lease command awaiting Enter; no other process
+is interrupted or messaged. Fresh same-binary placement23537 passed69, counter
+filter passed25, fade87066 passed33 (`store-roof-final-*-suite.log`). All current
+roof/joins/waist source checks green. Actual roof and recovery/service views
+remain required; do not claim visual completion from these tests or source code.
 
 ## Store aisle walking exposes recovery defects, 2026-10-14
 
@@ -4643,3 +8499,17 @@ does not acquire that bank. The final native build passed (18m32s). The broader
 120-map visual review, Saffron seat-color parity and timed door animation were
 open at this historical checkpoint. The current continuation records the
 completed source-scene reconstruction and later seat/review verification.
+
+## Store shape recheck, 2026-10-15
+
+Rechecked the human's blue-box and staff-enclosure correction in the current
+native build. Fresh GoldenrodDeptStore2F and GoldenrodDeptStore5F comparisons
+in `target/kanto-resume/store-shape-recheck-20261015/` were both visually
+inspected against 2D at noon; both paired-state receipts preserve state.
+Blue cases are long, low boxes with flat sides and ridges confined to the lid.
+The staff enclosure has front glass and north/west/east counters. The existing
+implementation already provides these changes; no additional geometry edit was
+needed. The current test binary passed the blue-case regression and all13
+department-store tests. Capture completed successfully; receipt:
+`target/kanto-resume/receipts/store-shape-recheck-20261015.log`.
+This confirms these fixtures only, not whole-room or all-interior acceptance.

@@ -15,7 +15,11 @@ impl CrystalRuntime {
         asset_root: &AssetRoot,
         loaded: LoadedCompiledGamePack,
     ) -> Result<Self> {
-        crystal_assets::verify_compiled_game_pack_for_runtime(loaded.pack())?;
+        // Verified loaders certify this immutable wrapper. Diagnostic decoders
+        // remain uncertified and retain the full production checks here.
+        if !loaded.is_runtime_verified() {
+            crystal_assets::verify_compiled_game_pack_for_runtime(loaded.pack())?;
+        }
         let modpack = loaded
             .save_modpack_identity()
             .context("compute compiled game pack save identity")?;

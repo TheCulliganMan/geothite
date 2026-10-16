@@ -4,12 +4,13 @@ import argparse,json,math
 from pathlib import Path
 from sculpt_geometry import part,ellipsoid,loft,curved_profiles,fitted_patch,fitted_contour,crease_normals
 from abra_sculpt import surface
-from bovine_sculpt import oval,curved_tube,smooth
+from bovine_sculpt import fitted_patch,oval,curved_tube,smooth
 from skarmory_sculpt import blade
 from wing_insect_sculpt import contour
 from skin_glb import COORDINATES
 HEIGHT=1.02
-BODY=(.75,.81,.82);ARMOR=(.22,.25,.29);TREAD=(.34,.39,.42);RED=(.52,.22,.29);IVORY=(.96,.96,.88);INK=(.085,.10,.12)
+# Local normal RGB555: skin (18,20,19), tire (5,11,8).
+BODY=(148/255,165/255,156/255);ARMOR=(41/255,90/255,66/255);TREAD=BODY;RED=ARMOR;IVORY=(1.,1.,1.);INK=(0.,0.,0.)
 def tire_rows():
  path=[(0,.580,-.370),(0,.676,-.230),(0,.716,-.025),(0,.784,.195),(0,.757,.337),(0,.650,.460),(0,.445,.527),(0,.240,.554),(0,.138,.595),(0,.157,.677)]
  widths=[.100,.151,.172,.170,.155,.139,.122,.104,.083,.025];depths=[.027,.040,.047,.055,.056,.053,.046,.040,.030,.016]
@@ -29,7 +30,7 @@ def ribbon(name,color,rows,offset=0.,width_scale=1.,depth_scale=1.):
   for j in range(n):a=k*n+j;b=k*n+(j+1)%n;f.append((a,b,b+n,a+n))
  return crease_normals(part(name,color,v,f,True),38.)
 
-def sculpture():
+def sculpture(normalize=True):
  body=ellipsoid('Body / broad pale armored elephant barrel',BODY,(0,.400,-.057),(.330,.281,.387),40,28)
  head=ellipsoid('Head / broad pale lowered elephant cranium',BODY,(0,.554,.249),(.284,.238,.239),40,28);p=[body,head];hs=surface(head)
  rows=tire_rows();p.append(ribbon('Tire / continuous charcoal back and hanging trunk',ARMOR,rows))
@@ -61,6 +62,7 @@ def sculpture():
     p.append(fitted_patch('Toenail / fitted ivory elephant toe '+name+' '+str(j),IVORY,oval(sign*.218+dx,.033,.020,.013,24),fs,.004))
  p.append(curved_tube('Tail / short armored rear flick',ARMOR,[(0,.425,-.405),(.045,.451,-.465),(.096,.461,-.493)],[.033,.026,.001],24))
  p=[crease_normals(q,35.) if q['part'].startswith(('Ear lining /','Eye /','Eye white /','Pupil /','Toenail /')) else q for q in p]
+ if not normalize:return {'name':'donphan','version':1,'coordinate_system':COORDINATES,'primitives':p}
  low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
  for q in p:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':'donphan','version':1,'coordinate_system':COORDINATES,'primitives':p}

@@ -8,9 +8,11 @@ from bovine_sculpt import oval,curved_tube
 from wing_insect_sculpt import contour
 from skin_glb import COORDINATES
 SPECIES=('wobbuffet',);HEIGHT=1.14
-BLUE=(.26,.67,.82);BLACK=(.12,.14,.18);WHITE=(.97,.97,.95);MOUTH=(.39,.22,.29);TONGUE=(.80,.46,.51)
+# Local Crystal normal RGB555: body (12,21,31), mouth shade (7,14,16).
+# Geometry helpers convert these sRGB values to linear material colors once.
+BLUE=(99/255,173/255,1.);BLACK=(0.,0.,0.);WHITE=(1.,1.,1.);MOUTH=BLACK;TONGUE=(57/255,115/255,132/255)
 
-def sculpture(species='wobbuffet'):
+def sculpture(species='wobbuffet',normalize=True):
     if species not in SPECIES:raise ValueError('unsupported patient pokemon')
     body=loft('Body / continuous tapered elastic blue silhouette',BLUE,curved_profiles(((.061,.065,.057,.0),(.14,.107,.090,.0),(.30,.115,.111,-.005),(.49,.169,.147,-.005),(.68,.222,.184,0),(.86,.250,.197,0),(1.014,.222,.172,0),(1.102,.133,.113,0),(1.129,.012,.013,0)),5),48)
     p=[body];bs=surface(body)
@@ -51,8 +53,9 @@ def sculpture(species='wobbuffet'):
         pupil=fitted_patch('Tail pupil / small dark watchful eye '+str(j),BLACK,oval(x+.002,y+.001,.008,.012,20),surface(white),.002);p.append(pupil)
     p=[crease_normals(q,35.) if q['part'].startswith(('Mouth /','Tongue /','Tail eye /','Tail pupil /')) else q for q in p]
     lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
-    for q in p:
-        q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+    if normalize:
+        for q in p:
+            q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'wobbuffet.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))

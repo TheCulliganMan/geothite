@@ -28,7 +28,8 @@ pub(crate) enum StairKind {
 
 /// Return the exact 2x2 source coordinate and direction for each authored
 /// player-house stair drawing. Blocks `$0a`/`$0b` are embedded in the north
-/// wall course. Block `$0f` contains a refrigerator, not a staircase.
+/// wall course; Copycat's `$23` places the same ascending flight at its west
+/// origin. Block `$0f` contains a refrigerator, not a staircase.
 pub(crate) fn stair_local(source: &VisualTileSource) -> Option<(u8, u8, StairKind)> {
     if source.tileset_id.as_ref() != "players_house" {
         return None;
@@ -36,6 +37,7 @@ pub(crate) fn stair_local(source: &VisualTileSource) -> Option<(u8, u8, StairKin
     let (origin_column, origin_row, drawing, kind) = match source.metatile_id {
         0x0a => (2, 0, [[0x4c, 0x4d], [0x5c, 0x5d]], StairKind::UpEast),
         0x0b => (2, 0, [[0x4e, 0x4f], [0x5e, 0x5f]], StairKind::DownWest),
+        0x23 => (0, 0, [[0x4c, 0x4d], [0x5c, 0x5d]], StairKind::UpEast),
         _ => return None,
     };
     if source.subtile_column < origin_column
@@ -290,6 +292,7 @@ mod tests {
     fn house_stairs_use_their_exact_drawing_and_direction() {
         for (block, origin_column, origin_row, drawing, kind) in [
             (0x0a, 2, 0, [[0x4c, 0x4d], [0x5c, 0x5d]], StairKind::UpEast),
+            (0x23, 0, 0, [[0x4c, 0x4d], [0x5c, 0x5d]], StairKind::UpEast),
             (
                 0x0b,
                 2,
@@ -327,5 +330,9 @@ mod tests {
         assert_eq!(stair_shape(&source(0x0f, 0, 0, 0x11)), None);
         assert_eq!(stair_shape(&source(0x0f, 2, 1, 0x25)), None);
         assert_eq!(stair_shape(&source(0x0f, 0, 1, 0x0b)), None);
+        for (x,y) in [(2,0),(3,0),(0,2),(0,3),(3,3)] {
+            assert_eq!(stair_local(&source(0x23,x,y,0x4c)),None,
+                "Copycat's mixed block keeps its wall/floor cells separate");
+        }
     }
 }

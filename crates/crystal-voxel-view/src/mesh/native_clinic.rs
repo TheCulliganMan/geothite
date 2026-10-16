@@ -53,7 +53,7 @@ pub(super) fn append_mirrored_wall(map:&str,cells:&[&VisualTile],g:&GridGeometry
   if !complete {continue;}
   for offset in [0,2] {
    let p=Placement{kind:ModelKind::WallClinical,column:column+offset,row,width:2,height:2,
-    ground,depth_pixels:3.,height_pixels:24.,base_pixels:0.,footing_pixels:None};
+    ground,depth_pixels:3.,height_pixels:32.,base_pixels:0.,footing_pixels:None};
    for i in p.indices(g.width) {claimed[i]=true;}
    out.push(p);
   }
@@ -64,7 +64,7 @@ pub(super) fn append_pc_headers(map:&str,cells:&[&VisualTile],g:&GridGeometry,cl
  for pc in pcs {
   if pc.row==0 {continue;}
   let p=Placement{kind:ModelKind::WallClinical,row:pc.row-1,height:1,
-   depth_pixels:3.,height_pixels:12.,base_pixels:12.,footing_pixels:None,..pc};
+   depth_pixels:3.,height_pixels:16.,base_pixels:16.,footing_pixels:None,..pc};
   if p.indices(g.width).any(|i|claimed[i])||!wall_source(map,&p,cells,g) {continue;}
   for i in p.indices(g.width) {claimed[i]=true;}
   out.push(p);
@@ -76,7 +76,7 @@ pub(super) fn wall_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeom
  let origin=&cells[p.row*g.width+p.column].source;
  let column=origin.subtile_column;
  if p.height==1 {
-  return origin.metatile_id==8&&column==2&&p.base_pixels==12.&&p.height_pixels==12.
+  return origin.metatile_id==8&&column==2&&p.base_pixels==16.&&p.height_pixels==16.
    &&p.indices(g.width).enumerate().all(|(j,i)| {
     let s=&cells[i].source;
     s.tileset_id.as_ref()=="pokecenter"&&s.metatile_id==8&&s.subtile_column==2+j as u8&&s.subtile_row==0&&s.tile_index==2

@@ -15,7 +15,7 @@ WHITE=(.98,.98,.96);BLUE=(.26,.44,.54)
 def crown_head():
  xy=[(0,1.058),(-.142,1.093),(-.227,1.192),(-.240,1.345),(-.235,1.538),(-.184,1.598),(-.151,1.495),(-.113,1.686),(-.054,1.705),(-.049,1.515),(.054,1.750),(.109,1.730),(.079,1.510),(.183,1.639),(.228,1.598),(.156,1.454),(.267,1.495),(.283,1.439),(.223,1.291),(.199,1.173),(.108,1.095)]
  def depth(y,x):return .115-.070*(y-1.25)
- cage=sheet('Head / continuous angular tan five-point crown',TAN,xy,depth,.120,4)
+ cage=sheet('Head / continuous angular tan five-point crown',TAN,xy,depth,.120,3)
  vv=[]
  for i in range(0,len(cage['positions']),3):
   x,y,z=cage['positions'][i:i+3];d=depth(y,x);t=max(0,min(1,(y-1.32)/.32));factor=1-.78*t*t*(3-2*t);vv.append((x,y,d+(z-d)*factor))
@@ -54,7 +54,7 @@ def limbs(p):
   boot=ellipsoid('Boot / grounded rounded lavender boxing shoe '+str(s),LAVENDER,(s*.180,.043,.167),(.093,.043,.128),36,24);p.append(boot)
   cuff=translate(crease_normals(loft('Boot cuff / rooted lavender ankle collar '+str(s),HEM,curved_profiles(((.072,.065,.072,.111),(.115,.065,.069,.104),(.153,.052,.055,.096)),3),32),40),s*.177,0,0);p.append(cuff)
   xy=[(s*(.180+dx),y) for dx,y in ((-.075,.043),(-.045,.066),(0,.073),(.045,.066),(.075,.043),(.055,.045),(.032,.060),(0,.064),(-.032,.060),(-.055,.045))]
-  p.append(paint('Boot seam / fitted curved lavender toe piping '+str(s),HEM,xy,boot,.003,3))
+  p.append(paint('Boot seam / fitted curved lavender toe piping '+str(s),HEM,xy,boot,.005,2))
   shoulder=sheet('Shoulder guard / rooted pointed tan boxing armor '+str(s),TAN,[(s*x,y) for x,y in ((.105,1.090),(.196,1.207),(.291,1.176),(.346,1.078),(.204,.948),(.148,1.000))],lambda y,x:.014,.060,3);p.append(shoulder)
   if s==-1:
    path=[(s*.210,1.069,.023),(s*.374,1.033,.157),(s*.517,1.110,.335)];widths=[.082,.069,.055];depths=[.085,.071,.054];center=(s*.560,1.170,.432);cuffpath=[(s*.505,1.099,.320),(s*.541,1.144,.389)]
@@ -66,9 +66,9 @@ def limbs(p):
   thumb=ellipsoid('Glove thumb / rooted red inner thumb '+str(s),RED,(center[0]-s*.070,center[1]-.045,center[2]+.026),(.052,.060,.069),32,22);p.append(thumb)
   cx,cy,cz=center
   xy=[(cx+x,cy+y) for x,y in ((-.084,-.028),(-.039,-.077),(.039,-.077),(.084,-.028),(.076,-.038),(.034,-.085),(-.034,-.085),(-.076,-.038))]
-  p.append(paint('Glove seam / fitted dark lower mitt contour '+str(s),CUFF,xy,glove,.003,3))
+  p.append(paint('Glove seam / fitted dark lower mitt contour '+str(s),CUFF,xy,glove,.005,2))
 
-def sculpture():
+def sculpture(normalize=True):
  torso=crease_normals(loft('Tunic / continuous sleeveless lavender boxing torso',LAVENDER,curved_profiles(((.652,.128,.103,.024),(.728,.185,.147,.015),(.877,.239,.177,.009),(1.027,.222,.147,.017),(1.108,.098,.080,.039)),5),48),45)
  neck=ellipsoid('Neck / rooted short tan boxing neck',TAN,(0,1.116,.077),(.088,.110,.080),36,24)
  head=crown_head();p=[torso,neck,head,skirt()]
@@ -76,16 +76,23 @@ def sculpture():
  for s in (-1,1):
   xy=[(s*x,y) for x,y in ((.062,1.293),(.189,1.319),(.183,1.240),(.130,1.214),(.093,1.222))]
   socket=paint('Eye socket / fitted angular dark boxing recess '+str(s),INK,xy,head,.006,3);p.append(socket)
-  cx=sum(x for x,y in xy)/len(xy);cy=sum(y for x,y in xy)/len(xy)
+  cx=cy=0.
+  for x,y in xy:cx+=x;cy+=y
+  cx/=len(xy);cy/=len(xy)
   eye=paint('Eye / fitted ivory boxing gaze '+str(s),WHITE,[(cx+.88*(x-cx),cy+.87*(y-cy)) for x,y in xy],socket,.004,3);p.append(eye)
-  iris=paint('Iris / fitted blue boxing stare '+str(s),BLUE,oval(s*.145,1.268,.016,.026,24),eye,.003,2);p.append(iris)
-  pupil=paint('Pupil / fitted dark boxing slit '+str(s),INK,oval(s*.145,1.266,.007,.021,20),iris,.003,2);p.append(pupil)
-  p.append(paint('Glint / tiny ivory boxing eye point '+str(s),WHITE,oval(s*.145-.002,1.276,.002,.004,16),pupil,.002,2))
+  iris=paint('Iris / fitted blue boxing stare '+str(s),BLUE,oval(s*.145,1.268,.016,.026,24),eye,.003,1);p.append(iris)
+  pupil=paint('Pupil / fitted dark boxing slit '+str(s),INK,oval(s*.145,1.266,.007,.021,20),iris,.003,1);p.append(pupil)
+  p.append(paint('Glint / tiny ivory boxing eye point '+str(s),WHITE,oval(s*.145-.002,1.276,.002,.004,16),pupil,.002,1))
  p.append(paint('Mouth / fitted firm boxing jaw crease',INK,[(-.089,1.152),(-.033,1.136),(.031,1.129),(.090,1.139),(.085,1.132),(.029,1.121),(-.034,1.129),(-.084,1.145)],head,.004,3))
  limbs(p)
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
+ from sculpt_geometry import linear
  for q in p:
-  q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+  n=q['part'];rgb=(0,0,0) if n.startswith(('Eye socket /','Pupil /','Mouth /','Belt /','Boot seam /','Glove seam /')) else (255,255,255) if n.startswith(('Eye /','Glint /')) else (222,24,148) if n.startswith(('Tunic /','Skirt /','Boot /','Boot cuff /','Glove')) else (173,123,99)
+  q['base_color']=linear(tuple(v/255 for v in rgb))
+ if normalize:
+  for q in p:
+   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':'hitmonchan','version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

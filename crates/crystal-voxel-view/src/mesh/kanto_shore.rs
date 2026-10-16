@@ -329,7 +329,7 @@ pub(super) fn finish(
         for i in banks {
             for &q in &faces[i] {
                 let p = old.positions[q * 4..q * 4 + 4].try_into().unwrap();
-                super::outdoor_stone::append_coast(
+                new_bark::ledge_finish::append_natural_bank(
                     &mut mesh.solid,
                     p,
                     old.normals[q * 4],
@@ -491,6 +491,11 @@ mod tests {
                     }
                 }
             }
+            let source_corners: Vec<_> = mesh.textured.uvs.chunks_exact(4).enumerate()
+                .filter(|(_, uv)| new_bark::sampled_cell(uv, &g)
+                    .is_some_and(|i| bank(cells[i].source.tile_index)))
+                .flat_map(|(q, _)| mesh.textured.positions[q * 4..q * 4 + 4].iter().copied())
+                .collect();
             finish(
                 &mut mesh,
                 &cells.iter().collect::<Vec<_>>(),
@@ -517,7 +522,15 @@ mod tests {
                 .solid
                 .positions
                 .iter()
-                .all(|p| p.iter().all(|v| v.is_finite()) && p[1] >= -2. && p[1] <= 0.));
+                .all(|p| p.iter().all(|v| v.is_finite()) && p[1] >= -2. - g.tile_height * 0.20 && p[1] <= g.tile_height * 0.32));
+            assert!(source_corners.iter().all(|p| mesh.solid.positions.contains(p)),
+                "fractured shelves and walls preserve all source contact corners");
+            assert!(mesh.solid.positions.iter().any(|p| p[1] > 0.05),
+                "shore shelves must contain physical rock relief");
+            assert!(mesh.solid.uvs.iter().all(|uv| *uv == crate::scenery_finish::SOURCE_PAINT_UV
+                || *uv == new_bark::ledge_finish::BANK_GROUND_UV
+                || (uv[0] > 87000. && uv[0] < 90000. && uv[1] < -10000.)),
+                "shore rock must never sample a 2D sprite");
             assert!(mesh.solid.positions.iter().any(|p| p[1] == 0.));
             assert!(mesh.solid.positions.iter().any(|p| p[1] == -2.));
             for (tri, n) in mesh.solid.indices.chunks_exact(3).zip(

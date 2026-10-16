@@ -302,6 +302,35 @@
           const bundle = await selectRendererBundle({ fetch, navigator, url: location.href });
           globalThis.__crystalRendererBundle = bundle;
           const wasm = await import(bundle.module);
+          const { cpuWorkerPolicy } = await import('./cpu-worker-policy.js');
+          const workerPolicy = cpuWorkerPolicy({
+            params: new URLSearchParams(location.search), wasm, storage: localStorage,
+            embedded: document.documentElement.classList.contains('flygon-embedded'),
+            workerSupported: typeof Worker === 'function' && typeof WebAssembly === 'object',
+          });
+          let cpuWorkerBudget = null;
+          if (workerPolicy.terrain || workerPolicy.actor) {
+            const { createCpuWorkerBudget } = await import('./terrain-worker-client.js');
+            cpuWorkerBudget = createCpuWorkerBudget();
+          }
+          if (workerPolicy.terrain) {
+            const { installTerrainWorkerBridge } = await import('./terrain-worker-bridge.js');
+            const terrainWorker = installTerrainWorkerBridge(wasm, {
+              trace: new URLSearchParams(location.search).get('loading-trace') === 'on',
+              sharedBudget: cpuWorkerBudget,
+              eager: workerPolicy.eager,
+            });
+            window.addEventListener('pagehide', () => terrainWorker?.dispose(), { once: true });
+          }
+          if (workerPolicy.actor) {
+            const { installActorWorkerBridge } = await import('./actor-worker-bridge.js');
+            const actorWorker = installActorWorkerBridge(wasm, {
+              trace: new URLSearchParams(location.search).get('loading-trace') === 'on',
+              sharedBudget: cpuWorkerBudget,
+              eager: workerPolicy.eager,
+            });
+            window.addEventListener('pagehide', () => actorWorker?.dispose(), { once: true });
+          }
           const { installGpuShaderNormalization } = await import('./gpu-shaders.js');
           installGpuShaderNormalization(wasm);
           const { default: init } = wasm;
@@ -346,7 +375,7 @@
           viewControls = mountViewToggle(wasm, {
             button: document.querySelector('#view-toggle'), canvas, storage: localStorage,
             startIn2D: document.documentElement.classList.contains("flygon-embedded"),
-            startIn3D: ["new-bark", "bedroom", "goldenrod", "department-store", "underground", "route26", "route26-canyon", "route29", "route29-battle", "falkner-battle", "national-park", "national-park-pool", "union-cave", "ice-path", "whirl-islands", "mount-silver"].includes(new URLSearchParams(location.search).get("preview")),
+            startIn3D: workerPolicy.preview3D,
           });
           const bridge = createGameBridge(wasm);
           if (new URLSearchParams(location.search).get("flygon") === "1") {

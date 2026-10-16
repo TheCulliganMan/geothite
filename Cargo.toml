@@ -9,6 +9,8 @@ members = [
     "crates/crystal-net",
     "crates/crystal-render-api",
     "crates/crystal-runtime",
+    "crates/crystal-terrain-worker",
+    "crates/crystal-actor-worker",
     "crates/crystal-tui",
     "crates/crystal-voxel-view",
     "crates/crystal-web-server",
@@ -54,6 +56,21 @@ opt-level = 3
 opt-level = 3
 
 [profile.web-release.package.crystal-flygon]
+opt-level = 3
+
+# Pack decoding and integrity checks run before the first playable frame.
+# Keep their hot loops at speed optimization; the rest of the browser graph
+# retains download-oriented size optimization.
+[profile.web-release.package.crystal-assets]
+opt-level = 3
+
+[profile.web-release.package.ciborium]
+opt-level = 3
+
+[profile.web-release.package.ciborium-ll]
+opt-level = 3
+
+[profile.web-release.package.sha2]
 opt-level = 3
 
 # Bevy's default dev profile (opt-level 0) makes the renderer and ECS spend

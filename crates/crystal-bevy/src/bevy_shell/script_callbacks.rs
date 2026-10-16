@@ -71,7 +71,34 @@ fn take_visible_pending_screen_fade(runtime_shell: &mut BevyRuntimeShell) -> Res
     Ok(())
 }
 
-fn tick_visible_screen_fade(time: Res<Time>, mut runtime_shell: ResMut<BevyRuntimeShell>) {
+fn tick_visible_screen_fade(
+    time: Res<Time>,
+    mut runtime_shell: ResMut<BevyRuntimeShell>,
+    #[cfg(feature = "voxel-view")] voxel_settings: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
+    #[cfg(feature = "voxel-view")] voxel_status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
+    #[cfg(feature = "voxel-view")] mut render_wait: Local<bool>,
+) {
+    #[cfg(feature = "voxel-view")]
+    let released_render_wait = {
+        if runtime_shell.visible_walk_warp_phase == Some(VisibleWalkWarpPhase::FadeIn)
+            && voxel_settings.as_ref().is_some_and(|settings| settings.enabled)
+            && voxel_status.as_ref().is_some_and(|status| status.terrain_pending
+                || (status.active && status.terrain_map.as_deref()
+                    != Some(runtime_shell.shell.current_map_name())))
+        {
+            // MAPSETUP_DOOR loads the destination before FadeInFromWhite. Keep
+            // that white palette while asynchronous terrain/actor preparation
+            // catches up; the existing fade phase continues to own input. The
+            // renderer-neutral controller has no such asynchronous prerequisite.
+            *render_wait = true;
+            return;
+        }
+        std::mem::take(&mut *render_wait)
+            && runtime_shell.visible_walk_warp_phase == Some(VisibleWalkWarpPhase::FadeIn)
+    };
+    #[cfg(not(feature = "voxel-view"))]
+    let released_render_wait = false;
+
     if let Some(VisibleBlackoutPhase::WhiteHold { frames_remaining }) =
         runtime_shell.visible_blackout_phase
     {
@@ -106,10 +133,12 @@ fn tick_visible_screen_fade(time: Res<Time>, mut runtime_shell: ResMut<BevyRunti
         // Keep fades on the same bounded 60 Hz presentation clock as every
         // other retained animation. This preserves their wall-clock duration
         // at 20-30 Hz without allowing a long stall to skip the whole scene.
-        fade.advance(
+        // The first ready update's delta includes the loading/publication
+        // interval. Do not spend that interval on a fade that was still held.
+        fade.advance(if released_render_wait { 0.0 } else {
             time.delta_secs()
-                .min(GAME_TICK_SECONDS * MAX_VISIBLE_SEQUENCE_CATCH_UP_FRAMES as f32),
-        );
+                .min(GAME_TICK_SECONDS * MAX_VISIBLE_SEQUENCE_CATCH_UP_FRAMES as f32)
+        });
         if fade.elapsed_frames >= fade.total_frames {
             if walk_warp_phase == Some(VisibleWalkWarpPhase::FadeOut) {
                 // MAPSETUP_DOOR exposes the loaded destination beneath the

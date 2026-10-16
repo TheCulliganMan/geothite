@@ -81,6 +81,8 @@ pub(crate) const BUILDING_TEMPLATES: &[BuildingTemplate] = &[
     template("johto", &[&[0x18, 0x19], &[0x1a, 0x17]], 4, 0x06),
     template("johto", &[&[0x18, 0x19], &[0x1a, 0x1b]], 4, 0x06),
     template("johto", &[&[0x18, 0x19], &[0x1a, 0x11]], 4, 0x06),
+    // The same north/south gate straddles a connection with the 08/09 roof.
+    template("johto", &[&[0x08, 0x09], &[0x1a, 0x11]], 4, 0x06),
     template("johto", &[&[0x18, 0x19], &[0x10, 0x11]], 4, 0x06),
     template("johto", &[&[0x14, 0x15]], 2, 0x06),
     traditional(&[&[0x2c, 0x2d], &[0x26, 0x2f]], 0x06),
@@ -169,9 +171,13 @@ pub(crate) const BUILDING_TEMPLATES: &[BuildingTemplate] = &[
     template("johto_modern", &[&[0x18, 0x19], &[0x1a, 0x1b]], 4, 0x06),
     template("johto_modern", &[&[0x18, 0x19], &[0x10, 0x11]], 4, 0x06),
     template("johto_modern", &[&[0x18, 0x19], &[0x1c, 0x1e]], 4, 0x06),
-    // Goldenrod's repeated square shops/houses are four independent 4x4
-    // drawings. They are commonly adjacent in the block map, but $12/$13
-    // and $14/$15 are not left/right halves of one wide structure.
+    template("johto_modern", &[&[0x08,0x09], &[0x1c,0x1e]], 4, 0x06),
+    // The complete14/15 pair uses exactly the same compact-house drawing as
+    // Johto, including its one off-center37/38,39/3a door. Match it before
+    // individual blocks: Azalea's two houses must not become paired shops.
+    template("johto_modern", &[&[0x14,0x15]], 2, 0x06),
+    // Goldenrod's separate14/13 and12/13 neighbors remain independent4x4
+    // drawings; adjacency alone does not authorize joining their plots.
     template("johto_modern", &[&[0x12]], 2, 0x06),
     template("johto_modern", &[&[0x13]], 2, 0x06),
     template("johto_modern", &[&[0x14]], 2, 0x06),

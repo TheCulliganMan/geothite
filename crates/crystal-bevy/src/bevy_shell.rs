@@ -11,6 +11,8 @@ mod render_measure_validation;
 #[cfg(feature = "location-tester")]
 mod render_walk;
 mod battle_anim_graphics;
+#[cfg(not(target_arch = "wasm32"))]
+mod native_tasks;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
 use std::fmt::Display;
 use std::hash::{Hash, Hasher};
@@ -4690,6 +4692,10 @@ struct RenderedViewport {
     /// must not pay to compose the 84x82 terrain source on every camera step.
     #[cfg(feature = "voxel-view")]
     visual_world_enabled: bool,
+    #[cfg(feature = "voxel-view")]
+    visual_neighbors: Vec<map_neighborhood::RetainedMap>,
+    #[cfg(feature = "voxel-view")]
+    visual_neighborhood_view: Option<(crystal_voxel_view::VoxelCameraControls, f32)>,
     viewport_origin: Option<(i16, i16)>,
     /// The viewport origin shown immediately before a committed walking step.
     /// Retaining it lets the renderer scroll the replacement texture over the
@@ -5972,7 +5978,21 @@ pub fn run_bevy_shell(
         }
         window
     };
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let headless_capture = std::env::var("CRYSTAL_RENDER_TEST_HEADLESS").is_ok_and(|v| v == "1");
+    #[cfg(not(all(feature = "location-tester", not(target_arch = "wasm32"))))]
+    let headless_capture = false;
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    anyhow::ensure!(!headless_capture || (render_test_screenshot.is_some() && !render_test_live
+        && std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TARGET").is_ok_and(|v| v == "image")),
+        "headless capture requires a one-shot screenshot with an image target");
     let plugins = DefaultPlugins.build();
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let plugins = if headless_capture {
+        plugins.disable::<bevy::winit::WinitPlugin>()
+    } else { plugins };
+    #[cfg(not(target_arch = "wasm32"))]
+    let plugins = plugins.set(native_tasks::plugin());
     #[cfg(all(target_arch = "wasm32", feature = "browser-webgpu"))]
     let plugins = plugins.set(bevy::render::RenderPlugin {
         render_creation: bevy::render::settings::RenderCreation::Automatic(Box::new(crate::browser_backend::settings())),
@@ -6345,7 +6365,19 @@ pub fn run_bevy_shell(
     if let Some((directory, seconds)) = render_test_measure.as_ref() {
         render_record::install(&mut app, directory, *seconds, false, false, false)?;
     }
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    if headless_capture {
+        app.add_plugins(bevy::app::ScheduleRunnerPlugin::run_loop(std::time::Duration::from_millis(16)));
+    }
+    #[cfg(target_os = "macos")]
+    let native_window_keepalive = if headless_capture { None } else {
+        Some(native_window_lifetime::retain_primary(&mut app)?)
+    };
     let app_exit = app.run();
+    #[cfg(target_os = "macos")]
+    // The runner has now returned/dropped its render world. Release the final
+    // native-window owner here on main, after RenderAppChannels has shut down.
+    drop(native_window_keepalive);
     anyhow::ensure!(app_exit.is_success(), "render session exited with an error");
 
     #[cfg(feature = "location-tester")]
@@ -6520,7 +6552,8 @@ fn configure_voxel_composite_camera(
         camera.clear_color = bevy::camera::ClearColorConfig::None;
         commands
             .entity(entity)
-            .insert(bevy::camera::visibility::RenderLayers::layer(0));
+            .insert((bevy::camera::visibility::RenderLayers::layer(0),
+                crystal_voxel_view::WorldOverlayCamera));
     }
 }
 
@@ -8266,9 +8299,11 @@ fn initialize_bevy_runtime_shell(
         let party_size=std::env::var("CRYSTAL_RENDER_TEST_PARTY_SIZE")
             .map_or(Ok(1usize),|v|v.parse::<usize>().context("render party size must be an integer"))?;
         anyhow::ensure!((1..=6).contains(&party_size),"render party size must be between 1 and 6");
+        let party_species = std::env::var("CRYSTAL_RENDER_TEST_PARTY_SPECIES")
+            .unwrap_or_else(|_| "TOTODILE".into()).to_ascii_uppercase();
         for _ in 0..party_size {
         shell.add_party_pokemon(
-            "TOTODILE",
+            &party_species,
             30,
             None,
             None,
@@ -8804,6 +8839,8 @@ include!("bevy_shell/stats_screen.rs");
 include!("bevy_shell/render_mod.rs");
 #[path = "bevy_shell/terrain_ledges.rs"]
 mod terrain_ledges;
+#[path = "bevy_shell/map_neighborhood.rs"]
+mod map_neighborhood;
 /// Read-only authored ledge metadata shared by native rendering and pack
 /// verification. Collision remains authoritative in the production controller.
 pub fn authored_visual_jump_ledges(width:u16,blocks:&[u16],
@@ -8837,6 +8874,8 @@ include!("bevy_shell/catch_tutorial.rs");
 
 #[cfg(not(target_arch = "wasm32"))]
 mod native_navigation;
+#[cfg(target_os = "macos")]
+mod native_window_lifetime;
 
 #[cfg(not(target_arch = "wasm32"))]
 #[path = "bevy_shell/handheld_input.rs"]

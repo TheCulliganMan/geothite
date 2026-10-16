@@ -100,9 +100,10 @@ mod tests {
   profiles.objects.push(custom);assert!(!profile_allows(&f,&profiles));
  }
  #[test]
- fn kanto_healing_effects_reject_partial_machine_and_other_clinics() {
+ fn native_healing_effects_reject_partial_machine_and_unreviewed_clinics() {
   let mut f=frame();let a=actor(VisualEffectId::HealMachineBall(0),Vec2::new(12.,10.));
   for i in 0..16 {f.tiles[i].source.tile_index^=1;assert!(transform(&f,&a).is_none());f.tiles[i].source.tile_index^=1;}
-  f.map_id="CherrygrovePokecenter1F".into();assert!(transform(&f,&a).is_none());
+  f.map_id="CherrygrovePokecenter1F".into();assert!(transform(&f,&a).is_some());
+  f.map_id="UnreviewedPokecenter1F".into();assert!(transform(&f,&a).is_none());
  }
 }

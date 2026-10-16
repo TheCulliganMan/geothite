@@ -11,6 +11,29 @@ use crate::profile::{CellShape, GROUND_HEIGHT, SolidKind};
 
 const FIXTURE_HEIGHT: f32 = 3.0;
 
+/// Mansion north-facing flights. Up/down identities come from their complete
+/// source drawing and phase, never the collision label alone.
+pub(crate) fn mansion_stair_local(source:&VisualTileSource)->Option<(u8,u8,bool)> {
+    if source.tileset_id.as_ref()!="mansion"||source.subtile_row>=2{return None;}
+    let (origin,down)=match source.metatile_id {
+        5=>(0,false),6=>(2,false),
+        0x15=>if source.subtile_column<2 {(0,false)}else{(2,true)},
+        0x16=>if source.subtile_column<2 {(0,true)}else{(2,false)},
+        _=>return None,
+    };
+    let x=source.subtile_column.checked_sub(origin)?;if x>=2{return None;}
+    let y=source.subtile_row;
+    let tiles=if down {[[8,9],[0x18,0x19]]}else{[[0xa,0xb],[0x1a,0x1b]]};
+    (source.tile_index==tiles[y as usize][x as usize]).then_some((x,y,down))
+}
+pub(crate) fn mansion_stair_shape(source:&VisualTileSource)->Option<CellShape> {
+    let (_,row,down)=mansion_stair_local(source)?;
+    let (north_height,south_height)=if down {
+        (-16.+row as f32*8.,-8.+row as f32*8.)
+    }else{(16.-row as f32*8.,8.-row as f32*8.)};
+    Some(CellShape::RampNorth{north_height,south_height})
+}
+
 /// The player's bedroom block `$02` carries the upstairs landing in its
 /// north-east 2x2 quadrant, also retained by decorated blocks $1f/$23-$25. Crystal's warp at `(7,0)` uses this exact drawing
 /// to descend to 1F; the other twelve cells in the block are wall/floor.
@@ -67,6 +90,32 @@ pub(crate) fn trainer_house_b1f_stair_local(
         .then_some((column, source.subtile_row))
 }
 
+/// The same ladder/flight drawings are actual warp endpoints in Rocket Base.
+/// Keep phase/drawing and map identities explicit; other facility blocks are
+/// machinery or walls even when collision happens to be blocked.
+pub(crate) fn facility_stair_local(map:&str,source:&VisualTileSource)
+    ->Option<(u8,u8,crate::players_house::StairKind)> {
+    if map=="TrainerHouseB1F" {
+        return trainer_house_b1f_stair_local(map,source)
+            .map(|(x,y)|(x,y,crate::players_house::StairKind::UpEast));
+    }
+    if !matches!(map,"TeamRocketBaseB2F"|"TeamRocketBaseB3F")
+        ||source.tileset_id.as_ref()!="facility"||source.subtile_column<2
+        ||source.subtile_column>=4||source.subtile_row>=2 {return None;}
+    let (drawing,kind)=match source.metatile_id {
+        4=>([[0x10,0x11],[0x20,0x21]],crate::players_house::StairKind::UpEast),
+        5=>([[0x30,0x31],[0x18,0x19]],crate::players_house::StairKind::DownWest),
+        _=>return None,
+    };
+    let (x,y)=(source.subtile_column-2,source.subtile_row);
+    (source.tile_index==drawing[y as usize][x as usize]).then_some((x,y,kind))
+}
+pub(crate) fn facility_stair_shape(map:&str,source:&VisualTileSource)->Option<CellShape> {
+    let (x,_,kind)=facility_stair_local(map,source)?;
+    let base=if kind==crate::players_house::StairKind::UpEast{0.}else{-16.};
+    Some(CellShape::RampEast{west_height:base+x as f32*8.,east_height:base+(x+1)as f32*8.})
+}
+
 pub(crate) fn trainer_house_b1f_stair_shape(
     map_id: &str,
     source: &VisualTileSource,
@@ -100,12 +149,20 @@ pub(crate) fn has_back_wall(tileset: &str) -> bool {
             | "gate"
             | "train_station"
             | "champions_room"
+            | "elite_four_room"
             | "battle_tower_inside"
             | "tower"
             | "underground"
             | "warehouse"
             | "ship"
     )
+}
+
+/// These two enclosed rooms share atlases with outdoor water and caves.
+/// Roof terraces keep their open-air architecture even on an indoor atlas.
+pub(crate) fn has_room_perimeter(map:&str,tileset:&str)->bool {
+    (has_back_wall(tileset)||matches!((map,tileset),("CeruleanGym","port")|("HallOfFame","ice_path")))
+        &&!matches!(map,"GoldenrodDeptStoreRoof"|"CeladonMansionRoof"|"TinTowerRoof")
 }
 
 /// Each decorated bed variant is one 16x32 drawing in the left half of blocks
@@ -750,6 +807,7 @@ mod tests {
             "pokecenter",
             "game_corner",
             "train_station",
+            "elite_four_room",
             "warehouse",
             "ship",
         ] {

@@ -140,6 +140,13 @@ async fn run_browser() -> Result<()> {
         let shadow_receivers = params.as_ref().and_then(|params| params.get("shadow-receivers")).as_deref() == Some("on");
         crystal_voxel_view::configure_shadow_receiver_diagnostics(shadow_receivers)
             .map_err(anyhow::Error::msg)?;
+        #[cfg(feature = "tree-entity-qa")]
+        {
+            let eager_entities = params.as_ref().and_then(|params| params.get("tree-entities")).as_deref() == Some("eager");
+            crystal_voxel_view::configure_lazy_tree_entities_diagnostics(eager_entities);
+            let legacy_vertices = params.as_ref().and_then(|params| params.get("tree-vertices")).as_deref() == Some("legacy");
+            crystal_voxel_view::configure_tree_vertex_weld_diagnostics(legacy_vertices);
+        }
         let eager = params.and_then(|params| params.get("loading-collision")).as_deref() == Some("eager");
         crystal_voxel_view::configure_grove_collision_diagnostics(eager)
             .map_err(anyhow::Error::msg)?;
@@ -151,9 +158,11 @@ async fn run_browser() -> Result<()> {
         crystal_bevy::enable_loading_allocation_stacks();
     }
     #[cfg(feature = "voxel-view")]
-    if web_sys::UrlSearchParams::new_with_str(
+    let trace_loading = web_sys::UrlSearchParams::new_with_str(
         &web_sys::window().context("browser window is unavailable")?.location().search().unwrap_or_default(),
-    ).ok().and_then(|params| params.get("loading-trace")).as_deref() == Some("on") {
+    ).ok().and_then(|params| params.get("loading-trace")).as_deref() == Some("on");
+    #[cfg(feature = "voxel-view")]
+    if trace_loading {
         crystal_voxel_view::loading_trace::start();
     }
     #[cfg(feature = "browser-webgpu")]
@@ -171,7 +180,16 @@ async fn run_browser() -> Result<()> {
     let loaded = {
         #[cfg(feature = "voxel-view")]
         let _trace = crystal_voxel_view::loading_trace::span("pack.verify", || serde_json::json!({}));
-        crystal_assets::load_verified_compiled_game_pack_bytes(DEFAULT_BROWSER_PACK_FILENAME, pack_bytes)?
+        let load = || crystal_assets::load_verified_compiled_game_pack_bytes(DEFAULT_BROWSER_PACK_FILENAME, pack_bytes);
+        #[cfg(feature = "voxel-view")]
+        let result = if trace_loading {
+            crystal_assets::with_compiled_pack_load_observer(crystal_bevy::loading_pack_trace::observe_stage, load)
+        } else {
+            load()
+        };
+        #[cfg(not(feature = "voxel-view"))]
+        let result = load();
+        result?
     };
     let asset_root = AssetRoot::new(".");
     let runtime = {
@@ -184,7 +202,10 @@ async fn run_browser() -> Result<()> {
     // both allocation peaks in WebAssembly's non-shrinking linear memory.
     #[cfg(feature = "voxel-view")]
     {
-        let _ = fetch_browser_open_models("open-models.json", false).await;
+        let scenery = fetch_browser_open_models("open-models.json", false).await;
+        #[cfg(feature = "terrain-worker-qa")]
+        if scenery.is_err() { crystal_voxel_view::terrain_worker::browser_scenery_sources(None); }
+        let _ = scenery;
         fetch_browser_open_models("open-people.json", true).await?;
     }
     let spawn_identifier = runtime.title_new_game_spawn_identifier()?;
@@ -205,6 +226,7 @@ async fn run_browser() -> Result<()> {
             Some("underground") => Some(("GoldenrodUnderground", 3, 18)),
             Some("route26") => Some(("Route26", 10, 54)),
             Some("route26-canyon") => Some(("Route26", 10, 28)),
+            Some("ilex" | "ilex-forest") => Some(("IlexForest", 1, 37)),
             Some("route29") => Some(("Route29", 50, 9)),
             Some("route29-battle") => Some(("Route29", 50, 9)),
             Some("azalea-well") => Some(("AzaleaTown", 33, 9)),
@@ -251,7 +273,7 @@ async fn run_browser() -> Result<()> {
                         Some("union-cave") => (4, 0),
                         Some("ice-path" | "mount-silver") => (1, 0),
                         Some("whirl-islands") => (0, 0),
-                        Some("route26" | "route26-canyon" | "route29" | "route29-battle"
+                        Some("ilex" | "ilex-forest" | "route26" | "route26-canyon" | "route29" | "route29-battle"
                             | "national-park" | "national-park-pool") => (0, 1),
                         _ => (0, -1),
                     }),
@@ -433,6 +455,8 @@ async fn fetch_browser_open_models(url: &str, people: bool) -> Result<()> {
             .dyn_into::<web_sys::Response>()
             .map_err(|e| anyhow::anyhow!("decode artwork response: {e:?}"))?;
         if response.status() == 404 && !people {
+            #[cfg(feature = "terrain-worker-qa")]
+            crystal_voxel_view::terrain_worker::browser_scenery_sources(None);
             return Ok(());
         }
         anyhow::ensure!(
@@ -440,21 +464,27 @@ async fn fetch_browser_open_models(url: &str, people: bool) -> Result<()> {
             "artwork: HTTP {}",
             response.status()
         );
-        let text = JsFuture::from(
+        let text_value = JsFuture::from(
             response
                 .text()
                 .map_err(|e| anyhow::anyhow!("read artwork: {e:?}"))?,
         )
         .await
-        .map_err(|e| anyhow::anyhow!("read artwork: {e:?}"))?
-        .as_string()
-        .context("artwork response is not text")?;
+        .map_err(|e| anyhow::anyhow!("read artwork: {e:?}"))?;
+        let text = text_value.as_string().context("artwork response is not text")?;
         if people {
             crystal_voxel_view::install_open_people_bundle(&text)
         } else {
             crystal_voxel_view::install_open_model_bundle(&text)
         }
         .map_err(anyhow::Error::msg)?;
+        if people {
+            #[cfg(feature = "actor-worker-qa")]
+            crystal_voxel_view::actor_worker::browser_people_sources_value(text_value, text.len());
+        } else {
+            #[cfg(feature = "terrain-worker-qa")]
+            crystal_voxel_view::terrain_worker::browser_scenery_sources_value(text_value, text.len());
+        }
         Ok(())
     };
     let result: Result<()> = if timer.is_some() {

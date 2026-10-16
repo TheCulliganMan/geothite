@@ -2,7 +2,28 @@
 //! No cone shells, billboard crowns or retained broadleaf grove geometry.
 use super::*;
 
+const RECIPES: [(f32,f32,f32,usize);3] = [
+    (1.08,0.94,0.025,7), (0.92,1.06,-0.005,8), (1.00,1.00,0.065,7),
+];
+
+pub(super) fn stem_height(tile: f32, coordinates: [i32;2], neighbors: [bool;4]) -> f32 {
+    let v = variation(coordinates[0],coordinates[1]);
+    let interior = neighbors.iter().all(|&n| n);
+    tile * (5.+v.height*0.9+if interior {1.2} else {0.}) * RECIPES[v.index].1
+        * non_ancient_height_factor(coordinates)
+}
+
 pub(super) fn append(
+    mesh: &mut TerrainMeshData,
+    bounds: [f32; 4], base: f32, tile: f32,
+    coordinates: [i32; 2], neighbors: [bool; 4],
+) {
+    let first = mesh.solid.positions.len();
+    append_canopy(mesh, bounds, base, tile, coordinates, neighbors);
+    mesh.solid.cutaway_ranges.push(first..mesh.solid.positions.len());
+}
+
+pub(super) fn append_canopy(
     mesh: &mut TerrainMeshData,
     bounds: [f32; 4],
     base: f32,
@@ -11,216 +32,228 @@ pub(super) fn append(
     neighbors: [bool; 4],
 ) {
     let first = mesh.solid.positions.len();
-    let interior = neighbors.iter().all(|&n| n);
-    if !interior || (coordinates[0].rem_euclid(4) == 0 && coordinates[1].rem_euclid(4) == 0) {
-        let v = variation(coordinates[0], coordinates[1]);
-        // Three authored branch recipes: spreading, upright, and swept.
-        let (crown_width, crown_height, branch_drop, courses) = [
-            (1.08, 0.94, 0.025, 7),
-            (0.92, 1.06, -0.005, 8),
-            (1.00, 1.00, 0.065, 7),
-        ][v.index];
-        let spacing = (bounds[1] - bounds[0]).min(bounds[3] - bounds[2]);
-        let offset = grove_trunk_offset(coordinates, spacing);
-        let center = Vec3::new(
-            (bounds[0] + bounds[1]) * 0.5 + offset.x,
-            base,
-            (bounds[2] + bounds[3]) * 0.5 + offset.y,
-        );
-        let height = tile * (5.0 + v.height * 0.9 + if interior { 1.2 } else { 0.0 }) * crown_height;
-        let phase = v.turn + v.height * 5.31;
-        let lean = Vec3::new(phase.cos(), 0., phase.sin()) * spacing * 0.055;
-        let stem = |t: f32| center + Vec3::Y * height * t + lean * t * t;
-        // A continuous fluted trunk, with a rooted flare and unequal warm fissures.
-        let start = mesh.solid.positions.len() as u32;
-        for row in 0..=12 {
-            let t = row as f32 / 12.;
-            for side in 0..=12 {
-                let a = (side % 12) as f32 * std::f32::consts::TAU / 12.;
-                let radial = Vec3::new(a.cos(), 0., a.sin());
-                let flare = 1. + (1. - t).powi(9) * (0.6 + 0.3 * (a * 5. + phase).cos());
-                let radius = spacing
-                    * 0.095
-                    * (1. - t * 0.94)
-                    * flare
-                    * (1. + 0.09 * (a * 7. + phase).sin());
-                mesh.solid
-                    .positions
-                    .push((stem(t) + radial * radius).to_array());
-                mesh.solid
-                    .normals
-                    .push((radial + Vec3::Y * 0.04).normalize().to_array());
-                mesh.solid.uvs.push([0.; 2]);
-                let grain = 0.78 + 0.22 * (a * 7. + phase + t).cos();
-                mesh.solid
-                    .colors
-                    .push([0.20 * grain, 0.095 * grain, 0.035 * grain, 1.]);
-            }
-        }
-        for row in 0..12 {
-            for side in 0..12 {
-                let a = start + row * 13 + side;
-                let b = a + 13;
-                mesh.solid.indices.extend([a, b, a + 1, a + 1, b, b + 1]);
-            }
-        }
-        let density = neighbors.iter().filter(|&&n| n).count() as f32 / 4.;
-        let spread = spacing * (1.05 + density * 1.15) * crown_width;
-        // Unequal staggered limbs, rather than rotationally identical whorls.
-        for level in 0..courses {
-            for bough in 0..4 {
-                let seed = phase + level as f32 * 2.399963 + bough as f32 * 1.618034;
-                if (seed * 3.7).sin() > 0.92 {
-                    continue;
-                }
-                let t = 0.27 + level as f32 * (0.665 / courses as f32) + 0.018 * (seed * 2.3).sin();
-                let angle = seed + bough as f32 * 0.18;
-                let direction = Vec3::new(angle.cos(), 0., angle.sin());
-                let root = stem(t);
-                // Mature lower limbs must carry the crown beyond the narrow
-                // source trunk plot. Taper the upper courses rather than
-                // compressing every course into a pole-like silhouette.
-                let reach =
-                    spacing * crown_width * (0.96 - 0.70 * level as f32 / courses as f32) * (0.87 + 0.13 * (seed * 1.7).sin());
-                let tip = root
-                    + direction * reach
-                    + Vec3::Y * height * (0.015 - branch_drop - 0.035 * (seed * 2.1).cos().abs());
-                append_branch(
-                    &mut mesh.solid,
-                    root,
-                    tip,
-                    spacing * 0.026 * (1. - t * 0.65),
-                );
-                let across = Vec3::new(-direction.z, 0., direction.x);
-                for twig in 0..6 {
-                    let f = 0.22 + twig as f32 * 0.145;
-                    let anchor = root.lerp(tip, f);
-                    for side in [-1., 1.] {
-                        let length = spread
-                            * (1. - t)
-                            * 0.40
-                            * (0.7 + 0.3 * (seed + twig as f32).cos().abs());
-                        let twig_tip = anchor + direction * length * 0.65 + across * side * length
-                            - Vec3::Y * length * 0.22;
-                        append_twig(
-                            &mut mesh.solid,
-                            anchor,
-                            twig_tip,
-                            spacing * 0.009 * (1. - f * 0.6),
-                        );
-                        spray(
-                            &mut mesh.solid,
-                            anchor,
-                            twig_tip,
-                            spread * (1. - t) * 0.32,
-                            seed + twig as f32 * 1.7 + side,
-                            v.tint,
-                        );
-                    }
-                }
-                spray(
-                    &mut mesh.solid,
-                    root.lerp(tip, 0.4),
-                    tip + direction * spread * (1. - t) * 0.30,
-                    spread * (1. - t) * 0.30,
-                    seed,
-                    v.tint,
-                );
-            }
-        }
-        // Unequal upper boughs carry lateral sprays into the leader. A few
-        // tiny stem-side tufts left the whole upper crown as an exposed mast.
-        for level in 0..3 {
-            let t = 0.82 + level as f32 * 0.06;
-            let shoots = 5 - level;
-            for shoot in 0..shoots {
-                let angle = phase + level as f32 * 2.399963
-                    + shoot as f32 * std::f32::consts::TAU / shoots as f32;
-                let direction = Vec3::new(angle.cos(), 0., angle.sin());
-                let across = Vec3::new(-direction.z, 0., direction.x);
-                let root = stem(t);
-                let reach = spacing * (0.52 - level as f32 * 0.15)
-                    * (0.86 + 0.14 * (angle * 1.7).sin());
-                let tip = root
-                    + direction * reach
-                    + Vec3::Y * height * 0.015;
-                append_twig(&mut mesh.solid, root, tip, spacing * 0.006);
-                spray(
-                    &mut mesh.solid,
-                    root.lerp(tip, 0.25),
-                    tip,
-                    spacing * (0.26 - level as f32 * 0.05),
-                    angle,
-                    v.tint,
-                );
-                for side in [-1., 1.] {
-                    let anchor = root.lerp(tip, 0.58);
-                    let end = anchor + direction * reach * 0.25
-                        + across * reach * side * 0.44;
-                    append_twig(&mut mesh.solid, anchor, end, spacing * 0.004);
-                    spray(&mut mesh.solid, anchor, end,
-                        spacing * (0.20 - level as f32 * 0.035),
-                        angle + side * 0.9, v.tint);
-                }
-            }
-        }
-        spray(
-            &mut mesh.solid,
-            stem(0.91),
-            stem(1.02),
-            spacing * 0.20,
-            phase,
-            v.tint,
-        );
-        // Fit the whole organic crown proportionally inside the existing
-        // readable margin. A uniform XZ fit retains branches, folded needles
-        // and their winding; a per-vertex envelope can crease narrow tips.
-        // Scale about the rooted stem, preserving its authored center and base.
-        let margin = spacing * 0.75;
-        let limits = [
-            bounds[0] - margin,
-            bounds[1] + margin,
-            bounds[2] - margin,
-            bounds[3] + margin,
-        ];
-        let mut fit = 1.0_f32;
-        let mut low = Vec3::splat(f32::INFINITY);
-        let mut high = Vec3::splat(f32::NEG_INFINITY);
-        for p in &mesh.solid.positions[first..] {
-            low = low.min(Vec3::from_array(*p));
-            high = high.max(Vec3::from_array(*p));
-            for (axis, origin, low, high) in [
-                (0, center.x, limits[0], limits[1]),
-                (2, center.z, limits[2], limits[3]),
-            ] {
-                let delta = p[axis] - origin;
-                if delta > 0. {
-                    fit = fit.min((high - origin) / delta);
-                }
-                if delta < 0. {
-                    fit = fit.min((low - origin) / delta);
-                }
-            }
-        }
-        // Crowded interior trees get taller leaders, but their fitted crown
-        // must still read as a mature tree rather than a long narrow pole.
-        let span = high - low;
-        let height_fit = (span.x.max(span.z) * fit / (span.y * 0.65)).min(1.);
-        for i in first..mesh.solid.positions.len() {
-            let p = &mut mesh.solid.positions[i];
-            p[0] = center.x + (p[0] - center.x) * fit;
-            p[1] = center.y + (p[1] - center.y) * height_fit;
-            p[2] = center.z + (p[2] - center.z) * fit;
-            let n = Vec3::from_array(mesh.solid.normals[i]);
-            mesh.solid.normals[i] = Vec3::new(n.x / fit, n.y / height_fit, n.z / fit)
-                .normalize()
-                .to_array();
+    let v = variation(coordinates[0], coordinates[1]);
+    // Three authored branch recipes: spreading, upright, and swept.
+    let (crown_width, _, branch_drop, courses) = RECIPES[v.index];
+    let spacing = (bounds[1] - bounds[0]).min(bounds[3] - bounds[2]);
+    let offset = grove_trunk_offset(coordinates, spacing);
+    let center = Vec3::new(
+        (bounds[0] + bounds[1]) * 0.5 + offset.x,
+        base,
+        (bounds[2] + bounds[3]) * 0.5 + offset.y,
+    );
+    let height = stem_height(tile,coordinates,neighbors);
+    let phase = v.turn + v.height * 5.31;
+    // An occasional older lower limb keeps dry needles. Most trees have
+    // none, and even a weathered tree keeps the rest of its crown evergreen.
+    let age = variation(coordinates[0] ^ 0x4e31, coordinates[1] ^ 0x62b5);
+    let dead_limb = (age.offset[0] > 0.65).then_some((
+        1 + (((age.height - 0.9) / 0.7 * 3.) as usize).min(2),
+        (age.turn / std::f32::consts::FRAC_PI_2).round() as usize,
+    ));
+    let lean = Vec3::new(phase.cos(), 0., phase.sin()) * spacing * 0.055;
+    let stem = |t: f32| center + Vec3::Y * height * t + lean * t * t;
+    // A continuous fluted trunk, with a rooted flare and unequal warm fissures.
+    let start = mesh.solid.positions.len() as u32;
+    for row in 0..=12 {
+        let t = row as f32 / 12.;
+        for side in 0..=12 {
+            let a = (side % 12) as f32 * std::f32::consts::TAU / 12.;
+            let radial = Vec3::new(a.cos(), 0., a.sin());
+            let flare = 1. + (1. - t).powi(9) * (0.6 + 0.3 * (a * 5. + phase).cos());
+            let radius = spacing
+                * 0.095
+                * (1. - t * 0.94)
+                * flare
+                * (1. + 0.09 * (a * 7. + phase).sin());
+            mesh.solid
+                .positions
+                .push((stem(t) + radial * radius).to_array());
+            mesh.solid
+                .normals
+                .push((radial + Vec3::Y * 0.04).normalize().to_array());
+            mesh.solid.uvs.push([0.; 2]);
+            let grain = 0.78 + 0.22 * (a * 7. + phase + t).cos();
+            mesh.solid
+                .colors
+                .push([0.20 * grain, 0.095 * grain, 0.035 * grain, 1.]);
         }
     }
-    crate::understory::append(&mut mesh.solid, bounds, base, tile, coordinates);
-    mesh.solid
-        .cutaway_ranges
-        .push(first..mesh.solid.positions.len());
+    for row in 0..12 {
+        for side in 0..12 {
+            let a = start + row * 13 + side;
+            let b = a + 13;
+            mesh.solid.indices.extend([a, b, a + 1, a + 1, b, b + 1]);
+        }
+    }
+    let density = neighbors.iter().filter(|&&n| n).count() as f32 / 4.;
+    let spread = spacing * (1.05 + density * 1.15) * crown_width;
+    // Unequal staggered limbs, rather than rotationally identical whorls.
+    for level in 0..courses {
+        for bough in 0..4 {
+            let seed = phase + level as f32 * 2.399963 + bough as f32 * 1.618034;
+            if (seed * 3.7).sin() > 0.92 {
+                continue;
+            }
+            let weathered = dead_limb == Some((level, bough));
+            let t = 0.27 + level as f32 * (0.665 / courses as f32) + 0.018 * (seed * 2.3).sin();
+            let angle = seed + bough as f32 * 0.18;
+            let direction = Vec3::new(angle.cos(), 0., angle.sin());
+            let root = stem(t);
+            // Mature lower limbs must carry the crown beyond the narrow
+            // source trunk plot. Taper the upper courses rather than
+            // compressing every course into a pole-like silhouette.
+            let reach =
+                spacing * crown_width * (0.96 - 0.70 * level as f32 / courses as f32) * (0.87 + 0.13 * (seed * 1.7).sin());
+            let tip = root
+                + direction * reach
+                + Vec3::Y * height * (0.015 - branch_drop - 0.035 * (seed * 2.1).cos().abs());
+            append_branch(
+                &mut mesh.solid,
+                root,
+                tip,
+                spacing * 0.026 * (1. - t * 0.65),
+            );
+            let across = Vec3::new(-direction.z, 0., direction.x);
+            for twig in 0..6 {
+                let f = 0.22 + twig as f32 * 0.145;
+                let anchor = root.lerp(tip, f);
+                for side in [-1., 1.] {
+                    let length = spread
+                        * (1. - t)
+                        * 0.40
+                        * (0.7 + 0.3 * (seed + twig as f32).cos().abs());
+                    let twig_tip = anchor + direction * length * 0.65 + across * side * length
+                        - Vec3::Y * length * 0.22;
+                    append_twig(
+                        &mut mesh.solid,
+                        anchor,
+                        twig_tip,
+                        spacing * 0.009 * (1. - f * 0.6),
+                    );
+                    spray(
+                        &mut mesh.solid,
+                        anchor,
+                        twig_tip,
+                        spread * (1. - t) * 0.32,
+                        seed + twig as f32 * 1.7 + side,
+                        v.tint,
+                        weathered,
+                    );
+                }
+            }
+            spray(
+                &mut mesh.solid,
+                root.lerp(tip, 0.4),
+                tip + direction * spread * (1. - t) * 0.30,
+                spread * (1. - t) * 0.30,
+                seed,
+                v.tint,
+                weathered,
+            );
+        }
+    }
+    // Unequal upper boughs carry lateral sprays into the leader. A few
+    // tiny stem-side tufts left the whole upper crown as an exposed mast.
+    for level in 0..3 {
+        let t = 0.82 + level as f32 * 0.06;
+        let shoots = 5 - level;
+        for shoot in 0..shoots {
+            let angle = phase + level as f32 * 2.399963
+                + shoot as f32 * std::f32::consts::TAU / shoots as f32;
+            let direction = Vec3::new(angle.cos(), 0., angle.sin());
+            let across = Vec3::new(-direction.z, 0., direction.x);
+            let root = stem(t);
+            let reach = spacing * (0.52 - level as f32 * 0.15)
+                * (0.86 + 0.14 * (angle * 1.7).sin());
+            let tip = root
+                + direction * reach
+                + Vec3::Y * height * 0.015;
+            append_twig(&mut mesh.solid, root, tip, spacing * 0.006);
+            spray(
+                &mut mesh.solid,
+                root.lerp(tip, 0.25),
+                tip,
+                spacing * (0.26 - level as f32 * 0.05),
+                angle,
+                v.tint,
+                false,
+            );
+            for side in [-1., 1.] {
+                let anchor = root.lerp(tip, 0.58);
+                let end = anchor + direction * reach * 0.25
+                    + across * reach * side * 0.44;
+                append_twig(&mut mesh.solid, anchor, end, spacing * 0.004);
+                spray(&mut mesh.solid, anchor, end,
+                    spacing * (0.20 - level as f32 * 0.035),
+                    angle + side * 0.9, v.tint, false);
+            }
+        }
+    }
+    spray(
+        &mut mesh.solid,
+        stem(0.91),
+        stem(1.02),
+        spacing * 0.20,
+        phase,
+        v.tint,
+        false,
+    );
+    // Fit the whole organic crown proportionally inside the existing
+    // readable margin. A uniform XZ fit retains branches, folded needles
+    // and their winding; a per-vertex envelope can crease narrow tips.
+    // Scale about the rooted stem, preserving its authored center and base.
+    let margin = spacing * 0.75;
+    let limits = [
+        bounds[0] - margin,
+        bounds[1] + margin,
+        bounds[2] - margin,
+        bounds[3] + margin,
+    ];
+    let mut fit = 1.0_f32;
+    let mut low = Vec3::splat(f32::INFINITY);
+    let mut high = Vec3::splat(f32::NEG_INFINITY);
+    for p in &mesh.solid.positions[first..] {
+        low = low.min(Vec3::from_array(*p));
+        high = high.max(Vec3::from_array(*p));
+        for (axis, origin, low, high) in [
+            (0, center.x, limits[0], limits[1]),
+            (2, center.z, limits[2], limits[3]),
+        ] {
+            let delta = p[axis] - origin;
+            if delta > 0. {
+                fit = fit.min((high - origin) / delta);
+            }
+            if delta < 0. {
+                fit = fit.min((low - origin) / delta);
+            }
+        }
+    }
+    // Crowded interior trees get taller leaders, but their fitted crown
+    // must still read as a mature tree rather than a long narrow pole.
+    let span = high - low;
+    // Even an edge-biased planting keeps its rooted flare in blocked land.
+    for p in &mesh.solid.positions[first..first + 13] {
+        for (axis, origin, low, high) in [
+            (0, center.x, bounds[0], bounds[1]),
+            (2, center.z, bounds[2], bounds[3]),
+        ] {
+            let delta = p[axis] - origin;
+            if delta > 0. { fit = fit.min((high - origin) / delta); }
+            if delta < 0. { fit = fit.min((low - origin) / delta); }
+        }
+    }
+    let height_fit = (span.x.max(span.z) * fit / (span.y * 0.65)).min(1.);
+    for i in first..mesh.solid.positions.len() {
+        let p = &mut mesh.solid.positions[i];
+        p[0] = center.x + (p[0] - center.x) * fit;
+        p[1] = center.y + (p[1] - center.y) * height_fit;
+        p[2] = center.z + (p[2] - center.z) * fit;
+        let n = Vec3::from_array(mesh.solid.normals[i]);
+        mesh.solid.normals[i] = Vec3::new(n.x / fit, n.y / height_fit, n.z / fit)
+            .normalize()
+            .to_array();
+    }
 }
 
 fn spray(
@@ -230,6 +263,7 @@ fn spray(
     width: f32,
     phase: f32,
     tint: [f32; 3],
+    weathered: bool,
 ) {
     let axis = (tip - root).normalize();
     let side = axis
@@ -261,6 +295,7 @@ fn spray(
                 + needle_up * length * 0.065, end,
                 mid - across * length * 0.10 + needle_up * length * 0.065];
             let center = points.iter().copied().sum::<Vec3>() / 4.;
+            let patch = leaf_pigment(center,width*5.);
             let mut normals = [Vec3::ZERO; 4];
             let start = mesh.positions.len() as u32;
             for mut ids in [[0, 1, 2], [0, 2, 3], [0, 3, 1], [1, 3, 2]] {
@@ -282,10 +317,15 @@ fn spray(
                 mesh.positions.push(point.to_array());
                 mesh.normals.push(n.to_array());
                 mesh.uvs.push([0.; 2]);
+                let needle = if weathered {
+                    [0.10 + 0.20 * tip, 0.052 + 0.10 * tip, 0.025 + 0.026 * tip]
+                } else {
+                    [0.025 + 0.12 * tip, 0.09 + 0.22 * tip, 0.06 + 0.015 * tip]
+                };
                 mesh.colors.push([
-                    (0.025 + 0.12 * tip) * tint[0] * light * pigment,
-                    (0.09 + 0.22 * tip) * tint[1] * light * pigment,
-                    (0.06 + 0.015 * tip) * tint[2] * light * pigment,
+                    needle[0] * tint[0] * light * pigment * patch[0],
+                    needle[1] * tint[1] * light * pigment * patch[1],
+                    needle[2] * tint[2] * light * pigment * patch[2],
                     1.,
                 ]);
             }
@@ -333,7 +373,7 @@ mod tests {
         for phase in [0.0, 0.7, 2.9] {
             for axis in [Vec3::X, Vec3::Y, Vec3::new(1., -0.3, 0.5)] {
                 let mut mesh = SurfaceMeshData::default();
-                spray(&mut mesh, Vec3::ZERO, axis * 2., 1., phase, [1.; 3]);
+                spray(&mut mesh, Vec3::ZERO, axis * 2., 1., phase, [1.; 3], false);
                 assert_eq!(mesh.indices.len(), 7 * 2 * 4 * 3);
                 assert_eq!(mesh.positions.len(), 7 * 2 * 4);
                 for (bundle, faces) in mesh.positions.chunks_exact(4)

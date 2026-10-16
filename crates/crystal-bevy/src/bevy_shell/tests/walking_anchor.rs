@@ -1377,6 +1377,41 @@ fn walking_anchor_forest_preview_uses_real_floor_encounters_without_starting_a_b
 
 #[cfg(feature = "location-tester")]
 #[test]
+fn walking_anchor_meadow_preview_starts_on_real_grass_without_starting_a_battle() {
+    use crate::core::world::collision::{sample_collision, is_grass_encounter_permission};
+    let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..").canonicalize().unwrap());
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().unwrap();
+    let shell = initialize_bevy_runtime_shell(asset_root, runtime,
+        BevyShellStart::NewGameAtRuntimeTile { spawn_identifier,
+            map_name: "Route36".into(), tile_x: 20, tile_y: 8 },
+        BevyShellConfig { smoke_player_name: Some("CHRIS".into()),
+            quick_save_path: None, ..Default::default() }).unwrap();
+    let shell = prepare_walking_encounter_preview_at_map(shell,
+        WalkingEncounterPreviewMap::Route29Grass, Some("Route35"))
+        .expect("the meadow approach must start on actual encounter grass");
+    let snapshot = shell.shell.snapshot().unwrap();
+    assert_eq!(snapshot.overworld.map_name, "Route35");
+    assert_eq!(snapshot.overworld.facing, Direction::Right);
+    assert!(snapshot.battle.is_none() && shell.battle_origin.published().is_none());
+    assert_eq!(shell.player_walk_frame_ticks, 0);
+    assert_eq!(shell.shell.session().state().wild_encounter_cooldown, 5);
+    assert_eq!(shell.shell.current_encounter_surface_checked().unwrap(),
+        Some(crate::core::world::encounters::EncounterSurface::Grass));
+    let overworld = shell.shell.session().overworld();
+    let from = snapshot.overworld.tile;
+    let to = TilePosition::new(from.x + 1, from.y);
+    for tile in [from, to] {
+        assert!(is_grass_encounter_permission(sample_collision(
+            &overworld.map, &overworld.tileset, tile)
+            .expect("original collision").permission));
+    }
+}
+
+
+#[cfg(feature = "location-tester")]
+#[test]
 fn walking_anchor_ice_preview_keeps_source_floor_and_excludes_real_sliding_ice() {
     use crate::core::world::collision::{sample_collision, permissions};
     let asset_root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR"))

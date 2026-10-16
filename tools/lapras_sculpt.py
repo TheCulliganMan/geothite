@@ -50,10 +50,17 @@ def sculpture():
     p.append(ellipsoid('Jaw / cream lower muzzle',CREAM,(0.,1.158,.705),(.143,.036,.172),28,12))
     for side in (-1,1):
         x=side*.118;y=1.285
-        eye=fitted_patch('Eye / expressive white almond '+str(side),WHITE,oval(x,y,.042,.025,24),face,.004);p.append(eye)
-        pupil=fitted_patch('Eye / dark upright pupil '+str(side),INK,oval(x+side*.011,y,.013,.023,20),surface(eye),.002);p.append(pupil)
-        p.append(fitted_patch('Eye / small glint '+str(side),WHITE,oval(x+side*.011-.003,y+.009,.004,.006,12),surface(pupil),.001))
-        points=[(side*(.082+i*.006),1.320+i*.001,face(1.320+i*.001,side*(.082+i*.006))+.004) for i in range(10)]
+        almond=[(x+side*u,y+v) for u,v in
+                ((-.040,-.004),(-.025,.008),(.011,.015),(.040,.020),
+                 (.031,-.008),(0.,-.016),(-.028,-.014))]
+        eye=crease_normals(fitted_contour('Eye / expressive white almond '+str(side),WHITE,
+                                        almond,face,.004,subdivisions=3),35.)
+        p.append(eye)
+        pupil=fitted_patch('Eye / dark upright pupil '+str(side),INK,oval(x+side*.009,y+.001,.010,.0115,20),surface(eye),.002);p.append(pupil)
+        p.append(fitted_patch('Eye / small glint '+str(side),WHITE,oval(x+side*.0065,y+.0065,.0025,.0035,12),surface(pupil),.001))
+        p.append(fitted_patch('Nostril / small muzzle inset '+str(side),INK,
+                             oval(side*.057,1.211,.0065,.0042,12),face,.002))
+        points=[(side*(.082+i*.006),1.294+i*.002,face(1.294+i*.002,side*(.082+i*.006))+.004) for i in range(10)]
         p.append(tube('Brow / fitted gentle upper eye crease '+str(side),SPOT,points,[.003]*len(points),8))
         # Curl is a continuous fleshy spiral rather than a sphere with a line.
         points=[];radii=[]
@@ -65,6 +72,13 @@ def sculpture():
         p.append(flipper(side,False));p.append(flipper(side,True))
         for j,(yy,xx,rx,ry) in enumerate(((.39,.125,.021,.031),(.47,.098,.014,.028),(.99,.071,.012,.018),(1.09,.078,.010,.018))):
             p.append(fitted_patch('Neck spot / '+str(side)+' '+str(j),SPOT,oval(side*xx,yy,rx,ry,16),skin,.003))
+    # A shallow closed crease follows the actual muzzle instead of crossing
+    # its curved surface as a straight floating chord.
+    mouth=[]
+    for i in range(25):
+        x=-.123+.246*i/24;y=1.179+.009*(abs(x)/.123)**2
+        mouth.append((x,y,face(y,x)+.0015))
+    p.append(tube('Mouth / fitted gentle muzzle crease',INK,mouth,[.0022]*len(mouth),8))
     p.append(curved_tube('Horn / short forehead cone',BLUE,[(0.,1.335,.735),(0.,1.407,.754),(0.,1.475,.745)],[.029,.022,.0015],18))
     # Shell overlaps torso, with a continuous rounded lip and firmly seated spikes.
     shell=ellipsoid('Shell / broad domed gray carapace',SHELL,(0.,.34,-.18),(.363,.242,.455),36,20);p.append(shell)

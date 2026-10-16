@@ -129,7 +129,7 @@ For a 30-frame WebGPU waterfall, run the walking harness with
 `GPU_WATERFALL=1` and `loading-trace=on`, then render its report:
 
 ```sh
-python3 tools/with-graphics-lock.py -- env GPU_WATERFALL=1 \
+env GPU_WATERFALL=1 \
   PROBE_STARTUP_INPUT=1 SCENARIO=walking node tools/browser-walking-performance.mjs \
   'http://127.0.0.1:3004/?preview=route29&renderer=webgpu&multiplayer=off&loading-trace=on' \
   .local/loading-empty-storage.json 2.5d .local/webgpu-30-frame.json
@@ -174,43 +174,295 @@ it remains disabled by default pending moving-camera visual acceptance.
 
 Merged opaque tree meshes restore 16-bit indices after merging when every
 final offset fits; larger meshes and browser alignment retain 32-bit indices.
-The 144-prototype audit preserves 8,166,816 source indices and confirms that
-all tree UVs are zero. Character finger shaping now uses conservative projected
+The 120-prototype canopy audit preserves 7,144,800 source indices, checks that
+every density class retains a full tree, and confirms all tree UVs are zero. Character finger shaping now uses conservative projected
 triangle bins with source order preserved. A frozen-source comparison across
 16 supplied-rig cases measured 5,974 ms versus 603 ms for that isolated step,
 with bit-exact geometry, normals, UVs, colors, indices and skin data. This is
 not a whole-game loading-time measurement. The targeted geometry, placement,
 fade, character and shadow regressions pass (48 tests).
 
-When multiple chats share the Mac or Linux checkout, serialize graphical QA:
+As of the user's October 14 directive, graphical QA runs concurrently across
+chats without waiting for `tools/with-graphics-lock.py`. Capture timelines even
+under contention and record concurrent workloads; those measurements do not
+establish isolated performance. Keep test commands alive until their browser
+closes, and leave other chats' windows and processes alone. The optional lock
+wrapper remains available for an explicitly requested isolated comparison.
 
-```sh
-python3 tools/with-graphics-lock.py -- COMMAND ARGUMENTS
-```
+Native play now selects Bevy's supported CPU clustering backend, retaining
+point/spot/rect lights, reflection/irradiance probes, decals and device limits.
+The same frozen native binary measured GPU scene envelopes of
+38.875 / 35.578 / 38.041 ms for GPU / CPU / GPU clustering, using 30 warmed
+3D cycles per run on Apple M5 under shared graphics contention. All five GPU
+clustering passes disappeared; significant image differences were confined to
+animated characters. These are GPU scene envelopes, not displayed FPS or
+isolated CPU assignment measurements. `CRYSTAL_CLUSTERING=gpu` restores the
+GPU backend for comparison. Shadow HZB remains an opt-in experiment because
+its three controls did not establish a net gain.
 
-The advisory kernel lock lives in ignored `.local/graphics-qa.lock`. Use the
-wrapper for native previews, captures and browser QA; CPU-only builds and tests
-can continue concurrently. Keep browser test commands alive until their browser
-closes. Existing unwrapped previews must be coordinated with their owner first.
-The lock releases automatically when its command exits, including failures, and
-is inherited by the child so killing only the wrapper cannot admit a second
-render test while its game still runs. Never remove the lock file while tests
-may be waiting on it.
+The prepared local native client was updated and launched with `just play-3d`.
+The October 15 encounter-guard update is installed for subsequent launches;
+the existing game window was left running. The binary and both `just play-3d`
+and `just trace-3d` default to CPU clustering. A production-input Route 29 Cut interaction now displays
+the authored notice in both 2D and 3D without crashing; controller story,
+battle/PP, MCP movement/menu and clean-stdio regressions pass with the external
+TUI pack. The first capture route walked past the Cut tile; only the corrected
+capture ending at (46, 10), facing left, proves the graphical interaction.
+The guarded native executable also completes twelve alternating Ilex Forest
+walking legs from (1, 37), with an empty party and no Repel, without the former
+invalid-battle crash. Paired captures preserve authoritative state. Walking
+encounters require a usable party before committing a battle; real controller
+tests cover empty, fainted and healthy parties, including a valid wild battle.
+The native bedroom route `--walk S` exercises Select and its registered-item
+notice, not Start; Start-menu coverage comes from the controller regression and
+browser input tests.
+
+The prepared browser copy on port 3003 now includes the matching WebGPU/WebGL
+mains and terrain/appearance workers, together with the published tree-height
+variation. All 50 production files were verified over HTTP after an atomic
+directory exchange; the existing clock-derived pack and model inputs retained
+their hashes. A fresh default WebGPU session then passed a house exit/return,
+walking, Start and return to 2D with successful worker jobs and no fallback or
+graphics errors. Prior height-v14 renderer directories remain available for
+already-open pages; the new renderer configuration selects the worker build.
+
+On macOS, the runner now retains the existing primary window handle holder
+outside `app.run()` and releases it after rendering has shut down. This avoids
+the observed main/render-thread wait when the renderer would otherwise destroy
+the last native window owner during exit. The former moving 20-second
+reproducer exited normally three times without forced cleanup. Ilex, the Cut
+notice and the bedroom Select notice also passed paired 2D/3D checks and normal
+exit. The fixed binary is installed for subsequent `just play-3d` launches;
+an already-running game keeps its current executable until relaunched.
+
+Direct native drawing remains an opt-in comparison using
+`CRYSTAL_NATIVE_DRAWING=direct`. It removes indirect-parameter-building encoder
+labels, but matched stationary A/B/A mean update intervals were
+42.43 / 43.75 / 72.54 ms under changing contention, with no reliable whole-frame
+gain. Standard indirect drawing remains the default. A running-thread CPU
+sample identified buffer uploads and Metal staging allocations as significant;
+grass material synchronization was minor in that sample. CPU stage envelopes
+alone do not establish the time spent in either operation or exclude waits.
+
+The first unrestricted 30-frame stationary depth-pass experiment passed GPU,
+shader and device-loss checks in all three controls. Depth-off GPU spans were
+50.97 ms and 28.29 ms; depth-on was 89.21 ms, including a 7.30 ms early depth
+pass. External contention changed substantially between controls, so this does
+not establish an isolated regression or gain. The experiment remains off by
+default. Its paired screenshots retain 99.737% exact pixels, with 0.067% of
+pixels changing by more than eight channel levels. The separate receiver
+pruning experiment reduced caster candidates from 180 to 165 but showed no
+GPU timing benefit in this sample; it also remains opt-in.
+
+Runtime trees now defer hidden sorted fading children and transparent material
+allocation until their first fade. The first-fade regression covers scroll,
+rotation, scale, retention-first operation, populated default material assets,
+reuse and map teardown. All 33 fade tests pass. Terrain preparation fuses three
+coverage scans while retaining independent validation and sorted AABB results;
+all 19 terrain tests pass. Isolated 73,728-triangle coverage measurements were
+4.163 to 3.588 ms for opaque input and 3.763 to 3.437 ms for mixed grass input.
+These are preparation microbenchmarks, not whole-game loading claims. Opt-in
+nested schedule envelopes now distinguish transform propagation, visibility
+propagation, camera visibility and light visibility work; all three trace tests
+pass. Envelopes may include interleaved independent work and are not additive.
+
+The same-bundle eager/lazy/eager walking controls measured CPU main spans of
+18.72 / 16.14 / 20.77 ms under contention. The lazy sample retained 903 leaf
+entities versus 5,479 in the eager control, deferring 4,576 sorted leaves.
+Transform propagation was 3.15 / 2.21 / 4.44 ms and camera visibility checks
+0.85 / 0.51 / 0.96 ms. All three captures passed shader/device checks and real
+keyboard movement. Paths and concurrent workloads varied, so these are
+observations rather than an isolated percentage or universal FPS claim.
+
+Pack loaders now retain private immutable verification provenance. Successful
+file and browser-byte loaders certify only after every runtime integrity check;
+runtime construction skips the duplicate check for that certified wrapper.
+Uncertified diagnostic inputs still receive full verification. Four loader
+regressions pass, including valid CBOR with corrupt semantic metadata. An
+eight-case alternating native control on the canonical 388-map browser pack
+measured runtime construction medians of 1,443.7 ms with duplicate verification
+and 241.7 ms with certification reuse. These unoptimized, contended native
+measurements do not establish browser savings or compare directly to browser
+profiles and capture workloads.
+
+Native AArch64 builds enable the SHA-256 hardware backend. An alternating
+legacy/accelerated/legacy control hashed the actual 581,973,763-byte native
+pack three times per variant: median SHA times were 1,221 / 216 / 1,238 ms.
+All nine digests matched exactly, and each pass also checked the existing frame
+checksum. This measures the hashing stage rather than total game startup;
+pack decoding, runtime construction, and integrity checks remain required.
+Browser targets retain their existing backend.
+
+Native task pools allocate one I/O worker, approximately half the available CPU
+threads to asynchronous preparation, and the remainder to frame computation.
+On a 10-core host that policy assigns 1 / 5 / 4 workers, versus the previous
+3 / 3 / 4. Tree work reads the actual initialized asynchronous pool size and
+keeps publication bounded. A fresh native Bevy process confirmed the actual
+1 / 5 / 4 pool assignment. Actor warmup now initializes the shared rig catalog
+once, then prepares independent character bases and their paintings on the
+asynchronous pool, with at most one active job per loading worker.
+Final CPU appearance work (skinning attributes, accessories, and mounted
+bounds) now runs there too, using app-owned staging consumed by the existing
+GPU publisher. Actual worker/direct comparisons preserve exact mesh bytes,
+index widths, bounds, and painting data; first-pose and lifecycle regressions
+also pass. A contended same-binary Route 29 control measured the worst main
+character-update call at 924 ms with appearance warmup disabled, versus
+1.4–4.5 ms enabled. `CRYSTAL_ACTOR_APPEARANCE_WARMUP=off` retains that control.
+This measures a loading stall, not steady-state FPS or browser performance.
+
+Native painted terrain images decode on the existing asynchronous pool while
+terrain geometry builds. Publication waits for both exact images, moves them
+into the existing asset cache once, and keeps no extra decoded copy. A
+contended Route 29 off/on/off control measured terrain publication at
+59.5 / 15.9 / 52.0 ms, with matching scenery in paired 2D/3D captures. Exact
+bytes, image format, sampler, cancellation, atomic publication, and map-handle
+reuse tests pass. `CRYSTAL_PAINTED_IMAGE_WARMUP=off` retains the control;
+browser image decoding is unchanged.
+
+Native water masks and shoreline images also prepare inside the existing
+terrain job from its captured frame. Palette sampling and live phase uniforms
+stay on main; stale terrain results drop their owned images. With PNG warmup
+enabled, a same-binary water off/on/off control measured publication at
+14.5 / 0.46 / 15.3 ms. The paired 2D control was pixel-identical; 3D differences
+were confined to animated characters. Exact image/phase, stale-publication,
+and all 22 water/shoreline regressions pass. Set
+`CRYSTAL_WATER_IMAGE_WARMUP=off` for the original publication path. Browser
+water-image publication remains unchanged.
+
+Native terrain preparation also converts independent spatial batches on that
+existing pool. Domain classification and batch ordering remain deterministic;
+parallel conversion preserves mesh attribute bytes, index widths, bounds, and
+all three collision coverage variants. Small jobs stay serial. Exact-output
+tests include a parent terrain task running on a single-worker pool to check
+that nested preparation cannot starve its children. Set
+`CRYSTAL_TERRAIN_BATCH_PARALLEL=off` for a same-binary serial control. A
+contended native Route 29 serial/parallel/serial control measured total mesh
+preparation at 467.5 / 368.8 / 475.8 ms, with the solid-surface stage at
+391.3 / 291.0 / 395.4 ms. Parallel conversion used five workers. Paired
+production 2D/3D captures retained scenery, with image differences confined to
+animated characters. These are preparation timings, not whole-startup or FPS
+measurements.
+
+Native spatial partitioning caches each triangle's bucket in one byte rather
+than repeating its f64 centroid calculation. The temporary cache is released
+before compact vertex buffers are allocated (about 2.37 MiB for Route 29).
+An additional contended same-binary off/on/off control measured partitioning at
+246.5 / 195.1 / 239.1 ms. Exact-output tests cover boundary, negative, reflected,
+and extreme coordinates. `CRYSTAL_TERRAIN_BUCKET_CACHE=off` retains the original
+calculation control; browsers retain their existing memory policy.
+
+The browser release profile optimizes `crystal-assets`, `ciborium`,
+`ciborium-ll`, and `sha2` at level 3. A production-loader Wasm probe using the
+same default size optimization and these four overrides measured a median
+863.05 → 472.30 ms in three paired ABBA rounds after warmup. CBOR decoding
+measured 524.60 → 259.35 ms and identity hashing 263.95 → 136.40 ms. All cases
+returned the same certified pack identity and rejected corruption. The small
+probe grew by 712,854 bytes; this is not a measured game-bundle size increase
+or whole-startup improvement. The shared host was under memory pressure.
+An earlier probe optimized every crate and is not the shipping-profile control.
+
+The browser packager now enables separate Rust terrain and appearance workers
+and packages both WebGPU and its matching WebGL fallback by default. The game
+controller and GPU publication remain on the main thread. Main and worker CPU
+kernel identities must match; failed or incompatible workers retain the direct
+loading fallback. `CRYSTAL_CPU_WORKERS=0` builds without either worker;
+`CRYSTAL_TERRAIN_WORKER=0` and `CRYSTAL_ACTOR_WORKER=0` select them individually.
+For a full-detail direct control, also set `CRYSTAL_SCENERY_FULL_DETAIL=1`.
+The runtime URL controls `terrainWorker=0` and `actorWorker=0` remain available.
+
+Workers start on first 3D use. A genuine never-3D Continue session downloaded
+and initialized neither worker, submitted no jobs, and retained the same main
+Wasm capacity as its explicit opt-out control. It keeps the original validated
+model strings until activation: about 29.14 million characters, or approximately
+31 MB of additional main JavaScript heap in Chromium. That is a bounded memory
+tradeoff, not a claim of lower total 2D memory. Movement and input checks passed.
+
+Earlier full-detail WebGPU worker tests covered New Bark, Route 29, Ilex Forest,
+and Dark Cave with full 116 by 114 regional terrain, real walking, production
+Start menus, 30-frame GPU captures, and same-state 2D/3D comparisons. Eight house cycles
+(16 warps) and the final return to 2D passed without worker fallback or rendering
+errors. Late-cycle combined Wasm capacity stayed near 1.224 GB. Route 29 used
+about 919 MB in the main Wasm and 2.00 GB across main and both workers, essentially
+unchanged by moving mesh allocations into the wire format. These capacities
+exclude JavaScript, browser and driver memory. WebKit also passed an actual
+WebGL house exit/return and final 2D switch with both workers.
+
+After integrating the published ordinary-tree height variation, both workers
+and both renderer variants were rebuilt from one frozen source generation.
+Route 29 at `(50, 9)`, facing down at preview hour 16, retained the same
+authoritative paired state and tree silhouettes as the published height build.
+The candidate retained full detail; the published reference reported reduced
+detail, so this is not a global pixel-identity comparison. The new generation
+also passed the original empty-party Ilex walk on WebGL and WebGPU, two WebKit
+house exit/return cycles, and genuine never-3D 2D with no worker downloads,
+initializations or jobs. Route 29 combined Wasm capacity remained about 2.002 GB.
+Its heavily contended stationary trial recorded an 83 ms median frame interval
+and 18.99 seconds to full terrain readiness; host load was about 22, versus
+about 6 in the earlier walking trial. These different trials do not establish
+a frame-rate or full-readiness improvement.
+
+Paged restoration uses a soft 4 ms cooperative budget. Actual callbacks can
+exceed it: headers of 7–11 ms and one 16.2 ms advance were recorded. Cold pack
+verification and image publication still cause main-thread long tasks. One
+contended New Bark trial responded to Start at 3.83 seconds and completed full
+terrain at 9.28 seconds; these results do not establish faster whole startup
+or full terrain readiness. Foreground trees can still obscure parts of Ilex's
+view; the worker changes retain existing geometry and composition.
+
+An earlier, historical terrain-only experiment moved 1.9 seconds of work off
+the main thread and responded to controls at 3.54 rather than 6.57 seconds,
+but full terrain readiness was slower: 9.11 rather than 8.17 seconds. That
+experiment supported further development, not a claim that loading was fixed.
+The current guarded builds also pass the original empty-party Ilex walking
+regression without adding a starter or Repel; healthy-party wild battles remain
+covered by the production controller tests.
+
+Exact vertex welding of merged opaque tree meshes retains triangle order and
+every vertex attribute. The current 120-prototype audit removes 14.83% of
+prepared vertices and about 13.25 MB without reducing tree detail. A same-module
+30-frame WebGPU legacy/weld/legacy control measured GPU spans of
+38.66 / 36.65 / 39.06 ms under contention. Scenery captures matched; these
+samples do not establish an isolated FPS improvement. Three subsequent house
+exit/return cycles passed real movement and menu checks with no GPU errors or
+device loss. Wasm capacity remained at 1,061,158,912 bytes; live GPU buffers
+returned to 134,020,965 bytes in the final indoor sample. Loading and frame
+times still need improvement.
 
 The runtime forest implementation now selects shared full-detail prototypes
 rather than generating a unique world-space mesh for every grove. Both tree
 families retain three branch architectures, four prototype height/phase recipes,
-source density classes, and the existing sparse-interior placement rule. Stable
-source coordinates select the prototype, instance height, quarter-turn and a
-small trunk offset within the blocked plot. Each placement replaces the shared
+and source density classes. Every authored tree remains present, including
+dense interiors. Forest’s complete 4×4 canopy drawing retains an ancient tree;
+its separate 2×2 Headbutt drawing retains a small pine at the authored location,
+without an added ground colony. Stable source coordinates select the prototype, instance height, quarter-turn and a
+trunk offset of up to 32% of the plot width on each axis. Fitting keeps the
+rooted flare inside the blocked plot. Each placement replaces the shared
 prototype's trunk offset, so repeated models do not repeat the planting grid.
+Ordinary Johto and Kanto trees have a stable per-placement height factor
+from 0.6 to 1.4 of their source recipe. Shared pine instances replace their
+prototype height with the target height, so variation is applied once.
+Ancient trees retain their existing height variation, with their complete
+canopy and bole reduced vertically by 30% around the source footing.
 National Park retains its centered trees and formal hedges. Ordinary Kanto
 canopies use the same coordinate-seeded offset. Instance
 translation and scale fit the authored plot. This deliberately replaces unique
 per-placement branch geometry with a reusable modeled library. Bank-conforming
 groves retain the original terrain-shaped path.
 
-Each graphical app owns a bounded library of at most 144 prototypes. Instances
+Each graphical app owns a bounded library of at most 120 canopy prototypes and
+12 ground-cover prototypes. Ancient canopies retain their source roots and broad
+crowns at 70% of their previous height; small Headbutt drawings keep their separate scale.
+Only in Ilex Forest, at corners joining at least three ancient canopy plots,
+large divided ferns, flowers, loose broadleaf plants, and fallen leaves span
+all qualifying authored plots. Divided fern fronds meet at shared edge midpoints so growth connects
+between trees while leaving open ground and irregular borders. Small trees do not qualify a junction. Other maps, including National Park,
+do not receive the new underbrush.
+Foliage pigment varies subtly within crowns, fern fronds, and grass blades.
+Overlapping local color fields preserve lighting and avoid uniform tile tints.
+Ground cover has its own
+placement and scale: crown fitting, tree height and trunk offsets never shrink
+or move it. Its leaves stay inside blocked plots; large ferns rise 1.7–2.1 tiles, below a 2.25-tile ceiling.
+Instances
 share GPU mesh handles and collision trees, permitting Bevy's normal instancing;
 cutaway/fade state remains independent. The library survives regional rebuilds
 and is released with its app, so GPU handles cannot cross asset stores. Cold
@@ -221,7 +473,10 @@ The streamer prepares beyond the camera/shadow footprint, retains a wider band
 to avoid rebuilding trees during reversals, and prioritizes the camera rather
 than the source-coordinate origin. Preloaded outer-band trees stay hidden until
 needed, avoiding extra draw/shadow work. Native publication accepts at most two
-completed grove tasks per frame. The production-source geometry control checks
+completed cold grove tasks per frame. Already-cached shared placements now
+bypass that cap in camera order, within a 4 ms CPU preparation/publication budget
+and a 64-placement ceiling. Deferred GPU work is outside that CPU budget and
+needs native frame measurement. The production-source geometry control checks
 6,912 placements against the original conservative source bounds; those placements
 reuse 92 generated prototypes. Desktop/browser moving-scene performance and
 visual acceptance for this redesign remain pending; these are geometry-control
@@ -274,25 +529,26 @@ CRYSTAL_LOADING_TRACE="$PWD/.local/loading-trace.json" \
   content-packs/core-modular.browser.crystalpack --map PlayersHouse2F --x 3 --y 3
 ```
 
-The local compact pack is compatible with this native renderer. The browser build
-used for verification includes `location-tester,allocation-tester,fullscreen-scaling,browser-webgpu,crystal-voxel-view/scenery-full-detail` with the `wasm-dev` profile and the
-`wasm32-unknown-unknown` target. Use a matching wasm-bindgen CLI when packaging it.
-`CRYSTAL_WEBGPU=1 tools/new-bark-3d-web.sh` packages separate WebGPU and
-WebGL builds. Bevy selects WebGL uniform padding and texture views at compile
-time, so a dual-feature binary cannot serve as its own WebGL fallback. The
-loader selects an available adapter; `renderer=webgl` forces the legacy bundle.
-The modern bundle also probes its adapter in Rust before renderer construction.
-GPU shader normalization remains in Rust; `gpu-shaders.js` only forwards browser
-shader descriptors to that function.
+The local compact pack is compatible with this native renderer. The current
+browser verification uses the `web-release` profile, the
+`wasm32-unknown-unknown` target, full-detail scenery, and the production renderer
+with `location-tester`, `fullscreen-scaling`, and both worker feature hooks.
+Packaging requires wasm-bindgen CLI 0.2.128; `WASM_BINDGEN` selects its executable.
+`tools/new-bark-3d-web.sh` now packages separate WebGPU and WebGL builds by
+default. Set `CRYSTAL_WEBGPU=0` to build only WebGL. Bevy selects WebGL uniform
+padding and texture views at compile time, so a dual-feature binary cannot
+serve as its own WebGL fallback. The loader selects an available adapter;
+`renderer=webgl` forces the legacy bundle. The modern bundle also probes its
+adapter in Rust before renderer construction. GPU shader normalization remains
+in Rust; `gpu-shaders.js` only forwards browser shader descriptors.
 
-The packaging helper also accepts `CRYSTAL_WEB_PROFILE=web-release` and defaults
-to one Cargo build job. Combine it with `CRYSTAL_WEBGPU=1` and
-`CRYSTAL_SCENERY_FULL_DETAIL=1` to package both full-detail backends using that
-profile. The helper strips the debugging name section from generated Wasm.
-The release candidate completed the full-detail Azalea browser test with no
-graphics errors, but full terrain readiness still took 32.20 seconds versus
-32.88 seconds for the iteration baseline. It remains unpublished and is not
-accepted as a playable loading-time fix.
+The helper defaults to the `wasm-dev` iteration profile and one Cargo build
+job. Set `CRYSTAL_WEB_PROFILE=web-release` for the profile used in the current
+worker verification. Enabled workers require full-detail scenery; the helper
+includes it in both main backends and worker builds. It strips the debugging
+name section from generated Wasm. A historical Azalea release experiment took
+32.20 seconds to finish terrain versus 32.88 seconds for its iteration baseline;
+that result was not accepted as a loading-time improvement.
 
 Branch and twig generation now compute each ring's repeated normal and pigment
 once per limb. A control against the original production functions verifies
@@ -351,6 +607,15 @@ tree prototype preparation, instance reuse/upload and every render frame's prepa
 sort and submission stages. Captures are bounded at 131,072 events and expose
 `droppedEvents`; a complete verification capture requires zero drops.
 CPU render/submission spans are not GPU timestamps or displayed FPS.
+The outer `render.submit` span includes Bevy's whole render system, including
+graph execution, final readback submission and presentation. Nested
+`render.graph_begin`, `render.graph_encode`, `render.graph_submit` and
+`render.graph_finish` spans distinguish the public render-graph schedule stages.
+They are CPU envelopes inside `render.graph` and `render.submit`; do not add
+their durations to either parent or interpret them as GPU execution time.
+Graph boundaries require tracing enabled before app creation (`loading-trace=on`
+or `CRYSTAL_LOADING_TRACE`). Their diagnostic ordering barriers are absent from
+ordinary play; trace timings therefore include that diagnostic overhead.
 Snapshots also include unfinished spans with `inProgress: true` and their
 elapsed duration. Completion replaces that live span with its final event,
 so a stalled regional operation remains visible before it finishes.

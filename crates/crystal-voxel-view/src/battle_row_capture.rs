@@ -967,12 +967,16 @@ mod tests {
         submit(&mut app);
         app.update();
         let before_layout = app.world().resource::<BattleSceneLayout>().clone();
-        app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0]
-            .as_mut()
-            .unwrap()
-            .species_id = Arc::from("KADABRA");
+        {
+            let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+            let player = frame.battlers[0].as_mut().unwrap();
+            player.species_id = Arc::from("KADABRA");
+            // Its listed 4'3" size exceeds the shared source-bank envelope.
+            // Retaining Raichu's smaller fixture size need not move the camera.
+            player.pokedex_size_m = Some(1.2954);
+        }
         app.update();
-        assert_ne!(*app.world().resource::<BattleSceneLayout>(), before_layout);
+        assert_ne!(app.world().resource::<BattleSceneLayout>().camera, before_layout.camera);
         assert_eq!(
             active(&mut app),
             [true; 2],

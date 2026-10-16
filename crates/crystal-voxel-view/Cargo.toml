@@ -16,6 +16,9 @@ bevy = { workspace = true, features = [
     "bevy_shader",
     "bevy_material",
     "bevy_anti_alias",
+    "smaa_luts",
+    "zstd_rust",
+    "bevy_post_process",
     "bevy_render",
     "bevy_sprite",
     "bevy_sprite_render",
@@ -33,8 +36,19 @@ flate2.workspace = true
 gltf = { version = "1.4.1", default-features = false, features = ["utils", "names", "extras"] }
 sha2.workspace = true
 image = { workspace = true, features = ["jpeg"] }
+ciborium = { workspace = true, optional = true }
+bytemuck = { version = "1", features = ["extern_crate_alloc"], optional = true }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = { workspace = true, optional = true }
+js-sys = { workspace = true, optional = true }
 
 [features]
+# Main-renderer QA bridge; the isolated CPU worker does not include this.
+terrain-worker-browser = ["terrain-worker", "dep:wasm-bindgen", "dep:js-sys"]
+terrain-worker = ["dep:ciborium", "dep:bytemuck"]
+actor-worker = ["terrain-worker"]
+actor-worker-browser = ["actor-worker", "dep:wasm-bindgen", "dep:js-sys"]
 people-review = ["bevy/bevy_winit", "bevy/x11", "bevy/png"]
 operation-trace = []
 # Exact full-detail browser/native comparisons without a runtime environment.

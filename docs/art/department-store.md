@@ -1,5 +1,28 @@
 # Department store architectural courses and closed display islands
 
+Current correction, 2026-10-14: the user identified the fifth-floor staffed
+enclosure as counters on its north, west and east sides, with a glass wall
+toward the screen (+Z). The previous sealed lower display/lid interpretation
+below is superseded. The current editable kit has three counter runs and four
+thin vertical glazing panels; the renderer separates those panels and their
+reflections into a transparent material. Source identity, all56 owned cells,
+the original staff-floor inset, collision, actor support and shop scripts remain
+unchanged. Source-complete blue aisle boxes are separate long, low cases with
+flat sides and ridges only above their lids. These revisions require fresh
+production visual review; geometry/source checks alone do not accept them.
+Current reviewed result: both stores'2F/3F blue cases and5F enclosure were
+inspected against2D, including additional5F south-side views. The longer flat
+blue cases and three-counter/front-glass interpretation are verified within
+that scope. See `docs/handoff/kanto-interiors.md` for receipts and remaining
+walking, counter-reveal, scale and room-composition work.
+Counter reveal follow-up: authenticated adjacent bays now meet beneath their
+caps and omit buried end faces. Both solid and source-painted bays use depth
+coverage. Interior floor compaction remaps their reveal ranges and linked
+label/register anchors together with the vertices. Both4F approach/retreat walks
+verify player visibility and opaque restoration without layered gray triangles;
+the pixel coverage remains visible during fade. These checks do not complete
+room-scale, palette, interaction or all-stair acceptance.
+
 This original kit refines the two stores' six shared floor layouts. It does not
 change runtime maps, collision, events, warps, actor support, inventory or shop
 logic. The eight cached prototypes use the existing bounded gzip-in-JSON model
@@ -95,7 +118,7 @@ Runtime assets are deterministic products of the named editable parts in
 in the existing source manifest as `department-store.blend`.
 The Python check verifies closed oriented parts with positive volume, valid
 normals, unchanged source identities and collisions across all twelve maps,
-exact warp exclusion, the staff-floor inset, the sealed lower centre and the
+exact warp exclusion, the staff-floor inset, three counter runs, thin front glass and the
 editable-source hashes. Rust tests cover rejection at every source field,
 native padded/scrolled frames, cropped guards, custom profiles, atomic append,
 non-square scale/normal fitting, live inscription UVs and unchanged footing.
@@ -118,9 +141,10 @@ native client, and inspect the integrated geometry in its actual lighting:
   camera directions and cutaway
 - Enter the lift through gameplay `(2, 0)`, travel and return. Use every existing
   stair warp in the inspected floors, including Goldenrod's 6F roof connection
-- Orbit both sides, approach the island, and confirm that the apparent lower U
-  centre remains physically closed while the existing staff-floor inset stays
-  clear. No new collision/footing behavior is implied by a visual capture
+- Orbit both sides and approach the enclosure. Confirm that its front is
+  transparent glass while the other three sides remain counters, and that the
+  existing staff-floor inset stays clear. Original collision and footing remain
+  authoritative; a visual capture does not establish a new walkable floor
 
 The stair source checker reads all twelve maps directly from the ignored pack
 and verifies 88 STAIRCASE cells across 22 complete drawings. The production

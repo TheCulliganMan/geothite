@@ -3334,7 +3334,7 @@ fn use_visible_bicycle(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             .active_engine_flags
             .contains("ENGINE_ALWAYS_ON_BIKE")
     {
-        runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "CantGetOffBikeText")?);
+        runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".CantGetOffBikeText@Script_CantGetOffBike")?);
         mark_runtime_snapshot_dirty(runtime_shell);
         set_shell_action_status(runtime_shell, "CAN'T GET OFF HERE");
         return Ok(());
@@ -3433,7 +3433,7 @@ fn use_visible_escape_rope(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             item_use.destination_map, item_use.destination_warp_index
         ),
     );
-    runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "UseEscapeRopeText")?);
+    runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".UseEscapeRopeText@EscapeRopeOrDig")?);
     runtime_shell.pending_field_travel_arrival = true;
     runtime_shell.pending_field_travel_delay_frames = None;
     Ok(())
@@ -3733,10 +3733,10 @@ fn execute_visible_contextual_field_move(runtime_shell: &mut BevyRuntimeShell) -
             open_visible_contextual_field_move_prompt(
                 runtime_shell,
                 PartyFieldMove::Waterfall,
-                "AskWaterfallText",
+                ".AskWaterfallText@Script_AskWaterfall",
             )?;
         } else {
-            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "HugeWaterfallText")?);
+            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".HugeWaterfallText@Script_CantDoWaterfall")?);
             mark_runtime_snapshot_dirty(runtime_shell);
         }
         return Ok(true);
@@ -3785,7 +3785,7 @@ fn execute_visible_contextual_field_move(runtime_shell: &mut BevyRuntimeShell) -
                 "AskWhirlpoolText",
             )?;
         } else {
-            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "MayPassWhirlpoolText")?);
+            runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".MayPassWhirlpoolText@Script_MightyWhirlpool")?);
             mark_runtime_snapshot_dirty(runtime_shell);
         }
         return Ok(true);
@@ -4542,7 +4542,7 @@ fn use_visible_teleport(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             field_move.destination_tile.y
         ),
     );
-    runtime_shell.field_notice = Some(visible_asm_text(&snapshot, "TeleportReturnText")?);
+    runtime_shell.field_notice = Some(visible_asm_text(&snapshot, ".TeleportReturnText@TeleportFunction")?);
     retain_visible_field_notice_scene(runtime_shell, &snapshot);
     runtime_shell.pending_field_travel_arrival = true;
     runtime_shell.pending_field_travel_delay_frames = Some(60);

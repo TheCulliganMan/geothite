@@ -1,20 +1,20 @@
 # Fruit tree refinement
 
-The 3D `fruit_tree` actor uses a continuous, fluted trunk with five staggered
-boughs, recessed foliage, 300 closed cupped leaves, and nine hanging berries.
-The berries have depressed tops, small stems and shoot leaves. Their placement
-leaves fruit visible from both sides of the crown. This replaces the former
-five bare faceted lobes and surface-mounted fruit dots.
+The 3D `fruit_tree` actor uses the surrounding Johto forest's muted linear
+foliage and bark palette. Ten unequal scaffold limbs carry 50 leafy twigs and
+800 folded leaves. There are no solid foliage cores or spherical crown lobes.
+Ten small berries hang from stems anchored to actual shoots.
+The actor shares the terrain's solid material handle, including its exterior
+sky fill, shadows and day/night response. It no longer uses the character PBR
+material, which shaded the narrow leaves almost black beside the grove trees.
 
-The model retains its 1.08-unit height and floor-centered root. Its new width
-and depth are 0.810606 × 0.727528 units, within the previous
-0.874760 × 0.802672 footprint. The actor registry, presentation scale, source
-visibility rules, picked-tree behavior, interaction and collision are unchanged.
-The pack and original 2D sprite are unchanged.
+The model is 2.4 units tall, with its spreading crown bounded by 2.10 × 1.90
+units. Five root flares ground the crooked trunk. The floor-centered interaction
+root, source visibility, picked-tree behavior and collision remain unchanged.
 
-The model has 8,132 triangles, up from 2,212. All components still merge into
-the existing single actor mesh; the individual leaves add no render entities
-or draw calls. No textures or external model dependencies are introduced.
+The model has 17,192 triangles. Its components merge into the existing single
+actor mesh; individual leaves add no render entities or draw calls. There are
+no textures or external model dependencies.
 
 The editable recipe is `fruit_tree()` in `tools/build-actor-props.py`.
 `art/johto/source/actor-props-fruit-tree-refinement.blend` is the focused editable
@@ -32,15 +32,16 @@ python3 tools/check-fruit-tree.py \
 ```
 
 The focused validator checks finite geometry, normalized normals, triangle
-winding, closed-volume orientation, the existing size contract, leaf detail,
-fruit stems and the triangle budget. The broader actor checker currently
-expects the retired `slowpoke.mesh.json`; that independent migration prevents
-its full-catalog run from completing.
+winding, volume orientation, floor root, canopy bounds, all 800 leaves and 50
+twigs, fruit stems and an 18,000-triangle budget. It rejects the retired solid
+foliage cores. The editable-source integrity check verifies the saved Blender
+source against its manifest.
 
-The native location tester was rebuilt with one Cargo job and the actual
-verified browser pack. Paired 2D/3D captures at `Route30 (9, 6)`, noon, preserve
-the game state (`state_preserved=true`). The before/after review confirms
-readable berries and layered leaves, a continuous grounded trunk, and unchanged
-placement beside the house. Front and rear Blender previews were also inspected;
-the first preview's trunk seams and detached leaf shell were corrected before
-the production rebuild. The focused validator and native build pass.
+Validation: the focused geometry validator, editable Blender source integrity
+check and native `render_at_location` build pass. Production captures were
+inspected against 2D at `Route29 (11, 6)`, noon, with matching facing and
+`state_preserved=true`. The first capture exposed excessive PBR darkening;
+the material was changed to share terrain lighting, and foliage colors were
+adjusted after another in-scene comparison. The reviewed image is saved locally
+at `.local/art-review/fruit-tree.png` (ignored). This was visual QA under
+concurrent build workloads, not a performance measurement.

@@ -136,3 +136,77 @@ report `state_preserved=true`. The two sky regressions and all ten existing
 clock/lighting regressions passed. Browser GPU output was not exercised in
 this native review; the shader uses ordinary fragment operations and no textures,
 compute features, or platform-specific branches.
+
+## City and town luminaires
+
+Authored outdoor glass now emits at night across Johto and Kanto, including
+houses, labs, Pokemon Centers, marts, gyms, stations, department stores and
+landmarks. Ecruteak lattice openings and the procedural Kanto gym/brick-office
+panes carry explicit glass roles. Arcade bulbs, station clocks, store lettering,
+the lighthouse lantern and the radio aerial warning lamp retain their own roles.
+Frames, metal fittings and ordinary notice boards do not become lamps.
+
+Window color and illumination are separate. Each connected, outward-facing glass
+pane supplies a finite rectangular area emitter. The palette shader integrates
+its diffuse irradiance over the receiving surface's hemisphere using the
+renderer's polygon-light integral. This produces a broad, soft wash on nearby
+sills, walls, paving and actors, without spotlight cones or concentrated point
+hotspots. A bounded set of the nearest 32 panes supplies local illumination;
+distant panes retain emission. Frames and reflection strips do not enlarge the
+emitting rectangle. The integration uses no additional textures or shader
+bindings, and runs on the same native/browser material path.
+
+The authoritative local RTC fades the lights on from 17:00 to 19:00 and off from
+04:00 to 06:00, continuously through midnight. Clock changes update materials and
+light energy while idle. Light positions use the same retained terrain transform
+as the buildings, including camera scrolling. Interiors, caves and inactive 3D
+views turn the exterior lights off. Daytime paint, native glass optics, source
+2D palettes and gameplay time retain their existing behavior.
+
+```sh
+cargo build --locked -p crystal-bevy --features location-tester \
+  --example render_at_location -j2
+
+CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS=300 \
+CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image \
+CRYSTAL_RENDER_TEST_CAMERA='1 1 40 0' \
+  target/debug/examples/render_at_location \
+    --pack content-packs/core-modular.browser.crystalpack \
+    --map GoldenrodCity --x 14 --y 22 --view both --hour 0 \
+    --screenshot target/city-night-final/goldenrod-night.png
+
+CRYSTAL_RENDER_TEST_PACK="$PWD/content-packs/text-tui.crystalpack" \
+RUST_MIN_STACK=33554432 \
+  cargo test --locked -p crystal-bevy -p crystal-voxel-view \
+    --features crystal-bevy/location-tester --lib city_lights -j2
+```
+
+Review actual light on pavement, walls and actors, and occlusion behind nearby
+casters, in addition to luminous panes. Paired 2D/3D state witnesses must preserve
+the same authoritative game state. Temporary captures and local packs stay ignored.
+
+The native exterior review covers all 23 pack maps with environment `TOWN` at
+midnight, with extra landmark views and daylight controls. This includes Lake of
+Rage, Silver Cave's exterior and Route 23 alongside the 20 named cities/towns.
+The complete-map mesh audit finds 3,336 window emitters across 22 of those maps;
+Route 23 has no exterior glass. All maps mesh successfully. Every paired 2D/3D
+state witness reports `state_preserved=true`. Glass sits inside real wall pockets
+in the shared authored kits; the exported geometry regression checks clear
+openings and pane depth against the neighboring facade. A Goldenrod control
+with only the area-light contribution disabled retains glowing panes while
+removing the warm wash on plaster and paving, verifying actual illumination.
+
+The Ecruteak follow-up closes the east walls of its shared blank-front house
+drawing. The shrine gate's east warp tiles remain beyond the inset building
+envelope. Opposing daylight orbits and a midnight view verify the repaired walls.
+The Johto shoreline pass also applies the existing rounded cap stones to bare
+path/lawn banks immediately beside water, and turns the pebble layout along
+north–south banks. Both bank directions now share the same stone construction
+and source pigment. Water boundaries, walking heights and previously claimed
+art remain intact. Lake of Rage uses this same town shoreline pass.
+
+The 128 focused city-light, clock, exterior-model, New Bark, modeled-exterior
+and Johto shoreline regressions pass, including the wall-coverage and four-edge
+bare-bank checks. The exported aperture regression passes for its four authored
+house/shop fixtures. Native review images live under the ignored
+`target/city-verify-final/`; its 37 paired state witnesses all preserve game state.

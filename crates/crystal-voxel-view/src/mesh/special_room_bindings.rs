@@ -529,8 +529,8 @@ const OBJECTS: &[Object] = &[
         height: 4,
         fingerprint: 0x8c13068143f27d4d,
         detail: Detail::Asset(Asset::ShrinePaperLantern),
-        rise: 20.,
-        depth: 17.,
+        rise: 11.5,
+        depth: 4.,
     },
     Object {
         map: "DragonShrine",
@@ -539,8 +539,8 @@ const OBJECTS: &[Object] = &[
         height: 3,
         fingerprint: 0xedcff31fe4a2c899,
         detail: Detail::ShrineAltar,
-        rise: 18.,
-        depth: 7.,
+        rise: 0.,
+        depth: 24.,
     },
     Object {
         map: "FightingDojo",

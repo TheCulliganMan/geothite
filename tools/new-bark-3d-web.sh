@@ -8,6 +8,12 @@ PACK="${CRYSTAL_PACK:-content-packs/core-modular.browser.crystalpack}"
 OUT="${CRYSTAL_WEB_OUT:-target/new-bark-3d-web}"
 TARGET="${CARGO_TARGET_DIR:-target}"
 PROFILE="${CRYSTAL_WEB_PROFILE:-wasm-dev}"
+# Workers activate only when 3D is used. Keep explicit controls for profiling
+# and preserve the earlier per-worker QA environment names for callers.
+CPU_WORKERS="${CRYSTAL_CPU_WORKERS:-1}"
+TERRAIN_WORKER="${CRYSTAL_TERRAIN_WORKER:-${CRYSTAL_TERRAIN_WORKER_QA:-$CPU_WORKERS}}"
+ACTOR_WORKER="${CRYSTAL_ACTOR_WORKER:-${CRYSTAL_ACTOR_WORKER_QA:-$CPU_WORKERS}}"
+WEBGPU="${CRYSTAL_WEBGPU:-1}"
 case "$PROFILE" in
     wasm-dev|web-release) ;;
     *) echo 'CRYSTAL_WEB_PROFILE must be wasm-dev or web-release.' >&2; exit 1 ;;
@@ -21,6 +27,18 @@ command -v "$BINDGEN" >/dev/null 2>&1 || { echo 'Install official wasm-bindgen-c
 }
 export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-1}"
 FEATURES=fullscreen-scaling,voxel-view,location-tester
+set --
+if [ "$TERRAIN_WORKER" = 1 ]; then
+    FEATURES=$FEATURES,terrain-worker-qa,crystal-voxel-view/scenery-full-detail
+    set -- "$@" -p crystal-terrain-worker
+fi
+if [ "$ACTOR_WORKER" = 1 ]; then
+    FEATURES=$FEATURES,actor-worker-qa,crystal-voxel-view/scenery-full-detail
+    set -- "$@" -p crystal-actor-worker
+fi
+if [ "$#" -gt 0 ]; then
+    cargo build --locked --profile "$PROFILE" "$@" --target wasm32-unknown-unknown
+fi
 if [ "${CRYSTAL_ALLOCATIONS:-0}" = 1 ]; then
     FEATURES=$FEATURES,allocation-tester
 fi
@@ -33,10 +51,18 @@ cargo rustc --locked --profile "$PROFILE" -p crystal-audio --lib --crate-type cd
     --features browser-synth --target wasm32-unknown-unknown
 cargo build --locked -p crystal-web-server --bin crystal-web-server
 mkdir -p "$OUT"
+if [ "$TERRAIN_WORKER" = 1 ]; then
+    "$BINDGEN" --target web --no-typescript --remove-name-section --out-dir "$OUT" --out-name crystal-terrain-worker \
+        "$TARGET/wasm32-unknown-unknown/$PROFILE/crystal_terrain_worker.wasm"
+fi
+if [ "$ACTOR_WORKER" = 1 ]; then
+    "$BINDGEN" --target web --no-typescript --remove-name-section --out-dir "$OUT" --out-name crystal-actor-worker \
+        "$TARGET/wasm32-unknown-unknown/$PROFILE/crystal_actor_worker.wasm"
+fi
 "$BINDGEN" --target web --no-typescript --remove-name-section --out-dir "$OUT" --out-name crystal-bevy \
     "$TARGET/wasm32-unknown-unknown/$PROFILE/crystal-bevy.wasm"
-# Optional modern backend; the existing artifact remains the WebGL fallback.
-if [ "${CRYSTAL_WEBGPU:-0}" = 1 ]; then
+# Keep separate modern and WebGL artifacts: their uniform layouts differ.
+if [ "$WEBGPU" = 1 ]; then
     cargo build --locked --profile "$PROFILE" -p crystal-bevy --bin crystal-bevy \
         --features "$FEATURES,browser-webgpu" --target wasm32-unknown-unknown
     "$BINDGEN" --target web --no-typescript --remove-name-section --out-dir "$OUT" --out-name crystal-bevy-webgpu \

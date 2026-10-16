@@ -159,15 +159,15 @@ pub(super) fn sync(
     meshes: &mut Assets<Mesh>,
     materials: &mut Assets<VoxelMaterial>,
 ) -> bool {
-    let (Some(built), Some(_), Some(_)) = (
+    let (Some(_built), Some(_), Some(_)) = (
         &cache.built_frame,
         cache.instances_root,
         cache.solid_material.as_ref(),
     ) else {
         return false;
     };
-    let offset = crate::terrain_tracking::offset(built, frame);
-    let offset = Vec3::new(offset.x, 0., offset.y);
+    let offset = crate::retained_terrain_transform(frame, cache)
+        .map_or(Vec3::ZERO, |transform| transform.translation);
     let ground = cache
         .built_footing_heights
         .iter()
@@ -281,6 +281,33 @@ fn camera_priority(low: Vec3, high: Vec3, matrix: Mat4) -> f32 {
     band + distance
 }
 
+#[cfg(not(target_arch = "wasm32"))]
+const CACHED_PUBLICATION_BUDGET: std::time::Duration = std::time::Duration::from_millis(4);
+#[cfg(not(target_arch = "wasm32"))]
+const MAX_CACHED_PUBLICATIONS: usize = 64;
+
+#[cfg(not(target_arch = "wasm32"))]
+fn cached_publication_allowed(elapsed: std::time::Duration, published: usize) -> bool {
+    elapsed < CACHED_PUBLICATION_BUDGET && published < MAX_CACHED_PUBLICATIONS
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn publish_native_instance(stream: &mut Stream, index: usize,
+    groups: Vec<occluder_fade::PreparedGroup>, root: Entity, opaque: &Handle<VoxelMaterial>,
+    commands: &mut Commands, meshes: &mut Assets<Mesh>, materials: &mut Assets<VoxelMaterial>,
+    needed_now: &impl Fn(Vec3, Vec3) -> bool) -> bool {
+    if let Some(bounds) = occluder_fade::prepared_bounds(&groups) {
+        stream.bounds[index] = bounds;
+        if !needed_now(bounds.0, bounds.1) { return false; }
+    }
+    let tree = commands.spawn((Transform::default(), Visibility::default())).id();
+    commands.entity(root).add_child(tree);
+    occluder_fade::spawn_groups(commands, meshes, materials, tree, groups, opaque.clone(), None);
+    stream.active.insert(index, tree);
+    stream.visible.insert(index);
+    true
+}
+
 fn sync_interest(
     cache: &mut TerrainRevisionCache,
     mut interest: HashSet<usize>,
@@ -306,6 +333,11 @@ fn sync_interest(
     }
     #[cfg(not(target_arch = "wasm32"))]
     {
+        let publication_started = bevy::platform::time::Instant::now();
+        let pool = AsyncComputeTaskPool::get();
+        // Match the pool that actually executes these jobs. Four queued trees
+        // underutilized larger native pools while oversubscribing tiny ones.
+        let cold_job_limit = pool.thread_num().clamp(1,64);
         stream.jobs.retain(|index, _| interest.contains(index));
         let mut ready = Vec::new();
         let mut queued: Vec<_> = stream.jobs.keys().copied().collect();
@@ -320,26 +352,30 @@ fn sync_interest(
         }
         for (index, groups) in ready {
             stream.jobs.remove(&index);
-            if let Some(bounds) = occluder_fade::prepared_bounds(&groups) {
-                stream.bounds[index] = bounds;
-                if !needed_now(bounds.0, bounds.1) { interest.remove(&index); continue; }
-            }
-            let tree = commands
-                .spawn((Transform::default(), Visibility::default()))
-                .id();
-            commands.entity(root).add_child(tree);
-            occluder_fade::spawn_groups(
-                commands,
-                meshes,
-                materials,
-                tree,
-                groups,
-                opaque.clone(),
-                None,
-            );
-            stream.active.insert(index, tree);
-            stream.visible.insert(index);
+            if !publish_native_instance(stream,index,groups,root,&opaque,commands,meshes,
+                materials,&needed_now) { interest.remove(&index); }
         }
+        // Completed shared prototypes need no worker or geometry build. The
+        // old two-tree cap made a newly exposed 285-tree view take 143 frames,
+        // even when all its buffers were already shared and ready. Publish
+        // cached placements in camera order under a measured CPU budget.
+        let mut candidates: Vec<_> = interest.iter().copied()
+            .filter(|i| !stream.active.contains_key(i)).collect();
+        candidates.sort_unstable_by(|&a,&b| priority(stream.bounds[a].0,stream.bounds[a].1)
+            .total_cmp(&priority(stream.bounds[b].0,stream.bounds[b].1)).then(a.cmp(&b)));
+        let mut cached_published = 0;
+        for index in candidates {
+            if !cached_publication_allowed(publication_started.elapsed(), cached_published) { break; }
+            let Some(groups) = stream.source.prepare_if_cached(index,&stream.library) else { continue; };
+            stream.jobs.remove(&index);
+            if publish_native_instance(stream,index,groups,root,&opaque,commands,meshes,
+                materials,&needed_now) { cached_published += 1; }
+            else { interest.remove(&index); }
+        }
+        drop(crate::loading_trace::span("region.grove_cached_publication", || serde_json::json!({
+            "published":cached_published,"elapsed_ms":publication_started.elapsed().as_secs_f64()*1000.,
+            "budget_ms":CACHED_PUBLICATION_BUDGET.as_secs_f64()*1000.,
+            "cold_workers":pool.thread_num(),"cold_job_limit":cold_job_limit})));
         let mut missing: Vec<_> = interest
             .iter()
             .copied()
@@ -352,13 +388,13 @@ fn sync_interest(
         });
         for index in missing
             .into_iter()
-            .take(4usize.saturating_sub(stream.jobs.len()))
+            .take(cold_job_limit.saturating_sub(stream.jobs.len()))
         {
             let source = stream.source.clone();
             let library = stream.library.clone();
             stream.jobs.insert(
                 index,
-                AsyncComputeTaskPool::get().spawn(async move { source.prepare(index, &library) }),
+                pool.spawn(async move { source.prepare(index, &library) }),
             );
         }
     }
@@ -396,6 +432,17 @@ fn sync_interest(
 
 #[cfg(test)]
 mod tests {
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn cached_publication_stops_at_cpu_deadline_and_has_a_finite_fast_path_cap() {
+        assert!(cached_publication_allowed(std::time::Duration::ZERO,0));
+        assert!(cached_publication_allowed(CACHED_PUBLICATION_BUDGET
+            - std::time::Duration::from_nanos(1),MAX_CACHED_PUBLICATIONS-1));
+        assert!(!cached_publication_allowed(CACHED_PUBLICATION_BUDGET,0));
+        assert!(!cached_publication_allowed(std::time::Duration::ZERO,MAX_CACHED_PUBLICATIONS));
+        assert!(!cached_publication_allowed(CACHED_PUBLICATION_BUDGET*2,0));
+    }
+
     #[test]
     fn preload_and_retention_bands_surround_the_visible_camera() {
         let matrix = Mat4::orthographic_rh(-10., 10., -10., 10., 0.1, 100.)

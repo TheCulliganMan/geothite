@@ -25,6 +25,11 @@ pub(super) struct SkinnedActor {
 }
 
 impl SkinnedActor {
+    pub(super) fn effect_matrices(&self, matrices: &mut [Mat4]) {
+        self.rig.skin_matrices_into(&self.pose.current, matrices)
+            .expect("effect anchors share the validated body pose");
+    }
+
     pub(super) fn visible_bounds(&mut self) -> Option<(Vec3, Vec3)> {
         self.rig.skin_matrices_into(&self.pose.current, &mut self.visibility_matrices).ok()?;
         posed_visibility_bounds(&self.visibility_parts, &self.visibility_matrices)
@@ -191,11 +196,12 @@ impl BodyPose {
             &mut self.target,
         )
         .expect("validated finite body-pose time");
+        crate::species_rig::motion::battle_float(rig, &mut self.target);
         let t = (self.blend_seconds / BLEND_SECONDS).clamp(0.0, 1.0);
         let weight = t * t * (3.0 - 2.0 * t);
         for ((pose, target), from) in self.current.iter_mut().zip(&self.target).zip(&self.from) {
-            // These authored skins only rotate joints. Retain exact bind
-            // translations/scale, including identity root and planted feet.
+            // Preserve authored local translations and the floating root's
+            // clearance; cue blending only changes joint rotations.
             *pose = *target;
             if weight < 1.0 {
                 pose.rotation = from.rotation.slerp(target.rotation, weight).normalize();

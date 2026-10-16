@@ -14,16 +14,13 @@ use bevy::prelude::*;
 use bevy::camera::visibility::RenderLayers;
 use character_meshes::*;
 use crystal_render_api::{VisualActor, VisualActorId, VisualWorldFrame};
+use crate::footing::actor_ground_point;
 use std::collections::{HashMap, HashSet};
 use std::f32::consts::{PI, TAU};
 
 #[derive(Component)]
 pub(crate) struct ModeledActor;
 
-/// One ordinary walking cycle travels this many gameplay tiles. The stance foot
-/// moves backward at exactly the root's speed; there is no timer-driven skating.
-const CYCLE_DISTANCE: f32 = 1.12;
-const RUN_CYCLE_DISTANCE: f32 = 2.80;
 // Presentation scale belongs to the player identity, not its sprite source:
 // NPCs using the same trainer art keep their authored stature.
 const PLAYER_PRESENTATION_SCALE: f32 = 1.25;
@@ -33,7 +30,7 @@ fn character_scale(actor: &VisualActor, tile_height: f32) -> f32 {
 }
 
 fn cycle_distance(run: f32) -> f32 {
-    CYCLE_DISTANCE + (RUN_CYCLE_DISTANCE - CYCLE_DISTANCE) * run
+    crate::human_locomotion::cycle_distance(run)
 }
 #[derive(Clone, Copy, Debug)]
 struct Motion {
@@ -116,10 +113,8 @@ impl Motion {
                 10.0
             };
             self.walk_weight += (target_weight - self.walk_weight) * (1.0 - (-response * dt).exp());
-            // Walking at 60Hz is ~7.466 tiles/s in the production host.
-            // A walking-only 1.12-tile cycle produced 13.3 footfalls/s. Blend
-            // into a genuinely different running gait: a longer distance per
-            // cycle, short planted stance, and an aerial return on both legs.
+            // Blend into a longer running cycle with a short planted stance
+            // and aerial return. The same blend drives the visible skin.
             let target_run = if target_weight > 0.0 {
                 ((self.speed - 1.6) / 2.0).clamp(0.0, 1.0)
             } else {
@@ -173,6 +168,7 @@ struct WorldPokemonSkin {
     joints: Vec<Entity>,
     pose: Vec<Transform>,
     seconds: f32,
+    motion: Motion,
     joint_offsets: Vec<(usize,Quat)>,
 }
 
@@ -185,7 +181,7 @@ fn world_pokemon_joint_offsets(rig: &crate::species_rig::SpeciesRig, npc: bool) 
 fn world_pokemon_actor_rig(kind:actor_props::PropKind,id:VisualActorId) -> Option<&'static crate::species_rig::SpeciesRig> {
     let canonical=world_pokemon_rig(kind)?;
     if !matches!(id,VisualActorId::Object(_)) || canonical.species!=crate::species_rig::Species::Butterfree {
-        return Some(canonical);
+        return Some(crate::species_rig::motion::world_rig(canonical));
     }
     static PERCHED:std::sync::OnceLock<crate::species_rig::SpeciesRig>=std::sync::OnceLock::new();
     Some(PERCHED.get_or_init(|| {
@@ -238,17 +234,19 @@ impl WorldPokemonSkin {
         entity: Entity,
         rig: &'static crate::species_rig::SpeciesRig,
         npc: bool,
+        foot: Vec2,
+        facing: Vec2,
         binds: &mut Assets<bevy::mesh::skinning::SkinnedMeshInverseBindposes>,
-        cache: &mut HashMap<&'static str, Handle<bevy::mesh::skinning::SkinnedMeshInverseBindposes>>,
+        cache: &mut HashMap<(&'static str, usize), Handle<bevy::mesh::skinning::SkinnedMeshInverseBindposes>>,
     ) -> Self {
-        let inverse_bindposes = cache.entry(rig.species.name()).or_insert_with(|| {
+        let inverse_bindposes = cache.entry((rig.species.name(),rig.joints.len())).or_insert_with(|| {
             binds.add(bevy::mesh::skinning::SkinnedMeshInverseBindposes::from(
                 rig.joints.iter().map(|joint| joint.inverse_bind).collect::<Vec<_>>()))
         }).clone();
         let joint_offsets=world_pokemon_joint_offsets(rig,npc);
         let mut pose=rig.joints.iter().map(|joint|joint.bind).collect::<Vec<_>>();
         for &(joint,rotation) in &joint_offsets {pose[joint].rotation=(rotation*pose[joint].rotation).normalize();}
-        let bounds=rig.animated_bounds;
+        let bounds=if npc && rig.species==crate::species_rig::Species::Butterfree {rig.animated_bounds}else{rig.locomotion_bounds()};
         let mut joints = Vec::with_capacity(rig.joints.len());
         for (index,joint) in rig.joints.iter().enumerate() {
             let child = commands.spawn((Visibility::default(), pose[index], ModeledActor)).id();
@@ -259,15 +257,25 @@ impl WorldPokemonSkin {
             bevy::mesh::skinning::SkinnedMesh { inverse_bindposes, joints: joints.clone() },
             bevy::camera::primitives::Aabb::from_min_max(bounds.0,bounds.1),
         ));
-        Self { rig, joints, pose, seconds: 0., joint_offsets }
+        Self { rig, joints, pose, seconds: 0., motion: Motion::new(foot,facing), joint_offsets }
     }
 
-    fn advance(&mut self, delta: f32, transforms: &mut Query<&mut Transform, With<ModeledActor>>) {
+    fn advance(&mut self, delta: f32, foot: Vec2, facing: Option<Vec2>, scale: f32, transforms: &mut Query<&mut Transform, With<ModeledActor>>) {
         use crate::species_rig::{Clip, Playback};
         if !delta.is_finite() || delta < 0. { return; }
-        self.seconds = (self.seconds + delta).rem_euclid(self.rig.clip(Clip::Idle).duration);
-        self.rig.sample_into(Clip::Idle, self.seconds, Playback::Loop, &mut self.pose)
-            .expect("validated world Pokemon idle sample");
+        self.seconds = (self.seconds + delta).rem_euclid(120.);
+        let distance=foot.distance(self.motion.last_world_foot);
+        let phase=self.motion.phase;
+        self.motion.advance(foot, facing, scale, delta);
+        if distance.is_finite() && distance<=scale*1.5 {
+            self.motion.phase=(phase+self.rig.locomotion_phase_delta(distance/scale,delta)).rem_euclid(TAU);
+        }
+        if self.joint_offsets.is_empty() {
+            self.rig.sample_locomotion(self.seconds, self.motion.phase, self.motion.walk_weight, &mut self.pose);
+        } else {
+            self.rig.sample_into(Clip::Idle, self.seconds, Playback::Loop, &mut self.pose)
+                .expect("validated world Pokemon idle sample");
+        }
         for &(joint,rotation) in &self.joint_offsets {
             self.pose[joint].rotation=(rotation*self.pose[joint].rotation).normalize();
         }
@@ -293,6 +301,8 @@ fn cave_stone_finish(frame: &VisualWorldFrame) -> Option<CaveStoneFinish> {
 pub(crate) struct ModeledActors {
     #[cfg(not(target_arch = "wasm32"))]
     asset_warmup: NativeAssetWarmup,
+    #[cfg(all(target_arch = "wasm32", feature = "actor-worker-browser"))]
+    actor_warmup: crate::actor_worker::browser::Warmup,
     people_gpu: crate::open_people_skin::PeopleGpu,
     material: Option<Handle<StandardMaterial>>,
     remote_material: Option<Handle<StandardMaterial>>,
@@ -304,47 +314,186 @@ pub(crate) struct ModeledActors {
     gpu_map_id: String,
     seating_key: Option<crate::TerrainCacheKey>,
     seats: Vec<crate::seating::Seat>,
+    seating_tiles: Vec<crystal_render_api::VisualTile>,
     prop_meshes: HashMap<(actor_props::PropKind, Option<(CaveStoneFinish, u8)>, bool, Option<crystal_render_api::VisualPokemonModelPalette>,bool), Handle<Mesh>>,
     perched_wing_meshes: HashMap<(actor_props::PropKind,Option<crystal_render_api::VisualPokemonModelPalette>),Handle<Mesh>>,
     stone_materials: HashMap<CaveStoneFinish, Handle<VoxelMaterial>>,
+    foliage_material: Option<Handle<VoxelMaterial>>,
     props: HashMap<VisualActorId, PropInstance>,
-    pokemon_binds: HashMap<&'static str, Handle<bevy::mesh::skinning::SkinnedMeshInverseBindposes>>,
+    pokemon_binds: HashMap<(&'static str, usize), Handle<bevy::mesh::skinning::SkinnedMeshInverseBindposes>>,
 }
 
+#[cfg(not(target_arch = "wasm32"))]
+type ActorAssetInterest = (&'static str, Vec<&'static str>);
 #[cfg(not(target_arch = "wasm32"))]
 #[derive(Default)]
 struct NativeAssetWarmup {
     interest: Vec<(&'static str, &'static str)>,
-    task: Option<bevy::tasks::Task<()>>,
+    appearance_interest: Vec<CharacterKind>,
+    bootstrap: Option<bevy::tasks::Task<()>>,
+    queued: std::collections::VecDeque<ActorAssetInterest>,
+    tasks: Vec<bevy::tasks::Task<()>>,
     ready: bool,
 }
 #[cfg(not(target_arch = "wasm32"))]
 impl NativeAssetWarmup {
-    fn pending(&mut self, frame: &VisualWorldFrame) -> bool {
+    fn replace_interest(&mut self, interest: Vec<(&'static str, &'static str)>) {
+        self.bootstrap = None;
+        self.tasks.clear();
+        self.queued.clear();
+        self.ready = interest.is_empty();
+        let mut groups = std::collections::BTreeMap::<_,Vec<_>>::new();
+        for &(base, painting) in &interest {
+            let paintings = groups.entry(base).or_default();
+            if !paintings.contains(&painting) { paintings.push(painting); }
+        }
+        self.queued.extend(groups);
+        self.interest = interest;
+    }
+    fn poll_and_dispatch(&mut self, pool: &bevy::tasks::TaskPool,
+        mut spawn: impl FnMut(ActorAssetInterest) -> bevy::tasks::Task<()>) {
+        use bevy::tasks::futures_lite::future;
+        self.tasks.retain_mut(|task| future::block_on(future::poll_once(task)).is_none());
+        let limit = pool.thread_num().max(1);
+        while self.tasks.len() < limit {
+            let Some(interest) = self.queued.pop_front() else { break; };
+            self.tasks.push(spawn(interest));
+        }
+        self.ready = self.bootstrap.is_none() && self.queued.is_empty() && self.tasks.is_empty();
+    }
+    fn pending(&mut self, frame: &VisualWorldFrame, gpu: &mut crate::open_people_skin::PeopleGpu) -> bool {
         use bevy::tasks::{AsyncComputeTaskPool, futures_lite::future};
         let Some(pool) = AsyncComputeTaskPool::try_get() else { return false; };
         let mut interest = frame.actors.iter().filter_map(character_kind)
             .map(crate::npc_appearance::look).map(|look| (look.base,look.texture_key)).collect::<Vec<_>>();
         interest.sort_unstable(); interest.dedup();
-        if self.interest != interest || (!self.ready && self.task.is_none()) {
-            self.interest = interest.clone();
-            self.ready = false;
-            self.task = Some(pool.spawn(async move {
-                let _trace = crate::loading_trace::span("region.prepare_actor_assets", || serde_json::json!({"requested":interest.len()}));
-                for (base,painting) in interest {
-                    let rig = crate::open_people::get(base).expect("required production character rig");
-                    let _ = rig.refined_body();
-                    crate::npc_textures::get(painting).expect("required production character painting");
-                }
-            }));
-        }
-        if let Some(task) = &mut self.task {
-            if future::block_on(future::poll_once(task)).is_some() {
-                self.task = None;
-                self.ready = true;
+        let mut kinds = frame.actors.iter().filter_map(character_kind).collect::<Vec<_>>();
+        kinds.sort_unstable_by_key(|kind| *kind as usize); kinds.dedup();
+        if self.interest != interest || self.appearance_interest != kinds {
+            self.replace_interest(interest);
+            self.appearance_interest = kinds;
+            // Retiring the app-owned staging map also isolates results from a
+            // canceled synchronous job that finishes after interest changes.
+            gpu.2 = Default::default();
+            if let Some(&(base,_)) = self.interest.first() {
+                // get() initializes the shared complete rig catalog once. Finish
+                // that single cold parse before other workers refine different
+                // bases, rather than occupying every worker on its OnceLock.
+                self.bootstrap = Some(pool.spawn(async move {
+                    let _trace = crate::loading_trace::span("region.prepare_actor_catalog", ||
+                        serde_json::json!({"base":base}));
+                    crate::open_people::get(base).expect("required production character rig");
+                }));
             }
         }
+        if let Some(task) = &mut self.bootstrap {
+            if future::block_on(future::poll_once(task)).is_none() { return true; }
+            self.bootstrap = None;
+        }
+        if !self.ready {
+            let prepared = gpu.2.clone();
+            let missing = self.appearance_interest.iter().copied().filter(|kind| {
+                let look = crate::npc_appearance::look(*kind);
+                !gpu.0.contains_key(&(look.base,*kind))
+            }).collect::<Vec<_>>();
+            self.poll_and_dispatch(pool, |(base,paintings)| {
+                let prepared = prepared.clone();
+                let kinds = missing.iter().copied().filter(|kind|
+                    crate::npc_appearance::look(*kind).base == base).collect::<Vec<_>>();
+                pool.spawn(async move {
+                let _trace = crate::loading_trace::span("region.prepare_actor_assets", ||
+                    serde_json::json!({"base":base,"paintings":paintings.len()}));
+                let rig = crate::open_people::get(base).expect("required production character rig");
+                let _ = rig.refined_body();
+                for painting in paintings {
+                    crate::npc_textures::get(painting).expect("required production character painting");
+                }
+                // Same-binary diagnostic control; production prepares every
+                // missing appearance before the main-thread publication step.
+                let prepare_looks = !std::env::var("CRYSTAL_ACTOR_APPEARANCE_WARMUP")
+                    .is_ok_and(|value| matches!(value.as_str(), "0" | "off" | "false"));
+                for kind in kinds.into_iter().filter(|_| prepare_looks) {
+                    let appearance = crate::open_people_skin::prepare_appearance(&rig, kind);
+                    prepared.lock().expect("prepared actor lock").insert((base,kind),appearance);
+                }
+            })});
+        }
         !self.ready
+    }
+}
+
+#[cfg(all(test, not(target_arch = "wasm32")))]
+mod asset_warmup_tests {
+    use super::*;
+    use std::sync::{Arc, atomic::{AtomicBool,AtomicUsize,Ordering}};
+    fn wait_until(mut condition: impl FnMut() -> bool) {
+        let deadline=std::time::Instant::now()+std::time::Duration::from_secs(5);
+        while !condition() {
+            assert!(std::time::Instant::now()<deadline,"asset worker did not progress");
+            std::thread::yield_now();
+        }
+    }
+    #[test]
+    fn native_actor_jobs_group_bases_bound_workers_and_finish_complete_interest() {
+        let pool=bevy::tasks::TaskPoolBuilder::new().num_threads(2).build();
+        let mut warmup=NativeAssetWarmup::default();
+        warmup.replace_interest(vec![("a","red"),("a","blue"),("a","red"),
+            ("b","green"),("c","gold"),("d","silver")]);
+        assert_eq!(warmup.queued.len(),4);
+        assert_eq!(warmup.queued[0],("a",vec!["red","blue"]));
+        let gate=Arc::new(AtomicBool::new(false));
+        let started=Arc::new(AtomicUsize::new(0));
+        let finished=Arc::new(std::sync::Mutex::new(Vec::new()));
+        let spawn=|work:ActorAssetInterest| {
+            let gate=gate.clone();let started=started.clone();let finished=finished.clone();
+            pool.spawn(async move {
+                started.fetch_add(1,Ordering::SeqCst);
+                while !gate.load(Ordering::SeqCst) {bevy::tasks::futures_lite::future::yield_now().await;}
+                finished.lock().unwrap().push(work);
+            })
+        };
+        warmup.poll_and_dispatch(&pool,spawn);
+        wait_until(||started.load(Ordering::SeqCst)==2);
+        assert_eq!(warmup.tasks.len(),pool.thread_num());
+        assert_eq!(warmup.queued.len(),2);
+        assert!(!warmup.ready);
+        gate.store(true,Ordering::SeqCst);
+        wait_until(|| {warmup.poll_and_dispatch(&pool,spawn);warmup.ready});
+        let mut actual=finished.lock().unwrap().clone();actual.sort_unstable();
+        assert_eq!(actual,vec![("a",vec!["red","blue"]),("b",vec!["green"]),
+            ("c",vec!["gold"]),("d",vec!["silver"])]);
+        assert!(warmup.tasks.is_empty() && warmup.queued.is_empty());
+    }
+    #[test]
+    fn changing_actor_interest_cancels_old_jobs_and_empty_interest_is_ready() {
+        let pool=bevy::tasks::TaskPoolBuilder::new().num_threads(1).build();
+        let mut warmup=NativeAssetWarmup::default();
+        warmup.replace_interest(vec![("old","old-paint"),("queued","unused")]);
+        struct Retired(Arc<AtomicBool>);
+        impl Drop for Retired {fn drop(&mut self) {self.0.store(true,Ordering::SeqCst);}}
+        let started=Arc::new(AtomicBool::new(false));
+        let retired=Arc::new(AtomicBool::new(false));
+        warmup.poll_and_dispatch(&pool, |_| {
+            let started=started.clone();let retired=retired.clone();
+            pool.spawn(async move {
+                let _retired=Retired(retired);
+                started.store(true,Ordering::SeqCst);
+                bevy::tasks::futures_lite::future::pending::<()>().await;
+            })
+        });
+        wait_until(||started.load(Ordering::SeqCst));
+        warmup.replace_interest(vec![("new","new-paint")]);
+        assert!(warmup.tasks.is_empty());
+        assert_eq!(warmup.queued[0],("new",vec!["new-paint"]));
+        let completed=Arc::new(AtomicBool::new(false));
+        let spawn=|work:ActorAssetInterest| {let completed=completed.clone();pool.spawn(async move {
+            assert_eq!(work,("new",vec!["new-paint"]));completed.store(true,Ordering::SeqCst);
+        })};
+        wait_until(|| {warmup.poll_and_dispatch(&pool,spawn);warmup.ready});
+        assert!(completed.load(Ordering::SeqCst));
+        wait_until(||retired.load(Ordering::SeqCst));
+        warmup.replace_interest(Vec::new());
+        assert!(warmup.ready && warmup.tasks.is_empty() && warmup.queued.is_empty());
     }
 }
 
@@ -384,7 +533,7 @@ fn swimmer_depth(frame: &VisualWorldFrame, actor: &VisualActor, kind: CharacterK
     if !matches!(actor.id, VisualActorId::Object(_))
         || !matches!(kind, CharacterKind::SwimmerGuy | CharacterKind::SwimmerGirl)
     { return 0.; }
-    let Some(cell) = crate::tile_at_visual_point(frame, actor_foot(actor) + Vec2::Y * 0.01)
+    let Some(cell) = crate::tile_at_visual_point(frame, actor_ground_point(frame, actor) + Vec2::Y * 0.01)
     else { return 0.; };
     if !frame.tiles.iter().any(|tile| tile.column == cell.x && tile.row == cell.y
         && crate::shape_for_source(&tile.source) == crate::CellShape::Water)
@@ -394,6 +543,19 @@ fn swimmer_depth(frame: &VisualWorldFrame, actor: &VisualActor, kind: CharacterK
 
 pub(crate) fn npc_texture_names() -> Vec<&'static str> {
     SOURCE_KINDS.iter().map(|&(name, _)| name).chain(std::iter::once("outdoorsman")).collect()
+}
+
+#[cfg(feature = "actor-worker")]
+pub(crate) fn worker_kind_for_source(source: &str) -> Option<CharacterKind> {
+    character_meshes::kind_for_source(source)
+}
+#[cfg(feature = "actor-worker")]
+pub(crate) fn worker_interests(frame: &VisualWorldFrame) -> Vec<crate::actor_worker::Key> {
+    let mut keys = frame.actors.iter().filter(|actor| character_kind(actor).is_some())
+        .filter_map(|actor| crate::actor_worker::key_for_source(&actor.source_id).ok()).collect::<Vec<_>>();
+    keys.sort_unstable_by_key(|key| key.source);
+    keys.dedup();
+    keys
 }
 
 fn character_kind(actor: &VisualActor) -> Option<CharacterKind> {
@@ -426,26 +588,28 @@ fn facing_yaw(facing: Vec2) -> f32 {
     facing.x.atan2(-facing.y)
 }
 
-fn model_transform(actor: &VisualActor, height: f32, yaw: f32, scale: f32) -> Transform {
-    // Ground displacement stays on the production foot anchor. Height includes
-    // only resolved terrain support and the current presentation hop.
-    Transform::from_translation(visual_point_to_voxel(actor_foot(actor), height + 0.04))
+fn model_transform(frame: &VisualWorldFrame, actor: &VisualActor, height: f32, yaw: f32, scale: f32) -> Transform {
+    // Source OAM bottoms are tile edges, not the ground root of a 3D body.
+    Transform::from_translation(visual_point_to_voxel(actor_ground_point(frame, actor), height + 0.04))
         .with_rotation(Quat::from_rotation_y(yaw))
         .with_scale(Vec3::splat(scale))
 }
 
-fn prop_foot(actor: &VisualActor, kind: actor_props::PropKind) -> Vec2 {
+fn prop_foot(frame: &VisualWorldFrame, actor: &VisualActor, kind: actor_props::PropKind) -> Vec2 {
     // The ball occupies the middle eight pixels of its sixteen-pixel sprite.
     // Its lower edge sits inside the gameplay tile, unlike a person's feet.
     if kind == actor_props::PropKind::PokeBall {
         actor.center - Vec2::new(0.0, actor.size.y * 0.25)
+    } else if world_pokemon_rig(kind).is_some()
+        || matches!(kind, actor_props::PropKind::ChrisBike | actor_props::PropKind::KrisBike) {
+        actor_ground_point(frame, actor)
     } else {
         actor_foot(actor)
     }
 }
 
 fn world_foot(frame: &VisualWorldFrame, actor: &VisualActor) -> Vec2 {
-    actor_foot(actor) - frame.center
+    actor_ground_point(frame, actor) - frame.center
         + Vec2::new(
             frame.grid_origin.x as f32 * frame.tile_size.x,
             -frame.grid_origin.y as f32 * frame.tile_size.y,
@@ -454,7 +618,7 @@ fn world_foot(frame: &VisualWorldFrame, actor: &VisualActor) -> Vec2 {
 
 fn furniture_seat_target(frame: &VisualWorldFrame, seat: crate::seating::Seat,
     actor: &VisualActor, ground: f32) -> Option<Vec3> {
-    let foot = actor_foot(actor);
+    let foot = actor_ground_point(frame, actor);
     if let Some(target) = seat.target(frame, foot, ground) { return Some(target); }
     // Authored NPCs sit on their actual tile; front-approach presentation is
     // reserved for players, so dialogue scripts cannot visually relocate Mom.
@@ -464,7 +628,7 @@ fn furniture_seat_target(frame: &VisualWorldFrame, seat: crate::seating::Seat,
     let radius = frame.tile_size.min_element() * 0.5;
     if frame.actors.iter().any(|other| other.id != actor.id
         && matches!(other.id, VisualActorId::Object(_) | VisualActorId::Player | VisualActorId::RemotePlayer(_))
-        && actor_foot(other).distance_squared(ahead) < radius * radius) { return None; }
+        && actor_ground_point(frame, other).distance_squared(ahead) < radius * radius) { return None; }
     seat.actor_target(frame, foot, actor.facing, ground)
 }
 
@@ -509,13 +673,42 @@ fn contact_shadow() -> Mesh {
     data.into_mesh()
 }
 
+impl ModeledActors {
+    fn refresh_seats(&mut self, frame: &VisualWorldFrame, profiles_revision: u64,
+        profiles: Option<&crate::live_profiles::Document>) -> bool {
+        let _trace = crate::loading_trace::span("actor.seating", || serde_json::json!({
+            "map": frame.map_id.as_ref(), "tiles": frame.tiles.len(),
+        }));
+        let mut key = crate::TerrainCacheKey::from_frame(frame);
+        key.profiles_revision = profiles_revision;
+        if self.seating_key.as_ref() == Some(&key) { return false; }
+        // The broad terrain key is a cheap invalidation hint. Seat resolution
+        // reads map, grid, scale, profile document and the complete source tiles;
+        // crop origin/viewport/ledges alone cannot alter local seat rectangles.
+        // Retain every tile field, including texture-family and priority evidence.
+        let same_inputs = self.seating_key.as_ref().is_some_and(|previous|
+            previous.map_id == key.map_id && previous.grid_size == key.grid_size
+                && previous.tile_bits == key.tile_bits
+                && previous.profiles_revision == key.profiles_revision)
+            && self.seating_tiles == frame.tiles;
+        self.seating_key = Some(key);
+        if same_inputs { return false; }
+        let _resolve = crate::loading_trace::span("actor.seating.resolve", || serde_json::json!({
+            "map": frame.map_id.as_ref(), "tiles": frame.tiles.len(),
+        }));
+        self.seats = crate::mesh::seating_surfaces(frame, profiles);
+        self.seating_tiles.clone_from(&frame.tiles);
+        true
+    }
+}
+
 #[allow(clippy::too_many_arguments)]
 pub(crate) fn sync(
     mut commands: Commands,
     frame: Res<VisualWorldFrame>,
-    #[cfg(not(target_arch = "wasm32"))]
+    #[cfg(any(not(target_arch = "wasm32"), feature = "actor-worker-browser"))]
     mut status: ResMut<VoxelViewStatus>,
-    #[cfg(target_arch = "wasm32")]
+    #[cfg(all(target_arch = "wasm32", not(feature = "actor-worker-browser")))]
     status: Res<VoxelViewStatus>,
     settings: Option<Res<crate::VoxelViewSettings>>,
     presentation: (
@@ -539,14 +732,31 @@ pub(crate) fn sync(
     let player_visibility = if settings.as_ref().is_some_and(|s| s.camera.first_person) {
         Visibility::Hidden
     } else { Visibility::Inherited };
+    #[cfg(all(target_arch = "wasm32", feature = "actor-worker-browser"))]
+    {
+        let requested = frame.active && enabled_map(&frame.map_id)
+            && settings.as_ref().is_none_or(|settings| settings.enabled);
+        let ModeledActors { actor_warmup, people_gpu, .. } = &mut *state;
+        if actor_warmup.pending(&frame, requested, people_gpu) && status.active {
+            status.terrain_pending = true;
+            status.active_frames = 0;
+            return;
+        }
+    }
     #[cfg(not(target_arch = "wasm32"))]
     if frame.active && enabled_map(&frame.map_id)
         && settings.as_ref().is_none_or(|settings| settings.enabled)
-        && state.asset_warmup.pending(&frame) && status.active {
+        && {
+            let ModeledActors { asset_warmup, people_gpu, .. } = &mut *state;
+            asset_warmup.pending(&frame, people_gpu)
+        } && status.active {
         status.terrain_pending = true;
         status.active_frames = 0;
         return;
     }
+    // Background body preparation may advance for the destination, but its
+    // instances must stay with the retained room until terrain publication.
+    if status.active && crate::retain_lighthouse_room(&frame,&footing) {return;}
     let enabled = frame.active && status.active && enabled_map(&frame.map_id);
     if !enabled || state.map_id != frame.map_id.as_ref() {
         for (_, instance) in state.instances.drain() {
@@ -653,7 +863,16 @@ pub(crate) fn sync(
                 (finish, variant)
             })
         } else { None };
-        let cave_material = stone.map(|(finish,_)| {
+        // Fruit trees belong to the palette-preserving terrain lighting path,
+        // just like the surrounding groves. Character PBR double-shades leaves.
+        let terrain_material = if kind == actor_props::PropKind::FruitTree {
+            Some(footing.solid_material.clone().unwrap_or_else(||
+                state.foliage_material.get_or_insert_with(|| {
+                    let mut material = crate::solid_terrain_material();
+                    material.extension.cave_reveal.z = 1.;
+                    stone_materials.add(material)
+                }).clone()))
+        } else { stone.map(|(finish,_)| {
             state.stone_materials.entry(finish).or_insert_with(|| {
                 let texture = images.add(crate::painted_stone::movable_bedrock_image(finish==CaveStoneFinish::Frozen));
                 // The rock mesh already contains authored face shading. Use
@@ -662,17 +881,18 @@ pub(crate) fn sync(
                 stone_materials.add(crate::voxel_material(StandardMaterial { base_color: Color::WHITE, base_color_texture: Some(texture),
                     perceptual_roughness: 0.94, reflectance: 0.10, ..default() }))
             }).clone()
-        });
+        }) };
         // Flat stationary decorations use the center of their source drawing
         // only when a complete, actually modeled table supplies their support.
-        let tabletop=if kind==actor_props::PropKind::Pokedex
+        let tabletop=if (kind==actor_props::PropKind::Pokedex
+                ||kind==actor_props::PropKind::PokeBall&&frame.map_id.as_ref()=="ElmsLab")
             && matches!(actor.id,VisualActorId::Object(_)) {
             footing.built_frame.as_ref().filter(|built|
                 built.map_id==frame.map_id&&built.tile_size==frame.tile_size)
                 .and_then(|built|crate::mesh::traditional_tabletop_height(built,
                     footing.built_profiles.as_deref(),actor.center))
         } else {None};
-        let render_foot=if tabletop.is_some() {actor.center}else{prop_foot(actor,kind)};
+        let render_foot=if tabletop.is_some() {actor.center}else{prop_foot(&frame,actor,kind)};
         let Some(height) = tabletop.or_else(||
             resolved_footing_height(&frame, render_foot, &footing.footing_heights))
         else {
@@ -724,7 +944,10 @@ pub(crate) fn sync(
                 *current = transform;
             }
             if let Some(skin) = &mut instance.skin {
-                skin.advance(time.delta_secs(), &mut transforms);
+                // Remove camera scrolling before measuring actual travelled distance.
+                let scroll=frame.center-Vec2::new(frame.grid_origin.x as f32*frame.tile_size.x,
+                    -frame.grid_origin.y as f32*frame.tile_size.y);
+                skin.advance(time.delta_secs(), render_foot-scroll, actor.facing, prop_scale, &mut transforms);
             }
         } else {
             let key=(kind,stone,gold_gym_stone,actor.model_palette,perched);
@@ -784,7 +1007,7 @@ pub(crate) fn sync(
                     mesh
                 }))
                 .clone();
-            let entity = if let Some(material) = cave_material {
+            let entity = if let Some(material) = terrain_material {
                 commands.spawn(((Mesh3d(mesh),
 MeshMaterial3d(material),
 transform,), ModeledActor, RenderLayers::layer(VOXEL_RENDER_LAYER))).id()
@@ -797,6 +1020,12 @@ transform,),
                     RenderLayers::layer(VOXEL_RENDER_LAYER),
                 ))
                 .id() };
+            // Match painted people: keep directional contour lighting and
+            // cast grounding shadows, but do not turn a small Pokemon into a
+            // silhouette inside building shadows or its own shadow texels.
+            if rig.is_some() {
+                commands.entity(entity).insert(NotShadowReceiver);
+            }
             let pedals = matches!(kind, actor_props::PropKind::ChrisBike | actor_props::PropKind::KrisBike)
                 .then(|| crate::bicycle::spawn_pedals(&mut commands, &mut meshes,
                     material.clone(), entity, 0.));
@@ -805,15 +1034,17 @@ transform,),
             }
             let skin = rig.map(|rig| WorldPokemonSkin::spawn(&mut commands, entity, rig,
                 matches!(actor.id,VisualActorId::Object(_)),
+                render_foot-(frame.center-Vec2::new(frame.grid_origin.x as f32*frame.tile_size.x,
+                    -frame.grid_origin.y as f32*frame.tile_size.y)), facing,
                 &mut binds, &mut state.pokemon_binds));
             if perched {
                 let skin=skin.as_ref().expect("perched body skin");
                 let wing=commands.spawn((Mesh3d(state.perched_wing_meshes[&(kind,actor.model_palette)].clone()),
                     MeshMaterial3d(state.perched_wing_material.as_ref().unwrap().clone()),
                     bevy::mesh::skinning::SkinnedMesh {
-                        inverse_bindposes:state.pokemon_binds[skin.rig.species.name()].clone(),joints:skin.joints.clone()
+                        inverse_bindposes:state.pokemon_binds[&(skin.rig.species.name(),skin.rig.joints.len())].clone(),joints:skin.joints.clone()
                     },bevy::camera::primitives::Aabb::from_min_max(skin.rig.animated_bounds.0,skin.rig.animated_bounds.1),
-                    Transform::IDENTITY,Visibility::default(),ModeledActor,RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
+                    Transform::IDENTITY,Visibility::default(),ModeledActor,NotShadowReceiver,RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
                 commands.entity(entity).add_child(wing);
             }
             state.props.insert(actor.id, PropInstance { entity, pedals, kind, stone, gold_gym_stone, model_palette: actor.model_palette, skin });
@@ -830,13 +1061,8 @@ transform,),
     if let Some(instance) = state.props.get(&VisualActorId::Player) {
         commands.entity(instance.entity).insert(player_visibility);
     }
-    let mut seating_key = crate::TerrainCacheKey::from_frame(&frame);
-    seating_key.profiles_revision = footing.key.as_ref().map_or(0, |key| key.profiles_revision);
-    let seating_key = Some(seating_key);
-    if state.seating_key != seating_key {
-        state.seats = crate::mesh::seating_surfaces(&frame, footing.built_profiles.as_deref());
-        state.seating_key = seating_key;
-    }
+    state.refresh_seats(&frame, footing.key.as_ref().map_or(0, |key| key.profiles_revision),
+        footing.built_profiles.as_deref());
     for actor in &frame.actors {
         let mounted = actor.id == VisualActorId::Player && surf_seat_height(&frame).is_some();
         let kind = if mounted {
@@ -884,12 +1110,16 @@ transform,),
         if let Some(instance) = state.instances.get_mut(&actor.id) {
             instance
                 .motion
-                .advance(world_foot, actor.facing, scale, time.delta_secs());
+                .advance(world_foot, actor.facing,
+                    scale * if actor.source_id.ends_with("_bike") || surf_seat.is_some() { 1.0 }
+                    else { person_height(kind) / crate::human_locomotion::REFERENCE_HEIGHT },
+                    time.delta_secs());
             if let Ok(mut transform) = transforms.get_mut(instance.entity) {
-                *transform = model_transform(actor, height, instance.motion.yaw, scale);
+                *transform = model_transform(&frame, actor, height, instance.motion.yaw, scale);
             }
             {
                 let person = &mut instance.person;
+                person.run_blend = instance.motion.run_weight;
                 person.bicycle = actor.source_id.ends_with("_bike");
                 person.surfing = surf_seat.is_some();
                 person.hop_step = (hop_weight > 0.0).then(|| (
@@ -903,6 +1133,7 @@ transform,),
                 }
                 if let Ok(mut transform) = transforms.get_mut(instance.entity) {
                     *transform = model_transform(
+                        &frame,
                         actor,
                         height,
                         instance.motion.yaw,
@@ -923,7 +1154,7 @@ transform,),
                 // The soft contact shadow stays on the terrain while the root
                 // rises; its local offset must account for the imported scale.
                 let root_scale = scale * person_height(kind) / person.rig.height;
-                let ground = resolved_footing_height(&frame, actor_foot(actor), &footing.footing_heights)
+                let ground = resolved_footing_height(&frame, actor_ground_point(&frame, actor), &footing.footing_heights)
                     .unwrap_or(height);
                 if let Ok(mut shadow) = transforms.get_mut(instance.shadow) {
                     shadow.translation.y = (ground - height - person.sitting.offset.y * person.sitting.eased_weight()) / root_scale - 0.001;
@@ -950,6 +1181,7 @@ transform,),
                     .spawn((
                         (if actor.id == VisualActorId::Player { player_visibility } else { Visibility::Inherited },
 model_transform(
+                                &frame,
                                 actor,
                                 height,
                                 motion.yaw,
@@ -958,7 +1190,7 @@ model_transform(
                         ModeledActor,
                     ))
                     .id();
-                commands.entity(entity).insert(model_transform(actor, height, motion.yaw,
+                commands.entity(entity).insert(model_transform(&frame, actor, height, motion.yaw,
                     scale * person_height(kind) / imported.height).with_scale(Vec3::new(
                         scale * person_height(kind) / imported.height * crate::npc_appearance::look(kind).width,
                         scale * person_height(kind) / imported.height,
@@ -983,7 +1215,7 @@ model_transform(
 MeshMaterial3d(state.shadow_material.as_ref().unwrap().clone()),
 Transform::from_xyz(0.0,
                                 if hop_weight > 0.0 {
-                                    (resolved_footing_height(&frame, actor_foot(actor), &footing.footing_heights)
+                                    (resolved_footing_height(&frame, actor_ground_point(&frame, actor), &footing.footing_heights)
                                         .unwrap_or(height) - height)
                                         / (scale * person_height(kind) / person.rig.height) - 0.001
                                 } else { -0.001 },
@@ -1063,6 +1295,84 @@ mod tests {
             facing: Some(Vec2::X),
         }
     }
+    fn seating_bits(seats: &[crate::seating::Seat]) -> Vec<([u32;4],u32,Option<u32>)> {
+        seats.iter().map(|seat| (seat.rect.map(f32::to_bits),seat.height.to_bits(),
+            seat.yaw.map(f32::to_bits))).collect()
+    }
+    #[test]
+    fn seating_refresh_preserves_source_drawings_scale_profiles_and_crop_only_reuse() {
+        use crystal_render_api::{VisualTile,VisualTileSource};
+        let document: crate::live_profiles::Document = serde_json::from_str(
+            include_str!("../../../modpacks/voxel-view/profiles.json")).unwrap();
+        let stool=document.objects.iter().find(|object|object.name=="Shared lab round stool").unwrap();
+        let mut furniture=VisualWorldFrame::default();
+        furniture.map_id="ElmsLab".into();
+        furniture.grid_size=UVec2::new(stool.tiles[0].len() as u32+2,stool.tiles.len() as u32+2);
+        furniture.tile_size=Vec2::splat(8.);
+        for row in 0..furniture.grid_size.y { for column in 0..furniture.grid_size.x {
+            let mut source=VisualTileSource { tileset_id:stool.tileset.as_str().into(),
+                metatile_id:0,subtile_column:(column%4) as u8,subtile_row:(row%4) as u8,
+                tile_index:stool.ground };
+            if (row as usize)<stool.tiles.len() && (column as usize)<stool.tiles[0].len() {
+                let y=row as usize;let x=column as usize;
+                source.metatile_id=stool.metatiles.as_ref().map_or(stool.metatile,|blocks|
+                    blocks[(usize::from(stool.origin[1])+y)/4][(usize::from(stool.origin[0])+x)/4]);
+                source.subtile_column=((usize::from(stool.origin[0])+x)%4) as u8;
+                source.subtile_row=((usize::from(stool.origin[1])+y)%4) as u8;
+                source.tile_index=stool.tiles[y][x];
+            }
+            furniture.tiles.push(VisualTile {column,row,source,texture:Handle::default(),
+                animation_frames:None,priority:false});
+        }}
+        let mut park=VisualWorldFrame::default();
+        park.map_id="NationalPark".into();park.grid_size=UVec2::new(4,4);
+        park.tile_size=Vec2::splat(8.);
+        for row in 0..4 { for column in 0..4 {
+            park.tiles.push(VisualTile {column,row,texture:Handle::default(),priority:false,
+                animation_frames:None,source:VisualTileSource {tileset_id:"park".into(),
+                    metatile_id:if row<3 {0x0e}else{0x01},subtile_column:column as u8,
+                    subtile_row:row as u8,tile_index:if row<3 {0x07+row as u16*0x10+column as u16}else{0}}});
+        }}
+        for mut frame in [furniture,park] {
+            let mut state=ModeledActors::default();
+            assert!(state.refresh_seats(&frame,1,None));
+            assert_eq!(state.seats.len(),1);
+            let original=seating_bits(&state.seats);
+            if frame.map_id.as_ref()=="NationalPark" {
+                let bench=crate::exterior_models::model(crate::exterior_models::Kind::ParkBench);
+                let cushion=crate::seating::cushion_height(&bench.surface.positions,&bench.surface.indices)
+                    .unwrap_or(bench.max[1]);
+                let expected=(cushion-bench.min[1])*1.5*frame.tile_size.y/(bench.max[1]-bench.min[1]);
+                assert_eq!(state.seats[0].height.to_bits(),expected.to_bits());
+                assert_eq!(state.seats[0].rect,[0.,0.,4.,2.]);
+            }
+            assert!(!state.refresh_seats(&frame,1,None));
+            frame.center+=Vec2::new(15.,-7.);
+            frame.grid_origin+=IVec2::new(2,1);
+            frame.viewport_size+=Vec2::splat(20.);
+            frame.terrain_revision+=1;
+            assert!(!state.refresh_seats(&frame,1,None));
+            assert_eq!(seating_bits(&state.seats),original);
+            // Evidence other than labels is retained; an altered drawing must
+            // invalidate the complete authored chair/bench exactly as before.
+            frame.tiles[0].source.tile_index^=0x80;frame.terrain_revision+=1;
+            assert!(state.refresh_seats(&frame,1,None));
+            assert!(state.seats.is_empty());
+            assert_eq!(seating_bits(&state.seats),seating_bits(&crate::mesh::seating_surfaces(&frame,None)));
+            frame.tiles[0].source.tile_index^=0x80;frame.terrain_revision+=1;
+            assert!(state.refresh_seats(&frame,1,None));
+            assert_eq!(seating_bits(&state.seats),original);
+            frame.tile_size*=2.;
+            assert!(state.refresh_seats(&frame,1,None));
+            assert_eq!(seating_bits(&state.seats),seating_bits(&crate::mesh::seating_surfaces(&frame,None)));
+            assert!(state.refresh_seats(&frame,2,Some(&document)));
+            assert_eq!(seating_bits(&state.seats),seating_bits(&crate::mesh::seating_surfaces(&frame,Some(&document))));
+            frame.tiles[0].priority=true;frame.terrain_revision+=1;
+            assert!(state.refresh_seats(&frame,2,Some(&document)));
+            assert_eq!(seating_bits(&state.seats),seating_bits(&crate::mesh::seating_surfaces(&frame,Some(&document))));
+        }
+    }
+
     #[test]
     fn automatic_seating_respects_npc_placement_and_occupied_seats() {
         let mut frame = VisualWorldFrame::default();
@@ -1073,12 +1383,12 @@ mod tests {
         let mut player = actor();
         player.center = Vec2::new(8., -24.);
         player.facing = Some(Vec2::Y);
-        assert_eq!(furniture_seat_target(&frame, seat, &player, 0.), Some(Vec3::new(0., 5., -24.)));
+        assert_eq!(furniture_seat_target(&frame, seat, &player, 0.), Some(Vec3::new(0., 5., -16.)));
         let mut npc = player.clone();
         npc.id = VisualActorId::Object(7);
         assert!(furniture_seat_target(&frame, seat, &npc, 0.).is_none(), "NPC must retain its authored tile");
         npc.center.y += 16.;
-        assert_eq!(furniture_seat_target(&frame, seat, &npc, 0.), Some(Vec3::new(0., 5., -8.)));
+        assert_eq!(furniture_seat_target(&frame, seat, &npc, 0.), Some(Vec3::new(0., 5., 0.)));
         frame.actors = vec![player.clone(), npc];
         assert!(furniture_seat_target(&frame, seat, &player, 0.).is_none(), "occupied seat must not be claimed");
         frame.actors[1].source_id = "growlithe".into();
@@ -1089,7 +1399,7 @@ mod tests {
     fn swimmers_show_head_and_shoulders_above_authenticated_water_only() {
         let mut a = actor();
         a.id = VisualActorId::Object(7);
-        a.center = Vec2::new(0., 8.);
+        a.center = Vec2::ZERO;
         let mut f = VisualWorldFrame::default();
         f.grid_size = UVec2::ONE;
         f.viewport_size = Vec2::splat(8.);
@@ -1113,10 +1423,28 @@ mod tests {
             f.tiles[0].source.tile_index = 0x14;
         }
         assert_eq!(swimmer_depth(&f, &a, CharacterKind::Trainer), 0.);
-        assert_eq!(a.center, Vec2::new(0., 8.), "presentation does not move map position");
+        assert_eq!(a.center, Vec2::ZERO, "presentation does not move map position");
     }
 
     fn actor_test_app() -> App {
+        fn wait_for_actor_assets(
+            frame: Res<VisualWorldFrame>, status: Res<VoxelViewStatus>,
+            mut state: ResMut<ModeledActors>,
+        ) {
+            if !frame.active || !status.active || !enabled_map(&frame.map_id) { return; }
+            #[cfg(not(target_arch = "wasm32"))]
+            {
+                let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
+                let ModeledActors { asset_warmup, people_gpu, .. } = &mut *state;
+                // Another test may initialize the global task pool. Exercise the
+                // actual production preparation/publication path in either case,
+                // and wait for its result before asserting against this frame.
+                while asset_warmup.pending(&frame, people_gpu) {
+                    assert!(std::time::Instant::now() < deadline, "actor assets did not settle");
+                    std::thread::sleep(std::time::Duration::from_millis(1));
+                }
+            }
+        }
         let mut app = App::new();
         let mut frame = VisualWorldFrame::default();
         frame.active = true;
@@ -1139,8 +1467,70 @@ mod tests {
             .init_resource::<Assets<VoxelMaterial>>()
             .init_resource::<Assets<Image>>()
             .init_resource::<Assets<bevy::mesh::skinning::SkinnedMeshInverseBindposes>>()
-            .add_systems(Update, sync);
+            .add_systems(Update, (wait_for_actor_assets, sync).chain());
         app
+    }
+
+    #[test]
+    fn modeled_pokemon_keep_lit_pigment_and_cast_grounding_shadows() {
+        let mut app=actor_test_app();
+        let mut follower=actor();follower.id=VisualActorId::PartyFollower;
+        follower.source_id="species:TOTODILE:icon_monster".into();
+        let original=follower.clone();
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors=vec![follower];
+        for map in ["GoldenrodCity","ElmsLab","UnionCave1F"] {
+            app.world_mut().resource_mut::<VisualWorldFrame>().map_id=map.into();
+            app.update();
+            let state=app.world().resource::<ModeledActors>();
+            let instance=&state.props[&VisualActorId::PartyFollower];
+            assert!(instance.skin.is_some(),"preserve production animation");
+            assert!(app.world().get::<NotShadowReceiver>(instance.entity).is_some(),
+                "small painted Pokemon must remain readable in cast shade");
+            assert!(app.world().get::<NotShadowCaster>(instance.entity).is_none(),
+                "the Pokemon still casts a real grounding shadow");
+            let handle=&app.world().get::<MeshMaterial3d<StandardMaterial>>(instance.entity).unwrap().0;
+            let material=app.world().resource::<Assets<StandardMaterial>>().get(handle).unwrap();
+            assert!(!material.unlit,"retain real directional contour shading");
+            assert_eq!(material.base_color,Color::WHITE,"keep the canonical model pigment");
+            assert_eq!(material.emissive,LinearRgba::BLACK,"readability must not make the Pokemon luminous");
+            assert_eq!(app.world().resource::<VisualWorldFrame>().actors[0],original);
+        }
+    }
+    #[test]
+    fn pokemon_motion_followers_use_travel_and_ignore_camera_scroll_and_warps() {
+        for name in ["PIKACHU", "LUGIA", "GLIGAR"] {
+            let mut app=actor_test_app();
+            let mut follower=actor();follower.id=VisualActorId::PartyFollower;
+            follower.source_id=format!("species:{name}:icon_monster").into();
+            app.world_mut().resource_mut::<VisualWorldFrame>().actors=vec![follower];
+            app.update();
+            let root=app.world().resource::<ModeledActors>().props[&VisualActorId::PartyFollower].entity;
+            let original=app.world().get::<Mesh3d>(root).unwrap().0.clone();
+            for tick in 0..8 {
+                app.world_mut().resource_mut::<VisualWorldFrame>().actors[0].center.x+=1.;
+                app.world_mut().resource_mut::<Time>().advance_by(std::time::Duration::from_millis(16));
+                app.update();
+                let state=app.world().resource::<ModeledActors>();
+                let skin=state.props[&VisualActorId::PartyFollower].skin.as_ref().unwrap();
+                assert!(skin.motion.phase>0.,"{name} {tick}");
+            }
+            let phase=app.world().resource::<ModeledActors>().props[&VisualActorId::PartyFollower].skin.as_ref().unwrap().motion.phase;
+            {
+                let mut frame=app.world_mut().resource_mut::<VisualWorldFrame>();
+                frame.center+=Vec2::new(8.,4.);frame.actors[0].center+=Vec2::new(8.,4.);
+            }
+            app.update();
+            assert_eq!(app.world().resource::<ModeledActors>().props[&VisualActorId::PartyFollower].skin.as_ref().unwrap().motion.phase,phase);
+            for _ in 0..60 {
+                app.world_mut().resource_mut::<Time>().advance_by(std::time::Duration::from_millis(16));app.update();
+            }
+            assert_eq!(app.world().resource::<ModeledActors>().props[&VisualActorId::PartyFollower].skin.as_ref().unwrap().motion.walk_weight,0.);
+            app.world_mut().resource_mut::<VisualWorldFrame>().actors[0].center.x+=500.;
+            app.update();
+            let state=app.world().resource::<ModeledActors>();let skin=state.props[&VisualActorId::PartyFollower].skin.as_ref().unwrap();
+            assert_eq!(skin.motion.phase,0.);assert_eq!(skin.motion.walk_weight,0.);
+            assert_eq!(app.world().get::<Mesh3d>(root).unwrap().0,original);
+        }
     }
 
     #[test]
@@ -1159,7 +1549,7 @@ mod tests {
         let b_skin=app.world().get::<SkinnedMesh>(b.entity).unwrap();
         assert_eq!(a_skin.inverse_bindposes,b_skin.inverse_bindposes);
         assert_eq!(app.world().get::<Mesh3d>(a.entity).unwrap().0,app.world().get::<Mesh3d>(b.entity).unwrap().0);
-        assert_eq!(a_skin.joints.len(),14);
+        assert_eq!(a_skin.joints.len(),20); // canonical 14 plus two complete three-joint leg chains
         assert!(a_skin.joints.iter().all(|joint|!b_skin.joints.contains(joint)));
         let root_transform=*app.world().get::<Transform>(roots[0]).unwrap();
         app.world_mut().resource_mut::<Time>().advance_by(std::time::Duration::from_millis(250));
@@ -1298,8 +1688,8 @@ mod tests {
     fn uphill_hop_moves_the_character_root_and_keeps_its_shadow_grounded() {
         use crystal_render_api::{VisualPlayerTraversal, VisualTraversalStep};
         let mut app = actor_test_app();
-        let from = Vec2::new(0.0, -4.0);
-        let to = Vec2::new(0.0, 4.0);
+        let from = Vec2::new(0.0, -12.0);
+        let to = Vec2::new(0.0, -4.0);
         {
             let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
             frame.grid_size = UVec2::new(1, 2);
@@ -1323,7 +1713,7 @@ mod tests {
             let shadow_y = root.translation.y + shadow.translation.y * root.scale.y;
             assert!((shadow_y - ground - 0.04 + 0.001 * root.scale.y).abs() < 0.001);
             assert_eq!(root.translation.x, 0.0);
-            assert_eq!(root.translation.z, -from.lerp(to, progress).y);
+            assert_eq!(root.translation.z, -(from.lerp(to, progress).y + 8.0));
             if progress == 0.5 {
                 let mut expected_pose = instance.person.rig.nodes.clone();
                 instance.person.rig.sample("Jump", instance.person.rig.duration("Jump") * progress, &mut expected_pose);
@@ -1445,8 +1835,12 @@ mod tests {
                 assert_eq!(joints, &skins[0], "stale costume skeleton for {source}");
                 assert!(joints.iter().all(|&entity| app.world().get::<Transform>(entity).is_some()));
             }
+            // Map transitions retire the previous appearance; this test must
+            // prove every source uploads correctly without requiring a leaked
+            // catalog of all previously visited character meshes.
+            assert_eq!(app.world().resource::<ModeledActors>().people_gpu.0.len(), 1,
+                "stale character upload after switching to {source}");
         }
-        assert_eq!(app.world().resource::<ModeledActors>().people_gpu.0.len(), SOURCE_KINDS.len()+1);
         app.world_mut().resource_mut::<VisualWorldFrame>().actors.clear();
         app.update();
         assert_eq!(app.world_mut().query_filtered::<Entity, With<ModeledActor>>().iter(app.world()).count(), 0);
@@ -1494,6 +1888,7 @@ mod tests {
             );
             let actor = &frame.actors[0];
             let expected = model_transform(
+                &frame,
                 actor,
                 0.0,
                 app.world().resource::<ModeledActors>().instances[&VisualActorId::Player]
@@ -1770,8 +2165,9 @@ mod tests {
     #[test]
     fn modeled_facing_and_foot_remain_world_anchored() {
         let actor = actor();
-        let transform = model_transform(&actor, 2.0, facing_yaw(Vec2::X), 16.0);
-        assert_eq!(transform.translation, Vec3::new(20.0, 2.04, -22.0));
+        let frame = actor_test_app().world().resource::<VisualWorldFrame>().clone();
+        let transform = model_transform(&frame, &actor, 2.0, facing_yaw(Vec2::X), 16.0);
+        assert_eq!(transform.translation, Vec3::new(20.0, 2.04, -30.0));
         assert!((transform.rotation * Vec3::Z - Vec3::X).length() < 0.0001);
     }
     #[test]
@@ -1785,9 +2181,79 @@ mod tests {
         let p=app.world().get::<Transform>(state.instances[&player.id].entity).unwrap();
         let n=app.world().get::<Transform>(state.instances[&npc.id].entity).unwrap();
         assert!((p.scale.y/n.scale.y-PLAYER_PRESENTATION_SCALE).abs()<0.001);
-        assert_eq!(p.translation,visual_point_to_voxel(actor_foot(&player),0.04));
-        assert_eq!(n.translation,visual_point_to_voxel(actor_foot(&npc),0.04));
+        let frame = app.world().resource::<VisualWorldFrame>();
+        assert_eq!(p.translation,visual_point_to_voxel(actor_ground_point(frame, &player),0.04));
+        assert_eq!(n.translation,visual_point_to_voxel(actor_ground_point(frame, &npc),0.04));
         assert_eq!(app.world().resource::<VisualWorldFrame>().actors[0],player);
+    }
+
+    #[test]
+    fn bicycle_and_rider_share_the_centered_anchor_on_the_first_frame() {
+        for source in ["chris_bike", "kris_bike"] {
+            let mut app = actor_test_app();
+            app.world_mut().resource_mut::<VisualWorldFrame>().actors[0].source_id = source.into();
+            app.update();
+            let state = app.world().resource::<ModeledActors>();
+            let rider = app.world().get::<Transform>(state.instances[&VisualActorId::Player].entity).unwrap();
+            let bike = app.world().get::<Transform>(state.props[&VisualActorId::Player].entity).unwrap();
+            assert_eq!(rider.translation, bike.translation, "{source} cannot wait a frame to align");
+            assert_eq!(rider.translation, Vec3::new(20., 0.04, -30.));
+        }
+    }
+
+    #[test]
+    fn external_map_edge_characters_stand_inside_the_original_floor_bounds() {
+        let explicit = std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path = explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none() || path.is_file());
+        if !path.is_file() { return; }
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let mut app = actor_test_app();
+        for map in ["RadioTower3F", "RadioTower4F", "RadioTower5F", "PlayersHouse2F", "NewBarkTown"] {
+            let data = &loaded.pack().data().maps[map];
+            let size = UVec2::new(data.attributes.width as u32 * 2, data.attributes.height as u32 * 2);
+            for scale in [1., 4.] {
+                let mut frame = app.world().resource::<VisualWorldFrame>().clone();
+                frame.map_id = map.into();
+                frame.source_map_size_core_tiles = Some(size);
+                frame.grid_size = size * 2;
+                frame.tile_size = Vec2::splat(8. * scale);
+                frame.viewport_size = frame.grid_size.as_vec2() * frame.tile_size;
+                frame.center = Vec2::new(23., -41.);
+                frame.actors.clear();
+                let half = frame.viewport_size * 0.5;
+                let mut expected = Vec::new();
+                for (i, (x, y)) in [(0, 0), (size.x - 1, 0), (0, size.y - 1), (size.x - 1, size.y - 1)]
+                    .into_iter().enumerate()
+                {
+                    let mut a = actor();
+                    a.id = match i { 0 => VisualActorId::Player, 1 => VisualActorId::RemotePlayer(1),
+                        _ => VisualActorId::Object(i as u32) };
+                    a.size = Vec2::splat(16. * scale);
+                    a.center = frame.center + Vec2::new(-half.x + (x as f32 * 2. + 1.) * frame.tile_size.x,
+                        half.y - (y as f32 * 2. + 1.) * frame.tile_size.y);
+                    a.facing = Some([Vec2::X, Vec2::Y, Vec2::NEG_X, Vec2::NEG_Y][i]);
+                    expected.push((a.id, a.center));
+                    frame.actors.push(a);
+                }
+                app.world_mut().resource_mut::<TerrainRevisionCache>().footing_heights =
+                    vec![0.; (frame.grid_size.x * frame.grid_size.y) as usize];
+                *app.world_mut().resource_mut::<VisualWorldFrame>() = frame.clone();
+                app.update();
+                let state = app.world().resource::<ModeledActors>();
+                for (id, center) in expected {
+                    let root = app.world().get::<Transform>(state.instances[&id].entity).unwrap();
+                    assert!((root.translation - visual_point_to_voxel(center, 0.04)).length() < 0.001,
+                        "{map} {id:?} must stand at the core tile center, independently of facing and scale");
+                    let p = Vec2::new(root.translation.x, -root.translation.z) - frame.center;
+                    assert!(p.abs().cmple(half - frame.tile_size + Vec2::splat(0.001)).all(),
+                        "{map} {id:?} needs half a gameplay tile of floor on every side");
+                }
+                assert_eq!(*app.world().resource::<VisualWorldFrame>(), frame,
+                    "map extent and source presentation must remain unchanged");
+            }
+        }
     }
     #[test]
     fn item_ball_uses_its_art_bottom_and_smaller_grounded_scale() {
@@ -1805,6 +2271,42 @@ mod tests {
         assert_eq!(transform.translation.z, -expected_foot.y);
         assert_eq!(transform.scale, Vec3::splat(frame.tile_size.y));
         assert_eq!(app.world().resource::<VisualWorldFrame>().actors[1].center, ball.center);
+    }
+    #[test]
+    fn elm_starter_balls_rest_on_bare_table_and_follow_object_visibility() {
+        use crystal_render_api::{VisualTile,VisualTileSource};
+        let mut app=actor_test_app();let mut frame=app.world().resource::<VisualWorldFrame>().clone();
+        frame.map_id="ElmsLab".into();frame.grid_size=UVec2::new(8,5);frame.viewport_size=Vec2::new(64.,40.);
+        frame.actors.clear();frame.tiles.clear();
+        let drawing=[[5,6,6,6,6,7],[21,22,22,22,22,23],[37,38,38,38,38,39]];
+        for y in 0..5 {for x in 0..8 {
+            let mut source=VisualTileSource{tileset_id:"lab".into(),metatile_id:1,
+                subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,tile_index:0x10};
+            if y<3&&x<6 {
+                source.metatile_id=[[6,7],[10,11]][(y+2)/4][x/4];
+                source.subtile_row=((y+2)%4)as u8;source.tile_index=drawing[y][x];
+            }
+            frame.tiles.push(VisualTile{column:x as u32,row:y as u32,source,texture:default(),priority:false,animation_frames:None});
+        }}
+        for (i,column) in [1,3,5].into_iter().enumerate() {
+            let mut ball=actor();ball.id=VisualActorId::Object(20+i as u32);ball.source_id="poke_ball".into();
+            ball.center=Vec2::new(-32.+(column as f32+0.5)*8.,8.);frame.actors.push(ball);
+        }
+        app.world_mut().resource_mut::<TerrainRevisionCache>().built_frame=Some(frame.clone());
+        app.world_mut().resource_mut::<TerrainRevisionCache>().footing_heights=vec![6.;40];
+        *app.world_mut().resource_mut::<VisualWorldFrame>()=frame.clone();app.update();
+        assert_eq!(app.world().resource::<ModeledActors>().props.len(),3);
+        for ball in &frame.actors {
+            let entity=app.world().resource::<ModeledActors>().props[&ball.id].entity;
+            let transform=app.world().get::<Transform>(entity).unwrap();
+            assert_eq!(transform.translation,visual_point_to_voxel(ball.center,10.04));
+        }
+        assert_eq!(*app.world().resource::<VisualWorldFrame>(),frame);
+        let removed=app.world().resource::<ModeledActors>().props[&frame.actors[0].id].entity;
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors.remove(0);app.update();
+        assert_eq!(app.world().resource::<ModeledActors>().props.len(),2);
+        assert!(app.world().get_entity(removed).is_err());
+        assert_eq!(app.world().resource::<TerrainRevisionCache>().footing_heights,vec![6.;40]);
     }
     #[test]
     fn variable_prop_source_replaces_same_id_and_reuses_per_kind_mesh() {
@@ -2128,7 +2630,9 @@ mod tests {
             let old_run = state.run_weight;
             state.advance(position, Some(Vec2::X), 16.0, dt);
             let step = (state.phase - old_phase).rem_euclid(TAU);
-            assert!(step > 0.0 && step < 0.71, "phase jumped by {step}");
+            // The shorter walking cycle can advance up to 1.09 radians on
+            // the first fast frame, before the smooth run blend catches up.
+            assert!(step > 0.0 && step < 1.10, "phase jumped by {step}");
             assert!((state.run_weight - old_run).abs() < 0.13);
             assert_eq!(state.last_world_foot, position);
             if frame == 230 {

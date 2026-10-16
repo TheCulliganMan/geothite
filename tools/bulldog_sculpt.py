@@ -2,13 +2,23 @@
 """Original Snubbull and Granbull with distinct jowls, ears, collars and teeth."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,crease_normals
+from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch as _fitted_patch,crease_normals
 from abra_sculpt import surface
 from bovine_sculpt import oval,curved_tube
 from wing_insect_sculpt import membrane,contour
 from skin_glb import COORDINATES
 SPECIES=('snubbull','granbull');HEIGHT=1.06
 PINK=(.91,.53,.64);PURPLE=(.66,.48,.66);BLUE=(.42,.70,.84);CREAM=(.95,.87,.65);WHITE=(.98,.97,.93);INK=(.17,.16,.19);TONGUE=(.79,.43,.46)
+
+def fitted_patch(name,color,outline,surface,thickness=.008):
+    # Python 3.12 changed float summation. Keep the original left-to-right
+    # centroid, including centerline signed zero, in Blender's newer Python.
+    outline=list(outline);area=0.
+    for a,b in zip(outline,outline[1:]+outline[:1]):area+=a[0]*b[1]-b[0]*a[1]
+    if area<0:outline.reverse()
+    cx=cy=0.
+    for x,y in outline:cx+=x;cy+=y
+    return _fitted_patch(name,color,outline,surface,thickness,center=(cx/len(outline),cy/len(outline)))
 
 def ears(p,big):
     c=PURPLE if big else PINK;base=1.015 if big else .891
@@ -82,11 +92,18 @@ def granbull():
         p.append(curved_tube('Fang / small downward upper canine '+str(s),WHITE,[(s*.062,.854,.238),(s*.068,.823,.260)],[.013,.0015],16))
     limbs(p,body,True);return p
 
-def sculpture(species):
+def sculpture(species,normalize=True):
     if species not in SPECIES:raise ValueError('unsupported bulldog')
     p=snubbull() if species=='snubbull' else granbull();lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
+    from sculpt_geometry import linear
+    # Exact local Crystal normal RGB555 colors, expanded to sRGB8.
     for q in p:
-        q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+        name=q['part'];big=species=='granbull'
+        rgb=(123,33,140) if name.startswith('Mouth / fitted rosy') else (0,0,0) if name.startswith(('Nose /','Pupil /','Eye / fitted','Ear marking /','Mouth /','Wrist /','Hand fold /','Toe groove /','Collar / fitted')) else (57,82,107) if name.startswith(('Spot /','Collar / continuous')) else (255,255,255) if name.startswith(('Fang /','Tusk /','Eye /')) or (not big and name.startswith('Foot /')) else ((189,99,181) if big else (231,115,107))
+        q['base_color']=linear(tuple(v/255 for v in rgb))
+    if normalize:
+        for q in p:
+            q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)

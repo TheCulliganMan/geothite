@@ -11,9 +11,9 @@ from skin_glb import COORDINATES
 SPECIES=('electabuzz','elekid');HEIGHTS={'electabuzz':1.28,'elekid':.91}
 YELLOW=(.95,.80,.29);INK=(.075,.095,.13);WHITE=(.98,.98,.91);PINK=(.82,.49,.52)
 
-def striped_tube(p,label,points,radii,bands):
+def striped_tube(p,label,points,radii,bands,steps=28):
  base=curved_tube(label,YELLOW,points,radii,32);p.append(base)
- pp,rr=smooth(points,radii,28)
+ pp,rr=smooth(points,radii,steps)
  for j,(a,b) in enumerate(bands):
   start=max(0,int(a*(len(pp)-1)));end=min(len(pp)-1,int(b*(len(pp)-1)))
   p.append(curved_tube(label.replace(' /',' stripe /')+' '+str(j),INK,pp[start:end+1],[r+.003 for r in rr[start:end+1]],32))
@@ -45,7 +45,9 @@ def gaze(p,parent,baby):
  for s in (-1,1):
   outline=((.028,.620),(.140,.660),(.128,.589),(.084,.566),(.046,.581)) if baby else ((.046,1.040),(.172,1.098),(.151,1.024),(.091,1.006))
   xy=[(s*x,y) for x,y in outline]
-  socket=paint('Eye socket / fitted sharp electric recess '+str(s),INK,xy,parent,.005,3);p.append(socket);cx=sum(x for x,y in xy)/len(xy);cy=sum(y for x,y in xy)/len(xy)
+  socket=paint('Eye socket / fitted sharp electric recess '+str(s),INK,xy,parent,.005,3);p.append(socket);cx=cy=0.
+  for x,y in xy:cx+=x;cy+=y
+  cx/=len(xy);cy/=len(xy)
   eye=paint('Eye / fitted ivory angular electric gaze '+str(s),WHITE,[(cx+.88*(x-cx),cy+.85*(y-cy)) for x,y in xy],socket,.004,3);p.append(eye)
   p.append(paint('Pupil / fitted small dark electric stare '+str(s),INK,oval(s*(.096 if baby else .123),.602 if baby else 1.045,.005,.010,24),eye,.003,2))
 
@@ -61,7 +63,7 @@ def elekid():
  p.append(paint('Bolt / fitted broad baby electric belly zigzag',INK,[(-.066,.466),(.085,.444),(.034,.363),(.091,.367),(.022,.260),(-.002,.329),(-.074,.345),(-.031,.405),(-.076,.415)],body,.007,4))
  for s in (-1,1):
   p.append(paddle('Arm root / slim yellow baby electric connector '+str(s),YELLOW,[(s*.209,.636,.009),(s*.338,.653,.034),(s*.398,.640,.057)],[.042,.038,.045],[.041,.038,.045]))
-  striped_tube(p,'Arm / broad yellow baby electric forearm '+str(s),[(s*.354,.650,.045),(s*.447,.644,.061),(s*.556,.631,.075)],[.073,.091,.094],[(.22,.40),(.60,.79)])
+  striped_tube(p,'Arm / broad yellow baby electric forearm '+str(s),[(s*.354,.650,.045),(s*.447,.644,.061),(s*.556,.631,.075)],[.073,.091,.094],[(.22,.40),(.60,.79)],steps=12)
   hand=ellipsoid('Hand / broad yellow baby electric fist '+str(s),YELLOW,(s*.591,.626,.081),(.094,.097,.102),40,26);p.append(hand)
   for j,(y,z) in enumerate(((.688,.135),(.602,.158),(.595,.018))):
    p.append(curved_tube(f'Hand claw / rooted ivory baby electric point {s} {j}',WHITE,[(s*.615,y,z),(s*.660,y+.006,z+.026),(s*.687,y+.011,z+.033)],[.022,.015,.002],28))
@@ -107,10 +109,16 @@ def electabuzz():
  p.append(ellipsoid('Tail tip / rooted rounded yellow adult electric end',YELLOW,(.379,.568,-.516),(.027,.032,.027),32,22))
  return p
 
-def sculpture(name):
+def sculpture(name,normalize=True):
  if name not in SPECIES:raise ValueError(name)
  p=electabuzz() if name=='electabuzz' else elekid();lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[name]/(hi-lo)
- for q in p:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+ if name=='elekid':
+  from sculpt_geometry import linear
+  for q in p:
+   n=q['part'];rgb=(0,0,0) if n.startswith(('Eye socket /','Pupil /','Mouth /','Belly band /','Bolt /','Arm stripe /')) else (255,255,255) if n.startswith(('Eye /','Hand claw /')) else (255,255,41)
+   q['base_color']=linear(tuple(v/255 for v in rgb))
+ if normalize:
+  for q in p:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':name,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

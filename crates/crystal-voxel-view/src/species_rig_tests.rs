@@ -16,11 +16,12 @@ fn unique_skin_motion_preserves_full_vertex_animation_envelope_bits() {
 fn candidate(species: Species) -> Vec<u8> {
     let key = format!("{}_GLB", species.name().to_uppercase());
     let canonical = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(match species {
+        Species::Procedural(_) => unreachable!("GLB fixture only"),
         Species::Clefairy | Species::Jigglypuff => format!("models/actor_props/icon_{}.glb", species.name()),
         Species::Chikorita | Species::Cyndaquil | Species::Totodile => {
             format!("models/actor_props/battle_{}.glb", species.name())
         }
-        Species::Bayleef | Species::Meganium | Species::Gengar | Species::Spearow | Species::Wooper | Species::Gyarados | Species::Sudowoodo | Species::Lapras | Species::Snorlax | Species::Pikachu | Species::Bulbasaur | Species::Charmander | Species::Squirtle | Species::Geodude | Species::Pidgey | Species::Oddish | Species::Poliwag | Species::Rattata | Species::Raticate | Species::Psyduck | Species::Golduck | Species::Zubat | Species::Golbat | Species::Crobat | Species::Butterfree | Species::Beedrill | Species::Hoothoot | Species::Sentret | Species::Staryu | Species::Voltorb | Species::Onix | Species::Diglett | Species::Slowpoke | Species::Entei | Species::Raikou | Species::Suicune | Species::Furret | Species::Noctowl | Species::Ledyba | Species::Ledian | Species::Spinarak | Species::Ariados | Species::Quagsire | Species::Hoppip | Species::Sunkern | Species::Sunflora | Species::Aipom | Species::Skiploom | Species::Jumpluff | Species::Unown(_) => {
+        Species::Bayleef | Species::Meganium | Species::Gengar | Species::Spearow | Species::Wooper | Species::Gyarados | Species::Sudowoodo | Species::Lapras | Species::Snorlax | Species::Pikachu | Species::Bulbasaur | Species::Charmander | Species::Squirtle | Species::Geodude | Species::Pidgey | Species::Oddish | Species::Poliwag | Species::Rattata | Species::Raticate | Species::Psyduck | Species::Golduck | Species::Zubat | Species::Golbat | Species::Crobat | Species::Butterfree | Species::Beedrill | Species::Hoothoot | Species::Sentret | Species::Staryu | Species::Voltorb | Species::Onix | Species::Diglett | Species::Slowpoke | Species::Entei | Species::Raikou | Species::Suicune | Species::Furret | Species::Noctowl | Species::Ledyba | Species::Ledian | Species::Spinarak | Species::Ariados | Species::Quagsire | Species::Hoppip | Species::Bellossom | Species::Qwilfish | Species::Wobbuffet | Species::Dunsparce | Species::Shuckle | Species::Gligar | Species::Yanma | Species::Murkrow | Species::Misdreavus | Species::Teddiursa | Species::Ursaring | Species::Snubbull | Species::Granbull | Species::Houndour | Species::Houndoom | Species::Miltank | Species::Tauros | Species::Delibird | Species::Stantler | Species::Girafarig | Species::Phanpy | Species::Marill | Species::Natu | Species::Remoraid | Species::Octillery | Species::Swinub | Species::Piloswine | Species::Sneasel | Species::Skarmory | Species::Smeargle | Species::Lugia | Species::Articuno | Species::Zapdos | Species::Moltres | Species::Corsola | Species::Mantine | Species::Porygon | Species::Porygon2 | Species::Chinchou | Species::Lanturn | Species::Slugma | Species::Magcargo | Species::Togepi | Species::Togetic | Species::Hitmonlee | Species::Hitmonchan | Species::Hitmontop | Species::Tyrogue | Species::Smoochum | Species::Elekid | Species::Magby | Species::Pichu | Species::Cleffa | Species::Igglybuff | Species::Mareep | Species::Flaaffy | Species::Ampharos | Species::Xatu | Species::Azumarill | Species::Donphan | Species::Sunkern | Species::Sunflora | Species::Aipom | Species::Skiploom | Species::Jumpluff | Species::Unown(_) => {
             format!("models/battle_species/{}.glb", species.name())
         }
     });
@@ -64,6 +65,66 @@ fn fixture(species: Species) -> &'static SpeciesRig {
     static LEDIAN: OnceLock<SpeciesRig> = OnceLock::new();
     static ARIADOS: OnceLock<SpeciesRig> = OnceLock::new();
     static JUMPLUFF: OnceLock<SpeciesRig> = OnceLock::new();
+    static BELLOSSOM: OnceLock<SpeciesRig> = OnceLock::new();
+    static QWILFISH: OnceLock<SpeciesRig> = OnceLock::new();
+    static WOBBUFFET: OnceLock<SpeciesRig> = OnceLock::new();
+    static DUNSPARCE: OnceLock<SpeciesRig> = OnceLock::new();
+    static SHUCKLE: OnceLock<SpeciesRig> = OnceLock::new();
+    static GLIGAR: OnceLock<SpeciesRig> = OnceLock::new();
+    static TEDDIURSA: OnceLock<SpeciesRig> = OnceLock::new();
+    static SNUBBULL: OnceLock<SpeciesRig> = OnceLock::new();
+    static HOUNDOUR: OnceLock<SpeciesRig> = OnceLock::new();
+    static MILTANK: OnceLock<SpeciesRig> = OnceLock::new();
+    static TAUROS: OnceLock<SpeciesRig> = OnceLock::new();
+    static DELIBIRD: OnceLock<SpeciesRig> = OnceLock::new();
+    static STANTLER: OnceLock<SpeciesRig> = OnceLock::new();
+    static GIRAFARIG: OnceLock<SpeciesRig> = OnceLock::new();
+    static PHANPY: OnceLock<SpeciesRig> = OnceLock::new();
+    static MARILL: OnceLock<SpeciesRig> = OnceLock::new();
+    static NATU: OnceLock<SpeciesRig> = OnceLock::new();
+    static TOGEPI: OnceLock<SpeciesRig> = OnceLock::new();
+    static TOGETIC: OnceLock<SpeciesRig> = OnceLock::new();
+    static REMORAID: OnceLock<SpeciesRig> = OnceLock::new();
+    static OCTILLERY: OnceLock<SpeciesRig> = OnceLock::new();
+    static SWINUB: OnceLock<SpeciesRig> = OnceLock::new();
+    static PILOSWINE: OnceLock<SpeciesRig> = OnceLock::new();
+    static SNEASEL: OnceLock<SpeciesRig> = OnceLock::new();
+    static SKARMORY: OnceLock<SpeciesRig> = OnceLock::new();
+    static SMEARGLE: OnceLock<SpeciesRig> = OnceLock::new();
+    static MOLTRES: OnceLock<SpeciesRig> = OnceLock::new();
+    static ZAPDOS: OnceLock<SpeciesRig> = OnceLock::new();
+    static ARTICUNO: OnceLock<SpeciesRig> = OnceLock::new();
+    static LUGIA: OnceLock<SpeciesRig> = OnceLock::new();
+    static CORSOLA: OnceLock<SpeciesRig> = OnceLock::new();
+    static MANTINE: OnceLock<SpeciesRig> = OnceLock::new();
+    static PORYGON: OnceLock<SpeciesRig> = OnceLock::new();
+    static PORYGON2: OnceLock<SpeciesRig> = OnceLock::new();
+    static CHINCHOU: OnceLock<SpeciesRig> = OnceLock::new();
+    static LANTURN: OnceLock<SpeciesRig> = OnceLock::new();
+    static SLUGMA: OnceLock<SpeciesRig> = OnceLock::new();
+    static MAGCARGO: OnceLock<SpeciesRig> = OnceLock::new();
+    static HITMONLEE: OnceLock<SpeciesRig> = OnceLock::new();
+    static HITMONCHAN: OnceLock<SpeciesRig> = OnceLock::new();
+    static HITMONTOP: OnceLock<SpeciesRig> = OnceLock::new();
+    static TYROGUE: OnceLock<SpeciesRig> = OnceLock::new();
+    static SMOOCHUM: OnceLock<SpeciesRig> = OnceLock::new();
+    static ELEKID: OnceLock<SpeciesRig> = OnceLock::new();
+    static MAGBY: OnceLock<SpeciesRig> = OnceLock::new();
+    static PICHU: OnceLock<SpeciesRig> = OnceLock::new();
+    static CLEFFA: OnceLock<SpeciesRig> = OnceLock::new();
+    static IGGLYBUFF: OnceLock<SpeciesRig> = OnceLock::new();
+    static MAREEP: OnceLock<SpeciesRig> = OnceLock::new();
+    static FLAAFFY: OnceLock<SpeciesRig> = OnceLock::new();
+    static AMPHAROS: OnceLock<SpeciesRig> = OnceLock::new();
+    static XATU: OnceLock<SpeciesRig> = OnceLock::new();
+    static AZUMARILL: OnceLock<SpeciesRig> = OnceLock::new();
+    static DONPHAN: OnceLock<SpeciesRig> = OnceLock::new();
+    static HOUNDOOM: OnceLock<SpeciesRig> = OnceLock::new();
+    static GRANBULL: OnceLock<SpeciesRig> = OnceLock::new();
+    static URSARING: OnceLock<SpeciesRig> = OnceLock::new();
+    static MISDREAVUS: OnceLock<SpeciesRig> = OnceLock::new();
+    static MURKROW: OnceLock<SpeciesRig> = OnceLock::new();
+    static YANMA: OnceLock<SpeciesRig> = OnceLock::new();
     static SUNKERN: OnceLock<SpeciesRig> = OnceLock::new();
     static SUNFLORA: OnceLock<SpeciesRig> = OnceLock::new();
     static AIPOM: OnceLock<SpeciesRig> = OnceLock::new();
@@ -89,6 +150,7 @@ fn fixture(species: Species) -> &'static SpeciesRig {
     static GEODUDE: OnceLock<SpeciesRig> = OnceLock::new();
     static SQUIRTLE: OnceLock<SpeciesRig> = OnceLock::new();
     let cache = match species {
+        Species::Procedural(_) => unreachable!("GLB fixture only"),
         Species::Chikorita => &CHIKORITA,
         Species::Bayleef => &BAYLEEF,
         Species::Meganium => &MEGANIUM,
@@ -135,6 +197,66 @@ fn fixture(species: Species) -> &'static SpeciesRig {
         Species::Quagsire => &QUAGSIRE,
         Species::Hoppip => &HOPPIP,
         Species::Skiploom => &SKIPLOOM,
+        Species::Bellossom => &BELLOSSOM,
+        Species::Qwilfish => &QWILFISH,
+        Species::Wobbuffet => &WOBBUFFET,
+        Species::Dunsparce => &DUNSPARCE,
+        Species::Shuckle => &SHUCKLE,
+        Species::Gligar => &GLIGAR,
+        Species::Yanma => &YANMA,
+        Species::Murkrow => &MURKROW,
+        Species::Misdreavus => &MISDREAVUS,
+        Species::Teddiursa => &TEDDIURSA,
+        Species::Ursaring => &URSARING,
+        Species::Snubbull => &SNUBBULL,
+        Species::Granbull => &GRANBULL,
+        Species::Houndour => &HOUNDOUR,
+        Species::Houndoom => &HOUNDOOM,
+        Species::Miltank => &MILTANK,
+        Species::Tauros => &TAUROS,
+        Species::Delibird => &DELIBIRD,
+        Species::Stantler => &STANTLER,
+        Species::Girafarig => &GIRAFARIG,
+        Species::Phanpy => &PHANPY,
+        Species::Marill => &MARILL,
+        Species::Natu => &NATU,
+        Species::Togepi => &TOGEPI,
+        Species::Togetic => &TOGETIC,
+        Species::Remoraid => &REMORAID,
+        Species::Octillery => &OCTILLERY,
+        Species::Swinub => &SWINUB,
+        Species::Piloswine => &PILOSWINE,
+        Species::Sneasel => &SNEASEL,
+        Species::Skarmory => &SKARMORY,
+        Species::Smeargle => &SMEARGLE,
+        Species::Moltres => &MOLTRES,
+        Species::Zapdos => &ZAPDOS,
+        Species::Articuno => &ARTICUNO,
+        Species::Lugia => &LUGIA,
+        Species::Corsola => &CORSOLA,
+        Species::Mantine => &MANTINE,
+        Species::Porygon => &PORYGON,
+        Species::Porygon2 => &PORYGON2,
+        Species::Chinchou => &CHINCHOU,
+        Species::Lanturn => &LANTURN,
+        Species::Slugma => &SLUGMA,
+        Species::Magcargo => &MAGCARGO,
+        Species::Hitmonlee => &HITMONLEE,
+        Species::Hitmonchan => &HITMONCHAN,
+        Species::Hitmontop => &HITMONTOP,
+        Species::Tyrogue => &TYROGUE,
+        Species::Smoochum => &SMOOCHUM,
+        Species::Elekid => &ELEKID,
+        Species::Magby => &MAGBY,
+        Species::Pichu => &PICHU,
+        Species::Cleffa => &CLEFFA,
+        Species::Igglybuff => &IGGLYBUFF,
+        Species::Mareep => &MAREEP,
+        Species::Flaaffy => &FLAAFFY,
+        Species::Ampharos => &AMPHAROS,
+        Species::Xatu => &XATU,
+        Species::Azumarill => &AZUMARILL,
+        Species::Donphan => &DONPHAN,
         Species::Sunkern => &SUNKERN,
         Species::Sunflora => &SUNFLORA,
         Species::Aipom => &AIPOM,
@@ -180,14 +302,14 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Chikorita, 7463, 3220, 1.0_f32),
         (Species::Bayleef, 9626, 3836, 1.15_f32),
         (Species::Meganium, 11353, 4520, 1.48_f32),
-        (Species::Cyndaquil, 4506, 2086, 0.91_f32),
+        (Species::Cyndaquil, 16314, 8138, 1.25_f32),
         (Species::Totodile, 7531, 7078, 1.02_f32),
         (Species::Gengar, 6952, 5560, 1.05_f32),
         (Species::Spearow, 2139, 1929, 0.75_f32),
         (Species::Wooper, 3991, 5532, 0.70_f32),
         (Species::Gyarados, 9187, 11666, 1.40_f32),
         (Species::Sudowoodo, 9089, 11376, 1.04_f32),
-        (Species::Lapras, 19298, 21720, 1.50_f32),
+        (Species::Lapras, 19471, 23332, 1.50_f32),
         (Species::Snorlax, 13680, 21820, 1.40_f32),
         (Species::Pikachu, 11568, 13876, 1.00_f32),
         (Species::Bulbasaur, 19587, 31896, 0.95_f32),
@@ -225,6 +347,66 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Ariados, 6498, 6768, 0.90_f32),
         (Species::Quagsire, 4380, 6836, 1.13_f32),
         (Species::Hoppip, 5963, 8380, 0.85_f32),
+        (Species::Bellossom, 18524, 26980, 0.95_f32),
+        (Species::Qwilfish, 9014, 13644, 0.91_f32),
+        (Species::Wobbuffet, 11791, 19260, 1.14_f32),
+        (Species::Dunsparce, 11833, 12248, 0.85_f32),
+        (Species::Shuckle, 14875, 19836, 0.91_f32),
+        (Species::Gligar, 17422, 26768, 1.06_f32),
+        (Species::Yanma, 19976, 26452, 0.95_f32),
+        (Species::Murkrow, 13359, 16616, 0.78_f32),
+        (Species::Misdreavus, 14175, 23794, 1.02_f32),
+        (Species::Teddiursa, 19943, 23880, 1.14_f32),
+        (Species::Ursaring, 19016, 27116, 1.14_f32),
+        (Species::Snubbull, 16555, 19516, 1.06_f32),
+        (Species::Granbull, 14140, 19048, 1.06_f32),
+        (Species::Houndour, 11024, 14248, 1.20_f32),
+        (Species::Houndoom, 15865, 22736, 1.20_f32),
+        (Species::Miltank, 17281, 17976, 1.12_f32),
+        (Species::Tauros, 14025, 16504, 1.28_f32),
+        (Species::Delibird, 9916, 17808, 1.10_f32),
+        (Species::Stantler, 15993, 20548, 1.28_f32),
+        (Species::Girafarig, 14025, 22432, 1.28_f32),
+        (Species::Phanpy, 18472, 31284, 1.02_f32),
+        (Species::Marill, 3437, 5648, 1.02_f32),
+        (Species::Natu, 18853, 28820, 1.04_f32),
+        (Species::Togepi, 17825, 28896, 0.94_f32),
+        (Species::Togetic, 16755, 26728, 0.94_f32),
+        (Species::Remoraid, 6822, 7724, 1.00_f32),
+        (Species::Octillery, 19798, 21740, 1.00_f32),
+        (Species::Swinub, 7044, 8496, 0.98_f32),
+        (Species::Piloswine, 5062, 9432, 0.98_f32),
+        (Species::Sneasel, 8779, 9936, 1.11_f32),
+        (Species::Skarmory, 3635, 4288, 1.21_f32),
+        (Species::Smeargle, 16875, 21004, 1.14_f32),
+        (Species::Moltres, 19671, 26024, 1.28_f32),
+        (Species::Zapdos, 18495, 28584, 1.28_f32),
+        (Species::Articuno, 19074, 26704, 1.28_f32),
+        (Species::Lugia, 19823, 34796, 1.45_f32),
+        (Species::Corsola, 7359, 14180, 0.93_f32),
+        (Species::Mantine, 19485, 27416, 1.02_f32),
+        (Species::Porygon, 4789, 2008, 1.05_f32),
+        (Species::Porygon2, 14189, 23912, 1.05_f32),
+        (Species::Chinchou, 12754, 11116, 0.95_f32),
+        (Species::Lanturn, 17971, 15572, 0.95_f32),
+        (Species::Slugma, 2290, 4108, 0.98_f32),
+        (Species::Magcargo, 5554, 10276, 0.98_f32),
+        (Species::Hitmonlee, 19747, 35276, 1.24_f32),
+        (Species::Hitmonchan, 18362, 30096, 1.30_f32),
+        (Species::Hitmontop, 17394, 29828, 1.25_f32),
+        (Species::Tyrogue, 19924, 33424, 0.86_f32),
+        (Species::Smoochum, 19907, 34392, 0.78_f32),
+        (Species::Elekid, 19466, 33128, 0.91_f32),
+        (Species::Magby, 19764, 35032, 0.77_f32),
+        (Species::Pichu, 9462, 9104, 0.62_f32),
+        (Species::Cleffa, 14716, 24376, 0.6_f32),
+        (Species::Igglybuff, 16964, 28684, 0.58_f32),
+        (Species::Mareep, 6382, 11840, 0.85_f32),
+        (Species::Flaaffy, 10302, 16636, 1.0_f32),
+        (Species::Ampharos, 2402, 4700, 1.35_f32),
+        (Species::Xatu, 15289, 24060, 1.04_f32),
+        (Species::Azumarill, 4873, 7448, 1.02_f32),
+        (Species::Donphan, 17395, 29596, 1.02_f32),
         (Species::Sunkern, 11694, 16524, 0.95_f32),
         (Species::Sunflora, 9135, 13696, 0.95_f32),
         (Species::Aipom, 17804, 30016, 1.02_f32),
@@ -2022,5 +2204,1481 @@ fn sunflower_family_keeps_seed_base_and_feet_fixed_with_coherent_botanical_detai
             }}
         }}
         assert_eq!(moved.len(),prefixes.len());
+    }
+}
+
+
+#[test]
+fn bellossom_keeps_leaf_tips_planted_and_crown_parts_coherent() {
+    let rig=fixture(Species::Bellossom);
+    assert!(std::ptr::eq(super::for_species("BELLOSSOM").unwrap(),super::rig(Species::Bellossom)));
+    assert_bits(crate::battle_species_models::mesh("BELLOSSOM").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    let supports:Vec<_>=(0..rig.neutral.positions.len()).filter(|&v|rig.neutral.positions[v][1]<0.001).collect();
+    assert!(!supports.is_empty());
+    for part in &rig.anatomy {
+        let owner=if part.name.starts_with("Flower ") {
+            let words:Vec<_>=part.name.split_whitespace().collect();
+            let sign=words[words.len()-if part.name.starts_with("Flower petal /") {2} else {1}];
+            Some(if sign=="-1" {8} else {9})
+        } else if ["Head /","Eye /","Eye glint /","Cheek /","Mouth /","Tongue /"].iter().any(|prefix|part.name.starts_with(prefix)) {Some(3)} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);let mut moved=std::collections::HashSet::new();
+    let prefixes=["Body /","Head /","Arm /","Skirt /","Flower petal /","Flower center /","Flower well /"];
+    for clip in Clip::ALL {for frame in 0..=60 {
+        rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/61.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Bellossom leaves culling bounds");
+            assert!(point.y>=-0.000001,"Bellossom crosses floor");
+        }
+        for &v in &supports {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+        if frame==17 {for prefix in prefixes {
+            if rig.anatomy.iter().filter(|p|p.name.starts_with(prefix)).any(|p|p.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005)) {moved.insert(prefix);}
+        }}
+    }}
+    assert_eq!(moved.len(),prefixes.len());
+}
+
+#[test]
+fn qwilfish_keeps_spines_face_and_spotted_tail_coherent_without_floor_drift() {
+    let rig=fixture(Species::Qwilfish);
+    assert!(std::ptr::eq(super::for_species("QWILFISH").unwrap(),super::rig(Species::Qwilfish)));
+    assert_bits(crate::battle_species_models::mesh("QWILFISH").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let owner=if part.name.starts_with("Tail fin /") || part.name.starts_with("Tail spot /") {Some(6)}
+            else if !["Tail /","Fin /","Fin crease /"].iter().any(|p|part.name.starts_with(p)) {Some(1)} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);let mut moved=std::collections::HashSet::new();
+    let prefixes=["Body /","Spine /","Fin /","Fin crease /","Tail /","Tail fin /","Tail spot /"];
+    for clip in Clip::ALL {for frame in 0..=60 {
+        rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/61.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);
+            assert!((point.y-rig.neutral.positions[v][1]).abs()<0.000001,"Qwilfish changes floor height");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Qwilfish leaves culling bounds");
+        }
+        if frame==17 {for prefix in prefixes {
+            if rig.anatomy.iter().filter(|p|p.name.starts_with(prefix)).any(|p|p.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005)) {moved.insert(prefix);}
+        }}
+    }}
+    assert_eq!(moved.len(),prefixes.len());
+}
+
+#[test]
+fn wobbuffet_keeps_basal_lobes_planted_face_fitted_and_tail_eyes_coherent() {
+    let rig=fixture(Species::Wobbuffet);
+    assert!(std::ptr::eq(super::for_species("WOBBUFFET").unwrap(),super::rig(Species::Wobbuffet)));
+    assert_bits(crate::battle_species_models::mesh("WOBBUFFET").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let owner=if part.name.starts_with("Foot /") {Some(0)}
+            else if ["Eye /","Mouth /","Tongue /"].iter().any(|p|part.name.starts_with(p)) {Some(1)}
+            else if ["Tail paddle /","Tail eye /","Tail pupil /"].iter().any(|p|part.name.starts_with(p)) {Some(10)}
+            else if part.name.starts_with("Hand /") {Some(if part.name.contains("salute") {4} else {7})} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);let mut moved=std::collections::HashSet::new();
+    let prefixes=["Body /","Arm /","Hand /","Tail /","Tail paddle /","Tail eye /","Tail pupil /"];
+    for clip in Clip::ALL {for frame in 0..=60 {
+        rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/61.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Wobbuffet crosses the supporting floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Wobbuffet leaves culling bounds");
+        }
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /")) {
+            for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+        }
+        if frame==17 {for prefix in prefixes {
+            if rig.anatomy.iter().filter(|p|p.name.starts_with(prefix)).any(|p|p.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005)) {moved.insert(prefix);}
+        }}
+    }}
+    assert_eq!(moved.len(),prefixes.len());
+}
+
+#[test]
+fn dunsparce_keeps_belly_grounded_wings_fitted_and_drill_spiral_coherent() {
+    let rig=fixture(Species::Dunsparce);
+    assert!(std::ptr::eq(super::for_species("DUNSPARCE").unwrap(),super::rig(Species::Dunsparce)));
+    assert_bits(crate::battle_species_models::mesh("DUNSPARCE").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let owner=if ["Drill /","Drill groove /"].iter().any(|p|part.name.starts_with(p)) {Some(6)}
+            else if ["Body /","Belly /","Eye /","Jaw /","Back band /"].iter().any(|p|part.name.starts_with(p)) {Some(1)}
+            else if ["Wing /","Wing crease /"].iter().any(|p|part.name.starts_with(p)) {Some(if part.name.ends_with("-1") {2} else {3})} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);let mut moved=std::collections::HashSet::new();
+    let prefixes=["Body /","Belly /","Eye /","Jaw /","Wing /","Wing crease /","Back band /","Tail /","Drill /","Drill groove /"];
+    for clip in Clip::ALL {for frame in 0..=60 {
+        rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/61.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Dunsparce crosses the supporting floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Dunsparce leaves culling bounds");
+        }
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Body /") || p.name.starts_with("Belly /")) {
+            for v in part.vertices.clone() {assert!((rig.skin_point(v,&matrices).y-rig.neutral.positions[v][1]).abs()<0.000001,"Dunsparce lifts its belly");}
+        }
+        if frame==17 {for prefix in prefixes {
+            if rig.anatomy.iter().filter(|p|p.name.starts_with(prefix)).any(|p|p.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005)) {moved.insert(prefix);}
+        }}
+    }}
+    assert_eq!(moved.len(),prefixes.len());
+}
+
+#[test]
+fn shuckle_keeps_shell_apertures_and_feet_fixed_while_soft_body_moves() {
+    let rig=fixture(Species::Shuckle);
+    assert!(std::ptr::eq(super::for_species("SHUCKLE").unwrap(),super::rig(Species::Shuckle)));
+    assert_bits(crate::battle_species_models::mesh("SHUCKLE").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    let hard=["Shell /","Interior /","Rim /","Spot /","Foot /"];
+    for part in &rig.anatomy {
+        let owner=if hard.iter().any(|p|part.name.starts_with(p)) {Some(0)}
+            else if ["Head /","Eye /","Mouth /"].iter().any(|p|part.name.starts_with(p)) {Some(7)} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);let mut moved=std::collections::HashSet::new();
+    let prefixes=["Limb /","Neck /","Head /","Eye /","Mouth /"];
+    for clip in Clip::ALL {for frame in 0..=60 {
+        rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/61.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Shuckle crosses the supporting floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Shuckle leaves culling bounds");
+        }
+        for part in rig.anatomy.iter().filter(|part|hard.iter().any(|p|part.name.starts_with(p))) {
+            for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+        }
+        if frame==17 {for prefix in prefixes {
+            if rig.anatomy.iter().filter(|p|p.name.starts_with(prefix)).any(|p|p.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005)) {moved.insert(prefix);}
+        }}
+    }}
+    assert_eq!(moved.len(),prefixes.len());
+}
+
+#[test]
+fn gligar_keeps_talons_planted_and_face_pincers_sails_and_venom_tail_coherent() {
+    let rig=fixture(Species::Gligar);
+    assert!(std::ptr::eq(super::for_species("GLIGAR").unwrap(),super::rig(Species::Gligar)));
+    assert_bits(crate::battle_species_models::mesh("GLIGAR").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let owner=if ["Foot /","Foot claw /"].iter().any(|p|part.name.starts_with(p)) {Some(0)}
+            else if ["Head /","Eye /","Pupil /","Eye glint /","Mouth /","Fang /"].iter().any(|p|part.name.starts_with(p)) {Some(2)}
+            else if ["Tongue /","Tongue crease /"].iter().any(|p|part.name.starts_with(p)) {Some(5)}
+            else if part.name.starts_with("Ear /") {Some(if part.name.ends_with("-1") {3} else {4})}
+            else if part.name.starts_with("Pincer /") {Some(if part.name.ends_with("-1") {7} else {9})}
+            else if part.name.starts_with("Tail bulb /") {Some(13)} else if part.name.starts_with("Stinger /") {Some(14)} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);let mut moved=std::collections::HashSet::new();
+    let prefixes=["Body /","Head /","Ear /","Tongue /","Arm /","Pincer /","Wing /","Wing spar /","Leg /","Tail /","Tail bulb /","Stinger /"];
+    for clip in Clip::ALL {for frame in 0..=60 {
+        rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/61.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Gligar crosses the supporting floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Gligar leaves culling bounds");
+        }
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /") || p.name.starts_with("Foot claw /")) {
+            for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+        }
+        if frame==17 {for prefix in prefixes {
+            if rig.anatomy.iter().filter(|p|p.name.starts_with(prefix)).any(|p|p.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005)) {moved.insert(prefix);}
+        }}
+    }}
+    assert_eq!(moved.len(),prefixes.len());
+}
+
+#[test]
+fn yanma_keeps_coated_wings_and_forked_toes_coherent_through_segmented_tail_motion() {
+    let rig=fixture(Species::Yanma);
+    assert!(std::ptr::eq(super::for_species("YANMA").unwrap(),super::rig(Species::Yanma)));
+    assert_bits(crate::battle_species_models::mesh("YANMA").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let owner=if part.name.starts_with("Foot /") {Some(0)} else if part.name.starts_with("Thorax /") {Some(1)}
+            else if ["Head /","Eye /","Eye glint /","Crown /","Mandible /","Forehead /","Mouth /"].iter().any(|p|part.name.starts_with(p)) {Some(2)}
+            else if ["Tail cap /","Tail fin /","Tail tip /"].iter().any(|p|part.name.starts_with(p)) {Some(15)}
+            else if ["Wing /","Wing band /","Wing vein /"].iter().any(|p|part.name.starts_with(p)) {
+                let words:Vec<_>=part.name.split_whitespace().collect();let end=words.len()-usize::from(part.name.starts_with("Wing vein /"));
+                let side=words[end-2];let rear:usize=words[end-1].parse().unwrap();Some(3+if side=="-1" {0} else {2}+rear)
+            } else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner as u16,0,0,0]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);let mut moved=std::collections::HashSet::new();
+    let prefixes=["Thorax /","Head /","Wing /","Wing band /","Wing vein /","Leg /","Abdomen /","Abdomen collar /","Tail cap /","Tail fin /","Tail tip /"];
+    for clip in Clip::ALL {for frame in 0..=60 {
+        rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/61.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"Yanma crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Yanma leaves culling bounds");
+        }
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /")) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        if frame==17 {for prefix in prefixes {if rig.anatomy.iter().filter(|p|p.name.starts_with(prefix)).any(|p|p.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005)) {moved.insert(prefix);}}}
+    }}
+    assert_eq!(moved.len(),prefixes.len());
+}
+
+#[test]
+fn murkrow_keeps_planted_talons_and_coherent_folded_wings_through_broom_motion() {
+    let rig=fixture(Species::Murkrow);
+    assert!(std::ptr::eq(super::for_species("MURKROW").unwrap(),super::rig(Species::Murkrow)));
+    assert_bits(crate::battle_species_models::mesh("MURKROW").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let owner=if ["Foot /","Toe /","Talon /"].iter().any(|p|part.name.starts_with(p)) {Some(0)}
+            else if ["Head /","Hat /","Eye /","Pupil /","Nostril /"].iter().any(|p|part.name.starts_with(p)) {Some(2)}
+            else if part.name.starts_with("Bill /") {Some(if part.name.contains("lower") || part.name.contains("seam") {3} else {2})}
+            else if ["Tail fan /","Tail fold /"].iter().any(|p|part.name.starts_with(p)) {Some(7)}
+            else if part.name.starts_with("Binding /") {Some(6)}
+            else if part.name.starts_with("Crest /") {Some(8+part.name.split_whitespace().last().unwrap().parse::<usize>().unwrap())}
+            else if part.name.starts_with("Wing /") || part.name.starts_with("Wing feather /") {
+                let words:Vec<_>=part.name.split_whitespace().collect();let index=words.len()-if part.name.starts_with("Wing feather /") {2} else {1};Some(if words[index]=="-1" {4} else {5})
+            } else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner as u16,0,0,0]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);let mut moved=std::collections::HashSet::new();
+    let prefixes=["Head /","Crest /","Bill /","Wing /","Wing feather /","Tail /","Binding /","Tail fan /","Tail fold /"];
+    for clip in Clip::ALL {for frame in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"Murkrow crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Murkrow leaves culling bounds");
+        }
+        for part in rig.anatomy.iter().filter(|p|["Foot /","Toe /","Talon /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        if frame==9 {for prefix in prefixes {if rig.anatomy.iter().filter(|p|p.name.starts_with(prefix)).any(|p|p.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005)) {moved.insert(prefix);}}}
+    }}
+    assert_eq!(moved.len(),prefixes.len());
+}
+
+#[test]
+fn misdreavus_keeps_colored_curl_seams_closed_and_necklace_coherent() {
+    let rig=fixture(Species::Misdreavus);
+    assert!(std::ptr::eq(super::for_species("MISDREAVUS").unwrap(),super::rig(Species::Misdreavus)));
+    assert_bits(crate::battle_species_models::mesh("MISDREAVUS").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    let mut seams=Vec::new();
+    for part in &rig.anatomy {
+        if let Some(name)=part.name.strip_prefix("Hair tip / tapered pink curl ") {
+            let base=rig.anatomy.iter().find(|p|p.name==format!("Hair / swept volumetric {name}")).unwrap();
+            let vertices:std::collections::HashMap<_,_>=base.vertices.clone().map(|v|(rig.neutral.positions[v].map(f32::to_bits),v)).collect();
+            let mut shared=std::collections::HashSet::new();
+            for v in part.vertices.clone() {let key=rig.neutral.positions[v].map(f32::to_bits);if let Some(&a)=vertices.get(&key) {
+                assert_eq!(rig.joint_indices[a],rig.joint_indices[v]);assert_eq!(rig.joint_weights[a],rig.joint_weights[v]);
+                shared.insert(key);seams.push((a,v));
+            }}
+            assert_eq!(shared.len(),24);
+        } else if !part.name.starts_with("Body /") && !part.name.starts_with("Hair /") {
+            for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[2,0,0,0]);}
+        }
+    }
+    assert!(!seams.is_empty());
+    let body=rig.anatomy.iter().find(|p|p.name.starts_with("Body /")).unwrap();
+    let support:Vec<_>=body.vertices.clone().filter(|&v|rig.neutral.positions[v][1]<0.015).collect();assert!(support.len()>=5);
+    let (mut pose,mut matrices)=storage(rig);let mut moved=false;
+    for clip in Clip::ALL {for frame in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"Misdreavus crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Misdreavus leaves culling bounds");
+        }
+        for &v in &support {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+        for &(a,b) in &seams {assert_vec_close(rig.skin_point(a,&matrices),rig.skin_point(b,&matrices),0.000001);}
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Hair tip /")) {if part.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005) {moved=true;}}
+    }}
+    assert!(moved,"curled hair tips never articulate");
+}
+
+#[test]
+fn bear_family_keeps_paws_lunar_markings_and_honey_contact_coherent() {
+    for (name,species) in [("TEDDIURSA",Species::Teddiursa),("URSARING",Species::Ursaring)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let owner=if ["Foot /","Foot claw /"].iter().any(|p|part.name.starts_with(p)) {Some(0)}
+                else if part.name.starts_with("Ring /") {Some(1)}
+                else if ["Head /","Moon /","Eye /","Pupil /","Muzzle /","Nose /","Mouth /"].iter().any(|p|part.name.starts_with(p)) {Some(2)}
+                else if part.name.starts_with("Tail /") {Some(7)}
+                else if part.name.starts_with("Ear /") {Some(if part.name.ends_with("-1") {8} else {9})}
+                else if part.name.starts_with("Hand /") || part.name.starts_with("Hand claw /") {
+                    let words:Vec<_>=part.name.split_whitespace().collect();let index=words.len()-if part.name.starts_with("Hand claw /") {2} else {1};Some(if words[index]=="-1" {4} else {6})
+                } else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner as u16,0,0,0]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);let mut moved=false;
+        for clip in Clip::ALL {for frame in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+            }
+            for part in rig.anatomy.iter().filter(|p|["Foot /","Foot claw /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+            if species==Species::Teddiursa {for (a,b) in matrices[2].to_cols_array().iter().zip(matrices[4].to_cols_array()) {assert!((a-b).abs()<0.000001,"honey paw separates from head");}}
+            for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Hand / broad rounded bear palm 1")) {if part.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005) {moved=true;}}
+        }}
+        assert!(moved,"{name} right palm never articulates");
+    }
+}
+
+#[test]
+fn bulldog_family_keeps_paws_folded_ears_spots_and_tusks_coherent() {
+    for (name,species) in [("SNUBBULL",Species::Snubbull),("GRANBULL",Species::Granbull)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let owner=if ["Foot /","Toe groove /"].iter().any(|p|part.name.starts_with(p)) {Some(0)}
+                else if part.name.starts_with("Spot /") {Some(1)}
+                else if ["Head /","Jowl /","Eye /","Pupil /","Muzzle /","Nose /","Mouth /","Fang /"].iter().any(|p|part.name.starts_with(p)) {Some(2)}
+                else if ["Jaw /","Tusk /"].iter().any(|p|part.name.starts_with(p)) {Some(3)}
+                else if part.name.starts_with("Tail /") {Some(8)}
+                else if part.name.starts_with("Ear /") || part.name.starts_with("Ear marking /") {Some(if part.name.ends_with("-1") {9} else {10})}
+                else if ["Hand /","Hand fold /","Wrist /"].iter().any(|p|part.name.starts_with(p)) {
+                    let words:Vec<_>=part.name.split_whitespace().collect();let index=words.len()-if part.name.starts_with("Hand fold /") {2} else {1};Some(if words[index]=="-1" {5} else {7})
+                } else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner as u16,0,0,0]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);let mut moved=std::collections::HashSet::new();
+        let prefixes=["Head /","Ear /","Arm /","Hand /","Jaw /","Tail /"];
+        for clip in Clip::ALL {for frame in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+            }
+            for part in rig.anatomy.iter().filter(|p|["Foot /","Toe groove /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+            if frame==9 {for prefix in prefixes {if rig.anatomy.iter().filter(|p|p.name.starts_with(prefix)).any(|p|p.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005)) {moved.insert(prefix);}}}
+        }}
+        assert_eq!(moved.len(),prefixes.len(),"{name} has an inactive feature");
+    }
+}
+
+#[test]
+fn hellhound_family_keeps_armored_paws_skulls_horns_and_tails_coherent() {
+    for (name,species) in [("HOUNDOUR",Species::Houndour),("HOUNDOOM",Species::Houndoom)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let owner=if ["Paw /","Paw crease /","Claw /","Cuff /"].iter().any(|p|part.name.starts_with(p)) {Some(0)}
+                else if ["Body /","Armor / broad"].iter().any(|p|part.name.starts_with(p)) {Some(1)}
+                else if ["Collar /","Charm /"].iter().any(|p|part.name.starts_with(p)) {Some(2)}
+                else if ["Head /","Muzzle /","Nose /","Eye /","Horn /","Fang /","Armor / fitted","Armor / dark","Mouth / recessed","Mouth / fitted closed"].iter().any(|p|part.name.starts_with(p)) {Some(3)}
+                else if ["Jaw /","Mouth / pink"].iter().any(|p|part.name.starts_with(p)) {Some(4)}
+                else if part.name.starts_with("Ear /") {Some(if part.name.ends_with("-1") {11} else {12})}
+                else if part.name.starts_with("Tail / pointed") {Some(11)} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner as u16,0,0,0]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);let mut moved=std::collections::HashSet::new();
+        let prefixes=["Head /","Leg /","Tail /","Armor /"];
+        for clip in Clip::ALL {for frame in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+            }
+            for part in rig.anatomy.iter().filter(|p|["Paw /","Paw crease /","Claw /","Cuff /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+            if frame==9 {for prefix in prefixes {if rig.anatomy.iter().filter(|p|p.name.starts_with(prefix)).any(|p|p.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005)) {moved.insert(prefix);}}}
+        }}
+        assert_eq!(moved.len(),prefixes.len(),"{name} has an inactive feature");
+    }
+}
+
+#[test]
+fn bovine_family_keeps_hooves_udder_studs_and_three_tail_chains_coherent() {
+    for (name,species) in [("MILTANK",Species::Miltank),("TAUROS",Species::Tauros)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let owner=if species==Species::Miltank {
+                if part.name.starts_with("Foot /") {Some(0)}
+                else if ["Body /","Udder /","Teat /","Spot /"].iter().any(|p|part.name.starts_with(p)) {Some(1)}
+                else if ["Head /","Face /","Eye /","Muzzle /","Nose /","Mouth /","Horn /"].iter().any(|p|part.name.starts_with(p)) {Some(2)}
+                else if part.name.starts_with("Ear /") {Some(if part.name.ends_with("-1") {7} else {8})}
+                else if part.name.starts_with("Hand /") {Some(if part.name.ends_with("-1") {4} else {6})}
+                else if part.name.starts_with("Tail / rounded") {Some(11)} else {None}
+            } else {
+                if ["Hoof /","Hoof groove /"].iter().any(|p|part.name.starts_with(p)) {Some(0)}
+                else if part.name.starts_with("Body /") {Some(1)}
+                else if ["Mane /","Mane crease /"].iter().any(|p|part.name.starts_with(p)) {Some(2)}
+                else if ["Head /","Eye /","Nose /","Nostril /","Rivet /","Horn /"].iter().any(|p|part.name.starts_with(p)) {Some(3)}
+                else if part.name.starts_with("Tail / pointed") {Some(10+3*part.name.split_whitespace().last().unwrap().parse::<usize>().unwrap())} else {None}
+            };
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner as u16,0,0,0]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);let mut moved=std::collections::HashSet::new();
+        let prefixes=["Head /","Horn /","Leg /","Tail /"];
+        for clip in Clip::ALL {for frame in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(frame as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+            }
+            for part in rig.anatomy.iter().filter(|p|["Foot /","Hoof /","Hoof groove /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+            if frame==9 {for prefix in prefixes {if rig.anatomy.iter().filter(|p|p.name.starts_with(prefix)).any(|p|p.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))>0.0005)) {moved.insert(prefix);}}}
+        }}
+        assert_eq!(moved.len(),prefixes.len(),"{name} has an inactive feature");
+    }
+}
+
+#[test]
+fn delibird_skin_keeps_webs_planted_and_held_sack_coherent() {
+    let rig=fixture(Species::Delibird);
+    assert!(std::ptr::eq(super::for_species("DELIBIRD").unwrap(),super::rig(Species::Delibird)));
+    assert_bits(crate::battle_species_models::mesh("DELIBIRD").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let owner=if part.name.starts_with("Foot /") {Some(0)}
+            else if ["Head /","Eye /"].iter().any(|p|part.name.starts_with(p)) {Some(2)}
+            else if part.name.starts_with("Beak /") {Some(if part.name.contains("lower") || part.name.contains("seam") {3} else {2})}
+            else if part.name.starts_with("Crest /") {Some(if part.name.ends_with("-1") {6} else {7})}
+            else if part.name.starts_with("Tail sack /") || part.name=="Wing / broad tapered flipper 1" {Some(5)}
+            else if part.name=="Wing / broad tapered flipper -1" {Some(4)} else {None};
+        if let Some(owner)=owner {
+            for i in part.vertices.clone() {assert_eq!(rig.joint_indices[i],[owner,0,0,0],"{}",part.name);assert_eq!(rig.joint_weights[i],[1.0,0.0,0.0,0.0]);}
+        }
+    }
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*step as f32/30.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001);
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all());
+        }
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /")) {for v in part.vertices.clone() {
+            assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);
+        }}
+    }}
+}
+
+#[test]
+fn stantler_skin_keeps_hooves_planted_and_antler_loops_coherent() {
+    let rig=fixture(Species::Stantler);
+    assert!(std::ptr::eq(super::for_species("STANTLER").unwrap(),super::rig(Species::Stantler)));
+    assert_bits(crate::battle_species_models::mesh("STANTLER").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let owner=if ["Hoof /","Hoof groove /"].iter().any(|p|part.name.starts_with(p)) {Some(0)}
+            else if ["Head /","Eye /","Brow /","Brow spot /","Muzzle /","Nostril /","Antler"].iter().any(|p|part.name.starts_with(p)) {Some(3)}
+            else if part.name.starts_with("Ear /") {Some(if part.name.ends_with("-1") {4} else {5})}
+            else if part.name.starts_with("Tail / large") {Some(11)}
+            else if ["Body /","Spot /"].iter().any(|p|part.name.starts_with(p)) {Some(1)} else {None};
+        if let Some(owner)=owner {
+            for i in part.vertices.clone() {assert_eq!(rig.joint_indices[i],[owner,0,0,0],"{}",part.name);assert_eq!(rig.joint_weights[i],[1.0,0.0,0.0,0.0]);}
+        }
+    }
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*step as f32/30.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001);
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all());
+        }
+        for part in rig.anatomy.iter().filter(|p|["Hoof /","Hoof groove /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {
+            assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);
+        }}
+    }}
+}
+
+#[test]
+fn girafarig_skin_keeps_hooves_planted_and_both_heads_coherent() {
+    let rig=fixture(Species::Girafarig);
+    assert!(std::ptr::eq(super::for_species("GIRAFARIG").unwrap(),super::rig(Species::Girafarig)));
+    assert_bits(crate::battle_species_models::mesh("GIRAFARIG").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let owner=if ["Hoof /","Hoof groove /"].iter().any(|p|part.name.starts_with(p)) {Some(0)}
+            else if ["Head /","Eye /","Mouth /","Muzzle /","Horn /","Horn tip /"].iter().any(|p|part.name.starts_with(p)) {Some(3)}
+            else if part.name.starts_with("Ear /") {Some(if part.name.ends_with("-1") {4} else {5})}
+            else if ["Tail head /","Tail eye /","Tail mouth /","Tail tooth /"].iter().any(|p|part.name.starts_with(p)) {Some(12)}
+            else if ["Body /","Spot / fitted gold","Mane / pink back"].iter().any(|p|part.name.starts_with(p)) || part.name=="Spot / fitted brown shoulder marking group 0" {Some(1)} else {None};
+        if let Some(owner)=owner {
+            for i in part.vertices.clone() {assert_eq!(rig.joint_indices[i],[owner,0,0,0],"{}",part.name);assert_eq!(rig.joint_weights[i],[1.0,0.0,0.0,0.0]);}
+        }
+    }
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*step as f32/30.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001);
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all());
+        }
+        for part in rig.anatomy.iter().filter(|p|["Hoof /","Hoof groove /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {
+            assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);
+        }}
+    }}
+}
+
+#[test]
+fn elephant_family_keeps_pads_toes_ears_and_armor_coherent() {
+    for (name,species) in [("PHANPY",Species::Phanpy),("DONPHAN",Species::Donphan)] {
+        let rig=fixture(species);let baby=species==Species::Phanpy;
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if n.starts_with("Body /") {Some(1)}
+                else if ["Foot /","Toenail /","Ankle armor /"].iter().any(|p|n.starts_with(p)) {Some(if baby && n.ends_with("-1 front") {9} else {0})}
+                else if ["Ear /","Ear tip /","Ear lining /"].iter().any(|p|n.starts_with(p)) {
+                    let side=if n.starts_with("Ear tip /") {n.split_whitespace().rev().nth(1).unwrap()} else {n.split_whitespace().last().unwrap()};Some(if side=="-1" {5} else {6})
+                }
+                else if ["Nose /","Nostril /"].iter().any(|p|n.starts_with(p)) {Some(4)}
+                else if ["Head /","Eye /","Eye glint /","Eye white /","Pupil /","Forehead /","Mouth /","Tongue /","Tusk /"].iter().any(|p|n.starts_with(p)) {Some(2)}
+                else if n.starts_with("Tread /") {let p=n.split_whitespace().last().unwrap().parse::<usize>().unwrap();Some(if p<3 {1} else if p<5 {2} else if p<7 {3} else {4})} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+            }
+            for part in rig.anatomy.iter().filter(|p|["Foot /","Toenail /","Ankle armor /"].iter().any(|s|p.name.starts_with(s)) && !(baby && p.name.ends_with("-1 front"))) {for v in part.vertices.clone() {
+                assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);
+            }}
+        }}
+    }
+}
+
+#[test]
+fn water_rabbit_family_keeps_paddles_planted_and_bellies_welded() {
+    for (name,species) in [("MARILL",Species::Marill),("AZUMARILL",Species::Azumarill)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let owner=if part.name.starts_with("Foot /") {Some(0)}
+                else if ["Eye /","Mouth /","Nose /"].iter().any(|p|part.name.starts_with(p)) {Some(2)}
+                else if part.name.starts_with("Tail / blue") {Some(11)} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0]);assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let a=&rig.anatomy[0];let b=&rig.anatomy[1];let mut seam=Vec::new();
+        for v in a.vertices.clone() {if let Some(w)=b.vertices.clone().find(|&w|rig.neutral.positions[v]==rig.neutral.positions[w]) {seam.push((v,w));}}
+        assert_eq!(seam.len(),40);
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+            }
+            for &(v,w) in &seam {assert_eq!(rig.skin_point(v,&matrices),rig.skin_point(w,&matrices),"{name} tears its belly seam");}
+            for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /")) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn psychic_bird_family_keeps_talons_planted_and_wing_markings_coherent() {
+    for (name,species) in [("NATU",Species::Natu),("XATU",Species::Xatu)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if ["Toe /","Claw /"].iter().any(|p|n.starts_with(p)) {Some(0)}
+                else if ["Head /","Eye /","Pupil /","Eye glint /","Beak /","Bill seam /"].iter().any(|p|n.starts_with(p)) {Some(2)}
+                else if ["Wing /","Wing gold /","Wing red /","Wing badge","Wing hem"].iter().any(|p|n.starts_with(p)) {
+                    let core=n.strip_suffix(" rear").unwrap_or(n);let side=if n.starts_with("Wing red /") || n.starts_with("Wing hem") {core.split_whitespace().rev().nth(1).unwrap()} else {core.split_whitespace().last().unwrap()};Some(if side=="-1" {3} else {4})
+                } else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+            }
+            for part in rig.anatomy.iter().filter(|p|["Toe /","Claw /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn electric_sheep_family_keeps_supports_curls_and_beacons_coherent() {
+    for (name,species,beacon) in [("MAREEP",Species::Mareep,8),("FLAAFFY",Species::Flaaffy,10),("AMPHAROS",Species::Ampharos,8)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if ["Foot /","Toe /"].iter().any(|p|n.starts_with(p)) {Some(0)}
+                else if ["Crown /","Crown groove /","Eye /","Nostril /","Muzzle /","Forehead /","Horn /"].iter().any(|p|n.starts_with(p)) {Some(3)}
+                else if ["Tail / round","Tail / ivory","Tail / ruby","Tail / quiet"].iter().any(|p|n.starts_with(p)) {Some(beacon)}
+                else if species==Species::Mareep && n.starts_with("Fleece /") {Some(1)} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+                if rig.neutral.positions[v][1]==0. {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+            }
+            for part in rig.anatomy.iter().filter(|p|["Foot /","Toe /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn baby_family_keeps_planted_feet_and_fitted_faces_coherent() {
+    for (name,species) in [("PICHU",Species::Pichu),("CLEFFA",Species::Cleffa),("IGGLYBUFF",Species::Igglybuff)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if n.starts_with("Foot /") {Some(0)}
+                else if ["Head /","Eye /","Eye glint /","Eye border /","Iris /","Pupil /","Cheek /","Nose /","Mouth /","Tongue /","Forehead /"].iter().any(|p|n.starts_with(p)) {Some(2)} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+                if rig.neutral.positions[v][1]==0. {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+            }
+            for part in rig.anatomy.iter().filter(|p|["Foot /","Toe /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn magby_keeps_planted_claws_open_bill_and_crown_coherent() {
+    for (name,species) in [("MAGBY",Species::Magby)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if ["Foot /","Toe claw /"].iter().any(|p|n.starts_with(p)) {Some(0)}
+                else if ["Head /","Eye socket /","Eye /","Pupil /","Glint /","Bill /","Mouth back /"].iter().any(|p|n.starts_with(p)) {Some(3)}
+                else if n.starts_with("Crown lobe /") {Some(4)} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+                if rig.neutral.positions[v][1]==0. {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+            }
+            for part in rig.anatomy.iter().filter(|p|["Foot /","Toe claw /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn elekid_keeps_planted_feet_open_plugs_and_striped_arms_coherent() {
+    for (name,species) in [("ELEKID",Species::Elekid)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if n.starts_with("Foot /") {Some(0)}
+                else if ["Eye socket /","Eye /","Pupil /","Mouth /"].iter().any(|p|n.starts_with(p)) {Some(2)}
+                else if n.starts_with("Plug /") {Some(if n.ends_with("-1") {3} else {4})}
+                else if ["Arm root /","Arm /","Arm stripe /","Hand /","Hand claw /"].iter().any(|p|n.starts_with(p)) {
+                    let side=if n.starts_with("Arm stripe /") || n.starts_with("Hand claw /") {n.split_whitespace().nth_back(1).unwrap()} else {n.split_whitespace().next_back().unwrap()};
+                    Some(if side=="-1" {5} else {6})
+                } else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+                if rig.neutral.positions[v][1]==0. {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+            }
+            for part in rig.anatomy.iter().filter(|p|["Foot /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn smoochum_keeps_planted_feet_fitted_gaze_and_bob_coherent() {
+    for (name,species) in [("SMOOCHUM",Species::Smoochum)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if n.starts_with("Foot /") {Some(0)}
+                else if n.starts_with("Hair side /") {Some(if n.ends_with("-1") {4} else {5})}
+                else if n.starts_with("Hair tuft /") {Some(6)}
+                else if ["Head /","Eye socket /","Eye /","Pupil /","Iris /","Glint /","Lips /","Mouth /","Hair","Bangs /"].iter().any(|p|n.starts_with(p)) {Some(3)}
+                else if ["Arm /","Hand /","Finger /"].iter().any(|p|n.starts_with(p)) {
+                    let side=if n.starts_with("Finger /") {n.split_whitespace().nth_back(1).unwrap()} else {n.split_whitespace().next_back().unwrap()};
+                    Some(if side=="-1" {7} else {8})
+                } else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+                if rig.neutral.positions[v][1]==0. {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+            }
+            for part in rig.anatomy.iter().filter(|p|["Foot /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn tyrogue_keeps_planted_shoes_fitted_gaze_and_wrapped_wrists_coherent() {
+    for (name,species) in [("TYROGUE",Species::Tyrogue)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if ["Shoe /","Shoe seam /"].iter().any(|p|n.starts_with(p)) {Some(0)}
+                else if ["Ear /","Ear contour /"].iter().any(|p|n.starts_with(p)) {Some(if n.ends_with("-1") {4} else {5})}
+                else if ["Head /","Eye socket /","Eye /","Iris /","Pupil /","Glint /","Mouth /"].iter().any(|p|n.starts_with(p)) {Some(3)}
+                else if ["Wrist band /","Palm /","Finger /"].iter().any(|p|n.starts_with(p)) {
+                    let side=if n.starts_with("Finger /") {n.split_whitespace().nth_back(1).unwrap()} else {n.split_whitespace().next_back().unwrap()};
+                    Some(if side=="-1" {7} else {9})
+                } else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+                if rig.neutral.positions[v][1]==0. {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+            }
+            for part in rig.anatomy.iter().filter(|p|["Shoe /","Shoe seam /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn hitmontop_keeps_grounded_spin_point_and_raised_balance_limbs_coherent() {
+    for (name,species) in [("HITMONTOP",Species::Hitmontop)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if n.starts_with("Spin point /") {Some(0)}
+                else if ["Head /","Eye /","Pupil /","Helmet crease /","Mouth /"].iter().any(|p|n.starts_with(p)) {Some(1)}
+                else if ["Arm /","Wrist wrap /","Hand /"].iter().any(|p|n.starts_with(p)) {Some(if n.ends_with("-1") {4} else {5})}
+                else if ["Leg /","Ankle wrap /","Foot /","Foot spike /","Foot sole /"].iter().any(|p|n.starts_with(p)) {
+                    let side=if n.starts_with("Foot spike /") {n.split_whitespace().nth_back(1).unwrap()} else {n.split_whitespace().next_back().unwrap()};
+                    Some(if side=="-1" {6} else {7})
+                } else if ["Tail ball /","Tail spike /"].iter().any(|p|n.starts_with(p)) {Some(10)} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+                if rig.neutral.positions[v][1]==0. {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+            }
+            for part in rig.anatomy.iter().filter(|p|["Spin point /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn hitmontop_idle_rotates_once_forward_and_wraps_without_a_ground_or_pose_jump() {
+    use bevy::prelude::Vec2;
+    let rig=fixture(Species::Hitmontop);
+    let origin=rig.joints[1].bind.translation;
+    let helmet=rig.anatomy.iter().find(|p|p.name.starts_with("Head /")).unwrap();
+    let vertex=helmet.vertices.clone().find(|&i| {
+        let p=Vec3::from_array(rig.neutral.positions[i])-origin;
+        Vec2::new(p.x,p.z).length()>0.08
+    }).unwrap();
+    let (mut pose,mut matrices)=storage(rig);
+    let duration=rig.clip(Clip::Idle).duration;
+    let mut previous:Option<Vec2>=None;
+    let mut total=0.0_f32;
+    for step in 0..=160 {
+        rig.sample_into(Clip::Idle,duration*step as f32/160.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        let point=rig.skin_point(vertex,&matrices)-origin;
+        let direction=Vec2::new(point.x,point.z);
+        if let Some(previous)=previous {
+            let angle=previous.perp_dot(direction).atan2(previous.dot(direction));
+            assert!(angle<0.0 && angle> -0.08,"idle must rotate forward continuously: {step} {angle}");
+            total+=angle;
+        }
+        previous=Some(direction);
+    }
+    assert!((total+std::f32::consts::TAU).abs()<0.00002);
+    for time in [duration-0.00001,duration+0.00001] {
+        rig.sample_into(Clip::Idle,time,Playback::Loop,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for (i,p) in rig.neutral.positions.iter().enumerate() {
+            assert_vec_close(rig.skin_point(i,&matrices),Vec3::from_array(*p),0.00001);
+        }
+    }
+}
+
+#[test]
+fn hitmonchan_keeps_planted_boots_fitted_gaze_and_gloves_coherent() {
+    for (name,species) in [("HITMONCHAN",Species::Hitmonchan)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if ["Boot /","Boot cuff /","Boot seam /"].iter().any(|p|n.starts_with(p)) {Some(0)}
+                else if ["Head /","Eye socket /","Eye /","Iris /","Pupil /","Glint /","Mouth /"].iter().any(|p|n.starts_with(p)) {Some(3)}
+                else if n.starts_with("Shoulder guard /") {Some(if n.ends_with("-1") {4} else {5})}
+                else if ["Glove cuff /","Glove /","Glove thumb /","Glove seam /"].iter().any(|p|n.starts_with(p)) {Some(if n.ends_with("-1") {7} else {9})} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+                if rig.neutral.positions[v][1]==0. {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+            }
+            for part in rig.anatomy.iter().filter(|p|["Boot /","Boot cuff /","Boot seam /"].iter().any(|s|p.name.starts_with(s))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn hitmonlee_keeps_support_foot_grounded_and_executes_a_lifted_kick() {
+    for (name,species) in [("HITMONLEE",Species::Hitmonlee)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if ["Foot /","Toe claw /","Foot mark /"].iter().any(|p|n.starts_with(p)) {
+                    let side=if n.starts_with("Toe claw /") {n.split_whitespace().nth_back(1).unwrap()} else {n.split_whitespace().next_back().unwrap()};
+                    Some(if side=="-1" {3} else {0})
+                } else if ["Eye /","Pupil /","Pupil core /"].iter().any(|p|n.starts_with(p)) {Some(5)}
+                else if ["Hand /","Finger /"].iter().any(|p|n.starts_with(p)) {
+                    let side=if n.starts_with("Finger /") {n.split_whitespace().nth_back(1).unwrap()} else {n.split_whitespace().next_back().unwrap()};
+                    Some(if side=="-1" {7} else {9})
+                } else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+            }
+            for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /") && p.name.ends_with(" 1")) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+        rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        let kick=rig.anatomy.iter().find(|p|p.name.starts_with("Foot /") && p.name.ends_with(" -1")).unwrap();
+        assert!(kick.vertices.clone().map(|v|rig.skin_point(v,&matrices).y).fold(f32::INFINITY,f32::min)>0.10);
+    }
+}
+
+#[test]
+fn egg_fairies_preserve_fitted_details_and_floor_contacts_through_battle_cues() {
+    for (name,species,head) in [("TOGEPI",Species::Togepi,2),("TOGETIC",Species::Togetic,3)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if ["Foot /","Foot point /","Foot crease /","Toe crease /"].iter().any(|p|n.starts_with(p)) {Some(0)}
+                else if ["Head /","Eye /","Eye glint /","Eye crease /","Brow /","Mouth /","Tongue /"].iter().any(|p|n.starts_with(p)) {Some(head)}
+                else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+            }
+            for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /")) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn jet_fish_keep_ground_contacts_and_coherent_facial_details_through_battle_cues() {
+    for (name,species) in [("REMORAID",Species::Remoraid),("OCTILLERY",Species::Octillery)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if ["Eye /","Mouth /","Stripe /","Crown /"].iter().any(|p|n.starts_with(p)) {Some(1)}
+                else if species==Species::Remoraid && n.starts_with("Tail /") {Some(2)} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);let neutral=Vec3::from_array(rig.neutral.positions[v]);
+                assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+                if neutral.y<0.025 {
+                    if species==Species::Octillery {assert_vec_close(point,neutral,0.000001);}
+                    else {assert!((point.y-neutral.y).abs()<0.000001);}
+                }
+            }
+        }}
+    }
+}
+
+#[test]
+fn fur_pigs_keep_hooves_grounded_and_snouts_coherent_through_battle_cues() {
+    for (name,species) in [("SWINUB",Species::Swinub),("PILOSWINE",Species::Piloswine)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if n.starts_with("Hoof /") {Some(0)}
+                else if ["Snout /","Nostril /","Tusk /","Eye /","Fur crease /"].iter().any(|p|n.starts_with(p)) {Some(2)}
+                else if n.starts_with("Stripe /") {Some(1)} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+            }
+            for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Hoof /")) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        }}
+    }
+}
+
+#[test]
+fn sneasel_keeps_toe_talons_planted_and_advances_its_hooked_claws() {
+    let rig=fixture(Species::Sneasel);
+    assert!(std::ptr::eq(super::for_species("SNEASEL").unwrap(),super::rig(Species::Sneasel)));
+    assert_bits(crate::battle_species_models::mesh("SNEASEL").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let n=part.name.as_str();
+        let owner=if n.starts_with("Foot /") || n.starts_with("Talon / paired") {Some(0)}
+            else if ["Head /","Eye /","Mouth /"].iter().any(|p|n.starts_with(p)) || n=="Gem / fitted gold oval forehead" {Some(3)}
+            else if n=="Gem / fitted gold oval chest" {Some(1)}
+            else if n.starts_with("Ear /") {Some(4)} else if n.starts_with("Plume /") {Some(5)}
+            else if n.starts_with("Tail /") {Some(6)}
+            else if n.starts_with("Hand /") || n.starts_with("Talon / hooked") {
+                let side=if n.starts_with("Hand /") {n.split_whitespace().next_back().unwrap()} else {n.split_whitespace().nth_back(1).unwrap()};Some(if side=="-1" {8} else {10})
+            } else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"Sneasel crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Sneasel leaves culling bounds");
+        }
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /") || p.name.starts_with("Talon / paired")) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+    }}
+    rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+    rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+    for part in rig.anatomy.iter().filter(|p|p.name=="Hand / broad claw-bearing palm -1" || p.name.starts_with("Talon / hooked") && p.name.split_whitespace().nth_back(1)==Some("-1")) {
+        let forward=part.vertices.clone().map(|v|rig.skin_point(v,&matrices).z-rig.neutral.positions[v][2]).sum::<f32>()/part.vertices.len() as f32;
+        assert!(forward>0.03,"{} does not advance into the strike",part.name);
+    }
+}
+
+#[test]
+fn skarmory_keeps_talons_planted_strokes_metal_wings_and_opens_its_bill() {
+    let rig=fixture(Species::Skarmory);
+    assert!(std::ptr::eq(super::for_species("SKARMORY").unwrap(),super::rig(Species::Skarmory)));
+    assert_bits(crate::battle_species_models::mesh("SKARMORY").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let n=part.name.as_str();
+        let owner=if n.starts_with("Claw /") {Some(0)}
+            else if ["Head /","Eye /","Crest /","Nape /"].iter().any(|p|n.starts_with(p)) {Some(3)}
+            else if n.starts_with("Bill /") {Some(9)} else if n.starts_with("Tail /") {Some(6)}
+            else if n.starts_with("Neck /") {Some(if n.ends_with(" 3") {3} else {2})}
+            else if n.starts_with("Wing /") {
+                let side=if n.starts_with("Wing / swept") {n.split_whitespace().next_back().unwrap()} else {n.split_whitespace().nth_back(1).unwrap()};Some(if side=="-1" {4} else {5})
+            } else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"Skarmory crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Skarmory leaves culling bounds");
+        }
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Claw /")) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+    }}
+    rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+    rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+    for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Wing / swept")) {
+        let tip=part.vertices.clone().max_by(|&a,&b|rig.neutral.positions[a][0].abs().total_cmp(&rig.neutral.positions[b][0].abs())).unwrap();
+        assert!(rig.skin_point(tip,&matrices).y<rig.neutral.positions[tip][1]-0.10,"{} does not stroke",part.name);
+    }
+    let lower=rig.anatomy.iter().find(|p|p.name.starts_with("Bill / tapered")).unwrap();
+    let tip=lower.vertices.clone().max_by(|&a,&b|rig.neutral.positions[a][2].total_cmp(&rig.neutral.positions[b][2])).unwrap();
+    let closed=matrices[3].transform_point3(Vec3::from_array(rig.neutral.positions[tip]));
+    assert!(rig.skin_point(tip,&matrices).y<closed.y-0.008);
+}
+
+#[test]
+fn smeargle_keeps_paws_planted_and_paints_with_a_coherent_held_tail() {
+    let rig=fixture(Species::Smeargle);
+    assert!(std::ptr::eq(super::for_species("SMEARGLE").unwrap(),super::rig(Species::Smeargle)));
+    assert_bits(crate::battle_species_models::mesh("SMEARGLE").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let n=part.name.as_str();
+        let owner=if ["Foot /","Toe groove /","Cuff /"].iter().any(|p|n.starts_with(p)) {Some(0)}
+            else if ["Head /","Eye /","Muzzle /","Nostril /","Mouth /","Tongue /"].iter().any(|p|n.starts_with(p)) {Some(3)}
+            else if n.starts_with("Beret /") {Some(6)} else if n.starts_with("Brush /") {Some(10)}
+            else if n.starts_with("Ear /") {Some(if n.ends_with("-1") {4} else {5})}
+            else if n.starts_with("Hand /") || n.starts_with("Finger /") {
+                let side=if n.starts_with("Hand /") {n.split_whitespace().next_back().unwrap()} else {n.split_whitespace().nth_back(1).unwrap()};Some(if side=="-1" {8} else {10})
+            } else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+    }
+    let hand=rig.anatomy.iter().find(|p|p.name=="Hand / cream open palm 1").unwrap();
+    let center=hand.vertices.clone().map(|v|Vec3::from_array(rig.neutral.positions[v])).sum::<Vec3>()/hand.vertices.len() as f32;
+    let tail=rig.anatomy.iter().find(|p|p.name.starts_with("Tail /")).unwrap();
+    let grip=tail.vertices.clone().min_by(|&a,&b|Vec3::from_array(rig.neutral.positions[a]).distance_squared(center).total_cmp(&Vec3::from_array(rig.neutral.positions[b]).distance_squared(center))).unwrap();
+    assert!(rig.joint_indices[grip].iter().zip(rig.joint_weights[grip]).any(|(&j,w)|j==10 && w==1.));
+    let distance=Vec3::from_array(rig.neutral.positions[grip]).distance(center);
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);assert!(point.y>=-0.000001,"Smeargle crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Smeargle leaves culling bounds");
+        }
+        for part in rig.anatomy.iter().filter(|p|["Foot /","Toe groove /","Cuff /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        assert!((rig.skin_point(grip,&matrices).distance(matrices[10].transform_point3(center))-distance).abs()<0.000001);
+    }}
+    rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+    rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+    let paint=rig.anatomy.iter().find(|p|p.name.starts_with("Brush / tapered")).unwrap();
+    let advance=paint.vertices.clone().map(|v|rig.skin_point(v,&matrices).z-rig.neutral.positions[v][2]).sum::<f32>()/paint.vertices.len() as f32;
+    assert!(advance>0.035,"Smeargle's brush does not paint forward");
+}
+
+#[test]
+fn lava_mollusks_keep_contact_height_and_articulate_stalks_and_shell() {
+    for (name,species) in [("SLUGMA",Species::Slugma),("MAGCARGO",Species::Magcargo)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if ["Shell /","Shell ridge /","Shell seam /","Chimney /"].iter().any(|p|n.starts_with(p)) {Some(5)}
+                else if n.starts_with("Eye stalk /") || n.starts_with("Eye /") {Some(if n.ends_with("-1") {3} else {4})}
+                else if n.starts_with("Lava /") || n.starts_with("Mouth /") {Some(2)}
+                else if n.starts_with("Mantle /") {Some(1)} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let point=rig.skin_point(v,&matrices);let neutral=Vec3::from_array(rig.neutral.positions[v]);
+                assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+                if neutral.y<0.005 {assert!((point.y-neutral.y).abs()<0.000001,"{name} contact layer changes height");}
+            }
+        }}
+        rig.sample_into(Clip::Attack,0.31,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Eye / broad")) {
+            assert!(part.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(matrices[2].transform_point3(Vec3::from_array(rig.neutral.positions[v])))>0.003),"{name} eye stalk does not peer independently");
+        }
+        if species==Species::Magcargo {
+            let shell=rig.anatomy.iter().find(|p|p.name=="Chimney / hollow stone vent").unwrap();
+            assert!(shell.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(matrices[1].transform_point3(Vec3::from_array(rig.neutral.positions[v])))>0.005));
+        }
+    }
+}
+
+#[test]
+fn porygon2_keeps_paddles_fixed_and_advances_coherent_bill() {
+    let rig=fixture(Species::Porygon2);
+    assert!(std::ptr::eq(super::for_species("PORYGON2").unwrap(),super::rig(Species::Porygon2)));
+    assert_bits(crate::battle_species_models::mesh("PORYGON2").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let n=part.name.as_str();
+        let owner=if n.starts_with("Foot /") || n.starts_with("Foot highlight /") {Some(0)}
+            else if ["Bill /","Eye socket /","Eye white /","Pupil /","Eye glint /","Head highlight /"].iter().any(|p|n.starts_with(p)) {Some(3)} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for v in 0..rig.neutral.positions.len() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Porygon2 crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Porygon2 leaves culling bounds");
+        }
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /") || p.name.starts_with("Foot highlight /")) {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+    }}
+    rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+    rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+    let bill=rig.anatomy.iter().find(|p|p.name.starts_with("Bill /")).unwrap();
+    let advance=bill.vertices.clone().map(|v|rig.skin_point(v,&matrices).z-rig.neutral.positions[v][2]).sum::<f32>()/bill.vertices.len() as f32;
+    assert!(advance>0.015,"Porygon2 bill does not advance in attack");
+    let tail=rig.anatomy.iter().find(|p|p.name.starts_with("Tail /")).unwrap();
+    assert!(tail.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(matrices[1].transform_point3(Vec3::from_array(rig.neutral.positions[v])))>0.01));
+}
+
+#[test]
+fn porygon_keeps_panels_rigid_and_paddle_contact_height() {
+    let rig=fixture(Species::Porygon);
+    assert!(std::ptr::eq(super::for_species("PORYGON").unwrap(),super::rig(Species::Porygon)));
+    assert_bits(crate::battle_species_models::mesh("PORYGON").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let n=part.name.as_str();
+        let owner=if n.starts_with("Foot /") {if n.ends_with("-1") {5} else {6}}
+            else if ["Head /","Bill /","Eye border /","Eye white /","Pupil /","Eye glint /"].iter().any(|p|n.starts_with(p)) {3}
+            else if n.starts_with("Neck /") {2} else if n.starts_with("Tail /") {4} else {1};
+        for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}
+    }
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for part in &rig.anatomy {for v in part.vertices.clone() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Porygon crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Porygon leaves culling bounds");
+            if part.name.starts_with("Foot /") {assert!((point.y-rig.neutral.positions[v][1]).abs()<0.000001,"paddle contact height changes");}
+        }}
+    }}
+    rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+    rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+    let bill=rig.anatomy.iter().find(|p|p.name.starts_with("Bill /")).unwrap();
+    let advance=bill.vertices.clone().map(|v|rig.skin_point(v,&matrices).z-rig.neutral.positions[v][2]).sum::<f32>()/bill.vertices.len() as f32;
+    assert!(advance>0.010,"Porygon bill does not advance in attack");
+    let tail=rig.anatomy.iter().find(|p|p.name.starts_with("Tail /")).unwrap();
+    assert!(tail.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(matrices[1].transform_point3(Vec3::from_array(rig.neutral.positions[v])))>0.005));
+}
+
+#[test]
+fn anglers_keep_pelvic_contact_and_articulate_fins_lures_and_tail() {
+    for (name,species) in [("CHINCHOU",Species::Chinchou),("LANTURN",Species::Lanturn)] {
+        let rig=fixture(species);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        for part in &rig.anatomy {
+            let n=part.name.as_str();
+            let owner=if n.starts_with("Fin / broad") || n.starts_with("Fin fold /") {Some(if n.ends_with("-1") {2} else {3})}
+                else if n.starts_with("Fin / soft") {Some(if n.ends_with("-1") {8} else {9})}
+                else if n.starts_with("Lure /") {Some(if species==Species::Chinchou {if n.ends_with("-1") {5} else {7}} else if n.contains("large") {5} else {7})}
+                else if n.starts_with("Tail fin /") {Some(11)}
+                else if ["Body /","Mask /","Eye /","Pupil /","Mouth /"].iter().any(|p|n.starts_with(p)) {Some(1)} else {None};
+            if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{name} {n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+        }
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=30 {
+            rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for part in &rig.anatomy {for v in part.vertices.clone() {
+                let point=rig.skin_point(v,&matrices);
+                assert!(point.y>=-0.000001,"{name} crosses the floor");
+                assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"{name} leaves culling bounds");
+                if part.name.starts_with("Fin / soft") {assert!((point.y-rig.neutral.positions[v][1]).abs()<0.000001,"{name} pelvic contact height changes");}
+            }}
+        }}
+        rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Fin / broad")) {
+            assert!(part.vertices.clone().any(|v|rig.skin_point(v,&matrices).y-rig.neutral.positions[v][1]< -0.02),"{name} fin does not stroke");
+        }
+        for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Lure / hanging") || p.name.starts_with("Lure / golden")) {
+            let owner=rig.joint_indices[part.vertices.start][0] as usize;
+            assert!(part.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(matrices[owner-1].transform_point3(Vec3::from_array(rig.neutral.positions[v])))>0.005),"{name} lure does not move independently");
+        }
+        if species==Species::Lanturn {
+            let tail=rig.anatomy.iter().find(|p|p.name.starts_with("Tail fin /")).unwrap();
+            assert!(tail.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(matrices[10].transform_point3(Vec3::from_array(rig.neutral.positions[v])))>0.005));
+        }
+    }
+}
+
+#[test]
+fn mantine_keeps_shared_wing_seams_and_lifts_attached_remora() {
+    let rig=fixture(Species::Mantine);
+    assert!(std::ptr::eq(super::for_species("MANTINE").unwrap(),super::rig(Species::Mantine)));
+    assert_bits(crate::battle_species_models::mesh("MANTINE").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let n=part.name.as_str();
+        let owner=if n.starts_with("Tail leaf /") || n.starts_with("Tail leaf back /") {Some(9)}
+            else if n.starts_with("Cephalic fin /") {Some(if n.ends_with("-1") {6} else {7})}
+            else if n.starts_with("Remora tail /") {Some(12)}
+            else if n.starts_with("Remora") && !n.starts_with("Remora / slender") {Some(10)}
+            else if ["Body /","Back /","Eye /","Mouth /","Gill /"].iter().any(|p|n.starts_with(p)) {Some(1)} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+    }
+    let mut seams=Vec::new();
+    for side in ["-1","1"] {
+        let upper=rig.anatomy.iter().find(|p|p.name==format!("Wing / curved blue back {side}")).unwrap();
+        let lower=rig.anatomy.iter().find(|p|p.name==format!("Wing / pale curved underside {side}")).unwrap();
+        let keys=lower.vertices.clone().map(|v|(rig.neutral.positions[v].map(f32::to_bits),v)).collect::<std::collections::HashMap<_,_>>();
+        let pairs=upper.vertices.clone().filter_map(|v|keys.get(&rig.neutral.positions[v].map(f32::to_bits)).map(|&w|(v,w))).collect::<Vec<_>>();
+        assert!(pairs.len()>45);seams.extend(pairs);
+    }
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for part in &rig.anatomy {for v in part.vertices.clone() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Mantine crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Mantine leaves culling bounds");
+            if part.name.starts_with("Body /") {assert!((point.y-rig.neutral.positions[v][1]).abs()<0.000001,"Mantine belly contact height changes");}
+        }}
+        for &(v,w) in &seams {assert_vec_close(rig.skin_point(v,&matrices),rig.skin_point(w,&matrices),0.0000001);}
+    }}
+    rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+    rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+    for side in ["-1","1"] {
+        let wing=rig.anatomy.iter().find(|p|p.name==format!("Wing / curved blue back {side}")).unwrap();
+        assert!(wing.vertices.clone().any(|v|rig.skin_point(v,&matrices).y-rig.neutral.positions[v][1]>0.20),"Mantine wing does not stroke upward");
+    }
+    let fish=rig.anatomy.iter().find(|p|p.name.starts_with("Remora / attached")).unwrap();
+    let lift=fish.vertices.clone().map(|v|rig.skin_point(v,&matrices).y-rig.neutral.positions[v][1]).sum::<f32>()/fish.vertices.len() as f32;
+    assert!(lift>0.06,"Remora does not follow the right wing");
+}
+
+#[test]
+fn corsola_keeps_four_pads_fixed_and_articulates_complete_coral_forks() {
+    let rig=fixture(Species::Corsola);
+    assert!(std::ptr::eq(super::for_species("CORSOLA").unwrap(),super::rig(Species::Corsola)));
+    assert_bits(crate::battle_species_models::mesh("CORSOLA").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let n=part.name.as_str();
+        let owner=if n.starts_with("Foot /") {0} else if n.starts_with("Coral /") {2+n.split_whitespace().next_back().unwrap().parse::<u16>().unwrap()}
+            else if n.starts_with("Side arm /") {if n.ends_with("-1") {7} else {8}} else {1};
+        for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}
+    }
+    assert_eq!(rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /")).count(),4);
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for part in &rig.anatomy {for v in part.vertices.clone() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Corsola crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Corsola leaves culling bounds");
+            if part.name.starts_with("Foot /") {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+        }}
+    }}
+    rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+    rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+    for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Coral / smooth primary tip") || p.name.starts_with("Side arm / rounded tip")) {
+        let distance=if part.name.starts_with("Side arm /") {0.025} else {0.005};
+        assert!(part.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(matrices[1].transform_point3(Vec3::from_array(rig.neutral.positions[v])))>distance),"{} does not move independently",part.name);
+    }
+}
+
+#[test]
+fn moltres_keeps_talons_planted_and_articulates_coherent_flame_banks() {
+    let rig=fixture(Species::Moltres);
+    assert!(std::ptr::eq(super::for_species("MOLTRES").unwrap(),super::rig(Species::Moltres)));
+    assert_bits(crate::battle_species_models::mesh("MOLTRES").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let n=part.name.as_str();
+        let owner=if ["Foot /","Toe /","Talon /"].iter().any(|p|n.starts_with(p)) {Some(0)}
+            else if n.starts_with("Wing /") {Some(if n.ends_with("-1") {4} else {5})}
+            else if ["Wing fire /","Wing glow /","Wing heart /"].iter().any(|p|n.starts_with(p)) {Some(if n.ends_with("-1") {6} else {7})}
+            else if n.starts_with("Crown") {Some(8)} else if n.starts_with("Tail") {Some(9)}
+            else if n.starts_with("Neck /") {Some(2)}
+            else if ["Head /","Eye","Pupil /","Bill"].iter().any(|p|n.starts_with(p)) {Some(3)}
+            else if n.starts_with("Body /") {Some(1)} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for part in &rig.anatomy {for v in part.vertices.clone() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Moltres crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Moltres leaves culling bounds");
+            if ["Foot /","Toe /","Talon /"].iter().any(|p|part.name.starts_with(p)) {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+        }}
+    }}
+    rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+    rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+    for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Wing /")) {
+        assert!(part.vertices.clone().any(|v|rig.skin_point(v,&matrices).y-rig.neutral.positions[v][1]< -0.10),"{} does not stroke",part.name);
+    }
+    for (prefix,parent) in [("Wing fire / flowing red-orange flame bank -1",4),("Wing fire / flowing red-orange flame bank 1",5),("Crown /",3),("Tail /",1)] {
+        let part=rig.anatomy.iter().find(|p|p.name.starts_with(prefix)).unwrap();
+        assert!(part.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(matrices[parent].transform_point3(Vec3::from_array(rig.neutral.positions[v])))>0.005),"{prefix} does not articulate independently");
+    }
+}
+
+#[test]
+fn zapdos_keeps_talons_planted_and_articulates_coherent_thunder_fans() {
+    let rig=fixture(Species::Zapdos);
+    assert!(std::ptr::eq(super::for_species("ZAPDOS").unwrap(),super::rig(Species::Zapdos)));
+    assert_bits(crate::battle_species_models::mesh("ZAPDOS").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let n=part.name.as_str();
+        let owner=if ["Foot /","Toe /","Talon /"].iter().any(|p|n.starts_with(p)) {Some(0)}
+            else if ["Wing /","Underfeather /","Covert /"].iter().any(|p|n.starts_with(p)) {
+                let side=n.split_whitespace().rev().nth(if n.starts_with("Underfeather /") {1} else {0}).unwrap();
+                Some(if side=="-1" {4} else {5})
+            } else if n.starts_with("Tail /") {Some(6)}
+            else if ["Neck /","Throat /"].iter().any(|p|n.starts_with(p)) {Some(2)}
+            else if ["Head /","Eye","Pupil /","Bill","Crown /","Cheek /"].iter().any(|p|n.starts_with(p)) {Some(3)}
+            else if ["Body /","Breast feather /"].iter().any(|p|n.starts_with(p)) {Some(1)} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for part in &rig.anatomy {for v in part.vertices.clone() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Zapdos crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Zapdos leaves culling bounds");
+            if ["Foot /","Toe /","Talon /"].iter().any(|p|part.name.starts_with(p)) {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+        }}
+    }}
+    rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+    rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+    for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Wing /")) {
+        assert!(part.vertices.clone().any(|v|rig.skin_point(v,&matrices).y-rig.neutral.positions[v][1]< -0.10),"{} does not stroke",part.name);
+    }
+    let tail=rig.anatomy.iter().find(|p|p.name.starts_with("Tail /")).unwrap();
+    assert!(tail.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(matrices[1].transform_point3(Vec3::from_array(rig.neutral.positions[v])))>0.005));
+}
+
+#[test]
+fn articuno_keeps_talons_planted_and_articulates_wings_and_streamer() {
+    let rig=fixture(Species::Articuno);
+    assert!(std::ptr::eq(super::for_species("ARTICUNO").unwrap(),super::rig(Species::Articuno)));
+    assert_bits(crate::battle_species_models::mesh("ARTICUNO").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let n=part.name.as_str();
+        let owner=if ["Foot /","Toe /","Talon /"].iter().any(|p|n.starts_with(p)) {Some(0)}
+            else if n.starts_with("Wing /") {Some(if n.ends_with("-1") {4} else {5})}
+            else if n.starts_with("Flight feathers /") {Some(if n.split_whitespace().rev().nth(1)==Some("-1") {4} else {5})}
+            else if ["Neck /","Throat /"].iter().any(|p|n.starts_with(p)) {Some(2)}
+            else if ["Head /","Eye","Pupil /","Glint /","Bill","Crown /"].iter().any(|p|n.starts_with(p)) {Some(3)}
+            else if ["Body /","Breast /"].iter().any(|p|n.starts_with(p)) {Some(1)} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+    }
+    let tail=rig.anatomy.iter().find(|p|p.name.starts_with("Tail /")).unwrap();
+    for joint in 6..=8 {assert!(tail.vertices.clone().any(|v|rig.joint_indices[v].iter().zip(&rig.joint_weights[v]).any(|(&j,&w)|j==joint && w>0.05)),"streamer joint {joint} has no influence");}
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for part in &rig.anatomy {for v in part.vertices.clone() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Articuno crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Articuno leaves culling bounds");
+            if ["Foot /","Toe /","Talon /"].iter().any(|p|part.name.starts_with(p)) {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+            if ["Tail /","Tail fold /"].iter().any(|p|part.name.starts_with(p)) {assert!((point.y-rig.neutral.positions[v][1]).abs()<0.000001,"streamer floor clearance changes");}
+        }}
+    }}
+    rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+    rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+    for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Wing /")) {
+        assert!(part.vertices.clone().any(|v|rig.skin_point(v,&matrices).y-rig.neutral.positions[v][1]< -0.10),"{} does not stroke",part.name);
+    }
+    assert!(tail.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(matrices[6].transform_point3(Vec3::from_array(rig.neutral.positions[v])))>0.005),"streamer curve does not articulate independently");
+}
+
+#[test]
+fn lugia_keeps_pads_planted_and_articulates_palms_mandible_and_tail() {
+    let rig=fixture(Species::Lugia);
+    assert!(std::ptr::eq(super::for_species("LUGIA").unwrap(),super::rig(Species::Lugia)));
+    assert_bits(crate::battle_species_models::mesh("LUGIA").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    for part in &rig.anatomy {
+        let n=part.name.as_str();
+        let owner=if ["Foot /","Toes /"].iter().any(|p|n.starts_with(p)) {Some(0)}
+            else if ["Wing palm /","Wing digits /"].iter().any(|p|n.starts_with(p)) {Some(if n.ends_with("-1") {5} else {7})}
+            else if n.starts_with("Tail fin /") {Some(10)}
+            else if n.starts_with("Neck /") {Some(2)}
+            else if ["Jaw / open","Tongue /"].iter().any(|p|n.starts_with(p)) {Some(8)}
+            else if ["Head /","Head crest /","Eye","Mask /","Pupil /","Jaw /","Mouth /"].iter().any(|p|n.starts_with(p)) {Some(3)}
+            else if ["Body /","Belly /","Back plates /"].iter().any(|p|n.starts_with(p)) {Some(1)} else {None};
+        if let Some(owner)=owner {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[owner,0,0,0],"{n}");assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);}}
+    }
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=30 {
+        rig.sample_into(clip,rig.clip(clip).duration*(step as f32+0.37)/31.0,Playback::Clamp,&mut pose).unwrap();
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for part in &rig.anatomy {for v in part.vertices.clone() {
+            let point=rig.skin_point(v,&matrices);
+            assert!(point.y>=-0.000001,"Lugia crosses the floor");
+            assert!(point.cmpge(rig.animated_bounds.0).all() && point.cmple(rig.animated_bounds.1).all(),"Lugia leaves culling bounds");
+            if ["Foot /","Toes /"].iter().any(|p|part.name.starts_with(p)) {assert_vec_close(point,Vec3::from_array(rig.neutral.positions[v]),0.000001);}
+            if ["Tail /","Tail fin /"].iter().any(|p|part.name.starts_with(p)) {assert!((point.y-rig.neutral.positions[v][1]).abs()<0.000001);}
+        }}
+    }}
+    rig.sample_into(Clip::Attack,0.18,Playback::Clamp,&mut pose).unwrap();
+    rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+    for part in rig.anatomy.iter().filter(|p|p.name.starts_with("Wing palm /")) {
+        assert!(part.vertices.clone().any(|v|rig.neutral.positions[v][1]-rig.skin_point(v,&matrices).y>0.08),"{} does not stroke",part.name);
+    }
+    for (prefix,parent) in [("Wing palm / rounded five-finger white fan -1",4),("Wing palm / rounded five-finger white fan 1",6),("Jaw / open",3),("Tail fin /",9)] {
+        let part=rig.anatomy.iter().find(|p|p.name.starts_with(prefix)).unwrap();
+        assert!(part.vertices.clone().any(|v|rig.skin_point(v,&matrices).distance(matrices[parent].transform_point3(Vec3::from_array(rig.neutral.positions[v])))>0.003),"{prefix} does not articulate independently");
     }
 }

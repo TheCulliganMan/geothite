@@ -27,6 +27,15 @@ fn cap_cleft(x: f32, z: f32) -> f32 {
     (1. - fracture.abs() / 0.12).clamp(0., 1.) * 0.9
 }
 
+// Broad, piecewise-planar mountain beds with shallow resolved joints. The
+// old deep erosion multiplied by several radial fades made whole caps swell
+// into rounded mounds, even though the underlying slab field was linear.
+fn mountain_bed_depth(x: f32, z: f32) -> f32 {
+    let bed=super::cave_cliff::slab(x*0.22+7.,z*0.22-19.);
+    let joint=super::cave_cliff::slab(x*0.31+z*0.09+29.,z*0.27-x*0.05-71.);
+    0.24+bed*0.30+(1.-joint.abs()/0.10).clamp(0.,1.)*0.06
+}
+
 fn mineral_bevel(inward: f32, distance: f32, along: f32, depth: f32, width: f32) -> Vec2 {
     if distance >= width || depth <= -width || depth >= width {
         return Vec2::ZERO;
@@ -79,15 +88,38 @@ pub(super) fn finish_rock_geometry(mesh: &mut TerrainMeshData, map: &str,
     cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32; 2]) {
     {
         let _trace = crate::loading_trace::span("region.rock_sculpt_rims", || serde_json::json!({}));
-        sculpt_rock_rims(mesh, cells, shapes, g, origin);
+        sculpt_rock_rims_on_map(mesh, map, cells, shapes, g, origin);
     }
     {
         let _trace = crate::loading_trace::span("region.rock_round_contacts", || serde_json::json!({}));
         super::rock_bases::round_geometry(mesh, map, cells, shapes, g, origin);
     }
+    super::outdoor_mountains::finish(mesh, map, cells, shapes, g, origin);
     {
         let _trace = crate::loading_trace::span("region.rock_finish_normals", || serde_json::json!({}));
         mineral_normals(&mut mesh.solid);
+    }
+    finish_mountain_cap_pigment(&mut mesh.solid, map);
+}
+
+fn finish_mountain_cap_pigment(surface: &mut SurfaceMeshData, map: &str) {
+    if map != "BlackthornCity" { return; }
+    // Canyon's original vertex pigment contains horizontal strata and baked
+    // directional shading. Across a cap those bands become broad dark blobs,
+    // suggesting rounded mounds even on the shallow planar geometry. Retain
+    // the sediment faces, and let the existing mineral material and lighting
+    // describe the upper beds without this second, false relief field.
+    let reference = Vec3::new(0.35, 0.245, 0.12);
+    for ((normal, uv), color) in surface.normals.iter().zip(&surface.uvs)
+        .zip(&mut surface.colors)
+    {
+        if uv[0] >= -9000. || uv[1] >= -30000. { continue; }
+        let t = ((normal[1] - 0.35) / 0.45).clamp(0., 1.);
+        let weight = t * t * (3. - 2. * t);
+        let pigment = Vec3::new(color[0], color[1], color[2]).lerp(reference, weight);
+        color[0] = pigment.x;
+        color[1] = pigment.y;
+        color[2] = pigment.z;
     }
 }
 
@@ -98,13 +130,29 @@ pub(super) fn sculpt_rock_rims(
     g: &GridGeometry,
     origin: [i32; 2],
 ) {
-    sculpt_rock_rims_with_edge_index(mesh, cells, shapes, g, origin, true);
+    sculpt_rock_rims_with_edge_index(mesh, cells, shapes, g, origin, true, 0.48);
+}
+
+pub(super) fn sculpt_rock_rims_on_map(mesh: &mut TerrainMeshData, map: &str,
+    cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32;2]) {
+    // Blackthorn's short adjoining beds cannot absorb the old near-half-tile
+    // lateral crest recession on top of both corner cuts. Retain broad caps
+    // and keep their projected samples ordered through these narrow joins.
+    let recession=if map=="BlackthornCity" {0.0}else{0.48};
+    sculpt_rock_rims_with_edge_index(mesh,cells,shapes,g,origin,true,recession);
 }
 
 #[cfg(test)]
 pub(super) fn sculpt_rock_rims_reference(mesh: &mut TerrainMeshData,
     cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32; 2]) {
-    sculpt_rock_rims_with_edge_index(mesh, cells, shapes, g, origin, false);
+    sculpt_rock_rims_with_edge_index(mesh, cells, shapes, g, origin, false, 0.48);
+}
+
+#[cfg(test)]
+pub(super) fn sculpt_rock_rims_reference_on_map(mesh: &mut TerrainMeshData, map: &str,
+    cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32;2]) {
+    sculpt_rock_rims_with_edge_index(mesh,cells,shapes,g,origin,false,
+        if map=="BlackthornCity" {0.0}else{0.48});
 }
 
 struct CapTriangle {
@@ -168,7 +216,7 @@ impl CapTriangleIndex {
 
 fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
     cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry,
-    origin: [i32; 2], indexed: bool) {
+    origin: [i32; 2], indexed: bool, crest_recession: f32) {
     if !mesh.solid.uvs.iter().any(|uv| uv[0] < -9000.0) {
         return;
     }
@@ -513,6 +561,25 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
     let edge_candidates = if indexed { rock_edge_candidates(&edges, g) } else { Vec::new() };
     let all_edges: Vec<_> = (0..edges.len()).collect();
     let s = &mut mesh.solid;
+    // A sixth-cell wall/cap sample can differ by a float ULP. Mountain
+    // coordinates need a tolerance comfortably below their mesh spacing,
+    // rather than a decimal boundary that splits the same authored sample.
+    let sample_scale=if crest_recession<0.48 {100.}else{10000.};
+    // Authored cap samples include the identical endpoints on adjoining
+    // wall faces. Classify before any bevel lowers their height; using the
+    // rounded height here misclassified the cap shoulder as lower wall.
+    let cap_samples=if crest_recession<0.48 {
+        s.positions.iter().zip(&s.normals).zip(&s.uvs)
+            .filter(|((_,n),uv)|uv[0] < -9000. && n[1]>0.9)
+            .map(|((p,_),_)|p.map(|v|(v*sample_scale).round() as i64))
+            .collect::<std::collections::HashSet<_>>()
+    } else {std::collections::HashSet::new()};
+    let wall_samples=if crest_recession<0.48 {
+        s.positions.iter().zip(&s.normals).zip(&s.uvs)
+            .filter(|((_,n),uv)|uv[0] < -9000. && n[1]<=0.9)
+            .map(|((p,_),_)|p.map(|v|(v*sample_scale).round() as i64))
+            .collect::<std::collections::HashSet<_>>()
+    } else {std::collections::HashSet::new()};
     let mut shared_positions = HashMap::<[i64; 3], ([f32; 3], [bool; 3])>::new();
     for i in 0..s.positions.len() {
         if s.uvs[i][0] >= -9000.0 {
@@ -531,7 +598,7 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
         // different float expressions. A one-ULP difference can cross a steep
         // shoulder constraint and open a slit. Reuse the position field at
         // source precision, without joining the distinct material/normal data.
-        let source_key = s.positions[i].map(|value| (value * 10000.).round() as i64);
+        let source_key = s.positions[i].map(|value| (value * sample_scale).round() as i64);
         let source_point = Vec3::new(
             p.x + origin[0] as f32 * g.tile_width - g.origin_x,
             p.y,
@@ -761,7 +828,11 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
                     );
                     0.65 + fracture * 0.35
                 });
-                let recess = g.tile_width * 0.48 * interior * rise * join * erosion;
+                // Preserve lower wall beds. The cap and its coincident wall
+                // endpoint share their authored sample classification, so
+                // the upper cut cannot split that geometric seam.
+                let recession=if cap_samples.contains(&source_key) {crest_recession}else{0.48};
+                let recess = g.tile_width * recession * interior * rise * join * erosion;
                 crest_inset[direction] = crest_inset[direction].max(recess);
                 crest_relief = crest_relief.max(interior * rise * join);
             }
@@ -783,8 +854,18 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
         let crest_height = if relief > 0. {
             let source_x = source_point.x / g.tile_width;
             let source_z = source_point.z / g.tile_height;
-            let erosion = -(crest_depth(source_x, source_z) + cap_cleft(source_x, source_z))
-                * g.tile_height * relief;
+            let legacy=-(crest_depth(source_x,source_z)+cap_cleft(source_x,source_z))
+                *g.tile_height*relief;
+            let erosion=if cap_samples.contains(&source_key) {
+                // Authored cap and coincident wall endpoints share this one
+                // shallow bed, without edge-distance-dependent swelling.
+                // Keep any higher existing contact: lowering a sheltered
+                // corner below its last wall ring would reverse that face.
+                let bed=-mountain_bed_depth(source_x,source_z)*g.tile_height*tree_seat;
+                if wall_samples.contains(&source_key) {bed.max(legacy)}else{bed}
+            } else {
+                legacy
+            };
             erosion.max(-(rounded.y - datum).max(0.) * 0.35)
         } else {
             0.
@@ -985,7 +1066,7 @@ fn color(p: Vec3, n: Vec3) -> [f32; 4] {
     [c.x, c.y, c.z, 1.0]
 }
 
-fn canyon_color(p: Vec3, n: Vec3) -> [f32; 4] {
+pub(super) fn canyon_color(p: Vec3, n: Vec3) -> [f32; 4] {
     let weather = noise(p / 14.0);
     let band = noise(Vec3::new(p.x / 32.0, p.y / 3.8, p.z / 32.0));
     let grain = noise(p / 1.5);
@@ -1021,22 +1102,12 @@ pub(super) fn append_canyon(
 }
 
 /// Bare water-edge mineral keeps its authenticated source pigment. Reuse the
-/// existing closed wall relief and world-height rings, without meadow moss.
+/// world-seeded fractured shelf and closed wall relief, without meadow moss.
 pub(in crate::mesh) fn append_coast(
     s: &mut SurfaceMeshData, p: [[f32; 3]; 4], n: [f32; 3],
     g: &GridGeometry, origin: [i32; 2], palette: [[f32; 3]; 2],
 ) {
-    append_with_pigment(s,p,n,g,origin,|p,n| {
-        let broad=noise(p/14.);
-        let grain=noise(p/1.8);
-        let strata=noise(Vec3::new(p.x/20.,p.y/1.7,p.z/20.));
-        let wet=(-p.y/(g.tile_height*0.25)).clamp(0.,1.);
-        let mut c=Vec3::from_array(palette[1]).lerp(Vec3::from_array(palette[0]),
-            0.22+broad*0.38+strata*0.12);
-        c *= (0.88+grain*0.16)*(1.-wet*0.18);
-        c *= 0.65+0.35*n.dot(Vec3::new(0.45,0.8,0.55).normalize()).max(0.);
-        [c.x,c.y,c.z,1.]
-    },40000.);
+    super::new_bark::ledge_finish::append_shore(s, p, n, g, origin, palette);
 }
 
 fn append_with_pigment(
@@ -1178,6 +1249,27 @@ mod tests {
     use super::*;
 
     #[test]
+    fn blackthorn_cap_pigment_removes_false_relief_without_repainting_walls_or_other_maps() {
+        let mut surface = SurfaceMeshData::default();
+        surface.positions = vec![[0., 16., 0.]; 5];
+        surface.normals = vec![[0., 1., 0.], [0., 1., 0.], [0., 0., 1.],
+            [0., 1., 0.], [0., 1., 0.]];
+        surface.uvs = vec![[-10000., -40000.], [-10008., -40000.],
+            [-10000., -40000.], [-10000., -20000.], [0., 0.]];
+        surface.colors = vec![[0.16, 0.11, 0.05, 1.], [0.39, 0.28, 0.15, 1.],
+            [0.18, 0.12, 0.06, 1.], [0.20, 0.205, 0.17, 1.], [0.8, 0.7, 0.6, 1.]];
+        let original = surface.clone();
+        finish_mountain_cap_pigment(&mut surface, "Route26");
+        assert_eq!(surface.colors, original.colors);
+        finish_mountain_cap_pigment(&mut surface, "BlackthornCity");
+        assert_eq!(surface.colors[0], surface.colors[1], "flat caps must not carry false baked relief");
+        assert_eq!(&surface.colors[2..], &original.colors[2..], "retain sediment walls and other materials");
+        assert_eq!(surface.positions, original.positions);
+        assert_eq!(surface.normals, original.normals);
+        assert_eq!(surface.uvs, original.uvs);
+    }
+
+    #[test]
     fn merged_wall_border_matches_both_source_cell_caps() {
         let g = GridGeometry { width: 2, height: 1, tile_width: 8., tile_height: 8.,
             origin_x: 0., origin_z: 0. };
@@ -1200,6 +1292,18 @@ mod tests {
     #[test]
     #[ignore = "requires a completed external CRYSTAL_RENDER_TEST_PACK"]
     fn external_route_rock_caps_retain_winding_after_the_combined_finish() {
+        check_external_rock_caps(&["NewBarkTown", "Route29", "CherrygroveCity", "Route30",
+            "Route31", "VioletCity", "Route26", "Route27", "Route43",
+            "Route45", "Route46", "LakeOfRage"],100_000);
+    }
+
+    #[test]
+    #[ignore = "requires a completed external CRYSTAL_RENDER_TEST_PACK"]
+    fn external_blackthorn_angular_contacts_retain_source_caps_and_support() {
+        check_external_rock_caps(&["BlackthornCity"],1_000);
+    }
+
+    fn check_external_rock_caps(maps: &[&str], minimum_caps: usize) {
         let path = std::env::var("CRYSTAL_RENDER_TEST_PACK")
             .expect("set CRYSTAL_RENDER_TEST_PACK to a completed local pack");
         let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
@@ -1207,9 +1311,7 @@ mod tests {
         let mut total_caps = 0;
         // Include both rocky routes and the early-game town/route chain.
         // These are actual source layouts, rather than repeats of Route26.
-        for map in ["NewBarkTown", "Route29", "CherrygroveCity", "Route30",
-            "Route31", "VioletCity", "Route26", "Route27", "Route43",
-            "Route45", "Route46", "LakeOfRage"] {
+        for &map in maps {
             let module = &pack.data().maps[map];
             let tileset = &module.attributes.tileset_name;
             let layout = &pack.runtime_files()[&format!("data/tilesets/{tileset}_metatiles.bin")];
@@ -1262,25 +1364,57 @@ mod tests {
             }
             // Keep authored face classification through sculpting. UV winding
             // alone mislabels weathered vertical wall projections as caps.
+            let original_positions=mesh.solid.positions.clone();
+            let original_normals=mesh.solid.normals.clone();
             let mut classified = mesh.clone();
-            sculpt_rock_rims(&mut classified, &cells, &shapes, &g, [0,0]);
+            sculpt_rock_rims_on_map(&mut classified, map, &cells, &shapes, &g, [0,0]);
             let footing = mesh.footing_heights.clone();
             finish_rock_geometry(&mut mesh, map, &cells, &shapes, &g, [0,0]);
             assert_eq!(mesh.footing_heights, footing, "{map} source support changed");
             assert!(mesh.authored_cells.iter().all(Option::is_none), "{map} claims changed");
+            if map=="BlackthornCity" {
+                let mut groups=HashMap::<[i64;3],(Vec3,Vec3,bool,bool)>::new();
+                for &i in &mesh.solid.indices {
+                    let i=i as usize;
+                    if i>=original_positions.len() || mesh.solid.uvs[i][0]>=-9000. {continue;}
+                    let key=original_positions[i].map(|v|(v*100.).round() as i64);
+                    let p=Vec3::from_array(mesh.solid.positions[i]);
+                    let cap=original_normals[i][1]>0.9;
+                    let entry=groups.entry(key).or_insert((p,p,false,false));
+                    entry.0=entry.0.min(p);entry.1=entry.1.max(p);
+                    entry.2|=cap;entry.3|=!cap;
+                }
+                let mut shared=0;
+                for (key,(low,high,cap,wall)) in groups {
+                    if cap && wall {
+                        assert!((high-low).max_element()<0.001,
+                            "{map} cap/wall seam split at {key:?}: {low:?}..{high:?}");
+                        shared+=1;
+                    }
+                }
+                assert!(shared>100,"the real layout must exercise cap/wall joins");
+                println!("{map}: {shared} shared cap/wall samples checked");
+            }
             let mut caps = 0;
             for ids in mesh.solid.indices.chunks_exact(3) {
                 if mesh.solid.uvs[ids[0] as usize][0] >= -9000. { continue; }
                 if classified.solid.normals[ids[0] as usize][1] <= 0.9 { continue; }
                 let p = [ids[0],ids[1],ids[2]].map(|i| Vec3::from_array(mesh.solid.positions[i as usize]));
                 let cross = (p[1]-p[0]).cross(p[2]-p[0]);
-                assert!(cross.y >= -0.0001, "{map} inverted native cap: {p:?}");
+                if cross.y < -0.0001 {
+                    let before=[ids[0],ids[1],ids[2]].map(|i|Vec3::from_array(classified.solid.positions[i as usize]));
+                    let mut circular=classified.clone();
+                    super::super::rock_bases::round_geometry(&mut circular,"Route26",&cells,&shapes,&g,[0,0]);
+                    let control=[ids[0],ids[1],ids[2]].map(|i|Vec3::from_array(circular.solid.positions[i as usize]));
+                    let source=[ids[0],ids[1],ids[2]].map(|i|classified.solid.uvs[i as usize]);
+                    panic!("{map} inverted native cap: {p:?}; before base: {before:?}; circular control: {control:?}; source UV: {source:?}");
+                }
                 caps += 1;
             }
             total_caps += caps;
             println!("{map}: {caps} source rock cap triangles checked");
         }
-        assert!(total_caps > 100_000, "the external layouts must exercise substantial rock geometry");
+        assert!(total_caps > minimum_caps, "the external layouts must exercise substantial rock geometry");
     }
     #[test]
     fn cap_mineral_clefts_have_resolved_valleys_between_broad_planes() {

@@ -2,6 +2,7 @@
 """Check actual live-coal anatomy, fitted gaze, root volumes and open bill."""
 import copy,json,os,unittest
 from pathlib import Path
+from magby_glb import read_magby,geometry_digest
 from magby_sculpt import sculpture,HEIGHT
 from sculpt_geometry import ellipsoid,translate
 from sculpt_test_support import assert_closed_models,assert_model_shading
@@ -12,14 +13,14 @@ ROOT=Path(os.environ.get('CRYSTAL_MAGBY_TEST_MODELS',Path(__file__).resolve().pa
 
 class MagbyTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'magby.mesh.json').read_bytes())
+ def setUpClass(cls):cls.model=read_magby(ROOT/'magby.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachment_checks.NidorinaTests.find
  overlap=attachment_checks.NidorinaTests.overlap
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'magby':self.m})
  def test_shading_tracks_actual_faces(self):assert_model_shading(self,{'magby':self.m})
  def test_recipe_bounds_budget_and_distinct_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),95000)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),95000)
   self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for prefix,count in (('Body /',1),('Head /',1),('Collar /',1),('Crown lobe /',5),('Belly /',1),('Eye /',2),('Pupil /',2),('Arm /',2),('Hand /',2),('Hand claw /',6),('Leg /',2),('Foot /',2),('Toe claw /',4),('Tail /',1),('Bill /',1),('Mouth back /',1)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),count,prefix)

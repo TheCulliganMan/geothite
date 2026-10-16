@@ -90,6 +90,15 @@ pub(super) fn shape_approaches(
     origin: [i32; 2],
 ) {
     if !cells.iter().any(|cell| bank(&cell.source)) {
+        // Kanto banks retain source ownership for directed terrace replacement.
+        // Without authored edges they keep their original geometry; consume
+        // only the temporary tag before the material/batching boundary.
+        for surface in [&mut mesh.solid,&mut mesh.textured,
+            &mut mesh.animated_solid,&mut mesh.animated_textured] {
+            for uv in &mut surface.uvs {
+                if uv[0]==BANK_OWNER_UV {*uv=[0.;2];}
+            }
+        }
         return;
     }
     for (i, cell) in cells.iter().enumerate() {
@@ -305,11 +314,22 @@ pub(super) fn finish_detached_grove(
     shapes: &[CellShape],
     origin: [i32; 2],
 ) {
+    finish_detached_grove_with_claims(mesh, cells, g, shapes, origin, None);
+}
+
+pub(super) fn finish_detached_grove_with_claims(
+    mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    shapes: &[CellShape],
+    origin: [i32; 2],
+    claims: Option<&DeferredClaims>,
+) {
     if !cells.iter().any(|cell| bank(&cell.source)) {
         return;
     }
     shape_surface(&mut mesh.solid, cells, g);
-    soften_lips(mesh, cells, g, shapes, origin);
+    soften_lips_with_claims(mesh, cells, g, shapes, origin, claims);
 }
 
 fn refresh_normals(s: &mut SurfaceMeshData, changed: &[bool]) {
@@ -352,14 +372,25 @@ fn soften_lips(
     shapes: &[CellShape],
     origin: [i32; 2],
 ) {
+    soften_lips_with_claims(mesh, cells, g, shapes, origin, None);
+}
+
+fn soften_lips_with_claims(
+    mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    shapes: &[CellShape],
+    origin: [i32; 2],
+    claims: Option<&DeferredClaims>,
+) {
     let full = |i: usize| {
         bank(&cells[i].source)
             && cells[i].source.subtile_row == 3
             && !matches!(shapes[i], CellShape::RampEast { .. })
-            && mesh
+            && claims.map_or_else(|| mesh
                 .authored_cells
                 .get(i)
-                .is_none_or(|claim| claim.is_none())
+                .is_none_or(|claim| claim.is_none()), |claims| claims.unclaimed(i))
     };
     let interior = |i: usize| {
         let col = i % g.width;
@@ -535,6 +566,23 @@ mod normal_fields {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn undirected_kanto_bank_clears_only_temporary_material_ownership() {
+        let mut source=super::super::tests::source_with_tile(0x07,0,0,0x2c);
+        source.tileset_id="kanto".into();
+        let frame=super::super::tests::frame(1,1,vec![source]);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let g=GridGeometry {width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let mut mesh=TerrainMeshData {footing_heights:vec![6.],..Default::default()};
+        append_solid_quad(&mut mesh.solid,[[0.,0.,0.],[0.,6.,0.],[8.,6.,0.],[8.,0.,0.]],
+            [0.,0.,-1.],[0.4,0.3,0.2,1.]);
+        mark_bank_surface(&mut mesh.solid,0,0);
+        let before=mesh.solid.clone();
+        shape_approaches(&mut mesh,&cells,&g,&[CellShape::Flat],[0,0]);
+        assert_eq!(mesh.solid.positions,before.positions);assert_eq!(mesh.solid.normals,before.normals);
+        assert_eq!(mesh.solid.colors,before.colors);assert_eq!(mesh.solid.indices,before.indices);
+        assert!(mesh.solid.uvs.iter().all(|uv|*uv==[0.;2]));assert_eq!(mesh.footing_heights,[6.]);
+    }
 
     #[test]
     fn relieved_bank_sod_follows_its_source_without_extra_upright_foliage() {
@@ -556,8 +604,8 @@ mod tests {
                     if normal[0] < 0. { p.reverse(); }
                     assert!(new_bark::ledge_finish::append(&mut surface, p, normal, &g, [10, -7]));
                     let original = surface.positions.clone();
-                    assert!(original.iter().all(|p| (0. ..=6.).contains(&p[1])),
-                        "ledge finish must not add a second upright grass curtain");
+                    assert!(original.iter().all(|p| (0. ..=8.).contains(&p[1])),
+                        "rock masses stay low instead of adding upright grass curtains");
                     mark_bank_surface(&mut surface, 0, row * 2);
                     shape_surface(&mut surface, &cells, &g);
                     for (before, after) in original.iter().zip(&surface.positions) {

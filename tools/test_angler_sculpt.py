@@ -4,17 +4,18 @@ import json,unittest
 from pathlib import Path
 from angler_sculpt import sculpture,SPECIES,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_axolotl_sculpt import ray_intersections
+from sculpt_test_support import ray_intersections
+from angler_glb import read_angler,geometry_digest
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class AnglerTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def setUpClass(cls):cls.models={s:read_angler(ROOT/(s+'.glb'),s) for s in SPECIES}
  def find(self,ps,prefix):return next(p for p in ps if p['part'].startswith(prefix))
  def test_closed_connected_oriented_parts(self):assert_closed_models(self,self.models)
  def test_normals_follow_stored_triangles(self):assert_model_shading(self,self.models)
  def test_regeneration_height_budget_and_distinct_faces(self):
   for s,m in self.models.items():
-   ps=m['primitives'];self.assertEqual(m,sculpture(s));self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
+   ps=m['primitives'];self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
    self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in ps),25000);self.assertEqual(len(ps),len({p['part'] for p in ps}))
    for prefix,n in (('Fin / broad',2),('Fin / soft',2),('Lure / golden' if s=='lanturn' else 'Lure / hanging',2),('Pupil / black cross' if s=='chinchou' else 'Eye / deep red',4 if s=='chinchou' else 2)):self.assertEqual(sum(p['part'].startswith(prefix) for p in ps),n)
  def overlap(self,a,b):
@@ -25,12 +26,17 @@ class AnglerTests(unittest.TestCase):
     if aa and bb and min(max(aa),max(bb))-max(min(aa),min(bb))>.0003:return
   self.fail((a['part'],b['part']))
  def test_broad_mask_triangle_centers_stay_above_cheek(self):
-  ps=self.models['lanturn']['primitives'];mask=self.find(ps,'Mask /');v=mask['positions']
+  ps=self.models['lanturn']['primitives'];mask=self.find(ps,'Mask /');v=mask['positions'];front_count=0
   for k in range(0,len(mask['indices']),3):
    ids=mask['indices'][k:k+3]
-   if sum(mask['normals'][i*3+2] for i in ids)<=.001:continue
+   # Smooth corner normals may face forward on a vertical rim wall.
+   # Select the actual outward front triangles by geometric winding.
+   a,b,c=[v[3*i:3*i+3] for i in ids]
+   if (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<=1e-12:continue
+   front_count+=1
    x,y,z=[sum(v[i*3+j] for i in ids)/3 for j in range(3)];hits=ray_intersections(ps[0],x,y)
    self.assertTrue(hits);self.assertGreater(z-max(hits),.001,(x,y,z,max(hits)))
+  self.assertEqual(front_count,1472)
  def test_fins_are_rooted_in_body(self):
   for m in self.models.values():
    for p in m['primitives']:

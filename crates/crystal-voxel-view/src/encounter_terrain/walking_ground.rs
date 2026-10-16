@@ -17,8 +17,17 @@ impl WalkingGround {
             self.grass_cells.contains(&cell)
         }).count()
     }
-    pub(super) fn nearby_stage_pairs(&self, original: [Vec3; 2]) -> Vec<[Vec3; 2]> {
+    pub(super) fn nearby_stage_pairs(&self, original: [Vec3; 2], bodies: [Option<BattleBody>; 2]) -> Vec<[Vec3; 2]> {
         let tile_size = SOURCE_CELL_SIZE * RETAINED_SCALE * 2.0;
+        // A large body can fit a two-row floor band only between the rows'
+        // tile centers. Sample the already witnessed half-tile grid for those
+        // bodies, keeping the same world radius and separation candidates.
+        let fine = bodies.into_iter().flatten().any(|body| {
+            let (min, max) = body.visual_bounds.unwrap_or((body.min, body.max));
+            let extent = (max - min) * body.scale;
+            extent.x.max(extent.z) > tile_size
+        });
+        let (radius, step) = if fine { (10, tile_size * 0.5) } else { (5, tile_size) };
         let delta = original[1] - original[0];
         let direction = Vec3::new(delta.x, 0.0, delta.z).normalize_or_zero();
         if direction == Vec3::ZERO { return Vec::new(); }
@@ -28,12 +37,12 @@ impl WalkingGround {
                 / (tile_size * 0.5) - Vec2::splat(0.00001)).floor().as_ivec2();
             self.cells.get(&cell).copied()
         };
-        let mut offsets: Vec<_> = (-5_i32..=5).flat_map(|z|
-            (-5_i32..=5).map(move |x| (x, z))).collect();
+        let mut offsets: Vec<_> = (-radius..=radius).flat_map(|z|
+            (-radius..=radius).map(move |x| (x, z))).collect();
         offsets.sort_by_key(|&(x, z)| (x * x + z * z, z, x));
         let mut pairs = Vec::new();
         for (x, z) in offsets {
-            let source = original[0] + Vec3::new(x as f32, 0.0, z as f32) * tile_size;
+            let source = original[0] + Vec3::new(x as f32, 0.0, z as f32) * step;
             for facing in [direction, right, -right, -direction] {
                 for separation in [2.0, 1.0] {
                     let target = source + facing * tile_size * separation;
@@ -92,8 +101,11 @@ impl WalkingGround {
             return Err(invalid);
         }
         let delta = target - source;
-        let radius = if matches!(location.target,
-            VisualBattleTarget::ScriptedGround { .. }) { 5 } else { 3 };
+        let radius = match location.target {
+            VisualBattleTarget::WalkingGrass { .. } => crystal_render_api::WALKING_BATTLE_GROUND_RADIUS,
+            VisualBattleTarget::ScriptedGround { .. } => 5,
+            _ => 3,
+        };
         if delta.abs().element_sum() != 2
             || (delta.x != 0 && delta.y != 0)
             || tiles.is_empty()
@@ -325,4 +337,75 @@ fn proven_water_cell(
                         .flatten()
                         .any(|&id| id == source.tile_index))
         })
+}
+
+#[cfg(test)]
+mod staging_tests {
+    use super::*;
+
+    #[test]
+    fn onix_animation_requires_real_room_beyond_the_narrow_corridor() {
+        let make_body = |species, meters| {
+            let rig = crate::species_rig::for_species(species).unwrap();
+            let (min, max) = rig.neutral_bounds;
+            let scale = crate::battle_layout::model_scale(species, Some(meters), min, max).unwrap();
+            let mut body = BattleBody::modeled(species, min, max, scale);
+            body.visual_bounds = Some(rig.animated_bounds);
+            body
+        };
+        let bodies = [Some(make_body("CYNDAQUIL", 0.508)), Some(make_body("ONIX", 8.7884))];
+        let original = [Vec3::new(0.0, 0.0, 2.0), Vec3::new(8.0, 0.0, 2.0)];
+        let floor = |rows: std::ops::Range<i32>| WalkingGround {
+            origin: Vec2::ZERO,
+            cells: (-20..=20).flat_map(|x| rows.clone().map(move |z|
+                (IVec2::new(x, z), 0.0))).collect(),
+            grass_cells: Default::default(),
+        };
+        let fits = |ground: &WalkingGround, anchors| {
+            BattleSceneLayout::for_map_bodies(bodies, anchors, Vec2::new(1280.0, 720.0))
+                .is_some_and(|layout| (0..2).all(|index|
+                    ground.contains(bodies[index].unwrap(), layout.body_poses[index].unwrap(), anchors[index].y)))
+        };
+        let room = floor(-20..21);
+        assert!(fits(&room, original), "the complete authored animation fits real room-sized support");
+        let corridor = floor(0..4);
+        assert!(!corridor.nearby_stage_pairs(original, bodies).into_iter().any(|anchors| fits(&corridor, anchors)),
+            "finer staging must not pretend the real Onix animation fits an eight-unit corridor");
+        let onix = bodies[1].unwrap();
+        let (min, max) = onix.visual_bounds.unwrap();
+        println!("Onix world animation extent: {:?}; neutral extent: {:?}",
+            (max - min) * onix.scale, (onix.max - onix.min) * onix.scale);
+    }
+
+    #[test]
+    fn large_bodies_can_center_on_a_two_row_floor_without_extending_it() {
+        let ground = WalkingGround {
+            origin: Vec2::ZERO,
+            cells: (-12..=12).flat_map(|x| (0..4).map(move |z|
+                (IVec2::new(x, z), 0.0))).collect(),
+            grass_cells: Default::default(),
+        };
+        let original = [Vec3::new(0.0, 0.0, 2.0), Vec3::new(8.0, 0.0, 2.0)];
+        let body = BattleBody::modeled("TEST", Vec3::new(-3.75, 0.0, -3.75),
+            Vec3::new(3.75, 1.0, 3.75), 1.0);
+        let bodies = [Some(body); 2];
+        let fits = |anchors| {
+            BattleSceneLayout::for_map_bodies(bodies, anchors, Vec2::new(1280.0, 720.0))
+                .is_some_and(|layout| (0..2).all(|index|
+                    ground.contains(body, layout.body_poses[index].unwrap(), anchors[index].y)))
+        };
+        assert!(!ground.nearby_stage_pairs(original, [None; 2]).into_iter().any(fits),
+            "tile centers miss the actual center of the eight-unit-wide band");
+        let pairs = ground.nearby_stage_pairs(original, bodies);
+        assert!(pairs.len() <= 3528);
+        assert!(pairs.into_iter().any(fits),
+            "half-tile placement must fit the same complete body on the existing floor");
+        let outside = Transform::from_xyz(0.0, 0.0, 2.0);
+        assert!(!ground.contains(body, outside, 0.0),
+            "finer staging must not approve the absent floor beyond the band");
+        let small = [Some(BattleBody::modeled("TEST", Vec3::new(-0.5, 0.0, -0.5),
+            Vec3::new(0.5, 1.0, 0.5), 1.0)); 2];
+        assert!(ground.nearby_stage_pairs(original, small).len() <= 968,
+            "small bodies retain the original search budget");
+    }
 }

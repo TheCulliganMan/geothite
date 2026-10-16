@@ -1,46 +1,59 @@
-# Porygon2 sculpture
+# Porygon2 sculpture and rig
 
-`tools/porygon2_sculpt.py` authors the original canonical Porygon2 mesh. The
-battle-species builder dispatches it before Blender batching and rejects the
-previous Porygon2 path. Porygon now has its own authored angular-cage recipe. Porygon2 keeps its 1.05 presentation height and grounded
-origin, with 17 closed parts and 39,784 triangles.
+`tools/porygon2_sculpt.py` authors the rounded virtual duck;
+`tools/porygon2_glb.py` exports its canonical standard glTF skin. The builder
+writes the GLB before Blender batching. The retired static JSON is removed.
 
-One continuous rose volume forms the rounded torso, slender curved neck and
-head. A seated cyan lower body follows the stored contour rings and has a
-curved upper color boundary. The initial evenly spaced belly rings crossed
-underlying contour knots and left red slivers showing through; using the actual
-torso contour levels fixes those gaps.
+The continuous rose torso, slender curved neck and rounded head retain their
+original geometry. The seated cyan belly follows the actual torso contour
+levels on both sides. The rooted cyan leaf tail, downward-sloping spatulate
+bill, both splayed paddles and fitted body/paddle reflections also retain their
+exact original neutral f32 positions, normals, colors and triangles: nine parts
+in total. Eye borders and whites retain their outlines with two interior
+subdivisions instead of three; pupils and glints are refitted to those surfaces.
+This reduces the old 23,691 vertices to 14,189 within the existing 20,000-vertex
+rig limit, without relaxing any loader budget.
 
-Two rounded cyan paddles splay outward and support the lower body. A slender
-rooted leaf tail curves backward and upward. The flattened blue spatulate bill
-joins the head and slopes gently downward. Large fitted ivory eyes have thin
-dark borders, curious vertical pupils and small ivory glints. Subtle seated
-pink and pale-cyan reflections provide stylized toy highlights. These are
-native static base-color surfaces rather than a claim of a skeletal rig or
-custom glossy material.
+The model has 17 closed parts, 14,189 vertices, 23,912 triangles, six joints,
+95 accessors and 609,300 bytes. Authoring height remains 1.05; the verified local
+pack height is 0.6096 m. No external mesh, texture, rig or extracted game content
+is shipped.
 
-Silhouette and palette were checked against the
-[official Porygon2 artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/233.png).
-External research inspected downloadable CC Attribution listings for
-[Porygon2](https://sketchfab.com/3d-models/porygon2-76d884ae73f84ca59303a50b3188f0ab),
-[Porygon2 Johto](https://sketchfab.com/3d-models/porygon2-johto-aab3755cf2474494bfcf67a792ed0935),
-and [another Porygon2](https://sketchfab.com/3d-models/porygon2-bbe8d4b77bb2422b8edaa33329e4787f).
-Their metadata did not establish a usable original rig. No external meshes or
-textures were imported.
+An identity floor root holds both paddles and their highlights fixed. One
+spatial field supports the lower torso and its seated cyan coat, then bends
+the rising neck into a rigid head. The head carries the complete fitted eyes,
+pupils, glints, crown reflection and bill. Idle turns a curious gaze; attack
+advances the bill with a forward nod; recoil reverses the gesture. Two tail
+joints give the rooted leaf an independent delayed sway. All clips use the
+standard rotation-only source-cue timing and literal neutral endpoints.
 
-`python3 -m unittest discover -s tools -p test_porygon2_sculpt.py` checks closed
-connected topology, outward winding, finite unit normals, recipe parity,
-height and budget, fitted eyes/reflections and triangle clearance, physical
-belly/bill/tail/paddle joins, both grounded paddles' support by the blue body,
-and actual blue coverage of the front and rear lower torso. Join checks use
-occupied ray intervals rather than bounding boxes.
+Neutral f32 digest:
+`449d2c9aa5b3d054b2a96818696b9e677a72369d926bfa80e39093976bcb08ac`.
+The nine unchanged non-eye parts retain digest
+`4d894b9d33428b82d3b02db38aae4014af151a38302fc0e740d558250bdfcd5c`.
 
-Final verification passed all eight Porygon2 regressions, including exact
-recipe parity. The first run found averaged tail-cap normals opposing a tiny
-cap triangle; crease-aware normals applied after final coordinate quantization
-correct that issue. Front/rear software views and the final native battle
-capture were visually inspected. The native build and Rust 220-species
-grounding/volume regression passed, and layout/storage validation passed for
-all 571 JSON assets. Old completed-test object intermediates were removed to
-provide build space. Temporary reference art, renders and logs were removed
-after inspection. The full species visual review remains ongoing.
+```sh
+python3 -m unittest discover -s tools -p 'test_porygon2*.py'
+```
+
+Eight anatomy checks cover closed outward topology, shading, recipe parity,
+fit and triangle clearance of eyes/reflections, actual occupied joins, both
+paddles' support by the belly and front/rear blue coat coverage. Eight skin
+checks decode the actual stored hierarchy, keys and weights to verify coherent
+owners, fixed paddles, floor clearance, neutral endpoints, visible articulation,
+winding and physical edge strain, posed joins, fitted features, forward bill
+motion and independent tail sway. The canonical test pins the unchanged
+non-eye geometry. Shiny checks are intentionally skipped.
+
+All 16 Python anatomy/skin checks passed, along with the final canonical
+non-eye geometry pin. Two focused Rust rig/GPU regressions and two wider
+catalog/timing regressions passed. Blender regeneration is byte-identical to
+the canonical GLB. The production native client built successfully.
+Front/rear and fixed-camera neutral, idle, attack and recoil views were
+inspected, followed by a normal paired 3D/2D battle against Pidgey. The paddles
+meet visibly rendered terrain, the bill and gaze remain readable, and game
+state is preserved. Shiny checks were skipped as requested.
+
+Final normal pair: core 3596/hash 3811849301, LCD 4422, virtual time
+80.779143917; `state_preserved=true`. Final QA prefix: `porygon2-normal` under
+ignored `target/pokemon-native-review`.

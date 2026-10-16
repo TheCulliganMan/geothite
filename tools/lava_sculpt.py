@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Original flowing lava bodies and a closed coiled stone snail shell."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
-from sculpt_geometry import part,ellipsoid,tube,curved_profiles,fitted_patch
+from sculpt_geometry import part,ellipsoid,tube,curved_profiles
+from bovine_sculpt import fitted_patch
 from abra_sculpt import surface
 from pitcher_sculpt import funnel
 from skin_glb import COORDINATES
@@ -59,7 +62,8 @@ def shell_parts():
     p.append(ellipsoid('Chimney / recessed molten floor',GLOW,(.11,.805,-.285),(.048,.006,.034),20,8))
     return p
 
-def sculpture(species):
+@lru_cache(maxsize=2)
+def raw_sculpture(species):
     if species not in SPECIES:raise ValueError('unsupported lava species')
     shelled=species=='magcargo';body=flowing_body(shelled);p=[body];skin=surface(body)
     for side in (-1,1):
@@ -87,6 +91,11 @@ def sculpture(species):
             outline=[(side*.10,-.44),(side*.15,-.32),(side*.13,-.16),(side*.10,-.04)]
             p.append(tube('Mantle / fitted sinuous lava fold '+str(side),RED,
                 [(x,top(z,x)+.003,z) for x,z in outline],[.012,.015,.014,.010],14))
+    return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+def sculpture(species,normalize=True):
+    model=deepcopy(raw_sculpture(species))
+    if not normalize:return model
+    p=model['primitives']
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0.))*scale,7) for i,v in enumerate(q['positions'])]
@@ -94,7 +103,7 @@ def sculpture(species):
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
+    from lava_glb import export_lava
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    for s in SPECIES:(args.output/(s+'.mesh.json')).write_text(json.dumps(sculpture(s),separators=(',',':')))
-
+    for s in SPECIES:(args.output/(s+'.glb')).write_bytes(export_lava(s))
 if __name__=='__main__':main()

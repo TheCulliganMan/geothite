@@ -1,84 +1,64 @@
-# Gold flame bird with curved, closed fire banks
+# Moltres flame sculpture and rig
 
-`tools/moltres_sculpt.py` replaces Moltres's shared legendary-bird primitives
-with an original individual sculpture. The battle-species builder dispatches
-this pure recipe. All three original Kanto bird recipes now have their own
-authoring paths, and the obsolete shared primitive route rejects execution.
-Shared overworld props retain their separate sources.
+`tools/moltres_sculpt.py` authors the original gold bird and closed flame
+banks. `tools/moltres_glb.py` exports the canonical skinned
+`models/battle_species/moltres.glb`; the battle-species builder regenerates it
+through the same recipe. No third-party geometry is included.
 
-Official [normal-form Moltres artwork](https://sg.portal-pokemon.com/pokedex/0146/)
-was inspected visually in a temporary browser tab, which was closed after
-review. No reference image was downloaded into source or the shipped bundle.
-The [external source review](legendary-bird-rig-research.md) has not yielded a
-validated usable open rig. This sculpture is original and static; no third-party
-geometry was imported.
+The slender breast, narrow throat, compact head, fitted eyes, pointed grey
+bill, gold leading wing arms, red-orange fire banks, crown and swept tail
+retain the established design. Grey feet have three forward digits, a rear
+digit and ivory talon tips. Warm orange and hot gold layers fit the actual
+closed flame surfaces on both sides.
 
-A slender gold breast and long narrow throat support a compact head, fitted
-black eye sockets, narrow ivory lenses, small dark pupils and a long grey
-pointed beak with a fine charcoal join. Each wing has a slim, curved gold
-leading arm over a broad red-orange fire bank. The closed flame outlines have
-irregular tips and scalloped lower edges. Their shallow curved surfaces support
-broad orange cores and three smaller hot gold pockets on both sides. The head
-has a three-lick crown flame with orange and gold cores on both sides. A broad
-backward-swept tail flame has its own fitted orange and gold cores. Grey feet
-have three forward digits, a rear digit and ivory talon tips.
+The optimized asset has 62 recoverable source parts packed into 46 runtime
+primitives, 19,671 vertices, 26,024 triangles and 12 joints. It occupies
+800,464 bytes and 206 accessors, within the existing renderer limits. The
+previous static source had 58,645 vertices and 75,968 triangles. Redundant
+interior subdivisions were removed and crease normals shared; flame outlines
+were retained. All 26 body, neck, head, bill, leg, foot, digit and talon parts
+retain their original float32 geometry exactly. The other 36 parts retain
+their projected outline boundaries within 0.00000015 authoring units.
 
-The first review showed overly solid red flame panels. Replacing small isolated
-orange patches with broad warm cores made the color transition clearer. Core
-outlines are inset from actual vertical sections of the authored fire outline;
-blindly scaling a concave outline would not preserve its narrow notches. The
-stored-surface regression caught an orange cap crossing the curved parent
-between fitted vertices. Denser cap subdivisions corrected the triangle-center
-and edge clearance. Gold leading arms also have enough real depth to stay in
-front of overlapping flame colors; an independent stored-ray check verifies
-that clearance. The tail remains above the feet so grounding does not raise
-both feet into the air.
+Authoring height remains 1.28 with the floor at zero. The local pack's 6 ft
+7 in dimension supplies the production height of 2.0066 metres. The source
+geometry SHA-256 is
+`dc2e868b13c6cc3334e76cd38c4089930ff2e2fec9c4935b394793eb6f0bdf4b`;
+the packed runtime geometry pin is
+`bc2c5af3c85515bb49c4773acaf16f96232104ac36d08b59681ba4eba064bc33`.
+Strict decoding restores the source order and rejects noncanonical data.
 
-Final Moltres has 62 parts and 75,968 triangles. Its presentation height remains
-1.28 and its lowest point is zero. Its canonical SHA-256 is
-`4448b4b3d118c282803b64e15ee35eb3ab6b62d76e23384dc456494bdfa2e915`.
+The fixed root owns every foot, digit and talon. Shin weights bridge the
+planted feet and yawing torso. Separate neck and head joints keep eyes and
+bill coherent. Each gold wing arm carries a separate flame-bank joint;
+orange cores and gold pockets follow their bank together. The crown and tail
+have independent motion, with tail yaw preserving its floor clearance.
+Rotation-only idle, attack and recoil clips use literal neutral endpoints.
 
-The final candidate passed twelve stored-mesh tests in 59.617 seconds, and the
-installed canonical source passed all twelve again in 47.913 seconds. Tests
-cover connected closed outward solids, finite unit normals and actual face
-winding, recipe parity, budgets, height, grounding and feature counts.
-Independent nonadjacent triangle checks cover the body, neck, wing arms,
-fire banks, fitted wing color layers, crown and tail. Stored-ray volume checks
-cover neck/head/beak/crown roots, wing/body and fire/arm roots, tail/body roots
-and the complete shin/foot/digit/talon chains. The grey feet and ivory claws
-must remain close to the floor. Every fitted eye and fire color layer is
-checked at vertices, front triangle centers and edge midpoints against the
-actual stored parent, including the corresponding back-facing parents.
-Independent stored-ray samples require the leading arms to clear overlapping
-flame colors. Detached flame-wing and tail negative controls are rejected.
+The 21 Python anatomy and skin checks passed. They cover actual posed occupied
+joins, surface support and clearance, winding, physical edge strain, floor
+contact, coherent color layers, independent motion, strict round trips and
+budgets. Two focused Rust checks passed for planted talons, articulation,
+culling bounds and production GPU activation at pack height. Blender
+regeneration is byte-identical. Fixed-camera front and rear views of neutral,
+idle, attack and recoil were inspected. Shiny checks are skipped at the user's
+request.
 
-Final front, oblique and rear software images completed with exit zero and
-were individually inspected. Canonical layout validation passed; storage
-validation passed for the current shared tree of 573 raw JSON model documents.
-All three edited Python files parsed, and the relevant Git whitespace check
-passed. The installed source remains byte-identical to the reviewed candidate.
+The production native client built successfully with:
 
-The first fresh native build and Rust all-251 regression exited 101 because
-a shared gym-scenery initializer lacked `gym_stone_pixels`. The current shared
-source supplies that field. The retried production build completed with exit
-zero in 21 minutes 40 seconds including shared cache waits. The current all-251
-Rust model regression passed with one matching test, zero failures, 1.16 seconds
-and 1,266 filtered tests. Other package targets contained no matching tests.
-All three current replacement source hashes were verified in that test binary.
+```sh
+CARGO_TARGET_DIR=target/pokemon-models cargo build --locked -p crystal-bevy \
+  --features location-tester,bevy/zstd_rust --example immersive_battle_3d -j1 \
+  --config profile.dev.package.crystal-voxel-view.opt-level=0 \
+  --config profile.dev.package.crystal-bevy.opt-level=0
+```
 
-The fresh production executable contains the full canonical source hash and
-compiled mute switch. A muted owned-image GPU battle capture exited zero in
-4.22 seconds; renderer write time was 0.94 seconds. The 2,000 by 1,400 image
-has 47,915 colors and was inspected in full. Moltres's gold leading arms,
-red-orange banks, warm flame cores, crown, grey bill, legs and ivory claws
-render alongside the arena, Pidgeotto and battle HUD. Its tail is partly seen
-behind the body; complementary software views cover its full outline. Model
-hash and executable inode, size and modification time were unchanged before
-and after the capture and across the three replacement trials.
-
-Every native trial set `CRYSTAL_PREVIEW_MUTE=1` before process creation. The
-backend sets both music and effect sinks to zero before appending sources and
-keeps music refreshes at zero; startup music log messages do not mean audible
-playback. No system volume or other application was changed. The separate
-live-window capture issue and full 251-species appearance goal remain open.
-Generated captures and logs are ignored verification scratch, not deliverables.
+The zstd backend flag supplies the backend required by the shared image
+features. Normal paired 3D/2D inspection against Sentret shows the Moltres HUD
+name, fitted eyes and bill, gold wing arms, red-orange flame silhouette, crown,
+swept tail and planted grey feet on visibly rendered terrain. The accepted
+camera preserves game state: core frame 2629/hash 275580255, LCD animation frame
+3377, virtual time 60.621271291. Final ignored QA prefix is
+`target/pokemon-native-review/moltres-normal`. This accepts the current Moltres
+pass; the full catalog, move-specific choreography, field gaits and browser
+review remain open.

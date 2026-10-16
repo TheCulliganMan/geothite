@@ -16,7 +16,10 @@ pub(super) struct RenderWalk {
     player_bounds: Option<(Vec2, Vec2)>,
     player_moved: bool,
     capture_steps: bool,
+    arrival_reveal_captured: bool,
     synthetic_input: bool,
+    step_input: bool,
+    segment_tile: Option<TilePosition>,
     running_input: bool,
     hold_on_battle: bool,
     hold_healing_balls:Option<u8>,
@@ -31,6 +34,15 @@ impl RenderWalk {
 
     pub(super) fn settled(&self) -> bool {
         self.finished && self.settle >= 30
+    }
+
+    pub(super) fn hold_for_source_capture(&mut self) -> Result<()> {
+        anyhow::ensure!(self.started(), "source hold requires an ordinary QA input route");
+        std::fs::write(self.path.with_extension("movement.csv"), &self.trace)?;
+        self.tick = self.route.len() * 32;
+        self.finished = true;
+        self.settle = 30;
+        Ok(())
     }
 }
 
@@ -70,7 +82,7 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bo
         finished: false,
         settle: 0,
         path: path.to_owned(),
-        trace: "frame,map,origin_x,origin_y,center_x,center_y,builds,frame_ms,focused,input,tile_x,tile_y\n".into(),
+        trace: "frame,map,origin_x,origin_y,center_x,center_y,builds,frame_ms,focused,input,tile_x,tile_y,terrain_map,terrain_pending,terrain_active,fade_alpha,warp_phase,runtime_map\n".into(),
         times: Vec::new(),
         first_builds: None,
         origins: default(),
@@ -78,7 +90,10 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bo
         player_bounds: None,
         player_moved: false,
         capture_steps,
+        arrival_reveal_captured: false,
         synthetic_input,
+        step_input: std::env::var("CRYSTAL_RENDER_TEST_WALK_STEPS").as_deref()==Ok("1"),
+        segment_tile: None,
         running_input: std::env::var("CRYSTAL_RENDER_TEST_RUN").as_deref() == Ok("1"),
         hold_on_battle: std::env::var("CRYSTAL_RENDER_TEST_HOLD_BATTLE").as_deref() == Ok("1"),
         hold_healing_balls,
@@ -123,7 +138,7 @@ fn inject_synthetic_keys(
     }
 }
 
-fn drive(
+pub(super) fn drive(
     mut walk: ResMut<RenderWalk>,
     mut keyboard: ResMut<ButtonInput<KeyCode>>,
     status: Res<crystal_voxel_view::VoxelViewStatus>,
@@ -211,6 +226,15 @@ fn drive(
     let tile = runtime.shell.session().overworld().player.tile;
     let first_tile = *walk.first_tile.get_or_insert(tile);
     walk.authoritative_moved |= tile != first_tile;
+    if walk.step_input && walk.started() && status.terrain_pending {
+        // A debug terrain build can take longer than a step. Release input
+        // while it fits the accepted position; don't audit empty/stale frames.
+        for key in [KeyCode::ArrowRight,KeyCode::ArrowLeft,KeyCode::ArrowUp,
+            KeyCode::ArrowDown,KeyCode::KeyZ,KeyCode::KeyX,KeyCode::ShiftRight] {
+            keyboard.release(key);
+        }
+        return;
+    }
     for key in [
         KeyCode::ArrowRight,
         KeyCode::ArrowLeft,
@@ -224,6 +248,7 @@ fn drive(
             keyboard.release(key);
         }
     }
+    if walk.tick % 32 == 0 {walk.segment_tile=Some(tile);}
     let segment = walk.tick / 32;
     if segment == walk.route.len() {
         assert!(!walk.hold_on_battle || visible_battle,
@@ -276,14 +301,20 @@ fn drive(
         KeyCode::ArrowUp | KeyCode::ArrowRight | KeyCode::ArrowDown | KeyCode::ArrowLeft) {
         keyboard.press(KeyCode::KeyX);
     }
-    keyboard.press(key);
+    // Hold the ordinary key until one authoritative step commits, then let
+    // its production interpolation settle. Turns can consume an initial press.
+    if walk.step_input && walk.segment_tile.is_some_and(|start|tile!=start) {
+        keyboard.release(key);
+    } else {
+        keyboard.press(key);
+    }
     let dt = time.delta_secs_f64() * 1000.0;
     walk.times.push(dt);
     walk.maps.insert(frame.map_id.to_string());
     walk.origins
         .insert((frame.grid_origin.x, frame.grid_origin.y));
     let line = format!(
-        "{},{},{},{},{:.3},{:.3},{},{:.3},{},{},{},{}\n",
+        "{},{},{},{},{:.3},{:.3},{},{:.3},{},{},{},{},{},{},{},{},{:?},{}\n",
         walk.tick,
         frame.map_id,
         frame.grid_origin.x,
@@ -299,9 +330,31 @@ fn drive(
             "keyboard"
         },
         tile.x,
-        tile.y
+        tile.y,
+        status.terrain_map.as_deref().unwrap_or(""),
+        status.terrain_pending,
+        status.active,
+        runtime.screen_fade.map_or(0, |fade| fade.alpha),
+        runtime.visible_walk_warp_phase,
+        runtime.shell.current_map_name(),
     );
     walk.trace.push_str(&line);
+    if runtime.visible_walk_warp_phase == Some(VisibleWalkWarpPhase::FadeOut) {
+        walk.arrival_reveal_captured = false;
+    }
+    if walk.capture_steps && !walk.arrival_reveal_captured
+        && runtime.visible_walk_warp_phase == Some(VisibleWalkWarpPhase::FadeIn)
+        && runtime.screen_fade.is_some_and(|fade| fade.alpha < 255)
+    {
+        if let Ok((window, _)) = windows.single() {
+            if let Some(screenshot) = render_capture::moving_screenshot(capture.as_deref(), window) {
+                let stem = walk.path.file_stem().unwrap().to_string_lossy();
+                let path = walk.path.with_file_name(format!("{stem}-arrival-reveal-{}.png",walk.tick));
+                commands.spawn(screenshot).observe(bevy::render::view::screenshot::save_to_disk(path));
+                walk.arrival_reveal_captured = true;
+            }
+        }
+    }
     if walk.capture_steps && walk.tick % 32 == 12 {
         if let Ok((window, _)) = windows.single() {
             let stem = walk.path.file_stem().unwrap().to_string_lossy();
@@ -315,6 +368,10 @@ fn drive(
                     .observe(bevy::render::view::screenshot::save_to_disk(path));
             }
         }
+    }
+    if walk.step_input && walk.tick % 32 == 31 {
+        std::fs::write(walk.path.with_extension("movement.csv"), &walk.trace)
+            .expect("write exact route progress");
     }
     walk.tick += 1;
 }

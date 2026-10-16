@@ -2,6 +2,7 @@
 """Stored electric anatomy, stripe roots and genuinely open contact blades."""
 import copy,json,os,unittest
 from pathlib import Path
+from elekid_glb import read_elekid,geometry_digest
 from electric_pair_sculpt import sculpture,SPECIES,HEIGHTS
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_slime_sculpt import ray_intersections
@@ -13,7 +14,7 @@ ROOT=Path(os.environ.get('CRYSTAL_ELECTRIC_PAIR_TEST_MODELS',Path(__file__).reso
 
 class ElectricPairTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={n:json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in SPECIES}
+ def setUpClass(cls):cls.models={n:read_elekid(ROOT/'elekid.glb') if n=='elekid' else json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in SPECIES}
  find=attachment_checks.NidorinaTests.find
  overlap=attachment_checks.NidorinaTests.overlap
  def each(self):
@@ -22,7 +23,7 @@ class ElectricPairTests(unittest.TestCase):
  def test_shading_tracks_actual_faces(self):assert_model_shading(self,self.models)
  def test_parity_floor_height_budget_and_distinct_electric_anatomy(self):
   for n in self.each():
-   self.assertEqual(self.m,sculpture(n));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),115000)
+   self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture(n)));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),115000)
    self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHTS[n],places=6)
    counts=(('Head /',1),('Crest /',2),('Antenna /',2),('Antenna ball /',2),('Jaw /',2),('Fang /',2),('Knuckle /',6),('Thumb /',2),('Wrist fur /',4),('Tail tip /',1),('Arm stripe /',6),('Leg stripe /',4),('Toe claw /',6),('Back stripe /',1),('Tail /',1),('Tail stripe /',4)) if n=='electabuzz' else (('Head /',0),('Plug /',2),('Arm root /',2),('Arm stripe /',4),('Hand claw /',6),('Belly band /',1))
    for prefix,num in counts+(('Body /',1),('Eye /',2),('Hand /',2),('Leg /',2),('Foot /',2),('Bolt /',1)):self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),num,prefix)

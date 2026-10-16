@@ -4,7 +4,7 @@ import argparse,json,math
 from pathlib import Path
 from sculpt_geometry import part,fitted_patch,fitted_contour
 from abra_sculpt import surface
-from bovine_sculpt import oval
+from bovine_sculpt import oval,fitted_patch
 from skin_glb import COORDINATES
 HEIGHT=1.05
 RED=(.88,.39,.47);BLUE=(.40,.75,.79);INK=(.09,.11,.13);WHITE=(.95,.97,.95)
@@ -65,5 +65,7 @@ def sculpture():
  for q in p:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':'porygon','version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'porygon.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ from porygon_glb import export_porygon
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
+ (args.output/'porygon.glb').write_bytes(export_porygon())
 if __name__=='__main__':main()

@@ -539,6 +539,8 @@ include!("runtime_pack.rs");
 include!("verification.rs");
 include!("runtime_commands.rs");
 include!("game_data.rs");
+mod pack_load_trace;
+pub use pack_load_trace::with_compiled_pack_load_observer;
 include!("mutation_protocol.rs");
 include!("merge.rs");
 include!("script_parsing.rs");

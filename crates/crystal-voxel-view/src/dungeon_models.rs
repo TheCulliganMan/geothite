@@ -105,6 +105,7 @@ pub(crate) struct Model {
     tower_timber_pixels: Option<Vec<[usize; 2]>>,
     gym_orb_pixels: Option<Vec<[usize; 2]>>,
     mansion_hut_materials: Option<Vec<u8>>,
+    shrine_materials: Option<Vec<u8>>,
     hall_terminal_pixels: Option<Vec<[usize;2]>>,
     theater_stage_materials: Option<Vec<u8>>,
     min: [f32; 3],
@@ -123,6 +124,8 @@ impl Model {
         let mut orb_pixels = Vec::new();
         let mut hut_materials=Vec::new();let mut hut_valid=export.name=="roof_access_hut";
         let mut hut_seen=0u8;
+        let mut shrine_roles=Vec::new();let mut shrine_seen=0u8;
+        let mut shrine_valid=matches!(export.name.as_str(),"shrine_dragon_rail"|"shrine_dragon_mask");
         let mut named_orb = export.name == "league_podium";
         let mut hall_pixels=Vec::new();let mut hall_valid=export.name=="hall_of_fame_terminal";
         let mut stage_roles=Vec::new();let mut stage_valid=matches!(export.name.as_str(),"theater_platform"|"theater_backdrop");
@@ -264,6 +267,13 @@ impl Model {
                     hut_materials.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
                 }else {hut_valid=false;}
             }
+            if shrine_valid {
+                let role=match p.name.as_str() {"wood_dark"|"ink"=>Some(0),"wood"=>Some(1),
+                    "wood_light"|"brass"=>Some(2),"cloth_light"=>Some(3),_=>None};
+                if let Some(role)=role {shrine_seen|=1<<role;
+                    shrine_roles.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
+                }else{shrine_valid=false;}
+            }
         }
         crate::scenery_finish::contain(&mut surface, min, max);
         if (0..3).any(|a| !min[a].is_finite() || !max[a].is_finite() || max[a] - min[a] <= 1e-6) {
@@ -280,7 +290,8 @@ impl Model {
         let gym_orb_pixels = (named_orb
             && orb_pixels.len() == surface.positions.len()).then_some(orb_pixels);
         let mansion_hut_materials=(hut_valid && hut_seen==127 && hut_materials.len()==surface.positions.len()).then_some(hut_materials);
-        Ok(Self { theater_stage_materials:(stage_valid&&stage_roles.len()==surface.positions.len()).then_some(stage_roles), hall_terminal_pixels:(hall_valid&&hall_pixels.len()==surface.positions.len()).then_some(hall_pixels), mansion_hut_materials, surface: surface.into(), gym_stone_pixels, pewter_guardian_pixels, tower_timber_pixels, gym_orb_pixels, min, max })
+        let shrine_materials=(shrine_valid&&shrine_seen==15&&shrine_roles.len()==surface.positions.len()).then_some(shrine_roles);
+        Ok(Self { theater_stage_materials:(stage_valid&&stage_roles.len()==surface.positions.len()).then_some(stage_roles), hall_terminal_pixels:(hall_valid&&hall_pixels.len()==surface.positions.len()).then_some(hall_pixels), mansion_hut_materials, shrine_materials, surface: surface.into(), gym_stone_pixels, pewter_guardian_pixels, tower_timber_pixels, gym_orb_pixels, min, max })
     }
     pub(crate) fn append_native_theater_stage(&self,target:&mut SurfaceMeshData,bounds:[f32;4],
         height:f32,swatches:[[f32;2];3])->bool {
@@ -311,6 +322,23 @@ impl Model {
         true
     }
     pub(crate) fn has_native_mansion_hut_materials(&self)->bool {self.mansion_hut_materials.is_some()}
+    pub(crate) fn has_native_shrine_materials(&self)->bool {self.shrine_materials.is_some()}
+    pub(crate) fn append_native_shrine(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        swatches:[[f32;2];4],turn:bool)->bool {
+        let Some(roles)=&self.shrine_materials else{return false;};
+        let first=target.positions.len();self.append(target,bounds,0.,height);
+        for (i,&role) in roles.iter().enumerate() {
+            let j=first+i;
+            if turn {
+                target.positions[j][0]=bounds[0]+bounds[1]-target.positions[j][0];
+                target.positions[j][2]=bounds[2]+bounds[3]-target.positions[j][2];
+                target.normals[j][0]*=-1.;target.normals[j][2]*=-1.;
+            }
+            target.uvs[j]=swatches[usize::from(role)];
+            target.colors[j]=crate::interior_models::authored_face_color([1.;4],Vec3::from_array(target.normals[j]));
+        }
+        true
+    }
     pub(crate) fn append_native_mansion_hut(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
         source_uv:impl Fn(u8)->[f32;2])->bool {
         let Some(roles)=&self.mansion_hut_materials else{return false;};
@@ -588,6 +616,36 @@ mod tests {
             let changed=source.replace(&format!("\"name\":\"{name}\""),"\"name\":\"unknown\"");
             let unknown=Model::parse(&changed).unwrap();assert!(!unknown.has_native_mansion_hut_materials());
             assert!(!unknown.append_native_mansion_hut(&mut SurfaceMeshData::default(),[0.,48.,0.,32.],24.,|_|[0.,0.]));
+        }
+    }
+    #[test]
+    fn shrine_dragon_materials_require_named_roles_keep_cache_and_turn_inward() {
+        for source in [include_str!("../models/special_rooms/shrine_dragon_rail.mesh.json"),
+            include_str!("../models/special_rooms/shrine_dragon_mask.mesh.json")] {
+            let model=Model::parse(source).unwrap();let before=model.surface.clone();
+            let mut original=SurfaceMeshData::default();model.append(&mut original,[2.,26.,3.,147.],0.,20.);
+            let swatches=[[0.1,0.2],[0.3,0.4],[0.5,0.6],[0.7,0.8]];
+            let mut painted=SurfaceMeshData::default();
+            assert!(model.append_native_shrine(&mut painted,[2.,26.,3.,147.],20.,swatches,false));
+            assert_eq!(original.positions,painted.positions);assert_eq!(original.normals,painted.normals);
+            assert_eq!(original.indices,painted.indices);assert_eq!(model.surface.colors,before.colors);
+            assert_eq!(model.surface.positions,before.positions);
+            assert!(swatches.iter().all(|uv|painted.uvs.contains(uv)));
+            let mut turned=SurfaceMeshData::default();
+            assert!(model.append_native_shrine(&mut turned,[2.,26.,3.,147.],20.,swatches,true));
+            assert_eq!(turned.indices,painted.indices);
+            for ((a,b),(na,nb)) in painted.positions.iter().zip(&turned.positions)
+                .zip(painted.normals.iter().zip(&turned.normals)) {
+                assert!((a[0]+b[0]-28.).abs()<0.0001&&(a[2]+b[2]-150.).abs()<0.0001&&a[1]==b[1]);
+                assert_eq!(*nb,[-na[0],na[1],-na[2]]);
+            }
+            for name in ["wood_dark","ink","wood","wood_light","brass","cloth_light"] {
+                let changed=source.replace(&format!("\"name\":\"{name}\""),"\"name\":\"unknown\"");
+                let unknown=Model::parse(&changed).unwrap();assert!(!unknown.has_native_shrine_materials());
+                let mut untouched=SurfaceMeshData::default();
+                assert!(!unknown.append_native_shrine(&mut untouched,[2.,26.,3.,147.],20.,swatches,false));
+                assert!(untouched.positions.is_empty());
+            }
         }
     }
 

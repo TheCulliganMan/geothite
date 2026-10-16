@@ -1,23 +1,67 @@
-# Remoraid and Octillery sculptures
+# Remoraid and Octillery sculptures and skins
 
-`tools/jet_fish_sculpt.py` authors original static geometry for Remoraid and Octillery. The main battle builder dispatches these two species to the recipe and retains the existing Goldeen, Seaking and Magikarp recipes. Only the two canonical mesh JSON assets are regenerated. The prior normalized height of 1.00 remains unchanged.
+`tools/jet_fish_sculpt.py` authors the anatomy and `tools/jet_fish_glb.py`
+exports canonical standard glTF skins. The battle builder dispatches both
+before generic Blender batching. The duplicate static JSON assets are removed.
+Every original neutral f32 position, normal, color and triangle is retained at
+the 1.00 authoring height. Raw recipe geometry is cached for normalization and
+skin pivots.
 
-Remoraid has a continuous tapered mint body, swept upper and scalloped lower tail lobes, a forward dorsal crest, lower pelvic fin, pale pectoral paddles, paired fitted lateral bars and large ivory eyes. The caudal lobes sit behind the body rather than crossing its face. Octillery has a continuous mantle linking its rounded head to a narrow neck and flared arm base. Eight individually curved solid arms carry sixteen raised annular yellow sucker rims and recessed gold wells. Its three crown spots follow the actual head surface. Heavy red eyelids and a hollow upward siphon replace the previous round stare and capped mouth.
+Remoraid retains its continuous tapered mint body, swept upper and scalloped
+lower tail lobes, forward dorsal crest, lower pelvic fin, pale pectoral paddles,
+fitted lateral bars and large ivory eyes. Seven joints give it a floor-height
+preserving body yaw, a caudal body bend, coherent rigid tail lobes and independent
+fin strokes. Its fitted bars, eyes and mouth follow the body. Rigid tail lobes
+avoid folding the thin scalloped fan during a stroke.
 
-Official [Remoraid artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/223.png) and [Octillery artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/224.png) were inspected as temporary design references. No reference image, downloaded mesh, texture or extracted game model is shipped. Searches found print-oriented assets and game extractions, but no compatible original open rig was verified or imported. The canonical assets remain static; skeletal animation is not claimed.
+Octillery retains its continuous head, neck and arm mantle, eight curled arms,
+sixteen open annular yellow sucker rims and recessed gold wells, three fitted
+crown spots, heavy eyelids and hollow upward siphon. Eleven joints articulate
+the upper mantle, aiming siphon and eight individually phased tentacle tips.
+The lower supports remain on the identity floor root. Arms and their suckers
+share a smooth spatial weight field; the upper curls bend while their lower
+contacts stay fixed. The broad transition and bounded curl angles avoid local
+stretching. The siphon and inner lining share a longitudinal deformation field,
+keeping the mouth open while the base remains connected. Facial details and
+crown spots follow the upper mantle.
 
-Verification commands:
+Both skins use the existing idle loop and source-relative attack/hit clips,
+rotation-only animation and literal neutral endpoints. The verified local pack
+heights are 0.6096 m for Remoraid and 0.889 m for Octillery.
+
+| Model | Parts | Vertices | Triangles | Joints | Bytes | Accessors |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Remoraid | 18 | 6,822 | 7,724 | 7 | 263,080 | 89 |
+| Octillery | 52 | 19,798 | 21,740 | 11 | 741,696 | 229 |
+
+The existing 1 MiB, 20,000-vertex and 256-accessor limits remain unchanged.
+Neutral f32 digests:
+
+- Remoraid: `02f2a0f1061633dd1b6772fc886c1ccce95ddc5237d63a8e3ca29a280a6d0514`
+- Octillery: `11c7a88eb486c7a59ae19980866dcfc9a9d0f25510be9472abfaa419a8a2c36f`
+
+Official [Remoraid artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/223.png)
+and [Octillery artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/224.png)
+were used for the original sculpture pass. No external mesh, texture, extracted
+game model or reference image is shipped.
 
 ```sh
-python3 -m unittest discover -s tools -p test_jet_fish_sculpt.py
-python3 tools/check-model-layout.py
-python3 tools/model_asset_storage.py validate crates/crystal-voxel-view/models
-cargo test --locked -p crystal-voxel-view every_exact_species_is_grounded_and_volumetric --lib
-cargo build --locked -p crystal-bevy --example immersive_battle_3d --features location-tester
+python3 -m unittest discover -s tools -p 'test_jet_fish*.py'
 ```
 
-Eight geometry tests check closed connected outward-oriented primitives, shading against stored triangles, regeneration and height/triangle bounds, fish proportions and tail placement, eight arms with actual mantle contact, fitted facial and lateral details, sucker support on actual arm surfaces, and an open siphon lip with real depth. Software front, oblique and rear views inspect stored geometry. Native battle captures use the ignored local `content-packs/realtime-clock.browser.crystalpack` and verify static appearance and camera fit. They do not establish controller or gameplay behavior.
+Eight anatomy tests retain the closed topology, shading, height, proportions,
+fitted surfaces, arm contacts, sucker support and hollow siphon checks. Eight
+skin tests independently decode the actual keys and weights to check coherent
+ownership, floor contacts, physical posed joins, open posed suckers, an open
+aiming siphon, winding, strain, neutral endpoints and visible movement of every
+arm and fin. Shiny checks are intentionally skipped.
 
-Verified this pass: eight geometry regressions, canonical layout, validation of 571 raw JSON model documents, the full-catalog Rust grounded/volumetric regression, and native battle captures for both species passed. Remoraid contains 7,724 triangles (506,355 bytes); Octillery contains 21,740 triangles (1,443,244 bytes). Temporary captures and reference images were removed after inspection.
+All 16 Python anatomy/skin checks, two focused Rust rig/GPU regressions and two wider catalog/timing regressions passed. Blender regeneration produced byte-identical GLBs. The production native client built successfully; final paired 3D/2D battles were visually inspected with preserved game state, accepted terrain and visible ground. Shiny checks were skipped as requested.
 
-This is an incremental pass within the full 251-species goal; the complete catalog still requires visual review and improvements.
+Remoraid against Sentret: core 2552/hash 4071485440, LCD 3222, virtual time 58.125843916; `state_preserved=true`.
+
+Octillery against Pidgey: core 2956/hash 819259712, LCD 3720, virtual time 68.988857374; `state_preserved=true`.
+
+Final ignored QA prefixes are `target/pokemon-native-review/remoraid-normal` and
+`target/pokemon-native-review/octillery-normal`. Temporary helpers, builder
+parity outputs and software previews were removed after inspection.

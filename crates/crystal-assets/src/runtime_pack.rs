@@ -3,6 +3,9 @@ pub struct LoadedCompiledGamePack {
     path: PathBuf,
     bytes: Vec<u8>,
     pack: CompiledGamePack,
+    // Set only after every production runtime check succeeds. The loaded
+    // wrapper exposes no mutable pack access, so certification stays valid.
+    runtime_verified: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -169,6 +172,13 @@ pub struct TeleportFieldMoveOutcome {
 }
 
 impl LoadedCompiledGamePack {
+    /// Whether this immutable owned pack completed the production verifier.
+    /// Diagnostic/test decoders leave this false and must still be verified
+    /// before an ordinary runtime can consume them.
+    pub fn is_runtime_verified(&self) -> bool {
+        self.runtime_verified
+    }
+
     pub fn path(&self) -> &Path {
         &self.path
     }

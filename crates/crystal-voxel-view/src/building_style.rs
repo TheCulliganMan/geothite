@@ -27,7 +27,7 @@ pub(crate) fn uses_center_ridge_roof(
 
 /// Pewter Museum is the one Kanto civic landmark whose authored deep roof
 /// band is a pitched hall rather than a flat plan slab.  Match the complete
-/// catalogued drawing dimensions and its stable west-cap metatile; ordinary
+/// catalogued twelve-row drawing and its stable west roof cap; ordinary
 /// marts, gyms, stations, and compact houses keep their existing roof form.
 pub(crate) fn uses_kanto_museum_ridge(
     width: usize,
@@ -36,10 +36,10 @@ pub(crate) fn uses_kanto_museum_ridge(
     source: &VisualTileSource,
 ) -> bool {
     source.tileset_id.as_ref() == "kanto"
-        && source.metatile_id == 0x75
+        && source.metatile_id == 0x0c
         && width == 16
-        && height == 8
-        && roof_rows == 4
+        && height == 12
+        && roof_rows == 8
 }
 
 /// Celadon's department store is a 12x16-tile landmark: four native roof
@@ -232,9 +232,10 @@ mod tests {
 
     #[test]
     fn only_the_complete_pewter_museum_uses_the_kanto_hall_ridge() {
-        assert!(uses_kanto_museum_ridge(16, 8, 4, &source("kanto", 0x75)));
-        assert!(!uses_kanto_museum_ridge(12, 8, 4, &source("kanto", 0x75)));
-        assert!(!uses_kanto_museum_ridge(16, 8, 4, &source("kanto", 0x20)));
+        assert!(uses_kanto_museum_ridge(16, 12, 8, &source("kanto", 0x0c)));
+        assert!(!uses_kanto_museum_ridge(16, 8, 4, &source("kanto", 0x75)));
+        assert!(!uses_kanto_museum_ridge(12, 12, 8, &source("kanto", 0x0c)));
+        assert!(!uses_kanto_museum_ridge(16, 12, 8, &source("kanto", 0x20)));
     }
 
     #[test]

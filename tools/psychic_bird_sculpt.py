@@ -4,11 +4,12 @@ import argparse,json,math
 from pathlib import Path
 from sculpt_geometry import part,loft,curved_profiles,ellipsoid,fitted_patch,fitted_contour,crease_normals,tube
 from abra_sculpt import surface
-from bovine_sculpt import oval,curved_tube,reverse_front
+from bovine_sculpt import fitted_patch,oval,curved_tube,reverse_front
 from wing_insect_sculpt import contour
 from skin_glb import COORDINATES
 SPECIES=('natu','xatu');HEIGHT=1.04
-GREEN=(.52,.73,.35);RED=(.79,.32,.41);GOLD=(.98,.79,.29);IVORY=(.95,.97,.94);INK=(.12,.14,.16);GLINT=(.84,.89,.90)
+# Local normal RGB555 for both birds: green (10,23,13), red (20,5,6).
+GREEN=(82/255,189/255,107/255);RED=(165/255,41/255,49/255);GOLD=(1.,1.,1.);IVORY=GOLD;INK=(0.,0.,0.);GLINT=GOLD
 
 def transform(p,sign,undo=False):
     q=dict(p);angle=sign*.95;c=math.cos(angle);s=math.sin(angle)
@@ -46,7 +47,7 @@ def feet(p,root_y):
 
 def natu():
     body=ellipsoid('Body / single round green Natu orb',GREEN,(0,.332,0),(.255,.255,.236),48,32);p=[body];eyes(p,body,.398,.113,.067,.033);feet(p,.146)
-    beak=ellipsoid('Beak / broad rounded golden seed bill',GOLD,(0,.333,.268),(.089,.037,.102),36,20);p.append(beak)
+    beak=ellipsoid('Beak / broad rounded golden seed bill',RED,(0,.333,.268),(.089,.037,.102),36,20);p.append(beak)
     smile=contour([((-.060,.328),(-.024,.317),(.023,.317),(.060,.328)),((.060,.328),(.022,.321),(-.025,.321),(-.060,.328))],10)
     p.append(fitted_contour('Bill seam / fitted narrow dark Natu smile',INK,smile,surface(beak),.002))
     plume=loft('Crest / single swept red lance feather',RED,curved_profiles(((.510,.011,.007,-.046),(.552,.029,.013,-.061),(.612,.036,.015,-.093),(.689,.019,.011,-.133),(.725,.001,.001,-.150)),4),28)
@@ -55,10 +56,10 @@ def natu():
     red_sections=[[(.017,.386),(.061,.367),(.085,.337),(.080,.330),(.016,.346)],[(.016,.327),(.089,.314),(.080,.280),(.003,.295)],[(.001,.278),(.069,.263),(.045,.207),(-.025,.213)]]
     for sign in (-1,1):
         wing=ellipsoid('Wing / dark outlined rounded Natu shield '+str(sign),INK,(0,.305,0),(.101,.132,.082),40,28);skin=surface(wing);p.append(transform(wing,sign))
-        p.append(transform(fitted_contour('Wing gold / curved leading Natu feather '+str(sign),GOLD,yellow,skin,.007,subdivisions=3),sign))
+        p.append(transform(fitted_contour('Wing gold / curved leading Natu feather '+str(sign),GOLD,yellow,skin,.007,subdivisions=2),sign))
         for j,xy in enumerate(red_sections):p.append(transform(fitted_contour('Wing red / barred trailing Natu feather '+str(sign)+' '+str(j),RED,xy,skin,.006,subdivisions=3),sign))
         back=reverse_front(wing);bs=surface(back)
-        p.append(transform(reverse_front(fitted_contour('Wing gold / curved leading Natu feather '+str(sign)+' rear',GOLD,[(-x,y) for x,y in yellow],bs,.007,subdivisions=3)),sign))
+        p.append(transform(reverse_front(fitted_contour('Wing gold / curved leading Natu feather '+str(sign)+' rear',GOLD,[(-x,y) for x,y in yellow],bs,.007,subdivisions=2)),sign))
         for j,xy in enumerate(red_sections):p.append(transform(reverse_front(fitted_contour('Wing red / barred trailing Natu feather '+str(sign)+' '+str(j)+' rear',RED,[(-x,y) for x,y in xy],bs,.006,subdivisions=3)),sign))
     for sign in (-1,1):
         p.append(curved_tube('Tail / broad swept red Natu feather '+str(sign),RED,[(0,.186,-.133),(sign*.066,.167,-.246),(sign*.116,.145,-.322)],[.043,.044,.002],24))
@@ -114,9 +115,10 @@ def xatu():
         p.append(reverse_front(fitted_contour('Back stripe / fitted golden ceremonial bar '+str(j),GOLD,xy,surface(rear),.006,subdivisions=3)))
     return p
 
-def sculpture(species):
+def sculpture(species,normalize=True):
     if species not in SPECIES:raise ValueError('unsupported psychic bird')
     p=natu() if species=='natu' else xatu();p=[crease_normals(q,35.) if q['part'].startswith(('Eye /','Pupil /','Eye glint /','Wing gold /','Wing red /','Bill seam /','Collar /','Chest symbol /','Chest pupil /','Wing badge','Wing hem','Back stripe /')) else q for q in p]
+    if not normalize:return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]

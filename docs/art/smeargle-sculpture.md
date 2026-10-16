@@ -1,27 +1,58 @@
-# Smeargle painter-dog sculpture
+# Smeargle painter-dog sculpture and skin
 
-`tools/smeargle_sculpt.py` authors the canonical static Smeargle mesh directly with the existing standard-library geometry helpers. The Blender catalog builder dispatches Smeargle to this recipe. Other species are not regenerated.
+`tools/smeargle_sculpt.py` authors the anatomy and `tools/smeargle_glb.py` exports
+canonical `smeargle.glb`. The duplicate static JSON is removed. The battle
+builder dispatches this standard skin before generic Blender batching.
 
-The previous generic dog had tiny dark eyes, brown paws and tail, a cylindrical cap tip, and a smooth green oval. The replacement has a continuous cream torso and projecting canine muzzle, large ivory eyes in brown sockets, short floppy brown ears, a soft slanted cream beret with a bent crown point, cream three-toed paws with fitted grooves, brown ankle markings, and two brown bands on each forelimb. One hand holds a cream tail that sweeps across the front of the body and ends in a tapered brush. Cream bristles and green paint meet at the same scalloped ring, with no floating pigment shell. The green tip has a shaped, subtly uneven contour.
+The torso, brown collar, canine head and muzzle, fitted eyes and nostrils,
+floppy ears, slanted cream beret, tongue, three-toed paws, ankle markings,
+fingers, looping tail and scalloped green brush retain their original geometry.
+Those 39 non-arm parts preserve every original neutral f32 position, normal,
+color and triangle. The 26 colored arm bands now use the current shared
+continuous two-span arm builder, retaining shared ring frames and normals.
+This adds 382 vertices and 728 triangles rather than retaining the older
+single-span band implementation.
 
-The official [Smeargle artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/235.png) was inspected for proportions, colors, features and pose. Reference images are temporary verification material and are not shipped.
+Thirteen joints provide a supported torso and neck, coherent fitted face,
+separate floppy ears and beret, articulated forelimbs, and a painting grip.
+Paws, toe grooves and brown ankle cuffs stay on the identity floor root. The
+right palm, its three fingers, the held distal tail and both brush layers share
+one owner. The continuous tail blends back toward the torso; its root stays
+attached while the grip and paint tip move through a forward painting stroke.
+The left open hand gestures independently. Standard rotation-only idle and
+source-relative attack/hit clips return to literal neutral endpoints.
 
-## External model research
+The four material groups for the two banded arms follow the existing packed
+model pattern. All 65 source parts round-trip in their original order through
+`source_part_ranges`; the runtime uses 43 primitives. No geometry is dropped.
+The skin has 16,875 vertices, 21,004 triangles and 13 joints, using 669,624 bytes
+and 204 accessors. Existing loader budgets remain unchanged. Authoring height
+is 1.14; verified pack height is 1.1938 m.
 
-Searches found a [Cobblemon Smeargle listing](https://sketchfab.com/3d-models/smeargle-cobblemon-2e3990b6ca7942728fd47d86ab2e575b), a Pokémon X/Y extraction, and a [Free3D model listed as unrigged](https://free3d.com/3d-model/smeargle-pokemon-4404.html). This pass did not verify an available original rigged Smeargle suitable for import. No external model or game extraction was imported. This original JSON mesh has no skeletal rig or authored animation.
+- Source neutral f32 digest: `41339016b1387248e3407fbba1d1412e7fee742f47744f29bf3f6dff2211a753`
+- Packed runtime digest: `e87a6aa122e9560a34741eb17c164e9ae34f2da00990129878ef18676460b595`
 
-## Verification
+The original sculpture pass used [official artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/235.png)
+as a temporary reference. No external mesh, texture, rig or extracted game
+content is shipped. Ordered fitted-patch centroids preserve deterministic
+geometry across Python and Blender; the full GLB regenerates byte-identically.
 
 ```sh
-python3 -m unittest discover -s tools -p test_smeargle_sculpt.py
-python3 tools/check-model-layout.py
-python3 tools/model_asset_storage.py validate crates/crystal-voxel-view/models
-cargo test --locked -p crystal-voxel-view every_exact_species_is_grounded_and_volumetric --lib
-cargo build --locked -p crystal-bevy --example immersive_battle_3d --features location-tester
+python3 -m unittest discover -s tools -p 'test_smeargle*.py'
 ```
 
-Eight independent stored-geometry tests cover closed oriented connected parts, triangle normals, deterministic regeneration and preserved height, anatomy and colors, actual foot/leg/body support, head/ear/hat/tongue connections, tail/body/hand/brush contact, the shared scalloped brush boundary, shared arm-band rings and finger contacts, and fitted eyes, nostrils and paw grooves.
+Eight anatomy checks cover topology, normals, source regeneration, height,
+colors, physical appendage support and fitted details. Eight skin checks decode
+the actual keys and weights to verify packed source ranges, fixed paws, coherent
+owners, forward paint-tip motion, actual posed hand/tail/brush contact, neutral
+endpoints, winding and strain. All 14 points of each adjacent arm-band ring and
+all 36 points of the scalloped paint boundary remain exactly shared during
+idle, painting and recoil. Shiny checks are intentionally skipped.
 
-The asset has 65 material parts and 20,276 triangles, below the 22,000-triangle regression budget. Its catalog height remains 1.14. Front/oblique and rear software renders and a native battle screenshot are inspected for silhouette, colors, shading, grounding and camera fit. The existing ignored `content-packs/realtime-clock.browser.crystalpack` is used only for native presentation verification. Screenshots do not establish gameplay or TUI/MCP correctness.
+All 16 Python anatomy/skin checks, two focused Rust rig/GPU regressions and two wider catalog/timing regressions passed. Blender regeneration is byte-identical to the canonical GLB. The production native client built successfully. Front/rear and fixed-camera neutral, idle, painting and recovery views were inspected, followed by a paired normal 3D/2D battle against Hoppip with preserved game state and accepted, visibly rendered terrain. Shiny checks were skipped as requested.
 
-Temporary renders and the reference image are removed after verification. No content packs, exported game source, command dumps, PCM or build products are delivered. The full 251-species visual review remains active; catalog bounds tests alone cannot prove every species looks good.
+Final normal pair: core 1260/hash 1815607576, LCD 1868, virtual time 32.666663291; `state_preserved=true`.
+
+Final ignored QA prefix: `target/pokemon-native-review/smeargle-normal`. Temporary
+helpers, software previews, movement frames and builder parity outputs were
+removed after inspection.

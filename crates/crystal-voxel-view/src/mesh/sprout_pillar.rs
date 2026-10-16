@@ -158,7 +158,14 @@ mod tests {
         );
         let (selected, _) = build_animated_flowers(&frame, &images, &[[2, 0]]).unwrap();
         assert!(selected.count_vertices() > 0);
-        frame.map_id = "TinTower1F".into();
+        for level in 1..=9 {
+            frame.map_id=format!("TinTower{level}F").into();
+            let (selected,_) = build_animated_flowers(&frame,&images,&[[2,0]]).unwrap();
+            assert!(selected.count_vertices()>0);
+            let (unselected,_) = build_animated_flowers(&frame,&images,&[]).unwrap();
+            assert_eq!(unselected.count_vertices(),0,"Tin custom ownership must also exclude the pillar");
+        }
+        frame.map_id = "TinTowerRoof".into();
         let (unrelated, solid) = build_animated_flowers(&frame, &images, &[[2, 0]]).unwrap();
         assert_eq!(
             unrelated.count_vertices() + solid.count_vertices(),
@@ -243,8 +250,12 @@ mod tests {
     }
 }
 
+pub(super) fn pillar_map(map:&str)->bool {
+    matches!(map,"SproutTower1F"|"SproutTower2F"|"SproutTower3F")
+        ||super::modeled_dungeons::tin_tower_guardian_map(map)
+}
 pub(super) fn animated_source(map: &str, s: &VisualTileSource) -> bool {
-    matches!(map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F") && source_local(s).is_some()
+    pillar_map(map) && source_local(s).is_some()
 }
 
 pub(super) fn append(

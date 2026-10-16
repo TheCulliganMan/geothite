@@ -155,11 +155,10 @@ pub(crate) fn shape(map_id: &str, source: &VisualTileSource) -> Option<CellShape
         return Some(CellShape::Flat);
     }
 
-    // $12 is the authored southwest stair/landing drawing beside the 2F
-    // warp. It describes a horizontal surface in the original projection;
-    // it is not a stack of wall-height steps. Keep the complete block on the
-    // lobby plane so the optional renderer preserves its topology instead of
-    // inventing staircase geometry from the dark edge pixels.
+    // The complete southwest flight in $12 is replaced atomically by the
+    // modeled-interior matcher. Keep its source fallback and adjacent floor
+    // at the original support datum; partial/custom drawings must not become
+    // independent relief columns or change the 2F warp's player footing.
     if source.metatile_id == 0x12 {
         return Some(CellShape::PlaneAt { height: 0.0 });
     }

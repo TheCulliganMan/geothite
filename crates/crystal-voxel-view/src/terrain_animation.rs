@@ -51,11 +51,12 @@ fn refresh(
         if source.width() != 8 || source.height() != 8 || pixels.len() != 256 {
             return Err(());
         }
-        geometry_changed |= crate::flower::flower_shape(&tile.source).is_some()
-            || (mesh::animated_pillar_source(&built.map_id, &tile.source)
-                && selected
-                    .iter()
-                    .any(|&[a, b]| x >= a && x - a < 4 && y >= b && y - b < 6));
+        // Native blooms persist across source animation phases; only authored
+        // pillar poses need a geometry upload.
+        geometry_changed |= mesh::animated_pillar_source(&built.map_id, &tile.source)
+            && selected
+                .iter()
+                .any(|&[a, b]| x >= a && x - a < 4 && y >= b && y - b < 6);
         updates.push((index, tile.texture.clone(), pixels.clone()));
     }
     if updates.is_empty() {
@@ -118,44 +119,38 @@ pub(super) fn sync(
     if phases.map_id != frame.map_id || phases.tiles.is_empty() {
         return;
     }
-    let selected = cache.built_animated_pillars.clone();
-    let Some(built) = cache.built_frame.as_mut() else {
-        return;
-    };
-    let change = match refresh(built, &phases, &selected, &mut images) {
-        Ok(change) => change,
-        Err(()) => {
-            status.active = false;
-            status.inactive_reason = Some("terrain animation: SourceTextureUnavailable".into());
-            return;
-        }
-    };
-    if change == Change::None {
-        return;
+    if let Err(error) = sync_cache(&phases, &mut cache, &mut images, &mut meshes, &mut materials) {
+        status.active = false;
+        status.inactive_reason = Some(error);
     }
+}
+
+pub(super) fn sync_cache(
+    phases: &VisualTileAnimationFrame,
+    cache: &mut TerrainRevisionCache,
+    images: &mut Assets<Image>,
+    meshes: &mut Assets<Mesh>,
+    materials: &mut Assets<VoxelMaterial>,
+) -> Result<(), String> {
+    let selected = cache.built_animated_pillars.clone();
+    let Some(built) = cache.built_frame.as_mut() else { return Ok(()); };
+    let change = refresh(built, phases, &selected, images)
+        .map_err(|()| "terrain animation: SourceTextureUnavailable".to_owned())?;
+    if change == Change::None { return Ok(()); }
     if change == Change::Geometry {
-        let (textured, solid) = match mesh::build_animated_flowers(built, &images, &selected) {
-            Ok(meshes) => meshes,
-            Err(error) => {
-                status.active = false;
-                status.inactive_reason = Some(format!("terrain animation: {error:?}"));
-                return;
-            }
-        };
+        let (textured, solid) = mesh::build_animated_flowers(built, images, &selected)
+            .map_err(|error| format!("terrain animation: {error:?}"))?;
         cache.built_animated_bounds = [textured.get_aabb(), solid.get_aabb()];
-        update_domain(&mut meshes, &mut cache.animated_textured_mesh, textured);
-        update_domain(&mut meshes, &mut cache.animated_solid_mesh, solid);
+        update_domain(meshes, &mut cache.animated_textured_mesh, textured);
+        update_domain(meshes, &mut cache.animated_solid_mesh, solid);
     }
     // Atlas uploads replace their GPU texture. Refresh every bound material,
     // including cutaway/reveal clones, without rebuilding static geometry.
     let atlas = cache.built_frame.as_ref().unwrap().map_texture.clone();
-    let users: Vec<_> = materials
-        .iter()
-        .filter_map(|(id, m)| (m.base.base_color_texture.as_ref() == Some(&atlas)).then_some(id))
-        .collect();
-    for id in users {
-        let _ = materials.get_mut(id);
-    }
+    let users: Vec<_> = materials.iter().filter_map(|(id, m)|
+        (m.base.base_color_texture.as_ref() == Some(&atlas)).then_some(id)).collect();
+    for id in users { let _ = materials.get_mut(id); }
+    Ok(())
 }
 
 #[cfg(test)]
@@ -261,6 +256,19 @@ mod tests {
         };
         p.clone()
     }
+    #[test]
+    fn flower_texture_phases_do_not_remove_blooms_or_rebuild_geometry() {
+        let (mut frame, mut images) = fixture();
+        frame.map_id = "Route35".into();
+        for tile in &mut frame.tiles {
+            tile.source.tileset_id = "johto".into();
+            tile.source.tile_index = 3;
+        }
+        let live = phases(&frame);
+        assert_eq!(refresh(&mut frame, &live, &[], &mut images), Ok(Change::Atlas));
+        assert!(frame.tiles.iter().all(|tile| crate::flower::flower_shape(&tile.source).is_some()));
+    }
+
     #[test]
     fn sparse_pillar_phase_moves_selected_mesh_with_stable_revision_handles_and_footing() {
         let (frame, mut images) = fixture();

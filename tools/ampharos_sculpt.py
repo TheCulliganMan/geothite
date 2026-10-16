@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Original connected Ampharos sculpture; one canonical static runtime JSON.
+"""Original connected Ampharos authoring sculpture for the canonical standard skin.
 
 Continuous torso/neck/head loft, fitted belly panel, tapered flippers, striped
 horns and curved banded tail. No Blender, source sprites or content pack needed.
@@ -10,8 +10,8 @@ from skin_glb import COORDINATES
 from sculpt_geometry import part as _part, loft as _loft, ellipsoid as _ellipsoid, tube as _tube, translate
 
 HEIGHT=1.35
-PALETTE={'yellow':(.98,.79,.22),'belly':(1.,.96,.80),
-         'ink':(.065,.055,.055),'red':(.90,.13,.17),'shine':(1.,.85,.73)}
+# Local normal RGB555: yellow (31,31,2), lamp (21,10,1).
+PALETTE={'yellow':(1.,1.,16/255),'belly':(1.,1.,1.),'ink':(0.,0.,0.),'red':(173/255,82/255,8/255),'shine':(1.,1.,1.)}
 
 
 
@@ -22,9 +22,9 @@ def ellipsoid(name,color,*args,**kwargs):return _ellipsoid(name,PALETTE[color],*
 def tube(name,color,*args,**kwargs):return _tube(name,PALETTE[color],*args,**kwargs)
 
 
-def sculpture():
+def sculpture(normalize=True):
     body_profiles=(
-        (.12,.12,.115,-.01),(.22,.205,.17,-.01),(.36,.238,.205,-.01),
+        (.105,.16,.14,-.01),(.22,.205,.17,-.01),(.36,.238,.205,-.01),
         (.50,.216,.18,-.015),(.62,.157,.13,-.014),(.71,.112,.105,-.01),
         (.83,.095,.09,-.004),(.94,.095,.092,.008),
         (1.015,.139,.134,.033),(1.09,.174,.167,.047),
@@ -81,6 +81,7 @@ def sculpture():
         parts.append(tube('Tail / fitted charcoal ring '+str(k),'ink',[start,end],[radius,radius-.003]))
     parts.append(ellipsoid('Tail / ruby lamp','red',(.06,.525,-.621),(.083,.085,.080)))
     parts.append(ellipsoid('Tail / quiet lamp highlight','shine',(.025,.558,-.557),(.013,.016,.007),12,8))
+    if not normalize:return {'name':'ampharos','version':1,'coordinate_system':COORDINATES,'primitives':parts}
     height=max(v for p in parts for v in p['positions'][1::3]);scale=HEIGHT/height
     for p in parts:
         p['positions']=[round(v*scale,7) for v in p['positions']]

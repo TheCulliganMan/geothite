@@ -2,6 +2,7 @@
 """Stored scuffle anatomy, fitted gold gaze, continuous crown and digit roots."""
 import copy,json,os,unittest
 from pathlib import Path
+from tyrogue_glb import read_tyrogue,geometry_digest
 from tyrogue_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_kingdra_sculpt import crossed_faces
@@ -11,7 +12,7 @@ ROOT=Path(os.environ.get('CRYSTAL_TYROGUE_TEST_MODELS',Path(__file__).resolve().
 
 class TyrogueTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'tyrogue.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_tyrogue(ROOT/'tyrogue.glb');cls.ps=cls.m['primitives']
  find=attachment_checks.NidorinaTests.find
  overlap=attachment_checks.NidorinaTests.overlap
  test_fitted_layers_follow_actual_stored_parent=attachment_checks.NidorinaTests.test_fitted_layers_follow_actual_stored_parent
@@ -19,7 +20,7 @@ class TyrogueTests(unittest.TestCase):
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'tyrogue':self.m})
  def test_shading_tracks_actual_faces(self):assert_model_shading(self,{'tyrogue':self.m})
  def test_parity_floor_height_budget_and_distinct_small_fighter(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   for prefix,n in (('Head /',1),('Ear /',2),('Eye /',2),('Iris /',2),('Body /',1),('Waist band /',1),('Shorts /',1),('Shorts leg /',2),('Arm /',2),('Wrist band /',2),('Palm /',2),('Finger /',6),('Leg /',2),('Shoe /',2)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)

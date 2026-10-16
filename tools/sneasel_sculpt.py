@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Original alert Sneasel with angular fitted eyes and curved ivory talons."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
-from sculpt_geometry import loft,curved_profiles,ellipsoid,tube,fitted_patch,crease_normals
+from sculpt_geometry import loft,curved_profiles,ellipsoid,tube,crease_normals
+from bovine_sculpt import fitted_patch
 from abra_sculpt import surface
 from wing_insect_sculpt import contour,membrane
 from skin_glb import COORDINATES
@@ -12,7 +15,8 @@ INK=(.065,.12,.16);GOLD=(.97,.78,.29);RUBY=(.81,.22,.30);TONGUE=(.92,.51,.61)
 
 def oval(cx,cy,rx,ry,n=18):return [(cx+rx*math.cos(i*math.tau/n),cy+ry*math.sin(i*math.tau/n)) for i in range(n)]
 
-def sculpture(species='sneasel'):
+@lru_cache(maxsize=1)
+def raw_sculpture(species='sneasel'):
     if species not in SPECIES:raise ValueError('unsupported claw weasel')
     body=loft('Body / slim continuous hips waist and chest',TEAL,curved_profiles(((.27,.055,.055,-.015),(.34,.145,.10,-.015),(.45,.125,.115,-.015),(.57,.13,.125,-.015),(.67,.14,.12,-.005),(.74,.08,.075,.005)),4),32)
     head=loft('Head / tapered muzzle and broad slanted feline crown',TEAL,curved_profiles(((.687,.039,.040,.10),(.725,.125,.135,.055),(.78,.218,.181,.017),(.86,.245,.19,-.007),(.945,.21,.16,-.018),(1.005,.13,.105,-.021),(1.032,.019,.018,-.021)),4),36)
@@ -40,7 +44,9 @@ def sculpture(species='sneasel'):
             p.append(tube(f'Talon / hooked ivory hand claw {side} {j}',IVORY,[(x,y+.010,z+.04),(x+side*.012,y-.008,z+.104),(x+side*.015,y-.060,z+.153),(x+side*.011,y-.094,z+.16)],[.029,.027,.017,.0015],18))
         outline=[(side*.055,.856),(side*.198,.900),(side*.184,.814),(side*.077,.793)]
         socket=fitted_patch('Eye / fitted dark slanted socket '+str(side),INK,outline,hs,.004);p.append(socket)
-        cx=sum(x for x,y in outline)/4;cy=sum(y for x,y in outline)/4
+        cx=cy=0.
+        for x0,y0 in outline:cx+=x0;cy+=y0
+        cx/=4;cy/=4
         inset=[(cx+(x-cx)*.82,cy+(y-cy)*.76) for x,y in outline]
         eye=fitted_patch('Eye / fitted ivory angular white '+str(side),IVORY,inset,surface(socket),.003);p.append(eye)
         x=side*.115;y=.833
@@ -54,6 +60,11 @@ def sculpture(species='sneasel'):
     for side in (-1,1):
         x=side*.037
         p.append(fitted_patch('Mouth / small ivory fang '+str(side),IVORY,[(x-.009,.740),(x+.009,.742),(x,.727)],ms,.003))
+    return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+def sculpture(species='sneasel',normalize=True):
+    model=deepcopy(raw_sculpture(species))
+    if not normalize:return model
+    p=model['primitives']
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
@@ -61,6 +72,7 @@ def sculpture(species='sneasel'):
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
+    from sneasel_glb import export_sneasel
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    (args.output/'sneasel.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+    (args.output/'sneasel.glb').write_bytes(export_sneasel())
 if __name__=='__main__':main()

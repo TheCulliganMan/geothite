@@ -2,6 +2,7 @@
 """Stored handstand placement, blue balance ends and actual anatomical roots."""
 import copy,json,os,unittest
 from pathlib import Path
+from hitmontop_glb import read_hitmontop,geometry_digest
 from hitmontop_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_kingdra_sculpt import crossed_faces
@@ -11,7 +12,7 @@ ROOT=Path(os.environ.get('CRYSTAL_HITMONTOP_TEST_MODELS',Path(__file__).resolve(
 
 class HitmontopTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'hitmontop.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_hitmontop(ROOT/'hitmontop.glb');cls.ps=cls.m['primitives']
  find=attachment_checks.NidorinaTests.find
  overlap=attachment_checks.NidorinaTests.overlap
  test_fitted_layers_follow_actual_stored_parent=attachment_checks.NidorinaTests.test_fitted_layers_follow_actual_stored_parent
@@ -19,7 +20,7 @@ class HitmontopTests(unittest.TestCase):
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'hitmontop':self.m})
  def test_shading_tracks_actual_faces(self):assert_model_shading(self,{'hitmontop':self.m})
  def test_parity_height_budget_and_distinct_balance_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   for prefix,n in (('Head /',1),('Spin point /',1),('Body /',1),('Eye /',2),('Pupil /',2),('Helmet crease /',2),('Arm /',2),('Wrist wrap /',2),('Hand /',2),('Leg /',2),('Ankle wrap /',2),('Foot /',2),('Foot spike /',6),('Foot sole /',2),('Tail /',1),('Tail ball /',1),('Tail spike /',1)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)

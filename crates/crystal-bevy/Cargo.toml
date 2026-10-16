@@ -77,6 +77,11 @@ browser-webgpu = ["bevy-shell", "bevy/webgpu", "dep:naga"]
 location-tester = ["crystal-runtime/location-tester", "crystal-runtime/test-fixtures", "voxel-view", "crystal-assets/test-fixtures"]
 # Normal previews use System directly; allocation diagnostics are explicit.
 allocation-tester = ["location-tester"]
+# Opt-in same-binary runtime tree entity benchmark controls.
+tree-entity-qa = ["location-tester"]
+# Dedicated terrain CPU worker is opt-in at compile time and ?terrainWorker=1.
+terrain-worker-qa = ["voxel-view", "crystal-voxel-view/terrain-worker-browser"]
+actor-worker-qa = ["voxel-view", "crystal-voxel-view/actor-worker-browser"]
 # Opt-in per-system and render tracing; native captures use TRACE_CHROME.
 operation-trace = ["crystal-runtime/operation-trace", "bevy-shell", "bevy/trace_chrome", "bevy/detailed_trace", "crystal-voxel-view?/operation-trace"]
 # Select tools individually: Bevy's `dev` group enables file watching,

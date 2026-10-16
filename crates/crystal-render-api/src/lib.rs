@@ -58,6 +58,7 @@ impl Plugin for VisualWorldRenderPlugin {
             .init_resource::<VisualPlayerTraversal>()
             .init_resource::<VisualWorldLighting>()
             .init_resource::<VisualWorldClock>()
+            .init_resource::<VisualWorldNeighborhood>()
             .init_resource::<VisualTileAnimationFrame>();
         configure_world_render_sets(app);
         streamed_images::install(app);
@@ -153,6 +154,24 @@ pub struct VisualTileAnimationFrame {
     pub tiles: Vec<VisualTile>,
 }
 
+/// Independently retained outdoor maps selected by the presentation camera.
+/// Each frame uses its own map-local source coordinates, palette, atlas and
+/// model identity. No neighbor actors, scripts or gameplay sessions are run.
+#[derive(Resource, Clone, Debug, Default, PartialEq)]
+pub struct VisualWorldNeighborhood {
+    pub active_map_id: Arc<str>,
+    pub maps: Vec<VisualNeighborMap>,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub struct VisualNeighborMap {
+    pub frame: Arc<VisualWorldFrame>,
+    /// Center in the active world's pixel coordinates (+Y north). Keeping
+    /// placement separate avoids copying immutable tile grids while walking.
+    pub center: Vec2,
+    pub phases: Arc<VisualTileAnimationFrame>,
+}
+
 /// Stable identity for an actor across visual frame publications.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum VisualActorId {
@@ -245,6 +264,9 @@ pub struct VisualWorldFrame {
     /// None preserves legacy/unknown evidence; never infer bounds from grid_size.
     /// Consumers must include this value in built-terrain cache compatibility.
     pub source_map_size_core_tiles: Option<UVec2>,
+    /// Read-only source warp positions in core tiles. Interior architecture
+    /// leaves boundary exits open; these never grant movement permissions.
+    pub boundary_warps: Arc<[bevy::prelude::IVec2]>,
     /// Complete active-map/connection ledges, retained independently of the
     /// camera crop so terrace elevation cannot reset while walking.
     pub jump_ledges: Arc<[VisualJumpLedge]>,
@@ -451,6 +473,7 @@ mod tests {
     fn active_frame() -> VisualWorldFrame {
         VisualWorldFrame {
             jump_ledges: Default::default(),
+            boundary_warps: Default::default(),
             active: true,
             map_id: Arc::from("NewBarkTown"),
             source_map_size_core_tiles: None,

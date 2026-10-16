@@ -190,7 +190,15 @@ pub(super) fn parse_planter<'a>(
         }
         filtered
     });
+    let shrine_materials = original.shrine_materials.map(|roles| {
+        let mut filtered = vec![0; surface.positions.len()];
+        for (old, &new) in remap.iter().enumerate() {
+            if new != u32::MAX { filtered[new as usize] = roles[old]; }
+        }
+        filtered
+    });
     Ok(Model {
+        shrine_materials,
         theater_stage_materials,
         hall_terminal_pixels,
         mansion_hut_materials,

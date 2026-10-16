@@ -72,3 +72,51 @@ CARGO_TARGET_DIR=target/pokemon-models cargo test --locked -p crystal-voxel-view
 The catalogue now declares 242 bodies and 33 standard skins. Nine other
 battle-body gaps and the remaining model/rig/visual requirements stay within
 the full all-Pokemon goal.
+
+## Support contact rendering follow-up
+
+Later native views made Sentret appear suspended above its tail shadow.
+Decoded idle poses and the production skin pose confirm that the support curl
+stays exactly on its authored floor. The flat contact shadow instead used
+the whole silhouette's center, displaced from the supporting curl by about
+0.25 authoring units. A new renderer regression reproduced that displacement
+before the change.
+
+Grounded actors seed contact at the neutral floor, using a height-relative
+tolerance of 0.00001. The cached region follows connected surfaces within
+6% of model height above that floor, giving rounded supports a visible soft
+contact area. Crossings at that height are clipped exactly, so tessellation
+does not change the footprint. Connectivity stays below the ceiling;
+suspended tails and plumes cannot join a foot through an elevated torso.
+The same bounds register both the soft ground contact shadow and contact
+shading on retained grass.
+The complete animated bounds still control visibility. Floating bodies keep
+their existing whole-body shadow footprint. The source position, physical
+scale, geometry, skin, animations and grass height are unchanged.
+
+Five focused renderer/contact checks passed, including the actual skinned
+Sentret floor, offset tail shadow, Articuno feet, floating-body control,
+visibility restoration, disconnected low surfaces, exact clipping and
+tessellation invariance, and unchanged terrain height. The existing opt-in CPU
+benchmark remained ignored. The original neutral geometry pin remains
+`0a15f7e364cdec1b70a33e5e68df64620b7824223129e72dc9184606b8ce4485`.
+
+The pinned Sentret registry support, elapsed-animation timing and adjacent
+earth-grain regression also passed. The earth-grain fixture needed its two
+UV arguments converted to the existing tuple signature; its intended constant
+UVs are preserved. The native production client rebuilt successfully with
+the established `location-tester,bevy/zstd_rust` feature set.
+
+Native inspection rejected an initial point-sized patch because it disappeared
+under the round support. Extending the footprint over floor-connected nearby
+surfaces made the contact readable without restoring the displaced body patch.
+The final normal encounter shows two Sentret in complementary orientations,
+with soft shading under their actual tail bases on visible terrain. Species
+labels, ring markings and suspended hindfeet remain readable. The camera
+accepted the shot; no shader errors were reported. The paired 3D/2D state is
+preserved: core frame 2488/hash 2189612142, LCD animation frame 3144, virtual
+time 56.2137815. Final ignored QA prefix is
+`target/pokemon-native-review/sentret-support-final`; the original baseline
+pair uses `sentret-support-before`. Shiny checks were skipped as requested.
+The remaining catalog, move-specific choreography, field gaits and browser
+review stay open.

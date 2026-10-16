@@ -151,16 +151,16 @@ def stone(boulder=False):
   for i,(p,s) in enumerate([((0,0,.22),(.34,.29,.25)),((-.16,.06,.40),(.20,.18,.23)),((.19,-.05,.16),(.17,.19,.17)),((.02,-.20,.10),(.20,.12,.10))]):ico('Broken rock shard',p,s,'stone_light' if i==1 else 'stone',1)
 
 def fruit_tree():
- # An orchard sapling: one rooted fork, open branch saddles and cupped leaves.
- # Geometry stays within the previous source footprint after normalization.
- PALETTE.update({'orchard_bark':(.39,.25,.14),'orchard_bark_dark':(.25,.16,.10),
-  'orchard_shade':(.15,.32,.18),'orchard_leaf':(.25,.48,.23),
-  'orchard_leaf_sun':(.40,.61,.28),'orchard_berry':(.78,.12,.18),
-  'orchard_berry_blush':(.86,.17,.18)})
+ # A mature orchard tree: flared roots, a visible branching trunk and a broad,
+ # irregular crown. Canopy overhang is visual; the interaction root stays fixed.
+ PALETTE.update({'orchard_bark':(.24,.12,.045),'orchard_bark_dark':(.10,.055,.024),
+  'orchard_leaf':(.095,.22,.060),'orchard_leaf_mid':(.13,.28,.070),
+  'orchard_leaf_sun':(.17,.35,.085),'orchard_berry':(.34,.035,.020),
+  'orchard_berry_blush':(.43,.055,.025)})
  def limb(name,points,radii):
   points=[Vector(p) for p in points];vertices=[];sides=14
   for row,(point,radius) in enumerate(zip(points,radii)):
-   axis=Vector((0,0,1)) if row==0 else (points[min(row+1,len(points)-1)]-points[row-1]).normalized()
+   axis=(points[1]-point).normalized() if row==0 else (points[min(row+1,len(points)-1)]-points[row-1]).normalized()
    across=(Vector((1,0,0))-axis*axis.x).normalized();side=axis.cross(across)
    for ring in range(sides):
     turn=ring*math.tau/sides;flute=1+.045*math.sin(turn*5)+.025*math.cos(turn*9+row*.25)
@@ -171,51 +171,62 @@ def fruit_tree():
     a=row*sides+ring;b=row*sides+(ring+1)%sides;faces.append((a,b,b+sides,a+sides))
   me=bpy.data.meshes.new(name);me.from_pydata(vertices,[],faces);me.update()
   o=bpy.data.objects.new(name,me);COL.objects.link(o);me.materials.append(material('orchard_bark'))
-  for face in me.polygons:face.use_smooth=len(face.vertices)==4
- trunk=[(0,0,0),(-.012,.008,.12),(-.025,.015,.26),(-.005,.021,.35),(.018,.025,.43),(.003,.020,.53),(-.015,.015,.63)]
- limb('Continuous fluted orchard trunk',trunk,[.095,.073,.060,.052,.046,.036,.025])
- # Staggered boughs leave real openings between the foliage masses.
- crowns=[(-.235,-.015,.76,(.235,.22,.22)),(.225,.025,.83,(.23,.22,.23)),
-  (-.035,.045,1.045,(.225,.205,.19)),(.035,-.205,.755,(.235,.205,.19)),
-  (-.045,.225,.84,(.225,.19,.21))]
- for cluster,(x,y,z,radius) in enumerate(crowns):
-  end=Vector((x,y,z));fork=Vector((.014,.024,.41+cluster*.024))
-  elbow=fork.lerp(end,.56)+Vector((.025*math.sin(cluster*2.4),0,.035))
-  limb('Continuous orchard bough / '+str(cluster),[fork,elbow,end],[.034,.023,.010])
-  # A recessed dark inner cluster catches real shadows through the leaf gaps.
-  core=ico('Recessed foliage / '+str(cluster),end,tuple(v*.82 for v in radius),'orchard_shade',2)
-  for i,v in enumerate(core.data.vertices):v.co*=1+.065*math.sin(i*2.399963+cluster)
-  for blade in range(60):
-   t=(blade+.5)/60;h=1.-2.*t;angle=blade*2.399963+cluster*1.17
-   radial=Vector((math.sqrt(1-h*h)*math.cos(angle),math.sqrt(1-h*h)*math.sin(angle),h))
-   scatter=.82+.16*(.5+.5*math.sin(blade*4.17+cluster*1.9))
-   center=end+Vector(tuple(radial[k]*radius[k]*scatter for k in range(3)))
-   normal=Vector(tuple(radial[k]/radius[k] for k in range(3))).normalized()
-   tangent=normal.cross(Vector((0,0,1)) if abs(normal.z)<.9 else Vector((0,1,0))).normalized()
-   turn=blade*1.31+cluster;along=tangent*math.cos(turn)+normal.cross(tangent)*math.sin(turn)
-   across=normal.cross(along);length=.12+.035*(.5+.5*math.sin(blade*1.73+cluster));width=length*.31
-   outline=[(-.5,0),(-.30,-.78),(0,-1),(.31,-.72),(.5,0),(.31,.78),(0,1),(-.30,.72)]
-   vertices=[center+along*(u*length)+across*(v*width) for u,v in outline]
-   vertices.extend([center+normal*width*.21,center-normal*width*.08])
-   faces=[]
-   for edge in range(8):faces.extend([(edge,(edge+1)%8,8),((edge+1)%8,edge,9)])
-   me=bpy.data.meshes.new('Cupped orchard leaf');me.from_pydata(vertices,[],faces);me.update()
-   o=bpy.data.objects.new('Orchard leaf / %d / %02d'%(cluster,blade),me);COL.objects.link(o)
-   me.materials.append(material('orchard_leaf_sun' if radial.z>.30 and blade%3 else 'orchard_leaf'))
- # Fruit hangs below outer shoots, with a dimple, slender stem and one leaf.
- berries=[(-.25,-.235,.69),(.245,-.215,.77),(-.055,-.365,.73),(.08,-.29,.84),
-  (-.39,-.045,.74),(.395,.045,.81),(-.20,.285,.76),(.13,.305,.82),(.015,-.155,1.025)]
- for i,(x,y,z) in enumerate(berries):
-  anchor=Vector((x*.86,y*.86,z+.12));stem=Vector((x,y,z+.050))
-  rod('Hanging berry stem / '+str(i),anchor,stem,.007,.0045,'orchard_bark_dark',8)
-  o=sphere('Ripe berry / '+str(i),(x,y,z),(.057,.055,.064),'orchard_berry_blush' if i%3==0 else 'orchard_berry',16,8)
-  # Depressed top and faint unequal lobes avoid perfectly spherical candy dots.
+  for face in me.polygons:face.use_smooth=len(face.vertices)==4 and not name.startswith('Orchard twig /')
+  if name.startswith('Orchard twig /'):
+   import bmesh
+   bm=bmesh.new();bm.from_mesh(me)
+   bmesh.ops.triangulate(bm,faces=list(bm.faces));bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+   bm.to_mesh(me);bm.free();me.update()
+ # A crooked bole and unequal scaffold limbs support real leafy shoots.
+ # There are deliberately no solid canopy cores: daylight passes between leaves.
+ trunk=[(0,0,0),(-.012,.008,.15),(-.04,.015,.34),(-.025,.025,.53),(.025,.035,.73),(.045,.02,.96),(.015,.04,1.22)]
+ limb('Continuous fluted orchard trunk',trunk,[.09,.072,.060,.050,.041,.027,.012])
+ for i in range(5):
+  angle=i*math.tau/5+.24;radial=Vector((math.cos(angle),math.sin(angle),0))
+  limb('Orchard root flare / '+str(i),[Vector((0,0,.11)),radial*.10+Vector((0,0,.035)),radial*.17+Vector((0,0,.014))],[.044,.027,.007])
+ def orchard_leaf(label,base,direction,length,tone):
+  along=direction.normalized();normal=Vector((.12*math.sin(tone),-.12*math.cos(tone),1)).normalized()
+  across=normal.cross(along).normalized();normal=along.cross(across).normalized()
+  center=base+along*length*.48;width=length*.24
+  outline=[(-.5,0),(-.20,-.83),(.25,-.70),(.5,0),(.25,.70),(-.20,.83)]
+  vertices=[center+along*(u*length)+across*(v*width) for u,v in outline]
+  vertices.extend([center+normal*length*.075,center-normal*length*.012])
+  faces=[]
+  for edge in range(6):faces.extend([(edge,(edge+1)%6,6),((edge+1)%6,edge,7)])
+  me=bpy.data.meshes.new('Folded orchard leaf');me.from_pydata(vertices,[],faces);me.update()
+  o=bpy.data.objects.new('Orchard leaf / '+label,me);COL.objects.link(o)
+  me.materials.append(material(['orchard_leaf','orchard_leaf_mid','orchard_leaf_sun'][int(tone)%3]))
+ shoots=[]
+ for bough in range(10):
+  angle=bough*2.399963+.35;direction=Vector((math.cos(angle),math.sin(angle),0));across=Vector((-direction.y,direction.x,0))
+  tier=bough/9;fork=Vector((.01,.03,.53+tier*.43))
+  reach=.64-.10*tier+.075*math.sin(bough*1.7)
+  end=fork+direction*reach+Vector((0,0,.34+.07*math.cos(bough*2.1)))
+  elbow=fork.lerp(end,.52)-Vector((0,0,.055))+across*.045*math.sin(bough*1.9)
+  limb('Continuous orchard bough / '+str(bough),[fork,elbow,end],[.040*(1-tier*.3),.022,.006])
+  for twig in range(5):
+   side=-1 if twig%2 else 1;f=.38+twig*.13
+   base=elbow.lerp(end,(f-.38)/.62)
+   tip=base+direction*(.13+.035*math.sin(bough+twig))+across*side*(.19+.035*math.cos(twig*2+bough))+Vector((0,0,.08+.045*math.sin(bough+twig)))
+   middle=base.lerp(tip,.58)+Vector((0,0,.025))
+   limb('Orchard twig / %d / %d'%(bough,twig),[base,middle,tip],[.009,.005,.0018])
+   shoots.append((bough,twig,tip,middle))
+   axis=(tip-base).normalized();sideways=Vector((-axis.y,axis.x,0)).normalized()
+   for blade in range(16):
+    phase=bough*1.7+twig*2.1+blade*.87;sign=-1 if blade%2 else 1
+    anchor=base.lerp(tip,.12+.85*(blade//2)/7)+Vector((0,0,.035*math.sin(phase*2.4)))
+    leaf_axis=(axis*(.25+.50*math.sin(phase*1.3))+sideways*sign*(.73+.22*math.sin(phase))+Vector((0,0,.42*math.cos(phase)))).normalized()
+    orchard_leaf('%02d / %d / %02d'%(bough,twig,blade),anchor,leaf_axis,.10+.032*(.5+.5*math.sin(phase*1.9)),blade+bough*2+twig)
+ # Fruit is attached under an actual outer shoot, rather than on a canopy shell.
+ for i,(bough,twig,tip,middle) in enumerate(shoots[3::5]):
+  anchor=middle.lerp(tip,.66);center=anchor-Vector((0,0,.105))
+  rod('Hanging berry stem / '+str(i),anchor,center+Vector((0,0,.042)),.004,.0025,'orchard_bark_dark',7)
+  o=sphere('Ripe berry / '+str(i),center,(.044,.043,.048),'orchard_berry_blush' if i%3==0 else 'orchard_berry',14,8)
   for v in o.data.vertices:
-   q=v.co;polar=(q.z/.064+1)*.5
-   q.z-=.010*max(0.,(polar-.80)/.20)**2
-   q.x*=1+.035*math.sin(math.atan2(q.y,q.x)*5+i)
+   q=v.co;polar=(q.z/.048+1)*.5
+   q.z-=.007*max(0.,(polar-.75)/.25)**2
+   q.x*=1+.045*math.sin(math.atan2(q.y,q.x)*5+i)
   o.data.update()
-  leaf('Berry shoot leaf / '+str(i),anchor,anchor+Vector((.072,-.025,.018)),.018,'orchard_leaf')
 
 def paper():
  o=box('Thick paper folio',(0,0,.055),(.46,.62,.06),'cream',.009)
@@ -997,7 +1008,7 @@ BUILDERS={
 }
 # These source families intentionally share a recognizable subject but differ in
 # presentation scale. Source identity is never collapsed in the Rust registry.
-HEIGHTS={'chris_bike':.91,'kris_bike':.91,'battle_chikorita':1.00,'battle_cyndaquil':.91,'battle_totodile':1.02,'big_snorlax':1.48,'big_lapras':1.52,'big_onix':1.72,'fruit_tree':1.08,'poke_ball':.46,'boulder':.68,'rock':.43,
+HEIGHTS={'chris_bike':.91,'kris_bike':.91,'battle_chikorita':1.00,'battle_cyndaquil':.91,'battle_totodile':1.02,'big_snorlax':1.48,'big_lapras':1.52,'big_onix':1.72,'fruit_tree':2.4,'poke_ball':.46,'boulder':.68,'rock':.43,
  'paper':.13,'pokedex':.16,'famicom':.40,'snes':.30,'n64':.43,'virtual_boy':.59,'gold_trophy':.63,'silver_trophy':.56,
  'surf':.98,'surfing_pikachu':1.00,'bird':.72,'fairy':.78,'monster':1.00,'dragon':1.12,'slowpoke':.70,'sudowoodo':.96,'entei':1.12,'raikou':1.14,'suicune':1.25}
 
@@ -1078,7 +1089,7 @@ def normalize(name,objects):
  if name=='fruit_tree':
   bpy.context.view_layer.update();points=[o.matrix_world@v.co for o in objects for v in o.data.vertices]
   width=max(p.x for p in points)-min(p.x for p in points);depth=max(p.y for p in points)-min(p.y for p in points)
-  fit=min(1.,.87476/width,.802672/depth)
+  fit=min(1.,2.10/width,1.90/depth)
   for o in objects:o.matrix_world=Matrix.Diagonal((fit,fit,1.,1.))@o.matrix_world
 
 def sudowoodo_runtime_lod(name,objects):

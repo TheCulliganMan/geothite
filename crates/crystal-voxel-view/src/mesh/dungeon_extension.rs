@@ -36,6 +36,7 @@ pub(super) enum Detail {
     StoreBasementLift,
     StoreBasementStair,
     SproutPillar,
+    TinPillar,
     SproutAltar,
     VioletWall,
     VermilionPanel,
@@ -73,6 +74,7 @@ impl Detail {
             Self::StoreBasementLift => "special:store-basement-lift-front",
             Self::StoreBasementStair => "special:store-basement-warehouse-stair",
             Self::SproutPillar => "special:sprout-swaying-pillar",
+            Self::TinPillar => "special:tin-timber-pillar",
             Self::SproutAltar => "special:sprout-framed-altar",
             Self::VioletWall => "special:violet-north-wall",
             Self::VermilionPanel => "special:vermilion-north-panel",
@@ -392,10 +394,11 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>, profiles: Option<&Document>) {
         let panels = grouped_flat_card_placements(cells, g, 0x01, false, crate::vermilion::panel_local);
         groups(r, panels, Detail::VermilionPanel, 0x01, 32., 6.);
     }
-    if matches!(map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
+    if super::super::sprout_pillar::pillar_map(map) {
         let pillars = grouped_flat_card_placements(cells, g, 0x02, false,
             super::super::sprout_pillar::source_local);
-        groups(r, pillars, Detail::SproutPillar, 0x02, 48., 16.);
+        let detail=if super::tin_tower_guardian_map(map) {Detail::TinPillar}else{Detail::SproutPillar};
+        groups(r, pillars, detail, 0x02, 48., 16.);
     }
     if ruins(ts) {
         // Repeated carved guardians flank puzzle consoles as well as the
@@ -1062,7 +1065,12 @@ pub(super) fn append(
         Detail::VioletWall | Detail::SproutAltar => {
             let timber=matches!(detail,Detail::SproutAltar);
             let body=if timber {[0.52,0.34,0.13,1.]} else {[0.62,0.65,0.73,1.]};
-            slab(&mut mesh.solid,[w,e,s-4.*scale,s],0.,rise,body);
+            if timber {
+                super::append_tower_backing(&mut mesh.textured,g,p.column,p.row,
+                    [w,e,s-3.*scale,s]);
+            } else {
+                slab(&mut mesh.solid,[w,e,s-4.*scale,s],0.,rise,body);
+            }
             // The actual packed ornament skins a closed wall. Every source
             // tile retains its native size and phase; no picture is invented.
             for y in 0..p.height {for x in 0..p.width {
@@ -1239,7 +1247,7 @@ pub(super) fn append(
             for x in 0..p.width {let west=w+x as f32*g.tile_width+scale;
                 native_slab([west,west+g.tile_width-2.*scale,s,s+0.35*scale],0.6*scale,1.6*scale,plinth);}
         }
-        Detail::SproutPillar => {
+        Detail::SproutPillar | Detail::TinPillar => {
             let anchor = [p.column, p.row];
             super::super::sprout_pillar::append(&mut mesh.animated_textured, g, cells, anchor);
             mesh.animated_pillars.push(anchor);
@@ -1890,6 +1898,10 @@ mod tests {
             assert!(mesh.solid.normals.iter().any(|n|n[2] < -0.99));
             assert!(mesh.solid.normals.iter().any(|n|n[0]>0.99));
             assert!(mesh.solid.positions.iter().any(|v|v[1]>=16.));
+            if map=="SproutTower3F" {
+                assert!(mesh.textured.positions.iter().any(|v|v[1]>31.9),
+                    "altar backing joins the ceiling-height rear timber");
+            }
             assert!(!super::super::resolve("OtherRoom",&refs,&g,None).iter().any(|p|p.kind_label()==label));
             for i in [2,3,4,5,10,11,12,13] {
                 let mut bad=t.clone();bad[i].source.tile_index^=0x80;

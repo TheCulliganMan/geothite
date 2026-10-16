@@ -1,51 +1,67 @@
-# Swinub and Piloswine sculptures
+# Swinub and Piloswine sculptures and skins
 
-`tools/fur_pig_sculpt.py` replaces the shared brown sphere with two original
-fur silhouettes. Swinub has a low elongated coat, four fitted tapered dorsal
-wedges, sleepy curved eyes, a projecting pink snout and small rear wisps.
-Piloswine has a tall humped mantle with a scalloped hem, long drooping ears,
-hidden eyes, thin fitted front fur creases and two ivory tusks curving down
-and forward. Both have fitted tilted nostrils, four supporting shanks and
-grounded dark oval hooves. Swinub's lowered coat covers most of the supports
-instead of leaving long exposed legs.
+`tools/fur_pig_sculpt.py` authors the anatomy; `tools/fur_pig_glb.py` exports the
+canonical standard glTF skins. Both duplicate static JSON assets are removed.
+The battle builder dispatches the rigs before generic Blender batching.
+Every original neutral f32 position, normal, color and triangle is retained at
+the 0.98 authoring height. Raw recipe geometry is cached for normalization and
+skin pivots.
 
-The anatomy was checked against the official
+Swinub retains its low elongated coat, four fitted dorsal wedges, sleepy curved
+eyes, projecting pink snout and rear wisps. Piloswine retains its tall humped
+mantle, scalloped hem, long drooping ears, hidden eyes, fitted front fur creases
+and ivory tusks curving down and forward. Both retain fitted tilted nostrils,
+four supporting shanks and grounded dark oval hooves.
+
+Eight Swinub joints and nine Piloswine joints provide a gentle body sway,
+articulated sniffing head and supported leg middles. Hooves stay on the identity
+floor root. Snouts, nostrils, eyes, front fur creases and tusks follow the head;
+the front coat reaches the same owner before those fitted details. Swinub's
+stripes remain on the body. Piloswine's ears and Swinub's rear wisps have their
+own coherent owners. A broad vertical shank blend follows each leg's centerline,
+avoiding weight steps around the tiny polar rings and keeping the hooves fixed.
+Idle, attack and hit retain the shared rotation-only source-cue timing and
+literal neutral endpoints.
+
+| Model | Parts | Vertices | Triangles | Joints | Bytes | Accessors |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Swinub | 22 | 7,044 | 8,496 | 8 | 278,932 | 97 |
+| Piloswine | 22 | 5,062 | 9,432 | 9 | 211,732 | 90 |
+
+The existing loader budgets are unchanged. Verified pack heights are 0.4064 m
+and 1.0922 m. Neutral f32 digests:
+
+- Swinub: `99b43c8174c27d71d246f211d8ca6a0ce2764cb9d6e60cc2153b1fe25ffc0591`
+- Piloswine: `b6b3ef74640643f89b461d55f276157aad0cfb2f7a39d17214b9a9eb8d3ea0b9`
+
+Fitted patches use the existing ordered-centroid helper to preserve the original
+Python 3.9 geometry under newer Blender Python. The dorsal-patch helper accepts
+that same patch function for Swinub's stripes; its default remains unchanged.
+Blender regeneration is byte-identical to both canonical GLBs.
+
+The original anatomy was checked against official
 [Swinub artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/220.png)
 and [Piloswine artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/221.png).
-Those images were temporary visual references in ignored scratch output;
-they are not imported into the models or shipped bundle.
-
-Each species retains its previous normalized height of 0.98, one canonical
-static JSON and the pack-driven runtime species scale. The standard authoring
-entry point dispatches to the same recipe. Dorsal markings follow actual
-stored coat triangles. Piloswine's continuous mantle supplies the fringe
-silhouette, replacing separate orange blade primitives. This pass adds no
-downloaded mesh, rig, animation, duplicate catalog or pack content.
+No reference image, external mesh, texture, rig or game content is shipped.
 
 ```sh
-python3 tools/fur_pig_sculpt.py --output crates/crystal-voxel-view/models/battle_species
-python3 tools/test_fur_pig_sculpt.py
-python3 tools/check-model-layout.py
-python3 tools/model_asset_storage.py validate crates/crystal-voxel-view/models
-cargo test --locked -p crystal-voxel-view every_exact_species_is_grounded_and_volumetric --lib
-cargo run --locked -p crystal-bevy --example immersive_battle_3d --features location-tester -- content-packs/realtime-clock.browser.crystalpack --enemy-gust --species swinub --size 1000x700 --screenshot target/swinub-review.png
-# Repeat the native fixture with --species piloswine.
+python3 -m unittest discover -s tools -p 'test_fur_pig*.py'
 ```
 
-Six stored-model checks cover exact regeneration, dimensions and budgets,
-closed connected oriented surfaces, shading normals, distinct coat proportions
-and anatomy, the downward/forward tusk direction, fitted stripes, eyes,
-nostrils and fur creases, grounded hooves and actual volumetric overlap between
-hoof, shank and body. Swinub uses 8,496 triangles and 526,858 raw JSON bytes;
-Piloswine uses 9,432 triangles and 416,459 bytes. Before/after oblique views and
-a new rear view were inspected with the software rasterizer. Native fixtures
-verify static appearance and camera fit only, not animation or gameplay
-correctness. Both final models were inspected using the ignored local pack
-above. Swinub's low coat, stripes and sleepy face remain visible; Piloswine's
-ears, snout and curved tusks fit the camera. Piloswine's crown was broadened
-after the first native review to remove an overly pointed contour, then
-rebuilt and recaptured. Hooves contact the arena. All six model checks, asset
-layout and storage validation, and the Rust species-loader regression passed.
+Six anatomy checks cover exact f32 regeneration, dimensions and budgets, closed
+connected surfaces, shading, coat proportions, tusk direction, fitted details,
+grounded hooves and actual body/leg/hoof overlap. Seven skin checks decode the
+actual keys and weights to verify fixed feet, coherent features, posed physical
+joins, fitted surfaces, winding, strain, neutral endpoints and visible motion.
+Shiny checks are intentionally skipped.
 
-This family is an increment toward the full 251-species visual objective;
-final quality and rig coverage for the entire catalog remain open.
+All 13 Python anatomy/skin checks, two focused Rust rig/GPU regressions and two wider catalog/timing regressions passed. Blender regeneration is byte-identical to both canonical GLBs. The production native client built successfully. Final paired 3D/2D battles were visually inspected with preserved game state and accepted, visibly rendered terrain. Shiny checks were skipped as requested.
+
+Swinub against Sentret: core 1762/hash 3963713493, LCD 2338, virtual time 41.149872167; `state_preserved=true`.
+
+Piloswine against Rattata: core 1919/hash 3115544402, LCD 2543, virtual time 44.664665584; `state_preserved=true`.
+
+Final ignored QA prefixes are `target/pokemon-native-review/swinub-normal` and
+`target/pokemon-native-review/piloswine-normal`. Fixed-camera neutral, idle and
+attack views and rear art views were also inspected. Temporary helpers, software
+previews, movement frames and builder parity outputs were removed afterward.

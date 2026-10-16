@@ -13,7 +13,9 @@ pub(crate) fn reference_span(species: &str, min: Vec3, max: Vec3) -> f32 {
     let extent = max - min;
     let height_ratio = match species {
         // Ground to fitted dorsal coat; flames are included only in fit bounds.
-        "CYNDAQUIL" => 0.716_729 / 0.91,
+        "CYNDAQUIL" => 0.716_729 / 1.25,
+        // Standing horn span; raised tail tufts remain in fit/culling bounds.
+        "TAUROS" => 1.1175279 / 1.28,
         // Capsule only; disturbed soil is not part of the animal's height.
         "DIGLETT" => 0.8126839 / 0.82,
         // Tail-to-face centerline of the current authored pose, excluding horns.
@@ -24,8 +26,8 @@ pub(crate) fn reference_span(species: &str, min: Vec3, max: Vec3) -> f32 {
         "DRATINI" | "DRAGONAIR" => 2.241_65 / 1.18,
         "STEELIX" => 2.867_623_2 / 1.45,
         // Longitudinal nose-to-tail extent, not fin/lure height.
-        "MAGIKARP" | "GOLDEEN" | "SEAKING" | "REMORAID" | "CHINCHOU" | "LANTURN" | "DUNSPARCE"
-        | "CATERPIE" | "WEEDLE" => {
+        "MAGIKARP" | "GOLDEEN" | "SEAKING" | "REMORAID" | "CHINCHOU" | "LANTURN" | "MANTINE" | "DUNSPARCE"
+        | "CATERPIE" | "WEEDLE" | "YANMA" => {
             return extent.z;
         }
         _ => 1.0,
@@ -53,7 +55,7 @@ mod tests {
             "CYNDAQUIL",
             Some(0.508),
             Vec3::ZERO,
-            Vec3::new(0.65451, 0.91, 1.073912),
+            Vec3::new(0.65451, 1.25, 1.073912),
         )
         .unwrap();
         let s = model_scale(
@@ -64,8 +66,8 @@ mod tests {
         )
         .unwrap();
         assert!((s * 0.82 / (c * 0.716729) - 2.35).abs() < 1e-5);
-        assert!(c * 0.91 > c * 0.716729, "flames remain above measured body");
-        let original = Vec3::new(0.65451, 0.91, 1.073912);
+        assert!(c * 1.25 > c * 0.716729, "flames remain above measured body");
+        let original = Vec3::new(0.65451, 1.25, 1.073912);
         let scaled = original * c;
         assert!((scaled.x / scaled.y - original.x / original.y).abs() < 1e-6);
     }
@@ -120,6 +122,8 @@ pub(crate) struct BattleBody {
     pub max: Vec3,
     /// Full animation envelope; neutral bounds still define grounding and size.
     pub visual_bounds: Option<(Vec3, Vec3)>,
+    /// Picture-bank sight coverage, separate from neutral size/contact and rig motion.
+    pub source_bank_bounds: Option<(Vec3, Vec3)>,
     pub scale: Vec3,
     pub reference_height: f32,
     /// Neutral model-space contact datum. Ground bodies use min.y; an authored
@@ -133,7 +137,7 @@ impl BattleBody {
     pub(crate) fn modeled(species: &str, min: Vec3, max: Vec3, scale: f32) -> Self {
         let height = (max - min).y;
         let reference_height = match species {
-            "CYNDAQUIL" => height * (0.716_729 / 0.91),
+            "CYNDAQUIL" => height * (0.716_729 / 1.25),
             "DIGLETT" => height * (0.8126839 / 0.82),
             _ => height,
         };
@@ -141,6 +145,7 @@ impl BattleBody {
             min,
             max,
             visual_bounds: None,
+            source_bank_bounds: None,
             scale: Vec3::splat(scale),
             reference_height,
             support_y: min.y,
@@ -153,12 +158,33 @@ impl BattleBody {
             min: Vec3::new(-0.95, -0.95, -0.001),
             max: Vec3::new(0.95, 0.95, 0.001),
             visual_bounds: None,
+            source_bank_bounds: None,
             scale: Vec3::new(aspect, 1.0, 1.0),
             reference_height: 1.9,
             support_y: -0.95,
             modeled: false,
             glyph_plane: false,
         }
+    }
+    /// Reserve the existing upright source-picture bank as well as the complete
+    /// sculpture/rig. Only fit bounds grow: size, feet and reference stay authored.
+    pub(crate) fn with_source_card_envelope(mut self, aspect: f32) -> Self {
+        let card = Self::source_card(aspect);
+        let radius = card.max.x * card.scale.x;
+        let min = Vec3::new(-radius / self.scale.x, self.support_y, -radius / self.scale.z);
+        let max = Vec3::new(radius / self.scale.x,
+            self.support_y + (card.max.y - card.min.y) / self.scale.y,
+            radius / self.scale.z);
+        let (previous_min, previous_max) = self.visual_bounds.unwrap_or((self.min, self.max));
+        self.visual_bounds = Some((previous_min.min(min), previous_max.max(max)));
+        self.source_bank_bounds = Some(self.source_bank_bounds.map_or((min, max),
+            |(previous_min, previous_max)| (previous_min.min(min), previous_max.max(max))));
+        self
+    }
+    pub(crate) fn sight_corners(mut self, pose: Transform) -> [Vec3; 8] {
+        self.visual_bounds = self.source_bank_bounds.map(|(min, max)|
+            (min.min(self.min), max.max(self.max)));
+        self.corners(pose)
     }
     pub(crate) fn corners(self, pose: Transform) -> [Vec3; 8] {
         let (min, max) = self.visual_bounds.unwrap_or((self.min, self.max));
@@ -169,6 +195,39 @@ impl BattleBody {
                 if i & 4 == 0 { min.z } else { max.z },
             ))
         })
+    }
+}
+
+#[cfg(test)]
+mod source_bank_envelope_tests {
+    use super::*;
+
+    #[test]
+    fn send_out_envelope_contains_rig_and_full_bank_at_every_yaw_and_contact() {
+        for support in [0.2, 0.6] {
+            let mut authored = BattleBody::modeled("TEST", Vec3::new(-0.3, 0.2, -0.2), Vec3::new(0.3, 1.0, 0.2), 1.7);
+            authored.support_y = support;
+            authored.visual_bounds = Some((Vec3::new(-0.5, 0.1, -0.4), Vec3::new(0.4, 1.3, 0.4)));
+            let expanded = authored.with_source_card_envelope(1.2);
+            assert_eq!((expanded.min, expanded.max, expanded.scale, expanded.support_y, expanded.reference_height),
+                (authored.min, authored.max, authored.scale, authored.support_y, authored.reference_height));
+            assert_eq!(expanded, expanded.with_source_card_envelope(1.2));
+            let (min, max) = expanded.visual_bounds.unwrap();
+            let (rig_min, rig_max) = authored.visual_bounds.unwrap();
+            assert!(min.cmple(rig_min).all() && max.cmpge(rig_max).all());
+            let anchor = Vec3::new(3.0, 0.4, -2.0);
+            let rotation = Quat::from_rotation_y(0.71);
+            let model_pose = Transform { translation: anchor - Vec3::Y * support * authored.scale.y, rotation, scale: authored.scale };
+            for degree in 0..360 {
+                let card_pose = Transform { translation: anchor + Vec3::Y * 0.95,
+                    rotation: Quat::from_rotation_y((degree as f32).to_radians()), scale: Vec3::new(1.2, 1.0, 1.0) };
+                for x in [-0.95, 0.95] { for y in [-0.95, 0.95] {
+                    let point = model_pose.to_matrix().inverse().transform_point3(card_pose.transform_point(Vec3::new(x, y, 0.0)));
+                    assert!(point.cmpge(min - Vec3::splat(0.00001)).all()
+                        && point.cmple(max + Vec3::splat(0.00001)).all());
+                }}
+            }
+        }
     }
 }
 
@@ -893,7 +952,7 @@ mod source_registration_tests {
     #[test]
     fn cyndaquil_hit_anchor_is_on_body_below_flame_height() {
         let min = Vec3::new(-0.327255, 0.0, -0.536956);
-        let max = Vec3::new(0.327255, 0.91, 0.536956);
+        let max = Vec3::new(0.327255, 1.25, 0.536956);
         let body = BattleBody::modeled(
             "CYNDAQUIL",
             min,
@@ -920,7 +979,7 @@ mod anchored_layout_tests {
 
     fn route36_pair() -> [Option<BattleBody>; 2] {
         [
-            ("CYNDAQUIL", 0.508, Vec3::new(0.65451, 0.91, 1.073912)),
+            ("CYNDAQUIL", 0.508, Vec3::new(0.65451, 1.25, 1.073912)),
             ("SUDOWOODO", 1.1938, Vec3::new(0.770198, 0.82, 0.226966)),
         ]
         .map(|(species, meters, extent)| {
@@ -1453,5 +1512,25 @@ mod diglett_capsule_reference_tests {
         let body = BattleBody::modeled("DIGLETT", min, max, scale);
         assert!((body.reference_height - span).abs() < 0.000001);
         assert!((span * scale / WORLD_UNITS_PER_METER - 0.2032).abs() < 0.000001);
+    }
+}
+
+#[cfg(test)]
+mod mantine_reference_tests {
+    use super::*;
+    #[test]
+    fn mantine_pack_dimension_measures_its_longitudinal_ray_body() {
+        let rig=crate::species_rig::rig(crate::species_rig::Species::Mantine);
+        let (min,max)=rig.neutral_bounds;
+        let span=reference_span("MANTINE",min,max);
+        assert_eq!(span,(max-min).z);
+        assert!(span>(max-min).y*2.0);
+        let pack_dimension=2.1082;
+        let scale=model_scale("MANTINE",Some(pack_dimension),min,max).unwrap();
+        assert!((span*scale/WORLD_UNITS_PER_METER-pack_dimension).abs()<0.000001);
+        let body=BattleBody::modeled("MANTINE",min,max,scale);
+        assert_eq!(body.scale,Vec3::splat(scale));
+        assert_eq!(body.reference_height,(max-min).y);
+        assert_eq!(body.support_y,min.y);
     }
 }

@@ -44,8 +44,8 @@ impl Seat {
             );
         let point = (foot - top_left) / frame.tile_size * Vec2::new(1., -1.);
         let [x, y, width, depth] = self.rect;
-        // Feet lie on the south edge of their source gameplay tile. Exclude
-        // the bench's legs and neighboring ground from the seat footprint.
+        // Use the model's centered ground point. Exclude the bench's legs and
+        // neighboring ground from the seat footprint.
         if point.x < x || point.x >= x + width || point.y <= y || point.y > y + depth + 0.001 {
             return None;
         }

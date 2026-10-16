@@ -1,55 +1,52 @@
-# Original headless Hitmonlee sculpture
+# Original Hitmonlee sculpture and kicking skin
 
-The canonical Hitmonlee model now comes from `tools/hitmonlee_sculpt.py`.
-It replaces the primitive fighter with one continuous headless tan pear, fitted
-sloping black eyes, small ivory pupils, cream nine-rib shins and five-rib wrists,
-three curled tan fingers per hand, grounded tan feet, six ivory toe claws and
-fitted gold sole marks. Each spring limb is one closed continuous ribbed solid,
-not separate floating rings. The existing dedicated Rust battle registry entry
-is unchanged. The builder dispatches to the pure recipe and rejects the old
-Hitmonlee branch while retaining the other three fighters for later work.
+`tools/hitmonlee_sculpt.py` authors the original headless fighter;
+`tools/hitmonlee_glb.py` exports and strictly reads the canonical standard GLB in
+`crates/crystal-voxel-view/models/battle_species/hitmonlee.glb`. The duplicate
+static JSON is retired. No external model, rig or animation is imported.
 
-This is original static geometry. The [source review](hitmon-source-review.md)
-records the specific external models checked, including an advertised animated
-pack containing Hitmonchan whose download requires access that was unavailable.
-No third-party mesh, skin, bones or animation was retrieved or imported.
+A continuous pear body carries fitted sloping eyes, without a separate head or
+mouth. Tapered hips meet continuous nine-rib shin coils and broad three-clawed
+feet. Bent upper arms meet five-rib wrist coils, palms and three curled fingers.
+Round sole markings follow the stored foot surfaces. Local pack normal colors
+are ochre (181,115,41), gray (123,132,123), white and black. Pack height `411`
+sets a 1.4986 m production scale; authoring height remains 1.24.
 
-The model has 33 closed parts and 43,116 triangles, with floor zero and height
-1.24. Its raw canonical SHA-256 is
-`7345f5b394cd12eb496187abf9432c7d4b4315f4f6213e8ebd5d50a58a6109f8`.
+Twenty-seven parts preserve exact previous neutral f32 geometry, including all
+four coils, every body/limb/hand/foot/toe solid and the eye sockets. Only pupils,
+pupil cores and sole markings reduce sampling. Each coil retains 1,568 unique
+positions and 3,132 triangles. The canonical asset has 33 parts, 19,747 vertices,
+35,276 triangles, 10 joints, 151 accessors and 775,640 bytes. Neutral digest:
+`ac4facbaf5bc5ea34f73342afaa5bc98e8ffa962e8704c7c7d34da37f8ffd0ac`.
 
-All nine candidate stored-mesh tests passed in 6.403 seconds. They check
-connected closed solids, outward faces and normals, parity, anatomy counts,
-budget and floor contact. Actual occupied-volume intersections attach both
-hips, shins and feet, all six claws, both arms, wrists and palms, and all six
-fingers. Fitted black eyes, pupils and gold side markings follow actual stored
-parent triangles at vertices, face centers and edge midpoints. Curved torso,
-hips, limbs, springs, fingers and claws are checked for nonadjacent face
-crossings. Detached springs, fingers and feet must fail attachment checks.
+The right foot, toes and sole stay fixed. During attack, separate left hip and
+knee joints lift and advance the other foot, then return it to neutral. Idle
+and hit keep both feet planted. The continuous leg coil blends between hip and
+knee; the kicking foot, claws and sole share the knee owner. A supporting leg
+field joins the fixed right foot to the torso. Upper-body gaze stays fitted.
+Arm/wrist fields bend the wrist coils coherently; each palm and all its fingers
+share the wrist owner. Clips rotate joints with neutral endpoints and production
+source-cue timing. Exact move-specific choreography remains open.
 
-The first candidates exposed a shin/foot gap, a folded upper arm and curled
-finger intersections. The shin was extended into the foot, the upper-arm path
-was broadened and the finger roots/curls were corrected. The geometry checks
-were retained. Final front, oblique and rear 800×824 software images all
-rendered successfully and were individually inspected after the corrections.
-They show the continuous headless silhouette, grounded spring limbs and
-three-finger hands; the rear view also exposes the supported wrist roots.
+```sh
+blender -b -t 2 --python tools/build-battle-species.py -- /tmp/geothite-hitmonlee --only HITMONLEE
+python3 -m unittest discover -s tools -p test_hitmonlee_glb.py
+python3 -m unittest discover -s tools -p test_hitmonlee_sculpt.py
+```
 
-All nine canonical tests passed in 5.562 seconds. AST, model layout and
-575-file raw JSON storage checks passed. The native build completed successfully after the earlier shared footwear
-syntax failure was corrected. The final raw mesh fingerprint and the mute
-switch were present in the actual rebuilt executable. One unchanged executable
-(inode 216441911, size 189531952, mtime_ns 1791779637085927116) produced
-all four adult/fighter production GPU captures with exit zero. This model's
-2000×1400 capture contained 41,868 colors and was individually inspected in
-full frame: its authored anatomy appeared with Pidgeotto, the arena and battle
-HUD. Executable identity and all four source fingerprints were verified again
-after capture. All previews launched with `CRYSTAL_PREVIEW_MUTE=1`; system
-volume was unchanged.
+All nine sculpture and eight skin checks pass, covering closed outward geometry,
+normals, canonical bytes, parity, anatomy, coil density, fitted layers and sole
+clearance, actual neutral/posed attachment volumes, a fixed support foot, a lifted
+and advancing kick, return to neutral, floor exclusion, winding, strain and
+detached controls. Blender regenerates byte-identical data; front/rear and
+kick/hit software views were inspected. Both focused Rust tests, the native
+build and the wider catalog grounding / elapsed battle pose regressions pass.
+The normal paired review passes. Shiny checks are skipped at the user's
+request. These model checks do not establish TUI or MCP gameplay.
 
-The exact all-251 Rust model regression passed directly in 2.19 seconds
-(one actual test, zero failures, 1,293 filtered), with all four final mesh
-fingerprints verified in the frozen test executable before and after the run.
-This proves the model load path and this GPU image preview; the separate
-live-window issue remains unresolved. Completed ignored review scratch was
-removed after recording these results.
+The matched normal native 3D/2D review against Pidgey passes. Hitmonlee's
+headless silhouette, fitted gaze, coiled limbs, curled hands and planted feet
+remain readable at the verified scale. The idle snapshot complements the
+inspected kick/hit phase views. Terrain is accepted; the receipt preserves core
+frame 2585, hash 1293280905, LCD frame 3305, time 58.295432041 and
+`state_preserved=true`. Shiny checks remain skipped.

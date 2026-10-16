@@ -8,6 +8,7 @@ use serde::Deserialize;
 
 #[derive(Deserialize)]
 struct Primitive {
+    part: String,
     positions: Vec<f32>,
     normals: Vec<f32>,
     indices: Vec<u32>,
@@ -22,9 +23,10 @@ struct Export {
 /// Kept render-only so battle and world presentation can share the same art.
 fn parse_model<'a>(
     json: impl Into<crate::model_storage::Source<'a>>,
-) -> Result<SurfaceMeshData, String> {
+) -> Result<(SurfaceMeshData, Vec<crate::species_rig::Anatomy>), String> {
     let source: Export = crate::model_storage::parse(json)?;
     let mut mesh = SurfaceMeshData::default();
+    let mut anatomy = Vec::new();
     for p in source.primitives {
         let n = p.positions.len() / 3;
         if n < 3
@@ -41,6 +43,10 @@ fn parse_model<'a>(
             return Err("invalid authored species primitive".into());
         }
         let base = mesh.positions.len() as u32;
+        anatomy.push(crate::species_rig::Anatomy {
+            name: p.part, vertices: base as usize..base as usize+n,
+            indices: mesh.indices.len()..mesh.indices.len()+p.indices.len(), material: 0,
+        });
         for point in p.positions.chunks_exact(3) {
             mesh.positions.push([point[0], point[1], point[2]]);
             mesh.uvs.push([0.0, 0.0]);
@@ -77,155 +83,33 @@ fn parse_model<'a>(
     if min[1].abs() > 0.000_1 || (0..3).any(|a| max[a] - min[a] < 0.005) {
         return Err("authored species must be volumetric and floor rooted".into());
     }
-    Ok(mesh)
+    Ok((mesh, anatomy))
 }
 
-// Retain one explicit identity catalogue while routing articulated species to
-// their canonical GLB. The rig also exposes an exact neutral surface to callers
-// that only need immutable bounds or an overworld prop.
-macro_rules! species_mesh {
-    ("jumpluff") => { Some(crate::species_rig::rig(crate::species_rig::Species::Jumpluff).neutral.clone()) };
-    ("sunkern") => { Some(crate::species_rig::rig(crate::species_rig::Species::Sunkern).neutral.clone()) };
-    ("sunflora") => { Some(crate::species_rig::rig(crate::species_rig::Species::Sunflora).neutral.clone()) };
-    ("aipom") => { Some(crate::species_rig::rig(crate::species_rig::Species::Aipom).neutral.clone()) };
-    ("skiploom") => { Some(crate::species_rig::rig(crate::species_rig::Species::Skiploom).neutral.clone()) };
-    ("hoppip") => { Some(crate::species_rig::rig(crate::species_rig::Species::Hoppip).neutral.clone()) };
-    ("quagsire") => { Some(crate::species_rig::rig(crate::species_rig::Species::Quagsire).neutral.clone()) };
-    ("spinarak") => { Some(crate::species_rig::rig(crate::species_rig::Species::Spinarak).neutral.clone()) };
-    ("ariados") => { Some(crate::species_rig::rig(crate::species_rig::Species::Ariados).neutral.clone()) };
-    ("unown_i") => { Some(crate::species_rig::rig(crate::species_rig::Species::Unown(8)).neutral.clone()) };
-    ("entei") => { Some(crate::species_rig::rig(crate::species_rig::Species::Entei).neutral.clone()) };
-    ("raikou") => { Some(crate::species_rig::rig(crate::species_rig::Species::Raikou).neutral.clone()) };
-    ("ledyba") => { Some(crate::species_rig::rig(crate::species_rig::Species::Ledyba).neutral.clone()) };
-    ("ledian") => { Some(crate::species_rig::rig(crate::species_rig::Species::Ledian).neutral.clone()) };
-    ("noctowl") => { Some(crate::species_rig::rig(crate::species_rig::Species::Noctowl).neutral.clone()) };
-    ("furret") => { Some(crate::species_rig::rig(crate::species_rig::Species::Furret).neutral.clone()) };
-    ("suicune") => { Some(crate::species_rig::rig(crate::species_rig::Species::Suicune).neutral.clone()) };
-    ("slowpoke") => { Some(crate::species_rig::rig(crate::species_rig::Species::Slowpoke).neutral.clone()) };
-    ("diglett") => { Some(crate::species_rig::rig(crate::species_rig::Species::Diglett).neutral.clone()) };
-    ("onix") => { Some(crate::species_rig::rig(crate::species_rig::Species::Onix).neutral.clone()) };
-    ("voltorb") => { Some(crate::species_rig::rig(crate::species_rig::Species::Voltorb).neutral.clone()) };
-    ("staryu") => { Some(crate::species_rig::rig(crate::species_rig::Species::Staryu).neutral.clone()) };
-    ("sentret") => { Some(crate::species_rig::rig(crate::species_rig::Species::Sentret).neutral.clone()) };
-    ("hoothoot") => { Some(crate::species_rig::rig(crate::species_rig::Species::Hoothoot).neutral.clone()) };
-    ("butterfree") => { Some(crate::species_rig::rig(crate::species_rig::Species::Butterfree).neutral.clone()) };
-    ("beedrill") => { Some(crate::species_rig::rig(crate::species_rig::Species::Beedrill).neutral.clone()) };
-    ("zubat") => { Some(crate::species_rig::rig(crate::species_rig::Species::Zubat).neutral.clone()) };
-    ("golbat") => { Some(crate::species_rig::rig(crate::species_rig::Species::Golbat).neutral.clone()) };
-    ("crobat") => { Some(crate::species_rig::rig(crate::species_rig::Species::Crobat).neutral.clone()) };
-    ("psyduck") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Psyduck).neutral.clone())
-    };
-    ("golduck") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Golduck).neutral.clone())
-    };
-    ("raticate") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Raticate).neutral.clone())
-    };
-    ("rattata") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Rattata).neutral.clone())
-    };
-    ("jigglypuff") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Jigglypuff).neutral.clone())
-    };
-    ("clefairy") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Clefairy).neutral.clone())
-    };
-    ("poliwag") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Poliwag).neutral.clone())
-    };
-    ("oddish") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Oddish).neutral.clone())
-    };
-    ("pidgey") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Pidgey).neutral.clone())
-    };
-    ("geodude") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Geodude).neutral.clone())
-    };
-    ("squirtle") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Squirtle).neutral.clone())
-    };
-    ("charmander") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Charmander).neutral.clone())
-    };
-    ("bulbasaur") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Bulbasaur).neutral.clone())
-    };
-    ("pikachu") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Pikachu).neutral.clone())
-    };
-    ("snorlax") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Snorlax).neutral.clone())
-    };
-    ("lapras") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Lapras).neutral.clone())
-    };
-    ("sudowoodo") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Sudowoodo).neutral.clone())
-    };
-    ("gyarados") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Gyarados).neutral.clone())
-    };
-    ("wooper") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Wooper).neutral.clone())
-    };
-    ("chikorita") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Chikorita).neutral.clone())
-    };
-    ("cyndaquil") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Cyndaquil).neutral.clone())
-    };
-    ("totodile") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Totodile).neutral.clone())
-    };
-    ("meganium") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Meganium).neutral.clone())
-    };
-    ("bayleef") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Bayleef).neutral.clone())
-    };
-    ("gengar") => {
-        Some(crate::species_rig::rig(crate::species_rig::Species::Gengar).neutral.clone())
-    };
-    ("spearow") => {
-        Some(
-            crate::species_rig::rig(crate::species_rig::Species::Spearow)
-                .neutral
-                .clone(),
-        )
-    };
-    ("pidgeotto") => {
-        Some(crate::pidgeotto_rig::rig().neutral.clone())
-    };
-    ($file:literal) => {{
-        static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
-        Some(
-            MODEL
-                .get_or_init(|| {
-                    parse_model(crate::model_storage::include_model!(concat!(
-                        "models/battle_species/",
-                        $file,
-                        ".mesh.json"
-                    )))
-                    .expect(concat!("valid original species: ", $file))
-                })
-                .clone(),
-        )
-    }};
-}
+// The roster remains explicit below. Legacy bindings follow the canonical
+// source files, so an authored GLB automatically supersedes its old adapter.
+include!(concat!(env!("OUT_DIR"), "/legacy_species_rigs.rs"));
+
 macro_rules! species_models {
     ($( $id:literal => $file:tt ),+ $(,)?) => {
+        const MODELS: &[(&str,&str)] = &[$(($id,$file)),+];
         pub(crate) fn supported_species() -> impl Iterator<Item = &'static str> {
-            [$( $id ),+].into_iter()
+            MODELS.iter().map(|&(id,_)|id)
+        }
+        pub(crate) fn rig(species: &str) -> Option<&'static crate::species_rig::SpeciesRig> {
+            if let Some(rig) = crate::species_rig::authored_for_species(species) {
+                return Some(rig);
+            }
+            let name=MODELS.iter().find_map(|&(id,file)|id.eq_ignore_ascii_case(species).then_some(file))?;
+            if let Some(rig)=crate::species_rig::authored_for_species(name) {return Some(rig);}
+            if name=="pidgeotto" {
+                static RIG: OnceLock<crate::species_rig::SpeciesRig> = OnceLock::new();
+                return Some(RIG.get_or_init(crate::species_rig::motion::pidgeotto));
+            }
+            legacy_rig(name)
         }
         pub(crate) fn mesh(species: &str) -> Option<SurfaceMeshData> {
-            if species.len() == 7 && species.as_bytes()[..6].eq_ignore_ascii_case(b"UNOWN_") {
-                return crate::species_rig::for_species(species).map(|rig| rig.neutral.clone());
-            }
-            match species.to_ascii_uppercase().as_str() { $(
-                $id => species_mesh!($file),
-            )+ _ => None }
+            rig(species).map(|rig| rig.neutral.clone())
         }
     };
 }

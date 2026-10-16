@@ -104,14 +104,67 @@ fn triangle_coverage_inner(mesh: &Mesh, kind: u8) -> Option<std::sync::Arc<[Aabb
     Some(buckets.into_values().map(|(min, max)| Aabb::from_min_max(min, max)).collect())
 }
 
+/// Compute the three independent coverage domains in one original-index scan.
+/// Invalid/excessive domains retire separately: excluded grass must not poison
+/// opaque sight evidence, and a large coarse domain may exceed its own cap.
+fn triangle_coverages(mesh: &Mesh) -> [Option<std::sync::Arc<[Aabb]>>; 3] {
+    use bevy::mesh::VertexAttributeValues;
+    use std::collections::BTreeMap;
+    let _trace = crate::loading_trace::span("region.triangle_coverage", || serde_json::json!({
+        "triangles": mesh.indices().map_or(0, |indices| indices.len() / 3),
+    }));
+    if mesh.primitive_topology() != bevy::render::render_resource::PrimitiveTopology::TriangleList {
+        return [None, None, None];
+    }
+    let Some(VertexAttributeValues::Float32x3(positions)) = mesh.attribute(Mesh::ATTRIBUTE_POSITION)
+    else { return [None, None, None]; };
+    let Some(indices) = mesh.indices() else { return [None, None, None]; };
+    if indices.is_empty() || indices.len() % 3 != 0 { return [None, None, None]; }
+    let uvs = match mesh.attribute(Mesh::ATTRIBUTE_UV_0) {
+        Some(VertexAttributeValues::Float32x2(uvs)) => Some(uvs),
+        _ => None,
+    };
+    let mut buckets: [Option<BTreeMap<(i32, i32, i32), (Vec3, Vec3)>>; 3] =
+        std::array::from_fn(|_| Some(BTreeMap::new()));
+    let mut indices = indices.iter();
+    while let Some(a) = indices.next() {
+        let (Some(b), Some(c)) = (indices.next(), indices.next()) else { return [None, None, None]; };
+        let triangle = [a, b, c];
+        let grass = uvs.is_some_and(|uvs| triangle.iter().all(|&index|
+            uvs.get(index).is_some_and(|uv| uv[0] == 84000.0)));
+        let fine_domain = if grass { 2 } else { 1 };
+        if buckets[0].is_none() && buckets[fine_domain].is_none() { continue; }
+        let points = triangle.map(|index| positions.get(index).map(|p| Vec3::from_array(*p)));
+        let points = match points {
+            [Some(a), Some(b), Some(c)] if a.is_finite() && b.is_finite() && c.is_finite() => [a, b, c],
+            _ => { buckets[0] = None; buckets[fine_domain] = None; continue; }
+        };
+        let min = points[0].min(points[1]).min(points[2]);
+        let max = points[0].max(points[1]).max(points[2]);
+        for domain in [0, fine_domain] {
+            let Some(bucket) = buckets[domain].as_mut() else { continue; };
+            let cell = if domain == 0 { Vec3::splat(64.0) } else { Vec3::new(16.0, 8.0, 16.0) };
+            let center = (min * 0.5 + max * 0.5) / cell;
+            let key = (center.x.floor() as i32,
+                if domain == 0 { 0 } else { center.y.floor() as i32 },
+                center.z.floor() as i32);
+            bucket.entry(key).and_modify(|bounds| {
+                bounds.0 = bounds.0.min(min);
+                bounds.1 = bounds.1.max(max);
+            }).or_insert((min, max));
+            if bucket.len() > 4096 { buckets[domain] = None; }
+        }
+    }
+    buckets.map(|bucket| bucket.map(|bucket|
+        bucket.into_values().map(|(min, max)| Aabb::from_min_max(min, max)).collect()))
+}
+
 impl From<Mesh> for PreparedBatch {
     fn from(mesh: Mesh) -> Self {
         // Compute on the terrain worker, before render extraction moves the
         // CPU buffers. Never scan full vertex buffers when applying a build.
         let bounds = mesh.get_aabb();
-        let coverage = triangle_coverage(&mesh);
-        let sight_coverage = triangle_sight_coverage(&mesh);
-        let grass_coverage = triangle_grass_coverage(&mesh);
+        let [coverage, sight_coverage, grass_coverage] = triangle_coverages(&mesh);
         Self {
             mesh,
             bounds,
@@ -129,6 +182,43 @@ const MIN_TRIANGLES: usize = 4096;
 
 pub(super) fn prepare(source: SurfaceMeshData, tile_size: Vec2) -> Vec<PreparedBatch> {
     prepare_with_authentic_bounds(source, tile_size, None)
+}
+
+fn convert_spatial_batch(domain: AuthenticDomain, data: SurfaceMeshData) -> PreparedBatch {
+    let mut batch = PreparedBatch::from(data.into_compact_mesh());
+    batch.authentic_domain = domain;
+    batch
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn convert_spatial_batches_on_pool(batches: Vec<(AuthenticDomain, SurfaceMeshData)>,
+    pool: &bevy::tasks::TaskPool) -> Vec<PreparedBatch> {
+    let workers=pool.thread_num().max(1).min(batches.len());
+    if workers==0 {return Vec::new();}
+    let count=batches.len();
+    let pending=std::sync::Mutex::new(batches.into_iter().enumerate()
+        .collect::<std::collections::VecDeque<_>>());
+    // Bevy scope() ticks this pool's executor while awaiting its children.
+    // A terrain task therefore cannot starve its own one-thread pool. Do not
+    // replace this with block_on() over ordinary spawned task handles.
+    let output=pool.scope(|scope| {
+        for _ in 0..workers {
+            let pending=&pending;
+            scope.spawn(async move {
+                let mut completed=Vec::new();
+                loop {
+                    let work={pending.lock().unwrap().pop_front()};
+                    let Some((index,(domain,data)))=work else {break;};
+                    completed.push((index,convert_spatial_batch(domain,data)));
+                }
+                completed
+            });
+        }
+    });
+    let mut ordered=output.into_iter().flatten().collect::<Vec<_>>();
+    assert_eq!(ordered.len(),count,"every owned terrain batch must complete");
+    ordered.sort_unstable_by_key(|(index,_)|*index);
+    ordered.into_iter().map(|(_,batch)|batch).collect()
 }
 
 /// Split only source-map boundary crossings, then spatially batch each domain
@@ -150,19 +240,37 @@ pub(super) fn prepare_with_authentic_bounds(
         static ENABLED: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
         *ENABLED.get_or_init(|| std::env::var("CRYSTAL_TERRAIN_BATCHING").as_deref() != Ok("off"))
     };
-    separate_authentic_domains(source, authentic_bounds)
-        .into_iter()
-        .flat_map(|(domain, data)| {
+    let domains=separate_authentic_domains(source, authentic_bounds);
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        static PARALLEL: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+        let enabled=*PARALLEL.get_or_init(||
+            std::env::var("CRYSTAL_TERRAIN_BATCH_PARALLEL").as_deref()!=Ok("off"));
+        if enabled && spatial_batching {
+            if let Some(pool)=bevy::tasks::AsyncComputeTaskPool::try_get() {
+                // Source-domain decisions and spatial ordering stay serial.
+                // Only independent compact mesh/coverage conversion is parallel.
+                let batches=domains.into_iter().flat_map(|(domain,data)|
+                    partition(data,tile_size).into_iter().map(move |data|(domain,data)))
+                    .collect::<Vec<_>>();
+                let triangles=batches.iter().map(|(_,data)|data.indices.len()/3).sum::<usize>();
+                let parallel=batches.len()>=4 && triangles>=16_384;
+                let _trace=crate::loading_trace::span("region.convert_spatial_batches", ||
+                    serde_json::json!({"batches":batches.len(),"triangles":triangles,
+                        "workers":if parallel {pool.thread_num().min(batches.len()).max(1)}else{1},
+                        "parallel":parallel}));
+                return if parallel {convert_spatial_batches_on_pool(batches,pool)}
+                    else {batches.into_iter().map(|(domain,data)|convert_spatial_batch(domain,data)).collect()};
+            }
+        }
+    }
+    domains.into_iter().flat_map(|(domain, data)| {
             let batches = if spatial_batching {
                 partition(data, tile_size)
             } else {
                 vec![data]
             };
-            batches.into_iter().map(move |data| {
-                let mut batch = PreparedBatch::from(data.into_compact_mesh());
-                batch.authentic_domain = domain;
-                batch
-            })
+            batches.into_iter().map(move |data| convert_spatial_batch(domain,data))
         })
         .collect()
 }
@@ -529,6 +637,18 @@ pub(super) fn separate_authentic_domains(
 /// eligibility. A long triangle is assigned once and its actual full bounds
 /// participate in culling, including portions outside the nominal grid cell.
 fn partition(source: SurfaceMeshData, tile_size: Vec2) -> Vec<SurfaceMeshData> {
+    // Browsers retain the existing memory policy until separately measured.
+    #[cfg(target_arch = "wasm32")]
+    let cache_buckets = false;
+    #[cfg(not(target_arch = "wasm32"))]
+    let cache_buckets = {
+        static ENABLED: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+        *ENABLED.get_or_init(|| std::env::var("CRYSTAL_TERRAIN_BUCKET_CACHE").as_deref() != Ok("off"))
+    };
+    partition_with_bucket_cache(source, tile_size, cache_buckets)
+}
+
+fn partition_with_bucket_cache(source: SurfaceMeshData, tile_size: Vec2, cache_buckets: bool) -> Vec<SurfaceMeshData> {
     if source.indices.is_empty() {
         return Vec::new();
     }
@@ -575,6 +695,10 @@ fn partition(source: SurfaceMeshData, tile_size: Vec2) -> Vec<SurfaceMeshData> {
         return vec![source];
     }
     let batch_count = (count.x * count.y) as usize;
+    let _trace = crate::loading_trace::span("region.partition_surface", || serde_json::json!({
+        "vertices":vertex_count,"triangles":source.indices.len()/3,
+        "buckets":batch_count,"cache_buckets":cache_buckets,
+    }));
     let bucket_for = |triangle: &[u32]| {
         // f64 protects bucket selection for valid extreme f32 coordinates.
         // Stored geometry is copied bit-for-bit; it is never rebased or rounded.
@@ -594,12 +718,26 @@ fn partition(source: SurfaceMeshData, tile_size: Vec2) -> Vec<SurfaceMeshData> {
     // Count first: growing large buckets can retain nearly twice the indices
     // and briefly needs both old and new allocations in the browser heap.
     let mut sizes = vec![0; batch_count];
+    // At most 16x16 buckets: one byte per triangle avoids repeating the f64
+    // centroid calculation without adding a source-sized remap per worker.
+    // Release it before allocating compact vertex attributes below.
+    let mut triangle_buckets = cache_buckets.then(|| Vec::<u8>::with_capacity(source.indices.len() / 3));
     for triangle in source.indices.chunks_exact(3) {
-        sizes[bucket_for(triangle)] += 3;
+        let bucket = bucket_for(triangle);
+        sizes[bucket] += 3;
+        if let Some(cached) = triangle_buckets.as_mut() {
+            cached.push(u8::try_from(bucket).expect("spatial bucket fits in one byte"));
+        }
     }
     let mut buckets: Vec<Vec<u32>> = sizes.into_iter().map(Vec::with_capacity).collect();
-    for triangle in source.indices.chunks_exact(3) {
-        buckets[bucket_for(triangle)].extend_from_slice(triangle);
+    if let Some(cached) = triangle_buckets {
+        for (triangle, bucket) in source.indices.chunks_exact(3).zip(cached) {
+            buckets[usize::from(bucket)].extend_from_slice(triangle);
+        }
+    } else {
+        for triangle in source.indices.chunks_exact(3) {
+            buckets[bucket_for(triangle)].extend_from_slice(triangle);
+        }
     }
     // One shared dense remap, reset only at touched vertices. No per-batch
     // full-grid scans or attribute hashing, and no work on retained frames.
@@ -678,6 +816,105 @@ mod tests {
         data
     }
 
+    #[cfg(not(target_arch = "wasm32"))]
+    fn assert_prepared_batches_exact(expected:&[PreparedBatch],actual:&[PreparedBatch]) {
+        let bounds_bits=|bounds:Aabb| {
+            let mut bits=bounds.center.to_array().map(f32::to_bits).to_vec();
+            bits.extend(bounds.half_extents.to_array().map(f32::to_bits));bits
+        };
+        let coverage_bits=|coverage:&Option<std::sync::Arc<[Aabb]>>|
+            coverage.as_ref().map(|coverage|coverage.iter().copied().map(&bounds_bits).collect::<Vec<_>>());
+        assert_eq!(actual.len(),expected.len());
+        for (a,b) in expected.iter().zip(actual) {
+            assert_eq!(a.authentic_domain,b.authentic_domain);
+            assert_eq!(a.mesh.asset_usage,b.mesh.asset_usage);
+            assert_eq!(a.mesh.primitive_topology(),b.mesh.primitive_topology());
+            assert_eq!(a.mesh.indices(),b.mesh.indices(),"index values AND widths remain exact");
+            let attributes=|mesh:&Mesh|mesh.attributes().map(|(attribute,values)|
+                (attribute.id,attribute.format,values.get_bytes().to_vec())).collect::<Vec<_>>();
+            assert_eq!(attributes(&a.mesh),attributes(&b.mesh),"all vertex attribute bits and formats");
+            assert_eq!(a.bounds.map(&bounds_bits),b.bounds.map(&bounds_bits));
+            assert_eq!(coverage_bits(&a.coverage),coverage_bits(&b.coverage));
+            assert_eq!(coverage_bits(&a.sight_coverage),coverage_bits(&b.sight_coverage));
+            assert_eq!(coverage_bits(&a.grass_coverage),coverage_bits(&b.grass_coverage));
+        }
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    fn native_conversion_fixture() -> Vec<(AuthenticDomain,SurfaceMeshData)> {
+        let mut source=fixture(72);
+        for (index,uvs) in source.uvs.chunks_exact_mut(4).enumerate() {
+            if index%3==0 {uvs.fill([84000.,-0.]);}
+        }
+        let bounds=Some(AuthenticBounds {min:Vec2::splat(64.),max:Vec2::splat(448.)});
+        let mut result=separate_authentic_domains(source,bounds).into_iter()
+            .flat_map(|(domain,data)|partition(data,Vec2::splat(8.)).into_iter()
+                .map(move|data|(domain,data))).collect::<Vec<_>>();
+        assert!(result.len()>4);
+        // Exercise both compact index widths and the remaining domain labels
+        // alongside genuine source-domain and spatial partition decisions.
+        result.push((AuthenticDomain::Unresolved,fixture(130)));
+        result.push((AuthenticDomain::Unspecified,SurfaceMeshData::default()));
+        result
+    }
+    #[test]
+    #[cfg(not(target_arch = "wasm32"))]
+    fn native_parallel_batch_conversion_is_bit_exact_ordered_and_complete() {
+        let input=native_conversion_fixture();
+        let expected=input.iter().map(|(domain,data)|convert_spatial_batch(*domain,data.clone()))
+            .collect::<Vec<_>>();
+        assert!(expected.iter().any(|batch|matches!(batch.mesh.indices(),Some(bevy::mesh::Indices::U16(_)))));
+        assert!(expected.iter().any(|batch|matches!(batch.mesh.indices(),Some(bevy::mesh::Indices::U32(_)))));
+        for workers in [1,3] {
+            let pool=bevy::tasks::TaskPoolBuilder::new().num_threads(workers).build();
+            let actual=convert_spatial_batches_on_pool(input.clone(),&pool);
+            assert_prepared_batches_exact(&expected,&actual);
+        }
+    }
+    #[test]
+    #[cfg(not(target_arch = "wasm32"))]
+    fn native_bucket_cache_preserves_boundary_extreme_and_negative_geometry_exactly() {
+        for (scale, offset) in [(1., 0.), (1., -2048.), (-1., 1024.), (1.0e20, -2.0e22)] {
+            let mut source = fixture(72);
+            for position in &mut source.positions {
+                position[0] = position[0] * scale + offset;
+                position[2] = position[2] * scale - offset;
+            }
+            let serial = partition_with_bucket_cache(source.clone(), Vec2::splat(8.), false);
+            let cached = partition_with_bucket_cache(source, Vec2::splat(8.), true);
+            assert!(serial.len() > 1, "fixture must exercise spatial bucketing");
+            let convert = |batches: Vec<SurfaceMeshData>| batches.into_iter()
+                .map(|data| convert_spatial_batch(AuthenticDomain::Inside, data)).collect::<Vec<_>>();
+            assert_prepared_batches_exact(&convert(serial), &convert(cached));
+        }
+    }
+
+    #[test]
+    #[cfg(not(target_arch = "wasm32"))]
+    fn native_batch_conversion_nested_in_one_worker_pool_cannot_starve_children() {
+        let pool=std::sync::Arc::new(bevy::tasks::TaskPoolBuilder::new().num_threads(1).build());
+        assert_eq!(pool.thread_num(),1);
+        let input=native_conversion_fixture();
+        let expected=input.iter().map(|(domain,data)|convert_spatial_batch(*domain,data.clone()))
+            .collect::<Vec<_>>();
+        let (send,receive)=std::sync::mpsc::sync_channel(1);
+        let owned_pool=pool.clone();
+        let task=pool.spawn(async move {
+            let output=convert_spatial_batches_on_pool(input,&owned_pool);
+            send.send(output).unwrap();
+        });
+        let actual=match receive.recv_timeout(std::time::Duration::from_secs(10)) {
+            Ok(output)=>output,
+            Err(error)=>{
+                // Preserve a useful test failure instead of blocking forever
+                // joining the very worker whose starvation is being checked.
+                std::mem::forget(task);std::mem::forget(pool);
+                panic!("nested single-worker terrain conversion did not complete: {error}");
+            }
+        };
+        bevy::tasks::futures_lite::future::block_on(task);
+        assert_prepared_batches_exact(&expected,&actual);
+    }
+
     fn triangles(data: &SurfaceMeshData) -> BTreeMap<Vec<u32>, usize> {
         let mut counts = BTreeMap::new();
         let mut marked = vec![false; data.positions.len()];
@@ -729,6 +966,85 @@ mod tests {
         append_triangle(&mut data, [a, d, c], true);
         data.normals.fill([0.125, 1.0, -0.0]);
         data
+    }
+
+    fn assert_fused_coverage_matches_independent_scans(mesh: &Mesh) {
+        let bits = |coverage: Option<std::sync::Arc<[Aabb]>>| coverage.map(|bounds|
+            bounds.iter().map(|bound| {
+                let mut bits = bound.center.to_array().map(f32::to_bits).to_vec();
+                bits.extend(bound.half_extents.to_array().map(f32::to_bits));
+                bits
+            }).collect::<Vec<_>>());
+        let expected = [triangle_coverage(mesh), triangle_sight_coverage(mesh), triangle_grass_coverage(mesh)].map(&bits);
+        assert_eq!(triangle_coverages(mesh).map(bits), expected,
+            "every independent domain keeps exact bound bits, key order and absence semantics");
+    }
+
+    #[test]
+    fn fused_coverage_preserves_index_width_tags_and_original_mesh_bits() {
+        let mut source = fixture(40);
+        for (quad, uvs) in source.uvs.chunks_exact_mut(4).enumerate() {
+            if quad % 3 == 0 { uvs.fill([84000., -0.0]); }
+            else if quad % 3 == 1 { uvs[0][0] = 84000.; }
+        }
+        for mesh in [source.clone().into_mesh(), source.into_compact_mesh()] {
+            assert_fused_coverage_matches_independent_scans(&mesh);
+            let attributes = mesh.attributes().map(|(attribute, values)|
+                (attribute.id, values.get_bytes().to_vec())).collect::<Vec<_>>();
+            let indices = mesh.indices().cloned();
+            let batch = PreparedBatch::from(mesh);
+            assert_eq!(batch.mesh.attributes().map(|(attribute, values)|
+                (attribute.id, values.get_bytes().to_vec())).collect::<Vec<_>>(), attributes);
+            assert_eq!(batch.mesh.indices(), indices.as_ref());
+        }
+    }
+
+    #[test]
+    fn fused_coverage_retires_invalid_and_excessive_domains_independently() {
+        for grass in [false, true] {
+            let mut source = SurfaceMeshData::default();
+            append_triangle(&mut source, [[0.,0.,0.], [4.,0.,0.], [0.,0.,4.]], false);
+            append_triangle(&mut source, [[80.,0.,80.], [84.,0.,80.], [80.,0.,84.]], false);
+            if grass { source.uvs[3..].fill([84000., 0.]); }
+            source.positions[3][0] = f32::NAN;
+            let mesh = source.into_mesh();
+            assert_fused_coverage_matches_independent_scans(&mesh);
+            let coverage = triangle_coverages(&mesh);
+            assert!(coverage[0].is_none());
+            assert!(coverage[if grass { 1 } else { 2 }].is_some(),
+                "a face excluded from this domain cannot invalidate its evidence");
+        }
+        for spacing in [16., 128.] {
+            let mut source = SurfaceMeshData::default();
+            for i in 0..4100 {
+                let x = i as f32 * spacing;
+                append_triangle(&mut source, [[x,0.,0.], [x+1.,0.,0.], [x,0.,1.]], false);
+            }
+            let grass_start = source.uvs.len();
+            append_triangle(&mut source, [[0.,12.,0.], [1.,12.,0.], [0.,12.,1.]], false);
+            source.uvs[grass_start..].fill([84000., 0.]);
+            let mesh = source.into_mesh();
+            assert_fused_coverage_matches_independent_scans(&mesh);
+            let [full, sight, grass] = triangle_coverages(&mesh);
+            assert!(sight.is_none());
+            assert_eq!(full.is_some(), spacing == 16.);
+            assert_eq!(grass.unwrap().len(), 1, "each coverage domain keeps its own 4096-bucket cap");
+        }
+    }
+
+    #[test]
+    fn fused_coverage_keeps_missing_cpu_attributes_and_malformed_indices_absent() {
+        let mut mesh = fixture(4).into_mesh();
+        mesh.remove_attribute(Mesh::ATTRIBUTE_UV_0);
+        assert_fused_coverage_matches_independent_scans(&mesh);
+        mesh.insert_indices(bevy::mesh::Indices::U32(vec![0,1,2,u32::MAX,1,2]));
+        assert_fused_coverage_matches_independent_scans(&mesh);
+        mesh.insert_indices(bevy::mesh::Indices::U32(vec![0,1]));
+        assert_fused_coverage_matches_independent_scans(&mesh);
+        mesh.insert_indices(bevy::mesh::Indices::U32(Vec::new()));
+        assert_fused_coverage_matches_independent_scans(&mesh);
+        mesh.remove_attribute(Mesh::ATTRIBUTE_POSITION);
+        assert_fused_coverage_matches_independent_scans(&mesh);
     }
 
     #[test]

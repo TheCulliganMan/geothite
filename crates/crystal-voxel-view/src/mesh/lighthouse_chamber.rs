@@ -129,6 +129,8 @@ struct Export {
 }
 #[derive(Deserialize)]
 struct Primitive {
+    part: String,
+    material: String,
     positions: Vec<f32>,
     normals: Vec<f32>,
     indices: Vec<u32>,
@@ -136,13 +138,43 @@ struct Primitive {
 }
 struct Model {
     surface: SurfaceMeshData,
+    pixels: Vec<[usize;2]>,
+}
+fn material_pixel(asset:Asset,material:&str)->Option<[usize;2]> {
+    Some(match (asset,material) {
+        (Asset::TeaTable,"linen") => [8,5],
+        (Asset::TeaTable,"linen_edge"|"wood_cut"|"walnut") => [8,3],
+        (Asset::TeaTable,"wood_highlight") => [8,2],
+        (Asset::TeaTable,"brass"|"brass_shadow"|"glaze_light"|"sea_glaze") => [8,16],
+        (Asset::TeaTable,"tea") => [14,17],
+        (Asset::KeeperCot,"linen"|"linen_edge"|"sage_blanket") => [4,12],
+        (Asset::KeeperCot,"walnut"|"wood_cut") => [1,3],
+        (Asset::KeeperCot,"wood_highlight") => [1,9],
+        (Asset::KeeperCot,"dark_joinery") => [0,0],
+        (Asset::RedStool,"terracotta"|"wood_highlight") => [5,5],
+        (Asset::RedStool,"cushion_edge"|"walnut"|"wood_cut") => [3,4],
+        _=>return None,
+    })
+}
+fn part_pixel(asset:Asset,material:&str,part:&str)->Option<[usize;2]> {
+    if asset==Asset::TeaTable && part.starts_with("Cup ") {
+        return match material {
+            "glaze_light"|"sea_glaze"=>Some([10,9]),
+            "tea"=>Some([10,10]),
+            _=>None,
+        };
+    }
+    material_pixel(asset,material)
 }
 impl Model {
-    fn parse<'a>(source: impl Into<crate::model_storage::Source<'a>>) -> Result<Self, String> {
+    fn parse<'a>(source: impl Into<crate::model_storage::Source<'a>>,asset:Asset) -> Result<Self, String> {
         let export: Export = crate::model_storage::parse(source)?;
         let mut surface = SurfaceMeshData::default();
+        let mut pixels=Vec::new();
         for p in export.primitives {
+            let pixel=part_pixel(asset,&p.material,&p.part).ok_or_else(||format!("unknown lighthouse material {}",p.material))?;
             let count = p.positions.len() / 3;
+            pixels.extend(vec![pixel;count]);
             if count == 0
                 || p.positions.len() % 3 != 0
                 || p.normals.len() != p.positions.len()
@@ -180,7 +212,7 @@ impl Model {
         if surface.positions.is_empty() {
             return Err("empty lighthouse chamber model".into());
         }
-        Ok(Self { surface })
+        Ok(Self { surface,pixels })
     }
 }
 fn model(asset: Asset) -> &'static Model {
@@ -197,7 +229,7 @@ fn model(asset: Asset) -> &'static Model {
                 "models/lighthouse_chamber/red_stool.mesh.json"
             ),
         ]
-        .map(|s| Model::parse(s).expect("validated lighthouse chamber model"))
+        .into_iter().zip(Asset::ALL).map(|(s,a)| Model::parse(s,a).expect("validated lighthouse chamber model")).collect::<Vec<_>>().try_into().ok().expect("three lighthouse models")
     })[asset as usize]
 }
 pub(super) fn append(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement, asset: Asset) {
@@ -217,25 +249,28 @@ pub(super) fn append(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement
         p.height as f32 * g.tile_height,
     );
     let origin = Vec3::new(w, 0., n);
-    let source = &model(asset).surface;
-    let base = mesh.solid.positions.len() as u32;
-    for ((&point, &normal), &color) in source
+    let model=model(asset);
+    let source = &model.surface;
+    let base = mesh.textured.positions.len() as u32;
+    for ((&point, &normal), &pixel) in source
         .positions
         .iter()
         .zip(&source.normals)
-        .zip(&source.colors)
+        .zip(&model.pixels)
     {
-        mesh.solid
+        mesh.textured
             .positions
             .push((origin + Vec3::from_array(point) * scale).to_array());
         let normal = (Vec3::from_array(normal) / scale).normalize();
-        mesh.solid.normals.push(normal.to_array());
-        mesh.solid
+        mesh.textured.normals.push(normal.to_array());
+        mesh.textured
             .colors
-            .push(crate::interior_models::authored_face_color(color, normal));
+            .push(crate::interior_models::authored_face_color([1.;4], normal));
+        let uv=g.uv(p.column+pixel[0]/8,p.row+pixel[1]/8);
+        mesh.textured.uvs.push([uv.0+(uv.1-uv.0)*((pixel[0]%8)as f32+0.5)/8.,
+            uv.2+(uv.3-uv.2)*((pixel[1]%8)as f32+0.5)/8.]);
     }
-    mesh.solid.uvs.extend_from_slice(&source.uvs);
-    mesh.solid
+    mesh.textured
         .indices
         .extend(source.indices.iter().map(|i| i + base));
     // Furniture and floor remain opaque and never join the masonry reveal mask.
@@ -246,6 +281,39 @@ mod tests {
     use super::*;
     use std::sync::Arc;
     const MAP: &str = "OlivineLighthouse6F";
+    #[test]
+    fn external_keeper_furniture_uses_its_own_native_palette_roles() {
+        let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(std::path::PathBuf::from)
+            .unwrap_or_else(||std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        if !path.is_file(){return;}
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let pixels=image::load_from_memory(&loaded.pack().runtime_files()["gfx/tilesets/lighthouse.png"]).unwrap().to_luma8();
+        for (material,part,value) in [("sea_glaze","Cup faceted bowl",255),("tea","Cup tea inset",0)] {
+            let p=part_pixel(Asset::TeaTable,material,part).unwrap();let (_,_,_,tile)=expected(Asset::TeaTable,p[0]/8,p[1]/8);
+            assert_eq!(pixels.get_pixel((tile as u32%16)*8+(p[0]%8)as u32,
+                (tile as u32/16)*8+(p[1]%8)as u32)[0],value);
+            assert_ne!(p,part_pixel(Asset::TeaTable,material,"Teapot faceted body").unwrap());
+        }
+        for (asset,material,value) in [
+            (Asset::TeaTable,"linen",170),(Asset::TeaTable,"linen_edge",85),
+            (Asset::TeaTable,"brass",170),(Asset::TeaTable,"tea",0),
+            (Asset::KeeperCot,"linen",255),(Asset::KeeperCot,"sage_blanket",255),
+            (Asset::KeeperCot,"wood_highlight",170),(Asset::KeeperCot,"walnut",85),
+            (Asset::RedStool,"terracotta",170),(Asset::RedStool,"cushion_edge",85),
+        ] {
+            let p=if asset==Asset::TeaTable&&material=="tea" {
+                part_pixel(asset,material,"Cup tea inset").unwrap()
+            }else{material_pixel(asset,material).unwrap()};
+            let (_,_,_,tile)=expected(asset,p[0]/8,p[1]/8);
+            assert_eq!(pixels.get_pixel((tile as u32%16)*8+(p[0]%8)as u32,
+                (tile as u32/16)*8+(p[1]%8)as u32)[0],value,"{asset:?} {material}");
+            let t=object(asset);let g=grid();let placement=resolve(&t,MAP,&g).remove(0);
+            let mut mesh=TerrainMeshData::default();append(&mut mesh,&g,&placement,asset);
+            let uv=g.uv(placement.column+p[0]/8,placement.row+p[1]/8);
+            assert!(mesh.textured.uvs.contains(&[uv.0+(uv.1-uv.0)*((p[0]%8)as f32+0.5)/8.,
+                uv.2+(uv.3-uv.2)*((p[1]%8)as f32+0.5)/8.]));
+        }
+    }
     fn grid() -> GridGeometry {
         GridGeometry {
             width: 12,
@@ -396,24 +464,22 @@ mod tests {
             let (w, _, n, _) = g.bounds(p.column, p.row);
             let e = w + p.width as f32 * g.tile_width;
             let s = n + p.height as f32 * g.tile_height;
-            assert!(mesh.solid.positions.iter().all(|v| v[0] >= w
+            assert!(mesh.textured.positions.iter().all(|v| v[0] >= w
                 && v[0] <= e
                 && v[2] >= n
                 && v[2] <= s
                 && v[1] >= 0.
                 && v[1] <= p.rise_pixels));
-            assert!(mesh.textured.positions.iter().all(|v| v[1] == 0.));
-            assert_eq!(mesh.textured.indices.len(), p.width * p.height * 6);
-            let source_colors = &model(asset).surface.colors;
+            assert!(mesh.solid.positions.is_empty());
+            let floor_vertices=p.width*p.height*4;
+            assert!(mesh.textured.positions[..floor_vertices].iter().all(|v|v[1]==0.));
+            assert_eq!(mesh.textured.indices.len(), p.width * p.height * 6+model(asset).surface.indices.len());
             let mut shades: Vec<_> = mesh
-                .solid
+                .textured
                 .colors
                 .iter()
-                .zip(source_colors)
-                .filter_map(|(lit, base)| {
-                    assert_eq!(lit[3], base[3]);
-                    (base[0] > 0.00001).then_some(lit[0] / base[0])
-                })
+                .skip(floor_vertices)
+                .map(|lit|{assert_eq!(lit[3],1.);lit[0]})
                 .collect();
             shades.sort_by(f32::total_cmp);
             assert!(

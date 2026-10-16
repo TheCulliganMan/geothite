@@ -9,7 +9,9 @@ from wing_insect_sculpt import membrane,contour
 from skarmory_sculpt import blade
 from skin_glb import COORDINATES
 SPECIES=('murkrow',);HEIGHT=.78
-COAT=(.18,.29,.38);FEATHER=(.22,.34,.44);DARK=(.105,.17,.23);GOLD=(.91,.81,.49);WHITE=(.98,.97,.92);INK=(.07,.09,.12);RED=(.81,.29,.24)
+# Local Crystal normal RGB555: feather (7,7,17), gold (26,26,3).
+COAT=(57/255,57/255,140/255);FEATHER=COAT;DARK=(0.,0.,0.)
+GOLD=(214/255,214/255,24/255);WHITE=(1.,1.,1.);INK=(0.,0.,0.);RED=GOLD
 
 def bill(name,color,rows):
     n=8;v=[]
@@ -21,7 +23,7 @@ def bill(name,color,rows):
         for i in range(n):a=j*n+i;b=j*n+(i+1)%n;f.append((a,b,b+n,a+n))
     return crease_normals(part(name,color,v,f),40.)
 
-def sculpture(species='murkrow'):
+def sculpture(species='murkrow',normalize=True):
     if species not in SPECIES:raise ValueError('unsupported witch crow')
     body=loft('Body / rounded dark crow breast and abdomen',COAT,curved_profiles(((.201,.026,.031,-.012),(.26,.122,.122,-.013),(.365,.184,.166,-.016),(.465,.174,.154,-.007),(.55,.131,.117,.001),(.612,.067,.067,.008)),4),36)
     neck=loft('Neck / narrow dark crow neck',COAT,curved_profiles(((.535,.065,.060,.007),(.645,.050,.051,.019),(.738,.058,.060,.020)),4),28)
@@ -67,9 +69,9 @@ def sculpture(species='murkrow'):
         for j,dx in enumerate((-.026,0,.026)):
             start=(s*.075+dx*.35,.027,.045);end=(s*.075+dx*1.5,.018,.110)
             p.append(curved_tube(f'Toe / three golden forward toes {s} {j}',GOLD,[start,(s*.075+dx,.022,.079),end],[.009,.009,.007],14))
-            p.append(curved_tube(f'Talon / white forward toe tip {s} {j}',WHITE,[(end[0],end[1]+.001,end[2]-.006),(end[0],.013,.136),(end[0],.006,.152)],[.009,.006,.0012],14))
+            p.append(curved_tube(f'Talon / white forward toe tip {s} {j}',GOLD,[(end[0],end[1]+.001,end[2]-.006),(end[0],.013,.136),(end[0],.006,.152)],[.009,.006,.0012],14))
         p.append(curved_tube('Toe / short golden rear toe '+str(s),GOLD,[(s*.075,.027,.011),(s*.078,.017,-.036),(s*.082,.015,-.053)],[.009,.008,.006],14))
-        p.append(curved_tube('Talon / white rear toe tip '+str(s),WHITE,[(s*.082,.016,-.047),(s*.084,.007,-.076)],[.007,.0012],14))
+        p.append(curved_tube('Talon / white rear toe tip '+str(s),GOLD,[(s*.082,.016,-.047),(s*.084,.007,-.076)],[.007,.0012],14))
     p.append(curved_tube('Tail / short supporting broom stem',COAT,[(0,.383,-.125),(0,.415,-.222),(0,.474,-.315)],[.033,.030,.026],20))
     p.append(curved_tube('Binding / narrow red broom band',RED,[(0,.414,-.218),(0,.432,-.249)],[.033,.031],22))
     fan=[(-.035,.461),(-.223,.562),(-.306,.658),(-.158,.643),(-.151,.724),(-.028,.664),(.044,.740),(.091,.661),(.269,.674),(.184,.566),(.237,.527),(.080,.466)]
@@ -78,8 +80,9 @@ def sculpture(species='murkrow'):
         xy=[(x*.17,.483),(x*.55,.483+(y-.483)*.5),(x,y)]
         p.append(tube('Tail fold / fitted radiating broom crease '+str(j),FEATHER,[(xx,yy,bs(yy,xx)+.001) for xx,yy in xy],[.0016,.0018,.0008],10))
     lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
-    for q in p:
-        q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+    if normalize:
+        for q in p:
+            q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'murkrow.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))

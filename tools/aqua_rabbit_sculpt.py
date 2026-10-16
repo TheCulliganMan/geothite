@@ -6,6 +6,7 @@ from sculpt_geometry import part,ellipsoid,tube,fitted_patch,crease_normals,curv
 from abra_sculpt import surface
 from chikorita_sculpt import linear
 from skin_glb import COORDINATES
+from bovine_sculpt import fitted_patch
 HEIGHT=1.02
 BLUE=(.23,.70,.85);WHITE=(.97,.97,.92);RED=(.85,.39,.40)
 INK=(.08,.13,.16);PINK=(.90,.57,.63)
@@ -70,7 +71,7 @@ def ear_lining(name,rows,skin):
     return part(name,RED,v,fs)
 
 
-def sculpture(species):
+def sculpture(species,normalize=True):
     if species not in ('marill','azumarill'):raise ValueError(species)
     adult=species=='azumarill';p,skin=body(adult);surf=surface(skin)
     for s in (-1,1):
@@ -111,6 +112,14 @@ def sculpture(species):
     p.append(tube('Tail / continuous zigzag cord',INK,tail,[.008]*len(tail),8))
     end=tail[-1];p.append(ellipsoid('Tail / blue buoy at cord endpoint',BLUE,end,(.087,.087,.087) if adult else (.100,.100,.100),18,10))
     p=[q if q['part'].startswith('Body /') else crease_normals(q) for q in p]
+    # Normal RGB555 from the local pack, expanded before linear conversion.
+    blue=(74,107,239) if species=='marill' else (82,123,198)
+    warm=(206,66,41) if species=='marill' else (181,57,33)
+    for q in p:
+        n=q['part']
+        rgb=(255,255,255) if n.startswith(('Body / welded pale','Eye / small white','Belly /')) else warm if n.startswith(('Ear / fitted red','Mouth / quiet')) else (0,0,0) if n.startswith(('Eye / fitted','Mouth / fitted','Nose /','Tail / continuous')) else blue
+        q['base_color']=linear(tuple(v/255 for v in rgb))
+    if not normalize:return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
     floor=min(v for q in p for v in q['positions'][1::3]);height=max(v for q in p for v in q['positions'][1::3])-floor
     for q in p:
         q['positions']=[round((v-(floor if i%3==1 else 0.))*HEIGHT/height,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]

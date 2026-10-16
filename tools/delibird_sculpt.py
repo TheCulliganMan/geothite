@@ -6,7 +6,8 @@ from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,translate,c
 from abra_sculpt import surface,polygon_caps
 from skin_glb import COORDINATES
 SPECIES=('delibird',);HEIGHT=1.10
-RED=(.88,.25,.29);WHITE=(.96,.97,.92);SHADE=(.76,.79,.77);GOLD=(.95,.82,.36);INK=(.13,.15,.16)
+# Normal RGB555 from the local pack: lavender (21,16,31), orange (30,8,2).
+RED=(247/255,66/255,16/255);WHITE=(1.,1.,1.);SHADE=(173/255,132/255,1.);GOLD=RED;INK=(0.,0.,0.)
 
 def drape(name,color,outline,skin,thickness=.007,steps=2):
     # Subdivided concave footprint follows actual stored triangles throughout.
@@ -48,7 +49,7 @@ def foot(side):
     f += [(i,i+n,(i+1)%n+n,(i+1)%n) for i in range(n)]
     return crease_normals(part('Foot / grounded three-toed web '+str(side),GOLD,v,f),35.)
 
-def sculpture(species='delibird'):
+def sculpture(species='delibird',normalize=True):
     if species not in SPECIES:raise ValueError('unsupported feather-sack bird')
     body=loft('Body / rounded red penguin pear',RED,curved_profiles(((.105,.09,.10,-.025),(.14,.185,.18,-.025),(.24,.23,.22,-.025),(.40,.235,.225,-.025),(.56,.20,.19,-.012),(.68,.16,.15,.005),(.76,.12,.11,.01),(.80,.015,.02,.01)),4),32)
     head=ellipsoid('Head / broad white feather face',WHITE,(0,.825,.015),(.192,.182,.169),32,20)
@@ -77,7 +78,7 @@ def sculpture(species='delibird'):
         es=surface(eye);pupil=ellipsoid('Eye / bright dark pupil '+str(side),INK,(x-side*.012,y-.004,es(y-.004,x-side*.012)+.002),(.020,.034,.006),20,14);p.append(pupil)
         ps=surface(pupil);p.append(ellipsoid('Eye / white glint '+str(side),WHITE,(x-side*.012-.004,y+.008,ps(y+.008,x-side*.012-.004)+.001),(.005,.010,.002),12,8))
     beak=loft('Beak / broad rounded upper bill',GOLD,curved_profiles(((.788,.100,.035,.238),(.813,.110,.066,.230),(.837,.070,.053,.219),(.85,.013,.016,.202)),4),28);p.append(beak)
-    p.append(ellipsoid('Beak / lower gold bill',(.89,.75,.28),(0,.780,.229),(.087,.020,.050),28,14))
+    p.append(ellipsoid('Beak / lower gold bill',GOLD,(0,.780,.229),(.087,.020,.050),28,14))
     ss=surface(beak);points=[(x,.789+.006*abs(x/.075),ss(.789+.006*abs(x/.075),x)+.001) for x in (-.075,-.05,-.025,0,.025,.05,.075)]
     p.append(tube('Beak / curved mouth seam',INK,points,[.002]*len(points),10))
     p.append(ellipsoid('Bib / single lower feather button',WHITE,(0,.375,bs(.375,0)+.005),(.019,.032,.013),20,12))
@@ -89,6 +90,7 @@ def sculpture(species='delibird'):
         pts=[]
         for y in (.47,.40,.30,.22):pts.append((-x,y,-(rear_skin(y,x)+.002)))
         p.append(tube('Tail sack / fitted rear fold '+str(j),SHADE,pts,[.0025,.003,.0025,.001],8))
+    if not normalize:return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]

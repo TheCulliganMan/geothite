@@ -4,10 +4,13 @@ use super::*;
 
 const LABEL: &str = "outdoor/kanto-paving";
 const BRIDGE_LABEL: &str = "outdoor/kanto-brick-bridge";
+const BRICK_PATH_LABEL: &str = "outdoor/kanto-brick-path";
 fn drawing(block: u16) -> Option<[u16; 16]> {
     Some(match block {
         // The authored brick deck retains its original LADDER permission.
         0x05 => [0x4b; 16],
+        // City paths use a distinct two-course drawing, not the bridge glyph.
+        0x55 => [0x5b; 16],
         0x22 => [
             0x21, 0x23, 0x23, 0x10, 0x23, 0x23, 0x23, 0x10, 0x23, 0x23, 0x23, 0x10, 0x21, 0x23,
             0x23, 0x10,
@@ -56,6 +59,14 @@ fn ink(tile: u16, x: usize, y: usize) -> usize {
             [
                 "00000000", "11111110", "11111110", "00000000", "11101111", "11101111", "00000000",
                 "01111110",
+            ][y]
+                .as_bytes()[x] as usize
+                - b'0' as usize
+        }
+        0x5b => {
+            [
+                "11111111", "00010000", "00010000", "00010000", "11111111", "00000001", "00000001",
+                "00000001",
             ][y]
                 .as_bytes()[x] as usize
                 - b'0' as usize
@@ -115,7 +126,7 @@ fn palette(
             *slot = Some(color);
         }
     }
-    if cells[indices[0]].source.metatile_id == 0x05 {
+    if matches!(cells[indices[0]].source.metatile_id, 0x05 | 0x55) {
         let a = colors[0]?;
         let b = colors[1]?;
         return (a != b).then_some([a, b, a, b]);
@@ -143,6 +154,16 @@ fn paint(rgba: [u8; 4], gain: f32) -> [f32; 4] {
         linear(rgba[2]) * gain,
         1.,
     ]
+}
+fn land_brick_paint(rgba: [u8; 4], gain: f32) -> [f32; 4] {
+    let mut color = paint(rgba, gain);
+    let luminance = color[0] * 0.2126 + color[1] * 0.7152 + color[2] * 0.0722;
+    // Translate the pale source field into warm mineral paving. Keep its live
+    // day/night illumination without turning the broad street into mint enamel.
+    for (channel, warmth) in color[..3].iter_mut().zip([1., 0.97, 0.88]) {
+        *channel = *channel * 0.25 + luminance * warmth * 0.75;
+    }
+    color
 }
 fn quad(out: &mut SurfaceMeshData, p: [[f32; 3]; 4], color: [f32; 4]) {
     let normal = (Vec3::from_array(p[1]) - Vec3::from_array(p[0]))
@@ -265,6 +286,12 @@ fn brick_deck(
 ) {
     let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
     let scale = g.tile_width.min(g.tile_height);
+    let land = source.tile_index == 0x5b;
+    let colors = if land {
+        [colors[1], colors[0], colors[1], colors[0]]
+    } else {
+        colors
+    };
     quad(
         out,
         [
@@ -275,10 +302,12 @@ fn brick_deck(
         ],
         paint(colors[0], 0.76),
     );
-    let height = (s - n) / 3.;
-    for row in 0..3 {
-        let phase = i32::from(source.subtile_row) * 3 + row;
-        let offset = if phase % 2 == 0 { 0. } else { (e - w) * 0.5 };
+    let rows = if land { 2 } else { 3 };
+    let height = (s - n) / rows as f32;
+    for row in 0..rows {
+        let phase = i32::from(source.subtile_row) * rows + row;
+        let shifted = if land { phase % 2 == 0 } else { phase % 2 != 0 };
+        let offset = if shifted { (e - w) * 0.5 } else { 0. };
         for col in -1..1 {
             let x = w + col as f32 * (e - w) + offset;
             // Clipped halves of one brick share pigment, even at a native
@@ -294,7 +323,11 @@ fn brick_deck(
                     n + (row + 1) as f32 * height,
                 ],
                 [w, e, n, s],
-                paint(colors[1], gain),
+                if land {
+                    land_brick_paint(colors[1], gain * 0.86)
+                } else {
+                    paint(colors[1], gain)
+                },
                 scale,
             );
         }
@@ -345,7 +378,7 @@ fn append(
     colors: [[u8; 4]; 4],
 ) {
     let tile = source.tile_index;
-    if tile == 0x4b {
+    if matches!(tile, 0x4b | 0x5b) {
         brick_deck(out, g, i, source, colors);
         return;
     }
@@ -521,10 +554,10 @@ pub(super) fn finish(
         };
         for &i in &indices {
             append(&mut mesh.solid, g, i, &cells[i].source, colors);
-            mesh.authored_cells[i] = Some(if first.metatile_id == 0x05 {
-                BRIDGE_LABEL
-            } else {
-                LABEL
+            mesh.authored_cells[i] = Some(match first.metatile_id {
+                0x05 => BRIDGE_LABEL,
+                0x55 => BRICK_PATH_LABEL,
+                _ => LABEL,
             });
             removed.insert(faces[i].unwrap());
             for &q in &bridge_walls[i] {
@@ -731,6 +764,86 @@ mod tests {
         (cells, shapes, g, images, mesh)
     }
     #[test]
+    fn city_brick_path_replaces_complete_art_with_two_courses_and_preserves_support() {
+        let (cells, shapes, g, images, mut mesh) = fixture(0x55);
+        let support = mesh.footing_heights.clone();
+        finish(
+            &mut mesh,
+            &cells.iter().collect::<Vec<_>>(),
+            &shapes,
+            &g,
+            &images,
+        );
+        assert!(mesh.textured.indices.is_empty());
+        assert!(
+            mesh.authored_cells
+                .iter()
+                .all(|&v| v == Some(BRICK_PATH_LABEL))
+        );
+        assert_eq!(mesh.footing_heights, support);
+        assert!(
+            mesh.solid
+                .positions
+                .iter()
+                .all(|p| p[1] <= 0. && p[1] >= -0.16)
+        );
+        // Source55 has two broad pale courses; bridge05 has three smaller
+        // courses with the opposite pigment roles. They share construction,
+        // but never acquire one another's source silhouette or permissions.
+        let source = &cells[0].source;
+        let mut one = SurfaceMeshData::default();
+        brick_deck(&mut one, &g, 0, source, COLORS);
+        let tops = one
+            .positions
+            .iter()
+            .zip(&one.colors)
+            .filter(|(p, _)| p[1] == 0.)
+            .collect::<Vec<_>>();
+        assert!(!tops.is_empty());
+        assert!(
+            tops.iter().all(|(_, c)| c[0] > paint(COLORS[1], 1.)[0]),
+            "pale source brick field"
+        );
+        let mut bridge = source.clone();
+        bridge.metatile_id = 5;
+        bridge.tile_index = 0x4b;
+        let mut old = SurfaceMeshData::default();
+        brick_deck(&mut old, &g, 0, &bridge, COLORS);
+        assert_ne!(one.positions, old.positions);
+    }
+
+    #[test]
+    fn city_path_rejects_changed_drawing_paint_claims_or_support() {
+        for fault in 0..6 {
+            let (mut cells, mut shapes, g, mut images, mut mesh) = fixture(0x55);
+            match fault {
+                0 => cells[6].source.tile_index = 0x4b,
+                1 => cells[6].source.subtile_column = 0,
+                2 => mesh.authored_cells[6] = Some("another/asset"),
+                3 => shapes[6] = CellShape::PlaneAt { height: 2. },
+                4 => {
+                    if let TileImageSample::Rgba(p) =
+                        images.pixels.get_mut(&cells[6].texture.id()).unwrap()
+                    {
+                        p[0] ^= 32;
+                    }
+                }
+                _ => mesh.textured.positions[24][1] = 1.,
+            }
+            let before = mesh.textured.clone();
+            finish(
+                &mut mesh,
+                &cells.iter().collect::<Vec<_>>(),
+                &shapes,
+                &g,
+                &images,
+            );
+            assert_eq!(mesh.textured, before, "fault {fault}");
+            assert!(mesh.solid.indices.is_empty());
+        }
+    }
+
+    #[test]
     fn brick_bridge_keeps_original_support_and_finishes_all_water_edges() {
         let (cells, shapes, g, images, mut mesh) = bridge_fixture();
         let feet = mesh.footing_heights.clone();
@@ -742,23 +855,21 @@ mod tests {
             &images,
         );
         assert_eq!(mesh.footing_heights, feet);
-        assert!(mesh
-            .textured
-            .uvs
-            .chunks_exact(4)
-            .all(|uv| new_bark::sampled_cell(uv, &g)
-                .is_none_or(|i| cells[i].source.metatile_id != 5)));
+        assert!(mesh.textured.uvs.chunks_exact(4).all(|uv| {
+            new_bark::sampled_cell(uv, &g).is_none_or(|i| cells[i].source.metatile_id != 5)
+        }));
         for (i, c) in cells.iter().enumerate() {
             assert_eq!(
                 mesh.authored_cells[i],
                 (c.source.metatile_id == 5).then_some(BRIDGE_LABEL)
             );
         }
-        assert!(mesh
-            .solid
-            .positions
-            .iter()
-            .all(|p| p[1] <= 0. && p[1] >= -2.));
+        assert!(
+            mesh.solid
+                .positions
+                .iter()
+                .all(|p| p[1] <= 0. && p[1] >= -2.)
+        );
         for tri in mesh.solid.indices.chunks_exact(3) {
             let [a, b, c] =
                 std::array::from_fn(|j| Vec3::from_array(mesh.solid.positions[tri[j] as usize]));
@@ -798,7 +909,8 @@ mod tests {
             if tri.iter().any(|&i| i < 4) {
                 continue;
             }
-            let p: [Vec3;3] = std::array::from_fn(|j|Vec3::from_array(deck.positions[tri[j] as usize]));
+            let p: [Vec3; 3] =
+                std::array::from_fn(|j| Vec3::from_array(deck.positions[tri[j] as usize]));
             if (p[1] - p[0]).cross(p[2] - p[0]).length_squared() < 0.000001 {
                 continue;
             }

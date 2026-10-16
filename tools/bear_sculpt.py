@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Original honey cub and powerful ring bear with fitted lunar markings."""
-import argparse,json,math
+import argparse,json,math,struct
 from pathlib import Path
 from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,fitted_contour,crease_normals
 from abra_sculpt import surface
@@ -115,11 +115,34 @@ def ursaring():
     paws(p,True)
     p.append(ellipsoid('Tail / small rounded brown tail',BROWN,(0,.354,-.192),(.075,.065,.070),28,18));return p
 
-def sculpture(species):
+def sculpture(species,normalize=True):
     if species not in SPECIES:raise ValueError('unsupported bear')
-    p=teddiursa() if species=='teddiursa' else ursaring();lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
+    p=teddiursa() if species=='teddiursa' else ursaring()
+    # Smooth the curved adult marking and fitted ruff while retaining their
+    # sharp perimeter creases, exact surface positions and triangle order.
+    if species=='ursaring':p=[crease_normals(q,35.) if q['part'].startswith(('Ring /','Ruff /')) else q for q in p]
+    lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
+    # The local normal palettes contain two authored colors plus white/black.
+    # Keep the original geometry and part names while using those exact colors.
+    from sculpt_geometry import linear
+    coat=(165,90,0) if species=='ursaring' else (181,115,49)
+    marking_color=(255,255,49) if species=='ursaring' else (255,255,255)
     for q in p:
-        q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+        name=q['part']
+        rgb=(0,0,0) if name.startswith(('Nose /','Pupil /','Mouth / dark','Mouth / small','Eye / large')) else (115,57,33) if name.startswith(('Ear / fitted','Mouth / fitted little')) and species=='teddiursa' else marking_color if name.startswith(('Moon /','Ring /','Muzzle /','Ear / fitted')) else (255,255,255) if name.startswith(('Eye /','Hand claw /','Foot claw /')) else coat
+        q['base_color']=linear(tuple(v/255 for v in rgb))
+    if normalize:
+        for q in p:
+            q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+            # Reuse exact stored position/normal pairs without smoothing creases
+            # or changing a single indexed triangle corner. Preserve signed zero.
+            vertices={};remap=[];positions=[];normals=[]
+            for i in range(0,len(q['positions']),3):
+                point=q['positions'][i:i+3];normal=q['normals'][i:i+3];key=struct.pack('<6f',*point,*normal)
+                if key not in vertices:
+                    vertices[key]=len(positions)//3;positions.extend(point);normals.extend(normal)
+                remap.append(vertices[key])
+            q['positions']=positions;q['normals']=normals;q['indices']=[remap[i] for i in q['indices']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)

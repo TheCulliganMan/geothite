@@ -1,4 +1,7 @@
 // Source-proven architectural finishes. These are surfaces, not object coverage.
+#[cfg(test)]
+#[path = "native_pokecom_floor_tests.rs"]
+mod native_pokecom_floor_tests;
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum InteriorFloor {
     Oak,
@@ -54,10 +57,72 @@ fn store_floor_map(map:&str)->bool {
     map.strip_prefix("GoldenrodDeptStore").or_else(||map.strip_prefix("CeladonDeptStore"))
         .is_some_and(|floor|matches!(floor,"1F"|"2F"|"3F"|"4F"|"5F"|"6F"|"Elevator"))
 }
-// Reviewed Kanto residential rooms and the two Johto player-home floors.
-// Palette is read through the room atlas, never guessed from the map name.
+// Exact pack rooms sharing the house atlas carpet; unknown rooms keep their own floor.
+const WOVEN_HOUSE_MAPS:&[&str]=&[
+    "BillsFamilysHouse",
+    "BillsHouse",
+    "BillsOlderSistersHouse",
+    "BlackthornDragonSpeechHouse",
+    "BlackthornEmysHouse",
+    "BluesHouse",
+    "CeladonMansionRoofHouse",
+    "CeruleanGymBadgeSpeechHouse",
+    "CeruleanPoliceStation",
+    "CeruleanTradeSpeechHouse",
+    "CharcoalKiln",
+    "CherrygroveEvolutionSpeechHouse",
+    "CherrygroveGymSpeechHouse",
+    "CianwoodLugiaSpeechHouse",
+    "CianwoodPharmacy",
+    "CianwoodPhotoStudio",
+    "DayCare",
+    "DayOfWeekSiblingsHouse",
+    "GoldenrodFlowerShop",
+    "GoldenrodHappinessRater",
+    "GoldenrodNameRater",
+    "GoldenrodPPSpeechHouse",
+    "GuideGentsHouse",
+    "LakeOfRageHiddenPowerHouse",
+    "LakeOfRageMagikarpHouse",
+    "LavenderNameRater",
+    "LavenderSpeechHouse",
+    "MahoganyRedGyaradosSpeechHouse",
+    "ManiasHouse",
+    "MoveDeletersHouse",
+    "MrFujisHouse",
+    "MrPsychicsHouse",
+    "OlivineGoodRodHouse",
+    "OlivineHouseBeta",
+    "OlivinePunishmentSpeechHouse",
+    "OlivineTimsHouse",
+    "PewterNidoranSpeechHouse",
+    "PewterSnoozeSpeechHouse",
+    "PlayersNeighborsHouse",
+    "PokeSeersHouse",
+    "PokemonFanClub",
+    "Route12SuperRodHouse",
+    "Route16FuchsiaSpeechHouse",
+    "Route26HealHouse",
+    "Route27SandstormHouse",
+    "Route28SteelWingHouse",
+    "Route2NuggetHouse",
+    "Route30BerryHouse",
+    "Route39Farmhouse",
+    "Route5CleanseTagHouse",
+    "SafariZoneWardensHome",
+    "SoulHouse",
+    "TrainerHouse1F",
+    "VermilionDiglettsCaveSpeechHouse",
+    "VermilionFishingSpeechHouse",
+    "VermilionMagnetTrainSpeechHouse",
+    "ViridianNicknameSpeechHouse",
+];
+fn woven_house_map(map:&str)->bool {WOVEN_HOUSE_MAPS.contains(&map)}
+
 fn reviewed_native_room(map: &str) -> bool {
-    matches!(map,
+    // These houses share the complete source drawings used by the native
+    // furniture and wall matchers. Read their own atlas palette in both regions.
+    woven_house_map(map) || matches!(map,
         "PlayersHouse1F" | "PlayersHouse2F" | "BillsHouse"
         | "BillsOlderSistersHouse"
         | "BluesHouse"
@@ -139,8 +204,50 @@ fn cafe_floor_source(source: &VisualTileSource) -> bool {
         && source.tile_index == [0x01, 0x10, 0x01, 0x10, 0x11, 0x12, 0x11, 0x12][usize::from(phase % 8)]
 }
 
+fn native_johto_lab_floor_map(map:&str)->bool {matches!(map,"ElmsLab"|"EarlsPokemonAcademy")}
+
+fn native_johto_lab_floor_source(map:&str,s:&VisualTileSource)->bool {
+    if s.tileset_id.as_ref()!="lab"||s.subtile_column>=4||s.subtile_row>=4 {return false;}
+    // Actual source floor phases, excluding walls, equipment and desks sharing
+    // these metatiles. Neither the gray strips nor blue weave is timber.
+    let mask:u16=match (map,s.tile_index,s.metatile_id) {
+        ("ElmsLab",0x10,1)=>0xffff,
+        ("ElmsLab",0x10,2|6|7)=>0x00ff,
+        ("ElmsLab",0x10,9|0x18)=>0xff00,
+        ("ElmsLab",0x10,0xa|0xc)=>0xfff0,
+        ("ElmsLab",0x10,0xb)=>0xfffc,
+        ("ElmsLab",0x10,0x21)=>0x0003,
+        ("EarlsPokemonAcademy",0x24,0xe)=>0x33ff,
+        ("EarlsPokemonAcademy",0x24,0xf)=>0xccff,
+        ("EarlsPokemonAcademy",0x24,0x10)=>0xffff,
+        ("EarlsPokemonAcademy",0x24,0x11..=0x13)=>0xf000,
+        ("EarlsPokemonAcademy",0x24,0x15)=>0xff33,
+        _=>0,
+    };
+    mask&(1<<(s.subtile_row*4+s.subtile_column))!=0
+}
+
 fn interior_floor(map: &str, source: &VisualTileSource) -> Option<InteriorFloor> {
     use InteriorFloor::*;
+    if map == crate::pokecom::ADMIN_OFFICE && source.tileset_id.as_ref() == "pokecom_center" {
+        return (crate::pokecom::floor_source(map, source)
+            && matches!(shape_for_source_on_map(map, source), CellShape::Flat | CellShape::PlaneAt {height:0.}))
+            .then_some(NativeRoom);
+    }
+    if native_radio_room::is_map(map)&&source.tileset_id.as_ref()=="radio_tower"
+        &&source.tile_index==1&&source.subtile_column<4&&source.subtile_row<4 {
+        return matches!(shape_for_source_on_map(map,source),CellShape::Flat|CellShape::PlaneAt{height:0.})
+            .then_some(NativeRoom);
+    }
+    if map=="WiseTriosRoom"&&source.tileset_id.as_ref()=="traditional_house"
+        &&source.tile_index==0x50&&source.subtile_column<4&&source.subtile_row<4 {
+        return matches!(shape_for_source_on_map(map,source),CellShape::Flat|CellShape::PlaneAt{height:0.})
+            .then_some(NativeRoom);
+    }
+    if native_johto_lab_floor_source(map,source) {
+        return matches!(shape_for_source_on_map(map,source),CellShape::Flat|CellShape::PlaneAt{height:0.})
+            .then_some(NativeRoom);
+    }
     if kanto_native_floor_map(map) && source.tileset_id.as_ref()=="pokecenter"
         && source.tile_index==1 && source.subtile_column<4
         && ((source.subtile_row==2 && (matches!(source.metatile_id,5|6|7) || source.metatile_id==0x38 && source.subtile_column<2
@@ -198,7 +305,8 @@ fn interior_floor(map: &str, source: &VisualTileSource) -> Option<InteriorFloor>
                 CellShape::Flat | CellShape::PlaneAt { height: 0. }))
             .then_some(NativeRoom);
     }
-    if kanto_native_floor_map(map)
+    if (woven_house_map(map)&&source.tileset_id.as_ref()=="house"&&source.tile_index==1)
+        || kanto_native_floor_map(map)
         && matches!((source.tileset_id.as_ref(),source.tile_index),
             ("house"|"players_house"|"players_room",0x01) | ("mansion",0x01|0x11)
             | ("lab",0x10|0x24) | ("pokecenter",0x11) | ("mart",0x01|0x48)
@@ -752,37 +860,33 @@ pub(super) fn native_house_material_floor_cell(mesh:&mut SurfaceMeshData,b:[f32;
         "native house material floor requires finite source bounds");
     let sample=|pixel:[usize;2]|[u0+(u1-u0)*(pixel[0]as f32+0.5)/8.,
         v0+(v1-v0)*(pixel[1]as f32+0.5)/8.];
-    native_house_floor_fields(mesh,b,height,world,wood,[sample([0,0]),sample([1,0])]);
+    if !wood {
+        // Preserve every native carpet texel. A single flat surface avoids
+        // inventing broad checker tiles, grout or extra walking relief.
+        append_quad(mesh,[[w,height,n],[w,height,s],[e,height,s],[e,height,n]],
+            [0.,1.,0.],[[u0,v0],[u0,v1],[u1,v1],[u1,v0]],
+            crate::interior_models::authored_face_color([1.;4],Vec3::Y));
+        return;
+    }
+    native_house_wood_floor_field(mesh,b,height,world,sample([0,0]));
 }
-pub(super) fn native_house_floor_fields(mesh:&mut SurfaceMeshData,b:[f32;4],height:f32,
-    world:[i32;2],wood:bool,fields:[[f32;2];2]) {
+pub(super) fn native_house_wood_floor_field(mesh:&mut SurfaceMeshData,b:[f32;4],height:f32,
+    world:[i32;2],field:[f32;2]) {
     let [w,e,n,s]=b;
-    let west=if wood {(world[0]+2*world[1].rem_euclid(2)).rem_euclid(4)==0}
-        else {world[0].rem_euclid(2)==0};
-    let east=if wood {(world[0]+2*world[1].rem_euclid(2)).rem_euclid(4)==3}
-        else {world[0].rem_euclid(2)==1};
-    let north=wood || world[1].rem_euclid(2)==0;
-    let south=wood || world[1].rem_euclid(2)==1;
-    let border=if wood {0.045}else{0.025};
-    let xs=if west {[0.,border,1.]}else if east {[0.,1.-border,1.]}else {[0.,0.5,1.]};
-    let zs=if wood {vec![0.,0.045,0.25,0.5,0.75,0.955,1.]}
-        else if north {vec![0.,0.025,1.]}else {vec![0.,0.975,1.]};
-    let point=|x:f32,z:f32|[w+(e-w)*x,height-if (west && x==0.)||(east && x==1.)
-        ||(north && z==0.)||(south && z==1.) {(e-w).min(s-n)*0.006}else{0.},n+(s-n)*z];
-    let checker=(world[0].div_euclid(2)+world[1].div_euclid(2)).rem_euclid(2);
-    // Verified residential swatches: wood uses medium gold; ceramic keeps the
-    // light/pink pair from house tile01 or Mansion tile11 in its live atlas.
-    let tex=|_:f32,_:f32|fields[usize::from(!wood&&checker!=0)];
+    let west=(world[0]+2*world[1].rem_euclid(2)).rem_euclid(4)==0;
+    let east=(world[0]+2*world[1].rem_euclid(2)).rem_euclid(4)==3;
+    let xs=if west {[0.,0.045,1.]}else if east {[0.,0.955,1.]}else {[0.,0.5,1.]};
+    let zs=[0.,0.045,0.25,0.5,0.75,0.955,1.];
+    let point=|x:f32,z:f32|[w+(e-w)*x,height-if (west&&x==0.)||(east&&x==1.)
+        ||z==0.||z==1. {(e-w).min(s-n)*0.006}else{0.},n+(s-n)*z];
     let shade=|x:f32,z:f32| {
-        let column=if wood {(world[0]+2*world[1].rem_euclid(2)).div_euclid(4)}else{world[0].div_euclid(2)};
+        let column=(world[0]+2*world[1].rem_euclid(2)).div_euclid(4);
         let seed=(column*3+world[1]*5).rem_euclid(7)as f32;
-        if wood {
-            let grain=((world[0]as f32+x)*2.7+(world[1]as f32+z)*23.).sin();
-            let body=0.93+seed*0.004+grain*0.045;
-            if (west&&x<0.045)||(east&&x>0.955)||z<0.045||z>0.955 {body*0.68}else{body}
-        } else {0.98+seed*0.002}
+        let grain=((world[0]as f32+x)*2.7+(world[1]as f32+z)*23.).sin();
+        let body=0.93+seed*0.004+grain*0.045;
+        if (west&&x<0.045)||(east&&x>0.955)||z<0.045||z>0.955 {body*0.68}else{body}
     };
-    native_source_surface_patches(mesh,&xs,&zs,point,tex,shade,true);
+    native_source_surface_patches(mesh,&xs,&zs,point,|_,_|field,shade,true);
 }
 
 fn native_rough_floor_cell(mesh:&mut SurfaceMeshData,b:[f32;4],height:f32,uv:(f32,f32,f32,f32)) {
@@ -844,7 +948,8 @@ pub(super) fn finish_surfaces_with_profiles(
     profiles: Option<&Document>,
 ) -> usize {
     if (!gym_floor_map(map) && !traditional_room::floor_map(map) && !ship_floor_map(map)
-        && !enhanced_room_floor_map(map) && !store_floor_map(map) && !kanto_native_floor_map(map))
+        && !enhanced_room_floor_map(map) && !store_floor_map(map) && !kanto_native_floor_map(map)
+        && !woven_house_map(map)&&!native_johto_lab_floor_map(map)&&map!=crate::pokecom::ADMIN_OFFICE&&map!="WiseTriosRoom")
         || g.width.checked_mul(g.height) != Some(cells.len())
     {
         return finish_surfaces(mesh, map, cells, g, world_origin);
@@ -854,7 +959,7 @@ pub(super) fn finish_surfaces_with_profiles(
     // their verified native backing should receive the room finish too.
     // Only user-owned overrides exclude backing in the enhanced rooms.
     let custom = (enhanced_room_floor_map(map) || store_floor_map(map) || kanto_native_floor_map(map)
-        || traditional_room::floor_map(map)).then(|| Document {
+        || traditional_room::floor_map(map)||woven_house_map(map)||native_johto_lab_floor_map(map)||map==crate::pokecom::ADMIN_OFFICE||map=="WiseTriosRoom").then(|| Document {
         objects: profiles.map_or_else(Vec::new, |d| d.objects.iter()
             .filter(|o| !built_in_profiles().objects.iter().any(|canonical| canonical == *o))
             .cloned().collect()),
@@ -1028,7 +1133,7 @@ fn finish_surfaces_excluding(
             let destination = row as usize * g.width + column as usize;
             let source_index = sr * g.width + sc;
             if (enhanced_room_floor_map(map) || store_floor_map(map) || kanto_native_floor_map(map)
-                || traditional_room::floor_map(map))
+                || traditional_room::floor_map(map)||woven_house_map(map)||native_johto_lab_floor_map(map)||map==crate::pokecom::ADMIN_OFFICE||map=="WiseTriosRoom")
                 && (excluded.get(destination) == Some(&true)
                     || excluded.get(source_index) == Some(&true))
             {
@@ -1058,7 +1163,7 @@ fn finish_surfaces_excluding(
                         && source_styles.iter().any(|style|*style==Some(InteriorFloor::NativeRoom))
                         => Some(InteriorFloor::NativeRoom),
                     ("players_room", 0x02) | ("players_house", 0x11) => Some(InteriorFloor::Oak),
-                    ("traditional_house",0x11) if map=="MountMoonGiftShop"=>Some(InteriorFloor::NativeRoom),
+                    ("traditional_house",0x11) if matches!(map,"MountMoonGiftShop"|"WiseTriosRoom")=>Some(InteriorFloor::NativeRoom),
                     ("traditional_house", 0x11) => Some(InteriorFloor::Tatami),
                     _ => None,
                 }
@@ -1146,11 +1251,27 @@ fn finish_surfaces_excluding(
                     g.uv(donor%g.width,donor/g.width)
                 };
                 let atlas=cells[source_index].source.tileset_id.as_ref();
-                if traditional_wood_wall::is_map(map)&&atlas=="traditional_house"
+                if map == crate::pokecom::ADMIN_OFFICE && atlas == "pokecom_center" {
+                    append_top(&mut mesh.textured,bounds,height,native_uv);
+                } else if native_radio_room::is_map(map)&&atlas=="radio_tower"&&cells[donor_index].source.tile_index==1 {
+                    append_top(&mut mesh.textured,bounds,height,native_uv);
+                } else if matches!(map,"SproutTower1F"|"SproutTower2F"|"SproutTower3F")
+                    && atlas=="tower" && cells[donor_index].source.tile_index==0x02 {
+                    // Native gold boards already contain the grain and course
+                    // joints. Preserve their continuous drawing and datum.
+                    append_top(&mut mesh.textured,bounds,height,native_uv);
+                } else if map=="WiseTriosRoom"&&atlas=="traditional_house"&&cells[donor_index].source.tile_index==0x50 {
+                    append_top(&mut mesh.textured,bounds,height,native_uv);
+                } else if matches!(map,"ElmsLab"|"EarlsPokemonAcademy")&&atlas=="lab"
+                    &&native_johto_lab_floor_source(map,&cells[donor_index].source) {
+                    // Continuous source courses/weave at the original datum;
+                    // an invented slab grid would break their small pattern.
+                    append_top(&mut mesh.textured,bounds,height,native_uv);
+                } else if traditional_wood_wall::is_map(map)&&atlas=="traditional_house"
                     &&cells[donor_index].source.tile_index==0x50 {
                     let field=[native_uv.0+(native_uv.1-native_uv.0)*0.5/8.,
                         native_uv.2+(native_uv.3-native_uv.2)*2.5/8.];
-                    native_house_floor_fields(&mut mesh.textured,bounds,height,world,true,[field;2]);
+                    native_house_wood_floor_field(&mut mesh.textured,bounds,height,world,field);
                 } else if matches!(map,"MountMoonGiftShop"|"MahoganyMart1F")
                     ||traditional_room::floor_map(map)&&cells[donor_index].source.tile_index==1 {
                     native_gift_shop_floor_cell(&mut mesh.textured,bounds,height,world,native_uv,cells[donor_index].source.tile_index);
@@ -1184,12 +1305,11 @@ fn finish_surfaces_excluding(
                 } else if matches!(map,"SilphCo1F"|"TrainerHouseB1F") && atlas == "facility" {
                     native_silph_material_floor_cell(&mut mesh.textured, bounds, height,
                         world, native_uv, cells[donor_index].source.tile_index);
-                } else if reviewed_native_room(map) && matches!(atlas,"house"|"players_house"|"players_room") {
+                } else if (reviewed_native_room(map)||woven_house_map(map)) && matches!(atlas,"house"|"players_house"|"players_room") {
                     native_house_material_floor_cell(&mut mesh.textured,bounds,height,world,native_uv,matches!(atlas,"players_house"|"players_room"));
                 } else if reviewed_native_room(map) && map.starts_with("CeladonMansion")
                     && atlas=="mansion" && cells[donor_index].source.tile_index==0x11 {
-                    // Tile11's white/medium pair is the native pink checker.
-                    // Fit physical ceramic courses instead of enlarged pixels.
+                    // Tile11 owns the fine pink/white woven drawing, at its native scale.
                     native_house_material_floor_cell(&mut mesh.textured,bounds,height,world,native_uv,false);
                 } else {native_beveled_floor_cell(&mut mesh.textured,bounds,height,world,native_uv);}
 
@@ -1221,6 +1341,15 @@ fn finish_surfaces_excluding(
                 tower_grating_cell(&mut mesh.textured, bounds, height,
                     cells[destination].source.tile_index,
                     g.uv(destination % g.width, destination / g.width));
+            } else if matches!(style,InteriorFloor::LighthouseSlate|InteriorFloor::LighthouseChecker) {
+                // Keep the worn native stone courses and their own gray
+                // palette; a broad generic slab grid erased both.
+                let u=[quad[0],quad[1],quad[2],quad[5]].map(|i|mesh.textured.uvs[i as usize]);
+                append_top(&mut mesh.textured,bounds,height,
+                    (u.iter().map(|v|v[0]).fold(f32::INFINITY,f32::min),
+                     u.iter().map(|v|v[0]).fold(f32::NEG_INFINITY,f32::max),
+                     u.iter().map(|v|v[1]).fold(f32::INFINITY,f32::min),
+                     u.iter().map(|v|v[1]).fold(f32::NEG_INFINITY,f32::max)));
             } else if style == InteriorFloor::FuchsiaNative {
                 gym_native_floor_cell(&mut mesh.textured,bounds,height,
                     InteriorFloor::GymTimber,world,g.uv(destination%g.width,destination/g.width));
@@ -1237,9 +1366,6 @@ fn finish_surfaces_excluding(
                 // These complete, zero-height drawings are floor, not cushions.
                 append_top(&mut mesh.textured, bounds.into(), height,
                     g.uv(destination % g.width, destination / g.width));
-            } else if style == InteriorFloor::LighthouseChecker {
-                let edges = lighthouse_chamber_floor_edges(mesh, map, cells, g, destination);
-                lighthouse_chamber_floor_cell(&mut mesh.solid, bounds, height, world, edges);
             } else {
                 floor_cell(&mut mesh.solid, bounds, height, style, world);
             }
@@ -1249,13 +1375,35 @@ fn finish_surfaces_excluding(
         }
     }
     if finished > 0 {
-        compact_surface(&mut mesh.textured);
+        compact_textured(mesh);
     }
     append_known_room_backing(mesh, map, cells, g, world_origin, excluded);
     if floor_trace {eprintln!("interior-floor map={map} finished={finished}");}
     finished
 }
-fn compact_surface(mesh: &mut SurfaceMeshData) {
+fn compact_textured(mesh:&mut TerrainMeshData) {
+    let owners=mesh.textured.cutaway_ranges.clone();
+    let mapping=compact_surface(&mut mesh.textured);
+    let mapped_range=|range:&std::ops::Range<usize>| {
+        let mut first=usize::MAX;let mut end=0;
+        for i in range.clone() {
+            if let Some(&next)=mapping.get(i).filter(|&&v|v!=u32::MAX) {
+                first=first.min(next as usize);end=end.max(next as usize+1);
+            }
+        }
+        (first<end).then_some(first..end)
+    };
+    mesh.depth_coverage_textured_ranges=mesh.depth_coverage_textured_ranges.iter()
+        .filter_map(mapped_range).collect();
+    mesh.layered_alpha_textured_ranges=mesh.layered_alpha_textured_ranges.iter()
+        .filter_map(mapped_range).collect();
+    mesh.cutaway_links.retain_mut(|(_,anchor)| {
+        let next=mapping.get(*anchor).copied().filter(|&v|v!=u32::MAX).map(|v|v as usize)
+            .or_else(||owners.iter().find(|r|r.contains(anchor)).and_then(mapped_range).map(|r|r.start));
+        if let Some(next)=next {*anchor=next;true}else{false}
+    });
+}
+fn compact_surface(mesh: &mut SurfaceMeshData)->Vec<u32> {
     let mut rebuilt = SurfaceMeshData::default();
     let mut mapping = vec![u32::MAX; mesh.positions.len()];
     let mut used=vec![false;mesh.positions.len()];
@@ -1281,6 +1429,7 @@ fn compact_surface(mesh: &mut SurfaceMeshData) {
     }
     rebuilt.indices=mesh.indices.iter().map(|&i|mapping[i as usize]).collect();
     *mesh = rebuilt;
+    mapping
 }
 
 #[cfg(test)]
@@ -1293,10 +1442,20 @@ fn kanto_floor_compaction_preserves_complete_fade_owners_and_triangle_attributes
     }
     // Interleave triangle references; the third quad is unused scratch.
     mesh.indices=vec![4,5,6,0,1,2,12,13,14,4,6,7,0,2,3,12,14,15];
-    mesh.cutaway_ranges=vec![4..8,12..16];
+    mesh.cutaway_ranges=vec![4..8,8..16];
     let (opaque,groups)=crate::occluder_fade::prepare(mesh.clone());
     let before=crate::occluder_fade::geometry_signature(&opaque,groups);
-    compact_surface(&mut mesh);
+    let mut terrain=TerrainMeshData{textured:mesh,depth_coverage_textured_ranges:vec![8..16],
+        layered_alpha_textured_ranges:vec![8..16],
+        depth_coverage_solid_ranges:vec![20..30],cutaway_links:vec![(55,12),(60,8)],
+        footing_heights:vec![2.5;4],..Default::default()};
+    compact_textured(&mut terrain);
+    assert_eq!(terrain.depth_coverage_textured_ranges,vec![8..12]);
+    assert_eq!(terrain.layered_alpha_textured_ranges,vec![8..12]);
+    assert_eq!(terrain.depth_coverage_solid_ranges,vec![20..30]);
+    assert_eq!(terrain.cutaway_links,vec![(55,8),(60,8)],"live and unused anchors follow their owner");
+    assert_eq!(terrain.footing_heights,vec![2.5;4]);
+    let mesh=terrain.textured;
     assert_eq!(mesh.positions.len(),12);
     assert_eq!(mesh.cutaway_ranges,vec![4..8,8..12]);
     let (opaque,groups)=crate::occluder_fade::prepare(mesh);
@@ -1446,6 +1605,67 @@ fn append_native_home_backing(mesh:&mut TerrainMeshData,g:&GridGeometry,column:u
     mesh.textured.uvs[first..].fill(paint);
 }
 
+fn append_native_fixture_backing(mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTile],
+    g:&GridGeometry,_origin:[i32;2],excluded:&[bool]) {
+    if !reviewed_native_room(map) && map!="ElmsLab" {return;}
+    // Furniture hides wall art in the flat projection. Complete source-owned
+    // cabinets/TVs still stand in front of a continuous architectural wall.
+    let placements=resolve(map,cells,g,None);
+    for fixture in &placements {
+        let phase=cells[fixture.row*g.width+fixture.column].source.subtile_row as usize;
+        let Some(course_row)=fixture.row.checked_sub(phase) else{continue;};
+        let picture=fixture.kind==ModelKind::PictureFrame;
+        if fixture.height<(if picture {2}else{3})||phase>1
+            ||!matches!(fixture.kind,ModelKind::Bookcase|ModelKind::LabBookcase|ModelKind::Cabinet
+                |ModelKind::DrawerCabinet|ModelKind::Television|ModelKind::Refrigerator
+                |ModelKind::PendulumClock|ModelKind::Radio|ModelKind::PictureFrame)
+            ||fixture.indices(g.width).any(|i|excluded.get(i)==Some(&true)) {continue;}
+        let atlas=&cells[fixture.row*g.width+fixture.column].source.tileset_id;
+        let Some(wall)=placements.iter().filter(|wall|
+            wall.row==course_row&&wall.height==2
+                &&matches!(wall.kind,ModelKind::WallDomestic|ModelKind::WallTraditional|ModelKind::WallClinical)
+                &&cells[wall.row*g.width+wall.column].source.tileset_id==*atlas
+                &&!wall.indices(g.width).any(|i|excluded.get(i)==Some(&true)))
+            .min_by_key(|wall|wall.column.abs_diff(fixture.column)) else{continue;};
+        let left=(wall.column+wall.width).min(fixture.column+fixture.width);
+        let right=wall.column.max(fixture.column);
+        if (left..right).any(|column|!placements.iter().any(|p|
+            column>=p.column&&column<p.column+p.width
+                &&(p.height>=3||matches!(p.kind,ModelKind::PictureFrame|ModelKind::WindowWall))
+                &&cells[p.row*g.width+p.column].source.tileset_id==*atlas
+                &&p.row.checked_sub(cells[p.row*g.width+p.column].source.subtile_row as usize)==Some(course_row)
+                &&matches!(p.kind,ModelKind::Bookcase|ModelKind::LabBookcase|ModelKind::Cabinet
+                    |ModelKind::DrawerCabinet|ModelKind::Television|ModelKind::Refrigerator
+                    |ModelKind::PendulumClock|ModelKind::Radio|ModelKind::PictureFrame|ModelKind::WindowWall)
+                &&!p.indices(g.width).any(|i|excluded.get(i)==Some(&true)))) {continue;}
+        let front=g.origin_z+(wall.row+2)as f32*g.tile_height
+            -if map=="ElmsLab" {0.}else{0.1*g.tile_height/8.};
+        // Keep backing behind the physical fixture, never through a desktop.
+        let fixture_back=g.origin_z+(fixture.row+fixture.height)as f32*g.tile_height
+            -fixture.depth_pixels*g.tile_height/8.;
+        // Cabinet back boards overlap the wall seam by one native pixel;
+        // that concealed join must not be mistaken for an open room boundary.
+        if !picture&&fixture_back<front-g.tile_height/8.*1.01 {continue;}
+        let west=g.origin_x+fixture.column as f32*g.tile_width;
+        let east=west+fixture.width as f32*g.tile_width;
+        let bounds=[west,east,front-3.*g.tile_height/8.,front];
+        if map=="ElmsLab" && wall.kind==ModelKind::WallClinical {
+            // Reuse the adjacent clinical panel, including its blue lower
+            // band and cap. Only a complete source-proven furniture/window
+            // chain can continue that panel behind the rear bookcases.
+            model(wall.kind).append_fitted(&mut mesh.solid,bounds,0.,
+                wall.height_pixels*g.tile_height/8.);
+        }else if native_mansion_architecture::wall(map,wall,cells,g) {
+            native_mansion_architecture::append_wall(mesh,g,wall,cells,bounds);
+        }else{
+            let paint=native_source_swatches(wall,g,[[4,2]])[0];
+            let first=mesh.textured.positions.len();
+            architecture_box(&mut mesh.textured,[west,east,0.,32.*g.tile_height/8.,bounds[2],front],[1.;3]);
+            mesh.textured.uvs[first..].fill(paint);
+        }
+    }
+}
+
 fn append_known_room_backing(
     mesh: &mut TerrainMeshData,
     map: &str,
@@ -1470,7 +1690,10 @@ fn append_known_room_backing(
         }}
         return;
     }
-    if reviewed_native_room(map) { return; }
+    if reviewed_native_room(map) || map=="ElmsLab" {
+        append_native_fixture_backing(mesh,map,cells,g,world_origin,excluded);
+        return;
+    }
     if traditional_wood_wall::is_map(map) {
         traditional_wood_wall::append_backing(mesh,map,cells,g,world_origin,excluded);
         return;
@@ -1589,6 +1812,67 @@ fn append_known_room_backing(
 mod surface_finish_tests {
     use super::*;
     use std::sync::Arc;
+    #[test]
+    fn johto_lab_floors_keep_source_pattern_datum_and_excluded_cells() {
+        for (map,block,tile) in [("ElmsLab",1,0x10),("EarlsPokemonAcademy",0x10,0x24)] {
+            let (mut tiles,g)=floor();
+            tiles[0].source=VisualTileSource{tileset_id:"lab".into(),metatile_id:block,
+                subtile_column:0,subtile_row:0,tile_index:tile};
+            let refs=tiles.iter().collect::<Vec<_>>();
+            assert_eq!(interior_floor(map,&tiles[0].source),Some(InteriorFloor::NativeRoom));
+            let build=|| {let mut mesh=TerrainMeshData{footing_heights:vec![2.5],..Default::default()};
+                append_top(&mut mesh.textured,g.bounds(0,0).into(),0.,g.uv(0,0));mesh};
+            let original=build();let mut mesh=build();
+            assert_eq!(finish_surfaces_excluding(&mut mesh,map,&refs,&g,[0,0],&[false]),1);
+            assert_eq!(mesh.textured.indices.len(),6,"continuous floor must not acquire bevel slabs or board seams");
+            assert_eq!(mesh.textured.positions,original.textured.positions);
+            assert_eq!(mesh.textured.uvs,original.textured.uvs);
+            assert_eq!(mesh.footing_heights,original.footing_heights);
+            assert!(mesh.solid.indices.is_empty());
+            let mut excluded=build();
+            assert_eq!(finish_surfaces_excluding(&mut excluded,map,&refs,&g,[0,0],&[true]),0);
+            assert_eq!(excluded.textured,original.textured);
+            let custom=Document{objects:vec![Object{
+                name:"User lab floor".into(),tileset:"lab".into(),map:Some(map.into()),maps:None,
+                metatile:block,metatiles:None,origin:[0,0],tiles:vec![vec![tile]],ground:tile,
+                top_pixels:0,depth_pixels:0.,footing_pixels:None,mask:Default::default(),parts:vec![],
+            }],atmosphere:None};
+            let mut owned=build();
+            assert_eq!(finish_surfaces_with_profiles(&mut owned,map,&refs,&g,[0,0],Some(&custom)),0);
+            assert_eq!(owned.textured,original.textured);
+            let mut bad=tiles[0].source.clone();bad.tile_index^=0x80;
+            assert!(!native_johto_lab_floor_source(map,&bad));
+            bad=tiles[0].source.clone();bad.subtile_column=4;
+            assert!(!native_johto_lab_floor_source(map,&bad));
+            assert!(!native_johto_lab_floor_source("UnreviewedLab",&tiles[0].source));
+        }
+    }
+    #[test]
+    fn johto_lab_floor_phases_cover_external_pack_without_claiming_equipment() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file());if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let layout=&pack.pack().runtime_files()["data/tilesets/lab_metatiles.bin"];
+        for (map,tile,count,palette) in [("ElmsLab",0x10,288,0),("EarlsPokemonAcademy",0x24,320,6)] {
+            let module=&pack.pack().data().maps[map];let mut found=0;
+            assert_eq!(module.attributes.tileset_name,"lab");
+            assert_eq!(pack.pack().data().tilesets["lab"].palette_map[tile as usize],palette);
+            for &block in &module.blocks {for phase in 0..16 {
+                let actual=layout[block as usize*16+phase]as u16;
+                let source=VisualTileSource{tileset_id:"lab".into(),metatile_id:block,
+                    subtile_column:(phase%4)as u8,subtile_row:(phase/4)as u8,tile_index:actual};
+                assert_eq!(native_johto_lab_floor_source(map,&source),actual==tile,"{map}: block{block:x}/phase{phase}");
+                if actual==tile {
+                    assert_eq!(interior_floor(map,&source),Some(InteriorFloor::NativeRoom));found+=1;
+                    let mut changed=source.clone();changed.tile_index^=0x80;
+                    assert!(!native_johto_lab_floor_source(map,&changed));
+                }
+            }}
+            assert_eq!(found,count,"{map}: all source floor cells");
+        }
+    }
     fn floor() -> (Vec<VisualTile>, GridGeometry) {
         (
             vec![VisualTile {
@@ -1943,9 +2227,88 @@ mod kanto_room_floor_tests {
                 let normal=Vec3::from_array(mesh.normals[ids[0]as usize]);
                 assert!((b-a).cross(c-a).dot(normal)>0.);
             }
-            assert!(mesh.uvs.iter().all(|u|*u==sample||(!wood&&*u==[1.5/16.,0.5/16.])));
+            if wood {assert!(mesh.uvs.iter().all(|u|*u==sample));}
+            else {
+                assert_eq!(mesh.indices.len(),6,"carpet needs one opaque source quad");
+                assert_eq!(mesh.uvs,vec![[0.,0.],[0.,0.5],[0.5,0.5],[0.5,0.]]);
+                assert!(mesh.positions.iter().all(|p|p[1]==0.));
+            }
         }}
     }
+    #[test]
+    fn woven_house_carpet_covers_all_external_pack_rooms_without_adding_floor_geometry() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file(),"explicit external pack must exist");
+        if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let mut maps=Vec::new();let mut houses=0;
+        for (map,module) in &pack.pack().data().maps {
+            let atlas=module.attributes.tileset_name.as_str();
+            if !(atlas=="house"||atlas=="mansion"&&map.starts_with("CeladonMansion")){continue;}
+            if atlas=="house" {assert!(woven_house_map(map),"{map}: missing Johto/Kanto carpet binding");houses+=1;}
+            let layout=&pack.pack().runtime_files()[&format!("data/tilesets/{atlas}_metatiles.bin")];
+            let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let tiles=(0..w*h).map(|i| {let (x,y)=(i%w,i/w);let block=module.blocks[y/4*(w/4)+x/4];
+                VisualTile{animation_frames:None,column:x as u32,row:y as u32,texture:Default::default(),priority:false,
+                    source:VisualTileSource{tileset_id:atlas.into(),metatile_id:block,subtile_column:(x%4)as u8,
+                        subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+y%4*4+x%4]as u16}}
+            }).collect::<Vec<_>>();
+            let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],authored_cells:vec![None;tiles.len()],..Default::default()};
+            let mut count=0;
+            for (i,tile) in tiles.iter().enumerate() {
+                if tile.source.tile_index!=if atlas=="house"{1}else{0x11}{continue;}
+                assert_eq!(interior_floor(map,&tile.source),Some(InteriorFloor::NativeRoom),"{map}");
+                count+=1;append_top(&mut mesh.textured,g.bounds(i%w,i/w).into(),2.75,g.uv(i%w,i/w));
+            }
+            if count==0 {continue;}
+            let refs=tiles.iter().collect::<Vec<_>>();
+            assert_eq!(finish_surfaces(&mut mesh,map,&refs,&g,[0,0]),count,"{map}");
+            let floor_indices=mesh.textured.indices.chunks_exact(3).filter(|tri|
+                tri.iter().all(|&i|mesh.textured.positions[i as usize][1]==2.75)).count()*3;
+            assert_eq!(floor_indices,count*6,"{map}: no enlarged ceramic patches");
+            assert!(mesh.textured.positions[..count*4].iter().all(|p|p[1]==2.75));
+            assert_eq!(mesh.footing_heights,vec![2.75;tiles.len()]);assert_eq!(mesh.authored_cells,vec![None;tiles.len()]);
+            maps.push(map.clone());
+        }
+        assert_eq!(houses,WOVEN_HOUSE_MAPS.len());assert_eq!(maps.len(),60);
+        println!("Woven carpet maps: {}",maps.join(","));
+    }
+
+    #[test]
+    fn woven_house_carpet_keeps_native_pattern_scale_and_custom_source_ownership() {
+        for map in WOVEN_HOUSE_MAPS {
+            let (tiles,g,mut mesh)=fixture();let refs=tiles.iter().collect::<Vec<_>>();
+            assert_eq!(interior_floor(map,&tiles[0].source),Some(InteriorFloor::NativeRoom),"{map}");
+            let custom=Document{objects:vec![crate::live_profiles::Object{
+                name:"User carpet".into(),tileset:"house".into(),map:Some((*map).into()),maps:None,
+                metatile:0,metatiles:None,origin:[0,0],tiles:vec![vec![1]],ground:1,
+                top_pixels:0,depth_pixels:0.,footing_pixels:None,mask:Default::default(),parts:vec![],
+            }],atmosphere:None};
+            assert_eq!(finish_surfaces_with_profiles(&mut mesh,map,&refs,&g,[-7,11],Some(&custom)),3,"{map}");
+            assert_eq!(mesh.textured.indices.len(),24);
+            assert!(mesh.textured.positions.iter().all(|p|p[1]==3.25));
+            assert_eq!(mesh.footing_heights,vec![3.25;4]);assert_eq!(mesh.authored_cells,vec![None;4]);
+            assert!(mesh.solid.positions.is_empty());
+        }
+        for world in [[0,0],[-9,17],[12,-5]] {
+            let mut carpet=SurfaceMeshData::default();
+            native_house_material_floor_cell(&mut carpet,[0.,8.,0.,8.],2.75,world,(0.2,0.4,0.3,0.7),false);
+            assert_eq!(carpet.positions,vec![[0.,2.75,0.],[0.,2.75,8.],[8.,2.75,8.],[8.,2.75,0.]]);
+            assert_eq!(carpet.uvs,vec![[0.2,0.3],[0.2,0.7],[0.4,0.7],[0.4,0.3]]);
+            assert_eq!(carpet.indices.len(),6);
+        }
+        let (mut tiles,_,_)=fixture();
+        tiles[0].source.subtile_row=4;
+        assert_eq!(interior_floor("GoldenrodNameRater",&tiles[0].source),None);
+        tiles[0].source.subtile_row=0;tiles[0].source.tile_index=0x24;
+        assert_ne!(interior_floor("GoldenrodNameRater",&tiles[0].source),Some(InteriorFloor::NativeRoom));
+        tiles[0].source.tile_index=1;
+        assert_eq!(interior_floor("UnreviewedHouseAnnex",&tiles[0].source),Some(InteriorFloor::Oak));
+    }
+
     #[test]
     fn kanto_native_center_ceramic_keeps_local_palette_footing_and_service_apron_guards() {
         let (mut tiles,g,mut mesh)=fixture();
@@ -1983,6 +2346,25 @@ mod kanto_room_floor_tests {
         altered=tiles[0].source.clone();altered.metatile_id=16;altered.subtile_column=2;
         assert_ne!(interior_floor("MountMoonGiftShop",&altered),Some(InteriorFloor::NativeRoom));
         assert_ne!(interior_floor("MahoganyMart1F",&tiles[0].source),Some(InteriorFloor::NativeRoom));
+    }
+    #[test]
+    fn wise_floor_keeps_native_gold_plank_uvs_without_a_slab_grid() {
+        let (mut tiles,g,mut mesh)=fixture();
+        for t in &mut tiles {t.source.tileset_id="traditional_house".into();
+            t.source.metatile_id=0x1f;t.source.tile_index=0x50;}
+        let refs=tiles.iter().collect::<Vec<_>>();
+        let positions=mesh.textured.positions.clone();let uvs=mesh.textured.uvs.clone();
+        assert_eq!(finish_surfaces(&mut mesh,"WiseTriosRoom",&refs,&g,[0,0]),4);
+        assert_eq!(mesh.footing_heights,vec![3.25;4]);
+        assert_eq!(mesh.authored_cells,vec![None;4]);
+        assert_eq!(mesh.textured.indices.len(),24,"one original floor quad per cell");
+        for quad in mesh.textured.indices.chunks_exact(6) {
+            for &i in quad {
+                let v=mesh.textured.positions[i as usize];let uv=mesh.textured.uvs[i as usize];
+                assert!(positions.iter().zip(&uvs).any(|(p,u)|*p==v&&*u==uv));
+            }
+        }
+        assert_ne!(interior_floor("OtherTraditionalRoom",&tiles[0].source),Some(InteriorFloor::NativeRoom));
     }
     #[test]
     fn traditional_entrance_floor_keeps_gold_without_repainting_borders_or_door_mat() {
@@ -2151,7 +2533,107 @@ mod kanto_room_floor_tests {
             "closed authored courses must not receive another wall from block metadata");
     }
     #[test]
-    fn kanto_native_mansion_checker_keeps_live_colors_claims_and_walking_datum() {
+    fn elms_lab_rear_bookcases_continue_the_clinical_wall_only() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file());if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let module=&pack.pack().data().maps["ElmsLab"];
+        let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+        let layout=&pack.pack().runtime_files()["data/tilesets/lab_metatiles.bin"];
+        let mut tiles=(0..w*h).map(|i| {let x=i%w;let y=i/w;let block=module.blocks[y/4*(w/4)+x/4];
+            VisualTile{column:x as u32,row:y as u32,texture:Default::default(),animation_frames:None,priority:false,
+                source:VisualTileSource{tileset_id:"lab".into(),metatile_id:block,subtile_column:(x%4)as u8,
+                    subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+y%4*4+x%4]as u16}}
+        }).collect::<Vec<_>>();
+        let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let build=|tiles:&[VisualTile],map:&str,excluded:&[bool]| {
+            let mut mesh=TerrainMeshData{footing_heights:vec![2.5;w*h],authored_cells:vec![None;w*h],..Default::default()};
+            append_known_room_backing(&mut mesh,map,&tiles.iter().collect::<Vec<_>>(),&g,[0,0],excluded);
+            assert_eq!(mesh.footing_heights,vec![2.5;w*h]);
+            assert_eq!(mesh.authored_cells,vec![None;w*h]);
+            mesh
+        };
+        let mesh=build(&tiles,"ElmsLab",&[]);
+        assert!(!mesh.solid.indices.is_empty(),"the rear shelves must have a wall behind them");
+        assert!(mesh.textured.indices.is_empty());
+        assert!(mesh.solid.positions.iter().all(|p|p[0]>=96. && p[0]<=160. && p[2]>=13. && p[2]<=16.),
+            "only the rear shelf run receives backing; freestanding shelves stay freestanding");
+        for column in 12..20 {
+            let center=(column as f32+0.5)*8.;
+            assert!(mesh.solid.indices.chunks_exact(3).any(|triangle| {
+                let v=[0,1,2].map(|j|mesh.solid.positions[triangle[j]as usize]);
+                v.iter().all(|p|(p[1]-32.).abs()<0.001)
+                    &&v.iter().any(|p|p[0]<=center)&&v.iter().any(|p|p[0]>=center)
+            }),
+                "the clinical cap must span every rear cabinet, column {column}");
+        }
+        let cells=tiles.iter().collect::<Vec<_>>();
+        let wall=resolve("ElmsLab",&cells,&g,None).into_iter()
+            .find(|p|p.kind==ModelKind::WallClinical&&p.column==4&&p.row==0).unwrap();
+        let mut reference=TerrainMeshData::default();
+        model(wall.kind).append_fitted(&mut reference.solid,[96.,112.,13.,16.],0.,32.);
+        assert!(mesh.solid.colors.iter().all(|color|reference.solid.colors.iter().any(|paint|
+            color.iter().zip(paint).all(|(a,b)|(a-b).abs()<0.0001))),
+            "continue the same clinical paint and cap materials");
+        assert!(build(&tiles,"UnreviewedLab",&[]).solid.indices.is_empty());
+        assert!(build(&tiles,"ElmsLab",&vec![true;w*h]).solid.indices.is_empty(),
+            "custom profiles retain ownership");
+        // The connecting window drawing is evidence of a continuous course.
+        // Changed source art must break that chain instead of guessing a wall.
+        tiles[8].source.tile_index^=0x80;
+        assert!(build(&tiles,"ElmsLab",&[]).solid.indices.is_empty());
+    }
+    #[test]
+    fn external_native_cabinets_and_tvs_keep_contiguous_walls_without_claiming_support() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file());if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let files=pack.pack().runtime_files();
+        for (map,atlas) in [("BluesHouse","house"),("CeladonMansion1F","mansion"),
+            ("CeladonMansion2F","mansion"),("CeladonMansion3F","mansion")] {
+            let module=&pack.pack().data().maps[map];
+            let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
+            let layout=&files[&format!("data/tilesets/{atlas}_metatiles.bin")];
+            let tiles=(0..w*h).map(|i| {let x=i%w;let y=i/w;let block=module.blocks[y/4*(w/4)+x/4];
+                VisualTile{column:x as u32,row:y as u32,texture:Default::default(),animation_frames:None,priority:false,
+                    source:VisualTileSource{tileset_id:atlas.into(),metatile_id:block,subtile_column:(x%4)as u8,
+                        subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+y%4*4+x%4]as u16}}
+            }).collect::<Vec<_>>();
+            let cells=tiles.iter().collect::<Vec<_>>();
+            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let mut mesh=TerrainMeshData{footing_heights:vec![72.;w*h],..Default::default()};
+            append_native_fixture_backing(&mut mesh,map,&cells,&g,[0,0],&[]);
+            assert!(!mesh.textured.positions.is_empty(),"{map}: north furniture cannot leave a wall gap");
+            assert!(mesh.solid.positions.iter().all(|v|v[1]==32.),"only neutral stone caps, no generic cream wall");
+            assert_eq!(mesh.footing_heights,vec![72.;w*h]);
+            assert!(mesh.textured.positions.iter().all(|v|v[1]>=0.&&v[1]<=32.));
+            assert!(mesh.textured.positions.iter().any(|v|v[1]==32.));
+            if map=="BluesHouse" {
+                assert!(mesh.textured.positions.iter().any(|v|v[0]==0.&&v[1]==32.),
+                    "the paired west bookshelves must connect to the same wall as the TV: {:?}",
+                    resolve(map,&cells,&g,None).iter().map(|p|(p.kind,p.column,p.row,p.width,p.height,
+                        p.depth_pixels,cells[p.row*w+p.column].source.subtile_row)).collect::<Vec<_>>());
+                let frame=resolve(map,&cells,&g,None).into_iter().find(|p|p.kind==ModelKind::PictureFrame).unwrap();
+                let mut mounted=TerrainMeshData{footing_heights:vec![72.;w*h],..Default::default()};
+                assert!(append(&mut mounted,map,&cells,&g,&frame,&mut vec![false;w*h],[0,0]));
+                let front=(frame.row+frame.height)as f32*g.tile_height;
+                assert!(mounted.textured.positions.iter().filter(|v|v[1]>0.).all(|v|v[2]>front),
+                    "recessed artwork must remain in front of the wall backing");
+                assert_eq!(mounted.footing_heights,vec![72.;w*h]);
+            }
+            let mut custom=TerrainMeshData::default();
+            append_native_fixture_backing(&mut custom,map,&cells,&g,[0,0],&vec![true;w*h]);
+            assert!(custom.textured.positions.is_empty(),"custom drawings retain ownership");
+            append_native_fixture_backing(&mut custom,"UnknownRoom",&cells,&g,[0,0],&[]);
+            assert!(custom.textured.positions.is_empty());
+        }
+    }
+    #[test]
+    fn kanto_native_mansion_weave_keeps_live_pattern_claims_and_walking_datum() {
         for map in ["CeladonMansion1F","CeladonMansion2F","CeladonMansion3F","CeladonMansionRoofHouse"] {
             let (mut tiles,g,mut mesh)=fixture();
             for tile in &mut tiles {tile.source.tileset_id="mansion".into();tile.source.tile_index=0x11;}
@@ -2160,11 +2642,11 @@ mod kanto_room_floor_tests {
             assert!(mesh.solid.positions.is_empty());
             assert_eq!(mesh.footing_heights,vec![3.25;4]);
             assert_eq!(mesh.authored_cells,vec![None;4]);
-            assert!(mesh.textured.positions.iter().all(|p|p[1]<=3.25 && p[1]>=3.202));
-            for uv in &mesh.textured.uvs {
-                let pixel=[(uv[0]*16.).rem_euclid(8.),(uv[1]*16.).rem_euclid(8.)];
-                assert!((near(pixel[0],0.5)||near(pixel[0],1.5)) && near(pixel[1],0.5),
-                    "only the native light/pink source pixels may paint the checker");
+            assert!(mesh.textured.positions.iter().all(|p|p[1]==3.25));
+            assert_eq!(mesh.textured.indices.len(),24);
+            for (p,uv) in mesh.textured.positions.iter().zip(&mesh.textured.uvs) {
+                assert!(near(uv[0],p[0]/16.)&&near(uv[1],p[2]/16.),
+                    "the full native woven pattern must stay at source scale");
             }
             let (mut tiles,g,mut legacy)=fixture();
             for tile in &mut tiles {tile.source.tileset_id="mansion".into();tile.source.tile_index=1;}
@@ -2322,11 +2804,10 @@ mod kanto_room_floor_tests {
         assert_eq!(finish_surfaces(&mut mesh,"BluesHouse",&refs,&g,[-3,7]),4);
         assert!(mesh.solid.indices.is_empty(),"no beige replacement paint");
         assert_eq!(mesh.footing_heights,vec![3.25;4]);assert_eq!(mesh.authored_cells,vec![None;4]);
-        assert!(mesh.textured.positions.iter().all(|p|p[1]<=3.25 && p[1]>=3.202));
-        for uv in &mesh.textured.uvs {
-            let pixel_x=(uv[0]*16.).rem_euclid(8.);
-            let pixel_y=(uv[1]*16.).rem_euclid(8.);
-            assert!(near(pixel_x,0.5)||near(pixel_x,1.5));assert!(near(pixel_y,0.5));
+        assert!(mesh.textured.positions.iter().all(|p|p[1]==3.25));
+        assert_eq!(mesh.textured.indices.len(),24);
+        for (p,uv) in mesh.textured.positions.iter().zip(&mesh.textured.uvs) {
+            assert!(near(uv[0],p[0]/16.)&&near(uv[1],p[2]/16.));
         }
     }
     #[test]
@@ -2498,7 +2979,7 @@ mod kanto_room_floor_tests {
             top_pixels:0,depth_pixels:0.,footing_pixels:None,mask:Default::default(),parts:vec![],
         }],atmosphere:None};
         assert_eq!(finish_surfaces_with_profiles(&mut mesh,"BluesHouse",&refs,&g,[0,0],Some(&custom)),3);
-        assert_eq!(mesh.textured.indices.len(),6+3*48);
+        assert_eq!(mesh.textured.indices.len(),6+3*6);
         tiles[0].source.subtile_column=4;
         assert_eq!(interior_floor("BluesHouse",&tiles[0].source),None);
         tiles[0].source.subtile_column=0;tiles[0].source.tile_index=0x24;

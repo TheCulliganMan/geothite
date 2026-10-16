@@ -1,5 +1,8 @@
 //! External static scenery keeps its UVs and cutout materials separate from
 //! the pack atlas and the opaque authored geometry.
+#[cfg(feature = "terrain-worker")]
+#[path = "terrain_worker/scenery_wire.rs"]
+pub(super) mod worker_wire;
 use bevy::asset::RenderAssetUsages;
 use crate::mesh::SurfaceMeshData;
 use base64::Engine as _;
@@ -49,6 +52,7 @@ pub(crate) struct EncodedTexture {
 
 #[derive(Clone, Debug, PartialEq)]
 pub(crate) struct SceneryTexture {
+    blend: bool,
     width: u32,
     height: u32,
     pixels: Vec<u8>,
@@ -80,6 +84,7 @@ impl SceneryTexture {
             return Err("external scenery texture byte count mismatch".into());
         }
         Ok(Arc::new(Self {
+            blend: false,
             width: encoded.width,
             height: encoded.height,
             pixels,
@@ -90,6 +95,7 @@ impl SceneryTexture {
         }))
     }
     pub fn image(&self) -> Image {
+        let _trace = crate::loading_trace::span("region.prepare_scenery_image", || serde_json::json!({"width":self.width,"height":self.height,"bytes":self.pixels.len()}));
         let mut image = Image::new(
             Extent3d {
                 width: self.width,
@@ -108,14 +114,25 @@ impl SceneryTexture {
                 ..bevy::image::ImageSamplerDescriptor::linear()
             },
         );
+        if crate::render_quality::requested().materials() {
+            crate::texture_filtering::mipmap(&mut image, self.alpha_cutoff);
+        }
         image
     }
     pub fn alpha_mode(&self) -> AlphaMode {
+        if self.blend {return AlphaMode::Blend;}
         let mode = self.alpha_cutoff.map_or(AlphaMode::Opaque, AlphaMode::Mask);
         if std::env::var_os("CRYSTAL_VOXEL_PIPELINE_TRACE").is_some() {
             eprintln!("scenery alpha: mode={mode:?} size={}x{}", self.width, self.height);
         }
         mode
+    }
+    /// A shared neutral texture lets authored glazing supply its own tint and
+    /// alpha without changing the opaque/cutout policy of imported scenery.
+    pub fn glass_panel() -> Arc<Self> {
+        static GLASS: std::sync::OnceLock<Arc<SceneryTexture>>=std::sync::OnceLock::new();
+        GLASS.get_or_init(||Arc::new(Self{blend:true,width:1,height:1,pixels:vec![255;4],
+            alpha_cutoff:None,double_sided:true,wrap_u:TextureWrap::Clamp,wrap_v:TextureWrap::Clamp})).clone()
     }
 }
 
@@ -166,10 +183,21 @@ mod tests {
         }
     }
     #[test]
+    fn authored_glazing_blends_without_changing_imported_scenery_modes() {
+        let glass=SceneryTexture::glass_panel();
+        assert_eq!(glass.alpha_mode(),AlphaMode::Blend);
+        assert!(glass.double_sided);
+        assert!(Arc::ptr_eq(&glass,&SceneryTexture::glass_panel()));
+        assert_eq!(glass.image().data.as_deref(),Some(&[255;4][..]));
+        let mut opaque=encoded();opaque.alpha_cutoff=None;
+        assert_eq!(SceneryTexture::decode(opaque).unwrap().alpha_mode(),AlphaMode::Opaque);
+        assert_eq!(SceneryTexture::decode(encoded()).unwrap().alpha_mode(),AlphaMode::Mask(0.5));
+    }
+    #[test]
     fn cutouts_keep_alpha_srgb_and_the_source_wrap_mode() {
         let texture = SceneryTexture::decode(encoded()).unwrap();
         let image = texture.image();
-        assert_eq!(image.data.as_ref().expect("CPU image pixels").as_slice(), [80, 120, 70, 0, 80, 120, 70, 255]);
+        assert_eq!(&image.data.as_ref().expect("CPU image pixels")[..8], [80, 120, 70, 0, 80, 120, 70, 255]);
         assert_eq!(
             image.texture_descriptor.format,
             TextureFormat::Rgba8UnormSrgb

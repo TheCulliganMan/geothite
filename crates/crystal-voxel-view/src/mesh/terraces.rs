@@ -3,12 +3,23 @@
 use super::*;
 use bevy::prelude::{IVec2, Vec2};
 
+// Preserve Johto/forest terrain even when a connected source halo contains Kanto.
+fn kanto_family<'a>(tiles: impl Iterator<Item=&'a VisualTile>) -> bool {
+    let mut kanto=false;
+    for tile in tiles {match tile.source.tileset_id.as_ref() {
+        "johto"|"johto_modern"|"forest"=>return false,
+        "kanto"=>kanto=true,
+        _=>{},
+    }}
+    kanto
+}
+
 pub(super) fn support_correction(
     frame: &VisualWorldFrame,
     cell: bevy::prelude::UVec2,
     foot: Vec2,
 ) -> f32 {
-    if frame.jump_ledges.is_empty() {
+    if frame.jump_ledges.is_empty() || !super::jump_changes_floor_level(&frame.map_id) {
         return 0.;
     }
     let g = GridGeometry {
@@ -19,7 +30,10 @@ pub(super) fn support_correction(
         origin_x: 0.,
         origin_z: 0.,
     };
-    let field = Field::new(&frame.jump_ledges, &g, [0, 0]);
+    let mut field = Field::new(&frame.jump_ledges, &g, [0, 0]);
+    if kanto_family(frame.tiles.iter()) {
+        field.levels=super::terrace_levels::get_for_family(&frame.jump_ledges,true);
+    }
     let start = frame.grid_origin.as_vec2() + cell.as_vec2();
     let grid_size = frame.grid_size.as_vec2() * frame.tile_size;
     let grid_point = Vec2::new(
@@ -46,6 +60,8 @@ pub(super) fn support_correction(
     support - field.map_height(start + Vec2::splat(0.5))
 }
 use crystal_render_api::VisualJumpLedge;
+#[path = "town_ledge_lip.rs"]
+mod town_ledge_lip;
 
 pub(super) struct Field<'a> {
     edges: &'a [VisualJumpLedge],
@@ -130,7 +146,18 @@ pub(super) fn finish(
     origin: [i32; 2],
     edges: &[VisualJumpLedge],
 ) {
-    let field = Field::new(edges, g, origin);
+    finish_on_map(mesh,"",cells,g,origin,edges);
+}
+
+pub(super) fn finish_on_map(mesh: &mut TerrainMeshData, map: &str,
+    cells: &[&VisualTile], g: &GridGeometry, origin: [i32;2], edges: &[VisualJumpLedge]) {
+    // Tin Tower's one-way hops cross timber barriers on a level indoor floor.
+    // They do not describe cumulative outdoor hills or changes of floor level.
+    if !super::jump_changes_floor_level(map) {return;}
+    let mut field = Field::new(edges, g, origin);
+    if kanto_family(cells.iter().copied()) {
+        field.levels=super::terrace_levels::get_for_family(edges,true);
+    }
     let h = crate::profile::JUMP_LEDGE_HEIGHT * g.tile_height / SOURCE_TILE_HEIGHT;
     for (i, height) in mesh.footing_heights.iter_mut().enumerate() {
         let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
@@ -145,14 +172,29 @@ pub(super) fn finish(
         &mut mesh.animated_solid,
         &mut mesh.animated_textured,
     ].into_iter().enumerate() {
-        shape_surface_excluding(surface, cells, &field,
-            if domain == 0 { rigid.as_deref() } else { None });
+        shape_surface_excluding_with_lips(surface, cells, &field,
+            if domain == 0 { rigid.as_deref() } else { None },map=="BlackthornCity");
     }
     super::rigid_buildings::lift(&mut mesh.solid, &mesh.rigid_buildings, &field);
-    append_drop_faces(&mut mesh.solid, cells, &field);
+    append_drop_faces_with_lips(&mut mesh.solid, cells, &field,map=="BlackthornCity");
+}
+
+// Animation refreshes replace the retained flower surface. Keep Kanto's
+// refreshed geometry on exactly the same cumulative field as its static lawn.
+pub(super) fn fit_kanto_animated(surface: &mut SurfaceMeshData, cells: &[&VisualTile],
+    g: &GridGeometry, origin: [i32; 2], edges: &[VisualJumpLedge]) {
+    if !kanto_family(cells.iter().copied()) { return; }
+    let mut field = Field::new(edges, g, origin);
+    field.levels = super::terrace_levels::get_for_family(edges, true);
+    shape_surface_excluding_with_lips(surface, cells, &field, None, false);
 }
 
 fn append_drop_faces(out: &mut SurfaceMeshData, cells: &[&VisualTile], field: &Field<'_>) {
+    append_drop_faces_with_lips(out,cells,field,false);
+}
+
+fn append_drop_faces_with_lips(out: &mut SurfaceMeshData, cells: &[&VisualTile],
+    field: &Field<'_>, closed_lips: bool) {
     let g = field.g;
     let first = out.indices.len();
     for edge in field.edges {
@@ -227,6 +269,11 @@ fn append_drop_faces(out: &mut SurfaceMeshData, cells: &[&VisualTile], field: &F
             });
             if timber {
                 append_solid_quad(out, p, normal.to_array(), [0.38, 0.22, 0.085, 1.]);
+            } else if cell_at(g,middle.x,middle.y).is_some_and(|i|
+                cells[i].source.tileset_id.as_ref()=="kanto" && field.jump_cell(i,cells)) {
+                town_ledge_lip::append_kanto(out,p,normal.to_array(),g,field.origin);
+            } else if closed_lips {
+                town_ledge_lip::append(out,p,normal.to_array(),g,field.origin);
             } else if !super::new_bark::ledge_finish::append(
                 out,
                 p,
@@ -258,6 +305,11 @@ fn shape_surface(surface: &mut SurfaceMeshData, cells: &[&VisualTile], field: &F
 }
 
 fn shape_surface_excluding(surface: &mut SurfaceMeshData, cells: &[&VisualTile], field: &Field<'_>, rigid: Option<&[bool]>) {
+    shape_surface_excluding_with_lips(surface,cells,field,rigid,false);
+}
+
+fn shape_surface_excluding_with_lips(surface: &mut SurfaceMeshData, cells: &[&VisualTile],
+    field: &Field<'_>, rigid: Option<&[bool]>, closed_lips: bool) {
     let old = surface.positions.clone();
     let h = crate::profile::JUMP_LEDGE_HEIGHT * field.g.tile_height / SOURCE_TILE_HEIGHT;
     let mut changed = vec![false; old.len()];
@@ -285,6 +337,16 @@ fn shape_surface_excluding(surface: &mut SurfaceMeshData, cells: &[&VisualTile],
         // that cannot turn the tall cliff into the bank's six-pixel cap.
         let mineral = ids.iter().all(|&i| surface.uvs[i][0] < -9000.);
         let jump = !mineral && owner.is_some_and(|i| field.jump_cell(i, cells));
+        let kanto_ground=owner.is_some_and(|i|cells[i].source.tileset_id.as_ref()=="kanto");
+        // The shared terrace field already replaces this drawing's local
+        // bank rise. Retire the old fronts, including their tail beyond the
+        // authored cut. Keep lateral returns: they seal the bank against a
+        // descending stair opening rather than becoming floating end cards.
+        let kanto_bank=marked.is_some_and(|i|cells[i].source.tileset_id.as_ref()=="kanto");
+        if (closed_lips || (kanto_bank && (normal.z>0.7 || field.drop_face(center,normal)))) && jump && marked.is_some() {
+            obsolete[number]=true;
+            continue;
+        }
         let geometric_normal = (Vec3::from_array(old[ids[1]]) - Vec3::from_array(old[ids[0]]))
             .cross(Vec3::from_array(old[ids[2]]) - Vec3::from_array(old[ids[0]]))
             .normalize_or_zero();
@@ -335,7 +397,7 @@ fn shape_surface_excluding(surface: &mut SurfaceMeshData, cells: &[&VisualTile],
             obsolete[number] = true;
             continue;
         }
-        if jump && normal.y > 0.9 && ids.iter().all(|&i| old[i][1].abs() < 0.001) {
+        if jump && normal.y > 0.9 && ids.iter().all(|&i| old[i][1].abs()<0.001 || (kanto_ground && old[i][1]>=0. && old[i][1]<h*0.5)) {
             obsolete[number] = true;
             continue;
         }
@@ -349,7 +411,21 @@ fn shape_surface_excluding(surface: &mut SurfaceMeshData, cells: &[&VisualTile],
             // Separate vertices at a drop's shared XZ edge remain on their
             // owning side. This is stable across tessellation and scrolling.
             let toward = (Vec2::new(inside.x, inside.z) - position).normalize_or_zero() * 0.001;
-            let upper = field.height(position + toward);
+            // Relieved bank returns protrude outside their source cell. Their
+            // height belongs to the original wall plane, not the lower ramp
+            // beneath that relief. Sampling the protrusion tears open the end.
+            let bank_contact = marked.filter(|_|kanto_ground).map(|owner| {
+                let (w,e,n,s)=field.g.bounds(owner%field.g.width,owner/field.g.width);
+                let eps=field.g.tile_width.min(field.g.tile_height)*0.0001;
+                let mut p=position.clamp(Vec2::new(w+eps,n+eps),Vec2::new(e-eps,s-eps));
+                let axis=if normal.x.abs()>normal.z.abs() {
+                    p.x=if normal.x>0. {e}else{w};Vec2::new(normal.x.signum(),0.)
+                } else {
+                    p.y=if normal.z>0. {s}else{n};Vec2::new(0.,normal.z.signum())
+                };
+                (p-axis*eps,p+axis*eps)
+            });
+            let upper = field.height(bank_contact.map_or(position+toward,|p|p.0));
             // Both faces of a mineral contact must remove the same legacy
             // bank rise. A zero-floor side may bury its toe, but cannot tear
             // away from the neighboring bank side above that ground contact.
@@ -365,19 +441,33 @@ fn shape_surface_excluding(surface: &mut SurfaceMeshData, cells: &[&VisualTile],
                 // follows the bank whose old local rise has been removed.
                 let t = ((p.y - old_floor) / (old_top - old_floor)).clamp(0., 1.);
                 p.y + upper - old_floor * (1. - t)
-            } else if jump && normal.y.abs() < 0.9 && p.y >= -0.01 && p.y <= h + 0.05 {
-                let lower = field.height(position + Vec2::new(normal.x, normal.z) * 0.01);
+            } else if jump && normal.y.abs() < 0.9 && p.y >= -0.01
+                && p.y <= h + if kanto_ground {0.001}else{0.05} {
+                let lower = field.height(bank_contact.map_or(
+                    position + Vec2::new(normal.x, normal.z) * 0.01,|p|p.1));
                 lower + (upper - lower) * (p.y / h).clamp(0., 1.)
             } else if jump && normal.y > 0.1 && p.y >= -0.01 && p.y <= h + 0.05 {
-                upper
+                upper + if kanto_ground {(p.y-h).max(0.)}else{0.}
             } else {
                 p.y + upper - if jump { h } else { 0. }
             };
             surface.positions[i][1] = y;
-            if surface.uvs[i][0] == super::ledge_approach::BANK_OWNER_UV {
+            if !kanto_ground && surface.uvs[i][0] == super::ledge_approach::BANK_OWNER_UV {
                 surface.uvs[i] = [0., 0.];
             }
         }
+        if kanto_ground && marked.is_some() {
+            let (low,high)=ids.iter().map(|&i|surface.positions[i][1])
+                .fold((f32::INFINITY,f32::NEG_INFINITY),|(lo,hi),y|(lo.min(y),hi.max(y)));
+            // A relieved wall between equal levels becomes a horizontal card.
+            // The real cap already owns that floor; retain only actual returns.
+            if high-low<0.001 {obsolete[number]=true;}
+        }
+    }
+    // Keep Kanto provenance until both triangles sharing each quad have used
+    // it. Clearing the first triangle's vertices made the second lose ownership.
+    for uv in &mut surface.uvs {
+        if uv[0]==super::ledge_approach::BANK_OWNER_UV {*uv=[0.;2];}
     }
     let _contact_trace = crate::loading_trace::span("mineral.terrace_shared_points", || {
         let mut active=vec![false;old.len()];
@@ -479,6 +569,29 @@ fn cell_at(g: &GridGeometry, x: f32, z: f32) -> Option<usize> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn tin_tower_hops_leave_indoor_mesh_and_actor_support_level() {
+        let g=GridGeometry{width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let tiles=(0..16).map(|i|VisualTile{column:(i%4)as u32,row:(i/4)as u32,
+            texture:Default::default(),priority:false,animation_frames:None,
+            source:VisualTileSource{tileset_id:"tower".into(),metatile_id:9,
+                subtile_column:(i%4)as u8,subtile_row:(i/4)as u8,tile_index:2}}).collect::<Vec<_>>();
+        let refs=tiles.iter().collect::<Vec<_>>();
+        let edges=vec![VisualJumpLedge{start:IVec2::new(0,2),end:IVec2::new(4,2),descent:IVec2::Y}];
+        let mut original=TerrainMeshData{footing_heights:vec![0.;16],..Default::default()};
+        for surface in [&mut original.solid,&mut original.textured,&mut original.animated_solid,&mut original.animated_textured] {
+            append_top(surface,[0.,32.,0.,32.],0.,(0.,1.,0.,1.));
+        }
+        for level in 1..=9 {
+            let name=format!("TinTower{level}F");let mut mesh=original.clone();
+            finish_on_map(&mut mesh,&name,&refs,&g,[0,0],&edges);assert_eq!(mesh,original);
+            let frame=VisualWorldFrame{map_id:name.into(),jump_ledges:edges.clone().into(),
+                grid_size:bevy::prelude::UVec2::splat(4),tile_size:Vec2::splat(8.),..Default::default()};
+            assert_eq!(support_correction(&frame,bevy::prelude::UVec2::ZERO,Vec2::new(3.,7.)),0.);
+        }
+        let mut outdoor=original.clone();finish_on_map(&mut outdoor,"RouteTest",&refs,&g,[0,0],&edges);
+        assert!(outdoor.footing_heights.iter().any(|h|*h>0.),"outdoor terraces keep their cumulative elevation");
+    }
     #[test]
     fn every_authored_jump_descends_and_reverse_side_is_lower() {
         let g = GridGeometry {
@@ -756,6 +869,117 @@ mod tests {
             shifted.height(Vec2::new(96., 136.)),
             "the same source point cannot change height when the viewport scrolls"
         );
+    }
+
+    #[test]
+    fn kanto_cap_detail_side_faces_keep_their_clearance_above_ground() {
+        let g=GridGeometry{width:4,height:8,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let sources=(0..8).flat_map(|y|(0..4).map(move|x| {
+            let mut s=super::super::tests::source_with_tile(if y<4 {0x07}else{0x0a},x,y%4,
+                if y==3 {0x37}else{0x2c});s.tileset_id="kanto".into();s
+        })).collect();
+        let frame=super::super::tests::frame(4,8,sources);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let edges=[VisualJumpLedge{start:IVec2::new(0,4),end:IVec2::new(4,4),descent:IVec2::Y}];
+        let mut field=Field::new(&edges,&g,[0,0]);
+        field.levels=super::super::terrace_levels::get_for_family(&edges,true);
+        let mut detail=SurfaceMeshData::default();
+        append_solid_quad(&mut detail,[[12.,6.012,12.],[12.,6.04,12.],
+            [12.,6.04,13.],[12.,6.012,13.]],[1.,0.,0.],[0.3,0.2,0.1,1.]);
+        let original=detail.positions.clone();
+        shape_surface_excluding(&mut detail,&cells,&field,None);
+        assert_eq!(detail.positions,original,"pebble sides cannot collapse into coplanar floor cards");
+        assert_eq!(detail.indices.len(),6);
+    }
+
+    #[test]
+    fn kanto_return_above_stair_row_cannot_become_a_floating_floor_card() {
+        let g=GridGeometry{width:4,height:8,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let sources=(0..8).flat_map(|y|(0..4).map(move|x| {
+            let mut s=super::super::tests::source_with_tile(if y<4 {0x2f}else{0x0a},x,y%4,
+                if y==3 {[0x37,0x34,0x04,0x04][x as usize]}else{0x2c});s.tileset_id="kanto".into();s
+        })).collect();
+        let frame=super::super::tests::frame(4,8,sources);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let edges=[VisualJumpLedge{start:IVec2::new(0,4),end:IVec2::new(2,4),descent:IVec2::Y}];
+        let mut field=Field::new(&edges,&g,[0,0]);
+        field.levels=super::super::terrace_levels::get_for_family(&edges,true);
+        let mut wall=SurfaceMeshData::default();
+        append_solid_quad(&mut wall,[[16.,1.,16.],[16.4,3.,16.],
+            [16.3,3.,24.],[16.1,1.,24.]],[1.,0.,0.],[0.3,0.2,0.1,1.]);
+        super::super::ledge_approach::mark_bank_surface(&mut wall,0,9);
+        shape_surface_excluding(&mut wall,&cells,&field,None);
+        assert!(wall.indices.is_empty(),"flattened relief must not remain on the walking cap");
+        assert!(wall.positions.iter().all(|p|(p[1]-6.).abs()<0.001),
+            "both triangles must retain their source owner until fitting finishes");
+    }
+
+    #[test]
+    fn relieved_kanto_return_keeps_its_upper_bank_contact_above_the_stair_ramp() {
+        let g=GridGeometry{width:4,height:8,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let sources=(0..8).flat_map(|y|(0..4).map(move|x| {
+            let mut s=super::super::tests::source_with_tile(if y<4 {0x2f}else{0x0a},x,y%4,
+                if y==3 {[0x37,0x34,0x04,0x04][x as usize]}else{0x2c});
+            s.tileset_id="kanto".into();s
+        })).collect();
+        let frame=super::super::tests::frame(4,8,sources);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let edges=[VisualJumpLedge{start:IVec2::new(0,4),end:IVec2::new(2,4),descent:IVec2::Y}];
+        let mut field=Field::new(&edges,&g,[0,0]);
+        field.levels=super::super::terrace_levels::get_for_family(&edges,true);
+        let mut wall=SurfaceMeshData::default();
+        append_solid_quad(&mut wall,[[16.4,0.,24.],[16.4,6.,24.],
+            [16.4,6.,32.],[16.4,0.,32.]],[1.,0.,0.],[0.3,0.2,0.1,1.]);
+        super::super::ledge_approach::mark_bank_surface(&mut wall,0,13);
+        shape_surface_excluding(&mut wall,&cells,&field,None);
+        assert!(!wall.indices.is_empty());
+        assert!((wall.positions[1][1]-6.).abs()<0.001);
+        assert!((wall.positions[2][1]-6.).abs()<0.001,"the relieved corner cannot dive onto the bypass");
+        assert!(wall.positions[3][1]<0.002);
+        assert!(wall.uvs.iter().all(|uv|uv[0]!=super::super::ledge_approach::BANK_OWNER_UV));
+    }
+
+    #[test]
+    fn closed_lips_retire_legacy_bank_faces_beyond_the_directed_cut_end() {
+        let g=GridGeometry{width:4,height:8,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let sources=(0..8).flat_map(|y|(0..4).map(move |x| {
+            let mut s=super::super::tests::source_with_tile(0x07,x,y%4,if y%4==3 {0x37}else{0x2c});
+            s.tileset_id="kanto".into();s
+        })).collect();
+        let frame=super::super::tests::frame(4,8,sources);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let edges=[VisualJumpLedge{start:IVec2::new(0,4),end:IVec2::new(2,4),descent:IVec2::Y}];
+        let field=Field::new(&edges,&g,[0,0]);
+        let mut old=SurfaceMeshData::default();
+        append_solid_quad(&mut old,[[32.,0.,32.],[32.,6.,32.],[24.,6.,32.],[24.,0.,32.]],
+            [0.,0.,1.],[0.43,0.385,0.29,1.]);
+        super::super::ledge_approach::mark_bank_surface(&mut old,0,15);
+        let mut new=old.clone();
+        // Unattributed legacy geometry uses centroid inference. A proven
+        // Kanto owner now selects the closed replacement without a town switch.
+        old.uvs.fill([0.;2]);
+        shape_surface_excluding(&mut old,&cells,&field,None);
+        shape_surface_excluding_with_lips(&mut new,&cells,&field,None,false);
+        assert!(!old.indices.is_empty(),"the old face survived outside the cut span");
+        assert!(new.indices.is_empty(),"replacement must not retain a flattened legacy wall");
+    }
+
+    #[test]
+    fn blackthorn_closed_lips_preserve_authoritative_terrace_support() {
+        let mut frame=super::super::tests::frame(8,8,
+            vec![super::super::tests::source_with_tile(0,0,0,5);64]);
+        frame.jump_ledges=vec![VisualJumpLedge{start:IVec2::new(2,4),end:IVec2::new(6,4),descent:IVec2::Y}].into();
+        frame.map_id="Route37".into();
+        let old=build_terrain_mesh(&frame).unwrap();
+        frame.map_id="BlackthornCity".into();
+        let new=build_terrain_mesh(&frame).unwrap();
+        assert_eq!(new.footing_heights,old.footing_heights);
+        assert_eq!(new.authored_cells,old.authored_cells);
+        assert_ne!(new.solid,old.solid,"the town's closed lip must reach production meshing");
+        for tri in new.solid.indices.chunks_exact(3) {
+            let p=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(new.solid.positions[i as usize]));
+            assert!((p[1]-p[0]).cross(p[2]-p[0]).length_squared()>1e-10);
+        }
     }
 
     #[test]

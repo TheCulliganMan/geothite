@@ -1,6 +1,8 @@
 //! Bevy frontend for the shared Geothite runtime.
 
 mod battle_anim_machine;
+#[cfg(feature = "voxel-view")]
+pub mod loading_pack_trace;
 #[cfg(feature = "browser-webgpu")]
 mod browser_shader;
 #[cfg(all(target_arch = "wasm32", feature = "browser-webgpu"))]

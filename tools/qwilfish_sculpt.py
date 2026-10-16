@@ -8,7 +8,11 @@ from bovine_sculpt import oval,curved_tube,reverse_front
 from wing_insect_sculpt import membrane,contour
 from skin_glb import COORDINATES
 SPECIES=('qwilfish',);HEIGHT=.91
-TEAL=(.27,.52,.56);CREAM=(.88,.92,.64);PINK=(.92,.56,.66);INK=(.065,.085,.105);WHITE=(.98,.98,.94)
+def source_color(rgb):
+    return tuple(v/255 for v in rgb)
+# Local Crystal front/back RGB555: navy (4,6,16), yellow (27,29,11).
+# Historical part names remain stable so existing anatomy checks keep their meaning.
+TEAL=source_color((33,49,132));CREAM=source_color((222,239,90));PINK=CREAM;INK=(0.,0.,0.);WHITE=(1.,1.,1.)
 CENTER=.45;RADII=(.34,.30,.31)
 
 def hemisphere(lower):
@@ -29,7 +33,7 @@ def rotated_oval(x,y,w,h,angle,n=28):
     c=math.cos(angle);s=math.sin(angle)
     return [(x+c*(xx-x)-s*(yy-y),y+s*(xx-x)+c*(yy-y)) for xx,yy in oval(x,y,w,h,n)]
 
-def sculpture(species='qwilfish'):
+def sculpture(species='qwilfish',normalize=True):
     if species not in SPECIES:raise ValueError('unsupported puffer fish')
     lower=hemisphere(True);upper=hemisphere(False);p=[lower,upper]
     lower_skin=surface(lower);upper_skin=surface(upper)
@@ -57,18 +61,19 @@ def sculpture(species='qwilfish'):
     fan=membrane('Tail fin / rounded teal paddle border',TEAL,outline,1,root_z=-.570,thickness=.026);p.append(fan);fs=surface(fan)
     cx=sum(x for x,y in outline)/len(outline);cy=sum(y for x,y in outline)/len(outline)
     inset=[(cx+(x-cx)*.81,cy+(y-cy)*.81) for x,y in outline]
-    cream=fitted_contour('Tail fin / fitted cream paddle center',CREAM,inset,fs,.004);p.append(cream);cs=surface(cream)
+    cream=fitted_contour('Tail fin / fitted cream paddle center',WHITE,inset,fs,.004);p.append(cream);cs=surface(cream)
     for j,(x,y,w,h,a) in enumerate(((-.392,.251,.024,.049,-.67),(-.415,.123,.023,.052,-.45))):
         p.append(fitted_patch('Tail spot / fitted teal oblong '+str(j),TEAL,rotated_oval(x,y,w,h,a),cs,.003))
     reverse=reverse_front(fan);back_inset=[(-x,y) for x,y in inset]
-    back_cream=fitted_contour('Tail fin / fitted cream reverse center',CREAM,back_inset,surface(reverse),.004);back_skin=surface(back_cream)
+    back_cream=fitted_contour('Tail fin / fitted cream reverse center',WHITE,back_inset,surface(reverse),.004);back_skin=surface(back_cream)
     p.append(reverse_front(back_cream))
     for j,(x,y,w,h,a) in enumerate(((-.392,.251,.024,.049,-.67),(-.415,.123,.023,.052,-.45))):
         p.append(reverse_front(fitted_patch('Tail spot / fitted rear teal oblong '+str(j),TEAL,rotated_oval(-x,y,w,h,-a),back_skin,.003)))
     p=[crease_normals(q,35.) if q['part'].startswith(('Eye /','Pupil /','Fin /','Fin crease /','Mouth /','Tail fin / fitted','Tail spot /')) else q for q in p]
     lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
-    for q in p:
-        q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+    if normalize:
+        for q in p:
+            q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'qwilfish.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))

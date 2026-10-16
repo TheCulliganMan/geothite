@@ -1,25 +1,56 @@
-# Skarmory sculpture
+# Skarmory sculpture and skin
 
-`tools/skarmory_sculpt.py` authors original static geometry for Skarmory, replacing the sphere/rod torso, round head and disconnected flat wing primitives. The established battle builder dispatches to this recipe and writes the canonical `skarmory.mesh.json`. Its existing normalized height of 1.21 remains unchanged; no other species asset is regenerated.
+`tools/skarmory_sculpt.py` authors the anatomy; `tools/skarmory_glb.py` exports
+canonical `skarmory.glb`. The duplicate static JSON is removed. The battle
+builder dispatches this standard skin before generic Blender batching. Every
+original neutral f32 position, normal, color and triangle is retained at the
+1.21 authoring height. Raw recipe geometry is cached for normalization and pivots.
 
-The breast, shoulder and rising neck form a continuous shell. A joined angular skull extends into a sharp upper bill, with a separate lower mandible and dark mouth seam. Surface-fitted yellow eyes sit inside dark angular sockets. Four fitted neck seams define overlapping armor. An upright swept crest and four rear nape plumes join the skull. Each wing has a swept pale steel leading edge and four layered red blade solids with broad roots embedded in the shoulder. Silver haunches support bent darker hocks and three forward plus one rear hooked talon on each grounded foot. The long hooked tail blade connects to the rear body.
+The breast, shoulder and rising neck retain their continuous steel shell. The
+angular skull and sharp upper bill, lower mandible, fitted yellow eyes, four
+neck armor seams, upright crest, four nape plumes, swept wing leading edges,
+eight red wing blades, silver haunches, bent hocks, eight hooked talons and long
+hooked tail blade are unchanged. The existing diffuse mesh-color path retains
+the sharp steel planes and red undersides.
 
-The palette and sharp surface planes suggest steel; the recipe does not add reflective PBR materials or a skeletal rig. The existing runtime mesh-color rendering path is retained.
+Ten joints articulate the torso, neck, head, both wings, tail, supported leg
+middles and lower mandible. All four talons on each foot stay on the identity
+floor root. A wing's steel leading edge and four red blades share one rigid
+owner, preserving their plate shapes and overlap through the stroke. The head
+carries its fitted eyes, crest and nape armor. Neck seams follow the rigid
+section of their actual support. The lower mandible and mouth seam share their
+hinge; the bill opens during attack and recoil without closing through its
+neutral upper edge. Standard rotation-only idle/source-cue timing and literal
+neutral endpoints are retained.
 
-[Official artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/227.png) was inspected as a temporary design reference. [Skarmory (Animated) by nguyenlouis32](https://sketchfab.com/3d-models/skarmory-animated-f6bd32a3716848d8895b5dd562be8c79) advertises animation and CC Attribution, but its authorship and rig suitability were not verified. The official download API returned HTTP 401 without authentication. Nothing from that listing was imported, and no external mesh or reference image is shipped.
+The skin has 42 parts, 3,635 vertices, 4,288 triangles and ten joints, using
+181,568 bytes and 167 accessors. Existing loader budgets are unchanged.
+Verified pack height is 1.7018 m. Neutral f32 digest:
+`4a314b8b28c7023ad5044af9003e534b194def610a87be4865b89bde70c1e997`.
 
-Verification commands:
+Ordered patch and eye-inset centroids preserve the original Python 3.9 geometry
+under Blender's newer Python. Both authoring paths regenerate the full GLB
+byte-identically.
+
+The original sculpture pass used [official artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/227.png)
+as a temporary reference. No external mesh, texture, rig or extracted game
+content is shipped.
 
 ```sh
-python3 -m unittest discover -s tools -p test_skarmory_sculpt.py
-python3 tools/check-model-layout.py
-python3 tools/model_asset_storage.py validate crates/crystal-voxel-view/models
-cargo test --locked -p crystal-voxel-view every_exact_species_is_grounded_and_volumetric --lib
-cargo build --locked -p crystal-bevy --example immersive_battle_3d --features location-tester
+python3 -m unittest discover -s tools -p 'test_skarmory*.py'
 ```
 
-Seven geometry checks inspect closed connected outward-oriented solids, normals against stored triangles, deterministic regeneration and bounds, blade counts, real wing/head/tail body contacts, crest/plume skull contact, fitted eye/neck surfaces and actual haunch/hock/talon support. Software front, rear and oblique reviews inspect stored geometry. A native battle capture uses the existing ignored `content-packs/realtime-clock.browser.crystalpack` to inspect static appearance and camera fit. This does not establish gameplay or controller behavior.
+Seven anatomy checks retain topology, shading, bounds, blade counts, actual
+armor and limb contacts and fitted-surface checks. Eight skin checks decode the
+actual keys and weights to verify fixed talons, coherent armor, neutral
+endpoints, visible articulation, two-wing attack strokes, an opening bill,
+physical posed joins, fitted features, winding and strain. Shiny checks are
+intentionally skipped.
 
-Verified this pass: seven geometry checks, canonical model layout, validation of 571 raw JSON model documents, the Rust full-catalog grounded/volumetric regression, and a native battle capture passed. The canonical asset contains 4,288 triangles and occupies 260,728 bytes. Temporary artwork, download response and review captures were removed after inspection.
+All 15 Python anatomy/skin checks, two focused Rust rig/GPU regressions and two wider catalog/timing regressions passed. Blender regeneration is byte-identical to the canonical GLB. The production native client built successfully. Front/rear and fixed-camera neutral, idle, wing-stroke and recovery views were inspected, followed by a paired normal 3D/2D battle against Hoppip with preserved game state and accepted, visibly rendered terrain. Shiny checks were skipped as requested.
 
-This is an incremental species pass; the full 251-species visual goal remains active and unproven.
+Final normal pair: core 1332/hash 453190722, LCD 1965, virtual time 35.581795208; `state_preserved=true`.
+
+Final ignored QA prefix: `target/pokemon-native-review/skarmory-normal`. Temporary
+helpers, software previews, movement frames and builder parity outputs were
+removed after inspection.

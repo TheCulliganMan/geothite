@@ -4,6 +4,8 @@
 use super::*;
 use crate::dungeon_models::{RoomAsset as Asset, room_model};
 use crate::interior_models::{ModelKind as Interior, model as interior_model};
+#[path="native_shrine.rs"]
+mod native_shrine;
 #[derive(Clone, Copy, Debug)]
 pub(super) enum Surface {
     Stone,
@@ -16,6 +18,7 @@ pub(super) enum Surface {
     Tatami,
     Facility,
     DojoNative,
+    ShrineNative,
 }
 #[derive(Clone, Copy, Debug)]
 pub(super) enum Wall {
@@ -29,6 +32,7 @@ pub(super) enum FloorStyle {
     StoreLift,
     MansionRoof,
     Dojo,
+    Shrine,
 }
 #[derive(Clone, Copy, Debug)]
 pub(super) enum Detail {
@@ -83,6 +87,7 @@ impl Detail {
             Self::Surface(Surface::Tatami) => "special-room:surface-dojo-mat",
             Self::Surface(Surface::Facility) => "special-room:surface-facility",
             Self::Surface(Surface::DojoNative) => "special-room:surface-dojo-mat",
+            Self::Surface(Surface::ShrineNative) => "special-room:surface-shrine-planks",
             Self::Wall(_) | Self::WallSegment { .. } => "special-room:connected-enclosure",
             Self::RoofRail => "special-room:terrace-parapet",
             Self::LivePlaque => "special-room:live-sign-in-frame",
@@ -97,7 +102,7 @@ impl Detail {
             Self::FacilitySourceBarrier => "special-room:facility-source-barrier",
             Self::RoofExit => "special-room:roof-access-door",
             Self::ServiceCounter => "special-room:bike-service-counter",
-            Self::ShrineAltar => "special-room:shrine-altar-screen",
+            Self::ShrineAltar => "special-room:shrine-green-mat",
             Self::Guardian => "special-room:dojo-guardian",
             Self::LiveFloorInlay => "special-room:surface-live-inlay",
             Self::Arena => "special-room:surface-tower-arena",
@@ -201,6 +206,7 @@ fn add(
             "CeladonMansionRoof"=>FloorStyle::MansionRoof,
             "GoldenrodDeptStoreElevator" | "CeladonDeptStoreElevator" => FloorStyle::StoreLift,
             "FightingDojo" => FloorStyle::Dojo,
+            "DragonShrine" => FloorStyle::Shrine,
             _ => FloorStyle::Default,
         }),
         rise_pixels: rise,
@@ -260,7 +266,7 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>) {
         }
     }
 }
-fn slab(out: &mut SurfaceMeshData, b: [f32; 4], low: f32, high: f32, c: [f32; 4]) {
+pub(super) fn slab(out: &mut SurfaceMeshData, b: [f32; 4], low: f32, high: f32, c: [f32; 4]) {
     let [w, e, n, s] = b;
     for (p, normal) in [
         (
@@ -322,7 +328,7 @@ fn surface(out: &mut SurfaceMeshData, b: [f32; 4], kind: Surface, x: usize, y: u
     let c = match kind {
         Surface::BlueBrick | Surface::ArcadeCeramic => unreachable!("handled before generic paving"),
         Surface::Stone => [0.55, 0.57, 0.50, 1.],
-        Surface::RoofTile | Surface::StoreTile | Surface::DojoNative => unreachable!("owned paving uses its verified source atlas"),
+        Surface::RoofTile | Surface::StoreTile | Surface::DojoNative | Surface::ShrineNative => unreachable!("owned paving uses its verified source atlas"),
         Surface::Ceramic => {
             if (x + y) % 2 == 0 {
                 [0.72, 0.74, 0.67, 1.]
@@ -442,6 +448,15 @@ fn octagon(out: &mut SurfaceMeshData, b: [f32; 4], low: f32, high: f32, color: [
 }
 fn underlay(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement, kind: Surface, cells: &[&VisualTile]) {
     for i in p.indices(g.width) {
+        if matches!(kind,Surface::ShrineNative) {
+            let sample=if matches!(p.form,Form::Room(Detail::Surface(_),FloorStyle::Shrine)) {i} else {p.ground};
+            let source=&cells[sample].source;
+            assert!(source.tileset_id.as_ref()=="lab"&&source.tile_index==0x8a,
+                "Shrine floor requires its authenticated blue plank drawing");
+            append_top(&mut mesh.textured,g.bounds(i%g.width,i/g.width).into(),0.,
+                g.uv(sample%g.width,sample/g.width));
+            continue;
+        }
         if matches!(kind,Surface::DojoNative) {
             let sample=if matches!(p.form,Form::Room(Detail::Surface(_),FloorStyle::Dojo)) {i} else {p.ground};
             let source=&cells[sample].source;
@@ -664,13 +679,23 @@ pub(super) fn append_with_floor(
     let rise = p.rise_pixels * k;
     let depth = p.depth_pixels * k;
     let b = [w, e, n, s];
+    if floor_style==FloorStyle::Shrine {
+        if let Detail::Asset(asset @ (Asset::ShrineDragonRail|Asset::ShrineDragonMask))=detail {
+            if !room_model(asset).has_native_shrine_materials() {
+                for i in p.indices(g.width) {append_top(&mut mesh.textured,
+                    g.bounds(i%g.width,i/g.width).into(),0.,g.uv(i%g.width,i/g.width));}
+                return;
+            }
+        }
+    }
     if mansion_roof && matches!(detail,Detail::Asset(Asset::RoofAccessHut))
         && !room_model(Asset::RoofAccessHut).has_native_mansion_hut_materials() {
         // Unknown authored materials retain the complete original 2D plot.
         for i in p.indices(g.width) {append_top(&mut mesh.textured,g.bounds(i%g.width,i/g.width).into(),0.,g.uv(i%g.width,i/g.width));}
         return;
     }
-    let room_floor = if floor_style==FloorStyle::Dojo {Surface::DojoNative}
+    let room_floor = if floor_style==FloorStyle::Shrine {Surface::ShrineNative}
+    else if floor_style==FloorStyle::Dojo {Surface::DojoNative}
     else if roof_tiles || mansion_roof { Surface::RoofTile } else if floor_style == FloorStyle::StoreLift {
         Surface::StoreTile
     } else { match cells[p.ground].source.tileset_id.as_ref() {
@@ -681,7 +706,7 @@ pub(super) fn append_with_floor(
         "elite_four_room" => Surface::Stone,
         _ => Surface::Ceramic,
     }};
-    if !matches!(
+    if !(floor_style==FloorStyle::Shrine&&matches!(detail,Detail::ShrineAltar|Detail::Asset(Asset::ShrinePaperLantern))) && !matches!(
         detail,
         Detail::Pit
             | Detail::Stairs
@@ -717,18 +742,27 @@ pub(super) fn append_with_floor(
         Detail::TowerLadder { down } => {
             let base = if down { -16. * k } else { 0. };
             let top = if down { 0. } else { 24. * k };
-            let timber = [0.43, 0.29, 0.16, 1.];
-            let edge = [0.30, 0.19, 0.10, 1.];
+            let sample=|pixel:[usize;2]| {
+                let uv=g.uv(p.column+pixel[0]/8,p.row+pixel[1]/8);
+                [uv.0+(uv.1-uv.0)*((pixel[0]%8)as f32+0.5)/8.,
+                 uv.2+(uv.3-uv.2)*((pixel[1]%8)as f32+0.5)/8.]
+            };
+            let [timber,edge,well]=if down {[[0,0],[0,1],[2,2]]}
+                else{[[1,5],[2,11],[0,0]]}.map(sample);
+            let native_slab=|out:&mut SurfaceMeshData,b,low,high,uv| {
+                let first=out.positions.len();slab(out,b,low,high,[1.;4]);
+                out.uvs[first..].fill(uv);
+            };
             if down {
                 // Open well: no room-height backing can conceal the rungs.
-                slab(&mut mesh.solid, b, base - k, base, [0.13, 0.10, 0.07, 1.]);
+                native_slab(&mut mesh.textured, b, base - k, base, well);
                 for frame in [
                     [w, w + k, n, s],
                     [e - k, e, n, s],
                     [w + k, e - k, n, n + k],
                     [w + k, e - k, s - k, s],
                 ] {
-                    slab(&mut mesh.solid, frame, base, 0., edge);
+                    native_slab(&mut mesh.textured, frame, base, 0., edge);
                 }
             } else {
                 // Reuse the same native backing sample as the room. The late
@@ -748,12 +782,12 @@ pub(super) fn append_with_floor(
             }
             let z = n + 3. * k;
             for x in [w + 2. * k, e - 3. * k] {
-                slab(&mut mesh.solid, [x, x + k, z, z + k], base, top + k, edge);
+                native_slab(&mut mesh.textured, [x, x + k, z, z + k], base, top + k, edge);
             }
             for i in 0..=6 {
                 let y = base + (top - base) * i as f32 / 6.;
-                slab(
-                    &mut mesh.solid,
+                native_slab(
+                    &mut mesh.textured,
                     [w + 2. * k, e - 2. * k, z - 0.35 * k, z + 1.35 * k],
                     y,
                     y + 0.75 * k,
@@ -801,6 +835,17 @@ pub(super) fn append_with_floor(
             assert!(room_model(Asset::RoofAccessHut).append_native_mansion_hut(&mut mesh.textured,
                 [w,e,s-depth,s],rise,|role|source_texel_uv(g,p,pixels[role as usize])));
         }
+        Detail::Asset(Asset::ShrinePaperLantern) if floor_style==FloorStyle::Shrine => {
+            native_shrine::append_lit_fixture(mesh,g,p);
+        }
+        Detail::Asset(asset @ (Asset::ShrineDragonRail|Asset::ShrineDragonMask)) if floor_style==FloorStyle::Shrine => {
+            let mask=asset==Asset::ShrineDragonMask;
+            let east=cells[p.row*g.width+p.column].source.metatile_id==0x24;
+            let pixels=native_shrine::dragon_pixels(asset,east);
+            let bounds=if mask {[w,e,n+22.*k,n+28.*k]}else{[w,e,s-depth,s]};
+            assert!(room_model(asset).append_native_shrine(&mut mesh.textured,bounds,rise,
+                pixels.map(|pixel|source_texel_uv(g,p,pixel)),!mask&&east));
+        }
         Detail::Asset(a) => room_model(a).append(&mut mesh.solid, [w, e, s - depth, s], 0., rise),
         Detail::RoofSeat => {
             let first = mesh.solid.positions.len();
@@ -829,8 +874,13 @@ pub(super) fn append_with_floor(
             else if matches!(kind, Surface::Ceramic) && roof_tiles { Surface::RoofTile }
             else if matches!(kind, Surface::Ceramic) && floor_style == FloorStyle::StoreLift {
                 Surface::StoreTile
-            } else { kind }, cells),
+            } else if floor_style==FloorStyle::Shrine {Surface::ShrineNative}
+            else { kind }, cells),
         Detail::Wall(material) | Detail::WallSegment { material, .. } => {
+            if floor_style==FloorStyle::Shrine {
+                native_shrine::append_wall(mesh,g,p,cells);
+                return;
+            }
             if floor_style==FloorStyle::Dojo {
                 dojo_source_wall(mesh,g,p,b);
                 return;
@@ -925,6 +975,12 @@ pub(super) fn append_with_floor(
         }
         Detail::Threshold | Detail::FloorBand if floor_style==FloorStyle::Dojo => {
             live_source_slab(mesh,g,p,b,-k,0.);
+        }
+        Detail::Threshold | Detail::FloorBand if floor_style==FloorStyle::Shrine => {
+            for i in p.indices(g.width) {
+                append_top(&mut mesh.textured,g.bounds(i%g.width,i/g.width).into(),0.,
+                    g.uv(i%g.width,i/g.width));
+            }
         }
         Detail::Threshold | Detail::FloorBand if floor_style == FloorStyle::StoreLift => {
             let mut source_floor = p.clone();
@@ -1113,30 +1169,11 @@ pub(super) fn append_with_floor(
             }
         }
         Detail::ShrineAltar => {
-            slab(
-                &mut mesh.solid,
-                [w, e, s - 4. * k, s],
-                0.,
-                19. * k,
-                [0.29, 0.16, 0.10, 1.],
-            );
-            for j in 0..5 {
-                let x = w + (e - w) * (j as f32 + 0.5) / 5.;
-                slab(
-                    &mut mesh.solid,
-                    [x - 0.45 * k, x + 0.45 * k, s - 4.4 * k, s + 0.15 * k],
-                    0.,
-                    19. * k,
-                    [0.60, 0.38, 0.18, 1.],
-                );
+            // The complete green drawing is a floor mat in front of the elder.
+            for i in p.indices(g.width) {
+                append_top(&mut mesh.textured,g.bounds(i%g.width,i/g.width).into(),0.,
+                    g.uv(i%g.width,i/g.width));
             }
-            slab(
-                &mut mesh.solid,
-                [w, e, s - 5. * k, s + 1. * k],
-                16. * k,
-                18. * k,
-                [0.70, 0.54, 0.28, 1.],
-            );
         }
         Detail::LiveFloorInlay => {
             for i in p.indices(g.width) {
@@ -1386,6 +1423,140 @@ mod tests {
                 },
             })
             .collect()
+    }
+    #[test]
+    fn external_shrine_keeps_native_surfaces_light_footprints_and_streaming_placement() {
+        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
+        assert!(explicit.is_none()||path.is_file());if !path.is_file(){return;}
+        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let m=&pack.pack().data().maps["DragonShrine"];
+        let layout=&pack.pack().runtime_files()["data/tilesets/lab_metatiles.bin"];
+        let source_image=image::load_from_memory(&pack.pack().runtime_files()["gfx/tilesets/lab.png"]).unwrap().to_luma8();
+        let palette=&pack.pack().data().tilesets["lab"].palette_map;
+        let (w,h)=(m.attributes.width as usize*4,m.attributes.height as usize*4);
+        let g=grid(w,h);let mut tiles=cells(w,h);
+        for y in 0..h {for x in 0..w {
+            let block=m.blocks[y/4*(w/4)+x/4];
+            tiles[y*w+x].source=VisualTileSource{tileset_id:"lab".into(),metatile_id:block,
+                subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,
+                tile_index:layout[block as usize*16+y%4*4+x%4]as u16};
+        }}
+        let refs=tiles.iter().collect::<Vec<_>>();
+        let mut r=Resolver{map:"DragonShrine",cells:&refs,g:&g,claimed:vec![false;w*h],out:vec![]};
+        resolve_into(&mut r);
+        assert!(r.claimed.iter().all(|&v|v),"complete shrine source coverage");
+        let mut floors=0;let mut mats=0;let mut lamps=0;let mut walls=0;let mut dragons=0;let mut thresholds=0;
+        for p in &r.out {
+            let Form::Room(detail,style)=p.form else{panic!("shrine room binding")};
+            assert_eq!(style,FloorStyle::Shrine);
+            if let Detail::Asset(asset @ (Asset::ShrineDragonRail|Asset::ShrineDragonMask))=detail {
+                dragons+=1;
+                let mut mesh=TerrainMeshData{footing_heights:vec![2.75;w*h],..Default::default()};
+                append_with_floor(&mut mesh,&g,p,&refs,detail,style);
+                assert!(mesh.solid.indices.is_empty());assert_eq!(mesh.footing_heights,vec![2.75;w*h]);
+                assert!(mesh.textured.positions.iter().all(|v|v[1]<=p.rise_pixels+0.001));
+                let pixels=native_shrine::dragon_pixels(asset,refs[p.row*w+p.column].source.metatile_id==0x24);
+                let expected=if asset==Asset::ShrineDragonMask {[0,85,170,255]}else{[0,85,170,170]};
+                for (pixel,gray) in pixels.into_iter().zip(expected) {
+                    let raw=refs[(p.row+pixel[1]/8)*w+p.column+pixel[0]/8].source.tile_index as usize;
+                    let packed=palette[raw];assert_eq!(packed&7,3);
+                    let count=(source_image.width()/8)*(source_image.height()/8);
+                    let index=if packed&8!=0 {(raw&127)+count as usize/2}else{raw};
+                    let x=(index%16*8+pixel[0]%8)as u32;let y=(index/16*8+pixel[1]%8)as u32;
+                    assert_eq!(source_image.get_pixel(x,y).0[0],gray,"{asset:?} source pigment at {pixel:?}");
+                    assert!(mesh.textured.uvs.contains(&source_texel_uv(&g,p,pixel)));
+                }
+                if asset==Asset::ShrineDragonMask {
+                    assert!(mesh.textured.positions.iter().filter(|v|v[1]>0.).all(|v|v[2]>=22.&&v[2]<=28.),
+                        "mask mounting plaque meets the north-wall plane at24px");
+                }
+            }
+            if matches!(detail,Detail::Wall(_)|Detail::WallSegment{..}) {
+                walls+=1;
+                let mut mesh=TerrainMeshData{footing_heights:vec![2.75;w*h],..Default::default()};
+                append_with_floor(&mut mesh,&g,p,&refs,detail,style);
+                assert_eq!(mesh.footing_heights,vec![2.75;w*h]);assert!(mesh.solid.indices.is_empty());
+                let (west,east,_,_)=g.bounds(p.column,p.row);
+                let low=(2-p.row)as f32*8.;let high=low+8.;let uv=g.uv(p.column,p.row);
+                let expected=[[east,low,24.],[east,high,24.],[west,high,24.],[west,low,24.]];
+                let tex=[[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2],[uv.0,uv.3]];
+                assert!(mesh.textured.positions.windows(4).zip(mesh.textured.uvs.windows(4))
+                    .any(|(positions,uvs)|positions==expected&&uvs==tex),"upright original wall cell");
+                assert!(mesh.textured.positions.iter().all(|v|v[1]<=24.));
+            }
+            if matches!(detail,Detail::Asset(Asset::ShrinePaperLantern)) {
+                lamps+=1;
+                assert_eq!((p.width,p.height,p.rise_pixels,p.depth_pixels),(4,4,11.5,4.));
+                for scale in [0.5,1.,2.] {
+                    let mut g=g;g.tile_width*=scale;g.tile_height*=scale;
+                    let mut mesh=TerrainMeshData{footing_heights:vec![2.75;w*h],..Default::default()};
+                    append_with_floor(&mut mesh,&g,p,&refs,detail,style);
+                    assert_eq!(mesh.footing_heights,vec![2.75;w*h]);assert!(mesh.solid.indices.is_empty());
+                    let (west,_,north,_)=g.bounds(p.column,p.row);
+                    let above=mesh.textured.positions.iter().filter(|v|v[1]>0.).collect::<Vec<_>>();
+                    assert!(above.iter().all(|v|v[0]>=west+12.75*scale&&v[0]<=west+19.25*scale
+                        &&v[2]>=north+17.*scale&&v[2]<=north+21.*scale&&v[1]<=11.5*scale+0.001),
+                        "small stand, not the entire light pool");
+                    let mut floor_area=0.;
+                    for tri in mesh.textured.indices.chunks_exact(3) {
+                        let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
+                        let normal=Vec3::from_array(mesh.textured.normals[tri[0]as usize]);
+                        let cross=(b-a).cross(c-a);
+                        assert!(cross.dot(normal)>0.,"outward fixture/pool winding");
+                        if a.y==0.&&b.y==0.&&c.y==0.&&normal.y>0.9 {floor_area+=cross.length()*0.5;}
+                    }
+                    assert!((floor_area-1024.*scale*scale).abs()<0.01,"one flat floor patch per pool");
+                }
+            }
+            if !matches!(detail,Detail::Surface(_)|Detail::ShrineAltar|Detail::Threshold){continue;}
+            let mut mesh=TerrainMeshData{footing_heights:vec![2.75;w*h],..Default::default()};
+            append_with_floor(&mut mesh,&g,p,&refs,detail,style);
+            assert_eq!(mesh.footing_heights,vec![2.75;w*h]);
+            assert!(mesh.solid.indices.is_empty(),"no brown paving or tall screen");
+            assert_eq!(mesh.textured.indices.len(),p.width*p.height*6,"one floor surface per source cell");
+            assert!(mesh.textured.positions.iter().all(|v|v[1]==0.));
+            for (v,uv) in mesh.textured.positions.iter().zip(&mesh.textured.uvs) {
+                assert!((uv[0]-v[0]/(w as f32*8.)).abs()<0.00001);
+                assert!((uv[1]-v[2]/(h as f32*8.)).abs()<0.00001);
+            }
+            if matches!(detail,Detail::ShrineAltar) {
+                mats+=1;assert_eq!((p.width,p.height,p.rise_pixels,p.depth_pixels),(4,3,0.,24.));
+                for y in 0..3 {for x in 0..4 {
+                    assert_eq!(refs[(p.row+y)*w+p.column+x].source.tile_index,[0xae,0xaf,0xad][y]);
+                }}
+            }else if matches!(detail,Detail::Threshold) {
+                thresholds+=1;assert!(matches!(refs[p.row*w+p.column].source.tile_index,0x02|0x12));
+            }else{floors+=1;assert_eq!(refs[p.row*w+p.column].source.tile_index,0x8a);}
+        }
+        assert_eq!(mats,1);assert_eq!(lamps,2);assert_eq!(walls,36);assert_eq!(dragons,4);assert!(floors>100);
+        assert_eq!(thresholds,8,"complete red entrance mat");
+        // Production uses a padded streaming grid, whose placement indices
+        // are not the source-map coordinates. Move the grid by seven cells
+        // while preserving every world position and immutable source phase.
+        let margin=7;let (bw,bh)=(w+margin*2,h+margin*2);let mut shifted=cells(bw,bh);
+        for y in 0..h {for x in 0..w {
+            let mut tile=tiles[y*w+x].clone();tile.column=(x+margin)as u32;tile.row=(y+margin)as u32;
+            shifted[(y+margin)*bw+x+margin]=tile;
+        }}
+        let big=GridGeometry{width:bw,height:bh,origin_x:-(margin as f32)*8.,origin_z:-(margin as f32)*8.,..g};
+        let shifted_refs=shifted.iter().collect::<Vec<_>>();
+        for p in &r.out {
+            let Form::Room(detail,style)=p.form else{unreachable!()};
+            if !matches!(detail,Detail::Wall(_)|Detail::WallSegment{..}|Detail::Asset(
+                Asset::ShrineDragonRail|Asset::ShrineDragonMask|Asset::ShrinePaperLantern)){continue;}
+            let mut q=p.clone();q.column+=margin;q.row+=margin;
+            q.ground=(p.ground/w+margin)*bw+p.ground%w+margin;
+            let mut a=TerrainMeshData::default();let mut b=TerrainMeshData::default();
+            append_with_floor(&mut a,&g,p,&refs,detail,style);
+            append_with_floor(&mut b,&big,&q,&shifted_refs,detail,style);
+            assert_eq!(a.textured.positions,b.textured.positions,"streaming translation: {detail:?}");
+            assert_eq!(a.textured.normals,b.textured.normals);
+            assert_eq!(a.textured.indices,b.textured.indices);
+        }
+        assert!(rendered(Detail::Surface(Surface::Timber),1,1).textured.indices.is_empty(),
+            "other timber rooms retain their existing path");
     }
     #[test]
     fn kanto_native_dojo_floor_wall_and_guardian_keep_source_palette_and_support() {

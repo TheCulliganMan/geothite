@@ -5,6 +5,8 @@ No imported sprites, textures, or Nintendo models. All meshes authored here.
 import bpy, math, random, json, sys
 from pathlib import Path
 from mathutils import Vector
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from window_recess import carve_window_pocket, build_window_ring
 args = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 P = Path(next((arg for arg in args if not arg.startswith('--')), 'target/new-bark-assets'))
 P.mkdir(parents=True, exist_ok=True)
@@ -71,15 +73,19 @@ def facade_cube(n,x,z,w,h,y,depth,mat,angle=0,bevel=0):
  a=math.radians(angle);o=cube(n,(x*math.cos(a)-y*math.sin(a),x*math.sin(a)+y*math.cos(a),z),(w,depth,h),mat,bevel);o.rotation_euler.z=a;return o
 
 def window(x,z,y,w=.68,h=.73,angle=0,shutters=False):
+ carve_window_pocket(COL,x,z,w-.07,h-.07,y,angle)
  f=lambda n,dx,dz,ww,hh,off,dd,mat,bevel=0:facade_cube(n,x+dx,z+dz,ww,hh,y+off,dd,mat,angle,bevel)
- f('Recessed window surround',0,0,w+.15,h+.15,-.015,.13,'timber',.015)
- f('Painted window border',0,0,w+.09,h+.09,-.09,.035,'plaster_light')
- f('Cool glass',0,0,w-.07,h-.07,-.115,.025,'glass')
- f('Glass upper reflection',-.12*w,.19*h,w*.46,.06,-.132,.014,'glass_light')
- f('Glass lower reflection',.19*w,-.19*h,w*.21,.035,-.133,.014,'glass_light')
- f('Window vertical bar',0,0,.055,h-.05,-.143,.04,'plaster_light')
- f('Window horizontal bar',0,0,w-.05,.052,-.144,.04,'plaster_light')
- f('Window ledge',0,-h/2-.055,w+.28,.10,-.10,.32,'timber_light',.018)
+ def ring(name,width,height,off,depth,thickness,material):
+  build_window_ring(COL,MATS[material],name,x,z,width,height,y+off,depth,thickness,angle)
+ ring('Recessed window surround',w+.15,h+.15,.07,.13,.09,'timber')
+ ring('Painted window border',w+.09,h+.09,.0925,.035,.08,'plaster_light')
+ f('Cool glass',0,0,w-.07,h-.07,.14,.025,'glass')
+ f('Glass upper reflection',-.12*w,.19*h,w*.46,.06,.123,.014,'glass_light')
+ f('Glass lower reflection',.19*w,-.19*h,w*.21,.035,.122,.014,'glass_light')
+ f('Window vertical bar',0,0,.035,h-.05,.115,.025,'plaster_light')
+ f('Window horizontal bar',0,0,w-.05,.035,.114,.025,'plaster_light')
+ f('Window ledge',0,-h/2-.055,w+.20,.07,.035,.12,'timber_light',.012)
+
  if shutters:
   for s in [-1,1]:
    f('Open wooden shutter',s*(w/2+.17),0,.17,h+.08,-.045,.045,'timber_light')
@@ -129,6 +135,39 @@ def roof(width,depth,eave,ridge,palette,rows,gable_material=None):
    a=Vector((xx,side*d,eave-.015));b=Vector((xx,0,ridge+.015));o=cube('Gable edge timber',(a+b)/2,(.095,.115,(b-a).length),'timber_light');o.rotation_euler=(b-a).to_track_quat('Z','Y').to_euler()
  cube('Ridge cap',(0,0,ridge+.038),(width,.18,.12),palette+'_light',.032)
 
+def closed_town_roof_courses(width,depth,eave,ridge,palette,rows=10,columns=10):
+ # Closed beveled prisms retain a flat ceramic face, thick lip and shoulders.
+ # Half tiles finish staggered rows at the unchanged structural roof edges.
+ COL['roof_courses']='closed_prism_v1'
+ for side in [-1,1]:
+  for row in range(rows):
+   t0=row/rows;t1=(row+1)/rows
+   y0=side*depth/2*(1-t0);y1=side*depth/2*(1-t1)
+   z0=eave+(ridge-eave)*t0+.085;z1=eave+(ridge-eave)*t1+.045
+   edges=[-width/2]
+   edges.extend(-width/2+width*(i+(.5 if row%2 else 1))/columns for i in range(columns) if 0<i+(.5 if row%2 else 1)<columns)
+   edges.append(width/2)
+   for column,(x0,x1) in enumerate(zip(edges,edges[1:])):
+    x0+=.004;x1-=.004;bevel=min(.025,(x1-x0)*.12)
+    profile=[(x0,-.04),(x1,-.04),(x1,-.014),(x1-bevel,0),
+             (x0+bevel,0),(x0,-.014)]
+    vs=[(x,y,z+dz) for y,z in [(y0,z0),(y1,z1)] for x,dz in profile]
+    faces=[tuple(range(5,-1,-1)),tuple(range(6,12))]
+    faces.extend((i,(i+1)%6,(i+1)%6+6,i+6) for i in range(6))
+    if side<0:faces=[tuple(reversed(f)) for f in faces]
+    shade=(column*17+row*7+side*3)%11
+    material=palette+'_light' if shade==0 else palette+'_warm' if shade==7 else palette
+    mesh('Small closed ceramic course',vs,faces,material)
+
+def town_roof(width,depth,eave,ridge,palette,gable_material=None):
+ previous=set(COL.objects)
+ roof(width,depth,eave,ridge,palette,6,gable_material)
+ for o in set(COL.objects)-previous:
+  if o.name.startswith('Individual roof course'):
+   data=o.data;bpy.data.objects.remove(o,do_unlink=True)
+   if data.users==0:bpy.data.meshes.remove(data)
+ closed_town_roof_courses(width,depth,eave,ridge,palette)
+
 def foundation(w,d):
  cube('Solid stone plinth',(0,0,.13),(w,d,.26),'stone',.035)
  # substantial corner footings and front blocks give the stonework a crafted rhythm
@@ -151,7 +190,7 @@ def make_house():
  # Side gables fill the volume behind roof, visible from every angle.
  for xx in [-1.761,1.761]:
   mesh('Cream gable end',[(xx,-1.245,2.17),(xx,1.245,2.17),(xx,0,3.17)],[(0,1,2)] if xx<0 else [(2,1,0)],'plaster_light')
- roof(3.935,2.93,2.18,3.29,'roof_red',6,gable_material='plaster_light')
+ town_roof(3.935,2.93,2.18,3.29,'roof_red',gable_material='plaster_light')
  fy=-1.252;door(fy-.016,z=1.02,w=.69,h=1.51)
  for x in [-1.13,1.13]:window(x,1.30,fy,w=.64,h=.70,shutters=True)
  # side walls: local y=-halfwidth rotated +/-90
@@ -314,6 +353,13 @@ def export_asset(name,col):
   scene.cursor.location=(0,0,0);bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
   # Recompute consistent face winding, particularly the two roof slope shells.
   bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.mesh.normals_make_consistent(inside=False);bpy.ops.object.mode_set(mode='OBJECT')
+  # Recalculation cannot infer the outside of the two disconnected open
+  # plaster gable caps. Preserve their authored outward orientation.
+  if name=='house' and mat_name=='plaster_light':
+   for face in obj.data.polygons:
+    if abs(face.center.x)>1.9 and face.center.z>=2.18 and abs(face.normal.x)>.99 and face.normal.x*face.center.x<0:
+     face.flip()
+   obj.data.update()
  objects=[o for o in col.objects if o.type=='MESH']
  if name in ['house','lab']:
   # Tiny ledges and edge timbers are included in the exact occupied footprint.
@@ -342,6 +388,7 @@ def export_asset(name,col):
   primitives.append({'name':obj.name,'material':obj.data.materials[0].name,'base_color':[round(v,5) for v in color], 'positions':positions,'normals':normals,'indices':indices})
   tri_count+=len(indices)//3
  data={'name':name,'coordinate_system':'right-handed; +Y up; front +Z','origin':'floor-center','bounds':{'min':minv,'max':maxv},'dimensions':[round(maxv[i]-minv[i],6) for i in range(3)],'triangle_count':tri_count,'primitive_count':len(primitives),'primitives':primitives}
+ if col.get('roof_courses'):data['roof_courses']=col['roof_courses']
  if name in ['house','lab']:data['door_anchor']=[0,0,maxv[2]]
  (P/f'{name}.mesh.json').write_text(json.dumps(data,separators=(',',':')))
  bpy.ops.object.select_all(action='DESELECT')
@@ -371,7 +418,7 @@ scene['Source coordinates']='Z-up, front -Y. Export files Y-up, front +Z, floor-
 for screen in bpy.data.screens:
  for area in screen.areas:
   if area.type=='VIEW_3D':area.spaces.active.region_3d.view_perspective='CAMERA'
-bpy.ops.wm.save_as_mainfile(filepath=str(P/'new-bark-modular-assets.blend'))
+bpy.ops.wm.save_as_mainfile(filepath=str(P/'new-bark-modular-assets.blend'),compress=False)
 if '--skip-preview' not in args:
  bpy.ops.render.render(write_still=True)
 print('FINAL_STATS='+json.dumps(STATS))

@@ -5,12 +5,17 @@ use bevy::prelude::*;
 use crystal_render_api::VisualWorldFrame;
 
 pub(super) fn offset(built: &VisualWorldFrame, live: &VisualWorldFrame) -> Vec2 {
-    (built.grid_origin - live.grid_origin).as_vec2() * live.tile_size
+    // A retained map patch and the active camera grid can have different
+    // extents. Their centers, rather than only their northwest corners,
+    // determine where the same authored source coordinate appears.
+    (built.grid_origin.as_vec2() + built.grid_size.as_vec2() * 0.5
+        - live.grid_origin.as_vec2() - live.grid_size.as_vec2() * 0.5) * live.tile_size
 }
 
 pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bool {
     if built.map_id != live.map_id
         || built.source_map_size_core_tiles != live.source_map_size_core_tiles
+        || built.boundary_warps != live.boundary_warps
         || built.jump_ledges != live.jump_ledges
         || built.grid_size != live.grid_size
         || built.tile_size != live.tile_size
@@ -139,6 +144,16 @@ pub(super) fn align_footings(
 mod tests {
     use super::*;
     use crystal_render_api::{VisualTile, VisualTileSource};
+    #[test]
+    fn resized_retained_patches_keep_the_same_source_point_in_world_space() {
+        let built = frame(IVec2::new(10, 12));
+        let mut live = frame(IVec2::new(4, 6));
+        live.grid_size = UVec2::new(40, 48);
+        let source_point = Vec2::new(19.5, 22.5);
+        let point = |frame: &VisualWorldFrame| (source_point - frame.grid_origin.as_vec2()
+            - frame.grid_size.as_vec2() * 0.5) * frame.tile_size;
+        assert_eq!(point(&built) + offset(&built, &live), point(&live));
+    }
     fn frame(origin: IVec2) -> VisualWorldFrame {
         let width = 28;
         let mut frame = VisualWorldFrame {
@@ -234,6 +249,9 @@ mod tests {
         changed = frame(IVec2::new(2, 0));
         changed.source_map_size_core_tiles = Some(UVec2::splat(20));
         assert!(!can_reuse(&built, &changed), "changed source acreage requires a new partition");
+        changed = frame(IVec2::new(2, 0));
+        changed.boundary_warps = vec![IVec2::new(3, 7)].into();
+        assert!(!can_reuse(&built, &changed), "changed exits require new wall openings");
         changed = frame(IVec2::new(2, 0));
         changed.jump_ledges = vec![crystal_render_api::VisualJumpLedge {
             start: IVec2::new(0,4), end: IVec2::new(8,4), descent: IVec2::Y,

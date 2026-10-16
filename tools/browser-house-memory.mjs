@@ -5,6 +5,7 @@ import fs from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { installTextureMemoryAccounting } from './browser-texture-memory.mjs';
 import { installWebGpuMemoryAccounting } from './browser-webgpu-memory.mjs';
+import { mergeTerrainWorkerTrace, mergeActorWorkerTrace } from './terrain-worker-trace.mjs';
 const [url, output, engine = 'webkit', cyclesText = '6'] = process.argv.slice(2);
 const cycles = Number(cyclesText);
 assert.ok(url && output && ['webkit', 'chromium', 'firefox'].includes(engine) &&
@@ -232,6 +233,11 @@ try {
       const style = getComputedStyle(canvas);
       return { label,
       heapBytes: houseRaw.memory.buffer.byteLength,
+      workerMemory: {
+        terrain: globalThis.__crystalTerrainWorkerMetrics?.workerMemory ?? null,
+        actor: globalThis.__crystalActorWorkerMetrics?.workerMemory ?? null,
+      },
+      actorCache: globalThis.__crystalActorWorkerMetrics?.cache ?? null,
       shaderErrors: window.houseShaderErrors ?? [],
           allocator: houseWasm.crystal_loading_memory_read ? JSON.parse(houseWasm.crystal_loading_memory_read()) : null,
           ...houseMemory,
@@ -240,6 +246,10 @@ try {
         display: style.display, visibility: style.visibility, opacity: style.opacity },
       enabled: document.querySelector('#view-toggle').getAttribute('aria-pressed') };
     }, label));
+    const current = report.samples.at(-1);
+    const requestedWorkers = ['terrain', 'actor'].filter(name => current.workerMemory[name] != null || new URL(url).searchParams.get(name + 'Worker') === '1');
+    current.combinedLinearMemoryHighWaterBytes = requestedWorkers.every(name => current.workerMemory[name]?.peakBytes != null)
+      ? current.heapBytes + requestedWorkers.reduce((sum, name) => sum + current.workerMemory[name].peakBytes, 0) : null;
     report.samples.at(-1).voxel = (await command({ kind: 'observe' })).presentation?.voxel;
     report.stage = label;
     await fs.writeFile(output, JSON.stringify(report, null, 2) + '\n');
@@ -373,6 +383,15 @@ try {
 } finally {
   if (page && !page.isClosed()) {
     try {
+      report.cpuWorkers = await page.evaluate(() => ({
+        terrain: globalThis.__crystalTerrainWorkerMetrics ? { metrics: globalThis.__crystalTerrainWorkerMetrics, traces: globalThis.__crystalTerrainWorkerTraces } : null,
+        actor: globalThis.__crystalActorWorkerMetrics ? { metrics: globalThis.__crystalActorWorkerMetrics, traces: globalThis.__crystalActorWorkerTraces } : null,
+      }));
+      for (const name of ['terrain', 'actor']) if (report.cpuWorkers[name] || new URL(url).searchParams.get(name + 'Worker') === '1') {
+        assert.ok(report.cpuWorkers[name]?.metrics.completed > 0, name + ' worker must actually complete');
+        for (const counter of ['fallback', 'failed', 'initFailures']) assert.equal(report.cpuWorkers[name].metrics[counter], 0, name + ' worker ' + counter);
+      }
+      report.combinedMemoryMeaning = 'Sum of requested main/worker WebAssembly linear-memory high-water; excludes JavaScript, browser and GPU driver overhead.';
       report.allocationStacks ??= await page.evaluate(() => globalThis.__crystalAllocationStacks ?? []);
       if (new URL(url).searchParams.get('allocation-stacks') === 'on') {
         assert.ok(report.allocationStacks.length > 0 && report.allocationStacks.length <= 64,
@@ -382,11 +401,21 @@ try {
         if (typeof window.houseWasm?.crystal_loading_trace_read !== 'function') throw Error('Missing Rust loading waterfall');
         return window.houseWasm.crystal_loading_trace_read();
       });
-      const capture = JSON.parse(trace);
+      let capture = JSON.parse(trace);
+      if (report.traceRequested) {
+        for (const [name, merge] of [['terrain', mergeTerrainWorkerTrace], ['actor', mergeActorWorkerTrace]]) {
+          const worker = report.cpuWorkers[name];
+          if (worker?.traces?.length) {
+            const merged = merge(capture, worker.traces);
+            capture = merged.trace;
+            worker.traceAlignment = merged.alignments;
+          }
+        }
+      }
       report.traceEventCount = capture.traceEvents.length;
       if (report.traceRequested) {
         report.waterfall = output.replace(/\.json$/, '-trace.json');
-        await fs.writeFile(report.waterfall, trace);
+        await fs.writeFile(report.waterfall, JSON.stringify(capture));
         assert.ok(capture.traceEvents.length > 0, 'Requested waterfall must contain events');
         assert.equal(capture.droppedEvents, 0, 'Waterfall must include every regional load');
       } else {

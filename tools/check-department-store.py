@@ -34,10 +34,15 @@ def check_models():
     assert x1<=16 or x0>=48 or z1<=16 or z0>=32,(p['name'],'covers floor inset')
    count+=1
   tris+=doc['triangle_count'];stored+=stored_model_size(path)
- # Lower centre is a closed supporting body, regardless of its dark lid finish.
- body=next(p for p in kit.u_display().parts if p[0]=='Closed lower display sealed body');vs=body[2]
- assert min(v[2]for v in vs)==32 and max(v[2]for v in vs)==63.5 and max(v[1]for v in vs)==7.6
- print(f'Geometry: 8 deterministic models, {count} closed positive-volume parts, {tris:,} triangles, {stored:,} stored bytes; upper floor inset and closed lower centre verified')
+ parts=kit.u_display().parts
+ assert sum('sealed body' in p[0] for p in parts)==3
+ for label,mat,vs,faces in parts:
+  if mat in ('blue_glass','blue_reflection','blue_glint'):
+   assert min(v[2]for v in vs)>=63.6 and max(v[2]for v in vs)<=63.86
+  # No broad opaque lower block or glass lid can cover the staff enclosure.
+  if min(v[2]for v in vs)>=32:
+   assert max(v[2]for v in vs)-min(v[2]for v in vs)<=.51
+ print(f'Geometry: 8 deterministic models, {count} closed positive-volume parts, {tris:,} triangles, {stored:,} stored bytes; three counter runs, thin front glass and native staff-floor inset verified')
 class Decoder:
  def __init__(self,b):self.b=b;self.i=0
  def read(self,n):v=self.b[self.i:self.i+n];self.i+=n;return v

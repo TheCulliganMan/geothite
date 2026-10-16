@@ -157,6 +157,16 @@ pub(crate) fn append_styled_patch(
             0.90 + 0.10 * t * t * (3. - 2. * t)
         } else { 1. };
         let h = height * (0.80 + seed * 0.20) * edge_height;
+        // Pigment follows a continuous field in authored source coordinates,
+        // with a weaker blade-to-blade change instead of a tint per tile.
+        let pigment = if kind == PatchKind::Meadow {
+            let mut patch = crate::foliage::leaf_pigment(Vec3::new(
+                coordinates[0] as f32 + root.x/unit,0.4,
+                coordinates[1] as f32 + root.z/unit),2.7);
+            let blade_tone = 1.+(random(coordinates[0],coordinates[1],blade*7+6)-0.5)*0.05;
+            for channel in &mut patch { *channel *= blade_tone; }
+            patch
+        } else { [1.;3] };
         let width = unit * match kind {
             PatchKind::Meadow => 0.035 + seed * 0.025,
             PatchKind::ParkShort => 0.030 + seed * 0.016,
@@ -238,7 +248,8 @@ pub(crate) fn append_styled_patch(
                                 PatchKind::ParkLong => [0.075 + seed * 0.04 + t * 0.27,
                                     0.19 + seed * 0.04 + t * 0.29, 0.045 + t * 0.045],
                             };
-                            out.colors.push([color[0]*shade,color[1]*shade,color[2]*shade,1.]);
+                            out.colors.push([color[0]*shade*pigment[0],color[1]*shade*pigment[1],
+                                color[2]*shade*pigment[2],1.]);
                         }
                         out.indices.extend([first, first + 1, first + 2]);
                     }

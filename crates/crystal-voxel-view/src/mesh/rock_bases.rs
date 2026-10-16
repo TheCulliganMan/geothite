@@ -125,13 +125,24 @@ pub(super) fn round_geometry(
             {
                 continue;
             }
-            let center = corner + inward * radius;
-            let radial = original.xz() - center;
-            let length = radial.length();
-            if length > radius {
-                let rounded = center + radial * (radius / length);
-                p[0] = rounded.x;
-                p[2] = rounded.y;
+            if map == "BlackthornCity" {
+                // The mountain town exposes broad fractured beds. A circular
+                // contact projection bows every height ring into a padded
+                // shoulder; one diagonal mineral plane keeps these rings
+                // straight and shares the same cut across cap and wall.
+                let cut=radius*(2.-std::f32::consts::SQRT_2);
+                let shift=((cut-local.x-local.y)*0.5).max(0.);
+                p[0]+=inward.x*shift;
+                p[2]+=inward.y*shift;
+            } else {
+                let center = corner + inward * radius;
+                let radial = original.xz() - center;
+                let length = radial.length();
+                if length > radius {
+                    let rounded = center + radial * (radius / length);
+                    p[0] = rounded.x;
+                    p[2] = rounded.y;
+                }
             }
         }
     }
@@ -251,7 +262,18 @@ mod tests {
         }
     }
 
+    #[test]
+    fn blackthorn_angular_contacts_keep_combined_mineral_winding_and_support() {
+        for z in -3..=3 {for x in -3..=3 {
+            check_production_rock_finish_for_map([x*17,z*19],"BlackthornCity");
+        }}
+    }
+
     fn check_production_rock_finish(origin: [i32; 2]) {
+        check_production_rock_finish_for_map(origin,"Route26");
+    }
+
+    fn check_production_rock_finish_for_map(origin: [i32; 2], map: &str) {
         let (frame, g, mut mesh) = fixture();
         // Match production's six subdivisions per source tile on both caps
         // and walls, rather than six across the entire diagnostic shelf.
@@ -303,14 +325,15 @@ mod tests {
         // corner caps and walls added by the sculptor.
         let source_positions = mesh.solid.positions.clone();
         let mut classified = mesh.clone();
-        outdoor_stone::sculpt_rock_rims(&mut classified, &cells, &shapes, &g, origin);
+        outdoor_stone::sculpt_rock_rims_on_map(&mut classified, map, &cells, &shapes, &g, origin);
         let mut reference = mesh.clone();
-        outdoor_stone::sculpt_rock_rims_reference(&mut reference, &cells, &shapes, &g, origin);
+        outdoor_stone::sculpt_rock_rims_reference_on_map(&mut reference, map, &cells, &shapes, &g, origin);
         assert_eq!(classified.solid, reference.solid,
             "local edge candidates must preserve the full mineral field exactly at {origin:?}");
         let sculpted_positions = classified.solid.positions.clone();
-        round_geometry(&mut classified, "Route26", &cells, &shapes, &g, origin);
-        outdoor_stone::finish_rock_geometry(&mut mesh, "Route26", &cells, &shapes, &g, origin);
+        round_geometry(&mut classified, map, &cells, &shapes, &g, origin);
+        super::super::outdoor_mountains::finish(&mut classified, map, &cells, &shapes, &g, origin);
+        outdoor_stone::finish_rock_geometry(&mut mesh, map, &cells, &shapes, &g, origin);
         assert_eq!(mesh.solid.positions, classified.solid.positions);
         assert_eq!(mesh.solid.indices, classified.solid.indices);
         let mut shared_source_positions = HashMap::new();
@@ -398,12 +421,13 @@ mod tests {
 
     #[test]
     fn rounded_contacts_share_wall_vertices_and_expose_a_closed_floor() {
+        for map in ["Route26", "BlackthornCity"] {
         let (frame, g, mut mesh) = fixture();
         let cells: Vec<_> = frame.tiles.iter().collect();
         let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
         let before = mesh.solid.positions.clone();
         let footing = mesh.footing_heights.clone();
-        round(&mut mesh, "Route26", &cells, &shapes, &g, [0, 0]);
+        round(&mut mesh, map, &cells, &shapes, &g, [0, 0]);
         let corner: Vec<_> = before
             .iter()
             .zip(&mesh.solid.positions)
@@ -445,9 +469,30 @@ mod tests {
                 assert_eq!(original, after);
             }
         }
+        }
     }
     #[test]
+    fn blackthorn_contact_samples_form_one_straight_mineral_plane() {
+        let (frame,g,mut mesh)=fixture();
+        let original=mesh.solid.positions.clone();
+        let cells:Vec<_>=frame.tiles.iter().collect();
+        let shapes:Vec<_>=cells.iter().map(|c|shape_for_source(&c.source)).collect();
+        round_geometry(&mut mesh,"BlackthornCity",&cells,&shapes,&g,[0,0]);
+        let mut cut=original.iter().zip(&mesh.solid.positions).filter_map(|(p,q)| {
+            (p[0]==8. && p[1]==0. && p[2]>=8. && p[2]<=11. && q[0]>8.0001)
+                .then_some(Vec2::new(q[0],q[2]))
+        }).collect::<Vec<_>>();
+        cut.sort_by(|a,b|a.x.total_cmp(&b.x));
+        cut.dedup();
+        assert!(cut.len()>=3,"inspect more than the single corner endpoint");
+        let axis=(cut[cut.len()-1]-cut[0]).normalize();
+        assert!(cut.iter().all(|p|axis.perp_dot(*p-cut[0]).abs()<0.0001),
+            "contact rings must lie on a straight cut rather than a circular arc");
+    }
+
+    #[test]
     fn contact_outline_stays_fixed_when_the_source_viewport_scrolls() {
+        for map in ["Route26","BlackthornCity"] {
         let (frame, g, mut mesh) = fixture();
         let original_count = mesh.solid.positions.len();
         let mut shifted = mesh.clone();
@@ -474,10 +519,10 @@ mod tests {
         let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
         let other: Vec<_> = shifted_frame.tiles.iter().collect();
         let other_shapes: Vec<_> = other.iter().map(|c| shape_for_source(&c.source)).collect();
-        round(&mut mesh, "Route26", &cells, &shapes, &g, [0, 0]);
+        round(&mut mesh, map, &cells, &shapes, &g, [0, 0]);
         round(
             &mut shifted,
-            "Route26",
+            map,
             &other,
             &other_shapes,
             &shifted_g,
@@ -490,6 +535,7 @@ mod tests {
                 a.distance(b) < 0.0001,
                 "viewport changes cannot reshape an existing rock contact"
             );
+        }
         }
     }
     #[test]

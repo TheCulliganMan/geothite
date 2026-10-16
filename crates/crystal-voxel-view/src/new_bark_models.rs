@@ -8,6 +8,7 @@ use bevy::prelude::{Vec2, Vec3};
 use serde::Deserialize;
 
 use crate::mesh::SurfaceMeshData;
+mod town_glass;
 
 /// The connected, source-verified outdoor art slice. Shared by scenery, actors,
 /// and presentation settings; interiors and all other maps retain their views.
@@ -79,6 +80,8 @@ struct Primitive {
 struct Export {
     #[serde(default)]
     name: String,
+    #[serde(default)]
+    roof_courses: Option<String>,
     primitives: Vec<Primitive>,
     door_anchor: Option<[f32; 3]>,
 }
@@ -87,6 +90,7 @@ pub(crate) struct Model {
     textured: Vec<crate::scenery_surfaces::ScenerySurface>,
     surface: SurfaceMeshData,
     solid_materials: Vec<(String, std::ops::Range<usize>, [f32; 4])>,
+    glass_uvs: Vec<(usize, [f32; 2])>,
     pub(crate) min: [f32; 3],
     pub(crate) max: [f32; 3],
     door_anchor: Option<[f32; 3]>,
@@ -169,7 +173,17 @@ impl Model {
             target
                 .indices
                 .extend(primitive.indices.into_iter().map(|i| base + i));
-            if texture.is_none()
+            let authored_courses=matches!(export.name.as_str(),"house"|"pokecenter"|"mart")
+                && export.roof_courses.as_deref()==Some("closed_prism_v1")
+                && primitive.material.starts_with("roof_") && !primitive.material.ends_with("_dark");
+            if authored_courses {
+                let sun=Vec3::new(0.45,0.8,0.55).normalize();
+                for i in base as usize..target.positions.len() {
+                    let light=0.60+0.40*Vec3::from_array(target.normals[i]).dot(sun).max(0.);
+                    for channel in 0..3 {target.colors[i][channel]*=light;}
+                }
+            }
+            if texture.is_none() && !authored_courses
                 && !crate::roof_tiles::refine(target, base as usize, index_start, &primitive.material)
                 && !(matches!(export.name.as_str(), "traditional_house" | "violet_gym")
                     && crate::roof_tiles::refine_traditional(target, base as usize, index_start,
@@ -201,14 +215,36 @@ impl Model {
         }) {
             return Err("invalid authored doorway anchor".into());
         }
+        let glass_uvs = if matches!(export.name.as_str(), "house" | "pokecenter" | "mart") {
+            solid_materials.iter().filter(|(name, _, _)| name == "glass")
+                .flat_map(|(_, range, _)| town_glass::coordinates(&surface, range.clone())).collect()
+        } else { Vec::new() };
         Ok(Self {
             textured,
             surface,
             solid_materials,
+            glass_uvs,
             min,
             max,
             door_anchor: export.door_anchor,
         })
+    }
+
+    pub(crate) fn mark_city_lights(&self, target: &mut SurfaceMeshData, first: usize) {
+        let center=(Vec3::from_array(self.min)+Vec3::from_array(self.max))*0.5;
+        for (material,range,_) in &self.solid_materials {
+            if !matches!(material.as_str(),"glass"|"glass_light") {continue;}
+            crate::city_lights::mark_window(target,first+range.start..first+range.end,first,false);
+            for i in range.clone() {
+                if crate::scenery_finish::town_glass_coordinates(target.uvs[first+i]).is_some() {continue;}
+                let outward=Vec3::from_array(self.surface.normals[i]).dot(
+                    (Vec3::from_array(self.surface.positions[i])-center)*Vec3::new(1.,0.,1.))>0.;
+                let base=if crate::city_lights::source_window_tag(target.uvs[first+i]) {
+                    crate::city_lights::SOURCE_UV_BASE
+                } else {crate::city_lights::UV_BASE};
+                target.uvs[first+i][1]=base+if outward && material=="glass" {0.}else{0.25};
+            }
+        }
     }
 
     pub(crate) fn append_textured_fitted(
@@ -220,6 +256,7 @@ impl Model {
     ) {
         for part in &self.textured {
             let adapter = Self {
+                glass_uvs: Vec::new(),
                 surface: part.mesh.clone(),
                 textured: Vec::new(),
                 solid_materials: Vec::new(),
@@ -269,6 +306,51 @@ impl Model {
         }
     }
 
+    /// Painted town roles carry authored local material coordinates/daylight.
+    /// Live glass gains pane coordinates; doors, timber and unpainted faces keep their tags.
+    pub(crate) fn light_fitted_source_paint(&self, target: &mut SurfaceMeshData, first: usize) {
+        for (material,range,_) in &self.solid_materials {
+            let kind=if material.starts_with("roof_") && !material.ends_with("_dark")
+                || matches!(material.as_str(),"violet"|"violet_warm"|"violet_light") {0.}
+                else {match material.as_str() {
+                    "plaster"|"plaster_light"=>1.,"plaster_service_wall"=>2.,
+                    "plaster_service_mortar"=>3.,_=>continue,
+                }};
+            for i in range.clone() {
+                if target.uvs[first+i]==crate::scenery_finish::SOURCE_PAINT_UV
+                    || crate::scenery_finish::town_paint_kind(target.uvs[first+i]).is_some() {
+                    let p=self.surface.positions[i];let n=self.surface.normals[i];
+                    let (u,v)=if n[1].abs()>0.5 {(p[0],p[2])}
+                        else if n[0].abs()>n[2].abs() {(p[2],p[1])}else {(p[0],p[1])};
+                    target.uvs[first+i]=[u,crate::scenery_finish::TOWN_PAINT_BASE+kind*32.+v];
+                }
+            }
+        }
+        for &(i, uv) in &self.glass_uvs {
+            if target.uvs[first+i] == crate::scenery_finish::SOURCE_PAINT_UV
+                || crate::scenery_finish::town_glass_coordinates(target.uvs[first+i]).is_some() {
+                target.uvs[first+i] = uv;
+            }
+        }
+    }
+
+    /// Compact plaster and its low ochre sill follow the complete native wall.
+    /// Model-local height distinguishes that sill from gables/chimney mortar.
+    pub(crate) fn recolor_fitted_compact_wall(&self, target: &mut SurfaceMeshData,
+        first: usize, palette: [[f32;4];2]) {
+        for (material,range,original) in &self.solid_materials {
+            if !matches!(material.as_str(),"plaster"|"plaster_light") {continue;}
+            for index in range.clone() {
+                let color=palette[usize::from(material=="plaster_light"
+                    && self.surface.positions[index][1]<0.5)];
+                let old=target.colors[first+index];
+                let shade=(old[0]+old[1]+old[2])/(original[0]+original[1]+original[2]);
+                for channel in 0..3 {target.colors[first+index][channel]=color[channel]*shade;}
+                target.uvs[first+index]=crate::scenery_finish::SOURCE_PAINT_UV;
+            }
+        }
+    }
+
     pub(crate) fn recolor_fitted_service_wall(&self, target: &mut SurfaceMeshData,
         first: usize, palette: [[f32;4];2]) {
         for (material,range,original) in &self.solid_materials {
@@ -281,6 +363,26 @@ impl Model {
                 let old=target.colors[first+index];
                 let shade=(old[0]+old[1]+old[2])/(original[0]+original[1]+original[2]);
                 for channel in 0..3 {target.colors[first+index][channel]=color[channel]*shade;}
+                target.uvs[first+index]=crate::scenery_finish::SOURCE_PAINT_UV;
+            }
+        }
+    }
+
+    /// Glazing and service door leaves share their live entrance paint.
+    /// Structural timber, jambs, roof courses and fittings retain their roles.
+    pub(crate) fn recolor_fitted_entrance(&self, target: &mut SurfaceMeshData,
+        first: usize, palette: [[f32;4];2]) {
+        for (material,range,original) in &self.solid_materials {
+            let (paint,gain)=match material.as_str() {
+                "glass" => (palette[0],0.84),
+                "glass_light" => (palette[0],1.),
+                "roof_teal_dark" => (palette[1],1.),
+                _=>continue,
+            };
+            for index in range.clone() {
+                let old=target.colors[first+index];
+                let shade=(old[0]+old[1]+old[2])/(original[0]+original[1]+original[2]).max(0.0001);
+                for channel in 0..3 {target.colors[first+index][channel]=paint[channel]*shade*gain;}
                 target.uvs[first+index]=crate::scenery_finish::SOURCE_PAINT_UV;
             }
         }
@@ -463,6 +565,26 @@ mod tests {
     use super::*;
 
     #[test]
+    fn civic_reference_identity_is_separate_from_live_roof_and_door_paint() {
+        for (kind,role) in [(ModelKind::Pokecenter,"medical_red"),(ModelKind::Mart,"shop_sign_blue")] {
+            let m=model(kind);let mut painted=m.surface.clone();
+            m.recolor_fitted_roof(&mut painted,0,[[0.01,0.01,0.01,1.],[0.,0.6,0.9,1.],[0.4,1.,1.,1.]]);
+            m.recolor_fitted_entrance(&mut painted,0,[[0.9,1.,0.3,1.],[0.5,0.2,0.02,1.]]);
+            let mut count=0;
+            for (name,range,_) in &m.solid_materials {
+                if name==role || name=="medical_white" {
+                    count+=range.len();
+                    assert_eq!(&painted.colors[range.clone()],&m.surface.colors[range.clone()]);
+                }
+            }
+            assert!(count>100,"the raised identity must be real geometry");
+            assert_eq!(painted.positions,m.surface.positions);
+            assert_eq!(painted.indices,m.surface.indices);
+            assert_eq!(m.door_anchor,Some([0.,0.,2.]));
+        }
+    }
+
+    #[test]
     fn compact_house_visible_end_caps_keep_wall_material_when_roof_paint_changes() {
         let m=model(ModelKind::House);
         let mut sides=[false;2];
@@ -509,6 +631,49 @@ mod tests {
     }
 
     #[test]
+    fn civic_running_bond_has_fine_body_courses_and_brick_gables_inside_the_original_roof() {
+        for source in [crate::model_storage::include_model!("models/johto/pokecenter.mesh.json"),
+            crate::model_storage::include_model!("models/johto/mart.mesh.json")] {
+            let export: Export = crate::model_storage::parse(source).unwrap();
+            let mut backing = [None, None];
+            for part in &export.primitives {
+                if part.material != "plaster_service_mortar" { continue; }
+                for ids in part.indices.chunks_exact(3) {
+                    let p = [ids[0],ids[1],ids[2]].map(|i|Vec3::from_slice(&part.positions[i as usize*3..]));
+                    if p.iter().all(|v|v.y>=2.45999 && v.x.abs()>1.9)
+                        && (p[1]-p[0]).cross(p[2]-p[0]).length()>1. {
+                        backing[usize::from(p[0].x>0.)] = Some(p.map(|v|Vec2::new(v.y,v.z)));
+                    }
+                }
+            }
+            assert!(backing.iter().all(Option::is_some),"continuous original gable backing");
+            let mut gable_faces=[0;2]; let mut body_faces=0;
+            for part in &export.primitives {
+                if part.material != "plaster_service_wall" { continue; }
+                for ids in part.indices.chunks_exact(3) {
+                    let p = [ids[0],ids[1],ids[2]].map(|i|Vec3::from_slice(&part.positions[i as usize*3..]));
+                    let n = Vec3::from_slice(&part.normals[ids[0] as usize*3..]);
+                    if n.z>0.99 && p.iter().all(|v|(0.66..2.23).contains(&v.y)) {body_faces+=1;}
+                    if n.x.abs()<0.99 || !p.iter().all(|v|v.y>=2.46 && v.x.abs()>1.98) {continue;}
+                    assert!(n.x*p[0].x>0.,"only the exposed brick front reaches this plane");
+                    let side=usize::from(p[0].x>0.);gable_faces[side]+=1;
+                    let triangle=backing[side].unwrap();
+                    for point in p {
+                        let point=Vec2::new(point.y,point.z);
+                        for e in 0..3 {
+                            let a=triangle[e];let b=triangle[(e+1)%3];let c=triangle[(e+2)%3];
+                            assert!((b-a).perp_dot(point-a)*(b-a).perp_dot(c-a)>=-0.00001,
+                                "brick must remain inside original gable triangle");
+                        }
+                    }
+                }
+            }
+            assert!(body_faces>=200,"fine body courses, not the old oversized bricks");
+            assert!(gable_faces.iter().all(|&count|count>=40),"resolved masonry on both gables");
+        }
+    }
+
+    #[test]
     fn service_gable_end_walls_face_outward_and_share_source_masonry() {
         for kind in [ModelKind::Pokecenter,ModelKind::Mart] {
             let m=model(kind);
@@ -516,17 +681,56 @@ mod tests {
             for (material,range,_) in &m.solid_materials {
                 // Fascia/roof timber has legitimate inward-facing sides of
                 // closed beams at this height. Only wall roles are end caps.
-                if !matches!(material.as_str(),"plaster_service_wall"|"plaster"|"roof_red_dark"|"roof_blue_dark") {continue;}
+                if !matches!(material.as_str(),"plaster_service_wall"|"plaster_service_mortar"|"plaster"|"roof_red_dark"|"roof_blue_dark") {continue;}
                 for i in range.clone() {
                     let p=m.surface.positions[i];let n=m.surface.normals[i];
                     if p[1]>=2.41999 && p[0].abs()>1.7 && n[0].abs()>0.99 {
-                        assert!(n[0]*p[0]>0.,"{kind:?} gable faces into the building: {p:?}/{n:?}");
-                        assert_eq!(material,"plaster_service_wall","gable must share source wall paint");
-                        sides[usize::from(p[0]>0.)]=true;
+                        if n[0]*p[0]<0. {
+                            // Closed brick backs legitimately face inward,
+                            // behind the exposed end wall and its bevels.
+                            assert_eq!(material,"plaster_service_wall");
+                            assert!(p[0].abs()<1.98,"inward face exposed at the gable crest: {p:?}");
+                        } else {
+                            assert!(matches!(material.as_str(),"plaster_service_wall"|"plaster_service_mortar"),"gable must share source masonry paint");
+                            sides[usize::from(p[0]>0.)]=true;
+                        }
                     }
                 }
             }
             assert_eq!(sides,[true,true],"both authored gable ends must close {kind:?}");
+        }
+    }
+
+    #[test]
+    fn entrance_paint_preserves_geometry_and_non_glass_structural_materials() {
+        for kind in [ModelKind::House,ModelKind::Pokecenter,ModelKind::Mart] {
+            let m=model(kind);let mut mesh=SurfaceMeshData::default();
+            m.append_fitted(&mut mesh,[0.,64.,0.,64.],0.,16.,Some(24.));
+            let original=mesh.clone();
+            m.recolor_fitted_entrance(&mut mesh,0,[[0.9,0.85,0.08,1.],[0.3,0.04,0.2,1.]]);
+            assert_eq!(mesh.positions,original.positions);
+            assert_eq!(mesh.normals,original.normals);
+            assert_eq!(mesh.indices,original.indices);
+            let (mut glass,mut doors)=(0,0);
+            for (material,range,_) in &m.solid_materials {
+                match material.as_str() {
+                    "glass"|"glass_light" => {
+                        glass+=range.len();
+                        assert!(mesh.colors[range.clone()].iter().all(|c|c[0]>c[2]*5. && c[1]>c[2]*5.));
+                        assert!(mesh.uvs[range.clone()].iter().all(|uv|*uv==crate::scenery_finish::SOURCE_PAINT_UV));
+                    },
+                    "roof_teal_dark" => {
+                        doors+=range.len();
+                        assert!(mesh.colors[range.clone()].iter().all(|c|c[0]>c[1]*4. && c[2]>c[1]*3.));
+                    },
+                    _ => {
+                        assert_eq!(mesh.colors[range.clone()],original.colors[range.clone()]);
+                        assert_eq!(mesh.uvs[range.clone()],original.uvs[range.clone()]);
+                    },
+                }
+            }
+            assert!(glass>0);
+            if kind!=ModelKind::House {assert!(doors>0);}
         }
     }
 
@@ -596,6 +800,125 @@ mod tests {
             }
         }
         assert!(changed>0);
+        }
+    }
+
+    #[test]
+    fn town_daylight_tags_only_live_painted_roles_without_mutating_paint() {
+        for kind in [ModelKind::House,ModelKind::Pokecenter,ModelKind::Mart] {
+            let m=model(kind);let mut mesh=m.surface_mesh();
+            m.recolor_fitted_roof(&mut mesh,0,[[0.03,0.04,0.08,1.],[0.1,0.4,0.8,1.],[0.4,0.8,1.,1.]]);
+            if kind==ModelKind::House {
+                m.recolor_fitted_compact_wall(&mut mesh,0,[[0.7,0.9,0.7,1.],[0.5,0.3,0.04,1.]]);
+            } else {m.recolor_fitted_service_wall(&mut mesh,0,[[0.8,0.3,0.5,1.],[0.7,0.8,0.7,1.]]);}
+            m.recolor_fitted_entrance(&mut mesh,0,[[0.9,0.9,0.1,1.],[0.3,0.1,0.2,1.]]);
+            let before=mesh.clone();m.light_fitted_source_paint(&mut mesh,0);
+            assert_eq!(mesh.positions,before.positions);assert_eq!(mesh.normals,before.normals);
+            assert_eq!(mesh.indices,before.indices);assert_eq!(mesh.colors,before.colors);
+            let mut painted=0;let mut glazing=0;
+            for (name,range,_) in &m.solid_materials {for i in range.clone() {
+                if crate::scenery_finish::town_paint_kind(mesh.uvs[i]).is_some() {
+                    assert_eq!(before.uvs[i],crate::scenery_finish::SOURCE_PAINT_UV);
+                    assert!(name.starts_with("roof_") && !name.ends_with("_dark") || name.starts_with("plaster"));
+                    painted+=1;
+                } else if crate::scenery_finish::town_glass_coordinates(mesh.uvs[i]).is_some() {
+                    assert_eq!(name,"glass");
+                    assert_eq!(before.uvs[i],crate::scenery_finish::SOURCE_PAINT_UV);
+                    glazing+=1;
+                } else {
+                    assert_eq!(mesh.uvs[i],before.uvs[i]);
+                    assert_ne!(name,"glass","every authored source-painted pane needs local coordinates");
+                    if name=="glass_light" {
+                        assert_eq!(mesh.uvs[i],crate::scenery_finish::SOURCE_PAINT_UV);glazing+=1;
+                    }
+                }
+            }}
+            assert!(painted>0 && glazing>0);
+            let mut unpainted=m.surface_mesh();let before=unpainted.clone();
+            m.light_fitted_source_paint(&mut unpainted,0);assert_eq!(unpainted,before);
+        }
+    }
+
+    #[test]
+    fn town_material_coordinates_survive_translation_and_nonuniform_fitting() {
+        for kind in [ModelKind::House,ModelKind::Pokecenter,ModelKind::Mart] {
+            let m=model(kind);let mut fitted=Vec::new();
+            for bounds in [[0.,32.,0.,24.],[128.,192.,-80.,-32.]] {
+                let mut mesh=SurfaceMeshData::default();
+                m.append_fitted(&mut mesh,bounds,0.,16.,None);
+                m.recolor_fitted_roof(&mut mesh,0,[[0.04,0.04,0.04,1.],[0.1,0.4,0.8,1.],[0.4,0.8,1.,1.]]);
+                if kind==ModelKind::House {
+                    m.recolor_fitted_compact_wall(&mut mesh,0,[[0.7,0.9,0.7,1.],[0.5,0.3,0.04,1.]]);
+                } else {m.recolor_fitted_service_wall(&mut mesh,0,[[0.8,0.3,0.5,1.],[0.7,0.8,0.7,1.]]);}
+                m.recolor_fitted_entrance(&mut mesh,0,[[0.7,0.9,0.7,1.],[0.5,0.3,0.04,1.]]);
+                m.light_fitted_source_paint(&mut mesh,0);fitted.push(mesh);
+            }
+            assert_ne!(fitted[0].positions,fitted[1].positions);
+            assert_eq!(fitted[0].uvs,fitted[1].uvs,"grain must stay attached to authored surfaces");
+            let coords=fitted[0].uvs.iter().filter(|&&uv|crate::scenery_finish::town_paint_kind(uv).is_some())
+                .map(|uv|uv.map(f32::to_bits)).collect::<std::collections::BTreeSet<_>>();
+            assert!(coords.len()>100,"material coordinates cannot be a constant style flag");
+        }
+    }
+
+    #[test]
+    fn compact_source_plaster_preserves_joinery_roof_and_geometry() {
+        let m=model(ModelKind::House);let original=m.surface_mesh();let mut painted=original.clone();
+        let palette=[[0.72,0.95,0.72,1.],[0.56,0.30,0.04,1.]];
+        m.recolor_fitted_compact_wall(&mut painted,0,palette);
+        assert_eq!(painted.positions,original.positions);
+        assert_eq!(painted.normals,original.normals);
+        assert_eq!(painted.indices,original.indices);
+        let mut sill=0;let mut plaster=0;
+        for (name,range,_) in &m.solid_materials {
+            for i in range.clone() {
+                if matches!(name.as_str(),"plaster"|"plaster_light") {
+                    assert_eq!(painted.uvs[i],crate::scenery_finish::SOURCE_PAINT_UV);
+                    let c=painted.colors[i];
+                    if name=="plaster_light" && original.positions[i][1]<0.5 {
+                        assert!(c[0]>c[1] && c[1]>c[2]);sill+=1;
+                    } else {assert!(c[1]>c[0] && (c[0]-c[2]).abs()<1e-6);plaster+=1;}
+                } else {
+                    assert_eq!(painted.colors[i],original.colors[i],"changed {name}");
+                    assert_eq!(painted.uvs[i],original.uvs[i],"changed {name}");
+                }
+            }
+        }
+        assert!(sill>0 && plaster>0);
+    }
+
+    #[test]
+    fn closed_town_roof_courses_keep_small_scale_bounds_and_raw_triangle_budget() {
+        for (source,depth,top,eave,ridge) in [
+            (crate::model_storage::include_model!("models/new_bark/house.mesh.json"),3.,3.642,2.18,3.29),
+            (crate::model_storage::include_model!("models/johto/pokecenter.mesh.json"),4.,3.448,2.46,3.35),
+            (crate::model_storage::include_model!("models/johto/mart.mesh.json"),4.,3.448,2.46,3.35),
+            (crate::model_storage::include_model!("models/johto/route_gate.mesh.json"),4.,3.448,2.46,3.35),
+        ] {
+            let export:Export=crate::model_storage::parse(source).unwrap();
+            assert_eq!(export.roof_courses.as_deref(),Some("closed_prism_v1"));
+            let m=Model::parse(source).unwrap();
+            assert_eq!(m.min,[-2.,0.,-depth/2.]);
+            assert_eq!(m.max,[2.,top,depth/2.]);
+            assert_eq!(m.door_anchor,Some([0.,0.,depth/2.]));
+            let mut fine_faces=0;
+            for p in &export.primitives {
+                if !p.material.starts_with("roof_") || p.material.ends_with("_dark") {continue;}
+                let (_,range,_)=m.solid_materials.iter().find(|(name,_,_)|name.as_str()==p.material.as_str()).unwrap();
+                let rendered=m.surface.indices.chunks_exact(3).filter(|tri|range.contains(&(tri[0] as usize))).count();
+                assert_eq!(rendered,p.indices.len()/3,"authored ceramics must not be re-tessellated");
+                for tri in p.indices.chunks_exact(3) {
+                    let q=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_slice(&p.positions[i as usize*3..]));
+                    let face=(q[1]-q[0]).cross(q[2]-q[0]);
+                    if q.iter().all(|v|v.y>eave && v.y<ridge-0.05)
+                        && (0.35..0.98).contains(&face.normalize_or_zero().y) {
+                        assert!(face.length()*0.5<0.055,"coarse roof panel remains on {}",export.name);
+                        fine_faces+=1;
+                    }
+                }
+            }
+            assert!(fine_faces>900,"both slopes need small ceramic courses");
+            assert!(export.primitives.iter().map(|p|p.indices.len()/3).sum::<usize>()<12000);
         }
     }
 

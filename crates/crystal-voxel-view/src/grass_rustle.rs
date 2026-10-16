@@ -6,7 +6,8 @@ use crystal_render_api::{VisualEffectId, VisualPlayerTraversal};
 #[derive(Clone, Copy, Debug, Default, Reflect, ShaderType, PartialEq)]
 pub(super) struct GrassUniform {
     pub contact: Vec4,
-    /// Zero selects native height. Retained battles remove the LCD display zoom.
+    /// X: zero selects native height; retained battles remove LCD display zoom.
+    /// Y: blossom animation clock, shared by forward and shadow vertex passes.
     pub height_scale: Vec4,
 }
 
@@ -70,7 +71,7 @@ impl Rustle {
                 self.age = 0.0;
             }
             if let Some(player) = frame.actors.iter().find(|a| a.id == VisualActorId::Player) {
-                let foot = actor_foot(player);
+                let foot = footing::actor_ground_point(frame, player);
                 self.center = foot - offset;
                 self.radius = frame.tile_size.min_element() * 1.5;
             }
@@ -176,7 +177,7 @@ mod tests {
         let mut state = Rustle::default();
         state.advance(&frame, true, None, 0.0);
         let push = state.advance(&frame, true, None, 0.06).contact;
-        assert_eq!(push.truncate(), Vec3::new(12.0, -16.0, 12.0));
+        assert_eq!(push.truncate(), Vec3::new(12.0, -24.0, 12.0));
         assert!(push.w > 0.5);
         frame.actors.pop();
         let rebound = state.advance(&frame, true, None, 0.14).contact;
@@ -209,7 +210,7 @@ mod tests {
         traversal.step.as_mut().unwrap().to.x += 16.0;
         frame.actors[0].center += Vec2::new(16.0, 8.0);
         let restarted = state.advance(&frame, true, Some(&traversal), 0.02).contact;
-        assert_eq!(restarted, Vec4::new(28.0, -24.0, 12.0, 0.0));
+        assert_eq!(restarted, Vec4::new(28.0, -32.0, 12.0, 0.0));
         assert!(
             state
                 .advance(&frame, true, Some(&traversal), 0.06)
@@ -238,10 +239,10 @@ mod tests {
         frame.actors.pop();
         frame.center += Vec2::new(3.0, -5.0);
         let scrolled = state.advance(&frame, true, None, 0.06).contact;
-        assert_eq!(scrolled.truncate(), Vec3::new(15.0, -11.0, 12.0));
+        assert_eq!(scrolled.truncate(), Vec3::new(15.0, -19.0, 12.0));
         frame.grid_origin += IVec2::new(1, 2);
         let recropped = state.advance(&frame, true, None, 0.0).contact;
-        assert_eq!(recropped.truncate(), Vec3::new(7.0, -27.0, 12.0));
+        assert_eq!(recropped.truncate(), Vec3::new(7.0, -35.0, 12.0));
         assert_eq!(scrolled.w, recropped.w);
     }
 

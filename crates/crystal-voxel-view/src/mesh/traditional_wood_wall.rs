@@ -37,6 +37,25 @@ pub(super) fn append(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement) {
             native_source_swatches(p,g,[[4,22],[1,24],[1,22],[2,22]])));
     }
 }
+pub(super) fn perimeter_template(out:&mut SurfaceMeshData,map:&str,cells:&[&VisualTile],
+    g:&GridGeometry,placements:&[Placement])->Option<usize> {
+    if let Some(p)=placements.iter().filter(|p|source(map,p,cells,g)).min_by_key(|p|(p.row,p.column)) {
+        // Keep the timber field without repeating the radio below it.
+        timber(out,g,g.origin_x+p.column as f32*g.tile_width,2,
+            g.origin_z+(p.row+2)as f32*g.tile_height,g.uv(p.column,p.row));
+        return Some(p.row);
+    }
+    let (blocks,_)=binding(map)?;let width=blocks.len()*4;
+    for row in 0..g.height.saturating_sub(3) {for column in 0..g.width.saturating_sub(width-1) {
+        if !backing_source(map,cells,g,column,row,&[]) {continue;}
+        let donor=(0..4).flat_map(|y|(0..width).map(move|x|(row+y)*g.width+column+x))
+            .find(|&i|cells[i].source.tile_index==0x11)?;
+        timber(out,g,g.origin_x+column as f32*g.tile_width,2,
+            g.origin_z+(row+2)as f32*g.tile_height,g.uv(donor%g.width,donor/g.width));
+        return Some(row);
+    }}
+    None
+}
 fn binding(map:&str)->Option<(&'static[u16],u64)> {
     match map {
         "EcruteakItemfinderHouse"|"EcruteakLugiaSpeechHouse"|"VioletKylesHouse"|"VioletNicknameSpeechHouse"

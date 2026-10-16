@@ -6,6 +6,30 @@ use bevy::prelude::Vec3;
 // Live source paint already contains the current map's time-of-day palette.
 // Retain shadow/contact modulation without applying a second colored light.
 pub(crate) const SOURCE_PAINT_UV: [f32;2] = [85000.,0.];
+// Four town paint domains carry authored local coordinates in the same UV
+// channel: ceramic, plaster, clay and mortar. Existing source paint is separate.
+pub(crate) const TOWN_PAINT_BASE: f32 = 1024.;
+pub(crate) const TOWN_GLASS_BASE: f32 = 1152.;
+pub(crate) const TOWN_TIMBER_BASE: f32 = 1184.;
+pub(crate) fn town_timber_coordinates(uv: [f32;2]) -> Option<[f32;2]> {
+    let p=[uv[0],uv[1]-TOWN_TIMBER_BASE];
+    p.iter().all(|v|v.is_finite() && (0. ..16.).contains(v)).then_some(p)
+}
+pub(crate) fn town_glass_coordinates(uv: [f32; 2]) -> Option<[f32; 2]> {
+    let p = [uv[0], uv[1] - TOWN_GLASS_BASE];
+    p.iter().all(|v| v.is_finite() && (0. ..=1.).contains(v)).then_some(p)
+}
+// Town cast shade needs enough separation to ground foundations and actors.
+// Keep this independent of the wider exterior/forest daylight policy.
+pub(crate) fn town_shadow_fill(map: &str, tileset: &str) -> bool {
+    (map.ends_with("City") || map.ends_with("Town"))
+        && matches!(tileset, "johto" | "johto_modern" | "kanto")
+}
+pub(crate) fn town_paint_kind(uv: [f32;2]) -> Option<u8> {
+    let kind=((uv[1]-TOWN_PAINT_BASE)/32.).round();
+    (uv.iter().all(|v|v.is_finite()) && (0.0..=3.0).contains(&kind)
+        && uv[0].abs()<16. && (uv[1]-(TOWN_PAINT_BASE+kind*32.)).abs()<8.).then_some(kind as u8)
+}
 
 #[derive(Clone, Copy)]
 enum Material {

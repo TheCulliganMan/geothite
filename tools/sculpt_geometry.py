@@ -46,7 +46,7 @@ def tube(name,color,points,radii,segments=12):
     return part(name,color,v,f,True)
 
 
-def fitted_patch(name,color,outline,surface,thickness=.008):
+def fitted_patch(name,color,outline,surface,thickness=.008,*,center=None):
     """Closed shallow marking follows a real surface instead of floating on it.
 
     The XY outline must be convex. Three concentric front/back rings preserve
@@ -55,7 +55,7 @@ def fitted_patch(name,color,outline,surface,thickness=.008):
     outline=list(outline)
     if sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(outline,outline[1:]+outline[:1]))<0:
         outline.reverse()
-    cx=sum(x for x,y in outline)/len(outline);cy=sum(y for x,y in outline)/len(outline)
+    cx,cy=center if center is not None else (sum(x for x,y in outline)/len(outline),sum(y for x,y in outline)/len(outline))
     xy=[(cx,cy)]
     for radius in (.33,.67,1.):xy.extend((cx+(x-cx)*radius,cy+(y-cy)*radius) for x,y in outline)
     front=[(x,y,surface(y,x)+thickness) for x,y in xy]

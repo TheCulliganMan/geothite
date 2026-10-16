@@ -8,7 +8,7 @@ from pathlib import Path
 source = Path(__file__).with_name('build-new-bark-models.py').read_text()
 exec(compile(source.split('\nmake_house();')[0], 'new_bark_modeling_vocabulary', 'exec'))
 from mathutils import Matrix
-for n,c in {'roof_blue':(.18,.34,.55),'roof_blue_light':(.31,.48,.69),'roof_blue_dark':(.11,.22,.37),'roof_blue_warm':(.23,.40,.61),'violet':(.38,.29,.45),'violet_light':(.53,.44,.59),'violet_dark':(.24,.19,.32),'violet_warm':(.44,.34,.49),'plaster_service_wall':(.98,.91,.73),'plaster_service_mortar':(.88,.86,.77)}.items():
+for n,c in {'roof_blue':(.18,.34,.55),'roof_blue_light':(.31,.48,.69),'roof_blue_dark':(.11,.22,.37),'roof_blue_warm':(.23,.40,.61),'violet':(.38,.29,.45),'violet_light':(.53,.44,.59),'violet_dark':(.24,.19,.32),'violet_warm':(.44,.34,.49),'plaster_service_wall':(.98,.91,.73),'plaster_service_mortar':(.88,.86,.77),'medical_red':(.62,.13,.11),'medical_white':(.94,.92,.84),'shop_sign_blue':(.12,.28,.46)}.items():
  m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True
  m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*c,1)
  m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=.86
@@ -18,7 +18,7 @@ def beam(n,a,b,w,d,mat):
  a=Vector(a);b=Vector(b);o=cube(n,(a+b)/2,(w,d,(b-a).length),mat,.012)
  o.rotation_euler=(b-a).to_track_quat('Z','Y').to_euler();return o
 
-def source_service_letters(text,y,z,height):
+def source_service_letters(text,y,z,height,material='ink'):
  # Original solid stroke lettering, matching the words visible on the source
  # storefronts. Each stroke is a closed prism; no font/texture dependency.
  glyphs={
@@ -38,34 +38,55 @@ def source_service_letters(text,y,z,height):
   for a,b in glyphs[char]:
    a=Vector((left+(index*advance+a[0])*height,y,z+(a[1]-.5)*height))
    b=Vector((left+(index*advance+b[0])*height,y,z+(b[1]-.5)*height))
-   o=cube('Source service letter '+char,(a+b)/2,(height*.105,.025,(b-a).length),'ink')
+   o=cube('Source service letter '+char,(a+b)/2,(height*.105,.025,(b-a).length),material)
    o.rotation_euler=(b-a).to_track_quat('Z','Y').to_euler()
 
+def civic_brick(name,outline,distance,angle):
+ # Closed shallow frustum: its four sloping sides supply restrained arrises
+ # without a bevel modifier or extra triangles on every course.
+ center=(sum(p[0] for p in outline)/len(outline),sum(p[1] for p in outline)/len(outline))
+ front=[]
+ for u,z in outline:
+  dx,dz=center[0]-u,center[1]-z;length=math.hypot(dx,dz)
+  inset=min(.004,length*.10)/max(length,.000001)
+  front.append((u+dx*inset,z+dz*inset))
+ n=len(outline)
+ vs=[(u,-distance-.001,z) for u,z in outline]+[(u,-distance-.023,z) for u,z in front]
+ faces=[tuple(range(n-1,-1,-1)),tuple(range(n,2*n))]+[(i,(i+1)%n,(i+1)%n+n,i+n) for i in range(n)]
+ o=mesh(name,vs,faces,'plaster_service_wall');o.rotation_euler.z=math.radians(angle)
+ return o
+
 def civic_bricks():
- # All four walls have the same restrained running bond. Half bricks at
- # alternating ends preserve full coverage behind the original corner trim.
- for angle,span,distance,count in [(0,3.46,1.605,5),(180,3.46,1.605,5),(90,3.17,1.75,4),(-90,3.17,1.75,4)]:
+ # Eight smaller running-bond courses retain the exact wall coverage. Every
+ # brick is a closed solid above the existing recessed live-painted mortar.
+ for angle,span,distance,count in [(0,3.46,1.605,7),(180,3.46,1.605,7),(90,3.17,1.75,6),(-90,3.17,1.75,6)]:
   step=span/count
-  for row in range(6):
+  for row in range(8):
    starts=[-span/2+i*step for i in range(count+1)] if row%2==0 else [-span/2]+[-span/2+(i+.5)*step for i in range(count)]+[span/2]
-   for column,(left,right) in enumerate(zip(starts,starts[1:])):
-    width=right-left-.020;height=.260-.018;z=.665+(row+.5)*.260
-    if width<step*.7:
-     o=cube('Civic half brick',((left+right)/2,-distance-.012,z),(width,.022,height),'plaster_service_wall')
-    else:
-     # Two softly clipped arrises make a closed six-sided shallow brick,
-     # rather than a flat texture card or an expensive bevel on every edge.
-     cut=.012+.004*((row+column)%3);w=width/2;h=height/2
-     outline=[(-w+cut,-h),(w,-h),(w,h-cut),(w-cut,h),(-w,h),(-w,-h+cut)]
-     vs=[(u+(left+right)/2,-distance-depth,v+z) for depth in [.001,.023] for u,v in outline]
-     faces=[tuple(range(5,-1,-1)),tuple(range(6,12))]+[(i,(i+1)%6,(i+1)%6+6,i+6) for i in range(6)]
-     o=mesh('Dressed civic brick',vs,faces,'plaster_service_wall')
-    o.rotation_euler.z=math.radians(angle)
-    if angle:
-     # Rotation applies to the complete face-local coordinates around the
-     # unchanged building center, including half-brick object placement.
-     a=math.radians(angle);x,y=o.location.x,o.location.y
-     o.location.x=x*math.cos(a)-y*math.sin(a);o.location.y=x*math.sin(a)+y*math.cos(a)
+   for left,right in zip(starts,starts[1:]):
+    left+=.009;right-=.009;bottom=.665+row*.195+.007;top=.665+(row+1)*.195-.007
+    civic_brick('Fine civic running-bond brick',[(left,bottom),(right,bottom),(right,top),(left,top)],distance,angle)
+
+def civic_gables():
+ # Clip closed brick volumes to the original roof end-wall triangle. The
+ # unchanged source-painted gable remains a continuous mortar backing.
+ eave,ridge,half=2.46,3.35,1.85;slope=(ridge-eave)/half;step=2*half/7
+ def clip(poly,sign):
+  result=[]
+  for a,b in zip(poly,poly[1:]+poly[:1]):
+   da=ridge-.035-a[1]-sign*slope*a[0];db=ridge-.035-b[1]-sign*slope*b[0]
+   if da>=0:result.append(a)
+   if (da>=0)!=(db>=0):
+    t=da/(da-db);result.append((a[0]+t*(b[0]-a[0]),a[1]+t*(b[1]-a[1])))
+  return result
+ for angle in [-90,90]:
+  for row in range(5):
+   starts=[-half+i*step for i in range(8)] if row%2==0 else [-half]+[-half+(i+.5)*step for i in range(7)]+[half]
+   for left,right in zip(starts,starts[1:]):
+    left+=.009;right-=.009;bottom=eave+row*.195+.007;top=eave+(row+1)*.195-.007
+    poly=clip(clip([(left,bottom),(right,bottom),(right,top),(left,top)],1),-1)
+    if len(poly)<3 or max(p[1] for p in poly)-min(p[1] for p in poly)<.025:continue
+    civic_brick('Clipped civic gable brick',poly,1.98,angle)
 
 def service_building(kind):
  begin(kind);palette='roof_red' if kind=='pokecenter' else 'roof_blue'
@@ -80,7 +101,8 @@ def service_building(kind):
   cube('Pale upper string course',(0,y,2.34),(3.61,.11,.14),'plaster')
  for x in [-1.765,1.765]:cube('Side warm base course',(x,0,.54),(.065,3.20,.20),'timber_gold')
  for xx in [-1.751,1.751]:mesh('Source-painted civic gable',[(xx,-1.605,2.42),(xx,1.605,2.42),(xx,0,3.28)],[(2,1,0)] if xx<0 else [(0,1,2)],'plaster_service_wall')
- roof(3.96,3.70,2.46,3.35,palette,6,gable_material='plaster_service_wall')
+ town_roof(3.96,3.70,2.46,3.35,palette,gable_material='plaster_service_mortar')
+ civic_gables()
  fy=-1.615;door(fy-.03,z=1.16,w=1.02,h=1.75,lab=True)
  for x in [-1.13,1.13]:window(x,1.34,fy,w=.68,h=1.0)
  for a in [-90,90]:
@@ -89,10 +111,17 @@ def service_building(kind):
  cube('Entrance landing',(0,-1.955,.11),(1.37,.55,.22),'stone_light',.025)
  cube('Threshold front edge',(0,-2.241,.092),(1.20,.026,.09),'stone')
  if kind=='pokecenter':
-  cube('Red entry shelter',(0,-1.87,2.16),(1.40,.66,.15),palette,.04)
+  cube('Red entry shelter',(0,-1.87,2.16),(1.40,.66,.15),'medical_red',.04)
   cube('Entry shelter cream edge',(0,-2.186,2.135),(1.44,.06,.09),'plaster_light',.014)
-  facade_cube('Source Poke plaque mounting',0,2.58,.82,.57,fy-.14,.14,'cream',bevel=.035)
-  source_service_letters('POKé',fy-.24,2.58,.19)
+  # The approved render uses the medical ball emblem, separate from roof paint.
+  facade_cube('Medical enamel plaque',0,2.62,.84,.64,fy-.14,.14,'medical_red',bevel=.035)
+  for name,radius,depth,offset,material in [
+      ('Medical ball outer ring',.225,.025,.225,'medical_white'),
+      ('Medical ball inset',.174,.030,.244,'medical_red'),
+      ('Medical ball central button',.065,.038,.270,'medical_white')]:
+   emblem=cone(name,(0,fy-offset,2.62),radius,radius,depth,material,32)
+   emblem.rotation_euler.x=math.pi/2
+  facade_cube('Medical ball equator',0,2.62,.76,.045,fy-.267,.025,'medical_white',bevel=.008)
   for x in [-.70,.70]:
    facade_cube('Warm entrance lamp',x,1.87,.095,.16,fy-.095,.12,'yellow',bevel=.015)
  else:
@@ -101,29 +130,37 @@ def service_building(kind):
    x=-1.62+i*.405
    o=cube('Tailored striped shop awning',(x,-1.86,2.105),(.402,.58,.068),palette if i%2==0 else 'plaster_light',.008);o.rotation_euler.x=.14
    cube('Scalloped awning valance',(x,-2.139,2.034),(.402,.035,.17),palette if i%2==0 else 'plaster_light',.022)
-  facade_cube('Source Mart signboard',0,2.64,1.17,.36,fy-.12,.12,'cream',bevel=.025)
-  source_service_letters('MART',fy-.21,2.64,.25)
+  facade_cube('Source Mart signboard',0,2.64,1.17,.36,fy-.12,.12,'shop_sign_blue',bevel=.025)
+  source_service_letters('MART',fy-.21,2.64,.25,'medical_white')
  # A restrained roof vent gives each roof a readable scale.
  cube('Roof vent base',(.99,.65,2.98),(.44,.43,.24),'plaster_shadow',.018)
  cube('Roof vent cap',(.99,.65,3.14),(.53,.52,.11),palette+'_dark',.022)
 
 
 def make_gate():
- begin('route_gate');foundation(3.72,3.15)
- cube('Gatehouse ochre plaster',(0,0,1.45),(3.54,2.98,2.48),'plaster',.035)
- building_trim(3.56,3.0,1.45,2.42)
- roof(3.96,3.64,2.72,3.50,'roof_teal',6)
- fy=-1.50
- facade_cube('Deep gateway recess',0,1.25,1.38,2.05,fy-.02,.15,'timber',bevel=.022)
- facade_cube('Gateway blue interior',0,1.25,1.15,1.91,fy-.105,.02,'roof_teal_dark')
- for x in [-.65,.65]:facade_cube('Gate opening carved post',x,1.25,.13,2.18,fy-.135,.13,'plaster_light',bevel=.015)
- facade_cube('Gate opening lintel',0,2.29,1.43,.15,fy-.13,.14,'plaster_light',bevel=.017)
- cube('Gate threshold',(0,-1.84,.10),(1.52,.72,.20),'stone_light',.023)
- for x in [-1.30,1.30]:window(x,1.51,fy,w=.46,h=.82)
- for a in [-90,90]:window(0,1.48,-1.783,w=1.16,h=.88,angle=a)
- for x in [-1.1,1.1]:window(x,1.54,fy,w=.68,h=.80,angle=180)
- facade_cube('Route wayfinding board',0,2.51,.76,.24,fy-.13,.09,'roof_teal_dark',bevel=.016)
- for x in [-.23,0,.23]:facade_cube('Route board studs',x,2.51,.072,.072,fy-.19,.028,'yellow',bevel=.009)
+ # One north/south route-gate kit, with the source's offset door and right
+ # paired window. Shared live source paint supplies the roof and pink masonry.
+ begin('route_gate');foundation(3.67,3.37)
+ cube('Recessed gate mortar backing',(0,0,1.35),(3.5,3.21,2.22),'plaster_service_mortar',.045)
+ civic_bricks();building_trim(3.51,3.22,1.37,2.14)
+ for y in [-1.614,1.614]:
+  cube('Gate ochre base course',(0,y,.54),(3.5,.065,.20),'timber_gold')
+  cube('Gate pale cornice',(0,y,2.34),(3.61,.11,.14),'plaster',.018)
+ for x in [-1.765,1.765]:cube('Gate side base course',(x,0,.54),(.065,3.20,.20),'timber_gold')
+ town_roof(3.96,3.70,2.46,3.35,'roof_blue',gable_material='plaster_service_mortar')
+ civic_gables()
+ fy=-1.615
+ door(fy-.03,z=1.16,w=1.02,h=1.75,lab=True)
+ # The fitted native doorway remains at column three; the entrance is the
+ # physical anchor and the right window is one double-light opening.
+ window(1.10,1.54,fy,w=.97,h=.82)
+ for a in [-90,90]:window(0,1.48,-1.763,w=.96,h=.86,angle=a)
+ for x in [-1.08,1.08]:window(x,1.42,fy,w=.73,h=.88,angle=180)
+ cube('Gate entrance landing',(0,-1.955,.11),(1.37,.55,.22),'stone_light',.025)
+ cube('Gate threshold nosing',(0,-2.241,.092),(1.20,.026,.09),'stone',.012)
+ # Restrained timber brackets make the eave readable from the game camera.
+ for x in [-1.58,1.58]:
+  beam('Gate eave corbel',(x,-1.63,2.10),(x,-1.82,2.39),.09,.09,'timber')
 
 
 def make_traditional(kind):
@@ -225,6 +262,7 @@ for name,col in list(ASSETS.items()):
     group['indices'].append(group['lookup'][key])
  for group in groups.values():group.pop('lookup');primitives.append(group);tri_count+=len(group['indices'])//3
  data={'name':name,'coordinate_system':'right-handed; +Y up; front +Z','origin':'floor-center','bounds':{'min':minv,'max':maxv},'dimensions':[round(maxv[i]-minv[i],6) for i in range(3)],'triangle_count':tri_count,'primitive_count':len(primitives),'primitives':primitives}
+ if col.get('roof_courses'):data['roof_courses']=col['roof_courses']
  if name in TARGETS:data['door_anchor']=[0,0,maxv[2]]
  (P/f'{name}.mesh.json').write_text(json.dumps(data,separators=(',',':')))
  bpy.ops.object.select_all(action='DESELECT')
@@ -232,7 +270,8 @@ for name,col in list(ASSETS.items()):
  bpy.context.view_layer.objects.active=objects[0]
  bpy.ops.export_scene.gltf(filepath=str(P/f'{name}.glb'),use_selection=True,export_format='GLB',export_yup=True,export_apply=True,export_materials='EXPORT',export_animations=False)
  STATS[name]={k:v for k,v in data.items() if k!='primitives'}
- assert tri_count<6500,(name,tri_count)
+ # Closed window pockets retain every ceramic course and add reveal faces.
+ assert tri_count<(12000 if col.get('roof_courses') else 7500),(name,tri_count)
 (P/'asset-stats.json').write_text(json.dumps(STATS,indent=2))
 # Inspection lineup is excluded from every runtime export.
 for name,(x,y) in {'pokecenter':(-6,3),'mart':(0,3),'route_gate':(6,3),'traditional_house':(-6,-3),'violet_gym':(0,-3),'sprout_tower':(7,-4),'grass':(-3,-5)}.items():

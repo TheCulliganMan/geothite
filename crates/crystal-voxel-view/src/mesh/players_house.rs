@@ -157,7 +157,9 @@ fn append_course(
 }
 
 // The divider is drawn in plan for six rows, with two wall bands at its
-// south end. Folding that complete drawing avoids a tall front-facing card.
+// south end. Extrude its plan to the same full height as the north wall,
+// repeating the two timber bands down the closed sides. The visible volume
+// starts at the north-wall plane so its cap cannot protrude behind that wall.
 fn append_partitions(
     mesh: &mut TerrainMeshData,
     cells: &[&VisualTile],
@@ -200,7 +202,7 @@ fn append_partitions(
                     row: row as u32,
                     tile_index: crate::players_house::FLOOR_TILE,
                 })?;
-            let h = 2.0 * g.tile_height;
+            let h = COURSE_HEIGHT as f32 * g.tile_height;
             let front = g.origin_z + (row + 6) as f32 * g.tile_height;
             for r in 0..8 {
                 for c in 0..2 {
@@ -212,7 +214,7 @@ fn append_partitions(
                         0.0,
                         g.uv(ground % g.width, ground / g.width),
                     );
-                    if r < 6 {
+                    if (COURSE_HEIGHT-1..6).contains(&r) {
                         append_top(
                             &mut mesh.textured,
                             [x0, x1, z0, z1],
@@ -222,12 +224,12 @@ fn append_partitions(
                     }
                 }
             }
-            for band in 0..2 {
+            for band in 0..COURSE_HEIGHT {
                 let top = h - band as f32 * g.tile_height;
                 let bottom = top - g.tile_height;
                 for c in 0..2 {
                     let (x0, x1, _, _) = g.bounds(col + c, row);
-                    let (u0, u1, v0, v1) = g.uv(col + c, row + 6 + band);
+                    let (u0, u1, v0, v1) = g.uv(col + c, row + 6 + band % 2);
                     append_quad(
                         &mut mesh.textured,
                         [
@@ -240,7 +242,7 @@ fn append_partitions(
                         [[u1, v1], [u1, v0], [u0, v0], [u0, v1]],
                         TEXTURED_SHADE,
                     );
-                    let north = g.origin_z + row as f32 * g.tile_height;
+                    let north = g.origin_z + (row + COURSE_HEIGHT - 1) as f32 * g.tile_height;
                     append_quad(
                         &mut mesh.textured,
                         [
@@ -254,7 +256,7 @@ fn append_partitions(
                         [0.68, 0.68, 0.68, 1.0],
                     );
                 }
-                for r in 0..6 {
+                for r in COURSE_HEIGHT-1..6 {
                     for east in [false, true] {
                         let x = g.origin_x + (col + if east { 2 } else { 0 }) as f32 * g.tile_width;
                         let z0 = g.origin_z + (row + r) as f32 * g.tile_height;
@@ -264,7 +266,7 @@ fn append_partitions(
                         } else {
                             (z1, z0, [-1.0, 0.0, 0.0])
                         };
-                        let (u0, u1, v0, v1) = g.uv(col + usize::from(east), row + 6 + band);
+                        let (u0, u1, v0, v1) = g.uv(col + usize::from(east), row + 6 + band % 2);
                         append_quad(
                             &mut mesh.textured,
                             [[x, bottom, a], [x, top, a], [x, top, b], [x, bottom, b]],
@@ -344,13 +346,13 @@ mod tests {
             .zip(mesh.textured.normals.chunks_exact(4))
             .filter(|(p, n)| n[0] == [0.0, 1.0, 0.0] && p[0][1] > 0.0)
             .collect::<Vec<_>>();
-        assert_eq!(raised_tops.len(), 12);
+        assert_eq!(raised_tops.len(), 6);
         assert!(
             raised_tops
                 .iter()
-                .all(|(p, _)| p.iter().all(|v| v[1] == 16.0 && v[2] <= 48.0))
+                .all(|(p, _)| p.iter().all(|v| v[1] == 32.0 && v[2] <= 48.0))
         );
-        assert!(mesh.textured.positions.iter().all(|p| p[1] <= 16.0));
+        assert!(mesh.textured.positions.iter().all(|p| p[1] <= 32.0));
     }
 
     #[test]

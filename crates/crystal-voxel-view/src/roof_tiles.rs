@@ -185,14 +185,11 @@ mod tests {
     }
 
     #[test]
-    fn authored_town_roofs_gain_curvature_with_fixed_perimeters_and_quiet_colors() {
+    fn legacy_town_roofs_gain_curvature_with_fixed_perimeters_and_quiet_colors() {
         for json in [
-            include_str!("../models/new_bark/house.mesh.json"),
             include_str!("../models/new_bark/player_house.mesh.json"),
             include_str!("../models/new_bark/lab.mesh.json"),
             include_str!("../models/johto/traditional_house.mesh.json"),
-            include_str!("../models/johto/pokecenter.mesh.json"),
-            include_str!("../models/johto/mart.mesh.json"),
             include_str!("../models/johto/violet_gym.mesh.json"),
         ] {
             let export: Export = serde_json::from_str(json).unwrap();

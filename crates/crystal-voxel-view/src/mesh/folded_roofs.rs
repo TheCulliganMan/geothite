@@ -52,6 +52,8 @@ pub(in crate::mesh) fn append(
     let light = Vec3::new(-0.35, 0.85, 0.4).normalize();
     let shade = 0.62 + 0.38 * light.y;
     let ink = [color[0] / shade, color[1] / shade, color[2] / shade];
+    let source_painted=mesh.uvs[first+ids[0]]==crate::scenery_finish::SOURCE_PAINT_UV;
+    let folds_start=mesh.positions.len();
     // Narrow closed folds run back to front; a shallow cross-course breaks up
     // the broad plane without painting a grid or replacing the existing slab.
     let count = ((e - w) / (scale * [0.36, 0.48, 0.42, 0.52][style]))
@@ -88,6 +90,9 @@ pub(in crate::mesh) fn append(
             ],
             ink.map(|v| v * 0.82),
         );
+    }
+    if source_painted {
+        for uv in &mut mesh.uvs[folds_start..] {*uv=crate::scenery_finish::SOURCE_PAINT_UV;}
     }
     if style == 1 {
         return;

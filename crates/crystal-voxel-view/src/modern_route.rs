@@ -106,7 +106,8 @@ pub(crate) fn modern_route_shape(source: &VisualTileSource) -> Option<CellShape>
 
     // $5a/$59 are the upper/lower courses of Route 34's horizontal fence.
     // Fold them together once; they occur in straight runs and mixed corners.
-    if matches!(source.metatile_id, 0x3d | 0x48 | 0x49 | 0x4a)
+    // Azalea's mixed gate/sign block78 has the same two rail courses.
+    if matches!(source.metatile_id, 0x3d | 0x48 | 0x49 | 0x4a | 0x78)
         && matches!(source.tile_index, 0x5a | 0x59)
     {
         return Some(CellShape::FacadeBand {
@@ -206,6 +207,20 @@ mod tests {
             modern_route_shape(&source(0x6a, 0, 0, 0x05)),
             Some(CellShape::Flat)
         );
+    }
+
+    #[test]
+    fn azalea_gate_rails_leave_sign_and_ground_roles_separate() {
+        for column in 0..2 {
+            for (row,tile,band) in [(2,0x5a,0),(3,0x59,1)] {
+                assert!(matches!(modern_route_shape(&source(0x78,column,row,tile)),
+                    Some(CellShape::FacadeBand{solid:SolidKind::Fence,band_from_top,..})
+                        if band_from_top==band));
+            }
+        }
+        for (column,row,tile) in [(0,0,6),(3,1,6),(2,2,0x4e),(3,2,0x4f),(2,3,0x5e),(3,3,0x5f)] {
+            assert!(modern_route_shape(&source(0x78,column,row,tile)).is_none());
+        }
     }
 
     #[test]

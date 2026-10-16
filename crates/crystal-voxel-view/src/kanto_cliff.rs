@@ -93,6 +93,15 @@ pub(crate) fn kanto_cliff_shape(source: &VisualTileSource) -> Option<CellShape> 
                 Some(CellShape::RaisedTop { height: JUMP_LEDGE_HEIGHT, solid: SolidKind::Bank })
             }
         }
+        // The paved mirror of the half-width stair termination: its east
+        // bank shares the south drop; the western04 pair is a walkable stair.
+        0x5c if (2..4).contains(&source.subtile_column) && source.subtile_row<3
+            && source.tile_index==0x39 => Some(CellShape::RaisedTop {
+                height:JUMP_LEDGE_HEIGHT,solid:SolidKind::Bank,
+            }),
+        0x5c if source.subtile_row==3 && matches!((source.subtile_column,source.tile_index),(2,0x36)|(3,0x37)) =>
+            Some(CellShape::LedgeBand {face:LedgeFace::South,plane_subtile:4,
+                band_from_top:0,band_count:1,top_tile_index:0x39,height:JUMP_LEDGE_HEIGHT}),
         // `$2c` fills the mountain interior between the authored edge
         // blocks. Its sixteen `$11` cells share their plateau datum; keeping
         // this fill flat leaves a pixel-art hole through otherwise 3D rock.
@@ -128,7 +137,7 @@ pub(crate) fn kanto_cliff_shape(source: &VisualTileSource) -> Option<CellShape> 
         // while its east two columns are ordinary `$2c/$04` ground. Keep
         // the transition half-width instead of extending the ledge through
         // the walkable half of the metatile.
-        0x2f if source.subtile_column < 2
+        0x2f | 0x42 if source.subtile_column < 2
             && source.subtile_row < 3
             && source.tile_index == 0x2c =>
         {
@@ -156,7 +165,7 @@ pub(crate) fn kanto_cliff_shape(source: &VisualTileSource) -> Option<CellShape> 
                 height: JUMP_LEDGE_HEIGHT,
             })
         }
-        0x2f if source.subtile_column < 2
+        0x2f | 0x42 if source.subtile_column < 2
             && source.subtile_row == 3
             && matches!(source.tile_index, 0x37 | 0x34) =>
         {
@@ -433,6 +442,30 @@ mod tests {
                 assert_eq!(kanto_cliff_shape(&flat), None);
             }
         }
+    }
+
+    #[test]
+    fn mirrored_paved_stair_termination_raises_only_its_east_bank() {
+        for y in 0..4 {for x in 0..4 {
+            let mut s=source(0x5c,y);s.subtile_column=x;
+            s.tile_index=if y<3 {0x39}else{[0x04,0x04,0x36,0x37][x as usize]};
+            let shape=kanto_cliff_shape(&s);
+            assert_eq!(shape.is_some(),x>=2);
+            if let Some(shape)=shape {assert_eq!(shape.surface_height(8.),6.);}
+        }}
+        let mut changed=source(0x5c,3);changed.subtile_column=2;changed.tile_index=0x37;
+        assert!(kanto_cliff_shape(&changed).is_none());
+    }
+
+    #[test]
+    fn mixed_tree_bank_42_raises_only_its_proven_west_half() {
+        for y in 0..4 {for x in 0..4 {
+            let mut s=source(0x42,y);s.subtile_column=x;
+            s.tile_index=if x<2 {if y==3 {[0x37,0x34][x as usize]}else{0x2c}}
+                else if y%2==0 {[0x40,0x41][x as usize-2]}else{[0x50,0x51][x as usize-2]};
+            assert_eq!(kanto_cliff_shape(&s).is_some(),x<2);
+            if x<2 {assert_eq!(kanto_cliff_shape(&s).unwrap().surface_height(8.),6.);}
+        }}
     }
 
     #[test]

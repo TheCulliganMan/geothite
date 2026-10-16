@@ -9247,16 +9247,54 @@ fn runtime_load_verifies_immutable_pack_only_once() {
     let expected_identity = pack.identity().unwrap();
     let path = root.join("runtime.crystalpack");
     crystal_assets::write_compiled_game_pack_for_tests(&path, &pack).unwrap();
-    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+    for byte_loader in [false, true] {
+        let before_load = crystal_assets::runtime_pack_verification_counts_for_tests();
+        let loaded = if byte_loader {
+            crystal_assets::load_verified_compiled_game_pack_bytes(&path, std::fs::read(&path).unwrap()).unwrap()
+        } else {
+            crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap()
+        };
+        assert!(loaded.is_runtime_verified());
+        let before_runtime = crystal_assets::runtime_pack_verification_counts_for_tests();
+        assert_eq!((before_runtime.0 - before_load.0, before_runtime.1 - before_load.1), (1, 1),
+            "both native and browser loaders perform the full verification exactly once");
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded).unwrap();
+        let after = crystal_assets::runtime_pack_verification_counts_for_tests();
+        assert_eq!((after.0 - before_runtime.0, after.1 - before_runtime.1), (0, 0),
+            "runtime construction retains immutable loader certification without duplicate validation");
+        assert_eq!(runtime.pack_identity(), &expected_identity);
+    }
+    std::fs::remove_dir_all(root).unwrap();
+}
+
+#[test]
+fn runtime_load_still_verifies_uncertified_loaded_packs_and_rejects_corruption() {
+    let root = temp_repository_root("uncertified-runtime-verification");
+    let asset_root = AssetRoot::new(&root);
+    let data = minimal_runtime_data();
+    let pack = CompiledGamePack::new_unchecked_for_tests(data.clone(), report_for(&data));
+    let path = root.join("runtime.crystalpack");
+    crystal_assets::write_compiled_game_pack_for_tests(&path, &pack).unwrap();
+    let loaded = crystal_assets::read_unverified_compiled_game_pack_for_intro_timing_diagnostic(&path).unwrap();
+    assert!(!loaded.is_runtime_verified());
     let before = crystal_assets::runtime_pack_verification_counts_for_tests();
-    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded).unwrap();
+    let _runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded).unwrap();
     let after = crystal_assets::runtime_pack_verification_counts_for_tests();
-    assert_eq!(
-        (after.0 - before.0, after.1 - before.1),
-        (1, 1),
-        "runtime construction must verify once, without rehashing its unchanged pack"
-    );
-    assert_eq!(runtime.pack_identity(), &expected_identity);
+    assert_eq!((after.0 - before.0, after.1 - before.1), (1, 1));
+
+    // Keep the serialized identity/hash valid while corrupting required
+    // runtime metadata. Only the full runtime verifier rejects this payload.
+    let mut invalid_data = data;
+    invalid_data.runtime_map_metadata.values_mut().next().unwrap().name = "WrongRuntimeMap".to_string();
+    let corrupt = CompiledGamePack::new_unchecked_for_tests(invalid_data.clone(), report_for(&invalid_data));
+    crystal_assets::write_compiled_game_pack_for_tests(&path, &corrupt).unwrap();
+    let loaded = crystal_assets::read_unverified_compiled_game_pack_for_intro_timing_diagnostic(&path).unwrap();
+    assert!(!loaded.is_runtime_verified());
+    let before = crystal_assets::runtime_pack_verification_counts_for_tests();
+    assert!(CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded).is_err(),
+        "diagnostic decoding cannot certify corrupt content for an ordinary runtime");
+    let after = crystal_assets::runtime_pack_verification_counts_for_tests();
+    assert_eq!((after.0 - before.0, after.1 - before.1), (1, 1));
     std::fs::remove_dir_all(root).unwrap();
 }
 

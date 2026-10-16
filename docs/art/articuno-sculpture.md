@@ -1,85 +1,76 @@
-# Crystalline ice bird with a continuous curling streamer
+# Articuno feather banks and curling streamer
 
-`tools/articuno_sculpt.py` replaces Articuno's earlier shared legendary-bird
-shape with original individual anatomy. The main battle-species builder
-dispatches this pure recipe and rejects the obsolete Articuno route. Zapdos,
-Moltres and unrelated shared overworld props retain their existing sources.
+`tools/articuno_sculpt.py` authors the original ice bird.
+`tools/articuno_glb.py` exports the canonical skinned GLB; the battle-species
+builder regenerates it through that same path. No third-party geometry is
+included.
 
-The model has a slender upright blue cranium and throat, three crystalline
-deep-blue crown blades, fitted ivory almond eyes, restrained dark pupils and a
-short grey hooked bill. Its pale breast has feathered lower points and meets a
-fitted pale throat collar. Raised bent wings have nine curved primary vanes and
-seven smaller shoulder coverts on each of their upper and underside surfaces.
-Grey feet have three forward digits, one rear digit and ivory talon tips.
+The slender blue breast has a fitted pale feather bib and throat collar.
+Its calm head has fitted eyes and glints, a short grey bill and three
+crystalline crown blades. Each bent wing arm carries nine primary vanes and
+seven coverts, with separate closed front and rear layers. Grey shins lead
+to feet with three forward digits, a rear digit and ivory talons. A continuous
+blue ribbon sweeps backward into a broad curl and tapered tip. Three raised
+longitudinal channels follow its actual curved surface.
 
-The blue tail is one continuous closed elliptical ribbon with a broad curling
-silhouette. Parallel-transport frames keep its cross section aligned through
-the turn. Three quiet longitudinal folds fit to rays through the actual stored
-ribbon triangles; they are not positioned at an assumed radial depth. The
-curve opens smoothly rather than crossing itself at a tight turn.
+The optimized source has 109 recoverable parts packed into 49 runtime
+primitives, 19,074 vertices, 26,704 triangles and 11 joints. The GLB occupies
+777,424 bytes and 210 accessors, within the unchanged renderer limits. The
+former static source had 43,145 vertices and 63,816 triangles. Excess cap
+subdivisions, duplicated feather corners and oversampled channel paths were
+reduced. All 32 core anatomy parts, including the complete main tail ribbon,
+retain their original float32 positions, normals, colors and triangle order.
+Their geometry SHA-256 is
+`3e1053c83be263e340ea67b0dd98bae4a1ade7ad9f9a4eaa6ce40cdc76fef350`.
+The other 74 feather and fitted-marking outlines were compared in both
+directions against their original projected boundaries; maximum displacement
+is 0.000000112 authoring units. The three channel paths remain fitted to the
+unchanged ribbon.
 
-Official [Articuno](https://sg.portal-pokemon.com/pokedex/0144/) artwork was
-inspected visually in a temporary browser tab. No reference image is retained
-in the repository or bundle. The first review showed the ribbon edge-on and
-too much solid wing spar. The broad ribbon frame and shorter spar exposed the
-individual vanes; the next stored-triangle test caught a tight-turn crossing.
-A more open curl corrected it. Surface-fitting and a readable fold width
-removed the broken subpixel channel appearance in the final software views.
+The canonical source geometry SHA-256 is
+`26e353890f4a03ddfdc599cbeb0a77f14f474505f2c060627ac25ebf4b926160`;
+the packed runtime geometry pin is
+`e38af1c0bb7982e268d4de9841a4722458a42d6d8f23e5abb82d697d7f0b377c`.
+Strict decoding restores all source parts in their original order and rejects
+noncanonical data. Same-color flight feathers with a shared carrier are
+packed together without changing their individual geometry.
 
-The inspected [Master Galanodel model metadata](https://api.sketchfab.com/v3/models/e8c9a50843a5442483eadf414e8d7d65)
-advertises a downloadable CC BY 4.0 model with five animation clips, described
-as a Bedrock adaptation of Galarian Articuno. It is a different form from the
-required Crystal ice bird; its skeleton has not been inspected and no geometry
-was imported. The inspected [nguyenlouis32 Lugia metadata](https://api.sketchfab.com/v3/models/c07e5814167b48c887b688f8783e0b9b)
-advertises downloadable CC BY 4.0 geometry with zero animation clips, but its
-download endpoint returned HTTP 401. Its description supplies species lore,
-not authoring provenance. No Lugia geometry or skeleton was retrieved. These
-observations do not establish that no suitable open rig exists; the full search
-remains active. This original Articuno sculpture is static.
+The identity root fixes every foot, digit and talon. Blended shins bridge to
+the yawing body. The pale bib follows the breast, the collar follows the neck,
+and the complete gaze, bill and crown follow the head. Each complete wing
+assembly has one coherent carrier. Three tail joints use continuous
+arc-length weights along the authored ribbon; the channels use the same
+field. Tail rotations preserve vertical clearance while the curl articulates.
+Rotation-only idle, attack and recoil clips return exactly to neutral.
 
-Final stored Articuno has 109 parts and 63,816 triangles. Its presentation
-height remains 1.28 and its lowest point is zero. The SHA-256 prefix is
-`2db96ffe5e04a517`.
+Authoring height stays 1.28 with its lowest point at zero. The local verified
+pack supplies a 5 ft 7 in production height of 1.7018 metres.
 
-The final candidate passed all eleven stored-mesh tests in 15.912 seconds;
-the installed canonical model passed again in 15.759 seconds. Tests cover
-closed connected outward solids, finite unit normals and actual face winding,
-recipe parity, preserved height and grounding, budgets and feature counts,
-independent nonadjacent body/neck/streamer/feather crossings, actual volume
-roots for crown, bill, tail and both banks of every wing layer, and complete
-digit support. Fitted eyes and pale plumage are checked against stored parent
-triangles at vertices, front face centers and edge midpoints. Streamer folds
-are checked by independent 3D point-to-triangle distance. Detached-wing and
-detached-fold negative controls are rejected.
+Eleven anatomy tests and nine decoded-skin tests passed, covering occupied
+anatomical joins, supported fitted surfaces, winding, physical edge strain,
+fixed floor contacts, independent wing and tail motion, posed ribbon
+self-intersection, channel-to-ribbon distance, strict round trips and budgets.
+Two focused Rust tests passed for production GPU activation at pack height,
+planted talons, tail clearance, articulation and culling bounds. The shared
+point-to-triangle distance helper also passed its two existing dragon-ribbon
+checks after moving to common test support. Blender regeneration is
+byte-identical. Fixed-camera front and rear neutral, idle, attack and recoil
+software views were inspected. Shiny checks are skipped at the user's request.
 
-All final front, oblique and rear software images completed with exit zero and
-were inspected. Canonical layout and storage validation passed for the current
-shared tree of 572 raw JSON model documents. The fresh native build completed
-with exit zero in 8 minutes 38 seconds, including its shared-cache wait. The
-Rust all-251 regression ran its matching test and passed in 1.49 seconds, with
-1,249 other tests filtered from that crate.
+The production native client built successfully with:
 
-The production GPU capture completed with exit zero in 3.10 seconds for the
-whole verification command; the renderer reported writing the image in 0.47
-seconds. Its 2,000 by 1,400 image has 48,301 distinct colors and was inspected
-in full. Articuno's crown, pale bib, layered blue wings, grey feet and curling
-tail are present alongside the opponent, arena and production battle HUD.
-The battle oblique view partly occludes the tail behind the body; the separate
-front and rear software inspections cover its continuous geometry.
+```sh
+CARGO_TARGET_DIR=target/pokemon-models cargo build --locked -p crystal-bevy \
+  --features location-tester,bevy/zstd_rust --example immersive_battle_3d -j1 \
+  --config profile.dev.package.crystal-voxel-view.opt-level=0 \
+  --config profile.dev.package.crystal-bevy.opt-level=0
+```
 
-Before launch, the executable contained the complete canonical model SHA-256
-`2db96ffe5e04a51752eb20cac43c521f174a193433759ae2904806a925ed1ca6`
-and the compiled mute switch. Model payloads are compressed in the build
-output, so this verifies their raw-source fingerprint rather than expecting
-literal JSON bytes in the executable. The executable inode, size and
-modification timestamp and the canonical model hash stayed unchanged across
-the capture. `CRYSTAL_PREVIEW_MUTE=1` was set before process creation; the
-native backend sets new music and effect sinks to zero before appending audio
-and keeps music-volume refreshes at zero. No system volume or other application
-was changed. The capture explicitly targeted the owned GPU image.
-
-This proves the replacement renders in that production image path. It does
-not resolve the separate live native-window capture problem or establish that
-every species looks finished. The full 251-species appearance goal remains
-active. Temporary capture images, logs and Python caches are verification
-scratch, not shipped model deliverables.
+The wider exact-species grounding/volume and elapsed-animation timing tests
+passed. Normal paired 3D/2D inspection against Sentret shows the explicit
+Articuno label, fitted pale chest, layered wings, complete tail curl and its
+three clear channels. Grey feet and ivory talons meet visible terrain. The
+camera accepted the shot and preserved game state: core frame 3950/hash
+123451209, LCD animation frame 4754, virtual time 88.511306625. Final ignored
+QA prefix is `target/pokemon-native-review/articuno-normal`. This accepts the
+current Articuno pass; the full catalog and remaining animation work stay open.

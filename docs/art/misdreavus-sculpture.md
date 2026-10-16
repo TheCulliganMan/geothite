@@ -1,43 +1,53 @@
-# Misdreavus sculpture
+# Misdreavus sculpture and standard skin
 
-`tools/misdreavus_sculpt.py` authors the original canonical Misdreavus mesh.
-The species builder dispatches the recipe before Blender batching; the former
-straight locks, pink terminal balls and uniform necklace have been removed.
-The 1.02 presentation height and floor origin remain unchanged.
+`tools/misdreavus_sculpt.py` authors the flowing ghost anatomy, and
+`tools/misdreavus_glb.py` exports canonical `battle_species/misdreavus.glb`.
+The species builder emits this standard skin and retires duplicate static JSON.
+Production mesh lookup and GPU animation share its exact neutral geometry.
 
-A broad rounded blue face sits above a compact continuous body with five soft
-hem lobes. Six asymmetric volumetric locks sweep and curl around the head,
-including the high crown plume and a rear lock. Five have tapered pink ends.
-Each color transition shares a complete elliptical section between two closed
-solids, rather than attaching a separate pink ball. Warm gold almond eyes,
-large ruby irises, dark inward pupils and ivory glints fit the actual stored
-face triangles. A small curved smile follows the same surface.
+All 41 original closed parts preserve exact stored f32 positions, normals and
+triangle order: 14,175 vertices and 23,794 triangles. The GLB is 567,252 bytes,
+with 15 joints and 168 accessors, inside the existing loader budgets. Its pinned
+geometry/material digest is
+`65520ddfee63c5e0fa3d39643396f88dfe2b9e2fbefd7bc24355cc2491b59935`.
+Accessor reuse compares packed bytes, preserving signed-zero normals in the
+five similar gem meshes. The normalized 1.02 height and floor origin remain
+unchanged; local pack height 204 is 2′4″ (0.7112 m), applied uniformly.
 
-Five graduated ruby necklace gems follow the lower face, with a larger central
-orb, medium neighbors and small end beads. Their closed volumes overlap the
-head or body and a curved cord. A rear cord completes the loop. Rose and ivory
-highlights fit the stored gem surfaces; they use ordinary base colors rather
-than claiming emissive or glass materials. The asset has 41 closed parts and
-23,794 triangles. It uses the native static mesh path and has no imported rig
-or animation.
+Actual local normal front/back sprites and the RGB555 palette were inspected.
+Blue (9,9,17) becomes sRGB8 (74,74,140), and pink (30,6,19) becomes
+(247,49,156), with white and black. This replaces the earlier invented teal,
+cream and ruby colors. White sclera surround pink irises; the locks, gems and
+highlights use the source palette. Historical part labels retain warm gold,
+ruby and rose wording for continuity. No extracted sprites ship with the model.
 
-Silhouette, features and palette were checked against the
-[official Misdreavus artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/200.png).
-The [Koof Misdreavus listing](https://sketchfab.com/3d-models/misdreavus-55233fb017cb4d0a9f20dcd1c7daca11)
-and its [public metadata](https://api.sketchfab.com/v3/models/55233fb017cb4d0a9f20dcd1c7daca11)
-describe a Blender-authored rig, one animation and CC Attribution 4.0 licensing.
-Its official download endpoint returned HTTP 401 requiring authentication;
-no external model, viewer geometry or textures were imported.
+An identity root preserves the five low hem lobes. The body blends upward into
+a yawing body joint and coherent head. The fitted eye layers and smile, all
+five graduated gems, their fitted highlights and both necklace cords share the
+head owner. Each of six asymmetric hair locks has a base and delayed curl
+joint. Blue lock and pink tip weights use the same position-based field,
+keeping all five complete 24-vertex color seams closed throughout motion.
+A wider base transition prevents attack strain without simplifying the curls.
 
-`python3 -m unittest discover -s tools -p test_misdreavus_sculpt.py` checks
-closed topology, winding, connectivity, finite unit normals, exact regeneration,
-height, budget, real head/body/hair and gem/cord overlap, complete nonzero pink
-curl seams, fitted expression and highlight layers, front marking triangle
-clearance, and the five-lobed hem. Software views and a native battle capture
-check model presentation rather than gameplay behavior.
+Idle, attack and hit clips use rotations only, neutral endpoints and source
+battle-cue timing. All seven stored-skin and nine migrated anatomy checks pass,
+including canonical reconstruction, bind identity, colors, hem support, seam
+closure, fitted feature ownership, winding, edge strain, closed topology,
+physical joins, expression fitting and real graduated necklace geometry.
+Front and rear neutral software views were inspected. Focused Blender output
+is byte-identical and emits no duplicate static JSON. Both focused production Rust checks pass: GPU skinning at pack size and
+off-grid seam closure, coherent necklace, hem support and culling checks.
+Matched normal native 3D/2D review against Sentret shows a clear spectral
+face, graduated necklace and swept curls against tall grass; no color-seam gaps
+are visible. Rear curls were also inspected in neutral software views. The
+paired capture preserves core frame 3135, hash 3238905079, LCD frame 3849 and
+time 71.5263535 (`state_preserved=true`). Images and receipts remain ignored
+local QA artifacts. Exact sprite-frame motion,
+field gaits and browser review remain open. Shiny checks/captures are skipped
+at the user's request.
 
-All nine sculpture regressions passed for the final stored asset. Front,
-rear and oblique software views and the rebuilt native battle renderer were
-inspected with the local external content pack. The Rust test covering
-grounded volumetric bounds for the 220-species battle catalog passed, together with canonical
-layout checks and storage validation of 571 JSON model documents.
+The wider `every_exact_species_is_grounded_and_volumetric` and
+`body_pose_uses_elapsed_idle_time_and_exact_current_attack_progress` regressions
+also pass on this asset. They establish catalog geometry and elapsed-pose
+coverage, without claiming visual acceptance for unrelated models. The native
+client build passes.

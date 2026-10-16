@@ -1084,6 +1084,9 @@ def rainbow_phoenix(n):
 @register('LUGIA',1.45)
 def sea_guardian(n):
  raise ValueError('Lugia uses its original pure sculpture recipe')
+@register('LAPRAS',1.50)
+def swimming_transport(n):
+ raise ValueError('Lapras uses its canonical articulated sculpture recipe')
 @register('MEW MEWTWO',1.26)
 def psychic_cats(n):
  large=n=='MEWTWO';c='lilac' if large else 'pink';sph('Slender torso',(0,0,.45),(.20,.15,.27),c);rod('Slender neck',(0,0,.66),(0,-.015,.82),.07,c);sph('Large feline head',(0,-.025,.92),(.23,.18,.21),c);eyes(.98,-.184,.12,.05,'purple' if large else 'blue');sph('Short muzzle',(0,-.19,.85),(.105,.07,.048),c);feet(c,.18,s=(.12,.22 if large else .17,.07));arms(c,.56,.20)
@@ -1266,25 +1269,42 @@ def run():
   (OUT/'clefable.mesh.json').write_text(json.dumps(clefable_sculpture(),separators=(',',':')))
   names.remove('clefable')
   print('clefable: original swept-ear fairy with three-point wings and curled tail',flush=True)
- for baby in ('cleffa','igglybuff'):
+ for baby in ('pichu','cleffa','igglybuff'):
   if baby in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
-   from baby_fairy_sculpt import sculpture as baby_fairy_sculpture
-   (OUT/(baby+'.mesh.json')).write_text(json.dumps(baby_fairy_sculpture(baby),separators=(',',':')))
+   from baby_glb import export_baby
+   (OUT/(baby+'.glb')).write_bytes(export_baby(baby))
+   (OUT/(baby+'.mesh.json')).unlink(missing_ok=True)
    names.remove(baby)
-   print(baby+': original baby fairy sculpture with fitted face and distinct crown',flush=True)
+   print(baby+': canonical baby skin with fitted face and planted feet',flush=True)
+ if 'corsola' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from corsola_glb import export_corsola
+  (OUT/'corsola.glb').write_bytes(export_corsola())
+  (OUT/'corsola.mesh.json').unlink(missing_ok=True)
+  names.remove('corsola')
+  print('corsola: canonical coherent coral forks, arms and four planted pads',flush=True)
+ if 'mantine' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from mantine_glb import export_mantine
+  (OUT/'mantine.glb').write_bytes(export_mantine())
+  (OUT/'mantine.mesh.json').unlink(missing_ok=True)
+  names.remove('mantine')
+  print('mantine: canonical shared wing seams and attached articulated Remora',flush=True)
  if 'porygon' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from porygon_sculpt import sculpture as porygon_sculpture
-  (OUT/'porygon.mesh.json').write_text(json.dumps(porygon_sculpture(),separators=(',',':')))
+  from porygon_glb import export_porygon
+  (OUT/'porygon.glb').write_bytes(export_porygon())
+  (OUT/'porygon.mesh.json').unlink(missing_ok=True)
   names.remove('porygon')
-  print('porygon: original angular wedge hull with polygonal side-panel eyes',flush=True)
+  print('porygon: canonical rigid angular panels, scanning head and grounded paddle swivels',flush=True)
  if 'porygon2' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from porygon2_sculpt import sculpture as porygon2_sculpture
-  (OUT/'porygon2.mesh.json').write_text(json.dumps(porygon2_sculpture(),separators=(',',':')))
+  from porygon2_glb import export_porygon2
+  (OUT/'porygon2.glb').write_bytes(export_porygon2())
+  (OUT/'porygon2.mesh.json').unlink(missing_ok=True)
   names.remove('porygon2')
-  print('porygon2: original continuous rose body with seated cyan belly and paddles',flush=True)
+  print('porygon2: canonical curious gaze, flexible rear tail and grounded cyan paddles',flush=True)
  for small_nido in ('nidoran_f','nidoran_m'):
   if small_nido in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -1312,18 +1332,33 @@ def run():
   print('magmar: original twin fire crown, open bill, flame belly and clawed limbs',flush=True)
  if 'magby' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from magby_sculpt import sculpture as magby_sculpture
-  (OUT/'magby.mesh.json').write_text(json.dumps(magby_sculpture(),separators=(',',':')))
+  from magby_glb import export_magby
+  (OUT/'magby.glb').write_bytes(export_magby())
+  (OUT/'magby.mesh.json').unlink(missing_ok=True)
   names.remove('magby')
-  print('magby: original lobed live-coal crown, open bill, rooted claws and plain tail',flush=True)
- for electric_species in ('electabuzz','elekid'):
+  print('magby: canonical planted live-coal skin with coherent crown, open bill and clawed arms',flush=True)
+ if 'elekid' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from elekid_glb import export_elekid
+  (OUT/'elekid.glb').write_bytes(export_elekid())
+  (OUT/'elekid.mesh.json').unlink(missing_ok=True)
+  names.remove('elekid')
+  print('elekid: canonical planted electric egg with open plug blades and coherent striped arms',flush=True)
+ for electric_species in ('electabuzz',):
   if electric_species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
    from electric_pair_sculpt import sculpture as electric_sculpture
    (OUT/(electric_species+'.mesh.json')).write_text(json.dumps(electric_sculpture(electric_species),separators=(',',':')))
    names.remove(electric_species)
    print(electric_species+': original striped electric anatomy with rooted claws and open baby contact holes',flush=True)
- for ice_dancer in ('jynx','smoochum'):
+ if 'smoochum' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from smoochum_glb import export_smoochum
+  (OUT/'smoochum.glb').write_bytes(export_smoochum())
+  (OUT/'smoochum.mesh.json').unlink(missing_ok=True)
+  names.remove('smoochum')
+  print('smoochum: canonical planted kiss creature with fitted gaze, recessed lips and coherent bob',flush=True)
+ for ice_dancer in ('jynx',):
   if ice_dancer in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
    from ice_dancers_sculpt import sculpture as ice_dancer_sculpture
@@ -1332,26 +1367,72 @@ def run():
    print(ice_dancer+': original distinct ice-dancer anatomy, fitted gaze and recessed kiss rim',flush=True)
  if 'tyrogue' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from tyrogue_sculpt import sculpture as tyrogue_sculpture
-  (OUT/'tyrogue.mesh.json').write_text(json.dumps(tyrogue_sculpture(),separators=(',',':')))
+  from tyrogue_glb import export_tyrogue
+  (OUT/'tyrogue.glb').write_bytes(export_tyrogue())
+  (OUT/'tyrogue.mesh.json').unlink(missing_ok=True)
   names.remove('tyrogue')
-  print('tyrogue: original small scuffle fighter with continuous crown and three-finger hands',flush=True)
+  print('tyrogue: canonical planted scuffle fighter with continuous crown and articulated wrapped wrists',flush=True)
  if 'hitmontop' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from hitmontop_sculpt import sculpture as hitmontop_sculpture
-  (OUT/'hitmontop.mesh.json').write_text(json.dumps(hitmontop_sculpture(),separators=(',',':')))
+  from hitmontop_glb import export_hitmontop
+  (OUT/'hitmontop.glb').write_bytes(export_hitmontop())
+  (OUT/'hitmontop.mesh.json').unlink(missing_ok=True)
   names.remove('hitmontop')
   print('hitmontop: original handstand fighter with blue spiked feet and ball tail',flush=True)
  if 'hitmonchan' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from hitmonchan_sculpt import sculpture as hitmonchan_sculpture
-  (OUT/'hitmonchan.mesh.json').write_text(json.dumps(hitmonchan_sculpture(),separators=(',',':')))
+  from hitmonchan_glb import export_hitmonchan
+  (OUT/'hitmonchan.glb').write_bytes(export_hitmonchan())
+  (OUT/'hitmonchan.mesh.json').unlink(missing_ok=True)
   names.remove('hitmonchan')
   print('hitmonchan: original crown-headed boxer with pleated lavender kit and red thumbed mitts',flush=True)
- if 'hitmonlee' in names:
+ for species in ('remoraid','octillery'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from jet_fish_glb import export_jet_fish
+   (OUT/(species+'.glb')).write_bytes(export_jet_fish(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
+   names.remove(species)
+   print(species+': canonical articulated fins or grounded tentacle curls and hollow siphon',flush=True)
+ for species in ('swinub','piloswine'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from fur_pig_glb import export_fur_pig
+   (OUT/(species+'.glb')).write_bytes(export_fur_pig(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
+   names.remove(species)
+   print(species+': canonical planted fur pig with coherent coat and sniffing head',flush=True)
+ if 'sneasel' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from hitmonlee_sculpt import sculpture as hitmonlee_sculpture
-  (OUT/'hitmonlee.mesh.json').write_text(json.dumps(hitmonlee_sculpture(),separators=(',',':')))
+  from sneasel_glb import export_sneasel
+  (OUT/'sneasel.glb').write_bytes(export_sneasel())
+  (OUT/'sneasel.mesh.json').unlink(missing_ok=True)
+  names.remove('sneasel')
+  print('sneasel: canonical planted toe talons and coherent feathered claw strike',flush=True)
+ if 'skarmory' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from skarmory_glb import export_skarmory
+  (OUT/'skarmory.glb').write_bytes(export_skarmory())
+  (OUT/'skarmory.mesh.json').unlink(missing_ok=True)
+  names.remove('skarmory')
+  print('skarmory: canonical articulated metal wings and opening lower bill with planted talons',flush=True)
+ if 'smeargle' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from smeargle_glb import export_smeargle
+  (OUT/'smeargle.glb').write_bytes(export_smeargle())
+  (OUT/'smeargle.mesh.json').unlink(missing_ok=True)
+  names.remove('smeargle')
+  print('smeargle: canonical held brush-tail stroke with continuous banded arms and planted paws',flush=True)
+ if 'hitmonlee' in names:
+
+
+
+
+
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from hitmonlee_glb import export_hitmonlee
+  (OUT/'hitmonlee.glb').write_bytes(export_hitmonlee())
+  (OUT/'hitmonlee.mesh.json').unlink(missing_ok=True)
   names.remove('hitmonlee')
   print('hitmonlee: original headless fighter with continuous ribbed springs and three-finger hands',flush=True)
  if 'nidoking' in names:
@@ -1384,6 +1465,13 @@ def run():
   (OUT/'wartortle.mesh.json').write_text(json.dumps(wartortle_sculpture(),separators=(',',':')))
   names.remove('wartortle')
   print('wartortle: original feather ears, cloud tail, fitted turtle shell and restrained eyes',flush=True)
+ if 'lapras' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from lapras_glb import export_lapras
+  (OUT/'lapras.glb').write_bytes(export_lapras())
+  (OUT/'lapras.mesh.json').unlink(missing_ok=True)
+  names.remove('lapras')
+  print('lapras: canonical seated shell, fitted almond gaze and articulated swimming body',flush=True)
  if 'ho_oh' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
   from ho_oh_sculpt import sculpture as ho_oh_sculpture
@@ -1392,28 +1480,32 @@ def run():
   print('ho_oh: original rainbow phoenix with tricolor flight vanes and golden tail fan',flush=True)
  if 'lugia' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from lugia_sculpt import sculpture as lugia_sculpture
-  (OUT/'lugia.mesh.json').write_text(json.dumps(lugia_sculpture(),separators=(',',':')))
+  from lugia_glb import export_lugia
+  (OUT/'lugia.glb').write_bytes(export_lugia())
+  (OUT/'lugia.mesh.json').unlink(missing_ok=True)
   names.remove('lugia')
-  print('lugia: original sea guardian with five broad digits per hand, open jaw and swept tail',flush=True)
+  print('lugia: canonical five-digit hand wings, open mandible and planted pads',flush=True)
  if 'moltres' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from moltres_sculpt import sculpture as moltres_sculpture
-  (OUT/'moltres.mesh.json').write_text(json.dumps(moltres_sculpture(),separators=(',',':')))
+  from moltres_glb import export_moltres
+  (OUT/'moltres.glb').write_bytes(export_moltres())
+  (OUT/'moltres.mesh.json').unlink(missing_ok=True)
   names.remove('moltres')
-  print('moltres: original gold leading wings and closed fire banks with fitted warm and hot cores',flush=True)
+  print('moltres: canonical gold wing strokes and coherent flame-bank articulation',flush=True)
  if 'zapdos' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from zapdos_sculpt import sculpture as zapdos_sculpture
-  (OUT/'zapdos.mesh.json').write_text(json.dumps(zapdos_sculpture(),separators=(',',':')))
+  from zapdos_glb import export_zapdos
+  (OUT/'zapdos.glb').write_bytes(export_zapdos())
+  (OUT/'zapdos.mesh.json').unlink(missing_ok=True)
   names.remove('zapdos')
-  print('zapdos: original angular thunder fans, rooted black underfeathers and long tapered bill',flush=True)
+  print('zapdos: canonical planted talons and coherent articulated thunder fans',flush=True)
  if 'articuno' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from articuno_sculpt import sculpture as articuno_sculpture
-  (OUT/'articuno.mesh.json').write_text(json.dumps(articuno_sculpture(),separators=(',',':')))
+  from articuno_glb import export_articuno
+  (OUT/'articuno.glb').write_bytes(export_articuno())
+  (OUT/'articuno.mesh.json').unlink(missing_ok=True)
   names.remove('articuno')
-  print('articuno: original crystalline crown, layered ice vanes and continuous curling streamer',flush=True)
+  print('articuno: canonical feather banks and articulated curling streamer',flush=True)
  for bird in ('pidgeot','fearow'):
   if bird in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -1544,55 +1636,65 @@ def run():
   (OUT/'rhyhorn.mesh.json').write_text(json.dumps(rhyhorn_sculpture(),separators=(',',':')))
   names.remove('rhyhorn')
   print('rhyhorn: original rooted dorsal armor, wedge muzzle and stocky stone legs',flush=True)
- if 'donphan' in names:
-  sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from donphan_sculpt import sculpture as donphan_sculpture
-  (OUT/'donphan.mesh.json').write_text(json.dumps(donphan_sculpture(),separators=(',',':')))
-  names.remove('donphan')
-  print('donphan: original continuous tire tread and swept tusk sculpture',flush=True)
- if 'phanpy' in names:
-  sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from phanpy_sculpt import sculpture as phanpy_sculpture
-  (OUT/'phanpy.mesh.json').write_text(json.dumps(phanpy_sculpture(),separators=(',',':')))
-  names.remove('phanpy')
-  print('phanpy: original upturned trunk and drooping ear sculpture',flush=True)
- if 'togetic' in names:
-  sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from togetic_sculpt import sculpture as togetic_sculpture
-  (OUT/'togetic.mesh.json').write_text(json.dumps(togetic_sculpture(),separators=(',',':')))
-  names.remove('togetic')
-  print('togetic: original graceful neck and layered swept wings with open body rings',flush=True)
- if 'togepi' in names:
-  sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from togepi_sculpt import sculpture as togepi_sculpture
-  (OUT/'togepi.mesh.json').write_text(json.dumps(togepi_sculpture(),separators=(',',':')))
-  names.remove('togepi')
-  print('togepi: original rounded star head and cracked shell with open color rings',flush=True)
+ for species in ('phanpy','donphan'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from elephant_glb import export_elephant
+   (OUT/(species+'.glb')).write_bytes(export_elephant(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
+   names.remove(species)
+   print(species+': canonical planted elephant with articulated trunk and coherent fitted details',flush=True)
+ for species in ('togepi','togetic'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from egg_fairy_glb import export_egg_fairy
+   (OUT/(species+'.glb')).write_bytes(export_egg_fairy(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
+   names.remove(species)
+   print(species+': canonical planted egg fairy with coherent shell rings and articulated head, arms and wings',flush=True)
  for species in ('natu','xatu'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
-   from psychic_bird_sculpt import sculpture as psychic_bird_sculpture
-   (OUT/(species+'.mesh.json')).write_text(json.dumps(psychic_bird_sculpture(species),separators=(',',':')))
+   from psychic_bird_glb import export_psychic_bird
+   (OUT/(species+'.glb')).write_bytes(export_psychic_bird(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
    names.remove(species)
-   print(species+': original calm psychic bird with fitted symbolic plumage',flush=True)
+   print(species+': canonical planted psychic bird with coherent wing markings and articulated plumage',flush=True)
  if 'yanma' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from yanma_sculpt import sculpture as yanma_sculpture
-  (OUT/'yanma.mesh.json').write_text(json.dumps(yanma_sculpture(),separators=(',',':')))
+  from yanma_glb import export_yanma
+  (OUT/'yanma.glb').write_bytes(export_yanma())
+  (OUT/'yanma.mesh.json').unlink(missing_ok=True)
   names.remove('yanma')
-  print('yanma: original veined clear-wing dragonfly with a rising segmented tail',flush=True)
+  print('yanma: canonical four-wing skin with planted forked toes and articulated segmented abdomen',flush=True)
+ if 'shuckle' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from shuckle_glb import export_shuckle
+  (OUT/'shuckle.glb').write_bytes(export_shuckle())
+  (OUT/'shuckle.mesh.json').unlink(missing_ok=True)
+  names.remove('shuckle')
+  print('shuckle: standard rigid perforated shell, planted feet and soft neck/limb skin',flush=True)
+ if 'dunsparce' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from dunsparce_glb import export_dunsparce
+  (OUT/'dunsparce.glb').write_bytes(export_dunsparce())
+  (OUT/'dunsparce.mesh.json').unlink(missing_ok=True)
+  names.remove('dunsparce')
+  print('dunsparce: standard grounded land snake with coherent wings and tilted spiral drill',flush=True)
  if 'gligar' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from gligar_sculpt import sculpture as gligar_sculpture
-  (OUT/'gligar.mesh.json').write_text(json.dumps(gligar_sculpture(),separators=(',',':')))
+  from gligar_glb import export_gligar
+  (OUT/'gligar.glb').write_bytes(export_gligar())
+  (OUT/'gligar.mesh.json').unlink(missing_ok=True)
   names.remove('gligar')
-  print('gligar: original hooked-pincer glider with blue scalloped sails',flush=True)
+  print('gligar: canonical coupled pincer/sail skin with articulated ears, tongue and venom tail',flush=True)
  if 'bellossom' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from bellossom_sculpt import sculpture as bellossom_sculpture
-  (OUT/'bellossom.mesh.json').write_text(json.dumps(bellossom_sculpture(),separators=(',',':')))
+  from bellossom_glb import export_bellossom
+  (OUT/'bellossom.glb').write_bytes(export_bellossom())
+  (OUT/'bellossom.mesh.json').unlink(missing_ok=True)
   names.remove('bellossom')
-  print('bellossom: original layered leaf dancer with recessed crown flowers',flush=True)
+  print('bellossom: standard layered dancer skin with grounded leaf tips and coherent crown flowers',flush=True)
  for species in ('sunkern','sunflora'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -1603,42 +1705,85 @@ def run():
    print(species+': canonical grounded seedling or articulated ray-petal sunflower',flush=True)
  if 'qwilfish' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from qwilfish_sculpt import sculpture as qwilfish_sculpture
-  (OUT/'qwilfish.mesh.json').write_text(json.dumps(qwilfish_sculpture(),separators=(',',':')))
+  from qwilfish_glb import export_qwilfish
+  (OUT/'qwilfish.glb').write_bytes(export_qwilfish())
+  (OUT/'qwilfish.mesh.json').unlink(missing_ok=True)
   names.remove('qwilfish')
-  print('qwilfish: original inflated puffer with radial spines and spotted fan tail',flush=True)
+  print('qwilfish: standard coherent puffer skin with pectoral fins and articulated spotted tail',flush=True)
  if 'misdreavus' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from misdreavus_sculpt import sculpture as misdreavus_sculpture
-  (OUT/'misdreavus.mesh.json').write_text(json.dumps(misdreavus_sculpture(),separators=(',',':')))
+  from misdreavus_glb import export_misdreavus
+  (OUT/'misdreavus.glb').write_bytes(export_misdreavus())
+  (OUT/'misdreavus.mesh.json').unlink(missing_ok=True)
   names.remove('misdreavus')
-  print('misdreavus: original flowing locks and graduated ruby necklace',flush=True)
+  print('misdreavus: canonical six swept locks and curls with coherent spectral gaze and necklace',flush=True)
  if 'wobbuffet' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from wobbuffet_sculpt import sculpture as wobbuffet_sculpture
-  (OUT/'wobbuffet.mesh.json').write_text(json.dumps(wobbuffet_sculpture(),separators=(',',':')))
+  from wobbuffet_glb import export_wobbuffet
+  (OUT/'wobbuffet.glb').write_bytes(export_wobbuffet())
+  (OUT/'wobbuffet.mesh.json').unlink(missing_ok=True)
   names.remove('wobbuffet')
-  print('wobbuffet: original elastic salute and watchful paddle tail',flush=True)
+  print('wobbuffet: standard planted elastic salute skin and articulated watchful tail',flush=True)
  if 'murkrow' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from murkrow_sculpt import sculpture as murkrow_sculpture
-  (OUT/'murkrow.mesh.json').write_text(json.dumps(murkrow_sculpture(),separators=(',',':')))
+  from murkrow_glb import export_murkrow
+  (OUT/'murkrow.glb').write_bytes(export_murkrow())
+  (OUT/'murkrow.mesh.json').unlink(missing_ok=True)
   names.remove('murkrow')
-  print('murkrow: original witch-crow sculpture with hooked bill and bound broom tail',flush=True)
+  print('murkrow: canonical planted witch-crow skin with coherent folded wings and articulated feather hat and broom tail',flush=True)
  for species in ('teddiursa','ursaring'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
-   from bear_sculpt import sculpture as bear_sculpture
-   (OUT/(species+'.mesh.json')).write_text(json.dumps(bear_sculpture(species),separators=(',',':')))
+   from bear_glb import export_bear
+   (OUT/(species+'.glb')).write_bytes(export_bear(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
    names.remove(species)
-   print(species+': distinct bear anatomy and fitted lunar markings',flush=True)
+   print(species+': canonical planted bear skin with coherent lunar markings and honey-paw contact',flush=True)
+ if 'girafarig' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from girafarig_glb import export_girafarig
+  (OUT/'girafarig.glb').write_bytes(export_girafarig())
+  (OUT/'girafarig.mesh.json').unlink(missing_ok=True)
+  names.remove('girafarig')
+  print('girafarig: canonical planted giraffe with fitted neck spots and independent second head',flush=True)
+ if 'stantler' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from stantler_glb import export_stantler
+  (OUT/'stantler.glb').write_bytes(export_stantler())
+  (OUT/'stantler.mesh.json').unlink(missing_ok=True)
+  names.remove('stantler')
+  print('stantler: canonical planted deer with coherent antler loops and independent curled tail',flush=True)
+ if 'delibird' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from delibird_glb import export_delibird
+  (OUT/'delibird.glb').write_bytes(export_delibird())
+  (OUT/'delibird.mesh.json').unlink(missing_ok=True)
+  names.remove('delibird')
+  print('delibird: canonical planted delivery bird with coherent held wing and sack',flush=True)
+ for species in ('miltank','tauros'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from bovine_glb import export_bovine
+   (OUT/(species+'.glb')).write_bytes(export_bovine(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
+   names.remove(species)
+   print(species+': canonical planted bovine skin with coherent fitted markings and separate tail chains',flush=True)
+ for species in ('houndour','houndoom'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from hellhound_glb import export_hellhound
+   (OUT/(species+'.glb')).write_bytes(export_hellhound(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
+   names.remove(species)
+   print(species+': canonical bone-armored canine skin with fixed paws and segmented tail',flush=True)
  for species in ('snubbull','granbull'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
-   from bulldog_sculpt import sculpture as bulldog_sculpture
-   (OUT/(species+'.mesh.json')).write_text(json.dumps(bulldog_sculpture(species),separators=(',',':')))
+   from bulldog_glb import export_bulldog
+   (OUT/(species+'.glb')).write_bytes(export_bulldog(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
    names.remove(species)
-   print(species+': distinct bulldog anatomy with folded ears and fitted features',flush=True)
+   print(species+': canonical planted bulldog skin with coherent folded ears, spots, jaws and tusks',flush=True)
  if 'aipom' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
   from aipom_glb import export_aipom
@@ -1667,13 +1812,14 @@ def run():
   (OUT/'jumpluff.mesh.json').unlink(missing_ok=True)
   names.remove('jumpluff')
   print('jumpluff: canonical three-head skin with all 84 bristles preserved',flush=True)
- for species in ('mareep','flaaffy'):
+ for species in ('mareep','flaaffy','ampharos'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
-   from sheep_sculpt import sculpture as sheep_sculpture
-   (OUT/(species+'.mesh.json')).write_text(json.dumps(sheep_sculpture(species),separators=(',',':')))
+   from electric_sheep_glb import export_electric_sheep
+   (OUT/(species+'.glb')).write_bytes(export_electric_sheep(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
    names.remove(species)
-   print(species+': distinct electric sheep anatomy and integrated fleece',flush=True)
+   print(species+': canonical planted electric sheep with coherent fleece, bands and beacon',flush=True)
  for species in ('spinarak','ariados'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -1682,13 +1828,22 @@ def run():
    (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
    names.remove(species)
    print(species+': canonical six-limbed spider skin and fitted carapace markings',flush=True)
+ for species in ('chinchou','lanturn'):
+  if species in names:
+   sys.path.insert(0,str(Path(__file__).resolve().parent))
+   from angler_glb import export_angler
+   (OUT/(species+'.glb')).write_bytes(export_angler(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
+   names.remove(species)
+   print(species+': canonical swimming fins and flexible connected beacons',flush=True)
  for species in ('slugma','magcargo'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
-   from lava_sculpt import sculpture as lava_sculpture
-   (OUT/(species+'.mesh.json')).write_text(json.dumps(lava_sculpture(species),separators=(',',':')))
+   from lava_glb import export_lava
+   (OUT/(species+'.glb')).write_bytes(export_lava(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
    names.remove(species)
-   print(species+': continuous lava mantle and coiled stone shell',flush=True)
+   print(species+': canonical coherent molten neck, eye stalks and rigid vented shell',flush=True)
  for species in ('zubat','golbat','crobat'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -1829,10 +1984,11 @@ def run():
  for species in ('marill','azumarill'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
-   from aqua_rabbit_sculpt import sculpture as aqua_rabbit_sculpture
-   (OUT/(species+'.mesh.json')).write_text(json.dumps(aqua_rabbit_sculpture(species),separators=(',',':')))
+   from water_rabbit_glb import export_water_rabbit
+   (OUT/(species+'.glb')).write_bytes(export_water_rabbit(species))
+   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
    names.remove(species)
-   print(species+': distinct papercraft silhouettes and welded belly',flush=True)
+   print(species+': canonical planted water rabbit with welded belly and articulated buoy',flush=True)
  for species in ('croconaw','feraligatr'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -1879,12 +2035,6 @@ def run():
    (OUT/(species+'.mesh.json')).write_text(json.dumps(fighting_sculpture(species),separators=(',',':')))
    names.remove(species)
    print(species+': distinct fighting anatomy with grounded toes and fitted faces',flush=True)
- if 'ampharos' in names:
-  sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from ampharos_sculpt import sculpture
-  (OUT/'ampharos.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
-  names.remove('ampharos')
-  print('ampharos: connected beacon sculpture with fitted facial and body markings',flush=True)
  if 'meganium' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
   from meganium_glb import export_meganium

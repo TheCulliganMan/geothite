@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the authored fruit tree's geometry and existing actor-size contract."""
+"""Validate the authored fruit tree's geometry and orchard scale."""
 import argparse
 import math
 from pathlib import Path
@@ -43,13 +43,16 @@ def verify(path):
         triangles += len(indices)//3
     low = [min(p[a] for p in points) for a in range(3)]
     high = [max(p[a] for p in points) for a in range(3)]
-    assert abs(low[1]) < 1e-6 and abs(high[1]-1.08) < 1e-6, ('floor/height', low, high)
-    # The former tree's footprint is the maximum permitted extent.
-    assert max(abs(low[0]), abs(high[0])) <= 0.437381, ('width', low, high)
-    assert max(abs(low[2]), abs(high[2])) <= 0.401337, ('depth', low, high)
-    assert 0 < triangles < 12000, triangles
+    assert abs(low[1]) < 1e-6 and abs(high[1]-2.4) < 1e-6, ('floor/height', low, high)
+    # Broad crown overhangs the fixed interaction root, without spanning a path.
+    assert max(abs(low[0]), abs(high[0])) <= 1.050001, ('width', low, high)
+    assert max(abs(low[2]), abs(high[2])) <= 0.950001, ('depth', low, high)
+    assert 0 < triangles < 18000, triangles
     assert 'Continuous fluted orchard trunk' in parts
-    assert sum(p.startswith('Orchard leaf /') for p in parts) >= 150
+    assert sum(p.startswith('Orchard root flare /') for p in parts) == 5
+    assert sum(p.startswith('Orchard leaf /') for p in parts) == 800
+    assert sum(p.startswith('Orchard twig /') for p in parts) == 50
+    assert not any(p.startswith('Recessed foliage /') for p in parts)
     berries = [p for p in parts if p.startswith('Ripe berry /')]
     assert 6 <= len(berries) <= 16
     assert sum(p.startswith('Hanging berry stem /') for p in parts) == len(berries)

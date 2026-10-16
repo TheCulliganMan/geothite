@@ -3,16 +3,17 @@
 import copy,json,os,unittest
 from pathlib import Path
 from articuno_sculpt import sculpture,HEIGHT
+from articuno_glb import read_articuno,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_slime_sculpt import ray_intersections
-from test_kingdra_sculpt import crossed_faces
-from test_dragon_family_sculpt import surface_distances
+from sculpt_test_support import indexed_ray_intersections as ray_intersections
+from sculpt_test_support import crossed_faces
+from sculpt_test_support import surface_distances
 from sculpt_geometry import translate
 ROOT=Path(os.environ.get('CRYSTAL_ARTICUNO_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 
 class ArticunoTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'articuno.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_articuno(ROOT/'articuno.glb');cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def overlap(self,a,b):
   xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
@@ -25,7 +26,7 @@ class ArticunoTests(unittest.TestCase):
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'articuno':self.m})
  def test_finite_unit_normals_follow_actual_faces(self):assert_model_shading(self,{'articuno':self.m})
  def test_recipe_parity_preserved_height_grounding_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),80000)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),80000)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   for prefix,n in (('Crown /',3),('Wing /',2),('Primary /',36),('Covert /',28),('Tail /',1),('Tail fold /',3),('Leg /',2),('Toe / three',6),('Toe / rear',2),('Talon /',8)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)

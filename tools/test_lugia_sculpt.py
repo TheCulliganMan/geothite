@@ -3,15 +3,16 @@
 import copy,json,os,unittest
 from pathlib import Path
 from lugia_sculpt import sculpture,HEIGHT
+from lugia_glb import read_lugia,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_slime_sculpt import ray_intersections
-from test_kingdra_sculpt import crossed_faces
+from sculpt_test_support import indexed_ray_intersections as ray_intersections
+from sculpt_test_support import crossed_faces
 from sculpt_geometry import translate,ellipsoid
 ROOT=Path(os.environ.get('CRYSTAL_LUGIA_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 
 class LugiaTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'lugia.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_lugia(ROOT/'lugia.glb');cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def overlap(self,a,b):
   xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
@@ -24,7 +25,7 @@ class LugiaTests(unittest.TestCase):
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'lugia':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'lugia':self.m})
  def test_recipe_parity_grounding_height_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),80000)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),80000)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   for prefix,n in (('Wing arm /',2),('Wing palm /',2),('Wing digit /',10),('Eye flag /',2),('Head crest /',1),('Back plate /',10),('Tail /',1),('Tail fin /',2),('Haunch /',2),('Leg /',2),('Foot /',2),('Toe /',6)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)
@@ -85,7 +86,11 @@ class LugiaTests(unittest.TestCase):
    # Test occupied intervals, not just surface crossings: a solid filler whose
    # boundaries lie beyond both jaws must still invalidate the mouth void.
    for p in rotated:
-    hits=sorted(-y for y in ray_intersections(p,0,z))
+    # Shared triangle edges are one surface crossing, including the x=0
+    # meridian of a float32 ellipsoid. Pair unique occupied boundaries.
+    hits=[]
+    for hit in sorted(-y for y in ray_intersections(p,0,z)):
+     if not hits or abs(hit-hits[-1])>1e-7:hits.append(hit)
     for low,high in zip(hits[::2],hits[1::2]):
      if min(high,top-.0002)-max(low,floor+.0002)>.0001:return False
   return True

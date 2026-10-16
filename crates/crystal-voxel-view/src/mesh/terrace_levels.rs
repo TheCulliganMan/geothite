@@ -11,24 +11,32 @@ pub(super) struct Levels {
     height: usize,
     corners: Vec<[f32; 4]>,
 }
-static CACHE: OnceLock<Mutex<VecDeque<(Vec<VisualJumpLedge>, Arc<Levels>)>>> = OnceLock::new();
+static CACHE: OnceLock<Mutex<VecDeque<(Vec<VisualJumpLedge>, bool, Arc<Levels>)>>> =
+    OnceLock::new();
 
 pub(super) fn get(edges: &[VisualJumpLedge]) -> Arc<Levels> {
+    get_for_family(edges, false)
+}
+
+pub(super) fn get_for_family(edges: &[VisualJumpLedge], kanto: bool) -> Arc<Levels> {
     let mut cache = CACHE
         .get_or_init(|| Mutex::new(VecDeque::new()))
         .lock()
         .unwrap();
-    if let Some(i) = cache.iter().position(|(key, _)| key.as_slice() == edges) {
+    if let Some(i) = cache
+        .iter()
+        .position(|(key, family, _)| key.as_slice() == edges && *family == kanto)
+    {
         let item = cache.remove(i).unwrap();
-        let answer = item.1.clone();
+        let answer = item.2.clone();
         cache.push_back(item);
         return answer;
     }
-    let levels = Arc::new(Levels::build(edges));
+    let levels = Arc::new(Levels::build(edges, kanto));
     if cache.len() == 4 {
         cache.pop_front();
     }
-    cache.push_back((edges.to_vec(), levels.clone()));
+    cache.push_back((edges.to_vec(), kanto, levels.clone()));
     levels
 }
 
@@ -117,7 +125,10 @@ impl Union {
 }
 
 impl Levels {
-    fn build(edges: &[VisualJumpLedge]) -> Self {
+    fn build(edges: &[VisualJumpLedge], kanto: bool) -> Self {
+        if kanto && !edges.is_empty() && edges.iter().all(|e| e.descent == IVec2::Y) {
+            return Self::south_courses(edges);
+        }
         let mut min = IVec2::ZERO;
         let mut max = IVec2::ZERO;
         for e in edges {
@@ -368,6 +379,50 @@ impl Levels {
         }
     }
 
+    /// A south-facing course lowers the route; an opening is a ramp between
+    /// its two levels. Independent bypass solves must not make the ground dip
+    /// and rise again between authored drops.
+    fn south_courses(edges: &[VisualJumpLedge]) -> Self {
+        let mut min = IVec2::ZERO;
+        let mut max = IVec2::ZERO;
+        let mut courses = std::collections::BTreeMap::<i32, Vec<(i32, i32)>>::new();
+        for edge in edges {
+            min = min.min(edge.start).min(edge.end);
+            max = max.max(edge.start).max(edge.end);
+            courses
+                .entry(edge.start.y)
+                .or_default()
+                .push((edge.start.x, edge.end.x));
+        }
+        min -= IVec2::splat(8);
+        max += IVec2::splat(8);
+        let width = (max.x - min.x) as usize;
+        let height = (max.y - min.y) as usize;
+        let mut corners = Vec::with_capacity(width * height);
+        for y in min.y..max.y {
+            for x in min.x..max.x {
+                let mut h = [0.; 4];
+                for (&plane, spans) in &courses {
+                    let cut = spans.iter().any(|&(a, b)| x >= a && x < b);
+                    for (i, dy) in [0, 1, 1, 0].into_iter().enumerate() {
+                        h[i] += if cut {
+                            if y < plane { 1. } else { 0. }
+                        } else {
+                            (plane - y - dy).clamp(0, 1) as f32
+                        };
+                    }
+                }
+                corners.push(h);
+            }
+        }
+        Self {
+            origin: min,
+            width,
+            height,
+            corners,
+        }
+    }
+
     pub(super) fn height(&self, p: Vec2) -> f32 {
         let p = p - self.origin.as_vec2();
         let x = (p.x.floor() as i32).clamp(0, self.width as i32 - 1) as usize;
@@ -380,5 +435,85 @@ impl Levels {
         } else {
             c[0] * (1. - u) + c[2] * v + c[3] * (u - v)
         }
+    }
+}
+
+#[cfg(test)]
+mod stair_tests {
+    use super::*;
+
+    #[test]
+    fn staggered_south_courses_never_dip_when_travelling_north() {
+        let edges = [
+            (12, 4, 14),
+            (12, 16, 24),
+            (20, 4, 14),
+            (28, 8, 16),
+            (40, 4, 6),
+            (40, 8, 14),
+            (40, 16, 32),
+            (48, 28, 32),
+            (56, 4, 8),
+            (56, 16, 32),
+        ]
+        .map(|(y, a, b)| VisualJumpLedge {
+            start: IVec2::new(a, y),
+            end: IVec2::new(b, y),
+            descent: IVec2::Y,
+        });
+        let field = get_for_family(&edges, true);
+        for x in 0..40 {
+            for quarter in 0..(72 * 4 - 1) {
+                let north = field.height(Vec2::new(x as f32 + 0.5, quarter as f32 / 4.));
+                let south = field.height(Vec2::new(x as f32 + 0.5, (quarter + 1) as f32 / 4.));
+                assert!(
+                    north + 0.0001 >= south,
+                    "northward descent at x{x}, quarter{quarter}: {south} -> {north}"
+                );
+            }
+        }
+        for edge in &edges {
+            let x = (edge.start.x + edge.end.x) as f32 / 2.;
+            let y = edge.start.y as f32;
+            assert!(
+                (field.height(Vec2::new(x, y - 0.001))
+                    - field.height(Vec2::new(x, y + 0.001))
+                    - 1.)
+                    .abs()
+                    < 0.0001
+            );
+        }
+    }
+
+    #[test]
+    fn interrupted_kanto_shelf_is_level_with_descent_confined_to_stair_row() {
+        // Route 1's three adjacent banks, interrupted by two half-block stairs.
+        let edges = [(4, 6), (8, 14), (16, 32)].map(|(a, b)| VisualJumpLedge {
+            start: IVec2::new(a, 40),
+            end: IVec2::new(b, 40),
+            descent: IVec2::Y,
+        });
+        let field = get_for_family(&edges, true);
+        let high = field.height(Vec2::new(5., 38.5));
+        let low = field.height(Vec2::new(5., 40.5));
+        assert!((high - low - 1.).abs() < 0.0001);
+        for x in 5..31 {
+            assert!(
+                (field.height(Vec2::new(x as f32 + 0.5, 38.5)) - high).abs() < 0.0001,
+                "shelf bends at column {x}"
+            );
+            assert!((field.height(Vec2::new(x as f32 + 0.5, 40.5)) - low).abs() < 0.0001);
+        }
+        for x in [6.5, 7.5, 14.5, 15.5] {
+            for t in [0., 0.25, 0.5, 0.75, 0.999] {
+                assert!(
+                    (field.height(Vec2::new(x, 39. + t)) - (high + (low - high) * t)).abs()
+                        < 0.0001
+                );
+            }
+        }
+        // Family-scoped cache entries cannot change Johto or forest terrain.
+        assert!(Arc::ptr_eq(&get(&edges), &get_for_family(&edges, false)));
+        assert!(!Arc::ptr_eq(&get(&edges), &field));
     }
 }

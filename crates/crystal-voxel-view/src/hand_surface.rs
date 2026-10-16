@@ -91,6 +91,13 @@ fn refine_selection(
     // Lookup order has no geometric meaning. Neighbor sums keep their ordered
     // set so changing the outer tables cannot change floating-point results.
     let mut adjacent = HashMap::<[i32; 3], BTreeSet<[i32; 3]>>::new();
+    let target_pins = original.len() >= 16_384
+        && selected.iter().filter(|&&v| v).count() < original.len() / 4;
+    let selected_keys = if target_pins {
+        original_keys.iter().zip(selected).filter_map(|(&key, &selected)| selected.then_some(key))
+            .collect::<HashSet<_>>()
+    } else { HashSet::new() };
+    let mut pinned_original = if target_pins { vec![false; original.len()] } else { Vec::new() };
     let mut pinned = HashSet::new();
     let mut points = HashMap::new();
     let mut edge_faces = HashMap::<([i32; 3], [i32; 3]), Vec<[i32; 3]>>::new();
@@ -98,7 +105,8 @@ fn refine_selection(
         let face = [face[0] as usize, face[1] as usize, face[2] as usize];
         let keys = face.map(|i| original_keys[i]);
         if !face.iter().all(|&i| selected[i]) {
-            pinned.extend(keys);
+            if target_pins { for i in face { pinned_original[i] = true; } }
+            else { pinned.extend(keys); }
             continue;
         }
         for i in 0..3 {
@@ -113,6 +121,14 @@ fn refine_selection(
                 .entry((a.min(b), a.max(b)))
                 .or_default()
                 .push(keys[(i + 2) % 3]);
+        }
+    }
+    if target_pins {
+        // Only selected keys can be queried by rounding or edge subdivision.
+        // A compact vertex mask retains every other original pin for the
+        // later check of newly created midpoint coincidences.
+        for (i, &key) in original_keys.iter().enumerate() {
+            if pinned_original[i] && selected_keys.contains(&key) { pinned.insert(key); }
         }
     }
     for (&(a, b), faces) in &edge_faces {
@@ -234,19 +250,59 @@ fn refine_selection(
             _ => unreachable!(),
         }
     }
-    let mut normals = HashMap::<[i32; 3], Vec3>::new();
-    for face in mesh.indices.chunks_exact(3) {
-        let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
-        let n = (p[1] - p[0]).cross(p[2] - p[0]);
-        for &i in face {
-            *normals.entry(key(mesh.positions[i as usize])).or_default() += n;
+    if target_pins {
+        let new_keys = mesh.positions[original.len()..].iter().copied().map(key).collect::<HashSet<_>>();
+        for (i, &key) in original_keys.iter().enumerate() {
+            if pinned_original[i] && new_keys.contains(&key) { pinned.insert(key); }
         }
     }
-    for i in 0..mesh.positions.len() {
-        if (i >= selected.len() || selected[i])
-            && !pinned.contains(&original_keys.get(i).copied().unwrap_or_else(||key(mesh.positions[i])))
-        {
-            if let Some(n) = normals.get(&key(mesh.positions[i])) {
+    if mesh.positions.len() < 16_384 {
+        // Keep the direct path for small surfaces, where indexing costs more
+        // than the original normal scan.
+        let mut normals = HashMap::<[i32; 3], Vec3>::new();
+        for face in mesh.indices.chunks_exact(3) {
+            let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+            let n = (p[1] - p[0]).cross(p[2] - p[0]);
+            for &i in face { *normals.entry(key(mesh.positions[i as usize])).or_default() += n; }
+        }
+        for i in 0..mesh.positions.len() {
+            if (i >= selected.len() || selected[i])
+                && !pinned.contains(&original_keys.get(i).copied().unwrap_or_else(|| key(mesh.positions[i])))
+            {
+                if let Some(n) = normals.get(&key(mesh.positions[i])) {
+                    if n.length_squared() > 1e-12 { mesh.normals[i] = n.normalize().to_array(); }
+                }
+            }
+        }
+        return;
+    }
+    // Only selected/new, unpinned vertices consume a rebuilt normal. Keep
+    // every face contributing to their geometric welds, but avoid accumulating
+    // normals for the hundreds of thousands of unrelated costume vertices.
+    let current_keys = mesh.positions.iter().copied().map(key).collect::<Vec<_>>();
+    let update_normal = (0..mesh.positions.len()).map(|i|
+        (i >= selected.len() || selected[i])
+            && !pinned.contains(&original_keys.get(i).copied().unwrap_or(current_keys[i])))
+        .collect::<Vec<_>>();
+    let needed = current_keys.iter().zip(&update_normal)
+        .filter_map(|(&key, &update)| update.then_some(key)).collect::<HashSet<_>>();
+    if needed.is_empty() { return; }
+    // Small/densely selected surfaces cost less to accumulate directly.
+    let targeted = current_keys.len() >= 16_384 && needed.len() < current_keys.len() / 4;
+    let mut normals = HashMap::<[i32; 3], Vec3>::new();
+    for face in mesh.indices.chunks_exact(3) {
+        let keys = [face[0], face[1], face[2]].map(|i| current_keys[i as usize]);
+        if targeted && !keys.iter().any(|key| needed.contains(key)) { continue; }
+        let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+        let n = (p[1] - p[0]).cross(p[2] - p[0]);
+        // Retain the original face and corner order of all floating-point sums.
+        for key in keys {
+            if !targeted || needed.contains(&key) { *normals.entry(key).or_default() += n; }
+        }
+    }
+    for (i, &update) in update_normal.iter().enumerate() {
+        if update {
+            if let Some(n) = normals.get(&current_keys[i]) {
                 if n.length_squared() > 1e-12 {
                     mesh.normals[i] = n.normalize().to_array();
                 }

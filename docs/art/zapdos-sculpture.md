@@ -1,81 +1,61 @@
-# Angular thunder bird with black underfeathers
+# Zapdos thunder fans and planted talons
 
-`tools/zapdos_sculpt.py` replaces the shared legendary-bird primitive model
-with an original Zapdos sculpture. The battle-species builder dispatches this
-pure recipe and rejects the earlier Zapdos route. Moltres and the separate
-shared overworld props retain their existing sources.
+`tools/zapdos_sculpt.py` authors the original angular thunder bird.
+`tools/zapdos_glb.py` exports its canonical skinned GLB, and the battle-species
+builder uses the same export path. No third-party geometry is included.
 
-Official [normal-form Zapdos artwork](https://sg.portal-pokemon.com/pokedex/0145/)
-was inspected visually in a temporary browser tab, which was closed after the
-review. No reference image was downloaded into the repository. Its sharp
-silhouette guided the original wing, crown, face, breast and tail geometry.
-The [external candidate review](legendary-bird-rig-research.md) has not yielded
-a validated usable rig. No third-party geometry was imported. This sculpture
-is static.
+Two broad gold wing fans have sharp outer points and deep zigzag edges.
+Each carries three black lightning underfeathers and a fitted gold shoulder
+covert. A lean breast has rooted jagged side feathers; grey feather spats
+connect it to narrow shins. Each foot has three forward digits, a rear digit
+and ivory talon tips. The compact head carries three long crown points, two
+jagged cheek rays, fitted narrow ivory eyes and a long ochre bill. The tail
+has a five-point gold fan over a black underfan.
 
-Two broad gold wing fans have angular outer points and deep zigzag edges.
-Each fan has three rooted black underfeathers, which make the second layer
-read clearly from behind. Gold shoulder coverts fit the actual stored wing
-triangles. A lean breast tapers into the abdomen, with rooted jagged gold
-side feathers. Grey feather spats connect the torso to narrow brown-grey shins;
-each foot has three forward digits, a rear digit and ivory talon tips.
+The canonical GLB has 54 parts, 18,495 vertices, 28,584 triangles, nine joints,
+216 accessors and 729,848 bytes. Removing excess interior pupil subdivisions
+brings the former 20,739-vertex static model within the existing skin limits.
+All 52 non-pupil parts retain their original float32 positions, normals,
+colors and triangle order. Their geometry SHA-256 is
+`f127297ad8e2e71188ad235f4d43678895b7eeca66157130d14a1f82f6e1b00d`.
+The canonical geometry pin is
+`75512d822cf34c6097ea7c8421a159f7bad0291a985a4ae20ab5ae2642ba041f`.
 
-The compact gold head has three long lightning crown points and two jagged
-cheek rays. Narrow ivory eyes, small dark pupils and black sockets fit the
-actual cranium. The long ochre bill tapers downward through independently
-closed upper and lower lance shapes, separated by a narrow charcoal join.
-The tail is a sweeping five-point gold fan over a black underfan. Both fans
-join the actual body volume.
+The identity root fixes all feet, digits and talons. Blended shin and thigh
+weights bridge floor contacts to the yawing torso. Neck and head motion keep
+the fitted throat, eyes, cheek rays, crown and closed bill coherent. Each
+complete gold-and-black wing assembly has its own rigid carrier, preventing
+separation of its interlocking zigzag blades. Both tail fans share a yawing
+joint so they preserve their floor clearance. Rotation-only idle, attack and
+recoil clips return exactly to neutral.
 
-The first software view exposed an overly round torso. Narrowing its lower
-profiles and adding rooted feather points improved the silhouette. The root
-regression then caught that the narrower body no longer supported the original
-shin caps. Actual grey thigh feather solids now join both body and shin;
-the final test checks the complete body/thigh/shin/foot chain. The attachment
-check was not relaxed.
+Authoring height remains 1.28 with its lowest point at zero. The local verified
+pack supplies a 5 ft 3 in production height of 1.6002 metres.
 
-Final Zapdos has 54 parts and 32,360 triangles. Its presentation height remains
-1.28 and its lowest point is zero. Its canonical SHA-256 is
-`36be6eb0fa6cf91e0dc84274593804194fd0a4df2b788ea08d1d09b81b34f6e9`.
+Eleven anatomy checks and eight decoded-skin checks passed. They cover actual
+occupied anatomical joins, supported and unobscured fitted surfaces, outward
+winding, physical edge strain, fixed floor contacts, coherent owners, visible
+wing strokes, independent tail motion, canonical round trips and unchanged
+source geometry. Blender regeneration is byte-identical. Fixed-camera front
+and rear neutral, idle, attack and recoil software views were inspected.
+Shiny checks are skipped at the user's request.
 
-The final candidate passed eleven stored-mesh tests in 5.159 seconds. The
-installed canonical source passed all eleven again in 5.315 seconds. Tests
-cover connected closed outward solids, finite unit normals and actual face
-winding, recipe parity, height, grounding, feature counts and triangle budget.
-Independent nonadjacent triangle checks cover body, neck, crown, wings, black
-underfeathers, cheek and breast rays, thighs and tail. Independent stored-ray
-volume checks cover anatomical roots, both wing assemblies, both tail layers
-and complete digit/talon chains. Fitted eye, shoulder and throat vertices,
-front triangle centers and edge midpoints are checked against actual parent
-triangles. Deliberately detached wing and tail negative controls fail.
+Two focused Rust rig/GPU checks and the wider exact-species grounding/volume
+and elapsed-animation timing regressions passed. The production native client
+built successfully with:
 
-Final front, oblique and rear software images completed with exit zero and
-were individually inspected after the final geometry generation. Earlier
-images were superseded. Canonical layout validation passed, storage validation
-passed for the current shared tree of 572 raw JSON model documents, all three
-edited Python files parsed successfully, and the relevant Git whitespace check
-passed.
+```sh
+CARGO_TARGET_DIR=target/pokemon-models cargo build --locked -p crystal-bevy \
+  --features location-tester,bevy/zstd_rust --example immersive_battle_3d -j1 \
+  --config profile.dev.package.crystal-voxel-view.opt-level=0 \
+  --config profile.dev.package.crystal-bevy.opt-level=0
+```
 
-The fresh native build completed with exit zero in 6 minutes 59 seconds,
-including its shared build-directory wait. The production GPU capture
-completed with exit zero in 4.11 seconds for the complete verification command.
-Its 2,000 by 1,400 image has 46,971 distinct colors and was inspected in full:
-Zapdos's gold zigzag wings, black underfeathers, long pointed bill, crown,
-feathered breast, grounded digits and trailing fan are visible alongside the
-opponent, arena and production battle HUD.
-
-Before launch, the executable contained the complete canonical source SHA-256
-shown above and the compiled mute switch. Its inode, size and modification
-timestamp and the canonical model hash stayed unchanged across the capture.
-`CRYSTAL_PREVIEW_MUTE=1` was set before process creation, and the native backend
-sets both music and effect sinks to zero before appending samples and keeps
-music-volume refreshes at zero. No system volume or other application was
-changed. The capture explicitly targeted the owned GPU image.
-
-The fresh Rust all-251 regression completed with exit zero: its matching test
-passed in 1.08 seconds, with 1,253 other tests filtered from that crate. The
-overall test build took 11 minutes 05 seconds including the shared-cache wait.
-The renderer reported writing the GPU image in 0.90 seconds. This image verifies
-the replacement in the production GPU image path; it does not establish gameplay,
-resolve the separate live-window capture problem or prove every model's
-appearance finished. The full 251-species appearance goal remains open.
+The normal paired 3D/2D encounter against Pidgey was inspected. The HUD names
+Zapdos explicitly. Its narrow bill, crown rays, black underfeathers, fitted
+gold wing fans and lightning tail remain readable; grey feet and ivory talons
+meet visibly rendered terrain. The camera accepted the shot and state was
+preserved: core frame 3263/hash 2569537076, LCD animation frame 3994, virtual
+time 73.532027458. Final ignored QA prefix is
+`target/pokemon-native-review/zapdos-normal`. This accepts the current Zapdos
+pass; the full model catalog and remaining animation work stay open.

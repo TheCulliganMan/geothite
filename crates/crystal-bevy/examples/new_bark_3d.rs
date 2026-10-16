@@ -6,6 +6,10 @@ use crystal_runtime::CrystalRuntime;
 use std::path::PathBuf;
 
 fn main() -> Result<()> {
+    if std::env::var("CRYSTAL_TREE_DEPTH_PREPASS").as_deref() == Ok("on") {
+        crystal_voxel_view::configure_tree_depth_prepass_diagnostics(true)
+            .map_err(anyhow::Error::msg)?;
+    }
     if std::env::var_os("CRYSTAL_LOADING_TRACE").is_some() {
         crystal_voxel_view::loading_trace::start();
     }
@@ -94,7 +98,14 @@ fn main() -> Result<()> {
     let root = AssetRoot::new(pack.parent().context("pack directory")?);
     let loaded = {
         let _trace = crystal_voxel_view::loading_trace::span("pack.verify", || serde_json::json!({"path": pack}));
-        read_loaded_verified_compiled_game_pack(&pack)?
+        if std::env::var_os("CRYSTAL_LOADING_TRACE").is_some() {
+            crystal_assets::with_compiled_pack_load_observer(
+                crystal_bevy::loading_pack_trace::observe_stage,
+                || read_loaded_verified_compiled_game_pack(&pack),
+            )?
+        } else {
+            read_loaded_verified_compiled_game_pack(&pack)?
+        }
     };
     let runtime = {
         let _trace = crystal_voxel_view::loading_trace::span("pack.load_runtime", || serde_json::json!({}));

@@ -3,6 +3,7 @@
 import copy,json,os,unittest
 from collections import defaultdict
 from pathlib import Path
+from hitmonchan_glb import read_hitmonchan,geometry_digest
 from hitmonchan_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_kingdra_sculpt import crossed_faces
@@ -13,7 +14,7 @@ ROOT=Path(os.environ.get('CRYSTAL_HITMONCHAN_TEST_MODELS',Path(__file__).resolve
 
 class HitmonchanTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'hitmonchan.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_hitmonchan(ROOT/'hitmonchan.glb');cls.ps=cls.m['primitives']
  find=attachment_checks.NidorinaTests.find
  overlap=attachment_checks.NidorinaTests.overlap
  test_fitted_layers_follow_actual_stored_parent=attachment_checks.NidorinaTests.test_fitted_layers_follow_actual_stored_parent
@@ -30,7 +31,7 @@ class HitmonchanTests(unittest.TestCase):
   for ns in shared:
    for n in ns[1:]:self.assertGreater(dot(ns[0],n),.99999)
  def test_parity_floor_height_budget_and_boxing_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   for prefix,n in (('Head /',1),('Tunic /',1),('Skirt /',1),('Belt /',1),('Shoulder guard /',2),('Eye /',2),('Glove /',2),('Glove thumb /',2),('Glove cuff /',2),('Glove seam /',2),('Boot /',2),('Boot cuff /',2),('Boot seam /',2)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)

@@ -1,52 +1,85 @@
-# Natu and Xatu sculptures
+# Natu and Xatu planted-talon skins
 
-`tools/psychic_bird_sculpt.py` authors original canonical Natu and Xatu meshes.
-The battle species builder dispatches both before Blender batching. Each keeps
-its existing 1.04 presentation height and floor origin.
+`tools/psychic_bird_sculpt.py` authors the original birds.
+`tools/psychic_bird_glb.py` exports their canonical standard skins through the
+shared production reader and GPU path. The battle builder directly exports
+these GLBs; parallel static JSON is retired.
 
-Natu has one round green body, calm ivory almond eyes with broad dark pupils and
-soft silver reflections, a broad rounded golden bill and one swept red lance
-crest. Two rounded dark wing shields have curved golden leading feathers and
-three red trailing sections separated by dark bars on both faces. Two short
-swept red tail feathers join the body. The asset has 46 closed parts and 44,692
-triangles.
+Natu retains its round orb, calm fitted gaze, rounded bill, swept lance crest,
+barred wing shields on both faces and paired tail feathers. Four large leading
+wing coatings use two subdivision levels instead of three: vertices fall from
+27,993 to 18,853 and triangles from 44,692 to 28,820. All 42 other parts retain
+exact original positions, normals and indices. Actual marking vertices and
+front triangle clearance pass at the original offsets. The existing vertex
+and index limits remain unchanged.
 
-Xatu has a tall tapered green torso and broad green head, watchful almond eyes,
-a long hooked golden bill and a fitted dark jagged neck ruff. Two red watchful
-chest symbols have narrow dark pupil slits. Long folded ivory sleeves meet
-below the chest and carry red-and-gold diagonal badges and red/dark hem bands
-on both faces. Two long swept red head ribbons descend behind the torso, which
-carries three fitted golden rear bars. The asset has 49 closed parts and
-24,060 triangles.
+Xatu retains all 49 parts with exact original positions, normals and triangle
+order: the tapered torso, green head, hooked bill, jagged collar, chest symbols,
+folded ivory sleeves with layered badges/hem bands, swept head ribbons and
+rear stripes. Both birds retain supporting ankles, splayed red toes and ivory
+talons, with normalized height 1.04 and a grounded origin.
 
-Both birds have short supporting red ankles, three long splayed red toes and
-ivory talons on each foot, plus curved rear toes. All facial and plumage marks
-fit the actual stored surfaces; no separate planar symbols float in front of
-the body or wings.
+Natu's ten joints articulate its upper orb, rigid wing units, crest, separate
+tail feathers and ankle middles. Xatu's eleven joints articulate its head,
+rigid sleeves, two independent two-stage streamers and ankle middles. Each
+wing owns all fitted markings on both faces. Xatu's torso, collar, chest
+symbols and rear stripes share one spatial field into the head. Fitted gaze
+and bill share the head. Toes and talons remain on the identity root; ankles
+blend into the body. Idle, attack and hit use rotations only, neutral endpoints
+and existing source battle cues. Streamer tips follow their bases with delay.
 
-Silhouette and palette were checked against the
-[official Natu artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/177.png)
-and [official Xatu artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/178.png).
-External research found CC Attribution listings for
-[Pokemon Natu](https://sketchfab.com/3d-models/pokemon-natu-0926265c0b7f4b66a3cde29f6df9ab34),
-described as made in Feather, and
-[Xatu](https://sketchfab.com/3d-models/xatu-3bb721abe28e4b63937209fa9ef721e2).
-Their metadata did not establish usable original rigs. No external meshes or
-textures were imported. These are original static sculptures using native base
-colors, with no rigging or animation claimed.
+The local normal RGB555 palette is green (10,23,13), red (20,5,6), white and
+black for both birds. Natu's bill uses the warm red. Historical `gold` part
+names use the source palette's white in this pack; Xatu's bill is also white.
+Shiny checks remain skipped at the user's request.
 
-`python3 -m unittest discover -s tools -p test_psychic_bird_sculpt.py` checks
-closed connected topology, outward winding, finite unit normals, deterministic
-recipe parity, height, budget, anatomy counts, all fitted face/symbol/plumage
-vertices and front triangle clearance, both wing faces, actual body/head/bill,
-crest/streamer/tail/wing roots, and every supporting ankle, toe and talon join.
-Root checks use actual occupied ray intervals rather than bounds alone.
-Front/rear software views and native battle captures assess model presentation
-rather than gameplay behavior.
+| Asset | Parts | Joints | Vertices | Triangles | Accessors | Bytes | Pack height |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| Natu | 46 | 10 | 18,853 | 28,820 | 189 | 766,412 | 8 = 8 inches = 0.2032 m |
+| Xatu | 49 | 11 | 15,289 | 24,060 | 199 | 593,840 | 411 = 4 feet 11 inches = 1.4986 m |
 
-Final verification passed all seven psychic-bird geometry regressions. Final
-front/rear software views and both native battle captures were visually
-inspected. The Rust catalog regression passed for the 220-species battle catalog; it verifies
-grounding and volume rather than visual quality. Layout and storage validation
-passed for all 571 JSON assets. Temporary reference artwork, review renders and
-logs were removed after inspection.
+Neutral digests:
+
+- Natu: `42b91ce42d9cbfb2367f3640cdd1641c5da72aedb65da5cc41b412d9d8b09fd1`.
+- Xatu: `5196df1ef836e954c4904ec06cf3448e3a701eba946050d5a38a477d116e785b`.
+
+All seven anatomy and seven decoded-skin checks pass. They cover closed outward
+surfaces, stored normals, source regeneration, actual support roots, both wing
+faces, fitted marking vertices and triangle clearance, canonical bind/budgets,
+normal colors, rigid owners, fixed toes/talons, articulation, winding/strain,
+posed collar/chest/rear fitting and delayed streamer tips. Both focused Rust
+checks pass, proving GPU activation at pack sizes, coherent owners, fixed
+supports and animated bounds. Final Blender/native exports are byte-identical;
+front/rear software views were inspected. The native build passes. Both normal native reviews pass. Exact sprite-frame motion, field gaits and
+browser visual review remain open.
+
+```sh
+python3 tools/psychic_bird_glb.py --species natu --output crates/crystal-voxel-view/models/battle_species/natu.glb
+python3 tools/psychic_bird_glb.py --species xatu --output crates/crystal-voxel-view/models/battle_species/xatu.glb
+python3 -m unittest discover -s tools -p test_psychic_bird_sculpt.py
+python3 -m unittest discover -s tools -p test_psychic_bird_glb.py
+cargo test --locked -p crystal-voxel-view psychic_bird_family_ --lib
+blender -b -t 2 --python tools/build-battle-species.py -- target/psychic-bird-review --only NATU,XATU
+```
+
+Builder exports, source-image helpers and capture intermediates remain ignored
+verification scratch. Canonical GLBs and authoring code are the deliverables.
+
+
+Natu's matched normal native 3D/2D review against Pidgey passes. Its small
+pack-based scale, planted toes/talons, round body, swept crest and layered wing
+markings read clearly against the retained grass. The paired receipt preserves
+core frame 2260, hash 1900440669, LCD frame 2941 and time 53.010732125
+(`state_preserved=true`). The native build and wider catalog grounding/actual
+elapsed-pose regressions pass. Shiny checks remain skipped.
+
+
+Xatu's matched normal native 3D/2D review against Pidgey passes. Its tall
+pack-based silhouette, planted toes/talons, folded sleeves, fitted chest and
+wing markings, hooked bill and swept streamers read clearly. The far streamer
+and rear bars are partly obscured at this angle; rear software views cover
+them. The paired receipt preserves core frame 2043, hash 2373058012, LCD frame
+2672 and time 46.734551292 (`state_preserved=true`). Both normal native reviews,
+the native build and wider catalog grounding/actual elapsed-pose regressions
+pass. Shiny checks remain skipped; exact motion, field gaits, browser review
+and the all-species objective remain open.

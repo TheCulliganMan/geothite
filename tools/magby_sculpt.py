@@ -21,20 +21,22 @@ def bill():
  for i in range(n):ff.append((i,(len(rings)-1)*n+i,(len(rings)-1)*n+(i+1)%n,(i+1)%n))
  return crease_normals(part('Bill / rooted yellow live-coal taper with open mouth',GOLD,vv,ff,True),45)
 
-def sculpture():
+def sculpture(normalize=True):
  body=ellipsoid('Body / compact red live-coal pear',RED,(0,.370,-.006),(.174,.205,.136),44,28)
  neck=loft('Collar / rooted dark live-coal neck wrap',INK,curved_profiles(((.513,.072,.065,.020),(.560,.081,.071,.023),(.598,.076,.066,.024)),3),40)
  head=ellipsoid('Head / broad red live-coal face',RED,(0,.750,.020),(.220,.179,.171),48,30);p=[body,neck,head]
  # Overlapping lobes form a low cloud crown, rather than three floating balls.
  for j,(x,y,z,rx,ry,rz) in enumerate(((-.111,.876,.067,.123,.109,.131),(.110,.869,.074,.129,.117,.136),(-.140,.892,-.073,.096,.105,.107),(.128,.909,-.070,.103,.106,.115),(0,.935,-.020,.116,.111,.128))):
-  p.append(ellipsoid('Crown lobe / rooted rounded live-coal cloud '+str(j),RED,(x,y,z),(rx,ry,rz),40,26))
- p.append(paint('Belly / fitted pointed yellow live-coal bib',GOLD,[(-.116,.268),(-.126,.339),(-.080,.433),(.028,.528),(.014,.438),(.105,.379),(.120,.310),(.083,.213),(-.060,.205)],body,.005,4))
+  p.append(ellipsoid('Crown lobe / rooted rounded live-coal cloud '+str(j),RED,(x,y,z),(rx,ry,rz),40 if j==4 else 28,26 if j==4 else 18))
+ p.append(paint('Belly / fitted pointed yellow live-coal bib',GOLD,[(-.116,.268),(-.126,.339),(-.080,.433),(.028,.528),(.014,.438),(.105,.379),(.120,.310),(.083,.213),(-.060,.205)],body,.005,3))
  for s in (-1,1):
   xy=[(s*x,y) for x,y in ((.037,.821),(.122,.832),(.151,.773),(.139,.698),(.099,.680),(.057,.712))]
-  socket=paint('Eye socket / fitted dark live-coal recess '+str(s),INK,xy,head,.005,3);p.append(socket);cx=sum(x for x,y in xy)/len(xy);cy=sum(y for x,y in xy)/len(xy)
+  socket=paint('Eye socket / fitted dark live-coal recess '+str(s),INK,xy,head,.005,3);p.append(socket);cx=cy=0.
+  for x,y in xy:cx+=x;cy+=y
+  cx/=len(xy);cy/=len(xy)
   eye=paint('Eye / fitted tall ivory live-coal gaze '+str(s),IVORY,[(cx+.88*(x-cx),cy+.90*(y-cy)) for x,y in xy],socket,.004,3);p.append(eye)
-  pupil=paint('Pupil / fitted narrow live-coal stare '+str(s),INK,oval(s*.090,.754,.008,.033,28),eye,.003,3);p.append(pupil)
-  p.append(paint('Glint / fitted small ivory live-coal spark '+str(s),IVORY,oval(s*.087,.766,.002,.006,20),pupil,.002,2))
+  pupil=paint('Pupil / fitted narrow live-coal stare '+str(s),INK,oval(s*.090,.754,.008,.033,24),eye,.003,2);p.append(pupil)
+  p.append(paint('Glint / fitted small ivory live-coal spark '+str(s),IVORY,oval(s*.087,.766,.002,.006,20),pupil,.002,1))
   path=[(s*.084,.504,.004),(s*.200,.573,.010),(s*.310,.672,.014),(s*.394,.747,.037)]
   p.append(paddle('Arm / rooted raised red live-coal limb '+str(s),RED,path,[.045,.056,.053,.046],[.044,.054,.053,.045]))
   hand=ellipsoid('Hand / rooted red live-coal claw junction '+str(s),RED,(s*.411,.766,.047),(.065,.069,.052),36,24);p.append(hand)
@@ -48,7 +50,12 @@ def sculpture():
  p.append(curved_tube('Tail / rooted plain pointed red live-coal balance',RED,[(0,.300,-.090),(.075,.286,-.245),(.161,.364,-.376),(.225,.436,-.428)],[.054,.051,.031,.002],32))
  p.append(bill());p.append(ellipsoid('Mouth back / recessed dark live-coal oral chamber',INK,(0,.705,.195),(.030,.024,.023),32,22))
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
- for q in p:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+ from sculpt_geometry import linear
+ for q in p:
+  n=q['part'];rgb=(0,0,0) if n.startswith(('Collar /','Eye socket /','Pupil /','Mouth back /')) else (255,255,255) if n.startswith(('Eye /','Glint /','Hand claw /','Toe claw /')) else (255,148,74) if n.startswith(('Bill /','Belly /')) else (189,16,90)
+  q['base_color']=linear(tuple(v/255 for v in rgb))
+ if normalize:
+  for q in p:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':'magby','version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

@@ -17,25 +17,47 @@ let placements = modeled_interiors::resolve(map, &original_cells, &geometry, pro
 
 Each `Placement::indices(width)` identifies only a complete verified drawing.
 `Placement::label()` supplies an exact `interior/<asset>` label. Exclude those
-indices from legacy/live matching, preserving immutable original cells, shapes,
-atlas slots and footing calculations. Append with:
+indices from legacy/live matching, preserving immutable original cells, shapes
+and atlas slots. Production appends with the complete furnishing list so chairs
+can face their adjacent tables:
 
 ```rust
-modeled_interiors::append(&mut mesh, &original_cells, &geometry, placement, &mut claims);
+modeled_interiors::append_with_tables(
+    &mut mesh, map, &original_cells, &geometry, placement, &mut claims,
+    world_origin, &placements,
+);
 ```
 
-`append` returns false without changing either mesh or claims if any owned cell
+The append returns false without changing either mesh or claims if any owned cell
 is already claimed. A successful append restores the existing floor sample,
 places geometry within the drawing's footprint, sets claims and records
 `TerrainMeshData.authored_cells`. Explicit live-profile footing values are
-preserved; other actor footing remains the caller's original result. Model
-fitting inverse-transforms normals and shades solid facets without textures.
+preserved. Native Radio stair flights replace support only in their four owned
+cells; other furnishings retain the caller's original footing. Model fitting
+inverse-transforms normals and shades solid facets; native material adaptations
+can sample the authenticated source atlas.
 
 The semantic live-profile allowlist is exact. Sources are matched against the
 existing checked-in canonical profiles, including maps, tilesets, complete
 metatile grids, every subtile phase and every tile index. A customized matching
 live profile keeps ownership and is not overridden even by a compiled matcher.
 There is no copied content-pack catalog or new source-data dump.
+
+## Room perimeter and camera cutaway
+
+`mesh/room_perimeter.rs` continues rear wall panels around the west, east and
+south edges of enclosed source maps. It reuses the room's modeled architecture
+or original wall bands. Where no reusable panel is available, plain returns
+use the rear drawing's field paint. Wall geometry stays outside
+the playable floor; source warp positions preserve boundary exits, and authored
+Radio Tower glazing keeps its perimeter opening. Outdoor rooftops stay open.
+
+The perimeter uses the real source-map extent, never the viewport edge. Each
+section records its inward-facing plane. The existing whole-object fade system
+hides a section completely when the camera is outside that plane, then restores
+it as the camera moves around the room. Cameras inside the room retain its
+walls. This policy travels with cached and worker-built terrain and does not
+change collision, scripts, warps, source cells or actor support heights.
 
 ## Implemented matching
 
@@ -129,8 +151,9 @@ sit in an open recessed well. Source identity, complete drawing, ground and
 map scope are checked before reserving four cells. This geometry preserves
 support and uses the existing warp/controller path. The production audit adds
 exactly 32 ladder cells. A native 1F-to-2F ladder transition passes; further
-routes remain to be checked. The swaying central pillar still requires an
-animation-aware model.
+routes remain to be checked. The central timber pillar uses a complete-source animated mesh driven by live
+pack frames. Its base stays anchored while the upper geometry and normals follow
+each pose; custom ownership and clipped art retain the source fallback.
 
 Game Corner row banks fit two individual arcade cabinets back to back, with
 screens and controls facing the west and east stools. The quarter-turns fit
@@ -196,3 +219,59 @@ raised seats with visible frames/legs. Creative liberties are acceptable; room
 quality, proportions and a coherent finished scene remain required.
 Four enhanced floor and slot orientation/seat regressions pass. Full room
 completion still requires the remaining architecture and interaction review.
+
+## Radio Tower stair contact
+
+The twelve flights on RadioTower1F through RadioTower5F use complete four-cell
+source drawings, with per-floor counts 1, 2, 3, 4 and 2. Upward flights match
+block 0x03's right half or 0x0c's left half; downward flights match 0x0d's right
+half or 0x1d's left half. Exit carpets and Lavender Radio Tower do not select flights.
+Missing ground or native materials, altered/cropped art and custom ownership
+retain source fallback.
+
+The existing selected stair model supplies the geometry, gray/white source
+finishes and eight treads. Its complete rail envelope is fitted to 12 pixels
+over the 16-pixel run, keeping the stone treads visible at the normal camera
+angle. Descending wells have an ink-colored bottom. Support
+uses the fitted stone tops and their beveled nosings, excluding rails and
+stringers. Per-point contact requires the complete source and all four expected
+native support samples, so a fallback drawing cannot create raised footing.
+
+Pack-backed `radio_stair` tests cover all twelve endpoints, source paint,
+ownership/fallback and contact against rendered surfaces at three tile scales.
+The controller regression
+`radio_tower_all_twelve_stairs_keep_authored_step_off_and_allow_reentry` covers
+the authored southward step off a staircase and reentry through the production
+controller. Native visual acceptance is tracked separately in
+[the interior handoff](handoff/kanto-interiors.md).
+
+Sprout Tower's longitudinal timber strips extend through the two source rows
+before a verified transverse wall face. The side and cross wall retain their
+own source claims and floor support; custom neighboring ownership rejects the
+extension. East and west production views verify the joined corners.
+
+Radio studio east glass returns authenticate the complete terminal pane, table,
+and floor footer, then follow the connected glass run to its outer corner.
+Their placement is independent of the padded render grid. Both exposed sides carry the live glass drawing with outward
+triangle winding; the closed return meets the front panel at ceiling height.
+On RadioTower5F, the front panel ends at a doorway: no inferred return is
+placed there, including when altered or cropped side art uses source fallback.
+The actual side partition follows the pale cap at source column 35.
+
+Complete pale side-cap drawings on RadioTower2F, RadioTower5F and
+LavRadioTower1F produce ceiling-height glass partitions at the marked strip.
+Their 24 source cells retain white top caps, with native glass on both faces
+and vertical mullions. A missing complete front-pane material donor preserves
+the original source art. Confirmed glass on an outer map edge replaces the
+opaque perimeter segment over the same span. Three production entrance walks
+and paired east/west views verify the openings and wall placement.
+
+Tin Tower's nine interior floors contain a complete blank block outside the
+playable room on the west, east and south. Perimeter walls meet the inner edge
+of that authenticated block instead of leaving a black strip beside the floor.
+Altered source borders and other rooms keep their existing boundary behavior;
+floor support, source ownership and the first-floor exit opening are preserved.
+Native third-floor default/east/west views and the first-floor entrance view
+verify these joins. Tin Tower's timber-barrier hops keep a level floor, as
+specified by the production terrace model; the audit checks level endpoints
+there and descending endpoints for other ledges.

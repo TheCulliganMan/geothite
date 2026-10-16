@@ -689,6 +689,7 @@ fn build_terrain_mesh_internal(
     };
     if let Some(tileset) = cells.first().map(|tile| tile.source.tileset_id.as_ref()) {
         if !crate::interior::has_back_wall(tileset)
+            && !crate::interior::has_room_perimeter(&frame.map_id,tileset)
             && !crate::interior_cutaway::is_cave(frame) {
             background::append_repeating_background_apron(
                 &mut mesh, &geometry, &original_cells, &source_shapes);
@@ -812,7 +813,7 @@ fn build_terrain_mesh_internal(
         debug_assert!(appended, "validated facility table reservation must append");
     }
     for placement in &interior_placements {
-        let appended = modeled_interiors::append(
+        let appended = modeled_interiors::append_with_tables(
             &mut mesh,
             frame.map_id.as_ref(),
             &original_cells,
@@ -820,6 +821,7 @@ fn build_terrain_mesh_internal(
             placement,
             &mut claimed_by_tree,
             frame.grid_origin.to_array(),
+            &interior_placements,
         );
         debug_assert!(appended, "validated interior reservation must append");
     }
@@ -2134,13 +2136,14 @@ fn build_terrain_mesh_internal(
         }
     }
     if images.is_some() {
-        new_bark::append_signs(
+        new_bark::append_signs_with_samples(
             &mut mesh,
             frame.map_id.as_ref(),
             &cells,
             &shapes,
             &geometry,
             &mut claimed_by_tree,
+            images,
         );
     }
     if images.is_some() && authored_enabled {
@@ -2197,6 +2200,7 @@ fn build_terrain_mesh_internal(
     for row in 0..height {
         for column in 0..width {
             let index = row * width + column;
+            if original_cells[index].source.metatile_id == u16::MAX { continue; }
             if claimed_by_building[index]
                 || claimed_by_tree[index]
                 || claimed_by_casino_stool[index]
@@ -2209,22 +2213,21 @@ fn build_terrain_mesh_internal(
                     ground_tile_index,
                     solid: SolidKind::Flower,
                 } = shapes[index]
-                && let Some(ground) = authored_ground_cell(&cells, &shapes, ground_tile_index)
+                && let Some(ground) = authored_ground_for_source(&cells, &shapes, ground_tile_index,&cells[index].source)
                 && (new_bark::append_flower(
                     &mut mesh.animated_solid,
                     frame.map_id.as_ref(),
                     cells[index],
                     &geometry,
                     shapes[ground].surface_height(geometry.tile_height),
-                ) || (authored_enabled
-                    && modeled_exteriors::append_flower(
+                ) || modeled_exteriors::append_flower(
                         &mut mesh.animated_solid,
                         frame.map_id.as_ref(),
                         cells[index],
                         &geometry,
                         shapes[ground].surface_height(geometry.tile_height),
                         frame.grid_origin.to_array(),
-                    )))
+                    ))
             {
                 let (west, east, north, south) = geometry.bounds(column, row);
                 append_top(
@@ -2239,12 +2242,13 @@ fn build_terrain_mesh_internal(
                 { "park/flowers" } else { "johto/flowers" });
                 continue;
             }
+            let grass_start = mesh.solid.positions.len();
             if images.is_some()
                 && let CellShape::Cutout {
                     ground_tile_index,
                     solid: SolidKind::Grass,
                 } = shapes[index]
-                && let Some(ground) = authored_ground_cell(&cells, &shapes, ground_tile_index)
+                && let Some(ground) = authored_ground_for_source(&cells, &shapes, ground_tile_index,&cells[index].source)
                 && (new_bark::append_connected_grass(
                     &mut mesh.solid,
                     frame.map_id.as_ref(),
@@ -2271,6 +2275,9 @@ fn build_terrain_mesh_internal(
                     shapes[ground].surface_height(geometry.tile_height),
                     geometry.uv(ground % width, ground / width),
                 );
+                new_bark::ledge_finish::clear_grass_at_ledges(&mut mesh.solid, grass_start,
+                    shapes[ground].surface_height(geometry.tile_height), &frame.jump_ledges,
+                    &geometry, frame.grid_origin.to_array());
                 mesh.authored_cells[index] = Some("johto/tall_grass");
                 continue;
             }
@@ -2333,6 +2340,8 @@ fn build_terrain_mesh_internal(
         kanto_paving::finish(&mut mesh, &original_cells, &source_shapes, &geometry, images);
         kanto_shore::finish(&mut mesh, &original_cells, &source_shapes, &geometry,
             frame.grid_origin.to_array(), images);
+        johto_shore::finish(&mut mesh, &frame.map_id, &original_cells, &source_shapes,
+            &geometry, frame.grid_origin.to_array(), images);
     }
 
     if dragons_den::finish(&mut mesh, &frame.map_id, &original_cells, &geometry,
@@ -2368,6 +2377,8 @@ fn build_terrain_mesh_internal(
             frame.grid_origin.to_array(),
             profiles,
         );
+        modeled_interiors::append_room_perimeter(
+            &mut mesh, frame, &original_cells, &geometry, &interior_placements, &dungeon_placements, images);
     }
     if authored_enabled && let Some(images) = images {
         seafoam_palette::finish(&mut mesh,&frame.map_id,&original_cells,images);
@@ -2407,8 +2418,11 @@ fn build_terrain_mesh_internal(
         let edges=frame.jump_ledges.iter().filter(|edge|!traditional_room_placements.iter()
             .any(|p|p.owns_jump_edge(edge,frame.grid_origin.to_array())))
             .cloned().collect::<Vec<_>>();
-        terraces::finish(&mut mesh, &original_cells, &geometry,
+        terraces::finish_on_map(&mut mesh, &frame.map_id, &original_cells, &geometry,
             frame.grid_origin.to_array(), &edges);
+    }
+    if authored_enabled && let Some(images)=images {
+        outdoor_stairs::finish(&mut mesh,&original_cells,&geometry,images,frame.grid_origin.to_array());
     }
     if authored_enabled {
         let _trace = crate::loading_trace::span("region.finish_authored_landmarks", || serde_json::json!({}));
@@ -2425,7 +2439,7 @@ fn build_terrain_mesh_internal(
         if frame.jump_ledges.is_empty() {
             deferred.cells=original_cells.iter().map(|t|(*t).clone()).collect();
             deferred.shapes=source_shapes.clone();
-            deferred.claims=mesh.authored_cells.clone();
+            deferred.claims=DeferredClaims::Static(mesh.authored_cells.clone());
         }
     } else if let Some(sink) = grove_sink.as_mut() {
         for grove in detached_groves {

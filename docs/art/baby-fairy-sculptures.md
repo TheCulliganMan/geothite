@@ -1,49 +1,63 @@
-# Cleffa and Igglybuff
+# Pichu, Cleffa and Igglybuff
 
-These are original renderer-native sculptures, authored in
-`tools/baby_fairy_sculpt.py`. Their canonical mesh JSON files are generated
-through the existing battle-species builder. Clefable and Wigglytuff keep their
-existing recipes and assets.
+The canonical assets are the three standard skinned GLBs in
+`crates/crystal-voxel-view/models/battle_species/`. `tools/baby_glb.py` exports
+and strictly reads them. Pichu is an original sculpture in
+`tools/pichu_sculpt.py`; Cleffa and Igglybuff retain every neutral position,
+normal and triangle from `tools/baby_fairy_sculpt.py`. The old static JSON
+copies are removed. No downloaded model is used.
 
-Cleffa has a continuous peach pear body, broad brown star ears, an angled rolled
-forehead tuft with a fitted curl, small dark eyes with ivory reflections, warm
-cheeks, a wavy smile, inward hands, two feet, and a short rear puff. Igglybuff has
-a pale balloon body, three joined crown lobes, a fitted forehead spiral, ruby
-irises and dark pupils, a delighted mouth, small side hands, and petal feet.
-Facial layers follow the actual parent triangles rather than an analytic proxy.
-The established model heights remain 0.60 and 0.58 respectively.
+Pichu replaces the generic mouse prefab with broad black ears and fitted yellow
+insets, an oversized head, electric cheek pouches, a continuous jagged black
+collar, short arms, supporting legs, planted toes and a rooted black lightning
+tail. Cleffa keeps its broad brown star ears, rolled forehead tuft and fitted
+curl, inward hands, tiny face and rear puff. Igglybuff keeps its balloon body,
+three joined crown lobes, fitted forehead spiral, red irises and petal feet.
+Normal colors come from the local pack's RGB555 palettes. All three source
+Pokédex heights are `100` (0.3048 m). Authoring heights remain 0.62, 0.60 and
+0.58 respectively; production scales them from the pack.
 
-Shape and color references: [Cleffa official artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/173.png)
-and [Igglybuff official artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/174.png).
-No source artwork is shipped with the assets.
+The fixed root owns the feet. A shared spatial field joins torso and head;
+faces follow the head, and appendages have their own joints. Pichu's supporting
+legs blend into the body above the planted toes. Cleffa's tuft and fitted curl
+share one joint. Igglybuff's three crown lobes share one joint. Idle, attack and
+hit clips rotate these joints with neutral endpoints, and production battle
+cues control attack/hit timing.
 
-The downloadable Sketchfab listings checked included Cleffa
-`8071756ead9548eb8d734cd181b947df` and `881ec68b435e4d9abd60648b755495ea`,
-and Igglybuff `eb434d6210e94307a155fb664c7ce6d8`. Their metadata did not establish
-a usable original rig. Two other Igglybuff listings,
-`217a11c999cc4e858278bcb2cedc0806` and `87ad19da768c42cba9e0784558c090dd`,
-explicitly describe AI generation. No external model was imported. These local
-assets are static geometry; they do not claim skeletal animation.
+| Species | Parts | Vertices | Triangles | Joints | GLB bytes |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Pichu | 24 | 9,462 | 9,104 | 10 | 381,376 |
+| Cleffa | 17 | 14,716 | 24,376 | 9 | 587,892 |
+| Igglybuff | 19 | 16,964 | 28,684 | 6 | 630,808 |
 
-The [Cleffa metadata](https://api.sketchfab.com/v3/models/8071756ead9548eb8d734cd181b947df)
-and [Igglybuff metadata](https://api.sketchfab.com/v3/models/eb434d6210e94307a155fb664c7ce6d8)
-were rechecked: both advertise CC Attribution and zero animations. Zero
-animations alone does not prove an absence of a skeleton. Both official download
-endpoints returned HTTP 401 without authentication, so their geometry and rigs
-could not be inspected through that route.
+Regenerate through the existing builder:
 
-`test_baby_fairy_sculpt.py` checks closed outward geometry, normals, exact recipe
-parity, heights and grounded feet, distinct anatomy, stored-triangle face fit,
-front-face clearance, physical appendage joins, and supported spirals. Front,
-rear, oblique and native battle views must also be reviewed; geometry checks
-alone do not establish visual quality or gameplay correctness.
+```sh
+blender -b -t 2 --python tools/build-battle-species.py -- /tmp/geothite-babies --only PICHU,CLEFFA,IGGLYBUFF
+python3 -m unittest discover -s tools -p test_baby_glb.py
+python3 -m unittest discover -s tools -p test_baby_fairy_sculpt.py
+```
 
-Verified locally: all nine sculpture regressions passed; canonical layout and
-all 571 JSON documents passed storage validation; the Rust catalog regression
-passed for the 220-species battle catalog. The remaining 31 shared species are
-covered by the separate shared-species regression. Final front, rear and oblique renders were inspected,
-followed by successful native battle captures of both species with the ignored
-`content-packs/realtime-clock.browser.crystalpack`. Their small species scale and
-visible features were retained. Native captures establish presentation only;
-they do not establish controller or MCP gameplay. Cleffa has 17 parts and 24,376
-triangles; Igglybuff has 19 parts and 28,684 triangles.
+The skin tests cover canonical bytes, neutral bind matrices, budgets, original
+Pichu geometry and fitting, ownership, planted feet, neutral clip endpoints,
+visible articulation, triangle winding, edge strain and actual posed volume
+contacts. The nine fairy sculpture tests retain their original face clearance,
+closed geometry, physical joins and spiral support checks. Rust regressions
+cover registry/catalog identity, immutable feet, fitted faces, floor and animated
+bounds, and GPU selection at the verified pack heights. Blender regenerated all
+three assets byte for byte. The native reviewer builds successfully; the two
+wider regressions for catalog grounding and battle cue timing pass.
+
+All three matched normal native 3D/2D reviews pass. Pichu's broad tipped ears,
+fitted gaze/cheeks, jagged collar, planted toes and lightning tail read clearly
+against Pidgey. Cleffa's star ears, rolled tuft, tiny face and planted feet read
+clearly against Sentret. Igglybuff's crown, forehead spiral, red eyes and grounded
+petal feet read clearly against Pidgey. Their small production scales follow the
+pack. Each paired receipt preserves state, and encounter terrain is accepted.
+Pichu preserves core frame 1654, hash 892235761, LCD frame 2259 and time
+39.108565458. Cleffa preserves core frame 1639, hash 2539579671, LCD frame 2253
+and time 39.007266249. Igglybuff preserves core frame 1921, hash 3830763378,
+LCD frame 2624 and time 46.141430541. Profile views conceal some rear detail;
+the inspected front/rear software views cover it. Shiny checks remain skipped.
+
+These model checks do not establish TUI or MCP gameplay.

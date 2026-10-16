@@ -2,7 +2,7 @@
 """Original Girafarig and Stantler with distinct quadruped anatomy."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,crease_normals
+from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch as _fitted_patch,crease_normals
 from abra_sculpt import surface,polygon_caps
 from bovine_sculpt import oval,curved_tube,reverse_front
 from wing_insect_sculpt import membrane,contour
@@ -10,6 +10,15 @@ from skin_glb import COORDINATES
 SPECIES=('girafarig','stantler');HEIGHT=1.28
 GOLD=(.95,.74,.28);BROWN=(.27,.20,.19);PINK=(.88,.43,.54);IVORY=(.97,.95,.80);WHITE=(.98,.98,.95);INK=(.10,.12,.13)
 TAN=(.69,.52,.44);NOSE=(.46,.31,.23);HOOF=(.27,.24,.30);ANTLER=(.93,.82,.43);ORB=(.35,.27,.40)
+
+def fitted_patch(name,color,outline,skin,thickness=.008):
+    # Preserve the original centroid and signed zeros in newer Blender Python.
+    outline=list(outline);area=0.
+    for a,b in zip(outline,outline[1:]+outline[:1]):area+=a[0]*b[1]-b[0]*a[1]
+    if area<0:outline.reverse()
+    cx=cy=0.
+    for x,y in outline:cx+=x;cy+=y
+    return _fitted_patch(name,color,outline,skin,thickness,center=(cx/len(outline),cy/len(outline)))
 
 def trunk(name,color,rows):
     n=32;v=[]
@@ -101,6 +110,14 @@ def girafarig():
     grin=fitted_patch('Tail mouth / fitted ivory jagged grin',IVORY,[(-.11,.995),(.022,.995),(.001,.966),(-.08,.966)],bs,.005);p.append(reverse_front(grin));gs=surface(grin)
     for j,x in enumerate((-.079,-.050,-.02)):
         p.append(reverse_front(fitted_patch('Tail tooth / fitted dark divider '+str(j),BROWN,[(x-.002,.991),(x+.002,.991),(x+.009,.971),(x+.005,.971)],gs,.0015)))
+    # Crystal's front spots have a dark center inside their pink border.
+    for outer in list(p):
+        name=outer['part']
+        if not name.startswith(('Spot / fitted brown shoulder','Spot / fitted brown neck')):continue
+        side,j=map(int,name.split()[-2:])
+        if 'shoulder' in name:z,y,w,h=((.11,.54,.045,.061),(.19,.64,.033,.054))[j];region='shoulder'
+        else:z,y,w,h=((.22,.79,.025,.046),(.248,.91,.025,.040))[j];region='neck'
+        p.append(flank_patch(f'Spot center / fitted dark {region} marking {side} {j}',INK,oval(-side*z,y,w*.62,h*.62,20),outer,side,.002))
     return p
 
 def closed_antler(name,points,radius=.019):
@@ -141,9 +158,25 @@ def stantler():
     p.append(ellipsoid('Tail / large soft curled tan tail',TAN,(0,.664,-.43),(.119,.128,.118),32,20))
     return p
 
-def sculpture(species):
+def sculpture(species,normalize=True):
     if species not in SPECIES:raise ValueError('unsupported psychic hoofed species')
     p=girafarig() if species=='girafarig' else stantler()
+    if species=='stantler':
+        # Normal palette from the user-supplied local pack; no shiny verification.
+        from chikorita_sculpt import linear
+        for q in p:
+            n=q['part']
+            rgb=(0,0,0) if n.startswith(('Eye / fitted dark','Eye / dark','Nostril /','Hoof groove /')) else (33,41,132) if n.startswith(('Muzzle /','Brow /','Hoof /','Ear / fitted','Antler orb /')) else (255,255,255) if n.startswith(('Antler /','Antler stem /','Antler tine /','Eye / fitted ivory','Chest /','Brow spot /','Spot /')) else (189,123,57)
+            q['base_color']=linear(tuple(v/255 for v in rgb))
+    if species=='girafarig':
+        # Smooth the fitted curved panels without changing any triangle positions.
+        p=[crease_normals(q,35.) if q['part'].startswith(('Spot /','Spot center /','Eye /','Tail eye /')) else q for q in p]
+        from chikorita_sculpt import linear
+        for q in p:
+            n=q['part']
+            rgb=(255,255,255) if n.startswith(('Eye / fitted ivory','Eye / small','Horn /','Horn tip /','Tail mouth /')) else (231,82,132) if n.startswith(('Muzzle /','Ear / fitted','Mane /','Hoof /','Mouth / pink','Spot / fitted brown')) else (0,0,0) if n.startswith(('Spot center /','Eye / fitted dark','Eye / dark','Hoof groove /','Body / continuous brown','Tail /','Tail head /','Tail tooth /','Tail eye / dark','Mouth / fitted')) or (n.startswith('Leg /') and n.endswith('1')) else (255,181,33)
+            q['base_color']=linear(tuple(v/255 for v in rgb))
+    if not normalize:return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
     lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
     for q in p:
         q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]

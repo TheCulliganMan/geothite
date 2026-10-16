@@ -188,6 +188,11 @@ The executable is `target/release/crystal-bevy` (`crystal-bevy.exe` on Windows).
 Press `F3` during play to switch between 2D and 3D. Game content is compiled
 with the Rust `pack_core` command in [Game content setup](docs/game-content.md).
 
+The 3D renderer includes material-specific highlights, sky reflections, filtered
+detail textures and camera-fitted shadows. Native hardware defaults to the high
+quality preset with SMAA, supported SSAO and HDR; browsers use balanced quality.
+See [render quality settings](docs/render-quality.md) for presets and fallbacks.
+
 In the 3D overworld, the first Pokémon in the party follows the trainer's
 trail. Reordering the party changes the companion, and it stays with the
 trainer across map transitions. Surf shows the trainer seated on the Pokémon
@@ -238,10 +243,6 @@ and zooms vertically; pinch zooms. Gamepad Select / Back cycles **close orbit
 trainer's facing direction. The right stick looks around in first person.
 Touch dragging rotates horizontally and zooms vertically in orbit view, and
 looks vertically in first person; two fingers pinch to zoom.
-
-The optional on-screen camera toolbar provides zoom, rotate, tilt, first person,
-and reset controls. **Orbit view** restores the previous orbit after using the
-first-person button; the zoom percentage resets the camera.
 
 In the 3D overworld, the left stick moves relative to the camera; the D-pad
 keeps compass directions. The first-person preset switches to the trainer’s eye level and hides

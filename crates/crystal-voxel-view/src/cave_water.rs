@@ -125,6 +125,15 @@ pub(super) fn retained_registration(built: &VisualWorldFrame, live: &VisualWorld
     r
 }
 
+/// Preserve original map-space ripple and shoreline lookups when the exact
+/// source mesh is uniformly rebased into an encounter's smaller world units.
+pub(super) fn encounter_registration(frame: &VisualWorldFrame, translation: Vec3, scale: f32) -> Vec4 {
+    let source = registration(frame);
+    let local_offset = Vec2::new(source.z + frame.center.x, source.w - frame.center.y);
+    let offset = local_offset * scale - Vec2::new(translation.x, translation.z);
+    Vec4::new(source.x, source.y * scale, offset.x, offset.y)
+}
+
 // Only complete, authenticated cascades supply a downstream foam footprint.
 // The mask's alpha channel is presentation data, never surface transparency.
 struct CascadeImpact {
@@ -692,6 +701,66 @@ mod tests {
         assert_eq!(built.tiles[1].texture, second);
     }
     #[test]
+    fn outdoor_source_water_palette_tracks_live_frames_and_missing_art() {
+        let mut images=Assets::<Image>::default();
+        let make=|deep:[u8;4],foam:[u8;4]|Image::new(
+            Extent3d{width:8,height:8,depth_or_array_layers:1},TextureDimension::D2,
+            (0..64).flat_map(|i|if i%8==0 {foam}else {deep}).collect(),
+            TextureFormat::Rgba8UnormSrgb,RenderAssetUsages::MAIN_WORLD);
+        let day=images.add(make([0,0,255,255],[255,255,255,255]));
+        let night=images.add(make([0,0,99,255],[123,123,189,255]));
+        let mut water=tile(0x14);water.source.tileset_id="johto".into();water.source.metatile_id=0x35;
+        water.texture=day.clone();water.animation_frames=Some(vec![day.clone(),night.clone()].into());
+        let mut frame=VisualWorldFrame{map_id:"OlivineCity".into(),tiles:vec![water],..default()};
+        let before=frame.clone();
+        assert_eq!(native_palette(&frame,&images),Some([Vec4::new(0.,0.,1.,2.),Vec4::new(1.,1.,1.,2.)]));
+        assert_eq!(frame,before,"palette extraction must not mutate the source frame");
+        frame.tiles[0].texture=night.clone();
+        let dark=native_palette(&frame,&images).unwrap();
+        assert!(dark[0].z<0.2 && dark[0].z>0.05);
+        assert!(dark[1].z>dark[1].x && dark[1].z<0.6);
+        images.get_mut(&night).unwrap().data.as_mut().unwrap()[3]=0;
+        assert_eq!(native_palette(&frame,&images),Some([Vec4::new(0.,0.,0.,-2.);2]),
+            "missing opaque art must retain its source surface, never guessed teal");
+        frame.tiles[0].animation_frames=None;
+        assert!(native_palette(&frame,&images).is_none());
+        frame.tiles[0].animation_frames=Some(vec![day,night].into());
+        for family in ["forest","park"] {
+            frame.tiles[0].source.tileset_id=family.into();
+            assert!(!outdoor_source_palette(&frame));
+            assert!(native_palette(&frame,&images).is_none());
+        }
+    }
+
+    #[test]
+    fn kanto_optical_finish_tracks_night_and_preserves_other_water_families() {
+        let mut images=Assets::<Image>::default();
+        let make=|blue:u8,light:u8|Image::new(
+            Extent3d{width:8,height:8,depth_or_array_layers:1},TextureDimension::D2,
+            (0..64).flat_map(|i|if i%8==0 {[light,light,light,255]}else {[0,0,blue,255]}).collect(),
+            TextureFormat::Rgba8UnormSrgb,RenderAssetUsages::MAIN_WORLD);
+        let day=images.add(make(255,255));let night=images.add(make(99,123));
+        let mut water=tile(0x14);water.source.tileset_id="kanto".into();water.source.metatile_id=0x43;
+        water.texture=day.clone();water.animation_frames=Some(vec![day.clone(),night.clone()].into());
+        let mut frame=VisualWorldFrame{map_id:"VermilionCity".into(),tiles:vec![water],..default()};
+        let before=frame.clone();let finish=native_palette(&frame,&images).unwrap();
+        assert_eq!(frame,before);
+        assert!(finish[0].z>finish[0].y && finish[0].y>finish[0].x && finish[0].z<0.5);
+        assert!(finish[1].truncate().max_element()<0.7,"soft mineral-blue glints");
+        frame.map_id="CeladonCity".into();assert_eq!(native_palette(&frame,&images),Some(finish));
+        frame.tiles[0].texture=night.clone();let dark=native_palette(&frame,&images).unwrap();
+        assert!(dark[0].truncate().cmplt(finish[0].truncate()).all());
+        assert!(dark[1].truncate().cmplt(finish[1].truncate()).all());
+        frame.tiles[0].texture=day;frame.tiles[0].source.tileset_id="johto".into();
+        frame.tiles[0].source.metatile_id=0x35;
+        assert_eq!(native_palette(&frame,&images),Some([Vec4::new(0.,0.,1.,2.),Vec4::new(1.,1.,1.,2.)]));
+        frame.tiles[0].source.tileset_id="kanto".into();frame.tiles[0].source.metatile_id=0x43;
+        frame.tiles[0].texture=night.clone();
+        images.get_mut(&night).unwrap().data.as_mut().unwrap()[3]=0;
+        assert_eq!(native_palette(&frame,&images),Some([Vec4::new(0.,0.,0.,-2.);2]));
+    }
+
+    #[test]
     fn kanto_native_water_patterns_take_palette_without_repeating_source_pixels() {
         let mut images=Assets::<Image>::default();
         let mut data=vec![];
@@ -741,6 +810,36 @@ mod tests {
         frame.tiles[0].animation_frames=None;assert!(mask(&frame).is_none());
         frame.tiles[0].animation_frames=Some(vec![first,second].into());
         frame.tiles[0].source.tileset_id="house".into();assert!(mask(&frame).is_none());
+    }
+
+    #[test]
+    fn encounter_water_keeps_the_original_ripple_and_shore_coordinates() {
+        for center in [Vec2::ZERO, Vec2::new(144.0, -88.0)] {
+            let frame = VisualWorldFrame {
+                map_id: "OlivineCity".into(),
+                grid_size: UVec2::new(40, 28),
+                grid_origin: IVec2::new(-12, 9),
+                tile_size: Vec2::splat(32.0),
+                center,
+                ..default()
+            };
+            let source = registration(&frame);
+            let bounds = crate::water_surface::bounds(&frame);
+            for translation in [Vec3::ZERO, Vec3::new(-19.0, 3.0, 7.0)] {
+                let scale = 1.0 / 16.0;
+                let retained = encounter_registration(&frame, translation, scale);
+                for local in [Vec3::new(-320.0, -8.0, -224.0), Vec3::ZERO, Vec3::new(140.0, -8.0, 99.0)] {
+                    let world = local + Vec3::new(center.x, 0.0, -center.y);
+                    let rebased = local * scale + translation;
+                    let expected = (Vec2::new(world.x, world.z) + Vec2::new(source.z, source.w)) / source.y;
+                    let actual = (Vec2::new(rebased.x, rebased.z) + Vec2::new(retained.z, retained.w)) / retained.y;
+                    assert!((actual - expected).length() < 0.00001);
+                    let shore = |map: Vec2| (map - Vec2::new(bounds.x, bounds.y)) / Vec2::new(bounds.z, bounds.w);
+                    assert!((shore(actual) - shore(expected)).length() < 0.00001);
+                    assert_eq!(retained.x, source.x, "retain the authored water mode");
+                }
+            }
+        }
     }
 
     #[test]
@@ -800,30 +899,60 @@ mod tests {
 }
 
 
-/// Palette samples, never a repeated drawing, supply native Tohjo currents.
-/// Only authenticated live water images participate; unavailable source art
-/// leaves the existing source surface untouched rather than inventing a hue.
-pub(super) fn native_palette(frame:&VisualWorldFrame,images:&Assets<Image>)->Option<[Vec4;2]> {
-    if frame.map_id.as_ref()!="TohjoFalls" {return None;}
-    let mut colors=std::collections::BTreeSet::new();
+/// Source-palette optics apply to proven regional water, never forest/park
+/// families. The animation/drawing role remains the authority for occupancy.
+pub(super) fn outdoor_source_palette(frame:&VisualWorldFrame)->bool {
+    if !outdoor(&frame.map_id) || frame.map_id.as_ref()=="IlexForest" {return false;}
+    let mut found=false;
     for tile in &frame.tiles {
         if role_for_map(tile,&frame.map_id)==[0,0] {continue;}
-        let image=images.get(&tile.texture)?;
-        if image.texture_descriptor.size.width!=8 || image.texture_descriptor.size.height!=8
-            || !matches!(image.texture_descriptor.format,TextureFormat::Rgba8Unorm|TextureFormat::Rgba8UnormSrgb) {return None;}
-        let data=image.data.as_ref()?;
-        if data.len()!=256 || data.chunks_exact(4).any(|p|p[3]!=255) {return None;}
-        for pixel in data.chunks_exact(4) {
-            let c=Vec3::from_array([pixel[0],pixel[1],pixel[2]].map(|v|{
-                let v=f32::from(v)/255.;if v<=0.04045 {v/12.92}else{((v+0.055)/1.055).powf(2.4)}
-            }));
-            if c.dot(Vec3::new(0.2126,0.7152,0.0722))>0.006 {colors.insert([pixel[0],pixel[1],pixel[2]]);}
-        }
+        if !matches!(tile.source.tileset_id.as_ref(),"johto"|"johto_modern"|"kanto"|"port") {return false;}
+        found=true;
     }
-    let mut colors=colors.into_iter().map(|rgb|Vec3::from_array(rgb.map(|v|{
-        let v=f32::from(v)/255.;if v<=0.04045 {v/12.92}else{((v+0.055)/1.055).powf(2.4)}
-    }))).collect::<Vec<_>>();
-    colors.sort_by(|a,b|a.dot(Vec3::new(0.2126,0.7152,0.0722)).total_cmp(&b.dot(Vec3::new(0.2126,0.7152,0.0722))));
-    if colors.len()<2 {return None;}
-    Some([colors[0].extend(1.),colors[colors.len()-1].extend(1.)])
+    found
+}
+
+/// Palette samples supply currents without repeating the source drawing.
+/// w=1 retains native Tohjo behavior; w=2 selects outdoor source paint. w=-2
+/// keeps the original source surface if an eligible outdoor palette is missing.
+pub(super) fn native_palette(frame:&VisualWorldFrame,images:&Assets<Image>)->Option<[Vec4;2]> {
+    let open=outdoor_source_palette(frame);
+    if frame.map_id.as_ref()!="TohjoFalls" && !open {return None;}
+    let palette=(|| {
+        let mut colors=std::collections::BTreeSet::new();
+        let mut sampled=std::collections::HashSet::new();
+        for tile in &frame.tiles {
+            if role_for_map(tile,&frame.map_id)==[0,0] || !sampled.insert(tile.texture.id()) {continue;}
+            let image=images.get(&tile.texture)?;
+            if image.texture_descriptor.size.width!=8 || image.texture_descriptor.size.height!=8
+                || !matches!(image.texture_descriptor.format,TextureFormat::Rgba8Unorm|TextureFormat::Rgba8UnormSrgb) {return None;}
+            let data=image.data.as_ref()?;
+            if data.len()!=256 || data.chunks_exact(4).any(|p|p[3]!=255) {return None;}
+            for pixel in data.chunks_exact(4) {
+                let c=Vec3::from_array([pixel[0],pixel[1],pixel[2]].map(|v|{
+                    let v=f32::from(v)/255.;if v<=0.04045 {v/12.92}else{((v+0.055)/1.055).powf(2.4)}
+                }));
+                if c.dot(Vec3::new(0.2126,0.7152,0.0722))>0.006 {colors.insert([pixel[0],pixel[1],pixel[2]]);}
+            }
+        }
+        let mut colors=colors.into_iter().map(|rgb|Vec3::from_array(rgb.map(|v|{
+            let v=f32::from(v)/255.;if v<=0.04045 {v/12.92}else{((v+0.055)/1.055).powf(2.4)}
+        }))).collect::<Vec<_>>();
+        colors.sort_by(|a,b|a.dot(Vec3::new(0.2126,0.7152,0.0722)).total_cmp(&b.dot(Vec3::new(0.2126,0.7152,0.0722))));
+        if colors.len()<2 {return None;}
+        let flag=if open {2.}else {1.};
+        let mut deep=colors[0];
+        let mut foam=colors[colors.len()-1];
+        // Kanto's pure-blue/white indexed paint becomes a quieter optical
+        // material. Retain live night brightness and the existing source role;
+        // no change to forest, Johto, indoor pools or missing-art fallback.
+        let kanto=open && frame.tiles.iter().filter(|tile|role_for_map(tile,&frame.map_id)!=[0,0])
+            .all(|tile|tile.source.tileset_id.as_ref()=="kanto");
+        if kanto {
+            foam=Vec3::new(foam.x*0.34+deep.x*0.10,foam.y*0.50+deep.y*0.10,foam.z*0.56+deep.z*0.06);
+            deep=Vec3::new(deep.x*0.55+deep.z*0.018,deep.y*0.60+deep.z*0.23,deep.z*0.44+deep.y*0.12);
+        }
+        Some([deep.extend(flag),foam.extend(flag)])
+    })();
+    palette.or_else(||open.then_some([Vec4::new(0.,0.,0.,-2.);2]))
 }

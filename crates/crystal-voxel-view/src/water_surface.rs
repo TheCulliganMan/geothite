@@ -10,6 +10,28 @@ use crystal_render_api::VisualWorldFrame;
 const SAMPLES: usize = 4;
 const REACH: f32 = 8.0;
 
+/// Owned, frame-specific CPU images. None is an authenticated dry result,
+/// distinct from a caller that has not prepared these images yet.
+pub(super) struct PreparedImages {
+    pub mask: Option<Image>,
+    pub shore: Option<Image>,
+}
+impl PreparedImages {
+    pub fn for_frame(frame: &VisualWorldFrame) -> Self {
+        let mask = {
+            let _trace = crate::loading_trace::span("region.prepare_water_mask_image", ||
+                serde_json::json!({"grid":frame.grid_size.to_array()}));
+            crate::cave_water::mask(frame)
+        };
+        let shore = mask.as_ref().and_then(|_| {
+            let _trace = crate::loading_trace::span("region.prepare_water_shore_image", ||
+                serde_json::json!({"grid":frame.grid_size.to_array()}));
+            shoreline(frame)
+        });
+        Self { mask, shore }
+    }
+}
+
 /// Water contact follows the published player foot, never collision or a
 /// camera-relative decal. A dry tile, cascade or unavailable source clears it.
 pub(super) fn contact(frame: &VisualWorldFrame) -> Vec4 {
@@ -23,7 +45,7 @@ pub(super) fn contact(frame: &VisualWorldFrame) -> Vec4 {
     if !frame.tile_size.is_finite() || frame.tile_size.min_element() <= 0.0 {
         return Vec4::ZERO;
     }
-    let foot = crate::actor_foot(actor);
+    let foot = crate::footing::actor_ground_point(frame, actor);
     if !foot.is_finite() || !actor.size.is_finite() {
         return Vec4::ZERO;
     }
@@ -66,6 +88,17 @@ pub(super) fn blend_clock(previous: Vec4, time: f32, steps: Vec2) -> Vec4 {
         0.10
     };
     Vec4::new(time, interval, steps.x, steps.y)
+}
+
+/// Accumulate slow optical motion from proven source advances. Unlike using
+/// the three-frame atlas phase directly, a source wrap never reverses a swell.
+/// Invalid/skipped steps hold the last pose; no renderer clock predicts water.
+pub(super) fn advance_motion(previous: Vec4, steps: Vec2) -> Vec4 {
+    let start = previous.x;
+    let end = start + steps.x.max(0.) * 0.03;
+    // Subtract from both endpoints so interpolation stays continuous at wrap.
+    let wrap = (end / std::f32::consts::TAU).floor() * std::f32::consts::TAU;
+    Vec4::new(end - wrap, start - wrap, 0., 0.)
 }
 
 pub(super) fn bounds(frame: &VisualWorldFrame) -> Vec4 {
@@ -251,6 +284,61 @@ mod tests {
         frame
     }
 
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn background_water_images_match_legacy_bytes_for_route_cave_and_phases() {
+        fn same(a: Option<Image>, b: Option<Image>) {
+            match (a,b) {
+                (None,None) => {},
+                (Some(a),Some(b)) => {
+                    assert_eq!(a.data,b.data);
+                    assert_eq!(format!("{:?}",a.texture_descriptor),format!("{:?}",b.texture_descriptor));
+                    assert_eq!(format!("{:?}",a.sampler),format!("{:?}",b.sampler));
+                    assert_eq!(a.asset_usage,b.asset_usage);
+                },
+                _ => panic!("prepared image presence differs"),
+            }
+        }
+        let first = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(701),std::marker::PhantomData);
+        let second = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(702),std::marker::PhantomData);
+        let pool = bevy::tasks::TaskPoolBuilder::new().num_threads(2).build();
+        for (map,tileset,columns,rows) in [("Route29","johto",116,114),
+            ("LakeOfRage","johto",12,8),("UnionCave1F","cave",12,8),
+            ("TohjoFalls","cave",12,8),("DragonsDenB1F","johto",4,4)] {
+            for phase in 0..2 {
+                let mut f = frame(columns,rows,|x,y| x==0 || y==0);
+                f.map_id = map.into();
+                for tile in &mut f.tiles {
+                    tile.source.tileset_id = tileset.into();
+                    tile.texture = if phase==0 {first.clone()} else {second.clone()};
+                    tile.animation_frames = Some(vec![first.clone(),second.clone()].into());
+                    if tileset=="cave" {tile.source.metatile_id=0x2c;}
+                }
+                if map=="DragonsDenB1F" {
+                    for (i,tile) in f.tiles.iter_mut().enumerate() {
+                        tile.source.metatile_id=0x07;
+                        tile.source.subtile_column=(i%4) as u8;
+                        tile.source.subtile_row=(i/4) as u8;
+                        tile.source.tile_index=crate::cave_water::DEN_WHIRLPOOL_DRAWING[i];
+                    }
+                }
+                let original = f.clone();
+                let worker_frame = f.clone();
+                let prepared = bevy::tasks::futures_lite::future::block_on(pool.spawn(async move {
+                    PreparedImages::for_frame(&worker_frame)
+                }));
+                let mask = crate::cave_water::mask(&f);
+                assert!(mask.is_some(),"water fixture {map}");
+                let shore = mask.as_ref().and_then(|_|shoreline(&f));
+                same(prepared.mask,mask); same(prepared.shore,shore);
+                assert_eq!(f,original,"CPU preparation must preserve captured source frame");
+            }
+        }
+        let dry = frame(4,4,|_,_|true);
+        let prepared = PreparedImages::for_frame(&dry);
+        assert!(prepared.mask.is_none() && prepared.shore.is_none(),"dry None must not synthesize shoreline");
+    }
+
     fn depth(image: &Image, x: usize, y: usize) -> f32 {
         let byte = image.data.as_ref().unwrap()[(y * image.width() as usize + x) * 4];
         (byte as f32 / 255.0 * 2.0 - 1.0) * REACH
@@ -370,6 +458,22 @@ mod tests {
     }
 
     #[test]
+    fn slow_motion_crosses_source_wraps_without_reset_and_holds_when_paused() {
+        let step = Vec2::new(std::f32::consts::TAU / 3., 0.);
+        let mut motion = Vec4::ZERO;
+        for _ in 0..150 {
+            let next = advance_motion(motion, step);
+            assert!((next.x-next.y-step.x*0.03).abs() < 0.00001);
+            assert!((next.y-motion.x).rem_euclid(std::f32::consts::TAU).min(
+                (motion.x-next.y).rem_euclid(std::f32::consts::TAU)) < 0.00001);
+            motion=next;
+        }
+        let paused=advance_motion(motion,Vec2::ZERO);
+        assert_eq!(paused.x,paused.y);
+        assert_eq!(paused.x,motion.x);
+    }
+
+    #[test]
     fn swimmer_contact_tracks_the_source_foot_and_clears_on_land() {
         let mut frame = frame(4, 4, |x, _| x < 2);
         let second = Handle::Uuid(
@@ -391,7 +495,7 @@ mod tests {
             facing: None,
         });
         let initial = contact(&frame);
-        assert_eq!(initial, Vec4::new(3.5, 2.5, 1.1, 1.0));
+        assert_eq!(initial, Vec4::new(3.5, 1.5, 1.1, 1.0));
         frame.center += Vec2::new(16.0, -8.0);
         frame.actors[0].center += Vec2::new(16.0, -8.0);
         assert_eq!(
@@ -406,7 +510,7 @@ mod tests {
             "dry ground has no swimmer ring"
         );
         frame.actors[0].center.x += 24.0;
-        frame.tiles[11].animation_frames = None;
+        frame.tiles[7].animation_frames = None;
         assert_eq!(
             contact(&frame),
             Vec4::ZERO,

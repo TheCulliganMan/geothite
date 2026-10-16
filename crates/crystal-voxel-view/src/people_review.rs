@@ -33,6 +33,7 @@ struct Review {
     run_phase: Option<f32>,
     bicycle: bool,
     run_weight: f32,
+    run_blend: f32,
     head_scale: Option<f32>,
     hand_scale: Option<f32>,
     unlit: bool,
@@ -49,6 +50,11 @@ enum CaptureOutcome { Saved, Blank }
 struct ReviewTarget(Option<Handle<Image>>);
 
 pub fn run() -> AppExit {
+    if std::env::args().nth(1).as_deref() == Some("--validate-walk") {
+        crate::human_locomotion::validation::validate();
+        eprintln!("Human locomotion checks passed for every identity: contacts, ground speed, bone lengths, loop seams, shoe floor and culling bounds.");
+        return AppExit::Success;
+    }
     let output = std::env::args()
         .nth(1)
         .map(PathBuf::from)
@@ -128,6 +134,12 @@ pub fn run() -> AppExit {
             people: vec![],
             run_phase,
             bicycle,
+            run_blend: std::env::var("CRYSTAL_PEOPLE_REVIEW_RUN_BLEND").ok().map(|value| {
+                let blend: f32 = value.parse().expect("review run blend must be numeric");
+                assert!(blend.is_finite() && (0.0..=1.0).contains(&blend),
+                    "review run blend must be from 0 to 1");
+                blend
+            }).unwrap_or(0.0),
             run_weight: std::env::var("CRYSTAL_PEOPLE_REVIEW_RUN_WEIGHT").ok().map(|value| {
                 let weight: f32 = value.parse().expect("review run weight must be numeric");
                 assert!(weight.is_finite() && (0.0..=1.0).contains(&weight),
@@ -418,11 +430,13 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + i as f32 * 1.6 }, 0
     }
     let run_phase = review.run_phase;
     let run_weight = review.run_weight;
+    let run_blend = review.run_blend;
     let head_scale = review.head_scale;
     let hand_scale = review.hand_scale;
     let texture_key = crate::npc_appearance::look(review.kinds[review.index]).texture_key;
     let export_pose = review.frame == 29;
     for (index, person) in review.people.iter_mut().enumerate() {
+        person.run_blend = run_blend;
         // Optional diagnostic samples the actual production update rather
         // than duplicating the animation or skin-palette implementation.
         // The ordinary capture immediately restores its requested pose.

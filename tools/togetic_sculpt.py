@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Original graceful Togetic with a slender neck and layered swept angel wings."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
 from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,fitted_contour,crease_normals
 from abra_sculpt import surface
@@ -33,7 +35,8 @@ def feather(sign,j):
     p['positions']=[v*.35-.060 if i%3==2 else v for i,v in enumerate(p['positions'])]
     return crease_normals(p,35.)
 
-def sculpture():
+@lru_cache(maxsize=1)
+def raw_sculpture():
     body=loft('Body / continuous pear torso and long slender ivory neck',WHITE,curved_profiles(((.070,.032,.035,-.020),(.170,.176,.139,-.032),(.330,.231,.177,-.045),(.480,.184,.151,-.022),(.580,.100,.095,.013),(.650,.055,.053,.026),(.750,.044,.045,.032),(.863,.044,.044,.034),(.962,.050,.047,.030)),4),40)
     face=head();p=[body,face];bs=surface(body);hs=surface(face)
     designs=[('upper red front triangle',RED,[(-.080,.505),(.039,.454),(-.059,.376)],False),('lower blue front lozenge',BLUE,[(-.196,.343),(-.119,.316),(-.127,.240),(-.207,.272)],False),('right red front triangle',RED,[(.132,.263),(.219,.296),(.199,.371)],False),('upper red rear triangle',RED,[(-.060,.512),(.087,.430),(-.065,.364)],True),('lower blue rear lozenge',BLUE,[(-.179,.341),(-.103,.311),(-.111,.236),(-.192,.273)],True),('lower red rear triangle',RED,[(.045,.222),(.139,.293),(.141,.216)],True)]
@@ -64,11 +67,17 @@ def sculpture():
     cx=sum(x for x,y in smile)/len(smile);cy=sum(y for x,y in smile)/len(smile);inside=[(cx+(x-cx)*.72,cy+(y-cy)*.72) for x,y in smile]
     p.append(fitted_contour('Tongue / fitted rosy smile interior',PINK,inside,surface(mouth),.003))
     p=[crease_normals(q,35.) if q['part'].startswith(('Eye /','Eye glint /','Brow /','Body fleck /','Toe crease /','Mouth /','Tongue /')) else q for q in p]
+    return {'name':'togetic','version':1,'coordinate_system':COORDINATES,'primitives':p}
+def sculpture(normalize=True):
+    model=deepcopy(raw_sculpture())
+    if not normalize:return model
+    p=model['primitives']
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':'togetic','version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
+    from egg_fairy_glb import export_egg_fairy
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    (args.output/'togetic.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+    (args.output/'togetic.glb').write_bytes(export_egg_fairy('togetic'))
 if __name__=='__main__':main()

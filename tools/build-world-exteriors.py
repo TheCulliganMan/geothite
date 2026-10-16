@@ -13,6 +13,10 @@ for n,c in {
  'park_frame':(.065,.075,.085),
  'park_slats_light':(.61,.64,.63),
  'park_slats':(.48,.52,.53),
+ 'cut_leaf':(.52,.66,.18),
+ 'cut_leaf_light':(.70,.76,.30),
+ 'cut_leaf_dark':(.32,.47,.11),
+ 'cut_bark':(.57,.35,.16),
 }.items():
  m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True
  m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*c,1)
@@ -31,11 +35,26 @@ def start(name,w,d,side='south'):
  begin(name); TARGETS[name]=(w,d); DOORS[name]=side
 
 def panel(n,x,z,w,h,y,mat='glass',angle=0):
- facade_cube(n+' recessed frame',x,z,w+.11,h+.11,y,.11,'stone_dark',angle)
- facade_cube(n+' inset face',x,z,w,h,y-.07,.035,mat,angle)
- facade_cube(n+' reflection',x-w*.20,z+h*.25,w*.32,.055,y-.094,.016,'glass_light',angle)
- for dx in [-w/2,0,w/2]:facade_cube(n+' upright',x+dx,z,.04,h,y-.10,.024,'plaster_light',angle)
- facade_cube(n+' sill',x,z-h/2-.035,w+.20,.07,y-.07,.24,'stone_light',angle)
+ carve_window_pocket(COL,x,z,w,h,y,angle)
+ # Hollow surround seated at the wall plane, with real reveals behind it.
+ for side in [-1,1]:
+  facade_cube(n+' recessed jamb',x+side*(w+.055)/2,z,.055,h+.11,y+.10,.11,'stone_dark',angle)
+  facade_cube(n+' recessed rail',x,z+side*(h+.055)/2,w,.055,y+.10,.11,'stone_dark',angle)
+ facade_cube(n+' inset face',x,z,w,h,y+.13,.035,mat,angle)
+ facade_cube(n+' reflection',x-w*.20,z+h*.25,w*.32,.055,y+.106,.016,'glass_light',angle)
+ for dx in [-w/2,0,w/2]:facade_cube(n+' upright',x+dx,z,.03,h,y+.10,.024,'plaster_light',angle)
+ facade_cube(n+' sill',x,z-h/2-.035,w+.14,.055,y+.03,.10,'stone_light',angle)
+
+
+def medallion(y,z,palette):
+ # Shared vocabulary no longer supplies the older civic roundel helper.
+ for name,radius,depth,offset,material in [
+  ('Medical ball outer ring',.25,.035,0.,'plaster_light'),
+  ('Medical ball inset',.19,.025,-.025,palette),
+  ('Medical ball button',.065,.025,-.045,'plaster_light')]:
+  emblem=cone(name,(0,y+offset,z),radius,radius,depth,material,24)
+  emblem.rotation_euler.x=math.pi/2
+ facade_cube('Medical ball equator',0,z,.46,.045,y-.05,.025,'plaster_light')
 
 def flat_roof(w,d,z,palette='roof_blue',parapet=True):
  cube('Closed roof slab',(0,0,z),(w,d,.19),palette+'_dark',.025)
@@ -75,12 +94,11 @@ def awning(w,d,z,palette='roof_blue'):
 def civic(name,style,w=5.5,d=3.5):
  start(name,w+.5,d+.6)
  floors=3 if style in ['department','silph','mansion'] else 1
- h={'department':5.8,'silph':7.0,'mansion':4.8,'station':2.6,'gym':2.7,'museum':2.8,'power':3.2}.get(style,2.35)
- full_shell(w,d,h,wall='plaster' if style in ['mansion','museum'] else 'plaster_light',floors=floors,cols=4 if w>5 else 3)
- if style!='museum':front_entry(d,1.1 if w>4 else .8)
- else:panel('Museum ceremonial central window',0,1.30,1.12,1.54,-d/2-.04)
- palette='roof_red' if style=='center' else 'roof_teal' if style in ['station','museum','mansion'] else 'roof_blue'
- if style in ['museum','house','mansion']:
+ h={'department':5.8,'silph':7.0,'mansion':4.8,'station':2.6,'gym':2.7,'power':3.2}.get(style,2.35)
+ full_shell(w,d,h,wall='plaster' if style in ['mansion'] else 'plaster_light',floors=floors,cols=4 if w>5 else 3)
+ front_entry(d,1.1 if w>4 else .8)
+ palette='roof_red' if style=='center' else 'roof_teal' if style in ['station','mansion'] else 'roof_blue'
+ if style in ['house','mansion']:
   roof(w+.40,d+.35,h+.28,h+1.35,palette,5)
  else:flat_roof(w+.3,d+.3,h+.3,palette)
  if name.startswith('kanto_'):
@@ -112,13 +130,6 @@ def civic(name,style,w=5.5,d=3.5):
    cone('Gym stone capital',(x,-d/2-.10,2.73),.30,.24,.15,'stone',8)
   facade_cube('Gym carved crest',0,2.65,1.2,.45,-d/2-.14,.12,'roof_blue_dark',bevel=.04)
   for x in [-.32,.32]:ico('Gym badge metal',(x,-d/2-.23,2.66),(.19,.05,.18),'yellow',1)
- elif style=='museum':
-  for x in [-w*.38,-w*.23,w*.23,w*.38]:
-   cone('Museum fluted column',(x,-d/2-.17,1.50),.14,.12,2.35,'plaster_light',10)
-   cube('Museum column foot',(x,-d/2-.17,.32),(.38,.38,.15),'stone_light',.025)
-   cube('Museum capital',(x,-d/2-.17,2.69),(.37,.36,.16),'stone_light',.025)
-  facade_cube('Museum pediment plaque',0,2.73,2.15,.30,-d/2-.20,.12,'stone')
-  ico('Museum fossil relief',(0,-d/2-.29,2.73),(.44,.045,.12),'plaster_light',2)
  elif style=='station':
   awning(w-.35,d,2.18,'roof_teal')
   for x in [-w*.37,w*.37]:cube('Station canopy column',(x,-d/2-.31,1.08),(.11,.11,2.16),'stone_dark')
@@ -171,17 +182,42 @@ def townhouse(name,variant):
 def east_gate():
  start('east_gate',4,4,'east');foundation(3.52,3.48)
  # Open transverse passage; no solid wall blocks the east/west entrance.
- for y in [-1.20,1.20]:
-  cube('Gate side wing',(0,y,1.24),(3.50,1.04,2.04),'plaster_light',.025)
-  for angle in [0,180]:panel('Gate wing window',0,1.35,1.1,.74,-1.73,angle=angle)
+ for y,depth in [(-1.61,.24),(.61,2.16)]:
+  cube('Gate side wing',(0,y,1.24),(3.50,depth,2.04),'plaster_light',.025)
+  # Three low stone courses seat each wing; the passage remains open.
+  for row in range(3):
+   for col in range(7):
+    x=-1.44+col*.48
+    cube('Gatehouse dressed plinth',(x,(-1.74 if y<0 else 1.74),.36+row*.18),(.466,.10,.166),'stone_light' if (col+row)%4 else 'stone',.012)
+  for x in [-1.76,1.76]:
+   for row in range(3):
+    for part in range(max(1,round(depth/.48))):
+     span=depth/max(1,round(depth/.48))
+     cube('Gatehouse plinth return',(x,y-depth/2+span*(part+.5),.36+row*.18),(.10,span-.012,.166),'stone_light',.012)
+ for angle in [0,180]:panel('Gate wing window',0,1.35,1.1,.74,-1.73,angle=angle)
  for x in [-1.71,1.71]:
-  cube('Passage lintel',(x,0,2.11),(.17,1.45,.38),'timber')
-  for y in [-.69,.69]:cube('Passage jamb',(x,y,1.08),(.17,.16,2.03),'timber_light')
- cube('Passage recessed paving',(0,0,.07),(3.89,1.23,.14),'stone_light',.015)
- roof(3.93,3.94,2.35,3.38,'roof_blue',5)
+  cube('Passage lintel',(x,-.985,2.11),(.17,1.45,.38),'timber')
+  for y in [-1.535,-.435]:cube('Passage jamb',(x,y,1.08),(.17,.16,2.03),'timber_light')
+ cube('Passage recessed paving',(0,-.985,.07),(3.89,1.12,.14),'stone_light',.015)
+ town_roof(3.93,3.94,2.35,3.38,'roof_blue',gable_material='plaster_light')
+ # Exposed structural posts and real eave brackets frame the open passage.
+ for x in [-1.76,1.76]:
+  for y in [-1.74,1.74]:
+   cube('Gatehouse corner timber',(x,y,1.30),(.14,.14,2.10),'timber',.015)
+  for y in [-1.535,-.435]:
+   beam('Passage carved knee brace',(x,y,1.78),(x,y+(.30 if y>-1. else -.30),2.18),.10,.12,'timber_light')
+ for x in [-1.94,1.94]:
+  cube('Gatehouse gable tie',(x,0,2.38),(.12,3.46,.14),'timber',.012)
+  cube('Gatehouse king post',(x,0,2.84),(.12,.13,.90),'timber_light',.012)
+  for side in [-1,1]:
+   beam('Gatehouse gable brace',(x,side*1.30,2.43),(x,0,3.20),.09,.11,'timber_light')
+ for x in [-1.44,-.96,-.48,0,.48,.96,1.44]:
+  for y in [-1.80,1.80]:cube('Gatehouse exposed rafter tail',(x,y,2.30),(.09,.28,.12),'timber_light',.008)
+ for y in [-1.85,1.85]:
+  cube('Gatehouse eave fascia',(0,y,2.30),(3.88,.12,.18),'timber',.018)
  # East-facing low threshold ends on the actual side doorway seam.
- cube('East entry threshold',(1.88,0,.08),(.24,1.24,.16),'stone_light',.015)
- facade_cube('Gate side plaque',0,2.13,.93,.26,-1.80,.09,'roof_blue_dark',90)
+ cube('East entry threshold',(1.88,-.985,.08),(.24,1.24,.16),'stone_light',.015)
+ facade_cube('Gate side plaque',-.985,2.13,.93,.26,-1.80,.09,'roof_blue_dark',90)
 
 
 def pagoda(name,burnt=False):
@@ -339,10 +375,16 @@ def forest_gate_shell(closed):
     for j in range(8) if -span/2+(j+(.5 if row%2 else 1))*step<span/2]+[span/2]
    for column,(left,right) in enumerate(zip(cuts,cuts[1:])):
     z=.43+(row+.5)*2.71/12
-    if not closed and angle==0 and left<.72 and right>-.72 and z<1.87:continue
     depth=.024+.002*((row+column)%3)
-    facade_cube('Forest running-bond masonry', (left+right)/2,z,right-left-.014,
-     2.71/12-.014,face-.005,depth,'plaster',angle)
+    segments=[(left,right)]
+    if not closed and angle==0 and z<1.87:
+     # Cut actual half bricks against the jamb, rather than omitting whole
+     # columns and leaving broad unpainted mortar stripes beside the door.
+     segments=[(left,min(right,-2.10)),(max(left,-.90),right)]
+    for a,b in segments:
+     if b-a>.02:
+      facade_cube('Forest running-bond masonry',(a+b)/2,z,b-a-.014,
+       2.71/12-.014,face-.005,depth,'plaster',angle)
   window_span=w if angle in [0,180] else d
   for x in [-window_span/3,0,window_span/3]:
    z=2.48;width=1.04;height=.57;y=face-.052
@@ -353,6 +395,23 @@ def forest_gate_shell(closed):
     facade_cube('Forest yellow window pane',x+dx,z,pane,height-.10,y-.058,.016,'glass',angle)
    facade_cube('Forest dressed window sill',x,z-height/2-.065,width+.20,.07,y-.014,.18,'plaster_light',angle)
 
+def forest_gate_entry():
+ # The source has one left-side door with a horizontal upper light, not
+ # centered laboratory double doors or a striped entrance canopy.
+ for name,parent in [('forest_gate_door','timber'),('forest_gate_door_frame','timber_light'),
+   ('forest_gate_door_panel','timber')]:
+  if name not in MATS:
+   m=MATS[parent].copy();m.name=name;MATS[name]=m
+ x=-1.5
+ for dx in [-.52,.52]:
+  cube('Forest source door jamb',(x+dx,-2.73,1.005),(.09,.14,1.61),'forest_gate_door_frame')
+ cube('Forest source door header',(x,-2.73,1.765),(1.13,.14,.09),'forest_gate_door_frame')
+ cube('Forest source single door',(x,-2.74,.96),(.95,.03,1.52),'forest_gate_door')
+ cube('Forest source upper light recess',(x,-2.76,1.34),(.86,.018,.40),'stone_dark')
+ cube('Forest source horizontal door light',(x,-2.772,1.34),(.78,.01,.30),'glass')
+ cube('Forest source lower door panel',(x,-2.76,.50),(.75,.015,.38),'forest_gate_door_panel')
+ cube('Forest source entry threshold',(x,-2.755,.10),(1.30,.30,.20),'stone_light',.014)
+
 def forest_gate(closed=False):
  name='forest_gate_closed' if closed else 'forest_gate'
  start(name,6.0,6.0,'none' if closed else 'south')
@@ -362,29 +421,26 @@ def forest_gate(closed=False):
  for o in list(COL.objects):
   if o.name.startswith('Timber corner upright'):bpy.data.objects.remove(o,do_unlink=True)
  if not closed:
-  front_entry(5.25,1.12)
-  # The doorway shares the old teal pigment but is not roof paint.
-  if 'forest_gate_door' not in MATS:
-   m=MATS['roof_teal_dark'].copy();m.name='forest_gate_door';MATS['forest_gate_door']=m
-  for o in COL.objects:
-   if o.type=='MESH' and o.name.startswith('Door leaf'):
-    o.data.materials[0]=MATS['forest_gate_door']
-  # Retain this doorway assembly and its original projection/fit envelope.
-  awning(1.95,5.25,2.14,'roof_teal')
+  forest_gate_entry()
 
 def nature(name,kind):
  start(name,2,{'sign':.32,'bench':1.05,'fence':.30}.get(kind,2),'none')
  if kind in ['canopy','cut','hedge']:
-  if kind!='hedge':
+  if kind=='canopy':
    cone('Tapered tree trunk',(0,0,.72),.18,.11,1.44,'timber_light',7)
    for a in [0,2.1,4.2]:rod('Visible trunk root',(0,0,.22),(math.cos(a)*.52,math.sin(a)*.52,.045),.09,'timber',6)
   if kind=='canopy':
    for i,(x,y,z,s) in enumerate([(-.52,0,1.78,.72),(.52,0,1.86,.75),(0,.46,2.14,.80),(0,-.44,2.13,.83),(0,0,2.58,.72)]):
     rod('Bough',(0,0,.95),(x,y,z),.075,'timber_light');ico('Faceted broadleaf crown',(x,y,z),(s,s*.86,s),['leaf','leaf_light','leaf_dark'][i%3],2)
   elif kind=='cut':
-   for i in range(5):
-    a=i*math.tau/5;ico('Low cuttable leafy crown',(math.cos(a)*.35,math.sin(a)*.35,1.24+(i%2)*.10),(.49,.45,.49),'leaf_light' if i%2 else 'leaf',1)
-   ico('Cuttable crown tip',(0,0,1.73),(.32,.32,.43),'leaf_gold',1)
+   # A small, visibly slender sapling: the open fork and three pointed leaf
+   # tufts distinguish the CUT obstacle from rounded grove/fruit trees.
+   cone('Cuttable exposed slender trunk',(0,0,.65),.14,.085,1.30,'cut_bark',7)
+   for a in [0,2.1,4.2]:
+    rod('Cuttable short root',(0,0,.13),(math.cos(a)*.29,math.sin(a)*.29,.035),.055,'cut_bark',6)
+   for i,(x,y,z) in enumerate([(-.38,0,1.55),(.38,.04,1.61),(0,-.12,1.98)]):
+    rod('Cuttable exposed fork',(0,0,.83),(x,y,z-.12),.065,'cut_bark',6)
+    ico('Cuttable pointed leaf tuft',(x,y,z),(.43,.39,.52),['cut_leaf_dark','cut_leaf','cut_leaf_light'][i],1)
   else:
    cube('Clipped hedge dense center',(0,0,.51),(1.65,1.50,.9),'leaf_dark',.20)
    for x in [-.52,0,.52]:
@@ -435,7 +491,7 @@ builders={
 for prefix in ['modern','kanto']:
  for style in ['center','mart','gym','station','department','arcade']:
   name=prefix+'_'+style;builders[name]=lambda n=name,s=style,p=prefix:civic(n,s,w=5.45 if p=='modern' else 5.9,d=3.3 if p=='modern' else 3.65)
-for name,style,w,d in [('kanto_museum','museum',7.3,3.8),('silph','silph',5.6,3.8),('kanto_mansion','mansion',5.3,3.8),('power_plant','power',7.6,4.3),('modern_daycare','house',4.4,3.6)]:builders[name]=lambda n=name,s=style,w=w,d=d:civic(n,s,w,d)
+for name,style,w,d in [('silph','silph',5.6,3.8),('kanto_mansion','mansion',5.3,3.8),('power_plant','power',7.6,4.3),('modern_daycare','house',4.4,3.6)]:builders[name]=lambda n=name,s=style,w=w,d=d:civic(n,s,w,d)
 for name,kind in [('kanto_canopy','canopy'),('cut_tree','cut'),('park_hedge','hedge'),('shore_boulder','boulder'),('route_sign','sign'),('park_bench','bench'),('timber_fence','fence')]:builders[name]=lambda n=name,k=kind:nature(n,k)
 only=next((a.split('=',1)[1].split(',') for a in args if a.startswith('--only=')),None)
 for name,build in builders.items():
@@ -468,10 +524,17 @@ for name,col in list(ASSETS.items()):
  primitives=[]
  for g in groups.values():g.pop('lookup');primitives.append(g)
  data={'name':name,'coordinate_system':'right-handed; +Y up; front +Z','bounds':{'min':minv,'max':maxv},'primitives':primitives}
- if DOORS[name]=='south':data['door_anchor']=[0,0,maxv[2]];data['door_face']='south'
- elif DOORS[name]=='east':data['door_anchor']=[maxv[0],0,0];data['door_face']='east'
+ if DOORS[name]=='south':
+  along=0.
+  if name=='forest_gate':
+   threshold=next(o for o in objects if o.name.startswith('Forest source entry threshold'))
+   along=round(sum(v.co.x for v in threshold.data.vertices)/len(threshold.data.vertices),6)
+  data['door_anchor']=[along,0,maxv[2]];data['door_face']='south'
+ elif DOORS[name]=='east':data['door_anchor']=[maxv[0],0,1. if name=='east_gate' else 0.];data['door_face']='east'
  (P/f'{name}.mesh.json').write_text(json.dumps(data,separators=(',',':')))
- triangles=sum(len(g['indices'])//3 for g in primitives);assert triangles<12000,(name,triangles)
+ triangles=sum(len(g['indices'])//3 for g in primitives)
+ # Five storeys of closed window pockets add real reveal surfaces.
+ assert triangles<(13000 if name=='tin_tower' else 12000),(name,triangles)
  STATS[name]={'triangles':triangles,'parts':len(objects),'bounds':data['bounds'],'door_face':DOORS[name]}
 # Editable collection lineup, after exports so presentation offsets never enter runtime.
 for i,(name,col) in enumerate(ASSETS.items()):

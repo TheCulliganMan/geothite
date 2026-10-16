@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Original branching Corsola and curved, two-tone Mantine sculptures."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
 from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,translate,fitted_patch,fitted_contour,crease_normals
 from abra_sculpt import surface
 from spider_sculpt import dorsal_patch,upper_skin
 from skin_glb import COORDINATES
-from bovine_sculpt import curved_tube,oval
+from bovine_sculpt import curved_tube,oval,fitted_patch
 from wing_insect_sculpt import contour
 from skarmory_sculpt import blade
 SPECIES=('corsola','mantine');HEIGHTS={'corsola':.93,'mantine':1.02}
@@ -89,7 +91,7 @@ def mantine():
     body=loft('Body / broad pale ray belly',BELLY,curved_profiles(((.26,.05,.08,-.02),(.28,.18,.25,-.01),(.34,.25,.34,0),(.44,.245,.33,0),(.52,.19,.24,.035),(.565,.03,.035,.04)),4),40)
     p=[body]
     outline=[(.17*math.cos(i*math.tau/24),-.07+.20*math.sin(i*math.tau/24)) for i in range(24)]
-    p.append(dorsal_patch('Back / fitted blue dorsal mantle',BLUE,outline,upper_skin(body)))
+    p.append(dorsal_patch('Back / fitted blue dorsal mantle',BLUE,outline,upper_skin(body),patch=fitted_patch))
     for side in (-1,1):
         upper=wing(side,True);lower=wing(side,False);p.extend((upper,lower,wing_border(side,lower)))
         fin=loft('Cephalic fin / rounded curved blue leaf paddle '+str(side),BLUE,curved_profiles(((.48,.027,.016,.25),(.60,.037,.018,.33),(.73,.033,.017,.35),(.82,.021,.013,.31),(.845,.003,.004,.29)),4),32)
@@ -123,16 +125,24 @@ def mantine():
         p.append(fitted_patch('Remora glint / fitted ivory sparkle '+str(side),WHITE,oval(x-.001,.404,.002,.003,16),surface(eye),.001))
     return p
 
-def sculpture(species):
+@lru_cache(maxsize=2)
+def raw_sculpture(species):
     if species not in SPECIES:raise ValueError('unsupported sea sculpture')
     p=corsola() if species=='corsola' else mantine()
-    low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[species]/(high-low)
+    if species=='mantine':p=[crease_normals(q,60. if q['part'].startswith('Wing border /') else 35.) if q['part'].startswith(('Back /','Wing border /','Remora mouth /','Remora eye /','Remora glint /')) else q for q in p]
+    return p
+def sculpture(species,normalize=True):
+    p=deepcopy(raw_sculpture(species))
+    low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[species]/(high-low) if normalize else 1.
     for q in p:
-        q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
+        q['positions']=[round((v-(low if normalize and i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
         q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    for s in SPECIES:(args.output/(s+'.mesh.json')).write_text(json.dumps(sculpture(s),separators=(',',':')))
+    from mantine_glb import export_mantine
+    (args.output/'mantine.glb').write_bytes(export_mantine())
+    from corsola_glb import export_corsola
+    (args.output/'corsola.glb').write_bytes(export_corsola())
 if __name__=='__main__':main()

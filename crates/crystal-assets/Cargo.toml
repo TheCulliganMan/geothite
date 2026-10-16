@@ -19,6 +19,11 @@ serde_json.workspace = true
 sha2.workspace = true
 sha1 = "0.10.7"
 
+# Apple Silicon keeps the exact SHA-256 algorithm while using its hardware
+# instructions. This feature is deliberately absent from browser targets.
+[target.'cfg(all(target_arch = "aarch64", not(target_arch = "wasm32")))'.dependencies]
+sha2 = { workspace = true, features = ["asm"] }
+
 [features]
 test-fixtures = ["crystal-core/test-fixtures"]
 

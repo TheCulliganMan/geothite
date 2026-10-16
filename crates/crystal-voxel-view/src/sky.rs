@@ -113,6 +113,14 @@ impl Palette {
 fn linear(rgb: Vec3) -> Vec4 {
     Color::srgb(rgb.x, rgb.y, rgb.z).to_linear().to_vec4()
 }
+pub(super) fn environment_colors(second: u32) -> [Vec3; 3] {
+    let palette = Palette::at(second);
+    let cycle = DayCycle::at_seconds(second);
+    let upper = linear(palette.zenith.lerp(palette.cloud, 0.18)).truncate();
+    let horizon = cycle.horizon.to_linear().to_vec4().truncate();
+    let ground = linear(Vec3::new(0.22, 0.20, 0.16)).truncate() * cycle.ambient_gain;
+    [upper, horizon, ground]
+}
 fn material(second: u32, center: Vec3, elapsed: f32) -> SkyMaterial {
     let palette = Palette::at(second);
     let cycle = DayCycle::at_seconds(second);

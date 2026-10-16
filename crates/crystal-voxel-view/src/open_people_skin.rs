@@ -26,6 +26,7 @@ const HAND_SCALE: f32 = 0.82;
 pub(crate) struct PeopleGpu(
     pub HashMap<(&'static str, CharacterKind), Gpu>,
     HashMap<&'static str, Handle<Image>>,
+    pub PreparedAppearances,
 );
 pub(crate) struct Gpu {
     mesh: Handle<Mesh>,
@@ -42,9 +43,133 @@ struct AccessoryGpu {
     material: Handle<StandardMaterial>,
     remote: Handle<StandardMaterial>,
 }
-fn accessory_gpu(mesh: crate::mesh::SurfaceMeshData, meshes: &mut Assets<Mesh>,
-    materials: &mut Assets<StandardMaterial>) -> AccessoryGpu {
-    accessory_mesh_gpu(mesh.into_mesh(), meshes, materials)
+#[cfg(feature = "actor-worker")]
+#[path = "actor_worker/appearance_wire.rs"]
+pub(crate) mod worker_wire;
+
+/// CPU-only final appearance. No asset handles or ECS state cross this boundary.
+pub(crate) struct PreparedAppearance {
+    mesh: Mesh,
+    bounds: (Vec3, Vec3),
+    head: Option<Mesh>,
+    costume: Option<Mesh>,
+    backpack: Option<Mesh>,
+}
+pub(crate) type PreparedAppearances = Arc<std::sync::Mutex<HashMap<(&'static str, CharacterKind), PreparedAppearance>>>;
+
+pub(crate) fn prepare_appearance(rig: &PersonRig, kind: CharacterKind) -> PreparedAppearance {
+    let _trace = crate::loading_trace::span("actor.prepare_appearance", || serde_json::json!({"kind":format!("{kind:?}")}));
+    let look = crate::npc_appearance::look(kind);
+    let crate::open_people::RefinedBody {
+        mesh: mut body, ids: mut body_joints, weights: mut body_weights,
+    } = rig.refined_body();
+    crate::head_surface::bald_crown(&rig,&mut body,&mut body_joints,&mut body_weights,look);
+    crate::npc_appearance::child_head(&rig,&mut body,&mut body_joints,&mut body_weights,look);
+    crate::npc_appearance::soften_jaw_normals(&rig,&mut body,&body_joints,&body_weights);
+    if matches!(kind,
+        CharacterKind::Trainer | CharacterKind::TrainerFemale | CharacterKind::Receptionist
+        | CharacterKind::Clerk | CharacterKind::Officer | CharacterKind::Cal
+        | CharacterKind::CooltrainerM | CharacterKind::LinkReceptionist
+        | CharacterKind::OldLinkReceptionist | CharacterKind::Teacher
+        | CharacterKind::RedsMom | CharacterKind::Bill | CharacterKind::GymGuide
+        | CharacterKind::Biker | CharacterKind::BlackBelt | CharacterKind::PokefanF | CharacterKind::Blue | CharacterKind::Brock
+        | CharacterKind::Rocket | CharacterKind::RocketGirl
+        | CharacterKind::Bruno | CharacterKind::Chuck | CharacterKind::BugCatcher | CharacterKind::Bugsy
+        | CharacterKind::GameboyKid | CharacterKind::StandingYoungster
+        | CharacterKind::Outdoorsman | CharacterKind::UnusedGuy | CharacterKind::Will
+        | CharacterKind::SwimmerGuy | CharacterKind::SwimmerGirl | CharacterKind::Twin) {
+        crate::head_surface::adventure_profile(&rig, &mut body, &mut body_joints, &mut body_weights);
+    }
+    if matches!(kind, CharacterKind::Trainer | CharacterKind::TrainerFemale) {
+        crate::head_surface::player_profile(&rig, &mut body, &body_joints, &body_weights);
+    }
+    if matches!(kind, CharacterKind::Kurt | CharacterKind::KurtOutside) {
+        // Keep Kurt's drawn eyes, nose, mouth and forehead in place.
+        // Extra refinement is restricted to the established jaw/nape
+        // selection, with pinned crown and collar boundaries.
+        for _ in 0..2 {
+            crate::head_surface::smooth(&rig, &mut body, &mut body_joints, &mut body_weights);
+        }
+        crate::head_surface::nape_normals(&rig, &mut body, &body_joints, &body_weights);
+    }
+    let hair_extension=crate::hair_shapes::sculpt(&rig,&mut body,&mut body_joints,&mut body_weights,look);
+    crate::npc_appearance::shorts_body(&rig,&mut body,&mut body_joints,&mut body_weights,look);
+    crate::kimono_sleeves::sculpt(&mut body,&mut body_joints,&mut body_weights,look);
+    crate::garment_body::cover(&mut body,&mut body_joints,&mut body_weights,look);
+    crate::garment_body::nurse_legs(&mut body,&mut body_joints,&mut body_weights,look);
+    crate::npc_appearance::correct_body_uvs(&mut body, look, &mut body_joints, &mut body_weights);
+    crate::painted_torso::avoid_shirt_gutter(&mut body, look, &mut body_joints, &mut body_weights);
+    crate::painted_torso::map_front(&mut body, look, &mut body_joints, &mut body_weights);
+    crate::painted_torso::long_sleeves(&mut body, &mut body_joints, &mut body_weights, look);
+    if matches!(look.texture_key, "red" | "misty" | "brock" | "pokefan_m" | "nurse") {
+        crate::painted_torso::short_sleeves(&mut body, &mut body_joints, &mut body_weights, look);
+    }
+    crate::bare_body::sculpt(&rig, &mut body, &mut body_joints, &mut body_weights, look);
+    crate::footwear::adapt(&mut body,&mut body_joints,&mut body_weights,look);
+    crate::handwear::adapt(&rig, &mut body, &mut body_joints, &mut body_weights, look);
+    // Offline review only: inspect the final production surface rather
+    // than diagnosing altered normals from the original GLB alone.
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    if let Some(directory) = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_MESHES") {
+        let directory = std::path::PathBuf::from(directory);
+        std::fs::create_dir_all(&directory).expect("create mesh review directory");
+        let snapshot = serde_json::json!({
+            "positions": body.positions,
+            "normals": body.normals,
+            "uvs": body.uvs,
+            "indices": body.indices,
+            "joints": body_joints,
+            "weights": body_weights,
+        });
+        std::fs::write(directory.join(format!("{}.json", look.texture_key)),
+            serde_json::to_vec(&snapshot).expect("encode review mesh"))
+            .expect("write review mesh");
+    }
+    // Walking and mounted instances share GPU resources. Include both
+    // envelopes even when the first instance happens to be on foot.
+    let locomotion_bounds = rig.locomotion_bounds();
+    let mut bounds = (locomotion_bounds.0-Vec3::splat(hair_extension),
+        locomotion_bounds.1+Vec3::splat(hair_extension));
+    if matches!(kind, CharacterKind::Trainer | CharacterKind::TrainerFemale) {
+        let scale = Vec3::new(look.height / rig.height * look.width,
+            look.height / rig.height, look.height / rig.height);
+        let mounted = crate::bicycle::body_bounds(&rig, &body.positions,
+            &body_joints, &body_weights, scale, HEAD_SCALE, HAND_SCALE);
+        bounds.0 = bounds.0.min(mounted.0);
+        bounds.1 = bounds.1.max(mounted.1);
+    }
+    let mut mesh = body.into_mesh();
+    mesh.insert_attribute(
+        Mesh::ATTRIBUTE_JOINT_INDEX,
+        VertexAttributeValues::Uint16x4(body_joints),
+    );
+    mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, body_weights);
+        let head = crate::npc_appearance::head_mesh(&rig, look).map(|mesh| mesh.into_mesh());
+        let costume = crate::npc_appearance::costume_mesh(&rig, look)
+            .map(|costume| {
+                #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+                if let Some(directory)=std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_MESHES") {
+                    let snapshot=serde_json::json!({
+                        "positions":costume.surface.positions,
+                        "normals":costume.surface.normals,
+                        "uvs":costume.surface.uvs,
+                        "indices":costume.surface.indices,
+                        "joints":costume.joints,
+                        "weights":costume.weights,
+                    });
+                    std::fs::write(std::path::PathBuf::from(directory)
+                        .join(format!("{}.costume.json",look.texture_key)),
+                        serde_json::to_vec(&snapshot).expect("encode review costume"))
+                        .expect("write review costume");
+                }
+                let mut mesh = costume.surface.into_mesh();
+                mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_INDEX,
+                    VertexAttributeValues::Uint16x4(costume.joints));
+                mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, costume.weights);
+                mesh
+            });
+        let backpack = crate::npc_appearance::backpack_mesh(&rig, look).map(|mesh| mesh.into_mesh());
+    PreparedAppearance { mesh, bounds, head, costume, backpack }
 }
 fn accessory_mesh_gpu(mesh: Mesh, meshes: &mut Assets<Mesh>,
     materials: &mut Assets<StandardMaterial>) -> AccessoryGpu {
@@ -59,6 +184,8 @@ fn accessory_mesh_gpu(mesh: Mesh, meshes: &mut Assets<Mesh>,
         material: materials.add(material), remote: materials.add(ghost) }
 }
 pub(crate) struct Person {
+    pub run_blend: f32,
+    locomotion: crate::human_locomotion::HumanLocomotion,
     pub bicycle: bool,
     pub surfing: bool,
     /// Accepted step progress and airborne blend; root lift belongs to terrain presentation.
@@ -74,6 +201,7 @@ pub(crate) struct Person {
     wrist_nodes: Vec<usize>,
     idle: Vec<Transform>,
     run: Vec<Transform>,
+    posed: Vec<Transform>,
 }
 impl PeopleGpu {
     pub(super) fn retain_kinds(&mut self, kinds: &std::collections::HashSet<CharacterKind>) {
@@ -97,6 +225,7 @@ impl PeopleGpu {
         images: &mut Assets<Image>,
         binds: &mut Assets<SkinnedMeshInverseBindposes>,
     ) -> Person {
+        let prepared = &self.2;
         let textures = &mut self.1;
         let gpu = self.0.entry((name, kind)).or_insert_with(|| {
             let _trace = crate::loading_trace::span("actor.build_body", || serde_json::json!({
@@ -104,89 +233,9 @@ impl PeopleGpu {
             let look = crate::npc_appearance::look(kind);
             let painting = crate::npc_textures::get(look.texture_key)
                 .expect("required production character painting");
-            let crate::open_people::RefinedBody {
-                mesh: mut body, ids: mut body_joints, weights: mut body_weights,
-            } = rig.refined_body();
-            crate::head_surface::bald_crown(&rig,&mut body,&mut body_joints,&mut body_weights,look);
-            crate::npc_appearance::child_head(&rig,&mut body,&mut body_joints,&mut body_weights,look);
-            crate::npc_appearance::soften_jaw_normals(&rig,&mut body,&body_joints,&body_weights);
-            if matches!(kind,
-                CharacterKind::Trainer | CharacterKind::TrainerFemale | CharacterKind::Receptionist
-                | CharacterKind::Clerk | CharacterKind::Officer | CharacterKind::Cal
-                | CharacterKind::CooltrainerM | CharacterKind::LinkReceptionist
-                | CharacterKind::OldLinkReceptionist | CharacterKind::Teacher
-                | CharacterKind::RedsMom | CharacterKind::Bill | CharacterKind::GymGuide
-                | CharacterKind::Biker | CharacterKind::BlackBelt | CharacterKind::PokefanF | CharacterKind::Blue | CharacterKind::Brock
-                | CharacterKind::Rocket | CharacterKind::RocketGirl
-                | CharacterKind::Bruno | CharacterKind::Chuck | CharacterKind::BugCatcher | CharacterKind::Bugsy
-                | CharacterKind::GameboyKid | CharacterKind::StandingYoungster
-                | CharacterKind::Outdoorsman | CharacterKind::UnusedGuy | CharacterKind::Will
-                | CharacterKind::SwimmerGuy | CharacterKind::SwimmerGirl | CharacterKind::Twin) {
-                crate::head_surface::adventure_profile(&rig, &mut body, &mut body_joints, &mut body_weights);
-            }
-            if matches!(kind, CharacterKind::Trainer | CharacterKind::TrainerFemale) {
-                crate::head_surface::player_profile(&rig, &mut body, &body_joints, &body_weights);
-            }
-            if matches!(kind, CharacterKind::Kurt | CharacterKind::KurtOutside) {
-                // Keep Kurt's drawn eyes, nose, mouth and forehead in place.
-                // Extra refinement is restricted to the established jaw/nape
-                // selection, with pinned crown and collar boundaries.
-                for _ in 0..2 {
-                    crate::head_surface::smooth(&rig, &mut body, &mut body_joints, &mut body_weights);
-                }
-                crate::head_surface::nape_normals(&rig, &mut body, &body_joints, &body_weights);
-            }
-            let hair_extension=crate::hair_shapes::sculpt(&rig,&mut body,&mut body_joints,&mut body_weights,look);
-            crate::npc_appearance::shorts_body(&rig,&mut body,&mut body_joints,&mut body_weights,look);
-            crate::kimono_sleeves::sculpt(&mut body,&mut body_joints,&mut body_weights,look);
-            crate::garment_body::cover(&mut body,&mut body_joints,&mut body_weights,look);
-            crate::garment_body::nurse_legs(&mut body,&mut body_joints,&mut body_weights,look);
-            crate::npc_appearance::correct_body_uvs(&mut body, look, &mut body_joints, &mut body_weights);
-            crate::painted_torso::avoid_shirt_gutter(&mut body, look, &mut body_joints, &mut body_weights);
-            crate::painted_torso::map_front(&mut body, look, &mut body_joints, &mut body_weights);
-            crate::painted_torso::long_sleeves(&mut body, &mut body_joints, &mut body_weights, look);
-            if matches!(look.texture_key, "red" | "misty" | "brock" | "pokefan_m" | "nurse") {
-                crate::painted_torso::short_sleeves(&mut body, &mut body_joints, &mut body_weights, look);
-            }
-            crate::bare_body::sculpt(&rig, &mut body, &mut body_joints, &mut body_weights, look);
-            crate::footwear::adapt(&mut body,&mut body_joints,&mut body_weights,look);
-            crate::handwear::adapt(&rig, &mut body, &mut body_joints, &mut body_weights, look);
-            // Offline review only: inspect the final production surface rather
-            // than diagnosing altered normals from the original GLB alone.
-            #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
-            if let Some(directory) = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_MESHES") {
-                let directory = std::path::PathBuf::from(directory);
-                std::fs::create_dir_all(&directory).expect("create mesh review directory");
-                let snapshot = serde_json::json!({
-                    "positions": body.positions,
-                    "normals": body.normals,
-                    "uvs": body.uvs,
-                    "indices": body.indices,
-                    "joints": body_joints,
-                    "weights": body_weights,
-                });
-                std::fs::write(directory.join(format!("{}.json", look.texture_key)),
-                    serde_json::to_vec(&snapshot).expect("encode review mesh"))
-                    .expect("write review mesh");
-            }
-            // Walking and mounted instances share GPU resources. Include both
-            // envelopes even when the first instance happens to be on foot.
-            let mut bounds = (rig.bounds.0-Vec3::splat(hair_extension),
-                rig.bounds.1+Vec3::splat(hair_extension));
-            if matches!(kind, CharacterKind::Trainer | CharacterKind::TrainerFemale) {
-                let scale = Vec3::new(look.height / rig.height * look.width,
-                    look.height / rig.height, look.height / rig.height);
-                let mounted = crate::bicycle::body_bounds(&rig, &body.positions,
-                    &body_joints, &body_weights, scale, HEAD_SCALE, HAND_SCALE);
-                bounds.0 = bounds.0.min(mounted.0);
-                bounds.1 = bounds.1.max(mounted.1);
-            }
-            let mut mesh = body.into_mesh();
-            mesh.insert_attribute(
-                Mesh::ATTRIBUTE_JOINT_INDEX,
-                VertexAttributeValues::Uint16x4(body_joints),
-            );
-            mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, body_weights);
+            let staged = prepared.lock().expect("prepared actor lock").remove(&(name, kind));
+            let PreparedAppearance { mesh, bounds, head, costume, backpack } =
+                staged.unwrap_or_else(|| prepare_appearance(&rig, kind));
             // The validated painting catalog is immutable. Different body
             // rigs can share its exact pixels without sharing their geometry.
             let texture = textures.entry(look.texture_key).or_insert_with(|| {
@@ -222,33 +271,9 @@ impl PeopleGpu {
                 material: materials.add(material),
                 remote: materials.add(ghost),
                 binds: binds.add(SkinnedMeshInverseBindposes::from(rig.inverse_binds.clone())),
-                head: crate::npc_appearance::head_mesh(&rig, look)
-                    .map(|mesh| accessory_gpu(mesh, meshes, materials)),
-                costume: crate::npc_appearance::costume_mesh(&rig, look)
-                    .map(|costume| {
-                        #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
-                        if let Some(directory)=std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_MESHES") {
-                            let snapshot=serde_json::json!({
-                                "positions":costume.surface.positions,
-                                "normals":costume.surface.normals,
-                                "uvs":costume.surface.uvs,
-                                "indices":costume.surface.indices,
-                                "joints":costume.joints,
-                                "weights":costume.weights,
-                            });
-                            std::fs::write(std::path::PathBuf::from(directory)
-                                .join(format!("{}.costume.json",look.texture_key)),
-                                serde_json::to_vec(&snapshot).expect("encode review costume"))
-                                .expect("write review costume");
-                        }
-                        let mut mesh = costume.surface.into_mesh();
-                        mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_INDEX,
-                            VertexAttributeValues::Uint16x4(costume.joints));
-                        mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, costume.weights);
-                        accessory_mesh_gpu(mesh, meshes, materials)
-                    }),
-                backpack: crate::npc_appearance::backpack_mesh(&rig, look)
-                    .map(|mesh| accessory_gpu(mesh, meshes, materials)),
+                head: head.map(|mesh| accessory_mesh_gpu(mesh, meshes, materials)),
+                costume: costume.map(|mesh| accessory_mesh_gpu(mesh, meshes, materials)),
+                backpack: backpack.map(|mesh| accessory_mesh_gpu(mesh, meshes, materials)),
             }
         });
         let look = crate::npc_appearance::look(kind);
@@ -345,6 +370,8 @@ MeshMaterial3d(if remote { costume.remote.clone() } else { costume.material.clon
             commands.entity(nodes[rig.mesh_node]).add_child(accessory);
         }
         Person {
+            run_blend: 0.0,
+            locomotion: crate::human_locomotion::HumanLocomotion::new(&rig),
             bicycle,
             surfing: false,
             hop_step: None,
@@ -356,6 +383,7 @@ MeshMaterial3d(if remote { costume.remote.clone() } else { costume.material.clon
             hand_scale,
             wrist_nodes,
             run: idle.clone(),
+            posed: idle.clone(),
             idle,
             rig,
             nodes,
@@ -419,12 +447,7 @@ impl Person {
             seconds.rem_euclid(self.rig.duration("Idle")),
             &mut self.idle,
         );
-        self.rig.sample(
-            "Run",
-            phase.rem_euclid(std::f32::consts::TAU) / std::f32::consts::TAU
-                * self.rig.duration("Run"),
-            &mut self.run,
-        );
+        self.locomotion.sample(&self.rig, phase, self.run_blend, &mut self.run);
         if let Some((progress, _)) = self.hop_step {
             self.hop.resize(self.idle.len(), Transform::IDENTITY);
             self.rig.sample("Jump", progress.clamp(0.0, 1.0) * self.rig.duration("Jump"), &mut self.hop);
@@ -463,25 +486,29 @@ impl Person {
             self.seated.clone_from(&self.idle);
             crate::bicycle::seat_pose(&self.rig, &mut self.seated, self.model_scale, self.sitting.height);
         }
-        for (index, ((&entity, a), b)) in self.nodes.iter().zip(&self.idle).zip(&self.run).enumerate() {
-            if let Ok(mut t) = transforms.get_mut(entity) {
-                *t = Transform {
-                    translation: a.translation.lerp(b.translation, weight),
-                    rotation: a.rotation.slerp(b.rotation, weight).normalize(),
-                    scale: a.scale.lerp(b.scale, weight),
-                };
-                if let Some((_, hop_weight)) = self.hop_step {
-                    // Reuse authored limb articulation without importing its
-                    // root translations on top of the terrain hop arc.
-                    t.rotation = t.rotation.slerp(self.hop[index].rotation, hop_weight.clamp(0.0, 1.0)).normalize();
-                }
-                if sitting > 0. {
-                    let seated = &self.seated[index];
-                    t.translation = t.translation.lerp(seated.translation, sitting);
-                    t.rotation = t.rotation.slerp(seated.rotation, sitting).normalize();
-                    t.scale = t.scale.lerp(seated.scale, sitting);
-                }
+        for (index, ((t, a), b)) in self.posed.iter_mut().zip(&self.idle).zip(&self.run).enumerate() {
+            *t = Transform {
+                translation: a.translation.lerp(b.translation, weight),
+                rotation: a.rotation.slerp(b.rotation, weight).normalize(),
+                scale: a.scale.lerp(b.scale, weight),
+            };
+            if let Some((_, hop_weight)) = self.hop_step {
+                // Reuse authored limb articulation without importing its
+                // root translations on top of the terrain hop arc.
+                t.rotation = t.rotation.slerp(self.hop[index].rotation, hop_weight.clamp(0.0, 1.0)).normalize();
             }
+            if sitting > 0. {
+                let seated = &self.seated[index];
+                t.translation = t.translation.lerp(seated.translation, sitting);
+                t.rotation = t.rotation.slerp(seated.rotation, sitting).normalize();
+                t.scale = t.scale.lerp(seated.scale, sitting);
+            }
+        }
+        if weight > 0. && !self.bicycle && !self.surfing && self.hop_step.is_none() && sitting == 0. {
+            self.locomotion.plant_blend(&self.rig, &self.idle, &self.run, weight, &mut self.posed);
+        }
+        for (&entity, pose) in self.nodes.iter().zip(&self.posed) {
+            if let Ok(mut t) = transforms.get_mut(entity) { *t = *pose; }
         }
         // Apply after rebuilding every local transform from animation, so
         // these proportions cannot accumulate across frames. Hats and hair
@@ -494,6 +521,58 @@ impl Person {
 #[cfg(test)]
 mod tests {
     use super::*;
+    /// Both routes must publish identical vertices, index widths, joints,
+    /// accessories, bounds and material/image ordering. The staged route uses
+    /// an actual worker task and consumes its owned CPU result exactly once.
+    #[test]
+    #[ignore = "requires supplied character rigs and paintings"]
+    fn background_appearance_is_byte_exact_with_direct_publication() {
+        use bevy::ecs::world::CommandQueue;
+        fn mesh_bits(mesh: &Mesh) -> Vec<u8> {
+            let mut bytes = format!("{:?}{:?}",mesh.primitive_topology(),mesh.indices()).into_bytes();
+            for (attribute, values) in mesh.attributes() {
+                bytes.extend_from_slice(format!("{:?}{:?}",attribute.id,attribute.format).as_bytes());
+                bytes.extend_from_slice(values.get_bytes());
+            }
+            bytes
+        }
+        let pool = bevy::tasks::TaskPoolBuilder::new().num_threads(2).build();
+        for kind in [CharacterKind::Trainer, CharacterKind::TrainerFemale,
+            CharacterKind::Nurse, CharacterKind::Kurt, CharacterKind::KimonoGirl] {
+            let look = crate::npc_appearance::look(kind);
+            let rig = crate::open_people::get(look.base).expect("supplied rig").clone();
+            let worker_rig = rig.clone();
+            let prepared = bevy::tasks::futures_lite::future::block_on(pool.spawn(async move {
+                prepare_appearance(&worker_rig,kind)
+            }));
+            let mut results = Vec::new();
+            for staged in [None,Some(prepared)] {
+                let mut cache = PeopleGpu::default();
+                if let Some(prepared) = staged {
+                    cache.2.lock().unwrap().insert((look.base,kind),prepared);
+                }
+                let world = World::new();
+                let mut queue = CommandQueue::default();
+                let mut commands = Commands::new(&mut queue,&world);
+                let root = commands.spawn_empty().id();
+                let mut meshes = Assets::<Mesh>::default();
+                let mut materials = Assets::<StandardMaterial>::default();
+                let mut images = Assets::<Image>::default();
+                let mut binds = Assets::<SkinnedMeshInverseBindposes>::default();
+                cache.spawn(look.base,kind,rig.clone(),root,false,true,&mut commands,
+                    &mut meshes,&mut materials,&mut images,&mut binds);
+                assert!(cache.2.lock().unwrap().is_empty(),"staging consumed");
+                let gpu = &cache.0[&(look.base,kind)];
+                let mesh_handles = [Some(&gpu.mesh),gpu.head.as_ref().map(|a| &a.mesh),
+                    gpu.costume.as_ref().map(|a| &a.mesh),gpu.backpack.as_ref().map(|a| &a.mesh)];
+                let geometry = mesh_handles.map(|handle|handle.map(|h|mesh_bits(meshes.get(h).unwrap())));
+                let bounds = [gpu.bounds.0.to_array().map(f32::to_bits),gpu.bounds.1.to_array().map(f32::to_bits)];
+                let painting = images.iter().map(|(_,image)|image.data.clone()).collect::<Vec<_>>();
+                results.push((geometry,bounds,painting,meshes.len(),materials.len(),binds.len()));
+            }
+            assert_eq!(results[0],results[1],"{kind:?}");
+        }
+    }
     #[test]
     #[ignore = "requires supplied character rigs and paintings"]
     fn different_body_rigs_share_exact_painting_upload_without_sharing_meshes() {
@@ -774,7 +853,8 @@ mod tests {
                 "hand proportions accumulated on a repeated animation frame");
         }
         let mut expected = rig.nodes.clone();
-        rig.sample("Run",rig.duration("Run")*0.25,&mut expected);
+        people[0].locomotion.sample(&rig,std::f32::consts::FRAC_PI_2,
+            people[0].run_blend,&mut expected);
         crate::hand_pose::relax(&rig,&mut expected);
         let head_scale = match kind {
             CharacterKind::PokefanF => 0.60,

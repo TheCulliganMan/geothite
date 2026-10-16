@@ -14,7 +14,7 @@ GOLD=(.95,.82,.36);HAIR=(.95,.91,.62);BABY_HAIR=(.96,.89,.45)
 CREAM=(.98,.94,.75);WHITE=(.96,.97,.94);INK=(.08,.065,.10)
 LIP=(.88,.54,.60);GREEN=(.20,.44,.37)
 
-def lips(p,head,cx,cy,rx,ry):
+def lips(p,head,cx,cy,rx,ry,baby=False):
  at=surface(head);vv=[];nn=48;mm=20;minor=.023 if ry>.07 else .020
  for i in range(nn):
   a=math.tau*i/nn
@@ -25,17 +25,17 @@ def lips(p,head,cx,cy,rx,ry):
  for i in range(nn):
   for j in range(mm):ff.append((i*mm+j,((i+1)%nn)*mm+j,((i+1)%nn)*mm+(j+1)%mm,i*mm+(j+1)%mm))
  lip=crease_normals(part('Lips / rooted pink oval kiss rim',LIP,vv,ff,True),45);p.append(lip)
- p.append(paint('Mouth / fitted dark recessed oval kiss opening',INK,oval(cx,cy,rx-minor+.005,ry-minor+.005,40),head,.004,3))
+ p.append(paint('Mouth / fitted dark recessed oval kiss opening',INK,oval(cx,cy,rx-minor+.005,ry-minor+.005,40),head,.004,1 if baby else 3))
 
 def eyes(p,head,baby):
  cy=.972 if baby else 1.102;cx=.110 if baby else .089;rx=.063 if baby else .036;ry=.079 if baby else .044
  for s in (-1,1):
-  socket=paint('Eye socket / fitted dark ice-dancer recess '+str(s),INK,oval(s*cx,cy,rx+.006,ry+.006,36),head,.005,3);p.append(socket)
-  eye=paint('Eye / fitted ivory ice-dancer gaze '+str(s),WHITE,oval(s*cx,cy,rx,ry,36),socket,.004,3);p.append(eye)
+  socket=paint('Eye socket / fitted dark ice-dancer recess '+str(s),INK,oval(s*cx,cy,rx+.006,ry+.006,36),head,.005,1 if baby else 3);p.append(socket)
+  eye=paint('Eye / fitted ivory ice-dancer gaze '+str(s),WHITE,oval(s*cx,cy,rx,ry,36),socket,.004,1 if baby else 3);p.append(eye)
   if baby:
-   pupil=paint('Pupil / fitted broad dark baby stare '+str(s),INK,oval(s*cx-.008,cy+.006,.039,.056,32),eye,.003,3);p.append(pupil)
-   iris=paint('Iris / fitted green lower baby gaze '+str(s),GREEN,oval(s*cx-.008,cy-.018,.032,.025,28),pupil,.003,3);p.append(iris)
-   p.append(paint('Glint / fitted ivory baby eye spark '+str(s),WHITE,oval(s*cx-.016,cy+.037,.010,.014,24),pupil,.004,2))
+   pupil=paint('Pupil / fitted broad dark baby stare '+str(s),INK,oval(s*cx-.008,cy+.006,.039,.056,32),eye,.003,1);p.append(pupil)
+   iris=paint('Iris / fitted green lower baby gaze '+str(s),GREEN,oval(s*cx-.008,cy-.018,.032,.025,28),pupil,.003,1);p.append(iris)
+   p.append(paint('Glint / fitted ivory baby eye spark '+str(s),WHITE,oval(s*cx-.016,cy+.037,.010,.014,24),pupil,.004,1))
   else:p.append(paint('Pupil / fitted tiny dark dancer stare '+str(s),INK,oval(s*cx,cy,.006,.010,24),eye,.003,2))
 
 def gown():
@@ -85,20 +85,20 @@ def jynx():
  return p
 
 def smoochum_hair(p):
- back=ellipsoid('Hair back / rooted short golden baby bob',BABY_HAIR,(0,1.049,-.078),(.287,.226,.194),44,28);p.append(back)
- cap=ellipsoid('Hair crown / rooted golden baby dome',BABY_HAIR,(0,1.183,.007),(.275,.147,.207),44,28);p.append(cap)
+ back=ellipsoid('Hair back / rooted short golden baby bob',BABY_HAIR,(0,1.049,-.078),(.287,.226,.194),28,28);p.append(back)
+ cap=ellipsoid('Hair crown / rooted golden baby dome',BABY_HAIR,(0,1.183,.007),(.275,.147,.207),28,28);p.append(cap)
  xy=[(-.293,1.034),(-.255,1.145),(-.190,1.251),(-.078,1.310),(.040,1.322),(.181,1.261),(.259,1.174),(.290,1.085),(.190,1.052),(.042,1.049),(.012,1.123),(-.014,1.044),(-.173,1.024)]
  p.append(sheet('Bangs / continuous golden baby fringe with center notch',BABY_HAIR,xy,lambda y,x:.215-.70*x*x-.22*(y-1.16)**2,.033,3))
- for s in (-1,1):p.append(paddle('Hair side / rooted short golden baby side lock '+str(s),BABY_HAIR,[(s*.185,1.158,-.039),(s*.255,1.051,.013),(s*.264,.966,.023),(s*.242,.885,.041),(s*.184,.824,.072),(s*.135,.808,.080)],[.045,.055,.057,.047,.024,.003],[.044,.048,.049,.041,.021,.003]))
+ for s in (-1,1):p.append(paddle('Hair side / rooted short golden baby side lock '+str(s),BABY_HAIR,[(s*.185,1.158,-.039),(s*.255,1.051,.013),(s*.264,.966,.023),(s*.242,.885,.041),(s*.184,.824,.072),(s*.135,.808,.080)],[.045,.055,.057,.047,.024,.003],[.044,.048,.049,.041,.021,.003],segments=20,steps=4))
  tips=[[(0,1.283,-.003),(-.153,1.375,.001),(-.259,1.434,.000)],[(.012,1.290,-.021),(.179,1.421,-.018),(.259,1.499,-.004)],[(0,1.299,-.003),(-.041,1.401,.008),(-.054,1.446,.000)],[(.010,1.293,-.045),(.036,1.420,-.039),(.044,1.466,-.027)]]
- for j,path in enumerate(tips):p.append(paddle('Hair tuft / rooted golden baby leaf '+str(j),BABY_HAIR,path,[.025,.040,.002],[.019,.021,.002]))
+ for j,path in enumerate(tips):p.append(paddle('Hair tuft / rooted golden baby leaf '+str(j),BABY_HAIR,path,[.025,.040,.002],[.019,.021,.002],segments=28 if j==1 else 20,steps=6 if j==1 else 4))
 
 def smoochum_limbs(p):
  for s in (-1,1):
   p.append(paddle('Leg / rooted short cream baby support '+str(s),CREAM,[(s*.092,.212,-.013),(s*.112,.110,.018),(s*.138,.041,.046)],[.047,.041,.034],[.047,.039,.032]))
-  p.append(ellipsoid('Foot / grounded rounded cream baby toe '+str(s),CREAM,(s*.145,.035,.060),(.052,.035,.074),36,24))
+  p.append(ellipsoid('Foot / grounded rounded cream baby toe '+str(s),CREAM,(s*.145,.035,.060),(.052,.035,.074),28,24))
   p.append(paddle('Arm / rooted short curved cream baby forelimb '+str(s),CREAM,[(s*.112,.533,.017),(s*.217,.488,.042),(s*.227,.413,.080)],[.054,.047,.040],[.049,.047,.038]))
-  p.append(ellipsoid('Hand / small cream three-finger baby palm '+str(s),CREAM,(s*.219,.398,.088),(.039,.041,.033),32,22))
+  p.append(ellipsoid('Hand / small cream three-finger baby palm '+str(s),CREAM,(s*.219,.398,.088),(.039,.041,.033),20,22))
   for j in range(3):
    x=s*(.196+.021*j);p.append(curved_tube(f'Finger / rooted small cream baby digit {s} {j}',CREAM,[(x,.387,.099),(x+s*.004,.359-.004*(j==1),.110),(x+s*.007,.346,.110)],[.013,.011,.005],24))
 
@@ -106,19 +106,25 @@ def smoochum():
  body=ellipsoid('Body / compact pink baby pear',PINK,(0,.365,-.006),(.194,.230,.154),44,28)
  head=ellipsoid('Head / broad rounded pink baby face',PINK,(0,.976,.028),(.237,.234,.181),48,30)
  # A short throat reaches the large head without an unsupported gap.
- neck=ellipsoid('Neck / short rooted cream baby throat',CREAM,(0,.628,.034),(.091,.090,.090),36,24)
+ neck=ellipsoid('Neck / short rooted cream baby throat',CREAM,(0,.628,.034),(.091,.090,.090),24,24)
  p=[body,neck,head]
  chest=ellipsoid('Chest / rooted broad cream baby collar',CREAM,(0,.536,.022),(.216,.093,.152),44,28);p.append(chest)
- p.append(paint('Chest bib / fitted pointed cream baby breast',CREAM,[(-.122,.533),(.122,.533),(.128,.468),(.068,.436),(0,.425),(-.068,.436),(-.128,.468)],body,.008,4))
- eyes(p,head,True);lips(p,head,0,.869,.037,.060);smoochum_hair(p);smoochum_limbs(p)
+ p.append(paint('Chest bib / fitted pointed cream baby breast',CREAM,[(-.122,.533),(.122,.533),(.128,.468),(.068,.436),(0,.425),(-.068,.436),(-.128,.468)],body,.008,3))
+ eyes(p,head,True);lips(p,head,0,.869,.037,.060,True);smoochum_hair(p);smoochum_limbs(p)
  for q in p:
   if q['part'].startswith(('Head /','Eye socket /','Eye /','Pupil /','Iris /','Glint /','Lips /','Mouth /','Hair','Bangs /')):q['positions']=[v-(.110 if i%3==1 else 0) for i,v in enumerate(q['positions'])]
  return p
 
-def sculpture(name):
+def sculpture(name,normalize=True):
  if name not in SPECIES:raise ValueError(name)
  p=jynx() if name=='jynx' else smoochum();lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[name]/(hi-lo)
- for q in p:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+ if name=='smoochum':
+  from sculpt_geometry import linear
+  for q in p:
+   n=q['part'];rgb=(0,0,0) if n.startswith(('Eye socket /','Pupil /','Mouth /')) else (255,255,255) if n.startswith(('Eye /','Glint /','Neck /','Chest /','Chest bib /','Arm /','Hand /','Finger /','Leg /','Foot /')) else (239,198,33) if n.startswith(('Hair','Bangs /','Lips /')) else (165,8,156)
+   q['base_color']=linear(tuple(v/255 for v in rgb))
+ if normalize:
+  for q in p:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':name,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

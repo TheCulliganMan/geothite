@@ -2,9 +2,9 @@
 """Original Cleffa and Igglybuff sculptures with fitted faces and distinct silhouettes."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import loft,curved_profiles,ellipsoid,tube,fitted_patch,fitted_contour,crease_normals
+from sculpt_geometry import loft,curved_profiles,ellipsoid,tube,fitted_contour,crease_normals
 from abra_sculpt import surface
-from bovine_sculpt import oval
+from bovine_sculpt import oval,fitted_patch
 from wing_insect_sculpt import contour
 from skin_glb import COORDINATES
 SPECIES=('cleffa','igglybuff');HEIGHTS={'cleffa':.60,'igglybuff':.58}
@@ -41,13 +41,20 @@ def igglybuff():
   center=(sign*.100,.070,.065);p.append(tilt(ellipsoid('Foot / grounded pale balloon petal '+str(sign),PALE,center,(.062,.080,.070),32,22),sign*.24,center))
   x=sign*.116;y=.457;border=fitted_contour('Eye border / fitted dark Igglybuff socket '+str(sign),INK,oval(x,y,.053,.068,32),skin,.006,subdivisions=3);iris=fitted_contour('Iris / fitted ruby balloon eye '+str(sign),RUBY,oval(x,y,.049,.064,32),surface(border),.003);pupil=fitted_patch('Pupil / fitted large dark balloon oval '+str(sign),INK,oval(x,y,.027,.046,36),surface(iris),.003);glint=fitted_patch('Eye glint / fitted ivory balloon reflection '+str(sign),WHITE,oval(x-.008,y+.020,.012,.014,28),surface(pupil),.002);p.extend((border,iris,pupil,glint))
  p.append(spiral('Forehead / fitted dark balloon spiral',body,0,.596,.052,INK))
- mouth=contour((((-.038,.374),(-.010,.369),(.012,.368),(.038,.375)),((.038,.375),(.025,.294),(-.024,.298),(-.038,.374))),12);q=fitted_contour('Mouth / fitted delighted balloon smile',INK,mouth,skin,.005,subdivisions=3);p.append(q);cx=sum(x for x,y in mouth)/len(mouth);cy=sum(y for x,y in mouth)/len(mouth);p.append(fitted_contour('Tongue / fitted rosy balloon smile interior',TONGUE,[(cx+(x-cx)*.74,cy+(y-cy)*.74) for x,y in mouth],surface(q),.003));return p
-def sculpture(species):
+ mouth=contour((((-.038,.374),(-.010,.369),(.012,.368),(.038,.375)),((.038,.375),(.025,.294),(-.024,.298),(-.038,.374))),12);q=fitted_contour('Mouth / fitted delighted balloon smile',INK,mouth,skin,.005,subdivisions=3);p.append(q);cx=cy=0.
+ for x,y in mouth:cx+=x;cy+=y
+ cx/=len(mouth);cy/=len(mouth);p.append(fitted_contour('Tongue / fitted rosy balloon smile interior',TONGUE,[(cx+(x-cx)*.74,cy+(y-cy)*.74) for x,y in mouth],surface(q),.003));return p
+def sculpture(species,normalize=True):
  p={'cleffa':cleffa,'igglybuff':igglybuff}[species]()
  for i,q in enumerate(p):
   if q['part'].startswith(('Eye /','Eye glint /','Eye border /','Iris /','Pupil /','Cheek /','Mouth /','Tongue /')):p[i]=crease_normals(q,35)
  low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[species]/(high-low)
- for q in p:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+ from sculpt_geometry import linear
+ for q in p:
+  n=q['part'];rgb=(0,0,0) if n.startswith(('Eye /','Eye border /','Pupil /','Mouth /','Forehead /')) else (255,255,255) if n.startswith('Eye glint /') else ((107,57,0) if species=='cleffa' else (181,41,41)) if n.startswith(('Ear /','Tuft crease /','Iris /')) else ((255,107,206) if species=='cleffa' else (255,132,198))
+  q['base_color']=linear(tuple(v/255 for v in rgb))
+ if normalize:
+  for q in p:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
  a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)

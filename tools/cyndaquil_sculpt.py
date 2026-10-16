@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Original folded-paper Cyndaquil: explicit panels, no remesh or mesh inputs.
+"""Original rounded quadrupedal Cyndaquil, authored without mesh inputs.
 
-The 30 named assemblies use the established ten-joint skin. Dimensions are
-runtime units (+Y up, +Z front), retaining the 0.716729 body reference and 0.91
+The 34 named assemblies use a twelve-joint skin with four planted legs. Dimensions are
+runtime units (+Y up, +Z front), retaining the 0.716729 body reference and 1.25
 full silhouette. The archived Blender sculpture remains an editable historical
 source; this compact recipe is the authoritative source of the new sculpture.
 """
@@ -16,13 +16,32 @@ EMBER = (.86, .18, .12)
 ORANGE = (.98, .47, .075)
 GOLD = (1., .78, .22)
 BODY_HEIGHT = .716729
-FULL_HEIGHT = .91
+FULL_HEIGHT = 1.25
 # z, center_y, half_width, half_height; each row is an intentional fold.
-HEAD = ((-.170,.493,.107,.110),(-.095,.539,.173,.144),
-        (.020,.552,.200,.156729),(.125,.540,.181,.137),
-        (.220,.516,.139,.099),(.322,.486,.085,.059),
-        (.416,.464,.040,.030),(.462,.455,.020,.020))
-RING = 16
+HEAD = ((-.075,.45,.20,.19),(.015,.48,.245,.23),
+        (.13,.477,.255,.231729),(.25,.43,.225,.22),
+        (.35,.355,.168,.17),(.45,.265,.095,.10),
+        (.54,.205,.035,.037),(.565,.194,.014,.016))
+RING = 32
+TORSO = ((-.57,.29,.045,.06),(-.52,.32,.16,.18),
+         (-.42,.335,.235,.235),(-.28,.345,.255,.245),
+         (-.12,.36,.24,.24),(.02,.40,.19,.22),(.10,.43,.13,.17))
+
+
+def curved_profiles(profiles):
+    """Cubic silhouette curves rather than a stack of straight taper sections."""
+    result=[]
+    for i in range(len(profiles)-1):
+        a,b,c,d=profiles[max(0,i-1)],profiles[i],profiles[i+1],profiles[min(len(profiles)-1,i+2)]
+        for step in range(2):
+            t=step/2.
+            result.append(tuple(.5*((2*y)+(-x+z)*t+(2*x-5*y+4*z-w)*t*t+(-x+3*y-3*z+w)*t*t*t)
+                                for x,y,z,w in zip(a,b,c,d)))
+    return tuple(result)+(profiles[-1],)
+
+
+HEAD=curved_profiles(HEAD)
+TORSO=curved_profiles(TORSO)
 
 
 def add(a, b): return tuple(x+y for x,y in zip(a,b))
@@ -63,6 +82,20 @@ def merged(*parts):
         result['positions']+=part['positions'];result['normals']+=part['normals']
         result['indices'] += [i+offset for i in part['indices']]
     return result
+
+
+def rounded(mesh):
+    """Area-weighted surface normals, welded over the authored loft seams."""
+    points=list(zip(*[iter(mesh['positions'])]*3));sums={}
+    for a,b,c in zip(*[iter(mesh['indices'])]*3):
+        normal=cross(sub(points[b],points[a]),sub(points[c],points[a]))
+        for i in (a,b,c):sums[points[i]]=add(sums.get(points[i],(0.,0.,0.)),normal)
+    normals=[]
+    for i,p in enumerate(points):
+        n=unit(sums[p]);original=tuple(mesh['normals'][i*3:i*3+3])
+        normals.extend(f32(v) for v in (n if dot(n,original)>.25 else original))
+    mesh['normals']=normals
+    return mesh
 
 
 def loft(rings):
@@ -112,7 +145,7 @@ def face_x(z,y):
 
 def eyelid(side):
     # The long angular V is readable from the battle flank as well as 3/4.
-    line=((.039,.578,.002),(.098,.550,.008),(.175,.541,.008),(.242,.559,.002))
+    line=((.09,.445,.002),(.145,.475,.005),(.205,.48,.005),(.265,.455,.002))
     vertices=[]
     for z,y,width in line:
         for depth,dy in ((.006,width),(.006,-width),(-.003,-width),(-.003,width)):
@@ -148,55 +181,55 @@ def flame(root, tip, width, depth, twist, bend):
 def sculpt():
     # Imported lazily so source generation and the skin writer remain separable.
     from cyndaquil_glb import PARTS, COORDINATES, QUILLS, source_point
-    body=horizontal(((.075,-.025,.095,.09),(.125,-.035,.172,.153),(.235,-.038,.209,.185),
-                     (.355,-.020,.199,.176),(.470,.003,.156,.139),(.565,.020,.094,.100)))
-    pieces=[body,loft(head_rings())]
-    for side in (-1,1):
-        # Heel is under the haunch; the low, broad toe settles onto one plane.
-        pieces.append(horizontal(((0.,.032,.061,.111),(.021,.035,.071,.125),
-                                  (.058,.027,.069,.113),(.103,-.012,.057,.084),(.168,-.045,.046,.069)),12,side*.145))
-        pieces.append(horizontal(((.076,-.034,.076,.094),(.130,-.049,.096,.117),
-                                  (.206,-.047,.095,.118),(.271,-.027,.063,.089)),12,side*.127))
-        # Explicit shoulder, elbow and folded palm; no cylindrical bead joints.
-        arm=[]
-        lift=.013 if side<0 else 0.
-        for y,z,w,d,cx in ((.198,.177,.031,.037,.164),(.213,.188,.039,.052,.170),
-                           (.245,.155,.042,.041,.178),(.282,.122,.047,.044,.185),
-                           (.325,.091,.047,.044,.184),(.365,.077,.040,.041,.176)):
-            curl=1-(y-.198)/(.365-.198)
-            arm.append([(side*cx+w*math.cos(math.tau*i/10),y+lift*curl,
-                         z-(.013 if side<0 else 0.)*curl+d*math.sin(math.tau*i/10)) for i in range(10)])
-        pieces.append(loft(arm))
-    body_mesh=merged(*pieces)
+    torso_rings=[[(w*math.cos(math.tau*i/RING),y+h*math.sin(math.tau*i/RING),z)
+                   for i in range(RING)] for z,y,w,h in TORSO]
+    body_mesh=merged(rounded(loft(torso_rings)),rounded(loft(head_rings())))
+    legs={}
+    for rear,z in ((False,.04),(True,-.36)):
+        for side in (-1,1):
+            # Broad flat soles, rounded toes, a curved ankle, and a shoulder
+            # embedded in the low body. Four separate supports span its length.
+            profiles=((0.,z+.03,.060,.08),(.013,z+.045,.064,.086),
+                      (.04,z+.025,.06,.076),(.075,z-.005,.057,.062),
+                      (.13,z-.017,.075,.075),(.21,z-.02,.081,.08),
+                      (.25,z-.02,.045,.05))
+            name=('Hindleg' if rear else 'Foreleg')+' / '+('left' if side<0 else 'right')
+            legs[name]=(rounded(horizontal(curved_profiles(profiles),32,side*(.19 if rear else .16))),CREAM)
     # The dorsal coat follows the body's exact fold vertices, not coarse
     # chords across its convex panels. Its rear head plate meets the pear's
     # rear panels inside the neck, making the hood continuous in profile.
-    cap=shell_patch([[add(p,(0.,.008,0.)) for p in ring[1:RING//2]]
-                     for ring in head_rings()[:6]])
-    torso_rows=((.235,-.038,.209,.185),(.355,-.020,.199,.176),
-                (.470,.003,.156,.139),(.565,.020,.094,.100))
-    back_grid=[]
-    for y,z,w,d in torso_rows:
-        back_grid.append([(w*math.cos(math.tau*i/16),y,z+d*math.sin(math.tau*i/16)-.006)
-                          for i in range(8,17)])
-    rear_head=head_rings()[0]
-    rear_plate=loft([[add(p,(0.,0.,-.006)) for p in rear_head],
-                    [add(p,(0.,0.,.008)) for p in rear_head]])
-    cap=merged(cap,rear_plate,shell_patch(back_grid,(0.,0.,.012)))
-    nose=loft([[(.021*math.cos(math.tau*i/8),.455+.014*math.sin(math.tau*i/8),z) for i in range(8)] for z in (.456,.473)])
+    cap_grid=[]
+    for z,y,w,h in HEAD:
+        edge=.65*(1.-max(0.,min(1.,(z-.30)/.24)))+.13*max(0.,min(1.,(z-.30)/.24))
+        cap_grid.append([(w*math.cos(edge+(math.pi-2*edge)*i/24),
+                          y+h*math.sin(edge+(math.pi-2*edge)*i/24)+.006,z) for i in range(25)])
+    cap=shell_patch(cap_grid)
+    back_grid=[[(w*math.cos(math.pi*i/16),y+h*math.sin(math.pi*i/16)+.006,z)
+                for i in range(17)] for z,y,w,h in TORSO]
+    cap=rounded(merged(cap,shell_patch(back_grid,(0.,-.008,0.))))
+    nose=rounded(loft([[(.009*math.cos(math.tau*i/16),.194+.007*math.sin(math.tau*i/16),z) for i in range(16)] for z in (.562,.574)]))
     parts={PARTS[0]:(nose,INK),PARTS[1]:(eyelid(-1),INK),PARTS[2]:(eyelid(1),INK),
-           PARTS[3]:(cap,BACK),PARTS[9]:(body_mesh,CREAM)}
-    specs=(((-.235,.91,-.314),.126,.029,-28,-.10),
-           ((.249,.875,-.302),.130,.030,27,.12),
-           ((-.319,.699,-.438),.143,.033,-40,-.22),
-           ((.324,.704,-.449),.140,.034,40,.22),
-           ((.003,.806,-.535),.148,.035,62,-.11))
+           PARTS[3]:(cap,BACK),PARTS[9]:(body_mesh,CREAM),**legs}
+    specs=(((-.28,1.12,-.35),.23,.04,-28,-.10),
+           ((.28,1.10,-.37),.24,.04,27,.12),
+           ((-.34,1.17,-.65),.24,.045,-40,-.22),
+           ((.34,1.15,-.67),.24,.045,40,.22),
+           ((.003,1.25,-.80),.26,.045,62,-.11))
     for (name,source_root),(tip,width,depth,twist,bend) in zip(QUILLS,specs):
         root=source_point(*source_root)
         assemblies=flame(root,tip,width,depth,twist,bend)
         for suffix,mesh in assemblies.items():
             color=EMBER if suffix=='ember silhouette' else GOLD if suffix.endswith('golden heart') else ORANGE
             parts[name+' / '+suffix]=(mesh,color)
+    # Keep the established metre datum while shortening the four supports
+    # relative to the deep, low belly. Fire remains independently sized.
+    body_scale=BODY_HEIGHT/max(v for name,(mesh,_) in parts.items() if 'flame quill /' not in name for v in mesh['positions'][1::3])
+    for name,(mesh,_) in parts.items():
+        if 'flame quill /' in name:continue
+        for i in range(1,len(mesh['positions']),3):mesh['positions'][i]=f32(mesh['positions'][i]*body_scale)
+        for i in range(0,len(mesh['normals']),3):
+            n=mesh['normals'][i:i+3];n[1]/=body_scale
+            mesh['normals'][i:i+3]=[f32(v) for v in unit(n)]
     # Height is an explicit reference, not normalisation by changing flame tips.
     all_flame=[p for name,(mesh,_) in parts.items() if 'flame quill /' in name for p in mesh['positions'][1::3]]
     highest=max(all_flame)

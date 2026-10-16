@@ -21,6 +21,57 @@ need visual review. Unknown species, shiny palettes, Substitute and Minimize
 retain their actual source art where a correct modeled appearance is unavailable.
 Source clipping and some faint/withdraw/capture phases retain the original presentation as explicit remaining 3D gaps. Send-out now keeps the original two picture-bank reveal frames and four smoke frames over the 3D map, switching to the model when the full picture appears at tick 6. Shiny send-out reuses the original source animation. Intro trainer portraits still use the original presentation until that source transition finishes.
 
+The normal send-out handoff reserves the complete model/rig and existing source
+picture bank in one stable body envelope. Switching to the two reveal frames no longer
+restarts the establishing search. Model dimensions and contact remain authored;
+the original bank texture still stands at its own fixed scale and floor contact.
+Its smoke chart uses that full bank and contact rather than a model hit anchor
+or changing opaque-pixel bounds. F3 restores the held source registration.
+The bank also participates in checked-ground, frustum and sight-edge proofs.
+This can conservatively reject a space that fits only the neutral model; the
+renderer does not reuse that smaller proof for a wider source picture.
+Changed viewport or measured HUD reservations still require a new fit; the
+opt-in encounter trace reports those key changes separately from body changes.
+
+Native location-tester paired captures can request an exact, naturally presented
+reveal frame with `CRYSTAL_RENDER_TEST_HOLD_SEND_OUT_FRAME=4` or `5`. This opt-in
+mode requires a disposable session with no save path and a one-shot 3D/2D pair.
+Only that capture uses an explicit 60 Hz verification clock. It releases the QA
+keys and freezes through `PairedCaptureHold` after the runtime and presented
+source packet both reach the requested frame; it never assigns an animation
+frame or changes scripts, RNG, species, HP or flags. Unset keeps normal timing.
+The receipt additionally requires `source_state_preserved=true`, the requested
+`send_out_frame` and matching `source_frame` through both readbacks.
+
+Native Violet Gym captures now verify both requested reveal frames against
+their frozen 2D counterparts. Both retain the actual tiled gym floor beneath
+Spearow and the original Cyndaquil reveal pixels, without a classic fallback
+or an exposed underside of the ground. Their receipts confirm
+`state_preserved=true`, `source_state_preserved=true`, and exact matching
+send-out/source frames `4` and `5` at 60 Hz. The frame-4 receipt has game frame
+172, hash 2612578542 and LCD frame 904; frame 5 has game frame 251, hash
+1340057035 and LCD frame 984. This is representative gym reveal acceptance;
+other maps and later battle phases retain separate review requirements.
+The trace confirms the sole additional fit occurs before the reveal, when
+measured HUD safe-Y changes from `(0.23, 0.75)` to
+`(0.26041666, 0.74444443)`. Bodies, support, viewport and frozen-map identity
+remain unchanged. The picture-bank transition itself adds no fit.
+Invocation for repeating that review:
+
+```sh
+env -u CRYSTAL_RENDER_TEST_TRAINER_MAP \
+CRYSTAL_RENDER_TEST_HOLD_SEND_OUT_FRAME=4 \
+CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image \
+CRYSTAL_RENDER_TEST_WALK_INPUT=synthetic \
+CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS=300 \
+target/battle-scene-goal/debug/examples/immersive_battle_3d \
+  content-packs/core-modular.browser.crystalpack --gym-encounter \
+  --size 640x360 --walk UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA \
+  --screenshot /tmp/sendout-bank4-3d.png --second /tmp/sendout-bank4-2d.png
+```
+
+Repeat with frame `5` and separate output paths for the other picture bank.
+
 The arena renders into an offscreen target. One camera-facing similarity maps
 the complete source effect canvas between the projected battler hit anchors.
 It is fitted in physical pixels, then normalized to viewport coordinates, so
@@ -70,6 +121,119 @@ cells; the same floor, complete-body and scenery proofs still apply.
 A native shader-review pair verifies the foreground rule with Cyndaquil and
 Sentret fully visible, with the same battle checksum in 3D and 2D. That capture
 does not validate the newer grass-height normalization or browser build.
+The rebuilt browser client also verifies complete foreground clearance in an
+ordinary Route 29 Sentret encounter, with 3D enabled and no console errors.
+A real turn changes Leer PP from 30 to 29 and Cyndaquil HP from 51 to 49 after
+Tackle. Menu and attack screenshots confirm that both Pokémon remain readable.
+The browser shot is comparatively overhead; it is not broad camera-composition
+acceptance for other locations.
+The obsolete actor-mask camera now remains inactive and its reserved image stays
+at one pixel instead of drawing both Pokémon into another full-resolution view.
+The focused regression checks retirement of an active mask, idempotent updates,
+window resizing, and preservation of the actual battle camera and actor layers.
+This cleanup postdates the browser visibility bundle described above.
+
+Camera admission now also ignores retained grass bounds lying wholly inside
+the shader's discarded foreground depth. Bounds crossing that plane or behind
+the pair still block a shot. This avoids forcing overhead views because of
+invisible blades; the original ground, wall, tree, and omitted-geometry checks
+remain in place. All 43 encounter-terrain regressions pass, including foreground
+admission, crossing/background rejection, exact cut-plane behavior, and the
+existing ground and omission checks. A fresh native Route 29 pair shows the
+settled menu from a low view, both complete Pokémon clear of foreground grass,
+and the actual retained trees and floor. Its paired-state receipt verifies the
+unchanged battle state. The preceding send-out capture exposes a ground edge
+and partial grass overlap; that transition is not visually accepted yet.
+A fresh Vermilion Gym trainer pair also preserves battle state and shows both
+Cyndaquil and Magnemite clearly against the literal tiled floor and gym bins.
+The camera sweep now limits its downward dip to the available elevation above
+six degrees, keeping its lateral orbit. Previously a send-out could subtract
+twelve degrees from an already six-degree establishing shot and look upward
+through the retained ground. All five camera regressions pass, including the
+full cue/side/progress sweep at 6, 12, 24 and 48 degrees. A rebuilt native Route 29
+capture shows the pre-settled Go! frame with Cyndaquil and a naturally encountered
+Pidgey fully clear, and continuous retained ground below them. Its settled
+3D/2D pair preserves battle state. This verifies that transition frame; earlier
+picture-bank reveal frames and other locations still need their own review.
+The packaged browser build also shows a natural Route 29 Hoppip encounter from
+a low map view with unobstructed bodies and continuous ground in the full-model
+send-out. A real turn changes Leer PP from 30 to 29, presents Hoppip's Splash,
+and returns to the command menu without console errors. HP remains 51 because
+Splash does no damage. This browser proof does not cover the cavern fit gap.
+The fresh Union Cave corridor review is not accepted: a naturally encountered
+Onix causes every modeled shot to fail admission on the checked floor and the
+client remains in its classic battle presentation. The retained cave geometry
+is present. `CRYSTAL_ENCOUNTER_TRACE` now reports rejected camera reasons and
+supported/unsupported staging counts to separate floor fit from framing and
+occlusion failures; this is an active location/large-body gap.
+A subsequent natural Zubat encounter verifies the retained Union Cave rock floor
+and walls, readable Pokémon, and an unchanged 3D/2D battle checksum. That smaller
+encounter does not close the Onix gap. Large-body staging now also samples the
+existing half-tile support grid within the same world radius: core-tile centers
+alone can miss the center of a two-row floor band. Every complete animated
+footprint must still pass the original cell-by-cell support check; neither the
+ground nor Pokémon scale changes. All 69 encounter-terrain regressions pass,
+including the narrow-band placement and absent-floor rejection. A fresh natural
+Geodude cavern pair preserves battle state and both complete readable models.
+Large-body Onix visual verification remains open; neither smaller encounter
+closes that gap.
+The actual Onix animation envelope measures approximately 9.04 by 8.26 retained
+units horizontally. A dedicated rig regression confirms that it cannot fit an
+eight-unit corridor, although room-sized original floor can support it. The
+walking encounter now witnesses an 11-by-11 tile neighborhood once at binding,
+matching the bounded staging search, rather than stopping at 7 by 7. Occupancy,
+plain-collision approval, actual built elevations, missing cells, and the full
+animated footprint remain required. All 15 walking-anchor producer regressions
+and the wider-witness boundary regression pass, along with the 70-test terrain
+run. The native build succeeds; finding an actual usable cavern room for Onix
+remains open pending visual verification.
+A fresh native Ilex Forest pair shows a naturally encountered level-7 Metapod
+and Cyndaquil completely visible on the original forest floor, with its trees,
+flowers and shoreline retained. The low settled view has continuous ground
+beneath both bodies and no foreground grass obstruction. The paired receipt
+preserves frame 854, checksum hash 1018850691 and LCD animation frame 2791.
+This verifies that settled composition, not every forest transition.
+The browser bundle with the stable model/bank layout and retained-water fix
+also passes a natural Route 29 Pidgey encounter: the low shot keeps the tiny
+Pidgey and Cyndaquil completely clear of foreground grass while tall grass
+remains behind them. With 3D enabled, an ordinary Leer/Tackle turn changes
+Leer PP from 30 to 29 and HP from 51 to 49, then returns to FIGHT/PKMN/PACK/RUN.
+No browser console errors appear. This bundle's WASM SHA-256 is
+`dc67fe7c44ef894e529db923a23090d12ff629d9d9dd446f4d4b256a9edb982e`.
+It predates the exact-frame native capture harness and later field-text fixes.
+An additional original Hiker Daniel encounter selects his authored level-11
+Onix through `UNIONCAVE1F_POKEFAN_M1`. Its current bounded trainer witness
+produces no supported staging candidates and remains classic. That rejected
+review supplies no final 3D/2D acceptance pair; the large-body cavern gap is
+still open.
+An ordinary Olivine City rod encounter with Krabby retains the actual house,
+fence, bank and city ground; its paired battle checksum is unchanged and both
+Pokémon are readable. Its flat lavender foreground water is not accepted yet.
+Retained water now converts its ripple/shore map registration into the same
+scaled, translated coordinates as the frozen mesh, while preserving source
+water mode, textures and geometry. All 14 water-mask/palette/registration tests
+pass, including ripple and shoreline coordinate invariance across rebasing.
+The material fix awaits a rebuilt visual check.
+A rebuilt native Olivine rod encounter with Magikarp verifies restored blue
+water and wave detail, the original city assets, readable models, and unchanged
+3D/2D battle state. This is a held-frame surface check, not a water-motion test.
+
+Normal send-out now reserves the complete authored model/rig and original
+1.9-unit source bank in one stable layout envelope. The two source-card reveal
+frames still draw their exact textures, grounded at the same feet, with their
+OAM chart registered to the actual full bank rather than a model hit anchor.
+The bank also participates in the neutral sight-edge proof without inflating
+physical contact bounds. Three focused handoff tests, 56 renderer tests and
+46 terrain tests pass; fresh native reveal and settled visual checks remain.
+The rebuilt Olivine trace no longer changes layout body type during reveal.
+It still establishes twice with identical body envelopes; the remaining
+viewport/HUD key change is under investigation before a production one-fit claim.
+A fresh ordinary Route 29 Hoppip encounter on the rebuilt client preserves the
+paired battle state and shows clear complete models on the low retained-map
+shot. Moving snapshots still skip the two brief source-bank ticks, so those
+frames have not received visual acceptance yet. A native-only verification hold
+is being prepared to inspect their actual presented state without changing
+scripts, RNG or production animation timing.
 
 Streamed routes warm the existing grove recipes across the authentic encounter
 neighborhood before freezing it, using the normal bounded worker queue. Trees

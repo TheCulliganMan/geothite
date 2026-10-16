@@ -73,10 +73,15 @@ pub(super) fn shot(
     let back = base.camera.rotation * Vec3::Z;
     let yaw = back.dot(axis.cross(Vec3::Y)).atan2(back.dot(-axis));
     let elevation = back.y.clamp(-1.0, 1.0).asin();
+    // Establishing views can already sit at six degrees. Subtracting the
+    // entire send-out dip there points the camera upward through the floor.
+    // Keep the orbit, but consume only the available downward headroom.
+    let minimum_elevation = elevation.min(6.0_f32.to_radians());
+    let shot_elevation = (elevation - lowering.to_radians() * envelope).max(minimum_elevation);
     base.battle_shot(
         bodies,
         yaw + sweep.to_radians(),
-        elevation - lowering.to_radians() * envelope,
+        shot_elevation,
     )
     .unwrap_or_else(|| base.clone())
 }
@@ -158,6 +163,32 @@ mod tests {
         };
         (base, bodies, frame)
     }
+    #[test]
+    fn already_low_establishing_views_never_dip_through_the_ground() {
+        let (initial, bodies, mut frame) = fixture();
+        for degrees in [6.0_f32, 12.0, 24.0, 48.0] {
+            let base = initial.battle_shot(bodies, 90.0_f32.to_radians(), degrees.to_radians()).unwrap();
+            for kind in [VisualBattleCueKind::Move, VisualBattleCueKind::Impact,
+                VisualBattleCueKind::SendOut, VisualBattleCueKind::Faint] {
+                frame.cues[0].kind = kind;
+                for side in [VisualBattleSide::Player, VisualBattleSide::Enemy] {
+                    frame.cues[0].side = side;
+                    for tick in 0..=100 {
+                        frame.cues[0].progress = tick as f32 / 100.0;
+                        let next = shot(&base, bodies, &frame);
+                        let elevation = (next.camera.rotation * Vec3::Z).y.asin();
+                        assert!(elevation >= 6.0_f32.to_radians() - 0.00001,
+                            "{kind:?} at {degrees} degrees dipped below the proven low view");
+                        assert!(elevation <= degrees.to_radians() + 0.00001);
+                        assert_eq!(next.origins, base.origins);
+                        assert_eq!(next.body_poses, base.body_poses);
+                        assert_eq!(next, shot(&base, bodies, &frame));
+                    }
+                }
+            }
+        }
+    }
+
     #[test]
     fn terrain_limited_sweep_stays_continuous_and_publishes_the_final_proven_state() {
         let (base, bodies, mut frame) = fixture();

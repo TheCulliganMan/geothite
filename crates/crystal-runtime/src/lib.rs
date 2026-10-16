@@ -6,6 +6,7 @@
 pub mod frontpic_animation;
 pub mod hall_of_fame;
 mod outdoor_mods;
+mod runtime_presentation_text;
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
@@ -2185,6 +2186,7 @@ pub struct RuntimePresentationCatalogSnapshot {
     pub pokedex_entries: BTreeMap<String, RuntimePokedexEntry>,
     pub pokemon_frontpic_anim: BTreeMap<String, FrontpicAnimProgram>,
     pub asm_text: BTreeMap<String, String>,
+    pub asm_text_aliases: BTreeMap<String, String>,
     pub move_names: Vec<String>,
     pub battle_animations: BTreeMap<String, Vec<String>>,
     pub battle_animation_table: Vec<String>,
@@ -3632,6 +3634,7 @@ impl RuntimePresentationCatalogSnapshot {
             pokedex_entries: data.pokedex_entries.clone(),
             pokemon_frontpic_anim: data.pokemon_frontpic_anim.clone(),
             asm_text: data.asm_text.clone(),
+            asm_text_aliases: runtime_presentation_text::asm_text_aliases(data),
             move_names: data.move_names.clone(),
             battle_animations: data.battle_animations.clone(),
             battle_animation_table: data.battle_animation_table.clone(),

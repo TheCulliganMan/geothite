@@ -13,10 +13,12 @@ pub(crate) use park_tree::append_park_tree;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum GroveFamily { JohtoPine, AncientForest }
 impl GroveFamily {
-    pub(crate) fn from_source(map: &str, tileset: &str) -> Self {
-        // Ilex keeps the pine appearance the user selected to match 2D.
-        // A separate source tileset does not require changing tree species.
-        if map == "IlexForest" { Self::JohtoPine } else { Self::from_tileset(tileset) }
+    pub(crate) fn from_drawing(tileset: &str, width: usize, height: usize) -> Self {
+        // Forest's small 2x2 Headbutt drawing and 4x4 ancient canopy are
+        // different authored objects. Map identity must never conflate them.
+        if tileset == "forest" && width == 2 && height == 2 {
+            Self::JohtoPine
+        } else { Self::from_tileset(tileset) }
     }
     pub(crate) fn from_tileset(tileset: &str) -> Self {
         if tileset == "forest" { Self::AncientForest } else { Self::JohtoPine }
@@ -63,6 +65,29 @@ pub(crate) fn instance_variation(coordinates: [i32; 2]) -> (usize, f32, f32) {
     (v.index, v.height, v.turn)
 }
 
+/// Per-tree height, stable across scrolling and rebuilds. This factor is only
+/// used by ordinary trees; ancient trees and formal park trees keep their scale.
+pub(crate) fn non_ancient_height_factor([x,z]: [i32;2]) -> f32 {
+    let mut n = (x as u32).wrapping_mul(0x9e3779b9)
+        ^ (z as u32).wrapping_mul(0x85ebca6b) ^ 0x41c64e6d;
+    n ^= n >> 16;
+    n = n.wrapping_mul(0x7feb352d);
+    n ^= n >> 15;
+    n = n.wrapping_mul(0x846ca68b);
+    n ^= n >> 16;
+    0.6 + (n & 65535) as f32 / 65535. * 0.8
+}
+
+pub(crate) fn instance_vertical_ratio(family: GroveFamily, coordinates: [i32;2],
+    prototype: [i32;2], neighbors: [bool;4]) -> f32 {
+    match family {
+        GroveFamily::JohtoPine => pine::stem_height(1.,coordinates,neighbors)
+            / pine::stem_height(1.,prototype,neighbors),
+        GroveFamily::AncientForest => variation(coordinates[0],coordinates[1]).height
+            / variation(prototype[0],prototype[1]).height,
+    }
+}
+
 /// Ordinary source-authenticated Johto groves use branching pines.
 pub(crate) fn append_grove_tree(mesh: &mut TerrainMeshData, bounds: [f32;4], base: f32,
     tile: f32, coordinates: [i32;2], neighbors: [bool;4]) {
@@ -79,11 +104,37 @@ pub(crate) fn append_family_grove(mesh: &mut TerrainMeshData, bounds: [f32;4], b
     }
 }
 
+/// Canopies are fitted and shifted independently of the ground layer at runtime.
+pub(crate) fn append_family_canopy(mesh: &mut TerrainMeshData, bounds: [f32;4], base: f32,
+    tile: f32, coordinates: [i32;2], neighbors: [bool;4], family: GroveFamily) {
+    let first = mesh.solid.positions.len();
+    match family {
+        GroveFamily::JohtoPine => pine::append_canopy(mesh,bounds,base,tile,coordinates,neighbors),
+        GroveFamily::AncientForest => ancient::append_canopy(mesh,bounds,base,tile,coordinates,neighbors),
+    }
+    if mesh.solid.positions.len() > first {
+        mesh.solid.cutaway_ranges.push(first..mesh.solid.positions.len());
+    }
+}
+
 pub(crate) fn grove_trunk_offset(coordinates: [i32; 2], spacing: f32) -> Vec2 {
     let v = variation(coordinates[0], coordinates[1]);
     // Break up rows visibly while leaving room for the fitted trunk flare
     // inside the original blocked plot.
-    Vec2::new(v.offset[0], v.offset[1]) * spacing * 0.24
+    Vec2::new(v.offset[0], v.offset[1]) * spacing * 0.32
+}
+
+/// Restrained pigment patches within a crown, independent of tile boundaries.
+/// Each complete leaf uses one sample so its lighting and solid shape remain clear.
+pub(crate) fn leaf_pigment(point: Vec3, scale: f32) -> [f32;3] {
+    let p = point / scale.max(0.001);
+    let patch = ((p.dot(Vec3::new(0.83,0.57,-0.46))).sin()
+        + (p.dot(Vec3::new(-0.39,1.17,0.71))+1.9).sin()*0.55
+        + (p.dot(Vec3::new(2.13,-0.67,1.47))+0.8).sin()*0.18)/1.73;
+    let warmth = (p.dot(Vec3::new(-0.71,0.31,1.09))+2.7).sin();
+    [1.+patch*0.065+warmth*0.025,
+     1.+patch*0.055,
+     1.+patch*0.045-warmth*0.025]
 }
 
 /// Curved, tapered branch sections, continuous at their shared rings.
@@ -199,6 +250,46 @@ fn town_crown(mesh: &mut SurfaceMeshData, center: Vec3, radius: Vec3, phase: f32
 mod tests {
     use super::*;
     use crate::new_bark_models::{self, ModelKind};
+    #[test]
+    fn ordinary_tree_height_varies_by_at_most_forty_percent_without_changing_ancient_scale() {
+        let mut low = f32::INFINITY;
+        let mut high = f32::NEG_INFINITY;
+        for z in -32..32 {for x in -32..32 {
+            let coordinates = [x,z];
+            let height = non_ancient_height_factor(coordinates);
+            assert!((0.6..=1.400001).contains(&height));
+            assert_eq!(height,non_ancient_height_factor(coordinates));
+            low=low.min(height); high=high.max(height);
+            let prototype=[4,8];
+            for neighbors in [[false;4],[true;4]] {
+                let ratio=instance_vertical_ratio(GroveFamily::JohtoPine,coordinates,prototype,neighbors);
+                assert!((pine::stem_height(1.,prototype,neighbors)*ratio
+                    -pine::stem_height(1.,coordinates,neighbors)).abs()<0.00001,
+                    "shared prototypes must apply the placement's height once");
+                assert_eq!(instance_vertical_ratio(GroveFamily::AncientForest,coordinates,prototype,neighbors),
+                    variation(x,z).height/variation(prototype[0],prototype[1]).height,
+                    "ordinary-tree variation must leave ancient scaling unchanged");
+            }
+        }}
+        assert!(low<0.62 && high>1.38,"ordinary trees must use the requested height range");
+    }
+    #[test]
+    fn foliage_pigment_varies_inside_one_crown_without_strong_color_swings() {
+        let samples = (0..64).map(|i| leaf_pigment(
+            Vec3::new((i%8) as f32, (i/8) as f32, 1.7),2.)).collect::<Vec<_>>();
+        assert!(samples.iter().flatten().all(|v| (0.90..=1.10).contains(v)));
+        let low = samples.iter().map(|c|c[1]).fold(f32::INFINITY,f32::min);
+        let high = samples.iter().map(|c|c[1]).fold(f32::NEG_INFINITY,f32::max);
+        assert!(high-low > 0.035, "a single crown must contain multiple subtle pigment patches");
+        assert_eq!(leaf_pigment(Vec3::ONE,2.),leaf_pigment(Vec3::ONE,2.));
+    }
+    #[test]
+    fn forest_drawing_preserves_ancient_and_small_headbutt_identities() {
+        assert_eq!(GroveFamily::from_drawing("forest", 4, 4), GroveFamily::AncientForest);
+        assert_eq!(GroveFamily::from_drawing("forest", 2, 2), GroveFamily::JohtoPine);
+        assert_eq!(GroveFamily::from_drawing("johto", 2, 4), GroveFamily::JohtoPine);
+    }
+
     #[test]
     fn mature_trees_clear_house_roofs_and_keep_authored_trunk_plots() {
         let house = new_bark_models::model(ModelKind::PlayerHouse);

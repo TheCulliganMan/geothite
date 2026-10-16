@@ -8,7 +8,8 @@ from bovine_sculpt import oval,curved_tube
 from spider_sculpt import dorsal_patch,upper_skin
 from skin_glb import COORDINATES
 SPECIES=('shuckle',);HEIGHT=.91
-RED=(.77,.31,.35);CREAM=(.94,.91,.72);YELLOW=(.97,.81,.29);INK=(.12,.14,.10);DARK=(.20,.14,.12)
+# Local Crystal normal RGB555: shell (21,4,3), soft body (31,22,5).
+RED=(173/255,33/255,24/255);CREAM=(1.,1.,1.);YELLOW=(1.,181/255,41/255);INK=(0.,0.,0.);DARK=INK
 CENTER=(0,.285,0);RADII=(.33,.245,.285)
 # Oriented cube charts share a deterministic square perimeter grid.
 FACES=(((1,0,0),(0,0,-1),(0,1,0)),((-1,0,0),(0,0,1),(0,1,0)),((0,0,1),(1,0,0),(0,1,0)),((0,0,-1),(-1,0,0),(0,1,0)),((0,1,0),(1,0,0),(0,0,-1)),((0,-1,0),(1,0,0),(0,0,1)))
@@ -69,7 +70,7 @@ def collar(face,cx,cy,label):
         a=i;b=(i+1)%n;f.extend(((a,b,b+n,a+n),(a+3*n,b+3*n,b+2*n,a+2*n),(b,a,a+2*n,b+2*n),(a+n,b+n,b+3*n,a+3*n)))
     return crease_normals(part('Rim / curved cream annular collar '+label,CREAM,v,f),40.)
 
-def sculpture(species='shuckle'):
+def sculpture(species='shuckle',normalize=True):
     if species not in SPECIES:raise ValueError('unsupported mold tortoise')
     armor,holes=shell();core=ellipsoid('Interior / recessed dark soft-body core',DARK,CENTER,(.238,.177,.207),32,20);p=[armor,core]
     for face,cx,cy,label in holes:p.append(collar(face,cx,cy,label))
@@ -101,8 +102,9 @@ def sculpture(species='shuckle'):
         for field in ('positions','normals'):q[field]=[-v if i%3!=1 else v for i,v in enumerate(q[field])]
         p.append(q)
     lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
-    for q in p:
-        q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+    if normalize:
+        for q in p:
+            q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

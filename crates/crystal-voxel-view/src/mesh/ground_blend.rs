@@ -15,6 +15,9 @@ struct Edge {
     path_positive: bool,
 }
 impl GroundBlend {
+    pub(super) fn material_at(&self, p: [f32;3], g: &GridGeometry) -> Option<GroundMaterial> {
+        cell_at(g,p[0],p[2]).and_then(|i|self.materials.get(i).copied().flatten())
+    }
     #[cfg(test)]
     pub(super) fn new(materials: &[Option<GroundMaterial>], g: &GridGeometry) -> Self {
         Self::build(materials, None, g)

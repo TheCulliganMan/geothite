@@ -4,6 +4,11 @@ use crate::{VisualActorId, VisualTile, VisualWorldFrame};
 use bevy::prelude::{Handle, IVec2, Image, Resource, UVec2, Vec2};
 use std::sync::Arc;
 
+/// Bounded original-map support sampled once when a walking encounter binds.
+/// Renderer staging stays within this neighborhood and must prove every body
+/// against the actual retained floor; collision approval alone is insufficient.
+pub const WALKING_BATTLE_GROUND_RADIUS: i32 = 5;
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum VisualBattleSourceMovement {
     Normal,

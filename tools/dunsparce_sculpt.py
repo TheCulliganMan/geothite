@@ -9,7 +9,9 @@ from spider_sculpt import upper_skin
 from wing_insect_sculpt import membrane,contour
 from skin_glb import COORDINATES
 SPECIES=('dunsparce',);HEIGHT=.85
-YELLOW=(.95,.85,.40);BLUE=(.35,.65,.69);IVORY=(.97,.97,.93);EYE=(.97,.91,.69);INK=(.22,.28,.26);GROOVE=(.47,.40,.18)
+# Local Crystal normal RGB555: gold (31,24,6), blue (8,15,23).
+# Geometry helpers perform the only sRGB-to-linear conversion.
+YELLOW=(1.,198/255,49/255);BLUE=(66/255,123/255,189/255);IVORY=(1.,1.,1.);EYE=IVORY;INK=(0.,0.,0.);GROOVE=BLUE
 
 def trunk():
     rows=curved_profiles(((-.58,.027,.033,.205),(-.43,.12,.10,.23),(-.22,.19,.15,.25),(0,.24,.18,.26),(.21,.32,.22,.25),(.43,.35,.22,.25),(.61,.27,.17,.25),(.70,.045,.055,.25)),4)
@@ -41,7 +43,7 @@ def roof_band(name,z,width,skin):
     for a,b in zip(rim,rim[1:]+rim[:1]):f.append((b,a,a+count,b+count))
     return crease_normals(part(name,BLUE,v,f),40.)
 
-def sculpture(species='dunsparce'):
+def sculpture(species='dunsparce',normalize=True):
     if species not in SPECIES:raise ValueError('unsupported land snake')
     p=trunk();head=p[0];hs=surface(head);top=upper_skin(head)
     for side in (-1,1):
@@ -56,7 +58,7 @@ def sculpture(species='dunsparce'):
         pts=[]
         for j in range(9):
             t=j/8;xx=side*(.23+.185*t);yy=.365+.16*t;pts.append((xx,yy,ws(yy,xx)+.001))
-        p.append(tube('Wing crease / fitted feather fold '+str(side),(.69,.71,.68),pts,[.0015]*9,8))
+        p.append(tube('Wing crease / fitted feather fold '+str(side),BLUE,pts,[.0015]*9,8))
     for j,(z,w) in enumerate(((-.26,.151),(-.025,.21))):
         p.append(roof_band('Back band / fitted curved blue ribbon '+str(j),z,w,top))
     stem=[(0,.235,-.515),(0,.27,-.627),(0,.385,-.717),(0,.435,-.749)]
@@ -71,8 +73,9 @@ def sculpture(species='dunsparce'):
         points.append(((w+.001)*math.sin(a),y,z+(d+.001)*math.cos(a)))
     p.append(crease_normals(tube('Drill groove / continuous three-turn spiral',GROOVE,points,[.0025*(1-.50*j/144) for j in range(145)],10),35.))
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
-    for q in p:
-        q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+    if normalize:
+        for q in p:
+            q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

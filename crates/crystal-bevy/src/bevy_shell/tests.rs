@@ -23,6 +23,7 @@ include!("tests/fishing_anchor.rs");
 include!("tests/walking_anchor.rs");
 include!("tests/kanto_interior_states.rs");
 include!("tests/surf_anchor.rs");
+include!("tests/walking_encounter_eligibility.rs");
 include!("tests/trainer_anchor.rs");
 include!("tests/scripted_trainer_anchor.rs");
 include!("tests/fishing_presentation.rs");

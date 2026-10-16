@@ -4,17 +4,18 @@ import json,math,unittest
 from pathlib import Path
 from porygon2_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_axolotl_sculpt import ray_intersections
+from sculpt_test_support import ray_intersections
+from porygon2_glb import read_porygon2,geometry_digest
 from bovine_sculpt import reverse_front
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class Porygon2Tests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'porygon2.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_porygon2(ROOT/'porygon2.glb');cls.ps=cls.m['primitives']
  def find(self,prefix):return next(p for p in self.ps if p['part'].startswith(prefix))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'porygon2':self.m})
  def test_finite_unit_normals_follow_winding(self):assert_model_shading(self,{'porygon2':self.m})
  def test_recipe_parity_height_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   self.assertLess(sum(len(p['indices'])//3 for p in self.ps),50000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for prefix,n in (('Body /',1),('Belly /',1),('Bill /',1),('Tail /',1),('Foot /',2),('Eye socket /',2),('Eye white /',2),('Pupil /',2)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n)

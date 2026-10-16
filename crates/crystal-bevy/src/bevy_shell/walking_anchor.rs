@@ -133,9 +133,11 @@ fn bind_visible_walking_encounter(
     let core = IVec2::new(i32::from(to.x), i32::from(to.y));
     let map_size = UVec2::new(u32::from(width), u32::from(height));
     let mut walkable = Vec::new();
-    // Fixed 7x7 budget; never scan or copy a whole map on a render tick.
-    for y in -3..=3 {
-        for x in -3..=3 {
+    // One bounded 11x11 observation at encounter binding, not a whole-map scan
+    // or per-tick query. Large bodies may need nearby room beyond a corridor.
+    let radius = crystal_render_api::WALKING_BATTLE_GROUND_RADIUS;
+    for y in -radius..=radius {
+        for x in -radius..=radius {
             let p = core + IVec2::new(x, y);
             if p.cmplt(IVec2::ZERO).any() || p.cmpge(map_size.as_ivec2()).any() {
                 continue;

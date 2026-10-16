@@ -8,7 +8,8 @@ fn append_cianwood_walls(
     out: &mut Vec<Placement>,
 ) {
     let sprout = matches!(map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F");
-    if !sprout && !matches!(map, "CianwoodGym" | "EcruteakGym") {
+    let tin=super::modeled_dungeons::tin_tower_guardian_map(map);
+    if !sprout && !tin && !matches!(map, "CianwoodGym" | "EcruteakGym" | "BurnedTower1F") {
         return;
     }
     let Some(ground) = ground_sample(cells, map, "tower", crate::tower::TOWER_FLOOR_TILE) else {
@@ -77,6 +78,15 @@ fn append_cianwood_walls(
                     && source.subtile_row as usize==dy
                     && matches!(crate::tower::tower_shape(source),Some(CellShape::FacadeBand{band_count:2,..}))
             }));
+        // A longitudinal strip ends two source rows before the folded
+        // transverse face. Carry its closed timber through that wall course.
+        let north_join = sprout && h == 4 && row + h + 2 <= g.height
+            && (0..2).all(|dy| (0..2).all(|dx| {
+                let j = (row + h + dy) * g.width + column + dx;
+                !claimed[j] && matches!(crate::tower::tower_shape(&cells[j].source),
+                    Some(CellShape::FacadeBand { band_from_top, band_count: 2, .. })
+                        if band_from_top as usize == dy)
+            }));
         let p = Placement {
             kind: ModelKind::WallTraditional,
             column,
@@ -86,12 +96,14 @@ fn append_cianwood_walls(
             ground,
             depth_pixels: if matches!(s.metatile_id, 0x21 | 0x22) {
                 3.0
+            } else if north_join {
+                (h + 2) as f32 * 8.0
             } else if return_join {
                 32.0
             } else {
                 h as f32 * 8.0
             },
-            height_pixels: 16.0,
+            height_pixels: 32.0,
             base_pixels: 0.0,
             footing_pixels: None,
         };
@@ -106,6 +118,58 @@ fn append_cianwood_walls(
 mod cianwood_wall_tests {
     use super::*;
     use std::sync::Arc;
+    #[test]
+    fn sprout_side_strips_reach_cross_wall_from_both_sides() {
+        let g=GridGeometry {width:4,height:8,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        for (block,ox) in [(0x08,0usize),(0x0a,2)] {
+            let tiles=(0..32).map(|i| {
+                let (x,y)=(i%4,i/4);
+                VisualTile {column:x as u32,row:y as u32,texture:Handle::default(),priority:false,animation_frames:None,
+                    source:VisualTileSource {tileset_id:"tower".into(),metatile_id:if y<4 {block}else{5},
+                        subtile_column:x as u8,subtile_row:(y%4)as u8,
+                        tile_index:if y<4 && (ox..ox+2).contains(&x) {[0x41,0x31][x-ox]}
+                            else if (4..6).contains(&y) {[0x11,0x21][y-4]}else{2}}}
+            }).collect::<Vec<_>>();
+            let refs=tiles.iter().collect::<Vec<_>>();let mut out=vec![];let mut claimed=vec![false;32];
+            append_cianwood_walls("SproutTower3F",&refs,&g,&mut claimed,&mut out);
+            assert_eq!(out.len(),1);assert_eq!(out[0].depth_pixels,48.);
+            assert_eq!(claimed.iter().filter(|v|**v).count(),8,"cross wall retains its own source claim");
+            let mut mesh=TerrainMeshData {footing_heights:vec![7.;32],..Default::default()};
+            assert!(append(&mut mesh,"SproutTower3F",&refs,&g,&out[0],&mut vec![false;32],[0,0]));
+            assert_eq!(mesh.footing_heights,vec![7.;32]);
+            assert!((mesh.textured.positions.iter().map(|p|p[2]).fold(0.,f32::max)-48.).abs()<0.001);
+            for j in (4..6).flat_map(|y|(ox..ox+2).map(move |x|y*4+x)) {
+                let mut protected=vec![false;32];protected[j]=true;let mut out=vec![];
+                append_cianwood_walls("SproutTower3F",&refs,&g,&mut protected,&mut out);
+                assert_eq!(out[0].depth_pixels,32.,"custom cross-wall source keeps authority");
+            }
+        }
+    }
+    #[test]
+    fn tin_guardians_keep_wall_backing_without_stealing_statue_cells() {
+        let g=GridGeometry{width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        for block in [0x21,0x22] {
+            let ox=if block==0x21 {0}else{2};
+            let art=[[0x22,0x23],[0x32,0x33],[0x12,0x13],[0x36,0x37]];
+            let tiles:Vec<_>=(0..16).map(|i| {
+                let (x,y)=(i%4,i/4);
+                VisualTile{column:x as u32,row:y as u32,texture:Handle::default(),
+                    priority:false,animation_frames:None,
+                    source:VisualTileSource{tileset_id:"tower".into(),metatile_id:block,
+                        subtile_column:x as u8,subtile_row:y as u8,
+                        tile_index:if (ox..ox+2).contains(&x){art[y][x-ox]}
+                            else if y<2 {[0x11,0x21][y]}else{2}}}
+            }).collect();
+            let refs=tiles.iter().collect::<Vec<_>>();
+            for map in (1..=9).map(|level|format!("TinTower{level}F")).chain(["BurnedTower1F".into()]) {
+                let mut claimed=vec![false;16];let mut out=vec![];
+                append_cianwood_walls(&map,&refs,&g,&mut claimed,&mut out);
+                assert_eq!(out.len(),1);
+                assert!((0..4).all(|y|(ox..ox+2).all(|x|!claimed[y*4+x])));
+                assert_eq!(guardian_wall_bounds(&map,&out[0],&refs,&g,[8.,16.,13.,16.]),[0.,32.,13.,16.]);
+            }
+        }
+    }
     #[test]
     fn southern_returns_reach_the_verified_folded_wall_and_reject_overrides() {
         let g=GridGeometry{width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
@@ -187,7 +251,9 @@ mod cianwood_wall_tests {
                     };
                 }
             }
-            let mut maps = vec!["CianwoodGym", "EcruteakGym"];
+            let mut maps = vec!["CianwoodGym", "EcruteakGym", "BurnedTower1F"];
+            maps.extend(["TinTower1F","TinTower2F","TinTower3F","TinTower4F","TinTower5F",
+                "TinTower6F","TinTower7F","TinTower8F","TinTower9F"]);
             if matches!(block, 0x04 | 0x06 | 0x08 | 0x0a | 0x0c | 0x0e) {
                 maps.extend(["SproutTower1F", "SproutTower2F", "SproutTower3F"]);
             }
@@ -212,11 +278,20 @@ mod cianwood_wall_tests {
                 ));
                 assert_eq!(mesh.footing_heights, vec![0.0; 16]);
                 assert!(!mesh.textured.indices.is_empty());
+                if t[oy*4+ox].source.tile_index==0x41 {
+                    let uv=g.uv(ox,oy);
+                    let gold=[uv.0+(uv.1-uv.0)*1.5/8.,uv.2+(uv.3-uv.2)*3.5/8.];
+                    let glint=[uv.0+(uv.1-uv.0)*0.5/8.,uv.2+(uv.3-uv.2)*2.5/8.];
+                    let object=mesh.textured.positions.iter().zip(&mesh.textured.uvs)
+                        .filter(|(p,_)|p[1]>0.).map(|(_,uv)|*uv).collect::<Vec<_>>();
+                    assert!(object.contains(&gold),"framing stays on the native gold field");
+                    assert!(!object.contains(&glint),"a one-pixel white glint cannot paint the entire frame");
+                }
                 assert!(mesh.solid.positions.iter().chain(&mesh.textured.positions).all(|p| p[0] >= ox as f32 * 8.0
                     && p[0] <= (ox + 2) as f32 * 8.0
                     && p[2] >= oy as f32 * 8.0
                     && p[2] <= (oy + h) as f32 * 8.0));
-                if map.starts_with("SproutTower") {
+                if map.starts_with("SproutTower")||super::super::modeled_dungeons::tin_tower_guardian_map(map)||map=="BurnedTower1F" {
                     for y in oy..oy+h {
                         for x in ox..ox+2 {
                             let i = y*4+x;
@@ -253,7 +328,7 @@ mod cianwood_wall_tests {
                 assert!(bad.is_empty());
                 t[oy * 4 + ox].source.tile_index = original;
                 append_cianwood_walls(
-                    "TinTower1F",
+                    "TinTowerRoof",
                     &t.iter().collect::<Vec<_>>(),
                     &g,
                     &mut vec![false; 16],
@@ -273,6 +348,26 @@ mod cianwood_wall_tests {
             }
         }
     }
+}
+
+// Guardian art occupies the foreground of these wall blocks. Its source
+// ownership stays with the statue; the timber course continues behind it.
+fn guardian_wall_bounds(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry,
+    bounds:[f32;4])->[f32;4] {
+    let s=&cells[p.row*g.width+p.column].source;
+    if !(super::modeled_dungeons::tin_tower_guardian_map(map)||map=="BurnedTower1F")
+        || !matches!(s.metatile_id,0x21|0x22) {return bounds;}
+    let Some(block_x)=p.column.checked_sub(s.subtile_column as usize) else{return bounds;};
+    let ox=if s.metatile_id==0x21 {0}else{2};
+    let art=[[0x22,0x23],[0x32,0x33],[0x12,0x13],[0x36,0x37]];
+    if block_x+4>g.width || p.row+4>g.height || !(0..4).all(|y|(0..2).all(|x|{
+        let t=&cells[(p.row+y)*g.width+block_x+ox+x].source;
+        t.tileset_id==s.tileset_id && t.metatile_id==s.metatile_id
+            && t.subtile_column as usize==ox+x && t.subtile_row as usize==y
+            && t.tile_index==art[y][x]
+    })) {return bounds;}
+    [g.origin_x+block_x as f32*g.tile_width,
+        g.origin_x+(block_x+4)as f32*g.tile_width,bounds[2],bounds[3]]
 }
 
 fn append_side_wall(

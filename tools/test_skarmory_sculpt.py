@@ -3,16 +3,16 @@
 import json,unittest
 from pathlib import Path
 from skarmory_sculpt import sculpture,HEIGHT
-from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_axolotl_sculpt import ray_intersections
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/skarmory.mesh.json'
+from sculpt_test_support import assert_closed_models,assert_model_shading,ray_intersections
+from skarmory_glb import read_skarmory,geometry_digest
+ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/skarmory.glb'
 class SkarmoryTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.model=json.loads(ROOT.read_bytes());cls.ps=cls.model['primitives']
+    def setUpClass(cls):cls.model=read_skarmory(ROOT);cls.ps=cls.model['primitives']
     def test_closed_connected_oriented_parts(self):assert_closed_models(self,{'skarmory':self.model})
     def test_normals_match_stored_triangles(self):assert_model_shading(self,{'skarmory':self.model})
     def test_regeneration_bounds_budget_and_blade_counts(self):
-        self.assertEqual(self.model,sculpture());ps=self.ps
+        self.assertEqual(geometry_digest(self.model),geometry_digest(sculpture()));ps=self.ps
         self.assertEqual(len(ps),len({p['part'] for p in ps}))
         self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
         self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6)

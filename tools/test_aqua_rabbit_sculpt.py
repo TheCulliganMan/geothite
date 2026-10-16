@@ -2,6 +2,7 @@
 """Stored papercraft water-rabbit surfaces, anatomy and actual attachment checks."""
 import copy,json,unittest
 from pathlib import Path
+from water_rabbit_glb import read_water_rabbit,geometry_digest
 from aqua_rabbit_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from chikorita_sculpt import cross,sub,unit,dot
@@ -26,7 +27,7 @@ def hits(ts,x,y):
 
 class AquaRabbitTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={n:json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in ('marill','azumarill')}
+    def setUpClass(cls):cls.models={n:read_water_rabbit(ROOT/(n+'.glb'),n) for n in ('marill','azumarill')}
     def test_closed_anatomy_including_joined_material_regions(self):
         models=copy.deepcopy(self.models)
         for m in models.values():
@@ -46,7 +47,7 @@ class AquaRabbitTests(unittest.TestCase):
             self.assertGreater(blended,100,n)
     def test_recipe_ground_and_scale(self):
         for n,m in self.models.items():
-            self.assertEqual(m,sculpture(n));names=[p['part'] for p in m['primitives']]
+            self.assertEqual(geometry_digest(m),geometry_digest(sculpture(n)));names=[p['part'] for p in m['primitives']]
             self.assertEqual(len(names),len(set(names)))
             self.assertAlmostEqual(max(v for p in m['primitives'] for v in p['positions'][1::3]),HEIGHT,places=6)
             self.assertEqual(min(v for p in m['primitives'] for v in p['positions'][1::3]),0.)

@@ -36,6 +36,8 @@ rails and capped posts. Grass and flower geometry reuse the authored Johto
 foliage vocabulary through exact outdoor source identities. Park long grass
 retains a taller silhouette. Ground samples must match the originating tileset;
 a same-number sample from a neighboring connected map cannot substitute.
+Cuttable saplings have three pointed yellow-green leaf tufts and an exposed
+slender fork, keeping them recognizable beside the darker rounded grove trees.
 
 ## Matching and ownership
 
@@ -83,3 +85,31 @@ These cover mesh integrity/budgets, directional door fitting, source phase,
 unknown/cropped drawings, distinct regional mapping, same-tileset underlays and
 canonical-profile preservation. Whole-world renderer coverage and screenshots
 must be checked separately; mesh validity alone is not gameplay evidence.
+
+## Recessed city windows
+
+`tools/window_recess.py` cuts shallow pockets into the opaque wall before the
+shared authoring helpers install hollow frames and glazing. The pane sits behind
+the facade plane; the opening has real reveal surfaces, and the sill projects
+only slightly. The modern/Kanto kit, common Johto windows, New Bark cottage/lab,
+and player house use this construction. Door seams and occupied plot bounds stay
+fixed. The lighting system derives its area emitters from the final pane geometry.
+
+The editable refinements live in the `city-window-*.blend` sources alongside the
+original world source. New Bark sources retain their existing names. The shared
+builders can regenerate the canonical mesh JSON without a content-pack export.
+Generated GLBs, render captures and build directories remain scratch output.
+
+The five-storey Tin Tower retains its roof courses and uses 12,568 triangles with
+closed window pockets, under a 13,000-triangle family limit; other world exteriors
+retain their 12,000-triangle limit. The detailed Johto service kit allows 12,000
+triangles with its ceramic courses intact. These limits include actual reveal
+geometry rather than replacing it with surface cards.
+
+The mansion's authored mesh remains below 12,000 triangles; the existing runtime
+ceramic refinement brings it to 16,604, under a separate 17,000 runtime limit.
+
+`python3 -m unittest discover -s tools -p test_window_recess.py` traces pane
+samples against the real exported wall triangles. It requires visible openings,
+glass behind the adjacent facade plane, and both front windows on representative
+modern and cottage models.

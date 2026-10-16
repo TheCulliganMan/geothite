@@ -148,7 +148,10 @@ fn enhanced_room_floor_source(map: &str, s: &VisualTileSource) -> Option<Interio
                 0x1f | 0x20 => 0xffcc,
                 _ => return None,
             };
-            (s.tile_index == 0x02 && mask & (1 << phase) != 0).then_some(InteriorFloor::AmberTimber)
+            (s.tile_index == 0x02 && mask & (1 << phase) != 0).then_some(
+                if matches!(map,"SproutTower1F"|"SproutTower2F"|"SproutTower3F") {
+                    InteriorFloor::NativeRoom
+                } else {InteriorFloor::AmberTimber})
         }
         ("VioletGym", "elite_four_room") => {
             let mask: u16 = match s.metatile_id {
@@ -354,9 +357,11 @@ mod enhanced_room_floor_tests {
             "EcruteakGym",
             "PewterGym",
         ] {
+            let style=if map.starts_with("SproutTower") {InteriorFloor::NativeRoom}
+                else {InteriorFloor::AmberTimber};
             assert_eq!(
                 enhanced_room_floor_source(map, &source("tower", 9, 0, 0, 2)),
-                Some(InteriorFloor::AmberTimber)
+                Some(style)
             );
             for b in [1, 7, 0x0b, 0x21, 0x22, 0x37, 0x38, 0x39] {
                 assert_eq!(
@@ -370,7 +375,7 @@ mod enhanced_room_floor_tests {
             );
             assert_eq!(
                 enhanced_room_floor_source(map, &source("tower", 0x10, 0, 0, 2)),
-                Some(InteriorFloor::AmberTimber)
+                Some(style)
             );
             assert_eq!(
                 enhanced_room_floor_source(map, &source("tower", 9, 4, 0, 2)),
@@ -505,6 +510,53 @@ mod enhanced_room_floor_tests {
         }
     }
     #[test]
+    fn external_sprout_board_courses_keep_native_uvs_datum_and_object_ownership() {
+        let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(std::path::PathBuf::from)
+            .unwrap_or_else(||std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../content-packs/text-tui.crystalpack"));
+        if !path.is_file(){return;}
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let pack=loaded.pack();let art=&pack.runtime_files()["data/tilesets/tower_metatiles.bin"];
+        for map in ["SproutTower1F","SproutTower2F","SproutTower3F"] {
+            let data=&pack.data().maps[map];
+            let (w,h)=(data.attributes.width as usize*4,data.attributes.height as usize*4);
+            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let tiles=(0..w*h).map(|i| {
+                let (x,y)=(i%w,i/w);let block=data.blocks[y/4*(w/4)+x/4];
+                VisualTile{column:x as u32,row:y as u32,texture:Default::default(),priority:false,
+                    animation_frames:None,source:source("tower",block,(x%4)as u8,(y%4)as u8,
+                        art[block as usize*16+y%4*4+x%4]as u16)}
+            }).collect::<Vec<_>>();
+            let refs=tiles.iter().collect::<Vec<_>>();
+            let mut excluded=vec![false;w*h];
+            for p in modeled_dungeons::resolve(map,&refs,&g,None) {
+                for i in p.indices(w) {excluded[i]=true;}
+            }
+            let mut mesh=TerrainMeshData{footing_heights:vec![0.;w*h],
+                authored_cells:vec![None;w*h],..Default::default()};
+            let mut count=0;
+            for (i,tile) in tiles.iter().enumerate() {
+                if interior_floor(map,&tile.source)==Some(InteriorFloor::NativeRoom) {
+                    append_top(&mut mesh.textured,g.bounds(i%w,i/w).into(),0.,g.uv(i%w,i/w));
+                    if !excluded[i] {count+=1;}
+                }
+            }
+            assert!(count>100,"{map} must verify its actual walking floor");
+            let before=mesh.textured.indices.len();
+            assert_eq!(finish_surfaces_excluding(&mut mesh,map,&refs,&g,[0,0],&excluded),count);
+            assert_eq!(mesh.textured.indices.len(),before,"no invented cell bevels or board divisions");
+            assert!(mesh.solid.indices.is_empty());
+            assert_eq!(mesh.footing_heights,vec![0.;w*h]);
+            assert_eq!(mesh.authored_cells,vec![None;w*h]);
+            for &i in &mesh.textured.indices {
+                let p=mesh.textured.positions[i as usize];let uv=mesh.textured.uvs[i as usize];
+                assert_eq!(p[1],0.);
+                assert!((uv[0]-p[0]/(w as f32*8.)).abs()<0.0001);
+                assert!((uv[1]-p[2]/(h as f32*8.)).abs()<0.0001);
+            }
+        }
+    }
+    #[test]
     fn finish_preserves_support_and_custom_floor_and_earns_no_object_claims() {
         let g = GridGeometry {
             width: 4,
@@ -542,8 +594,14 @@ mod enhanced_room_floor_tests {
             finish_surfaces_excluding(&mut mesh, "SproutTower1F", &cells, &g, [0, 0], &excluded),
             15
         );
-        assert_eq!(mesh.textured.indices.len(), 6);
-        assert!(mesh.solid.positions.iter().all(|p| p[1] == 3.5));
+        assert_eq!(mesh.textured.indices.len(), 16*6);
+        assert!(mesh.solid.positions.is_empty());
+        for &i in &mesh.textured.indices {
+            let p=mesh.textured.positions[i as usize];let uv=mesh.textured.uvs[i as usize];
+            assert_eq!(p[1],3.5);
+            assert!((uv[0]-p[0]/32.).abs()<0.0001);
+            assert!((uv[1]-p[2]/32.).abs()<0.0001);
+        }
         assert_eq!(mesh.footing_heights, vec![3.5; 16]);
         assert_eq!(mesh.authored_cells, vec![None; 16]);
     }

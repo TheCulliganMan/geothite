@@ -3,17 +3,18 @@
 import json,math,unittest
 from pathlib import Path
 from wobbuffet_sculpt import sculpture,HEIGHT
+from wobbuffet_glb import read_wobbuffet,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class WobbuffetTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'wobbuffet.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):cls.m=read_wobbuffet(ROOT/'wobbuffet.glb');cls.ps=cls.m['primitives']
  def find(self,prefix):return next(p for p in self.ps if p['part'].startswith(prefix))
  def test_closed_oriented_connected_geometry(self):assert_closed_models(self,{'wobbuffet':self.m})
  def test_finite_unit_normals_follow_faces(self):assert_model_shading(self,{'wobbuffet':self.m})
  def test_exact_recipe_height_and_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
   self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),25000)
   self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for prefix,n in (('Arm /',2),('Hand /',2),('Foot /',4),('Eye /',2),('Tail eye /',2),('Tail pupil /',2),('Mouth /',1),('Tongue /',1)):self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n)

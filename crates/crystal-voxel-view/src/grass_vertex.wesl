@@ -7,10 +7,17 @@ import bevy_pbr::render::{
     view_transformations::position_world_to_clip,
 };
 
+// Camera/sky globals occupy binding 11 in forward views, but binding 1
+// in depth/shadow prepass views. Wind must use the same clock in every pass.
+@if(PREPASS_PIPELINE)
+import bevy_render::globals::Globals;
 @if(PREPASS_PIPELINE)
 import bevy_pbr::prepass::io::{Vertex, UncompressedVertex, VertexOutput, decompress_vertex};
 @else
 import bevy_pbr::render::forward_io::{Vertex, UncompressedVertex, VertexOutput, decompress_vertex};
+
+@if(PREPASS_PIPELINE)
+@group(0) @binding(1) var<uniform> prepass_globals: Globals;
 
 struct GrassUniform {
     contact: vec4<f32>, // world X/Z, radius, signed spring amplitude
@@ -36,6 +43,15 @@ fn grass_position(world: vec4<f32>, uv: vec2<f32>, world_scale: f32) -> vec4<f32
             point.z += direction.y * bend;
             point.y -= abs(bend) * 0.18;
         }
+    }
+    if abs(uv.x - 86000.0) < 0.5 {
+        let t = grass.height_scale.y;
+        let phase = world.x * 0.045 + world.z * 0.031;
+        let gust = pow(max(0.0, sin(t * 0.29)), 4.0);
+        let bend = max(uv.y, 0.0) * world_scale
+            * (0.055 * sin(t * 1.7 + phase) + 0.035 * gust);
+        point.x += bend;
+        point.z += bend * 0.45;
     }
     return point;
 }

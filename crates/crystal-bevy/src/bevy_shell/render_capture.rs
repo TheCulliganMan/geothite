@@ -13,6 +13,91 @@ pub(super) struct PairedCaptureHold {
     pub(super) frozen: bool,
 }
 
+#[derive(Resource)]
+struct SendOutFrameHold {
+    target: u8,
+    held: Option<HeldSendOut>,
+}
+
+struct HeldSendOut {
+    animation: VisibleSendOutAnimation,
+    presented: crystal_render_api::VisualBattleFrame,
+    checksum: StateChecksum,
+    lcd_frame: u64,
+}
+
+fn requested_send_out_frame(value: Option<&str>) -> Result<Option<u8>> {
+    match value {
+        None => Ok(None),
+        Some("4") => Ok(Some(4)),
+        Some("5") => Ok(Some(5)),
+        _ => anyhow::bail!("CRYSTAL_RENDER_TEST_HOLD_SEND_OUT_FRAME must be 4 or 5"),
+    }
+}
+
+fn presented_send_out_matches(target: u8, animation: Option<&VisibleSendOutAnimation>,
+    frame: &crystal_render_api::VisualBattleFrame) -> bool {
+    let Some(animation) = animation else { return false; };
+    let side = if animation.side == crate::core::battle::turn::BattleSide::Player {
+        VisualBattleSide::Player
+    } else { VisualBattleSide::Enemy };
+    animation.frame == target && frame.active && !frame.use_source_scene && frame.validate().is_ok()
+        && frame.source.as_ref().is_some_and(|source| source.frame == u16::from(target))
+        && frame.cues.iter().any(|cue| cue.kind == VisualBattleCueKind::SendOut
+            && cue.side == side && cue.move_id.as_ref() == "SEND_OUT")
+}
+
+fn install_send_out_hold(app: &mut App, target: Option<u8>) {
+    if let Some(target) = target {
+        app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            std::time::Duration::from_secs_f64(1.0 / 60.0)))
+            .insert_resource(SendOutFrameHold { target, held: None })
+            .add_systems(PreUpdate, hold_presented_send_out
+                .after(bevy::input::InputSystems).before(super::render_walk::drive));
+    }
+}
+
+fn hold_presented_send_out(
+    mut request: ResMut<SendOutFrameHold>,
+    runtime: Res<BevyRuntimeShell>,
+    frame: Res<crystal_render_api::VisualBattleFrame>,
+    mut walk: Option<ResMut<super::render_walk::RenderWalk>>,
+    mut hold: ResMut<PairedCaptureHold>,
+    mut virtual_time: ResMut<Time<Virtual>>,
+    mut keys: ResMut<ButtonInput<KeyCode>>,
+    mut exit: MessageWriter<AppExit>,
+) {
+    if request.held.is_some() { return; }
+    let Some(walk) = walk.as_mut() else {
+        eprintln!("send-out capture requires --walk and an ordinary input route");
+        exit.write(AppExit::error());
+        return;
+    };
+    if !walk.started() || !presented_send_out_matches(request.target,
+        runtime.visible_send_out_animation.as_ref(), &frame) { return; }
+    let pinned = (|| -> Result<HeldSendOut> {
+        walk.hold_for_source_capture()?;
+        Ok(HeldSendOut {
+            animation: runtime.visible_send_out_animation.as_ref().unwrap().clone(),
+            presented: frame.clone(),
+            checksum: runtime.shell.snapshot()?.state_checksum,
+            lcd_frame: runtime.lcd_animation_frame,
+        })
+    })();
+    match pinned {
+        Ok(pinned) => {
+            request.held = Some(pinned);
+            keys.reset_all();
+            hold.frozen = true;
+            virtual_time.pause();
+        }
+        Err(error) => {
+            eprintln!("send-out capture could not pin its presented state: {error:#}");
+            exit.write(AppExit::error());
+        }
+    }
+}
+
 #[derive(PartialEq)]
 struct PairedState {
     checksum: StateChecksum,
@@ -121,6 +206,20 @@ pub(super) fn install(
         Ok(value) if value == "rgba" => true,
         _ => anyhow::bail!("CRYSTAL_RENDER_TEST_CAPTURE_CHANNELS must be rgb or rgba"),
     };
+    #[cfg(not(target_arch = "wasm32"))]
+    let send_out_frame = match std::env::var("CRYSTAL_RENDER_TEST_HOLD_SEND_OUT_FRAME") {
+        Ok(value) => requested_send_out_frame(Some(&value))?,
+        Err(std::env::VarError::NotPresent) => None,
+        Err(error) => return Err(error).context("read requested send-out frame"),
+    };
+    #[cfg(target_arch = "wasm32")]
+    let send_out_frame = None;
+    if send_out_frame.is_some() {
+        anyhow::ensure!(!live && !same_second_view && second.is_some(),
+            "send-out frame verification requires a one-shot matched 3D/2D capture");
+        anyhow::ensure!(app.world().resource::<BevyRuntimeShell>().quick_save_path.is_none(),
+            "send-out frame verification requires a disposable session without a save path");
+    }
     let state_receipt = path.with_extension("paired-state.txt");
     for path in std::iter::once(&path).chain(second.iter()).chain(std::iter::once(&state_receipt)) {
         if let Some(parent) = path.parent().filter(|p| !p.as_os_str().is_empty()) {
@@ -166,6 +265,7 @@ pub(super) fn install(
     })
     .add_systems(Update, (prepare_image_target, capture).chain()
         .after(crystal_render_api::WorldRenderSet::RenderSync));
+    install_send_out_hold(app, send_out_frame);
     Ok(())
 }
 
@@ -289,6 +389,7 @@ fn capture(
     status: Res<crystal_voxel_view::VoxelViewStatus>,
     battle_status: Res<crystal_voxel_view::BattleViewStatus>,
     battle_frame: Res<crystal_render_api::VisualBattleFrame>,
+    send_out_hold: Option<Res<SendOutFrameHold>>,
     mut settings: ResMut<crystal_voxel_view::VoxelViewSettings>,
     primary_window: Query<Entity, With<PrimaryWindow>>,
     mut commands: Commands,
@@ -298,6 +399,24 @@ fn capture(
         eprintln!("capture rejected after runtime error: {error}");
         exit.write(AppExit::error());
         return;
+    }
+    if let Some(request) = &send_out_hold {
+        if capture.started.elapsed().as_secs() > capture.timeout_seconds {
+            eprintln!("send-out frame {} capture timed out; map: {:?}",
+                request.target, battle_status.map_scenery_fallback_reason);
+            exit.write(AppExit::error());
+            return;
+        }
+        let Some(pinned) = &request.held else { return; };
+        let preserved = runtime.visible_send_out_animation.as_ref() == Some(&pinned.animation)
+            && *battle_frame == pinned.presented
+            && runtime.lcd_animation_frame == pinned.lcd_frame
+            && runtime.shell.snapshot().is_ok_and(|snapshot| snapshot.state_checksum == pinned.checksum);
+        if !preserved {
+            eprintln!("send-out capture rejected: pinned source or authoritative state changed");
+            exit.write(AppExit::error());
+            return;
+        }
     }
     // Check throughout both readbacks, including their completion update.
     // A late mutation must not be accepted just because requests matched.
@@ -402,11 +521,17 @@ fn capture(
                     "size":[actor.size.x,actor.size.y],
                     "facing":actor.facing.map(|f|[f.x,f.y]),
                 })).collect::<Vec<_>>();
-                let receipt = format!(
+                let mut receipt = format!(
                     "state_preserved=true\nchecksum={:?}\nlcd_animation_frame={}\nactors={}\nvirtual_seconds={}\nactor_sources={}\n",
                     state.checksum, state.lcd_frame, state.actors.len(), virtual_time.elapsed_secs_f64(),
                     serde_json::Value::Array(actor_sources),
                 );
+                if let Some(pinned) = send_out_hold.as_ref().and_then(|request| request.held.as_ref()) {
+                    receipt.push_str(&format!(
+                        "source_state_preserved=true\nsource_clock_hz=60\nsend_out_side={:?}\nsend_out_frame={}\nsource_frame={}\n",
+                        pinned.animation.side, pinned.animation.frame,
+                        pinned.presented.source.as_ref().unwrap().frame));
+                }
                 if let Err(error) = std::fs::write(capture.first_path.with_extension("paired-state.txt"), receipt) {
                     eprintln!("paired capture receipt failed: {error}");
                     exit.write(AppExit::error());
@@ -618,6 +743,62 @@ mod image_target_tests {
         camera::RenderTarget,
         window::{WindowRef, WindowResolution},
     };
+
+    #[test]
+    fn source_frame_hold_is_opt_in_and_only_accepts_reveal_ticks() {
+        assert_eq!(requested_send_out_frame(None).unwrap(), None);
+        for tick in ["4", "5"] {
+            assert_eq!(requested_send_out_frame(Some(tick)).unwrap(), tick.parse::<u8>().ok());
+        }
+        for invalid in ["", "0", "3", "6", "40", "4.0"] {
+            assert!(requested_send_out_frame(Some(invalid)).is_err());
+        }
+        let mut app = App::new();
+        install_send_out_hold(&mut app, None);
+        assert!(!app.world().contains_resource::<bevy::time::TimeUpdateStrategy>());
+        assert!(!app.world().contains_resource::<SendOutFrameHold>());
+        install_send_out_hold(&mut app, Some(4));
+        assert!(matches!(app.world().resource::<bevy::time::TimeUpdateStrategy>(),
+            bevy::time::TimeUpdateStrategy::ManualDuration(step)
+            if *step == std::time::Duration::from_secs_f64(1.0 / 60.0)));
+        assert!(app.world().resource::<SendOutFrameHold>().held.is_none());
+    }
+
+    #[test]
+    fn source_frame_hold_requires_the_actual_presented_send_out_without_advancing_it() {
+        let animation = VisibleSendOutAnimation {
+            side: crate::core::battle::turn::BattleSide::Player, frame: 4, shiny: false,
+        };
+        let mut frame = crystal_render_api::VisualBattleFrame {
+            active: true, map_id: Arc::from("Route29"),
+            source: Some(VisualBattleSourceFrame {
+                frame: 4, bgp: 0xe4, battler_bgps: [0xe4; 2],
+                battler_palettes: [[[1.0; 4]; 4]; 2],
+                battler_textures: [Handle::default(), Handle::default()],
+                battler_offsets: [Vec2::ZERO; 2], screen_offset: Vec2::ZERO,
+                line_x_offsets: None, line_y_offsets: None,
+                objects: Vec::new(), battler_rows: [None; 2],
+            }),
+            cues: vec![VisualBattleCue { kind: VisualBattleCueKind::SendOut,
+                side: VisualBattleSide::Player, move_id: Arc::from("SEND_OUT"),
+                element: Arc::from("NORMAL"), progress: 4.0 / 36.0, damaging: false }],
+            ..default()
+        };
+        let before = frame.clone();
+        assert!(presented_send_out_matches(4, Some(&animation), &frame));
+        assert_eq!(frame, before);
+        assert_eq!(animation.frame, 4);
+        assert!(!presented_send_out_matches(5, Some(&animation), &frame));
+        assert!(!presented_send_out_matches(4, None, &frame));
+        frame.source.as_mut().unwrap().frame = 5;
+        assert!(!presented_send_out_matches(4, Some(&animation), &frame));
+        frame.source.as_mut().unwrap().frame = 4;
+        frame.cues[0].side = VisualBattleSide::Enemy;
+        assert!(!presented_send_out_matches(4, Some(&animation), &frame));
+        frame.cues[0].side = VisualBattleSide::Player;
+        frame.use_source_scene = true;
+        assert!(!presented_send_out_matches(4, Some(&animation), &frame));
+    }
 
     #[test]
     fn moving_capture_retains_explicit_image_target_scale_without_window_fallback() {

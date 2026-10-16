@@ -18,6 +18,43 @@ pub(super) fn bedrock_image() -> Image {
     ))
 }
 
+/// Owned CPU results, moved into Assets exactly once. No global decoded copy.
+#[cfg(not(target_arch = "wasm32"))]
+pub(super) struct PreparedImages {
+    pub stone: Option<Image>,
+    pub bedrock: Option<Image>,
+}
+#[cfg(not(target_arch = "wasm32"))]
+impl PreparedImages {
+    pub(super) fn decode() -> Self {
+        let _trace = crate::loading_trace::span("region.prepare_painted_assets", || serde_json::json!({}));
+        Self { stone: Some(image()), bedrock: Some(bedrock_image()) }
+    }
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[derive(Default)]
+pub(super) struct NativePreparation {
+    pub task: Option<bevy::tasks::Task<PreparedImages>>,
+}
+#[cfg(not(target_arch = "wasm32"))]
+impl NativePreparation {
+    pub fn start(&mut self) {
+        if self.task.is_some() || std::env::var("CRYSTAL_PAINTED_IMAGE_WARMUP")
+            .is_ok_and(|value| matches!(value.as_str(), "0" | "off" | "false")) { return; }
+        let Some(pool) = bevy::tasks::AsyncComputeTaskPool::try_get() else { return; };
+        self.task = Some(pool.spawn(async { PreparedImages::decode() }));
+    }
+    pub fn poll(&mut self) -> Option<PreparedImages> {
+        use bevy::tasks::futures_lite::future;
+        let result = self.task.as_mut().and_then(|task|
+            future::block_on(future::poll_once(task)));
+        if result.is_some() { self.task = None; }
+        result
+    }
+    pub fn cancel(&mut self) { self.task = None; }
+}
+
 /// Relative mineral detail for vertex-painted moving cave stones. Ice keeps
 /// the same fractures with neutral pigment beneath its blue frost colors.
 pub(super) fn movable_bedrock_image(frozen: bool) -> Image {
@@ -40,9 +77,13 @@ pub(super) fn movable_bedrock_image(frozen: bool) -> Image {
 }
 
 fn decode(bytes: &[u8]) -> Image {
-    let pixels = image::load_from_memory(bytes)
-        .expect("embedded original sandstone must decode")
-        .into_rgba8();
+    let pixels = {
+        let _trace = crate::loading_trace::span("region.decode_painted_png", || serde_json::json!({"encoded_bytes":bytes.len()}));
+        image::load_from_memory(bytes)
+            .expect("embedded original sandstone must decode")
+            .into_rgba8()
+    };
+    let _trace = crate::loading_trace::span("region.prepare_painted_image", || serde_json::json!({"width":pixels.width(),"height":pixels.height()}));
     let mut image = Image::new(
         Extent3d {
             width: pixels.width(),
@@ -59,12 +100,57 @@ fn decode(bytes: &[u8]) -> Image {
         address_mode_v: ImageAddressMode::Repeat,
         ..ImageSamplerDescriptor::linear()
     });
+    if crate::render_quality::requested().materials() {
+        crate::texture_filtering::mipmap(&mut image, None);
+    }
     image
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn background_painted_images_match_exact_decode_and_transfer_once() {
+        let pool = bevy::tasks::TaskPoolBuilder::new().num_threads(1).build();
+        let mut preparation = NativePreparation { task: Some(pool.spawn(async { PreparedImages::decode() })) };
+        let deadline = std::time::Instant::now()+std::time::Duration::from_secs(10);
+        let mut prepared = loop {
+            if let Some(images) = preparation.poll() { break images; }
+            assert!(std::time::Instant::now()<deadline);
+            std::thread::yield_now();
+        };
+        for (background,direct) in [(prepared.stone.take().unwrap(),image()),
+            (prepared.bedrock.take().unwrap(),bedrock_image())] {
+            assert_eq!(background.data,direct.data);
+            assert_eq!(format!("{:?}",background.texture_descriptor),format!("{:?}",direct.texture_descriptor));
+            assert_eq!(format!("{:?}",background.sampler),format!("{:?}",direct.sampler));
+            assert_eq!(background.asset_usage,direct.asset_usage);
+        }
+        assert!(prepared.stone.is_none() && prepared.bedrock.is_none());
+        assert!(preparation.task.is_none() && preparation.poll().is_none());
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn canceling_painted_preparation_drops_pending_app_owned_work() {
+        use std::sync::{Arc,atomic::{AtomicBool,Ordering}};
+        struct Dropped(Arc<AtomicBool>);
+        impl Drop for Dropped { fn drop(&mut self) { self.0.store(true,Ordering::SeqCst); } }
+        let pool = bevy::tasks::TaskPoolBuilder::new().num_threads(1).build();
+        let dropped = Arc::new(AtomicBool::new(false));
+        let witness = Dropped(dropped.clone());
+        let mut preparation = NativePreparation { task: Some(pool.spawn(async move {
+            let _witness = witness;
+            bevy::tasks::futures_lite::future::pending::<PreparedImages>().await
+        })) };
+        preparation.cancel();
+        let deadline = std::time::Instant::now()+std::time::Duration::from_secs(5);
+        while !dropped.load(Ordering::SeqCst) {
+            assert!(std::time::Instant::now()<deadline);
+            std::thread::yield_now();
+        }
+        assert!(preparation.poll().is_none());
+    }
     #[test]
     fn frozen_moving_stone_detail_is_neutral_opaque_and_varied() {
         let image=movable_bedrock_image(true);

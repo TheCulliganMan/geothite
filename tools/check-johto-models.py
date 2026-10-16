@@ -22,6 +22,50 @@ from skiploom_glb import read_skiploom
 from jumpluff_glb import read_jumpluff
 from aipom_glb import read_aipom
 from sunflower_glb import read_sunkern,read_sunflora
+from bellossom_glb import read_bellossom
+from qwilfish_glb import read_qwilfish
+from wobbuffet_glb import read_wobbuffet
+from dunsparce_glb import read_dunsparce
+from shuckle_glb import read_shuckle
+from gligar_glb import read_gligar
+from yanma_glb import read_yanma
+from murkrow_glb import read_murkrow
+from misdreavus_glb import read_misdreavus
+from bear_glb import read_teddiursa,read_ursaring
+from bulldog_glb import read_snubbull,read_granbull
+from hellhound_glb import read_houndour,read_houndoom
+from jet_fish_glb import read_remoraid,read_octillery
+from fur_pig_glb import read_swinub,read_piloswine
+from sneasel_glb import read_sneasel
+from skarmory_glb import read_skarmory
+from smeargle_glb import read_smeargle
+from moltres_glb import read_moltres
+from zapdos_glb import read_zapdos
+from articuno_glb import read_articuno
+from lugia_glb import read_lugia
+from corsola_glb import read_corsola
+from mantine_glb import read_mantine
+from porygon_glb import read_porygon
+from porygon2_glb import read_porygon2
+from angler_glb import read_chinchou,read_lanturn
+from lava_glb import read_slugma,read_magcargo
+from egg_fairy_glb import read_togepi,read_togetic
+from hitmonlee_glb import read_hitmonlee
+from hitmonchan_glb import read_hitmonchan
+from hitmontop_glb import read_hitmontop
+from tyrogue_glb import read_tyrogue
+from smoochum_glb import read_smoochum
+from elekid_glb import read_elekid
+from magby_glb import read_magby
+from baby_glb import read_pichu,read_cleffa,read_igglybuff
+from electric_sheep_glb import read_mareep,read_flaaffy,read_ampharos
+from psychic_bird_glb import read_natu,read_xatu
+from water_rabbit_glb import read_marill,read_azumarill
+from elephant_glb import read_phanpy,read_donphan
+from girafarig_glb import read_girafarig
+from stantler_glb import read_stantler
+from delibird_glb import read_delibird
+from bovine_glb import read_miltank,read_tauros
 from noctowl_glb import read_noctowl
 from furret_glb import read_furret
 from suicune_glb import read_suicune
@@ -85,6 +129,68 @@ def validate_imported_mesh_reference(path):
         assert len(color) == 4 and all(math.isfinite(v) and 0 <= v <= 1 for v in color), path
 
 weighted_skins = {
+    models / 'battle_species/lugia.glb': (read_lugia, 56),
+    models / 'battle_species/articuno.glb': (read_articuno, 109),
+    models / 'battle_species/zapdos.glb': (read_zapdos, 54),
+    models / 'battle_species/moltres.glb': (read_moltres, 62),
+    models / 'battle_species/corsola.glb': (read_corsola, 37),
+    models / 'battle_species/mantine.glb': (read_mantine, 32),
+    models / 'battle_species/chinchou.glb': (read_chinchou, 21),
+    models / 'battle_species/lanturn.glb': (read_lanturn, 29),
+
+    models / 'battle_species/porygon.glb': (read_porygon, 16),
+    models / 'battle_species/porygon2.glb': (read_porygon2, 17),
+    models / 'battle_species/togepi.glb': (read_togepi, 27),
+    models / 'battle_species/togetic.glb': (read_togetic, 37),
+    models / 'battle_species/remoraid.glb': (read_remoraid, 18),
+    models / 'battle_species/octillery.glb': (read_octillery, 52),
+    models / 'battle_species/swinub.glb': (read_swinub, 22),
+    models / 'battle_species/piloswine.glb': (read_piloswine, 22),
+    models / 'battle_species/sneasel.glb': (read_sneasel, 38),
+    models / 'battle_species/skarmory.glb': (read_skarmory, 42),
+    models / 'battle_species/smeargle.glb': (read_smeargle, 65),
+    models / 'battle_species/slugma.glb': (read_slugma, 12),
+    models / 'battle_species/magcargo.glb': (read_magcargo, 22),
+    models / 'battle_species/hitmonlee.glb': (read_hitmonlee, 33),
+    models / 'battle_species/hitmonchan.glb': (read_hitmonchan, 36),
+    models / 'battle_species/hitmontop.glb': (read_hitmontop, 35),
+    models / 'battle_species/tyrogue.glb': (read_tyrogue, 40),
+    models / 'battle_species/smoochum.glb': (read_smoochum, 40),
+    models / 'battle_species/elekid.glb': (read_elekid, 32),
+    models / 'battle_species/magby.glb': (read_magby, 38),
+    models / 'battle_species/pichu.glb': (read_pichu, 24),
+    models / 'battle_species/cleffa.glb': (read_cleffa, 17),
+    models / 'battle_species/igglybuff.glb': (read_igglybuff, 19),
+
+    models / 'battle_species/mareep.glb': (read_mareep, 26),
+    models / 'battle_species/flaaffy.glb': (read_flaaffy, 33),
+    models / 'battle_species/ampharos.glb': (read_ampharos, 26),
+    models / 'battle_species/natu.glb': (read_natu, 46),
+    models / 'battle_species/xatu.glb': (read_xatu, 49),
+    models / 'battle_species/marill.glb': (read_marill, 19),
+    models / 'battle_species/azumarill.glb': (read_azumarill, 25),
+    models / 'battle_species/phanpy.glb': (read_phanpy, 32),
+    models / 'battle_species/donphan.glb': (read_donphan, 49),
+    models / 'battle_species/girafarig.glb': (read_girafarig, 72),
+    models / 'battle_species/stantler.glb': (read_stantler, 51),
+    models / 'battle_species/delibird.glb': (read_delibird, 28),
+    models / 'battle_species/miltank.glb': (read_miltank, 45),
+    models / 'battle_species/tauros.glb': (read_tauros, 42),
+    models / 'battle_species/houndour.glb': (read_houndour, 44),
+    models / 'battle_species/houndoom.glb': (read_houndoom, 67),
+    models / 'battle_species/snubbull.glb': (read_snubbull, 39),
+    models / 'battle_species/granbull.glb': (read_granbull, 42),
+    models / 'battle_species/teddiursa.glb': (read_teddiursa, 37),
+    models / 'battle_species/ursaring.glb': (read_ursaring, 48),
+    models / 'battle_species/misdreavus.glb': (read_misdreavus, 41),
+    models / 'battle_species/murkrow.glb': (read_murkrow, 62),
+    models / 'battle_species/yanma.glb': (read_yanma, 66),
+    models / 'battle_species/gligar.glb': (read_gligar, 32),
+    models / 'battle_species/shuckle.glb': (read_shuckle, 27),
+    models / 'battle_species/dunsparce.glb': (read_dunsparce, 19),
+    models / 'battle_species/wobbuffet.glb': (read_wobbuffet, 19),
+    models / 'battle_species/qwilfish.glb': (read_qwilfish, 36),
+    models / 'battle_species/bellossom.glb': (read_bellossom, 45),
     models / 'battle_species/sunkern.glb': (read_sunkern, 18),
     models / 'battle_species/sunflora.glb': (read_sunflora, 30),
     models / 'battle_species/aipom.glb': (read_aipom, 50),
@@ -126,7 +232,7 @@ weighted_skins = {
     models / 'battle_species/bulbasaur.glb': (read_bulbasaur, 44),
     models / 'battle_species/pikachu.glb': (read_pikachu, 40),
     models / 'battle_species/snorlax.glb': (read_snorlax, 31),
-    models / 'battle_species/lapras.glb': (read_lapras, 42),
+    models / 'battle_species/lapras.glb': (read_lapras, 45),
     models / 'battle_species/sudowoodo.glb': (read_sudowoodo, 33),
     models / 'battle_species/gyarados.glb': (read_gyarados, 40),
     models / 'battle_species/wooper.glb': (read_wooper, 22),

@@ -14,6 +14,9 @@ use crystal_voxel_view::{audit_cell_coverage_on_map, audit_terrain_mesh_with_ima
 use serde_json::json;
 use std::{collections::BTreeMap, path::PathBuf, sync::Arc};
 
+#[path = "audit_authored_assets/script_variants.rs"]
+mod script_variants;
+
 fn main() -> Result<()> {
     let mut args = std::env::args().skip(1);
     let pack = PathBuf::from(
@@ -186,6 +189,9 @@ fn main() -> Result<()> {
             map_texture: handles[0].clone(),
             tile_size: Vec2::splat(8.0),
             grid_size: UVec2::new(width as u32, height as u32),
+            source_map_size_core_tiles: Some(UVec2::new(width as u32 / 2, height as u32 / 2)),
+            boundary_warps: module.events.warps.iter().map(|warp|
+                bevy::prelude::IVec2::new(i32::from(warp.x), i32::from(warp.y))).collect(),
             viewport_size: Vec2::new(width as f32 * 8.0, height as f32 * 8.0),
             tiles,
             ..Default::default()
@@ -217,6 +223,7 @@ fn main() -> Result<()> {
             "invalid footing for {map_id}"
         );
         let mut jump_edge_samples = 0;
+        let mut rejected_jump_origins = 0;
         // Verify actual production takeoff/landing positions. An inked lip
         // cell can fold onto the face and is not itself the player's takeoff.
         // TryJump reads HOP permissions at the current runtime position.
@@ -228,6 +235,17 @@ fn main() -> Result<()> {
         let collision = runtime.data().tileset_collision(tileset)?;
         for y in 0..height / 2 {
             for x in 0..width / 2 {
+                let origin = TilePosition::new(x as i16, y as i16);
+                // The low-level jump helper accepts a wall quadrant when its
+                // complement carries HOP bits. A real player still needs an
+                // occupiable origin, as required by production session startup.
+                if ![Direction::Down, Direction::Up, Direction::Left, Direction::Right]
+                    .into_iter().any(|direction| crystal_core::world::collision::can_enter_tile(
+                        &authored_map, &collision, origin, direction,
+                        crystal_core::world::collision::PlayerTraversalState::Walk)) {
+                    rejected_jump_origins += 1;
+                    continue;
+                }
                 for direction in [Direction::Down, Direction::Up, Direction::Left, Direction::Right] {
                     let mut player = PlayerMovementState::new(TilePosition::new(x as i16, y as i16));
                     let LedgeJumpOutcome::Jumped { from, to, .. } = attempt_ledge_jump(
@@ -244,15 +262,20 @@ fn main() -> Result<()> {
                     let support = |p: TilePosition| {
                         let foot = Vec2::new(
                             -(width as f32 * 4.) + (f32::from(p.x) * 2. + 1.) * 8.,
-                            height as f32 * 4. - (f32::from(p.y) * 2. + 2.) * 8.,
+                            // Production actor_ground_point samples the tile
+                            // center, one source cell north of the sprite foot.
+                            height as f32 * 4. - (f32::from(p.y) * 2. + 1.) * 8.,
                         );
                         crystal_voxel_view::resolved_footing_height(&frame, foot, &mesh.footing_heights)
                             .expect("in-bounds production footing")
                     };
                     let approach = support(from);
                     let landing = support(to);
-                    if approach <= landing + 0.0001 {
-                        errors.push(json!({"map":map_id,"error":"production jump does not descend",
+                    let changes_level = crystal_voxel_view::jump_changes_floor_level(map_id);
+                    if if changes_level { approach <= landing + 0.0001 }
+                        else { (approach - landing).abs() > 0.0001 } {
+                        errors.push(json!({"map":map_id,"error":if changes_level {
+                            "production jump does not descend" } else { "production barrier hop changes floor level" },
                             "direction":format!("{direction:?}"),
                             "approach_tile":[from.x,from.y],"landing_tile":[to.x,to.y],
                             "approach_height":approach,"landing_height":landing,
@@ -296,10 +319,13 @@ fn main() -> Result<()> {
             started.elapsed().as_secs_f64() * 1000.0
         );
         let environment = runtime.data().map_environment(map_id)?;
+        let city_window_sources = crystal_voxel_view::audit_city_window_sources(map_id, &mesh.solid);
         let landmark = runtime.data().pokegear_landmark_for_map(map_id).ok();
         let mut map_report = json!({ "map": map_id, "environment": environment,
             "region": landmark.map(|landmark| landmark.region.as_str()),
+            "city_window_sources": city_window_sources,
             "landmark": landmark.map(|landmark| landmark.constant.as_str()), "tileset": tileset, "source_cells": frame.tiles.len(), "modeled_cells": modeled, "families": families, "unmodeled_source_classification": remaining, "unmodeled_sources": sources, "solid_vertices": mesh.solid.positions.len(), "solid_triangles": mesh.solid.indices.len()/3, "footing_cells": mesh.footing_heights.len(), "jump_edge_samples":jump_edge_samples });
+        map_report["rejected_unoccupiable_jump_origins"] = json!(rejected_jump_origins);
         if let Some(window) = seam_window {
             map_report["mineral_seams"] = mineral_seams(&mesh.solid, window);
         }
@@ -321,7 +347,7 @@ fn main() -> Result<()> {
             }
         }
     }
-    let report = json!({ "format": "geothite-authored-model-coverage-v1", "map_count": maps.len(), "verified_maps": reports.len(), "totals": totals, "families": all_families, "mesher_errors": errors, "actor_sources": actor_sources, "battle_species": battle_species, "limitations": ["Base maps and optional declared block-substitution combinations; script reachability, actors and decorations need separate runtime review", "Unmodeled source classifications are legacy classifier evidence, not proof of an authored model", "Greyscale source samples validate topology and ownership; actual game palette and lighting need native visual review"], "maps": reports, "script_block_variants":variant_reports });
+    let report = json!({ "format": "geothite-authored-model-coverage-v1", "map_count": maps.len(), "verified_maps": reports.len(), "totals": totals, "families": all_families, "mesher_errors": errors, "actor_sources": actor_sources, "battle_species": battle_species, "limitations": ["Base maps and optional declared block substitutions; coverage is exhaustive only where each variant reports all-declared-alternative-combinations, otherwise declared-script-prefixes. Script reachability, cross-script combinations, actors and decorations need separate runtime review", "Unmodeled source classifications are legacy classifier evidence, not proof of an authored model", "Greyscale source samples validate topology and ownership; actual game palette and lighting need native visual review"], "maps": reports, "script_block_variants":variant_reports });
     if let Some(parent) = output.parent() {
         std::fs::create_dir_all(parent)?;
     }
@@ -448,7 +474,6 @@ fn audit_script_variants(
 ) -> Result<Vec<serde_json::Value>> {
     let width = base.grid_size.x as usize;
     let height = base.grid_size.y as usize;
-    let mut edits = BTreeMap::new();
     for change in changes {
         ensure!(
             change.x % CHANGE_BLOCK_COORD_STRIDE == 0 && change.y % CHANGE_BLOCK_COORD_STRIDE == 0,
@@ -458,30 +483,18 @@ fn audit_script_variants(
             usize::from(change.x / CHANGE_BLOCK_COORD_STRIDE) * 4,
             usize::from(change.y / CHANGE_BLOCK_COORD_STRIDE) * 4,
         );
-        if let Some(old) = edits.insert(xy, change.block_id) {
-            ensure!(
-                old == change.block_id,
-                "conflicting block alternatives on {map} at {xy:?}"
-            );
-        }
         ensure!(
             xy.0 + 4 <= width && xy.1 + 4 <= height,
             "block change outside {map}"
         );
     }
-    ensure!(
-        edits.len() <= 8,
-        "{map} exceeds the bounded 8-edit combination audit"
-    );
-    let edits: Vec<_> = edits.into_iter().collect();
+    let plan = script_variants::plan(changes);
     let mut reports = Vec::new();
-    for mask in 1usize..1usize << edits.len() {
+    for (ordinal, edits) in plan.states.iter().enumerate() {
+        let mask = ordinal + 1;
         let mut frame = base.clone();
         let mut changed = Vec::new();
-        for (bit, &((x, y), block)) in edits.iter().enumerate() {
-            if mask & (1 << bit) == 0 {
-                continue;
-            }
+        for (&(x, y), &block) in edits {
             let drawing = layout
                 .get(usize::from(block) * 16..usize::from(block) * 16 + 16)
                 .with_context(|| format!("missing block {block:02x} on {map}"))?;
@@ -532,14 +545,19 @@ fn audit_script_variants(
             }
         }
         reports.push(
-            json!({"map":map,"block_mask":mask,"edited_cells":changed.len(),
+            json!({"map":map,"variant_index":mask,
+            "block_mask":plan.binary_choices.then_some(mask),
+            "coverage":plan.coverage,"possible_combinations":plan.possible_combinations,
+            "audited_states":plan.states.len(),"block_edits":edits.iter().map(|(&(x,y), &block)|
+                json!({"source_cell":[x,y],"block":block})).collect::<Vec<_>>(),
+            "edited_cells":changed.len(),
             "edited_families":families,"edited_unmodeled_classification":remaining,
             "footing_cells":mesh.footing_heights.len()}),
         );
     }
     eprintln!(
-        "{map}: {} declared block-substitution combinations verified",
-        reports.len()
+        "{map}: {} block-substitution states verified ({}, {} possible combinations)",
+        reports.len(), plan.coverage, plan.possible_combinations
     );
     Ok(reports)
 }

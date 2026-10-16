@@ -1,6 +1,6 @@
 //! Pure camera-rig calculation shared by the Bevy system and tests.
 
-use bevy::prelude::{Quat, Transform, Vec2, Vec3};
+use bevy::prelude::{Quat, Transform, Vec2, Vec3, Vec4};
 
 use crate::{
     EXPECTED_GRID_SIZE,
@@ -35,6 +35,47 @@ impl Default for VoxelCameraControls {
 }
 
 impl VoxelCameraControls {
+    /// Conservative terrain demand for the actual perspective frustum. Slice
+    /// all twelve frustum edges by the landscape's vertical band: corner rays
+    /// alone miss the horizon when an eye-level view straddles it. Keep whole
+    /// metatiles and a preparation margin so small look changes do not rebuild.
+    pub fn terrain_halo_tiles(self, viewport: Vec2, aspect: f32, minimum: i16) -> i16 {
+        let mut pose = self.pose(viewport);
+        let tile = viewport.y / EXPECTED_GRID_SIZE.y as f32;
+        if self.first_person {
+            pose.eye.y += tile * 2.0;
+            pose.target.y += tile * 2.0;
+        }
+        let aspect = if aspect.is_finite() && aspect > 0.0 { aspect } else { 1.0 };
+        let inverse = (bevy::math::proj::perspective(pose.vertical_fov_radians, aspect, pose.near, pose.far)
+            * pose.transform().to_matrix().inverse()).inverse();
+        let corners: [Vec3; 8] = std::array::from_fn(|i| {
+            let p = inverse * Vec4::new(if i & 1 == 0 { -1.0 } else { 1.0 },
+                if i & 2 == 0 { -1.0 } else { 1.0 }, if i & 4 == 0 { 0.0 } else { 1.0 }, 1.0);
+            p.truncate() / p.w
+        });
+        let (bottom, top) = (-tile, tile * 8.0);
+        let mut extent = viewport * 0.5;
+        let mut include = |p: Vec3| {
+            if p.is_finite() { extent = extent.max(Vec2::new(p.x.abs(), p.z.abs())); }
+        };
+        for (i, &a) in corners.iter().enumerate() {
+            if (bottom..=top).contains(&a.y) { include(a); }
+            for bit in [1, 2, 4] {
+                if i & bit != 0 { continue; }
+                let b = corners[i | bit];
+                for y in [bottom, top] {
+                    let t = (y - a.y) / (b.y - a.y);
+                    if (0.0..=1.0).contains(&t) { include(a.lerp(b, t)); }
+                }
+            }
+        }
+        let halo = ((extent - viewport * 0.5) / tile).max_element().ceil() as i32 + 16;
+        // 980 source tiles fit an 8K atlas, including the LCD and scroll margin.
+        let halo = halo.max(i32::from(minimum)).min(480);
+        (((halo + 15) / 16) * 16) as i16
+    }
+
     pub fn new(zoom_step: f32, rotation_step: f32) -> Self {
         Self {
             zoom_step: if zoom_step.is_finite() {
@@ -133,7 +174,7 @@ impl VoxelCameraControls {
             if let Some(player) = frame.actors.iter().find(|a|
                 a.id == crystal_render_api::VisualActorId::Player) {
                 let height=crate::footing::resolved_footing_height(frame,
-                    crate::footing::actor_foot(player), heights).unwrap_or(0.);
+                    crate::footing::actor_ground_point(frame, player), heights).unwrap_or(0.);
                 pose.eye.y += height;
                 pose.target.y += height;
             }
@@ -144,7 +185,7 @@ impl VoxelCameraControls {
                 .iter()
                 .find(|a| a.id == crystal_render_api::VisualActorId::Player)
             {
-                let foot = crate::footing::actor_foot(player);
+                let foot = crate::footing::actor_ground_point(frame, player);
                 let height = crate::footing::resolved_footing_height(frame, foot, heights)
                     .or_else(|| crate::footing::footing_height(frame, foot))
                     .unwrap_or(0.0);
@@ -161,6 +202,34 @@ impl VoxelCameraControls {
         }
         pose
     }
+    /// Conservative landscape-box test in the same world units as the camera.
+    /// Producers use it before loading/meshing a neighbor, including boxes
+    /// crossing the horizon or near plane. Map Y is world Z (+south).
+    pub fn terrain_bounds_visible(self, viewport: Vec2, aspect: f32, min: Vec2, max: Vec2) -> bool {
+        let mut pose = self.pose(viewport);
+        let tile = viewport.y / EXPECTED_GRID_SIZE.y as f32;
+        if self.first_person {
+            pose.eye.y += tile * 2.0;
+            pose.target.y += tile * 2.0;
+        }
+        let matrix = bevy::math::proj::perspective(pose.vertical_fov_radians,
+            aspect.max(0.1), pose.near, pose.far) * pose.transform().to_matrix().inverse();
+        let points: [Vec4; 8] = std::array::from_fn(|i| matrix * Vec3::new(
+            if i & 1 == 0 { min.x } else { max.x },
+            if i & 2 == 0 { -tile } else { tile * 8.0 },
+            if i & 4 == 0 { min.y } else { max.y },
+        ).extend(1.0));
+        // Keep a preparation margin for interpolation and models overhanging
+        // their source cells. Non-finite input stays conservative.
+        !points.iter().all(|p| p.is_finite()) || !(
+            points.iter().all(|p| p.x < -p.w * 1.15)
+            || points.iter().all(|p| p.x > p.w * 1.15)
+            || points.iter().all(|p| p.y < -p.w * 1.15)
+            || points.iter().all(|p| p.y > p.w * 1.15)
+            || points.iter().all(|p| p.z < 0.0)
+            || points.iter().all(|p| p.z > p.w))
+    }
+
     /// Orbit cameras follow the gradual terrain rise; first person follows the
     /// rider's airborne height. Neither reads a screen-space sprite lift.
     pub(crate) fn world_pose_with_traversal(
@@ -174,10 +243,11 @@ impl VoxelCameraControls {
             && let Some((height, arc)) = crate::footing::traversal_height(frame, player, heights, traversal)
             && arc > 0.0
         {
-            let ground = crate::footing::resolved_footing_height(frame, crate::footing::actor_foot(player), heights).unwrap_or(height);
+            let ground = crate::footing::resolved_footing_height(frame, crate::footing::actor_ground_point(frame, player), heights).unwrap_or(height);
             let step = traversal.and_then(|t| t.step).unwrap();
-            let from = crate::footing::resolved_footing_height(frame, step.from, heights).unwrap_or(ground);
-            let to = crate::footing::resolved_footing_height(frame, step.to, heights).unwrap_or(ground);
+            let offset = Vec2::Y * frame.tile_size.y;
+            let from = crate::footing::resolved_footing_height(frame, step.from + offset, heights).unwrap_or(ground);
+            let to = crate::footing::resolved_footing_height(frame, step.to + offset, heights).unwrap_or(ground);
             let camera_height = if self.first_person { height } else { from + (to - from) * step.progress.clamp(0.0, 1.0) };
             pose.eye.y += camera_height - ground;
             pose.target.y += camera_height - ground;
@@ -248,6 +318,39 @@ pub fn card_rotation_toward_camera(pose: VoxelCameraPose) -> Quat {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn landscape_selection_follows_the_camera_and_retains_near_plane_crossings() {
+        let viewport = Vec2::new(640., 576.);
+        let north = VoxelCameraControls::with_pose(1., 0., 0., true);
+        let south = VoxelCameraControls::with_pose(1., 4., 0., true);
+        let low = Vec2::new(-128., -1600.);
+        let high = Vec2::new(128., -1000.);
+        assert!(north.terrain_bounds_visible(viewport, 1.4, low, high));
+        assert!(!south.terrain_bounds_visible(viewport, 1.4, low, high));
+        assert!(north.terrain_bounds_visible(viewport, 1.4, Vec2::splat(-32.), Vec2::splat(32.)),
+            "a box containing the camera cannot disappear at the near plane");
+        let outside = Vec2::new(100_000., -1000.);
+        assert!(!north.terrain_bounds_visible(viewport, 1.4, outside, outside + Vec2::splat(64.)));
+    }
+
+    #[test]
+    fn terrain_demand_follows_perspective_pitch_zoom_and_window_aspect() {
+        let viewport = Vec2::new(640.0, 576.0);
+        let normal = VoxelCameraControls::default();
+        let close = normal.terrain_halo_tiles(viewport, 1.4, 48);
+        let horizon = VoxelCameraControls::with_pose(1.0, 0.0, 0.0, true);
+        let far = horizon.terrain_halo_tiles(viewport, 1.4, 48);
+        assert!(far > close, "eye-level views need real maps beyond the orbit halo: {far} vs {close}");
+        assert!(horizon.terrain_halo_tiles(viewport, 2.4, 48) >= far);
+        let down = VoxelCameraControls::with_pose(1.0, 0.0, 85.0, false);
+        assert!(down.terrain_halo_tiles(viewport, 1.4, 48) <= far);
+        for rotation in 0..8 {
+            let camera = VoxelCameraControls::with_pose(0.0, rotation as f32, 5.0, false);
+            let halo = camera.terrain_halo_tiles(viewport, 1.8, 48);
+            assert!(halo >= 48 && halo <= 480 && halo % 16 == 0);
+        }
+    }
 
     #[test]
     fn select_cycles_close_wide_and_trainer_aligned_first_person() {
@@ -329,7 +432,7 @@ mod tests {
         let heights = vec![7.0; 16];
         let pose = camera.world_pose(&frame, &heights);
         assert_eq!(pose.eye.x, 20.0);
-        assert_eq!(pose.eye.z, -30.0);
+        assert_eq!(pose.eye.z, -38.0);
         assert!(pose.eye.y > 7.0);
         frame.actors[0].center.x += 0.25;
         assert_eq!(camera.world_pose(&frame, &heights).eye.x, 20.25);

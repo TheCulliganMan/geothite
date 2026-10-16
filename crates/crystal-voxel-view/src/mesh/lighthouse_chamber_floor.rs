@@ -228,7 +228,12 @@ mod lighthouse_chamber_floor_tests {
         assert_eq!(finish_surfaces(&mut m, MAP, &refs, &g, [0, 0]), 1);
         assert_eq!(m.footing_heights, footing);
         assert_eq!(m.authored_cells, authored);
-        assert!(m.solid.positions.iter().all(|v| v[1] == 2.5));
+        assert!(m.solid.positions.is_empty(),"native pink/green checks replace the pale slab finish");
+        assert_eq!(m.textured.indices.len(),6);
+        let uv=g.uv(0,0);
+        assert!(m.textured.uvs.iter().all(|v|(near(v[0],uv.0)||near(v[0],uv.1))
+            &&(near(v[1],uv.2)||near(v[1],uv.3))));
+        assert!(m.textured.positions.iter().all(|v|v[1]==2.5));
         assert!(m.solid.cutaway_ranges.is_empty());
         for (sample, label) in [
             (1, "dungeon:lighthouse-keeper-cot"),

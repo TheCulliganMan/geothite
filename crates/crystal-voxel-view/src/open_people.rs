@@ -127,6 +127,7 @@ pub(crate) fn get(name: &str) -> Option<&'static Arc<PersonRig>> {
 
 pub(crate) struct PersonRig {
     refined_body: OnceLock<RefinedBody>,
+    locomotion_bounds: OnceLock<(Vec3, Vec3)>,
     pub nodes: Vec<Transform>,
     pub parents: Vec<Option<usize>>,
     pub skin_nodes: Vec<usize>,
@@ -173,6 +174,9 @@ struct Track {
 }
 
 impl PersonRig {
+    pub(crate) fn locomotion_bounds(&self) -> (Vec3, Vec3) {
+        *self.locomotion_bounds.get_or_init(|| crate::human_locomotion::HumanLocomotion::bounds(self))
+    }
     pub(crate) fn refined_body(&self) -> RefinedBody {
         self.refined_body.get_or_init(|| {
             let _trace = crate::loading_trace::span("actor.refine_shared_body", || serde_json::json!({}));
@@ -517,6 +521,7 @@ impl PersonRig {
         };
         let mut rig = Self {
             refined_body: OnceLock::new(),
+            locomotion_bounds: OnceLock::new(),
             nodes,
             parents,
             skin_nodes,
@@ -771,4 +776,12 @@ mod tests {
             }
         }
     }
+}
+
+/// Bounded immutable catalog diagnostics for the isolated actor CPU worker.
+#[cfg(feature = "actor-worker")]
+pub(crate) fn worker_cache_keys() -> Vec<(&'static str, bool)> {
+    let Some(rigs) = RIGS.get() else { return Vec::new(); };
+    PEOPLE.into_iter().filter_map(|name| rigs.get(name)
+        .map(|rig| (name, rig.refined_body.get().is_some()))).collect()
 }

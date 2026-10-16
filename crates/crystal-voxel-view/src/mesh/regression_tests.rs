@@ -96,6 +96,7 @@ mod tests {
             map_id: Arc::from("UnmodeledTestMap"),
             source_map_size_core_tiles: None,
             jump_ledges: Default::default(),
+            boundary_warps: Default::default(),
             terrain_revision: 1,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
@@ -1721,7 +1722,7 @@ mod tests {
     }
 
     #[test]
-    fn flower_frames_change_only_the_separate_animated_mesh() {
+    fn flower_frames_keep_persistent_native_blooms_and_static_ground() {
         let frame = frame(
             2,
             1,
@@ -1734,7 +1735,9 @@ mod tests {
         let build = |pixel: usize| {
             let mut samples = TerrainImageSamples::default();
             let mut pixels = ground.clone();
-            pixels[pixel * 4..pixel * 4 + 4].copy_from_slice(&[20, 0, 10, 255]);
+            if pixel < 64 {
+                pixels[pixel * 4..pixel * 4 + 4].copy_from_slice(&[20, 0, 10, 255]);
+            }
             samples
                 .pixels
                 .insert(frame.tiles[0].texture.id(), TileImageSample::Rgba(pixels));
@@ -1749,11 +1752,12 @@ mod tests {
         assert_eq!(first.textured, second.textured);
         assert_eq!(first.solid, second.solid);
         assert_eq!(first.footing_heights, second.footing_heights);
-        assert!(!first.animated_textured.positions.is_empty());
-        assert_ne!(
-            first.animated_textured.positions,
-            second.animated_textured.positions
-        );
+        assert!(first.animated_textured.positions.is_empty());
+        assert!(!first.animated_solid.positions.is_empty());
+        assert_eq!(first.animated_solid, second.animated_solid);
+        let blank = build(usize::MAX);
+        assert_eq!(first.animated_solid, blank.animated_solid);
+        assert!(first.animated_solid.uvs.iter().all(|uv| uv[0] == 86000.));
     }
 
     #[test]

@@ -97,8 +97,8 @@ class CyndaquilTests(unittest.TestCase):
         model = self.model.neutral_model()
         self.assertEqual(author.geometry_digest(model), author.REST_DIGEST)
         self.assertEqual(self.model.names, list(author.PARTS))
-        self.assertEqual(sum(len(p) for p in self.model.vertices), 4506)
-        self.assertEqual(sum(len(p['indices'])//3 for p in model['primitives']), 2086)
+        self.assertEqual(sum(len(p) for p in self.model.vertices), 16314)
+        self.assertEqual(sum(len(p['indices'])//3 for p in model['primitives']), 8138)
         source_path = os.environ.get('CYNDAQUIL_MESH_SOURCE')
         if source_path:
             source = json.loads(Path(source_path).read_bytes())
@@ -107,18 +107,18 @@ class CyndaquilTests(unittest.TestCase):
                     self.assertEqual(author.packed(p[key], component), author.packed(q[key], component))
         points = sum(self.model.vertices, [])
         self.assertEqual(min(p[1] for p in points), 0.)
-        self.assertEqual(struct.pack('<f', max(p[1] for p in points)), struct.pack('<f', .91))
+        self.assertEqual(struct.pack('<f', max(p[1] for p in points)), struct.pack('<f', 1.25))
 
     def test_standard_bounded_schema_one_skin_and_identity_root(self):
         doc = self.model.doc
-        self.assertLess(len(self.blob), 300000)
+        self.assertLess(len(self.blob), 800000)
         self.assertEqual(doc['asset']['version'], '2.0')
         self.assertFalse(doc.get('extensionsRequired'))
         self.assertEqual((len(doc['meshes']), len(doc['skins']), len(doc['scenes']), len(doc['buffers'])), (1, 1, 1, 1))
-        self.assertEqual(doc['scenes'][0]['nodes'], [0, 10])
+        self.assertEqual(doc['scenes'][0]['nodes'], [0, len(author.JOINTS)])
         self.assertEqual(doc['nodes'][0]['translation'], [0., 0., 0.])
-        self.assertEqual(doc['nodes'][10], {'name': 'cyndaquil', 'mesh': 0, 'skin': 0})
-        self.assertEqual(doc['skins'][0]['joints'], list(range(10)))
+        self.assertEqual(doc['nodes'][len(author.JOINTS)], {'name': 'cyndaquil', 'mesh': 0, 'skin': 0})
+        self.assertEqual(doc['skins'][0]['joints'], list(range(len(author.JOINTS))))
         self.assertLessEqual(len(author.JOINTS), 32)
         self.assertNotIn('uri', doc['buffers'][0])
         for view in doc['bufferViews']:
@@ -138,14 +138,14 @@ class CyndaquilTests(unittest.TestCase):
             self.assertTrue(all(sum(raw[i:i+4]) == 255 for i in range(0, len(raw), 4)))
             for js, ws in zip(ids, weights):
                 self.assertAlmostEqual(sum(ws), 1.)
-                self.assertTrue(all(type(j) is int and 0 <= j < 10 for j in js))
+                self.assertTrue(all(type(j) is int and 0 <= j < len(author.JOINTS) for j in js))
                 self.assertTrue(all(math.isfinite(w) and 0. <= w <= 1. for w in ws))
                 for j, w in zip(js, ws):
                     if w:
                         used.add(j)
                     else:
                         self.assertEqual(j, 0)
-        self.assertEqual(used, set(range(10)))
+        self.assertEqual(used, set(range(len(author.JOINTS))))
 
     def test_panel_recipe_rebuilds_canonical_geometry_without_an_input_mesh(self):
         from cyndaquil_sculpt import sculpt, BODY_HEIGHT, FULL_HEIGHT
@@ -193,10 +193,10 @@ class CyndaquilTests(unittest.TestCase):
         for clip, (_, duration, samples) in zip(self.model.doc['animations'], author.CLIPS):
             self.assertEqual(clip['extras']['loopSuggested'], clip['name'] == 'cyndaquil.idle')
             self.assertEqual(clip['extras']['cueRelative'], clip['name'] != 'cyndaquil.idle')
-            self.assertEqual(len(clip['channels']), 9)
+            self.assertEqual(len(clip['channels']), len(author.JOINTS)-1)
             for channel in clip['channels']:
                 self.assertEqual(channel['target']['path'], 'rotation')
-                self.assertIn(channel['target']['node'], range(1, 10))
+                self.assertIn(channel['target']['node'], range(1, len(author.JOINTS)))
                 self.assertEqual(clip['samplers'][channel['sampler']]['interpolation'], 'LINEAR')
             for _, times, keys in self.model.clips[clip['name'].split('.')[-1]]:
                 self.assertEqual(len(times), samples)
@@ -208,15 +208,25 @@ class CyndaquilTests(unittest.TestCase):
             for t in (0., 1.):
                 for matrix in self.model.matrices(clip['name'].split('.')[-1], t):
                     self.assertLess(max(abs(a-b) for a, b in zip(matrix, IDENTITY)), 3e-8)
-        for i in range(30):
+        for i in range(len(author.PARTS)):
             for a, b in zip(self.model.vertices[i], self.model.posed(i, self.model.matrices())):
                 self.assertLess(math.dist(a, b), 3e-8)
             for a, b in zip(self.model.normals[i], self.model.posed(i, self.model.matrices(), normal=True)):
                 self.assertLess(math.dist(a, b), 3e-8)
 
-    def test_grounded_rear_paws_and_low_haunches_stay_fixed(self):
+    def test_four_distinct_planted_soles_stay_fixed(self):
+        contacts=[]
+        for name in ('Foreleg / left','Foreleg / right','Hindleg / left','Hindleg / right'):
+            part=self.model.names.index(name)
+            sole=[p for p in self.model.vertices[part] if p[1]==0.]
+            self.assertGreater(len(sole),20)
+            center=[sum(p[a] for p in sole)/len(sole) for a in (0,2)]
+            self.assertLess(center[0],0.) if name.endswith('left') else self.assertGreater(center[0],0.)
+            self.assertGreater(center[1],-.1) if name.startswith('Foreleg') else self.assertLess(center[1],-.27)
+            contacts.append(center)
+        self.assertTrue(all(math.dist(a,b)>.2 for i,a in enumerate(contacts) for b in contacts[i+1:]))
         probes = [(i, j) for i, points in enumerate(self.model.vertices)
-                  for j, p in enumerate(points) if p[1] <= .105]
+                  for j, p in enumerate(points) if p[1] <= .035]
         self.assertGreater(len(probes), 250)
         for i, j in probes:
             self.assertEqual(self.model.ids[i][j], [0, 0, 0, 0])
@@ -242,9 +252,9 @@ class CyndaquilTests(unittest.TestCase):
                 coincident[tuple(p)] = signature
                 if i in (0, 1, 2):
                     self.assertEqual(signature, ((2, 0, 0, 0), (1., 0., 0., 0.)))
-        for joint in (3, 4):
+        for joint, part in ((3,30),(4,31),(10,32),(11,33)):
             self.assertGreater(sum(any(j == joint and w > .75 for j, w in zip(js, ws))
-                                   for js, ws in zip(self.model.ids[9], self.model.weights[9])), 30)
+                                   for js, ws in zip(self.model.ids[part], self.model.weights[part])), 30)
 
     def test_five_folded_quills_keep_all_nested_layers_rigid(self):
         for joint, (name, _) in enumerate(author.QUILLS, 5):

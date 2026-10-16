@@ -43,7 +43,9 @@ def main():
             e = stages[0]
             if name == "submit": submit_spans.append(e)
             cpu[name].append(((e["ts"] - origin) / 1000., e["dur"] / 1000.))
-        for name in ["frame.sync_3d", "frame.modeled_actors", "region.grove_stream", "region.grove_interest"]:
+        nested_names = ["frame.sync_3d", "frame.modeled_actors", "region.grove_stream", "region.grove_interest"]
+        nested_names += [name for name in ["frame.transform_propagation", "frame.visibility_propagation", "frame.check_visibility", "frame.check_light_visibility"] if any(e["name"] == name for e in events)]
+        for name in nested_names:
             nested[name].append(sum(e["dur"] for e in events if e["name"] == name and e["ts"] >= main_frame["ts"] and e["ts"] + e["dur"] <= main_frame["ts"] + main_frame["dur"] + .01) / 1000.)
     cpu_rows = [{"stage": name, "startMs": statistics.mean(a for a, _ in samples),
                  "meanMs": statistics.mean(b for _, b in samples), "samples": 30} for name, samples in cpu.items()]
@@ -113,7 +115,9 @@ def main():
         ax.set_axisbelow(True)
         ax.set_xlim(0, max(r["startMs"] + r["meanMs"] for r in rows) * 1.22 + .5)
     fig.suptitle(f'WebGPU {report.get("scenario", "walking")} waterfall — average of 30 consecutive frames\nEngine frame interval: {statistics.mean(intervals):.2f} ms', fontsize=15)
-    fig.text(.02, .012, "CPU and GPU clocks are separate. Bars show averages, not one real frame. Query/resolve instrumentation is included; no GPU readback during the sample.", fontsize=8)
+    fig.text(.02, .022, "CPU and GPU clocks are separate. Bars show averages, not one real frame. Query/resolve instrumentation is included; no GPU readback during the sample.", fontsize=8)
+    if report.get("graphicsContext"):
+        fig.text(.02, .008, report["graphicsContext"], fontsize=8)
     fig.tight_layout(rect=[0, .04, 1, .92])
     fig.savefig(str(out) + "-30-frame-waterfall.png", dpi=180)
     fig.savefig(str(out) + "-30-frame-waterfall.svg")

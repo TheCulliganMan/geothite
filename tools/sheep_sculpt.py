@@ -6,6 +6,7 @@ from sculpt_geometry import part,loft,curved_profiles,tube,ellipsoid,fitted_patc
 from abra_sculpt import surface
 from spider_sculpt import banded_limb
 from skin_glb import COORDINATES
+from bovine_sculpt import fitted_patch
 
 SPECIES=('mareep','flaaffy');HEIGHT={'mareep':.85,'flaaffy':1.}
 BLUE=(.29,.50,.64);PINK=(.89,.47,.59);CREAM=(.94,.89,.70)
@@ -50,7 +51,7 @@ def curl(name,mesh,x,y,radius):
         xx=x+r*math.cos(a);yy=y+r*math.sin(a);points.append((xx,yy,skin(yy,xx)+.003))
     return tube(name,CURL,points,[.003]*54,8)
 
-def sculpture(species):
+def sculpture(species,normalize=True):
     if species not in SPECIES:raise ValueError('unsupported sheep')
     mid=species=='flaaffy';color=PINK if mid else BLUE;p=[]
     if mid:
@@ -94,6 +95,23 @@ def sculpture(species):
     p.extend(banded_limb('Tail / curved alternating segment',path,(.044,.038,.032,.026,.018),(INK,color if mid else GOLD,INK,color if mid else GOLD)))
     p.append(ellipsoid('Tail / round electric beacon',BEACON if mid else ORANGE,path[-1],(.073,.078,.072),24,16))
     p.append(ellipsoid('Tail / ivory beacon highlight',WHITE,(path[-1][0]-.020,path[-1][1]+.028,path[-1][2]+.058),(.017,.020,.005),12,8))
+    # Local normal palettes: wool/skin and the darker source shade, white/black.
+    from chikorita_sculpt import linear
+    skin=(255,107,156) if mid else (82,41,156)
+    wool=(255,255,255) if mid else (198,165,57)
+    shade=(82,24,115) if mid else skin
+    for q in p:
+        n=q['part']
+        if n.startswith(('Ear /','Tail / curved')):
+            k=int(n.split()[-1]);rgb=(0,0,0) if k%2==0 else skin if mid else (198,165,57)
+        elif n.startswith(('Fleece /','Crown /')):rgb=wool
+        elif n.startswith('Crown groove /'):rgb=shade
+        elif n.startswith(('Eye / outer','Toe /','Tail / ivory')):rgb=(255,255,255)
+        elif n.startswith(('Eye / black','Nostril /')):rgb=(0,0,0)
+        elif n.startswith('Tail / round'):rgb=shade if mid else (198,165,57)
+        else:rgb=skin
+        q['base_color']=linear(tuple(v/255 for v in rgb))
+    if not normalize:return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT[species]/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0.))*scale,7) for i,v in enumerate(q['positions'])]
