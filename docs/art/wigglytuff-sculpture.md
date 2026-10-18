@@ -1,7 +1,7 @@
 # Wigglytuff sculpture
 
 `tools/wigglytuff_sculpt.py` authors the original canonical battle asset
-`models/battle_species/wigglytuff.mesh.json`. The battle-species builder routes
+`models/battle_species/wigglytuff.glb`. The battle-species builder routes
 this identity through the pure geometry recipe. Other fairy assets retain their
 own recipes and geometry. Wigglytuff retains its authoring height of 1.0; the
 runtime retains the normal species scale.
@@ -24,8 +24,9 @@ the official download endpoint returned HTTP 401 without authentication, so its
 source could not be inspected. Other checked listings were
 `331560a5efa646acbaaeeee735590ad3` (a Drawfee variant) and
 `1bb0007369d74d0bad20b56ae377af1c` (Version1); neither metadata established a
-usable original rig. No external geometry was imported. This local asset is
-static and does not claim skeletal animation.
+usable original rig. No external geometry was imported. The initial local asset was
+static; the current canonical asset uses an original standard skin with
+production verification in [the skin guide](fairy-pair-skins.md).
 
 Stored-mesh regressions check closed outward surfaces, normals, exact recipe
 parity, height and grounding, distinct anatomy, actual parent-triangle fitting,
@@ -47,3 +48,16 @@ storage validation passed (569 raw JSON model documents at verification time).
 These catalog checks establish loadability and geometry invariants; they do not
 replace individual visual review of the remaining species. Temporary previews,
 logs, and downloaded reference artwork were removed.
+
+
+## Current canonical skin
+
+The neutral sculpture now has 18,648 vertices and 31,548 triangles, below
+the existing skin limits. Only redundant eye-frame and mouth subdivision was
+reduced; the broad white belly keeps its original four subdivision levels and
+offset. Numerical zero signs are normalized for portable exports. A seven-control
+canonical standard skin adds independent ears, arms and forelock while retaining
+the coherent body/face and planted feet. Production registration and native review are complete for the scoped scenes.
+[The fairy skin guide](fairy-pair-skins.md) records current
+geometry, source/skin checks, hashes and remaining gates; older verification
+figures above describe the initial static review.

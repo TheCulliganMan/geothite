@@ -2,8 +2,10 @@
 
 `tools/raptor_bird_sculpt.py` replaces the shared generic bird construction
 with original individual anatomy. The main builder dispatches its pure recipes
-and rejects the obsolete Pidgeot/Fearow route. Pidgeotto's existing original
-GLB and production wing rig are retained.
+and rejects the obsolete Pidgeot/Fearow route. Pidgeotto now uses its separate [standard skin](pidgeotto-skin.md).
+Pidgeot and Fearow now use the standard production skins documented in the
+[skin guide](raptor-bird-skins.md). The following records their original static
+sculpture baseline.
 
 Pidgeot has a rounded eagle cranium, fitted angular ivory eyes inside hooked
 charcoal cheek stripes, a short pink hooked bill and three long swept gold/red
@@ -37,10 +39,11 @@ and [Fearow metadata](https://api.sketchfab.com/v3/models/152b20b94b104fea9f5976
 advertise downloadable CC BY 4.0 models with zero animation clips. Their download
 endpoints returned HTTP 401 and their descriptions provide no authoring
 provenance. Their geometry and skeletons could not be inspected; zero clips
-alone does not prove absence of a rig. No external model was imported. The new
-original sculptures are static, and the full usable-rig search remains active.
+alone does not prove absence of a rig. No external model was imported. Those
+original sculptures formed the static baseline for the later original rig
+migration; no external model was imported.
 
-Final stored Pidgeot has 105 parts and 70,352 triangles; Fearow has 161 parts
+The original static Pidgeot has 105 parts and 70,352 triangles; Fearow has 161 parts
 and 57,532 triangles. Heights remain the installed originals' 1.35 and 1.23,
 with the lowest point at zero. SHA-256 prefixes are `a53a3cb719856d0f` and
 `a7a23686116eb621` respectively.

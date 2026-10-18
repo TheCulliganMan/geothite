@@ -694,25 +694,7 @@ fn play_pending_audio(
         let audio = if let Some(audio) = runtime_shell.audio_source_cache.get(&cache_key) {
             audio.clone()
         } else {
-            let source = match match command.kind {
-                ModpackAudioKind::Music => runtime_shell
-                    .shell
-                    .runtime()
-                    .audio()
-                    .require_music(&command.audio_id),
-                ModpackAudioKind::SoundEffect => runtime_shell
-                    .shell
-                    .runtime()
-                    .audio()
-                    .require_sound_effect(&command.audio_id),
-                ModpackAudioKind::Cry => runtime_shell
-                    .shell
-                    .runtime()
-                    .audio()
-                    .require_cry(&command.audio_id),
-            }
-            .map(|program| program.source.clone())
-            {
+            let source = match source_for_visible_audio_command(runtime_shell.shell.runtime(),&command) {
                 Ok(source) => source,
                 Err(error) => {
                     clear_failed_music_playback_state(&mut runtime_shell, &command);
@@ -1076,6 +1058,37 @@ fn pcm_samples_for_sound_option(samples: &Arc<[i16]>, sound: Sound) -> Arc<[i16]
             })
             .collect::<Vec<_>>(),
     )
+}
+
+// Derived cries use the source program already embedded in the supplied pack,
+// including when ordinary playback storage is PCM/gzip. No alias catalog or
+// regenerated PCM is required. The decoder verifies its canonical PCM first.
+fn source_for_visible_audio_command(
+    runtime: &CrystalRuntime,
+    command: &BevyAudioCommand,
+) -> Result<AudioProgramSource> {
+    let program=match command.kind {
+        ModpackAudioKind::Music=>runtime.audio().require_music(&command.audio_id)?,
+        ModpackAudioKind::SoundEffect=>runtime.audio().require_sound_effect(&command.audio_id)?,
+        ModpackAudioKind::Cry=>runtime.audio().require_cry(&command.audio_id)?,
+    };
+    if command.cry_parameters.is_none() { return Ok(program.source.clone()); }
+    anyhow::ensure!(command.kind==ModpackAudioKind::Cry,"cry registers require a cry program");
+    let asset=runtime.data().audio.iter().find(|asset|asset.id==command.audio_id)
+        .context("parameterized cry has no pack asset")?;
+    anyhow::ensure!(asset.loop_start_sample.is_none() && asset.loop_end_sample.is_none(),
+        "parameterized cry must not loop");
+    let format=asset.pcm_format.as_ref().context("cry source has no PCM format")?;
+    let frame_size=usize::from(format.channels)*usize::from(format.bits_per_sample/8);
+    let byte_len=asset.pcm_frame_count.context("cry source has no frame count")?
+        .checked_mul(frame_size).context("cry source byte count overflows")?;
+    Ok(AudioProgramSource::Midi {
+        midi_base64:asset.midi_program.as_ref().context("cry source has no bundled program")?.midi_base64.clone(),
+        format:AudioPcmFormat {sample_rate_hz:format.sample_rate_hz,channels:format.channels,
+            bits_per_sample:format.bits_per_sample},
+        byte_len,payload_hash:asset.payload_hash.clone().context("cry source has no PCM hash")?,
+        loop_start_sample:None,loop_end_sample:None,
+    })
 }
 
 #[cfg(not(target_arch = "wasm32"))]

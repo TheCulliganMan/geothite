@@ -6,6 +6,7 @@ import bevy_pbr::render::forward_io::{VertexOutput, FragmentOutput};
 import bevy_pbr::render::pbr_prepass_functions::calculate_motion_vector;
 import bevy_pbr::render::{
     pbr_fragment::pbr_input_from_standard_material,
+    pbr_types::STANDARD_MATERIAL_FLAGS_BASE_COLOR_TEXTURE_BIT,
     pbr_functions::{alpha_discard, main_pass_post_lighting_processing},
     mesh_view_bindings,
     mesh_view_types::DIRECTIONAL_LIGHT_FLAGS_SHADOWS_ENABLED_BIT,
@@ -83,8 +84,8 @@ fn water_impact(uv: vec2<f32>) -> f32 {
 
 // Forward-only aperture; floors, fragments behind the body and shadow
 // geometry remain intact. The capsule follows authoritative player support.
-fn reveal_cave_player(world: vec4<f32>, pixel: vec2<f32>, aperture_only: bool, radius_scale: f32) {
-    if terrain.cave_reveal.x < 0.5 || terrain.cutaway.bottom_radius.w <= 0.0 { return; }
+fn reveal_player(world: vec4<f32>, pixel: vec2<f32>, aperture_only: bool, radius_scale: f32) {
+    if terrain.cutaway.bottom_radius.w <= 0.0 { return; }
     // A faded inner wall must fade down to its base. Keeping its bottom at a
     // player-relative height left opaque stumps that looked like false steps.
     // Authored low surfaces and the outer rock enclosure keep their relief.
@@ -148,6 +149,11 @@ fn reveal_cave_player(world: vec4<f32>, pixel: vec2<f32>, aperture_only: bool, r
     if strength > coverage { discard; }
 }
 
+fn reveal_cave_player(world: vec4<f32>, pixel: vec2<f32>, aperture_only: bool, radius_scale: f32) {
+    if terrain.cave_reveal.x < 0.5 || terrain.cutaway.bottom_radius.w <= 0.0 { return; }
+    reveal_player(world, pixel, aperture_only, radius_scale);
+}
+
 // The palette and baked face shade are the surface color. The sun pass
 // contributes visibility only, without applying another PBR light response.
 fn mineral_hash(p: vec3<f32>) -> f32 {
@@ -205,24 +211,25 @@ struct WaterOptics {
     glint: f32,
 }
 
-fn shore_distance(map: vec2<f32>) -> f32 {
-    if min(terrain.water_bounds.z, terrain.water_bounds.w) < 1.0 { return 8.0; }
+// Contact includes fitted rock feet; broad depth tint follows actual land.
+fn shore_distances(map: vec2<f32>) -> vec2<f32> {
+    if min(terrain.water_bounds.z, terrain.water_bounds.w) < 1.0 { return vec2<f32>(8.0); }
     let uv = (map - terrain.water_bounds.xy) / terrain.water_bounds.zw;
     // Outside a retained grid there is no evidence of a bank. Clamping a dry
     // border texel into unknown water would create a moving foam curtain.
-    if min(uv.x, uv.y) < 0.0 || max(uv.x, uv.y) > 1.0 { return 8.0; }
-    return max((textureSampleLevel(water_shore, water_shore_sampler, uv, 0.0).r
-        * 2.0 - 1.0) * 8.0, 0.0);
+    if min(uv.x, uv.y) < 0.0 || max(uv.x, uv.y) > 1.0 { return vec2<f32>(8.0); }
+    return max((textureSampleLevel(water_shore, water_shore_sampler, uv, 0.0).rg
+        * 2.0 - 1.0) * 8.0, vec2<f32>(0.0));
 }
 
 // Pools, lakes and seas share a level surface. Depth tint and a quiet bank
 // edge describe the water without rolling normals, crests or moving bands.
-fn pool_optics(map: vec2<f32>, distance: f32, deep: vec3<f32>,
+fn pool_optics(map: vec2<f32>, distance: f32, depth_distance: f32, deep: vec3<f32>,
     shallow: vec3<f32>, crest: vec3<f32>, style: vec4<f32>, view: vec3<f32>) -> WaterOptics {
     let cloud = mineral_field(vec3<f32>(map * 0.085, 91.3));
     let normal = vec3<f32>(0.0, 1.0, 0.0);
     let fresnel = 0.025 + 0.975 * pow(1.0 - clamp(dot(normal, view), 0.0, 1.0), 5.0);
-    let shallows = 1.0 - smoothstep(0.15, 3.5, distance);
+    let shallows = 1.0 - smoothstep(0.15, 3.5, depth_distance);
     let basin_tone = (cloud - 0.5) * 0.08;
     var color = mix(deep, shallow,
         clamp(0.16 + shallows * 0.68 + basin_tone, 0.03, 0.96));
@@ -236,11 +243,156 @@ fn pool_optics(map: vec2<f32>, distance: f32, deep: vec3<f32>,
     return result;
 }
 
+// Ripples on proven regional water. Analytic wave slopes drive the
+// reflection normal; the authored plane stays level at banks and under Surf.
+// Unequal directions/wavelengths avoid a scrolling tiled normal map. The
+// caller supplies only motion confirmed by the source animation, so pausing
+// the game holds the water too. Fine waves fade below a pixel at distant zoom.
+fn coastal_wave_packet(p: vec2<f32>, direction: vec2<f32>, frequency: f32,
+    cross_frequency: f32, phase: f32, cross_phase: f32) -> vec3<f32> {
+    let across = vec2<f32>(-direction.y, direction.x);
+    let carrier = dot(p,direction)*frequency + phase;
+    let envelope_phase = dot(p,across)*cross_frequency + cross_phase;
+    let envelope = 0.55 + 0.45*sin(envelope_phase);
+    // Include the envelope's slope as well as the carrier's. A rotating
+    // camera then sees real short wave groups instead of endless mirror bands.
+    let gradient = direction*envelope*cos(carrier)
+        + across*(0.45*cross_frequency/frequency)*cos(envelope_phase)*sin(carrier);
+    return vec3<f32>(envelope*sin(carrier),gradient);
+}
+
+fn rippled_pool_optics(map: vec2<f32>, distance: f32, depth_distance: f32, phase: f32, pixel: f32,
+    deep: vec3<f32>, shallow: vec3<f32>, crest: vec3<f32>,
+    style: vec4<f32>, view: vec3<f32>) -> WaterOptics {
+    let p = map * style.x * 1.75;
+    let d0 = vec2<f32>(0.940, 0.342);
+    let d1 = vec2<f32>(-0.447, 0.894);
+    let d2 = vec2<f32>(0.781, -0.625);
+    let d3 = vec2<f32>(0.242, 0.970);
+    let a = dot(p, d0) * 0.82 - phase * 2.0;
+    let b = dot(p, d1) * 1.37 + phase * 3.0;
+    let c = dot(p, d2) * 3.10 - phase * 5.0;
+    let d = dot(p, d3) * 6.20 + phase * 7.0;
+    let fine = 1.0 - smoothstep(0.3, 1.2, pixel * style.x * 1.75 * 6.20);
+    var long0 = vec3<f32>(sin(a),d0*cos(a));
+    var long1 = vec3<f32>(sin(b),d1*cos(b));
+    var crest_field = sin(c) * 0.65 + sin(b) * 0.35;
+    var slope = long0.yz * 0.56 + long1.yz * 0.28
+        + (d2 * cos(c) * 0.12 + d3 * cos(d) * 0.04) * fine;
+    if style.w > 0.25 {
+        // Outdoor ponds and seas share finite crossing wavelets. Their
+        // separate strength/scale settings retain calm inland water; indoor
+        // pools keep their short waves. Integer phase rates close at TAU.
+        long0 = coastal_wave_packet(p,d0,0.82,0.63,-phase*2.0,phase);
+        long1 = coastal_wave_packet(p,d1,1.37,0.91,phase*3.0,-phase*2.0);
+        let chop0 = coastal_wave_packet(p,d2,3.10,2.30,-phase*5.0,-phase*3.0);
+        let chop1 = coastal_wave_packet(p,d3,6.20,4.10,phase*7.0,phase*2.0);
+        let middle = 1.0 - smoothstep(0.3,1.2,pixel*style.x*1.75*3.10);
+        // Long swells carry volume, but short crossing wavelets carry most
+        // of the visible normal. Otherwise sunlight and reflected clouds
+        // stretch into parallel ribbons across the entire coastal surface.
+        // Each wavelet has its own bounded crosswind envelope and derivative.
+        slope = long0.yz * 0.18 + long1.yz * 0.13
+            + chop0.yz * 0.42 * middle + chop1.yz * 0.27 * fine;
+        // Bright crests need the same finite crossing groups. The former
+        // two nearly parallel carriers painted long silver atlas-like marks
+        // even with all reflection lighting disabled.
+        crest_field = chop0.x * 0.65 + chop1.x * 0.35;
+    }
+    // Capillary motion damps at the actual shore rather than clipping through
+    // piers and rocks. The same retained distance field gives islands shallows.
+    let strength = style.y * mix(0.35, 1.4, smoothstep(0.0, 1.2, distance));
+    let normal = normalize(vec3<f32>(-slope.x * strength, 1.0, -slope.y * strength));
+    let facing = clamp(dot(normal, view), 0.0, 1.0);
+    let fresnel = 0.02 + 0.98 * pow(1.0 - facing, 5.0);
+    let swell = long0.x * 0.55 + long1.x * 0.30 + sin(c) * 0.15 * fine;
+    let shallows = exp(-depth_distance * 0.72);
+    var color = mix(deep, shallow, shallows * 0.85);
+    color *= 0.94 + swell * 0.14;
+    // Short broken silver crests leave broad quiet areas between wavelets.
+    // Periodic drift stays continuous when the retained motion wraps at TAU.
+    let breakup = town_grain(p * 0.72 + vec2<f32>(sin(phase), cos(phase)) * 0.22);
+    let ridge = smoothstep(0.72, 0.97, crest_field);
+    let glint = ridge * smoothstep(0.38, 0.75, breakup) * fine;
+    color = mix(color, crest, glint * style.y * 0.60);
+    // Refracted light makes a soft moving network in the shallow margin.
+    // It disappears into blue absorption offshore instead of covering the
+    // whole sea with a repeated bright pattern.
+    let caustic_field = sin(c + sin(a)) + sin(b + sin(c));
+    var caustic = pow(1.0 - min(abs(caustic_field), 1.0), 5.0) * fine;
+    if style.w > 0.25 && style.w < 0.39 {
+        // A narrow outdoor pond must not magnify two continuous carriers
+        // into silver ribbons. Rotated, gently warped contours form a soft
+        // broken light network; indoor pools retain their existing caustics.
+        let q=vec2<f32>(p.x*0.82-p.y*0.57,p.x*0.57+p.y*0.82)*2.4
+            +vec2<f32>(sin(phase),cos(phase))*0.24
+            +vec2<f32>(breakup-0.5,long0.x)*0.24;
+        let contour=abs(town_grain(q)-0.5)*5.0;
+        caustic=pow(1.0-min(contour,1.0),6.0)*fine*0.35;
+    }
+    // Open coastal water has no authored visible bed to receive pool-floor
+    // caustics. Pools and sheltered water retain their existing treatment.
+    color += shallow * caustic * shallows * select(0.24, 0.0, style.w > 0.39);
+    // One feathered, broken wash follows banks; no repeated contour bands or
+    // foam at the unknown edge of a streamed region. Live phase drives its lap.
+    // A small sea-rock foot carries a thin broken wash, not the broad bright
+    // beach margin of a real bank. Dense native rows must not merge into a
+    // lattice of pale square islands beneath the unchanged rocks.
+    let rock_contact = smoothstep(0.05, 0.75, depth_distance - distance);
+    let wash_width = mix(0.16, 0.06, rock_contact)
+        + mix(0.10, 0.03, rock_contact) * sin(phase * 2.0 + breakup * 5.0);
+    let wash = (1.0 - smoothstep(wash_width, wash_width + mix(0.22, 0.10, rock_contact), distance))
+        * smoothstep(0.20, 0.64, breakup);
+    color = mix(color, crest, wash * style.z * 0.65 * mix(1.0, 0.45, rock_contact));
+    var result: WaterOptics;
+    result.color = color;
+    result.normal = normal;
+    result.fresnel = fresnel;
+    result.glint = glint;
+    return result;
+}
+
 @fragment
-fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> FragmentOutput {
+fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> FragmentOutput {
+    var in=raw;
+    var source_atlas=false;
+    var source_mineral=false;
+    var source_concrete=false;
+@if(VERTEX_UVS_A) {
+    source_concrete=in.uv.x>=-7.0 && in.uv.x<=-6.0 && in.uv.y>=0.0 && in.uv.y<=1.0;
+    source_mineral=in.uv.x>=-5.0 && in.uv.x<=-4.0 && in.uv.y>=0.0 && in.uv.y<=1.0;
+    source_atlas=(in.uv.x>=-3.0 && in.uv.x<=-2.0 && in.uv.y>=0.0 && in.uv.y<=1.0) || source_mineral || source_concrete;
+    if source_atlas {in.uv.x=select(select(-2.0,-4.0,source_mineral),-6.0,source_concrete)-in.uv.x;}
+}
+    // Decode before the standard atlas sample and every mask/prepass path.
     var surface = pbr_input_from_standard_material(in, is_front);
+    source_atlas=source_atlas && (surface.material.flags & STANDARD_MATERIAL_FLAGS_BASE_COLOR_TEXTURE_BIT)!=0u;
+    source_mineral=source_mineral && source_atlas;
+    if source_mineral {
+        let native=surface.material.base_color.rgb;
+        let value=(dot(native,vec3<f32>(0.2126,0.7152,0.0722))*0.58
+            +max(max(native.r,native.g),native.b)*0.42)*0.68;
+        let mineral=vec3<f32>(0.90,0.96,1.0)*value;
+        surface.material.base_color=vec4<f32>(mix(native,mineral,0.90),surface.material.base_color.a);
+    }
     let world_dx = dpdx(surface.world_position.xyz);
     let world_dy = dpdy(surface.world_position.xyz);
+    source_concrete=source_concrete && source_atlas;
+    if source_concrete {
+        let p=(surface.world_position.xz+terrain.water_enabled.zw)
+            /max(terrain.water_enabled.y,0.001);
+        let pixel=max(length(world_dx.xz),length(world_dy.xz))
+            /max(terrain.water_enabled.y,0.001);
+        let fine=1.0-smoothstep(0.5,1.5,pixel*42.0);
+        let grain=(town_grain(p*42.0)-0.5)*0.13*fine;
+        let weather=(town_grain(p*0.85)-0.5)*0.065;
+        let slab=(town_grain(floor(p*0.5)+vec2<f32>(17.0,31.0))-0.5)*0.08;
+        let native=surface.material.base_color.rgb;
+        let value=dot(native,vec3<f32>(0.2126,0.7152,0.0722));
+        let concrete=mix(native,vec3<f32>(value),0.65);
+        let pigment=vec3<f32>(0.66,0.65,0.63)*(1.0+grain+weather+slab);
+        surface.material.base_color=vec4<f32>(concrete*pigment,surface.material.base_color.a);
+    }
 @if(VERTEX_UVS_A)
     let uv_dx = dpdx(in.uv);
 @if(VERTEX_UVS_A)
@@ -248,13 +400,19 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
     var water_normal = surface.world_normal;
     // Fresnel, source crest, exposed sky strength and active optical surface.
     var water_reflection = vec4<f32>(0.0);
+    var wind_water = false;
     var enclosing_wall = false;
     var frozen_platform = false;
     var cave_portal = false;
-    var source_painted = false;
+    var source_painted = source_atlas;
+    var source_paving = false;
+    var source_road = false;
+    var source_fabric = false;
     var town_source_paint = false;
     var town_ceramic = false;
     var town_glass = false;
+    var source_glass = false;
+    var luminous_glass = false;
     var city_source_window = false;
     var town_timber = false;
     var town_paint_kind = -1.0;
@@ -263,17 +421,77 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
     var source_forest_floor = false;
     var woodland_floor_light = vec3<f32>(1.0);
 @if(VERTEX_UVS_A) {
-    let town_kind=round((in.uv.y-1024.0)/32.0);
-    let town_v=in.uv.y-(1024.0+town_kind*32.0);
-    town_source_paint=town_kind>=0.0 && town_kind<=3.0 && abs(in.uv.x)<16.0 && abs(town_v)<8.0;
+    var town_kind=round((in.uv.y-1024.0)/32.0);
+    var town_v=in.uv.y-(1024.0+town_kind*32.0);
+    let town_slate=abs(in.uv.x)<16.0 && abs(in.uv.y-1328.0)<8.0;
+    if town_slate {
+        town_kind=4.0;
+        town_v=in.uv.y-1328.0;
+    }
+    town_source_paint=town_kind>=0.0 && (town_kind<=3.0 || town_slate)
+        && abs(in.uv.x)<16.0 && abs(town_v)<8.0;
     town_ceramic=town_source_paint && town_kind==0.0;
     if town_source_paint { town_paint_kind = town_kind; }
     pane=vec2<f32>(in.uv.x,in.uv.y-1152.0);
     town_glass=all(pane>=vec2<f32>(0.0)) && all(pane<=vec2<f32>(1.0));
+    luminous_glass=town_glass;
+    var source_pane=vec2<f32>(in.uv.x,in.uv.y-1216.0);
+    let source_lamp=source_pane.y>=2.0 && source_pane.y<=3.0;
+    source_pane.y-=select(0.0,2.0,source_lamp);
+    source_glass=all(source_pane>=vec2<f32>(0.0)) && all(source_pane<=vec2<f32>(1.0));
+    if source_glass {pane=source_pane; luminous_glass=source_lamp;}
+    town_glass=town_glass || source_glass;
     let timber=vec2<f32>(in.uv.x,in.uv.y-1184.0);
     town_timber=all(timber>=vec2<f32>(0.0)) && all(timber<vec2<f32>(16.0));
     city_source_window = in.uv.y >= 1280.0 && in.uv.y <= 1280.25;
-    source_painted = city_source_window || abs(in.uv.x - 85000.0) < 0.5 || town_source_paint || town_glass || town_timber;
+    source_road=in.uv.x>=79500.0 && in.uv.x<81500.0
+        && in.uv.y>=-5000.0 && in.uv.y< -2000.0;
+    source_paving=(in.uv.x>=82500.0 && in.uv.x<84000.0
+        && in.uv.y>=-5000.0 && in.uv.y< -2000.0) || source_road;
+    source_fabric = in.uv.x >= 82000.0 && in.uv.x < 82100.0
+        && in.uv.y >= 3500.0 && in.uv.y < 4000.0;
+    source_painted = source_painted || (abs(in.uv.x - 86100.0) < 0.5 && abs(in.uv.y - 85000.0) < 0.5) || source_fabric || source_paving || city_source_window || abs(in.uv.x - 85000.0) < 0.5 || abs(in.uv.x - 86200.0) < 0.5 || town_source_paint || town_glass || town_timber;
+    if abs(in.uv.x - 86100.0) < 0.5 && abs(in.uv.y - 85000.0) < 0.5 {
+        // The existing rooted sea-stone domain retains its native pigment.
+        // Continuous world coordinates weld grain across the sculpt's paint
+        // seams; fine pores fade before they can shimmer at a distance.
+        let rock=vec3<f32>(surface.world_position.x+terrain.water_enabled.z,
+            surface.world_position.y,surface.world_position.z+terrain.water_enabled.w)
+            /max(terrain.water_enabled.y,0.001);
+        let pixel=max(length(world_dx),length(world_dy))/max(terrain.water_enabled.y,0.001);
+        let detail=1.0-smoothstep(0.35,1.0,pixel*28.0);
+        let broad=mineral_field(rock*2.6)-0.5;
+        let pores=mineral_field(rock*28.0)-0.5;
+        let pigment=1.0+broad*0.22+pores*0.22*detail;
+        surface.material.base_color=vec4<f32>(surface.material.base_color.rgb*pigment,
+            surface.material.base_color.a);
+    }
+    if source_paving {
+        let p=vec2<f32>(in.uv.x-select(83000.0,80000.0,source_road),-3000.0-in.uv.y);
+        let footprint=max(fwidth(in.uv.x),fwidth(in.uv.y));
+        let detail=1.0-smoothstep(0.6,1.5,footprint*36.0);
+        let broad=town_grain(p*2.2)-0.5;
+        let fine=town_grain(p*36.0)-0.5;
+        var pigment=1.0+broad*0.06+fine*0.12*detail;
+        if source_road {
+            // Authored blank pavement stays seamless. Mineral aggregate and
+            // broad wear read at the normal camera distance without a fake bond.
+            let rotated=vec2<f32>(p.x*0.8-p.y*0.6,p.x*0.6+p.y*0.8);
+            let wear=town_grain(rotated*0.55)-0.5;
+            let aggregate=town_grain(rotated*8.0)-0.5;
+            let aggregate_detail=1.0-smoothstep(0.5,1.5,footprint*8.0);
+            let stone_dx=vec2<f32>(uv_dx.x*0.8+uv_dx.y*0.6,uv_dx.x*0.6-uv_dx.y*0.8)*1.25;
+            let stone_dy=vec2<f32>(uv_dy.x*0.8+uv_dy.y*0.6,uv_dy.x*0.6-uv_dy.y*0.8)*1.25;
+            let stone=sample_detail(painted_bedrock,painted_bedrock_sampler,
+                rotated*1.25,stone_dx,stone_dy).rgb;
+            let mineral=clamp(dot(stone/vec3<f32>(0.25,0.21,0.16),
+                vec3<f32>(0.2126,0.7152,0.0722)),0.65,1.35);
+            pigment=(1.0+wear*0.08+broad*0.04+aggregate*0.06*aggregate_detail
+                +fine*0.04*detail)*mix(1.0,mineral,0.30);
+        }
+        surface.material.base_color=vec4<f32>(surface.material.base_color.rgb*pigment,
+            surface.material.base_color.a);
+    }
     let timber_footprint=max(fwidth(in.uv.x)*36.0,fwidth(in.uv.y)*0.8);
     if town_timber {
         // Grain follows the member's long axis in authored scene coordinates.
@@ -293,12 +511,18 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
         if town_kind==1.0 {pigment=1.0+broad*0.035+fine*0.06*detail;}
         if town_kind==2.0 {pigment=1.0+broad*0.035+fine*0.08*detail;}
         if town_kind==3.0 {pigment=1.0+broad*0.02+fine*0.035*detail;}
+        if town_kind==4.0 {
+            let cleft=town_grain(p*vec2<f32>(5.5,1.1))-0.5;
+            pigment=1.0+broad*0.10+cleft*0.10+fine*0.16*detail;
+        }
         surface.material.base_color=vec4<f32>(surface.material.base_color.rgb*pigment,
             surface.material.base_color.a);
     }
     source_forest_floor = in.uv.x > 75000.0 && in.uv.x < 79000.0
         && round(-in.uv.y / 10000.0) == 7.0;
-    source_painted = source_painted || source_forest_floor;
+    let source_planting = in.uv.x >= 78000.0 && in.uv.x < 79000.0
+        && round(-in.uv.y / 10000.0) == 8.0;
+    source_painted = source_painted || source_forest_floor || source_planting;
     if in.uv.x > 90000.0 {
         let kind = round(in.uv.y / 100000.0);
         enclosing_wall = kind == 2.0 || kind == 3.0 || kind == 10.0 || kind == 18.0;
@@ -333,6 +557,16 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
     // the source floor, and the original shadow geometry.
     if cave_portal && !below_support {
         reveal_cave_player(surface.world_position, in.position.xy, true, 1.0);
+    }
+}
+@if(VERTEX_UVS_A) {
+    // Native outdoor canyon stone can cover the trainer in a narrow pass.
+    // Open only the projected body, preserving the ridge outside that aperture
+    // and every surface at or below the authoritative walking support.
+    let outdoor_canyon = in.uv.x < -9000.0 && in.uv.y < -30000.0;
+    if outdoor_canyon && terrain.cave_reveal.z > 0.5
+        && surface.world_position.y > terrain.cutaway.bottom_radius.y + 0.02 {
+        reveal_player(surface.world_position, in.position.xy, true, 1.5);
     }
 }
     // A flat transparent shadow can disappear beneath the retained terrain.
@@ -394,9 +628,24 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
     // the original cutout and every leaf, without changing the shadow pass.
     // Positive W retains a source alpha cutoff; negative W enables coverage
     // for solid palette needles without inventing an alpha cutout.
-    let masked_cutaway = terrain.cutaway.fade.w != 0.0 && terrain.cutaway.fade.x > 0.0;
+    var masked_cutaway = terrain.cutaway.fade.w != 0.0 && terrain.cutaway.fade.x > 0.0;
+@if(VOXEL_SMOOTH_DEPTH_FADE) {
+    // Native alpha cutouts still reject their transparent texels above, but
+    // must not turn a smooth linked caption back into whole-object stipple.
+    masked_cutaway = false;
+    // Only authored outdoor building fades carry a player capsule. Retain
+    // their smooth ghost outside it, with the same clear body aperture as
+    // the coverage path. Other layered alpha keeps a zero capsule radius.
+    if terrain.cutaway.fade.x > 0.0 {
+        reveal_player(surface.world_position, in.position.xy, true, 2.0);
+    }
+}
 @if(VOXEL_COVERAGE_FADE) {
     if masked_cutaway {
+        // Building reveal keeps a faint complete silhouette, but its retained
+        // pixels must not stipple the trainer. Only building groups supply a
+        // player capsule here; foliage and room fades retain their policy.
+        reveal_player(surface.world_position, in.position.xy, true, 2.0);
         let coverage = fract(52.9829189 * fract(dot(floor(in.position.xy), vec2<f32>(0.06711056, 0.00583715))));
         if coverage < terrain.cutaway.fade.x { discard; }
     }
@@ -449,7 +698,7 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
             woodland_floor_light = mix(vec3<f32>(0.78, 0.88, 0.90),
                 vec3<f32>(1.08, 1.03, 0.92), smoothstep(0.85, 1.30, tone));
             }
-        } else if role == 6.0 {
+        } else if role == 6.0 || role == 11.0 {
             // Packed dusty ground has darker, warmer worn patches, rather
             // than the former uniformly pale slab between scattered specks.
             craft = mix(vec3<f32>(0.85, 0.81, 0.74), vec3<f32>(1.07, 1.05, 0.99),
@@ -459,17 +708,43 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
         }
         surface.material.base_color = vec4<f32>(surface.material.base_color.rgb * craft,
             surface.material.base_color.a);
+        if role == 10.0 || role == 11.0 {
+            // These roles belong solely to authenticated shoreline caps.
+            // Terrace fitting can expose a cap as a steep face: use mineral
+            // paint there, while retaining the original gentle-bank finish.
+            let exposed = 1.0-smoothstep(0.60,0.84,abs(surface.world_normal.y));
+            let rock = vec3<f32>(map.x*8.0,surface.world_position.y,map.y*8.0);
+            let rock_dx = vec3<f32>(uv_dx.x*8.0,world_dx.y,uv_dx.y*8.0);
+            let rock_dy = vec3<f32>(uv_dy.x*8.0,world_dy.y,uv_dy.y*8.0);
+            let raw_weights = pow(abs(surface.world_normal),vec3<f32>(2.0));
+            let weights = raw_weights/max(dot(raw_weights,vec3<f32>(1.0)),0.0001);
+            let stone_x = sample_detail(painted_stone,painted_stone_sampler,
+                rock.zy/128.0,rock_dx.zy/128.0,rock_dy.zy/128.0).rgb;
+            let stone_y = sample_detail(painted_stone,painted_stone_sampler,
+                rock.xz/128.0,rock_dx.xz/128.0,rock_dy.xz/128.0).rgb;
+            let stone_z = sample_detail(painted_stone,painted_stone_sampler,
+                rock.xy/128.0,rock_dx.xy/128.0,rock_dy.xy/128.0).rgb;
+            let stone = stone_x*weights.x+stone_y*weights.y+stone_z*weights.z;
+            // Use the stone's relief without transferring its ochre palette
+            // into every coast. A restrained earth-brown base joins bare rock.
+            let stone_tone = dot(stone,vec3<f32>(0.2126,0.7152,0.0722))/0.2583;
+            let mineral = vec3<f32>(0.33,0.26,0.18)*mix(1.0,stone_tone,0.55);
+            surface.material.base_color = vec4<f32>(mix(surface.material.base_color.rgb,
+                mineral,exposed),surface.material.base_color.a);
+        }
     }
-    // Reserved source-guarded indoor finishes, separate from atlas UVs,
+    // Reserved source-guarded room finishes and live entry cloth, separate from atlas UVs,
     // live water, fountain threads and the rock material coordinate ranges.
     let room_paint = in.uv.x >= 80000.0 && in.uv.x < 81000.0
         && in.uv.y >= 1000.0 && in.uv.y < 3000.0;
     let room_prop = in.uv.x >= 82000.0 && in.uv.x < 82100.0
-        && in.uv.y >= 1000.0 && in.uv.y < 3000.0;
+        && ((in.uv.y >= 1000.0 && in.uv.y < 3000.0) || source_fabric);
     if room_prop {
         let fabric = in.uv.y >= 2500.0;
         let enamel = in.uv.y >= 2000.0 && !fabric;
-        let origin = select(select(1000.0,2000.0,enamel),2500.0,fabric);
+        let side_mat = source_fabric && in.uv.y >= 3700.0;
+        let fabric_origin = select(3500.0,3700.0,side_mat);
+        let origin = select(select(select(1000.0,2000.0,enamel),2500.0,fabric),fabric_origin,source_fabric);
         let map = in.uv - vec2<f32>(82000.0, origin);
         let height = surface.world_position.y;
         let cloud = mineral_field(vec3<f32>(map.x * 0.24,height * 0.15,map.y * 0.24));
@@ -480,6 +755,27 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
             let warp = pow(0.5 + 0.5*sin(phase.x),6.0)*resolved.x;
             let weft = pow(0.5 + 0.5*sin(phase.y),6.0)*resolved.y;
             pigment = 1.02 - (warp + weft) * 0.085;
+            if source_fabric {
+                // Broad diagonal twill remains legible when individual
+                // threads fall below a pixel. All cells share mat-local
+                // coordinates, so neither weave nor binding repeats at seams.
+                let diagonal=vec2<f32>(map.x+map.y,map.x-map.y)*1.25;
+                let resolved_twill=vec2<f32>(1.0)-smoothstep(vec2<f32>(0.5),
+                    vec2<f32>(2.0),fwidth(diagonal));
+                let twill=sin(diagonal.x)*sin(diagonal.y)*resolved_twill.x*resolved_twill.y;
+                pigment=0.92+twill*0.16-(warp+weft)*0.065;
+                let extent=select(vec2<f32>(32.0,16.0),vec2<f32>(16.0,32.0),side_mat);
+                let nearest=min(map,extent-map);
+                let edge=min(nearest.x,nearest.y);
+                let binding=1.0-smoothstep(0.45,0.9,edge);
+                pigment*=1.0-binding*0.30;
+                let along=select(map.x,map.y,nearest.x<nearest.y);
+                let stitch_phase=along*5.0;
+                let stitch=pow(0.5+0.5*sin(stitch_phase),5.0)
+                    *(1.0-smoothstep(0.5,2.0,fwidth(stitch_phase)));
+                let seam=1.0-smoothstep(0.08,0.20,abs(edge-0.38));
+                pigment+=stitch*seam*0.22;
+            }
         } else if !enamel {
             let phase = (map.x + map.y) * 1.6 + cloud * 1.4;
             let resolved = 1.0 - smoothstep(0.4,2.5,fwidth(phase));
@@ -523,7 +819,7 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
     // depth tint stays registered across source cells and camera scrolling.
     if in.uv.x > 40000.0 && in.uv.x < 60000.0 && in.uv.y < -40000.0 {
         let map = in.uv - vec2<f32>(50000.0, -50000.0);
-        let optics = pool_optics(map, 1.8,
+        let optics = pool_optics(map, 1.8, 1.8,
             vec3<f32>(0.025, 0.12, 0.16), vec3<f32>(0.085, 0.32, 0.34),
             vec3<f32>(0.40, 0.65, 0.61), vec4<f32>(1.1, 0.12, 0.0, 0.25), surface.V);
         water_normal = optics.normal;
@@ -542,11 +838,18 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
     // Decode authored map coordinates so scrolling cannot slide the grain.
     // Atlas UVs and all other solid surfaces remain outside this branch.
     let shoreline = in.uv.x > 87000.0 && in.uv.x < 90000.0 && in.uv.y < -10000.0;
+    // Native banks already carry their live atlas palette. Keep fixed-color
+    // terrace lips/stairs in the original band with their existing lighting.
+    let source_shoreline = shoreline && in.uv.y < -65000.0;
+    source_painted = source_painted || source_shoreline;
     if in.uv.x < -9000.0 || shoreline {
+        // Mountain material belongs to mountain geometry. A shoreline's
+        // source paint must not promote every bank into the canyon finish.
         let canyon = in.uv.y < -30000.0 && !shoreline;
-        let tag = select(20000.0, 40000.0, canyon);
+        let volcanic = in.uv.y < -50000.0 && !shoreline;
+        let tag = select(select(20000.0, 40000.0, canyon), 60000.0, volcanic);
         let rock = select(vec3<f32>(-in.uv.x - 10000.0, surface.world_position.y, -in.uv.y - tag),
-            vec3<f32>((in.uv.x - 88000.0) * 8.0, surface.world_position.y, (-in.uv.y - 20000.0) * 8.0), shoreline);
+            vec3<f32>((in.uv.x - 88000.0) * 8.0, surface.world_position.y, (-in.uv.y - select(20000.0, 70000.0, source_shoreline)) * 8.0), shoreline);
         let rock_dx = select(vec3<f32>(-uv_dx.x, world_dx.y, -uv_dx.y), vec3<f32>(uv_dx.x * 8.0, world_dx.y, -uv_dx.y * 8.0), shoreline);
         let rock_dy = select(vec3<f32>(-uv_dy.x, world_dy.y, -uv_dy.y), vec3<f32>(uv_dy.x * 8.0, world_dy.y, -uv_dy.y * 8.0), shoreline);
         let mineral = mineral_field(rock * 1.4);
@@ -568,7 +871,7 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
         // Broad cap plates use the regular cave-rock scale. Sampling this
         // same asset at 40 units packed many tiny painted lumps onto each
         // native tile and concealed the actual large mineral planes.
-        let cap_scale = select(144.0, 40.0, shoreline);
+        let cap_scale = 144.0;
         let y_rock = sample_detail(painted_bedrock, painted_bedrock_sampler, rock.xz / cap_scale, rock_dx.xz / cap_scale, rock_dy.xz / cap_scale).rgb;
         let x_paint = select(x_rock, x_layer, canyon);
         let z_paint = select(z_rock, z_layer, canyon);
@@ -587,7 +890,8 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
         let canyon_bed = mix(vec3<f32>(0.49, 0.37, 0.20), reference, wall);
         let broad_pigment = select(reference, canyon_bed * (0.96 + weather * 0.08), canyon);
         let pigment = mix(broad_pigment, paint, paint_strength);
-        surface.material.base_color = vec4<f32>(pigment * surface.material.base_color.rgb / reference * detail,
+        let finished_rock = pigment * surface.material.base_color.rgb / reference * detail;
+        surface.material.base_color = vec4<f32>(finished_rock,
             surface.material.base_color.a);
     }
     // Cave stone and dust use distinct positive map-coordinate tags.
@@ -687,8 +991,30 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
             let pool_tone = select(select(shallow_hint, vec3<f32>(0.065, 0.20, 0.22), woodland_pool),
                 mix(deep,crest,select(0.28,0.035,source_outdoor_water)),palette_current);
             let pool_phase = mix(terrain.water_motion.y, terrain.water_motion.x, blend);
-            let optics = pool_optics(map, shore_distance(map), deep, pool_tone, crest,
-                terrain.water_style, surface.V);
+            let distances = shore_distances(map);
+            let distance = distances.x;
+            let depth_distance = distances.y;
+            let water_pixel = max(length(world_dx.xz), length(world_dy.xz))
+                / max(terrain.water_enabled.y, 0.001);
+            var optics: WaterOptics;
+            if open_water && terrain.water_deep.w > 2.5 && terrain.water_style.w > 0.25 {
+                wind_water = true;
+                // Regional source palettes supply pigment and night exposure;
+                // their white pixels become reflection/foam, never tiled paint.
+                let depth_color = terrain.water_deep.rgb * 0.72;
+                let shallow_color = mix(depth_color, terrain.water_foam.rgb, 0.22);
+                optics = rippled_pool_optics(map, distance, depth_distance, pool_phase, water_pixel,
+                    depth_color, shallow_color, crest, terrain.water_style, surface.V);
+            } else if indoor_pool {
+                // The authenticated Cerulean pool uses short, low ripples and
+                // shallow caustics. Keep its blue pool pigment and quiet indoor
+                // reflections; it receives neither coastal wash nor cloud sheen.
+                optics = rippled_pool_optics(map, distance, depth_distance, pool_phase, water_pixel,
+                    deep_hint, shallow_hint, crest_hint, terrain.water_style, surface.V);
+            } else {
+                optics = pool_optics(map, distance, depth_distance, deep, pool_tone, crest,
+                    terrain.water_style, surface.V);
+            }
             var pool = optics.color;
             if terrain.water_contact.w > 0.5 && kind.x > 0.5 {
                 // A swimmer disturbs only authenticated water, in map space.
@@ -934,8 +1260,27 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
             let reflected=reflect(-surface.V,surface.world_normal);
             let sky=clamp(reflected.y*0.5+0.5,0.0,1.0);
             let sheen=(0.04+0.16*fresnel)*sky;
-            let pane_light=recess+0.10*(pane.y-0.5)+sheen;
+            // Source clerestories need a visible recess and sky gradient at
+            // normal game distance, while keeping their live palette hue.
+            let pane_light=select(recess+0.10*(pane.y-0.5)+sheen,
+                recess*(0.56+0.34*pane.y)+sheen*1.4,source_glass);
             shaded*=mix(1.0,pane_light,source_shadow_contrast);
+            if source_glass {
+                // A broad reflected sky patch distinguishes closed glass
+                // from painted infill. It stays subordinate to the native
+                // pigment and disappears with daylight, leaving lamp policy
+                // and the authored night palette authoritative.
+                let diagonal=pane.y+pane.x*0.35;
+                let sky_patch=smoothstep(0.22,0.42,diagonal)
+                    *(1.0-smoothstep(0.65,0.88,diagonal));
+                // The raised game camera often reflects the lower hemisphere
+                // in vertical panes. Keep a subdued ground reflection there
+                // rather than losing the entire glass finish below the sky.
+                let reflection=mix(vec3<f32>(0.16,0.20,0.21),
+                    vec3<f32>(0.48,0.66,0.78),sky)*source_light;
+                shaded=mix(shaded,reflection,
+                    (0.14+0.32*sky_patch)*source_shadow_contrast);
+            }
         }
     }
     shaded *= woodland_floor_light;
@@ -943,13 +1288,29 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
         // Camera-dependent sky sheen and the actual directional light reflect
         // off the level water surface. Real scene shadows still suppress direct sun;
         // the normal scene energies also dim these effects at night/in caves.
-        let sky = mix(vec3<f32>(0.15, 0.30, 0.36), vec3<f32>(0.46, 0.64, 0.68),
+        var sky = mix(vec3<f32>(0.15, 0.30, 0.36), vec3<f32>(0.46, 0.64, 0.68),
             clamp(water_normal.y * 0.5 + 0.5, 0.0, 1.0));
-        let sky_weight = clamp((water_reflection.x * 0.65 + water_reflection.y * 0.045)
+        var sky_response = water_reflection.x * 0.65 + water_reflection.y * 0.045;
+        if wind_water {
+            let reflected = reflect(-surface.V, water_normal);
+            let sky_height = smoothstep(0.0, 0.85, reflected.y);
+            // Broad, low-contrast cloud reflections bend with the wave normal.
+            // A sharp high-frequency cloud field stamps a dark checker onto
+            // the short wave groups. Keep cloud volume at a wider sky scale.
+            // Scene light supplies exposure/tint; Bevy's environment
+            // map below supplies the current sky's specular radiance as well.
+            let cloud_field = mineral_field(reflected * vec3<f32>(1.4, 2.2, 1.4));
+            let cloud = smoothstep(0.25, 0.85, cloud_field);
+            sky = mix(vec3<f32>(0.42, 0.64, 0.78), vec3<f32>(0.16, 0.38, 0.68), sky_height);
+            sky = mix(sky, vec3<f32>(0.80, 0.88, 0.94), cloud * 0.22);
+            sky_response = 0.08 + water_reflection.x * 1.1 + water_reflection.y * 0.20;
+        }
+        let sky_weight = clamp(sky_response
             * water_reflection.z, 0.0, 0.35);
         shaded = mix(shaded, sky * ambient_tint * ambient_gain, sky_weight);
         shaded = shaded + sun_tint * water_sun * sun_gain * visibility
-            * (0.035 + water_reflection.x * 0.16) * water_reflection.z;
+            * select(0.035 + water_reflection.x * 0.16,
+                0.65 + water_reflection.x * 1.5, wind_water) * water_reflection.z;
     }
 @if(VOXEL_MATERIAL_LIGHTING) {
     // Authored roles control the BRDF without recoloring source paint or
@@ -957,10 +1318,15 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
     // x = perceptual roughness, y = normal-incidence reflectance, z = strength.
     var response = vec3<f32>(surface.material.perceptual_roughness,
         dot(surface.material.reflectance, vec3<f32>(0.333333)) * 0.08, 0.0);
+    if source_paving { response = vec3<f32>(0.94, 0.025, 0.30); }
+    if source_fabric { response = vec3<f32>(0.98, 0.02, 0.15); }
+    if source_concrete { response = vec3<f32>(0.97, 0.02, 0.30); }
+    if source_mineral { response = vec3<f32>(0.96, 0.025, 0.30); }
     if town_paint_kind == 0.0 { response = vec3<f32>(0.40, 0.04, 0.85); } // ceramic
     if town_paint_kind == 1.0 { response = vec3<f32>(0.94, 0.025, 0.35); } // plaster
     if town_paint_kind == 2.0 { response = vec3<f32>(0.82, 0.035, 0.50); } // clay
     if town_paint_kind == 3.0 { response = vec3<f32>(0.97, 0.025, 0.30); } // mortar
+    if town_paint_kind == 4.0 { response = vec3<f32>(0.92, 0.025, 0.35); } // mineral slate
     if town_timber { response = vec3<f32>(0.72, 0.035, 0.55); }
     if enclosing_wall { response = vec3<f32>(0.90, 0.035, 0.35); }
     if frozen_platform { response = vec3<f32>(0.28, 0.025, 0.70); }
@@ -1060,7 +1426,7 @@ fn fragment(in: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragment
             *(window_light/(1.0+6.0*window_light))*(6.0*terrain.city_night.x);
 @if(VERTEX_UVS_A) {
         let city_role = in.uv.y - 1248.0;
-        if (city_role >= 0.0 && city_role <= 3.0) || city_source_window || town_glass {
+        if (city_role >= 0.0 && city_role <= 3.0) || city_source_window || luminous_glass {
             // Emission is independent of moonlight, cast shade and camera.
             // Keep a shallow edge/face response so panes retain their volume.
             var glow = vec3<f32>(1.0, 0.58, 0.19);

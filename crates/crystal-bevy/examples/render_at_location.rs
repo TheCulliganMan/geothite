@@ -368,6 +368,13 @@ fn nearest_walkable_tile(
         let y = i16::try_from(y)?;
         let tile = crystal_runtime::core::world::map::TilePosition::new(x, y);
         if let Ok(session)=runtime.data().overworld_session(map,tile,0) {
+            // Disposable review spawns must not overlap authored actors,
+            // including those not yet loaded by the startup visibility pass.
+            // Runtime movement will keep wandering actors clear afterwards.
+            if session.objects.iter().enumerate().any(|(index,object)|
+                session.object_runtime_tile_checked(index,object).is_ok_and(|position|position==tile)) {
+                continue;
+            }
             // Session initialization also permits connection-source exceptions.
             // Perimeter review needs a standable source tile, not a wall that
             // happens to share the connection's coordinate range.
@@ -635,5 +642,30 @@ mod tests {
     fn batch_output_stems_are_filesystem_safe() {
         assert_eq!(safe_file_stem("NewBarkTown"), "NewBarkTown");
         assert_eq!(safe_file_stem("Map / Test"), "Map___Test");
+    }
+
+    #[test]
+    #[ignore = "requires the user-supplied external pack"]
+    fn perimeter_fixtures_avoid_authored_actor_positions() {
+        let path=PathBuf::from(env::var_os("CRYSTAL_RENDER_TEST_PACK").expect("explicit external pack"));
+        let root=AssetRoot::new(path.parent().unwrap());
+        let loaded=read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let runtime=CrystalRuntime::from_loaded_compiled_pack(&root,loaded).unwrap();
+        for (map,occupied,target) in [("OlivineLighthouse3F",(9,2),(10,2)),
+            ("OlivineLighthouse5F",(2,13),(2,15))] {
+            let (w,h)=runtime.data().saved_map_tile_bounds(map).unwrap();
+            let actor=crystal_runtime::core::world::map::TilePosition::new(occupied.0,occupied.1);
+            let old=runtime.data().overworld_session(map,actor,0).unwrap();
+            assert!(old.objects.iter().any(|object|
+                crystal_runtime::core::world::session::object_tile_position_checked(object)==Some(actor)),
+                "exercise the actual source actor that the former {map} pose overlapped");
+            let (x,y)=nearest_walkable_tile(&runtime,map,w,h,target.0,target.1).unwrap();
+            assert_ne!((x,y),occupied);
+            let tile=crystal_runtime::core::world::map::TilePosition::new(x,y);
+            let session=runtime.data().overworld_session(map,tile,0).unwrap();
+            assert!(session.objects.iter().enumerate().all(|(index,object)|
+                session.object_runtime_tile_checked(index,object).is_ok_and(|position|position!=tile)));
+            println!("perimeter-actor-clear: {x},{y} map={map}");
+        }
     }
 }

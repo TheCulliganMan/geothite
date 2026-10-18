@@ -1,84 +1,54 @@
-# Tangela sculpture
+# Tangela sculpture and rooted vine rig
 
-The installed original recipe is `tools/tangela_sculpt.py`. It replaces the
-previous dark upright body, repeated bent front rods and bead pupils with
-a rounded blue tangle, fitted dark eye opening, white oval eyes with tiny
-high pupils, and broad grounded red shoes. This is static original geometry.
-No external model, texture, skeleton or clip was imported. The
-[source review](vine-parent-source-review.md) records the official artwork,
-individual third-party metadata and actual inaccessible download endpoints.
+`tools/tangela_sculpt.py` retains the round blue tangle, clear dark eye opening,
+rooted white ovals with tiny high pupils and broad red shoes. All 41 closed
+vines remain: individual front curls, layered front weave, four eye-frame
+ropes, nine crossing rear wraps, four side curls and four rear curls. The side
+curls turn farther around the body for a clearer profile. Hidden root centers
+are seated inside the actual core, including lateral roots whose old caps
+only grazed the surface. They blend back into the authored outer loops.
+No external geometry or rig is imported.
 
-## Geometry and integration
+`tools/tangela_glb.py` exports the canonical `tangela.glb`: all 49 logical
+solids packed losslessly into 10 runtime material groups, 17,318 vertices,
+31,236 triangles, 39 joints, 162 accessors and 896,856 bytes. Redundant radial
+and path sampling is reduced within the unchanged skin limits. Smooth rope
+normals preserve curved strands while the fitted dark opening adapts to the
+stored core. Authoring height remains 1.00; verified pack height is 0.9906 m.
 
-The model has 49 parts and 106,668 triangles, floor 0 and height 1.00.
-Canonical SHA-256:
-`d2112c7af307009754020e3500bb545174b0a86d62401f56a0e84194e573fa1e`.
+Logical neutral geometry digest:
+`e8705e62e57b9a088c5df2f38d475e0ec2895b8311a504ef065d2e53f0527064`.
+Packed runtime digest:
+`9122c50cf61e0829b7d88147233af06cdfc8e5ba7ee98d917c864bc2b918b416`.
 
-There are 41 physically rooted vines: layered front spirals, four ropes
-framing the eye opening, nine differently tilted wrapping paths, four rear
-curls and four curls angled toward the sides. Each wrapping centerline is
-projected onto the core ellipsoid, including its compressed top, before its
-short buried-root transition and outward surface offset. Rope widths follow
-local bend radii, with independent nonadjacent triangle-crossing checks.
-The side curls rotate both positions and normals through 0.90 radians.
-The long wrapping ropes use 18-sided sections, while the other ropes retain
-24-sided sections, within the unchanged 110,000-triangle limit.
+The body, face, eyes, pupils and four framing ropes share a coherent carrier.
+Each of the other 37 strands has a separate carrier rooted on its own authored
+path. Its influence blends from the fixed embedded root to the free curled
+section. Idle phases differ across all 37 vines. Attack and hit follow source
+cue timing and return to neutral endpoints. Red shoes remain fixed in battle;
+world walking uses two shoe chains and preserves every body/vine influence.
+Material packing keeps each logical solid's geometry, indices, material and
+weights. Builder, asset readers and production registry use the GLB; the
+obsolete static JSON is removed.
 
-`tools/build-battle-species.py` dispatches directly to this pure recipe before
-Blender batching. Its old generic Tangela body is replaced by an explicit
-guard. The exact Rust Tangela species route remains unchanged.
+All 16 combined Python checks pass for exact geometry/packing and schemas,
+closed outward strands and shading, uncrossed curves, fitted face, actual
+occupied root witnesses, fixed root-cap owners, shoe/eye attachments, both
+pupils remaining unobstructed by every vine through motion, fixed floor,
+neutral endpoints, winding/strain, isolated articulation and distinct idle
+phases. Detached-root controls remain active. Three focused Rust checks pass
+for GPU activation at verified pack height, runtime owners and all 37 vine
+carriers, animated floor/culling and two world support chains through 64
+phases with all vine influences preserved. Front, side and rear poses of all
+clips were inspected; Blender exports are byte-identical. Shiny checks remain
+skipped at the user's request. Browser visual acceptance remains open.
 
-## Verification
-
-All nine candidate checks passed in 19.168 seconds. All nine checks against
-the installed canonical bytes passed in 26.181 seconds. The checks cover:
-
-- Closed outward surfaces and normals aligned with actual faces.
-- Recipe parity, floor, height, palette, unique parts and triangle budget.
-- All 41 vine roots, both shoe roots and both eye roots against actual body
-  volume, with detached negative examples.
-- Fitted face and pupil vertices, triangle centers and edge clearances
-  against their actual stored parent surfaces.
-- Nonadjacent triangle crossings within every individual vine.
-- Every stored pupil vertex against actual occluding vine triangles.
-
-The final front, oblique and rear software renders each exited 0 at
-800×824 and were individually inspected in full. The round silhouette,
-clear pupils, broad shoes and layered curls are substantial improvements.
-Smooth core remains visible between strands in the oblique view; these
-renders do not establish that every angle is fully polished.
-
-Earlier candidates exposed real defects: self-crossed tight curls, abrupt
-buried-root joins, rear loops hidden beneath parallel bands, a handle-like
-crest, and tilted ropes sinking into the core. The current recipe uses
-spaced spirals, bounded widths, a smaller crest, projected wrapping paths
-and earlier root emergence. Those failures were corrected in geometry;
-the root, crossing, pupil and budget guards were retained.
-
-The native union build exited 0 in 4 minutes 49 seconds. Its binary contained
-the full final canonical SHA and the preview-mute switch before launch.
-Frozen binary identity was `(218972741, 215590880, 1791824407445108302)`
-(inode, bytes, modification time in nanoseconds). With explicit
-`CRYSTAL_PREVIEW_MUTE=1` and `CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image`,
-the real external `content-packs/realtime-clock.browser.crystalpack` produced
-a 2000×1400 native GPU battle capture and exited 0. The full image was
-individually inspected: Tangela's vines, clear gaze and red shoes rendered
-with the opponent, arena and HUD. The binary identity and canonical source
-hash remained stable across capture. This proves that native image-target
-render, rather than ordinary live-window, browser, animation or gameplay
-coverage.
-
-The final-hash Rust unit binary contains the canonical Tangela SHA and was
-frozen at `(219161165, 245836800, 1791824972427262607)`. Its test listing
-identified the exact species regression, which passed as one actual test
-in 5.99 seconds. That regression asserts 251 supported species and checks
-each authoritative route, loaded mesh, indices, finite geometry, floor,
-bounds and unit normals. Binary identity and Tangela source hash were
-stable across the run. This is integration coverage, not approval of all
-251 species' art. The broader Cargo union invocation exited 0 after
-14 minutes 41 seconds of compilation. It ran one actual species regression,
-passing in 18.42 seconds; the other crates had zero matching tests and are
-not counted as additional species coverage.
-
-Scratch output is ignored and retained while the Tangela/Kangaskhan family
-work continues.
+Both shared all-species geometry and exact source-cue pose timing checks pass.
+The rebuilt native Route 29 Tangela/Pidgey 3D/2D pair was inspected at preserved
+state: frame 2551, checksum 3912378689, LCD frame 3214 and virtual time
+56.338423042. The full tangle, clear pupils, red shoes and correct TANGELA HUD
+remain readable; both shoes meet the terrain. Normal terrain admission passes
+at original pack size and the existing -110-degree review angle, with normal
+size/support/omission and whole-body/frustum checks active. No shader errors
+were reported. Ignored evidence is `target/pokemon-native-review/tangela-normal`.
+Grass height is untouched. Browser visual acceptance remains open.

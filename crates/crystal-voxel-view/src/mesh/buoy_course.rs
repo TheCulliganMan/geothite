@@ -234,23 +234,27 @@ fn retire_raised_banks(surface: &mut SurfaceMeshData, raised: &std::collections:
 }
 
 fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint: [[f32; 2]; 2]) {
-    let levels = [(-0.10, 0.65), (0.02, 1.0), (0.14, 0.70)];
-    let rings: Vec<[Vec3; 12]> = levels
+    // A molded float, rather than a white cone. The source's gray pigment
+    // remains visible on the narrow seam above the water; the pale shoulder
+    // rounds into a small recessed cap. Keep the original footprint and
+    // vertical envelope, including the mostly submerged lower rim.
+    const SIDES: usize = 16;
+    let levels = [(-0.10, 0.65), (-0.01, 0.96), (0.03, 1.0),
+        (0.055, 0.98), (0.13, 0.83), (0.185, 0.52), (0.20, 0.24)];
+    let rings: Vec<[Vec3; SIDES]> = levels
         .into_iter()
         .map(|(y, r)| {
             std::array::from_fn(|i| {
-                let a = i as f32 * std::f32::consts::TAU / 12.;
+                let a = i as f32 * std::f32::consts::TAU / SIDES as f32;
                 center + Vec3::new(a.cos() * radius * r, y * tile, a.sin() * radius * r)
             })
         })
         .collect();
-    for row in 0..2 {
-        for side in 0..12 {
-            let next = (side + 1) % 12;
+    for row in 0..rings.len()-1 {
+        for side in 0..SIDES {
+            let next = (side + 1) % SIDES;
             let outward = (rings[row][side] - center).with_y(0.);
-            // The dark source outline belongs only to the mostly submerged
-            // lower rim; the broad exposed shoulder keeps its pale paint.
-            let uv = if row==0 {paint[1]} else {paint[0]};
+            let uv = if row<=2 {paint[1]} else {paint[0]};
             face(
                 out,
                 [rings[row][side], rings[row + 1][side], rings[row + 1][next]],
@@ -265,23 +269,23 @@ fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint:
             );
         }
     }
-    for side in 0..12 {
+    for side in 0..SIDES {
         face(
             out,
             [
-                rings[2][side],
-                center + Vec3::Y * tile * 0.20,
-                rings[2][(side + 1) % 12],
+                rings[rings.len()-1][side],
+                center + Vec3::Y * tile * 0.18,
+                rings[rings.len()-1][(side + 1) % SIDES],
             ],
             Vec3::Y,
-            paint[0],
+            paint[1],
         );
         face(
             out,
             [
                 rings[0][side],
                 center - Vec3::Y * tile * 0.10,
-                rings[0][(side + 1) % 12],
+                rings[0][(side + 1) % SIDES],
             ],
             Vec3::NEG_Y,
             paint[1],
@@ -290,6 +294,9 @@ fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint:
 }
 
 fn face(out: &mut SurfaceMeshData, mut p: [Vec3; 3], outward: Vec3, uv: [f32; 2]) {
+    // The live atlas already supplies the current time-of-day pigment.
+    // Keep native face shading without applying the night palette twice.
+    let uv = crate::scenery_finish::source_atlas_uv(uv);
     if (p[1] - p[0]).cross(p[2] - p[0]).dot(outward) < 0. {
         p.swap(1, 2);
     }
@@ -469,7 +476,8 @@ mod tests {
         assert!(
             mesh.textured.uvs[8..]
                 .iter()
-                .all(|uv| new_bark::sampled_cell(&[*uv], &g) == Some(0))
+                .all(|uv| crate::scenery_finish::source_atlas_coordinates(*uv)
+                    .is_some_and(|uv|new_bark::sampled_cell(&[uv], &g) == Some(0)))
         );
         assert_eq!(mesh.textured.positions.len() % 4, 0);
         let before = mesh.textured.positions.len();
@@ -494,6 +502,10 @@ mod tests {
             mesh.textured.positions.iter().any(|p| p[1] > -1.5),
             "the float survives ground finishing"
         );
+        assert!(mesh.textured.positions.iter().zip(&mesh.textured.uvs)
+            .filter(|(p,_)|p[1]>-1.5)
+            .all(|(_,uv)|crate::scenery_finish::source_atlas_coordinates(*uv).is_some()),
+            "exposed float paint retains its live palette through ground finishing");
     }
     #[test]
     fn cropped_reserved_unknown_and_missing_art_retain_the_original_plane() {
@@ -521,6 +533,29 @@ mod tests {
             assert_eq!(mesh.authored_cells, vec![None; 2]);
         }
     }
+    #[test]
+    fn float_retains_its_envelope_with_visible_source_seam_and_recessed_cap() {
+        let mut mesh=SurfaceMeshData::default();
+        let center=Vec3::new(4.,-2.,4.);
+        let paint=[[0.1,0.2],[0.3,0.4]];
+        float(&mut mesh,center,2.,8.,paint);
+        let low=mesh.positions.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min);
+        let high=mesh.positions.iter().map(|p|p[1]).fold(f32::NEG_INFINITY,f32::max);
+        assert!((low+2.8).abs()<0.0001 && (high+0.4).abs()<0.0001,
+            "the new shoulder must retain the original waterline envelope");
+        assert!(mesh.positions.iter().all(|p|p[0]>=2. && p[0]<=6. && p[2]>=2. && p[2]<=6.),
+            "the native silhouette still owns the whole footprint");
+        let cap=mesh.positions.iter().filter(|p|(p[0]-4.).abs()<0.0001
+            && (p[2]-4.).abs()<0.0001 && p[1]>center.y)
+            .map(|p|p[1]).fold(f32::NEG_INFINITY,f32::max);
+        assert!(cap>center.y && cap<high-0.1,"the cap is visibly recessed below its pale rim");
+        assert!(mesh.positions.iter().zip(&mesh.uvs).any(|(p,uv)|
+            p[1]>center.y && p[1]<center.y+0.5
+                && crate::scenery_finish::source_atlas_coordinates(*uv)
+                    .is_some_and(|p|p.into_iter().zip(paint[1]).all(|(a,b)|(a-b).abs()<0.0001))),
+            "the gray source seam must remain visible above the unchanged water plane");
+    }
+
     #[test]
     fn float_is_closed_consistently_wound_and_non_degenerate() {
         let mut mesh = SurfaceMeshData::default();

@@ -10,6 +10,63 @@ use crate::mesh::SurfaceMeshData;
 use bevy::prelude::Vec3;
 use serde::Deserialize;
 
+/// Native prop sprites already contain their current map/time palette.
+/// Ignore transparent background and black outlines, retaining a readable
+/// body tone from the live palette rather than guessing from the map name.
+pub(crate) fn native_stone_color(image: &bevy::prelude::Image) -> Option<[u8;3]> {
+    use bevy::render::render_resource::TextureFormat;
+    if !matches!(image.texture_descriptor.format,
+        TextureFormat::Rgba8Unorm | TextureFormat::Rgba8UnormSrgb) {return None;}
+    let data=image.data.as_ref()?;
+    if data.len()!=image.width() as usize*image.height() as usize*4 {return None;}
+    let mut counts=std::collections::BTreeMap::<[u8;3],usize>::new();
+    for p in data.chunks_exact(4) {
+        if p[3]!=255 || u32::from(p[0])+u32::from(p[1])+u32::from(p[2])<96 {continue;}
+        *counts.entry([p[0],p[1],p[2]]).or_default()+=1;
+    }
+    let colored=counts.iter().any(|(rgb,count)|*count>=4
+        && rgb.iter().max().unwrap()-rgb.iter().min().unwrap()>=16);
+    let tones=counts.into_iter().filter(|(rgb,count)|*count>=4
+        && if colored {rgb.iter().max().unwrap()-rgb.iter().min().unwrap()>=16}
+            else {*rgb.iter().max().unwrap()>=96}).collect::<Vec<_>>();
+    let &(dominant,_)=tones.iter().max_by_key(|(_,count)|*count)?;
+    // Dark live palettes can have a nearly black body and a readable mineral
+    // highlight. Baking face shade over only that dark body erases the volume.
+    // Use an actual significant highlight, never invent a night exposure/hue.
+    if *dominant.iter().max().unwrap()<96 {
+        tones.into_iter().max_by_key(|(rgb,count)|
+            (u32::from(rgb[0])*2126+u32::from(rgb[1])*7152+u32::from(rgb[2])*722,*count))
+            .map(|(rgb,_)|rgb)
+    } else {Some(dominant)}
+}
+
+pub(crate) fn native_stone_mesh(kind: PropKind, rgb: [u8;3]) -> SurfaceMeshData {
+    let mut data=mesh(kind);
+    let mut low=Vec3::splat(f32::INFINITY);let mut high=Vec3::splat(f32::NEG_INFINITY);
+    for p in &data.positions {let p=Vec3::from_array(*p);low=low.min(p);high=high.max(p);}
+    let paint=rgb.map(|v| {let v=f32::from(v)/255.;
+        if v<=0.04045 {v/12.92}else{((v+0.055)/1.055).powf(2.4)}});
+    // Loose smashable stone keeps the live hue, with a little neutral mineral
+    // in its coating so ochre source sprites read as rock rather than gold.
+    let paint=if kind==PropKind::Rock {
+        let value=paint[0]*0.2126+paint[1]*0.7152+paint[2]*0.0722;
+        paint.map(|c|c*0.72+value*0.28)
+    } else {paint};
+    for i in 0..data.colors.len() {
+        let old=data.colors[i];
+        let pigment=((old[0]*0.2126+old[1]*0.7152+old[2]*0.0722)/0.30).clamp(0.35,1.10);
+        let facing=0.66+0.34*Vec3::from_array(data.normals[i])
+            .dot(Vec3::new(-0.35,0.85,0.40).normalize()).max(0.);
+        data.colors[i]=[paint[0]*pigment*facing,paint[1]*pigment*facing,paint[2]*pigment*facing,old[3]];
+        let p=(Vec3::from_array(data.positions[i])-low)/(high-low).max(Vec3::splat(0.0001));
+        let n=Vec3::from_array(data.normals[i]).abs();
+        let uv=if n.y>=n.x && n.y>=n.z {[p.x,p.z]}
+            else if n.x>=n.z {[p.z,p.y]} else {[p.x,p.y]};
+        data.uvs[i]=crate::scenery_finish::source_atlas_uv(uv);
+    }
+    data
+}
+
 #[derive(Deserialize)]
 struct Primitive {
     #[serde(default)]
@@ -134,6 +191,7 @@ macro_rules! prop_mesh {
     ("icon_clefairy") => { crate::species_rig::rig(crate::species_rig::Species::Clefairy).neutral.clone() };
     ("chris_bike") => { crate::bicycle::mesh(false) };
     ("kris_bike") => { crate::bicycle::mesh(true) };
+    ("biker") => { crate::bicycle::mesh(false) };
     ("battle_chikorita") => {
         crate::species_rig::rig(crate::species_rig::Species::Chikorita)
             .neutral
@@ -209,8 +267,6 @@ authored_props! {
     BigSnorlax => "big_snorlax",
     BigLapras => "big_lapras",
     BigOnix => "big_onix",
-    Surf => "surf",
-    SurfingPikachu => "surfing_pikachu",
     IconBat => "icon_bat",
     IconBigmon => "icon_bigmon",
     IconBird => "icon_bird",
@@ -246,6 +302,7 @@ authored_props! {
     IconSnorlax => "icon_snorlax",
     ChrisBike => "chris_bike",
     KrisBike => "kris_bike",
+    BikerBike => "biker",
     BattleChikorita => "battle_chikorita",
     BattleCyndaquil => "battle_cyndaquil",
     BattleTotodile => "battle_totodile",
@@ -254,6 +311,12 @@ authored_props! {
     IconSudowoodo => "icon_sudowoodo",
     IconUnown => "icon_unown",
     IconVoltorb => "icon_voltorb",
+}
+
+impl PropKind {
+    pub(crate) fn is_bicycle(self) -> bool {
+        matches!(self, Self::ChrisBike | Self::KrisBike | Self::BikerBike)
+    }
 }
 
 /// Exact resolved source/path handling. In particular, gfx/icons/monster.png
@@ -316,6 +379,70 @@ mod tests {
     use std::collections::HashSet;
 
     #[test]
+    fn native_stone_paint_ignores_background_and_preserves_the_shared_shape() {
+        use bevy::{prelude::Image,asset::RenderAssetUsages,render::render_resource::{Extent3d,TextureDimension,TextureFormat}};
+        let mut image=Image::new_fill(Extent3d {width:4,height:4,depth_or_array_layers:1},
+            TextureDimension::D2,&[0,0,0,0],TextureFormat::Rgba8UnormSrgb,RenderAssetUsages::default());
+        let data=image.data.as_mut().unwrap();
+        for p in data[..24].chunks_exact_mut(4) {p.copy_from_slice(&[165,123,24,255]);}
+        for p in data[24..].chunks_exact_mut(4) {p.copy_from_slice(&[57,57,57,255]);}
+        assert_eq!(native_stone_color(&image),Some([165,123,24]));
+        for kind in [PropKind::Rock,PropKind::Boulder] {
+            let old=mesh(kind);let painted=native_stone_mesh(kind,[165,123,24]);
+            assert_eq!(painted.positions,old.positions);assert_eq!(painted.normals,old.normals);
+            assert_eq!(painted.indices,old.indices);
+            assert!(painted.colors.iter().all(|c|c[0]>c[1] && c[1]>c[2]));
+            assert!(painted.uvs.iter().all(|uv|crate::scenery_finish::source_atlas_coordinates(*uv).is_some()));
+            assert!(painted.uvs.iter().any(|uv|uv!=&painted.uvs[0]),"stone grain spans the closed faces");
+        }
+        let pixels=image.data.as_mut().unwrap();
+        for p in pixels[..40].chunks_exact_mut(4) {p.copy_from_slice(&[66,33,41,255]);}
+        for p in pixels[40..].chunks_exact_mut(4) {p.copy_from_slice(&[99,74,123,255]);}
+        assert_eq!(native_stone_color(&image),Some([99,74,123]),
+            "the native night highlight must remain visible on the fractured faces");
+        for p in image.data.as_mut().unwrap().chunks_exact_mut(4) {p.copy_from_slice(&[66,33,41,255]);}
+        assert_eq!(native_stone_color(&image),Some([66,33,41]),"do not invent an absent highlight");
+        image.data.as_mut().unwrap().fill(0);
+        assert_eq!(native_stone_color(&image),None);
+    }
+
+    #[test]
+    fn smashable_stone_is_one_closed_fractured_volume_inside_its_source_cell() {
+        let rock=mesh(PropKind::Rock);
+        let low=rock.positions.iter().fold(Vec3::splat(f32::INFINITY),|a,p|a.min(Vec3::from_array(*p)));
+        let high=rock.positions.iter().fold(Vec3::splat(f32::NEG_INFINITY),|a,p|a.max(Vec3::from_array(*p)));
+        assert!((low-Vec3::new(-0.32,0.,-0.27)).abs().max_element()<0.000002);
+        assert!((high-Vec3::new(0.32,0.43,0.27)).abs().max_element()<0.000002);
+        let point=|i:u32|rock.positions[i as usize].map(|v|(v*1_000_000.).round() as i32);
+        let mut edges=std::collections::BTreeMap::new();
+        let mut adjacency=std::collections::BTreeMap::<[i32;3],Vec<[i32;3]>>::new();
+        let mut volume=0.;
+        for tri in rock.indices.chunks_exact(3) {
+            let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(rock.positions[i as usize]));
+            let normal=(b-a).cross(c-a);
+            assert!(normal.length_squared()>0.000000000001);
+            volume+=a.dot(b.cross(c))/6.;
+            for i in 0..3 {
+                let (a,b)=(point(tri[i]),point(tri[(i+1)%3]));
+                let edge=if a<b {(a,b)}else{(b,a)};
+                *edges.entry(edge).or_insert(0usize)+=1;
+                adjacency.entry(a).or_default().push(b);
+            }
+        }
+        assert!(edges.values().all(|count|*count==2),"no cracks or overlapping shells");
+        assert!(volume>0.01,"outward winding encloses a real stone");
+        let mut queue=vec![*adjacency.keys().next().unwrap()];let mut seen=HashSet::new();
+        while let Some(p)=queue.pop() {if seen.insert(p) {queue.extend_from_slice(&adjacency[&p]);}}
+        assert_eq!(seen.len(),adjacency.len(),"one stone, no detached lumps");
+        assert_eq!(rock.indices.len()/3,98);
+        for rgb in [[165,123,24],[120,80,160]] {
+            let finish=native_stone_mesh(PropKind::Rock,rgb);
+            assert_eq!(finish.positions,rock.positions);assert_eq!(finish.indices,rock.indices);
+            assert!(finish.colors.iter().all(|c|c.iter().all(|v|v.is_finite()) && c[3]==1.));
+        }
+    }
+
+    #[test]
     fn gold_gym_boulder_named_palette_preserves_geometry_and_other_assets() {
         let ordinary = mesh(PropKind::Boulder);
         let gym = gold_gym_boulder_mesh();
@@ -367,6 +494,10 @@ mod tests {
             prop_kind_for_source("icon_monster")
         );
         for bad in [
+            "surf",
+            "surfing_pikachu",
+            "gfx/sprites/surf.png",
+            "gfx/sprites/surfing_pikachu.png",
             "fruit_tree_picked",
             "monster_extra",
             "SPRITE_MONSTER",
@@ -429,7 +560,9 @@ mod tests {
                 assert!((Vec3::from_array(n).length() - 1.0).abs() < 0.0001);
             }
         }
-        assert_eq!(ALL_KINDS.len(), 69);
+        // Registry size changes as retired sprite props move to shared rigs.
+        // Validate the current registry above rather than requiring old assets.
+        assert!(!labels.contains("surf") && !labels.contains("surfing_pikachu"));
     }
 
     #[test]

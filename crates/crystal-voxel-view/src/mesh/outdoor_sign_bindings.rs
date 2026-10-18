@@ -1,6 +1,33 @@
-// Ten bounded native sign signatures. These are source guards, not a map catalog.
-// The Johto atlas is deliberately absent: its existing signs are already authored.
+// Bounded native sign signatures. These are source guards, not a map catalog.
+// Matching Johto notice drawings share the framed live-inscription producer.
 const BINDINGS: &[Binding] = &[
+    Binding {
+        tileset: "johto",
+        block: 0x45,
+        origin: [0, 0],
+        art: [0x4e, 0x4f, 0x5e, 0x5f],
+        backing: [0x06; 4],
+        kind: Kind::Modern,
+        lettering: [3, 5, 10, 3],
+    },
+    Binding {
+        tileset: "johto",
+        block: 0x47,
+        origin: [2, 2],
+        art: [0x4e, 0x4f, 0x5e, 0x5f],
+        backing: [0x05; 4],
+        kind: Kind::Modern,
+        lettering: [3, 5, 10, 3],
+    },
+    Binding {
+        tileset: "johto",
+        block: 0x78,
+        origin: [2, 2],
+        art: [0x4e, 0x4f, 0x5e, 0x5f],
+        backing: [0x06; 4],
+        kind: Kind::Modern,
+        lettering: [3, 5, 10, 3],
+    },
     Binding {
         tileset: "johto_modern",
         block: 0x3c,

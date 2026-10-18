@@ -158,41 +158,45 @@ mod tests {
                             }) {
                                 continue;
                             }
-                            assert!(part < 4, "only masonry courses may reach a closed join");
-                            let other = &exports[usize::from(neighbor)].primitives[part];
-                            for &i in tri {
-                                let offset = i as usize * 3;
+                            assert!(source.name.starts_with("Closed masonry")
+                                || source.name.starts_with("Continuous recessed")
+                                || source.name.starts_with("Closed dressed-stone")
+                                || source.name.starts_with("Continuous coping")
+                                || source.name.starts_with("Beveled continuous stone coping"),
+                                "only closed masonry and coping parts may reach a join");
+                            let points = tri.iter().map(|&i| {
                                 let mut point = bevy::prelude::Vec3::from_slice(
-                                    &source.positions[offset..offset + 3],
-                                );
+                                    &source.positions[i as usize * 3..i as usize * 3 + 3]);
                                 point[axis] -= direction;
-                                for face in other.indices.chunks_exact(3) {
-                                    let offset = face[0] as usize * 3;
-                                    let plane = bevy::prelude::Vec3::from_slice(
-                                        &other.positions[offset..offset + 3],
-                                    );
-                                    let b = face[1] as usize * 3;
-                                    let c = face[2] as usize * 3;
-                                    let b =
-                                        bevy::prelude::Vec3::from_slice(&other.positions[b..b + 3]);
-                                    let c =
-                                        bevy::prelude::Vec3::from_slice(&other.positions[c..c + 3]);
-                                    let normal = (b - plane).cross(c - plane).normalize();
-                                    assert!(
-                                        normal.dot(point - plane) <= 0.00001,
-                                        "join leaves closed neighbor: own={own} neighbor={neighbor} side={bit} part={part}"
-                                    );
-                                }
-                            }
+                                point
+                            }).collect::<Vec<_>>();
+                            // Beveled coping and the masonry courses are closed convex parts.
+                            // Require one actual neighboring part to contain
+                            // the entire triangle, rather than its bounding box.
+                            let contained = exports[usize::from(neighbor)].primitives.iter().any(|other| {
+                                other.indices.chunks_exact(3).all(|face| {
+                                    let [a,b,c] = [face[0],face[1],face[2]].map(|i|
+                                        bevy::prelude::Vec3::from_slice(
+                                            &other.positions[i as usize * 3..i as usize * 3 + 3]));
+                                    let normal = (b-a).cross(c-a).normalize();
+                                    points.iter().all(|point|normal.dot(*point-a)<=0.00001)
+                                })
+                            });
+                            assert!(contained,
+                                "join leaves closed neighbor: own={own} neighbor={neighbor} side={bit} part={part}");
                             removed += 1;
                         }
                     }
-                    assert_eq!(removed, 8);
+                    // The original four courses contribute eight triangles;
+                    // the beveled coping splits its joined face at the bevel datum.
+                    // Every selected triangle above must still be contained in
+                    // one actual convex part of the neighboring module.
+                    assert_eq!(removed, 10);
                     triangles += removed;
                 }
             }
         }
-        assert_eq!((checked, triangles), (144, 1152));
+        assert_eq!((checked, triangles), (144, 1440));
     }
 }
 

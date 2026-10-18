@@ -1,7 +1,7 @@
 //! Small closed ceramic courses for Ecruteak's intact, source-selected roofs.
 use super::*;
 
-fn solid<const N: usize>(mesh: &mut SurfaceMeshData, rings: [[Vec3;N];2], colors: [[f32;3];3],
+pub(super) fn solid<const N: usize>(mesh: &mut SurfaceMeshData, rings: [[Vec3;N];2], colors: [[f32;3];3],
     origin: [f32;2], t: f32, painted: bool) {
     let center=rings.iter().flatten().copied().sum::<Vec3>()/(N*2) as f32;
     let mut faces=vec![(rings[0].to_vec(),colors[1]),(rings[1].to_vec(),colors[2])];

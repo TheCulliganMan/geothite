@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Voltorb standard skin with a coherent shell and face above a grounded support band."""
+"""Voltorb and Electrode coherent shell skins above grounded support bands."""
 import argparse,hashlib,json,math,struct
 from pathlib import Path
 from orb_sculpt import sculpture as orb_sculpture,HEIGHT as ORB_HEIGHT
@@ -13,26 +13,26 @@ def geometry_digest(model):
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
 
-SPECIES=('voltorb',)
-REST_DIGESTS={'voltorb':'560b40b398d50fcbeb2944890bd8e60733c1182c83c20b824e84b8a358f4e605'}
-PARTS={'voltorb':tuple(p['part'] for p in sculpt()['primitives'])};MAX_BYTES=1024*1024
+SPECIES=('voltorb','electrode')
+REST_DIGESTS={'voltorb':'560b40b398d50fcbeb2944890bd8e60733c1182c83c20b824e84b8a358f4e605','electrode':'cc8828f83e653417b3a084b8e0ca908deb1f3a5fe4acfea67e831e87050e7571'}
+PARTS={s:tuple(p['part'] for p in orb_sculpture(s)['primitives']) for s in SPECIES};MAX_BYTES=1024*1024
 
 def sculpture(species):
- if species!='voltorb':raise ValueError('unsupported orb')
- return sculpt()
-JOINTS={'voltorb':(('root',None,(0.,0.,0.)),('body',0,(0.,HEIGHT*.5,0.)))}
+ if species not in SPECIES:raise ValueError('unsupported orb')
+ model=orb_sculpture(species);model['name']=species;return model
+JOINTS={s:(('root',None,(0.,0.,0.)),('body',0,(0.,ORB_HEIGHT[s]*.5,0.))) for s in SPECIES}
 
 CLIPS=(('idle',3.4,85),('attack',1.,65),('hit',1.,65))
 
 
 def skin_weights(species,part,position):
  if part.startswith('Lower shell /'):
-  body=smoothstep(HEIGHT*.015,HEIGHT*.20,position[1])
+  height=ORB_HEIGHT[species];body=smoothstep(height*.015,height*(.20 if species=='voltorb' else .15),position[1])
   return [1,0,0,0],[body,1.-body,0.,0.]
  return [1,0,0,0],[1.,0.,0.,0.]
 
 def pose_angles(species,clip,t):
- if species!='voltorb' or clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid orb clip/time')
+ if species not in SPECIES or clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid orb clip/time')
  if t in (0.,1.):return [(0.,0.,0.)]*2
  wave=math.sin(math.tau*t);breath=.5-.5*math.cos(math.tau*t)
  if clip=='idle':return [(0.,0.,0.),(.014*wave,.018*wave,.010*breath)]
@@ -48,7 +48,7 @@ def export_orb(species,model=None):
  if (model.get('name')!=species or model.get('version')!=1 or model.get('coordinate_system')!=COORDINATES
      or tuple(p.get('part') for p in model.get('primitives',[]))!=PARTS[species]
      or geometry_digest(model)!=REST_DIGESTS[species]):raise ValueError('unreviewed orb neutral geometry')
- g=Glb();g.doc['asset']['generator']='Geothite coherent Voltorb orb skin v1'
+ g=Glb();g.doc['asset']['generator']=('Geothite coherent Voltorb orb skin v1' if species=='voltorb' else 'Geothite coherent Electrode orb skin v1')
  nodes=g.doc['nodes'];inverse=[];joints=JOINTS[species]
  for name,parent,pivot in joints:
   origin=joints[parent][2] if parent is not None else (0.,0.,0.)
@@ -86,7 +86,7 @@ def export_orb(species,model=None):
   g.doc['animations'].append({'name':species+'.'+clip,'channels':channels,'samplers':samplers,
     'extras':{'loopSuggested':clip=='idle','cueRelative':clip!='idle','purpose':'early coherent shell rock; face and equator stay together; pinned support band; source battle cues own timing'}})
  g.doc['extras']={'coordinate_system':COORDINATES,'source_name':species,'source_sha256':REST_DIGESTS[species],
-    'reference_span':HEIGHT,'body_reference_height':HEIGHT,'full_silhouette_height':HEIGHT,
+    'reference_span':ORB_HEIGHT[species],'body_reference_height':ORB_HEIGHT[species],'full_silhouette_height':ORB_HEIGHT[species],
     'geometry_source':'tools/orb_sculpt.py','geometry_preservation':'exact source f32 anatomy, normals, colours and triangle order',
     'animation_contract':'identity floor root; pinned lower shell support; coherent shell, equator and fitted face; rotation-only source-cue clips'}
  if len(g.doc['accessors'])>256:raise ValueError('orb exceeds existing accessor limit')
@@ -109,8 +109,10 @@ def decode_orb(blob,species):
 
 def read_orb(path,species):
  with Path(path).open('rb') as f:return decode_orb(f.read(MAX_BYTES+1),species)
+def export_electrode(model=None):return export_orb('electrode',model)
+def read_electrode(path):return read_orb(path,'electrode')
 def export_voltorb(model=None):return export_orb('voltorb',model)
 def read_voltorb(path):return read_orb(path,'voltorb')
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,default=Path('crates/crystal-voxel-view/models/battle_species/voltorb.glb'));a=p.parse_args();a.output.parent.mkdir(parents=True,exist_ok=True);blob=export_voltorb();a.output.write_bytes(blob);print(len(blob),'bytes',len(PARTS['voltorb']),'parts',len(JOINTS['voltorb']),'joints',REST_DIGESTS['voltorb'])
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--species',choices=SPECIES,default='voltorb');p.add_argument('--output',type=Path);a=p.parse_args();a.output=a.output or Path('crates/crystal-voxel-view/models/battle_species')/(a.species+'.glb');a.output.parent.mkdir(parents=True,exist_ok=True);blob=export_orb(a.species);a.output.write_bytes(blob);print(len(blob),'bytes',len(PARTS[a.species]),'parts',len(JOINTS[a.species]),'joints',REST_DIGESTS[a.species])
 if __name__=='__main__':main()

@@ -1675,16 +1675,42 @@ pub struct BuenasPasswordState {
     pub option_index: usize,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
-#[serde(deny_unknown_fields)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RoamingPokemonState {
     pub species: Option<String>,
     pub level: u8,
     pub map_group: u8,
     pub map_number: u8,
     pub hp: u8,
+    /// Opt-in full-width HP for scaled roamers; stock saves retain the WRAM byte.
+    pub scaled_hp: Option<u16>,
     /// Big-endian packed DV bytes: attack/defense, then speed/special.
     pub dvs_be: [u8; 2],
+}
+
+impl Serialize for RoamingPokemonState {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        use serde::ser::SerializeStruct;
+        // Binary structs are positional: skipping None would consume the DV
+        // bytes as an Option tag and corrupt every following roamer/save field.
+        let omit_hp = crate::save::roaming_save_v24_wire()
+            || (serializer.is_human_readable() && self.scaled_hp.is_none());
+        let mut value = serializer
+            .serialize_struct("RoamingPokemonState", if omit_hp { 6 } else { 7 })?;
+        value.serialize_field("species", &self.species)?;
+        value.serialize_field("level", &self.level)?;
+        value.serialize_field("map_group", &self.map_group)?;
+        value.serialize_field("map_number", &self.map_number)?;
+        value.serialize_field("hp", &self.hp)?;
+        if !omit_hp {
+            value.serialize_field("scaled_hp", &self.scaled_hp)?;
+        }
+        value.serialize_field("dvs_be", &self.dvs_be)?;
+        value.end()
+    }
 }
 
 impl Default for RoamingPokemonState {
@@ -1697,6 +1723,7 @@ impl Default for RoamingPokemonState {
             map_group: u8::MAX,
             map_number: u8::MAX,
             hp: 0,
+            scaled_hp: None,
             dvs_be: [0, 0],
         }
     }
@@ -1715,16 +1742,41 @@ impl<'de> Deserialize<'de> for RoamingPokemonState {
             map_group: u8,
             map_number: u8,
             hp: u8,
+            #[serde(default)]
+            scaled_hp: Option<u16>,
             dvs_be: [u8; 2],
         }
 
-        let raw = RawRoamingPokemonState::deserialize(deserializer)?;
+        let raw = if crate::save::roaming_save_v24_wire() {
+            #[derive(Deserialize)]
+            struct V24RoamingPokemonState {
+                species: Option<String>,
+                level: u8,
+                map_group: u8,
+                map_number: u8,
+                hp: u8,
+                dvs_be: [u8; 2],
+            }
+            let old = V24RoamingPokemonState::deserialize(deserializer)?;
+            RawRoamingPokemonState {
+                species: old.species,
+                level: old.level,
+                map_group: old.map_group,
+                map_number: old.map_number,
+                hp: old.hp,
+                scaled_hp: None,
+                dvs_be: old.dvs_be,
+            }
+        } else {
+            RawRoamingPokemonState::deserialize(deserializer)?
+        };
         let state = Self {
             species: raw.species,
             level: raw.level,
             map_group: raw.map_group,
             map_number: raw.map_number,
             hp: raw.hp,
+            scaled_hp: raw.scaled_hp,
             dvs_be: raw.dvs_be,
         };
         state.validate_saved_state(0).map_err(D::Error::custom)?;
@@ -1733,7 +1785,23 @@ impl<'de> Deserialize<'de> for RoamingPokemonState {
 }
 
 impl RoamingPokemonState {
+    pub fn current_hp(&self) -> u16 {
+        self.scaled_hp.unwrap_or(u16::from(self.hp))
+    }
+
+    pub fn set_current_hp(&mut self, hp: u16) {
+        if self.scaled_hp.is_some() {
+            self.scaled_hp = Some(hp);
+            self.hp = hp.min(u16::from(u8::MAX)) as u8;
+        } else {
+            self.hp = hp as u8;
+        }
+    }
+
     fn validate_saved_state(&self, index: usize) -> Result<(), String> {
+        if self.scaled_hp.is_some_and(|hp| self.hp != hp.min(u16::from(u8::MAX)) as u8) {
+            return Err(format!("roaming_pokemon[{index}] scaled HP does not match its HP byte"));
+        }
         if let Some(species) = &self.species {
             validate_script_runtime_token(&format!("roaming_pokemon[{index}].species"), species)?;
             if self.level == 0 {
@@ -11693,6 +11761,7 @@ mod tests {
 
         state = GameState::default();
         state.roaming_pokemon[0] = RoamingPokemonState {
+            scaled_hp: None,
             species: Some("RAIK OU".to_string()),
             level: 40,
             map_group: 1,
@@ -11707,6 +11776,7 @@ mod tests {
 
         state = GameState::default();
         state.roaming_pokemon[0] = RoamingPokemonState {
+            scaled_hp: None,
             species: Some("RAIKOU".to_string()),
             level: 0,
             map_group: 1,
@@ -11721,6 +11791,7 @@ mod tests {
 
         state = GameState::default();
         state.roaming_pokemon[0] = RoamingPokemonState {
+            scaled_hp: None,
             species: Some("RAIKOU".to_string()),
             level: 40,
             map_group: 1,
@@ -15298,6 +15369,7 @@ mod tests {
         let catalog = roaming_catalog_for_tests();
         let mut slots = std::array::from_fn(|_| RoamingPokemonState::default());
         slots[0] = RoamingPokemonState {
+            scaled_hp: None,
             species: Some("RAIKOU".to_string()),
             level: 40,
             map_group: 1,

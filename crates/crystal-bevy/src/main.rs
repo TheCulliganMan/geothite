@@ -222,6 +222,7 @@ async fn run_browser() -> Result<()> {
             Some("bedroom") => Some(("PlayersHouse2F", 3, 4)),
             Some("house-door") => Some(("PlayersHouse1F", 7, 6)),
             Some("goldenrod") => Some(("GoldenrodCity", 20, 18)),
+            Some("saffron") => Some(("SaffronCity", 20, 24)),
             Some("department-store") => Some(("GoldenrodDeptStore1F", 8, 4)),
             Some("underground") => Some(("GoldenrodUnderground", 3, 18)),
             Some("route26") => Some(("Route26", 10, 54)),
@@ -273,11 +274,16 @@ async fn run_browser() -> Result<()> {
                         Some("union-cave") => (4, 0),
                         Some("ice-path" | "mount-silver") => (1, 0),
                         Some("whirl-islands") => (0, 0),
+                        Some("saffron") => (0, 1),
                         Some("ilex" | "ilex-forest" | "route26" | "route26-canyon" | "route29" | "route29-battle"
                             | "national-park" | "national-park-pool") => (0, 1),
                         _ => (0, -1),
                     }),
-                    render_test_hour: Some(if params.get("preview").as_deref() == Some("azalea-well") { 12 } else { 16 }),
+                    render_test_hour: Some(match params.get("preview").as_deref() {
+                        Some("azalea-well") => 12,
+                        Some("saffron") => 0,
+                        _ => 16,
+                    }),
                     render_test_walking_encounter: params.get("preview").as_deref() == Some("route29-battle"),
                     render_test_falkner_encounter: params.get("preview").as_deref() == Some("falkner-battle"),
                     // No persistence: an art preview must not overwrite a save.

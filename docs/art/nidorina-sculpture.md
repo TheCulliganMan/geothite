@@ -1,5 +1,12 @@
 # Nidorina poison-pin sculpture
 
+The current optimized GLB geometry, standard skin and production verification
+are recorded in [Nidorina and Nidorino skins](nido-middle-skins.md). The section
+below is the earlier static-sculpture record, including its former budgets and
+source fingerprints.
+
+## Prior static sculpture record
+
 `tools/nidorina_sculpt.py` replaces the generic family primitive with an
 original hornless Nidorina. The species builder dispatches this pure recipe
 and rejects its old Nidorina branch. Nidorino and both small Nidoran now have separate original sculptures.

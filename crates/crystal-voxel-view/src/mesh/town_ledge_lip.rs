@@ -1,6 +1,15 @@
 //! Closed mineral lips over the authoritative town terrace face.
 use super::*;
 
+fn mineral_grain(mesh: &mut SurfaceMeshData, first: usize, g: &GridGeometry, origin: [i32;2]) {
+    for (p,uv) in mesh.positions[first..].iter().zip(&mut mesh.uvs[first..]) {
+        // The positive mineral tag finishes already shaped faces without
+        // enrolling them in another terrain elevation pass.
+        *uv = [88000.+(p[0]-g.origin_x+origin[0] as f32*g.tile_width)/8.,
+            -20000.-(p[2]-g.origin_z+origin[1] as f32*g.tile_height)/8.];
+    }
+}
+
 /// Kanto's native earthen banks are exposed bedrock, not a retaining wall
 /// assembled from upright pebble columns. Keep the authored support plane and
 /// join heights while giving the face broad fractures and buried rim outcrops.
@@ -10,16 +19,12 @@ pub(super) fn append_kanto(mesh: &mut SurfaceMeshData, face: [[f32;3];4],
     if !new_bark::ledge_finish::append_bare_rock(mesh,face,normal,g,origin) {
         append_solid_quad(mesh,face,normal,[0.34,0.30,0.24,1.]);
     }
-    for (p,uv) in mesh.positions[first..].iter().zip(&mut mesh.uvs[first..]) {
-        // The positive mineral tag adds rock grain without enrolling these
-        // already shaped faces in a second terrain elevation pass.
-        *uv = [88000.+(p[0]-g.origin_x+origin[0] as f32*g.tile_width)/8.,
-            -20000.-(p[2]-g.origin_z+origin[1] as f32*g.tile_height)/8.];
-    }
+    mineral_grain(mesh,first,g,origin);
 }
 
 pub(super) fn append(mesh: &mut SurfaceMeshData, face: [[f32;3];4],
     normal: [f32;3], g: &GridGeometry, origin: [i32;2]) {
+    let first=mesh.positions.len();
     // The original plane seals the terrain behind the narrow stone joints.
     append_solid_quad(mesh,face,normal,[0.26,0.18,0.09,1.]);
     let p=face.map(Vec3::from_array);let outward=Vec3::from_array(normal);
@@ -48,6 +53,7 @@ pub(super) fn append(mesh: &mut SurfaceMeshData, face: [[f32;3];4],
                 +outward*((local.z+1.)*0.5*0.17-0.03)*g.tile_width
         });
     }
+    mineral_grain(mesh,first,g,origin);
 }
 
 #[cfg(test)]
@@ -100,7 +106,10 @@ mod tests {
             assert!(a.iter().zip(b).all(|(a,b)|(a-b).abs()<0.0001));
         }
         for (a,b) in a.uvs.iter().zip(&b.uvs) {assert_eq!(a,b);}
-        assert!(a.uvs[4..].iter().all(|uv| *uv == crate::scenery_finish::SOURCE_PAINT_UV));
+        for (p,uv) in a.positions.iter().zip(&a.uvs) {
+            assert_eq!(*uv,[88000.+(p[0]+17.*g.tile_width)/8.,
+                -20000.-(p[2]+9.*g.tile_height)/8.]);
+        }
     }
     #[test]
     fn closed_ledge_stones_keep_the_support_lip_and_bury_the_tapered_toe() {

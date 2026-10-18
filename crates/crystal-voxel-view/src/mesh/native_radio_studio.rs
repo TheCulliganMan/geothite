@@ -707,7 +707,7 @@ mod tests {
                 "missing authored geometry cannot remove a room enclosure");
             let frame=VisualWorldFrame {map_id:name.into(),source_map_size_core_tiles:Some(bevy::prelude::UVec2::new(w as u32/2,h as u32/2)),..Default::default()};
             let mut perimeter=TerrainMeshData {authored_cells:mesh.authored_cells.clone(),..Default::default()};
-            super::super::append_room_perimeter(&mut perimeter,&frame,&refs,&g,&placements,&[],None);
+            super::super::append_room_perimeter(&mut perimeter,&frame,&refs,&g,&placements,&[],None,None);
             for surface in [&perimeter.solid,&perimeter.textured] {for ids in surface.indices.chunks_exact(3) {
                 let points=[ids[0],ids[1],ids[2]].map(|i|surface.positions[i as usize]);
                 let z=points.iter().map(|p|p[2]).sum::<f32>()/3.;

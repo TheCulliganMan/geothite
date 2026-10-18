@@ -99,12 +99,22 @@ fn tick_visible_screen_fade(
     #[cfg(not(feature = "voxel-view"))]
     let released_render_wait = false;
 
+    advance_visible_screen_fade(&mut runtime_shell, time.delta_secs(), released_render_wait);
+}
+
+// Shared by the graphical clock and renderer-neutral controller. Whiteout
+// owns its full fade/hold/recovery sequence before scripts regain input.
+fn advance_visible_screen_fade(
+    runtime_shell: &mut BevyRuntimeShell,
+    elapsed_seconds: f32,
+    released_render_wait: bool,
+) {
     if let Some(VisibleBlackoutPhase::WhiteHold { frames_remaining }) =
         runtime_shell.visible_blackout_phase
     {
         if frames_remaining > 0 {
             let elapsed_frames = if let Some(fade) = runtime_shell.screen_fade.as_mut() {
-                take_visible_sequence_frames(&mut fade.accumulated_seconds, time.delta_secs())
+                take_visible_sequence_frames(&mut fade.accumulated_seconds, elapsed_seconds)
             } else {
                 1
             };
@@ -113,8 +123,8 @@ fn tick_visible_screen_fade(
             });
             return;
         }
-        if let Err(error) = commit_visible_blackout_recovery(&mut runtime_shell) {
-            record_visible_runtime_system_error(&mut runtime_shell, error);
+        if let Err(error) = commit_visible_blackout_recovery(runtime_shell) {
+            record_visible_runtime_system_error(runtime_shell, error);
             runtime_shell.visible_blackout_phase = None;
             runtime_shell.screen_fade = None;
             return;
@@ -136,7 +146,7 @@ fn tick_visible_screen_fade(
         // The first ready update's delta includes the loading/publication
         // interval. Do not spend that interval on a fade that was still held.
         fade.advance(if released_render_wait { 0.0 } else {
-            time.delta_secs()
+            elapsed_seconds
                 .min(GAME_TICK_SECONDS * MAX_VISIBLE_SEQUENCE_CATCH_UP_FRAMES as f32)
         });
         if fade.elapsed_frames >= fade.total_frames {
@@ -148,9 +158,9 @@ fn tick_visible_screen_fade(
                 // MAPSETUP_DOOR resets the destination presentation, but the
                 // physical D-pad remains sampled across the fade. Retain its
                 // ordering so a continuous hold resumes without a new edge.
-                reset_visible_navigation_state_preserving_held_directions(&mut runtime_shell);
-                if let Err(error) = queue_visible_current_music(&mut runtime_shell) {
-                    record_visible_runtime_system_error(&mut runtime_shell, error);
+                reset_visible_navigation_state_preserving_held_directions(runtime_shell);
+                if let Err(error) = queue_visible_current_music(runtime_shell) {
+                    record_visible_runtime_system_error(runtime_shell, error);
                     runtime_shell.visible_walk_warp_phase = None;
                     runtime_shell.screen_fade = None;
                     return;
@@ -161,7 +171,7 @@ fn tick_visible_screen_fade(
                     ScriptFadeDirection::In,
                     8,
                 ));
-                mark_runtime_snapshot_dirty(&mut runtime_shell);
+                mark_runtime_snapshot_dirty(runtime_shell);
                 return;
             }
             if walk_warp_phase == Some(VisibleWalkWarpPhase::FadeIn) {
@@ -179,27 +189,27 @@ fn tick_visible_screen_fade(
                         )
                     });
                 let result = if pitfall {
-                    begin_visible_pitfall_landing(&mut runtime_shell)
+                    begin_visible_pitfall_landing(runtime_shell)
                 } else {
-                    settle_visible_overworld_arrival(&mut runtime_shell, "walk_warp")
+                    settle_visible_overworld_arrival(runtime_shell, "walk_warp")
                 };
                 if let Err(error) = result {
-                    record_visible_runtime_system_error(&mut runtime_shell, error);
+                    record_visible_runtime_system_error(runtime_shell, error);
                     return;
                 }
-                mark_runtime_snapshot_dirty(&mut runtime_shell);
+                mark_runtime_snapshot_dirty(runtime_shell);
                 return;
             }
             if walk_warp_phase == Some(VisibleWalkWarpPhase::ScriptFadeIn) {
                 runtime_shell.visible_walk_warp_phase = None;
                 runtime_shell.screen_fade = None;
                 if let Err(error) =
-                    settle_visible_overworld_arrival(&mut runtime_shell, "script_warp")
+                    settle_visible_overworld_arrival(runtime_shell, "script_warp")
                 {
-                    record_visible_runtime_system_error(&mut runtime_shell, error);
+                    record_visible_runtime_system_error(runtime_shell, error);
                     return;
                 }
-                mark_runtime_snapshot_dirty(&mut runtime_shell);
+                mark_runtime_snapshot_dirty(runtime_shell);
                 return;
             }
             if walk_warp_phase == Some(VisibleWalkWarpPhase::MapReloadFadeIn) {
@@ -207,16 +217,16 @@ fn tick_visible_screen_fade(
                 runtime_shell.screen_fade = None;
                 if let Some(cursor) = runtime_shell.map_reload_return_cursor.take() {
                     arm_visible_active_script_cursor(
-                        &mut runtime_shell,
+                        runtime_shell,
                         &cursor.source_script,
                         cursor.command_index,
                     );
                 }
-                if let Err(error) = continue_visible_script_after_prompt(&mut runtime_shell) {
-                    record_visible_runtime_system_error(&mut runtime_shell, error);
+                if let Err(error) = continue_visible_script_after_prompt(runtime_shell) {
+                    record_visible_runtime_system_error(runtime_shell, error);
                     return;
                 }
-                mark_runtime_snapshot_dirty(&mut runtime_shell);
+                mark_runtime_snapshot_dirty(runtime_shell);
                 return;
             }
             if blackout_phase == Some(VisibleBlackoutPhase::FadeOut) {
@@ -230,12 +240,12 @@ fn tick_visible_screen_fade(
             if blackout_phase == Some(VisibleBlackoutPhase::FadeIn) {
                 runtime_shell.visible_blackout_phase = None;
                 runtime_shell.screen_fade = None;
-                if let Err(error) = settle_visible_overworld_arrival(&mut runtime_shell, "blackout")
+                if let Err(error) = settle_visible_overworld_arrival(runtime_shell, "blackout")
                 {
-                    record_visible_runtime_system_error(&mut runtime_shell, error);
+                    record_visible_runtime_system_error(runtime_shell, error);
                     return;
                 }
-                mark_runtime_snapshot_dirty(&mut runtime_shell);
+                mark_runtime_snapshot_dirty(runtime_shell);
                 return;
             }
             // The final palette must be rendered once, but a FadeOut without
@@ -3306,7 +3316,7 @@ fn use_selected_evolution_item(runtime_shell: &mut BevyRuntimeShell) -> Result<(
             (
                 target_species.clone(),
                 format!(
-                    "Congratulations! {source_name} evolved into {}!",
+                    "Congratulations!\n{source_name} evolved\ninto {}!",
                     crate::core::models::pokemon_species_display_name(target_species)
                 ),
             )

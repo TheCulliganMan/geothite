@@ -159,12 +159,13 @@ fn setup(
         NotShadowReceiver,
     ));
 }
-fn outdoors(frame: &VisualWorldFrame) -> bool {
+pub(super) fn outdoors(frame: &VisualWorldFrame) -> bool {
     !crate::interior_cutaway::is_cave(frame)
         && frame
             .tiles
             .first()
-            .is_some_and(|tile| !crate::interior::has_back_wall(&tile.source.tileset_id))
+            .is_some_and(|tile| !crate::interior::has_back_wall(&tile.source.tileset_id)
+                || crate::interior::open_air_roof(&frame.map_id,&tile.source.tileset_id))
 }
 fn sync(
     frame: Res<VisualWorldFrame>,
@@ -306,5 +307,20 @@ mod tests {
             *app.world().get::<Visibility>(dome).unwrap(),
             Visibility::Hidden
         );
+        for (map,atlas) in [("CeladonMansionRoof","mansion"),
+            ("GoldenrodDeptStoreRoof","mart"),("TinTowerRoof","tower")] {
+            {
+                let mut frame=app.world_mut().resource_mut::<VisualWorldFrame>();
+                frame.map_id=map.into();frame.tiles[0].source.tileset_id=atlas.into();
+            }
+            app.update();
+            assert_eq!(*app.world().get::<Visibility>(dome).unwrap(),Visibility::Visible,"{map}");
+        }
+        {
+            let mut frame=app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.map_id="CeladonMansionRoofHouse".into();frame.tiles[0].source.tileset_id="mansion".into();
+        }
+        app.update();
+        assert_eq!(*app.world().get::<Visibility>(dome).unwrap(),Visibility::Hidden);
     }
 }

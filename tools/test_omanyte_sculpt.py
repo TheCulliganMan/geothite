@@ -2,26 +2,28 @@
 """Stored nautilus-shell seams, mantle attachments, clear eyes and grounded fan."""
 import copy,json,os,unittest
 from pathlib import Path
+from skin_glb import packed
 from omanyte_sculpt import sculpture,HEIGHT,CREAM,BLUE,WHITE
 from sculpt_geometry import linear,translate
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_kingdra_sculpt import crossed_faces
-from test_slime_sculpt import ray_intersections
+from sculpt_test_support import indexed_ray_intersections as ray_intersections
 import test_nidorina_sculpt as attachments
 ROOT=Path(os.environ.get('CRYSTAL_OMANYTE_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class OmanyteTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'omanyte.mesh.json').read_bytes())
+ def setUpClass(cls):cls.model=__import__('nautilus_glb').read_nautilus(ROOT/'omanyte.glb', 'omanyte')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def test_closed_outward_surfaces(self):assert_closed_models(self,{'omanyte':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'omanyte':self.m})
  def test_recipe_height_floor_palette_and_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),32);self.assertEqual(len({p['part'] for p in self.ps}),32)
+  from nautilus_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),32);self.assertEqual(len({p['part'] for p in self.ps}),32)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),22000)
-  self.assertEqual(self.find('Shell /')['base_color'],linear(CREAM));self.assertEqual(self.find('Body /')['base_color'],linear(BLUE))
-  for s in (-1,1):self.assertEqual(self.find('Eye /',s)['base_color'],linear(WHITE))
+  self.assertEqual(packed(self.find('Shell /')['base_color']),packed(linear(CREAM)));self.assertEqual(packed(self.find('Body /')['base_color']),packed(linear(BLUE)))
+  for s in (-1,1):self.assertEqual(packed(self.find('Eye /',s)['base_color']),packed(linear(WHITE)))
  def test_mantle_eyes_and_all_tentacles_have_actual_volume_roots(self):
   body=self.find('Body /');self.assertTrue(self.overlap(self.find('Shell /'),body))
   for p in self.ps:

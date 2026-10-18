@@ -18,7 +18,9 @@ def occupied(p,point):
 
 class SteelixTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'steelix.mesh.json').read_bytes())
+ def setUpClass(cls):
+  from steelix_glb import read_steelix
+  cls.model=read_steelix(ROOT/'steelix.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
@@ -27,7 +29,8 @@ class SteelixTests(unittest.TestCase):
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'steelix':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'steelix':self.m})
  def test_recipe_parity_height_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),45000)
+  from steelix_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000);self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000)
   self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for label,n in (('Segment /',10),('Joint /',9),('Spike /',8),('Upper tooth /',4),('Lower tooth /',3),('Iris /',2),('Head /',1),('Jaw /',1),('Tail /',1)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
   self.assertFalse(any('prong' in p['part'].lower() for p in self.ps))

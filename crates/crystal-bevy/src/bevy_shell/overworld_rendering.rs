@@ -1067,11 +1067,7 @@ fn spawn_visible_battle_tower_challenge_menu(
         .visible_battle_tower_challenge_menu
         .as_ref()
         .context("no Battle Tower challenge menu is open")?;
-    let options: &[&str] = if menu.english {
-        &["CHALLENGE", "EXPLANATION", "CANCEL"]
-    } else {
-        &["NEWS", "NEWS", "???", "CANCEL"]
-    };
+    let options = visible_battle_tower_challenge_options(menu.english);
     let selected = strict_readonly_cursor_index(
         &Some(menu.cursor.clone()),
         "script:battle-tower-challenge",
@@ -5847,7 +5843,7 @@ fn spawn_scene_dialog(
             let y_tile = top as f32 + 2.0 + index as f32 * 2.0;
             let (x, y) = battle_hud_tile_origin(left as f32 + 2.0, y_tile);
             spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images,
-                option, x, y, 4.4);
+                crate::visible_script_menu_option_label(menu, option), x, y, 4.4);
             if index == selected {
                 let (x, y) = battle_hud_tile_origin(left as f32 + 1.0, y_tile);
                 spawn_scene_dialog_bitmap_text(commands, rendered_art, asset_root, images,
@@ -12786,7 +12782,7 @@ fn push_visible_runtime_menu_dialog_entries(
                         } else {
                             " "
                         };
-                        format!("{marker}{option}")
+                        format!("{marker}{}",crate::visible_script_menu_option_label(menu,option))
                     })
                     .collect::<Vec<_>>()
                     .join(" ");
@@ -12798,7 +12794,7 @@ fn push_visible_runtime_menu_dialog_entries(
             windowed_index_range(cursor_index, vertical.options.len()).map(|index| {
                 let option = &vertical.options[index];
                 let marker = if index == cursor_index { ">" } else { " " };
-                compact_scene_label(&format!("{marker}{option}"), SCENE_DIALOG_TEXT_CHARS)
+                compact_scene_label(&format!("{marker}{}",crate::visible_script_menu_option_label(menu,option)), SCENE_DIALOG_TEXT_CHARS)
             }),
         );
         if entries.len() >= SCENE_MENU_VISIBLE_ROWS {

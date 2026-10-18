@@ -8,6 +8,9 @@ pub(super) fn is_map(map:&str)->bool {
 pub(super) fn matches(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
     if !is_map(map)||p.width!=2||p.base_pixels!=0.||cells.len()!=g.width*g.height
         ||p.column+2>g.width||p.row+p.height>g.height {return false;}
+    if p.kind==ModelKind::PottedPlant&&p.height==8 {
+        return topiary_source(map,p,cells,g);
+    }
     let first=&cells[p.row*g.width+p.column].source;
     if p.kind==ModelKind::PictureFrame&&wall_donor(cells,g,p.row).is_none(){return false;}
     let (origin,art):([u8;2],&[u16])=match (p.kind,p.height,first.metatile_id,first.subtile_column) {
@@ -39,10 +42,25 @@ pub(super) fn matches(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry
     })
 }
 
+// The tall west-edge topiary is one drawing crossing two source blocks.
+// Authenticate all sixteen cells before claiming it, including the lower pot.
+fn topiary_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
+    if map!="RadioTower2F"||p.width!=2||p.height!=8
+        ||p.column+2>g.width||p.row+8>g.height||cells.len()!=g.width*g.height {return false;}
+    let art=[0x80,0x81,0x82,0x83,0x84,0x85,0x86,0x87,
+        0x88,0x89,0x82,0x83,0x44,0x45,0x4a,0x4b];
+    p.indices(g.width).enumerate().all(|(j,i)| {
+        let s=&cells[i].source;let y=j/2;
+        s.tileset_id.as_ref()=="radio_tower"&&s.metatile_id==(if y<4 {0x30}else{0x1f})
+            &&s.subtile_column==(j%2)as u8&&s.subtile_row==(y%4)as u8
+            &&s.tile_index==art[j]
+    })
+}
+
 pub(super) fn candidates(map:&str,cells:&[&VisualTile],g:&GridGeometry,claimed:&mut[bool],out:&mut Vec<Placement>) {
     if !is_map(map)||g.width<2||cells.len()!=g.width*g.height||claimed.len()!=cells.len(){return;}
     let Some(ground)=ground_sample(cells,map,"radio_tower",1)else{return;};
-    for (kind,height,depth,rise) in [(ModelKind::WallAcoustic,2,3.,32.),(ModelKind::WallAcoustic,1,3.,32.),
+    for (kind,height,depth,rise) in [(ModelKind::PottedPlant,8,12.,56.),(ModelKind::WallAcoustic,2,3.,32.),(ModelKind::WallAcoustic,1,3.,32.),
         (ModelKind::PictureFrame,2,3.,32.),(ModelKind::PottedPlant,4,12.,24.)] {
         if height>g.height {continue;}
         for row in 0..=g.height-height {for column in 0..=g.width-2 {
@@ -121,10 +139,15 @@ pub(super) fn append(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,cells
     b:[f32;4],selected:&crate::interior_models::Model,origin:[i32;2]) {
     let [w,e,_,s]=b;let scale=g.tile_height/8.;
     if p.kind==ModelKind::PottedPlant {
-        assert!(selected.append_native_facility_plant(out,b,p.height_pixels*scale,
-            // The common lower crown provides stable green swatches even
-            // when the upper source slots are supplied by the live renderer.
-            native_source_swatches(p,g,[[3,19],[2,19],[4,19],[3,25],[3,26],[4,26]])));
+        if p.height==8 {
+            assert!(selected.append_native_facility_topiary(out,b,scale,
+                native_source_swatches(p,g,[[3,51],[2,51],[4,51],[3,57],[3,58],[4,58]])));
+        } else {
+            assert!(selected.append_native_facility_plant(out,b,p.height_pixels*scale,
+                // The common lower crown provides stable green swatches even
+                // when the upper source slots are supplied by the live renderer.
+                native_source_swatches(p,g,[[3,19],[2,19],[4,19],[3,25],[3,26],[4,26]])));
+        }
         // Plants on the north perimeter stand in front of a continuous wall.
         // Interior plants keep their own free-standing footprint.
         if p.height==4&&p.row as i32+origin[1]==0 {
@@ -175,6 +198,35 @@ mod tests {
             let plants=p.iter().filter(|p|p.kind==ModelKind::PottedPlant&&matches(name,p,&refs,&g)).collect::<Vec<_>>();
             let expected=data.blocks.iter().map(|&b|match b {0x0b|0x2f=>2,0x31|0x1f|0x37|0x3c=>1,_=>0}).sum::<usize>();
             assert_eq!(plants.len(),expected,"{name} must preserve every full plant drawing");
+            if name=="RadioTower2F" {
+                let topiary=plants.iter().find(|p|p.height==8).expect("cross-block topiary");
+                assert_eq!((topiary.column,topiary.row,topiary.height_pixels),(0,8,56.));
+                assert!(!p.iter().any(|q|q.height==4&&q.column==0&&q.row==12),
+                    "one topiary must own its lower pot, without a duplicate plant");
+                for bad in topiary.indices(w) {
+                    let mut altered=t.clone();altered[bad].source.tile_index^=0x80;
+                    let refs=altered.iter().collect::<Vec<_>>();
+                    assert!(!resolve(name,&refs,&g,None).iter().any(|q|q.height==8&&q.kind==ModelKind::PottedPlant));
+                }
+                // Production pads short rooms to the LCD minimum and can
+                // include surrounding cells; source identity must survive that.
+                let pg=GridGeometry{width:w+4,height:h+4,..g};
+                let mut padded=vec![t[0].clone();pg.width*pg.height];
+                for tile in &mut padded {tile.source.metatile_id=u16::MAX;}
+                for y in 0..h {for x in 0..w {padded[(y+2)*pg.width+x+2]=t[y*w+x].clone();}}
+                let pref=padded.iter().collect::<Vec<_>>();
+                let mut shifted=(*topiary).clone();shifted.column+=2;shifted.row+=2;
+                assert!(matches(name,&shifted,&pref,&pg),"padded live frame retains full drawing");
+                assert!(!matches("RadioTower1F",&shifted,&pref,&pg));
+                let mut custom_claimed=vec![false;w*h];custom_claimed[topiary.row*w]=true;
+                let mut candidate=Vec::new();
+                candidates(name,&refs,&g,&mut custom_claimed,&mut candidate);
+                assert!(!candidate.iter().any(|q|q.height==8),"custom ownership wins");
+                let mut topiary_mesh=TerrainMeshData{footing_heights:vec![2.5;w*h],..Default::default()};
+                assert!(super::super::append(&mut topiary_mesh,name,&refs,&g,topiary,&mut vec![false;w*h],[0,0]));
+                assert!(topiary_mesh.textured.positions.iter().any(|v|v[1]>50.));
+                assert_eq!(topiary_mesh.footing_heights,vec![2.5;w*h]);
+            }
             assert!(!p.iter().any(|p|p.kind==ModelKind::ArcadeStool&&refs[p.row*w+p.column].source.metatile_id==0x0b));
             let mut claimed=vec![false;w*h];let mut mesh=TerrainMeshData{footing_heights:vec![2.5;w*h],..Default::default()};
             for piece in p.iter().filter(|p|matches(name,p,&refs,&g)) {
@@ -185,6 +237,23 @@ mod tests {
             assert!(mesh.solid.indices.is_empty());
             assert!(mesh.textured.positions.iter().any(|v|v[1]>=32.));
             assert!(mesh.textured.normals.iter().all(|n|(Vec3::from_array(*n).length()-1.).abs()<0.0001));
+            for picture in p.iter().filter(|p|p.kind==ModelKind::PictureFrame&&matches(name,p,&refs,&g)) {
+                let mut sign=TerrainMeshData{footing_heights:vec![2.5;w*h],..Default::default()};
+                assert!(super::super::append(&mut sign,name,&refs,&g,picture,&mut vec![false;w*h],[0,0]));
+                for y in 0..2 {for x in 0..2 {
+                    let uv=g.uv(picture.column+x,picture.row+y);
+                    let count=sign.textured.indices.chunks_exact(3).filter(|tri| {
+                        let q=[tri[0],tri[1],tri[2]].map(|i|sign.textured.uvs[i as usize]);
+                        let area=(q[1][0]-q[0][0])*(q[2][1]-q[0][1])-(q[1][1]-q[0][1])*(q[2][0]-q[0][0]);
+                        area.abs()>0.0000001&&tri.iter().all(|&i| {
+                            let i=i as usize;let q=sign.textured.uvs[i];let v=sign.textured.positions[i];
+                            sign.textured.normals[i][2]>0.5&&v[1]>=15.&&v[1]<=31.
+                                &&q[0]>=uv.0&&q[0]<=uv.1&&q[1]>=uv.2&&q[1]<=uv.3
+                        })
+                    }).count();assert_eq!(count,2,"native radio art must not get a second generic overlay");
+                }}
+                assert_eq!(sign.footing_heights,vec![2.5;w*h]);
+            }
             let seat_count=data.blocks.iter().map(|&b|match b {0x11=>2,0x24=>1,_=>0}).sum::<usize>();
             assert_eq!(p.iter().filter(|p|chair_source(name,p,&refs,&g)).count(),seat_count,
                 "both native seat variants must stay in front of the rear wall");
@@ -247,7 +316,7 @@ mod tests {
                 assert!((uv[1]-v[2]/(h as f32*8.)).abs()<0.0001);
             }
             assert!(resolve("UnreviewedRadioLobby",&refs,&g,None).iter().all(|p|!matches("UnreviewedRadioLobby",p,&refs,&g)));
-            if let Some(plant)=plants.first() {
+            if let Some(plant)=plants.iter().find(|p|p.height==4) {
                 let i=plant.row*w+plant.column;let source=&t[i].source;
                 let object:crate::live_profiles::Object=serde_json::from_value(serde_json::json!({
                     "name":"Custom radio lobby plant","map":name,"tileset":"radio_tower",

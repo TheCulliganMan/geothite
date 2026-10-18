@@ -287,6 +287,41 @@ fn open_visible_remember_password_for_script_command(
     Ok(true)
 }
 
+fn visible_battle_tower_challenge_options(english: bool) -> &'static [&'static str] {
+    if english { &["CHALLENGE", "EXPLANATION", "CANCEL"] }
+    else { &["NEWS", "NEWS", "???", "CANCEL"] }
+}
+
+fn visible_battle_tower_controller_entries(runtime_shell: &BevyRuntimeShell) -> Result<Option<Vec<String>>> {
+    if let Some(menu)=runtime_shell.visible_battle_tower_challenge_menu.as_ref() {
+        let options=visible_battle_tower_challenge_options(menu.english);
+        let selected=strict_readonly_cursor_index(&Some(menu.cursor.clone()),
+            "script:battle-tower-challenge",options.len()).context("Battle Tower challenge cursor")?;
+        return Ok(Some(options.iter().enumerate().map(|(i,label)|
+            format!("{}{}",if i==selected {">"}else{" "},label)).collect()));
+    }
+    if let Some(menu)=runtime_shell.visible_battle_tower_room_menu.as_ref() {
+        let entries=match &menu.phase {
+            VisibleBattleTowerRoomMenuPhase::PickLevel=>{
+                let selected=strict_readonly_cursor_index(&Some(menu.cursor.clone()),
+                    "script:battle-tower-room",menu.level_groups.len()+1).context("Battle Tower level cursor")?;
+                let mut entries=vec!["What level do you want to challenge?".to_string()];
+                entries.extend(menu.level_groups.iter().map(|group|format!("L:{:>3}",u16::from(*group)*10))
+                    .chain(std::iter::once("CANCEL".to_string())).enumerate().map(|(i,label)|
+                        format!("{}{}",if i==selected {">"}else{" "},label)));
+                entries
+            }
+            VisibleBattleTowerRoomMenuPhase::ConfirmCancel { yes_no_index }=>vec![
+                "Cancel your BATTLE ROOM challenge?".into(),
+                format!("{}YES",if *yes_no_index==0 {">"}else{" "}),
+                format!("{}NO",if *yes_no_index==1 {">"}else{" "})],
+            VisibleBattleTowerRoomMenuPhase::Rejection { message }=>vec![message.clone()],
+        };
+        return Ok(Some(entries));
+    }
+    Ok(None)
+}
+
 fn open_visible_battle_tower_challenge_menu_for_script_command(
     runtime_shell: &mut BevyRuntimeShell,
     source_script: &str,
@@ -3283,10 +3318,8 @@ fn queue_visible_slow_cry(runtime_shell: &mut BevyRuntimeShell, species: &str) -
     let cry = snapshot.presentation.pokemon_cries.get(species)
         .with_context(|| format!("missing cry metadata for {species}"))?;
     let parameters = crystal_audio::pcm::CrySynthesisParameters::slow(cry.pitch, cry.length);
-    let audio_id = format!("CRY_MON_{species}");
-    anyhow::ensure!(matches!(runtime_shell.shell.runtime().audio().require_cry(&audio_id)?.source,
-        AudioProgramSource::Midi { loop_start_sample: None, loop_end_sample: None, .. }),
-        "slow cry requires the bundled species MIDI program");
+    let audio_id = cry.cry.clone();
+    runtime_shell.shell.runtime().audio().require_cry(&audio_id)?;
     let playback = runtime_shell.shell.runtime().audio()
         .require_playback_entry(AudioKind::Cry, &audio_id)?;
     let mode = playback.mode;
@@ -3318,9 +3351,9 @@ fn queue_visible_pokemon_cry(
         .pokemon_cries
         .get(species_id)
         .with_context(|| format!("Pokemon species {species_id} has no pack cry metadata"))?;
-    // PlayMonCry uses the species metadata's exported CRY_* program. Selector-
-    // based CRY_MON_* variants belong to battle animation `cry` commands, not
-    // ordinary species cries such as Oak's Wooper showcase.
+    // Ordinary species cries retain the metadata's exported CRY_* playback.
+    // Animation and slow-cry commands apply cartridge registers to that same
+    // bundled source instead of requiring a separate species alias catalog.
     let cry_id = cry.cry.clone();
     let state_checksum = snapshot.state_checksum.clone();
     let playback = runtime_shell
@@ -3362,14 +3395,17 @@ fn queue_visible_pokemon_cry(
     Ok(())
 }
 
-fn visible_pokemon_animation_cry_id(species_id: &str, selector: u8) -> String {
-    let suffix = match selector & 0x03 {
-        0 => "_GROWL",
-        1 => "_ROAR",
-        2 | 3 => "",
-        _ => unreachable!(),
-    };
-    format!("CRY_MON_{species_id}{suffix}")
+fn visible_pokemon_animation_cry_parameters(
+    cry: &crate::assets::PokemonCryMetadata,
+    selector: u8,
+) -> crystal_audio::pcm::CrySynthesisParameters {
+    // BattleAnimCmd_Cry loads the species registers, then adds .CryData.
+    // These are cartridge words: the length addition wraps at sixteen bits.
+    let length_delta=match selector & 3 {0=>0x00c0,1=>0x0040,_=>0};
+    crystal_audio::pcm::CrySynthesisParameters {
+        pitch: cry.pitch as u16,
+        length: (cry.length as u16).wrapping_add(length_delta),
+    }
 }
 
 fn queue_visible_pokemon_animation_cry(
@@ -3378,12 +3414,13 @@ fn queue_visible_pokemon_animation_cry(
     selector: u8,
 ) -> Result<()> {
     let snapshot = runtime_shell.shell.snapshot()?;
-    snapshot
+    let cry=snapshot
         .presentation
         .pokemon_cries
         .get(species_id)
         .with_context(|| format!("Pokemon species {species_id} has no pack cry metadata"))?;
-    let cry_id = visible_pokemon_animation_cry_id(species_id, selector);
+    let cry_id = cry.cry.clone();
+    let parameters=visible_pokemon_animation_cry_parameters(cry,selector);
     let state_checksum = snapshot.state_checksum.clone();
     let playback = runtime_shell
         .shell
@@ -3399,7 +3436,7 @@ fn queue_visible_pokemon_animation_cry(
         &mut runtime_shell.pending_audio,
         BevyAudioCommand {
             battle_sound: None,
-            cry_parameters: None,
+            cry_parameters: Some(parameters),
             audio_id: cry_id.clone(),
             kind: ModpackAudioKind::Cry,
             mode: playback.mode,
@@ -4101,26 +4138,90 @@ impl VisibleMapCatalogEntry for std::sync::Arc<crate::RuntimeMapCatalogSnapshot>
     }
 }
 
+/// Two connection hops complete landmarks whose source drawing straddles a
+/// neighboring map (for example Lavender's tower roof on Route10South).
+/// Keep distant maps below direct neighbors in overlap precedence, and stop
+/// reciprocal connections from repeating the same map placement.
+fn connected_render_map_placements<'a, M: VisibleMapCatalogEntry>(
+    active_map_name: &str, maps: &'a [M],
+) -> Result<Vec<(&'a crate::RuntimeMapCatalogSnapshot, i32, i32)>> {
+    let lookup = |name: &str| maps.iter().map(VisibleMapCatalogEntry::visible_map)
+        .find(|map| map.map_name == name);
+    let active = lookup(active_map_name)
+        .ok_or_else(|| anyhow::anyhow!("render map {active_map_name} is missing"))?;
+    // The two outdoor gate drawings flank one interior warp room. Compose
+    // their real scenery across that visual seam without adding a game map
+    // connection or changing collision/warp ownership.
+    let gate_plot=|map:&crate::RuntimeMapCatalogSnapshot,rows:&[&[u16]],inset:i32| {
+        let w=usize::from(map.attributes.width);let h=usize::from(map.attributes.height);
+        if w==0 || rows.is_empty() || map.blocks.len()!=w*h {return None;}
+        for row in 0..h.saturating_sub(rows.len()-1) {
+            for col in 0..w.saturating_sub(rows[0].len()-1) {
+                if rows.iter().enumerate().all(|(dy,line)|line.iter().enumerate()
+                    .all(|(dx,b)|map.blocks[(row+dy)*w+col+dx]==*b)) {
+                    return Some((col as i32*4+inset,row as i32*4));
+                }
+            }
+        }
+        None
+    };
+    let gate_link=lookup("Route40").zip(lookup("BattleTowerOutside")).and_then(|(route,tower)| {
+        if route.attributes.tileset_name!="johto" || tower.attributes.tileset_name!="battle_tower_outside"
+            || ![route,tower].iter().all(|m|m.events.warps.iter().any(|w|
+                w.target_map_constant=="ROUTE_40_BATTLE_TOWER_GATE")) {return None;}
+        let r=gate_plot(route,&[&[0x18,0x19],&[0x16,0x1e]],0)?;
+        let t=gate_plot(tower,&[&[0x2e,0x18,0x2f],&[0x30,0x16,0x31]],2)?;
+        Some((route,tower,r.0-t.0,r.1-t.1))
+    });
+    let mut pending = vec![(active, 0i32, 0i32, 0u8)];
+    let mut visited = std::collections::HashSet::from([(active.map_name.as_str(), 0i32, 0i32)]);
+    let mut cursor = 0;
+    while cursor < pending.len() {
+        let (source, x, y, depth) = pending[cursor];
+        cursor += 1;
+        if depth == 2 { continue; }
+        if let Some((route,tower,dx,dy))=gate_link {
+            let link=if source.map_name==route.map_name {Some((tower,dx,dy))}
+                else if source.map_name==tower.map_name {Some((route,-dx,-dy))}else{None};
+            if let Some((target,dx,dy))=link {
+                let next=(target.map_name.as_str(),x.saturating_add(dx),y.saturating_add(dy));
+                if visited.insert(next) {pending.push((target,next.1,next.2,depth+1));}
+            }
+        }
+        for connection in &source.attributes.connections {
+            let target = lookup(&connection.target_map).ok_or_else(|| anyhow::anyhow!(
+                "connection target {} referenced by {} is missing from the map catalog",
+                connection.target_map, source.map_name))?;
+            let scale = i32::from(RENDER_METATILE_WIDTH);
+            let offset = connection.offset.saturating_mul(scale);
+            let (dx, dy) = match connection.direction.to_ascii_lowercase().as_str() {
+                "north" => (offset, -i32::from(target.attributes.height)*scale),
+                "south" => (offset, i32::from(source.attributes.height)*scale),
+                "west" => (-i32::from(target.attributes.width)*scale, offset),
+                "east" => (i32::from(source.attributes.width)*scale, offset),
+                _ => continue,
+            };
+            let next = (target.map_name.as_str(), x.saturating_add(dx), y.saturating_add(dy));
+            if visited.insert(next) { pending.push((target, next.1, next.2, depth+1)); }
+        }
+    }
+    pending.sort_by_key(|(_,_,_,depth)| if *depth == 0 { 0 } else { 3-depth });
+    Ok(pending.into_iter().map(|(map,x,y,_)|(map,x,y)).collect())
+}
+
 fn visible_map_block_identity_from_catalog<M: VisibleMapCatalogEntry>(
     active_map_name: &str,
     maps: &[M],
 ) -> u64 {
     let mut hasher = std::collections::hash_map::DefaultHasher::new();
     active_map_name.hash(&mut hasher);
-    let active = maps
-        .iter()
-        .map(VisibleMapCatalogEntry::visible_map)
-        .find(|map| map.map_name == active_map_name);
-    active.map(|map| map.blocks.as_slice()).hash(&mut hasher);
-    if let Some(active) = active {
-        for connection in &active.attributes.connections {
-            connection.target_map.hash(&mut hasher);
-            maps.iter()
-                .map(VisibleMapCatalogEntry::visible_map)
-                .find(|map| map.map_name == connection.target_map)
-                .map(|map| map.blocks.as_slice())
-                .hash(&mut hasher);
-        }
+    match connected_render_map_placements(active_map_name, maps) {
+        Ok(placements) => for (map,x,y) in placements {
+            map.map_name.hash(&mut hasher);
+            (x,y).hash(&mut hasher);
+            map.blocks.hash(&mut hasher);
+        },
+        Err(error) => error.to_string().hash(&mut hasher),
     }
     hasher.finish()
 }
@@ -4164,6 +4265,85 @@ mod visible_map_block_identity_tests {
             objects: Vec::new(),
             blocks,
         }
+    }
+
+    #[test]
+    fn tower_gate_backdrop_joins_real_exteriors_without_changing_game_connections() {
+        let mut route=map_snapshot("Route40",vec![1;180],vec![]);
+        route.attributes.width=10;route.attributes.height=18;route.attributes.tileset_name="johto".into();
+        let mut tower=map_snapshot("BattleTowerOutside",vec![1;140],vec![]);
+        tower.attributes.width=10;tower.attributes.height=14;tower.attributes.tileset_name="battle_tower_outside".into();
+        for (map,rows,x,y) in [(&mut route,vec![vec![0x18,0x19],vec![0x16,0x1e]],4,1),
+            (&mut tower,vec![vec![0x2e,0x18,0x2f],vec![0x30,0x16,0x31]],3,11)] {
+            for (dy,row) in rows.iter().enumerate() {for (dx,b) in row.iter().enumerate(){map.blocks[(y+dy)*10+x+dx]=*b;}}
+            map.events.warps.push(crystal_core::map::WarpEvent {index:1,x:8,y:5,
+                target_map_constant:"ROUTE_40_BATTLE_TOWER_GATE".into(),target_map:"Route40BattleTowerGate".into(),target_warp_id:1});
+        }
+        let maps=vec![route,tower];let original=maps.clone();
+        for (active,target,offset) in [("Route40","BattleTowerOutside",(2,-40)),("BattleTowerOutside","Route40",(-2,40))] {
+            let placements=connected_render_map_placements(active,&maps).unwrap();
+            assert_eq!(placements.len(),2);assert_eq!(placements[0].0.map_name,active);
+            assert_eq!((placements[1].0.map_name.as_str(),placements[1].1,placements[1].2),(target,offset.0,offset.1));
+        }
+        assert_eq!(maps,original,"presentation cannot add authoritative map connections");
+        let key=visible_map_block_identity_from_catalog("Route40",&maps);
+        let mut changed=maps.clone();changed[1].blocks[0]=9;
+        assert_ne!(key,visible_map_block_identity_from_catalog("Route40",&changed));
+        for index in [0,1] {
+            let mut changed=maps.clone();changed[index].events.warps.clear();
+            assert_eq!(connected_render_map_placements("Route40",&changed).unwrap().len(),1);
+        }
+        let mut changed=maps.clone();changed[1].blocks[113]^=1;
+        assert_eq!(connected_render_map_placements("Route40",&changed).unwrap().len(),1);
+    }
+
+    #[test]
+    fn connected_landmark_sources_include_roof_and_preserve_neighbor_precedence() {
+        let connection=|direction: &str,target: &str,offset| crystal_core::map::MapConnection {
+            direction:direction.into(),target_map:target.into(),offset };
+        let mut route=map_snapshot("Route12",vec![1],vec![connection("north","LavenderTown",0)]);
+        route.attributes.width=10;route.attributes.height=54;
+        let mut town=map_snapshot("LavenderTown",vec![2],vec![
+            connection("north","Route10South",0),connection("south","Route12",0)]);
+        town.attributes.width=10;town.attributes.height=9;
+        let mut roof=map_snapshot("Route10South",vec![3],vec![connection("north","Beyond",0)]);
+        roof.attributes.width=10;roof.attributes.height=9;
+        let maps=vec![route,town,roof,map_snapshot("Beyond",vec![4],vec![])];
+        let placements=connected_render_map_placements("Route12",&maps).unwrap();
+        assert_eq!(placements.iter().map(|(m,x,y)|(m.map_name.as_str(),*x,*y)).collect::<Vec<_>>(),
+            vec![("Route12",0,0),("Route10South",0,-72),("LavenderTown",0,-36)]);
+        let key=visible_map_block_identity_from_catalog("Route12",&maps);
+        let mut changed=maps.clone();changed[2].blocks[0]=9;
+        assert_ne!(key,visible_map_block_identity_from_catalog("Route12",&changed),
+            "a runtime edit to the connected roof must rebuild the terrain");
+        changed=maps.clone();changed[3].blocks[0]=9;
+        assert_eq!(key,visible_map_block_identity_from_catalog("Route12",&changed),
+            "the bounded two-hop halo must not hash unrelated distant terrain");
+    }
+
+    #[test]
+    fn connected_landmark_offsets_accumulate_and_missing_maps_report_the_source() {
+        let connection=|direction: &str,target: &str,offset| crystal_core::map::MapConnection {
+            direction:direction.into(),target_map:target.into(),offset };
+        let maps=vec![map_snapshot("Active",vec![1,2],vec![connection("east","Side",3)]),
+            map_snapshot("Side",vec![3,4,5],vec![connection("north","Roof",-2)]),
+            map_snapshot("Roof",vec![6],vec![])];
+        let placements=connected_render_map_placements("Active",&maps).unwrap();
+        assert_eq!(placements.iter().map(|(m,x,y)|(m.map_name.as_str(),*x,*y)).collect::<Vec<_>>(),
+            vec![("Active",0,0),("Roof",0,8),("Side",8,12)]);
+        let error=connected_render_map_placements("Active",&maps[..2]).unwrap_err().to_string();
+        assert!(error.contains("Roof") && error.contains("Side"));
+    }
+
+    #[test]
+    fn connected_landmark_keeps_distinct_authored_placements_of_one_map() {
+        let connection=|offset| crystal_core::map::MapConnection {
+            direction:"east".into(),target_map:"Neighbor".into(),offset };
+        let maps=vec![map_snapshot("Active",vec![1,2],vec![connection(0),connection(3)]),
+            map_snapshot("Neighbor",vec![3],vec![])];
+        let placements=connected_render_map_placements("Active",&maps).unwrap();
+        assert_eq!(placements.iter().map(|(m,x,y)|(m.map_name.as_str(),*x,*y)).collect::<Vec<_>>(),
+            vec![("Active",0,0),("Neighbor",8,0),("Neighbor",8,12)]);
     }
 
     #[test]

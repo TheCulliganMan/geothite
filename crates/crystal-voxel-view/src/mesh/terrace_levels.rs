@@ -40,7 +40,7 @@ pub(super) fn get_for_family(edges: &[VisualJumpLedge], kanto: bool) -> Arc<Leve
     levels
 }
 
-fn corner_domain(
+pub(super) fn corner_domain(
     vertex: IVec2,
     owner: usize,
     index: &impl Fn(IVec2) -> Option<usize>,

@@ -1,3 +1,4862 @@
+Native continuous League capture gates corrected — 2026-10-18
+
+Added the opt-in location-tester example review_native_league and an adaptive
+RenderWalk policy. It begins outside Will in Indigo Plateau with one initial
+legal level100 Mew, four legal moves/max PP and five Full Restores. Later
+progression uses ordinary keyboard edges through the existing native input
+owner. Routing probes clones only; it never installs their state. Victory
+flags, spent/carried PP, Pack healing stock, actual exits, ceremony, credits
+and the normal Continue summary are checked rather than supplied.
+
+The driver captures matched 3D/2D checkpoints within the same running App,
+pausing presentation/input during readback and then resuming. Battle evidence
+requires actual modeled species and room scenery; GPU readback owns captures.
+Hall entrance samples wait until visible scroll poses; animation frames and
+fully revealed Oak rating pages get separate captures. Blank phase entries
+cannot satisfy these pose checks. Each League room requires arrival, actual
+walking, battle and earned checkpoints. Art acceptance still requires viewing
+every image; generated completion metadata deliberately leaves that false.
+
+Native example builds passed4m45s,4m18s and6m16s. Pipeline18877 is terminal1:
+its Python3.9 hash helper failed after compilation and before any native input;
+the ignored helper was corrected and the completed build reused. Resume66126
+ran the ordinary paired Power Plant UD control successfully11.45s: all two
+full images/two moving samples individually inspected, source checksum exact,
+64 frames(9,9)→(9,8)→(9,9), one terrain build, no warp/fade. Existing capture
+input still works with the added opt-in policy.
+
+The first native League attempt stopped before startup: guessed Indigo tile
+(14,4) is not walkable in this actual pack. No battles, flags or saves were
+created. The example now derives Will's actual compiled warp and probes all
+four adjacent approaches on cloned sessions, requiring a real step/warp before
+choosing the initial tile. The native policy follows that actual direction;
+no south-facing stair assumption remains. Warp build43585/Cargo73603 passed
+5m30s. Adaptive-direction build82195 passed6m16s and its v2 run entered Will
+through the real compiled warp(14,3), approaching from(15,3) with ordinary Left.
+It walked to(5,8), completed the trainer dialogue and reached the actual
+Mew–Xatu battle without spending PP or earning a win yet.
+
+All four v2 field images were individually inspected and rejected: they still
+show Indigo Plateau while the core is WillsRoom. A preserved paused state is
+insufficient when the rendered room is stale. The v2 run then stopped at the
+reviewer's erroneous unconditional row-cache gate. Actual native status was
+active PBR/native, modeled MEW/XATU, actual WillsRoom scenery, no source species
+or scenery fallback; row-cache receipts are unused for this normal scene draw.
+No battle image or native model-quality acceptance is claimed from that status.
+The rejection and hash-zero metadata diagnosis are recorded in v2's
+individual-room-review.json; pipeline82195 is terminal1.
+
+New capture/input gates require the actual rendered map and installed terrain
+to match the live room. Walking additionally requires a committed in-room step
+from a QA arrow, excluding an inherited warp stride. Earned rooms are held
+before later dialogue/exit input. Row receipts are required only for an image
+composite; normal native scenes still require modeled species, actual scenery
+and GPU screenshot readback. Receipts now report the real authoritative hash
+rather than presentation_snapshot's intentional zero placeholder, plus actual
+source event flags and block overrides. The paired comparator already used
+full integrity snapshots; that comparison was not replaced or weakened.
+Map-gate build63531 passed4m01s. Final v3 pipeline95488/Python78363/Cargo78366 is
+live, compiling the latest complete gate changes before a fresh session. Logs,
+rejected images and pending v3 evidence stay under target/kanto-resume. Native
+League acceptance remains pending; no five-win/ceremony completion is claimed.
+Keep the full original16, all311/shared-furniture, party-variant, animation and
+whole-room obligations open. No geometry, gameplay dispatcher, source flags,
+packs or audio changed for this harness. The deleted
+docs/handoff/kanto-interiors.md remains deleted; this checkpoint and
+docs/modeled-interiors.md retain the current handoff.
+
+Power Plant smooth housing reveal verified offscreen — 2026-10-18
+
+Replaced only the twelve machine housings' depth-coverage ranges with the
+existing layered-alpha policy. The renderer already separates depth writing
+from pixel coverage: this uses smooth forward alpha with depth ordering, not
+ordinary multilayer blending. The closed4-source-pixel bed and floor remain
+outside every fade range. Geometry, UVs, source claims and support are unchanged.
+
+Source session19224/Cargo58970 is terminal0: three equipment checks4.41s after
+4m25s build; exact layered ranges, no coverage mask and opaque beds verified.
+Three aggregate-floor4.60s, seven divider, compaction1,43 fade0.58s and one
+smooth-depth forward-pipeline controls pass. Fresh native examples built6m25s;
+pipeline4850/Python59176 is terminal0.
+
+All12 pairs/24 full images and eight moving samples were individually inspected
+offscreen. Matched(13,11) front views replace the rejected grain with smooth
+housing ghosts; (11,9) moving views no longer stipple either character. Checked
+poses show no hidden-face clutter. Low beds stay opaque; clear housings retain
+their solid source roofs and controls. Aggregate/office floor, full-height
+stripe divider and backing controls remain intact. Four64-frame walks settle
+(13,11)→(13,10)→(13,11) in cameras0/2 and(11,9)→(11,8)→(11,9) in cameras2/6,
+one active/settled build each, no warp/fade.
+
+The whole311/225 audit equals the completed aggregate baseline exactly: every
+map record, source/support/claim, geometry count, variant and global field is
+unchanged. No new external exception is needed. Receipt:
+power-plant-smooth-housing-full311-invariant-summary.json. Housing-reveal scope
+accepted; whole-room acceptance remains open. Red/black utility-floor drawings
+still need source identity/3D finish review, alongside fixture/material details
+and broader composition. Native continuous earned League/Hall, the original16
+room/material/actor obligations and full interiors/shared-furniture goal remain
+active; this does not close those requirements.
+
+Power Plant aggregate floor verified offscreen — 2026-10-18
+
+Added a separate source-authenticated machinery-floor finish for the296 actual
+facility$1c cells in blocks$1a/$1b/$1c/$2c/$2e. The existing468-cell office
+checker contract is separate. The new surface keeps the blue field and all
+five light/seven dark fleck centers from the original8×8 drawing, with live
+source pigments and shallow faceted insets. It introduces no slab grid and
+stays below the original walking datum; machinery/conduit/wall fragments
+retain their source art. Changed/custom drawings yield to their original owner.
+
+New tests cover every external source phase, actual floor counts, protected
+non-floor art, source/native8/32 scales, full projected coverage, outward
+normals, exact light/dark areas, bounds, support and custom ownership. The
+first source build was intentionally interrupted terminal130 after a winding
+error was found by inspection, not from a timeout; the ring triangulation is
+corrected. Source session46413/Cargo54799 is terminal0: three checks3.95s
+after4m16s compile. Six facility-floor17.38s,34 shared-floor12.75s,13 perimeter
+46.96s, seven divider7.06s, compaction1 and43 fade0.46s controls pass. Fresh
+native examples built3m50s; pipeline49127/Python54968 is terminal0.
+
+All13 source/native pairs (26 full images) and eight moving samples were
+individually inspected offscreen. Two extra direct-aggregate walks (session
+52298 terminal0) prove(11,9)→(11,8)→(11,9), with tile$1c at both endpoints;
+the original two office controls prove(9,9)→(9,8)→(9,9). Each64-frame run has
+one active/settled build and no warp/fade. The blue aggregate is finer and
+continuous around equipment and partial floor fragments; office checker and
+full-height divider remain unchanged. The original floordrawing fleck centers
+and live pigments remain, with faceted insets below the walking datum.
+
+Strict311/225 audit passes:309 other map records and all225 alternatives exact.
+Power source/support/claims are exact. Its296 actual source cells plus112
+existing paired-cabinet ground quads are finished:408 surfaces ×(174−2)
+triangles/(522−4) vertices =+70176 textured triangles/+211344 vertices. The
+cabinet producer already appends those112 Ground::Diamond quads at height0;
+no cabinet body or walkable datum was changed.
+
+The only concurrent external delta is Dragon's Den's existing4-cell notice at
+[36,48,37,49], Johto$45 art$4e/$4f/$5e/$5f. The current outdoor-sign binding
+transfers world-exterior/route_sign to outdoor-sign/modern-frame. Inspected old
+model252 triangles/576 vertices and new1468/3568 account exactly for+1216
+solid triangles/+2992 vertices; its live inscription adds2 textured triangles/
+4 vertices. All remaining Dragon fields/source/support are exact. These files
+were read only; no Dragon visual acceptance is claimed. The checker asserts
+these exact exceptions rather than dropping fields. Receipt:
+power-plant-aggregate-full311-invariant-summary.json.
+
+Aggregate-floor scope accepted. The machine-housing reveal still leaves pixel
+grain over the player/companion at(13,11) and during(11,9) walks; a matched old
+(13,11) render confirms it predates this change. Fix that housing reveal next,
+keeping its shallow bed opaque. Red/black floor drawings still need source
+identity/finish review; machine fixtures, broader room composition, original16
+and native continuous League/Hall remain open.
+
+Lance south barrier geometry verified offscreen — 2026-10-18
+
+Added mesh/lance_south_barrier.rs and integrated authenticated perimeter
+ownership. Actual base$31 keeps both entrance warp lanes open; scripted$34
+builds a closed gray course at the existing48-source-pixel blue-wall ceiling,
+with cap, sole, back and ends. It joins both sides at source row46. All80
+south source cells and the north/side drawings authenticate before suppressing
+the duplicate inferred black exterior. Source state, collision, flags, warps
+and support remain unchanged. Custom/edited/partial drawings retain fallback.
+
+The provisional$33 interpretation was rejected after reading the actual
+collision table: it blocks its north half and is not an authored entrance
+alternative. The final source regression explicitly rejects it. An initial
+test-helper path compile error was repaired; failed receipt is preserved.
+Final source session15929/Cargo51438 is terminal0:8 selected tests59.70s after
+6m40s compile/queue (seven Lance checks plus one unrelated balance-name match).
+These cover both authored south states/either north state, source8/native32
+scale, complete face/volume/winding, every80-cell edit, custom ownership and
+unchanged open floor/support. Current-binary perimeter session94359 is also
+terminal0:13 checks53.59s. Compaction1 and fade43/0.66s pass.
+
+Pipeline37845/Python50664 and native Cargo51905 are terminal0; fresh native
+examples built8m07s including their queue. All eight pairs/16 full images and
+eight moving samples were individually inspected offscreen. Both side views
+show the closed gray course joined to the blue ceiling with finished caps and
+ends; the base state clears both entrance lanes. Front view uses the existing
+outside-wall cutaway policy. The player stays readable at the wall. The192-frame
+closed walk runs(5,19)→(5,22), rejects the fourth Down, then returns to(5,20);
+the64-frame open walk runs(4,21)→(4,20)→(4,21). Both stay active/settled with
+one build and no warp/fade.
+
+Strict311/225 audit passes:310 other map records and222 non-Lance alternatives
+are exact. Lance gains32 base wall claims and eight closed-alternative claims;
+all source/support and other ownership fields are exact. The native course
+adds116 triangles/232 vertices, removes64 flat-source triangles and retires580
+triangles/1160 vertices of inferred exterior: net−528 textured triangles/−928
+vertices; solid geometry is exact. Reviewed counts are asserted explicitly.
+Receipt: lance-south-barrier-full311-invariant-summary.json. Shared native pack
+SHA remains a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Barrier geometry/joins/opening scope accepted. Whole-room fidelity, remaining
+original16 room/material/actor obligations and continuous native League remain
+open; no broad completion is claimed.
+
+Read-only next-task diagnosis: Power Plant has296 noisy machinery-floor tile
+$1c cells in blocks$1a/$1b/$1c/$2c/$2e, distinct from the finished$01/$26 checker.
+A separate source-authenticated finish must preserve their partial block masks
+and collision drawings. No Power floor edit was made during this Lance work.
+
+Power Plant divider ceiling height verified; Trainer basement backing verified — 2026-10-18
+
+Power Plant's divider cap and every side band now scale to the room ceiling:
+128 world units at the production32-unit tile scale. Nine paired source/native
+views and four moving samples were inspected offscreen, including opposite
+sides. Joins and openings remain intact; smooth wall transparency keeps the
+player readable. The311-map/225-variant audit retains exact source claims,
+support and geometry counts. Height/reveal scope is accepted; broader room
+materials and composition remain open.
+
+Trainer basement pipeline63365 and saved-session build18578 are terminal0;
+fresh native examples built7m16s. All13 pairs/26 full images and four moving
+samples were inspected: continuous green backing, upper returns joined to the
+gold arena, open east stairs, low reception counter and visible receptionist.
+Two64-frame walks settle along(5,3)→(6,3)→(5,3) and(5,8)→(5,7)→(5,8).
+Seven divider/counter, six shell, six facility-floor,34 shared-floor,13 perimeter,
+43 fade, compaction and ownership checks pass. Strict311/225 comparison changes
+only Trainer geometry (+2166 textured triangles/+4420 vertices);310 other map
+records, all alternatives, claims and support are exact. See the smooth-reveal
+and Trainer connected-backing invariant receipts under target/kanto-resume/receipts.
+Reception service/battle and whole-room visual acceptance remain open.
+
+Lance diagnostic pipeline51709 is terminal0. Three paired views from the
+unchanged controller-owned entry-locked save confirm its south barrier remains
+flat floor artwork; implementation and native continuous League proof remain
+open. This does not close the broader interiors goal.
+
+Power Plant full-height/smooth reveal verified; Trainer basement backing underway — 2026-10-18
+
+Fresh smooth-reveal native build passed7m08s; pipeline26137 is terminal0.
+All nine PowerPlant native/source pairs (18 full images) and four moving
+samples were individually inspected. The divider reaches the actual128-world
+ceiling at32-unit native tile scale; joins and source openings are intact.
+The smooth translucent reveal replaces cabinet pixel grain and keeps player/
+companion silhouettes readable on both sides and while moving; floor stays
+opaque. Both UD walks settle(9,9)→(9,8)→(9,9),64 active/settled frames each,
+one build, no warp/fade. Scoped height/reveal accepted; machinery-area floor,
+fixture finish and whole-room composition remain open.
+
+Six source divider tests3.49s, one compaction, five shell17.32s, six facility
+floor13.87s,34 shared floor10.61s, both ownership controls,12 perimeter107.93s
+and43 fade1.09s checks pass. Strict311/225 audit equals the completed Silph
+baseline entirely: all map records, alternatives, claims/support/counts exact.
+See facility-divider-smooth-reveal-full311-invariant-summary.json and reviewed
+Power-only provenance. Its three TrainerHouseB1F pairs remain unreviewed and
+are superseded for reception-counter/backing work; this is not whole-family
+or whole-room visual acceptance. This native binary predates the changes below.
+
+TrainerHouseB1F's actual10×16 core-tile room has one east warp(9,4). Extended
+native facility backing through its full rear drawing and upper returns only;
+returns join the existing gold arena at source row12, leave source stair
+rows8–9 open, and add no second green lower enclosure or invented south exit.
+Source authentication covers80 rear cells plus48 stair/arena-join cells; the
+paint donor is its actual green tile22 at source(4,0), not a machine cap.
+Six shell checks pass22.38s; new regression covers source/native scales,
+every rear column and side join, the landing, all128 edits rejecting, unchanged
+source/support and22 old flat wall cells removed while stair artwork survives.
+
+The receptionist at(7,1) stands inside a counter, distinct from arena walls.
+Its unique source$21 return anchors a connected22-cell counter component;
+only that component stays at8-source-pixel desk height. Arena walls remain
+at32-source-pixel ceiling height, without guessed viewport rows. New source/
+production-scale and padded-grid tests verify both heights and unchanged
+support/claims. The first run passed six existing tests but its new count
+assertion expected production162 cells in a direct raw-source fixture; the
+fixture also includes eight cabinet caps retired in production. It actually
+has22 counter+148 wall/cap cells=170, including exactly eight raw cabinet caps.
+The expectation is corrected and explicitly tests that distinction; failure
+receipt is preserved. All seven divider/counter checks pass10.58s after5m47s;
+source session71449 is terminal0. Current six shell28.78s, six facility-floor
+14.02s,34 shared-floor10.49s, compaction and both ownership controls also pass.
+
+Pipeline71203 stopped terminal1 on the broad perimeter check (12 pass/one
+fail52.17s): it expected an inferred green front wall even where the authored
+gold arena already supplies the enclosure. The check now requires upper
+returns to stop at their arena join and separately verifies actual source
+arena front-face coverage at every source column, preserving the front-wall
+gate without adding a duplicate green enclosure. Failure receipt is retained.
+That rerun stopped terminal101 (12 pass/one fail70.33s); pipeline4056 is
+terminal1. Its stricter front check assumed a flat exterior at source row32.
+The actual$3e/$3f corner drawings end in gray footings: corner wall bodies end
+at row31, while the middle$34 course reaches row32. The test now verifies the
+front-facing solid at every column along that exact stepped source outline,
+rather than forcing the arena into a different rectangular footprint. Both
+failed perimeter receipts remain preserved. No runtime geometry was changed
+for this assertion correction.
+
+The corrected source-outline run passes all13 perimeter checks48.98s after
+5m21s compile; source session79459 is terminal0. Pipeline63365/Python44335 is
+live and passes fresh seven divider/counter7.06s, six shell27.25s, six facility
+floor18.58s,34 shared floor14.45s,43 fade0.51s, compaction and both ownership
+controls. Native Cargo45304 is compiling fresh examples. Thirteen paired
+views plus two walks and311/225 comparison follow. Reception fixture(6,3)
+avoids the actual(7,3) battle-prompt coordinate event; actual warp(9,4) is not
+used as a spawn. Trainer backing/counter and receptionist visibility await
+native review.
+
+The original16 matrix still correctly leaves Lance's south barrier open:
+the inspected enclosed portal checkpoint concerns the north door only. A
+fresh saved-session capture tool is queued in session18578/Cargo45695 after
+the active native build. Pipeline51709 waits for that exact build and captures
+three offscreen pairs from the existing controller-owned entry-locked save,
+with state preservation and unchanged save hash checks, to diagnose the
+actual south barrier in current production geometry. It does not seed door
+flags or claim a continuous native League run. No Lance code has changed;
+old entry-locked/blue-wall images are diagnosis history, not fresh acceptance.
+The full all311/original16/shared-furniture goal remains active.
+
+Silph backing verified; full-height divider reveal refinement — 2026-10-18
+
+Fresh native examples built9m42s; combined pipeline17970 is terminal0. Seven
+Power Plant static pairs were individually inspected and confirm the divider
+now reaches the actual128-world-unit ceiling at32-unit native tiles, with
+continuous joins and the original openings. Its cabinet depth-coverage reveal
+is visually rejected: the grainy mask tints the occluded player gold. Height
+is correct, but this is not full divider/readability acceptance. The two Power
+walk pairs and three TrainerHouseB1F pairs in that artifact are superseded and
+not individually reviewed; provenance explicitly records that limit.
+
+Replaced only the divider's exact wall/cap reveal ranges with the existing
+smooth layered-alpha policy used by native timber dividers. Floor remains
+opaque and all source geometry, indices, UVs, footprints and support remain.
+The four-scale regression now requires exact layered ranges, no cabinet pixel
+mask, complete cap/side coverage and an opaque floor. All six divider tests pass
+3.49s after6m14s source build; session14530 is terminal0. Pipeline26137/
+Python35722 is live; compaction and five shell17.32s controls pass, with the
+remaining facility/shared-floor/ownership/perimeter/fade checks underway.
+It then builds fresh native examples, captures12 PowerPlant/TrainerHouseB1F
+pairs and two walks, and audits311/225. New smooth reveal is not yet visually
+accepted; the prior grainy reveal remains rejected.
+
+Silph's separate backing scope passes visual review: six paired native/source
+views (12 full images) and two moving samples were individually inspected.
+Green rear backing is continuous behind the reception chairs and seating;
+side/front returns connect, north source stair columns26–27 stay open and
+both real south exits stay clear. Player/companion readability holds in the
+reception, stair, aisle and walking poses. Ordinary RL settles(7,5)→(8,5)→(7,5)
+in64 active/settled frames, one build, no warp/fade. Fixtures/composition,
+actors and broader services remain open; fixture arrival is not earned travel.
+
+Strict audit passes after accounting for the inspected external schema
+addition open_water_level=None on all311 interiors (derived from terrace
+open-water datum in audit_authored_assets.rs). Only Silph's wall geometry
+changes: +5,444 textured triangles/+11,120 vertices. All310 other map records'
+preexisting fields, all225 alternatives, source claims and support remain
+exact. See facility-wall-scale-and-silph-full311-invariant-summary.json and
+the scoped critique/reviewed provenance. The compaction regression also passes
+0.01s, preserving complete reveal owners and opaque floors. Full all311,
+original16, shared-furniture, native service and earned-state goals stay active.
+
+Production divider scale corrected; Power checker finish visually verified — 2026-10-18
+
+Reopened the prior divider-height acceptance. The earlier face-band correction
+closed faces only at the unscaled32-world-unit cap; source tests used8-unit
+tiles, but the native shell publishes32-unit tiles (bevy_shell::TILE_SIZE).
+The outer shell ceiling is128 world units there, so the divider was still too
+low. Earlier height acceptance in the ignored critique/invariant receipts is
+withdrawn. This is a concrete missed scale conversion, not a lighting issue.
+
+append_facility_divider_network now converts32 source pixels by tile_height/8,
+matching the room ceiling at4/8/16/32-unit tile scales. The actual-pack test
+checks continuous side bands and caps at all four scales, unchanged source,
+claims/openings/support, and wall-only reveal ranges. Each cap/side section
+uses the existing depth-writing player reveal; its floor stays opaque. Six
+divider tests pass4.08s after6m34s including the wait behind Silph tests.
+Production height/readability still requires the new native captures.
+
+Power Plant checker finish is scoped visually accepted: six floor tests14.30s,
+34 shared-floor10.44s, six divider3.64s,11 perimeter38.34s and43 fade0.39s
+controls pass; native build3m40s. All nine pairs (18 full images) and four
+moving samples were individually inspected; blue/cream layout is retained
+with quiet ceramic fields, floors remain below their walking datum, and
+machine/conduit/carpets retain their source drawings. Both UD walks settle
+64 frames each, one build, no warp/fade. Its strict audit is entirely equal
+to the backing baseline: all311 map records, all225 alternatives and support
+unchanged. Pipeline6607 is terminal0. See the reviewed checker-finish provenance
+and power-plant-checker-finish-full311-invariant-summary.json. This native
+build predates the divider scale and Silph changes; it proves floor finish,
+not corrected production divider height.
+
+Silph backing now authenticates the full128-cell rear course, restores58 flat
+wall-art cells to a source-green32px wall and connected side/front returns,
+and leaves north source columns26–27 open for the stair artwork and both real
+south exits open. Five shell checks pass25.07s after4m55s source build; current
+fresh scale-test binary is also rerunning them. New test covers all rear
+columns/heights, side joins, exits, all128 source edits, preserved stair art,
+custom ownership and unchanged source/support. It is not yet visually accepted.
+
+Combined pipeline17970/Python30330 is live. The current binary passes five
+shell24.97s, six facility-floor17.40s,34 shared-floor12.12s, both retired
+ownership controls,12 perimeter56.58s and43 fade0.66s checks. Native Cargo30886
+is confirmed compiling fresh examples. It then captures18 native/source pairs
+across PowerPlant, SilphCo1F and TrainerHouseB1F plus three ordinary walks and
+audits all311/225 states. All renders remain headless. Fresh full-height
+player visibility and Silph backing appearance remain unverified. Broader
+room/material/actor, service/reachable-state and original16 obligations keep
+the full goal active.
+
+Power Plant backing visually verified; checker finish in verification — 2026-10-18
+
+Closed the missing rear/outer wall with the existing source-green facility
+shell, behind cupboards, sofas and machines and through both corner returns.
+Four shell tests pass21.48s; six divider,11 perimeter39.41s and43 fade0.40s
+controls pass. Native examples built4m04s, pipeline64348 is terminal0. Nine
+paired native/source views (18 full images) plus four moving samples were
+individually inspected offscreen. Both UD walks settle(9,9)→(9,8)→(9,9),64
+frames each, one build, no warp/fade. The wall/returns stay continuous, actual
+exits stay open and the player remains readable. Backing scope accepted;
+whole-room composition, fixtures and machinery-area floor finish remain open.
+
+The strict311/225 comparison permits only PowerPlant's +8,604 textured
+triangles/+17,360 vertices. All other fields, source/support, all310 other map
+records and all225 alternatives remain exact. See the reviewed provenance and
+individual-room-review.json in power-plant-outer-backing-headless-review and
+receipts/power-plant-outer-backing-full311-invariant-summary.json. This native
+build predates the separate checker-floor source change below.
+
+Extended the existing authenticated blue/cream ceramic finish to PowerPlant.
+The real room has234 blue+234 cream source cells across15 metatile patterns.
+The new real-pack regression requires468 finished cells and preserves every
+non-floor corner/UV, source and support. Existing complete phase, edited
+source and custom-ownership tests now include PowerPlant; the broad service
+floor fixture now uses actual all-blue block30 rather than machine block00.
+Six facility-floor tests pass14.30s after a4m25s source build; source session
+14030 is terminal0. All34 shared-floor checks10.44s, six divider3.64s,
+11 perimeter38.34s and43 fade0.39s controls pass. Pipeline6607/Python26861 is
+live with fresh native Cargo27520; matching views/walking samples and the
+full311/225 comparison follow. Checker finish is not yet visually accepted.
+Silph's existing diagnostic native/source pair confirms the same flat green
+rear-course defect. Its actual eight source blocks and two real south exits
+were inspected externally; the north stair artwork at source columns26–27
+requires an opening rather than a sealed continuation. Repair follows Power
+floor verification. The full interior goal remains active.
+
+Power Plant outer backing implementation in verification — 2026-10-18
+
+The prior divider correction was concrete progress: height tests, native
+opposite-side/walking inspection and an exact311/225 comparison completed.
+The next diagnosed defect is the room boundary: generic gold cabinet paint
+and flat green rear drawing. Extended the existing native facility room shell
+to the actual20×18 core-tile Power Plant with its full ten-metatile rear
+course, including cupboard/sofa/divider/machine source drawings. The source
+wall's green field/light/ink samples now define continuous32px backing and
+returns; both real(2,17)/(3,17) exit tiles remain open. The existing two small
+facility rooms retain their exact dimensions and source contracts.
+
+A new external-pack regression checks every rear column through31px height,
+both side joins, front openings, actual wall-paint donors, unchanged support
+and source, all160 rear-source edits rejecting atomically, and exactly38 old
+flat wall cells removed while floor/support remain. All four shell tests pass
+21.48s after a7m19s source build; source session45711 is terminal0. Six divider
+controls,11 perimeter checks39.41s and43 fade checks0.40s pass. Pipeline64348/
+Python22297 is live; native Cargo24283 is compiling fresh examples, followed
+by nine paired views plus moving samples offscreen and the full311/225 audit.
+This is implementation awaiting native evidence, not visual acceptance.
+
+The next material defect is traced: johto_facility_floor::is_map excludes
+PowerPlant, so its checker cells use the generic per-pixel native finish rather
+than the existing live blue/cream swatches. Do not repaint machines or carpet;
+review the native backing first, then extend the source-authenticated checker
+finish and test actual source phases/ownership. Floor aliasing, fixtures,
+composition and the full interior goal stay open.
+
+Power Plant divider height verified offscreen — 2026-10-18
+
+The divider side bands now span 0–16–32 source pixels and meet the existing
+ceiling cap continuously. The long laboratory separator, entrance partition,
+ends and joins retain their source footprints and doorway openings. Six
+facility-divider regressions, retired-facility/Rocket ownership controls,
+ten perimeter checks and 43 fade checks pass. Fresh native examples built
+in 12m11s; pipeline session22734 is terminal0.
+
+Individually inspected nine matching native/source pairs (18 full images)
+and four moving samples, including opposite sides/cameras. Upper faces close
+against caps and the player remains readable. Both ordinary UD walks follow
+(9,9)→(9,8)→(9,9), 64 active/settled frames per camera, one build, no warp/fade.
+The strict audit is entirely equal to the completed PokéCom baseline: all311
+map records, all225 script alternatives, source claims, support and geometry
+counts remain exact. See power-plant-divider-height-full311-invariant-summary.json
+and reviewed provenance in power-plant-divider-height-headless-review.
+
+This accepts the divider-height correction only. Missing north/outer backing,
+floor aliasing, fixture finish and broader room composition remain open;
+fixture arrivals are not earned gameplay progress. The all311/original16
+shared-furniture objective remains active.
+
+PokéCom side-keyboard layout visually verified; divider height tests pass — 2026-10-18
+
+Revised PokéCom source passes18 checks50.95s; native examples build11m25s.
+All six native/source pairs (12 full images) and two moving samples were
+individually inspected offscreen. Each of the three desks has one monitor and
+one keyboard beside it; the old duplicate below-screen keyboards and flat side
+keyboard drawings are gone. Upper counter backing stays connected, the lower
+red band is a matching real8px counter, and the entrance/aisle stays clear.
+This accepts layout/backing only: CRT roof highlight, broader fixture finish,
+floor/wall materials, composition/actors and hidden areas remain open.
+
+The strict311/225 comparison passes after inspecting exact differences. Twelve
+keyboard cells and two red cells become modeled; four counter-face cells
+transfer to complete stations. The lower backing adds24 indexed triangles;
+whole-room net textured vertices rise48 (raw backing builder56), rather than
+the initially predicted56. All source/support/225 alternatives are exact.
+308 other map records are exact; two concurrent forest solid-geometry changes
+are explicitly pinned: DragonsDenB1F(+33,858tri/+28,786v) and IlexForest
+(+22,164,516tri/+17,019,176v). Current pine/forest_instances/foliage/understory
+changes were inspected and not edited; their visual acceptance is not claimed.
+The invariant receipt is pokecom-side-keyboard-full311-invariant-summary.json.
+Ordinary RL input proves(1,29)→(2,29)→(1,29),64 active/settled frames, one build,
+no warp/fade; paired states and actual Player/Object centers stay distinct.
+Pipeline session15220 is terminal0. Reviewed provenance and scoped critique
+are in pokecom-side-keyboard-headless-review.
+
+The human's Power Plant correction remains the immediate active work. All six
+facility_divider checks pass6.17s after the queued source build11m30s (including
+waiting behind the prior native build). Retired facility/Rocket ownership,
+ten perimeter43.07s and43 fade controls pass. Pipeline13208/session22734 is
+confirmed live building fresh native examples; before views are not after
+acceptance. The prepared nine after pairs include opposite divider sides and
+UD movement. Separate missing Power Plant north/outer backing remains open.
+The full all311/original16/shared-furniture objective remains active.
+
+Power Plant divider must reach the ceiling — human correction, 2026-10-18
+
+Human explicitly requires the Power Plant divider to be full height. Inspection
+finds a shared legacy-network defect: WALL_HEIGHT/caps are32px, but both exposed
+side bands use tile_height and stop at16px with the normal8px source grid. The
+mesher now divides the actual wall height into two continuous side bands. This
+closes every outward side to its existing cap without changing footprints,
+openings, source cells, support, UVs, normals or triangle/vertex counts. The same
+floor-to-cap invariant applies to this existing facility fallback vocabulary;
+fully authored Rocket walls still retire that network as before.
+
+New mesh/facility_divider_height_tests.rs checks actual external Power Plant
+sources: every side segment has exact[0,16]/[16,32] spans, every occupied cell
+retains its ceiling cap, claims match all existing horizontal/vertical/end-cap
+placements and every other source cell/opening remains unclaimed. Support and
+original source metadata are exact; an unrelated map emits nothing. The queued
+run-power-plant-divider-height-review.py/session22734 uses the same owned Cargo
+cache after the active native build, then requires divider, retired-facility,
+Rocket ownership, perimeter/fade checks and a fresh native build. Seven static
+pairs and two UD pairs/moving samples cover the room from opposite sides and
+along the partition from both camera sides. All captures are explicitly headless/image.
+Source collision confirms(11,9) is floor beside the divider; the earlier(10,9)
+probe is rejected by the authoritative shell as a wall, not bypassed.
+
+Five before pairs from the completed slot native binary (PowerPlant code then
+unchanged) were produced and individually reviewed: (9,9) rotations0/2/6,
+(7,3) and(13,11) front. Provenance is marked reviewed; they are diagnostic before
+views only. They also confirm the separate missing north backing/incorrect
+gold outer boundary remain outstanding. Do not treat this divider correction
+as completion of that outer-wall repair or whole-room fidelity.
+
+The revised PokéCom tests now pass18/18 in50.95s. Its native build is still
+verified live as Cargo11649 beneath pipeline9709/session15220; final paired
+images and audit have not yet been accepted. No windows, model exports, pack
+regeneration, commits or other goals' cache changes were made. The full
+all311/original16/shared-furniture objective remains active.
+
+PokéCom backing ownership corrected; lower station gets a real counter — 2026-10-18
+
+Fresh pokecom Cargo5424 terminates after11m39s compile:17 pass,one fail54.30s.
+The failure is the office test's assumed seven counter placements; actualnine
+are correct. Exact pinned source inspection shows the complete stations take
+four of the old six no-body red counter-face cells, leaving two between the
+upper desks. The lower station additionally owns two formerly flat red cells.
+Tests now expect nine counter placements, three unchanged physical headers,
+two remaining face cells and44 counter-owned cells. The failed result is kept
+in receipts/pokecom-side-keyboard-counter-ownership-failure.log.
+
+That inspection also exposes the lower station's red band as counter backing,
+not floor. station_backing_donor authenticates its complete monitor/keyboard
+and the original upper floor apron, then chooses a complete straight header
+from this same room for live countertop/front material. append_station_backing
+adds the matching eight-pixel-high closed course behind this lower desk only;
+the three existing upper headers remain intact. The source test compares this
+actual appended tail and checks height/placement; electronics retain their own
+five gray paints. No actor, collision, support, script, pack or asset changes.
+
+Final revised pipeline PID9709/session15220 is verified live with Cargo9712
+(--lib pokecom), logging receipts/pokecom-side-keyboard-tests.log and
+pokecom-side-keyboard-final-review-driver.log. Earlier pipeline session93710 is
+terminal after the expected test-count failure; do not restart it. The current
+pipeline gates all18 pokecom checks, perimeter/fade, fresh native examples,
+five static pairs plus one RL pair and a full311/225 audit. The RL fixture now
+uses clear(1,29)→(2,29)→(1,29): source scientist(4,28) walks vertically, so the
+old(3,29)→(4,29) aisle could be occupied. Both standing scientists are confirmed
+at(7,27)/(7,29), directly in front of the right-hand keyboards. Native pack SHA
+remains a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+The prepared strict comparison now requires12 keyboard cells plus two red
+cells become modeled, four former counter-face cells transfer to stations,
+and exactly24 triangles/56 vertices for the new lower backing. This expected
+comparison is not yet executed against a new audit. No final native visual
+acceptance is claimed. Power Plant backing is the next diagnosed repair; the
+full all311/original16/shared-furniture objective remains active.
+
+PokéCom complete side-keyboard workstation repair in verification — 2026-10-18
+
+The prior slot-bank turn completed source/layout tests, individual headless
+native/source review and strict311/225 comparison; it is concrete progress.
+The wider interior objective remains active. The deleted handoff file remains
+deleted; these canonical guides retain current evidence and open work.
+
+Current source adds station_local for the complete4x3 monitor/side-keyboard
+source drawing. Three guarded stations claim36 cells instead of leaving side
+keyboard drawings behind. The selected closed computer kit is adapted at runtime:
+its complete3072-vertex keyboard moves right, its tabletop/legs span both halves,
+and the monitor/other electronics stay in the left half. No model assets or packs
+are exported. Existing source collision/support/controllers remain unchanged.
+The legacy monitor-only placement is removed, and stale station append rejects
+before geometry. Unknown model roles/keyboard topology retain source rendering.
+Counter header candidates keep all three physical red backing courses while
+six former no-body face cells become station-owned. Office tests now distinguish
+this ownership from removal of the backing.
+
+Initial Cargo session59248 terminates successfully: compile18m16s, one
+external-pack complete station/support/source test passes14.08s. Its actual test
+binary also contains the new three-scale keyboard/monitor/cache/unknown-contract
+test, which passes0.02s when invoked directly. Both results are preserved as
+pokecom-side-keyboard-intermediate-tests.log and intermediate-geometry.log.
+Counter-header ownership was refined during that compile, so neither result
+alone proves final-revision acceptance. The pipeline PID3592/session93710 has
+now launched fresh final-revision Cargo5424 (pokecom selection), verified live,
+logging receipts/pokecom-side-keyboard-tests.log. It next gates perimeter/fade
+controls, native rebuild, five static pairs plus one RL final pair/moving samples,
+and a strict311/225 comparison against the completed slot baseline. Follow
+receipts/pokecom-side-keyboard-review-driver.log and the same live handle; do not
+restart on an observation timeout. No new native visual acceptance is claimed.
+Whole-room office materials/composition/actors and the full all311/original16/
+shared-furniture objective remain open.
+
+Slot banks verified facing outward toward stools — 2026-10-18
+
+Complete Celadon and Goldenrod banks now render six pairs at source gameplay
+rows6..11, with full32-pixel cabinet height. Celadon retains four two-wide banks;
+Goldenrod retains three. Left fronts face west and right fronts east, including
+back/end units. All36 Celadon and30 Goldenrod bank stools match a single facing
+station. Goldenrod's two table stools remain separate. The projected header no
+longer creates unpaired fronts; the final machine row replaces the old flat end
+art. Existing source collision, support, actors, scripts and pack are unchanged.
+
+Two focused external-pack tests pass20.76s after the corrected visible-front
+assertion;23 arcade,23 casino,ten perimeter and43 fade controls pass (overlapping
+selections, not a unique sum). Native examples build successfully5m37s. Twelve
+headless native/source pairs (24 full images) and four moving samples were
+individually reviewed at matching noon/position/state. Both UD walks prove
+(10,7)→(10,6)→(10,7),64 settled frames each, one terrain build and no warp/fade.
+No windows were opened. Receipts and reviewed provenance are under ignored
+target/kanto-resume/native-arcade-banks-headless-review and receipts/native-arcade-banks-*.
+
+The strict311/225 comparison against the completed workbench audit confirms
+exactly56 former bank-end cutout cells become modeled, with total geometry
+counts unchanged in both game corners. All225 alternatives and support remain
+exact.307 other map records are exact; DragonsDenB1F and IlexForest have separate
+concurrent pine solid-geometry changes, explicitly pinned in the comparison
+and not visually accepted by this work. No assets or packs were regenerated.
+Scoped bank count, height, alignment and outward orientation are accepted;
+whole-room finish/composition, seating actors, PokéCom keyboard layout and the
+remaining all311/original16/shared-furniture objective stay open.
+
+Arcade banks integrated; revised visible-front/stool tests compiling — 2026-10-18
+
+Human correction is authoritative: slot drawings are two tiles tall beside
+one-tile stools; Celadon has four two-wide banks, six positions long. Back/end
+units must face outward. New native_arcade_banks.rs is now wired before the
+individual profiles in modeled_interiors. It authenticates the complete56-cell
+header/middle/end drawing and builds six pairs on source rows6..11 at32-pixel
+height. Row5's projected header no longer creates unpaired fronts. Both ends
+and all intermediate rows face the outer aisles through the existing rigid
+pair adapter. Custom-owned or tile-edited complete banks yield as a whole;
+stale source append fails before geometry. Unknown model contracts retain
+source rendering. No collision, support, actors, scripts, packs or assets change.
+
+First source build succeeds4m44s, but one of two tests fails: the test incorrectly
+requires the hidden rear faces of the closed screen blocks to point outward.
+The stale/source/custom/atomic test passes. The corrected test identifies the
+actual forward display faces using the original model's +Z screen faces, adds
+an explicit full32-pixel height gate and matches all36 Celadon/30 Goldenrod
+bank stools. Cargo93689/session73634 is confirmed live compiling that revision,
+logged in receipts/native-arcade-banks-tests.log; the original failure is kept
+as native-arcade-banks-closed-screen-test-failure.log. Do not claim test or visual
+acceptance yet. The headless driver run-native-arcade-banks-review.py is prepared
+but has not started. It gates fresh arcade/casino/perimeter/fade controls and a
+fresh native build, then ten static pairs and two UD final pairs/moving samples.
+Use the completed facility-workbench-finish311/225 audit as the new baseline,
+including its explicitly observed external pine changes. Full slot-bank visual
+verification and full all311/original16/shared-furniture acceptance remain open.
+
+Facility workbench finish verified; slot-bank correction reopened by source layout — 2026-10-18
+
+Ten facility_workbench bodies now use live gold/brown/light/ink from their own
+complete block28 drawings. native_facility_furniture_materials authenticates
+all named bench, casing, key, trim and recess parts before any floor/body
+append. The current geometry, live eleven-pixel display, operator floor,
+actor positions and support are unchanged. The four maps contain MrPokemon1,
+PowerPlant3, Ruins1 and RocketB3F5 benches (120 owned cells). No assets, palettes,
+pack or exports changed. New facility_workbench_finish_tests pins every body
+against the existing fitted model and the real pack's four grayscale pigments,
+all claims/support, cached geometry at three scales and unknown/missing roles.
+Old readout tests now inspect the actual display tail and native body, not an
+empty solid pass.
+
+Source Cargo succeeds9m22s; two focused tests pass15.05s. Thirteen workbench/
+radio checks pass131.11s,13 table/chair94.59s,52 shared-model0.42s,ten perimeter
+85.66s and43 fade1.48s. The focused two are included in the13 workbench checks,
+not additional unique cases. Native examples build succeeds13m58s. Nine static
+front/side source/native pairs show all ten benches, including Rocket's boss
+room control. The RL final pair makes ten pairs/20 full images; every image
+and both moving captures was individually reviewed. The gold bodies and
+readable keys/recesses/readouts are scoped finish acceptance. Workbench form,
+whole-room composition, remaining walls, floor aliasing, broad Rocket caps,
+actor alignment, broader dynamic reveal and services remain open.
+
+Ordinary PowerPlant input follows(6,9)->(7,9)->(6,9),64 active/settled frames,
+no warp/fade and one terrain build. Each pair preserves its own state with
+distinct player/object centers. Fixtures are not earned arrivals. All captures
+explicitly remain headless/image/muted; no windows or app/focus changes.
+
+The311-map/225-state audit has zero mesher errors and the exact13,440-triangle/
+40,320-vertex transfer from solid to textured benches: MrPokemon1,344 triangles,
+PowerPlant4,032, Ruins1,344 and Rocket6,720. Every other field in these rooms,
+all source/support/claim/totals and all225 alternatives stay exact.304 other
+map records are entirely identical. Three additional maps have only external
+solid-geometry deltas observed during concurrent pine work: Dragon'sDen
++1,184 triangles/+840 vertices, Ilex+42,756/+25,212 and SafariBeta-260/-780.
+The shared foliage/pine.rs generator changed after the preceding native build;
+its source and geometry were inspected, not edited here. The first strict
+comparison rejected those deltas; the final bounded comparison explicitly pins
+all six external values and keeps their visual acceptance false. This is not
+an assertion that all307 other map geometry records are unchanged. Receipts,
+comparison and reviewed provenance use facility-workbench-finish prefixes
+under ignored target/kanto-resume. No staging/commit occurred.
+
+Human clarification reopens the arcade row interpretation: slots are two
+source tiles tall, stools one; Celadon has four two-wide banks, six positions
+long. Fronts must face their stools, including back/end units facing outward.
+Existing source interaction events pin rows6..11. Current rendering treats the
+projected row5 header as separate fronts and leaves the final stool row's end
+art unaligned. A new native_arcade_banks.rs has been drafted but is not yet
+integrated or tested at this checkpoint; its full-bank source guard and six
+row placement must now be wired, tested and reviewed. Prior pair-only approval
+does not close this human-corrected bank layout. No completion is claimed.
+
+The human also did not recognize the vague PokéCom gray-unit question. An
+existing source/native pair (pokecom-office-walk-review/office-aisle) shows rows
+of keys in the three rectangles beside the monitors; keyboard trays are the
+working source interpretation. The generic computer places keys below its
+screen and leaves these adjacent drawings flat. Investigate that actual layout
+without requiring the human to label an ambiguously described fixture.
+Full all311/original16/shared-furniture acceptance remains active; the deleted
+handoff remains deleted and both canonical guides retain the objective.
+
+Facility table/chair wood now uses its live source finish — 2026-10-18
+
+New native_facility_furniture_materials.rs authenticates the four original
+facility kits by export and part names, rejecting unknown parts/materials or
+missing gold/brown/light/ink roles. Model::append_native_facility_furniture
+retains fitted geometry and maps those roles onto samples from the complete
+source drawing. Tabletop/wood, brown aprons/insets, light edges/pages/cups and
+dark ferrules/binding now follow the live atlas. The small native printed page
+face is unchanged. No fixed source palette copy, model asset or pack changed.
+
+Facility append revalidates this material contract before appending any floor
+or body. Existing source/custom/reserved guards retain priority. Thirty-one
+original bodies change finish: one square table, five document desks, three
+meeting tables and22 chairs across MrPokemonsHouse, PowerPlant,
+RuinsOfAlphResearchCenter, SilphCo1F and TeamRocketBaseB3F. Silph's selected
+source-gold meeting model is unchanged, making32 total objects/260 source cells.
+Chair rotation now operates on the newly appended textured body; its ten
+corrected headings, twelve unchanged headings, owned plots and actor clearance
+remain verified. Source floors/support stay independent and unchanged.
+
+Source Cargo succeeds5m09s. Two focused tests pass4.22s against the actual pack:
+all32 objects retain exact positions/normals/indices and support, all four live
+material roles are present, the Silph selected-table control is exact, cached
+models remain immutable across three fitting scales, and unknown part/material
+contracts reject atomically. Existing chair/body/page tests now inspect native
+textured vertices rather than vacuously inspecting an empty solid mesh. An
+initial test compile incorrectly passed a compressed Source wrapper to the
+JSON string parser; it was corrected using bounded decode_bytes before this
+successful run. Thirteen furniture controls (including these two) pass22.77s,
+ten perimeter controls34.91s,43 fade controls0.41s and52 shared model controls
+0.14s. Native examples build succeeds5m09s.
+
+Fifteen static native/source pairs include front/side views of the square
+table, PowerPlant meeting table and both desks, Ruins desk, both Rocket tables
+and both Rocket desks, plus Silph and PowerPlant waiting-chair controls. The
+RL final pair makes16 pairs/32 full images, all individually inspected along
+with both moving captures. Gold bodies, brown lower trim and light details
+are scoped visually verified. The source-native small document print, cup
+opening/handle, drawer and leg forms remain readable. Each pair preserves its
+own state with distinct actual player/object centers. These location fixtures
+are not earned arrivals or service proofs. Ordinary PowerPlant input follows
+(7,15)->(8,15)->(7,15),64 active/settled terrain frames, no warp/fade and one
+terrain build throughout. It checks the waiting aisle, not every approach.
+
+The strict311-map/225-state audit has zero mesher errors. Exactly17,732
+triangles/53,196 vertices transfer from solid colors to live textured finish,
+with no added/removed geometry: MrPokemon1,756 triangles, PowerPlant5,332,
+Ruins972, Silph2,856 and RocketB3F6,816. All five rooms' other fields, all306
+other map records, source/support/ownership counts, totals and all225
+alternatives remain exact against the preceding chair-facing baseline. These
+counts supplement the actual visual review; they do not establish full-room
+fidelity alone.
+
+All captures explicitly stay HEADLESS=1/CAPTURE_TARGET=image/PREVIEW_MUTE=1,
+without native windows, app navigation or focus changes. Ignored receipts,
+strict comparison and reviewed provenance use facility-native-finish prefixes
+under target/kanto-resume. No export, staging or commit occurred. The deleted
+handoff remains deleted; these canonical guides retain the full objective.
+
+Remaining observed defects include fixed pale instrument-workbench bodies
+beside the now-gold desks, missing PowerPlant/Silph rear backing, PowerPlant
+floor aliasing, broad Rocket wall caps, actor/chair and companion alignment,
+fine trim, broader dynamic reveal, composition and authored services. The
+instrument workbench path is a separate source family; this finish does not
+close it. Full all311/original16/shared-furniture acceptance remains active.
+
+Facility chairs face their serving surfaces; verified without native windows — 2026-10-18
+
+New mesh/facility_chair_facing.rs selects the nearest authenticated resolved
+square/meeting table, side desk or actual L-counter course within32 source
+pixels. The two reception courses are shared with the counter builder, so its
+empty staff area is not treated as a filled rectangle. Twenty of22 chairs have
+a serving target: two in MrPokemonsHouse, four in PowerPlant, six in SilphCo1F
+and eight in TeamRocketBaseB3F. Ten bodies rotate: MrPokemon's two west chairs
+face east and eight south-side meeting chairs face north. Twelve existing
+south-facing bodies remain byte-exact, including the two PowerPlant waiting
+chairs whose distant tables are across a wall. This does not orient actors.
+
+Only newly appended solid chair vertices rotate, within their original16x16
+owned plots and clear of the actor foot. Source floor, support, UVs, indices,
+alpha and cached models remain untouched. Normals account for nonuniform
+fitting, and their baked directional response is recomputed. A custom/edited
+serving surface cannot supply a facing; append rechecks the target witness.
+No model asset, content pack or source export changed.
+
+Source Cargo succeeds3m46s; three focused tests pass7.40s against the actual
+external pack. Tests pin all22 headings/20 targets/10 rotations, each four-cell
+claim and unchanged floor/support; all four quarter turns at five fitting
+scales check real backrest direction, owned bounds, outward winding, normals,
+material alpha and cached-model immutability. Edited/custom table and stale
+target rejection are covered. An initial harness compile failed on the token
+< followed immediately by -; it was corrected before this successful run.
+Eleven furniture controls (including those three) pass18.95s, ten perimeter
+controls37.01s and43 fade controls0.52s. Native examples build succeeds4m38s.
+
+Twelve static native/source pairs cover MrPokemon front/both sides, PowerPlant
+front/side and waiting-area control, Silph front/side, and both Rocket tables
+front/side. A PowerPlant RL final pair makes13 pairs/26 full images; every
+image and both moving captures were individually reviewed. Serving directions
+are scoped verified in these views. Silph's front view includes both staff
+chairs; its side view crops one. Generic cream table/chair materials, actor
+alignment, rear backing in PowerPlant/Silph, PowerPlant floor aliasing, broad
+Rocket wall caps and whole-room composition remain open. Static location
+fixtures are not earned arrivals or authored-service proofs.
+
+Ordinary controller input follows PowerPlant(7,15)->(8,15)->(7,15) across64
+logged frames: terrain active/settled, no warp or screen fade, one terrain
+build throughout. This checks the waiting-area aisle, not every chair approach
+or dynamic reveal pose. The complete311-map/225-state audit is parsed exactly
+equal to the preceding verified sofa baseline:311 identical map records,
+all alternatives/support/claims/geometry counts exact and zero mesher errors.
+Chair coverage remains88 cells and sofa coverage48 cells. Orientation changes
+do not change these counts; visual review supplies the direction evidence.
+
+All captures explicitly use HEADLESS=1, CAPTURE_TARGET=image and PREVIEW_MUTE=1
+with the CRYSTAL_RENDER_TEST_/CRYSTAL_ prefixes. Winit and macOS window keepalive
+are disabled; ScheduleRunner drives image readback. No windows, app navigation,
+focus changes, staging, commits or exports were used. Ignored receipts, source
+compile failure, strict audit comparison and reviewed provenance remain under
+target/kanto-resume with facility-chair-facing prefixes. The deleted handoff
+stays deleted. Full all311/original16/shared-furniture acceptance remains open.
+
+Three missing facility sofas modeled at their correct source offsets — 2026-10-18
+
+Two new facility_tables_bindings rules reuse the existing native blue sofa for
+MrPokemonsHouse and PowerPlant. The complete guarded plot begins in block$19's
+lower two rows and includes the following block$07 checker rows. Only the eight
+sofa cells are owned; floor guards remain unclaimed and unraised. This restores
+one sofa at source(4,2) in MrPokemon's room and two at(12,2)/(16,2) in PowerPlant.
+No new mesh assets, model dimensions, palettes, source exports or packs were
+introduced. The three existing Silph$2d sofas retain their original geometry.
+
+Actual source Cargo68444 succeeds4m25s; both focused external-pack tests pass
+14.69s. They resolve the three missing plots under canonical profiles and the
+three existing Silph plots, verify grounded11-pixel bodies/closed winding,
+separate opaque floor and body reveal, unchanged support/source art, all sixteen
+body/floor guard edits, custom ownership, reserved body cells, clipped plots
+and unknown-room rejection. The first harness compile used the wrapper's wrong
+accessor and omitted the profile import; both were corrected before these tests
+ran. No runtime or visual result is attributed to that failed compile.
+
+Eight fresh facility-furniture tests (including those same two) pass15.16s;
+ten perimeter controls pass49.63s and43 fade controls pass0.49s. These repeated
+focused tests are not ten distinct furniture tests. The native examples build
+succeeds4m07s. Nine static native/source pairs cover the new sofas from front
+and both sides, an extra PowerPlant pose and both Silph control poses. Those
+18 full images, the RL final pair and both moving captures were individually
+reviewed:20 paired images plus two moving images overall. Scale, cushions,
+arms, feet, source-blue finish and source positions are scoped verified, with
+clear native floor in front. Every pair preserves its own source/native state
+and distinct actual player/object centers. All three Silph sofas are visible
+in the control views.
+
+Ordinary controller input follows PowerPlant(7,3)->(8,3)->(7,3),64 logged frames,
+with active settled terrain, no warp/screen fade and no additional terrain
+build. This checks the aisle in front of the sofas; it is not an earned quest
+arrival or blanket animation/reveal acceptance. MrPokemon's introduction was
+not bypassed to manufacture movement proof. Sofa-body reveal ranges and their
+independent opaque floor have focused test coverage; broader dynamic poses
+remain part of full-room acceptance.
+
+The strict311-map/225-state audit passes with zero mesher errors. Exactly24
+flat source cells become sofa-owned: MrPokemon8 and PowerPlant16. Each body's
+source bounds are pinned, all guard floors/support/other claims are unchanged,
+and only intended furniture geometry/accounting differs. Geometry deltas are
++420 textured triangles/+968 vertices in MrPokemon and+840/+1936 in PowerPlant.
+All309 other map records (including Silph), all225 alternatives and every other
+field remain exact. Global sofa coverage is now48 cells:24 new and24 existing,
+six sofas across three rooms. Counts do not establish visual fidelity alone.
+
+Ignored receipts, strict comparison, reviewed provenance and individual-room
+review are under target/kanto-resume with facility-wall-sofa prefixes. All
+captures stay headless/image/muted, with no windows, tabs, focus changes,
+exports, staging or commits. The deleted handoff stays deleted; these two
+canonical guides retain the evidence and remaining full scope.
+
+The views still show facility chairs whose facing needs table-aware review,
+generic table/chair materials, and missing rear-wall backing in PowerPlant and
+Silph. PowerPlant's fine floor pattern also aliases. Whole-room composition,
+actor/companion placement, services and earned arrivals remain open. In
+facility_tables::append, the chair path still fits its model without choosing
+a facing from adjacent table/counter geometry; the sofa binding does not fix
+that requirement. Full all311/original16/shared-furniture work remains active.
+
+Small facility walls connected; exterior wall-art remnants removed and verified offscreen — 2026-10-18
+
+New mesh/native_facility_room_shell.rs supplies continuous32-source-pixel green
+walls in MrPokemonsHouse and RuinsOfAlphResearchCenter. The shell uses the actual
+rear tile$22 field/light/ink palette, closes behind every rear furniture column,
+joins both sides and keeps source exits(2,7)/(3,7) open. All64 cells of each
+complete north drawing authenticate it; edited, clipped, unknown or custom-owned
+north drawings yield. Padded grids cannot shift physical boundaries. No source
+art, actors, support, collision or source ownership are changed.
+
+A broad perimeter test rejected the first protruding trim. Recessed courses now
+stay behind the physical boundary. The first native build then raced the shared
+Electrode JSON-to-GLB replacement: build.rs:172 failed reading the removed JSON.
+The replacement GLB was present afterward, and a fresh build succeeded without
+restoring or changing that separate asset work. Six static pairs and a Ruins LR
+final pair (14 full images), plus both moving images, were individually reviewed.
+Those first views exposed an old flat green tile$22 band outside the rear wall;
+they are recorded as the rejected ground-art stage, not final acceptance.
+
+The final refinement removes only original horizontal, zero-height wall-art
+faces at their own north source-cell bounds:16 cells in MrPokemon's room and14
+in the Ruins room. Real checker floors, raised surfaces, borrowed color donors,
+existing vertex/range identities and all support/ownership survive. New source
+Cargo65239 succeeds4m14s: three focused tests pass11.29s; ten perimeter controls
+including those same three pass37.35s;43 fade controls pass0.48s. The native
+examples build succeeds5m57s. Repeated earlier focused/control runs are not
+additional unique tests.
+
+All seven final pairs (14 full images) and both captured moving images were
+individually reviewed again. Front/east/west views show green backing above and
+behind the cabinets, connected side joins, the open entrance and removal of the
+exterior green ground band. Every pair preserves its own source/native state
+and distinct actual player/object centers. Ordinary Ruins LR movement follows
+(6,6)->(5,6)->(6,6) across64 logged frames, with active settled terrain, no warp,
+no screen fade and no additional terrain build. The64 rows are not64 reviewed
+images or blanket animation acceptance. MrPokemon's authored introduction was
+not bypassed to manufacture another walking result. These remain initial room
+fixtures, not earned arrivals or authored service completion.
+
+The final strict311-map/225-state audit has zero mesher errors. Compared with
+the verified facility-floor baseline, only the two intended room geometry
+records differ: MrPokemon +3688 textured triangles/+7440 vertices and Ruins
++3692/+7440. The previous wall revision had+3720 triangles in each; removal of
+the original wall ground faces accounts exactly for the32/28-triangle cleanup.
+All309 other map records, every nongeometry field/claim/support value and all225
+declared alternatives are exact. Counts alone do not establish appearance.
+Ignored receipts, provenance and individual-room review are under
+target/kanto-resume with native-facility-room-shell (earlier stage) and
+native-facility-wall-ground-cleanup (final) prefixes. All work remains
+headless/image/muted, without windows, tabs, focus changes, source export,
+pack regeneration, staging or commits.
+
+Closed backing, connected sides, the source-green finish, exact open exits and
+removal of the exterior wall-art band are scoped verified. Fine trim aliasing,
+exterior furniture-underlay corners, generic table/chair materials, actor
+composition and authored arrival/service scenes remain open. The flat blue
+fixture is the same sofa art already modeled for Silph: MrPokemon block$19
+lower rows match Silph$2d upper rows. Its missing binding needs the correct
+source-row offset and native floor guards; no sofa fix is claimed yet. Full
+all311/original16/shared-furniture and whole-room obligations remain active.
+The deleted handoff stays deleted; these canonical guides retain current proof.
+
+Johto facility checker floors restored and verified offscreen — 2026-10-18
+
+New johto_facility_floor.rs authenticates the blue/cream floor fragments in
+MrPokemonsHouse, RuinsOfAlphResearchCenter, TeamRocketBaseB2F and TeamRocketBaseB3F.
+The final surface pass now retains live source color fields and small ceramic
+seams instead of generic gray paint. Exact metatile/phase/art masks exclude
+walls, stairs, carpet, equipment and edited drawings; live custom profiles keep
+first refusal. Source art, gameplay, support and authored ownership are unchanged.
+The existing PowerPlant/Silph/TrainerHouse finish paths remain unchanged.
+
+B2F needed a second repair: its authored Surface::Facility slabs painted opaque
+gray lids before the final finish. Their 1,032 exact source floor fragments now
+supply native textured tops, allowing the same live ceramic finish to survive.
+The external-pack regression resolves all actual B2F placements and checks that
+these lids have no solid gray overlay, retain their source UVs and preserve
+support. No model, source export or pack regeneration was required.
+
+Final source Cargo58668 succeeds in3m43s; all three focused tests pass7.01s.
+The first selector test run exposed a wrong test expectation for custom ownership:
+one exact source phase is reserved, so15 of16 fixture cells should finish, not8.
+That expectation was corrected and the retained custom quad is asserted. The
+source-phase test passed even in that first run. Current tests additionally
+check triangle-local color donors and the actual B2F authored floor path.
+Fresh34 room-floor controls pass10.43s,43 fade controls pass0.40s and the native
+examples build succeeds3m46s. Repeated earlier selector tests are not extra
+unique test cases.
+
+Twelve static pairs cover both small rooms and two positions each in B2F/B3F
+from front and side cameras. Those24 full images, the native RL final pair and
+both moving captures were individually inspected (26 paired images plus two
+moving images). Every pair preserves its own game state and distinct actual
+player/object centers. Ordinary controller input moves B2F(4,10)->(5,10)->(4,10)
+across64 logged frames, with active settled terrain, no warp/screen fade and no
+additional terrain build. Logged frames do not establish blanket animation
+acceptance. These are initial fixtures, not earned quest/service arrivals.
+All captures use headless/image/muted settings; no windows, tabs, focus changes
+or application switching occurred.
+
+The latest strict311-map/225-state audit passes with zero mesher errors. Only
+four intended solid/textured geometry fields differ in the four target maps;
+all307 other map records, every nongeometry field/claim/support value and all225
+declared alternatives remain exact. B2F's1,032 authored floor claims survive.
+Receipts, strict comparison, per-pair provenance and individual-room review are
+under ignored target/kanto-resume with johto-facility-checker prefixes. Neither
+audit counts nor passing tests substitute for the inspected native views.
+
+The blue/cream layout and grounded ceramic finish are scoped verified. Visible
+remaining work includes full-height rear backing in the two small rooms,
+unmodeled blue bench relief, B2F generic gray walls/broad caps, B3F backing behind
+cabinets, table/chair materials, actor composition and services. A source trace
+confirms the divider builder currently excludes both small rooms. Floor/source
+boundaries must be retained when repairing those walls. Full all311/original16,
+shared-furniture, room composition and earned-scene obligations remain active.
+The deleted handoff remains deleted; these canonical guides retain the work.
+
+Facility paired bookcases: source finish and distinct bases verified offscreen — 2026-10-18
+
+The exact complete facility $06 drawing now selects source-derived wood and
+book materials in MrPokemonsHouse, PowerPlant, RuinsOfAlphResearchCenter and
+TeamRocketBaseB3F. Seven paired assemblies retain the source distinction:
+left $2a/$2b cupboard bases replace the lowest book row; right $28/$29 units
+retain all three book rows. The source guard rejects edited, partial and other
+room drawings. Original placement, scale, support, source art and cached models
+are unchanged. No exported model, pack or generated content was added.
+
+Actual source build succeeds in3m55s; the two new external-pack tests pass7.04s.
+The fresh bookcase filter passes15 tests13.94s, including those same two tests;
+it is not17 distinct tests. All43 fade controls pass0.41s. The native examples
+build succeeds3m43s. Fourteen paired static captures, covering all seven source
+assemblies from front and side, were individually reviewed as28 full images.
+Each pair preserves state and has distinct actual player/object centers. These
+are room fixtures, not earned arrivals or dynamic foreground-reveal proof.
+All captures use explicit headless/image/muted settings. No windows, tabs or
+focus changes were used. Ignored receipts and reviewed capture provenance are
+under target/kanto-resume with facility-bookcase-native-finish prefixes.
+
+The strict311-map/225-state comparison passes with zero mesher errors. All307
+other map records and every nongeometry field, claim and support value are
+exactly unchanged. Only the four intended solid/textured geometry fields differ
+in the four selected rooms; replacing the left lower book rows reduces combined
+triangles by826 overall. Counts alone do not establish appearance.
+
+Source wood/books and the distinct cupboard/open-book bases are scoped verified.
+The views still expose missing source checker floors in MrPokemonsHouse, the
+Ruins research center and Rocket B3F, plus insufficient rear backing behind
+fixtures and generic table/chair materials. These are visible outstanding
+defects, not established regressions from this furniture change. Whole-room
+composition, actors, services and dynamic bookcase reveal remain open. Full
+all311/original16/shared-furniture work remains active; the deleted handoff
+remains deleted.
+
+Power Plant opaque beds and housing reveal verified offscreen — 2026-10-18
+
+Fresh source Cargo49770 finished5m01s; all three equipment tests pass16.06s,
+including the twelve housing coverage ranges and opaque beds outside all reveal
+ranges. Eight fresh facility controls pass4.47s and43 fade controls pass0.61s.
+The native build succeeds3m51s after the shared terrace constructor was completed
+by its owning work. No unrelated terrain changes were made here.
+
+Four fresh static pairs and the actual UD conduit final pair (ten full images),
+plus both captured moving images, were individually inspected. Office overview,
+front/east/west conduit views and movement confirm roofs/controls, source gray,
+closed solid beds and the existing nearest-surface coverage reveal. Foreground
+housing faces no longer ordinary-blend through one another; beds stay opaque.
+Coverage grain is still visible and is not accepted as full visual polish.
+The actual authoritative route remains (13,11)->(13,10)->(13,11),64 logged frames,
+active settled terrain, no warp/screen fade and no extra terrain builds. Each
+paired source/native capture preserves its own state. These are initial room
+fixtures, not earned quest arrivals or service completion.
+
+The final311/225 audit passes the strict original equipment comparison: only
+PowerPlant's192 machine claims, +384 textured triangles/+1536 vertices and the
+corresponding flat-to-modeled accounting differ from the Lance baseline. All
+310 other map records, every other field/support and all225 declared states are
+unchanged, with zero mesher errors. It is also exactly equal to the first
+machinery geometry audit, as expected for finish/reveal metadata changes.
+Counts do not prove appearance. Actual receipts, provenance and individual-room-
+review are under ignored target/kanto-resume with power-plant-opaque-bed-equipment
+prefixes. All captures remain headless/image/muted; no windows or focus changes.
+
+The machinery's source shape/roof/front/grounded support and reveal ordering are
+scoped verified. Visible coverage grain, broad bed detailing, office materials,
+rear fixtures, actor/companion composition and authored quest/service scenes
+remain open. A source trace also identifies the next shared furniture defect:
+facility bookcase$06 still uses generic pale materials because facility is
+excluded from native_bookcase_source. Actual audited ownership is112 cells in
+four rooms: MrPokemonsHouse16, PowerPlant16, RuinsOfAlphResearchCenter16 and
+TeamRocketBaseB3F64. The source's left cupboard ends$2a/$2b; the right unit ends
+with open-book tiles$28/$29. These need distinct source finishes/base treatment,
+not a blanket recolor or two identical cupboard bases. No bookcase change or
+acceptance is claimed yet. Full all311/original16/shared-furniture work remains
+active, and the deleted handoff remains deleted.
+
+Power Plant machinery modeled; source finish reviewed; foreground reveal repair in verification — 2026-10-18
+
+New mesh/power_plant_equipment.rs resolves all twelve complete native facility
+$12/$16 equipment plots in PowerPlant (six each,192 cells). Exact full4x4 art
+and subtile guards, prior ownership and live custom profiles determine each
+whole placement. Other maps and partial/edited/customized plots yield. Low
+closed machine beds occupy the existing blocked plots; chamfered housings rise
+to20 source pixels overall. The upper two source rows wrap the roofs, and the
+lower two become upright controls. Original footing, source cells, scripts,
+collision, actors and adjacent floor/conduit drawings are not mutated. Primary
+source collision confirms both equipment blocks are WALL in all quadrants,
+while red/white conduit block$0b is FLOOR in all four. This resolves the full
+192-cell equipment selector, beyond the48 cells matching an old B2F drawing.
+Integration is a private facility_radio child and one authored-landmark call.
+
+The first compiled render fixture9,10 was rejected as nonwalkable before any
+image; its receipt is retained under rejected-unwalkable-fixture. The previously
+verified9,9 office pose was used instead, without rebuilding unchanged code.
+The first five pairs/ten full images were individually inspected: roof/front
+roles and grounded housings are visible, but pale bed/end paint was rejected.
+The next dark-field revision was inspected at two pairs/four images and rejected
+as nearly black; its other three pairs are not manually reviewed. The final
+midtone selector chooses a real opaque neutral source-control pixel, excluding
+white highlights, dark ink, blue and gold. It copies no palette or artwork and
+changes no model assets. All five midtone static pairs plus its conduit final
+pair (twelve full images) and both captured moving images were individually
+inspected. Roof/control orientation, machine scale and the revised gray field
+are scoped accepted; whole machinery/room acceptance is withheld for reveal.
+
+Midtone source build4m58s: three equipment tests pass7.55s (twelve plots, exact
+roof/front areas and outward normals, immutable support, edited/custom ownership
+and the field selector). Fresh eight facility controls pass3.81s and43 fade
+controls pass0.48s. Native build3m47s. Actual ordinary UD conduit route is
+(13,11)->(13,10)->(13,11), with64 logged frames, settled active terrain, no warp
+and no screen fade. The64-frame log is not64 visually reviewed images. Every
+final source/native pair retains its own state. The walk exposes closed faces
+blending through each other in the foreground unit; this is a real remaining
+visual defect despite the passing movement/fade controls.
+
+The depth-writing change passed all three source tests (Cargo48842,3m46s build,
+7.07s tests), but its native build failed at terrace_datum.rs with E0063: a shared
+VisualTerraceDatum change had not yet supplied water_barriers. The current
+constructor was inspected and already has its actual water_barriers value;
+this thread did not alter that unrelated work. No new native reveal images
+followed the failed build.
+
+The current refinement keeps the closed shallow beds opaque and assigns only
+the complete housing/panel ranges to source-cabinet depth-writing reveal,
+alongside their ordinary cutaway ranges. This retains a solid foundation beneath
+revealing hardware. Tests require all twelve coverage ranges plus bed vertices
+outside every reveal range. Actual source Cargo49770 and its gated opaque-bed
+offscreen driver are running; fresh source/native reveal/walk results remain
+pending. No earlier images are evidence for the refined reveal.
+
+All three completed geometry/finish311-map audits have zero mesher errors.
+Strict comparison permits only PowerPlant's192 claims, +384 textured triangles,
++1536 vertices and flat-to-modeled accounting (276->468 modeled,1070->878 flat).
+Every other field,310 other map records, all support and all225 declared states
+are unchanged. The finish-only audits are exactly equal to the first machinery
+audit; counts do not prove appearance or reveal. Receipts/provenance are under
+ignored target/kanto-resume with power-plant-equipment, power-plant-metal-equipment,
+power-plant-midtone-equipment, source-only power-plant-depth-equipment and pending
+power-plant-opaque-bed-equipment prefixes.
+All captures use headless image targets and mute. No windows, tabs, focus changes,
+source exports, packs, assets, staging, commits or cross-chat messages occurred.
+
+PowerPlant's office wood/material palette, rear fixtures, actor/companion
+composition and authored services/quest scenes remain open. Full all311,
+original16 art/earned-native scenes and shared-furniture obligations remain
+active; the deleted handoff stays deleted and these canonical guides retain
+current acceptance/history.
+
+Lance blue side courses raised and reviewed offscreen — 2026-10-18
+
+New mesh/lance_side_walls.rs folds the complete native west/east blue courses
+into closed ceiling-level walls joining the north course. The full native
+north drawing and both44-row side-block strips must authenticate; altered,
+clipped or customized courses yield without partial wall construction. Both
+source wall columns are owned (168 cells); carpet, statues, south door and all
+walking heights remain unchanged. Each side has one coherent cutaway group.
+No core scripts, flags, pack inputs, furniture assets or audio were changed.
+
+The initial84-cell revision passed geometry and the311/225 invariant check,
+but all four native/source pairs were individually reviewed and rejected:
+it incorrectly enlarged the narrow outer-edge art into dark striped faces
+and sampled alternating cap colors. Those rejected images and receipts remain
+separate under lance-blue-side-wall-headless-review. The final revision uses
+the adjacent native brick-face tile93 and authenticated north field paint for
+continuous caps/backs, folding both columns rather than leaving a flat brick
+course beside the new wall. This corrects the observed error, not a source
+palette/export change.
+
+Final source build4m13s; both new wall tests and all three existing Lance
+geometry tests pass (the lance_ filter also selects one unrelated Hitmontop
+balance test; six total,9.92s). The wall tests verify every inner-face height
+along both courses, closed signed volume/outward faces, original support,
+source immutability and edited/clipped/custom-source rejection. Fresh43 fade
+controls pass0.63s. Native build4m45s. All five final pairs/ten full images and
+both captured moving images are individually inspected: north join, east/west
+middle walls, south ends and an ordinary UD aisle walk. The actual route is
+(4,12)->(4,11)->(4,12), with active settled terrain, no warp and zero fade.
+The64-frame movement log is functional evidence, not64 reviewed native images.
+Each final source/native pair retains its own authoritative state.
+
+Final full311 audit has zero mesher errors. Strict comparison admits only
+Lance's intended168 wall claims, +1448 textured triangles/+3568 vertices and
+corresponding flat-to-modeled accounting; every other field,310 other map
+records, all support and all225 declared alternatives are unchanged. Receipts:
+lance-blue-brick-wall-{tests,fade-controls,native-build,full311-invariant-summary}
+under target/kanto-resume/receipts; final images/provenance/individual-room-review
+under target/kanto-resume/lance-blue-brick-wall-headless-review. All captures
+are headless/image/muted; no windows, tabs, focus changes or exports occurred.
+
+Continuous blue brick faces/closed backing are scoped accepted. Broad foreground
+cap composition, flat floor-edge fragments, guardian/actor fidelity, remaining
+south-barrier art and full-room presentation remain open. These visual fixtures
+do not earn a victory or continuous League traversal. The earlier earned Lance
+flags/blocks/PP evidence is separate and predates the side-wall change. Full
+all311/original16/shared-furniture/service/earned-native-scene work remains active.
+
+Lance earned third mask verified offscreen; all16 alternatives have native state evidence — 2026-10-18
+
+Three ordinary-input native replays now reach and hold Mary's actual source page
+in LancesRoom after defeating Lance. All six final source/native images were
+individually inspected. Each pair preserves its own authoritative checksum;
+frames/checksums differ across independent runs. The read-only witnesses record
+BEAT_CHAMPION_LANCE=true, ENTRANCE_CLOSED=true, EXIT_OPEN=false and actual map
+blocks north$0b/south$34. No door/victory flags or block edits were seeded.
+The initial legal party/location is a fixture, not proof of full-story arrival.
+A production stdio move menu verifies Ice Beam starts at16PP; all three native
+victories end at10PP. Both source-page and initial-menu stdio probes retain
+byte-empty stderr. The native pack/checkpoint identity was preserved.
+
+The final front, east90-degree and east110-degree pairs and witnesses are in
+target/kanto-resume/lance-earned-third-mask-headless-review. The wider110-degree
+view includes the room footprint, but the south entrance is too small for close
+geometry acceptance; the90-degree view clips that end. Blue side courses remain
+flat, guardians/actors and whole-room materials remain open. No battle visual
+or continuous native League/Hall acceptance is inferred.
+
+The actual original16 evidence checker passes:16 image-supported physical-state
+alternatives,37 native pairs, all225 declared audit alternatives retained.
+This covers five synthetic exit-only states, ten controller-owned entrance or
+victory states (including Lance's new third mask), and the6F callback. Inventory
+coverage is not full visual acceptance. Receipts are original16-native-evidence-
+inventory.json and lance-earned-third-mask-verification-summary.json under the
+ignored target/kanto-resume/receipts directory. All captures used headless image
+targets and mute; no windows or focus changes. Full all311 interiors, original16
+art review, shared furniture, services and earned native scene obligations remain
+active. The deleted handoff stays deleted; these two canonical guides retain
+current acceptance and history.
+
+Ordinary source-dialogue observer regression passes; native Lance replay resumed — 2026-10-18
+
+Initial source Cargo30959 compiled6m48s and reached Mary's ordinary page, proving
+the observer admission worked, but its new checksum assertion compared a cheap
+presentation snapshot (frame15/hash0) with a full snapshot (frame15/hash155502283).
+The primary runtime implementation explicitly makes presentation_snapshot omit
+integrity hashing. This was a mismatched verification API, not evidence that the
+observer mutated gameplay. That actual failed receipt/driver gate are retained
+as initial-checksum-view-mismatch. Neither native build nor scene acceptance
+followed that failed gate.
+
+The regression now compares state_checksum() before/after observation, and the
+QA witness uses the same authoritative checksum API as paired capture. Fresh
+Cargo32505 compiled2m20s and the real native-pack Lance regression passed6.79s:
+ordinary page admission, stale closed-window/wrong-page rejection, read-only
+checksum, actual win/PP/flags and Hall continuation all pass. Fresh existing
+printer controls pass2/8.85s; new-page printer identity passes1/4.51s; same-tile
+warp route release passes1/0.00s. No zero-test filter is treated as a pass.
+
+Serial driver32621 passed its source gate and completed saved-renderer rebuild;
+its actual U18+A500 native front replay is now live, with an east-wide replay
+queued only after actual front-page/block/flag/PP/checksum assertions pass.
+Final pairs, source witnesses, actual portals and original16 acceptance remain
+pending inspection. The code changes observe QA text and release QA keys only;
+production controller, source scripts, flags and input dispatch are retained.
+All captures are headless/image/muted, and all311/shared-furniture/full-room/
+service/native-earned-scene obligations remain active.
+
+Lance replay exposed source-dialogue QA gap; read-only observer repair implemented — 2026-10-18
+
+The native-compatible checkpoint was actually replayed with ordinary U18+A500
+inputs after a3m55s saved-renderer rebuild. It won and continued through Hall,
+credits and home instead of holding Mary's page. Once NewBarkTown was observed,
+owned renderer28827 was deliberately terminated: the desired page had already
+passed, so more A inputs could not satisfy this capture. The failed run and its
+moving frames are retained separately in lance-earned-third-mask-source-hook-miss;
+no final pair or original16 acceptance follows. Individual moving frames80/120
+show actual battle, and140/141/142/160 show Mary's text, Oak's arrival and later
+continuation with the north portal open. Those six selected images were
+individually inspected; the other hundreds of intermediate images are not
+reviewed. Battle composition is poor (tiny Mew against oversized wall/stair
+scenery); this is not a battle-rendering acceptance. Lance's flat blue side
+courses/black backing and whole-room/actor work remain open.
+
+A production stdio-MCP replay from the same native checkpoint reached Mary's
+actual first page after73 ordinary A presses following Up input; it retained
+byte-empty stderr. Its exact page is MARY: Oh, no!\nIt's all over!, matching the
+requested target. This rules out the guessed text as the cause. The old QA hold
+only consulted field_notice, while ordinary compiled writetext uses the shared
+visible_field_dialog_pages surface with field_notice=None. New
+render_walk::revealed_dialogue_page reads that actual renderer page and its
+matching complete printer. It rejects other/unfinished pages and stale retained
+text after closetext. Only QA key release/freeze changes; the production input,
+dialogue dispatcher, flags and script continuation are unchanged.
+
+The hold now additionally records a read-only dialogue-hold.json witness with
+actual source label/window/page/checksum, party move PP, current-map overrides
+and three observed Lance flags. This makes native earned-state evidence checkable
+without flag injection or save identity edits. The existing real-pack Lance
+regression now requires observation of the earned ordinary Mary page, verifies
+field_notice=None, rejects a closed-window copy and wrong page, checks observer
+checksum immutability and actual victory/entrance/exit flags/PP depletion.
+Fresh source Cargo30959 is live; the queued replay driver waits for its actual
+pass, then rebuilds and checks both held pairs against actual north0b/south34
+blocks, earned champion/closed entrance/unset synthetic exit flag, spent Ice Beam
+PP and matching paired checksum. All new observer/build/native results remain
+pending. No original16 or full-room completion is claimed. Captures remain
+headless/image/muted; no windows, source exports, pack builds, staging, commits
+or cross-chat messages occurred. Full all311/original16/shared-furniture and
+service/earned-scene requirements remain active.
+
+Viridian irregular relief checked; green-wall fidelity still open; native Lance checkpoint repair — 2026-10-18
+
+Fresh source Cargo24359 compiled8m31s. All three mesh tests passed0.01s, the
+17 fresh gym controls passed3.93s and41 fade controls passed0.44s. Native
+Cargo25955 completed4m02s. All12 final pairs/24 full-size images in
+viridian-irregular-stone-headless-review were individually inspected: rotations
+0/2/6, all eight perimeter fixtures and the ordinary UD route. The repeating
+quilt pattern is removed; section edges and all source maze joins remain closed,
+floor/entry space stays intact and the player remains grounded. This accepts
+only the irregular-relief/closed-join improvement. Broad cap proportions,
+repeated side-panel/material fidelity, guardian shapes and companion readability
+still prevent full green-maze/room acceptance. Some northern/middle fixtures
+hide the companion, so distinct actor centers alone do not prove readability.
+The actual route proves5,9→5,8→5,9 with active same-map terrain, no warp and zero
+fade. Strict full311/225 comparison actually passed exact JSON equality with the
+final pink baseline: all counts/claims/support/variants/root fields are intact;
+this count audit does not prove vertex positions are unchanged.
+
+To pursue the remaining original16 Lance state without synthetic door flags,
+the exact pinned source was re-read: the actual victory sequence opens north
+block0b while the entrance remains closed, then displays Mary's first page.
+The existing ordinary-input notice hold can capture that authored state. Fresh
+saved-session renderer build completed3m37s. First attempted native replay from
+current-text-pack-earned-states/LancesRoom-before-battle.crystalsave was rejected
+before rendering: its actual embedded pack hash is the browser11f9e17c… baseline,
+not nativea0153af8…. The earlier assumption that this checkpoint was native-
+compatible was wrong. All five available similarly named checkpoints were
+inspected: two use that browser hash and three an older8086b150… hash. No identity
+or hash was rewritten. The failed load/log and original bytes are retained.
+The existing ignored actual-pack Lance controller regression was explicitly
+executed against the current native pack and passed6.70s, including real battle,
+PP mutation, authored exit opening and Hall continuation. Its newly created
+quiescent checkpoint embeds the correct nativea0153af8… hash and was loaded by
+that regression before fighting. The failed browser input/logs were preserved
+under rejected-browser-checkpoint names. The ordinary native replay was retried
+from the genuinely native checkpoint; fresh saved-renderer Cargo28308 is live
+before its inputs/captures. Native earned third-mask capture remains unproven;
+no flags/pack IDs/hashes were rewritten. All work stays offscreen/image/muted;
+no visible windows, pack export, staging, commits or cross-chat messages occur.
+Full all311/original16/shared-furniture/service/earned-scene obligations remain
+active, and deleted handoff/unrelated work remain untouched.
+
+Viridian first relief rejected visually; irregular cap refinement implemented — 2026-10-18
+
+Native Cargo23217 completed1m34s; the offscreen driver generated12 pairs (three
+rotations/eight perimeter poses/one UD walk) and completed its311/225 audit.
+Only rotation0 and rotation2 pairs have been individually reviewed so far
+(four full-size images). Joins stay connected and the top is genuinely uneven,
+but its regular concentric tessellation plus a height frequency near one cycle
+per8px cell produces a repeating quilt-like pattern. This fails the requested
+improvement over manufactured/block-like green maze walls. No visual acceptance
+is granted. Rotation6/perimeter/walk images remain manually unreviewed. The
+actual UD route proved5,9→5,8→5,9 with settled active same-map terrain, no warp
+and zero fade. The executed strict311/225 comparison is exactly equal to the
+final pink audit for every field; it proves counts/claims/support/variants,
+not unchanged vertex positions or satisfactory appearance.
+
+The refinement in viridian_maze_stone.rs keeps section boundary XZ coordinates
+fixed while moving interior cap vertices with two smooth, bounded one-axis
+fields. Their windows vanish exactly at every boundary and at floor height;
+their positive derivative bounds keep closed parts inside the same source plot.
+Normals compose the inverse transpose of both horizontal transforms and the
+existing vertical relief. Height frequencies no longer align near one cell
+period. Existing source ownership, UVs, index topology, buried join ordinals,
+floor datum and fade ownership remain unchanged. Bounds tests now require the
+same source plot and exact section edges rather than requiring every interior
+vertex's XZ to remain flat/regular. New source Cargo24359 is live; fresh
+viridian-irregular-stone driver is queued behind its actual three maze passes,
+then fresh gym/fade controls, rebuild, all12 paired captures, actual UD and full
+311/225 equality audit. Its new geometry/pigments and appearance remain unverified.
+All captures stay offscreen/image/muted. Full all311/original16/shared-furniture,
+actor and service obligations remain active. No unrelated changes or deleted
+handoff were restored; no model export, pack build, staging or commit occurred.
+
+Game Corner pink/orientation/rear-wall repair verified; Viridian stone relief in tests — 2026-10-18
+
+Pink correction Cargo19216 compiled9m49s and all five actual viewer tests passed
+in8.04s; the Bevy filter selected no gameplay tests. Fresh controls passed21
+arcade,23 casino and one packed wall-donor selection (overlapping selections).
+Native build20828 completed5m11s. All24 final pairs/48 full-size images in
+native-arcade-pink-midtone-headless-review were individually inspected: both
+Game Corners at rotations0/2/6, all16 actor-clear perimeter poses and both
+ordinary UD aisle walks. Pink bodies/yellow edges, outward fronts toward stool
+rows, connected rear wall above prize racks/rear equipment and original clear
+floor aisles are accepted for this scoped repair. Every pair preserves state
+and actual Player/Object centers are distinct. Both actual routes prove
+10,7→10,6→10,7 with active same-map terrain, no warp and zero fade. Companion
+occlusion in front views and player/stool pose/readability at some perimeter
+fixtures still require full actor/service review; no blanket room pass follows.
+
+The raw full311 audit equality assertion initially failed. Investigation found
+exactly one additive schema field: audit_authored_assets.rs now records
+coastal_terrace_field = frame.terrace_datum.is_some(); it was absent in the prior
+receipt and is false for every one of these311 interiors. No preexisting field
+differs. The executed strict comparison explicitly admits only this reviewed
+absent→false addition and proves all preexisting map/geometry/ownership/support,
+root/totals and all225 variant fields exactly equal, with zero mesher errors.
+This does not claim byte-for-byte JSON equality. The earlier orientation/wall
+audit already proved changes limited to the two Game Corners' solid geometry.
+
+New viridian_maze_stone.rs now replaces the old pigment-only cap finish under
+the same complete Viridian network admission. A shared continuous height field
+weathers the existing closed stone parts down inside their original footprint
+and height envelope; its cubic ramp fixes floor contact and its positive vertical
+derivative preserves closed/overlapping parts. Normals follow the inverse
+transpose and native green pigments retain mild weathering. Topology, UVs,
+buried join ordinals, source claims, collision, floor and fade groups are retained.
+Existing bevel proof now checks genuine uneven geometry rather than requiring
+flat tops. New tests cover all16 shapes at three scales/three offsets, coincident
+hard-edge copies, positive winding, unit normals, cached-model immutability,
+fixed floor/XZ bounds and exact neighboring buried-face point sets. Source
+Cargo21689 compiled8m27s; all three selected maze tests passed0.02s. The fresh
+17-test gym_scenery control selection passed3.82s; all41 fresh occluder_fade
+controls passed0.41s. Serial driver23214 started native Cargo23217 after those
+actual passes. No native acceptance yet: front/side/perimeter/ordinary UD and
+full311/225 audit remain pending; its strict comparator is prepared to require
+complete count/ownership/support audit equality with the final pink baseline. Every
+capture is offscreen/image/muted. No window, focus switch, model export, pack
+regeneration, staging, commit or cross-chat message occurred. Deleted handoff
+stays deleted; all311/original16/shared-furniture/service obligations remain open.
+
+Game Corner first native review rejects cream bodies; pink-midtone correction — 2026-10-18
+
+Native Cargo18348 completed in3m57s. All six front/east/west paired views of
+Celadon/Goldenrod Game Corner were individually inspected (12 images). Cabinet
+fronts now face the stool aisles and the north walls/ceiling remain connected
+behind cabinets and prize racks. However, the bodies remain cream: [10,1] used
+RED's255 highlight, so the previous bank-only assertion accepted the wrong
+visible pigment. This is rejected material evidence, not room acceptance.
+Existing actual source-color traces identify [25,1] as pink RGBA255,156,198;
+the source swatch now uses that pixel, and the pack test requires RED's170
+midtone instead of255. Yellow trim remains its independent YELLOW170 sample.
+No size, ownership, support, topology, UV layout or gameplay change accompanies
+this one-swatch correction. Fresh source Cargo19216 is live; the serial
+native-arcade-pink-midtone driver gates rebuild and complete recapture/audit on
+its actual passes. The original quality driver16736 completed its16 perimeter captures, both
+ordinary UD routes and full311/225 audit using its already-built pre-correction
+executable. Both walks prove10,7→10,6→10,7 with active same-map terrain, no warp
+and zero fade. Their two final pairs were also individually inspected: the player
+is grounded/visible, but the companion is partly behind the player in this front
+view; no full actor readability acceptance follows. Together with the six static
+pairs, eight pairs/16 images have been individually reviewed. All16 perimeter
+pairs remain manually unreviewed. Strict audit comparison actually passed: only
+Celadon solid triangles+1380/vertices+2760 and Goldenrod+1840/+3680 change; all309
+other maps,225 variants, source ownership/support, textured geometry and all
+other non-geometry/root fields remain exact, with zero mesher errors. These
+receipts must not be presented as proof of the corrected pink paint. All rendering stays offscreen/image/muted.
+Full room/service/actor and all311/original16 obligations remain open.
+
+Game Corner cabinet orientation/native pink and rear-wall repair implemented — 2026-10-18
+
+New native_arcade_pairs.rs adapts the existing closed, beveled two-unit model.
+It validates separate halves/no crossing triangles, turns the original west and
+east units toward their stool aisles, centers each on its actual owned half,
+and rejects geometry outside the unchanged source footprint before any write.
+Height, source UVs, indices and each triangle's rigid edge lengths are preserved;
+normals/neutral face shading turn with the units and cached geometry is immutable.
+Only the existing complete native ArcadePair source guard uses this adapter;
+rear/front-facing single machines and unsupported-source fallbacks are retained.
+Pair body/trim swatches now select the native pink field and yellow edge rather
+than making nearly the entire body yellow.
+
+New native_arcade_backing.rs admits complete north-row prize racks and both
+complete rear-cabinet halves in only Celadon/Goldenrod Game Corner. It reuses
+the existing cabinet guards, rejects altered/clipped drawings and custom-owned
+source, joins spans and copies the authenticated room-wall volume behind their
+original occupied cells. Source claims, flooring, support and all events remain
+unchanged; no wall is invented behind interior banks. Existing camera-wall and
+cutaway ownership is retained. Source arcade-specific wall pieces/poster backing
+were28px while rear machines reach29px, despite the shared wall kit's32px datum.
+Resolved wall/window courses in these two rooms and poster backing now share32px;
+prize racks/cabinets keep their original sizes. Updated wall tests require the
+actual ceiling datum, and the new backing ray proof now reaches31px above the
+machines, as well as lower/middle wall bands.
+
+First source Cargo14564 compiled9m01s and ran five tests: four passed, covering
+rigid outward-facing detail, immutable cached models, whole-source/footing guards
+and actual packed north-wall backing rays. The pigment test passed pink but
+failed its expected yellow bank number, reporting actual4 versus expected6.
+Pinned source tileset_constants.asm explicitly defines PAL_BG_YELLOW4 and
+PAL_BG_ROOF6; the assertion was corrected to that authoritative constant, without
+changing the native swatch to fit a wrong expectation. That failed receipt and
+dependent gate failure are preserved as initial-wall-attempt. No native build
+or visual acceptance occurred from that attempt. The additional32px ceiling
+repair was added before the fresh run recorded below.
+
+Fresh unified Cargo16581 finished compilation in10m44s and all five selected
+viewer tests passed in8.08s, including actual pink/yellow pigments, rigid outward
+cabinet faces and complete north-wall rays through31px. No Bevy gameplay test
+was selected by this filter. The same fresh viewer test binary also passed21
+arcade,23 casino and one packed room-donor control; selections overlap and are
+not additive distinct test counts. This verifies the32px ceiling/source repair
+at the mesh level, not visual acceptance. Serial driver16736 then started native
+Cargo18348 for render_at_location and audit_authored_assets. Both rooms at0/2/6,
+actor-clear perimeter poses, two ordinary UD aisle walks and the complete311/225
+audit remain queued. A strict audit comparator is prepared to allow only the two
+Game Corners' geometry fields to differ; all309 other maps,225 variants, source
+ownership/support and other totals must remain exact. All actual new images and
+source/geometry/support deltas remain pending inspection. Every capture explicitly
+uses headless image target and mute, with
+no visible fallback or focus change. No model assets/packs were regenerated.
+Full all311/original16/shared furniture/service/earned-native-scene and remaining
+wall/actor obligations remain active. Deleted handoff and unrelated work remain
+untouched; no staging, commit, PR, cross-chat message or export was performed.
+
+Link finish repair visually verified; nine owned door alternatives and rooftop callback reviewed — 2026-10-18
+
+Native Cargo8212 completed4m03s. All12 final link-room pairs (24 images) were
+individually inspected: each of the three rooms at rotations0/2/6 plus its
+ordinary LLRR lower-platform route. Complete native diamonds now extend through
+both entry corners; red entries, gray/beige octagons, green apparatus, cream
+round stools and blue/white trade receivers retain source pigment. This scoped
+floor/pigment repair is accepted. Every pair preserves state and actual
+player/object centers are distinct. Each route proves all ordered positions
+5,6→4,6→3,6→4,6→5,6 with settled active terrain, no warp/fade, and readable final
+player/companion footing. No network battle/trade service follows from walking.
+Broad low blue wall caps, lower gray-band/wall-face proportions, apparatus and
+actor/companion fidelity remain open; the full rooms are not accepted.
+
+The fresh complete311/225 audit comparison was actually executed. It changes
+only the three link rooms' four geometry fields; all308 other maps, all225
+variants, all source ownership/support fields and all other root/non-geometry
+totals are exactly equal, with zero errors. The ignored invariant summary records
+Colosseum solid triangles−27936/textured+12640 and TimeCapsule/TradeCenter each
+solid−28316/textured+13020, with corresponding actual vertex deltas. No palette
+or visual acceptance was inferred from these counts. This follows the current
+7 source checks/full packed-room final-pass proof,34 floor controls and existing
+room/offscreen controls; rejected initial and partial-checker evidence remains
+explicitly superseded.
+
+The fresh actual-pack entry-lock controller passes5.18s across all five rooms;
+four actual victory/PP/exit controller cases pass14.12s. Saved-session renderer
+build passes4.40s. All18 source/native pairs from their nine alternatives were
+individually inspected from front/east. Closed southern barriers are clear in
+side views despite front player cutaway; four northern exit openings are visible
+after actual wins. Some side views crop far ends, so they do not establish full
+coverage individually. Guardian spheres lose red/white source accents, and Koga/
+Karen retain generic blue human outfits; room/actor fidelity remains open.
+Lance's lower entry pair does not cover its north gate, so two additional actual
+ten-step Up walks reach5,9 from5,19. Both final pairs were individually inspected:
+the closed north gate remains visible, source/native state matches and terrain
+settles. Their20 intermediate images are not reviewed; no middle-step animation
+acceptance is inferred. Lance's side courses remain largely flat blue/gray art
+against black perimeter, so its wall height/material/ornament work is open.
+
+Two additional Celadon6F callback pairs were individually inspected. Actual
+source aliases DeptStore6F.blk; its base block6,0 is2f, and the unconditional
+MAPCALLBACK_TILES changes it to03. Runtime-tile initialization explicitly
+finishes this authoritative callback. Both source and native show glazing
+instead of roof stairs at that course, with no preview flags or synthetic block
+edits. Window/perimeter heights remain too low and backing is missing behind
+the vending bank, clearly exposed from east; full room architecture is rejected.
+All22 final pairs in original16-owned-state-headless-review preserve state and
+actual player/object centers are distinct. These ten original alternatives plus
+the five previously reviewed synthetic exit-only cases give native evidence for
+15 of the original16; Lance's third mask still requires appropriate native
+state/scene capture. The old lance-victory-saves load was attempted and rejected
+by the client because its core-modular identity differs from the current pack.
+Its ID was not rewritten. The compatible current-text-pack-earned-states Lance
+victory save is authored after entering HallOfFame, as its controller helper
+explicitly asserts, so it cannot prove the temporary Lance-room combination.
+
+Full all311 composition/materials/services/reachable states, all16 native/earned
+state obligations, continuous native League/Hall animation and shared furniture
+remain active. Next concrete quality repairs include Game Corner cabinet
+orientation/pink paint/rear joins, low retail walls and vending backing, and
+remaining PowerPlant/Viridian/link-room volumes. All captures were offscreen,
+image targets and muted; no windows, focus changes, cross-chat messages, pack
+export, generated model assets or unrelated edits occurred. Deleted handoff
+remains deleted; these canonical documents retain current evidence.
+
+Complete packed-room floor regression passes; original16 native-state review queued — 2026-10-18
+
+Cargo5995 completed compilation8m34s. All14 Bevy link controls pass64.89s and
+all7 selected viewer checks pass3.64s, now including full TerrainMeshData equality
+through the real final finisher on each complete packed link-room mesh. All34
+floor controls also pass11.62s; existing special-room/sample/perimeter and
+one offscreen-default control pass. The exact native gate01 motif now remains
+native across plain-floor and platform-corner source blocks; no floor-block
+allowlist omits the entry corners. These tests still do not establish appearance.
+Owned native Cargo8212 is confirmed live; driver6050 will recapture all12 link
+pairs/three ordinary four-step walks and perform the full311/225 comparison.
+No final native link-room acceptance is claimed before those fresh images.
+
+A second serial driver8104 now waits for the completed link source/native/audit
+gates before extending the original16 evidence. It runs fresh actual-pack
+controller entry-lock and four-victory tests, publishes their five entry/four
+battle saves, builds the saved-session renderer and captures all nine original
+alternatives from front/east as18 matched pairs. Entries use the authored
+arrival transaction from an initial map fixture; victories seed the initial
+party only and require real battle/PP/script changes. Neither flags nor block
+edits are seeded, and this is not continuous League traversal. The driver
+requires actual passes, same-map/state/camera receipts, and explicitly leaves
+all individual image review pending. Lance's third mask, Celadon's unconditional
+callback case, native continuous League/Hall scenes and all311 room quality
+remain separate required work. All rendering stays headless/image/muted.
+
+Current verification wait and actor-scale qualification — 2026-10-18
+
+Owned Cargo5995 and viewer-test compiler7006 are confirmed live; the serial
+review driver6050 waits on that exact Cargo process. No source changes were
+made while compiling, and no observation timeout was treated as termination.
+The complete packed-room final-floor regression and new native appearance are
+still pending, with earlier initial/partial-checker captures retained rejected.
+
+Read-only actor-source inspection qualifies the earlier link-room scale finding:
+new_bark_actors.rs explicitly applies PLAYER_PRESENTATION_SCALE1.25 only to the
+player identity; NPCs sharing Chris's source retain authored stature. Therefore
+same source IDs/64px sprite sizes do not prove equal physical height. The small
+other trainer still needs seated-pose/readability review; do not normalize its
+height solely to match uniform source icons or undo the requested player scale.
+No actor files were edited. Hall source-frame capture code was also inspected:
+the continuous controller saves render_visible_hall_of_fame_screen images at
+phase entry, so those source frames still do not prove native GPU ceremony
+presentation or its mid-phase animation. The full native-scene gate stays open.
+
+Complete packed-room floor gate added after entry-corner defect — 2026-10-18
+
+Cargo2951 completed11m30s; all14 Bevy link controls59.12s, all7 viewer checks
+3.71s, offscreen-default/existing-room controls and all34 floor controls11.19s
+passed. The native build completed3m47s. Nine static pairs, all three complete
+LLRR walks and the311/225 audit completed. Its comparison again changes only
+three maps' geometry fields; all308 other maps, all225 variants, ownership and
+support fields are exactly unchanged, with zero errors. These receipts are
+preserved as partial-checker; they do not prove final visual acceptance.
+
+Individual inspection of the new Colosseum source/native pair shows restored
+diamonds over most of the floor, but gray patches remain beside the entry.
+Actual source blocks1f/20 also contain the same gate01 diamond floor outside
+the platform. Restricting final-pass protection to blocks16/17 missed those
+physical floor cells; the isolated final-pass fixture was too narrow. Remaining
+partial-checker pairs are retained as superseded/unaccepted, with no invented
+individual-review claim. The finish exclusion now recognizes that unambiguous
+live gate01 motif with valid phases in only the three link maps, including all
+platform-corner floor cells. The existing complete plot/cell geometry guards
+are retained. The actual-pack regression now calls the real final profile-aware
+finisher on the complete generated room mesh and requires zero rewriting and
+full TerrainMeshData equality for each map, covering every cell/UV/index/range,
+not just plain-floor fixtures. The isolated fixture also covers corner blocks
+and invalid phases/atlas/tile/map. Fresh unified Cargo5995 is confirmed live;
+its serial driver requires these actual tests, all34 floor controls, native
+recapture, actual walking and full311/225 comparison. This last repair has no
+passing-test or native appearance claim yet.
+
+The first checked link view also retains very broad, low wall caps and a much
+smaller Object(0) Chris than the player, despite identical source IDs/sizes in
+the receipt. Geometry/actor fidelity remains open beyond the finish repair;
+unchanged old geometry is not evidence of acceptable room scale or ceiling
+height. Current arcade trace likewise confirms south-facing native pair models
+bypass the older outward branch and yellow body sampling loses pink panel
+paint. Actual Crystal CeladonGameCorner.asm has no callbacks/changeblock or
+hidden-stair warp: both posters jumptext 'nothing' and its two exits go south
+to Celadon City. The earlier speculative hidden-stair note was corrected;
+source interactions, not remembered first-generation behavior, govern repair.
+
+All311/original16/shared furniture/service/earned-native-scene obligations remain
+active. No window, focus change, model regeneration, pack export or cross-chat
+message occurred; unrelated changes and the deleted handoff remain preserved.
+
+Game Corner orientation cause traced; link floor build still live — 2026-10-18
+
+The current renderer's native_arcade_source branch invokes append_native_arcade
+before the older ArcadePair outward adapter. The pair export explicitly faces
++Z. Inspection of all nine material primitives proves no triangle crosses the
+unit midline and the nearest vertex is0.08 model units away, so these are two
+independent cabinets, not one connected body. A future source-qualified pair
+adapter can rotate each closed unit west/east toward its existing stool aisle,
+retaining live palette roles, indices, heights and source-cell ownership; the
+single rear machines must remain south-facing. This is cause/implementation
+preparation, not an executed fix or visual pass. Rear-wall joins still require
+source-qualified backing behind equipment and normalized short header planes;
+Celadon's authored poster text and southern city exits must remain accessible.
+
+Owned Cargo2951 remains confirmed live compiling the link checker final-pass
+regression; it has not been restarted for observation latency. The serial driver
+continues waiting on this exact process before tests/build/captures. No final
+floor pass or whole-room acceptance is claimed yet. No visible render launched.
+
+Link checker-floor regression found in native review; final-pass repair pending — 2026-10-18
+
+The first offscreen three-room build passed its source/control gates and built
+in3m57s. Nine static pairs at rotations0/2/6 and all three ordinary LLRR routes
+completed with expected ordered positions5,6→4,6→3,6→4,6→5,6, active settled
+terrain, no warp/fade and paired state preserved. The full311/225 comparison
+has zero errors, only the three link-room geometry fields changed, all308 other
+maps and all225 variants are exactly equal, and ownership/support fields remain
+unchanged. These receipts are preserved with initial-finish names.
+
+The first Colosseum source/native pair was individually inspected and rejected:
+blue walls, green apparatus and red entry were restored, but the later generic
+floor finisher still erased native diamonds to gray tiles. Remaining first-pass
+pairs are retained as superseded/unaccepted, not individually accepted. The
+native_link_room append-only tests did not exercise that final finishing stage.
+interior_surfaces.rs now excludes the exact three-room gate01 floor sources
+(complete17 or16's last row with valid phases) from generic repainting, retaining
+the existing full live drawing, zero floor datum and source/collision ownership.
+The new link_room_native_checker_survives_final_floor_finishing regression runs
+the actual final profile-aware floor pass over all accepted source rows in all
+three maps and checks unchanged positions, normals, complete UVs, colors,
+indices, stored support and ownership; unrelated maps/altered sources reject.
+Fresh unified Cargo2951 is confirmed running; its serial driver waits for all
+three named source tests, controls and fresh native build before recapturing
+all12 pairs/routes and the full311/225 audit. The final floor repair has no
+passing-test or native appearance claim yet.
+
+Fresh current-build PowerPlant/ViridianGym/GoldenrodGameCorner pairs have also
+been individually inspected, all with preserved state and distinct actual
+player/object centers. They confirm the older-gallery issues: large flat Power
+Plant machinery plots, smooth/manufactured Viridian maze caps/sides, and Game
+Corner cabinet fronts southward despite west/east stools plus black rear-wall
+gaps behind equipment. Native arcade paint is selected before the older
+outward-pair branch, so outward-facing source code elsewhere does not prove
+current cabinet orientation. These remain concrete next repairs; no whole-room,
+service or earned-state acceptance follows. All captures were headless image
+targets with mute enabled, no windows or focus changes. No packs or model assets
+were regenerated; unrelated work and the deleted handoff remain untouched.
+
+Native link-room source and offscreen-default checks pass — 2026-10-18
+
+Unified Cargo99553 completed compilation in8m55s, then all14 Bevy link controls
+passed60.49s and all6 selected viewer checks passed4.92s. The latter includes
+the new actual-pack Colosseum/TimeCapsule/TradeCenter palette/coverage/upright
+geometry/support checks and named-model-role rejection/volume test. The source
+header now validates all three Wall rows. Fresh executable controls also pass:
+10 special-room checks, one source-sampled asset control4.30s, one perimeter
+control and the one automated-native-offscreen-default regression. No visual
+or whole-room acceptance follows from these tests. The serial driver is now
+running owned native Cargo1583, then requires nine static matched pairs, three
+ordinary four-step routes and the complete311/225 audit. All new rendering is
+explicitly headless image capture with mute enabled and no visible fallback.
+A second serial driver waits for that review process before rechecking current
+PowerPlant/ViridianGym/GoldenrodGameCorner images, avoiding concurrent renders.
+
+Additional individual gallery review — 2026-10-18
+
+PowerPlant and ViridianGym's existing matched source/native images were each
+inspected individually while the link-room source build runs. Their paired
+receipts preserve state; PowerPlant's actual player/object centers are distinct.
+PowerPlant's office divider is connected and furniture is grounded, but several
+large central/southern machinery banks remain flat source paintings, unlike the
+upright northern bank. Red/white connecting runs also remain low; their exact
+structural identity must come from source before inventing machinery. Its office
+furniture is paler than native gold. Viridian's maze joins are continuous with
+an open central aisle, but large smooth cap islands and repetitive side panels
+still read as manufactured blocks rather than the mottled native green drawing.
+Those surfaces remain rejected for final appearance; full northern coverage,
+entrance-statue framing, services and earned leader scenes are not proven.
+Findings are recorded in ignored full311-native-current-review/
+individual-room-review.json. This review does not close either room or replace
+current source-backed geometry/footing checks with screenshot inference.
+
+Offscreen-only verification and complete link header — 2026-10-18
+
+Automated native captures remain headless image targets with audio muted; no
+visible fallback, window launch, application switch or focus change is permitted.
+The full source wall header consists of three accepted Wall rows, including the
+gray lower band. The native finish guard now admits and validates all three rows,
+with blue body/cap sampling from row zero and the gray skirt from qualified floor
+paint. This corrects the previous two-row guard before source tests execute.
+Owned Cargo97627/rustc98632 and dependent Python98201 were stopped before their
+test/source gate; their receipts are preserved as header-attempt-stopped and
+header-driver-stopped. No pass or gameplay blocker is inferred from cancellation.
+Fresh unified Cargo99553 is running the three-room source/model checks. The
+serial review driver waits for its actual result before controls, native build,
+offscreen paired capture, ordinary walking and full311/225 audit. New visual
+acceptance remains pending; the wider interior obligations remain open.
+
+All thirteen replacement fixtures reviewed; native link-room finishes added — 2026-10-18
+
+Every source/native pair in gallery-actor-clear-headless-review has now been
+individually inspected, with specific findings in capture-provenance.json. All
+thirteen replacement poses keep player and authored objects separate; original
+overlapping gallery evidence remains rejected. Checked house stools/tables/wall
+courses and school benches/chair alignment are readable in these views, but
+this does not close whole-room, service, alternate-camera or actor fidelity.
+Colosseum loses its blue wall, green apparatus and native entry/floor colors to
+white/steel; the same loss is visible in Time Capsule's saved pair. Elm's house
+has much paler timber than source. Mahogany has conspicuous black/white outer
+wall strips and pale barrier tops. Battle Tower hallway door/control fronts
+still require close volume/material review. These are explicit remaining
+appearance issues; small classic species icons alone do not establish correct
+physical species scale, so small silhouettes need actual readability review.
+
+The link-room repair covers Colosseum, TimeCapsule and TradeCenter. The last
+two share the authenticated trade drawing; all three previously have full320
+source-cell ownership, which is retained. New native_link_rooms.rs uses existing
+whole-plot/cell fingerprints and a dedicated LinkRoom style. It replaces generic
+ceramic/grating paint with the native checker, gray waist strip and red entry;
+restores blue wall pigments and gray skirt from this room's own atlas; paints
+the original octagon's gray/beige courses and original apparatus with their own
+green pigments. Time Capsule/Trade Center's receiver uses its own blue/white
+source drawing. Model parse metadata requires complete named link materials;
+unknown names/missing roles and altered drawings retain the existing fallback.
+Model geometry is not regenerated, and logical support/collision/scripts/actors
+are unchanged. Procedural floor/entry tops stay at the original zero datum.
+
+New regressions compare actual source palette banks/pixels for all three packed
+rooms, require source coverage/unchanged stored support, compare every upright
+triangle against the prior room kit, reject every altered platform source cell,
+and reject unsupported model roles/names without writes. The first owned two-map
+compile was stopped before tests to include TradeCenter; its log is preserved,
+with no pass/failure or gameplay-blocker inference. Only owned Cargo96728 and
+rustc97086 were stopped. Current unified Cargo97627 is confirmed live compiling
+the three-room source/model tests. No new link source pass or appearance claimed
+yet. Its serial driver requires actual passes, existing special-room/sample/
+perimeter controls, a fresh native build, all three rooms at rotations0/2/6,
+three ordinary LLRR lower-platform routes and the complete311/225 audit. Every
+new image and actual audit delta still needs inspection before acceptance.
+
+All311/original16/shared-furniture/earned native-scene obligations remain active.
+No windows, focus changes, external pack export, generated model artifact or
+shared antialiasing edit was made. Deleted handoff remains deleted; these two
+canonical review documents retain the work and outstanding acceptance scope.
+
+Native lighthouse tread support verified; gallery replacements captured — 2026-10-17
+
+Fresh native tools build in4m05s. All fourteen ordinary-Right stair crossings
+reach their original expected map/tile, with matching active terrain, no pending
+terrain/warp and zero fade. Two additional1F upward-flight views at rotations0/6
+complete too. All sixteen paired state/camera receipts are checked and all32
+source/native images are individually inspected. The upward-flight arrivals now
+show the player supported above the steps instead of buried at the original
+flat floor. Descending arrivals follow recessed treads; lower legs are naturally
+obscured by the shaft, with head/body still identifiable. Checked masonry/moss
+and independent block ends remain connected. Scoped tread support/arrival
+readability accepted. Cap dominance, foreground floor-like wall remnants and
+whole-room/actor fidelity remain open. Each crossing follows a disposable
+initial fixture; these are14 input-earned arrivals, not a continuous ascent.
+
+The new311-map/225-variant audit has zero errors and is exactly equal in every
+parsed field to lighthouse-closed-ends-full311-audit.json, including all map,
+source ownership, geometry, stored support and variant records. The equality
+receipt is lighthouse-stair-support-full311-invariant-summary.json. Actual
+rendered contact is proved by the source/triangle regressions and native images,
+not inferred from this unchanged mesh audit. Source test results remain38 viewer
+passes plus the authoritative reentry pass, eight footing and five Radio stair
+controls; no all-tests or whole-goal claim is made.
+
+The serial gallery job completes all thirteen actor-clear paired replacements.
+Every receipt preserves state and the requested default camera, and every
+actually captured player center differs from every source object center. Old
+invalid originals stay rejected and link to their replacement evidence. The
+CeruleanPoliceStation pair is individually inspected: player and seated Pokefan
+are separate, pink stools have finished round seats, the table is grounded and
+checked wall courses are continuous. The fishing guru still appears in a blue
+uniform, and Diglett is unusually small relative to its source drawing, so
+actor fidelity/whole-room approval stay open. The other twelve replacement pairs
+remain pending individual inspection. No object positions, source scripts or
+pack data were changed for these fixtures.
+
+Full all311 room composition/materials/services and reachable states, original16
+alternatives, shared furniture and earned native League/Hall/animation acceptance
+remain active. Old fall-arrival image review and moving-column/other animation
+obligations remain separate. All captures ran offscreen/muted; no windows or app
+focus changes, external pack exports, shared AA edits or commits were made.
+
+Stair tread/source controls pass; thirteen gallery fixtures rejected — 2026-10-17
+
+The unified build completes in8m43s. All38 selected viewer tests pass10.73s,
+including both new tread/gait regressions and all fourteen packed flights'
+rendered contact checks. The authoritative stair-arrival/reentry controller
+passes4.42s. Fresh executable controls pass eight footing tests and five Radio
+stair tests (56.41s), retaining ordinary-ground, authored ledge and existing
+Radio behavior. Native tools are rebuilding; new actor height/readability and
+all fourteen native arrivals are still unverified until the queued capture job
+and individual review finish. No visual approval is inferred from these passes.
+
+Inspection of the original CeruleanPoliceStation pair found the player on its
+Pokefan NPC. An exact player/object-center comparison across all311 original
+paired receipts identifies thirteen invalid original gallery fixtures:
+BattleTowerHallway, BillsFamilysHouse, CeladonDeptStore5F,
+CeruleanPoliceStation, Colosseum, CopycatsHouse1F, EarlsPokemonAcademy,
+EcruteakLugiaSpeechHouse, ElmsHouse, GoldenrodDeptStore5F, MahoganyGym,
+Route39Farmhouse and ViridianNicknameSpeechHouse. Their original capture exit
+codes remain preserved, but fixture validity/whole-room approval is explicitly
+rejected in results.json and actor-overlap-review.json. This exact overlap test
+is not a proof that every other room/fixture is adequate. Existing newer scoped
+reviews remain separately identified; original invalid evidence is not deleted.
+
+The corrected batch sampler already avoids authored runtime/start positions,
+collision, warps and ledges. A serial follow-up driver is queued after the
+current stair source/native/audit process87698, reusing its fresh tools to
+replace all thirteen original fixtures. It requires preserved paired state and
+distinct actually captured player/object centers. Every replacement still needs
+individual image review; these disposable starts do not prove earned arrivals.
+No gameplay object position or script is changed. All311/original16/shared
+furniture/earned native-scene and broader composition obligations stay open.
+All native captures remain explicitly offscreen/muted with no window fallback.
+
+Lighthouse visual tread support implemented; verification running — 2026-10-17
+
+lighthouse_stairs.rs now supplies rendered actor footing for complete accepted
+up/down flights. It reuses the mesher's native floor/phase/source admission,
+orders the actual frame grid and rejects missing/duplicate/clipped/foreign art,
+nonfinite coordinates and incompatible resolved support planes. Ordinary floor
+queries return before dense resolution. Contact samples the actual six tread
+heights and closed cheeks at the frame's real world offset/scale. Stored source
+support arrays, flight geometry, source cells, collision and warp scripts remain
+unchanged. The common resolved-footing path consumes this scoped visual sample;
+complete lighthouse flights keep walking gait while authored ledge jumps still
+retain their arc. Other maps and rejected drawings retain existing behavior.
+
+Two new regressions test actual emitted horizontal triangle contact for all six
+steps, both directions, scales0.5/1/2, reordered grids/world offsets, source
+corruption/clipping/duplicates/foreign maps/missing ground and altered support.
+A gait test distinguishes ordinary stair walking from an authored ledge jump.
+The existing external-pack stair guard now independently checks all fourteen
+packed flights against emitted tread tops as well as source warp identity,
+paint and untouched support arrays. No pass is claimed until the actual unified
+source run finishes: Cargo87532 is confirmed live compiling. The dependent
+source/native driver requires those passes and the authoritative reentry test,
+then existing footing/radio controls, a native build, all fourteen ordinary-Right
+stair arrivals with settled terrain/zero fade, two extra1F camera pairs and the
+full311/225 audit. Every resulting image still requires individual review.
+
+All6F perimeter pairs were individually inspected and their scoped records are
+updated. All intended six-floor perimeter poses now have individually reviewed
+valid fixtures; the old3F north and5F southwest overlapping fixtures remain
+rejected. The full room, source-alternative, shared-furniture, earned native
+League/Hall and other acceptance obligations remain open. Render work remains
+explicitly offscreen/muted, with no visible-window fallback or focus changes.
+
+Closed lighthouse wall ends verified; stair support defect identified — 2026-10-17
+
+The unified lighthouse build completes in11m07s:36 viewer tests pass10.94s
+(one separate ignored test), including the new outward-ray closure test and
+actual-pack masonry/stair/pit guards; the authoritative stair-arrival/reentry
+controller test passes4.39s. Fresh native location/audit tools build in3m37s.
+All six source/native pairs complete explicitly offscreen/muted, and all twelve
+images are individually inspected. The failed5F southwest view now has an
+opaque masonry end under its top instead of a hollow opening. Both side views
+retain closed/connected courses.4F south's adjacent opaque end is closed;2F
+pit mouth/lining stays visible at rotations0/2. Player and neighboring item ball
+remain separate. Scoped closure accepted; cap dominance, foreground base-floor
+remnants and full composition remain open.
+
+The311-map/225-variant audit has zero errors. Only six lighthouse map records
+change, only textured triangle/vertex counts (buried body faces retained).
+Triangle deltas for floors1–6 are35096/36408/36736/38048/35752/32800; vertex
+deltas are exactly three times those counts. All other fields in those maps,
+305 other complete map records, all root/non-map records and all225 alternatives
+are exactly equal. The actual comparison is recorded in
+lighthouse-closed-ends-full311-invariant-summary.json. This is closed original
+masonry geometry, not changed source ownership/support/collision or game events.
+
+All eight6F perimeter pairs are now individually reviewed. Together with prior
+floors and the corrected3F/5F actor-clear fixtures, all48 intended perimeter poses
+have individually reviewed replacements. The two old overlapping poses remain
+rejected. These before-pit captures prove only their checked player/wall/moss
+scope. Chamber/actor fidelity, foreground base remnants and overall composition
+remain open; new pit/end views provide their own separate evidence.
+
+Five old native stair-arrival pairs have now been individually inspected:
+1F3,11→2F;2F3,11→1F;2F5,3→3F;3F13,3→4F;3F5,3→2F.
+The two arrivals onto upward stairs hide the player's lower body. Source code
+confirms that the new flights rise16 source pixels while visual footing remains
+at the original floor height. Downward arrivals also need actual tread support
+rather than unchanged floor height. The next repair must sample only complete
+accepted stair geometry for visual footing, preserving authored navigation,
+warp destinations and original support arrays. Remaining nine stair-arrival
+pairs, old fall images, all311/original16/shared-furniture/earned native scenes
+and the full acceptance table remain open. No windows or app focus changes.
+
+Lighthouse independent wall-end repair added; native proof pending — 2026-10-17
+
+The corrected5F southwest pair exposes a hollow end when an adjacent masonry
+block fades. Lighthouse masonry now retains buried model faces because every
+block owns its own reveal range. The source-complete guard, floor restoration,
+ceiling height, source pigment, orientation, rubble ownership, source collision
+and events are unchanged. Only rubble skirts still cull shared sides. New
+regression independently ray-tests emitted outward-facing body triangles from
+all four sides, three samples per side, every native wall/window type and all
+four rotations/reflections after neighboring bodies disappear. It also requires
+the restored floor to stay outside the reveal range.
+
+Unified Cargo79815 is confirmed live compiling the lighthouse/source/controller
+tests; no pass claimed yet. Its dependent driver requires the actual new ray
+regression plus external-pack masonry proof, then builds native location/audit
+tools, captures six source/native pairs explicitly offscreen/muted (the5F defect
+at rotations0/2/6,4F south and2F pit rotations0/2), and audits all311/225 records.
+Current closed-end appearance, geometry deltas and all new checks remain pending.
+All seven valid old5F perimeter pairs are individually inspected, plus the
+corrected southwest fixture. Their player/checked wall courses are readable;
+the northern trainer stays hidden by a cap, and foreground base remnants remain
+open. The rejected old southwest pose is retained as invalid evidence. Floor6
+poses and the full acceptance table remain open. No windows
+or focus changes; external packs/shared AA files remain untouched.
+
+Lighthouse pit reveal visually checked; perimeter fixtures corrected — 2026-10-17
+
+The offscreen/muted native build completed in3m50s, followed by all eleven
+matched source/native pairs, a real Down-driven2F→1F fall and the full311-map/
+225-variant audit. All22 images were individually inspected. Each of the six
+openings now has a visible mouth/recess in the default view;2F rotation2 also
+shows depth. Rotation6 shows the lining behind the player but the body partly
+overlaps its projection, so broader alternate-camera readability remains open.
+Checked wall/moss joins remain connected, the adjacent floor remains opaque,
+and player scale/capsule and ceiling heights are unchanged. The distant-from-pit
+lighthouse control retains opaque masonry. The Rocket control retains continuous
+opaque blue backing behind the Persian. Existing faceted wall lighting and
+first-person ceiling/companion composition remain open.
+
+The new fall pair visibly lands on solid1F floor with a readable player and
+sailor. Its movement receipt confirms the actual source destination(16,13),
+matching active terrain, no pending terrain/warp and zero fade. This is one
+input-earned fall after disposable placement, not a continuous earned ascent.
+Every parsed audit field is exactly equal to lighthouse-pit-full311-audit.json:
+all311 map records,225 variant records, source ownership, support, geometry and
+root totals; zero errors. The reveal change affects runtime opacity selection.
+The equality receipt is lighthouse-pit-reveal-full311-invariant-summary.json.
+Capture provenance now records these scoped findings, never whole-room approval.
+
+All third-floor perimeter pairs are now individually reviewed, with the old
+north(9,2) evidence rejected and its checked replacement(9,3) retained. All eight
+fourth-floor pairs have also been individually reviewed: checked player and
+masonry/moss joins are readable/continuous. They predate pit geometry and do not
+prove the new pits. The northeast view partly hides its northern NPC; the south
+view exposes floor-like source wall-base remnants during foreground reveal.
+These remain composition/refinement work rather than broad room acceptance.
+
+Source actor-position checking found another invalid old fixture:5F southwest
+(2,13). It is marked rejected. The expanded external-pack example regression
+passes in4.14s and independently covers both old actor positions, selecting3F
+(9,3) and5F(3,13) while retaining all authored actors. The fresh location-tool
+build passes in6.97s and the corrected5F source/native pair completes offscreen.
+Both images are inspected: the item ball west of the player is separate, and
+the sailor remains in the central aisle. Its paired state is preserved. The
+fixture is valid, but the wall appearance is rejected: independently fading
+masonry exposes an uncapped neighbor end beneath an opaque top. Source review
+confirms lighthouse blocks cull buried neighbor sides even though each block
+owns a separate cutaway range. Next repair must keep those independently
+revealed boundaries closed without altering collision or source ownership.
+The production sampler change remains confined to disposable QA placement.
+
+Floors5–6 perimeter images, fourteen stair-arrival pairs and the remaining old
+fall-arrival images still need individual review. Distant NPC occlusion, room
+composition, all311/original16 alternatives, shared furniture, earned native
+League/Hall sequences and the broader acceptance table remain open. Rendering
+uses HEADLESS=1, CAPTURE_TARGET=image and mute, with no visible-window fallback.
+Shared antialiasing files and external content packs remain untouched.
+
+Nearby lighthouse pit reveal added; body-only ray limitation addressed in code — 2026-10-17
+
+The remaining default-view pit occlusion comes from whole-object fade selection:
+its nine rays end on the player capsule, so an adjacent pit can be blocked by a
+foreground cap that does not cover the player. New source-scoped floor targets
+reuse lighthouse_pit.rs's exact complete-block guard. Only an opening within two
+walking tiles contributes its mouth center and four inset corners. Coordinates
+include the actual visual-grid world offset; malformed/duplicate/clipped/altered
+or foreign sources and distant openings contribute nothing. Camera-behind
+points are removed. The player's existing capsule/radius remains unchanged.
+
+The fade system consumes these extra targets only with an active camera/player
+and an authored built map matching the current map. Actual retained triangle
+rays still decide blockers. Existing camera-plane outside-room behavior remains;
+pit rays independently detect blockers for those walls too. Existing reveal
+amounts, timing, shadow geometry, source meshes, ceiling heights, support,
+collision, scripts and warp outcomes stay unchanged. The pit lining/floor have
+no fade ownership, so they remain opaque. Previous target lists participate in
+change detection, letting blockers restore when the player leaves or the map
+changes. Other maps/unknown drawings retain the body-only path.
+
+Two new regressions exercise complete-source/near-distance/world-offset targets
+(including array reorder, corruption, duplicate and foreign-map controls), and
+an actual triangle cap that blocks the pit but none of the player's original
+rays. The unified build now passes all six pit/reveal tests in5.41s. The actual
+fresh viewer executable also passes all41 occluder-fade tests in0.43s, including
+real ECS camera/map replacement and gateway/concavity controls, plus both
+unchanged capsule controls. Driver70558 is confirmed live building native tools;
+these source/behavior passes do not establish rendered pit readability.
+The queued headless job then captures all six pits in the default view, both
+2F side views, a far-from-pit lighthouse control and the Rocket backing control.
+It also performs one actual fall/map transition with settled terrain/zero fade
+checks and refreshes all311/225 audit records. Prior twelve fall inputs remain
+valid behavioral evidence; new native opacity/appearance is still unverified.
+
+No visual acceptance is inferred from implementation or tests. Individually
+inspect every new pair for pit readability, connected fading/opaque joins,
+retained masonry/moss and player composition. Full all311/original16/shared
+furniture, upper-floor and earned native-scene obligations remain open. All
+renders stay explicitly offscreen/muted; shared AA files are untouched.
+
+Pit geometry/source and twelve native falls pass; default-view visibility still open — 2026-10-17
+
+All four actual pit regressions pass6.78s, including all six packed openings,
+closed/inward-wound shaft topology, complete-block guards, untouched footing
+and the production mesher's no-floor-bridge check. Fresh stair-source,
+masonry-source and authoritative stair-controller controls each pass. Native
+examples build successfully in5m17s. The first capture attempt correctly rejects
+the4F close-up at(7,3), a wall tile. Its exact error and attempt logs are retained;
+only that fixture moves to the original floor at(8,2), north of the same pit.
+Four completed pairs are reused rather than rerendered. Geometry/collision and
+expected fall outcomes are not weakened to repair the harness.
+
+The resumed job completes eight static pit pairs and all twelve actual Down
+pitfall inputs. Every destination map/tile matches source, active terrain matches
+the destination, pending terrain is false, warp phase isNone and fade is zero.
+Each pair preserves its state. All20 explicit initial fixture positions were
+also checked against source actor positions. These are independent disposable
+starts followed by real input-driven falls, not a continuous earned ascent.
+The twelve fall-arrival pairs still need individual visual inspection.
+
+The311-map/225-variant audit has zero mesher errors. Exactly five maps change:
+2F/3F/4F/5F/6F contain1/1/2/1/1 pits. Each adds eight modeled cells, two net
+textured triangles and four net vertices; total48/12/24. Only the lower$28
+black cells leave unmodeled-flat classification. Upper source floor cells,
+all other source keys/families/bounds and support summaries are unchanged;
+306 map records and all225 variant records are identical. Root totals differ
+only by48 modeled and minus48 flat cells. Exact bounds and deltas are verified
+in lighthouse-pit-full311-invariant-summary.json, alongside the actual audit.
+
+All six2F static source/native images (rotations0/2/6) were inspected individually.
+The lining/recess is present, but foreground caps still hide the pit at the
+default rotation0 and partly at rotation2. Do not accept pit readability from
+source/topology/input passes or the side view alone. Follow-up must make the
+nearby fall opening readable while preserving ceiling-height masonry, source
+navigation and wall continuity. Other five static pairs still need individual
+review. No broad pit visual acceptance is claimed.
+
+The3F review also found the old north fixture at(9,2) on the original sailor.
+render_at_location's batch sampler now excludes authored runtime object positions,
+including startup-unloaded actors, in addition to its existing collision/warp/
+ledge checks. The actual external-pack example regression passes3.82s and selects
+(9,3). Both corrected source/native images were inspected: player and sailor
+now occupy distinct tiles; the original sailor/item/architecture stay intact.
+Old north evidence is explicitly rejected, and only this corrected fixture is
+scoped accepted. NW/NE/east3F before-pit pairs have been inspected; the other
+four perimeter poses, floors4–6, fourteen stair-arrival pairs and twelve fall
+pairs remain pending individual review. Full all311/original16/shared-furniture
+and native earned-scene scope remains open. No windows opened.
+
+Native lighthouse pit implementation added; source/full-scene tests compiling — 2026-10-17
+
+New lighthouse_pit.rs replaces only the lower eight black cells of an exact
+source-complete block$28 with an open beveled mouth, inward-facing stone shaft
+and black bottom16 pixels below the floor. Upper source floor cells remain
+unclaimed. Its three pigments come from this same drawing: tile$2e's mid/dark
+floor pixels and the pit's black tile$01. All vertices remain at or below the
+original floor; support, collision, source events and warp handling are untouched.
+The pit is not a room wall or fading owner, and cuts_foundation describes its
+open topology. Every one of the block's sixteen tile identities, tileset,
+metatile and phase must match; clipped/changed/foreign drawings retain fallback.
+Pinned source inspection finds six instances across2F/3F/4F/5F/6F (1/1/2/1/1).
+
+Four focused regressions cover complete-source admission/negative controls and
+eight-cell ownership, inward winding and closed lower topology at three scales,
+the full production mesher's lack of any floor bridge, and all six openings in
+the actual external pack with untouched footing and verified source pigments.
+The unified three-package/location-tester Cargo63829 is confirmed live compiling
+the viewer test executable; these tests are not yet reported passed. Diff checks
+pass. Driver64765 requires all four actual passes, then fresh stair source,
+masonry source and authoritative stair-controller controls before building the
+native tools. Its dependent headless driver captures all six new pits (eight
+static pairs), crosses all twelve pitfall events using ordinary Down input from
+the northern source floor, and requires actual expected destination map/tile,
+matching active terrain, no pending load/warp and zero fade. It then audits all
+311 maps/225 alternatives. The twelve cases start from disposable room fixtures;
+only their subsequent input-driven fall arrivals can be earned. No source pack
+or event/coordinate outcomes are injected. Logs use lighthouse-pit prefixes.
+
+Native pit appearance and fall behavior remain unverified until these gates
+and individual image review complete. Earlier rejected flat-pit evidence is
+preserved. Upper-floor perimeter and fourteen stair-arrival images still need
+individual review; full all311/original16/shared-furniture and native earned
+scene acceptance remains open. All rendering is explicitly offscreen/muted.
+
+Fourteen native stair warps pass; side views confirm unmodeled flat pit — 2026-10-17
+
+The serial offscreen/muted job completes all three side pairs and all fourteen
+ordinary-Right stair cases successfully. Each case starts immediately west of
+one authored stair as a disposable room fixture; the subsequent native keyboard
+input actually crosses its warp. Every CSV final runtime map and tile matches
+the pinned source destination and landing coordinate, and each final source/native
+pair preserves its own state. Initial arrival remains unearned; this is fourteen
+independent real warp crossings, not one continuous earned six-floor ascent.
+The fourteen final movement pairs still require individual visual inspection.
+Evidence: lighthouse-stair-input-headless-driver.log and its capture-provenance.
+All48 perimeter pairs across six floors have also completed; only1F/2F's sixteen
+pairs have been individually inspected so far. Floors3–6 remain pending review.
+
+All ten images in the five static side pairs were inspected individually,
+including opposite rotation6 views of the1F stair and2F pit. Rotation6 makes
+the previously hidden2F northern trainer and player readable, accepting only
+that scoped actor-view result. The1F stair is source-correct in rise and its
+actual crossing works, but side cheeks/caps still dominate the checked side
+views; no full stair appearance pass is claimed.
+
+The2F pit is rejected for missing readable3D depth. The current audit confirms
+all sixteen source cells of block$28 remain unmodeled flat; the lower eight
+black tile$01 cells are the pit. The floor matcher deliberately excludes that
+lower half, and the masonry matcher excludes pits entirely. A proper next fix
+needs a recessed native shaft/opening with strict complete-block admission:
+upper eight cells alternate$2e/$2f source floor, lower eight are$01. Claim only
+the lower eight, preserve the upper source floor, all support/collision and
+fall-warp behavior, and reject altered/clipped/foreign drawings. Do not fill
+it with a floor or classify it as a wall. Add actual pit/fall input checks and
+inspect the same two side cameras after geometry changes. No production pit
+change is implemented or accepted yet. Full all311/original16/shared-furniture
+and earned native-scene obligations remain open. No windows opened.
+
+Lighthouse2F perimeter review exposes nearby trainer occlusion; side/warp checks running — 2026-10-17
+
+All sixteen actual source/native images for the eight2F perimeter poses were
+inspected individually. Each preserves its paired state. Player readability,
+checked joins and moss courses remain present. The northern inner cap can
+completely hide the nearby trainer at the north pose; stair/pit approaches also
+need side views. Whole-room acceptance remains false. Static occlusion alone
+does not justify changing collision, lowering ceiling-height walls or reversing
+stairs. The source1F stair at(3,11) is block$3a leading to2F, consistent with the
+positive-rise native flight. Independently reading all six pinned source maps
+finds fourteen stair warps; block$31 always leads down a floor and$3a up a floor.
+
+A new serial offscreen/muted driver waits for the existing six-floor perimeter
+job. It captures west/east side views of the1F stair,2F northern trainer and2F
+pit, then starts immediately west of each of the fourteen source stairs and
+uses ordinary Right input. Actual movement CSV runtime map/tile must equal the
+source warp's destination and landing tile; no coordinates, flags or warp
+outcomes are injected after initial disposable room placement. It records
+initial arrival as unearned and subsequent input-driven destination arrival
+separately. Every resulting image still needs individual visual review. No new
+compiler/exporter is started. Evidence uses lighthouse-stair-input prefixes;
+2F provenance records only the scoped wall/moss/player inspection. Floors3–6
+and full all311/original16/shared-furniture/earned-scene scope remain open.
+
+Lighthouse1F eight perimeter pairs individually inspected — 2026-10-17
+
+All sixteen actual source/native images for northwest, north, northeast, east,
+southeast, south, southwest and west were inspected individually. Each pair
+preserves its own source state at camera0/0/45/0. The player remains readable
+in every checked pose; checked wall joins remain continuous and green moss
+courses are present. The south entrance remains visible and the southwest
+stair geometry is seen at its adjacent pose. Foreground wall caps partly hide
+the northern NPC and the stair approach from some farther poses. Those need
+side-angle and actual traversal review before whole-room acceptance; do not
+change collision or shrink architecture from these static images alone.
+Provenance marks only the scoped wall/moss/player review and explicitly keeps
+whole_room_accepted=false. Evidence: lighthouse-perimeter-headless-review/
+OlivineLighthouse1F-* and its capture-provenance.json. Floors2–6 continue in the
+same serial offscreen/muted job; no all-floor visual pass is claimed.
+
+Office menu labels and mansion bookcase/clock height visually accepted — 2026-10-17
+
+Native tools finish successfully in3m59s. Both new held-menu source/native pairs
+complete offscreen and muted, preserving each paired state at camera0/0/45/0.
+All four final images were inspected individually. Each menu displays three
+readable English labels, its first-row cursor and the dialogue below, with no
+border overflow. This accepts the scoped office menu-label repair, superseding
+the earlier rejected blank-label images. Raw source choices and branches remain
+unchanged. Actual stdio English-label/B→Start checks pass for both; the freshly
+built stdio-clean executable also passes its real one-test text-tui-pack check
+in0.76s. Evidence: office-visible-label-headless-review/ and
+office-visible-label-{native-driver,headless-driver,text-tui-stdio-clean}.log.
+Gray monitor-side fixture identity/geometry and whole-room fidelity remain open.
+
+The current real-pack mansion height/source regression already passes7.75s.
+The queued standalone Cargo invocation would rebuild Bevy with a different
+feature set to repeat that same check. Only that owned redundant compile and
+its dependent waiting drivers were stopped, preserving its log as
+mansion-height-redundant-feature-build-stopped.log. No compiler failure or
+external blocker is inferred. A revised driver requires the actual successful
+source-test, native-build and office/TUI receipts, confirms the native tool is
+newer than the changed geometry source, and reuses it for both mansion pairs
+and the full audit; no build cache or other goal's process is touched.
+
+All four new mansion source/native images were inspected individually. In both
+the overview and close view the30-pixel clock now rises clearly above the22-pixel
+bookcases, matching the source's four-row/three-row drawings; fixtures remain
+grounded. This accepts the scoped height correction. First-person black roof,
+actor/companion composition and whole-room fidelity remain open. Evidence:
+mansion-height-headless-review/ and its updated capture-provenance.json.
+
+The actual new all311/225 audit succeeds with zero mesher errors. Every root
+field, map record and variant record is exactly equal to the completed
+house-office audit. This preserves reported source ownership, classifications,
+geometry counts and footing summaries; count equality alone is not height
+proof, which comes from the actual geometry regression and inspected views.
+Evidence: mansion-height-full311-{audit,invariant-summary}.json. The restarted
+lighthouse-perimeter driver is confirmed live at PID59619, consuming these
+completed tools for all six floors. Full all311/original16/shared-furniture and
+earned native-scene acceptance remain open. No windows opened.
+
+Actual office CLI label presentation and cancel→Start verified — 2026-10-17
+
+The rebuilt geothite mcp client loads each current office checkpoint and reaches
+its menu through three ordinary A inputs. Actual rendered text shows all three
+English options in each menu: POKECOM CLUB / MOBILE CENTER / QUIT and USING PHONE /
+NO CONNECTION / QUIT. B produces menu=null, dialogue=false and mode=overworld;
+Start then produces the production visible-shell:text-frontend menu with
+mode=menu. Both positions remain unchanged at(6,27)/(6,29), and both processes
+exit successfully with zero stderr bytes. These checks inspect the actual text
+frontend, beyond the formatter/controller contract. Evidence:
+office-visible-label-current-cli-menus.json. Native 2D/3D label appearance is
+still pending; its existing headless driver is waiting for the live native
+rebuild. Full all311/original16/shared-furniture and earned-scene scope stays open.
+
+Office display/controller and mansion height regressions pass — 2026-10-17
+
+The current three-package test build exits successfully after15m40s. Its actual
+fresh Bevy executable passes the office label width/scope contract and all seven
+real-pack office branches in8.87s, including all ten email pages, source choice
+semantics, text input ownership, cancel, Start and walking. The fresh viewer test
+executable passes external_mansion_corridor_furniture_reveal_owns_whole_objects_but_not_floor_or_neighbors
+in7.75s: all four source-matched mansion shelves use22-pixel geometry, the clock
+retains30 pixels, floor/footing and complete-object reveal/source guards remain
+valid. Evidence: office-visible-label-{unit,controller}-tests.log and
+mansion-height-current-source-test.log. The rebuilt native-pack CLI also passes
+its actual one-test clean-stderr gameplay regression in4.72s after6m37s
+compilation (office-visible-label-stdio-clean.log). Native tools are rebuilding
+against the current render API; menu readability and mansion proportions are
+not yet visually accepted. The existing sequential capture drivers remain live.
+
+The original16 alternatives were rechecked against the completed311/225 audit
+and the pinned external source. Audit masks describe block combinations, not
+necessarily persisted flag combinations or chronological states:
+
+| Maps | Mask1: exit only | Mask2: entrance closed | Mask3: both block edits |
+| --- | --- | --- | --- |
+| Will, Koga, Bruno, Karen | Disposable visual fixture; regular entry closes the entrance before a victory opens the exit | Authored entry scene, exercised by earned controller traversal | Authored victory opens exit while retaining closed entrance; four real wins and exit traversals already pass |
+| Lance | Disposable visual fixture; no source setter for EVENT_LANCES_ROOM_EXIT_OPEN | Authored entry scene | Victory directly opens the north block while retaining entrance closure; the source sets ENTRANCE_CLOSED again rather than EXIT_OPEN, so callback reconstruction from flags differs |
+
+These are fifteen declared combinations. The sixteenth is CeladonDeptStore6F's
+single tiles-callback changeblock12,0,$03, applied unconditionally to hide the
+rooftop stairs. The baseline room is additional. The four ordinary rooms use
+exit block$16 and entrance block$2a; Lance uses$0b and$34. The audit's visual-cell
+coordinates are twice those source changeblock coordinates. Indigo Plateau's
+entry reset clears all ten door flags; it does not create an earned exit-only
+case. Source inspection does not replace native evidence for every alternative.
+The prior actual continuous five-win/Hall/Continue controller result remains
+verified at72.61s; full native earned-scene coverage and all311 fidelity remain
+open. Do not add Lance's missing exit flag or remove synthetic audit states to
+make accounting simpler.
+
+Lighthouse hidden-area review queued behind verified native build — 2026-10-17
+
+The saved Lighthouse6F source/native pair was inspected individually again.
+Its central furnishings and moss courses are visible, but large foreground
+wall caps obscure surrounding corridors. That center pose cannot establish
+whole-room acceptance or wall joins from other sides. Existing production
+render_at_location --perimeter selects eight boundary targets and deduplicates
+nearest standable non-warp/non-ledge tiles using the runtime collision data.
+A sequential offscreen/muted review job now waits for the mansion source/native
+and311 audit gates, then captures these perimeter poses on all six lighthouse
+floors at hour12 and camera0/0/45/0. It checks each actual paired-state receipt
+and records manual review as pending. These are disposable initial-room visual
+fixtures, not earned arrival or quest-state evidence. No new compiler/exporter
+is started by this queued capture job. Evidence will use lighthouse-perimeter
+prefixes under ignored target/kanto-resume. All311/original16/shared-furniture
+and earned native-scene obligations remain open.
+
+Mansion bookcase/clock proportions corrected in source; verification queued — 2026-10-17
+
+The individually inspected saved mansion clock pair confirms a source/native
+scale mismatch. Mansion block0f bookcases occupy three source rows (24 pixels),
+while the adjacent clock occupies four (32 pixels). Native generic shelves at29
+pixels nearly reach the30-pixel clock, erasing the source's height difference.
+Only complete source-matched mansion corridor Bookcase placements now use22
+pixels, retaining the same two-pixel allowance as the30-pixel clock. Other
+bookcase families, cabinet depth, source claims, footing and scripts are unchanged.
+The existing external mansion regression now checks all matched shelf heights
+and actual emitted geometry, while retaining source corruption, neighbor,
+whole-object reveal and opaque-floor controls. This change is not yet tested
+or visually accepted. The sequential mansion-height review driver waits for the
+currently live office pipeline, then runs the real-pack regression, builds
+native tools, captures two offscreen/muted source/native pairs and refreshes
+all311/225 audit records. Receipts use mansion-height prefixes. No windows or
+application navigation are used; the deleted handoff remains deleted.
+
+Round house stool native finish accepted; office blank-label defect repaired in code — 2026-10-17
+
+Native Cargo49309 exits0 after6m29s. All five headless/muted pairs, the311/225
+audit and actual rebuilt email stdio checks complete successfully. Every one
+of the ten final source/native images was inspected individually. Both Warden
+views now show a solid round padded seat, its source cream/pink/red pigments,
+and connected dark feet. The former square notch/open cap is gone. Both source
+PNGs are byte-identical to the before views. This accepts the scoped stool
+finish; roof/companion/actor composition and whole-room acceptance remain open.
+Evidence: house-office-headless-review/warden-{overview,stool-table}.
+
+The audit verifies311 maps and225 variants with zero mesher errors. All source
+claims/classifications, support counts/extrema and all225 variant records are
+unchanged. Only textured counts change, across56 house-stool maps, by exactly
+306 triangles per source stool (four stools per changed map); the new closed
+round geometry explains each delta. Evidence: house-office-full311-{audit,
+invariant-summary}.json. This is shared Kanto/Johto source-family proof, not
+whole-map visual acceptance for all56 houses.
+
+The exact source-menu hold works for both office menus and records their actual
+raw choices. Native and2D menus both show blank option text because these two
+English-office source headers retain Japanese labels unsupported by the English
+bitmap font. These menu images are explicitly rejected for readability; the
+passing seven-case gameplay test is not a visual pass. The current native email
+first page is fully readable, and all ten pages separately pass through actual
+MCP with zero stderr, correct directional ownership and released Start.
+
+New shared visible_script_menu_option_label in crystal-bevy presents these six
+exact scoped source choices in readable English, fitting the authored13-cell
+column. The two qualified menu IDs, owning ScriptDefinition map and exact raw
+option strings all gate the labels. Raw choices, source program, cursor/index,
+branch values and pack bytes stay unchanged. Unknown/foreign options retain
+their original text. Both graphical paths and the TUI use this one formatter.
+The label contract tests source scope/font width; the actual seven-case
+controller regression also requires each selected menu's display labels while
+still executing its original branches. These changes are not yet executed.
+
+The first label build51970 is terminal before tests: Bevy's menu renderer picked
+up a concurrently added is_open_air_rooftop call after crystal-render-api had
+already compiled without that helper. The helper is now present in the current
+API source; neither it nor the other goal's caller is reverted or duplicated.
+The exact failure is preserved in office-visible-label-build-tests-attempt1.log.
+Cargo53139 is confirmed live recompiling the current API and test graph. Driver53257
+requires actual label/unit and complete source-controller passes plus CLI stderr
+control before building tools. A new offscreen driver then captures only the two
+changed menus and verifies their English labels and B→Start through real stdio;
+the unchanged terrain/stool/email evidence is reused. Receipts use
+office-visible-label prefixes. Full all311/original16/shared-furniture / earned
+native-scene acceptance remains open. Gray office-unit clarification is pending;
+independent work continues. No windows opened.
+
+Production CLI movement passes; actual TUI-pack stderr/movement also verified — 2026-10-17
+
+The rebuilt geothite MCP movement/production-Start regression passes4.34s with
+the native pack after4m55s compilation. That same Cargo invocation also builds
+the actual stdio-clean executable (its first filter selected zero tests there;
+that zero-test result is not a stderr pass). Directly executing the fresh
+main-test and stdio-clean executables with the completed text-tui.crystalpack
+now passes each real one-test regression; the actual Mom-dialogue stdio check
+passes2.98s and requires byte-for-byte empty stderr. No fullscreen UI/window is
+opened. Logs: house-office-mcp-control.log,
+house-office-text-tui-mcp-control.log and house-office-text-tui-stdio-clean.log.
+
+Native-pack stdio Cargo48436 now passes its actual one-test regression in6.26s
+after5m00s compilation. The rebuilt real stdio client also replays all ten email
+pages: text visible after A, directions blocked, final acknowledgement closes
+text, Start opens and stderr is empty. Nine distinct presentations reflect the
+source's repeated ellipsis page, not a dropped page. Compact observed receipt:
+house-office-email-stdio-ten-pages.json. Both native and TUI pack transports
+are now checked. Driver46583 is confirmed live building native tools (Cargo49309);
+five paired captures and the311/225 audit remain queued behind its actual exit0.
+Concurrent species-model source updates can invalidate renderer dependencies;
+preserve other owners' models/caches. The stool/office visual finish and full
+original all311/original16/shared-furniture/native-scene acceptance remain open.
+
+All seven office controller branches pass; CLI/native verification running — 2026-10-17
+
+Cargo46399 finishes successfully after4m42s and compiles the exact menu-hold QA
+addition. The corrected seven-case office regression passes5.18s from the fresh
+Bevy test executable. Both help choices and explicit Quit for each menu, B
+cancellation after help, all ten fully revealed email pages with independent
+source passages, directional ownership, Start and ordinary walking all pass.
+The closing-text wait repair is now exercised; the prior partial page result
+is superseded by complete execution, not by accepting fewer pages.
+
+The already-executed three stool tests and five unchanged wood/cafe/Mom/battle
+controls remain passing and are reused. CLI Cargo47567 is confirmed live testing
+actual production MCP movement/Start; stderr-clean regression follows, then a
+fresh native build. Capture driver remains gated on that actual success and
+will inspect five paired views, the full311/225 audit and rebuilt email stdio.
+Native stool/office finish acceptance and the full original goal remain open.
+Evidence: house-office-menu-hold-build-tests.log,
+native-pokecom-office-controller-tests.log and house-office-{native,headless}-driver.log.
+All rendering stays offscreen, image-targeted and muted.
+
+Round house stool/source checks pass; office reader condition corrected — 2026-10-17
+
+Combined build42485 completes successfully after9m26s. Direct execution from
+its actual fresh viewer binary passes all three native_house_stool checks in
+4.12s: full packed source pigments/four Warden claims, outward complete disc at
+three scales and integration's round cap/unchanged low height. Player-home wood
+and both gray cafe source controls pass. The actual native-pack Mom/NewBark
+control passes5.08s and battle-command/turn/PP control passes5.01s. These results
+verify the unchanged stool and controller-guard code; they do not establish a
+new native stool finish. Logs use house-stool-{round-source-tests,player-wood-control,
+cafe-gray-control,cafe-front-control} and house-office-{mom-gate,battle-command}-control.
+
+The repaired closing-text wait now retains the email's first fully revealed
+page instead of losing its text label. The seven-case reader then stops after
+that first page because its own completion predicate checked only generic
+ui.window_open, which jumptext need not set. The authoritative text window is
+still open. Corrected predicate also requires !ui.text_window_open; all ten
+expected pages and independent source passages remain mandatory. No acceptance
+assertion is relaxed. The partial run is preserved in
+native-pokecom-office-after-jumptext-guard-before-reader-fix.log; it is not a
+passing email test. Both old build/capture drivers are terminal at their gates.
+
+Cargo46399 is confirmed live rebuilding the corrected reader and late exact
+source-menu QA hold. Driver46583 requires its executable receipts and complete
+seven-case pass; the already executed unchanged stool/source/controller controls
+are reused, not gratuitously rerun. It then requires the real CLI MCP/stdout
+controls and builds tools. A new headless driver waits on46583 and retains the
+same five paired views,311/225 audit and email stdio checks. Receipts now use
+house-office-menu-hold-build-tests.log and house-office-{native,headless}-driver.log.
+Full original acceptance remains open, including actual native stool/office
+views. Source investigation also traced the three gray fixtures beside office
+monitors to complete C6/C7/D6/D7 drawings in VRAM bank1 (192-tile sheet uses its
+96-tile half offset). Their geometry remains unmodeled pending that source
+assembly review; do not silently classify them as benches. No windows opened.
+
+Exact source-menu capture hold added; house/office verification queued — 2026-10-17
+
+RenderWalk gains opt-in CRYSTAL_RENDER_TEST_HOLD_MENU_ID. After ordinary QA
+input reaches that exact live ScriptDefinition menu with selectable source
+options and no notice/item overlay, it releases keys and freezes only the
+paired presentation. The receipt records the observed menu ID, map, tile and
+options. It does not open a menu, select a row, set a cursor or mutate source
+state. Exhausting the route without the target fails. Normal gameplay never
+installs this render-QA input resource. This addition still needs actual build
+and native-capture execution; it is not included in the test executable that
+was already compiling when this late QA-only change was written.
+
+Driver42857 still waits for actual combined test-build receipts, then runs the
+office/stool/source/controller and stdio controls before building native tools.
+Capture driver44503 waits for its actual success and prepares five paired
+views: both identical Warden before poses, office source menus1/2 through the
+new exact hold, and the email's first page. It then runs the full311/225 audit
+and replays the rebuilt stdio MCP against computer3: text visible after A,
+directions blocked, ten pages acknowledged, Start released, stderr empty.
+These results are pending. Relevant logs: house-office-{native,headless}-driver.log,
+house-stool-office-jumptext-build-tests.log, house-office-full311-audit.json and
+house-office-email-stdio.jsonl. The active full original objective is unchanged.
+Every capture explicitly uses headless1, image target and mute1; no windows.
+
+Office email exposes renderer-neutral jumptext acknowledgement bug; repair compiling — 2026-10-17
+
+The new office regression executes after12m51s compilation. All six choices
+for computers1/2 pass: both complete help streams, explicit Quit, B cancellation,
+Start and walking. Computer3 fails because its own source text label is already
+absent immediately after A. This is not accepted as a passing seven-case test.
+The failed result is preserved in native-pokecom-office-controller-tests-before-jumptext-fix.log.
+The first stool-only gate correctly stops rather than bypassing this failure.
+
+A production stdio-MCP replay from the actual computer3 checkpoint exits0 with
+empty stderr but falsely reports no dialogue after A; an opt-in dialogue trace
+shows the email's first page created and immediately lost. The actual graphical
+path instead retains the correct first page. Its headless/muted source/native
+pair was inspected individually: The ADMINISTRATION / OFFICE received an is
+fully visible in both. Receipt: pokecom-email-graphical-baseline/ and its log.
+This baseline uses the prior Rocket native binary and is not evidence that the
+new controller repair or stool geometry has compiled.
+
+Tracing the production controller finds its settling loop automatically takes
+a pending TextLabel before respecting jumptext/farjumptext's paired closing
+button wait. That also acknowledges the wait and closes the entire document.
+The renderer already retains that same boundary. New guard returns input for
+a closing text wait when automatic input is disabled; only real A/B page
+acknowledgements may finish it. No script/text/menu state is injected and no
+second dispatcher is added. The existing explicit auto-input smoke path is
+unchanged. Production diagnostics remain opt-in; no unconditional logs added.
+
+Cargo42485 is confirmed live rebuilding both test executables with this guard
+and the new round house stool. New driver waits for actual executable receipts,
+then requires all seven office branches, three stool checks, player wood and
+two cafe controls, Mom/NewBark and battle-command controls. It then requires
+actual stdio-MCP movement/Start and clean-stderr regressions before a fresh
+native build. Logs use house-office and house-stool prefixes. The prior
+stool-only driver is terminal after its gate assertion, not a live build.
+All new controller/stool results remain pending; full all311/original16/shared
+furniture/native scene scope remains intact. No visible windows may be opened.
+
+Fresh mansion/Warden views expose stool UV and shape defect; fix implemented — 2026-10-17
+
+Four new headless/muted pairs complete with preserved state and requested
+cameras: CeladonMansion1F overview and clock view at(4,5), WardensHome overview
+at(7,4) and stool/table close-up at(8,3). All eight source/native images were
+inspected individually. The mansion's clock/bookshelf/blue-wall/gray-cap and
+floor composition is visible; clock relative height against its flanking
+bookcases needs source-based review before whole-room acceptance. First-person
+black-roof presentation and actor/companion composition remain open.
+
+Warden's source shows compact round cushioned stools. Native close-up instead
+shows a square pink U-shaped cap with a dark gap. Actual house tiles02/03 have
+background rows0..4; their oval cushion is rows5..11, followed by feet. The old
+rectangular helper incorrectly painted rows1..7 over the cap, including those
+background pixels. New native_house_stool.rs emits a complete32-segment round
+beveled cushion with its highlighted center, main upholstery, side and dark
+feet sampled from actual seat/foot pixels. Four feet overlap the underside and
+fit within it. No sprite background or foot outline is projected over the cap.
+Only the already source-complete reviewed `house` stool branch changes; player
+home round wood stools and cafe gray rectangular seats retain their paths.
+Claims, support heights, collision, object positions and scripts are unchanged.
+
+The prior rectangular-house expectation is updated to require a complete
+projected disc and rounded sides. New checks cover outward/closed geometry and
+constant own-pigment triangles at three scales, actual packed source pigments,
+and all four Warden stools' independent claims/support. These tests are not yet
+executed. Driver waits for the running office-controller Cargo38504, requires
+its actual pass, then compiles/runs the three native_house_stool checks including
+the ignored pack case. Evidence: mansion-warden-headless-review/ (before views),
+house-stool-test-driver.log and pending house-stool-round-source-tests.log.
+A new native build and same-pose after views plus311/225 audit are required;
+this new stool finish is not visually accepted yet. Full original scope remains
+active. No windowed fallback is allowed.
+
+Rocket foreground reveal verified in earned native walks — 2026-10-17
+
+Native Cargo36848 exits0 after6m47s. All seven paired captures and the full311 /
+225-state audit complete headless/image-targeted/muted, with no visible window.
+All14 source/native final images and10 native movement images were inspected
+individually. In all five earned LR routes at the original camera0/0/45/0,
+player head/body/feet remain readable; camera2 no longer hides the entire
+trainer. Course and whole statue/backing fade applies only to foreground
+occluders. Both front controls retain a continuous opaque full-height wall
+behind the statue; no missing end is exposed beside a fading course. Scoped
+foreground readability/backing acceptance is now established. Ceiling/open
+black roof presentation and first-person companion composition are still open.
+
+The routes use the same earned saves and ordinary LR input as the before set;
+all authoritative position sets match. Each new source/native pair preserves
+its own game state and requested camera. All five new final source PNGs are
+byte-identical to the before PNGs. Warm-up timing differs by a few engine/LCD
+frames between the old and new runs, so their raw cross-run checksums are not
+equal; do not claim exact cross-run frame identity. These are recorded explicitly
+in rocket-reveal-headless-review/before-after-state-comparison.json. Initial
+party is seeded; both camera Grunt victories in these saves were earned by
+the already-passing real-input controller regression. No flag/script injection
+is used in these native walks.
+
+The audit has311 verified maps,225 variants and zero mesher errors. All variant
+records and all other map records are exactly equal to the final bed-seam
+baseline. B1F changes only textured vertices168040→169336 and triangles58160→58592,
+from the newly retained buried ends of independent wall courses. All source
+claims/classification and support counts/extrema remain unchanged. Evidence:
+rocket-reveal-headless-review/, rocket-reveal-full311-{audit,invariant-summary}.json,
+rocket-reveal-native-{driver,build}.log and the three wall/five Persian test logs.
+
+The broader all311 room/state/service, original16 alternative/reachability,
+shared-furniture and earned native League/Hall scene acceptance remains open.
+Cargo38504 is confirmed live compiling the seven-branch PokéCom office service
+regression next, in the same owned cache after the Rocket pipeline finished.
+No pack, audio, model source owned by another goal, shared AA/filtering code,
+collision or source scripts were changed by this reveal work.
+
+Rocket wall-course and Persian source checks pass; native build running — 2026-10-17
+
+Cargo34705 exits0 after11m18s. All three new rocket_wall_reveal tests pass in
+3.72s against the native pack, including the actual-map triangle multiset
+preservation check, unchanged source/support and closed independent wall-course
+ends with all floor triangles outside reveal ownership. The Bevy executable
+has no matching tests and earns no controller coverage here. All five Persian
+source/backing/anatomy controls also pass from the fresh viewer executable in
+4.92s. Receipts: rocket-wall-course-reveal-tests.log and
+rocket-reveal-persian-controls.log. The earlier cache-generation failure is
+superseded by this actual execution; no source model was replaced.
+
+Native Cargo36848 is confirmed live building the three tools in the owned
+cache. Driver34837 will then run the five exact earned LR routes, two frontal
+backing controls and the full311/225 audit, all headless/image-targeted/muted.
+Native foreground-wall readability remains unaccepted until those views are
+inspected. The PokéCom service regression is implemented and queued behind
+that pipeline; it is not included in the already-completed Bevy executable.
+All311 room/state/service, original16 alternative/reachability and broader
+shared-furniture/native earned-scene requirements remain open.
+
+PokéCom office service controller coverage added — 2026-10-17
+
+New ignored external-pack regression
+kanto_pokecom_office_computers_serve_all_choices_and_release_input drives all
+seven source branches: both information choices and explicit Quit at computers1
+and2, plus computer3's email. Each fixture starts at the actual customer-side
+background event, faces the terminal through input and saves a quiescent native
+review checkpoint if requested. The test requires each own qualified source
+menu, each branch's own text label, every fully revealed authored printer page,
+directional input ownership, B cancellation after help, explicit Quit, Start
+and ordinary walking afterward. No menu, source cursor, choice or text is
+injected. Initial room placement is a fixture, not story-earned arrival.
+
+The new file is included from the existing Kanto interior regression file;
+production behavior is unchanged. Execution is pending. Driver waits for the
+current seven Rocket pairs and311/225 audit to finish before starting Cargo in
+the same owned cache. Receipt: native-pokecom-office-controller-tests.log and
+pokecom-office-controller-driver.log. Native terminal/service appearance still
+requires paired capture; geometry identity of the small gray office fixtures
+and whole-room acceptance remain open. All captures remain offscreen and muted.
+
+Rocket reveal validation cache retry — 2026-10-17
+
+The first wall-course test build exits101 before running tests: generated
+mr__mime.glb metadata/payload were absent from this goal's Cargo output while
+the canonical source model was being added by another goal. The source file is
+now present; no species source, shared cache, or other owner's files were
+changed. The failed log is preserved as rocket-wall-course-reveal-tests-attempt1.log.
+Cargo34705 rebuilds in target/kanto-resume and is confirmed live. Native driver
+34794 waits for all three exact wall-course passes and five Persian/source
+controls before building tools; capture driver34837 waits for that success.
+Seven headless/muted pairs are prepared: the five identical earned LR routes
+at camera0/0/45/0 plus two front statue/backing controls. The route verifier
+requires identical authoritative position sets to the prior captures. Full311 /
+225-state auditing follows. These new wall results are still pending; previous
+bed/portal/service/controller acceptance remains unchanged.
+
+Final bed seam verified offscreen; Rocket wall reveal in implementation — 2026-10-17
+
+The updated bed tests pass (two viewer tests; Bevy has no matching test), as do
+three Lance portal and52 model-catalog controls from the fresh test executable.
+The native tool build exits0 in4m10s. All six Pink/Polkadot/Pikachu front/side
+source/native pairs complete headless, image-targeted and muted. Each source
+and native image was inspected individually: rounded plain cloth sides retain
+their own pigment, the former black source-frame stripe is absent from the
+cloth, and no interpolated atlas streak crosses the print/plain seam. The
+correct source motifs and gray frame remain. This accepts the scoped bed-print
+finish, not the bedroom's entire composition or earned decoration acquisition.
+Initial ownership is seeded; actual PC selection and room reload use production
+input. Evidence: bed-seam-headless-review/{pink,polkadot,pikachu}-print-{front,side}
+images and paired-state receipts; bed-uv-seam-cloth-tests.log,
+bed-seam-native-{driver,build}.log. All311 map records and225 source-block
+variant records exactly match the prior cloth-recess audit, with311 verified
+maps and zero mesher errors. UV appearance is established by image inspection,
+not those equal counts. Evidence: bed-seam-full311-{audit,invariant-summary}.json.
+
+Earned Rocket LR walks previously exposed default-camera player occlusion.
+New rocket_wall_reveal.rs partitions only verified native RocketWall source
+ownership into closed rectangular courses, retains every original floor outside
+reveal ranges, and keeps buried course ends capped. Whole Persian statues and
+their wall backings receive separate reveal ranges. Existing camera-ray fade
+logic owns presentation; collision, source tiles, authored claims, ceiling
+height and earned sensor flags are untouched. Non-Rocket placements delegate
+to the existing mesher. No shared renderer, AA or texture-filtering code is
+changed. Three new geometry/source tests are compiling under Cargo33456 in
+target/kanto-resume; their execution and a new native build/capture are still
+pending. Do not claim the foreground-wall defect fixed until same-camera earned
+LR routes and frontal backing controls have been inspected. The full all311 /
+original16 / shared furniture / earned native scene scope remains open.
+All future automated captures remain offscreen and muted with no window fallback.
+
+Enclosed portal and both exact notice pages verified; final cloth UV seam pending — 2026-10-17
+
+Native build28883 exits0 in6m22s. All12 offscreen/muted pairs and the full311/225
+audit complete successfully. The four same-state portal comparisons were
+individually inspected: the closed threshold no longer protrudes behind the
+wall; the open passage has dark enclosed returns and a real clear threshold.
+This accepts the scoped architectural finish, not native earned League scene
+coverage. All six bed source PNGs are byte-identical to the already inspected
+references. Their new native front/side views were inspected individually.
+
+Both opt-in notice holds succeed on the actual first purchase. Page0 is fully
+revealed28 characters (CHRIS put the / FRESH WATER in); page1 is fully revealed31
+characters (FRESH WATER in / the ITEM POCKET.). Both observed-wallet receipts
+are800, proving one200 purchase from the funded1000 save. Both source/native
+pages were individually inspected with no menu underneath, and paired-state /
+camera checks pass. This proves the new QA hold compiles and catches the real
+production presentation rather than relabeling timed captures. Artifacts:
+cloth-recess-headless-review/vending-held-notice-page{0,1}-{2d,3d}.png and each
+3d.notice-hold.txt. Whole-room service acceptance remains separate.
+
+The refreshed audit has311 verified maps,225 variants, zero mesher errors and
+all map/variant records exactly equal to the prior completed textured audit.
+Count equality does not capture closed-threshold relocation or UV changes;
+those are established by explicit geometry checks and native views. Open-recess
+added faces are not reported as full variant geometry counts. Evidence:
+cloth-recess-full311-{audit,invariant-summary}.json and audit.log.
+
+Close bed inspection catches thin UV interpolation streaks at the printed /
+plain transition, plus the source frame's black outline still painted on the
+upper cloth edge. New implementation splits attribute vertices only across
+that UV seam and assigns a whole triangle to printed or plain cloth, preventing
+an atlas sweep across a transition triangle. It excludes the two outer source
+frame columns from the cloth print; the separate native rails/posts retain
+those pigments. Every fitted triangle corner and smooth normal is preserved.
+The regression now compares exact indexed triangle corners/normals, requires
+constant pigment for every plain triangle and checks west/east/head/foot print
+orientation explicitly at all three scales. Only index/UV seam duplication may
+change, not the rendered surface, source claims or support. These latest seam
+changes are not yet executed or visually accepted.
+
+Cargo30447/session42259 is live running the updated bed tests; receipt:
+bed-uv-seam-cloth-tests.log. Native driver70819/Python30927 waits for both bed
+passes, then runs three portal and52 catalog controls from the fresh viewer
+binary before building the tools. Capture driver23572 waits for that build,
+then captures only the six changed bed views and refreshes the full311/225
+audit. Receipts use bed-seam prefixes. Other completed source/service/earned
+sensor evidence remains scoped. Foreground Rocket wall occlusion and the full
+all311/original16/shared-furniture/native earned-scene objective remain open.
+All rendering stays headless, image-targeted and muted, with no windowed fallback.
+
+Native batch/audit and earned sensor walks verified; finish defects corrected in code — 2026-10-17
+
+Native build25365 exits0 in4m52s. All15 headless/muted pairs complete with
+preserved state and exact requested camera, and source/native images were
+individually inspected. Six decoration-bed views now show correct gray rails,
+Pink marks, pale/blue Polkadot art and the large Pikachu print on rounded cloth.
+Four Lance views establish an upright closed/open arch and round source-gold
+posts. Two Persian front/three-quarter views show the revised face/shoulders and
+continuous backing. Three named vending views show the correct menu and fully
+readable CHRIS/FRESH WATER notice with the menu hidden. Both longer named routes
+still stop at notice page0; an extra6A diagnostic returns Clang, so none is
+misreported as named page1 evidence. Detailed observed states are recorded in
+printed-bed-portal-headless-review/capture-provenance.json.
+
+The full311/225 audit exits0 with311 verified maps, zero mesher errors and all16
+original Kanto alternatives retained. All map source/support invariants and all
+225 variant edits/masks/support match the prior baseline. Only Lance's common
+map fields change:80 formerly flat north cells gain lance:north-portal. Only
+its mask1/3 edited-cell classifications change, with16 north-door cells gaining
+that family in each. All311 maps now report textured vertices/triangles; Rocket
+B1F currently has168040 textured vertices/58160 triangles. New textured fields
+had no prior baseline, so they do not prove unaffected textured counts.
+Receipts: printed-bed-portal-full311-audit.{json,log},
+printed-bed-portal-full311-invariant-summary.json and common-diff.json.
+
+The new actual-input alarm regression also exits0: one test14.44s proves all
+eight entry tiles, both real Grunt victories per entry, consumed PP, earned
+camera flags, cleared re-entry and production Start release. Native-compatible
+earned saves exist for all eight. Five corresponding native LR walkthrough
+pairs complete and were individually inspected; traces witness both neighbor
+and sensor coordinates with map unchanged. All five backing joins remain
+contiguous. However several default north-camera poses obscure the player
+behind foreground walls (camera2 fully): these are not camera-readability
+acceptance. RocketWall currently does not opt into the authored cutaway ranges
+used by the existing occluder system. Keep ceiling-height connected geometry;
+foreground reveal/readability needs a proper scoped fix. Artifacts:
+rocket-earned-native-walk-review; receipts/native-earned-rocket-controller-
+tests.log. Initial party is seeded; victories and camera flags are earned.
+
+Two defects found during these reviews are corrected in source, still awaiting
+new native views: blanket drawing outlines must not stretch down the duvet
+thickness as a black band, and the portal floor must not project out behind the
+north wall as a pale shelf. Printed upper cloth now retains full live art while
+rounded sides sample their own live cloth pigment at5,10; geometry is unchanged.
+The closed threshold ends at wall depth; the open recess includes the actual
+warp tile plus dark source-painted returns/ceiling/backing behind both lanes.
+The bed checks now require plain cloth sides and printed top; portal checks
+require no rear shelf, clear warp-tile centers and backing behind those centers.
+Both bed tests pass0.02s, all three portal tests pass0.00s and all52 catalog
+checks pass0.24s. Receipt: bed-cloth-side-portal-recess-tests.log and
+cloth-recess-{kanto_lance,interior_models-tests}-tests.log.
+
+Added opt-in CRYSTAL_RENDER_TEST_HOLD_FIELD_NOTICE to the QA input route. It
+releases keys only when the live notice's exact requested page is fully
+revealed, freezes paired presentation like the existing healing capture, and
+writes observed page/text/wallet evidence. A missing target fails the capture;
+it never changes source text, menu selection or economy. This new QA path must
+still compile and pass actual native captures. Driver34799/Python28440 owns
+native build28883; driver88097 waits for success, then captures six beds, four
+portal views and two held notice pages requiring wallet800 after one purchase,
+followed by another full311/225 audit. New scripts and receipts use cloth-recess
+prefixes. All captures remain explicitly headless/image-targeted/muted.
+The complete all311/original16/shared-furniture/earned native scene objective
+remains unfinished; neither scoped counts nor selected camera angles replace it.
+
+Named vending and ten current geometry gates pass — 2026-10-17
+
+Cargo21375 exits0 after18m58s compile. The one actual named vending regression
+passes12.70s and all nine funded/no-money/full-pocket drink cases pass, including
+complete CHRIS/drink/item-pocket notification text. Native-compatible named
+fixtures are saved under native-named-vending-controller-review/celadon-vending.
+The viewer filter matches zero vending tests and adds no coverage. Receipt:
+native-named-vending-controller-tests.log.
+
+The fresh viewer binary then passes both bed checks0.02s, all three Lance portal
+checks0.00s and all five current Persian checks8.90s against the native pack.
+The Persian results include the new anatomy's bounded/outward geometry and
+analytic curves plus all-five-statue backing/source/support guards. Receipts:
+current-anatomy-{native_decor_bed,kanto_lance,rocket_persian}-tests.log. All52
+current interior_models::tests also pass0.15s, including complete catalog parse,
+material-role and fitted-bound controls; current-bed-model-catalog-controls.log.
+These checks establish scoped geometry/source invariants, not visual acceptance.
+
+An offscreen matched named-pocket pair from the existing vending-fixed native
+tool was individually inspected: CHRIS and FRESH WATER are fully readable,
+with no underlying menu on either view. State/camera receipt passes. Artifacts:
+native-named-vending-headless-review/named-pocket-{2d,3d}.png. This closes the
+unnamed fixture diagnostic; it does not claim the new anatomy/bed/portal native
+build is finished. Native Cargo25365 is live compiling the viewer library in
+the owned cache. Driver23240 still owns that build; captures and the new earned
+sensor-input regression remain behind its success gate. No windows opened.
+
+Rocket script control passes; real-input sensor regression added — 2026-10-17
+
+Existing rocket_camera_runs_two_grunts_then_switch_disables_every_camera passes
+one matched test16.86s. It checks both Grunt identities, completion/event order
+and the secret switch disabling all eight source camera entry scripts. Its
+helper starts scripts and supplies battle completion, so this is scoped source
+continuation proof, not ordinary movement or real-battle proof. Receipt:
+target/kanto-resume/receipts/persian-anatomy-rocket-script-control.log.
+
+Added ignored external-pack regression
+kanto_rocket_statue_sensors_use_walk_input_and_earn_both_grunt_victories. Across
+all eight actual source entry tiles (both lanes of cameras1/2/3 plus cameras4/5),
+it supplies only initial identity/party, walks from the neighboring tile via
+VisibleShellController::press, observes GRUNTM_20 then GRUNTM_21, fights with
+ordinary A input, requires PP consumption and the earned cleared-camera event,
+walks off and re-enters the same sensor, and verifies released Start ownership.
+It injects no camera flags, coordinates, source scripts or victory outcomes.
+Optional native-compatible earned review saves are written before Start.
+
+This new test is implemented but not compiled/executed yet. Driver20388 waits
+for the current verified native build, then runs only the Bevy test target and
+this exact external regression against the native pack, using this task's cache.
+Receipts: native-earned-rocket-controller-driver.log and
+native-earned-rocket-controller-tests.log. Named vending Cargo21375 remains
+live in viewer libtest compilation; no timeout was treated as terminal and no
+competing native build is running. The complete interior/shared-furniture scope
+remains open; all native captures stay headless/muted.
+
+Frontal Persian diagnosis and anatomy correction implemented — 2026-10-17
+
+Two additional headless/muted native pairs at TeamRocketBaseB1F(5,3) and(6,3)
+were individually inspected against their same-state source. Both receipts pass,
+with cameras0/7/0/1 and0/0/0/1. The front view exposes a round head, two bulbous
+muzzle balls and a cylindrical neck: generic cat anatomy, not accepted Persian
+fidelity. Artifacts: target/kanto-resume/rocket-persian-frontal-headless-review.
+These are initial-location/no-input fixtures, not alarm progression evidence;
+standing initially on a sensor does not prove its movement-trigger behavior.
+
+rocket_persian.rs now blends wider shoulders into the seated haunches, lowers
+and broadens the skull, reduces the muzzle and adds contour-attached almond
+lids, a chiselled nose, faceted forehead jewel and six attached tapered whisker
+ridges. Existing live source gold/shadow paint, pedestal,16x8 footprint,28-pixel
+height, backing ownership and source/controller behavior are retained. Eyes and
+jewel follow the skull surface; the whiskers begin inside the cheeks. No new
+asset catalog, pack, Blender file or species model was introduced. This new
+anatomy is implemented but not yet tested or visually accepted.
+
+Own queued native Cargo22002 was confirmed to have no compiler child, then
+stopped along with its wait driver19369 to include the new anatomy gate. No
+other owner's compiler/cache was touched. Its old capture driver correctly
+rejects the missing native-success result and starts no captures. Replacement
+native driver21912/Python23240 waits for named vending Cargo21375, then runs the
+two bed, three portal and five Rocket tests from that fresh viewer executable
+before building tools. Capture driver52046 waits for that build, then captures
+six beds, four door states/views, two frontal statue views and three named
+vending states, all headless/muted, followed by the full311/225 textured audit.
+Receipts: current-anatomy-native-driver.log, current-anatomy-native-build.log,
+current-anatomy-headless-driver.log and current-anatomy-*-tests.log.
+
+Both bed-print guards and all three current portal gates pass — 2026-10-17
+
+Retry62091/Cargo19280 exits0 after15m06s. The two actual viewer bed tests pass
+in0.01s: native_decor_bed_print_keeps_rounded_geometry_and_live_orientation and
+native_decor_bed_variants_require_own_art_and_preserve_support_claims. Bevy
+matches zero and adds no coverage. These establish preserved rounded geometry,
+source print bounds/orientation, neutralized generic tint, own-art admission,
+claims and support. Receipt: native-decor-bed-generated-assets-tests.log.
+
+The gated driver reruns all three kanto_lance tests directly from that same
+fresh viewer test executable; all three pass0.00s, with no ignored matches.
+Receipt: lance-portal-current-generated-assets-tests.log. The bed/portal native
+appearance remains unverified. Native tool build22002 is now submitted and
+waiting for named vending Cargo21375 in this task's cache; Cargo21375 is live
+compiling updated viewer dependencies. No build was restarted on a timeout.
+Driver24205 still owns the native build, and headless driver76473 still waits
+for its successful result before ten paired captures and the full311/225 audit.
+Logs: verified-interior-generated-assets-native-{driver,build}.log and
+printed-bed-portal-generated-assets-headless-driver.log under receipts.
+
+The nine earlier service pairs and full native-pack continuous controller
+League/Hall pass remain scoped evidence. Named vending regression/native notice
+refresh, new bed/portal visual inspection, current textured audit, all311 room
+fidelity and the remaining shared-furniture/earned native scene obligations
+remain open. All rendering stays headless, image-targeted and muted; never open
+windows or use a windowed fallback.
+
+Nine headless vending service pairs inspected; fixture identity tightened — 2026-10-17
+
+Using native-compatible initial controller saves and the existing native tool
+that already includes the vending fixes, nine headless/muted pairs were captured
+and individually inspected. Every state/camera receipt passes. Actual observed
+states include source prices200/300/350 and wallet1000; insufficient-money
+refusal; full-pocket refusal followed by the returned menu; purchase Clang;
+two real item-pocket notice pages with the underlying menu hidden; and cancel
+with both menu/text fully closed. Shorter funded/full-pocket AA routes still
+show the initial menu and are not mislabeled purchase/refusal evidence. The
+native machines have finished top vents and the surrounding wall remains
+continuous in these views. These service views do not certify the whole room.
+Artifacts: target/kanto-resume/native-vending-headless-review; exact observed
+states and pre-bed/portal binary provenance are in service-state-provenance.json.
+
+Inspection also catches unnamed trainer setup in this regression's initial
+fixtures: the source notice prints "put the" without a trainer name. The
+production notice already uses snapshot.trainer.player_name. The fixture now
+sets CHRIS explicitly and checks the complete trainer/drink/pocket text during
+all three successful purchase cases. No production notice code was changed.
+Named regression18830/Cargo21375 is queued in this task's cache; its result,
+native-compatible named saves and replacement notice views remain pending.
+The old unnamed notice is diagnostic evidence, not final text acceptance.
+
+Continuous native-pack League/controller ceremony passes — 2026-10-17
+
+Direct production-controller regression
+kanto_controller_continuously_earns_league_and_continues_home passes one matched
+test72.61s against core-modular.crystalpack. It seeds only the initial level100
+Mew party/moves and five Full Restores, then carries one controller through
+Will, Koga, Bruno, Karen and Lance. Every battle actually runs, spends PP,
+earns its victory flag and settles; movement follows collision paths and real
+warps. Remaining total PP81→76→70→59→53; two Full Restores are used through Pack,
+with stock5→4→3. No victory flags or post-setup coordinates are assigned.
+Receipt: target/kanto-resume/receipts/native-continuous-league-controller.log.
+
+The same run enters HallOfFame, slow-steps to the machine at(4,3), verifies
+ceremony input ownership and one recorded real party member, traverses all
+required Pokémon/player/Oak/closing phases and the credits to THE END, drives
+the production title/Continue summary including its20-frame clock, and returns
+to NewBarkTown with one Hall record and resumed game timer. The setup party is
+a fixture, not a claimed earned acquisition or a full story playthrough.
+
+Eight required phase-entry images under native-continuous-league-controller-
+review/continuous-league were individually inspected: Pokémon animation/hold,
+Oak rating and closing have the correct source sprites/text; Pokémon/player
+back/front entry frames are blank transition starts. These are source-renderer
+phase-entry diagnostics, not native3D or whole-phase animation acceptance.
+Native continuous walking/battle/ceremony captures and party-size/rotation
+variants remain required. This completes native-pack controller progression
+proof only; all311 room fidelity, source alternatives and shared furniture
+remain within the unfinished objective.
+
+Native vending fixtures pass; bed build retry after concurrent inputs — 2026-10-17
+
+The existing production-controller vending regression passes against the native
+core pack: all nine combinations (three drinks, funded/no-money/full-pocket)
+verify exact item/money changes or refusal, notice ownership, cancel closure and
+Start input. One matched test passes12.95s. Native-compatible initial review
+saves are in target/kanto-resume/native-vending-controller-review/celadon-vending;
+receipt: receipts/native-vending-controller-fixtures.log. This is controller
+proof, not yet native service-menu visual acceptance.
+
+Bed build87527 exits101 before executing the new bed checks: concurrently added
+Slowbro/Slowking include_model references lacked generated .gz/.meta files and
+test-local constants at compile time. Both GLBs and both constants now exist in
+the current sources. Retry62091/Cargo19280 runs the same normal build path;
+generated Slowbro/Slowking outputs now exist in this task's cache. No unrelated
+source was changed or reverted and no cache was removed. The prior gates
+correctly stopped without building or capturing. Replacement driver24205 waits
+for the two actual bed passes, then reruns three portal checks and builds the
+native tools. Headless capture/audit driver76473 waits for that native build.
+Logs: native-decor-bed-generated-assets-tests.log,
+verified-interior-generated-assets-native-driver.log and
+printed-bed-portal-generated-assets-headless-driver.log under receipts.
+
+Live decoration-bed prints implemented; portal geometry gates pass — 2026-10-17
+
+The regenerated-asset retry completes all three Lance portal tests: upright
+closed/open doorway coverage in both warp lanes, three broad platform steps with
+retained cutaway ownership, and rejection of incomplete/customized upper source
+art. This proves geometry invariants, not visual acceptance. Receipt:
+target/kanto-resume/receipts/lance-north-portal-generated-assets-tests.log.
+
+Pink, Polkadot and Pikachu beds now bind their complete live blanket art onto
+the same rounded canonical frame/mattress geometry, preserving fitted extents,
+source claims and support. Frame/linen colors sample the live source rather
+than generic beige material. Admission requires the correct map and all eight
+cells of that variant's own drawing. No printed assets were extracted or added
+to the repository. Two new tests cover geometry preservation, print bounds,
+source ownership and unchanged support; Cargo17334 is currently compiling them.
+Their result and native appearance remain unverified.
+
+The replacement verification driver requires both new bed checks and reruns all
+three portal checks from that same freshly compiled viewer test binary before
+building render_at_location, render_saved_session and audit_authored_assets.
+It replaces the old wait-only native driver; no duplicate build is running.
+Receipts: native-decor-bed-print-tests.log,
+lance-portal-current-print-binary-tests.log and
+verified-interior-native-build-driver.log under target/kanto-resume/receipts.
+
+All further captures must explicitly set CRYSTAL_RENDER_TEST_HEADLESS=1,
+CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image and CRYSTAL_PREVIEW_MUTE=1. Never open
+review windows or use a windowed fallback. Paired offscreen views and the fresh
+311-map/225-variant audit with textured geometry counts remain pending. The
+complete interior/shared-furniture/earned-state scope remains unfinished.
+
+Native-pack bed fixtures and six headless material diagnostics — 2026-10-17
+
+The native save loader correctly rejects TUI saves because their identity adds
++text-tui. No header was edited and no compatibility guard bypassed. The same
+owned-bed production-PC regression was rerun directly against the completed
+native core pack: all three variants pass10.11s and save matching native fixtures
+in native-owned-bed-controller-review/owned-bed-variants. Receipt:
+owned-bed-native-pack-controller-tests.log. Initial ownership remains seeded,
+not a claimed Mystery Gift acquisition.
+
+Six headless/muted captures complete: each Pink/Polkadot/Pikachu bed has an
+above-front and unobstructed eye-side view, with matched source screenshots.
+All six state/camera receipts pass; source/native images and all three close
+native side views were individually inspected under owned-bed-headless-review.
+The rounded geometry reads clearly, but appearance is NOT accepted: all three
+frames are beige wood where source rails/posts are gray; Pink is too muted;
+Polkadot inverts the source's pale cover/blue dots into blue cover/white dots;
+Pikachu substitutes a small geometric face for the source's large printed
+figure. These are concrete remaining shared-furniture defects, not gameplay
+failures. The current native tools predate the pending portal implementation;
+these captures diagnose unchanged bed assets and save/camera setup only.
+
+Source pixel checks from the actual Pink paired screenshot confirm frame gray
+(156,156,156), dark(57,57,57), ivory(247,231,214), coral(247,82,49), pink
+(255,156,198). Polkadot uses pale ivory and blue/periwinkle; Pikachu uses yellow,
+orange and dark source art. Keep live source sampling; do not commit extracted
+prints or another catalog. The existing Feathery native finish already samples
+its source, while the three variant meshes still use generic material colors.
+Their canonical blanket decorations in build-johto-interiors.py explain the
+inverted dots and invented mascot face. Correct native frame/cover/print binding
+and preserve rounded geometry, exact extents, claims, footing and custom guards;
+source-accurate printed cloth must not become another flat bed card.
+
+Portal joint test25964 exits101 before geometry tests because species_rig's
+concurrent Electabuzz GLB addition arrived after the build script's asset scan;
+its .gz/.meta outputs were missing in the owned cache. The gate45471 correctly
+exits1 and starts no native build. No source/catalog was reverted or hand-copied,
+and no cache was cleaned. Replacement37480/Cargo15691 reruns the existing build
+path; the expected Electabuzz generated outputs now exist(17:40), and compilation
+is live. New native-build gate91550 waits for15691 and the same three explicit
+portal test passes before rebuilding tools. Logs:
+lance-north-portal-generated-assets-tests.log and
+lance-portal-generated-assets-native-driver.log. Portal tests/native after views
+and the updated textured-count full audit are still unverified. The complete
+all311/original16/shared-furniture/earned-state goal remains active; all captures
+must remain explicitly headless/muted with no windowed fallback.
+
+Owned-bed controller gate passes; upright Lance portal implemented — 2026-10-17
+
+Bounded-walk build15719 exits0 after6m50s. The one matched external-pack test
+passes1.22s and logs all three actual PC setups: DECO_PINK_BED,
+DECO_POLKADOT_BED and DECO_PIKACHU_BED. Each verifies source wDecoBed, bad-warp
+reload/text/script closure and ordinary directional input to(2,4),then(1,4),
+without post-setup coordinate mutation. Final review saves exist under
+celadon-vending-controller-review/owned-bed-variants. Ownership was explicitly
+seeded before input; no Mystery Gift acquisition is claimed. Native appearance
+of these variants is still pending. The earlier five bad-warp-fixed control
+passes (including all nine vending cases) remain scoped evidence.
+
+Implemented mesh/lance_north_portal.rs, called only after lance_terraces has
+authenticated the complete upper12-row champion drawing, exact map extent and
+absence of conflicting custom placements. It removes the old horizontal north
+art at the raised platform datum and builds ceiling-height side-wall volumes,
+source-painted round gold columns and an elliptical arch/soffit. Closed2e keeps
+its painted door panel; open0b has a real aperture across both source warp lanes.
+Ground through the opening is separate from architectural cutaway. The existing
+platform/stair finish, collision, source scripts, door flags and authoritative
+footing are retained. No new game-content pack or copied model is introduced.
+
+The existing terrace winding/cutaway test now expects the retained owner plus
+the new architectural owner. A new geometry test covers both source door forms,
+all80 north-cell claims, exact whole-fixture footing preservation, ceiling/
+platform bounds, unchanged source frame and both open/closed warp-lane sections.
+Existing all-source-cell/custom/map-extent rejection checks remain. Joint
+geometry25964/Cargo13496 is live compiling the viewer with these changes in the
+owned cache. No test/native acceptance is claimed yet. Logs:
+receipts/lance-north-portal-geometry-tests.log and
+receipts/owned-bed-controller-bounded-walk-tests.log.
+
+After those geometry checks pass, rebuild native render_at_location,
+render_saved_session and the audit example (including new textured counts),
+then inspect headless/muted Lance closed/open front/east views at(4,3), actual
+warp/entry/controller controls, all three bed variants and the fresh full311/
+225-state audit. Keep the five synthetic exit-only labels and all original16
+alternatives; continuous native earned League/Hall, Persian frontal anatomy,
+remaining services/furniture and whole-room311 acceptance stay open.
+
+Headless original-variant review exposes Lance north-wall defect — 2026-10-17
+
+Headless/muted batch49171 completes(exit0) with ten new paired views in
+original16-exit-only-headless-review; no windowed image cache was reused. All
+ten comparisons were individually inspected. Will/Koga/Bruno/Karen show their
+northern exit-only openings and joined source courses from front/east. This
+accepts only that declared geometry scope, not whole-room fidelity or earned
+reachability. Lance's center views crop its northern doorway, so two additional
+headless pairs73570 at(4,3), north-front/north-east, were captured and inspected.
+All12 preserve source state and requested camera; capture-provenance.json keeps
+the synthetic EXIT_OPEN flags and earned_reachability=false labels.
+
+The closer Lance east view exposes an actual defect: the north doorway and gold
+ornamental columns remain flattened source artwork on the raised platform.
+The source callback opens the correct block, but this is not acceptable upright
+3D architecture. Do not count the Lance mask1 art complete. A complete guarded
+north arch/column volume is required for both original2e and open0b drawings,
+with correct front/east views, source/custom/truncation guards, unchanged footing
+and both warp approaches clear. Current lance_terraces lifts the authenticated
+upper12 source rows and broad stairs; retain that platform/footing and original
+sixteen alternatives while fixing the north drawing. No speculative geometry
+was added during diagnosis. This defect also affects baseline/combined Lance
+states and must be covered there, not hidden by a favorable camera.
+
+Owned-bed repair15923 builds in4m05s. The new UI/cursor closure assertion passes
+and actual walking now reaches(2,3), proving the stale textbox correction works;
+the three-frame fixture had incorrectly expected two tiles down and one left.
+The test now uses bounded ordinary directional frames until(2,4), then(1,4),
+retaining exact target/state assertions. Replacement15719/Cargo11241 is live;
+all three bed variants still need to pass before saves/native appearance are
+accepted. No fixture coordinates are directly mutated after setup.
+
+From the exact bad-warp-fixed libtest, all nine vending cases pass again6.19s,
+plus Mom/NewBark2.51s, actual battle turn2.59s, nurse healing2.02s and native nurse
+presentation3.13s (one matched test each). Driver23483 exits0; receipt
+badwarp-close-controller-controls.log. Native examples still predate the
+bad-warp fix and new textured audit count fields; rebuild after the controller
+fixture passes. The full goal remains open and all future captures remain
+explicitly headless/muted, with no windowed fallback.
+
+PC reload defect identified; schema-aware full audit verified — 2026-10-17
+
+Diagnostic24610 completes(exit101,8m02s build) and exposes the exact post-PC
+state: menu=None,text=None,window_open=false,text_window_open=true, with no
+script cursor, special, pending load/warp, fade or text wait. The bad-warp room
+reload has completed; its empty retained textbox incorrectly owns input in the
+renderer-neutral controller. The source PC changed-decor path uses warp NONE,
+0,0 with MAPSETUP_BADWARP and no following closetext. take_visible_pending_map_load
+now retires that inherited textbox through the existing close_text_window API
+before bad-warp map callbacks run, preserving any new callback text. Other map
+setup paths and authored command streams are unchanged. External owned-bed
+regression15923/Cargo10049 is compiling the repair; no pass is claimed yet.
+
+The full311 audit's shared map fields are identical to the rounded-furniture
+baseline, with zero mesher errors and all225 variant identities/order retained.
+All225 records are equivalent after removing only the newly added original_block
+metadata from block_edits. The added flat_house_native_window_cells field exists
+on311 records; it is diagnostic schema, not changed ownership/footing. Exact raw
+and normalized diffs are ignored receipts/statue-vending-full311-*-diff*.json.
+The report counted only mesh.solid, whereas Persian/backing append to
+mesh.textured; unchanged solid counts do not prove that textured geometry is
+unchanged. Added explicit textured_vertices/textured_triangles to the source
+audit example. Its updated executable/audit still need building/running; do not
+claim textured-count verification from the earlier report.
+
+Exit-only headless recapture49171 is active in a fresh directory,
+original16-exit-only-headless-review, so it cannot silently reuse the interrupted
+windowed images. It explicitly enables HEADLESS=1, image capture and preview
+mute; native window creation remains disabled. It must finish all ten pairs,
+then each actual comparison still needs inspection. The full all311/original16,
+shared furniture, native earned League/Hall and room-fidelity objective remains
+open. No source/export/pack publication ran.
+
+Headless paired capture56593 completed successfully(exit0,5.71s) at the verified statue pose, with both images validated and state_preserved=true. This verifies the non-windowed capture path for subsequent visual work; no windowed fallback is needed.
+
+Non-disruptive capture requirement — user correction, 2026-10-17
+
+The user explicitly requires no render windows. The owned exit-only capture
+driver5294 was terminated; process inspection confirms no owned windowed
+render/capture driver remains. A child finished during termination; no batch
+was restarted. All future captures must explicitly use
+CRYSTAL_RENDER_TEST_HEADLESS=1 and CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image.
+The existing feature-gated native implementation disables WinitPlugin, skips
+native-window retention and uses ScheduleRunnerPlugin with the image target.
+The compiled render_at_location contains its headless admission guard. Owned
+statue/exit-only driver scripts now set HEADLESS=1; do not rerun windowed commands
+from older notes, and never fall back to windowed mode if headless capture fails.
+
+A headless test at(6,4) was rejected before app startup because that source tile
+is unwalkable; no image or headless rendering pass is claimed for it. Replacement
+56593 uses the already verified(5,2) statue pose and is in progress, logged in
+receipts/rocket-persian-headless-eye.log. The PC reload diagnostic24610 remains
+non-windowed and was not stopped. Native build98204 passed6m33s; the five statue
+side after comparisons and all311 audit completed before the user correction.
+All five side pairs were individually inspected: backing is continuous and
+curves are smoother, but frontal Persian anatomy/overall fidelity still needs
+review. The audit covers311 maps/225 variants with no mesher errors. Shared map
+fields are identical to the prior baseline; added flat_house_native_window_cells
+and variant original_block diagnostics require schema-aware comparison before
+claiming identical variant records. The exit-only batch is interrupted and not
+a completed ten-view set. The full goal remains active under the no-window rule.
+
+All nine vending cases pass; owned-bed controller reload isolated — 2026-10-17
+
+Fresh Bevy build2754 completes successfully in13m10s. The one matched vending
+regression passes in5.01s and logs all nine exact cases: Fresh Water200, Soda
+Pop300 and Lemonade350 each buy exactly one with1000 initial money, refuse at
+zero money, and refuse a full1980-unit pocket without charge/item changes.
+Every case also verifies source menu identity, modal input/notice presentation,
+B notice handling, source cancellation and production Start. Log:
+receipts/celadon-vending-scoped-prices-tests.log. The scoped amount-resolution
+fix therefore has actual service coverage, not just a unit pass.
+
+All four controls pass again from that exact new Bevy libtest: Mom/New Bark
+3.97s, actual battle turn1.67s, nurse healing1.91s, native nurse presentation
+2.56s (one matched test each). Driver12220 then correctly fails on the new owned
+bed test. Pink selection and wDecoBed pass, both decoration/PC menus close, but
+Down/Down/Left leaves the controller at(2,2) rather than(1,4). No bed save was
+accepted. The existing integrated graphical owned-Pink-PC test passes separately
+in4.93s from the same external pack and executable, including its script-cursor/
+text closure and movement checks. This separates a renderer-neutral settling
+problem from the graphical setup path; do not label the failed new test passed.
+
+An opt-in source trace reproduces the same failure (no additional trace error):
+PlayersHousePCScript branches through .Warp and stages the authored bad-warp
+map reload. The new test now asserts script/text closure before walking and
+prints UI,cursor,special,load,warp,fade/action state on failure. Diagnostic Cargo
+session24610 is queued behind the running native example build. No production
+controller reload patch has been guessed. Logs: owned-bed-integrated-comparison,
+owned-bed-controller-script-trace, owned-bed-controller-reload-diagnostic-tests.
+
+Driver98204 advanced to the actual native example build, logged in
+statue-vending-scoped-native-build.log. It has not completed yet. Statue/audit
+2768 and exit-only16059 remain behind their gates. Native vending/bed visual
+review, full311 audit and original16/earned-state/Hall acceptance remain open.
+No pack/export publication ran; the full goal remains active.
+
+Exit-only native variant review queued without changing source behavior — 2026-10-17
+
+Existing render_at_location --preview-flag was inspected: it permits only a
+fresh disposable runtime-tile session without saving, settles the initial
+callback, installs the verified flag, and reruns production map setup. This
+supports each of the five mask1 exit-only combinations without adding a block
+insertion path or changing Lance's actual script. Driver16059 waits for the
+statue/audit driver2747 and requires its actual full311 exit0, then captures
+front/east pairs for all five rooms. Each identity must include its exact
+EXIT_OPEN fixture flag and each paired receipt must preserve state. The ignored
+capture-provenance.json labels all ten views synthetic and explicitly denies
+earned reachability. Visual review remains required after capture. Log:
+receipts/exit-only-variant-review-driver.log. Native jobs are serialized.
+
+A live-binding review also confirms the player bedroom has precisely four
+source bed forms: Feathery1b, Pink1c, Polkadot1d and Pikachu1e. BedBlue and
+BedGreen have canonical mesh/normal/bounds validation but no current production
+placement selector; the full311 baseline contains only interior/bed_red and
+cannot establish decoration-bed appearance. Do not invent source bindings to
+make unused palette assets appear in the native gallery. The three pending
+owned-bed PC fixtures cover the remaining live rounded variants; their actual
+controller and multi-angle native results are still required. Cargo2754 has
+reached Bevy test compilation and includes that new fixture test.
+
+Original16 structural alternatives: source path accounting clarified — 2026-10-17
+
+The completed225-state audit was inspected directly. For each of Will/Koga/
+Bruno/Karen/Lance, block_mask1 is the northern exit-open edit, mask2 the southern
+entrance-wall edit, and mask3 both. Celadon6F contributes its unconditional
+roof-stair wall callback, completing16 nonempty alternatives. These masks must
+all retain geometry/native review; baseline is additional, not one of the16.
+
+The pinned external source maps were read directly. Indigo's NEWMAP callback
+resets all five door scenes and both door flags. Each room's arrival scene
+closes the southern doorway before returning normal input. The four Elite Four
+victory scripts open the northern exit and set EXIT_OPEN while retaining the
+closed entrance. Lance opens the northern block directly but sets ENTRANCE_CLOSED
+again; it does not set EXIT_OPEN. The existing external controller regression
+already explicitly asserts that source quirk and the actual block override;
+do not normalize Lance into the other four flag sequences.
+
+| Alternative | Source interpretation | Remaining proof |
+| --- | --- | --- |
+| Five mask2 entrance-only states | Normal locked arrival before victory | Reuse verified real entry states; exact native variant/joins still need accounting |
+| Five mask3 combined states | Victory opens exit while the entrance remains closed; Lance uses a direct block edit | Continuous earned native gauntlet and same-state source pairs remain required |
+| Five mask1 exit-only states | Declared independent edit combinations; no normal reset-to-entry-to-victory path demonstrated | Keep all five geometry/native fixtures, explicitly label synthetic combinations; do not claim earned reachability |
+| Celadon6F mask1 | TILES callback unconditionally hides rooftop stairs | Real callback is already exercised; native service/room proof still pending |
+
+This is source-path analysis, not a new runtime pass or proof that every possible
+engine path was exhaustively excluded. No variant was dropped and no script,
+flag, controller state or audit mask was changed. The repaired vending Cargo2754
+remains live compiling the viewer library; the new bed test is not yet executed.
+
+Remaining bedroom variants now have a production-input fixture gate — 2026-10-17
+
+Added ignored external-pack controller test
+kanto_owned_bed_variants_use_pc_input_and_publish_review_fixtures. Each of
+Pink, Polkadot and Pikachu beds starts in an explicitly owned-decoration visual
+fixture. It opens the real bedroom PC, selects Decoration/Bed and the source
+entry through VisibleShellController.press, dismisses setup notices, verifies
+wDecoBed, closes the nested menus and walks from the PC to(1,4). Optional final
+saves go to celadon-vending-controller-review/owned-bed-variants. Source flags
+are seeded only for initial ownership; this is not a Mystery Gift acquisition
+or earned-state proof. No bed state, source block or room transition is directly
+mutated after initial setup. Native multi-angle variant review remains required.
+
+The test was added while vending Cargo2754 was still compiling crystal-assets,
+before its Bevy test compiler started. Companion driver12220 waits for that
+exact Cargo, requires all nine vending case receipts and a one-test pass, then
+runs the four prior gameplay controls and this owned-bed test from the actual
+new libtest path printed by Cargo. It rejects zero matches; no parallel Cargo
+build is added. Log: receipts/repaired-controller-controls-driver.log, with
+individual *-scoped-prices.log control receipts. No result is claimed yet.
+The existing native/statue/audit pipelines remain live behind their gates.
+
+Scoped source-price regression passes — 2026-10-17
+
+Assets build13268 exits0 after8m11s; the one matched
+script_economy_resolves_own_map_prices_without_leaking_scopes_or_caps test
+passes. It verifies own-map PRICE plus a global fee, foreign/negative/oversized
+amount refusal with unchanged state, and both debit/credit preserving the
+pack's MAX_MONEY despite a conflicting local definition. Log:
+receipts/scoped-script-economy-tests.log. This is scoped unit evidence; the
+nine real source vending cases are not yet accepted.
+
+Driver98204/Python1619 has advanced to fresh Bevy vending Cargo2754, logged in
+receipts/celadon-vending-scoped-prices-tests.log. The native example build is
+still conditional on all nine explicit passing case receipts and a passing
+test footer. Separate driver2768/Python2747 waits for1619 to finish, requires
+NATIVE_BUILD_EXIT=0 and a native executable header, then captures all five
+Rocket after poses at the exact before camera and runs all311 maps with declared
+script-block alternatives. Its scripts/logs stay ignored under target/kanto-resume.
+After capture, each actual native comparison must still be visually inspected;
+state/file existence and a geometry audit do not prove visual acceptance.
+
+A reread of the saved Tower Cyndaquil/Misdreavus native move-menu image confirms
+that pair is readable. It is not the separate Cyndaquil/Kangaskhan case and
+does not resolve that outstanding higher-shot failure. No camera threshold,
+body dimension or admission gate was weakened. The obsolete99-unit full-stack
+vending saves/backups were removed; full-pocket fixtures use1980 units.
+The full interior/furniture/earned-state goal remains active.
+
+Scoped-price verification pipeline queued — 2026-10-17
+
+Assets regression13268/Cargo822 remains live and has reached compilation of
+crystal-assets with the scoped amount-operand fix and its complete new test.
+Driver98204 (target/kanto-resume/run-scoped-vending-review.py) waits for that
+exact Cargo process, requires its one matched test to pass, then runs the full
+nine-case Bevy vending regression (crystal-bevy/location-tester only; no empty
+viewer target). It requires all nine explicit case receipts plus a passing test
+footer before building render_at_location, render_saved_session and
+audit_authored_assets. Logs: scoped-vending-review-driver.log,
+scoped-script-economy-tests.log, celadon-vending-scoped-prices-tests.log, and
+statue-vending-scoped-native-build.log under receipts/. No duplicate build or
+source export was launched. At this checkpoint the assets compile is still
+running; neither the repaired vending matrix nor the native build is a pass.
+After native exit0, inspect all five exact-pose Rocket after comparisons and
+funded/refused vending routes, then perform the full311/225-state audit and
+repeat the four controller controls from the repaired Bevy binary.
+
+Obsolete joint build stopped after reproduced service failure — 2026-10-17
+
+Owned joint Cargo98762/session86864 was deliberately interrupted(exit130)
+after its fresh Bevy executable reproduced the Soda Pop price-scope error.
+It was compiling a viewer target with zero matching vending tests; continuing
+that obsolete target could not verify the repaired assets execution path.
+Only that owned Cargo was signaled. Driver36785 exits1 on its test-result gate;
+no native build started. Replacement assets regression13268/Cargo822 is live,
+compiling shared core dependencies in target/kanto-resume after acquiring the
+released cache. Follow its actual terminal result before running the repaired
+nine-case Bevy matrix. This is not a timeout-triggered restart or a test pass.
+
+Vending price scope defect reproduced and repaired — 2026-10-17
+
+The fresh public-notice Bevy executable was run directly while the joint
+Cargo command98762 finished its viewer target. All three Fresh Water setups
+pass (funded, zero money, full1980-unit pocket), including exact quantity/money,
+notice ownership, cancellation and Start. Soda Pop then fails at its source
+checkmoney: UnknownCurrencyConstant CELADONDEPTSTORE6F_SODA_POP_PRICE. This is
+an actual service defect, not a successful nine-case run. The map's source DEFs
+are already in story_event_script_constants; execution previously consulted
+only currency_constants, although text rendering already uses scoped DEFs.
+
+GameDataSet.apply_script_economy_command now resolves amount operands from the
+owning map's constants, then global source constants, before retaining the
+existing core economy evaluator and authoritative currency caps. It does not
+merge other maps or rewrite exported programs, catalogs, or packs. A new assets
+regression exercises local/global expression operands, foreign-map rejection,
+negative/oversized rejection without mutation, and an unchanged global money
+cap even when a map defines MAX_MONEY. Its build13268 is queued behind98762;
+no passing result is claimed yet. The conditional native driver must reject
+the old nine-case run and must not publish stale native acceptance.
+
+The same fresh controller executable passes four explicit controls: Mom/New
+Bark gate, actual battle turn/PP, nurse HP/PP healing, and native nurse live art/
+overlay ownership (one matched test each). Receipts:
+celadon-vending-public-notice-direct-tests.log and
+vending-public-notice-controller-controls.log. Re-run the full vending matrix
+and relevant controls after the scoped-price fix; native after views and full311
+audit remain required. The full goal remains active. The deleted handoff stays
+deleted; these canonical notes retain the remaining work.
+
+Public notice presentation aligned with the controller owner — 2026-10-17
+
+VisibleShellController.snapshot now projects active field/PC notices using the
+same visible_field_dialog_pages and printer page index as graphical Bevy. It
+hides an underlying source menu, exposes the current notice page with Text
+ownership, and reports the remaining visible notice pages rather than stale
+writetext history. Battle presentation remains on its existing path. Only the
+returned presentation copy changes; source menu identity, game state, script
+cursor and input dispatch are not replaced or advanced by observation.
+The vending regression now explicitly requires the public controller to hide
+menus under pocket notification and expose nonempty current notice text, in
+addition to the existing actual B/input, money, quantity and cancellation gates.
+
+Own partial build50557 was deliberately stopped(exit130) after this public-view
+change: its Bevy test compiler had already parsed the old presentation. This
+was a stale compile, not a timeout or passing result. Replacement joint
+build86864 includes the full-pocket fixture and public presentation assertions,
+logged in receipts/celadon-vending-public-notice-tests.log. It is the only
+current owned test build and must be followed through its actual result. No
+other agent's compiler/cache was stopped or modified.
+
+All nine corrected setups still need to pass before final native rebuild and
+service acceptance. The three core identity and five Rocket geometry checks
+remain completed scoped evidence; native examples still predate the changes.
+The all311/original16 objective remains active. No pack/export publication ran.
+
+Vending source cancellation now progresses; refusal fixture corrected — 2026-10-17
+
+The source-closewindow Bevy executable was freshly produced at16:24 and run
+directly as71561 while the joint Cargo run24427 was still finishing its viewer
+test target. Funded Fresh Water and zero-money refusal both pass their exact
+item/balance checks, cancellation and production Start. This proves the authored
+closewindow continuation resolves the previously stranded .Start cursor. The
+third setup then fails quantity100 versus expected99. This is a fixture error,
+not an inventory regression: MAX_ITEM_STACK is99, but ordered pocket inventory
+correctly appends a second stack when capacity remains. The original ReceiveItem
+ASM explicitly scans to the terminator and allows a new slot, and the existing
+core regression documents that behavior. No bag implementation was changed.
+Evidence: receipts/celadon-vending-source-closewindow-direct-tests.log.
+
+The full-bag setup now supplies MAX_ITEM_STACK*ITEM_POCKET_CAPACITY (1980 units
+in20 full stacks) before interacting, then requires refusal with all quantity
+and money unchanged. Fixture filenames use full-pocket, and the obsolete
+owned FRESH_WATER-full-stack save/backup were removed. All three drinks still
+require funded,zero-money and full-pocket cases (nine real controller setups),
+notice ownership, cancellation and Start. New build50557 is queued in
+receipts/celadon-vending-full-pocket-tests.log. The prior24427 command remains
+live and must be polled rather than restarted; its old99-unit test is expected
+to fail and cannot count as the corrected full-pocket gate.
+
+The native examples still predate the controller identity/cancellation and
+Rocket geometry changes. After all nine corrected setups pass, build fresh
+render_at_location,render_saved_session and audit_authored_assets; replay the
+owned initial vending fixtures and inspect the matched statue after views at
+all five recorded positions. The full311 geometry/support audit and relevant
+Mom/battle/nurse controller controls remain required. The overall all311/
+original16 objective is not complete. No content pack or export ran.
+
+Vending cancellation stranded before authored closewindow; continuation fixed — 2026-10-17
+
+The interrupted53249 handle is missing and process inspection confirms its
+Cargo/compiler is no longer live. Its log has no final test result. It did
+finish an updated Bevy libtest (15:18) containing the new notification check;
+that artifact was run directly as5441. The actual result is failure in0.89s,
+not a completed build/test pass. Purchase amount/quantity and notification
+checks complete, but B cancellation leaves menu=None, runtime/text windows
+open, stale CeladonClangText and active .Start@CeladonDeptStore6FVendingMachine
+cursor at command3. Evidence: receipts/celadon-vending-notification-direct-tests.log.
+
+CloseActiveMenu intentionally takes the menu identity only. The next authored
+command3 is closewindow, but continue_visible_script_after_prompt treated the
+leftover runtime window as an input boundary before that closer could run.
+The continuation now permits exactly that authored closewindow when no menu
+is active; all text waits, notices, battles and other modal owners still block.
+It executes the existing source-step path, then the source comparisons,
+closetext and end normally; no manual window/script-state reset or alternate
+dispatcher was added. This complements the qualified-label and notice-priority
+fixes. Current joint vending build24427 is live in
+receipts/celadon-vending-source-closewindow-tests.log. Its exact process was
+polled; the viewer dependency completed and Bevy compilation is active. Run all
+nine actual cases and inspect the result before accepting service behavior.
+
+All five Rocket before comparisons are now individually inspected with matched
+source state and camera0/7/-5/first-person: (5,2),(23,2),(23,6),(21,16),(7,16).
+They show the missing backing at all security statues and provide same-pose
+before/after gates. All paired state is preserved in
+rocket-persian-smooth-review/all-five-before-state-checks.json. The first
+south-east capture lost its screenshot channel; retrying the exact same pose
+succeeded. That was a readback failure, not a map/collision blocker, and the
+failed attempt is not visual acceptance. Logs:
+receipts/rocket-persian-{all-five,south}-before-captures.log.
+
+The three core identity and five Rocket geometry checks remain completed
+scoped evidence. Fresh native examples, after views, relevant controller
+controls and the post-Rocket full311 audit still remain. No source/export/pack
+publication ran. The original all311/original16 goal remains active.
+
+Rocket source gates passed; vending notification ownership under verification — 2026-10-17
+
+Corrected exported-label build81685 completed successfully: three core
+menu-choice tests pass, including the actual .MenuHeader@Parent grammar and
+unchanged ordinary link-token validation. This supersedes the first dotted-label
+attempt. Direct gameplay test2291 now confirms the first funded Fresh Water
+purchase has exactly one added item and a200 deduction, then fails the cancel
+assertion. It is not a full vending pass. Evidence:
+receipts/celadon-vending-exported-label-{tests,controller-tests}.log.
+
+The current test now requires the exact source menu with item-notification
+flags/notices fully settled before cancelling. Inspection also found that B's
+generic-source-menu branch preceded field/PC notice handling, whereas A already
+lets those notices own input. B now defers that branch while either notice is
+present and uses the existing modal handlers; no second dispatcher or new menu
+state was introduced. Funded cases advance pocket notices with B and require
+that, while the notice remains active, the underlying source menu/result is not
+cancelled. Once the notice dismisses, authored continuation may legitimately
+change the accumulator (PlaceMoneyTopRight publishes the current balance), so
+the test does not freeze that authored result. Exact quantities/charges,
+refusals, cancellation and Start remain required across all nine setups.
+Build53249 is live in receipts/celadon-vending-notification-settle-tests.log.
+It includes the notice-readiness and B-priority correction; inspect its actual
+result before claiming success or starting final service captures.
+
+The opt-in CRYSTAL_SCRIPT_TRACE diagnostic was attempted on the earlier test.
+Its extra mid-loadmenu snapshot rejects the transient unresolved .MenuHeader
+before verticalmenu qualifies it. That diagnostic failure is excluded as
+cancellation evidence and was not reported as a passing gameplay test. The
+normal production test's original failure remains the cancel assertion.
+No trace logging or unrelated diagnostic paths were changed.
+
+Rocket geometry build81341 completes successfully (22m39s including its queue).
+All five selected viewer tests pass in0.43s: actual external-map backing for all
+five statues, synthetic complete-course/rejection/footing checks, analytic
+nonuniform curve normals, bounded outward sculpture faces and original complete
+sensor drawing/support guards. Bevy matches zero Rocket tests and adds no
+coverage. Evidence: receipts/rocket-persian-smooth-backing-tests.log.
+The native after build/captures and full311 audit remain required. Current
+native examples are before-fix evidence; the full original interior objective
+remains active.
+
+Acceptance gates retained from current evidence — 2026-10-17
+
+The original16 are confirmed directly in the last completed audit: three
+nonempty declared block-edit combinations each for Will/Koga/Bruno/Karen/Lance,
+and one Celadon Dept Store6F callback alternative. They are not simply three
+chronological gameplay states. An audit combination is not proof of source
+reachability; native art review and an earned controller/source-state trace
+must be accounted for separately. The baseline room is additional to those
+nonempty alternatives. No declared combination was removed to simplify success.
+
+| Required scope | Evidence inspected | Outstanding acceptance |
+| --- | --- | --- |
+| All311 interiors | Latest aggregate-floor audit preserves309 other map records and all225 alternatives; Power source/support/claims exact; one concurrent Dragon sign delta inspected explicitly; Power floors/walls, Silph, Trainer backing/counter and Lance barrier have scoped paired acceptance | Trainer basement backing/reception counter scoped accepted (13 pairs/four moving samples;310 other maps and225 alternatives exact); other backing, fixture finish, walls/floors, composition, actors, hidden areas, services and reachable states |
+| Original16 Kanto alternatives | All16 retained in225 combinations and covered by37 paired native/source views; five synthetic exit-only cases, ten controller-owned entrance/victory alternatives including earned Lance north$0b/south$34, and Celadon6F callback; actual flags, spent PP and per-pair checksums verified | Lance south-barrier geometry scoped accepted in eight fresh pairs/eight moving samples, with all225 alternatives retained; full earned continuous native traversal and broader room/material/actor fidelity remain |
+| Shared curved furniture | Most recent52 catalog controls, bed tests and native print views pass; three round house-stool tests, wood/cafe controls and two same-pose Warden native views pass | Broader fixture/room fidelity, actor/companion composition and earned decoration acquisition |
+| Power Plant walls/floor | Outer/rear backing, quiet checker and ceiling-height128-world-unit divider with smooth player reveal verified; nine final pairs/four moving samples, two settled walks and exact311/225 audit | Aggregate floor and smooth housing reveal scoped accepted; latest311/225 audit exact to aggregate baseline; red/black floor drawings, fixtures, actors and broader composition remain |
+| Rocket statues | Three wall-course and five Persian checks pass; all eight sensors earn both real Grunt victories; five earned native LR pairs, ten moving frames and two frontal backing controls inspected; foreground player reveal verified | Whole-room fidelity/coverage and ceiling/first-person composition beyond these checked poses |
+| Celadon vending | All nine named controller cases pass12.70s; native menu/purchase/refusal/cancel and both exact held notice pages inspected, each after one purchase at wallet800 | Whole-room service presentation and remaining equipment/fixtures |
+| League/Hall | One native-pack controller continuously beats all five trainers, traverses real exits, completes ceremony/credits and Continue back home72.61s; initial party is seeded | Native continuous walking/battle/ceremony scene captures, party variants/rotation and animation fidelity; blank phase-entry screenshots are insufficient |
+| Large Battle Tower camera | Source fallback diagnoses unreadable Cyndaquil/Kangaskhan compositions | Readable native views of actual poses; a source fallback is not native acceptance |
+| Specialty equipment/services | Scoped clinic/PokéCom/counter work; all seven office controller branches and actual native/TUI CLI checks pass; native email page inspected | Both native/source menu pairs are individually inspected and label readability is scoped accepted; seven cases, both actual CLI menus and native/TUI stderr checks pass. Gray monitor-side fixture identity/geometry and whole-room review remain open |
+
+Current native tools include the enclosed Lance portal, final bed UV seam,
+revised Persian anatomy and verified foreground Rocket wall reveal. Scoped
+source/native finish captures and the latest311/225 audit are complete. Round
+house stool geometry and the office email controller repair have passing focused
+checks and fresh CLI/native evidence. The stool finish, repaired
+office menu labels and mansion bookcase/clock height are scoped accepted with
+actual tests and inspected paired native/source views. Later checkpoints record
+the completed lighthouse scopes, all16 physical-state evidence and Lance's
+reviewed side-wall repair; full-room and earned-scene obligations remain open.
+No captures may use a windowed fallback. This table retains the full completion
+target; checkpoints and history distinguish scoped proof from open acceptance.
+
+All-five Rocket backing regression added — 2026-10-17
+
+The backing acceptance now includes the actual external pack, not just a
+synthetic wall fixture. external_rocket_persian_backing_closes_all_five_security_statues
+builds immutable source cells from the supplied underground metatiles and
+TeamRocketBaseB1F map, requires exactly five resolved statues and a complete
+512-square-pixel ceiling-height front behind every one, then verifies original
+footing across the whole map. The existing eight-cell ownership guard, the
+isolated/edited-source rejection check, smooth-versus-hard normal check and
+outward/bounded anatomy test remain. These checks are implemented but have not
+yet executed; build81341 is still queued behind corrected identity build81685.
+Both exact process handles were polled and confirmed live, not assumed stopped.
+
+The before close pair at(5,2),camera0/7/-5/first-person, is now captured and
+individually inspected. It clearly shows the missing wall behind the statue,
+faceted gold anatomy and an unobstructed sculpture profile. This is the matching
+position/camera for the after gate; the(3,3) eye view is peripheral and does not
+replace it. No alarm-trigger coordinates were used for this close review.
+Evidence: rocket-persian-smooth-review/before-eye-close-compare.png and its
+paired-state file. A fresh native build, after comparisons and full-map audit
+still remain required. The current native examples predate both the exported
+menu-identity correction and statue/backing changes; they are before evidence
+only. The original all311/original16 scope remains active.
+
+Exported-menu correction and Rocket statue backing implemented — 2026-10-17
+
+Build81625 completed: three core menu-choice checks pass, with zero matching
+Bevy tests. Those checks only covered the initially inferred dotted notation,
+so they did not prove the actual exported vending menu. Direct gameplay test
+67273 fails on the new exact-ID assertion: actual is
+.MenuHeader@CeladonDeptStore6FVendingMachine, not the inferred
+CeladonDeptStore6FVendingMachine.MenuHeader. The pack parser's
+resolve_menu_reference explicitly emits local@parent. This is corrected at the
+source validator and regression: ordinary menu tokens remain unchanged; only
+qualified .local@parent identities are additionally accepted, with nonempty
+components, exact whitespace and parent-token/reserved-prefix rules. The exact
+original ID remains on the wire. The source-qualified core test now uses the
+actual exported identity and rejects malformed/ambiguous parent separators.
+Build81685 is the current corrected core/Bevy build, logged in
+receipts/celadon-vending-exported-label-tests.log. It must pass, then the ignored
+vending test must be rerun from its new Bevy binary. The regression now optionally
+saves nine initial money/stock fixtures under KANTO_INTERIOR_STATE_REVIEW_DIR/
+celadon-vending for native replay. No passing vending claim is made.
+
+Native pre-fix evidence: approaching from(8,3) with UA yields a matched,
+state-preserved vending menu with the source200/300/350 prices and3000 money.
+The comparison was inspected. UAA then reproduces the real menu-choice identity
+error and is correctly rejected by capture. That is a gameplay failure, not a
+valid final pair. Earlier A/AA captures faced away and are excluded as service
+evidence. UA from(8,2) reaches dialogue but fails the QA route's required actual
+translation; its moving frame is diagnostic only. Evidence:
+celadon-vending-review/pre-fix-approach-intro-* and
+receipts/celadon-vending-pre-fix-approach-views.log. A fresh post-fix renderer
+and purchase/refusal/cancel views remain required.
+
+Rocket Persian review: new production before views show that the wall stops
+behind the statue. The existing closes_wall_edge predicate suppresses exposed
+neighbor ends but never fills that gap. The new backing requires the complete
+eight-cell sensor drawing and an adjoining authenticated upper/lower horizontal
+wall pair. It fills only the sensor's upper two source rows at the neighboring
+32px ceiling height, using the same sampled blue body/black cap. It stays behind
+the plinth, preserves eight source claims and all support, and does not infer
+backing for an isolated/edited statue. New tests require complete front projected
+area, confined bounds, rejection of edited source and unchanged live footing.
+Body/head ellipsoids also now use24x12 curves with analytic normals under the
+nonuniform native fit; pedestal/ears stay hard. Tests cover smooth/hard normals,
+bounds and outward faces. No alarm/controller behavior, source claims or game content changed.
+Native acceptance remains pending on a fresh build, after views and audit.
+
+Own standalone geometry build31774 was deliberately stopped(exit130): its
+standalone feature graph was rebuilding a separate GPU dependency graph, and
+the core identity implementation had just changed. This was not a timeout or
+passing test. Replacement joint Bevy/viewer build81341 preserves the established
+feature graph and is queued behind81685, logged in
+receipts/rocket-persian-smooth-backing-tests.log. Before captures are in
+rocket-persian-smooth-review/. Front and eye at(3,3) were inspected; that eye
+leaves the statue at the right edge, so it is not a close-shape acceptance view.
+A clear quarter view at(5,2) is being captured for the actual before/after gate.
+The full all311/original16 interior objective remains open.
+
+Celadon vending exposes qualified-menu identity bug; fix pending validation — 2026-10-17
+
+The new external-pack controller regression compiles, then fails at drink
+confirmation (0.98s): build visible menu choice frame -> menu_choice.menu_id
+must be exact and untrimmed. This is a gameplay failure, not a rendering issue.
+Initial inspection inferred the dotted label notation
+CeladonDeptStore6FVendingMachine.MenuHeader; the later controller assertion
+disproved that inference (see the exported-label correction below). game_data_scripts.rs preserves
+menu.header_label as the menu identity, while MenuChoiceFrame previously applied
+the generic link-token validator that forbids dots. Selection runs the source
+path before recording the deterministic choice, so the transport rejection
+interrupts an otherwise valid menu interaction. The failing test is evidence
+of this gap, not a pass. Log: receipts/celadon-vending-controller-tests.log.
+
+The first attempted MenuChoiceFrame validator accepted nonempty dot-separated
+label components. That notation did not match the pack export and is superseded
+by the exported-label correction below. It preserves the original
+identity on the wire, whitespace/reserved-prefix rejection and all other link
+token validation. No global token grammar or script/controller dispatcher was
+relaxed. A core regression roundtrips the qualified menu, rejects empty local
+components/whitespace/path separators/reserved prefixes, and verifies ordinary
+link tokens still reject dots. The gameplay regression also requires the exact
+qualified identity and checks three drinks across funded,zero-money and99-item
+full-stack cases (nine setups), plus input ownership/cancel/Start.
+
+Joint core/Bevy test build81625 is live in
+receipts/celadon-vending-menu-identity-tests.log. After it finishes, run the
+ignored vending controller test directly from the newly built Bevy libtest,
+inspect all actual results and repair any further source/menu problems.
+A new native build and paired service views are required for visual acceptance
+of this behavior; the last completed examples predate the core identity fix.
+The accepted bed geometry and its prior audit are unchanged by this transport
+fix, but no current playable-vending claim is made. Full interior acceptance
+remains open. No pack/export/audio content changes were made.
+
+Rounded feathery bed verified in production — 2026-10-17
+
+Native build33604 completes successfully in6m35s. Fresh paired production views
+inspect the default decorated PlayersHouse2F bed from the front/east, at eye
+level from its side/head, and during a bedside UUDD walk. All five comparisons
+and moving01 were individually inspected. Mattress/pillow/cuff edges retain
+soft curves; the frame and headboard keep hard faces, floor contact and native
+orientation. The bedside lane remains clear. Exact camera poses and paired
+state are verified in rounded-bed-review/review-state-checks.json. The128-frame
+walk runs(1,4)->(1,3)->(1,2)->(1,3)->(1,4), with one terrain build, matching
+active terrain,zero final offset and no pending load/fade/warp. The bedroom's
+current gallery pair is refreshed. This accepts the rounded bed geometry;
+whole-room/ceiling/remaining furniture acceptance remains separate.
+
+The renewed full311-map/225-state audit has zero mesher errors. Every field
+shared with player-home-timber-foot-full311-audit.json is unchanged on every
+map; all225 variant records are identical. The current audit adds the diagnostic
+unmodeled_facade_cells field on all311 records; that schema addition is
+preserved. Importantly, this baseline audit does not apply bedroom decoration
+state: its PlayersHouse2F family list has no bed and its variant list has no
+PlayersHouse2F entry. Thus unchanged audit geometry cannot prove the new bed.
+The55 runtime model checks and matched decorated-room captures provide that
+evidence. Audit summary/diff and native build/capture logs are in receipts/
+rounded-furniture-ten-* and rounded-bed-native-captures.log. All three pack
+hashes remain unchanged (rounded-furniture-ten-pack-hashes.json).
+
+Service acceptance is being extended with the external-pack controller test
+kanto_celadon_vending_controller_buys_refuses_and_releases_input. It approaches
+the real background event, selects each drink through production menu inputs,
+checks exact bag/money changes, insufficient-funds and full-stack refusals,
+input ownership, cancellation and production Start afterward. Only initial
+fixture money/stock are supplied; source/controller paths are not altered.
+Test build22856 is live, logged in receipts/celadon-vending-controller-tests.log;
+its compiler is confirmed active. No passing claim is made until its actual
+result is inspected. Only cfg(test) code changed after the native build began;
+the production furniture/wall implementation remains the tested/captured one.
+The original all311/original16 service,reachable-state and native scene gates
+remain active. No deleted handoff was restored and no pack/export work ran.
+
+Celadon sixth-floor callback control — 2026-10-17
+
+The freshly built Bevy libtest runs the external-pack
+kanto_department_store_sixth_floor_controller_applies_rooftop_stair_callback
+regression successfully (one test,1.50s). It verifies the authored rooftop-stair
+replacement in authoritative layout/collision and production Start input after
+the callback. It does not prove vending purchases or whole-room visual fidelity.
+Evidence: receipts/rounded-furniture-celadon-callback-control.log. Native
+build33604 remains the sole active renderer build; its live compiler has been
+confirmed and no duplicate build was started.
+
+Ten-model runtime checks passed — 2026-10-17
+
+Runtime build75237 completed successfully in11m11s. All55 selected viewer
+interior_models tests pass, including rounded_furniture_keeps_curved_corner_normals_hard_faces_and_native_extents
+and the native home-fixture material-role/ownership regression covering the new
+feathery bed. The Bevy interior_models filter matches zero tests; it adds no
+coverage. Native build33604 has acquired the Cargo lock and is now compiling;
+it is no longer merely queued. Production visual acceptance and the renewed
+full311 audit remain pending on that build. No furniture or wall implementation changed after the test
+build began. The full interior goal remains active.
+
+Kurt timber-join inspection and bed rebuild queue — 2026-10-17
+
+Two additional matched native views of Kurt's house, rotated east/west at(9,5),
+were individually inspected. Both preserve source state. The rear backing meets
+the side returns; the large south-side opening corresponds to the entrance.
+The thin dark stripes are sampled timber-joint paint on the closed wall fronts,
+not missing vertical wall panels. traditional_wood_wall.rs builds a five-face
+closed backing and fills its front with contiguous patches; its outer front
+boundary stays at the body plane. No speculative wall relocation or closure was
+made. The timber finish may still need aesthetic refinement; these diagnostic
+views do not accept whole-room materials. Evidence:
+rounded-furniture-review/kurt-wall-{east,west}-compare.png.
+
+The ten-model runtime test build remains live as75237. Native build33604 is
+queued behind it in the same owned Cargo cache, building render_at_location and
+audit_authored_assets. It is logged in receipts/rounded-furniture-ten-native-build.log;
+its current output explicitly reports waiting for the build-directory lock.
+Do not start a duplicate build or treat the queue as failure. After both finish,
+inspect actual runtime results, render the refreshed feathery bed with paired
+state at elevated/eye level and walking, then run the full311/225-state audit.
+The last completed native examples and audit predate this newly published bed.
+All original interior/service/state/Hall/League gates remain in scope.
+
+Additional round-stool review — 2026-10-17
+
+Celadon Game Corner and Elm's Lab now have inspected elevated and unobscured
+close native/source pairs. The arcade side view at(9,7) clearly shows rounded
+padded rims and round legs; the lab view at(9,2) shows the round timber stool
+beside the table with floor contact and no table overlap. The first arcade eye
+view has a follower on the nearest stool; the first lab eye view misses the
+stool. Those two are excluded from close-view acceptance and replaced by
+celadon-arcade-eye-side and lab-stools-eye-clear. All pairs preserve source
+state; their exact cameras are in rounded-furniture-review/review-state-checks.json.
+This accepts the selected stool geometry, not arcade machine/whole-room fidelity.
+The newly published feathery bed is not in these pre-rebuild stool captures.
+
+Rounded furniture visual review and train transport verification — 2026-10-17
+
+Fresh paired native captures inspect Earl's Academy at (1,9), elevated and
+at eye level, plus Kurt's house elevated and from the side at (10,4). Rounded
+classroom seat corners and tubular supports remain readable, with seats facing
+their desks. The clear-aisle UUDD walk spans 128 frames and positions
+(1,9)->(1,8)->(1,7)->(1,8)->(1,9), ending with matching active terrain,
+zero offset and no pending load/fade/warp. Its moving01 frame was inspected.
+The cushion side view confirms the padded edge and clear table relationship.
+The initial north-facing cushion close view has a follower over its center;
+it does not establish the top finish. All six paired captures preserve state.
+These accept the selected chair/cushion silhouettes, not whole-room fidelity:
+Kurt's visible timber joins and first-person open ceilings still need review.
+Evidence: target/kanto-resume/rounded-furniture-review/, review-state-checks.json.
+
+check-room-furniture-bindings.py now checks native fitted extents and transformed
+normals for the shared curved seats, floor cushion and six upholstered beds,
+in addition to its ship furniture/source checks. It passes. The feathery-bed
+candidate retains material roles and the exact fitted extent at three scales;
+its slightly wider raw authored bounds do not alter the native plot because
+these models use independent-axis fitting. The candidate is now published.
+All 68 model checks pass (114560 triangles,188531 exported vertices), and the
+expanded fitting check passes. A new runtime regression requires both curved
+corner normals and hard faces, finite unit fitted normals and native extents
+at three scales on all ten refreshed furniture models. Runtime suite75237 is
+live in receipts/rounded-furniture-ten-runtime-tests.log; it and a fresh native
+build/bed capture remain required before accepting the new feathery model.
+The earlier production binary predates that newly published model.
+
+The feature-enabled CPU worker test finished successfully: exactly one viewer
+test passes, exercising six external maps including both train stations.
+Borrowed/owned response bytes and direct/restored/paged prepared outputs match;
+the selected train-door flag is required on both stations. The Bevy invocation
+matches zero tests and is not additional coverage. Evidence:
+receipts/train-doors-worker-feature-tests.log (17m09s build,4.26s test).
+This proves CPU worker transport; no browser-worker runtime claim is made.
+
+Both native travel directions now run for2240 frames each: Goldenrod->travel
+LCD->Saffron and Saffron->travel LCD->Goldenrod, ending at(9,10). Final native
+and source images from both rides were individually inspected and preserve
+paired state. Both traces end with matching active terrain,zero offset and
+no pending load/fade/warp. The trace's map field is empty during the LCD travel
+scene; its(6,5) entry must not be described as an active station platform pose.
+Evidence: train-doors-review/boarding-native-*,reciprocal-native-*,
+reciprocal-state-checks.json. Exact partial plug/slide/closing animation poses
+still lack native visual acceptance; existing32-frame captures are too sparse
+for that claim. Broad train fidelity and full311/original16 acceptance remain
+open. No pack/export work or unrelated ownership changes were made.
+
+Player-house back wall verified — 2026-10-17
+
+Both player-house floors now use one physical timber finish across the rear
+backing, exposed plain panels, side returns and stair recess. Live source
+pigment supplies the wood color; repeated bitmap grain and stretched bright
+marks no longer fight between sections. Shallow plank bevels meet the outer
+body boundary exactly. A low continuous timber foot reaches the actual floor
+boundary while upper backing stays recessed behind fixtures. The separate
+raised rear cap is removed. Existing source/custom guards, openings, furniture
+plots and walking support remain intact.
+
+The final production native build passes (8m32s). Six final paired views were
+individually inspected: downstairs front/east/west, bedroom, eye level from
+clear floor at (2,4), and the downstairs return walk. All preserve paired state
+and the requested camera pose. A final moving frame was also inspected. The
+128-frame walk reaches (4,6)->(5,6)->(6,6)->(5,6)->(4,6), with one terrain build,
+active matching terrain, zero final offset and no pending load, fade or warp.
+The dark strip seen during the intermediate contact review is covered by the
+joined timber foot in the final views. The earlier eye fixture at (4,4) sat on
+the neighbor NPC and is excluded; it was not a player-visibility defect.
+
+The corrected home suite passes 11 renderer checks plus one controller Hall
+save/Continue check; the two ignored continuous-League checks are not passes.
+Together with house/perimeter/model/animation/train controls, 202 distinct
+checks pass. The initial backing assertion incorrectly included the fixture's
+existing floor UVs; its test-only correction now checks appended wall UVs and
+also verifies the original floor positions/UVs/indices remain unchanged.
+Production wall code did not change after the final native build/captures.
+
+The full 311-map/225-state audit has zero mesher errors. Family/source ownership,
+modeled/unmodeled classifications, jump samples and reported footing summaries
+are unchanged, and all 225 variant records remain identical. Only solid geometry
+counts differ on seven maps using the newly rounded shared furniture. Audit
+counts do not prove wall shape; explicit boundary checks and native views do.
+Both house gallery entries are refreshed. All three pack hashes are unchanged.
+Evidence: target/kanto-resume/player-home-timber-review/final-* and
+receipts/player-home-timber-foot-*. This accepts the back-wall/contact
+correction, not whole-house or full-interior fidelity. First-person ceiling/
+roof presentation and the remaining furniture/scenery review remain open.
+
+Parallel goal progress retained: Blender corner-normal and 68-model validation
+pass; nine furniture assets have denser curves with unchanged bounds/materials.
+Feathery-bed fitting still needs review before publishing its new output.
+Train native source/model/animation controls and all 10 controller/mesh verifier
+cases pass. Both idle station pairs were inspected and show closed doors. A
+2240-frame native A-button fixture replay goes Goldenrod->train LCD->Saffron,
+ends at(9,10) with settled matching terrain and a state-preserved final pair.
+Moving frames 03/04/18/19 were inspected as temporal diagnostics, including
+arrival door opening; those frames have no same-state 2D partners. Reciprocal
+native animation/precise partial poses and worker metadata remain unaccepted.
+The first worker probe matched 0 tests because terrain-worker was disabled;
+it is not a pass. Feature-enabled CPU worker test build is live as session 26788, logged in
+receipts/train-doors-worker-feature-tests.log. Continue with that exact build,
+then inspect actual one-test/roundtrip results, including both station flags
+through borrowed/owned and paged restore paths.
+
+The original all311/original16 room/state/service/reachability acceptance,
+larger Battle Tower camera work, continuous earned native League and Hall party
+variants/rotation/animation remain active. No exporter or pack publication ran.
+
+Player-home floor contact correction pending — 2026-10-17
+
+The recessed upper backing is at1.8 source rows while the floor begins at2.
+It now has a one-source-pixel timber foot reaching the actual floor boundary.
+The upper body starts above that foot and remains behind appliances/trim;
+projected front area remains exactly width×ceiling height. This complements
+the flush outer-boundary bevel fix. Existing backing checks now explicitly
+require the foot at source row2. Build2617 was stopped(exit130) because it
+predated this additional contact correction. Native build45562 is live in
+receipts/player-home-timber-foot-native-build.log. Earlier rendered wall views
+are intermediate evidence, not final acceptance; renewed renders and tests
+are still required. No pack, source footprint, support, collision or script
+changes were made.
+
+Player-home contact refinement pending — 2026-10-17
+
+The corrected wall's first native build passed (9m18s). Front, east, west,
+bedroom and a 128-frame RRLL return walk were inspected against matched 2D.
+The quieter finish is continuous; the walk settles at(4,6) with active matching
+terrain, no offset, pending load, fade or warp. The first front capture drifted
+to yaw1 and was replaced by after-front-exact at yaw0. The eye fixture at(4,4)
+coincided with the neighbor NPC and is excluded; after-eye-clear at(2,4) was
+inspected and is usable. Every retained pair preserves source state.
+
+Close moving-frame review caught the new front bevel receding at its outer
+floor boundary. native_home_timber now fades the recess to zero on the whole
+front rectangle's outer boundary, matching the remaining five body faces
+exactly. The geometry regression now checks floor/crown/end contacts explicitly.
+This second refinement is not yet accepted: build2617 is live in
+receipts/player-home-timber-contact-native-build.log; the old home test61440
+was deliberately stopped(exit130) because it predates the contact correction.
+Final native captures, renewed home/house/perimeter/model tests and the audit
+remain required. Train doors and rounded-furniture acceptance remain pending.
+
+Player-home back wall correction implemented, verification pending — 2026-10-17
+
+The user reports the player-house back wall as a regression. Fresh before
+captures confirm mismatched wall treatments: repeated bitmap grain on exposed
+courses, enlarged bright grain marks behind fixtures, and separate finishes on
+returns/recesses. A shared native_home_timber producer now gives both player
+home floors a quiet physical plank surface using the live source wood pigment,
+small bevels and subtle grain. The existing source guards still authenticate
+backing, exposed walls, side returns and the stair recess; other homes retain
+their existing finish. The rear course no longer adds its separate raised cap.
+Source footprints, furniture, openings, authored labels and support are not
+changed. A new geometry check requires one complete projected front, outward
+winding, closed bounds and no bitmap-grain UV repetition. Existing backing
+checks retain coverage, source/custom guards and unchanged footing. Native
+build/test and fresh after front/east/west/movement views remain required; no
+visual acceptance is claimed. User wall correction takes priority over the
+pending train-door and rounded-furniture acceptance work.
+
+Nine furniture source models were regenerated from the shared interior author:
+stool, arcade_stool, link_seat, cushion and five bed variants. Their complete
+bounds/material identities remain exact. Interior exporters now preserve
+Blender corner normals; the Blender regression passes smooth sides, flat caps,
+hard corners and inverse-transpose scaling. The 68-asset validator passes.
+Feathery bed output was held back because its bounds changed. The first train
+build passed eight distinct source/geometry checks. The next joint test build
+failed in concurrent render_quality SMAA tests requiring Debug; the owning
+source now uses plain assertions. Renderer/worker checks need rerunning.
+Evidence: target/kanto-resume/rounded-interior-review/, train-doors-review/
+and receipts/rounded-interior-*, interior-corner-normals-*, train-doors-*.
+The earlier native build33372 and queued home test1086 were deliberately
+stopped (exit130) because they predated the wall correction. The corrected
+native build97123 failed on a missing architecture_box import, corrected in
+native_home_timber.rs. Retry72771 is live, logged in
+player-home-timber-native-build-retry.log. It must finish before after captures
+and a renewed joint home test run.
+
+Train plug/slide doors implemented, verification pending — 2026-10-17
+
+The native train model now separates authenticated door leaves from its static
+body. Each leaf plugs outward before sliding sideways; closing reverses that
+path. The renderer observes the published station officer route and does not
+change source movement, controller timing, travel presentation or audio. The
+selected-door flag travels through native preparation and worker serialization,
+so a custom override that rejects the train cannot independently add doors.
+Sparse pillar/flora refreshes retain selected doors in the animated domain.
+New checks cover component partition, rigid motion and interpolated officer
+coordinates in both stations, including cropped/scaled frames and unknown
+actors. The focused joint test build is running; native animation, worker
+roundtrips and movement/cached-mesh checks remain pending. No visual acceptance
+is claimed. Evidence will be under target/kanto-resume/train-doors-review/ and
+receipts/train-doors-*. The full interior objective remains active.
+
+Cianwood/Ecruteak statue backing verified — 2026-10-17
+
+Both gyms now have continuous ceiling-height timber behind their north statues.
+The existing full guardian-drawing guard now applies to both maps, as confirmed
+against pinned source and the actual pack. Statue source ownership, walking
+support, source warps and the invisible-floor/Strength layouts are unchanged.
+Twenty-two distinct focused checks and the native build pass. The actual-pack
+geometry check joins all 160 source pixels of each rear course; edited or
+incomplete guardian art cannot infer a wider backing.
+
+Thirteen fresh after native/2D pairs were individually inspected: both gyms'
+front/east/west views, stage RRLL walks, wide views, north-facing checks and a
+Sprout control. Every pair preserves state. Both 128-frame walks traverse
+(4,2)->(6,2) and return, settling with active matching terrain and no offset,
+pending load, fade or warp. Moving frames show floor contact. A separate native
+temporal capture retains column pose movement. The 311-map/225-state audit
+has zero errors and unchanged reported records/variants. Its counts do not
+measure the widened wall positions; the geometry test and renders prove them.
+Both gallery entries are refreshed and all three pack hashes are unchanged.
+
+This accepts the statue backing, not complete gym or whole-interior fidelity.
+Larger Battle Tower camera coverage, train slide-out doors, continuous earned
+native League/Hall party variants and the original full room/state/service/
+reachability review remain active. Evidence is under
+ target/kanto-resume/gym-guardian-backing-review/ and receipts/gym-guardian-backing-*.
+
+Cianwood/Ecruteak guardian backing implemented, verification pending — 2026-10-17
+
+The pinned source confirms both gyms share the complete first-row tower
+wall/guardian drawings used by the existing Tin/Burned backing helper. Its
+map guard now includes CianwoodGym and EcruteakGym. The full guardian drawing
+still authenticates widening; unknown maps, changed identities/art and cropped
+drawings retain the original bounds. Statue source cells and floor/support
+remain separate. Tests now check the complete actual-pack rear wall across
+160 source pixels, retained statue ownership and unchanged support, plus
+mutations of every guardian cell. All five wall tests and seventeen additional distinct controls pass (22
+total). The native build remains live. Six fresh before front/east/west pairs at (5,2) were inspected and
+show the slots. Native after views and both stage return walks are pending.
+
+Tin timber player reveal verified — 2026-10-17
+
+The fifth-floor north-lane panel now participates in the existing player-ray
+reveal system. Each source-owned TowerTimber body has a separate cutaway range;
+its floor caps stay opaque. Chris's whole body and feet are visible in the
+previously obscured front view and walking diagnostic. The same panel stays
+opaque in the nonblocking side views. No wall height, geometry, support,
+source claim, UV or gameplay state changed.
+
+Twenty distinct focused checks pass, including actual nine-floor render
+preparation, retained opaque floor triangles, source/custom ownership, fade
+restoration, camera-orbit/ECS behavior and moving pillars. The native build
+passes. Nine fresh after native/2D pairs were individually inspected and
+preserve state: three lane views, the 128-frame RRLL return walk, Tin5's wide
+view, and Sprout3/Ecruteak/Cianwood/Burned controls. A separate temporal native
+pair still changes the column pose. The full 311-map/225-state audit has zero
+errors and identical reported records/variants. All pack hashes are unchanged;
+five base gallery entries are refreshed. Evidence: tin-panel-reveal-review/
+and receipts/tin-panel-reveal-* under target/kanto-resume/.
+
+The controls expose separate north-wall backing gaps behind Cianwood and
+Ecruteak statues. guardian_wall_bounds in cianwood_walls.rs currently extends
+backing only for Tin/Burned, excluding both gyms; verify their exact guardian
+source drawings and complete that backing next. The reveal acceptance is
+scoped and does not accept those rooms as complete. Larger Battle Tower camera,
+train slide-out doors, continuous earned native League/Hall party variants,
+and the original complete room/state/service/reachability review remain active.
+
+Tin timber player reveal implemented, verification pending — 2026-10-17
+
+The Tin5 north-lane panel is a source-owned Form::TowerTimber body that never
+registered with the existing player-reveal system. Each such body now gets
+its own textured cutaway range after its floor caps. Geometry, UVs, source
+claims, support and outer camera-wall planes are unchanged. The real nine-floor
+regression now checks the exact Tin5 panel and render preparation: one body
+group per panel, with all floor triangles retained in the opaque static mesh.
+The joint nine-floor regression and nineteen additional focused controls pass
+(20 distinct checks). The native build remains live. Three fresh before pairs at (4,0)
+were inspected; the front view hides Chris below his hat while both side views
+show him. Final same-route and side controls remain pending.
+
+Tin north-wall joins verified — 2026-10-17
+
+The authenticated missing north sections now join the side and guardian-wall
+courses on TinTower2F/3F/4F/5F/7F/9F. Grating stays horizontal, and the fifth
+floor's top walking lane remains in front of the outer wall. Floors 1/6/8
+retain their existing outline. Nineteen distinct focused checks pass,
+including the nine-floor source/custom-owner, continuous outer side span,
+native timber, Battle Tower trim and sparse moving-column controls.
+
+All eighteen affected-floor front/east/west native/2D comparisons were
+individually inspected. Three unchanged-floor controls and both return walks
+bring the inspected same-state total to 23. Every paired receipt preserves
+state. The two 128-frame walks return exactly and settle. A separate native
+temporal capture visibly changes the column pose; it is not a frozen-state
+2D comparison. The full 311-map/225-state audit has no errors and matches the
+preceding station audit's reported records exactly. Those counters omit the
+added textured wall surfaces; geometry tests and native views prove the joins.
+Six Tin base gallery entries are refreshed. All three pack hashes are unchanged.
+
+This accepts the outer north joins, not complete Tin Tower or whole-interior
+fidelity. The fifth-floor lane walk also exposes an existing internal timber
+panel hiding most of Chris at its middle position. That visibility issue needs
+correction. Larger Battle Tower camera coverage, train slide-out door animation,
+continuous earned native League/Hall party variants, and the original full
+room/state/service/reachability review remain active. Evidence is under
+target/kanto-resume/tin-north-join-review/ and receipts/tin-north-join-*.
+
+Pier ramps verified at eight walking tiles — 2026-10-17
+
+The latest slower-ramp request extends the shared shore approach from twelve
+to sixteen source cells (96 to 128 native pixels), six to eight walking tiles.
+The ordinary grade is 25% shallower. Geometry and player support use the same
+deck graph and vertex heights; fixed garden contacts remain supported.
+All six focused pier checks pass, along with the joint Cargo test run and
+native build. Three fresh native/2D comparisons were inspected at Route25
+(47,9), Route12 (5,34), and Route32 (13,60); all preserve paired state.
+The two 128-frame return walks and inspected moving frames keep player feet
+on the connected deck. Receipts are under piers-eight-tile-review/ and
+receipts/piers-eight-tile-*. The native pack hash is unchanged. This accepts
+the longer shore grade in these views; the wider room and scenery review
+remains active. Tin's separate boundary test still needs its old side-wall
+assertion updated for the new short internal returns, followed by native review.
+
+Tin north joins implemented, verification pending — 2026-10-17
+
+The new source-bound outline helper authenticates all160 source cells in each
+Tin floor's complete north block row. It closes missing outer sections only
+on2F/3F/4F/5F/7F/9F. Native rear courses on1F/6F/8F remain unchanged. Missing
+sections stand at the outer north boundary, with short returns meeting the
+backs of existing folded rear walls; internal grating/floor is not extruded.
+Custom source owners, edited canonical profiles, partial rows, changed art
+and other map dimensions suppress this inference. No footing/source claims
+or animated pillar state are written. The first joint run failed on the pre-existing Battle Tower trim boundary
+assertion before reaching Tin. The assertion now allows only its deliberate
+0.02px source-art trim relief while keeping wall bodies bounded. The rerun
+reaches Tin and fails an old assertion that treats the new short return as
+the outer west wall (256px versus32px). Native Tin review remains pending. Fresh
+before views of the five other affected floors were captured; final native
+after views, source walking and full audit remain pending. This is not yet
+visual acceptance.
+
+Station floor correction verified — 2026-10-17
+
+Both stations now retain the complete native blue/white waiting-floor motif.
+Goldenrod no longer falls through to gray Stone; Saffron keeps the small
+source inset instead of a two-swatch simplification. Platform/rail art and
+walking heights are retained. All40 focused checks and the4m02s native build
+pass. Six inspected after pairs preserve state: both front views, opposing
+side views, Goldenrod DDUU and the retained traditional-house wood-strip RRLL.
+Both walks return exactly and settle with matching active terrain, no pending
+load, offset/fade or warp. Moving01 on each route was inspected for foot contact
+as an unpaired diagnostic. All10 train controller/mesh cases pass.
+
+The full311-map/225-state audit has zero errors. Only Goldenrod's solid geometry
+counts change; every reported footing summary and every variant is unchanged.
+Saffron's texture/motif change is demonstrated by the paired images, not by
+those coarse mesh counters. Both station gallery pairs are refreshed and all
+three shared pack hashes are unchanged. This accepts the scoped floor change,
+not complete station art or the requested3D slide-out door animation.
+
+The earlier traditional rear-rail diagnosis was wrong and is withdrawn.
+Original collision blocks01/08 make their lower quadrants RADIO/FLOOR or
+FLOOR/FLOOR; tile0x50 is walkable wooden flooring. The unverified rail-wall
+edits were removed before any native rebuild. The original floor and wall
+seam remain, with a new preservation regression and a successful paired
+(3,1)->(5,1)->(3,1) walk. No rail-wall correction is required for that strip.
+
+Three fresh TinTower9F front/east/west pairs preserve state and still show
+rear corner gaps between the statue wall and side courses. The source mixes
+blank padding and grating; complete outline/guard validation is the next wall
+implementation step. Evidence: target/kanto-resume/station-native-floor-review/,
+station-native-floor-controller-review/, tin9-north-join-review/ and
+receipts/station-native-floor-*. No owned job is live. All original full-room,
+state/service/reachability, League and Hall requirements remain active.
+
+Current review checkpoint — 2026-10-17
+
+Actual main now builds with Pokemon dimension publication and its scheduler
+ordering intact. The fresh native build passes in7m37s; all five tools have
+valid executable headers and were actually run. Seventy-six distinct focused
+tests pass, including real-pack core battle/Mom/Tower controllers, original
+Kanto entry/victory/Lance-Hall/rooftop callbacks, supplied human/Surf rigs,
+source walls/piers, dimension conversion, follower/SURF publication, MCP
+movement/menu and clean stderr. The station verifier passes all10 cases.
+Zero-test feature-disabled filters are excluded. The latest feature-test
+binary is09:01 local; no Rust source is newer at this checkpoint. No frozen
+scheduler exclusion is needed for this task's verification cache.
+
+Five freshly inspected main Tower wall pairs preserve state; the rear RRLL
+walk returns exactly, and the staging route crosses the opening twice and
+returns. Both settle with active matching terrain and no pending load, offset,
+fade or warp. The gallery pair is refreshed. A real reception-to-battle replay
+produces modeled CYNDAQUIL/MISDREAVUS with no source fallback and preserves
+paired state; current menu text spacing is visibly corrected. Cyndaquil is
+smaller and separated from Chris in inspected unpaired entry diagnostics.
+The larger CYNDAQUIL/KANGASKHAN encounter still rejects the 3D camera with
+'no readable higher shot on checked ground'; its successful source-view UI
+pair is not 3D acceptance. Native images verify the08:34 compiled main
+checkpoint; subsequent exterior roof/gate edits are preserved and included
+in later test builds, not claimed as visually verified by those images.
+
+The actual-main311-map/225-state audit has zero mesher errors. Every reported
+footing summary and every variant matches the prior frozen baseline; only
+IlexForest solid geometry differs. All three shared pack hashes are unchanged.
+The earlier traditional rear-rail diagnosis in these notes is superseded:
+source tile0x50 belongs to walkable wooden floor, confirmed by the original
+collision data. Keep the flat native wood strip and upright row-two wall
+seam; the proposed rail-wall change was withdrawn before native rendering.
+The full original interior/state/service/reachability, continuous native
+League and Hall party/rotation/animation requirements remain active. No
+owned process is live. Details and remaining limitations are appended to
+docs/modeled-interiors.md; receipts are under
+target/kanto-resume/receipts/current-main-* and visual evidence under
+target/kanto-resume/tower-current-main-*/ and traditional-rear-rail-review/.
+
+Earlier scoped Tower checkpoint — 2026-10-17
+
+The BattleTowerBattleRoom wall correction passes its real-pack regression and26
+renderer controls. Source gray panels, blue skirting, roof corner caps and the
+staging entrance replace generic pale walls/framed art. Five inspected final
+native/2D pairs preserve state; RRLL traverses the rear FLOOR lane and UD enters
+and leaves the staging DOOR. Both settle with matching active terrain and no
+pending load, offset/fade or warp. The full311/225 audit changes only this room's
+family/geometry records, with all reported footing summaries/variants unchanged.
+The gallery is refreshed for this scoped geometry. Capture tools were actually
+relinked after header checks rejected disk-full strip corruption.
+
+The reception blocker is fixed. Empty core challenge/room menu markers remain
+owned until a real choice, and controller snapshots expose the same production
+choices as the native UI. The legal three-starter level10 regression passes on
+native4.90s and TUI1.19s packs, proving both menus, the unexecuted cancel branch,
+unchanged state when cleanup declines the marker, source save and canonical
+opponent battle. All67 distinct focused checks pass across renderer, Tower,
+neutral controls, reload, MCP movement/menu and clean stderr. The water-denial
+control requires the separate unchanged-source browser fixture; the modded-pack
+prerequisite failure is retained and excluded from passing evidence.
+
+The final native replay follows reception -> Elevator -> Hallway -> BattleRoom
+and reaches the first actual FIGHT move menu in1537 logged frames/53.49s. Its
+same-state3D/2D pair preserves state, with modeled CYNDAQUIL/CORSOLA and no model
+fallback. Moving26-29 show room entry, the opponent walking through the staging
+opening, arrival and introduction; they are unpaired diagnostics. This accepts
+the entry route and wall scope, not all seven battles or complete challenge/UI
+fidelity. Move-menu metadata/header text still overlaps, and moving26 has a
+large/overlapping follower under the frozen build's older dimensions. The
+respective owners were notified; full main dimension-publisher integration is
+unconfirmed and remains the next integration gate. The current-main integration
+build is now active; its first attempt exposed a stale task-local API artifact,
+not a missing resource implementation. The owned game-crate cache was cleared
+and the actual main tree is rebuilding with the dimension publisher and ordering
+edge intact. All three canonical whole-file pack hashes remain unchanged.
+Evidence: tower-battle-native-wall-review/final-*,
+tower-battle-wall-offset-full311-audit.json, tower-native-reception-entry-review/
+and tower-battle-reception-* receipts. Every original interior/state/service/
+League/Hall requirement remains active.
+
+BattleTower1F's lower side courses now form connected32px walls. Exact source
+blocks18/16 and corner quadrants1a/17 supply the modeled footprint; neighboring
+and upper-corner FLOOR stays clear. The gold body samples BROWN wall tiles,
+excluding the RED corner caps and projected floor pixels. All16 focused checks
+pass on the final source, including the palette-donor regression. Six inspected
+same-state native/2D pairs preserve state across front/east/west, both side
+approaches and the entrance. DDDUUU returns left(1,5) via(1,8) and right(14,5)
+via(14,8); DDUU exits to BattleTowerOutside and returns to(7,8). Final runtime/
+terrain match, terrain active, no pending load, offset/fade zero and no warp.
+Moving02 on each side shows floor contact. The full311/225-state audit has zero
+errors and changes only lobby modeling/classification records; every reported
+footing summary and variant is unchanged. The lobby gallery is refreshed.
+This accepts the side courses/joins in these views. Whole-room and native
+challenge fidelity remain open. The battle room's wall correction and first
+entry route are recorded above. No owned job is live or task code unsynced. The
+frozen source's recorded scheduler exception and full main integration remain
+open. Evidence: tower-native-side-wall-review/final-*,
+tower-side-course-material-full311-audit.json and tower-side-course-* receipts.
+
+The earned one-member Lance→Hall ceremony→credits→title/Continue route now
+runs successfully through the native frontend. The final U18+A500 replay
+returns to NewBarkTown (13,6), produces an inspected same-state 3D/2D pair and
+state_preserved=true, and exits0. Fifty-two ceremony and forty-eight sampled
+credit/title frames were inspected. Canonical native autosave readback confirms
+one Mew entry, earned Lance/Elite Four flags and the post-champion spawn.
+A closer front machine-effect pair now also exits0, was inspected and preserves
+state. Its QA hold recognizes the actual Hall source sprite; clinic checks are
+unchanged. Rotated machine-effect projection and other party variants are not
+accepted by these two front-view comparisons.
+
+The Continue A-routing fix passes the earned controller gate on graphical and
+TUI packs. Ordinary capture startup and post-route readback now have separate
+bounded waits; four deadline checks and the optimized native build pass.
+The long replay can therefore finish its final readback after300s. Native logs
+retain a nonfatal stale-entity command warning during title→world transition.
+
+The continuous earned controller route now passes on both shared graphical
+and TUI packs with one carried legal Mew party, real menu healing and no
+mid-run state reset (TUI52.26s, graphical60.30s). Recover waits out narrated
+Destiny Bond; Psychic targets Gengar/Vileplume. The separate actual losing
+Magikarp/Karen regression passes on both packs (1.76s/1.20s): exit stays closed,
+whiteout heals/warps and clears abandoned script/input state. This fixes the
+reproduced controller bug where whiteout text resumed Karen's victory script.
+Eight existing screen-fade/whiteout controls pass. The graphical clock and
+renderer-neutral settling use the same production fade/hold/recovery helper.
+Native full-room/party-variant fidelity and all wider review remain open.
+
+Battle Tower lobby rear banks and wall connectivity are verified. Seventeen
+focused checks and the optimized native build pass. Five inspected same-state
+pairs cover front/east/west, rear canopy approach and the south entrance;
+all preserve state. LLRR returns from (8,1) via (6,1). DDUU leaves through the
+south door, enters BattleTowerOutside, and returns to (7,8). Both settle with
+matching active terrain, no pending load, zero offset/fade and no warp. The
+full 311-map/225-variant audit changes only BattleTower1F; every reported footing summary field
+and variant remains identical. The base lobby gallery is refreshed for this
+scope. Counter/PC/seating, side-wall ornament and whole-room fidelity remain
+open. The subsequent native furniture revision passes eighteen focused checks
+and the optimized native build. Thirteen paired captures preserve state; front,
+east/west, counter/kiosk/PC, stool, rear/entrance walk and service views were
+inspected. The U counter joins continuously; the kiosk and PC have finished
+native surfaces, and six gold stools replace blue office chairs. The full311/
+225-state audit changes only Tower1F, with every reported footing summary field and variant
+unchanged. Static follower initialization can place Totodile inside a blocked
+stool; that pose is not accepted. Whole-room fidelity remains open.
+
+Three Tower challenge controls expose missing runtime-selectable trainer text
+(_BTGreetingF10Text, M9Text and M23Text). The Rust exporter now includes the
+external Battle Tower trainer text file and requires all120 selected messages.
+The fixed tools, scoped source export and prepared-workspace build pass. All
+three candidates add exactly120 messages; every old text, other game-data field,
+runtime file and embedded audio payload is identical to its published pack.
+All377 audio hash/frame/loop checks pass on each candidate. Twelve Tower
+controller checks now pass, including the three former failures. Seven neutral
+controller controls and earned Hall/Continue on browser/native candidates pass.
+The fresh terminal binary passes actual MCP movement/menu (1.02s), clean
+stderr during Mom's dialogue (1.72s) and the dump smoke check. All three
+canonical ignored packs are published after a repeated exact-content comparison.
+The broader no-run wrapper failed on an obsolete station example import after
+building these binaries; the import is corrected, with its rebuild pending. The unrelated outside roof control also fails on
+an absent raw-source PNG; the outside goal was notified. Whole-room, native
+challenge presentation and wider service/state acceptance remain open.
+
+The follower seed correction passes five integration checks and three new
+inspected native pairs: blocked stool, LR return walk, and an ordinary clear
+spawn. All preserve paired state. Totodile no longer emerges through the stool;
+after walking it follows the real floor history. LR returns(3,9) via(2,9), with
+matching active terrain, no pending build/fade/warp. The clear follower remains
+present, partly occluded by the player in the front view. This accepts the seed
+placement correction, not whole-room fidelity. Twelve Surf-anchor controls pass
+on their required vanilla-source fixture; modded source-table prerequisites differ.
+
+The corrected Hall projection passes the six-slot map-space regression, four
+Hall geometry controls, three clinic controls and the real nurse publication/
+overlay regression. Fresh native comparisons now show one ball in the rotated
+view and all six balls in both front and rotated views, attached to the tray.
+All three paired-state checks preserve state. The six-member earned controller
+route passes13.38s and records the actual complete party. The opt-in native QA
+keep-battler flag declines presented Shift prompts with ordinary B; both
+six-member native replays log160 KeyX frames and reach the Hall machine.
+This accepts these tray placements, not every ceremony phase/party variant or
+whole-room fidelity. Evidence: native-hall-animation-review/map-space-*.
+
+The train's post-load script now completes its source movement, wait20's
+120-frame delay and real End before the destination scene starts/ends. Source
+PLAYER/timing ownership survives the map load; departure NPC commands remain
+rejected without state mutation. EndCallback retains its prior consume-only
+behavior. The same existing deferred-arrival path handles normal source End.
+All43 distinct focused checks pass across train graphics/control, neutral menus/
+gameplay, Tower gameplay, reload, authored map-load priority, actual MCP movement/
+menu and clean stderr. The final station verifier passes10/10. The separate
+outside roof fixture still lacks raw artwork and is excluded from the twelve
+Tower gameplay controls, not reported as passing.
+
+The final native replay returns Gold(9,10) -> Saffron -> Gold(9,10) through2624
+logged frames and exits0 after57.58s. Its same-state final3D/2D pair was inspected
+and preserves state; final runtime/terrain match, terrain is active, no pending
+load, offset/fade zero and no warp. Moving20/44 were inspected as diagnostics;
+they have no matched2D frames and do not establish full door-animation fidelity.
+The taller33px body clears the actual24px player in the earlier inspected
+station views and five source/custom/headroom checks. Native source-tail and
+arrival-scene behavior are accepted for this scoped route. Whole-station art
+is open: Goldenrod's3D waiting floor is gray versus native blue, and requested
+3D slide-out door motion is not proven. Saffron's native floor is blue in the
+ride frames. The subsequent lobby side-course correction is recorded above.
+
+The disk-full native link/strip failures were repaired. Cargo's first apparent
+success retained a corrupt1296-byte render_at_location cache executable; both
+that hash artifact and its launcher copy were removed, forcing a real relink.
+The relink passes11.53s, all five native roots have valid Mach-O headers, and
+render_at_location then executes a fresh Tower pair successfully in6.19s. That
+pair was inspected, preserves state and refreshes the stale Tower1F gallery.
+MCP passes1.17s; clean stderr passes1.54s on the final code. Verification remains
+on the frozen source with its recorded Pokemon scheduler exception; full main
+integration is still part of the wider goal. No owned build, capture or exporter
+is live, and no task code is pending synchronization. Source artifacts/packs
+were not staged or committed. Evidence: station-native-final-scene-review/,
+station-final-scene-verification/, tower-native-side-wall-review/current-front*
+and train-deferred-* receipts. The lobby side courses are now corrected above;
+the first native Tower challenge entry is recorded above; station floor/doors and full original review remain open.
+
+The wood floor source-band correction is verified for its scope. Full native
+UVs replace single-color samples and broad generated planks in home/gift-shop/
+traditional floors and beneath traditional wooden walls. All33 native-room floor
+checks pass0.43s. Thirteen fresh native/2D pairs preserve state and were inspected:
+both floors of player/Red/Copycat homes, EcruteakItemfinderHouse, Kurt's house,
+MountMoonGiftShop, MahoganyMart1F, a home closeup and two return walks. DU returns
+home(6,5) via(6,6); RRLL returns Ecruteak(3,6) via(5,6). Both settle with matching
+runtime/terrain maps, active terrain, no pending load, zero offset/fade and no
+warp; moving frames show foot contact. Ten base-gallery entries are refreshed.
+The full311/225 audit has zero mesh errors; every map audit record, reported
+footing summary and variant record is identical. This audit does not contain
+per-cell footing digests. The first unfocused keyboard walk timed out; explicit
+synthetic step input through the production dispatcher passes. No own build/capture/exporter is live and no task code is unsynced. The Tower1F
+gallery is refreshed from the final rebuilt capture tool at(8,5), hour12; its
+side-wall correction is recorded in the current checkpoint above.
+Evidence: native-wood-band-review/, native-wood-band-full311-audit.json,
+station-staged-load-verification/ and the corresponding receipts. This accepts
+these floor patterns/joins, not whole-room furniture, walls or the full goal.
+
+The full objective still covers all311 non-Town/Route interiors, Johto/unused
+maps, shared furniture and the original sixteen Kanto states: Bruno/Karen/
+Koga/Lance/Will (three each), CeladonDeptStore6F (one). Whole-room visual,
+service/state/reachability and continuous League acceptance remain open.
+Battle Tower hallway wall/door/canopy/clearance and the lobby pair are verified;
+lobby counter/PC/seating, wall ornament and battle-room/lift walls remain open. Review records live here and in modeled-interiors.md. The old
+handoff path remains absent. Notes below are historical context.
+
+Battle Tower battle-room/elevator floor palette, arena and flat start marks
+are verified. The final optimized build, 27 viewer checks, full311/225 audit,
+three return walks and eleven accepted paired comparisons pass. Two tighter
+west views were reviewed but rejected for framing; the wider west view passes.
+All thirteen paired-state checks preserve state. Both base gallery entries are
+refreshed. The eight floor-mark cells no longer render raised cylinders.
+
+Room walls/materials, door interpretation and the original wider requirements
+remain open. Block0x04's right PictureFrame half is the DOOR quadrant; its left
+GateTerminal half is WALL. The structural repair must preserve that aperture,
+not convert the large left terminal model directly into the doorway or seal
+it with backing. The hallway's offset central elevator needs its own drawing.
+
+The earned Lance→ceremony→title/Continue controller gate passes on both current
+shared packs (TUI 12.79s, graphical 9.69s). Older and TUI-identity saves correctly
+fail graphical identity checks; a graphical fixture was regenerated by real
+battle/script continuation. Native Hall window inspection awaits Mac unlock:
+the UI tool explicitly reports a locked Mac. This is not native animation
+acceptance. Independent interior work continues; the full goal remains active.
+
+Patterned tile0x11 floors are verified in 35 rooms: all 33 Center rooms plus
+Battle Tower 1F and hallway. The normal optimized native build, two new source/
+geometry/override tests, twenty controls, full311/225 audit and 51 accepted
+same-state comparisons pass. All 35 base gallery entries are refreshed. Three
+return walks settle; the initial upstairs walk started on a blocked source tile
+and is not evidence, while the corrected RRLL route passes.
+
+Four additional inspected comparison pairs expose the other two Tower rooms:
+BattleTowerBattleRoom and BattleTowerElevator still use a separate gray room
+surface renderer and are not accepted. Their source blue floor/red-white arena
+needs its own correction. The hallway's door drawings are also misclassified
+as terminals; the pinned map's warp events confirm their door role. Rear-wall
+continuity, furnishings and all wider original requirements remain active.
+
+Oak's lab notices are verified. The normal optimized native build, 21 viewer
+checks, six inspected same-state comparisons, a return walk and full311/225
+audit pass. Only Oak's two frame paint totals change; all ownership/footing and
+225 variants remain identical. The source fixture floor and old textured-frame
+assertion were corrected; the final backing control includes Oak's actual pack
+layout and passes. Oak's accepted base gallery entry is refreshed. The original
+full room/service/state, Hall/League and coverage requirements remain active.
+
+Mounted house/mansion pictures and Radio sign overlays are verified. The
+optimized native build, 43 viewer checks, 80 individually inspected same-state
+comparisons and the 311-map/225-variant audit pass for this scope. House and
+mansion frames retain their selected closed geometry, use native border colors
+and mount at 16..32px. Radio signs render their native artwork once. All 59
+affected base gallery entries are refreshed. Three return walks settle normally.
+
+The broad Bevy `picture` filter also encountered two separate failures: a
+legacy pack path was missing and a new-game name-menu assertion received
+" NAME " instead of "NAME". These are recorded, not counted as passing checks.
+Other picture families, full room/material/service/state coverage, native Hall
+animation and continuous earned League traversal remain open. The original
+full goal remains active; detailed evidence follows in docs/modeled-interiors.md.
+
+Shared domestic appliance-wall margins are verified across all 53 affected
+houses. The optimized native build, six domestic regressions, 31 related
+controls, 69 individually inspected same-state comparisons and the full
+311-map/225-variant audit pass. The source-complete 0x1c/0x1d/0x1e margins now
+join the native ceiling-height wall instead of leaving holes above PCs/TVs/
+appliances. Day Care's east wall meets its floor after excluding its exact
+four-cell black-padding band. The 53 base gallery entries are refreshed.
+
+The audit changes exactly those 53 map records, adding 214 modeled wall cells;
+all reported footing summary fields and all 225 variant records remain identical. Day Care and
+Goldenrod return walks settle; the first Trainer route met an NPC, and a
+corrected lower-aisle UD route returns and settles. The broader house review
+still needs picture-frame mounting height and remaining furniture/material
+fidelity. Whole-room/service/state, Hall animation, continuous earned League
+traversal and the original full coverage requirements remain active. Detailed
+receipts are appended to docs/modeled-interiors.md.
+
+Dojo and domestic notice-wall changes pass the optimized native build,
+17 inspected same-state comparisons and the 311-map/225-variant audit.
+The Dojo now has a thin 32px brick course behind its northern guardians and
+central notices. Warden's home, Pokémon Fan Club and Trainer House have full
+notice-wall backing. Three original walking routes and a corrected clear-aisle
+Fan Club route return and settle; the initial Fan Club route met an NPC and
+is not return-path evidence. Both source-bound Dojo regressions and all 30 notice/window/perimeter/floor,
+house, Radio and topiary controls pass. All four verified base gallery entries
+are refreshed. This closes the scoped wall corrections.
+
+The PC margins and Day Care east-padding defects identified in this pass
+have since been corrected and verified as recorded above. Ornament identity, remaining furniture/material/room coverage,
+Hall animation, continuous earned League traversal and the original full
+service/state review remain open.
+
+Radio 2F's west-edge topiary and Goldenrod Flower Shop's rear-wall corrections
+now pass the native build and eight inspected same-state comparisons, including
+east/west views. Both UUDD walking fixtures return and settle. The final audit
+verifies all 311 maps/225 variants with no mesher errors; only Radio 2F gains
+eight modeled cells and Flower Shop gains sixteen. All reported footing summary fields and all
+225 variant records remain unchanged. All 29 focused regressions now pass,
+and both verified base gallery entries were refreshed. The first linker ran
+out of disk space; obsolete libraries in this task's cache were removed and
+the corrupt test executable was rebuilt successfully. Current receipts and
+final captures are recorded at the end of docs/modeled-interiors.md.
+
+Sixteen additional base rooms were inspected. The identified Dojo guardian
+and Warden notice backing gaps have since been corrected as recorded above. Several floor/stair material reviews remain pending. Radio's
+other fixtures and Flower Shop's remaining display geometry still need broader
+whole-room review; the scoped corrections do not establish room acceptance.
+
+The classroom, tower side-wall and Viridian coping corrections are verified.
+Earl's side walls repeat only the plain native stripes, preserving the single
+rear blackboard. Sprout uses the actual padding/lattice boundary and retains
+wall backing behind internal ladders. Sprout and Tin perimeters now select the
+native rear-facing timber course before making side returns: the previous
+side-facing donor caused thick repeated sections and dark joins. All 40 final
+tower comparisons were inspected; four ordinary walking fixtures settle,
+including both stair routes, pillar-area movement and the ground-floor exit.
+The expanded perimeter regression and final focused controls pass. The full
+311-map/225-state audit matches the prior ownership and footing report exactly.
+
+Viridian's canonical 16 maze modules now have continuous beveled stone coping,
+without the rejected square panel pattern. Four final paired views and the
+return walk pass, as do 38 gym checks, including all 144 neighboring joins.
+Radio's east glass and clear entrances were checked in eight fresh side/walk
+comparisons. Fourteen current base gallery entries were refreshed. These are
+scoped corrections, not whole-room or full-goal acceptance. Upper Tin north
+boundaries/grating still need source-based coverage review; Radio 2F's former
+flat west-edge foliage strip is now corrected as recorded above. Player-bedroom exterior shadows,
+Copycat decor identity, Pewter materials, Hall ceremony animation, earned League
+traversal and the original full state/service review remain open. Detailed
+receipts are appended to docs/modeled-interiors.md.
+
+The requested slower pier ramps now spread the shore grade over twelve source
+cells (96 native pixels/six walking tiles), one third shallower than the
+previous eight-cell approach.
+The native build, five pier regressions, three inspected same-state native/2D
+pairs and two ordinary walking fixtures pass. Shared vertices and player
+support follow the longer grade through bends and raised-paving contacts.
+Detailed receipts are at the end of docs/modeled-interiors.md. The broader
+house, furniture and original full review scope below remains active.
+
+The house stair recess and missing shoulder strips are now verified in all
+six floors of Red's, Copycat's and the player home. Twenty-two native/2D
+comparisons were inspected and preserve state; six UU fixtures cross once each
+way and settle. The native build, both source-bound stair tests, four wall/
+floor/QA controls (15 tests), and the full311/225-state mesh audit pass.
+Only Red's and Copycat's first floors gain four modeled wall cells each;
+walking heights and all 225 variant records remain unchanged. Copycat's
+upstairs east perimeter now meets its floor rather than black source padding.
+These are scoped wall/stair checks, not whole-room acceptance. Large exterior
+shadows in the player bedroom and decor/model fidelity still need review.
+
+The full311 native capture set is complete, including six refreshed house
+entries: 311/311 base-state image trios, paired state preserved, no failures,
+and 13 disposable Flash fixtures. Capture completion is not visual acceptance
+or story reachability. The earlier count of 41 maps larger than an LCD used
+the wrong units. The CLI dimensions are 16px walking tiles; an original 160x144
+LCD spans 10x9 of them (20x18 visual tiles). Thus 177 maps exceed that footprint
+and need coverage assessment rather than assuming one base pose suffices.
+Viridian Gym's coping has since been corrected as recorded above; broader
+maze massing still needs whole-room acceptance. Pewter Gym's floor and rock
+enclosure remain flagged for material review. Detailed receipts follow in
+docs/modeled-interiors.md. The full original variant/reachability scope stays
+active.
+
+The elevated-pier correction is verified for its scoped deck, ground-island
+and ramp changes: connected level spans, visible supports, native brick joints,
+soil beneath 3D flowers, aligned actor/statue/sign footing, and gradual shore
+approaches that continue through corners. Five pier regressions and the related
+Cerulean/port/terrace/paving/sign/shore/flower checks pass; the 14-map mesh audit
+has no errors. Twenty-one native/2D paired captures preserve state, and five
+ordinary walking fixtures settle correctly. Route 24's low side camera still
+hides the bridge behind foreground terrain; its overhead comparison confirms
+the deck, but that camera view is not visually accepted. The broader landscape,
+house stair backing and full earlier scope remain open. Detailed evidence is
+at the end of docs/modeled-interiors.md.
+
+Cerulean's two raw floor patches beneath the entrance statues now share the
+modeled pink-deck builder. Eight Cerulean checks, the native build, a clean
+four-map ownership/support audit and five inspected paired floor views pass;
+an ordinary UD walk also completes. A fresh sixth comparison confirms the
+rear-wall gap at Red's rising stair flight. Repair that recess and its joins,
+keeping the approach and up/down warp clear. Remaining furniture, whole-room,
+Hall/League and original full variant/reachability requirements remain active.
+Detailed evidence is at the end of docs/modeled-interiors.md.
+
+Cerulean Gym now has connected gray tiled walls at ceiling height. Its gray
+rim remains walkable, both exit tiles stay open, and every wall supports camera
+cutaway. The pack-backed boundary regression, normal native build, unchanged
+four-map ownership/support audit and nine inspected paired comparisons pass.
+Both rim walks and the exit complete with settled terrain. Fresh views expose
+two raw brick patches beneath the entrance statues; fix their floor backing
+next. Whole-room review, house stairs, remaining shared furniture and the full
+original animation/variant/reachability requirements remain active. Detailed
+evidence is at the end of docs/modeled-interiors.md.
+
+Celadon's café cabinets now use their native gray front rows and horizontal
+top grille, at the source-derived height/depth, with a continuous rear wall
+behind the northern cabinet. Fourteen café checks, the wall-donor regression,
+a clean four-map audit and six inspected paired comparisons pass under the
+normal optimization profile. Olivine's ordinary exit now also passes with the
+default stack, closing that verification follow-up. A fresh Cerulean Gym view
+still has black outer walls from the blank north-row donor; correct that
+source-specific wall course next. House stair backing, remaining furniture,
+whole-room reviews and the full original variant/reachability scope remain
+active. Detailed evidence is at the end of docs/modeled-interiors.md.
+
+Olivine Café now has modeled native-painted table/plants, six gray stools,
+a connected service counter and upright, joined timber walls. Rear review also
+removed a false floor strip behind Celadon's north display cabinet. Fourteen
+café checks, the wall-donor control, a clean two-map audit and nine inspected
+paired comparisons pass. Interior walking and the café exit complete; the
+exit required a larger worker stack in the local zero-optimization verification
+build, so normal-profile/default-stack confirmation remains open. Whole-café
+composition, Celadon display materials and the broader interior/variant scope
+remain active. Detailed evidence is at the end of docs/modeled-interiors.md.
+
+The café floor pattern is restored in Celadon and Olivine, and Celadon’s wall
+poster now appears once. Fourteen focused checks, a clean two-room audit,
+five paired visual comparisons and an ordinary four-step walk pass. Existing
+Celadon stools were confirmed as modeled seats with legs. Fresh Olivine views
+still show planar table/plant art and a flat rear-wall strip: complete those
+fixtures and connected rear architecture next. Whole-room café acceptance and
+the broader interior/variant requirements remain open. Detailed evidence is
+at the end of `docs/modeled-interiors.md`.
+
+Goldenrod’s blue cases now use the taller station ticket-box body, and the
+player’s downstairs side walls continue the rear plank course at matching
+height and texel scale. The native build, seven-map geometry audit and seven
+paired visual checks pass. This closes those two scoped corrections; broader
+room/furniture, animation and reachable-state acceptance remain open. Detailed
+evidence is at the end of `docs/modeled-interiors.md`.
+
+Native floor finishing now survives odd imported-model triangle counts, fixing
+patchwork wood in Red’s downstairs room. The focused suite passes 233 checks
+(two ignored), and the current 311-map/225-variant audit has no mesher errors.
+Fourteen paired floor comparisons and two walking samples were inspected.
+Café seating/poster duplication, Cerulean outer wall shapes and house stair
+backing remain under review; the audit is not full-room or reachable-state
+acceptance. See the latest evidence in `docs/modeled-interiors.md`.
+
+PokéCom's long console now has a closed beveled casing, native deck, recessed
+electronics, sloped controls and forward slots aligned to its original footprint.
+The display base meets the sixteen-pixel deck. Seventeen focused checks, a
+zero-error targeted audit, nine paired comparisons and three ordinary walks
+pass; final comparisons and three moving samples were inspected. The console
+owns 192 blocked cells and leaves its apron floor unclaimed. This closes its
+scoped machinery form. Left kiosks/equipment, lobby planting, other furniture,
+service-state visibility and room composition remain. Broader Kanto/shared
+furniture, Hall animation, continuous League traversal and full311/original16
+visual/reachability acceptance remain active. See the latest detailed evidence
+in `docs/modeled-interiors.md`.
+
+PokéCom's large communications display now has an upright native screen/frame,
+a closed blue housing and a shallow plinth. Rear review caught and corrected a
+base crossing the back wall; final geometry and floor stay inside the room.
+Sixteen focused checks, the native build, a zero-error targeted audit and eight
+matched comparisons pass. Both aisle routes and two moving frames were reviewed.
+The display owns sixty cells; the long console/body and its remaining equipment
+and service-state presentation are still open. Broader shared furniture, Hall
+animation, continuous League traversal and full311/original16 visual/reachability
+acceptance remain active. See the detailed evidence at the end of
+`docs/modeled-interiors.md`.
+
+Elite Four north doors now stand upright with closed native-painted volumes
+and retain blue landing backing. The authored open block removes the slab.
+Fourteen League checks, a four-room/twelve-state audit and nine matched
+closed/earned-open comparisons pass. The battle regression now walks through
+each earned exit into the next room; real PP use and script-driven flags/block
+changes are checked first. These are four independent battle fixtures, not a
+continuous gauntlet. Full native Hall animation, continuous League traversal,
+shared furniture/PokeCom equipment and all311/original16 visual/reachability
+acceptance remain open. Detailed evidence is at the end of
+`docs/modeled-interiors.md`.
+
+The upper terrace fronts in Will, Koga and Bruno now use native blue wall art
+vertically and blue paving on top; the green floor stays below. Thirteen League
+checks, the four-room/twelve-state audit, eight matched comparisons and front/
+stair walks pass. Final views and three moving samples were inspected. This
+closes the scoped terrace-front material correction. Dimensional north doors,
+earned League progression, full native Hall animation, shared furniture/PokeCom
+equipment and all311/original16 visual/reachability acceptance remain open.
+See the detailed evidence at the end of `docs/modeled-interiors.md`.
+
+Credits source export and renderer-neutral credits clock/input fixes are now
+implemented. The earned Lance-to-ceremony-to-title/Continue candidate test
+passes in the normal optimized initializer without a stack override; ten
+source phase frames were reviewed. All three canonical ignored packs were
+published after controller, ceremony, MCP and clean-stderr gates passed.
+All 28 intro scenes and 377 audio checks pass,
+and non-title game data/runtime assets/audio fingerprints are unchanged.
+Hall now has guarded connected rear/side/south walls, native platform border
+finishes and a matched floor under the folded rear drawing. Eleven selected
+checks, the room-wall control, the targeted audit, five paired room/earned
+views and four walking routes pass; final comparisons and seven moving frames
+were inspected. Full native ceremony-animation review, remaining League
+materials/traversal and the full 311 interiors/original 16 Kanto variants remain
+open.
+See the latest detailed evidence in `docs/modeled-interiors.md`.
+
+Koga's six native tree drawings now have closed broadleaf volumes with native
+yellow-green foliage and brown bark. The six-tree external-pack regression,
+15 scenery controls, model-volume control and six-role material guard pass;
+the targeted audit has no mesher errors. Four static Koga comparisons and four
+ordinary walking routes were inspected against matching 2D states. This closes
+the scoped tree geometry/paint correction. League terrace material finishes,
+earned battle traversal and the full interior/variant acceptance remain open.
+
+The dark base strip was a deleted horizontal paving row, now restored in Will,
+Koga and Bruno without changing support, stairs or source ownership. All five
+League controls pass, including a complete-row area/UV regression; the four-room
+audit has zero mesher errors. Four static comparisons plus Koga seam/stair
+walks were inspected with matching source states. This closes that floor gap;
+the other room/material/animation requirements remain.
+
+Karen's 160 blocked void/lip cells now share the exact recess source matcher
+with Violet, with a separate native finish: two blue source courses folded
+below the platform, a narrow inset coping and native black closure at 24-pixel
+depth. The platform/support stay unchanged. All 22 recess controls pass; the
+Karen/Violet audit reports zero mesher errors and all 160 intended native
+claims. Four Karen static views, a Violet control and three platform walks
+were individually reviewed with preserved paired states. This closes the
+scoped recess-depth correction. League wall material finishes and
+remaining League/interior/variant requirements are still open.
+
+Karen's upper landing now closes the recessed strip behind its lower wall.
+The native blue cap meets the existing model's measured top shoulder at the
+16-pixel landing datum, and the adjoining stair sides meet that cap. Eight
+League controls, the four-room audit, six paired comparisons and upper-aisle/
+stair routes pass; final comparisons and three moving samples were inspected.
+Blocked-cell support and source ownership remain unchanged. This closes the
+black landing trench; wall finish fidelity, earned
+progression and the full interior/variant acceptance still remain open.
+
+Will's 144 water cells and Bruno's 160 lava cells now form shallow native
+basins with unchanged atlas/animation bindings, footing and object ownership.
+Nine League controls, the four-room audit, six matched comparisons, two walking
+routes and two same-camera temporal comparisons pass. Bruno's native bubbles
+advance; Will's native pool stays static, matching the pinned source animation
+list. The liquid-depth/texture/clock correction is accepted in these views;
+the bank correction below supersedes the previously pending flat-bank item.
+
+Both rooms' four blue banks now have closed native walls with complete opaque
+floor backing. Their two original rows fold once onto the 16-pixel front;
+bounded native pigment finishes the narrow cap, back and ends. Ten League
+controls, six paired comparisons, two behind-bank walking routes and a fresh
+Bruno temporal pair pass. The four-room audit has no mesher errors and confirms
+32 newly owned bank cells per room. The fresh full audit passes 311/311 maps,
+225 declared substitution states and 298 jump samples with zero mesher errors.
+The variant identities/edits match the prior complete alternative-state audit.
+Whole-interior visual/reachability acceptance remains open.
+
+The League panel and compound-barrier finishes now use their source neutral
+palette, with the original eight-cell panel drawing across each barrier cap.
+Twelve League checks, the room-wall donor control, seven paired comparisons
+and a low-angle barrier walk pass. Both moving samples show the complete
+compound fading while its native floor stays opaque. The current four-room,
+twelve-state audit has zero mesher errors and unchanged ownership/support.
+This follows the prior full311 geometry audit; upper terrace-front material
+review, doorway-state presentation, earned progression and the broader
+interior/variant requirements remain open.
+
 # Remaining source-family review
 
 This is an implementation and visual-review checklist. Counts are residual
@@ -5,6 +4864,31 @@ This is an implementation and visual-review checklist. Counts are residual
 percentage of finished scenes. Plot counts can include backing ground. Dynamic
 map states and individual species art remain separate work in the broader
 conversion checklist.
+
+PokéCom's source blue floor, black room separation, twelve compact orange lobby
+seats and three gray office computer finishes now have focused source tests and
+paired native review. Ten basic lobby counter courses also have native low
+volumes and verified source tops/fronts. Two short returns join the service
+counter, with raised blue corner controls; eleven focused tests, four paired
+native views and both outer-aisle walks pass. The next two long returns also
+join their rear caps and front courses, with the right blue control raised;
+twelve focused tests, three paired views and both outside-aisle walks pass.
+The western clinic healer, public PC and two-part blue control cabinet now have
+native geometry against a connected ceiling-height rear wall with mounted art
+and all three lamps. Thirteen PokéCom checks, six Kanto clinic controls, the
+room-wall control, four paired native views and counter/PC-aisle walks pass.
+The stepped lobby and separate office now have source-aligned side/south walls
+with overlapping outside corners and open exit mats. Four office and ten lobby
+window courses stand on ceiling-height backing, without flooring behind the
+folded wall art. Fourteen focused checks, the room-wall control, seven paired
+views and three aisle/exit routes pass. The office north bar, short left return
+and south courses now have low closed native counter volumes, and both plants
+use green foliage/gold pot pigments from their source palette banks. Fifteen
+focused checks, four paired native views and aisle/PC-email/exit routes pass.
+Central communications machinery, remaining equipment, other counter
+configurations and office side fixtures/room composition remain open. Continue those complete source-owned
+families next. The full 311-interior and original 16 Kanto variant acceptance
+requirements remain active, including runtime reachability and service scenes.
 
 ## Game Corner, Gym, store and tower expansion
 
@@ -402,8 +5286,14 @@ Complete drawings extend beyond several old selectors:
 | --- | --- | --- |
 | Café tables and service counters | 64 table + 86 counter / 3 | `cafe.rs` exact table/counter selectors; complete round tables and connected C-shaped counters, preserving the operator bay |
 | Game Corner rear architecture and counters | 288 rear-course + 88 counter / 2 | `casino.rs`; source-specific walls, payout equipment, pillars, doorways and connected counters |
-| Power Plant equipment/track courses | 192 plot cells / 1 | Six block `12` plus six `16` plots; reconstruct connected equipment and track surfaces. Only 48 cells match the existing B2F west-half track drawing exactly |
-| Facility divider networks | 948 / 3 | PowerPlant 116, TeamRocketBaseB3F 670, TrainerHouseB1F 162; `facility_divider.rs`; replace/refine the existing closed 16-pixel network |
+| Power Plant equipment/track courses | 192 plot cells / 1 | All twelve native `12`/`16` plots have reviewed closed opaque beds, roof panels, upright controls and gray finish; ordinary conduit movement and housing depth-writing reveal ordering pass. Coverage grain, bed detailing and broader room/quest fidelity remain open |
+| Facility bookcase finish and distinct bases | 112 modeled cells / 4 | Exact source guard, native wood/books and seven left-only cupboard bases verified with15 bookcase controls and14 individually reviewed source/native pairs; rear backing, composition and dynamic reveal remain open |
+| Johto facility checker floors | 4 rooms, including1,032 owned B2F fragments | Exact source colors/phase guards and custom ownership verified by three focused tests,34 floor controls,13 reviewed pairs and ordinary RL movement; room walls/fixtures/services remain open |
+| Small facility rear/side shell | 2 rooms | Source-green backing/side joins, exact exits and removed exterior wall-art bands verified by three focused tests, ten perimeter controls and seven fresh reviewed pairs; fine trim, underlay corners, table/chair facing/materials and authored scenes remain open |
+| Facility sofa placements | 24 new cells / 2 rooms;48 family cells / 3 rooms | Three missing block19 sofas reuse the native blue body at the correct lower-half source offset; ten reviewed pairs include all three unchanged Silph controls; whole rooms, chair facing/materials and services remain open |
+| Facility chair facing | 22 chairs / 4 rooms;88 owned cells | Twenty authenticated serving targets; ten corrected headings, twelve unchanged bodies; three focused tests,13 reviewed pairs and64-frame waiting-aisle walk; materials, actors, services and whole rooms remain open |
+| Facility table/chair finish | 32 objects / 5 rooms;260 source cells | Thirty-one original bodies now use authenticated live gold/brown/light/ink; selected Silph table unchanged; exact geometry/support and16 reviewed pairs; instrument workbenches, actors, dynamic poses, services and whole rooms remain open |
+| Facility divider networks | 948 / 3 | PowerPlant 116, TeamRocketBaseB3F 670, TrainerHouseB1F 162; `facility_divider.rs`; current closed network uses the32-source-pixel ceiling datum; connected-shape/material/native review remains |
 | Radio studio side-wall edges | 24 / 3 | Complete `3d`/`20`/`3e` cap runs: RadioTower2F 10, RadioTower5F 10, LavRadioTower1F 4. Native ceiling-height glass follows the actual cap strip; the fifth-floor entrance stays open. Three entrance walks and six paired east/west views verified. |
 | Underground switch-room walls/gates | 904 / 1 | `elite_four_room.rs`, blocks `2a/37/3d/3e/3f`; validate all script-controlled gate and switch states |
 | Warehouse side walls | 288 / 2 | GoldenrodDeptStoreB1F and GoldenrodUndergroundWarehouse; `underground_boundary.rs`, block `0c` west halves and `0e` east halves |
@@ -3983,3 +8873,16 @@ rerun12815 passed all16 module cap/trim assertions plus11 network,43 Kanto,
 23 interior-model and31 placement tests. Receipt:
 `target/kanto-cafe-counter-cap-source-test-receipt.log`. Corrected native
 review remains pending.
+
+Power Plant backing diagnosis — 2026-10-18
+
+The current workbench headless pair at(6,9) was inspected again: the full rear
+backing is absent behind the two sofas and equipment, while generic side
+walls borrow gold furniture paint. native_facility_room_shell::source currently
+admits only the two8x8 small facilities. The external pinned source confirms
+PowerPlant is20x18 gameplay tiles and has exactly the(2,17)/(3,17) entrance pair.
+Its complete north drawing includes cupboards, native wall22, both sofas, the
+divider join and equipment. Next repair must authenticate that complete course,
+keep backing behind every fixture, retain the internal divider and exit, and
+replace generic perimeter generation only when the native contract succeeds.
+No Power Plant source change or new visual acceptance is made at this checkpoint.

@@ -57,7 +57,7 @@ def anatomy():
  head=longitudinal('Head / broad browed tan grey Golem reptile skull',SKIN,[(.25,.884,.10,.10),(.38,.938,.191,.145),(.51,.926,.224,.146),(.65,.838,.182,.094),(.732,.797,.07,.042)]);p.append(head)
  upper=bill('Muzzle / rooted broad tan grey Golem upper snout',SKIN,[(.45,.157,.776,.915),(.61,.185,.746,.852),(.75,.12,.753,.811),(.788,.046,.772,.793)]);p.append(upper)
  lower=bill('Jaw / open rooted tan grey Golem lower jaw',SHADE,[(.30,.128,.647,.791),(.48,.165,.551,.650),(.64,.137,.543,.611),(.75,.07,.591,.635),(.772,.013,.633,.643)]);p.append(lower)
- p.append(ellipsoid('Mouth back / recessed dark Golem oral chamber',INK,(0,.754,.420),(.128,.116,.068),32,22))
+ p.append(ellipsoid('Mouth back / recessed dark Golem oral chamber',INK,(0,.754,.420),(.128,.116,.068),28,18))
  p.append(ellipsoid('Tongue / rooted pink Golem tongue',PINK,(0,.612,.608),(.085,.020,.067),32,20))
  for s in (-1,1):
   xy=[(s*x,y) for x,y in ((.060,.941),(.169,.982),(.199,.929),(.158,.885),(.091,.885))]
@@ -68,12 +68,12 @@ def anatomy():
   p.append(curved_tube('Fang / rooted ivory Golem upper canine '+str(s),IVORY,[(s*.12,.784,.623),(s*.122,.741,.635),(s*.119,.699,.649)],[.027,.019,.002],24))
   p.append(paddle('Arm / rooted short tan grey Golem upper arm '+str(s),SKIN,[(s*.344,.854,.145),(s*.485,.735,.247)],[.107,.082],[.116,.090]))
   p.append(paddle('Forearm / rooted raised tan grey Golem forearm '+str(s),SKIN,[(s*.481,.738,.246),(s*.511,.864,.351)],[.084,.072],[.090,.080]))
-  p.append(ellipsoid('Hand / broad three-clawed tan grey Golem hand '+str(s),SKIN,(s*.525,.920,.391),(.096,.102,.100),28,20))
+  p.append(ellipsoid('Hand / broad three-clawed tan grey Golem hand '+str(s),SKIN,(s*.525,.920,.391),(.096,.102,.100),24,16))
   for j,dx in enumerate((-.060,0,.060)):
    p.append(curved_tube(f'Hand claw / three rooted ivory Golem claws {s} {j}',IVORY,[(s*.525+dx*.80,.969,.430),(s*.525+dx,1.043,.469),(s*.525+dx*.92,1.079,.508)],[.027,.019,.002],20))
   p.append(ellipsoid('Thigh / stocky rooted tan grey Golem haunch '+str(s),SKIN,(s*.285,.272,.051),(.181,.210,.193),32,22))
   p.append(paddle('Leg / short rooted tan grey Golem shin '+str(s),SKIN,[(s*.29,.244,.080),(s*.333,.110,.160)],[.107,.096],[.121,.093]))
-  p.append(ellipsoid('Foot / grounded broad tan grey Golem pad '+str(s),SKIN,(s*.334,.059,.191),(.149,.059,.167),32,22))
+  p.append(ellipsoid('Foot / grounded broad tan grey Golem pad '+str(s),SKIN,(s*.334,.059,.191),(.149,.059,.167),28,18))
   for j,dx in enumerate((-.075,0,.075)):
    p.append(paddle(f'Foot claw / three rooted ivory Golem forward toes {s} {j}',IVORY,[(s*.334+dx*.8,.050,.295),(s*.334+dx,.032,.370),(s*.334+dx*1.05,.012,.417)],[.039,.029,.012],[.027,.018,.002]))
   p.append(curved_tube('Heel claw / rooted ivory Golem rear point '+str(s),IVORY,[(s*.35,.054,.057),(s*.35,.037,-.004),(s*.35,.027,-.045)],[.027,.019,.002],20))
@@ -81,11 +81,18 @@ def anatomy():
   p.append(curved_tube('Lower tooth / rooted ivory Golem jaw tooth '+str(j),IVORY,[(x,.604,.637),(x,.641,.655),(x,.664,.665)],[.020,.014,.002],20))
  return p
 
-def sculpture():
+def sculpture(normalize=True):
  p=anatomy();lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
  for q in p:
-  q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+  if normalize:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
+  q['normals']=[round(v,7) for v in q['normals']]
+  for key in ('positions','normals'):q[key]=[0. if v==0 else v for v in q[key]]
  return {'name':'golem','version':1,'coordinate_system':COORDINATES,'primitives':p}
+def write_canonical(output):
+    from stone_pair_glb import export_stone_pair
+    (output/'golem.glb').write_bytes(export_stone_pair('golem'))
+
+
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'golem.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);write_canonical(args.output)
 if __name__=='__main__':main()

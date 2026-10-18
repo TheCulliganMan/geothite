@@ -4690,6 +4690,8 @@ impl RuntimeGameShell {
             visible_object_facings.insert(object_id.clone(), facing);
         }
         Ok(RuntimeShellSnapshot {
+            competitive_battle: RuntimeCompetitiveBattleSnapshot::from_state(
+                &self.runtime.data, &self.session.state)?,
             boot: self.runtime.boot_summary(),
             overworld: self.session.snapshot(),
             overworld_player_hidden: self.session.overworld.player_hidden,

@@ -350,6 +350,9 @@ pub struct BevyShellConfig {
     pub render_test_live: bool,
     #[cfg(feature = "location-tester")]
     pub render_test_walk: Option<String>,
+    /// Fresh legal party only; the native review must earn every League flag.
+    #[cfg(feature = "location-tester")]
+    pub render_test_league: bool,
     /// Explicit developer capture viewport; normal play keeps its window settings.
     #[cfg(feature = "location-tester")]
     pub render_test_window_size: Option<(u32, u32)>,
@@ -652,6 +655,32 @@ impl VisibleShellController {
             text.asm_text = Some(page.clone());
             text.body = None;
         }
+        if snapshot.battle.is_none()
+            && (self.shell.field_notice.is_some() || self.shell.pc_notice.is_some())
+            && let Some(pages) = visible_field_dialog_pages(&snapshot, &self.shell)
+        {
+            // Match the graphical notice owner rather than exposing a source
+            // menu or stale writetext history underneath it to text clients.
+            let page_index = self.shell.field_text_reveal.as_ref()
+                .filter(|reveal| reveal.text == pages.join("\u{1e}"))
+                .map_or(0, |reveal| reveal.page_index.min(pages.len().saturating_sub(1)));
+            if let Some(page) = pages.get(page_index) {
+                snapshot.phase = RuntimeShellPhase::Text;
+                snapshot.ui.menu = None;
+                snapshot.ui.text = Some(RuntimeTextSnapshot {
+                    label: if self.shell.field_notice.is_some() {
+                        "visible-shell:field-notice"
+                    } else { "visible-shell:pc-notice" }.to_string(),
+                    source: RuntimeTextSource::AsmText,
+                    asm_text: Some(page.clone()),
+                    body: None,
+                    queued_text_events: pages.len().saturating_sub(page_index+1)
+                        + self.shell.field_notice_queue.len(),
+                });
+                snapshot.ui.text_window_open = true;
+                snapshot.ui.window_open = true;
+            }
+        }
         if let Some(message) = self.shell.battle_messages.front() {
             // Battle dialogue is owned by the visible controller rather than
             // RuntimeGameShell's script text surface. Project the currently
@@ -668,12 +697,18 @@ impl VisibleShellController {
             });
             snapshot.ui.text_window_open = true;
         }
-        if snapshot.ui.menu.is_none() && !snapshot.ui.text_window_open {
+        let tower_entries = if snapshot.battle.is_none() {
+            visible_battle_tower_controller_entries(&self.shell)?
+        } else { None };
+        if tower_entries.is_some() { snapshot.ui.menu = None; }
+        if tower_entries.is_some() || (snapshot.ui.menu.is_none() && !snapshot.ui.text_window_open) {
             // Runtime text records are retained as execution history after
             // closetext. They are not a visible surface and must not hide a
             // production-controller menu such as Start, Pack, or Party.
-            snapshot.ui.text = None;
-            let mut entries = if let Some(battle) = snapshot.battle.as_ref() {
+            if tower_entries.is_none() { snapshot.ui.text = None; }
+            let mut entries = if let Some(entries) = tower_entries {
+                entries
+            } else if let Some(battle) = snapshot.battle.as_ref() {
                 visible_battle_command_menu_entries(&snapshot, &self.shell, battle)?
             } else {
                 visible_field_command_entries(&snapshot, &self.shell)?
@@ -761,6 +796,11 @@ impl VisibleShellController {
     /// Apply a simultaneous joypad chord through the production input owner.
     pub fn press_buttons(&mut self, buttons: impl IntoIterator<Item = GameButton>) -> Result<()> {
         let mut buttons: Vec<_> = buttons.into_iter().collect();
+        // Match the graphical credits owner: only A/B reach its handlers;
+        // directions and Start must never fall through to the runtime map.
+        if self.shell.credits_screen.is_some() {
+            buttons.retain(|button| matches!(button, GameButton::A | GameButton::B));
+        }
         // A modal B dismissal owns the chord; do not move after closing it.
         if buttons.contains(&GameButton::B) && has_visible_shell_b_action(&mut self.shell) {
             buttons.retain(|button| *button == GameButton::B);
@@ -768,14 +808,21 @@ impl VisibleShellController {
         }
         let outcome = apply_visible_shell_smoke_frame(&mut self.shell, &buttons)?;
         self.complete_overworld_outcome(outcome)?;
+        // Native presentation advances credits once per input-clock frame.
+        // Renderer-neutral hosts have no Bevy Time system, so advance that
+        // same production sequence here, without draining past its A/B waits.
+        if self.shell.credits_screen.is_some() {
+            tick_visible_credits_screen(&mut self.shell);
+            if let Some(error) = self.shell.last_error.as_ref() {
+                anyhow::bail!("advance credits presentation: {error}");
+            }
+        }
         settle_visible_shell_until_input(&mut self.shell)
     }
 
     pub fn wait_frames(&mut self, frames: usize) -> Result<()> {
         for _ in 0..frames {
-            let outcome = apply_visible_shell_smoke_frame(&mut self.shell, &[])?;
-            self.complete_overworld_outcome(outcome)?;
-            settle_visible_shell_until_input(&mut self.shell)?;
+            self.press_buttons(std::iter::empty())?;
         }
         Ok(())
     }
@@ -4674,6 +4721,8 @@ struct RenderedViewport {
     visual_tiles: Vec<crystal_render_api::VisualTile>,
     #[cfg(any(test, feature = "voxel-view"))]
     visual_jump_ledges: std::sync::Arc<[crystal_render_api::VisualJumpLedge]>,
+    #[cfg(any(test, feature = "voxel-view"))]
+    visual_terrace_datum: Option<std::sync::Arc<crystal_render_api::VisualTerraceDatum>>,
     /// Validated terrain identity, rebuilt with the tile grid rather than
     /// rehashing every source tile during camera/actor interpolation.
     visual_tiles_revision: Option<u64>,
@@ -5752,6 +5801,8 @@ pub fn run_bevy_shell(
     #[cfg(feature = "location-tester")]
     let render_test_walk = config.render_test_walk.clone();
     #[cfg(feature = "location-tester")]
+    let render_test_league = config.render_test_league;
+    #[cfg(feature = "location-tester")]
     let render_test_window_size = config.render_test_window_size;
     #[cfg(feature = "location-tester")]
     let render_test_second_screenshot = config.render_test_second_screenshot.clone();
@@ -5975,12 +6026,18 @@ pub fn run_bevy_shell(
         window
     };
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
-    let headless_capture = std::env::var("CRYSTAL_RENDER_TEST_HEADLESS").is_ok_and(|v| v == "1");
+    let headless_capture = match std::env::var("CRYSTAL_RENDER_TEST_HEADLESS") {
+        Ok(value) if value == "1" => true,
+        Ok(value) if value == "0" => false,
+        Err(std::env::VarError::NotPresent) => render_test_screenshot.is_some()
+            && !render_test_live && render_capture::requested_image_target(false)?,
+        _ => anyhow::bail!("CRYSTAL_RENDER_TEST_HEADLESS must be 0 or 1"),
+    };
     #[cfg(not(all(feature = "location-tester", not(target_arch = "wasm32"))))]
     let headless_capture = false;
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     anyhow::ensure!(!headless_capture || (render_test_screenshot.is_some() && !render_test_live
-        && std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TARGET").is_ok_and(|v| v == "image")),
+        && render_capture::requested_image_target(render_test_live)?),
         "headless capture requires a one-shot screenshot with an image target");
     let plugins = DefaultPlugins.build();
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
@@ -6180,8 +6237,12 @@ pub fn run_bevy_shell(
                 .after(apply_visible_battle_screen_offset)
                 .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
         )
+        .add_systems(Update, publish_pokemon_dimensions
+            .after(publish_visual_world_frame)
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract))
         .add_systems(Update, publish_party_follower
             .after(publish_visual_world_frame)
+            .after(publish_pokemon_dimensions)
             .in_set(crystal_render_api::WorldRenderSet::PresentationExtract))
         .add_systems(Update, publish_surf_mount
             .after(publish_party_follower)
@@ -6344,6 +6405,7 @@ pub fn run_bevy_shell(
                 .as_deref()
                 .context("--walk requires a screenshot or recording path")?,
             capture_steps,
+            render_test_league,
         )?;
     }
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
@@ -7678,6 +7740,15 @@ fn settle_visible_shell_controller(
             advance_visible_pokegear_exit(runtime_shell, 1)?;
             continue;
         }
+        if runtime_shell.visible_blackout_phase
+            .is_some_and(|phase| phase != VisibleBlackoutPhase::AwaitText)
+        {
+            advance_visible_screen_fade(runtime_shell, GAME_TICK_SECONDS, false);
+            if let Some(error) = runtime_shell.last_error.as_ref() {
+                anyhow::bail!("advance whiteout recovery: {error}");
+            }
+            continue;
+        }
         if advance_visible_smoke_walk_warp_phase(runtime_shell)? {
             continue;
         }
@@ -7759,6 +7830,13 @@ fn settle_visible_shell_controller(
         }
         if runtime_shell.visible_heal_machine.is_some() {
             advance_visible_heal_machine(runtime_shell)?;
+            continue;
+        }
+        // Renderer-neutral hosts have no graphical clock. Use the same train
+        // sequence and script continuation as the native update, just as for
+        // healing above, before returning the next authored input boundary.
+        if runtime_shell.visible_magnet_train.is_some() {
+            advance_visible_magnet_train(runtime_shell)?;
             continue;
         }
         if runtime_shell.visible_battle_sliding_intro.is_some() {
@@ -7957,6 +8035,14 @@ fn settle_visible_shell_controller(
             continue;
         }
         if !has_visible_auto_script_action(runtime_shell, &snapshot) {
+            return Ok(());
+        }
+        // jumptext/farjumptext publish their text label and closing button
+        // wait together. Consuming the label as an automatic request also
+        // acknowledges that wait, erasing even a multi-page sign/email in
+        // the interaction's opening press. The graphical printer retains
+        // this boundary; renderer-neutral hosts must retain it as well.
+        if !auto_input && visible_pending_text_wait_closes_window(runtime_shell) {
             return Ok(());
         }
         if advance_visible_next_pending_script_request(runtime_shell, &snapshot)? {
@@ -8309,6 +8395,12 @@ fn initialize_bevy_runtime_shell(
         )?;
         }
 
+    }
+    #[cfg(feature = "location-tester")]
+    if config.render_test_league {
+        anyhow::ensure!(runtime_tile_start && !config.render_test_party,
+            "League review requires its own fresh location fixture");
+        render_walk::league::seed(&mut shell)?;
     }
     if let Some(save_path) = title_menu
         .as_ref()
@@ -8844,6 +8936,7 @@ pub fn authored_visual_jump_ledges(width:u16,blocks:&[u16],
 }
 include!("bevy_shell/overworld_rendering.rs");
 include!("bevy_shell/start_menu.rs");
+include!("bevy_shell/competitive_battle.rs");
 include!("bevy_shell/bitmap_font.rs");
 include!("bevy_shell/graphics_assets.rs");
 include!("bevy_shell/field_pack.rs");

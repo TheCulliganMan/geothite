@@ -4711,6 +4711,7 @@
         shell.session_mut().state.sync_party_from_storage();
         shell.session_mut().state.roaming_pokemon[0] =
             crystal_core::state::RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("CHIKORITA".to_string()),
                 level: 40,
                 map_group: 1,

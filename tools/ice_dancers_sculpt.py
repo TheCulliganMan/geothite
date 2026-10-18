@@ -15,7 +15,7 @@ CREAM=(.98,.94,.75);WHITE=(.96,.97,.94);INK=(.08,.065,.10)
 LIP=(.88,.54,.60);GREEN=(.20,.44,.37)
 
 def lips(p,head,cx,cy,rx,ry,baby=False):
- at=surface(head);vv=[];nn=48;mm=20;minor=.023 if ry>.07 else .020
+ at=surface(head);vv=[];nn=48 if baby else 28;mm=20 if baby else 12;minor=.023 if ry>.07 else .020
  for i in range(nn):
   a=math.tau*i/nn
   for j in range(mm):
@@ -25,63 +25,75 @@ def lips(p,head,cx,cy,rx,ry,baby=False):
  for i in range(nn):
   for j in range(mm):ff.append((i*mm+j,((i+1)%nn)*mm+j,((i+1)%nn)*mm+(j+1)%mm,i*mm+(j+1)%mm))
  lip=crease_normals(part('Lips / rooted pink oval kiss rim',LIP,vv,ff,True),45);p.append(lip)
- p.append(paint('Mouth / fitted dark recessed oval kiss opening',INK,oval(cx,cy,rx-minor+.005,ry-minor+.005,40),head,.004,1 if baby else 3))
+ p.append(paint('Mouth / fitted dark recessed oval kiss opening',INK,oval(cx,cy,rx-minor+.005,ry-minor+.005,40 if baby else 24),head,.004,1))
 
 def eyes(p,head,baby):
- cy=.972 if baby else 1.102;cx=.110 if baby else .089;rx=.063 if baby else .036;ry=.079 if baby else .044
+ cy=.972 if baby else 1.102;cx=.110 if baby else .089;rx=.063 if baby else .048;ry=.079 if baby else .058
  for s in (-1,1):
-  socket=paint('Eye socket / fitted dark ice-dancer recess '+str(s),INK,oval(s*cx,cy,rx+.006,ry+.006,36),head,.005,1 if baby else 3);p.append(socket)
-  eye=paint('Eye / fitted ivory ice-dancer gaze '+str(s),WHITE,oval(s*cx,cy,rx,ry,36),socket,.004,1 if baby else 3);p.append(eye)
+  socket=paint('Eye socket / fitted dark ice-dancer recess '+str(s),INK,oval(s*cx,cy,rx+.006,ry+.006,36 if baby else 24),head,.005,1);p.append(socket)
+  eye=paint('Eye / fitted ivory ice-dancer gaze '+str(s),WHITE,oval(s*cx,cy,rx,ry,36 if baby else 24),socket,.004,1);p.append(eye)
   if baby:
    pupil=paint('Pupil / fitted broad dark baby stare '+str(s),INK,oval(s*cx-.008,cy+.006,.039,.056,32),eye,.003,1);p.append(pupil)
    iris=paint('Iris / fitted green lower baby gaze '+str(s),GREEN,oval(s*cx-.008,cy-.018,.032,.025,28),pupil,.003,1);p.append(iris)
    p.append(paint('Glint / fitted ivory baby eye spark '+str(s),WHITE,oval(s*cx-.016,cy+.037,.010,.014,24),pupil,.004,1))
-  else:p.append(paint('Pupil / fitted tiny dark dancer stare '+str(s),INK,oval(s*cx,cy,.006,.010,24),eye,.003,2))
+  else:p.append(paint('Pupil / fitted tiny dark dancer stare '+str(s),INK,oval(s*cx,cy,.012,.018,20),eye,.003,1))
 
 def gown():
- rows=[(.009,.418,.293),(.085,.381,.279),(.263,.313,.239),(.476,.218,.174),(.664,.170,.140),(.798,.201,.151),(.912,.109,.093)];n=96;vv=[]
- for y,w,d in rows:
+ rows=[(.009,.418,.293),(.085,.381,.279),(.263,.313,.239),(.476,.218,.174),(.664,.170,.140),(.798,.201,.151),(.912,.109,.093)];n=64;vv=[]
+ rows=curved_profiles([(y,w,d,-.015) for y,w,d in rows],3)
+ for y,w,d,z in rows:
   fade=max(0,1-y/.68)
   for i in range(n):
    a=math.tau*i/n;fold=1+.078*fade*math.cos(7*a);vv.append((w*math.sin(a)*fold,y,-.015+d*math.cos(a)*fold))
  ff=[tuple(reversed(range(n))),tuple((len(rows)-1)*n+i for i in range(n))]
  for k in range(len(rows)-1):
   for i in range(n):a=k*n+i;b=k*n+(i+1)%n;ff.append((a,b,b+n,a+n))
- return crease_normals(part('Gown / continuous flared seven-fold red dancer dress',RED,vv,ff,True),40)
+ return crease_normals(part('Gown / continuous flared seven-fold pink dancer dress',RED,vv,ff,True),40)
+
+def jynx_mark(name,color,xy,parent,th=.003,sub=1):
+ # Clip narrow adult grooves to the actual parent triangles; a low-poly cap
+ # must not bridge across the curvature of a long hair lock.
+ from sculpt_geometry import fitted_triangle_contour
+ return crease_normals(fitted_triangle_contour(name,color,xy,parent,th,precision=7),35)
 
 def jynx_hair(p):
- back=crease_normals(loft('Hair back / rooted long blonde dancer mantle',HAIR,curved_profiles(((.640,.134,.065,-.080),(.720,.234,.110,-.105),(.860,.284,.151,-.113),(1.020,.280,.163,-.100),(1.170,.253,.166,-.085),(1.300,.196,.144,-.060),(1.380,.069,.061,-.020)),5),48),45);p.append(back)
- dome=ellipsoid('Hair crown / rooted blonde center-parted dancer dome',HAIR,(0,1.316,-.055),(.222,.104,.126),44,28);p.append(dome)
+ back=crease_normals(loft('Hair back / rooted long ivory dancer mantle',HAIR,curved_profiles(((.640,.134,.065,-.080),(.720,.234,.110,-.105),(.860,.284,.151,-.113),(1.020,.280,.163,-.100),(1.170,.253,.166,-.085),(1.300,.196,.144,-.060),(1.380,.069,.061,-.020)),3),32),45);p.append(back)
+ dome=ellipsoid('Hair crown / rooted ivory center-parted dancer dome',HAIR,(0,1.316,-.055),(.222,.104,.126),28,18);p.append(dome)
  for j in (-1,0,1):
   x=j*.135;xy=[(x-.004,.813),(x-.014,.976),(x-.016,1.151),(x-.010,1.247),(x-.004,1.247),(x-.010,1.151),(x-.008,.976),(x+.002,.813)]
-  strand=paint('Back hair strand / fitted subtle blonde dancer groove '+str(j),(.84,.80,.52),xy,reverse_front(back),.003,3);p.append(reverse_front(strand))
+  strand=jynx_mark('Back hair strand / fitted subtle ivory dancer groove '+str(j),(.84,.80,.52),xy,reverse_front(back),.003,1);p.append(reverse_front(strand))
  for s in (-1,1):
-  p.append(paddle('Hair part / rooted arched blonde dancer forelock '+str(s),HAIR,[(0,1.286,.097),(s*.061,1.373,.050),(s*.119,1.395,.018),(s*.183,1.368,-.002),(s*.228,1.311,.022)],[.003,.041,.043,.046,.050],[.003,.035,.037,.041,.044]))
-  p.append(paddle('Hair curtain / rooted sweeping blonde dancer lock '+str(s),HAIR,[(s*.132,1.346,.023),(s*.238,1.226,.102),(s*.280,.996,.138),(s*.258,.795,.192),(s*.146,.646,.247)],[.090,.091,.091,.078,.008],[.061,.065,.064,.057,.007]))
+  p.append(paddle('Hair part / rooted arched ivory dancer forelock '+str(s),HAIR,[(0,1.286,.097),(s*.061,1.373,.050),(s*.119,1.395,.018),(s*.183,1.368,-.002),(s*.228,1.311,.022)],[.003,.041,.043,.046,.050],[.003,.035,.037,.041,.044],segments=18,steps=4))
+  p.append(paddle('Hair curtain / rooted sweeping ivory dancer lock '+str(s),HAIR,[(s*.132,1.346,.023),(s*.238,1.226,.102),(s*.280,.996,.138),(s*.258,.795,.192),(s*.146,.646,.247)],[.090,.091,.091,.078,.008],[.061,.065,.064,.057,.007],segments=18,steps=4))
   curtain=p[-1];xy=[(s*x,y) for x,y in ((.181,.697),(.252,.865),(.279,1.017),(.246,1.214),(.239,1.214),(.272,1.017),(.245,.865),(.174,.697))]
-  p.append(paint('Hair strand / fitted subtle blonde curtain groove '+str(s),(.84,.80,.52),xy,curtain,.003,3))
+  p.append(jynx_mark('Hair strand / fitted subtle ivory curtain groove '+str(s),(.84,.80,.52),xy,curtain,.003,1))
   for j in range(2):
-   p.append(paddle(f'Hair tip / rooted layered blonde dancer point {s} {j}',HAIR,[(s*(.246+.035*j),.878,.151-.015*j),(s*(.260+.034*j),.715,.122-.051*j),(s*(.208+.064*j),.605+.017*j,.185-.044*j)],[.057,.050,.003],[.045,.037,.003]))
+   p.append(paddle(f'Hair tip / rooted layered ivory dancer point {s} {j}',HAIR,[(s*(.246+.035*j),.878,.151-.015*j),(s*(.260+.034*j),.715,.122-.051*j),(s*(.208+.064*j),.605+.017*j,.185-.044*j)],[.057,.050,.003],[.045,.037,.003],segments=16,steps=4))
 
-def jynx_limbs(p):
- for s in (-1,1):
-  p.append(paddle('Sleeve / rooted bent white dancer arm '+str(s),WHITE,[(s*.130,.821,-.012),(s*.282,.714,.026),(s*.421,.771,.094)],[.074,.078,.056],[.081,.076,.055]))
-  hand=ellipsoid('Palm / open purple five-finger dancer hand '+str(s),PURPLE,(s*.457,.811,.126),(.071,.079,.048),36,24);p.append(hand)
-  paths=[([(s*.411,.836,.132),(s*.369,.890,.146),(s*.358,.915,.145)],[.024,.022,.011]),
+def jynx_arm_path(s):return [(s*.130,.821,-.012),(s*.282,.714,.026),(s*.421,.771,.094)]
+
+def jynx_digit_paths(s):
+ return [([(s*.411,.836,.132),(s*.369,.890,.146),(s*.358,.915,.145)],[.024,.022,.011]),
          ([(s*.436,.869,.128),(s*.435,.946,.137),(s*.449,.966,.131)],[.022,.020,.010]),
          ([(s*.475,.872,.126),(s*.505,.947,.137),(s*.522,.960,.132)],[.023,.020,.010]),
          ([(s*.501,.834,.125),(s*.572,.869,.139),(s*.589,.861,.133)],[.022,.019,.009]),
          ([(s*.495,.789,.126),(s*.562,.783,.138),(s*.578,.793,.136)],[.022,.019,.009])]
-  for j,(path,radii) in enumerate(paths):p.append(curved_tube(f'Finger / rooted purple dancer digit {s} {j}',PURPLE,path,radii,28))
+
+def jynx_limbs(p):
+ for s in (-1,1):
+  p.append(paddle('Sleeve / rooted bent white dancer arm '+str(s),WHITE,jynx_arm_path(s),[.074,.078,.056],[.081,.076,.055],segments=18,steps=4))
+  hand=ellipsoid('Palm / open purple five-finger dancer hand '+str(s),PURPLE,(s*.457,.811,.126),(.071,.079,.048),24,16);p.append(hand)
+  paths=jynx_digit_paths(s)
+  for j,(path,radii) in enumerate(paths):p.append(curved_tube(f'Finger / rooted purple dancer digit {s} {j}',PURPLE,path,radii,16))
 
 def jynx():
- dress=gown();neck=ellipsoid('Neck / rooted purple dancer throat',PURPLE,(0,.937,.018),(.108,.118,.099),36,24)
- head=ellipsoid('Head / broad purple dancer face',PURPLE,(0,1.087,.044),(.219,.221,.180),48,30);p=[dress,neck,head]
+ dress=gown();neck=ellipsoid('Neck / rooted purple dancer throat',PURPLE,(0,.937,.018),(.108,.118,.099),24,16)
+ head=ellipsoid('Head / broad purple dancer face',PURPLE,(0,1.087,.044),(.219,.221,.180),36,24);p=[dress,neck,head]
  for s in (-1,1):
-  plate=ellipsoid('Chest trim / rooted gold dancer bodice lobe '+str(s),GOLD,(s*.099,.814,.128),(.112,.109,.086),40,26);p.append(plate)
-  p.append(paint('Bodice / fitted red dancer chest inset '+str(s),RED,oval(s*.099,.814,.087,.080,36),plate,.006,3))
- bridge=ellipsoid('Chest bridge / rooted gold dancer central waist trim',GOLD,(0,.774,.140),(.053,.074,.047),36,24);p.append(bridge)
- eyes(p,head,False);lips(p,head,0,1.009,.035,.057);jynx_hair(p);jynx_limbs(p)
+  plate=ellipsoid('Chest trim / rooted white dancer bodice lobe '+str(s),GOLD,(s*.099,.814,.128),(.112,.109,.086),28,18);p.append(plate)
+  p.append(paint('Bodice / fitted pink dancer chest inset '+str(s),RED,oval(s*.099,.814,.087,.080,24),plate,.006,2))
+ bridge=ellipsoid('Chest bridge / rooted white dancer central waist trim',GOLD,(0,.774,.140),(.053,.074,.047),24,16);p.append(bridge)
+ eyes(p,head,False);lips(p,head,0,.985,.055,.035);jynx_hair(p);jynx_limbs(p)
  return p
 
 def smoochum_hair(p):
@@ -123,11 +135,19 @@ def sculpture(name,normalize=True):
   for q in p:
    n=q['part'];rgb=(0,0,0) if n.startswith(('Eye socket /','Pupil /','Mouth /')) else (255,255,255) if n.startswith(('Eye /','Glint /','Neck /','Chest /','Chest bib /','Arm /','Hand /','Finger /','Leg /','Foot /')) else (239,198,33) if n.startswith(('Hair','Bangs /','Lips /')) else (165,8,156)
    q['base_color']=linear(tuple(v/255 for v in rgb))
+ if name=='jynx':
+  from sculpt_geometry import linear
+  for q in p:
+   n=q['part'];rgb=(0,0,0) if n.startswith(('Eye socket /','Pupil /','Mouth /')) else (255,255,255) if n.startswith(('Eye /','Hair','Back hair strand /','Chest trim /','Chest bridge /','Sleeve /')) else (239,49,156) if n.startswith(('Gown /','Bodice /','Lips /')) else (115,16,123)
+   q['base_color']=linear(tuple(v/255 for v in rgb))
  if normalize:
   for q in p:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':name,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
  a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
- for n in SPECIES:(args.output/(n+'.mesh.json')).write_text(json.dumps(sculpture(n),separators=(',',':')))
+ from jynx_glb import export_jynx
+ from smoochum_glb import export_smoochum
+ for n,export in (('jynx',export_jynx),('smoochum',export_smoochum)):
+  (args.output/(n+'.glb')).write_bytes(export());(args.output/(n+'.mesh.json')).unlink(missing_ok=True)
 if __name__=='__main__':main()

@@ -15,6 +15,9 @@ pub fn export(root: &Path) -> Result<()> {
     let data = root.join("apps/web/assets/data");
     let mut paths = Vec::new();
     for directory in ["data/text", "data/phone/text"] { files(&vendor.join(directory), &mut paths)?; }
+    // These dynamically selected trainer messages live outside data/text.
+    // Every gender/index can be selected by LoadOpponentTrainerAndPokemon.
+    paths.push(vendor.join("data/battle_tower/trainer_text.asm"));
     paths.sort();
     let mut texts = BTreeMap::new();
     for path in paths {
@@ -42,6 +45,14 @@ pub fn export(root: &Path) -> Result<()> {
             }
             let value = value.trim().to_owned();
             if !value.is_empty() { ensure!(texts.insert(label.clone(), value).is_none(), "duplicate global text {label}"); }
+        }
+    }
+    for (gender, count) in [("M", 25), ("F", 15)] {
+        for index in 1..=count {
+            for phase in ["Greeting", "Win", "Loss"] {
+                let label = format!("_BT{phase}{gender}{index}Text");
+                ensure!(texts.contains_key(&label), "missing Battle Tower source text {label}");
+            }
         }
     }
     ensure!(!texts.is_empty(), "source ASM text catalog");

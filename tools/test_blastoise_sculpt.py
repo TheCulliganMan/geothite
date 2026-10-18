@@ -13,7 +13,9 @@ ROOT=Path(os.environ.get('CRYSTAL_BLASTOISE_TEST_MODELS',Path(__file__).resolve(
 
 class BlastoiseTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'blastoise.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):
+  from turtle_glb import read_turtle
+  cls.m=read_turtle(ROOT/'blastoise.glb','blastoise');cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def overlap(self,a,b):
   xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
@@ -26,19 +28,19 @@ class BlastoiseTests(unittest.TestCase):
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'blastoise':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'blastoise':self.m})
  def test_recipe_parity_height_floor_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),110000)
+  from turtle_glb import geometry_digest;self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
-  for prefix,n in (('Cannon /',2),('Cannon floor /',2),('Cannon lining /',2),('Cannon mount /',2),('Ear /',2),('Ear inset /',2),('Tail /',1),('Arm /',2),('Hand /',2),('Hand claw /',6),('Haunch /',2),('Leg /',2),('Foot /',2),('Toe /',6),('Foot claw /',6),('Shell seam /',11)):
+  for prefix,n in (('Cannon /',2),('Cannon floor /',2),('Cannon lining /',2),('Cannon mount /',2),('Ear /',2),('Ear inset /',2),('Tail /',1),('Arm /',2),('Hand /',0),('Hand claw /',6),('Haunch /',2),('Leg /',2),('Foot /',2),('Toe /',6),('Foot claw /',6),('Shell seam /',11)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)
  def test_body_shell_belly_rim_head_jaw_and_tail_have_volume_roots(self):
   body=self.find('Body /');shell=self.find('Shell /');head=self.find('Head /');self.assertTrue(self.overlap(body,shell));self.assertTrue(self.overlap(self.find('Belly /'),body));self.assertTrue(self.overlap(self.find('Shell rim /'),shell));self.assertTrue(self.overlap(head,body));self.assertTrue(self.overlap(self.find('Muzzle /'),head));self.assertTrue(self.overlap(self.find('Jaw /'),head));self.assertTrue(self.overlap(self.find('Tail /'),shell))
  def test_cannon_mounts_barrels_and_ears_have_real_roots(self):
   for s in (-1,1):
    mount=self.find('Cannon mount /',s);self.assertTrue(self.overlap(mount,self.find('Shell /')));self.assertTrue(self.overlap(mount,self.find('Cannon /',s)));self.assertTrue(self.overlap(self.find('Cannon lining /',s),self.find('Cannon /',s)));self.assertTrue(self.overlap(self.find('Ear /',s),self.find('Head /')))
- def test_all_arm_hand_and_ivory_claw_roots(self):
+ def test_continuous_forelimbs_and_ivory_claw_roots(self):
   for s in (-1,1):
-   arm=self.find('Arm /',s);hand=self.find('Hand /',s);self.assertTrue(self.overlap(arm,self.find('Body /')));self.assertTrue(self.overlap(hand,arm))
-   for j in range(3):self.assertTrue(self.overlap(hand,self.find('Hand claw /',f'{s} {j}')))
+   arm=self.find('Arm /',s);self.assertTrue(self.overlap(arm,self.find('Body /')))
+   for j in range(3):self.assertTrue(self.overlap(arm,self.find('Hand claw /',f'{s} {j}')))
  def test_feet_toes_and_ivory_hooks_are_supported_and_grounded(self):
   for s in (-1,1):
    thigh=self.find('Haunch /',s);leg=self.find('Leg /',s);foot=self.find('Foot /',s);self.assertTrue(self.overlap(thigh,self.find('Body /')));self.assertTrue(self.overlap(leg,thigh));self.assertTrue(self.overlap(foot,leg));self.assertLess(min(foot['positions'][1::3]),.002)

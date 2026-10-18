@@ -1,5 +1,17 @@
 // Complete source identities, not copied artwork or map data.
 const RULES: &[Rule] = &[
+    // Wall-backed sofas begin in block19's lower half. The following two
+    // checker rows authenticate their operator floor but remain unclaimed.
+    Rule {
+        map: "MrPokemonsHouse", tileset: "facility", anchor: None,
+        width: 4, height: 4, fingerprint: 0x30da7d3abb32772d,
+        rows: &[0xf,0xf,0,0], kind: Kind::Sofa, ground: Ground::Checker,
+    },
+    Rule {
+        map: "PowerPlant", tileset: "facility", anchor: None,
+        width: 4, height: 4, fingerprint: 0x30da7d3abb32772d,
+        rows: &[0xf,0xf,0,0], kind: Kind::Sofa, ground: Ground::Checker,
+    },
     Rule {
         map: "SilphCo1F", tileset: "facility", anchor: Some([0,0]),
         width: 12, height: 8, fingerprint: 0xe82ff23cabd17f4c,

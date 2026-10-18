@@ -1,6 +1,7 @@
 //! Complete framed outdoor signs. Only native lettering remains a live surface.
 //! A missing, rephased, overridden or already-owned cell rejects the whole sign.
 use super::*;
+use bevy::prelude::Vec2;
 use crate::live_profiles::{Document, Object};
 use crate::outdoor_sign_models::{Kind, model};
 
@@ -161,6 +162,13 @@ pub(super) fn append(
     {
         return false;
     }
+    let first_solid=mesh.solid.positions.len();
+    let first_textured=mesh.textured.positions.len();
+    // The fishing-pier notice stands on its raised plot with its backing.
+    let datum=if b.tileset=="kanto" && b.block==0x79 {
+        mesh.footing_heights.get(p.row*g.width+p.column).copied()
+            .filter(|h|(*h-crate::port::PIER_HEIGHT*g.tile_height/8.).abs()<0.001).unwrap_or(0.)
+    } else {0.};
     for (local, index) in p.indices(g.width).enumerate() {
         let (w, e, n, s) = g.bounds(index % g.width, index / g.width);
         let sample = p.ground[local];
@@ -199,15 +207,58 @@ pub(super) fn append(
             [fx(right), top * height, z],
         ],
         [0., 0., 1.],
-        [[u0, v0], [u0, v1], [u1, v1], [u1, v0]],
+        [[u0, v0], [u0, v1], [u1, v1], [u1, v0]].map(|uv|
+            if b.tileset=="forest" {uv} else {crate::scenery_finish::source_atlas_uv(uv)}),
         TEXTURED_SHADE,
     );
+    for point in &mut mesh.solid.positions[first_solid..] {point[1]+=datum;}
+    for point in &mut mesh.textured.positions[first_textured..] {point[1]+=datum;}
     for i in p.indices(g.width) {
         claimed[i] = true;
     }
     mark_authored_rect(mesh, g, [p.column, p.row, 2, 2], b.kind.label());
     true
 }
+/// A small maintained margin keeps a complete native sign readable through
+/// adjoining encounter grass. Only successfully modeled non-forest frames
+/// authorize it; roots, coverage, pigment and gameplay support stay intact.
+pub(super) fn clear_grass(mesh:&mut TerrainMeshData, first:usize, base:f32,
+    bounds:[f32;4], g:&GridGeometry, signs:&[Placement]) {
+    let rects=signs.iter().filter(|p|p.binding.kind!=Kind::Forest
+        && p.indices(g.width).all(|i|mesh.authored_cells.get(i)
+            ==Some(&Some(p.binding.kind.label()))))
+        .filter_map(|p| {
+            let (w,_,_,s)=g.bounds(p.column,p.row+1);
+            let b=[w+0.06*g.tile_width,w+1.94*g.tile_width,
+                s-0.62*g.tile_height,s-0.05*g.tile_height];
+            (b[0]<=bounds[1]+1.75*g.tile_width && b[1]>=bounds[0]-1.75*g.tile_width
+                && b[2]<=bounds[3]+1.75*g.tile_height && b[3]>=bounds[2]-1.75*g.tile_height)
+                .then_some([Vec2::new(b[0]/g.tile_width,b[2]/g.tile_height),
+                    Vec2::new(b[1]/g.tile_width,b[3]/g.tile_height)])
+        }).collect::<Vec<_>>();
+    if rects.is_empty() {return;}
+    for i in first..mesh.solid.positions.len() {
+        if mesh.solid.uvs[i][0]!=84000. {continue;}
+        let p=Vec3::from_array(mesh.solid.positions[i]);
+        let q=Vec2::new(p.x/g.tile_width,p.z/g.tile_height);
+        let delta=rects.iter().map(|b|q-q.clamp(b[0],b[1]))
+            .min_by(|a,b|a.length_squared().total_cmp(&b.length_squared())).unwrap();
+        let distance=delta.length();
+        let t=((distance-0.25)/1.5).clamp(0.,1.);
+        if t>=1. {continue;}
+        let scale=0.45+0.55*t*t*(3.-2.*t);
+        let gradient=if distance>0.0001 {delta/distance*(0.55*6.*t*(1.-t)/1.5)}
+            else {Vec2::ZERO};
+        let h=p.y-base;
+        let n=Vec3::from_array(mesh.solid.normals[i]);
+        mesh.solid.normals[i]=Vec3::new(
+            n.x-h*gradient.x/g.tile_width*n.y/scale,n.y/scale,
+            n.z-h*gradient.y/g.tile_height*n.y/scale).normalize_or_zero().to_array();
+        mesh.solid.positions[i][1]=base+h*scale;
+        mesh.solid.uvs[i][1]*=scale;
+    }
+}
+
 #[cfg(test)]
 #[path = "outdoor_sign_tests.rs"]
 mod tests;

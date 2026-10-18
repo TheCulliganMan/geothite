@@ -1539,8 +1539,15 @@ impl GameDataSet {
                         next_state.battle,
                         BattleMemory::Wild { .. } | BattleMemory::StaticWild { .. }
                     );
+                    let wild_battle_type = match &next_state.battle {
+                        BattleMemory::Wild { battle_type, .. }
+                        | BattleMemory::StaticWild { battle_type, .. } => Some(battle_type.clone()),
+                        _ => None,
+                    };
                     let trainer_ai_move_flags = match &next_state.battle {
-                        BattleMemory::Trainer { ai_move_flags, .. } => Some(*ai_move_flags),
+                        BattleMemory::Trainer {
+                            trainer_class, ai_move_flags, ..
+                        } => Some((trainer_class.clone(), *ai_move_flags)),
                         BattleMemory::Wild { .. } | BattleMemory::StaticWild { .. } => None,
                         BattleMemory::Inactive => {
                             unreachable!("an AI-selected move requires an active battle")
@@ -1549,11 +1556,13 @@ impl GameDataSet {
                     let trainer_post_context = match &next_state.battle {
                         BattleMemory::Trainer {
                             trainer_id,
+                            trainer_class,
                             battle_type,
                             ai_item_switch_flags,
                             ..
                         } => Some((
                             trainer_id.clone(),
+                            trainer_class.clone(),
                             battle_type.clone(),
                             *ai_item_switch_flags,
                         )),
@@ -1600,10 +1609,11 @@ impl GameDataSet {
                             calls: &move_calls_for_selector,
                             recorded_limit: move_random_calls,
                         };
-                        let actual = if let Some(ai_move_flags) = trainer_ai_move_flags {
-                            self.select_trainer_enemy_move_with_scratch(
+                        let actual = if let Some((trainer_class, ai_move_flags)) = &trainer_ai_move_flags {
+                            self.select_trainer_enemy_move_for_class(
                                 combat,
-                                ai_move_flags,
+                                trainer_class,
+                                *ai_move_flags,
                                 &mut counting,
                             )
                             .map_err(|error| {
@@ -1612,10 +1622,13 @@ impl GameDataSet {
                                 }
                             })?
                         } else {
-                            EnemyMoveSelection {
-                                slot: core_select_wild_enemy_move_slot(combat, &mut counting),
-                                ai_damage_register: 0,
-                            }
+                            self.select_wild_enemy_move_for_battle(
+                                combat,
+                                wild_battle_type.as_deref().expect("wild battle move context"),
+                                &mut counting,
+                            ).map_err(|error| BattleTurnError::EnemyActionSelectionFailed {
+                                error: format!("recompute wild enemy move: {error:#}"),
+                            })?
                         };
                         if actual.slot != selected_move_slot {
                             let battle_kind = if replaying_wild_ai { "wild" } else { "trainer" };
@@ -1665,7 +1678,7 @@ impl GameDataSet {
                                     self.inner.battle_random_byte()
                                 }
                             }
-                            let (trainer_id, battle_type, flags) = trainer_post_context
+                            let (trainer_id, trainer_class, battle_type, flags) = trainer_post_context
                                 .as_ref()
                                 .expect("trainer post-order context");
                             let mut counting = CountingRandom {
@@ -1674,9 +1687,10 @@ impl GameDataSet {
                                 recorded_limit: post_order_random_calls,
                             };
                             let actual = self
-                                .select_trainer_post_order_action(
+                                .select_trainer_post_order_action_for_class(
                                     combat,
                                     trainer_id,
+                                    trainer_class,
                                     battle_type,
                                     *flags,
                                     &mut used_for_selector.borrow_mut(),

@@ -4,21 +4,24 @@ import json,os,unittest
 from pathlib import Path
 from aerodactyl_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_axolotl_sculpt import ray_intersections
+from sculpt_test_support import indexed_ray_intersections as ray_intersections
 import test_gligar_sculpt as joins
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 def rotate(p,up):
  q=dict(p);q['positions']=[v for i in range(0,len(p['positions']),3) for v in ((p['positions'][i],-p['positions'][i+2],p['positions'][i+1]) if up else (p['positions'][i],p['positions'][i+2],-p['positions'][i+1]))];return q
 class AerodactylTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads(Path(os.environ.get('CRYSTAL_AERODACTYL_TEST_MESH',str(ROOT/'aerodactyl.mesh.json'))).read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):
+  from aerodactyl_glb import read_aerodactyl
+  cls.m=read_aerodactyl(Path(os.environ.get('CRYSTAL_AERODACTYL_TEST_GLB',str(ROOT/'aerodactyl.glb'))));cls.ps=cls.m['primitives']
  def find(self,prefix):return next(p for p in self.ps if p['part'].startswith(prefix))
  overlap=joins.GligarTests.overlap
  def test_closed_connected_outward_anatomy(self):assert_closed_models(self,{'aerodactyl':self.m})
  def test_finite_unit_normals_follow_actual_faces(self):assert_model_shading(self,{'aerodactyl':self.m})
  def test_recipe_parity_grounding_height_budget_and_identity(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
-  self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),65000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from aerodactyl_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
+  self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000);self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for prefix,n in (('Skull /',1),('Jaw /',1),('Jaw hinge /',2),('Skull horn /',2),('Tooth /',12),('Wing /',2),('Wing arm /',2),('Wing finger /',4),('Wing claw /',6),('Foot claw /',6),('Tail tip /',1)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n)
  def test_skull_jaw_cheeks_and_swept_horns_have_real_joins(self):

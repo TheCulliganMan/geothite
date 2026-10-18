@@ -8,7 +8,16 @@ use bevy::{
         render_resource::{Extent3d, TextureDimension, TextureFormat},
     },
 };
-use crystal_render_api::{VisualTile, VisualWorldFrame};
+use crystal_render_api::{VisualTile, VisualTileSource, VisualWorldFrame};
+
+/// Source water identity shared by optical presentation and terrain height
+/// ownership. Cave pools deliberately use a flat cave-floor profile, so the
+/// geometric `Water` shape alone cannot identify every standing surface.
+pub(crate) fn standing_water_source(source: &VisualTileSource) -> bool {
+    source.subtile_column < 4 && source.subtile_row < 4
+        && (crate::profile::shape_for_source(source) == crate::profile::CellShape::Water
+            || (matches!(source.tileset_id.as_ref(), "cave" | "dark_cave") && source.tile_index == 0x14))
+}
 
 pub(crate) const DEN_WHIRLPOOL_DRAWING: [u16;16] = [
     0x32,0x33,0x58,0x58,0x42,0x43,0x58,0x58,
@@ -55,7 +64,7 @@ pub(crate) fn outdoor(map: &str) -> bool {
     map.starts_with("Route") || map.ends_with("City") || map.ends_with("Town")
         || matches!(map,"LakeOfRage"|"IlexForest"|"NationalPark"|"NationalParkBugContest"|"BattleTowerOutside"
             |"RuinsOfAlphOutside"|"SilverCaveOutside"|"OlivinePort"|"VermilionPort"
-            |"CinnabarIsland"|"SafariZoneBeta")
+            |"CinnabarIsland"|"SafariZoneBeta"|"MountMoonSquare")
 }
 
 pub(super) fn role_for_map(tile: &VisualTile, map: &str) -> [u8; 2] {
@@ -75,7 +84,7 @@ pub(super) fn role_for_map(tile: &VisualTile, map: &str) -> [u8; 2] {
         return [0, 0];
     }
     if open_water {
-        return if crate::profile::shape_for_source(s) == crate::profile::CellShape::Water {
+        return if standing_water_source(s) {
             [255,0]
         } else { [0,0] };
     }
@@ -505,10 +514,13 @@ mod tests {
     #[test]
     fn outdoor_water_requires_source_geometry_and_an_authenticated_animation() {
         let mut t=tile(0x14);t.source.tileset_id="johto".into();t.source.metatile_id=0x35;
-        for map in ["LakeOfRage","Route44","CherrygroveCity","NewBarkTown"] {
+        for map in ["LakeOfRage","Route44","CherrygroveCity","NewBarkTown","MountMoonSquare"] {
             assert!(live_outdoor_water(&t,map));
         }
         assert!(!live_outdoor_water(&t,"PlayersHouse1F"));
+        let mut mountain=t.clone();mountain.source.tileset_id="kanto".into();mountain.source.metatile_id=0x43;
+        assert!(live_outdoor_water(&mountain,"MountMoonSquare"));
+        for map in ["MountMoon","MountMoonGiftShop"] {assert!(!live_outdoor_water(&mountain,map));}
         t.source.tile_index=0x05;assert!(!live_outdoor_water(&t,"LakeOfRage"));
         t.source.tile_index=0x14;t.animation_frames=None;
         assert!(!live_outdoor_water(&t,"LakeOfRage"));
@@ -713,7 +725,10 @@ mod tests {
         water.texture=day.clone();water.animation_frames=Some(vec![day.clone(),night.clone()].into());
         let mut frame=VisualWorldFrame{map_id:"OlivineCity".into(),tiles:vec![water],..default()};
         let before=frame.clone();
-        assert_eq!(native_palette(&frame,&images),Some([Vec4::new(0.,0.,1.,2.),Vec4::new(1.,1.,1.,2.)]));
+        let finish=native_palette(&frame,&images).unwrap();
+        assert_eq!(finish[0].w,3.,"proven Johto coast shares the regional wind surface");
+        assert!(finish[0].z>finish[0].y && finish[0].y>finish[0].x && finish[0].z<0.5);
+        assert!(finish[1].truncate().max_element()<=1.);
         assert_eq!(frame,before,"palette extraction must not mutate the source frame");
         frame.tiles[0].texture=night.clone();
         let dark=native_palette(&frame,&images).unwrap();
@@ -724,16 +739,74 @@ mod tests {
             "missing opaque art must retain its source surface, never guessed teal");
         frame.tiles[0].animation_frames=None;
         assert!(native_palette(&frame,&images).is_none());
-        frame.tiles[0].animation_frames=Some(vec![day,night].into());
+        frame.tiles[0].animation_frames=Some(vec![day,night.clone()].into());
         for family in ["forest","park"] {
             frame.tiles[0].source.tileset_id=family.into();
             assert!(!outdoor_source_palette(&frame));
             assert!(native_palette(&frame,&images).is_none());
         }
+        images.get_mut(&night).unwrap().data.as_mut().unwrap()[3]=255;
+        for map in ["NationalPark","NationalParkBugContest","SafariZoneBeta"] {
+            frame.map_id=map.into();
+            let before=frame.clone();
+            let finish=native_palette(&frame,&images).unwrap();
+            assert_eq!(finish[0].w,3.,"native park ponds share source-driven water optics");
+            assert!(finish[0].z>finish[0].y && finish[0].y>finish[0].x);
+            assert_eq!(frame,before,"pond optics cannot alter the source or water height");
+        }
+        frame.tiles[0].animation_frames=None;
+        assert!(native_palette(&frame,&images).is_none(),"static fixtures do not own live pond optics");
     }
 
     #[test]
-    fn kanto_optical_finish_tracks_night_and_preserves_other_water_families() {
+    fn johto_water_shares_live_pigment_with_calmer_inland_ripples() {
+        let mut images=Assets::<Image>::default();
+        let handles=[[0,0,255,255],[0,0,99,255]].into_iter().enumerate().map(|(i,deep)| {
+            let foam=if i==0 {[255,255,255,255]}else{[123,123,189,255]};
+            images.add(Image::new(Extent3d{width:8,height:8,depth_or_array_layers:1},
+                TextureDimension::D2,(0..64).flat_map(|p|if p%8==0 {foam}else{deep}).collect(),
+                TextureFormat::Rgba8UnormSrgb,RenderAssetUsages::MAIN_WORLD))
+        }).collect::<Vec<_>>();
+        let mut source=tile(0x14);source.source.metatile_id=0x35;
+        source.animation_frames=Some(handles.clone().into());
+        let mut frame=VisualWorldFrame{tiles:vec![source],..default()};
+        let mut reference=[None,None];
+        for family in ["johto","johto_modern"] {
+            frame.tiles[0].source.tileset_id=family.into();
+            for map in ["NewBarkTown","CherrygroveCity","OlivineCity","CianwoodCity",
+                "Route26","Route27","Route34","Route40","Route41"] {
+                frame.map_id=map.into();
+                for (phase,h) in handles.iter().enumerate() {
+                    frame.tiles[0].texture=h.clone();let before=frame.clone();
+                    let finish=native_palette(&frame,&images).unwrap();
+                    assert_eq!(finish[0].w,3.,"{map}/{family} must share coastal optics");
+                    assert_eq!(frame,before,"optical selection must not mutate source or support");
+                    if let Some(old)=reference[phase] {assert_eq!(finish,old,"one coastal pigment transform");}
+                    else {reference[phase]=Some(finish);}
+                }
+            }
+            for map in ["VioletCity","BlackthornCity","EcruteakCity","GoldenrodCity","Route42","LakeOfRage"] {
+                frame.map_id=map.into();
+                let style=crate::water_surface::style(&frame);
+                assert!(style.y<0.23 && style.z<0.48 && style.w<0.40,
+                    "{map}: inland normals, wash and reflection stay calmer than the coast");
+                for (phase,h) in handles.iter().enumerate() {
+                    frame.tiles[0].texture=h.clone();let before=frame.clone();
+                    assert_eq!(native_palette(&frame,&images),reference[phase],
+                        "{map}/{family}: inland water shares regional pigment and the existing ripple pass");
+                    assert_eq!(frame,before,"source and support remain unchanged");
+                }
+            }
+            frame.map_id="IlexForest".into();
+            assert!(native_palette(&frame,&images).is_none(),"forest policy stays untouched");
+        }
+        let [Some(day),Some(night)]=reference else {panic!("both live phases were exercised");};
+        assert!(night[0].truncate().cmplt(day[0].truncate()).all());
+        assert!(night[1].truncate().cmplt(day[1].truncate()).all());
+    }
+
+    #[test]
+    fn regional_optical_finish_tracks_night_and_preserves_indoor_water_families() {
         let mut images=Assets::<Image>::default();
         let make=|blue:u8,light:u8|Image::new(
             Extent3d{width:8,height:8,depth_or_array_layers:1},TextureDimension::D2,
@@ -745,15 +818,31 @@ mod tests {
         let mut frame=VisualWorldFrame{map_id:"VermilionCity".into(),tiles:vec![water],..default()};
         let before=frame.clone();let finish=native_palette(&frame,&images).unwrap();
         assert_eq!(frame,before);
+        assert_eq!(finish[0].w, 3., "Kanto opts into wind-driven surface optics");
         assert!(finish[0].z>finish[0].y && finish[0].y>finish[0].x && finish[0].z<0.5);
-        assert!(finish[1].truncate().max_element()<0.7,"soft mineral-blue glints");
+        assert!(finish[1].z > 0.8 && finish[1].truncate().max_element() <= 1.0,
+            "pale blue foam and reflection retain a bounded daylight highlight");
         frame.map_id="CeladonCity".into();assert_eq!(native_palette(&frame,&images),Some(finish));
         frame.tiles[0].texture=night.clone();let dark=native_palette(&frame,&images).unwrap();
         assert!(dark[0].truncate().cmplt(finish[0].truncate()).all());
         assert!(dark[1].truncate().cmplt(finish[1].truncate()).all());
         frame.tiles[0].texture=day;frame.tiles[0].source.tileset_id="johto".into();
         frame.tiles[0].source.metatile_id=0x35;
-        assert_eq!(native_palette(&frame,&images),Some([Vec4::new(0.,0.,1.,2.),Vec4::new(1.,1.,1.,2.)]));
+        assert_eq!(native_palette(&frame,&images),Some(finish));
+        frame.tiles[0].source.tileset_id="port".into();
+        frame.tiles[0].source.metatile_id=0x18;
+        frame.map_id="VermilionPort".into();
+        assert_eq!(native_palette(&frame,&images),Some(finish), "Kanto port joins its coastal surface");
+        frame.map_id="OlivinePort".into();
+        assert_eq!(native_palette(&frame,&images),Some(finish),
+            "both harbors share the same source-family wind surface");
+        frame.tiles[0].texture=night.clone();
+        assert_eq!(native_palette(&frame,&images),Some(dark),
+            "harbor reflections retain the live night palette");
+        frame.map_id="CeruleanGym".into();
+        assert!(native_palette(&frame,&images).is_none(),
+            "indoor port-family pools retain their quiet pool optics");
+        frame.map_id="VermilionCity".into();
         frame.tiles[0].source.tileset_id="kanto".into();frame.tiles[0].source.metatile_id=0x43;
         frame.tiles[0].texture=night.clone();
         images.get_mut(&night).unwrap().data.as_mut().unwrap()[3]=0;
@@ -899,21 +988,24 @@ mod tests {
 }
 
 
-/// Source-palette optics apply to proven regional water, never forest/park
-/// families. The animation/drawing role remains the authority for occupancy.
+/// Source-palette optics apply to proven regional water and native park ponds.
+/// The animation/drawing role remains the authority for occupancy.
 pub(super) fn outdoor_source_palette(frame:&VisualWorldFrame)->bool {
     if !outdoor(&frame.map_id) || frame.map_id.as_ref()=="IlexForest" {return false;}
     let mut found=false;
     for tile in &frame.tiles {
         if role_for_map(tile,&frame.map_id)==[0,0] {continue;}
-        if !matches!(tile.source.tileset_id.as_ref(),"johto"|"johto_modern"|"kanto"|"port") {return false;}
+        let native_park = tile.source.tileset_id.as_ref()=="park"
+            && matches!(frame.map_id.as_ref(),"NationalPark"|"NationalParkBugContest"|"SafariZoneBeta");
+        if !native_park && !matches!(tile.source.tileset_id.as_ref(),"johto"|"johto_modern"|"kanto"|"port") {return false;}
         found=true;
     }
     found
 }
 
 /// Palette samples supply currents without repeating the source drawing.
-/// w=1 retains native Tohjo behavior; w=2 selects outdoor source paint. w=-2
+/// w=1 retains native Tohjo behavior; w=2 selects outdoor source paint;
+/// w=3 enables the shared regional/harbor wind surface. w=-2
 /// keeps the original source surface if an eligible outdoor palette is missing.
 pub(super) fn native_palette(frame:&VisualWorldFrame,images:&Assets<Image>)->Option<[Vec4;2]> {
     let open=outdoor_source_palette(frame);
@@ -940,18 +1032,16 @@ pub(super) fn native_palette(frame:&VisualWorldFrame,images:&Assets<Image>)->Opt
         }))).collect::<Vec<_>>();
         colors.sort_by(|a,b|a.dot(Vec3::new(0.2126,0.7152,0.0722)).total_cmp(&b.dot(Vec3::new(0.2126,0.7152,0.0722))));
         if colors.len()<2 {return None;}
-        let flag=if open {2.}else {1.};
         let mut deep=colors[0];
         let mut foam=colors[colors.len()-1];
-        // Kanto's pure-blue/white indexed paint becomes a quieter optical
-        // material. Retain live night brightness and the existing source role;
-        // no change to forest, Johto, indoor pools or missing-art fallback.
-        let kanto=open && frame.tiles.iter().filter(|tile|role_for_map(tile,&frame.map_id)!=[0,0])
-            .all(|tile|tile.source.tileset_id.as_ref()=="kanto");
-        if kanto {
-            foam=Vec3::new(foam.x*0.34+deep.x*0.10,foam.y*0.50+deep.y*0.10,foam.z*0.56+deep.z*0.06);
-            deep=Vec3::new(deep.x*0.55+deep.z*0.018,deep.y*0.60+deep.z*0.23,deep.z*0.44+deep.y*0.12);
+        // Regional blue/white supplies absorption and pale reflection, rather
+        // than a flat indexed-blue plane. The existing water style keeps
+        // inland ponds calmer than exposed coasts; geometry stays untouched.
+        if open {
+            foam=Vec3::new(foam.x*0.62+deep.x*0.06,foam.y*0.82+deep.y*0.04,foam.z*0.90+deep.z*0.04);
+            deep=Vec3::new(deep.x*0.45+deep.z*0.016,deep.y*0.55+deep.z*0.16,deep.z*0.48+deep.y*0.10);
         }
+        let flag=if open {3.} else {1.};
         Some([deep.extend(flag),foam.extend(flag)])
     })();
     palette.or_else(||open.then_some([Vec4::new(0.,0.,0.,-2.);2]))

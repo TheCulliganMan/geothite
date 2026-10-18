@@ -6,11 +6,87 @@ use bevy::prelude::Vec3;
 // Live source paint already contains the current map's time-of-day palette.
 // Retain shadow/contact modulation without applying a second colored light.
 pub(crate) const SOURCE_PAINT_UV: [f32;2] = [85000.,0.];
+// Raised brick geometry has already been fitted to its pier's source-corner
+// heights. Retain the same live-paint shader role while giving terrain passes
+// explicit ownership at clipped bevels exactly on a land/deck boundary.
+pub(crate) const LEVEL_PAVING_UV: [f32;2] = [85000.,-61000.];
+// Live source pigment uses the same woven finish as static entry cloth.
+pub(crate) const SOURCE_FABRIC_BASE: [f32;2] = [82000.,3500.];
+// The same mat turned across a side gate has a 16x32 rather than 32x16
+// source footprint. Keep its perimeter binding continuous across all cells.
+pub(crate) const SOURCE_FABRIC_SIDE_BASE: [f32;2] = [82000.,3700.];
+pub(crate) fn source_fabric_coordinates(uv:[f32;2])->Option<[f32;2]> {
+    let p=[uv[0]-SOURCE_FABRIC_BASE[0],uv[1]-SOURCE_FABRIC_BASE[1]];
+    (p.iter().all(|v|v.is_finite()) && (0. ..100.).contains(&p[0])
+        && (0. ..500.).contains(&p[1])).then_some(p)
+}
+// City paving carries source-map coordinates for stationary mineral grain.
+pub(crate) const PAVING_GRAIN_BASE: [f32;2] = [83000.,-3000.];
+pub(crate) const ROAD_GRAIN_BASE: [f32;2] = [80000.,-3000.];
+pub(crate) fn road_coordinates(uv: [f32;2]) -> Option<[f32;2]> {
+    (uv.iter().all(|v|v.is_finite()) && (79500. ..81500.).contains(&uv[0])
+        && (-5000. ..-2000.).contains(&uv[1])).then(||
+            [uv[0]-ROAD_GRAIN_BASE[0],ROAD_GRAIN_BASE[1]-uv[1]])
+}
+pub(crate) fn paving_coordinates(uv: [f32;2]) -> Option<[f32;2]> {
+    if let Some(p)=road_coordinates(uv) {return Some(p);}
+    (uv.iter().all(|v|v.is_finite()) && (82500. ..84000.).contains(&uv[0])
+        && (-5000. ..-2000.).contains(&uv[1])).then(||
+            [uv[0]-PAVING_GRAIN_BASE[0],PAVING_GRAIN_BASE[1]-uv[1]])
+}
+// Live atlas paint already carries time-of-day color. A reversible
+// negative U band marks that lighting policy without copying source pixels.
+pub(crate) fn source_atlas_uv(uv: [f32;2]) -> [f32;2] {[-2.-uv[0],uv[1]]}
+// Concrete samples live native pigment without magnifying its pixel speckles.
+pub(crate) fn source_concrete_uv(uv:[f32;2])->[f32;2] {[-6.-uv[0],uv[1]]}
+pub(crate) fn source_concrete_coordinates(uv:[f32;2])->Option<[f32;2]> {
+    (uv.iter().all(|v|v.is_finite()) && (-7. ..=-6.).contains(&uv[0])
+        && (0. ..=1.).contains(&uv[1])).then(||[-6.-uv[0],uv[1]])
+}
+// Mineral source paint retains its live value while softening palette chroma.
+pub(crate) fn source_mineral_uv(uv: [f32;2]) -> [f32;2] {[-4.-uv[0],uv[1]]}
+pub(crate) fn source_mineral_coordinates(uv: [f32;2]) -> Option<[f32;2]> {
+    (uv.iter().all(|v|v.is_finite()) && (-5. ..=-4.).contains(&uv[0])
+        && (0. ..=1.).contains(&uv[1])).then(||[-4.-uv[0],uv[1]])
+}
+pub(crate) fn source_atlas_coordinates(uv: [f32;2]) -> Option<[f32;2]> {
+    (uv.iter().all(|v|v.is_finite()) && (-3. ..=-2.).contains(&uv[0])
+        && (0. ..=1.).contains(&uv[1])).then(||[-2.-uv[0],uv[1]])
+}
+
 // Four town paint domains carry authored local coordinates in the same UV
 // channel: ceramic, plaster, clay and mortar. Existing source paint is separate.
 pub(crate) const TOWN_PAINT_BASE: f32 = 1024.;
 pub(crate) const TOWN_GLASS_BASE: f32 = 1152.;
 pub(crate) const TOWN_TIMBER_BASE: f32 = 1184.;
+// Mineral slate is separate from ceramic glaze, glass and source panes.
+pub(crate) const TOWN_SLATE_BASE: f32 = 1328.;
+// Closed source-colored panes retain normalized coordinates independently of
+// whether their drawing is an authored lamp. Two disjoint bands keep dark
+// glass out of the nighttime emitter list.
+pub(crate) const SOURCE_GLASS_BASE: f32 = 1216.;
+/// Tag the closed pane's local XY extent independently of its native lamp
+/// identity. Both compact office bays and continuous museum bands share it.
+pub(crate) fn mark_source_glass(mesh: &mut SurfaceMeshData,
+    vertices: std::ops::Range<usize>, bounds: [f32;4], lit: bool) {
+    let [left,right,bottom,top]=bounds;
+    for i in vertices {
+        let p=mesh.positions[i];
+        mesh.uvs[i]=[((p[0]-left)/(right-left)).clamp(0.,1.),
+            SOURCE_GLASS_BASE+if lit {2.}else{0.}
+                +((p[1]-bottom)/(top-bottom)).clamp(0.,1.)];
+    }
+}
+pub(crate) fn source_glass_coordinates(uv: [f32; 2]) -> Option<([f32; 2], bool)> {
+    for lit in [false, true] {
+        let p = [uv[0], uv[1] - SOURCE_GLASS_BASE - if lit { 2. } else { 0. }];
+        if p.iter().all(|v| v.is_finite() && (0. ..=1.).contains(v)) {
+            return Some((p, lit));
+        }
+    }
+    None
+}
+
 pub(crate) fn town_timber_coordinates(uv: [f32;2]) -> Option<[f32;2]> {
     let p=[uv[0],uv[1]-TOWN_TIMBER_BASE];
     p.iter().all(|v|v.is_finite() && (0. ..16.).contains(v)).then_some(p)
@@ -26,6 +102,8 @@ pub(crate) fn town_shadow_fill(map: &str, tileset: &str) -> bool {
         && matches!(tileset, "johto" | "johto_modern" | "kanto")
 }
 pub(crate) fn town_paint_kind(uv: [f32;2]) -> Option<u8> {
+    if uv.iter().all(|v|v.is_finite()) && uv[0].abs()<16.
+        && (uv[1]-TOWN_SLATE_BASE).abs()<8. {return Some(4);}
     let kind=((uv[1]-TOWN_PAINT_BASE)/32.).round();
     (uv.iter().all(|v|v.is_finite()) && (0.0..=3.0).contains(&kind)
         && uv[0].abs()<16. && (uv[1]-(TOWN_PAINT_BASE+kind*32.)).abs()<8.).then_some(kind as u8)
@@ -303,6 +381,25 @@ pub(crate) fn refine(
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn slate_material_domain_is_disjoint_from_glass_and_existing_town_paint() {
+        for x in [-7.,0.,7.] {for y in [-7.,0.,7.] {
+            let uv=[x,TOWN_SLATE_BASE+y];
+            assert_eq!(town_paint_kind(uv),Some(4));
+            assert!(source_glass_coordinates(uv).is_none());
+            assert!(town_glass_coordinates(uv).is_none());
+            assert!(!(crate::city_lights::UV_BASE..=crate::city_lights::UV_BASE+3.).contains(&uv[1]),
+                "slate cannot overlap any legacy window, cream or neon emitter role");
+            assert!(!crate::city_lights::source_window_tag(uv));
+        }}
+        for kind in 0..4 {
+            assert_eq!(town_paint_kind([0.,TOWN_PAINT_BASE+kind as f32*32.]),Some(kind));
+        }
+        for base in [TOWN_GLASS_BASE,TOWN_TIMBER_BASE,SOURCE_GLASS_BASE,
+            crate::city_lights::UV_BASE,crate::city_lights::SOURCE_UV_BASE] {
+            for y in [0.,0.25,1.] {assert_eq!(town_paint_kind([0.,base+y]),None);}
+        }
+    }
     use super::*;
     #[test]
     fn closed_ceramic_panel_gains_a_crown_without_more_triangles() {

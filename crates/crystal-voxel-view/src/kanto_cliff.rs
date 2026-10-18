@@ -46,18 +46,22 @@ pub(crate) fn shoreline_round_barrier_local(source: &VisualTileSource) -> Option
         .then_some((local_column, local_row))
 }
 
-/// Block `$29` stores the same round barrier as four flipped copies of tile
-/// `$24`, two drawings in its right half. It sits on pale paving rather than
-/// grass, so it keeps a separate classifier and authored underlay.
-pub(crate) fn round_path_barrier_local(source: &VisualTileSource) -> Option<(u8, u8)> {
-    if source.tileset_id.as_ref() != "kanto"
-        || source.metatile_id != 0x29
-        || source.subtile_column < 2
-        || source.tile_index != 0x24
-    {
-        return None;
-    }
-    Some((source.subtile_column - 2, source.subtile_row % 2))
+/// These native drawings can stand on dry land or beside a harbor mat.
+/// Their complete source component, never the map name or camera crop, decides.
+pub(crate) fn ambiguous_water_barrier_local(source:&VisualTileSource)->Option<(u8,u8)> {
+    let allowed=match source.metatile_id {
+        0x13=>source.subtile_column<4 && source.subtile_row<4,
+        0x46=>source.subtile_column<2 && (2..4).contains(&source.subtile_row),
+        0x4a=>(2..4).contains(&source.subtile_column) && (2..4).contains(&source.subtile_row),
+        _=>false,
+    };
+    allowed.then(||round_barrier_local(source)).flatten()
+}
+
+pub(crate) fn water_backed_barrier_local(source:&VisualTileSource,point:bevy::prelude::IVec2,
+    datum:Option<&crystal_render_api::VisualTerraceDatum>)->Option<(u8,u8)> {
+    shoreline_round_barrier_local(source).or_else(||
+        ambiguous_water_barrier_local(source).filter(|_|datum.is_some_and(|d|d.water_barrier_at(point))))
 }
 
 /// Resolves the six-block Diglett's Cave mound family used by Kanto towns and
@@ -67,6 +71,30 @@ pub(crate) fn round_path_barrier_local(source: &VisualTileSource) -> Option<(u8,
 pub(crate) fn kanto_cliff_shape(source: &VisualTileSource) -> Option<CellShape> {
     if source.tileset_id.as_ref() != "kanto" {
         return None;
+    }
+
+    // Plain plateau beside a repeated east-facing cliff drawing. These are
+    // mineral courses, not independent round posts or a flat path texture.
+    if source.metatile_id==0x29 {
+        let (x,y)=(source.subtile_column,source.subtile_row);
+        if x>=4 || y>=4 || source.tile_index!=if x<2 {0x11}else{0x24} {return None;}
+        return Some(if x<2 {CellShape::RaisedTop {height:KANTO_CLIFF_HEIGHT,solid:SolidKind::Bank}}
+            else {side_band(LedgeFace::East,4,x-2)});
+    }
+
+    // The northern tunnel combines a plateau, an east/south cliff return and
+    // the same four mouth tiles as the low mound. Its mouth keeps the native
+    // floor; only the verified surrounding ink belongs to the mineral body.
+    if source.metatile_id==0x70 {
+        let (x,y)=(source.subtile_column as usize,source.subtile_row as usize);
+        let art=[[0x11,0x11,0x24,0x24],[0x11,0x11,0x24,0x24],
+            [0x48,0x49,0x34,0x24],[0x58,0x59,0x37,0x34]];
+        if x>=4 || y>=4 || source.tile_index!=art[y][x] {return None;}
+        return Some(if x<2 && y>=2 {CellShape::Flat}
+            else if x<2 {CellShape::RaisedTop {height:KANTO_CLIFF_HEIGHT,solid:SolidKind::Bank}}
+            else if y<2 {side_band(LedgeFace::East,4,(x-2)as u8)}
+            else {CellShape::LedgeBand {face:LedgeFace::South,plane_subtile:4,
+                band_from_top:(y-2)as u8,band_count:2,top_tile_index:0x11,height:KANTO_CLIFF_HEIGHT}});
     }
 
     match source.metatile_id {
@@ -248,6 +276,32 @@ mod tests {
             subtile_row: row,
             tile_index: 0,
         }
+    }
+
+    #[test]
+    fn northern_tunnel_matches_native_block_and_keeps_the_four_mouth_cells_level() {
+        let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").expect("external pack required");
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(std::path::PathBuf::from(path)).unwrap();
+        let art=&loaded.pack().runtime_files()["data/tilesets/kanto_metatiles.bin"];
+        for row in 0..4 {for column in 0..4 {
+            let mut s=source(0x70,row);s.subtile_column=column;
+            s.tile_index=art[0x70*16+row as usize*4+column as usize]as u16;
+            let shape=kanto_cliff_shape(&s).expect("every native tunnel cell has a verified geometric role");
+            if column<2 && row>=2 {
+                assert_eq!(shape,CellShape::Flat,"the mouth and threshold keep native walking support");
+                assert_eq!(crate::profile::support_height(&s,8.),0.);
+            } else {
+                assert_eq!(shape.surface_height(8.),KANTO_CLIFF_HEIGHT);
+                if column>=2 {
+                    assert!(matches!(shape,CellShape::LedgeBand {face:LedgeFace::East,..}) && row<2
+                        || matches!(shape,CellShape::LedgeBand {face:LedgeFace::South,..}) && row>=2);
+                }
+            }
+            let mut changed=s.clone();changed.tile_index^=0x80;
+            assert_eq!(kanto_cliff_shape(&changed),None,"custom ink retains source fallback");
+            let mut foreign=s.clone();foreign.tileset_id="johto".into();
+            assert_eq!(kanto_cliff_shape(&foreign),None);
+        }}
     }
 
     #[test]
@@ -542,21 +596,62 @@ mod tests {
     }
 
     #[test]
-    fn flipped_tile_barriers_in_block_29_resolve_as_two_complete_drawings() {
+    fn repeated_cliff_side_ink_in_block_29_is_not_a_round_barrier_drawing() {
         for origin_row in [0, 2] {
             for row in 0..2 {
                 for column in 0..2 {
                     let mut source = source(0x29, origin_row + row);
                     source.subtile_column = 2 + column;
                     source.tile_index = 0x24;
-                    assert_eq!(round_path_barrier_local(&source), Some((column, row)));
+                    assert_eq!(round_barrier_local(&source), None);
+                    assert_eq!(shoreline_round_barrier_local(&source), None);
+                    assert!(matches!(kanto_cliff_shape(&source),Some(CellShape::LedgeBand {
+                        face:LedgeFace::East,height:KANTO_CLIFF_HEIGHT,..
+                    })),"the repeated ink belongs to the native east cliff face");
                 }
             }
         }
         let mut ground = source(0x29, 0);
         ground.subtile_column = 0;
         ground.tile_index = 0x11;
-        assert_eq!(round_path_barrier_local(&ground), None);
+        assert_eq!(round_barrier_local(&ground), None);
+        assert!(matches!(kanto_cliff_shape(&ground),Some(CellShape::RaisedTop {
+            height:KANTO_CLIFF_HEIGHT,solid:SolidKind::Bank
+        })));
+        let mut wrong=ground.clone();wrong.tile_index=0x24;
+        assert_eq!(kanto_cliff_shape(&wrong),None,"borrowed side ink cannot raise a plateau cell");
+    }
+
+    #[test]
+    fn external_harbor_domains_keep_dry_map_reuse_and_authorize_the_actual_water_clusters() {
+        let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").expect("external pack required");
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(std::path::PathBuf::from(path)).unwrap();
+        let pack=loaded.pack();let art=&pack.runtime_files()["data/tilesets/kanto_metatiles.bin"];
+        let mut checked=0;let mut harbor=false;
+        for (name,map) in &pack.data().maps {
+            if map.attributes.tileset_name!="kanto" || !map.blocks.iter().any(|b|matches!(b,0x13|0x46|0x4a)) {continue;}
+            checked+=1;
+            let w=map.attributes.width as usize*4;let h=map.attributes.height as usize*4;
+            let cells=(0..w*h).map(|i| {
+                let (x,y)=(i%w,i/w);let block=map.blocks[y/4*(w/4)+x/4];
+                (bevy::prelude::IVec2::new(x as i32,y as i32),VisualTileSource {tileset_id:"kanto".into(),
+                    metatile_id:block,subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,
+                    tile_index:art[block as usize*16+y%4*4+x%4]as u16},false)
+            }).collect::<Vec<_>>();
+            let datum=crate::mesh::source_terrace_datum(name,&[],&cells);
+            if !cells.iter().any(|(_,s,_)|s.tile_index==0x14) {
+                assert!(datum.is_none(),"dry native map {name} must retain its existing barriers");
+            }
+            if name=="VermilionCity" {
+                let datum=datum.unwrap();
+                for (x,y) in [(32,56),(36,62),(42,62)] {
+                    assert!(datum.water_barrier_at(bevy::prelude::IVec2::new(x,y)),"missing water barrier {x},{y}; resolved {} cells",datum.water_barriers.len());
+                }
+                assert!(!datum.water_barrier_at(bevy::prelude::IVec2::new(38,62)),"entry mat stays independent");
+                harbor=true;
+            }
+        }
+        assert!(harbor && checked>1);
     }
 
     #[test]

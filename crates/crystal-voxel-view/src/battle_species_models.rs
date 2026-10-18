@@ -102,10 +102,7 @@ macro_rules! species_models {
             }
             let name=MODELS.iter().find_map(|&(id,file)|id.eq_ignore_ascii_case(species).then_some(file))?;
             if let Some(rig)=crate::species_rig::authored_for_species(name) {return Some(rig);}
-            if name=="pidgeotto" {
-                static RIG: OnceLock<crate::species_rig::SpeciesRig> = OnceLock::new();
-                return Some(RIG.get_or_init(crate::species_rig::motion::pidgeotto));
-            }
+
             legacy_rig(name)
         }
         pub(crate) fn mesh(species: &str) -> Option<SurfaceMeshData> {

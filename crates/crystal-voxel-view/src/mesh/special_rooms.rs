@@ -2,10 +2,24 @@
 //! Fingerprints bind every immutable source identity in an entire object plot.
 //! Rendering never reads or changes collision, warps, actors, or footing.
 use super::*;
+#[cfg(test)]
+#[path = "johto_facility_owned_floor_tests.rs"]
+mod johto_facility_owned_floor_tests;
 use crate::dungeon_models::{RoomAsset as Asset, room_model};
 use crate::interior_models::{ModelKind as Interior, model as interior_model};
 #[path="native_shrine.rs"]
 mod native_shrine;
+#[path="native_battle_tower_room_floor.rs"]
+mod native_tower_floor;
+#[path="native_tower_battle_walls.rs"]
+mod native_tower_walls;
+#[path="native_link_rooms.rs"]
+mod native_link_rooms;
+
+pub(super) fn append_tower_battle_perimeter(mesh: &mut TerrainMeshData, frame: &VisualWorldFrame,
+    cells: &[&VisualTile], g: &GridGeometry) {
+    native_tower_walls::perimeter(mesh,frame,cells,g);
+}
 #[derive(Clone, Copy, Debug)]
 pub(super) enum Surface {
     Stone,
@@ -33,6 +47,9 @@ pub(super) enum FloorStyle {
     MansionRoof,
     Dojo,
     Shrine,
+    TowerArena,
+    TowerLift,
+    LinkRoom,
 }
 #[derive(Clone, Copy, Debug)]
 pub(super) enum Detail {
@@ -43,6 +60,7 @@ pub(super) enum Detail {
     WallSegment { material: Wall, open: [bool; 4] },
     RoofRail,
     LivePlaque,
+    TowerStagingDoor,
     Threshold,
     ArcadeEntryMat,
     FloorBand,
@@ -91,6 +109,7 @@ impl Detail {
             Self::Wall(_) | Self::WallSegment { .. } => "special-room:connected-enclosure",
             Self::RoofRail => "special-room:terrace-parapet",
             Self::LivePlaque => "special-room:live-sign-in-frame",
+            Self::TowerStagingDoor => "special-room:tower-staging-door",
             Self::Threshold => "special-room:surface-threshold",
             Self::ArcadeEntryMat => "special-room:arcade-entry-mat",
             Self::FloorBand => "special-room:surface-corridor-band",
@@ -207,6 +226,9 @@ fn add(
             "GoldenrodDeptStoreElevator" | "CeladonDeptStoreElevator" => FloorStyle::StoreLift,
             "FightingDojo" => FloorStyle::Dojo,
             "DragonShrine" => FloorStyle::Shrine,
+            "BattleTowerBattleRoom" => FloorStyle::TowerArena,
+            "BattleTowerElevator" => FloorStyle::TowerLift,
+            "Colosseum" | "TimeCapsule" | "TradeCenter" => FloorStyle::LinkRoom,
             _ => FloorStyle::Default,
         }),
         rise_pixels: rise,
@@ -447,7 +469,17 @@ fn octagon(out: &mut SurfaceMeshData, b: [f32; 4], low: f32, high: f32, color: [
     }
 }
 fn underlay(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement, kind: Surface, cells: &[&VisualTile]) {
+    if native_tower_floor::underlay(mesh,g,p,cells) {return;}
     for i in p.indices(g.width) {
+        if matches!(kind,Surface::Facility)
+            && super::modeled_interiors::native_johto_facility_floor_source(&cells[i].source) {
+            // The B2F authored floor owns these cells before the final surface
+            // pass. Supply the actual checker drawing instead of an opaque
+            // gray slab that would hide the live finish underneath it.
+            append_top(&mut mesh.textured,g.bounds(i%g.width,i/g.width).into(),0.,
+                g.uv(i%g.width,i/g.width));
+            continue;
+        }
         if matches!(kind,Surface::ShrineNative) {
             let sample=if matches!(p.form,Form::Room(Detail::Surface(_),FloorStyle::Shrine)) {i} else {p.ground};
             let source=&cells[sample].source;
@@ -629,8 +661,11 @@ fn live_source_slab(
     }
 }
 
-fn dojo_source_wall(mesh: &mut TerrainMeshData,g: &GridGeometry,p: &Placement,b:[f32;4]) {
-    let [w,e,n,s]=b;let k=g.tile_height/SOURCE_TILE_HEIGHT;let height=16.*k;
+fn dojo_source_wall(mesh: &mut TerrainMeshData,g: &GridGeometry,p: &Placement,b:[f32;4],cells:&[&VisualTile]) {
+    // Both source rows are one upright course, not two thick floor blocks.
+    if cells[p.row*g.width+p.column].source.subtile_row!=0 {return;}
+    let [w,e,n,_]=b;let k=g.tile_height/SOURCE_TILE_HEIGHT;let height=32.*k;
+    let s=n+2.*g.tile_height;let n=s-3.*k;let b=[w,e,n,s];
     let out=&mut mesh.textured;let first=out.positions.len();let index=out.indices.len();
     slab(out,b,0.,height,TEXTURED_SHADE);
     out.uvs[first..].fill(source_texel_uv(g,p,[0,0]));
@@ -642,7 +677,7 @@ fn dojo_source_wall(mesh: &mut TerrainMeshData,g: &GridGeometry,p: &Placement,b:
     let uv=g.uv(p.column,p.row);
     for (a,b,normal) in [([w,s],[e,s],Vec3::Z),([e,n],[w,n],-Vec3::Z),
         ([w,n],[w,s],-Vec3::X),([e,s],[e,n],Vec3::X)] {
-        for row in 0..2 {
+        for row in 0..4 {
             let bottom=row as f32*8.*k;let top=bottom+8.*k;
             append_quad(out,[[a[0],bottom,a[1]],[b[0],bottom,b[1]],
                 [b[0],top,b[1]],[a[0],top,a[1]]],normal.to_array(),
@@ -650,6 +685,54 @@ fn dojo_source_wall(mesh: &mut TerrainMeshData,g: &GridGeometry,p: &Placement,b:
                 crate::interior_models::authored_face_color([1.;4],normal));
         }
     }
+}
+// Only the two complete northern guardian drawings interrupt the rear wall.
+// Interior statues deliberately have no wall behind them.
+fn dojo_guardian_backing(mesh:&mut TerrainMeshData,g:&GridGeometry,p:&Placement,cells:&[&VisualTile])->bool {
+    if !matches!(p.form,Form::Room(Detail::Guardian,FloorStyle::Dojo))
+        ||p.width!=2||p.height!=4||cells.len()!=g.width*g.height
+        ||p.column+2>g.width||p.row+4>g.height {return false;}
+    let first=&cells[p.row*g.width+p.column].source;
+    let (donor_column,phase)=match (first.metatile_id,first.subtile_column,first.subtile_row) {
+        (0x28,0,0)=>(p.column+2,2),
+        (0x29,2,0) if p.column>=2 =>(p.column-2,0),
+        _=>return false,
+    };
+    if donor_column+2>g.width||!OBJECTS.iter().any(|o|matches!(o.detail,Detail::Guardian)
+        &&matches_object("FightingDojo",cells,g,p.column,p.row,o)) {return false;}
+    if !(0..2).all(|y|(0..2).all(|x| {
+        let s=&cells[(p.row+y)*g.width+donor_column+x].source;
+        s.tileset_id.as_ref()=="train_station"&&s.metatile_id==first.metatile_id
+            &&s.subtile_column==phase+x as u8&&s.subtile_row==y as u8&&s.tile_index==0x30
+    })) {return false;}
+    let (w,_,n,_)=g.bounds(p.column,p.row);let e=w+2.*g.tile_width;
+    let mut donor=p.clone();donor.column=donor_column;
+    let start=mesh.textured.positions.len();
+    dojo_source_wall(mesh,g,&donor,[w,e,n,n+2.*g.tile_height],cells);
+    mesh.textured.cutaway_ranges.push(start..mesh.textured.positions.len());
+    true
+}
+fn dojo_plaque_backing(mesh:&mut TerrainMeshData,g:&GridGeometry,p:&Placement,cells:&[&VisualTile])->bool {
+    if p.width!=2||p.height!=2||p.column+2>g.width||p.row+2>g.height
+        ||cells.len()!=g.width*g.height {return false;}
+    let source=&cells[p.row*g.width+p.column].source;
+    if source.metatile_id!=0x25||source.subtile_row!=0
+        ||!OBJECTS.iter().any(|o|matches!(o.detail,Detail::LivePlaque)
+            &&matches_object("FightingDojo",cells,g,p.column,p.row,o)) {return false;}
+    let donor=(0..g.width).filter(|&x| {
+        let a=&cells[p.row*g.width+x].source;let b=&cells[(p.row+1)*g.width+x].source;
+        a.tileset_id.as_ref()=="train_station"&&a.tile_index==0x30&&a.subtile_row==0
+            &&matches!(cell_detail("FightingDojo",a),Some(Detail::Wall(_)))
+            &&b.tileset_id==a.tileset_id&&b.metatile_id==a.metatile_id
+            &&b.subtile_column==a.subtile_column&&b.subtile_row==1&&b.tile_index==0x30
+    }).min_by_key(|&x|x.abs_diff(p.column));
+    let Some(column)=donor else{return false;};
+    let (w,_,n,_)=g.bounds(p.column,p.row);let e=w+2.*g.tile_width;
+    let mut paint=p.clone();paint.column=column;
+    let start=mesh.textured.positions.len();
+    dojo_source_wall(mesh,g,&paint,[w,e,n,n+2.*g.tile_height],cells);
+    mesh.textured.cutaway_ranges.push(start..mesh.textured.positions.len());
+    true
 }
 pub(super) fn append(
     mesh: &mut TerrainMeshData,
@@ -670,6 +753,9 @@ pub(super) fn append_with_floor(
     mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement,
     cells: &[&VisualTile], detail: Detail, floor_style: FloorStyle,
 ) {
+    if native_link_rooms::append(mesh,g,p,cells,detail,floor_style) {return;}
+    if native_tower_floor::append(mesh,g,p,cells,detail,floor_style) {return;}
+    if native_tower_walls::append(mesh,g,p,cells,detail,floor_style) {return;}
     let roof_tiles = floor_style == FloorStyle::Roof;
     let mansion_roof=floor_style==FloorStyle::MansionRoof;
     let (w, _, n, _) = g.bounds(p.column, p.row);
@@ -862,6 +948,7 @@ pub(super) fn append_with_floor(
         }
         Detail::Guardian => {
             if floor_style==FloorStyle::Dojo {
+                dojo_guardian_backing(mesh,g,p,cells);
                 model(Kind::TowerGuardian).append_pewter_guardian(&mut mesh.textured,
                     [w,e,s-depth,s],rise,|pixel|source_texel_uv(g,p,pixel));
             } else {
@@ -882,7 +969,7 @@ pub(super) fn append_with_floor(
                 return;
             }
             if floor_style==FloorStyle::Dojo {
-                dojo_source_wall(mesh,g,p,b);
+                dojo_source_wall(mesh,g,p,b,cells);
                 return;
             }
             let open = if let Detail::WallSegment { open, .. } = detail {
@@ -937,7 +1024,27 @@ pub(super) fn append_with_floor(
                 );
             }
         }
+        Detail::TowerStagingDoor => {
+            // An altered/incomplete native course keeps its actual source art.
+            for i in p.indices(g.width) {
+                append_top(&mut mesh.textured,g.bounds(i%g.width,i/g.width).into(),0.,g.uv(i%g.width,i/g.width));
+            }
+        }
         Detail::LivePlaque => {
+            if floor_style==FloorStyle::Dojo {
+                let backed=dojo_plaque_backing(mesh,g,p,cells);
+                // Keep each complete 16px notice once, high on the brick wall.
+                for y in 0..2 {for x in 0..2 {
+                    let uv=g.uv(p.column+x,p.row+y);
+                    let a=w+x as f32*g.tile_width;let b=a+g.tile_width;
+                    let top=(32.-y as f32*8.)*k;let low=top-8.*k;let front=s+0.05*k;
+                    append_quad(&mut mesh.textured,[[b,low,front],[b,top,front],[a,top,front],[a,low,front]],
+                        Vec3::Z.to_array(),[[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2],[uv.0,uv.3]],
+                        crate::interior_models::authored_face_color([1.;4],Vec3::Z));
+                }}
+                if backed {mesh.textured.cutaway_ranges.last_mut().unwrap().end=mesh.textured.positions.len();}
+                return;
+            }
             interior_model(Interior::PictureFrame).append_fitted(
                 &mut mesh.solid,
                 [w, e, s - 3. * k, s],
@@ -1584,8 +1691,11 @@ mod tests {
         let mut mesh=TerrainMeshData{footing_heights:vec![5.;16],..Default::default()};
         append_with_floor(&mut mesh,&g,&wall,&tiles.iter().collect::<Vec<_>>(),Detail::Wall(Wall::Timber),FloorStyle::Dojo);
         assert!(mesh.solid.indices.is_empty());
-        assert_eq!(mesh.textured.indices.len(),48+2*12+8*6,
-            "beveled floor, two four-triangle caps and eight native side quads");
+        assert_eq!(mesh.textured.indices.len(),48+2*12+16*6,
+            "beveled floor, two four-triangle caps and four native brick courses");
+        assert_eq!(mesh.textured.positions.iter().map(|p|p[1]).fold(0.,f32::max),32.);
+        assert!(mesh.textured.positions.iter().filter(|p|p[1]>0.).all(|p|p[2]>=13.&&p[2]<=16.),
+            "folded wall has one thin rear course");
         for tri in mesh.textured.indices[48..].chunks_exact(3) {
             let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
             assert!((b-a).cross(c-a).dot(Vec3::from_array(mesh.textured.normals[tri[0]as usize]))>0.);
@@ -1604,6 +1714,52 @@ mod tests {
         assert!(mesh.textured.uvs.contains(&source_texel_uv(&g,&p,[8,24])));
         tiles[0].source.tile_index^=1;
         assert!(!matches_object("FightingDojo",&tiles.iter().collect::<Vec<_>>(),&g,0,0,guardian));
+    }
+    #[test]
+    fn dojo_north_guardians_keep_thin_ceiling_backing_and_interior_statues_stay_free() {
+        let g=grid(8,4);let mut tiles=cells(8,4);
+        let art=[
+            [0x48,0x49,0x30,0x30, 0x30,0x30,0x48,0x49],
+            [0x58,0x59,0x30,0x30, 0x30,0x30,0x58,0x59],
+            [0x10,1,0x56,0x56, 0x56,0x56,0x10,1],
+            [0x5a,0x5b,0x56,0x56, 0x56,0x56,0x5a,0x5b],
+        ];
+        for y in 0..4 {for x in 0..8 {
+            let s=&mut tiles[y*8+x].source;s.tileset_id="train_station".into();
+            s.metatile_id=if x<4 {0x28}else{0x29};
+            s.subtile_column=(x%4)as u8;s.subtile_row=y as u8;s.tile_index=art[y][x];
+        }}
+        for column in [0,6] {
+            let p=Placement{column,row:0,width:2,height:4,ground:2,
+                rise_pixels:26.,depth_pixels:12.,front_rows:4.,
+                form:Form::Room(Detail::Guardian,FloorStyle::Dojo)};
+            let refs=tiles.iter().collect::<Vec<_>>();
+            let mut mesh=TerrainMeshData{footing_heights:vec![3.5;32],..Default::default()};
+            assert!(dojo_guardian_backing(&mut mesh,&g,&p,&refs));
+            assert_eq!(mesh.footing_heights,vec![3.5;32]);assert!(mesh.solid.indices.is_empty());
+            assert_eq!(mesh.textured.cutaway_ranges.len(),1);
+            assert_eq!(mesh.textured.positions.iter().map(|v|v[1]).fold(0.,f32::max),32.);
+            assert!(mesh.textured.positions.iter().all(|v|v[2]>=13.&&v[2]<=16.));
+            assert!(mesh.textured.positions.iter().all(|v|v[0]>=column as f32*8.
+                &&v[0]<=(column+2)as f32*8.));
+            let donor=if column==0 {2}else{4};
+            for bad in p.indices(8).chain((0..2).flat_map(|y|(donor..donor+2).map(move|x|y*8+x))) {
+                let mut altered=tiles.clone();altered[bad].source.tile_index^=1;
+                let mut rejected=TerrainMeshData::default();
+                assert!(!dojo_guardian_backing(&mut rejected,&g,&p,&altered.iter().collect::<Vec<_>>()));
+                assert!(rejected.textured.positions.is_empty());
+            }
+            let mut interior=tiles.clone();
+            for i in p.indices(8) {interior[i].source.metatile_id=if column==0 {0x26}else{0x27};}
+            assert!(!dojo_guardian_backing(&mut TerrainMeshData::default(),&g,&p,&interior.iter().collect::<Vec<_>>()));
+            let mut wrong=p.clone();wrong.form=Form::Room(Detail::Guardian,FloorStyle::Default);
+            assert!(!dojo_guardian_backing(&mut TerrainMeshData::default(),&g,&wrong,&refs));
+        }
+        let refs=tiles.iter().collect::<Vec<_>>();let mut claimed=vec![false;32];claimed[0]=true;
+        let mut resolver=Resolver{map:"FightingDojo",cells:&refs,g:&g,claimed,out:vec![]};
+        resolve_into(&mut resolver);
+        assert!(!resolver.out.iter().any(|p|p.column==0&&matches!(p.form,Form::Room(Detail::Guardian,_))),
+            "custom statue ownership suppresses both statue and its backing");
     }
     #[test]
     fn special_room_complete_objects_reject_every_identity_mutation_phase_crop_and_unknown_scope() {

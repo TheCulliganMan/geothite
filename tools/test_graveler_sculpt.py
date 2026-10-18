@@ -10,14 +10,15 @@ import test_nidorina_sculpt as attachments
 ROOT=Path(os.environ.get('CRYSTAL_GRAVELER_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class GravelerTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'graveler.mesh.json').read_bytes())
+ def setUpClass(cls):cls.model=__import__('stone_pair_glb').read_stone_pair(ROOT/'graveler.glb', 'graveler')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'graveler':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'graveler':self.m})
  def test_recipe_parity_height_floor_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),80000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from stone_pair_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for label,n in (('Body /',1),('Arm /',4),('Forearm /',2),('Hand /',4),('Finger /',12),('Foot /',2),('Rubble /',6),('Forehead /',1)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
   self.assertFalse(any(p['part'].startswith('Head /') for p in self.ps))
  def test_all_arms_palms_digits_and_rubble_have_actual_roots(self):

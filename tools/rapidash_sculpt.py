@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Original athletic fire unicorn with a raised foreleg and open equine jaw."""
-import argparse,json,math
+import argparse
 from pathlib import Path
+from functools import lru_cache
 from sculpt_geometry import ellipsoid,loft,curved_profiles,translate
 from hoofed_sculpt import trunk
 from bovine_sculpt import curved_tube,oval
@@ -12,27 +13,28 @@ from skin_glb import COORDINATES
 HEIGHT=1.30
 RED=(.77,.27,.24);PINK=(.85,.48,.51)
 
+@lru_cache(maxsize=1)
 def anatomy():
  body=trunk('Body / long athletic cream Rapidash torso',CREAM,curved_profiles(((-.56,.034,.057,.854),(-.44,.197,.229,.863),(-.23,.24,.247,.873),(.04,.231,.259,.882),(.24,.187,.23,.913),(.37,.094,.16,.957),(.39,.029,.055,.991)),5))
- neck=loft('Neck / long arched cream Rapidash neck and chest',CREAM,curved_profiles(((.755,.081,.109,.242),(.935,.177,.197,.260),(1.15,.124,.139,.308),(1.39,.098,.114,.353),(1.585,.115,.135,.332),(1.716,.101,.116,.332)),5),40)
- head=ellipsoid('Head / rooted proportioned cream Rapidash skull',CREAM,(0,1.696,.382),(.166,.187,.210),40,26)
- muzzle=ellipsoid('Muzzle / rooted long cream Rapidash upper snout',CREAM,(0,1.670,.578),(.124,.081,.190),40,26)
- jaw=ellipsoid('Jaw / open rooted cream Rapidash lower jaw',CREAM,(0,1.530,.556),(.119,.042,.154),36,24)
- back=ellipsoid('Mouth back / recessed dark Rapidash oral chamber',INK,(0,1.591,.488),(.081,.085,.034),32,22)
- tongue=ellipsoid('Tongue / rooted pink Rapidash tongue',PINK,(0,1.567,.602),(.065,.012,.066),32,20);p=[body,neck,head,muzzle,jaw,back,tongue]
+ neck=loft('Neck / long arched cream Rapidash neck and chest',CREAM,curved_profiles(((.755,.081,.109,.242),(.935,.177,.197,.260),(1.15,.124,.139,.308),(1.39,.098,.114,.353),(1.585,.115,.135,.332),(1.716,.101,.116,.332)),4),32)
+ head=ellipsoid('Head / rooted proportioned cream Rapidash skull',CREAM,(0,1.696,.382),(.166,.187,.210),30,20)
+ muzzle=ellipsoid('Muzzle / rooted long cream Rapidash upper snout',CREAM,(0,1.670,.578),(.124,.081,.190),30,20)
+ jaw=ellipsoid('Jaw / open rooted cream Rapidash lower jaw',CREAM,(0,1.530,.556),(.119,.042,.154),28,18)
+ back=ellipsoid('Mouth back / recessed dark Rapidash oral chamber',INK,(0,1.591,.488),(.081,.085,.034),24,16)
+ tongue=ellipsoid('Tongue / rooted pink Rapidash tongue',PINK,(0,1.567,.602),(.065,.012,.066),24,16);p=[body,neck,head,muzzle,jaw,back,tongue]
  for s in (-1,1):
-  ear=paddle('Ear / rooted pointed cream Rapidash pinna '+str(s),CREAM,[(s*.102,1.79,.309),(s*.173,1.924,.275),(s*.211,1.987,.264)],[.057,.037,.0015],[.054,.028,.0015]);p.append(ear)
-  p.append(paint('Ear inset / fitted dark pink Rapidash inner ear '+str(s),INNER,[(s*x,y) for x,y in ((.131,1.839),(.17,1.919),(.195,1.958),(.199,1.89),(.169,1.825))],ear,.005,3))
+  ear=paddle('Ear / rooted pointed cream Rapidash pinna '+str(s),CREAM,[(s*.102,1.79,.309),(s*.173,1.924,.275),(s*.211,1.987,.264)],[.057,.037,.0015],[.054,.028,.0015],segments=24,steps=4);p.append(ear)
+  p.append(paint('Ear inset / fitted dark pink Rapidash inner ear '+str(s),INNER,[(s*x,y) for x,y in ((.131,1.839),(.17,1.919),(.195,1.958),(.199,1.89),(.169,1.825))],ear,.005,2))
   xy=[(s*x,y) for x,y in ((.065,1.760),(.133,1.796),(.143,1.749),(.106,1.723),(.069,1.734))]
-  socket=paint('Socket / fitted narrow dark Rapidash gaze '+str(s),INK,xy,head,.008,3);p.append(socket);cx=sum(x for x,y in xy)/5;cy=sum(y for x,y in xy)/5
-  eye=paint('Eye / fitted narrow white Rapidash stare '+str(s),WHITE,[(cx+.85*(x-cx),cy+.78*(y-cy)) for x,y in xy],socket,.005,3);p.append(eye)
-  iris=paint('Iris / fitted red Rapidash iris '+str(s),RED,oval(s*.109,1.756,.010,.018,24),eye,.003,2);p.append(iris)
-  p.append(paint('Pupil / fitted dark Rapidash slit '+str(s),INK,oval(s*.11,1.756,.0035,.013,20),iris,.003,2))
-  p.append(paint('Nostril / fitted small Rapidash nostril '+str(s),INK,oval(s*.047,1.697,.005,.007,20),muzzle,.003,2))
+  socket=paint('Socket / fitted narrow dark Rapidash gaze '+str(s),INK,xy,head,.008,2);p.append(socket);cx=sum(x for x,y in xy)/5;cy=sum(y for x,y in xy)/5
+  eye=paint('Eye / fitted narrow white Rapidash stare '+str(s),WHITE,[(cx+.85*(x-cx),cy+.78*(y-cy)) for x,y in xy],socket,.005,2);p.append(eye)
+  iris=paint('Iris / fitted red Rapidash iris '+str(s),RED,oval(s*.109,1.756,.010,.018,24),eye,.003,1);p.append(iris)
+  p.append(paint('Pupil / fitted dark Rapidash slit '+str(s),INK,oval(s*.11,1.756,.0035,.013,20),iris,.003,1))
+  p.append(paint('Nostril / fitted small Rapidash nostril '+str(s),INK,oval(s*.047,1.697,.005,.007,20),muzzle,.003,1))
   for row,z in enumerate((.259,-.351)):
    raised=s==-1 and row==0
    if row==0:
-    p.append(ellipsoid('Shoulder / rooted rounded cream Rapidash shoulder '+str(s),CREAM,(s*.118,.883,.237),(.116,.179,.145),36,24))
+    p.append(ellipsoid('Shoulder / rooted rounded cream Rapidash shoulder '+str(s),CREAM,(s*.118,.883,.237),(.116,.179,.145),28,18))
     points=[(s*.13,.923,z),(s*.232,.79,z+.11),(s*.266,.733,z+.281),(s*.248,.521,z+.228)] if raised else [(s*.13,.91,z),(s*.185,.677,z+.009),(s*.19,.383,z+.053),(s*.193,.085,z+.097)];rr=[.096,.078,.051,.037] if raised else [.096,.076,.047,.034]
    else:points=[(s*.124,.874,z),(s*.195,.667,z-.077),(s*.217,.443,z+.026),(s*.214,.240,z-.032),(s*.211,.085,z+.033)];rr=[.109,.094,.065,.043,.035]
    p.append(curved_tube(f'Leg / sculpted athletic cream Rapidash limb {s} {row}',CREAM,points,rr,28))
@@ -52,11 +54,13 @@ def anatomy():
  p.extend(flame('tail',[(.964,-.575),(1.093,-.687),(1.218,-.826),(1.162,-.897),(1.252,-1.00),(1.179,-1.006),(1.224,-1.145),(1.11,-1.109),(1.129,-1.272),(1.019,-1.207),(.973,-1.35),(.903,-1.25),(.894,-1.144),(.802,-1.208),(.808,-1.072),(.741,-1.069),(.812,-.934),(.795,-.799),(.911,-.781)],0,[(.962,-.733),(1.06,-.735),(1.156,-.84),(1.107,-.91),(1.172,-1.01),(1.101,-1.05),(1.071,-1.147),(1.006,-1.127),(.95,-1.209),(.939,-1.099),(.862,-1.115),(.89,-1.004),(.853,-.947),(.89,-.84)],.062,glow_offset=.018))
  return p
 
-def sculpture():
- p=anatomy();lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
+@lru_cache(maxsize=2)
+def sculpture(normalize=True):
+ import copy
+ p=copy.deepcopy(anatomy());lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo) if normalize else 1.
  for q in p:
-  q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+  q['positions']=[round((v-(lo if normalize and i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':'rapidash','version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'rapidash.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);from fire_horse_glb import export_rapidash; (args.output/'rapidash.glb').write_bytes(export_rapidash())
 if __name__=='__main__':main()

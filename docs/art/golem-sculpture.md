@@ -51,3 +51,8 @@ This verifies the native image target and roster loading; live-window,
 browser, animation and gameplay paths remain unapproved. The queued Cargo integration job also finished with exit zero; its roster
 check ran one test and passed in 2.70 seconds. Completed temporary review
 images and logs have been removed.
+
+The later [canonical stone-pair skins](stone-pair-skins.md) retain the polygon
+shell, open jaw and complete claws within standard skin limits, with anatomical
+skull, jaw, shoulder, elbow, wrist and hind-limb controls. Current captures use
+the headless image path.

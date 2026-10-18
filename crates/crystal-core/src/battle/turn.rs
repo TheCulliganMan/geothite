@@ -1,5 +1,9 @@
 use std::collections::{BTreeMap, BTreeSet};
 
+#[path = "move_preview.rs"]
+mod move_preview;
+pub use move_preview::{BattleMovePreview, preview_battle_move, preview_battle_replacement};
+
 use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
 
 use crate::battle::capture::CaptureOutcome;

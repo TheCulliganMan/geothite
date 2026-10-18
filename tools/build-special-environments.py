@@ -7,6 +7,8 @@ front +Z. All source units are arbitrary; runtime fits exact verified source plo
 import bpy, math, json, sys
 from pathlib import Path
 from mathutils import Vector
+sys.path.insert(0,str(Path(__file__).parent))
+from window_recess import carve_window_pocket, build_window_ring
 args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
 out=Path(next((a for a in args if not a.startswith('--')),'target/special-environments'));out.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
@@ -43,9 +45,10 @@ def rod(n,a,b,r,mat,verts=6):
 def poly(n,verts,faces,mat):
  me=bpy.data.meshes.new(n);me.from_pydata(verts,[],faces);me.update();o=bpy.data.objects.new(n,me);COL.objects.link(o);me.materials.append(M[mat]);return o
 
-def ring(n,p,outer,inner,h,mat,verts=12):
+def ring(n,p,outer,inner,h,mat,verts=12,top_outer=None,top_inner=None):
  x,y,z=p;vs=[]
- for zz,r in [(z-h/2,outer),(z+h/2,outer),(z-h/2,inner),(z+h/2,inner)]:
+ for zz,r in [(z-h/2,outer),(z+h/2,outer if top_outer is None else top_outer),
+              (z-h/2,inner),(z+h/2,inner if top_inner is None else top_inner)]:
   vs.extend((x+r*math.cos(i*math.tau/verts),y+r*math.sin(i*math.tau/verts),zz) for i in range(verts))
  fs=[]
  for i in range(verts):
@@ -191,13 +194,33 @@ box('Overhanging passenger roof',(.18,0,1.66),(4.18,1.40,.14),'cloth_light',.07)
 box('Raised bridge house',(-1.29,0,1.88),(1.25,1.13,.44),'cloth_light',.09)
 box('Bridge weather roof',(-1.30,0,2.13),(1.48,1.30,.12),'metal_light',.055)
 for side in [-1,1]:
- for x in [-1.21,-.68,-.15,.38,.91,1.44]:box('Passenger window',(x,side*.638,1.39),(.36,.028,.22),'glass',.055)
- for x in [-1.65,-1.27,-.89]:box('Bridge glazing',(x,side*.574,1.92),(.26,.025,.20),'glass',.04)
+ angle=0 if side<0 else 180
+ for x in [-1.21,-.68,-.15,.38,.91,1.44]:
+  local=x if side<0 else -x
+  carve_window_pocket(COL,local,1.39,.36,.22,-.62,angle)
+  build_window_ring(COL,M['metal_light'],'Passenger recessed window frame',local,1.39,.42,.28,-.625,.04,.025,angle)
+  box('Passenger inset glazing',(x,side*.57,1.39),(.36,.025,.22),'glass',.008)
+ for x in [-1.65,-1.27,-.89]:
+  local=x if side<0 else -x
+  carve_window_pocket(COL,local,1.92,.26,.20,-.565,angle)
+  build_window_ring(COL,M['metal_light'],'Bridge recessed window frame',local,1.92,.31,.25,-.57,.03,.025,angle)
+  box('Bridge inset glazing',(x,side*.515,1.92),(.26,.022,.20),'glass',.006)
  for x in [-2.58,-2.12,2.40,2.82]:
   rod('Fore and aft rail stanchion',(x,side*.69,1.06),(x,side*.69,1.40),.027,'metal_light',6)
  for a,b in [(-2.80,-1.89),(2.19,2.96)]:rod('Guard rail open cabin-side gangway',(a,side*.69,1.38),(b,side*.69,1.38),.029,'metal_light',6)
-cone('Tapered red funnel',(.83,0,1.99),.30,.26,.59,'red',10)
-cone('Funnel dark rim',(.83,0,2.30),.29,.29,.12,'steel',10)
+ring('Tapered open red funnel',(.83,0,1.99),.30,.20,.59,'red',10,top_outer=.26,top_inner=.18)
+ring('Open funnel rim',(.83,0,2.30),.29,.21,.12,'steel',10)
+cone('Funnel recessed throat',(.83,0,2.22),.21,.21,.035,'ink',10)
+# Low roof fittings and seams stay below the original funnel/bridge silhouette.
+for x in [-.28,.22,1.35,1.85]:
+ box('Passenger roof folded seam',(x,0,1.737),(.012,1.28,.012),'metal_light',.003)
+for x in [-.10,1.67]:
+ box('Passenger roof vent curb',(x,0,1.79),(.34,.32,.10),'metal_light',.018)
+ box('Recessed roof vent well',(x,0,1.846),(.28,.26,.018),'ink',.006)
+ for y in [-.075,0,.075]:box('Roof vent louver',(x,y,1.866),(.27,.025,.026),'steel',.004)
+# Quiet closed plank seams on exposed teak, clear of the cabin and entry.
+for y in [-.69,.69]:box('Teak side-deck seam',(-.04,y,1.078),(5.22,.012,.010),'wood_dark',.002)
+for x in [-2.60,-2.23,2.30,2.65]:box('Teak end-deck seam',(x,0,1.078),(.012,1.30,.010),'wood_dark',.002)
 rod('Ship foremast',(-2.37,0,1.08),(-2.37,0,2.04),.037,'metal_light',7)
 rod('Ship stern mast',(2.64,0,1.04),(2.64,0,1.69),.032,'metal_light',7)
 # North-side recessed entry: the real gangway remains open at the authored

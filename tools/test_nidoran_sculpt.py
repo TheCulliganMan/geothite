@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Stored-surface tests for distinct small poison-pin silhouettes and roots."""
-import copy,json,os,unittest
+import copy,os,unittest
 from pathlib import Path
 from nidoran_sculpt import sculpture,SPECIES,HEIGHTS
 from sculpt_test_support import assert_closed_models,assert_model_shading
-import test_nidorino_sculpt as root_checks
-from test_slime_sculpt import ray_intersections
+from sculpt_test_support import indexed_ray_intersections as ray_intersections
+from nidoran_glb import read_nidoran,geometry_digest
 from test_kingdra_sculpt import crossed_faces
 from nidorino_sculpt import side_chart
 from sculpt_geometry import translate
@@ -13,17 +13,24 @@ ROOT=Path(os.environ.get('CRYSTAL_NIDORAN_TEST_MODELS',Path(__file__).resolve().
 
 class NidoranTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def setUpClass(cls):cls.models={s:read_nidoran(ROOT/(s+'.glb'),s) for s in SPECIES}
  def each(self):
   for s,m in self.models.items():self.ps=m['primitives'];yield s,m
  def find(self,prefix,s=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (s is None or p['part'].endswith(' '+str(s))))
- overlap=root_checks.NidorinoTests.overlap
+ def overlap(self,a,b):
+  xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
+  if xh<=xl or yh<=yl:return False
+  for i in range(1,25):
+   for j in range(1,25):
+    x=xl+(xh-xl)*i/25;y=yl+(yh-yl)*j/25;aa=sorted(ray_intersections(a,x,y));bb=sorted(ray_intersections(b,x,y))
+    if any(min(ah,bh)-max(al,bl)>.0002 for al,ah in zip(aa[::2],aa[1::2]) for bl,bh in zip(bb[::2],bb[1::2])):return True
+  return False
  def test_closed_connected_outward_solids(self):assert_closed_models(self,self.models)
  def test_normals_track_actual_faces(self):assert_model_shading(self,self.models)
  def test_parity_grounding_height_budget_and_anatomy(self):
   for s,m in self.each():
    with self.subTest(species=s):
-    self.assertEqual(m,sculpture(s));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000)
+    self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
     self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHTS[s],places=6)
     for prefix,n in (('Horn /',1),('Ear /',2),('Ear inset /',2),('Haunch /',4),('Leg /',4),('Foot /',4),('Claw /',8),('Back spine /',3),('Tail /',1),('Incisor /',2),('Cheek barb /',6 if s.endswith('_f') else 0),('Ear fold /',2 if s.endswith('_f') else 0)):
      self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)

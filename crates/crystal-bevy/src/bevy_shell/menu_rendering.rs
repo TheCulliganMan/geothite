@@ -5894,6 +5894,13 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         time_of_day: effective_time_of_day.to_string(),
         palette_map: tileset.palette_map.clone(),
     };
+    let connected_maps = match connected_render_map_placements(&map.map_name, &snapshot.maps) {
+        Ok(maps) => maps,
+        Err(error) => {
+            record_visible_render_error(&mut commands, &mut runtime_shell, error);
+            return;
+        }
+    };
     let map_visual_key =
         {
             let mut hasher = std::collections::hash_map::DefaultHasher::new();
@@ -5907,25 +5914,16 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             tileset_art_key.time_of_day.hash(&mut hasher);
             map.attributes.border_block.hash(&mut hasher);
             tileset.palette_map.hash(&mut hasher);
-            for connection in &map.attributes.connections {
-                connection.direction.hash(&mut hasher);
-                connection.target_map.hash(&mut hasher);
-                connection.offset.hash(&mut hasher);
-                if let Some(target_map) = snapshot
-                    .maps
-                    .iter()
-                    .find(|candidate| candidate.map_name == connection.target_map)
-                {
-                    target_map.attributes.tileset_name.hash(&mut hasher);
-                    target_map.attributes.border_block.hash(&mut hasher);
-                    visible_effective_map_time_of_day(target_map, live_time_of_day, flash_active)
-                        .hash(&mut hasher);
-                    if let Some(target_tileset) = snapshot.tilesets.iter().find(|candidate| {
-                        candidate.tileset_id == target_map.attributes.tileset_name
-                    }) {
-                        target_tileset.palette_map.hash(&mut hasher);
-                    }
-                }
+            for &(target_map, origin_x, origin_y) in connected_maps.iter().skip(1) {
+                target_map.map_name.hash(&mut hasher);
+                (origin_x,origin_y).hash(&mut hasher);
+                target_map.attributes.tileset_name.hash(&mut hasher);
+                target_map.attributes.border_block.hash(&mut hasher);
+                visible_effective_map_time_of_day(target_map, live_time_of_day, flash_active)
+                    .hash(&mut hasher);
+                if let Some(target_tileset) = snapshot.tilesets.iter().find(|candidate| {
+                    candidate.tileset_id == target_map.attributes.tileset_name
+                }) { target_tileset.palette_map.hash(&mut hasher); }
             }
             hasher.finish()
         };
@@ -6145,23 +6143,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         width: i32::from(width),
         height: i32::from(height),
     });
-    for connection in &map.attributes.connections {
-        let Some(target_map) = snapshot
-            .maps
-            .iter()
-            .find(|candidate| candidate.map_name == connection.target_map)
-        else {
-            record_visible_render_error(
-                &mut commands,
-                &mut runtime_shell,
-                anyhow::anyhow!(
-                    "connection target {} referenced by {} is missing from the map catalog",
-                    connection.target_map,
-                    map.map_name,
-                ),
-            );
-            return;
-        };
+    for &(target_map, origin_x, origin_y) in connected_maps.iter().skip(1) {
         let Some(target_tileset) = snapshot
             .tilesets
             .iter()
@@ -6229,16 +6211,6 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             i32::from(target_map.attributes.width) * i32::from(RENDER_METATILE_WIDTH);
         let target_height =
             i32::from(target_map.attributes.height) * i32::from(RENDER_METATILE_WIDTH);
-        let offset = connection
-            .offset
-            .saturating_mul(i32::from(RENDER_METATILE_WIDTH));
-        let (origin_x, origin_y) = match connection.direction.to_ascii_lowercase().as_str() {
-            "north" => (offset, -target_height),
-            "south" => (offset, i32::from(height)),
-            "west" => (-target_width, offset),
-            "east" => (i32::from(width), offset),
-            _ => continue,
-        };
         render_sources.push(ResolvedRenderSource {
             map: target_map,
             tileset: target_tileset,
@@ -6619,6 +6591,15 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                 return;
             }
         };
+        #[cfg(feature="voxel-view")]
+        if rendered.map_visual_key!=Some(map_visual_key) {
+            // Full native domains depend on map/connection identity, not on
+            // the camera crop or a live water-animation frame.
+            rendered.visual_terrace_datum=match terrain_ledges::datum(&render_sources,
+                runtime_shell.shell.runtime(),&rendered.visual_jump_ledges) {
+            Ok(datum)=>datum,
+            Err(error)=>{record_visible_render_error(&mut commands,&mut runtime_shell,error);return;}
+        }; }
         rendered.visual_tiles_revision = visual_tile_grid_is_complete(&visual_tiles)
             .then(|| visual_terrain_revision(map_visual_key, (start_x, start_y), &visual_tiles));
         rendered.visual_tiles = visual_tiles;
@@ -8302,9 +8283,11 @@ Transform::from_xyz(0.0, 0.0, z),),
 
     rendered.map_name = Some(snapshot.overworld.map_name.clone());
     rendered.visual_lighting = crystal_render_api::VisualWorldLighting::from_source_palette(effective_time_of_day);
-    rendered.visual_clock_enabled = map.attributes.time_of_day.is_none()
+    // Rooftops keep native fixed-palette pixels but expose the RTC to the 3D sky.
+    rendered.visual_clock_enabled = (map.attributes.time_of_day.is_none()
         && map.attributes.environment.as_deref().is_some_and(|environment|
-            environment.eq_ignore_ascii_case("town") || environment.eq_ignore_ascii_case("route"));
+            environment.eq_ignore_ascii_case("town") || environment.eq_ignore_ascii_case("route")))
+        || crystal_render_api::is_open_air_rooftop(&snapshot.overworld.map_name,&map.attributes.tileset_name);
     rendered.tile = Some(snapshot.overworld.tile);
     rendered.world_key = Some(world_key);
     rendered.position_key = Some(position_key);

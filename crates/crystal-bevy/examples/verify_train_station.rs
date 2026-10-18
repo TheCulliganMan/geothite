@@ -296,8 +296,11 @@ fn journey(
         } else if s.ui.text.is_some() {
             press(c, events, GameButton::A)?;
         } else {
-            c.wait_frames(1)?;
-            observe(c, events, "wait one controller frame")?;
+            // The source train includes two128-frame holds plus travel.
+            // Observe bounded8-frame batches; empty input cannot dismiss a
+            // dialogue page reached midway through a batch.
+            c.wait_frames(8)?;
+            observe(c, events, "wait eight controller frames")?;
         }
     }
     bail!(
@@ -324,9 +327,9 @@ fn west_approach(c: &mut VisibleShellController, events: &mut Vec<Value>, map: &
 // not collision authority; both mesh aperture and controller movement matter.
 fn mesh_clearance(runtime: &CrystalRuntime, map: &str) -> Result<Value> {
     use bevy::{
+        asset::RenderAssetUsages,
         prelude::{Assets, Handle, Image, UVec2, Vec2},
         render::{
-            asset::RenderAssetUsages,
             render_resource::{Extent3d, TextureDimension, TextureFormat},
         },
     };
@@ -444,7 +447,10 @@ fn mesh_clearance(runtime: &CrystalRuntime, map: &str) -> Result<Value> {
                         || p.iter().all(|p| p[0] >= right - 0.001)
                         || p.iter().all(|p| p[2] <= north + 0.001)
                         || p.iter().all(|p| p[2] >= south - 0.001)
-                        || p.iter().all(|p| p[1] <= 0.001),
+                        || p.iter().all(|p| p[1] <= 0.001)
+                        // The current player is24px tall; require an extra
+                        // pixel of headroom while allowing the tube roof above.
+                        || p.iter().all(|p| p[1] >= 25.0 - 0.001),
                     "{name} triangle obstructs real boarding aperture ({x},5): {p:?}"
                 );
             }

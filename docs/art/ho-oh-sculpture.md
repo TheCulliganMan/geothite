@@ -61,6 +61,14 @@ for the earlier model only. Large-bird native staging and browser acceptance
 remain open.
 
 
+A subsequent camera follow-up corrected radial-versus-view-depth far-plane
+units and added a second 60/68/75-degree search only after all ordinary stages
+fail. All 48 terrain and three battle-view integration checks pass; Articuno's
+native 3D/2D regression also passes. Ho-Oh still fails the current Route 29
+retained-neighborhood/scenery proof in both tiers. Full-size native acceptance
+remains open; no geometry or scale change was used to force it through.
+
+
 ## Initial static sculpture history
 
 `tools/ho_oh_sculpt.py` authors an original individual battle sculpture. Its reviewed

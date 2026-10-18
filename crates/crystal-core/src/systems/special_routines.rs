@@ -9580,7 +9580,7 @@ fn init_roam_mons(
         slot.level = write.level;
         slot.map_group = write.map_group;
         slot.map_number = write.map_number;
-        slot.hp = write.hp;
+        slot.set_current_hp(u16::from(write.hp));
     }
     let roamers = state.roaming_pokemon.clone();
     set_script_bool_value(state, true);

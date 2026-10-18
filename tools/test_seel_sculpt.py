@@ -6,17 +6,20 @@ from seel_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 import test_donphan_sculpt as joins
-ROOT=Path(os.environ.get('SEEL_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/seel.mesh.json'))
+ROOT=Path(os.environ.get('SEEL_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/seel.glb'))
 class SeelTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads(ROOT.read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):
+  from seal_glb import read_seal
+  cls.m=read_seal(ROOT,'seel');cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'seel':self.m})
  def test_finite_unit_normals_follow_winding(self):assert_model_shading(self,{'seel':self.m})
  def test_exact_recipe_height_grounding_and_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),50000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from seal_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
  def test_distinct_tail_paddles_muzzle_and_playful_face(self):
-  for prefix,count in (('Body /',1),('Head /',1),('Horn /',1),('Tail fluke /',2),('Flipper /',2),('Muzzle /',1),('Mouth /',1),('Tongue /',1),('Tusk /',2),('Eye /',2),('Brow /',2),('Nose /',1)):
+  for prefix,count in (('Body /',1),('Head /',1),('Horn /',1),('Tail fluke /',2),('Flipper /',2),('Flipper fold /',4),('Muzzle /',1),('Mouth /',1),('Tongue /',1),('Tusk /',2),('Eye /',2),('Brow /',2),('Nose /',1)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),count)
  def pairs(self):
   for p in self.ps:
@@ -50,6 +53,10 @@ class SeelTests(unittest.TestCase):
   for p in self.ps:
    if p['part'].startswith('Brow /'):parent=self.find('Head /')
    elif p['part'].startswith('Tongue crease /'):parent=self.find('Tongue /')
+   elif p['part'].startswith('Flipper fold /'):
+    parent=self.find('Flipper /',p['part'].split()[-2])
+    def top(q):return dict(q,positions=[v for i in range(0,len(q['positions']),3) for v in (q['positions'][i],-q['positions'][i+2],q['positions'][i+1])])
+    parent=top(parent);p=top(p)
    else:continue
    for x,y,z in {tuple(p['positions'][i:i+3]) for i in range(0,len(p['positions']),3)}:
     h=ray_intersections(parent,x,y);self.assertTrue(h);self.assertLess(abs(z-max(h)),.012)

@@ -12,14 +12,17 @@ import test_nidorina_sculpt as attachments
 ROOT=Path(os.environ.get('CRYSTAL_RHYDON_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class RhydonTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'rhydon.mesh.json').read_bytes())
+ def setUpClass(cls):
+  from rhino_glb import read_rhydon
+  cls.model=read_rhydon(ROOT/'rhydon.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'rhydon':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'rhydon':self.m})
  def test_recipe_parity_height_floor_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),110000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from rhino_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for label,n in (('Belly plate /',4),('Ear /',2),('Hand claw /',6),('Foot claw /',4),('Fang /',2),('Horn /',1),('Horn spiral /',1),('Tail armor /',3),('Cheek armor /',6)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
  def test_head_muzzle_jaw_and_oral_chamber_have_volume_roots(self):
   body=self.find('Body /');head=self.find('Head /');self.assertTrue(self.overlap(head,body));self.assertTrue(self.overlap(self.find('Muzzle /'),head));self.assertTrue(self.overlap(self.find('Jaw /'),body))

@@ -4534,10 +4534,19 @@ fn take_visible_pending_map_load(runtime_shell: &mut BevyRuntimeShell) -> Result
             ));
         }
     }
-    let reload_return_cursor = reload_current_map
+    let load_return_cursor = (reload_current_map || new_map_load)
         .then(|| visible_active_compiled_script_cursor(runtime_shell))
         .flatten();
     reset_visible_navigation_state(runtime_shell);
+    if map_setup == "MAPSETUP_BADWARP" {
+        // The bedroom PC's `warp NONE, 0, 0` replaces the whole map graphics
+        // after changing decorations; it has no following closetext. Retire
+        // its inherited textbox before callbacks can publish new text, as the
+        // native map redraw does, rather than retaining an empty input owner.
+        if runtime_shell.shell.snapshot()?.ui.text_window_open {
+            runtime_shell.shell.close_text_window()?;
+        }
+    }
     runtime_shell
         .last_audio_events
         .push(format!("took pending map load {:?}", request));
@@ -4546,7 +4555,7 @@ fn take_visible_pending_map_load(runtime_shell: &mut BevyRuntimeShell) -> Result
         // run the map's scene, NEWMAP, OBJECTS, or CMDQUEUE callbacks. Its
         // LoadBlockData and LoadMapGraphics steps invoke TILES then SPRITES.
         runtime_shell.pending_scene_script = None;
-        runtime_shell.map_reload_return_cursor = reload_return_cursor;
+        runtime_shell.map_reload_return_cursor = load_return_cursor;
         runtime_shell
             .shell
             .apply_current_map_setup_callbacks(map_setup)?;
@@ -4563,8 +4572,15 @@ fn take_visible_pending_map_load(runtime_shell: &mut BevyRuntimeShell) -> Result
                 .shell
                 .apply_current_map_setup_callbacks(map_setup)?;
         }
-        arm_visible_current_scene_script(runtime_shell, "map_load")?;
-        take_visible_pending_scene_script(runtime_shell)?;
+        if let Some(cursor) = load_return_cursor {
+            // Script_newloadmap stops this frame, not the retained command
+            // stream. Resume it on the destination before new scene input.
+            runtime_shell.deferred_script_warp_arrival_scripts = true;
+            arm_visible_active_script_cursor_from_run(runtime_shell, Some(cursor));
+        } else {
+            arm_visible_current_scene_script(runtime_shell, "map_load")?;
+            take_visible_pending_scene_script(runtime_shell)?;
+        }
     }
     queue_visible_current_music(runtime_shell)?;
     if !reload_current_map {

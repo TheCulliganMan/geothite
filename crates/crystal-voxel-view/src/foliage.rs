@@ -8,10 +8,11 @@ use bevy::prelude::*;
 mod park_tree;
 mod pine;
 mod ancient;
+mod deciduous;
 pub(crate) use park_tree::append_park_tree;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(crate) enum GroveFamily { JohtoPine, AncientForest }
+pub(crate) enum GroveFamily { JohtoPine, AncientForest, KantoDeciduous }
 impl GroveFamily {
     pub(crate) fn from_drawing(tileset: &str, width: usize, height: usize) -> Self {
         // Forest's small 2x2 Headbutt drawing and 4x4 ancient canopy are
@@ -21,10 +22,10 @@ impl GroveFamily {
         } else { Self::from_tileset(tileset) }
     }
     pub(crate) fn from_tileset(tileset: &str) -> Self {
-        if tileset == "forest" { Self::AncientForest } else { Self::JohtoPine }
+        match tileset {"forest"=>Self::AncientForest,"kanto"=>Self::KantoDeciduous,_=>Self::JohtoPine}
     }
     pub(crate) fn label(self) -> &'static str {
-        match self { Self::JohtoPine => "johto/tree", Self::AncientForest => "forest/ancient_tree" }
+        match self { Self::JohtoPine => "johto/tree", Self::AncientForest => "forest/ancient_tree", Self::KantoDeciduous => "world-exterior/kanto_canopy" }
     }
 }
 
@@ -85,6 +86,7 @@ pub(crate) fn instance_vertical_ratio(family: GroveFamily, coordinates: [i32;2],
             / pine::stem_height(1.,prototype,neighbors),
         GroveFamily::AncientForest => variation(coordinates[0],coordinates[1]).height
             / variation(prototype[0],prototype[1]).height,
+        GroveFamily::KantoDeciduous => deciduous::height(1.,coordinates)/deciduous::height(1.,prototype),
     }
 }
 
@@ -101,6 +103,11 @@ pub(crate) fn append_family_grove(mesh: &mut TerrainMeshData, bounds: [f32;4], b
     match family {
         GroveFamily::JohtoPine => pine::append(mesh,bounds,base,tile,coordinates,neighbors),
         GroveFamily::AncientForest => ancient::append(mesh,bounds,base,tile,coordinates,neighbors),
+        GroveFamily::KantoDeciduous => {
+            let first=mesh.solid.positions.len();
+            deciduous::append_canopy(mesh,bounds,base,tile,coordinates,neighbors);
+            mesh.solid.cutaway_ranges.push(first..mesh.solid.positions.len());
+        },
     }
 }
 
@@ -111,10 +118,15 @@ pub(crate) fn append_family_canopy(mesh: &mut TerrainMeshData, bounds: [f32;4], 
     match family {
         GroveFamily::JohtoPine => pine::append_canopy(mesh,bounds,base,tile,coordinates,neighbors),
         GroveFamily::AncientForest => ancient::append_canopy(mesh,bounds,base,tile,coordinates,neighbors),
+        GroveFamily::KantoDeciduous => deciduous::append_canopy(mesh,bounds,base,tile,coordinates,neighbors),
     }
     if mesh.solid.positions.len() > first {
         mesh.solid.cutaway_ranges.push(first..mesh.solid.positions.len());
     }
+}
+
+pub(crate) fn instance_width_ratio(family:GroveFamily,coordinates:[i32;2],prototype:[i32;2])->f32 {
+    if family==GroveFamily::KantoDeciduous {deciduous::width_ratio(coordinates,prototype)} else {1.}
 }
 
 pub(crate) fn grove_trunk_offset(coordinates: [i32; 2], spacing: f32) -> Vec2 {
@@ -292,16 +304,25 @@ mod tests {
 
     #[test]
     fn mature_trees_clear_house_roofs_and_keep_authored_trunk_plots() {
-        let house = new_bark_models::model(ModelKind::PlayerHouse);
-        let roof = (house.max[1] - house.min[1]) * 16.0;
-        for z in 0..20 {
-            for x in 0..20 {
-                let v = variation(x, z);
-                assert!(
-                    80.0 * v.height > roof,
-                    "mature crown must clear normal house roof"
-                );
-                assert!(v.offset.iter().all(|o| (o * 16.0 * 0.30).abs() < 8.0));
+        let roof = [ModelKind::House, ModelKind::PlayerHouse, ModelKind::Lab,
+            ModelKind::Pokecenter, ModelKind::Mart].into_iter().map(|kind| {
+                let model = new_bark_models::model(kind);
+                // Buildings use two source tiles per authored model unit.
+                (model.max[1] - model.min[1]) * 16. * 2.
+            }).fold(0., f32::max);
+        for coordinates in [[0,0], [4,8], [-12,4], [6,8], [13,6], [29,4]] {
+            for neighbors in [[false;4], [true;4], [true,false,true,false]] {
+                let mut tree = TerrainMeshData::default();
+                append_grove_tree(&mut tree, [0.,32.,0.,32.], 3.,16.,
+                    coordinates,neighbors);
+                let top = tree.solid.positions.iter().map(|p| p[1]).fold(3.,f32::max);
+                assert!(top > 3. + roof * 1.10,
+                    "generated pine must stand above town roofs: {coordinates:?}, {top}, roof {roof}");
+                assert!(top >= 3. + pine::stem_height(16.,coordinates,neighbors),
+                    "crown fitting must retain the full leader height");
+                assert!(tree.solid.positions[..13].iter().all(|p|
+                    p[1] == 3. && p[0] > 0. && p[0] < 32. && p[2] > 0. && p[2] < 32.),
+                    "the rooted flare must remain on its authored plot");
             }
         }
     }

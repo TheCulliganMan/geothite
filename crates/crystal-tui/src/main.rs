@@ -668,6 +668,9 @@ fn run_tui(mut game: RuntimeGameShell, theme: TuiTheme, save_path: Option<PathBu
             .draw(|frame| ui.draw(frame, &snapshot))
             .context("draw terminal UI")?;
         if !event::poll(Duration::from_millis(100)).context("poll terminal input")? {
+            // Timed presentation keeps running while the terminal waits for
+            // input. The production controller retains every A/B boundary.
+            game.wait_frames(6)?;
             continue;
         }
         let Event::Key(key) = event::read().context("read terminal input")? else {

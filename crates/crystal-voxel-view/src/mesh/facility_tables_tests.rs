@@ -140,9 +140,12 @@ fn facility_tables_are_complete_finite_and_leave_native_actor_support_alone() {
                 .all(|p| p[1] == 0.)
         );
         assert!(mesh.solid.cutaway_ranges.is_empty() && mesh.textured.cutaway_ranges.is_empty());
+        let body=furniture_body(&mesh,owned);
+        assert!(mesh.solid.positions.is_empty());
+        assert!(!body.positions.is_empty());
         let ([west, east, north, south], rise) = kind.fitting();
         assert!(
-            mesh.solid
+            body
                 .positions
                 .iter()
                 .all(|p| p.iter().all(|v| v.is_finite())
@@ -154,7 +157,7 @@ fn facility_tables_are_complete_finite_and_leave_native_actor_support_alone() {
                     && p[2] <= g.origin_z + south + 0.001)
         );
         assert!(
-            mesh.solid
+            body
                 .normals
                 .iter()
                 .all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.001)
@@ -352,7 +355,7 @@ fn facility_document_face_is_live_outward_and_clears_its_physical_paper() {
             .unwrap();
         let mut mesh = TerrainMeshData::default();
         assert!(append(&mut mesh, &refs, &g, p, &mut claimed));
-        let count = p.indices(g.width).count() * 4;
+        let count = mesh.textured.positions.len()-4;
         assert!(
             mesh.textured.positions[count..]
                 .iter()

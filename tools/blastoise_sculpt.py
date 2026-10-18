@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Original heavy shell turtle with genuine recessed twin cannon bores."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
 from sculpt_geometry import part,ellipsoid,loft,curved_profiles,crease_normals
 from bovine_sculpt import oval,curved_tube,reverse_front
 from lugia_sculpt import paddle
-from raptor_bird_sculpt import sheet,paint
+from raptor_bird_sculpt import sheet
+from wartortle_sculpt import paint,fitted_shading,forelimb
 from wartortle_sculpt import ribbon
 from chikorita_sculpt import add,sub,mul,dot,cross,unit
 from skin_glb import COORDINATES
@@ -36,7 +39,7 @@ def cannon(p,s):
  for j in range(4):
   for i in range(n):a=j*n+i;b=j*n+(i+1)%n;c=((j+1)%4)*n+(i+1)%n;d=((j+1)%4)*n+i;f.append((a,b,c,d))
  p.append(crease_normals(part('Cannon lining / rooted dark open annulus '+str(s),BORE,v,f,True),38))
- floor=ellipsoid('Cannon floor / recessed dark bore '+str(s),INK,(0,0,0),(.045,.045,.010),32,18)
+ floor=ellipsoid('Cannon floor / recessed dark bore '+str(s),INK,(0,0,0),(.045,.045,.010),24,14)
  center=add(root,mul(axis,length-.163))
  for field in ('positions','normals'):
   old=floor[field];vv=[]
@@ -45,10 +48,10 @@ def cannon(p,s):
   floor[field]=vv
  p.append(floor)
  # Blue shoulder socket physically roots both the shell and barrel.
- p.append(ellipsoid('Cannon mount / blue rooted shoulder socket '+str(s),BLUE,(s*.265,.744,-.082),(.105,.094,.098),36,24))
+ p.append(ellipsoid('Cannon mount / blue rooted shoulder socket '+str(s),BLUE,(s*.265,.744,-.082),(.105,.094,.098),22,14))
 
 def rim():
- n=64;m=16;v=[]
+ n=48;m=12;v=[]
  for i in range(n):
   a=i*math.tau/n
   for j in range(m):
@@ -58,25 +61,25 @@ def rim():
 
 def limbs(p):
  for s in (-1,1):
-  p.append(paddle('Arm / muscular blue cannon-turtle forelimb '+str(s),BLUE,[(s*.25,.652,.024),(s*.405,.589,.093),(s*.477,.516,.203)],[.110,.115,.104],[.116,.112,.106]))
-  p.append(ellipsoid('Hand / substantial blue turtle fist '+str(s),BLUE,(s*.485,.489,.218),(.117,.119,.125),36,24))
+  p.append(forelimb('Arm / continuous blue cannon-turtle forelimb and palm '+str(s),BLUE,[(s*.25,.652,.024),(s*.385,.600,.100),(s*.460,.535,.220),(s*.490,.485,.310),(s*.502,.465,.345)],[.110,.115,.118,.075,.003],[.116,.112,.125,.088,.003]))
   for j,dx in enumerate((-.060,0,.060)):
-   p.append(curved_tube(f'Hand claw / three ivory turtle points {s} {j}',WHITE,[(s*.485+dx,.460,.302),(s*.485+dx*.95,.449,.343),(s*.485+dx*.9,.428,.365)],[.024,.019,.002],24))
-  p.append(ellipsoid('Haunch / powerful blue cannon-turtle thigh '+str(s),BLUE,(s*.235,.235,.044),(.157,.196,.157),40,26))
+   p.append(curved_tube(f'Hand claw / three ivory turtle points {s} {j}',WHITE,[(s*.485+dx,.460,.302),(s*.485+dx*.95,.449,.343),(s*.485+dx*.9,.428,.365)],[.024,.019,.002],16))
+  p.append(ellipsoid('Haunch / powerful blue cannon-turtle thigh '+str(s),BLUE,(s*.235,.235,.044),(.157,.196,.157),28,18))
   p.append(paddle('Leg / short strong blue turtle ankle '+str(s),BLUE,[(s*.25,.22,.064),(s*.264,.116,.128),(s*.265,.051,.181)],[.085,.082,.086],[.087,.074,.050]))
-  p.append(ellipsoid('Foot / grounded broad blue turtle paw '+str(s),BLUE,(s*.265,.035,.187),(.111,.035,.111),36,22))
+  p.append(ellipsoid('Foot / grounded broad blue turtle paw '+str(s),BLUE,(s*.265,.035,.187),(.111,.035,.111),26,16))
   for j,dx in enumerate((-.065,0,.065)):
-   p.append(curved_tube(f'Toe / three blue turtle digits {s} {j}',BLUE,[(s*.265+dx*.5,.042,.233),(s*.265+dx,.027,.277),(s*.265+dx,.021,.291)],[.035,.026,.020],24))
-   p.append(curved_tube(f'Foot claw / three grounded ivory hooks {s} {j}',WHITE,[(s*.265+dx,.024,.278),(s*.265+dx,.017,.312),(s*.265+dx,.002,.331)],[.021,.015,.002],24))
+   p.append(curved_tube(f'Toe / three blue turtle digits {s} {j}',BLUE,[(s*.265+dx*.5,.042,.233),(s*.265+dx,.027,.277),(s*.265+dx,.021,.291)],[.035,.026,.020],16))
+   p.append(curved_tube(f'Foot claw / three grounded ivory hooks {s} {j}',WHITE,[(s*.265+dx,.024,.278),(s*.265+dx,.017,.312),(s*.265+dx,.002,.331)],[.021,.015,.002],16))
 
-def sculpture(species='blastoise'):
+@lru_cache(maxsize=1)
+def raw_sculpture(species='blastoise'):
  if species not in SPECIES:raise ValueError('unsupported cannon turtle')
- body=ellipsoid('Body / blue mantle beneath armored turtle plates',BLUE,(0,.455,.011),(.307,.350,.170),48,30)
- shell=ellipsoid('Shell / substantial domed brown turtle armor',BROWN,(0,.455,-.109),(.340,.375,.233),52,32)
- belly=ellipsoid('Belly / gently domed tan turtle breast',TAN,(0,.455,.068),(.287,.335,.146),48,30)
- head=crease_normals(loft('Head / broad angular blue turtle cranium',BLUE,curved_profiles(((.725,.085,.098,.083),(.795,.193,.156,.083),(.91,.223,.175,.074),(.999,.187,.139,.049),(1.055,.106,.080,.020),(1.064,.025,.026,.014)),4),48),45)
- muzzle=ellipsoid('Muzzle / broad low blue turtle snout',BLUE,(0,.830,.221),(.192,.073,.080),44,26)
- jaw=ellipsoid('Jaw / broad cream cannon-turtle chin',TAN,(0,.761,.174),(.158,.069,.095),40,26);p=[body,shell,belly,rim(),head,muzzle,jaw]
+ body=ellipsoid('Body / blue mantle beneath armored turtle plates',BLUE,(0,.455,.011),(.307,.350,.170),32,20)
+ shell=ellipsoid('Shell / substantial domed brown turtle armor',BROWN,(0,.455,-.109),(.340,.375,.233),36,24)
+ belly=ellipsoid('Belly / gently domed tan turtle breast',TAN,(0,.455,.068),(.287,.335,.146),32,20)
+ head=crease_normals(loft('Head / broad angular blue turtle cranium',BLUE,curved_profiles(((.725,.085,.098,.083),(.795,.193,.156,.083),(.91,.223,.175,.074),(.999,.187,.139,.049),(1.055,.106,.080,.020),(1.064,.025,.026,.014)),4),36),45)
+ muzzle=ellipsoid('Muzzle / broad low blue turtle snout',BLUE,(0,.830,.221),(.192,.073,.080),32,20)
+ jaw=ellipsoid('Jaw / broad cream cannon-turtle chin',TAN,(0,.761,.174),(.158,.069,.095),30,20);p=[body,shell,belly,rim(),head,muzzle,jaw]
  for j,path in enumerate(([(-.237,.596),(-.127,.565),(0,.552),(.127,.565),(.237,.596)],[(-.202,.365),(-.112,.339),(0,.333),(.112,.339),(.202,.365)],[(0,.747),(0,.628),(0,.489),(0,.356),(0,.182)])):
   p.append(paint('Belly seam / fitted plated turtle join '+str(j),SEAM,ribbon(path,.0035),belly,.005,3))
  rear=reverse_front(shell);hexagon=[(0,.744),(-.174,.646),(-.193,.443),(0,.284),(.193,.443),(.174,.646)]
@@ -99,10 +102,17 @@ def sculpture(species='blastoise'):
  p.append(paddle('Tail / short tapered blue turtle wedge',BLUE,[(0,.265,-.215),(0,.182,-.359),(0,.125,-.459)],[.079,.061,.003],[.067,.043,.003]))
  for s in (-1,1):cannon(p,s)
  limbs(p)
+ p=fitted_shading([crease_normals(q,65. if q['part'].startswith('Arm /') else 40.) for q in p])
+ return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+
+def sculpture(species='blastoise',normalize=True):
+ m=deepcopy(raw_sculpture(species));p=m['primitives']
+ if not normalize:return m
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
  for q in p:
   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
- return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+  q['positions']=[0. if v==0. else v for v in q['positions']]
+ return m
 
 def main():
  a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'blastoise.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))

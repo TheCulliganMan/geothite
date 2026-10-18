@@ -1,6 +1,8 @@
 //! Sparse planted margins on verified outdoor water. Every accent stays in
 //! its water cell; source paths, actor support and terrain ownership remain intact.
 use super::*;
+// A CPU terrain-fit hint. Solid-color shaders leave this marker unchanged.
+pub(super) const ROOTED_WATER_UV:f32=86100.;
 
 fn place_seed(map: &str) -> u32 {
     // These two presentations are the same physical park. Other locations
@@ -108,7 +110,9 @@ pub(super) fn append(mesh: &mut TerrainMeshData, map: &str, cells: &[&VisualTile
             let toward=Vec3::new(dx as f32,0.,dz as f32);
             let center=Vec3::new((w+e)*0.5,shapes[i].surface_height(g.tile_height),(n+s)*0.5)
                 +toward*tile*0.30;
+            let first=mesh.solid.positions.len();
             patch(&mut mesh.solid,center,toward,tile,coord,fresh,seed);
+            mesh.solid.uvs[first..].fill([ROOTED_WATER_UV,0.]);
         }
     }}
 }
@@ -156,4 +160,23 @@ mod tests {
         let paths:Vec<_>=path_tiles.iter().collect();let mut path=make();
         append(&mut path,"LakeOfRage",&paths,&shapes,&g,[x,18]);assert!(path.solid.positions.is_empty());
     }
+    #[test]
+    fn elevated_pier_water_plants_remain_rooted_when_terrain_is_terraced() {
+        let g=GridGeometry{width:3,height:1,tile_width:32.,tile_height:32.,origin_x:0.,origin_z:0.};
+        let tiles=[5,0x14,5].into_iter().enumerate().map(|(x,t)|VisualTile{
+            column:x as u32,row:0,source:VisualTileSource{tileset_id:"johto".into(),metatile_id:0,
+                subtile_column:0,subtile_row:0,tile_index:t},texture:Handle::default(),animation_frames:None,priority:false}).collect::<Vec<_>>();
+        let cells=tiles.iter().collect::<Vec<_>>();let shapes=[CellShape::Flat,CellShape::Water,CellShape::Flat];
+        let mut mesh=TerrainMeshData{authored_cells:vec![None;3],footing_heights:vec![0.;3],..Default::default()};
+        let mut selected=None;
+        for x in 0..40 {append(&mut mesh,"Route32",&cells,&shapes,&g,[x,18]);
+            if !mesh.solid.positions.is_empty() {selected=Some(x);break;}}
+        let x=selected.unwrap();let old=mesh.solid.positions.clone();
+        assert!(mesh.solid.uvs.iter().all(|uv|uv[0]==ROOTED_WATER_UV));
+        let edge=crystal_render_api::VisualJumpLedge{start:bevy::math::IVec2::new(x,19),end:bevy::math::IVec2::new(x+3,19),descent:bevy::math::IVec2::Y};
+        super::super::terraces::finish_on_map(&mut mesh,"Route32",&cells,&g,[x,18],&[edge]);
+        assert!(mesh.footing_heights[0]>0.);
+        assert_eq!(&mesh.solid.positions[..old.len()],old.as_slice());
+    }
+
 }

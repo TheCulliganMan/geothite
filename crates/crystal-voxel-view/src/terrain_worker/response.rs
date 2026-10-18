@@ -196,6 +196,7 @@ pub(super) struct Response {
     animated_textured: MeshWire,
     animated_solid: MeshWire,
     pillars: Vec<[u64; 2]>,
+    train_doors: bool,
 }
 
 impl Response {
@@ -304,6 +305,7 @@ impl Response {
                 .collect::<Result<_, _>>()?,
             animated_textured: MeshWire::capture(&built.animated_textured_mesh)?,
             animated_solid: MeshWire::capture(&built.animated_solid_mesh)?,
+            train_doors: built.train_doors,
             pillars: built
                 .animated_pillars
                 .iter()
@@ -418,6 +420,7 @@ impl Response {
                 .collect::<Result<_, _>>()?,
             animated_textured: MeshWire::capture_owned(built.animated_textured_mesh)?,
             animated_solid: MeshWire::capture_owned(built.animated_solid_mesh)?,
+            train_doors: built.train_doors,
             pillars: built
                 .animated_pillars
                 .iter()
@@ -517,6 +520,7 @@ impl Response {
                 .collect::<Result<_, _>>()?,
             animated_textured_mesh: self.animated_textured.into_mesh()?,
             animated_solid_mesh: self.animated_solid.into_mesh()?,
+            train_doors: self.train_doors,
             animated_pillars: self
                 .pillars
                 .into_iter()

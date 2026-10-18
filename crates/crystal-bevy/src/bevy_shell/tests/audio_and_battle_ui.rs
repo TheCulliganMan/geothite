@@ -157,23 +157,44 @@ fn victory_music_waits_for_turn_messages_but_not_rewards() {
 }
 
 #[test]
-fn battle_animation_cry_selectors_choose_exact_species_variants() {
-    assert_eq!(
-        visible_pokemon_animation_cry_id("SANDSHREW", 0),
-        "CRY_MON_SANDSHREW_GROWL"
-    );
-    assert_eq!(
-        visible_pokemon_animation_cry_id("SANDSHREW", 1),
-        "CRY_MON_SANDSHREW_ROAR"
-    );
-    assert_eq!(
-        visible_pokemon_animation_cry_id("SANDSHREW", 2),
-        "CRY_MON_SANDSHREW"
-    );
-    assert_eq!(
-        visible_pokemon_animation_cry_id("SANDSHREW", 3),
-        "CRY_MON_SANDSHREW"
-    );
+fn battle_animation_cry_selectors_use_source_word_offsets() {
+    let cry=crate::assets::PokemonCryMetadata {cry:"CRY_PARAS".into(),pitch:-1,length:-32};
+    for (selector,length) in [(0,160),(1,32),(2,65504),(3,65504),(4,160)] {
+        let parameters=visible_pokemon_animation_cry_parameters(&cry,selector);
+        assert_eq!((parameters.pitch,parameters.length),(65535,length));
+    }
+}
+
+#[test]
+#[ignore = "requires an external verified pack via CRYSTAL_RENDER_TEST_PACK"]
+fn external_animation_cries_decode_base_programs_without_species_aliases() {
+    let pack=PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").expect("external pack"));
+    let root=AssetRoot::new(pack.parent().unwrap());
+    let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&pack).unwrap();
+    let runtime=CrystalRuntime::from_loaded_compiled_pack(&root,loaded).unwrap();
+    let mut shell=initialize_bevy_runtime_shell(root,runtime.clone(),
+        BevyShellStart::NewGameAtRuntimeTile {spawn_identifier:runtime.title_new_game_spawn_identifier().unwrap(),
+            map_name:"PlayersHouse2F".into(),tile_x:3,tile_y:3},BevyShellConfig::default()).unwrap();
+    let cry=runtime.data().pokemon_cries["MEW"].clone();
+    let original=runtime.audio().require_cry(&cry.cry).unwrap().source.clone();
+    let mut samples=Vec::new();
+    for selector in 0..4 {
+        shell.pending_audio.clear();
+        queue_visible_pokemon_animation_cry(&mut shell,"MEW",selector).unwrap();
+        let command=shell.pending_audio.last().unwrap();
+        assert_eq!(command.audio_id,cry.cry);
+        let expected_delta=[0xc0,0x40,0,0][selector as usize];
+        assert_eq!(command.cry_parameters.unwrap().length,(cry.length as u16).wrapping_add(expected_delta));
+        let source=source_for_visible_audio_command(&runtime,command).unwrap();
+        let decoded=decoded_audio_program_source(command,source).unwrap();
+        assert!(!decoded.bytes.is_empty());
+        assert_eq!(decoded.loop_range,None);
+        samples.push(decoded.bytes);
+    }
+    assert!(samples[0].len()>samples[1].len() && samples[1].len()>samples[2].len());
+    assert_eq!(samples[2],samples[3]);
+    assert_eq!(runtime.audio().require_cry(&cry.cry).unwrap().source,original,
+        "derived synthesis must preserve the supplied canonical source");
 }
 
 fn assert_audio_cache_contains_non_silent_pcm(world: &World, expected_count: usize) {
@@ -337,12 +358,101 @@ fn magnet_train_playmusic2_waits_one_frame_between_stop_and_restart() {
 }
 
 #[test]
+fn renderer_neutral_controller_settles_both_magnet_train_directions() {
+    for direction in [1, -1] {
+        let mut shell = progression_shell_on_map_for_test("GoldenrodMagnetTrainStation");
+        let before = shell.shell.snapshot().unwrap().overworld;
+        shell.visible_magnet_train = Some(VisibleMagnetTrain {
+            direction,
+            hold_position: 64 * direction,
+            final_position: -96 * direction,
+            position: 96 * direction,
+            offset: 96 * direction,
+            player_x: -4,
+            player_sprite_visible: false,
+            player_sprite_frame: 0,
+            player_sprite_duration: 0,
+            wait_counter: 0,
+            phase: 0,
+            arrival_sfx_played: false,
+        });
+        let mut controller = VisibleShellController { shell };
+        controller.wait_frames(1).expect("finish clock-owned train frames");
+        assert!(controller.shell.visible_magnet_train.is_none());
+        assert_eq!(controller.shell.active_music.as_deref(), Some("MUSIC_MAGNET_TRAIN"));
+        assert!(controller.shell.last_audio_events.iter().any(|event| {
+            event.contains("SFX_TRAIN_ARRIVED")
+        }), "the train must reach its production arrival cue");
+        let after = controller.snapshot().unwrap().overworld;
+        assert_eq!(after.map_name, before.map_name);
+        assert_eq!(after.tile, before.tile, "an empty wait cannot move the player");
+    }
+}
+
+#[test]
+fn magnet_train_warpcheck_stages_map_load_and_resumes_destination_commands() {
+    for (map,script,to) in [
+        ("GoldenrodMagnetTrainStation", ".MagnetTrainToSaffron@GoldenrodMagnetTrainStationOfficerScript", "SaffronMagnetTrainStation"),
+        ("SaffronMagnetTrainStation", ".MagnetTrainToGoldenrod@SaffronMagnetTrainStationOfficerScript", "GoldenrodMagnetTrainStation"),
+    ] {
+        let root=AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+        let runtime=workspace_desktop_runtime(&root);
+        let commands=runtime.compiled_script_commands(script).unwrap();
+        let index=commands.iter().position(|c|c["command"]=="warpcheck").unwrap();
+        let npc_index=commands.iter().position(|c|c["command"]=="applymovement"
+            &&c["args"][0].as_str()!=Some("PLAYER")).unwrap();
+        let end_index=commands.iter().rposition(|c|c["command"]=="end").unwrap();
+        let spawn_identifier=runtime.title_new_game_spawn_identifier().unwrap();
+        let mut shell=initialize_bevy_runtime_shell(root,runtime,
+            BevyShellStart::NewGameAtRuntimeTile {spawn_identifier,map_name:map.into(),tile_x:6,tile_y:5},
+            BevyShellConfig::default()).unwrap();
+        let step=shell.shell.step_compiled_script_command(map,script,index,
+            ScriptRuntimeInputs::default(),ScriptPhoneInputs::default()).unwrap();
+        arm_visible_active_script_cursor_from_run(&mut shell,step.next_cursor);
+        execute_visible_pending_script_warp(&mut shell).unwrap();
+        assert_eq!(shell.shell.current_map_name(),map,"newloadmap still belongs to the departure interpreter");
+        let state=shell.shell.session().state();
+        assert_eq!(state.script_runtime.pending_script_warp.as_ref().unwrap().target_map,to);
+        let load=state.script_runtime.pending_map_load.as_ref().unwrap();
+        assert_eq!(load.command,"newloadmap");
+        assert_eq!(load.map_setup.as_deref(),Some("MAPSETUP_TRAIN"));
+        take_visible_pending_map_load(&mut shell).expect("commit train load and resume source cursor");
+        settle_visible_shell_until_input(&mut shell).expect("finish arrival movement, source wait and end");
+        let snapshot=shell.shell.snapshot().unwrap();
+        assert_eq!(snapshot.overworld.map_name,to);
+        assert_eq!(snapshot.overworld.tile,TilePosition::new(11,5));
+        assert_eq!(snapshot.overworld.facing,Direction::Down);
+        assert!(shell.last_audio_events.iter().any(|event|event.contains("drained runtime delays")
+            &&event.contains(script)&&event.contains("command: \"wait\"")&&event.contains("frames: 120")),
+            "source wait20 must consume its actual120-frame delay after arrival");
+        assert!(shell.last_audio_events.iter().any(|event|
+            event.contains(&format!("script end state source={script}:{end_index} "))),
+            "the retained source stream must execute and consume its real end");
+        let source_end=shell.last_audio_events.iter().position(|event|
+            event.contains(&format!("script end state source={script}:{end_index} "))).unwrap();
+        let scene=shell.shell.current_scene_script().unwrap().unwrap().script_name.unwrap();
+        let scene_start=shell.last_audio_events.iter().position(|event|
+            event.contains("scene armed ")&&event.contains(&scene)
+                &&event.ends_with("reason=script_warp_continuation_end"))
+            .expect("destination scene must run after the retained source stream");
+        let scene_end=shell.last_audio_events.iter().position(|event|
+            event.contains(&format!("script end state source={scene}:"))).unwrap();
+        assert!(source_end<scene_start&&scene_start<scene_end);
+        assert!(!shell.deferred_script_warp_arrival_scripts);
+        assert!(shell.active_script_cursor.is_none());
+        let before=shell.shell.snapshot().unwrap().state_checksum;
+        let rejected=shell.shell.step_compiled_script_command(map,script,npc_index,
+            ScriptRuntimeInputs::default(),ScriptPhoneInputs::default()).unwrap_err();
+        assert!(format!("{rejected:#}").contains("map mismatch"),
+            "departure NPCs must not be mutated in the destination map");
+        assert_eq!(shell.shell.snapshot().unwrap().state_checksum,before);
+    }
+}
+
+#[test]
 fn magnet_train_background_uses_source_attribute_palettes() {
-    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
-        .canonicalize()
-        .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
+    let runtime_shell = core_modular_title_shell_for_test();
+    let asset_root = runtime_shell.asset_root.clone();
     let base = load_visible_magnet_train_base(&asset_root, "day")
         .expect("Magnet Train background assembled from source tiles");
     let palettes = load_tileset_palette_bank(&asset_root, "train_station", "day")
@@ -366,10 +476,7 @@ fn magnet_train_background_uses_source_attribute_palettes() {
 
 #[test]
 fn magnet_train_frame_contains_the_source_gendered_player_sprite() {
-    let mut runtime_shell = core_modular_title_shell_for_test();
-    runtime_shell.intro_screen = None;
-    runtime_shell.title_menu = None;
-    runtime_shell.visible_continue_screen = None;
+    let mut runtime_shell = progression_shell_on_map_for_test("GoldenrodMagnetTrainStation");
     runtime_shell.visible_magnet_train = Some(VisibleMagnetTrain {
         direction: 1,
         hold_position: 64,
@@ -445,11 +552,8 @@ fn magnet_train_frame_contains_the_source_gendered_player_sprite() {
 
 #[test]
 fn magnet_train_player_uses_source_palettes_and_oam_priority() {
-    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
-        .canonicalize()
-        .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
+    let runtime_shell = core_modular_title_shell_for_test();
+    let asset_root = runtime_shell.asset_root.clone();
     let red = load_visible_magnet_train_player_frames(&asset_root, false, "day")
         .expect("PAL_OW_RED player frames");
     let blue = load_visible_magnet_train_player_frames(&asset_root, true, "day")

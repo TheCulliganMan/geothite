@@ -2,9 +2,9 @@
 
 A server-owned Pokémon Crystal encounter expansion inspired by [Wowabox's All Pokémon Catchable 151](https://github.com/wowabox/All_Pokemon_Catchable_151_Mod). This is an original Gen 2 content overlay, not a port of the reference project's Lua code.
 
-All 251 Gen 1–2 species, including Mew and Celebi, have renewable wild encounters. No trading, breeding, gifts, or event-only captures are required. Original evolution and capture rules are unchanged. Existing encounters retain their normal time-of-day behavior; every added slot applies morning, day, and night. Grass includes the game's ordinary cave/tower land encounters; water means Surf, not fishing.
+All 251 Gen 1–2 species, including Mew and Celebi, have renewable wild encounters. No trading, breeding, gifts, or event-only captures are required. Capture rules are unchanged. The shared solo-completion overlay also adds a Link Cable for every trade evolution; see [the mod guide](../../../../modpacks/all-pokemon/README.md). Existing encounters retain their normal time-of-day behavior; every added slot applies morning, day, and night. Grass includes the game's ordinary cave/tower land encounters; water means Surf, not fishing.
 
-The checked-in `encounters.json` is the authoritative mod content. It replaces selected slots in existing tables while preserving encounter rates and the original 7-slot land / 3-slot water distributions. Land slots 5–7 have 5%, 4%, and 1% chances per encounter; Surf slots 2–3 have 30% and 10%. Levels and habitats are explicit. Legendaries are repeatable rare encounters in late areas; Celebi is level 30 in Ilex Forest and Mew is level 40 outside Silver Cave. Progression gates and map geometry remain unchanged.
+The checked-in [`modpacks/all-pokemon/encounters.json`](../../../../modpacks/all-pokemon/encounters.json) is the authoritative mod content. It replaces selected slots in existing tables while preserving encounter rates and the original 7-slot land / 3-slot water distributions. Land slots 5–7 have 5%, 4%, and 1% chances per encounter; Surf slots 2–3 have 30% and 10%. Levels and habitats are explicit. Legendaries are repeatable rare encounters in late areas; Celebi is level 30 in Ilex Forest and Mew is level 40 outside Silver Cave. Progression gates and map geometry remain unchanged.
 
 ## Server integration
 
@@ -15,7 +15,7 @@ The added manifest `all-251-catchable-v1` separates this world from vanilla save
 Build a standalone pack from the Rust workspace:
 
 ```sh
-cargo run --locked -p crystal-web-server --bin catchable -- ../content-packs/core-modular.browser.crystalpack /tmp/all-251.browser.crystalpack
+cargo run --locked -p crystal-assets --bin pack_all_pokemon -- content-packs/core-modular.browser.crystalpack content-packs/all-pokemon.browser.crystalpack
 ```
 
 The same builder accepts the full desktop pack and preserves its audio storage mode. Keep the source pack's audio sidecars available when distributing sidecar-based packs.
@@ -170,4 +170,4 @@ Slots below are one-based and have the same species and level at all three times
 cargo test --locked -p crystal-web-server
 ```
 
-The integration tests use the repository's real browser pack. They verify 251-species coverage, reject a deliberately removed Celebi encounter, reject unknown species, preserve all non-encounter content, round-trip the compiled pack, and check deterministic identity and multiplayer acceptance. A separate hosted-pack test verifies composition with the realtime-clock overlay.
+The integration tests use the repository's real browser pack. They verify 251-species coverage, reject a deliberately removed Celebi encounter, reject unknown species, preserve unrelated content and audio, round-trip the compiled pack, and check deterministic identity and multiplayer acceptance. A separate hosted-pack test verifies composition with the realtime-clock overlay.

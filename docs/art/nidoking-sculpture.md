@@ -1,5 +1,12 @@
 # Original armored Nidoking sculpture
 
+The current canonical sculpture and articulated skin are documented in
+[the royal-Nido guide](nido-royal-skins.md). The record below describes the
+prior static sculpture.
+
+## Prior static sculpture
+
+
 The canonical Nidoking model now comes from `tools/nidoking_sculpt.py`.
 It replaces the generic family biped with a forward-leaning purple body, a long
 lowered wedge skull, a large swept nasal lance, thick ragged teal-lined ears,

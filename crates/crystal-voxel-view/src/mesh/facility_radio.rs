@@ -6,6 +6,9 @@ use std::sync::OnceLock;
 use crate::interior_models::RadioFurniturePart;
 #[path = "facility_radio_source.rs"]
 mod source;
+#[path = "power_plant_equipment.rs"]
+mod power_plant_equipment;
+pub(in crate::mesh) use power_plant_equipment::finish as finish_power_plant_equipment;
 use source::{Identity, Kind};
 pub(super) struct Placement {
     resolved: source::Match,
@@ -80,6 +83,7 @@ pub(super) fn resolve(
         &customized,
     )
     .into_iter()
+    .filter(|p|p.kind()!=Kind::Workbench || model(0).has_native_facility_furniture_materials())
     .map(|resolved| Placement { resolved })
     .collect()
 }
@@ -91,6 +95,13 @@ fn pixel_uv(g: &GridGeometry, p: &source::Match, x: f32, y: f32) -> [f32; 2] {
         uv.0 + (uv.1 - uv.0) * (x - tx as f32 * 8.) / 8.,
         uv.2 + (uv.3 - uv.2) * (y - ty as f32 * 8.) / 8.,
     ]
+}
+
+// Plain fields in the bench's own complete source drawing: wood top,
+// brown drawer apron, light edge and dark drawer division respectively.
+fn workbench_swatches(g:&GridGeometry,p:&source::Match)->[[f32;2];4] {
+    [[4.,14.],[4.,16.],[4.,1.],[4.,17.]]
+        .map(|[x,y]|pixel_uv(g,p,x+0.5,y+0.5))
 }
 
 fn radio_affine(kind:Kind,part:RadioFurniturePart)->[f32;4] {
@@ -176,6 +187,9 @@ pub(super) fn append(
     if !p.coherent(&identities, g.width, g.height) {
         return false;
     }
+    if p.kind()==Kind::Workbench && !model(0).has_native_facility_furniture_materials() {
+        return false;
+    }
     let (west, _, north, _) = g.bounds(p.column, p.row);
     let sx = g.tile_width / 8.;
     let sy = g.tile_height / 8.;
@@ -221,7 +235,10 @@ pub(super) fn append(
             assert!(model(kind.model_index()).append_native_radio(&mut mesh.textured,bounds,rise*sy,sy,
                 |part|radio_affine(kind,part),swatches),"canonical radio furniture requires its named material parts");
         }
-        kind => model(kind.model_index()).append_fitted(&mut mesh.solid, bounds, 0., rise * sy),
+        Kind::Workbench => {
+            assert!(model(0).append_native_facility_furniture(&mut mesh.textured,bounds,
+                rise*sy,workbench_swatches(g,p)),"complete facility workbench requires named live materials");
+        }
     }
     let point = |x: f32, y: f32, z: f32| [west + x * sx, y * sy, north + z * sy];
     let native_point=|part,x,y,z| {
@@ -289,4 +306,5 @@ mod tests {
     use super::*;
     use std::sync::Arc;
     include!("facility_radio_tests.rs");
+    include!("facility_workbench_finish_tests.rs");
 }

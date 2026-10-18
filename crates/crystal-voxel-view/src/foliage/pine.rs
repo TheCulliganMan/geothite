@@ -2,15 +2,32 @@
 //! No cone shells, billboard crowns or retained broadleaf grove geometry.
 use super::*;
 
-const RECIPES: [(f32,f32,f32,usize);3] = [
-    (1.08,0.94,0.025,7), (0.92,1.06,-0.005,8), (1.00,1.00,0.065,7),
+struct Recipe {
+    width: f32,
+    height: f32,
+    drop: f32,
+    courses: usize,
+    crown_start: f32,
+    lean: f32,
+}
+
+// Red-pine-inspired high spreading, upright and windswept crowns. Their
+// widest limbs sit well above the open lower trunk, rather than at its base.
+const RECIPES: [Recipe; 3] = [
+    Recipe { width: 1.08, height: 0.94, drop: 0.025, courses: 7, crown_start: 0.60, lean: 0.12 },
+    Recipe { width: 0.92, height: 1.06, drop: -0.005, courses: 8, crown_start: 0.48, lean: 0.055 },
+    Recipe { width: 1.00, height: 1.00, drop: 0.045, courses: 7, crown_start: 0.56, lean: 0.20 },
 ];
 
 pub(super) fn stem_height(tile: f32, coordinates: [i32;2], neighbors: [bool;4]) -> f32 {
     let v = variation(coordinates[0],coordinates[1]);
     let interior = neighbors.iter().all(|&n| n);
-    tile * (5.+v.height*0.9+if interior {1.2} else {0.}) * RECIPES[v.index].1
-        * non_ancient_height_factor(coordinates)
+    // Mature leaders rise above town roofs even at the shortest seeded
+    // placement. Keep age variation additive so it cannot shrink a tree
+    // back to shrub height; interior trees still reach a little higher.
+    tile * (10.5 + (v.height - 0.9) * 0.9
+        + (non_ancient_height_factor(coordinates) - 0.6) * 4.
+        + if interior { 1.2 } else { 0. }) * RECIPES[v.index].height
 }
 
 pub(super) fn append(
@@ -33,8 +50,9 @@ pub(super) fn append_canopy(
 ) {
     let first = mesh.solid.positions.len();
     let v = variation(coordinates[0], coordinates[1]);
-    // Three authored branch recipes: spreading, upright, and swept.
-    let (crown_width, _, branch_drop, courses) = RECIPES[v.index];
+    let recipe = &RECIPES[v.index];
+    let crown_width = recipe.width;
+    let courses = recipe.courses;
     let spacing = (bounds[1] - bounds[0]).min(bounds[3] - bounds[2]);
     let offset = grove_trunk_offset(coordinates, spacing);
     let center = Vec3::new(
@@ -51,7 +69,7 @@ pub(super) fn append_canopy(
         1 + (((age.height - 0.9) / 0.7 * 3.) as usize).min(2),
         (age.turn / std::f32::consts::FRAC_PI_2).round() as usize,
     ));
-    let lean = Vec3::new(phase.cos(), 0., phase.sin()) * spacing * 0.055;
+    let lean = Vec3::new(phase.cos(), 0., phase.sin()) * spacing * recipe.lean;
     let stem = |t: f32| center + Vec3::Y * height * t + lean * t * t;
     // A continuous fluted trunk, with a rooted flare and unequal warm fissures.
     let start = mesh.solid.positions.len() as u32;
@@ -74,9 +92,14 @@ pub(super) fn append_canopy(
                 .push((radial + Vec3::Y * 0.04).normalize().to_array());
             mesh.solid.uvs.push([0.; 2]);
             let grain = 0.78 + 0.22 * (a * 7. + phase + t).cos();
-            mesh.solid
-                .colors
-                .push([0.20 * grain, 0.095 * grain, 0.035 * grain, 1.]);
+            // Dark rooted bark warms to the orange-red upper stem visible
+            // between the sparse branches of a mature red pine.
+            mesh.solid.colors.push([
+                (0.17 + t * 0.17) * grain,
+                (0.105 + t * 0.065) * grain,
+                (0.065 + t * 0.015) * grain,
+                1.,
+            ]);
         }
     }
     for row in 0..12 {
@@ -88,6 +111,20 @@ pub(super) fn append_canopy(
     }
     let density = neighbors.iter().filter(|&&n| n).count() as f32 / 4.;
     let spread = spacing * (1.05 + density * 1.15) * crown_width;
+    // A couple of shortened lower limbs retain the open trunk. Only one
+    // carries a small remnant spray; neither forms a broad evergreen skirt.
+    for limb in 0..2 {
+        let angle = phase + limb as f32 * 2.4;
+        let direction = Vec3::new(angle.cos(), 0., angle.sin());
+        let root = stem(0.30 + limb as f32 * 0.11);
+        let tip = root + direction * spacing * (0.38 + 0.08 * angle.sin())
+            - Vec3::Y * height * 0.012;
+        append_branch(&mut mesh.solid, root, tip, spacing * 0.014);
+        if limb == 1 {
+            spray(&mut mesh.solid, root.lerp(tip, 0.7), tip,
+                spacing * 0.14, angle, v.tint, false);
+        }
+    }
     // Unequal staggered limbs, rather than rotationally identical whorls.
     for level in 0..courses {
         for bough in 0..4 {
@@ -96,18 +133,22 @@ pub(super) fn append_canopy(
                 continue;
             }
             let weathered = dead_limb == Some((level, bough));
-            let t = 0.27 + level as f32 * (0.665 / courses as f32) + 0.018 * (seed * 2.3).sin();
+            let course = level as f32 / (courses - 1) as f32;
+            let t = recipe.crown_start + (0.90 - recipe.crown_start) * course
+                + 0.018 * (seed * 2.3).sin();
             let angle = seed + bough as f32 * 0.18;
             let direction = Vec3::new(angle.cos(), 0., angle.sin());
             let root = stem(t);
-            // Mature lower limbs must carry the crown beyond the narrow
-            // source trunk plot. Taper the upper courses rather than
-            // compressing every course into a pole-like silhouette.
-            let reach =
-                spacing * crown_width * (0.96 - 0.70 * level as f32 / courses as f32) * (0.87 + 0.13 * (seed * 1.7).sin());
+            // The crown broadens upward, then tapers into an uneven leader.
+            // Needle size follows crown width, independently of stem height.
+            let fullness = (0.36 + 0.92 * (std::f32::consts::PI * course).sin())
+                * (1. - course * 0.30);
+            let reach = spacing * crown_width * fullness
+                * (0.87 + 0.13 * (seed * 1.7).sin());
+            let foliage_width = spread * (0.55 - course * 0.32);
             let tip = root
                 + direction * reach
-                + Vec3::Y * height * (0.015 - branch_drop - 0.035 * (seed * 2.1).cos().abs());
+                + Vec3::Y * height * (0.015 - recipe.drop - 0.020 * (seed * 2.1).cos().abs());
             append_branch(
                 &mut mesh.solid,
                 root,
@@ -119,8 +160,7 @@ pub(super) fn append_canopy(
                 let f = 0.22 + twig as f32 * 0.145;
                 let anchor = root.lerp(tip, f);
                 for side in [-1., 1.] {
-                    let length = spread
-                        * (1. - t)
+                    let length = foliage_width
                         * 0.40
                         * (0.7 + 0.3 * (seed + twig as f32).cos().abs());
                     let twig_tip = anchor + direction * length * 0.65 + across * side * length
@@ -135,7 +175,7 @@ pub(super) fn append_canopy(
                         &mut mesh.solid,
                         anchor,
                         twig_tip,
-                        spread * (1. - t) * 0.32,
+                        foliage_width * 0.32,
                         seed + twig as f32 * 1.7 + side,
                         v.tint,
                         weathered,
@@ -145,8 +185,8 @@ pub(super) fn append_canopy(
             spray(
                 &mut mesh.solid,
                 root.lerp(tip, 0.4),
-                tip + direction * spread * (1. - t) * 0.30,
-                spread * (1. - t) * 0.30,
+                tip + direction * foliage_width * 0.30,
+                foliage_width * 0.30,
                 seed,
                 v.tint,
                 weathered,
@@ -211,11 +251,7 @@ pub(super) fn append_canopy(
         bounds[3] + margin,
     ];
     let mut fit = 1.0_f32;
-    let mut low = Vec3::splat(f32::INFINITY);
-    let mut high = Vec3::splat(f32::NEG_INFINITY);
     for p in &mesh.solid.positions[first..] {
-        low = low.min(Vec3::from_array(*p));
-        high = high.max(Vec3::from_array(*p));
         for (axis, origin, low, high) in [
             (0, center.x, limits[0], limits[1]),
             (2, center.z, limits[2], limits[3]),
@@ -229,9 +265,6 @@ pub(super) fn append_canopy(
             }
         }
     }
-    // Crowded interior trees get taller leaders, but their fitted crown
-    // must still read as a mature tree rather than a long narrow pole.
-    let span = high - low;
     // Even an edge-biased planting keeps its rooted flare in blocked land.
     for p in &mesh.solid.positions[first..first + 13] {
         for (axis, origin, low, high) in [
@@ -243,14 +276,14 @@ pub(super) fn append_canopy(
             if delta < 0. { fit = fit.min((low - origin) / delta); }
         }
     }
-    let height_fit = (span.x.max(span.z) * fit / (span.y * 0.65)).min(1.);
+    // Fit only the horizontal crown. Tying height to available plot width
+    // flattened mature leaders below roofs and lost seeded height variation.
     for i in first..mesh.solid.positions.len() {
         let p = &mut mesh.solid.positions[i];
         p[0] = center.x + (p[0] - center.x) * fit;
-        p[1] = center.y + (p[1] - center.y) * height_fit;
         p[2] = center.z + (p[2] - center.z) * fit;
         let n = Vec3::from_array(mesh.solid.normals[i]);
-        mesh.solid.normals[i] = Vec3::new(n.x / fit, n.y / height_fit, n.z / fit)
+        mesh.solid.normals[i] = Vec3::new(n.x / fit, n.y, n.z / fit)
             .normalize()
             .to_array();
     }
@@ -369,6 +402,38 @@ fn append_twig(mesh: &mut SurfaceMeshData, root: Vec3, tip: Vec3, radius: f32) {
 mod tests {
     use super::*;
     #[test]
+    fn mature_crowns_spread_above_sparse_lower_limbs() {
+        for coordinates in [[0,0], [4,8], [-12,4], [6,8], [13,6], [29,4]] {
+            for neighbors in [[false;4], [true;4]] {
+                let mut tree = TerrainMeshData::default();
+                append(&mut tree,[0.,32.,0.,32.],3.,16.,coordinates,neighbors);
+                let height = stem_height(16.,coordinates,neighbors);
+                let offset = grove_trunk_offset(coordinates,32.);
+                let root = Vec2::new(16. + offset.x,16. + offset.y);
+                let mut lower_radius = 0.0_f32;
+                let mut crown_radius = 0.0_f32;
+                let mut needles = 0;
+                let mut low_needles = 0;
+                for (p,color) in tree.solid.positions.iter().zip(&tree.solid.colors) {
+                    let t = (p[1] - 3.) / height;
+                    let radius = Vec2::new(p[0],p[2]).distance(root);
+                    if t < 0.35 { lower_radius = lower_radius.max(radius); }
+                    if t > 0.55 { crown_radius = crown_radius.max(radius); }
+                    if color[1] > color[0] * 1.2 && color[1] > color[2] * 1.2 {
+                        needles += 1;
+                        if t < 0.4 { low_needles += 1; }
+                    }
+                }
+                assert!(needles > 1000);
+                assert!(low_needles * 40 < needles,
+                    "lower trunk must remain sparsely needled: {coordinates:?}");
+                assert!(crown_radius > lower_radius * 1.7,
+                    "mature crown must broaden above the shortened lower limbs: {coordinates:?}");
+            }
+        }
+    }
+
+    #[test]
     fn needle_tufts_are_closed_slender_bundles_with_unchanged_triangle_budget() {
         for phase in [0.0, 0.7, 2.9] {
             for axis in [Vec3::X, Vec3::Y, Vec3::new(1., -0.3, 0.5)] {
@@ -458,7 +523,7 @@ mod tests {
                     );
                     let span = high - low;
                     assert!(
-                        span.x.max(span.z) > span.y * 0.60,
+                        span.x.max(span.z) > span.y * 0.22,
                         "mature pines need a full canopy rather than a bare pole silhouette: {coordinates:?}, {neighbors:?}, span {span:?}"
                     );
                 }

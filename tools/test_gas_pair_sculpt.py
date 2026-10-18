@@ -3,6 +3,7 @@
 import copy,json,os,unittest
 from pathlib import Path
 from gas_pair_sculpt import sculpture,anatomy,HEIGHTS,VENTS,unit,PURPLE
+from gas_pair_glb import read_gas,geometry_digest
 from sculpt_geometry import translate,ellipsoid
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_steelix_sculpt import occupied
@@ -12,7 +13,7 @@ ROOT=Path(os.environ.get('CRYSTAL_GAS_TEST_MODELS',Path(__file__).resolve().pare
 class GasTests(unittest.TestCase):
  raw={}
  @classmethod
- def setUpClass(cls):cls.models={n:json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in HEIGHTS}
+ def setUpClass(cls):cls.models={n:read_gas(ROOT/(n+'.glb'),n) for n in HEIGHTS}
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def select(self,n):self.m=self.models[n];self.ps=self.m['primitives']
@@ -20,7 +21,7 @@ class GasTests(unittest.TestCase):
  def test_face_aligned_normals(self):assert_model_shading(self,self.models)
  def test_recipe_floor_height_budget_and_distinct_anatomy(self):
   for n,m in self.models.items():
-   self.assertEqual(m,sculpture(n));self.assertEqual(min(v for p in m['primitives'] for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in m['primitives'] for v in p['positions'][1::3]),HEIGHTS[n],places=6);self.assertLess(sum(len(p['indices'])//3 for p in m['primitives']),100000);self.assertEqual(len(m['primitives']),len({p['part'] for p in m['primitives']}))
+   self.assertEqual(geometry_digest(m),geometry_digest(sculpture(n)));self.assertEqual(min(v for p in m['primitives'] for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in m['primitives'] for v in p['positions'][1::3]),HEIGHTS[n],places=6);self.assertLessEqual(sum(len(p['indices'])//3 for p in m['primitives']),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in m['primitives']),20000);self.assertEqual(len(m['primitives']),len({p['part'] for p in m['primitives']}))
    for prefix,count in (('Eye /',2 if n=='koffing' else 4),('Fang /',2 if n=='koffing' else 4),('Skull mark /',1 if n=='koffing' else 2),('Crossbone /',2),('Tongue /',1 if n=='koffing' else 0),('Small body /',0 if n=='koffing' else 1),('Rear node /',0 if n=='koffing' else 1),('Gas cloud /',2),('Gas lobe /',8)):self.assertEqual(sum(p['part'].startswith(prefix) for p in m['primitives']),count,(n,prefix))
  def test_actual_weezing_connectors_join_all_three_orbs(self):
   self.select('weezing')

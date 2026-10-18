@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 """Verify repository-complete editable sources and embedded runtime model inputs."""
+from rafflesia_glb import read_gloom,read_vileplume
+from steelix_glb import read_steelix
+from arbok_glb import read_arbok
+from ekans_glb import read_ekans
+from raichu_glb import read_raichu
 from pathlib import Path
 from model_asset_storage import read_model_json, validate_storage
 from pidgeotto_glb import read_pidgeotto
@@ -8,9 +13,14 @@ from jigglypuff_glb import read_jigglypuff
 from clefairy_glb import read_clefairy
 from sentret_glb import read_sentret
 from staryu_glb import read_staryu
-from voltorb_glb import read_voltorb
+from fossil_scythe_glb import read_kabuto,read_kabutops
+from armored_bug_glb import read_pineco,read_forretress
+from pitcher_glb import read_bellsprout,read_weepinbell,read_victreebel
+from voltorb_glb import read_voltorb,read_electrode
 from onix_glb import read_onix
 from diglett_glb import read_diglett
+from dugtrio_glb import read_dugtrio
+from tentacle_glb import read_tentacool,read_tentacruel
 from slowpoke_glb import read_slowpoke
 from entei_glb import read_entei
 from raikou_glb import read_raikou
@@ -42,6 +52,46 @@ from smeargle_glb import read_smeargle
 from moltres_glb import read_moltres
 from zapdos_glb import read_zapdos
 from articuno_glb import read_articuno
+from mew_glb import read_mew
+from mewtwo_glb import read_mewtwo
+from heracross_glb import read_heracross
+from pinsir_glb import read_pinsir
+from scizor_glb import read_scizor
+from scyther_glb import read_scyther
+from starmie_glb import read_starmie
+from gastly_glb import read_gastly
+from haunter_glb import read_haunter
+from eevee_glb import read_eevee
+from jolteon_glb import read_jolteon
+from flareon_glb import read_flareon
+from espeon_glb import read_espeon
+from umbreon_glb import read_umbreon
+from vulpix_glb import read_vulpix
+from ninetales_glb import read_ninetales
+from venonat_glb import read_venonat
+from venomoth_glb import read_venomoth
+from mushroom_crab_glb import read_paras,read_parasect
+from cocoon_glb import read_metapod,read_kakuna
+from larva_glb import read_caterpie,read_weedle
+from crab_glb import read_krabby,read_kingler
+from bivalve_glb import read_shellder,read_cloyster
+from slime_glb import read_grimer,read_muk,read_ditto
+from seal_glb import read_seel,read_dewgong
+from turtle_glb import read_wartortle,read_blastoise
+from crocodile_glb import read_croconaw,read_feraligatr
+from bone_keeper_glb import read_cubone,read_marowak
+from tapir_glb import read_drowzee,read_hypno
+from psychic_fox_glb import read_abra,read_alakazam
+from kadabra_glb import read_kadabra
+from gas_pair_glb import read_koffing,read_weezing
+from magnet_glb import read_magnemite,read_magneton
+from tangela_glb import read_tangela
+from kangaskhan_glb import read_kangaskhan
+from fire_horse_glb import read_ponyta,read_rapidash
+from fighting_glb import read_machop,read_machoke,read_machamp
+from rhino_glb import read_rhyhorn,read_rhydon
+from vaporeon_glb import read_vaporeon
+from celebi_glb import read_celebi
 from ho_oh_glb import read_ho_oh
 from lugia_glb import read_lugia
 from corsola_glb import read_corsola
@@ -56,8 +106,36 @@ from hitmonchan_glb import read_hitmonchan
 from hitmontop_glb import read_hitmontop
 from tyrogue_glb import read_tyrogue
 from smoochum_glb import read_smoochum
+from jynx_glb import read_jynx
+from dodo_glb import read_doduo,read_dodrio
+from raptor_bird_glb import read_pidgeot,read_fearow
+from feline_glb import read_meowth,read_persian
+from pig_monkey_glb import read_mankey,read_primeape
 from elekid_glb import read_elekid
 from magby_glb import read_magby
+from magmar_glb import read_magmar
+from electabuzz_glb import read_electabuzz
+from slow_pair_glb import read_slowbro,read_slowking
+from lickitung_glb import read_lickitung
+from mr_mime_glb import read_mr_mime
+from egg_nurse_glb import read_chansey,read_blissey
+from rock_pupa_glb import read_larvitar,read_pupitar
+from tyranitar_glb import read_tyranitar
+from fire_badger_glb import read_quilava,read_typhlosion
+from fire_dragon_glb import read_charmeleon,read_charizard
+from stone_pair_glb import read_graveler,read_golem
+from nautilus_glb import read_omanyte,read_omastar
+from aerodactyl_glb import read_aerodactyl
+from dragon_family_glb import read_dratini,read_dragonair,read_dragonite
+from goldfish_glb import read_goldeen,read_seaking,read_magikarp
+from seahorse_glb import read_horsea,read_seadra,read_kingdra
+from fairy_pair_glb import read_clefable,read_wigglytuff
+from sand_mammal_glb import read_sandshrew,read_sandslash
+from poli_frog_glb import read_poliwhirl,read_poliwrath,read_politoed
+from nido_royal_glb import read_nidoqueen,read_nidoking
+from nido_middle_glb import read_nidorina,read_nidorino
+from nidoran_glb import read_nidoran_f,read_nidoran_m
+from fire_canine_glb import read_growlithe,read_arcanine
 from baby_glb import read_pichu,read_cleffa,read_igglybuff
 from electric_sheep_glb import read_mareep,read_flaaffy,read_ampharos
 from psychic_bird_glb import read_natu,read_xatu
@@ -130,6 +208,65 @@ def validate_imported_mesh_reference(path):
         assert len(color) == 4 and all(math.isfinite(v) and 0 <= v <= 1 for v in color), path
 
 weighted_skins = {
+    models / 'battle_species/scyther.glb': (read_scyther, 57),
+    models / 'battle_species/starmie.glb': (read_starmie, 23),
+    models / 'battle_species/gastly.glb': (read_gastly, 19),
+    models / 'battle_species/haunter.glb': (read_haunter, 23),
+    models / 'battle_species/eevee.glb': (read_eevee, 47),
+    models / 'battle_species/jolteon.glb': (read_jolteon, 50),
+    models / 'battle_species/flareon.glb': (read_flareon, 46),
+    models / 'battle_species/espeon.glb': (read_espeon, 44),
+    models / 'battle_species/umbreon.glb': (read_umbreon, 46),
+    models / 'battle_species/vulpix.glb': (read_vulpix, 48),
+    models / 'battle_species/paras.glb': (read_paras, 56),
+    models / 'battle_species/metapod.glb': (read_metapod, 15),
+    models / 'battle_species/caterpie.glb': (read_caterpie, 33),
+    models / 'battle_species/weedle.glb': (read_weedle, 24),
+    models / 'battle_species/kakuna.glb': (read_kakuna, 14),
+    models / 'battle_species/parasect.glb': (read_parasect, 36),
+    models / 'battle_species/krabby.glb': (read_krabby, 31),
+    models / 'battle_species/kingler.glb': (read_kingler, 36),
+    models / 'battle_species/shellder.glb': (read_shellder, 19),
+    models / 'battle_species/cloyster.glb': (read_cloyster, 24),
+    models / 'battle_species/grimer.glb': (read_grimer, 26),
+    models / 'battle_species/muk.glb': (read_muk, 26),
+    models / 'battle_species/ditto.glb': (read_ditto, 8),
+    models / 'battle_species/seel.glb': (read_seel, 27),
+    models / 'battle_species/dewgong.glb': (read_dewgong, 22),
+    models / 'battle_species/wartortle.glb': (read_wartortle, 66),
+    models / 'battle_species/blastoise.glb': (read_blastoise, 71),
+    models / 'battle_species/croconaw.glb': (read_croconaw, 49),
+    models / 'battle_species/feraligatr.glb': (read_feraligatr, 80),
+    models / 'battle_species/cubone.glb': (read_cubone, 45),
+    models / 'battle_species/marowak.glb': (read_marowak, 52),
+    models / 'battle_species/drowzee.glb': (read_drowzee, 43),
+    models / 'battle_species/hypno.glb': (read_hypno, 48),
+    models / 'battle_species/abra.glb': (read_abra, 43),
+    models / 'battle_species/alakazam.glb': (read_alakazam, 53),
+    models / 'battle_species/kadabra.glb': (read_kadabra, 60),
+    models / 'battle_species/koffing.glb': (read_koffing, 23),
+    models / 'battle_species/weezing.glb': (read_weezing, 35),
+    models / 'battle_species/magnemite.glb': (read_magnemite, 18),
+    models / 'battle_species/magneton.glb': (read_magneton, 54),
+    models / 'battle_species/tangela.glb': (read_tangela, 49),
+    models / 'battle_species/kangaskhan.glb': (read_kangaskhan, 70),
+    models / 'battle_species/ponyta.glb': (read_ponyta, 47),
+    models / 'battle_species/rapidash.glb': (read_rapidash, 54),
+    models / 'battle_species/machop.glb': (read_machop, 32),
+    models / 'battle_species/machoke.glb': (read_machoke, 41),
+    models / 'battle_species/machamp.glb': (read_machamp, 51),
+    models / 'battle_species/rhyhorn.glb': (read_rhyhorn, 46),
+    models / 'battle_species/rhydon.glb': (read_rhydon, 64),
+    models / 'battle_species/venomoth.glb': (read_venomoth, 53),
+    models / 'battle_species/venonat.glb': (read_venonat, 33),
+    models / 'battle_species/ninetales.glb': (read_ninetales, 56),
+    models / 'battle_species/vaporeon.glb': (read_vaporeon, 57),
+    models / 'battle_species/scizor.glb': (read_scizor, 55),
+    models / 'battle_species/pinsir.glb': (read_pinsir, 53),
+    models / 'battle_species/heracross.glb': (read_heracross, 47),
+    models / 'battle_species/mewtwo.glb': (read_mewtwo, 52),
+    models / 'battle_species/mew.glb': (read_mew, 40),
+    models / 'battle_species/celebi.glb': (read_celebi, 38),
     models / 'battle_species/ho_oh.glb': (read_ho_oh, 207),
     models / 'battle_species/lugia.glb': (read_lugia, 56),
     models / 'battle_species/articuno.glb': (read_articuno, 109),
@@ -158,8 +295,61 @@ weighted_skins = {
     models / 'battle_species/hitmontop.glb': (read_hitmontop, 35),
     models / 'battle_species/tyrogue.glb': (read_tyrogue, 40),
     models / 'battle_species/smoochum.glb': (read_smoochum, 40),
+    models / 'battle_species/jynx.glb': (read_jynx,45),
+    models / 'battle_species/doduo.glb': (read_doduo,37),
+    models / 'battle_species/pidgeot.glb': (read_pidgeot,105),
+    models / 'battle_species/fearow.glb': (read_fearow,161),
+    models / 'battle_species/dodrio.glb': (read_dodrio,61),
+    models / 'battle_species/meowth.glb': (read_meowth,51),
+    models / 'battle_species/persian.glb': (read_persian,48),
+    models / 'battle_species/mankey.glb': (read_mankey,52),
+    models / 'battle_species/primeape.glb': (read_primeape,59),
     models / 'battle_species/elekid.glb': (read_elekid, 32),
     models / 'battle_species/magby.glb': (read_magby, 38),
+    models / 'battle_species/magmar.glb': (read_magmar, 55),
+    models / 'battle_species/electabuzz.glb': (read_electabuzz, 70),
+    models / 'battle_species/slowbro.glb': (read_slowbro, 72),
+    models / 'battle_species/lickitung.glb': (read_lickitung, 33),
+    models / 'battle_species/mr__mime.glb': (read_mr_mime, 67),
+    models / 'battle_species/chansey.glb': (read_chansey, 24),
+    models / 'battle_species/blissey.glb': (read_blissey, 38),
+    models / 'battle_species/horsea.glb': (read_horsea, 36),
+    models / 'battle_species/goldeen.glb': (read_goldeen, 36),
+    models / 'battle_species/larvitar.glb': (read_larvitar, 45),
+    models / 'battle_species/pupitar.glb': (read_pupitar, 28),
+    models / 'battle_species/tyranitar.glb': (read_tyranitar, 70),
+    models / 'battle_species/quilava.glb': (read_quilava, 68),
+    models / 'battle_species/typhlosion.glb': (read_typhlosion, 77),
+    models / 'battle_species/charmeleon.glb': (read_charmeleon, 52),
+    models / 'battle_species/charizard.glb': (read_charizard, 65),
+    models / 'battle_species/graveler.glb': (read_graveler, 40),
+    models / 'battle_species/golem.glb': (read_golem, 77),
+    models / 'battle_species/omanyte.glb': (read_omanyte, 32),
+    models / 'battle_species/omastar.glb': (read_omastar, 43),
+    models / 'battle_species/aerodactyl.glb': (read_aerodactyl, 56),
+    models / 'battle_species/dratini.glb': (read_dratini, 17),
+    models / 'battle_species/dragonair.glb': (read_dragonair, 21),
+    models / 'battle_species/dragonite.glb': (read_dragonite, 60),
+    models / 'battle_species/seaking.glb': (read_seaking, 70),
+    models / 'battle_species/magikarp.glb': (read_magikarp, 30),
+    models / 'battle_species/seadra.glb': (read_seadra, 34),
+    models / 'battle_species/kingdra.glb': (read_kingdra, 47),
+    models / 'battle_species/clefable.glb': (read_clefable, 32),
+    models / 'battle_species/wigglytuff.glb': (read_wigglytuff, 24),
+    models / 'battle_species/sandshrew.glb': (read_sandshrew, 58),
+    models / 'battle_species/sandslash.glb': (read_sandslash, 53),
+    models / 'battle_species/poliwhirl.glb': (read_poliwhirl, 25),
+    models / 'battle_species/poliwrath.glb': (read_poliwrath, 27),
+    models / 'battle_species/politoed.glb': (read_politoed, 36),
+    models / 'battle_species/nidoqueen.glb': (read_nidoqueen, 61),
+    models / 'battle_species/nidoking.glb': (read_nidoking, 70),
+    models / 'battle_species/nidorina.glb': (read_nidorina, 59),
+    models / 'battle_species/nidorino.glb': (read_nidorino, 74),
+    models / 'battle_species/nidoran_f.glb': (read_nidoran_f, 65),
+    models / 'battle_species/nidoran_m.glb': (read_nidoran_m, 53),
+    models / 'battle_species/growlithe.glb': (read_growlithe, 57),
+    models / 'battle_species/arcanine.glb': (read_arcanine, 81),
+    models / 'battle_species/slowking.glb': (read_slowking, 60),
     models / 'battle_species/pichu.glb': (read_pichu, 24),
     models / 'battle_species/cleffa.glb': (read_cleffa, 17),
     models / 'battle_species/igglybuff.glb': (read_igglybuff, 19),
@@ -211,8 +401,26 @@ weighted_skins = {
     models / 'battle_species/entei.glb': (read_entei, 59),
     models / 'battle_species/slowpoke.glb': (read_slowpoke, 40),
     models / 'battle_species/diglett.glb': (read_diglett, 15),
+    models / 'battle_species/dugtrio.glb': (read_dugtrio, 33),
+    models / 'battle_species/tentacool.glb': (read_tentacool,13),
+    models / 'battle_species/tentacruel.glb': (read_tentacruel,23),
     models / 'battle_species/onix.glb': (read_onix, 36),
     models / 'battle_species/voltorb.glb': (read_voltorb, 8),
+    models / 'battle_species/electrode.glb': (read_electrode, 10),
+    models / 'battle_species/bellsprout.glb': (read_bellsprout, 14),
+    models / 'battle_species/weepinbell.glb': (read_weepinbell, 20),
+    models / 'battle_species/victreebel.glb': (read_victreebel, 25),
+    models / 'battle_species/gloom.glb': (read_gloom, 30),
+    models / 'battle_species/vileplume.glb': (read_vileplume, 34),
+    models / 'battle_species/steelix.glb': (read_steelix, 48),
+    models / 'battle_species/arbok.glb': (read_arbok, 25),
+    models / 'battle_species/ekans.glb': (read_ekans, 16),
+    models / 'battle_species/raichu.glb': (read_raichu, 39),
+
+    models / 'battle_species/pineco.glb': (read_pineco, 54),
+    models / 'battle_species/forretress.glb': (read_forretress, 48),
+    models / 'battle_species/kabuto.glb': (read_kabuto, 23),
+    models / 'battle_species/kabutops.glb': (read_kabutops, 42),
     models / 'battle_species/staryu.glb': (read_staryu, 10),
     models / 'battle_species/sentret.glb': (read_sentret, 38),
     models / 'battle_species/hoothoot.glb': (read_hoothoot, 38),
@@ -234,7 +442,7 @@ weighted_skins = {
     models / 'battle_species/bulbasaur.glb': (read_bulbasaur, 44),
     models / 'battle_species/pikachu.glb': (read_pikachu, 40),
     models / 'battle_species/snorlax.glb': (read_snorlax, 31),
-    models / 'battle_species/lapras.glb': (read_lapras, 45),
+    models / 'battle_species/lapras.glb': (read_lapras, 49),
     models / 'battle_species/sudowoodo.glb': (read_sudowoodo, 33),
     models / 'battle_species/gyarados.glb': (read_gyarados, 40),
     models / 'battle_species/wooper.glb': (read_wooper, 22),

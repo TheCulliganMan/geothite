@@ -47,7 +47,8 @@ pub(crate) fn mark(mesh: &mut SurfaceMeshData, first: usize, model: &Model, kind
                 }
                 (Kind::RadioTower, "coral") => 3.,
                 (
-                    Kind::ModernStation
+                    Kind::RadioTower
+                    | Kind::ModernStation
                     | Kind::ModernDepartment
                     | Kind::KantoStation
                     | Kind::KantoDepartment
@@ -123,6 +124,9 @@ pub(crate) fn collect(mesh: &SurfaceMeshData) -> Vec<Emitter> {
     let mut sides = Vec::new();
     for i in 0..mesh.positions.len() {
         let native = crate::scenery_finish::town_glass_coordinates(mesh.uvs[i]).is_some();
+        let source_glass = crate::scenery_finish::source_glass_coordinates(mesh.uvs[i]);
+        let native = native || (source_glass.is_some_and(|(_, lit)| lit)
+            && mesh.normals[i][2] > 0.9);
         if mesh.uvs[i][1] != UV_BASE && mesh.uvs[i][1] != SOURCE_UV_BASE && !native {
             continue;
         }
@@ -236,6 +240,7 @@ pub(crate) fn sync(
     if !frame.is_changed()
         && !cache.is_changed()
         && !status.is_changed()
+        && !materials.is_changed()
         && !clock.as_ref().is_some_and(|clock| clock.is_changed())
     {
         return;
@@ -357,6 +362,16 @@ mod tests {
                 .city_windows[0],
             Vec4::new(65., 16., 34., 64.)
         );
+        // Deferred building/actor parts can create materials after the map and
+        // clock have settled. They must inherit the same night state at once.
+        app.update();
+        let late = app.world_mut().resource_mut::<Assets<crate::VoxelMaterial>>()
+            .add(crate::solid_terrain_material());
+        app.update();
+        let material = app.world().resource::<Assets<crate::VoxelMaterial>>()
+            .get(&late).unwrap();
+        assert_eq!(material.extension.city_night.x, 1.);
+        assert_eq!(material.extension.city_windows[0], Vec4::new(65., 16., 34., 64.));
         app.world_mut()
             .resource_mut::<VisualWorldFrame>()
             .grid_origin
@@ -478,6 +493,42 @@ mod tests {
                     assert_eq!(mesh.uvs[i], *uv, "daytime pane optics");
                 }
             }
+        }
+    }
+
+    #[test]
+    fn radio_tower_name_is_five_solid_glyphs_in_front_of_its_panel_with_a_separate_light_role() {
+        let m=crate::exterior_models::model(Kind::RadioTower);
+        let panel=m.surface.positions.iter().enumerate().filter(|(i,_)|m.vertex_material(*i)=="violet_dark")
+            .map(|(_,p)|*p).collect::<Vec<_>>();
+        let front=panel.iter().map(|p|p[2]).fold(f32::NEG_INFINITY,f32::max);
+        let bounds=[panel.iter().map(|p|p[0]).fold(f32::INFINITY,f32::min),
+            panel.iter().map(|p|p[0]).fold(f32::NEG_INFINITY,f32::max),
+            panel.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min),
+            panel.iter().map(|p|p[1]).fold(f32::NEG_INFINITY,f32::max)];
+        let mut spans=Vec::new();
+        for tri in m.surface.indices.chunks_exact(3) {
+            if m.vertex_material(tri[0]as usize)!="cream" {continue;}
+            let p=tri.iter().map(|i|m.surface.positions[*i as usize]).collect::<Vec<_>>();
+            assert!(p.iter().all(|p|p[2]>front && p[0]>bounds[0] && p[0]<bounds[1] && p[1]>bounds[2] && p[1]<bounds[3]),
+                "name strokes sit entirely in front of and within the existing sign");
+            spans.push([p.iter().map(|p|p[0]).fold(f32::INFINITY,f32::min),
+                p.iter().map(|p|p[0]).fold(f32::NEG_INFINITY,f32::max)]);
+        }
+        spans.sort_by(|a,b|a[0].total_cmp(&b[0]));
+        let mut groups=Vec::<[f32;2]>::new();
+        for span in spans {
+            if let Some(last)=groups.last_mut() && span[0]<=last[1]+0.00001 {last[1]=last[1].max(span[1]);}
+            else {groups.push(span);}
+        }
+        assert_eq!(groups.len(),5,"five separate readable RADIO glyphs");
+        let mut mesh=SurfaceMeshData::default();m.append_fitted(&mut mesh,[0.,64.,0.,96.],0.,16.,Some(24.));
+        let before=mesh.clone();mark(&mut mesh,0,m,Kind::RadioTower);
+        assert_eq!(mesh.positions,before.positions);assert_eq!(mesh.colors,before.colors);
+        assert_eq!(mesh.normals,before.normals);assert_eq!(mesh.indices,before.indices);
+        for i in 0..mesh.positions.len() {
+            if m.vertex_material(i)=="cream" {assert_eq!(mesh.uvs[i][1],UV_BASE+1.);}
+            if m.vertex_material(i)=="coral" {assert_eq!(mesh.uvs[i][1],UV_BASE+3.);}
         }
     }
 

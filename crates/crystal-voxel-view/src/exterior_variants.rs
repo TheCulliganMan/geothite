@@ -37,7 +37,7 @@ fn warp(p: Vec3, recipe: [f32; 6], stone: bool) -> Vec3 {
     )
 }
 
-fn generate(source: &Model, recipe: [f32; 6], stone: bool, asset: usize) -> Model {
+fn generate(source: &Model, recipe: [f32; 6], stone: bool, asset: usize, faceted: bool) -> Model {
     let mut result = source.clone();
     let min = Vec3::from_array(source.min);
     let extent = Vec3::from_array(source.max) - min;
@@ -88,13 +88,13 @@ fn generate(source: &Model, recipe: [f32; 6], stone: bool, asset: usize) -> Mode
             p[1] = min.y + (p[1] - min.y) * fit;
             *n = Vec3::new(n[0], n[1] / fit, n[2]).normalize().to_array();
         }
-        // Restore broad weathered facets on the authored split faces. Shared
-        // basal vertices keep their continuous normals and closed contacts.
+        // Ordinary boulders retain their broad weathered facets. Boundary
+        // posts keep the shared smooth normals across pigment seams.
         let mut uses = vec![0usize; result.surface.positions.len()];
         for &i in &result.surface.indices {
             uses[i as usize] += 1;
         }
-        for ids in result.surface.indices.chunks_exact(3) {
+        for ids in result.surface.indices.chunks_exact(3).filter(|_|faceted) {
             let [a, b, c] = std::array::from_fn(|i| {
                 Vec3::from_array(result.surface.positions[ids[i] as usize])
             });
@@ -141,7 +141,7 @@ pub(crate) fn variant_model(kind: Kind, coordinates: [i32; 2]) -> &'static Model
             .map(|&kind| {
                 let recipes = if kind == Kind::CutTree { SHRUBS } else { ROCKS };
                 std::array::from_fn(|asset| {
-                    generate(model(kind), recipes[asset], kind != Kind::CutTree, asset)
+                    generate(model(kind), recipes[asset], kind != Kind::CutTree, asset, kind==Kind::ShoreBoulder)
                 })
             })
             .collect()
@@ -154,12 +154,27 @@ mod tests {
     use super::*;
 
     #[test]
+    fn boundary_variants_keep_continuous_normals_at_material_seams() {
+        for kind in [Kind::KantoBoundaryLand,Kind::KantoBoundaryShore,Kind::KantoBoundaryPath] {
+            for recipe in ROCKS {
+                let m=generate(model(kind),recipe,true,0,false);
+                let mut seen=std::collections::BTreeMap::new();
+                for (&p,&n) in m.surface.positions.iter().zip(&m.surface.normals) {
+                    if let Some(old)=seen.insert(p.map(f32::to_bits),n) {
+                        assert!(Vec3::from_array(old).distance(Vec3::from_array(n))<0.0001);
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
     fn three_scenery_assets_keep_closed_topology_materials_contacts_and_footprints() {
         for kind in KINDS {
             let source = model(kind);
             let recipes = if kind == Kind::CutTree { SHRUBS } else { ROCKS };
             let variants: [Model; 3] = std::array::from_fn(|asset| {
-                generate(source, recipes[asset], kind != Kind::CutTree, asset)
+                generate(source, recipes[asset], kind != Kind::CutTree, asset, kind==Kind::ShoreBoulder)
             });
             assert_ne!(variants[0].surface.positions, variants[1].surface.positions);
             assert_ne!(variants[1].surface.positions, variants[2].surface.positions);

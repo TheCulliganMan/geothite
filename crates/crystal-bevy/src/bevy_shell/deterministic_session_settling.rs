@@ -1895,7 +1895,11 @@ fn press_visible_pokedex_a_button(runtime_shell: &mut BevyRuntimeShell) -> Resul
 
 fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     let menu_snapshot = runtime_shell.shell.snapshot()?;
-    if visible_menu_has_selectable_options(&menu_snapshot) {
+    // A source menu can remain underneath a purchase/PC notice. Let its
+    // existing modal handler own B, as it already owns A, before cancelling
+    // the underlying menu or overwriting the script's selected result.
+    if runtime_shell.field_notice.is_none() && runtime_shell.pc_notice.is_none()
+        && visible_menu_has_selectable_options(&menu_snapshot) {
         let menu = menu_snapshot.ui.menu.as_ref().expect("selectable menu");
         if menu.menu_2d_requested { return cancel_visible_2d_menu(runtime_shell); }
         if visible_runtime_menu_disables_b(runtime_shell, menu)? { return Ok(()); }
@@ -4949,6 +4953,14 @@ fn continue_visible_script_after_prompt(runtime_shell: &mut BevyRuntimeShell) ->
         // script between its text and wait opcodes (notably MeetMomScript).
         let text_window_blocks =
             snapshot.ui.text_window_open && runtime_shell.active_script_cursor.is_none();
+        // Cancelling verticalmenu removes the active menu, but its source
+        // window remains open until the following closewindow opcode runs.
+        // That leftover window cannot itself prevent its authored closer.
+        let closing_runtime_window = snapshot.ui.window_open && snapshot.ui.menu.is_none()
+            && runtime_shell.active_script_cursor.as_ref().is_some_and(|cursor|
+                runtime_shell.shell.runtime().compiled_script_command_name(
+                    &cursor.source_script,cursor.next_command_index)
+                    .is_ok_and(|command|command=="closewindow"));
         if runtime_shell.visible_mom_bank.is_some()
             || runtime_shell.field_notice.is_some()
             || runtime_shell.pc_notice.is_some()
@@ -4969,7 +4981,7 @@ fn continue_visible_script_after_prompt(runtime_shell: &mut BevyRuntimeShell) ->
             || !snapshot.script_events.pending_emotes.is_empty()
             || snapshot.pending_shop.is_some()
             || text_window_blocks
-            || snapshot.ui.window_open
+            || (snapshot.ui.window_open && !closing_runtime_window)
             || snapshot.ui.active_pokemon_picture.is_some()
             || runtime_shell.elevator_cursor.is_some()
             || visible_menu_has_selectable_options(&snapshot)

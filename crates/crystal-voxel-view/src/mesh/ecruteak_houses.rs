@@ -3,6 +3,8 @@
 use super::*;
 #[path = "ecruteak_roof.rs"]
 mod roof;
+#[path = "ecruteak_ruin_roof.rs"]
+mod ruin_roof;
 #[path = "ecruteak_timber.rs"]
 mod timber;
 #[path = "ecruteak_eaves.rs"]
@@ -476,37 +478,40 @@ pub(super) fn append_temple(mesh: &mut SurfaceMeshData, b: [f32; 4], t: f32, doo
     finish_facade(mesh,first,b,t,facade);
 }
 
-pub(super) fn append_burned(mesh: &mut SurfaceMeshData, b: [f32; 4], t: f32, door: Option<f32>) {
+pub(super) fn append_burned(mesh: &mut SurfaceMeshData, b: [f32; 4], t: f32, door: Option<f32>, facade: Option<FacadePaint>) {
+    let first=mesh.positions.len();
+    let timber_block=|mesh: &mut SurfaceMeshData, member, color| timber::block(mesh,member,color,t,b,facade.is_some());
     let [w, e, n, s] = b;
     let (left, right, back, front) = (w + t * 0.30, e - t * 0.30, n + t * 0.30, s - t * 0.40);
     let h = t * 3.5;
-    let ash = [0.055, 0.046, 0.033];
-    let timber = [0.40, 0.28, 0.105];
+    let ash=facade.map(|p|super::kanto_craft::mix(p.window,p.timber,0.04)).unwrap_or([0.055,0.046,0.033]);
+    let wall=facade.map(|p|p.wall).unwrap_or([0.40,0.28,0.105]);
+    let edge=facade.map(|p|p.timber).unwrap_or(EDGE);
     let dx = door
         .unwrap_or(w + (e - w) * 0.30)
         .clamp(left + t * 0.70, right - t * 0.70);
     block(
         mesh,
         [left, right, 0., t * 0.15, back, front],
-        [0.28, 0.25, 0.18],
+        facade.map(|p|super::kanto_craft::mix(p.window,p.wall,0.12)).unwrap_or([0.28,0.25,0.18]),
     );
     block(
         mesh,
         [left, right, t * 0.15, h, back, back + t * 0.12],
-        timber,
+        wall,
     );
     block(
         mesh,
         [left, left + t * 0.12, t * 0.15, h, back, front],
-        timber,
+        wall,
     );
     block(
         mesh,
         [right - t * 0.12, right, t * 0.15, h, back, front],
-        timber,
+        wall,
     );
     for (a, b) in [(left, dx - t * 0.55), (dx + t * 0.55, right)] {
-        block(mesh, [a, b, t * 0.15, h, front - t * 0.12, front], timber);
+        block(mesh, [a, b, t * 0.15, h, front - t * 0.12, front], wall);
     }
     block(
         mesh,
@@ -518,7 +523,7 @@ pub(super) fn append_burned(mesh: &mut SurfaceMeshData, b: [f32; 4], t: f32, doo
             front - t * 0.12,
             front,
         ],
-        timber,
+        wall,
     );
     block(
         mesh,
@@ -530,12 +535,12 @@ pub(super) fn append_burned(mesh: &mut SurfaceMeshData, b: [f32; 4], t: f32, doo
             front - t * 0.40,
             front - t * 0.30,
         ],
-        [0.025, 0.022, 0.016],
+        facade.map(|p|p.window).unwrap_or([0.025,0.022,0.016]),
     );
     for i in 0..9 {
         let x = left + (right - left) * i as f32 / 8.;
         if (x - dx).abs() > t * 0.58 {
-            block(
+            timber_block(
                 mesh,
                 [
                     x - t * 0.04,
@@ -560,7 +565,7 @@ pub(super) fn append_burned(mesh: &mut SurfaceMeshData, b: [f32; 4], t: f32, doo
                 front,
                 front + t * 0.06,
             ],
-            [0.035, 0.031, 0.020],
+            facade.map(|p|p.window).unwrap_or([0.035,0.031,0.020]),
         );
     }
     // Dark interior remains behind the missing roof courses, not white infill.
@@ -569,6 +574,17 @@ pub(super) fn append_burned(mesh: &mut SurfaceMeshData, b: [f32; 4], t: f32, doo
         [left, right, h - t * 0.22, h - t * 0.12, back, front],
         ash,
     );
+    // Source plaster sits behind surviving cedar framing. Each member is
+    // a closed chamfered solid; the doorway remains its original clear span.
+    for (a,z) in [(left,dx-t*0.55),(dx+t*0.55,right)] {
+        timber_base(mesh,a,z,front,t,facade);
+    }
+    for x in [dx-t*0.61,dx+t*0.55] {
+        timber_block(mesh,[x,x+t*0.06,t*0.15,t*3.0,front,front+t*0.09],edge);
+    }
+    timber_block(mesh,[dx-t*0.61,dx+t*0.61,t*3.0,t*3.10,front,front+t*0.09],edge);
+    timber_block(mesh,[left,right,h-t*0.20,h-t*0.08,front,front+t*0.09],edge);
+    finish_facade(mesh,first,b,t,facade);
     low_roof(mesh, b, t, h, t * 3.95, true, None, None);
 }
 
@@ -579,82 +595,7 @@ fn low_roof(mesh: &mut SurfaceMeshData, b: [f32; 4], t: f32, eave: f32, ridge: f
     let height =
         |z: f32| eave + (ridge - eave) * (1. - ((z - middle) / ((front - back) * 0.5)).abs());
     if !burned {roof::append(mesh,[left,right,back,front],t,eave,ridge,roof_palette);}
-    else {for side in 0..2 {
-        for row in 0..8 {
-            for col in 0..6 {
-                if burned
-                    && ((side == 0 && row == 3 && col == 2) || (side == 1 && row == 5 && col == 4))
-                {
-                    continue;
-                }
-                let start = if side == 0 { back } else { middle };
-                let za = start + (front - back) * 0.5 * row as f32 / 8.;
-                let zb = start + (front - back) * 0.5 * (row + 1) as f32 / 8.;
-                let xa = left + (right - left) * col as f32 / 6.;
-                let xb = left + (right - left) * (col + 1) as f32 / 6.;
-                let (ya, yb) = (height(za), height(zb));
-                let color = if burned { [0.055, 0.052, 0.041] } else { ROOF };
-                let color = color.map(|v| v * (0.91 + ((row + col) % 3) as f32 * 0.055));
-                let thick = t * 0.06;
-                face(
-                    mesh,
-                    &[[xa, ya, za], [xa, yb, zb], [xb, yb, zb], [xb, ya, za]],
-                    color,
-                );
-                face(
-                    mesh,
-                    &[
-                        [xa, ya - thick, za],
-                        [xb, ya - thick, za],
-                        [xb, yb - thick, zb],
-                        [xa, yb - thick, zb],
-                    ],
-                    color,
-                );
-                face(
-                    mesh,
-                    &[
-                        [xa, ya - thick, za],
-                        [xa, ya, za],
-                        [xb, ya, za],
-                        [xb, ya - thick, za],
-                    ],
-                    color,
-                );
-                face(
-                    mesh,
-                    &[
-                        [xb, yb - thick, zb],
-                        [xb, yb, zb],
-                        [xa, yb, zb],
-                        [xa, yb - thick, zb],
-                    ],
-                    color,
-                );
-                face(
-                    mesh,
-                    &[
-                        [xa, yb - thick, zb],
-                        [xa, yb, zb],
-                        [xa, ya, za],
-                        [xa, ya - thick, za],
-                    ],
-                    color,
-                );
-                face(
-                    mesh,
-                    &[
-                        [xb, ya - thick, za],
-                        [xb, ya, za],
-                        [xb, yb, zb],
-                        [xb, yb - thick, zb],
-                    ],
-                    color,
-                );
-            }
-        }
-    }
-    }
+    else {ruin_roof::append(mesh,[left,right,back,front],t,eave,ridge);}
     for (x, reverse) in [(left, false), (right, true)] {
         let mut p = vec![
             [x, eave - t * 0.08, back],
@@ -724,6 +665,43 @@ mod tests {
             assert!(volume>0.);assert!(edges.values().all(|&count|count==2));
             assert!(mesh.indices.len()/3<300);
         }}
+    }
+
+    #[test]
+    fn ruined_facade_uses_live_plaster_and_grained_joinery_without_repainting_its_roof() {
+        let b=[-32.,32.,-32.,32.];
+        for paint in [
+            FacadePaint {wall:[0.7,0.95,0.7],timber:[0.4,0.23,0.02],shadow:[0.04;3],window:[0.;3]},
+            FacadePaint {wall:[0.18,0.15,0.45],timber:[0.06,0.02,0.03],shadow:[0.006;3],window:[0.;3]},
+        ] {
+            let mut original=SurfaceMeshData::default();
+            block(&mut original,[-80.,-72.,0.,8.,-80.,-72.],[0.2,0.3,0.4]);
+            let mut plain=original.clone();let mut painted=original.clone();
+            append_burned(&mut plain,b,8.,Some(-8.),None);
+            append_burned(&mut painted,b,8.,Some(-8.),Some(paint));
+            assert_eq!(plain.positions,painted.positions);assert_eq!(plain.normals,painted.normals);
+            assert_eq!(plain.indices,painted.indices);
+            let prefix=original.positions.len();
+            assert_eq!(&painted.colors[..prefix],original.colors.as_slice());
+            assert_eq!(&painted.uvs[..prefix],original.uvs.as_slice());
+            let mut plaster=0;let mut timber=0;let mut roof=0;
+            for i in prefix..painted.positions.len() {
+                let uv=painted.uvs[i];
+                if uv==crate::scenery_finish::SOURCE_PAINT_UV
+                    && (painted.positions[i][1]-(8.*3.5-8.*0.12)).abs()<0.0001
+                    && painted.normals[i][1]>0.99 {
+                    assert!(painted.colors[i][..3].iter().all(|v|*v<0.02),
+                        "the burned interior must stay dark beneath the roof openings");
+                }
+                if crate::scenery_finish::town_paint_kind(uv)==Some(1) {
+                    plaster+=1;
+                    let c=painted.colors[i];assert!((c[0]/c[1]-paint.wall[0]/paint.wall[1]).abs()<0.00001);
+                } else if crate::scenery_finish::town_timber_coordinates(uv).is_some() {timber+=1;}
+                else if uv==[0.,0.] {roof+=1;assert_eq!(painted.colors[i],plain.colors[i]);}
+                else {assert_eq!(uv,crate::scenery_finish::SOURCE_PAINT_UV);}
+            }
+            assert!(plaster>=24 && timber>200 && roof>1000);
+        }
     }
 
     #[test]
@@ -808,7 +786,7 @@ mod tests {
                 };
                 let mut m = SurfaceMeshData::default();
                 match kind {
-                    0 => append_burned(&mut m, b, t, Some(-t)),
+                    0 => append_burned(&mut m, b, t, Some(-t), None),
                     1 => append_gate(&mut m, b, t, None, None),
                     _ => append_temple(&mut m, b, t, Some(-t), None, None),
                 }

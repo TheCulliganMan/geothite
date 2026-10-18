@@ -1,7 +1,7 @@
 # Original volumetric actor kit
 
-69 independently keyed runtime meshes: all 28 non-walking-human sprite families
-(including both mounted trainers), all 38 resolved icon families, and three
+68 independently keyed runtime sources: all 27 non-walking-human sprite families
+(including the mounted trainers and Biker), all 38 resolved icon families, and three
 canonical starter rig sources. These contain authored geometry and linear
 material colors only. They contain no sprite pixels, extracted textures, ROM
 content, or game logic.
@@ -47,6 +47,14 @@ Canonical runtime exports live here. Editable native `.blend` files are maintain
 the repository's shared art-source storage helper; update those files
 after changing the geometry. Temporary previews are not build inputs.
 
+The smashable `rock` uses the focused editable source
+`art/johto/source/actor-props-rock-refinement.blend`. Its closed 98-triangle
+body has a broad 0.64 × 0.54 footprint and retains its 0.43 height and floor
+root, fitting within one source actor cell. Strength boulders retain their
+taller, separate silhouette. All outdoor placements use this same canonical
+rock with their current native palette; there are no town-specific meshes.
+Rebuild it with `blender -b --python tools/build-actor-props.py -- target/actor-props-rock --only=rock --skip-preview`.
+
 ## Verification
 
 ```
@@ -54,10 +62,15 @@ python3 tools/check-actor-props.py
 cargo test -p crystal-voxel-view actor_props
 ```
 
-The Python check proves generator/registry/export agreement, 66 exact source
+The Python check proves generator/registry/export agreement, 65 exact source
 families, three canonical starter rig sources, nonempty full-volume geometry, valid indices,
 finite normalized vertex normals, consistent triangle winding, positive solid
 volumes, floor grounding and bounded unit scale. Rust tests validate source
 namespace separation, rejection of inferred aliases, canonical exact-species selection,
 all imported meshes, and malformed-export rejection. These checks do not
 replace gameplay, visual or interaction testing.
+
+Surf always uses the exact Pokémon retained by the field move, with the trainer
+posed on its animated body. The generic Surf creature and preset surfing-Pikachu
+board assets and generators are retired. Source Surf sprite IDs remain part of
+the faithful 2D presentation.

@@ -3,6 +3,17 @@
 use super::*;
 use bevy::prelude::{IVec2, Vec2};
 
+// Standing water uses one complete-body datum, never a varying land contour.
+// Authored waterfalls/upper pools own their existing geometry separately.
+fn level_water(source: &VisualTileSource) -> bool {
+    crate::cave_water::standing_water_source(source)
+}
+pub(super) fn water_owns_height(source: &VisualTileSource) -> bool {
+    level_water(source) || matches!(shape_for_source(source), CellShape::Waterfall)
+        || crate::kanto_cliff::shoreline_round_barrier_local(source).is_some()
+        || super::buoy_course::source(source)
+}
+
 // Preserve Johto/forest terrain even when a connected source halo contains Kanto.
 fn kanto_family<'a>(tiles: impl Iterator<Item=&'a VisualTile>) -> bool {
     let mut kanto=false;
@@ -30,7 +41,10 @@ pub(super) fn support_correction(
         origin_x: 0.,
         origin_z: 0.,
     };
-    let mut field = Field::new(&frame.jump_ledges, &g, [0, 0]);
+    if frame.tiles.get(cell.y as usize*g.width+cell.x as usize)
+        .is_some_and(|t|water_owns_height(&t.source)
+            ||super::elevated_piers::level_surface(&frame.map_id,&t.source)) {return 0.;}
+    let mut field = Field::new(&frame.jump_ledges, &g, [0, 0]).with_datum(frame.terrace_datum.as_deref());
     if kanto_family(frame.tiles.iter()) {
         field.levels=super::terrace_levels::get_for_family(&frame.jump_ledges,true);
     }
@@ -64,6 +78,7 @@ use crystal_render_api::VisualJumpLedge;
 mod town_ledge_lip;
 
 pub(super) struct Field<'a> {
+    datum: Option<&'a crystal_render_api::VisualTerraceDatum>,
     edges: &'a [VisualJumpLedge],
     g: &'a GridGeometry,
     origin: [i32; 2],
@@ -73,11 +88,29 @@ impl<'a> Field<'a> {
     pub(super) fn new(edges: &'a [VisualJumpLedge], g: &'a GridGeometry, origin: [i32; 2]) -> Self {
         let levels = super::terrace_levels::get(edges);
         Self {
+            datum: None,
             edges,
             g,
             origin,
             levels,
         }
+    }
+
+    pub(super) fn with_kanto_levels(mut self) -> Self {
+        self.levels=super::terrace_levels::get_for_family(self.edges,true);
+        self
+    }
+
+    pub(super) fn with_source(edges:&'a [VisualJumpLedge],g:&'a GridGeometry,
+        origin:[i32;2],cells:&[&VisualTile])->Self {
+        let mut field=Self::new(edges,g,origin);
+        if kanto_family(cells.iter().copied()) {
+            field.levels=super::terrace_levels::get_for_family(edges,true);
+        }
+        field
+    }
+    pub(super) fn with_datum(mut self, datum:Option<&'a crystal_render_api::VisualTerraceDatum>)->Self {
+        self.datum=datum;self
     }
 
     /// A finite ledge raises its entire upstream terrace. Beyond its ends,
@@ -92,7 +125,49 @@ impl<'a> Field<'a> {
     }
     fn map_height(&self, p: Vec2) -> f32 {
         let rise = crate::profile::JUMP_LEDGE_HEIGHT * self.g.tile_height / SOURCE_TILE_HEIGHT;
-        self.levels.height(p) * rise
+        super::terrace_datum::sample(self.datum,p).unwrap_or_else(||self.levels.height(p)) * rise
+    }
+
+    fn water_owned(&self,i:usize,cells:&[&VisualTile])->bool {
+        water_owns_height(&cells[i].source) || crate::kanto_cliff::water_backed_barrier_local(
+            &cells[i].source,IVec2::new(self.origin[0]+(i%self.g.width)as i32,
+                self.origin[1]+(i/self.g.width)as i32),self.datum).is_some()
+    }
+    pub(super) fn water_surface_offset(&self,p:Vec2)->f32 {
+        let point=self.map_point(p);
+        let Some(datum)=self.datum else {return 0.;};
+        let level=if let Some(level)=datum.open_water_at(point.floor().as_ivec2()) {level}
+        else {
+            let local=point-datum.origin.as_vec2();
+            // Native deck corners include the exact outer boundary, but a
+            // repeated offshore deck cannot borrow a raised land-edge sample.
+            if local.x<0. || local.y<0. || local.x>datum.size.x as f32 || local.y>datum.size.y as f32 {return 0.;}
+            super::terrace_datum::sample(Some(datum),point).unwrap_or(0.)
+        };
+        level*crate::profile::JUMP_LEDGE_HEIGHT*self.g.tile_height/SOURCE_TILE_HEIGHT
+    }
+    pub(super) fn water_offset(&self, i: usize, cells: &[&VisualTile]) -> f32 {
+        if self.datum.is_none() || !self.water_owned(i,cells)
+            || matches!(shape_for_source(&cells[i].source),CellShape::Waterfall)
+            || !matches!(cells[i].source.tileset_id.as_ref(), "johto" | "johto_modern" | "kanto") {
+            return 0.;
+        }
+        let (w,e,n,s) = self.g.bounds(i % self.g.width, i / self.g.width);
+        let point = self.map_point(Vec2::new((w+e)*0.5, (n+s)*0.5));
+        let datum = self.datum.unwrap();
+        if let Some(level)=datum.open_water_at(point.floor().as_ivec2()) {
+            return level*crate::profile::JUMP_LEDGE_HEIGHT*self.g.tile_height/SOURCE_TILE_HEIGHT;
+        }
+        let local = point - datum.origin.as_vec2();
+        // The camera halo can repeat water beyond the complete native maps.
+        // Land sampling clamps to the nearest authored edge, but that edge
+        // cannot authorize a raised ocean outside its source evidence.
+        if local.x < 0. || local.y < 0.
+            || local.x >= datum.size.x as f32 || local.y >= datum.size.y as f32 {
+            return 0.;
+        }
+        super::terrace_datum::sample(Some(datum), point).unwrap_or(0.)
+            * crate::profile::JUMP_LEDGE_HEIGHT * self.g.tile_height / SOURCE_TILE_HEIGHT
     }
 
     fn jump_cell(&self, index: usize, cells: &[&VisualTile]) -> bool {
@@ -151,15 +226,32 @@ pub(super) fn finish(
 
 pub(super) fn finish_on_map(mesh: &mut TerrainMeshData, map: &str,
     cells: &[&VisualTile], g: &GridGeometry, origin: [i32;2], edges: &[VisualJumpLedge]) {
+    finish_with_datum(mesh,map,cells,g,origin,edges,None);
+}
+pub(super) fn finish_with_datum(mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTile],
+    g:&GridGeometry,origin:[i32;2],edges:&[VisualJumpLedge],datum:Option<&crystal_render_api::VisualTerraceDatum>) {
     // Tin Tower's one-way hops cross timber barriers on a level indoor floor.
     // They do not describe cumulative outdoor hills or changes of floor level.
-    if !super::jump_changes_floor_level(map) {return;}
-    let mut field = Field::new(edges, g, origin);
+    if !super::jump_changes_floor_level(map) {
+        // Flat-map policy also ignores any imported neighbor elevation, but
+        // a recessed modeled rock still needs its dry-side closure.
+        close_flat_rock_contacts(mesh,map,cells,g,origin,None);
+        return;
+    }
+    let mut field = Field::new(edges, g, origin).with_datum(datum);
     if kanto_family(cells.iter().copied()) {
         field.levels=super::terrace_levels::get_for_family(edges,true);
     }
     let h = crate::profile::JUMP_LEDGE_HEIGHT * g.tile_height / SOURCE_TILE_HEIGHT;
+    let water_continuation=mesh.authored_cells.iter().map(|owner|
+        *owner==Some("outdoor/border-water")).collect::<Vec<_>>();
     for (i, height) in mesh.footing_heights.iter_mut().enumerate() {
+        if level_water(&cells[i].source) {
+            *height += field.water_offset(i,cells);
+            continue;
+        }
+        if water_continuation.get(i).copied().unwrap_or(false) || field.water_owned(i,cells)
+            ||super::elevated_piers::level_surface(map,&cells[i].source) {continue;}
         let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
         *height += field.height(Vec2::new((w + e) * 0.5, (n + s) * 0.5))
             - if field.jump_cell(i, cells) { h } else { 0. };
@@ -172,21 +264,127 @@ pub(super) fn finish_on_map(mesh: &mut TerrainMeshData, map: &str,
         &mut mesh.animated_solid,
         &mut mesh.animated_textured,
     ].into_iter().enumerate() {
-        shape_surface_excluding_with_lips(surface, cells, &field,
-            if domain == 0 { rigid.as_deref() } else { None },map=="BlackthornCity");
+        shape_surface_excluding_with_lips_on_map(surface, cells, &field,
+            if domain == 0 { rigid.as_deref() } else { None },map=="BlackthornCity",map);
     }
     super::rigid_buildings::lift(&mut mesh.solid, &mesh.rigid_buildings, &field);
-    append_drop_faces_with_lips(&mut mesh.solid, cells, &field,map=="BlackthornCity");
+    append_drop_faces_with_lips_on_map(&mut mesh.solid, cells, &field,map=="BlackthornCity",map);
+    if crate::cave_water::outdoor(map)||super::elevated_piers::has_piers(map) {
+        let recessed_rocks = recessed_rock_cells(mesh);
+        append_low_water_shore_with_continuation(&mut mesh.solid,map,cells,&field,&water_continuation,Some(&recessed_rocks));
+    }
 }
 
-// Animation refreshes replace the retained flower surface. Keep Kanto's
-// refreshed geometry on exactly the same cumulative field as its static lawn.
-pub(super) fn fit_kanto_animated(surface: &mut SurfaceMeshData, cells: &[&VisualTile],
-    g: &GridGeometry, origin: [i32; 2], edges: &[VisualJumpLedge]) {
-    if !kanto_family(cells.iter().copied()) { return; }
-    let mut field = Field::new(edges, g, origin);
-    field.levels = super::terrace_levels::get_for_family(edges, true);
-    shape_surface_excluding_with_lips(surface, cells, &field, None, false);
+fn recessed_rock_cells(mesh: &TerrainMeshData) -> Vec<bool> {
+    mesh.authored_cells.iter().map(|owner|
+        *owner==Some("world-exterior/kanto_boundary_shore")).collect()
+}
+
+/// Replacing a flat rock sprite with a recessed sea bed exposes the side of
+/// adjacent level ground. Close that hidden side even on maps with no ledges.
+/// Existing bank tops, rock models, water planes and actor support stay intact.
+pub(super) fn close_flat_rock_contacts(mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTile],
+    g:&GridGeometry,origin:[i32;2],datum:Option<&crystal_render_api::VisualTerraceDatum>) {
+    if !crate::cave_water::outdoor(map) {return;}
+    let recessed_rocks=recessed_rock_cells(mesh);
+    if !recessed_rocks.iter().any(|&rock|rock) {return;}
+    let field=Field::with_source(&[],g,origin,cells).with_datum(datum);
+    append_low_water_shore_with_continuation(&mut mesh.solid,map,cells,&field,&[],Some(&recessed_rocks));
+}
+
+// Preserve the complete native upper bank. A backing below it seals the
+// distance to level water without stretching or tearing its sculpted faces.
+#[cfg(test)]
+fn append_low_water_shore(out:&mut SurfaceMeshData,map:&str,cells:&[&VisualTile],field:&Field<'_>) {
+    append_low_water_shore_with_continuation(out,map,cells,field,&[],None);
+}
+fn append_low_water_shore_with_continuation(out:&mut SurfaceMeshData,map:&str,cells:&[&VisualTile],
+    field:&Field<'_>,water_continuation:&[bool],recessed_rocks:Option<&[bool]>) {
+    let g=field.g;
+    for (i,tile) in cells.iter().enumerate() {
+        let water=crate::profile::WATER_HEIGHT*g.tile_height/SOURCE_TILE_HEIGHT
+            +field.water_offset(i,cells);
+        // Modeled sea rocks and floating courses retain a level water
+        // underlay too. Its contact with raised land needs the same backing,
+        // while two neighboring water owners must never acquire a wall.
+        let water_backed_barrier=crate::kanto_cliff::water_backed_barrier_local(&tile.source,
+            IVec2::new(field.origin[0]+(i%g.width)as i32,field.origin[1]+(i/g.width)as i32),field.datum).is_some()
+            ||super::buoy_course::source(&tile.source);
+        if !water_backed_barrier
+            && (tile.source.tile_index!=0x14||!matches!(shape_for_source(&tile.source),CellShape::Water)) {continue;}
+        let x=(i%g.width)as isize;let z=(i/g.width)as isize;
+        let (w,e,n,s)=g.bounds(i%g.width,i/g.width);
+        for (dx,dz,ends) in [(-1,0,[[w,n],[w,s]]),(1,0,[[e,s],[e,n]]),
+            (0,-1,[[e,n],[w,n]]),(0,1,[[w,s],[e,s]])] {
+            let nx=x+dx;let nz=z+dz;
+            if nx<0||nz<0||nx>=g.width as isize||nz>=g.height as isize {continue;}
+            let neighbor=nz as usize*g.width+nx as usize;
+            let source=&cells[neighbor].source;
+            if water_continuation.get(neighbor).copied().unwrap_or(false)
+                || super::elevated_piers::level_surface(map,source)
+                ||field.water_owned(neighbor,cells) {continue;}
+            let normal=Vec3::new(-dx as f32,0.,-dz as f32);
+            let inset=Vec2::new(dx as f32,dz as f32)*g.tile_width.min(g.tile_height)*0.0002;
+            let [a,b]=ends.map(|p|Vec2::from_array(p)+inset);
+            // A sealed mineral pond meets the plateau's native base as well
+            // as its terrace offset. Ignoring that base leaves no front bank
+            // after the water rises, exposing individual eroded cap fingers.
+            let native = if field.water_offset(i,cells)>0.
+                && super::terrace_datum::mountain_ponds::plateau(source) {
+                shape_for_source(source).surface_height(g.tile_height)
+            } else {0.};
+            // Endpoints can lie exactly on the next cell's bridge or water
+            // datum. The cap was fitted from inside this owning bank cell;
+            // its backing must use the same side at both terminal corners.
+            let (nw,ne,nn,ns)=g.bounds(neighbor%g.width,neighbor/g.width);
+            let eps=g.tile_width.min(g.tile_height)*0.0001;
+            let heights=[a,b].map(|p|field.height(p.clamp(
+                Vec2::new(nw+eps,nn+eps),Vec2::new(ne-eps,ns-eps)))+native);
+            // Native shoreline caps are dry bank geometry too, even though
+            // their glyph is not an ordinary lawn/path material donor.
+            let flat_rock_contact = water_backed_barrier
+                && recessed_rocks.is_some_and(|mask|mask.get(i)==Some(&true))
+                && matches!(shape_for_source(source),CellShape::Flat|CellShape::PlaneAt {height:0.})
+                && (super::kanto_shore::source_bank(source) || matches!(super::new_bark::ground_material(source),Some(
+                    super::new_bark::GroundMaterial::Lawn|super::new_bark::GroundMaterial::Path
+                    |super::new_bark::GroundMaterial::Pavers)));
+            if heights.iter().all(|h|*h<=0.001) && !flat_rock_contact {continue;}
+            let top=heights.map(|h|h.max(water));
+            let p=[[a.x,water,a.y],[a.x,top[0],a.y],[b.x,top[1],b.y],[b.x,water,b.y]];
+            // This is the side of the existing cliff, never a second
+            // shoreline crown. Forest presentation remains outside this pass.
+            let first=out.positions.len();
+            let keep_existing_finish=source.tileset_id.as_ref()=="forest"
+                || tile.source.tileset_id.as_ref()=="forest";
+            let backed=if keep_existing_finish {
+                super::new_bark::ledge_finish::append(out,p,normal.to_array(),g,field.origin)
+            } else if matches!(super::new_bark::ground_material(source),
+                Some(super::new_bark::GroundMaterial::Lawn)) {
+                super::new_bark::ledge_finish::append_support_face(out,p,normal.to_array(),g,field.origin)
+            } else {
+                super::new_bark::ledge_finish::append_bare_support_face(out,p,normal.to_array(),g,field.origin)
+            };
+            if !backed {
+                append_solid_quad(out,p,normal.to_array(),[0.29,0.19,0.08,1.]);
+            }
+            if keep_existing_finish {out.uvs[first..].fill([0.;2]);}
+        }
+    }
+}
+
+// Refreshes replace the retained blooms. Fit outdoor flowers to the same
+// existing field as their static lawn; forest/interior vertices keep their
+// legacy path even when they occur in a connected town halo.
+pub(super) fn fit_animated_outdoor(surface: &mut SurfaceMeshData, map:&str,cells: &[&VisualTile],
+    g: &GridGeometry, origin: [i32; 2], edges: &[VisualJumpLedge],datum:Option<&crystal_render_api::VisualTerraceDatum>) {
+    let kanto=kanto_family(cells.iter().copied());
+    if !kanto && !super::new_bark::ordinary_lawn_map(map) {return;}
+    let mut field = Field::new(edges, g, origin).with_datum(datum);
+    if kanto {field.levels=super::terrace_levels::get_for_family(edges,true);}
+    let preserved=(!kanto).then(||surface.positions.iter().map(|p|
+        cell_at(g,p[0],p[2]).is_none_or(|i|!super::source_bound_outdoor_ground(&cells[i].source)))
+        .collect::<Vec<_>>());
+    shape_surface_excluding_with_lips_on_map(surface, cells, &field, preserved.as_deref(), false,map);
 }
 
 fn append_drop_faces(out: &mut SurfaceMeshData, cells: &[&VisualTile], field: &Field<'_>) {
@@ -195,6 +393,10 @@ fn append_drop_faces(out: &mut SurfaceMeshData, cells: &[&VisualTile], field: &F
 
 fn append_drop_faces_with_lips(out: &mut SurfaceMeshData, cells: &[&VisualTile],
     field: &Field<'_>, closed_lips: bool) {
+    append_drop_faces_with_lips_on_map(out,cells,field,closed_lips,"");
+}
+fn append_drop_faces_with_lips_on_map(out: &mut SurfaceMeshData, cells: &[&VisualTile],
+    field: &Field<'_>, closed_lips: bool,map:&str) {
     let g = field.g;
     let first = out.indices.len();
     for edge in field.edges {
@@ -237,16 +439,31 @@ fn append_drop_faces_with_lips(out: &mut SurfaceMeshData, cells: &[&VisualTile],
         for v in a.max(low)..b.min(high) {
             let points = [to_world(v), to_world(v + 1)];
             let tangent = (points[1] - points[0]).normalize_or_zero();
+            let middle = (points[0] + points[1]) * 0.5;
+            let across = Vec2::new(normal.x, normal.z) * 0.001;
+            if [middle - across, middle + across].into_iter().all(|p|
+                cell_at(g,p.x,p.y).is_some_and(|i|field.water_owned(i,cells))) {
+                // A propagated land contour cannot become a wall or step
+                // through a connected pool. Its bank belongs to land only.
+                continue;
+            }
             let levels = std::array::from_fn::<_, 2, _>(|endpoint| {
                 // At a joined corner, sampling exactly at the endpoint can
                 // select the landing beyond the perpendicular course. Both
                 // lip limits must stay inside this unit's owning span.
                 let p = points[endpoint] + tangent * if endpoint == 0 { 0.001 } else { -0.001 };
                 let toward = Vec2::new(normal.x, normal.z) * 0.001;
-                let lower = field.height(p + toward)
-                    + cell_at(g, p.x + toward.x, p.y + toward.y)
-                        .filter(|&i| matches!(shape_for_source(&cells[i].source), CellShape::Water))
-                        .map_or(0., |_| CellShape::Water.surface_height(g.tile_height));
+                let lower_cell=cell_at(g,p.x+toward.x,p.y+toward.y);
+                let lower=if lower_cell.is_some_and(|i|level_water(&cells[i].source)) {
+                    crate::profile::WATER_HEIGHT*g.tile_height/SOURCE_TILE_HEIGHT
+                        +field.water_offset(lower_cell.unwrap(),cells)
+                } else if lower_cell.is_some_and(|i|super::elevated_piers::level_surface(map,&cells[i].source)) {
+                    if lower_cell.is_some_and(|i|!super::elevated_piers::walkway(map,&cells[i].source)) {
+                        crate::profile::WATER_HEIGHT*g.tile_height/SOURCE_TILE_HEIGHT
+                    } else {crate::port::PIER_HEIGHT*g.tile_height/SOURCE_TILE_HEIGHT}
+                } else {field.height(p+toward)+lower_cell
+                    .filter(|&i|matches!(shape_for_source(&cells[i].source),CellShape::Water))
+                    .map_or(0., |_|CellShape::Water.surface_height(g.tile_height))};
                 (lower, field.height(p - toward))
             });
             if levels.iter().all(|&(l, h)| h <= l + 0.001) {
@@ -310,21 +527,71 @@ fn shape_surface_excluding(surface: &mut SurfaceMeshData, cells: &[&VisualTile],
 
 fn shape_surface_excluding_with_lips(surface: &mut SurfaceMeshData, cells: &[&VisualTile],
     field: &Field<'_>, rigid: Option<&[bool]>, closed_lips: bool) {
+    shape_surface_excluding_with_lips_on_map(surface,cells,field,rigid,closed_lips,"");
+}
+fn shape_surface_excluding_with_lips_on_map(surface: &mut SurfaceMeshData, cells: &[&VisualTile],
+    field: &Field<'_>, rigid: Option<&[bool]>, closed_lips: bool,map:&str) {
     let old = surface.positions.clone();
     let h = crate::profile::JUMP_LEDGE_HEIGHT * field.g.tile_height / SOURCE_TILE_HEIGHT;
     let mut changed = vec![false; old.len()];
     let mut obsolete = vec![false; surface.indices.len() / 3];
     let mut contact_tops = HashMap::<(IVec2, IVec2), Option<f32>>::new();
+    // A source-authenticated bank of a resolved mineral pond has one floor
+    // offset. Its sculpted faces can protrude over the adjacent plateau;
+    // sampling that lower offset per vertex stretches them into needles.
+    let mut resolved_banks=Vec::new();
+    if field.datum.is_some() && surface.uvs.iter().any(|uv|
+        uv[0]>87000. && uv[0]<90000. && uv[1]< -65000.) {
+        for (i,tile) in cells.iter().enumerate() {
+            if !super::kanto_shore::source_bank(&tile.source) {continue;}
+            let (x,z)=(i%field.g.width,i/field.g.width);
+            // Raised inland rivers also have positive water offsets. Only
+            // a native mineral rim needs the pond's rigid fitting; ordinary
+            // banks must keep the land's corner heights to close their joins.
+            let mineral_rim=(z.saturating_sub(1)..=(z+1).min(field.g.height-1)).any(|r|
+                (x.saturating_sub(1)..=(x+1).min(field.g.width-1)).any(|c|
+                    super::terrace_datum::mountain_ponds::plateau(&cells[r*field.g.width+c].source)));
+            let resolved=mineral_rim && (z.saturating_sub(1)..=(z+1).min(field.g.height-1)).any(|r|
+                (x.saturating_sub(1)..=(x+1).min(field.g.width-1)).any(|c| {
+                    let j=r*field.g.width+c;
+                    cells[j].source.tileset_id.as_ref()=="kanto" && field.water_offset(j,cells)>0.
+                }));
+            if resolved {
+                let (w,e,n,s)=field.g.bounds(x,z);
+                let center=Vec2::new((w+e)*0.5,(n+s)*0.5);
+                resolved_banks.push((center,field.height(center)));
+            }
+        }
+    }
     let source_point = |uv: [f32; 2]| Vec2::new(
         (-uv[0] - 10000.) / field.g.tile_width,
-        (-uv[1] - if uv[1] < -30000. { 40000. } else { 20000. }) / field.g.tile_height);
+        (-uv[1] - if uv[1] < -50000. {60000.} else if uv[1] < -30000. { 40000. } else { 20000. }) / field.g.tile_height);
     for (number, tri) in surface.indices.chunks_exact(3).enumerate() {
         let ids = [tri[0], tri[1], tri[2]].map(|i| i as usize);
+        // Native brick bevels may be clipped exactly onto a land boundary.
+        // Their producer has fitted them to the pier's own corner heights;
+        // geometric inward nudges must not assign them to the adjoining hill.
+        if ids.iter().all(|&i|surface.uvs[i]==crate::scenery_finish::LEVEL_PAVING_UV) {
+            continue;
+        }
         if rigid.is_some_and(|owned| ids.iter().all(|&i| owned[i])) {
             continue;
         }
         let center = ids.iter().map(|&i| Vec3::from_array(old[i])).sum::<Vec3>() / 3.;
         let normal = Vec3::from_array(surface.normals[ids[0]]);
+        if !resolved_banks.is_empty() && ids.iter().all(|&i| {
+            let uv=surface.uvs[i];uv[0]>87000. && uv[0]<90000. && uv[1]< -65000.
+        }) {
+            let point=Vec2::new(center.x,center.z);
+            let nearest=resolved_banks.iter().filter_map(|&(bank,offset)| {
+                let d=((point-bank)/Vec2::new(field.g.tile_width,field.g.tile_height)).length_squared();
+                (d<2.25).then_some((d,offset))
+            }).min_by(|a,b|a.0.total_cmp(&b.0));
+            if let Some((_,offset))=nearest {
+                for &i in &ids {if !changed[i] {surface.positions[i][1]=old[i][1]+offset;changed[i]=true;}}
+                continue;
+            }
+        }
         let marked = ids
             .iter()
             .all(|&i| surface.uvs[i][0] == super::ledge_approach::BANK_OWNER_UV)
@@ -332,12 +599,71 @@ fn shape_surface_excluding_with_lips(surface: &mut SurfaceMeshData, cells: &[&Vi
             .filter(|&i| i < cells.len());
         let inside = center - normal * 0.001;
         let owner = marked.or_else(|| cell_at(field.g, inside.x, inside.z));
+        if owner.is_some_and(|i|field.water_owned(i,cells))
+            && !ids.iter().all(|&i|surface.uvs[i][0]< -9000.) {
+            // A complete enclosed lake receives one constant offset, including
+            // ripple accents. Open seas and authored waterfall pools stay put.
+            let offset=field.water_offset(owner.unwrap(),cells);
+            if offset != 0. { for &i in &ids {
+                if !changed[i] { surface.positions[i][1]=old[i][1]+offset; changed[i]=true; }
+            } }
+            continue;
+        }
+        // Piers, planted islands and their low water form a level structure.
+        // Hills elsewhere on a route must not bend its decks or flower roots.
+        let pier=owner.is_some_and(|i|super::elevated_piers::walkway(map,&cells[i].source)
+            ||super::elevated_piers::structural_edge(map,&cells[i].source));
+        let water=crate::profile::WATER_HEIGHT*field.g.tile_height/SOURCE_TILE_HEIGHT;
+        let flat_water=normal.y>0.99
+            &&!ids.iter().all(|&i|surface.uvs[i][0]< -9000.)
+            &&(ids.iter().all(|&i|(old[i][1]-water).abs()<0.0001)
+                || (owner.is_some_and(|i|level_water(&cells[i].source))
+                    &&ids.iter().all(|&i|(old[i][1]-old[ids[0]][1]).abs()<0.0001)));
+        // The suspended bridge keeps the same inland river beneath its
+        // deck. Its source cells belong to paving, so the water underlay
+        // needs explicit height ownership rather than the land contour.
+        if flat_water && pier {
+            let offset=field.water_surface_offset(Vec2::new(center.x,center.z));
+            for &i in &ids {if !changed[i] {
+                surface.positions[i][1]=old[i][1]+offset;changed[i]=true;
+            }}
+            continue;
+        }
+        let rooted_water=ids.iter().all(|&i|surface.uvs[i][0]==super::shore_ecology::ROOTED_WATER_UV);
+        // Proven deck structures were fitted by PierLevels already. A
+        // raised river can place them above the old fixed-height cutoff;
+        // applying land height again lifts their beams away from the paving.
+        if rooted_water || flat_water || (pier && !ids.iter().all(|&i|surface.uvs[i][0]< -9000.)) {
+            continue;
+        }
         // Mineral faces carry their shader's world-coordinate tag. Their
         // fractured relief can protrude into a neighboring shallow-bank cell;
         // that cannot turn the tall cliff into the bank's six-pixel cap.
         let mineral = ids.iter().all(|&i| surface.uvs[i][0] < -9000.);
         let jump = !mineral && owner.is_some_and(|i| field.jump_cell(i, cells));
         let kanto_ground=owner.is_some_and(|i|cells[i].source.tileset_id.as_ref()=="kanto");
+        // Mineral relief can protrude past its original cell. Its calibrated
+        // offset belongs to the source footprint, not the water or bank under
+        // the protrusion. Preserve the owning side at discontinuous contacts.
+        let geometric_normal = (Vec3::from_array(old[ids[1]]) - Vec3::from_array(old[ids[0]]))
+            .cross(Vec3::from_array(old[ids[2]]) - Vec3::from_array(old[ids[0]]))
+            .normalize_or_zero();
+        let mineral_cell = (mineral && field.datum.is_some()).then(|| {
+            let source=ids.map(|i|source_point(surface.uvs[i]));
+            let mut center=source.into_iter().sum::<Vec2>()/3.;
+            let lo=source.into_iter().fold(Vec2::splat(f32::INFINITY),Vec2::min);
+            let hi=source.into_iter().fold(Vec2::splat(f32::NEG_INFINITY),Vec2::max);
+            let span=hi-lo;
+            // Folded courses retain a narrow UV thickness across the wall.
+            // Recover their authored grid plane before choosing its inside;
+            // a tiny centroid bias can otherwise remain in the water cell.
+            let axis=if span.y>span.x*1.5 && geometric_normal.x.abs()>0.0001 {
+                center.x=center.x.round();Vec2::new(geometric_normal.x.signum(),0.)
+            } else if span.x>span.y*1.5 && geometric_normal.z.abs()>0.0001 {
+                center.y=center.y.round();Vec2::new(0.,geometric_normal.z.signum())
+            } else {Vec2::new(normal.x,normal.z).normalize_or_zero()};
+            (center-axis*0.01).floor()
+        });
         // The shared terrace field already replaces this drawing's local
         // bank rise. Retire the old fronts, including their tail beyond the
         // authored cut. Keep lateral returns: they seal the bank against a
@@ -347,9 +673,6 @@ fn shape_surface_excluding_with_lips(surface: &mut SurfaceMeshData, cells: &[&Vi
             obsolete[number]=true;
             continue;
         }
-        let geometric_normal = (Vec3::from_array(old[ids[1]]) - Vec3::from_array(old[ids[0]]))
-            .cross(Vec3::from_array(old[ids[2]]) - Vec3::from_array(old[ids[0]]))
-            .normalize_or_zero();
         let mineral_wall = if mineral {
             // Sculpting/rounded contacts can move a facet into the adjoining
             // cell and tilt its normal. The mineral shader's original map
@@ -425,7 +748,6 @@ fn shape_surface_excluding_with_lips(surface: &mut SurfaceMeshData, cells: &[&Vi
                 };
                 (p-axis*eps,p+axis*eps)
             });
-            let upper = field.height(bank_contact.map_or(position+toward,|p|p.0));
             // Both faces of a mineral contact must remove the same legacy
             // bank rise. A zero-floor side may bury its toe, but cannot tear
             // away from the neighboring bank side above that ground contact.
@@ -436,6 +758,10 @@ fn shape_surface_excluding_with_lips(surface: &mut SurfaceMeshData, cells: &[&Vi
                 });
                 top.map(|top| (h, top))
             });
+            let upper = if let Some(cell)=mineral_cell.filter(|_|contact.or(mineral_wall).is_none()) {
+                let source=source_point(surface.uvs[i]).clamp(cell+Vec2::splat(0.0001),cell+Vec2::splat(0.9999));
+                field.map_height(source)
+            } else {field.height(bank_contact.map_or(position+toward,|p|p.0))};
             let y = if let Some((old_floor, old_top)) = contact.or(mineral_wall) {
                 // The cliff's cap keeps its authored height, while its foot
                 // follows the bank whose old local rise has been removed.
@@ -453,7 +779,7 @@ fn shape_surface_excluding_with_lips(surface: &mut SurfaceMeshData, cells: &[&Vi
             };
             surface.positions[i][1] = y;
             if !kanto_ground && surface.uvs[i][0] == super::ledge_approach::BANK_OWNER_UV {
-                surface.uvs[i] = [0., 0.];
+                surface.uvs[i] = super::new_bark::ledge_finish::cliff_material_uv(surface.positions[i],field.g,field.origin);
             }
         }
         if kanto_ground && marked.is_some() {
@@ -466,8 +792,10 @@ fn shape_surface_excluding_with_lips(surface: &mut SurfaceMeshData, cells: &[&Vi
     }
     // Keep Kanto provenance until both triangles sharing each quad have used
     // it. Clearing the first triangle's vertices made the second lose ownership.
-    for uv in &mut surface.uvs {
-        if uv[0]==super::ledge_approach::BANK_OWNER_UV {*uv=[0.;2];}
+    for (position,uv) in surface.positions.iter().zip(&mut surface.uvs) {
+        if uv[0]==super::ledge_approach::BANK_OWNER_UV {
+            *uv=super::new_bark::ledge_finish::cliff_material_uv(*position,field.g,field.origin);
+        }
     }
     let _contact_trace = crate::loading_trace::span("mineral.terrace_shared_points", || {
         let mut active=vec![false;old.len()];
@@ -568,9 +896,447 @@ fn cell_at(g: &GridGeometry, x: f32, z: f32) -> Option<usize> {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn retained_river_plane_continues_outside_bounds_and_beneath_the_bridge() {
+        use super::*;
+        let frame=super::super::tests::frame(4,4,(0..16).map(|i| {
+            let mut s=super::super::tests::source_with_tile(if i==5 {5}else{0x43},
+                (i%4)as u8,(i/4)as u8,if i==5 {0x4b}else{0x14});
+            s.tileset_id="kanto".into();s
+        }).collect());
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ONE,
+            size:bevy::prelude::UVec2::splat(2),levels:vec![[0.;4];4].into(),water_barriers:Default::default(),
+            open_water:Some(crystal_render_api::VisualOpenWaterDatum {level:2.,cells:vec![IVec2::ONE].into()})};
+        let field=Field::with_source(&[],&g,[0,0],&cells).with_datum(Some(&datum));
+        assert_eq!(field.water_offset(0,&cells),12.,"the visible source-water border continues the river");
+        assert_eq!(field.water_offset(10,&cells),0.,"an unrelated native pond retains its own level");
+        let mut surface=SurfaceMeshData::default();
+        let (w,e,n,s)=g.bounds(1,1);
+        append_top(&mut surface,[w,e,n,s],crate::profile::WATER_HEIGHT,g.uv(1,1));
+        shape_surface_excluding_with_lips_on_map(&mut surface,&cells,&field,None,false,"CeruleanCity");
+        assert!(surface.positions.iter().all(|p|p[1]==crate::profile::WATER_HEIGHT+12.),
+            "a bridge cannot hide a second sea-level water plane beneath the raised river");
+        let mut closed=datum.clone();closed.open_water=None;closed.levels=vec![[2.;4];4].into();
+        let closed_field=Field::with_source(&[],&g,[0,0],&cells).with_datum(Some(&closed));
+        assert_eq!(closed_field.water_surface_offset(Vec2::new(-8.,0.)),0.,
+            "ocean continuation cannot inherit a native land-edge elevation");
+        let mut bed=SurfaceMeshData::default();
+        append_top(&mut bed,[w,e,n,s],crate::profile::WATER_HEIGHT,g.uv(1,1));
+        shape_surface_excluding_with_lips_on_map(&mut bed,&cells,&closed_field,None,false,"CeruleanCity");
+        assert!(bed.positions.iter().all(|p|p[1]==crate::profile::WATER_HEIGHT+12.),
+            "connected source maps closing the river must retain its bridge water level too");
+        let mut high=closed.clone();high.levels=vec![[8.;4];4].into();
+        let high_field=Field::with_source(&[],&g,[0,0],&cells).with_datum(Some(&high));
+        let mut frame=SurfaceMeshData::default();
+        append_top(&mut frame,[w,e,n,s],52.,g.uv(1,1));
+        let fitted=frame.clone();
+        shape_surface_excluding_with_lips_on_map(&mut frame,&cells,&high_field,None,false,"CeruleanCity");
+        assert_eq!(frame,fitted,"high-river deck frames must not receive a second land-height lift");
+    }
+
+    #[test]
+    fn repeated_water_outside_native_datum_cannot_inherit_the_edge_terrace() {
+        use super::*;
+        for atlas in ["kanto", "johto"] {
+            let frame = super::super::tests::frame(6, 6, (0..36).map(|i| {
+                let mut source = super::super::tests::source_with_tile(0x43,
+                    (i % 4) as u8, (i / 6 % 4) as u8, 0x14);
+                source.tileset_id = atlas.into();
+                source
+            }).collect());
+            let cells = frame.tiles.iter().collect::<Vec<_>>();
+            let g = GridGeometry { width: 6, height: 6, tile_width: 8., tile_height: 8.,
+                origin_x: -17., origin_z: 23. };
+            let datum = crystal_render_api::VisualTerraceDatum {
+                origin: IVec2::new(7, 11), size: bevy::prelude::UVec2::splat(2),
+                levels: vec![[1.;4];4].into(), open_water:None,water_barriers: Default::default(),
+            };
+            let field = Field::with_source(&[], &g, [6,10], &cells).with_datum(Some(&datum));
+            let mut surface = SurfaceMeshData::default();
+            for i in 0..36 {
+                let (w,e,n,s) = g.bounds(i%6,i/6);
+                append_top(&mut surface,[w,e,n,s],crate::profile::WATER_HEIGHT,g.uv(i%6,i/6));
+            }
+            let original = surface.clone();
+            shape_surface(&mut surface,&cells,&field);
+            for i in 0..36 {
+                let inside = (1..3).contains(&(i%6)) && (1..3).contains(&(i/6));
+                let expected = if inside {crate::profile::JUMP_LEDGE_HEIGHT} else {0.};
+                assert_eq!(field.water_offset(i,&cells),expected,"{atlas} cell {i}");
+                for j in i*4..i*4+4 {
+                    assert_eq!(surface.positions[j][1],original.positions[j][1]+expected,
+                        "{atlas} water geometry must agree with its support at cell {i}");
+                }
+            }
+            assert_eq!(surface.indices,original.indices);
+            assert_eq!(surface.uvs,original.uvs);
+            assert_eq!(field.height(bevy::prelude::Vec2::new(-16.,24.)),
+                crate::profile::JUMP_LEDGE_HEIGHT,"land continuation keeps its edge sampling");
+        }
+    }
+    #[test]
+    fn shoreline_backing_keeps_its_bank_height_at_a_bridge_corner() {
+        let make=|block,column,row,tile| {
+            let mut s=super::super::tests::source_with_tile(block,column,row,tile);
+            s.tileset_id="kanto".into();s
+        };
+        let frame=super::super::tests::frame(2,2,vec![make(0x1f,0,0,0x33),make(5,0,0,0x4b),
+            make(0x1f,0,1,0x14),make(5,0,1,0x4b)]);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let g=GridGeometry {width:2,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let mut levels=vec![[0.;4];4];levels[0]=[8.;4];
+        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:bevy::prelude::UVec2::splat(2),
+            levels:levels.into(),open_water:None,water_barriers:Default::default()};
+        let field=Field::new(&[],&g,[0,0]).with_datum(Some(&datum));
+        let mut surface=SurfaceMeshData::default();
+        append_low_water_shore(&mut surface,"Route25",&cells,&field);
+        for x in [0.,8.] {
+            let high=surface.positions.iter().filter(|p|(p[0]-x).abs()<0.001
+                && (p[2]-8.).abs()<0.01).map(|p|p[1]).fold(f32::NEG_INFINITY,f32::max);
+            assert!((high-48.).abs()<0.001,"bank endpoint {x} must meet its cap instead of borrowing the bridge datum");
+        }
+        assert!(surface.positions.iter().any(|p|(p[1]+2.).abs()<0.001),"water stays at its original level");
+        let mut flat=datum.clone();flat.levels=vec![[0.;4];4].into();
+        let mut control=SurfaceMeshData::default();
+        append_low_water_shore(&mut control,"Route25",&cells,&Field::new(&[],&g,[0,0]).with_datum(Some(&flat)));
+        assert!(control.positions.is_empty(),"an unraised bank retains its existing native lip");
+    }
+
+    #[test]
+    fn raised_river_bank_follows_its_land_corners_instead_of_a_pond_center() {
+        let mut ground=super::super::tests::source_with_tile(0x23,0,0,0x01);
+        ground.tileset_id="kanto".into();
+        let mut bank=super::super::tests::source_with_tile(0x1f,1,0,0x33);
+        bank.tileset_id="kanto".into();
+        let mut water=super::super::tests::source_with_tile(0x43,1,1,0x14);
+        water.tileset_id="kanto".into();
+        let frame=super::super::tests::frame(3,2,vec![ground.clone(),bank,ground.clone(),ground.clone(),water,ground]);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let g=GridGeometry {width:3,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let mut levels=vec![[1.;4];6];levels[1]=[2.,1.,1.,2.];
+        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(3,2),
+            levels:levels.into(),open_water:None,water_barriers:Default::default()};
+        let field=Field::new(&[],&g,[0,0]).with_datum(Some(&datum));
+        let mut bank=SurfaceMeshData::default();
+        append_top(&mut bank,[8.,16.,0.,8.],0.,g.uv(1,0));
+        let mut land=bank.clone();
+        for (uv,p) in bank.uvs.iter_mut().zip(&bank.positions) {*uv=[88000.+p[0]/8.,-70000.-p[2]/8.];}
+        shape_surface(&mut bank,&cells,&field);
+        shape_surface(&mut land,&cells,&field);
+        assert_eq!(bank.positions,land.positions,"the bank cap must meet the graded land along both edges");
+        assert!(bank.positions.iter().any(|p|p[1]>11.9));
+        assert!(bank.positions.iter().any(|p|p[1]<6.1));
+    }
+
+    #[test]
+    fn sealed_pond_bank_keeps_one_offset_across_its_sculpted_source_edge() {
+        use super::*;
+        let mut rock=super::super::tests::source_with_tile(0x2c,0,0,0x11);rock.tileset_id="kanto".into();
+        let mut bank=super::super::tests::source_with_tile(0x1f,1,0,0x33);bank.tileset_id="kanto".into();
+        let mut water=super::super::tests::source_with_tile(0x43,1,1,0x14);water.tileset_id="kanto".into();
+        let frame=super::super::tests::frame(3,2,vec![rock.clone(),bank,rock.clone(),rock.clone(),water,rock]);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let g=GridGeometry {width:3,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let mut levels=vec![[1.;4];6];levels[1]=[22./crate::profile::JUMP_LEDGE_HEIGHT;4];levels[4]=levels[1];
+        let mut datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(3,2),
+            levels:levels.into(),open_water:None,water_barriers:std::sync::Arc::from([])};
+        let points=vec![[15.7,0.,5.],[16.2,0.2,5.2],[15.8,0.8,7.]];
+        let original=SurfaceMeshData {uvs:points.iter().map(|p|[88000.+p[0]/8.,-70000.-p[2]/8.]).collect(),
+            positions:points,normals:vec![[0.,1.,0.];3],colors:vec![[0.3,0.3,0.3,1.];3],indices:vec![0,1,2],..Default::default()};
+        let mut shifted=original.clone();
+        shape_surface(&mut shifted,&cells,&Field::new(&[],&g,[0,0]).with_datum(Some(&datum)));
+        for (a,b) in shifted.positions.iter().zip(&original.positions) {
+            assert!((a[1]-b[1]-22.).abs()<0.0001,"sculpted bank must not inherit the lower neighboring offset");
+            assert_eq!([a[0],a[2]],[b[0],b[2]]);
+        }
+        assert_eq!(shifted.uvs,original.uvs);
+        datum.levels=vec![[0.;4];6].into();
+        let mut retained=original.clone();
+        shape_surface(&mut retained,&cells,&Field::new(&[],&g,[0,0]).with_datum(Some(&datum)));
+        assert_eq!(retained.positions,original.positions,"ordinary source banks keep their original grading");
+    }
+
+    #[test]
+    fn sculpted_volcanic_cap_keeps_its_own_level_when_it_protrudes_into_a_raised_pond() {
+        use super::*;
+        let mut rock=super::super::tests::source_with_tile(0x2c,0,0,0x11);rock.tileset_id="kanto".into();
+        let mut water=super::super::tests::source_with_tile(0x43,1,0,0x14);water.tileset_id="kanto".into();
+        let frame=super::super::tests::frame(2,1,vec![rock,water]);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let g=GridGeometry {width:2,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(2,1),
+            levels:vec![[0.;4],[16./crate::profile::JUMP_LEDGE_HEIGHT;4]].into(),open_water:None,water_barriers:std::sync::Arc::from([])};
+        let field=Field::new(&[],&g,[0,0]).with_datum(Some(&datum));
+        let mut surface=SurfaceMeshData {positions:vec![[8.1,16.,1.],[8.1,16.,7.],[8.9,16.,7.]],
+            normals:vec![[0.,1.,0.];3],uvs:vec![[-10007.,-60001.],[-10007.,-60007.],[-10008.,-60007.]],
+            colors:vec![[0.2,0.2,0.2,1.];3],indices:vec![0,1,2],..Default::default()};
+        let original=surface.clone();
+        shape_surface(&mut surface,&cells,&field);
+        assert_eq!(surface.positions,original.positions,"mineral cap cannot inherit the pond's lift");
+        assert_eq!(surface.uvs,original.uvs);
+        assert_eq!(surface.indices,original.indices);
+        // A folded source wall has thickness beyond its exact native plane.
+        // Its centroid can lie in the water even though the face belongs to rock.
+        let mut wall=SurfaceMeshData {positions:vec![[8.05,0.,1.],[8.05,16.,1.],[8.05,16.,7.]],
+            normals:vec![[1.,0.,0.];3],uvs:vec![[-10008.05,-60001.],[-10008.05,-60001.],[-10008.05,-60007.]],
+            colors:vec![[0.2,0.2,0.2,1.];3],indices:vec![0,1,2],..Default::default()};
+        let original_wall=wall.clone();
+        shape_surface(&mut wall,&cells,&field);
+        assert_eq!(wall.positions,original_wall.positions,"a folded mineral course keeps its original rock-side offset");
+        let mut shore=SurfaceMeshData::default();
+        append_low_water_shore(&mut shore,"CinnabarIsland",&cells,&field);
+        assert!(!shore.indices.is_empty(),"the raised pond needs a continuous native mineral bank");
+        assert!(shore.positions.iter().any(|p|(p[1]-14.).abs()<0.001));
+        assert!(shore.positions.iter().any(|p|(p[1]-16.).abs()<0.001));
+        assert!(shore.positions.iter().all(|p|p[1]<18.),"the shore is a shallow lip, never a tall retaining wall");
+    }
+
     use super::*;
     #[test]
-    fn tin_tower_hops_leave_indoor_mesh_and_actor_support_level() {
+    fn recessed_sea_rocks_close_the_native_flat_bank_side_without_raising_the_cap() {
+        let g=GridGeometry {width:4,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let frame=super::super::tests::frame(4,2,(0..8).map(|i| {
+            let (x,y)=(i%4,i/4);
+            let mut s=super::super::tests::source_with_tile(if x<2 {0x6b}else{0x1f},
+                x as u8,if x<2 {y as u8}else{0},if x<2 {[[0x2a,0x2b],[0x3a,0x3b]][y][x]}else{0x33});
+            s.tileset_id="kanto".into();s
+        }).collect());
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        assert!(super::super::kanto_shore::source_bank(&cells[2].source));
+        assert!(!matches!(super::super::new_bark::ground_material(&cells[2].source),Some(
+            super::super::new_bark::GroundMaterial::Lawn|super::super::new_bark::GroundMaterial::Path
+            |super::super::new_bark::GroundMaterial::Pavers)));
+        let mut mesh=TerrainMeshData {footing_heights:vec![0.;8],
+            authored_cells:(0..8).map(|i|Some(if i%4<2 {"world-exterior/kanto_boundary_shore"}
+                else{"outdoor/kanto-shore"})).collect(),..Default::default()};
+        append_top(&mut mesh.textured,[0.,16.,0.,16.],crate::profile::WATER_HEIGHT,(0.,1.,0.,1.));
+        let before=mesh.clone();
+        close_flat_rock_contacts(&mut mesh,"VermilionCity",&cells,&g,[0,0],None);
+        assert!(!mesh.solid.positions.is_empty(),"the recessed rock bed exposes a real native bank side");
+        assert!(mesh.solid.positions.iter().all(|p|p[0]>15. && p[0]<16.01 && p[1]>=-2. && p[1]<=0.),
+            "only the hidden side between the existing bank and sea level is added");
+        assert!(mesh.solid.positions.iter().any(|p|p[1]==0.));
+        assert!(mesh.solid.positions.iter().any(|p|p[1]==crate::profile::WATER_HEIGHT));
+        assert_eq!(mesh.textured,before.textured);
+        assert_eq!(mesh.footing_heights,before.footing_heights);
+        assert_eq!(mesh.authored_cells,before.authored_cells);
+    }
+
+    #[test]
+    fn modeled_sea_rock_beds_close_level_sand_contacts_without_new_rims_or_water_walls() {
+        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let make=|dry:bool|super::super::tests::frame(4,4,(0..16).map(|i| {
+            let (x,y)=(i%4,i/4);
+            let mut s=super::super::tests::source_with_tile(0x43,(x%4)as u8,(y%4)as u8,0x14);
+            s.tileset_id="kanto".into();
+            if x<2 {
+                s.metatile_id=0x6b;s.subtile_column=x as u8;s.subtile_row=(y%2)as u8;
+                s.tile_index=[[0x2a,0x2b],[0x3a,0x3b]][y%2][x];
+            } else if dry {s.metatile_id=0x31;s.tile_index=0x39;}
+            s
+        }).collect());
+        let frame=make(true);let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let mut mesh=TerrainMeshData {footing_heights:vec![0.;16],
+            authored_cells:(0..16).map(|i|(i%4<2).then_some("world-exterior/kanto_boundary_shore")).collect(),
+            ..Default::default()};
+        append_top(&mut mesh.textured,[0.,16.,0.,32.],crate::profile::WATER_HEIGHT,(0.,1.,0.,1.));
+        append_solid_quad(&mut mesh.solid,[[1.,-2.,1.],[1.,3.,1.],[7.,3.,1.],[7.,-2.,1.]],
+            [0.,0.,1.],[0.5;4]);
+        let original=mesh.clone();
+        let neighboring_terrace=crystal_render_api::VisualTerraceDatum {
+            origin:IVec2::ZERO,size:bevy::prelude::UVec2::splat(4),
+            levels:vec![[2.;4];16].into(),open_water:None,water_barriers:Default::default(),
+        };
+        finish_with_datum(&mut mesh,"Route20",&cells,&g,[0,0],&[],Some(&neighboring_terrace));
+        let added=&mesh.solid.positions[original.solid.positions.len()..];
+        assert!(!added.is_empty(),"a recessed rock bed must close the neighboring flat sand underside");
+        assert!(added.iter().all(|p|p[1]>=crate::profile::WATER_HEIGHT&&p[1]<=0.),
+            "only the concealed face below the existing bank, never a new rim or cap");
+        assert!(added.iter().all(|p|p[0]>14.&&p[0]<17.),"only the exact rock/land contact");
+        assert!(mesh.solid.normals[original.solid.positions.len()..].iter().all(|n|n[1].abs()<0.9),
+            "no horizontal top surface is introduced");
+        assert_eq!(mesh.textured,original.textured,"water positions, UVs and source clock stay exact");
+        assert_eq!(mesh.footing_heights,original.footing_heights);
+        assert_eq!(mesh.authored_cells,original.authored_cells);
+        assert_eq!(&mesh.solid.positions[..original.solid.positions.len()],&original.solid.positions);
+        let sea=make(false);let refs=sea.tiles.iter().collect::<Vec<_>>();
+        let mut offshore=original.clone();
+        close_flat_rock_contacts(&mut offshore,"Route20",&refs,&g,[0,0],None);
+        assert_eq!(offshore,original,"no walls between two water owners");
+        let mut unmodeled=original.clone();unmodeled.authored_cells.fill(None);
+        let before=unmodeled.clone();
+        close_flat_rock_contacts(&mut unmodeled,"Route20",&cells,&g,[0,0],None);
+        assert_eq!(unmodeled,before,"a source drawing alone cannot authorize a recessed bed");
+    }
+    #[test]
+    fn water_backed_shore_rocks_close_only_the_raised_land_contact() {
+        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let make=|land:bool|super::super::tests::frame(4,4,(0..16).map(|i| {
+            let (x,y)=(i%4,i/4);
+            let mut s=super::super::tests::source_with_tile(1,(x%4)as u8,(y%4)as u8,0x14);
+            s.tileset_id="kanto".into();
+            if x<2 {
+                s.metatile_id=0x6b;s.subtile_column=x as u8;s.subtile_row=(y%2+2)as u8;
+                s.tile_index=if y%2==0 {if x==0 {0x2a}else{0x2b}} else if x==0 {0x3a}else{0x3b};
+            } else if land {s.tile_index=0x39;}
+            s
+        }).collect());
+        let mut frame=make(true);frame.map_id="Route18".into();
+        frame.jump_ledges=vec![VisualJumpLedge {start:IVec2::new(0,3),end:IVec2::new(4,3),descent:IVec2::Y}].into();
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        assert!(crate::kanto_cliff::shoreline_round_barrier_local(&cells[0].source).is_some());
+        let mut mesh=TerrainMeshData {footing_heights:vec![0.;16],..Default::default()};
+        let water=crate::profile::WATER_HEIGHT;
+        for row in 0..4 {for col in 0..2 {
+            append_top(&mut mesh.textured,[col as f32*8.,(col+1)as f32*8.,row as f32*8.,(row+1)as f32*8.],water,g.uv(col,row));
+        }}
+        append_solid_quad(&mut mesh.solid,[[4.,water,4.],[4.,water+1.,4.],[8.,water+1.,4.],[8.,water,4.]],
+            [0.,0.,1.],[0.5;4]);
+        mesh.solid.uvs.fill([super::super::shore_ecology::ROOTED_WATER_UV,0.]);
+        let original=mesh.clone();finish_on_map(&mut mesh,"Route18",&cells,&g,[0,0],&frame.jump_ledges);
+        assert_eq!(mesh.textured,original.textured,"all water-underlay vertices, normals and UVs stay exact");
+        assert_eq!(&mesh.solid.positions[..original.solid.positions.len()],&original.solid.positions,
+            "the original sea rock stays on the water datum");
+        let field=Field::new(&frame.jump_ledges,&g,[0,0]);
+        let mut backing=SurfaceMeshData::default();append_low_water_shore(&mut backing,"Route18",&cells,&field);
+        assert!(!backing.positions.is_empty(),"close the land-side gap behind the protected rock row");
+        assert!(backing.positions.iter().any(|p|p[1]>1.));
+        // Existing fractured support may protrude slightly toward its water
+        // contact. It cannot span the pool or add a new top above the land.
+        assert!(backing.positions.iter().all(|p|p[0]>14. && p[0]<18.));
+        for row in 0..4 {for col in 0..2 {assert_eq!(mesh.footing_heights[row*4+col],0.);}}
+        let sea=make(false);let refs=sea.tiles.iter().collect::<Vec<_>>();
+        let mut no_wall=SurfaceMeshData::default();
+        append_low_water_shore(&mut no_wall,"Route18",&refs,&field);
+        assert!(no_wall.positions.is_empty(),"no walls between offshore rocks and standing water");
+    }
+    #[test]
+    fn continued_border_water_cannot_regrow_terrace_walls_but_real_shores_stay_closed() {
+        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let f=super::super::tests::frame(4,4,(0..16).map(|i| {
+            let mut s=super::super::tests::source_with_tile(0x43,0,0,0x14);
+            s.tileset_id="kanto".into();
+            if i==5 {s.metatile_id=0x2d;s.subtile_column=3;s.tile_index=0x33;}
+            if i==3 {s.metatile_id=0x31;s.tile_index=0x39;}
+            s
+        }).collect());
+        let cells=f.tiles.iter().collect::<Vec<_>>();
+        let edges=[VisualJumpLedge{start:IVec2::new(0,3),end:IVec2::new(4,3),descent:IVec2::Y}];
+        let field=Field::with_source(&edges,&g,[0,0],&cells);
+        let mut mask=vec![false;16];mask[5]=true;
+        let mut old=SurfaceMeshData::default();append_low_water_shore(&mut old,"MountMoonSquare",&cells,&field);
+        assert!(old.positions.iter().any(|p|p[0]<18.),"the former corner would grow a false island");
+        let mut corrected=SurfaceMeshData::default();
+        append_low_water_shore_with_continuation(&mut corrected,"MountMoonSquare",&cells,&field,&mask,None);
+        assert!(!corrected.positions.is_empty(),"the genuine raised shore retains its backing");
+        assert!(corrected.positions.iter().all(|p|p[0]>20.),"no wall around retired border corners");
+        let mut mesh=TerrainMeshData{footing_heights:vec![0.;16],authored_cells:vec![None;16],..Default::default()};
+        mesh.authored_cells[5]=Some("outdoor/border-water");
+        append_top(&mut mesh.animated_textured,[8.,16.,8.,16.],-2.,g.uv(0,1));
+        let surface=mesh.animated_textured.clone();
+        finish_on_map(&mut mesh,"MountMoonSquare",&cells,&g,[0,0],&edges);
+        assert_eq!(mesh.animated_textured,surface,"continued water stays one level");
+        assert_eq!(mesh.footing_heights[5],0.,"water support retains its original datum");
+        assert!(mesh.footing_heights[3]>0.,"actual dry shore retains its terrace");
+    }
+    #[test]
+    fn floating_buoy_courses_cannot_acquire_land_terrace_walls_or_height() {
+        for (family,block,column) in [("johto",0x34,0),("johto_modern",0x34,0),
+            ("johto",0x3a,2),("johto_modern",0x3a,2)] {
+            let g=GridGeometry {width:4,height:8,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let mut frame=super::super::tests::frame(4,8,(0..32).map(|i| {
+                let mut s=super::super::tests::source_with_tile(if i%4==1 {block}else{1},
+                    if i%4==1 {column}else{(i%4) as u8},(i/4%4)as u8,
+                    if i%4==1 {0x58}else if i%4<3 {0x14}else{6});
+                s.tileset_id=family.into();s
+            }).collect());
+            frame.map_id="OlivineCity".into();
+            frame.jump_ledges=vec![VisualJumpLedge {start:IVec2::new(0,4),
+                end:IVec2::new(4,4),descent:IVec2::Y}].into();
+            let cells=frame.tiles.iter().collect::<Vec<_>>();
+            assert!(super::super::buoy_course::source(&cells[1].source));
+            let mut mesh=TerrainMeshData {footing_heights:vec![0.;32],..Default::default()};
+            let water=crate::profile::WATER_HEIGHT;
+            for row in 0..8 {for col in 0..3 {
+                append_top(&mut mesh.textured,[col as f32*8.,(col+1)as f32*8.,
+                    row as f32*8.,(row+1)as f32*8.],water,(0.,1.,0.,1.));
+                if col==1 {append_solid_quad(&mut mesh.solid,
+                    [[10.,water-0.5,row as f32*8.+4.],[10.,water+1.,row as f32*8.+4.],
+                    [14.,water+1.,row as f32*8.+4.],[14.,water-0.5,row as f32*8.+4.]],
+                    [0.,0.,1.],[1.;4]);}
+            }}
+            let original=mesh.clone();
+            finish_on_map(&mut mesh,"OlivineCity",&cells,&g,[0,0],&frame.jump_ledges);
+            assert_eq!(mesh.textured.positions,original.textured.positions,"level water bed");
+            assert_eq!(&mesh.solid.positions[..original.solid.positions.len()],&original.solid.positions,
+                "floating caps cannot inherit the island's height");
+            for tri in mesh.solid.indices.chunks_exact(3) {
+                let p=[tri[0],tri[1],tri[2]].map(|i|mesh.solid.positions[i as usize]);
+                if p.iter().all(|p|p[0]<20.) {
+                    assert!(p.iter().all(|p|p[1]<=water+1.001),"no new walls along floating courses: {p:?}");
+                }
+            }
+            for row in 0..8 {assert_eq!(mesh.footing_heights[row*4+1],0.);}
+            assert!(mesh.footing_heights.iter().enumerate().any(|(i,h)|i%4==3&&*h>0.),
+                "the actual island still owns its terrace");
+        }
+    }
+
+    #[test]
+    fn island_terraces_never_slope_water_or_its_surf_support() {
+        for (map, tileset) in [("Route42", "johto"), ("Route22", "kanto"),
+            ("TohjoFalls", "cave")] {
+            let g = GridGeometry { width: 4, height: 8, tile_width: 8., tile_height: 8.,
+                origin_x: 0., origin_z: 0. };
+            let mut frame = super::super::tests::frame(4, 8, (0..32).map(|i| {
+                let mut source = super::super::tests::source_with_tile(if tileset=="cave" {1}else{0x43}, (i % 4) as u8,
+                    (i / 4 % 4) as u8, if i % 4 < 2 { 0x14 } else { 0x2c });
+                source.tileset_id = tileset.into(); source
+            }).collect());
+            frame.map_id = map.into();
+            frame.jump_ledges = vec![VisualJumpLedge { start: IVec2::new(0,4),
+                end: IVec2::new(4,4), descent: IVec2::Y }].into();
+            let cells = frame.tiles.iter().collect::<Vec<_>>();
+            assert!(level_water(&cells[0].source),"{map}: native water fixture");
+            let mut mesh = TerrainMeshData { footing_heights: vec![0.;32], ..Default::default() };
+            for surface in [&mut mesh.solid, &mut mesh.textured,
+                &mut mesh.animated_solid, &mut mesh.animated_textured] {
+                for row in 0..8 { for col in 0..2 {
+                    append_top(surface, [col as f32*8.,(col+1) as f32*8.,row as f32*8.,(row+1) as f32*8.],
+                        crate::profile::WATER_HEIGHT, (0.,1.,0.,1.));
+                }}
+            }
+            let original = mesh.clone();
+            finish_on_map(&mut mesh, map, &cells, &g, [0,0], &frame.jump_ledges);
+            for (after, before) in [&mesh.solid,&mesh.textured,&mesh.animated_solid,&mesh.animated_textured]
+                .into_iter().zip([&original.solid,&original.textured,&original.animated_solid,&original.animated_textured]) {
+                assert_eq!(&after.positions[..before.positions.len()],before.positions.as_slice(),"{map}: water geometry");
+            }
+            for tri in mesh.solid.indices.chunks_exact(3) {
+                let p = [tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.solid.positions[i as usize]));
+                let center = (p[0]+p[1]+p[2])/3.;
+                // Exclude the bank's fractured contact shoulder itself;
+                // a wall through the open pool is the forbidden transition.
+                if center.x>=0. && center.x<8. && center.z>=0. && center.z<64. {
+                    assert!(p.iter().all(|p|(p.y-crate::profile::WATER_HEIGHT).abs()<0.0001),
+                        "{map}: land ledge wall must not cut through the water: {p:?}");
+                }
+            }
+            for row in 0..8 { for col in 0..2 {
+                let i=row*4+col;
+                assert_eq!(mesh.footing_heights[i],0.,"{map}: water support");
+                assert_eq!(support_correction(&frame,bevy::prelude::UVec2::new(col as u32,row as u32),
+                    Vec2::new(col as f32*8.-12.,28.-row as f32*8.)),0.);
+            }}
+            assert!(mesh.footing_heights.iter().enumerate().any(|(i,h)|i%4>=2&&*h>0.),
+                "{map}: the island land still owns its ledge");
+        }
+    }
+
+    #[test]
+    fn level_city_and_tower_hops_leave_mesh_and_actor_support_unchanged() {
         let g=GridGeometry{width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
         let tiles=(0..16).map(|i|VisualTile{column:(i%4)as u32,row:(i/4)as u32,
             texture:Default::default(),priority:false,animation_frames:None,
@@ -582,8 +1348,9 @@ mod tests {
         for surface in [&mut original.solid,&mut original.textured,&mut original.animated_solid,&mut original.animated_textured] {
             append_top(surface,[0.,32.,0.,32.],0.,(0.,1.,0.,1.));
         }
-        for level in 1..=9 {
-            let name=format!("TinTower{level}F");let mut mesh=original.clone();
+        let maps=(1..=9).map(|level|format!("TinTower{level}F")).chain(["SaffronCity".to_owned(),"Route20".to_owned()]);
+        for name in maps {
+            let mut mesh=original.clone();
             finish_on_map(&mut mesh,&name,&refs,&g,[0,0],&edges);assert_eq!(mesh,original);
             let frame=VisualWorldFrame{map_id:name.into(),jump_ledges:edges.clone().into(),
                 grid_size:bevy::prelude::UVec2::splat(4),tile_size:Vec2::splat(8.),..Default::default()};

@@ -39,10 +39,15 @@ pub(crate) fn locomotion(name: &str) -> Locomotion {
     }
 }
 
+/// These authored tendrils support the bell instead of hovering above land.
+fn rests_on_tentacles(name: &str) -> bool {
+    name.eq_ignore_ascii_case("tentacool") || name.eq_ignore_ascii_case("tentacruel")
+}
+
 /// Swimming locomotion does not imply hovering during a battle. Lapras's
 /// authored belly is seated; its flippers and neck supply the swimming motion.
 pub(crate) fn battle_hovers(name: &str) -> bool {
-    locomotion(name) == Locomotion::Float && !name.eq_ignore_ascii_case("lapras")
+    locomotion(name) == Locomotion::Float && !name.eq_ignore_ascii_case("lapras") && !rests_on_tentacles(name)
 }
 
 /// A hovering battler keeps its clearance throughout idle, attack and recoil.
@@ -87,7 +92,7 @@ fn role(name: &str) -> Role {
         Role::Wing
     } else if has(&[
         "leg", "legs", "proleg", "foot", "feet", "foreleg", "hindleg", "hind", "thigh", "shin",
-        "shank", "haunch", "hock", "toe", "toes", "talon", "ankle", "knee", "calf", "paw", "shoe",
+        "shank", "haunch", "hip", "hips", "greave", "greaves", "hock", "toe", "toes", "talon", "ankle", "knee", "calf", "paw", "shoe",
         "boot", "sole", "heel", "paws", "hoof", "hooves",
     ]) || has(&["fore", "rear"]) && has(&["left", "right"])
     {
@@ -160,7 +165,6 @@ fn quadruped(name: &str) -> bool {
             | "ninetales"
             | "nidoran_f"
             | "nidoran_m"
-            | "nidorina"
             | "nidorino"
             | "tauros"
             | "mareep"
@@ -537,64 +541,7 @@ fn weld_weights(rig: &mut SpeciesRig) {
     }
 }
 
-pub(crate) fn pidgeotto() -> SpeciesRig {
-    let source = crate::pidgeotto_rig::rig();
-    let mut indices = 0;
-    let anatomy = source
-        .anatomy
-        .iter()
-        .map(|part| {
-            let count = source
-                .neutral
-                .indices
-                .iter()
-                .filter(|&&v| part.vertices.contains(&(v as usize)))
-                .count();
-            let result = Anatomy {
-                name: part.name.clone(),
-                vertices: part.vertices.clone(),
-                indices: indices..indices + count,
-                material: 0,
-            };
-            indices += count;
-            result
-        })
-        .collect();
-    let mut rig = from_mesh("pidgeotto", source.neutral.clone(), anatomy);
-    // Preserve the exact authored wing hinges and idle rotations.
-    for wing in 0..2 {
-        let index = 9 + wing;
-        rig.joints[index].parent = Some(0);
-        rig.joints[index].bind.translation = source.pivots[wing];
-        rig.joints[index].inverse_bind = Mat4::from_translation(-source.pivots[wing]);
-        for part in source.anatomy.iter().filter(|p| p.group == wing + 1) {
-            for v in part.vertices.clone() {
-                rig.joint_indices[v] = [index as u16, 0, 0, 0];
-            }
-        }
-    }
-    rig.clips[0].duration = source.duration;
-    rig.clips[0].times = (0..=64).map(|i| source.duration * i as f32 / 64.).collect();
-    rig.clips[0].rotations = rig.joints[1..]
-        .iter()
-        .enumerate()
-        .map(|(i, _)| {
-            rig.clips[0]
-                .times
-                .iter()
-                .map(|&t| {
-                    if i == 8 || i == 9 {
-                        source.sample(t).unwrap()[i - 7].rotation
-                    } else {
-                        Quat::IDENTITY
-                    }
-                })
-                .collect()
-        })
-        .collect();
-    rig.animated_bounds = rig.compute_envelope();
-    rig
-}
+
 
 #[derive(Clone, Debug)]
 pub(crate) struct MotionLimb {
@@ -643,8 +590,7 @@ fn motion_limbs(rig: &SpeciesRig) -> Vec<MotionLimb> {
                 }
                 parent = rig.joints[p].parent;
             }
-            let authored_flight = (!matches!(rig.species, Species::Procedural(_))
-                || rig.species.name() == "pidgeotto")
+            let authored_flight = (!matches!(rig.species, Species::Procedural(_)))
                 && rig
                     .clip(Clip::Idle)
                     .rotations
@@ -723,6 +669,7 @@ impl SpeciesRig {
                             + 0.015 * (seconds * TAU * flight_beat(self.species.name()).0).sin())
                 }
                 Locomotion::Glide => height * (0.14 + 0.018 * (seconds * TAU).sin()),
+                Locomotion::Float if rests_on_tentacles(self.species.name()) => 0.,
                 Locomotion::Float => height * (0.16 + 0.012 * (seconds * TAU * 0.7).sin()),
             };
         if mode == Locomotion::Walk && weight > 0. {
@@ -777,7 +724,7 @@ pub(crate) fn world_rig(canonical: &'static SpeciesRig) -> &'static SpeciesRig {
         }
         rig.motion_limbs = motion_limbs(&rig);
         weld_weights(&mut rig);
-        if locomotion(rig.species.name()) != Locomotion::Walk {
+        if locomotion(rig.species.name()) != Locomotion::Walk && !rests_on_tentacles(rig.species.name()) {
             // Broad bat wings may extend below the feet on the downstroke.
             // Resolve their clearance once from actual poses, not each frame.
             let mut pose = rig.joints.iter().map(|j| j.bind).collect::<Vec<_>>();
@@ -824,26 +771,1301 @@ mod tests {
     }
 
     #[test]
-    fn pokemon_motion_cloyster_floats_as_one_complete_shell() {
-        let canonical = crate::species_rig::for_species("CLOYSTER").unwrap();
+    fn pokemon_motion_crabs_use_four_complete_walking_limbs() {
+        for name in ["KRABBY","KINGLER"] {
+            let rig=world_rig(crate::species_rig::for_species(name).unwrap());
+            assert_eq!(rig.walk_legs.len(),4,"{name} split a knee or toe into an extra leg");
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];
+            let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);
+                gait::assert_supports(rig,&pose);
+                rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+                let floor=(0..rig.neutral.positions.len()).map(|v|rig.skin_point(v,&matrices).y).fold(f32::INFINITY,f32::min);
+                assert!(floor>=-0.00001 && floor<0.005,"{name} lost ground contact: {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn pokemon_motion_fighting_family_keeps_two_complete_weight_bearing_legs() {
+        for (name,legs) in [("MACHOP",2),("MACHOKE",2),("MACHAMP",2)] {
+            let rig=world_rig(crate::species_rig::for_species(name).unwrap());assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} split or combined a complete limb");
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through the floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
+                }
+                assert!(low<0.005,"{name} lost ground contact: {low}");
+            }
+        }
+    }
+
+    #[test]
+    fn pokemon_motion_fire_horses_keep_four_complete_legs_and_bound_flame_banks() {
+        for (name,legs) in [("PONYTA",4),("RAPIDASH",4)] {
+            let rig=world_rig(crate::species_rig::for_species(name).unwrap());assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} split or combined a complete limb");
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through the floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
+                }
+                assert!(low<0.005,"{name} lost ground contact: {low}");
+            }
+        }
+    }
+
+    #[test]
+    fn kangaskhan_skin_walks_on_two_legs_without_swinging_baby_rim_grips() {
+        for (name,legs) in [("KANGASKHAN",2)] {
+            let rig=world_rig(crate::species_rig::for_species(name).unwrap());assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} split or combined a complete limb");
+            for joint in [16,17] {assert_eq!(role(&rig.joints[joint].name),Role::Other);assert!(!rig.motion_limbs.iter().any(|limb|limb.joint==joint));}
+            let canonical=crate::species_rig::for_species(name).unwrap();
+            for part in canonical.anatomy.iter().filter(|p|p.name.starts_with("Baby ")) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through the floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
+                }
+                assert!(low<0.005,"{name} lost ground contact: {low}");
+            }
+        }
+    }
+
+    #[test]
+    fn kadabra_skin_walks_on_two_complete_feet_and_preserves_psychic_props() {
+        for (name,legs) in [("KADABRA",2)] {
+            let rig=world_rig(crate::species_rig::for_species(name).unwrap());assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} split or combined a complete limb");
+            let canonical=crate::species_rig::for_species(name).unwrap();
+            for part in canonical.anatomy.iter().filter(|p|p.name.starts_with("Held silver spoon") || p.name.starts_with("Hollow silver spoon") || p.name.starts_with("Long swept moustache") || p.name.starts_with("Heavy curved psychic tail") || p.name.starts_with("Broad tail saddle band")) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through the floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
+                }
+                assert!(low<0.005,"{name} lost ground contact: {low}");
+            }
+        }
+    }
+
+    #[test]
+    fn psychic_fox_skin_walks_on_two_feet_and_preserves_props_and_tail_weights() {
+        for (name,legs) in [("ABRA",2),("ALAKAZAM",2)] {
+            let rig=world_rig(crate::species_rig::for_species(name).unwrap());assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} split or combined a complete limb");
+            let canonical=crate::species_rig::for_species(name).unwrap();
+            for part in canonical.anatomy.iter().filter(|p|p.name.starts_with("Spoon /") || p.name.starts_with("Moustache /") || p.name.starts_with("Tail /")) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through the floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
+                }
+                assert!(low<0.005,"{name} lost ground contact: {low}");
+            }
+        }
+    }
+
+    #[test]
+    fn bilateral_support_details_follow_their_own_walking_leg_and_keep_rigid_feet() {
+        for (name,prefixes,foot_prefix) in [
+            ("LICKITUNG",&["Thigh /","Thigh ring /","Thigh center /","Foot /","Toe /"][..],"Foot /"),
+            ("MR__MIME",&["Hip /","Thigh /","Knee /","Shin /","Shoe /","Shoe curl /"][..],"Shoe /"),
+            ("SCIZOR",&["Hip armor /","Thigh /","Greave /","Foot /","Toe cap /"][..],"Foot /"),
+            ("SCYTHER",&["Haunch /","Haunch thorn /","Shank /","Greave /","Foot /","Foot claw /"][..],"Foot /"),
+        ] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2);
+            for side in [-1,1] {
+                let suffix=format!(" {side}");let foot=rig.anatomy.iter().find(|p|p.name.starts_with(foot_prefix) && p.name.ends_with(&suffix)).unwrap();let owner=rig.joint_indices[foot.vertices.start][0];
+                for prefix in prefixes {
+                    let parts=rig.anatomy.iter().filter(|p|p.name.starts_with(prefix) && p.name.ends_with(&suffix)).collect::<Vec<_>>();
+                    assert_eq!(parts.len(),1,"{name} {prefix}{suffix} missing or combined");
+                    for part in parts {for v in part.vertices.clone() {
+                        for (&joint,weight) in rig.joint_indices[v].iter().zip(rig.joint_weights[v]) {if weight>0. {assert!((owner-2..=owner).contains(&joint),"{name} {} follows another leg",part.name);}}
+                        if ["Foot /","Toe /","Toe cap /","Foot claw /","Shoe /","Shoe curl /"].iter().any(|p|part.name.starts_with(p)) {assert_eq!(rig.joint_indices[v][0],owner);assert_eq!(rig.joint_weights[v][0],1.);}
+                    }}
+                }
+            }
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+        }
+    }
+
+    #[test]
+    fn lickitung_skin_walks_on_two_complete_feet_without_rebinding_tongue_tail_or_face() {
+        let canonical=crate::species_rig::for_species("LICKITUNG").unwrap();let rig=world_rig(canonical);
+        assert_eq!(locomotion("LICKITUNG"),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2);
+        for part in canonical.anatomy.iter().filter(|p|["Head /","Mouth lining /","Eye /","Eye glint /","Nostril /","Tongue /","Tongue groove /","Tail /","Arm /","Hand tip /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+        let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+        for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+            for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"Lickitung walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"Lickitung lost ground contact: {low}");}
+    }
+
+    #[test]
+    fn mr_mime_skin_walks_on_two_complete_slippers_without_rebinding_gloves_or_face() {
+        let canonical=crate::species_rig::for_species("MR__MIME").unwrap();let rig=world_rig(canonical);
+        assert_eq!(locomotion("MR__MIME"),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2);
+        for part in canonical.anatomy.iter().filter(|p|["Head /","Mouth lining /","Eye /","Pupil /","Eye glint /","Cheek /","Upper lip /","Lower lip /","Mouth back /","Tongue /","Ear fan /","Arm /","Palm /","Finger /","Fingertip /","Finger pad /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+        let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+        for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+            for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"Mr Mime walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"Mr Mime lost ground contact: {low}");}
+    }
+
+    #[test]
+    fn slow_pair_skin_walks_on_two_feet_without_rebinding_shells_crowns_and_collars() {
+        for name in ["SLOWBRO","SLOWKING"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2);
+            for part in canonical.anatomy.iter().filter(|p|["Head /","Muzzle /","Jaw /","Tongue /","Fang /","Tooth /","Arm /","Hand /","Hand claw /","Shell ","Crown ","Jewel","Collar panel /","Ear /","Tail /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+        }
+    }
+
+    #[test]
+    fn fire_canine_skin_walks_on_four_complete_paws_and_preserves_face_fur_and_tail() {
+        for name in ["GROWLITHE","ARCANINE"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),4);
+            for part in canonical.anatomy.iter().filter(|p|["Head /","Muzzle /","Jaw /","Nose /","Lip /","Eye socket /","Eye /","Pupil /","Eye glint /","Forehead stripe /","Ear /","Ear inset /","Body /","Flank stripe /","Back stripe /","Mane /","Mane tuft /","Forelock /","Tail /","Tail tuft /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            for side in [-1,1] {for row in [0,1] {
+                let suffix=format!(" {side} {row}");
+                let paw=rig.anatomy.iter().find(|p|p.name.starts_with("Paw /") && p.name.ends_with(&suffix)).unwrap();
+                let owner=rig.joint_indices[paw.vertices.start][0];
+                for prefix in ["Leg /","Paw /","Paw crease /","Leg stripe /","Ankle fur /","Ankle tuft /"] {
+                    let parts=rig.anatomy.iter().filter(|p|p.name.starts_with(prefix) && p.name.ends_with(&suffix)).collect::<Vec<_>>();
+                    assert_eq!(parts.len(),if name=="GROWLITHE" && prefix.starts_with("Ankle") {0} else {1},"{name} {prefix}{suffix} missing or combined");
+                    for part in parts {for v in part.vertices.clone() {
+                        for (&joint,weight) in rig.joint_indices[v].iter().zip(rig.joint_weights[v]) {if weight>0. {assert!((owner-2..=owner).contains(&joint),"{name} {} follows another leg",part.name);}}
+                        if ["Paw /","Paw crease /"].iter().any(|p|part.name.starts_with(p)) {assert_eq!(rig.joint_indices[v][0],owner);assert_eq!(rig.joint_weights[v][0],1.);}
+                    }}
+                }
+            }}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+        }
+    }
+
+    #[test]
+    fn nidoran_skin_walks_on_four_complete_paws_and_preserves_face_ears_spots_and_tail() {
+        for name in ["NIDORAN_F","NIDORAN_M"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),4);
+            for part in canonical.anatomy.iter().filter(|p|["Head /","Muzzle /","Horn /","Mouth /","Eye socket /","Eye /","Iris /","Pupil /","Glint /","Nostril /","Incisor /","Cheek barb /","Ear /","Ear inset /","Ear fold /","Body /","Flank spot /","Back spine /","Tail /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            // Keep every complete toe set and fitted haunch spot in its own leg's IK tree.
+            for side in [-1,1] {for placement in ["front","rear"] {
+                let suffix=format!(" {side} {placement}");
+                let foot=rig.anatomy.iter().find(|p|p.name.starts_with("Foot /") && p.name.ends_with(&suffix)).unwrap();
+                let owner=rig.joint_indices[foot.vertices.start][0];
+                for part in rig.anatomy.iter().filter(|p|p.name.ends_with(&suffix) && ["Foot /","Claw /","Leg /","Haunch /","Haunch spot /"].iter().any(|prefix|p.name.starts_with(prefix))) {
+                    for v in part.vertices.clone() {
+                        for (&joint,weight) in rig.joint_indices[v].iter().zip(rig.joint_weights[v]) {if weight>0. {assert!((owner-2..=owner).contains(&joint),"{name} {} follows another leg",part.name);}}
+                        if part.name.starts_with("Claw /") {assert_eq!(rig.joint_indices[v][0],owner);assert_eq!(rig.joint_weights[v][0],1.);}
+                    }
+                }
+                assert_eq!(rig.anatomy.iter().filter(|p|p.name.starts_with("Claw /") && p.name.ends_with(&suffix)).count(),1);
+            }}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+        }
+    }
+
+    #[test]
+    fn nido_middle_skin_walks_on_anatomical_supports_with_local_marks_and_claws() {
+        for (name,legs) in [("NIDORINA",2),("NIDORINO",4)] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs);assert_eq!(quadruped(canonical.species.name()),legs==4);
+            for part in canonical.anatomy.iter().filter(|p|["Head /","Muzzle /","Jaw /","Horn /","Eye socket /","Eye /","Iris /","Pupil /","Glint /","Nostril /","Fang /","Head spot /","Ear /","Ear inset /","Ear fold /","Body /","Breast /","Flank spot /","Back spine /","Arm /","Hand /","Hand claw /","Tail /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            for side in [-1,1] {for placement in if legs==4 {vec!["front","rear"]} else {vec![""]} {
+                let suffix=if legs==4 {format!(" {side} {placement}")} else {format!(" {side}")};let foot=rig.anatomy.iter().find(|p|p.name.starts_with("Foot /") && p.name.ends_with(&suffix)).unwrap();let owner=rig.joint_indices[foot.vertices.start][0];
+                let prefixes=if legs==4 {vec!["Haunch /","Leg /","Leg spot /","Foot /","Claw /"]} else {vec!["Haunch /","Haunch spot /","Leg /","Foot /","Foot claw /"]};
+                for prefix in prefixes {let parts=rig.anatomy.iter().filter(|p|p.name.starts_with(prefix) && p.name.ends_with(&suffix)).collect::<Vec<_>>();assert_eq!(parts.len(),1,"{name} {prefix}{suffix} missing or combined");for part in parts {for v in part.vertices.clone() {for (&joint,weight) in rig.joint_indices[v].iter().zip(rig.joint_weights[v]) {if weight>0. {assert!((owner-2..=owner).contains(&joint),"{name} {} follows another leg",part.name);}}if ["Foot /","Foot claw /","Claw /"].iter().any(|p|part.name.starts_with(p)) {assert_eq!(rig.joint_indices[v][0],owner);assert_eq!(rig.joint_weights[v][0],1.);}}}}
+            }}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+        }
+    }
+
+    #[test]
+    fn nido_royal_skin_walks_on_anatomical_supports_with_local_marks_and_claws() {
+        for (name,legs) in [("NIDOQUEEN",2),("NIDOKING",2)] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs);assert_eq!(quadruped(canonical.species.name()),legs==4);
+            for part in canonical.anatomy.iter().filter(|p|["Head /","Muzzle /","Jaw /","Horn /","Eye socket /","Eye /","Iris /","Pupil /","Glint /","Nostril /","Fang /","Head spot /","Ear /","Ear inset /","Ear fold /","Body /","Chest plate /","Belly plate /","Back spine /","Arm /","Hand /","Hand claw /","Tail /","Tail collar /","Tail spine /","Shoulder /","Tongue /","Cheek barb /","Chin /","Mouth /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            for side in [-1,1] {for placement in if legs==4 {vec!["front","rear"]} else {vec![""]} {
+                let suffix=if legs==4 {format!(" {side} {placement}")} else {format!(" {side}")};let foot=rig.anatomy.iter().find(|p|p.name.starts_with("Foot /") && p.name.ends_with(&suffix)).unwrap();let owner=rig.joint_indices[foot.vertices.start][0];
+                let prefixes=if legs==4 {vec!["Haunch /","Leg /","Leg spot /","Foot /","Claw /"]} else {vec!["Haunch /","Knee /","Leg /","Foot /","Foot claw /"]};
+                for prefix in prefixes {let parts=rig.anatomy.iter().filter(|p|p.name.starts_with(prefix) && p.name.ends_with(&suffix)).collect::<Vec<_>>();assert_eq!(parts.len(),1,"{name} {prefix}{suffix} missing or combined");for part in parts {for v in part.vertices.clone() {for (&joint,weight) in rig.joint_indices[v].iter().zip(rig.joint_weights[v]) {if weight>0. {assert!((owner-2..=owner).contains(&joint),"{name} {} follows another leg",part.name);}}if ["Foot /","Foot claw /","Claw /"].iter().any(|p|part.name.starts_with(p)) {assert_eq!(rig.joint_indices[v][0],owner);assert_eq!(rig.joint_weights[v][0],1.);}}}}
+            }}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+        }
+    }
+
+    #[test]
+    fn fairy_pair_skin_walks_on_complete_feet_without_rebinding_fitted_features() {
+        for name in ["CLEFABLE", "WIGGLYTUFF"] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            assert_eq!(locomotion(name), Locomotion::Walk);
+            assert_eq!(rig.walk_legs.len(), 2);
+            assert!(!quadruped(canonical.species.name()));
+            for part in canonical.anatomy.iter().filter(|p| !["Haunch /", "Leg /", "Foot /", "Toe /"].iter().any(|prefix| p.name.starts_with(prefix))) {
+                for v in part.vertices.clone() {
+                    assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} {}", part.name);
+                    assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "{name} {}", part.name);
+                }
+            }
+            for side in [-1, 1] {
+                let suffix = format!(" {side}");
+                let foot = rig.anatomy.iter().find(|p| p.name.starts_with("Foot /") && p.name.ends_with(&suffix)).unwrap();
+                let owner = rig.joint_indices[foot.vertices.start][0];
+                for prefix in if name == "CLEFABLE" {vec!["Foot /", "Toe /"]} else {vec!["Foot /"]} {
+                    let parts = rig.anatomy.iter().filter(|p| p.name.starts_with(prefix) && p.name.ends_with(&suffix)).collect::<Vec<_>>();
+                    assert_eq!(parts.len(), 1, "{name} {prefix}{suffix} missing or combined");
+                    for part in parts { for v in part.vertices.clone() {
+                        for (&joint, weight) in rig.joint_indices[v].iter().zip(rig.joint_weights[v]) {
+                            if weight > 0. { assert!((owner-2..=owner).contains(&joint), "{name} {} follows another leg", part.name); }
+                        }
+                        if ["Foot /", "Toe /"].iter().any(|p| part.name.starts_with(p)) {
+                            assert_eq!(rig.joint_indices[v][0], owner);
+                            assert_eq!(rig.joint_weights[v][0], 1.);
+                        }
+                    }}
+                }
+            }
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2, tick as f32*TAU/64., 1., &mut pose);
+                gait::assert_supports(rig, &pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut low = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices); low = low.min(p.y);
+                    assert!(p.y >= -0.00001, "{name} walks through floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all());
+                }
+                assert!(low < 0.005, "{name} lost ground contact: {low}");
+            }
+        }
+    }
+
+    #[test]
+    fn sand_mammal_skin_walks_on_anatomical_supports_with_local_marks_and_claws() {
+        for name in ["SANDSHREW", "SANDSLASH"] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            assert_eq!(locomotion(name), Locomotion::Walk);
+            assert_eq!(rig.walk_legs.len(), 2);
+            assert!(!quadruped(canonical.species.name()));
+            for part in canonical.anatomy.iter().filter(|p| !["Haunch /", "Leg /", "Foot /", "Toe /"].iter().any(|prefix| p.name.starts_with(prefix))) {
+                for v in part.vertices.clone() {
+                    assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} {}", part.name);
+                    assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "{name} {}", part.name);
+                }
+            }
+            for side in [-1, 1] {
+                let suffix = format!(" {side}");
+                let foot = rig.anatomy.iter().find(|p| p.name.starts_with("Foot /") && p.name.ends_with(&suffix)).unwrap();
+                let owner = rig.joint_indices[foot.vertices.start][0];
+                for prefix in ["Haunch /", "Leg /", "Foot /", "Toe /"] {
+                    let parts = rig.anatomy.iter().filter(|p| p.name.starts_with(prefix) && p.name.ends_with(&suffix)).collect::<Vec<_>>();
+                    assert_eq!(parts.len(), 1, "{name} {prefix}{suffix} missing or combined");
+                    for part in parts { for v in part.vertices.clone() {
+                        for (&joint, weight) in rig.joint_indices[v].iter().zip(rig.joint_weights[v]) {
+                            if weight > 0. { assert!((owner-2..=owner).contains(&joint), "{name} {} follows another leg", part.name); }
+                        }
+                        if ["Foot /", "Toe /"].iter().any(|p| part.name.starts_with(p)) {
+                            assert_eq!(rig.joint_indices[v][0], owner);
+                            assert_eq!(rig.joint_weights[v][0], 1.);
+                        }
+                    }}
+                }
+            }
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2, tick as f32*TAU/64., 1., &mut pose);
+                gait::assert_supports(rig, &pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut low = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices); low = low.min(p.y);
+                    assert!(p.y >= -0.00001, "{name} walks through floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all());
+                }
+                assert!(low < 0.005, "{name} lost ground contact: {low}");
+            }
+        }
+    }
+
+    #[test]
+    fn poli_frog_skin_walks_on_anatomical_supports_with_local_marks_and_claws() {
+        for (name,legs) in [("POLIWHIRL",2),("POLIWRATH",2),("POLITOED",2)] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs);assert_eq!(quadruped(canonical.species.name()),legs==4);
+            for part in canonical.anatomy.iter().filter(|p|["Head /","Eye socket /","Eye /","Pupil /","Brow /","Cheek /","Mouth /","Crest /","Belly /","Spiral /","Arm /","Hand /","Thumb /","Finger /","Glove crease /","Body /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            for side in [-1,1] {for placement in if legs==4 {vec!["front","rear"]} else {vec![""]} {
+                let suffix=if legs==4 {format!(" {side} {placement}")} else {format!(" {side}")};let foot=rig.anatomy.iter().find(|p|p.name.starts_with("Foot /") && p.name.ends_with(&suffix)).unwrap();let owner=rig.joint_indices[foot.vertices.start][0];
+                let prefixes=if legs==4 {vec!["Haunch /","Leg /","Leg spot /","Foot /","Claw /"]} else {if name=="POLITOED" {vec!["Haunch /","Leg /","Foot /","Toe /"]} else {vec!["Haunch /","Leg /","Foot /"]}};
+                for prefix in prefixes {let parts=rig.anatomy.iter().filter(|p|p.name.starts_with(prefix) && p.name.ends_with(&suffix)).collect::<Vec<_>>();assert_eq!(parts.len(),1,"{name} {prefix}{suffix} missing or combined");for part in parts {for v in part.vertices.clone() {for (&joint,weight) in rig.joint_indices[v].iter().zip(rig.joint_weights[v]) {if weight>0. {assert!((owner-2..=owner).contains(&joint),"{name} {} follows another leg",part.name);}}if ["Foot /","Toe /"].iter().any(|p|part.name.starts_with(p)) {assert_eq!(rig.joint_indices[v][0],owner);assert_eq!(rig.joint_weights[v][0],1.);}}}}
+            }}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+        }
+    }
+
+    #[test]
+    fn egg_nurse_skin_walks_on_two_complete_feet_without_rebinding_pouches_or_ornaments() {
+        for name in ["CHANSEY","BLISSEY"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2);
+            for part in canonical.anatomy.iter().filter(|p|["Pouch /","Egg /","Eye /","Eye glint /","Smile /","Chin /","Mouth lining /","Tongue /","Arm /","Hand /","Ribbon /","Tail /","Crown /","Curl /","Arm frill /","Skirt /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+        }
+    }
+
+    #[test]
+    fn electabuzz_skin_walks_on_two_feet_without_rebinding_stripes_fists_and_antennae() {
+        let canonical=crate::species_rig::for_species("ELECTABUZZ").unwrap();let rig=world_rig(canonical);
+        assert_eq!(locomotion("ELECTABUZZ"),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2);
+        for part in canonical.anatomy.iter().filter(|p|["Jaw /","Tongue /","Fang /","Arm /","Arm stripe /","Hand /","Knuckle /","Thumb /","Wrist fur /","Antenna /","Antenna ball /","Crest /","Tail /","Tail stripe /","Tail tip /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+        let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+        for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+            for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"Electabuzz walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"Electabuzz lost ground contact: {low}");}
+    }
+
+    #[test]
+    fn magmar_skin_walks_on_two_feet_without_rebinding_bill_cuffs_and_flames() {
+        let canonical=crate::species_rig::for_species("MAGMAR").unwrap();let rig=world_rig(canonical);
+        assert_eq!(locomotion("MAGMAR"),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2);
+        for part in canonical.anatomy.iter().filter(|p|["Bill /","Tongue /","Crown flame /","Crown glow /","Tail flame /","Tail glow /","Arm /","Cuff /","Hand /","Hand claw /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+        let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+        for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+            for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"Magmar walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"Magmar lost ground contact: {low}");}
+    }
+
+    #[test]
+    fn turtle_skin_walks_on_two_complete_feet_without_rebinding_shells_and_features() {
+        for name in ["WARTORTLE","BLASTOISE"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2,"{name} split a complete support limb");
+            for part in canonical.anatomy.iter().filter(|p|["Shell /","Shell rim /","Shell seam /","Belly /","Belly seam /","Cannon /","Cannon lining /","Cannon floor /","Cannon mount /","Ear /","Ear lobe /","Ear inset /","Tail /","Tail fold /","Arm /","Hand claw /"].iter().any(|prefix|p.name.starts_with(prefix))) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+        }
+    }
+
+    #[test]
+    fn crocodile_skin_walks_on_two_complete_feet_with_non_leg_owners_preserved() {
+        for name in ["CROCONAW","FERALIGATR"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2,"{name} split a complete limb");
+            for part in canonical.anatomy.iter().filter(|p|p.name.starts_with("Hand /") || p.name.starts_with("Tooth /") || p.name.starts_with("Tail /") || p.name.starts_with("Crest /") || p.name.starts_with("Armor / four fitted arm")) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+        }
+    }
+
+    #[test]
+    fn bone_keeper_skin_walks_on_two_feet_with_club_weights_intact() {
+        for name in ["CUBONE","MAROWAK"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2,"{name} split a complete support limb");
+            for part in canonical.anatomy.iter().filter(|p|p.name.starts_with("Bone shaft /") || p.name.starts_with("Bone lobe /") || p.name.starts_with("Thumb /")) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}
+                assert!(low<0.005,"{name} lost ground contact: {low}");
+            }
+        }
+    }
+
+    #[test]
+    fn tapir_skin_walks_on_two_feet_and_preserves_held_pendulum_weights() {
+        for (name,legs) in [("DROWZEE",2),("HYPNO",2)] {
+            let rig=world_rig(crate::species_rig::for_species(name).unwrap());assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} split or combined a complete limb");
+            let canonical=crate::species_rig::for_species(name).unwrap();
+            for part in canonical.anatomy.iter().filter(|p|p.name.starts_with("Pendulum /")) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through the floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
+                }
+                assert!(low<0.005,"{name} lost ground contact: {low}");
+            }
+        }
+    }
+
+    #[test]
+    fn tangela_skin_walks_on_two_shoes_and_preserves_all_authored_vine_weights() {
+        for (name,legs) in [("TANGELA",2)] {
+            let rig=world_rig(crate::species_rig::for_species(name).unwrap());assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} split or combined a complete limb");
+            let canonical=crate::species_rig::for_species(name).unwrap();
+            for part in canonical.anatomy.iter().filter(|p|!p.name.starts_with("Shoe /")) {for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            assert!(rig.motion_limbs.is_empty());
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through the floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
+                }
+                assert!(low<0.005,"{name} lost ground contact: {low}");
+            }
+        }
+    }
+
+    #[test]
+    fn pokemon_motion_rhinos_keep_four_and_two_complete_weight_bearing_legs() {
+        for (name,legs) in [("RHYHORN",4),("RHYDON",2)] {
+            let rig=world_rig(crate::species_rig::for_species(name).unwrap());assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} split or combined a complete limb");
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through the floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
+                }
+                assert!(low<0.005,"{name} lost ground contact: {low}");
+            }
+        }
+    }
+
+    #[test]
+    fn pokemon_motion_seals_slide_without_lifting_their_low_supports() {
+        for name in ["SEEL","DEWGONG"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert!(rig.walk_legs.is_empty());assert_eq!(rig.joints.len(),canonical.joints.len());
+            let floor:Vec<_>=rig.neutral.positions.iter().enumerate().filter_map(|(v,p)|(p[1]<0.0000001).then_some(v)).collect();assert!(!floor.is_empty());
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+                for v in 0..rig.neutral.positions.len() {
+                    let p=rig.skin_point(v,&matrices);assert!(p.y>=-0.00001,"{name} slides through the floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
+                }
+                for &v in &floor {assert!(rig.skin_point(v,&matrices).y.abs()<0.000001,"{name} lifted its low support");}
+            }
+        }
+    }
+
+    #[test]
+    fn pokemon_motion_slimes_slide_with_broad_fixed_puddles() {
+        for name in ["GRIMER","MUK","DITTO"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();
+            let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);
+            assert!(rig.walk_legs.is_empty());
+            assert_eq!(rig.joints.len(),canonical.joints.len());
+            let floor:Vec<_>=rig.neutral.positions.iter().enumerate().filter_map(|(v,p)|(p[1]<0.0000001).then_some(v)).collect();
+            assert!(floor.len()>=48);
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];
+            let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];
+            let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);
+                rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+                for v in 0..rig.neutral.positions.len() {
+                    let p=rig.skin_point(v,&matrices);
+                    assert!(p.y>=-0.00001,"{name} slides through the floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
+                }
+                for &v in &floor {assert!(rig.skin_point(v,&matrices).distance(Vec3::from_array(rig.neutral.positions[v]))<0.000001,"{name} lifted its puddle sole");}
+            }
+        }
+    }
+
+    #[test]
+    fn seahorse_skin_preserves_coherent_fins_snouts_and_swimming_clearance() {
+        for name in ["HORSEA","SEADRA","KINGDRA"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Float);assert!(battle_hovers(name));assert!(rig.walk_legs.is_empty());assert_eq!(rig.motion_limbs.len(),1);assert_eq!(rig.motion_limbs[0].joint,7);assert_eq!(rig.motion_limbs[0].role,Role::Tail);assert_eq!(rig.joints.len(),canonical.joints.len());
+            assert_eq!(rig.joint_indices,canonical.joint_indices);assert_eq!(rig.joint_weights,canonical.joint_weights);
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();let height=rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/32.,tick as f32,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);assert!(p.y>height*0.14,"{name} lost floating clearance");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");}
+            }
+        }
+    }
+
+    #[test]
+    fn goldfish_skin_preserves_painted_fins_mouths_and_swimming_clearance() {
+        for name in ["GOLDEEN","SEAKING","MAGIKARP"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Float);assert!(battle_hovers(name));assert!(rig.walk_legs.is_empty());assert_eq!(rig.motion_limbs.len(),1);assert!(rig.motion_limbs.iter().all(|limb|limb.role==Role::Tail));assert_eq!(rig.joints.len(),canonical.joints.len());
+            for v in 0..rig.neutral.positions.len() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{name} vertex {v}");assert_eq!(rig.joint_weights[v],canonical.joint_weights[v],"{name} vertex {v}");}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();let height=rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/32.,tick as f32,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);assert!(p.y>height*0.14,"{name} lost floating clearance");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");}
+            }
+        }
+    }
+
+    #[test]
+    fn dragon_family_skin_preserves_coils_soles_ribbons_and_authored_flight() {
+        for name in ["DRATINI", "DRAGONAIR", "DRAGONITE"] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            let flying = name == "DRAGONITE";
+            assert_eq!(locomotion(name), if flying { Locomotion::Fly } else { Locomotion::Walk });
+            assert!(rig.walk_legs.is_empty());
+            assert!(rig.crawl_segments.is_empty());
+            assert_eq!(rig.joints.len(), canonical.joints.len());
+            for v in 0..rig.neutral.positions.len() {
+                assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} vertex {v}");
+                assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "{name} vertex {v}");
+            }
+            let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
+            assert!(!floor.is_empty());
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32 / 32., tick as f32 * TAU / 64., 1., &mut pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut low = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices);
+                    low = low.min(p.y);
+                    assert!(p.y >= -0.000001, "{name} crosses floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "{name} leaves locomotion bounds");
+                    if flying { assert!(p.y > height * 0.14, "{name} lost flight clearance"); }
+                }
+                if !flying { assert!(low < height * 0.005, "{name} lost coil contact"); }
+                for &v in &floor {
+                    let expected = Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation;
+                    assert!(rig.skin_point(v, &matrices).distance(expected) < 0.000001, "{name} contact {v} left root");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn ekans_skin_preserves_grounded_coil_and_canonical_neck_tail_bindings() {
+        for name in ["EKANS"] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            let flying = name == "DRAGONITE";
+            assert_eq!(locomotion(name), if flying { Locomotion::Fly } else { Locomotion::Walk });
+            assert!(rig.walk_legs.is_empty());
+            assert!(rig.crawl_segments.is_empty());
+            assert_eq!(rig.joints.len(), canonical.joints.len());
+            for v in 0..rig.neutral.positions.len() {
+                assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} vertex {v}");
+                assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "{name} vertex {v}");
+            }
+            let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
+            assert!(!floor.is_empty());
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32 / 32., tick as f32 * TAU / 64., 1., &mut pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut low = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices);
+                    low = low.min(p.y);
+                    assert!(p.y >= -0.000001, "{name} crosses floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "{name} leaves locomotion bounds");
+                    if flying { assert!(p.y > height * 0.14, "{name} lost flight clearance"); }
+                }
+                if !flying { assert!(low < height * 0.005, "{name} lost coil contact"); }
+                for &v in &floor {
+                    let expected = Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation;
+                    assert!(rig.skin_point(v, &matrices).distance(expected) < 0.000001, "{name} contact {v} left root");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn arbok_skin_preserves_grounded_coil_and_canonical_hood_jaw_bindings() {
+        for name in ["ARBOK"] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            let flying = name == "DRAGONITE";
+            assert_eq!(locomotion(name), if flying { Locomotion::Fly } else { Locomotion::Walk });
+            assert!(rig.walk_legs.is_empty());
+            assert!(rig.crawl_segments.is_empty());
+            assert_eq!(rig.joints.len(), canonical.joints.len());
+            for v in 0..rig.neutral.positions.len() {
+                assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} vertex {v}");
+                assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "{name} vertex {v}");
+            }
+            let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
+            assert!(!floor.is_empty());
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32 / 32., tick as f32 * TAU / 64., 1., &mut pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut low = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices);
+                    low = low.min(p.y);
+                    assert!(p.y >= -0.000001, "{name} crosses floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "{name} leaves locomotion bounds");
+                    if flying { assert!(p.y > height * 0.14, "{name} lost flight clearance"); }
+                }
+                if !flying { assert!(low < height * 0.005, "{name} lost coil contact"); }
+                for &v in &floor {
+                    let expected = Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation;
+                    assert!(rig.skin_point(v, &matrices).distance(expected) < 0.000001, "{name} contact {v} left root");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn steelix_skin_preserves_grounded_supports_and_canonical_armor_jaw_bindings() {
+        for name in ["STEELIX"] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            let flying = name == "DRAGONITE";
+            assert_eq!(locomotion(name), if flying { Locomotion::Fly } else { Locomotion::Walk });
+            assert!(rig.walk_legs.is_empty());
+            assert!(rig.crawl_segments.is_empty());
+            assert_eq!(rig.joints.len(), canonical.joints.len());
+            for v in 0..rig.neutral.positions.len() {
+                assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} vertex {v}");
+                assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "{name} vertex {v}");
+            }
+            let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
+            assert!(!floor.is_empty());
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32 / 32., tick as f32 * TAU / 64., 1., &mut pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut low = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices);
+                    low = low.min(p.y);
+                    assert!(p.y >= -0.000001, "{name} crosses floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "{name} leaves locomotion bounds");
+                    if flying { assert!(p.y > height * 0.14, "{name} lost flight clearance"); }
+                }
+                if !flying { assert!(low < height * 0.005, "{name} lost coil contact"); }
+                for &v in &floor {
+                    let expected = Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation;
+                    assert!(rig.skin_point(v, &matrices).distance(expected) < 0.000001, "{name} contact {v} left root");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn pig_monkey_skin_walks_on_two_complete_supports_with_coherent_fur_faces_fists() {
+        for (name,tails) in [("MANKEY",1),("PRIMEAPE",0)] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2,"{name} support chains");
+            assert_eq!(rig.motion_limbs.iter().filter(|l|l.role==Role::Arm).count(),2);assert_eq!(rig.motion_limbs.iter().filter(|l|l.role==Role::Tail).count(),tails);
+            for part in &canonical.anatomy {
+                if ["Leg /","Foot /","Toe /","Ankle cuff /"].iter().any(|p|part.name.starts_with(p)) {continue;}
+                for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{name} {}",part.name);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}
+            }
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all()&&p.cmple(hi).all(),"{name} leaves bounds");}
+                assert!(floor<0.005,"{name} loses ground contact {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn feline_skin_walks_complete_supports_with_coherent_gaze_whiskers_charms() {
+        for (name,supports,arms) in [("MEOWTH",2,2),("PERSIAN",4,0)] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),supports,"{name} support chains");
+            assert_eq!(rig.motion_limbs.iter().filter(|l|l.role==Role::Arm).count(),arms);assert_eq!(rig.motion_limbs.iter().filter(|l|l.role==Role::Tail).count(),1);
+            for part in &canonical.anatomy {
+                if ["Leg /","Foot /","Toe /"].iter().any(|p|part.name.starts_with(p)) {continue;}
+                for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{name} {}",part.name);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}
+            }
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all()&&p.cmple(hi).all(),"{name} leaves bounds");}
+                assert!(floor<0.005,"{name} loses ground contact {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn dodo_skin_walks_complete_supports_with_coherent_separate_heads_and_jaws() {
+        for (name,tails) in [("DODUO",0),("DODRIO",3)] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),2,"{name} support chains");
+            assert_eq!(rig.motion_limbs.iter().filter(|l|l.role==Role::Arm).count(),0);assert_eq!(rig.motion_limbs.iter().filter(|l|l.role==Role::Tail).count(),tails);
+            for part in &canonical.anatomy {
+                if ["Leg /","Foot /"].iter().any(|p|part.name.starts_with(p)) {continue;}
+                for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{name} {}",part.name);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}
+            }
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all()&&p.cmple(hi).all(),"{name} leaves bounds");}
+                assert!(floor<0.005,"{name} loses ground contact {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn jynx_skin_keeps_world_hem_seated_and_canonical_open_hand_bindings() {
+        let canonical=crate::species_rig::for_species("JYNX").unwrap();let rig=world_rig(canonical);
+        assert_eq!(locomotion("JYNX"),Locomotion::Walk);assert!(!battle_hovers("JYNX"));assert!(rig.walk_legs.is_empty());assert!(rig.crawl_segments.is_empty());
+        assert_eq!(rig.joints.len(),22);assert_eq!(rig.joint_indices,canonical.joint_indices);assert_eq!(rig.joint_weights,canonical.joint_weights);
+        let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+        for tick in 0..64 {
+            rig.sample_locomotion(tick as f32/32.,tick as f32*TAU/64.,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+            for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.000001);assert!(p.cmpge(lo).all()&&p.cmple(hi).all());}
+            assert!(floor.abs()<0.000001);
+        }
+    }
+
+    #[test]
+    fn tentacle_skin_keeps_world_tips_seated_without_changing_swimming_class() {
+        for name in ["TENTACOOL","TENTACRUEL"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Float);assert!(!battle_hovers(name));assert_eq!(rig.hover_clearance,0.);assert!(rig.walk_legs.is_empty());assert!(rig.crawl_segments.is_empty());
+            assert_eq!(rig.joints.len(),canonical.joints.len());assert_eq!(rig.joint_indices,canonical.joint_indices);assert_eq!(rig.joint_weights,canonical.joint_weights);
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/32.,tick as f32*TAU/64.,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.000001);assert!(p.cmpge(lo).all()&&p.cmple(hi).all());}
+                assert!(floor.abs()<0.000001,"{name} left authored floor: {floor}");
+            }
+        }
+        for name in ["HORSEA","PORYGON","KOFFING"] {assert!(battle_hovers(name));}
+    }
+
+    #[test]
+    fn dugtrio_skin_preserves_grounded_soil_and_three_independent_capsules() {
+        for name in ["DUGTRIO"] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            let flying = name == "DRAGONITE";
+            assert_eq!(locomotion(name), if flying { Locomotion::Fly } else { Locomotion::Walk });
+            assert!(rig.walk_legs.is_empty());
+            assert!(rig.crawl_segments.is_empty());
+            assert_eq!(rig.joints.len(), canonical.joints.len());
+            for v in 0..rig.neutral.positions.len() {
+                assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} vertex {v}");
+                assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "{name} vertex {v}");
+            }
+            let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
+            assert!(!floor.is_empty());
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32 / 32., tick as f32 * TAU / 64., 1., &mut pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut low = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices);
+                    low = low.min(p.y);
+                    assert!(p.y >= -0.000001, "{name} crosses floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "{name} leaves locomotion bounds");
+                    if flying { assert!(p.y > height * 0.14, "{name} lost flight clearance"); }
+                }
+                if !flying { assert!(low < height * 0.005, "{name} lost coil contact"); }
+                for &v in &floor {
+                    let expected = Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation;
+                    assert!(rig.skin_point(v, &matrices).distance(expected) < 0.000001, "{name} contact {v} left root");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn aerodactyl_skin_preserves_canonical_jaw_wings_and_authored_flight() {
+        let canonical = crate::species_rig::for_species("AERODACTYL").unwrap();
         let rig = world_rig(canonical);
-        assert_eq!(locomotion("CLOYSTER"), Locomotion::Float);
-        assert!(rig.walk_legs.is_empty());
-        assert!(
-            rig.joint_indices.iter().all(|j| j[0] == 1),
-            "shell spikes, eyes and teeth must follow the mollusk body"
-        );
+        assert_eq!(locomotion("AERODACTYL"), Locomotion::Fly);
+        assert!(rig.walk_legs.is_empty() && rig.crawl_segments.is_empty());
+        assert_eq!(rig.joints.len(), canonical.joints.len());
+        for v in 0..rig.neutral.positions.len() {
+            assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "vertex {v}");
+            assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "vertex {v}");
+        }
+        let wings: Vec<_> = rig.motion_limbs.iter().filter(|l| l.role == Role::Wing).collect();
+        assert_eq!(wings.len(), 2);
+        assert!(wings.iter().all(|l| l.authored_flight));
+        let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
+        assert!(!floor.is_empty());
         let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
         let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+        let (lo, hi) = rig.locomotion_bounds();
+        let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
         for tick in 0..64 {
-            rig.sample_locomotion(tick as f32 / 32., tick as f32, 1., &mut pose);
+            rig.sample_locomotion(tick as f32 / 32., tick as f32 * TAU / 64., 1., &mut pose);
             rig.skin_matrices_into(&pose, &mut matrices).unwrap();
-            assert!(pose[0].translation.y > 0.1);
-            for i in 0..rig.neutral.positions.len() {
-                assert!(
-                    rig.skin_point(i, &matrices).y > 0.1,
-                    "Cloyster should hover clear of the floor"
-                );
+            for v in 0..rig.neutral.positions.len() {
+                let p = rig.skin_point(v, &matrices);
+                assert!(p.y > height * 0.14);
+                assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "vertex {v} leaves flight bounds");
+            }
+            for &v in &floor { assert!(rig.skin_point(v, &matrices).distance(Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation) < 0.000001); }
+        }
+    }
+
+    #[test]
+    fn pidgeotto_skin_preserves_rooted_shoulders_and_exact_authored_flight() {
+        let canonical = crate::species_rig::for_species("PIDGEOTTO").unwrap();
+        let rig = world_rig(canonical);
+        assert_eq!(locomotion("PIDGEOTTO"), Locomotion::Fly);
+        assert!(rig.walk_legs.is_empty() && rig.crawl_segments.is_empty());
+        assert_eq!(rig.joints.len(), canonical.joints.len());
+        for v in 0..rig.neutral.positions.len() {
+            assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "vertex {v}");
+            assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "vertex {v}");
+        }
+        let wings: Vec<_> = rig.motion_limbs.iter().filter(|l| l.role == Role::Wing).collect();
+        assert_eq!(wings.len(), 2);
+        assert!(wings.iter().all(|l| l.authored_flight));
+        let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
+        assert!(!floor.is_empty());
+        let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+        let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+        let (lo, hi) = rig.locomotion_bounds();
+        let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+        for tick in 0..64 {
+            rig.sample_locomotion(tick as f32 / 32., tick as f32 * TAU / 64., 1., &mut pose);
+            rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let p = rig.skin_point(v, &matrices);
+                assert!(p.y > height * 0.14);
+                assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "vertex {v} leaves flight bounds");
+            }
+            for &v in &floor { assert!(rig.skin_point(v, &matrices).distance(Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation) < 0.000001); }
+        }
+    }
+
+    #[test]
+    fn raptor_bird_skin_preserves_rooted_shoulders_and_authored_flight() {
+        for name in ["PIDGEOT", "FEAROW"] {
+        let canonical = crate::species_rig::for_species(name).unwrap();
+        let rig = world_rig(canonical);
+        assert_eq!(locomotion(name), Locomotion::Fly);
+        assert!(rig.walk_legs.is_empty() && rig.crawl_segments.is_empty());
+        assert_eq!(rig.joints.len(), canonical.joints.len());
+        for v in 0..rig.neutral.positions.len() {
+            assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "vertex {v}");
+            assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "vertex {v}");
+        }
+        let wings: Vec<_> = rig.motion_limbs.iter().filter(|l| l.role == Role::Wing).collect();
+        assert_eq!(wings.len(), 2);
+        assert!(wings.iter().all(|l| l.authored_flight));
+        let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
+        assert!(!floor.is_empty());
+        let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+        let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+        let (lo, hi) = rig.locomotion_bounds();
+        let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+        for tick in 0..64 {
+            rig.sample_locomotion(tick as f32 / 32., tick as f32 * TAU / 64., 1., &mut pose);
+            rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let p = rig.skin_point(v, &matrices);
+                assert!(p.y > height * 0.14);
+                assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "vertex {v} leaves flight bounds");
+            }
+            for &v in &floor { assert!(rig.skin_point(v, &matrices).distance(Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation) < 0.000001); }
+        }
+        }
+    }
+
+    #[test]
+    fn nautilus_skin_reuses_ten_canonical_hinges_and_preserves_grounded_crawl() {
+        for name in ["OMANYTE", "OMASTAR"] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            assert_eq!(locomotion(name), Locomotion::Walk);
+            assert_eq!(rig.joints.len(), canonical.joints.len());
+            assert!(rig.walk_legs.is_empty());
+            assert_eq!(rig.crawl_segments.len(), 10);
+            assert!(rig.crawl_segments.iter().enumerate().all(|(i,s)| s.joint == i+5));
+            for v in 0..rig.neutral.positions.len() {
+                assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} vertex {v}");
+                assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "{name} vertex {v}");
+            }
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut authored = pose.clone();
+            let mut resting = pose.clone();
+            let mut strokes = [false; 10];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
+            assert!(!floor.is_empty());
+            for tick in 0..64 {
+                let seconds = tick as f32 / 20.;
+                let phase = tick as f32 * TAU / 64.;
+                rig.sample_locomotion(seconds, phase, 1., &mut pose);
+                rig.sample_locomotion(seconds, phase, 0., &mut resting);
+                canonical.sample_into(Clip::Idle, seconds, Playback::Loop, &mut authored).unwrap();
+                for (i, segment) in rig.crawl_segments.iter().enumerate() {
+                    assert!(resting[segment.joint].rotation.angle_between(authored[segment.joint].rotation) < 0.001);
+                    strokes[i] |= pose[segment.joint].rotation.angle_between(authored[segment.joint].rotation) > 0.01;
+                }
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices);
+                    assert!(p.y >= -0.000001, "{name} vertex {v} crosses floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "{name} leaves crawl bounds");
+                }
+                for &v in &floor { assert!(rig.skin_point(v, &matrices).y.abs() < 0.000001, "{name} loses ground contact"); }
+            }
+            assert!(strokes.into_iter().all(|moved| moved), "{name} needs ten independent crawl strokes");
+            rig.sample_locomotion(0.37, 0.8, 1., &mut pose);
+            rig.sample_locomotion(0.83, 0.8, 1., &mut resting);
+            assert!(rig.crawl_segments.iter().any(|s| pose[s.joint].rotation.angle_between(resting[s.joint].rotation) > 0.01), "{name} lost authored clock motion while crawling");
+        }
+    }
+
+    #[test]
+    fn pitcher_skin_preserves_leaves_mouths_and_grounded_two_root_or_legless_motion() {
+        for (name,legs) in [("BELLSPROUT",2),("WEEPINBELL",0),("VICTREEBEL",0)] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} root supports");assert!(rig.motion_limbs.is_empty());
+            if legs==0 {assert_eq!(rig.joints.len(),canonical.joints.len());}
+            for part in &canonical.anatomy {if name=="BELLSPROUT" && part.name.starts_with("Root /") {continue;}for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{name} {}",part.name);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}}
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);if legs>0 {gait::assert_supports(rig,&pose);}rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} leaves full bounds");}assert!(floor<0.005,"{name} loses ground contact {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn armored_bug_skin_keeps_legless_canonical_bindings_and_ground_contact() {
+        for name in ["PINECO","FORRETRESS"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert!(rig.walk_legs.is_empty());assert!(rig.motion_limbs.is_empty());
+            assert_eq!(rig.joints.len(),canonical.joints.len());assert_eq!(rig.joint_indices,canonical.joint_indices);assert_eq!(rig.joint_weights,canonical.joint_weights);
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} leaves full bounds");}
+                assert!(floor<0.005,"{name} loses ground contact {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn raichu_skin_keeps_face_curled_ears_and_thin_tail_while_walking() {
+        for (name,legs,arms) in [("RAICHU",2,2),("PIKACHU",2,2)] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} support chains");
+            assert_eq!(rig.motion_limbs.iter().filter(|l|l.role==Role::Arm).count(),arms);
+            assert_eq!(rig.motion_limbs.iter().filter(|l|l.role==Role::Tail).count(),1);
+            for part in &canonical.anatomy {
+                if ["Leg /","Foot /","Claw /","Thigh /","Shin /","Toe /","Haunch /","Toe crease /"].iter().any(|p|part.name.starts_with(p)) {continue;}
+                for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{name} {}",part.name);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}
+            }
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} leaves full bounds");}
+                assert!(floor<0.005,"{name} loses ground contact {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn rafflesia_skin_preserves_faces_and_crowns_while_walking() {
+        for (name,legs,arms) in [("GLOOM",2,2),("VILEPLUME",2,2)] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} support chains");
+            assert_eq!(rig.motion_limbs.iter().filter(|l|l.role==Role::Arm).count(),arms);
+            for part in &canonical.anatomy {
+                if ["Leg /","Foot /","Claw /","Thigh /","Shin /","Toe /"].iter().any(|p|part.name.starts_with(p)) {continue;}
+                for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{name} {}",part.name);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}
+            }
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} leaves full bounds");}
+                assert!(floor<0.005,"{name} loses ground contact {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn fossil_scythe_skin_walks_on_four_and_two_complete_supports() {
+        for (name,legs,arms) in [("KABUTO",4,0),("KABUTOPS",2,2)] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Walk);assert_eq!(rig.walk_legs.len(),legs,"{name} support chains");
+            assert_eq!(rig.motion_limbs.iter().filter(|l|l.role==Role::Arm).count(),arms);
+            for part in &canonical.anatomy {
+                if ["Leg /","Foot /","Claw /","Thigh /","Shin /","Toe /"].iter().any(|p|part.name.starts_with(p)) {continue;}
+                for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{name} {}",part.name);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}
+            }
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} leaves full bounds");}
+                assert!(floor<0.005,"{name} loses ground contact {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn electrode_skin_preserves_ground_contact_and_coherent_shell_without_fake_limbs() {
+        let canonical = crate::species_rig::for_species("ELECTRODE").unwrap();
+        let rig = world_rig(canonical);
+        assert_eq!(locomotion("ELECTRODE"), Locomotion::Walk);
+        assert!(rig.walk_legs.is_empty()); assert!(rig.motion_limbs.is_empty());
+        assert_eq!(rig.joints.len(), canonical.joints.len());
+        assert_eq!(rig.joint_indices, canonical.joint_indices);
+        assert_eq!(rig.joint_weights, canonical.joint_weights);
+        let mut pose=vec![Transform::IDENTITY;rig.joints.len()];
+        let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()]; let (lo,hi)=rig.locomotion_bounds();
+        for tick in 0..64 {
+            rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap(); let mut floor=f32::INFINITY;
+            for v in 0..rig.neutral.positions.len() {
+                let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);
+                assert!(p.y>=-0.00001,"Electrode crosses floor");
+                assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"Electrode leaves full bounds");
+            }
+            assert!(floor<0.005,"Electrode loses ground contact: {floor}");
+        }
+    }
+
+    #[test]
+    fn rock_pupa_skin_preserves_two_larva_supports_and_grounded_legless_pupa() {
+        for (name, legs) in [("LARVITAR", 2), ("PUPITAR", 0)] {
+            let canonical = crate::species_rig::for_species(name).unwrap(); let rig = world_rig(canonical);
+            assert_eq!(locomotion(name), Locomotion::Walk); assert_eq!(rig.walk_legs.len(), legs);
+            assert_eq!(rig.motion_limbs.iter().filter(|l| l.role == Role::Arm).count(), if legs==0 {0} else {2});
+            if legs==0 { assert_eq!(rig.joints.len(), canonical.joints.len()); }
+            for part in &canonical.anatomy {
+                if legs>0 && ["Foot /", "Toe /", "Thigh /"].iter().any(|p| part.name.starts_with(p)) {continue;}
+                for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{name} {}",part.name);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}
+            }
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);if legs>0 {gait::assert_supports(rig,&pose);}
+                rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} vertex {v} crosses floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} leaves full locomotion bounds");}
+                assert!(floor<0.005,"{name} loses ground contact: {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn tyranitar_skin_walks_on_two_complete_supports_and_preserves_upper_armor_and_tail() {
+        for (name, legs) in [("TYRANITAR", 2)] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            assert_eq!(locomotion(name), Locomotion::Walk);
+            assert_eq!(rig.motion_limbs.iter().filter(|l| l.role == Role::Arm).count(), 2);
+            assert_eq!(rig.walk_legs.len(), legs, "{name} split a toe or merged a limb");
+            for part in &canonical.anatomy {
+                if ["Foot /", "Foot claw /", "Thigh /", "Thigh vent /", "Shin /"].iter().any(|p| part.name.starts_with(p)) { continue; }
+                for v in part.vertices.clone() {
+                    assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} {}", part.name);
+                    assert_eq!(rig.joint_weights[v], canonical.joint_weights[v]);
+                }
+            }
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20., tick as f32*TAU/64., 1., &mut pose);
+                gait::assert_supports(rig, &pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut floor = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices); floor = floor.min(p.y);
+                    assert!(p.y >= -0.00001, "{name} vertex {v} crosses floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "{name} leaves locomotion bounds");
+                }
+                assert!(floor < 0.005, "{name} loses ground contact: {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn fire_badger_skin_walks_on_complete_four_and_two_supports_with_preserved_upper_controls() {
+        for (name, legs) in [("QUILAVA", 4), ("TYPHLOSION", 2)] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            assert_eq!(locomotion(name), Locomotion::Walk);
+            assert_eq!(rig.walk_legs.len(), legs, "{name} split a toe or merged a limb");
+            for part in &canonical.anatomy {
+                if ["Foot /", "Toe /", "Leg /", "Haunch /"].iter().any(|p| part.name.starts_with(p)) { continue; }
+                for v in part.vertices.clone() {
+                    assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} {}", part.name);
+                    assert_eq!(rig.joint_weights[v], canonical.joint_weights[v]);
+                }
+            }
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20., tick as f32*TAU/64., 1., &mut pose);
+                gait::assert_supports(rig, &pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut floor = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices); floor = floor.min(p.y);
+                    assert!(p.y >= -0.00001, "{name} vertex {v} crosses floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "{name} leaves locomotion bounds");
+                }
+                assert!(floor < 0.005, "{name} loses ground contact: {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn fire_dragon_skin_preserves_two_ground_supports_and_authored_flight() {
+        for name in ["CHARMELEON", "CHARIZARD"] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            let flying = name == "CHARIZARD";
+            assert_eq!(locomotion(name), if flying { Locomotion::Fly } else { Locomotion::Walk });
+            assert_eq!(rig.walk_legs.len(), if flying { 0 } else { 2 });
+            if flying { assert_eq!(rig.joints.len(), canonical.joints.len()); }
+            for part in &canonical.anatomy {
+                if !flying && ["Foot /", "Foot claw /", "Haunch /"].iter().any(|p| part.name.starts_with(p)) { continue; }
+                for v in part.vertices.clone() {
+                    assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} {}", part.name);
+                    assert_eq!(rig.joint_weights[v], canonical.joint_weights[v]);
+                }
+            }
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            let height = rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20., tick as f32*TAU/64., 1., &mut pose);
+                if !flying { gait::assert_supports(rig, &pose); }
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut floor = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices); floor = floor.min(p.y);
+                    assert!(p.y >= -0.00001, "{name} vertex {v} crosses floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "{name} leaves locomotion bounds");
+                    if flying { assert!(p.y > height*0.14, "{name} lost flight clearance"); }
+                }
+                if !flying { assert!(floor < 0.005, "{name} loses ground contact: {floor}"); }
+            }
+        }
+    }
+
+    #[test]
+    fn stone_pair_skin_walks_on_two_supports_and_preserves_complete_upper_anatomy() {
+        for (name, arms) in [("GRAVELER", 4), ("GOLEM", 2)] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            assert_eq!(locomotion(name), Locomotion::Walk);
+            assert_eq!(rig.walk_legs.len(), 2, "{name} split a toe or heel into another support");
+            assert_eq!(rig.motion_limbs.iter().filter(|l| l.role == Role::Arm).count(), arms);
+            for part in &canonical.anatomy {
+                if ["Foot /", "Foot claw /", "Heel claw /", "Thigh /", "Leg /"].iter().any(|p| part.name.starts_with(p)) { continue; }
+                for v in part.vertices.clone() {
+                    assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} {} vertex {v}", part.name);
+                    assert_eq!(rig.joint_weights[v], canonical.joint_weights[v]);
+                }
+            }
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let (lo, hi) = rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/20., tick as f32*TAU/64., 1., &mut pose);
+                gait::assert_supports(rig, &pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut floor = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices); floor = floor.min(p.y);
+                    assert!(p.y >= -0.00001, "{name} vertex {v} walks through floor");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "{name} leaves locomotion bounds");
+                }
+                assert!(floor < 0.005, "{name} loses ground contact: {floor}");
+            }
+        }
+    }
+
+    #[test]
+    fn magnet_skin_preserves_mechanical_weights_and_intentional_floating() {
+        for name in ["MAGNEMITE","MAGNETON"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Float);assert!(battle_hovers(name));assert!(rig.walk_legs.is_empty());assert!(rig.motion_limbs.is_empty());assert_eq!(rig.joints.len(),canonical.joints.len());
+            assert_eq!(rig.joint_indices,canonical.joint_indices);assert_eq!(rig.joint_weights,canonical.joint_weights);
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();let height=rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/32.,tick as f32,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);assert!(p.y>height*0.14,"{name} lost floating clearance");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");}
+            }
+        }
+    }
+
+    #[test]
+    fn gas_pair_skin_preserves_authored_weights_and_intentional_floating() {
+        for name in ["KOFFING","WEEZING"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Float);assert!(battle_hovers(name));assert!(rig.walk_legs.is_empty());assert!(rig.motion_limbs.is_empty());assert_eq!(rig.joints.len(),canonical.joints.len());
+            assert_eq!(rig.joint_indices,canonical.joint_indices);assert_eq!(rig.joint_weights,canonical.joint_weights);
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();let height=rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/32.,tick as f32,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);assert!(p.y>height*0.14,"{name} lost floating clearance");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");}
+            }
+        }
+    }
+
+    #[test]
+    fn pokemon_motion_bivalves_keep_authored_valves_while_floating() {
+        for name in ["SHELLDER","CLOYSTER"] {
+            let canonical=crate::species_rig::for_species(name).unwrap();
+            let rig=world_rig(canonical);
+            assert_eq!(locomotion(name),Locomotion::Float);
+            assert!(rig.walk_legs.is_empty());
+            assert_eq!(rig.joints.len(),canonical.joints.len());
+            for part in &rig.anatomy {
+                if part.name.starts_with("Eye white /") || part.name.starts_with("Pupil /") || part.name.starts_with("Teeth /") {
+                    for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],[1,0,0,0],"{name} {}",part.name);}
+                }
+                if part.name.starts_with("Shell /") {
+                    let owner=if name=="SHELLDER" || part.name.ends_with("-1") {2} else {3};
+                    assert!(part.vertices.clone().any(|v|rig.joint_indices[v][0]==owner && rig.joint_weights[v][0]>0.99));
+                }
+            }
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];
+            let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];
+            let (lo,hi)=rig.locomotion_bounds();
+            for tick in 0..64 {
+                rig.sample_locomotion(tick as f32/32.,tick as f32,1.,&mut pose);
+                rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+                assert!(pose[0].translation.y>0.1);
+                for v in 0..rig.neutral.positions.len() {
+                    let p=rig.skin_point(v,&matrices);
+                    assert!(p.y>0.1,"{name} lost swimming clearance");
+                    assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
+                }
             }
         }
     }
@@ -853,10 +2075,18 @@ mod tests {
         for name in ["CATERPIE", "WEEDLE"] {
             let canonical = crate::species_rig::for_species(name).unwrap();
             let rig = world_rig(canonical);
-            assert_eq!(rig.crawl_segments.len(), 6, "{name}");
-            assert_eq!(rig.walk_legs.len(), 8, "{name}");
+            assert_eq!(rig.crawl_segments.len(), 8, "{name}");
+            assert_eq!(rig.walk_legs.len(), if name=="CATERPIE" {6} else {14}, "{name}");
             let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
             let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let mut seams=Vec::new();
+            if name=="CATERPIE" {
+                let a=rig.anatomy.iter().find(|p|p.name.starts_with("Body /")).unwrap();
+                let b=rig.anatomy.iter().find(|p|p.name.starts_with("Belly /")).unwrap();
+                let left:std::collections::BTreeMap<_,_>=a.vertices.clone().map(|i|(rig.neutral.positions[i].map(f32::to_bits),i)).collect();
+                let common:std::collections::BTreeMap<_,_>=b.vertices.clone().filter_map(|i|left.get(&rig.neutral.positions[i].map(f32::to_bits)).map(|&j|(rig.neutral.positions[i].map(f32::to_bits),(j,i)))).collect();
+                assert_eq!(common.len(),114);seams.extend(common.into_values());
+            }
             for tick in 0..64 {
                 rig.sample_locomotion(0.2, tick as f32 * TAU / 64., 1., &mut pose);
                 gait::assert_supports(rig, &pose);
@@ -866,8 +2096,11 @@ mod tests {
                         .all(|v| rig.skin_point(v, &matrices).y >= -0.00001),
                     "{name} crawled through the floor"
                 );
+                for &(a,b) in &seams {assert!(rig.skin_point(a,&matrices).distance(rig.skin_point(b,&matrices))<0.000001,"{name} world crawl opened the material seam");}
+                let floor=(0..rig.neutral.positions.len()).map(|v|rig.skin_point(v,&matrices).y).fold(f32::INFINITY,f32::min);
+                assert!(floor<(rig.neutral_bounds.1.y-rig.neutral_bounds.0.y)*0.005,"{name} world crawl lost ground contact: {floor}");
                 let front = &rig.crawl_segments[0];
-                let back = &rig.crawl_segments[5];
+                let back = rig.crawl_segments.last().unwrap();
                 assert!(
                     pose[front.joint].translation.distance(front.center) > 0.0001
                         || pose[back.joint].translation.distance(back.center) > 0.0001
@@ -895,6 +2128,9 @@ mod tests {
             ("Head / armoured cranium", Role::Head),
             ("Hind claw / small ivory point", Role::Leg),
             ("Forearm / tapered cuff", Role::Arm),
+            ("Hip armor / rounded coxa", Role::Leg),
+            ("Greave / flared lower-leg armor", Role::Leg),
+            ("scizor/hip_left", Role::Leg),
             ("Rear primary / layered flight vane", Role::Wing),
             ("Rear crown / armor spike", Role::Head),
             ("cloyster/rear_left", Role::Leg),

@@ -3,6 +3,7 @@
 import copy,json,os,unittest
 from pathlib import Path
 from tapir_sculpt import sculpture,HEIGHT
+from tapir_glb import read_tapir,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_slime_sculpt import ray_intersections
 import test_magnet_sculpt as joins
@@ -10,7 +11,7 @@ ROOT=Path(os.environ.get('TAPIR_TEST_MODELS',Path(__file__).resolve().parents[1]
 
 class TapirTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={n:json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in ('drowzee','hypno')}
+    def setUpClass(cls):cls.models={n:read_tapir(ROOT/(n+'.glb'),n) for n in ('drowzee','hypno')}
     def test_closed_anatomy_with_welded_body_materials(self):
         m=copy.deepcopy(self.models);a,b=m['drowzee']['primitives'][:2]
         joined={'part':'Body / joined material regions','positions':a['positions']+b['positions'],'normals':a['normals']+b['normals'],'indices':a['indices']+[i+len(a['positions'])//3 for i in b['indices']]}
@@ -19,11 +20,12 @@ class TapirTests(unittest.TestCase):
     def test_actual_triangle_shading(self):assert_model_shading(self,self.models)
     def test_recipe_ground_and_species_identity(self):
         for n,m in self.models.items():
-            self.assertEqual(m,sculpture(n));names=[p['part'] for p in m['primitives']]
+            self.assertEqual(geometry_digest(m),geometry_digest(sculpture(n)));names=[p['part'] for p in m['primitives']]
             self.assertEqual(len(names),len(set(names)))
             self.assertEqual(min(v for p in m['primitives'] for v in p['positions'][1::3]),0.)
             self.assertAlmostEqual(max(v for p in m['primitives'] for v in p['positions'][1::3]),HEIGHT,places=6)
-            self.assertLess(sum(len(p['indices'])//3 for p in m['primitives']),45000)
+            self.assertLessEqual(sum(len(p['indices'])//3 for p in m['primitives']),40000)
+            self.assertLessEqual(sum(len(p['positions'])//3 for p in m['primitives']),20000)
             adult=n=='hypno'
             for prefix,count in {'Ear / rounded':0 if adult else 2,'Ear / pointed':2 if adult else 0,'Ruff /':1 if adult else 0,'Pendulum /':3 if adult else 0,'Hand / curved':6,'Foot / yellow':4 if adult else 2}.items():
                 self.assertEqual(sum(x.startswith(prefix) for x in names),count,(n,prefix))

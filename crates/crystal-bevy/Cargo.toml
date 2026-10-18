@@ -138,3 +138,7 @@ required-features = ["bevy-shell"]
 name = "certify_intro"
 path = "src/bin/certify_intro.rs"
 required-features = ["intro-certification"]
+
+[[example]]
+name = "review_native_league"
+required-features = ["location-tester"]

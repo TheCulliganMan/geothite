@@ -2,10 +2,11 @@
 """Original pink shell-tailed biped with a separate toothed spiral creature."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import ellipsoid,loft,curved_profiles,part,translate
-from bovine_sculpt import curved_tube,oval
-from lugia_sculpt import paddle
-from raptor_bird_sculpt import paint
+from functools import lru_cache
+from copy import deepcopy
+from sculpt_geometry import loft,curved_profiles,part,translate,crease_normals
+from bovine_sculpt import curved_tube as rounded_tube,oval
+from slow_pair_sculpt import ellipsoid as rounded_form,paddle as swept_form,paint,fitted_shading,forelimb
 from murkrow_sculpt import bill
 from skin_glb import COORDINATES
 HEIGHT=1.20
@@ -13,6 +14,16 @@ PINK=(.90,.56,.64);INNER=(.73,.39,.49);CREAM=(.95,.90,.68);WHITE=(.99,.98,.94);I
 SHELL=(.65,.73,.77);RIDGE=(.73,.80,.82);SHADE=(.44,.53,.61)
 SHELL_ROWS=[(.48,.19,.17,-.54),(.57,.25,.215,-.56),(.73,.225,.205,-.59),(.87,.175,.165,-.62),(1.01,.125,.125,-.65),(1.13,.075,.08,-.68),(1.20,.018,.024,-.69)]
 SHELL_X=.37
+
+def ellipsoid(name,color,center,radii,segments=28,rings=18):
+ if name.startswith(('Ear /','Shoulder /','Hand /','Mouth back /','Tongue /','Shell rear wall /','Shell mouth back /')):segments=min(segments,20);rings=min(rings,14)
+ elif name.startswith('Thigh /'):segments=min(segments,24);rings=min(rings,16)
+ return rounded_form(name,color,center,radii,segments,rings)
+def paddle(name,color,points,widths,depths):
+ return swept_form(name,color,points,widths,depths,segments=16 if name.startswith('Foot claw /') else 20)
+def curved_tube(name,color,points,radii,segments=20):
+ cap=16 if name.startswith(('Fang /','Hand claw /','Shell upper tooth /','Shell lower tooth /')) else 28 if name.startswith('Tail /') else 20
+ return rounded_tube(name,color,points,radii,min(segments,cap))
 
 def shell_rim(j,start,end):
  rows=curved_profiles(SHELL_ROWS,6);selected=[r for r in rows if start<=r[0]<=end];n=40;vv=[]
@@ -30,8 +41,9 @@ def shell_rim(j,start,end):
   a=i;b=(i+1)%n;ff.append((b,a,a+inner,b+inner));a=(count-1)*n+i;b=(count-1)*n+(i+1)%n;ff.append((a,b,b+inner,a+inner))
  return part('Shell coil / fitted overlapping grey-blue turn '+str(j),RIDGE,vv,ff,True)
 
+@lru_cache(maxsize=1)
 def anatomy():
- body=loft('Body / continuous pink Slowbro head neck and pear torso',PINK,curved_profiles(((.19,.14,.14,-.015),(.35,.31,.255,-.015),(.57,.345,.265,0),(.80,.29,.235,.015),(1.00,.235,.218,.030),(1.19,.275,.24,.048),(1.35,.258,.22,.050),(1.47,.15,.14,.050),(1.49,.025,.026,.050)),5),48)
+ body=loft('Body / continuous pink Slowbro head neck and pear torso',PINK,curved_profiles(((.19,.14,.14,-.015),(.35,.31,.255,-.015),(.57,.345,.265,0),(.80,.29,.235,.015),(1.00,.235,.218,.030),(1.19,.275,.24,.048),(1.35,.258,.22,.050),(1.47,.15,.14,.050),(1.49,.025,.026,.050)),4),32)
  upper=ellipsoid('Muzzle / broad rounded cream Slowbro upper lip',CREAM,(0,1.155,.345),(.267,.087,.179),40,26)
  jaw=ellipsoid('Jaw / open rounded cream Slowbro lower lip',CREAM,(0,.967,.326),(.218,.065,.166),40,26)
  back=ellipsoid('Mouth back / recessed dark Slowbro oral chamber',INK,(0,1.045,.270),(.167,.113,.038),32,22)
@@ -48,8 +60,7 @@ def anatomy():
   p.append(paint('Nostril / fitted subtle Slowbro nostril '+str(s),INNER,oval(s*.052,1.193,.005,.009,20),upper,.003,2))
   p.append(curved_tube('Fang / rooted small upper Slowbro canine '+str(s),WHITE,[(s*.179,1.110,.386),(s*.180,1.057,.400),(s*.174,1.037,.406)],[.016,.012,.0015],20))
   p.append(ellipsoid('Shoulder / rooted rounded pink Slowbro shoulder '+str(s),PINK,(s*.255,.817,.084),(.117,.124,.111),32,22))
-  p.append(paddle('Arm / hanging rooted pink Slowbro forelimb '+str(s),PINK,[(s*.238,.854,.085),(s*.329,.718,.15),(s*.281,.617,.245)],[.111,.104,.083],[.115,.106,.087]))
-  hand=ellipsoid('Hand / short rounded clawed Slowbro palm '+str(s),PINK,(s*.270,.613,.260),(.095,.114,.091),32,22);p.append(hand)
+  p.append(forelimb('Arm / continuous rooted pink Slowbro forelimb and palm '+str(s),PINK,[(s*.238,.854,.085),(s*.300,.718,.150),(s*.270,.617,.260),(s*.270,.557,.310),(s*.270,.533,.329)],[.111,.104,.095,.072,.002],[.115,.106,.091,.052,.002]))
   for j,dx in enumerate((-.052,0,.052)):
    p.append(curved_tube(f'Hand claw / three rooted white Slowbro digits {s} {j}',WHITE,[(s*.270+dx*.80,.566,.312),(s*.270+dx,.529,.347),(s*.270+dx,.515,.372)],[.021,.016,.0015],20))
   thigh=ellipsoid('Thigh / rooted heavy pink Slowbro haunch '+str(s),PINK,(s*.277,.318,.034),(.193,.236,.199),36,24);p.append(thigh)
@@ -74,12 +85,14 @@ def anatomy():
   p.append(paint('Shell pupil / fitted tiny dark shell slit '+str(s),INK,oval(cx,cy,.004,.008,16),eye,.003,2))
  for j,(x,y,z,tx,ty,tz,r) in enumerate(((.58,.61,-.57,.74,.64,-.61,.052),(.57,.76,-.63,.75,.84,-.68,.057),(.50,.93,-.65,.64,1.03,-.72,.047),(.36,1.13,-.67,.39,1.37,-.72,.061),(.19,.76,-.62,.07,.85,-.67,.051),(.22,.94,-.66,.13,1.06,-.73,.047),(.38,.69,-.77,.38,.77,-.98,.061))):
   p.append(curved_tube('Shell spine / rooted tapered grey-blue shell point '+str(j),RIDGE,[(x,y,z),((x+tx)/2,(y+ty)/2,(z+tz)/2),(tx,ty,tz)],[r,r*.65,.0015],24))
- return p
+ return fitted_shading([q if q['part'].startswith(('Shell coil /','Crown turn /')) else crease_normals(q,45.) for q in p])
 
-def sculpture():
- p=anatomy();low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
- for q in p:
-  q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+@lru_cache(maxsize=2)
+def sculpture(normalize=True):
+ p=deepcopy(anatomy());low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
+ if normalize:
+  for q in p:
+   q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) or 0. for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':'slowbro','version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
  a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'slowbro.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))

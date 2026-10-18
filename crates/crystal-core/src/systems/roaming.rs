@@ -361,16 +361,15 @@ where
         }
         if input.battle_result & 0x0f == 0 {
             let roaming = &mut next.slots[slot_index];
-            roaming.hp = 0;
+            roaming.set_current_hp(0);
             roaming.map_group = catalog.inactive_map.map_group;
             roaming.map_number = catalog.inactive_map.map_number;
             roaming.species = None;
             outcome.cleared_roaming_slot = Some(slot);
             return Ok((next, outcome));
         }
-        let hp = input.enemy_hp as u8;
-        next.slots[slot_index].hp = hp;
-        outcome.saved_roaming_hp = Some(hp);
+        next.slots[slot_index].set_current_hp(input.enemy_hp);
+        outcome.saved_roaming_hp = Some(next.slots[slot_index].hp);
     } else {
         if let Some(slot) = input.roaming_slot {
             return Err(RoamingEngineError::UnexpectedRoamingSlot { slot });
@@ -493,6 +492,7 @@ mod tests {
 
     fn active(species: &str, map_number: u8) -> RoamingPokemonState {
         RoamingPokemonState {
+            scaled_hp: None,
             species: Some(species.to_string()),
             level: 40,
             map_group: 1,

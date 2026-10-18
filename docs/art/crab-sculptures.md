@@ -1,37 +1,72 @@
-# Krabby and Kingler sculptures
+# Krabby and Kingler sculptures and rigs
 
-`tools/crab_sculpt.py` authors original four-legged crabs with orange domed
-carapaces, rounded ivory lower shells, articulated ivory limbs, and open
-hooked orange pincers. Krabby has two crown points and round pale eyes.
-Kingler has five crown points, angular eyes and one substantially larger claw.
-The crown points intersect the carapace, and cheek points grow from the lower
-shell. Facial markings fit the actual stored triangles. Authoring height
-remains 0.97 for both species, with normal runtime species scale.
+The crab models retain their orange upper shells, ivory bellies, raised eyes,
+cheek peaks and four walking legs. The pincers now have broad, flattened palms
+and tapered movable jaws. Kingler has a dominant claw more than twice the
+height of its smaller pincer, five crown points and two additional ivory jaw
+teeth. Krabby retains equal claws and two crown points. Four pointed ivory
+walking toes provide explicit ground contact. Visual references are the official
+[Krabby](https://www.pokemon.com/us/pokedex/krabby) and
+[Kingler](https://www.pokemon.com/us/pokedex/kingler) artwork. Reference images
+remain outside the shipped assets.
 
-Official [Krabby artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/098.png)
-and [Kingler artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/099.png)
-were inspected for anatomy and colors and are not shipped. The downloadable
-[Kingler listing](https://sketchfab.com/3d-models/kingler-34df10aac7984ef681f11f2f7c6c7a7e)
-advertises CC Attribution and zero animations. That metadata does not establish
-a usable original rig; zero animations does not establish an absent skeleton.
-Its official download endpoint returned HTTP 401 without authentication.
-No external geometry was imported. These original authored meshes are static.
+`tools/crab_sculpt.py` authors the geometry and `tools/crab_glb.py` exports the
+canonical skins. Legacy static JSON files are removed. The runtime, builder and
+model checker all use the same canonical GLBs.
 
-Stored-mesh checks cover closed connected outward surfaces, normals and
-actual winding, exact recipe parity, preserved height and grounding, budgets,
-four walking legs, two open claws, crown differences, Kingler's claw asymmetry,
-actual solid intersections at articulations and roots, marking fitting and
-front-face clearance. The initial rear legs were moved inward after an
-independent stored-ray test found their roots outside the ivory lower shell.
-All six stored-mesh regressions passed. Krabby has 27 parts and 32,904
-triangles; Kingler has 30 parts and 26,412 triangles. Front, rear and oblique
-software reviews are complete. Canonical copies match the tested candidates
-byte for byte, and the main builder dispatches both through the pure recipe.
-Layout and storage checks passed for 569 raw JSON model documents.
+| Species | Parts | Vertices | Triangles | Joints | Accessors | Bytes | Authoring height | Pack height |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Krabby | 31 | 17,883 | 25,576 | 12 | 140 | 678,056 | 0.97 | 0.4064 m |
+| Kingler | 36 | 18,026 | 25,908 | 12 | 156 | 674,292 | 0.97 | 1.2954 m |
 
-Fresh native presentation remains incomplete: the rebuilt reviewer returned
-blank battle captures, as documented in [native review notes](native-pokemon-review.md).
-The separate Rust all-251 loaded-mesh check passed after these replacements.
-Software previews do not establish native integration or gameplay. The full visual
-goal and usable rig search remain active. Temporary species candidates,
-reference artwork, software renders and test logs were removed.
+The verified local pack supplies height digits 104 (RIVER CRAB) and 403
+(PINCER), respectively. Neutral geometry digests:
+
+- Krabby: `5f8f12d336b23cecec7ad64a1ef4ab89f387324289654f1fdbc722df900ff5ef`.
+- Kingler: `77ef337fdce8469cd785876b536b3c92953ebd6a1b026f7b12001c2a592cfc36`.
+
+The floor root remains fixed. A yaw-only body carries the complete shell and
+face. Each arm blends from the shell into its own carrier and wrist. The
+palm follows the wrist; a child jaw carrier closes independently. Four blended
+leg carriers keep their knees attached while the walking toes stay planted
+in battle. World locomotion groups each complete leg, knee and toe into one
+walking chain. Idle, attack and hit use rotation-only keys, neutral endpoints
+and the existing source-cue timing.
+
+Eleven Python checks pass: canonical bounded containers, hierarchy and inverse
+binds, anatomical owners, occupied roots through motion with a detached negative
+control, floor contact, winding, strain, independent jaws, source-cue metadata,
+closed outward solids, stored normals, family anatomy and fitted face clearance.
+The existing 20,000-vertex, 40,000-triangle, 64-primitive, 256-accessor and 1 MiB
+limits are retained. Blender generation is byte-identical. Front, side and rear
+poses of all three clips were inspected for both species. Shiny checks are
+skipped at the user's request.
+
+Four focused Rust checks pass: both verified-size GPU paths, production
+anatomical ownership and routing, planted battle toes, animated culling bounds,
+independent jaws, and the 64-phase world walking regression. The existing
+Paras/Parasect contact regression also passes in the same run.
+
+Rebuild and check:
+
+```sh
+python3 tools/crab_sculpt.py --output crates/crystal-voxel-view/models/battle_species
+python3 -m unittest discover -s tools -p 'test_crab*.py'
+```
+
+The rebuilt production client passed normal Route 29 terrain admission for both
+species at original pack size. The paired 3D/2D Krabby encounter against Pidgey
+preserves core frame 3412, checksum 2771847911, LCD animation frame 4151 and
+virtual time 76.7544295. The Kingler encounter against Pidgey preserves core
+frame 3538, checksum 1460042242, LCD animation frame 4257 and virtual time
+79.629184374. Both inspected pairs show the full pincer silhouettes, clear
+species labels and toes meeting the terrain. Kingler's dominant claw remains
+much larger than its other pincer. Neither capture reports shader errors.
+Evidence is ignored under `target/pokemon-native-review/krabby-normal` and
+`target/pokemon-native-review/kingler-normal`.
+
+The captures select the existing supported angle with
+`CRYSTAL_BATTLE_REVIEW_YAW=-110`; normal scale, source support, scenery omission
+and whole-body/frustum checks remain active. The two shared grounded/volumetric
+and source-cue pose timing regressions pass. Grass height is untouched. Browser
+visual acceptance remains open.

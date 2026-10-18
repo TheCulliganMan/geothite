@@ -1,70 +1,86 @@
-# Grimer, Muk and Ditto sculptures
+# Grimer, Muk and Ditto sculptures and rigs
 
-`tools/slime_sculpt.py` authors three original canonical battle JSON assets.
-The battle-species builder dispatches each identity through this pure geometry
-recipe, replacing the old shared stacked spheres. Each retains its 0.96 authoring
-height and the normal runtime species scale. Other species remain unchanged.
+`tools/slime_sculpt.py` authors three original flowing slime models.
+`tools/slime_glb.py` exports canonical skins used by the runtime, main builder
+and model checker. Legacy static JSON assets are removed.
 
-Each species has one closed continuous body with flowing rippled contours and
-a broad flat underside. Ripples blend gradually into that underside instead of
-producing an abrupt seam. Grimer has a tall open mouth, a raised true annular
-lip, pale eyes with tiny pupils, a blue-gray lower tongue, two forward arms,
-and rounded three-finger hands. Muk has a broader sagging puddle, darker muted
-color, a wide mouth, narrow angled eyes, one long sagging arm and a shorter
-opposite hand. Both have soft supported folds on the front and rear.
+All three retain one closed continuous body and a broad flat puddle underside.
+Grimer has a wider tall open mouth, a true annular lip, pale eyes with tiny
+pupils, a blue-gray lower tongue, forward arms and rounder, shorter three-finger
+hands. Muk has a wider mouth, angled eyes, a broad sagging base, one long arm
+and a shorter opposite hand. Both retain supported front and rear folds.
+Ditto has fuller upper lobes, a stronger asymmetric side bulge, tiny eyes,
+a curved smile with a fitted pink interior, and three soft lavender highlights.
+Its upper body remains continuous with its spread base.
 
-Ditto has an asymmetric rounded blob with three upper lobes, a soft spread
-base, tiny fitted eyes, a gently curved smile with a pink interior, and three
-soft lavender highlights. It has no separate ears, arms, sphere skirt or sludge
-mouth rim. Its smile interior follows the actual concave smile outline rather
-than assuming an ellipse will fit inside the thin curve.
+The official [Grimer](https://www.pokemon.com/us/pokedex/grimer),
+[Muk](https://www.pokemon.com/us/pokedex/muk) and
+[Ditto](https://www.pokemon.com/us/pokedex/ditto) artwork informed the anatomy
+and colors. No reference pixels or external geometry are shipped.
 
-The official [Grimer](https://assets.pokemon.com/assets/cms2/img/pokedex/full/088.png),
-[Muk](https://assets.pokemon.com/assets/cms2/img/pokedex/full/089.png) and
-[Ditto](https://assets.pokemon.com/assets/cms2/img/pokedex/full/132.png) artwork
-was inspected for shape, anatomy and color. No reference image is shipped.
-Downloadable [Grimer](https://sketchfab.com/3d-models/grimer-6b86d9e0fa824ebd81aef8d7ab9d43cd),
-[Muk](https://sketchfab.com/3d-models/muk-512043dacaf74c548834455ac922b450),
-and [Ditto](https://sketchfab.com/3d-models/ditto-47a04e8d40dd49689bcc6158f1f8a821)
-listings advertise CC Attribution and zero animations, but their metadata does
-not establish usable original rigs. Zero animations does not prove an absence
-of a skeleton. The official download endpoints returned HTTP 401 without
-authentication. Other Ditto listings checked were
-`5a67ff026dac49818f4b0e63be8f5384` and `fb5b9e441d60453da296b6e12643fcba`;
-the latter is a plush scan. No external mesh was imported. These authored
-meshes are static.
+| Species | Parts | Vertices | Triangles | Joints | Accessors | Bytes | Authoring height | Pack height |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Grimer | 26 | 18,739 | 25,172 | 13 | 146 | 730,324 | 0.96 | 0.889 m |
+| Muk | 26 | 16,163 | 21,396 | 13 | 139 | 633,072 | 0.96 | 1.1938 m |
+| Ditto | 8 | 9,310 | 13,980 | 5 | 51 | 403,272 | 0.96 | 0.3048 m |
 
-Stored-mesh regressions check closed outward geometry, finite unit normals,
-exact recipe parity, heights, broad flat grounding, budgets, distinct anatomy,
-actual solid intersections at arms, palms and individual fingers, fitted face
-vertices, front triangle clearance, true open mouth-rim centers, supported
-front and rear folds, and Muk's asymmetric arm span. Native captures establish
-presentation, not gameplay. The full 251-species visual goal and usable
-open-access rig search remain active.
+The verified local pack supplies height digits 211 (SLUDGE), 311 (SLUDGE) and
+100 (TRANSFORM), respectively. Neutral geometry digests:
 
-All eleven stored-mesh checks passed for the final assets. The spatial ray index
-uses stored triangle projections and keeps the original barycentric inclusion
-test. A separate comparison checks it against the original unindexed oracle
-across 378 body and mouth sample rays; all marking vertices and triangle
-centroids retain their original verification coverage. Ditto's asymmetry check
-measures its upper side bulge rather than the broad puddle sole.
+- Grimer: `01ccaddd323bf25f60a019cbc0642316ec52af5c7cd650ecc625d54d607c3a03`.
+- Muk: `373608073b4024110aaaf4e23d345ca1c07c2fd6a2725f72fe985893224ca8c3`.
+- Ditto: `1a3fc7b87714f7c4c5b82db35cecc4fb7bc3d3679f52f0ccf2336727626327e8`.
 
-| Species | Parts | Triangles |
-| --- | ---: | ---: |
-| Grimer | 26 | 42,244 |
-| Muk | 26 | 27,844 |
-| Ditto | 8 | 13,980 |
+At least 48 sole vertices remain fixed to the floor root. The continuous body
+blends into a torso and coherent head. Grimer and Muk blend their arms into
+separate palms, with six independent digit carriers rooted in those palms.
+Ditto has two independent lateral lobe carriers; the highlights use the same
+position-dependent influences as the body beneath them. Eyes, mouth coatings,
+tongues and annular lips follow the coherent head. Rotation-only idle, attack
+and hit clips retain neutral endpoints and the existing source-cue clocks.
+World sliding preserves the fixed underside and the authored articulation.
 
-The Rust `every_normal_species_has_a_bounded_reusable_visible_model` regression
-passed for all 251 actual loaded species meshes. Canonical layout and storage
-checks passed (569 raw JSON documents at verification time). The final meshes
-were reviewed from front, rear and oblique angles. Native battle verification
-is complete for this batch: the fresh Bevy example built successfully and
-captured GRIMER, MUK and DITTO with the ignored local content pack. Each actual
-2000×1400 battle capture was inspected. Mouth rims, fitted eyes and fingers,
-Muk's long arm, and Ditto's small blob and face were reviewed at normal species
-scale. The canonical meshes stayed unchanged from the eleven passing model
-checks. These captures establish presentation, not gameplay. These catalog checks do not establish completed visual review of
-every remaining species.
+Seventeen Python checks pass: canonical bytes and bounded schemas, hierarchy,
+identity binds, normalized influences and anatomical owners, actual occupied
+arm/palm/finger roots through motion with a detached negative control, fixed
+soles, independent local articulation, floor/endpoints/winding/strain, fitted
+faces and Ditto highlights through poses, source cues, closed outward geometry,
+unit normals, recipe parity and size, anatomy, true annular mouth openings,
+body folds and an independent ray-index comparison. Posed clearance checks
+follow the authored front faces; closed markings' intentionally embedded back
+and edge walls are excluded from that front-surface test.
 
-Temporary reference images, software reviews and verification logs were removed.
+Existing 20,000-vertex, 40,000-triangle, 64-primitive, 256-accessor and 1 MiB
+limits remain unchanged. Five focused Rust checks pass for all three verified
+pack-size GPU paths, production routing/owners/floor/culling and independent
+appendages, plus 64 phases of world sliding. Front, side and rear poses of all
+three clips were inspected for each model. Blender exports are byte-identical.
+Shiny checks are skipped at the user's request. Grass height is untouched.
+
+Rebuild and check:
+
+```sh
+python3 tools/slime_sculpt.py --output crates/crystal-voxel-view/models/battle_species
+python3 -m unittest discover -s tools -p 'test_slime*.py'
+```
+
+The rebuilt production client passes normal Route 29 terrain admission for all
+three models at original pack size. Every paired 3D/2D capture was inspected:
+
+| Pair | Core frame | Checksum | LCD frame | Virtual seconds |
+| --- | ---: | ---: | ---: | ---: |
+| Grimer / Pidgey | 2795 | 1195468295 | 3471 | 62.241414707 |
+| Muk / Sentret | 2871 | 2640698820 | 3509 | 62.198563916 |
+| Ditto / Pidgey | 2671 | 2973483575 | 3340 | 58.788624415 |
+
+All three preserve state, show full silhouettes and the correct species HUDs,
+and meet the terrain with their broad bases. Grimer's open mouth and rounded
+hands, Muk's asymmetric arms and wide stare, and Ditto's small smiling blob,
+asymmetric upper outline and highlights remain readable. No shader errors
+were reported. Final ignored evidence uses `grimer-normal`, `muk-normal` and
+`ditto-normal` under `target/pokemon-native-review/`.
+
+The captures select the existing supported -110-degree angle while retaining
+normal size, source support, scenery omission and whole-body/frustum checks.
+Both shared all-species grounded/volumetric and exact source-cue pose timing
+regressions pass. Browser visual acceptance remains open.

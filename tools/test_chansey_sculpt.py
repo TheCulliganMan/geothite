@@ -2,6 +2,7 @@
 """Stored egg containment, open pouch, physical roots and fitted face checks."""
 import copy,json,os,unittest
 from pathlib import Path
+from egg_nurse_glb import read_chansey,geometry_digest
 from chansey_sculpt import anatomy,sculpture,HEIGHT,PINK,POUCH,EGG
 from sculpt_geometry import translate,linear,ellipsoid
 from sculpt_test_support import assert_closed_models,assert_model_shading
@@ -13,7 +14,7 @@ ROOT=Path(os.environ.get('CRYSTAL_CHANSEY_TEST_MODELS',Path(__file__).resolve().
 class ChanseyTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
-  cls.model=json.loads((ROOT/'chansey.mesh.json').read_bytes())
+  cls.model=read_chansey(ROOT/'chansey.glb')
   raw=anatomy();cls.floor=min(v for p in raw for v in p['positions'][1::3]);cls.scale=HEIGHT/(max(v for p in raw for v in p['positions'][1::3])-cls.floor)
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
@@ -22,17 +23,17 @@ class ChanseyTests(unittest.TestCase):
  def test_closed_outward_surfaces(self):assert_closed_models(self,{'chansey':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'chansey':self.m})
  def test_recipe_palette_height_floor_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),80000)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
   self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
-  for label,n in (('Ribbon /',6),('Foot /',2),('Hand /',2),('Eye /',2),('Pouch /',1),('Egg /',1),('Tail /',1)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
+  for label,n in (('Ribbon /',6),('Foot /',2),('Arm /',2),('Eye /',2),('Pouch /',1),('Egg /',1),('Tail /',1)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
   for label,color in (('Body /',PINK),('Pouch /',POUCH),('Egg /',EGG)):self.assertEqual(self.find(label)['base_color'],linear(color))
  def test_pouch_egg_tail_and_ribbons_have_actual_roots(self):
   for child,parent in (('Pouch /','Body /'),('Egg /','Pouch /'),('Tail /','Body /')):self.assertTrue(self.overlap(self.find(child),self.find(parent)),child)
   for p in self.ps:
    if p['part'].startswith('Ribbon /'):self.assertTrue(self.overlap(p,self.find('Body /')),p['part'])
- def test_limbs_and_both_egg_holding_hands_have_actual_roots(self):
+ def test_limbs_and_both_continuous_palms_have_actual_roots(self):
   for s in (-1,1):
-   for child,parent in (('Shoulder /','Body /'),('Arm /','Shoulder /'),('Hand /','Arm /'),('Hand /','Egg /'),('Ankle /','Body /'),('Foot /','Ankle /')):self.assertTrue(self.overlap(self.find(child,s),self.find(parent,s if parent not in ('Body /','Egg /') else None)),(s,child,parent))
+   for child,parent in (('Shoulder /','Body /'),('Arm /','Shoulder /'),('Arm /','Egg /'),('Ankle /','Body /'),('Foot /','Ankle /')):self.assertTrue(self.overlap(self.find(child,s),self.find(parent,s if parent not in ('Body /','Egg /') else None)),(s,child,parent))
    self.assertEqual(min(self.find('Foot /',s)['positions'][1::3]),0)
  def pairs(self):
   for p in self.ps:
@@ -59,6 +60,6 @@ class ChanseyTests(unittest.TestCase):
   self.assertFalse(self.contained(translate(copy.deepcopy(self.find('Egg /')),0,-.06*self.scale,0)))
   fill=ellipsoid('Invalid filled pouch',POUCH,self.point(0,.494,.355),tuple(r*self.scale for r in (.14,.025,.11)),32,24)
   for point in self.opening():self.assertTrue(occupied(fill,point),point)
- def test_detached_egg_hands_ribbons_and_tail_are_rejected(self):
-  for child,parent in (('Egg /','Pouch /'),('Hand /','Egg /'),('Ribbon /','Body /'),('Tail /','Body /')):self.assertFalse(self.overlap(translate(copy.deepcopy(self.find(child)),3,0,0),self.find(parent)))
+ def test_detached_egg_palms_ribbons_and_tail_are_rejected(self):
+  for child,parent in (('Egg /','Pouch /'),('Arm /','Egg /'),('Ribbon /','Body /'),('Tail /','Body /')):self.assertFalse(self.overlap(translate(copy.deepcopy(self.find(child)),3,0,0),self.find(parent)))
 if __name__=='__main__':unittest.main()

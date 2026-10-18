@@ -2,6 +2,7 @@
 """Stored two-color body, rooted curls/frills and supported egg geometry."""
 import copy,json,os,unittest
 from pathlib import Path
+from egg_nurse_glb import read_blissey,geometry_digest
 from blissey_sculpt import anatomy,sculpture,HEIGHT,PINK,WHITE,POUCH,EGG
 from sculpt_geometry import translate,linear,ellipsoid
 from sculpt_test_support import assert_closed_models,assert_model_shading
@@ -13,7 +14,7 @@ ROOT=Path(os.environ.get('CRYSTAL_BLISSEY_TEST_MODELS',Path(__file__).resolve().
 class BlisseyTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
-  cls.model=json.loads((ROOT/'blissey.mesh.json').read_bytes());raw=anatomy();cls.floor=min(v for p in raw for v in p['positions'][1::3]);cls.scale=HEIGHT/(max(v for p in raw for v in p['positions'][1::3])-cls.floor)
+  cls.model=read_blissey(ROOT/'blissey.glb');raw=anatomy();cls.floor=min(v for p in raw for v in p['positions'][1::3]);cls.scale=HEIGHT/(max(v for p in raw for v in p['positions'][1::3])-cls.floor)
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
@@ -23,7 +24,7 @@ class BlisseyTests(unittest.TestCase):
  def test_closed_outward_surfaces(self):assert_closed_models(self,{'blissey':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'blissey':self.m})
  def test_recipe_palette_floor_height_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),110000)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
   for label,color in (('Lower body /',WHITE),('Upper body /',PINK),('Pouch /',POUCH),('Egg /',EGG)):self.assertEqual(self.find(label)['base_color'],linear(color))
   for label,n in (('Crown /',2),('Curl /',2),('Arm frill /',6),('Skirt /',10),('Leg /',2),('Foot /',2)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
  def test_body_halves_pouch_egg_and_crown_have_actual_roots(self):
@@ -32,7 +33,7 @@ class BlisseyTests(unittest.TestCase):
    self.assertTrue(self.overlap(self.find('Crown /',s),self.find('Upper body /')));self.assertTrue(self.overlap(self.find('Curl /',s),self.find('Crown /',s)))
  def test_limbs_frills_skirt_and_feet_have_actual_roots(self):
   for s in (-1,1):
-   for child,parent in (('Shoulder /','Upper body /'),('Arm /','Shoulder /'),('Hand /','Arm /'),('Leg /','Lower body /'),('Foot /','Leg /')):self.assertTrue(self.overlap(self.find(child,s),self.find(parent,s if parent not in ('Upper body /','Lower body /') else None)),(s,child))
+   for child,parent in (('Shoulder /','Upper body /'),('Arm /','Shoulder /'),('Leg /','Lower body /'),('Foot /','Leg /')):self.assertTrue(self.overlap(self.find(child,s),self.find(parent,s if parent not in ('Upper body /','Lower body /') else None)),(s,child))
    self.assertEqual(min(self.find('Foot /',s)['positions'][1::3]),0)
    for j in range(3):self.assertTrue(self.overlap(self.find('Arm frill /',f'{s} {j}'),self.find('Shoulder /',s)),(s,j))
   for p in self.ps:

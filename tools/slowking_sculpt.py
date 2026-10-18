@@ -2,10 +2,11 @@
 """Original royal pink biped with a flared collar and horned spiral crown."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import ellipsoid,loft,curved_profiles,part,translate,crease_normals
+from functools import lru_cache
+from copy import deepcopy
+from sculpt_geometry import loft,curved_profiles,part,translate,crease_normals
 from bovine_sculpt import curved_tube,oval
-from lugia_sculpt import paddle
-from raptor_bird_sculpt import paint
+from slow_pair_sculpt import ellipsoid,paddle,paint,fitted_shading,forelimb
 from skin_glb import COORDINATES
 HEIGHT=1.25
 PINK=(.90,.56,.62);CREAM=(.96,.91,.70);WHITE=(.99,.98,.95);INK=(.085,.075,.095);RED=(.87,.31,.24)
@@ -44,8 +45,9 @@ def crown_turn(j,start,end):
   a=i;b=(i+1)%n;faces.append((b,a,a+inner,b+inner));a=(count-1)*n+i;b=(count-1)*n+(i+1)%n;faces.append((a,b,b+inner,a+inner))
  return part('Crown turn / fitted slanted overlapping shell turn '+str(j),LIGHT,verts,faces,True)
 
+@lru_cache(maxsize=1)
 def anatomy():
- body=loft('Body / slender pink Slowking pear torso and neck',PINK,curved_profiles(((.19,.13,.124,-.028),(.35,.265,.224,-.025),(.53,.281,.222,-.010),(.73,.236,.18,.005),(.89,.155,.132,.01),(1.035,.120,.111,.017),(1.135,.132,.125,.020)),5),40)
+ body=loft('Body / slender pink Slowking pear torso and neck',PINK,curved_profiles(((.19,.13,.124,-.028),(.35,.265,.224,-.025),(.53,.281,.222,-.010),(.73,.236,.18,.005),(.89,.155,.132,.01),(1.035,.120,.111,.017),(1.135,.132,.125,.020)),4),32)
  head=ellipsoid('Head / rooted rounded pink Slowking face',PINK,(0,1.239,.020),(.215,.213,.195),40,26)
  muzzle=ellipsoid('Muzzle / rooted broad cream Slowking snout',CREAM,(0,1.168,.220),(.215,.076,.151),40,26)
  p=[body,head,muzzle]
@@ -58,8 +60,7 @@ def anatomy():
   p.append(paint('Nostril / fitted subtle Slowking nostril '+str(s),INK,oval(s*.041,1.209,.0035,.005,16),muzzle,.0025,2))
   p.append(curved_tube('Tooth / rooted small ivory Slowking canine '+str(s),WHITE,[(s*.146,1.126,.270),(s*.147,1.102,.28),(s*.142,1.088,.282)],[.013,.010,.0015],20))
   p.append(ellipsoid('Shoulder / rooted rounded pink Slowking shoulder '+str(s),PINK,(s*.183,.849,.021),(.095,.108,.097),32,22))
-  p.append(paddle('Arm / short bent pink Slowking forelimb '+str(s),PINK,[(s*.180,.859,.044),(s*.261,.745,.106),(s*.204,.653,.193)],[.091,.082,.068],[.095,.087,.071]))
-  hand=ellipsoid('Hand / rooted rounded pink Slowking palm '+str(s),PINK,(s*.183,.660,.214),(.081,.086,.077),32,22);p.append(hand)
+  p.append(forelimb('Arm / continuous rooted pink Slowking forelimb and palm '+str(s),PINK,[(s*.180,.859,.044),(s*.215,.745,.106),(s*.183,.660,.214),(s*.183,.621,.250),(s*.183,.602,.268)],[.091,.082,.081,.061,.002],[.095,.087,.077,.045,.002],segments=24))
   for j,dx in enumerate((-.046,0,.046)):
    p.append(curved_tube(f'Hand claw / three rooted white Slowking digits {s} {j}',WHITE,[(s*.183+dx*.80,.626,.257),(s*.183+dx,.598,.287),(s*.183+dx,.590,.307)],[.017,.012,.0015],20))
   p.append(ellipsoid('Thigh / rooted round pink Slowking haunch '+str(s),PINK,(s*.221,.289,.025),(.169,.213,.177),36,24))
@@ -80,12 +81,14 @@ def anatomy():
  rim=paint('Jewel rim / fitted pale circular royal setting',LIGHT,oval(0,1.708,.064,.066,40),crown,.010,3);p.append(rim)
  ruby=paint('Jewel / fitted red round Slowking ruby',RUBY,oval(0,1.708,.048,.049,40),rim,.007,3);p.append(ruby)
  p.append(paint('Jewel glint / fitted ivory ruby gleam',WHITE,oval(-.014,1.727,.010,.009,20),ruby,.003,2))
- return p
+ return fitted_shading([q if q['part'].startswith(('Shell coil /','Crown turn /')) else crease_normals(q,45.) for q in p])
 
-def sculpture():
- p=anatomy();low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
- for q in p:
-  q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+@lru_cache(maxsize=2)
+def sculpture(normalize=True):
+ p=deepcopy(anatomy());low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
+ if normalize:
+  for q in p:
+   q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) or 0. for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':'slowking','version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
  a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'slowking.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))

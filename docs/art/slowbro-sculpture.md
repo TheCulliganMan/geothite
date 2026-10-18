@@ -1,5 +1,93 @@
 # Slowbro sculpture
 
+The current canonical asset is `slowbro.glb`, authored by
+`tools/slowbro_sculpt.py` and `tools/slow_pair_glb.py`. Its 72 named source
+solids pack losslessly into 38 runtime primitives, with 19,322 vertices,
+32,532 triangles, 18 joints, 220 accessors and 855,076 bytes. The former
+static JSON is retired. Physical scale and the existing geometry, accessor,
+primitive and byte limits are unchanged.
+
+Each pink forelimb is now one closed surface from its buried shoulder through
+the elbow, wrist and palm. The earlier overlapping round `Hand /` solids are
+retired, removing their visible wrist ring. The centerline and both radius
+profiles interpolate smoothly, following the continuous-forelimb approach
+already used for the turtles. Eased elbow bends prevent self intersections.
+All six original white hand claws remain seated in the actual pink palm
+volume. Separate shoulder, elbow and wrist joints still articulate each arm.
+The 70 non-arm/palm solids retain their exact stored f32 geometry, normals,
+indices and colors from the previous GLB.
+
+Both complete feet and their claws stay planted in battle. Body, neck, head,
+supported legs and a two-joint tail articulate while facial features move
+together. All seventeen non-root carriers have independent motion. Idle is
+3.2 seconds; attack and hit are one-second rotation-only clips driven by the
+production battle cues. Complete feet and lower limbs follow production
+walking support without rebinding facial or held assemblies.
+
+The whole toothed shell follows its tail attachment with a distinct lower
+biting jaw. Coils, spines, upper teeth and fitted gaze stay on the shell;
+lower teeth follow its jaw. Each ear carries its fitted inset and curl.
+Samples in both the hero and shell mouth openings remain empty against every
+posed solid.
+
+The logical geometry SHA-256 over stored f32 buffers is
+`d530ae799750a2e83b3474fc00986df88a53935c12baaf152c3916c5056905b2`. The packed geometry pin is
+`33741cd0059c20dfaee09820fe9898e00eee22e21fce8e153eda4985ed38fc14`. Background Blender dispatch reproduces
+both canonical GLBs byte for byte.
+
+All 34 final Python regressions pass in 199.811 seconds. They independently
+read stored buffers and exercise hierarchy, inverse binds, lossless packing,
+budgets, supported floor contact, edge strain and winding through the source
+clips. Actual occupied-volume roots include every claw; the continuous arms
+remain uncrossed through sampled poses. A stored-surface regression rejects
+large closing fans anywhere outside the buried shoulder. Existing fitted
+layers, shell coil/crown turn inner and outer faces, mouth voids and detached
+attachment negatives remain covered. All four production Rust GPU, battle
+support and two-foot walking checks pass in 3.15 seconds.
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest \
+  test_slowbro_sculpt test_slowking_sculpt test_slow_pair_glb -v
+```
+
+The shared 204-entry model-schema and source-cue timing regressions pass in
+108.78 and 148.11 seconds. Native examples build successfully. Preflight checks
+confirm both executables support headless capture and embed both exact
+current canonical compressed GLBs.
+
+All six production captures render directly to 1000×700 offscreen images with
+`CRYSTAL_RENDER_TEST_HEADLESS=1`, `CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image`
+and `CRYSTAL_PREVIEW_MUTE=1`. No OS windows or focus changes are used. The
+Route36 portrait uses ordinary wide first-person controls `0 0 -10 1`;
+the elevated view uses `3 2 50 0`. Each was individually inspected against
+the corresponding locked 2D image. The portrait shows continuous smooth
+wrists and readable facial anatomy; the elevated and full Route29 battle
+views retain the species' silhouette and rooted appendages. The battle HUD
+names match SLOWBRO and PIDGEY, with no model fallback.
+
+The named `CRYSTAL_ENCOUNTER_TRACE=1` diagnostics confirm terrain admission
+at the actual unchanged 1.6002 m pack height, computed from the production
+uniform scale and reference height. Admission reports `accepted=true` and
+`reason=None`; body support remains at zero. No size reduction, scenery
+change or admission/omission relaxation is used. Paired receipts are:
+
+| View | State frame | State hash | LCD frame | Virtual seconds |
+| --- | --- | --- | --- | --- |
+| first | 2759 | 3133142272 | 2759 | 47.256526458 |
+| elevated | 2153 | 1930752588 | 2153 | 36.881305583 |
+| battle | 4225 | 1654057903 | 5051 | 94.636115041 |
+
+The earlier tight first-person setting `1 0 20 1` still crops the upper
+head; the review uses the ordinary wider controls rather than changing
+camera behavior or species scale. Browser and moving-world visual acceptance
+remain open. Shiny checks are skipped. Grass height, AA and filtering are
+untouched by this correction.
+
+## Earlier static geometry review
+
+The following records the earlier static asset and its original source review.
+Current rig validation and production capture receipts are recorded above.
+
 The canonical `slowbro.mesh.json` now uses original geometry from
 `tools/slowbro_sculpt.py`, replacing the generic oval head, round protruding
 eyes, mitten arms and ball-shaped shell. Its 74 named closed parts contain

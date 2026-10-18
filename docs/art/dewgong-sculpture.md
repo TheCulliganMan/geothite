@@ -1,48 +1,64 @@
-# Dewgong sculpture
+# Dewgong sculpture and rig
 
-`tools/dewgong_sculpt.py` authors the canonical original battle asset
-`models/battle_species/dewgong.mesh.json`. The battle-species builder dispatches
-Dewgong through the pure geometry recipe. Seel keeps its separate reclining
-sculpture and canonical asset. Authoring height remains 1.03, with normal runtime
-species scale.
+`tools/dewgong_sculpt.py` authors the adult white seal and `tools/seal_glb.py`
+exports its canonical skin. The runtime, builder and checker use
+`models/battle_species/dewgong.glb`; the legacy static JSON file is removed.
+One continuous surface runs through its rounded head, forward-swept neck,
+broad belly and hooked tail. The head and crown now sit farther forward for
+a softer seal profile. Two broad scalloped front fans carry supported creases,
+and the tail ends in two raised scalloped fans. Tall dark eyes, brown lower
+reflections, bright eye glints, a white muzzle, small charcoal nostril, gentle
+smile and two small ivory lower canines distinguish Dewgong from Seel.
 
-One closed continuous body runs through the rounded head, long neck, broad
-belly, and curling tail. Smooth elliptical sections follow the curved centerline;
-the lower bend has enough room for its thickness without folding into itself.
-Two broad scalloped front fans carry supported flowing creases, and the raised
-tail ends in two broad curved flukes. The small tapered horn, tall dark eyes,
-soft brown reflections, bright eye glints, rounded white muzzle, small charcoal
-nostril, gentle smile and two short ivory lower fangs distinguish the adult
-from Seel. It has neither a cream muzzle nor a protruding tongue.
+The [official Dewgong artwork](https://www.pokemon.com/us/pokedex/dewgong)
+informed the shape and palette. No reference pixels or external geometry are
+shipped. The adult retains a white muzzle and has no protruding tongue.
 
-The [official artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/087.png)
-was inspected for silhouette and colors and is not shipped.
-The downloadable [Dewgong listing](https://sketchfab.com/3d-models/dewgong-08600e523c6f4d889f707c2435f7588e)
-advertises CC Attribution and zero animations, but its metadata does not
-establish a usable original rig. Zero animations does not establish an absent
-skeleton. Its official download endpoint returned HTTP 401 without
-authentication, so no external geometry was imported. This original authored
-mesh is static.
+| Parts | Vertices | Triangles | Joints | Accessors | Bytes | Authoring height | Pack height |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 22 | 15,206 | 23,740 | 9 | 117 | 649,548 | 1.03 | 1.7018 m |
 
-Stored-mesh checks cover closed outward geometry, finite unit normals,
-recipe parity, preserved height, grounding, triangle budget, distinct adult
-anatomy, actual solid intersections at roots, front marking clearance,
-parent-triangle fitting, supported smile and fan folds, fan placement, and
-signed ray crossings across the body bend. The latter distinguishes separated
-sections of the curved body from nested overlapping or inverted surfaces.
-Native captures verify presentation, not controller or MCP gameplay. The full
-251-species visual goal and usable open-access rig search remain active.
+The verified local pack supplies height digits 507 and classification SEA LION.
+The neutral geometry digest is
+`07d7f5f2e844cd65944949d81004e5de86d9493fb99bf220dbc9c552830ae5e9`.
 
-The ten stored-mesh regressions passed with 22 parts and 23,740 triangles.
-The initial underside bend was widened and thinned after rear-view inspection
-showed a crease; the final signed-ray regression checks the stored surface
-independently across 777 sample rays. The final eye highlights were fitted
-inside their actual tapered eye parents. Front, rear, and oblique reviews are
-complete. Canonical layout and storage checks passed (569 raw JSON documents
-at verification time). The Rust `every_normal_species_has_a_bounded_reusable_visible_model` check
-passed for all 251 actual loaded species meshes. The native battle example
-built successfully and captured DEWGONG using the ignored local pack. Its
-normal species scale, white fans, muzzle, and small fangs were inspected in the
-actual battle scene. These checks do not establish completed visual review of
-every remaining species. Temporary captures, reference artwork, and verification
-logs were removed.
+A floor root anchors the lowest belly vertices. The continuous body blends
+into a coherent head and two tail carriers. The front flippers articulate
+independently with their creases, and each terminal fan has its own child
+carrier. Eyes, reflections, glints, muzzle, nose, smile, canines and crown
+follow the coherent head. Idle, attack and hit retain rotation-only keys,
+neutral endpoints and source-cue clocks. World sliding preserves belly contact.
+
+All 26 dedicated combined Seel/Dewgong Python checks pass, including actual
+occupied appendage roots through motion with a detached negative control,
+posed gaze clearance, fixed low support, winding and strain. The original
+777 signed body rays still distinguish disjoint curved sections from nested
+surfaces; a separate posed triangle-intersection test checks the adult body
+in all three clips. Four focused Rust checks pass for both verified-size GPU
+paths, routing/owners/floor/culling and independent appendages, and 64 phases
+of grounded world sliding. Front, side and rear poses were inspected for all
+clips. Blender exports are byte-identical. Existing geometry, primitive,
+accessor and byte limits remain unchanged. Shiny checks are skipped at the
+user's request; grass height is untouched.
+
+Rebuild and check:
+
+```sh
+python3 tools/dewgong_sculpt.py --output crates/crystal-voxel-view/models/battle_species
+PYTHONPATH=tools python3 -m unittest test_seal_glb test_seel_sculpt test_dewgong_sculpt
+```
+
+The rebuilt production client passes normal Route 29 terrain admission at
+original pack size. The inspected Dewgong/Hoppip 3D/2D pair preserves core
+frame 3470, checksum 2172026011, LCD animation frame 4201 and virtual time
+75.831987126. The full curved body, raised stem, both tail fans and both front
+flippers remain in frame. The gentle face, white muzzle, crown and lower
+canines remain readable with the correct DEWGONG HUD. The belly meets the
+terrain. No shader errors were reported. Final ignored evidence uses
+`target/pokemon-native-review/dewgong-normal`.
+
+The existing supported -110-degree angle is selected with normal size, source
+support, scenery omission and whole-body/frustum checks active. Both shared
+all-species grounded/volumetric and exact source-cue pose timing regressions
+pass. Browser visual acceptance remains open.
+See also [Seel](seel-sculpture.md).

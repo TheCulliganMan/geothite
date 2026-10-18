@@ -32,6 +32,8 @@ include!("tests/battle_capture_palettes.rs");
 include!("tests/battle_oam_layers.rs");
 include!("tests/battle_sliding_intro.rs");
 include!("tests/shop_rendering.rs");
+include!("tests/all_pokemon.rs");
+include!("tests/trainer_rematches.rs");
 include!("tests/heal_machine_rendering.rs");
 include!("tests/town_map_rendering.rs");
 

@@ -39,6 +39,23 @@ def check_geometry(root):
     models = root/'crates/crystal-voxel-view/models'
     for name in ['interiors/arcade_stool','dungeons/ship_stool']:
         fit(load(models/(name+'.mesh.json')), [2,14,0,12,7])
+    # Curved upholstery must remain inside the native drawing after fitting,
+    # including the taller shared classroom seats and the shallow floor pads.
+    for name, target in [
+        ('stool', [2,10,0,8,7]),
+        ('link_seat', [2,10,0,8,11]),
+        ('cushion', [0,16,0,15,3]),
+        *[(name, [0,16,0,32,11]) for name in
+          ('bed_blue', 'bed_green', 'bed_pink', 'bed_feathery',
+           'bed_polkadot', 'bed_pikachu')],
+    ]:
+        model = load(models/'interiors'/(name+'.mesh.json'))
+        assert not model.get('preserve_aspect', False), name
+        fitted = fit(model, target)
+        lo, hi = bounds([v for _, box in fitted for v in box])
+        west, east, north, south, rise = target
+        for actual, expected in zip(lo+hi, [west,0,north,east,rise,south]):
+            assert abs(actual-expected) < 1e-5, (name, lo, hi)
     bunk = load(models/'dungeons/ship_bunk.mesh.json')
     fit(bunk, [0,16,0,32,7])
     assert bunk['name'] == 'ship_bunk' and sum(len(p['indices']) for p in bunk['primitives']) > 300

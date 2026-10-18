@@ -2982,11 +2982,29 @@ fn lake_shiny_model_matches_the_pack_forced_shiny_object_and_rejects_replacement
     assert_eq!(battle.request.species, "GYARADOS");
     assert_eq!(battle.request.battle_type, "BATTLETYPE_FORCESHINY");
     let variables = BTreeMap::new();
+    let snapshot=shell.shell.snapshot().expect("lake presentation");
+    let bitmap=resolve_visible_object_sprite_asset_id(&shell.asset_root,&object.sprite,
+        &variables,&snapshot.presentation.menu_icons);
+    let source=visible_map_object_model_source_id("LakeOfRage",object,&object.sprite,
+        &bitmap,&variables,&snapshot.presentation.menu_icons);
     let palette = visible_map_object_model_palette(&shell.asset_root, "LakeOfRage", object,
-        "SPRITE_GYARADOS", "species:GYARADOS:gyarados", &variables).unwrap().unwrap();
+        &object.sprite, &source, &variables).unwrap().expect("the real resolved lake actor needs its shiny palette");
     assert_eq!(palette.appearance, load_pokemon_palette(&shell.asset_root, "gyarados", PokemonSpriteSide::Front, true).unwrap());
     assert_ne!(palette.appearance, palette.normal);
     assert!(palette.appearance[1][0] > palette.appearance[1][2]);
+    for source in ["species:GYARADOS:gyarados","species:GYARADOS:icon_gyarados"] {
+        assert_eq!(visible_map_object_model_palette(&shell.asset_root,"LakeOfRage",object,
+            &object.sprite,source,&variables).unwrap(),Some(palette));
+    }
+    for source in ["species:GYARADOS:icon_monster","species:MAGIKARP:icon_gyarados","gyarados","custom_gyarados"] {
+        assert!(visible_map_object_model_palette(&shell.asset_root,"LakeOfRage",object,
+            &object.sprite,source,&variables).unwrap().is_none(),"{source} is not this verified actor");
+    }
+    assert!(visible_map_object_model_palette(&shell.asset_root,"Route44",object,
+        &object.sprite,&source,&variables).unwrap().is_none(),"the same species elsewhere stays normal");
+    let mut ordinary=object.clone();ordinary.pal=0;
+    assert!(visible_map_object_model_palette(&shell.asset_root,"LakeOfRage",&ordinary,
+        &object.sprite,&source,&variables).unwrap().is_none(),"an ordinary source palette is not forced shiny");
     for map in ["Route44", "LakeOfRage"] {
         let mut changed = object.clone(); changed.script = "OtherGyarados".into();
         assert!(visible_map_object_model_palette(&shell.asset_root, map, &changed,

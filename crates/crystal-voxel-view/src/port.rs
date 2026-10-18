@@ -5,6 +5,42 @@ use crystal_render_api::VisualTileSource;
 use crate::profile::{CellShape, GROUND_HEIGHT, SolidKind};
 
 pub(crate) const SHIP_HEIGHT: f32 = 28.0;
+pub(crate) const PIER_HEIGHT: f32 = 4.0;
+
+pub(crate) fn harbor_map(map:&str)->bool {
+    matches!(map,"OlivinePort"|"VermilionPort")
+}
+
+/// Shared signature of the complete eight-block ferry drawing. Optical water
+/// backing and the model resolver must agree before replacing this rectangle.
+pub(crate) fn ferry_source(source: &VisualTileSource, x: usize, y: usize) -> bool {
+    x < 16 && y < 8 && source.tileset_id.as_ref() == "port"
+        && source.metatile_id == 0x18 + (y / 4 * 4 + x / 4) as u16
+        && source.subtile_column as usize == x % 4
+        && source.subtile_row as usize == y % 4
+        && ferry_anchor(x, y).is_none_or(|tile| source.tile_index == tile)
+}
+
+pub(crate) fn ferry_anchor(x: usize, y: usize) -> Option<u16> {
+    match (x, y) {
+        (0, 2) | (0, 4) => Some(0x2b),
+        (6, 0) => Some(0x1a), (8, 1) => Some(0x26), (12, 1) => Some(0x2a),
+        (4, 4) => Some(0x46), (8, 4) => Some(0x49), (12, 4) => Some(0x4d),
+        (1, 6) => Some(0x58), (7, 6) => Some(0x5c), (11, 6) => Some(0x5e),
+        (12, 6) => Some(0x5f), (3, 3) => Some(0x33), (7, 3) => Some(0x3e),
+        (11, 3) => Some(0x42), (14, 3) => Some(0x45),
+        _ => None,
+    }
+}
+/// The same complete four-tile drawing owns both the modeled mooring post
+/// and its continuous water backing. Ship artwork keeps its separate role.
+pub(crate) fn bollard_local(s:&VisualTileSource)->Option<(u8,u8)> {
+    if s.tileset_id.as_ref()!="port" || s.subtile_column>=4 || s.subtile_row>=4
+        || matches!(s.metatile_id,0x18..=0x1f) {return None;}
+    let (x,y)=(s.subtile_column%2,s.subtile_row%2);
+    (s.tile_index==[[0x01,0x02],[0x11,0x12]][y as usize][x as usize]).then_some((x,y))
+}
+
 
 pub(crate) fn cerulean_floor_source(map: &str, source: &VisualTileSource) -> bool {
     if map != "CeruleanGym" || source.tileset_id.as_ref() != "port"
@@ -28,8 +64,8 @@ pub(crate) fn port_shape(source: &VisualTileSource) -> Option<CellShape> {
     if source.tile_index == 0x14 {
         return Some(CellShape::Water);
     }
-    // Cerulean Gym's pink brick bridges and wooden front courses reuse
-    // this atlas. Preserve their shallow baseline; they are not barrel props.
+    // Atlas trim fallback. Authored Cerulean piers use PIER_HEIGHT for both
+    // their modeled decks and actor support; the gray rim remains ground.
     if matches!(source.metatile_id, 0x2e..=0x31 | 0x36..=0x39)
         && matches!(source.tile_index, 0x0a | 0x0b | 0x22)
     {
@@ -123,7 +159,7 @@ mod tests {
     }
 
     #[test]
-    fn cerulean_bridges_keep_a_shallow_baseline_below_ship_geometry() {
+    fn atlas_bridge_trim_fallback_stays_distinct_from_ship_geometry() {
         assert!(matches!(
             port_shape(&source(0x30, 0x0a)),
             Some(CellShape::Relief {

@@ -1235,18 +1235,13 @@ pub fn apply_weather_type_modifier(
             move_type: move_type.to_string(),
         });
     }
-    let Some(modifiers) = weather_modifiers.type_modifiers.get(weather_id) else {
-        return Err(DamageCalculationError::MissingWeatherModifier {
-            weather,
-            move_type: move_type.to_string(),
-        });
-    };
+    let modifiers = weather_modifiers.type_modifiers.get(weather_id);
     // BattleCommand_DamageStats only branches for FIRE and WATER under rain
-    // or sun. Every other valid type retains the incoming damage unchanged;
+    // or sun. Every unlisted weather/type pair retains the incoming damage;
     // the sparse exported table represents those exceptional branches, not
     // an exhaustive matrix requiring a synthetic ×1 entry for every type.
     Ok(modifiers
-        .get(move_type)
+        .and_then(|modifiers| modifiers.get(move_type))
         .map_or(damage, |entry| entry.apply_floor(damage)))
 }
 
@@ -2055,6 +2050,27 @@ mod tests {
             .expect("ordinary types are neutral under sun"),
             40
         );
+    }
+
+    #[test]
+    fn weather_modifier_keeps_sparse_sandstorm_pairs_neutral() {
+        for move_type in ["NORMAL","FIRE","WATER","ELECTRIC","GRASS","ICE","FIGHTING",
+            "POISON","GROUND","FLYING","PSYCHIC","BUG","ROCK","GHOST","DRAGON","DARK","STEEL"] {
+            assert_eq!(apply_weather_type_modifier(40,Weather::Sandstorm,move_type,&weather_modifiers()),
+                Ok(40),"{move_type}: the source table has no Sandstorm damage exception");
+        }
+        assert!(matches!(apply_weather_type_modifier(40,Weather::Sandstorm,"WA TER",&weather_modifiers()),
+            Err(DamageCalculationError::InvalidWeatherModifierType {..})));
+    }
+
+    #[test]
+    fn weather_modifier_retains_explicit_sandstorm_mod_overrides() {
+        let mut modifiers=weather_modifiers();
+        modifiers.type_modifiers.insert("WEATHER_SANDSTORM".into(),
+            [("WATER".into(),TypeMultiplier {numerator:2,denominator:1})].into_iter().collect());
+        assert_eq!(apply_weather_type_modifier(40,Weather::Sandstorm,"WATER",&modifiers),Ok(80));
+        assert_eq!(apply_weather_type_modifier(40,Weather::Rain,"WATER",&modifiers),Ok(60));
+        assert_eq!(apply_weather_type_modifier(40,Weather::Sun,"WATER",&modifiers),Ok(20));
     }
 
     #[test]

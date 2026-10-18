@@ -1920,6 +1920,38 @@ struct ImmersiveBattleHudBacking {
     border: bool,
 }
 
+// Size source glyphs in display pixels. A fixed world-unit cap becomes an
+// eight-pixel font when the native LCD camera uses less than one pixel/unit.
+fn immersive_battle_source_ui_scale(view_width:f32,pixels_per_unit:f32,display_dpi:f32)->f32 {
+    let preferred=((view_width-48.0)/720.0)
+        .min(3.0*display_dpi/(4.0*pixels_per_unit));
+    let source_pixels=(4.0*pixels_per_unit*preferred)
+        .min(3.0*display_dpi).floor().max(1.0);
+    (source_pixels/(4.0*pixels_per_unit)).min(preferred)
+}
+
+#[cfg(test)]
+#[test]
+fn native_battle_hud_glyphs_remain_readable_without_overlapping_panels() {
+    for (width,height) in [(640.0,576.0),(1280.0,800.0)] {
+        for dpi in [1.0,2.0,3.0] {
+            let physical=Vec2::new(width,height)*dpi;
+            #[cfg(feature="fullscreen-scaling")]
+            let pixels_per_unit=fullscreen_pixels_per_world_unit(physical,dpi)*dpi;
+            #[cfg(not(feature="fullscreen-scaling"))]
+            let pixels_per_unit=(physical/Vec2::new(640.0,576.0)).min_element();
+            let scale=immersive_battle_source_ui_scale(physical.x/pixels_per_unit,pixels_per_unit,dpi);
+            let glyph_css=TILE_SIZE*scale*pixels_per_unit/dpi;
+            assert!((16.0..=24.01).contains(&glyph_css),
+                "{width}x{height} at {dpi}x: glyph width {glyph_css} CSS pixels");
+            // Production HP panels span 96 and 80 source pixels. Include
+            // both outer gutters; each name/HP panel must fit beside the other.
+            let combined=(704.0*scale+64.0)*pixels_per_unit;
+            assert!(combined<=physical.x,"HUD panels overlap at {width}x{height}/{dpi}x");
+        }
+    }
+}
+
 /// Re-layout the exact production sprites, never their values or input state.
 /// Run after fullscreen parenting so compact battle panels do not inherit the
 /// fullscreen LCD zoom. Stored source transforms also make F3 reversible.
@@ -2033,18 +2065,7 @@ Visibility::Hidden,),
         .filter(|dpi| dpi.is_finite() && *dpi > 0.0).unwrap_or(window.scale_factor());
     #[cfg(not(target_arch = "wasm32"))]
     let display_dpi = window.scale_factor();
-    #[cfg(not(target_arch = "wasm32"))]
-    let preferred = ((view.x - 48.0) / 720.0).min(0.62);
-    #[cfg(target_arch = "wasm32")]
-    let preferred = ((view.x - 48.0) / 720.0)
-        .min(3.0 * display_dpi / (4.0 * pixels_per_unit));
-    // Keep source glyphs at about 24 CSS pixels even when the host was
-    // compiled without fullscreen-scaling and its LCD camera magnifies units.
-    let source_pixels = (4.0 * pixels_per_unit * preferred)
-        .min(3.0 * display_dpi)
-        .floor()
-        .max(1.0);
-    let scale = (source_pixels / (4.0 * pixels_per_unit)).min(preferred);
+    let scale = immersive_battle_source_ui_scale(view.x, pixels_per_unit, display_dpi);
     let mut bounds = [None::<Rect>; 2];
     for (_, sprite, transform, source, hud) in &ui {
         if hud.is_none() {

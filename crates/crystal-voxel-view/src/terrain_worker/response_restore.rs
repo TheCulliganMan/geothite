@@ -73,6 +73,7 @@ impl Restore {
                 animated_textured_mesh: empty(),
                 animated_solid_mesh: empty(),
                 animated_pillars: Vec::new(),
+                train_doors: response.train_doors,
             },
         })
     }

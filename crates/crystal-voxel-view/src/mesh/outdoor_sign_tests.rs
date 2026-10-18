@@ -60,8 +60,8 @@ fn placements(
     )
 }
 #[test]
-fn all_ten_complete_native_patterns_select_four_distinct_frames() {
-    assert_eq!(BINDINGS.len(), 10);
+fn complete_native_patterns_select_their_shared_frames() {
+    assert_eq!(BINDINGS.len(), 13);
     for b in BINDINGS {
         let (cells, g) = fixture(b);
         let p = placements(&cells, &g, None);
@@ -69,7 +69,7 @@ fn all_ten_complete_native_patterns_select_four_distinct_frames() {
         assert_eq!(p[0].binding.kind, b.kind);
         assert_eq!(p[0].indices(g.width).collect::<Vec<_>>(), [5, 6, 9, 10]);
     }
-    assert!(!BINDINGS.iter().any(|b| b.tileset == "johto"));
+    assert_eq!(BINDINGS.iter().filter(|b| b.tileset == "johto" && b.kind==Kind::Modern).count(),3);
 }
 #[test]
 fn every_changed_identity_and_single_owned_cell_rejects_the_whole_sign() {
@@ -120,12 +120,14 @@ fn ground_is_same_atlas_same_palette_block_and_preserves_native_pattern() {
             assert!(placements(&changed, &g, None).is_empty());
         }
     }
-    assert_eq!(BINDINGS[6].backing, [0x30, 0x39, 0x39, 0x30]);
-    assert_eq!(BINDINGS[7].backing, [0x00, 0x16, 0x06, 0x00]);
+    assert_eq!(BINDINGS.iter().find(|b|b.tileset=="kanto" && b.block==0x79).unwrap().backing,
+        [0x30, 0x39, 0x39, 0x30]);
+    assert_eq!(BINDINGS.iter().find(|b|b.tileset=="park" && b.block==0x15).unwrap().backing,
+        [0x00, 0x16, 0x06, 0x00]);
 }
 #[test]
 fn custom_profiles_protect_single_cells_and_incomplete_cropped_drawings() {
-    let b = &BINDINGS[4];
+    let b = BINDINGS.iter().find(|b|b.tileset=="kanto" && b.block==0x08).unwrap();
     let (cells, g) = fixture(b);
     for tiles in ["[[70]]", "[[70,999],[998,997]]"] {
         let json = format!(
@@ -193,6 +195,9 @@ fn live_text_footprint_footing_and_atomic_append_are_preserved() {
         );
         assert_eq!(mesh.textured.indices.len(), 30); // Four native floor cells and one live inscription.
         assert!(mesh.textured.positions[..16].iter().all(|v| v[1] == 0.));
+        assert!(mesh.textured.uvs[..16].iter().all(|&uv|
+            crate::scenery_finish::source_atlas_coordinates(uv).is_none()),
+            "floor backing keeps its existing lighting; only the live inscription is tagged");
         let (w, _, n, _) = g.bounds(1, 1);
         let e = w + 2. * g.tile_width;
         let s = n + 2. * g.tile_height;
@@ -211,7 +216,9 @@ fn live_text_footprint_footing_and_atomic_append_are_preserved() {
         );
         let [px, py, pw, ph] = b.lettering.map(f32::from);
         assert_eq!(
-            mesh.textured.uvs[16..],
+            mesh.textured.uvs[16..].iter().map(|&uv|
+                crate::scenery_finish::source_atlas_coordinates(uv).unwrap_or(uv))
+                .collect::<Vec<_>>(),
             [
                 [(1. + px / 8.) / 4., (1. + py / 8.) / 4.],
                 [(1. + px / 8.) / 4., (1. + (py + ph) / 8.) / 4.],
@@ -219,6 +226,9 @@ fn live_text_footprint_footing_and_atomic_append_are_preserved() {
                 [(1. + (px + pw) / 8.) / 4., (1. + py / 8.) / 4.]
             ]
         );
+        assert!(mesh.textured.uvs[16..].iter().all(|&uv|
+            crate::scenery_finish::source_atlas_coordinates(uv).is_some()==(b.tileset!="forest")),
+            "preserve the forest sign's existing treatment");
         let vertex_count = mesh.solid.positions.len();
         assert!(!append(&mut mesh, &refs, &g, &p, &mut claimed));
         assert_eq!(mesh.solid.positions.len(), vertex_count);
@@ -248,5 +258,63 @@ fn cropped_or_revised_frames_fall_back_without_partial_claims() {
         g.width = 1;
         g.height = 16;
         assert!(placements(&cells, &g, None).is_empty());
+    }
+}
+
+#[test]
+fn elevated_pier_notice_and_its_floor_follow_the_deck_without_changing_ownership() {
+    let binding=BINDINGS.iter().find(|b|b.tileset=="kanto"&&b.block==0x79).unwrap();
+    let (cells,g)=fixture(binding);let refs=cells.iter().collect::<Vec<_>>();
+    let p=placements(&cells,&g,None).remove(0);
+    let build=|height| {
+        let mut mesh=TerrainMeshData{footing_heights:vec![height;cells.len()],authored_cells:vec![None;cells.len()],..Default::default()};
+        let mut claimed=vec![false;cells.len()];assert!(append(&mut mesh,&refs,&g,&p,&mut claimed));
+        (mesh,claimed)
+    };
+    let (flat,flat_claims)=build(0.);let (raised,raised_claims)=build(crate::port::PIER_HEIGHT);
+    assert_eq!(flat_claims,raised_claims);assert_eq!(flat.authored_cells,raised.authored_cells);
+    assert_eq!(raised.footing_heights,vec![crate::port::PIER_HEIGHT;cells.len()]);
+    for (old,new) in [(&flat.solid,&raised.solid),(&flat.textured,&raised.textured)] {
+        assert_eq!(old.indices,new.indices);assert_eq!(old.normals,new.normals);assert_eq!(old.uvs,new.uvs);
+        for (a,b) in old.positions.iter().zip(&new.positions) {
+            assert_eq!([a[0],a[2]],[b[0],b[2]]);assert!((b[1]-a[1]-crate::port::PIER_HEIGHT).abs()<0.0001);
+        }
+    }
+}
+
+#[test]
+fn sign_clearance_preserves_roots_coverage_models_and_unowned_or_forest_grass() {
+    for binding in BINDINGS {
+        let (cells,g)=fixture(binding);let signs=placements(&cells,&g,None);
+        let refs=cells.iter().collect::<Vec<_>>();
+        let mut mesh=TerrainMeshData{footing_heights:vec![3.25;16],
+            authored_cells:vec![None;16],..Default::default()};
+        append(&mut mesh,&refs,&g,&signs[0],&mut vec![false;16]);
+        let first=mesh.solid.positions.len();
+        crate::grass_blades::append(&mut mesh.solid,[-8.,0.,8.,16.],0.,24.,[1,3],true);
+        crate::grass_blades::append(&mut mesh.solid,[100.,108.,100.,108.],0.,24.,[15,15],false);
+        let original=mesh.clone();
+        let mut unowned=mesh.clone();unowned.authored_cells.fill(None);
+        let before=unowned.clone();
+        clear_grass(&mut unowned,first,0.,[-8.,108.,8.,108.],&g,&signs);
+        assert_eq!(unowned,before,"unappended/custom signs cannot trim grass");
+        clear_grass(&mut mesh,first,0.,[-8.,108.,8.,108.],&g,&signs);
+        if binding.kind==Kind::Forest {assert_eq!(mesh,original);continue;}
+        assert_eq!(&mesh.solid.positions[..first],&original.solid.positions[..first],"sign geometry");
+        assert_eq!(mesh.textured,original.textured,"live lettering and ground");
+        assert_eq!(mesh.footing_heights,original.footing_heights);
+        assert_eq!(mesh.authored_cells,original.authored_cells);
+        assert_eq!(mesh.solid.indices,original.solid.indices,"same blade coverage");
+        assert_eq!(mesh.solid.colors,original.solid.colors);
+        assert!(mesh.solid.positions[first..].iter().zip(&original.solid.positions[first..])
+            .any(|(a,b)|a[1]<b[1]-1.),"nearby blades expose the board");
+        for i in first..mesh.solid.positions.len() {
+            let a=mesh.solid.positions[i];let b=original.solid.positions[i];
+            assert_eq!([a[0],a[2]],[b[0],b[2]],"roots and occupied footprint");
+            assert!(a[1]>=0. && a[1]<=b[1]);
+            assert!((mesh.solid.uvs[i][1]-a[1]).abs()<0.0001,"wind height follows the shorter blade");
+            assert!((Vec3::from_array(mesh.solid.normals[i]).length()-1.).abs()<0.0001);
+            if b[1]==0. || b[0]>90. {assert_eq!(a,b,"roots and distant grass stay exact");}
+        }
     }
 }

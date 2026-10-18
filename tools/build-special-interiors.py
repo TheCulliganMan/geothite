@@ -9,6 +9,7 @@ from pathlib import Path
 from mathutils import Vector
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from roof_planter_sculpt import document as roof_planter_document, MATERIALS as ROOF_MATERIALS
+from blender_corner_normals import transformed_corner_normal
 args=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
 out=Path(next((a for a in args if not a.startswith('--')),'target/special-interiors'));out.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
@@ -389,9 +390,9 @@ def export(name,col):
   for tri in me.loop_triangles:
    mat=obj.data.materials[tri.material_index];g=groups.setdefault(mat.name,{'name':mat.name,'base_color':[round(v,5) for v in mat.diffuse_color],'positions':[],'normals':[],'indices':[]})
    if name in SOURCE_PIXELS:g['source_pixel']=SOURCE_PIXELS[name][mat.name]
-   normal=(normal_matrix@tri.normal).normalized()
-   if normal.length_squared<.9:continue
-   for vid in tri.vertices:
+   if tri.normal.length_squared<.9:continue
+   for vid,loop in zip(tri.vertices,tri.loops):
+    normal=transformed_corner_normal(me,loop,normal_matrix)
     v=obj.matrix_world@me.vertices[vid].co;g['indices'].append(len(g['positions'])//3);g['positions'].extend(round(c,6) for c in (v.x,v.z,-v.y));g['normals'].extend(round(c,6) for c in (normal.x,normal.z,-normal.y))
   obj_eval.to_mesh_clear()
  prim=[groups[n] for n in sorted(groups)];allp=[p['positions'] for p in prim];mins=[min(v[i] for p in allp for v in zip(*[iter(p)]*3)) for i in range(3)];maxs=[max(v[i] for p in allp for v in zip(*[iter(p)]*3)) for i in range(3)]

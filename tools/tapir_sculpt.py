@@ -2,6 +2,8 @@
 """Distinct closed Drowzee/Hypno anatomy, no imported assets or duplicate catalog."""
 import argparse,json,math
 from pathlib import Path
+from functools import lru_cache
+from copy import deepcopy
 from sculpt_geometry import part,loft,tube,ellipsoid,translate,fitted_patch,fitted_contour,curved_profiles,crease_normals
 from abra_sculpt import surface
 from bovine_sculpt import oval,curved_tube
@@ -66,7 +68,8 @@ def ring(name,color,center,radius,width):
     return part(name,color,v,fs,True)
 
 
-def sculpture(species):
+@lru_cache(maxsize=2)
+def raw_sculpture(species):
     if species not in ('drowzee','hypno'):raise ValueError(species)
     hypno=species=='hypno';p=[]
     profiles=([(.108,.192,.155,-.013),(.184,.292,.216,-.025),(.337,.304,.245,-.009),(.460,.283,.225,.005),(.575,.247,.193,.005),(.666,.198,.163,.004),(.736,.169,.145,.023),(.810,.235,.188,.027),(.903,.241,.197,.010),(.980,.199,.164,-.005),(1.028,.112,.101,-.010),(1.042,.020,.025,-.013)] if not hypno else
@@ -90,8 +93,8 @@ def sculpture(species):
             ear=part('Ear / pointed hypnotist '+str(s),YELLOW,v,[(0,1,2,3),(0,4,1),(1,4,2),(2,4,3),(3,4,0)]);p.append(ear)
             p.append(fitted_contour('Ear / fitted brown inner '+str(s),BROWN,[(s*.131,.992),(s*.168,.984),(s*.161,1.138)],surface(ear),.003,subdivisions=3))
         else:
-            ear=ellipsoid('Ear / rounded tapir '+str(s),YELLOW,(s*.207,.964,-.009),(.067,.090,.055),32,22);p.append(ear)
-            p.append(fitted_contour('Ear / recessed brown inner '+str(s),BROWN,oval(s*.219,.977,.038,.049,32),surface(ear),.004,subdivisions=3))
+            ear=ellipsoid('Ear / rounded tapir '+str(s),YELLOW,(s*.207,.964,-.009),(.067,.090,.055),24,16);p.append(ear)
+            p.append(fitted_contour('Ear / recessed brown inner '+str(s),BROWN,oval(s*.219,.977,.038,.049,32),surface(ear),.004,subdivisions=2))
         # Subtle fitted cheek smile creases below the nose.
         y=.766 if not hypno else .746
         outline=[(s*.075,y),(s*.115,y+.006),(s*.133,y+.024),(s*.129,y+.027),(s*.110,y+.012),(s*.076,y+.005)]
@@ -105,13 +108,13 @@ def sculpture(species):
         # Slightly cover tube rims so coincident rings cannot shimmer in shading.
         for name,center,r in [('rounded shoulder',shoulder,.078 if hypno else .095),('rounded elbow',elbow,.051 if hypno else .063)]:
             p.append(ellipsoid('Arm joint / '+name+' '+str(s),YELLOW,center,(r,r,r),24,16))
-        p.append(ellipsoid('Hand / broad palm '+str(s),YELLOW,wrist,(.073,.055,.054),32,22))
+        p.append(ellipsoid('Hand / broad palm '+str(s),YELLOW,wrist,(.073,.055,.054),24,16))
         for finger in range(3):
             x=wrist[0]+(finger-1)*.037;y=wrist[1]+.030
             if hypno:points=[(x,y,wrist[2]),(x,y+.034,wrist[2]+.054),(x,y-.018,wrist[2]+.094)]
             else:points=[(x,y,wrist[2]+.015),(x,y+.038,wrist[2]+.064),(x,y+.027,wrist[2]+.092)]
-            p.append(curved_tube('Hand / curved finger '+str(s)+' '+str(finger),YELLOW,points,[.022,.021,.010],24))
-        p.append(curved_tube('Hand / rooted curved thumb '+str(s),YELLOW,[(wrist[0]+s*.045,wrist[1]-.017,wrist[2]+.009),(wrist[0]+s*.072,wrist[1]+.006,wrist[2]+.047),(wrist[0]+s*.057,wrist[1]+.004,wrist[2]+.077)],[.026,.022,.014],24))
+            p.append(curved_tube('Hand / curved finger '+str(s)+' '+str(finger),YELLOW,points,[.022,.021,.010],18))
+        p.append(curved_tube('Hand / rooted curved thumb '+str(s),YELLOW,[(wrist[0]+s*.045,wrist[1]-.017,wrist[2]+.009),(wrist[0]+s*.072,wrist[1]+.006,wrist[2]+.047),(wrist[0]+s*.057,wrist[1]+.004,wrist[2]+.077)],[.026,.022,.014],18))
         hip=(s*.121,.292,-.010) if hypno else (s*.164,.199,-.009)
         knee=(s*.229,.208,.035) if hypno else (s*.223,.105,.027)
         ankle=(s*.193,.065,.084) if hypno else (s*.233,.063,.066)
@@ -120,10 +123,10 @@ def sculpture(species):
         p.append(curved_tube('Leg / planted shin '+str(s),legcolor,[knee,ankle],[.060,.047] if hypno else [.073,.059],28))
         r=.067 if hypno else .080
         p.append(ellipsoid('Leg joint / rounded knee '+str(s),legcolor,knee,(r,r,r),24,16))
-        p.append(ellipsoid('Foot / broad raised heel '+str(s),legcolor,(ankle[0],.045,.108),(.093,.040,.089),32,22))
+        p.append(ellipsoid('Foot / broad raised heel '+str(s),legcolor,(ankle[0],.045,.108),(.093,.040,.089),24,16))
         for toe in range(2 if hypno else 1):
             x=ankle[0]+(toe-.5)*.065 if hypno else ankle[0]
-            p.append(ellipsoid('Foot / yellow rounded toe '+str(s)+' '+str(toe),YELLOW,(x,.029,.186),(.052,.023,.052) if hypno else (.074,.023,.044),32,22))
+            p.append(ellipsoid('Foot / yellow rounded toe '+str(s)+' '+str(toe),YELLOW,(x,.029,.186),(.052,.023,.052) if hypno else (.074,.023,.044),24,16))
     if hypno:
         p.append(ruff())
         # Thin hanging cord anchored to the closed right hand; no cosmetic pose loop.
@@ -133,14 +136,21 @@ def sculpture(species):
         p.append(ring('Pendulum / dark inner rim',(.34,.35,.32),(end[0],end[1]-.052,end[2]+.003),.043,.0025))
     for i,q in enumerate(p):
         if q['part'].startswith(('Eye border /','Eye /','Cheek /','Ear / fitted','Ear / recessed')):p[i]=crease_normals(q,35)
+    return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+
+
+def sculpture(species,normalize=True):
+    m=deepcopy(raw_sculpture(species));p=m['primitives']
+    if not normalize:return m
     floor=min(v for q in p for v in q['positions'][1::3]);height=max(v for q in p for v in q['positions'][1::3])-floor
     for q in p:
         q['positions']=[round((v-(floor if i%3==1 else 0.))*HEIGHT/height,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
-    return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+    return m
 
 
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--out',type=Path,default=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species');a=a.parse_args()
     for n in ('drowzee','hypno'):
-        m=sculpture(n);(a.out/(n+'.mesh.json')).write_text(json.dumps(m,separators=(',',':')));print(n,len(m['primitives']),sum(len(q['indices'])//3 for q in m['primitives']))
+        from tapir_glb import export_tapir
+        blob=export_tapir(n);(a.out/(n+'.glb')).write_bytes(blob);print(n,len(blob),'bytes')
 if __name__=='__main__':main()

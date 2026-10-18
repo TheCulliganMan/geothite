@@ -1,16 +1,20 @@
-//! Original folded masonry below Violet Gym's exact native blocked recesses.
+//! Folded depth below Violet Gym's and Karen's exact native blocked recesses.
 //! No level-zero underlay, actor footing, collision, warp or world state is
 //! created. Every rim is inset into the proven pit side of the source edge.
 use super::*;
 #[path = "violet_gym_pit_source.rs"]
 mod source;
+#[path = "league_recess.rs"]
+mod league;
 use crate::live_profiles::Document;
 
 const LABEL: &str = "gym:violet-recess-depth";
 const DEPTH_PIXELS: f32 = 24.;
 pub(super) struct Placement {
+    map: &'static str,
     plan: source::Plan,
     blocked: Vec<bool>,
+    native: Option<league::Paint>,
 }
 impl Placement {
     pub(super) fn indices(&self) -> impl Iterator<Item = usize> + '_ {
@@ -39,7 +43,7 @@ pub(super) fn resolve(
     profiles: Option<&Document>,
     reserved: &[bool],
 ) -> Option<Placement> {
-    if map != "VioletGym"
+    if !matches!(map, "VioletGym" | "KarensRoom")
         || g.width == 0
         || g.width.checked_mul(g.height) != Some(cells.len())
         || reserved.len() != cells.len()
@@ -53,7 +57,10 @@ pub(super) fn resolve(
         }
     }
     let plan = source::resolve(map, &identities(cells), g.width, g.height, &blocked);
-    (!plan.cells.is_empty()).then_some(Placement { plan, blocked })
+    let native=if map=="KarensRoom" {Some(league::paint(&plan,cells,g.width)?)}else{None};
+    (!plan.cells.is_empty()).then_some(Placement {
+        map:if map=="KarensRoom" {"KarensRoom"}else{"VioletGym"},plan,blocked,native,
+    })
 }
 fn color(rgb: [f32; 3], factor: f32) -> [f32; 4] {
     [rgb[0] * factor, rgb[1] * factor, rgb[2] * factor, 1.]
@@ -178,20 +185,25 @@ pub(super) fn append(
     if claimed.len() != cells.len()
         || p.indices().any(|i| claimed[i])
         || source::resolve(
-            "VioletGym",
+            p.map,
             &identities(cells),
             g.width,
             g.height,
             &p.blocked,
         ) != p.plan
+        || (p.map=="KarensRoom" && league::paint(&p.plan,cells,g.width)!=p.native)
     {
         return false;
     }
-    append_geometry(&mut mesh.solid, g, &p.plan);
+    if let Some(paint)=&p.native {
+        league::append_geometry(&mut mesh.textured,g,&p.plan,paint);
+    }else{
+        append_geometry(&mut mesh.solid, g, &p.plan);
+    }
     for i in p.indices() {
         claimed[i] = true;
         if mesh.authored_cells.len() == cells.len() {
-            mesh.authored_cells[i] = Some(LABEL);
+            mesh.authored_cells[i] = Some(if p.native.is_some() {"league:karen-recess-depth"}else{LABEL});
         }
     }
     true

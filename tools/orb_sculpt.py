@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Original smooth closed Voltorb and Electrode shells with fitted faces."""
-import argparse,json,math
+import argparse,math
 from pathlib import Path
 from sculpt_geometry import part,fitted_patch,fitted_contour,crease_normals
 from abra_sculpt import surface
@@ -9,8 +9,7 @@ from wing_insect_sculpt import contour
 from bivalve_sculpt import ribbon_inside
 from skin_glb import COORDINATES
 SPECIES=('voltorb','electrode');HEIGHT={'voltorb':.82,'electrode':.94}
-RED=(.85,.32,.34);WHITE=(.95,.97,.98);INK=(.12,.13,.16)
-# Verified Voltorb normal/front/back RGB555 red (24,5,5); source white/black.
+# Verified local Voltorb and Electrode normal RGB555 red (24,5,5); white/black.
 VOLTORB_RED=(198/255,41/255,41/255);VOLTORB_WHITE=(1.,1.,1.);VOLTORB_INK=(0.,0.,0.)
 def hemisphere(upper,color):
  n=64;rings=24;v=[]
@@ -24,14 +23,14 @@ def hemisphere(upper,color):
  return crease_normals(part(('Upper shell /' if upper else 'Lower shell /')+' smooth closed molded hemisphere',color,v,f,True),45)
 def sculpture(s):
  if s not in SPECIES:raise ValueError(s)
- adult=s=='electrode';red=RED if adult else VOLTORB_RED;white=WHITE if adult else VOLTORB_WHITE;ink=INK if adult else VOLTORB_INK
+ adult=s=='electrode';red=VOLTORB_RED;white=VOLTORB_WHITE;ink=VOLTORB_INK
  top=hemisphere(True,white if adult else red);bottom=hemisphere(False,red if adult else white);p=[top,bottom];ss=surface(top)
  for sign in (-1,1):
   if adult:
-   p.append(fitted_patch('Pupil / fitted narrow dark explosive orb pupil '+str(sign),ink,oval(sign*.122,.536,.0047,.015,24),ss,.0038))
-   xy=contour((((.051,.615),(.081,.636),(.155,.736),(.190,.728)),((.190,.728),(.218,.724),(.248,.686),(.267,.669))),12)
+   p.append(fitted_patch('Pupil / fitted narrow dark explosive orb pupil '+str(sign),ink,oval(sign*.105,.536,.0062,.019,24),ss,.0038))
+   xy=contour((((.068,.566),(.120,.615),(.202,.687),(.250,.705)),),24)
    pts=[(sign*x,y,ss(y,sign*x)+.0028) for x,y in xy]
-   p.append(curved_tube('Brow / supported expressive raised orb arch '+str(sign),ink,pts,[.0020]*len(pts),10))
+   p.append(curved_tube('Brow / supported expressive raised orb arch '+str(sign),ink,pts,[.0032]*len(pts),10))
   else:
    xy=[(sign*x,y) for x,y in ((.045,.490),(.215,.638),(.214,.459),(.067,.445))]
    border=fitted_contour('Eye border / fitted sharp dark orb socket '+str(sign),ink,xy,ss,.006,subdivisions=3);p.append(border)
@@ -60,6 +59,8 @@ def main():
   if s=='voltorb':
    from voltorb_glb import export_voltorb
    (args.output/'voltorb.glb').write_bytes(export_voltorb())
-  else:(args.output/(s+'.mesh.json')).write_text(json.dumps(m,separators=(',',':')))
+  else:
+   from voltorb_glb import export_electrode
+   (args.output/'electrode.glb').write_bytes(export_electrode())
   print(s,len(m['primitives']),sum(len(p['indices'])//3 for p in m['primitives']),flush=True)
 if __name__=='__main__':main()

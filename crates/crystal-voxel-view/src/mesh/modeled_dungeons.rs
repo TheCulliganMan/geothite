@@ -14,7 +14,12 @@ mod cave_sill;
 mod cave_stones;
 #[path = "cave_boulder_fields.rs"]
 mod cave_boulder_fields;
-pub(super) use cave_boulder_fields::append_all;
+#[path = "rocket_wall_reveal.rs"]
+mod rocket_wall_reveal;
+pub(super) use rocket_wall_reveal::append_all;
+#[path = "tower_roof_paint.rs"]
+mod tower_roof_paint;
+pub(super) use tower_roof_paint::append_all_with_samples;
 
 pub(super) fn movable_stone(frozen: bool, dark: bool, variant: u8) -> SurfaceMeshData {
     let mut mesh = SurfaceMeshData::default();
@@ -48,10 +53,17 @@ mod lighthouse;
 mod lighthouse_chamber;
 #[path = "lighthouse_stairs.rs"]
 mod lighthouse_stairs;
+#[path = "lighthouse_pit.rs"]
+mod lighthouse_pit;
 #[path = "rocket_persian.rs"]
 mod rocket_persian;
 #[path = "special_rooms.rs"]
 mod rooms;
+
+pub(super) fn append_tower_battle_perimeter(mesh: &mut TerrainMeshData, frame: &VisualWorldFrame,
+    cells: &[&VisualTile], g: &GridGeometry) {
+    rooms::append_tower_battle_perimeter(mesh,frame,cells,g);
+}
 use crate::dungeon_models::{Kind, model};
 use crate::live_profiles::Document;
 
@@ -72,6 +84,7 @@ enum Form {
     Lighthouse(lighthouse::Detail),
     LighthouseChamber(lighthouse_chamber::Asset),
     LighthouseStair { down: bool },
+    LighthousePit,
     CaveCorner(crate::cave::DiagonalCorner),
     CaveHatch,
     CaveShaft,
@@ -109,6 +122,9 @@ impl Placement {
                     | crate::dungeon_models::ExtensionKind::ShipBulkhead))
             | Form::Lighthouse(_) | Form::RocketWall { .. })
     }
+    /// A complete native horizontal timber course; side-post drawings must
+    /// never be rotated and stretched as rear-wall perimeter templates.
+    pub(super) fn native_tower_wall(&self) -> bool { matches!(self.form,Form::TowerTimber) }
     pub(super) fn source_row(&self) -> usize { self.row }
     pub(super) fn append_room_wall(&self, mesh:&mut TerrainMeshData,g:&GridGeometry,
         cells:&[&VisualTile],origin:[i32;2]) {
@@ -126,7 +142,7 @@ impl Placement {
         append(mesh,g,&p,cells,origin);
     }
     pub(super) fn cuts_foundation(&self) -> bool {
-        matches!(self.form, Form::IcePit | Form::CaveShaft)
+        matches!(self.form, Form::IcePit | Form::CaveShaft | Form::LighthousePit)
     }
     pub(super) fn floor_sample_and_label(&self) -> (usize, &'static str) {
         (self.ground, self.kind_label())
@@ -151,6 +167,7 @@ impl Placement {
             Form::LighthouseChamber(asset) => asset.label(),
             Form::LighthouseStair { down: false } => "lighthouse:stone-stairs-up",
             Form::LighthouseStair { down: true } => "lighthouse:stone-stairs-down",
+            Form::LighthousePit => "lighthouse:recessed-pit",
             Form::CaveCorner(_) => "dungeon:cave-diagonal-corner",
             Form::CaveHatch | Form::CaveShaft => "dungeon:cave-floor-hatch",
             Form::CavePortal => "dungeon:cave-daylight-exit",
@@ -189,6 +206,17 @@ fn phase_consistent(cells: &[&VisualTile], g: &GridGeometry, p: TreePlacement) -
         })
     })
 }
+fn native_cerulean_statue_source(p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
+    matches!(p.form,Form::NativeGymGuardian)&&p.width==2&&p.height==4
+        &&p.column+2<=g.width&&p.row+4<=g.height
+        &&p.indices(g.width).enumerate().all(|(j,i)| {
+            let s=&cells[i].source;
+            s.tileset_id.as_ref()=="port"&&s.metatile_id==0x32
+                &&s.subtile_column==(j%2)as u8&&s.subtile_row==(j/2)as u8
+                &&s.tile_index==[6,7,22,23,8,9,24,25][j]
+        })
+}
+
 fn live_gym_orb(map: &str, tileset: &str) -> bool {
     match tileset {
         "elite_four_room" => matches!(map, "VioletGym" | "BlackthornGym1F" | "MahoganyGym" | "AzaleaGym" | "GoldenrodGym"),
@@ -201,6 +229,13 @@ pub(super) fn tin_tower_guardian_map(map:&str)->bool {
         |"TinTower6F"|"TinTower7F"|"TinTower8F"|"TinTower9F")
 }
 pub(super) fn lighthouse_map(map:&str)->bool {lighthouse::applies(map)}
+pub(super) fn lighthouse_stair_support(frame:&VisualWorldFrame,cell:bevy::prelude::UVec2,
+    foot:bevy::prelude::Vec2,resolved:&[f32])->Option<f32> {
+    lighthouse_stairs::support_sample(frame,cell,foot,resolved)
+}
+pub(super) fn lighthouse_pit_reveal_targets(frame:&VisualWorldFrame,foot:Vec3)->Vec<Vec3> {
+    lighthouse_pit::reveal_targets(frame,foot)
+}
 struct Resolver<'a> {
     map: &'a str,
     cells: &'a [&'a VisualTile],
@@ -651,6 +686,7 @@ pub(super) fn resolve(
     lighthouse::resolve_into(&mut r);
     lighthouse_chamber::resolve_into(&mut r);
     lighthouse_stairs::resolve_into(&mut r);
+    lighthouse_pit::resolve_into(&mut r);
     // Reuse live whole-drawing resolution rather than copy/export its catalog.
     // Shape-specific vocabulary below guards the semantic conversion; profile
     // names alone are never authority to reinterpret a user-edited drawing.
@@ -932,6 +968,10 @@ fn append_internal(
         lighthouse_stairs::append(mesh,g,p,down);
         return;
     }
+    if let Form::LighthousePit = p.form {
+        lighthouse_pit::append(mesh,g,p);
+        return;
+    }
     if let Form::Lighthouse(detail) = p.form {
         lighthouse::append(mesh, g, p, detail);
         return;
@@ -980,8 +1020,14 @@ fn append_internal(
         return;
     }
     let base = boulder_datum(p, cells, g);
+    let cerulean_statue=native_cerulean_statue_source(p,cells,g);
     let floor_uv = g.uv(p.ground % g.width, p.ground / g.width);
     for i in p.indices(g.width) {
+        if cerulean_statue {
+            extension::append_cerulean_deck(&mut mesh.solid,
+                g.bounds(i%g.width,i/g.width).into(),g.tile_height/8.,cells[i].source.subtile_row as usize);
+            continue;
+        }
         if matches!(p.form, Form::FrozenWall | Form::CaveCorner(_)) {
             let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
             let floor = [[w, 0., n], [w, 0., s], [e, 0., s], [e, 0., n]];
@@ -1032,8 +1078,13 @@ fn append_internal(
     let s = n + p.front_rows * g.tile_height;
     let rise = p.rise_pixels * g.tile_height / SOURCE_TILE_HEIGHT;
     match p.form {
-        Form::RocketPersian => rocket_persian::append(&mut mesh.textured,g,p,
-            [w,e,s-p.depth_pixels*g.tile_height/SOURCE_TILE_HEIGHT,s]),
+        Form::RocketPersian => {
+            let first=mesh.textured.positions.len();
+            rocket_persian::append_wall_backing(&mut mesh.textured,g,p,cells);
+            rocket_persian::append(&mut mesh.textured,g,p,
+                [w,e,s-p.depth_pixels*g.tile_height/SOURCE_TILE_HEIGHT,s]);
+            mesh.textured.cutaway_ranges.push(first..mesh.textured.positions.len());
+        }
         Form::CaveSill | Form::IceSill => cave_sill::append(
             &mut mesh.solid,
             g,
@@ -1101,8 +1152,14 @@ fn append_internal(
                 extension::append_sprout_guardian(
                     &mut mesh.textured, bounds, rise, source_uv);
             } else {
+                let first=mesh.textured.positions.len();
                 model(Kind::TowerGuardian).append_pewter_guardian(
                     &mut mesh.textured, bounds, rise, source_uv);
+                if cerulean_statue {
+                    for vertex in &mut mesh.textured.positions[first..] {
+                        vertex[1]+=crate::port::PIER_HEIGHT*g.tile_height/8.;
+                    }
+                }
             }
         }
         Form::GymOrb => model(Kind::LeaguePodium).append_gym_orb(
@@ -1115,7 +1172,9 @@ fn append_internal(
                  uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
             },
         ),
-        Form::TowerTimber => model(Kind::TimberWall).append_tower_timber(
+        Form::TowerTimber => {
+            let first = mesh.textured.positions.len();
+            model(Kind::TimberWall).append_tower_timber(
             &mut mesh.textured,
             [w, e, s - p.depth_pixels * g.tile_height / SOURCE_TILE_HEIGHT, s],
             rise,
@@ -1129,7 +1188,12 @@ fn append_internal(
                 [uv.0 + (uv.1 - uv.0) * (pixel[0] as f32 + 0.5) / 8.,
                  uv.2 + (uv.3 - uv.2) * (pixel[1] as f32 + 0.5) / 8.]
             },
-        ),
+            );
+            // Only the upright source-owned body reveals the player. Floor
+            // caps emitted above remain opaque, and adjacent panels keep
+            // separate reveal groups rather than fading an entire maze.
+            mesh.textured.cutaway_ranges.push(first..mesh.textured.positions.len());
+        },
         Form::GymBoulder | Form::SeafoamBoulder => {
             let first=mesh.textured.positions.len();
             let tower_stone = matches!(p.form, Form::GymBoulder)
@@ -1171,18 +1235,12 @@ fn append_internal(
             0.0,
             rise,
         ),
-        Form::RocketWall { open,blue } => {
-            let texel=|column,row,x:f32,y:f32| {
-                let uv=g.uv(column,row);
-                [uv.0+(uv.1-uv.0)*(x+0.5)/8.,uv.2+(uv.3-uv.2)*(y+0.5)/8.]
-            };
-            append_native_rocket_wall(&mut mesh.textured,[w,e,n,s],rise,open,
-                texel(p.column,p.row,0.,0.),texel(blue%g.width,blue/g.width,3.,3.));
-        }
+        Form::RocketWall { open,blue } => append_rocket_wall_body(&mut mesh.textured,g,p,open,blue),
         Form::CaveRim => unreachable!("cave rims handled above"),
         Form::Lighthouse(_) => unreachable!("lighthouse placements handled above"),
         Form::LighthouseChamber(_) => unreachable!("lighthouse chamber handled above"),
         Form::LighthouseStair { .. } => unreachable!("lighthouse stairs handled above"),
+        Form::LighthousePit => unreachable!("lighthouse pits handled above"),
         Form::CaveCorner(corner) => append_corner(
             &mut mesh.solid,
             [w, e, n, s],
@@ -1255,6 +1313,18 @@ fn faceted_face(
         out.indices.extend([base, base + 1, base + 2]);
     }
 }
+fn append_rocket_wall_body(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,
+    open:[bool;4],blue:usize) {
+    let texel=|column,row,x:f32,y:f32| {
+        let uv=g.uv(column,row);
+        [uv.0+(uv.1-uv.0)*(x+0.5)/8.,uv.2+(uv.3-uv.2)*(y+0.5)/8.]
+    };
+    let (w,_,n,_)=g.bounds(p.column,p.row);
+    append_native_rocket_wall(out,[w,w+p.width as f32*g.tile_width,n,n+p.front_rows*g.tile_height],
+        p.rise_pixels*g.tile_height/SOURCE_TILE_HEIGHT,open,
+        texel(p.column,p.row,0.,0.),texel(blue%g.width,blue/g.width,3.,3.));
+}
+
 fn append_native_rocket_wall(out:&mut SurfaceMeshData,[w,e,n,s]:[f32;4],h:f32,
     open:[bool;4],cap:[f32;2],blue:[f32;2]) {
     let first=out.positions.len();
@@ -1639,7 +1709,7 @@ pub(super) fn append_terrain(
         let (w, e, n, s) = g.bounds(x, y);
         let cliff = matches!(tile.source.tileset_id.as_ref(), "cave" | "dark_cave")
             && h >= 16.0 * g.tile_height / SOURCE_TILE_HEIGHT;
-        let canyon = (map.starts_with("Route") || map.ends_with("Town") || map.ends_with("City"))
+        let canyon = super::outdoor_mountains::enabled(map)
             && match tile.source.tileset_id.as_ref() {
                 "johto" | "johto_modern" => (0x68..=0x73).contains(&tile.source.metatile_id),
                 "kanto" => crate::kanto_cliff::kanto_cliff_shape(&tile.source).is_some()
@@ -1790,7 +1860,7 @@ mod tests {
             let cells = t.iter().collect::<Vec<_>>();
             let g = grid(4, 4);
             let shapes = cells.iter().map(|t| shape_for_source(&t.source)).collect::<Vec<_>>();
-            for map in ["Route3", "Route4", "Route9", "LavenderTown"] {
+            for map in ["Route3", "Route4", "Route9", "Route10South", "LavenderTown", "CinnabarIsland"] {
                 let mut mesh = TerrainMeshData::default();
                 mesh.authored_cells = vec![None; 16];
                 mesh.footing_heights = vec![16.; 16];
@@ -1951,6 +2021,42 @@ mod tests {
             }
         }
     }
+    #[test]
+    fn cerulean_guardian_floor_shares_the_adjacent_deck_and_preserves_support() {
+        let g=grid(4,4);let mut t=tiles(4,4,"port");
+        let art=[[6,7,5,5],[22,23,5,5],[8,9,5,5],[24,25,5,5]];
+        for (i,tile) in t.iter_mut().enumerate() {
+            tile.source.metatile_id=0x32;tile.source.tile_index=art[i/4][i%4];
+        }
+        let refs=t.iter().collect::<Vec<_>>();let p=resolve("CeruleanGym",&refs,&g,None)
+            .into_iter().find(|p|matches!(p.form,Form::NativeGymGuardian)).unwrap();
+        assert!(native_cerulean_statue_source(&p,&refs,&g));
+        let mut mesh=TerrainMeshData{footing_heights:vec![1.25;16],authored_cells:vec![None;16],..Default::default()};
+        append(&mut mesh,&g,&p,&refs,[0,0]);
+        let mut expected=SurfaceMeshData::default();
+        for i in p.indices(4) {
+            extension::append_cerulean_deck(&mut expected,g.bounds(i%4,i/4).into(),1.,i/4);
+        }
+        assert_eq!(mesh.solid.positions,expected.positions);
+        assert_eq!(mesh.solid.normals,expected.normals);
+        assert_eq!(mesh.solid.colors,expected.colors);
+        assert_eq!(mesh.solid.indices,expected.indices);
+        assert!(mesh.solid.positions.iter().any(|p|p[1]==crate::port::PIER_HEIGHT));
+        assert!(mesh.textured.positions.iter().any(|p|p[1]>27.+crate::port::PIER_HEIGHT));
+        assert_eq!(mesh.footing_heights,vec![1.25;16]);
+        assert_eq!(mesh.authored_cells,vec![None;16]);
+        assert!(mesh.textured.positions.iter().any(|p|p[1]>27.));
+        assert_eq!(p.indices(4).count(),8);
+        for i in p.indices(4) {for field in 0..5 {
+            let mut changed=t.clone();let s=&mut changed[i].source;
+            match field {0=>s.tileset_id="custom".into(),1=>s.metatile_id^=0x80,
+                2=>s.tile_index^=0x80,3=>s.subtile_column^=0x80,_=>s.subtile_row^=0x80}
+            assert!(!native_cerulean_statue_source(&p,&changed.iter().collect::<Vec<_>>(),&g));
+        }}
+        assert!(resolve("VermilionPort",&refs,&g,None).iter()
+            .all(|p|!native_cerulean_statue_source(p,&refs,&g)));
+    }
+
     #[test]
     fn tin_tower_guardians_require_the_actual_complete_drawing_and_preserve_floor() {
         let g=grid(4,4);let mut t=tiles(4,4,"tower");
@@ -2963,6 +3069,30 @@ mod tests {
                         subtile_row:(y%4)as u8,tile_index:art[b as usize*16+y%4*4+x%4]as u16}}
             }).collect::<Vec<_>>();
             let refs=t.iter().collect::<Vec<_>>();let g=grid(w,h);let placements=resolve(&name,&refs,&g,None);
+            if level == 5 {
+                assert!(placements.iter().any(|p| matches!(p.form, Form::TowerTimber)
+                    && p.column == 8 && p.row == 2),
+                    "the actual panel in front of the north walking lane is covered");
+            }
+            for panel in placements.iter().filter(|p| matches!(p.form, Form::TowerTimber)) {
+                let mut panel_mesh = TerrainMeshData {
+                    footing_heights: vec![5.; w*h], ..Default::default()
+                };
+                append(&mut panel_mesh, &g, panel, &refs, [0,0]);
+                assert_eq!(panel_mesh.textured.cutaway_ranges.len(), 1,
+                    "{name}: every native timber body supports player reveal");
+                let range = panel_mesh.textured.cutaway_ranges[0].clone();
+                let floor_vertices = panel.indices(w).count()*4;
+                assert_eq!(range, floor_vertices..panel_mesh.textured.positions.len(),
+                    "{name}: only the upright body can fade");
+                assert_eq!(panel_mesh.footing_heights, vec![5.; w*h]);
+                assert!(panel_mesh.camera_wall_textured_ranges.is_empty(),
+                    "internal panels use player rays rather than an outer camera plane");
+                let (opaque, groups) = crate::occluder_fade::prepare(panel_mesh.textured);
+                assert_eq!(groups.len(), 1, "{name}: source panel survives render preparation");
+                assert_eq!(opaque.indices.len(), panel.indices(w).count()*6,
+                    "{name}: all floor triangles stay in the opaque static mesh");
+            }
             let pillars=placements.iter().filter(|p|matches!(p.form,Form::Special(extension::Detail::TinPillar))).collect::<Vec<_>>();
             assert_eq!(pillars.len(),1,"{name} must model its complete center pillar");
             let mut pillar_mesh=TerrainMeshData{footing_heights:vec![5.;w*h],..Default::default()};

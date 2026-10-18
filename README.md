@@ -4,6 +4,14 @@ A Rust implementation of Pokémon Crystal with browser and desktop clients,
 multiplayer, and an optional 2.5D overworld renderer. Game logic, rendering,
 audio, and networking are implemented in this repository.
 
+The default content builds enable [All Pokémon, solo](modpacks/all-pokemon/README.md):
+all 251 Pokémon have renewable wild encounters, and Celadon Department Store 4F
+sells a Link Cable for solo trade evolutions alongside all six evolution stones.
+
+The source exporter also includes Battle Tower's dynamically selected trainer
+dialogue. See the verified [source-text repair runbook](docs/game-content.md#targeted-source-text-repair-on-2026-10-17)
+for refreshing a prepared external workspace and preserving the default mods.
+
 ## Features
 
 - Classic 2D presentation with a switchable 2.5D overworld view.
@@ -77,6 +85,8 @@ The script assembles the pinned pret source outside the checkout, exports game
 content with Rust, verifies audio and gameplay, and publishes ignored native,
 browser, and TUI packs under `content-packs/`. Concurrent agents use these packs
 and separate Cargo target directories; see the [build runbook](docs/game-content.md#share-packs-and-isolate-builds).
+Publication also checks an earned Lance victory through the Hall of Fame,
+credits, title return and the production Continue transaction to New Bark.
 
 ### 2. Create your server secret
 
@@ -190,7 +200,9 @@ with the Rust `pack_core` command in [Game content setup](docs/game-content.md).
 
 The 3D renderer includes material-specific highlights, sky reflections, filtered
 detail textures and camera-fitted shadows. Native hardware defaults to the high
-quality preset with SMAA, supported SSAO and HDR; browsers use balanced quality.
+quality preset with SMAA Ultra, supported SSAO and HDR; browsers use balanced
+quality. Character paintings use filtered mipmaps, and authored 3D textures
+use anisotropic filtering for clearer oblique views and less texture shimmer.
 See [render quality settings](docs/render-quality.md) for presets and fallbacks.
 
 In the 3D overworld, the first Pokémon in the party follows the trainer's
@@ -198,6 +210,11 @@ trail. Reordering the party changes the companion, and it stays with the
 trainer across map transitions. Surf shows the trainer seated on the Pokémon
 that used the move. That Pokémon remains the mount when the party is reordered;
 when it is the lead, it accompanies the trainer by carrying them.
+The rider follows the Pokémon's animated back through turns and swimming bob,
+with a seated pose fitted to its body width.
+This is the sole 3D Surf presentation: the Pokémon recorded by the field move
+carries the trainer. Pokémon retain their pack's Pokédex dimensions in every
+overworld role; mounting never enlarges or shrinks them to fit the rider.
 
 In 3D, stop on a chair, bench, or stool, or face an empty seat directly ahead.
 After a short pause, the trainer sits automatically. Moving away makes them stand.
@@ -218,6 +235,25 @@ Add `--load-save content-packs/player.crystalsave` to load that save.
 Native controls use `Enter` for Start, alongside the arrow keys, `Z`, `X`,
 and Right Shift. Hold B (`X`) with a direction to run at twice walking speed;
 [running shoes](modpacks/running-shoes/README.md) are enabled by default.
+
+The [competitive battle mod](modpacks/competitive-battles/README.md) adds a
+physical/special category for each move, a move inspection board, and a
+trainer AI that plans attacks, recovery, and switches through the Rust battle
+engine. Six trainer-class profiles share the same search strength, with distinct
+styles for pressure, setup, disruption, endurance, switching, and balanced play.
+The pack initializer and hosted pack preparation enable it by default.
+Its builder can also create a separate ignored pack from existing local content.
+
+Standard packs also enable [Wild Challenge](modpacks/wild-challenge/README.md):
+wild Pokémon scale with your team, receive legal complementary movesets, and
+use the competitive planner. Native, browser, and terminal/MCP builds share
+these defaults. Existing external content can be refreshed with the Rust
+`pack_default_battles` builder documented in the content guide. These rules
+change pack identity; use a new save for a newly upgraded pack.
+
+The refreshed local browser game is available at
+<http://localhost:3006/?multiplayer=off>. Its prepared runtime can be restarted
+with `just serve 3006 .local/default-battles-runtime`.
 
 Native Bevy enables gamepads and responsive window sizing by default, starting
 with an initial window up to 1280×800, fitted to the display’s DPI and size. Steam Deck and other handhelds can use their standard gamepad or
@@ -369,6 +405,8 @@ screenshots for visual changes and the checks you ran in pull requests.
 - [Meshtastic battle/trade profile](modpacks/meshtastic/README.md)
 - [Flygon modpack](modpacks/flygon/README.md)
 - [Native Rust text renderer and TUI](modpacks/text-tui/README.md)
+- [Wild Challenge: player-relative levels and competitive wild movesets](modpacks/wild-challenge/README.md)
+- [Trainer rematches with level and moveset scaling](modpacks/trainer-rematches/README.md)
 - [Deployment and maintenance](docs/deployment.md)
 - [Game fidelity audit](FIDELITY_AUDIT.md)
 - [Renderer inspection](RENDER_AT_LOCATION.md)

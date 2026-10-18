@@ -286,6 +286,9 @@ pub fn shape_for_source(source: &VisualTileSource) -> CellShape {
     if let Some(shape) = park_shape(source) {
         return shape;
     }
+    if crate::battle_tower::cliff_source(source) {
+        return CellShape::RaisedTop {height:MOUNTAIN_CLIFF_HEIGHT,solid:SolidKind::Bank};
+    }
     if let Some(shape) = kanto_cliff_shape(source) {
         return shape;
     }

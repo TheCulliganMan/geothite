@@ -15,8 +15,10 @@ pub(super) fn append(
         let (metatile, column, art, label) = match s.tileset_id.as_ref() {
             "johto" => (0x73, 0, [[0x46, 0x47], [0x56, 0x57]], "johto/mountain_cave"),
             "johto_modern" => (0x73, 2, [[0x45, 0x22], [0x27, 0x28]], "johto/mountain_cave"),
-            "kanto" => (
-                0x06,
+            // The tall northern cliff embeds the same complete mouth in
+            // block 70; block 06 supplies the separate low mound entrance.
+            "kanto" if matches!(s.metatile_id,0x06|0x70) => (
+                s.metatile_id,
                 0,
                 [[0x48, 0x49], [0x58, 0x59]],
                 "outdoor/kanto_mountain_cave",
@@ -214,6 +216,7 @@ mod tests {
             ("johto", 0x73, 0, [[0x46, 0x47], [0x56, 0x57]]),
             ("johto_modern", 0x73, 2, [[0x45, 0x22], [0x27, 0x28]]),
             ("kanto", 0x06, 0, [[0x48, 0x49], [0x58, 0x59]]),
+            ("kanto", 0x70, 0, [[0x48, 0x49], [0x58, 0x59]]),
         ] {
             let mut sources = vec![super::super::tests::source_with_tile(1, 0, 0, 6); 16];
             for y in 0..2 {

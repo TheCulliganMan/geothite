@@ -45,12 +45,59 @@ height. The production motion tracker passes its smoothed speed blend to the
 skin, including NPCs and remote players. Idle, jumping, sitting, surfing and
 bicycle poses retain their separate presentation paths.
 
+Overworld `biker` NPCs use the shared bicycle frame, articulated pedals and
+mounted human pose. Bikes follow each NPC's ground anchor, smoothed facing and
+distance-driven pedal phase; stopped riders keep their feet on the pedals.
+The Biker's mounted body is included in its culling bounds. The people reviewer
+shows Biker on the bike by default, including when a cycle phase is supplied.
+The supplied-rig regressions pass for mounted hand/sole contact and body bounds
+over 32 pedal phases, shared rider/bike turns and anchors, independent NPC
+pedals, sprite replacement/removal, and all 78 initial character pose cases.
+Four-angle renders at pedal phases 0 and 0.5 and a production Route 8 comparison
+at `(14, 9)`, noon, were inspected. All three Bikers are mounted at their source
+positions and facing; the paired 2D/3D capture preserved the game state.
+
 For four-angle motion reviews, pass a normalized cycle phase as the reviewer's
 third argument. `CRYSTAL_PEOPLE_REVIEW_RUN_BLEND=0` selects walking (the default),
 `1` selects running, and intermediate values inspect the transition.
 `CRYSTAL_PEOPLE_REVIEW_RUN_WEIGHT` still controls the blend from idle to motion.
 The reviewer's `--validate-walk` mode runs the same CPU gait regressions as the
 unit suite against the supplied rigs, without opening a graphics window.
+
+## Relaxed human idles
+
+Standing actors use `human_idle` rather than the supplied crouched Idle clip.
+Their hip-width stance keeps level soles planted through breathing and slow
+weight shifts. Shoulders and open hands hang naturally, with restrained head
+glances. Children, family characters, staff, scholars, older characters,
+confident trainers, broad builds and composed characters have different
+timing, arm bends and weight distribution. Stable identity phases and the
+world's instance clocks keep shared rigs from moving in unison.
+
+Spawn and subsequent animation updates sample the same pose. Walk transitions
+reuse the production leg contact solver; mounted and seated poses keep their
+existing fitting paths. Idle sampling changes only skin transforms, without
+per-frame allocation or changes to gameplay position or facing. Culling bounds
+include the new poses.
+
+The reviewer's `--validate-idle` mode checks all 75 identities for relaxed
+silhouettes, foot contact, continuous clocks and distinct poses, then checks
+skinned shoe floors and bounds through idle/walk/run blends. Use
+`--validate-instances` to run the production spawn, independent-skin and mounted
+contact regressions directly, without compiling unrelated game-pack fixtures;
+set `CRYSTAL_OPEN_MODEL_ROOT` to the supplied artwork directory for these checks. Use
+`CRYSTAL_PEOPLE_REVIEW_IDLE_SECONDS` to inspect later moments in a four-angle
+capture. `CRYSTAL_PEOPLE_REVIEW_HEADLESS=1` together with
+`CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET=1` captures without a desktop window.
+Keep `CRYSTAL_PREVIEW_MUTE=1` set for visual reviews.
+Use the `wasm-dev` profile's default optimization for full-roster instance
+checks; preparing every outfit with a per-crate optimization level of zero is slow.
+
+The idle and gait validators and production instance/contact regressions passed
+with the supplied artwork. Eleven characters were inspected from four angles,
+with four also inspected at a later idle time. A held-state 2D/3D comparison in
+`GoldenrodDeptStore1F` at `(8, 6)`, noon, preserved actor positions and facing.
+This verifies the relaxed posing; the broader anatomy and painting review remains open.
 
 ## Validation of legacy human removal
 

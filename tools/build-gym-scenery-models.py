@@ -112,8 +112,8 @@ for i in range(6):
  a=i*math.tau/6+.4
  leaf('Small crown folded facet',(.48*math.cos(a),.42*math.sin(a),1.11),(.30*math.cos(a),.27*math.sin(a),1.31),.095,'leaf_gold')
 
-def prism(name,z0,z1,material,mask,inset=0):
- # Chamfer only an exposed exterior corner; joined edges remain exactly aligned.
+def maze_outline(mask,inset=0):
+ # Chamfer exposed exterior corners while joined edges keep their exact planes.
  west=-.5+(inset if mask&8 else 0);east=.5-(inset if mask&2 else 0);south=-.5+(inset if mask&4 else 0);north=.5-(inset if mask&1 else 0)
  ch=.075;corners=[(west,south),(east,south),(east,north),(west,north)];pts=[]
  for i,(x,y) in enumerate(corners):
@@ -122,16 +122,42 @@ def prism(name,z0,z1,material,mask,inset=0):
    prev=corners[(i-1)%4];nex=corners[(i+1)%4]
    a=Vector((x,y));va=(Vector(prev)-a).normalized();vb=(Vector(nex)-a).normalized();pts.extend([tuple(a+va*ch),tuple(a+vb*ch)])
   else:pts.append((x,y))
+ return pts
+
+def closed_prism(name,pts,z0,z1,material):
  n=len(pts);verts=[(x,y,z)for z in [z0,z1]for x,y in pts]
  faces=[tuple(reversed(range(n))),tuple(range(n,2*n))]+[(i,(i+1)%n,(i+1)%n+n,i+n)for i in range(n)]
  return poly(name,verts,faces,material)
+
+def prism(name,z0,z1,material,mask,inset=0):
+ return closed_prism(name,maze_outline(mask,inset),z0,z1,material)
+
+def beveled_coping(mask):
+ # One continuous dressed stone, with a broad bevel only at exposed edges.
+ # Interior tessellation carries fine world-space pigment; it changes neither
+ # the level top nor neighbor contacts and introduces no stud/panel grid.
+ lower=maze_outline(mask);upper=maze_outline(mask,.10);n=len(lower)
+ verts=[(x,y,z)for z,ring in [(.82,lower),(.93,lower),(1.,upper)]for x,y in ring]
+ faces=[tuple(reversed(range(n)))]
+ for layer in range(2):
+  for i in range(n):
+   j=(i+1)%n;faces.append((layer*n+i,layer*n+j,(layer+1)*n+j,(layer+1)*n+i))
+ outer=list(range(2*n,3*n))
+ for size in [.66,.30]:
+  inner=list(range(len(verts),len(verts)+n));verts.extend((x*size,y*size,1.)for x,y in upper)
+  for i in range(n):
+   j=(i+1)%n;faces.append((outer[i],outer[j],inner[j],inner[i]))
+  outer=inner
+ center=len(verts);verts.append((0.,0.,1.))
+ for i in range(n):faces.append((outer[i],outer[(i+1)%n],center))
+ poly('Beveled continuous stone coping',verts,faces,'coping')
 
 for mask in range(16):
  begin(f'maze_wall_{mask:02x}')
  prism('Closed masonry base course',0,.34,'wall',mask,.018)
  prism('Continuous recessed belt course',.32,.42,'wall_shadow',mask,.032)
  prism('Closed dressed-stone upper course',.40,.84,'wall_light',mask,.055)
- prism('Broad hand-cut coping',.82,1.,'coping',mask)
+ beveled_coping(mask)
  # Edge ornament is only emitted on exposed faces. Every module retains the
  # exact unit footprint and 1.0 top datum, including an interior four-way join.
  for side,bit in [('north',1),('east',2),('south',4),('west',8)]:

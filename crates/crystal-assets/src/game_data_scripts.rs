@@ -679,6 +679,10 @@ impl GameDataSet {
         let Some(mut dispatch) = self.resolve_overworld_interaction(state, interaction)? else {
             return Ok(None);
         };
+        if let Some(script) = self.trainer_rematch_interaction(state, &dispatch)? {
+            dispatch.script = script;
+            return Ok(Some(dispatch));
+        }
         if !matches!(
             &interaction.target,
             OverworldInteractionTarget::Background { event_type }
@@ -1444,7 +1448,15 @@ impl GameDataSet {
             self.wild_battle_music_for_map_time(map_name, state.time.time_of_day)?
         };
         let catch_tutorial = request.battle_type == "BATTLETYPE_TUTORIAL";
-        let start = if dynamic_sweet_scent && request.battle_type == "BATTLETYPE_ROAMING" {
+        if !catch_tutorial && self.wild_challenge.is_some() {
+            if request.battle_type == "BATTLETYPE_ROAMING" {
+                let slot = state.roaming_pokemon.iter().position(|r| r.species.as_deref() == Some(request.species.as_str())).context("challenge roaming species is inactive")?;
+                request.level = self.scale_challenge_roamer(state, slot, 2)?;
+            } else {
+                request.level = self.challenge_level(state, request.level, 2);
+            }
+        }
+        let mut start = if dynamic_sweet_scent && request.battle_type == "BATTLETYPE_ROAMING" {
             let metadata = self.runtime_map_metadata_for_name(map_name)?;
             let current_map = (
                 u8::try_from(metadata.group_id).context("roaming battle map group exceeds byte")?,
@@ -1503,6 +1515,10 @@ impl GameDataSet {
                     )
                 })?
         };
+        if !catch_tutorial {
+            self.equip_wild_challenge_moves(&mut start.enemy_pokemon)?;
+            start.enemy_party = vec![start.enemy_pokemon.clone()];
+        }
         let resume_command_index = startbattle_command_index
             .checked_add(1)
             .context("scripted wild startbattle command index overflow")?;
@@ -1929,6 +1945,9 @@ impl GameDataSet {
                     "complete scripted trainer battle at {map_name}/{source_script}:{startbattle_command_index}"
                 )
             })?;
+        if won {
+            self.record_trainer_rematch_win(&mut staged_state, map_name, &completion.trainer_id);
+        }
         if matches!(staged_state.battle, BattleMemory::Inactive)
             && let Some((battle_type, roaming_slot, enemy, battle_map)) = battle_end
         {
@@ -2675,9 +2694,23 @@ impl GameDataSet {
         command_index: usize,
     ) -> Result<ScriptEconomyOutcome> {
         self.require_current_map(current_map, map_name)?;
-        let command = self
+        let mut command = self
             .script_economy_command(map_name, source_script, command_index)?
             .clone();
+        // Prices can be DEFs in the map script rather than currency-catalog
+        // entries. Resolve only this map's amount operands, preserving the
+        // pack's authoritative account caps and the core expression checks.
+        let constants = &self.story_event_script_constants;
+        for token in &mut command.amount_tokens {
+            if let Some(value) = constants.maps.get(map_name)
+                .and_then(|local| local.get(token))
+                .or_else(|| constants.global.get(token))
+            {
+                *token = u32::try_from(*value)
+                    .with_context(|| format!("script currency amount {map_name}:{token}={value} is not a u32"))?
+                    .to_string();
+            }
+        }
         core_apply_script_economy_command(state, command, &self.currency_constants)
             .map_err(|error| anyhow::anyhow!("apply script economy command: {error:?}"))
     }
@@ -3917,10 +3950,15 @@ impl GameDataSet {
         source_script: &str,
         command_index: usize,
     ) -> Result<ScriptMovementOutcome> {
-        self.require_current_map(current_map, map_name)?;
         let command = self
             .script_object_command(map_name, source_script, command_index)?
             .clone();
+        // A retained script may continue after newloadmap. PLAYER always
+        // addresses the live trainer; its movement program stays in the
+        // source module. Named objects still belong to their authored map.
+        if command.object_id.as_deref() != Some("PLAYER") {
+            self.require_current_map(current_map, map_name)?;
+        }
         let movement_label = command.movement.as_deref().with_context(|| {
             format!(
                 "script movement command at {source_script}:{command_index} has no movement label"
@@ -4407,10 +4445,14 @@ impl GameDataSet {
         command_index: usize,
         inputs: ScriptRuntimeInputs,
     ) -> Result<(ScriptRuntimeCommand, ScriptRuntimeOutcome)> {
-        self.require_current_map(current_map, map_name)?;
         let command = self
             .script_runtime_command(map_name, source_script, command_index)?
             .clone();
+        // Timing is interpreter state and can follow a cross-map load.
+        // Commands that address map state keep their live-map validation.
+        if !matches!(command.command.as_str(), "pause" | "wait") {
+            self.require_current_map(current_map, map_name)?;
+        }
         if let Some(object_id) = Self::script_runtime_live_object_reference_for_command(&command)? {
             Self::require_runtime_object_reference(overworld, &object_id)?;
         }

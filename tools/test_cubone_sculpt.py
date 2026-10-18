@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Stored skull anatomy, rooted gripping fingers, fitted gaze and bone club."""
-import copy,json,os,unittest
+import copy,os,unittest
 from pathlib import Path
 from cubone_sculpt import sculpture,anatomy,HEIGHT,INK
 from sculpt_geometry import translate
@@ -12,14 +12,14 @@ import test_nidorina_sculpt as attachments
 ROOT=Path(os.environ.get('CRYSTAL_CUBONE_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class CuboneTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'cubone.mesh.json').read_bytes())
+ def setUpClass(cls):from bone_keeper_glb import read_cubone;cls.model=read_cubone(ROOT/'cubone.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'cubone':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'cubone':self.m})
  def test_recipe_parity_floor_height_and_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from bone_keeper_glb import geometry_digest;self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for label,n in (('Orbit /',2),('Horn /',2),('Cheek /',2),('Finger /',6),('Thumb /',1),('Bone lobe /',4),('Toe claw /',2)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
  def test_skull_neck_snout_and_tail_have_actual_roots(self):
   for child,parent in (('Neck /','Body /'),('Head /','Neck /'),('Skull /','Head /'),('Snout /','Skull /'),('Tail /','Body /')):self.assertTrue(self.overlap(self.find(child),self.find(parent)),child)

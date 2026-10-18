@@ -7,11 +7,19 @@ from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_slime_sculpt import ray_intersections
 from bovine_sculpt import reverse_front
 from test_kingdra_sculpt import crossed_faces
+RIG_READY=os.environ.get('CRYSTAL_RAPTOR_BIRD_TEST_RIG_READY')=='1'
 ROOT=Path(os.environ.get('CRYSTAL_RAPTOR_BIRD_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 
 class RaptorBirdTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.ms={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def setUpClass(cls):
+  cls.ms={};cls.skin_sources={}
+  for s in SPECIES:
+   cls.skin_sources[s]=(ROOT/(s+'.glb')).exists()
+   if cls.skin_sources[s]:
+    from raptor_bird_glb import read_raptor_bird
+    cls.ms[s]=read_raptor_bird(ROOT/(s+'.glb'),s)
+   else:cls.ms[s]=json.loads((ROOT/(s+'.mesh.json')).read_bytes())
  def find(self,s,prefix,suffix=None):return next(p for p in self.ms[s]['primitives'] if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def overlap(self,a,b):
   xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
@@ -25,8 +33,15 @@ class RaptorBirdTests(unittest.TestCase):
  def test_finite_unit_normals_follow_actual_faces(self):assert_model_shading(self,self.ms)
  def test_regeneration_preserved_height_floor_and_budget(self):
   for s,m in self.ms.items():
-   self.assertEqual(m,sculpture(s));self.assertEqual(min(v for p in m['primitives'] for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in m['primitives'] for v in p['positions'][1::3]),HEIGHTS[s],places=6)
-   self.assertLess(sum(len(p['indices'])//3 for p in m['primitives']),85000);self.assertEqual(len(m['primitives']),len({p['part'] for p in m['primitives']}))
+   mode=RIG_READY or self.skin_sources[s]
+   if self.skin_sources[s]:
+    from raptor_bird_glb import geometry_digest
+    self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s,rig_ready=mode)))
+   else:self.assertEqual(m,sculpture(s,rig_ready=mode))
+   self.assertEqual(min(v for p in m['primitives'] for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in m['primitives'] for v in p['positions'][1::3]),HEIGHTS[s],places=6)
+   self.assertLess(sum(len(p['indices'])//3 for p in m['primitives']),40000 if mode else 85000);
+   if mode:self.assertLessEqual(sum(len(p['positions'])//3 for p in m['primitives']),20000)
+   self.assertEqual(len(m['primitives']),len({p['part'] for p in m['primitives']}))
  def test_species_specific_crest_and_feather_counts(self):
   for s,m in self.ms.items():
    for prefix,n in (('Wing /',2),('Primary /',16),('Rear primary /',16),('Covert /',12),('Rear covert /',12),('Tail /',5),('Leg /',2),('Foot /',2),('Toe / three',6),('Toe / rear',2),('Talon /',8),('Crest /',3 if s=='pidgeot' else 0),('Crown /',1 if s=='fearow' else 0),('Primary tip /',32 if s=='fearow' else 0),('Rear primary tip /',32 if s=='fearow' else 0)):

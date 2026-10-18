@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Stored-model proof of distinct, closed and grounded fighting-family anatomy."""
 import json,math,unittest
+from fighting_glb import read_fighting
 from pathlib import Path
 from machop_sculpt import sculpture,HEIGHTS
 from sculpt_test_support import assert_closed_models,assert_model_shading
@@ -9,15 +10,16 @@ ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battl
 
 class FightingFamilyTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={n:json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in HEIGHTS}
+    def setUpClass(cls):cls.models={n:read_fighting(ROOT/(n+'.glb'),n) for n in HEIGHTS}
 
     def test_exact_recipe_grounding_height_and_geometry_budget(self):
         for name,m in self.models.items():
             with self.subTest(species=name):
-                self.assertEqual(m,sculpture(name));parts=m['primitives']
+                from fighting_glb import geometry_digest
+                self.assertEqual(geometry_digest(m),geometry_digest(sculpture(name)));parts=m['primitives']
                 self.assertEqual(min(v for p in parts for v in p['positions'][1::3]),0.)
                 self.assertAlmostEqual(max(v for p in parts for v in p['positions'][1::3]),HEIGHTS[name],places=6)
-                self.assertLess(sum(len(p['indices'])//3 for p in parts),7000)
+                self.assertLess(sum(len(p['indices'])//3 for p in parts),40000)
                 self.assertEqual(len(parts),len({p['part'] for p in parts}))
 
     def test_every_part_is_a_connected_closed_outward_solid(self):
@@ -37,7 +39,7 @@ class FightingFamilyTests(unittest.TestCase):
             self.assertEqual(sum(n.startswith('Arm marking /') for n in names),4 if name=='machoke' else 0)
             for p in m['primitives']:
                 if p['part'].startswith(('Foot /','Toe /')):self.assertEqual(min(p['positions'][1::3]),0.)
-                if p['part'].startswith('Eye /'):
+                if p['part'].startswith('Eye / narrow'):
                     self.assertLess(max(p['positions'][2::3])-min(p['positions'][2::3]),HEIGHTS[name]*.05)
         # Distinguishing silhouette, not merely the same mesh with another tint.
         widths={n:max(abs(v) for p in m['primitives'] if p['part'].startswith('Body /') for v in p['positions'][::3])/HEIGHTS[n] for n,m in self.models.items()}

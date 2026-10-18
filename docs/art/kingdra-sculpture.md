@@ -48,3 +48,25 @@ grounding and normals. Native Bevy 0.20 captures previously returned black image
 see the [native review](native-pokemon-review.md). Neither stored-mesh checks
 nor software previews establish native presentation or TUI/MCP gameplay. The
 full 251-species appearance goal and usable rig search remain active.
+
+
+## Current skin preparation
+
+The current static export has 19,154 vertices and 31,156 triangles, within the
+existing skin budgets. Breast/eye surfaces fit actual stored parents; fins,
+folds, seams, horns and tail sections use bounded tessellation. The complete
+tail-root cap is seated inside the chest and the full inward coil remains
+uncrossed. A twelve-joint skin candidate adds independent head/fins, three tail
+carriers and paired branched crowns, retaining the genuinely hollow tapered
+muzzle and authored waterline. The normal static builder matches the current
+recipe exactly. Production skin registration, scoped Rust/native checks and
+same-state 3D/2D review remain pending. [The seahorse skin guide](seahorse-skins.md)
+records current geometry, hashes, checks and remaining gates. Earlier figures
+above describe the original static review.
+
+## Canonical skin publication
+
+The normal builder and direct sculpture CLI now publish strict canonical GLBs.
+Production registration uses these stored skins; the earlier static review and
+preparation notes above are historical. See [the current skin guide](seahorse-skins.md)
+for source geometry, checks, current production evidence and remaining limits.

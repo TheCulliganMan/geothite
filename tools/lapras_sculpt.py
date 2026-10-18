@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Original Lapras sculpture: curved neck, curled ears and seated spiked shell."""
 import math
-from sculpt_geometry import loft,curved_profiles,ellipsoid,tube,fitted_patch,crease_normals
-from bovine_sculpt import curved_tube,oval
+from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,crease_normals
+from bovine_sculpt import curved_tube,oval,smooth
 from abra_sculpt import surface
 from spider_sculpt import upper_skin
 from skin_glb import COORDINATES
@@ -13,21 +13,43 @@ RIM=(.81,.82,.86);SPOT=tuple(v*.70 for v in BLUE);INK=(.08,.12,.17);WHITE=(.98,.
 
 
 def flipper(side,rear):
-    q=ellipsoid(('Rear flipper / ' if rear else 'Fore flipper / ')+str(side),BLUE,(0,0,0),(1.,1.,1.),24,14)
-    # Curved broad leaf, thick at its shoulder and narrowing to a swept tip.
-    for field in ('positions',):
-        vv=[]
-        for i in range(0,len(q[field]),3):
-            x,y,z=q[field][i:i+3];t=(y+1.)/2.
-            span=.35 if rear else .57
-            vv.extend((side*(.28+span*t),.09+.055*(1.-t)+x*.043,
-                       (-.35 if rear else .16)+(-.18 if rear else .16)*t+z*(.125 if rear else .17)))
-        q[field]=vv
-    # Recompute smooth normals after non-uniform shaping, retain closed winding.
-    from chikorita_sculpt import mesh
-    v=[tuple(q['positions'][i:i+3]) for i in range(0,len(q['positions']),3)]
-    faces=[tuple(q['indices'][i:i+3]) for i in range(0,len(q['indices']),3)]
-    out=mesh(q['part'],'body',v,faces,True);out['base_color']=q['base_color'];return out
+    # A broad shoulder flattens into a swept paddle, then narrows to a soft tip.
+    # Blue upper and cream lower solids share the full cut boundary exactly.
+    if rear:
+        path=((.26,.120,-.32),(.38,.092,-.43),(.52,.072,-.55),(.66,.060,-.67))
+        widths=(.080,.130,.100,.003);depths=(.040,.032,.022,.003)
+    else:
+        path=((.27,.145,.14),(.42,.108,.23),(.62,.078,.37),(.81,.065,.48),(.89,.061,.52))
+        widths=(.095,.180,.170,.100,.004);depths=(.045,.036,.025,.015,.003)
+    points,widths=smooth(path,widths,3);_,depths=smooth(path,depths,3);result=[];n=11
+    for lower in (False,True):
+        v=[];faces=[]
+        for (x,y,z),width,depth in zip(points,widths,depths):
+            for j in range(n):
+                a=(math.pi if lower else 0.)+j*math.pi/(n-1)
+                v.append((side*x,y+depth*math.sin(a),z+width*math.cos(a)))
+        faces=[tuple(reversed(range(n))),tuple((len(points)-1)*n+j for j in range(n))]
+        for k in range(len(points)-1):
+            for j in range(n):a=k*n+j;b=k*n+(j+1)%n;faces.append((a,b,b+n,a+n))
+        name=('Flipper underside / '+('rear ' if rear else 'fore ') if lower else ('Rear flipper / ' if rear else 'Fore flipper / '))+str(side)
+        result.append(crease_normals(part(name,CREAM if lower else BLUE,v,faces,True),45.))
+    return result
+
+
+def carapace():
+    # A low seated plate rises to a domed crown; scalloping fades into the dome.
+    profiles=((.232,.260,.330,0.),(.275,.345,.428,.35),(.305,.365,.450,1.),
+              (.350,.360,.444,.80),(.420,.328,.405,.45),(.490,.276,.342,.20),
+              (.545,.211,.261,.05),(.581,.137,.173,0.),(.600,.060,.078,0.),(.605,.006,.009,0.))
+    n=64;v=[];faces=[]
+    for y,rx,rz,amount in profiles:
+        for j in range(n):
+            a=j*math.tau/n;wave=math.cos(10*a);spread=1.+.035*amount*wave
+            v.append((rx*math.cos(a)*spread,y-.010*amount*wave,-.18+rz*math.sin(a)*spread))
+    faces=[tuple(reversed(range(n))),tuple((len(profiles)-1)*n+j for j in range(n))]
+    for k in range(len(profiles)-1):
+        for j in range(n):a=k*n+j;b=k*n+(j+1)%n;faces.append((a,b,b+n,a+n))
+    return crease_normals(part('Shell / broad domed gray carapace',SHELL,v,faces,True),45.)
 
 
 def sculpture():
@@ -69,7 +91,7 @@ def sculpture():
             points.append((side*(.165+r*math.cos(a)),1.37+r*math.sin(a),.49-.018*t));radii.append(.037-.011*t)
         p.append(ellipsoid('Ear / fleshy curled backing '+str(side),BLUE,(side*.165,1.37,.465),(.097,.099,.031),16,10))
         p.append(tube('Ear / continuous inward curl '+str(side),BLUE,points,radii,14))
-        p.append(flipper(side,False));p.append(flipper(side,True))
+        p+=flipper(side,False);p+=flipper(side,True)
         for j,(yy,xx,rx,ry) in enumerate(((.39,.125,.021,.031),(.47,.098,.014,.028),(.99,.071,.012,.018),(1.09,.078,.010,.018))):
             p.append(fitted_patch('Neck spot / '+str(side)+' '+str(j),SPOT,oval(side*xx,yy,rx,ry,16),skin,.003))
     # A shallow closed crease follows the actual muzzle instead of crossing
@@ -81,13 +103,16 @@ def sculpture():
     p.append(tube('Mouth / fitted gentle muzzle crease',INK,mouth,[.0022]*len(mouth),8))
     p.append(curved_tube('Horn / short forehead cone',BLUE,[(0.,1.335,.735),(0.,1.407,.754),(0.,1.475,.745)],[.029,.022,.0015],18))
     # Shell overlaps torso, with a continuous rounded lip and firmly seated spikes.
-    shell=ellipsoid('Shell / broad domed gray carapace',SHELL,(0.,.34,-.18),(.363,.242,.455),36,20);p.append(shell)
-    ring=[(.354*math.cos(i*math.tau/64),.30,-.18+.44*math.sin(i*math.tau/64)) for i in range(65)]
-    p.append(tube('Shell rim / continuous pale rolled edge',RIM,ring,[.024]*len(ring),12));top=upper_skin(shell)
+    shell=carapace();p.append(shell)
+    ring=[]
+    for i in range(65):
+        a=i*math.tau/64;wave=math.cos(10*a);spread=1.+.035*wave
+        ring.append((.365*math.cos(a)*spread,.305-.010*wave,-.18+.450*math.sin(a)*spread))
+    p.append(tube('Shell rim / continuous pale rolled edge',RIM,ring,[.020]*len(ring),10));top=upper_skin(shell)
     for j,(x,z,h) in enumerate(((0.,-.20,.17),(-.20,-.14,.12),(.20,-.14,.12),
                               (-.18,-.39,.105),(.18,-.39,.105),(0.,-.51,.10),(-.25,.035,.09),(.25,.035,.09))):
         y=top(z,x)-.018
-        p.append(curved_tube('Shell spike / seated blunt cone '+str(j),SHELL,[(x,y,z),(x,y+h*.65,z-.01),(x,y+h,z-.024)],[.054,.038,.012],18))
+        p.append(curved_tube('Shell spike / seated blunt cone '+str(j),SHELL,[(x,y,z),(x*.98,y+h*.65,z-.012),(x*.97,y+h,z-.035)],[.060,.034,.012],18))
     p.append(curved_tube('Tail / short rear swimming taper',BLUE,[(0.,.18,-.48),(0.,.14,-.65),(0.,.09,-.78)],[.095,.069,.004],20))
     lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
     for q in p:

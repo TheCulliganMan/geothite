@@ -1,5 +1,12 @@
 # Nidorino poison-pin quadruped
 
+The current optimized GLB geometry, standard skin and production verification
+are recorded in [Nidorina and Nidorino skins](nido-middle-skins.md). The section
+below is the earlier static-sculpture record, including its former budgets and
+source fingerprints.
+
+## Prior static sculpture record
+
 `tools/nidorino_sculpt.py` replaces Nidorino's generic rounded family body with
 an original low quadruped. Its dedicated Rust battle registry entry remains
 in place. The builder dispatches this pure source and rejects the obsolete

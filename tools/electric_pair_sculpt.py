@@ -2,7 +2,9 @@
 """Original clawed Electabuzz and egg-shaped Elekid with open plug blades."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import part,ellipsoid,loft,curved_profiles,crease_normals
+from sculpt_geometry import part,ellipsoid,loft,curved_profiles,crease_normals,fitted_adaptive_contour
+from cubone_sculpt import skin_shading
+from goldfish_sculpt import surface
 from bovine_sculpt import oval,curved_tube,smooth,reverse_front
 from lugia_sculpt import paddle
 from raptor_bird_sculpt import paint
@@ -41,7 +43,8 @@ def plug(s):
   ff.extend(((i,j,2*n+j,2*n+i),(n+j,n+i,3*n+i,3*n+j),(j,i,n+i,n+j),(2*n+i,2*n+j,3*n+j,3*n+i)))
  return crease_normals(part('Plug / rooted yellow blade with actual contact hole '+str(s),YELLOW,vv,ff,True),35)
 
-def gaze(p,parent,baby):
+def gaze(p,parent,baby,paint_at=paint):
+ paint=paint_at
  for s in (-1,1):
   outline=((.028,.620),(.140,.660),(.128,.589),(.084,.566),(.046,.581)) if baby else ((.046,1.040),(.172,1.098),(.151,1.024),(.091,1.006))
   xy=[(s*x,y) for x,y in outline]
@@ -71,11 +74,41 @@ def elekid():
   p.append(ellipsoid('Foot / grounded yellow baby electric toe '+str(s),YELLOW,(s*.151,.037,.084),(.061,.037,.086),36,24))
  return p
 
+def adult_paint(name,color,xy,parent,th=.006,sub=3):
+ return fitted_adaptive_contour(name,color,xy,None,th,surface_at=surface(parent),initial_subdivisions=1)
+def adult_round(name,color,center,radii,segments=28,rings=18):
+ if name.startswith(('Knuckle /','Thumb /','Antenna ball /','Tail tip /','Tongue /')):cap=(20,12)
+ elif name.startswith(('Neck /','Mouth back /','Hand /','Foot /')):cap=(24,16)
+ else:cap=(28,18)
+ return ellipsoid(name,color,center,radii,min(segments,cap[0]),min(rings,cap[1]))
+def adult_tube(name,color,points,radii,segments=24):return curved_tube(name,color,points,radii,min(segments,24))
+def adult_striped_tube(p,label,points,radii,bands,steps=12):
+ base=adult_tube(label,YELLOW,points,radii);p.append(base)
+ pp,rr=smooth(points,radii,steps)
+ for j,(a,b) in enumerate(bands):
+  start=max(0,int(a*(len(pp)-1)));end=min(len(pp)-1,int(b*(len(pp)-1)))
+  p.append(adult_tube(label.replace(' /',' stripe /')+' '+str(j),INK,pp[start:end+1],[r+.003 for r in rr[start:end+1]],20))
+ return base
+def adult_shading(parts):
+ def find(prefix,side=None):return next(p for p in parts if p['part'].startswith(prefix) and (side is None or p['part'].endswith(' '+side)))
+ for i,p in enumerate(parts):
+  n=p['part'];side=n.split()[-1];parent=None;back=False
+  for child,owner in (('Eye socket /','Head /'),('Eye /','Eye socket /'),('Pupil /','Eye /'),('Back stripe /','Body /'),('Forehead /','Head /'),('Bolt /','Body /'),('Flank stripe /','Body /'),('Nostril /','Jaw / rooted yellow')):
+   if n.startswith(child):parent=find(owner,side if owner in ('Eye socket /','Eye /') else None);back=child=='Back stripe /'
+  if parent:parts[i]=reverse_front(skin_shading(reverse_front(p),reverse_front(parent))) if back else skin_shading(p,parent)
+ return parts
+
+ADULT_TAIL_POINTS=((0,.401,-.126),(.053,.314,-.334),(.260,.375,-.528),(.379,.568,-.516))
+def adult_arm(s):
+ if s==-1:return [(s*.144,.861,.008),(s*.285,.946,.015),(s*.349,1.156,.037),(s*.428,1.250,.072)],(s*.476,1.279,.114)
+ return [(s*.144,.852,.008),(s*.306,.918,.025),(s*.443,.899,.133),(s*.515,.871,.202)],(s*.572,.876,.267)
+
 def electabuzz():
+ ellipsoid=adult_round;curved_tube=adult_tube;striped_tube=adult_striped_tube;paint=adult_paint
  body=ellipsoid('Body / substantial yellow adult electric pear',YELLOW,(0,.640,-.014),(.260,.337,.205),48,30)
  neck=ellipsoid('Neck / rooted yellow adult electric support',YELLOW,(0,.948,.014),(.121,.119,.109),36,24)
  head=ellipsoid('Head / broad low yellow adult electric skull',YELLOW,(0,1.050,.033),(.280,.159,.190),48,30);p=[body,neck,head]
- gaze(p,head,False)
+ gaze(p,head,False,paint_at=paint)
  p.append(reverse_front(paint('Back stripe / fitted thick adult electric dorsal sweep',INK,[(-.077,.449),(-.133,.507),(-.103,.681),(-.057,.804),(.026,.923),(.107,.933),(.044,.819),(.009,.694),(-.031,.545)],reverse_front(body),.006,5)))
  p.append(paint('Forehead / fitted sharp black adult electric chevron',INK,[(0,1.054),(-.125,1.159),(-.068,1.127),(.023,1.190),(.011,1.138),(.102,1.173),(.039,1.092)],head,.006,4))
  p.append(paint('Bolt / fitted broad adult electric chest lightning',INK,[(-.083,.887),(.106,.861),(.035,.712),(.148,.710),(-.083,.422),(-.044,.633),(-.204,.615),(-.166,.741),(-.108,.729)],body,.007,4))
@@ -90,8 +123,7 @@ def electabuzz():
  for s in (-1,1):
   p.append(curved_tube('Fang / rooted ivory adult electric upper tooth '+str(s),WHITE,[(s*.087,.991,.241),(s*.087,.967,.258),(s*.085,.942,.267)],[.020,.016,.002],28))
   p.append(paint('Nostril / fitted small adult electric muzzle slit '+str(s),INK,oval(s*.049,1.006,.010,.005,24),upper,.003,3))
-  if s==-1:points=[(s*.144,.861,.008),(s*.285,.946,.015),(s*.349,1.156,.037),(s*.428,1.250,.072)];center=(s*.476,1.279,.114)
-  else:points=[(s*.144,.852,.008),(s*.306,.918,.025),(s*.443,.899,.133),(s*.515,.871,.202)];center=(s*.572,.876,.267)
+  points,center=adult_arm(s)
   striped_tube(p,'Arm / rooted bent yellow adult electric forelimb '+str(s),points,[.075,.081,.085,.063],[(.15,.25),(.39,.51),(.67,.79)])
   fist=ellipsoid('Hand / broad clenched yellow adult electric fist '+str(s),YELLOW,center,(.112,.096,.091),40,26);p.append(fist)
   furpaths=[[(s*.406,1.215,.042),(s*.433,1.170,.044)],[(s*.470,1.235,.079),(s*.490,1.190,.096)]] if s==-1 else [[(.490,.894,.180),(.468,.965,.198)],[(.544,.921,.208),(.513,.984,.218)]]
@@ -105,9 +137,9 @@ def electabuzz():
   for j in range(2):
    x=s*(.167+.058*j);p.append(curved_tube(f'Toe claw / rooted ivory adult electric point {s} {j}',WHITE,[(x,.053,.246),(x,.036,.301),(x,.024,.338)],[.026,.018,.002],28))
   p.append(curved_tube(f'Toe claw / rooted ivory adult electric point {s} 2',WHITE,[(s*.199,.044,.036),(s*.199,.028,-.046),(s*.199,.017,-.078)],[.021,.015,.002],28))
- striped_tube(p,'Tail / rooted long curved yellow adult electric balance',[(0,.401,-.126),(.053,.314,-.334),(.260,.375,-.528),(.379,.568,-.516)],[.050,.049,.041,.026],[(.13,.23),(.32,.42),(.52,.62),(.73,.83)])
+ striped_tube(p,'Tail / rooted long curved yellow adult electric balance',ADULT_TAIL_POINTS,[.050,.049,.041,.026],[(.13,.23),(.32,.42),(.52,.62),(.73,.83)])
  p.append(ellipsoid('Tail tip / rooted rounded yellow adult electric end',YELLOW,(.379,.568,-.516),(.027,.032,.027),32,22))
- return p
+ return adult_shading([crease_normals(q,45.) for q in p])
 
 def sculpture(name,normalize=True):
  if name not in SPECIES:raise ValueError(name)
@@ -119,6 +151,8 @@ def sculpture(name,normalize=True):
    q['base_color']=linear(tuple(v/255 for v in rgb))
  if normalize:
   for q in p:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+ if name=='electabuzz':
+  for q in p:q['positions']=[v or 0. for v in q['positions']]
  return {'name':name,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

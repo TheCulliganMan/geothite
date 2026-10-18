@@ -6,7 +6,8 @@ exports +Y-up/front +Z with a floor-centered origin and explicit threshold.
 from pathlib import Path
 # Load reusable geometric authoring helpers without generating the original kit.
 source = Path(__file__).with_name('build-new-bark-models.py').read_text()
-exec(compile(source.split('\nmake_house();')[0], 'new_bark_modeling_vocabulary', 'exec'))
+assert '\nbuilders=' in source,'New Bark authoring vocabulary boundary is missing'
+exec(compile(source.split('\nbuilders=',1)[0], 'new_bark_modeling_vocabulary', 'exec'))
 from mathutils import Matrix
 for n,c in {'roof_blue':(.18,.34,.55),'roof_blue_light':(.31,.48,.69),'roof_blue_dark':(.11,.22,.37),'roof_blue_warm':(.23,.40,.61),'violet':(.38,.29,.45),'violet_light':(.53,.44,.59),'violet_dark':(.24,.19,.32),'violet_warm':(.44,.34,.49),'plaster_service_wall':(.98,.91,.73),'plaster_service_mortar':(.88,.86,.77),'medical_red':(.62,.13,.11),'medical_white':(.94,.92,.84),'shop_sign_blue':(.12,.28,.46)}.items():
  m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True
@@ -19,8 +20,8 @@ def beam(n,a,b,w,d,mat):
  o.rotation_euler=(b-a).to_track_quat('Z','Y').to_euler();return o
 
 def source_service_letters(text,y,z,height,material='ink'):
- # Original solid stroke lettering, matching the words visible on the source
- # storefronts. Each stroke is a closed prism; no font/texture dependency.
+ # Original solid stroke lettering for storefront and landmark signs.
+ # Each stroke is a closed prism; no font/texture dependency.
  glyphs={
   'M':[((0,0),(0,1)),((0,1),(.375,.48)),((.375,.48),(.75,1)),((.75,1),(.75,0))],
   'A':[((0,0),(.375,1)),((.375,1),(.75,0)),((.18,.42),(.57,.42))],
@@ -28,8 +29,11 @@ def source_service_letters(text,y,z,height,material='ink'):
   'T':[((0,1),(.75,1)),((.375,1),(.375,0))],
   'P':[((0,0),(0,1)),((0,1),(.75,1)),((.75,1),(.75,.55)),((.75,.55),(0,.55))],
   'O':[((0,0),(0,1)),((0,1),(.75,1)),((.75,1),(.75,0)),((.75,0),(0,0))],
+  'D':[((0,0),(0,1)),((0,1),(.5,1)),((.5,1),(.75,.75)),((.75,.75),(.75,.25)),((.75,.25),(.5,0)),((.5,0),(0,0))],
+  'I':[((0,1),(.75,1)),((.375,1),(.375,0)),((0,0),(.75,0))],
   'K':[((0,0),(0,1)),((0,.45),(.75,1)),((0,.45),(.75,0))],
   'G':[((.75,1),(0,1)),((0,1),(0,0)),((0,0),(.75,0)),((.75,0),(.75,.5)),((.75,.5),(.40,.5))],
+  'E':[((0,0),(0,1)),((0,1),(.75,1)),((0,.5),(.60,.5)),((0,0),(.75,0))],
   'Y':[((0,1),(.375,.5)),((.75,1),(.375,.5)),((.375,.5),(.375,0))],
   'é':[((0,.38),(.75,.38)),((.75,.38),(.75,.72)),((.75,.72),(0,.72)),((0,.72),(0,0)),((0,0),(.75,0)),((.28,.93),(.59,1.20))],
  }
@@ -134,7 +138,7 @@ def service_building(kind):
   source_service_letters('MART',fy-.21,2.64,.25,'medical_white')
  # A restrained roof vent gives each roof a readable scale.
  cube('Roof vent base',(.99,.65,2.98),(.44,.43,.24),'plaster_shadow',.018)
- cube('Roof vent cap',(.99,.65,3.14),(.53,.52,.11),palette+'_dark',.022)
+ cube('Roof vent cap',(.99,.65,3.14),(.53,.52,.11),'stone_chimney_cap',.022)
 
 
 def make_gate():
@@ -171,7 +175,10 @@ def make_traditional(kind):
  for y in [-d/2-.025,d/2+.025]:
   for x in [-w*.4,-w*.2,0,w*.2,w*.4]:cube('Exposed timber rhythm',(x,y,1.28),(.09,.095,1.85),'timber_light')
  for xx in [-w/2,w/2]:mesh('Traditional pale gable',[(xx,-d/2,2.23),(xx,d/2,2.23),(xx,0,3.0)],[(2,1,0)] if xx<0 else [(0,1,2)],'plaster_light')
- roof(w+.48,d+.51,2.25,3.08,'violet',6,gable_material='plaster_light')
+ if wide:
+  town_roof(w+.48,d+.51,2.25,3.08,'violet',gable_material='plaster_light',columns=15)
+ else:
+  roof(w+.48,d+.51,2.25,3.08,'violet',6,gable_material='plaster_light')
  fy=-d/2-.035;door(fy,z=1.03,w=.88,h=1.56)
  for x in [-w*.32,w*.32]:
   window(x,1.28,fy,w=.79 if wide else .60,h=.78)
@@ -179,14 +186,64 @@ def make_traditional(kind):
  for a in [-90,90]:window(0,1.27,-w/2-.02,w=.9,h=.76,angle=a)
  cube('Traditional stone threshold',(0,-1.925,.10),(1.28,.69,.20),'stone_light',.024)
  if wide:
-  facade_cube('Source Gym nameboard',0,2.07,1.32,.37,fy-.11,.12,'cream',bevel=.027)
-  source_service_letters('GYM',fy-.19,2.07,.25)
+  # A boxed lintel projects beyond the deep fascia, keeping the whole native
+  # name legible from the production elevated camera while retaining its back.
+  facade_cube('Source Gym nameboard',0,2.07,1.32,.37,fy-.21,.32,'cream',bevel=.027)
+  source_service_letters('GYM',fy-.39,2.07,.25)
 
+
+def pagoda_roof(width,depth,eave,ridge,palette):
+ # Four curved hips share closed corners. Source paint still owns every tile.
+ x,y=width/2,depth/2
+ outer=[(-x,-y),(x,-y),(x,y),(-x,y)]
+ inner=[(a*.18,b*.18) for a,b in outer]
+ def point(side,u,t,lift=0):
+  a,b=outer[side],outer[(side+1)%4];c,d=inner[side],inner[(side+1)%4]
+  px=(a[0]*(1-u)+b[0]*u)*(1-t)+(c[0]*(1-u)+d[0]*u)*t
+  py=(a[1]*(1-u)+b[1]*u)*(1-t)+(c[1]*(1-u)+d[1]*u)*t
+  pz=eave+(ridge-eave)*t**1.45+.10*(1-t)**6+.10*abs(2*u-1)**4*(1-t)**3
+  return (px,py,pz+lift)
+ def shell(name,rings,material):
+  count=len(rings[0]);vs=[p for ring in rings for p in ring]
+  fs=[tuple(reversed(range(count))),tuple(range(count,2*count))]
+  fs.extend((i,(i+1)%count,(i+1)%count+count,i+count) for i in range(count))
+  mesh(name,vs,fs,material)
+ for side in range(4):
+  # The continuous dark timber deck closes every gap without an open skirt.
+  for row in range(5):
+   for column in range(2):
+    u0,u1=column/2,(column+1)/2;t0,t1=row/5,(row+1)/5
+    ps=[point(side,u,t) for u,t in [(u0,t0),(u1,t0),(u1,t1),(u0,t1)]]
+    shell('Pagoda continuous closed deck',[[(*p[:2],p[2]-.15) for p in ps],
+      [(*p[:2],p[2]-.07) for p in ps]],palette+'_dark')
+  for row in range(5):
+   cuts=[i/6 for i in range(7)] if row%2==0 else [0.]+[(i+.5)/6 for i in range(6)]+[1.]
+   for column,(left,right) in enumerate(zip(cuts,cuts[1:])):
+    u0=left+.003;u1=right-.003
+    t0=row/5;t1=min(1.,(row+1.10)/5)
+    rings=[]
+    for t in [t0,t1]:
+     top=[point(side,u0+(u1-u0)*j/3,t,.018+row*.012+.032*math.sin(math.pi*j/3)) for j in range(4)]
+     rings.append(top+[point(side,u1,t,-.035+row*.012),point(side,u0,t,-.035+row*.012)])
+    material=palette+('_light' if (column*17+row*7+side*3)%11==0
+      else '_warm' if (column*17+row*7+side*3)%11==7 else '')
+    shell('Pagoda closed curved ceramic course',rings,material)
+  for segment in range(6):
+   u0,u1=segment/6,(segment+1)/6
+   ps=[point(side,u,t) for u,t in [(u0,0),(u1,0),(u1,.025),(u0,.025)]]
+   shell('Pagoda swept timber fascia',[[(*p[:2],p[2]-.14) for p in ps],
+      [(*p[:2],p[2]-.025) for p in ps]],'timber_light')
+  a,b=outer[side]
+  beam('Pagoda exposed corner bracket',(a*.84,b*.84,eave-.22),
+    (a*.96,b*.96,eave+.06),.075,.075,'timber')
+ cube('Pagoda closed upper cap',(0,0,ridge+.038),(width*.18,depth*.18,.12),palette+'_light',.015)
+ COL['roof_courses']='closed_prism_v1'
 
 def make_tower():
  begin('sprout_tower');foundation(3.60,6.00)
+ old_roofs=set();tiers=[(3.48,5.72,.25),(2.92,4.60,2.02),(2.32,3.42,3.59)]
  # Three diminishing timber-and-plaster storeys, with hand-laid violet roofs.
- for level,(w,d,z) in enumerate([(3.48,5.72,.25),(2.92,4.60,2.02),(2.32,3.42,3.59)]):
+ for level,(w,d,z) in enumerate(tiers):
   h=1.55
   cube('Tower pale storey',(0,0,z+h/2),(w,d,h),'plaster_light',.025)
   for x in [-w/2+.04,w/2-.04]:
@@ -197,6 +254,7 @@ def make_tower():
     facade_cube('Tower narrow window',x,z+.91,.42,.68,-d/2-.05,.09,'timber',0 if y<0 else 180)
     for dx in [-.12,0,.12]:facade_cube('Tower window lath',x+dx,z+.91,.035,.60,-d/2-.115,.022,'plaster',0 if y<0 else 180)
   old=set(COL.objects);roof(w+.46,d+.44,z+h,z+h+.66,'violet',5)
+  old_roofs.update(set(COL.objects)-old)
   # Tiered roof courses stay solid and have modeled rims all the way around.
  fy=-2.865;door(fy,z=1.06,w=.84,h=1.58)
  cube('Tower threshold',(0,-3.13,.11),(1.23,.54,.22),'stone_light',.025)
@@ -204,6 +262,17 @@ def make_tower():
  for x in [-.17,0,.17]:facade_cube('Tower brass plaque marks',x,1.97,.055,.14,fy-.16,.018,'yellow')
  rod('Tower finial',(0,0,5.89),(0,0,6.39),.07,'timber',8)
  for z,r in [(6.03,.16),(6.17,.13),(6.30,.095)]:cone('Tower finial ring',(0,0,z),r,r,.045,'yellow',10)
+ # Preserve the original source-fit datum before replacing the old roof parts.
+ # Walls, windows, thresholds and door anchor consequently replay bit-for-bit.
+ bpy.context.view_layer.update()
+ points=[o.matrix_world@v.co for o in COL.objects for v in o.data.vertices]
+ xx=max(abs(v.x) for v in points);lo=min(v.y for v in points);hi=max(v.y for v in points)
+ COL['native_fit']=[xx,lo,hi]
+ for o in old_roofs:
+  data=o.data;bpy.data.objects.remove(o,do_unlink=True)
+  if data.users==0:bpy.data.meshes.remove(data)
+ dx=xx-(tiers[0][0]+.46)/2;dy=hi-(tiers[0][1]+.44)/2
+ for w,d,z in tiers:pagoda_roof(w+.46+2*dx,d+.44+2*dy,z+1.55,z+2.21,'violet')
 
 
 def make_grass():
@@ -230,6 +299,8 @@ for name,col in list(ASSETS.items()):
   # including shelter and threshold, are accounted for in the exact plot fit.
   xx=max(abs(v.co.x) for o in objects for v in o.data.vertices)
   ys=[v.co.y for o in objects for v in o.data.vertices];lo,hi=min(ys),max(ys);cy=(lo+hi)/2
+  if col.get('native_fit'):
+   xx,lo,hi=col['native_fit'];cy=(lo+hi)/2
   tw,td=TARGETS[name]
   for o in objects:
    for v in o.data.vertices:v.co.x*=tw/(2*xx);v.co.y=(v.co.y-cy)*td/(hi-lo)
@@ -271,7 +342,7 @@ for name,col in list(ASSETS.items()):
  bpy.ops.export_scene.gltf(filepath=str(P/f'{name}.glb'),use_selection=True,export_format='GLB',export_yup=True,export_apply=True,export_materials='EXPORT',export_animations=False)
  STATS[name]={k:v for k,v in data.items() if k!='primitives'}
  # Closed window pockets retain every ceramic course and add reveal faces.
- assert tri_count<(12000 if col.get('roof_courses') else 7500),(name,tri_count)
+ assert tri_count<(13000 if name=='sprout_tower' else 12000 if col.get('roof_courses') else 7500),(name,tri_count)
 (P/'asset-stats.json').write_text(json.dumps(STATS,indent=2))
 # Inspection lineup is excluded from every runtime export.
 for name,(x,y) in {'pokecenter':(-6,3),'mart':(0,3),'route_gate':(6,3),'traditional_house':(-6,-3),'violet_gym':(0,-3),'sprout_tower':(7,-4),'grass':(-3,-5)}.items():

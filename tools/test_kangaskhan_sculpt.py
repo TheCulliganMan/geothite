@@ -2,6 +2,7 @@
 """Stored parent/baby attachments, open pouch, mouth clearance and surface guards."""
 import copy,json,os,unittest
 from pathlib import Path
+from kangaskhan_glb import read_kangaskhan,geometry_digest
 from kangaskhan_sculpt import sculpture,HEIGHT
 from sculpt_geometry import translate,ellipsoid
 from sculpt_test_support import assert_closed_models,assert_model_shading
@@ -12,14 +13,14 @@ import test_nidorina_sculpt as attachments
 ROOT=Path(os.environ.get('CRYSTAL_KANGASKHAN_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class KangaskhanTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'kangaskhan.mesh.json').read_bytes())
+ def setUpClass(cls):cls.model=read_kangaskhan(ROOT/'kangaskhan.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def test_closed_outward_surfaces(self):assert_closed_models(self,{'kangaskhan':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'kangaskhan':self.m})
  def test_recipe_bounds_unique_parts_and_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),70);self.assertEqual(len({p['part'] for p in self.ps}),70)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),70);self.assertEqual(len({p['part'] for p in self.ps}),70)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),120000)
  def roots(self):
   for child,parent in (('Head /','Body /'),('Pouch /','Body /'),('Skull plate /','Head /'),('Snout /','Head /'),('Jaw /','Head /'),('Mouth back /','Head /'),('Tongue /','Jaw /'),('Tail /','Body /'),('Baby body /','Pouch /'),('Baby neck /','Baby body /'),('Baby head /','Baby neck /')):yield self.find(child),self.find(parent)

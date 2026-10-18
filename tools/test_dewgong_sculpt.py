@@ -6,15 +6,18 @@ from dewgong_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 import test_donphan_sculpt as joins
-ROOT=Path(os.environ.get('DEWGONG_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/dewgong.mesh.json'))
+ROOT=Path(os.environ.get('DEWGONG_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/dewgong.glb'))
 class DewgongTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads(ROOT.read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):
+  from seal_glb import read_seal
+  cls.m=read_seal(ROOT,'dewgong');cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'dewgong':self.m})
  def test_finite_unit_normals_follow_winding(self):assert_model_shading(self,{'dewgong':self.m})
  def test_recipe_parity_height_grounding_and_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),50000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from seal_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
  def test_distinct_adult_seal_anatomy(self):
   for prefix,count in (('Body /',1),('Flipper /',2),('Flipper fold /',4),('Tail fluke /',2),('Muzzle /',1),('Nose /',1),('Eye /',2),('Eye glint /',2),('Fang /',2),('Horn /',1),('Mouth /',1)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),count)

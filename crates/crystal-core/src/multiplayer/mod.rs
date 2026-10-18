@@ -1228,6 +1228,24 @@ fn validate_multiplayer_token(
     Ok(())
 }
 
+// Script menu identities retain qualified assembly labels such as
+// .MenuHeader@CeladonDeptStore6FVendingMachine. Keep the exact identity on the
+// wire; local-label separators are specific to menus, not other link tokens.
+fn validate_menu_choice_identity(value: &str) -> Result<(), MultiplayerMessageError> {
+    let field = "menu_choice.menu_id";
+    if value.is_empty() {
+        return Err(MultiplayerMessageError::EmptyText { field });
+    }
+    let source_label=value.strip_prefix('.').and_then(|local|local.split_once('@'))
+        .is_some_and(|(local,parent)|is_exact_multiplayer_token(parent)
+            &&local.split('.').all(|part|!part.is_empty()&&part.bytes().all(|byte|
+                byte.is_ascii_alphanumeric()||matches!(byte,b'_'|b'-'|b':'))));
+    if !is_exact_multiplayer_token(value)&&!source_label {
+        return Err(MultiplayerMessageError::InvalidText { field });
+    }
+    Ok(())
+}
+
 fn validate_multiplayer_user_id(
     field: &'static str,
     value: &str,
@@ -1751,7 +1769,7 @@ impl MenuChoiceFrame {
                 frame: self.frame,
             });
         }
-        validate_multiplayer_token("menu_choice.menu_id", &self.menu_id)?;
+        validate_menu_choice_identity(&self.menu_id)?;
         Ok(())
     }
 
@@ -7224,6 +7242,22 @@ mod tests {
                 field: "menu_choice.menu_id"
             })
         );
+    }
+
+    #[test]
+    fn menu_choices_preserve_qualified_source_labels_without_relaxing_link_tokens() {
+        let id = ".MenuHeader@CeladonDeptStore6FVendingMachine";
+        let choice = MenuChoiceFrame::new(2, Frame(144), id, 0, 4).unwrap();
+        let message = LinkMessage::MenuChoice(choice);
+        let encoded = serde_json::to_string(&message).unwrap();
+        assert!(encoded.contains(id));
+        assert_eq!(serde_json::from_str::<LinkMessage>(&encoded).unwrap(), message);
+        assert!(validate_multiplayer_token("session_id", id).is_err());
+        for invalid in [".MenuHeader", ".MenuHeader@", ".@Script", ".Menu@@Script",
+            ".Menu@Script@Other", ".Menu Header@Script", " .Menu@Script", ".Menu@Script\n",
+            ".Menu/Name@Script", ".Menu@fallback-script", ".Menu@legacy-script", "Script.Menu"] {
+            assert!(MenuChoiceFrame::new(2, Frame(144), invalid, 0, 4).is_err(), "{invalid:?}");
+        }
     }
 
     #[test]

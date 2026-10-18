@@ -1,52 +1,54 @@
-# Rapidash sculpture
+# Rapidash sculpture and rig
 
-The canonical Rapidash mesh uses original geometry from `tools/rapidash_sculpt.py`.
-Its 54 named closed parts contain 86,516 triangles, with a grounded floor and
-normalized height 1.30. SHA-256:
-`cd7d461ad54d109e64377e22e7a1516b35fc2e8d21559b7518b4f7f7c0395fd8`.
+`tools/rapidash_sculpt.py` retains the athletic cream unicorn, long arched neck,
+proportioned skull and long muzzle, narrow red gaze, pointed ears and ivory
+forehead horn. The separate upper snout, lower jaw, dark oral chamber and pink
+tongue retain a real empty mouth opening. Three dark blue hooves support the
+resting model; the bent left foreleg holds its hoof above the floor. Seven
+closed fire banks grow from crown, mane, tail stem and four lower limbs, with
+fourteen fitted yellow core layers on both sides. No external geometry or rig
+is imported.
 
-The adult body has an athletic horizontal torso, long arched neck, proportioned
-horse head, pointed ears and a long ivory forehead horn. Layered narrow eyes
-carry fitted red irises and dark slits. The separate upper snout, lower jaw,
-recessed dark oral chamber and pink tongue retain an actual empty mouth opening.
-Rounded shoulders connect to four curved limbs: three dark blue hooves support
-the model while one bent foreleg holds its hoof above the floor.
+`tools/fire_horse_glb.py` exports the canonical `rapidash.glb`: 54 logical
+solids packed into 47 runtime material groups, 17,555 vertices, 26,744
+triangles, 15 joints, 228 accessors and 724,584 bytes. Authoring height remains
+1.30; verified pack height is 1.7018 m. Redundant surface sampling is reduced
+within the unchanged skin limits. Adaptive fire-core fitting preserves actual
+clearance; core shading follows the underlying fire normals.
 
-Seven closed orange fire banks connect to the crown, neck/back, rooted tail stem
-and four lower limbs. Fourteen yellow core layers follow both actual stored
-sides. The larger tail required a distinct seating offset to keep core face
-centers above the curved orange parent; this was corrected without relaxing the
-clearance regression. The flame helper's optional offset preserves Ponyta's
-canonical geometry byte-for-byte. Both horses now use dedicated pure builder
-dispatch; the obsolete generic horse implementation has been removed while the
-existing exact Rust species routes are preserved.
+Logical neutral geometry digest:
+`8e17f3827417a173789716bfc7a5d2af03b236876a0fa606eea76b8bb726d54f`.
+Packed runtime digest:
+`c56d7e051ad01b2f418fca26b70baa6f9c682bc2048ad11e790fee0401ec156f`.
 
-All fourteen candidate checks passed in 52.872 seconds. These cover recipe
-parity, finite closed outward solids, face-aligned normals, height/floor/budget,
-named anatomy, actual roots for body/neck/head/ears/horn/jaws/tongue/shoulders/
-legs/hooves/tail/fire, three grounded hooves and one raised hoof, fitted vertices
-and face/edge clearance, uncrossed curved parts, twelve empty aperture probes,
-a filled-mouth negative and detached appendage negatives. Final front, oblique
-and rear software renders each exited 0 at 800×824 and were inspected in full.
-The installed mesh bytes match the reviewed candidate.
+The continuous neck blends body, neck and head. Coherent gaze, muzzle and horn
+follow the head, with separate ears and jaw. Tongue follows the lower jaw.
+Tail stem and plume, mane and crown have independent carriers. Ankle fire and
+both core faces share each matching leg carrier. Three supporting hooves stay
+fixed in battle; the raised foreleg articulates independently. World walking
+uses four complete chains and carries the ankle banks with their limbs,
+retaining the authored elevated foreleg. Idle, attack and hit use source-cue
+timing and return to neutral endpoints. Builder, asset readers and production
+registry use the GLB; the obsolete static JSON is removed.
 
-All fourteen installed canonical checks passed in 41.216 seconds. The fresh native build exited 0. The queued Rust integration test passed once
-in 1.50 seconds. A direct repeat confirmed both complete final horse SHAs in
-the executable and passed once in 3.81 seconds, with executable identity
-`(217688309, 223956624, 1791810097391192065)` and both canonical model SHAs
-stable across the test. This verifies bounded reusable models, not all-251
-art quality.
+All 33 combined Python checks for both horses pass, including actual empty
+jaw samples during motion, fourteen fitted core faces, occupied attachment
+roots with detached negative controls, closed outward geometry, shading,
+weights, local articulation, fixed supports and the raised forehoof, winding,
+strain and clip contracts. Front, side and rear poses of all clips were
+inspected, and Blender exports are byte-identical. Shiny checks are skipped
+at the user's request. Browser visual acceptance remains open.
 
-An actual muted native image-target GPU battle capture exited 0 at 2000×1400
-and was inspected in full. Rapidash's tall body, raised foreleg, red eye,
-horn, mouth and mane/tail silhouette were visible with opposing Pidgeotto,
-arena floor and battle HUD. Both final horse SHAs and the mute switch were
-present in the executable; `CRYSTAL_PREVIEW_MUTE=1` was set for launch.
-Executable identity `(217278815, 204526496, 1791808141760262307)` and both
-model SHAs stayed stable across capture. These are static image-target checks;
-live-window, browser, animation and gameplay behavior are separate scopes.
+Four focused runtime checks for both horses pass for GPU activation at verified
+pack sizes, independent carriers, animated culling and four complete world
+chains through 64 phases. Both shared all-species geometry and exact source-cue
+pose timing regressions pass.
 
-The [source review](fire-horses-source-review.md) records official references and
-specific CC BY candidate listings. No external archive or rig was retrieved or
-imported. This is original static geometry, with no animation claim. Task-owned ignored fire-horse verification scratch was removed after all
-verification jobs completed.
+The rebuilt native Route 29 Rapidash/Hoppip 3D/2D pair was inspected at
+preserved state: frame 3192, checksum 1320301839, LCD frame 3901 and virtual
+time 70.527144961. Complete horn, raised forehoof, open jaw, flowing fire and
+correct RAPIDASH HUD remain readable; the three supporting hooves meet the
+terrain. Normal terrain admission passes at the original pack size and the
+existing -110-degree review angle. No shader errors were reported. Ignored
+evidence is `target/pokemon-native-review/rapidash-normal`. Grass height is
+untouched.

@@ -89,17 +89,25 @@ def anatomy():
     return parts
 
 
-def sculpture():
+def sculpture(normalize=True):
     parts = anatomy()
     low = min(v for part in parts for v in part['positions'][1::3])
     high = max(v for part in parts for v in part['positions'][1::3])
     scale = HEIGHT/(high-low)
     for part in parts:
-        part['positions'] = [round((v-(low if i % 3 == 1 else 0))*scale, 7)
-                             for i, v in enumerate(part['positions'])]
+        if normalize:
+            part['positions'] = [round((v-(low if i % 3 == 1 else 0))*scale, 7)
+                                 for i, v in enumerate(part['positions'])]
         part['normals'] = [round(v, 7) for v in part['normals']]
+        for key in ('positions', 'normals'):
+            part[key] = [0. if v == 0 else v for v in part[key]]
     return {'name': 'omastar', 'version': 1, 'coordinate_system': COORDINATES,
             'primitives': parts}
+
+
+def write_canonical(output):
+    from nautilus_glb import export_nautilus
+    (output/'omastar.glb').write_bytes(export_nautilus('omastar'))
 
 
 def main():
@@ -107,7 +115,7 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
-    (args.output/'omastar.mesh.json').write_text(json.dumps(sculpture(), separators=(',', ':')))
+    write_canonical(args.output)
 
 
 if __name__ == '__main__':

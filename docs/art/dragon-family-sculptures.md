@@ -85,3 +85,8 @@ GPU images do not resolve the separate ordinary-window capture issue.
 All own verification jobs completed before temporary candidates, previews,
 native images, logs and authoring/test bytecode were removed. Temporary reference
 browser tabs were closed. The shared Rust build cache remains in place.
+
+The later [canonical skin publication](dragon-family-skins.md) replaces these
+static exports with bounded, independently controlled GLBs. Current captures
+use the headless image path and never open a window; the historical window
+limitations above do not describe that path.

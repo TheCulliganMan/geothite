@@ -2,6 +2,7 @@
 """Stored vine roots, uncrossed strands, visible pupils and rounded shoe checks."""
 import copy,json,os,unittest
 from pathlib import Path
+from tangela_glb import read_tangela,geometry_digest
 from tangela_sculpt import sculpture,HEIGHT,RED,WHITE
 from sculpt_geometry import translate,linear
 from sculpt_test_support import assert_closed_models,assert_model_shading
@@ -11,7 +12,7 @@ import test_nidorina_sculpt as attachments
 ROOT=Path(os.environ.get('CRYSTAL_TANGELA_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class TangelaTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'tangela.mesh.json').read_bytes())
+ def setUpClass(cls):cls.model=read_tangela(ROOT/'tangela.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
@@ -19,7 +20,7 @@ class TangelaTests(unittest.TestCase):
  def test_closed_outward_surfaces(self):assert_closed_models(self,{'tangela':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'tangela':self.m})
  def test_recipe_floor_height_palette_and_round_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),110000)
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),110000)
   self.assertEqual(len(self.vines()),41);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for s in (-1,1):
    shoe=self.find('Shoe /',s);self.assertEqual(shoe['base_color'],linear(RED));self.assertEqual(self.find('Eye /',s)['base_color'],linear(WHITE));self.assertEqual(min(shoe['positions'][1::3]),0)

@@ -210,3 +210,30 @@ and Johto shoreline regressions pass, including the wall-coverage and four-edge
 bare-bank checks. The exported aperture regression passes for its four authored
 house/shop fixtures. Native review images live under the ignored
 `target/city-verify-final/`; its 37 paired state witnesses all preserve game state.
+
+Saffron's shared Kanto brick buildings retain lamp identity from the authored
+window tile (`$0a`), independently of its current palette. Deliberately unlit
+`$32` panes remain dark. A building meshed during daylight or dusk therefore
+keeps its emitters for the later RTC night transition. Glazed doors follow the
+same clock-driven emission. Newly created palette materials also inherit the
+current lighting immediately, including parts arriving after an idle scene.
+
+The disposable browser preview
+`http://localhost:3003/?preview=saffron&multiplayer=off` starts in Saffron at
+midnight without saving progress. It uses the production controller, renderer
+and optional CPU workers. `terrainWorker=0` selects the main-thread terrain
+path for comparison.
+
+Saffron verification covers 102 focused day-cycle, city-light, and modeled
+exterior regressions. The shared-city mesh audit finds 232 Saffron emitters;
+Celadon, Fuchsia, Goldenrod and Pallet also mesh successfully. Paired native
+2D/3D captures at `(20, 24)` cover midnight, dawn and noon, with all three
+state witnesses preserving the game state. Review images are ignored under
+`target/saffron-light-final/`.
+
+Hardware-browser captures also verify matching night windows in WebGPU and
+WebGL, without startup or shader errors. The tested bundles are installed in
+the local desktop preview. Saffron's terrain-worker request currently exceeds
+the existing protocol buffer limit; its production main-thread recovery and
+the explicitly selected main-thread path both render the lights correctly.
+The actor worker completes without fallback.

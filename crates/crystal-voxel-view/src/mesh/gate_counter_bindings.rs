@@ -3,6 +3,12 @@
 const NETWORKS: &[Network] = &[
     // Café service opening and source wall/shelf halo authenticate the whole C.
     Network {
+        maps: &["OlivineCafe"], map_size:[16,16], width:4,height:12,
+        fingerprint:0x2199f781cc104fa7,
+        rows:&[0,3,3,3,3,3,3,3,3,3,15,15],
+        phones:&[],boundary:[false,true,true,false],
+    },
+    Network {
         maps: &["CeladonCafe"], map_size: [24,16], width:8,height:12,
         fingerprint:0x2f8f438e4ea4ee3f,
         rows:&[0,3,3,3,3,3,3,3,3,3,255,255],

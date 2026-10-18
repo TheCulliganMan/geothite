@@ -95,8 +95,8 @@ pub(super) fn shape_approaches(
         // only the temporary tag before the material/batching boundary.
         for surface in [&mut mesh.solid,&mut mesh.textured,
             &mut mesh.animated_solid,&mut mesh.animated_textured] {
-            for uv in &mut surface.uvs {
-                if uv[0]==BANK_OWNER_UV {*uv=[0.;2];}
+            for (position,uv) in surface.positions.iter().zip(&mut surface.uvs) {
+                if uv[0]==BANK_OWNER_UV {*uv=new_bark::ledge_finish::cliff_material_uv(*position,g,origin);}
             }
         }
         return;
@@ -112,7 +112,7 @@ pub(super) fn shape_approaches(
         &mut mesh.animated_textured,
         &mut mesh.animated_solid,
     ] {
-        shape_surface(surface, cells, g);
+        shape_surface(surface, cells, g, origin);
     }
     // The original constant-height bank run omitted faces between adjacent
     // jump drawings. Each sawtooth reset now needs its own closed south lip.
@@ -159,7 +159,7 @@ pub(super) fn mark_bank_surface(s: &mut SurfaceMeshData, first: usize, owner: us
     s.uvs[first..].fill([BANK_OWNER_UV, owner as f32]);
 }
 
-fn shape_surface(s: &mut SurfaceMeshData, cells: &[&VisualTile], g: &GridGeometry) {
+fn shape_surface(s: &mut SurfaceMeshData, cells: &[&VisualTile], g: &GridGeometry, origin:[i32;2]) {
     let original = s.positions.clone();
     let mut changed = vec![false; original.len()];
     let mut toe_blend = vec![None; original.len()];
@@ -285,9 +285,9 @@ fn shape_surface(s: &mut SurfaceMeshData, cells: &[&VisualTile], g: &GridGeometr
             }
         }
     }
-    for uv in &mut s.uvs {
+    for (position,uv) in s.positions.iter().zip(&mut s.uvs) {
         if uv[0] == BANK_OWNER_UV {
-            *uv = [0.; 2];
+            *uv = new_bark::ledge_finish::cliff_material_uv(*position,g,origin);
         }
     }
     refresh_normals(s, &changed);
@@ -328,7 +328,7 @@ pub(super) fn finish_detached_grove_with_claims(
     if !cells.iter().any(|cell| bank(&cell.source)) {
         return;
     }
-    shape_surface(&mut mesh.solid, cells, g);
+    shape_surface(&mut mesh.solid, cells, g, origin);
     soften_lips_with_claims(mesh, cells, g, shapes, origin, claims);
 }
 
@@ -546,7 +546,7 @@ mod normal_fields {
                             }
                         }
                     }
-                    shape_surface(&mut mesh.solid, &cells, &g);
+                    shape_surface(&mut mesh.solid, &cells, &g, origin);
                     soften_lips(&mut mesh, &cells, &g, &shapes, origin);
                     mesh
                 };
@@ -581,7 +581,8 @@ mod tests {
         shape_approaches(&mut mesh,&cells,&g,&[CellShape::Flat],[0,0]);
         assert_eq!(mesh.solid.positions,before.positions);assert_eq!(mesh.solid.normals,before.normals);
         assert_eq!(mesh.solid.colors,before.colors);assert_eq!(mesh.solid.indices,before.indices);
-        assert!(mesh.solid.uvs.iter().all(|uv|*uv==[0.;2]));assert_eq!(mesh.footing_heights,[6.]);
+        assert!(mesh.solid.positions.iter().zip(&mesh.solid.uvs).all(|(p,uv)|
+            *uv==new_bark::ledge_finish::cliff_material_uv(*p,&g,[0,0])));assert_eq!(mesh.footing_heights,[6.]);
     }
 
     #[test]
@@ -607,7 +608,7 @@ mod tests {
                     assert!(original.iter().all(|p| (0. ..=8.).contains(&p[1])),
                         "rock masses stay low instead of adding upright grass curtains");
                     mark_bank_surface(&mut surface, 0, row * 2);
-                    shape_surface(&mut surface, &cells, &g);
+                    shape_surface(&mut surface, &cells, &g, [10,-7]);
                     for (before, after) in original.iter().zip(&surface.positions) {
                         let rise = ((before[2] - oz) / 32.).clamp(0., 1.);
                         let expected = if before[1] <= 6. { before[1] * rise }
@@ -616,7 +617,8 @@ mod tests {
                             "source row {row}, normal {normal:?}: {before:?} became {after:?}");
                         assert_eq!([after[0], after[2]], [before[0], before[2]]);
                     }
-                    assert!(surface.uvs.iter().all(|uv| *uv == [0.; 2]));
+                    assert!(surface.positions.iter().zip(&surface.uvs).all(|(p,uv)|
+                        *uv==new_bark::ledge_finish::cliff_material_uv(*p,&g,[10,-7])));
                 }
             }
         }

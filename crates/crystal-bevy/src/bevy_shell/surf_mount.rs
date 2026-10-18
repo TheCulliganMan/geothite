@@ -1,3 +1,25 @@
+fn publish_pokemon_dimensions(
+    shell: Res<BevyRuntimeShell>,
+    mut dimensions: ResMut<crystal_render_api::VisualPokemonDimensions>,
+) {
+    if !dimensions.meters.is_empty() {
+        return;
+    }
+    dimensions.meters = shell
+        .shell
+        .runtime()
+        .data()
+        .pokedex_entries
+        .iter()
+        .filter_map(|(species, entry)| {
+            (entry.species == *species)
+                .then(|| pokedex_dimension_meters(entry.height_digits))
+                .flatten()
+                .map(|meters| (species.clone(), meters))
+        })
+        .collect();
+}
+
 fn visible_surf_actor(snapshot: &RuntimeShellSnapshot) -> Option<(String, Dv)> {
     use crate::core::systems::field_moves::{SURF_ACTOR_DVS_MEMORY, SURF_ACTOR_SPECIES_MEMORY};
     let saved_dvs = snapshot
@@ -23,28 +45,17 @@ fn visible_surf_actor(snapshot: &RuntimeShellSnapshot) -> Option<(String, Dv)> {
             return Some((species.clone(), dvs));
         }
     }
-    // Older saves predate the retained identity. Use the source's party
-    // selection if it still knows Surf, otherwise its first Surf user.
-    let selected = snapshot
-        .script_events
-        .memory
-        .get("wCurPartyMon")
-        .and_then(|value| value.parse::<usize>().ok());
-    let can_surf = |slot: &&crate::RuntimePartySlotSnapshot| {
-        !slot.pokemon.is_egg && slot.pokemon.moves.iter().any(|m| m.name == "SURF")
-    };
-    snapshot
-        .party
-        .slots
-        .iter()
-        .filter(can_surf)
-        .find(|slot| Some(slot.index) == selected)
-        .or_else(|| snapshot.party.slots.iter().find(can_surf))
-        .map(|slot| (slot.pokemon.species.id.clone(), slot.pokemon.dvs))
+    // Only the retained identity from the actual field move can carry the
+    // player. Current menu selection or another Surf-capable party member
+    // must never substitute for a missing identity.
+    None
 }
 
 fn visible_lead_is_surf_actor(snapshot: &RuntimeShellSnapshot) -> bool {
     let Some(lead) = snapshot.party.slots.first() else {
+        return false;
+    };
+    let Some((species, dvs)) = visible_surf_actor(snapshot) else {
         return false;
     };
     if let Some(index) = snapshot
@@ -53,10 +64,16 @@ fn visible_lead_is_surf_actor(snapshot: &RuntimeShellSnapshot) -> bool {
         .get(crate::core::systems::field_moves::SURF_ACTOR_PARTY_MEMORY)
         .and_then(|value| value.parse::<usize>().ok())
     {
-        return lead.index == index;
+        return lead.index == index && lead.pokemon.species.id == species && lead.pokemon.dvs == dvs;
     }
-    visible_surf_actor(snapshot)
-        .is_some_and(|(species, dvs)| lead.pokemon.species.id == species && lead.pokemon.dvs == dvs)
+    lead.pokemon.species.id == species && lead.pokemon.dvs == dvs
+}
+
+fn clear_visible_surf_mount(frame: &mut crystal_render_api::VisualWorldFrame) {
+    use crystal_render_api::VisualActorId;
+    if frame.actors.iter().any(|actor| actor.id == VisualActorId::SurfMount) {
+        frame.actors.retain(|actor| actor.id != VisualActorId::SurfMount);
+    }
 }
 
 fn publish_surf_mount(
@@ -76,19 +93,15 @@ fn publish_surf_mount(
         rendered.player_sprite_mode,
         Some(MovementMode::Surf | MovementMode::SurfPika)
     ) {
-        if frame
-            .actors
-            .iter()
-            .any(|a| a.id == VisualActorId::SurfMount)
-        {
-            frame.actors.retain(|a| a.id != VisualActorId::SurfMount);
-        }
+        clear_visible_surf_mount(&mut frame);
         return;
     }
     let Ok(snapshot) = readonly_companion_snapshot(&shell) else {
+        clear_visible_surf_mount(&mut frame);
         return;
     };
     let Some((species, dvs)) = visible_surf_actor(&snapshot) else {
+        clear_visible_surf_mount(&mut frame);
         return;
     };
     let Some(index) = frame
@@ -96,6 +109,7 @@ fn publish_surf_mount(
         .iter()
         .position(|a| a.id == VisualActorId::Player)
     else {
+        clear_visible_surf_mount(&mut frame);
         return;
     };
     let player = &frame.actors[index];
@@ -115,6 +129,7 @@ fn publish_surf_mount(
             shiny,
             &mut images,
         ) else {
+            clear_visible_surf_mount(&mut frame);
             return;
         };
         let palette = if shiny {
@@ -127,6 +142,7 @@ fn publish_surf_mount(
                 ),
                 load_pokemon_palette(&shell.asset_root, &asset_id, PokemonSpriteSide::Front, true),
             ) else {
+                clear_visible_surf_mount(&mut frame);
                 return;
             };
             Some(crystal_render_api::VisualPokemonModelPalette { normal, appearance })

@@ -1,4 +1,5 @@
 //! GPU resources and instances for the external people reader.
+#[cfg(test)]
 use bevy::asset::RenderAssetUsages;
 use crate::{new_bark_actors::ModeledActor, open_people::PersonRig, VOXEL_RENDER_LAYER};
 use bevy::camera::{primitives::Aabb, visibility::RenderLayers};
@@ -12,7 +13,6 @@ use bevy::{
         },
 
 
-        render_resource::{Extent3d, TextureDimension, TextureFormat},
 
     },
 };
@@ -130,7 +130,7 @@ pub(crate) fn prepare_appearance(rig: &PersonRig, kind: CharacterKind) -> Prepar
     let locomotion_bounds = rig.locomotion_bounds();
     let mut bounds = (locomotion_bounds.0-Vec3::splat(hair_extension),
         locomotion_bounds.1+Vec3::splat(hair_extension));
-    if matches!(kind, CharacterKind::Trainer | CharacterKind::TrainerFemale) {
+    if matches!(kind, CharacterKind::Trainer | CharacterKind::TrainerFemale | CharacterKind::Biker) {
         let scale = Vec3::new(look.height / rig.height * look.width,
             look.height / rig.height, look.height / rig.height);
         let mounted = crate::bicycle::body_bounds(&rig, &body.positions,
@@ -186,8 +186,10 @@ fn accessory_mesh_gpu(mesh: Mesh, meshes: &mut Assets<Mesh>,
 pub(crate) struct Person {
     pub run_blend: f32,
     locomotion: crate::human_locomotion::HumanLocomotion,
+    idle_motion: crate::human_idle::HumanIdle,
     pub bicycle: bool,
     pub surfing: bool,
+    pub surf_half_width: f32,
     /// Accepted step progress and airborne blend; root lift belongs to terrain presentation.
     pub hop_step: Option<(f32, f32)>,
     hop: Vec<Transform>,
@@ -239,18 +241,8 @@ impl PeopleGpu {
             // The validated painting catalog is immutable. Different body
             // rigs can share its exact pixels without sharing their geometry.
             let texture = textures.entry(look.texture_key).or_insert_with(|| {
-                let size = painting.size;
-                images.add(Image::new(
-                Extent3d {
-                    width: size.0,
-                    height: size.1,
-                    depth_or_array_layers: 1,
-                },
-                TextureDimension::D2,
-                painting.rgba.clone(),
-                TextureFormat::Rgba8UnormSrgb,
-                RenderAssetUsages::RENDER_WORLD,
-                ))
+                images.add(crate::texture_filtering::painted_image(
+                    painting.size, painting.rgba.clone()))
             }).clone();
             let material = StandardMaterial {
                 base_color: Color::srgb(0.97, 0.96, 0.94),
@@ -294,9 +286,14 @@ impl PeopleGpu {
             }
             Some(node)
         })).collect::<Vec<_>>();
+        let locomotion = crate::human_locomotion::HumanLocomotion::new(&rig);
+        let idle_motion = crate::human_idle::HumanIdle::new(&rig, kind);
         let mut idle = rig.nodes.clone();
-        rig.sample("Idle", 0.0, &mut idle);
-        if bicycle { crate::bicycle::pose(&rig, &mut idle, 0., model_scale); }
+        idle_motion.sample(&rig, &locomotion, 0., &mut idle);
+        if bicycle {
+            rig.sample("Idle", 0., &mut idle);
+            crate::bicycle::pose(&rig, &mut idle, 0., model_scale);
+        }
         else { crate::hand_pose::relax(&rig, &mut idle); }
         // Deferred entities must already contain the final visible pose.
         // Keep the animation buffers unscaled so updates never accumulate it.
@@ -371,9 +368,11 @@ MeshMaterial3d(if remote { costume.remote.clone() } else { costume.material.clon
         }
         Person {
             run_blend: 0.0,
-            locomotion: crate::human_locomotion::HumanLocomotion::new(&rig),
+            locomotion,
+            idle_motion,
             bicycle,
             surfing: false,
+            surf_half_width: 0.25,
             hop_step: None,
             hop: Vec::new(),
             sitting: Default::default(),
@@ -442,11 +441,11 @@ impl Person {
         seconds: f32,
         transforms: &mut Query<&mut Transform, With<ModeledActor>>,
     ) {
-        self.rig.sample(
-            "Idle",
-            seconds.rem_euclid(self.rig.duration("Idle")),
-            &mut self.idle,
-        );
+        if self.bicycle || self.surfing {
+            self.rig.sample("Idle", seconds.rem_euclid(self.rig.duration("Idle")), &mut self.idle);
+        } else {
+            self.idle_motion.sample(&self.rig, &self.locomotion, seconds, &mut self.idle);
+        }
         self.locomotion.sample(&self.rig, phase, self.run_blend, &mut self.run);
         if let Some((progress, _)) = self.hop_step {
             self.hop.resize(self.idle.len(), Transform::IDENTITY);
@@ -458,7 +457,7 @@ impl Person {
             crate::hand_pose::relax(&self.rig, &mut self.run);
         }
         if self.surfing {
-            crate::bicycle::surf_pose(&self.rig, &mut self.idle, self.model_scale);
+            crate::bicycle::surf_pose(&self.rig, &mut self.idle, self.model_scale, self.surf_half_width);
             self.run.clone_from(&self.idle);
         } else if self.bicycle {
             // Mounted riders use the same updated mesh and skin, seated rather
@@ -483,7 +482,8 @@ impl Person {
         }
         let sitting = if self.bicycle || self.surfing { 0. } else { self.sitting.eased_weight() };
         if sitting > 0. {
-            self.seated.clone_from(&self.idle);
+            self.rig.sample("Idle", seconds.rem_euclid(self.rig.duration("Idle")), &mut self.seated);
+            crate::hand_pose::relax(&self.rig, &mut self.seated);
             crate::bicycle::seat_pose(&self.rig, &mut self.seated, self.model_scale, self.sitting.height);
         }
         for (index, ((t, a), b)) in self.posed.iter_mut().zip(&self.idle).zip(&self.run).enumerate() {
@@ -518,9 +518,15 @@ impl Person {
     }
 }
 
-#[cfg(test)]
-mod tests {
+#[cfg(any(test, all(feature = "people-review", not(target_arch = "wasm32"))))]
+pub(crate) mod tests {
     use super::*;
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    pub(crate) fn validate_instances() {
+        spawned_characters_start_with_production_pose_and_proportions();
+        costume_instances_share_gpu_assets_and_own_their_animated_joint_palettes();
+        mounted_production_hands_and_shoes_fit_grips_and_pedals_through_full_cycle();
+    }
     /// Both routes must publish identical vertices, index widths, joints,
     /// accessories, bounds and material/image ordering. The staged route uses
     /// an actual worker task and consumes its owned CPU result exactly once.
@@ -602,13 +608,14 @@ mod tests {
         assert_eq!(images.len(), 1, "one painting upload across different body rigs");
         let image = images.get(texture).unwrap();
         let painting = crate::npc_textures::get(crate::npc_appearance::look(kind).texture_key).unwrap();
-        assert_eq!(image.data.as_deref(), Some(painting.rgba.as_slice()));
+        assert_eq!(&image.data.as_ref().unwrap()[..painting.rgba.len()], painting.rgba);
+        assert!(image.texture_descriptor.mip_level_count > 1);
         assert_eq!((image.width(), image.height()), painting.size);
         assert_eq!(image.asset_usage, RenderAssetUsages::RENDER_WORLD);
     }
 
-    #[test]
-    #[ignore = "requires shared Kenney rigs in CRYSTAL_OPEN_MODEL_ROOT"]
+    #[cfg_attr(test, test)]
+    #[cfg_attr(test, ignore = "requires shared Kenney rigs in CRYSTAL_OPEN_MODEL_ROOT")]
     fn costume_instances_share_gpu_assets_and_own_their_animated_joint_palettes() {
         for kind in [CharacterKind::Mom, CharacterKind::PokefanF, CharacterKind::Blue,
             CharacterKind::Youngster, CharacterKind::StandingYoungster, CharacterKind::BugCatcher] {
@@ -617,8 +624,8 @@ mod tests {
     }
 
     #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
-    #[test]
-    #[ignore = "requires supplied rider rigs and paintings in CRYSTAL_OPEN_MODEL_ROOT"]
+    #[cfg_attr(test, test)]
+    #[cfg_attr(test, ignore = "requires supplied rider rigs and paintings in CRYSTAL_OPEN_MODEL_ROOT")]
     fn mounted_production_hands_and_shoes_fit_grips_and_pedals_through_full_cycle() {
         use bevy::ecs::{system::SystemState, world::CommandQueue};
         fn sole_height(a: Vec3, b: Vec3, c: Vec3, x: f32, z: f32) -> Option<f32> {
@@ -659,7 +666,7 @@ mod tests {
             if area.abs() > 1e-14 && (low >= -1e-14 || high <= 1e-14) { 0. } else { minimum }
         }
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
-        for kind in [CharacterKind::Trainer, CharacterKind::TrainerFemale] {
+        for kind in [CharacterKind::Trainer, CharacterKind::TrainerFemale, CharacterKind::Biker] {
             let look = crate::npc_appearance::look(kind);
             let rig = Arc::new(PersonRig::parse(&std::fs::read(
                 root.join(format!("people/kenney/{}.glb", look.base))).unwrap()).unwrap());
@@ -747,8 +754,8 @@ mod tests {
         }
     }
 
-    #[test]
-    #[ignore = "requires supplied character rigs and paintings"]
+    #[cfg_attr(test, test)]
+    #[cfg_attr(test, ignore = "requires supplied character rigs and paintings")]
     fn spawned_characters_start_with_production_pose_and_proportions() {
         use bevy::ecs::{system::SystemState, world::CommandQueue};
         let mut world = World::new();
@@ -761,8 +768,9 @@ mod tests {
         let mut cases = crate::new_bark_actors::character_meshes::SOURCE_KINDS.iter()
             .map(|&(_,kind)| (kind,false)).collect::<Vec<_>>();
         cases.extend([(CharacterKind::Outdoorsman,false),
-            (CharacterKind::Trainer,true),(CharacterKind::TrainerFemale,true)]);
-        assert_eq!(cases.len(),77);
+            (CharacterKind::Trainer,true),(CharacterKind::TrainerFemale,true),
+            (CharacterKind::Biker,true)]);
+        assert_eq!(cases.len(),78);
         for (kind,bicycle) in cases {
             let look = crate::npc_appearance::look(kind);
             let rig = crate::open_people::get(look.base).unwrap().clone();

@@ -657,7 +657,10 @@ full detail, actual rendering errors and context loss, and reports memory withou
 an arbitrary pass/fail budget. Three WebGPU cycles completed without shader
 errors/context loss. Live allocations settle after later returns while the
 non-shrinking WASM heap remains larger. Native paired captures can use
-`CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image` when the desktop is locked.
+`CRYSTAL_RENDER_TEST_HEADLESS=1 CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image`
+without creating an OS window or changing focus, including when the desktop is
+locked. Native one-shot screenshots default to this offscreen mode. Automated
+checks must use it; visible/live review requires an explicit user request.
 
 The Chromium 156 buffer-retirement regression completed three full-detail
 exit/reentry, movement and menu cycles without renderer errors or context loss,

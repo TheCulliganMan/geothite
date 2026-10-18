@@ -197,11 +197,12 @@ def fitted_contour(name,color,outline,skin,thickness=.009,subdivisions=2):
 
 
 
-def fitted_adaptive_contour(name,color,outline,parent,thickness=.012):
+def fitted_adaptive_contour(name,color,outline,parent,thickness=.012,*,surface_at=None,initial_subdivisions=3,max_surface_error=None):
  # Conforming local refinement preserves the outline while resolving only the
  # cap faces whose chords would cut through the stored curved parent.
+ # Rigid curved caps can also bound excessive clearance above concave skin.
  from abra_sculpt import polygon_caps,surface
- skin=surface(parent);xy=list(outline);caps=polygon_caps(outline);th=thickness
+ skin=surface(parent) if surface_at is None else surface_at;xy=list(outline);caps=polygon_caps(outline);th=thickness
  def refine(marked):
   nonlocal caps
   mids={}
@@ -220,7 +221,9 @@ def fitted_adaptive_contour(name,color,outline,parent,thickness=.012):
    if count==2:refined.extend(((ab,b,bc),(a,ab,c),(ab,bc,c)));continue
    ca=mids[tuple(sorted((c,a)))];refined.extend(((a,ab,ca),(ab,b,bc),(ca,bc,c),(ab,bc,ca)))
   caps=refined
- for step in range(3):refine({tuple(sorted((f[i],f[(i+1)%3]))) for f in caps for i in range(3)})
+ if max_surface_error is not None and (not math.isfinite(max_surface_error) or max_surface_error<=0.):raise ValueError('invalid maximum surface error')
+ if not 0<=initial_subdivisions<=3:raise ValueError('invalid initial contour subdivisions')
+ for step in range(initial_subdivisions):refine({tuple(sorted((f[i],f[(i+1)%3]))) for f in caps for i in range(3)})
  for step in range(6):
   zs=[skin(y,x)+th for x,y in xy];marked=set()
   for face in caps:
@@ -228,7 +231,7 @@ def fitted_adaptive_contour(name,color,outline,parent,thickness=.012):
    gaps=[sum(zs[i] for i in face)/3-skin(samples[0][1],samples[0][0])]
    for a,b in zip(face,face[1:]+face[:1]):
     x,y=((xy[a][j]+xy[b][j])/2 for j in range(2));gaps.append((zs[a]+zs[b])/2-skin(y,x))
-   if min(gaps)<.001:marked.update(tuple(sorted((face[i],face[(i+1)%3]))) for i in range(3))
+   if min(gaps)<.001 or max_surface_error is not None and max(abs(gap-th) for gap in gaps)>max_surface_error:marked.update(tuple(sorted((face[i],face[(i+1)%3]))) for i in range(3))
   if not marked:break
   refine(marked)
  else:raise ValueError(name+' did not clear its stored parent')
@@ -239,3 +242,64 @@ def fitted_adaptive_contour(name,color,outline,parent,thickness=.012):
   if len(uses)==1:
    a,b=uses[0];faces.append((b,a,a+count,b+count))
  return crease_normals(part(name,color,v,faces),35)
+
+
+def fitted_triangle_contour(name,color,outline,parent,thickness=.001,*,precision=10):
+    """Closed layer conforming to a stored front heightfield, including concave outlines.
+
+    Clip the parent's actual front triangles to an ear-clipped outline rather
+    than bridging a recessed surface with raised chords. Buried back faces and
+    boundary walls close the layer; +Z remains the authored front direction.
+    Precision controls welding before the caller rounds exported coordinates.
+    """
+    from abra_sculpt import polygon_caps
+    if sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(outline,outline[1:]+outline[:1]))<0:
+        outline=list(reversed(outline))
+    turns=[(b[0]-a[0])*(c[1]-b[1])-(b[1]-a[1])*(c[0]-b[0]) for a,b,c in zip(outline,outline[1:]+outline[:1],outline[2:]+outline[:2])]
+    regions=[outline] if min(turns)>=-1e-12 else [[outline[i] for i in tri] for tri in polygon_caps(outline)]
+    points=[tuple(parent['positions'][i:i+3]) for i in range(0,len(parent['positions']),3)]
+    vertices=[];faces=[];lookup={}
+    def vertex(point):
+        key=tuple(round(v,precision) for v in point)
+        if key not in lookup:
+            lookup[key]=len(vertices);vertices.append(key)
+        return lookup[key]
+    for k in range(0,len(parent['indices']),3):
+        tri=[points[i] for i in parent['indices'][k:k+3]];a,b,c=tri
+        if (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<=1e-12:
+            continue
+        for region in regions:
+            poly=tri
+            for a,b in zip(region,region[1:]+region[:1]):
+                clipped=[]
+                def distance(q):
+                    return (b[0]-a[0])*(q[1]-a[1])-(b[1]-a[1])*(q[0]-a[0])
+                for u,v in zip(poly,poly[1:]+poly[:1]):
+                    du,dv=distance(u),distance(v);inside_u,inside_v=du>=-1e-12,dv>=-1e-12
+                    if inside_u:
+                        clipped.append(u)
+                    if inside_u!=inside_v:
+                        fraction=du/(du-dv)
+                        clipped.append(tuple(u[j]+fraction*(v[j]-u[j]) for j in range(3)))
+                poly=clipped
+                if len(poly)<3:
+                    break
+            if len(poly)<3:
+                continue
+            ids=[vertex(q) for q in poly]
+            for j in range(1,len(ids)-1):
+                if len({ids[0],ids[j],ids[j+1]})==3:
+                    faces.append((ids[0],ids[j],ids[j+1]))
+    edges={}
+    for face in faces:
+        for a,b in zip(face,face[1:]+face[:1]):
+            edges.setdefault(tuple(sorted((a,b))),[]).append((a,b))
+    if not faces or any(len(uses)>2 for uses in edges.values()):
+        raise ValueError(name+' has an invalid conforming front surface')
+    count=len(vertices)
+    positions=[(x,y,z+offset) for offset in (thickness,-thickness*.35) for x,y,z in vertices]
+    closed=faces+[tuple(i+count for i in reversed(face)) for face in faces]
+    for uses in edges.values():
+        if len(uses)==1:
+            a,b=uses[0];closed.append((b,a,a+count,b+count))
+    return part(name,color,positions,closed,True)

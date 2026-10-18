@@ -11,14 +11,14 @@ pub(crate) fn cycle_distance(run: f32) -> f32 {
     WALK_DISTANCE + (RUN_DISTANCE - WALK_DISTANCE) * run
 }
 
-fn world(rig: &PersonRig, pose: &[Transform], node: usize) -> Mat4 {
+pub(super) fn world(rig: &PersonRig, pose: &[Transform], node: usize) -> Mat4 {
     rig.parents[node]
         .map(|p| world(rig, pose, p))
         .unwrap_or(Mat4::IDENTITY)
         * pose[node].to_matrix()
 }
 
-fn rotate_world(rig: &PersonRig, pose: &mut [Transform], node: usize, delta: Quat) {
+pub(super) fn rotate_world(rig: &PersonRig, pose: &mut [Transform], node: usize, delta: Quat) {
     let parent = rig.parents[node]
         .map(|p| world(rig, pose, p).to_scale_rotation_translation().1)
         .unwrap_or(Quat::IDENTITY);
@@ -88,28 +88,38 @@ impl HumanLocomotion {
         }
         let mut bounds = rig.bounds;
         let mut pose = rig.nodes.clone();
+        let mut include = |pose: &[Transform]| {
+            let inverse = world(rig, pose, rig.mesh_node).inverse();
+            for (joint, &(min, max)) in boxes.iter().enumerate() {
+                if !min.is_finite() { continue; }
+                let matrix = inverse * world(rig, pose, rig.skin_nodes[joint]) * rig.inverse_binds[joint];
+                for x in [min.x, max.x] {
+                    for y in [min.y, max.y] {
+                        for z in [min.z, max.z] {
+                            let p = matrix.transform_point3(Vec3::new(x, y, z));
+                            bounds.0 = bounds.0.min(p);
+                            bounds.1 = bounds.1.max(p);
+                        }
+                    }
+                }
+            }
+        };
         for run in [0., 0.25, 0.5, 0.75, 1.] {
             for frame in 0..96 {
                 gait.sample(rig, frame as f32 / 96. * TAU, run, &mut pose);
                 crate::hand_pose::relax(rig, &mut pose);
-                let inverse = world(rig, &pose, rig.mesh_node).inverse();
-                for (joint, &(min, max)) in boxes.iter().enumerate() {
-                    if !min.is_finite() {
-                        continue;
-                    }
-                    let matrix = inverse
-                        * world(rig, &pose, rig.skin_nodes[joint])
-                        * rig.inverse_binds[joint];
-                    for x in [min.x, max.x] {
-                        for y in [min.y, max.y] {
-                            for z in [min.z, max.z] {
-                                let p = matrix.transform_point3(Vec3::new(x, y, z));
-                                bounds.0 = bounds.0.min(p);
-                                bounds.1 = bounds.1.max(p);
-                            }
-                        }
-                    }
-                }
+                include(&pose);
+            }
+        }
+        // Cover each manner and its widest motion without rebuilding the same
+        // quiet envelope for every identity during first appearance loading.
+        use crate::new_bark_actors::character_meshes::CharacterKind::*;
+        for kind in [Trainer, TrainerFemale, Mom, Youngster, Officer, Elm, Granny, Brock, KimonoGirl, Blue] {
+            let idle = crate::human_idle::HumanIdle::new(rig, kind);
+            for frame in 0..24 {
+                idle.sample(rig, &gait, frame as f32 * 1.83, &mut pose);
+                crate::hand_pose::relax(rig, &mut pose);
+                include(&pose);
             }
         }
         let margin = Vec3::splat(rig.height * 0.015);
@@ -266,6 +276,16 @@ impl HumanLocomotion {
                 leg.foot,
                 a.1.slerp(b.1, weight) * current.inverse(),
             );
+        }
+    }
+
+    /// Idle weight shifts keep both soles fixed, using the same anatomy and
+    /// contact solver as the transition into a walk.
+    pub(crate) fn plant_idle(&self, rig: &PersonRig, feet: &[(Vec3, Quat); 2], pose: &mut [Transform]) {
+        for (leg, &(target, rotation)) in self.legs.iter().zip(feet) {
+            self.solve_leg(rig, pose, *leg, target);
+            let current = world(rig, pose, leg.foot).to_scale_rotation_translation().1;
+            rotate_world(rig, pose, leg.foot, rotation * current.inverse());
         }
     }
 

@@ -115,8 +115,8 @@ pub struct ModifiedCryRequest {
 pub fn decode_modified_cry(midi: &str, request: &ModifiedCryRequest) -> Result<DecodedPcmAudio> {
     use crate::synth::{SynthContext, decode_midi, render};
     let mut program = decode_midi(midi)?;
-    anyhow::ensure!(program.cry_pitch.is_some() && program.cry_length.is_some(),
-        "modified cry requires a species cry program");
+    // A base CRY_* program has no species register defaults. Both base and
+    // pre-parameterized programs accept the caller's cartridge registers.
     // Preserve the pack's integrity contract; derived output has a different
     // hash and frame count and must not be compared to the ordinary cry.
     decode_midi_pcm(midi, request.format.clone(), request.byte_len,

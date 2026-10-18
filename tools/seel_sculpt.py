@@ -2,6 +2,8 @@
 """Original reclining Seel: continuous raised tail, lobed paddles and playful face."""
 import argparse,json,math
 from pathlib import Path
+from functools import lru_cache
+from copy import deepcopy
 from sculpt_geometry import part,loft,ellipsoid,curved_profiles,fitted_patch,crease_normals
 from abra_sculpt import surface
 from bovine_sculpt import oval,curved_tube
@@ -27,13 +29,18 @@ def horizontal(q):
   q[field]=[v for i in range(0,len(q[field]),3) for x,y,z in [q[field][i:i+3]] for v in (x,z,-y)]
  return q
 
-def sculpture():
+@lru_cache(maxsize=1)
+def raw_sculpture():
  rows=((- .28,.050,.060,.235),(-.19,.210,.180,.235),(.02,.280,.190,.230),(.20,.260,.220,.250),(.39,.215,.220,.310),(.57,.140,.160,.430),(.72,.075,.110,.620),(.84,.047,.070,.770),(.87,.025,.035,.800))
  body=horizontal(loft('Body / continuous reclining seal and rising tail stem',WHITE,curved_profiles(rows,4),40))
  head=ellipsoid('Head / broad round ice-blue seal cranium',WHITE,(0,.275,.315),(.232,.223,.215),40,28);p=[body,head];hs=surface(head)
  for sign in (-1,1):
   xy=contour((((.075,-.055),(.255,-.015),(.400,-.005),(.494,-.066)),((.494,-.066),(.541,-.086),(.535,-.142),(.502,-.165)),((.502,-.165),(.548,-.177),(.530,-.220),(.489,-.234)),((.489,-.234),(.519,-.255),(.474,-.295),(.424,-.288)),((.424,-.288),(.328,-.286),(.221,-.192),(.075,-.055))),8)
-  p.append(horizontal(pillow('Flipper / rounded three-lobed front paddle '+str(sign),WHITE,[(sign*x,y) for x,y in xy],.055,.037)))
+  paddle=pillow('Flipper / rounded three-lobed front paddle '+str(sign),WHITE,[(sign*x,y) for x,y in xy],.055,.037);fs=surface(paddle)
+  p.append(horizontal(deepcopy(paddle)))
+  for j,path in enumerate((((.230,-.080),(.320,-.080),(.430,-.090)),((.280,-.140),(.360,-.180),(.440,-.220)))):
+   points=[(sign*x,y,fs(y,sign*x)+.0016) for x,y in path]
+   p.append(horizontal(curved_tube(f'Flipper fold / supported rounded paddle crease {sign} {j}',(.55,.65,.74),points,[.0014]*len(points),8)))
   xy=contour((((.010,.762),(.047,.894),(.035,.956),(.098,1.017)),((.098,1.017),(.172,1.091),(.290,1.104),(.329,1.053)),((.329,1.053),(.370,1.016),(.362,.974),(.328,.966)),((.328,.966),(.347,.926),(.324,.888),(.290,.900)),((.290,.900),(.285,.855),(.242,.845),(.211,.868)),((.211,.868),(.150,.901),(.095,.788),(.010,.762))),8)
   p.append(pillow('Tail fluke / raised rounded three-lobed fan '+str(sign),WHITE,[(sign*x,y) for x,y in xy],-.855,.040))
   x=sign*.102;y=.339;eye=fitted_patch('Eye / fitted glossy dark seal oval '+str(sign),INK,oval(x,y,.023,.035,32),hs,.005);p.append(eye)
@@ -55,9 +62,15 @@ def sculpture():
   p.append(curved_tube('Tusk / curved short ivory seal canine '+str(sign),IVORY,[(sign*.133,.220,.535),(sign*.140,.183,.567),(sign*.136,.146,.583),(sign*.116,.139,.588)],[.018,.024,.017,.003],24))
  for i,q in enumerate(p):
   if q['part'].startswith(('Eye /','Eye sheen /','Eye glint /','Nose glint /')):p[i]=crease_normals(q,35)
+ return {'name':'seel','version':1,'coordinate_system':COORDINATES,'primitives':p}
+def sculpture(normalize=True):
+ m=deepcopy(raw_sculpture());p=m['primitives']
+ if not normalize:return m
  low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
  for q in p:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
- return {'name':'seel','version':1,'coordinate_system':COORDINATES,'primitives':p}
+ return m
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);m=sculpture();(args.output/'seel.mesh.json').write_text(json.dumps(m,separators=(',',':')));print(len(m['primitives']),'parts',sum(len(p['indices'])//3 for p in m['primitives']),'triangles')
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
+ from seal_glb import export_seel
+ blob=export_seel();(args.output/'seel.glb').write_bytes(blob);print(len(blob),'bytes')
 if __name__=='__main__':main()

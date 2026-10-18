@@ -1,11 +1,38 @@
 #!/usr/bin/env python3
 """Original feather-eared turtle with fitted shell plates and a broad cloud tail."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
 from sculpt_geometry import ellipsoid,part,crease_normals
-from bovine_sculpt import reverse_front,oval,curved_tube
+from bovine_sculpt import reverse_front,oval,curved_tube,smooth
 from lugia_sculpt import paddle
-from raptor_bird_sculpt import paint,sheet
+from raptor_bird_sculpt import sheet
+from sculpt_geometry import fitted_adaptive_contour
+from goldfish_sculpt import surface
+from cubone_sculpt import skin_shading
+
+def paint(name,color,xy,parent,th=.006,sub=3):
+ return fitted_adaptive_contour(name,color,xy,None,th,surface_at=surface(parent),initial_subdivisions=1)
+
+def forelimb(name,color,points,widths,depths):
+ # Match the centerline's smooth interpolation in both radius profiles.
+ # Linear radii left a visible ring where the wrist became the palm.
+ path,_=smooth(points,[1.]*len(points),6)
+ def profile(values):return [p[0] for p in smooth([(v,0.,0.) for v in values],[1.]*len(values),6)[0]]
+ return paddle(name,color,path,profile(widths),profile(depths),steps=1)
+
+def fitted_shading(parts):
+ def find(prefix,side=None):return next(p for p in parts if p['part'].startswith(prefix) and (side is None or p['part'].endswith(' '+side)))
+ for i,p in enumerate(parts):
+  name=p['part'];side=name.split()[-1];parent=None;back=False
+  for child,owner in (('Belly seam /','Belly /'),('Shell seam /','Shell /'),('Eye socket /','Head /'),('Mouth /','Muzzle /'),('Nostril /','Muzzle /'),('Tail fold /','Tail /')):
+   if name.startswith(child):parent=find(owner);back=child=='Shell seam /' or child=='Tail fold /' and side=='-1'
+  for child,owner in (('Eye /','Eye socket /'),('Iris /','Eye /'),('Pupil /','Iris /'),('Glint /','Pupil /'),('Ear inset /','Ear /')):
+   if name.startswith(child):parent=find(owner,side)
+  if parent:
+   parts[i]=reverse_front(skin_shading(reverse_front(p),reverse_front(parent))) if back else skin_shading(p,parent)
+ return parts
 from wing_insect_sculpt import contour
 from skin_glb import COORDINATES
 HEIGHT=1.10;SPECIES=('wartortle',)
@@ -21,7 +48,7 @@ def ribbon(points,width):
  return left+list(reversed(right))
 
 def rim():
- ns=64;nt=12;v=[]
+ ns=48;nt=10;v=[]
  for i in range(ns):
   a=i*math.tau/ns
   for j in range(nt):
@@ -47,7 +74,21 @@ def tail(p):
              ((.258,.842),(.171,.792),(.170,.694),(.200,.602)),
              ((.200,.602),(.231,.503),(.179,.459),(.128,.423)),
              ((.128,.423),(.063,.378),(-.035,.362),(-.036,.283))],7)
- q=sheet('Tail / broad two-curl pale cloud fan',CLOUD,xy,lambda y,x:-.167-.61*(y-.283)+.025*math.sin(5*x)*math.sin(4*(y-.283)),.075,3);p.append(q)
+ def depth(y,x):return -.167-.61*(y-.283)+.025*math.sin(5*x)*math.sin(4*(y-.283))
+ q=sheet('Tail / broad two-curl pale cloud fan',CLOUD,xy,depth,.075,2)
+ # A cloud tail needs billowing front and back surfaces in profile. Inflate
+ # the closed fan toward its interior while retaining both curled outlines.
+ def outline_distance(x,y):
+  result=math.inf
+  for a,b in zip(xy,xy[1:]+xy[:1]):
+   dx=b[0]-a[0];dy=b[1]-a[1];t=max(0.,min(1.,((x-a[0])*dx+(y-a[1])*dy)/(dx*dx+dy*dy)))
+   result=min(result,math.hypot(x-a[0]-t*dx,y-a[1]-t*dy))
+  return result
+ vertices=[]
+ for i in range(0,len(q['positions']),3):
+  x,y,z=q['positions'][i:i+3];half=.004+.11*math.sqrt(1.-math.exp(-(outline_distance(x,y)/.06)**2))
+  vertices.append((x,y,depth(y,x)+.024375+(half if z>depth(y,x) else -half)))
+ q=part(q['part'],CLOUD,vertices,[tuple(q['indices'][i:i+3]) for i in range(0,len(q['indices']),3)],True);p.append(q)
  # Actual fitted closed ribbons trace the two curls on both sides.
  for face in (-1,1):
   parent=q if face==1 else reverse_front(q)
@@ -58,23 +99,23 @@ def tail(p):
 
 def limbs(p):
  for s in (-1,1):
-  p.append(paddle('Arm / bent blue-violet turtle forelimb '+str(s),BLUE,[(s*.18,.601,.026),(s*.30,.552,.089),(s*.385,.537,.136)],[.083,.077,.078],[.081,.078,.078]))
-  p.append(ellipsoid('Hand / broad blue-violet turtle paw '+str(s),BLUE,(s*.393,.531,.144),(.088,.083,.091),32,22))
+  p.append(forelimb('Arm / continuous blue-violet forelimb and palm '+str(s),BLUE,[(s*.18,.601,.026),(s*.295,.558,.100),(s*.365,.532,.170),(s*.398,.520,.215),(s*.413,.514,.235)],[.083,.077,.083,.050,.002],[.081,.082,.090,.055,.002]))
   for j,dx in enumerate((-.040,0,.040)):
    p.append(curved_tube(f'Hand claw / three ivory turtle points {s} {j}',WHITE,[(s*.393+dx,.52,.203),(s*.393+dx*.9,.515,.235),(s*.393+dx*.8,.49,.256)],[.017,.013,.002],20))
-  p.append(ellipsoid('Haunch / powerful blue-violet turtle thigh '+str(s),BLUE,(s*.171,.184,.041),(.115,.146,.129),36,24))
+  p.append(ellipsoid('Haunch / powerful blue-violet turtle thigh '+str(s),BLUE,(s*.171,.184,.041),(.115,.146,.129),28,18))
   p.append(paddle('Leg / rooted short turtle ankle '+str(s),BLUE,[(s*.184,.185,.065),(s*.195,.096,.093),(s*.199,.046,.142)],[.065,.067,.072],[.070,.074,.050]))
-  p.append(ellipsoid('Foot / grounded blue-violet turtle paw '+str(s),BLUE,(s*.199,.029,.152),(.090,.029,.100),32,20))
+  p.append(ellipsoid('Foot / grounded blue-violet turtle paw '+str(s),BLUE,(s*.199,.029,.152),(.090,.029,.100),24,16))
   for j,dx in enumerate((-.051,0,.051)):
    p.append(curved_tube(f'Toe / three blunt blue turtle points {s} {j}',BLUE,[(s*.199+dx*.5,.031,.199),(s*.199+dx,.021,.245),(s*.199+dx,.012,.263)],[.029,.020,.0025],20))
 
-def sculpture(species='wartortle'):
+@lru_cache(maxsize=1)
+def raw_sculpture(species='wartortle'):
  if species not in SPECIES:raise ValueError('unsupported feather turtle')
- body=ellipsoid('Body / blue-violet mantle beneath turtle plates',BLUE,(0,.44,.016),(.232,.309,.130),44,28)
- shell=ellipsoid('Shell / substantial brown turtle dome',BROWN,(0,.44,-.085),(.265,.337,.155),48,30)
- belly=ellipsoid('Belly / gently domed pale plated breast',TAN,(0,.44,.070),(.226,.300,.118),48,30)
- head=ellipsoid('Head / compact blue-violet turtle cranium',BLUE,(0,.817,.088),(.188,.167,.172),48,30)
- muzzle=ellipsoid('Muzzle / broad low blue-violet turtle snout',BLUE,(0,.746,.209),(.164,.074,.077),44,26);p=[body,shell,belly,rim(),head,muzzle]
+ body=ellipsoid('Body / blue-violet mantle beneath turtle plates',BLUE,(0,.44,.016),(.232,.309,.130),28,18)
+ shell=ellipsoid('Shell / substantial brown turtle dome',BROWN,(0,.44,-.085),(.265,.337,.155),32,20)
+ belly=ellipsoid('Belly / gently domed pale plated breast',TAN,(0,.44,.070),(.226,.300,.118),32,20)
+ head=ellipsoid('Head / compact blue-violet turtle cranium',BLUE,(0,.817,.088),(.188,.167,.172),32,20)
+ muzzle=ellipsoid('Muzzle / broad low blue-violet turtle snout',BLUE,(0,.746,.209),(.164,.074,.077),32,20);p=[body,shell,belly,rim(),head,muzzle]
  # Belly seams and rear shell seams follow actual stored triangles.
  for j,path in enumerate(([(-.188,.536),(-.100,.512),(0,.503),(.10,.512),(.188,.536)],[(-.153,.346),(-.083,.326),(0,.320),(.083,.326),(.153,.346)],[(0,.699),(0,.590),(0,.480),(0,.370),(0,.190)])):
   p.append(paint('Belly seam / fitted turtle plate join '+str(j),SEAM,ribbon(path,.003),belly,.004,3))
@@ -96,10 +137,17 @@ def sculpture(species='wartortle'):
  p.append(paint('Mouth / fitted dark turtle smile',INK,mouth,muzzle,.004,3))
  for s in (-1,1):p.append(paint('Nostril / small fitted turtle dot '+str(s),INK,oval(s*.040,.76,.004,.003,16),muzzle,.003,2))
  ears(p);tail(p);limbs(p)
+ p=fitted_shading([crease_normals(q,70. if q['part'].startswith('Tail /') else 65. if q['part'].startswith('Arm /') else 40.) for q in p])
+ return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+
+def sculpture(species='wartortle',normalize=True):
+ m=deepcopy(raw_sculpture(species));p=m['primitives']
+ if not normalize:return m
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
  for q in p:
   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
- return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+  q['positions']=[0. if v==0. else v for v in q['positions']]
+ return m
 
 def main():
  a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'wartortle.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))

@@ -759,6 +759,30 @@ impl RuntimeGameShell {
         let command = self
             .runtime
             .compiled_script_command_name(source_script, command_index)?;
+        if command == "startbattle"
+            && let Some(frame) = self
+                .runtime
+                .data()
+                .trainer_rematch_dialogue_return(self.session.state())
+        {
+            // The original conversation has reached its own battle offer.
+            // Return to the appended rematch line instead of starting an
+            // authored fight followed by a second fight. Pop via the same
+            // authoritative mutations used by normal script returns.
+            loop {
+                let returned = self.pop_script_call_stack()?;
+                if returned.frame == frame {
+                    break;
+                }
+            }
+            return self.apply_compiled_script_command(
+                &frame.origin_map_name,
+                &frame.source_script,
+                frame.next_command_index,
+                inputs,
+                phone_inputs,
+            );
+        }
         let command_ref = RuntimeScriptCommandRef::new(&map_name, source_script, command_index);
         let is_gift_pokemon_command =
             self.runtime

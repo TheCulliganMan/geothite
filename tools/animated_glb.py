@@ -179,7 +179,9 @@ def pidgeotto_groups(model):
                 raise ValueError('wing primitive crosses the centerline')
             groups[side].append(index)
             if name.startswith('Layered wing'):
-                points = [primitive['positions'][i:i + 3] for i in range(0, len(primitive['positions']), 3)]
+                # Root covers append after the 438 original wing vertices.
+                # They must never redefine the authored shoulder hinge.
+                points = [primitive['positions'][i:i + 3] for i in range(0, min(len(primitive['positions']),438*3), 3)]
                 # The generator's first outlined shoulder corner is the vertex
                 # nearest the centerline. This exact exported vertex is the new
                 # hinge anchor. No source object origin survives in this JSON.

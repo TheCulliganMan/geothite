@@ -6,15 +6,18 @@ from wigglytuff_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 import test_donphan_sculpt as joins
-ROOT=Path(os.environ.get('WIGGLYTUFF_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/wigglytuff.mesh.json'))
+ROOT=Path(os.environ.get('WIGGLYTUFF_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/wigglytuff.glb'))
 class WigglytuffTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads(ROOT.read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):
+  from fairy_pair_glb import read_wigglytuff
+  cls.m=read_wigglytuff(ROOT) if ROOT.suffix=='.glb' else json.loads(ROOT.read_bytes());cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'wigglytuff':self.m})
  def test_finite_unit_normals_follow_winding(self):assert_model_shading(self,{'wigglytuff':self.m})
  def test_recipe_height_grounding_and_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),50000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from fairy_pair_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for p in self.ps:
    if p['part'].startswith('Foot /'):self.assertEqual(min(p['positions'][1::3]),0)
  def test_distinct_balloon_ears_eyes_and_rolled_forelock(self):

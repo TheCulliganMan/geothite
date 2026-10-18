@@ -14,7 +14,14 @@ ROOT=Path(os.environ.get('CRYSTAL_ICE_DANCERS_TEST_MODELS',Path(__file__).resolv
 
 class IceDancersTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={n:read_smoochum(ROOT/'smoochum.glb') if n=='smoochum' else json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in SPECIES}
+ def setUpClass(cls):
+  cls.models={}
+  for n in SPECIES:
+   if n=='smoochum':cls.models[n]=read_smoochum(ROOT/'smoochum.glb')
+   elif (ROOT/(n+'.glb')).exists():
+    from jynx_glb import read_jynx
+    cls.models[n]=read_jynx(ROOT/(n+'.glb'))
+   else:cls.models[n]=json.loads((ROOT/(n+'.mesh.json')).read_bytes())
  find=attachment_checks.NidorinaTests.find
  overlap=attachment_checks.NidorinaTests.overlap
  def each(self):
@@ -23,7 +30,7 @@ class IceDancersTests(unittest.TestCase):
  def test_shading_tracks_actual_faces(self):assert_model_shading(self,self.models)
  def test_parity_floor_height_budget_and_distinct_anatomy(self):
   for n in self.each():
-   self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture(n)));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),110000)
+   self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture(n)));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000);self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000)
    self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHTS[n],places=6)
    counts=(('Gown /',1),('Sleeve /',2),('Palm /',2),('Finger /',10),('Hair curtain /',2),('Hair part /',2),('Hair tip /',4),('Hair strand /',2),('Back hair strand /',3),('Chest trim /',2)) if n=='jynx' else (('Body /',1),('Arm /',2),('Hand /',2),('Finger /',6),('Hair tuft /',4),('Hair side /',2),('Bangs /',1),('Foot /',2),('Chest /',1),('Chest bib /',1))
    for prefix,num in counts+ (('Head /',1),('Eye /',2),('Lips /',1),('Mouth /',1)):self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),num,prefix)

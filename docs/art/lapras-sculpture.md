@@ -166,4 +166,59 @@ nostril and curved mouth crease remain visible, while the shell, flippers,
 blue/tan palette and seated belly stay readable. The original terrain is
 retained and no shader errors were reported. Native acceptance here covers
 this face refinement and retained contact, not complete model or browser
-fidelity. Broader flipper/shell refinement and legacy world props remain open.
+fidelity. At that stage, broader flipper/shell refinement and legacy world
+props remained open; the later flipper/shell work is recorded below.
+
+## Lapras swept flippers and scalloped shell (2026-10-16)
+
+The four stretched ellipsoid flippers are replaced by broad shoulder roots,
+flattened swept paddles and softly tapered tips. Blue upper and cream lower
+solids share the complete cut boundary and exact quantized skin weights, so
+the new undersides remain closed throughout the original flipper motion.
+Fore paddles sweep forward; smaller rear paddles sweep back. The shell now
+rises from a low plate into a dome with a gently scalloped edge and matching
+rolled rim. Eight swept blunt spikes seat into the actual stored shell.
+The visual reference remains the
+[official Lapras artwork](https://sg.portal-pokemon.com/pokedex/0131/).
+
+The 31 untouched parts retain every stored position, normal, triangle, color
+and skin influence, including the fitted face, curved neck, seated belly,
+body, ears, horn, spots and tail. Their geometry digest is
+`d23c482ab66936a2dc341ddcef7fc2fcf51bc17b2ccc88ee8ef084d3122b4643`;
+their joint/weight digest is
+`b526800229af653bfd7036db354d2675682a68ffcf628947e1739966ebea157d`.
+All joint rests, inverse binds, animation key times and rotations are unchanged.
+The source-cue timing and nine-joint rig remain intact. Authoring height stays
+1.50 and verified pack height stays 2.4892 metres. Original blue/tan RGB555
+colors are retained, including the new cream undersides. Battle contact stays
+seated; world swimming behavior is unchanged.
+
+The canonical asset now has 49 parts, 19,313 vertices, 21,968 triangles,
+234 accessors and 780,808 bytes. The source/neutral digest is
+`7a083c865c869d1fa5f832195c3ed2ec042b1267773294cc39fe47cd3c6b789b`.
+Shared normal, skin and index accessors reduce the GLB by 63,064 bytes despite
+adding four material solids. Vertices fall by 158 and triangles by 1,364.
+All existing schema, geometry, allocation and byte limits remain intact.
+
+Eleven Python checks pass, including all material seams through animation,
+occupied flipper roots and shell/rim/spike intersections with detached negative
+controls, unchanged geometry/influences/rests/keys, fitted face clearance,
+closed solids, actual normals, floor, winding and strain. Five focused Rust
+checks pass: flipper seams/ownership/culling/floor, seated shell, seated battle
+belly, contact shading and GPU activation at pack size. Blender generation is
+byte-identical. Fixed-camera before/after views and front/oblique/rear poses of
+idle, attack and hit were inspected. Shiny verification is skipped as requested.
+
+The rebuilt native Route 29 encounter against Pidgey passes terrain admission
+with the normal camera search and original 2.4892-metre pack size. Its inspected
+3D/2D pair preserves core frame 2580, checksum 2751870234, LCD animation frame
+3304 and virtual time 58.331329543. The receipt confirms `state_preserved=true`
+and the terrain log confirms `accepted=true`. Swept paddles and cream edges,
+the scalloped rim and seated spikes, retained face and blue/tan colors, and
+seated belly contact remain readable with matching LAPRAS HUD labels. No
+shader errors were reported. Both shared grounded-volumetric/model and exact
+source-cue timing regressions pass. Final ignored evidence uses
+`target/pokemon-native-review/lapras-shell-normal`, with fixed-camera comparison
+and animation sheets under `lapras-shell-comparison.png` and
+`lapras-shell-poses.png`. This closes the flipper/shell refinement; legacy
+world props and browser visual acceptance remain open.

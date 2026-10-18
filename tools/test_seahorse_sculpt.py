@@ -10,16 +10,19 @@ import test_magnet_sculpt as joins
 ROOT=Path(os.environ.get('SEAHORSE_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class SeahorseTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={n:json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in ('horsea','seadra')}
+ def setUpClass(cls):
+  from seahorse_glb import read_seahorse
+  cls.models={n:(json.loads((ROOT/(n+'.mesh.json')).read_bytes()) if os.environ.get('SEAHORSE_TEST_MODELS') and not (ROOT/(n+'.glb')).exists() else read_seahorse(ROOT/(n+'.glb'),n)) for n in ('horsea','seadra')}
  def find(self,ps,prefix,suffix=None):return next(p for p in ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_closed_outward_anatomy(self):assert_closed_models(self,self.models)
  def test_actual_stored_shading(self):assert_model_shading(self,self.models)
  def test_recipe_identity_grounding_and_budget(self):
   for n,m in self.models.items():
-   self.assertEqual(m,sculpture(n));ps=m['primitives'];names=[p['part'] for p in ps];self.assertEqual(len(names),len(set(names)))
+   from seahorse_glb import geometry_digest
+   self.assertEqual(geometry_digest(m),geometry_digest(sculpture(n)));ps=m['primitives'];names=[p['part'] for p in ps];self.assertEqual(len(names),len(set(names)))
    self.assertEqual(min(y for p in ps for y in p['positions'][1::3]),0.)
    self.assertAlmostEqual(max(y for p in ps for y in p['positions'][1::3]),HEIGHT,places=6)
-   self.assertLess(sum(len(p['indices'])//3 for p in ps),70000)
+   self.assertLessEqual(sum(len(p['indices'])//3 for p in ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in ps),20000)
    for prefix,count in {'Back fin /':2,'Belly fold /':5,'Snout /':3,'Pupil /':2,'Head fin /':2 if n=='seadra' else 6,'Armor /':6 if n=='seadra' else 0,'Iris /':0 if n=='seadra' else 2}.items():self.assertEqual(sum(x.startswith(prefix) for x in names),count)
  def test_anatomical_solid_connections(self):
   for n,m in self.models.items():

@@ -136,6 +136,17 @@ impl VoxelCameraControls {
                     crate::footing::actor_ground_point(frame, player), heights).unwrap_or(0.);
                 pose.eye.y += height;
                 pose.target.y += height;
+                // Look over raised native terrain rather than letting a low
+                // orbit bury the trainer behind a complete grass shelf.
+                // Keep user yaw, distance and target; only add needed pitch.
+                if crate::cave_water::outdoor(&frame.map_id)
+                    && frame.map_id.as_ref() != "IlexForest"
+                    && frame.tiles.first().is_some_and(|tile|
+                        matches!(tile.source.tileset_id.as_ref(), "johto" | "johto_modern" | "kanto")) {
+                    let foot = crate::footing::actor_ground_point(frame, player);
+                    pose = clear_foreground_terrain(pose, frame, heights,
+                        crate::footing::visual_point_to_voxel(foot, height));
+                }
             }
         }
         if self.first_person {
@@ -186,6 +197,55 @@ impl VoxelCameraControls {
         pose
     }
 
+}
+
+fn clear_foreground_terrain(
+    mut pose: VoxelCameraPose,
+    frame: &crystal_render_api::VisualWorldFrame,
+    heights: &[f32],
+    foot: Vec3,
+) -> VoxelCameraPose {
+    let offset = pose.eye - pose.target;
+    let horizontal = Vec2::new(offset.x, offset.z);
+    let distance = horizontal.length();
+    if distance <= 0.001 { return pose; }
+    let direction = horizontal / distance;
+    let pitch = offset.y.atan2(distance);
+    let mut needed = pitch;
+    // Half-cell sampling includes narrow shelves without inspecting source
+    // collision or changing the actual navigation/support geometry.
+    let stride = frame.tile_size.min_element() * 0.5;
+    if stride <= 0.0 || !stride.is_finite() { return pose; }
+    let mut d = stride;
+    while d <= distance {
+        let p = Vec2::new(foot.x, foot.z) + direction * d;
+        let visual = Vec2::new(p.x, -p.y);
+        // Obstruction needs the published cell crown, not the actor's exact
+        // stair interpolation (which reconstructs the terrace field).
+        if let Some(cell) = crate::footing::tile_at_visual_point(frame, visual)
+            && let Some(&height) = heights.get(cell.y as usize * frame.grid_size.x as usize + cell.x as usize)
+            && height > foot.y + frame.tile_size.y * 0.25 {
+            needed = needed.max((height + frame.tile_size.y * 0.5 - foot.y).atan2(d));
+        }
+        d += stride;
+    }
+    let angle = needed.min(80_f32.to_radians()).max(pitch);
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::var_os("CRYSTAL_CAMERA_CLEARANCE_TRACE").is_some() && !heights.is_empty() {
+        static REPORTED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+        if !REPORTED.swap(true, std::sync::atomic::Ordering::Relaxed) {
+            eprintln!("camera-clearance map={} foot={foot:?} eye={:?} target={:?} tile={:?} grid={:?} center={:?} heights={:?} pitch={} needed={}",
+                frame.map_id, pose.eye, pose.target, frame.tile_size, frame.grid_size, frame.center,
+                heights.iter().copied().fold((f32::INFINITY,f32::NEG_INFINITY), |(lo,hi),h|(lo.min(h),hi.max(h))),
+                pitch.to_degrees(), angle.to_degrees());
+        }
+    }
+    if angle > pitch {
+        let length = offset.length();
+        pose.eye = pose.target + Vec3::new(direction.x * angle.cos(), angle.sin(),
+            direction.y * angle.cos()) * length;
+    }
+    pose
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -249,6 +309,34 @@ pub fn card_rotation_toward_camera(pose: VoxelCameraPose) -> Quat {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn raised_foreground_clears_orbit_without_moving_target_or_terrain() {
+        let frame = crystal_render_api::VisualWorldFrame {
+            viewport_size: Vec2::splat(128.), tile_size: Vec2::splat(8.),
+            grid_size: bevy::prelude::UVec2::splat(16), ..Default::default()
+        };
+        let pose = VoxelCameraPose {
+            eye: Vec3::new(0., 60., 100.), target: Vec3::new(0., 8., 0.),
+            ..camera_pose(frame.viewport_size)
+        };
+        let mut heights = vec![0.; 256];
+        assert_eq!(clear_foreground_terrain(pose, &frame, &heights, Vec3::ZERO), pose);
+        // A tall rear bank must never force the camera upward.
+        heights[4 * 16 + 8] = 100.;
+        assert_eq!(clear_foreground_terrain(pose, &frame, &heights, Vec3::ZERO), pose);
+        heights[10 * 16 + 8] = 30.;
+        let before = heights.clone();
+        let clear = clear_foreground_terrain(pose, &frame, &heights, Vec3::ZERO);
+        assert!(clear.eye.y > pose.eye.y);
+        assert_eq!(clear.target, pose.target);
+        assert_eq!(clear.eye.x, pose.eye.x);
+        assert!(((clear.eye - clear.target).length() - (pose.eye - pose.target).length()).abs() < 0.001);
+        assert_eq!(heights, before);
+        // Existing high views are retained exactly.
+        let overhead = VoxelCameraControls::with_pose(0., 0., 85., false).pose(frame.viewport_size);
+        assert_eq!(clear_foreground_terrain(overhead, &frame, &heights, Vec3::ZERO), overhead);
+    }
 
     #[test]
     fn select_cycles_close_wide_and_trainer_aligned_first_person() {

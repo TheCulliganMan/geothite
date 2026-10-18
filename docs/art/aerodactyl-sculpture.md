@@ -62,3 +62,8 @@ capture failure documented in the native review.
 Temporary candidates, software previews, native PNGs, logs, the inspection
 application wrapper and task-generated authoring/test bytecode were removed
 after all verification jobs completed. The shared build cache is retained.
+
+The later [canonical skin publication](aerodactyl-skin.md) preserves this source
+geometry exactly and adds skull, jaw, wing, hind-limb and tail controls. Current
+captures use the headless image path; the historical window limitations above
+do not describe that path.

@@ -8131,6 +8131,16 @@ fn press_visible_title_confirm_button(
     runtime_shell: &mut BevyRuntimeShell,
     input: GameButton,
 ) -> Result<()> {
+    // Continue has already dispatched out of the exported main-menu loop.
+    // Its summary owns A until confirmation (including its authored delay).
+    // Testing main-menu readiness first would strand it in the pre-menu path.
+    if runtime_shell.visible_continue_screen.is_some() {
+        return if input == GameButton::A {
+            select_visible_title_menu_option(runtime_shell)
+        } else {
+            record_visible_runtime_action(runtime_shell, "input:title:continue:ignored")
+        };
+    }
     let Some(title) = runtime_shell.title_menu.as_ref() else {
         return handle_visible_no_active_title_menu(runtime_shell, "confirm");
     };

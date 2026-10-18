@@ -2,6 +2,8 @@
 use super::*;
 #[path = "gym_scenery_source.rs"]
 mod source;
+#[path = "viridian_maze_stone.rs"]
+mod maze_stone;
 use crate::live_profiles::Document;
 use source::{Identity, Kind};
 pub(super) struct Placement {
@@ -36,7 +38,7 @@ pub(super) fn resolve(
 ) -> Vec<Placement> {
     if !matches!(
         map,
-        "AzaleaGym" | "GoldenrodGym" | "CeladonGym" | "ViridianGym"
+        "AzaleaGym" | "GoldenrodGym" | "CeladonGym" | "ViridianGym" | "KogasRoom"
     ) || g.width.checked_mul(g.height) != Some(cells.len())
         || reserved.len() != cells.len()
     {
@@ -132,12 +134,20 @@ pub(super) fn append(
         let model = if p.kind == Kind::PlanterRound {
             crate::dungeon_models::gym_flower_planter_base()
         } else {crate::dungeon_models::gym_model(p.kind.asset_index())};
+        if p.kind == Kind::LeagueTree {
+            if !model.append_native_broad_tree(&mut mesh.textured,[w,e,n,s],rise,|[x,y]| {
+                let uv=g.uv(p.column+x/8,p.row+y/8);
+                [uv.0+(uv.1-uv.0)*((x%8)as f32+0.5)/8.,
+                 uv.2+(uv.3-uv.2)*((y%8)as f32+0.5)/8.]
+            }) { return false; }
+        } else {
         model.append(
             &mut mesh.solid,
             [w, e, n, s],
             0.,
             rise,
         );
+        }
         if p.kind == Kind::PlanterRound {
             append_planter_blossoms(&mut mesh.textured,[w,e,n,s],rise,
                 g.uv(p.column,p.row));
@@ -151,18 +161,10 @@ pub(super) fn append(
     }
     true
 }
-/// The authored coping already has beveled corners. Keep that closed geometry
-/// and its shared joins, using a continuous stone finish instead of raised studs.
+/// Weather the closed native stones inside their unchanged source footprint.
+/// Both sides of an internal join use the same continuous height field.
 fn finish_maze_cap(mesh:&mut SurfaceMeshData,start:usize,b:[f32;4],rise:f32) {
-    let scale=(b[1]-b[0]).min(b[3]-b[2])/8.;
-    for i in start..mesh.positions.len() {
-        let p=mesh.positions[i];
-        if mesh.normals[i][1]<0.5||p[1]<rise-0.2*scale {continue;}
-        let color=&mut mesh.colors[i];let mean=(color[0]+color[1]+color[2])/3.;
-        let x=p[0]/scale;let z=p[2]/scale;
-        let grain=0.96+0.025*((x*0.21+z*0.17).sin()+(x*0.071-z*0.113).sin());
-        for c in &mut color[..3] {*c=(*c*0.86+mean*0.14)*grain;}
-    }
+    maze_stone::finish(mesh,start,b,rise);
 }
 #[path = "celadon_flowerbed.rs"]
 mod blue_flowerbed;
@@ -179,8 +181,24 @@ mod tests {
             let baseline=mesh.clone();
             finish_maze_cap(&mut mesh,0,[0.,8.*scale,0.,8.*scale],12.*scale);
             assert_eq!(mesh.indices,baseline.indices,"covered join ordinals stay authoritative");
-            assert_eq!(mesh.positions,baseline.positions,"continuous coping adds no checkerboard studs or gaps");
-            assert_eq!(mesh.normals,baseline.normals);assert_ne!(mesh.colors,baseline.colors);
+            assert_ne!(mesh.positions,baseline.positions,"stone caps need actual uneven relief");
+            assert_ne!(mesh.normals,baseline.normals);assert_ne!(mesh.colors,baseline.colors);
+            for (before,after) in baseline.positions.iter().zip(&mesh.positions) {
+                assert!(after[0]>=0. && after[0]<=8.*scale && after[2]>=0. && after[2]<=8.*scale,
+                    "uneven stones remain inside their connected source plot");
+                if before[0]==0. || before[0]==8.*scale || before[2]==0. || before[2]==8.*scale {
+                    assert_eq!([before[0],before[2]],[after[0],after[2]],"section boundaries stay fixed");
+                }
+                assert!(after[1]>=0. && after[1]<=before[1],"relief stays inside the original vertical envelope");
+            }
+            let top=baseline.positions.iter().filter(|p|(p[1]-12.*scale).abs()<0.001).collect::<Vec<_>>();
+            assert!(top.len()>12,"stone cap tessellation carries material variation inside the top");
+            if mask!=0 {
+                assert!(baseline.positions.iter().zip(&baseline.normals).enumerate().any(|(i,(p,n))|
+                    p[1] >= 11.*scale && n[1] > 0.5 && n[1] < 0.999
+                        && mesh.positions[i][1]>=8.6*scale && mesh.normals[i][1]>0.),
+                    "exposed coping retains its authored bevel faces after weathering");
+            }
             for tri in mesh.indices.chunks_exact(3) {
                 let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
                 let normal=Vec3::from_array(mesh.normals[tri[0]as usize]);
@@ -394,6 +412,62 @@ mod tests {
         assert!(mesh.solid.positions.is_empty() && mesh.textured.positions.is_empty());
         assert!(claimed.iter().all(|v| !*v));
     }
+    #[test]
+    fn external_koga_has_six_guarded_broad_trees_with_unchanged_ground_support() {
+        let path=std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap());
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(path).unwrap();let pack=loaded.pack();
+        let map=&pack.data().maps["KogasRoom"];
+        let art=&pack.runtime_files()["data/tilesets/elite_four_room_metatiles.bin"];
+        let (w,h)=(map.attributes.width as usize*4,map.attributes.height as usize*4);
+        let tiles=(0..w*h).map(|i| {
+            let (x,y)=(i%w,i/w);let block=map.blocks[y/4*(w/4)+x/4];
+            VisualTile {column:x as u32,row:y as u32,priority:false,animation_frames:None,texture:Default::default(),
+                source:crystal_render_api::VisualTileSource {tileset_id:"elite_four_room".into(),metatile_id:block,
+                    subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,tile_index:art[block as usize*16+y%4*4+x%4]as u16}}
+        }).collect::<Vec<_>>();
+        let g=GridGeometry {width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let pixels=image::load_from_memory(&pack.runtime_files()["gfx/tilesets/elite_four_room.png"]).unwrap().to_luma8();
+        let drawing=[11,12,13,27,28,29,46,47,10];
+        for ([x,y],shade,palette) in [([8,3],85,2),([7,3],170,2),([6,3],255,2),([9,18],85,5),([8,19],170,5)] {
+            let raw=drawing[y/8*3+x/8];
+            assert_eq!(pixels.get_pixel((raw%16*8+x%8)as u32,(raw/16*8+y%8)as u32)[0],shade);
+            assert_eq!(pack.data().tilesets["elite_four_room"].palette_map[raw],palette,
+                "Koga canopy uses green bank paint and the trunk keeps its brown paint");
+        }
+        let refs=tiles.iter().collect::<Vec<_>>();let reserved=vec![false;w*h];
+        let tree=crate::dungeon_models::gym_model(2);
+        let mut original=SurfaceMeshData::default();tree.append(&mut original,[0.,24.,0.,24.],0.,28.);
+        let mut native=SurfaceMeshData::default();
+        assert!(tree.append_native_broad_tree(&mut native,[0.,24.,0.,24.],28.,|p|[p[0]as f32,p[1]as f32]));
+        assert_eq!(native.positions,original.positions);assert_eq!(native.normals,original.normals);
+        assert_eq!(native.indices,original.indices,"native paint must preserve the existing closed tree geometry");
+        assert!(native.uvs.iter().all(|p|[[8.,3.],[7.,3.],[6.,3.],[9.,18.],[8.,19.]].contains(p)));
+        let ps=resolve("KogasRoom",&refs,&g,[0,0],None,&reserved);
+        assert_eq!(ps.len(),6);
+        let positions=ps.iter().map(|p|(p.resolved.column,p.resolved.row)).collect::<Vec<_>>();
+        assert_eq!(positions,vec![(0,12),(16,12),(0,20),(16,20),(4,24),(12,24)]);
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;w*h],footing_heights:vec![2.75;w*h],..Default::default()};
+        let mut claimed=reserved.clone();
+        for p in &ps {assert!(append(&mut mesh,&refs,&g,p,&mut claimed));}
+        assert_eq!(mesh.authored_cells.iter().filter(|&&p|p==Some("league:koga-broad-tree")).count(),54);
+        assert_eq!(mesh.footing_heights,vec![2.75;w*h]);
+        assert!(mesh.textured.positions.iter().any(|p|p[1]>27.9),"foliage must be a full volume");
+        assert!(mesh.textured.positions.iter().all(|p|p[1]>=0. && p[1]<=28.001));
+        assert!(resolve("WillsRoom",&refs,&g,[0,0],None,&reserved).is_empty());
+        let first=&ps[0];
+        for i in first.indices(w) {
+            let mut changed=tiles.clone();changed[i].source.tile_index^=1;
+            let refs=changed.iter().collect::<Vec<_>>();
+            assert_eq!(resolve("KogasRoom",&refs,&g,[0,0],None,&reserved).len(),5,
+                "edited source rejects just that complete tree");
+        }
+        let mut blocked=reserved.clone();blocked[first.indices(w).next().unwrap()]=true;
+        assert_eq!(resolve("KogasRoom",&refs,&g,[0,0],None,&blocked).len(),5);
+        let custom:Document=serde_json::from_str(r#"{"objects":[{"name":"Custom tree","map":"KogasRoom","tileset":"elite_four_room","metatile":33,"origin":[0,0],"tiles":[[11,12,13],[27,28,29],[46,47,10]],"ground":31,"top_pixels":0,"depth_pixels":8}]}"#).unwrap();
+        assert!(!live::resolve(&refs,w,h,"KogasRoom",Some(&custom)).is_empty());
+        assert!(resolve("KogasRoom",&refs,&g,[0,0],Some(&custom),&reserved).is_empty());
+    }
+
 }
 
 // Original closed floral assemblies accompany only complete3e/3f flower
@@ -441,4 +515,5 @@ fn append_planter_blossoms(
                 center+Vec3::Y*scale*0.045,center-Vec3::Y*scale*0.026],false,(plant+petal)%3==0);
         }
     }
+
 }

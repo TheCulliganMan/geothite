@@ -2,6 +2,8 @@
 """Original distinct Grimer, Muk and Ditto with continuous flowing slime contours."""
 import argparse,json,math
 from pathlib import Path
+from functools import lru_cache
+from copy import deepcopy
 from sculpt_geometry import part,loft,curved_profiles,ellipsoid,fitted_patch,fitted_contour,crease_normals
 from abra_sculpt import surface
 from bovine_sculpt import oval,curved_tube,reverse_front
@@ -21,8 +23,8 @@ def body(species):
    a=j*math.tau/n;wave=1 if row in (0,len(profiles)-1) else 1+(.030*math.sin(3*a+.7)+.022*math.sin(5*a+1.8)+.010*math.sin(7*a-.4) if species=='ditto' else .045*math.sin(3*a+.7)+.035*math.sin(5*a+1.8)+.018*math.sin(7*a-.4))*min(1.,max(0.,(y-rows[0][0])/.055))
    x=rx*math.sin(a)*wave;z=cz+rz*math.cos(a)*wave;yy=y
    if species=='ditto':
-    yy+=(.095*math.sin(a)**8*(rx/.3)**2*math.exp(-((y-.45)/.13)**2) if row else 0)
-    if x>0:x*=1+.16*math.exp(-((y-.35)/.09)**2)
+    yy+=(.145*math.sin(a)**8*(rx/.3)**2*math.exp(-((y-.45)/.13)**2) if row else 0)
+    if x>0:x*=1+.32*math.exp(-((y-.35)/.09)**2)
    else:x+=(-.052 if species=='muk' else .006)*math.sin(y/rows[-1][0]*math.pi/2)
    v.append((x,yy,z))
  f=[tuple(reversed(range(n))),tuple((len(profiles)-1)*n+j for j in range(n))]
@@ -39,20 +41,27 @@ def lip(color,cx,cy,rx,ry,skin):
   for j in range(n):a=aa*n+j;b=aa*n+(j+1)%n;c=bb*n+j;d=bb*n+(j+1)%n;f.append((a,c,d,b))
  return crease_normals(part('Lip / true annular raised flowing mouth rim',color,v,f,True),45)
 
+def arm_layout(species,sign):
+ if species=='grimer':points=[(sign*.180,.370,.030),(sign*.290,.390,.100),(sign*.370,.370,.220),(sign*.405,.350,.305)];r=[.077,.080,.072,.058];center=(sign*.410,.350,.305);radii=(.082,.069,.061)
+ elif sign==1:points=[(.190,.400,.025),(.340,.425,.100),(.510,.405,.115),(.670,.355,.150)];r=[.098,.112,.105,.079];center=(.690,.345,.165);radii=(.105,.084,.075)
+ else:points=[(-.230,.290,.050),(-.350,.260,.120),(-.450,.205,.170)];r=[.088,.095,.063];center=(-.465,.204,.185);radii=(.077,.062,.057)
+ return points,r,center,radii
+def digit_root(species,sign,j):
+ _,_,center,radii=arm_layout(species,sign)
+ return (center[0]+sign*(j-1)*radii[0]*.60,center[1]+(.020 if j==0 else -.004 if j==1 else -.025),center[2]+.030)
 def arms(species,color):
  p=[]
  for sign in (-1,1):
-  if species=='grimer':points=[(sign*.180,.370,.030),(sign*.290,.390,.100),(sign*.370,.370,.220),(sign*.405,.350,.305)];r=[.077,.080,.072,.058];center=(sign*.410,.350,.305);radii=(.077,.063,.055)
-  elif sign==1:points=[(.190,.400,.025),(.340,.425,.100),(.510,.405,.115),(.670,.355,.150)];r=[.098,.112,.105,.079];center=(.690,.345,.165);radii=(.105,.084,.075)
-  else:points=[(-.230,.290,.050),(-.350,.260,.120),(-.450,.205,.170)];r=[.088,.095,.063];center=(-.465,.204,.185);radii=(.077,.062,.057)
+  points,r,center,radii=arm_layout(species,sign)
   arm=curved_tube('Arm / '+('long sagging adult sludge stream ' if species=='muk' and sign==1 else 'short forward flowing sludge stream ')+str(sign),color,points,r,24);p.append(arm)
   hand=ellipsoid('Hand / rounded flowing three-finger palm '+str(sign),color,center,radii,32,22);p.append(hand)
   for j in range(3):
-   xx=center[0]+sign*(j-1)*radii[0]*.60;yy=center[1]+(.020 if j==0 else -.004 if j==1 else -.025);zz=center[2]+.030
-   p.append(curved_tube('Finger / rounded drooping sludge digit '+str(sign)+' '+str(j),color,[(xx,yy,zz),(xx+sign*.009,yy-.027,zz+.050),(xx+sign*.004,yy-.051,zz+.067)],[.027 if species=='grimer' else .030,.025,.011],20))
+   xx,yy,zz=digit_root(species,sign,j);drop=.030 if species=='grimer' else .051
+   p.append(curved_tube('Finger / rounded drooping sludge digit '+str(sign)+' '+str(j),color,[(xx,yy,zz),(xx+sign*.009,yy-drop*.52,zz+.050),(xx+sign*.004,yy-drop,zz+.067)],[.032 if species=='grimer' else .030,.027,.012],16))
  return p
 
-def sculpture(species):
+@lru_cache(maxsize=3)
+def raw_sculpture(species):
  if species not in SPECIES:raise ValueError(species)
  color=COLORS[species];b=body(species);skin=surface(b);p=[b]
  if species=='ditto':
@@ -71,15 +80,15 @@ def sculpture(species):
   p.append(fitted_contour('Smile interior / soft pink transform grin',(.90,.73,.80),upper+list(reversed(lower)),surface(mouth),.002,subdivisions=3))
   for j,(x,y,rx,ry) in enumerate(((0,.525,.018,.009),(-.180,.468,.017,.011),(.160,.478,.014,.008))):p.append(fitted_patch('Body sheen / soft wet lavender highlight '+str(j),(.87,.81,.93),oval(x,y,rx,ry,24),skin,.002))
  else:
-  p+=arms(species,color);adult=species=='muk';cx=-.025 if adult else 0;cy=.580 if adult else .586;rx=.130 if adult else .095;ry=.104 if adult else .133
-  mouth=fitted_contour('Mouth / fitted deep open sludge cavity',INK,oval(cx,cy,rx,ry,48),skin,.012,subdivisions=3);p.append(mouth);p.append(lip(color,cx,cy,rx,ry,skin))
+  p+=arms(species,color);adult=species=='muk';cx=-.025 if adult else 0;cy=.580 if adult else .586;rx=.150 if adult else .110;ry=.110 if adult else .133
+  mouth=fitted_contour('Mouth / fitted deep open sludge cavity',INK,oval(cx,cy,rx,ry,40),skin,.012,subdivisions=2);p.append(mouth);p.append(lip(color,cx,cy,rx,ry,skin))
   p.append(fitted_patch('Tongue / fitted blue-gray lower sludge tongue',TONGUE,oval(cx,cy-ry*.56,rx*.75,ry*.26,40),surface(mouth),.005))
   for sign in (-1,1):
    x=sign*(.098 if adult else .094)+(-.034 if adult else 0);y=.726 if adult else .765
    if adult:xy=[(x-.038,y+.008),(x+.034,y+.030),(x+.029,y-.013),(x-.031,y-.011)]
-   else:xy=oval(x,y,.038,.044,28)
-   eye=fitted_contour('Eye border / fitted dark sludge socket '+str(sign),INK,xy,skin,.006,subdivisions=3);p.append(eye);ccx=sum(x for x,y in xy)/len(xy);ccy=sum(y for x,y in xy)/len(xy)
-   white=fitted_contour('Eye white / fitted pale sludge stare '+str(sign),WHITE,[(ccx+(x-ccx)*.91,ccy+(y-ccy)*.91) for x,y in xy],surface(eye),.003,subdivisions=3);p.append(white)
+   else:xy=oval(x,y,.038,.044,24)
+   eye=fitted_contour('Eye border / fitted dark sludge socket '+str(sign),INK,xy,skin,.006,subdivisions=2);p.append(eye);ccx=sum(x for x,y in xy)/len(xy);ccy=sum(y for x,y in xy)/len(xy)
+   white=fitted_contour('Eye white / fitted pale sludge stare '+str(sign),WHITE,[(ccx+(x-ccx)*.91,ccy+(y-ccy)*.91) for x,y in xy],surface(eye),.003,subdivisions=2);p.append(white)
    p.append(fitted_patch('Pupil / tiny fitted sludge point '+str(sign),INK,oval(x+.006,y+.008 if adult else y+.011,.0035,.0055,24),surface(white),.0025))
   for rear in (False,True):
    parent=reverse_front(b) if rear else b;ss=surface(parent)
@@ -90,11 +99,16 @@ def sculpture(species):
     q=curved_tube('Body fold / supported soft sludge crease '+str(int(rear))+' '+str(j),FOLD if adult else (.46,.37,.53),points,[.0025]*len(points),10);p.append(reverse_front(q) if rear else q)
  for i,q in enumerate(p):
   if q['part'].startswith(('Eye /','Eye border /','Eye white /','Pupil /','Mouth /','Tongue /','Smile interior /','Body sheen /')):p[i]=crease_normals(q,35)
+ return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+def sculpture(species,normalize=True):
+ m=deepcopy(raw_sculpture(species));p=m['primitives']
+ if not normalize:return m
  low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT[species]/(high-low)
  for q in p:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
- return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+ return m
 def main():
  a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);a.add_argument('--only',choices=SPECIES);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
+ from slime_glb import export_slime
  for s in ([args.only] if args.only else SPECIES):
-  m=sculpture(s);(args.output/(s+'.mesh.json')).write_text(json.dumps(m,separators=(',',':')));print(s,len(m['primitives']),'parts',sum(len(p['indices'])//3 for p in m['primitives']),'triangles',flush=True)
+  blob=export_slime(s);(args.output/(s+'.glb')).write_bytes(blob);print(s,len(blob),'bytes',flush=True)
 if __name__=='__main__':main()

@@ -112,17 +112,30 @@ mkdir -p "$repo/content-packs"
 browser_candidate="$repo/content-packs/core-modular.browser.pending.crystalpack"
 native_candidate="$repo/content-packs/core-modular.pending.crystalpack"
 tui_candidate="$repo/content-packs/text-tui.pending.crystalpack"
-trap 'rm -f -- "$browser_candidate" "$native_candidate" "$tui_candidate"' EXIT
-cp "$workspace/content-packs/core-modular.crystalpack" "$native_candidate"
+battle_candidate="$repo/content-packs/default-battles.pending.crystalpack"
+trap 'rm -f -- "$browser_candidate" "$native_candidate" "$tui_candidate" "$battle_candidate"' EXIT
+cargo run --profile "$profile" --locked -p crystal-assets --bin pack_all_pokemon -- "$workspace/content-packs/core-modular.crystalpack" "$native_candidate"
+cargo run --profile "$profile" --locked -p crystal-assets --bin pack_default_battles -- "$native_candidate" "$battle_candidate"
+mv "$battle_candidate" "$native_candidate"
 cargo run --profile "$profile" --locked -p crystal-assets --bin verify_crystalpack -- "$native_candidate" --desktop
-cp "$workspace/content-packs/core-modular.browser.crystalpack" "$browser_candidate"
+cargo run --profile "$profile" --locked -p crystal-assets --bin pack_all_pokemon -- "$workspace/content-packs/core-modular.browser.crystalpack" "$browser_candidate"
+cargo run --profile "$profile" --locked -p crystal-assets --bin pack_default_battles -- "$browser_candidate" "$battle_candidate"
+mv "$battle_candidate" "$browser_candidate"
 cargo run --profile "$profile" --locked -p crystal-assets --bin pack_text_tui -- . "$browser_candidate" "$tui_candidate"
 cargo run --profile "$profile" --locked -p crystal-assets --bin verify_crystalpack -- "$tui_candidate" --audio
 cargo run --profile "$profile" --locked -p geothite -- dump "$tui_candidate"
 export CRYSTAL_RENDER_TEST_PACK="$tui_candidate"
+CRYSTAL_MODPACK_TEST_BASE="$workspace/content-packs/core-modular.browser.crystalpack" cargo test --profile "$profile" --locked -p crystal-assets --test competitive_battles
+CRYSTAL_WILD_BASE_PACK="$workspace/content-packs/core-modular.browser.crystalpack" cargo test --profile "$profile" --locked -p crystal-assets --test wild_challenge
+CRYSTAL_DEFAULT_BATTLE_BASE="$workspace/content-packs/core-modular.browser.crystalpack" cargo test --profile "$profile" --locked -p crystal-assets --test default_battles
+CRYSTAL_MODPACK_TEST_BASE="$workspace/content-packs/core-modular.browser.crystalpack" cargo test --profile "$profile" --locked -p crystal-assets --test all_pokemon
+cargo test --profile "$profile" --locked -p crystal-bevy renderer_neutral_controller_uses_link_cable_through_production_pack
 cargo test --profile "$profile" --locked -p crystal-bevy renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn
 cargo test --profile "$profile" --locked -p crystal-bevy renderer_neutral_controller_plays_mom_and_new_bark_gate
 cargo test --profile "$profile" --locked -p crystal-bevy renderer_neutral_controller_starts_research_center_with_scene_callback
+# Exercise the earned champion scene before publishing a native pack. A pack
+# can pass early-game controls while missing its credits presentation program.
+CRYSTAL_RENDER_TEST_PACK="$native_candidate" cargo test --profile "$profile" --locked -p crystal-bevy kanto_lance_controller_completes_earned_ceremony_and_continues_home -- --ignored
 cargo test --profile "$profile" --locked -p geothite mcp_drives_real_movement_and_production_start_menu
 cargo test --profile "$profile" --locked -p geothite --test stdio_clean
 cargo build --profile "$profile" --locked -p geothite

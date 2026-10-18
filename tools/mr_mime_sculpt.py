@@ -1,16 +1,44 @@
 #!/usr/bin/env python3
 """Original expressive barrier mime with splayed gloves and curled slippers."""
 import argparse,json,math
+from functools import lru_cache
+from copy import deepcopy
 from pathlib import Path
-from sculpt_geometry import ellipsoid,loft,curved_profiles,crease_normals,part
-from bovine_sculpt import curved_tube,oval
-from raptor_bird_sculpt import paint,sheet
+from sculpt_geometry import ellipsoid as sphere,loft,curved_profiles,crease_normals,part,fitted_adaptive_contour,fitted_triangle_contour
+from bovine_sculpt import curved_tube as swept_tube,oval
+from cubone_sculpt import skin_shading
+from goldfish_sculpt import surface
+from raptor_bird_sculpt import sheet
 from moltres_sculpt import flowing
 from skin_glb import COORDINATES
 HEIGHT=1.20
 SKIN=(1.,.84,.85);WHITE=(.97,.98,.96);RED=(.89,.38,.50);BLUE=(.17,.40,.55);INK=(.11,.09,.13);PINK=(.91,.58,.63)
+DIGIT_ANGLES=(170,125,85,45,-10)
+def glove_center(side):return (-.48,1.257,.16) if side<0 else (.49,.772,.30)
+def arm_points(side):return ((side*.285,.851,.007),(-.494,.899,.076),(-.48,1.190,.148)) if side<0 else ((side*.285,.851,.007),(.46,.9,.113),(.485,.687,.286))
+def digit_points(side,index):
+ hx,hy,hz=glove_center(side);angle=math.radians(DIGIT_ANGLES[index]);dx,dy=math.cos(angle),math.sin(angle)
+ return ((hx+dx*.060,hy+dy*.061,hz),(hx+dx*.092,hy+dy*.095,hz+.008),(hx+dx*.132,hy+dy*.132,hz+.011))
+def ellipsoid(name,color,center,radii,segments=28,rings=18):
+ cap=(64,48) if name.startswith('Head /') else (16,12) if name.startswith('Fingertip /') else (20,14) if name.startswith(('Knee /','Mouth back /','Tongue /','Upper lip /','Lower lip /')) else (28,18) if name.startswith('Shoe /') else (20,14)
+ return sphere(name,color,center,radii,min(segments,cap[0]),min(rings,cap[1]))
+def curved_tube(name,color,points,radii,segments=20):
+ return swept_tube(name,color,points,radii,min(segments,16 if name.startswith('Finger /') else 20))
+def paint(name,color,xy,parent,th=.006,sub=3):
+ if name.startswith('Mouth lining /'):return fitted_triangle_contour(name,color,xy,parent,.001)
+ return fitted_adaptive_contour(name,color,xy,None,th,surface_at=surface(parent),initial_subdivisions=1)
+def fitted_shading(parts):
+ def find(prefix,side=None):return next(p for p in parts if p['part'].startswith(prefix) and (side is None or p['part'].endswith(' '+side)))
+ for i,p in enumerate(parts):
+  name=p['part'];side=name.split()[-1]
+  for child,parent in (('Eye /','Head /'),('Pupil /','Eye /'),('Eye glint /','Pupil /'),('Cheek /','Head /'),('Chest /','Body /'),('Mouth lining /','Head /')):
+   if name.startswith(child):parts[i]=skin_shading(p,find(parent,side if parent in ('Eye /','Pupil /') else None));break
+  if name.startswith('Finger pad /'):parts[i]=skin_shading(p,find('Fingertip /',' '.join(name.split()[-2:])))
+ return parts
+
+@lru_cache(maxsize=1)
 def anatomy():
- body=loft('Body / sculpted cream Mr Mime torso',WHITE,curved_profiles(((.37,.11,.12,.0),(.43,.22,.17,0),(.63,.27,.19,0),(.81,.24,.17,0),(.94,.13,.10,0)),5),40)
+ body=loft('Body / sculpted cream Mr Mime torso',WHITE,curved_profiles(((.37,.11,.12,.0),(.43,.22,.17,0),(.63,.27,.19,0),(.81,.24,.17,0),(.94,.13,.10,0)),4),32)
  neck=ellipsoid('Neck / rooted pale pink Mr Mime neck',SKIN,(0,.965,0),(.115,.13,.105),32,22)
  head=ellipsoid('Head / rounded pale pink Mr Mime head',SKIN,(0,1.167,0),(.267,.25,.22),80,56)
  # Recess the actual closed face around the smile rather than attaching a bill.
@@ -32,19 +60,19 @@ def anatomy():
   p.append(paint('Eye glint / fitted white Mr Mime gleam '+str(s),WHITE,oval(s*.086,1.244,.0025,.006,16),iris,.002,2))
   p.append(paint('Cheek / fitted rosy Mr Mime cheek '+str(s),RED,oval(s*.171,1.106,.047,.056,32),head,.008,3))
   outline=[(s*x,y) for x,y in ((.18,1.305),(.255,1.413),(.365,1.46),(.475,1.472),(.548,1.385),(.448,1.385),(.446,1.290),(.351,1.30),(.330,1.224),(.251,1.224),(.186,1.28))]
-  p.append(crease_normals(sheet('Ear fan / closed scalloped blue Mr Mime fan '+str(s),BLUE,flowing(outline,4),lambda x,y:-.025,.025,2),35))
+  p.append(crease_normals(sheet('Ear fan / closed scalloped blue Mr Mime fan '+str(s),BLUE,flowing(outline,4),lambda x,y:-.025,.025,0),35))
   shoulder=ellipsoid('Shoulder / rooted rosy round Mr Mime shoulder '+str(s),RED,(s*.253,.839,0),(.119,.122,.116),36,24);p.append(shoulder)
-  hand=(-.48,1.257,.16) if s==-1 else (.49,.772,.30)
-  pts=[(s*.285,.851,.007),(-.494,.899,.076),(-.48,1.190,.148)] if s==-1 else [(s*.285,.851,.007),(.46,.9,.113),(.485,.687,.286)]
+  hand=glove_center(s)
+  pts=arm_points(s)
   p.append(curved_tube('Arm / thin bent pale pink Mr Mime arm '+str(s),SKIN,pts,[.037,.033,.031],28))
   palm=ellipsoid('Palm / rooted rounded white Mr Mime glove '+str(s),WHITE,hand,(.086,.088,.037),36,24);p.append(palm)
   hx,hy,hz=hand
   # Five independent digits radiate from each actual glove, including a thumb.
-  for i,deg in enumerate((170,125,85,45,-10)):
-   a=math.radians(deg);dx,dy=math.cos(a),math.sin(a);root=(hx+dx*.060,hy+dy*.061,hz);mid=(hx+dx*.092,hy+dy*.095,hz+.008);tip=(hx+dx*.132,hy+dy*.132,hz+.011)
+  for i,deg in enumerate(DIGIT_ANGLES):
+   root,mid,tip=digit_points(s,i)
    p.append(curved_tube(f'Finger / rooted spread white Mr Mime digit {s} {i}',WHITE,[root,mid,tip],[.022,.020,.017],24))
    bulb=ellipsoid(f'Fingertip / rounded white Mr Mime fingertip {s} {i}',WHITE,tip,(.027,.029,.024),28,20);p.append(bulb)
-   p.append(paint(f'Finger pad / fitted pink Mr Mime fingertip {s} {i}',RED,oval(tip[0],tip[1],.017,.018,24),bulb,.003,2))
+   p.append(paint(f'Finger pad / fitted pink Mr Mime fingertip {s} {i}',RED,oval(tip[0],tip[1],.017,.018,16),bulb,.003,2))
   hip=ellipsoid('Hip / rooted rosy round Mr Mime hip '+str(s),RED,(s*.211,.412,0),(.100,.105,.094),32,22);p.append(hip)
   knee=(s*.307,.255,.064)
   p.append(curved_tube('Thigh / rooted pale pink Mr Mime upper leg '+str(s),SKIN,[(s*.224,.403,.012),knee],[.038,.035],28))
@@ -54,12 +82,14 @@ def anatomy():
   p.append(ellipsoid('Shoe / grounded blue Mr Mime slipper '+str(s),BLUE,(s*.294,.062,.167),(.092,.062,.137),36,24))
   p.append(curved_tube('Shoe curl / rooted upturned blue Mr Mime toe '+str(s),BLUE,[(s*.292,.061,.249),(s*.290,.105,.316),(s*.292,.172,.317),(s*.292,.181,.285),(s*.292,.156,.278)],[.038,.027,.020,.012,.004],28))
  p.append(paint('Chest / fitted rosy Mr Mime chest medallion',RED,oval(0,.667,.111,.111,40),body,.009,3))
- return p
+ return fitted_shading([crease_normals(q,45.) for q in p])
 
-def sculpture():
- p=anatomy();lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
- for q in p:
-  q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+@lru_cache(maxsize=2)
+def sculpture(normalize=True):
+ p=deepcopy(anatomy());lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
+ if normalize:
+  for q in p:
+   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) or 0. for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
  return {'name':'mr__mime','version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
  a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'mr__mime.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))

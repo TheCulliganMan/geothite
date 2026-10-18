@@ -2695,6 +2695,19 @@ impl GameDataSet {
         &self,
         state: &mut GameState,
     ) -> Result<TrainerBattleAdvanceOutcome> {
+        if self.competitive_battles {
+            if let BattleMemory::Trainer { trainer_class, battle_type, .. } = &state.battle {
+                if battle_type != "BATTLETYPE_LINK" {
+                    let combat = active_battle_combat_state(state)?;
+                    if combat.enemy.hp == 0 {
+                        let profile = crate::TrainerBattleProfile::for_class(trainer_class);
+                        let replacement = self.competitive_enemy_replacement(&combat, profile)?;
+                        return crystal_core::battle::start::advance_active_trainer_battle_with_replacement(state, replacement)
+                            .map_err(|error| anyhow::anyhow!("advance competitive trainer battle: {error}"));
+                    }
+                }
+            }
+        }
         core_advance_active_trainer_battle(state)
             .map_err(|error| anyhow::anyhow!("advance active trainer battle: {error}"))
     }
@@ -3684,6 +3697,9 @@ impl GameDataSet {
         ai_flags: u32,
         rng: &mut dyn BattleRandomSource,
     ) -> Result<EnemyMoveSelection> {
+        if self.competitive_battles && !combat.link_battle {
+            return self.select_competitive_enemy_move(combat, crate::TrainerBattleProfile::Balanced, rng);
+        }
         if battle_action_locked_before_menu(combat, BattleSide::Enemy) {
             return Ok(EnemyMoveSelection {
                 slot: core_select_wild_enemy_move_slot(combat, rng),
@@ -4055,6 +4071,17 @@ impl GameDataSet {
         selected_move_slot: usize,
         rng: &mut dyn BattleRandomSource,
     ) -> Result<BattleAction> {
+        if self.competitive_battles && !combat.link_battle {
+            if battle_action_locked_before_menu(combat, BattleSide::Enemy) {
+                return Ok(BattleAction::Move { slot: selected_move_slot });
+            }
+            let profile = self.trainers.trainers.get(trainer_id)
+                .map_or(crate::TrainerBattleProfile::Balanced, |trainer| {
+                    crate::TrainerBattleProfile::for_class(&trainer.trainer_class)
+                });
+            return self.select_competitive_trainer_action(combat, trainer_id, battle_type,
+                trainer_items_used, selected_move_slot, profile);
+        }
         let switch_flags = if battle_type == "BATTLETYPE_BATTLE_TOWER" {
             self.trainers
                 .trainers

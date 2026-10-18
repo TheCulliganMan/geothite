@@ -1,5 +1,12 @@
 # Original armored Nidoqueen sculpture
 
+The current canonical sculpture and articulated skin are documented in
+[the royal-Nido guide](nido-royal-skins.md). The record below describes the
+prior static sculpture.
+
+## Prior static sculpture
+
+
 The canonical Nidoqueen model now comes from `tools/nidoqueen_sculpt.py`.
 It replaces the generic family biped with a broad low reptilian head, fitted
 angular eyes, a short forehead horn, round brown-lined ears, a cream lower jaw,

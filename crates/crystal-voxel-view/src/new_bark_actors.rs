@@ -4,6 +4,8 @@
 pub(crate) mod actor_props;
 #[path = "johto_characters.rs"]
 pub(crate) mod character_meshes;
+#[path = "surf_riding.rs"]
+mod surf_riding;
 
 use crate::{
     ActorIdCache, TerrainRevisionCache, VOXEL_RENDER_LAYER, VoxelActorCard, VoxelViewStatus,
@@ -25,7 +27,7 @@ pub(crate) struct ModeledActor;
 // NPCs using the same trainer art keep their authored stature.
 const PLAYER_PRESENTATION_SCALE: f32 = 1.25;
 
-fn character_scale(actor: &VisualActor, tile_height: f32) -> f32 {
+pub(crate) fn character_scale(actor: &VisualActor, tile_height: f32) -> f32 {
     tile_height * 2.0 * if actor.id==VisualActorId::Player {PLAYER_PRESENTATION_SCALE} else {1.0}
 }
 
@@ -167,6 +169,7 @@ struct WorldPokemonSkin {
     rig: &'static crate::species_rig::SpeciesRig,
     joints: Vec<Entity>,
     pose: Vec<Transform>,
+    matrices: Vec<Mat4>,
     seconds: f32,
     motion: Motion,
     joint_offsets: Vec<(usize,Quat)>,
@@ -257,10 +260,10 @@ impl WorldPokemonSkin {
             bevy::mesh::skinning::SkinnedMesh { inverse_bindposes, joints: joints.clone() },
             bevy::camera::primitives::Aabb::from_min_max(bounds.0,bounds.1),
         ));
-        Self { rig, joints, pose, seconds: 0., motion: Motion::new(foot,facing), joint_offsets }
+        Self { rig, joints, pose, matrices: vec![Mat4::IDENTITY; rig.joints.len()], seconds: 0., motion: Motion::new(foot,facing), joint_offsets }
     }
 
-    fn advance(&mut self, delta: f32, foot: Vec2, facing: Option<Vec2>, scale: f32, transforms: &mut Query<&mut Transform, With<ModeledActor>>) {
+    fn advance(&mut self, delta: f32, foot: Vec2, facing: Option<Vec2>, scale: f32, swimming: bool, transforms: &mut Query<&mut Transform, With<ModeledActor>>) {
         use crate::species_rig::{Clip, Playback};
         if !delta.is_finite() || delta < 0. { return; }
         self.seconds = (self.seconds + delta).rem_euclid(120.);
@@ -270,7 +273,14 @@ impl WorldPokemonSkin {
         if distance.is_finite() && distance<=scale*1.5 {
             self.motion.phase=(phase+self.rig.locomotion_phase_delta(distance/scale,delta)).rem_euclid(TAU);
         }
-        if self.joint_offsets.is_empty() {
+        if swimming {
+            self.rig.sample_into(Clip::Idle, self.seconds, Playback::Loop, &mut self.pose)
+                .expect("validated Surf swimming pose");
+            // Carry the rider at the waterline. World followers' hovering or
+            // walking cycles would lift aquatic mounts or make them tread air.
+            let height = self.rig.neutral_bounds.1.y - self.rig.neutral_bounds.0.y;
+            self.pose[0].translation.y += height * 0.012 * (self.seconds * TAU * 0.7).sin();
+        } else if self.joint_offsets.is_empty() {
             self.rig.sample_locomotion(self.seconds, self.motion.phase, self.motion.walk_weight, &mut self.pose);
         } else {
             self.rig.sample_into(Clip::Idle, self.seconds, Playback::Loop, &mut self.pose)
@@ -286,7 +296,7 @@ impl WorldPokemonSkin {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-enum CaveStoneFinish { Rock, Dark, Frozen }
+enum CaveStoneFinish { Rock, Dark, Frozen, Native([u8;3]) }
 
 fn cave_stone_finish(frame: &VisualWorldFrame) -> Option<CaveStoneFinish> {
     frame.tiles.iter().find_map(|tile| match tile.source.tileset_id.as_ref() {
@@ -503,8 +513,14 @@ fn enabled_map(map: &str) -> bool {
     !map.is_empty()
 }
 
+/// Source Surf sprites remain 2D witnesses, never alternative 3D mounts.
+pub(crate) fn is_surf_avatar(actor: &VisualActor) -> bool {
+    actor.id == VisualActorId::Player && matches!(actor.source_id.as_ref(),
+        "surf" | "surfing_pikachu" | "surf_pikachu"
+        | "gfx/sprites/surf.png" | "gfx/sprites/surfing_pikachu.png")
+}
+
 /// The silhouette pass must use the same appearance test as the actual rig.
-/// Unsupported mounts keep their original card and its matching silhouette.
 pub(crate) fn has_modeled_player(frame: &VisualWorldFrame) -> bool {
     enabled_map(&frame.map_id)
         && frame.actors.iter().any(|actor| {
@@ -521,6 +537,15 @@ fn person_name(kind: CharacterKind) -> &'static str {
 }
 pub(crate) fn player_eye_height(actor: &VisualActor) -> f32 {
     character_kind(actor).map_or(1.2, person_height) * 0.85
+        * if actor.id == VisualActorId::Player { PLAYER_PRESENTATION_SCALE } else { 1.0 }
+}
+
+/// Visible stature above the source foot, including the rig's swimmer pose.
+pub(crate) fn modeled_character_height(frame: &VisualWorldFrame, actor: &VisualActor) -> Option<f32> {
+    let kind=character_kind(actor)?;
+    let height=character_scale(actor,frame.tile_size.y)*person_height(kind)
+        -swimmer_depth(frame,actor,kind);
+    (height.is_finite()&&height>0.).then_some(height)
 }
 
 fn person_height(kind: CharacterKind) -> f32 {
@@ -600,8 +625,7 @@ fn prop_foot(frame: &VisualWorldFrame, actor: &VisualActor, kind: actor_props::P
     // Its lower edge sits inside the gameplay tile, unlike a person's feet.
     if kind == actor_props::PropKind::PokeBall {
         actor.center - Vec2::new(0.0, actor.size.y * 0.25)
-    } else if world_pokemon_rig(kind).is_some()
-        || matches!(kind, actor_props::PropKind::ChrisBike | actor_props::PropKind::KrisBike) {
+    } else if world_pokemon_rig(kind).is_some() || kind.is_bicycle() {
         actor_ground_point(frame, actor)
     } else {
         actor_foot(actor)
@@ -632,26 +656,21 @@ fn furniture_seat_target(frame: &VisualWorldFrame, seat: crate::seating::Seat,
     seat.actor_target(frame, foot, actor.facing, ground)
 }
 
-fn surf_seat_height(frame: &VisualWorldFrame) -> Option<f32> {
+fn pokemon_world_scale(frame: &VisualWorldFrame, rig: &crate::species_rig::SpeciesRig,
+    dimensions: Option<&crystal_render_api::VisualPokemonDimensions>) -> Option<f32> {
+    let species = if rig.species.name().starts_with("unown_") { "UNOWN".into() }
+        else { rig.species.name().to_ascii_uppercase() };
+    let meters = *dimensions?.meters.get(&species)?;
+    let reference = crate::battle_layout::reference_span(&species, rig.neutral_bounds.0, rig.neutral_bounds.1);
+    (meters.is_finite() && meters > 0. && reference > 0.).then_some(
+        frame.tile_size.y * 2. * meters / reference)
+}
+
+fn surf_mount_seat(frame: &VisualWorldFrame,
+    dimensions: Option<&crystal_render_api::VisualPokemonDimensions>) -> Option<(surf_riding::SurfSeat, f32)> {
     let mount = frame.actors.iter().find(|a| a.id == VisualActorId::SurfMount)?;
-    let kind = prop_kind(mount)?;
-    static SEATS: std::sync::OnceLock<std::sync::Mutex<HashMap<actor_props::PropKind, f32>>> = std::sync::OnceLock::new();
-    let mut seats = SEATS.get_or_init(Default::default).lock().unwrap();
-    let seat = *seats.entry(kind).or_insert_with(|| {
-        let mesh = actor_props::mesh(kind);
-        let low = mesh.positions.iter().map(|p| Vec3::from_array(*p))
-            .fold(Vec3::splat(f32::INFINITY), Vec3::min);
-        let high = mesh.positions.iter().map(|p| Vec3::from_array(*p))
-            .fold(Vec3::splat(f32::NEG_INFINITY), Vec3::max);
-        let center = (low + high) * 0.5;
-        // Sample the torso's central support, excluding tall forward heads,
-        // horns and tails that do not provide a seat for the rider.
-        mesh.positions.iter().filter(|p|
-            (p[0] - center.x).abs() <= (high.x-low.x) * 0.25
-                && (p[2] - center.z).abs() <= (high.z-low.z) * 0.15)
-            .map(|p| p[1]).fold(0.25_f32, f32::max)
-    });
-    Some(seat * frame.tile_size.y * 2.0)
+    let rig = world_pokemon_actor_rig(prop_kind(mount)?, mount.id)?;
+    Some((surf_riding::SurfSeat::for_rig(rig), pokemon_world_scale(frame, rig, dimensions)?))
 }
 
 fn contact_shadow() -> Mesh {
@@ -714,6 +733,7 @@ pub(crate) fn sync(
     presentation: (
         Option<Res<crystal_render_api::VisualSurfRider>>,
         Option<Res<crystal_render_api::VisualPlayerTraversal>>,
+        Option<Res<crystal_render_api::VisualPokemonDimensions>>,
     ),
     footing: Res<TerrainRevisionCache>,
     cards: Res<ActorIdCache>,
@@ -728,7 +748,7 @@ pub(crate) fn sync(
     mut transforms: Query<&mut Transform, With<ModeledActor>>,
 ) {
     let _trace = crate::loading_trace::span("frame.modeled_actors", || serde_json::json!({"map":frame.map_id.as_ref()}));
-    let (surf_rider, traversal) = presentation;
+    let (surf_rider, traversal, dimensions) = presentation;
     let player_visibility = if settings.as_ref().is_some_and(|s| s.camera.first_person) {
         Visibility::Hidden
     } else { Visibility::Inherited };
@@ -802,7 +822,8 @@ pub(crate) fn sync(
     }
     let material = state.material.as_ref().unwrap().clone();
     let remote_material = state.remote_material.as_ref().unwrap().clone();
-    let surf_mounted = surf_seat_height(&frame).is_some();
+    let mount_seat = surf_mount_seat(&frame, dimensions.as_deref());
+    let surf_mounted = mount_seat.is_some();
     let visible: HashSet<_> = frame
         .actors
         .iter()
@@ -858,8 +879,15 @@ pub(crate) fn sync(
             && kind == actor_props::PropKind::Boulder;
         let stone = if matches!(actor.id, VisualActorId::Object(_))
             && matches!(kind, actor_props::PropKind::Boulder | actor_props::PropKind::Rock) {
-            cave_stone_finish(&frame).map(|finish| {
-                let variant = match actor.id { VisualActorId::Object(id) => (id%4) as u8, _=>0 };
+            cave_stone_finish(&frame).or_else(|| {
+                let exterior=crate::cave_water::outdoor(&frame.map_id)
+                    && frame.tiles.first().is_some_and(|tile|matches!(tile.source.tileset_id.as_ref(),
+                        "johto"|"johto_modern"|"kanto"));
+                exterior.then(||images.get(&actor.texture).and_then(actor_props::native_stone_color))
+                    .flatten().map(CaveStoneFinish::Native)
+            }).map(|finish| {
+                let variant = if matches!(finish,CaveStoneFinish::Native(_)) {0}
+                    else {match actor.id { VisualActorId::Object(id) => (id%4) as u8, _=>0 }};
                 (finish, variant)
             })
         } else { None };
@@ -873,8 +901,14 @@ pub(crate) fn sync(
                     stone_materials.add(material)
                 }).clone()))
         } else { stone.map(|(finish,_)| {
-            state.stone_materials.entry(finish).or_insert_with(|| {
-                let texture = images.add(crate::painted_stone::movable_bedrock_image(finish==CaveStoneFinish::Frozen));
+            // Native pigment lives on the shared mesh; all native palette
+            // variants reuse one neutral grain texture and material.
+            let material_finish=if matches!(finish,CaveStoneFinish::Native(_)) {
+                CaveStoneFinish::Native([0;3])
+            } else {finish};
+            state.stone_materials.entry(material_finish).or_insert_with(|| {
+                let texture = images.add(crate::painted_stone::movable_bedrock_image(
+                    matches!(finish,CaveStoneFinish::Frozen|CaveStoneFinish::Native(_))));
                 // The rock mesh already contains authored face shading. Use
                 // the same real-light energy response as the cave terrain,
                 // rather than adding a second PBR shade that blacks out faces.
@@ -909,23 +943,20 @@ pub(crate) fn sync(
             .facing
             .filter(|f| f.is_finite() && f.length_squared() > 0.5)
             .unwrap_or(Vec2::NEG_Y);
-        let prop_scale = match (actor.id, kind) {
-            (_, actor_props::PropKind::PokeBall) => scale * 0.5,
-            // The supplied moth icon has two 16px frames with visible heights
-            // of 12px and 14px. Use the maximum so its resting NPC keeps a
-            // stable source-sized silhouette throughout the icon animation.
-            (VisualActorId::Object(_), actor_props::PropKind::ExactSpecies("BUTTERFREE"))
-                if actor.source_id.ends_with(":icon_moth") => {
-                    let rig = rig.expect("Butterfree skin");
-                    actor.size.y * (14.0 / 16.0)
-                        / (rig.neutral_bounds.1.y - rig.neutral_bounds.0.y)
+        let prop_scale = if let Some(rig) = rig {
+            let Some(physical) = pokemon_world_scale(&frame, rig, dimensions.as_deref()) else {
+                if let Some(instance) = state.props.remove(&actor.id) {
+                    commands.entity(instance.entity).despawn();
                 }
-            // The battle sculpture's one-unit height is a model datum. A
-            // walking Totodile is a small starter, below the trainer's waist.
-            (VisualActorId::PartyFollower, actor_props::PropKind::ExactSpecies("TOTODILE")) => scale * 0.45,
-            _ => scale,
-        };
-        let transform = Transform::from_translation(visual_point_to_voxel(render_foot, height + 0.04))
+                continue;
+            };
+            physical
+        } else if kind == actor_props::PropKind::PokeBall { scale * 0.5 } else { scale };
+
+        let immersion = if actor.id == VisualActorId::SurfMount {
+            mount_seat.map_or(0., |(seat, scale)| seat.waterline * scale)
+        } else { 0. };
+        let transform = Transform::from_translation(visual_point_to_voxel(render_foot, height + 0.04 - immersion))
             .with_rotation(Quat::from_rotation_y(facing_yaw(facing)))
             .with_scale(Vec3::splat(prop_scale));
         // A variable sprite/decor/species can change without a new object ID.
@@ -947,7 +978,8 @@ pub(crate) fn sync(
                 // Remove camera scrolling before measuring actual travelled distance.
                 let scroll=frame.center-Vec2::new(frame.grid_origin.x as f32*frame.tile_size.x,
                     -frame.grid_origin.y as f32*frame.tile_size.y);
-                skin.advance(time.delta_secs(), render_foot-scroll, actor.facing, prop_scale, &mut transforms);
+                skin.advance(time.delta_secs(), render_foot-scroll, actor.facing, prop_scale,
+                    actor.id == VisualActorId::SurfMount, &mut transforms);
             }
         } else {
             let key=(kind,stone,gold_gym_stone,actor.model_palette,perched);
@@ -984,6 +1016,8 @@ pub(crate) fn sync(
                 .entry(key)
                 .or_insert_with(|| meshes.add(if gold_gym_stone {
                     actor_props::gold_gym_boulder_mesh().into_mesh()
+                } else if let Some((CaveStoneFinish::Native(rgb),_))=stone {
+                    actor_props::native_stone_mesh(kind,rgb).into_mesh()
                 } else if let Some((finish,variant))=stone {
                     let mut data=crate::mesh::movable_cave_stone(finish==CaveStoneFinish::Frozen,
                         finish==CaveStoneFinish::Dark, variant);
@@ -1026,7 +1060,7 @@ transform,),
             if rig.is_some() {
                 commands.entity(entity).insert(NotShadowReceiver);
             }
-            let pedals = matches!(kind, actor_props::PropKind::ChrisBike | actor_props::PropKind::KrisBike)
+            let pedals = kind.is_bicycle()
                 .then(|| crate::bicycle::spawn_pedals(&mut commands, &mut meshes,
                     material.clone(), entity, 0.));
             if actor.id == VisualActorId::Player {
@@ -1064,7 +1098,7 @@ transform,),
     state.refresh_seats(&frame, footing.key.as_ref().map_or(0, |key| key.profiles_revision),
         footing.built_profiles.as_deref());
     for actor in &frame.actors {
-        let mounted = actor.id == VisualActorId::Player && surf_seat_height(&frame).is_some();
+        let mounted = actor.id == VisualActorId::Player && surf_mounted;
         let kind = if mounted {
             Some(if surf_rider.as_ref().is_some_and(|rider| rider.female) {
                 CharacterKind::TrainerFemale
@@ -1089,8 +1123,8 @@ transform,),
             }
             continue;
         };
-        let surf_seat = (actor.id == VisualActorId::Player).then(|| surf_seat_height(&frame)).flatten();
-        let height = height + surf_seat.unwrap_or(0.0) - swimmer_depth(&frame, actor, kind);
+        let surf_seat = (actor.id == VisualActorId::Player).then_some(mount_seat).flatten();
+        let height = height + surf_seat.map_or(0., |(seat, scale)| seat.point.y * scale) - swimmer_depth(&frame, actor, kind);
         let world_foot = world_foot(&frame, actor);
         let scale = character_scale(actor,frame.tile_size.y);
         if scale <= 0.0 || !scale.is_finite() || !world_foot.is_finite() {
@@ -1104,14 +1138,15 @@ transform,),
             let old = state.instances.remove(&actor.id).unwrap();
             commands.entity(old.entity).despawn();
         }
-        let seat = if surf_seat.is_some() || actor.source_id.ends_with("_bike") { None }
+        let bicycle = prop_kind(actor).is_some_and(actor_props::PropKind::is_bicycle);
+        let seat = if surf_seat.is_some() || bicycle { None }
             else { state.seats.iter().find_map(|seat| furniture_seat_target(&frame, *seat, actor, height)
                 .map(|offset| (offset, seat.height, seat.yaw))) };
         if let Some(instance) = state.instances.get_mut(&actor.id) {
             instance
                 .motion
                 .advance(world_foot, actor.facing,
-                    scale * if actor.source_id.ends_with("_bike") || surf_seat.is_some() { 1.0 }
+                    scale * if bicycle || surf_seat.is_some() { 1.0 }
                     else { person_height(kind) / crate::human_locomotion::REFERENCE_HEIGHT },
                     time.delta_secs());
             if let Ok(mut transform) = transforms.get_mut(instance.entity) {
@@ -1120,8 +1155,13 @@ transform,),
             {
                 let person = &mut instance.person;
                 person.run_blend = instance.motion.run_weight;
-                person.bicycle = actor.source_id.ends_with("_bike");
+                person.bicycle = bicycle;
                 person.surfing = surf_seat.is_some();
+                person.surf_half_width = surf_seat.map_or(0.25, |(seat, mount_scale)|
+                    seat.half_width * mount_scale / (frame.tile_size.y * 2. * PLAYER_PRESENTATION_SCALE));
+                commands.entity(instance.shadow).insert(if person.surfing {
+                    Visibility::Hidden
+                } else { Visibility::Inherited });
                 person.hop_step = (hop_weight > 0.0).then(|| (
                     traversal.as_ref().and_then(|t| t.step).unwrap().progress,
                     hop_weight,
@@ -1201,7 +1241,7 @@ model_transform(
                     imported,
                     entity,
                     matches!(actor.id, VisualActorId::RemotePlayer(_)),
-                    actor.source_id.ends_with("_bike"),
+                    bicycle,
                     &mut commands,
                     &mut meshes,
                     &mut materials,
@@ -1209,6 +1249,8 @@ model_transform(
                     &mut binds,
                 );
                 person.surfing = surf_seat.is_some();
+                person.surf_half_width = surf_seat.map_or(0.25, |(seat, mount_scale)|
+                    seat.half_width * mount_scale / (frame.tile_size.y * 2. * PLAYER_PRESENTATION_SCALE));
                 let shadow = commands
                     .spawn((
                         (Mesh3d(state.shadow_mesh.as_ref().unwrap().clone()),
@@ -1249,13 +1291,26 @@ Transform::from_xyz(0.0,
         }
 
     }
-    // Update after the rider has advanced, including its initial zero phase.
-    if let (Some(mount), Some(rider)) = (state.props.get(&VisualActorId::SurfMount),
-        state.instances.get(&VisualActorId::Player)) {
+    // Use the same animated skin surface and smoothed turn as the mount.
+    // Following only its neutral height leaves the rider floating or clipping
+    // when the Pokémon breathes, swims or changes direction.
+    let ModeledActors { props, instances, .. } = &mut *state;
+    if let (Some((seat, _)), Some(mount), Some(rider)) = (mount_seat,
+        props.get_mut(&VisualActorId::SurfMount), instances.get(&VisualActorId::Player)) {
         if let Ok(rider_root) = transforms.get(rider.entity) {
             let rotation = rider_root.rotation;
-            if let Ok(mut mount_root) = transforms.get_mut(mount.entity) {
+            let contact = mount.skin.as_mut().map(|skin| {
+                skin.rig.skin_matrices_into(&skin.pose, &mut skin.matrices)
+                    .expect("validated Surf mount skin");
+                seat.animated_point(skin.rig, &skin.matrices)
+            }).unwrap_or(seat.point);
+            let position = if let Ok(mut mount_root) = transforms.get_mut(mount.entity) {
                 mount_root.rotation = rotation;
+                Some(mount_root.transform_point(contact))
+            } else { None };
+            if let Some(position) = position
+                && let Ok(mut rider_root) = transforms.get_mut(rider.entity) {
+                rider_root.translation = position;
             }
         }
     }
@@ -1412,14 +1467,18 @@ mod tests {
             },
         });
         for kind in [CharacterKind::SwimmerGuy, CharacterKind::SwimmerGirl] {
+            a.source_id=if kind==CharacterKind::SwimmerGuy {"swimmer_guy"}else{"swimmer_girl"}.into();
             let total = character_scale(&a, f.tile_size.y) * person_height(kind);
             let above = total - swimmer_depth(&f, &a, kind);
             assert!(above > total * 0.25 && above < total * 0.40,
                 "only the upper head/shoulder portion should clear water");
+            assert_eq!(modeled_character_height(&f,&a),Some(above),
+                "occluder interest follows the visible head and shoulders");
             let mut player = a.clone(); player.id = VisualActorId::Player;
             assert_eq!(swimmer_depth(&f, &player, kind), 0.);
             f.tiles[0].source.tile_index = 0x2c;
             assert_eq!(swimmer_depth(&f, &a, kind), 0., "land swimmer keeps full stature");
+            assert_eq!(modeled_character_height(&f,&a),Some(total));
             f.tiles[0].source.tile_index = 0x14;
         }
         assert_eq!(swimmer_depth(&f, &a, CharacterKind::Trainer), 0.);
@@ -1430,8 +1489,18 @@ mod tests {
         fn wait_for_actor_assets(
             frame: Res<VisualWorldFrame>, status: Res<VoxelViewStatus>,
             mut state: ResMut<ModeledActors>,
+            mut dimensions: ResMut<crystal_render_api::VisualPokemonDimensions>,
         ) {
             if !frame.active || !status.active || !enabled_map(&frame.map_id) { return; }
+            // Synthetic source-art fixtures use one model unit per metre.
+            // Production supplies these measurements from its loaded pack.
+            for actor in &frame.actors {
+                if let Some(rig) = prop_kind(actor).and_then(world_pokemon_rig) {
+                    let species = rig.species.name().to_ascii_uppercase();
+                    dimensions.meters.entry(species.clone()).or_insert_with(||
+                        crate::battle_layout::reference_span(&species, rig.neutral_bounds.0, rig.neutral_bounds.1));
+                }
+            }
             #[cfg(not(target_arch = "wasm32"))]
             {
                 let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
@@ -1462,6 +1531,7 @@ mod tests {
             .init_resource::<TerrainRevisionCache>()
             .init_resource::<ActorIdCache>()
             .init_resource::<ModeledActors>()
+            .init_resource::<crystal_render_api::VisualPokemonDimensions>()
             .init_resource::<Assets<Mesh>>()
             .init_resource::<Assets<StandardMaterial>>()
             .init_resource::<Assets<VoxelMaterial>>()
@@ -1469,6 +1539,98 @@ mod tests {
             .init_resource::<Assets<bevy::mesh::skinning::SkinnedMeshInverseBindposes>>()
             .add_systems(Update, (wait_for_actor_assets, sync).chain());
         app
+    }
+
+    #[test]
+    #[ignore = "requires supplied rider rigs and paintings"]
+    fn surf_riders_stay_on_the_animated_mount_through_turns_and_dismount() {
+        for female in [false, true] {
+            let mut app = actor_test_app();
+            app.insert_resource(crystal_render_api::VisualSurfRider { female });
+            // Feet/inches from the same source format used by the pack.
+            for (species, inches) in [("GOLDEEN", 24.), ("LAPRAS", 98.),
+                ("TOTODILE", 24.), ("PIKACHU", 16.), ("GYARADOS", 256.)] {
+                app.world_mut().resource_mut::<crystal_render_api::VisualPokemonDimensions>()
+                    .meters.insert(species.into(), inches * 0.0254);
+            }
+            for species in ["LAPRAS", "TOTODILE", "PIKACHU", "GYARADOS", "GOLDEEN"] {
+                {
+                    let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+                    frame.actors.truncate(1);
+                    frame.actors[0].source_id = if species == "PIKACHU" {
+                        "surfing_pikachu"
+                    } else { "surf" }.into();
+                    let mut mount = frame.actors[0].clone();
+                    mount.id = VisualActorId::SurfMount;
+                    mount.source_id = format!("species:{species}:icon_monster").into();
+                    frame.actors.push(mount);
+                }
+                for facing in [Vec2::X, Vec2::Y, Vec2::NEG_X, Vec2::NEG_Y] {
+                    for _ in 0..4 {
+                        app.world_mut().resource_mut::<Time>()
+                            .advance_by(std::time::Duration::from_secs_f32(1. / 60.));
+                        for actor in &mut app.world_mut().resource_mut::<VisualWorldFrame>().actors {
+                            actor.facing = Some(facing);
+                            actor.center += facing * 0.1;
+                        }
+                        app.update();
+                    }
+                    let world = app.world();
+                    let state = world.resource::<ModeledActors>();
+                    let rider = &state.instances[&VisualActorId::Player];
+                    let mount = &state.props[&VisualActorId::SurfMount];
+                    assert!(rider.person.surfing);
+                    assert_eq!(rider.kind, if female { CharacterKind::TrainerFemale } else { CharacterKind::Trainer });
+                    assert!(!state.props.contains_key(&VisualActorId::Player), "replace the generic Surf prop");
+                    let skin = mount.skin.as_ref().unwrap();
+                    assert!(skin.pose[0].translation.y.abs()
+                        < (skin.rig.neutral_bounds.1.y - skin.rig.neutral_bounds.0.y) * 0.03,
+                        "Surf mounts swim at the waterline instead of hovering");
+                    let seat = surf_riding::SurfSeat::for_rig(skin.rig);
+                    let mount_root = world.get::<Transform>(mount.entity).unwrap();
+                    assert!(seat.waterline > 0. && seat.waterline < seat.point.y,
+                        "{species} must intersect the water below its seated rider: {seat:?}");
+                    assert!((mount_root.translation.y + seat.waterline * mount_root.scale.y - 0.04).abs() < 0.0001,
+                        "the body-local waterline, rather than its lowest vertex, meets the water plane");
+                    let meters = world.resource::<crystal_render_api::VisualPokemonDimensions>().meters[species];
+                    let reference = crate::battle_layout::reference_span(species,
+                        skin.rig.neutral_bounds.0, skin.rig.neutral_bounds.1);
+                    let world_units_per_meter = world.resource::<VisualWorldFrame>().tile_size.y * 2.;
+                    assert!((mount_root.scale.y * reference / world_units_per_meter - meters).abs() < 0.00001,
+                        "mounting must preserve the Pokédex dimension");
+                    assert_eq!(mount_root.scale, Vec3::splat(mount_root.scale.y));
+                    let rider_root = world.get::<Transform>(rider.entity).unwrap();
+                    let contact = mount_root.transform_point(seat.animated_point(skin.rig, &skin.matrices));
+                    assert!(rider_root.translation.abs_diff_eq(contact, 0.0001));
+                    assert!(rider_root.rotation.dot(mount_root.rotation).abs() > 0.9999);
+                    assert_eq!(world.get::<Visibility>(rider.shadow), Some(&Visibility::Hidden));
+                }
+                let mounted_scale = {
+                    let state = app.world().resource::<ModeledActors>();
+                    app.world().get::<Transform>(state.props[&VisualActorId::SurfMount].entity).unwrap().scale
+                };
+                {
+                    let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+                    frame.actors[0].source_id = if female { "kris" } else { "chris" }.into();
+                    frame.actors[1].id = VisualActorId::PartyFollower;
+                }
+                app.update();
+                let state = app.world().resource::<ModeledActors>();
+                let following_scale = app.world().get::<Transform>(state.props[&VisualActorId::PartyFollower].entity).unwrap().scale;
+                assert_eq!(mounted_scale, following_scale, "Surf must never resize {species}");
+            }
+            {
+                let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+                frame.actors.truncate(1);
+                frame.actors[0].source_id = if female { "kris" } else { "chris" }.into();
+            }
+            app.update();
+            let state = app.world().resource::<ModeledActors>();
+            assert!(!state.props.contains_key(&VisualActorId::SurfMount));
+            let rider = &state.instances[&VisualActorId::Player];
+            assert!(!rider.person.surfing);
+            assert_eq!(app.world().get::<Visibility>(rider.shadow), Some(&Visibility::Inherited));
+        }
     }
 
     #[test]
@@ -1621,10 +1783,9 @@ mod tests {
         let wing_skin=app.world().get::<bevy::mesh::skinning::SkinnedMesh>(wing_entity).unwrap();
         assert_eq!(wing_skin.joints,perched.joints);
         let root=*app.world().get::<Transform>(entity).unwrap();
-        let height=rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
-        assert!((root.scale.y*height-npc.size.y*14.0/16.0).abs()<0.00001);
         let follower_root=app.world().get::<Transform>(state.props[&follower.id].entity).unwrap();
         assert_eq!(follower_root.scale,Vec3::splat(app.world().resource::<VisualWorldFrame>().tile_size.y*2.0));
+        assert_eq!(root.scale, follower_root.scale, "NPC and follower retain the same physical size");
         let aabb=app.world().get::<bevy::camera::primitives::Aabb>(entity).unwrap();
         let lo=Vec3::from(aabb.center-aabb.half_extents);let hi=Vec3::from(aabb.center+aabb.half_extents);
         let offsets=perched.joint_offsets.clone();
@@ -1748,7 +1909,7 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "requires supplied mounted player rigs and paintings"]
+    #[ignore = "requires supplied mounted player/NPC rigs and paintings"]
     fn mounted_runtime_riders_and_bikes_share_turns_anchors_and_independent_phases() {
         let mut app = actor_test_app();
         {
@@ -1760,8 +1921,32 @@ mod tests {
             other.center.x += 40.;
             other.facing = Some(Vec2::NEG_Y);
             frame.actors.push(other);
+            for (id, x) in [(20, 64.), (21, 88.)] {
+                let mut biker = frame.actors[0].clone();
+                biker.id = VisualActorId::Object(id);
+                biker.source_id = "biker".into();
+                biker.center.x += x;
+                frame.actors.push(biker);
+            }
         }
         app.update();
+        {
+            let state = app.world().resource::<ModeledActors>();
+            for id in [VisualActorId::Object(20), VisualActorId::Object(21)] {
+                let rider = &state.instances[&id];
+                assert_eq!(rider.kind, CharacterKind::Biker);
+                assert!(rider.person.bicycle, "NPC must spawn in its riding pose");
+                assert_eq!(state.props[&id].kind, actor_props::PropKind::BikerBike);
+                assert_eq!(app.world().get::<Transform>(rider.entity).unwrap().translation,
+                    app.world().get::<Transform>(state.props[&id].entity).unwrap().translation);
+            }
+            let first = &state.props[&VisualActorId::Object(20)];
+            let second = &state.props[&VisualActorId::Object(21)];
+            assert_eq!(app.world().get::<Mesh3d>(first.entity).unwrap().0,
+                app.world().get::<Mesh3d>(second.entity).unwrap().0);
+            assert_ne!(app.world().get::<Children>(first.entity).unwrap()[0],
+                app.world().get::<Children>(second.entity).unwrap()[0]);
+        }
         for step in 0..24 {
             app.world_mut().resource_mut::<Time>()
                 .advance_by(std::time::Duration::from_secs_f32(1./60.));
@@ -1769,11 +1954,17 @@ mod tests {
                 let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
                 frame.actors[0].center.x += 0.3;
                 frame.actors[0].facing = Some(Vec2::NEG_Y);
+                frame.actors[2].center.x += 0.15;
+                frame.actors[2].facing = Some(Vec2::NEG_Y);
             }
+            let published = app.world().resource::<VisualWorldFrame>().actors.clone();
             app.update();
             let state = app.world().resource::<ModeledActors>();
-            for id in [VisualActorId::Player,VisualActorId::Object(19)] {
+            assert_eq!(app.world().resource::<VisualWorldFrame>().actors, published);
+            for id in [VisualActorId::Player,VisualActorId::Object(19),
+                VisualActorId::Object(20),VisualActorId::Object(21)] {
                 let rider = &state.instances[&id];
+                assert!(rider.person.bicycle);
                 let prop = &state.props[&id];
                 let person = app.world().get::<Transform>(rider.entity).unwrap();
                 let bike = app.world().get::<Transform>(prop.entity).unwrap();
@@ -1787,13 +1978,31 @@ mod tests {
                     "crank must use the same frame's rider phase");
             }
             assert_eq!(state.instances[&VisualActorId::Object(19)].motion.phase,0.);
+            assert_eq!(state.instances[&VisualActorId::Object(21)].motion.phase,0.);
             assert!(state.instances[&VisualActorId::Player].motion.phase>0.);
+            assert!(state.instances[&VisualActorId::Object(20)].motion.phase>0.);
+            assert_ne!(state.instances[&VisualActorId::Player].motion.phase,
+                state.instances[&VisualActorId::Object(20)].motion.phase);
             if step==0 {
                 let rider = &state.instances[&VisualActorId::Player];
                 assert!((rider.motion.yaw-facing_yaw(Vec2::NEG_Y)).abs()>0.1,
                     "test must exercise an interpolated turn rather than its settled endpoint");
             }
         }
+        let bike = state_bike_entity(&app, VisualActorId::Object(20));
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[2].source_id = "youngster".into();
+        app.update();
+        assert!(app.world().get_entity(bike).is_err(), "sprite changes must remove the NPC bike");
+        assert!(!app.world().resource::<ModeledActors>().instances[&VisualActorId::Object(20)].person.bicycle);
+        let bike = state_bike_entity(&app, VisualActorId::Object(21));
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors.retain(|actor| actor.id != VisualActorId::Object(21));
+        app.update();
+        assert!(app.world().get_entity(bike).is_err(), "hidden NPCs must remove their bikes");
+        assert!(!app.world().resource::<ModeledActors>().instances.contains_key(&VisualActorId::Object(21)));
+    }
+
+    fn state_bike_entity(app: &App, id: VisualActorId) -> Entity {
+        app.world().resource::<ModeledActors>().props[&id].entity
     }
 
     #[test]
@@ -2338,6 +2547,39 @@ mod tests {
         app.update();
         assert!(app.world().resource::<ModeledActors>().props.is_empty());
     }
+    #[test]
+    fn native_stone_palette_updates_without_changing_movement_or_leaking_indoors() {
+        use bevy::{asset::RenderAssetUsages,render::render_resource::{Extent3d,TextureDimension,TextureFormat}};
+        let mut app=actor_test_app();
+        let image=Image::new_fill(Extent3d {width:4,height:4,depth_or_array_layers:1},
+            TextureDimension::D2,&[165,123,24,255],TextureFormat::Rgba8UnormSrgb,RenderAssetUsages::default());
+        let texture=app.world_mut().resource_mut::<Assets<Image>>().add(image);
+        let id=VisualActorId::Object(19);let mut prop=actor();
+        prop.id=id;prop.source_id="rock".into();prop.texture=texture.clone();
+        {
+            let mut frame=app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.map_id="CianwoodCity".into();frame.actors.push(prop);
+            frame.tiles.push(crystal_render_api::VisualTile {column:0,row:0,
+                source:crystal_render_api::VisualTileSource {tileset_id:"johto".into(),
+                    metatile_id:0,subtile_column:0,subtile_row:0,tile_index:6},
+                texture:default(),animation_frames:None,priority:false});
+        }
+        app.update();
+        let first=app.world().resource::<ModeledActors>().props[&id].entity;
+        assert_eq!(app.world().resource::<ModeledActors>().props[&id].stone,Some((CaveStoneFinish::Native([165,123,24]),0)));
+        let count=app.world().resource::<Assets<Mesh>>().len();
+        app.world_mut().resource_mut::<VisualWorldFrame>().actors[1].center.x+=8.;app.update();
+        assert_eq!(app.world().resource::<ModeledActors>().props[&id].entity,first);
+        assert_eq!(app.world().resource::<Assets<Mesh>>().len(),count);
+        for p in app.world_mut().resource_mut::<Assets<Image>>().get_mut(&texture).unwrap()
+            .data.as_mut().unwrap().chunks_exact_mut(4) {p.copy_from_slice(&[120,80,160,255]);}
+        app.update();
+        assert_eq!(app.world().resource::<ModeledActors>().props[&id].stone,Some((CaveStoneFinish::Native([120,80,160]),0)));
+        assert!(app.world().get_entity(first).is_err());
+        app.world_mut().resource_mut::<VisualWorldFrame>().map_id="PlayersHouse1F".into();app.update();
+        assert_eq!(app.world().resource::<ModeledActors>().props[&id].stone,None);
+    }
+
     #[test]
     fn gold_gym_boulder_palette_moves_with_same_object_and_does_not_leak_maps() {
         let mut app = actor_test_app();

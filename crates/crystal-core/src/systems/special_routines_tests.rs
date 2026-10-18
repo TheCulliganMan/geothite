@@ -8095,6 +8095,7 @@ fn bills_grandfather_and_init_roam_mons_write_saveable_state() {
     state.roaming_pokemon[0].dvs_be = [0x12, 0x34];
     state.roaming_pokemon[1].dvs_be = [0x56, 0x78];
     state.roaming_pokemon[2] = RoamingPokemonState {
+        scaled_hp: None,
         species: Some("SUICUNE".to_string()),
         level: 40,
         map_group: 7,
@@ -8119,6 +8120,7 @@ fn bills_grandfather_and_init_roam_mons_write_saveable_state() {
         state.roaming_pokemon,
         [
             RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("RAIKOU".to_string()),
                 level: 40,
                 map_group: 2,
@@ -8127,6 +8129,7 @@ fn bills_grandfather_and_init_roam_mons_write_saveable_state() {
                 dvs_be: [0x12, 0x34],
             },
             RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("ENTEI".to_string()),
                 level: 40,
                 map_group: 10,
@@ -8135,6 +8138,7 @@ fn bills_grandfather_and_init_roam_mons_write_saveable_state() {
                 dvs_be: [0x56, 0x78],
             },
             RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("SUICUNE".to_string()),
                 level: 40,
                 map_group: 7,

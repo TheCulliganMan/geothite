@@ -465,6 +465,8 @@ fn reject_unexpected_gift_pokemon_inputs(
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimeShellSnapshot {
+    /// Present only for the competitive battle mod, shared by all frontends.
+    pub competitive_battle: Option<RuntimeCompetitiveBattleSnapshot>,
     pub boot: RuntimeBootSummary,
     pub overworld: OverworldSnapshot,
     pub overworld_player_hidden: bool,
@@ -2159,6 +2161,7 @@ pub struct RuntimeEncounterCatalogSnapshot {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimeBattleRuleCatalogSnapshot {
+    pub competitive_battles: bool,
     pub capture_rules: CaptureRules,
     pub capture_wobble_probabilities: Vec<CaptureWobbleProbability>,
     pub stat_multipliers: BattleStatMultiplierTables,
@@ -2169,6 +2172,8 @@ pub struct RuntimeBattleRuleCatalogSnapshot {
     pub reward_rules: BattleRewardRules,
     pub escape_rules: BattleEscapeRules,
 }
+
+include!("runtime_competitive_battle.rs");
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimeWorldRuleCatalogSnapshot {
@@ -3601,6 +3606,7 @@ impl RuntimeEncounterCatalogSnapshot {
 impl RuntimeBattleRuleCatalogSnapshot {
     fn from_data(data: &GameDataSet) -> Self {
         Self {
+            competitive_battles: data.competitive_battles,
             capture_rules: data.capture_rules.clone(),
             capture_wobble_probabilities: data.capture_wobble_probabilities.clone(),
             stat_multipliers: data.battle_stat_multipliers.clone(),

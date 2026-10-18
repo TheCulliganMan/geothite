@@ -66,6 +66,7 @@ pub(super) fn append(
 ) {
     let painted_start = mesh.positions.len();
     let park = flags & 0x40 != 0;
+    let warm_stone = park || flags & 0x20 != 0;
     let [w, e, n, s] = face_bounds(&p);
     let y = p[0][1];
     let cell_x = ((w - g.origin_x) / g.tile_width).round() as i32 + origin[0];
@@ -99,8 +100,8 @@ pub(super) fn append(
             let xw = w + col as f32 * bw + offset;
             let xe = xw + bw;
             let variation = (lattice(cell_x * columns + col, world_row) - 0.5)
-                * if park { 0.12 } else { 0.095 };
-            let base = if park {
+                * if warm_stone { 0.12 } else { 0.095 };
+            let base = if warm_stone {
                 [0.64, 0.57, 0.43]
             } else if road {
                 [0.57, 0.43, 0.35]
@@ -113,7 +114,7 @@ pub(super) fn append(
                 base[1] + variation,
                 base[2] + variation - warmth,
             ];
-            let seam = if park {
+            let seam = if warm_stone {
                 [0.48, 0.43, 0.33]
             } else if road {
                 [0.42, 0.38, 0.32]
@@ -144,7 +145,7 @@ pub(super) fn append(
             }
         }
     }
-    if park {
+    if warm_stone {
         for i in painted_start..mesh.positions.len() {
             let p = mesh.positions[i];
             // Quantized source coordinates retain identical paint when the
@@ -174,7 +175,7 @@ mod tests {
         };
         let positions = [[0., 0., 0.], [0., 0., 8.], [8., 0., 8.], [8., 0., 0.]];
         for material in [GroundMaterial::Path, GroundMaterial::Pavers] {
-            for flags in [0, 1, 2, 4, 8, 15, 0x40] {
+            for flags in [0, 1, 2, 4, 8, 15, 0x20, 0x40] {
                 let mut m = SurfaceMeshData::default();
                 append(&mut m, positions, &g, [37, 29], material, flags);
                 let area: f32 = m

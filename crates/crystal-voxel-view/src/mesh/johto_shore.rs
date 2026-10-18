@@ -182,7 +182,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn bare_lake_banks_get_the_rock_cap_on_all_four_edges_without_moving_water() {
+    fn bare_lake_banks_share_the_cliff_face_on_all_four_edges_without_moving_water() {
         for direction in Direction::ALL {
             let g = GridGeometry { width: 3, height: 3, tile_width: 8., tile_height: 8.,
                 origin_x: 0., origin_z: 0. };
@@ -228,9 +228,15 @@ mod tests {
             assert_eq!(mesh.textured.quad_count(), 7);
             assert!(mesh.textured.positions.iter().any(|p| p[1] == -2.),
                 "the liquid surface keeps its original datum");
-            assert!(mesh.solid.positions.iter().any(|p|
-                p[0] > 8. && p[0] < 16. && p[2] > 8. && p[2] < 16. && p[1] > 0.4),
-                "every direction needs the same physical pebble crown");
+            assert!(mesh.solid.positions.iter().all(|p|p[1]>=-2. && p[1]<=0.),
+                "shore ledges use the standard cliff without a separate pebble crown");
+            let normal=Vec3::new(dx as f32,0.,dz as f32);
+            let edge=Vec3::new(if dx>0 {16.}else{8.},0.,if dz>0 {16.}else{8.});
+            assert!(mesh.solid.positions.iter().any(|&p| {
+                let p=Vec3::from_array(p);let relief=(p-edge).dot(normal);
+                p.y>-2. && p.y<0. && relief>0.05 && relief<0.5
+                    && if dx==0 {p.x>8.&&p.x<16.} else {p.z>8.&&p.z<16.}
+            }),"all four directions keep physical cliff-wall relief below the existing cap");
         }
     }
 

@@ -28,8 +28,8 @@ def skin_weights(part,position):
     if part.startswith(('Head /','Eye /','Brow /','Jaw /','Ear /','Horn /','Nostril /','Mouth /')):
         return [3,0,0,0],[1.,0.,0.,0.]
     if part.startswith(('Neck /','Throat /','Neck spot /')):return neck_weights(position)
-    if part.startswith(('Fore flipper /','Rear flipper /')):
-        joint=(4 if x<0 else 5) if part.startswith('Fore') else (6 if x<0 else 7)
+    if part.startswith(('Fore flipper /','Rear flipper /','Flipper underside /')):
+        joint=(4 if x<0 else 5) if part.startswith('Fore') or part.startswith('Flipper underside / fore') else (6 if x<0 else 7)
         flex=smoothstep(.33,.61,abs(x));return [0,joint,0,0],[1.-flex,flex,0.,0.]
     if part.startswith('Tail /'):
         flex=smoothstep(.53,.73,-z);return [0,8,0,0],[1.-flex,flex,0.,0.]
@@ -87,6 +87,11 @@ def export_lapras(model=None):
     g.doc['scenes']=[{'name':'lapras','nodes':[0,len(JOINTS)]}]
     g.doc['skins']=[{'name':'lapras','skeleton':0,'joints':list(range(len(JOINTS))),
                     'inverseBindMatrices':g.accessor(inverse,'MAT4')}]
+    shared={}
+    def accessor(values,kind,component=5126,target=None,normalized=False):
+        key=(packed(values,component),kind,component,target,normalized)
+        if key not in shared:shared[key]=g.accessor(values,kind,component,target,normalized=normalized)
+        return shared[key]
     colors,primitives={},[]
     for part in model['primitives']:
         color=tuple(part['base_color'])
@@ -98,10 +103,10 @@ def export_lapras(model=None):
             js,ws=skin_weights(part['part'],part['positions'][i:i+3]);qs=quantized_weights(ws)
             ids.extend(j if w else 0 for j,w in zip(js,qs));weights.extend(qs)
         primitives.append({'attributes':{'POSITION':g.accessor(part['positions'],'VEC3',target=34962,bounds=True),
-            'NORMAL':g.accessor(part['normals'],'VEC3',target=34962),
-            'JOINTS_0':g.accessor(ids,'VEC4',5121,34962),
-            'WEIGHTS_0':g.accessor(weights,'VEC4',5121,34962,normalized=True)},
-            'indices':g.accessor(part['indices'],'SCALAR',5123,34963),'material':colors[color],
+            'NORMAL':accessor(part['normals'],'VEC3',target=34962),
+            'JOINTS_0':accessor(ids,'VEC4',5121,34962),
+            'WEIGHTS_0':accessor(weights,'VEC4',5121,34962,normalized=True)},
+            'indices':accessor(part['indices'],'SCALAR',5123,34963),'material':colors[color],
             'mode':4,'extras':{'part':part['part']}})
     g.doc['meshes']=[{'name':'lapras','primitives':primitives}]
     for clip,duration,count in CLIPS:

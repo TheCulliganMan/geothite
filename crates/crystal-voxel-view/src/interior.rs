@@ -158,11 +158,18 @@ pub(crate) fn has_back_wall(tileset: &str) -> bool {
     )
 }
 
+/// Open-air terraces share room atlases but use the outdoor sky and clock.
+pub(crate) fn open_air_roof(map:&str,tileset:&str)->bool {
+    crystal_render_api::is_open_air_rooftop(map,tileset)
+}
+
 /// These two enclosed rooms share atlases with outdoor water and caves.
 /// Roof terraces keep their open-air architecture even on an indoor atlas.
+/// PokéCom has separated nonrectangular rooms; its source-aligned walls must
+/// not seed a rectangular enclosure across the black separation or alcoves.
 pub(crate) fn has_room_perimeter(map:&str,tileset:&str)->bool {
     (has_back_wall(tileset)||matches!((map,tileset),("CeruleanGym","port")|("HallOfFame","ice_path")))
-        &&!matches!(map,"GoldenrodDeptStoreRoof"|"CeladonMansionRoof"|"TinTowerRoof")
+        &&!matches!(map,"GoldenrodDeptStoreRoof"|"CeladonMansionRoof"|"TinTowerRoof"|"PokecomCenterAdminOfficeMobile")
 }
 
 /// Each decorated bed variant is one 16x32 drawing in the left half of blocks

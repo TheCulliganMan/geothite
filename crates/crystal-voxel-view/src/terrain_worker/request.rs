@@ -11,6 +11,9 @@ pub(crate) struct Frame {
     source_size: Option<[u32; 2]>,
     boundary_warps: Vec<[i32; 2]>,
     ledges: Vec<[[i32; 2]; 3]>,
+    datum: Option<([i32;2],[u32;2],super::blobs::Bulk<[u32;4]>,super::blobs::Bulk<[i32;2]>)>,
+    #[serde(default)]
+    open_water: Option<(u32,super::blobs::Bulk<[i32;2]>)>,
     revision: u64,
     origin: [i32; 2],
     atlas: u32,
@@ -183,6 +186,9 @@ impl Frame {
             active: frame.active,
             map: frame.map_id.to_string(),
             source_size: frame.source_map_size_core_tiles.map(|v| v.to_array()),
+            datum: frame.terrace_datum.as_ref().map(|d|(d.origin.to_array(),d.size.to_array(),d.levels.iter().map(|v|v.map(f32::to_bits)).collect(),d.water_barriers.iter().map(|p|p.to_array()).collect())),
+            open_water:frame.terrace_datum.as_ref().and_then(|d|d.open_water.as_ref())
+                .map(|r|(r.level.to_bits(),r.cells.iter().map(|p|p.to_array()).collect())),
             boundary_warps: frame.boundary_warps.iter().map(|v| v.to_array()).collect(),
             ledges: frame
                 .jump_ledges
@@ -208,10 +214,35 @@ impl Frame {
         deadline: bevy::platform::time::Instant,
         max_elements: usize,
     ) -> Result<bool, String> {
-        self.tiles.resolve(blobs, deadline, max_elements)
+        if let Some((_,size,levels,water))=&self.datum {
+            let n=u64::from(size[0])*u64::from(size[1]);
+            if n==0 || n>2_000_000 || levels.len()as u64!=n || water.len()as u64>n {
+                return Err("invalid source-domain buffer lengths".into());
+            }
+        }
+        let datum_ready=if let Some((_,_,levels,water))=self.datum.as_mut() {
+            let levels_ready=levels.resolve(blobs)?;
+            let water_ready=water.resolve(blobs)?;
+            levels_ready && water_ready
+        }else{true};
+        let river_ready=if let Some((_,cells))=&mut self.open_water {
+            if cells.len()>2_000_000 {return Err("invalid river source-domain length".into());}
+            cells.resolve(blobs)?
+        }else{true};
+        Ok(self.tiles.resolve(blobs, deadline, max_elements)? && datum_ready && river_ready)
     }
 
     pub(crate) fn restore(&self, bindings: &TextureBindings) -> Result<VisualWorldFrame, String> {
+        if let Some((_,size,levels,water))=&self.datum {
+            let values=levels.as_slice()?;
+            if size[0]==0 || size[1]==0 || u64::from(size[0])*u64::from(size[1])>2_000_000
+                || values.len()as u64!=u64::from(size[0])*u64::from(size[1])
+                || water.len()as u64>u64::from(size[0])*u64::from(size[1])
+                || values.iter().flatten().any(|&bits|{let v=f32::from_bits(bits);!v.is_finite()||v<0.}) {
+                return Err("invalid source-complete terrace datum".into());
+            }
+        }
+        if self.open_water.is_some() && self.datum.is_none() {return Err("river requires complete terrace source bounds".into());}
         if self.tiles.len() > 262_144 || self.actors.len() > 65_536 || self.ledges.len() > 65_536
             || self.boundary_warps.len() > 65_536 {
             return Err("terrain frame exceeds element limits".into());
@@ -220,6 +251,18 @@ impl Frame {
             active: self.active,
             map_id: Arc::from(self.map.as_str()),
             source_map_size_core_tiles: self.source_size.map(UVec2::from_array),
+            terrace_datum: self.datum.as_ref().map(|(origin,size,levels,water)|->Result<_,String>{
+                let datum=VisualTerraceDatum {
+                    origin:IVec2::from_array(*origin),size:UVec2::from_array(*size),
+                    levels:levels.as_slice()?.iter().map(|v|v.map(f32::from_bits)).collect(),
+                    open_water:self.open_water.as_ref().map(|(level,cells)|->Result<_,String>{
+                        Ok(VisualOpenWaterDatum {level:f32::from_bits(*level),
+                            cells:cells.as_slice()?.iter().copied().map(IVec2::from_array).collect()})
+                    }).transpose()?,water_barriers:water.as_slice()?.iter().copied().map(IVec2::from_array).collect(),
+                };
+                if !datum.valid_water_barriers() || !datum.valid_open_water() {return Err("invalid source-complete water barrier domain".into());}
+                Ok(Arc::new(datum))
+            }).transpose()?,
             boundary_warps: self.boundary_warps.iter().copied().map(IVec2::from_array).collect(),
             jump_ledges: self
                 .ledges
@@ -312,6 +355,28 @@ mod tests {
     use super::*;
 
     #[test]
+    fn source_complete_terrace_field_uses_bounded_pages_and_preserves_all_corners() {
+        let datum=Arc::new(VisualTerraceDatum {
+            open_water:Some(VisualOpenWaterDatum {level:f32::from_bits(0x3f123456),
+                cells:(0..512*256).step_by(3).map(|i|IVec2::new(-40+i%512,-80+i/512)).collect()}),
+            water_barriers:(0..512*256).step_by(2).map(|i|IVec2::new(-40+i%512,-80+i/512)).collect(),
+            origin:IVec2::new(-40,-80),size:UVec2::new(512,256),
+            levels:vec![[0.,f32::from_bits(0x3f123456),2.,3.];512*256].into()});
+        let frame=VisualWorldFrame {terrace_datum:Some(datum.clone()),..Default::default()};
+        let (wire,bindings)=Frame::capture(&frame);
+        let (header,mut pages)=super::super::blobs::encode_header(29,&wire).unwrap();
+        assert!(header.len()<4096,"the source-complete raster must not become a large metadata header");
+        let (mut decoded,mut store):(Frame,_)=super::super::blobs::decode_header(29,&header).unwrap();
+        assert!(decoded.restore(&bindings).is_err(),"incomplete raster pages cannot become terrain evidence");
+        while !pages.finished() {if let Some(page)=pages.next_page().unwrap() {
+            let ack=super::super::blobs::append_packet(&mut store,29,&page).unwrap();
+            pages.acknowledge(29,ack.0,ack.1).unwrap();
+        }}
+        assert!(decoded.resolve(&mut store,bevy::platform::time::Instant::now()+std::time::Duration::from_secs(1),4096).unwrap());
+        assert_eq!(decoded.restore(&bindings).unwrap().terrace_datum,Some(datum));
+    }
+
+    #[test]
     fn visual_frame_roundtrip_rebinds_assets_and_preserves_float_bits() {
         let bindings = TextureBindings::worker(3).unwrap();
         let a = bindings.handle(0).unwrap();
@@ -325,6 +390,10 @@ mod tests {
             center: Vec2::new(-0., f32::from_bits(0x3f123456)),
             map_texture: a.clone(),
             source_map_size_core_tiles: Some(UVec2::ONE),
+            terrace_datum:Some(Arc::new(VisualTerraceDatum {open_water:None,water_barriers:vec![IVec2::new(-8,4)].into(),
+                origin:IVec2::new(-8,4),size:UVec2::ONE,
+                levels:vec![[0.,f32::from_bits(0x3f123456),1.,2.]].into(),
+            })),
             boundary_warps: vec![IVec2::new(3, 7)].into(),
             jump_ledges: vec![VisualJumpLedge {
                 start: IVec2::ZERO,

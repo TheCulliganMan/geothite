@@ -585,15 +585,21 @@ fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
     // Keep its legal low-power moves but give this test alone a healthy,
     // same-owner lead that survives even a maximum-damage critical hit.
     let mut runtime_shell = route36_overworld_shell_for_battle_render_regression();
+    let scaled_wild = runtime_shell.runtime.data().wild_challenge.is_some();
     let original_moves = {
         let state = runtime_shell.shell.session_mut().state_mut();
-        let moves = state.storage.party.pokemon[0].take().unwrap().moves;
+        let mut moves = state.storage.party.pokemon[0].take().unwrap().moves;
+        if scaled_wild {
+            // At a peer level, Rock Slide can knock out the Fire-type fixture.
+            // Bayleef retains a legal Tackle and survives the scaled moveset.
+            moves.retain(|learned| learned.name == "TACKLE");
+        }
         state.sync_party_from_storage();
         moves
     };
     runtime_shell.shell.set_trainer_identity("CHRIS", 1).unwrap();
     runtime_shell.shell.add_party_pokemon(
-        "CYNDAQUIL", 40, None, None, "CHRIS", 1,
+        if scaled_wild { "BAYLEEF" } else { "CYNDAQUIL" }, 40, None, None, "CHRIS", 1,
         Dv::from_non_hp(10, 10, 10, 10),
     ).expect("add owned, healthy controller fixture Pokemon");
     {
@@ -647,6 +653,14 @@ fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
     };
     assert!(player.hp > critical_damage(enemy, player, "ROCK_THROW"),
         "fixture must survive Sudowoodo's strongest full-health attack");
+    if scaled_wild {
+        for learned in &enemy.moves {
+            if controller.shell.shell.runtime().data().moves[&learned.name].power > 0 {
+                assert!(player.hp > critical_damage(enemy, player, &learned.name),
+                    "fixture must survive a critical {} from the actual scaled moveset", learned.name);
+            }
+        }
+    }
     assert!(u32::from(critical_damage(player, enemy, "TACKLE")) * 4 < u32::from(enemy.hp),
         "fixture must leave Sudowoodo healthy even after a critical Tackle");
     let initial_options = &initial
@@ -675,6 +689,17 @@ fn renderer_neutral_controller_exposes_battle_commands_and_executes_a_turn() {
         "move menu has no selected command: {move_options:?}"
     );
     let pp_before = moves.battle.as_ref().expect("active battle").player_moves[0].current_pp;
+    if moves.battle_rules.competitive_battles {
+        let view = moves.competitive_battle.as_ref().expect("competitive battle inspection");
+        assert_eq!(view.moves.len(), moves.battle.as_ref().unwrap().player_moves.len());
+        assert_eq!(view.moves[0].move_id, "TACKLE");
+        assert_eq!(view.moves[0].category, crate::core::battle::damage::MoveCategory::Physical);
+        assert!(view.moves[0].damage_on_hit.is_some());
+        assert!(move_options.iter().any(|line| line.contains("PHYSICAL / ATK vs DEF")));
+        assert!(move_options.iter().any(|line| line.contains("Damage on hit:")));
+        assert!(move_options.iter().any(|line| line.contains("Priority +0")));
+        assert!(move_options.iter().any(|line| line.contains("PP")));
+    }
 
     controller
         .press(GameButton::A)

@@ -3234,21 +3234,22 @@ fn selected_enemy_battle_move_slot_with_rng(
     combat: &crystal_core::battle::turn::BattleCombatState,
     rng: &mut dyn BattleRandomSource,
 ) -> Result<crystal_core::battle::turn::EnemyMoveSelection> {
-    let RuntimeBattleKind::Trainer { ai_move_flags, .. } = &battle.kind else {
+    let RuntimeBattleKind::Trainer {
+        trainer_class, ai_move_flags, ..
+    } = &battle.kind else {
         anyhow::bail!("trainer move scorer received a wild battle");
     };
-    data.select_trainer_enemy_move_with_scratch(combat, *ai_move_flags, rng)
+    data.select_trainer_enemy_move_for_class(combat, trainer_class, *ai_move_flags, rng)
 }
 
 
 fn selected_wild_enemy_move_slot(
+    data: &crystal_assets::GameDataSet,
+    battle_type: &str,
     combat: &crystal_core::battle::turn::BattleCombatState,
     rng: &mut dyn BattleRandomSource,
 ) -> Result<crystal_core::battle::turn::EnemyMoveSelection> {
-    Ok(crystal_core::battle::turn::EnemyMoveSelection {
-        slot: crystal_core::battle::turn::select_wild_enemy_move_slot(combat, rng),
-        ai_damage_register: 0,
-    })
+    data.select_wild_enemy_move_for_battle(combat, battle_type, rng)
 }
 
 fn selected_enemy_trainer_post_order_action(
@@ -3261,15 +3262,17 @@ fn selected_enemy_trainer_post_order_action(
 ) -> Result<BattleAction> {
     let RuntimeBattleKind::Trainer {
         trainer_id,
+        trainer_class,
         ai_item_switch_flags,
         ..
     } = &battle.kind
     else {
         anyhow::bail!("trainer post-order action requested for a wild battle");
     };
-    data.select_trainer_post_order_action(
+    data.select_trainer_post_order_action_for_class(
         combat,
         trainer_id,
+        trainer_class,
         &battle.battle_type,
         *ai_item_switch_flags,
         trainer_items_used,
@@ -3332,7 +3335,7 @@ fn resolve_active_battle_turn_with_enemy_ai(
                     selected_enemy_battle_move_slot_with_rng(data, battle, combat, rng)
                 }
                 RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. } => {
-                    selected_wild_enemy_move_slot(combat, rng)
+                    selected_wild_enemy_move_slot(data, &battle.battle_type, combat, rng)
                 }
             },
             |selected_move_slot, combat, rng| match &battle.kind {
@@ -3381,7 +3384,7 @@ fn resolve_active_battle_item_turn_with_enemy_ai(
                     selected_enemy_battle_move_slot_with_rng(data, battle, combat, rng)
                 }
                 RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. } => {
-                    selected_wild_enemy_move_slot(combat, rng)
+                    selected_wild_enemy_move_slot(data, &battle.battle_type, combat, rng)
                 }
             },
             |selected_move_slot, combat, rng| match &battle.kind {
@@ -3434,7 +3437,7 @@ fn resolve_active_battle_party_item_turn_with_enemy_ai(
                     selected_enemy_battle_move_slot_with_rng(data, battle, combat, rng)
                 }
                 RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. } => {
-                    selected_wild_enemy_move_slot(combat, rng)
+                    selected_wild_enemy_move_slot(data, &battle.battle_type, combat, rng)
                 }
             },
             |selected_move_slot, combat, rng| match &battle.kind {
@@ -3483,7 +3486,7 @@ fn resolve_active_battle_ball_turn_with_enemy_ai(
                     selected_enemy_battle_move_slot_with_rng(data, battle, combat, rng)
                 }
                 RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. } => {
-                    selected_wild_enemy_move_slot(combat, rng)
+                    selected_wild_enemy_move_slot(data, &battle.battle_type, combat, rng)
                 }
             },
             |selected_move_slot, combat, rng| match &battle.kind {

@@ -675,10 +675,16 @@ mod tests {
         });
         let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
         frame.source = Some(source);
-        // Static-image cache tests use static species. Live joint rigs,
-        // including Sudowoodo and Raticate, must never be frozen by this cache.
-        frame.battlers[0].as_mut().unwrap().species_id = Arc::from("RAICHU");
-        frame.battlers[1].as_mut().unwrap().species_id = Arc::from("SEEL");
+        // Every supported Pokemon now has a live rig. Exercise the optional
+        // static-cache path with explicit neutral-only model fixtures instead
+        // of silently depending on a species that later gains articulation.
+        let ids=["STATIC_CACHE_FIXTURE_PLAYER","STATIC_CACHE_FIXTURE_ENEMY"];
+        for (battler,id) in frame.battlers.iter_mut().flatten().zip(ids) {battler.species_id=Arc::from(id);}
+        let neutral=Arc::new(crate::battle_species_models::mesh("SEEL").unwrap());
+        let bounds=BattleModelBounds::from_surface(&neutral);
+        let mut scene=app.world_mut().resource_mut::<BattleScene>();
+        for id in ids {scene.species_meshes.insert(Arc::from(id),Some(neutral.clone()));scene.species_bounds.insert(Arc::from(id),bounds);}
+        drop(scene);
         app.update();
         // AssetPlugin can publish initial internal shader events after the
         // first update. Drain those before tests simulate a settled receipt,
@@ -744,15 +750,8 @@ mod tests {
             let actor = app.world().resource::<BattleScene>().actors[0]
                 .as_ref()
                 .unwrap();
-            let wings = &actor.animated.as_ref().unwrap().wings;
-            (
-                [actor.entity, wings[0].entity, wings[1].entity],
-                [
-                    actor.mesh.as_ref().unwrap().id(),
-                    wings[0].mesh.id(),
-                    wings[1].mesh.id(),
-                ],
-            )
+            assert!(actor.skinned.is_some(), "Pidgeotto rows must use the standard GPU skin");
+            ([actor.entity], [actor.mesh.as_ref().unwrap().id()])
         };
         let mut reader = bevy::ecs::message::MessageCursor::<AssetEvent<Mesh>>::default();
         reader.clear(app.world().resource::<Messages<AssetEvent<Mesh>>>());

@@ -65,7 +65,8 @@ fn sync(
         || frame
             .tiles
             .first()
-            .is_some_and(|t| crate::interior::has_back_wall(&t.source.tileset_id));
+            .is_some_and(|t| crate::interior::has_back_wall(&t.source.tileset_id)
+                && !crate::interior::open_air_roof(&frame.map_id,&t.source.tileset_id));
     let intensity = if interior || matches!(lighting.as_deref(), Some(VisualWorldLighting::Dark)) {
         0.0
     } else {
@@ -198,6 +199,24 @@ mod tests {
                 .intensity,
             0.0
         );
+        *app.world_mut().resource_mut::<VisualWorldLighting>()=VisualWorldLighting::Day;
+        {
+            let mut frame=app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.map_id="CeladonMansionRoof".into();
+            frame.tiles=vec![crystal_render_api::VisualTile {
+                column:0,row:0,texture:Handle::default(),priority:false,animation_frames:None,
+                source:crystal_render_api::VisualTileSource {tileset_id:"mansion".into(),
+                    metatile_id:0,subtile_column:0,subtile_row:0,tile_index:0},
+            }];
+        }
+        app.update();
+        assert_eq!(app.world().get::<EnvironmentMapLight>(camera).unwrap().intensity,1.0,
+            "an open rooftop receives the same clock-driven sky reflections");
+        app.world_mut().resource_mut::<VisualWorldFrame>().map_id="CeladonMansionRoofHouse".into();
+        app.update();
+        assert_eq!(app.world().get::<EnvironmentMapLight>(camera).unwrap().intensity,0.0,
+            "the enclosed rooftop house must not inherit the outdoor environment");
+        assert_eq!(app.world().resource::<Assets<Image>>().len(),2);
     }
     #[test]
     fn reflection_maps_have_all_faces_mips_and_follow_visible_daylight() {

@@ -2,7 +2,8 @@
 """Original flowing goldfish and plated carp, with actual recessed oral cavities."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import part,curved_profiles,crease_normals,fitted_contour,ellipsoid
+from sculpt_geometry import part,curved_profiles,crease_normals,fitted_contour,fitted_triangle_contour,fitted_adaptive_contour,ellipsoid
+from cubone_sculpt import skin_shading
 from bovine_sculpt import oval,curved_tube,reverse_front
 from jet_fish_sculpt import side_rotate
 from wing_insect_sculpt import contour
@@ -27,7 +28,10 @@ def surface(mesh):
   return max(hits)
  return at
 
-def fitted(name,color,xy,parent,th=.004,sub=2):return crease_normals(fitted_contour(name,color,xy,surface(parent),th,sub),35)
+def fitted(name,color,xy,parent,th=.004,sub=2):
+ if name.startswith('Tail inset /'):
+  return skin_shading(fitted_adaptive_contour(name,color,xy,parent,th,surface_at=surface(parent),initial_subdivisions=1,max_surface_error=.001),parent)
+ return skin_shading(crease_normals(fitted_triangle_contour(name,color,xy,parent,th,precision=7),35),parent)
 def sheet(name,color,xy,depth,th=.012,sub=2):return crease_normals(fitted_contour(name,color,xy,depth,th,sub),35)
 def zy(p):
  p=dict(p)
@@ -77,7 +81,7 @@ def fins(p,s):
  carp=s=='magikarp';base=p[0];tails=[];sides=[]
  if carp:
   tail=contour([((.355,.455),(.48,.53),(.68,.76),(.85,.79)),((.85,.79),(.83,.64),(.64,.51),(.65,.455)),((.65,.455),(.64,.40),(.83,.24),(.85,.13)),((.85,.13),(.66,.17),(.46,.38),(.355,.455))],10)
-  raw=sheet('Tail / single forked red carp caudal sail',RED,tail,lambda y,x:.023*math.sin(x*6),.016,3)
+  raw=sheet('Tail / single forked red carp caudal sail',RED,tail,lambda y,x:.023*math.sin(x*6),.016,2)
   q=zy(raw);p.append(q);tails.append(q)
   inset=contour([((.40,.455),(.49,.52),(.66,.72),(.80,.75)),((.80,.75),(.77,.60),(.61,.51),(.615,.455)),((.615,.455),(.61,.40),(.77,.27),(.80,.18)),((.80,.18),(.65,.22),(.48,.40),(.40,.455))],10)
   for face_sign in (-1,1):
@@ -145,14 +149,16 @@ def markings(p,s,tails,sides):
     pts=[(x,y,sk(y,x)-.001) for x,y in path];p.append(side_rotate(curved_tube('Scale seam / supported staggered carp plate '+str(sign)+' '+str(j),SEAM,pts,[.003]*len(pts),10),sign))
  return p
 
-def sculpture(s):
+def sculpture(s,normalize=True):
  if s not in SPECIES:raise ValueError('unsupported goldfish')
  p=body(s);face(p,s);tails,sides=fins(p,s);markings(p,s,tails,sides)
+ if not normalize:return {'name':s,'version':1,'coordinate_system':COORDINATES,'primitives':p}
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[s]/(hi-lo)
  for q in p:
-  q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+  q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) or 0. for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) or 0. for v in q['normals']]
  return {'name':s,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 if __name__=='__main__':
  a=argparse.ArgumentParser(description=__doc__);a.add_argument('--out',type=Path,required=True);args=a.parse_args();args.out.mkdir(parents=True,exist_ok=True)
  for s in SPECIES:
-  m=sculpture(s);(args.out/(s+'.mesh.json')).write_text(json.dumps(m,separators=(',',':')));print(s,len(m['primitives']),sum(len(p['indices'])//3 for p in m['primitives']),flush=True)
+  from goldfish_glb import export_goldfish
+  blob=export_goldfish(s);(args.out/(s+'.glb')).write_bytes(blob);print(s,len(blob),'bytes',flush=True)

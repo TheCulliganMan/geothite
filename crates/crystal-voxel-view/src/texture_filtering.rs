@@ -1,9 +1,43 @@
 //! Filter authored 3D detail in linear light. Source tile/sprite atlases never
 //! enter this path: their nearest-neighbour sampling and CPU evidence stay exact.
 use bevy::{
+    asset::RenderAssetUsages,
     image::{Image, ImageSampler, ImageSamplerDescriptor},
-    render::render_resource::TextureFormat,
+    render::render_resource::{Extent3d, TextureDimension, TextureFormat},
 };
+use std::sync::OnceLock;
+
+fn anisotropy(quality: crate::render_quality::Quality, override_value: Option<&str>) -> u16 {
+    match override_value.and_then(|value| value.parse::<u16>().ok()) {
+        Some(value @ (1 | 2 | 4 | 8 | 16)) => value,
+        _ => match quality {
+            crate::render_quality::Quality::High => 16,
+            crate::render_quality::Quality::Balanced => 8,
+            _ => 4,
+        },
+    }
+}
+
+fn requested_anisotropy() -> u16 {
+    static VALUE: OnceLock<u16> = OnceLock::new();
+    *VALUE.get_or_init(|| anisotropy(crate::render_quality::requested(),
+        std::env::var("CRYSTAL_TEXTURE_ANISOTROPY").ok().as_deref()))
+}
+
+/// Character paintings are 3D artwork, independent of the nearest-sampled source
+/// atlases. Retain the exact painting at mip zero and filter it when minified.
+pub(super) fn painted_image(size: (u32, u32), rgba: Vec<u8>) -> Image {
+    let mut image = Image::new(
+        Extent3d { width: size.0, height: size.1, depth_or_array_layers: 1 },
+        TextureDimension::D2, rgba, TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::RENDER_WORLD,
+    );
+    static MIPMAPS: OnceLock<bool> = OnceLock::new();
+    if *MIPMAPS.get_or_init(|| std::env::var("CRYSTAL_CHARACTER_MIPMAPS").as_deref() != Ok("off")) {
+        mipmap(&mut image, None);
+    }
+    image
+}
 
 fn linear(v: u8) -> f32 {
     let v = v as f32 / 255.0;
@@ -87,7 +121,7 @@ pub(super) fn mipmap(image: &mut Image, alpha_cutoff: Option<f32>) {
     sampler.mag_filter = bevy::image::ImageFilterMode::Linear;
     sampler.min_filter = bevy::image::ImageFilterMode::Linear;
     sampler.mipmap_filter = bevy::image::ImageFilterMode::Linear;
-    sampler.anisotropy_clamp = 4;
+    sampler.anisotropy_clamp = requested_anisotropy();
     image.sampler = ImageSampler::Descriptor(sampler);
 }
 
@@ -152,7 +186,7 @@ mod tests {
         let ImageSampler::Descriptor(sampler) = image.sampler else {
             panic!()
         };
-        assert_eq!(sampler.anisotropy_clamp, 4);
+        assert_eq!(sampler.anisotropy_clamp, requested_anisotropy());
     }
     #[test]
     fn transparent_padding_does_not_stain_cutouts() {
@@ -180,5 +214,34 @@ mod tests {
         let before = image.data.clone();
         mipmap(&mut image, None);
         assert_eq!(image.data, before);
+    }
+
+    #[test]
+    fn character_painting_minifies_to_stable_linear_average_without_repainting() {
+        let pixels: Vec<u8> = (0..16).flat_map(|y| (0..16).flat_map(move |x| {
+            let value = if (x + y) % 2 == 0 { 0 } else { 255 };
+            [value, value, value, 255]
+        })).collect();
+        let image = painted_image((16, 16), pixels.clone());
+        let bytes = image.data.as_ref().unwrap();
+        assert_eq!(&bytes[..pixels.len()], pixels);
+        assert_eq!(image.texture_descriptor.mip_level_count, 5);
+        for texel in bytes[pixels.len()..].chunks_exact(4) {
+            assert_eq!(texel, &[188, 188, 188, 255]);
+        }
+    }
+
+    #[test]
+    fn texture_filtering_quality_has_valid_bounded_comparison_overrides() {
+        use crate::render_quality::Quality;
+        assert_eq!(anisotropy(Quality::High, None), 16);
+        assert_eq!(anisotropy(Quality::Balanced, None), 8);
+        assert_eq!(anisotropy(Quality::Low, None), 4);
+        for value in [1, 2, 4, 8, 16] {
+            assert_eq!(anisotropy(Quality::High, Some(&value.to_string())), value);
+        }
+        for invalid in ["0", "3", "32", "-1", "nan"] {
+            assert_eq!(anisotropy(Quality::High, Some(invalid)), 16);
+        }
     }
 }

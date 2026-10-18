@@ -88,3 +88,12 @@ These trials use the explicit owned GPU image capture target. They do not
 resolve the separate live native-window capture problem or establish gameplay
 coverage. Temporary verification images and logs are removed after inspection.
 The complete 251-species appearance goal remains active.
+
+## Canonical skin publication
+
+The current normal builder and direct sculpture CLI publish strict canonical
+GLBs for Goldeen, Seaking and Magikarp. Actual-parent eye/paint fitting, bounded
+carp tail tessellation and coherent swimming controls replace the earlier
+static exports. The historical geometry and verification figures above describe
+the original sculpture review. See [the current skin guide](goldfish-skins.md)
+for current geometry, control ownership, checks and production review evidence.

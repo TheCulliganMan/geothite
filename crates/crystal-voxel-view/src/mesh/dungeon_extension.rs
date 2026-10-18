@@ -3,6 +3,8 @@
 //! copied here and no model lookup is based on gameplay collision permissions.
 use super::*;
 use crate::dungeon_models::{ExtensionKind as Asset, extension_model};
+#[cfg(test)]
+use crate::port::ferry_anchor;
 #[path = "blackthorn_guardian.rs"]
 mod blackthorn_guardian;
 
@@ -20,6 +22,7 @@ pub(super) enum Floor {
     NativeStone,
     NativeCarpet,
     NativeCeramic,
+    HarborConcrete,
 }
 #[derive(Clone, Copy, Debug)]
 pub(super) enum Detail {
@@ -35,6 +38,7 @@ pub(super) enum Detail {
     CeruleanBridgeFace,
     StoreBasementLift,
     StoreBasementStair,
+    HarborStair,
     SproutPillar,
     TinPillar,
     SproutAltar,
@@ -65,6 +69,7 @@ impl Detail {
             Self::TeleportPad => "special:live-teleport-inlay",
             Self::LeagueBarrier => "special:league-balustrade",
             Self::Floor(Floor::Stone | Floor::NativeStone) => "special:stone-paving",
+            Self::Floor(Floor::HarborConcrete) => "special:harbor-concrete",
             Self::Floor(Floor::Wood) => "special:timber-deck",
             Self::Floor(Floor::Ceramic | Floor::NativeCeramic) => "special:ceramic-paving",
             Self::Floor(Floor::Carpet | Floor::NativeCarpet) => "special:champion-carpet",
@@ -73,6 +78,7 @@ impl Detail {
             Self::CeruleanBridgeFace => "special:cerulean-wood-bridge-face",
             Self::StoreBasementLift => "special:store-basement-lift-front",
             Self::StoreBasementStair => "special:store-basement-warehouse-stair",
+            Self::HarborStair => "special:harbor-stairwell",
             Self::SproutPillar => "special:sprout-swaying-pillar",
             Self::TinPillar => "special:tin-timber-pillar",
             Self::SproutAltar => "special:sprout-framed-altar",
@@ -212,6 +218,32 @@ fn saffron_wall_block(cells:&[&VisualTile],g:&GridGeometry,i:usize,protected:&[b
     }}
     hash==expected
 }
+pub(super) fn append_cerulean_deck(out:&mut SurfaceMeshData,bounds:[f32;4],scale:f32,source_row:usize) {
+    let [w,e,n,s]=bounds;
+    // A suspended deck above the surrounding ground, below jump-ledged land.
+    // Actor support is supplied by the same pier height in build_scene.
+    let deck = crate::port::PIER_HEIGHT * scale;
+    slab(out, [w, e, n, s], deck-3. * scale, deck-0.15 * scale, [0.97, 0.80, 0.62, 1.]);
+    if source_row % 4 == 0 {
+        for x in [w+0.5*scale,e-1.7*scale] {
+            slab(out,[x,x+1.2*scale,n+0.5*scale,n+1.7*scale],
+                -6.*scale,deck-3.*scale,[0.47,0.34,0.15,1.]);
+        }
+    }
+    let grout = 0.18 * scale;
+    for row in 0..2 {
+        let north = n + (s - n) * row as f32 * 0.5;
+        let south = north + (s - n) * 0.5;
+        let pieces = if (source_row * 2 + row) % 2 == 0 { 1 } else { 2 };
+        for piece in 0..pieces {
+            let west = w + (e - w) * piece as f32 / pieces as f32;
+            let east = w + (e - w) * (piece + 1) as f32 / pieces as f32;
+            slab(out, [west + grout, east - grout, north + grout, south - grout],
+                deck-0.15 * scale, deck, [0.90, 0.39, 0.43, 1.]);
+        }
+    }
+}
+
 fn cerulean_bridge_detail(s: &VisualTileSource) -> Option<(Detail, u16)> {
     if s.tileset_id.as_ref() != "port" || s.subtile_column >= 4 || s.subtile_row >= 4 { return None; }
     // The gray perimeter/lobby is 0x0a. The pink brick walkway is 0x05,
@@ -243,7 +275,7 @@ fn cerulean_water_source(s: &VisualTileSource) -> bool {
     mask & (1 << (s.subtile_row * 4 + s.subtile_column)) != 0
 }
 fn harbor(map: &str) -> bool {
-    matches!(map, "OlivinePort" | "VermilionPort")
+    crate::port::harbor_map(map)
 }
 fn groups(
     r: &mut Resolver<'_>,
@@ -769,13 +801,21 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>, profiles: Option<&Document>) {
         }
     }
     if harbor(map) && ts == "port" {
+        let mut stairs=grouped_flat_card_placements(cells,g,0x31,false,|s| {
+            if s.tileset_id.as_ref()!="port" || s.metatile_id!=0x35
+                || !(2..4).contains(&s.subtile_column) || !(2..4).contains(&s.subtile_row) {return None;}
+            let (x,y)=(s.subtile_column-2,s.subtile_row-2);
+            (s.tile_index==[[0x03,0x04],[0x1e,0x1f]][y as usize][x as usize])
+                .then_some((x,y,2,2))
+        });
+        stairs.retain(|p|p.column>=2 && (0..2).all(|dy|(0..2).all(|dx| {
+            let s=&cells[(p.row+dy)*g.width+p.column-2+dx].source;
+            s.tileset_id.as_ref()=="port" && s.metatile_id==0x35 && s.tile_index==0x31
+                && s.subtile_column as usize==dx && s.subtile_row as usize==dy+2
+        })));
+        groups(r,stairs,Detail::HarborStair,0x31,22.4,16.);
         let bollards = grouped_flat_card_placements(cells, g, 0x14, false, |s| {
-            if s.tileset_id.as_ref() != ts || matches!(s.metatile_id, 0x18..=0x1f) {
-                return None;
-            }
-            let (x, y) = (s.subtile_column % 2, s.subtile_row % 2);
-            (s.tile_index == [[0x01, 0x02], [0x11, 0x12]][y as usize][x as usize])
-                .then_some((x, y, 2, 2))
+            crate::port::bollard_local(s).map(|(x,y)|(x,y,2,2))
         });
         groups(
             r,
@@ -800,11 +840,7 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>, profiles: Option<&Document>) {
                 }
                 let (x, y) = (i % g.width, i / g.width);
                 if matching_rect(cells, g, x, y, 16, 8, |s, dx, dy| {
-                    s.tileset_id.as_ref() == ts
-                        && s.metatile_id == 0x18 + (dy / 4 * 4 + dx / 4) as u16
-                        && s.subtile_column as usize == dx % 4
-                        && s.subtile_row as usize == dy % 4
-                        && ferry_anchor(dx, dy).is_none_or(|tile| s.tile_index == tile)
+                    crate::port::ferry_source(s, dx, dy)
                 }) {
                     add_rect(
                         r,
@@ -853,8 +889,9 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>, profiles: Option<&Document>) {
             super::super::modeled_interiors::underground_native_floor(map,s).then_some(Floor::NativeCeramic)
         } else if passage(map) && s.tile_index == 0x10 {
             Some(Floor::Ceramic)
-        } else if harbor(map) && matches!(s.tile_index, 0x05 | 0x31) {
-            Some(Floor::Stone)
+        } else if harbor(map) && ts=="port" && s.subtile_column<4 && s.subtile_row<4
+            && matches!(s.tile_index, 0x05 | 0x31) {
+            Some(Floor::HarborConcrete)
         } else if map.starts_with("FastShip") && s.tile_index == 0x04 {
             Some(Floor::Wood)
         } else if map == "TinTowerRoof"
@@ -896,27 +933,6 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>, profiles: Option<&Document>) {
     }
 }
 
-fn ferry_anchor(x: usize, y: usize) -> Option<u16> {
-    match (x, y) {
-        (0, 2) => Some(0x2b),
-        (6, 0) => Some(0x1a),
-        (8, 1) => Some(0x26),
-        (12, 1) => Some(0x2a),
-        (0, 4) => Some(0x2b),
-        (4, 4) => Some(0x46),
-        (8, 4) => Some(0x49),
-        (12, 4) => Some(0x4d),
-        (1, 6) => Some(0x58),
-        (7, 6) => Some(0x5c),
-        (11, 6) => Some(0x5e),
-        (12, 6) => Some(0x5f),
-        (3, 3) => Some(0x33),
-        (7, 3) => Some(0x3e),
-        (11, 3) => Some(0x42),
-        (14, 3) => Some(0x45),
-        _ => None,
-    }
-}
 fn resolve_roof(r: &mut Resolver<'_>) {
     let (cells, g) = (r.cells, r.g);
     let mut side = vec![0i8; cells.len()];
@@ -1050,6 +1066,7 @@ pub(super) fn append(
             | Detail::TeleportPad
             | Detail::RoofSlope { .. }
             | Detail::RoofRidge
+            | Detail::HarborStair
     ) {
         let uv = g.uv(p.ground % g.width, p.ground / g.width);
         for i in p.indices(g.width) {
@@ -1252,15 +1269,22 @@ pub(super) fn append(
             super::super::sprout_pillar::append(&mut mesh.animated_textured, g, cells, anchor);
             mesh.animated_pillars.push(anchor);
         }
+        Detail::Model(Asset::HarborBollard) => {
+            assert!(extension_model(Asset::HarborBollard).append_native_harbor_bollard(
+                &mut mesh.textured,[w,e,s-p.depth_pixels*scale,s],floor_height,rise,|[x,y]| {
+                    let uv=g.uv(p.column+x/8,p.row+y/8);
+                    [uv.0+(uv.1-uv.0)*((x%8)as f32+0.5)/8.,
+                     uv.2+(uv.3-uv.2)*((y%8)as f32+0.5)/8.]
+                }));
+        }
         Detail::Model(Asset::HarborFerry) => {
             // The final three source courses depict the hull's upright face.
             // Collapse that illustrated depth while keeping the north docking
             // seam fixed; the real boarding warp is on the preceding gangway.
-            extension_model(Asset::HarborFerry).append(
+            extension_model(Asset::HarborFerry).append_docked_ferry(
                 &mut mesh.solid,
                 [w, e, n, n + 40. * scale],
-                floor_height,
-                28. * scale,
+                crate::profile::GROUND_HEIGHT,
             );
         }
         Detail::Model(Asset::HallOfFameTerminal) => {
@@ -1272,6 +1296,13 @@ pub(super) fn append(
             assert!(extension_model(Asset::HallOfFameTerminal).append_native_hall_terminal(
                 &mut mesh.textured,[w,e,s-p.depth_pixels*scale,s],rise,sample));
         }
+        Detail::Model(Asset::LeagueWall) => {
+            let uv=g.uv(p.column,p.row);
+            assert!(extension_model(Asset::LeagueWall).append_native_league_wall(&mut mesh.textured,
+                [w,e,s-p.depth_pixels*scale,s],rise,|[x,y]| {
+                    [uv.0+(uv.1-uv.0)*(x as f32+0.5)/8.,uv.2+(uv.3-uv.2)*(y as f32+0.5)/8.]
+                }));
+        }
         Detail::Model(kind) => extension_model(kind).append(
             &mut mesh.solid,
             [w, e, s - p.depth_pixels * scale, s],
@@ -1279,31 +1310,29 @@ pub(super) fn append(
             rise,
         ),
         Detail::CeruleanBridgeDeck => {
-            // Walkers retain the authored zero-height footing. Keep the modeled
-            // bridge thickness below that surface rather than clipping feet.
-            slab(&mut mesh.solid, [w, e, n, s], -3. * scale, -0.15 * scale, [0.97, 0.80, 0.62, 1.]);
-            let grout = 0.18 * scale;
-            for row in 0..2 {
-                let north = n + (s - n) * row as f32 * 0.5;
-                let south = north + (s - n) * 0.5;
-                let pieces = if (p.row * 2 + row) % 2 == 0 { 1 } else { 2 };
-                for piece in 0..pieces {
-                    let west = w + (e - w) * piece as f32 / pieces as f32;
-                    let east = w + (e - w) * (piece + 1) as f32 / pieces as f32;
-                    slab(&mut mesh.solid, [west + grout, east - grout, north + grout, south - grout],
-                        -0.15 * scale, 0., [0.90, 0.39, 0.43, 1.]);
+            let source=&cells[p.row*g.width+p.column].source;
+            let first=mesh.solid.positions.len();
+            append_cerulean_deck(&mut mesh.solid,[w,e,n,s],scale,source.subtile_row as usize);
+            if let Some([north,south])=crate::mesh::elevated_piers::entry_levels(source) {
+                let slope=(south-north)*scale/(s-n);
+                for (point,normal) in mesh.solid.positions[first..].iter_mut().zip(&mut mesh.solid.normals[first..]) {
+                    point[1]+=(north-crate::port::PIER_HEIGHT)*scale+(point[2]-n)*slope;
+                    *normal=Vec3::new(normal[0],normal[1],normal[2]-normal[1]*slope).normalize().to_array();
                 }
             }
-        }
+        },
         Detail::CeruleanBridgeFace => {
             // The painted face belongs against the preceding deck's edge,
             // not eight pixels farther into the water at the source row's end.
             let depth = 1.2 * scale;
-            append_top(&mut mesh.textured, [w, e, n, s], 0., g.uv(p.ground % g.width, p.ground / g.width));
-            slab(&mut mesh.solid, [w, e, n, n + depth], -3. * scale, 3. * scale, [0.47, 0.34, 0.15, 1.]);
+            append_top(&mut mesh.textured, [w, e, n, s], crate::profile::WATER_HEIGHT*scale, g.uv(p.ground % g.width, p.ground / g.width));
+            // This course fronts the gray, ground-level north rim. It is
+            // shoreline retaining timber, not a suspended pink pier.
+            let deck=0.;
+            slab(&mut mesh.solid, [w, e, n, n + depth], deck-3. * scale, deck, [0.47, 0.34, 0.15, 1.]);
             for x in [w + (e - w) * 0.12, w + (e - w) * 0.62] {
                 slab(&mut mesh.solid, [x, x + (e - w) * 0.18, n, n + depth],
-                    -6. * scale, 2. * scale, [0.60, 0.46, 0.23, 1.]);
+                    -6. * scale, deck-3.*scale, [0.60, 0.46, 0.23, 1.]);
             }
         }
         Detail::StoreBasementLift => {
@@ -1313,6 +1342,50 @@ pub(super) fn append(
             for i in p.indices(g.width) {
                 append_top(&mut mesh.textured, g.bounds(i % g.width, i / g.width).into(),
                     0.01 * scale, g.uv(i % g.width, i / g.width));
+            }
+        }
+        Detail::HarborStair => {
+            let sample=|[x,y]:[usize;2]| {
+                let uv=g.uv(p.column+x/8,p.row+y/8);
+                crate::scenery_finish::source_atlas_uv([
+                    uv.0+(uv.1-uv.0)*((x%8)as f32+0.5)/8.,
+                    uv.2+(uv.3-uv.2)*((y%8)as f32+0.5)/8.])
+            };
+            let first=mesh.textured.positions.len();
+            // A closed dark backing seals the recessed land opening. No water
+            // cell, water geometry or authoritative walking height is changed.
+            slab(&mut mesh.textured,[w,e,n,s],-16.5*scale,-16.*scale,[1.;4]);
+            mesh.textured.uvs[first..].fill(sample([0,1]));
+            // Line the recessed shaft instead of exposing sky/sea behind the
+            // low treads. The west landing stays open; all three other faces
+            // remain below the unchanged quay surface and inside this plot.
+            let bottom=-16.*scale;
+            for (points,normal) in [
+                ([[w,bottom,n],[e,bottom,n],[e,0.,n],[w,0.,n]],Vec3::Z),
+                ([[e,bottom,n],[e,bottom,s],[e,0.,s],[e,0.,n]],-Vec3::X),
+                ([[e,bottom,s],[w,bottom,s],[w,0.,s],[e,0.,s]],-Vec3::Z),
+            ] {
+                append_quad(&mut mesh.textured,points,normal.to_array(),[sample([1,1]);4],
+                    crate::interior_models::authored_face_color([1.;4],normal));
+            }
+            // Three real gray roles from the native flight: dark recess,
+            // middle-gray metal and light tread stone. The corner's green
+            // quay pigment is ground, not stair nosing or handrail paint.
+            let swatches=[[1,1],[0,1],[4,1],[4,1],[1,1]].map(sample);
+            let flight_first=mesh.textured.positions.len();
+            assert!(crate::interior_models::model(crate::interior_models::ModelKind::StairFlight)
+                .append_native_stair(&mut mesh.textured,[w,e,n,s],-16.*scale,rise,swatches));
+            // The complete drawing has dry quay west of its ladder cell.
+            // The shared model rises +X; turn its high end west rather than
+            // leaving the top landing against the eastern water barrier.
+            let (cx,cz)=((w+e)*0.5,(n+s)*0.5);
+            for i in flight_first..mesh.textured.positions.len() {
+                let point=mesh.textured.positions[i];
+                mesh.textured.positions[i]=[2.*cx-point[0],point[1],2.*cz-point[2]];
+                let normal=mesh.textured.normals[i];
+                let normal=Vec3::new(-normal[0],normal[1],-normal[2]);
+                mesh.textured.normals[i]=normal.to_array();
+                mesh.textured.colors[i]=crate::interior_models::authored_face_color([1.;4],normal);
             }
         }
         Detail::StoreBasementStair => {
@@ -1394,7 +1467,11 @@ pub(super) fn append(
             append_saffron_floor(&mut mesh.textured,[w,e,n,s],scale,g.uv(p.column,p.row));
         }
         Detail::Floor(kind) => {
-            if matches!(kind,Floor::NativeCeramic) {
+            if matches!(kind,Floor::HarborConcrete) {
+                let source=&cells[p.row*g.width+p.column].source;
+                harbor_concrete(&mut mesh.textured,[w,e,n,s],scale,
+                    [source.subtile_column,source.subtile_row],g.uv(p.column,p.row));
+            } else if matches!(kind,Floor::NativeCeramic) {
                 super::super::modeled_interiors::native_underground_floor_cell(
                     &mut mesh.textured,[w,e,n,s],0.,g.uv(p.column,p.row));
             } else if matches!(kind,Floor::NativeStone|Floor::NativeCarpet) {
@@ -1465,23 +1542,41 @@ pub(super) fn append(
             }
         }
         Detail::LeagueBarrier => {
-            let start = mesh.solid.positions.len();
+            let start = mesh.textured.positions.len();
             slab(
-                &mut mesh.solid,
+                &mut mesh.textured,
                 [w, e, n, s - 4. * scale],
                 0.,
                 16. * scale,
                 [0.45, 0.48, 0.43, 1.],
             );
-            extension_model(Asset::LeagueWall).append(
-                &mut mesh.solid,
-                [w, e, s - 4. * scale, s],
-                0.,
-                16. * scale,
-            );
+            let cap=g.uv(p.column,p.row);let face=g.uv(p.column,p.row+2);
+            for i in start..mesh.textured.positions.len() {
+                let normal=Vec3::from_array(mesh.textured.normals[i]);
+                let (uv,x,y)=if normal.y>0.9 {(cap,2.5,1.5)}else{(face,2.5,4.5)};
+                mesh.textured.uvs[i]=[uv.0+(uv.1-uv.0)*x/8.,uv.2+(uv.3-uv.2)*y/8.];
+                mesh.textured.colors[i]=crate::interior_models::authored_face_color([1.;4],normal);
+            }
+            let mut retained=Vec::with_capacity(mesh.textured.indices.len());
+            for tri in mesh.textured.indices.chunks_exact(3) {
+                if tri.iter().all(|&i|i as usize>=start && mesh.textured.normals[i as usize][1]>0.9) {continue;}
+                retained.extend_from_slice(tri);
+            }
+            mesh.textured.indices=retained;
+            for row in 0..2 {for column in 0..4 {
+                let west=w+(e-w)*column as f32/4.;let east=w+(e-w)*(column+1)as f32/4.;
+                let north=n+(s-4.*scale-n)*row as f32/2.;
+                let south=n+(s-4.*scale-n)*(row+1)as f32/2.;
+                append_top(&mut mesh.textured,[west,east,north,south],16.*scale,
+                    g.uv(p.column+column,p.row+row));
+            }}
+            assert!(extension_model(Asset::LeagueWall).append_native_league_wall(
+                &mut mesh.textured,[w,e,s-4.*scale,s],16.*scale,|[x,y]| {
+                    [face.0+(face.1-face.0)*(x as f32+0.5)/8.,face.2+(face.3-face.2)*(y as f32+0.5)/8.]
+                }));
             // Fade the complete guarded barrier when it blocks the trainer.
             // Its source footprint, closed geometry and footing remain intact.
-            mesh.solid.cutaway_ranges.push(start..mesh.solid.positions.len());
+            mesh.textured.cutaway_ranges.push(start..mesh.textured.positions.len());
         }
         Detail::ShipCompound => {
             // Source cap is a real horizontal rear course, not a floating card.
@@ -1682,6 +1777,30 @@ fn slab(out: &mut SurfaceMeshData, b: [f32; 4], low: f32, high: f32, color: [f32
         faceted_face(out, p, norm, color, 0.);
     }
 }
+// Two native cells form one concrete slab. Recesses remain below the dock
+// datum; the opaque native background supplies both daylight and night paint.
+fn harbor_concrete(out:&mut SurfaceMeshData,b:[f32;4],scale:f32,cell:[u8;2],
+    uv:(f32,f32,f32,f32)) {
+    let [w,e,n,s]=b;let (u0,u1,v0,v1)=uv;
+    let sample=crate::scenery_finish::source_concrete_uv([
+        u0+(u1-u0)*2.5/8.,v0+(v1-v0)*0.5/8.]);
+    let first=out.positions.len();
+    slab(out,b,-1.3*scale,-0.04*scale,[0.72,0.72,0.72,1.]);
+    out.uvs[first..].fill(sample);
+    // A subpixel hairline disappeared at the production exterior camera.
+    // Keep the same recessed joint, wide enough to read between cast slabs.
+    let gap=0.18*scale;
+    let x=if cell[0]%2==0 {w+gap}else{w};
+    let z=if cell[1]%2==0 {n+gap}else{n};
+    for (bounds,height,tint) in [([w,x,n,s],-0.035*scale,0.72),
+        ([x,e,n,z],-0.035*scale,0.72),([x,e,z,s],0.,1.)] {
+        if bounds[1]<=bounds[0] || bounds[3]<=bounds[2] {continue;}
+        let first=out.positions.len();
+        append_top(out,bounds,height,(sample[0],sample[0],sample[1],sample[1]));
+        for color in &mut out.colors[first..] { *color=[tint,tint,tint,1.]; }
+    }
+}
+
 fn floor_tile(out: &mut SurfaceMeshData, b: [f32; 4], kind: Floor, x: usize, y: usize, scale: f32) {
     let [w, e, n, s] = b;
     let color = match kind {
@@ -1701,7 +1820,7 @@ fn floor_tile(out: &mut SurfaceMeshData, b: [f32; 4], kind: Floor, x: usize, y: 
             }
         }
         Floor::Carpet => [0.35, 0.22, 0.33, 1.],
-        Floor::NativeStone | Floor::NativeCarpet | Floor::NativeCeramic => unreachable!("native floors require their source atlas"),
+        Floor::NativeStone | Floor::NativeCarpet | Floor::NativeCeramic | Floor::HarborConcrete => unreachable!("native floors require their source atlas"),
     };
     slab(
         out,
@@ -1839,6 +1958,18 @@ mod tests {
             .collect()
     }
     #[test]
+    fn external_league_native_wall_and_cap_swatches_use_the_original_gray_palette() {
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(
+            std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap())).unwrap();
+        let pack=loaded.pack();
+        let pixels=image::load_from_memory(&pack.runtime_files()["gfx/tilesets/elite_four_room.png"]).unwrap().to_luma8();
+        for (tile,x,y,gray) in [(0x10,1,3,255),(0x10,2,4,85),(0x10,2,2,170),(0x25,2,1,170)] {
+            assert_eq!(pixels.get_pixel(tile%16*8+x,tile/16*8+y)[0],gray);
+            assert_eq!(pack.data().tilesets["elite_four_room"].palette_map[tile as usize]&7,0,
+                "the wall's neutral pigments come from its own palette bank");
+        }
+    }
+    #[test]
     fn kanto_native_league_barrier_fades_as_one_complete_source_object() {
         for map in ["WillsRoom","KogasRoom","BrunosRoom","KarensRoom"] {
             let g=grid(4,8);let mut t=tiles(4,8,"elite_four_room",1);
@@ -1856,11 +1987,25 @@ mod tests {
             super::super::append(&mut mesh,&g,p,&refs,[0,0]);
             assert_eq!(mesh.footing_heights,vec![2.5;32]);
             assert_eq!(&mesh.solid.positions[..prefix],before.positions.as_slice());
-            assert_eq!(mesh.solid.cutaway_ranges,vec![prefix..mesh.solid.positions.len()]);
-            assert!(mesh.textured.cutaway_ranges.is_empty(),"floor backing stays opaque");
-            let (opaque,groups)=crate::occluder_fade::prepare(mesh.solid);
+            assert_eq!(mesh.solid,before,"unrelated solid scenery stays unchanged");
+            assert_eq!(mesh.textured.cutaway_ranges,vec![64..mesh.textured.positions.len()]);
+            let mut cap_area=0.;let mut cap_cells=std::collections::BTreeSet::new();
+            for tri in mesh.textured.indices.chunks_exact(3) {
+                let points=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
+                if !points.iter().all(|p|p.y==16. && p.z<=28.)
+                    || !tri.iter().all(|&i|mesh.textured.normals[i as usize][1]>0.9) {continue;}
+                cap_area+=(points[1]-points[0]).cross(points[2]-points[0]).length()*0.5;
+                let uv=tri.iter().map(|&i|bevy::prelude::Vec2::from_array(mesh.textured.uvs[i as usize]))
+                    .sum::<bevy::prelude::Vec2>()/3.;
+                let sample=(uv.y*8.)as usize*4+(uv.x*4.)as usize;
+                cap_cells.insert(sample);
+            }
+            assert_eq!(cap_area,32.*28.,"the closed slab keeps its top dimensions");
+            assert_eq!(cap_cells,(0..8).collect(),"all eight original cap cells paint the top once");
+            let (opaque,groups)=crate::occluder_fade::prepare(mesh.textured);
             assert_eq!(groups.len(),1,"the slab and wall must fade together");
-            assert_eq!(opaque.positions,before.positions,"unrelated preceding scenery stays opaque");
+            assert_eq!(opaque.positions.len(),64,"all sixteen native floor cells stay opaque");
+            assert!(opaque.positions.iter().all(|p|p[1]==0.));
             for i in 0..16 {
                 let mut changed=t.clone();changed[i].source.tile_index^=0x80;
                 assert!(!super::super::resolve(map,&changed.iter().collect::<Vec<_>>(),&g,None)
@@ -1986,6 +2131,108 @@ mod tests {
         assert_eq!(p.indices(5).count(), 12);
         assert!(p.indices(5).all(|i| i >= 5));
     }
+    #[test]
+    fn shared_harbor_concrete_keeps_source_paint_and_level_support() {
+        let g=grid(4,4);let t=tiles(4,4,"port",0x31);
+        let cells=t.iter().collect::<Vec<_>>();
+        for map in ["OlivinePort","VermilionPort"] {
+            let selected=super::super::resolve(map,&cells,&g,None);
+            let floors=selected.iter().filter(|p|p.kind_label()=="special:harbor-concrete")
+                .collect::<Vec<_>>();assert_eq!(floors.len(),16);
+            let mut mesh=TerrainMeshData{footing_heights:vec![0.;16],..Default::default()};
+            for p in floors {super::super::append(&mut mesh,&g,p,&cells,[0,0]);}
+            assert!(mesh.solid.positions.is_empty(),"source paint stays in the atlas");
+            assert!(mesh.textured.positions.iter().all(|p|p[1]<=0. && p[1]>=-1.301));
+            assert!(mesh.textured.positions.iter().any(|p|p[1]==0.));
+            assert!(mesh.textured.positions.iter().any(|p|p[1]< -1.));
+            assert_eq!(mesh.footing_heights,vec![0.;16]);
+            for &uv in &mesh.textured.uvs {
+                let native=crate::scenery_finish::source_concrete_coordinates(uv).unwrap();
+                assert!(native[0]>=0. && native[0]<=1. && native[1]>=0. && native[1]<=1.);
+                assert!(crate::scenery_finish::source_atlas_coordinates(uv).is_none());
+                assert!(crate::scenery_finish::source_mineral_coordinates(uv).is_none());
+            }
+            // Flat slab faces keep one tint across both triangles, retiring
+            // the four differently shaded wedges without changing the datum.
+            for q in (0..mesh.textured.positions.len()).step_by(4) {
+                if mesh.textured.positions[q..q+4].iter().all(|p|p[1]==0.) {
+                    assert!(mesh.textured.colors[q..q+4].iter().all(|c|*c==[1.;4]));
+                }
+            }
+        }
+        assert!(!super::super::resolve("CeruleanGym",&cells,&g,None).iter()
+            .any(|p|p.kind_label()=="special:harbor-concrete"));
+        for (ts,index) in [("port",0x14),("port",0x03),("kanto",0x31)] {
+            let bad=tiles(4,4,ts,index);let refs=bad.iter().collect::<Vec<_>>();
+            assert!(!super::super::resolve("OlivinePort",&refs,&g,None).iter()
+                .any(|p|p.kind_label()=="special:harbor-concrete"));
+        }
+    }
+
+    #[test]
+    fn external_harbor_stair_swatches_keep_gray_stone_and_metal_distinct_from_quay_ground() {
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
+            std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap())).unwrap();
+        let pixels = image::load_from_memory(&loaded.pack().runtime_files()["gfx/tilesets/port.png"])
+            .unwrap().to_luma8();
+        let native = |x: u32, y: u32| pixels.get_pixel(3 * 8 + x, y)[0];
+        assert_eq!(native(0, 1), 0, "recess and stringer shadow");
+        assert_eq!(native(1, 1), 85, "middle-gray metal");
+        assert_eq!(native(4, 1), 170, "light stone tread and nosing");
+        assert_eq!(native(0, 0), 255, "the old rail swatch belongs to quay ground");
+    }
+
+    #[test]
+    fn harbor_stairwell_uses_complete_native_drawing_without_moving_the_dock() {
+        let g=grid(4,4);let mut t=tiles(4,4,"port",0x31);
+        let drawing=[0x01,0x02,0x01,0x02,0x11,0x12,0x11,0x12,
+            0x31,0x31,0x03,0x04,0x31,0x31,0x1e,0x1f];
+        for (i,tile) in t.iter_mut().enumerate() {
+            tile.source.metatile_id=0x35;tile.source.tile_index=drawing[i];
+        }
+        for map in ["OlivinePort","VermilionPort"] {
+            let cells=t.iter().collect::<Vec<_>>();
+            let placements=super::super::resolve(map,&cells,&g,None);
+            let stairs=placements.iter().filter(|p|p.kind_label()=="special:harbor-stairwell")
+                .collect::<Vec<_>>();assert_eq!(stairs.len(),1);
+            assert_eq!(stairs[0].indices(4).collect::<Vec<_>>(),[10,11,14,15]);
+            let mut mesh=TerrainMeshData{footing_heights:vec![0.;16],..Default::default()};
+            super::super::append(&mut mesh,&g,stairs[0],&cells,[0,0]);
+            assert!(mesh.textured.positions.iter().any(|p|p[1]< -8.));
+            assert!(mesh.textured.positions.iter().any(|p|p[1]>0.));
+            assert!(mesh.textured.positions.iter().all(|p|p[0]>=16. && p[0]<=32.
+                && p[2]>=16. && p[2]<=32. && p[1]>=-16.501 && p[1]<=6.401));
+            assert!(mesh.textured.uvs.iter().all(|&uv|
+                crate::scenery_finish::source_atlas_coordinates(uv).is_some()));
+            let tread_uv={let uv=g.uv(2,2);
+                crate::scenery_finish::source_atlas_uv([
+                    uv.0+(uv.1-uv.0)*4.5/8.,uv.2+(uv.3-uv.2)*1.5/8.])};
+            let treads=mesh.textured.positions.iter().zip(&mesh.textured.normals).zip(&mesh.textured.uvs)
+                .filter_map(|((p,n),uv)|(*uv==tread_uv&&n[1]>0.99).then_some(*p)).collect::<Vec<_>>();
+            let mean=|west:bool| {
+                let points=treads.iter().filter(|p|if west {p[0]<20.}else{p[0]>28.}).collect::<Vec<_>>();
+                assert!(!points.is_empty());points.iter().map(|p|p[1]).sum::<f32>()/points.len()as f32
+            };
+            assert!(mean(true)>mean(false)+8.,"the highest treads must meet the western dock");
+            assert_eq!(mesh.footing_heights,vec![0.;16]);
+        }
+        for defect in 0..3 {
+            let mut bad=t.clone();
+            match defect {0=>bad[10].source.tile_index=0x31,
+                1=>bad[15].source.subtile_row=2,_=>bad[11].source.metatile_id=0x34}
+            assert!(!super::super::resolve("OlivinePort",&bad.iter().collect::<Vec<_>>(),&g,None)
+                .iter().any(|p|p.kind_label()=="special:harbor-stairwell"));
+        }
+        for i in [8,9,12,13] {
+            let mut bad=t.clone();bad[i].source.tile_index=0x14;
+            assert!(!super::super::resolve("OlivinePort",&bad.iter().collect::<Vec<_>>(),&g,None)
+                .iter().any(|p|p.kind_label()=="special:harbor-stairwell"),
+                "the west landing must be authenticated dry quay");
+        }
+        assert!(!super::super::resolve("CeruleanGym",&t.iter().collect::<Vec<_>>(),&g,None)
+            .iter().any(|p|p.kind_label()=="special:harbor-stairwell"));
+    }
+
     #[test]
     fn compound_ferry_requires_eight_complete_blocks_and_bow_cabin_keel_anchors() {
         let mut t = tiles(17, 8, "port", 0x14);
@@ -2616,7 +2863,7 @@ mod tests {
             assert!(!mesh.solid.indices.is_empty());
             assert!(mesh.solid.positions.iter().any(|v| v[1] < -2.9));
             if tile == 0x05 {
-                assert!(mesh.solid.positions.iter().all(|v| v[1] <= 0.));
+                assert!(mesh.solid.positions.iter().any(|v| v[1] == crate::port::PIER_HEIGHT));
                 assert!(mesh.textured.indices.is_empty(), "no coplanar floor backing beneath bridge bricks");
             }
             assert!(!super::super::resolve("OlivinePort", &t.iter().collect::<Vec<_>>(), &g, None)

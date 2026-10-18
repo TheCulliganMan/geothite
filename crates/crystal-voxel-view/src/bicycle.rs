@@ -312,14 +312,16 @@ pub(crate) fn body_bounds(rig: &crate::open_people::PersonRig,
     let mut transforms = rig.nodes.clone();
     let mut world = vec![None; transforms.len()];
     for idle in 0..8 {
-        for step in 0..68 {
+        for step in 0..73 {
             rig.sample("Idle", idle as f32 / 8. * rig.duration("Idle"), &mut transforms);
             if step < 64 {
                 pose(rig, &mut transforms, step as f32 / 64. * TAU, scale);
-            } else {
+            } else if step < 68 {
                 // Seated soles extend below the cushion-centered actor root.
                 // Include them in the same production skin culling envelope.
                 seat_pose(rig, &mut transforms, scale, 0.15 * (step - 63) as f32);
+            } else {
+                surf_pose(rig, &mut transforms, scale, 0.15 + (step - 68) as f32 * 0.08);
             }
             transforms[rig.skin_nodes[rig.head_joint]].scale *= head_scale;
             for hand in &rig.hand_joints {
@@ -425,10 +427,15 @@ pub(crate) fn pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transf
         let foot = foot_node(rig, side);
         // Keep the shoe's authored level orientation. Idle contains ankle
         // rocking, which would otherwise move the sole through the pedal.
-        let foot_rotation = joint_world(rig, &rig.nodes, foot).to_scale_rotation_translation().1;
+        let foot_rest = joint_world(rig, &rig.nodes, foot);
+        let foot_rotation = foot_rest.to_scale_rotation_translation().1;
         rotate_world(rig, transforms, thigh, Quat::from_rotation_x(-1.1));
         rotate_world(rig, transforms, shin, Quat::from_rotation_x(1.7));
-        let ankle = target(pedal + Vec3::new(0., 0.0775, -0.035));
+        // Preserve the fitted player sole clearance, then account for the
+        // taller NPC's floor-to-ankle distance without stretching its bones.
+        let ankle_clearance = 0.0775 + (foot_rest.transform_point3(Vec3::ZERO).y - rig.floor)
+            * (scale.y - 1.20 / rig.height);
+        let ankle = target(pedal + Vec3::new(0., ankle_clearance, -0.035));
         solve_limb(rig, transforms, thigh, shin, foot, ankle);
         let current = joint_world(rig, transforms, foot).to_scale_rotation_translation().1;
         rotate_world(rig, transforms, foot, foot_rotation * current.inverse());
@@ -440,8 +447,11 @@ pub(crate) fn pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transf
         // Fit the rounded production finger pads to the rubber surface.
         // Measured contact requires a small outward radial adjustment, rather
         // than placing the reshaped fingers inside the previous grip datum.
+        // The supplied right hand is asymmetric. Its larger NPC palm needs
+        // a little more radial clearance; retain both fitted player grips.
+        let clearance = if side == 1 { (scale.y * rig.height - 1.20).max(0.) * 0.01 } else { 0. };
         solve_limb(rig, transforms, upper, lower, wrist,
-            target(Vec3::new(sign * 0.215, 0.7365, 0.1965)));
+            target(Vec3::new(sign * 0.215, 0.7365 + clearance, 0.1965 - clearance)));
         // Align the finger hinge with the horizontal grip, rather than
         // inheriting the sideways fist orientation from a walking arm.
         let desired = Quat::from_rotation_x(1.05) * if side == 0 {
@@ -462,9 +472,9 @@ pub(crate) fn pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transf
     rotate_world(rig, transforms, thumb, Quat::from_rotation_x(-0.27));
 }
 
-/// Seated Surf pose: fixed straddling legs and hands resting forward on the
-/// mount. The actor root is placed at the Pokémon's back by the world renderer.
-pub(crate) fn surf_pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transform], scale: Vec3) {
+/// Fit the rider's legs around a narrow back or fold them onto a broad back.
+/// The Pokémon keeps its physical size and the supplied bones keep their lengths.
+pub(crate) fn surf_pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transform], scale: Vec3, half_width: f32) {
     let target = |point: Vec3| point / scale + Vec3::Y * rig.floor;
     let hips = rig.skin_nodes[rig.hips_joint];
     let parent = rig.parents[hips].map(|p| joint_world(rig, transforms, p))
@@ -478,8 +488,15 @@ pub(crate) fn surf_pose(rig: &crate::open_people::PersonRig, transforms: &mut [T
         let foot = foot_node(rig, side);
         rotate_world(rig, transforms, thigh, Quat::from_rotation_x(-1.1));
         rotate_world(rig, transforms, shin, Quat::from_rotation_x(1.7));
+        // A shell wider than the rider's legs must support their feet on top;
+        // forcing the small-mount straddle would put both shins inside it.
+        let folded = ((half_width - 0.24) / 0.18).clamp(0., 1.);
         solve_limb(rig, transforms, thigh, shin, foot,
-            target(Vec3::new(sign * 0.25, -0.26, 0.06)));
+            target(Vec3::new(sign * (half_width + 0.07).clamp(0.22, 0.38),
+                -0.26 + 0.42 * folded, 0.06 + 0.20 * folded)));
+        let level = joint_world(rig, &rig.nodes, foot).to_scale_rotation_translation().1;
+        let current = joint_world(rig, transforms, foot).to_scale_rotation_translation().1;
+        rotate_world(rig, transforms, foot, level * current.inverse());
         let wrist = wrist_node(rig, side);
         let lower = rig.parents[wrist].unwrap();
         let upper = rig.parents[lower].unwrap();
@@ -492,6 +509,38 @@ pub(crate) fn surf_pose(rig: &crate::open_people::PersonRig, transforms: &mut [T
 #[cfg(test)]
 mod mounted_tests {
     use super::*;
+    #[test]
+    #[ignore = "requires supplied rider rigs in CRYSTAL_OPEN_MODEL_ROOT"]
+    fn surf_pose_folds_feet_above_broad_backs_without_stretching_bones() {
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for name in ["human-male", "human-female"] {
+            let rig = crate::open_people::PersonRig::parse(
+                &std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap()).unwrap();
+            let scale = Vec3::splat(1.20 / rig.height);
+            for half_width in [0.12, 0.30, 0.50, 0.80] {
+                let mut transforms = rig.nodes.clone();
+                rig.sample("Idle", 0., &mut transforms);
+                let before = transforms.clone();
+                surf_pose(&rig, &mut transforms, scale, half_width);
+                for (node, transform) in transforms.iter().enumerate() {
+                    assert_eq!(transform.scale, before[node].scale, "the rider never stretches to fit");
+                    if node != rig.skin_nodes[rig.hips_joint] {
+                        assert_eq!(transform.translation, before[node].translation);
+                    }
+                }
+                for side in 0..2 {
+                    let ankle = (joint_world(&rig, &transforms, foot_node(&rig, side))
+                        .transform_point3(Vec3::ZERO) - Vec3::Y * rig.floor) * scale;
+                    if half_width >= 0.50 {
+                        assert!(ankle.y > 0.12, "broad backs support both feet above the seat: {ankle:?}");
+                    } else if half_width == 0.12 {
+                        assert!(ankle.y < -0.20, "narrow mounts retain a hanging straddle");
+                    }
+                }
+            }
+        }
+    }
+
     #[test]
     #[ignore = "requires supplied rider rigs in CRYSTAL_OPEN_MODEL_ROOT"]
     fn supplied_mounted_riders_reach_saddle_grips_and_pedal_circle() {

@@ -199,6 +199,19 @@ fn main() -> Result<()> {
         frame.jump_ledges = crystal_bevy::bevy_shell::authored_visual_jump_ledges(
             module.attributes.width,&module.blocks,&runtime.data().tileset_collision(tileset)?,
             bevy::prelude::IVec2::ZERO)?;
+        let domain_collision=runtime.data().tileset_collision(tileset)?;
+        let domain_sources=frame.tiles.iter().map(|tile| {
+            let s=&tile.source;
+            let permission=domain_collision.metatiles[s.metatile_id as usize].collision[
+                usize::from(s.subtile_row/2)*2+usize::from(s.subtile_column/2)];
+            let land=crystal_core::world::collision::describe_collision(permission).terrain
+                ==crystal_core::world::collision::Terrain::Land
+                || [crystal_core::world::map::Direction::Up,crystal_core::world::map::Direction::Down,
+                    crystal_core::world::map::Direction::Left,crystal_core::world::map::Direction::Right]
+                    .into_iter().any(|d|crystal_core::world::collision::allows_ledge_direction(permission,d));
+            (bevy::prelude::IVec2::new(tile.column as i32,tile.row as i32),s.clone(),land)
+        }).collect::<Vec<_>>();
+        frame.terrace_datum=crystal_voxel_view::source_terrace_datum(map_id,&frame.jump_ledges,&domain_sources);
         let legacy = audit_cell_coverage_on_map(map_id, &frame.tiles, width, height)
             .map_err(|error| anyhow::anyhow!("{map_id}: {error:?}"))?;
         let mesh = match audit_terrain_mesh_with_images(&frame, &images) {
@@ -289,15 +302,33 @@ fn main() -> Result<()> {
             }
         }
         let mut families = BTreeMap::<String, usize>::new();
+        let mut family_bounds = BTreeMap::<String, [u32; 4]>::new();
         let mut remaining = BTreeMap::<String, usize>::new();
+        let mut facade_cells = Vec::new();
+        let mut blank_windows = Vec::new();
         let mut sources = BTreeMap::<String, usize>::new();
         for ((tile, modeled), old) in frame.tiles.iter().zip(&mesh.authored_cells).zip(legacy) {
             if let Some(family) = modeled {
+                let bounds=family_bounds.entry((*family).to_owned())
+                    .or_insert([tile.column,tile.row,tile.column,tile.row]);
+                bounds[0]=bounds[0].min(tile.column);
+                bounds[1]=bounds[1].min(tile.row);
+                bounds[2]=bounds[2].max(tile.column);
+                bounds[3]=bounds[3].max(tile.row);
+                if matches!(*family,"world-exterior/kanto_blank"|"outdoor/kanto_flat_house")
+                    && matches!(tile.source.tile_index,0x0a|0x32) {
+                    blank_windows.push(json!({"column":tile.column,"row":tile.row,
+                        "tile":tile.source.tile_index}));
+                }
                 *families.entry((*family).to_owned()).or_default() += 1;
                 *all_families.entry((*family).to_owned()).or_default() += 1;
                 *totals.entry("modeled".into()).or_default() += 1;
             } else {
                 *remaining.entry(old.label().into()).or_default() += 1;
+                if old.label()=="facade" {
+                    facade_cells.push(json!({"column":tile.column,"row":tile.row,
+                        "metatile":tile.source.metatile_id,"tile":tile.source.tile_index}));
+                }
                 *totals
                     .entry(format!("unmodeled_{}", old.label()))
                     .or_default() += 1;
@@ -324,8 +355,17 @@ fn main() -> Result<()> {
         let mut map_report = json!({ "map": map_id, "environment": environment,
             "region": landmark.map(|landmark| landmark.region.as_str()),
             "city_window_sources": city_window_sources,
-            "landmark": landmark.map(|landmark| landmark.constant.as_str()), "tileset": tileset, "source_cells": frame.tiles.len(), "modeled_cells": modeled, "families": families, "unmodeled_source_classification": remaining, "unmodeled_sources": sources, "solid_vertices": mesh.solid.positions.len(), "solid_triangles": mesh.solid.indices.len()/3, "footing_cells": mesh.footing_heights.len(), "jump_edge_samples":jump_edge_samples });
+            "landmark": landmark.map(|landmark| landmark.constant.as_str()), "tileset": tileset, "source_cells": frame.tiles.len(), "modeled_cells": modeled, "families": families, "unmodeled_source_classification": remaining, "unmodeled_sources": sources, "solid_vertices": mesh.solid.positions.len(), "solid_triangles": mesh.solid.indices.len()/3, "textured_vertices": mesh.textured.positions.len(), "textured_triangles": mesh.textured.indices.len()/3, "footing_cells": mesh.footing_heights.len(),
+            "footing_height_min":mesh.footing_heights.iter().copied().reduce(f32::min),
+            "footing_height_max":mesh.footing_heights.iter().copied().reduce(f32::max),
+            "jump_edge_samples":jump_edge_samples });
         map_report["rejected_unoccupiable_jump_origins"] = json!(rejected_jump_origins);
+        map_report["open_water_level"]=json!(frame.terrace_datum.as_ref()
+            .and_then(|d|d.open_water.as_ref()).map(|r|r.level));
+        map_report["coastal_terrace_field"] = json!(frame.terrace_datum.is_some());
+        map_report["unmodeled_facade_cells"] = json!(facade_cells);
+        map_report["authored_family_source_bounds"] = json!(family_bounds);
+        map_report["flat_house_native_window_cells"] = json!(blank_windows);
         if let Some(window) = seam_window {
             map_report["mineral_seams"] = mineral_seams(&mesh.solid, window);
         }
@@ -549,7 +589,8 @@ fn audit_script_variants(
             "block_mask":plan.binary_choices.then_some(mask),
             "coverage":plan.coverage,"possible_combinations":plan.possible_combinations,
             "audited_states":plan.states.len(),"block_edits":edits.iter().map(|(&(x,y), &block)|
-                json!({"source_cell":[x,y],"block":block})).collect::<Vec<_>>(),
+                json!({"source_cell":[x,y],"block":block,
+                    "original_block":base.tiles[y*width+x].source.metatile_id})).collect::<Vec<_>>(),
             "edited_cells":changed.len(),
             "edited_families":families,"edited_unmodeled_classification":remaining,
             "footing_cells":mesh.footing_heights.len()}),

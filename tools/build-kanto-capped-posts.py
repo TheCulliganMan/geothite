@@ -1,4 +1,4 @@
-"""Original capped Kanto post with continuous shaft, collar, dome and underside.
+"""Original painted timber Kanto post with bevelled cap and closed underside.
 
 blender -b --threads 2 --python tools/build-kanto-capped-posts.py -- \
     target/kanto-capped-posts [--skip-preview]
@@ -43,31 +43,34 @@ def material(name, color):
 
 
 materials = [material(label, color) for label, color in [
-    ('Post | closed underside', (.16,.18,.18)),
-    ('Post | bevelled dark foot', (.24,.27,.27)),
-    ('Post | cool stone shaft', (.40,.45,.45)),
-    ('Post | shaft facet', (.46,.50,.49)),
-    ('Post | collar shadow', (.28,.33,.33)),
-    ('Post | cap rim', (.63,.67,.63)),
-    ('Post | pale rounded cap', (.79,.82,.74)),
-    ('Post | cap crown', (.88,.89,.80)),
+    ('Post | closed underside', (.12,.09,.05)),
+    ('Post | bevelled dark foot', (.22,.15,.08)),
+    ('Post | weathered timber shaft', (.42,.30,.16)),
+    ('Post | shaft facet', (.46,.33,.19)),
+    ('Post | collar shadow', (.25,.19,.12)),
+    ('Post | cap rim', (.68,.68,.61)),
+    ('Post | bevelled painted cap', (.79,.79,.74)),
+    ('Post | cap crown', (.88,.87,.82)),
 ]]
 
-# The radial rings are a single watertight solid. A slim tall shaft, neck
-# undercut, overhanging cap and bevelled toe are distinct silhouettes at any
-# angle. There are no floating overlays, image cards or inaccessible backs.
+# The radial rings form one watertight timber post. A restrained cap shoulder
+# and flat cut crown replace the swollen dome; keep the same fitting envelope,
+# height and seated foot, without overlays or inaccessible backs.
 profile = [
-    (0.000,.190), (.035,.236), (.095,.245), (.150,.214),
-    (.805,.214), (.845,.211), (.872,.257), (.930,.292),
-    (1.002,.287), (1.090,.247), (1.166,.168), (1.202,.083),
+    (0.000,.190), (.035,.245), (.095,.255), (.150,.250),
+    (.990,.250), (1.015,.252), (1.035,.276), (1.070,.292),
+    (1.180,.292), (1.200,.270), (1.212,.255), (1.212,.083),
 ]
 segment_materials = [1,1,2,2,4,4,5,5,6,6,7]
-radial = 12
+radial = 24
+# Preserve the existing model's native fitting envelope.
+radial_scale = math.cos(math.pi / 12)
 vertices = []
 for z, radius in profile:
     for i in range(radial):
-        angle = 2 * math.pi * i / radial + math.pi / radial
-        vertices.append((radius * math.cos(angle), radius * math.sin(angle), z))
+        angle = 2 * math.pi * i / radial
+        radius_scaled = radius * radial_scale
+        vertices.append((radius_scaled * math.cos(angle), radius_scaled * math.sin(angle), z))
 bottom = len(vertices)
 vertices.append((0,0,0))
 top = len(vertices)
@@ -80,7 +83,7 @@ for ring, slot in enumerate(segment_materials):
     for i in range(radial):
         j = (i + 1) % radial
         faces.append((ring*radial+i, ring*radial+j, (ring+1)*radial+j, (ring+1)*radial+i))
-        slots.append(3 if ring == 3 and i % 3 == 0 else slot)
+        slots.append(3 if ring == 3 and i % 6 < 2 else slot)
 for i in range(radial):
     faces.append(((len(profile)-1)*radial+i, (len(profile)-1)*radial+(i+1)%radial, top))
     slots.append(7)
@@ -101,6 +104,10 @@ assert volume > .17
 bm.to_mesh(mesh)
 bm.free()
 mesh.update()
+# Cut timber, cap bevels and the flat crown retain their own face normals.
+for face in mesh.polygons:
+    face.use_smooth = False
+mesh.update()
 collection = bpy.data.collections.new('ASSET | kanto_capped_post')
 scene.collection.children.link(collection)
 obj = bpy.data.objects.new('kanto_capped_post | complete editable solid',mesh)
@@ -114,10 +121,11 @@ groups = {}
 low, high = [float('inf')]*3, [-float('inf')]*3
 for tri in mesh.loop_triangles:
     m = mesh.materials[tri.material_index]
-    group = groups.setdefault(m.name, {'name':m.name, 'base_color':[round(c,6) for c in m.diffuse_color],
+    group = groups.setdefault(m.name, {'name':m.name, 'material':m.name, 'base_color':[round(c,6) for c in m.diffuse_color],
                                      'positions':[], 'normals':[], 'indices':[], 'lookup':{}})
-    for vi in tri.vertices:
-        v, n = mesh.vertices[vi].co, tri.normal
+    for vi, loop_index in zip(tri.vertices, tri.loops):
+        v = mesh.vertices[vi].co
+        n = mesh.corner_normals[loop_index].vector
         p = (round(v.x,6),round(v.z,6),round(-v.y,6))
         normal = (round(n.x,6),round(n.z,6),round(-n.y,6))
         for axis in range(3):
@@ -137,7 +145,7 @@ data = {'name':'kanto_capped_post', 'coordinate_system':'right-handed; +Y up; fr
 (output/'kanto_capped_post.mesh.json').write_text(json.dumps(data,separators=(',',':'))+'\n')
 stats = {'triangles':len(mesh.loop_triangles), 'closed_components':1, 'materials':len(primitives),
          'volume':volume, 'bounds':data['bounds']}
-assert stats['triangles'] == 288
+assert stats['triangles'] == 576
 (output/'asset-stats.json').write_text(json.dumps(stats,indent=2)+'\n')
 
 # Separate presentation collection: a hero and an independently spaced course

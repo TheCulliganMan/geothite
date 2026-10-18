@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Independent closed hemispheres, common equator and surface-fitted orb faces."""
-import json,os,struct,unittest
+import os,struct,unittest
 from pathlib import Path
 from orb_sculpt import sculpture,SPECIES,HEIGHT
-from voltorb_glb import read_voltorb
+from voltorb_glb import read_voltorb,read_electrode
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_slime_sculpt import ray_intersections
 ROOT=Path(os.environ.get('ORB_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models'))
@@ -12,23 +12,18 @@ class OrbTests(unittest.TestCase):
  def setUpClass(cls):
   cls.models={}
   for s in SPECIES:
-   if s=='voltorb':
-    path=ROOT/'voltorb.glb' if os.environ.get('ORB_TEST_MODELS') else ROOT/'battle_species/voltorb.glb'
-    cls.models[s]=read_voltorb(path)
-   else:
-    path=ROOT/(s+'.mesh.json') if os.environ.get('ORB_TEST_MODELS') else ROOT/'battle_species/electrode.mesh.json'
-    cls.models[s]=json.loads(path.read_bytes())
+   path=ROOT/(s+'.glb') if os.environ.get('ORB_TEST_MODELS') else ROOT/('battle_species/'+s+'.glb')
+   cls.models[s]=(read_voltorb if s=='voltorb' else read_electrode)(path)
+
  def find(self,ps,prefix,suffix=None):return next(p for p in ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_closed_outward_geometry(self):assert_closed_models(self,self.models)
  def test_unit_normals_and_actual_winding(self):assert_model_shading(self,self.models)
  def test_exact_recipe_grounding_height_budget(self):
   for s,m in self.models.items():
    expected=sculpture(s)
-   if s=='voltorb':
-    for a,b in zip(m['primitives'],expected['primitives']):
-     self.assertEqual(a['part'],b['part']);self.assertEqual(a['indices'],b['indices']);self.assertEqual(a['base_color'],b['base_color'])
-     for key in ('positions','normals'):self.assertEqual(struct.pack('<'+'f'*len(a[key]),*a[key]),struct.pack('<'+'f'*len(b[key]),*b[key]))
-   else:self.assertEqual(m,expected)
+   for a,b in zip(m['primitives'],expected['primitives']):
+    self.assertEqual(a['part'],b['part']);self.assertEqual(a['indices'],b['indices']);self.assertEqual(a['base_color'],b['base_color'])
+    for key in ('positions','normals'):self.assertEqual(struct.pack('<'+'f'*len(a[key]),*a[key]),struct.pack('<'+'f'*len(b[key]),*b[key]))
    ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT[s],places=6);self.assertLess(sum(len(p['indices'])//3 for p in ps),35000)
  def test_hemispheres_have_identical_closed_equator(self):
   for s,m in self.models.items():

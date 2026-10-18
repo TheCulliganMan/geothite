@@ -23,7 +23,7 @@ from the presentation lineup is exported into them.
 - `route_gate`: teal-roofed gateway, open-looking recessed threshold, route plaque
 - `traditional_house`: violet tiled roof, timber frame and latticed windows;
   reused as the source-fitted Earl's Academy facade
-- `violet_gym`: broad violet roof, carved nameboard and restrained wing crest
+- `violet_gym`: broad staggered ceramic roof with live source colors and a projected GYM nameboard
 - `sprout_tower`: three diminishing timber storeys, tiered roofs and brass finial
 - `grass`: eleven folded geometric blades, 88 triangles per source cell
 

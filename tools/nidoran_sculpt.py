@@ -2,15 +2,27 @@
 """Original distinct small female and male poison-pin creatures."""
 import argparse,json
 from pathlib import Path
-from sculpt_geometry import ellipsoid,crease_normals,loft,curved_profiles,translate
+from sculpt_geometry import ellipsoid,crease_normals,loft,curved_profiles,translate,fitted_triangle_contour
 from bovine_sculpt import curved_tube,oval,reverse_front
-from raptor_bird_sculpt import paint,sheet
-from nidorino_sculpt import side_patch
+from raptor_bird_sculpt import sheet as original_sheet
+from cubone_sculpt import skin_shading
+from nidorino_sculpt import side_chart
+from goldfish_sculpt import zy
 from rhyhorn_sculpt import longitudinal
 from skin_glb import COORDINATES
 SPECIES=('nidoran_f','nidoran_m');HEIGHTS={'nidoran_f':.78,'nidoran_m':.80}
 PALE=(.70,.73,.86);PURPLE=(.67,.46,.69);NAVY=(.41,.40,.64);SPOT=(.47,.30,.51);TEAL=(.17,.48,.50)
 WHITE=(.98,.98,.94);INK=(.075,.075,.105);ORANGE=(.79,.30,.19)
+
+def sheet(name,color,xy,depth,th=.018,sub=2):
+ # Planar ear faces need no recursive interior subdivision; retain the exact outline.
+ return original_sheet(name,color,xy,depth,th,0)
+def paint(name,color,xy,parent,th=.006,sub=3):
+ return skin_shading(crease_normals(fitted_triangle_contour(name,color,xy,parent,th,precision=7),35.),parent)
+def side_patch(name,color,outline,parent,s):
+ q=paint(name,color,[(z if s==-1 else -z,y) for z,y in outline],side_chart(parent,s),.004)
+ if s==1:q=reverse_front(q)
+ return zy(zy(zy(q)))
 
 def ears(p,female,color):
  for s in (-1,1):
@@ -42,7 +54,7 @@ def limbs(p,body,female,color):
   for j,(z,y,w,h) in enumerate(((-.125,.459,.026,.035),(-.221,.350,.027,.042),(-.060,.302,.015,.021)) if female else ((-.119,.337,.025,.033),(-.020,.270,.012,.018))):
    p.append(side_patch(f'Flank spot / fitted poison-pin marking {s} {j}',NAVY if female else SPOT,oval(z,y,w,h,20),body,s))
 
-def sculpture(species):
+def sculpture(species,normalize=True):
  if species not in SPECIES:raise ValueError('unsupported small poison-pin creature')
  female=species=='nidoran_f';color=PALE if female else PURPLE
  body=ellipsoid('Body / compact pale female pear' if female else 'Body / low crouching purple male barrel',color,(0,.350,-.061) if female else (0,.242,-.124),(.225,.264,.294) if female else (.220,.174,.330),44,26)
@@ -66,12 +78,13 @@ def sculpture(species):
     p.append(curved_tube(f'Cheek barb / rooted pale poison whisker {s} {j}',color,[(s*.128,y,z),(s*.221,y-.027,z+.032),(s*.284,y-.065,z+.064)],[.013,.010,.0015],20))
   y=.515 if female else .246;z=.322 if female else .469
   p.append(curved_tube('Incisor / small rooted ivory poison-pin tooth '+str(s),WHITE,[(s*.059,y+.012,z),(s*.059,y-.009,z+.018),(s*.055,y-.024,z+.019)],[.014,.011,.002],20))
- yy=.516 if female else .250;ww=.113 if female else .070
+ yy=.516 if female else .2503;ww=.113 if female else .070
  p.append(paint('Mouth / fitted shallow poison-pin smile',INK,[(-ww,yy+.018),(-ww*.6,yy),(0,yy-.005),(ww*.6,yy),(ww,yy+.018),(ww*.8,yy+.003),(ww*.5,yy-.008),(0,yy-.012),(-ww*.5,yy-.008),(-ww*.8,yy+.003)],muzzle,.003,3))
  ears(p,female,color);limbs(p,body,female,color)
  for j,(z,y,h) in enumerate(((-.123,.526,.124),(-.255,.452,.140),(-.323,.348,.092)) if female else ((-.075,.377,.199),(-.211,.350,.189),(-.346,.264,.133))):
   p.append(curved_tube('Back spine / rooted small poison barb '+str(j),color,[(0,y,z),(0,y+h*.50,z-.022),(0,y+h,z-.054)],[.058,.037,.002],24))
  p.append(curved_tube('Tail / short rooted poison-pin rear point',color,[(0,.277 if female else .215,-.277 if female else -.393),(0,.301 if female else .234,-.401 if female else -.460),(0,.346 if female else .294,-.452 if female else -.512)],[.059,.037,.002],24))
+ if not normalize:return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[species]/(hi-lo)
  for q in p:
   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]

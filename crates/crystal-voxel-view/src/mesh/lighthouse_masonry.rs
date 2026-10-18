@@ -2,8 +2,9 @@
 //!
 //! These four native blocks contain WALL/WINDOW quadrants only. No reachable
 //! floor, stair, pit, counter, actor or doorway source belongs to the matcher.
-//! Exact whole-block ownership is established before neighboring sides are
-//! culled; a changed block remains on its existing renderer in its entirety.
+//! Exact whole-block ownership controls the visible rubble skirt. Masonry shells
+//! stay closed because neighboring blocks can fade independently; a changed
+//! block remains on its existing renderer in its entirety.
 use super::*;
 use serde::Deserialize;
 use std::sync::OnceLock;
@@ -18,7 +19,8 @@ pub(super) enum Asset {
 pub(super) struct Detail {
     asset: Asset,
     moss: bool,
-    /// North, east, south, west. Only successfully owned neighbors close sides.
+    /// North, east, south, west rubble skirts. Owned neighbors omit shared
+    /// rubble; independently fading masonry bodies always retain closed ends.
     open: [bool; 4],
     turns: u8,
     /// Keep the native single window on the west/north half after orientation.
@@ -340,9 +342,9 @@ pub(super) fn append(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement
     };
     for part in &model(detail.asset).parts {
         let side = world_side(part.side, detail);
-        if side < 4 && !detail.open[side as usize] {
-            continue;
-        }
+        // Each block owns an independent reveal range. Keep buried masonry
+        // ends: revealing a neighbor must expose a closed wall, not its hollow
+        // interior. Only the low rubble skirt culls shared sides below.
         let source = &part.surface;
         let base = mesh.textured.positions.len() as u32;
         for (&point, &normal) in source.positions.iter().zip(&source.normals) {
@@ -544,6 +546,56 @@ mod tests {
                 assert_eq!(mesh.footing_heights,vec![6.;w*h]);
                 assert_eq!(mesh.textured.cutaway_ranges[0].start,64,"opaque floor excluded from reveal");
                 assert!(mesh.textured.positions.iter().any(|v|v[1]==32.));
+            }
+        }
+    }
+    #[test]
+    fn independently_revealed_neighbors_leave_closed_masonry_ends() {
+        // A single surviving block after all four neighbors fade. Test actual
+        // emitted, outward-facing triangles, including rotated window shells.
+        let g = grid(12, 12);
+        for id in [0x29, 0x3c, 0x3d, 0x3e] {
+            let mut tiles = floor(12, 12);
+            block(&mut tiles, 12, 4, 4, id);
+            let p = resolve(&tiles, &g, "OlivineLighthouse5F").remove(0);
+            for turns in 0..4 {
+                let mut d = detail(&p);
+                d.open = [false; 4];
+                d.turns = turns;
+                d.reflect = turns >= 2;
+                let mut mesh = TerrainMeshData::default();
+                append(&mut mesh, &g, &p, d);
+                let surface = &mesh.textured;
+                let reveal = surface.cutaway_ranges[0].clone();
+                assert_eq!(reveal.start, 64, "floor stays outside fading body");
+                for outward in [Vec3::X, -Vec3::X, Vec3::Z, -Vec3::Z] {
+                    let across = Vec3::new(-outward.z, 0., outward.x);
+                    for offset in [-8., 0., 8.] {
+                        let target = Vec3::new(48., 24., 48.) + across * offset;
+                        let start = target + outward * 32.;
+                        let direction = target - start;
+                        let hit = surface.indices.chunks_exact(3).any(|tri| {
+                            if !tri.iter().all(|i| reveal.contains(&(*i as usize))) {
+                                return false;
+                            }
+                            let [a,b,c] = [tri[0],tri[1],tri[2]]
+                                .map(|i| Vec3::from_array(surface.positions[i as usize]));
+                            let e1 = b-a;
+                            let e2 = c-a;
+                            let h = direction.cross(e2);
+                            let determinant = e1.dot(h);
+                            if determinant <= 1e-6 { return false; }
+                            let relative = start-a;
+                            let u = relative.dot(h)/determinant;
+                            let q = relative.cross(e1);
+                            let v = direction.dot(q)/determinant;
+                            let t = e2.dot(q)/determinant;
+                            u >= -1e-5 && v >= -1e-5 && u+v <= 1.00001
+                                && t > 0. && t < 1.
+                        });
+                        assert!(hit, "closed outward end: block={id:x} turns={turns} side={outward:?} offset={offset}");
+                    }
+                }
             }
         }
     }

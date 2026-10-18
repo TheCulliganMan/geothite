@@ -107,7 +107,11 @@ pub(crate) struct Model {
     mansion_hut_materials: Option<Vec<u8>>,
     shrine_materials: Option<Vec<u8>>,
     hall_terminal_pixels: Option<Vec<[usize;2]>>,
+    broad_tree_pixels: Option<Vec<[usize;2]>>,
+    league_wall_pixels: Option<Vec<[usize;2]>>,
+    harbor_pixels: Option<Vec<[usize;2]>>,
     theater_stage_materials: Option<Vec<u8>>,
+    link_materials: Option<Vec<u8>>,
     min: [f32; 3],
     max: [f32; 3],
 }
@@ -128,7 +132,15 @@ impl Model {
         let mut shrine_valid=matches!(export.name.as_str(),"shrine_dragon_rail"|"shrine_dragon_mask");
         let mut named_orb = export.name == "league_podium";
         let mut hall_pixels=Vec::new();let mut hall_valid=export.name=="hall_of_fame_terminal";
+        let mut tree_pixels=Vec::new();let mut tree_valid=export.name=="azalea_broad_tree";
+        let mut tree_seen=0u8;
+        let mut league_pixels=Vec::new();let mut league_valid=export.name=="league_wall";let mut league_seen=0u8;
+        let mut harbor_pixels=Vec::new();let mut harbor_valid=export.name=="harbor_bollard";
+        let mut harbor_seen=0u8;
         let mut stage_roles=Vec::new();let mut stage_valid=matches!(export.name.as_str(),"theater_platform"|"theater_backdrop");
+        let mut link_roles=Vec::new();let mut link_seen=0u8;
+        let mut link_valid=matches!(export.name.as_str(),"link_battle_console"|"link_trade_console"|"link_room_receiver");
+        let link_expected=if export.name=="link_trade_console" {0x7d}else{0x3f};
         let mut min = [f32::INFINITY; 3];
         let mut max = [f32::NEG_INFINITY; 3];
         for p in export.primitives {
@@ -248,6 +260,16 @@ impl Model {
                 if let Some(pixel)=pixel {hall_pixels.extend(std::iter::repeat_n(pixel,surface.positions.len()-base as usize));}
                 else {hall_valid=false;}
             }
+            if export.name=="harbor_bollard" {
+                let role=match p.name.as_str() {
+                    "stone"=>Some(([8,9],1)),"stone_light"=>Some(([4,4],2)),
+                    "steel"=>Some(([5,0],4)),_=>None,
+                };
+                if let Some((pixel,bit))=role {
+                    harbor_seen|=bit;
+                    harbor_pixels.extend(std::iter::repeat_n(pixel,surface.positions.len()-base as usize));
+                } else {harbor_valid=false;}
+            }
             if matches!(export.name.as_str(),"theater_platform"|"theater_backdrop") {
                 let role=if export.name=="theater_backdrop" {match p.material.as_str() {
                     "paper"|"paper_light"=>Some(1),"oak"|"oak_cut"|"edge"=>Some(0),
@@ -258,6 +280,33 @@ impl Model {
                 }};
                 if let Some(role)=role {stage_roles.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));}
                 else {stage_valid=false;}
+            }
+            if link_valid {
+                let role=match p.name.as_str() {"cloth"=>Some(0),"cloth_light"=>Some(1),
+                    "glass"=>Some(2),"ink"=>Some(3),"metal_light"=>Some(4),
+                    "steel"=>Some(5),"red"=>Some(6),_=>None};
+                if let Some(role)=role {link_seen|=1<<role;
+                    link_roles.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
+                }else {link_valid=false;}
+            }
+            if league_valid {
+                let role=match p.name.as_str() {
+                    "brass"=>Some((0,[1,3])),"dark_rock"=>Some((1,[2,4])),
+                    "stone"=>Some((2,[2,2])),"stone_light"=>Some((3,[1,3])),_=>None,
+                };
+                if let Some((role,pixel))=role {league_seen|=1<<role;
+                    league_pixels.extend(std::iter::repeat_n(pixel,surface.positions.len()-base as usize));
+                }else{league_valid=false;}
+            }
+            if tree_valid {
+                let role=match p.name.rsplit(':').next().unwrap_or("") {
+                    "leaf_dark"=>Some((0,[8,3])), "leaf"=>Some((1,[7,3])),
+                    "leaf_light"=>Some((2,[6,3])), "leaf_gold"=>Some((3,[7,3])),
+                    "bark"=>Some((4,[9,18])), "bark_light"=>Some((5,[8,19])), _=>None,
+                };
+                if let Some((role,pixel))=role {tree_seen|=1<<role;
+                    tree_pixels.extend(std::iter::repeat_n(pixel,surface.positions.len()-base as usize));
+                }else{tree_valid=false;}
             }
             if export.name=="roof_access_hut" {
                 let role=match p.name.as_str() {"metal_light"=>Some(0),"cloth"=>Some(1),
@@ -291,7 +340,7 @@ impl Model {
             && orb_pixels.len() == surface.positions.len()).then_some(orb_pixels);
         let mansion_hut_materials=(hut_valid && hut_seen==127 && hut_materials.len()==surface.positions.len()).then_some(hut_materials);
         let shrine_materials=(shrine_valid&&shrine_seen==15&&shrine_roles.len()==surface.positions.len()).then_some(shrine_roles);
-        Ok(Self { theater_stage_materials:(stage_valid&&stage_roles.len()==surface.positions.len()).then_some(stage_roles), hall_terminal_pixels:(hall_valid&&hall_pixels.len()==surface.positions.len()).then_some(hall_pixels), mansion_hut_materials, shrine_materials, surface: surface.into(), gym_stone_pixels, pewter_guardian_pixels, tower_timber_pixels, gym_orb_pixels, min, max })
+        Ok(Self { link_materials:(link_valid&&link_seen==link_expected&&link_roles.len()==surface.positions.len()).then_some(link_roles), harbor_pixels:(harbor_valid&&harbor_seen==7&&harbor_pixels.len()==surface.positions.len()).then_some(harbor_pixels), league_wall_pixels:(league_valid&&league_seen==15&&league_pixels.len()==surface.positions.len()).then_some(league_pixels), broad_tree_pixels:(tree_valid&&tree_seen==63&&tree_pixels.len()==surface.positions.len()).then_some(tree_pixels), theater_stage_materials:(stage_valid&&stage_roles.len()==surface.positions.len()).then_some(stage_roles), hall_terminal_pixels:(hall_valid&&hall_pixels.len()==surface.positions.len()).then_some(hall_pixels), mansion_hut_materials, shrine_materials, surface: surface.into(), gym_stone_pixels, pewter_guardian_pixels, tower_timber_pixels, gym_orb_pixels, min, max })
     }
     pub(crate) fn append_native_theater_stage(&self,target:&mut SurfaceMeshData,bounds:[f32;4],
         height:f32,swatches:[[f32;2];3])->bool {
@@ -417,6 +466,27 @@ impl Model {
         let Some(pixels)=&self.hall_terminal_pixels else {return false;};
         self.append_source_colors(target,bounds,height,pixels,source_uv);true
     }
+    pub(crate) fn append_native_broad_tree(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        source_uv:impl Fn([usize;2])->[f32;2])->bool {
+        let Some(pixels)=&self.broad_tree_pixels else {return false;};
+        self.append_source_colors(target,bounds,height,pixels,source_uv);true
+    }
+    pub(crate) fn append_native_league_wall(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
+        source_uv:impl Fn([usize;2])->[f32;2])->bool {
+        let Some(pixels)=&self.league_wall_pixels else {return false;};
+        self.append_source_colors(target,bounds,height,pixels,source_uv);true
+    }
+    pub(crate) fn append_native_harbor_bollard(&self,target:&mut SurfaceMeshData,bounds:[f32;4],
+        base:f32,height:f32,source_uv:impl Fn([usize;2])->[f32;2])->bool {
+        let Some(pixels)=&self.harbor_pixels else{return false;};
+        let first=target.positions.len();self.append(target,bounds,base,height);
+        for (i,pixel) in pixels.iter().enumerate().take(target.positions.len()-first) {
+            target.uvs[first+i]=crate::scenery_finish::source_mineral_uv(source_uv(*pixel));
+            target.colors[first+i]=crate::interior_models::authored_face_color(
+                [1.;4],Vec3::from_array(target.normals[first+i]));
+        }
+        true
+    }
     fn append_source_colors(
         &self, target: &mut SurfaceMeshData, bounds: [f32; 4], height: f32,
         pixels: &[[usize; 2]], source_uv: impl Fn([usize; 2]) -> [f32; 2],
@@ -472,6 +542,19 @@ impl Model {
             .indices
             .extend(self.surface.indices.iter().map(|&i| i + base));
     }
+    /// Keep the ferry's vertical proportions tied to its length, with the
+    /// authored north gangway's top at the quay. The underwater hull stays
+    /// below the sea; fitting its keel to water squashed the cabin and left
+    /// the full hull sitting above the surface like a shallow barge.
+    pub(crate) fn append_docked_ferry(&self, target: &mut SurfaceMeshData,
+        bounds: [f32; 4], quay_height: f32) {
+        let scale = (bounds[1] - bounds[0]) / (self.max[0] - self.min[0]);
+        // Named Gangway threshold: center1.065 + half-thickness0.0425.
+        let gangway_top = 1.1075;
+        self.append(target, bounds, quay_height - (gangway_top - self.min[1]) * scale,
+            (self.max[1] - self.min[1]) * scale);
+    }
+
     /// Taller ship wall fit with an unchanged central window band. The
     /// original round brass/glass/rivet assembly lies wholly inside native
     /// y=5..14 of its 16px panel and translates upward without scaling. Only
@@ -564,6 +647,147 @@ pub(crate) fn model(kind: Kind) -> &'static Model {
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn shared_ferry_fit_keeps_the_gangway_at_quay_and_cabin_proportions() {
+        let model = extension_model(ExtensionKind::HarborFerry);
+        for scale in [0.5, 1., 1.5] {
+            let bounds = [12. * scale, 140. * scale, 48. * scale, 88. * scale];
+            let quay = 3. * scale;
+            let mut target = SurfaceMeshData::default();
+            model.append_docked_ferry(&mut target, bounds, quay);
+            let horizontal_scale = 128. * scale / (model.max[0] - model.min[0]);
+            let mut contact = 0;
+            for (i, &point) in model.surface.positions.iter().enumerate() {
+                let fitted = target.positions[i];
+                assert!((fitted[1] - quay - (point[1] - 1.1075) * horizontal_scale).abs() < 0.00001);
+                assert!((fitted[0] - bounds[0] - (point[0] - model.min[0]) * horizontal_scale).abs() < 0.00002);
+                if (point[1] - 1.1075).abs() < 0.000001 && point[2] < -1. {
+                    assert!((fitted[1] - quay).abs() < 0.00001); contact += 1;
+                }
+                if point[2] == model.min[2] { assert!((fitted[2] - bounds[2]).abs() < 0.00001); }
+            }
+            assert!(contact > 0, "the actual authored gangway top must meet the quay");
+            assert!(target.positions.iter().any(|p| p[1] < crate::profile::WATER_HEIGHT * scale),
+                "the full keel cannot sit on top of water");
+            assert!(target.normals.iter().all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.00001));
+            assert_eq!(target.indices, model.surface.indices);
+        }
+    }
+
+    #[test]
+    fn shared_ferry_has_recessed_glazing_clear_pockets_and_unchanged_bounds() {
+        let source=crate::model_storage::include_model!("models/dungeon_extensions/harbor_ferry.mesh.json");
+        let export:Export=crate::model_storage::parse(source).unwrap();
+        let model=Model::parse(source).unwrap();
+        assert_eq!(model.min,[-3.6,0.,-1.07]);assert_eq!(model.max,[3.36,2.36,0.9]);
+        assert!(export.primitives.iter().map(|p|p.indices.len()/3).sum::<usize>()<6000);
+        let point=|p:&Primitive,i:u32|Vec3::from_slice(&p.positions[i as usize*3..i as usize*3+3]);
+        let mut glazing=Vec::new();let mut walls=Vec::new();
+        for p in &export.primitives {for tri in p.indices.chunks_exact(3) {
+            let normal=Vec3::from_slice(&p.normals[tri[0] as usize*3..tri[0] as usize*3+3]);
+            if normal.z.abs()<0.99 {continue;}
+            let points=[point(p,tri[0]),point(p,tri[1]),point(p,tri[2])];
+            let center=(points[0]+points[1]+points[2])/3.;
+            if p.name=="glass" && normal.z*center.z>0. {
+                let skin=if center.y>1.7 {0.565}else{0.62};
+                assert!(center.z.abs()<skin-0.03,"glazing sits behind the original cabin skin");
+                glazing.push(center);
+            }
+            if matches!(p.name.as_str(),"cloth"|"cloth_light") {walls.push((points,normal));}
+        }}
+        assert!(glazing.len()>=30,"passenger and bridge panes on both sides");
+        for pane in glazing {for (p,normal) in &walls {
+            let side=pane.z.signum();if normal.z*side<0.99 || p[0].z*side<=pane.z*side+0.02 {continue;}
+            let [a,b,c]=p.map(|v|bevy::prelude::Vec2::new(v.x,v.y));let q=bevy::prelude::Vec2::new(pane.x,pane.y);
+            let signs=[(b-a).perp_dot(q-a),(c-b).perp_dot(q-b),(a-c).perp_dot(q-c)];
+            let inside=signs.iter().all(|s|*s>0.000001)||signs.iter().all(|s|*s< -0.000001);
+            assert!(!inside,"the cabin wall cannot cover its recessed glazing");
+        }}
+        let mut a=SurfaceMeshData::default();let mut b=SurfaceMeshData::default();
+        model.append(&mut a,[0.,128.,0.,40.],-2.,28.);model.append(&mut b,[0.,128.,0.,40.],-2.,28.);
+        assert_eq!(a,b,"shared ferry geometry remains immutable across ports");
+    }
+    #[test]
+    fn native_harbor_paint_preserves_geometry_and_rejects_unknown_materials() {
+        let source=crate::model_storage::include_model!("models/dungeon_extensions/harbor_bollard.mesh.json");
+        let model=Model::parse(source).unwrap();let bounds=[8.,24.,16.,26.];
+        let mut plain=SurfaceMeshData::default();model.append(&mut plain,bounds,-2.,12.);
+        let mut native=SurfaceMeshData::default();
+        let sample=|p:[usize;2]|[p[0] as f32/16.,p[1] as f32/16.];
+        assert!(model.append_native_harbor_bollard(&mut native,bounds,-2.,12.,sample));
+        assert_eq!(plain.positions,native.positions);assert_eq!(plain.normals,native.normals);
+        assert_eq!(plain.indices,native.indices);
+        let coordinates=native.uvs.iter().map(|&uv|
+            crate::scenery_finish::source_mineral_coordinates(uv).unwrap()).collect::<Vec<_>>();
+        for pixel in [[8,9],[4,4],[5,0]] {assert!(coordinates.contains(&sample(pixel)));}
+        assert!(coordinates.iter().all(|uv|[[8,9],[4,4],[5,0]].map(sample).contains(uv)));
+        assert!(native.uvs.iter().all(|&uv|
+            crate::scenery_finish::source_atlas_coordinates(uv).is_none()));
+        assert!(crate::scenery_finish::source_mineral_coordinates(
+            crate::scenery_finish::source_atlas_uv([0.5,0.5])).is_none(),
+            "ordinary live atlas paint must not acquire the mineral finish");
+        let mut repeated=SurfaceMeshData::default();model.append(&mut repeated,bounds,-2.,12.);
+        assert_eq!(repeated,plain,"live paint cannot mutate the cached model");
+        let mut changed:serde_json::Value=crate::model_storage::parse(source).unwrap();
+        changed["primitives"][0]["name"]="unknown_harbor_material".into();
+        let unknown=Model::parse(changed.to_string().as_str()).unwrap();
+        let before=native.clone();
+        assert!(!unknown.append_native_harbor_bollard(&mut native,bounds,-2.,12.,sample));
+        assert_eq!(native,before,"unknown material cannot partially repaint a model");
+    }
+    #[test]
+    fn native_league_wall_binds_all_named_materials_without_changing_cached_geometry() {
+        let source=include_str!("../models/dungeon_extensions/league_wall.mesh.json");
+        let model=Model::parse(source).unwrap();let before=model.surface.clone();
+        let mut original=SurfaceMeshData::default();let mut native=SurfaceMeshData::default();
+        model.append(&mut original,[0.,32.,0.,5.],0.,16.);
+        assert!(model.append_native_league_wall(&mut native,[0.,32.,0.,5.],16.,|p|[p[0]as f32,p[1]as f32]));
+        assert_eq!(native.positions,original.positions);assert_eq!(native.normals,original.normals);
+        assert_eq!(native.indices,original.indices);assert_eq!(model.surface.colors,before.colors);
+        assert_eq!(model.surface.uvs,before.uvs);
+        assert!(native.uvs.iter().all(|p|[[1.,3.],[2.,4.],[2.,2.]].contains(p)));
+        let document:serde_json::Value=serde_json::from_str(source).unwrap();
+        for role in ["brass","dark_rock","stone","stone_light"] {
+            let mut changed=document.clone();let mut found=false;
+            for primitive in changed["primitives"].as_array_mut().unwrap() {
+                if primitive["name"].as_str()==Some(role) {primitive["name"]="unknown".into();found=true;}
+            }
+            assert!(found);let changed=serde_json::to_string(&changed).unwrap();
+            let unknown=Model::parse(&changed).unwrap();let mut out=native.clone();let before=out.clone();
+            assert!(!unknown.append_native_league_wall(&mut out,[0.,32.,0.,5.],16.,|_|[0.,0.]));
+            assert_eq!(out,before,"unknown materials cannot partially repaint the target");
+        }
+    }
+    #[test]
+    fn native_broad_tree_requires_all_material_roles_and_preserves_cached_geometry() {
+        let source=include_str!("../models/gym_scenery/azalea_broad_tree.mesh.json");
+        let model=Model::parse(source).unwrap();let before=model.surface.clone();
+        let bounds=[0.,24.,0.,24.];
+        let mut original=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
+        model.append(&mut original,bounds,0.,28.);
+        assert!(model.append_native_broad_tree(&mut painted,bounds,28.,|p|[p[0]as f32,p[1]as f32]));
+        assert_eq!(original.positions,painted.positions);
+        assert_eq!(original.normals,painted.normals);assert_eq!(original.indices,painted.indices);
+        assert_eq!(model.surface.colors,before.colors);
+        assert_eq!(model.surface.uvs,before.uvs);
+        let document:serde_json::Value=serde_json::from_str(source).unwrap();
+        for role in ["leaf_dark","leaf","leaf_light","leaf_gold","bark","bark_light"] {
+            let mut changed=document.clone();let mut found=false;
+            for primitive in changed["primitives"].as_array_mut().unwrap() {
+                let name=primitive["name"].as_str().unwrap();
+                if name.rsplit(':').next()==Some(role) {
+                    primitive["name"]=format!("{}:unknown",name.rsplit_once(':').unwrap().0).into();
+                    found=true;
+                }
+            }
+            assert!(found,"the canonical tree must contain {role}");
+            let changed=serde_json::to_string(&changed).unwrap();
+            let unknown=Model::parse(&changed).unwrap();
+            let mut target=painted.clone();let before=target.clone();
+            assert!(!unknown.append_native_broad_tree(&mut target,bounds,28.,|_|[0.,0.]));
+            assert_eq!(target,before,"unknown material roles cannot partially repaint a tree");
+        }
+    }
     #[test]
     fn native_theater_backdrop_keeps_geometry_and_binds_every_material() {
         let source=include_str!("../models/traditional_room/theater_backdrop.mesh.json");

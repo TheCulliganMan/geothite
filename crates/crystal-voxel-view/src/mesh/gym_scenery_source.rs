@@ -13,6 +13,7 @@ pub(super) enum Kind {
     PlanterLow,
     PlanterRound,
     CentralTree,
+    LeagueTree,
     Hedge,
     BlueFlowerBed,
     Maze,
@@ -23,6 +24,7 @@ impl Kind {
             Self::PlanterLow => "gym:leafy-display-planter",
             Self::PlanterRound => "gym:round-display-planter",
             Self::CentralTree => "gym:azalea-broad-tree",
+            Self::LeagueTree => "league:koga-broad-tree",
             Self::Hedge => "gym:celadon-round-hedge",
             Self::BlueFlowerBed => "gym:celadon-blue-flowerbed",
             Self::Maze => "gym:viridian-connected-maze",
@@ -32,7 +34,7 @@ impl Kind {
         match self {
             Self::PlanterLow => 0,
             Self::PlanterRound => 1,
-            Self::CentralTree => 2,
+            Self::CentralTree | Self::LeagueTree => 2,
             Self::Hedge => 3,
             Self::Maze | Self::BlueFlowerBed => unreachable!(),
         }
@@ -41,7 +43,7 @@ impl Kind {
         match self {
             Self::PlanterLow => 14.,
             Self::PlanterRound => 16.,
-            Self::CentralTree => 28.,
+            Self::CentralTree | Self::LeagueTree => 28.,
             Self::Hedge => 15.,
             Self::BlueFlowerBed => 12.,
             Self::Maze => 12.,
@@ -175,7 +177,7 @@ fn complete(
 }
 pub(super) fn valid_ground(map: &str, s: &Identity<'_>) -> bool {
     let (tileset, block, tile) = match map {
-        "AzaleaGym" => ("elite_four_room", 0x12, 0x1f),
+        "AzaleaGym" | "KogasRoom" => ("elite_four_room", 0x12, 0x1f),
         "GoldenrodGym" => ("elite_four_room", 0x02, 0x03),
         "CeladonGym" => ("train_station", 0x19, 0x57),
         "ViridianGym" => ("train_station", 0x03, 0x3d),

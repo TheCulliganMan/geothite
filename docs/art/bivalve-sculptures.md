@@ -1,51 +1,87 @@
-# Shellder and Cloyster sculptures
+# Shellder and Cloyster sculptures and rigs
 
-`tools/bivalve_sculpt.py` authors the two canonical battle meshes. The main
-battle-species builder dispatches both identities through this pure geometry
-recipe. Both preserve their 1.05 authoring height and normal runtime scale.
+`tools/bivalve_sculpt.py` authors original hollow mollusk shells, and
+`tools/bivalve_glb.py` exports their canonical skins. The runtime, main builder
+and model checker use the same GLBs; the legacy static JSON files are removed.
 
-Shellder has a genuinely hollow lavender upper hood and lower valve, separate
-dark interior linings, a rounded rear hinge, four rooted valve points, a black
-mollusk body, fitted pale oval eyes and tiny pupils, and a broad hanging pink
-tongue with a supported fold. Three shallow rear shell divisions follow the
-actual stored hood surface.
+Shellder's lavender upper valve now tilts over the black mollusk body instead
+of framing it as a vertical ring. A separate lower valve tilts upward beneath
+the face. Dark interior linings, four rooted valve points, a seated rear hinge,
+fitted pale oval eyes and pupils, three supported shell grooves and a broad
+pink tongue with a fitted fold complete the model.
 
-Cloyster has continuous hollow wavy lavender armor around a recessed blue-gray
-mantle and purple central orb. Eight tapered armor lances, the tall rear crown,
-and the forward mantle horn intersect their actual supporting shells. Sharp
-pale eyes, fitted pupils and a curved four-panel grin distinguish its face.
-The cups have closed rear walls, interior walls, and joined opening rims.
+Cloyster has two separately closed hollow outer armor halves, slightly opened
+around their rear hinge. Each half carries its own four purple lances. A
+separate blue-gray mantle carries the forward horn and a recessed charcoal
+lining. A darker purple central orb carries the sharp pale gaze, pupils,
+curved four-panel grin and tooth divisions. The tall rear crown remains rooted
+between the armor halves. The cups retain rear walls, interior walls, joined
+opening rims and closed hinge cuts.
 
-The official [Shellder artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/090.png)
-and [Cloyster artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/091.png)
-were inspected for shape and colors and are not shipped. The downloadable
-[Shellder listing](https://sketchfab.com/3d-models/shellder-807f309936ed4f6988bf169175f2f83c)
-and [Cloyster listing](https://sketchfab.com/3d-models/cloyster-dfa72d36b8214423a72f3340a241e63d)
-advertise CC Attribution and zero animations. Their metadata does not establish
-an original usable rig; zero animations does not establish an absent skeleton.
-Both official download endpoints returned HTTP 401 without authentication.
-No external geometry was imported. These original authored meshes are static.
+The official [Shellder](https://www.pokemon.com/us/pokedex/shellder) and
+[Cloyster](https://www.pokemon.com/us/pokedex/cloyster) artwork informed the
+shapes and palettes. No reference pixels or external geometry are shipped.
+These are original authored models with new authored skins and clips.
 
-Ten stored-mesh regressions cover closed outward geometry, unit normals and
-actual winding, exact recipe parity, grounding and height, distinct anatomy,
-real recessed shell cavities, physical intersections between layers and at
-horn roots, actual parent-triangle fitting, front marking clearance, and
-supported shell grooves, tongue fold and tooth divisions. Front, rear and
-oblique software reviews inspect the whole sculptures. Native captures, when
-available, verify presentation only, not controller or MCP gameplay. The full
-251-species visual goal and usable open-access rig search remain active.
+| Species | Parts | Vertices | Triangles | Joints | Accessors | Bytes | Authoring height | Pack height |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Shellder | 19 | 15,585 | 22,292 | 6 | 88 | 544,000 | 1.05 | 0.3048 m |
+| Cloyster | 24 | 17,021 | 23,892 | 5 | 100 | 657,744 | 1.05 | 1.4986 m |
 
-All ten stored-mesh regressions passed. Shellder has 19 parts and 29,204
-triangles; Cloyster has 22 parts and 22,044 triangles. A steep rear shell
-section initially lifted the thick groove edges too far above the surface;
-the final thin grooves are sampled along the actual shell and pass the
-independent stored-ray support check. Final front, rear and oblique reviews
-are complete. Canonical copies match the tested candidate bytes exactly.
-Layout and storage validation passed for 569 raw JSON model documents.
+The verified local pack supplies height digits 100 and 411, respectively;
+both are classified BIVALVE. Neutral geometry digests:
 
-Fresh native presentation remains incomplete: the rebuilt reviewer returned
-blank battle captures, as documented in [native review notes](native-pokemon-review.md).
-The separate Rust all-251 loaded-mesh check passed after these replacements.
-Software previews do not establish native integration or gameplay. The full visual
-goal and usable rig search remain active. Temporary species candidates,
-reference artwork, software renders and test logs were removed.
+- Shellder: `9603bdedd0b70757c615251f8ea5ea6b258a33c53c3ce6ab434f2f441edd95e9`.
+- Cloyster: `714eb4a74d131c5a8b303d1fde4af07a30dd0c739fa0741176cee1efbb336d74`.
+
+A fixed floor root and yaw-only body carry each coherent face. Shellder's
+upper hood hinges independently, the lower valve braces with a separate yaw
+carrier, and the tongue blends through a base and fold joint. Its crease
+shares the same position-dependent influences. Cloyster's left and right
+armor valves open independently around rear hinges; spikes follow their own
+valve, while the mantle, lining and forward horn share another carrier. All
+three rotation-only idle, attack and hit clips retain neutral endpoints and
+source-cue timing. The authored clips preserve their shell floor baseline.
+Production battle and world presentation retain the existing mollusk hover;
+world movement preserves the authored valves and face ownership.
+
+Fifteen Python checks cover canonical bounded containers, hierarchy and inverse
+binds, normalized weights and anatomical owners, occupied shell/lining/hinge/
+spike/tongue roots through motion with a detached negative control, floor
+contact, independent articulation, endpoints, winding, strain, source cues,
+closed outward solids, unit normals, exact geometry parity, physical size,
+anatomical counts, recessed cavities, fitted face clearance and supported
+surface details. Existing 20,000-vertex, 40,000-triangle, 64-primitive,
+256-accessor and 1 MiB limits remain unchanged. Shiny checks are skipped at the
+user's request.
+
+Four focused Rust checks pass for both verified-size GPU paths, production
+routing and anatomical ownership, shell contact, animated culling bounds,
+independent valves and tongue, and 64 phases of world swimming with the
+authored face and valve ownership retained. Front, side and rear poses of all
+three clips were inspected for both models. The rear hinge was seated deeper
+after the first side review. Final Blender generation is byte-identical.
+
+Rebuild and check:
+
+```sh
+python3 tools/bivalve_sculpt.py --output crates/crystal-voxel-view/models/battle_species
+python3 -m unittest discover -s tools -p 'test_bivalve*.py'
+```
+
+The rebuilt production client passes normal Route 29 terrain admission at
+original pack size for both models. The inspected Shellder/Pidgey 3D/2D pair
+preserves core frame 2592, checksum 1129406471, LCD animation frame 3197 and
+virtual time 55.903143251. The Cloyster/Pidgey pair preserves frame 3367,
+checksum 3177080196, LCD frame 4078 and time 72.56970316499999. Both show the
+full silhouettes, correct species HUDs, coherent faces and the existing
+mollusk hover placement. Shellder's hood overhang, seated hinge and tongue are
+visible; Cloyster's dark interior, grin, complete armor and rooted horns remain
+readable. Neither capture reports shader errors.
+
+Final ignored evidence uses `target/pokemon-native-review/shellder-normal`
+and `target/pokemon-native-review/cloyster-normal`. Both captures select the
+existing supported -110-degree angle while retaining normal size, source
+support, scenery omission and whole-body/frustum checks. The shared
+all-species grounded/volumetric and source-cue pose timing regressions pass.
+Grass height is untouched. Browser visual acceptance remains open.

@@ -1026,3 +1026,587 @@ fn lugia_activates_generic_gpu_at_verified_pack_height() {
 fn ho_oh_activates_generic_gpu_at_verified_pack_height() {
     assert_species_gpu_at_pack_size("HO_OH",Species::HoOh,10,3.81);
 }
+
+#[test]
+fn celebi_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("CELEBI",Species::Celebi,11,0.6096);
+}
+
+#[test]
+fn mew_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("MEW",Species::Mew,13,0.4064);
+}
+
+#[test]
+fn mewtwo_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("MEWTWO",Species::Mewtwo,17,2.0066);
+}
+
+#[test]
+fn heracross_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("HERACROSS",Species::Heracross,12,1.4986);
+}
+
+#[test]
+fn pinsir_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("PINSIR",Species::Pinsir,13,1.4986);
+}
+
+#[test]
+fn scizor_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("SCIZOR",Species::Scizor,17,1.8034);
+}
+
+#[test]
+fn scyther_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("SCYTHER",Species::Scyther,13,1.4986);
+}
+
+#[test]
+fn starmie_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("STARMIE",Species::Starmie,24,1.0922);
+}
+
+#[test]
+fn gastly_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("GASTLY",Species::Gastly,11,1.2954);
+}
+
+#[test]
+fn haunter_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("HAUNTER",Species::Haunter,16,1.6002);
+}
+
+#[test]
+fn eevee_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("EEVEE",Species::Eevee,13,0.3048);
+}
+
+#[test]
+fn vaporeon_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("VAPOREON",Species::Vaporeon,16,0.9906);
+}
+
+#[test]
+fn jolteon_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("JOLTEON",Species::Jolteon,11,0.7874);
+}
+
+#[test]
+fn flareon_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("FLAREON",Species::Flareon,14,0.8890);
+}
+
+#[test]
+fn espeon_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("ESPEON",Species::Espeon,15,0.8890);
+}
+
+#[test]
+fn umbreon_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("UMBREON",Species::Umbreon,13,0.9906);
+}
+
+#[test]
+fn vulpix_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("VULPIX",Species::Vulpix,17,0.6096);
+}
+
+#[test]
+fn ninetales_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("NINETALES",Species::Ninetales,20,1.0922);
+}
+
+#[test]
+fn venonat_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("VENONAT",Species::Venonat,10,0.9906);
+}
+
+#[test]
+fn venomoth_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("VENOMOTH",Species::Venomoth,17,1.4986);
+}
+
+#[test]
+fn mushroom_crab_paras_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("PARAS",Species::Paras,11,0.3048);
+}
+#[test]
+fn mushroom_crab_parasect_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("PARASECT",Species::Parasect,10,0.9906);
+}
+
+#[test]
+fn cocoon_metapod_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("METAPOD",Species::Metapod,4,0.7112);
+}
+#[test]
+fn cocoon_kakuna_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("KAKUNA",Species::Kakuna,5,0.6096);
+}
+
+#[test]
+fn larva_caterpie_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("CATERPIE",Species::Caterpie,12,0.3048);
+}
+#[test]
+fn larva_weedle_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("WEEDLE",Species::Weedle,12,0.3048);
+}
+
+#[test]
+fn crabs_krabby_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("KRABBY",Species::Krabby,12,0.4064);
+}
+#[test]
+fn crabs_kingler_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("KINGLER",Species::Kingler,12,1.2954);
+}
+
+#[test]
+fn bivalves_shellder_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("SHELLDER",Species::Shellder,6,0.3048);
+}
+#[test]
+fn bivalves_cloyster_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("CLOYSTER",Species::Cloyster,5,1.4986);
+}
+
+#[test]
+fn slimes_grimer_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("GRIMER",Species::Grimer,13,0.889);
+}
+#[test]
+fn slimes_muk_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("MUK",Species::Muk,13,1.1938);
+}
+#[test]
+fn slimes_ditto_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("DITTO",Species::Ditto,5,0.3048);
+}
+
+#[test]
+fn seals_seel_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("SEEL",Species::Seel,10,1.0922);
+}
+#[test]
+fn seals_dewgong_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("DEWGONG",Species::Dewgong,9,1.7018);
+}
+
+#[test]
+fn rhinos_rhyhorn_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("RHYHORN",Species::Rhyhorn,11,0.9906);
+}
+#[test]
+fn rhinos_rhydon_activates_generic_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("RHYDON",Species::Rhydon,15,1.905);
+}
+
+#[test]
+fn fighting_family_machop_activates_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("MACHOP",Species::Machop,13,0.7874);
+}
+#[test]
+fn fighting_family_machoke_activates_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("MACHOKE",Species::Machoke,12,1.4986);
+}
+#[test]
+fn fighting_family_machamp_activates_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("MACHAMP",Species::Machamp,18,1.6002);
+}
+
+#[test]
+fn fire_horses_ponyta_activates_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("PONYTA",Species::Ponyta,14,0.9906);
+}
+#[test]
+fn fire_horses_rapidash_activates_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("RAPIDASH",Species::Rapidash,15,1.7018);
+}
+
+#[test]
+fn kangaskhan_skin_activates_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("KANGASKHAN",Species::Kangaskhan,20,2.2098);
+}
+
+#[test]
+fn tangela_skin_activates_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("TANGELA",Species::Tangela,39,0.9906);
+}
+
+#[test]
+fn tapir_skin_activates_gpu_at_verified_pack_heights() {
+    assert_species_gpu_at_pack_size("DROWZEE",Species::Drowzee,13,0.9906);
+    assert_species_gpu_at_pack_size("HYPNO",Species::Hypno,14,1.6002);
+}
+
+#[test]
+fn psychic_fox_skin_activates_gpu_at_verified_pack_heights() {
+    assert_species_gpu_at_pack_size("ABRA",Species::Abra,15,0.889);
+    assert_species_gpu_at_pack_size("ALAKAZAM",Species::Alakazam,17,1.4986);
+}
+
+#[test]
+fn kadabra_skin_activates_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("KADABRA",Species::Kadabra,18,1.2954);
+}
+
+#[test]
+fn gas_pair_skin_activates_koffing_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("KOFFING",Species::Koffing,12,0.6096);
+}
+#[test]
+fn gas_pair_skin_activates_weezing_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("WEEZING",Species::Weezing,14,1.1938);
+}
+
+#[test]
+fn magnet_skin_activates_magnemite_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("MAGNEMITE",Species::Magnemite,7,0.3048);
+}
+#[test]
+fn magnet_skin_activates_magneton_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("MAGNETON",Species::Magneton,19,0.9906);
+}
+
+#[test]
+fn bone_keeper_skin_activates_cubone_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("CUBONE",Species::Cubone,14,0.4064);
+}
+#[test]
+fn bone_keeper_skin_activates_marowak_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("MAROWAK",Species::Marowak,14,0.9906);
+}
+
+#[test]
+fn crocodile_skin_activates_croconaw_gpu_at_verified_pack_height() {assert_species_gpu_at_pack_size("CROCONAW",Species::Croconaw,14,1.0922);}
+#[test]
+fn crocodile_skin_activates_feraligatr_gpu_at_verified_pack_height() {assert_species_gpu_at_pack_size("FERALIGATR",Species::Feraligatr,14,2.3114);}
+
+#[test]
+fn turtle_skin_activates_wartortle_gpu_at_verified_pack_height() {assert_species_gpu_at_pack_size("WARTORTLE",Species::Wartortle,15,0.9906);}
+#[test]
+fn turtle_skin_activates_blastoise_gpu_at_verified_pack_height() {assert_species_gpu_at_pack_size("BLASTOISE",Species::Blastoise,15,1.6002);}
+
+#[test]
+fn magmar_skin_activates_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("MAGMAR",Species::Magmar,17,1.2954);
+}
+
+#[test]
+fn electabuzz_skin_activates_gpu_at_verified_pack_height() {
+    assert_species_gpu_at_pack_size("ELECTABUZZ",Species::Electabuzz,19,1.0922);
+}
+
+#[test]
+fn slow_pair_skin_activates_slowbro_gpu_at_verified_pack_height() {assert_species_gpu_at_pack_size("SLOWBRO",Species::Slowbro,18,1.6002);}
+#[test]
+fn slow_pair_skin_activates_slowking_gpu_at_verified_pack_height() {assert_species_gpu_at_pack_size("SLOWKING",Species::Slowking,18,2.0066);}
+
+#[test]
+fn lickitung_skin_activates_gpu_at_pack_height() {assert_species_gpu_at_pack_size("LICKITUNG",Species::Lickitung,18,1.1938);}
+
+#[test]
+fn mr_mime_skin_activates_gpu_at_pack_height() {assert_species_gpu_at_pack_size("MR__MIME",Species::MrMime,26,1.2954);}
+
+#[test]
+fn egg_nurse_skin_activates_chansey_gpu_at_pack_height() {assert_species_gpu_at_pack_size("CHANSEY",Species::Chansey,17,1.0922);}
+#[test]
+fn egg_nurse_skin_activates_blissey_gpu_at_pack_height() {assert_species_gpu_at_pack_size("BLISSEY",Species::Blissey,25,1.4986);}
+
+#[test]
+fn fire_canine_skin_activates_growlithe_gpu_at_source_size() {assert_species_gpu_at_pack_size("GROWLITHE",Species::Growlithe,18,0.7112);}
+#[test]
+fn fire_canine_skin_activates_arcanine_gpu_at_source_size() {assert_species_gpu_at_pack_size("ARCANINE",Species::Arcanine,18,1.905);}
+
+#[test]
+fn nidoran_skin_activates_female_gpu_at_source_size() {assert_species_gpu_at_pack_size("NIDORAN_F",Species::NidoranF,11,0.4064);}
+#[test]
+fn nidoran_skin_activates_male_gpu_at_source_size() {assert_species_gpu_at_pack_size("NIDORAN_M",Species::NidoranM,11,0.508);}
+
+#[test]
+fn nido_middle_skin_activates_nidorina_gpu_at_source_size() {assert_species_gpu_at_pack_size("NIDORINA",Species::Nidorina,15,0.7874);}
+#[test]
+fn nido_middle_skin_activates_nidorino_gpu_at_source_size() {assert_species_gpu_at_pack_size("NIDORINO",Species::Nidorino,13,0.889);}
+
+#[test]
+fn nido_royal_skin_activates_nidoqueen_gpu_at_source_size() {assert_species_gpu_at_pack_size("NIDOQUEEN",Species::Nidoqueen,17,1.2954);}
+#[test]
+fn nido_royal_skin_activates_nidoking_gpu_at_source_size() {assert_species_gpu_at_pack_size("NIDOKING",Species::Nidoking,19,1.397);}
+
+#[test]
+fn poli_frog_skin_activates_poliwhirl_gpu_at_source_size() {assert_species_gpu_at_pack_size("POLIWHIRL",Species::Poliwhirl,12,0.9906);}
+
+#[test]
+fn poli_frog_skin_activates_poliwrath_gpu_at_source_size() {assert_species_gpu_at_pack_size("POLIWRATH",Species::Poliwrath,12,1.2954);}
+
+#[test]
+fn poli_frog_skin_activates_politoed_gpu_at_source_size() {assert_species_gpu_at_pack_size("POLITOED",Species::Politoed,15,1.0922);}
+
+#[test]
+fn sand_mammal_skin_activates_sandshrew_gpu_at_source_size() {assert_species_gpu_at_pack_size("SANDSHREW",Species::Sandshrew,15,0.6096);}
+
+#[test]
+fn sand_mammal_skin_activates_sandslash_gpu_at_source_size() {assert_species_gpu_at_pack_size("SANDSLASH",Species::Sandslash,17,0.9906);}
+
+#[test]
+fn fairy_pair_skin_activates_clefable_gpu_at_source_size() {assert_species_gpu_at_pack_size("CLEFABLE",Species::Clefable,11,1.2954);}
+
+#[test]
+fn fairy_pair_skin_activates_wigglytuff_gpu_at_source_size() {assert_species_gpu_at_pack_size("WIGGLYTUFF",Species::Wigglytuff,7,0.9906);}
+
+#[test]
+fn seahorse_skin_activates_horsea_gpu_at_source_size() {assert_species_gpu_at_pack_size("HORSEA",Species::Horsea,10,0.4064);}
+
+#[test]
+fn seahorse_skin_activates_seadra_gpu_at_source_size() {assert_species_gpu_at_pack_size("SEADRA",Species::Seadra,10,1.1938);}
+
+#[test]
+fn seahorse_skin_activates_kingdra_gpu_at_source_size() {assert_species_gpu_at_pack_size("KINGDRA",Species::Kingdra,12,1.8034);}
+
+#[test]
+fn goldfish_skin_activates_goldeen_gpu_at_source_size() {assert_species_gpu_at_pack_size("GOLDEEN",Species::Goldeen,6,0.6096);}
+
+#[test]
+fn goldfish_skin_activates_seaking_gpu_at_source_size() {assert_species_gpu_at_pack_size("SEAKING",Species::Seaking,8,1.2954);}
+
+#[test]
+fn goldfish_skin_activates_magikarp_gpu_at_source_size() {assert_species_gpu_at_pack_size("MAGIKARP",Species::Magikarp,9,0.889);}
+
+#[test]
+fn dragon_family_skin_activates_dratini_gpu_at_source_size() {assert_species_gpu_at_pack_size("DRATINI",Species::Dratini,7,1.8034);}
+
+#[test]
+fn dragon_family_skin_activates_dragonair_gpu_at_source_size() {assert_species_gpu_at_pack_size("DRAGONAIR",Species::Dragonair,7,3.9878);}
+
+#[test]
+fn dragon_family_skin_activates_dragonite_gpu_at_source_size() {assert_species_gpu_at_pack_size("DRAGONITE",Species::Dragonite,15,2.2098);}
+
+#[test]
+fn aerodactyl_skin_activates_gpu_at_source_size() {
+    assert_species_gpu_at_pack_size("AERODACTYL", Species::Aerodactyl, 9, 1.8034);
+}
+
+#[test]
+fn nautilus_skin_activates_omanyte_gpu_at_source_size() { assert_species_gpu_at_pack_size("OMANYTE", Species::Omanyte, 15, 0.4064); }
+
+#[test]
+fn nautilus_skin_activates_omastar_gpu_at_source_size() { assert_species_gpu_at_pack_size("OMASTAR", Species::Omastar, 19, 0.9906); }
+
+#[test]
+fn stone_pair_skin_activates_graveler_gpu_at_source_size() { assert_species_gpu_at_pack_size("GRAVELER", Species::Graveler, 10, 0.9906); }
+
+#[test]
+fn stone_pair_skin_activates_golem_gpu_at_source_size() { assert_species_gpu_at_pack_size("GOLEM", Species::Golem, 12, 1.397); }
+
+#[test]
+fn fire_dragon_skin_activates_charmeleon_gpu_at_source_size() { assert_species_gpu_at_pack_size("CHARMELEON", Species::Charmeleon, 13, 1.0922); }
+
+#[test]
+fn fire_dragon_skin_activates_charizard_gpu_at_source_size() { assert_species_gpu_at_pack_size("CHARIZARD", Species::Charizard, 15, 1.7018); }
+
+#[test]
+fn fire_badger_skin_activates_quilava_gpu_at_source_size() { assert_species_gpu_at_pack_size("QUILAVA", Species::Quilava, 13, 0.889); }
+
+#[test]
+fn fire_badger_skin_activates_typhlosion_gpu_at_source_size() { assert_species_gpu_at_pack_size("TYPHLOSION", Species::Typhlosion, 17, 1.7018); }
+
+#[test]
+fn tyranitar_skin_activates_gpu_at_source_size() { assert_species_gpu_at_pack_size("TYRANITAR", Species::Tyranitar, 14, 2.0066); }
+
+#[test]
+fn rock_pupa_skin_activates_larvitar_gpu_at_source_size() { assert_species_gpu_at_pack_size("LARVITAR", Species::Larvitar, 11, 0.6096); }
+
+#[test]
+fn rock_pupa_skin_activates_pupitar_gpu_at_source_size() { assert_species_gpu_at_pack_size("PUPITAR", Species::Pupitar, 4, 1.1938); }
+
+#[test]
+fn electrode_skin_activates_generic_gpu_at_original_pack_height() {
+    assert_species_gpu_at_pack_size("ELECTRODE", Species::Electrode, 2, 1.1938);
+}
+
+#[test]
+fn fossil_scythe_skin_kabuto_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("KABUTO",Species::Kabuto,6,0.5080);}
+#[test]
+fn fossil_scythe_skin_kabutops_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("KABUTOPS",Species::Kabutops,13,1.2954);}
+
+#[test]
+fn armored_bug_skin_pineco_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("PINECO",Species::Pineco,7,0.6096);}
+#[test]
+fn armored_bug_skin_forretress_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("FORRETRESS",Species::Forretress,7,1.1938);}
+
+#[test]
+fn pitcher_skin_bellsprout_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("BELLSPROUT",Species::Bellsprout,10,0.7112);}
+
+#[test]
+fn pitcher_skin_weepinbell_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("WEEPINBELL",Species::Weepinbell,9,0.9906);}
+
+#[test]
+fn pitcher_skin_victreebel_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("VICTREEBEL",Species::Victreebel,10,1.7018);}
+
+#[test]
+fn rafflesia_skin_gloom_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("GLOOM",Species::Gloom,11,0.7874);}
+
+#[test]
+fn rafflesia_skin_vileplume_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("VILEPLUME",Species::Vileplume,12,1.1938);}
+
+#[test]
+fn raichu_skin_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("RAICHU",Species::Raichu,13,0.7874);}
+
+#[test]
+fn ekans_skin_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("EKANS",Species::Ekans,5,2.0066);}
+
+#[test]
+fn arbok_skin_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("ARBOK",Species::Arbok,8,3.5052);}
+
+#[test]
+fn steelix_skin_activates_gpu_at_original_pack_size() {assert_species_gpu_at_pack_size("STEELIX",Species::Steelix,10,9.1948);}
+
+#[test]
+fn dugtrio_skin_activates_generic_gpu_at_original_pack_size() {
+    assert_species_gpu_at_pack_size("DUGTRIO", Species::Dugtrio, 4, 0.7112);
+}
+
+#[test]
+fn tentacle_skin_activates_gpu_at_verified_original_pack_heights() {
+    assert_species_gpu_at_pack_size("TENTACOOL",Species::Tentacool,6,0.889);
+    assert_species_gpu_at_pack_size("TENTACRUEL",Species::Tentacruel,24,1.6002);
+}
+
+#[test]
+fn tentacle_skin_battle_pose_keeps_authored_tips_on_the_floor() {
+    for species in [Species::Tentacool,Species::Tentacruel] {
+        let rig=species_rig::rig(species);let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];
+        for clip in Clip::ALL {for step in 0..=32 {
+            rig.sample_into(clip,rig.clip(clip).duration*step as f32/32.,Playback::Clamp,&mut pose).unwrap();
+            species_rig::motion::battle_float(rig,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            let floor=(0..rig.neutral.positions.len()).map(|v| rig.skin_point(v,&matrices).y).fold(f32::INFINITY,f32::min);
+            assert!(floor.abs()<0.000001,"{:?} {clip:?} {step} lifted to {floor}",species);
+        }}
+    }
+}
+
+#[test]
+fn jynx_skin_activates_gpu_at_verified_original_pack_height() {
+    assert_species_gpu_at_pack_size("JYNX",Species::Jynx,22,1.397);
+}
+
+#[test]
+fn pig_monkey_skin_activates_gpu_at_verified_original_pack_heights() {
+    assert_species_gpu_at_pack_size("MANKEY",Species::Mankey,12,0.508);
+    assert_species_gpu_at_pack_size("PRIMEAPE",Species::Primeape,10,0.9906);
+}
+
+#[test]
+fn feline_skin_activates_gpu_at_verified_original_pack_heights() {
+    assert_species_gpu_at_pack_size("MEOWTH",Species::Meowth,15,0.4064);
+    assert_species_gpu_at_pack_size("PERSIAN",Species::Persian,13,0.9906);
+}
+
+#[test]
+fn dodo_skin_activates_gpu_at_verified_original_pack_heights() {
+    assert_species_gpu_at_pack_size("DODUO",Species::Doduo,12,1.397);
+    assert_species_gpu_at_pack_size("DODRIO",Species::Dodrio,19,1.8034);
+}
+
+fn pidgeotto_skin_app(hz: u32) -> App {
+    let mut app=pair_app(hz);
+    {
+        let mut frame=app.world_mut().resource_mut::<VisualBattleFrame>();
+        for battler in frame.battlers.iter_mut().flatten() {
+            battler.species_id=Arc::from("PIDGEOTTO");battler.pokedex_size_m=Some(1.0922);
+        }
+        frame.source=Some(super::super::tests::source_test_frame(0xe4));
+    }
+    app.update();app.update();app
+}
+
+#[test]
+fn pidgeotto_skin_activates_whole_body_gpu_at_original_pack_height() {
+    assert_species_gpu_at_pack_size("PIDGEOTTO",Species::Pidgeotto,14,1.0922);
+}
+
+#[test]
+fn pidgeotto_skin_samples_current_source_cues_and_rewinds_all_live_joints() {
+    let mut app=pidgeotto_skin_app(60);let rig=species_rig::rig(Species::Pidgeotto);
+    let root=app.world().resource::<BattleScene>().actors[0].as_ref().unwrap().entity;
+    let placement=*app.world().get::<Transform>(root).unwrap();
+    for (step,progress) in [0.4,0.7,0.2].into_iter().enumerate() {
+        app.world_mut().resource_mut::<VisualBattleFrame>().cues=vec![cue(VisualBattleCueKind::Move,progress)];
+        let source=app.world().resource::<VisualBattleFrame>().clone();app.update();
+        let actor=app.world().resource::<BattleScene>().actors[0].as_ref().unwrap();
+        let skin=actor.skinned.as_ref().unwrap();let mut expected=vec![Transform::IDENTITY;14];
+        rig.sample_into(Clip::Attack,progress,Playback::Clamp,&mut expected).unwrap();
+        close_pose(&skin.pose.target,&expected);
+        if step==0 {for _ in 0..8 {app.update();}}
+        let actor=app.world().resource::<BattleScene>().actors[0].as_ref().unwrap();let skin=actor.skinned.as_ref().unwrap();
+        close_pose(&skin.pose.current,&expected);
+        let actual:Vec<_>=skin.joints.iter().map(|e|*app.world().get::<Transform>(*e).unwrap()).collect();close_pose(&actual,&expected);
+        assert_eq!(app.world().resource::<BattleScene>().actors[1].as_ref().unwrap().skinned.as_ref().unwrap().pose.clip,Clip::Idle);
+        assert_eq!(*app.world().get::<Transform>(root).unwrap(),placement);
+        assert_eq!(*app.world().resource::<VisualBattleFrame>(),source);
+    }
+}
+
+#[test]
+fn pidgeotto_skin_elapsed_rates_preserve_source_placement_and_immutable_buffers() {
+    let mut results=Vec::new();
+    for hz in [9,30,60] {
+        let mut app=pidgeotto_skin_app(hz);
+        // Reset both instance clocks to the same starting phase independently
+        // of the two setup updates needed to publish deferred GPU entities.
+        for actor in app.world_mut().resource_mut::<BattleScene>().actors.iter_mut().flatten() {actor.skinned.as_mut().unwrap().pose=BodyPose::new(species_rig::rig(Species::Pidgeotto));}
+        let frame=app.world().resource::<VisualBattleFrame>().clone();let layout=app.world().resource::<BattleSceneLayout>().clone();
+        let actor=app.world().resource::<BattleScene>().actors[0].as_ref().unwrap();let entity=actor.entity;let handle=actor.mesh.clone().unwrap();
+        let root=*app.world().get::<Transform>(entity).unwrap();let positions=app.world().resource::<Assets<Mesh>>().get(&handle).unwrap().attribute(Mesh::ATTRIBUTE_POSITION).unwrap().get_bytes().to_vec();
+        let counts=(app.world().entities().len(),app.world().resource::<Assets<Mesh>>().len());
+        for _ in 0..hz {app.update();}
+        assert_eq!(*app.world().resource::<VisualBattleFrame>(),frame);assert_eq!(*app.world().resource::<BattleSceneLayout>(),layout);assert_eq!(*app.world().get::<Transform>(entity).unwrap(),root);
+        assert_eq!((app.world().entities().len(),app.world().resource::<Assets<Mesh>>().len()),counts);
+        assert_eq!(app.world().resource::<Assets<Mesh>>().get(&handle).unwrap().attribute(Mesh::ATTRIBUTE_POSITION).unwrap().get_bytes(),positions);
+        results.push(app.world().resource::<BattleScene>().actors[0].as_ref().unwrap().skinned.as_ref().unwrap().pose.current.clone());
+    }
+    for pose in &results[1..] {close_pose(pose,&results[0]);}
+}
+
+#[test]
+fn pidgeotto_skin_switch_visibility_and_retirement_keep_instances_independent() {
+    let mut app=pidgeotto_skin_app(30);for _ in 0..7 {app.update();}
+    let snapshot=|app:&App,side:usize| {let actor=app.world().resource::<BattleScene>().actors[side].as_ref().unwrap();(actor.entity,actor.mesh.clone().unwrap(),actor.material.clone(),actor.skinned.as_ref().unwrap().joints.clone(),actor.skinned.as_ref().unwrap().pose.idle_seconds)};
+    let old=snapshot(&app,0);let other=snapshot(&app,1);
+    app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0].as_mut().unwrap().party_index=Some(3);app.update();app.update();
+    assert!(app.world().get_entity(old.0).is_err());assert!(old.3.iter().all(|e|app.world().get_entity(*e).is_err()));assert!(!app.world().resource::<Assets<Mesh>>().contains(old.1.id()));assert!(!app.world().resource::<Assets<StandardMaterial>>().contains(old.2.id()));
+    let new=snapshot(&app,0);let other_after=snapshot(&app,1);assert_eq!(other.0,other_after.0);assert_eq!(other.3,other_after.3);assert!(other_after.4>other.4);assert!(new.4<other_after.4);
+    app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0].as_mut().unwrap().visible=false;app.update();let hidden=snapshot(&app,0).4;
+    for _ in 0..3 {app.update();}assert_eq!(snapshot(&app,0).4,hidden);assert_eq!(*app.world().get::<Visibility>(new.0).unwrap(),Visibility::Hidden);
+    app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0].as_mut().unwrap().visible=true;app.update();assert_eq!(*app.world().get::<Visibility>(new.0).unwrap(),Visibility::Visible);
+    app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0]=None;app.update();
+    assert!(app.world().get_entity(new.0).is_err());assert!(new.3.iter().all(|e|app.world().get_entity(*e).is_err()));assert!(!app.world().resource::<Assets<Mesh>>().contains(new.1.id()));
+}
+
+#[test]
+fn pidgeotto_skin_source_flashes_cover_whole_mesh_without_touching_opponent() {
+    let mut app=pidgeotto_skin_app(30);
+    let colors=|app:&App,side:usize| {let actor=app.world().resource::<BattleScene>().actors[side].as_ref().unwrap();app.world().resource::<Assets<Mesh>>().get(actor.mesh.as_ref().unwrap()).unwrap().attribute(Mesh::ATTRIBUTE_COLOR).unwrap().get_bytes().to_vec()};
+    let normal=[colors(&app,0),colors(&app,1)];
+    app.world_mut().resource_mut::<VisualBattleFrame>().source.as_mut().unwrap().battler_bgps[0]=0x1b;let source=app.world().resource::<VisualBattleFrame>().clone();app.update();
+    let full=colors(&app,0);assert_ne!(full,normal[0]);assert_eq!(colors(&app,1),normal[1]);app.world_mut().insert_resource(BattleFlashMode::Reduced);app.update();assert_ne!(colors(&app,0),full);assert_eq!(*app.world().resource::<VisualBattleFrame>(),source);
+    app.world_mut().resource_mut::<VisualBattleFrame>().source.as_mut().unwrap().battler_bgps[0]=0xe4;app.update();assert_eq!(colors(&app,0),normal[0]);
+}
+
+// Retained coverage for the appearance path; intentionally excluded from the
+// normal-only pidgeotto_skin verification requested for this migration.
+#[test]
+fn shiny_palette_replaces_whole_gpu_bird_and_restores_normal_colors() {
+    let mut app=pidgeotto_skin_app(60);
+    let colors=|app:&App| {let actor=app.world().resource::<BattleScene>().actors[0].as_ref().unwrap();app.world().resource::<Assets<Mesh>>().get(actor.mesh.as_ref().unwrap()).unwrap().attribute(Mesh::ATTRIBUTE_COLOR).unwrap().clone()};
+    let normal=colors(&app);let mut frame=app.world_mut().resource_mut::<VisualBattleFrame>();let battler=frame.battlers[0].as_mut().unwrap();battler.shiny=true;battler.model_palette=Some(crystal_render_api::VisualPokemonModelPalette {normal:[[255;3],[240,190,120],[150,80,40],[0;3]],appearance:[[255;3],[255,190,0],[60,150,60],[0;3]]});drop(frame);app.update();assert_ne!(colors(&app),normal);
+    let mut frame=app.world_mut().resource_mut::<VisualBattleFrame>();let battler=frame.battlers[0].as_mut().unwrap();battler.shiny=false;battler.model_palette=None;drop(frame);app.update();assert_eq!(colors(&app),normal);
+}
+
+#[test]
+fn raptor_bird_skin_activates_gpu_at_verified_original_pack_heights() {
+    assert_species_gpu_at_pack_size("PIDGEOT",Species::Pidgeot,20,1.4986);
+    assert_species_gpu_at_pack_size("FEAROW",Species::Fearow,19,1.1938);
+}

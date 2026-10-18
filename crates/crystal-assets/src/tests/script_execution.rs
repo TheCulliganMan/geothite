@@ -434,6 +434,47 @@ fn map_module_extracts_money_script_commands_with_exact_tokens() {
 }
 
 #[test]
+fn script_economy_resolves_own_map_prices_without_leaking_scopes_or_caps() {
+    let map = "PriceMap";
+    let scripts = BTreeMap::from([("Buy".into(), serde_json::json!([
+        {"command":"takemoney", "args":["YOUR_MONEY", "PRICE", "+", "GLOBAL_FEE"]},
+        {"command":"givemoney", "args":["YOUR_MONEY", "100"]}
+    ]))]);
+    let mut module = test_map_module(map, "PRICE_MAP", None);
+    module.script_economy_commands = parse_script_economy_commands(map, &scripts).unwrap();
+    let mut data = GameDataSet {
+        maps: map_payload(vec![module]),
+        currency_constants: CurrencyCatalog(BTreeMap::from([
+            ("PRICE".into(), 200), ("MAX_MONEY".into(), 999_999)
+        ])),
+        ..GameDataSet::default()
+    };
+    data.story_event_script_constants.global.insert("GLOBAL_FEE".into(), 10);
+    data.story_event_script_constants.maps.insert(map.into(), BTreeMap::from([
+        ("PRICE".into(), 300), ("MAX_MONEY".into(), 1)
+    ]));
+    data.story_event_script_constants.maps.insert("OtherMap".into(), BTreeMap::from([
+        ("PRICE".into(), 900), ("OTHER_PRICE".into(), 500)
+    ]));
+    let mut state = GameState { money: 1000, ..GameState::default() };
+    data.apply_script_economy_command(&mut state, map, map, "Buy", 0).unwrap();
+    assert_eq!(state.money, 690, "own-map price plus global fee");
+    data.apply_script_economy_command(&mut state, map, map, "Buy", 1).unwrap();
+    assert_eq!(state.money, 790, "map-local MAX_MONEY must not replace the pack's account cap");
+    for token in ["OTHER_PRICE", "NEGATIVE_PRICE", "OVERSIZED_PRICE"] {
+        data.story_event_script_constants.maps.get_mut(map).unwrap().extend([
+            ("NEGATIVE_PRICE".into(), -1), ("OVERSIZED_PRICE".into(), i64::MAX)
+        ]);
+        data.maps.get_mut(map).unwrap().script_economy_commands[0].amount_tokens = vec![token.into()];
+        let before = state.clone();
+        assert!(data.apply_script_economy_command(&mut state, map, map, "Buy", 0).is_err());
+        assert_eq!(state, before, "invalid or foreign prices cannot mutate money");
+    }
+    assert_eq!(data.currency_constants.get("PRICE"), Some(200));
+    assert_eq!(data.currency_constants.get("MAX_MONEY"), Some(999_999));
+}
+
+#[test]
 fn parser_extracts_givemoney_from_exact_money_command_class() {
     let scripts: BTreeMap<String, Value> = [(
         "PrizeScript".to_string(),

@@ -16,13 +16,15 @@ ROOT = Path(__file__).resolve().parents[1]
 def verify(directory):
  source=(ROOT/'crates/crystal-voxel-view/src/johto_actor_props.rs').read_text()
  registry=re.findall(r'^\s*\w+ => "([a-z0-9_]+)",',source,re.M)
- assert len(registry)==69 and len(set(registry))==69, f'Expected 69 unique original model keys, found {len(registry)}'
+ assert len(registry)==68 and len(set(registry))==68, f'Expected 68 unique original model keys, found {len(registry)}'
  tree=ast.parse((ROOT/'tools/build-actor-props.py').read_text())
  authored=[k.value for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='BUILDERS' for t in n.targets) for k in n.value.keys]
- assert set(authored)==set(registry), 'Generator and Rust registry differ'
+ assert set(authored)|{'biker'}==set(registry), 'Generator and Rust registry differ'
+ for retired in ('surf','surfing_pikachu'):
+  assert retired not in registry and not (directory/(retired+'.mesh.json')).exists(), 'retired preset Surf mount returned'
  total_tri=0; total_vertices=0; digests=set(); biggest=(0,'')
  for name in registry:
-  if name in ('chris_bike','kris_bike'):
+  if name in ('chris_bike','kris_bike','biker'):
    assert not (directory/(name+'.mesh.json')).exists(), 'retired baked rider returned'
    assert (ROOT/'crates/crystal-voxel-view/src/bicycle.rs').is_file()
    continue
@@ -58,8 +60,8 @@ def verify(directory):
   assert triangles>=20 and triangles<25000,(name,'triangle budget',triangles)
   total_tri+=triangles;biggest=max(biggest,(triangles,name))
  source_families=[n for n in registry if not n.startswith('battle_')]
- assert len(source_families)==66 and sum(n.startswith('icon_') for n in source_families)==38
- print(f'PASS: {len(registry)-2} authored volumetric models and 2 native bicycle frames; 66 source families (28 sprites, 38 icons), 3 canonical starter rig sources')
+ assert len(source_families)==65 and sum(n.startswith('icon_') for n in source_families)==38
+ print(f'PASS: {len(registry)-3} authored volumetric models and 3 native bicycle identities; 65 source families (27 sprites, 38 icons), 3 canonical starter rig sources')
  print(f'PASS: {total_tri:,} triangles, {total_vertices:,} vertices; max {biggest[0]:,} triangles ({biggest[1]}); registry/export parity, finite attributes, winding/normals, ground anchors')
 
 if __name__=='__main__':

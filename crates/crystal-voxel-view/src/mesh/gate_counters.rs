@@ -64,6 +64,8 @@ impl Placement {
             })
     }
 }
+fn cafe_network(n:&Network)->bool {n.maps.iter().any(|map|matches!(*map,"CeladonCafe"|"OlivineCafe"))}
+
 fn owns(n: &Network, x: isize, y: isize) -> bool {
     x >= 0
         && y >= 0
@@ -130,10 +132,10 @@ fn complete(
             (0..n.width).map(move |dx| &cells[(y + dy) * g.width + x + dx].source)
         })
     };
-    sources().all(|s| s.tileset_id.as_ref() == if n.maps.contains(&"CeladonCafe") {"game_corner"} else {"gate"}) && identity_hash(sources()) == n.fingerprint
+    sources().all(|s| s.tileset_id.as_ref() == if cafe_network(n) {"game_corner"} else {"gate"}) && identity_hash(sources()) == n.fingerprint
 }
 fn valid_ground(map: &str, cell: &VisualTile) -> bool {
-    cell.source.tileset_id.as_ref() == if map=="CeladonCafe" {"game_corner"} else {"gate"}
+    cell.source.tileset_id.as_ref() == if matches!(map,"CeladonCafe"|"OlivineCafe") {"game_corner"} else {"gate"}
         && cell.source.tile_index == 0x01
         && matches!(
             shape_for_source_on_map(map, &cell.source),
@@ -200,7 +202,7 @@ fn resolve_networks(
                     let (Some(top),Some(side))=(top,side) else {continue;};
                     p.native_palette_sources=Some([top,side]);
                 }
-                if map=="CeladonCafe" {
+                if matches!(map,"CeladonCafe"|"OlivineCafe") {
                     let top=p.indices(g.width).find(|&i|cells[i].source.tile_index==0x0e);
                     let side=p.indices(g.width).find(|&i|cells[i].source.tile_index==0x1e);
                     let (Some(top),Some(side))=(top,side) else {continue;};
@@ -225,10 +227,10 @@ pub(super) fn append(
     p: &Placement,
     claimed: &mut [bool],
 ) -> bool {
-    let cafe=p.network.maps.contains(&"CeladonCafe");
+    let cafe=cafe_network(p.network);
     if claimed.len() != cells.len()
         || p.ground >= cells.len()
-        || !valid_ground(if cafe {"CeladonCafe"}else{""}, cells[p.ground])
+        || !valid_ground(if cafe {p.network.maps[0]}else{""}, cells[p.ground])
         || !complete(cells, g, p.grid_origin, p.column, p.row, p.network)
         || p.indices(g.width).any(|i| claimed[i])
         || p.native_palette_sources.is_some_and(|[top,side]| {
@@ -276,8 +278,20 @@ pub(super) fn append(
     for i in p.indices(g.width) {
         let x = i % g.width;
         let y = i / g.width;
-        let (west, east, north, south) = g.bounds(x, y);
-        append_top(&mut mesh.textured, [west, east, north, south], 0.0, uv);
+        let (west, east, mut north, south) = g.bounds(x, y);
+        if cafe && y-p.row==1 {
+            // The source cap sits below the rear timber course. Keep its
+            // physical end inside that three-pixel wall depth.
+            north=south-3.*g.tile_height/8.;
+        }
+        let floor_uv=if cafe {
+            let source=&cells[i].source;
+            let tile=[1,0x10,0x11,0x12][usize::from(source.subtile_row%2)*2+usize::from(source.subtile_column%2)];
+            cells.iter().position(|t|t.source.tileset_id.as_ref()=="game_corner" &&t.source.tile_index==tile
+                &&matches!(shape_for_source_on_map(p.network.maps[0],&t.source),CellShape::Flat|CellShape::PlaneAt{height:0.}))
+                .map(|j|g.uv(j%g.width,j/g.width)).unwrap_or(uv)
+        } else {uv};
+        append_top(&mut mesh.textured, [west, east, north, south], 0.0, floor_uv);
         let model=crate::gate_counter_models::segment(exposed(p.network, x-p.column, y-p.row));
         if let Some(swatches)=native {
             if cafe {
@@ -422,6 +436,38 @@ mod tests {
             assert_eq!(room_phones,expected,"{map}: every native phone drawing is bound");
         }
         assert!(phones>=20,"must exercise shared Kanto and Johto phone plots, got {phones}");
+    }
+
+    #[test]
+    fn olivine_cafe_counter_keeps_service_bay_and_validates_every_source_cell() {
+        let path=std::env::var("CRYSTAL_RENDER_TEST_PACK").expect("external pack for native cafe check");
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();let pack=loaded.pack();
+        let map=&pack.data().maps["OlivineCafe"];let art=&pack.runtime_files()["data/tilesets/game_corner_metatiles.bin"];
+        let (w,h)=(map.attributes.width as usize*4,map.attributes.height as usize*4);
+        let mut tiles=(0..w*h).map(|i|{let(x,y)=(i%w,i/w);let b=map.blocks[y/4*(w/4)+x/4];
+            VisualTile{animation_frames:None,column:x as u32,row:y as u32,texture:Default::default(),priority:false,
+                source:VisualTileSource{tileset_id:"game_corner".into(),metatile_id:b,subtile_column:(x%4)as u8,
+                    subtile_row:(y%4)as u8,tile_index:art[b as usize*16+y%4*4+x%4]as u16}}
+        }).collect::<Vec<_>>();
+        let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let refs=tiles.iter().collect::<Vec<_>>();let free=vec![false;tiles.len()];
+        let ps=resolve("OlivineCafe",&refs,&g,[0,0],None,&free);assert_eq!(ps.len(),1);let p=&ps[0];
+        assert_eq!((p.column,p.row,p.indices(w).count()),(12,0,26));
+        let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],authored_cells:vec![None;tiles.len()],..Default::default()};
+        let mut claims=free.clone();assert!(append(&mut mesh,&refs,&g,p,&mut claims));
+        assert!(mesh.solid.indices.is_empty());assert!(mesh.textured.positions.iter().all(|v|v[1]<=8.));
+        assert!(mesh.textured.positions.iter().all(|v|v[2]>=13.),"counter stays inside the rear course");
+        assert!(mesh.footing_heights.iter().all(|v|*v==1.25));
+        for y in 2..10 {for x in 14..16 {assert!(!claims[y*w+x],"staff walking bay remains open");}}
+        let mut reserved=free.clone();reserved[w+12]=true;
+        assert!(resolve("OlivineCafe",&refs,&g,[0,0],None,&reserved).is_empty());
+        assert!(resolve("CeladonCafe",&refs,&g,[0,0],None,&free).is_empty());
+        drop(refs);
+        for y in 0..12 {for x in 12..16 {
+            let i=y*w+x;let old=tiles[i].source.tile_index;tiles[i].source.tile_index=0xffff;
+            assert!(resolve("OlivineCafe",&tiles.iter().collect::<Vec<_>>(),&g,[0,0],None,&free).is_empty());
+            tiles[i].source.tile_index=old;
+        }}
     }
 
     #[test]

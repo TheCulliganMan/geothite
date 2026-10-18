@@ -8018,6 +8018,10 @@ fn spawn_battle_move_menu(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
+    if snapshot.competitive_battle.is_some() {
+        return spawn_competitive_move_menu(commands, snapshot, runtime_shell, battle,
+            rendered_art, asset_root, images);
+    }
     let (_slot, cursor_index, visible_rows, start) =
         battle_move_menu_state(snapshot, runtime_shell, battle)?;
     spawn_battle_window(
@@ -8895,6 +8899,15 @@ fn visible_battle_move_entries(
     let Some(selected) = selected else {
         return vec![compact_scene_label("INVALID CURSOR battle:moves", 30)];
     };
+    if let Some(competitive) = &snapshot.competitive_battle {
+        let mut entries = battle.player_moves.iter().enumerate().map(|(index, learned)| {
+            format!("{}{}  {}", if index == selected { ">" } else { " " },
+                battle_move_display_name(snapshot, &learned.name), visible_move_pp_text(snapshot, learned))
+        }).collect::<Vec<_>>();
+        entries.push(format!("{}CANCEL", if selected == battle.player_moves.len() { ">" } else { " " }));
+        entries.extend(competitive.move_detail_lines(selected));
+        return entries;
+    }
     let mut entries = Vec::new();
     entries.extend(windowed_index_range(selected, total).map(|index| {
         let marker = if runtime_shell.battle_move_swap_origin == Some(index) {

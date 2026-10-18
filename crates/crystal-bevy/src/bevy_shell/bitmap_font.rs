@@ -4581,7 +4581,9 @@ fn visible_map_object_model_palette(
         || object.sprite != "SPRITE_GYARADOS"
         || visible_sprite != "SPRITE_GYARADOS"
         || object.pal != 8
-        || source_id != "species:GYARADOS:gyarados"
+        // Species-only packs resolve this same authored actor through its
+        // native menu icon. That bitmap fallback must retain shiny identity.
+        || !matches!(source_id,"species:GYARADOS:gyarados"|"species:GYARADOS:icon_gyarados")
         || variable_sprites.contains_key(visible_sprite)
     { return Ok(None); }
     Ok(Some(crystal_render_api::VisualPokemonModelPalette {

@@ -1,61 +1,46 @@
-# Original Rhydon sculpture
+# Rhydon sculpture and rig
 
-`tools/rhydon_sculpt.py` authors a heavy grey biped with a continuous torso,
-four fitted cream belly bands, pointed neck armor, broad armored skull and
-muzzle, open fanged lower jaw and supported pink tongue. Tall pointed ears,
-fitted narrow red gaze, six rooted cheek points, rounded shoulders, short
-powerful arms, three hand claws each, stocky haunches and two claws per foot
-replace the old generic rock body. A cream nasal drill carries an actual
-three-turn raised spiral. Three back points and three fitted segmented collars
-finish a thick tapering upturned tail.
+`tools/rhydon_sculpt.py` authors a heavy gray biped with a continuous torso,
+four cream belly bands, pointed neck armor, broad skull and muzzle, open
+fanged jaw and pink tongue. Tall ears, narrow red gaze, six cheek points,
+rounded shoulders, powerful arms, three claws per hand, stocky haunches and
+two claws per foot retain the species silhouette. Its nasal drill has an
+actual three-turn raised spiral. Three back points and fitted annular collars
+finish the thick curved tail. No external geometry or rig is imported.
 
-The canonical model has 64 closed parts and 69,896 triangles, floor zero and height
-1.40. Its SHA-256 is
-`f5404c803679e4c76d6471e6b2742e6be378855047cba540823e96d92cd9ef4d`.
-All fourteen candidate tests passed in 12.757 seconds and all fourteen
-canonical tests passed in 11.917 seconds. They cover closed
-connected outward surfaces, face-aligned unit normals, recipe parity,
-bounds/budget/anatomy counts, actual skull/muzzle/jaw/chamber/tongue roots,
-ear/horn/spiral/cheek/limb/claw/fang/tail/armor volume roots, fitted marking
-vertices and face/edge clearances, uncrossed curved surfaces, twelve actual
-empty jaw samples and filled-mouth/detached attachment negatives.
+`tools/rhino_glb.py` exports the canonical `rhydon.glb`: 64 authored solids
+packed into 48 runtime material groups, 18,156 vertices, 28,304 triangles,
+15 joints, 242 accessors and 741,340 bytes. The source mesh previously exceeded
+the skin budget; reducing redundant surface sampling preserves every authored
+solid, the spiral turns and shared tail/collar curve within the existing
+limits. Authoring height remains 1.40; verified pack height is 1.905 m.
+The logical neutral digest is
+`f65fdcc84a808bd430ba1ce4ed03602ec0301a6bb0905722850774e49f1248c9`;
+the packed runtime digest is
+`c0131e43f7235c93fc5a645ab0c3e69f63dc8c2f8d8aa36e0134cc89ab22b4f7`.
 
-The first collar outline extended outside the torso and generation refused
-it; the corrected outline fits its parent. Rear visual inspection also caught
-speckling where independently curved tail collars crossed the actual tail.
-The collars now share the tail's complete curve, transport frames and radial
-sections. They are closed annular shells, with outer faces clearing and inner
-faces rooting into the stored tail. A dedicated test checks both surfaces
-against occupied volume. The drill spiral similarly follows the horn's actual
-smoothed curve and taper instead of an approximate cone. No test was relaxed.
+Independent jaw, ears, arms, hands and drill carriers accompany a coherent
+head and blended body. The two tail carriers deform the tail and its collars
+using the same source arc. Legs blend into the torso while foot pads and toe
+claws retain floor support. Left and right foot-claw groups remain separate
+for world walking. Idle, attack and hit use the source-cue clocks and return
+to neutral endpoints. Builder, asset reader and runtime routes use the GLB;
+the obsolete static JSON is removed.
 
-Final front, oblique and rear 800×824 software renders exited zero and were
-individually inspected after the horn/tail corrections. The drill spiral reads
-as three turns, the tail bands have clean boundaries, and the open mouth,
-fitted gaze, belly bands and claws are visible. AST checks passed.
+All 31 combined Python checks for both rhinoceroses pass. These include true
+open-jaw samples, inner collar occupancy and outer clearance through motion,
+occupied attachment roots with a detached negative control, fitted markings,
+weights, isolated joint motion, floor contact, winding and strain. Four focused
+Rust checks pass for GPU activation at verified pack sizes, runtime owners and
+world walking support chains. Front, side and rear poses of all three clips
+were inspected, and Blender exports are byte-identical. Shiny checks are
+skipped at the user's request. Browser visual acceptance remains open.
 
-The [source review](rhydon-source-review.md) records the inspected primary art
-and accessible rig candidate. The latter was excluded for humanoid avatar
-anatomy; no external geometry or rig is imported. This candidate is original
-static geometry. It is installed through a dedicated pure builder dispatch,
-preserving the existing exact Rhydon registry route. The generic rock builder
-rejects both rhinoceroses. The canonical bytes match the final three reviewed
-views' candidate hash. Model layout and all 575 raw canonical JSON files pass
-validation. A final-hash test executable containing Rhydon and Steelix passed
-the exact all-251 loaded-species check in 2.59 seconds and all 18 battle-layout
-tests. Its identity remained `(217082565, 212678000, 1791802643816871505)` and
-the canonical hashes stayed unchanged. That earlier check predates Graveler and Golem and excludes their replacements.
-
-The matching native executable contained the full final Rhydon, Graveler and
-Golem hashes before each launch. All three explicit image-target battle
-captures exited zero with `CRYSTAL_PREVIEW_MUTE=1`; each full 2000×1400 GPU
-frame was individually inspected for anatomy, floor contact, arena and HUD.
-Native executable identity `(217084807, 199802640, 1791803109751071562)` and
-all three canonical hashes remained stable through the complete capture batch.
-The exact all-251 loaded-species test then passed in 2.96 seconds in an
-executable containing all three final hashes, with stable identity
-`(217106909, 214395568, 1791803306590544522)` and unchanged canonical bytes.
-This verifies the native image target and roster loading; live-window,
-browser, animation and gameplay paths remain unapproved. The queued Cargo integration job also finished with exit zero; its roster
-check ran one test and passed in 2.70 seconds. Completed temporary review
-images and logs have been removed.
+The rebuilt native Route 29 Rhydon/Pidgey 3D/2D pair was inspected at identical
+state: frame 2374, checksum 3422758645, LCD frame 3085 and virtual time
+55.014122498. The drill, open jaw, claws, belly bands and complete curved tail
+remain readable; both feet meet the terrain and the RHYDON HUD is correct.
+Normal admission at the original pack size passes with the existing
+-110-degree review angle. No shader errors were reported. Ignored evidence is
+`target/pokemon-native-review/rhydon-normal`. Both shared geometry and
+source-cue timing regressions pass. Grass height is untouched.

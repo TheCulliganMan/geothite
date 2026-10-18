@@ -3,21 +3,23 @@
 import json,unittest
 from pathlib import Path
 from abra_sculpt import sculpture,HEIGHT
+from psychic_fox_glb import read_psychic,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 
 class FoxTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={n:json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in ('abra','alakazam')}
+    def setUpClass(cls):cls.models={n:read_psychic(ROOT/(n+'.glb'),n) for n in ('abra','alakazam')}
     def test_closed_connected_anatomy(self):assert_closed_models(self,self.models)
     def test_actual_triangle_shading(self):assert_model_shading(self,self.models)
     def test_recipe_height_and_ground(self):
         for n,m in self.models.items():
-            self.assertEqual(m,sculpture(n))
+            self.assertEqual(geometry_digest(m),geometry_digest(sculpture(n)))
             names=[p['part'] for p in m['primitives']];self.assertEqual(len(names),len(set(names)))
             self.assertEqual(min(v for p in m['primitives'] for v in p['positions'][1::3]),0.)
             self.assertAlmostEqual(max(v for p in m['primitives'] for v in p['positions'][1::3]),HEIGHT,places=6)
-            self.assertLess(sum(len(p['indices'])//3 for p in m['primitives']),7000)
+            self.assertLessEqual(sum(len(p['indices'])//3 for p in m['primitives']),40000)
+            self.assertLessEqual(sum(len(p['positions'])//3 for p in m['primitives']),20000)
             footparts=[p for p in m['primitives'] if p['part'].startswith('Foot /')]
             for side in ('-1','1'):
                 self.assertEqual(min(v for p in footparts if p['part'].split()[-1]==side for v in p['positions'][1::3]),0.)

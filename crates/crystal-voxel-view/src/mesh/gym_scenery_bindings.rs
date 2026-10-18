@@ -28,6 +28,7 @@ const OBJECTS: &[Object] = &[
     Object { map: "AzaleaGym", tileset: "elite_four_room", width: 2, height: 2, fingerprint: 0xfab632c6b84be61b, kind: Kind::PlanterRound },
     Object { map: "AzaleaGym", tileset: "elite_four_room", width: 2, height: 2, fingerprint: 0xfbf7ffa33e6dfe4f, kind: Kind::PlanterRound },
     Object { map: "AzaleaGym", tileset: "elite_four_room", width: 3, height: 3, fingerprint: 0xb19d35b93f836d0d, kind: Kind::CentralTree },
+    Object { map: "KogasRoom", tileset: "elite_four_room", width: 3, height: 3, fingerprint: 0xb19d35b93f836d0d, kind: Kind::LeagueTree },
     Object { map: "CeladonGym", tileset: "train_station", width: 2, height: 2, fingerprint: 0x1335c3a89c914905, kind: Kind::Hedge },
     Object { map: "CeladonGym", tileset: "train_station", width: 2, height: 2, fingerprint: 0x29035be990d55375, kind: Kind::Hedge },
     Object { map: "CeladonGym", tileset: "train_station", width: 2, height: 2, fingerprint: 0x36ed0c6f48dfa2f9, kind: Kind::Hedge },

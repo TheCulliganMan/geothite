@@ -74,11 +74,14 @@ fn complete_workbench_keeps_native_checker_floor_and_footing_and_live_readout() 
         }
     }
     assert!(
-        mesh.textured.positions[48..]
+        mesh.textured.positions[mesh.textured.positions.len()-8..]
             .iter()
             .all(|p| p[1] > 11. && p[1] < 17. && p[2] > 14.19 && p[2] < 14.21)
     );
-    assert!(mesh.solid.positions.iter().all(|p| p[0] >= 0.
+    assert!(mesh.solid.positions.is_empty());
+    let body_end=mesh.textured.positions.len()-8;
+    assert!(body_end>48);
+    assert!(mesh.textured.positions[48..body_end].iter().all(|p| p[0] >= 0.
         && p[0] <= 32.
         && p[1] >= 0.
         && p[1] <= 18.
@@ -202,7 +205,7 @@ fn live_display_triangles_face_outward_and_remain_inside_the_live_source_drawing
         let normal = Vec3::from_array(mesh.textured.normals[ids[0] as usize]);
         assert!((b - a).cross(c - a).dot(normal) > 0.);
     }
-    for uv in &mesh.textured.uvs[48..] {
+    for uv in &mesh.textured.uvs[mesh.textured.uvs.len()-8..] {
         assert!(uv[0] >= 0. && uv[0] <= 0.5 && uv[1] >= 0. && uv[1] <= 0.25);
     }
 }

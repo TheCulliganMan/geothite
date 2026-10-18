@@ -65,11 +65,18 @@ def anatomy():
   rock=ellipsoid('Rubble / rooted small rear Graveler stone '+str(j),LIGHT,(x,y,z),(rx,ry,rz),10,6);p.append(part(rock['part'],LIGHT,[tuple(rock['positions'][i:i+3]) for i in range(0,len(rock['positions']),3)],[tuple(rock['indices'][i:i+3]) for i in range(0,len(rock['indices']),3)],False))
  return p
 
-def sculpture():
+def sculpture(normalize=True):
  p=anatomy();lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
  for q in p:
-  q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+  if normalize:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
+  q['normals']=[round(v,7) for v in q['normals']]
+  for key in ('positions','normals'):q[key]=[0. if v==0 else v for v in q[key]]
  return {'name':'graveler','version':1,'coordinate_system':COORDINATES,'primitives':p}
+def write_canonical(output):
+    from stone_pair_glb import export_stone_pair
+    (output/'graveler.glb').write_bytes(export_stone_pair('graveler'))
+
+
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'graveler.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);write_canonical(args.output)
 if __name__=='__main__':main()

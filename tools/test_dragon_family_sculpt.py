@@ -11,7 +11,9 @@ from sculpt_test_support import surface_distances
 
 class DragonFamilyTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.ms={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def setUpClass(cls):
+  from dragon_family_glb import read_dragon_family
+  cls.ms={s:read_dragon_family(ROOT/(s+'.glb'),s) for s in SPECIES}
  def find(self,s,prefix,suffix=None):return next(p for p in self.ms[s]['primitives'] if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def overlap(self,a,b):
   xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
@@ -25,8 +27,9 @@ class DragonFamilyTests(unittest.TestCase):
  def test_finite_unit_normals_follow_actual_faces(self):assert_model_shading(self,self.ms)
  def test_recipe_parity_height_grounding_and_budget(self):
   for s,m in self.ms.items():
-   self.assertEqual(m,sculpture(s));self.assertAlmostEqual(max(v for p in m['primitives'] for v in p['positions'][1::3]),HEIGHTS[s],places=6);self.assertEqual(min(v for p in m['primitives'] for v in p['positions'][1::3]),0.)
-   self.assertLess(sum(len(p['indices'])//3 for p in m['primitives']),65000);self.assertEqual(len(m['primitives']),len({p['part'] for p in m['primitives']}))
+   from dragon_family_glb import geometry_digest
+   self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));self.assertAlmostEqual(max(v for p in m['primitives'] for v in p['positions'][1::3]),HEIGHTS[s],places=6);self.assertEqual(min(v for p in m['primitives'] for v in p['positions'][1::3]),0.)
+   self.assertLessEqual(sum(len(p['positions'])//3 for p in m['primitives']),20000);self.assertLessEqual(sum(len(p['indices'])//3 for p in m['primitives']),40000);self.assertEqual(len(m['primitives']),len({p['part'] for p in m['primitives']}))
  def test_species_specific_forehead_orbs_antennae_wings_and_digits(self):
   for s,counts in {'dratini':{'Forehead /':1,'Horn /':0,'Ear fin /':2,'Orb /':0},'dragonair':{'Forehead /':0,'Horn /':1,'Ear fin /':2,'Orb /':3},'dragonite':{'Horn /':1,'Antenna /':2,'Wing /':2,'Wing border /':2,'Wing spar /':2,'Wing rib /':4,'Belly fold /':8,'Foot claw /':6,'Hand claw /':6}}.items():
    for prefix,n in counts.items():self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ms[s]['primitives']),n,(s,prefix))

@@ -95,6 +95,8 @@ pub(super) fn finish_rock_geometry(mesh: &mut TerrainMeshData, map: &str,
         super::rock_bases::round_geometry(mesh, map, cells, shapes, g, origin);
     }
     super::outdoor_mountains::finish(mesh, map, cells, shapes, g, origin);
+    // Project backing from the final cap, including its mountain relief.
+    super::outdoor_mountains::append_reveal_floor(mesh, map, cells, shapes, g, origin);
     {
         let _trace = crate::loading_trace::span("region.rock_finish_normals", || serde_json::json!({}));
         mineral_normals(&mut mesh.solid);
@@ -375,10 +377,15 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
     }
     if let Some(triangles) = cap_triangles { mesh.solid.indices = triangles.finish(); }
     let rock_height = |i: usize, cell: &VisualTile| {
-        if !matches!(cell.source.tileset_id.as_ref(), "johto" | "johto_modern")
-            || !(cell.source.metatile_id == 0x0a
-                || (0x68..=0x73).contains(&cell.source.metatile_id))
-        {
+        let johto = matches!(cell.source.tileset_id.as_ref(), "johto" | "johto_modern")
+            && (cell.source.metatile_id == 0x0a
+                || (0x68..=0x73).contains(&cell.source.metatile_id));
+        let kanto = cell.source.tileset_id.as_ref()=="kanto"
+            && super::outdoor_mountains::permanent(&cell.source,shapes[i]);
+        // Both atlases use the same closed mineral shoulders. Source-proven
+        // Kanto mountain ink must not remain an unshaped textured box; low
+        // jump banks, shore rocks and entrance floors are separate owners.
+        if !johto && !kanto {
             return None;
         }
         match shapes[i] {
@@ -556,6 +563,24 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
         (rock_height(i, cell).is_some()
             && matches!(cell.source.metatile_id, 0x6a | 0x6c))
             .then(|| g.bounds(i % g.width, i / g.width))
+    }).collect();
+    // An authored entrance has its own closed arch and side blocks. Keep the
+    // rock/portal seating joint fixed instead of weathering those members
+    // apart. Require the complete native mouth, not a tile number alone.
+    let portals: Vec<_> = cells.iter().enumerate().filter_map(|(i,cell)| {
+        let source=&cell.source;
+        if source.tileset_id.as_ref()!="kanto" || !matches!(source.metatile_id,0x06|0x70)
+            || source.subtile_column!=0 || source.subtile_row!=2 {return None;}
+        let (x,z)=(i%g.width,i/g.width);
+        if x+2>g.width || z+2>g.height {return None;}
+        let art=[[0x48,0x49],[0x58,0x59]];
+        if !(0..2).all(|dz|(0..2).all(|dx| {
+            let s=&cells[(z+dz)*g.width+x+dx].source;
+            s.tileset_id==source.tileset_id && s.metatile_id==source.metatile_id
+                && s.subtile_column==dx as u8 && s.subtile_row==2+dz as u8 && s.tile_index==art[dz][dx]
+        })) {return None;}
+        let (w,_,n,_)=g.bounds(x,z);let (_,e,_,s)=g.bounds(x+1,z+1);
+        Some((w,e,n,s))
     }).collect();
     let edges = join_wall_edges(edges, &ledge_joints);
     let edge_candidates = if indexed { rock_edge_candidates(&edges, g) } else { Vec::new() };
@@ -882,7 +907,12 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
                     .clamp(0., 1.);
                 t * t * (3. - 2. * t)
             }).fold(1.0_f32, f32::min);
-        s.positions[i] = p.lerp(sculpted, join_weight).to_array();
+        let portal_weight=portals.iter().map(|&(w,e,n,s)| {
+            let nearest=Vec2::new(p.x.clamp(w,e),p.z.clamp(n,s));
+            let t=(p.xz().distance(nearest)/g.tile_width-0.25).clamp(0.,1.);
+            t*t*(3.-2.*t)
+        }).fold(1.0_f32,f32::min);
+        s.positions[i] = p.lerp(sculpted, join_weight*portal_weight).to_array();
         // Exact source floor contacts, protected inside edges and unexposed
         // viewport interiors keep their own authored coordinates. Only the
         // deformed shoulder samples need a common evaluated position.
@@ -1249,6 +1279,39 @@ mod tests {
     use super::*;
 
     #[test]
+    fn kanto_portal_arch_keeps_its_seating_joint_while_remote_mineral_faces_erode() {
+        let art=[[0x11,0x11,0x24,0x24],[0x11,0x11,0x24,0x24],
+            [0x48,0x49,0x34,0x24],[0x58,0x59,0x37,0x34]];
+        let sources=(0..64).map(|i| {
+            let (x,z)=(i%8,i/8);
+            let portal=(2..6).contains(&x)&&(2..6).contains(&z);
+            let rock=(1..7).contains(&x)&&(1..7).contains(&z);
+            let mut s=super::super::tests::source_with_tile(
+                if portal {0x70}else if rock {0x2c}else{0x31},
+                if portal {(x-2)as u8}else{(x%4)as u8},
+                if portal {(z-2)as u8}else{(z%4)as u8},
+                if portal {art[z-2][x-2]}else if rock {0x11}else{0x39});
+            s.tileset_id="kanto".into();s
+        }).collect();
+        let frame=super::super::tests::frame(8,8,sources);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        let g=GridGeometry {width:8,height:8,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;64],..Default::default()};
+        super::super::mountain_portals::append(&mut mesh,&cells,&shapes,&g,&mut [false;64],[0,0]);
+        let portal_end=mesh.solid.positions.len();
+        assert!(portal_end>0,"exercise the actual complete native entrance producer");
+        append_canyon(&mut mesh.solid,[[8.,0.,8.],[8.,16.,8.],[8.,16.,56.],[8.,0.,56.]],
+            Vec3::NEG_X.to_array(),&g,[0,0]);
+        let before=mesh.solid.positions.clone();
+        sculpt_rock_rims_on_map(&mut mesh,"Route10North",&cells,&shapes,&g,[0,0]);
+        assert_eq!(&mesh.solid.positions[..portal_end],&before[..portal_end],
+            "weathering cannot tear the closed arch away from its source seat");
+        assert!(mesh.solid.positions[portal_end..].iter().zip(&before[portal_end..]).any(|(a,b)|a!=b),
+            "a portal must not disable shaping of the surrounding mountain");
+    }
+
+    #[test]
     fn blackthorn_cap_pigment_removes_false_relief_without_repainting_walls_or_other_maps() {
         let mut surface = SurfaceMeshData::default();
         surface.positions = vec![[0., 16., 0.]; 5];
@@ -1303,6 +1366,13 @@ mod tests {
         check_external_rock_caps(&["BlackthornCity"],1_000);
     }
 
+    #[test]
+    #[ignore = "requires a completed external CRYSTAL_RENDER_TEST_PACK"]
+    fn external_kanto_mountain_shoulders_retain_caps_and_support() {
+        check_external_rock_caps(&["CeruleanCity","Route24","Route25","Route10North",
+            "CinnabarIsland"],1_000);
+    }
+
     fn check_external_rock_caps(maps: &[&str], minimum_caps: usize) {
         let path = std::env::var("CRYSTAL_RENDER_TEST_PACK")
             .expect("set CRYSTAL_RENDER_TEST_PACK to a completed local pack");
@@ -1337,15 +1407,18 @@ mod tests {
             mesh.authored_cells = vec![None; cells.len()];
             mesh.footing_heights = shapes.iter().map(|s| s.surface_height(g.tile_height)).collect();
             for (i, cell) in cells.iter().enumerate() {
-                if !matches!(cell.source.tileset_id.as_ref(), "johto" | "johto_modern")
-                    || !(cell.source.metatile_id == 0x0a || (0x68..=0x73).contains(&cell.source.metatile_id)) {
+                let johto=matches!(cell.source.tileset_id.as_ref(), "johto" | "johto_modern")
+                    && (cell.source.metatile_id == 0x0a || (0x68..=0x73).contains(&cell.source.metatile_id));
+                let kanto=cell.source.tileset_id.as_ref()=="kanto"
+                    && super::super::outdoor_mountains::permanent(&cell.source,shapes[i]);
+                if !johto && !kanto {
                     continue;
                 }
                 let h = shapes[i].surface_height(g.tile_height);
                 if h <= 0. { continue; }
                 let (x, z) = (i % width, i / width);
                 let (w, e, n, south) = g.bounds(x, z);
-                let append_face = if cell.source.metatile_id == 0x0a { append } else { append_canyon };
+                let append_face = if johto && cell.source.metatile_id == 0x0a { append } else { append_canyon };
                 append_face(&mut mesh.solid, [[w,h,n],[w,h,south],[e,h,south],[e,h,n]],
                     Vec3::Y.to_array(), &g, [0,0]);
                 for (nx, nz, a, b, normal) in [
@@ -1978,10 +2051,20 @@ mod tests {
 
     #[test]
     fn canyon_shoulders_are_broad_closed_and_anchored_at_the_floor() {
-        let flat = super::super::tests::source_with_tile(0, 0, 0, 5);
+        check_canyon_shoulders(false);
+        check_canyon_shoulders(true);
+    }
+
+    fn check_canyon_shoulders(kanto: bool) {
+        let source = |block,column,row,tile| {
+            let mut source=super::super::tests::source_with_tile(block,column,row,tile);
+            if kanto {source.tileset_id="kanto".into();}
+            source
+        };
+        let flat = source(if kanto {0x31}else{0}, 0, 0, if kanto {0x39}else{5});
         let mut sources = vec![flat; 12];
         for i in [5, 6] {
-            sources[i] = super::super::tests::source_with_tile(0x70, 2, 1, 0x3c);
+            sources[i] = source(if kanto {0x2c}else{0x70}, 2, 1, if kanto {0x11}else{0x3c});
         }
         let frame = super::super::tests::frame(4, 3, sources);
         let cells: Vec<_> = frame.tiles.iter().collect();

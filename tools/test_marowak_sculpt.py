@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Adult skull gaze, supported raised bone, strong tail and posed anatomy."""
-import copy,json,os,unittest
+import copy,os,unittest
 from pathlib import Path
 from marowak_sculpt import sculpture,anatomy,HEIGHT,INK
 from sculpt_geometry import translate
@@ -12,14 +12,14 @@ import test_nidorina_sculpt as attachments
 ROOT=Path(os.environ.get('CRYSTAL_MAROWAK_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class MarowakTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'marowak.mesh.json').read_bytes())
+ def setUpClass(cls):from bone_keeper_glb import read_marowak;cls.model=read_marowak(ROOT/'marowak.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'marowak':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'marowak':self.m})
  def test_recipe_parity_floor_height_and_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from bone_keeper_glb import geometry_digest;self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for label,n in (('Orbit /',2),('Horn /',2),('Cheek /',2),('Finger /',6),('Thumb /',1),('Bone lobe /',4),('Toe claw /',2),('Hand claw /',2),('Belly seam /',2),('Tail spine /',1)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
  def test_skull_neck_snout_tail_and_spine_have_actual_roots(self):
   for child,parent in (('Neck /','Body /'),('Head /','Neck /'),('Skull /','Head /'),('Snout /','Skull /'),('Tail /','Body /'),('Tail spine /','Tail /')):self.assertTrue(self.overlap(self.find(child),self.find(parent)),child)

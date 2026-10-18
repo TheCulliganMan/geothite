@@ -5104,7 +5104,12 @@ fn validate_saved_battle_references(data: &GameDataSet, state: &GameState) -> Re
                 "battle.trainer.enemy_party",
                 enemy_party,
             )?;
-            data.validate_saved_trainer_enemy_party(trainer, enemy_party, enemy_pokemon)
+            data.validate_saved_trainer_enemy_party_for_script(
+                trainer,
+                enemy_party,
+                enemy_pokemon,
+                source_script,
+            )
         }
     }
 }

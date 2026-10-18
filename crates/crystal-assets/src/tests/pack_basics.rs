@@ -4970,6 +4970,7 @@ fn roaming_wild_battle_run_saves_hp_and_runs_exact_route_update() {
         battle_active_enemy_party_index: Some(0),
         roaming_pokemon: [
             crystal_core::state::RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("NEW_MON".to_string()),
                 level: 40,
                 map_group: 1,
@@ -5048,6 +5049,7 @@ fn roaming_escape_item_records_the_exact_route_update_rng() {
         battle_active_enemy_party_index: Some(0),
         roaming_pokemon: [
             crystal_core::state::RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("NEW_MON".to_string()),
                 level: 40,
                 map_group: 1,
@@ -5112,6 +5114,7 @@ fn captured_roamer_is_cleared_without_route_rng() {
         battle_active_enemy_party_index: Some(0),
         roaming_pokemon: [
             crystal_core::state::RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("NEW_MON".to_string()),
                 level: 40,
                 map_group: 1,
@@ -5193,6 +5196,7 @@ fn nonroaming_battle_end_uses_one_in_sixteen_gate_before_route_update() {
             battle_active_enemy_party_index: Some(0),
             roaming_pokemon: [
                 crystal_core::state::RoamingPokemonState {
+                    scaled_hp: None,
                     species: Some("NEW_MON".to_string()),
                     level: 40,
                     map_group: 1,
@@ -5264,6 +5268,7 @@ fn nonroaming_link_battle_end_uses_link_gate_then_divider_for_routes() {
         battle_active_enemy_party_index: Some(0),
         roaming_pokemon: [
             crystal_core::state::RoamingPokemonState {
+                scaled_hp: None,
                 species: Some("NEW_MON".to_string()),
                 level: 40,
                 map_group: 1,
@@ -8377,6 +8382,7 @@ fn saved_roaming_battle_requires_selected_slot_map_and_normal_battles_never_refi
         ..GameDataSet::default()
     };
     let roaming = crystal_core::state::RoamingPokemonState {
+        scaled_hp: None,
         species: Some("NEW_MON".to_string()),
         level: 40,
         map_group: 1,

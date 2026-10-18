@@ -28,7 +28,31 @@ const BATTLE_LAYER: usize = 29;
 const RETAINED_SCALE: f32 = 1.0 / 16.0;
 const SOURCE_CELL_SIZE: f32 = 32.0;
 const BORDER_MARGIN: f32 = 0.25;
+const LOW_SHOT_ELEVATIONS: [f32; 7] = [6.0, 12.0, 18.0, 24.0, 32.0, 40.0, 48.0];
+const HIGH_SHOT_ELEVATIONS: [f32; 3] = [60.0, 68.0, 75.0];
 const RESIDUAL_OPACITY: f32 = 0.20;
+const SHOT_YAWS: [f32; 8] = [70.0, 90.0, 110.0, 140.0, -70.0, -90.0, -110.0, -140.0];
+
+fn review_shot_yaw(value: Option<&str>) -> Option<f32> {
+    let yaw=value?.parse::<f32>().ok()?;
+    SHOT_YAWS.contains(&yaw).then_some(yaw)
+}
+
+/// Native art review can select an existing establishing angle. Admission,
+/// retained scenery, support and full-body fitting still use the normal proof.
+fn requested_review_yaw() -> Option<f32> {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        static YAW: std::sync::OnceLock<Option<f32>> = std::sync::OnceLock::new();
+        *YAW.get_or_init(|| {
+            let yaw=review_shot_yaw(std::env::var("CRYSTAL_BATTLE_REVIEW_YAW").ok().as_deref());
+            if let Some(yaw)=yaw { trace(format_args!("native review yaw selected: {yaw}")); }
+            yaw
+        })
+    }
+    #[cfg(target_arch = "wasm32")]
+    { None }
+}
 
 /// Reward the smaller visible silhouette first. A large partner must not hide
 /// a tiny opponent's poor framing behind its own screen coverage. Long, low
@@ -597,7 +621,7 @@ impl EncounterTerrain {
         false
     }
 
-    /// Choose a proven low view that shows the existing location behind the
+    /// Choose a proven view, preferring low angles, that shows the location behind the
     /// pair. Tall source geometry counts; flat ground and reeds cannot crowd
     /// out a city's buildings. The chosen side stays fixed during this battle.
     pub(super) fn establish_camera(&mut self, layout: &mut BattleSceneLayout, bodies: [Option<BattleBody>; 2], viewport: Vec2) -> bool {
@@ -605,7 +629,21 @@ impl EncounterTerrain {
             "derived_stage": self.frozen.as_ref().is_some_and(|scene| scene.derived_stage),
             "viewport": [viewport.x, viewport.y],
         }));
-        let mut best = if self.establish_camera_at(layout, bodies, viewport) {
+        // Search every supported stage at ordinary elevations first. A higher
+        // view is a fallback only when that complete search finds no low shot.
+        let original = layout.clone();
+        for elevations in [&LOW_SHOT_ELEVATIONS[..], &HIGH_SHOT_ELEVATIONS[..]] {
+            let mut candidate = original.clone();
+            if self.establish_camera_tier(&mut candidate, bodies, viewport, elevations) {
+                *layout = candidate;
+                return true;
+            }
+        }
+        false
+    }
+
+    fn establish_camera_tier(&mut self, layout: &mut BattleSceneLayout, bodies: [Option<BattleBody>; 2], viewport: Vec2, elevations: &[f32]) -> bool {
+        let mut best = if self.establish_camera_at(layout, bodies, viewport, elevations) {
             let scene = self.frozen.as_ref().unwrap();
             let grass = scene.walking.as_ref().map_or(0, |ground| ground.grass_contacts(scene.anchors));
             Some((self.shot_score.unwrap() + grass as f32 * 40.0, layout.clone(), scene.anchors))
@@ -634,7 +672,7 @@ impl EncounterTerrain {
             }
             checked_stages += 1;
             scene.anchors = anchors;
-            if self.establish_camera_at(&mut candidate, bodies, viewport) {
+            if self.establish_camera_at(&mut candidate, bodies, viewport, elevations) {
                 let scene = self.frozen.as_ref().unwrap();
                 let grass = scene.walking.as_ref().map_or(0, |ground| ground.grass_contacts(anchors));
                 let score = self.shot_score.unwrap() - distance * 2.0 + grass as f32 * 40.0;
@@ -655,11 +693,13 @@ impl EncounterTerrain {
         false
     }
 
-    fn establish_camera_at(&mut self, layout: &mut BattleSceneLayout, bodies: [Option<BattleBody>; 2], viewport: Vec2) -> bool {
+    fn establish_camera_at(&mut self, layout: &mut BattleSceneLayout, bodies: [Option<BattleBody>; 2], viewport: Vec2, elevations: &[f32]) -> bool {
         self.shot_score = None;
         let mut best: Option<(f32, BattleSceneLayout)> = None;
-        for (yaw, elevation) in [6.0_f32, 12.0, 18.0, 24.0, 32.0, 40.0, 48.0].into_iter().flat_map(|elevation|
-            [70.0_f32, 90.0, 110.0, 140.0, -70.0, -90.0, -110.0, -140.0].map(|yaw| (yaw, elevation))) {
+        let review_yaw=requested_review_yaw();
+        for (yaw, elevation) in elevations.iter().copied().flat_map(|elevation|
+            SHOT_YAWS.map(|yaw| (yaw, elevation))) {
+            if review_yaw.is_some_and(|selected| selected!=yaw) { continue; }
             let mut compact = layout.clone();
             compact.distance = 0.0;
             let Some(original) = compact.battle_shot(bodies, yaw.to_radians(), elevation.to_radians()) else { continue; };
@@ -732,7 +772,7 @@ impl EncounterTerrain {
         }
         self.accepted = false;
         self.fog = None;
-        self.reason = Some("no readable low shot on checked ground");
+        self.reason = Some(if elevations[0] > 48.0 { "no readable higher shot on checked ground" } else { "no readable low shot on checked ground" });
         false
     }
 
@@ -808,7 +848,7 @@ impl EncounterTerrain {
         }
         let view = layout.camera.rotation.inverse();
         let mut deepest: f32 = 0.0;
-        let mut body_distance: f32 = 0.0;
+        let mut radial_distance: f32 = 0.0;
         for (index, (body, pose)) in bodies.into_iter().zip(layout.body_poses).enumerate() {
             if let (Some(body), Some(pose)) = (body, pose) {
                 if scene.walking.as_ref().is_some_and(|ground| !ground.contains(body, pose, scene.anchors[index].y)) {
@@ -821,12 +861,15 @@ impl EncounterTerrain {
                         return false;
                     }
                     deepest = deepest.max(-(view * (point - layout.camera.translation)).z);
-                    body_distance = body_distance.max(point.distance(layout.camera.translation));
+                    radial_distance = radial_distance.max(point.distance(layout.camera.translation));
                 }
             }
         }
-        let maximum_far = limit.min(body_distance + 32.0).min(layout.far);
-        if !deepest.is_finite() || deepest <= 0.0 || maximum_far < body_distance + 2.0 {
+        // Perspective near/far planes measure view-axis depth, not radial
+        // distance to off-axis wing tips. Use the same units as camera_limit
+        // and the projection, retaining every animated corner and rear margin.
+        let maximum_far = limit.min(deepest + 32.0).min(layout.far);
+        if !deepest.is_finite() || deepest <= 0.0 || maximum_far < deepest + 2.0 {
             self.reason = Some("authentic terrain is too small for the complete battlers");
             return false;
         }
@@ -834,14 +877,20 @@ impl EncounterTerrain {
         // pair. Prefer the deeper authentic view, reducing depth only when
         // omitted source geometry or its shadow would enter that view.
         let far = [32.0, 20.0, 8.0].into_iter()
-            .map(|depth| maximum_far.min(body_distance + depth))
+            .map(|depth| maximum_far.min(deepest + depth))
             .find(|&far| !scene.omitted.visible_or_shadow(layout.camera, viewport, far, scene.ground));
         let Some(far) = far else {
             self.reason = Some("omitted border or mutable terrain could affect the battle view");
             return false;
         };
+        // Bevy fog is radial while the retained frustum is axial. Fog must
+        // finish inside that proven range and start beyond every wing tip.
+        if far <= radial_distance + 0.6 {
+            self.reason = Some("authentic terrain cannot keep complete battlers clear of fog");
+            return false;
+        }
         trace(format_args!(
-            "fit camera={:?} authentic={:?} viewport={viewport:?} body_distance={body_distance} far={far}",
+            "fit camera={:?} authentic={:?} viewport={viewport:?} body_depth={deepest} far={far}",
             layout.camera, scene.authentic
         ));
         // Each instance or authored group owns one opacity. An AABB test is
@@ -871,7 +920,7 @@ impl EncounterTerrain {
         }
         scene.bodies = bodies;
         layout.far = far;
-        self.fog = Some(((body_distance + 8.0).min(far - 0.5), far - 0.1));
+        self.fog = Some(((radial_distance + 8.0).min(far - 0.5), far - 0.1));
         self.reason = None;
         self.accepted = true;
         true
@@ -2746,6 +2795,129 @@ use bevy::camera::primitives::MeshAabb;
         assert_eq!(pose.transform_point(Vec3::new(32.0, 16.0, 64.0)), feet[0]);
     }
     #[test]
+    fn tall_battler_uses_a_higher_shot_only_when_lower_views_cannot_fit() {
+        let bodies = [
+            Some(BattleBody::modeled("TALL_WIDE", Vec3::new(-8.0, 0.0, -4.0), Vec3::new(8.0, 12.0, 4.0), 1.0)),
+            Some(BattleBody::modeled("SMALL", Vec3::new(-1.0, 0.0, -1.0), Vec3::new(1.0, 2.0, 1.0), 1.0)),
+        ];
+        let anchors = [Vec3::new(0.0, 0.0, -4.0), Vec3::new(0.0, 0.0, 4.0)];
+        let viewport = Vec2::new(1000.0, 700.0);
+        let original = BattleSceneLayout::for_anchored_bodies(bodies, anchors, viewport).unwrap();
+        // Witness the complete frustum of one real higher shot. Its minimal
+        // source rectangle must suffice; unrelated extra ground is unnecessary.
+        let mut compact = original.clone();compact.distance = 0.0;
+        let mut higher = compact.battle_shot(bodies, 90.0_f32.to_radians(), 75.0_f32.to_radians()).unwrap();
+        let inverse = higher.camera.rotation.inverse();
+        let depth = bodies.into_iter().zip(higher.body_poses)
+            .flat_map(|(body, pose)| body.unwrap().corners(pose.unwrap()))
+            .map(|point| -(inverse * (point-higher.camera.translation)).z).fold(0.0_f32, f32::max);
+        let radial = bodies.into_iter().zip(higher.body_poses)
+            .flat_map(|(body, pose)| body.unwrap().corners(pose.unwrap()))
+            .map(|point| point.distance(higher.camera.translation)).fold(0.0_f32, f32::max);
+        let required_far = (depth+2.1).max(radial+0.7);
+        let tangent = (CAMERA_FOV*0.5).tan();
+        let eye = Vec2::new(higher.camera.translation.x, higher.camera.translation.z);
+        let (mut min, mut max) = (eye, eye);
+        for x in [-1.0, 1.0] {for y in [-1.0, 1.0] {
+            let ray = higher.camera.rotation * Vec3::new(x*tangent*viewport.x/viewport.y, y*tangent, -1.0);
+            let point = higher.camera.translation + ray*required_far;
+            let point = Vec2::new(point.x, point.z);
+            min = min.min(point);max = max.max(point);
+        }}
+        let authentic = AuthenticBounds {min:min-Vec2::splat(BORDER_MARGIN+0.01),max:max+Vec2::splat(BORDER_MARGIN+0.01)};
+        let mut state = EncounterTerrain {
+            frozen: Some(FrozenScene {
+                root: Entity::from_raw_u32(1).unwrap(), anchors,
+                authentic,
+                omitted: StaticBlockers::default(), static_blockers: StaticBlockers::default(), grass_lens_blockers: StaticBlockers::default(), objects: HashMap::new(), backdrop_bounds: Vec::new(), materials: Vec::new(),
+                images: Vec::new(), meshes: Vec::new(), ground: 0.0,
+                walking: None, water: false, bodies: [None, None], clearance: [Vec4::ZERO; 2], clearance_shape: [Vec4::ZERO; 2], grass_contact: [Vec4::ZERO; 2], contact_shape: [Vec4::ZERO; 2], derived_stage: false, source_anchors: anchors,
+            }),
+            ..default()
+        };
+        assert!(state.constrain_camera(&mut higher, bodies, viewport), "the independently witnessed higher shot must fit: {:?}", state.reason());
+        for elevation in [6.0_f32, 12.0, 18.0, 24.0, 32.0, 40.0, 48.0] {
+            for yaw in [70.0_f32, 90.0, 110.0, 140.0, -70.0, -90.0, -110.0, -140.0] {
+                let mut compact = original.clone();compact.distance = 0.0;
+                let shot = compact.battle_shot(bodies, yaw.to_radians(), elevation.to_radians()).unwrap();
+                for mut candidate in std::iter::once(shot.clone()).chain(shot.readable_facing(bodies)) {
+                    assert!(!state.constrain_camera(&mut candidate, bodies, viewport), "fixture unexpectedly admits a low shot");
+                }
+            }
+        }
+        let mut layout = original.clone();
+        assert!(state.establish_camera(&mut layout, bodies, viewport), "{:?}", state.reason());
+        assert_eq!(layout.origins, original.origins);
+        for (body, pose) in bodies.into_iter().zip(layout.body_poses) {
+            let body = body.unwrap();let pose = pose.unwrap();
+            assert_eq!(pose.scale, Vec3::ONE);
+            for point in body.corners(pose) {
+                assert!(state.frozen.as_ref().unwrap().authentic.point(point));
+            }
+        }
+        assert!((-layout.camera.forward().y).asin().to_degrees() > 48.0);
+        state.frozen.as_mut().unwrap().authentic = AuthenticBounds { min: Vec2::splat(-80.0), max: Vec2::splat(80.0) };
+        let mut lower = original.clone();
+        assert!(state.establish_camera_at(&mut lower, bodies, viewport, &LOW_SHOT_ELEVATIONS));
+        let mut chosen = original.clone();
+        assert!(state.establish_camera(&mut chosen, bodies, viewport));
+        assert_eq!(chosen.camera, lower.camera, "a valid low shot must take precedence");
+        // Removing the full wing's original ground remains a rejection.
+        state.frozen.as_mut().unwrap().authentic = AuthenticBounds { min: Vec2::splat(-5.0), max: Vec2::splat(5.0) };
+        assert!(!state.establish_camera(&mut original.clone(), bodies, viewport));
+    }
+
+    #[test]
+    fn wide_battler_far_plane_uses_view_depth_and_keeps_every_corner_inside() {
+        let bodies = [
+            Some(BattleBody::modeled("WIDE", Vec3::new(-8.0, 0.0, -0.5), Vec3::new(8.0, 3.0, 0.5), 1.0)),
+            Some(BattleBody::modeled("SMALL", Vec3::new(-0.5, 0.0, -0.5), Vec3::new(0.5, 1.0, 0.5), 1.0)),
+        ];
+        let anchors = [Vec3::ZERO, Vec3::new(0.0, 0.0, 4.0)];
+        let viewport = Vec2::new(1600.0, 600.0);
+        let mut layout = BattleSceneLayout::for_anchored_bodies(bodies, anchors, viewport).unwrap();
+        layout.camera = Transform::from_xyz(0.0, 4.0, 20.0)
+            .looking_at(Vec3::new(0.0, 4.0, 0.0), Vec3::Y);
+        layout.far = 23.0;
+        let original = layout.clone();
+        let mut state = EncounterTerrain {
+            frozen: Some(FrozenScene {
+                root: Entity::from_raw_u32(1).unwrap(), anchors,
+                authentic: AuthenticBounds { min: Vec2::splat(-40.0), max: Vec2::splat(40.0) },
+                omitted: StaticBlockers::default(), static_blockers: StaticBlockers::default(), grass_lens_blockers: StaticBlockers::default(), objects: HashMap::new(), backdrop_bounds: Vec::new(), materials: Vec::new(),
+                images: Vec::new(), meshes: Vec::new(), ground: 0.0,
+                walking: None, water: false, bodies: [None, None], clearance: [Vec4::ZERO; 2], clearance_shape: [Vec4::ZERO; 2], grass_contact: [Vec4::ZERO; 2], contact_shape: [Vec4::ZERO; 2], derived_stage: false, source_anchors: anchors,
+            }),
+            ..default()
+        };
+        assert!(bodies.into_iter().zip(layout.body_poses).flat_map(|(body, pose)| body.unwrap().corners(pose.unwrap()))
+            .any(|point| point.distance(layout.camera.translation) + 2.0 > layout.far),
+            "the fixture must distinguish radial distance from clipping depth");
+        assert!(state.constrain_camera(&mut layout, bodies, viewport), "{:?}", state.reason());
+        assert_eq!(layout.body_poses, original.body_poses);
+        let projection = Mat4::perspective_rh(CAMERA_FOV, viewport.x / viewport.y, 0.1, layout.far);
+        let view = layout.camera.to_matrix().inverse();
+        for (body, pose) in bodies.into_iter().zip(layout.body_poses) {
+            for point in body.unwrap().corners(pose.unwrap()) {
+                let clip = projection * view * point.extend(1.0);
+                let ndc = clip.truncate() / clip.w;
+                assert!(point.distance(layout.camera.translation) < state.fog_range().unwrap().0, "fog must not hide a framed wing tip");
+                assert!(ndc.x.abs() <= 1.0 && ndc.y.abs() <= 1.0 && (0.0..=1.0).contains(&ndc.z), "{ndc:?}");
+            }
+        }
+        let mut fogged_bodies = bodies;
+        let mut fogged = bodies[0].unwrap();fogged.min.x = -12.0;fogged.max.x = 12.0;
+        fogged_bodies[0] = Some(fogged);
+        assert!(!state.constrain_camera(&mut original.clone(), fogged_bodies, viewport));
+        assert_eq!(state.reason(), Some("authentic terrain cannot keep complete battlers clear of fog"));
+        let mut clipped = original.clone();
+        clipped.far = 20.0;
+        assert!(!state.constrain_camera(&mut clipped, bodies, viewport), "far plane must not clip a wing");
+        state.frozen.as_mut().unwrap().authentic.max.x = 10.0;
+        assert!(!state.constrain_camera(&mut original.clone(), bodies, viewport), "source terrain must still contain every wing corner");
+    }
+
+    #[test]
     fn border_crossing_leaf_and_offscreen_shadow_are_conservatively_rejected() {
         let authentic = AuthenticBounds {
             min: Vec2::splat(-20.0),
@@ -3060,7 +3232,7 @@ MeshMaterial3d(material.clone()),),
     #[test]
     fn finite_side_camera_fits_real_rigs_without_relaxing_authentic_or_omission_limits() {
         let cyndaquil = crate::species_rig::for_species("CYNDAQUIL").unwrap();
-        let bird = crate::pidgeotto_rig::rig();
+        let bird = crate::species_rig::for_species("PIDGEOTTO").unwrap();
         let bird_min = bird.neutral.positions.iter().map(|p| Vec3::from_array(*p))
             .fold(Vec3::splat(f32::INFINITY), Vec3::min);
         let bird_max = bird.neutral.positions.iter().map(|p| Vec3::from_array(*p))
@@ -3088,6 +3260,16 @@ MeshMaterial3d(material.clone()),),
             }),
             ..default()
         };
+        // The full standard bird envelope no longer fits the old narrow
+        // fixture. Require rejection there, retaining original size and every
+        // animated bound, then exercise the finite side view with enough retained
+        // foreground for its full top-down frustum.
+        let mut tight=primary.clone();
+        assert!(!state.constrain_layout(&mut tight,bodies,viewport));
+        assert_eq!(tight,primary);
+        state.frozen.as_mut().unwrap().authentic=AuthenticBounds {
+            min:Vec2::new(-18.0,-24.0),max:Vec2::new(22.0,52.0),
+        };
         let mut layout = primary.clone();
         assert!(!state.constrain_camera(&mut layout, bodies, viewport));
         assert_eq!(layout, primary);
@@ -3102,7 +3284,7 @@ MeshMaterial3d(material.clone()),),
                 assert_eq!(side.hit_anchors, primary.hit_anchors);
             }
         }
-        assert!(side_accepted);
+        assert!(side_accepted,"{:?}; bodies={bodies:?}; primary={primary:?}",state.reason());
         assert!(state.constrain_layout(&mut layout, bodies, viewport), "{:?}", state.reason());
         assert_ne!(layout.camera, primary.camera);
         assert_eq!(layout.origins, primary.origins);
@@ -3113,7 +3295,7 @@ MeshMaterial3d(material.clone()),),
         for (body, pose) in bodies.into_iter().zip(layout.body_poses) {
             for point in body.unwrap().corners(pose.unwrap()) {
                 assert!(scene.authentic.point(point));
-                assert!(layout.far >= point.distance(layout.camera.translation) + 2.0);
+                assert!(layout.far >= -(layout.camera.rotation.inverse() * (point - layout.camera.translation)).z + 2.0);
             }
         }
         // Foreground blades are completely discarded by the shader, even
@@ -3161,10 +3343,10 @@ MeshMaterial3d(material.clone()),),
         assert_eq!(trial.camera, preferred.camera, "the explicit trial uses the proven lower view");
         assert_eq!(trial.body_poses, primary.body_poses);
         assert_eq!(trial.hit_anchors, primary.hit_anchors);
-        let body_distance = bodies.into_iter().zip(trial.body_poses)
+        let body_depth = bodies.into_iter().zip(trial.body_poses)
             .flat_map(|(body, pose)| body.unwrap().corners(pose.unwrap()))
-            .map(|point| point.distance(trial.camera.translation)).fold(0.0_f32, f32::max);
-        assert!(trial.far >= body_distance + 20.0, "complete map scenery should survive behind the battle");
+            .map(|point| -(trial.camera.rotation.inverse() * (point - trial.camera.translation)).z).fold(0.0_f32, f32::max);
+        assert!(trial.far >= body_depth + 20.0, "complete map scenery should survive behind the battle");
         let wall = trial.camera.translation.lerp(trial.hit_anchors[0], 0.5);
         state.frozen.as_mut().unwrap().static_blockers.push(Bounds {
             min: wall - Vec3::splat(0.3), max: wall + Vec3::splat(0.3),
@@ -3245,7 +3427,7 @@ MeshMaterial3d(material.clone()),),
         state.frozen.as_mut().unwrap().static_blockers.clear();
         let tiny = [Some(BattleBody::modeled("TEST", Vec3::new(-0.1, 0.0, -0.1), Vec3::new(0.1, 0.2, 0.1), 1.0)); 2];
         let mut too_small = BattleSceneLayout::for_map_bodies(tiny, anchors, viewport).unwrap();
-        assert!(!state.establish_camera_at(&mut too_small, tiny, viewport),
+        assert!(!state.establish_camera_at(&mut too_small, tiny, viewport, &LOW_SHOT_ELEVATIONS),
             "physical eligibility alone cannot accept an unreadably distant shot");
         assert!(!state.accepted());
         assert_eq!(state.reason(), Some("no readable low shot on checked ground"));
@@ -3257,6 +3439,16 @@ MeshMaterial3d(material.clone()),),
             assert!(!camera_trial_requested(value));
         }
         assert!(camera_trial_requested(Some("1")));
+    }
+
+    #[test]
+    fn native_review_yaw_only_selects_supported_establishing_angles() {
+        for value in [None,Some(""),Some("0"),Some("1"),Some("45"),Some("180"),Some("NaN"),Some("inf")] {
+            assert_eq!(review_shot_yaw(value),None,"{value:?} must retain the normal camera search");
+        }
+        for yaw in [70.,90.,110.,140.,-70.,-90.,-110.,-140.] {
+            assert_eq!(review_shot_yaw(Some(&format!("{yaw}"))),Some(yaw));
+        }
     }
 
     #[test]

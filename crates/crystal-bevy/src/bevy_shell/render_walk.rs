@@ -1,9 +1,11 @@
 //! Native movement QA: ordinary keyboard input, per-frame trace and moving captures.
 use super::*;
+pub(super) mod league;
 
 #[derive(Resource)]
 pub(super) struct RenderWalk {
     route: Vec<KeyCode>,
+    league: Option<league::LeagueReview>,
     tick: usize,
     finished: bool,
     settle: usize,
@@ -19,12 +21,19 @@ pub(super) struct RenderWalk {
     arrival_reveal_captured: bool,
     synthetic_input: bool,
     step_input: bool,
-    segment_tile: Option<TilePosition>,
+    segment_position: Option<(String, TilePosition)>,
     running_input: bool,
     hold_on_battle: bool,
+    hold_on_move_menu: bool,
     hold_healing_balls:Option<u8>,
     held_healing:bool,
-    first_tile: Option<TilePosition>,
+    hold_field_notice:Option<String>,
+    held_field_notice:bool,
+    hold_menu_id:Option<String>,
+    held_menu:bool,
+    keep_current_battler: bool,
+    segment_key: Option<KeyCode>,
+    first_position: Option<(String, TilePosition)>,
     authoritative_moved: bool,
 }
 impl RenderWalk {
@@ -46,7 +55,45 @@ impl RenderWalk {
     }
 }
 
-pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bool) -> Result<()> {
+pub(super) fn move_menu_is_presented(shell: &BevyRuntimeShell, rendered: bool) -> bool {
+    rendered && shell.battle_move_cursor.is_some()
+        && shell.battle_messages.is_empty()
+        && !visible_battle_command_animation_active(shell)
+        && !shell.battle_level_stats.front().is_some_and(|stats| stats.active)
+}
+
+// Distinct maps can share the same arrival coordinates (Red's two floors do).
+// A committed warp must release a step-mode key even at identical coordinates.
+fn position_changed(start: Option<&(String, TilePosition)>, map: &str, tile: TilePosition) -> bool {
+    start.is_some_and(|(first_map, first_tile)| first_map != map || *first_tile != tile)
+}
+
+/// Observe the renderer's actual current page, including ordinary ASM text.
+/// Retained execution history or a different/unfinished printer cannot hold QA.
+pub(super) fn revealed_dialogue_page(
+    runtime: &BevyRuntimeShell,
+    snapshot: &RuntimeShellSnapshot,
+    wanted: &str,
+) -> Option<(usize, usize)> {
+    let pages = visible_field_dialog_pages(snapshot, runtime)?;
+    let reveal = runtime.field_text_reveal.as_ref()?;
+    (reveal.text == pages.join("\u{1e}")
+        && pages.get(reveal.page_index).is_some_and(|page| page == wanted)
+        && reveal.visible_chars >= wanted.chars().count())
+        .then_some((reveal.page_index, reveal.visible_chars))
+}
+
+#[cfg(test)]
+#[test]
+fn walk_steps_release_after_a_warp_to_identical_coordinates() {
+    let start = ("RedsHouse1F".to_owned(), TilePosition::new(7, 1));
+    assert!(!position_changed(None, "RedsHouse1F", start.1));
+    assert!(!position_changed(Some(&start), "RedsHouse1F", start.1));
+    assert!(position_changed(Some(&start), "RedsHouse1F", TilePosition::new(7, 0)));
+    assert!(position_changed(Some(&start), "RedsHouse2F", start.1));
+}
+
+pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bool, league: bool) -> Result<()> {
     let synthetic_input = match std::env::var("CRYSTAL_RENDER_TEST_WALK_INPUT") {
         Err(std::env::VarError::NotPresent) => false,
         Ok(value) if value == "keyboard" => false,
@@ -76,13 +123,21 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bo
     let hold_healing_balls=std::env::var("CRYSTAL_RENDER_TEST_HOLD_HEALING_BALLS").ok()
         .map(|v|v.parse::<u8>().context("healing hold count must be an integer")) .transpose()?;
     anyhow::ensure!(hold_healing_balls.is_none_or(|n|(1..=6).contains(&n)),"healing hold count must be between 1 and 6");
+    let hold_field_notice=std::env::var("CRYSTAL_RENDER_TEST_HOLD_FIELD_NOTICE").ok();
+    anyhow::ensure!(hold_field_notice.as_ref().is_none_or(|text|!text.is_empty()&&text.len()<=256),
+        "field notice capture target must contain 1..256 bytes");
+    let hold_menu_id=std::env::var("CRYSTAL_RENDER_TEST_HOLD_MENU_ID").ok();
+    anyhow::ensure!(hold_menu_id.as_ref().is_none_or(|id|!id.is_empty()&&id.len()<=256),
+        "menu capture target must contain 1..256 bytes");
+    anyhow::ensure!(!league || synthetic_input, "League review requires synthetic native keyboard input");
     app.insert_resource(RenderWalk {
+        league: league.then(|| league::LeagueReview::new(path)),
         route,
         tick: 0,
         finished: false,
         settle: 0,
         path: path.to_owned(),
-        trace: "frame,map,origin_x,origin_y,center_x,center_y,builds,frame_ms,focused,input,tile_x,tile_y,terrain_map,terrain_pending,terrain_active,fade_alpha,warp_phase,runtime_map\n".into(),
+        trace: "frame,map,origin_x,origin_y,center_x,center_y,builds,frame_ms,focused,input,tile_x,tile_y,terrain_map,terrain_pending,terrain_active,fade_alpha,warp_phase,runtime_map,route_key\n".into(),
         times: Vec::new(),
         first_builds: None,
         origins: default(),
@@ -93,12 +148,19 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bo
         arrival_reveal_captured: false,
         synthetic_input,
         step_input: std::env::var("CRYSTAL_RENDER_TEST_WALK_STEPS").as_deref()==Ok("1"),
-        segment_tile: None,
+        segment_position: None,
         running_input: std::env::var("CRYSTAL_RENDER_TEST_RUN").as_deref() == Ok("1"),
         hold_on_battle: std::env::var("CRYSTAL_RENDER_TEST_HOLD_BATTLE").as_deref() == Ok("1"),
+        hold_on_move_menu: std::env::var("CRYSTAL_RENDER_TEST_HOLD_MOVE_MENU").as_deref() == Ok("1"),
         hold_healing_balls,
         held_healing:false,
-        first_tile: None,
+        hold_field_notice,
+        held_field_notice:false,
+        hold_menu_id,
+        held_menu:false,
+        keep_current_battler: std::env::var("CRYSTAL_RENDER_TEST_KEEP_CURRENT_BATTLER").as_deref()==Ok("1"),
+        segment_key: None,
+        first_position: None,
         authoritative_moved: false,
     })
     .add_systems(PreUpdate, drive.after(bevy::input::InputSystems));
@@ -149,11 +211,12 @@ pub(super) fn drive(
     capture: Option<Res<render_capture::Capture>>,
     runtime: Res<BevyRuntimeShell>,
     battle: Option<Res<crystal_render_api::VisualBattleFrame>>,
-    settings: Res<crystal_voxel_view::VoxelViewSettings>,
+    mut settings: ResMut<crystal_voxel_view::VoxelViewSettings>,
     rendered: Res<RenderedViewport>,
     mut classic_warmup: Local<u32>,
     mut paired_hold:Option<ResMut<render_capture::PairedCaptureHold>>,
     mut virtual_time:ResMut<Time<Virtual>>,
+    presentation: (Query<(), With<CompetitiveMoveMenuMarker>>,Query<&HealMachineWorldSprite>, Res<crystal_voxel_view::BattleViewStatus>),
 ) {
     if walk.finished {
         walk.settle += 1;
@@ -164,7 +227,11 @@ pub(super) fn drive(
     let visible_battle = battle.as_ref().is_some_and(|battle| battle.active
         && battle.battlers.iter().all(|b| b.as_ref().is_some_and(|b| b.visible))
         && battle.cues.is_empty());
-    if walk.started() && walk.hold_on_battle && visible_battle {
+    let visible_move_menu = visible_battle && move_menu_is_presented(&runtime, !presentation.0.is_empty());
+    // Tactical UI review follows the real field encounter and pauses only
+    // after ordinary A input opens the production FIGHT menu.
+    if walk.started() && ((walk.hold_on_battle && visible_battle)
+        || (walk.hold_on_move_menu && visible_move_menu)) {
         if walk.running_input {
             let origin = runtime.battle_origin.published()
                 .expect("running battle capture requires a production origin");
@@ -185,10 +252,80 @@ pub(super) fn drive(
     if walk.started()&&!walk.held_healing&&status.active&&frame.active
         &&walk.hold_healing_balls.is_some_and(|n| {
             runtime.visible_heal_machine.as_ref().is_some_and(|a|a.party_count>=n)
-            &&frame.actors.iter().any(|a|a.id==crystal_render_api::VisualActorId::Effect(
+            &&(frame.actors.iter().any(|a|a.id==crystal_render_api::VisualActorId::Effect(
                 crystal_render_api::VisualEffectId::HealMachineBall(n-1)))
+                // Hall uses its native source sprite overlay; clinic effects
+                // are published as world actors. Require the actual drawn ball.
+                ||(runtime.visible_heal_machine.as_ref().is_some_and(|a|a.kind==2)
+                    &&presentation.1.iter().any(|marker|marker.0==
+                        crystal_render_api::VisualEffectId::HealMachineBall(n-1))))
         }) {
         walk.held_healing=true;walk.tick=walk.route.len()*32;walk.settle=30;
+        keyboard.reset_all();
+        if let Some(hold)=paired_hold.as_mut() {hold.frozen=true;virtual_time.pause();}
+    }
+    // Observe a source menu reached by ordinary route input. Holding its
+    // existing presentation releases keys before a later A selects a row;
+    // it never opens a menu, sets a cursor or changes the script outcome.
+    if walk.started()&&!walk.held_menu&&walk.hold_menu_id.is_some()
+        &&runtime.field_notice.is_none()&&runtime.pc_notice.is_none()
+        &&runtime.field_notice_queue.is_empty()&&runtime.pending_item_notification.is_none()
+        &&runtime.visible_field_item_notice.is_none()
+        &&let Ok(snapshot)=runtime.shell.presentation_snapshot()
+        &&let Some(menu)=snapshot.ui.menu.as_ref()
+        &&walk.hold_menu_id.as_deref()==Some(menu.menu_id.as_str())
+        &&matches!(menu.source,crystal_runtime::RuntimeMenuSource::ScriptDefinition {..})
+        &&menu.layout.vertical_menus.iter().any(|vertical|!vertical.options.is_empty())
+    {
+        let options=menu.layout.vertical_menus.iter().flat_map(|vertical|vertical.options.iter())
+            .cloned().collect::<Vec<_>>();
+        std::fs::write(walk.path.with_extension("menu-hold.txt"),format!(
+            "menu_id={}\nmap={}\ntile={:?}\noptions={:?}\n",
+            menu.menu_id,snapshot.overworld.map_name,snapshot.overworld.tile,options))
+            .expect("write observed source menu capture state");
+        walk.held_menu=true;walk.tick=walk.route.len()*32;walk.settle=30;
+        keyboard.reset_all();
+        if let Some(hold)=paired_hold.as_mut() {hold.frozen=true;virtual_time.pause();}
+    }
+    // Freeze only an actually revealed page from the live field text surface.
+    // Releasing QA keys prevents the next A from skipping the review target;
+    // the production dispatcher remains authoritative for every prior input.
+    if walk.started()&&!walk.held_field_notice
+        &&let Some((snapshot,page_index,visible_chars))=walk.hold_field_notice.as_ref().and_then(|wanted| {
+            let snapshot=runtime.shell.presentation_snapshot().ok()?;
+            let (page_index,visible_chars)=revealed_dialogue_page(&runtime,&snapshot,wanted)?;
+            Some((snapshot,page_index,visible_chars))
+        }) {
+        // Presentation snapshots deliberately omit integrity hashes. Capture
+        // this boundary once with the same authoritative hash as paired QA.
+        let checksum=runtime.shell.state_checksum().expect("checksum observed dialogue state");
+        let state=runtime.shell.session().state();
+        std::fs::write(walk.path.with_extension("notice-hold.txt"),format!(
+            "page={}\nvisible_chars={}\nmoney={}\ntext={}\n",
+            page_index,visible_chars,state.money,
+            walk.hold_field_notice.as_ref().unwrap())).expect("write observed notice capture state");
+        let overrides=state.map_block_overrides.get(&snapshot.overworld.map_name)
+            .into_iter().flat_map(|blocks|blocks.iter())
+            .map(|(&(x,y),&block)|serde_json::json!([x,y,block])).collect::<Vec<_>>();
+        let moves=snapshot.party.slots.iter().enumerate().map(|(slot,party)|serde_json::json!({
+            "slot":slot,"moves":party.pokemon.moves.iter().map(|m|serde_json::json!({
+                "name":m.name,"current_pp":m.current_pp})).collect::<Vec<_>>()
+        })).collect::<Vec<_>>();
+        let flags=["EVENT_LANCES_ROOM_ENTRANCE_CLOSED","EVENT_LANCES_ROOM_EXIT_OPEN","EVENT_BEAT_CHAMPION_LANCE"]
+            .into_iter().map(|name|(name,state.flags.is_script_flag_set(name).ok()))
+            .collect::<std::collections::BTreeMap<_,_>>();
+        let witness=serde_json::json!({
+            "map":snapshot.overworld.map_name,"tile":[snapshot.overworld.tile.x,snapshot.overworld.tile.y],
+            "checksum":format!("{:?}",checksum),
+            "source_label":snapshot.ui.text.as_ref().map(|text|text.label.as_str()),
+            "special_notice":runtime.field_notice.is_some(),"text_window_open":snapshot.ui.text_window_open,
+            "page":page_index,"visible_chars":visible_chars,"text":walk.hold_field_notice.as_ref().unwrap(),
+            "party_moves":moves,"map_block_overrides":overrides,"observed_flags":flags,
+        });
+        std::fs::write(walk.path.with_extension("dialogue-hold.json"),
+            serde_json::to_vec_pretty(&witness).expect("serialize observed dialogue state"))
+            .expect("write observed dialogue state");
+        walk.held_field_notice=true;walk.tick=walk.route.len()*32;walk.settle=30;
         keyboard.reset_all();
         if let Some(hold)=paired_hold.as_mut() {hold.frozen=true;virtual_time.pause();}
     }
@@ -224,8 +361,21 @@ pub(super) fn drive(
     }
     walk.first_builds.get_or_insert(status.terrain_builds);
     let tile = runtime.shell.session().overworld().player.tile;
-    let first_tile = *walk.first_tile.get_or_insert(tile);
-    walk.authoritative_moved |= tile != first_tile;
+    let map = runtime.shell.current_map_name();
+    walk.first_position.get_or_insert_with(|| (map.to_owned(), tile));
+    walk.authoritative_moved |= position_changed(walk.first_position.as_ref(), map, tile);
+    if let Some(mut league) = walk.league.take() {
+        keyboard.reset_all();
+        let done = league.frame(&runtime, &frame, &status, battle.as_deref(), &presentation.2, &mut settings,
+            &mut keyboard, &mut commands, capture.as_deref(),
+            windows.single().ok().map(|(entity, _)| entity),
+            paired_hold.as_deref_mut().expect("League paired capture hold"),
+            &mut virtual_time, walk.tick).expect("continuous native League review");
+        walk.tick += 1;
+        walk.finished = done;
+        walk.league = Some(league);
+        return;
+    }
     if walk.step_input && walk.started() && status.terrain_pending {
         // A debug terrain build can take longer than a step. Release input
         // while it fits the accepted position; don't audit empty/stale frames.
@@ -248,13 +398,19 @@ pub(super) fn drive(
             keyboard.release(key);
         }
     }
-    if walk.tick % 32 == 0 {walk.segment_tile=Some(tile);}
+    if walk.tick % 32 == 0 {walk.segment_position=Some((map.to_owned(),tile));}
     let segment = walk.tick / 32;
     if segment == walk.route.len() {
         assert!(!walk.hold_on_battle || visible_battle,
             "field battle review exhausted its ordinary inputs without a visible battle");
+        assert!(!walk.hold_on_move_menu || visible_move_menu,
+            "move menu review exhausted ordinary inputs before FIGHT opened");
         assert!(walk.hold_healing_balls.is_none()||walk.held_healing,
             "healing review exhausted ordinary inputs before the requested live ball count");
+        assert!(walk.hold_field_notice.is_none()||walk.held_field_notice,
+            "notice review exhausted ordinary inputs before the requested fully visible page");
+        assert!(walk.hold_menu_id.is_none()||walk.held_menu,
+            "menu review exhausted ordinary inputs before the requested source menu");
         walk.finished = true;
         std::fs::write(walk.path.with_extension("movement.csv"), &walk.trace)
             .expect("write movement trace");
@@ -296,14 +452,23 @@ pub(super) fn drive(
         walk.player_moved |= span.x >= frame.tile_size.x || span.y >= frame.tile_size.y;
         walk.player_bounds = Some((low, high));
     }
-    let key = walk.route[segment];
+    let requested_key = walk.route[segment];
+    if walk.tick % 32 == 0 || walk.segment_key.is_none() {
+        // Opt-in QA policy: keep the current battler by pressing ordinary B
+        // at the actual Shift choice. Latch for this whole input segment so
+        // closing the prompt cannot leave both A and B held simultaneously.
+        walk.segment_key = Some(if walk.keep_current_battler && requested_key == KeyCode::KeyZ
+            && runtime.battle_shift_prompt_cursor.is_some() && runtime.battle_messages.is_empty()
+        {KeyCode::KeyX} else {requested_key});
+    }
+    let key = walk.segment_key.expect("current route segment has a key");
     if walk.running_input && matches!(key,
         KeyCode::ArrowUp | KeyCode::ArrowRight | KeyCode::ArrowDown | KeyCode::ArrowLeft) {
         keyboard.press(KeyCode::KeyX);
     }
     // Hold the ordinary key until one authoritative step commits, then let
     // its production interpolation settle. Turns can consume an initial press.
-    if walk.step_input && walk.segment_tile.is_some_and(|start|tile!=start) {
+    if walk.step_input && position_changed(walk.segment_position.as_ref(), map, tile) {
         keyboard.release(key);
     } else {
         keyboard.press(key);
@@ -314,7 +479,7 @@ pub(super) fn drive(
     walk.origins
         .insert((frame.grid_origin.x, frame.grid_origin.y));
     let line = format!(
-        "{},{},{},{},{:.3},{:.3},{},{:.3},{},{},{},{},{},{},{},{},{:?},{}\n",
+        "{},{},{},{},{:.3},{:.3},{},{:.3},{},{},{},{},{},{},{},{},{:?},{},{:?}\n",
         walk.tick,
         frame.map_id,
         frame.grid_origin.x,
@@ -337,6 +502,7 @@ pub(super) fn drive(
         runtime.screen_fade.map_or(0, |fade| fade.alpha),
         runtime.visible_walk_warp_phase,
         runtime.shell.current_map_name(),
+        key,
     );
     walk.trace.push_str(&line);
     if runtime.visible_walk_warp_phase == Some(VisibleWalkWarpPhase::FadeOut) {

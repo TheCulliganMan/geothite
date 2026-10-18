@@ -12,6 +12,8 @@ const FLOWER_GROUNDS: [(&str, u16); 5] = [
     ("kanto", 0x2c),
 ];
 
+pub(crate) const SOURCE_BLOOM_TAG: f32 = 86200.;
+
 pub(crate) fn flower_shape(source: &VisualTileSource) -> Option<CellShape> {
     if source.tile_index != 0x03 {
         return None;

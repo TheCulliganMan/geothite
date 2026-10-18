@@ -3,13 +3,14 @@
 import json,math,os,unittest
 from pathlib import Path
 from magnet_sculpt import sculpture,SPECIES,HEIGHT
+from magnet_glb import read_magnet,geometry_digest
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_slime_sculpt import ray_intersections
 from bivalve_sculpt import top_view
 ROOT=Path(os.environ.get('MAGNET_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class MagnetTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def setUpClass(cls):cls.models={s:read_magnet(ROOT/(s+'.glb'),s) for s in SPECIES}
  def find(self,ps,prefix,unit,ending=None):return next(p for p in ps if p['part'].startswith(prefix) and p['part'].endswith(' / unit '+str(unit)) and (ending is None or p['part'].split(' / unit ')[0].endswith(' '+str(ending))))
  def overlap(self,a,b):
   xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
@@ -25,7 +26,7 @@ class MagnetTests(unittest.TestCase):
  def test_unit_normals_and_actual_winding(self):assert_model_shading(self,self.models)
  def test_exact_recipe_grounding_height_budget(self):
   for s,m in self.models.items():
-   self.assertEqual(m,sculpture(s));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in ps),25000 if s=='magnemite' else 75000)
+   self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['indices'])//3 for p in ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in ps),20000)
  def test_each_unit_has_complete_mechanical_details(self):
   for s,m in self.models.items():
    for j in range(1 if s=='magnemite' else 3):

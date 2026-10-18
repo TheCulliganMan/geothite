@@ -12,14 +12,17 @@ import test_nidorina_sculpt as attachments
 ROOT=Path(os.environ.get('CRYSTAL_SLOWBRO_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class SlowbroTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'slowbro.mesh.json').read_bytes())
+ def setUpClass(cls):
+  from slow_pair_glb import read_slowbro
+  cls.model=read_slowbro(ROOT/'slowbro.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'slowbro':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'slowbro':self.m})
  def test_recipe_parity_floor_height_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from slow_pair_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for label,n in (('Body /',1),('Ear /',2),('Eye /',2),('Belly band /',4),('Hand claw /',6),('Foot claw /',4),('Fang /',2),('Shell coil /',3),('Shell spine /',7),('Shell upper tooth /',4),('Shell lower tooth /',4),('Shell eye /',2)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
  def test_face_ears_jaw_and_tail_have_actual_roots(self):
   body=self.find('Body /')
@@ -28,8 +31,8 @@ class SlowbroTests(unittest.TestCase):
   for s in (-1,1):self.assertTrue(self.overlap(self.find('Ear /',s),body));self.assertTrue(self.overlap(self.find('Fang /',s),self.find('Muzzle /')))
  def test_limbs_and_all_white_claws_have_actual_roots(self):
   for s in (-1,1):
-   for child,parent in (('Shoulder /','Body /'),('Arm /','Shoulder /'),('Hand /','Arm /'),('Thigh /','Body /'),('Leg /','Thigh /'),('Foot /','Leg /')):self.assertTrue(self.overlap(self.find(child,s),self.find(parent,None if parent=='Body /' else s)),(child,s))
-   for label,parent,n in (('Hand claw /','Hand /',3),('Foot claw /','Foot /',2)):
+   for child,parent in (('Shoulder /','Body /'),('Arm /','Shoulder /'),('Thigh /','Body /'),('Leg /','Thigh /'),('Foot /','Leg /')):self.assertTrue(self.overlap(self.find(child,s),self.find(parent,None if parent=='Body /' else s)),(child,s))
+   for label,parent,n in (('Hand claw /','Arm /',3),('Foot claw /','Foot /',2)):
     for j in range(n):self.assertTrue(self.overlap(self.find(label,f'{s} {j}'),self.find(parent,s)),(label,s,j))
  def test_both_feet_support_the_model(self):
   for s in (-1,1):self.assertEqual(min(self.find('Foot /',s)['positions'][1::3]),0)
@@ -70,5 +73,5 @@ class SlowbroTests(unittest.TestCase):
   for p in self.ps:
    if p['part'].startswith(('Arm /','Leg /','Hand claw /','Foot claw /','Tail /','Shell spine /')):self.assertIsNone(crossed_faces(p),p['part'])
  def test_detached_tail_shell_and_claw_negatives(self):
-  for child,parent in (('Tail /','Body /'),('Shell body /','Tail /'),('Hand claw /','Hand /')):self.assertFalse(self.overlap(translate(copy.deepcopy(self.find(child)),3,0,0),self.find(parent)))
+  for child,parent in (('Tail /','Body /'),('Shell body /','Tail /'),('Hand claw /','Arm /')):self.assertFalse(self.overlap(translate(copy.deepcopy(self.find(child)),3,0,0),self.find(parent)))
 if __name__=='__main__':unittest.main()

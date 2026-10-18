@@ -20,8 +20,8 @@ It does not infer objects from collision or treat every used metatile as convert
 - Forest gateways have dedicated open/closed entrance variants with full deep
   roof, rear/side fenestration, timber braces, piers and nameboard. The small
   forest shrine has its own lattice-door, bell and rope model
-- Battle Tower has a separate wide four-storey glass facade, side piers, projecting
-  belts, twin entrance bays, podium and tournament crest
+- Battle Tower has a convex cyan curtain wall, coral side piers, lower wing
+  roofs, recessed windows, paired sliding doors, angled canopy and round seals
 
 Every model contains full side/back surfaces; authored windows, trim, recessed
 frames, sills and roof edges are geometry rather than source-art cards. Blank

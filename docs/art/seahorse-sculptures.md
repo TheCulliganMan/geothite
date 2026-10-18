@@ -59,3 +59,25 @@ Native Bevy 0.20 appearance verification remains incomplete; see the
 [native capture review](native-pokemon-review.md). Stored-mesh tests and software
 previews do not establish native presentation or TUI/MCP gameplay. The full
 251-species appearance goal and usable rig search remain active.
+
+
+## Current skin preparation
+
+Horsea now has 15,790 vertices / 24,912 triangles; Seadra has 13,214 / 20,324.
+Both fit the existing standard-skin budgets. Actual-parent eye layers and ivory
+fin tips, bounded tessellation and smooth thin folds/rays remove redundant
+geometry. The initial tail bend clears its inner turn and the complete root
+cap seats inside the torso. Ten-joint skin candidates add independent head,
+paired main/head fins and three arc-length tail carriers while retaining the
+real muzzle bore and authored waterline. The normal static builder exports
+match the recipes exactly. Production skin registration and native 3D/2D review
+remain pending. [The seahorse skin guide](seahorse-skins.md) records exact metrics,
+hashes, source/skin checks, corrected test oracles and remaining gates. Earlier
+verification figures above describe the original static review.
+
+## Canonical skin publication
+
+The normal builder and direct sculpture CLI now publish strict canonical GLBs.
+Production registration uses these stored skins; the earlier static review and
+preparation notes above are historical. See [the current skin guide](seahorse-skins.md)
+for source geometry, checks, current production evidence and remaining limits.

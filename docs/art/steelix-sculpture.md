@@ -1,65 +1,100 @@
-# Original Steelix sculpture
+# Original Steelix sculpture and skin
 
-`tools/steelix_sculpt.py` authors ten irregular steel boulders with nine buried
-volume-rooted joints, eight alternating body spikes and a pointed tail. The
-broad angular skull has fitted narrow ivory eyes, red irises and dark pupils.
-A separate low jaw connects through two actual metal hinges. Four upper and
-three lower squared teeth leave a real front aperture, backed by a recessed
-dark chamber. The incorrect old head prongs and exposed segment rods are gone.
+The original angular sculpture retains ten irregular steel boulders, nine
+buried volume-rooted joints, eight alternating spikes and a pointed tail.
+Its broad toothed skull has fitted ivory eyes, red irises and dark pupils.
+A separate low jaw connects through two metal hinges; four upper and three
+lower squared teeth leave a real aperture backed by a recessed dark chamber.
+The [original reference review](rock-serpents-source-review.md) records the
+anatomy investigation. No external mesh or rig is imported.
 
-The canonical `battle_species/steelix.mesh.json` has 48 closed parts and 9,244
-triangles, floor zero and height 1.45. Its SHA-256 is
-`d0f1a84536b48bc57a1781676d3871ba7a2f041af2be908aa3ccf663709fdf03`.
-All thirteen candidate checks passed in 3.075 seconds; all thirteen canonical
-checks passed in 3.045 seconds. Tests cover closed connected outward surfaces,
-unit normals following actual faces, recipe parity and anatomy counts, actual
-adjacent-rock/joint/spike/tail/head/hinge/chamber/tooth volume roots, grounded
-tail supports, fitted eye vertices and face/edge clearances, uncrossed spikes
-and joints, twelve actual empty aperture samples and filled/detached negatives.
-The body-reference test compares Rust against the authored normalized centerline.
+The canonical asset is now `battle_species/steelix.glb`. Every original source
+position, normal, color and triangle remains identical at f32 precision and
+in logical source order. Coherent same-carrier/material packing reduces
+48 logical parts to 32 runtime parts without changing geometry. It groups
+paired spikes, skull details, hinges and each jaw's teeth, retaining every
+logical range for strict readers.
 
-The first checks caught socket and ivory-eye faces crossing their faceted
-parents. Increasing the fitted layers' depth corrected the geometry without
-relaxing the checks. Final front, oblique and rear 800×824 software captures
-exited zero and were individually inspected after the correction.
+| Vertices / triangles | Logical / runtime parts | Joints | Accessors | GLB bytes | Authoring height / pack length |
+| --- | --- | --- | --- | --- | --- |
+| 10,405 / 9,244 | 48 / 32 | 10 | 155 | 420,980 | 1.45 / 9.1948 m |
 
-The dedicated builder dispatch preserves the existing Steelix registry path;
-the old generic serpent function now rejects Steelix. Its normalized
-tail-to-head centerline is 2.867623161993143, used in battle layout as
-`2.867_623_2 / 1.45`.
+All existing 20k vertex, 40k triangle, 64 part/joint, 256 accessor and 1 MiB
+limits remain intact. The normalized tail-to-head centerline remains
+2.867623161993143, used in battle layout as `2.867_623_2 / 1.45`. The pack's
+30 ft 2 in dimension remains a length, with uniform scale and full animation
+bounds; no standing-height reinterpretation or admission-gate change is made.
 
-The [source review](rock-serpents-source-review.md) records inspected official
-art and specific external candidates. Their archive endpoints returned 401;
-no external mesh, rig, skin or animation was available for inspection or import.
-This sculpture is original static geometry.
+Ten controls comprise floor root, seven successive rising-chain controls,
+head and jaw. The lowest three boulders and tail remain fixed to the root.
+Each upper boulder and its spikes stay rigid; buried joint vertices blend
+along the actual adjacent-center axis. The head, fitted gaze, hinges, dark
+chamber and upper teeth share one carrier. The jaw and complete lower teeth
+rotate around the existing hinge axis. Stiff, restrained chain motion supports
+the heavy head while the jaw opens for attack and responds separately to hit.
+Idle lasts four seconds/85 keys; attack and hit last one second/65 keys.
+Tracks rotate only, use source-relative cues and have neutral endpoints.
 
-The all-251 Rust job finished successfully (one test, 2.26 seconds). A direct
-test executable containing the canonical SHA also passed that exact test in
-2.56 seconds, but the following layout suite exposed a remaining old Steelix
-fixture: its model bounds and length assertion still described the previous
-sculpture. Seventeen tests passed and that fixture failed. It now uses the
-actual canonical bounds and the new measured reference span. Fresh layout
-execution remains required; the failed suite is not approval.
+Twenty-two Python checks pass in 13.644 seconds: thirteen retained source
+anatomy checks and nine independently decoded skin checks. They cover exact
+neutral preservation, source ranges, hierarchy/inverse binds, all controls
+moving, rigid armor/face/teeth owners, pinned supports, positive posed winding,
+bounded joint strain, actual posed boulder/joint/spike/hinge/tooth roots,
+fitted gaze, empty articulated aperture, original measured body datums,
+source cues/endpoints and mutated source/bytes/species rejection. Source checks
+now read the canonical GLB and compare f32 parity; their budgets are tightened
+to the current runtime limits.
 
-The original queued layout job also executed the stale fixture and exited 101.
-Only after that job was confirmed terminal was a fresh layout retry started.
-The native build finished in 15m00s. The executable was checked for the full
-canonical hash and mute switch, then captured with `CRYSTAL_PREVIEW_MUTE=1`
-and the known-good local pack. The image-target capture exited zero. Its full
-2000×1400 GPU frame was individually inspected: the broad toothed head, red
-gaze, connected steel chain, alternating spikes and pointed tail render with
-Pidgeotto, the arena and production battle HUD. Tail segments meet the arena
-floor and the complete silhouette fits the frame. Executable identity remained
-`(217030958, 197903744, 1791801856225148706)` (inode, bytes, mtime nanoseconds),
-and the canonical hash remained unchanged.
+Three focused Rust checks pass in 0.78 seconds for original-size GPU admission,
+canonical geometry/floor across clips and preserved world bindings/contact/full
+locomotion bounds. Shared schema and exact elapsed-idle/current-attack-cue
+checks pass in 99.98/99.76 seconds. All 24 fresh layout tests pass in 0.51
+seconds, including the previously unresolved Steelix length fixture. This
+supersedes the earlier stale-fixture failure. Together with the follower fixture regression below, there are 52 scoped checks;
+this is not a full-suite or gameplay-completion claim. Both native clients
+build in 58.40 seconds.
 
-The corrected-layout retry finished successfully. Independent final-hash
-verification used test executable identity
-`(217082565, 212678000, 1791802643816871505)`. It contained the full Steelix
-and Rhydon canonical hashes. The exact all-251 loaded-species test passed in
-2.59 seconds and all 18 battle-layout tests passed, including the corrected
-serpent fixture. Executable identity and source hashes remained stable.
-That binary lacked the newer Graveler hash, so this result does not verify
-that replacement. The native image target proves this capture path, not a
-live window, browser, animation or interactive gameplay. Completed Steelix
-review scratch is removed after inspection.
+The direct sculpture CLI, background builder, candidate and canonical GLBs
+match byte for byte. The common canonical reader restores all 48 logical
+parts without retaining a parallel JSON model. Rebuild into ignored output:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 tools/steelix_sculpt.py \
+  --output target/steelix-rebuild
+/Applications/Blender.app/Contents/MacOS/Blender --background --threads 2 \
+  --python tools/build-battle-species.py -- \
+  target/steelix-rebuild --only STEELIX
+```
+
+Source geometry SHA256:
+`87fe7010288e39368021ba4b84e9477f898cfc9e341d884f334cbaeeca40eceb`.
+Packed geometry SHA256:
+`1868650cc107f68412c8bd5614b9e2ae7db2b6f35b5db834e3213dc97ec556d0`.
+GLB SHA256:
+`7f7e568595edb71c6504127fd049b0b7af52d97e1af2bcf2583eba08c12073db`.
+The decoded neutral/attack sheet was inspected inline, entirely offscreen.
+The default Route36 review at (20,8) did not display the companion: its
+original-size following gap is 562.20215 pixels, requiring nine clear source
+steps, while that fixture walks four. A new production-publisher regression
+reproduces the blocked short fixture and verifies a clear corridor at
+EcruteakCity (20,21), retaining the full gap, original card size and unchanged
+authoritative state. It passes in 22.57 seconds, making 52 scoped checks.
+The default Route29 battle also rejects every checked original-size shot;
+its final reason is `no readable higher shot on checked ground`. Those failed
+captures are not visual approval. National Park admits the complete Steelix
+and Nidoran-M models without fallback; its paired battle image is inspected.
+The city front/world pairs completed in 63.784/46.405 seconds and were inspected
+inline, alongside the moving world frame. Front clearly exposes the skull, gaze,
+open jaw and rising chain; the wider world framing clips the giant companion
+at the left edge and remains a visibility limitation. The National Park battle
+pair completed in 144.329 seconds with both species names readable. All three
+retain the same authoritative state between 2D and 3D. Both native binaries
+remain identical across the completed city and battle groups (SHA256
+`fa5ff5777692bc1ef4d7e862a687a9abc74f0a32cff53649640b99379ec7d10c`
+for render_at_location,
+`d4fa7a2d562cd71462473a41427ea48aa2e4c3b8f3d43c40866e5a8805498a25`
+for immersive_battle_3d). No size, field-of-view,
+collision, omission or admission rule is relaxed to obtain these reviews.
+No shiny, grass-height, AA, audio,
+pack or gameplay changes belong to this batch. Full-roster improvement remains
+active.

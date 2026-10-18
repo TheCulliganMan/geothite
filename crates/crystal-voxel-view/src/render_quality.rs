@@ -3,10 +3,7 @@ use bevy::{
     anti_alias::smaa::{Smaa, SmaaPreset},
     camera::Hdr,
     light::{CascadeShadowConfig, CascadeShadowConfigBuilder, ShadowFilteringMethod},
-    post_process::{
-        bloom::{Bloom, BloomCompositeMode, BloomPrefilter},
-        dof::{DepthOfField, DepthOfFieldMode},
-    },
+    post_process::bloom::{Bloom, BloomCompositeMode, BloomPrefilter},
     prelude::*,
     render::{
         renderer::{RenderAdapterInfo, RenderDevice},
@@ -15,10 +12,15 @@ use bevy::{
 };
 use std::sync::OnceLock;
 
+#[path = "tilt_shift.rs"]
+mod tilt_shift;
+use tilt_shift::TiltShift;
+
 #[derive(Component)]
 struct WorldOverlayHdr;
 
 pub(super) fn register(app: &mut App) {
+    tilt_shift::register(app);
     app.add_systems(
         PostUpdate,
         (
@@ -28,8 +30,8 @@ pub(super) fn register(app: &mut App) {
     );
 }
 
-fn tilt_shift_enabled(quality: Quality, supported: bool, first_person: bool) -> bool {
-    quality.smaa() && supported && !first_person
+fn tilt_shift_enabled(quality: Quality, first_person: bool) -> bool {
+    quality.smaa() && !first_person
 }
 
 fn tilt_shift_requested() -> bool {
@@ -37,19 +39,9 @@ fn tilt_shift_requested() -> bool {
     *ENABLED.get_or_init(|| std::env::var("CRYSTAL_TILT_SHIFT").as_deref() != Ok("off"))
 }
 
-/// The world is measured in source pixels rather than meters. Scale the lens
-/// with focus distance so zoom and viewport scale retain the same gentle blur.
-/// At the pitched orbit angle, this produces a sharp strip through the trainer
-/// and softer scenery in front of and behind it, using actual scene depth.
-fn tilt_shift_lens(focal_distance: f32, framebuffer_height: f32) -> DepthOfField {
-    DepthOfField {
-        mode: DepthOfFieldMode::Gaussian,
-        focal_distance,
-        sensor_height: focal_distance * 0.04,
-        aperture_f_stops: 0.8,
-        max_circle_of_confusion_diameter: (framebuffer_height * 0.018).clamp(3.0, 28.0),
-        max_depth: focal_distance * 2.5,
-    }
+fn exploration_focus(frame: &crystal_render_api::VisualWorldFrame) -> bool {
+    crate::cave_water::outdoor(&frame.map_id) && frame.tiles.first().is_some_and(|tile|
+        matches!(tile.source.tileset_id.as_ref(), "johto" | "johto_modern" | "kanto"))
 }
 
 fn sync_tilt_shift(
@@ -65,7 +57,7 @@ fn sync_tilt_shift(
             &Camera,
             &Projection,
             &Transform,
-            Option<&mut DepthOfField>,
+            Option<&mut TiltShift>,
         ),
         With<crate::VoxelWorldCamera>,
     >,
@@ -73,16 +65,8 @@ fn sync_tilt_shift(
     let (Some(settings), Some(frame)) = (settings, frame) else {
         return;
     };
-    // WebGL cannot sample the depth texture required by Bevy's DOF. Also
-    // check the selected backend when a WebGPU build falls back to WebGL.
-    let supported = bevy::core_pipeline::core_3d::DEPTH_PREPASS_TEXTURE_SUPPORTED
-        && !(cfg!(target_arch = "wasm32")
-            && adapter.as_ref().is_some_and(|a| a.backend.to_str() == "gl"));
-    let enabled = tilt_shift_enabled(
-        effective(adapter.as_deref()),
-        supported,
-        settings.camera.first_person,
-    ) && tilt_shift_requested();
+    let enabled = tilt_shift_enabled(effective(adapter.as_deref()), settings.camera.first_person)
+        && tilt_shift_requested();
     let heights = terrain
         .as_ref()
         .map_or(&[][..], |t| t.footing_heights.as_slice());
@@ -107,28 +91,26 @@ fn sync_tilt_shift(
             && frame.active
             && settings.enabled
             && matches!(projection, Projection::Perspective(_));
-        let distance = focus.map(|focus| (focus - transform.translation).dot(*transform.forward()));
-        let Some(distance) = distance.filter(|d| active && d.is_finite() && *d > 0.0) else {
-            if current.is_some() {
-                commands.entity(entity).remove::<DepthOfField>();
-            }
-            continue;
-        };
         let height = camera
             .physical_viewport_size()
             .map_or(frame.viewport_size.y, |s| s.y as f32);
-        let lens = tilt_shift_lens(distance, height);
+        let band = focus.filter(|_| active).and_then(|focus| {
+            TiltShift::for_trainer(projection, transform, focus, frame.tile_size.y, height)
+                .map(|band|if exploration_focus(&frame) {band.readable_exterior()} else {band})
+        });
+        let Some(band) = band else {
+            if current.is_some() {
+                commands.entity(entity).remove::<TiltShift>();
+            }
+            continue;
+        };
         if let Some(mut current) = current {
             // Idle frames must not dirty the camera's extracted settings.
-            if current.focal_distance != lens.focal_distance
-                || current.sensor_height != lens.sensor_height
-                || current.max_circle_of_confusion_diameter != lens.max_circle_of_confusion_diameter
-                || current.max_depth != lens.max_depth
-            {
-                *current = lens;
+            if *current != band {
+                *current = band;
             }
         } else {
-            commands.entity(entity).insert(lens);
+            commands.entity(entity).insert(band);
         }
     }
 }
@@ -194,6 +176,18 @@ pub(super) fn effective(adapter: Option<&RenderAdapterInfo>) -> Quality {
     }
 }
 
+fn smaa_preset(quality: Quality, override_value: Option<&str>) -> Option<SmaaPreset> {
+    if !quality.smaa() || override_value == Some("off") {
+        return None;
+    }
+    Some(match override_value {
+        Some("smaa-high") => SmaaPreset::High,
+        Some("smaa-ultra") => SmaaPreset::Ultra,
+        _ if quality == Quality::High => SmaaPreset::Ultra,
+        _ => SmaaPreset::High,
+    })
+}
+
 pub(super) fn configure_camera(
     commands: &mut Commands,
     camera: Entity,
@@ -204,10 +198,9 @@ pub(super) fn configure_camera(
     commands
         .entity(camera)
         .insert(ShadowFilteringMethod::Gaussian);
-    if quality.smaa() {
-        commands.entity(camera).insert(Smaa {
-            preset: SmaaPreset::High,
-        });
+    if let Some(preset) = smaa_preset(quality,
+        std::env::var("CRYSTAL_ANTI_ALIASING").ok().as_deref()) {
+        commands.entity(camera).insert(Smaa { preset });
     }
     if quality == Quality::High {
         // Neutral's shoulder retains authored midtones while allowing window
@@ -290,61 +283,148 @@ pub(super) fn shadow_config(
 mod tests {
     use super::*;
 
-    fn blur_diameter(lens: &DepthOfField, fov: f32, depth: f32, height: f32) -> f32 {
-        let focal_length = bevy::post_process::dof::calculate_focal_length(lens.sensor_height, fov);
-        let scale = focal_length * focal_length / (lens.sensor_height * lens.aperture_f_stops);
-        let depth = depth.min(lens.max_depth);
-        (scale * (depth - lens.focal_distance).abs()
-            / (depth * (lens.focal_distance - focal_length))
-            * height)
-            .min(lens.max_circle_of_confusion_diameter)
+    #[test]
+    fn antialiasing_presets_keep_fallbacks_and_allow_a_same_binary_comparison() {
+        assert!(smaa_preset(Quality::High, None) == Some(SmaaPreset::Ultra));
+        assert!(smaa_preset(Quality::Balanced, None) == Some(SmaaPreset::High));
+        assert!(smaa_preset(Quality::High, Some("smaa-high")) == Some(SmaaPreset::High));
+        assert!(smaa_preset(Quality::Balanced, Some("smaa-ultra")) == Some(SmaaPreset::Ultra));
+        assert!(smaa_preset(Quality::High, Some("off")) == None);
+        assert!(smaa_preset(Quality::High, Some("unknown")) == Some(SmaaPreset::Ultra));
+        for quality in [Quality::Low, Quality::Legacy] {
+            assert!(smaa_preset(quality, Some("smaa-ultra")) == None);
+        }
     }
 
     #[test]
-    fn miniature_focus_keeps_trainer_sharp_and_scenery_soft_with_bounded_cost() {
+    fn exploration_focus_preserves_nearby_scenery_and_excludes_rooms_and_forests() {
+        use crystal_render_api::{VisualWorldFrame,VisualTile,VisualTileSource};
+        let pose=crate::camera_pose(Vec2::new(640.,576.));
+        let projection=Projection::Perspective(PerspectiveProjection {
+            fov:pose.vertical_fov_radians,..default()
+        });
+        let original=TiltShift::for_trainer(&projection,&pose.transform(),
+            Vec3::Y*32.,32.,720.).unwrap();
+        let readable=original.readable_exterior();
+        assert_eq!(readable.band.x,original.band.x);
+        assert_eq!(readable.band.z,original.band.z);
+        assert!(readable.band.y>=0.20);
+        for offset in [-0.20,-0.14,0.,0.14,0.20] {
+            assert!(readable.blur_diameter(readable.band.x+offset)<0.00001);
+        }
+        for y in [0.,0.1,0.25,0.75,0.9,1.] {
+            assert!(readable.blur_diameter(y)<=original.blur_diameter(y)+0.00001);
+        }
+        assert!(readable.band.w>6. && readable.band.w<8.,"gentle edge softness remains");
+        for (map,tileset,expected) in [
+            ("MahoganyTown","johto",true),("GoldenrodCity","johto_modern",true),
+            ("Route26","kanto",true),("CinnabarIsland","kanto",true),
+            ("IlexForest","forest",false),("DragonsDenB1F","johto",false),
+            ("Route35NationalParkGate","gate",false),("PlayersHouse1F","house",false),
+            ("MahoganyTown","unknown",false),
+        ] {
+            let frame=VisualWorldFrame {map_id:map.into(),tiles:vec![VisualTile {
+                column:0,row:0,source:VisualTileSource {tileset_id:tileset.into(),
+                    metatile_id:0,subtile_column:0,subtile_row:0,tile_index:0},
+                texture:default(),animation_frames:None,priority:false,
+            }],..default()};
+            assert_eq!(exploration_focus(&frame),expected,"{map}/{tileset}");
+        }
+        assert!(!exploration_focus(&VisualWorldFrame {map_id:"MahoganyTown".into(),..default()}));
+    }
+
+    #[test]
+    fn focus_band_preserves_the_trainer_and_fades_smoothly_into_visible_blur() {
         let pose = crate::camera_pose(Vec2::new(640.0, 576.0));
-        let focus = pose.eye.distance(pose.target);
-        let lens = tilt_shift_lens(focus, 720.0);
-        let coc = |depth| blur_diameter(&lens, pose.vertical_fov_radians, depth, 720.0);
-        assert_eq!(coc(focus), 0.0);
-        for depth in [focus * 0.96, focus * 1.04] {
-            assert!(coc(depth) < 1.75, "the trainer's body must stay readable");
+        let projection = Projection::Perspective(PerspectiveProjection {
+            fov: pose.vertical_fov_radians,
+            ..default()
+        });
+        let torso = Vec3::new(0.0, 32.0, 0.0);
+        let band =
+            TiltShift::for_trainer(&projection, &pose.transform(), torso, 32.0, 720.0).unwrap();
+        let center = band.band.x;
+        assert_eq!(band.blur_diameter(center), 0.0);
+        assert!(band.blur_diameter(center - 0.14) < 0.00001);
+        assert!(band.blur_diameter(center + 0.14) < 0.00001);
+        assert!(band.blur_diameter(center + band.band.y) < 0.00001);
+        assert!(band.blur_diameter(center + band.band.y + 0.001) < 0.001);
+        // A shifted focus must retain the gradient to BOTH screen edges,
+        // rather than reaching maximum blur early on its longer side.
+        for center in [center, 0.22, 0.78] {
+            let mut band = band;
+            band.band.x = center;
+            for edge in [0.0, 1.0] {
+                let direction = (edge - center).signum();
+                let start = center + direction * band.band.y;
+                let row = |t: f32| start + (edge - start) * t;
+                let mut previous = 0.0;
+                for step in 0..=100 {
+                    let blur = band.blur_diameter(row(step as f32 / 100.0));
+                    assert!(blur >= previous - 0.00001, "monotonic focus falloff");
+                    assert!(blur <= band.band.w + 0.00001);
+                    previous = blur;
+                }
+                assert!(
+                    band.blur_diameter(row(0.5)) < band.band.w * 0.20,
+                    "nearby scenery must retain detail"
+                );
+                let outer = [0.75, 0.9, 1.0].map(|t| band.blur_diameter(row(t)));
+                assert!(outer[1] - outer[0] > band.band.w * 0.15);
+                assert!(
+                    outer[2] - outer[1] > band.band.w * 0.15,
+                    "the outer edge must still have a visible gradient"
+                );
+                assert!((outer[2] - band.band.w).abs() < 0.0001);
+            }
         }
-        for depth in [focus * 0.65, focus * 1.8] {
-            assert!(
-                coc(depth) > 10.0,
-                "foreground/background softness should be visible"
-            );
-            assert!(coc(depth) <= 12.96);
-        }
-        assert!(coc(1.0) <= 12.96);
-        assert!(coc(f32::INFINITY).is_finite());
+        assert!((band.band.w - 12.96).abs() < 0.001);
         assert_eq!(
-            tilt_shift_lens(focus, 4320.0).max_circle_of_confusion_diameter,
-            28.0
+            TiltShift::for_trainer(&projection, &pose.transform(), torso, 32.0, 4320.0)
+                .unwrap()
+                .band
+                .w,
+            36.0
+        );
+        assert!(
+            TiltShift::for_trainer(
+                &projection,
+                &pose.transform(),
+                pose.eye - *pose.transform().forward(),
+                32.0,
+                720.0
+            )
+            .is_none()
         );
     }
 
     #[test]
-    fn miniature_lens_preserves_softness_under_world_scaling_and_orbit_zoom() {
-        let fov = crate::camera_pose(Vec2::new(640.0, 576.0)).vertical_fov_radians;
-        for focus in [144.0, 288.0, 576.0, 1152.0] {
-            for ratio in [0.65, 0.96, 1.04, 1.8] {
-                let base = blur_diameter(&tilt_shift_lens(576.0, 720.0), fov, 576.0 * ratio, 720.0);
-                let scaled =
-                    blur_diameter(&tilt_shift_lens(focus, 720.0), fov, focus * ratio, 720.0);
-                assert!((base - scaled).abs() < 0.00001);
-                let retina =
-                    blur_diameter(&tilt_shift_lens(focus, 1440.0), fov, focus * ratio, 1440.0);
-                assert!((retina - scaled * 2.0).abs() < 0.00001);
+    fn focus_band_protects_the_full_trainer_at_every_zoom_and_scales_with_resolution() {
+        let viewport = Vec2::new(640.0, 576.0);
+        let torso = Vec3::new(0.0, 32.0, 0.0);
+        for zoom in [0.0, 1.0, 5.0] {
+            let pose = crate::VoxelCameraControls::new(zoom, 0.0).pose(viewport);
+            let projection = Projection::Perspective(PerspectiveProjection {
+                fov: pose.vertical_fov_radians,
+                ..default()
+            });
+            let band =
+                TiltShift::for_trainer(&projection, &pose.transform(), torso, 32.0, 720.0).unwrap();
+            let retina =
+                TiltShift::for_trainer(&projection, &pose.transform(), torso, 32.0, 1440.0)
+                    .unwrap();
+            assert_eq!(retina.band.w, band.band.w * 2.0);
+            let matrix = projection.get_clip_from_view() * pose.transform().to_matrix().inverse();
+            for point in [Vec3::ZERO, torso, Vec3::Y * 64.0] {
+                let clip = matrix * point.extend(1.0);
+                assert_eq!(band.blur_diameter(0.5 - clip.y / clip.w * 0.5), 0.0);
             }
         }
-        assert!(!tilt_shift_enabled(Quality::Low, true, false));
-        assert!(!tilt_shift_enabled(Quality::Legacy, true, false));
-        assert!(!tilt_shift_enabled(Quality::Balanced, false, false));
-        assert!(!tilt_shift_enabled(Quality::High, true, true));
-        assert!(tilt_shift_enabled(Quality::Balanced, true, false));
-        assert!(tilt_shift_enabled(Quality::High, true, false));
+        assert!(!tilt_shift_enabled(Quality::Low, false));
+        assert!(!tilt_shift_enabled(Quality::Legacy, false));
+        assert!(!tilt_shift_enabled(Quality::High, true));
+        assert!(tilt_shift_enabled(Quality::Balanced, false));
+        assert!(tilt_shift_enabled(Quality::High, false));
     }
 
     #[test]
@@ -401,12 +481,16 @@ mod tests {
                 app.world_mut().entity_mut(camera).insert(transform);
                 app.update();
                 if requested().smaa() {
-                    let lens = app.world().get::<DepthOfField>(camera).unwrap();
-                    let expected = (Vec3::new(0.0, 39.0, 0.0) - pose.eye).dot(*transform.forward());
-                    assert!((lens.focal_distance - expected).abs() < 0.001);
+                    let band = app.world().get::<TiltShift>(camera).unwrap();
+                    let projection = app.world().get::<Projection>(camera).unwrap();
+                    let clip = projection.get_clip_from_view()
+                        * transform.to_matrix().inverse()
+                        * Vec3::new(0.0, 39.0, 0.0).extend(1.0);
+                    let expected = 0.5 - clip.y / clip.w * 0.5;
+                    assert!((band.band.x - expected).abs() < 0.001);
                 }
-                assert!(app.world().get::<DepthOfField>(ui).is_none());
-                assert!(app.world().get::<DepthOfField>(capture).is_none());
+                assert!(app.world().get::<TiltShift>(ui).is_none());
+                assert!(app.world().get::<TiltShift>(capture).is_none());
             }
         }
         app.world_mut()
@@ -414,19 +498,19 @@ mod tests {
             .camera
             .first_person = true;
         app.update();
-        assert!(app.world().get::<DepthOfField>(camera).is_none());
+        assert!(app.world().get::<TiltShift>(camera).is_none());
         app.world_mut()
             .resource_mut::<crate::VoxelViewSettings>()
             .camera
             .first_person = false;
         app.update();
         assert_eq!(
-            app.world().get::<DepthOfField>(camera).is_some(),
+            app.world().get::<TiltShift>(camera).is_some(),
             requested().smaa()
         );
         app.world_mut().get_mut::<Camera>(camera).unwrap().is_active = false;
         app.update();
-        assert!(app.world().get::<DepthOfField>(camera).is_none());
+        assert!(app.world().get::<TiltShift>(camera).is_none());
     }
 
     #[test]
@@ -482,7 +566,7 @@ mod tests {
         );
         assert_eq!(
             app.world().get::<Smaa>(world_camera).is_some(),
-            requested().smaa()
+            smaa_preset(requested(), std::env::var("CRYSTAL_ANTI_ALIASING").ok().as_deref()).is_some()
         );
     }
     #[test]

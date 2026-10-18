@@ -78,6 +78,34 @@ pub(crate) enum Species {
     Pidgey,
     Oddish,
     Poliwag,
+    Horsea,
+    Seadra,
+    Kingdra,
+    Goldeen,
+    Seaking,
+    Magikarp,
+    Larvitar,
+    Pupitar,
+    Tyranitar,
+    Quilava,
+    Typhlosion,
+    Charmeleon,
+    Charizard,
+    Graveler,
+    Golem,
+    Omanyte,
+    Omastar,
+    Aerodactyl,
+    Dratini,
+    Dragonair,
+    Dragonite,
+    Clefable,
+    Wigglytuff,
+    Sandshrew,
+    Sandslash,
+    Politoed,
+    Poliwrath,
+    Poliwhirl,
     Clefairy,
     Jigglypuff,
     Rattata,
@@ -93,8 +121,35 @@ pub(crate) enum Species {
     Sentret,
     Staryu,
     Voltorb,
+    Bellsprout,
+    Weepinbell,
+    Victreebel,
+    Gloom,
+    Vileplume,
+    Raichu,
+    Ekans,
+    Arbok,
+    Steelix,
+    Pineco,
+    Forretress,
+    Kabuto,
+    Kabutops,
+    Electrode,
     Onix,
     Diglett,
+    Dugtrio,
+    Tentacool,
+    Jynx,
+    Mankey,
+    Primeape,
+    Meowth,
+    Persian,
+    Doduo,
+    Dodrio,
+    Pidgeotto,
+    Fearow,
+    Pidgeot,
+    Tentacruel,
     Slowpoke,
     Entei,
     Raikou,
@@ -142,6 +197,65 @@ pub(crate) enum Species {
     Moltres,
     Zapdos,
     Articuno,
+    Mew,
+    Mewtwo,
+    Heracross,
+    Pinsir,
+    Scizor,
+    Scyther,
+    Starmie,
+    Gastly,
+    Haunter,
+    Eevee,
+    Vulpix,
+    Ninetales,
+    Venonat,
+    Venomoth,
+    Paras,
+    Parasect,
+    Metapod,
+    Kakuna,
+    Caterpie,
+    Weedle,
+    Krabby,
+    Kingler,
+    Shellder,
+    Cloyster,
+    Grimer,
+    Muk,
+    Ditto,
+    Seel,
+    Dewgong,
+    Drowzee,
+    Hypno,
+    Abra,
+    Alakazam,
+    Kadabra,
+    Koffing,
+    Weezing,
+    Wartortle,
+    Blastoise,
+    Croconaw,
+    Feraligatr,
+    Cubone,
+    Marowak,
+    Magnemite,
+    Magneton,
+    Tangela,
+    Kangaskhan,
+    Ponyta,
+    Rapidash,
+    Machop,
+    Machoke,
+    Machamp,
+    Rhyhorn,
+    Rhydon,
+    Umbreon,
+    Jolteon,
+    Flareon,
+    Espeon,
+    Vaporeon,
+    Celebi,
     HoOh,
     Lugia,
     Corsola,
@@ -161,6 +275,22 @@ pub(crate) enum Species {
     Smoochum,
     Elekid,
     Magby,
+    Magmar,
+    Electabuzz,
+    Slowking,
+    Slowbro,
+    Lickitung,
+    MrMime,
+    Chansey,
+    Blissey,
+    Growlithe,
+    Arcanine,
+    NidoranF,
+    NidoranM,
+    Nidorina,
+    Nidorino,
+    Nidoqueen,
+    Nidoking,
     Pichu,
     Cleffa,
     Igglybuff,
@@ -177,7 +307,7 @@ pub(crate) enum Species {
 }
 
 impl Species {
-    pub const ALL: [Self; 141] = [
+    pub const ALL: [Self; 271] = [
         Self::Chikorita,
         Self::Bayleef,
         Self::Meganium,
@@ -198,6 +328,34 @@ impl Species {
         Self::Pidgey,
         Self::Oddish,
         Self::Poliwag,
+        Self::Horsea,
+        Self::Seadra,
+        Self::Kingdra,
+        Self::Goldeen,
+        Self::Seaking,
+        Self::Magikarp,
+        Self::Larvitar,
+        Self::Pupitar,
+        Self::Tyranitar,
+        Self::Quilava,
+        Self::Typhlosion,
+        Self::Charmeleon,
+        Self::Charizard,
+        Self::Graveler,
+        Self::Golem,
+        Self::Omanyte,
+        Self::Omastar,
+        Self::Aerodactyl,
+        Self::Dratini,
+        Self::Dragonair,
+        Self::Dragonite,
+        Self::Clefable,
+        Self::Wigglytuff,
+        Self::Sandshrew,
+        Self::Sandslash,
+        Self::Politoed,
+        Self::Poliwrath,
+        Self::Poliwhirl,
         Self::Clefairy,
         Self::Jigglypuff,
         Self::Rattata,
@@ -213,8 +371,35 @@ impl Species {
         Self::Sentret,
         Self::Staryu,
         Self::Voltorb,
+        Self::Bellsprout,
+        Self::Weepinbell,
+        Self::Victreebel,
+        Self::Gloom,
+        Self::Vileplume,
+        Self::Raichu,
+        Self::Ekans,
+        Self::Arbok,
+        Self::Steelix,
+        Self::Pineco,
+        Self::Forretress,
+        Self::Kabuto,
+        Self::Kabutops,
+        Self::Electrode,
         Self::Onix,
         Self::Diglett,
+        Self::Dugtrio,
+        Self::Tentacool,
+        Self::Jynx,
+        Self::Mankey,
+        Self::Primeape,
+        Self::Meowth,
+        Self::Persian,
+        Self::Doduo,
+        Self::Dodrio,
+        Self::Pidgeotto,
+        Self::Fearow,
+        Self::Pidgeot,
+        Self::Tentacruel,
         Self::Slowpoke,
         Self::Entei,
         Self::Raikou,
@@ -262,6 +447,65 @@ impl Species {
         Self::Moltres,
         Self::Zapdos,
         Self::Articuno,
+        Self::Mew,
+        Self::Mewtwo,
+        Self::Heracross,
+        Self::Pinsir,
+        Self::Scizor,
+        Self::Scyther,
+        Self::Starmie,
+        Self::Gastly,
+        Self::Haunter,
+        Self::Eevee,
+        Self::Vulpix,
+        Self::Ninetales,
+        Self::Venonat,
+        Self::Venomoth,
+        Self::Paras,
+        Self::Parasect,
+        Self::Metapod,
+        Self::Kakuna,
+        Self::Caterpie,
+        Self::Weedle,
+        Self::Krabby,
+        Self::Kingler,
+        Self::Shellder,
+        Self::Cloyster,
+        Self::Grimer,
+        Self::Muk,
+        Self::Ditto,
+        Self::Seel,
+        Self::Dewgong,
+        Self::Drowzee,
+        Self::Hypno,
+        Self::Abra,
+        Self::Alakazam,
+        Self::Kadabra,
+        Self::Koffing,
+        Self::Weezing,
+        Self::Wartortle,
+        Self::Blastoise,
+        Self::Croconaw,
+        Self::Feraligatr,
+        Self::Cubone,
+        Self::Marowak,
+        Self::Magnemite,
+        Self::Magneton,
+        Self::Tangela,
+        Self::Kangaskhan,
+        Self::Ponyta,
+        Self::Rapidash,
+        Self::Machop,
+        Self::Machoke,
+        Self::Machamp,
+        Self::Rhyhorn,
+        Self::Rhydon,
+        Self::Umbreon,
+        Self::Jolteon,
+        Self::Flareon,
+        Self::Espeon,
+        Self::Vaporeon,
+        Self::Celebi,
         Self::HoOh,
         Self::Lugia,
         Self::Corsola,
@@ -281,6 +525,22 @@ impl Species {
         Self::Smoochum,
         Self::Elekid,
         Self::Magby,
+        Self::Magmar,
+        Self::Electabuzz,
+        Self::Slowking,
+        Self::Slowbro,
+        Self::Lickitung,
+        Self::MrMime,
+        Self::Chansey,
+        Self::Blissey,
+        Self::Growlithe,
+        Self::Arcanine,
+        Self::NidoranF,
+        Self::NidoranM,
+        Self::Nidorina,
+        Self::Nidorino,
+        Self::Nidoqueen,
+        Self::Nidoking,
         Self::Pichu,
         Self::Cleffa,
         Self::Igglybuff,
@@ -345,6 +605,34 @@ impl Species {
             Self::Pidgey => "pidgey",
             Self::Oddish => "oddish",
             Self::Poliwag => "poliwag",
+            Self::Horsea => "horsea",
+            Self::Seadra => "seadra",
+            Self::Kingdra => "kingdra",
+            Self::Goldeen => "goldeen",
+            Self::Seaking => "seaking",
+            Self::Magikarp => "magikarp",
+            Self::Larvitar => "larvitar",
+            Self::Pupitar => "pupitar",
+            Self::Tyranitar => "tyranitar",
+            Self::Quilava => "quilava",
+            Self::Typhlosion => "typhlosion",
+            Self::Charmeleon => "charmeleon",
+            Self::Charizard => "charizard",
+            Self::Graveler => "graveler",
+            Self::Golem => "golem",
+            Self::Omanyte => "omanyte",
+            Self::Omastar => "omastar",
+            Self::Aerodactyl => "aerodactyl",
+            Self::Dratini => "dratini",
+            Self::Dragonair => "dragonair",
+            Self::Dragonite => "dragonite",
+            Self::Clefable => "clefable",
+            Self::Wigglytuff => "wigglytuff",
+            Self::Sandshrew => "sandshrew",
+            Self::Sandslash => "sandslash",
+            Self::Politoed => "politoed",
+            Self::Poliwrath => "poliwrath",
+            Self::Poliwhirl => "poliwhirl",
             Self::Clefairy => "clefairy",
             Self::Jigglypuff => "jigglypuff",
             Self::Rattata => "rattata",
@@ -360,8 +648,35 @@ impl Species {
             Self::Sentret => "sentret",
             Self::Staryu => "staryu",
             Self::Voltorb => "voltorb",
+            Self::Bellsprout => "bellsprout",
+            Self::Weepinbell => "weepinbell",
+            Self::Victreebel => "victreebel",
+            Self::Gloom => "gloom",
+            Self::Vileplume => "vileplume",
+            Self::Raichu => "raichu",
+            Self::Ekans => "ekans",
+            Self::Arbok => "arbok",
+            Self::Steelix => "steelix",
+            Self::Pineco => "pineco",
+            Self::Forretress => "forretress",
+            Self::Kabuto => "kabuto",
+            Self::Kabutops => "kabutops",
+            Self::Electrode => "electrode",
             Self::Onix => "onix",
             Self::Diglett => "diglett",
+            Self::Dugtrio => "dugtrio",
+            Self::Tentacruel => "tentacruel",
+            Self::Tentacool => "tentacool",
+            Self::Jynx => "jynx",
+            Self::Primeape => "primeape",
+            Self::Mankey => "mankey",
+            Self::Meowth => "meowth",
+            Self::Persian => "persian",
+            Self::Doduo => "doduo",
+            Self::Dodrio => "dodrio",
+            Self::Pidgeotto => "pidgeotto",
+            Self::Fearow => "fearow",
+            Self::Pidgeot => "pidgeot",
             Self::Entei => "entei",
             Self::Raikou => "raikou",
             Self::Ledyba => "ledyba",
@@ -411,6 +726,65 @@ impl Species {
             Self::Moltres => "moltres",
             Self::Zapdos => "zapdos",
             Self::Articuno => "articuno",
+            Self::Mew => "mew",
+            Self::Mewtwo => "mewtwo",
+            Self::Heracross => "heracross",
+            Self::Pinsir => "pinsir",
+            Self::Scizor => "scizor",
+            Self::Scyther => "scyther",
+            Self::Starmie => "starmie",
+            Self::Gastly => "gastly",
+            Self::Haunter => "haunter",
+            Self::Eevee => "eevee",
+            Self::Vulpix => "vulpix",
+            Self::Ninetales => "ninetales",
+            Self::Venonat => "venonat",
+            Self::Venomoth => "venomoth",
+            Self::Paras => "paras",
+            Self::Parasect => "parasect",
+            Self::Metapod => "metapod",
+            Self::Kakuna => "kakuna",
+            Self::Caterpie => "caterpie",
+            Self::Weedle => "weedle",
+            Self::Rhydon => "rhydon",
+            Self::Drowzee => "drowzee",
+            Self::Hypno => "hypno",
+            Self::Abra => "abra",
+            Self::Alakazam => "alakazam",
+            Self::Kadabra => "kadabra",
+            Self::Koffing => "koffing",
+            Self::Weezing => "weezing",
+            Self::Wartortle => "wartortle",
+            Self::Blastoise => "blastoise",
+            Self::Croconaw => "croconaw",
+            Self::Feraligatr => "feraligatr",
+            Self::Cubone => "cubone",
+            Self::Marowak => "marowak",
+            Self::Magnemite => "magnemite",
+            Self::Magneton => "magneton",
+            Self::Tangela => "tangela",
+            Self::Kangaskhan => "kangaskhan",
+            Self::Ponyta => "ponyta",
+            Self::Rapidash => "rapidash",
+            Self::Machop => "machop",
+            Self::Machoke => "machoke",
+            Self::Machamp => "machamp",
+            Self::Rhyhorn => "rhyhorn",
+            Self::Dewgong => "dewgong",
+            Self::Seel => "seel",
+            Self::Ditto => "ditto",
+            Self::Muk => "muk",
+            Self::Grimer => "grimer",
+            Self::Cloyster => "cloyster",
+            Self::Shellder => "shellder",
+            Self::Kingler => "kingler",
+            Self::Krabby => "krabby",
+            Self::Umbreon => "umbreon",
+            Self::Jolteon => "jolteon",
+            Self::Flareon => "flareon",
+            Self::Espeon => "espeon",
+            Self::Vaporeon => "vaporeon",
+            Self::Celebi => "celebi",
             Self::HoOh => "ho_oh",
             Self::Lugia => "lugia",
             Self::Corsola => "corsola",
@@ -428,6 +802,22 @@ impl Species {
             Self::Smoochum => "smoochum",
             Self::Elekid => "elekid",
             Self::Magby => "magby",
+            Self::Magmar => "magmar",
+            Self::Electabuzz => "electabuzz",
+            Self::Slowking => "slowking",
+            Self::Slowbro => "slowbro",
+            Self::Lickitung => "lickitung",
+            Self::MrMime => "mr__mime",
+            Self::Chansey => "chansey",
+            Self::Blissey => "blissey",
+            Self::Growlithe => "growlithe",
+            Self::Arcanine => "arcanine",
+            Self::NidoranF => "nidoran_f",
+            Self::NidoranM => "nidoran_m",
+            Self::Nidorina => "nidorina",
+            Self::Nidorino => "nidorino",
+            Self::Nidoking => "nidoking",
+            Self::Nidoqueen => "nidoqueen",
             Self::Pichu => "pichu",
             Self::Cleffa => "cleffa",
             Self::Igglybuff => "igglybuff",
@@ -450,6 +840,19 @@ impl Species {
         match self {
             Self::Procedural(_) => unreachable!("procedural rigs do not use the GLB schema"),
             Self::Diglett => &["root", "body"],
+            Self::Dugtrio => &["root", "mole_0", "mole_1", "mole_2"],
+            Self::Tentacruel => &["root", "bell", "tentacle_0_base", "tentacle_0_bend", "tentacle_1_base", "tentacle_1_bend", "tentacle_2_base", "tentacle_2_bend", "tentacle_3_base", "tentacle_3_bend", "tentacle_4_base", "tentacle_4_bend", "tentacle_5_base", "tentacle_5_bend", "tentacle_6_base", "tentacle_6_bend", "tentacle_7_base", "tentacle_7_bend", "tentacle_8_base", "tentacle_8_bend", "tentacle_9_base", "tentacle_9_bend", "arm_-1", "arm_1"],
+            Self::Tentacool => &["root", "bell", "tentacle_0_base", "tentacle_0_bend", "tentacle_1_base", "tentacle_1_bend"],
+            Self::Jynx => &["root", "torso", "neck", "head", "hair_left", "hair_right", "arm_left", "elbow_left", "hand_left", "arm_right", "elbow_right", "hand_right", "finger_left_0", "finger_left_1", "finger_left_2", "finger_left_3", "finger_left_4", "finger_right_0", "finger_right_1", "finger_right_2", "finger_right_3", "finger_right_4"],
+            Self::Primeape => &["root", "body", "arm_left", "hand_left", "arm_right", "hand_right", "ear_left", "ear_right", "leg_left", "leg_right"],
+            Self::Mankey => &["root", "body", "arm_left", "hand_left", "arm_right", "hand_right", "ear_left", "ear_right", "leg_left", "leg_right", "tail_base", "tail_tip"],
+            Self::Meowth => &["root", "body", "neck", "head", "ear_left", "ear_right", "arm_left", "hand_left", "arm_right", "hand_right", "leg_-1", "leg_1", "tail_base", "tail_mid", "tail_tip"],
+            Self::Persian => &["root", "body", "neck", "head", "ear_left", "ear_right", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1", "tail_base", "tail_mid", "tail_tip"],
+            Self::Doduo => &["root", "body", "neck_base_0", "neck_tip_0", "head_0", "jaw_0", "neck_base_1", "neck_tip_1", "head_1", "jaw_1", "leg_left", "leg_right"],
+            Self::Dodrio => &["root", "body", "neck_base_0", "neck_tip_0", "head_0", "jaw_0", "neck_base_1", "neck_tip_1", "head_1", "jaw_1", "neck_base_2", "neck_tip_2", "head_2", "jaw_2", "leg_left", "leg_right", "tail_0", "tail_1", "tail_2"],
+            Self::Pidgeotto => &["root", "body", "head", "wing_left", "wrist_left", "wing_right", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_outer", "tail_middle", "tail_center", "crest"],
+            Self::Fearow => &["root", "body", "neck_base", "neck_tip", "head", "lower_bill", "wing_left", "wrist_left", "wing_right", "wrist_right", "tail_0", "tail_1", "tail_2", "tail_3", "tail_4", "leg_left", "leg_right", "crown", "mane"],
+            Self::Pidgeot => &["root", "body", "neck_base", "neck_tip", "head", "lower_bill", "wing_left", "wrist_left", "wing_right", "wrist_right", "tail_0", "tail_1", "tail_2", "tail_3", "tail_4", "leg_left", "leg_right", "crest_-1", "crest_0", "crest_1"],
             Self::Unown(_) => &["root", "eye", "glyph"],
             Self::Entei => &["root", "torso", "neck", "head", "mane_left", "mane_right", "smoke_base", "smoke_tip", "blade_left", "blade_right", "fore_left", "fore_right", "rear_left", "rear_right", "tail_base", "tail_tip"],
             Self::Raikou => &["root", "torso", "neck", "head", "ear_left", "ear_right", "mane_base", "mane_middle", "mane_tip", "fore_left", "fore_right", "rear_left", "rear_right", "tail_base", "tail_bend", "tail_tip"],
@@ -500,6 +903,65 @@ impl Species {
             Self::Moltres => &["root", "torso", "neck", "head", "wing_left", "wing_right", "fire_left", "fire_right", "crown", "tail", "leg_left", "leg_right"],
             Self::Zapdos => &["root", "torso", "neck", "head", "wing_left", "wing_right", "tail", "leg_left", "leg_right"],
             Self::Articuno => &["root", "torso", "neck", "head", "wing_left", "wing_right", "tail_root", "tail_curve", "tail_tip", "leg_left", "leg_right"],
+            Self::Mew => &["root", "torso", "neck", "head", "arm_left", "arm_right", "leg_left", "leg_right", "tail_root", "tail_curve", "tail_tip", "ear_left", "ear_right"],
+            Self::Mewtwo => &["root", "torso", "neck", "head", "upper_left", "forearm_left", "hand_left", "upper_right", "forearm_right", "hand_right", "hip_left", "knee_left", "hip_right", "knee_right", "tail_root", "tail_curve", "tail_tip"],
+            Self::Heracross => &["root", "body", "thorax", "head", "arm_left", "forearm_left", "arm_right", "forearm_right", "antenna_left", "antenna_right", "leg_left", "leg_right"],
+            Self::Pinsir => &["root", "abdomen", "carapace", "pincer_left", "pincer_right", "arm_left", "forearm_left", "hand_left", "arm_right", "forearm_right", "hand_right", "leg_left", "leg_right"],
+            Self::Scizor => &["root", "thorax", "abdomen", "neck", "head", "arm_left", "forearm_left", "pincer_left", "jaw_left", "arm_right", "forearm_right", "pincer_right", "jaw_right", "wing_left", "wing_right", "leg_left", "leg_right"],
+            Self::Scyther => &["root", "thorax", "abdomen", "neck", "head", "arm_left", "scythe_left", "arm_right", "scythe_right", "wing_left", "wing_right", "leg_left", "leg_right"],
+            Self::Starmie => &["root", "core", "front_layer", "front_arm_0_base", "front_arm_0_tip", "front_arm_1_base", "front_arm_1_tip", "front_arm_2_base", "front_arm_2_tip", "front_arm_3_base", "front_arm_3_tip", "front_arm_4_base", "front_arm_4_tip", "back_layer", "back_arm_0_base", "back_arm_0_tip", "back_arm_1_base", "back_arm_1_tip", "back_arm_2_base", "back_arm_2_tip", "back_arm_3_base", "back_arm_3_tip", "back_arm_4_base", "back_arm_4_tip"],
+            Self::Gastly => &["root", "face_core", "gas_halo", "gas_sector_0", "gas_sector_1", "gas_sector_2", "gas_sector_3", "gas_sector_4", "gas_sector_5", "gas_sector_6", "gas_sector_7"],
+            Self::Haunter => &["root", "face_core", "ear_left", "ear_right", "shroud_left", "shroud_right", "hem_left", "hem_right", "hand_left", "finger_-1_0", "finger_-1_1", "finger_-1_2", "hand_right", "finger_1_0", "finger_1_1", "finger_1_2"],
+            Self::Eevee => &["root", "body", "neck", "head", "ear_left", "ear_right", "tail_base", "tail_middle", "tail_tip", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1"],
+            Self::Vulpix => &["root", "body", "neck", "head", "ear_left", "ear_right", "tail_fan", "tail_0", "tail_1", "tail_2", "tail_3", "tail_4", "tail_5", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1"],
+            Self::Ninetales => &["root", "body", "neck", "head", "ear_left", "ear_right", "tail_fan", "tail_0", "tail_1", "tail_2", "tail_3", "tail_4", "tail_5", "tail_6", "tail_7", "tail_8", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1"],
+            Self::Venonat => &["root", "body", "antenna_left", "antenna_right", "arm_left", "arm_right", "hand_left", "hand_right", "leg_left", "leg_right"],
+            Self::Venomoth => &["root", "thorax", "head", "abdomen", "wing_left_front", "wing_left_rear", "wing_right_front", "wing_right_rear", "antenna_center", "antenna_left", "antenna_right", "leg_-1_0", "leg_-1_1", "leg_-1_2", "leg_1_0", "leg_1_1", "leg_1_2"],
+            Self::Paras => &["root", "body", "head", "claw_left", "claw_right", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1", "fungus_-1", "fungus_1"],
+            Self::Parasect => &["root", "body", "head", "claw_left", "claw_right", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1", "fungus_0"],
+            Self::Metapod => &["root", "shell", "head", "tail_fold"],
+            Self::Kakuna => &["root", "shell", "head", "arm_fold_left", "arm_fold_right"],
+            Self::Caterpie => &["root", "segment_0", "segment_1", "segment_2", "segment_3", "segment_4", "segment_5", "segment_6", "segment_7", "head", "horn_left", "horn_right"],
+            Self::Weedle => &["root", "segment_0", "segment_1", "segment_2", "segment_3", "segment_4", "segment_5", "segment_6", "segment_7", "head", "head_sting", "tail_sting"],
+            Self::Rhydon => &["root", "body", "head", "jaw", "arm_left", "hand_left", "arm_right", "hand_right", "leg_left", "leg_right", "tail_base", "tail_tip", "ear_left", "ear_right", "drill"],
+            Self::Drowzee => &["root", "body", "head", "arm_left", "elbow_left", "wrist_left", "arm_right", "elbow_right", "wrist_right", "leg_left", "leg_right", "ear_left", "ear_right"],
+            Self::Hypno => &["root", "body", "head", "arm_left", "elbow_left", "wrist_left", "arm_right", "elbow_right", "wrist_right", "leg_left", "leg_right", "ear_left", "ear_right", "pendulum"],
+            Self::Abra => &["root", "body", "head", "arm_left", "elbow_left", "wrist_left", "arm_right", "elbow_right", "wrist_right", "leg_left", "leg_right", "ear_left", "ear_right", "tail_base", "tail_tip"],
+            Self::Alakazam => &["root", "body", "head", "arm_left", "elbow_left", "wrist_left", "arm_right", "elbow_right", "wrist_right", "leg_left", "leg_right", "ear_left", "ear_right", "moustache_left", "moustache_right", "spoon_left", "spoon_right"],
+            Self::Kadabra => &["root", "body", "head", "arm_left", "elbow_left", "wrist_left", "arm_right", "elbow_right", "wrist_right", "leg_left", "leg_right", "ear_left", "ear_right", "moustache_left", "moustache_right", "tail_base", "tail_tip", "spoon"],
+            Self::Koffing => &["root", "body", "gas_cloud_0", "gas_lobe_0_0", "gas_lobe_0_1", "gas_lobe_0_2", "gas_lobe_0_3", "gas_cloud_1", "gas_lobe_1_0", "gas_lobe_1_1", "gas_lobe_1_2", "gas_lobe_1_3"],
+            Self::Weezing => &["root", "body", "small_orb", "rear_orb", "gas_cloud_0", "gas_lobe_0_0", "gas_lobe_0_1", "gas_lobe_0_2", "gas_lobe_0_3", "gas_cloud_1", "gas_lobe_1_0", "gas_lobe_1_1", "gas_lobe_1_2", "gas_lobe_1_3"],
+            Self::Wartortle => &["root", "body", "head", "arm_left", "elbow_left", "wrist_left", "arm_right", "elbow_right", "wrist_right", "leg_left", "leg_right", "feather_left", "feather_right", "tail_base", "tail_tip"],
+            Self::Blastoise => &["root", "body", "head", "arm_left", "elbow_left", "wrist_left", "arm_right", "elbow_right", "wrist_right", "leg_left", "leg_right", "barrel_left", "barrel_right", "tail_base", "tail_tip"],
+            Self::Croconaw => &["root", "body", "head", "jaw", "arm_left", "elbow_left", "wrist_left", "arm_right", "elbow_right", "wrist_right", "leg_left", "leg_right", "tail", "tail_tip"],
+            Self::Feraligatr => &["root", "body", "head", "jaw", "arm_left", "elbow_left", "wrist_left", "arm_right", "elbow_right", "wrist_right", "leg_left", "leg_right", "tail", "tail_tip"],
+            Self::Cubone => &["root", "body", "neck", "head", "arm_left", "elbow_left", "wrist_left", "arm_right", "elbow_right", "wrist_right", "leg_left", "leg_right", "tail", "tail_tip"],
+            Self::Marowak => &["root", "body", "neck", "head", "arm_left", "elbow_left", "wrist_left", "arm_right", "elbow_right", "wrist_right", "leg_left", "leg_right", "tail", "tail_tip"],
+            Self::Magnemite => &["root", "body_0", "magnet_left_0", "magnet_right_0", "crown_0", "face_bolt_0_0", "face_bolt_0_1"],
+            Self::Magneton => &["root", "body_0", "magnet_left_0", "magnet_right_0", "crown_0", "face_bolt_0_0", "face_bolt_0_1", "body_1", "magnet_left_1", "magnet_right_1", "crown_1", "face_bolt_1_0", "face_bolt_1_1", "body_2", "magnet_left_2", "magnet_right_2", "crown_2", "face_bolt_2_0", "face_bolt_2_1"],
+            Self::Tangela => &["root", "body", "vine_00", "vine_01", "vine_02", "vine_03", "vine_04", "vine_05", "vine_06", "vine_07", "vine_08", "vine_09", "vine_10", "vine_11", "vine_12", "vine_13", "vine_14", "vine_15", "vine_16", "vine_17", "vine_18", "vine_19", "vine_20", "vine_21", "vine_22", "vine_23", "vine_24", "vine_25", "vine_26", "vine_27", "vine_28", "vine_29", "vine_30", "vine_31", "vine_32", "vine_33", "vine_34", "vine_35", "vine_36"],
+            Self::Kangaskhan => &["root", "body", "head", "jaw", "ear_left", "ear_right", "arm_left", "wrist_left", "arm_right", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_tip", "baby_body", "baby_head", "baby_left_grip", "baby_right_grip", "baby_ear_left", "baby_ear_right"],
+            Self::Ponyta => &["root", "body", "neck", "head", "ear_left", "ear_right", "tail_stem", "tail_fire", "leg_-1_front", "leg_-1_rear", "leg_1_front", "leg_1_rear", "mane_fire", "crown_fire"],
+            Self::Rapidash => &["root", "body", "neck", "head", "ear_left", "ear_right", "tail_stem", "tail_fire", "leg_-1_front", "leg_-1_rear", "leg_1_front", "leg_1_rear", "mane_fire", "crown_fire", "jaw"],
+            Self::Machop => &["root", "body", "neck", "head", "leg_left", "leg_right", "arm_upper_left", "elbow_upper_left", "wrist_upper_left", "arm_upper_right", "elbow_upper_right", "wrist_upper_right", "tail"],
+            Self::Machoke => &["root", "body", "neck", "head", "leg_left", "leg_right", "arm_upper_left", "elbow_upper_left", "wrist_upper_left", "arm_upper_right", "elbow_upper_right", "wrist_upper_right"],
+            Self::Machamp => &["root", "body", "neck", "head", "leg_left", "leg_right", "arm_upper_left", "elbow_upper_left", "wrist_upper_left", "arm_upper_right", "elbow_upper_right", "wrist_upper_right", "arm_lower_left", "elbow_lower_left", "wrist_lower_left", "arm_lower_right", "elbow_lower_right", "wrist_lower_right"],
+            Self::Rhyhorn => &["root", "body", "head", "tail", "leg_-1_rear", "leg_-1_front", "leg_1_rear", "leg_1_front", "jaw", "ear_left", "ear_right"],
+            Self::Dewgong => &["root", "body", "head", "tail_base", "flipper_left", "flipper_right", "tail_tip", "fluke_left", "fluke_right"],
+            Self::Seel => &["root", "body", "head", "tail_base", "flipper_left", "flipper_right", "tail_tip", "fluke_left", "fluke_right", "tongue"],
+            Self::Ditto => &["root", "body", "head", "lobe_left", "lobe_right"],
+            Self::Muk => &["root", "body", "head", "arm_left", "hand_left", "arm_right", "hand_right", "finger_left_0", "finger_left_1", "finger_left_2", "finger_right_0", "finger_right_1", "finger_right_2"],
+            Self::Grimer => &["root", "body", "head", "arm_left", "hand_left", "arm_right", "hand_right", "finger_left_0", "finger_left_1", "finger_left_2", "finger_right_0", "finger_right_1", "finger_right_2"],
+            Self::Cloyster => &["root", "body", "valve_left", "valve_right", "mantle"],
+            Self::Shellder => &["root", "body", "upper_valve", "lower_valve", "tongue_base", "tongue_fold"],
+            Self::Kingler => &["root", "body", "arm_left", "wrist_left", "jaw_left", "arm_right", "wrist_right", "jaw_right", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1"],
+            Self::Krabby => &["root", "body", "arm_left", "wrist_left", "jaw_left", "arm_right", "wrist_right", "jaw_right", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1"],
+            Self::Umbreon => &["root", "body", "neck", "head", "ear_left", "ear_right", "tail_base", "tail_middle", "tail_tip", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1"],
+            Self::Jolteon => &["root", "body", "neck", "head", "ear_left", "ear_right", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1", "neck_ruff"],
+            Self::Flareon => &["root", "body", "neck", "head", "ear_left", "ear_right", "tail_base", "tail_middle", "tail_tip", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1", "neck_ruff"],
+            Self::Espeon => &["root", "body", "neck", "head", "ear_left", "ear_right", "tail_base", "tail_middle", "tail_hub", "fork_left", "fork_right", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1"],
+            Self::Vaporeon => &["root", "body", "neck", "head", "head_fin_left", "head_fin_right", "tail_base", "tail_middle", "tail_tip", "fluke_left", "fluke_right", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1", "neck_frill"],
+            Self::Celebi => &["root", "torso", "head", "arm_left", "arm_right", "wing_left", "wing_right", "antenna_left", "antenna_right", "leg_left", "leg_right"],
             Self::HoOh => &["root", "torso", "neck", "head", "wing_left", "wing_right", "tail", "mandible", "leg_left", "leg_right"],
             Self::Lugia => &["root", "torso", "neck", "head", "wing_left", "palm_left", "wing_right", "palm_right", "mandible", "tail_root", "tail_tip", "leg_left", "leg_right"],
             Self::Corsola => &["root", "body", "coral_left", "coral_right", "coral_rear", "coral_rear_right", "coral_rear_left", "arm_left", "arm_right"],
@@ -517,6 +979,22 @@ impl Species {
             Self::Smoochum => &["root", "torso", "neck", "head", "hair_left", "hair_right", "hair_tufts", "arm_left", "arm_right", "leg_left", "leg_right"],
             Self::Elekid => &["root", "torso", "head", "plug_left", "plug_right", "arm_left", "arm_right", "leg_left", "leg_right"],
             Self::Magby => &["root", "torso", "neck", "head", "crown", "arm_left", "arm_right", "tail_base", "tail_tip", "leg_left", "leg_right"],
+            Self::Magmar => &["root","body","neck","head","arm_left","elbow_left","wrist_left","arm_right","elbow_right","wrist_right","leg_left","leg_right","crown_left","crown_right","tail_base","tail_tip","fire_tip"],
+            Self::Electabuzz => &["root","body","neck","head","arm_left","elbow_left","wrist_left","arm_right","elbow_right","wrist_right","leg_left","leg_right","antenna_left","antenna_right","crest_left","crest_right","tail_base","tail_mid","tail_tip"],
+            Self::Slowking => &["root","body","neck","head","arm_left","elbow_left","wrist_left","arm_right","elbow_right","wrist_right","leg_left","leg_right","tail_base","tail_tip","crown","ruff_left","ruff_right","ruff_center"],
+            Self::Slowbro => &["root","body","neck","head","arm_left","elbow_left","wrist_left","arm_right","elbow_right","wrist_right","leg_left","leg_right","tail_base","tail_tip","shell","ear_left","ear_right","shell_jaw"],
+            Self::Lickitung => &["root","body","neck","head","arm_left","elbow_left","wrist_left","arm_right","elbow_right","wrist_right","leg_left","leg_right","tail_base","tail_mid","tail_tip","tongue_base","tongue_mid","tongue_tip"],
+            Self::MrMime => &["root","body","neck","head","arm_left","elbow_left","wrist_left","arm_right","elbow_right","wrist_right","leg_left","leg_right","knee_left","knee_right","fan_left","fan_right","finger_left_0","finger_left_1","finger_left_2","finger_left_3","finger_left_4","finger_right_0","finger_right_1","finger_right_2","finger_right_3","finger_right_4"],
+            Self::Chansey => &["root","body","head","arm_left","elbow_left","arm_right","elbow_right","leg_left","leg_right","ribbon_left_0","ribbon_left_1","ribbon_left_2","ribbon_right_0","ribbon_right_1","ribbon_right_2","tail_base","tail_tip"],
+            Self::Blissey => &["root","body","head","arm_left","elbow_left","arm_right","elbow_right","leg_left","leg_right","crown_left","curl_left","crown_right","curl_right","frill_left","frill_right","skirt_0","skirt_1","skirt_2","skirt_3","skirt_4","skirt_5","skirt_6","skirt_7","skirt_8","skirt_9"],
+            Self::Growlithe => &["root","body","neck","head","ear_left","ear_right","jaw","fore_left","fore_right","rear_left","rear_right","tail_base","tail_mid","tail_tip","mane","forelock","ruff_left","ruff_right"],
+            Self::Arcanine => &["root","body","neck","head","ear_left","ear_right","jaw","fore_left","fore_right","rear_left","rear_right","tail_base","tail_mid","tail_tip","mane","forelock","ruff_left","ruff_right"],
+            Self::NidoranF => &["root","body","head","ear_left","ear_right","fore_left","fore_right","rear_left","rear_right","tail_base","tail_tip"],
+            Self::NidoranM => &["root","body","head","ear_left","ear_right","fore_left","fore_right","rear_left","rear_right","tail_base","tail_tip"],
+            Self::Nidorina => &["root","body","head","ear_left","ear_right","arm_left","forearm_left","wrist_left","arm_right","forearm_right","wrist_right","leg_left","leg_right","tail_base","tail_tip"],
+            Self::Nidorino => &["root","body","head","ear_left","ear_right","jaw","horn","fore_left","fore_right","rear_left","rear_right","tail_base","tail_tip"],
+            Self::Nidoking => &["root", "body", "head", "ear_left", "ear_right", "horn", "lower_jaw", "tongue", "arm_left", "forearm_left", "wrist_left", "arm_right", "forearm_right", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_mid", "tail_tip"],
+            Self::Nidoqueen => &["root", "body", "head", "ear_left", "ear_right", "horn", "arm_left", "forearm_left", "wrist_left", "arm_right", "forearm_right", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_mid", "tail_tip"],
             Self::Pichu => &["root", "torso", "head", "ear_left", "ear_right", "arm_left", "arm_right", "tail", "leg_left", "leg_right"],
             Self::Cleffa => &["root", "torso", "head", "ear_left", "ear_right", "tuft", "arm_left", "arm_right", "tail"],
             Self::Igglybuff => &["root", "torso", "head", "crown", "arm_left", "arm_right"],
@@ -531,6 +1009,20 @@ impl Species {
             Self::Slowpoke => &["root", "body", "head", "tail_base", "tail_tip", "ear_left", "ear_right", "fore_left", "fore_right", "rear_left", "rear_right"],
             Self::Onix => &["root", "segment_3", "segment_4", "segment_5", "segment_6", "segment_7", "segment_8", "segment_9", "segment_10", "segment_11", "segment_12", "head"],
             Self::Voltorb => &["root", "body"],
+            Self::Bellsprout => &["root", "body", "upper_stem", "head", "leaf_left", "leaf_right", "leaf_tip_left", "leaf_tip_right", "leg_left", "leg_right"],
+            Self::Weepinbell => &["root", "body", "mouth", "leaf_left", "leaf_right", "leaf_tip_left", "leaf_tip_right", "hook", "hook_tip"],
+            Self::Victreebel => &["root", "body", "mouth", "leaf_left", "leaf_right", "leaf_tip_left", "leaf_tip_right", "hood", "vine", "vine_tip"],
+            Self::Gloom => &["root", "body", "crown", "arm_left", "arm_right", "leg_left", "leg_right", "sepal_0", "sepal_1", "sepal_2", "sepal_3"],
+            Self::Vileplume => &["root", "body", "crown", "arm_left", "arm_right", "leg_left", "leg_right", "petal_0", "petal_1", "petal_2", "petal_3", "petal_4"],
+            Self::Raichu => &["root", "body", "head", "arm_left", "arm_right", "ear_left", "ear_right", "ear_left_tip", "ear_right_tip", "tail_base", "tail_tip", "leg_left", "leg_right"],
+            Self::Ekans => &["root", "body", "head", "tail_base", "tail_tip"],
+            Self::Arbok => &["root", "body", "head", "tail_base", "tail_tip", "hood_left", "hood_right", "jaw"],
+            Self::Steelix => &["root", "segment_3", "segment_4", "segment_5", "segment_6", "segment_7", "segment_8", "segment_9", "head", "jaw"],
+            Self::Pineco => &["root", "body", "whorl_low", "whorl_middle", "whorl_high", "crown", "stem"],
+            Self::Forretress => &["root", "body", "upper_shell", "port_-1_0", "port_-1_1", "port_1_0", "port_1_1"],
+            Self::Kabuto => &["root", "body", "leg_-1_0", "leg_-1_1", "leg_1_0", "leg_1_1"],
+            Self::Kabutops => &["root", "body", "head", "arm_left", "arm_right", "elbow_left", "elbow_right", "blade_left", "blade_right", "leg_left", "leg_right", "tail_base", "tail_tip"],
+            Self::Electrode => &["root", "body"],
             Self::Staryu => &["root", "core", "arm_0_base", "arm_0_tip", "arm_1_base", "arm_1_tip", "arm_2_base", "arm_2_tip", "arm_3_base", "arm_3_tip", "arm_4_base", "arm_4_tip"],
             Self::Sentret => &["root", "tail_support", "tail_middle", "tail_upper", "body", "tail_curl", "tail_tip", "ear_left", "ear_right", "arm_left", "arm_right", "leg_left", "leg_right"],
             Self::Hoothoot => &["root", "body", "brow_left", "brow_tip_left", "brow_right", "brow_tip_right", "wing_left", "wing_tip_left", "wing_right", "wing_tip_right", "tail", "lower_beak"],
@@ -548,6 +1040,34 @@ impl Species {
             Self::Pidgey => &["root", "torso", "head", "lower_beak", "wing_left", "flight_left", "wing_right", "flight_right", "tail_fan", "crown"],
             Self::Oddish => &["root", "bulb", "leaf_0_base", "leaf_0_tip", "leaf_1_base", "leaf_1_tip", "leaf_2_base", "leaf_2_tip", "leaf_3_base", "leaf_3_tip", "leaf_4_base", "leaf_4_tip"],
             Self::Poliwag => &["root", "body", "tail_base", "tail_middle", "tail_tip"],
+            Self::Horsea => &["root", "body", "head", "fin_left", "fin_right", "head_fin_left", "head_fin_right", "tail_base", "tail_middle", "tail_tip"],
+            Self::Seadra => &["root", "body", "head", "fin_left", "fin_right", "head_fin_left", "head_fin_right", "tail_base", "tail_middle", "tail_tip"],
+            Self::Kingdra => &["root", "body", "head", "fin_left", "fin_right", "head_fin_left", "head_fin_right", "tail_base", "tail_middle", "tail_tip", "crown_left", "crown_right"],
+            Self::Goldeen => &["root", "body", "tail", "dorsal", "pectoral_left", "pectoral_right"],
+            Self::Seaking => &["root", "body", "tail", "dorsal", "pectoral_left", "pectoral_right", "pelvic_left", "pelvic_right"],
+            Self::Magikarp => &["root", "body", "tail", "dorsal", "pectoral_left", "pectoral_right", "pelvic", "barbel_left", "barbel_right"],
+            Self::Larvitar => &["root", "body", "head", "arm_left", "arm_right", "wrist_left", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_tip"],
+            Self::Pupitar => &["root", "body", "head", "tail_fold"],
+            Self::Tyranitar => &["root", "body", "head", "jaw", "arm_left", "arm_right", "forearm_left", "forearm_right", "wrist_left", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_tip"],
+            Self::Quilava => &["root", "body", "head", "foreleg_left", "foreleg_right", "hindleg_left", "hindleg_right", "fire_neck_0", "fire_neck_1", "fire_neck_2", "fire_rump_0", "fire_rump_1", "fire_rump_2"],
+            Self::Typhlosion => &["root", "body", "head", "jaw", "arm_left", "arm_right", "wrist_left", "wrist_right", "leg_left", "leg_right", "fire_mantle_0", "fire_mantle_1", "fire_mantle_2", "fire_mantle_3", "fire_mantle_4", "fire_mantle_5", "fire_mantle_6"],
+            Self::Charmeleon => &["root", "body", "head", "jaw", "arm_left", "arm_right", "wrist_left", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_tip", "flame"],
+            Self::Charizard => &["root", "body", "head", "jaw", "arm_left", "arm_right", "wrist_left", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_tip", "flame", "wing_left", "wing_right"],
+            Self::Graveler => &["root", "body", "arm_upper_left", "arm_upper_right", "arm_lower_left", "arm_lower_right", "wrist_upper_left", "wrist_upper_right", "wrist_lower_left", "wrist_lower_right"],
+            Self::Golem => &["root", "body", "head", "jaw", "arm_left", "arm_right", "forearm_left", "forearm_right", "wrist_left", "wrist_right", "leg_left", "leg_right"],
+            Self::Omanyte => &["root", "body", "shell", "eye_left", "eye_right", "crawl_tentacle_0", "crawl_tentacle_1", "crawl_tentacle_2", "crawl_tentacle_3", "crawl_tentacle_4", "crawl_tentacle_5", "crawl_tentacle_6", "crawl_tentacle_7", "crawl_tentacle_8", "crawl_tentacle_9"],
+            Self::Omastar => &["root", "body", "shell", "eye_left", "eye_right", "crawl_tentacle_0", "crawl_tentacle_1", "crawl_tentacle_2", "crawl_tentacle_3", "crawl_tentacle_4", "crawl_tentacle_5", "crawl_tentacle_6", "crawl_tentacle_7", "crawl_tentacle_8", "crawl_tentacle_9", "beak_left_lower", "beak_left_upper", "beak_right_lower", "beak_right_upper"],
+            Self::Aerodactyl => &["root", "body", "head", "jaw", "wing_left", "wing_right", "leg_left", "leg_right", "tail"],
+            Self::Dratini => &["root", "body", "head", "ear_left", "ear_right", "tail_base", "tail_tip"],
+            Self::Dragonair => &["root", "body", "head", "ear_left", "ear_right", "tail_base", "tail_tip"],
+            Self::Dragonite => &["root", "body", "head", "antenna_left", "antenna_right", "wing_left", "wing_right", "arm_left", "arm_right", "wrist_left", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_tip"],
+            Self::Clefable => &["root", "body", "ear_left", "ear_right", "arm_left", "arm_right", "tuft", "wing_left", "wing_right", "tail_base", "tail_tip"],
+            Self::Wigglytuff => &["root", "body", "ear_left", "ear_right", "arm_left", "arm_right", "tuft"],
+            Self::Sandshrew => &["root", "body", "head", "ear_left", "ear_right", "arm_left", "forearm_left", "wrist_left", "arm_right", "forearm_right", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_tip"],
+            Self::Sandslash => &["root", "body", "head", "ear_left", "ear_right", "arm_left", "forearm_left", "wrist_left", "arm_right", "forearm_right", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_tip", "quills_lower", "quills_upper"],
+            Self::Politoed => &["root", "body", "head", "eye_left", "eye_right", "arm_left", "forearm_left", "wrist_left", "arm_right", "forearm_right", "wrist_right", "leg_left", "leg_right", "crest_base", "crest_tip"],
+            Self::Poliwrath => &["root", "body", "eye_left", "eye_right", "arm_left", "forearm_left", "wrist_left", "arm_right", "forearm_right", "wrist_right", "leg_left", "leg_right"],
+            Self::Poliwhirl => &["root", "body", "eye_left", "eye_right", "arm_left", "forearm_left", "wrist_left", "arm_right", "forearm_right", "wrist_right", "leg_left", "leg_right"],
             Self::Clefairy => &["root", "body", "arm_left", "arm_right", "ear_left", "ear_right", "wing_left", "wing_right", "forelock", "tail_base", "tail_curl"],
             Self::Jigglypuff => &["root", "body", "arm_left", "arm_right", "ear_left", "ear_right", "forelock"],
             Self::Charmander => &["root", "torso", "head", "arm_left", "arm_right", "leg_left", "leg_right", "tail_base", "tail_mid", "tail_tip", "flame"],
@@ -653,6 +1173,19 @@ impl Species {
         match self {
             Self::Procedural(_) => unreachable!("procedural rigs do not use the GLB schema"),
             Self::Diglett => &[None, Some(0)],
+            Self::Dugtrio => &[None, Some(0), Some(0), Some(0)],
+            Self::Tentacruel => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(1), Some(6), Some(1), Some(8), Some(1), Some(10), Some(1), Some(12), Some(1), Some(14), Some(1), Some(16), Some(1), Some(18), Some(1), Some(20), Some(1), Some(1)],
+            Self::Tentacool => &[None, Some(0), Some(1), Some(2), Some(1), Some(4)],
+            Self::Jynx => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(7), Some(1), Some(9), Some(10), Some(8), Some(8), Some(8), Some(8), Some(8), Some(11), Some(11), Some(11), Some(11), Some(11)],
+            Self::Primeape => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(1), Some(1), Some(0), Some(0)],
+            Self::Mankey => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(1), Some(1), Some(0), Some(0), Some(1), Some(10)],
+            Self::Meowth => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(1), Some(8), Some(0), Some(0), Some(1), Some(12), Some(13)],
+            Self::Persian => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(0), Some(0), Some(0), Some(0), Some(1), Some(10), Some(11)],
+            Self::Doduo => &[None, Some(0), Some(1), Some(2), Some(3), Some(4), Some(1), Some(6), Some(7), Some(8), Some(0), Some(0)],
+            Self::Dodrio => &[None, Some(0), Some(1), Some(2), Some(3), Some(4), Some(1), Some(6), Some(7), Some(8), Some(1), Some(10), Some(11), Some(12), Some(0), Some(0), Some(1), Some(1), Some(1)],
+            Self::Pidgeotto => &[None, Some(0), Some(1), Some(1), Some(3), Some(1), Some(5), Some(0), Some(0), Some(1), Some(9), Some(9), Some(9), Some(2)],
+            Self::Fearow => &[None, Some(0), Some(1), Some(2), Some(3), Some(4), Some(1), Some(6), Some(1), Some(8), Some(1), Some(1), Some(1), Some(1), Some(1), Some(0), Some(0), Some(4), Some(2)],
+            Self::Pidgeot => &[None, Some(0), Some(1), Some(2), Some(3), Some(4), Some(1), Some(6), Some(1), Some(8), Some(1), Some(1), Some(1), Some(1), Some(1), Some(0), Some(0), Some(4), Some(4), Some(4)],
             Self::Unown(_) => &[None, Some(0), Some(1)],
             Self::Entei => &[None, Some(0), Some(1), Some(2), Some(2), Some(2), Some(1), Some(6), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(14)],
             Self::Raikou => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(7), Some(1), Some(1), Some(1), Some(1), Some(1), Some(13), Some(14)],
@@ -703,6 +1236,65 @@ impl Species {
             Self::Moltres => &[None, Some(0), Some(1), Some(2), Some(1), Some(1), Some(4), Some(5), Some(3), Some(1), Some(0), Some(0)],
             Self::Zapdos => &[None, Some(0), Some(1), Some(2), Some(1), Some(1), Some(1), Some(0), Some(0)],
             Self::Articuno => &[None, Some(0), Some(1), Some(2), Some(1), Some(1), Some(1), Some(6), Some(7), Some(0), Some(0)],
+            Self::Mew => &[None, Some(0), Some(1), Some(2), Some(1), Some(1), Some(1), Some(1), Some(1), Some(8), Some(9), Some(3), Some(3)],
+            Self::Mewtwo => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(5), Some(1), Some(7), Some(8), Some(1), Some(10), Some(1), Some(12), Some(1), Some(14), Some(15)],
+            Self::Heracross => &[None, Some(0), Some(1), Some(2), Some(2), Some(4), Some(2), Some(6), Some(3), Some(3), Some(1), Some(1)],
+            Self::Pinsir => &[None, Some(0), Some(1), Some(2), Some(2), Some(2), Some(5), Some(6), Some(2), Some(8), Some(9), Some(1), Some(1)],
+            Self::Scizor => &[None, Some(0), Some(1), Some(1), Some(3), Some(1), Some(5), Some(6), Some(7), Some(1), Some(9), Some(10), Some(11), Some(1), Some(1), Some(1), Some(1)],
+            Self::Scyther => &[None, Some(0), Some(1), Some(1), Some(3), Some(1), Some(5), Some(1), Some(7), Some(1), Some(1), Some(2), Some(2)],
+            Self::Starmie => &[None, Some(0), Some(1), Some(2), Some(3), Some(2), Some(5), Some(2), Some(7), Some(2), Some(9), Some(2), Some(11), Some(1), Some(13), Some(14), Some(13), Some(16), Some(13), Some(18), Some(13), Some(20), Some(13), Some(22)],
+            Self::Gastly => &[None, Some(0), Some(0), Some(2), Some(2), Some(2), Some(2), Some(2), Some(2), Some(2), Some(2)],
+            Self::Haunter => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(0), Some(8), Some(8), Some(8), Some(0), Some(12), Some(12), Some(12)],
+            Self::Eevee => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(7), Some(0), Some(0), Some(0), Some(0)],
+            Self::Vulpix => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(6), Some(6), Some(6), Some(6), Some(6), Some(0), Some(0), Some(0), Some(0)],
+            Self::Ninetales => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(6), Some(6), Some(6), Some(6), Some(6), Some(6), Some(6), Some(6), Some(0), Some(0), Some(0), Some(0)],
+            Self::Venonat => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(4), Some(5), Some(0), Some(0)],
+            Self::Venomoth => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(2), Some(2), Some(2), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1)],
+            Self::Paras => &[None, Some(0), Some(1), Some(1), Some(1), Some(0), Some(0), Some(0), Some(0), Some(1), Some(1)],
+            Self::Parasect => &[None, Some(0), Some(1), Some(1), Some(1), Some(0), Some(0), Some(0), Some(0), Some(1)],
+            Self::Metapod => &[None, Some(0), Some(1), Some(0)],
+            Self::Kakuna => &[None, Some(0), Some(1), Some(1), Some(1)],
+            Self::Caterpie => &[None, Some(0), Some(0), Some(0), Some(0), Some(0), Some(0), Some(0), Some(0), Some(8), Some(9), Some(9)],
+            Self::Weedle => &[None, Some(0), Some(0), Some(0), Some(0), Some(0), Some(0), Some(0), Some(0), Some(8), Some(9), Some(1)],
+            Self::Rhydon => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(1), Some(6), Some(0), Some(0), Some(1), Some(10), Some(2), Some(2), Some(2)],
+            Self::Drowzee => &[None, Some(0), Some(1), Some(1), Some(3), Some(4), Some(1), Some(6), Some(7), Some(0), Some(0), Some(2), Some(2)],
+            Self::Hypno => &[None, Some(0), Some(1), Some(1), Some(3), Some(4), Some(1), Some(6), Some(7), Some(0), Some(0), Some(2), Some(2), Some(8)],
+            Self::Abra => &[None, Some(0), Some(1), Some(1), Some(3), Some(4), Some(1), Some(6), Some(7), Some(0), Some(0), Some(2), Some(2), Some(1), Some(13)],
+            Self::Alakazam => &[None, Some(0), Some(1), Some(1), Some(3), Some(4), Some(1), Some(6), Some(7), Some(0), Some(0), Some(2), Some(2), Some(2), Some(2), Some(5), Some(8)],
+            Self::Kadabra => &[None, Some(0), Some(1), Some(1), Some(3), Some(4), Some(1), Some(6), Some(7), Some(0), Some(0), Some(2), Some(2), Some(2), Some(2), Some(1), Some(15), Some(8)],
+            Self::Koffing => &[None, Some(0), Some(0), Some(2), Some(2), Some(2), Some(2), Some(0), Some(7), Some(7), Some(7), Some(7)],
+            Self::Weezing => &[None, Some(0), Some(1), Some(1), Some(0), Some(4), Some(4), Some(4), Some(4), Some(0), Some(9), Some(9), Some(9), Some(9)],
+            Self::Wartortle => &[None, Some(0), Some(1), Some(1), Some(3), Some(4), Some(1), Some(6), Some(7), Some(0), Some(0), Some(2), Some(2), Some(1), Some(13)],
+            Self::Blastoise => &[None, Some(0), Some(1), Some(1), Some(3), Some(4), Some(1), Some(6), Some(7), Some(0), Some(0), Some(1), Some(1), Some(1), Some(13)],
+            Self::Croconaw => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(5), Some(1), Some(7), Some(8), Some(0), Some(0), Some(1), Some(12)],
+            Self::Feraligatr => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(5), Some(1), Some(7), Some(8), Some(0), Some(0), Some(1), Some(12)],
+            Self::Cubone => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(5), Some(1), Some(7), Some(8), Some(0), Some(0), Some(1), Some(12)],
+            Self::Marowak => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(5), Some(1), Some(7), Some(8), Some(0), Some(0), Some(1), Some(12)],
+            Self::Magnemite => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1)],
+            Self::Magneton => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1), Some(0), Some(7), Some(7), Some(7), Some(7), Some(7), Some(0), Some(13), Some(13), Some(13), Some(13), Some(13)],
+            Self::Tangela => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1)],
+            Self::Kangaskhan => &[None, Some(0), Some(1), Some(2), Some(2), Some(2), Some(1), Some(6), Some(1), Some(8), Some(0), Some(0), Some(1), Some(12), Some(1), Some(14), Some(15), Some(15), Some(15), Some(15)],
+            Self::Ponyta => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(0), Some(0), Some(0), Some(0), Some(2), Some(3)],
+            Self::Rapidash => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(0), Some(0), Some(0), Some(0), Some(2), Some(3), Some(3)],
+            Self::Machop => &[None, Some(0), Some(1), Some(2), Some(0), Some(0), Some(1), Some(6), Some(7), Some(1), Some(9), Some(10), Some(1)],
+            Self::Machoke => &[None, Some(0), Some(1), Some(2), Some(0), Some(0), Some(1), Some(6), Some(7), Some(1), Some(9), Some(10)],
+            Self::Machamp => &[None, Some(0), Some(1), Some(2), Some(0), Some(0), Some(1), Some(6), Some(7), Some(1), Some(9), Some(10), Some(1), Some(12), Some(13), Some(1), Some(15), Some(16)],
+            Self::Rhyhorn => &[None, Some(0), Some(1), Some(1), Some(0), Some(0), Some(0), Some(0), Some(2), Some(2), Some(2)],
+            Self::Dewgong => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(3), Some(6), Some(6)],
+            Self::Seel => &[None, Some(0), Some(1), Some(1), Some(0), Some(0), Some(3), Some(6), Some(6), Some(2)],
+            Self::Ditto => &[None, Some(0), Some(1), Some(2), Some(2)],
+            Self::Muk => &[None, Some(0), Some(1), Some(1), Some(3), Some(1), Some(5), Some(4), Some(4), Some(4), Some(6), Some(6), Some(6)],
+            Self::Grimer => &[None, Some(0), Some(1), Some(1), Some(3), Some(1), Some(5), Some(4), Some(4), Some(4), Some(6), Some(6), Some(6)],
+            Self::Cloyster => &[None, Some(0), Some(1), Some(1), Some(1)],
+            Self::Shellder => &[None, Some(0), Some(1), Some(1), Some(1), Some(4)],
+            Self::Kingler => &[None, Some(0), Some(1), Some(2), Some(3), Some(1), Some(5), Some(6), Some(0), Some(0), Some(0), Some(0)],
+            Self::Krabby => &[None, Some(0), Some(1), Some(2), Some(3), Some(1), Some(5), Some(6), Some(0), Some(0), Some(0), Some(0)],
+            Self::Umbreon => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(7), Some(0), Some(0), Some(0), Some(0)],
+            Self::Jolteon => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(0), Some(0), Some(0), Some(0), Some(2)],
+            Self::Flareon => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(7), Some(0), Some(0), Some(0), Some(0), Some(2)],
+            Self::Espeon => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(7), Some(8), Some(8), Some(0), Some(0), Some(0), Some(0)],
+            Self::Vaporeon => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(1), Some(6), Some(7), Some(8), Some(8), Some(0), Some(0), Some(0), Some(0), Some(2)],
+            Self::Celebi => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1), Some(2), Some(2), Some(0), Some(0)],
             Self::HoOh => &[None, Some(0), Some(1), Some(2), Some(1), Some(1), Some(1), Some(3), Some(0), Some(0)],
             Self::Lugia => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(1), Some(6), Some(3), Some(1), Some(9), Some(0), Some(0)],
             Self::Corsola => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1)],
@@ -720,6 +1312,22 @@ impl Species {
             Self::Smoochum => &[None, Some(0), Some(1), Some(2), Some(3), Some(3), Some(3), Some(1), Some(1), Some(0), Some(0)],
             Self::Elekid => &[None, Some(0), Some(1), Some(2), Some(2), Some(2), Some(2), Some(0), Some(0)],
             Self::Magby => &[None, Some(0), Some(1), Some(2), Some(3), Some(1), Some(1), Some(1), Some(7), Some(0), Some(0)],
+            Self::Magmar => &[None,Some(0),Some(1),Some(2),Some(1),Some(4),Some(5),Some(1),Some(7),Some(8),Some(0),Some(0),Some(3),Some(3),Some(1),Some(14),Some(15)],
+            Self::Electabuzz => &[None,Some(0),Some(1),Some(2),Some(1),Some(4),Some(5),Some(1),Some(7),Some(8),Some(0),Some(0),Some(3),Some(3),Some(3),Some(3),Some(1),Some(16),Some(17)],
+            Self::Slowking => &[None,Some(0),Some(1),Some(2),Some(1),Some(4),Some(5),Some(1),Some(7),Some(8),Some(0),Some(0),Some(1),Some(12),Some(3),Some(2),Some(2),Some(2)],
+            Self::Slowbro => &[None,Some(0),Some(1),Some(2),Some(1),Some(4),Some(5),Some(1),Some(7),Some(8),Some(0),Some(0),Some(1),Some(12),Some(13),Some(3),Some(3),Some(14)],
+            Self::Lickitung => &[None,Some(0),Some(1),Some(2),Some(1),Some(4),Some(5),Some(1),Some(7),Some(8),Some(0),Some(0),Some(1),Some(12),Some(13),Some(3),Some(15),Some(16)],
+            Self::MrMime => &[None,Some(0),Some(1),Some(2),Some(1),Some(4),Some(5),Some(1),Some(7),Some(8),Some(1),Some(1),Some(10),Some(11),Some(3),Some(3),Some(6),Some(6),Some(6),Some(6),Some(6),Some(9),Some(9),Some(9),Some(9),Some(9)],
+            Self::Chansey => &[None,Some(0),Some(1),Some(1),Some(3),Some(1),Some(5),Some(0),Some(0),Some(2),Some(2),Some(2),Some(2),Some(2),Some(2),Some(1),Some(15)],
+            Self::Blissey => &[None,Some(0),Some(1),Some(1),Some(3),Some(1),Some(5),Some(0),Some(0),Some(2),Some(9),Some(2),Some(11),Some(3),Some(5),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1)],
+            Self::Growlithe => &[None,Some(0),Some(1),Some(2),Some(3),Some(3),Some(3),Some(1),Some(1),Some(1),Some(1),Some(1),Some(11),Some(12),Some(2),Some(3),Some(14),Some(14)],
+            Self::Arcanine => &[None,Some(0),Some(1),Some(2),Some(3),Some(3),Some(3),Some(1),Some(1),Some(1),Some(1),Some(1),Some(11),Some(12),Some(2),Some(3),Some(14),Some(14)],
+            Self::NidoranF => &[None,Some(0),Some(1),Some(2),Some(2),Some(1),Some(1),Some(1),Some(1),Some(1),Some(9)],
+            Self::NidoranM => &[None,Some(0),Some(1),Some(2),Some(2),Some(1),Some(1),Some(1),Some(1),Some(1),Some(9)],
+            Self::Nidorina => &[None,Some(0),Some(1),Some(2),Some(2),Some(1),Some(5),Some(6),Some(1),Some(8),Some(9),Some(1),Some(1),Some(1),Some(13)],
+            Self::Nidorino => &[None,Some(0),Some(1),Some(2),Some(2),Some(2),Some(2),Some(1),Some(1),Some(1),Some(1),Some(1),Some(11)],
+            Self::Nidoking => &[None,Some(0),Some(1),Some(2),Some(2),Some(2),Some(2),Some(6),Some(1),Some(8),Some(9),Some(1),Some(11),Some(12),Some(1),Some(1),Some(1),Some(16),Some(17)],
+            Self::Nidoqueen => &[None,Some(0),Some(1),Some(2),Some(2),Some(2),Some(1),Some(6),Some(7),Some(1),Some(9),Some(10),Some(1),Some(1),Some(1),Some(14),Some(15)],
             Self::Pichu => &[None, Some(0), Some(1), Some(2), Some(2), Some(1), Some(1), Some(1), Some(0), Some(0)],
             Self::Cleffa => &[None, Some(0), Some(1), Some(2), Some(2), Some(2), Some(2), Some(2), Some(1)],
             Self::Igglybuff => &[None, Some(0), Some(1), Some(2), Some(2), Some(2)],
@@ -734,6 +1342,20 @@ impl Species {
             Self::Slowpoke => &[None, Some(0), Some(1), Some(1), Some(3), Some(2), Some(2), Some(1), Some(1), Some(1), Some(1)],
             Self::Onix => &[None, Some(0), Some(1), Some(2), Some(3), Some(4), Some(5), Some(6), Some(7), Some(8), Some(9), Some(10)],
             Self::Voltorb => &[None, Some(0)],
+            Self::Bellsprout => &[None, Some(0), Some(1), Some(2), Some(2), Some(2), Some(4), Some(5), Some(0), Some(0)],
+            Self::Weepinbell => &[None, Some(0), Some(1), Some(1), Some(1), Some(3), Some(4), Some(1), Some(7)],
+            Self::Victreebel => &[None, Some(0), Some(1), Some(1), Some(1), Some(3), Some(4), Some(2), Some(1), Some(8)],
+            Self::Gloom => &[None, Some(0), Some(1), Some(1), Some(1), Some(0), Some(0), Some(2), Some(2), Some(2), Some(2)],
+            Self::Vileplume => &[None, Some(0), Some(1), Some(1), Some(1), Some(0), Some(0), Some(2), Some(2), Some(2), Some(2), Some(2)],
+            Self::Raichu => &[None, Some(0), Some(1), Some(1), Some(1), Some(2), Some(2), Some(5), Some(6), Some(1), Some(9), Some(0), Some(0)],
+            Self::Ekans => &[None, Some(0), Some(1), Some(0), Some(3)],
+            Self::Arbok => &[None, Some(0), Some(1), Some(0), Some(3), Some(1), Some(1), Some(2)],
+            Self::Steelix => &[None, Some(0), Some(1), Some(2), Some(3), Some(4), Some(5), Some(6), Some(7), Some(8)],
+            Self::Pineco => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(5)],
+            Self::Forretress => &[None, Some(0), Some(0), Some(1), Some(1), Some(1), Some(1)],
+            Self::Kabuto => &[None, Some(0), Some(0), Some(0), Some(0), Some(0)],
+            Self::Kabutops => &[None, Some(0), Some(1), Some(1), Some(1), Some(3), Some(4), Some(5), Some(6), Some(0), Some(0), Some(1), Some(11)],
+            Self::Electrode => &[None, Some(0)],
             Self::Staryu => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(1), Some(6), Some(1), Some(8), Some(1), Some(10)],
             Self::Sentret => &[None, Some(0), Some(1), Some(2), Some(3), Some(0), Some(5), Some(4), Some(4), Some(4), Some(4), Some(4), Some(4)],
             Self::Hoothoot => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(1), Some(6), Some(1), Some(8), Some(1), Some(1)],
@@ -751,6 +1373,34 @@ impl Species {
             Self::Pidgey => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(1), Some(6), Some(1), Some(2)],
             Self::Oddish => &[None, Some(0), Some(1), Some(2), Some(1), Some(4), Some(1), Some(6), Some(1), Some(8), Some(1), Some(10)],
             Self::Poliwag => &[None, Some(0), Some(1), Some(2), Some(3)],
+            Self::Horsea => &[None,Some(0),Some(1),Some(1),Some(1),Some(2),Some(2),Some(1),Some(7),Some(8)],
+            Self::Seadra => &[None,Some(0),Some(1),Some(1),Some(1),Some(2),Some(2),Some(1),Some(7),Some(8)],
+            Self::Kingdra => &[None,Some(0),Some(1),Some(1),Some(1),Some(2),Some(2),Some(1),Some(7),Some(8),Some(2),Some(2)],
+            Self::Goldeen => &[None,Some(0),Some(1),Some(1),Some(1),Some(1)],
+            Self::Seaking => &[None,Some(0),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1)],
+            Self::Magikarp => &[None,Some(0),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1)],
+            Self::Larvitar => &[None,Some(0),Some(1),Some(1),Some(1),Some(3),Some(4),Some(0),Some(0),Some(1),Some(9)],
+            Self::Pupitar => &[None,Some(0),Some(1),Some(0)],
+            Self::Tyranitar => &[None,Some(0),Some(1),Some(2),Some(1),Some(1),Some(4),Some(5),Some(6),Some(7),Some(0),Some(0),Some(1),Some(12)],
+            Self::Quilava => &[None,Some(0),Some(1),Some(0),Some(0),Some(0),Some(0),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1)],
+            Self::Typhlosion => &[None,Some(0),Some(1),Some(2),Some(1),Some(1),Some(4),Some(5),Some(0),Some(0),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1)],
+            Self::Charmeleon => &[None,Some(0),Some(1),Some(2),Some(1),Some(1),Some(4),Some(5),Some(0),Some(0),Some(1),Some(10),Some(11)],
+            Self::Charizard => &[None,Some(0),Some(1),Some(2),Some(1),Some(1),Some(4),Some(5),Some(0),Some(0),Some(1),Some(10),Some(11),Some(1),Some(1)],
+            Self::Graveler => &[None,Some(0),Some(1),Some(1),Some(1),Some(1),Some(2),Some(3),Some(4),Some(5)],
+            Self::Golem => &[None,Some(0),Some(1),Some(1),Some(1),Some(1),Some(4),Some(5),Some(6),Some(7),Some(0),Some(0)],
+            Self::Omanyte => &[None,Some(0),Some(1),Some(1),Some(1),Some(0),Some(0),Some(0),Some(0),Some(0),Some(0),Some(0),Some(0),Some(0),Some(0)],
+            Self::Omastar => &[None,Some(0),Some(1),Some(1),Some(1),Some(0),Some(0),Some(0),Some(0),Some(0),Some(0),Some(0),Some(0),Some(0),Some(0),Some(1),Some(1),Some(1),Some(1)],
+            Self::Aerodactyl => &[None,Some(0),Some(1),Some(2),Some(1),Some(1),Some(0),Some(0),Some(1)],
+            Self::Dratini => &[None,Some(0),Some(1),Some(2),Some(2),Some(0),Some(5)],
+            Self::Dragonair => &[None,Some(0),Some(1),Some(2),Some(2),Some(0),Some(5)],
+            Self::Dragonite => &[None,Some(0),Some(1),Some(2),Some(2),Some(1),Some(1),Some(1),Some(1),Some(7),Some(8),Some(0),Some(0),Some(1),Some(13)],
+            Self::Clefable => &[None,Some(0),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1),Some(1),Some(9)],
+            Self::Wigglytuff => &[None,Some(0),Some(1),Some(1),Some(1),Some(1),Some(1)],
+            Self::Sandshrew => &[None,Some(0),Some(1),Some(2),Some(2),Some(1),Some(5),Some(6),Some(1),Some(8),Some(9),Some(1),Some(1),Some(1),Some(13)],
+            Self::Sandslash => &[None,Some(0),Some(1),Some(2),Some(2),Some(1),Some(5),Some(6),Some(1),Some(8),Some(9),Some(1),Some(1),Some(1),Some(13),Some(1),Some(1)],
+            Self::Politoed => &[None,Some(0),Some(1),Some(2),Some(2),Some(1),Some(5),Some(6),Some(1),Some(8),Some(9),Some(1),Some(1),Some(2),Some(13)],
+            Self::Poliwrath => &[None,Some(0),Some(1),Some(1),Some(1),Some(4),Some(5),Some(1),Some(7),Some(8),Some(1),Some(1)],
+            Self::Poliwhirl => &[None,Some(0),Some(1),Some(1),Some(1),Some(4),Some(5),Some(1),Some(7),Some(8),Some(1),Some(1)],
             Self::Clefairy => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(9)],
             Self::Jigglypuff => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1)],
             Self::Charmander => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(7), Some(8), Some(9)],
@@ -852,6 +1502,19 @@ impl Species {
         match self {
             Self::Procedural(_) => unreachable!("procedural rigs do not use the GLB schema"),
             Self::Diglett => 15,
+            Self::Dugtrio => 33,
+            Self::Tentacruel => 23,
+            Self::Tentacool => 13,
+            Self::Jynx => 35,
+            Self::Primeape => 45,
+            Self::Mankey => 38,
+            Self::Meowth => 39,
+            Self::Persian => 36,
+            Self::Doduo => 19,
+            Self::Dodrio => 32,
+            Self::Pidgeotto => 34,
+            Self::Fearow => 21,
+            Self::Pidgeot => 25,
             Self::Entei => 59,
             Self::Raikou => 62,
             Self::Ledyba => 36,
@@ -901,6 +1564,65 @@ impl Species {
             Self::Moltres => 46,
             Self::Zapdos => 54,
             Self::Articuno => 49,
+            Self::Mew => 40,
+            Self::Mewtwo => 52,
+            Self::Heracross => 47,
+            Self::Pinsir => 53,
+            Self::Scizor => 47,
+            Self::Scyther => 40,
+            Self::Starmie => 23,
+            Self::Gastly => 19,
+            Self::Haunter => 23,
+            Self::Eevee => 47,
+            Self::Vulpix => 48,
+            Self::Ninetales => 46,
+            Self::Venonat => 33,
+            Self::Venomoth => 53,
+            Self::Paras => 56,
+            Self::Parasect => 36,
+            Self::Metapod => 15,
+            Self::Kakuna => 14,
+            Self::Caterpie => 33,
+            Self::Weedle => 24,
+            Self::Rhydon => 48,
+            Self::Drowzee => 43,
+            Self::Hypno => 48,
+            Self::Abra => 43,
+            Self::Alakazam => 53,
+            Self::Kadabra => 38,
+            Self::Koffing => 23,
+            Self::Weezing => 35,
+            Self::Wartortle => 37,
+            Self::Blastoise => 42,
+            Self::Croconaw => 28,
+            Self::Feraligatr => 41,
+            Self::Cubone => 45,
+            Self::Marowak => 52,
+            Self::Magnemite => 9,
+            Self::Magneton => 27,
+            Self::Tangela => 10,
+            Self::Kangaskhan => 46,
+            Self::Ponyta => 40,
+            Self::Rapidash => 47,
+            Self::Machop => 32,
+            Self::Machoke => 41,
+            Self::Machamp => 51,
+            Self::Rhyhorn => 46,
+            Self::Dewgong => 22,
+            Self::Seel => 27,
+            Self::Ditto => 8,
+            Self::Muk => 26,
+            Self::Grimer => 26,
+            Self::Cloyster => 24,
+            Self::Shellder => 19,
+            Self::Kingler => 36,
+            Self::Krabby => 31,
+            Self::Umbreon => 46,
+            Self::Jolteon => 50,
+            Self::Flareon => 46,
+            Self::Espeon => 44,
+            Self::Vaporeon => 57,
+            Self::Celebi => 38,
             Self::HoOh => 38,
             Self::Lugia => 34,
             Self::Corsola => 37,
@@ -918,6 +1640,22 @@ impl Species {
             Self::Smoochum => 40,
             Self::Elekid => 32,
             Self::Magby => 38,
+            Self::Magmar => 39,
+            Self::Electabuzz => 41,
+            Self::Slowking => 33,
+            Self::Slowbro => 38,
+            Self::Lickitung => 26,
+            Self::MrMime => 34,
+            Self::Chansey => 16,
+            Self::Blissey => 19,
+            Self::Growlithe => 38,
+            Self::Arcanine => 46,
+            Self::NidoranF => 40,
+            Self::NidoranM => 36,
+            Self::Nidorina => 35,
+            Self::Nidorino => 39,
+            Self::Nidoking => 44,
+            Self::Nidoqueen => 39,
             Self::Pichu => 24,
             Self::Cleffa => 17,
             Self::Igglybuff => 19,
@@ -933,6 +1671,20 @@ impl Species {
             Self::Unown(form) => UNOWN_PART_COUNTS[usize::from(form)],
             Self::Onix => 36,
             Self::Voltorb => 8,
+            Self::Bellsprout => 12,
+            Self::Weepinbell => 12,
+            Self::Victreebel => 16,
+            Self::Gloom => 18,
+            Self::Vileplume => 23,
+            Self::Raichu => 25,
+            Self::Ekans => 16,
+            Self::Arbok => 25,
+            Self::Steelix => 32,
+            Self::Pineco => 13,
+            Self::Forretress => 18,
+            Self::Kabuto => 20,
+            Self::Kabutops => 27,
+            Self::Electrode => 10,
             Self::Staryu => 10,
             Self::Sentret => 38,
             Self::Hoothoot => 38,
@@ -951,7 +1703,7 @@ impl Species {
             Self::Wooper => 22,
             Self::Gyarados => 40,
             Self::Sudowoodo => 33,
-            Self::Lapras => 45,
+            Self::Lapras => 49,
             Self::Snorlax => 31,
             Self::Pikachu => 40,
             Self::Bulbasaur => 44,
@@ -961,6 +1713,34 @@ impl Species {
             Self::Pidgey => 43,
             Self::Oddish => 19,
             Self::Poliwag => 19,
+            Self::Horsea => 24,
+            Self::Seadra => 30,
+            Self::Kingdra => 35,
+            Self::Goldeen => 28,
+            Self::Seaking => 29,
+            Self::Magikarp => 25,
+            Self::Larvitar => 20,
+            Self::Pupitar => 9,
+            Self::Tyranitar => 34,
+            Self::Quilava => 39,
+            Self::Typhlosion => 45,
+            Self::Charmeleon => 29,
+            Self::Charizard => 38,
+            Self::Graveler => 22,
+            Self::Golem => 29,
+            Self::Omanyte => 20,
+            Self::Omastar => 26,
+            Self::Aerodactyl => 27,
+            Self::Dratini => 13,
+            Self::Dragonair => 17,
+            Self::Dragonite => 34,
+            Self::Clefable => 32,
+            Self::Wigglytuff => 24,
+            Self::Sandshrew => 33,
+            Self::Sandslash => 30,
+            Self::Politoed => 32,
+            Self::Poliwrath => 27,
+            Self::Poliwhirl => 25,
             Self::Clefairy => 35,
             Self::Jigglypuff => 22,
             Self::Rattata => 42,
@@ -974,6 +1754,19 @@ impl Species {
         match self {
             Self::Procedural(_) => unreachable!("procedural rigs do not use the GLB schema"),
             Self::Diglett => "f81fd70948ece5d6ade091c74c000f7a9b03ee6aab22981524543f4a07fc38c4",
+            Self::Dugtrio => "b3b89e9de63fe28defb7ee03d3cdb8a7efac2c97c9db3e9aae24d2f7bd5f790c",
+            Self::Tentacruel => "c21b730c9a3ea4b05d3a7031fff2c30ace66889c6948516b36fe2698a225117b",
+            Self::Tentacool => "acb31c9286cd89fc4218aec6bf9706b51fad8a1d0a967ac0e1a158be4b9a1798",
+            Self::Jynx => "d2fe39c6dbd02071e663680a8656da8d7e9caf6cc24daf6fb3a2c612b76a0921",
+            Self::Primeape => "45c0c8e59be21979e46ab5fe5c7ffbeae3c3ec9ad54858740b918aac26ee564f",
+            Self::Mankey => "13470b899782dfb2cb9de04a9579f5d061061c75dbbb95cfe913ed0e01500e52",
+            Self::Meowth => "c517d3dbd7ce7b9ebfecbbd4e0d02ded0530254c2a6bef293e92f112d3affdb8",
+            Self::Persian => "d0cd25924eb6b4a3c97ab852a94cf24b53e6f65d54dd04ee3b0584804c1fc69b",
+            Self::Doduo => "94090facb05decd9d763ba5fc85c0ad67866d7b05745eb98dcae903ab934f190",
+            Self::Dodrio => "21ca4a7aeec485dac57a7c5f2a54692259c76b131b22661383cd2e84ef7dd811",
+            Self::Pidgeotto => "a9a41d37c7ee99cc44e3be2513069b47edd87bbb73c47abc5e5bf02890f10650",
+            Self::Fearow => "9d317f1778d94a75d2c959dd71d7eacfe45293d7171419b9782fdc04ea114f1a",
+            Self::Pidgeot => "4290723e8ee8dd56c9e7aba24fc9e65aafe69384cc58f960f2cffdc2f84b7241",
             Self::Entei => "db453e0d91aa89189660d76f63e17f62e26c4d80e750455f9fb7e066cbcc249c",
             Self::Raikou => "06890d739507ac0cd3add1a6da44b954daafcb44f897f9e96e30ea039a597c6f",
             Self::Ledyba => "38b13162e17a6677a6d3c6cc6561f870210a342cbb00e226a8688ee5d5811e2a",
@@ -1023,6 +1816,65 @@ impl Species {
             Self::Moltres => "bc2c5af3c85515bb49c4773acaf16f96232104ac36d08b59681ba4eba064bc33",
             Self::Zapdos => "75512d822cf34c6097ea7c8421a159f7bad0291a985a4ae20ab5ae2642ba041f",
             Self::Articuno => "e38af1c0bb7982e268d4de9841a4722458a42d6d8f23e5abb82d697d7f0b377c",
+            Self::Mew => "36d3fc53223d21ac492d3d93879589a130773ba3d884c34a65f6173b3980d37e",
+            Self::Mewtwo => "ef903cf6d3fbd2c2b7ed2d8777e1d91726c56940e30f77aaa767e5e50eceb521",
+            Self::Heracross => "a33ddd1481ba4cb3435132daf36f3c5770e6b8155e24afc627142a32a82d923d",
+            Self::Pinsir => "347418889561cb58a6f9b3f05d441ca8f6bbe2a7b8fb6c4df81ec1a24ea01d84",
+            Self::Scizor => "c53bc5cf81b225ae9057e6bb3e1f854cf3903411a8c2b30e59b402b565002a73",
+            Self::Scyther => "549a4c15bda5cddc1bb41177a7aac6881f06e09d2e1d245940677f0beb3ea908",
+            Self::Starmie => "d9e6623d83cb207c09a01879bc85d5124e8a3a87fcdb6bc93ca79084369a6897",
+            Self::Gastly => "ed3adabb2b737302e42e576b7a43375e42045406d494e4beaed7acee1546ce32",
+            Self::Haunter => "de932449c4d842c05d74073ea292ea5b1a81cc4e565110568e11bef78b047f73",
+            Self::Eevee => "dbb03e378a70bab065c75f1b0dd241eb71f6da0bdf126ba5f2289df74407d633",
+            Self::Vulpix => "94d20844527dddce0a41783dddcff88ca7f08abff9b6d2e7aa86aa25dcaa6817",
+            Self::Ninetales => "d3c5cac139c338a855ec83edbb1e3df15cbfddb68f7affd4a59f6564301173c3",
+            Self::Venonat => "b1425a1645ef672eb73a014ed63285503c3f184ddecb3f782c466bea7163d4f3",
+            Self::Venomoth => "7670a960d16e7c38c3e79a8ffe12ba570ca202b6e77bb25f1d7f21d17dcb5323",
+            Self::Paras => "9cf3e0d314c5f90ef570f927288a43e2dd32e7421e7d6218202fc1807ec9d82f",
+            Self::Parasect => "ee0b479c17022294ba5cbc8084b4d2312aeb028868773ecd51113da09416838b",
+            Self::Metapod => "6b3fdcfefd6a88f8417852ca46a6d144a9d4d35c5e5e712b3c42c8b61576b36f",
+            Self::Kakuna => "2174b2bfbb87197fe326bd5fd82a05a06dc5539f943618d45a086dcb10d1f805",
+            Self::Caterpie => "527fcc82fab88435eb538b1b93614b03f896566ecefafc9d0f6e05e5cb419931",
+            Self::Weedle => "ef69247a874d0f1cec8f314d3885cd93ddaa5356fd45ce850dda1f75a0a162ea",
+            Self::Rhydon => "c0131e43f7235c93fc5a645ab0c3e69f63dc8c2f8d8aa36e0134cc89ab22b4f7",
+            Self::Drowzee => "1789c22bcf0b67308e90a00a00965c00c6e42b8f5bde57c782bd0d930c4e0859",
+            Self::Hypno => "7e70103e4d8495bf4b78adeb41eca93860c7bde563ec30811f43098380997915",
+            Self::Abra => "0f62090ca5311bb42f9f3a8375859f0336df8bfe1e76752e34588c9deb257eb9",
+            Self::Alakazam => "9798ee114b47db333f11ac0dfddb761373146d62684df9051613f8585fdb4f5c",
+            Self::Kadabra => "d027eeb4ab22721959745884fec132d2073f9ed1671cb3088292166a42360f58",
+            Self::Koffing => "ba5c5ad08e422850b832e4cb9412e18bcecbc53b62530186b11fa4f879b957de",
+            Self::Weezing => "b655fa7a75abd024c672927149600b45231e833200036b2c7bc97ed9ddba0c70",
+            Self::Wartortle => "8f76359639251ae9161bf295201020e8e4bafafe252c9f286fd3812218eb0a58",
+            Self::Blastoise => "0e4dfa76fc3b7fd8a1a2360552fa7c2663e821fd88a442bb899b32dd6e859548",
+            Self::Croconaw => "5e931c599dd42d7e2ebbf57fa8174ae66023d02dea8875b09730c1efc1a1697f",
+            Self::Feraligatr => "d80bb181fae2556e57b3ef65e60fb42f4e816f7008c5e72ca1db8d1979719cad",
+            Self::Cubone => "5bd078b289b719850ffbd5621c43b25276736ac2bc919b1e60460c9e84814d77",
+            Self::Marowak => "a72e2b8c3dd27fc1f022bc51c29880bc5cf789e205311bfe86d4436d6ef30c0a",
+            Self::Magnemite => "fcd9ef30d31caba9b51c6fc627b4bf0b68a20edf961777c9477acdb7b96904ce",
+            Self::Magneton => "432c67fcf83876db5de5b5e9c0dc9ae27df2a6180760e7a0325e394dfccb7f8f",
+            Self::Tangela => "9122c50cf61e0829b7d88147233af06cdfc8e5ba7ee98d917c864bc2b918b416",
+            Self::Kangaskhan => "d05bf3560699741a45d687e8c44745f0ba667d37fa551a0c1d7b16ef90cffc94",
+            Self::Ponyta => "586c58b6e344ad355eed3521ceeb585a241b17255a01a5ae26bb2fb4f3b185ce",
+            Self::Rapidash => "c56d7e051ad01b2f418fca26b70baa6f9c682bc2048ad11e790fee0401ec156f",
+            Self::Machop => "6847f6ddd211164ff5bdcffb5dc94b104dd87fdd3955610b53b611d728b5d71f",
+            Self::Machoke => "4b0b6d1f8f12e160831ba3ec746729bf11fcceffffec0fa4c9ef8932bd8313ae",
+            Self::Machamp => "c70bd3ba26597bfadc1fafae6d459a9334b41bd63b22f022578d5a6db4793ca6",
+            Self::Rhyhorn => "e6ad87610f6a2b99b8e1780fddffabfb97166fdb1c8d50278ca6e765dcbc0188",
+            Self::Dewgong => "07d7f5f2e844cd65944949d81004e5de86d9493fb99bf220dbc9c552830ae5e9",
+            Self::Seel => "e1b358039ce8dba65f99bfde6d01438da48fa17f8532ea107117e290e7fae852",
+            Self::Ditto => "1a3fc7b87714f7c4c5b82db35cecc4fb7bc3d3679f52f0ccf2336727626327e8",
+            Self::Muk => "373608073b4024110aaaf4e23d345ca1c07c2fd6a2725f72fe985893224ca8c3",
+            Self::Grimer => "01ccaddd323bf25f60a019cbc0642316ec52af5c7cd650ecc625d54d607c3a03",
+            Self::Cloyster => "714eb4a74d131c5a8b303d1fde4af07a30dd0c739fa0741176cee1efbb336d74",
+            Self::Shellder => "9603bdedd0b70757c615251f8ea5ea6b258a33c53c3ce6ab434f2f441edd95e9",
+            Self::Kingler => "77ef337fdce8469cd785876b536b3c92953ebd6a1b026f7b12001c2a592cfc36",
+            Self::Krabby => "5f8f12d336b23cecec7ad64a1ef4ab89f387324289654f1fdbc722df900ff5ef",
+            Self::Umbreon => "c627b4d60cb817a8e18596f759e06d97b6b57497c9af7badaea772b215b77e03",
+            Self::Jolteon => "3e154fb857ffb4531d84ef1cf35b3ec944ab4d59bbb5b0da316722aa0f6af022",
+            Self::Flareon => "2bdb14269978d1eaed0163530f5ecd9a966b45b5501db0927542151ec15268b5",
+            Self::Espeon => "051135bb83bc3ca1a337c80500fa056725f8b3fa59436c1b5267d195d4d5eb4e",
+            Self::Vaporeon => "0d92fd28cf7c31c03b49e55538d760de684e22797e9a32a7ccfba31790e84a81",
+            Self::Celebi => "94a8a577208273651ba7294a48345f701b30142a260b5fc2e920b21e252837fb",
             Self::HoOh => "4e246f222c484ed35240a4bd22ce63b024b482e85b707d9968dbea9da3fac218",
             Self::Lugia => "8bfe309e8e03304e4547f34346df87add36f0706bed92b5cc7b589b57cf4001b",
             Self::Corsola => "70a819e196fadc5fade144ed07e3483aa3a404f9c1a373f572975adb9d9f65d2",
@@ -1040,6 +1892,22 @@ impl Species {
             Self::Smoochum => "90026857a3c50573313f78f6fbd0fd12ed25f7cdae53bbd869a6a0f5e2c792d2",
             Self::Elekid => "5087eaed56db849c823c7e069ef7879375ebb39c6d3f68c84de469b858ad076a",
             Self::Magby => "aab2245cffeaa6b35e780fc79dee5fa83f7d6b482103151f3e1cfd6acec8c60b",
+            Self::Magmar => "3463aa43d0d0b9d5d979c0a55071283a3ef1a1893d053a2ffa97e5361dd0c83d",
+            Self::Electabuzz => "b043a49e3f3885b12adb6401eee1999cb9dcaa956952ca39e300cabc97bc0c34",
+            Self::Slowking => "c66499f5fae82d1d849da07acc4b7d5e48ce75270cac872bdee5681bb1f5320b",
+            Self::Slowbro => "33741cd0059c20dfaee09820fe9898e00eee22e21fce8e153eda4985ed38fc14",
+            Self::Lickitung => "972f51bfd45847d1dcda324c713ac66537d2eb19a6a9407ae395279d9bc99156",
+            Self::MrMime => "d583990f629188f68ad7098a02d6fca3b854f80187ac1bc00ac935bbf9bd1ab2",
+            Self::Chansey => "9b0d87c52e08fad76e7ee66f2983e075382f8a3da37b989e4cc025be0061021e",
+            Self::Blissey => "316186bb6e6a3a5c2eac8d4040d19e52536c3d642bdb23d6dba0288056f62a0e",
+            Self::Growlithe => "93977ea316f368e22fd7a1061f565e63ca5fd01264a654a6b628f2d65961ab99",
+            Self::Arcanine => "b8b53169922d6cb2ea77f87da6f84f68bb50279d875021a4bec7b884a9382b7e",
+            Self::NidoranF => "8bd3d7aefc6dd2bb59d701de719be620443ce0c1fc4aaaeb4bcdecc0a9c03802",
+            Self::NidoranM => "5d11703a3c1639cd8682d31e6d0466e48540efb084afadfbc04d29dfde753c81",
+            Self::Nidorina => "85c4a8e56049919dc4ca944a15f2711111399da8b3542cf1d4e38fffdd3f9b5e",
+            Self::Nidorino => "6a11581fdc1fd23d94214c2430bf1c33f8bd92bccc9e94e7abbffdf8f9ccd688",
+            Self::Nidoking => "0730055ac57991e822b343db39eb9020d0416bbd179956f8e49ee721f937c346",
+            Self::Nidoqueen => "5b9950cf9bb193673825a3db9214c65d3f2eb037367486e563ec310be35d6132",
             Self::Pichu => "45b03dd0a788ebf6714334c7c25ab472bab589aa9d5b70e2512ad105b7e992be",
             Self::Cleffa => "25d7809325a90fc9b89a9451ee3785256001f63b95cfb0a1568e7a3d7bd45725",
             Self::Igglybuff => "de4ed97b7ae946d32303e70a839c3880f24b1a01e0036b72be5aa78bc97010a4",
@@ -1055,6 +1923,20 @@ impl Species {
             Self::Unown(form) => UNOWN_DIGESTS[usize::from(form)],
             Self::Onix => "c36c6f0a7b6d955e1f5937d4862220768229c6ac7e661abc7b00fd354622fa10",
             Self::Voltorb => "560b40b398d50fcbeb2944890bd8e60733c1182c83c20b824e84b8a358f4e605",
+            Self::Bellsprout => "34c7d0c2b0acffea6b36f16c6ec988186e5bb2c1b5906c6781c805600ed1ae32",
+            Self::Weepinbell => "2f702734e363aaa15b2bc88e89e5ca88b6ad31a7517a6980bdae11926eb3c9ab",
+            Self::Victreebel => "efb9f3f09ee0e691fc9a3acd3675e9c23b86e86ff0ecbaccdc97411cd2958923",
+            Self::Gloom => "1d5f919f3795501e874632168a05d657bb5bddab837adffb6c017924a16cdcad",
+            Self::Vileplume => "0df615733458f9a0fa2a45bce3bf68a390fd8c8da2cb0fcd329a9138411acb3c",
+            Self::Raichu => "0352f76630694336e563c1def6366e9da3d479fd90b43e219c0d57c0fe89c4f0",
+            Self::Ekans => "eaf2ebad196f288b8c3827336f2ca7c90dd56070ced67699b45e13427dfbb6e4",
+            Self::Arbok => "2db1012c5b11414aee4a5b75c1517805dcf4be91989a2f854a74c6df71830790",
+            Self::Steelix => "1868650cc107f68412c8bd5614b9e2ae7db2b6f35b5db834e3213dc97ec556d0",
+            Self::Pineco => "57da153652ef565881c64f8a0874e22e182a0c1ce7eee3985311a145835167f8",
+            Self::Forretress => "5dbc71683b7f28a531a606b07e72f102a64dd20fa39fdd3938c2848429d19b5a",
+            Self::Kabuto => "46446b487607972de83a305147cd15a15e66dc7e9b15d3dda2c226c112864fa6",
+            Self::Kabutops => "425d7b4409372617d60635989f3d8993b5733b4c91754397bb39c056a27ce7b6",
+            Self::Electrode => "cc8828f83e653417b3a084b8e0ca908deb1f3a5fe4acfea67e831e87050e7571",
             Self::Staryu => "c8ef0c854e722452e6850b79cd7df6b66598e7b21488b69ba818c5dc80e87a67",
             Self::Sentret => "0a15f7e364cdec1b70a33e5e68df64620b7824223129e72dc9184606b8ce4485",
             Self::Hoothoot => "93fbea6a47abff0fff1f6ee6315f7ac09ea26bb1bf60a26b0d293a8ae7784555",
@@ -1070,15 +1952,43 @@ impl Species {
             Self::Squirtle => "222004eaea9a5593380331ab51391d1ddfdcda105fc35c11ebe53835e4e341d7",
             Self::Geodude => "90658750b47d9380750c88431617ae2860b5f5cdb8e6d1d0af8fb320124ab33d",
             Self::Pidgey => "814a75e55669f0361edc7c35026a7a0b112085cda12d4dcc485693bfd1990fb7",
-            Self::Oddish => "b138445f423d89daff929c82b90cc4950b9a9534b53d767887664b65e1ada7ab",
+            Self::Oddish => "b9c42e2be84290dfd4b02c68370d07d6f235fb3f7ea34826d677a1faaef29384",
             Self::Poliwag => "2914f4cf3bdb2b4ea6f4795e1586e3d93f4dee15f5b0050ca2981fdcc37c2f2d",
+            Self::Horsea => "9ced391e14c1462d6aec4e5fbb3cb7ea1882fe08cde7b7f9ab6f62a02c08c133",
+            Self::Seadra => "77563b2fa80988f87c72a2e83f27d69fcd5eb992cbc3f8585d30819ed651aa89",
+            Self::Kingdra => "630e46aff5bc1a55ef3e52dbacfb4617e6be6b2a5381389b8ee019795bfda69e",
+            Self::Goldeen => "248b6d97497e6c5d260216233c6692c8d2636c2f99573ee5302025acc47bba31",
+            Self::Seaking => "598ef7f5ae399ebef8d5bed97e398152862673a02de191b4cade5bb6c2ea9b57",
+            Self::Magikarp => "75e6d1ec0cd9b364d8c982351adf6acd23f477048cbea91a461d53daf622aabc",
+            Self::Larvitar => "61cd43cca9f55febba20701c2ce9244510d85dd4a826f4476c903f0815bb9706",
+            Self::Pupitar => "b972d03ec14adb898e754bb68511dad4e7f7f131aee538229c455b77ecc3a492",
+            Self::Tyranitar => "ab12485cb05e61b1722d768f92af6cc5151592507139262e80a58ce2c360db33",
+            Self::Quilava => "a93592c6a5759ecb4c8dec112b2a655d5283c6514da75bfdb4ba66f4b8ce7650",
+            Self::Typhlosion => "ed5bd1e628a7763fd30dce90c6d0e7fa6c09a8c8d5d93bb35eebafe28ae81402",
+            Self::Charmeleon => "5c7062be45d9caa717b32a0dd665c207e4b6e563add9971868dee91edc343007",
+            Self::Charizard => "20ca8700dd7dbe8c6db55ee12f00bae240ee62f1a39255d3aa06dec9d01ef05b",
+            Self::Graveler => "6c318d8d37db542a1b5cf1901ab815c6ff9674aba735a626ae390a3c8b676049",
+            Self::Golem => "9b16cb2ddc7577b4f64ae437f97e894b2154f75f5626f1dab4fcb1564a0b9671",
+            Self::Omanyte => "9df10630971b62ea925b0d03f556b92a04dcfe75d25ad66bbe7f0c7965f86246",
+            Self::Omastar => "2df6740a96834863a7812b4ca47f7fbf799992bb8eab0541f445325d864fb4ee",
+            Self::Aerodactyl => "09cc8fb6a4257c7daabf5eb7a77b4bea649eaf9ec6f5b0235cc8cedce0a7503a",
+            Self::Dratini => "53985a5d2655309199dcc14faf9c3e554d04e0fb273d8bdfcaa67b3cc64a75f7",
+            Self::Dragonair => "3effe7b64485d15be8a2b9d78c14ad80dd74dcab79c10b169f9145f13391efc2",
+            Self::Dragonite => "8fe63ca60d85a0dc97632a7f182a368a91d0f8fdba3fba2f9da92eb2d3524c3f",
+            Self::Clefable => "2dcfdca000ef1ccc8fa751fe5e95753104aa8097685d5200ff18cb6dbcf1c3e8",
+            Self::Wigglytuff => "ba8c7ae0e3fadd9d0a8f91ae55d2ab67ae4e2aed3432ea20df0254265ccf7614",
+            Self::Sandshrew => "2d57a940df4c3b341cf18d234d61cf58c391b2175e1bde7022a7afccc1386b8f",
+            Self::Sandslash => "fddac7741a7fbab34202801708542b62ccd5cd3a901a46bc37209062e627301d",
+            Self::Politoed => "8d04df99bf27b790d08bd554c5cbc4762bcc345acd6cba1fea600867cc5c8c44",
+            Self::Poliwrath => "3628cbf3a335a904aebdfa48f9ecc48d68033f9449107546b6fe256e7364d09e",
+            Self::Poliwhirl => "331c07cd646e2dd21412c2243507420d69862a69a0acaac3086eb3cafbbe4394",
             Self::Clefairy => "0d173aea43c62408317aabf296a57c3a202a674df5464cd94b29fc04e872accc",
             Self::Jigglypuff => "be7a901fb200b5528a7ec3fbba34c9944776fdb953d1eb15b69f58cf9419664e",
             Self::Charmander => "6ae03caf697cdaa11acbbb4d2bc90af86f0db04ecf02b64c7e7342a5aed72bfa",
             Self::Bulbasaur => "2789ad2986d637dbe83e6b3b4eb899dfe9ccd06d0746c3332053e72f3bd033df",
             Self::Pikachu => "4bdd281a376a6427e9ee966c69b650d349367033a58f70614987a2e8b1065387",
             Self::Snorlax => "91058a0c15e86e5e6ff07f98ff22bafbc6cd0752f2e861fe80c74ea58a74426c",
-            Self::Lapras => "e783b1adb22c94e3a0914dde725c5eef44c4197fc93e4736edc49e24e455548e",
+            Self::Lapras => "7a083c865c869d1fa5f832195c3ed2ec042b1267773294cc39fe47cd3c6b789b",
             Self::Sudowoodo => "010b92720972b99c2bee10df2b6a074d605fce9fef79d4f8eef8c49b2e079275",
             Self::Gyarados => "555f2c6aace148f0fa0e3412cdb5912581b5f6d6f60341c6eeaecdcb7d4ac045",
             Self::Wooper => "5a306ae7d1f9b79c7ce3897c0d538b2752c7cdf85c68f050fe8a1aa0b1bb801a",
@@ -1215,8 +2125,35 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
     static SENTRET: OnceLock<SpeciesRig> = OnceLock::new();
     static STARYU: OnceLock<SpeciesRig> = OnceLock::new();
     static VOLTORB: OnceLock<SpeciesRig> = OnceLock::new();
+    static BELLSPROUT: OnceLock<SpeciesRig> = OnceLock::new();
+    static WEEPINBELL: OnceLock<SpeciesRig> = OnceLock::new();
+    static VICTREEBEL: OnceLock<SpeciesRig> = OnceLock::new();
+    static GLOOM: OnceLock<SpeciesRig> = OnceLock::new();
+    static VILEPLUME: OnceLock<SpeciesRig> = OnceLock::new();
+    static RAICHU: OnceLock<SpeciesRig> = OnceLock::new();
+    static EKANS: OnceLock<SpeciesRig> = OnceLock::new();
+    static ARBOK: OnceLock<SpeciesRig> = OnceLock::new();
+    static STEELIX: OnceLock<SpeciesRig> = OnceLock::new();
+    static PINECO: OnceLock<SpeciesRig> = OnceLock::new();
+    static FORRETRESS: OnceLock<SpeciesRig> = OnceLock::new();
+    static KABUTO: OnceLock<SpeciesRig> = OnceLock::new();
+    static KABUTOPS: OnceLock<SpeciesRig> = OnceLock::new();
+    static ELECTRODE: OnceLock<SpeciesRig> = OnceLock::new();
     static ONIX: OnceLock<SpeciesRig> = OnceLock::new();
     static DIGLETT: OnceLock<SpeciesRig> = OnceLock::new();
+    static DUGTRIO: OnceLock<SpeciesRig> = OnceLock::new();
+    static TENTACRUEL: OnceLock<SpeciesRig> = OnceLock::new();
+    static TENTACOOL: OnceLock<SpeciesRig> = OnceLock::new();
+    static JYNX: OnceLock<SpeciesRig> = OnceLock::new();
+    static PRIMEAPE: OnceLock<SpeciesRig> = OnceLock::new();
+    static MANKEY: OnceLock<SpeciesRig> = OnceLock::new();
+    static MEOWTH: OnceLock<SpeciesRig> = OnceLock::new();
+    static PERSIAN: OnceLock<SpeciesRig> = OnceLock::new();
+    static DODUO: OnceLock<SpeciesRig> = OnceLock::new();
+    static DODRIO: OnceLock<SpeciesRig> = OnceLock::new();
+    static PIDGEOTTO: OnceLock<SpeciesRig> = OnceLock::new();
+    static FEAROW: OnceLock<SpeciesRig> = OnceLock::new();
+    static PIDGEOT: OnceLock<SpeciesRig> = OnceLock::new();
             static SLOWPOKE: OnceLock<SpeciesRig> = OnceLock::new();
     static ENTEI: OnceLock<SpeciesRig> = OnceLock::new();
     static RAIKOU: OnceLock<SpeciesRig> = OnceLock::new();
@@ -1267,6 +2204,65 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
     static MOLTRES: OnceLock<SpeciesRig> = OnceLock::new();
     static ZAPDOS: OnceLock<SpeciesRig> = OnceLock::new();
     static ARTICUNO: OnceLock<SpeciesRig> = OnceLock::new();
+    static MEW: OnceLock<SpeciesRig> = OnceLock::new();
+    static MEWTWO: OnceLock<SpeciesRig> = OnceLock::new();
+    static HERACROSS: OnceLock<SpeciesRig> = OnceLock::new();
+    static PINSIR: OnceLock<SpeciesRig> = OnceLock::new();
+    static SCIZOR: OnceLock<SpeciesRig> = OnceLock::new();
+    static SCYTHER: OnceLock<SpeciesRig> = OnceLock::new();
+    static STARMIE: OnceLock<SpeciesRig> = OnceLock::new();
+    static GASTLY: OnceLock<SpeciesRig> = OnceLock::new();
+    static HAUNTER: OnceLock<SpeciesRig> = OnceLock::new();
+    static EEVEE: OnceLock<SpeciesRig> = OnceLock::new();
+    static VULPIX: OnceLock<SpeciesRig> = OnceLock::new();
+    static NINETALES: OnceLock<SpeciesRig> = OnceLock::new();
+    static VENONAT: OnceLock<SpeciesRig> = OnceLock::new();
+    static VENOMOTH: OnceLock<SpeciesRig> = OnceLock::new();
+    static PARAS: OnceLock<SpeciesRig> = OnceLock::new();
+    static PARASECT: OnceLock<SpeciesRig> = OnceLock::new();
+    static METAPOD: OnceLock<SpeciesRig> = OnceLock::new();
+    static KAKUNA: OnceLock<SpeciesRig> = OnceLock::new();
+    static CATERPIE: OnceLock<SpeciesRig> = OnceLock::new();
+    static WEEDLE: OnceLock<SpeciesRig> = OnceLock::new();
+    static RHYDON: OnceLock<SpeciesRig> = OnceLock::new();
+    static DROWZEE: OnceLock<SpeciesRig> = OnceLock::new();
+    static HYPNO: OnceLock<SpeciesRig> = OnceLock::new();
+    static ABRA: OnceLock<SpeciesRig> = OnceLock::new();
+    static ALAKAZAM: OnceLock<SpeciesRig> = OnceLock::new();
+    static KADABRA: OnceLock<SpeciesRig> = OnceLock::new();
+    static KOFFING: OnceLock<SpeciesRig> = OnceLock::new();
+    static WEEZING: OnceLock<SpeciesRig> = OnceLock::new();
+    static WARTORTLE: OnceLock<SpeciesRig> = OnceLock::new();
+    static BLASTOISE: OnceLock<SpeciesRig> = OnceLock::new();
+    static CROCONAW: OnceLock<SpeciesRig> = OnceLock::new();
+    static FERALIGATR: OnceLock<SpeciesRig> = OnceLock::new();
+    static CUBONE: OnceLock<SpeciesRig> = OnceLock::new();
+    static MAROWAK: OnceLock<SpeciesRig> = OnceLock::new();
+    static MAGNEMITE: OnceLock<SpeciesRig> = OnceLock::new();
+    static MAGNETON: OnceLock<SpeciesRig> = OnceLock::new();
+    static TANGELA: OnceLock<SpeciesRig> = OnceLock::new();
+    static KANGASKHAN: OnceLock<SpeciesRig> = OnceLock::new();
+    static PONYTA: OnceLock<SpeciesRig> = OnceLock::new();
+    static RAPIDASH: OnceLock<SpeciesRig> = OnceLock::new();
+    static MACHOP: OnceLock<SpeciesRig> = OnceLock::new();
+    static MACHOKE: OnceLock<SpeciesRig> = OnceLock::new();
+    static MACHAMP: OnceLock<SpeciesRig> = OnceLock::new();
+    static RHYHORN: OnceLock<SpeciesRig> = OnceLock::new();
+    static DEWGONG: OnceLock<SpeciesRig> = OnceLock::new();
+    static SEEL: OnceLock<SpeciesRig> = OnceLock::new();
+    static DITTO: OnceLock<SpeciesRig> = OnceLock::new();
+    static MUK: OnceLock<SpeciesRig> = OnceLock::new();
+    static GRIMER: OnceLock<SpeciesRig> = OnceLock::new();
+    static CLOYSTER: OnceLock<SpeciesRig> = OnceLock::new();
+    static SHELLDER: OnceLock<SpeciesRig> = OnceLock::new();
+    static KINGLER: OnceLock<SpeciesRig> = OnceLock::new();
+    static KRABBY: OnceLock<SpeciesRig> = OnceLock::new();
+    static UMBREON: OnceLock<SpeciesRig> = OnceLock::new();
+    static JOLTEON: OnceLock<SpeciesRig> = OnceLock::new();
+    static FLAREON: OnceLock<SpeciesRig> = OnceLock::new();
+    static ESPEON: OnceLock<SpeciesRig> = OnceLock::new();
+    static VAPOREON: OnceLock<SpeciesRig> = OnceLock::new();
+    static CELEBI: OnceLock<SpeciesRig> = OnceLock::new();
     static HO_OH: OnceLock<SpeciesRig> = OnceLock::new();
     static LUGIA: OnceLock<SpeciesRig> = OnceLock::new();
     static CORSOLA: OnceLock<SpeciesRig> = OnceLock::new();
@@ -1284,6 +2280,22 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
     static SMOOCHUM: OnceLock<SpeciesRig> = OnceLock::new();
     static ELEKID: OnceLock<SpeciesRig> = OnceLock::new();
     static MAGBY: OnceLock<SpeciesRig> = OnceLock::new();
+    static MAGMAR: OnceLock<SpeciesRig> = OnceLock::new();
+    static ELECTABUZZ: OnceLock<SpeciesRig> = OnceLock::new();
+    static SLOWKING: OnceLock<SpeciesRig> = OnceLock::new();
+    static SLOWBRO: OnceLock<SpeciesRig> = OnceLock::new();
+    static LICKITUNG: OnceLock<SpeciesRig> = OnceLock::new();
+    static MR_MIME: OnceLock<SpeciesRig> = OnceLock::new();
+    static CHANSEY: OnceLock<SpeciesRig> = OnceLock::new();
+    static BLISSEY: OnceLock<SpeciesRig> = OnceLock::new();
+    static GROWLITHE: OnceLock<SpeciesRig> = OnceLock::new();
+    static ARCANINE: OnceLock<SpeciesRig> = OnceLock::new();
+    static NIDORAN_F: OnceLock<SpeciesRig> = OnceLock::new();
+    static NIDORAN_M: OnceLock<SpeciesRig> = OnceLock::new();
+    static NIDORINA: OnceLock<SpeciesRig> = OnceLock::new();
+    static NIDORINO: OnceLock<SpeciesRig> = OnceLock::new();
+    static NIDOKING: OnceLock<SpeciesRig> = OnceLock::new();
+    static NIDOQUEEN: OnceLock<SpeciesRig> = OnceLock::new();
     static PICHU: OnceLock<SpeciesRig> = OnceLock::new();
     static CLEFFA: OnceLock<SpeciesRig> = OnceLock::new();
     static IGGLYBUFF: OnceLock<SpeciesRig> = OnceLock::new();
@@ -1303,6 +2315,34 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
     static JIGGLYPUFF: OnceLock<SpeciesRig> = OnceLock::new();
     static CLEFAIRY: OnceLock<SpeciesRig> = OnceLock::new();
     static POLIWAG: OnceLock<SpeciesRig> = OnceLock::new();
+    static HORSEA: OnceLock<SpeciesRig> = OnceLock::new();
+    static SEADRA: OnceLock<SpeciesRig> = OnceLock::new();
+    static KINGDRA: OnceLock<SpeciesRig> = OnceLock::new();
+    static GOLDEEN: OnceLock<SpeciesRig> = OnceLock::new();
+    static SEAKING: OnceLock<SpeciesRig> = OnceLock::new();
+    static MAGIKARP: OnceLock<SpeciesRig> = OnceLock::new();
+    static LARVITAR: OnceLock<SpeciesRig> = OnceLock::new();
+    static PUPITAR: OnceLock<SpeciesRig> = OnceLock::new();
+    static TYRANITAR: OnceLock<SpeciesRig> = OnceLock::new();
+    static QUILAVA: OnceLock<SpeciesRig> = OnceLock::new();
+    static TYPHLOSION: OnceLock<SpeciesRig> = OnceLock::new();
+    static CHARMELEON: OnceLock<SpeciesRig> = OnceLock::new();
+    static CHARIZARD: OnceLock<SpeciesRig> = OnceLock::new();
+    static GRAVELER: OnceLock<SpeciesRig> = OnceLock::new();
+    static GOLEM: OnceLock<SpeciesRig> = OnceLock::new();
+    static OMANYTE: OnceLock<SpeciesRig> = OnceLock::new();
+    static OMASTAR: OnceLock<SpeciesRig> = OnceLock::new();
+    static AERODACTYL: OnceLock<SpeciesRig> = OnceLock::new();
+    static DRATINI: OnceLock<SpeciesRig> = OnceLock::new();
+    static DRAGONAIR: OnceLock<SpeciesRig> = OnceLock::new();
+    static DRAGONITE: OnceLock<SpeciesRig> = OnceLock::new();
+    static CLEFABLE: OnceLock<SpeciesRig> = OnceLock::new();
+    static WIGGLYTUFF: OnceLock<SpeciesRig> = OnceLock::new();
+    static SANDSHREW: OnceLock<SpeciesRig> = OnceLock::new();
+    static SANDSLASH: OnceLock<SpeciesRig> = OnceLock::new();
+    static POLITOED: OnceLock<SpeciesRig> = OnceLock::new();
+    static POLIWRATH: OnceLock<SpeciesRig> = OnceLock::new();
+    static POLIWHIRL: OnceLock<SpeciesRig> = OnceLock::new();
     static ODDISH: OnceLock<SpeciesRig> = OnceLock::new();
     static PIDGEY: OnceLock<SpeciesRig> = OnceLock::new();
     static GEODUDE: OnceLock<SpeciesRig> = OnceLock::new();
@@ -1329,6 +2369,34 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
         Species::Pidgey => &PIDGEY,
         Species::Oddish => &ODDISH,
         Species::Poliwag => &POLIWAG,
+        Species::Horsea => &HORSEA,
+        Species::Seadra => &SEADRA,
+        Species::Kingdra => &KINGDRA,
+        Species::Goldeen => &GOLDEEN,
+        Species::Seaking => &SEAKING,
+        Species::Magikarp => &MAGIKARP,
+        Species::Larvitar => &LARVITAR,
+        Species::Pupitar => &PUPITAR,
+        Species::Tyranitar => &TYRANITAR,
+        Species::Quilava => &QUILAVA,
+        Species::Typhlosion => &TYPHLOSION,
+        Species::Charmeleon => &CHARMELEON,
+        Species::Charizard => &CHARIZARD,
+        Species::Graveler => &GRAVELER,
+        Species::Golem => &GOLEM,
+        Species::Omanyte => &OMANYTE,
+        Species::Omastar => &OMASTAR,
+        Species::Aerodactyl => &AERODACTYL,
+        Species::Dratini => &DRATINI,
+        Species::Dragonair => &DRAGONAIR,
+        Species::Dragonite => &DRAGONITE,
+        Species::Clefable => &CLEFABLE,
+        Species::Wigglytuff => &WIGGLYTUFF,
+        Species::Sandshrew => &SANDSHREW,
+        Species::Sandslash => &SANDSLASH,
+        Species::Politoed => &POLITOED,
+        Species::Poliwrath => &POLIWRATH,
+        Species::Poliwhirl => &POLIWHIRL,
         Species::Clefairy => &CLEFAIRY,
         Species::Jigglypuff => &JIGGLYPUFF,
         Species::Rattata => &RATTATA,
@@ -1344,8 +2412,35 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
         Species::Sentret => &SENTRET,
         Species::Staryu => &STARYU,
         Species::Voltorb => &VOLTORB,
+        Species::Bellsprout => &BELLSPROUT,
+        Species::Weepinbell => &WEEPINBELL,
+        Species::Victreebel => &VICTREEBEL,
+        Species::Gloom => &GLOOM,
+        Species::Vileplume => &VILEPLUME,
+        Species::Raichu => &RAICHU,
+        Species::Ekans => &EKANS,
+        Species::Arbok => &ARBOK,
+        Species::Steelix => &STEELIX,
+        Species::Pineco => &PINECO,
+        Species::Forretress => &FORRETRESS,
+        Species::Kabuto => &KABUTO,
+        Species::Kabutops => &KABUTOPS,
+        Species::Electrode => &ELECTRODE,
         Species::Onix => &ONIX,
         Species::Diglett => &DIGLETT,
+        Species::Dugtrio => &DUGTRIO,
+        Species::Tentacruel => &TENTACRUEL,
+        Species::Tentacool => &TENTACOOL,
+        Species::Jynx => &JYNX,
+        Species::Primeape => &PRIMEAPE,
+        Species::Mankey => &MANKEY,
+        Species::Meowth => &MEOWTH,
+        Species::Persian => &PERSIAN,
+        Species::Doduo => &DODUO,
+        Species::Dodrio => &DODRIO,
+        Species::Pidgeotto => &PIDGEOTTO,
+        Species::Fearow => &FEAROW,
+        Species::Pidgeot => &PIDGEOT,
             Species::Slowpoke => &SLOWPOKE,
         Species::Entei => &ENTEI,
         Species::Raikou => &RAIKOU,
@@ -1396,6 +2491,65 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
         Species::Moltres => &MOLTRES,
         Species::Zapdos => &ZAPDOS,
         Species::Articuno => &ARTICUNO,
+        Species::Mew => &MEW,
+        Species::Mewtwo => &MEWTWO,
+        Species::Heracross => &HERACROSS,
+        Species::Pinsir => &PINSIR,
+        Species::Scizor => &SCIZOR,
+        Species::Scyther => &SCYTHER,
+        Species::Starmie => &STARMIE,
+        Species::Gastly => &GASTLY,
+        Species::Haunter => &HAUNTER,
+        Species::Eevee => &EEVEE,
+        Species::Vulpix => &VULPIX,
+        Species::Ninetales => &NINETALES,
+        Species::Venonat => &VENONAT,
+        Species::Venomoth => &VENOMOTH,
+        Species::Paras => &PARAS,
+        Species::Parasect => &PARASECT,
+        Species::Metapod => &METAPOD,
+        Species::Kakuna => &KAKUNA,
+        Species::Caterpie => &CATERPIE,
+        Species::Weedle => &WEEDLE,
+        Species::Rhydon => &RHYDON,
+        Species::Drowzee => &DROWZEE,
+        Species::Hypno => &HYPNO,
+        Species::Abra => &ABRA,
+        Species::Alakazam => &ALAKAZAM,
+        Species::Kadabra => &KADABRA,
+        Species::Koffing => &KOFFING,
+        Species::Weezing => &WEEZING,
+        Species::Wartortle => &WARTORTLE,
+        Species::Blastoise => &BLASTOISE,
+        Species::Croconaw => &CROCONAW,
+        Species::Feraligatr => &FERALIGATR,
+        Species::Cubone => &CUBONE,
+        Species::Marowak => &MAROWAK,
+        Species::Magnemite => &MAGNEMITE,
+        Species::Magneton => &MAGNETON,
+        Species::Tangela => &TANGELA,
+        Species::Kangaskhan => &KANGASKHAN,
+        Species::Ponyta => &PONYTA,
+        Species::Rapidash => &RAPIDASH,
+        Species::Machop => &MACHOP,
+        Species::Machoke => &MACHOKE,
+        Species::Machamp => &MACHAMP,
+        Species::Rhyhorn => &RHYHORN,
+        Species::Dewgong => &DEWGONG,
+        Species::Seel => &SEEL,
+        Species::Ditto => &DITTO,
+        Species::Muk => &MUK,
+        Species::Grimer => &GRIMER,
+        Species::Cloyster => &CLOYSTER,
+        Species::Shellder => &SHELLDER,
+        Species::Kingler => &KINGLER,
+        Species::Krabby => &KRABBY,
+        Species::Umbreon => &UMBREON,
+        Species::Jolteon => &JOLTEON,
+        Species::Flareon => &FLAREON,
+        Species::Espeon => &ESPEON,
+        Species::Vaporeon => &VAPOREON,
+        Species::Celebi => &CELEBI,
         Species::HoOh => &HO_OH,
         Species::Lugia => &LUGIA,
         Species::Corsola => &CORSOLA,
@@ -1413,6 +2567,22 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
         Species::Smoochum => &SMOOCHUM,
         Species::Elekid => &ELEKID,
         Species::Magby => &MAGBY,
+        Species::Magmar => &MAGMAR,
+        Species::Electabuzz => &ELECTABUZZ,
+        Species::Slowking => &SLOWKING,
+        Species::Slowbro => &SLOWBRO,
+        Species::Lickitung => &LICKITUNG,
+        Species::MrMime => &MR_MIME,
+        Species::Chansey => &CHANSEY,
+        Species::Blissey => &BLISSEY,
+        Species::Growlithe => &GROWLITHE,
+        Species::Arcanine => &ARCANINE,
+        Species::NidoranF => &NIDORAN_F,
+        Species::NidoranM => &NIDORAN_M,
+        Species::Nidorina => &NIDORINA,
+        Species::Nidorino => &NIDORINO,
+        Species::Nidoking => &NIDOKING,
+        Species::Nidoqueen => &NIDOQUEEN,
         Species::Pichu => &PICHU,
         Species::Cleffa => &CLEFFA,
         Species::Igglybuff => &IGGLYBUFF,
@@ -1436,6 +2606,19 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
             Species::Golbat => { crate::model_storage::include_model!("models/battle_species/golbat.glb") }
             Species::Butterfree => { crate::model_storage::include_model!("models/battle_species/butterfree.glb") }
             Species::Diglett => { crate::model_storage::include_model!("models/battle_species/diglett.glb") }
+            Species::Dugtrio => { crate::model_storage::include_model!("models/battle_species/dugtrio.glb") }
+            Species::Tentacruel => { crate::model_storage::include_model!("models/battle_species/tentacruel.glb") }
+            Species::Tentacool => { crate::model_storage::include_model!("models/battle_species/tentacool.glb") }
+            Species::Jynx => { crate::model_storage::include_model!("models/battle_species/jynx.glb") }
+            Species::Primeape => { crate::model_storage::include_model!("models/battle_species/primeape.glb") }
+            Species::Mankey => { crate::model_storage::include_model!("models/battle_species/mankey.glb") }
+            Species::Meowth => { crate::model_storage::include_model!("models/battle_species/meowth.glb") }
+            Species::Persian => { crate::model_storage::include_model!("models/battle_species/persian.glb") }
+            Species::Doduo => { crate::model_storage::include_model!("models/battle_species/doduo.glb") }
+            Species::Dodrio => { crate::model_storage::include_model!("models/battle_species/dodrio.glb") }
+            Species::Pidgeotto => { crate::model_storage::include_model!("models/battle_species/pidgeotto.glb") }
+            Species::Fearow => { crate::model_storage::include_model!("models/battle_species/fearow.glb") }
+            Species::Pidgeot => { crate::model_storage::include_model!("models/battle_species/pidgeot.glb") }
             Species::Unown(form) => match form {
                 0 => crate::model_storage::include_model!("models/battle_species/unown_a.glb"),
                 1 => crate::model_storage::include_model!("models/battle_species/unown_b.glb"),
@@ -1514,6 +2697,65 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
             Species::Moltres => { crate::model_storage::include_model!("models/battle_species/moltres.glb") }
             Species::Zapdos => { crate::model_storage::include_model!("models/battle_species/zapdos.glb") }
             Species::Articuno => { crate::model_storage::include_model!("models/battle_species/articuno.glb") }
+            Species::Mew => { crate::model_storage::include_model!("models/battle_species/mew.glb") }
+            Species::Mewtwo => { crate::model_storage::include_model!("models/battle_species/mewtwo.glb") }
+            Species::Heracross => { crate::model_storage::include_model!("models/battle_species/heracross.glb") }
+            Species::Pinsir => { crate::model_storage::include_model!("models/battle_species/pinsir.glb") }
+            Species::Scizor => { crate::model_storage::include_model!("models/battle_species/scizor.glb") }
+            Species::Scyther => { crate::model_storage::include_model!("models/battle_species/scyther.glb") }
+            Species::Starmie => { crate::model_storage::include_model!("models/battle_species/starmie.glb") }
+            Species::Gastly => { crate::model_storage::include_model!("models/battle_species/gastly.glb") }
+            Species::Haunter => { crate::model_storage::include_model!("models/battle_species/haunter.glb") }
+            Species::Eevee => { crate::model_storage::include_model!("models/battle_species/eevee.glb") }
+            Species::Vulpix => { crate::model_storage::include_model!("models/battle_species/vulpix.glb") }
+            Species::Ninetales => { crate::model_storage::include_model!("models/battle_species/ninetales.glb") }
+            Species::Venonat => { crate::model_storage::include_model!("models/battle_species/venonat.glb") }
+            Species::Venomoth => { crate::model_storage::include_model!("models/battle_species/venomoth.glb") }
+            Species::Paras => { crate::model_storage::include_model!("models/battle_species/paras.glb") }
+            Species::Parasect => { crate::model_storage::include_model!("models/battle_species/parasect.glb") }
+            Species::Metapod => { crate::model_storage::include_model!("models/battle_species/metapod.glb") }
+            Species::Kakuna => { crate::model_storage::include_model!("models/battle_species/kakuna.glb") }
+            Species::Caterpie => { crate::model_storage::include_model!("models/battle_species/caterpie.glb") }
+            Species::Weedle => { crate::model_storage::include_model!("models/battle_species/weedle.glb") }
+            Species::Rhydon => { crate::model_storage::include_model!("models/battle_species/rhydon.glb") }
+            Species::Drowzee => { crate::model_storage::include_model!("models/battle_species/drowzee.glb") }
+            Species::Hypno => { crate::model_storage::include_model!("models/battle_species/hypno.glb") }
+            Species::Abra => { crate::model_storage::include_model!("models/battle_species/abra.glb") }
+            Species::Alakazam => { crate::model_storage::include_model!("models/battle_species/alakazam.glb") }
+            Species::Kadabra => { crate::model_storage::include_model!("models/battle_species/kadabra.glb") }
+            Species::Koffing => { crate::model_storage::include_model!("models/battle_species/koffing.glb") }
+            Species::Weezing => { crate::model_storage::include_model!("models/battle_species/weezing.glb") }
+            Species::Wartortle => { crate::model_storage::include_model!("models/battle_species/wartortle.glb") }
+            Species::Blastoise => { crate::model_storage::include_model!("models/battle_species/blastoise.glb") }
+            Species::Croconaw => { crate::model_storage::include_model!("models/battle_species/croconaw.glb") }
+            Species::Feraligatr => { crate::model_storage::include_model!("models/battle_species/feraligatr.glb") }
+            Species::Cubone => { crate::model_storage::include_model!("models/battle_species/cubone.glb") }
+            Species::Marowak => { crate::model_storage::include_model!("models/battle_species/marowak.glb") }
+            Species::Magnemite => { crate::model_storage::include_model!("models/battle_species/magnemite.glb") }
+            Species::Magneton => { crate::model_storage::include_model!("models/battle_species/magneton.glb") }
+            Species::Tangela => { crate::model_storage::include_model!("models/battle_species/tangela.glb") }
+            Species::Kangaskhan => { crate::model_storage::include_model!("models/battle_species/kangaskhan.glb") }
+            Species::Ponyta => { crate::model_storage::include_model!("models/battle_species/ponyta.glb") }
+            Species::Rapidash => { crate::model_storage::include_model!("models/battle_species/rapidash.glb") }
+            Species::Machop => { crate::model_storage::include_model!("models/battle_species/machop.glb") }
+            Species::Machoke => { crate::model_storage::include_model!("models/battle_species/machoke.glb") }
+            Species::Machamp => { crate::model_storage::include_model!("models/battle_species/machamp.glb") }
+            Species::Rhyhorn => { crate::model_storage::include_model!("models/battle_species/rhyhorn.glb") }
+            Species::Dewgong => { crate::model_storage::include_model!("models/battle_species/dewgong.glb") }
+            Species::Seel => { crate::model_storage::include_model!("models/battle_species/seel.glb") }
+            Species::Ditto => { crate::model_storage::include_model!("models/battle_species/ditto.glb") }
+            Species::Muk => { crate::model_storage::include_model!("models/battle_species/muk.glb") }
+            Species::Grimer => { crate::model_storage::include_model!("models/battle_species/grimer.glb") }
+            Species::Cloyster => { crate::model_storage::include_model!("models/battle_species/cloyster.glb") }
+            Species::Shellder => { crate::model_storage::include_model!("models/battle_species/shellder.glb") }
+            Species::Kingler => { crate::model_storage::include_model!("models/battle_species/kingler.glb") }
+            Species::Krabby => { crate::model_storage::include_model!("models/battle_species/krabby.glb") }
+            Species::Umbreon => { crate::model_storage::include_model!("models/battle_species/umbreon.glb") }
+            Species::Jolteon => { crate::model_storage::include_model!("models/battle_species/jolteon.glb") }
+            Species::Flareon => { crate::model_storage::include_model!("models/battle_species/flareon.glb") }
+            Species::Espeon => { crate::model_storage::include_model!("models/battle_species/espeon.glb") }
+            Species::Vaporeon => { crate::model_storage::include_model!("models/battle_species/vaporeon.glb") }
+            Species::Celebi => { crate::model_storage::include_model!("models/battle_species/celebi.glb") }
             Species::HoOh => { crate::model_storage::include_model!("models/battle_species/ho_oh.glb") }
             Species::Lugia => { crate::model_storage::include_model!("models/battle_species/lugia.glb") }
             Species::Corsola => { crate::model_storage::include_model!("models/battle_species/corsola.glb") }
@@ -1531,6 +2773,22 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
             Species::Smoochum => { crate::model_storage::include_model!("models/battle_species/smoochum.glb") }
             Species::Elekid => { crate::model_storage::include_model!("models/battle_species/elekid.glb") }
             Species::Magby => { crate::model_storage::include_model!("models/battle_species/magby.glb") }
+            Species::Magmar => { crate::model_storage::include_model!("models/battle_species/magmar.glb") }
+            Species::Electabuzz => { crate::model_storage::include_model!("models/battle_species/electabuzz.glb") }
+            Species::Slowking => { crate::model_storage::include_model!("models/battle_species/slowking.glb") }
+            Species::Slowbro => { crate::model_storage::include_model!("models/battle_species/slowbro.glb") }
+            Species::Lickitung => { crate::model_storage::include_model!("models/battle_species/lickitung.glb") }
+            Species::MrMime => { crate::model_storage::include_model!("models/battle_species/mr__mime.glb") }
+            Species::Chansey => { crate::model_storage::include_model!("models/battle_species/chansey.glb") }
+            Species::Blissey => { crate::model_storage::include_model!("models/battle_species/blissey.glb") }
+            Species::Growlithe => { crate::model_storage::include_model!("models/battle_species/growlithe.glb") }
+            Species::Arcanine => { crate::model_storage::include_model!("models/battle_species/arcanine.glb") }
+            Species::NidoranF => { crate::model_storage::include_model!("models/battle_species/nidoran_f.glb") }
+            Species::NidoranM => { crate::model_storage::include_model!("models/battle_species/nidoran_m.glb") }
+            Species::Nidorina => { crate::model_storage::include_model!("models/battle_species/nidorina.glb") }
+            Species::Nidorino => { crate::model_storage::include_model!("models/battle_species/nidorino.glb") }
+            Species::Nidoking => { crate::model_storage::include_model!("models/battle_species/nidoking.glb") }
+            Species::Nidoqueen => { crate::model_storage::include_model!("models/battle_species/nidoqueen.glb") }
             Species::Pichu => { crate::model_storage::include_model!("models/battle_species/pichu.glb") }
             Species::Cleffa => { crate::model_storage::include_model!("models/battle_species/cleffa.glb") }
             Species::Igglybuff => { crate::model_storage::include_model!("models/battle_species/igglybuff.glb") }
@@ -1545,6 +2803,20 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
             Species::Slowpoke => { crate::model_storage::include_model!("models/battle_species/slowpoke.glb") }
             Species::Onix => { crate::model_storage::include_model!("models/battle_species/onix.glb") }
             Species::Voltorb => { crate::model_storage::include_model!("models/battle_species/voltorb.glb") }
+            Species::Bellsprout => { crate::model_storage::include_model!("models/battle_species/bellsprout.glb") }
+            Species::Weepinbell => { crate::model_storage::include_model!("models/battle_species/weepinbell.glb") }
+            Species::Victreebel => { crate::model_storage::include_model!("models/battle_species/victreebel.glb") }
+            Species::Gloom => { crate::model_storage::include_model!("models/battle_species/gloom.glb") }
+            Species::Vileplume => { crate::model_storage::include_model!("models/battle_species/vileplume.glb") }
+            Species::Raichu => { crate::model_storage::include_model!("models/battle_species/raichu.glb") }
+            Species::Ekans => { crate::model_storage::include_model!("models/battle_species/ekans.glb") }
+            Species::Arbok => { crate::model_storage::include_model!("models/battle_species/arbok.glb") }
+            Species::Steelix => { crate::model_storage::include_model!("models/battle_species/steelix.glb") }
+            Species::Pineco => { crate::model_storage::include_model!("models/battle_species/pineco.glb") }
+            Species::Forretress => { crate::model_storage::include_model!("models/battle_species/forretress.glb") }
+            Species::Kabuto => { crate::model_storage::include_model!("models/battle_species/kabuto.glb") }
+            Species::Kabutops => { crate::model_storage::include_model!("models/battle_species/kabutops.glb") }
+            Species::Electrode => { crate::model_storage::include_model!("models/battle_species/electrode.glb") }
             Species::Staryu => { crate::model_storage::include_model!("models/battle_species/staryu.glb") }
             Species::Sentret => { crate::model_storage::include_model!("models/battle_species/sentret.glb") }
             Species::Hoothoot => { crate::model_storage::include_model!("models/battle_species/hoothoot.glb") }
@@ -1556,6 +2828,34 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
             Species::Jigglypuff => { crate::model_storage::include_model!("models/actor_props/icon_jigglypuff.glb") }
             Species::Clefairy => { crate::model_storage::include_model!("models/actor_props/icon_clefairy.glb") }
             Species::Poliwag => { crate::model_storage::include_model!("models/battle_species/poliwag.glb") }
+            Species::Horsea => { crate::model_storage::include_model!("models/battle_species/horsea.glb") }
+            Species::Seadra => { crate::model_storage::include_model!("models/battle_species/seadra.glb") }
+            Species::Kingdra => { crate::model_storage::include_model!("models/battle_species/kingdra.glb") }
+            Species::Goldeen => { crate::model_storage::include_model!("models/battle_species/goldeen.glb") }
+            Species::Seaking => { crate::model_storage::include_model!("models/battle_species/seaking.glb") }
+            Species::Magikarp => { crate::model_storage::include_model!("models/battle_species/magikarp.glb") }
+            Species::Larvitar => { crate::model_storage::include_model!("models/battle_species/larvitar.glb") }
+            Species::Pupitar => { crate::model_storage::include_model!("models/battle_species/pupitar.glb") }
+            Species::Tyranitar => { crate::model_storage::include_model!("models/battle_species/tyranitar.glb") }
+            Species::Quilava => { crate::model_storage::include_model!("models/battle_species/quilava.glb") }
+            Species::Typhlosion => { crate::model_storage::include_model!("models/battle_species/typhlosion.glb") }
+            Species::Charmeleon => { crate::model_storage::include_model!("models/battle_species/charmeleon.glb") }
+            Species::Charizard => { crate::model_storage::include_model!("models/battle_species/charizard.glb") }
+            Species::Graveler => { crate::model_storage::include_model!("models/battle_species/graveler.glb") }
+            Species::Golem => { crate::model_storage::include_model!("models/battle_species/golem.glb") }
+            Species::Omanyte => { crate::model_storage::include_model!("models/battle_species/omanyte.glb") }
+            Species::Omastar => { crate::model_storage::include_model!("models/battle_species/omastar.glb") }
+            Species::Aerodactyl => { crate::model_storage::include_model!("models/battle_species/aerodactyl.glb") }
+            Species::Dratini => { crate::model_storage::include_model!("models/battle_species/dratini.glb") }
+            Species::Dragonair => { crate::model_storage::include_model!("models/battle_species/dragonair.glb") }
+            Species::Dragonite => { crate::model_storage::include_model!("models/battle_species/dragonite.glb") }
+            Species::Clefable => { crate::model_storage::include_model!("models/battle_species/clefable.glb") }
+            Species::Wigglytuff => { crate::model_storage::include_model!("models/battle_species/wigglytuff.glb") }
+            Species::Sandshrew => { crate::model_storage::include_model!("models/battle_species/sandshrew.glb") }
+            Species::Sandslash => { crate::model_storage::include_model!("models/battle_species/sandslash.glb") }
+            Species::Politoed => { crate::model_storage::include_model!("models/battle_species/politoed.glb") }
+            Species::Poliwrath => { crate::model_storage::include_model!("models/battle_species/poliwrath.glb") }
+            Species::Poliwhirl => { crate::model_storage::include_model!("models/battle_species/poliwhirl.glb") }
             Species::Oddish => { crate::model_storage::include_model!("models/battle_species/oddish.glb") }
             Species::Pidgey => { crate::model_storage::include_model!("models/battle_species/pidgey.glb") }
             Species::Geodude => { crate::model_storage::include_model!("models/battle_species/geodude.glb") }
@@ -1639,6 +2939,124 @@ pub(crate) fn authored_for_species(species: &str) -> Option<&'static SpeciesRig>
         Some(rig(Species::Skarmory))
     } else if species.eq_ignore_ascii_case("SMEARGLE") {
         Some(rig(Species::Smeargle))
+    } else if species.eq_ignore_ascii_case("SCYTHER") {
+        Some(rig(Species::Scyther))
+    } else if species.eq_ignore_ascii_case("STARMIE") {
+        Some(rig(Species::Starmie))
+    } else if species.eq_ignore_ascii_case("GASTLY") {
+        Some(rig(Species::Gastly))
+    } else if species.eq_ignore_ascii_case("HAUNTER") {
+        Some(rig(Species::Haunter))
+    } else if species.eq_ignore_ascii_case("EEVEE") {
+        Some(rig(Species::Eevee))
+    } else if species.eq_ignore_ascii_case("JOLTEON") {
+        Some(rig(Species::Jolteon))
+    } else if species.eq_ignore_ascii_case("FLAREON") {
+        Some(rig(Species::Flareon))
+    } else if species.eq_ignore_ascii_case("ESPEON") {
+        Some(rig(Species::Espeon))
+    } else if species.eq_ignore_ascii_case("UMBREON") {
+        Some(rig(Species::Umbreon))
+    } else if species.eq_ignore_ascii_case("VULPIX") {
+        Some(rig(Species::Vulpix))
+    } else if species.eq_ignore_ascii_case("PARAS") {
+        Some(rig(Species::Paras))
+    } else if species.eq_ignore_ascii_case("METAPOD") {
+        Some(rig(Species::Metapod))
+    } else if species.eq_ignore_ascii_case("CATERPIE") {
+        Some(rig(Species::Caterpie))
+    } else if species.eq_ignore_ascii_case("KRABBY") {
+        Some(rig(Species::Krabby))
+    } else if species.eq_ignore_ascii_case("KINGLER") {
+        Some(rig(Species::Kingler))
+    } else if species.eq_ignore_ascii_case("SHELLDER") {
+        Some(rig(Species::Shellder))
+    } else if species.eq_ignore_ascii_case("CLOYSTER") {
+        Some(rig(Species::Cloyster))
+    } else if species.eq_ignore_ascii_case("GRIMER") {
+        Some(rig(Species::Grimer))
+    } else if species.eq_ignore_ascii_case("MUK") {
+        Some(rig(Species::Muk))
+    } else if species.eq_ignore_ascii_case("DITTO") {
+        Some(rig(Species::Ditto))
+    } else if species.eq_ignore_ascii_case("SEEL") {
+        Some(rig(Species::Seel))
+    } else if species.eq_ignore_ascii_case("DEWGONG") {
+        Some(rig(Species::Dewgong))
+    } else if species.eq_ignore_ascii_case("DROWZEE") {
+        Some(rig(Species::Drowzee))
+    } else if species.eq_ignore_ascii_case("HYPNO") {
+        Some(rig(Species::Hypno))
+    } else if species.eq_ignore_ascii_case("ABRA") {
+        Some(rig(Species::Abra))
+    } else if species.eq_ignore_ascii_case("ALAKAZAM") {
+        Some(rig(Species::Alakazam))
+    } else if species.eq_ignore_ascii_case("KADABRA") {
+        Some(rig(Species::Kadabra))
+    } else if species.eq_ignore_ascii_case("KOFFING") {
+        Some(rig(Species::Koffing))
+    } else if species.eq_ignore_ascii_case("WEEZING") {
+        Some(rig(Species::Weezing))
+    } else if species.eq_ignore_ascii_case("WARTORTLE") {
+        Some(rig(Species::Wartortle))
+    } else if species.eq_ignore_ascii_case("BLASTOISE") {
+        Some(rig(Species::Blastoise))
+    } else if species.eq_ignore_ascii_case("CROCONAW") {
+        Some(rig(Species::Croconaw))
+    } else if species.eq_ignore_ascii_case("FERALIGATR") {
+        Some(rig(Species::Feraligatr))
+    } else if species.eq_ignore_ascii_case("CUBONE") {
+        Some(rig(Species::Cubone))
+    } else if species.eq_ignore_ascii_case("MAROWAK") {
+        Some(rig(Species::Marowak))
+    } else if species.eq_ignore_ascii_case("MAGNEMITE") {
+        Some(rig(Species::Magnemite))
+    } else if species.eq_ignore_ascii_case("MAGNETON") {
+        Some(rig(Species::Magneton))
+    } else if species.eq_ignore_ascii_case("TANGELA") {
+        Some(rig(Species::Tangela))
+    } else if species.eq_ignore_ascii_case("KANGASKHAN") {
+        Some(rig(Species::Kangaskhan))
+    } else if species.eq_ignore_ascii_case("PONYTA") {
+        Some(rig(Species::Ponyta))
+    } else if species.eq_ignore_ascii_case("RAPIDASH") {
+        Some(rig(Species::Rapidash))
+    } else if species.eq_ignore_ascii_case("MACHOP") {
+        Some(rig(Species::Machop))
+    } else if species.eq_ignore_ascii_case("MACHOKE") {
+        Some(rig(Species::Machoke))
+    } else if species.eq_ignore_ascii_case("MACHAMP") {
+        Some(rig(Species::Machamp))
+    } else if species.eq_ignore_ascii_case("RHYHORN") {
+        Some(rig(Species::Rhyhorn))
+    } else if species.eq_ignore_ascii_case("RHYDON") {
+        Some(rig(Species::Rhydon))
+    } else if species.eq_ignore_ascii_case("WEEDLE") {
+        Some(rig(Species::Weedle))
+    } else if species.eq_ignore_ascii_case("KAKUNA") {
+        Some(rig(Species::Kakuna))
+    } else if species.eq_ignore_ascii_case("PARASECT") {
+        Some(rig(Species::Parasect))
+    } else if species.eq_ignore_ascii_case("VENOMOTH") {
+        Some(rig(Species::Venomoth))
+    } else if species.eq_ignore_ascii_case("VENONAT") {
+        Some(rig(Species::Venonat))
+    } else if species.eq_ignore_ascii_case("NINETALES") {
+        Some(rig(Species::Ninetales))
+    } else if species.eq_ignore_ascii_case("VAPOREON") {
+        Some(rig(Species::Vaporeon))
+    } else if species.eq_ignore_ascii_case("SCIZOR") {
+        Some(rig(Species::Scizor))
+    } else if species.eq_ignore_ascii_case("PINSIR") {
+        Some(rig(Species::Pinsir))
+    } else if species.eq_ignore_ascii_case("HERACROSS") {
+        Some(rig(Species::Heracross))
+    } else if species.eq_ignore_ascii_case("MEWTWO") {
+        Some(rig(Species::Mewtwo))
+    } else if species.eq_ignore_ascii_case("MEW") {
+        Some(rig(Species::Mew))
+    } else if species.eq_ignore_ascii_case("CELEBI") {
+        Some(rig(Species::Celebi))
     } else if species.eq_ignore_ascii_case("HO_OH") || species.eq_ignore_ascii_case("HO-OH") {
         Some(rig(Species::HoOh))
     } else if species.eq_ignore_ascii_case("LUGIA") {
@@ -1679,6 +3097,38 @@ pub(crate) fn authored_for_species(species: &str) -> Option<&'static SpeciesRig>
         Some(rig(Species::Elekid))
     } else if species.eq_ignore_ascii_case("MAGBY") {
         Some(rig(Species::Magby))
+    } else if species.eq_ignore_ascii_case("MAGMAR") {
+        Some(rig(Species::Magmar))
+    } else if species.eq_ignore_ascii_case("ELECTABUZZ") {
+        Some(rig(Species::Electabuzz))
+    } else if species.eq_ignore_ascii_case("SLOWKING") {
+        Some(rig(Species::Slowking))
+    } else if species.eq_ignore_ascii_case("SLOWBRO") {
+        Some(rig(Species::Slowbro))
+    } else if species.eq_ignore_ascii_case("LICKITUNG") {
+        Some(rig(Species::Lickitung))
+    } else if species.eq_ignore_ascii_case("MR__MIME") {
+        Some(rig(Species::MrMime))
+    } else if species.eq_ignore_ascii_case("CHANSEY") {
+        Some(rig(Species::Chansey))
+    } else if species.eq_ignore_ascii_case("BLISSEY") {
+        Some(rig(Species::Blissey))
+    } else if species.eq_ignore_ascii_case("GROWLITHE") {
+        Some(rig(Species::Growlithe))
+    } else if species.eq_ignore_ascii_case("ARCANINE") {
+        Some(rig(Species::Arcanine))
+    } else if species.eq_ignore_ascii_case("NIDORAN_F") {
+        Some(rig(Species::NidoranF))
+    } else if species.eq_ignore_ascii_case("NIDORAN_M") {
+        Some(rig(Species::NidoranM))
+    } else if species.eq_ignore_ascii_case("NIDORINA") {
+        Some(rig(Species::Nidorina))
+    } else if species.eq_ignore_ascii_case("NIDORINO") {
+        Some(rig(Species::Nidorino))
+    } else if species.eq_ignore_ascii_case("NIDOKING") {
+        Some(rig(Species::Nidoking))
+    } else if species.eq_ignore_ascii_case("NIDOQUEEN") {
+        Some(rig(Species::Nidoqueen))
     } else if species.eq_ignore_ascii_case("PICHU") {
         Some(rig(Species::Pichu))
     } else if species.eq_ignore_ascii_case("CLEFFA") {
@@ -1769,8 +3219,62 @@ pub(crate) fn authored_for_species(species: &str) -> Option<&'static SpeciesRig>
         Some(rig(Species::Slowpoke))
     } else if species.eq_ignore_ascii_case("DIGLETT") {
         Some(rig(Species::Diglett))
+    } else if species.eq_ignore_ascii_case("DUGTRIO") {
+        Some(rig(Species::Dugtrio))
+    } else if species.eq_ignore_ascii_case("TENTACRUEL") {
+        Some(rig(Species::Tentacruel))
+    } else if species.eq_ignore_ascii_case("TENTACOOL") {
+        Some(rig(Species::Tentacool))
+    } else if species.eq_ignore_ascii_case("JYNX") {
+        Some(rig(Species::Jynx))
+    } else if species.eq_ignore_ascii_case("PRIMEAPE") {
+        Some(rig(Species::Primeape))
+    } else if species.eq_ignore_ascii_case("MEOWTH") {
+        Some(rig(Species::Meowth))
+    } else if species.eq_ignore_ascii_case("DODUO") {
+        Some(rig(Species::Doduo))
+    } else if species.eq_ignore_ascii_case("PIDGEOT") {
+        Some(rig(Species::Pidgeot))
+    } else if species.eq_ignore_ascii_case("FEAROW") {
+        Some(rig(Species::Fearow))
+    } else if species.eq_ignore_ascii_case("PIDGEOTTO") {
+        Some(rig(Species::Pidgeotto))
+    } else if species.eq_ignore_ascii_case("DODRIO") {
+        Some(rig(Species::Dodrio))
+    } else if species.eq_ignore_ascii_case("PERSIAN") {
+        Some(rig(Species::Persian))
+    } else if species.eq_ignore_ascii_case("MANKEY") {
+        Some(rig(Species::Mankey))
     } else if species.eq_ignore_ascii_case("ONIX") {
         Some(rig(Species::Onix))
+    } else if species.eq_ignore_ascii_case("ELECTRODE") {
+        Some(rig(Species::Electrode))
+    } else if species.eq_ignore_ascii_case("KABUTO") {
+        Some(rig(Species::Kabuto))
+    } else if species.eq_ignore_ascii_case("KABUTOPS") {
+        Some(rig(Species::Kabutops))
+    } else if species.eq_ignore_ascii_case("PINECO") {
+        Some(rig(Species::Pineco))
+    } else if species.eq_ignore_ascii_case("FORRETRESS") {
+        Some(rig(Species::Forretress))
+    } else if species.eq_ignore_ascii_case("BELLSPROUT") {
+        Some(rig(Species::Bellsprout))
+    } else if species.eq_ignore_ascii_case("WEEPINBELL") {
+        Some(rig(Species::Weepinbell))
+    } else if species.eq_ignore_ascii_case("VICTREEBEL") {
+        Some(rig(Species::Victreebel))
+    } else if species.eq_ignore_ascii_case("GLOOM") {
+        Some(rig(Species::Gloom))
+    } else if species.eq_ignore_ascii_case("VILEPLUME") {
+        Some(rig(Species::Vileplume))
+    } else if species.eq_ignore_ascii_case("STEELIX") {
+        Some(rig(Species::Steelix))
+    } else if species.eq_ignore_ascii_case("ARBOK") {
+        Some(rig(Species::Arbok))
+    } else if species.eq_ignore_ascii_case("EKANS") {
+        Some(rig(Species::Ekans))
+    } else if species.eq_ignore_ascii_case("RAICHU") {
+        Some(rig(Species::Raichu))
     } else if species.eq_ignore_ascii_case("VOLTORB") {
         Some(rig(Species::Voltorb))
     } else if species.eq_ignore_ascii_case("STARYU") {
@@ -1803,6 +3307,62 @@ pub(crate) fn authored_for_species(species: &str) -> Option<&'static SpeciesRig>
         Some(rig(Species::Clefairy))
     } else if species.eq_ignore_ascii_case("POLIWAG") {
         Some(rig(Species::Poliwag))
+    } else if species.eq_ignore_ascii_case("HORSEA") {
+        Some(rig(Species::Horsea))
+    } else if species.eq_ignore_ascii_case("SEADRA") {
+        Some(rig(Species::Seadra))
+    } else if species.eq_ignore_ascii_case("KINGDRA") {
+        Some(rig(Species::Kingdra))
+    } else if species.eq_ignore_ascii_case("GOLDEEN") {
+        Some(rig(Species::Goldeen))
+    } else if species.eq_ignore_ascii_case("SEAKING") {
+        Some(rig(Species::Seaking))
+    } else if species.eq_ignore_ascii_case("MAGIKARP") {
+        Some(rig(Species::Magikarp))
+    } else if species.eq_ignore_ascii_case("LARVITAR") {
+        Some(rig(Species::Larvitar))
+    } else if species.eq_ignore_ascii_case("PUPITAR") {
+        Some(rig(Species::Pupitar))
+    } else if species.eq_ignore_ascii_case("TYRANITAR") {
+        Some(rig(Species::Tyranitar))
+    } else if species.eq_ignore_ascii_case("QUILAVA") {
+        Some(rig(Species::Quilava))
+    } else if species.eq_ignore_ascii_case("TYPHLOSION") {
+        Some(rig(Species::Typhlosion))
+    } else if species.eq_ignore_ascii_case("CHARMELEON") {
+        Some(rig(Species::Charmeleon))
+    } else if species.eq_ignore_ascii_case("CHARIZARD") {
+        Some(rig(Species::Charizard))
+    } else if species.eq_ignore_ascii_case("GRAVELER") {
+        Some(rig(Species::Graveler))
+    } else if species.eq_ignore_ascii_case("GOLEM") {
+        Some(rig(Species::Golem))
+    } else if species.eq_ignore_ascii_case("OMANYTE") {
+        Some(rig(Species::Omanyte))
+    } else if species.eq_ignore_ascii_case("OMASTAR") {
+        Some(rig(Species::Omastar))
+    } else if species.eq_ignore_ascii_case("AERODACTYL") {
+        Some(rig(Species::Aerodactyl))
+    } else if species.eq_ignore_ascii_case("DRATINI") {
+        Some(rig(Species::Dratini))
+    } else if species.eq_ignore_ascii_case("DRAGONAIR") {
+        Some(rig(Species::Dragonair))
+    } else if species.eq_ignore_ascii_case("DRAGONITE") {
+        Some(rig(Species::Dragonite))
+    } else if species.eq_ignore_ascii_case("CLEFABLE") {
+        Some(rig(Species::Clefable))
+    } else if species.eq_ignore_ascii_case("WIGGLYTUFF") {
+        Some(rig(Species::Wigglytuff))
+    } else if species.eq_ignore_ascii_case("SANDSHREW") {
+        Some(rig(Species::Sandshrew))
+    } else if species.eq_ignore_ascii_case("SANDSLASH") {
+        Some(rig(Species::Sandslash))
+    } else if species.eq_ignore_ascii_case("POLITOED") {
+        Some(rig(Species::Politoed))
+    } else if species.eq_ignore_ascii_case("POLIWRATH") {
+        Some(rig(Species::Poliwrath))
+    } else if species.eq_ignore_ascii_case("POLIWHIRL") {
+        Some(rig(Species::Poliwhirl))
     } else if species.eq_ignore_ascii_case("ODDISH") {
         Some(rig(Species::Oddish))
     } else if species.eq_ignore_ascii_case("PIDGEY") {

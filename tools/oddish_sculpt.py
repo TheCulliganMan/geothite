@@ -30,7 +30,7 @@ def raw_parts():
     mouth=paint('Mouth / open happy dark wedge',MOUTH,[(-.026,.293),(.026,.293),(.016,.252),(0.,.239),(-.016,.252)],body,.003);p.append(mouth)
     p.append(paint('Tongue / fitted pink lower mouth',PINK,[(-.018,.265),(-.009,.247),(0.,.243),(.009,.247),(.018,.265),(.010,.273),(-.010,.273)],mouth,.002))
     for j,(start,end,width) in enumerate(LEAVES):
-        blade,midrib=leaf('Leaf '+str(j),start,end,width,GREEN,bend=.035 if j%2==0 else -.012)
+        blade,midrib=leaf('Leaf '+str(j),start,end,width,GREEN,bend=.035 if j%2==0 else -.012,solid_caps=True)
         # Geometry helper's botanical midrib uses this species' dark green material.
         from chikorita_sculpt import linear
         midrib['base_color']=linear(VEIN)

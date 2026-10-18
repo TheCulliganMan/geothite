@@ -113,40 +113,38 @@ pub(super) fn sync(
     if !status.active || !frame.active {
         return;
     }
-    let Some(phases) = phases else {
-        return;
-    };
-    if phases.map_id != frame.map_id || phases.tiles.is_empty() {
-        return;
-    }
     let selected = cache.built_animated_pillars.clone();
-    let Some(built) = cache.built_frame.as_mut() else {
-        return;
-    };
-    let change = match refresh(built, &phases, &selected, &mut images) {
-        Ok(change) => change,
-        Err(()) => {
-            status.active = false;
-            status.inactive_reason = Some("terrain animation: SourceTextureUnavailable".into());
-            return;
+    let train_open=cache.built_train_doors.then(||mesh::station_train_door_openness(&frame));
+    let train_changed=train_open.map(f32::to_bits)!=cache.built_train_open;
+    let Some(built) = cache.built_frame.as_mut() else {return;};
+    if built.map_id!=frame.map_id {return;}
+    let change=if let Some(phases)=phases.as_deref().filter(|p|
+        p.map_id==frame.map_id&&!p.tiles.is_empty()) {
+        match refresh(built, phases, &selected, &mut images) {
+            Ok(change)=>change,
+            Err(())=>{
+                status.active=false;
+                status.inactive_reason=Some("terrain animation: SourceTextureUnavailable".into());
+                return;
+            }
         }
-    };
-    if change == Change::None {
-        return;
-    }
-    if change == Change::Geometry {
-        let (textured, solid) = match mesh::build_animated_flowers(built, &images, &selected) {
-            Ok(meshes) => meshes,
-            Err(error) => {
-                status.active = false;
-                status.inactive_reason = Some(format!("terrain animation: {error:?}"));
+    }else{Change::None};
+    if change==Change::None&&!train_changed {return;}
+    if change==Change::Geometry||train_changed {
+        let (textured,solid)=match mesh::build_animated_scene(built,&images,&selected,train_open) {
+            Ok(meshes)=>meshes,
+            Err(error)=>{
+                status.active=false;
+                status.inactive_reason=Some(format!("terrain animation: {error:?}"));
                 return;
             }
         };
-        cache.built_animated_bounds = [textured.get_aabb(), solid.get_aabb()];
-        update_domain(&mut meshes, &mut cache.animated_textured_mesh, textured);
-        update_domain(&mut meshes, &mut cache.animated_solid_mesh, solid);
+        cache.built_animated_bounds=[textured.get_aabb(),solid.get_aabb()];
+        update_domain(&mut meshes,&mut cache.animated_textured_mesh,textured);
+        update_domain(&mut meshes,&mut cache.animated_solid_mesh,solid);
+        cache.built_train_open=train_open.map(f32::to_bits);
     }
+    if change==Change::None {return;}
     // Atlas uploads replace their GPU texture. Refresh every bound material,
     // including cutaway/reveal clones, without rebuilding static geometry.
     let atlas = cache.built_frame.as_ref().unwrap().map_texture.clone();

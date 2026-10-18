@@ -12,7 +12,9 @@ ROOT=Path(os.environ.get('SLIME_TEST_MODELS',Path(__file__).resolve().parents[1]
 from sculpt_test_support import indexed_ray_intersections as ray_intersections
 class SlimeTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def setUpClass(cls):
+  from slime_glb import read_slime
+  cls.models={s:read_slime(ROOT/(s+'.glb'),s) for s in SPECIES}
  def find(self,ps,prefix,suffix=None):return next(p for p in ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_indexed_rays_match_original_triangle_oracle(self):
   for species,m in self.models.items():
@@ -26,7 +28,8 @@ class SlimeTests(unittest.TestCase):
  def test_recipe_parity_height_grounding_and_budget(self):
   for s,m in self.models.items():
    with self.subTest(species=s):
-    self.assertEqual(m,sculpture(s));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT[s],places=6);self.assertLess(sum(len(p['indices'])//3 for p in ps),50000);self.assertEqual(len(ps),len({p['part'] for p in ps}))
+    from slime_glb import geometry_digest
+    self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT[s],places=6);self.assertLess(sum(len(p['indices'])//3 for p in ps),40000);self.assertEqual(len(ps),len({p['part'] for p in ps}))
     b=self.find(ps,'Body /');ground={tuple(b['positions'][i:i+3]) for i in range(0,len(b['positions']),3) if b['positions'][i+1]==0};self.assertGreater(len(ground),20);self.assertGreater(max(x for x,y,z in ground)-min(x for x,y,z in ground),.3);self.assertGreater(max(z for x,y,z in ground)-min(z for x,y,z in ground),.2)
  def test_species_have_distinct_sludge_and_transform_anatomy(self):
   for s,m in self.models.items():

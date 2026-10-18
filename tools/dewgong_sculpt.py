@@ -2,6 +2,8 @@
 """Original Dewgong with one curved seal body, flowing fans and fitted gentle face."""
 import argparse,json,math
 from pathlib import Path
+from functools import lru_cache
+from copy import deepcopy
 from sculpt_geometry import part,ellipsoid,loft,curved_profiles,fitted_patch,fitted_contour,crease_normals
 from seel_sculpt import pillow
 from bovine_sculpt import oval,smooth,curved_tube
@@ -12,7 +14,7 @@ HEIGHT=1.03
 WHITE=(.94,.97,.99);IVORY=(.99,.99,.97);INK=(.11,.12,.14);BROWN=(.35,.30,.27);FOLD=(.59,.65,.71)
 
 def curved_body():
- points=[(0,.920,.180),(0,.860,.190),(0,.755,.180),(0,.565,.135),(0,.395,.067),(0,.245,-.023),(0,.180,-.205),(0,.275,-.407),(0,.495,-.573),(0,.725,-.618),(0,.860,-.590),(0,.966,-.520)]
+ points=[(0,.920,.240),(0,.860,.250),(0,.755,.230),(0,.565,.190),(0,.395,.067),(0,.245,-.023),(0,.180,-.205),(0,.275,-.407),(0,.495,-.573),(0,.725,-.618),(0,.860,-.590),(0,.966,-.520)]
  widths=[.012,.115,.180,.181,.225,.250,.230,.170,.100,.065,.048,.040]
  depths=[.012,.102,.153,.174,.175,.160,.150,.105,.075,.050,.040,.036]
  pp,ww=smooth(points,widths,4);_,dd=smooth(points,depths,4);n=40;v=[]
@@ -24,7 +26,8 @@ def curved_body():
   for j in range(n):a=k*n+j;b=k*n+(j+1)%n;f.append((a,b,b+n,a+n))
  return part('Body / continuous curved head neck belly and hooked tail',WHITE,v,f,True)
 
-def sculpture():
+@lru_cache(maxsize=1)
+def raw_sculpture():
  body=curved_body();skin=surface(body);p=[body]
  for sign in (-1,1):
   xy=contour((((.148,.493),(.210,.437),(.313,.362),(.412,.372)),((.412,.372),(.427,.315),(.456,.320),(.438,.271)),((.438,.271),(.419,.218),(.434,.199),(.397,.170)),((.397,.170),(.379,.123),(.342,.115),(.312,.145)),((.312,.145),(.225,.228),(.170,.360),(.148,.493))),10)
@@ -49,12 +52,18 @@ def sculpture():
  for sign in (-1,1):
   x=sign*.083;y=.697;z=ms(y,x)
   p.append(curved_tube('Fang / small rooted ivory lower canine '+str(sign),IVORY,[(x,y,z+.004),(sign*.080,.668,z+.019),(sign*.070,.645,z+.024)],[.013,.014,.0025],20))
- horn=loft('Horn / short swept tapered white crown',WHITE,curved_profiles(((.881,.044,.038,.181),(.919,.033,.030,.193),(.960,.018,.017,.211),(.995,.002,.0025,.231)),4),32);p.append(horn)
+ horn=loft('Horn / short swept tapered white crown',WHITE,curved_profiles(((.881,.044,.038,.236),(.919,.033,.030,.248),(.960,.018,.017,.266),(.995,.002,.0025,.286)),4),32);p.append(horn)
  for i,q in enumerate(p):
   if q['part'].startswith(('Eye /','Eye sheen /','Eye glint /','Nose /','Nose glint /')):p[i]=crease_normals(q,35)
+ return {'name':'dewgong','version':1,'coordinate_system':COORDINATES,'primitives':p}
+def sculpture(normalize=True):
+ m=deepcopy(raw_sculpture());p=m['primitives']
+ if not normalize:return m
  low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
  for q in p:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
- return {'name':'dewgong','version':1,'coordinate_system':COORDINATES,'primitives':p}
+ return m
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);m=sculpture();(args.output/'dewgong.mesh.json').write_text(json.dumps(m,separators=(',',':')));print(len(m['primitives']),'parts',sum(len(p['indices'])//3 for p in m['primitives']),'triangles')
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
+ from seal_glb import export_dewgong
+ blob=export_dewgong();(args.output/'dewgong.glb').write_bytes(blob);print(len(blob),'bytes')
 if __name__=='__main__':main()

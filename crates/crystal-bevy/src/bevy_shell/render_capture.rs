@@ -4,6 +4,23 @@ use super::*;
 use bevy::platform::time::Instant;
 use std::sync::{Arc, Mutex};
 
+fn image_capture_target(value: Option<&str>, live: bool) -> Result<bool> {
+    match value {
+        None => Ok(!live && !cfg!(target_arch = "wasm32")),
+        Some("image") => Ok(true),
+        Some("window") => Ok(false),
+        _ => anyhow::bail!("CRYSTAL_RENDER_TEST_CAPTURE_TARGET must be window or image"),
+    }
+}
+
+pub(super) fn requested_image_target(live: bool) -> Result<bool> {
+    match std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TARGET") {
+        Ok(value) => image_capture_target(Some(&value), live),
+        Err(std::env::VarError::NotPresent) => image_capture_target(None, live),
+        Err(_) => anyhow::bail!("CRYSTAL_RENDER_TEST_CAPTURE_TARGET must be window or image"),
+    }
+}
+
 type Completion = Arc<Mutex<Option<Result<(), String>>>>;
 
 // Only passive, paired visual verification holds simulation. Live reviews,
@@ -99,7 +116,7 @@ fn hold_presented_send_out(
 }
 
 #[derive(PartialEq)]
-struct PairedState {
+pub(super) struct PairedState {
     checksum: StateChecksum,
     lcd_frame: u64,
     actors: Vec<crystal_render_api::VisualActor>,
@@ -117,7 +134,7 @@ impl StablePairedState {
     }
 }
 
-fn paired_state(runtime: &BevyRuntimeShell, frame: &crystal_render_api::VisualWorldFrame) -> Result<PairedState> {
+pub(super) fn paired_state(runtime: &BevyRuntimeShell, frame: &crystal_render_api::VisualWorldFrame) -> Result<PairedState> {
     Ok(PairedState {
         checksum: runtime.shell.snapshot()?.state_checksum,
         lcd_frame: runtime.lcd_animation_frame,
@@ -130,6 +147,45 @@ fn paired_state(runtime: &BevyRuntimeShell, frame: &crystal_render_api::VisualWo
     })
 }
 
+// Startup and post-route readback have independent bounded waits. A finite
+// ordinary input route can include long battles/credits and owns its duration.
+fn capture_timeout_elapsed(
+    startup: Instant,
+    readback_started: &mut Option<Instant>,
+    route: Option<(bool, bool)>,
+    now: Instant,
+) -> Option<std::time::Duration> {
+    match route {
+        Some((true, false)) => None,
+        Some((true, true)) => Some(now.duration_since(*readback_started.get_or_insert(now))),
+        _ => Some(now.duration_since(startup)),
+    }
+}
+
+#[test]
+fn capture_deadline_gives_a_long_completed_route_its_full_readback_window() {
+    let startup=Instant::now();
+    let later=startup+std::time::Duration::from_secs(500);
+    let mut readback=None;
+    assert_eq!(capture_timeout_elapsed(startup,&mut readback,Some((true,false)),later),None);
+    assert_eq!(capture_timeout_elapsed(startup,&mut readback,Some((true,true)),later),
+        Some(std::time::Duration::ZERO));
+    assert_eq!(capture_timeout_elapsed(startup,&mut readback,Some((true,true)),
+        later+std::time::Duration::from_secs(61)),Some(std::time::Duration::from_secs(61)));
+}
+
+#[test]
+fn capture_deadline_still_bounds_static_and_unstarted_route_startup() {
+    let startup=Instant::now();
+    let later=startup+std::time::Duration::from_secs(61);
+    for route in [None,Some((false,false))] {
+        let mut readback=None;
+        assert_eq!(capture_timeout_elapsed(startup,&mut readback,route,later),
+            Some(std::time::Duration::from_secs(61)));
+        assert!(readback.is_none());
+    }
+}
+
 #[derive(Resource)]
 pub(super) struct Capture {
     path: PathBuf,
@@ -140,6 +196,7 @@ pub(super) struct Capture {
     completion: Completion,
     started: Instant,
     timeout_seconds: u64,
+    route_readback_started: Option<Instant>,
     live: bool,
     idle: bool,
     first_path: PathBuf,
@@ -168,6 +225,20 @@ pub(super) fn install(
             settings.camera = camera;
         });
     }
+    if let Ok(value) = std::env::var("CRYSTAL_RENDER_TEST_FOV_DEGREES") {
+        let degrees=value.parse::<f32>().context("capture field of view must be a number")?;
+        anyhow::ensure!(degrees.is_finite() && (30. ..=120.).contains(&degrees),
+            "capture field of view must be between 30 and 120 degrees");
+        // Tall landmark QA can widen only the active 3D capture camera.
+        // Production controls, the paired 2D camera and game state stay intact.
+        app.add_systems(Update,(move |mut cameras:Query<(&Camera,&mut Projection),With<Camera3d>>| {
+            for (camera,mut projection) in &mut cameras {
+                if camera.is_active && let Projection::Perspective(p)=&mut *projection {
+                    p.fov=degrees.to_radians();
+                }
+            }
+        }).after(crystal_render_api::WorldRenderSet::RenderSync).before(capture));
+    }
     let timeout_seconds = match std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS") {
         Err(std::env::VarError::NotPresent) => 60,
         Ok(value) => {
@@ -190,12 +261,7 @@ pub(super) fn install(
         !same_second_view || !live,
         "same-view temporal captures require one-shot verification mode"
     );
-    let image_target_mode = match std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TARGET") {
-        Err(std::env::VarError::NotPresent) => false,
-        Ok(value) if value == "window" => false,
-        Ok(value) if value == "image" => true,
-        _ => anyhow::bail!("CRYSTAL_RENDER_TEST_CAPTURE_TARGET must be window or image"),
-    };
+    let image_target_mode = requested_image_target(live)?;
     anyhow::ensure!(
         !image_target_mode || !live,
         "image-target capture is a one-shot verification mode; live review requires window capture"
@@ -262,6 +328,7 @@ pub(super) fn install(
         completion: default(),
         started: Instant::now(),
         timeout_seconds,
+        route_readback_started: None,
     })
     .add_systems(Update, (prepare_image_target, capture).chain()
         .after(crystal_render_api::WorldRenderSet::RenderSync));
@@ -392,6 +459,7 @@ fn capture(
     send_out_hold: Option<Res<SendOutFrameHold>>,
     mut settings: ResMut<crystal_voxel_view::VoxelViewSettings>,
     primary_window: Query<Entity, With<PrimaryWindow>>,
+    move_menu: Query<(), With<CompetitiveMoveMenuMarker>>,
     mut commands: Commands,
     mut exit: MessageWriter<AppExit>,
 ) {
@@ -469,6 +537,7 @@ fn capture(
         capture.requested = false;
         capture.frame = 0;
         capture.started = Instant::now();
+        capture.route_readback_started = None;
         capture.identity.clear();
         capture.idle = false;
         for path in std::iter::once(&capture.first_path).chain(capture.second_path.iter()) {
@@ -526,6 +595,7 @@ fn capture(
                     state.checksum, state.lcd_frame, state.actors.len(), virtual_time.elapsed_secs_f64(),
                     serde_json::Value::Array(actor_sources),
                 );
+                receipt.push_str(&format!("presentation={}\n", capture.identity));
                 if let Some(pinned) = send_out_hold.as_ref().and_then(|request| request.held.as_ref()) {
                     receipt.push_str(&format!(
                         "source_state_preserved=true\nsource_clock_hz=60\nsend_out_side={:?}\nsend_out_frame={}\nsource_frame={}\n",
@@ -543,17 +613,35 @@ fn capture(
         return;
     }
     // Bound startup/readback failures; ordinary walking has its own duration.
-    if capture.started.elapsed().as_secs() > capture.timeout_seconds && walk.is_none() {
+    let startup=capture.started;
+    let elapsed=capture_timeout_elapsed(startup,&mut capture.route_readback_started,
+        walk.as_ref().map(|walk|(walk.started(),walk.settled())),Instant::now());
+    if elapsed.is_some_and(|elapsed|elapsed.as_secs()>capture.timeout_seconds) {
         eprintln!("capture timed out: {:?}", status.inactive_reason);
         exit.write(AppExit::error());
         return;
     }
     capture.frame = capture.frame.saturating_add(1);
+    if capture.frame % 300 == 0
+        && std::env::var_os("CRYSTAL_RENDER_TEST_TRACE_FRAME").is_some()
+    {
+        eprintln!("capture readiness: battle={battle_status:?}; menu={}; script={}; movement={}; fade={}; hold={}; bgp={:?}",
+            !move_menu.is_empty(), runtime.pending_scene_script.is_some(),
+            runtime.visible_script_movement.is_some(), runtime.screen_fade.is_some(),
+            hold.frozen, battle_frame.source.as_ref().map(|source| source.bgp));
+    }
     // Preserve the established 30 active-frame GPU warmup, but drop the
     // unconditional 90-frame startup and 60-frame post-save waits.
+    // UI-only reviews can explicitly inspect the renderer's honest source-art
+    // fallback. Model/scenery reviews continue requiring an active 3D scene.
+    let source_fallback = std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_SOURCE_FALLBACK").as_deref() == Ok("1")
+        && battle_frame.active && !move_menu.is_empty()
+        && battle_status.map_scenery_fallback_reason.is_some_and(|reason|
+            reason != "actual battle groves are warming");
     let settled = if settings.enabled {
         (status.active && !status.profiles_pending && status.active_frames >= 30)
             || (battle_status.active && battle_status.active_frames >= 30)
+            || source_fallback
     } else {
         status.inactive_reason.as_deref() == Some("disabled")
     };
@@ -636,12 +724,13 @@ fn capture(
         }
     }
     if capture.identity.is_empty() {
-        capture.identity = if battle_status.active {
+        capture.identity = if battle_frame.active {
             format!(
-                "battle|{}|modeled={:?}|source={:?}",
+                "battle|{}|modeled={:?}|source={:?}|fallback={:?}",
                 battle_frame.map_id,
                 battle_status.modeled_species,
-                battle_status.source_art_species
+                battle_status.source_art_species,
+                battle_status.map_scenery_fallback_reason
             )
         } else {
             format!("{}|{:?}|{:?}", frame.map_id, frame.center, settings.camera)
@@ -739,6 +828,14 @@ fn live_comparison(capture: &mut Capture) -> Result<()> {
 #[cfg(test)]
 mod image_target_tests {
     use super::*;
+    #[test]
+    fn automated_native_captures_default_to_offscreen_images() {
+        assert_eq!(image_capture_target(None, false).unwrap(), !cfg!(target_arch = "wasm32"));
+        assert!(!image_capture_target(None, true).unwrap());
+        assert!(image_capture_target(Some("image"), false).unwrap());
+        assert!(!image_capture_target(Some("window"), false).unwrap());
+        assert!(image_capture_target(Some("invalid"), false).is_err());
+    }
     use bevy::{
         camera::RenderTarget,
         window::{WindowRef, WindowResolution},
@@ -848,6 +945,7 @@ mod image_target_tests {
                 completion: default(),
                 started: Instant::now(),
                 timeout_seconds: 60,
+                route_readback_started: None,
                 live: false,
                 idle: false,
                 first_path: PathBuf::new(),

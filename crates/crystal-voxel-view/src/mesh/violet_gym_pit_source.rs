@@ -1,4 +1,4 @@
-//! Source proof for Violet's two connected recesses. Collision is never input
+//! Source proof for Violet's and Karen's connected recesses. Collision is never input
 //! to the matcher: $19's drawn lip/descending shade and $17's void establish
 //! the shape. Only the already blocked half of $19 and the void are owned.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -87,7 +87,7 @@ pub(super) fn resolve(
         cells: Vec::new(),
         edges: Vec::new(),
     };
-    if map != "VioletGym"
+    if !matches!(map, "VioletGym" | "KarensRoom")
         || width == 0
         || width.checked_mul(height) != Some(cells.len())
         || reserved.len() != cells.len()

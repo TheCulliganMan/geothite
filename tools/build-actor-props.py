@@ -148,7 +148,26 @@ def stone(boulder=False):
   for i in range(4):
    a=i*math.tau/4;ico('Embedded low face',(.23*math.cos(a),.23*math.sin(a),.12),(.17,.16,.15),'stone_dark',1)
  else:
-  for i,(p,s) in enumerate([((0,0,.22),(.34,.29,.25)),((-.16,.06,.40),(.20,.18,.23)),((.19,-.05,.16),(.17,.19,.17)),((.02,-.20,.10),(.20,.12,.10))]):ico('Broken rock shard',p,s,'stone_light' if i==1 else 'stone',1)
+  # One closed broken stone, with broad cleavage planes instead of a stack
+  # of round lumps. Ring corners share vertices; shallow asymmetric shoulders
+  # and a chipped crown give the small source silhouette readable fractures.
+  sides=10;vs=[]
+  for row,(z,r,cx,cy) in enumerate([(0,.60,0,0),(.12,1,0,0),(.35,.90,-.07,.02),(.52,.60,-.15,.04),(.60,.25,-.13,.03)]):
+   for i in range(sides):
+    a=math.tau*i/sides;radius=r*(1+.10*math.sin(i*2.13)+.045*math.cos(i*4.71))
+    vs.append((cx+math.cos(a)*radius*.34,cy+math.sin(a)*radius*.29,z))
+  vs.append((-.035,.008,.64));fs=[tuple(reversed(range(sides)))]
+  for row in range(4):
+   for i in range(sides):
+    a=row*sides+i;b=row*sides+(i+1)%sides;c=b+sides;d=a+sides
+    # Offset diagonal choices prevent repeated regular diamond facets.
+    fs.extend([(a,b,d),(b,c,d)] if (i+row)%3==0 else [(a,b,c,d)])
+  for i in range(sides):fs.append((40+i,40+(i+1)%sides,50))
+  me=bpy.data.meshes.new('Closed fractured smashable stone');me.from_pydata(vs,[],fs);me.update()
+  o=bpy.data.objects.new('Broad cleavage planes and chipped crown',me);COL.objects.link(o)
+  for name in ['stone','stone_light','stone_dark']:me.materials.append(material(name))
+  for i,f in enumerate(me.polygons):
+   f.material_index=2 if i==0 else (1 if i in (11,19,28,37,45,48,51) else 0)
 
 def fruit_tree():
  # A mature orchard tree: flared roots, a visible branching trunk and a broad,
@@ -494,7 +513,7 @@ def sudowoodo():
   pts=[(side*.092+.004*t,.125+.007*math.sin(t*math.pi),.42+.23*t) for t in (0,.33,.67,1)]
   tube(('Left' if side<0 else 'Right')+' rear growth crease',pts,.0024,groove)
 
-def pikachu(surf=False):
+def pikachu():
  feet('yellow',.125,s=(.083,.13,.054));sphere('Pear shaped body',(0,0,.31),(.205,.15,.23),'yellow');sphere('Mouse head',(0,-.015,.56),(.23,.18,.20),'yellow')
  for s in (-1,1):
   ear(s,(.155,.01,.82),(.063,.049,.25),'yellow','ink')
@@ -504,10 +523,6 @@ def pikachu(surf=False):
  for z in (.25,.39):box('Back stripe',(0,.143,z),(.25,.02,.043),'brown',.01)
  prism('Lightning bolt tail',[(.10,.23),(.22,.23),(.26,.41),(.40,.39),(.34,.66),(.49,.70),(.51,.89),(.29,.84),(.31,.64),(.20,.58)],.11,.06,'yellow')
  prism('Brown tail root',[(.10,.23),(.22,.23),(.25,.38),(.18,.36)],.11,.066,'brown')
- if surf:
-  for o in list(COL.objects):o.location.z+=.10
-  sphere('Surfboard',(0,0,.065),(.31,.61,.060),'blue',24,8);box('Surfboard center stripe',(0,0,.115),(.08,.85,.009),'white',.003)
-  rod('Board fin',(0,.34,.035),(0,.38,-.045),.065,.015,'navy')
 
 def snorlax(big=False):
  sphere('Broad seated body',(0,0,.39),(.40,.30,.39),'navy');belly((0,-.254,.41),(.31,.065,.28),'cream')
@@ -755,13 +770,6 @@ def staryu():
 def unown():
  raise ValueError('Unown shares its canonical glyph family; the generic world icon uses I')
 
-def surf_mount():
- # The source is the generic aquatic mount, not an inferred species or rider.
- sphere('Broad floating mount',(0,.08,.18),(.37,.45,.18),'blue');tube('Upright aquatic neck',[(0,-.19,.20),(0,-.35,.40),(0,-.37,.65)],.115,'blue');sphere('Mount head',(0,-.38,.70),(.20,.22,.155),'blue');muzzle((0,-.565,.65),(.15,.064,.068),'cream');eyes(0,-.546,.755,.022,.10)
- for s in (-1,1):
-  rod('Head horn',(s*.145,-.31,.79),(s*.19,-.27,.94),.052,.005,'cream');sphere('Swim paddle',(s*.35,.05,.10),(.20,.16,.060),'blue')
- sphere('Recessed saddle',(0,.06,.355),(.20,.23,.04),'navy');tube('Crescent tail',[(0,.37,.18),(0,.59,.19),(.12,.67,.28)],.075,'blue')
-
 def chikorita():
  # The current sculpture is authored as explicit paper panels in a dependency-
  # free recipe. Import those same panels for a fully editable Blender preview.
@@ -995,7 +1003,7 @@ BUILDERS={
  'paper':paper, 'pokedex':pokedex, 'famicom':lambda:console('famicom'), 'snes':lambda:console('snes'), 'n64':lambda:console('n64'), 'virtual_boy':lambda:console('virtual_boy'),
  'gold_trophy':lambda:trophy(), 'silver_trophy':lambda:trophy(True), 'bird':bird, 'fairy':fairy, 'monster':monster, 'dragon':dragon,
  'slowpoke':slowpoke, 'sudowoodo':sudowoodo, 'entei':lambda:beast('entei'), 'raikou':lambda:beast('raikou'), 'suicune':lambda:beast('suicune'),
- 'big_snorlax':snorlax, 'big_lapras':lapras, 'big_onix':onix, 'surf':surf_mount, 'surfing_pikachu':lambda:pikachu(True),
+ 'big_snorlax':snorlax, 'big_lapras':lapras, 'big_onix':onix,
  'icon_bat':bat, 'icon_bigmon':lambda:monster(True), 'icon_bird':bird, 'icon_blob':blob, 'icon_bug':bug, 'icon_bulbasaur':bulbasaur,
  'icon_caterpillar':caterpillar, 'icon_charmander':charmander, 'icon_clefairy':fairy, 'icon_diglett':diglett, 'icon_egg':egg, 'icon_equine':equine,
  'icon_fighter':fighter, 'icon_fish':fish, 'icon_fox':fox, 'icon_geodude':geodude, 'icon_ghost':ghost, 'icon_gyarados':lambda:serpent(True),
@@ -1010,7 +1018,7 @@ BUILDERS={
 # presentation scale. Source identity is never collapsed in the Rust registry.
 HEIGHTS={'chris_bike':.91,'kris_bike':.91,'battle_chikorita':1.00,'battle_cyndaquil':.91,'battle_totodile':1.02,'big_snorlax':1.48,'big_lapras':1.52,'big_onix':1.72,'fruit_tree':2.4,'poke_ball':.46,'boulder':.68,'rock':.43,
  'paper':.13,'pokedex':.16,'famicom':.40,'snes':.30,'n64':.43,'virtual_boy':.59,'gold_trophy':.63,'silver_trophy':.56,
- 'surf':.98,'surfing_pikachu':1.00,'bird':.72,'fairy':.78,'monster':1.00,'dragon':1.12,'slowpoke':.70,'sudowoodo':.96,'entei':1.12,'raikou':1.14,'suicune':1.25}
+ 'bird':.72,'fairy':.78,'monster':1.00,'dragon':1.12,'slowpoke':.70,'sudowoodo':.96,'entei':1.12,'raikou':1.14,'suicune':1.25}
 
 def convert(v):return [round(v.x,6),round(v.z,6),round(-v.y,6)]
 def canonical_primitive(primitive):
@@ -1086,6 +1094,14 @@ def normalize(name,objects):
  if name in ('paper','pokedex'):scale=1
  center=Vector(((lo.x+hi.x)/2,(lo.y+hi.y)/2,lo.z))
  for o in objects:o.location=(o.location-center)*scale;o.scale*=scale
+ if name=='rock':
+  # A broad low fracture reads as a smashable obstacle at the world camera.
+  # Keep the existing height/root and fit inside one source actor cell; the
+  # taller Strength boulder remains a distinct shared type. Export depth is -Y.
+  bpy.context.view_layer.update();points=[o.matrix_world@v.co for o in objects for v in o.data.vertices]
+  spans=[max(p[a] for p in points)-min(p[a] for p in points) for a in (0,1)]
+  fit=Matrix.Diagonal((.64/spans[0],.54/spans[1],1.,1.))
+  for o in objects:o.matrix_world=fit@o.matrix_world
  if name=='fruit_tree':
   bpy.context.view_layer.update();points=[o.matrix_world@v.co for o in objects for v in o.data.vertices]
   width=max(p.x for p in points)-min(p.x for p in points);depth=max(p.y for p in points)-min(p.y for p in points)

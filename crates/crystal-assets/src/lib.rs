@@ -550,6 +550,18 @@ include!("script_parsing.rs");
 mod tests;
 
 mod modern_move_split_modpack;
+mod competitive_battle_modpack;
+mod competitive_trainer_profiles;
+mod default_battle_modpack;
+pub use default_battle_modpack::build_default_battle_modpack;
+pub use competitive_trainer_profiles::TrainerBattleProfile;
+pub use competitive_battle_modpack::{
+    COMPETITIVE_BATTLES_MANIFEST_ID, build_competitive_battle_modpack,
+};
+mod wild_challenge;
+pub use wild_challenge::{WILD_CHALLENGE_MANIFEST_ID, WildChallengeRules, build_wild_challenge_modpack};
+mod trainer_rematches;
+pub use trainer_rematches::{TRAINER_REMATCHES_MANIFEST_ID, build_trainer_rematches_modpack};
 pub use modern_move_split_modpack::{
     MODERN_MOVE_SPLIT_MANIFEST_ID, build_modern_move_split_modpack,
 };
@@ -561,3 +573,10 @@ pub use player_customization_modpack::{
 
 mod text_tui_modpack;
 pub use text_tui_modpack::{TEXT_TUI_MANIFEST_ID, build_text_tui_modpack};
+
+mod all_pokemon_modpack;
+pub use all_pokemon_modpack::{
+    ALL_251_MANIFEST_ID, SOLO_EVOLUTION_MANIFEST_ID, LINK_CABLE_ITEM_ID,
+    STONE_MART_ID, EVOLUTION_STONES, build_all_251_catchable_modpack,
+    build_solo_evolution_modpack, build_all_pokemon_modpack, verify_all_251_coverage,
+};

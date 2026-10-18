@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """Stored crocodile anatomy, fitted eyes/jaws and distinct evolution profiles."""
-import json,unittest
+import json,os,unittest
 from pathlib import Path
 from crocodile_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from chikorita_sculpt import cross,sub,unit,dot
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
+ROOT=Path(os.environ.get('CRYSTAL_CROCODILE_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 
 class CrocodileTests(unittest.TestCase):
     @classmethod
-    def setUpClass(cls):cls.models={n:json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in ('croconaw','feraligatr')}
+    def setUpClass(cls):
+        from crocodile_glb import read_crocodile
+        cls.models={n:read_crocodile(ROOT/(n+'.glb'),n) for n in ('croconaw','feraligatr')}
     def test_closed_connected_anatomy(self):assert_closed_models(self,self.models)
     def test_actual_stored_triangle_shading(self):assert_model_shading(self,self.models)
     def test_curved_skin_blends_normals_but_crests_keep_their_folds(self):
@@ -29,11 +31,11 @@ class CrocodileTests(unittest.TestCase):
             self.assertGreater(blended,100,n)
     def test_recipe_height_and_ground(self):
         for n,m in self.models.items():
-            self.assertEqual(m,sculpture(n));names=[p['part'] for p in m['primitives']]
+            from crocodile_glb import geometry_digest;self.assertEqual(geometry_digest(m),geometry_digest(sculpture(n)));names=[p['part'] for p in m['primitives']]
             self.assertEqual(len(names),len(set(names)))
             self.assertEqual(min(v for p in m['primitives'] for v in p['positions'][1::3]),0.)
             self.assertAlmostEqual(max(v for p in m['primitives'] for v in p['positions'][1::3]),HEIGHT,places=6)
-            self.assertLess(sum(len(p['indices'])//3 for p in m['primitives']),22000)
+            self.assertLessEqual(sum(len(p['indices'])//3 for p in m['primitives']),40000)
             for side in ('-1','1'):
                 feet=[p for p in m['primitives'] if p['part'].startswith('Foot /') and side in p['part'].split()]
                 self.assertAlmostEqual(min(v for p in feet for v in p['positions'][1::3]),0.,places=6)

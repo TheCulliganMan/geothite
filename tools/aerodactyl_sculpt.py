@@ -34,7 +34,7 @@ def arrow():
   q[key]=[round(sum(q[key][i+j]*basis[k] for j,basis in enumerate((ex,ey,ez)))+(origin[k] if key=='positions' else 0),7) for i in range(0,len(q[key]),3) for k in range(3)]
  return q
 
-def sculpture():
+def sculpture(normalize=True):
  body=loft('Body / continuous lean fossil chest and neck',GRAY,curved_profiles(((.20,.025,.030,-.05),(.29,.145,.128,-.055),(.44,.185,.16,-.06),(.59,.175,.151,-.065),(.71,.122,.111,-.07),(.86,.088,.085,-.035),(1.015,.095,.080,.010)),4),40)
  head=longitudinal('Skull / swept narrow dinosaur wedge',GRAY,[(-.09,1.00,.07,.10),(.025,1.025,.174,.135),(.16,1.045,.158,.098),(.34,1.075,.129,.058),(.52,1.105,.084,.07),(.585,1.10,.013,.037)])
  jaw=longitudinal('Jaw / lowered long fossil mandible',GRAY,[(.035,.92,.095,.035),(.13,.85,.137,.043),(.30,.72,.125,.043),(.49,.65,.088,.050),(.56,.66,.013,.034)])
@@ -75,9 +75,12 @@ def sculpture():
  p.append(curved_tube('Tail / continuous slender swept fossil tail',GRAY,[(0,.29,-.13),(.04,.26,-.40),(.28,.38,-.68),(.50,.57,-.80)],[.075,.062,.040,.023],32));p.append(arrow())
  low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
  for q in p:
-  q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+  if normalize:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
+  q['normals']=[round(v,7) for v in q['normals']]
  return {'name':'aerodactyl','version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--out',type=Path,required=True);args=a.parse_args();m=sculpture();args.out.mkdir(parents=True,exist_ok=True);(args.out/'aerodactyl.mesh.json').write_text(json.dumps(m,separators=(',',':')));print('aerodactyl',len(m['primitives']),sum(len(p['indices'])//3 for p in m['primitives']))
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--out',type=Path,required=True);args=a.parse_args();args.out.mkdir(parents=True,exist_ok=True)
+ from aerodactyl_glb import export_aerodactyl
+ blob=export_aerodactyl();(args.out/'aerodactyl.glb').write_bytes(blob);print('aerodactyl',len(blob),'bytes',flush=True)
 if __name__=='__main__':main()

@@ -3,6 +3,7 @@
 import copy,json,os,unittest
 from pathlib import Path
 from mr_mime_sculpt import sculpture,anatomy,HEIGHT
+from mr_mime_glb import read_mr_mime,geometry_digest
 from sculpt_geometry import translate
 from steelix_sculpt import block
 from sculpt_test_support import assert_closed_models,assert_model_shading
@@ -12,14 +13,14 @@ import test_nidorina_sculpt as attachments
 ROOT=Path(os.environ.get('CRYSTAL_MR_MIME_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class MimeTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'mr__mime.mesh.json').read_bytes())
+ def setUpClass(cls):cls.model=read_mr_mime(ROOT/'mr__mime.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'mr__mime':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'mr__mime':self.m})
  def test_recipe_parity_floor_height_and_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),110000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
  def test_named_anatomy_and_five_digits_per_hand(self):
   for label,n in (('Ear fan /',2),('Palm /',2),('Finger /',10),('Fingertip /',10),('Finger pad /',10),('Shoulder /',2),('Hip /',2),('Knee /',2),('Shoe curl /',2)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
  def test_head_neck_jaws_and_tongue_have_actual_roots(self):

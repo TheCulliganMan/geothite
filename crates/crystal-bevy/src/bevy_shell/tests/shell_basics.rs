@@ -71,42 +71,33 @@ fn map_setup_callbacks_are_not_replayed_as_visible_scripts() {
 
 #[test]
 fn visible_newloadmap_commits_the_staged_destination_before_map_setup() {
-    let mut runtime_shell = core_modular_title_shell_for_test();
-    let initial = runtime_shell.shell.snapshot().expect("initial snapshot");
-    let target = initial
-        .spawn_points
-        .iter()
-        .find(|spawn| spawn.map_name != initial.overworld.map_name)
-        .cloned()
-        .expect("a spawn on another map");
-    let target_tile = TilePosition::new(target.tile_x, target.tile_y);
-    {
-        let state = runtime_shell.shell.session_mut().state_mut();
-        state.script_runtime.pending_script_warp = Some(crystal_core::state::ScriptWarpRequest {
-            target_map: target.map_name.clone(),
-            tile: target_tile,
-            facing: None,
-            source_script: "WarpToSpawnPoint".to_string(),
-            command_index: 0,
-        });
-        state.script_runtime.pending_map_load = Some(crystal_core::state::ScriptMapLoadRequest {
-            command: "newloadmap".to_string(),
-            map_setup: Some("MAPSETUP_FLY".to_string()),
-            source_script: ".FlyScript@FlyFunction".to_string(),
-            command_index: 8,
-        });
-    }
+    let root=AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../.."));
+    let runtime=workspace_desktop_runtime(&root);
+    let map="GoldenrodMagnetTrainStation";
+    let load=runtime.data().maps[map].script_map_commands.iter()
+        .find(|command|command.command=="newloadmap").unwrap().clone();
+    let warp_index=runtime.compiled_script_commands(&load.source_script).unwrap().iter()
+        .position(|command|command["command"]=="warpcheck").unwrap();
+    let spawn_identifier=runtime.title_new_game_spawn_identifier().unwrap();
+    let mut runtime_shell=initialize_bevy_runtime_shell(root,runtime,
+        BevyShellStart::NewGameAtRuntimeTile {spawn_identifier,map_name:map.into(),tile_x:6,tile_y:5},
+        BevyShellConfig::default()).unwrap();
+    // The authored route supplies both pending requests to the dispatcher.
+    runtime_shell.shell.step_compiled_script_command(map,&load.source_script,warp_index,
+        ScriptRuntimeInputs::default(),ScriptPhoneInputs::default()).unwrap();
+    let step=runtime_shell.shell.step_compiled_script_command(map,&load.source_script,load.command_index,
+        ScriptRuntimeInputs::default(),ScriptPhoneInputs::default()).unwrap();
+    arm_visible_active_script_cursor_from_run(&mut runtime_shell,step.next_cursor);
     mark_runtime_snapshot_dirty(&mut runtime_shell);
-    let staged = runtime_shell.shell.snapshot().expect("staged snapshot");
-
-    assert!(
-        advance_visible_next_pending_script_request(&mut runtime_shell, &staged)
-            .expect("advance newloadmap")
-    );
-
-    let arrived = runtime_shell.shell.snapshot().expect("arrival snapshot");
-    assert_eq!(arrived.overworld.map_name, target.map_name);
-    assert_eq!(arrived.overworld.tile, target_tile);
+    let staged=runtime_shell.shell.snapshot().expect("source-authenticated staged snapshot");
+    let target=staged.script_events.pending_script_warp.as_ref().unwrap().clone();
+    assert!(staged.script_events.pending_map_load.is_some());
+    assert!(advance_visible_next_pending_script_request(&mut runtime_shell,&staged)
+        .expect("advance authored newloadmap before ordinary warp"));
+    let arrived=runtime_shell.shell.snapshot().unwrap();
+    assert_ne!(arrived.overworld.map_name,map);
+    assert_eq!(arrived.overworld.map_name,target.target_map);
+    assert_eq!(arrived.overworld.tile,target.tile);
     assert!(arrived.script_events.pending_script_warp.is_none());
     assert!(arrived.script_events.pending_map_load.is_none());
 }

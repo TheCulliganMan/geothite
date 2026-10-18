@@ -12,6 +12,8 @@ use std::{
 
 #[path = "source_title_splash.rs"]
 mod source_title_splash;
+#[path = "source_title_credits.rs"]
+mod source_title_credits;
 
 pub(super) struct Certificate {
     file: String,
@@ -178,6 +180,7 @@ fn assemble_catalog(root: &Path, intro: Value, validate: bool) -> Result<Runtime
         super::source_title_screen::gender(&vendor, &constants)?,
         super::source_title_screen::oak_speech(&vendor, &constants)?,
         source_title_splash::lower(&vendor, &constants)?,
+        source_title_credits::lower(&vendor, &constants)?,
     ] {
         let subprogram =
             serde_json::from_value::<crystal_assets::RuntimePresentationSubprogram>(value)?;

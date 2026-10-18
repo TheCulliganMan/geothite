@@ -5,12 +5,13 @@ import json
 import os
 import unittest
 from pathlib import Path
+from skin_glb import packed
 
 from omastar_sculpt import sculpture, HEIGHT, YELLOW, IVORY
 from sculpt_geometry import linear, translate, ellipsoid
 from sculpt_test_support import assert_closed_models, assert_model_shading
 from test_kingdra_sculpt import crossed_faces
-from test_slime_sculpt import ray_intersections
+from sculpt_test_support import indexed_ray_intersections as ray_intersections
 import test_nidorina_sculpt as attachments
 
 ROOT = Path(os.environ.get('CRYSTAL_OMASTAR_TEST_MODELS',
@@ -32,7 +33,7 @@ def open_cross(parts):
 class OmastarTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.model = json.loads((ROOT/'omastar.mesh.json').read_bytes())
+        cls.model = __import__('nautilus_glb').read_nautilus(ROOT/'omastar.glb', 'omastar')
 
     def setUp(self):
         self.m = self.model
@@ -48,17 +49,18 @@ class OmastarTests(unittest.TestCase):
         assert_model_shading(self, {'omastar': self.m})
 
     def test_recipe_height_floor_palette_and_budget(self):
-        self.assertEqual(self.m, sculpture())
+        from nautilus_glb import geometry_digest
+        self.assertEqual(geometry_digest(self.m), geometry_digest(sculpture()))
         self.assertEqual(len(self.ps), 43)
         self.assertEqual(len({p['part'] for p in self.ps}), len(self.ps))
         self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]), 0)
         self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]), HEIGHT, places=6)
         self.assertLess(sum(len(p['indices'])//3 for p in self.ps), 22000)
         for side in (-1, 1):
-            self.assertEqual(self.find('Eye /', side)['base_color'], linear(YELLOW))
+            self.assertEqual(packed(self.find('Eye /', side)['base_color']), packed(linear(YELLOW)))
         for p in self.ps:
             if p['part'].startswith('Beak /'):
-                self.assertEqual(p['base_color'], linear(IVORY))
+                self.assertEqual(packed(p['base_color']), packed(linear(IVORY)))
 
     def test_shell_mantle_eyes_tentacles_and_beak_have_volume_roots(self):
         body = self.find('Body /')

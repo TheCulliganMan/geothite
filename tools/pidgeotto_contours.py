@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Refine original authored Pidgeotto contours, retaining its production rig."""
-import argparse,copy
+import argparse,copy,struct
 from pathlib import Path
 from sculpt_geometry import loft,translate,crease_normals,curved_profiles
 from pidgeotto_glb import decode_pidgeotto,export_pidgeotto
@@ -46,6 +46,11 @@ def refine(p):
 def prepare(model):
     """Used by the original batch authoring source before canonical GLB export."""
     model=copy.deepcopy(model)
+    # Refinement must see the same f32 coordinates as the canonical GLB,
+    # including when Blender passes six-decimal source values directly.
+    for p in model['primitives']:
+        for key in ('positions','normals'):
+            p[key]=list(struct.unpack('<'+str(len(p[key]))+'f',struct.pack('<'+str(len(p[key]))+'f',*p[key])))
     for index,p in enumerate(model['primitives']):
         if p['part'] not in TARGETS:continue
         pieces=components(p);largest=max(range(len(pieces)),key=lambda i:len(pieces[i]['indices']))

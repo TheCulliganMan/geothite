@@ -68,3 +68,104 @@ task-owned ignored scratch was removed after the final proofs.
 The [source review](bone-pair-source-review.md) records official anatomy and
 specific external model/rig candidates. No external archive, mesh, texture,
 rig or clip was retrieved or imported. This is original static geometry.
+
+
+## Articulated canonical model
+
+The static JSON is replaced by a single canonical GLB authored by
+`tools/bone_keeper_glb.py`. The original recipe remains editable, and both its
+CLI and the Blender builder export the same canonical skin. No external mesh,
+rig or animation was imported. The strict reader restores the original named
+logical parts and rejects altered geometry or binary data.
+
+The 14-joint hierarchy has an identity floor root, body, neck and skull,
+independent left/right upper arms, elbows and wrists, supported thighs, and
+two tail carriers. The whole skull, horns, cheeks, snout and fitted recessed
+gaze stay rigid together. Each palm, three fingers and hand claw follows its
+wrist; the gripping thumb, shaft and four club lobes follow the left wrist.
+The club stays rigid and held through every clip. Continuous projected arm
+weights avoid nearest-segment discontinuities at bent elbows. Body/belly,
+neck, haunch and tail transitions blend; battle feet and toe claws stay fixed.
+The world renderer supplies the existing two complete walking support chains.
+
+Idle lasts 3.2 seconds with 81 keys; attack and hit use 65 keys over one second.
+All endpoints return to neutral and production source cues own action timing.
+Adaptive fitted contours replace redundant uniform face subdivisions while
+preserving outlines and physically recessed surfaces. Rounded body/limb
+sampling fits the existing 20,000-vertex, 40,000-triangle, 64-part, 256-accessor
+and 1 MiB limits without changing authoring or pack height.
+
+Front/side/rear old, idle, attack and hit sheets were inspected. The oversized
+juvenile helmet and adult narrow muzzle/raised club remain distinct, the fitted
+gaze stays coherent, and fingers remain wrapped around their actual clubs.
+Blender exports match canonical bytes. Shiny checks are skipped by request;
+grass height is untouched. Final runtime verification is recorded below when
+complete; browser visual acceptance remains open.
+
+Current asset: 19,943 vertices, 34,972 triangles, all 45 named parts,
+14 joints, 209 accessors, 772,068 bytes, authoring height 1.00.
+Neutral geometry pin: `5bd078b289b719850ffbd5621c43b25276736ac2bc919b1e60460c9e84814d77`.
+
+The first reduction failed the existing nostril free-space check; the snout
+retains its original 64×40 sampling so both triangular recesses stay clear.
+
+All 32 Python checks pass: 13 Cubone anatomy checks (18.519 seconds),
+13 Marowak anatomy checks (17.956 seconds), and six stored skin checks
+(67.347 seconds). They cover exact canonical geometry and budgets, closed
+solids and actual normals, fitted face clearance, empty recessed spaces,
+rooted anatomy and gripping fingers, full hierarchy/weights/binds, independent
+carriers, actual occupied joins through clips, fixed feet/claws, bounded edge
+strain and winding, source-clock endpoints and mutation rejection. The first
+independent-carrier check caught imperceptible Cubone thigh articulation;
+the supported thigh yaw was increased while keeping all feet fixed.
+
+The Rust pack reader confirms CUBONE = 104 / LONELY = 0.4064 m and
+MAROWAK = 303 / BONEKEEPER = 0.9906 m. Four focused Rust checks passed
+in 2.20 seconds: both pack-size GPU activations, fixed battle supports with
+club/wrist ownership and bounds, and 64 phases of two-foot world walking
+with the held club's authored weights preserved. Native paired battle review is recorded below.
+
+Native Cubone/Sentret Route 29 3D/2D pair inspected: frame 3283, checksum
+1716862610, LCD frame 3963, virtual time 73.682151458. The original 0.4064 m
+size, oversized smooth skull, recessed eye/nostrils, rooted feet, curved fingers
+and held club remain readable. Correct CUBONE HUD; no fallback or shader error.
+Normal terrain admission passed at the existing -110-degree review yaw with
+support, omission, whole-body and frustum gates intact. State was preserved.
+Ignored evidence: `target/pokemon-native-review/cubone-normal`.
+
+Both current canonical compressed GLB payloads were found in the native
+executable. World first-person/elevated and browser visual acceptance remain
+open; shiny checks are skipped and grass height remains untouched.
+
+
+The shared all-species grounded/volumetric geometry and exact production
+source-cue timing checks both pass against the current 198-entry registry
+(2 tests, 124.73 seconds). Fresh battle and world review executables build
+successfully; all four current canonical compressed payloads are present in
+the battle executable. Multi-view native review continues below.
+
+
+World QA stack diagnosis: LLDB stopped in
+`GameDataSet::apply_runtime_mutation_command_with_checksum` at its stack probe.
+The unoptimized native QA override reserves 0x1b1000 + 0xf00 = 1,777,408 bytes
+(about 1.70 MiB) in that function, before its caller frames. This is the
+Compute Task Pool overflow, not an observed mesh/bind failure. Native world
+review was rebuilt with the repository's normal optimized `crystal-assets`
+profile (opt-level 2), retaining the same geometry, sizes, controller inputs and
+cameras. No runtime source or thread-stack limit was changed. World review
+remains unaccepted until the actual paired captures pass. Diagnostic evidence:
+`target/pokemon-native-review/cubone-world-debug.log` and
+`target/pokemon-native-review/world-stack-disassembly.log`.
+
+
+The normal optimized-assets build resolves the QA stack overflow. The initial
+New Bark rerun reached the authored exit dialogue, so its empty world view was
+rejected. The clear Route36 (20,8), noon location now provides preserved-state
+paired source/native views without walking into scripts. First-person Cubone
+(frame 1457, checksum 1163064811, time 24.757580166) shows the full front at
+authored size: smooth skull, recessed eyes/nostrils, curved hands, attached club
+and supported feet. The elevated side view separates its complete silhouette
+from the trainer at gameplay scale. No geometry, runtime support or admission
+settings changed for these captures. Evidence: `cubone-world-first` and
+`cubone-world-elevated` under the ignored native-review directory. These are
+stationary world checks; browser acceptance remains open.

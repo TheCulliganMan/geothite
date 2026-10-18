@@ -43,12 +43,52 @@ fn words(name: &str, keys: &[&str]) -> bool {
         .any(|w| keys.iter().any(|key| w.eq_ignore_ascii_case(key)))
 }
 
+fn support_center(rig: &SpeciesRig) -> Vec3 {
+    let mut center = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
+    if crawl(rig.species.name()) || quadruped(rig.species.name()) {
+        return center;
+    }
+    let hip_x = |suffix: &str| {
+        rig.joints.iter().find(|joint| joint.parent == Some(0) && joint.name.ends_with(suffix))
+            .map(|joint| joint.bind.translation.x)
+    };
+    let authored = (!matches!(rig.species, Species::Procedural(_)))
+        .then(|| hip_x("/leg_left").zip(hip_x("/leg_right")))
+        .flatten();
+    let (left, right) = authored.unwrap_or_else(|| {
+        // Earlier skins, including Pikachu, keep their haunches on the
+        // presentation root. Complete named legs still supply bilateral
+        // evidence; tiny toe marks and pads must not choose the axis.
+        let mut left = f32::NEG_INFINITY;
+        let mut right = f32::INFINITY;
+        for part in &rig.anatomy {
+            if role(&part.name) != Role::Leg || words(&part.name, &["foot", "feet", "toe", "toes", "claw", "claws", "talon", "paw", "hoof", "proleg", "shoe", "boot", "sole", "heel"]) {
+                continue;
+            }
+            let (lo, hi) = point_bounds(rig.neutral.positions[part.vertices.clone()].iter().copied().map(Vec3::from_array));
+            let x = (lo.x + hi.x) * 0.5;
+            if x < 0. { left = left.max(x); }
+            if x > 0. { right = right.min(x); }
+        }
+        (left, right)
+    });
+    if left.is_finite() && right.is_finite() {
+        // A long one-sided tail or prop can put both real legs on the same
+        // side of the silhouette center. Keep existing classification when
+        // that center separates the authored hips; otherwise use their axis.
+        if left < right && !(left < center.x && center.x < right) {
+            center.x = (left + right) * 0.5;
+        }
+    }
+    center
+}
+
 /// Complete named limbs are rebound together, including paint, feet and claws.
 /// Each independent crawler leg receives its own chain; a row of insect feet
 /// must never rotate as one long human shin.
 pub(super) fn build(rig: &mut SpeciesRig) {
     let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
-    let center = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
+    let center = support_center(rig);
     let is_crawl = crawl(rig.species.name());
     let is_quad = quadruped(rig.species.name());
     let mut groups: std::collections::BTreeMap<usize, Vec<(Range<usize>, bool)>> =
@@ -262,7 +302,10 @@ pub(super) fn build(rig: &mut SpeciesRig) {
                 .iter()
                 .position(|segment| segment.joint == parent)
                 .unwrap() as f32)
-                * 0.12
+                // The authored larvae have three support rows. A 0.12-cycle
+                // offset can put every pair in the 0.40-cycle swing window;
+                // quarter-cycle staggering keeps a support pair planted.
+                * if matches!(rig.species,Species::Caterpie | Species::Weedle) {0.25} else {0.12}
         } else if is_crawl {
             order as f32 * 0.27
         } else {
@@ -408,5 +451,60 @@ pub(super) fn sample(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Tran
         if floor < 0. {
             pose[0].translation.y -= floor;
         }
+    }
+}
+
+#[cfg(test)]
+mod support_center_tests {
+    use super::*;
+
+    #[test]
+    fn raichu_skin_support_center_uses_authored_hips_past_the_long_tail() {
+        let rig = crate::species_rig::for_species("RAICHU").unwrap();
+        let bounds = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
+        let hips: Vec<_> = rig.joints.iter().filter(|j| j.parent == Some(0) && (j.name.ends_with("/leg_left") || j.name.ends_with("/leg_right"))).map(|j| j.bind.translation.x).collect();
+        assert_eq!(hips.len(), 2);
+        assert!(hips.iter().all(|x| *x < bounds.x), "tail must expose the former one-leg classification");
+        let center = support_center(rig);
+        assert_eq!(center.x.to_bits(), ((hips[0] + hips[1]) * 0.5).to_bits());
+        assert_eq!(center.y.to_bits(), bounds.y.to_bits());
+        assert_eq!(center.z.to_bits(), bounds.z.to_bits());
+    }
+
+    #[test]
+    fn raichu_skin_support_center_preserves_a_separating_silhouette_axis() {
+        let mut rig = crate::species_rig::for_species("RAICHU").unwrap().clone();
+        rig.neutral_bounds.1.x = -rig.neutral_bounds.0.x + 0.02;
+        let bounds = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
+        assert_eq!(support_center(&rig).to_array().map(f32::to_bits), bounds.to_array().map(f32::to_bits));
+        for name in ["BELLSPROUT", "GLOOM", "KABUTOPS", "PINECO"] {
+            let rig = crate::species_rig::for_species(name).unwrap();
+            let bounds = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
+            assert_eq!(support_center(rig).to_array().map(f32::to_bits), bounds.to_array().map(f32::to_bits), "{name} keeps its existing axis");
+        }
+    }
+
+    #[test]
+    fn raichu_skin_support_center_requires_bilateral_leg_evidence() {
+        let mut rig = crate::species_rig::for_species("RAICHU").unwrap().clone();
+        let right = rig.joints.iter_mut().find(|j| j.name.ends_with("/leg_right")).unwrap();
+        right.parent = Some(1);
+        rig.anatomy.retain(|part| role(&part.name) != Role::Leg || words(&part.name, &["foot", "feet", "toe", "toes"]));
+        let bounds = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
+        assert_eq!(support_center(&rig).to_array().map(f32::to_bits), bounds.to_array().map(f32::to_bits));
+    }
+
+    #[test]
+    fn raichu_skin_support_center_handles_pikachu_without_authored_leg_roots() {
+        let rig = crate::species_rig::for_species("PIKACHU").unwrap();
+        assert!(!rig.joints.iter().any(|j| j.name.ends_with("/leg_left") || j.name.ends_with("/leg_right")));
+        let bounds = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
+        let haunches: Vec<_> = rig.anatomy.iter().filter(|p| p.name.starts_with("Haunch /")).map(|part| {
+            let (lo, hi) = point_bounds(rig.neutral.positions[part.vertices.clone()].iter().copied().map(Vec3::from_array));
+            (lo.x + hi.x) * 0.5
+        }).collect();
+        assert_eq!(haunches.len(), 2);
+        assert!(haunches.iter().all(|x| *x < bounds.x));
+        assert_eq!(support_center(rig).x.to_bits(), ((haunches[0] + haunches[1]) * 0.5).to_bits());
     }
 }

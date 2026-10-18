@@ -23,12 +23,14 @@ fn fixture(frame:&VisualWorldFrame)->Option<(usize,usize)> {
 }
 pub fn native_clinic_healing_supported(frame:&VisualWorldFrame)->bool {fixture(frame).is_some()}
 pub(super) fn profile_allows(frame:&VisualWorldFrame,profiles:&crate::live_profiles::Document)->bool {
+ if frame.map_id.as_ref()=="HallOfFame" {return crate::mesh::hall_healing_effects_supported(frame,Some(profiles));}
  fixture(frame).is_some_and(|(column,row)|crate::mesh::native_healing_owner_allows(frame,profiles,column,row))
 }
 pub(super) fn is_healing(actor:&VisualActor)->bool {
  matches!(actor.id,VisualActorId::Effect(VisualEffectId::HealMachineBall(_)|VisualEffectId::HealMachineLamp(_)))
 }
 pub(super) fn transform(frame:&VisualWorldFrame,actor:&VisualActor)->Option<Transform> {
+ if frame.map_id.as_ref()=="HallOfFame" {return hall_transform(frame,actor);}
  let (col,row)=fixture(frame)?;
  if !frame.tile_size.is_finite()||frame.tile_size.min_element()<=0.||!actor.center.is_finite() {return None;}
  let scale=frame.tile_size/8.;
@@ -46,6 +48,28 @@ pub(super) fn transform(frame:&VisualWorldFrame,actor:&VisualActor)->Option<Tran
  let z=south-if ball {0.15*scale.y}else{0.}+0.025*scale.y;
  Some(Transform::from_xyz(origin.x+inset+width*local.x/32.,center_y-card_size.y*0.5,z)
   .with_scale(Vec3::new(if actor.flip_x {-card_size.x}else{card_size.x},card_size.y,1.)))
+}
+
+fn hall_transform(frame:&VisualWorldFrame,actor:&VisualActor)->Option<Transform> {
+ if !crate::mesh::hall_healing_effects_supported(frame,None)
+  ||!matches!(actor.id,VisualActorId::Effect(VisualEffectId::HealMachineBall(0..=5)))
+  ||!actor.center.is_finite()||!actor.size.is_finite()||actor.size.min_element()<=0. {return None;}
+ let scale=frame.tile_size/8.;
+ let origin=frame.center+Vec2::new(
+  -(frame.grid_size.x as f32)*frame.tile_size.x*0.5-frame.grid_origin.x as f32*frame.tile_size.x,
+  (frame.grid_size.y as f32)*frame.tile_size.y*0.5+frame.grid_origin.y as f32*frame.tile_size.y);
+ let local=Vec2::new(actor.center.x-origin.x,origin.y-actor.center.y)/scale;
+ let VisualActorId::Effect(VisualEffectId::HealMachineBall(slot))=actor.id else{return None;};
+ // Publication already applies the source camera offset: Hall's player row3
+ // shifts OAM centers sixteen pixels north into these actual map positions.
+ let &(x,y)=[(77.,32.),(82.,32.),(73.,31.),(86.,31.),(69.,29.),(89.,29.)].get(slot as usize)?;
+ if !local.abs_diff_eq(Vec2::new(x,y),0.01){return None;}
+ // Fold the three nested pairs four pixels south onto the physical tray.
+ // Actor cards pivot at their bottom edge. After folding, that edge is
+ // south of the sprite center by half its height.
+ Some(Transform::from_xyz(origin.x+local.x*scale.x,10.15*scale.y,-origin.y+(local.y+4.)*scale.y+actor.size.y*0.5)
+  .with_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2))
+  .with_scale(Vec3::new(if actor.flip_x {-actor.size.x}else{actor.size.x},actor.size.y,1.)))
 }
 
 #[cfg(test)]

@@ -278,7 +278,7 @@ def export_asset(name,source):
   mat=ob.data.materials[0]
   primitives.append({'name':ob.name,'material':mat.name,'base_color':[round(v,5) for v in mat.diffuse_color],'positions':positions,'normals':normals,'indices':indices})
   tricount+=len(indices)//3
- data={'name':name,'coordinate_system':'right-handed; +Y up; front +Z','origin':'floor-center','bounds':{'min':minv,'max':maxv},'dimensions':[round(maxv[i]-minv[i],6) for i in range(3)],'triangle_count':tricount,'primitive_count':len(primitives),'door_anchor':[0,0,2.0],'door_width':round(.80*sx,6),'primitives':primitives}
+ data={'name':name,'coordinate_system':'right-handed; +Y up; front +Z','origin':'floor-center','bounds':{'min':minv,'max':maxv},'dimensions':[round(maxv[i]-minv[i],6) for i in range(3)],'triangle_count':tricount,'primitive_count':len(primitives),'door_anchor':[0,0,2.0],'door_width':round(.80*sx,6),'rigid_upper_from':1.945,'primitives':primitives}
  (P/f'{name}.mesh.json').write_text(json.dumps(data,separators=(',',':')))
  bpy.ops.object.select_all(action='DESELECT')
  for ob in export.objects:ob.select_set(True)

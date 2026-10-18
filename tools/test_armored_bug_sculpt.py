@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 """Independent stored armor contacts, shell topology and hollow-port checks."""
-import json,unittest
+import os,unittest
 from pathlib import Path
 from armored_bug_sculpt import sculpture,SPECIES,HEIGHT
+from armored_bug_glb import read_armored_bug,geometry_digest
+from test_seahorse_glb import occupied_overlap
+from sculpt_test_support import indexed_ray_intersections as rays
 from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_axolotl_sculpt import ray_intersections
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
+ray_intersections=rays  # Same stored-triangle barycentric oracle, with candidate indexing.
+ROOT=Path(os.environ.get('CRYSTAL_ARMORED_BUG_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class ArmoredBugTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def setUpClass(cls):cls.models={s:read_armored_bug(ROOT/(s+'.glb'),s) for s in SPECIES}
  def test_closed_connected_oriented_parts(self):assert_closed_models(self,self.models)
  def test_normals_match_stored_triangles(self):assert_model_shading(self,self.models)
  def test_regeneration_scale_and_distinct_anatomy(self):
   for s,m in self.models.items():
-   ps=m['primitives'];self.assertEqual(m,sculpture(s));self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
+   ps=m['primitives'];self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.)
    self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertEqual(len(ps),len({p['part'] for p in ps}));self.assertLess(sum(len(p['indices'])//3 for p in ps),15000)
    counts=(('Plate / navy',18),('Plate / teal',18),('Crown / navy',5),('Crown / teal',5),('Stem /',1),('Eye / narrow',2)) if s=='pineco' else (('Shell /',2),('Port /',4),('Port recess /',4),('Eye / ivory',2),('Chip / fitted',16),('Belt /',1))
    for prefix,n in counts:self.assertEqual(sum(p['part'].startswith(prefix) for p in ps),n,(s,prefix))
@@ -79,4 +82,24 @@ class ArmoredBugTests(unittest.TestCase):
      rear=name.startswith('Chip /') and name.split()[-2]=='True'
      if rear and name.startswith('Chip / fitted'):x=-x;z=-z
      hits=ray_intersections(skin,x,y);self.assertTrue(hits,(s,name));self.assertLess(abs(z-(min(hits) if rear and name.startswith('Chip / inset') else max(hits))),limit,(s,name))
+ def attachments(self,s):
+  ps=self.models[s]['primitives'];core=ps[0]
+  for p in ps:
+   n=p['part']
+   if s=='pineco' and n.startswith(('Plate / navy','Crown / navy','Stem /')) or s=='forretress' and n.startswith(('Shell /','Port /','Belt /')):yield p,core
+   elif n.startswith('Port recess /'):yield p,next(q for q in ps if q['part']=='Port / hollow tapered red barrel '+' '.join(n.split()[-2:]))
+ def test_hollow_shells_armor_and_barrels_have_actual_occupied_roots(self):
+  for s in self.models:
+   for child,parent in self.attachments(s):self.assertTrue(occupied_overlap(child,parent),(s,child['part']))
+ def test_white_gaze_is_visible_ahead_of_the_core(self):
+  for s,m in self.models.items():
+   core=m['primitives'][0]
+   for side in (-1,1):
+    eye=next(p for p in m['primitives'] if p['part'].startswith('Eye / fitted ivory' if s=='pineco' else 'Eye / ivory') and p['part'].endswith(' '+str(side)));visible=0
+    for k in range(0,len(eye['indices']),3):
+     a,b,c=tri=[eye['positions'][i*3:i*3+3] for i in eye['indices'][k:k+3]]
+     if (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<=1e-10:continue
+     x,y,z=[sum(v[j] for v in tri)/3 for j in range(3)];hits=rays(core,x,y)
+     if hits and z>max(hits)+.001:visible+=1
+    self.assertGreaterEqual(visible,3,(s,side))
 if __name__=='__main__':unittest.main()

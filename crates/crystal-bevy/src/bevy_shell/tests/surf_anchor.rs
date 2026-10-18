@@ -107,7 +107,7 @@ fn surf_anchor_mount_through_keyboard(app: &mut App) {
                 .location
                 .is_none()
         );
-        if shell.shell.session().snapshot().mode == MovementMode::Surf {
+        if matches!(shell.shell.session().snapshot().mode, MovementMode::Surf | MovementMode::SurfPika) {
             assert_eq!(
                 shell.shell.session().snapshot().tile,
                 TilePosition::new(38, 4)

@@ -21,6 +21,18 @@ def sheet(name,color,xy,depth,th=.018,sub=2):
 def paint(name,color,xy,parent,th=.006,sub=3):
  return sheet(name,color,xy,surface(parent),th,sub)
 
+def geometry_functions(rig_ready):
+ # Legacy callers keep their exact stored geometry. Rig topology spends samples
+ # on the curved outline and only refines fitted caps where parent clearance
+ # requires it, instead of subdividing tiny pupils and flat feathers uniformly.
+ if not rig_ready:return sheet,paint
+ from sculpt_geometry import fitted_adaptive_contour
+ def rig_sheet(name,color,xy,depth,th=.018,sub=2):
+  return sheet(name,color,xy,depth,th,0 if name.startswith(('Primary /','Rear primary /','Covert /','Rear covert /','Tail /')) else min(sub,1))
+ def rig_paint(name,color,xy,parent,th=.006,sub=3):
+  return fitted_adaptive_contour(name,color,xy,parent,th,initial_subdivisions=0,max_surface_error=th*.40)
+ return rig_sheet,rig_paint
+
 def vane_xy(root,tip,width):
  dx,dy=tip[0]-root[0],tip[1]-root[1];length=math.hypot(dx,dy)
  nx,ny=-dy/length*width,dx/length*width
@@ -37,7 +49,8 @@ def feather_depth(base,root,tip,width,offset,bank):
   return base(y,x)+offset+bank*.009*math.sin(math.pi*max(0,min(1,t)))*max(0,1-(w/width)**2)
  return at
 
-def pale_tip(p,feather,xy,root,tip,prefix):
+def pale_tip(p,feather,xy,root,tip,prefix,rig_ready=False):
+ sheet,paint=geometry_functions(rig_ready)
  dx,dy=tip[0]-root[0],tip[1]-root[1];dd=dx*dx+dy*dy
  def along(q):return ((q[0]-root[0])*dx+(q[1]-root[1])*dy)/dd
  clipped=[]
@@ -53,7 +66,8 @@ def pale_tip(p,feather,xy,root,tip,prefix):
   patch=paint(prefix+' '+str(face),CREAM,inset if face==1 else [(-x,y) for x,y in inset],parent,.004,2)
   p.append(patch if face==1 else reverse_front(patch))
 
-def wings(p,fear):
+def wings(p,fear,rig_ready=False):
+ sheet,paint=geometry_functions(rig_ready)
  for sign in (-1,1):
   depth=lambda y,x:-.02-.14*abs(x)+.028*math.sin(3*y)
   outline=contour([((.095,.56),(.21,.78),(.35,.98),(.57,1.08)),
@@ -75,8 +89,8 @@ def wings(p,fear):
    rear=sheet(f'Rear primary / layered upper flight vane {sign} {j}',LIGHT_BROWN,xy,feather_depth(depth,root,tip,.065 if fear else .072,-.023,-1),.020,1);p.append(rear)
    if fear:
     # A pale tip is fitted to both faces of the actual closed vane.
-    pale_tip(p,feather,xy,root,tip,f'Primary tip / supported pale terminal {sign} {j}')
-    pale_tip(p,rear,xy,root,tip,f'Rear primary tip / supported pale terminal {sign} {j}')
+    pale_tip(p,feather,xy,root,tip,f'Primary tip / supported pale terminal {sign} {j}',rig_ready)
+    pale_tip(p,rear,xy,root,tip,f'Rear primary tip / supported pale terminal {sign} {j}',rig_ready)
   for j in range(6):
    root=(sign*(.20+.073*j),.71+.068*j);tip=(sign*(.37+.076*j),.60+.071*j)
    xy=vane_xy(root,tip,.044)
@@ -94,13 +108,15 @@ def feet(p):
   p.append(curved_tube('Toe / rear gripping digit '+str(s),PINK,[(s*.108,.031,.035),(s*.13,.019,-.025),(s*.14,.014,-.050)],[.013,.011,.008],16))
   p.append(curved_tube('Talon / rear ivory hook '+str(s),TALON,[(s*.14,.014,-.045),(s*.15,.008,-.068),(s*.15,.002,-.082)],[.008,.006,.0015],16))
 
-def tails(p,fear):
+def tails(p,fear,rig_ready=False):
+ sheet,paint=geometry_functions(rig_ready)
  for j in range(5):
   x=(j-2)*.060
   xy=vane_xy((x*.20,.355),(x,.172+abs(j-2)*.012),.043)
   p.append(sheet('Tail / splayed rear feather '+str(j),LIGHT_BROWN if fear else RED,xy,lambda y,x:-.145-2.25*(.355-y),.018,2))
 
-def pidgeot_face(p,head):
+def pidgeot_face(p,head,rig_ready=False):
+ sheet,paint=geometry_functions(rig_ready)
  for s in (-1,1):
   xy=[(s*x,y) for x,y in ((.025,.940),(.110,.953),(.160,.917),(.156,.865),(.111,.790),(.086,.836),(.067,.864))]
   mask=paint('Mask / hooked charcoal cheek stripe '+str(s),INK,xy,head,.010,3);p.append(mask)
@@ -117,7 +133,8 @@ def pidgeot_face(p,head):
               ((end,.925-abs(j)*.014),(.44,.988),(.18,1.010),(-.185,y-.052))],12)
   q=zy(sheet('Crest / long swept ribbon '+str(j),GOLD if j==0 else RED,xy,lambda y,x:j*.047,.024,2));p.append(q)
 
-def fearow_face(p,head):
+def fearow_face(p,head,rig_ready=False):
+ sheet,paint=geometry_functions(rig_ready)
  for s in (-1,1):
   xy=[(s*x,y) for x,y in ((.029,.986),(.085,.998),(.110,.977),(.083,.950),(.039,.953))]
   socket=paint('Eye socket / sharp dark bill-side gaze '+str(s),INK,xy,head,.009,3);p.append(socket)
@@ -130,7 +147,8 @@ def fearow_face(p,head):
  mane=[(-.065,.682),(-.125,.813),(-.087,.792),(-.100,.901),(-.056,.858),(-.032,.965),(.001,.885),(.038,.976),(.062,.867),(.100,.928),(.084,.790),(.130,.850),(.075,.680)]
  p.append(sheet('Mane / ragged pale rear neck ruff',CREAM,mane,lambda y,x:.094+.10*(y-.68),.030,2))
 
-def sculpture(species):
+def sculpture(species,*,rig_ready=False,with_transform=False):
+ sheet,paint=geometry_functions(rig_ready)
  if species not in SPECIES:raise ValueError('unsupported raptor bird')
  fear=species=='fearow'
  rows=curved_profiles(((.188,.045,.045,-.018),(.265,.129,.145,-.025),(.405,.201,.189,-.020),(.525,.186,.167,-.005),(.620,.112,.103,.015),(.692,.039,.041,.036)),4)
@@ -155,14 +173,15 @@ def sculpture(species):
   p.append(paint('Throat / fitted continuous cream neck',CREAM,xy,neck,.011,4))
   xy=[(-.075,.737),(-.108,.814),(-.081,.864),(0,.897),(.081,.864),(.108,.814),(.075,.737),(0,.712)]
   p.append(paint('Cheek / fitted cream throat',CREAM,xy,head,.009,3))
- wings(p,fear);feet(p);tails(p,fear)
- (fearow_face if fear else pidgeot_face)(p,head)
+ wings(p,fear,rig_ready);feet(p);tails(p,fear,rig_ready)
+ (fearow_face if fear else pidgeot_face)(p,head,rig_ready)
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[species]/(hi-lo)
  for q in p:
   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
- return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+ model={'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+ return (model,(lo,scale)) if with_transform else model
 
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
- for s in SPECIES:(args.output/(s+'.mesh.json')).write_text(json.dumps(sculpture(s),separators=(',',':')))
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);a.add_argument('--rig-ready',action='store_true');args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
+ for s in SPECIES:(args.output/(s+'.mesh.json')).write_text(json.dumps(sculpture(s,rig_ready=args.rig_ready),separators=(',',':')))
 if __name__=='__main__':main()

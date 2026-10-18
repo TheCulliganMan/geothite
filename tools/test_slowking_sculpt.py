@@ -11,14 +11,17 @@ import test_nidorina_sculpt as attachments
 ROOT=Path(os.environ.get('CRYSTAL_SLOWKING_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class SlowkingTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'slowking.mesh.json').read_bytes())
+ def setUpClass(cls):
+  from slow_pair_glb import read_slowking
+  cls.model=read_slowking(ROOT/'slowking.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'slowking':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'slowking':self.m})
  def test_recipe_parity_floor_height_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from slow_pair_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for label,n in (('Collar panel /',10),('Crown horn /',2),('Crown crest /',5),('Crown turn /',2),('Eye /',2),('Hand claw /',6),('Foot claw /',4),('Tooth /',2),('Belly band /',3),('Jewel /',1)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
  def test_face_teeth_tail_and_collar_have_actual_roots(self):
   body=self.find('Body /');head=self.find('Head /');muzzle=self.find('Muzzle /');self.assertTrue(self.overlap(head,body));self.assertTrue(self.overlap(muzzle,head));self.assertTrue(self.overlap(self.find('Tail /'),body))
@@ -32,8 +35,8 @@ class SlowkingTests(unittest.TestCase):
    if p['part'].startswith(('Crown horn /','Crown crest /','Crown turn /')):self.assertTrue(self.overlap(p,crown),p['part'])
  def test_limbs_palms_and_claws_have_actual_roots(self):
   for s in (-1,1):
-   for child,parent in (('Shoulder /','Body /'),('Arm /','Shoulder /'),('Hand /','Arm /'),('Thigh /','Body /'),('Leg /','Thigh /'),('Foot /','Leg /')):self.assertTrue(self.overlap(self.find(child,s),self.find(parent,None if parent=='Body /' else s)),(child,s))
-   for label,parent,n in (('Hand claw /','Hand /',3),('Foot claw /','Foot /',2)):
+   for child,parent in (('Shoulder /','Body /'),('Arm /','Shoulder /'),('Thigh /','Body /'),('Leg /','Thigh /'),('Foot /','Leg /')):self.assertTrue(self.overlap(self.find(child,s),self.find(parent,None if parent=='Body /' else s)),(child,s))
+   for label,parent,n in (('Hand claw /','Arm /',3),('Foot claw /','Foot /',2)):
     for j in range(n):self.assertTrue(self.overlap(self.find(label,f'{s} {j}'),self.find(parent,s)),(label,s,j))
  def test_both_feet_are_grounded(self):
   for s in (-1,1):self.assertEqual(min(self.find('Foot /',s)['positions'][1::3]),0)
@@ -57,5 +60,5 @@ class SlowkingTests(unittest.TestCase):
   for p in self.ps:
    if p['part'].startswith(('Arm /','Leg /','Hand claw /','Foot claw /','Tail /','Crown horn /','Crown crest /')):self.assertIsNone(crossed_faces(p),p['part'])
  def test_detached_collar_horn_tail_and_claw_negatives(self):
-  for child,parent in (('Collar panel /','Body /'),('Crown horn /','Crown body /'),('Tail /','Body /'),('Hand claw /','Hand /')):self.assertFalse(self.overlap(translate(copy.deepcopy(self.find(child)),3,0,0),self.find(parent)))
+  for child,parent in (('Collar panel /','Body /'),('Crown horn /','Crown body /'),('Tail /','Body /'),('Hand claw /','Arm /')):self.assertFalse(self.overlap(translate(copy.deepcopy(self.find(child)),3,0,0),self.find(parent)))
 if __name__=='__main__':unittest.main()

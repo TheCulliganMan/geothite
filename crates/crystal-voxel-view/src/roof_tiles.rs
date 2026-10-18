@@ -24,7 +24,7 @@ pub(crate) fn refine(mesh: &mut SurfaceMeshData, first: usize, index: usize, nam
     } else {
         return false;
     };
-    refine_family(mesh, first, index, name, family)
+    refine_family(mesh, first, index, name, family, false)
 }
 
 /// Give the existing traditional-house panels the same closed course detail,
@@ -39,7 +39,7 @@ pub(crate) fn refine_traditional(
     if !name.starts_with("violet") {
         return false;
     }
-    refine_family(mesh, first, index, name, [color[0], color[1], color[2]])
+    refine_family(mesh, first, index, name, [color[0], color[1], color[2]], true)
 }
 
 fn refine_family(
@@ -48,6 +48,7 @@ fn refine_family(
     index: usize,
     name: &str,
     family: [f32; 3],
+    separate_panels: bool,
 ) -> bool {
     if name.ends_with("_dark") {
         return false;
@@ -138,6 +139,14 @@ fn refine_family(
         const U: usize = 4;
         const V: usize = 4;
         for panel in 0..2 {
+            // Traditional roofs retain their native paint but each small tile
+            // needs its own quiet firing variation and a readable side joint.
+            // Identical paint across the central valley merged two tiles into
+            // one broad sheet at the normal game camera distance.
+            let firing = if separate_panels {
+                1.0 + ((center.x + panel as f32 * du.x * 0.5) * 17.3
+                    + center.z * 9.7).sin() * 0.025
+            } else {1.0};
             for y in 0..V {
                 for x in 0..U {
                     let q = [
@@ -154,7 +163,9 @@ fn refine_family(
                         let sun = Vec3::new(0.45, 0.80, 0.55).normalize();
                         let first = mesh.colors.len() - 3;
                         for (vertex, i) in t.into_iter().enumerate() {
-                            let light = 0.60 + 0.40 * q[i].1.dot(sun).max(0.0);
+                            let edge = [x,x+1,x+1,x][i];
+                            let joint = if separate_panels && (edge==0 || edge==U) {0.84} else {1.0};
+                            let light = (0.60 + 0.40 * q[i].1.dot(sun).max(0.0))*joint*firing;
                             for c in 0..3 {
                                 mesh.colors[first + vertex][c] *= light;
                             }
@@ -186,11 +197,12 @@ mod tests {
 
     #[test]
     fn legacy_town_roofs_gain_curvature_with_fixed_perimeters_and_quiet_colors() {
+        // Closed authored Gym/pagoda courses bypass this legacy adapter and
+        // have their own raw-geometry preservation checks in new_bark_models.
         for json in [
             include_str!("../models/new_bark/player_house.mesh.json"),
             include_str!("../models/new_bark/lab.mesh.json"),
             include_str!("../models/johto/traditional_house.mesh.json"),
-            include_str!("../models/johto/violet_gym.mesh.json"),
         ] {
             let export: Export = serde_json::from_str(json).unwrap();
             let mut curved = 0;

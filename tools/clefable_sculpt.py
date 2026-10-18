@@ -2,7 +2,8 @@
 """Original Clefable sculpture, grounded and front +Z."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import ellipsoid,loft,curved_profiles,fitted_patch,fitted_contour,tube,crease_normals
+from sculpt_geometry import ellipsoid,loft,curved_profiles,fitted_patch,fitted_contour,fitted_triangle_contour,tube,crease_normals
+from cubone_sculpt import skin_shading
 from abra_sculpt import surface
 from bovine_sculpt import oval,reverse_front
 from jigglypuff_sculpt import pillow_ear
@@ -12,7 +13,7 @@ from baby_fairy_sculpt import tilt,spiral
 from skin_glb import COORDINATES
 HEIGHT=1.0
 PINK=(.98,.79,.79);BROWN=(.43,.36,.29);INK=(.13,.12,.16);WHITE=(.98,.98,.94);BLUSH=(.94,.55,.65);TONGUE=(.77,.53,.66);WING=(.95,.88,.81)
-def sculpture():
+def sculpture(normalize=True):
  body=loft('Body / continuous round pink fairy pear',PINK,curved_profiles(((.05,.05,.07,0),(.11,.16,.14,0),(.22,.26,.21,0),(.38,.30,.24,0),(.53,.27,.22,0),(.65,.22,.18,0),(.72,.15,.12,0),(.76,.04,.03,0)),4),40);skin=surface(body);p=[body]
  for sign in (-1,1):
   xy=contour((((.130,.646),(.218,.781),(.420,.839),(.525,.853)),((.525,.853),(.470,.757),(.365,.638),(.226,.583)),((.226,.583),(.194,.590),(.157,.626),(.130,.646))),12)
@@ -23,8 +24,9 @@ def sculpture():
    if bx>=.40:clipped.append((bx,by))
   cx=sum(x for x,y in clipped)/len(clipped);cy=sum(y for x,y in clipped)/len(clipped)
   tip=[(sign*(cx+(x-cx)*.985),cy+(y-cy)*.985) for x,y in clipped]
-  p.append(fitted_contour('Ear tip / fitted muted brown fairy cap front '+str(sign),BROWN,tip,surface(ear),.007,subdivisions=3))
-  back=fitted_contour('Ear tip / fitted muted brown fairy cap rear '+str(sign),BROWN,[(-x,y) for x,y in tip],surface(reverse_front(ear)),.007,subdivisions=3);p.append(reverse_front(back))
+  p.append(skin_shading(crease_normals(fitted_triangle_contour('Ear tip / fitted muted brown fairy cap front '+str(sign),BROWN,tip,ear,.007,precision=7),35),ear))
+  rear=reverse_front(ear)
+  back=skin_shading(crease_normals(fitted_triangle_contour('Ear tip / fitted muted brown fairy cap rear '+str(sign),BROWN,[(-x,y) for x,y in tip],rear,.007,precision=7),35),rear);p.append(reverse_front(back))
 
   center=(sign*.279,.386,.035);arm=tilt(ellipsoid('Arm / raised rounded fairy hand '+str(sign),PINK,center,(.091,.140,.075),32,22),-sign*.55,center);p.append(arm)
   for j in (-1,0,1):p.append(ellipsoid(('Hand claw / rooted ivory fairy fingertip ' if j==0 else 'Hand finger / rooted pink fairy fingertip ')+str(sign)+' '+str(j),WHITE if j==0 else PINK,(sign*(.346+j*.023),.496-abs(j)*.013,.062),(.014,.023,.024),20,14))
@@ -43,10 +45,14 @@ def sculpture():
   t=j/44;a=-math.pi/2+math.tau*1.12*t;r=.13*(1-.75*t);pts.append((.15+r*math.cos(a),.30+r*math.sin(a),-.34));radii.append(.065*(1-.70*t))
  p.append(crease_normals(tube('Tail / rooted thick curled pink fairy spiral',PINK,pts,radii,20),35))
  for i,q in enumerate(p):
-  if q['part'].startswith(('Eye /','Eye glint /','Cheek /','Mouth /','Tongue /','Tooth /','Ear tip /','Toe /')):p[i]=crease_normals(q,35)
- low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
- for q in p:q['positions']=[round((v-(low if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+  if q['part'].startswith(('Eye /','Eye glint /','Cheek /','Mouth /','Tongue /','Tooth /','Toe /')):p[i]=crease_normals(q,35)
+ if normalize:
+  low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
+  for q in p:q['positions']=[(round((v-(low if i%3==1 else 0))*scale,7) or 0.0) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) or 0.0 for v in q['normals']]
  return {'name':'clefable','version':1,'coordinate_system':COORDINATES,'primitives':p}
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'clefable.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ from fairy_pair_glb import export_clefable
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args()
+ output=args.output if args.output.suffix=='.glb' else args.output/'clefable.glb'
+ output.parent.mkdir(parents=True,exist_ok=True);output.write_bytes(export_clefable())
 if __name__=='__main__':main()

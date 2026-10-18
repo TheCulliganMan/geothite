@@ -57,7 +57,98 @@ The published files are:
 | Browser | `content-packs/core-modular.browser.crystalpack` |
 | Terminal and stdio MCP | `content-packs/text-tui.crystalpack` |
 
-All three remain ignored by Git.
+All three remain ignored by Git. The initializer applies the shared
+[All Pokémon, solo](../modpacks/all-pokemon/README.md) mod to both source pack
+formats before creating the TUI pack. All 251 species are catchable by default;
+Celadon Department Store 4F sells all six evolution stones and a ¥2,100 Link
+Cable. Use the cable from PACK on a trade-evolving Pokémon, holding its usual
+trade item when required. Successful use consumes the cable and required held
+item. This gives native, browser, TUI and MCP clients the same content policy.
+The source-only exports in the external workspace retain vanilla tables.
+
+To enhance an existing verified pack without rebuilding source exports:
+
+```sh
+cargo run --locked -p crystal-assets --bin pack_all_pokemon -- \
+  content-packs/core-modular.crystalpack content-packs/all-pokemon.crystalpack
+cargo run --locked -p crystal-assets --bin pack_all_pokemon -- \
+  content-packs/core-modular.browser.crystalpack content-packs/all-pokemon.browser.crystalpack
+cargo run --locked -p crystal-assets --bin pack_text_tui -- . \
+  content-packs/all-pokemon.browser.crystalpack content-packs/all-pokemon.text-tui.crystalpack
+```
+
+These commands preserve the supplied pack's audio storage and leave its source
+file intact. The additional manifest identities separate modded saves from
+older saves; no save migration happens automatically. Rebuild clients from
+this checkout for Link Cable held-item behavior.
+
+### Targeted source-text repair on 2026-10-17
+
+Battle Tower selects 120 greeting, win and loss messages from
+`data/battle_tower/trainer_text.asm`, outside the usual source text directories.
+The Rust exporter includes this file and rejects missing selected messages.
+With the pinned source and an already prepared external workspace, the repair
+used these `pack_core` stages (built with the `wasm-dev` profile):
+
+```sh
+workspace="$HOME/.local/share/geothite/export-workspace"
+cargo run --locked --profile wasm-dev -p crystal-assets --bin pack_core -- \
+  "$workspace" --export-asm-text
+cargo run --locked --profile wasm-dev -p crystal-assets --bin pack_core -- \
+  "$workspace" --pack-prepared-workspace
+```
+
+These stages produce vanilla source packs. Apply `pack_all_pokemon` and then
+`pack_default_battles` to each format, derive the TUI pack with `pack_text_tui`,
+and run the initializer's publication checks before replacing shared packs.
+The verified repair added exactly 120 messages to each published pack; all old
+texts, other game-data fields, runtime files and embedded audio were identical.
+All 377 PCM hash/frame/loop checks passed for each pack. Twelve Tower controls,
+early-game controller checks, earned Hall/Continue, MCP movement/menu and
+clean-stderr checks passed. The new pack identities require matching saves;
+existing saves were not rewritten.
+
+### Solo-completion pack verification on 2026-10-16
+
+The shared Rust overlay builder generated native, browser and text-client packs
+from the existing verified local content. The native pack passed production
+presentation validation. The TUI pack passed all 377 audio PCM hashes, frame
+counts and loop ranges. The real-pack item tests passed purchases, all ten solo
+trade evolutions, failed-use inventory preservation, 251-species encounter
+coverage and round-trip preservation of unrelated content and audio.
+
+This run reused content and build caches. Pack tools used
+`target/solo-completion` with the `wasm-dev` profile and an assets optimization
+override of 0. Client regressions use the standard optimized `wasm-dev` profile.
+The standard controller suite passed all seven renderer-neutral regressions,
+including cable use with a complete evolution confirmation, Mom/New Bark,
+battle command menus and PP mutation, department-store clerks, running shoes,
+Research Center and trainer rematches/save. The native earned Hall-of-Fame
+ceremony, save and Continue regression also passed. MCP movement/Start-menu
+and byte-empty stderr checks passed. The production TUI was launched with
+`target/solo-completion/wasm-dev/geothite play content-packs/all-pokemon.text-tui.crystalpack`;
+Enter opened its production Start menu and Ctrl-C exited cleanly.
+
+The three canonical files in `content-packs/` were then atomically replaced
+with the verified native, browser and TUI candidates. Byte comparisons matched
+all three published files to those tested candidates. The independent
+`all-pokemon.*.crystalpack` files remain available for explicit selection; all
+packs stay ignored by Git. Existing saves retain their original identities.
+
+The executed pack commands were:
+
+```sh
+target/solo-completion/wasm-dev/pack_all_pokemon \
+  content-packs/core-modular.browser.crystalpack content-packs/all-pokemon.browser.crystalpack
+target/solo-completion/wasm-dev/pack_text_tui . \
+  content-packs/all-pokemon.browser.crystalpack content-packs/all-pokemon.text-tui.crystalpack
+target/solo-completion/wasm-dev/pack_all_pokemon \
+  content-packs/core-modular.crystalpack content-packs/all-pokemon.crystalpack
+target/solo-completion/wasm-dev/verify_crystalpack \
+  content-packs/all-pokemon.crystalpack --desktop
+target/solo-completion/wasm-dev/verify_crystalpack \
+  content-packs/all-pokemon.text-tui.crystalpack --audio --desktop
+```
 
 The independent radio oracle tests use external fixtures at runtime rather than
 embedding files from another checkout into the test executable. To run those
@@ -105,6 +196,44 @@ record, all unrelated game data, and every runtime/audio byte. No generated
 packs or verification output are tracked.
 
 ## Play
+
+### Wild Challenge and standalone variants
+
+[Wild Challenge](../modpacks/wild-challenge/README.md) scales wild encounters
+with the strongest three non-egg party members and builds legal competitive
+movesets from the supplied pack. Standard packs enable it together with trainer
+profiles. It preserves encounter species, authored level floors, unrelated
+content and audio. Build a separate ignored terminal variant with:
+
+```sh
+cargo run --locked --profile wasm-dev -p crystal-assets --bin pack_wild_challenge -- \
+  content-packs/text-tui.crystalpack content-packs/wild-challenge-tui.crystalpack
+```
+
+Use `core-modular.crystalpack` or `core-modular.browser.crystalpack` as the input
+for the corresponding graphical format. The builder preserves storage format,
+verifies the input and output, and rejects overwriting the input. Rebuild the
+Rust client to use the rules. Modded saves have a distinct pack identity; choose
+a separate save path. The mod's README describes the level curve, move selection
+and external-pack regression command.
+
+The native `wild-challenge.crystalpack`, browser
+`wild-challenge.browser.crystalpack`, and terminal
+`wild-challenge-tui.crystalpack` outputs have been built and reloaded locally.
+The verified terminal workflow uses the optimized `wasm-dev` profile:
+
+```sh
+export CARGO_TARGET_DIR=target/agent-wild-challenge
+cargo build --locked --profile wasm-dev -p geothite
+"$CARGO_TARGET_DIR/wasm-dev/geothite" play content-packs/wild-challenge-tui.crystalpack
+```
+
+The Wild Challenge integration suite, required battle and Mom/New Bark
+controller regressions, MCP movement/Start test, and clean-stderr regression
+passed against the generated terminal pack. Interactive launch, Start-menu
+input, and a scratch save/reload were also verified.
+
+### Launch a client
 
 The initialization script prints the built text executable's absolute path and
 its play command. For a native Windows terminal build:
@@ -176,7 +305,78 @@ reported as an observation; no fixed memory budget is an acceptance requirement.
 [loading diagnostics](cold-start-3d.md#loading-waterfall-diagnostics) for commands
 and the measured limits.
 
+## Optional trainer rematches
+
+The [trainer-rematches overlay](../modpacks/trainer-rematches/README.md) adds
+repeat conversations and scaled battles to ordinary and scripted trainers.
+Their standard dialogue plays before the short rematch line and battle.
+Build it from the completed local pack without rerunning source export:
+
+```sh
+cargo run --locked -p crystal-assets --bin pack_trainer_rematches -- \
+  content-packs/text-tui.crystalpack content-packs/trainer-rematches-tui.crystalpack
+cargo run --locked -p geothite -- play content-packs/trainer-rematches-tui.crystalpack
+```
+
+The native/browser inputs use the same builder. Keep outputs ignored and use
+the overlay's own saves. See the mod guide for scaling rules and regressions.
+
 ## Share packs and isolate builds
+
+The initializer composes [competitive battles](../modpacks/competitive-battles/README.md)
+and [Wild Challenge](../modpacks/wild-challenge/README.md) into its native,
+browser, and text candidates before publication gates. Hosted pack preparation
+uses the same Rust composition. Build a separate local variant from an existing
+completed text pack with:
+
+```sh
+cargo run --locked -p crystal-assets --bin pack_default_battles -- \
+  content-packs/text-tui.crystalpack content-packs/default-battles.crystalpack
+```
+
+The builder enables trainer-class profiles, per-move categories, scaled wild
+encounters, legal wild movesets, and the shared wild move selector. It preserves
+other content and audio, verifies and reloads its candidate before publishing,
+and is idempotent. Live wild selection and mutation replay use the same method;
+tutorial and contest battles retain their original rules. Native/browser inputs
+use the same command. Source and output paths must differ.
+
+The local standard native, browser, and text packs were refreshed from their
+completed predecessors with this Rust builder. Their previous versions remain
+ignored as `core-modular.before-default-battles.crystalpack`,
+`core-modular.browser.before-default-battles.crystalpack`, and
+`text-tui.before-default-battles.crystalpack` for existing saves. Use a new save
+with the upgraded packs. Content/audio preservation and pack round trips passed
+for both native and browser storage, along with the trainer/wild integration,
+controller battle and Mom/New Bark, MCP movement/Start, and clean-stderr gates.
+The refreshed release text client was launched and accepts real keyboard input:
+
+```sh
+./target/competitive-battles-release/release/geothite play content-packs/text-tui.crystalpack
+```
+
+The prepared native `just play-3d` client was rebuilt against these rules and
+checked with movement and matching 2D/3D captures. This refresh composed the
+existing external packs; it did not rerun the full source exporter.
+
+The matching prepared browser runtime is `.local/default-battles-runtime`.
+Its Rust server, WebGL/WebGPU clients, and terrain/actor workers were rebuilt.
+Relaunch it with:
+
+```sh
+just serve 3006 .local/default-battles-runtime
+```
+
+Open `http://localhost:3006/?multiplayer=off`. Browser 2D checks exercised Start,
+keyboard movement, and complete trainer/wild turns through the production
+controller, including PP consumption and an actual trainer switch. A separate
+headless outdoor 3D performance probe rendered New Bark and accepted Start,
+but exceeded its 240-second host deadline; it is not a passing performance
+result. The older server on port 3003 was left running separately.
+
+Use the generated file as `CRYSTAL_RENDER_TEST_PACK` for the controller and stdio gates.
+The full source initializer must complete its gates for a new canonical pack
+publication.
 
 Run pack initialization once for the checkout. Agents use the published packs;
 they do not regenerate exports independently or overwrite the shared workspace.
@@ -197,3 +397,33 @@ persistent cache defaults to `$HOME/.cache/geothite/pack-builder`; override it
 with `CRYSTAL_PACK_BUILD_DIR`. `CRYSTAL_PACK_BUILD_PROFILE` accepts `release`
 (default) or `wasm-dev`, and applies consistently to builders and tests. Windows
 forwards these two settings into WSL. Keep all generated packs and captures ignored.
+
+### Hall-of-Fame publication gate
+
+The initializer also requires
+`kanto_lance_controller_completes_earned_ceremony_and_continues_home` against
+the verified native candidate before publication. This earns Lance's victory
+through the production controller, runs the original Hall dialogue/machine
+approach and ceremony, waits for THE END, returns to title and applies the
+production Continue transaction. It checks that credits own movement/Start
+input while their presentation clock advances. The source exporter binds
+credits metadata to the pinned external source; packs without that operation
+fail this gate even when their early-game controller checks pass.
+
+On 2026-10-16 the initializer completed with exit zero on macOS using the
+existing pinned source workspace and this task's isolated cache:
+
+```sh
+CRYSTAL_PACK_BUILD_PROFILE=wasm-dev \
+CRYSTAL_PACK_BUILD_DIR="$PWD/target/kanto-resume" \
+CARGO_BUILD_JOBS=1 bash tools/build-crystalpack.sh --jobs 1
+```
+
+The normal optimized earned ceremony gate passed without a stack override,
+alongside all 28 intro scenes, 377 audio hash/frame/loop checks and the existing
+controller/MCP/clean-stderr gates. All three canonical packs were published.
+Non-title game data, all 4,915 runtime assets and audio fingerprints matched the
+prior pack. The resulting client was launched with
+`target/kanto-resume/wasm-dev/geothite play content-packs/text-tui.crystalpack`;
+Start opened its production menu and the client exited cleanly. This reused
+source and build caches and is not another cold-start proof.

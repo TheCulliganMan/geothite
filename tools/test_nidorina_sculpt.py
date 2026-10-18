@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Independent stored topology, attachment and fitted poison-pin marking checks."""
-import copy,json,os,unittest
+import copy,os,unittest
 from pathlib import Path
 from nidorina_sculpt import sculpture,HEIGHT
 from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_slime_sculpt import ray_intersections
+from sculpt_test_support import indexed_ray_intersections as ray_intersections
 from test_kingdra_sculpt import crossed_faces
 from bovine_sculpt import reverse_front
 from goldfish_sculpt import zy
@@ -13,7 +13,9 @@ ROOT=Path(os.environ.get('CRYSTAL_NIDORINA_TEST_MODELS',Path(__file__).resolve()
 
 class NidorinaTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'nidorina.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):
+  from nido_middle_glb import read_nido_middle
+  cls.m=read_nido_middle(ROOT/'nidorina.glb','nidorina');cls.ps=cls.m['primitives']
  def find(self,prefix,s=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (s is None or p['part'].endswith(' '+str(s))))
  def overlap(self,a,b):
   xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
@@ -23,10 +25,19 @@ class NidorinaTests(unittest.TestCase):
     x=xl+(xh-xl)*i/25;y=yl+(yh-yl)*j/25;aa=ray_intersections(a,x,y);bb=ray_intersections(b,x,y)
     if aa and bb and min(max(aa),max(bb))-max(min(aa),min(bb))>.0002:return True
   return False
+ def occupied_overlap(self,a,b):
+  xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
+  if xh<=xl or yh<=yl:return False
+  for i in range(1,25):
+   for j in range(1,25):
+    x=xl+(xh-xl)*i/25;y=yl+(yh-yl)*j/25;aa=sorted(ray_intersections(a,x,y));bb=sorted(ray_intersections(b,x,y))
+    if any(min(ah,bh)-max(al,bl)>.0002 for al,ah in zip(aa[::2],aa[1::2]) for bl,bh in zip(bb[::2],bb[1::2])):return True
+  return False
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'nidorina':self.m})
  def test_shading_tracks_actual_faces(self):assert_model_shading(self,{'nidorina':self.m})
  def test_parity_floor_height_budget_and_hornless_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000)
+  from nido_middle_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   self.assertFalse(any('horn' in p['part'].lower() and 'hornless' not in p['part'].lower() for p in self.ps))
   for prefix,n in (('Ear /',2),('Ear inset /',2),('Ear fold /',2),('Eye /',2),('Fang /',2),('Hand claw /',6),('Foot claw /',6),('Haunch spot /',6),('Flank spot /',2),('Back spine /',3),('Tail /',1)):
@@ -34,19 +45,19 @@ class NidorinaTests(unittest.TestCase):
  def test_head_muzzle_ears_fangs_tail_and_spines_have_volume_roots(self):
   body=self.find('Body /');head=self.find('Head /');muzzle=self.find('Muzzle /')
   for a,b in ((head,body),(muzzle,head),(self.find('Tail /'),body)):
-   self.assertTrue(self.overlap(a,b),a['part'])
+   self.assertTrue(self.occupied_overlap(a,b),a['part'])
   for p in self.ps:
-   if p['part'].startswith('Back spine /'):self.assertTrue(self.overlap(p,body),p['part'])
+   if p['part'].startswith('Back spine /'):self.assertTrue(self.occupied_overlap(p,body),p['part'])
   for s in (-1,1):
-   self.assertTrue(self.overlap(self.find('Ear /',s),head));self.assertTrue(self.overlap(self.find('Fang /',s),muzzle))
+   self.assertTrue(self.occupied_overlap(self.find('Ear /',s),head));self.assertTrue(self.occupied_overlap(self.find('Fang /',s),muzzle))
  def test_all_limbs_and_claws_have_volume_roots(self):
   for s in (-1,1):
    body=self.find('Body /');arm=self.find('Arm /',s);hand=self.find('Hand /',s);thigh=self.find('Haunch /',s);leg=self.find('Leg /',s);foot=self.find('Foot /',s)
    for a,b in ((arm,body),(hand,arm),(thigh,body),(leg,thigh),(foot,leg)):
-    self.assertTrue(self.overlap(a,b),a['part'])
+    self.assertTrue(self.occupied_overlap(a,b),a['part'])
    self.assertLess(min(foot['positions'][1::3]),.002)
    for j in range(3):
-    self.assertTrue(self.overlap(self.find('Hand claw /',f'{s} {j}'),hand));self.assertTrue(self.overlap(self.find('Foot claw /',f'{s} {j}'),foot))
+    self.assertTrue(self.occupied_overlap(self.find('Hand claw /',f'{s} {j}'),hand));self.assertTrue(self.occupied_overlap(self.find('Foot claw /',f'{s} {j}'),foot))
  def pairs(self):
   for p in self.ps:
    n=p['part'];s=n.split()[-1];parent=None
@@ -76,6 +87,6 @@ class NidorinaTests(unittest.TestCase):
    if p['part'].startswith(('Ear /','Ear inset /','Ear fold /','Tail /','Back spine /','Arm /','Leg /')):self.assertIsNone(crossed_faces(p),p['part'])
  def test_detached_tail_ear_and_spine_are_rejected(self):
   for prefix,parent in (('Tail /','Body /'),('Ear /','Head /'),('Back spine /','Body /')):
-   self.assertFalse(self.overlap(translate(copy.deepcopy(self.find(prefix)),1,0,0),self.find(parent)))
+   self.assertFalse(self.occupied_overlap(translate(copy.deepcopy(self.find(prefix)),1,0,0),self.find(parent)))
 
 if __name__=='__main__':unittest.main()

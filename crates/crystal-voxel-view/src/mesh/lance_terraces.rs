@@ -1,6 +1,24 @@
 //! Lance's own native champions-room platform and three broad stair courses.
 use super::*;
 use bevy::prelude::{Vec2,UVec2};
+#[path = "lance_north_portal.rs"]
+mod north_portal;
+#[path = "lance_side_walls.rs"]
+mod side_walls;
+#[path = "lance_south_barrier.rs"]
+mod south_barrier;
+
+/// Suppress the inferred exterior only when all authored enclosure drawings
+/// are complete and no custom object owns any of the room architecture.
+pub(super) fn owns_perimeter(frame:&VisualWorldFrame,cells:&[&VisualTile],g:&GridGeometry,
+ profiles:Option<&crate::live_profiles::Document>)->bool {
+ complete(frame,cells,g) && side_walls::complete(frame,cells,g,profiles)
+  && south_barrier::complete(frame,cells,g,profiles)
+  && !live::resolve(cells,g.width,g.height,"LancesRoom",profiles).iter().any(|p|
+   p.indices(g.width).any(|i| {let x=frame.grid_origin.x+(i%g.width)as i32;
+    let y=frame.grid_origin.y+(i/g.width)as i32;(0..20).contains(&x)&&(0..12).contains(&y)}))
+}
+
 fn drawing(block:u16)->Option<[[u16;4];4]> {Some(match block {
  0x28=>[[202,176,176,176],[203,177,221,177],[204,178,222,178],[201,192,192,192]],
  0x2c=>[[176,176,193,194],[221,177,195,196],[222,178,197,198],[192,192,197,198]],
@@ -106,6 +124,9 @@ pub(super) fn finish(mesh:&mut TerrainMeshData,frame:&VisualWorldFrame,cells:&[&
   append_quad(&mut mesh.textured,[[w,0.,s],[e,0.,s],[e,16.*scale,s],[w,16.*scale,s]],
    [0.,0.,1.],[[uv.0,uv.3],[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2]],TEXTURED_SHADE);
  }
+ north_portal::finish(mesh,frame,cells,g);
+ side_walls::finish(mesh,frame,cells,g,profiles);
+ south_barrier::finish(mesh,frame,cells,g,profiles);
 }
 
 #[cfg(test)]
@@ -125,7 +146,7 @@ mod tests {
   }}
   mesh.footing_heights=vec![0.;320];mesh.authored_cells=vec![None;320];
   mesh.textured.cutaway_ranges=vec![0..4];
-  let frame=VisualWorldFrame {active:true,map_id:"LancesRoom".into(),source_map_size_core_tiles:Some(UVec2::new(10,24)),
+  let frame=VisualWorldFrame { terrace_datum: None,active:true,map_id:"LancesRoom".into(),source_map_size_core_tiles:Some(UVec2::new(10,24)),
    boundary_warps:Default::default(),jump_ledges:Default::default(),terrain_revision:0,grid_origin:IVec2::ZERO,map_texture:Default::default(),
    center:Vec2::ZERO,viewport_size:Vec2::new(160.,128.),tile_size:Vec2::splat(8.),grid_size:UVec2::new(20,16),tiles,actors:Vec::new()};
   (frame,g,mesh)
@@ -139,7 +160,7 @@ mod tests {
    }}}
    let mut mesh=baseline.clone();finish(&mut mesh,&frame,&frame.tiles.iter().collect::<Vec<_>>(),&g,None);
    assert_eq!(mesh.authored_cells.iter().filter(|&&v|v==Some("lance:terrace-stair")).count(),48);
-   assert_eq!(mesh.textured.cutaway_ranges.len(),1);
+   assert_eq!(mesh.textured.cutaway_ranges.len(),2,"original owner plus upright north portal");
    assert_eq!(mesh.textured.cutaway_ranges[0].len(),4,"complete original fade owner retained");
    assert_eq!(mesh.footing_heights[7*20+9],16.,"upper trainer/player landing");
    assert_eq!(mesh.footing_heights[13*20+9],0.,"lower carpet datum unchanged");
@@ -151,6 +172,53 @@ mod tests {
     let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
     let n=Vec3::from_array(mesh.textured.normals[tri[0]as usize]);
     assert!((b-a).cross(c-a).dot(n)>0.,"all native treads and closures point outward");
+   }
+  }
+ }
+ #[test]
+ fn kanto_lance_north_portal_is_upright_and_clears_both_open_warp_lanes() {
+  for open in [false,true] {
+   let (mut frame,g,mut mesh)=fixture();
+   if open {for y in 0..4 {for x in 8..12 {
+    let s=&mut frame.tiles[y*20+x].source;s.metatile_id=0x0b;s.tile_index=drawing(0x0b).unwrap()[y][x%4];
+   }}}
+   let source=frame.clone();
+   finish(&mut mesh,&frame,&frame.tiles.iter().collect::<Vec<_>>(),&g,None);
+   assert_eq!(frame,source,"scenery cannot mutate source or door state");
+   assert_eq!(mesh.authored_cells.iter().filter(|&&v|v==Some("lance:north-portal")).count(),80);
+   for y in 0..16 {for x in 0..20 {
+    assert_eq!(mesh.footing_heights[y*20+x],height(Vec2::new(x as f32+0.5,y as f32+0.5)),
+      "portal geometry must preserve every original terrace/walking height");
+   }}
+   let range=mesh.textured.cutaway_ranges.last().unwrap().clone();
+   assert!(mesh.textured.positions[range.clone()].iter().any(|p|p[1]==48.),"ceiling-height north course");
+   assert!(mesh.textured.positions[range].iter().all(|p|p[1]>=16.),"posts stand on the upper platform");
+   for tri in mesh.textured.indices.chunks_exact(3) {
+    let p=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
+    let center=(p[0]+p[1]+p[2])/3.;
+    if center.x>64.&&center.x<96.&&center.z<32.
+     &&tri.iter().all(|&i|mesh.textured.normals[i as usize][1]>0.99)
+     &&p.iter().all(|v|(v.y-16.).abs()<0.001) {
+      assert!(p.iter().all(|v|v.z>=if open {16.}else{24.}),
+       "no pale threshold shelf behind the closed wall or the actual open warp tile");
+    }
+   }
+   for x in [9.,11.] {
+    let point=Vec2::new(x*8.,28.);
+    let blocked_at=|z:f32|mesh.textured.indices.chunks_exact(3).any(|t| {
+     let p=[t[0],t[1],t[2]].map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
+     if !p.iter().all(|p|(p.z-z).abs()<0.001) {return false;}
+     let p=p.map(|v|Vec2::new(v.x,v.y));
+     let cross=|a:Vec2,b:Vec2|a.x*b.y-a.y*b.x;
+     if cross(p[1]-p[0],p[2]-p[0]).abs()<0.001 {return false;}
+     let signs=[cross(p[1]-p[0],point-p[0]),cross(p[2]-p[1],point-p[1]),cross(p[0]-p[2],point-p[2])];
+     signs.iter().all(|&v|v>=-0.001)||signs.iter().all(|&v|v<=0.001)
+    });
+    assert_eq!(blocked_at(32.),!open,"both source warp lanes follow the actual open/closed drawing");
+    if open {
+     assert!(!blocked_at(24.),"the dark recess must clear the actual warp-tile centers");
+     assert!(blocked_at(16.),"dark backing ends behind, never across, both warp lanes");
+    }
    }
   }
  }

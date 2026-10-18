@@ -58,6 +58,7 @@ struct Rule {
     ground: Ground,
 }
 include!("facility_tables_bindings.rs");
+#[derive(Clone)]
 pub(super) struct Match {
     rule: &'static Rule,
     pub column: usize,

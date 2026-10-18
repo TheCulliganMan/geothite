@@ -125,7 +125,7 @@ def export(name, obj):
     low, high = [float('inf')] * 3, [-float('inf')] * 3
     for triangle in mesh.loop_triangles:
         mat = mesh.materials[triangle.material_index]
-        g = groups.setdefault(mat.name, {'name': mat.name, 'base_color': [round(v, 6) for v in mat.diffuse_color],
+        g = groups.setdefault(mat.name, {'name': mat.name, 'material': mat.name, 'base_color': [round(v, 6) for v in mat.diffuse_color],
                                         'positions': [], 'normals': [], 'indices': [], 'lookup': {}})
         for vi in triangle.vertices:
             p, n = mesh.vertices[vi].co, triangle.normal

@@ -13,6 +13,7 @@ pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bo
         || built.source_map_size_core_tiles != live.source_map_size_core_tiles
         || built.boundary_warps != live.boundary_warps
         || built.jump_ledges != live.jump_ledges
+        || built.terrace_datum != live.terrace_datum
         || built.grid_size != live.grid_size
         || built.tile_size != live.tile_size
         || built.viewport_size != live.viewport_size
@@ -243,6 +244,18 @@ mod tests {
             start: IVec2::new(0,4), end: IVec2::new(8,4), descent: IVec2::Y,
         }].into();
         assert!(!can_reuse(&built, &changed), "changed authored jump levels require new terrain support");
+        changed = frame(IVec2::new(2, 0));
+        changed.terrace_datum=Some(std::sync::Arc::new(crystal_render_api::VisualTerraceDatum {open_water:None,water_barriers:std::sync::Arc::from([]),
+            origin:IVec2::ZERO,size:UVec2::ONE,levels:vec![[0.;4]].into(),
+        }));
+        assert!(!can_reuse(&built,&changed),"changed source land domains require new terrain and support");
+        let previous=changed.clone();
+        std::sync::Arc::make_mut(changed.terrace_datum.as_mut().unwrap()).water_barriers=vec![IVec2::ZERO].into();
+        assert!(!can_reuse(&previous,&changed),"a water-backing-only change must rebuild terrain");
+        let previous=changed.clone();
+        std::sync::Arc::make_mut(changed.terrace_datum.as_mut().unwrap()).open_water=
+            Some(crystal_render_api::VisualOpenWaterDatum {level:2.,cells:vec![IVec2::ZERO].into()});
+        assert!(!can_reuse(&previous,&changed),"a river-level-only change must rebuild terrain and support");
     }
     #[test]
     fn flower_animation_does_not_rebuild_static_terrain() {

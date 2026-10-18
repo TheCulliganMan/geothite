@@ -997,6 +997,10 @@ pub fn validate_compiled_runtime_file_key(key: &str) -> Result<()> {
 }
 
 fn validate_compiled_runtime_game_data(data: &GameDataSet) -> Result<()> {
+    if data.competitive_battles && data.type_categories.moves.len() != data.moves.len() {
+        anyhow::bail!("competitive battles require an exhaustive per-move category catalog");
+    }
+    if let Some(rules) = data.wild_challenge { rules.validate()?; }
     if data.pokemon.is_empty() {
         anyhow::bail!("compiled game pack has no Pokemon species data");
     }

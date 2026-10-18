@@ -153,6 +153,18 @@ pub(crate) fn room_model(kind: RoomAsset) -> &'static Model {
     })[kind as usize]
 }
 impl Model {
+    pub(crate) fn has_native_link_materials(&self)->bool {self.link_materials.is_some()}
+    pub(crate) fn append_native_link(&self,target:&mut crate::mesh::SurfaceMeshData,
+        bounds:[f32;4],base:f32,height:f32,swatches:[[f32;2];7])->bool {
+        let Some(roles)=&self.link_materials else {return false;};
+        let first=target.positions.len();self.append(target,bounds,base,height);
+        for (i,&role) in roles.iter().enumerate().take(target.positions.len()-first) {
+            let index=first+i;target.uvs[index]=swatches[role as usize];
+            target.colors[index]=crate::interior_models::authored_face_color([1.;4],
+                bevy::prelude::Vec3::from_array(target.normals[index]));
+        }
+        true
+    }
     /// Keep the authored volume while resolving each semantic material against
     /// a texel in the current source drawing and its active palette.
     pub(crate) fn append_source_sampled(
@@ -177,6 +189,29 @@ impl Model {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn native_link_models_require_complete_named_roles_and_preserve_volume() {
+        for kind in [RoomAsset::LinkBattleConsole,RoomAsset::LinkTradeConsole,RoomAsset::LinkRoomReceiver] {
+            let model=room_model(kind);assert!(model.has_native_link_materials());
+            let mut plain=crate::mesh::SurfaceMeshData::default();let mut painted=plain.clone();
+            model.append(&mut plain,[3.,35.,7.,23.],0.02,20.);
+            let swatches=std::array::from_fn(|i|[i as f32/8.,0.5]);
+            assert!(model.append_native_link(&mut painted,[3.,35.,7.,23.],0.02,20.,swatches));
+            assert_eq!(plain.positions,painted.positions);assert_eq!(plain.normals,painted.normals);
+            assert_eq!(plain.indices,painted.indices);assert!(painted.uvs.iter().all(|uv|swatches.contains(uv)));
+        }
+        let source=include_str!("../models/special_rooms/link_battle_console.mesh.json");
+        for change in 0..3 {
+            let mut value:serde_json::Value=serde_json::from_str(source).unwrap();
+            match change {0=>value["name"]="custom_link_console".into(),
+                1=>value["primitives"][0]["name"]="unknown_paint".into(),
+                _=>{value["primitives"].as_array_mut().unwrap().remove(0);}}
+            let model=Model::parse(value.to_string().as_str()).unwrap();
+            let mut out=crate::mesh::SurfaceMeshData::default();
+            assert!(!model.append_native_link(&mut out,[0.,32.,0.,16.],0.,20.,[[0.;2];7]));
+            assert!(out.positions.is_empty(),"unqualified model retains its existing finish");
+        }
+    }
     #[test]
     fn source_sampled_room_assets_preserve_geometry_and_resolve_every_material_live() {
         for (kind, height) in [

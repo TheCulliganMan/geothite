@@ -130,15 +130,28 @@ impl TerminalUi {
     }
 
     fn draw_body(&self, frame: &mut Frame<'_>, area: Rect, snapshot: &TextSnapshot) {
-        let wide = area.width >= 96 && !self.compact;
+        let wide = area.width >= if snapshot.competitive_battle { 80 } else { 96 } && !self.compact;
+        let context = context_lines(snapshot, self.compact || snapshot.competitive_battle);
+        let narrow_context_height =
+            wrap_lines(&context, usize::from(area.width.saturating_sub(4)).max(1))
+                .len()
+                .saturating_add(2)
+                .min(usize::from(area.height.saturating_sub(5))) as u16;
         let regions = Layout::default()
             .direction(if wide {
                 Direction::Horizontal
             } else {
                 Direction::Vertical
             })
-            .constraints(if wide {
+            .constraints(if wide && snapshot.competitive_battle {
+                [Constraint::Percentage(50), Constraint::Percentage(50)]
+            } else if wide {
                 [Constraint::Percentage(66), Constraint::Percentage(34)]
+            } else if snapshot.competitive_battle {
+                [
+                    Constraint::Min(5),
+                    Constraint::Length(narrow_context_height),
+                ]
             } else {
                 [Constraint::Percentage(62), Constraint::Percentage(38)]
             })
@@ -149,7 +162,6 @@ impl TerminalUi {
         }];
         game_lines.extend(snapshot.viewport.iter().cloned());
         self.draw_panel(frame, regions[0], "GAME BOY", &game_lines, false);
-        let context = context_lines(snapshot, self.compact);
         self.draw_panel(
             frame,
             regions[1],
@@ -410,6 +422,7 @@ mod tests {
 
     fn snapshot() -> TextSnapshot {
         TextSnapshot {
+            competitive_battle: false,
             viewport_title: "New Bark Town".to_string(),
             viewport: vec![
                 SnapshotLine {
@@ -440,6 +453,67 @@ mod tests {
             marker: Some((4, 6, '@')),
             status_line: "Overworld".to_string(),
             frame: 1,
+        }
+    }
+
+    #[test]
+    fn competitive_battle_keeps_both_hp_and_move_forecast_visible() {
+        let mut battle = snapshot();
+        battle.competitive_battle = true;
+        battle.viewport_title = "Battle".into();
+        battle.viewport = [
+            "Foe SUDOWOODO Lv20 HP 50/50",
+            "You CYNDAQUIL Lv20 HP 51/51",
+            "Turn 1  Clear (0 turns)",
+        ]
+        .into_iter()
+        .map(|text| SnapshotLine {
+            text: text.into(),
+            kind: LineKind::Normal,
+        })
+        .collect();
+        battle.menu = [
+            ">TACKLE PP 35/35",
+            " LEER PP 30/30",
+            " SMOKESCREEN PP 20/20",
+            " EMBER PP 25/25",
+            " CANCEL",
+            "NORMAL PHYSICAL / ATK vs DEF",
+            "Power 35  Base accuracy 95%  Priority +0",
+            "STAB Effectiveness x1/2",
+            "Damage on hit: 5-6 (non-critical)",
+        ]
+        .into_iter()
+        .map(|text| SnapshotLine {
+            text: text.into(),
+            kind: LineKind::Normal,
+        })
+        .collect();
+        for width in [48, 80, 120] {
+            let mut terminal = Terminal::new(TestBackend::new(width, 24)).unwrap();
+            terminal
+                .draw(|frame| TerminalUi::new(TuiTheme::default()).draw(frame, &battle))
+                .unwrap();
+            let rendered = terminal
+                .backend()
+                .buffer()
+                .content()
+                .iter()
+                .map(|cell| cell.symbol())
+                .collect::<String>();
+            for label in [
+                "HP 50/50",
+                "HP 51/51",
+                "CANCEL",
+                "PHYSICAL",
+                "Priority +0",
+                "Damage on hit:",
+            ] {
+                assert!(
+                    rendered.contains(label),
+                    "{width}x24 clipped {label}: {rendered}"
+                );
+            }
         }
     }
 

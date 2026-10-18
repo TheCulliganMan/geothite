@@ -66,66 +66,29 @@ and remain ignored output; see [local static previews](model-stl.md).
 
 ## Pidgeotto battle articulation
 
-`models/battle_species/pidgeotto.glb` is the single canonical Pidgeotto model.
-It retains 34 named anatomical parts and their materials, a shoulder hierarchy,
-and the standard `pidgeotto.idle_wings` clip. The 0.8-second loop has 65 quaternion
-keys per wing, exact closed endpoints, and smooth turnaround velocity. The first migration preserved the former Rust-loaded geometry bit for bit;
-subsequent reviewed art changes keep explicit geometry fingerprints.
+`models/battle_species/pidgeotto.glb` is the canonical standard GPU skin: 34
+named anatomical parts, 14 joints and source-relative idle, attack and hit clips.
+It retains every original geometry bit, neutral bound, physical size and exact
+0.8-second wing loop. Closed flexible shoulder covers keep the original wings
+attached through their full motion; head, wrists, shins, tail layers and crest
+have independent controls. Battle claws stay planted; world motion retains Fly
+clearance. The shared renderer owns immutable geometry, per-actor clocks,
+source cues, palette flashes, visibility and full animated camera bounds.
+The former dedicated wing-node parser and three-group renderer are removed.
 
-The battle renderer uploads three immutable groups once: body, left wing, and
-right wing. Each battler owns its wing transforms and presentation clock; an
-individual switch resets only that actor. Camera fitting and source-row
-registration use one conservative animation envelope. Neutral geometry still
-sets canonical physical size, ground contact and hit anchors. The parent actor
-retains source-program displacement and visibility, and palette flashes cover
-all three groups in both full and reduced modes. Animated actors always use
-live row rendering rather than the optional static capture cache.
+The authoring recipe `tools/build-battle-species.py` writes through the public
+`tools/pidgeotto_glb.py` wrapper. The strict reader, STL exporter and legacy demo
+consume canonical geometry without a JSON sidecar. Background Blender and both
+CLI paths reproduce the same production bytes. A clean game build needs no
+Blender installation.
 
-The authoring recipe remains `tools/build-battle-species.py`; its Pidgeotto
-export writes GLB directly through `tools/pidgeotto_glb.py`. No JSON or STL
-sidecar is required. A clean game build uses the committed GLB without Blender.
-
-```sh
-python3 tools/test_pidgeotto_glb.py
-python3 tools/check-battle-species.py
-cargo test --locked -p crystal-voxel-view pidgeotto
-# Disposable native fixture with a legal level-25 Pidgeotto and production inputs.
-cargo run --locked -p crystal-bevy --example immersive_battle_3d --features location-tester -- /path/to/external.crystalpack --pidgeotto --live
-```
-
-Native battle verification used the production controller, an 800×550 window,
-and the automatic llvmpipe software profile. The eight-second clip contains
-224 actual captured frames (about 28 fps), with median/p95 update times of
-29.38/45.57 ms. Video timestamps differ from the recorded originals by at most
-0.5 ms due to encoding precision; no frames are interpolated. At 1180×812,
-recording averaged about 12 fps, while a separate measurement without game
-screenshots had median/p95 times of 42.17/65.40 ms. These viewport-specific
-measurements do not establish a general performance gain.
-
-The complete voxel suite passes 843 tests (two existing ignored), and all 36
-source-check commands pass. A real-pack controller regression verifies legal
-move PP consumption and original animation dispatch. The full browser client
-compiles for Wasm; browser rendering remains unverified in this environment.
-Native F3 round trips restore every part, and a real Gust turn retains its
-source objects and sounds with constant mesh/material counts throughout.
-
-The next papercraft art pass replaces the round bird face and comb with a swept
-coral crest, angular eye markings, a hooked pink beak, layered cream/brown
-feathers and an alternating tail fan. All 34 part identities and the idle clip
-remain intact. Neutral height stays 1.000 authored unit with Y=0 footing;
-the verified pack dimension still supplies the physical size. The broader wing
-and tail silhouette is framed by the same shared camera fitting.
-
-Triangles change from 1,796 to 1,752. Flat crease normals require 4,538 vertices
-instead of 1,274, and the canonical GLB grows from 81,500 to 159,404 bytes.
-The renderer still uses the same three immutable draw groups. A matching
-800×550 native recording captured 217 real frames over eight seconds, with
-median/p95 updates of 29.63/47.23 ms. This is a visual improvement with similar
-observed pacing in these single runs, not a claimed optimization.
-
-This is an idle wing clip, not a replacement for any original attack sequence.
-Pokémon beyond the weighted skins below retain their existing static-part
-or whole-body presentation until their individual rigs and clips are verified.
+Twenty-one Python and 32 distinct scoped Rust checks pass. Three production
+2D/3D pairs and a moving world frame were inspected inline, entirely headless,
+offscreen and muted. Battle labels identify PIDGEOTTO and SENTRET. Original
+1.0922-metre size and full-body admission are preserved. Wide side views overlap
+feathers and reduce facial readability. No dedicated shiny validation was run.
+See the [production skin guide](pidgeotto-skin.md) for geometry pins, controls,
+rebuild commands and the limits of this review.
 
 ## Cyndaquil and Totodile GPU skins
 
@@ -4299,7 +4262,8 @@ nostril and curved mouth crease remain visible, while the shell, flippers,
 blue/tan palette and seated belly stay readable. The original terrain is
 retained and no shader errors were reported. Native acceptance here covers
 this face refinement and retained contact, not complete model or browser
-fidelity. Broader flipper/shell refinement and legacy world props remain open.
+fidelity. At that stage, broader flipper/shell refinement and legacy world
+props remained open; the later flipper/shell work is recorded below.
 
 
 ## Canonical phoenix skin (2026-10-15)
@@ -4362,3 +4326,3280 @@ Source dimensions, animated footprint, terrain admission and grass height were
 kept intact. The previously recorded static-era arena capture is historical evidence
 for the earlier model only. Large-bird native staging and browser acceptance
 remain open.
+
+
+## Large-body far-plane correction (2026-10-15)
+
+The authentic-scene camera check compared its perspective far plane with
+radial distance to the furthest animated corner. Perspective clipping and the
+retained-neighborhood ray limits instead measure view-axis depth. This could
+reject a wide wing that was completely inside both the frustum and original
+terrain. The far plane, backdrop depth margins and omission/shadow queries now
+use the maximum camera-space depth of every animated corner.
+
+An independent regression first reproduced the false rejection with a wide
+body. It now projects all corners through an explicit perspective matrix,
+checks clip-space bounds and rejects both a genuinely clipped wing and
+insufficient original terrain. Body poses, scale and full ground-footprint
+checks remain intact. Bevy's installed 0.20 fog shader uses radial distance,
+so fog keeps that separate metric, starts beyond the complete battler,
+and finishes inside the proven terrain range. A separate guard rejects
+views that cannot meet both requirements.
+
+All 47 encounter-terrain regressions pass, including actual ground cells,
+source offsets, surf support, source omission/shadow bounds and finite camera
+fallbacks. Native large-bird acceptance is recorded separately below.
+
+
+When the complete low-angle stage search fails, the camera now tries 60-,
+68- and 75-degree views through the identical admission checks. All supported
+stages at the ordinary 6–48-degree elevations take precedence over this second
+pass. Each pass uses a layout copy and publishes only an accepted result.
+An independent higher-view witness proves the fallback fits its complete
+frustum, keeps original scale and still rejects missing wing ground. Enlarging
+that fixture's genuine terrain restores the exact preferred low view.
+All 48 terrain tests and three battle-view integration checks pass.
+
+
+The final production build passed. A native Route 29 Articuno/Pidgey pair was
+visually inspected at core frame 2184, checksum 37399760, LCD animation frame
+2869 and virtual time 50.084423956. `state_preserved=true` and terrain admission
+is `accepted=true`. The ordinary low-view pass succeeds: both full wing banks,
+face, white breast, planted feet and complete blue streamer remain visible at
+pack size. Original grass, ledge and forest remain readable behind the pair;
+no exposed missing terrain or shader errors were seen. The matching 2D view
+uses that same held game state. Verification files use prefix
+`target/pokemon-native-review/articuno-camera-final`.
+
+Ho-Oh still fails Route 29 admission after both camera tiers: each tier checked
+78 supported staging candidates, but the complete view could not satisfy the
+retained-neighborhood and scenery checks. No native Ho-Oh acceptance is claimed.
+The wider and higher camera support is proved by the independent fixtures;
+large-bird production staging remains open. Model geometry, physical size,
+original source ground and grass height were not changed. Shiny verification
+was skipped as requested.
+
+
+## Celebi original onion fairy and skin (2026-10-15)
+
+Celebi's generic 22-part sphere/cone/diamond-wing placeholder was replaced by
+an original continuous swept onion bulb, fitted dark/blue gaze, three subtle
+folds, blue-tipped feelers, a little smile, pale chest collar, three-finger
+hands, rounded wing leaves and green drop-shaped feet. The first sculpt's
+point and old boot shape were corrected during review. A crowded antenna
+interval produced a proper face intersection; removing its redundant control
+point resolved the loop while retaining occupied blue-tip roots.
+
+The canonical GLB has 38 closed parts, 14,678 vertices, 23,056 triangles,
+11 joints, 181 accessors and 616,320 bytes. Its source/neutral SHA-256 is
+`94a8a577208273651ba7294a48345f701b30142a260b5fc2e920b21e252837fb`.
+Authoring height remains 0.98 with floor zero. The verified local pack gives
+height digits 200 (0.6096 metres), classification TIMETRAVEL. Foot roots stay
+fixed, shanks blend to the torso, the complete fitted gaze/folds share the head,
+each hand's three fingers share its arm, and each feeler's blue tip shares its
+antenna joint. Wings flutter independently through six cycles per 3.2-second
+idle. Rotation-only idle, attack and recoil return literally to neutral and
+source cues own timing. No shiny variant was generated or verified.
+
+Ten stored-model Python checks, two focused Rust checks and the two wider
+regressions pass. They cover closed solids, normals, proper intersections,
+actual fitted-parent triangle/edge clearance, occupied roots and a detached-tip
+negative control, correct owners, ground contact, posed winding/strain,
+independent motion, culling bounds, registry routing and GPU activation at
+verified pack size. Blender regeneration is byte-identical. Front/rear neutral,
+peak flutter, attack and recoil software views were inspected against the old
+placeholder. Details and reference are in `celebi-sculpture.md`.
+
+
+The wider exact-species grounding/volume and elapsed-idle/source-attack timing
+regressions passed. The rebuilt production native Route 29 encounter against
+Hoppip passes terrain admission (`accepted=true`). Its inspected 3D/2D pair
+preserves state at core frame 1525, checksum 2305946238, LCD animation frame
+2116 and virtual time 36.53826475. The swept head, dark/blue fitted gaze,
+blue feeler tips, small hands and pale wings remain readable beside the source
+grass at verified pack size. Rounded feet meet the field; the original forest
+and grass remain in place. No shader errors were reported. This verifies the
+held native view; browser visual acceptance remains open. Verification files
+use prefix `target/pokemon-native-review/celebi-normal` and remain ignored.
+
+
+## Mew original psychic cat and looping-tail skin (2026-10-16)
+
+Mew's old generic 27-part upright torso/button snout/block ears were replaced
+by an original compact pink pear body, short throat, soft feline cheeks/chin,
+fitted tapered gaze, soft ears with fitted interiors, a tiny smile, little
+three-finger hands, rounded haunches and long tapered paws with fitted toe
+creases. A continuous looping whip ends in an oval pink terminal. Rounded
+Bezier eye outlines and denser tail centerline sampling replaced the first
+angular candidate; the initial slipper paws were replaced by downward tapers.
+Mewtwo's subsequent dedicated replacement is documented below.
+
+The canonical GLB has 40 closed parts, 18,486 vertices, 30,224 triangles,
+13 joints, 190 accessors and 758,636 bytes. Its neutral/source SHA-256 is
+`36d3fc53223d21ac492d3d93879589a130773ba3d884c34a65f6173b3980d37e`.
+Authoring height is 0.78 with minimum zero; ears establish standing height
+rather than the looping tail. The verified local pack gives height digits
+104 (0.4064 metres), classification `NEW SPECIE`. Torso, neck, head, ears,
+hands and hind limbs respond separately. Three yawing tail joints blend by
+nearest-centerline arc length, and the oval tip shares the fully weighted
+distal carrier. Rotation-only source-cue clips preserve tail height and return
+literally to neutral. Existing render-only hovering clearance is unchanged.
+
+Ten stored-model checks, three focused Rust checks and the two wider
+regressions pass: canonical/schema limits, closed solids, normals, actual
+fitted-layer clearance, occupied roots and a detached-tip negative control,
+correct owners, three tail carriers, posed floor/winding/strain, independent
+motion, neutral endpoints, routing, culling bounds and GPU activation at pack
+size. An actual posed-vertex check confirms Mew's conservative fitting envelope
+already contains its runtime hover lift; no renderer or physical-size change
+was necessary. Blender regeneration is byte-identical. Front/rear neutral,
+idle, attack and recoil software views were inspected against the old
+placeholder. Shiny checks remain skipped. Details: `mew-sculpture.md`.
+
+
+The wider exact-species grounding/volume and elapsed-idle/source-attack timing
+regressions pass. The rebuilt production Route 29 encounter against Sentret
+passes terrain admission (`accepted=true`). Its inspected 3D/2D pair preserves
+state at core frame 1148, checksum 1008858066, LCD animation frame 1686 and
+virtual time 29.109839834. The feline face, soft ears, small hands, long paws,
+looping whip and oval tail tip fit fully in view. The standard hover clearance
+remains visible at verified pack size. Original grass and forest remain in
+place; no shader errors were reported. This verifies the held native view;
+browser visual acceptance remains open. Verification files use prefix
+`target/pokemon-native-review/mew-normal` and remain ignored.
+
+## Mewtwo genetic psychic cat
+
+Mewtwo now uses a dedicated pale genetic body, purple pelvis and heavy curved
+tail, narrow fitted violet gaze, blunt cranial projections, back-neck arch,
+three-finger hands with rounded contact tips, powerful haunches and planted
+three-pad feet. The old all-purple generic static cat is removed. Its standard
+glTF skin has 52 parts, 15,722 vertices, 27,880 triangles, 17 joints and 227
+accessors in 633,436 bytes. Neutral/source digest:
+`ef903cf6d3fbd2c2b7ed2d8777e1d91726c56940e30f77aaa767e5e50eceb521`.
+Authoring height is 1.45 with floor zero; verified pack height digits 607
+provide 2.0066 metres, classification `GENETIC`. Identity-root foot pads stay
+planted while blended hocks, hips, torso, neck, shoulders, elbows, wrists and
+three arc-weighted tail carriers articulate at source-cue time.
+
+Eight stored-model checks, two focused Rust checks and the two wider
+exact-species grounding/volume and elapsed-idle/source-attack regressions pass.
+Blender regeneration is byte-identical. Front and rear neutral, idle, attack
+and recoil views were inspected. Shiny verification remains skipped. Details:
+`mewtwo-sculpture.md`.
+
+The rebuilt production Route 29 encounter against Pidgey passes authentic
+terrain admission (`accepted=true`). The inspected 3D/2D pair preserves state
+at core frame 1332, checksum 1546947256, LCD animation frame 1943 and virtual
+time 34.104813792. The whole body fits at original pack scale, foot pads rest
+on source ground, and both species are named in the HUD. Original grass and
+forest remain in place; no shader errors were reported. Held native acceptance
+is complete; browser visual acceptance remains open. Final ignored evidence
+uses prefix `target/pokemon-native-review/mewtwo-normal`.
+
+## Heracross single-horn beetle
+
+Heracross now has a dedicated blue armored abdomen, fitted belly plate and
+seams, broad thorax collar, golden fitted gaze, scalloped mask seam,
+continuous flattened forked horn, bead antennae, serrated gauntlets and pale
+hooked claws. The generic round-eyed, mitten-handed static beetle is removed.
+Its standard glTF skin has 47 parts, 19,534 vertices, 32,148 triangles,
+12 joints and 223 accessors in 814,644 bytes. Neutral/source digest:
+`a33ddd1481ba4cb3435132daf36f3c5770e6b8155e24afc627142a32a82d923d`.
+Authoring height is 1.16 with floor zero; verified pack height digits 411
+provide 1.4986 metres, classification `SINGLEHORN`. Tarsi and foot claws stay
+on the identity root. Coxae and shins blend into body/leg carriers. Body,
+thorax, head, antennae, upper arms and forearms articulate independently;
+each gauntlet, its serrations, knuckle and two claws remain coherent.
+Attack lowers the head and horn at source-cue time.
+
+Nine stored-model checks and two focused Rust checks pass for canonical/schema
+limits, closed solids, normals, fitted triangle/edge clearance, occupied roots
+with a detached-bead negative control, coherent owners, planted claws, posed
+floor/winding/strain, independent motion, neutral endpoints, source cues,
+registry routing, culling bounds and GPU activation at verified pack size.
+Blender regeneration is byte-identical. Front and rear neutral, idle, attack
+and recoil software views were inspected against the old static model. Shiny
+verification remains skipped. Details: `heracross-sculpture.md`.
+
+The two wider grounding/volume and elapsed-idle/source-attack timing regressions
+pass. The rebuilt production Route 29 encounter against Pidgey passes terrain
+admission (`accepted=true`). The inspected 3D/2D pair preserves state at core
+frame 3014, checksum 2825358273, LCD animation frame 3737 and virtual time
+72.298003834. The complete horn, beads and claws fit at original pack scale;
+foot pads rest on source ground and the HUD names both species. Original grass
+and forest remain in place; no shader errors were reported. Held native
+acceptance is complete; browser visual acceptance remains open. Final ignored
+evidence uses prefix `target/pokemon-native-review/heracross-normal`.
+
+## Pinsir stag beetle
+
+Pinsir now has one continuous oval brown carapace, stern fitted ivory eyes,
+a dark upright mouth with four paired tooth bars, three closed transverse
+armor seams, huge curved pale pincers with five thorns each, thin raised arms
+and three-claw hands and feet. The generic round-eyed static beetle is removed.
+Its standard glTF skin has 53 parts, 14,082 vertices, 23,756 triangles,
+13 joints and 199 accessors in 565,000 bytes. Neutral/source digest:
+`347418889561cb58a6f9b3f05d441ca8f6bbe2a7b8fb6c4df81ec1a24ea01d84`.
+Authoring height is 1.16 with floor zero; verified pack height digits 411
+provide 1.4986 metres, classification `STAGBEETLE`. Tarsi and foot claws stay
+on the identity root. Shanks and the oval shell blend through leg, abdomen
+and upper carapace carriers. Each pincer owns its thorns, each hand owns its
+claws, and shoulders/elbows/wrists articulate separately. Attack closes the
+pincers at source-cue time.
+
+Nine stored-model checks and two focused Rust checks pass for canonical/schema
+limits, closed outward solids, normals, fitted triangle/edge clearance,
+occupied roots with a detached-spike negative control, coherent owners,
+planted feet, posed floor/winding/strain, self-intersections, independent
+motion, neutral endpoints, source cues, registry routing, culling bounds and
+GPU activation at verified pack size. Blender regeneration is byte-identical.
+Front and rear neutral, idle, attack and recoil views were inspected against
+the old static model. A folded thumb curve was corrected before acceptance.
+Shiny verification remains skipped. Details: `pinsir-sculpture.md`.
+
+The two wider grounding/volume and elapsed-idle/source-attack timing regressions
+pass. The rebuilt production Route 29 encounter against Sentret passes terrain
+admission (`accepted=true`). The inspected 3D/2D pair preserves state at core
+frame 2454, checksum 1836009259, LCD animation frame 3109 and virtual time
+54.840088499. Complete pincers, thorns and raised hands fit at original pack
+scale, foot pads rest on source ground, and the HUD names both species.
+Original grass and forest remain in place; no shader errors were reported.
+Held native acceptance is complete; browser visual acceptance remains open.
+Final ignored evidence uses prefix `target/pokemon-native-review/pinsir-normal`.
+
+## Scizor red steel mantis
+
+Scizor now has an angular three-pointed head and golden gaze, a narrow red
+thorax and waist, hanging abdomen with fitted dark armor, thin articulated
+arms, genuinely open pincers with independent lower jaws and coherent false
+eyes, four pale veined wing leaves, long red greaves and grounded pointed toe
+caps. The old generic round-headed static insect with painted claw splits is
+removed. Its 55 source parts remain exactly recoverable from 43 runtime parts,
+with 18,558 vertices, 27,348 triangles, 17 joints and 239 accessors in
+813,656 bytes. Source digest:
+`9b03e41cd8685a3ec5521fbc993abcdc872bd931a17cfdfb4fb1fdb1982bf7f3`.
+Packed neutral digest:
+`b460947f4351d6f0f28a3d92168aab50ab81ca53215d603ad2f41aa1893d64a8`.
+Authoring height is 1.28 with floor zero; verified pack height digits 511
+provide 1.8034 metres, classification `SCISSORS`. Fixed greaves/pads/toe caps
+support blended femurs and hip armor. Thorax, abdomen, neck, head, shoulders,
+elbows, wrist pincers, lower jaws and paired wing carriers articulate at
+source-cue time. Actual stored jaw-tip separation decreases during attack
+while retaining clearance.
+
+Eleven stored-model checks and two focused Rust checks pass for source recovery
+and schema limits, closed solids, normals, fitted triangle/edge clearance,
+actual empty jaw apertures and a filled-gap negative control, occupied roots
+and a detached-jaw control, coherent owners, planted armor, posed floor,
+winding/strain, self-intersections, independent motion, jaw closure, neutral
+endpoints, source cues, registry routing, culling bounds and GPU activation
+at verified pack size. Blender regeneration is byte-identical. Front and rear
+neutral, idle, attack and recoil views were inspected against the old generic
+static model. Shiny verification remains skipped. Details: `scizor-sculpture.md`.
+
+The two wider exact-species grounding/volume and elapsed-idle/source-attack
+regressions pass. The rebuilt production Route 29 encounter against Pidgey
+passes terrain admission (`accepted=true`, 867 candidate stages checked).
+The inspected 3D/2D pair preserves state at core frame 6686, checksum 135714849,
+LCD animation frame 7633 and virtual time 169.180527293. Complete pincers and
+cranial points fit at original pack scale; open jaws and false eyes read
+clearly, foot pads rest on source ground, and the HUD names both species.
+Original grass and forest remain in place; no shader errors were reported.
+Held native acceptance is complete; browser visual acceptance remains open.
+Final ignored evidence uses prefix `target/pokemon-native-review/scizor-normal`.
+
+## Scyther green mantis
+
+Scyther now has a rounded green thorax and pale breast shield, cream waist,
+segmented tapered abdomen, angular ivory gaze and muzzle, swept cranial points,
+curved ivory scythes with fitted green spines, four pale membranes visible on
+both wing faces, pointed hip armor, pale knee stalks and grounded three-claw
+feet. The generic round-headed static insect is removed. Its 57 source parts
+remain exactly recoverable from 36 runtime parts, with 19,533 vertices,
+30,360 triangles, 13 joints and 191 accessors in 811,488 bytes. Source digest:
+`ea4538d82e02fd1c896ad210cfe655355ddd53b56953e5ecdff59f86131452ea`.
+Packed neutral digest:
+`d27719b98ff97185509c5375d650cfb8bfa4a25db49e9fe13115972b00903d3d`.
+Authoring height is 1.18 with floor zero; verified pack height digits 411 provide
+1.4986 metres, classification `MANTIS`. Fixed greaves/pads/nails support blended
+pale shanks and independent armored coxae. Thorax, abdomen, neck, head, elbows,
+blades and paired wing carriers articulate at source-cue time. The actual
+blade tips sweep independently of the upper arms during attack.
+
+Thirteen stored-model checks pass for source recovery/schema limits, closed
+solids, normals, fitted front and rear face clearance, blade cutouts, occupied
+roots and detached-blade/vein negative controls, coherent owners, planted feet,
+posed floor/winding/strain, self-intersections, independent motion, blade-tip
+sweep, neutral endpoints and source cues. The thin ribs have actual embedded
+vertices within their membranes, preserving the delicate ridge geometry.
+Blender regeneration is byte-identical. Front/rear neutral, idle, attack and
+recoil views were inspected against the old generic model. Elbow stalks were
+extended into blade roots, hip motion made independently visible, and pale
+membranes carried through to the rear wing faces before acceptance. Shiny
+verification remains skipped. Details: `scyther-sculpture.md`.
+
+Two focused Rust checks pass for exact registry routing, production geometry,
+coherent gaze/blade-spine/wing/armor ownership, independently visible head,
+blade, wing and coxa motion, planted armor, culling bounds and GPU activation
+at verified pack size.
+
+The two wider exact-species grounding/volume and elapsed-idle/source-attack
+regressions pass. The production Route 29 encounter against Rattata passes
+terrain admission (`accepted=true`, 854 candidate stages checked). The inspected
+3D/2D pair preserves state at core frame 4531, checksum 1806325052, LCD animation
+frame 5374 and virtual time 113.673177877. Complete curved blades, crest and
+wing silhouette fit at original pack scale; elbow stalks meet their blades,
+clawed feet rest on source ground, and the HUD names both species. Original
+grass and forest remain in place; no shader errors were reported. Held native
+acceptance is complete; browser visual acceptance remains open. Final ignored
+evidence uses prefix `target/pokemon-native-review/scyther-normal`.
+
+### Starmie: dual purple stars and articulated radial arms
+
+The generic four-part Starmie is replaced by two continuous offset purple
+five-arm stars, ten seated ridges, an eight-spoke gold mount and a faceted
+rose gemstone. The 24-joint rig supplies separate layer carriers and ten
+two-joint radial chains while the entire core mount remains coherent.
+The protected lowest rear tip preserves the authoring floor; existing Float
+presentation supplies the intended hover. The model uses 23 parts, 2,966
+vertices, 3,344 triangles and 215,488 bytes at authoring height 1.03.
+The verified pack height is 307 (1.0922 metres), classification MYSTERIOUS.
+
+Eight Python checks, two focused Rust checks, both shared model/timing
+regressions and byte-identical Blender generation pass. Front and rear
+idle/attack/hit views were inspected. The production Route 29 encounter
+against Pidgey passes terrain admission; the inspected native 3D/2D pair
+preserves state at core frame 2391, checksum 2002455108, LCD animation frame
+3021 and virtual time 54.047793501. Complete star layers and the raised core
+remain readable at original size, with a ground shadow under the intended
+hover and correct species names in the HUD. No shader errors were reported.
+Shiny verification was skipped at the user's request; browser visual
+acceptance remains open. See `docs/art/starmie-sculpture.md`; final ignored
+evidence uses prefix `target/pokemon-native-review/starmie-normal`.
+
+### Gastly: dark ghost face and a drifting vapor cloak
+
+The generic ball, red gaze and tooth-bar grin are replaced by a continuous
+dark spherical orb, broad fitted white eyes with tiny black vertical pupils,
+a pink crescent mouth and two narrow ivory fangs. An irregular purple gas
+halo and nine tapered comma curls form a continuous surrounding cloak.
+The 11-joint skin keeps the face coherent while eight blended gas sectors
+drift independently, preserving the authoring floor. Existing Float
+presentation supplies the intended hover. The closed opaque papercraft
+model has 19 parts, 18,911 vertices, 26,448 triangles and 809,624 bytes at
+authoring height 1.05. Verified pack height is 403 (1.2954 metres), GAS.
+
+Front/rear idle, attack and hit views were inspected. The first native side
+view exposed a thin planar mist silhouette; the corrected cloak has a
+0.34-unit pre-normalization depth and curls distributed forward and back.
+Eight Python checks, two focused Rust checks, both shared model/timing
+regressions and byte-identical Blender generation pass for the final model.
+The production Route 29 encounter against Sentret passes terrain admission.
+The inspected final 3D/2D pair preserves state at core frame 2110, checksum
+2652738907, LCD animation frame 2734 and virtual time 47.96444296. Vapor depth,
+attached visible eye/fang, original pack size, ground shadow and species
+labels remain readable. No shader errors were reported. Shiny verification
+was skipped at the user's request; browser visual acceptance remains open.
+See `docs/art/gastly-sculpture.md`; final ignored evidence uses prefix
+`target/pokemon-native-review/gastly-normal`.
+
+### Haunter: a continuous spectral head and six independently curling claws
+
+The generic sphere, spike leaves and simple red-eyed grin are replaced by
+an original continuous ghost head with tall ear points, a ragged shroud,
+slanted white eyes, fine vertical pupils, a pink open grin and eight purple
+pointed teeth. Two genuinely detached palms each carry three curved purple
+claws. The 16-joint rig keeps the face coherent while six blended body hinges,
+two independent hands and six digit carriers supply idle, attack and hit
+articulation. Existing Float presentation supplies the intended hover.
+
+The model has 23 closed parts, 9,833 vertices, 13,444 triangles and 432,788
+bytes at authoring height 1.10. Verified pack height is 503 (1.6002 metres),
+GAS. Adaptive face fitting reuses the existing indexed triangle-surface reader
+through an optional sampler; the optimization preserves complete GLB bytes,
+and existing helper callers retain the same default. Front, rear and side
+views were inspected. Native inspection exposed small dark marks on the eyes;
+extra clearance did not resolve them. Smooth convex lenses with five-point
+outlines and seated backs replace the ill-conditioned cap faces, removing
+4,332 draft vertices. A regression checks each front eye triangle against its
+convex normal as well as the actual stored parent surface. Nine Python
+checks, two focused Rust checks, both shared model/timing regressions and
+byte-identical Blender generation pass for the final asset. Shiny verification
+is skipped at the user's request. See `docs/art/haunter-sculpture.md`.
+
+The final production Route 29 encounter against Pidgey passes terrain admission.
+The inspected 3D/2D pair preserves state at core frame 1172, checksum 2351786109,
+LCD animation frame 1840 and virtual time 34.827198458. The white eyes are clean;
+the complete head, shroud and detached three-clawed hands remain readable at
+original pack size, with a ground shadow beneath the intended hover and correct
+species labels. No shader errors were reported. Browser visual acceptance
+remains open. Final ignored evidence uses prefix
+`target/pokemon-native-review/haunter-normal`.
+
+### Eevee: broad amber gaze, a fluffy ruff and a continuous cream-tipped brush
+
+The generic fox is replaced by an original compact evolution fox with a rounded
+head, large pointed ears and fitted warm brown pinnae, broad dark amber eyes,
+a small muzzle and gentle smile. A continuous cream ruff and three chest lobes
+surround the short neck. Rounded hind thighs, short tapered limbs, four planted
+paws and subtle toe creases support the body. The bushy raised tail has a cream
+end and a gently serrated material cut. The 47-part model has 10,813 vertices,
+19,076 triangles and 481,024 bytes at authoring height 0.80. The verified pack
+height is 100 (0.3048 metres), EVOLUTION.
+
+The 13-joint skin supplies separate body/neck/head carriers, two ear carriers,
+four softly blended limb carriers and three tail carriers. Paws and toe creases
+stay fixed to the authoring root. Both tail materials share 24 identical seam
+positions and quantized weights, preserving a closed color boundary through
+idle, attack and hit. Front, rear and side poses were inspected. Nine Python
+checks, two focused Rust checks, both shared model/timing regressions and
+byte-identical Blender generation pass. Shiny verification is skipped at the
+user's request. See `docs/art/eevee-sculpture.md`.
+
+The production Route 29 encounter against Pidgey passes terrain admission.
+The inspected native 3D/2D pair preserves state at core frame 3039, checksum
+2392749496, LCD animation frame 3708 and virtual time 66.17505725. The full ears,
+gaze, cream ruff and brush tip remain readable at original pack size; paws meet
+source ground and the HUD names both species. No shader errors were reported.
+Browser visual acceptance remains open. Final ignored evidence uses prefix
+`target/pokemon-native-review/eevee-normal`.
+
+### Vaporeon: pleated white frill and articulated mermaid tail
+
+The generic blue fox is replaced by an original cyan aquatic cat with a smooth
+face, violet gaze, fitted navy crown and tall central crest. Blue-rimmed head
+fans carry cream membranes and two seated rays on both sides. A continuous
+scalloped white neck fan frames the head. Rounded shoulder and hind-leg roots,
+four planted paws, a long curling tail, paired broad flukes and seated navy
+dorsal ridges complete the silhouette. The 57-part model has 13,565 vertices,
+23,164 triangles, 232 accessors and 569,232 bytes at authoring height 1.00.
+Verified pack height is 303 (0.9906 metres), BUBBLE JET.
+
+The 16-joint skin provides independent head fans, neck frill and paired flukes,
+three tail carriers and softly blended limbs while retaining four fixed paws.
+The face, crown and crest stay coherent. Front, rear and side poses were
+inspected; both fan faces retain their cream membranes and seated rays.
+Nine Python checks, two focused Rust checks, both shared model/timing
+regressions and byte-identical Blender generation pass. A shared room-test
+compilation error was repaired by mutating its Arc slice through a temporary
+vector; the external room-donor regression also passes. Shiny verification
+is skipped at the user's request. See `docs/art/vaporeon-sculpture.md`.
+
+The Route 29 native encounter against Pidgey passes terrain admission and the
+inspected 3D/2D pair preserves state at frame 3871, checksum 1754180436, LCD
+frame 4606 and virtual time 85.294497. The face, head fins, crest, white frill,
+dorsal ridge and planted paws are readable at original size with correct HUD
+labels and no reported shader errors. A second accepted down/up approach
+preserves frame 2906, checksum 761625219, LCD frame 3580 and time 65.686622126.
+Those two cameras self-occlude the tail. An additional opposite-side capture
+using `CRYSTAL_BATTLE_REVIEW_YAW=-70` exposes the full curl and both flukes,
+closing the native tail-angle review. Its inspected 3D/2D pair preserves frame
+3219, checksum 409803199, LCD frame 3890 and time 69.192291249, with terrain
+admission passing at original size and no reported shader errors. The native
+review selector only chooses existing supported angles and retains normal
+support, omission, scale and full-body/frustum checks; its focused test and
+seven camera/facing/rig regressions pass. Browser visual acceptance remains
+open. Optional Route 35 debug capture
+attempts hit a worker stack overflow and then an active-world-frame timeout
+with larger stacks; these do not count as visual acceptance. Final ignored
+evidence uses `vaporeon-normal`, `vaporeon-tail-vertical` and
+`vaporeon-opposite` prefixes under
+`target/pokemon-native-review/`.
+
+### Jolteon: white needle collar and grounded lightning fox
+
+The generic yellow fox is replaced by a lean lightning fox with long angular
+legs, four planted paws, sharp upright ears, fitted violet ear insets, narrow
+almond gaze and swept cheek bristles. A continuous twelve-point white collar
+and three long chest needles frame the throat. Eight occupied back/rump
+bristles replace the generic brush tail. The 50-part canonical GLB contains
+10,892 vertices, 17,840 triangles, 213 accessors and 468,260 bytes at authoring
+height 1.05. The verified pack supplies height 207 (0.7874 metres), LIGHTNING.
+
+The 11-joint rig provides coherent body/quills and head/cheeks/muzzle/gaze,
+blended neck and four limbs, independent ears and a separate collar carrier.
+Paws and toe creases remain fixed on the root. Source-cue timing and neutral
+clip endpoints are retained. Eight Python checks and both focused Rust
+rig/GPU checks pass; Blender generation is byte-identical. Front, side and
+rear poses of all three clips were inspected. Initial eye caps intersected
+the head; subdivided fitted surfaces correct this. Shiny verification is
+skipped at the user's request. See `docs/art/jolteon-sculpture.md`.
+
+The rebuilt native example passes a Route 29 walking encounter against Pidgey.
+The inspected 3D/2D pair preserves state at core frame 1357, checksum
+3790288244, LCD animation frame 1904 and virtual time 32.880172499. Terrain
+admission passes at original pack size. Yellow body and violet gaze, sharp
+ears, white collar, rump bristles and grounded paws remain readable; HUD labels
+match the 2D state. No shader errors were reported. The two shared regressions
+for grounded volumetric models and exact source-cue pose timing pass.
+Evidence uses `target/pokemon-native-review/jolteon-normal`; browser visual
+acceptance remains open.
+
+### Flareon: full cream collar and flexible curled plume
+
+The generic orange fox is replaced by a compact flame fox with a voluminous
+scalloped cream collar, broad curled cream plume, swept cream forehead flame
+and two seated wisps. Deep blue eyes, charcoal ear insets, short smiling muzzle,
+rounded haunches and four planted paws complete the silhouette. The 46-part
+canonical GLB has 11,495 vertices, 20,424 triangles, 209 accessors and 512,692
+bytes at authoring height 0.97. Verified pack height is 211 (0.889 metres), FLAME.
+
+The 14-joint skin has independent ears and collar, four blended limbs and a
+continuously weighted three-carrier tail. The plume is one closed cream solid
+with gentle longitudinal fur ridges; the forehead tuft stays coherent with the
+head and gaze. Paws and toe creases remain on the neutral root. Eight Python
+checks and both focused Rust rig/GPU checks pass. Blender generation is
+byte-identical. Front, side and rear poses of all three clips were inspected.
+Shiny verification is skipped at the user's request.
+See `docs/art/flareon-sculpture.md`.
+
+The initial native view exposed a red cast in the orange body material. The
+body/face palette was corrected against that production result; geometry,
+weights and motion are unchanged. The final material passes all eight Python
+checks and both focused Rust checks, with byte-identical Blender generation.
+Both shared volumetric-model and exact source-cue timing regressions also pass.
+
+The final native Route 29 walking encounter against Pidgey passes terrain
+admission at original pack size. The inspected 3D/2D pair preserves core frame
+3535, checksum 3189029028, LCD animation frame 4259 and virtual time
+80.209025832. `CRYSTAL_BATTLE_REVIEW_YAW=-110` selects an existing establishing
+angle while retaining terrain support, omission, scale and full-body/frustum
+checks. The orange body, blue gaze, dark ear insets, cream forehead tuft,
+collar and full plume remain readable, with planted paws and matching FLAREON
+HUD labels. No shader errors were reported. Final ignored evidence uses
+`target/pokemon-native-review/flareon-normal`; browser visual acceptance
+remains open.
+
+### Espeon: ruby forehead lens and independently forked tail
+
+The generic lilac fox is replaced by a slender sun cat with broad triangular
+ears and fitted dark blue pinnae, silver-violet almond gaze, a fitted ruby
+forehead lens, swept cheek fans, joined shoulders, rounded haunches and four
+planted paws. Its long curved tail ends in two separately curled tips joined
+at a smooth occupied hub. The 44-part canonical GLB has 10,809 vertices,
+19,164 triangles, 208 accessors and 484,268 bytes at authoring height 1.00.
+Verified pack height is 211 (0.889 metres), SUN.
+
+The 15-joint rig provides coherent head/face/gem/cheeks, independent ears,
+a blended neck and four limbs, three tail carriers and independently blended
+fork-tip carriers. The hub and both fork roots share the final stem carrier
+before the branches fade into their own tip joints. Paws and toe creases remain
+on the neutral root. Nine Python checks and both focused Rust rig/GPU checks
+pass. Blender generation is byte-identical. Front, side and rear poses of
+all three clips were inspected. Shiny verification is skipped at the user's
+request. See `docs/art/espeon-sculpture.md`.
+
+The rebuilt native example passes a Route 29 walking encounter against Pidgey.
+The inspected 3D/2D pair preserves core frame 4069, checksum 2848246175, LCD
+animation frame 4787 and virtual time 93.811969876. Terrain admission passes
+at original pack size. `CRYSTAL_BATTLE_REVIEW_YAW=-110` selects an existing
+establishing angle with normal support, omission, scale and full-body/frustum
+checks. The lilac body, ruby lens, violet gaze, broad ears, cheek fans and both
+fork tips remain readable, with planted paws and matching ESPEON HUD labels.
+No shader errors were reported. Both shared grounded-volumetric/model and exact
+source-cue timing regressions pass. Final ignored evidence uses
+`target/pokemon-native-review/espeon-normal`; browser visual acceptance remains
+open.
+
+### Umbreon: fitted hollow gold rings and seamless banded ears/tail
+
+The generic dark fox is replaced by a compact charcoal moonlight companion
+with tapered ears, a thick rising tail, red almond eyes and vertical pupils,
+a small muzzle, joined shoulders, rounded haunches and four planted paws.
+Hollow gold rings fit the forehead and all four outer limbs; continuous gold
+bands wrap both ears and the tail. The 46-part canonical GLB has 12,563 vertices,
+21,084 triangles, 195 accessors and 497,056 bytes at authoring height 1.05.
+Verified pack height is 303 (0.9906 metres), MOONLIGHT.
+
+The 13-joint skin has independent ears, a blended neck and four limbs, and
+a continuously weighted three-carrier tail. Face/forehead and side limb rings
+remain with their actual head and shoulder/haunch surfaces. Paws and toe creases
+stay fixed on the neutral root. All six gold-band material seams share exact
+positions and quantized weights through idle, attack and hit. Ten Python
+checks and both focused Rust rig/GPU checks pass. Front, side and rear poses
+of all three clips were inspected; Blender generation is byte-identical.
+Shiny verification is skipped at the user's request.
+See `docs/art/umbreon-sculpture.md`.
+
+The rebuilt native example passes a Route 29 walking encounter against Sentret.
+The inspected 3D/2D pair preserves core frame 3215, checksum 875707673, LCD
+animation frame 3941 and virtual time 72.125268584. Terrain admission passes
+at original pack size. `CRYSTAL_BATTLE_REVIEW_YAW=-110` selects an existing
+establishing angle with normal support, omission, scale and full-body/frustum
+checks. The charcoal body, red gaze, hollow gold rings, both ear bands and
+full banded tail remain readable, with planted paws and matching UMBREON HUD
+labels. No shader errors were reported. Both shared grounded-volumetric/model
+and exact source-cue timing regressions pass. Final ignored evidence uses
+`target/pokemon-native-review/umbreon-normal`; browser visual acceptance
+remains open.
+
+## Lapras swept flippers and scalloped shell (2026-10-16)
+
+The four stretched ellipsoid flippers are replaced by broad shoulder roots,
+flattened swept paddles and softly tapered tips. Blue upper and cream lower
+solids share the complete cut boundary and exact quantized skin weights, so
+the new undersides remain closed throughout the original flipper motion.
+Fore paddles sweep forward; smaller rear paddles sweep back. The shell now
+rises from a low plate into a dome with a gently scalloped edge and matching
+rolled rim. Eight swept blunt spikes seat into the actual stored shell.
+The visual reference remains the
+[official Lapras artwork](https://sg.portal-pokemon.com/pokedex/0131/).
+
+The 31 untouched parts retain every stored position, normal, triangle, color
+and skin influence, including the fitted face, curved neck, seated belly,
+body, ears, horn, spots and tail. Their geometry digest is
+`d23c482ab66936a2dc341ddcef7fc2fcf51bc17b2ccc88ee8ef084d3122b4643`;
+their joint/weight digest is
+`b526800229af653bfd7036db354d2675682a68ffcf628947e1739966ebea157d`.
+All joint rests, inverse binds, animation key times and rotations are unchanged.
+The source-cue timing and nine-joint rig remain intact. Authoring height stays
+1.50 and verified pack height stays 2.4892 metres. Original blue/tan RGB555
+colors are retained, including the new cream undersides. Battle contact stays
+seated; world swimming behavior is unchanged.
+
+The canonical asset now has 49 parts, 19,313 vertices, 21,968 triangles,
+234 accessors and 780,808 bytes. The source/neutral digest is
+`7a083c865c869d1fa5f832195c3ed2ec042b1267773294cc39fe47cd3c6b789b`.
+Shared normal, skin and index accessors reduce the GLB by 63,064 bytes despite
+adding four material solids. Vertices fall by 158 and triangles by 1,364.
+All existing schema, geometry, allocation and byte limits remain intact.
+
+Eleven Python checks pass, including all material seams through animation,
+occupied flipper roots and shell/rim/spike intersections with detached negative
+controls, unchanged geometry/influences/rests/keys, fitted face clearance,
+closed solids, actual normals, floor, winding and strain. Five focused Rust
+checks pass: flipper seams/ownership/culling/floor, seated shell, seated battle
+belly, contact shading and GPU activation at pack size. Blender generation is
+byte-identical. Fixed-camera before/after views and front/oblique/rear poses of
+idle, attack and hit were inspected. Shiny verification is skipped as requested.
+
+The rebuilt native Route 29 encounter against Pidgey passes terrain admission
+with the normal camera search and original 2.4892-metre pack size. Its inspected
+3D/2D pair preserves core frame 2580, checksum 2751870234, LCD animation frame
+3304 and virtual time 58.331329543. The receipt confirms `state_preserved=true`
+and the terrain log confirms `accepted=true`. Swept paddles and cream edges,
+the scalloped rim and seated spikes, retained face and blue/tan colors, and
+seated belly contact remain readable with matching LAPRAS HUD labels. No
+shader errors were reported. Both shared grounded-volumetric/model and exact
+source-cue timing regressions pass. Final ignored evidence uses
+`target/pokemon-native-review/lapras-shell-normal`, with fixed-camera comparison
+and animation sheets under `lapras-shell-comparison.png` and
+`lapras-shell-poses.png`. This closes the flipper/shell refinement; legacy
+world props and browser visual acceptance remain open.
+
+### Vulpix: six independent orange curl plumes
+
+The generic orange fox is replaced by a compact russet fox with three curled
+orange forelock waves, broad brown gaze, fitted dark ear insets, a small muzzle,
+a fitted cream chest bib, rounded haunches and four planted dark paws. Six full
+orange plumes form a layered curl fan. The 48-part canonical GLB has 13,624
+vertices, 22,736 triangles, 227 accessors and 597,188 bytes at authoring height
+0.85. Verified pack height is 200 (0.6096 metres), FOX.
+
+The 17-joint rig provides independent ears, a blended neck and four limbs,
+a common tail-fan carrier and six independently blended curl carriers. Face
+and forelock stay coherent with the head; paws and toe creases remain fixed.
+The initial fan was too thin and open; fuller plumes and tighter coils correct
+its silhouette. Conforming local subdivision fixes the initial cream bib
+intersection with the actual curved neck. Nine Python checks and both focused
+Rust rig/GPU checks pass, including every curl articulating independently,
+occupied roots, floor/culling and fitted surfaces. Front, side and rear poses
+of all three clips were inspected; Blender generation is byte-identical.
+Shiny verification is skipped at the user's request.
+See `docs/art/vulpix-sculpture.md`.
+
+The rebuilt native Route 29 walking encounter against Pidgey passes terrain
+admission at original pack size. The inspected 3D/2D pair preserves core frame
+3540, checksum 2552778670, LCD animation frame 4244 and virtual time
+77.847123207. `CRYSTAL_BATTLE_REVIEW_YAW=-110` selects an existing establishing
+angle with normal support, omission, scale and full-body/frustum checks.
+The russet body, brown gaze, orange forelock and curl fan, cream bib and grounded
+dark paws remain readable with matching VULPIX HUD labels. No shader errors
+were reported. Both shared grounded-volumetric/model and exact source-cue
+timing regressions pass. Final ignored evidence uses
+`target/pokemon-native-review/vulpix-normal`; browser visual acceptance
+remains open.
+
+### Ninetales: cream mane and nine independently flowing golden-tipped plumes
+
+The generic pale fox is replaced by an elegant cream fox with a longer muzzle,
+sharp red gaze, fitted warm ear insets, full mane, long chest point, swept cheek
+fur and three crown wisps. Joined shoulders, rounded haunches and four planted
+paws support nine flowing plumes: seven rise into a high fan and two lower tails
+sweep forward. Each has a continuous golden end. The 56 authored parts pack
+losslessly into 46 runtime parts, 14,231 vertices, 23,784 triangles, 250 accessors
+and 662,324 bytes. Authoring height is 1.30; verified pack height is 307
+(1.0922 metres), FOX.
+
+The 20-joint rig has independent ears, a blended neck and four limbs, a common
+tail-fan carrier and nine independently blended plume carriers. Matching tip
+materials share a primitive while retaining every source vertex's actual skin
+assignment. Source ranges restore all anatomy in order. All nine cream/gold
+interfaces retain exact positions and quantized weights through animation;
+paws stay fixed on the neutral root. Ten Python checks and both focused Rust
+rig/GPU checks pass. Front, side and rear poses of all three clips were
+inspected; Blender generation is byte-identical. Renderer limits remain intact.
+Shiny verification is skipped at the user's request.
+See `docs/art/ninetales-sculpture.md`.
+
+The rebuilt native Route 29 walking encounter against Sentret passes terrain
+admission at original pack size. The inspected 3D/2D pair preserves core frame
+3435, checksum 2149984195, LCD animation frame 4096 and virtual time
+74.372243042. `CRYSTAL_BATTLE_REVIEW_YAW=-110` selects an existing establishing
+angle with normal support, omission, scale and full-body/frustum checks.
+The long muzzle and red gaze, cream mane and crest, high plume fan and lower
+forward tails, golden ends and grounded stance remain readable with matching
+NINETALES HUD labels. No shader errors were reported. Both shared grounded-
+volumetric/model and exact source-cue timing regressions pass. Final ignored
+evidence uses `target/pokemon-native-review/ninetales-normal`; browser visual
+acceptance remains open.
+
+
+# Venonat sculpture and rig
+
+Venonat's generic stacked insect is replaced by an original continuous fuzzy
+purple body, large faceted pink compound lenses, fitted lens glints, a pink
+snout and paired ivory fangs. Curved white feelers end in broad pale leaves.
+Small purple arms carry ivory palms and three curled claws each. Short ankles
+join two broad ivory feet. Three pointed crown tufts complete the silhouette.
+
+`tools/venonat_sculpt.py` authors 33 closed parts, 15,723 vertices and
+22,268 triangles. `tools/venonat_glb.py` exports a canonical 646,940-byte GLB
+with 10 joints and 154 accessors at authoring height 1.10. The verified local
+pack supplies height digits 303 (0.9906 metres), INSECT. Pack size is retained.
+The neutral geometry digest is
+`b1425a1645ef672eb73a014ed63285503c3f184ddecb3f782c466bea7163d4f3`.
+All existing renderer and schema limits remain intact.
+
+A coherent body carrier keeps the eyes, glints, nose, fangs and crown together.
+Feelers, arms and claw hands articulate separately. Blended lower body and
+ankles allow motion while both feet and their toe creases remain fixed to the
+floor root. Idle, attack and hit retain neutral endpoints and source-cue timing.
+
+Eight Python checks pass: canonical bytes and limits, closed outward solids,
+actual face normals, fitted glints on the faceted lenses, anatomical owners,
+occupied feature roots through motion with a detached negative control,
+floor/endpoints/winding/strain/motion, and source-cue metadata. Front, side and
+rear poses of all three clips were inspected. Blender generation is
+byte-identical. Shiny verification is skipped at the user's request.
+
+Rebuild with `python3 tools/venonat_glb.py`. Run asset checks with
+`python3 -m unittest discover -s tools -p test_venonat_glb.py`.
+
+Both focused Rust checks pass, covering runtime routing, exact anatomy owners,
+floor/culling bounds, fixed feet, independent feeler/arm/hand motion and GPU
+activation at verified pack height. Shared grounded/volumetric and source-cue
+pose-timing regressions also pass.
+
+The rebuilt native Route 29 walking encounter against Pidgey passes normal
+terrain admission at original pack size. The inspected 3D/2D pair preserves
+core frame 2199, checksum 584843726, LCD animation frame 2794 and virtual time
+48.732609791. `CRYSTAL_BATTLE_REVIEW_YAW=-110` selects an existing supported
+angle with the normal size, support, omission and whole-body/frustum checks.
+Compound eyes, feelers, fangs and claw hands read clearly; both broad feet meet
+the ground. The matching VENONAT HUD names the modeled Pokémon. No shader
+errors were reported. Final ignored evidence uses
+`target/pokemon-native-review/venonat-normal`. Browser visual acceptance
+remains open.
+
+
+# Venomoth sculpture and rig
+
+The generic stacked insect and angular fans are replaced by an original lilac
+moth with long swept forewings and smaller scalloped hindwings. Fine dark veins
+follow both faces of the actual wing surfaces. A round head carries pale blue
+lenses, fitted dark round pupils and ivory reflections, paired curved ivory
+mandibles and three pointed lilac antennae. Six short tucked legs flank a long
+gray lavender abdomen with three seated zigzag seams. The visual reference is
+the [official Venomoth artwork](https://www.pokemon.com/us/pokedex/venomoth).
+Reference pixels are not shipped.
+
+`tools/venomoth_sculpt.py` authors 53 closed parts, 19,412 vertices and
+30,580 triangles. `tools/venomoth_glb.py` exports a canonical 784,824-byte GLB
+with 17 joints and 223 accessors at authoring height 1.16. The verified local
+pack supplies height digits 411 (1.4986 metres), POISONMOTH. Original pack size
+is retained. The neutral geometry digest is
+`7670a960d16e7c38c3e79a8ffe12ba570ca202b6e77bb25f1d7f21d17dcb5323`.
+Existing renderer and schema limits remain intact.
+
+Four independent wing joints carry each complete membrane and its matching
+veins. Three antenna carriers articulate separately from the head, keeping the
+pupils, glints and jaws coherent with the face. The striped abdomen turns on
+its own carrier. Six leg carriers keep each tucked toe coherent with its leg;
+leg roots blend into the thorax. The floor root remains neutral, and yaw-only
+thorax/abdomen motion preserves the lower oval's floor contact. Idle, attack
+and hit retain neutral endpoints and source-cue timing. Existing Fly locomotion
+is unchanged; no new battle hover is introduced.
+
+Nine Python checks pass: canonical bytes and schema limits, closed outward
+solids, actual face normals, fitted pupils and glints, anatomical owners,
+occupied roots through motion with a detached negative control, seated veins
+and zigzag seams on stored surfaces, floor/endpoints/winding/strain/motion,
+and source-cue metadata. Front, side and rear poses of all three clips were
+inspected. Blender generation is byte-identical. Shiny verification is skipped
+at the user's request.
+
+Rebuild with `python3 tools/venomoth_glb.py`. Run asset checks with
+`python3 -m unittest discover -s tools -p test_venomoth_glb.py`.
+
+Both focused Rust checks pass, covering runtime routing, exact anatomy owners,
+floor/culling bounds, independent wings/antennae/legs/abdomen and GPU activation
+at verified pack height. Shared grounded/volumetric and source-cue pose timing
+regressions also pass.
+
+The rebuilt native Route 29 walking encounter against Sentret passes normal
+terrain admission at original pack size. The inspected 3D/2D pair preserves
+core frame 1801, checksum 3957057059, LCD animation frame 2417 and virtual time
+42.825647333. `CRYSTAL_BATTLE_REVIEW_YAW=-110` selects an existing supported
+angle with normal size, support, omission and whole-body/frustum checks.
+The four swept wings and veins, pointed antennae, pale round gaze, ivory jaws,
+tucked legs and striped abdomen remain readable. The lower oval meets the
+ground, and the matching VENOMOTH HUD identifies the modeled Pokémon.
+No shader errors were reported. Final ignored evidence uses
+`target/pokemon-native-review/venomoth-normal`. Browser visual acceptance
+remains open.
+
+
+# Paras and Parasect sculptures and rigs
+
+The generic eight-limbed insects and flattened mushroom ellipsoids are replaced
+by original orange mushroom crabs. Four braced walking legs and two broad,
+tapered foreclaws form six insect appendages. Paras has a russet rear shell,
+round white eyes with large dark pupils and glints, six forehead beads, an
+orange snout, paired ivory mouth claws and two small pink fungal umbrellas.
+Parasect has blank pale eyes, a broader muzzle and a large pink fungal dome
+that overhangs its head. Golden markings follow the actual stored cap surfaces.
+Inset underside disks, radial gills and rooted cream stalks complete the fungi.
+The visual references are the official
+[Paras](https://www.pokemon.com/us/pokedex/paras) and
+[Parasect](https://www.pokemon.com/us/pokedex/parasect) artwork.
+Reference pixels are not shipped.
+
+`tools/mushroom_crab_sculpt.py` authors both species.
+`tools/mushroom_crab_glb.py` exports canonical skins within all existing limits:
+
+| Species | Parts | Vertices | Triangles | Joints | Accessors | Bytes | Authoring height | Pack height |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Paras | 56 | 19,755 | 31,860 | 11 | 213 | 711,892 | 0.78 | 0.3048 m |
+| Parasect | 36 | 13,877 | 22,168 | 10 | 152 | 543,484 | 1.14 | 0.9906 m |
+
+The verified local pack supplies height digits 100 and 303, respectively;
+both are classified MUSHROOM. Original pack size is retained. Neutral digests:
+
+- Paras: `9cf3e0d314c5f90ef570f927288a43e2dd32e7421e7d6218202fc1807ec9d82f`.
+- Parasect: `ee0b479c17022294ba5cbc8084b4d2312aeb028868773ecd51113da09416838b`.
+
+A yaw-only body and coherent head carry each face. Foreclaws articulate
+independently from the front carapace. Four blended leg carriers flex between
+the body and fixed walking toes. Each fungus has its own carrier shared by its
+cap, golden markings, underside, gills and rooted stalk; the two juvenile fungi
+can move separately. Idle, attack and hit retain neutral endpoints and source
+cue timing. No terrain, grass-height, size or camera-admission rules change.
+
+Eight Python checks pass across both assets: canonical bytes and schema limits,
+closed outward solids, actual normals, fitted gaze/mouth/golden spots on stored
+surfaces, exact skin owners, occupied feature roots through motion with a
+detached negative control, floor/endpoints/winding/strain/motion, and source-cue
+metadata. Front, side and rear views of all three clips were inspected for
+both species. Blender generation is byte-identical. Shiny verification is
+skipped at the user's request.
+
+Rebuild with:
+
+```sh
+python3 tools/mushroom_crab_sculpt.py --out crates/crystal-voxel-view/models/battle_species
+```
+ Run asset checks with
+`python3 -m unittest discover -s tools -p test_mushroom_crab_glb.py`.
+
+Three focused Rust checks pass, covering both runtime species routes, exact
+anatomical owners, floor/culling bounds, fixed walking toes, independent claws,
+legs and fungal caps, and GPU activation at both verified pack heights. Shared
+grounded/volumetric and source-cue pose timing regressions also pass.
+
+The rebuilt native Route 29 Paras encounter against Pidgey passes normal
+terrain admission at original pack size. The inspected 3D/2D pair preserves
+core frame 2009, checksum 134018625, LCD animation frame 2623 and virtual time
+45.983132001. Twin fungi, golden spots, juvenile gaze, mouth claws and digging
+foreclaws remain readable with the correct PARAS HUD. Four walking toes meet
+the ground. No shader errors were reported. Final ignored evidence uses
+`target/pokemon-native-review/paras-normal`.
+
+The native Route 29 Parasect encounter against Sentret also passes normal
+terrain admission at original pack size. The inspected pair preserves core
+frame 2148, checksum 1893713661, LCD animation frame 2778 and virtual time
+48.692868291. The overhanging pink/gold cap, blank pale eyes, broad snout and
+tapered foreclaws remain readable with the correct PARASECT HUD and grounded
+walking feet. No shader errors were reported. Final ignored evidence uses
+`target/pokemon-native-review/parasect-normal`. Both captures use
+`CRYSTAL_BATTLE_REVIEW_YAW=-110`, selecting an existing supported angle with
+normal scale, support, omission and whole-body/frustum checks. Browser visual
+acceptance remains open for both species.
+
+
+# Metapod and Kakuna sculptures and rigs
+
+The static cocoon recipes now produce original, articulated canonical GLBs.
+Metapod has a clearer projecting face, hooked crown, rear point, curved lower
+tail and three fitted tail segments. Rounded ivory crescents and dark pupils
+replace the rectangular eyes. Sloping green lids, cheek shields and seated
+seams complete the pale green chrysalis. Kakuna has a rounded golden crown,
+triangular dark eyes with small ivory glints, broad folded arm plates, a raised
+central shield and three tapered abdominal seams. Its shield uses structural
+cross-sections at the actual shell's profile breaks, avoiding thin overlapping
+coatings and split highlight fans. The visual references are the official
+[Metapod](https://www.pokemon.com/us/pokedex/metapod) and
+[Kakuna](https://www.pokemon.com/us/pokedex/kakuna) artwork.
+Reference pixels are not shipped.
+
+`tools/cocoon_sculpt.py` authors both species. `tools/cocoon_glb.py` supplies
+the canonical skins and strict authoring readers. All existing limits remain:
+
+| Species | Parts | Vertices | Triangles | Joints | Accessors | Bytes | Authoring height | Pack height |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Metapod | 15 | 10,664 | 15,788 | 4 | 80 | 455,168 | 0.80 | 0.7112 m |
+| Kakuna | 14 | 11,069 | 16,336 | 5 | 80 | 478,004 | 0.80 | 0.6096 m |
+
+The verified local pack supplies height digits 204 and 200, respectively;
+both are classified COCOON. Original pack size is retained. Neutral digests:
+
+- Metapod: `6b3fdcfefd6a88f8417852ca46a6d144a9d4d35c5e5e712b3c42c8b61576b36f`.
+- Kakuna: `2174b2bfbb87197fe326bd5fd82a05a06dc5539f943618d45a086dcb10d1f805`.
+
+A neutral floor root fixes the lowest shell points. Blended shell and head
+carriers give small cocoon motions while the complete gaze stays coherent with
+the head. Metapod has an independent blended tail fold. Kakuna has separate
+folded-arm carriers shared by each plate and its seam. Idle, attack and hit use
+restrained rotation-only motion, neutral endpoints and existing source-cue
+timing. No terrain, grass-height, size or camera-admission rules change.
+
+Eleven Python checks pass across both assets. These cover canonical bytes and
+schema limits, closed outward solids, actual normals, physical bounds, fitted
+faces and plates on stored surfaces, Metapod's continuous bent profile, exact
+skin owners, fixed lower shell points, seated fold roots through motion with a
+detached negative control, floor/endpoints/winding/strain/articulation, and
+source-cue metadata. Shiny verification is skipped at the user's request.
+
+Rebuild with:
+
+```sh
+python3 tools/cocoon_sculpt.py --output crates/crystal-voxel-view/models/battle_species
+python3 -m unittest discover -s tools -p 'test_cocoon*.py'
+```
+
+Three focused Rust checks pass, covering both runtime species routes, exact
+head/fold owners, fixed lower-shell contacts, floor/culling bounds, independent
+head/tail/arm-fold motion and GPU activation at verified pack heights. Both
+shared grounded/volumetric and source-cue pose timing regressions pass.
+Front, side and rear poses of all three clips were inspected for both species;
+Blender generation is byte-identical.
+
+The rebuilt native Route 29 Metapod encounter against Pidgey passes normal
+terrain admission at original pack size. The inspected 3D/2D pair preserves
+core frame 2421, checksum 1062851264, LCD animation frame 3031 and virtual time
+53.275264209. The hooked crown, projecting face, sleepy gaze, rear point and
+segmented lower tail remain readable with the correct METAPOD HUD. The lower
+shell tip meets the ground. No shader errors were reported. Final ignored
+evidence uses `target/pokemon-native-review/metapod-normal`.
+
+The native Route 29 Kakuna encounter against Sentret also passes normal terrain
+admission at original pack size. Its inspected pair preserves core frame 2578,
+checksum 1752407553, LCD animation frame 3260 and virtual time 57.848109083.
+The rounded crown, triangular gaze, folded arms, clean central ridge and
+abdominal bands remain readable with the correct KAKUNA HUD and planted lower
+shell tip. No shader errors were reported. Final ignored evidence uses
+`target/pokemon-native-review/kakuna-normal`. Both captures select an existing
+supported angle with `CRYSTAL_BATTLE_REVIEW_YAW=-110`, retaining normal scale,
+support, omission and whole-body/frustum checks. Browser visual acceptance
+remains open for both species.
+
+
+# Caterpie and Weedle sculptures and rigs
+
+The generic detached-looking larva segments are replaced by continuous,
+annulated bodies with raised heads and curled tails. Caterpie has a continuous
+cream underside, five hollow yellow circles on each green side, six raised
+cream leg knobs, broad yellow eye rims, black lenses and fitted ivory glints,
+a two-part green snout, a red Y antenna with rounded ends and a soft pale tail
+point. Weedle has a tan body, fourteen pink prolegs including six planted pads,
+a broad rosy nose with a fitted reflection, small glossy black eyes and curved
+ivory head and tail stings. Neck caps are buried inside the heads. The visual
+references are the official [Caterpie](https://www.pokemon.com/us/pokedex/caterpie)
+and [Weedle](https://www.pokemon.com/us/pokedex/weedle) artwork.
+Reference pixels are not shipped.
+
+`tools/larva_sculpt.py` authors both species. `tools/larva_glb.py` exports
+canonical skins within all existing renderer and schema limits:
+
+| Species | Parts | Vertices | Triangles | Joints | Accessors | Bytes | Authoring height | Pack height |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Caterpie | 33 | 13,539 | 25,360 | 12 | 152 | 507,296 | 0.95 | 0.3048 m |
+| Weedle | 24 | 10,537 | 19,772 | 12 | 112 | 415,840 | 0.95 | 0.3048 m |
+
+The verified local pack supplies height digits 100 for both species, classified
+WORM and HAIRY BUG respectively. Original pack size is retained. Neutral digests:
+
+- Caterpie: `527fcc82fab88435eb538b1b93614b03f896566ecefafc9d0f6e05e5cb419931`.
+- Weedle: `ef69247a874d0f1cec8f314d3885cd93ddaa5356fd45ce850dda1f75a0a162ea`.
+
+Eight blended body carriers create small crawling waves. A coherent head
+carries the complete gaze and snout. Caterpie's fork branches articulate
+separately; its rounded antenna ends share those carriers. Weedle has separate
+head- and tail-sting carriers. Caterpie's lowest belly points and Weedle's
+planted pink pads stay on the neutral floor root. Raised prolegs and side rings
+use the body skin field. The two closed green/cream body halves share 114 exact
+stored boundary points and matching quantized skin influences through every
+clip. Rings sit fully on the green surface and retain open centers.
+Idle, attack and hit keep neutral endpoints and source-cue timing. No grass,
+terrain, scale or camera-admission rules change.
+
+Ten Python checks pass across both assets: canonical bytes and anatomy/limits,
+closed outward connected solids, actual normals, fitted reflections, exact
+anatomy owners and body carriers, exact animated green/cream seams, rings
+seated on the stored green surface, occupied feature roots through motion with
+a detached negative control, floor/endpoints/winding/strain/independent motion,
+and source-cue metadata. Shiny verification is skipped at the user's request.
+
+Rebuild and check with:
+
+```sh
+python3 tools/larva_sculpt.py --out crates/crystal-voxel-view/models/battle_species
+python3 -m unittest discover -s tools -p test_larva_glb.py
+```
+
+The world crawl adapter reuses the eight authored body joints. It preserves
+the continuous skin and both sides of the cream/green seam. Existing world IK
+creates six independent Caterpie proleg chains and fourteen Weedle chains;
+the head follows its authored front-body parent once. A smaller arch fits the
+tiny supports' reach, preventing planted pads from being pulled above the
+floor. The world regression samples 64 travel phases, checks support lengths
+and level feet, enforces ground contact and a closed material seam, and returns
+the complete skin to its exact neutral rest pose. Canonical battle bindings
+and source-cue clips remain separate from these world-only leg chains.
+
+Four focused Rust checks pass: runtime routing/anatomical ownership/floor/
+culling/material seams and independent tips, both verified-size GPU paths,
+and the world crawling regression. The three supporting pairs use staggered
+phases so they cannot all enter swing together; this closes Weedle's brief
+airborne interval. Front, side and rear poses of all three clips were inspected
+for both species, and Blender generation is byte-identical.
+
+All three shared grounded/volumetric, exact source-cue pose timing and readable
+map-speed cadence regressions pass. The rebuilt native Route 29 Caterpie
+encounter against Pidgey passes normal terrain admission at original pack size.
+Its inspected 3D/2D pair preserves core frame 5514, checksum 2831601804,
+LCD animation frame 6261 and virtual time 116.21247896. The small larva remains
+readable with its red fork, yellow-rimmed gaze, cream body, side markings and
+curled tail; the belly meets the ground and the HUD says CATERPIE. No shader
+errors were reported. Final ignored evidence uses
+`target/pokemon-native-review/caterpie-normal`.
+
+The native Route 29 Weedle encounter against Sentret also passes normal terrain
+admission at original pack size. Its inspected pair preserves core frame 5081,
+checksum 1179181144, LCD animation frame 5848 and virtual time 113.864353625.
+The tan segmented body, rosy nose and prolegs, black gaze and both ivory stings
+remain readable with the correct WEEDLE HUD and grounded pink pads. No shader
+errors were reported. Final ignored evidence uses
+`target/pokemon-native-review/weedle-normal`. Both captures select an existing
+supported angle with `CRYSTAL_BATTLE_REVIEW_YAW=-110`, retaining normal scale,
+support, omission and whole-body/frustum checks. Browser visual acceptance
+remains open for both species.
+
+
+### Krabby and Kingler: broad pincers and independent closing jaws
+
+Both crabs now use canonical skinned GLBs from `tools/crab_sculpt.py` and
+`tools/crab_glb.py`. Broad flattened palms and tapered movable jaws replace the
+round pincer tubes. Kingler has a dominant claw more than twice its smaller
+pincer's height, five crown points and additional ivory jaw teeth. Krabby
+keeps equal pincers and two crown points. Four explicit ivory walking toes
+meet the ground. Twelve joints provide a coherent shell/face, separate arms,
+wrists and closing jaws, four braced leg carriers and a fixed floor root.
+World locomotion groups each leg, knee and toe into one complete walking chain.
+Legacy static JSON files are removed and all runtime/builder/checker routes use
+the canonical GLBs. Full details are in [crab-sculptures.md](crab-sculptures.md).
+
+Krabby has 31 parts, 17,883 vertices, 25,576 triangles, 140 accessors and
+678,056 bytes. Kingler has 36 parts, 18,026 vertices, 25,908 triangles,
+156 accessors and 674,292 bytes. Both authoring heights are 0.97; verified pack
+sizes remain 0.4064 m and 1.2954 m. Eleven Python checks pass, including fitted
+faces, closed outward geometry, stored normals, occupied roots through motion,
+a detached negative control, planted toes, winding/strain, anatomical owners,
+independent jaws and source-cue contracts. Blender generation is byte-identical;
+front, side and rear poses of all three clips were inspected. Four focused Rust
+checks pass for GPU size, routing/owners/floor/culling/independent jaws and
+64-phase world contact. The existing Paras/Parasect contact regression also
+passes. Both shared grounded/volumetric and source-cue timing regressions pass.
+Shiny checks remain skipped at the user's request.
+
+The rebuilt native Route 29 Krabby/Pidgey pair passes terrain admission and
+preserves core frame 3412, checksum 2771847911, LCD animation frame 4151 and
+virtual time 76.7544295. The Kingler/Pidgey pair preserves frame 3538,
+checksum 1460042242, LCD frame 4257 and time 79.629184374. Both inspected pairs
+show full pincer silhouettes, correct species HUDs and grounded toes, with no
+shader errors. Final ignored evidence uses `krabby-normal` and `kingler-normal`
+under `target/pokemon-native-review/`. Both captures select the existing
+supported -110-degree angle while retaining normal scale/support/omission and
+whole-body/frustum checks. Grass height is untouched. Browser visual acceptance
+remains open for both species.
+
+
+### Shellder and Cloyster: overhanging hood and articulated hollow armor
+
+Both bivalves now use canonical skins from `tools/bivalve_sculpt.py` and
+`tools/bivalve_glb.py`. Shellder's upper hood tilts over its black face,
+replacing the vertical ring silhouette. Its lower valve tilts upward, its
+rear hinge sits deeper in the hood, and its tongue has independent base/fold
+articulation with a matching crease. Cloyster has two closed hollow armor
+halves with independent rear hinges and matching spikes, a separate blue-gray
+mantle and horn, charcoal lining, and a darker central orb carrying its
+complete gaze and grin. Original geometry and normal physical size remain
+within the existing limits. No external geometry was imported. Details are
+in [bivalve-sculptures.md](bivalve-sculptures.md).
+
+Shellder has 19 parts, 15,585 vertices, 22,292 triangles, six joints,
+88 accessors and 544,000 bytes. Cloyster has 24 parts, 17,021 vertices,
+23,892 triangles, five joints, 100 accessors and 657,744 bytes. Both authoring
+heights remain 1.05; verified pack heights are 0.3048 m and 1.4986 m. The
+legacy static JSON files are removed and all runtime/builder/checker routes
+use the canonical GLBs.
+
+Fifteen final Python checks pass for geometry parity, bounded schemas,
+closed outward shells, shading, fitted faces and details, actual hollow
+cavities, occupied roots through motion with a detached negative control,
+ownership, shell floor baseline, endpoints, winding/strain and independent
+valves/tongue. Four final Rust checks pass for both verified-size GPU paths,
+production routing/owners/floor/culling/independent articulation and 64 phases
+of world swimming. Existing battle and world mollusk hover is preserved.
+Front, side and rear poses of all three clips were inspected for both models;
+the side review prompted a deeper rear hinge on Shellder. Final Blender exports
+are byte-identical. Both shared all-species grounded/volumetric and exact
+source-cue pose timing regressions pass. Shiny checks remain skipped.
+
+Native Route 29 Shellder/Pidgey admission passes at original pack size; its
+inspected 3D/2D pair preserves core frame 2592, checksum 1129406471,
+LCD animation frame 3197 and virtual time 55.903143251. The Cloyster/Pidgey
+pair preserves frame 3367, checksum 3177080196, LCD frame 4078 and time
+72.56970316499999. Full silhouettes, the correct species HUDs, coherent faces
+and existing hover placement remain visible, with no shader errors. Final
+ignored evidence uses `shellder-normal` and `cloyster-normal` under
+`target/pokemon-native-review/`. Both captures select the existing supported
+-110-degree angle with all normal size/support/omission and whole-body/frustum
+checks active. Grass height is untouched. Browser visual acceptance remains
+open for both species.
+
+
+### Grimer, Muk and Ditto: planted flowing bodies and soft appendages
+
+All three slimes now use canonical skinned GLBs from `tools/slime_sculpt.py`
+and `tools/slime_glb.py`. Grimer has a wider tall open mouth and shorter,
+rounder digits. Muk has a wider mouth and retains its long sagging arm and
+short opposite hand. Ditto has fuller upper lobes and a stronger asymmetric
+side bulge. Each retains one continuous flowing body and a broad flat puddle
+sole, with at least 48 contact vertices fixed to the floor root. Torso and
+coherent head carriers blend through the body; Grimer and Muk add independent
+palms and six digit carriers, while Ditto adds two lateral lobes with matching
+highlight influences. Rotation-only idle, attack and hit clips retain neutral
+endpoints and source-cue clocks. World sliding preserves the complete sole.
+Legacy static JSON files are removed and all runtime/builder/checker routes
+use the canonical GLBs. Details are in [slime-sculptures.md](slime-sculptures.md).
+
+Grimer has 26 parts, 18,739 vertices, 25,172 triangles, 13 joints,
+146 accessors and 730,324 bytes. Muk has 26 parts, 16,163 vertices,
+21,396 triangles, 13 joints, 139 accessors and 633,072 bytes. Ditto has
+eight parts, 9,310 vertices, 13,980 triangles, five joints, 51 accessors
+and 403,272 bytes. All authoring heights remain 0.96; verified pack sizes
+remain 0.889 m, 1.1938 m and 0.3048 m. Existing limits remain unchanged.
+
+Seventeen Python checks pass for bounded canonical skins, normalized weights,
+hierarchy/binds, exact geometry, closed outward solids and normals, real
+occupied arm/palm/finger roots through motion with a detached negative control,
+fixed floor contact, local articulation, endpoints/winding/strain, actual
+fitted faces and Ditto highlights through poses, true annular lips, supported
+folds, indexed-ray equivalence and source cues. Posed marking clearance follows
+authored front surfaces; embedded edge and back walls remain intentionally
+buried. Five Rust checks pass for all three pack-sized GPU paths, production
+routing/owners/floor/culling and independent digits/lobes, plus 64 phases of
+world sliding. Front, side and rear poses of all clips were inspected for each
+model; Blender exports are byte-identical. Both shared all-species grounded/
+volumetric and source-cue timing regressions pass. Shiny checks remain skipped.
+
+All three rebuilt native Route 29 captures pass normal terrain admission at
+original pack size. The inspected Grimer/Pidgey 3D/2D pair preserves frame
+2795, checksum 1195468295, LCD frame 3471 and time 62.241414707. Muk/Sentret
+preserves frame 2871, checksum 2640698820, LCD frame 3509 and time
+62.198563916. Ditto/Pidgey preserves frame 2671, checksum 2973483575,
+LCD frame 3340 and time 58.788624415. Full silhouettes, coherent faces,
+correct species labels and grounded bases remain readable; no shader errors
+were reported. Final ignored evidence uses `grimer-normal`, `muk-normal` and
+`ditto-normal` under `target/pokemon-native-review/`. The existing supported
+-110-degree angle is selected with normal size/support/omission and whole-body/
+frustum checks active. Grass height is untouched. Browser visual acceptance
+remains open for all three.
+
+
+### Seel and Dewgong: grounded seal supports and articulated curved tails
+
+Both seals now use canonical skins from `tools/seal_glb.py` over their
+individual `seel_sculpt.py` and `dewgong_sculpt.py` recipes. Seel adds four
+supported front-paddle creases and keeps its reclining body, raised lobed tail,
+cream muzzle, ivory tusks, glossy teal-reflected gaze and playful tongue.
+Dewgong's upper body, head and crown sweep farther forward, retaining its
+continuous hooked body, white muzzle, gentle gaze, lower canines and scalloped
+fans. Both have blended bodies, coherent head carriers, two continuous tail
+carriers, independent paired tail fans and front flippers. Seel's paddles sweep
+around Y while remaining level on the floor, and its tongue has a separate
+carrier shared with its crease. Dewgong's low belly is anchored to the floor.
+World sliding retains those supports and the authored articulation. Legacy
+static JSON files are removed; runtime/builder/checker routes use the canonical
+GLBs. See [Seel](seel-sculpture.md) and [Dewgong](dewgong-sculpture.md).
+
+Seel has 27 parts, 13,304 vertices, 21,680 triangles, 10 joints,
+137 accessors and 559,936 bytes. Dewgong has 22 parts, 15,206 vertices,
+23,740 triangles, nine joints, 117 accessors and 649,548 bytes. Both authoring
+heights remain 1.03; verified pack sizes remain 1.0922 m and 1.7018 m.
+Existing geometry, primitive, accessor and byte limits remain unchanged.
+
+All 26 dedicated combined Python checks pass, including occupied appendage
+roots through motion with a detached negative control, posed gaze clearance,
+low support, local articulation, winding/strain, and Dewgong's static signed-ray
+and posed triangle-intersection body checks. The same run passed 27 existing
+sea, seahorse and Sentret checks. Four focused Rust checks pass for both
+verified-size GPU paths, routing/owners/floor/culling and independent tails/
+flippers/fans/tongue, plus 64 phases of grounded world sliding. Three existing
+terrain seam checks also pass. Front, side and rear poses of all clips were
+inspected for both models, and Blender exports are byte-identical. Both shared
+all-species grounded/volumetric and exact source-cue pose timing regressions
+pass. Shiny checks remain skipped at the user's request.
+
+Native Route 29 admission passes at original pack size for both models. The
+inspected Seel/Sentret 3D/2D pair preserves frame 4184, checksum 3435595935,
+LCD frame 4919 and time 90.181717666. Dewgong/Hoppip preserves frame 3470,
+checksum 2172026011, LCD frame 4201 and time 75.831987126. Complete silhouettes,
+raised paired tail fans, coherent faces and correct species labels remain
+readable. Seel's low paddles and Dewgong's belly meet the terrain. No shader
+errors were reported. Final ignored evidence uses `seel-normal` and
+`dewgong-normal` under `target/pokemon-native-review/`. The existing supported
+-110-degree angle is selected with normal size/support/omission and whole-body/
+frustum checks active. Grass height is untouched. Browser visual acceptance
+remains open for both species.
+
+
+### Rhyhorn and Rhydon: armored support chains and articulated drill
+
+Both rhinoceroses now use canonical skins from `tools/rhino_glb.py` over their
+individual sculptures. Rhyhorn gains fitted red irises and a shorter nasal
+horn while retaining its seated dorsal armor, broad wedge head and four
+stocky legs. Rhydon retains all 64 authored solids, including the real drill
+spiral, open fanged jaw and fitted annular tail collars. Redundant sampling is
+reduced to fit the unchanged skin limits. Both have coherent head and body
+carriers, independent jaws and ears, articulated tails and grounded pads.
+Rhydon also has independent arms, hands and drill. World walking uses four
+complete support chains for Rhyhorn and two for Rhydon; left and right toe
+groups remain separate. Legacy JSON files are removed and builder, reader and
+runtime routes use the canonical GLBs. See [Rhyhorn](rhyhorn-sculpture.md) and
+[Rhydon](rhydon-sculpture.md).
+
+Rhyhorn has 46 parts, 14,488 vertices, 25,368 triangles, 11 joints,
+178 accessors and 520,208 bytes. Rhydon's 64 source solids occupy 48 runtime
+material groups, 18,156 vertices, 28,304 triangles, 15 joints, 242 accessors
+and 741,340 bytes. Authoring heights remain 1.11 and 1.40; verified pack
+heights remain 0.9906 m and 1.905 m.
+
+All 31 combined Python checks pass, covering closed outward solids, strict
+logical/packed geometry and weights, occupied attachment roots, local joint
+articulation, grounded supports, winding/strain, fitted markings and source
+cues. Rhydon's actual open jaw and both collar surfaces remain valid through
+all three clips. Four focused Rust checks pass for pack-sized GPU activation,
+runtime articulation and world support chains. Both shared geometry and exact
+source-cue pose timing regressions pass. Front, side and rear poses of all
+clips were inspected; Blender exports are byte-identical. Shiny checks remain
+skipped at the user's request.
+
+The rebuilt native Route 29 captures pass normal terrain admission at original
+pack sizes. The inspected Rhyhorn/Pidgey 3D/2D pair preserves frame 4472,
+checksum 3264865042, LCD frame 5203 and time 97.399773957. Rhydon/Pidgey
+preserves frame 2374, checksum 3422758645, LCD frame 3085 and time
+55.014122498. Complete silhouettes, coherent faces, seated armor and correct
+species HUDs are readable; their feet meet the terrain. No shader errors were
+reported. Ignored evidence uses `rhyhorn-normal` and `rhydon-normal` under
+`target/pokemon-native-review/`. The existing supported -110-degree angle is
+selected with normal size/support/omission and whole-body/frustum checks
+active. Grass height is untouched. Browser visual acceptance remains open.
+
+
+### Machop family: seated muscular limbs and independent arm chains
+
+Machop, Machoke and Machamp now use canonical skins from
+`tools/fighting_glb.py` and their dedicated sculpture. Curved limbs and
+interpolated torso profiles replace coarse transitions. Complete shoulder and
+hip caps are buried in the body; red gaze, Machoke arm markings and Machamp
+lips follow their actual parent surfaces. Mature trunks and waist bands share
+the torso's rings, removing the gray patches exposed by the pose review.
+Each arm has independent shoulder, elbow and wrist carriers; Machamp has four
+complete chains. Hands, fingers and thumbs follow their wrist. Continuous
+longitudinal arm weights avoid nearest-segment discontinuities at bent elbows.
+Bodies blend through pelvis/chest/neck/head, facial details and crests remain
+coherent, and Machop has an independent tail. Battle pads/toes stay fixed;
+world walking uses two complete support chains. Legacy JSONs are removed and
+builder, reader and runtime routes use the GLBs. See
+[fighting sculptures](fighting-sculptures.md).
+
+Machop has 32 parts, 4,377 vertices, 7,288 triangles, 13 joints,
+133 accessors and 226,332 bytes. Machoke has 41 parts, 5,621 vertices,
+9,264 triangles, 12 joints, 162 accessors and 271,936 bytes. Machamp has
+51 parts, 6,598 vertices, 10,992 triangles, 18 joints, 199 accessors and
+335,256 bytes. Authoring heights remain 0.85/1.15/1.45 and verified pack
+sizes remain 0.7874/1.4986/1.6002 m. Existing limits are unchanged.
+
+All 12 combined Python checks and five focused Rust checks pass, including
+occupied limb/finger/crest/tail roots, complete buried shoulder and hip caps,
+fitted eyes and markings through poses, front/rear garment coverage, fixed
+floor supports, isolated joint articulation, winding/strain and source cues,
+GPU activation at verified pack sizes, animated bounds and 64 phases of world
+walking. Both shared all-species geometry and exact source-cue timing
+regressions pass. Front, side and rear poses of all clips were inspected;
+Blender exports are byte-identical. Shiny checks remain skipped. Grass height
+is untouched. Browser visual acceptance remains open for all three.
+
+Native Route 29 admission passes at original pack size for all three. The
+paired 3D/2D views were inspected at preserved state:
+
+| Pair | Frame | Checksum | LCD frame | Virtual seconds |
+| --- | ---: | ---: | ---: | ---: |
+| Machop / Rattata | 2249 | 343043607 | 2872 | 50.97786054 |
+| Machoke / Sentret | 3168 | 2308503285 | 3853 | 70.069877625 |
+| Machamp / Sentret | 2244 | 714168474 | 2851 | 49.662108499 |
+
+Complete silhouettes, coherent red gaze, seated shoulders, clean garments and
+correct species HUDs remain readable; all three models' feet meet the terrain.
+Machamp's four arms and fists are distinct in the production view. No shader
+errors were reported. Final ignored evidence uses `machop-normal`,
+`machoke-normal` and `machamp-normal` under `target/pokemon-native-review/`.
+The existing supported -110-degree angle is selected with normal size/support/
+omission and whole-body/frustum checks active. Grass height is untouched.
+Browser visual acceptance remains open.
+
+
+### Ponyta and Rapidash: coherent layered fire and articulated equine skins
+
+Both horses now use canonical skins from `tools/fire_horse_glb.py` over their
+dedicated sculptures. The slender juvenile and athletic adult retain cream
+bodies, arched necks, fitted gaze and ears, shaped legs, dark blue hooves and
+seven closed flame banks. Fourteen yellow core layers remain fitted to both
+sides. Rapidash retains its horn, real open jaw and raised left forehoof.
+Redundant interior sampling is reduced to meet the existing skin limits;
+adaptive fitting preserves actual clearance. Matching the cores to the fire
+banks' interpolated normals removes broad diagonal highlights exposed by the
+pose review. The shared adaptive helper's default remains unchanged.
+
+Bodies and shoulders remain coherent; necks blend torso/neck/head influences.
+Ears, tail stems, tail plumes, manes and crowns/forelocks have independent
+carriers. The adult jaw carries its tongue. Each ankle bank and its two core
+faces share the matching leg carrier. Supporting hooves stay fixed in battle;
+Rapidash's elevated foreleg articulates independently. World walking uses four
+complete chains per horse and carries ankle fire with the matching limb,
+retaining the adult's authored elevated foreleg. Lossless material packing
+combines each pair of core faces while preserving every logical solid.
+Builder, asset readers and runtime routes use the GLBs; old static JSONs are
+removed. See [Ponyta](ponyta-sculpture.md) and
+[Rapidash](rapidash-sculpture.md).
+
+Ponyta has 47 logical solids, 40 runtime material groups, 15,002 vertices,
+22,280 triangles, 14 joints, 200 accessors and 637,600 bytes. Rapidash has
+54 logical solids, 47 runtime groups, 17,555 vertices, 26,744 triangles,
+15 joints, 228 accessors and 724,584 bytes. Authoring heights remain 1.10 and
+1.30; verified pack heights remain 0.9906 m and 1.7018 m. Limits and physical
+sizes are unchanged.
+
+All 33 combined Python checks pass, including actual attachment roots through
+motion, strict logical/packed schemas and weights, both posed core faces,
+empty adult jaw samples, fixed supports and raised forehoof, isolated joint
+motion, winding/strain and source-cue contracts. Four focused Rust checks pass
+for verified-size GPU activation, runtime owners and independent carriers,
+animated culling, plus four complete world chains through 64 phases. Front,
+side and rear poses of all clips were inspected; Blender exports are
+byte-identical. Shiny checks remain skipped. Grass height is untouched.
+Browser visual acceptance remains open for both species.
+
+
+Both shared all-species geometry and exact source-cue pose timing regressions
+pass. Native Route 29 admission passes at original pack size for both horses.
+The inspected Ponyta/Hoppip 3D/2D pair preserves frame 2063, checksum
+971999260, LCD frame 2668 and time 46.357391624. Rapidash/Hoppip preserves
+frame 3192, checksum 1320301839, LCD frame 3901 and time 70.527144961.
+Complete silhouettes, coherent gaze, flowing fire and correct species HUDs
+remain readable. Ponyta's four hooves and Rapidash's three support hooves meet
+the terrain; the adult's raised foreleg and open jaw remain distinct. No shader
+errors were reported. Ignored evidence uses `ponyta-normal` and
+`rapidash-normal` under `target/pokemon-native-review/`. The existing supported
+-110-degree angle is selected with normal size/support/omission and whole-body/
+frustum checks active. Grass height is untouched. Browser visual acceptance
+remains open.
+
+
+### Kangaskhan: independently articulated mother and seated baby
+
+Kangaskhan now uses a canonical skin from `tools/kangaskhan_glb.py` over its
+dedicated sculpture. All 70 logical solids remain: armored mother, open mouth,
+raised clawed fists, fitted thigh armor, broad grounded feet, balancing tail,
+open cream pouch and complete pale violet baby. Reduced radial/interior
+sampling and adaptive fitted paint fit the unchanged skin limits. Lossless
+material packing produces 46 runtime groups with 18,743 vertices, 31,108
+triangles, 20 joints, 252 accessors and 823,132 bytes. Authoring height remains
+1.40; verified pack height remains 2.2098 m. See
+[Kangaskhan](kangaskhan-sculpture.md).
+
+Mother body, belly, pouch and dorsal armor share one carrier; head, jaw, ears,
+arms and wrists articulate separately. The tail has two continuous carriers.
+Haunch armor follows its supporting haunch, and ankles blend into fixed feet
+and toe claws. The baby has a separate body, blended neck, head, ears and two
+arm/hand grip carriers. It remains seated with both hands holding the rim.
+Grip joints use explicit grip names, preventing walking arm swing from being
+applied to the baby's hands. World walking retains two complete support chains
+and preserves every baby influence. Builder, asset readers and runtime routes
+use the GLB; the old static JSON is removed.
+
+All 19 combined Python checks pass, including exact logical/packed geometry,
+weights, actual roots, baby containment and both grips through motion, fitted
+mother/baby/armor layers, real empty jaw and pouch interior, fixed feet,
+isolated joint motion, winding/strain and source-cue contracts. The narrow baby
+seat contact is proved with a shared occupied-volume point in the cup floor;
+the generic overlap grid skips that thin interval. Detached controls remain
+active. Three focused Rust checks pass for verified-size GPU activation,
+runtime owners and independent mother/baby carriers, animated floor/culling,
+and two world leg chains through 64 phases with baby weights preserved and
+grips excluded from walking arm swing. Both shared all-species geometry and
+exact source-cue timing checks pass. Front, side and rear poses of all clips
+were inspected; Blender exports are byte-identical. Shiny checks remain
+skipped. Grass height is untouched. Browser visual acceptance remains open.
+
+Both shared all-species geometry and exact source-cue pose timing checks pass.
+The rebuilt native Route 29 Kangaskhan/Rattata 3D/2D pair was inspected at
+preserved state: frame 4570, checksum 339953756, LCD frame 5413 and virtual
+time 99.975341419. The complete parent, seated baby and rim grips, open jaw,
+raised fists and correct KANGASKHAN HUD remain readable; both feet meet the
+terrain. Normal terrain admission passes at the original pack size and the
+existing -110-degree review angle, with normal size/support/omission and
+whole-body/frustum checks active. No shader errors were reported. Ignored
+evidence is `target/pokemon-native-review/kangaskhan-normal`. Grass height is
+untouched. Browser visual acceptance remains open.
+
+
+### Tangela: rooted independent curls and coherent gaze
+
+Tangela now uses a canonical skin from `tools/tangela_glb.py` over its dedicated
+sculpture. All 41 closed vines remain, including four coherent eye-frame ropes,
+front/layered curls, nine rear wraps, four side curls and four rear curls.
+The existing side curls turn farther around the body for profile readability.
+Hidden root centers sit inside the actual stored core, correcting lateral caps
+that only grazed its surface. Reduced radial/path redundancy and smooth rope
+normals retain the tangle within unchanged limits. All 49 logical solids pack
+losslessly into 10 runtime material groups: 17,318 vertices, 31,236 triangles,
+39 joints, 162 accessors and 896,856 bytes. Authoring height stays 1.00;
+verified pack height stays 0.9906 m. See [Tangela](tangela-sculpture.md).
+
+Body, face, eyes, pupils and four framing ropes share a coherent carrier.
+The other 37 strands have independent carriers blended from embedded roots to
+free curls, with distinct idle phases. Attack and hit use source-cue clocks
+and return to neutral endpoints. Red shoes stay fixed in battle; world walking
+uses two shoe chains and preserves every body/vine influence. Material packing
+preserves each logical solid and its actual weights. Builder, asset readers
+and runtime routes use the GLB; the old static JSON is removed.
+
+All 16 combined Python checks pass, including closed uncrossed vines, actual
+occupied root witnesses, fixed root caps, shoe/eye attachments, both pupils
+remaining unobstructed by all 41 vines through motion, fixed floor, winding/
+strain, isolated articulation, distinct phases and cue contracts. Three focused
+Rust checks pass for verified-size GPU activation, all 37 vine carriers,
+animated floor/culling and two world shoe chains through 64 phases with all
+body/vine influences preserved. Front, side and rear poses of all clips were
+inspected; Blender exports are byte-identical. Shiny checks remain skipped.
+Grass height is untouched. Browser visual acceptance remains open.
+
+Both shared all-species geometry and exact source-cue pose timing checks pass.
+The rebuilt native Route 29 Tangela/Pidgey 3D/2D pair was inspected at preserved
+state: frame 2551, checksum 3912378689, LCD frame 3214 and virtual time
+56.338423042. The full tangle, clear pupils, red shoes and correct TANGELA HUD
+remain readable; both shoes meet the terrain. Normal terrain admission passes
+at original pack size and the existing -110-degree review angle, with normal
+size/support/omission and whole-body/frustum checks active. No shader errors
+were reported. Ignored evidence is `target/pokemon-native-review/tangela-normal`.
+Grass height is untouched. Browser visual acceptance remains open.
+
+
+### Drowzee and Hypno: coherent tapirs and hand-held pendulum
+
+Both dedicated tapir sculptures now use canonical `tapir_glb.py` skins.
+The 43/48 named solids remain intact, including Drowzee's welded wavy waist
+and Hypno's scalloped ivory ruff and open metal ring. Reduced redundant
+surface samples bring both within unchanged runtime limits: Drowzee has
+19,170 vertices, 32,056 triangles, 13 joints, 188 accessors and 711,100 bytes;
+Hypno has 19,105 vertices, 32,320 triangles, 14 joints, 204 accessors and
+695,476 bytes. Authoring height remains 1.12. Verified pack heights are
+0.9906 m and 1.6002 m. See [tapir anatomy](tapir-sculptures.md).
+
+Both rigs use fixed battle feet, continuous blended torso/neck and leg fields,
+coherent fitted faces, independent ears and three carriers per arm. Hypno's
+cord and ring share a carrier parented to its right wrist and pivoting at the
+held cord root. World walking builds two full support chains and preserves
+pendulum influences. Idle/attack/hit follow established source-clock contracts.
+Builder, strict readers, runtime GPU routing and world rigs use the GLBs;
+static JSON duplicates are removed. Species::ALL now contains 187 entries.
+
+All 16 Python checks and three focused Rust checks pass. These cover fixed
+feet, geometry limits and shading, welded waist motion, independent carriers,
+occupied hand/cord/ring/lip connections, bounded strain, winding, identity
+endpoints, verified pack-size GPU activation and two world support chains
+through 64 phases. Blender reproduces both files byte for byte. Front, side
+and rear previews of all three clips were inspected. Shiny checks are skipped
+and grass height is untouched. Browser visual acceptance remains open.
+
+
+The focused Rust rig/GPU/world checks passed (3 tests, 1.41 seconds), as did
+the shared all-species geometry and exact source-cue pose timing checks
+(2 tests, 86.53 seconds). The freshly built native Drowzee/Hoppip Route 29 pair
+was inspected at preserved state: frame 2928, checksum 2531053417, LCD frame
+3543 and virtual time 64.29578896. The complete rounded body, fitted sleepy
+face, wavy waist and fingers remain readable, with both feet on terrain and
+the correct DROWZEE HUD. Normal admission passed at original pack size and
+the existing -110-degree review angle with support, omission, whole-body and
+frustum checks active. No shader errors were reported. Ignored evidence:
+`target/pokemon-native-review/drowzee-normal`.
+
+
+The native Hypno/Sentret Route 29 pair was also inspected at preserved state:
+frame 1600, checksum 3201743356, LCD frame 2207 and virtual time 38.088585666.
+The pointed ears, fitted gaze, ivory ruff, raised hands and connected open
+pendulum remain readable; both feet meet terrain and the HUD says HYPNO.
+Normal admission passed at original pack size and existing -110-degree review
+yaw with all support/omission/whole-body/frustum constraints active, no fallback
+and no shader errors. Ignored evidence: `target/pokemon-native-review/hypno-normal`.
+Browser visual acceptance remains open. No shiny checks or grass-height edits
+were made.
+
+
+### Abra and Alakazam: curved anatomy, seated roots and psychic props
+
+Abra and Alakazam now use canonical `psychic_fox_glb.py` skins over their
+original dedicated sculptures. Curved torso/cuirass profiles, palms, insteps,
+forearms, fingers and a curved banded Abra tail improve the static anatomy.
+Both retain the tapered fox skulls and their closed or focused gaze. Adaptive
+fitted ear/gaze patches clear the stored surfaces. Hidden upper-arm roots sit
+inside the torso, and Alakazam's moustache blades have substantial embedded
+muzzle roots. See [psychic fox anatomy](psychic-fox-sculptures.md).
+
+All 43/53 logical parts remain. Abra has 7,254 vertices, 12,040 triangles,
+15 joints, 185 accessors and 335,248 bytes; Alakazam has 7,513 vertices,
+12,264 triangles, 17 joints, 222 accessors and 343,788 bytes. Authoring height
+remains 1.12; verified pack heights remain 0.889 m and 1.4986 m. No runtime,
+size, terrain or camera limits were relaxed. Species::ALL now has 189 entries.
+
+Both rigs have fixed battle feet/claws, blended torso/neck and limbs, coherent
+heads/gazes, independent ears and three carriers per arm. Abra adds two tail
+carriers shared by the matching brown band; Alakazam adds separate moustache
+and held-spoon carriers. Each spoon pivots at its curled-finger grip beneath
+the wrist. World walking uses two complete support chains and retains all
+prop/tail influences. Idle, attack and hit follow source-cue clocks and neutral
+endpoint contracts. Runtime, readers and builder use GLBs; old JSON duplicates
+are removed.
+
+All 12 Python and three focused Rust checks pass, including actual anatomical
+root occupancy through clips, fitted surface clearance, supported spoons,
+independent articulation, planted feet, winding/strain, GPU activation at pack
+size and two support chains across 64 world phases. Final front/side/rear pose
+sheets were inspected. Blender exports are byte-identical. Shiny checks remain
+skipped; grass height is untouched. Browser visual acceptance remains open.
+
+
+Both shared all-species geometry and exact source-cue timing checks passed
+(2 tests, 133.82 seconds). The native client was rebuilt before capture.
+The Abra/Pidgey Route 29 pair was inspected at preserved state: frame 3659,
+checksum 293534093, LCD frame 4382 and virtual time 79.20587775. The closed gaze,
+pointed muzzle/ears, chest armor, curled fingers, banded tail and clawed feet
+remain readable. Both feet meet terrain and the HUD says ABRA. Normal terrain
+admission passed at original pack size and the existing -110-degree review
+yaw with normal support/omission/whole-body/frustum checks active, no fallback
+and no shader errors. Ignored evidence: `target/pokemon-native-review/abra-normal`.
+
+
+The native Alakazam/Sentret Route 29 pair was also inspected at preserved state:
+frame 2118, checksum 4140350985, LCD frame 2820 and virtual time 49.969093667.
+The focused eyes, pointed ears/muzzle, seated moustache blades, chest/shoulder
+armor, curled fingers and both spoons remain readable. Both clawed feet meet
+terrain, and the HUD says ALAKAZAM. Normal admission passed at original pack
+size and existing -110-degree review yaw with normal support, omission,
+whole-body and frustum checks active, no fallback and no shader errors.
+Ignored evidence: `target/pokemon-native-review/alakazam-normal`. Browser
+visual acceptance remains open. Shiny checks and grass-height edits remain
+skipped.
+
+
+### Kadabra: connected neck, seated moustache and fitted tail band
+
+Kadabra now uses a canonical `kadabra_glb.py` skin over its reviewed detailed
+sculpture. The neck extends into the skull, both moustache halves have embedded
+muzzle roots, and the tail band conforms to clipped triangles of the actual
+gold tail. The other 56 parts retain exact reviewed geometry. The star, focused
+gaze, brows, three pink waves, asymmetric hands, ivory finger/toe claws, heavy
+curled tail and hollow held spoon remain. See [Kadabra](kadabra-sculpture.md).
+
+All 60 logical parts pack losslessly into 38 runtime groups: 4,776 vertices,
+5,848 triangles, 18 joints, 223 accessors and 293,136 bytes. Authoring height
+stays 1.12; verified pack height stays 1.2954 m. Limits and native terrain/camera
+constraints are unchanged. The runtime, readers and builder use the GLB; the
+old JSON duplicate is removed. Species::ALL now contains 190 entries.
+
+The floor root and complete feet/claws stay fixed in battle. Torso/neck and
+limbs blend continuously, head/gaze remain coherent, and ears, wrists,
+moustache, tail and held spoon have independent carriers. Anatomical part
+identity keeps each moustache root on its own carrier across the center plane.
+The fitted band shares the tail field. World walking builds two complete
+support chains and preserves prop/tail influences. All clips use source-cue
+clocks with neutral endpoints.
+
+All nine Python checks pass, including exact unchanged geometry, lossless
+ranges, closed solids and shading, occupied neck/moustache/limb roots under
+motion, supported spoon and bowl/stem contact, planted feet, winding/strain,
+independent articulation, strict readers and reproducible fitted band geometry.
+A restored short-neck control fails the actual skull contact check. The final
+front/side/rear pose sheets were inspected; the default Blender builder exports
+byte-identical canonical skins. The explicit detailed-source review mode was
+also executed. Shiny checks remain skipped; grass height is untouched. Browser
+visual acceptance remains open.
+
+
+The three focused Rust checks passed against the final skin (0.40 seconds):
+GPU activation at the verified 1.2954 m pack height, authoritative rig sampling
+and bounds with fixed complete feet and anatomical moustache owners, and two
+world support chains through 64 phases with tail/moustache/spoon weights
+preserved. The native example was rebuilt before capture.
+
+
+Both shared all-species geometry and exact source-cue timing checks passed
+(2 tests, 124.45 seconds). The rebuilt native Kadabra/Hoppip Route 29 pair was
+inspected at preserved state: frame 2921, checksum 3542893732, LCD frame 3623
+and virtual time 63.956251295. The connected neck, rooted swept moustache,
+forehead star, focused eyes, three pink waves, curled fingers, raised held
+spoon and continuous tail band remain readable. Both clawed feet meet terrain,
+and the HUD says KADABRA. Normal terrain admission passed at the original
+1.2954 m pack height and existing -110-degree review yaw, with normal support,
+omission, whole-body and frustum checks active, no fallback and no shader errors.
+Ignored evidence: `target/pokemon-native-review/kadabra-normal`. Browser visual
+acceptance remains open. Shiny checks and grass-height edits remain skipped.
+
+
+### Koffing and Weezing: cratered orbs and independently phased vapor
+
+The original gas sculptures now use canonical `gas_pair_glb.py` skins.
+Local orb/cloud sampling reductions and adaptive fitted patches retain all
+thirteen radial craters per orb, recessed expressions, skull/crossbones,
+rooted canines, adult joining stalks and both five-lobed gas billows. All
+23/35 original logical parts remain. See [gas pair](gas-pair-sculpture.md).
+
+Koffing has 10,563 vertices, 18,264 triangles, 12 joints, 127 accessors and
+442,308 bytes; Weezing has 16,974 vertices, 28,756 triangles, 14 joints,
+188 accessors and 687,324 bytes. Authoring heights stay 1.00/1.20, and verified
+pack heights stay 0.6096/1.1938 m. Both now fit the unchanged geometry/skin
+limits. Runtime, readers and builder use the GLBs; old JSON duplicates are
+removed. Species::ALL now contains 192 entries.
+
+Faces, emblems and fangs remain coherent with each orb. Weezing's upper orb
+and rear node have independent carriers joined by blended stalks. Each
+root-parented cloud has a separate carrier and four lobe carriers, with eight
+distinct lobe phases. Occupied roots retain core/lobe connections, and coherent
+tiny polar cap fields prevent quantized-weight pinching. Intentional float
+locomotion and battle hover remain. Clips follow source-cue clocks and neutral
+endpoint contracts.
+
+All 20 combined Python checks pass, including actual crater emptiness at rest
+and under motion, fitted features, occupied roots, floor/winding/strain,
+independent carriers and gas phases. Final front/side/rear poses were inspected;
+Blender outputs are byte-identical. Shiny checks remain skipped and grass height
+is untouched. Browser visual acceptance remains open.
+
+
+Four focused Rust checks pass (1.78 seconds): GPU activation for each species
+at its verified pack height, all independent carriers with coherent features,
+animated floor/culling bounds and preserved intentional battle hover, and 64
+world floating phases with every authored influence preserved. Both world rigs
+have no walk legs or additional limb motion.
+
+
+The shared all-species geometry and exact source-cue timing checks passed.
+An additional unrelated `outdoor_entry_mat` regression failed at its expected
+marked-cell count (0 rather than 8). Its temporary image-sample lifetime was
+corrected to unblock test compilation; this changes test setup only. The
+failure is separate from the passing model/rig checks and remains recorded in
+`target/pokemon-native-review/gas-shared-tests.log`.
+
+
+The rebuilt native Koffing/Sentret Route 29 3D/2D pair was inspected at preserved
+state: frame 2506, checksum 2573841080, LCD frame 3143 and virtual time
+55.148248124. The cheerful grin, tongue/canines, cratered silhouette, lower
+skull/crossbones and separate billows remain readable, with the correct KOFFING
+HUD and intentional hovering clearance. Normal terrain admission passed at the
+original 0.6096 m pack height and existing -110-degree review yaw, with normal
+support/omission/whole-body/frustum constraints active, no fallback and no
+shader errors. Ignored evidence: `target/pokemon-native-review/koffing-normal`.
+
+
+The native Weezing/Pidgey Route 29 pair was also inspected at preserved state:
+frame 2347, checksum 3242319440, LCD frame 3031 and virtual time 54.178510084.
+The linked main/upper orbs, rear node, strained expressions, solid canines,
+craters, cream emblems and independent billows remain readable, with the
+correct WEEZING HUD and intentional hovering clearance. Normal admission
+passed at the original 1.1938 m pack height and existing -110-degree review
+yaw with normal support/omission/whole-body/frustum checks active, no fallback
+and no shader errors. Ignored evidence: `target/pokemon-native-review/weezing-normal`.
+Browser visual acceptance remains open. Shiny checks and grass-height edits
+remain skipped.
+
+
+### Magnemite and Magneton: open magnet hinges and axial screw motion
+
+Both dedicated steel-orb sculptures now use `magnet_glb.py` canonical skins.
+Adaptive fitted eyes, simpler flat cross-slot caps and smooth helical thread
+normals reduce redundant geometry while keeping the sphere/eye proportions,
+open beveled horseshoes, red/blue pole blocks, three slotted screws per orb,
+3.5-turn crown threads and three joined Magneton bodies. Eye shading matches
+stored parents. See [magnetic sculptures](magnet-sculptures.md).
+
+Magnemite retains 18 logical parts in 9 runtime groups: 5,966 vertices,
+9,140 triangles, 7 joints, 64 accessors and 286,008 bytes. Magneton retains
+54 logical parts in 27 groups: 17,898 vertices, 27,420 triangles, 19 joints,
+152 accessors and 687,728 bytes. Heights remain 0.96 authoring and verified
+pack heights 0.3048/0.9906 m. Geometry, skin, size, camera and terrain limits
+are unchanged. Runtime, readers and builder use GLBs; old JSON duplicates
+are removed. Species::ALL now contains 194 entries.
+
+Each unit has a coherent orb/eye carrier, two magnet hinges with attached pole
+blocks, one crown carrier and two face-bolt carriers. Crowns twist around each
+original unit's actual axis; lower-unit turns are retained. All metal parts
+stay rigid, and the three adult body joins remain occupied through motion.
+Source-cue idle/attack/hit clips return to neutral endpoints. Intentional
+battle/world hover remains, with all mechanical weights preserved.
+
+All 16 Python and four focused Rust checks pass: lossless source ranges,
+strict geometry/clip readers, closed solids/shading, true roots and cluster
+joins, open notches and solid arms, rigid lengths, floor/winding, independent
+carriers, correct crown axes, pack-size GPU activation and 64 world floating
+phases without extra limb motion. Final front/side/rear pose sheets were
+inspected; Blender exports match the canonical bytes. Shiny checks remain
+skipped and grass height is untouched. Browser acceptance remains open.
+
+
+Both shared all-species geometry and exact source-cue timing checks passed
+(2 tests, 90.99 seconds). The rebuilt native Magnemite/Pidgey Route 29 pair
+was inspected at preserved state: frame 2450, checksum 720946100, LCD frame
+3103 and virtual time 54.029684417. The coherent eye, face bolts, threaded
+crown, open horseshoes and red/blue poles remain readable, with the correct
+MAGNEMITE HUD and intentional floating clearance. Normal terrain admission
+passed at the original 0.3048 m pack height and existing -110-degree review
+yaw with normal support/omission/whole-body/frustum constraints active, no
+fallback and no shader errors. Ignored evidence:
+`target/pokemon-native-review/magnemite-normal`.
+
+
+The native Magneton/Pidgey Route 29 pair was also inspected at preserved
+state: frame 2803, checksum 4239097170, LCD frame 3441 and virtual time
+61.380406917. All three joined bodies, eyes, face screws and colored open
+magnets remain readable, with the correct MAGNETON HUD and intentional
+floating clearance. Normal terrain admission passed at the original
+0.9906 m pack height and existing -110-degree review yaw, with normal
+support/omission/whole-body/frustum constraints active, no fallback and no
+shader errors. Ignored evidence: `target/pokemon-native-review/magneton-normal`.
+Shiny verification remains skipped; browser visual acceptance remains open.
+
+
+### Cubone and Marowak articulation (196 registered authored rigs)
+
+Cubone and Marowak now use canonical GLBs, retaining all 45/52 original named
+parts. Both have 14 joints: supported bodies, neck/skull, two three-joint arms,
+thighs and two tail carriers. Skull paint and horns remain coherent; gripping
+fingers/thumb and rigid bifurcated club travel together on the actual left wrist.
+World walking uses two complete support chains. Source heights remain 1.00/1.18;
+no model scale or camera admission rule changed. See the species sculpture
+notes for geometry budgets and neutral pins. Blender byte parity and final
+front/side/rear pose sheets were inspected. Runtime checks are in progress.
+Shiny verification stays skipped and browser visual acceptance remains open.
+
+All 32 Python checks pass: 13 Cubone anatomy checks (18.519 seconds),
+13 Marowak anatomy checks (17.956 seconds), and six stored skin checks
+(67.347 seconds). They cover exact canonical geometry and budgets, closed
+solids and actual normals, fitted face clearance, empty recessed spaces,
+rooted anatomy and gripping fingers, full hierarchy/weights/binds, independent
+carriers, actual occupied joins through clips, fixed feet/claws, bounded edge
+strain and winding, source-clock endpoints and mutation rejection. The first
+independent-carrier check caught imperceptible Cubone thigh articulation;
+the supported thigh yaw was increased while keeping all feet fixed.
+
+The Rust pack reader confirms CUBONE = 104 / LONELY = 0.4064 m and
+MAROWAK = 303 / BONEKEEPER = 0.9906 m. Four focused Rust checks passed
+in 2.20 seconds: both pack-size GPU activations, fixed battle supports with
+club/wrist ownership and bounds, and 64 phases of two-foot world walking
+with the held club's authored weights preserved. Native paired battle review is recorded below.
+
+
+
+Native Cubone/Sentret Route 29 3D/2D pair inspected: frame 3283, checksum
+1716862610, LCD frame 3963, virtual time 73.682151458. The original 0.4064 m
+size, oversized smooth skull, recessed eye/nostrils, rooted feet, curved fingers
+and held club remain readable. Correct CUBONE HUD; no fallback or shader error.
+Normal terrain admission passed at the existing -110-degree review yaw with
+support, omission, whole-body and frustum gates intact. State was preserved.
+Ignored evidence: `target/pokemon-native-review/cubone-normal`.
+
+Native Marowak/Pidgey Route 29 3D/2D pair inspected: frame 4728, checksum
+3246843888, LCD frame 5500, virtual time 105.379601959. The original 0.9906 m
+size, long rounded skull/muzzle, narrow gaze, raised held club, muscular tail
+and grounded broad feet remain readable. The diffuse fog light preserves the
+bone/skin distinction. Correct MAROWAK HUD; no fallback or shader error. Normal
+terrain admission passed at the existing -110-degree review yaw with support,
+omission, whole-body and frustum gates intact. State was preserved. Ignored
+evidence: `target/pokemon-native-review/marowak-normal`.
+
+Both current canonical compressed payloads are present in the native executable.
+World first-person/elevated and browser reviews remain open.
+
+
+### Croconaw and Feraligatr (198 authored registry entries)
+
+Canonical 14-joint skins replace both static JSONs. Selective jaw subdivision,
+curved body/limb profiles, rounded digits, rooted teeth, seated curved bevels
+and centerline-following tail fins retain all 49/80 logical solids in 28/41
+runtime groups. Published assets have 12,078/14,951 vertices and 19,044/21,756
+triangles, within the unchanged runtime limits. Original pack sizes remain
+1.0922/2.3114 m. Thirteen Python checks, the published strict reader, four
+focused Rust checks and exact Blender byte parity pass. Signed-zero position
+canonicalization makes exports reproducible without changing numeric geometry,
+weights or clips. Final pose sheets are inspected; native multi-view and browser
+reviews remain pending. See `crocodile-sculptures.md` for details and pins.
+
+
+The shared all-species grounded/volumetric geometry and exact production
+source-cue timing checks both pass against the current 198-entry registry
+(2 tests, 124.73 seconds). Fresh battle and world review executables build
+successfully; all four current canonical compressed payloads are present in
+the battle executable. Multi-view native review continues below.
+
+
+Native Croconaw/Sentret Route 29 pair inspected at preserved state: frame
+5213, checksum 1248705665, LCD frame 6187, virtual time 137.530594338. The
+original 1.0922 m body, rounded broad snout, coherent eyes/paint, rooted teeth,
+rounded fingers/toes and attached tail diamond remain readable against the
+retained terrain. Correct CROCONAW HUD; no fallback or shader error. Normal
+terrain admission passed at the existing -110-degree review yaw with support,
+omission, whole-body and frustum constraints intact. Ignored evidence:
+`target/pokemon-native-review/croconaw-normal`.
+
+Native Feraligatr/Sentret Route 29 pair also inspected at preserved state:
+frame 4638, checksum 2873737362, LCD frame 5613, virtual time 128.680985458.
+The original 2.3114 m size is retained. The whole red-crested silhouette, broad
+rounded jaws, seated teeth, clean V belly, curved limbs/armor, counterbalancing
+tail and grounded clawed feet fit in the actual scene. Diffuse fog light leaves
+the blue/cream/red anatomy readable. Correct FERALIGATR HUD; no fallback or
+shader error. Normal terrain admission passed at the existing -110-degree
+review yaw and normal support/omission/whole-body/frustum constraints. Ignored
+evidence: `target/pokemon-native-review/feraligatr-normal`.
+
+World first-person review is not accepted yet. `render_at_location` with
+CUBONE in NewBarkTown (5,8), image-target paired capture and first-person
+camera aborts with a Compute Task Pool stack overflow. It reproduced with
+both RALA and LR ordinary inputs. The debugger diagnosis is recorded below;
+no model resizing or admission relaxation was used. Browser review remains open.
+
+
+World QA stack diagnosis: LLDB stopped in
+`GameDataSet::apply_runtime_mutation_command_with_checksum` at its stack probe.
+The unoptimized native QA override reserves 0x1b1000 + 0xf00 = 1,777,408 bytes
+(about 1.70 MiB) in that function, before its caller frames. This is the
+Compute Task Pool overflow, not an observed mesh/bind failure. Native world
+review was rebuilt with the repository's normal optimized `crystal-assets`
+profile (opt-level 2), retaining the same geometry, sizes, controller inputs and
+cameras. No runtime source or thread-stack limit was changed. World review
+remains unaccepted until the actual paired captures pass. Diagnostic evidence:
+`target/pokemon-native-review/cubone-world-debug.log` and
+`target/pokemon-native-review/world-stack-disassembly.log`.
+
+
+Stationary native world review now runs with normal optimized assets. The
+New Bark gate capture was rejected because it showed dialogue rather than a
+Pokémon. Route36 (20,8), noon pairs preserve state and show Cubone/Marowak
+fronts in first person and sides at elevated gameplay scale. Their skulls,
+held clubs and support remain coherent at original size. Croconaw and
+Feraligatr elevated silhouettes also remain readable, but close limb
+transitions need more organic contour work. Feraligatr's first-person body
+view crops its head at the normal follower distance; face acceptance remains
+open. Per-species documents record receipts and limitations. Browser and
+moving-world acceptance remain open. Shiny checks remain skipped per user
+direction; grass height is owned by another agent.
+
+
+Crocodile contour correction after actual close native review: exposed elbow
+and knee closing disks are buried inside adjoining curved surfaces; feet
+receive local silhouette sampling. The first Croconaw hock curve folded
+internally, caught by a new independent triangle-crossing check and fixed
+with a straight buried shin root. Feraligatr knee armor follows the full
+joined thigh/hock envelope. Logical/runtime part counts, original size,
+hierarchy, binds, clips and all unrelated geometry/weights are preserved.
+All 15 Python checks and four focused Rust activation/support/world-walking
+checks pass; Blender exact export parity holds; the complete exact-species
+schema check passes after correcting an unchanged Heracross vertex fixture.
+Current Feraligatr paired native battle/elevated views show coherent joins,
+support and full silhouette. First-person frontal face readability remains
+limited by its large jaw at the normal follower gap. Final Croconaw native
+review is recorded in the per-species art guide. Browser/moving-world
+acceptance remain open; shiny checks remain skipped.
+
+
+Wartortle and Blastoise canonical skins increase the explicit authored rig
+registry from 198 to 200 entries. All 68/73 named source solids remain in
+39/44 losslessly grouped runtime parts. Their original pure geometry recipes
+now use adaptive fitted surfaces and focused round-body sampling within the
+existing budgets. Both fifteen-joint rigs preserve rigid shells and scutes,
+supported feet, wrist-owned claws, distinct feather ears or complete hollow
+cannon assemblies, and two tail carriers. Wartortle's cloud tail gains real
+billowing volume after side-view critique, with an in-plane blend that avoids
+the initial thin-rim fold. All 34 Python anatomy/skin checks pass across final
+bytes; final Blender export parity holds. Four focused Rust production/GPU/
+walking checks pass. Shared and native multi-view receipts are recorded in
+`docs/art/turtle-sculptures.md`. Seventy-five static species files still remain,
+with browser/moving-world acceptance and previously documented large-model
+framing work also open. Shiny checks remain skipped; grass is untouched.
+
+
+Turtle native review: both current canonical GLBs are verified inside the
+fresh production example binaries. Original-size paired battles show correct
+WARTORTLE/BLASTOISE names and both exact models with no fallback; terrain
+admission passes without rule changes. Stationary first-person and elevated
+views show the revised tail, coherent fitted shell/gaze and real cannon rims.
+Both still expose a visible wrist junction needing further contour work;
+these models are not fully visually accepted yet. The 200-entry registry
+schema and production cue checks pass (2 tests, 193.15 s). Receipts, critiques
+and remaining acceptance work are in the turtle art guide.
+
+
+The turtle wrist correction replaces each separate arm/palm pair with one
+closed forelimb, reducing source/runtime parts to 66/37 and 71/42. Smooth
+radius interpolation and eased terminal bends remove the visible wrist ring
+in final native first-person and elevated views. Both fifteen-joint rigs,
+original claws, shell and feature ownership remain intact. All 35 Python
+geometry/skin checks and four focused Rust activation/support/walking checks
+pass; both Blender exports match canonical bytes. Final native pairs preserve
+state and the current compressed assets are verified in the executable.
+The turtle art guide records the final pins, counts, critiques and receipts.
+Browser, moving-world and final-revision battle visual acceptance remain open;
+75 static species files still remain. Shiny checks remain skipped.
+
+
+Magmar increases the explicit authored rig registry from 200 to 201 entries.
+Its original 55 source solids remain in 39 losslessly grouped runtime parts.
+Adaptive fitted layers, focused round-body sampling and a locally rounded
+open bill fit 19,923 vertices/30,320 triangles in the existing limits.
+The seventeen-joint skin preserves coherent bill/tongue/gaze, continuous
+forelimb/cuff fields, wrist-owned claws, fixed complete battle supports,
+independent crown flames and a three-carrier burning tail. Thin flame banks
+and their fitted glow layers move together after a differential rim-fold
+regression. All 20 final Python checks and three production activation,
+support and walking checks pass. The 201-entry schema passes on final bytes;
+shared source-cue timing also passes, and Blender export parity holds.
+Native paired first-person/elevated/battle views preserve state, correct HUD
+names and authentic terrain admission at 1.2954 m with no fallback.
+The rounded bill is accepted; faint close-range belly shadow bands remain
+open, as do browser/moving-world visual acceptance. See
+`docs/art/magmar-sculpture.md` for final pins, counts and receipts.
+Seventy-four static species files remain. Shiny checks stay skipped; grass
+and renderer AA/filtering are untouched.
+
+
+Electabuzz geometry preparation preserves all 70 named parts while reducing
+64,252 vertices/113,628 triangles to 19,502 vertices/33,748 triangles through
+adult-only adaptive fitting and focused round/stripe sampling. All thirteen
+pair anatomy checks pass on current canonical assets; Elekid's canonical
+bytes remain exact. Electabuzz still uses its static JSON while its rig
+migration is in progress, so the authored registry remains 201 and 74 static
+species files remain.
+
+Automated native screenshots now default to headless image capture. The
+window-system plugin and macOS native-window retention are disabled in this
+mode, and the scheduler drives the production renderer directly. Eight
+capture regressions pass, including default selection and image target,
+viewport, ownership and paired-state behavior. An explicit headless paired
+GPU capture completes at 1000×700 with state preserved (Route36, frame 2178,
+checksum 3615010567). AGENTS.md requires offscreen automation and explicit
+user authorization for visible/live renders. Shiny checks remain skipped.
+
+
+Electabuzz completes its canonical standard-skin migration, increasing the
+explicit authored registry from 201 to 202 entries. The 70 source solids
+remain in 41 losslessly grouped runtime parts (19,502 vertices, 33,748
+triangles, 19 joints). The rig follows the distinct raised-left/forward-right
+arms, preserves the open fang-bearing jaws and knuckled fists, shares smooth
+arm/leg/tail fields with stripe wraps, and articulates antennae and scalp
+tufts independently. Complete feet/claws stay fixed in battle; world walking
+uses two complete support chains. All 21 Python geometry/skin/anatomy checks,
+three production activation/support/walking checks and two shared registry/
+cue checks pass. Blender export parity holds, and Elekid's bytes are exact.
+All final native close/elevated/battle review is headless and muted. Paired
+state, original 1.0922 m pack size, correct HUD names and authentic terrain
+admission are verified with no fallback. See the electric-pair art guide for
+pins and receipts. Browser/moving-world acceptance remain open. Seventy-three
+static species files remain; shiny checks stay skipped and grass/AA/filtering
+are untouched.
+
+
+## Shell bipeds: Slowbro and Slowking
+
+Slowbro and Slowking increase the authored rig registry from 202 to 204.
+Their 74/62 original named solids pack losslessly into 40/35 runtime parts.
+Focused round sampling and fitted surfaces reduce their former
+45,019/38,798 vertices to 19,528/19,169, with 32,764/31,984 triangles.
+Both remain below the existing geometry, accessor, part and byte limits.
+Each has 18 joints, supported feet/claws, independent shoulder/elbow/wrist
+chains, body/neck/head motion and a two-joint tail. Slowbro's whole shell
+follows its tail attachment with a separate biting jaw; Slowking's crown
+and ruby stay coherent over three independently moving collar sectors.
+Both mouths on Slowbro remain empty through the sampled source clips.
+
+The inside of the broad elbows exposed closest-path weight discontinuities
+in the first pose checks. A continuous longitudinal arm field removes the
+jump without reducing the authored motion or changing the limits. Final
+sampled edge ratios are approximately 0.89–1.09. All 33 Python checks and four
+production GPU/support/walking checks pass; background Blender reproduces
+both GLBs byte for byte. Their art guides record geometry pins and source
+provenance. Seventy-one static species files remain. Shiny checks stay
+skipped, and grass height, AA and filtering are untouched by this batch.
+
+
+The final 204-entry registry/schema and cue-timing regressions also pass.
+Six current native captures are headless and muted, with guarded executable
+identity and exact embedded GLBs. Each 3D/2D pair preserves state. Both
+Route29 battles name the intended species and SENTRET and use the models
+without fallback; the full battle views show grounded anatomy. Ordinary
+first-person close framing crops the upper face/head, so close-view
+acceptance remains open alongside wrist seam polish, browser and moving-world
+review. A separate terrain-admission trace was not collected; no admission
+claim is made from these receipts. Art guides retain exact paired-state
+checksums and clocks. No scale, scenery, grass, AA or filtering changes were
+made for this batch.
+
+
+## Continuous forelimbs for Slowbro and Slowking
+
+The two overlapping palm solids on each biped are replaced by continuous
+closed arm/wrist/palm surfaces, using smoothly interpolated centerlines and
+radius profiles as on the turtles. Eased elbow bends remove self
+intersections; every original hand claw stays rooted through the source
+clips. A stored-surface regression rejects large closing fans outside the
+buried shoulder. The 70/58 non-arm/palm solids retain exact f32 geometry,
+normals, indices and colors.
+
+Current Slowbro/Slowking assets contain 19,322/18,831 vertices,
+32,532/31,512 triangles, 72/60 logical parts and 38/33 runtime parts.
+The 18-joint rigs and original physical scale remain. All 34 Python tests,
+four production GPU/support/walking tests and two shared schema/cue tests
+pass. Background Blender reproduces both current canonical GLBs exactly.
+The registry remains at 204 entries; 71 static species files remain.
+
+Six fresh native reviews are entirely headless and muted, with verified
+executable identity and exact embedded GLBs. The first-person portraits use
+ordinary wide controls `0 0 -10 1`, making the faces/crowns and wrists
+readable. Every 3D/2D pair preserves state. Both Route29 battles name the
+intended species and PIDGEY without model fallback and show grounded anatomy.
+This revision collects the named encounter trace: both are accepted at their
+actual unchanged 1.6002/2.0066 m pack heights, with no scale, support,
+omission or admission workaround. Art guides record the exact paired-state
+checksums and clocks. The earlier tight `1 0 20 1` view still crops upper
+heads; camera behavior is unchanged. Browser and moving-world visual review
+remain open. Shiny checks are skipped; grass, AA and filtering are untouched.
+
+
+## Lickitung: tongue and tail articulation
+
+Lickitung increases the explicit authored rig registry from 204 to 205, replacing its static JSON with one canonical GLB. Focused round
+sampling and conforming surfaces reduce 61,784 vertices and 108,716 triangles
+to 17,028 vertices and 29,256 triangles, with 33 logical solids packed
+losslessly into 24 runtime primitives. The file contains 18 joints, 157
+accessors and 758,680 bytes; all existing limits remain intact.
+
+Body/neck/head, independent shoulder/elbow/wrist chains and supported legs
+carry three tongue and three tail joints. Continuous palms remove the old
+separate hand solids while retaining rooted white nail tips. The fitted
+tongue groove interpolates the actual stored, quantized parent-triangle
+weights. Fixed complete feet and toes preserve battle floor contact and
+production two-foot walking. The closed head retains a physical oral recess;
+independent stored-geometry rays verify its depth. All original pink, cream,
+white and dark facial colors remain.
+
+Native close review caught a jagged mouth fringe on the initial cap. Finer
+head sampling and a 1 mm source-space lining clipped directly from the head
+triangles avoid lifted chords over the recess and reduce the fringe. An
+independent test limits the exposed lining standoff to 0.1% of body height,
+in addition to the existing clearance threshold. Faint close mouth-rim shadow
+aliasing remains open for shading polish; no renderer workaround is added.
+
+All 20 Python geometry/skin regressions, three production GPU/support/walking
+checks and two shared registry/cue checks pass. Background Blender dispatch
+reproduces the canonical bytes exactly. Three final native captures are
+entirely offscreen and muted, with verified executable identity and exact
+embedded GLB. Every 3D/2D pair preserves state. The Route29 LICKITUNG/SENTRET
+battle uses both models without fallback and is admitted at the original
+1.1938 m pack height with zero support offset. The art guide records source
+provenance, pins and exact state receipts. Seventy static species files
+remain. Browser/moving-world review stays open. Shiny checks are skipped;
+grass, AA and filtering are untouched by this batch.
+
+
+## Mr. Mime: ten glove digits and supported slippers
+
+Mr. Mime increases the explicit authored rig registry from 205 to 206,
+replacing its static JSON with a canonical GLB. Focused round sampling and
+removal of coplanar fan subdivisions reduce 63,305 vertices and 105,964
+triangles to 19,663 vertices and 33,212 triangles. All 67 logical source
+solids remain, packed losslessly into 32 runtime primitives. The file has
+26 joints, 218 accessors and 917,600 bytes under the unchanged limits.
+
+Body/neck/head, separate shoulder/elbow/wrist chains, hips and knees, two
+complete fan carriers and ten whole-digit carriers preserve the asymmetric
+mime pose. Every glove keeps five rooted fingers with rounded tips and
+fitted rosy pads. Complete blue slippers and curled toes remain fixed in
+battle. The physical smile and fitted face share the head transform; its
+concave closed lining follows the actual front head triangles at 1 mm
+source-space standoff. Stored-ray checks reject raised chords and keep the
+oral probes empty through every clip.
+
+All 22 Python geometry/skin regressions, three Rust GPU/support/walking
+checks and two shared registry/cue checks pass. Background Blender dispatch
+reproduces the canonical bytes exactly. Six software neutral/idle/attack/hit
+views and three native 3D/2D pairs were inspected without opening any window.
+The native build contains the exact final GLB and headless/mute controls;
+every capture explicitly uses them and preserves its paired game state.
+Route36 first-person/elevated views retain the complete physical size and
+grounded slippers, with partial foliage occlusion of the raised glove. The
+Route29 MR__MIME/PIDGEY battle shows both models without fallback and is
+admitted at the original 1.2954 m pack height with zero support offset.
+The art guide records exact pins and paired-state receipts. Close mouth-rim
+shadow aliasing remains open for polish. Sixty-nine static species files
+remain; browser and moving-world visual review remain open. Shiny checks,
+grass, AA and filtering are outside this batch.
+
+
+## Chansey and Blissey: contained eggs and continuous palms
+
+The egg nurses increase the authored rig registry from 206 to 208,
+replacing both static JSON files with canonical GLBs. Chansey reduces
+28,420 vertices and 51,296 triangles to 10,390 vertices and 18,704 triangles:
+24 logical solids, 16 runtime primitives, 17 joints, 124 accessors and
+499,164 bytes. Blissey reduces 39,460 vertices and 70,872 triangles to
+19,379 vertices and 34,472 triangles: 38 logical solids, 19 runtime
+primitives, 25 joints, 163 accessors and 918,928 bytes. All limits and
+physical-size paths remain unchanged.
+
+Both eggs stay contained in actual open pink cups on the body carrier.
+Chansey's distal palms retain their egg grip while the shoulder/elbow
+chains flex; six ribbons and two tail carriers move independently. Blissey
+adds independent crown/whole-curl pairs, two shoulder-frill assemblies and
+ten individual skirt-petal carriers. Fixed complete feet retain battle
+floor contact and production two-foot walking. Fitted faces remain coherent.
+
+Software review caught Blissey's faceted recess above the happy mouth.
+Denser facial sampling and a tighter physical depression remove that patch
+while preserving the empty-mouth probes. Its closed lining conforms to the
+actual front triangles at 1 mm source-space standoff. Welding at export
+precision prevents collapsed slivers, with unchanged Mr. Mime bytes.
+Native close review then exposed dark seams at separate pink hand/arm
+joins. Continuous forelimbs replace two Hand solids per species; eased
+centerlines prevent inside-wrist crossings and retain rounded palms. A new
+regression rejects large closing fans outside the buried shoulders. Other
+source solids are preserved through that correction.
+
+All 33 final Python pair checks, four Rust GPU/support/walking checks and
+two shared registry/cue regressions pass. Background Blender dispatch
+reproduces both canonical GLBs exactly. Final software pose sheets and six
+selected production native 3D/2D pairs were inspected entirely offscreen and
+muted, after checking executable identity and exact embedded payloads. All
+pairs preserve game state. Close views show the corrected palms; Blissey's
+review camera uses existing pitch-20 controls to keep its silhouette in
+frame after rejecting a cropped pitch-minus-10 view. Elevated and battle
+views show grounded feet. Both battles have named HUDs, no model fallback
+and successful admission at unchanged 1.0922/1.4986 m pack heights with zero
+support offset. The species art guides record exact geometry pins, asset
+hashes, capture clocks and state receipts.
+
+Sixty-seven static species files remain. Browser and moving-world visual
+review remain open. Shiny checks are skipped; grass, AA and filtering are
+untouched by this batch.
+
+
+## Growlithe and Arcanine: distinct striped canine skins
+
+The authored rig registry grows from 208 to 210. Both retired static dogs
+used the same coarse 1,986-vertex, 2,796-triangle, 48-part topology with only
+small head-height changes. New original parametric sculptures distinguish
+the compact round-eyed puppy and long-legged, full-maned guardian. Growlithe
+has 16,302 vertices, 26,140 triangles, 57 logical solids, 32 runtime parts,
+18 joints, 190 accessors and 718,636 bytes. Arcanine has 19,539 vertices,
+31,404 triangles, 81 logical solids, 34 runtime parts, 18 joints, 206
+accessors and 874,164 bytes. The added detail remains under every existing
+limit; normalized reference heights stay 0.90/1.30 and runtime primitive
+counts decrease from the old 48 per species.
+
+Round puppy eyes, focused adult eyes, fitted warm ear interiors, cream
+snouts, rooted black noses and closed jaws accompany distinct forelocks,
+cream ruffs and curled plumes. The guardian adds cream ankle fur and more
+body/tail fur. Side, back, forehead, leg and toe markings conform to actual
+stored parent triangles; no floating stripe fins are used. Four complete
+paws stay fixed in battle. The rigs add body/neck/head motion, independent
+ears and jaws, four supported limb fields, three monotone tail carriers and
+independent main/side ruffs and forelocks. All fitted layers retain the
+appropriate parent carriers.
+
+All 17 Python anatomy/skin regressions, four Rust GPU/support/four-foot
+walking checks and two shared registry/cue checks pass. Background Blender
+reproduces the exact GLBs. Final software poses and six selected native
+3D/2D pairs were inspected entirely offscreen and muted, with exact current
+embedded payloads and stable executable identities. All selected game states
+are preserved. Named GROWLITHE/SENTRET and ARCANINE/PIDGEY battles use both
+models without fallback and pass authentic terrain admission at the original
+0.7112/1.9050 m pack heights with zero support offset. Existing controls rotate
+Arcanine's orbit view to improve the trainer/model separation; large-companion
+spacing still needs world-view polish. The fire-canines guide records pins,
+asset hashes, physical-size traces, capture clocks and state receipts.
+
+Sixty-five static species files remain. Browser and moving-world visual
+review remain open. Shiny checks are skipped; grass, AA and filtering are
+untouched by this batch.
+
+
+## Distinct small Nidoran skins: 210 to 212 registered rigs
+
+The original female and male sculptures now use canonical `nidoran_f.glb`
+and `nidoran_m.glb` standard skins. Redundant planar-ear subdivision is removed
+without changing their notched outlines. Markings clip the actual stored
+parent triangles; the minute male mouth contour adjustment removes quantized
+slivers. Their distinct pear/barrel bodies, pinnae, horns, cheek barbs, spots,
+four paws and eight claws remain. Both retain the original normalized heights
+and pack physical sizes. The female has 19,256 vertices/31,768 triangles,
+40 runtime primitives and 184 accessors; the male has 16,782/28,160,
+36 primitives and 173 accessors. Both use 11 joints with articulated head,
+ears, four supported ankle fields and two tail carriers. Vertex counts fall
+about 41% from the retired static files, within unchanged runtime limits.
+
+Claw sets and haunch markings remain separate per limb. The gait regression
+proves that each support belongs to its corresponding leg's IK tree and every
+complete claw set follows its actual foot. This closes a gap in floor/bounds-only
+checks, which cannot detect marks or claws following another leg. The same
+packing audit identified the fire-canine support-detail issue corrected in
+[the fire-canines guide](fire-canines.md#growlithe-and-arcanine-per-limb-support-packing).
+
+All 17 Python checks, four Rust GPU/support/per-leg walking checks and two
+shared registry/cue checks pass. Background Blender reproduces both exact
+GLBs. Final software poses and all six selected native 3D/2D pairs were
+inspected offscreen and muted with exact embedded payloads and stable binary
+identities. The paired states remain unchanged. NIDORAN_F/PIDGEY and
+NIDORAN_M/RATTATA battles retain modeled actors without fallback and pass
+authentic terrain admission at the original 0.4064/0.5080 m heights with zero
+support offset. The [small-Nidoran guide](small-nidoran-sculptures.md) records
+pins, asset/executable hashes, capture clocks, physical-size traces and paired
+state receipts. No shiny checks, grass changes, AA or filtering work is included.
+
+Sixty-three static species files remain. Browser and moving-world visual
+acceptance remain open, as do previously recorded camera, follower-spacing
+and large-legendary admission issues. The full model/rig goal remains active.
+
+## Fire-canine walking support details stay with their own legs
+
+Growlithe and Arcanine retain their original sculptures, materials, battle
+weights, skeletons and exact decoded animation keys. Their old runtime packing
+combined paw creases, leg stripes and adult ankle fur/tufts across multiple
+legs, while production walking IK assigns each runtime primitive to one leg.
+A new stored-GLB regression rejects that cross-leg assembly. The exporter now
+packs those categories per limb, and the Rust walking regression checks every
+support's actual IK tree, with complete paws and toe creases on their own
+rigid foot carrier. Non-support face/body/fur/tail weights remain intact.
+
+Growlithe now has 38 runtime primitives, 209 accessors and 713,180 GLB bytes;
+Arcanine has 46, 236 and 845,220. Logical geometry, normals, source order,
+materials, indices, skin weights, hierarchy, inverse binds, clip keys and
+sampled battle positions/normals compare exactly with the prior assets. Vertex
+and triangle counts, physical-size paths and all runtime limits are unchanged.
+The [fire-canines guide](fire-canines.md) records current packed/asset hashes
+and preserves the prior sculpture and capture record separately.
+
+All 18 Python checks, four Rust GPU/support/per-leg walking checks and two
+shared registry/cue checks pass. Background Blender reproduces both exact
+assets. Six native 3D/2D pairs and eight selected production walking frames
+were inspected entirely offscreen and muted, with exact embedded payloads and
+stable executable identities. Settled pairs preserve their authoritative state;
+intermediate GPU readbacks supplement the per-leg/64-phase numerical checks.
+Named GROWLITHE/SENTRET and ARCANINE/SENTRET battles pass authentic terrain
+admission at original 0.7112/1.9050 m pack heights with zero support offset and
+no fallback. Traversal endpoint tree occlusion and trainer/sign overlap remain
+visible, so broader moving-world/follower-spacing acceptance remains open.
+Browser review remains open. No shiny verification, grass, AA or filtering
+changes are included.
+
+The read-only source-range audit also identified bilateral support assemblies
+on Lickitung, Mr. Mime, Scizor and Scyther. Those are corrected in the following
+[Bilateral walking support packing](world-support-packing.md) revision, which
+also separates mantis shin armor/pads and classifies hip/greave roles. Many
+other multi-source assemblies already stay within one limb and do not need
+changes. The registry remains at 212 rigs, with 63 static species files and
+the previously recorded broader visual/admission work still outstanding.
+The full model and rig objective remains active.
+
+
+## Bilateral shells, markings and mantis lower-leg supports
+
+Lickitung's thigh markings and Mr. Mime's hip/knee shells now retain separate
+runtime parts per leg. Scizor and Scyther retain separate greaves and rigid
+foot pads, with toe caps/claws local to each foot. The prior packed mantis
+armor joined shin and foot roles across both legs. Walking classification now
+recognizes hip and greave categories. The new four-species regression proves
+each support's actual IK tree, rigid foot/toe ownership, floor contact and
+bounds through 64 locomotion phases. Stored-GLB regressions fail against the
+previous bilateral assemblies and pass after correction.
+
+All four logical sculptures, materials, battle weights, skeletons, inverse
+binds and decoded clips remain unchanged. Independent old/new decoding also
+matches sampled battle positions/normals exactly. Runtime primitive counts
+are now 26/34/47/40 for Lickitung/Mr. Mime/Scizor/Scyther, within unchanged
+limits. Current packed and full-asset pins, metadata and evidence are in
+[the support-packing guide](world-support-packing.md); the original art guides
+link to that current runtime revision.
+
+All 44 Python checks and 31 Rust locomotion checks pass. The latter include
+251 species and 26 Unown selectors for bind identity, attack/hit movement and
+finite unit-scale world poses; the four-species support check supplies the
+stronger 64-phase per-vertex floor/bounds and ownership coverage. Four
+canonical-skin checks, four original-size GPU checks and two shared registry/
+cue checks also pass, for 85 total checks. Background Blender reproduces all
+four exact GLBs. Eight native 3D/2D pairs and four production walking frames
+were inspected offscreen and muted with exact embedded payloads and stable
+executable identity. Every pair preserves its authoritative state. Named
+battles pass authentic terrain admission at original 1.1938/1.2954/1.8034/
+1.4986 m heights with zero support offset and no fallback model.
+
+The registry remains at 212 rigs and 63 static species files. Browser review,
+broader moving-world/camera/follower-spacing acceptance, mouth-rim aliasing
+notes and large-legendary admission remain open. No shiny checks, grass, AA,
+filtering, game-content or audio changes are included. The full model and rig
+objective remains active.
+
+## Nidorina and Nidorino skins: 214 registered rigs
+
+The original blue hornless Nidorina and purple horned Nidorino sculptures now
+use canonical `nidorina.glb` and `nidorino.glb` standard skins. Redundant planar
+ear subdivision is removed, markings clip actual stored parent triangles,
+and Nidorino's rounded quarter sampling is reduced to 28×20. The original
+silhouettes and normalized height 1.12 remain. Vertex counts fall about
+66%/34% from the retired static models. Nidorina has 19,478 vertices,
+32,064 triangles, 35 runtime primitives, 15 joints, 201 accessors and 808,672
+bytes; Nidorino has 19,860/32,172, 39 primitives, 13 joints, 189 accessors and
+748,348 bytes. All existing runtime limits remain unchanged.
+
+Nidorina articulates head, pinnae, three-carrier forelimbs, paired haunches and
+two tail carriers, with complete hind paws/nails fixed in battle and hand
+claws following their wrists. Its world gait now matches the authored biped's
+two planted supports. Nidorino articulates head, pinnae, jaw, horn, four
+supported limbs and two tail carriers, with complete paws/nails fixed in
+battle. Per-limb spot/claw packing retains their correct walking IK trees.
+Both preserve identity floor roots, occupied attachments, coherent fitted
+features and rotation-only, source-cue-timed idle/attack/hit clips.
+
+All 25 Python anatomy/skin checks, four Rust original-size GPU/battle-support/
+per-leg locomotion checks and two shared registry/cue checks pass, for 31
+focused checks. Two recipe parity checks were repeated after moving imports
+inside the test setup/parity methods to preserve borrowed-helper import cost.
+Hitmonlee's imported legacy side-patch helper keeps its original behavior;
+Hitmonlee and both small Nidoran exporters remain byte-identical. Background
+Blender reproduces both exact GLBs and normal strict readers load 59/74
+logical solids. Builder, reader and production Rust routes use the canonical
+GLBs, and obsolete JSON assets are removed.
+
+Final software comparisons/poses, six native 3D/2D pairs and two production
+walking frames were inspected offscreen and muted. Exact embedded payloads
+and stable executable identity bind the captures to the current assets. Every
+pair preserves its authoritative state. Named NIDORINA/SENTRET and
+NIDORINO/RATTATA encounters pass authentic whole-body terrain admission at
+the original 0.7874/0.8890 m pack heights with zero support offset and no
+fallback. [The middle-Nido guide](nido-middle-skins.md) records current pins,
+asset/executable hashes, capture clocks, physical-size traces and receipts;
+the species guides preserve the prior static-art record separately.
+
+Sixty-one static species files remain. Browser and broader moving-world,
+camera, follower-spacing, aliasing and large-legendary admission work remain
+open. No shiny checks, grass, AA, filtering, game-content or audio changes
+are included. The full model and rig objective remains active.
+
+
+## Nidoqueen and Nidoking canonical skins
+
+The active full-roster goal advances from 214 to 216 registered skins, with
+59 static species files remaining. The existing royal sculptures now have
+17/19-joint canonical GLBs and normal builder, strict-reader and Rust routes.
+Queen geometry falls from 55,955 to 18,397 vertices; king geometry from 48,831
+to 19,990, preserving their distinct rounded/ragged ears, short/large horns,
+paired/single chest shields, closed/open jaws and substantial spined tails.
+Both have supported arm/wrist chains, independent ears/horn, three yawing tail
+carriers and complete fixed battle feet. The king has separate lower jaw and
+tongue controls. All limits and real physical dimensions remain intact.
+
+All 28 Python checks, four focused Rust checks and two shared registry/cue GPU
+regressions pass (34 unique checks); background Blender reproduces both assets
+exactly. Six production 3D/2D pairs and two actual world walking frames were
+inspected offscreen and muted. Every final pair preserves authoritative state.
+Named NIDOQUEEN/SENTRET and NIDOKING/SENTRET encounters admit complete original
+1.2954/1.3970 m bodies at zero support offset without fallback, shrinking or
+relaxed terrain/frustum/omission gates. Exact embedded current GLB payloads
+and unchanged executable identities bind the captures to these assets.
+
+Nidoking's close first-person camera clips its forward horn. Wider world and
+battle views retain the full silhouette; first-person camera/follower distance
+is an explicit unresolved issue, with full dimensions retained. Browser,
+broader moving-world, camera, follower-spacing, aliasing and large-legendary
+admission work remain open. [The royal-Nido guide](nido-royal-skins.md) records
+pins, hashes, physical-size traces, clocks, receipts and this visual limitation.
+No shiny checks, grass, AA, filtering, pack or audio changes belong to this
+batch. The full model and rig goal remains active.
+
+
+## Physical companion distance and first-person framing
+
+The full-roster goal advances through a shared presentation correction; rig
+count remains 216 and 59 static species remain. First-person eye height now
+matches the rendered trainer's 1.25 presentation scale. Following distance
+uses each unchanged model's animated forward/height/width bounds and the
+pack's physical dimension, while preserving sprite/card size and grounding.
+It records actual path history, checks every initial source tile, and resets
+teleports against gameplay step size independently of body distance.
+A fractional-gap rounding defect found during native review is fixed without
+extrapolating the path; its regression fails under the old strict comparison.
+
+Thirty-one unique checks pass: three renderer tests (including complete
+original-size projection for six species over 32 gait phases), eighteen camera
+tests, eight follower tests and two real-pack Surf ownership checks. A further
+Surf save/reorder check is blocked before follower/app initialization by the
+local Route44 source-water-table fixture guard; no guard, source data or pack
+is modified to bypass it. Full gameplay/Surf verification is not claimed.
+
+Nine current production 3D/2D pairs and three extra actual moving frames were
+inspected offscreen and muted, with exact current embedded model payloads and
+stable executable identity. All nine frozen pairs preserve authoritative
+state. Nidoking's horn and Feraligatr's eyes now remain visible in the reviewed
+ordinary first-person views, and Arcanine has clear trainer/body separation
+at full size. Maximum-zoom orbit views still crop large bodies; wider views
+retain silhouettes, with some foreground-foot and sign overlap still open.
+[The companion guide](pokemon-following-distance.md) records commands, receipts,
+identities, the Surf fixture failure and scope limits. Broader world, camera,
+browser, scenery, aliasing and large-legendary admission acceptance remain open.
+No shiny checks, model resizing, geometry/rig asset changes, grass, AA,
+filtering, game-content, audio or pack changes belong to this batch.
+
+
+## Poliwhirl, Poliwrath and Politoed
+
+The registry now contains 219 canonical skins; 56 static species files remain.
+The three generic frog prototypes are replaced by distinct authored sculptures
+and twelve/twelve/fifteen-control rigs. Poliwhirl has friendly raised eyes and
+padded gloves, Poliwrath has angular eyes, a heavier body and raised boxing
+guard, and Politoed has its own head, cheeks, smile, web digits and curled crest.
+The blue frogs punch with both hands; Politoed has independent head/crest
+motion. Arc-length elbow weighting preserves the raised guard under its
+stronger attack. Feet and full per-leg toe assemblies retain support ownership.
+
+All thirteen Python checks, five focused Rust checks and two shared schema/cue
+checks pass (20 unique checks). Background Blender reproduces the final assets.
+Nine production 3D/2D pairs and three actual moving-world frames were inspected
+inline, offscreen and muted with unchanged executable identities and exact
+current embedded model payloads. All paired authoritative states are preserved.
+Named battles admit complete original 0.9906/1.2954/1.0922 m bodies with zero
+support offset and no fallback or relaxed gates. The raised guard keeps
+Poliwrath's lower legs visible. Foliage/glove overlap and moving-world sign
+proximity remain broader scene issues; browser and full-camera acceptance
+remain open. [The frog guide](poli-frog-skins.md) records geometry, hashes,
+commands, clocks, receipts and limitations. No shiny checks, grass, AA/filtering,
+audio, pack or gameplay changes belong to this batch. The full model and rig
+goal remains active.
+
+
+## Sandshrew and Sandslash authoring and skin candidates
+
+Original plated/quilled mammal sculptures and fifteen/seventeen-control skin
+exporters are authored, with eleven checks passing against independently decoded
+generated bytes. Both hands dig, complete feet remain fixed, every control moves
+actual geometry, and posed armor roots plus all shoulder-cap vertices stay
+supported. Offscreen software comparisons exposed rounded bead-like shell tiles,
+continuous bands and incorrect hand-claw counts; these were corrected and the
+latest neutral/rear/front/decoded-attack comparisons inspected inline.
+
+Production builder/Rust registration, canonical asset publication, scoped native
+checks and same-state production 3D/2D review remain pending. These candidates do
+not yet change the 219-skin/56-static totals. The full-roster goal remains active.
+[The candidate guide](sand-mammal-skins.md) records geometry, controls, test
+coverage, exact hashes, remaining integration work and the offscreen-only rule.
+No shiny, grass, AA/filtering, content-pack, audio or gameplay work is included.
+
+
+## Sandshrew and Sandslash production integration
+
+The two authored candidates are now canonical production skins. The registry
+contains 221 skins and 54 static species files remain. The normal background
+Blender builder and lazy strict readers publish/read the stored assets, while
+the retired generic branch rejects accidental use. Rust registers exact
+geometry pins, fifteen/seventeen controls, fixed complete battle feet and
+separate complete per-foot toe assemblies for world walking.
+
+A new world regression exposed low hand claws being rebound to a leg. The
+packed category is now explicitly `Hand claw /`; exact geometry and logical
+source ranges are preserved, with no shared gait heuristic change. The same
+regression fails before the packing fix and passes afterward. All eleven
+stored-asset Python checks, four focused parser/GPU/world checks and two shared
+schema/cue checks pass (seventeen unique scoped checks).
+
+Six same-state production 3D/2D pairs and two actual moving-world frames were
+inspected inline, offscreen and muted. All paired authoritative states are
+preserved, with exact current embedded asset payloads and stable executable
+identities. Named battles admit complete original 0.6096/0.9906 m bodies at
+zero support offset without fallback, resizing or relaxed gates. Sandshrew's
+shell and short claws differ clearly from Sandslash's swept quills, severe
+eyes and longer paired claws. The smaller Sandshrew remains low in the ordinary
+first-person composition; broader camera, browser and world/scenery acceptance
+remain open. [The canonical guide](sand-mammal-skins.md) records hashes,
+commands, receipts, clocks, verification and limitations. No shiny checks,
+grass, AA/filtering, audio, pack or gameplay changes belong to this batch.
+The full model and rig goal remains active.
+
+
+## Clefable and Wigglytuff geometry and skin preparation
+
+The existing sculptures now fit current skin budgets. Wigglytuff falls from
+28,880/48,060 vertices/triangles to 18,648/31,548 by reducing redundant eye-frame
+and mouth subdivision, retaining the original broad fitted belly. Clefable's
+brown ear caps now conform to actual parent triangles, fixing an exposed edge
+intersection while reducing geometry to 15,603 vertices and 27,448 triangles.
+Normal background Blender static exports match the current source exactly.
+
+Eleven/seven-control standard skin candidates retain coherent fitted faces,
+planted feet, independent ears/arms/forelocks and Clefable's wings/two tail
+carriers. Actual stored wing sides determine their physical control ownership.
+Eighteen source checks and eight independently decoded skin checks pass, and
+Python runtimes produce identical candidate bytes. Offscreen software old/new,
+front/rear and decoded attack views were inspected inline. Production GLB
+publication, builder/Rust integration, scoped native checks and same-state
+production visual review remain pending, so totals remain 221 skins and 54
+static species files. [The preparation guide](fairy-pair-skins.md) records exact
+metrics, hashes, test oracles and remaining gates. No shiny, grass, AA/filtering,
+audio, pack or gameplay changes are included. The full-roster goal stays active.
+
+
+## Clefable and Wigglytuff production skins
+
+The optimized fairies are now canonical production skins. Normal background
+Blender, direct sculpture CLI exports and strict lazy readers use GLB, with old
+static JSONs retired. Rust registers exact geometry/hierarchy/pins and eleven/
+seven controls. Complete feet/toenails retain battle support and separate world
+support trees; fitted facial/ear layers, forelocks, wings, tails and hand details
+retain their actual carriers. Totals are 223 skins and 52 static species files.
+
+All twenty-six stored-asset Python checks, four focused parser/GPU/world checks
+and two shared schema/cue checks pass (32 scoped checks). Six same-state
+production 3D/2D pairs and two moving-world frames were inspected inline,
+offscreen and muted, with exact embedded current GLBs and stable executable
+identities. All paired authoritative states are preserved. Named battles admit
+complete original 1.2954/0.9906 m bodies with zero support offset, no fallback,
+no shrinking and no relaxed terrain/frustum/omission rules. Clefable's stage
+search rejected unsuitable border/scenery shots before finding its valid view.
+
+Ear/wing/tail silhouettes, eyes, mouths, belly and feet remain readable in the
+scoped views. Front foliage overlaps one Clefable hand/wing, profile hides some
+face/wing detail, and faint Wigglytuff belly lighting bands remain broader
+presentation polish. Browser, full camera/world/material acceptance and other
+remaining species are open. [The canonical skin guide](fairy-pair-skins.md)
+records commands, geometry, hashes, physical sizes, receipts, clocks and limits.
+No shiny checks, grass, AA/filtering, audio, content pack or gameplay changes
+belong to this batch. The full model and rig goal remains active.
+
+
+## Horsea, Seadra and Kingdra geometry and skin preparation
+
+The three existing sea-creature sculptures now fit the 20k/40k skin budgets:
+15,790/24,912 vertices/triangles for Horsea, 13,214/20,324 for Seadra and
+19,154/31,156 for Kingdra. Actual-parent eye/breast/fin-tip surfaces, bounded
+curved tessellation and smooth thin-ray normals remove redundant geometry.
+The old Horsea/Seadra coil self-intersection and sinking Seadra fin-tip edges
+are fixed. All tail-root caps seat within their torsos. Kingdra's rear seam
+clearance is corrected without relaxing fitting thresholds.
+
+Ten/ten/twelve-joint standard skin candidates provide independent heads, main
+and head/neck fins, three tail carriers and Kingdra's paired branched crowns.
+Tail weights match actual authored cross-section circles along arc length,
+avoiding weight jumps to adjacent coil turns. Identity-root/body/tail yaw
+preserves the authored waterline without a clamp; all snout parts retain their
+head carrier and the real empty bore survives poses and a negative control.
+Eighteen sculpture checks and eight independent decoded-skin checks pass.
+
+Normal background Blender static exports match the recipes/pins, and Python
+runtimes produce identical candidate skin bytes. Offscreen old/new/front/rear
+and decoded-attack software views were inspected inline. Production GLB
+publication, builder/Rust registration, scoped GPU/world checks and original-size
+same-state native review remain pending; totals stay 223 skins and 52 static
+species files. [The preparation guide](seahorse-skins.md) records exact metrics,
+hashes, root/fitting oracles, evidence and remaining gates. No shiny checks,
+grass, AA/filtering, audio, pack or gameplay changes are included. The full
+model and rig goal remains active.
+
+## Horsea, Seadra and Kingdra canonical skins
+
+Production integration now replaces the three static exports with strict
+canonical GLBs, bringing registration to 226 skins and 49 static species files.
+Normal background builder, direct sculpture CLIs, logical readers, species
+cache/dispatch and GPU/world paths use the stored ten/ten/twelve-joint skins.
+All 33 scoped checks pass (26 stored Python, five focused Rust and two shared
+schema/pose-cue checks). Nine current production 3D/2D pairs and three moving
+frames were inspected inline, entirely offscreen and muted. Every paired state
+is preserved. Named battles admit complete original 0.4064/1.1938/1.8034 m
+bodies with zero support offset and no fallback, shrinking or relaxed gates.
+
+Mouths, fitted eyes/breasts, curls, fins and crowns remain readable in scoped
+views. Profile hides some detail and Kingdra's moving tail overlaps a nearby
+sign. Browser, broader camera/world/material coverage and remaining species
+stay open. [The skin guide](seahorse-skins.md) records hashes, commands, tests,
+original sizes, paired clocks and executable identities. No shiny checks,
+grass, AA/filtering, audio, pack or gameplay changes belong to this batch.
+The full model and rig goal remains active.
+
+## Goldeen, Seaking and Magikarp canonical skins
+
+The three original fish sculptures now publish strict canonical GLBs through
+the normal builder, direct CLI, logical readers and Rust/GPU/world dispatch.
+Registration contains 229 skins and 46 static species files. Geometry drops
+from 43,891/35,909/36,302 to 16,748/19,923/15,922 vertices while retaining every
+named part, actual oral cavity and fitted marking. Six/eight/nine-joint rigs
+provide coherent caudal swimming, independent pectoral/dorsal/pelvic controls
+and Magikarp barbels. Shared source tail roots retain one anatomical carrier;
+all world bindings match canonical weights exactly. Existing limits stay intact.
+
+Thirty-four scoped checks pass: 19 stored Python, five focused Rust, two shared
+schema/cue checks and eight datum/cache regressions. Nine same-state production
+3D/2D pairs and three moving-world frames were reviewed inline, offscreen and
+muted. All paired states are preserved. Named battles admit complete original
+0.6096/1.2954/0.889 m longitudinal dimensions with no fallback, support offset,
+shrinking or relaxed camera/ground/omission proof.
+
+Profiling a slow capture found repeated complete source terrace-datum builds.
+A bounded exact-input cache now reuses those immutable results while retaining
+the original calculation for changed map/ledge/tile/permission evidence. Coastal,
+waterfall, overlap-priority, camera-crop and terrain/actor-support regressions
+pass. No terrain height or gameplay rule changed. [The fish skin guide](goldfish-skins.md)
+records geometry, bindings, hashes, checks, physical references, captured clocks,
+executable IDs and limits. Dark far-fin shadows, thin-edge aliasing, browser and
+broader camera/world/material work remain open. No shiny checks, grass-height,
+AA/filtering, audio, pack or gameplay changes belong to this batch. The full
+model and rig goal remains active.
+
+## Dratini, Dragonair and Dragonite canonical skins
+
+The dragon family now uses seven/seven/fifteen-joint canonical skins through
+the normal builder, strict logical readers, Rust dispatch and direct sculpture
+CLI. Registration reaches 232 skin variants with 43 static species files.
+Continuous coils and ivory ribbons share actual spine-ring bindings. Dragonite's
+arm bindings follow the source tube rings, retaining stronger forearm attacks
+within the existing strain limit. Fixed battle contacts, coherent wings,
+complete claws, original dimensions and all standard limits remain intact.
+
+Twenty-eight scoped checks pass: 21 stored Python, five focused Rust and two
+shared schema/cue checks. Nine same-state native pairs and three moving-world
+frames were reviewed inline, headless and muted. All three battles admit full
+original dimensions without fallback or relaxed scene gates. Dragonite's world
+review uses a wider normal zoom to include its tail. Broader follower/scenery
+overlap, lighting/AA, browser and camera coverage remain open. The
+[dragon skin guide](dragon-family-skins.md) records geometry, bindings, checks,
+physical references, captured clocks and executable identities. No shiny,
+grass-height, AA/filtering, pack, audio or gameplay work is included. The full
+model and rig goal remains active.
+
+## Aerodactyl canonical skin
+
+The detailed fossil flyer now uses nine canonical controls for its ground root,
+body, skull, mandible, wings, hind limbs and arrow tail. Every source vertex and
+triangle remains unchanged. Same-carrier packing retains all 56 logical parts
+in 27 runtime parts within all existing limits. Production builder, direct CLI,
+strict reader and Rust dispatch use the same GLB. Registration reaches 233 skin
+variants and 42 static species files; full-roster improvement remains active.
+
+Twenty-five scoped checks pass: 20 stored Python, three focused Rust and two
+shared schema/cue checks. The recoil gasp preserves the source jaw clearance;
+upper/lower teeth, palate and tongue follow their actual jaws. Soles stay rooted
+in battle, while existing world Fly mode and canonical bindings remain intact.
+Three current same-state native pairs and one moving-world frame were inspected
+inline, headless and muted. The named battle admits the complete original
+1.8034 m body without fallback or relaxed scene gates. The
+[Aerodactyl skin guide](aerodactyl-skin.md) records geometry, controls, checks,
+physical references, captured clocks, executable IDs and limits. Tree occlusion,
+thin-edge aliasing and broader lighting, browser and camera coverage remain
+open. No shiny checks, grass-height, AA/filtering, pack, audio or gameplay
+changes belong to this batch.
+
+## Omanyte and Omastar canonical skins
+
+The nautilus pair now uses fifteen/nineteen-joint canonical skins through the
+normal background builder, direct CLIs, strict readers and Rust dispatch.
+Registration reaches 235 skin variants and 40 static species files. Ten actual
+root-cap hinges animate each tentacle independently; shell ribs/spirals/spines,
+coherent gaze and the adult's four open beak quadrants retain their carriers.
+A pre-existing reversed polar-cap triangle on each ribbed shell is repaired
+with ear clipping, preserving shape and counts. All standard limits remain.
+
+World crawling reuses canonical hinges and exact weights, composing its strokes
+with the authored clock while retaining floor contact. Thirty-seven scoped
+checks pass: 31 stored Python, four focused Rust and two shared schema/cue
+checks. Six same-state production pairs and two moving-world frames were
+inspected inline, headless and muted. Both battles admit complete original
+0.4064/0.9906 m bodies without fallback or relaxed scene gates. The
+[nautilus skin guide](nautilus-skins.md) records source corrections, anatomy,
+controls, checks, physical references, captured clocks, executable identities
+and limits. Profile occlusion, thin-line aliasing, broader lighting, browser and
+camera coverage remain open. No shiny checks, grass-height, AA/filtering,
+audio, pack or gameplay work is included. Full-roster improvement remains active.
+
+## Graveler and Golem canonical skins
+
+The stone pair now uses ten/twelve-joint canonical skins through the normal
+background builder, direct CLIs, strict readers and Rust dispatch. Registration
+reaches 237 skin variants and 38 static species files. Graveler retains four
+independent arm/wrist chains and its coherent fitted rock face. Golem retains
+all 32 polygon plates, an actual open jaw and complete claws while modest palm,
+foot-pad and recessed-chamber reductions bring it within the standard vertex
+budget. Same-carrier packing preserves all logical parts; runtime group names
+are unique and bounded. All existing limits remain intact.
+
+Thirty-eight scoped checks pass: 32 stored Python, four focused Rust and two
+shared schema/cue checks. Fixed battle supports, occupied limb/digit/jaw roots,
+real empty mouth space, plate/face support and complete two-support walking
+pass. Six current same-state native pairs and two moving-world frames were
+inspected inline, headless and muted. Both named battles admit complete original
+0.9906/1.397 m bodies without fallback or relaxed scene gates. The
+[stone-pair skin guide](stone-pair-skins.md) records geometry, controls, checks,
+physical references, captured clocks, executable identities and limits.
+Profile/foliage occlusion, close scenery placement, deep shadows, thin-edge
+aliasing and broader browser/camera/material coverage remain open. No shiny
+checks, grass-height, AA/filtering, audio, pack or gameplay work is included.
+Full-roster model and rig improvement remains active.
+
+
+## Charmeleon and Charizard canonical skins
+
+The fire-dragon evolutions now use original shaped skulls, real open jaws,
+fitted bibs and angular gazes, complete digits, curved burning tails and
+thirteen/fifteen-joint canonical skins. Charmeleon has one swept red crest;
+Charizard has twin orange horns and broad scalloped teal bat wings. Registration
+reaches 239 skin variants and 36 static species files. Standard geometry,
+packing, physical-size and admission limits remain intact.
+
+Twenty-six scoped checks pass: 20 stored Python, four focused Rust and two
+shared schema/cue checks. Six current production 3D/2D pairs and two moving-world
+frames were inspected inline, headless and muted. Both battles admit complete
+original 1.0922/1.7018 m bodies without fallback. Charmeleon keeps two grounded
+world supports; Charizard preserves authored flight. The
+[fire-dragon skin guide](fire-dragon-skins.md) records anatomy, controls, checks,
+physical references, capture clocks, binary identities and limits. Charizard's
+moving tail partly crosses foliage; scenery/sign placement, profile occlusion,
+strong shadows, thin-edge aliasing and broader browser/camera/material coverage
+remain open. No shiny checks, grass-height, AA/filtering, audio, pack or gameplay
+work belongs to this batch. Full-roster model and rig improvement remains active.
+
+
+## Quilava and Typhlosion canonical skins
+
+The fire-starter evolutions now use original low/upright badger sculptures with
+shared-surface cream/midnight coats, shaped muzzles, actual fitted red gaze,
+complete toes and thirteen/seventeen-joint canonical skins. Quilava keeps four
+short supports and separate six-blade neck/rump fire clusters; Typhlosion has
+complete forepaws, an actual open jaw and seven independently moving shoulder
+fire blades. Registration reaches 241 skin variants and 34 static species files.
+Standard geometry, packing, physical-size and admission limits remain intact.
+
+Twenty-seven scoped checks pass: 21 stored Python, four focused Rust and two
+shared schema/cue checks. Six final same-state production pairs and two
+moving-world frames were inspected inline, headless and muted. Both battles
+admit complete original 0.889/1.7018 m bodies without fallback. Four/two complete
+walking support chains preserve upper bindings and stay inside full bounds.
+An initial native review exposed lateral eyes hidden from the front; refitting
+both gazes around the forward brow fixes the blank face and adds a real
+skull-occlusion regression. The [fire-badger skin guide](fire-badger-skins.md)
+records anatomy, controls, checks, physical references, captured clocks,
+executable identities and limits. Small details, profile occlusion, strong
+mandible shadows, foliage overlap and broader browser/camera/material coverage
+remain open. No shiny checks, grass-height, AA/filtering, audio, pack or gameplay
+work belongs to this batch. Full-roster model and rig improvement remains active.
+
+
+## Tyranitar canonical skin
+
+Tyranitar now has an original armored sculpture and fourteen-joint canonical
+skin through the normal background builder, direct CLI, strict reader and Rust
+dispatch. A shaped skull, real open toothed jaw, fitted red gaze, segmented
+belly shield, actual recessed armor marks, complete claws, rooted crown/cheek/
+dorsal spines and a heavy curved tail replace the old primitive assembly.
+All 70 logical parts survive coherent packing into 34 runtime parts. Standard
+geometry, storage, physical-size and admission limits remain intact.
+Registration reaches 242 skin variants and 33 static species files.
+
+Twenty-six scoped checks pass: 21 stored Python, three focused Rust and two
+shared schema/cue checks. Three final same-state production pairs and one
+moving-world frame were inspected inline, headless and muted. The battle admits
+complete original 2.0066 m Tyranitar without fallback. Two complete world
+supports preserve upper armor and tail bindings, stay inside full bounds and
+retain ground contact. The [Tyranitar skin guide](tyranitar-skin.md) records
+anatomy, controls, checks, physical reference, captured clocks, binary identities
+and limits. Strong jaw shadows, far-limb/spine occlusion, sign/foliage placement
+and broader browser/camera/material coverage remain open. No shiny checks,
+grass-height, AA/filtering, audio, pack or gameplay work belongs to this batch.
+Full-roster model and rig improvement remains active.
+
+
+## Larvitar and Pupitar canonical skins
+
+The pre-evolutions now use original local-sprite-guided sculptures and
+11/four-joint canonical skins through the normal background builder, direct
+CLIs, strict readers and Rust dispatch. Larvitar retains one tall horn, black
+cheek tears, a red diamond, complete blunt digits and a three-pronged tail;
+the old adult-style dorsal spikes are removed. Pupitar has a faceted visor,
+larger angular gaze, three crown points, six side points, front/back shell
+seams and a grounded lower fold. Coherent packing restores all 45/28 logical
+parts from 20/nine runtime parts. All standard limits remain intact.
+Registration reaches 244 skin variants and 31 static species files.
+
+Twenty-seven scoped checks pass: 21 stored Python, four focused Rust and two
+shared schema/cue checks. Six final same-state production pairs and two moving
+frames were inspected inline, headless and muted. Both battles admit complete
+original 0.6096/1.1938 m models without fallback or relaxed gates. Larvitar keeps
+two complete ground supports; Pupitar remains legless, retains its canonical
+bindings and keeps lower-fold contact without adding hover. The
+[rock-larva/pupa skin guide](rock-pupa-skins.md) records anatomy, controls,
+checks, physical references, capture clocks, binary identities and limits.
+Small-scale detail, profile occlusion, green-body/grass contrast and broader
+browser/camera/material coverage remain open. No shiny checks, grass-height,
+AA/filtering, audio, pack or gameplay work belongs to this batch. Full-roster
+model and rig improvement remains active.
+
+## Electrode coherent shell and expression
+
+Electrode now shares the existing orb exporter with Voltorb and uses a
+canonical two-joint skin. Its normal red/white/ink palette matches the local
+pack. Angled thicker brows and longer centred pupils refine the fitted grin.
+The shared equator and complete face move together above a fixed support ring;
+legless world locomotion preserves canonical weights. Voltorb's GLB is unchanged.
+Electrode retains 17,210 vertices, 23,480 triangles and ten parts, with 48
+accessors / 675,972 bytes under all original limits. The registry reaches
+245 skin variants and 30 static species files.
+
+Twenty-three scoped checks pass: 18 Python, three focused Rust and two shared
+schema/cue checks. Three headless/muted same-state production pairs and a
+moving world frame were inspected inline. The battle admits the complete
+original 1.1938 m model with uniform scale and no fallback; HUD labels identify
+both Pokémon. High-view grin foreshortening, side occlusion, subtle tooth seams
+and broader browser/camera/material coverage remain open. The
+[Electrode skin guide](electrode-skin.md) records commands, controls, source and
+binary hashes, checks, capture clocks and limits. No shiny, grass, AA, audio,
+pack or gameplay changes belong to this batch. Full-roster work remains active.
+
+## Kabuto and Kabutops fossil anatomy and skins
+
+The two old primitive assemblies are replaced by original domed/recessed
+Kabuto and swept-head, ribbed, paired-scythe Kabutops sculptures. Canonical
+six/thirteen-joint GLBs retain complete fitted faces, rooted claws/limbs,
+scythes, crown blades, spurs, talons and tail. Four/two complete world support
+chains preserve ground contact; upper-body bindings remain canonical. Coherent
+packing restores 23/42 source parts from 20/27 runtime parts. Geometry is
+5,970 / 9,130 vertices and 9,356 / 14,756 triangles, with all original limits
+intact. Registration reaches 247 skin variants and 28 static species files.
+
+Twenty-three scoped checks pass: 17 stored Python, four focused Rust and two
+shared schema/cue checks. Six headless/muted same-state production pairs and
+two moving world frames were inspected inline. Both battles admit complete
+original 0.5080 / 1.2954 m models with uniform scale and no fallback; HUDs name
+both Pokémon. The initial scythe self-intersection was corrected by changing
+the curve and root width. The [fossil skin guide](fossil-scythe-skins.md) records
+commands, anatomy, controls, hashes, checks, capture clocks and visual limits.
+High-view gaze occlusion, side foreshortening, foliage overlap and broader
+browser/camera/material coverage remain open. No shiny, grass-height, AA,
+audio, pack or gameplay changes belong to this batch. Full-roster work remains
+active.
+
+## Pineco and Forretress coherent mechanical armor
+
+Both detailed neutral sculptures retain exact f32 geometry, normals, colors
+and triangle order while gaining canonical seven-joint skins. Pineco has
+independent plate whorls, crown and stem above a fixed core tip; Forretress has
+a fixed lower shell, hinged upper shell and four articulated hollow ports.
+Coherent packing reduces 54/48 source parts to 13/18 runtime parts under all
+original limits. Registration reaches 249 skin variants and 26 static species
+files.
+
+Twenty-four scoped checks pass: 18 stored Python, four focused Rust and two
+shared schema/cue checks. Six headless/muted same-state production pairs and
+two moving world frames were inspected inline. Both battles admit complete
+original 0.6096/1.1938 m models with uniform scale and no fallback. The
+[armored bug skin guide](armored-bug-skins.md) records commands, hierarchy,
+geometry preservation, checks, hashes, capture clocks and visual limits.
+Physical contacts stay fixed, but weak contact shadows can still make the
+legless silhouettes look suspended, especially Pineco's narrow core tip.
+Grounding readability remains open before full visual acceptance, alongside
+broader browser/camera/material coverage. No shiny, grass-height, AA, audio,
+pack or gameplay changes belong to this batch. Full-roster work remains active.
+
+## Lower-body battle grounding
+
+A faint additional ground-occlusion layer now complements the existing tight
+support shadow for grounded modeled battlers. Its footprint clips the neutral
+lower 30% of the sculpture, uses exact triangle intersections, excludes high
+plumes, and stays within that horizontal extent. Tight contact, floating
+footprints, original dimensions, physical placement and admission/terrain gates
+retain their contracts. The change improves the floor cue beneath Pineco's
+armor while retaining Sentret's tail support.
+
+Eight shadow regressions pass; one unrelated dense-forest benchmark remains
+ignored. Three final same-state production battle pairs for Pineco, Forretress
+and Sentret were inspected inline, headless and muted, with unchanged binaries
+and no fallback. The [battle grounding guide](battle-grounding.md) records the
+algorithm, validation, scope and capture identities. World/browser/hardware-
+shadow coverage and broader roster fidelity remain open. No shiny, grass, AA,
+audio, pack or gameplay work belongs to this change. Static roster count stays
+26 and the full model/rig goal remains active.
+
+## Bellsprout family botanical skins
+
+Bellsprout, Weepinbell and Victreebel now have canonical 10/9/10-joint skins.
+Fitted facial details, occupied mouth floors, rooted hood/tendrils and
+ear-clipped concave leaf caps improve the original sculptures. Common-parent
+leaf attachment weights survive production welding, while separate leaf tips,
+mouths, stem and tendrils remain articulated. Bellsprout retains two real root
+support chains; the legless evolutions retain fixed body tips and no invented
+limbs. Original dimensions, full motion bounds and admission limits hold.
+
+Twenty-five scoped checks pass: 18 stored Python, five focused Rust and two
+shared schema/cue checks. The [botanical skin guide](pitcher-skins.md) records
+anatomy, metrics, rebuild commands, hashes and review limits. Registration
+reaches 252 skin variants and 23 static species files. Oddish's separate use
+of the legacy shared leaf cap is corrected in the follow-up below. Full-roster
+model and rig improvement remains active.
+
+## Oddish concave leaf-cap correction
+
+The shared botanical audit confirmed cap/side-wall crossings in all five
+Oddish blades. Ear-clipped true-section caps replace the old concave vertex
+fans, retaining every boundary position, dimension, joint node, material,
+weight and animation key. Every non-blade part remains exact. The corrected
+canonical GLB has 8,845 vertices, 14,620 triangles, 19 parts and 12 joints;
+the strict source digest is updated without relaxing parsing limits.
+
+Thirteen distinct scoped checks pass: ten stored Python, two focused Rust
+and the shared anatomy/order/physical-size schema check. Three production
+2D/3D pairs and one moving world frame were inspected inline, entirely
+offscreen and muted. Original 0.508 m battle admission has no fallback and
+keeps physical support at zero. The [Oddish guide](oddish-sculpture.md#concave-cap-correction)
+records preservation, negative controls, metrics, clocks, binary identities
+and visual limits. This closes the specific legacy-cap audit item. Registry
+counts stay 252 skin variants and 23 static species files; full-roster visual
+and rig improvement remains active.
+
+## Gloom and Vileplume botanical sculptures and skins
+
+The old generic assemblies are replaced by a sleepy four-lobed spotted Gloom
+bud with rooted drool and a broad five-petal Vileplume crown with fitted
+mottling, pale annular throat and actual recessed nectar well. Canonical
+11/12-joint skins preserve coherent faces, crown details and independently
+hinged sepals/petals. World gait retains two complete supports and both arms,
+with upper bindings preserved. Original authored/pack dimensions, full motion
+bounds, floor contacts and model-admission limits hold. Coherent packing
+reduces 30/34 logical parts to 18/23 runtime parts.
+
+Sixteen final Python checks and four final focused Rust checks pass. Two
+shared schema/cue checks pass before the tip-only refinement; exact joint
+nodes, clip keys and counts remain unchanged by that correction. The
+[botanical crown guide](rafflesia-skins.md) records anatomy, checks, source and
+packed hashes, rebuild commands and visual limits. Registry count reaches
+254 skin variants and 21 static species files. Full-roster model and rig
+improvement remains active.
+
+Six final headless/muted same-state pairs and two moving world frames were
+inspected inline. Gloom retains its byte-identical capture group; corrected
+Vileplume has a new group with stable binaries and no fallback. Rounded petal
+ends replace visible flat cuts. The final default Vileplume world view remains
+substantially obstructed by foliage, with the moving frame exposing it through
+existing dither fading. World visibility and broader visual coverage remain
+open; no full visual acceptance is claimed. No shiny, grass-height, AA, audio,
+pack or gameplay changes belong to this batch.
+
+## Raichu curled ears and electric-mouse walking supports
+
+Raichu's primitive static assembly is replaced with a cream-bellied orange
+sculpture, fitted facial details, curled brown/gold ears, planted brown paws
+and a thin curved whip ending in a golden bolt. Its thirteen-control skin
+preserves coherent face, hand, ear-lining and tail carriers. Structured ear
+grids resolve folds and sinking found in the initial concave plate prototype.
+World support classification now uses bilateral anatomical evidence when an
+asymmetric tail places the full bound center outside both legs. This fixes
+Raichu and the unchanged Pikachu asset while preserving valid existing axes,
+source bounds, placement and physical dimensions.
+
+Twenty-six scoped checks pass. Six headless/muted same-state production pairs
+were inspected inline with stable binaries and no battle fallback. Both world
+camera directions remain partly obstructed by foliage, so world visibility
+acceptance stays open. The [Raichu guide](raichu-skin.md) records anatomy,
+hashes, checks, capture clocks and limitations. Registry count reaches 255 skin
+variants and 20 static species files. Full-roster improvement remains active.
+
+## Ekans continuous grounded coil and skin
+
+The generic spherical-headed serpent and four neck rings are replaced by an
+original purple coil with a tapered muzzle, fitted golden slit gaze, one broad
+surface-following collar, continuous ventral strip and raised segmented tail.
+Five controls articulate the neck, head and tail while retaining the low coil
+on the floor root. An initial crossed neck bend was corrected in geometry;
+neutral and posed intersection checks pass. Original authoring height,
+longitudinal size calibration, uniform scale and full animated bounds hold.
+
+Sixteen Python checks, three focused Rust checks and the shared schema check
+pass. The [Ekans guide](ekans-skin.md) records anatomy, metrics, exact hashes,
+rebuild commands and review status. Registry count reaches 256 skin variants
+and 19 static species files. Full-roster model and rig improvement remains active.
+
+Three headless/muted same-state production pairs and two moving frames were
+inspected inline. Front and battle views are clear, with both battle HUD names
+and complete models without fallback. The world view remains partly obscured
+by foreground branches. A standing-height-only helper postcheck was corrected
+to honor the existing Ekans length calibration; fresh saved battle outputs and
+unchanged binary identities were audited without rerendering. The guide records
+that recovery and its native clock. No shiny, grass-height, AA, audio, pack or
+gameplay changes belong to this batch.
+
+## Arbok rounded threat hood and articulated fanged jaw
+
+The generic spherical-headed cobra and flat hood are replaced by an original
+rounded mantle with fitted dark/ivory/red false eyes and red threat chevron,
+angular narrow-eyed upper head, real mouth opening, rooted curved fangs,
+dark throat, pink tongue and independently moving lower jaw. Eight controls
+retain the low coil on its floor root and articulate the neck, head, raised
+tail, unmarked outer hood folds and mandible. The complete fitted mask shares
+the central chest carrier. Hood geometry now lies across the front of the
+neck, preserving the visible central marking. Local outer-fold pivots and
+restrained motion resolve measured stretching without relaxing limits.
+
+Twenty-one final Python checks and three final focused Rust checks pass. The
+[Arbok guide](arbok-skin.md) records anatomy, exact source/packed hashes,
+rebuild commands and review status. Original dimensions, longitudinal size
+calibration, uniform scale, full bounds and admission gates remain intact;
+Ekans stays byte-identical. Registry reaches 257 skin variants and 18 static
+species files. Full-roster model and rig improvement remains active.
+
+Production front review prompted sharper peaked/notched dark brows, angular
+pale false eyes, a dark-bordered red chevron and lower real-eye placement.
+Geometry checks require real brow notches and coherent complete mask carriers.
+Joint nodes, inverse binds and every clip key remain byte-identical. The final
+shared schema check also passes, making 25 scoped checks overall. Three refined
+headless/muted same-state production pairs and two moving frames were inspected
+inline with stable binaries, complete models without fallback and readable
+battle HUD names. Front and battle views are clear; stationary world foliage
+still obscures much of the animal. Broader visibility and palette parity remain
+open. No shiny, grass-height, AA, audio, pack or gameplay changes belong to this
+batch.
+
+## Steelix exact-neutral steel-chain and jaw skin
+
+The original angular steel sculpture now has ten controls for a grounded root,
+seven rising-chain segments, head and independently hinged jaw. Three low
+boulders and the tail stay pinned; rigid armor and spikes retain their carriers,
+buried joints blend along actual center axes, and complete face/upper/lower
+teeth follow the appropriate skull or jaw. Every original neutral f32 position,
+normal, color and triangle remains unchanged. Coherent packing retains 48
+logical ranges in 32 runtime parts. Original physical length calibration,
+uniform scale, full bounds and admission gates remain intact.
+
+Twenty-two Python checks, three focused Rust checks, two shared schema/cue
+checks and all 24 fresh layout checks pass, including the earlier unresolved
+Steelix length fixture; a production follower fixture regression brings the
+total to 52 scoped checks. The [Steelix guide](steelix-sculpture.md)
+records hierarchy, preservation, measurements, hashes, commands and review
+status. Headless, muted front/world/battle pairs were inspected inline with
+unchanged binaries and preserved authoritative state. Front and battle show
+Steelix clearly; the wider world framing still clips the giant at the left
+edge. The default short Route36 trail and obstructed Route29 battle fixture
+are explicitly rejected as visual evidence. Registry reaches 258 skin variants
+and 17 static species files.
+Full-roster model and rig improvement remains active.
+
+
+## Dugtrio independent capsule skin
+
+Three continuous rounded emerging capsules replace the static ellipsoid
+assembly, with distinct heights, fitted narrow black eyes and highlights,
+rooted oval noses and a shared bed of varied faceted soil. Four controls keep
+the soil and buried bases fixed while each mole articulates independently.
+Staggered source-cue attack/hit clips and phased idle preserve coherent faces,
+original physical height, uniform scale and full animated bounds.
+
+Eleven Python checks, three focused Rust checks and two shared schema/cue
+regressions pass: 16 scoped checks. The [Dugtrio guide](dugtrio-skin.md) records
+anatomy, ownership, measurements, hashes, commands and production review
+status. Three same-state production pairs and two moving frames were inspected
+inline, entirely headless and muted, with exact current model data and unchanged
+binaries. Front and battle are clear with grounded soil and readable species
+HUD names; the stationary world view still has foreground foliage obstruction.
+Registry reaches 259 skin variants and 16 static species files.
+Full-roster model and rig improvement remains active.
+
+## Tentacool and Tentacruel grounded tentacle skins
+
+Continuous rounded bells, embedded red lobes, fitted mantle eyes and blue
+curved tendrils replace both static assemblies. The source uses the normal
+local-pack palette and original physical heights. Six/24 controls articulate
+Tentacool's two tendrils and Tentacruel's ten visible tendrils plus side feelers;
+distal contacts remain on the fixed floor root. Source-cue clips retain
+coherent bell faces and highlights.
+
+These tendril-supported bodies no longer receive the generic world/battle
+hover lift or world minimum hover clearance. Their swimming classification
+stays intact. Fifteen Python, four focused Rust, ten related unaffected and
+two shared schema/cue checks pass: 31 scoped checks. The
+[tentacle guide](tentacle-skins.md) records anatomy, palette, ownership,
+measurements, hashes, commands and production review status. Registry reaches
+261 skin variants and 14 static species files. Six same-state production pairs
+and two moving frames were inspected inline, headless and muted. Both models
+show readable real gaze and grounded tendrils in city and battle views, with
+readable battle species names, no fallback and unchanged binaries. Early close
+views exposed hidden upper gaze; advancing the mantle, raising the eyes and
+widening pupils fixed readability while preserving every joint, inverse bind,
+clip key, bell, lobe, arm and tendril. Full-roster work remains active.
+
+
+## Jynx grounded gown and independent five-digit hands
+
+The detailed adult dancer recipe is retopologized from 48,266 vertices and
+79,520 triangles to 15,311/24,740, retaining shaped hair and hands while
+improving the folded gown, enlarged gaze and broad recessed kiss rim. Its
+normal local-pack palette and original 1.397 m height are retained. Twenty-two
+controls cover the pinned hem, torso/neck/head, two hair curtains, both
+shoulder/elbow/wrist chains and all ten fingers. Coherent packing preserves
+45 logical anatomy ranges in 35 runtime parts. Smoochum remains byte-identical.
+
+Twenty Python, three focused Rust and two shared schema/cue checks pass:
+25 scoped checks. The [Jynx guide](jynx-skin.md) records anatomy, packing,
+measurements, hashes, commands and production review status. Registry reaches
+262 skin variants and 13 static species files. Three same-state production
+pairs and a moving world frame were inspected inline, entirely headless and
+muted, with exact current model data and unchanged binaries. Close/world/
+battle views show the complete model and grounded hem; gaze, kiss aperture,
+hair, hands and battle species names are readable. No fallback is used.
+Full-roster work remains active.
+
+
+## Mankey and Primeape rooted fur and articulated fists
+
+Both static assemblies now use continuous pelts, rooted fur locks, fitted
+angry gaze and pig nostrils, bent limbs, formed clenched fists and three-toed
+paws. Mankey has a long articulated curl tail; Primeape has a wider pelt,
+denser fur, larger fists and dark wrist/ankle bands. Twelve/ten controls
+preserve coherent faces and fists, fixed battle paws, and two complete
+production walking support chains. Original physical heights, normal local-
+pack palettes, full animated bounds and admission rules remain intact.
+
+Nineteen Python, three focused Rust and two shared schema/cue checks pass:
+24 scoped checks. The [pig-monkey guide](pig-monkey-skins.md) records anatomy,
+rig ownership, measurements, hashes, commands and production review status.
+Registry reaches 264 skin variants and 11 static species files. Six same-state
+production pairs and both moving world frames were inspected inline, entirely
+headless, offscreen and muted. Original-size models and paws are grounded;
+battle views show distinct anatomy and actual species names without fallback.
+World facial detail remains small at the wide camera distance. Binary identities
+and canonical GLB hashes remained unchanged throughout the review. Full-roster
+model and rig improvement remains active.
+
+
+## Meowth and Persian feline bodies, coherent faces and curled tails
+
+Both static assemblies are replaced by original continuous feline bodies,
+fitted gaze, rooted whiskers, formed paws and curled tails. Meowth retains a
+large engraved coin, pointed dark ears, broad white eyes and two beckoning
+palms; Persian has a lean long quadruped trunk, flowing throat, narrower gaze,
+forehead jewel and four complete supports. Fifteen/thirteen controls keep
+faces and charms coherent, articulate ears and three-control tails, and pin
+battle paws. Original physical dimensions, normal local-pack palettes,
+animated bounds and admission rules are preserved.
+
+Nineteen Python, three focused Rust and two shared schema/cue checks pass:
+24 scoped checks. The [feline guide](feline-skins.md)
+records anatomy, ownership, measurements, hashes, verified exports and review
+status. Six same-state production pairs and both walking world frames were
+inspected inline, entirely headless, offscreen and muted. Complete original-size
+models stay grounded; battle views show readable anatomy and actual species
+names without fallback. Facial detail is small in wide world views. Binary
+identities and canonical GLB hashes remained unchanged throughout the review.
+Registry reaches 266 skin variants and nine static species files. Full-roster
+model and rig improvement remains active.
+
+
+## Doduo and Dodrio independent necks and hinged bills
+
+The detailed runner sculpts now fit production limits while retaining all
+37/61 logical anatomy ranges. Closed eyes follow the actual stored head
+surfaces; normal local-pack palettes and wider Dodrio pupils improve fidelity
+and readability. Twelve/nineteen controls articulate separate neck-base/tip/
+head/jaw chains, two supporting shins and Dodrio's three fan plumes. Head gaze
+and crests remain coherent; lower bills hinge along authored head yaw axes.
+All battle toes and claws stay planted, while world motion uses two complete
+walking supports. Original physical heights and full animated bounds remain.
+
+Twenty Python, three focused Rust and two shared schema/cue checks pass:
+25 scoped checks. The [runner-bird guide](dodo-sculptures.md)
+records anatomy, retopology, ownership, measurements, hashes, exports and review
+status. Six same-state production pairs and both walking frames were inspected
+inline, entirely headless, offscreen and muted. Models and claws stay grounded;
+battle views separate the heads and show actual species names without fallback.
+Heads overlap in wide side views; Doduo's raised bill underside is very dark in
+the fixed front lighting and clearer in battle. Current binary identities and
+canonical GLB hashes remained unchanged across the captures.
+Registry reaches 268 skin variants and seven static species files. Pidgeotto
+also retains its earlier wing-node GLB and still needs a standard skin/cue
+upgrade. Full-roster model and rig improvement remains active.
+
+
+## Pidgeotto full-body production migration
+
+Pidgeotto now uses the shared standard skin and cue path described above.
+At that migration the registry contained 269 standard variants and seven
+static species files. The later Pidgeot/Fearow migration below updates that count.
+All 251 species retain model paths. Registry coverage alone does not establish
+full-roster visual quality; the broader model and rig improvement remains active.
+
+
+## Pidgeot and Fearow standard-skin production migration
+
+The [raptor-bird skin guide](raptor-bird-skins.md) records canonical 20/19-control
+skins with coherent heads and bills, two-stage necks, separate wing/wrist banks,
+five tail feathers, crest/crown/mane and planted clawed feet. Adaptive fitted
+markings and reduced interior feather subdivisions bring both sculptures under
+existing loader limits while preserving all anatomy names, sampled outlines
+and exact original neutral bounds. The shared production renderer, source
+readers, STL exporter and background builder use the single GLB for each bird.
+Authored flight is retained without changing the world renderer’s threshold.
+
+Fourteen canonical anatomy, twelve decoded-skin/API and five scoped Rust checks
+pass: 31 checks. The background builder reproduces canonical bytes. Six native
+same-state 2D/3D pairs and both moving world frames were inspected inline,
+entirely headless, offscreen and muted. Battle HUDs identify PIDGEOT/PIDGEY and
+FEAROW/PIDGEY; complete wings and planted claws fit at original pack dimensions.
+Wide profile banks overlap and reduce facial detail; the sampled world position
+has existing occlusion dithering and NPC overlap. Fearow’s bill foreshortens
+head-on and remains clear in profile and battle. Existing terrain admission
+rejected early Fearow stages before finding a valid Route 29 composition;
+size, FOV, bounds and terrain guards remain unchanged. Independent asset and
+binary identity audits pass across all six captures.
+
+The registry now contains 271 standard variants and five static species:
+Exeggcute, Exeggutor, Farfetch’d, Ivysaur and Venusaur. All 251 species retain
+model paths. Full-roster model and rig improvement remains active.

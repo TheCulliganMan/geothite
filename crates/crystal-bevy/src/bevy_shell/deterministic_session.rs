@@ -5085,6 +5085,10 @@ fn visible_non_text_player_boundary(
         || runtime_shell.visible_mom_bank.is_some()
         || runtime_shell.visible_script_movement.is_some()
         || runtime_shell.visible_headbutt_animation.is_some()
+        // These cutscenes advance on host frames. Repeated A input cannot
+        // finish them inside this script-only loop.
+        || runtime_shell.visible_heal_machine.is_some()
+        || runtime_shell.visible_magnet_train.is_some()
         || runtime_shell.visible_card_flip.is_some()
         || runtime_shell.visible_slot_machine.is_some()
         || runtime_shell.visible_unown_puzzle.is_some()
@@ -5195,6 +5199,10 @@ fn close_visible_noninteractive_runtime_surface(
     // in the same continuation pass that opened it.
     if runtime_shell.pokegear_menu_open
         || runtime_shell.pc_hub_session_open
+        // These specials also own empty core menu markers. Their default
+        // cancel value is not a response until the visible choice resolves.
+        || runtime_shell.visible_battle_tower_challenge_menu.is_some()
+        || runtime_shell.visible_battle_tower_room_menu.is_some()
         || runtime_shell.special_boundary.is_some()
         || runtime_shell.visible_heal_machine.is_some()
         || runtime_shell.visible_magnet_train.is_some()

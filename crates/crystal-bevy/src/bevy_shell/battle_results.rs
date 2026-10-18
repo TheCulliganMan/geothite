@@ -791,35 +791,20 @@ fn arm_visible_script_cursor_after_outcome(
             callback, ..
         }) => {
             runtime_shell.active_script_cursor = None;
-            if let Err(error) = consume_visible_script_end_state(runtime_shell) {
-                record_visible_runtime_system_error(
-                    runtime_shell,
-                    anyhow::anyhow!("failed to consume script end state for {script}: {error:#}"),
-                );
-                return;
-            }
-            if *callback {
-                return;
-            }
-            if visible_script_call_stack_has_return(runtime_shell) {
-                match resume_visible_script_return(runtime_shell) {
-                    Ok(()) => {}
-                    Err(error) => {
-                        runtime_shell.active_script_cursor = None;
-                        record_visible_runtime_system_error(
-                            runtime_shell,
-                            anyhow::anyhow!(
-                                "failed to resume script return for {script}: {error:#}"
-                            ),
-                        );
-                        return;
-                    }
-                }
+            let finished = if *callback {
+                consume_visible_script_end_state(runtime_shell)
             } else {
-                runtime_shell.active_script_cursor = None;
-                runtime_shell
-                    .last_audio_events
-                    .push(format!("script end={script}"));
+                // Normal end also resumes its caller or starts destination
+                // scenes deferred behind a retained cross-map source script.
+                take_visible_script_end_state(runtime_shell)
+            };
+            if let Err(error) = finished {
+                record_visible_runtime_system_error(runtime_shell,
+                    anyhow::anyhow!("failed to finish script end for {script}: {error:#}"));
+                return;
+            }
+            if !*callback && runtime_shell.active_script_cursor.is_none() {
+                runtime_shell.last_audio_events.push(format!("script end={script}"));
                 trim_event_log(&mut runtime_shell.last_audio_events);
             }
         }
@@ -5372,6 +5357,22 @@ fn execute_last_coord_event_script(runtime_shell: &mut BevyRuntimeShell) -> Resu
 fn execute_visible_pending_script_warp(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     record_visible_runtime_action(runtime_shell, "script:pending:warp")?;
     let next_cursor = visible_active_compiled_script_cursor(runtime_shell);
+    if let Some(cursor) = next_cursor.as_ref()
+        && runtime_shell.shell.runtime().compiled_script_command_name(
+            &cursor.source_script, cursor.command_index,
+        )? == "newloadmap"
+    {
+        // warpcheck selects a destination while the departure script still
+        // owns the interpreter. Stage its following newloadmap before the
+        // existing map-load consumer commits the warp and map setup together.
+        let step = runtime_shell.shell.step_compiled_script_command(
+            &cursor.origin_map_name, &cursor.source_script, cursor.command_index,
+            ScriptRuntimeInputs::default(), ScriptPhoneInputs::default(),
+        )?;
+        integrate_visible_compiled_script_run(runtime_shell, std::slice::from_ref(&step))?;
+        arm_visible_active_script_cursor_from_run(runtime_shell, step.next_cursor);
+        return Ok(());
+    }
     let transitioned = if let Some(cursor) = next_cursor {
         runtime_shell
             .shell

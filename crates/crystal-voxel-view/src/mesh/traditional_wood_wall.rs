@@ -1,4 +1,6 @@
 //! Closed timber at the authored wall/floor seam; radios remain floor objects.
+//! Tile0x50 in the lower source rows is a walkable wooden floor strip. Only
+//! the upper rows of blocks01/08 are WALL; never fold that floor up the wall.
 use super::*;
 
 pub(super) fn is_map(map:&str)->bool {
@@ -133,6 +135,21 @@ mod tests {
                 assert_eq!(claimed.iter().filter(|&&v|v).count(),16);
                 assert_eq!(mesh.footing_heights,vec![3.25;36]);assert!(mesh.solid.positions.is_empty());
                 assert!(mesh.textured.positions.iter().any(|v|v[1]==32.&&v[2]==16.));
+                // Source collisions01/08 leave the lower half RADIO/FLOOR
+                // or FLOOR/FLOOR. Keep its native wood bands flat; interpreting
+                // these bands as wall rails would erase a real walking strip.
+                let donor=p.row*g.width+p.column+2+2*g.width;
+                assert_eq!(cells[donor].source.tile_index,crate::house::TRADITIONAL_HOUSE_FLOOR_TILE);
+                let floor=g.uv(p.column+2,p.row+2);
+                let expected_uvs=[[floor.0,floor.2],[floor.0,floor.3],
+                    [floor.1,floor.3],[floor.1,floor.2]];
+                for (cell,i) in p.indices(g.width).filter(|i|i/g.width>=p.row+2).enumerate() {
+                    let (w,e,n,south)=g.bounds(i%g.width,i/g.width);
+                    assert_eq!(&mesh.textured.positions[cell*4..cell*4+4],
+                        &[[w,0.,n],[w,0.,south],[e,0.,south],[e,0.,n]]);
+                    assert_eq!(&mesh.textured.uvs[cell*4..cell*4+4],&expected_uvs,
+                        "native horizontal wood bands must remain on the ground");
+                }
                 for v in &mesh.textured.positions {
                     if v[1]>0.&&v[2]>16.+1e-5 {
                         assert_eq!(p.kind,ModelKind::RadioWall);

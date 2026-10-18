@@ -120,6 +120,23 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         ground: 0x01,
         kind: ModelKind::PictureFrame,
     },
+    // One native notice, mounted high on a continuous domestic wall course.
+    AuthoredInteriorDrawing {
+        tileset: "house", block: 0x29, origin: [0, 0], size: [4, 2],
+        tiles: &[0,0,0x44,0x45,0,0,0,0], ground: 1,
+        kind: ModelKind::WallDomestic,
+    },
+    // Plain rear wall above the flower displays, beside the native window.
+    AuthoredInteriorDrawing {
+        tileset: "house", block: 0x32, origin: [0, 0], size: [2, 2],
+        tiles: &[0x00, 0x00, 0x00, 0x00], ground: 0x01,
+        kind: ModelKind::WallDomestic,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "house", block: 0x32, origin: [2, 0], size: [2, 2],
+        tiles: &[0x24, 0x4a, 0x34, 0x2c], ground: 0x01,
+        kind: ModelKind::WindowWall,
+    },
     // house 10 0,0 Computer
     AuthoredInteriorDrawing {
         tileset: "house",
@@ -129,6 +146,23 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         tiles: &[0x40, 0x41, 0x20, 0x21, 0x42, 0x43, 0x1e, 0x1f],
         ground: 0x01,
         kind: ModelKind::Computer,
+    },
+    // The PC's upper margin and left shoulder remain one rear wall course.
+    AuthoredInteriorDrawing {
+        tileset: "house", block: 0x1c, origin: [0,0], size: [2,2],
+        tiles: &[0,0,0,0], ground: 1, kind: ModelKind::WallDomestic,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "house", block: 0x1c, origin: [2,0], size: [2,1],
+        tiles: &[0,0], ground: 1, kind: ModelKind::WallDomestic,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "house", block: 0x1d, origin: [2,0], size: [2,1],
+        tiles: &[0,0], ground: 1, kind: ModelKind::WallDomestic,
+    },
+    AuthoredInteriorDrawing {
+        tileset: "house", block: 0x1e, origin: [0,0], size: [2,1],
+        tiles: &[0,0], ground: 1, kind: ModelKind::WallDomestic,
     },
     // house 1c 2,1 Computer
     AuthoredInteriorDrawing {
@@ -1002,7 +1036,7 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         ground: 0x01,
         kind: ModelKind::WindowWall,
     },
-    // battle_tower_inside 07 0,0 LinkSeat
+    // battle_tower_inside 07 0,0 Stool
     AuthoredInteriorDrawing {
         tileset: "battle_tower_inside",
         block: 0x07,
@@ -1010,9 +1044,9 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         size: [2, 2],
         tiles: &[0x0e, 0x0f, 0x1e, 0x1f],
         ground: 0x11,
-        kind: ModelKind::LinkSeat,
+        kind: ModelKind::Stool,
     },
-    // battle_tower_inside 07 2,0 LinkSeat
+    // battle_tower_inside 07 2,0 Stool
     AuthoredInteriorDrawing {
         tileset: "battle_tower_inside",
         block: 0x07,
@@ -1020,7 +1054,7 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         size: [2, 2],
         tiles: &[0x0e, 0x0f, 0x1e, 0x1f],
         ground: 0x11,
-        kind: ModelKind::LinkSeat,
+        kind: ModelKind::Stool,
     },
     // battle_tower_inside 05 0,0 Computer
     AuthoredInteriorDrawing {
@@ -1042,7 +1076,7 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         ground: 0x11,
         kind: ModelKind::LinkSeat,
     },
-    // battle_tower_inside 02 0,0 WallClinical
+    // battle_tower_inside 02 0,0 ReceptionCounter
     AuthoredInteriorDrawing {
         tileset: "battle_tower_inside",
         block: 0x02,
@@ -1050,9 +1084,9 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         size: [4, 2],
         tiles: &[0x06, 0x0a, 0x0a, 0x0a, 0x16, 0x1a, 0x1a, 0x1a],
         ground: 0x11,
-        kind: ModelKind::WallClinical,
+        kind: ModelKind::ReceptionCounter,
     },
-    // battle_tower_inside 03 0,0 ReceptionCounter
+    // battle_tower_inside 03 0,0 WallPanel
     AuthoredInteriorDrawing {
         tileset: "battle_tower_inside",
         block: 0x03,
@@ -1060,9 +1094,9 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         size: [4, 2],
         tiles: &[0x54, 0x55, 0x54, 0x55, 0x50, 0x51, 0x50, 0x51],
         ground: 0x11,
-        kind: ModelKind::TowerReception,
+        kind: ModelKind::WallPanel,
     },
-    // battle_tower_inside 1b 0,0 ReceptionCounter
+    // battle_tower_inside 1b 0,0 WallPanel
     AuthoredInteriorDrawing {
         tileset: "battle_tower_inside",
         block: 0x1b,
@@ -1072,9 +1106,9 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
             0x43, 0x45, 0x44, 0x45, 0x53, 0x55, 0x54, 0x55, 0x50, 0x51, 0x50, 0x51,
         ],
         ground: 0x11,
-        kind: ModelKind::TowerReception,
+        kind: ModelKind::WallPanel,
     },
-    // battle_tower_inside 1d 0,0 ReceptionCounter
+    // battle_tower_inside 1d 0,0 WallPanel
     AuthoredInteriorDrawing {
         tileset: "battle_tower_inside",
         block: 0x1d,
@@ -1084,9 +1118,9 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
             0x44, 0x45, 0x44, 0x45, 0x54, 0x55, 0x54, 0x55, 0x50, 0x51, 0x50, 0x51,
         ],
         ground: 0x11,
-        kind: ModelKind::TowerReception,
+        kind: ModelKind::WallPanel,
     },
-    // battle_tower_inside 1e 0,0 ReceptionCounter
+    // battle_tower_inside 1e 0,0 WallPanel
     AuthoredInteriorDrawing {
         tileset: "battle_tower_inside",
         block: 0x1e,
@@ -1096,9 +1130,23 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
             0x44, 0x45, 0x44, 0x45, 0x48, 0x49, 0x4a, 0x55, 0x50, 0x51, 0x50, 0x51,
         ],
         ground: 0x11,
-        kind: ModelKind::TowerReception,
+        kind: ModelKind::WallPanel,
     },
-    // battle_tower_inside 04 0,0 GateTerminal
+    AuthoredInteriorDrawing {tileset:"battle_tower_inside",block:0x2a,origin:[0,0],size:[4,2],
+        tiles:&[0x54,0x55,0x54,0x55,0x4f,0x5f,0x50,0x51],ground:0x11,kind:ModelKind::WallPanel},
+    AuthoredInteriorDrawing {tileset:"battle_tower_inside",block:0x2b,origin:[0,0],size:[4,2],
+        tiles:&[0x54,0x55,0x54,0x55,0x50,0x51,0x4f,0x5f],ground:0x11,kind:ModelKind::WallPanel},
+    // Lobby side courses occupy only the source WALL quadrants. The corner
+    // blocks' upper halves remain FLOOR and must not acquire a solid return.
+    AuthoredInteriorDrawing {tileset:"battle_tower_inside",block:0x18,origin:[0,0],size:[2,4],
+        tiles:&[0x2e,0x2f,0x3e,0x3f,0x2e,0x2f,0x3e,0x3f],ground:0x11,kind:ModelKind::WallPanel},
+    AuthoredInteriorDrawing {tileset:"battle_tower_inside",block:0x16,origin:[2,0],size:[2,4],
+        tiles:&[0x2c,0x2d,0x3c,0x3d,0x2c,0x2d,0x3c,0x3d],ground:0x11,kind:ModelKind::WallPanel},
+    AuthoredInteriorDrawing {tileset:"battle_tower_inside",block:0x1a,origin:[0,2],size:[2,2],
+        tiles:&[0x40,0x11,0x2e,0x41],ground:0x11,kind:ModelKind::WallPanel},
+    AuthoredInteriorDrawing {tileset:"battle_tower_inside",block:0x17,origin:[2,2],size:[2,2],
+        tiles:&[0x11,0x3b,0x3a,0x2d],ground:0x11,kind:ModelKind::WallPanel},
+    // The left quadrant is WALL; the right quadrant is the real DOOR.
     AuthoredInteriorDrawing {
         tileset: "battle_tower_inside",
         block: 0x04,
@@ -1106,9 +1154,9 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         size: [2, 2],
         tiles: &[0x54, 0x55, 0x50, 0x51],
         ground: 0x11,
-        kind: ModelKind::GateTerminal,
+        kind: ModelKind::WallPanel,
     },
-    // battle_tower_inside 04 2,0 PictureFrame
+    // battle_tower_inside 04 2,0 GateDoorFrame
     AuthoredInteriorDrawing {
         tileset: "battle_tower_inside",
         block: 0x04,
@@ -1116,7 +1164,17 @@ const INTERIOR_DRAWINGS: &[AuthoredInteriorDrawing] = &[
         size: [2, 2],
         tiles: &[0x02, 0x03, 0x12, 0x13],
         ground: 0x11,
-        kind: ModelKind::PictureFrame,
+        kind: ModelKind::GateDoorFrame,
+    },
+    // The hallway elevator projects one source row beyond the other doors.
+    AuthoredInteriorDrawing {
+        tileset: "battle_tower_inside",
+        block: 0x25,
+        origin: [0, 0],
+        size: [4, 3],
+        tiles: &[0x43, 0x45, 0x45, 0x45, 0x54, 0x55, 0x02, 0x03, 0x50, 0x51, 0x12, 0x13],
+        ground: 0x11,
+        kind: ModelKind::GateDoorFrame,
     },
     // mart 01 2,0 WindowWall
     AuthoredInteriorDrawing {
@@ -1378,6 +1436,9 @@ fn append_signature_candidates(
     out: &mut Vec<Placement>,
 ) {
     for drawing in INTERIOR_DRAWINGS {
+        if drawing.tileset=="battle_tower_inside" && matches!(drawing.block,0x16|0x17|0x18|0x1a)
+            && map!="BattleTower1F" {continue;}
+        if drawing.tileset=="battle_tower_inside" && drawing.block==0x25 && map!="BattleTowerHallway" {continue;}
         if drawing.tileset=="underground"&&map!="VermilionPortPassage" {continue;}
 
         if reviewed_native_room(map) && !matches!(map,"PlayersHouse1F"|"PlayersHouse2F")
@@ -1668,7 +1729,7 @@ mod signature_tests {
     }
     #[test]
     fn domestic_window_roles_follow_window_art_on_either_side() {
-        for block in [0x05, 0x08, 0x16] {
+        for block in [0x05, 0x08, 0x16, 0x32] {
             for drawing in INTERIOR_DRAWINGS.iter().filter(|d| d.tileset == "house" && d.block == block) {
                 let expected = if drawing.tiles == [0x24, 0x4a, 0x34, 0x2c] {
                     ModelKind::WindowWall

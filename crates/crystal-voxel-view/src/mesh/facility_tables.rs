@@ -5,9 +5,13 @@ use crate::live_profiles::Document;
 use std::sync::OnceLock;
 #[path = "facility_tables_source.rs"]
 mod source;
+#[path = "facility_chair_facing.rs"]
+mod chair_facing;
 use source::{Identity, Kind};
 pub(super) struct Placement {
     resolved: source::Match,
+    chair_turn: u8,
+    chair_target: Option<source::Match>,
 }
 impl Placement {
     pub(super) fn indices(&self, width: usize) -> impl Iterator<Item = usize> + '_ {
@@ -63,7 +67,7 @@ pub(super) fn resolve(
         }
     }
     let identities: Vec<_> = cells.iter().map(|c| identity(&c.source)).collect();
-    source::resolve(
+    let resolved=source::resolve(
         map,
         &identities,
         g.width,
@@ -73,9 +77,13 @@ pub(super) fn resolve(
         &customized,
     )
     .into_iter()
-    .filter(|p| !p.native_silph_meeting_table() || native_meeting_model().is_some())
-    .map(|resolved| Placement { resolved })
-    .collect()
+    .filter(|p| if p.native_silph_meeting_table() {native_meeting_model().is_some()}
+        else {matches!(p.kind(),Kind::Sofa|Kind::ReceptionCounter)
+            || model(p.kind()).has_native_facility_furniture_materials()})
+    .collect::<Vec<_>>();
+    let facings=resolved.iter().map(|p|chair_facing::choose(p,&resolved)).collect::<Vec<_>>();
+    resolved.into_iter().zip(facings).map(|(resolved,(chair_turn,chair_target))|
+        Placement {resolved,chair_turn,chair_target}).collect()
 }
 // Use the shared selected table and its strict material contract. Missing or
 // unknown selected materials leave the entire original source drawing intact.
@@ -151,6 +159,8 @@ pub(super) fn append(
         let Some(model) = native_meeting_model() else { return false; };
         Some(model)
     } else { None };
+    if native.is_none() && !matches!(p.kind(),Kind::Sofa|Kind::ReceptionCounter)
+        && !model(p.kind()).has_native_facility_furniture_materials() {return false;}
     let (west, _, north, _) = g.bounds(p.column, p.row);
     let sx = g.tile_width / 8.;
     let sy = g.tile_height / 8.;
@@ -180,7 +190,13 @@ pub(super) fn append(
         let gold = [uv.0 + (uv.1-uv.0)*4.5/8., uv.2 + (uv.3-uv.2)*4.5/8.];
         assert!(model.append_native_dining_table(&mut mesh.textured, bounds, rise * sy, [gold;2]));
     } else {
-        model(p.kind()).append_fitted(&mut mesh.solid, bounds, 0., rise * sy);
+        let first=mesh.textured.positions.len();
+        assert!(model(p.kind()).append_native_facility_furniture(&mut mesh.textured,
+            bounds,rise*sy,facility_swatches(g,p)));
+        if p.kind()==Kind::Chair && placement.chair_target.as_ref()
+            .is_some_and(|target|target.coherent(&identities,g.width,g.height)) {
+            chair_facing::rotate(&mut mesh.textured,first,g,p,placement.chair_turn);
+        }
     }
     if matches!(p.kind(), Kind::SquareTable | Kind::SideDesk) {
         let (source_y, paper_z) = if p.kind() == Kind::SquareTable {
@@ -258,6 +274,23 @@ fn append_sofa(out:&mut SurfaceMeshData,g:&GridGeometry,p:&source::Match) {
     }
 }
 
+// Each sample belongs to this complete source drawing, never a neighboring
+// floor or another object's palette. Coordinates denote pixel centers.
+fn facility_swatches(g:&GridGeometry,p:&source::Match)->[[f32;2];4] {
+    let pixels=match p.kind() {
+        Kind::Chair=>[[5,4],[6,10],[4,3],[2,3]],
+        Kind::SquareTable=>[[4,4],[4,25],[4,1],[4,24]],
+        Kind::SideDesk=>[[4,4],[4,16],[4,1],[4,17]],
+        Kind::MeetingTable=>[[20,20],[20,41],[20,17],[20,40]],
+        _=>unreachable!("source-authenticated wood furniture"),
+    };
+    pixels.map(|[x,y]| {
+        let uv=g.uv(p.column+x/8,p.row+y/8);
+        [uv.0+(uv.1-uv.0)*((x%8)as f32+0.5)/8.,
+         uv.2+(uv.3-uv.2)*((y%8)as f32+0.5)/8.]
+    })
+}
+
 /// Two joined closed courses form the native L without filling the clerk aisle.
 fn append_reception_counter(out:&mut SurfaceMeshData,g:&GridGeometry,p:&source::Match) {
     let (west,_,north,_)=g.bounds(p.column,p.row);
@@ -270,7 +303,7 @@ fn append_reception_counter(out:&mut SurfaceMeshData,g:&GridGeometry,p:&source::
     let dark=[lower.0+(lower.1-lower.0)*4.5/8.,lower.2+(lower.3-lower.2)*1.5/8.];
     let ink=[lower.0+(lower.1-lower.0)*4.5/8.,lower.2+(lower.3-lower.2)*4.5/8.];
     let light=[uv.0+(uv.1-uv.0)*4.5/8.,uv.2+(uv.3-uv.2)*1.5/8.];
-    for [w,e,n,s] in [[0.,80.,48.,64.],[80.,96.,8.,64.]] {
+    for &[w,e,n,s] in chair_facing::RECEPTION_COURSES {
         let [w,e,n,s]=[west+w*sx,west+e*sx,north+n*sy,north+s*sy];
         let height=8.*sy;
         append_quad(out,[[w,height,n],[w,height,s],[e,height,s],[e,height,n]],
@@ -295,4 +328,7 @@ mod tests {
     use super::*;
     use std::sync::Arc;
     include!("facility_tables_tests.rs");
+    include!("facility_wall_sofa_tests.rs");
+    include!("facility_chair_facing_tests.rs");
+    include!("facility_native_finish_tests.rs");
 }

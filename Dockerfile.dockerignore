@@ -12,6 +12,8 @@
 !modpacks/
 !modpacks/modern-move-split/
 !modpacks/modern-move-split/data.json
+!modpacks/all-pokemon/
+!modpacks/all-pokemon/encounters.json
 !content-packs/
 !content-packs/core-modular.browser.crystalpack
 !docker/

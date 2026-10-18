@@ -3,19 +3,26 @@
 import json,math,os,unittest
 from pathlib import Path
 from dodo_sculpt import sculpture,SPECIES,HEIGHT,POSES
-from sculpt_test_support import assert_closed_models,assert_model_shading
+from sculpt_test_support import assert_closed_models,assert_model_shading,crossed_faces
 from test_slime_sculpt import ray_intersections
 import test_magnet_sculpt as joins
 ROOT=Path(os.environ.get('DODO_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class DodoTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def setUpClass(cls):
+  cls.models={}
+  for s in SPECIES:
+   if (ROOT/(s+'.glb')).exists():
+    from dodo_glb import read_dodo
+    cls.models[s]=read_dodo(ROOT/(s+'.glb'),s)
+   else:cls.models[s]=json.loads((ROOT/(s+'.mesh.json')).read_bytes())
  def find(self,ps,prefix,ending=None):return next(p for p in ps if p['part'].startswith(prefix) and (ending is None or p['part'].endswith(' '+str(ending))))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,self.models)
  def test_finite_unit_normals_and_actual_winding(self):assert_model_shading(self,self.models)
  def test_recipe_grounding_height_budget(self):
   for s,m in self.models.items():
-   self.assertEqual(m,sculpture(s));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in ps),65000 if s=='doduo' else 95000);self.assertEqual(len(ps),len({p['part'] for p in ps}))
+   from dodo_glb import geometry_digest
+   self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['indices'])//3 for p in ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in ps),20000);self.assertEqual(len(ps),len({p['part'] for p in ps}))
  def test_species_specific_heads_feet_crests_and_tail(self):
   for s,m in self.models.items():
    ps=m['primitives'];n=2 if s=='doduo' else 3
@@ -38,6 +45,16 @@ class DodoTests(unittest.TestCase):
      suffix=str(sign)+' '+str(k);toe=self.find(ps,'Toe /',suffix);pairs += [(foot,toe),(toe,self.find(ps,'Claw /',suffix))]
     toe=self.find(ps,'Hind toe /',sign);pairs += [(foot,toe),(toe,self.find(ps,'Hind claw /',sign))]
    for a,b in pairs:self.assertTrue(joins.MagnetTests.overlap(self,a,b),(s,a['part'],b['part']))
+ def test_curved_necks_shanks_digits_and_feathers_do_not_self_cross(self):
+  for s,m in self.models.items():
+   for p in m['primitives']:
+    if p['part'].startswith(('Neck /','Leg /','Toe /','Claw /','Hind toe /','Hind claw /','Crest /','Tail /')):self.assertIsNone(crossed_faces(p),(s,p['part']))
+ def test_detached_neck_bill_and_foot_negative_controls_are_rejected(self):
+  import copy
+  from sculpt_geometry import translate
+  for s,m in self.models.items():
+   ps=m['primitives']
+   for child,parent in (('Neck /','Body /'),('Upper beak /','Head /'),('Foot /','Leg /')):self.assertFalse(joins.MagnetTests.overlap(self,translate(copy.deepcopy(self.find(ps,child)),2.,0.,0.),self.find(ps,parent)))
  def markings(self):
   for s,m in self.models.items():
    ps=m['primitives']

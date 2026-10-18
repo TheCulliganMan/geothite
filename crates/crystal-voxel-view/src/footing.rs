@@ -87,7 +87,10 @@ pub fn resolved_footing_height(
         .checked_mul(width)?
         .checked_add(usize::try_from(coordinate.x).ok()?)?;
     let resolved = resolved_heights.get(index).copied()?;
-    Some(resolved + crate::mesh::terrace_support_correction(frame,coordinate,foot)
+    Some(resolved + crate::mesh::lighthouse_stair_support(frame,coordinate,foot,resolved_heights)
+        .map_or(0.,|height|height-resolved)
+        + crate::mesh::terrace_support_correction(frame,coordinate,foot)
+        + crate::mesh::pond_support_correction(frame,coordinate,foot,resolved_heights)
         + crate::mesh::league_stair_support_correction(frame,coordinate,foot,resolved_heights)
         + crate::mesh::hall_stair_support_correction(frame,coordinate,foot,resolved_heights)
         + crate::mesh::radio_stair_support_correction(frame,coordinate,foot,resolved_heights))
@@ -120,8 +123,13 @@ pub(crate) fn traversal_height(
     let from = resolved_footing_height(frame, from_point, heights)?;
     let to = resolved_footing_height(frame, to_point, heights)?;
     let rise = to - from;
+    // Complete lighthouse flights supply actual tread contact without turning
+    // their steep visual rise into an authored ledge jump.
+    let lighthouse_flight=[from_point,to_point].into_iter().any(|point|
+        tile_at_visual_point(frame,point+Vec2::Y*FOOTING_SAMPLE_EPSILON)
+            .and_then(|cell|crate::mesh::lighthouse_stair_support(frame,cell,point,heights)).is_some());
     // Stairs and shallow ramps keep their ordinary gait.
-    if !step.ledge_jump && rise < frame.tile_size.y * 0.4 {
+    if !step.ledge_jump && (lighthouse_flight || rise < frame.tile_size.y * 0.4) {
         return Some((ground, 0.0));
     }
     let p = step.progress.clamp(0.0, 1.0);
@@ -154,7 +162,7 @@ mod tests {
     }
 
     fn frame() -> VisualWorldFrame {
-        VisualWorldFrame {
+        VisualWorldFrame { terrace_datum: None,
             active: true,
             map_id: Arc::from("NewBarkTown"),
             source_map_size_core_tiles: None,

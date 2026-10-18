@@ -51,8 +51,11 @@ pub(super) fn frozen(frame: &VisualWorldFrame) -> bool {
         && (frame.map_id.starts_with("IcePath") || frame.map_id.starts_with("SeafoamIslands"))
 }
 pub(super) fn coastal(frame: &VisualWorldFrame) -> bool {
+    coastal_map(&frame.map_id)
+}
+pub(crate) fn coastal_map(map:&str)->bool {
     matches!(
-        frame.map_id.as_ref(),
+        map,
         "NewBarkTown"
             | "OlivineCity"
             | "CianwoodCity"

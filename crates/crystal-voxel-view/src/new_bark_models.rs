@@ -82,6 +82,8 @@ struct Export {
     name: String,
     #[serde(default)]
     roof_courses: Option<String>,
+    #[serde(default)]
+    rigid_upper_from: Option<f32>,
     primitives: Vec<Primitive>,
     door_anchor: Option<[f32; 3]>,
 }
@@ -94,6 +96,7 @@ pub(crate) struct Model {
     pub(crate) min: [f32; 3],
     pub(crate) max: [f32; 3],
     door_anchor: Option<[f32; 3]>,
+    rigid_upper_from: Option<f32>,
 }
 
 impl Model {
@@ -173,9 +176,12 @@ impl Model {
             target
                 .indices
                 .extend(primitive.indices.into_iter().map(|i| base + i));
-            let authored_courses=matches!(export.name.as_str(),"house"|"pokecenter"|"mart")
-                && export.roof_courses.as_deref()==Some("closed_prism_v1")
-                && primitive.material.starts_with("roof_") && !primitive.material.ends_with("_dark");
+            let authored_courses=export.roof_courses.as_deref()==Some("closed_prism_v1")
+                && !primitive.material.ends_with("_dark")
+                && ((matches!(export.name.as_str(),"house"|"pokecenter"|"mart")
+                    && primitive.material.starts_with("roof_"))
+                    || matches!(export.name.as_str(),"violet_gym"|"sprout_tower")
+                        && primitive.material.starts_with("violet"));
             if authored_courses {
                 let sun=Vec3::new(0.45,0.8,0.55).normalize();
                 for i in base as usize..target.positions.len() {
@@ -185,7 +191,7 @@ impl Model {
             }
             if texture.is_none() && !authored_courses
                 && !crate::roof_tiles::refine(target, base as usize, index_start, &primitive.material)
-                && !(matches!(export.name.as_str(), "traditional_house" | "violet_gym")
+                && !(matches!(export.name.as_str(), "traditional_house" | "violet_gym" | "sprout_tower")
                     && crate::roof_tiles::refine_traditional(target, base as usize, index_start,
                         &primitive.material, primitive.base_color))
             {
@@ -215,6 +221,9 @@ impl Model {
         }) {
             return Err("invalid authored doorway anchor".into());
         }
+        if export.rigid_upper_from.is_some_and(|y|!y.is_finite() || y<=min[1] || y>=max[1]) {
+            return Err("invalid rigid upper-storey boundary".into());
+        }
         let glass_uvs = if matches!(export.name.as_str(), "house" | "pokecenter" | "mart") {
             solid_materials.iter().filter(|(name, _, _)| name == "glass")
                 .flat_map(|(_, range, _)| town_glass::coordinates(&surface, range.clone())).collect()
@@ -227,6 +236,7 @@ impl Model {
             min,
             max,
             door_anchor: export.door_anchor,
+            rigid_upper_from: export.rigid_upper_from,
         })
     }
 
@@ -263,6 +273,7 @@ impl Model {
                 min: self.min,
                 max: self.max,
                 door_anchor: self.door_anchor,
+                rigid_upper_from: self.rigid_upper_from,
             };
             let mut mesh = SurfaceMeshData::default();
             adapter.append_fitted(&mut mesh, bounds, base, height, None);
@@ -278,6 +289,25 @@ impl Model {
 
     pub(crate) fn surface_mesh(&self) -> SurfaceMeshData {
         self.surface.clone()
+    }
+
+    /// Keep the shared petals and their fitted facet shading; native flower
+    /// paint changes only the blossom materials, leaving the leaves intact.
+    pub(crate) fn recolor_fitted_blossoms(&self,target:&mut SurfaceMeshData,
+        first:usize,palette:[[f32;4];2]) {
+        for (material,range,original) in &self.solid_materials {
+            let color=match material.as_str() {
+                "coral"=>palette[0],
+                "pink"=>std::array::from_fn(|i|palette[0][i]*0.75+palette[1][i]*0.25),
+                "yellow"=>palette[1],
+                _=>continue,
+            };
+            for i in range.clone() {
+                for c in 0..3 {target.colors[first+i][c]=color[c]
+                    *target.colors[first+i][c]/original[c].max(0.0001);}
+                target.uvs[first+i][0]=crate::flower::SOURCE_BLOOM_TAG;
+            }
+        }
     }
 
     /// Recolor the existing named roof materials from the source drawing.
@@ -409,14 +439,17 @@ impl Model {
             .unwrap_or((self.min[0] + self.max[0]) * 0.5);
         let target_anchor = door_x.unwrap_or((west + east) * 0.5);
         self.append_transformed(target, |position, normal| {
-            let (x, x_scale) = fit_horizontal(
+            let (x, x_scale) = if self.rigid_upper_from.is_some_and(|y|position[1]<y) && door_x.is_some() {
+                crate::exterior_models::fit_door_axis(position[0],
+                    [self.min[0],self.max[0]],[west,east],anchor,target_anchor)
+            } else {fit_horizontal(
                 position[0],
                 [self.min[0], self.max[0]],
                 [west, east],
                 anchor,
                 target_anchor,
-                door_x.is_some(),
-            );
+                door_x.is_some() && !self.rigid_upper_from.is_some_and(|y|position[1]>=y),
+            )};
             let p = [
                 x,
                 base_height + (position[1] - self.min[1]) * height_scale,
@@ -779,6 +812,7 @@ mod tests {
             crate::model_storage::include_model!("models/johto/pokecenter.mesh.json"),
             crate::model_storage::include_model!("models/johto/mart.mesh.json"),
             crate::model_storage::include_model!("models/johto/violet_gym.mesh.json"),
+            crate::model_storage::include_model!("models/johto/sprout_tower.mesh.json"),
         ] {
         let m=Model::parse(source).unwrap();
         let mut mesh=SurfaceMeshData::default();
@@ -800,6 +834,16 @@ mod tests {
             }
         }
         assert!(changed>0);
+        if crate::model_storage::parse::<Export>(source).unwrap().name=="sprout_tower" {
+            let painted=mesh.clone();m.light_fitted_source_paint(&mut mesh,0);
+            assert_eq!(mesh.positions,painted.positions);assert_eq!(mesh.colors,painted.colors);
+            for (name,range,_) in &m.solid_materials {
+                if name.starts_with("violet") {continue;}
+                assert_eq!(&mesh.uvs[range.clone()],&painted.uvs[range.clone()],
+                    "tower source-roof lighting cannot retag its {name}");
+            }
+            assert!(mesh.uvs.iter().any(|&uv|crate::scenery_finish::town_paint_kind(uv)==Some(0)));
+        }
         }
     }
 
@@ -888,22 +932,43 @@ mod tests {
     }
 
     #[test]
+    fn shared_gym_nameboard_clears_the_eave_inside_the_original_plot() {
+        let m=model(ModelKind::VioletGym);
+        let front=|material:&str| {
+            let (_,range,_)=m.solid_materials.iter().find(|(name,_,_)|name==material).unwrap();
+            range.clone().map(|i|m.surface.positions[i][2]).fold(f32::NEG_INFINITY,f32::max)
+        };
+        let (_,ink,_)=m.solid_materials.iter().find(|(name,_,_)|name=="ink").unwrap();
+        assert!(ink.clone().all(|i|m.surface.positions[i][2]>front("violet_dark")+0.08),
+            "the complete GYM inscription must stand ahead of the roof's front edge");
+        assert!(front("cream")<front("ink") && front("ink")<m.max[2],
+            "lettering is proud of its closed backing, within the existing doorway plot");
+        assert!(ink.clone().all(|i|(1.9..2.22).contains(&m.surface.positions[i][1])),
+            "the inscription stays above the doorway");
+        assert_eq!(m.min,[-3.,0.,-1.5]);
+        assert_eq!(m.max,[3.,3.178,1.5]);
+        assert_eq!(m.door_anchor,Some([0.,0.,1.5]));
+    }
+
+    #[test]
     fn closed_town_roof_courses_keep_small_scale_bounds_and_raw_triangle_budget() {
-        for (source,depth,top,eave,ridge) in [
-            (crate::model_storage::include_model!("models/new_bark/house.mesh.json"),3.,3.642,2.18,3.29),
-            (crate::model_storage::include_model!("models/johto/pokecenter.mesh.json"),4.,3.448,2.46,3.35),
-            (crate::model_storage::include_model!("models/johto/mart.mesh.json"),4.,3.448,2.46,3.35),
-            (crate::model_storage::include_model!("models/johto/route_gate.mesh.json"),4.,3.448,2.46,3.35),
+        for (source,width,depth,top,eave,ridge) in [
+            (crate::model_storage::include_model!("models/new_bark/house.mesh.json"),4.,3.,3.642,2.18,3.29),
+            (crate::model_storage::include_model!("models/johto/pokecenter.mesh.json"),4.,4.,3.448,2.46,3.35),
+            (crate::model_storage::include_model!("models/johto/mart.mesh.json"),4.,4.,3.448,2.46,3.35),
+            (crate::model_storage::include_model!("models/johto/route_gate.mesh.json"),4.,4.,3.448,2.46,3.35),
+            (crate::model_storage::include_model!("models/johto/violet_gym.mesh.json"),6.,3.,3.178,2.25,3.08),
         ] {
             let export:Export=crate::model_storage::parse(source).unwrap();
             assert_eq!(export.roof_courses.as_deref(),Some("closed_prism_v1"));
             let m=Model::parse(source).unwrap();
-            assert_eq!(m.min,[-2.,0.,-depth/2.]);
-            assert_eq!(m.max,[2.,top,depth/2.]);
+            assert_eq!(m.min,[-width/2.,0.,-depth/2.]);
+            assert_eq!(m.max,[width/2.,top,depth/2.]);
             assert_eq!(m.door_anchor,Some([0.,0.,depth/2.]));
             let mut fine_faces=0;
             for p in &export.primitives {
-                if !p.material.starts_with("roof_") || p.material.ends_with("_dark") {continue;}
+                if !(p.material.starts_with("roof_") || p.material.starts_with("violet"))
+                    || p.material.ends_with("_dark") {continue;}
                 let (_,range,_)=m.solid_materials.iter().find(|(name,_,_)|name.as_str()==p.material.as_str()).unwrap();
                 let rendered=m.surface.indices.chunks_exact(3).filter(|tri|range.contains(&(tri[0] as usize))).count();
                 assert_eq!(rendered,p.indices.len()/3,"authored ceramics must not be re-tessellated");
@@ -923,9 +988,28 @@ mod tests {
     }
 
     #[test]
+    fn off_center_house_door_never_stretches_the_upper_storey_or_roof() {
+        let m=model(ModelKind::PlayerHouse);
+        let mut centered=SurfaceMeshData::default();let mut offset=SurfaceMeshData::default();
+        m.append_fitted(&mut centered,[-2.,2.,-2.,2.],0.,1.,Some(0.));
+        m.append_fitted(&mut offset,[-2.,2.,-2.,2.],0.,1.,Some(-1.));
+        let mut checked=0;let mut moved=0;
+        for i in 0..m.surface.positions.len() {
+            if m.surface.positions[i][1]>=1.945 {
+                assert_eq!(centered.positions[i],offset.positions[i],"roof/deck must share one affine fit");
+                assert_eq!(centered.normals[i],offset.normals[i]);checked+=1;
+            }else if centered.positions[i]!=offset.positions[i] {moved+=1;}
+        }
+        assert!(checked>1000 && moved>1000);
+        assert_eq!(centered.indices,offset.indices);
+        assert_eq!(m.min,[-2.,0.,-2.]);assert_eq!(m.max,[2.,4.173,2.]);
+    }
+
+    #[test]
     fn refined_roof_panels_stay_above_the_structural_deck() {
         for source in [
             crate::model_storage::include_model!("models/new_bark/house.mesh.json"),
+            crate::model_storage::include_model!("models/new_bark/player_house.mesh.json"),
             crate::model_storage::include_model!("models/johto/pokecenter.mesh.json"),
             crate::model_storage::include_model!("models/johto/mart.mesh.json"),
             crate::model_storage::include_model!("models/johto/violet_gym.mesh.json"),
@@ -967,6 +1051,7 @@ mod tests {
                         let p=[triangle[0],triangle[1],triangle[2]].map(|i|
                             Vec3::from_array(model.surface.positions[i as usize]));
                         let face=(p[1]-p[0]).cross(p[2]-p[0]);
+                        if face.y<=0. {continue;}
                         // Vents and ridge caps legitimately sit above tiles.
                         // Only the broad pitched dark faces are the deck.
                         if material.ends_with("_dark")
@@ -1068,6 +1153,43 @@ mod tests {
             );
             }
         }
+    }
+
+    #[test]
+    fn sprout_pagoda_keeps_native_bounds_with_swept_four_sided_ceramic_tiers() {
+        let source=crate::model_storage::include_model!("models/johto/sprout_tower.mesh.json");
+        let export:Export=crate::model_storage::parse(source).unwrap();
+        assert_eq!(export.roof_courses.as_deref(),Some("closed_prism_v1"));
+        let m=model(ModelKind::SproutTower);
+        assert_eq!(m.min,[-2.,0.,-4.]);assert_eq!(m.max,[2.,6.39,4.]);
+        assert_eq!(m.door_anchor,Some([0.,0.,4.]));
+        let fascia=export.primitives.iter().find(|p|p.material=="timber_light").unwrap();
+        let back=fascia.positions.chunks_exact(3).filter(|p|(p[2]+4.).abs()<0.00001
+            && (1.7..2.1).contains(&p[1])).collect::<Vec<_>>();
+        let corner=back.iter().filter(|p|p[0].abs()>1.99).map(|p|p[1]).fold(0.,f32::max);
+        let center=back.iter().filter(|p|p[0].abs()<0.001).map(|p|p[1]).fold(0.,f32::max);
+        assert!(corner>center+0.09,"the eaves turn upward at their corners");
+        for level in [1.8,3.57,5.14] {
+            let mut facing=[false;4];
+            for primitive in export.primitives.iter().filter(|p|
+                matches!(p.material.as_str(),"violet"|"violet_light"|"violet_warm")) {
+                for (p,n) in primitive.positions.chunks_exact(3).zip(primitive.normals.chunks_exact(3)) {
+                    if p[1]<level || p[1]>level+0.78 || n[1]<0.3 {continue;}
+                    for (i,(axis,sign)) in [(0,-1.),(0,1.),(2,-1.),(2,1.)].into_iter().enumerate() {
+                        facing[i]|=n[axis]*sign>0.15;
+                    }
+                }
+            }
+            assert!(facing.into_iter().all(|present|present),"every roof tier has four real sloping hips");
+        }
+        for (name,range,_) in &m.solid_materials {
+            if !name.starts_with("violet")||name.ends_with("_dark") {continue;}
+            let raw=export.primitives.iter().find(|p|p.material==*name).unwrap();
+            assert_eq!(m.surface.positions[range.clone()],raw.positions.chunks_exact(3)
+                .map(|p|[p[0],p[1],p[2]]).collect::<Vec<_>>(),
+                "closed authored courses must not be retessellated as broad old slabs");
+        }
+        assert!(m.surface.indices.len()/3<25_000,"bounded shared landmark geometry");
     }
 
     #[test]

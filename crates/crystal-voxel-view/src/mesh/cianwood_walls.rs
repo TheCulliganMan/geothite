@@ -146,7 +146,7 @@ mod cianwood_wall_tests {
         }
     }
     #[test]
-    fn tin_guardians_keep_wall_backing_without_stealing_statue_cells() {
+    fn native_guardians_keep_wall_backing_without_stealing_statue_cells() {
         let g=GridGeometry{width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
         for block in [0x21,0x22] {
             let ox=if block==0x21 {0}else{2};
@@ -161,13 +161,80 @@ mod cianwood_wall_tests {
                             else if y<2 {[0x11,0x21][y]}else{2}}}
             }).collect();
             let refs=tiles.iter().collect::<Vec<_>>();
-            for map in (1..=9).map(|level|format!("TinTower{level}F")).chain(["BurnedTower1F".into()]) {
+            for map in (1..=9).map(|level|format!("TinTower{level}F"))
+                .chain(["BurnedTower1F".into(),"CianwoodGym".into(),"EcruteakGym".into()]) {
                 let mut claimed=vec![false;16];let mut out=vec![];
                 append_cianwood_walls(&map,&refs,&g,&mut claimed,&mut out);
                 assert_eq!(out.len(),1);
                 assert!((0..4).all(|y|(ox..ox+2).all(|x|!claimed[y*4+x])));
                 assert_eq!(guardian_wall_bounds(&map,&out[0],&refs,&g,[8.,16.,13.,16.]),[0.,32.,13.,16.]);
+                for y in 0..4 { for x in ox..ox+2 { for field in 0..5 {
+                    let mut changed=tiles.clone();let source=&mut changed[y*4+x].source;
+                    match field {0=>source.tileset_id="other".into(),1=>source.metatile_id^=1,
+                        2=>source.subtile_column^=1,3=>source.subtile_row^=1,_=>source.tile_index^=1}
+                    assert_eq!(guardian_wall_bounds(&map,&out[0],&changed.iter().collect::<Vec<_>>(),&g,
+                        [8.,16.,13.,16.]),[8.,16.,13.,16.],"edited guardian cannot infer backing");
+                }}}
+                let cropped=GridGeometry{height:3,..g};
+                assert_eq!(guardian_wall_bounds(&map,&out[0],&refs[..12],&cropped,
+                    [8.,16.,13.,16.]),[8.,16.,13.,16.]);
+                assert_eq!(guardian_wall_bounds("UnreviewedGym",&out[0],&refs,&g,
+                    [8.,16.,13.,16.]),[8.,16.,13.,16.]);
             }
+        }
+    }
+    #[test]
+    fn external_gym_guardian_backing_completes_the_native_north_course() {
+        let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").expect("external pack required");
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(std::path::PathBuf::from(path)).unwrap();
+        let pack=loaded.pack();let art=&pack.runtime_files()["data/tilesets/tower_metatiles.bin"];
+        for map in ["CianwoodGym","EcruteakGym"] {
+            let data=&pack.data().maps[map];
+            let (w,h)=(data.attributes.width as usize*4,data.attributes.height as usize*4);
+            assert_eq!((w,h),(20,36));
+            let tiles=(0..w*h).map(|i| {
+                let (x,y)=(i%w,i/w);let block=data.blocks[y/4*(w/4)+x/4];
+                VisualTile{column:x as u32,row:y as u32,texture:Handle::default(),priority:false,
+                    animation_frames:None,source:VisualTileSource{tileset_id:"tower".into(),
+                        metatile_id:block,subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,
+                        tile_index:art[block as usize*16+y%4*4+x%4]as u16}}
+            }).collect::<Vec<_>>();
+            let refs=tiles.iter().collect::<Vec<_>>();
+            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let mut mesh=TerrainMeshData{footing_heights:vec![7.;w*h],
+                authored_cells:vec![None;w*h],..Default::default()};
+            let native=super::super::modeled_dungeons::resolve(map,&refs,&g,None);
+            for wall in native.iter().filter(|p|p.native_tower_wall()&&p.source_row()==0) {
+                wall.append_room_wall(&mut mesh,&g,&refs,[0,0]);
+            }
+            let mut reserved=vec![false;w*h];let mut walls=vec![];
+            append_cianwood_walls(map,&refs,&g,&mut reserved,&mut walls);
+            let mut claimed=vec![false;w*h];let mut guardians=0;
+            for wall in walls.iter().filter(|p|p.row==0&&matches!(refs[p.column].source.metatile_id,0x21|0x22)) {
+                guardians+=1;
+                assert!(append(&mut mesh,map,&refs,&g,wall,&mut claimed,[0,0]));
+                let block_x=wall.column-refs[wall.column].source.subtile_column as usize;
+                let ox=if refs[wall.column].source.metatile_id==0x21 {0}else{2};
+                for y in 0..4 {for x in ox..ox+2 {
+                    let i=y*w+block_x+x;
+                    assert!(!claimed[i]&&mesh.authored_cells[i].is_none(),"{map}: statue keeps its source");
+                }}
+            }
+            assert_eq!(guardians,2);
+            // Upper timber bodies meet over the complete source width;
+            // the two statue slots cannot be hidden by floor geometry.
+            // Include the beveled crown rather than just its inset top face.
+            let mut spans=mesh.textured.indices.chunks_exact(3).filter_map(|tri| {
+                let p=[mesh.textured.positions[tri[0]as usize],mesh.textured.positions[tri[1]as usize],
+                    mesh.textured.positions[tri[2]as usize]];
+                p.iter().all(|p|p[1]>8.&&p[2]>=12.999&&p[2]<=16.001)
+                    .then(||(p.iter().map(|p|p[0]).fold(f32::INFINITY,f32::min),
+                        p.iter().map(|p|p[0]).fold(f32::NEG_INFINITY,f32::max)))
+            }).collect::<Vec<_>>();
+            spans.sort_by(|a,b|a.0.total_cmp(&b.0));let mut end=0.;
+            for (a,b) in spans {assert!(a<=end+0.001,"{map}: rear wall gap {end}..{a}");end=end.max(b);}
+            assert!((end-160.).abs()<0.001,"{map}: full room width has backing");
+            assert_eq!(mesh.footing_heights,vec![7.;w*h]);
         }
     }
     #[test]
@@ -355,7 +422,8 @@ mod cianwood_wall_tests {
 fn guardian_wall_bounds(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry,
     bounds:[f32;4])->[f32;4] {
     let s=&cells[p.row*g.width+p.column].source;
-    if !(super::modeled_dungeons::tin_tower_guardian_map(map)||map=="BurnedTower1F")
+    if !(super::modeled_dungeons::tin_tower_guardian_map(map)
+        ||matches!(map,"BurnedTower1F"|"CianwoodGym"|"EcruteakGym"))
         || !matches!(s.metatile_id,0x21|0x22) {return bounds;}
     let Some(block_x)=p.column.checked_sub(s.subtile_column as usize) else{return bounds;};
     let ox=if s.metatile_id==0x21 {0}else{2};

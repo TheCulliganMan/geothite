@@ -16,7 +16,27 @@ use crate::state::GameState;
 
 const SAVE_MAGIC: &[u8; 12] = b"CRYSTALSAVE\0";
 pub const SAVE_EXTENSION: &str = "crystalsave";
-pub const SAVE_FORMAT_VERSION: u16 = 24;
+pub const SAVE_FORMAT_VERSION: u16 = 25;
+const PRE_SCALED_ROAMING_SAVE_VERSION: u16 = 24;
+
+std::thread_local! {
+    static ROAMING_SAVE_V24_WIRE: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+}
+
+pub(crate) fn roaming_save_v24_wire() -> bool {
+    ROAMING_SAVE_V24_WIRE.with(std::cell::Cell::get)
+}
+
+fn with_v24_roaming_wire<T>(operation: impl FnOnce() -> T) -> T {
+    struct Restore(bool);
+    impl Drop for Restore {
+        fn drop(&mut self) {
+            ROAMING_SAVE_V24_WIRE.with(|value| value.set(self.0));
+        }
+    }
+    let _restore = Restore(ROAMING_SAVE_V24_WIRE.with(|value| value.replace(true)));
+    operation()
+}
 const SAVE_VERSION_OFFSET: usize = SAVE_MAGIC.len();
 const SAVE_PAYLOAD_LENGTH_OFFSET: usize = SAVE_VERSION_OFFSET + 2;
 const SAVE_PAYLOAD_HASH_OFFSET: usize = SAVE_PAYLOAD_LENGTH_OFFSET + 4;
@@ -294,7 +314,9 @@ impl SaveGame {
     }
 
     pub fn validate(&self) -> Result<(), SaveError> {
-        if self.format_version != SAVE_FORMAT_VERSION {
+        if self.format_version != SAVE_FORMAT_VERSION
+            && !(roaming_save_v24_wire() && self.format_version == PRE_SCALED_ROAMING_SAVE_VERSION)
+        {
             return Err(SaveError::UnsupportedVersion(self.format_version));
         }
         self.metadata.validate()?;
@@ -939,7 +961,7 @@ fn read_save_game_bytes(
         return Err(SaveError::FrameTooShort);
     }
     let version = u16::from_be_bytes([bytes[SAVE_VERSION_OFFSET], bytes[SAVE_VERSION_OFFSET + 1]]);
-    if version != SAVE_FORMAT_VERSION {
+    if version != SAVE_FORMAT_VERSION && version != PRE_SCALED_ROAMING_SAVE_VERSION {
         return Err(SaveError::UnsupportedVersion(version));
     }
     let declared = u32::from_be_bytes([
@@ -969,11 +991,28 @@ fn read_save_game_bytes(
             actual: actual_hash,
         });
     }
-    let (save, consumed): (SaveGame, usize) =
+    let decode = || {
         bincode::serde::decode_from_slice(payload, save_binary_config())
-            .map_err(|error| SaveError::Decode(error.to_string()))?;
+            .map_err(|error| SaveError::Decode(error.to_string()))
+    };
+    let (mut save, consumed): (SaveGame, usize) = if version == PRE_SCALED_ROAMING_SAVE_VERSION {
+        // Validate the original state's checksum using its original wire
+        // layout before upgrading. The guard is local to this decoding thread.
+        with_v24_roaming_wire(decode)?
+    } else {
+        decode()?
+    };
     if consumed != payload.len() {
         return Err(SaveError::TrailingBytes(payload.len() - consumed));
+    }
+    if save.format_version != version {
+        return Err(SaveError::UnsupportedVersion(save.format_version));
+    }
+    if version == PRE_SCALED_ROAMING_SAVE_VERSION {
+        save.format_version = SAVE_FORMAT_VERSION;
+        save.metadata.saved_state_hash = game_state_checksum(&save.state)
+            .map_err(|error| SaveError::InvalidState(error.to_string()))?
+            .hash();
     }
     save.validate()?;
     Ok(save)
@@ -1152,6 +1191,62 @@ mod tests {
 
     fn test_save(state: GameState, modpack: SaveModpackIdentity) -> SaveGame {
         SaveGame::new(state, modpack, pack_content_hash().to_string()).expect("test save")
+    }
+
+    #[test]
+    fn binary_save_roundtrips_optional_roamer_hp() {
+        for scaled_hp in [None, Some(353)] {
+            let mut state = GameState::default();
+            state.money = 1234;
+            if let Some(hp) = scaled_hp {
+                state.roaming_pokemon[0] = crate::state::RoamingPokemonState {
+                    species: Some("RAIKOU".into()),
+                    level: 100,
+                    map_group: 1,
+                    map_number: 1,
+                    hp: 255,
+                    scaled_hp: Some(hp),
+                    dvs_be: [0x12, 0x34],
+                };
+            }
+            let json = serde_json::to_value(&state.roaming_pokemon[0]).unwrap();
+            assert_eq!(json.get("scaled_hp").is_some(), scaled_hp.is_some());
+            let save = test_save(state, SaveModpackIdentity::new("core", pack_content_hash()).unwrap());
+            let bytes = encode_save_game_bytes(&save).unwrap();
+            let loaded = read_save_game_bytes(&bytes, "roamer.crystalsave").unwrap();
+            assert_eq!(loaded, save);
+            assert_eq!(loaded.state.roaming_pokemon[0].scaled_hp, scaled_hp);
+        }
+    }
+
+    #[test]
+    fn binary_save_migrates_v24_roamers_with_checksum_validation() {
+        let mut state = GameState::default();
+        state.money = 1234;
+        state.script_runtime.memory.insert("GEOTHITE_TRAINER_WON_VioletGym_ABE".into(), "1".into());
+        let mut old = test_save(state, SaveModpackIdentity::new("core", pack_content_hash()).unwrap());
+        old.format_version = PRE_SCALED_ROAMING_SAVE_VERSION;
+        old.metadata.saved_state_hash = with_v24_roaming_wire(|| game_state_checksum(&old.state)).unwrap().hash();
+        let mut bytes = with_v24_roaming_wire(|| encode_save_game_bytes(&old)).unwrap();
+        bytes[SAVE_VERSION_OFFSET..SAVE_VERSION_OFFSET + 2]
+            .copy_from_slice(&PRE_SCALED_ROAMING_SAVE_VERSION.to_be_bytes());
+        let loaded = read_save_game_bytes(&bytes, "v24.crystalsave").unwrap();
+        assert_eq!(loaded.state, old.state);
+        assert_eq!(loaded.format_version, SAVE_FORMAT_VERSION);
+        assert_eq!(loaded.metadata.saved_state_hash, game_state_checksum(&loaded.state).unwrap().hash());
+        assert!(!roaming_save_v24_wire());
+
+        // A valid outer frame must not bypass the old state checksum while
+        // migration updates the checksum to the new serialization layout.
+        old.metadata.saved_state_hash ^= 1;
+        let payload = with_v24_roaming_wire(|| bincode::serde::encode_to_vec(&old, save_binary_config())).unwrap();
+        let mut corrupt = SAVE_MAGIC.to_vec();
+        corrupt.extend_from_slice(&PRE_SCALED_ROAMING_SAVE_VERSION.to_be_bytes());
+        corrupt.extend_from_slice(&(payload.len() as u32).to_be_bytes());
+        corrupt.extend_from_slice(&fnv1a32_bytes(&payload).to_be_bytes());
+        corrupt.extend_from_slice(&payload);
+        assert!(matches!(read_save_game_bytes(&corrupt, "corrupt-v24.crystalsave"), Err(SaveError::Decode(_))));
+        assert!(!roaming_save_v24_wire());
     }
 
     #[test]
@@ -1793,6 +1888,7 @@ mod tests {
 
         let mut prior_state = GameState::default();
         prior_state.roaming_pokemon[0] = crate::state::RoamingPokemonState {
+            scaled_hp: None,
             species: Some("ROAMING_V9_SCHEMA_SENTINEL".to_string()),
             level: 40,
             map_group: 1,

@@ -89,6 +89,11 @@ fn expected(block: u16, x: usize, y: usize) -> Option<u16> {
 fn bank(tile: u16) -> bool {
     matches!(tile, 0x31 | 0x33 | 0x54)
 }
+pub(super) fn source_bank(s:&VisualTileSource)->bool {
+    s.tileset_id.as_ref()=="kanto" && bank(s.tile_index)
+        && expected(s.metatile_id,s.subtile_column as usize,s.subtile_row as usize)==Some(s.tile_index)
+}
+
 fn ink(tile: u16, p: usize) -> usize {
     let rows = if tile == 0x33 {
         [
@@ -525,8 +530,11 @@ mod tests {
                 .all(|p| p.iter().all(|v| v.is_finite()) && p[1] >= -2. - g.tile_height * 0.20 && p[1] <= g.tile_height * 0.32));
             assert!(source_corners.iter().all(|p| mesh.solid.positions.contains(p)),
                 "fractured shelves and walls preserve all source contact corners");
-            assert!(mesh.solid.positions.iter().any(|p| p[1] > 0.05),
-                "shore shelves must contain physical rock relief");
+            assert!(mesh.solid.positions.iter().all(|p|p[1]>=-2. && p[1]<=0.),
+                "standard cliff faces cannot add a separate raised shoreline crown");
+            assert!(mesh.solid.positions.iter().zip(&mesh.solid.normals).any(|(p,n)|
+                p[1]>-2. && p[1]<0. && n[1].abs()>0.001 && n[1].abs()<0.9),
+                "the shared cliff wall must retain real fractured relief");
             assert!(mesh.solid.uvs.iter().all(|uv| *uv == crate::scenery_finish::SOURCE_PAINT_UV
                 || *uv == new_bark::ledge_finish::BANK_GROUND_UV
                 || (uv[0] > 87000. && uv[0] < 90000. && uv[1] < -10000.)),

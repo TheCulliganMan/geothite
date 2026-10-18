@@ -1,4 +1,11 @@
 //! Pure authored-profile mesh construction for the optional voxel renderer.
+pub(crate) fn lighthouse_pit_reveal_targets(frame:&VisualWorldFrame,foot:Vec3)->Vec<Vec3> {
+    modeled_dungeons::lighthouse_pit_reveal_targets(frame,foot)
+}
+pub(crate) fn lighthouse_stair_support(frame:&VisualWorldFrame,cell:bevy::prelude::UVec2,
+    foot:bevy::prelude::Vec2,resolved:&[f32])->Option<f32> {
+    modeled_dungeons::lighthouse_stair_support(frame,cell,foot,resolved)
+}
 #[cfg(feature = "terrain-worker")]
 #[path = "terrain_worker/mesh_wire.rs"]
 pub(super) mod worker_wire;
@@ -12,10 +19,17 @@ mod live;
 
 #[path = "mesh/buoy_course.rs"]
 mod buoy_course;
+#[path = "mesh/elevated_piers.rs"]
+mod elevated_piers;
+pub(crate) fn pier_over_water(map: &str, source: &VisualTileSource, north: Option<&VisualTileSource>) -> bool {
+    elevated_piers::water_under_deck(map, source, north)
+}
 #[path = "mesh/kanto_paving.rs"]
 mod kanto_paving;
 #[path = "mesh/kanto_shore.rs"]
 mod kanto_shore;
+#[path = "mesh/enclosed_ponds.rs"]
+mod enclosed_ponds;
 #[path = "mesh/pebbles.rs"]
 mod pebbles;
 #[path = "mesh/johto_shore.rs"]
@@ -25,6 +39,8 @@ mod shore_ecology;
 
 #[path = "mesh/background.rs"]
 mod background;
+#[path = "mesh/rooftop_sky.rs"]
+mod rooftop_sky;
 #[path = "mesh/cave_enclosure.rs"]
 mod cave_enclosure;
 mod cave_crowns;
@@ -90,6 +106,8 @@ mod gym_scenery;
 mod violet_gym_pits;
 #[path = "mesh/train_station_scenery.rs"]
 mod train_station_scenery;
+#[path = "mesh/native_home_timber.rs"]
+mod native_home_timber;
 #[path = "mesh/city_gardens.rs"]
 mod city_gardens;
 #[path = "mesh/city_railway.rs"]
@@ -114,10 +132,14 @@ mod terraces;
 mod rigid_buildings;
 #[path = "mesh/league_terraces.rs"]
 mod league_terraces;
+mod league_liquids;
+mod league_banks;
 #[path = "mesh/lance_terraces.rs"]
 mod lance_terraces;
 #[path = "mesh/hall_machine.rs"]
 mod hall_machine;
+mod pokecom_display;
+mod pokecom_console;
 #[path = "mesh/soul_offerings.rs"]
 mod soul_offerings;
 pub(crate) fn native_healing_owner_allows(frame:&VisualWorldFrame,profiles:&crate::live_profiles::Document,column:usize,row:usize)->bool {
@@ -141,6 +163,10 @@ pub(crate) fn traditional_tabletop_height(frame:&VisualWorldFrame,
 pub(crate) fn radio_stair_support_correction(frame:&VisualWorldFrame,cell:bevy::prelude::UVec2,foot:bevy::prelude::Vec2,resolved:&[f32])->f32 {
     modeled_interiors::radio_stair_support_correction(frame,cell,foot,resolved)
 }
+pub(crate) fn hall_healing_effects_supported(frame:&VisualWorldFrame,
+    profiles:Option<&crate::live_profiles::Document>)->bool {
+    hall_machine::effects_supported(frame,profiles)
+}
 pub(crate) fn hall_stair_support_correction(frame:&VisualWorldFrame,
     cell:bevy::prelude::UVec2,foot:bevy::prelude::Vec2,resolved:&[f32])->f32 {
     hall_machine::support_correction(frame,cell,foot,resolved)
@@ -151,10 +177,13 @@ pub(crate) fn league_stair_support_correction(frame:&VisualWorldFrame,
 }
 #[path = "mesh/terrace_levels.rs"]
 mod terrace_levels;
-/// Tin Tower hops cross timber barriers on one floor; other authored ledges
-/// use the cumulative terrace field and descend to a lower landing.
+#[path = "mesh/terrace_datum.rs"]
+mod terrace_datum;
+pub use terrace_datum::source_terrace_datum;
+/// Saffron and the Seafoam coast are level ground; Tin Tower hops cross barriers on one floor.
+/// Their collision edges must not create cumulative outdoor hills.
 pub fn jump_changes_floor_level(map: &str) -> bool {
-    !modeled_dungeons::tin_tower_guardian_map(map)
+    !matches!(map,"SaffronCity"|"Route20") && !modeled_dungeons::tin_tower_guardian_map(map)
 }
 pub(crate) fn terrace_support_correction(frame: &VisualWorldFrame, cell: bevy::prelude::UVec2,
     foot: bevy::prelude::Vec2) -> f32 {
@@ -166,6 +195,8 @@ mod outdoor_stone;
 mod slowpoke_well;
 #[path = "mesh/outdoor_stairs.rs"]
 mod outdoor_stairs;
+#[path = "mesh/outdoor_entry_mat.rs"]
+mod outdoor_entry_mat;
 #[path = "mesh/rock_bases.rs"]
 mod rock_bases;
 #[path = "mesh/ordinary_house.rs"]
@@ -412,6 +443,7 @@ pub struct TerrainMeshData {
     pub animated_solid: SurfaceMeshData,
     /// Only pillars actually selected by the completed build may animate.
     pub(crate) animated_pillars: Vec<[usize; 2]>,
+    pub(crate) animated_train_doors: bool,
     pub footing_heights: Vec<f32>,
     /// Actual source cells consumed by successful original-model appends.
     /// This deliberately excludes old relief, cards and recolored ground.
@@ -647,6 +679,7 @@ impl DeferredClaims {
 }
 #[derive(Default, Clone)]
 struct DeferredGroves {
+    terrace_datum: Option<std::sync::Arc<crystal_render_api::VisualTerraceDatum>>,
     bank_regions: std::sync::OnceLock<Vec<[f32;4]>>,
     recipes: std::collections::VecDeque<new_bark::GroveRecipe>,
     geometry: Option<GridGeometry>,
@@ -657,6 +690,10 @@ struct DeferredGroves {
     claims: DeferredClaims,
 }
 impl DeferredGroves {
+    fn uses_terrace(&self) -> bool {
+        !self.jump_ledges.is_empty() || self.terrace_datum.as_ref()
+            .is_some_and(|d| d.levels.iter().flatten().any(|&height| height != 0.))
+    }
     fn next(&mut self) -> Option<Vec<crate::occluder_fade::PreparedGroup>> {
         let recipe = self.recipes.pop_front()?;
         Some(self.prepare_recipe(recipe, None))
@@ -664,7 +701,7 @@ impl DeferredGroves {
     fn prepare_recipe(&self, recipe: new_bark::GroveRecipe, library: Option<&crate::forest_instances::Library>) -> Vec<crate::occluder_fade::PreparedGroup> {
         let _trace = crate::loading_trace::span("tree.prepare_exact_instance", || serde_json::json!({"coordinates":recipe.coordinates_for_trace()}));
         let g=self.geometry.as_ref().expect("deferred source geometry");
-        if self.jump_ledges.is_empty() {
+        if !self.uses_terrace() {
             let regions = self.bank_regions.get_or_init(|| ledge_approach::grove_bank_regions(&self.cells,g));
             if !ledge_approach::grove_may_touch_bank(recipe.conservative_bounds(),regions) {
                 return if let Some(library) = library { recipe.prepare_instanced(library) } else { recipe.prepare_shared() };
@@ -678,7 +715,7 @@ impl DeferredGroves {
             crate::occluder_fade::set_coverage_fade(&mut groups, coverage);
             groups
         } else {
-            let recipe = recipe.on_terrace(&self.jump_ledges,g,self.origin);
+            let recipe = recipe.on_terrace(&self.jump_ledges,g,self.origin,self.terrace_datum.as_deref());
             if let Some(library) = library { recipe.prepare_instanced(library) } else { recipe.prepare_shared() }
         }
     }
@@ -692,7 +729,7 @@ pub(crate) struct StreamedGroves { source: DeferredGroves }
 impl StreamedGroves {
     pub(crate) fn bounds(&self, index: usize) -> (Vec3, Vec3) {
         let recipe = self.source.recipes[index].clone().on_terrace(&self.source.jump_ledges,
-            self.source.geometry.as_ref().unwrap(), self.source.origin);
+            self.source.geometry.as_ref().unwrap(), self.source.origin,self.source.terrace_datum.as_deref());
         recipe.conservative_bounds()
     }
     pub(crate) fn len(&self) -> usize { self.source.recipes.len() }
@@ -706,14 +743,14 @@ impl StreamedGroves {
         -> Option<Vec<crate::occluder_fade::PreparedGroup>> {
         let mut recipe = self.source.recipes[index].clone();
         let geometry = self.source.geometry.as_ref()?;
-        if self.source.jump_ledges.is_empty() {
+        if !self.source.uses_terrace() {
             // Do not initialize regional bank metadata on the frame thread.
             let regions = self.source.bank_regions.get()?;
             if ledge_approach::grove_may_touch_bank(recipe.conservative_bounds(), regions) {
                 return None;
             }
         } else {
-            recipe = recipe.on_terrace(&self.source.jump_ledges, geometry, self.source.origin);
+            recipe = recipe.on_terrace(&self.source.jump_ledges, geometry, self.source.origin,self.source.terrace_datum.as_deref());
         }
         let mut groups = library.prepare_if_cached_with_ground(recipe.bounds, recipe.base_height,
             recipe.tile_height, recipe.coordinates, recipe.neighbors, recipe.family,
@@ -726,6 +763,51 @@ impl StreamedGroves {
 #[cfg(all(test, not(target_arch = "wasm32")))]
 mod cached_grove_tests {
     use super::*;
+    use bevy::prelude::{IVec2,UVec2,Vec2};
+
+    #[test]
+    fn deciduous_groves_use_the_same_kanto_shelf_as_the_rendered_ground() {
+        let g=GridGeometry {width:40,height:72,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let edges=[(12,4,14),(12,16,24),(20,4,14),(28,8,16),
+            (40,4,6),(40,8,14),(40,16,32),(48,28,32),(56,4,8),(56,16,32)]
+            .map(|(y,a,b)|crystal_render_api::VisualJumpLedge {
+                start:IVec2::new(a,y),end:IVec2::new(b,y),descent:IVec2::Y });
+        let cell=tests::frame(1,1,vec![crystal_render_api::VisualTileSource {
+            tileset_id:"kanto".into(),metatile_id:1,subtile_column:0,subtile_row:0,tile_index:0x2c }]);
+        let ground=terraces::Field::with_source(&edges,&g,[0,0],&[&cell.tiles[0]]);
+        let center=Vec2::new(7.*8.,38.5*8.);
+        let expected=ground.height(center);
+        assert!(expected>terraces::Field::new(&edges,&g,[0,0]).height(center)+0.1,
+            "the interrupted Kanto shelf must exercise its own elevation rules");
+        let recipe=new_bark::GroveRecipe {family:crate::foliage::GroveFamily::KantoDeciduous,
+            bounds:[center.x-8.,center.x+8.,center.y-8.,center.y+8.],base_height:0.,tile_height:8.,
+            coordinates:[6,37],neighbors:[false;4],understory_bounds:None,coverage_fade:true};
+        let lifted=recipe.on_terrace(&edges,&g,[0,0],None);
+        assert!((lifted.base_height-expected).abs()<0.001,
+            "streamed tree roots and plants must stand on the same ground shelf");
+    }
+
+    #[test]
+    fn positive_terrace_datum_lifts_cached_groves_without_local_jump_edges() {
+        let library=crate::forest_instances::Library::default();
+        let recipe=new_bark::GroveRecipe {family:crate::foliage::GroveFamily::KantoDeciduous,
+            bounds:[0.,16.,0.,16.],base_height:0.,tile_height:16.,coordinates:[0,0],
+            neighbors:[false;4],understory_bounds:None,coverage_fade:true};
+        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:UVec2::ONE,
+            levels:vec![[2.;4]].into(),open_water:None,water_barriers:Default::default()};
+        let source=DeferredGroves {geometry:Some(GridGeometry {width:1,height:1,tile_width:16.,
+            tile_height:16.,origin_x:0.,origin_z:0.}),terrace_datum:Some(std::sync::Arc::new(datum)),
+            recipes:std::collections::VecDeque::from([recipe.clone()]),..Default::default()};
+        assert!(source.uses_terrace());
+        let mut expected=recipe;expected.base_height=24.;
+        let expected=expected.prepare_instanced(&library);
+        let streamed=StreamedGroves {source};
+        let actual=streamed.prepare(0,&library);
+        let cached=streamed.prepare_if_cached(0,&library).unwrap();
+        let signature=|groups|crate::occluder_fade::geometry_signature(&SurfaceMeshData::default(),groups);
+        assert_eq!(signature(expected.clone()),signature(actual));
+        assert_eq!(signature(expected),signature(cached));
+    }
 
     #[test]
     fn cached_publication_preserves_bank_conforming_background_ownership() {
@@ -814,6 +896,13 @@ pub(crate) fn build_animated_flowers(
     images: &Assets<Image>,
     pillars: &[[usize; 2]],
 ) -> Result<(Mesh, Mesh), TerrainMeshError> {
+    build_animated_scene(frame,images,pillars,None)
+}
+pub(crate) fn station_train_door_openness(frame:&VisualWorldFrame)->f32 {
+    train_station_scenery::door_openness(frame)
+}
+pub(crate) fn build_animated_scene(frame:&VisualWorldFrame,images:&Assets<Image>,
+    pillars:&[[usize;2]],train_open:Option<f32>)->Result<(Mesh,Mesh),TerrainMeshError> {
     let samples = TerrainImageSamples::capture(frame, images);
     let geometry = GridGeometry {
         width: frame.grid_size.x as usize,
@@ -825,6 +914,8 @@ pub(crate) fn build_animated_flowers(
     };
     let mut textured = SurfaceMeshData::default();
     let mut solid_mesh = SurfaceMeshData::default();
+    let cells=frame.tiles.iter().collect::<Vec<_>>();
+    let shapes=cells.iter().map(|tile|shape_for_source_on_map(&frame.map_id,&tile.source)).collect::<Vec<_>>();
     for tile in &frame.tiles {
         let Some(CellShape::Cutout {
             ground_tile_index, ..
@@ -832,19 +923,20 @@ pub(crate) fn build_animated_flowers(
         else {
             continue;
         };
-        let base_height = frame
-            .tiles
-            .iter()
-            .find_map(|ground| {
-                let shape = shape_for_source_on_map(frame.map_id.as_ref(), &ground.source);
-                (ground.source.tile_index == ground_tile_index && matches!(shape, CellShape::Flat))
-                    .then(|| shape.surface_height(geometry.tile_height))
+        let base_height = if source_bound_outdoor_ground(&tile.source) {
+            authored_ground_for_source(&cells,&shapes,ground_tile_index,&tile.source)
+                .map(|i|shapes[i].surface_height(geometry.tile_height))
+        } else {
+            frame.tiles.iter().find_map(|ground| {
+                let shape=shape_for_source_on_map(&frame.map_id,&ground.source);
+                (ground.source.tile_index==ground_tile_index && matches!(shape,CellShape::Flat))
+                    .then(||shape.surface_height(geometry.tile_height))
             })
-            .ok_or(TerrainMeshError::MissingGroundSample {
-                column: tile.column,
-                row: tile.row,
-                tile_index: ground_tile_index,
-            })?;
+        }.ok_or(TerrainMeshError::MissingGroundSample {
+            column:tile.column,row:tile.row,tile_index:ground_tile_index,
+        })?;
+        let base_height=elevated_piers::garden_flower_base(&frame.map_id,&tile.source)
+            .map_or(base_height,|h|h*geometry.tile_height/SOURCE_TILE_HEIGHT);
         if new_bark::append_flower(
             &mut solid_mesh,
             frame.map_id.as_ref(),
@@ -858,6 +950,7 @@ pub(crate) fn build_animated_flowers(
             &geometry,
             base_height,
             frame.grid_origin.to_array(),
+            Some(&samples),
         ) {
             continue;
         }
@@ -882,15 +975,21 @@ pub(crate) fn build_animated_flowers(
             SolidKind::Flower,
         )?;
     }
-    let cells: Vec<_> = frame.tiles.iter().collect();
     if sprout_pillar::pillar_map(&frame.map_id) {
         for &anchor in pillars {
             sprout_pillar::append(&mut textured, &geometry, &cells, anchor);
         }
     }
-    for surface in [&mut textured, &mut solid_mesh] {
-        terraces::fit_kanto_animated(surface, &cells, &geometry,
-            frame.grid_origin.to_array(), &frame.jump_ledges);
+    if jump_changes_floor_level(&frame.map_id) {
+        for surface in [&mut textured, &mut solid_mesh] {
+            terraces::fit_animated_outdoor(surface, &frame.map_id, &cells, &geometry,
+                frame.grid_origin.to_array(), &frame.jump_ledges,frame.terrace_datum.as_deref());
+        }
+    }
+    if let Some(open)=train_open {
+        if !train_station_scenery::append_selected_doors(&mut textured,frame,&cells,&geometry,open) {
+            return Err(TerrainMeshError::InvalidTrainDoorSource);
+        }
     }
     Ok((textured.into_mesh(), solid_mesh.into_mesh()))
 }
@@ -2161,19 +2260,6 @@ fn kanto_round_barrier_placements(
     })
 }
 
-fn kanto_round_path_barrier_placements(
-    cells: &[&VisualTile],
-    geometry: &GridGeometry,
-) -> Vec<TreePlacement> {
-    thin_object_placements(
-        grouped_flat_card_placements(cells, geometry, 0x11, true, |source| {
-            crate::kanto_cliff::round_path_barrier_local(source)
-                .map(|(column, row)| (column, row, 2, 2))
-        }),
-        geometry,
-    )
-}
-
 fn kanto_shoreline_round_barrier_placements(
     cells: &[&VisualTile],
     geometry: &GridGeometry,
@@ -3377,6 +3463,30 @@ fn append_facility_divider_network(
         }
     }
 
+    // The Trainer House receptionist stands inside a counter, not behind
+    // an arena wall. Follow only the occupied component anchored by its
+    // unique $21 reception return; the arena uses a separate wall network.
+    // This topology survives padded render grids without guessed map rows.
+    let mut reception_counter = vec![false; occupied.len()];
+    if map_id == "TrainerHouseB1F" {
+        let mut pending = occupied.iter().enumerate()
+            .filter(|(i, owned)| **owned && cells[*i].source.metatile_id == 0x21)
+            .map(|(i, _)| i).collect::<Vec<_>>();
+        while let Some(i) = pending.pop() {
+            if reception_counter[i] { continue; }
+            reception_counter[i] = true;
+            let (x, y) = (i % geometry.width, i / geometry.width);
+            for neighbor in [
+                (x > 0).then(|| i - 1),
+                (x + 1 < geometry.width).then(|| i + 1),
+                (y > 0).then(|| i - geometry.width),
+                (y + 1 < geometry.height).then(|| i + geometry.width),
+            ].into_iter().flatten() {
+                if occupied[neighbor] && !reception_counter[neighbor] { pending.push(neighbor); }
+            }
+        }
+    }
+
     // Complete authored replacements can retire every legacy divider. In
     // that case there is no remaining face requiring the old paint samples.
     if !occupied.iter().any(|cell| *cell) {
@@ -3397,7 +3507,10 @@ fn append_facility_divider_network(
     let ground_uv = geometry.uv(ground % geometry.width, ground / geometry.width);
     let brown_uv = geometry.uv(brown % geometry.width, brown / geometry.width);
     let stripe_uv = facility_divider_stripe_uv(cells, geometry, 0, 0)?;
-    let wall_height = crate::facility_divider::WALL_HEIGHT;
+    // WALL_HEIGHT is authored in eight-pixel source cells; production tiles
+    // are32 world units. Match the room shell's ceiling at every render scale.
+    let ceiling_height = crate::facility_divider::WALL_HEIGHT
+        * geometry.tile_height / SOURCE_TILE_HEIGHT;
     for row in 0..geometry.height {
         for column in 0..geometry.width {
             let index = row * geometry.width + column;
@@ -3405,6 +3518,7 @@ fn append_facility_divider_network(
                 continue;
             }
             claimed[index] = true;
+            let wall_height = if reception_counter[index] { geometry.tile_height } else { ceiling_height };
             let bounds = geometry.bounds(column, row);
             append_top(
                 &mut mesh.textured,
@@ -3412,6 +3526,7 @@ fn append_facility_divider_network(
                 0.0,
                 ground_uv,
             );
+            let first_wall_vertex = mesh.textured.positions.len();
             let source = &cells[index].source;
             let top_uv = if matches!(source.tile_index, 0x40..=0x42) {
                 geometry.uv(column, row)
@@ -3438,8 +3553,10 @@ fn append_facility_divider_network(
             let east_open =
                 column + 1 == geometry.width || !occupied[row * geometry.width + column + 1];
             for band in 0..2 {
-                let y0 = band as f32 * geometry.tile_height;
-                let y1 = y0 + geometry.tile_height;
+                // The sides must meet the existing ceiling-height cap. Using
+                // two source-tile heights left the upper half of every face open.
+                let y0 = band as f32 * wall_height * 0.5;
+                let y1 = (band + 1) as f32 * wall_height * 0.5;
                 if north_open {
                     append_quad(
                         &mut mesh.textured,
@@ -3497,10 +3614,19 @@ fn append_facility_divider_network(
                     );
                 }
             }
+            // Keep the floor opaque while the full-height wall and cap share
+            // the existing smooth divider reveal around an occluded player.
+            let wall = first_wall_vertex..mesh.textured.positions.len();
+            mesh.textured.cutaway_ranges.push(wall.clone());
+            mesh.layered_alpha_textured_ranges.push(wall);
         }
     }
     Ok(())
 }
+
+#[cfg(test)]
+#[path = "mesh/facility_divider_height_tests.rs"]
+mod facility_divider_height_tests;
 
 #[cfg(test)]
 mod rocket_wall_ownership_tests {
@@ -3874,7 +4000,6 @@ pub fn audit_cell_coverage_on_map(
     prop_cards.extend(pokecom_chair_placements(map_id, &cells, &geometry));
     prop_cards.extend(park_bench_placements(&cells, &geometry));
     prop_cards.extend(kanto_round_barrier_placements(&cells, &geometry));
-    prop_cards.extend(kanto_round_path_barrier_placements(&cells, &geometry));
     prop_cards.extend(kanto_shoreline_round_barrier_placements(&cells, &geometry));
     prop_cards.extend(ship_stool_placements(map_id, &cells, &geometry));
     prop_cards.extend(ship_rack_placements(map_id, &cells, &geometry));
@@ -4805,7 +4930,7 @@ fn append_kanto_building_placements(
                 if at(x, facade_y) == Some(0x37)
                     && matches!(at(last_x, facade_y), Some(0x73 | 0x7e))
                     && (1..width_blocks - 1).all(|column| {
-                        matches!(at(x + (column * 4) as isize, facade_y), Some(0x3a | 0x7d))
+                        matches!(at(x + (column * 4) as isize, facade_y), Some(0x3a | 0x7d | 0x53))
                     })
                 {
                     add(x, y, width_blocks, cap_rows + 1, 4);
@@ -4894,7 +5019,7 @@ fn append_kanto_building_placements(
         if first == 0x38
             && at(x + 4, y) == Some(0x39)
             && matches!((at(x, y + 4), at(x + 4, y + 4)),
-                (Some(0x3c), Some(0x3d)) | (Some(0x10), Some(0x66)))
+                (Some(0x3c), Some(0x3d)) | (Some(0x10), Some(0x66 | 0x12)))
         {
             add(x, y, 2, 2, 4);
         }
@@ -8113,15 +8238,22 @@ fn append_shallow_top_group(
     Ok(())
 }
 
-// Kanto's lawn tile is also used on raised bank caps. Decorative cutouts
-// need native flat ground from their own atlas, not that remote cap's height.
+// Outdoor tile numbers are reused across connected atlas families and bank
+// caps. Cutouts need their own flat native ground whenever it is available.
+fn source_bound_outdoor_ground(source:&VisualTileSource)->bool {
+    matches!(source.tileset_id.as_ref(),"johto"|"johto_modern"|"kanto")
+}
+
 fn authored_ground_for_source(
     cells: &[&VisualTile],
     shapes: &[CellShape],
     tile: u16,
     source: &VisualTileSource,
 ) -> Option<usize> {
-    if source.tileset_id.as_ref() == "kanto" {
+    // Connected maps can reuse a tile number with different native pixels.
+    // Keep outdoor underlays in their own atlas; prefer its actual flat ground
+    // over a distant raised cap. The forest/indoor legacy path stays separate.
+    if source_bound_outdoor_ground(source) {
         return cells
             .iter()
             .zip(shapes)
@@ -9985,6 +10117,7 @@ pub enum TerrainMeshError {
         column: u32,
         row: u32,
     },
+    InvalidTrainDoorSource,
 }
 
 include!("mesh/regression_tests.rs");
@@ -10096,6 +10229,107 @@ mod kanto_native_ground_tests {
     }
 
     #[test]
+    fn johto_flower_refresh_retains_connected_lawn_height_without_lifting_forest_blooms() {
+        for (map,family) in [("NewBarkTown","johto"),("GoldenrodCity","johto_modern")] {
+            let sources=[(family,5),(family,3),("forest",5),("forest",3)].map(|(family,tile)|{
+                let mut s=super::tests::source_with_tile(2,1,1,tile);s.tileset_id=family.into();s
+            }).to_vec();
+            let mut f=super::tests::frame(4,1,sources);f.map_id=map.into();
+            f.jump_ledges=vec![crystal_render_api::VisualJumpLedge {
+                start:bevy::prelude::IVec2::new(0,2),end:bevy::prelude::IVec2::new(4,2),
+                descent:bevy::prelude::IVec2::Y,
+            }].into();
+            let mut forest_before=None;
+            for forest_map in [false,true] {
+                if forest_map {f.map_id="IlexForest".into();}
+                let (_,mesh)=build_animated_flowers(&f,&Assets::<Image>::default(),&[]).unwrap();
+                let bevy::mesh::VertexAttributeValues::Float32x3(points)=mesh.attribute(Mesh::ATTRIBUTE_POSITION).unwrap() else {panic!("flower positions")};
+                let rise=crate::profile::JUMP_LEDGE_HEIGHT*f.tile_size.y/SOURCE_TILE_HEIGHT;
+                for (column,expected) in [(1,if forest_map {0.}else{rise}),(3,0.)] {
+                    let x=(column as f32-2.)*f.tile_size.x;
+                    let selected=points.iter().filter(|p|p[0]>x && p[0]<x+f.tile_size.x).collect::<Vec<_>>();
+                    assert!(!selected.is_empty());
+                    if column==3 {
+                        let actual=selected.iter().map(|p|**p).collect::<Vec<_>>();
+                        if let Some(before)=&forest_before {assert_eq!(&actual,before,"forest bloom vertices remain exact");}
+                        else {forest_before=Some(actual);}
+                    }
+                    let base=selected.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min);
+                    assert!((base-expected).abs()<0.001,"{map} forest_map={forest_map} column={column}: {base} != {expected}");
+                    assert!(selected.iter().all(|p|p[1]<=expected+f.tile_size.y*0.65+0.001));
+                }
+            }
+        }
+    }
+
+    #[test]
+    #[ignore = "requires a completed external CRYSTAL_RENDER_TEST_PACK"]
+    fn external_outdoor_cutouts_keep_available_native_ground_donors() {
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(std::env::var("CRYSTAL_RENDER_TEST_PACK").unwrap()).unwrap();
+        let pack=loaded.pack();let mut maps=0;let mut cutouts=0;let mut deferred=0;
+        for (name,module) in &pack.data().maps {
+            let family=&module.attributes.tileset_name;
+            if !matches!(family.as_str(),"johto"|"johto_modern"|"kanto") || !new_bark::ordinary_lawn_map(name) {continue;}
+            let width=module.attributes.width as usize*4;let height=module.attributes.height as usize*4;
+            let layout=&pack.runtime_files()[&format!("data/tilesets/{family}_metatiles.bin")];
+            let mut sources=Vec::new();
+            for y in 0..height {for x in 0..width {
+                let block=module.blocks[y/4*(width/4)+x/4];
+                sources.push(VisualTileSource{tileset_id:family.as_str().into(),metatile_id:block,
+                    subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,
+                    tile_index:layout[block as usize*16+y%4*4+x%4]as u16});
+            }}
+            let f=super::tests::frame(width as u32,height as u32,sources);let cells=f.tiles.iter().collect::<Vec<_>>();
+            let shapes=cells.iter().map(|t|shape_for_source_on_map(name,&t.source)).collect::<Vec<_>>();
+            for (i,shape) in shapes.iter().enumerate() {
+                if let CellShape::Cutout{ground_tile_index,..}=shape {
+                    // Buoys and other specialized producers can request water,
+                    // which this generic dry-ground helper has never supplied.
+                    // Require every formerly available dry-ground donor to
+                    // remain available in its native atlas.
+                    let before=if family=="kanto" {
+                        authored_ground_for_source(&cells,&shapes,*ground_tile_index,&cells[i].source)
+                    }else{authored_ground_cell(&cells,&shapes,*ground_tile_index)};
+                    // A full map omits the connected map/apron donors used by
+                    // real chunks. An already absent donor proves no regression
+                    // here; native connected captures exercise those contexts.
+                    if before.is_none() {deferred+=1;continue;}
+                    let donor=authored_ground_for_source(&cells,&shapes,*ground_tile_index,&cells[i].source)
+                        .unwrap_or_else(||panic!("{name} lacks same-family ground at {},{}",i%width,i/width));
+                    assert_eq!(cells[donor].source.tileset_id,cells[i].source.tileset_id);
+                    cutouts+=1;
+                }
+            }
+            maps+=1;
+        }
+        println!("verified {maps} native outdoor maps, {cutouts} available ground donors; {deferred} cells already defer to connected/specialized context");
+        assert!(maps>=50 && cutouts>1000,"{maps} maps and {cutouts} cutouts");
+    }
+
+    #[test]
+    fn johto_cutouts_and_flower_refresh_use_their_own_flat_atlas_ground() {
+        for family in ["johto","johto_modern"] {
+            let foreign=if family=="johto" {"johto_modern"}else{"johto"};
+            let mut sources=vec![];
+            for (family,block,tile) in [(foreign,1,5),(family,0x68,5),(family,2,5),(family,4,3)] {
+                let mut source=super::tests::source_with_tile(block,0,0,tile);source.tileset_id=family.into();sources.push(source);
+            }
+            let f=super::tests::frame(4,1,sources);let cells=f.tiles.iter().collect::<Vec<_>>();
+            let shapes=[CellShape::Flat,CellShape::RaisedTop{height:16.,solid:SolidKind::Bank},CellShape::Flat,
+                CellShape::Cutout{ground_tile_index:5,solid:SolidKind::Flower}];
+            assert_eq!(authored_ground_for_source(&cells,&shapes,5,&cells[3].source),Some(2));
+            assert_eq!(authored_ground_for_source(&cells[..2],&shapes[..2],5,&cells[3].source),Some(1));
+            assert!(authored_ground_for_source(&cells[..1],&shapes[..1],5,&cells[3].source).is_none());
+            let mut forest=cells[3].source.clone();forest.tileset_id="forest".into();
+            assert_eq!(authored_ground_for_source(&cells,&shapes,5,&forest),Some(0));
+            let (_,mesh)=build_animated_flowers(&f,&Assets::<Image>::default(),&[]).unwrap();
+            let Some(bevy::mesh::VertexAttributeValues::Float32x3(positions))=mesh.attribute(Mesh::ATTRIBUTE_POSITION) else {panic!("flower positions");};
+            assert!(!positions.is_empty());
+            assert!(positions.iter().all(|p|p[1]>=0. && p[1]<=f.tile_size.y*0.65+0.001));
+        }
+    }
+
+    #[test]
     fn kanto_cutouts_use_flat_same_atlas_ground_instead_of_remote_bank_caps() {
         let sources = [(0x07, 0x2c), (0x0a, 0x2c), (0x74, 0x03)]
             .map(|(b, t)| {
@@ -10144,4 +10378,9 @@ mod kanto_native_ground_tests {
                 .is_none()
         );
     }
+}
+
+pub(crate) fn pond_support_correction(frame:&VisualWorldFrame,cell:bevy::prelude::UVec2,
+    foot:bevy::prelude::Vec2,resolved:&[f32])->f32 {
+    enclosed_ponds::support_correction(frame,cell,foot,resolved)
 }

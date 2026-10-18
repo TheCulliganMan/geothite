@@ -8,6 +8,7 @@ The saved blend preserves separately named editable mesh objects and materials.
 from pathlib import Path
 source = Path(__file__).with_name('build-new-bark-models.py').read_text()
 exec(compile(source.split('\nmake_house();')[0], 'original_geometric_vocabulary', 'exec'))
+from blender_corner_normals import transformed_corner_normal
 
 for name, color in {
  'enamel':(.80,.86,.83), 'enamel_light':(.95,.96,.87), 'metal':(.30,.39,.42),
@@ -21,7 +22,36 @@ for name, color in {
  m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=.72
  MATS[name]=m
 
-def ball(n,p,s,m):return ico(n,p,s,m,2)
+# Curves belong in the shared furniture producer. Broad architecture keeps the
+# original planar vocabulary; only soft upholstery receives rounded bevels.
+_planar_cube=cube
+_round_cone=cone
+def cube(n,loc,dim,mat,bevel=0):
+ soft=any(word in n.lower() for word in ('padded','upholstered','cushion','pillow','mattress','duvet','rounded armrest'))
+ if not soft or not bevel:return _planar_cube(n,loc,dim,mat,bevel)
+ bpy.ops.mesh.primitive_cube_add(size=1,location=loc)
+ o=move(bpy.context.object,n,mat);o.dimensions=dim
+ bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+ for face in o.data.polygons:face.use_smooth=True
+ b=o.modifiers.new('Soft furniture edge','BEVEL');b.width=min(bevel,min(dim)*.4);b.segments=5;b.harden_normals=True
+ bpy.ops.object.modifier_apply(modifier=b.name)
+ return o
+
+def cone(n,loc,r1,r2,depth,mat,vertices=8):
+ o=_round_cone(n,loc,r1,r2,depth,mat,max(vertices,24))
+ for face in o.data.polygons:face.use_smooth=len(face.vertices)==4
+ if min(r1,r2)>.12:
+  b=o.modifiers.new('Small rounded rim','BEVEL');b.width=min(depth*.15,min(r1,r2)*.05);b.segments=3;b.harden_normals=True
+  bpy.ops.object.modifier_apply(modifier=b.name)
+ return o
+
+def ball(n,p,s,m):
+ if 'leaf' in n.lower():return ico(n,p,s,m,2)
+ bpy.ops.mesh.primitive_uv_sphere_add(segments=24,ring_count=12,radius=1,location=p)
+ o=move(bpy.context.object,n,m);o.scale=s
+ bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
+ for face in o.data.polygons:face.use_smooth=True
+ return o
 def front(n,x,z,w,h,y,m,d=.025,b=.012):return facade_cube(n,x,z,w,h,y,d,m,bevel=b)
 def legs(w,d,h,m='timber_light',r=.065):
  for x in [-w/2,w/2]:
@@ -554,8 +584,8 @@ def export(name,col):
    if tri.normal.length_squared<.9:continue
    mat=me.materials[tri.material_index]
    group=groups.setdefault(mat.name,{'positions':[],'normals':[],'indices':[],'base_color':[round(v,5) for v in mat.diffuse_color], 'material':mat.name,'lookup':{}})
-   n=(normal_matrix@tri.normal).normalized();norm=(round(n.x,6),round(n.z,6),round(-n.y,6))
-   for vid in tri.vertices:
+   for vid,loop in zip(tri.vertices,tri.loops):
+    n=transformed_corner_normal(me,loop,normal_matrix);norm=(round(n.x,6),round(n.z,6),round(-n.y,6))
     v=obj.matrix_world@me.vertices[vid].co;pos=(round(v.x,6),round(v.z,6),round(-v.y,6));key=pos+norm
     if key not in group['lookup']:
      group['lookup'][key]=len(group['positions'])//3;group['positions'].extend(pos);group['normals'].extend(norm)

@@ -71,7 +71,7 @@ struct RecipeWire {
     tile_height: u32,
     coordinates: [i32; 2],
     neighbors: [bool; 4],
-    understory: Option<[u32; 4]>,
+    understory: Option<([u32; 4], [u8; 2], u64)>,
     coverage: bool,
 }
 
@@ -98,13 +98,14 @@ impl StreamWire {
                     family: match r.family {
                         crate::foliage::GroveFamily::JohtoPine => 0,
                         crate::foliage::GroveFamily::AncientForest => 1,
+                        crate::foliage::GroveFamily::KantoDeciduous => 2,
                     },
                     bounds: r.bounds.map(f32::to_bits),
                     base: r.base_height.to_bits(),
                     tile_height: r.tile_height.to_bits(),
                     coordinates: r.coordinates,
                     neighbors: r.neighbors,
-                    understory: r.understory_bounds.map(|b| b.map(f32::to_bits)),
+                    understory: r.understory_bounds.map(|p| (p.bounds.map(f32::to_bits),p.cells,p.occupied)),
                     coverage: r.coverage_fade,
                 })
                 .collect(),
@@ -208,6 +209,7 @@ impl StreamWire {
                     family: match r.family {
                         0 => crate::foliage::GroveFamily::JohtoPine,
                         1 => crate::foliage::GroveFamily::AncientForest,
+                        2 => crate::foliage::GroveFamily::KantoDeciduous,
                         _ => return Err("invalid grove family".into()),
                     },
                     bounds: r.bounds.map(f32::from_bits),
@@ -215,13 +217,14 @@ impl StreamWire {
                     tile_height: f32::from_bits(r.tile_height),
                     coordinates: r.coordinates,
                     neighbors: r.neighbors,
-                    understory_bounds: r.understory.map(|b| b.map(f32::from_bits)),
+                    understory_bounds: r.understory.map(|(bounds,cells,occupied)| crate::understory::Plot {bounds:bounds.map(f32::from_bits),cells,occupied}),
                     coverage_fade: r.coverage,
                 })
             })
             .collect::<Result<_, String>>()?;
         Ok(Arc::new(StreamedGroves {
             source: DeferredGroves {
+                terrace_datum: frame.terrace_datum.clone(),
                 bank_regions,
                 recipes,
                 geometry,

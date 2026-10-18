@@ -2,6 +2,7 @@
 """Stored pony anatomy, supported flowing fire, fitted skin and blue hooves."""
 import copy,json,os,unittest
 from pathlib import Path
+from fire_horse_glb import read_ponyta,geometry_digest
 from ponyta_sculpt import sculpture,HEIGHT
 from sculpt_geometry import translate
 from bovine_sculpt import reverse_front
@@ -15,14 +16,14 @@ def unzy(p):
  return p
 class PonytaTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'ponyta.mesh.json').read_bytes())
+ def setUpClass(cls):cls.model=read_ponyta(ROOT/'ponyta.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'ponyta':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'ponyta':self.m})
  def test_recipe_parity_floor_height_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for label,n in (('Eye /',2),('Ear /',2),('Leg /',4),('Hoof /',4),('Flame /',7),('Flame glow /',14)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
   self.assertFalse(any('horn' in p['part'].lower() for p in self.ps))
  def test_head_muzzle_ears_neck_and_tail_have_actual_roots(self):

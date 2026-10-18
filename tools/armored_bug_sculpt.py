@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Original layered Pineco and rocky, hollow-port Forretress sculptures."""
-import argparse,json,math
+import argparse,math
 from pathlib import Path
 from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch,crease_normals
 from abra_sculpt import surface,polygon_caps
@@ -135,15 +135,17 @@ def forretress():
                 p.extend((reverse_front(dark),reverse_front(face)) if rear else (dark,face))
     return p
 
-def sculpture(species):
+def sculpture(species,normalize=True):
     if species not in SPECIES:raise ValueError('unsupported armored bagworm')
     p=pineco() if species=='pineco' else forretress()
     lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
     for q in p:
-        q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+        if normalize:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
+        q['normals']=[round(v,7) for v in q['normals']]
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
     a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True)
-    for s in SPECIES:(args.output/(s+'.mesh.json')).write_text(json.dumps(sculpture(s),separators=(',',':')))
+    from armored_bug_glb import export_armored_bug
+    for s in SPECIES:(args.output/(s+'.glb')).write_bytes(export_armored_bug(s))
 if __name__=='__main__':main()

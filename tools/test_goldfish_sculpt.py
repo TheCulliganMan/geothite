@@ -12,7 +12,9 @@ from test_dragon_family_sculpt import surface_distances
 ROOT=Path(os.environ.get('CRYSTAL_GOLDFISH_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class GoldfishTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={s:json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
+ def setUpClass(cls):
+  from goldfish_glb import read_goldfish
+  cls.models={s:read_goldfish(ROOT/(s+'.glb'),s) if (ROOT/(s+'.glb')).exists() else json.loads((ROOT/(s+'.mesh.json')).read_bytes()) for s in SPECIES}
  def find(self,s,prefix,last=None):return next(p for p in self.models[s]['primitives'] if p['part'].startswith(prefix) and (last is None or p['part'].endswith(' '+str(last))))
  def overlap(self,a,b):
   xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
@@ -26,7 +28,8 @@ class GoldfishTests(unittest.TestCase):
  def test_finite_unit_normals_follow_stored_faces(self):assert_model_shading(self,self.models)
  def test_regeneration_species_height_floor_and_budget(self):
   for s,m in self.models.items():
-   self.assertEqual(m,sculpture(s));self.assertEqual(len(m['primitives']),len({p['part'] for p in m['primitives']}));self.assertLess(sum(len(p['indices'])//3 for p in m['primitives']),75000)
+   from goldfish_glb import geometry_digest
+   self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));self.assertEqual(len(m['primitives']),len({p['part'] for p in m['primitives']}));self.assertLessEqual(sum(len(p['positions'])//3 for p in m['primitives']),20000);self.assertLessEqual(sum(len(p['indices'])//3 for p in m['primitives']),40000)
    self.assertEqual(min(v for p in m['primitives'] for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in m['primitives'] for v in p['positions'][1::3]),HEIGHTS[s],places=6)
  def test_body_has_no_nonadjacent_crossed_faces(self):
   for s in SPECIES:self.assertIsNone(crossed_faces(self.find(s,'Body /')),s)

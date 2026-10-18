@@ -3,6 +3,36 @@
 use super::*;
 use crystal_render_api::VisualJumpLedge;
 
+#[cfg(feature="voxel-view")]
+pub(super) fn datum(sources:&[ResolvedRenderSource<'_>],runtime:&CrystalRuntime,
+    edges:&[VisualJumpLedge])->anyhow::Result<Option<std::sync::Arc<crystal_render_api::VisualTerraceDatum>>> {
+    let Some(primary)=sources.first() else{return Ok(None);};
+    let mut cells=Vec::new();
+    // The active map wins; connected rectangles use the renderer's reverse
+    // lookup order (nearest connections precede second-ring continuations).
+    for source in sources.iter().take(1).chain(sources.iter().skip(1).rev()) {
+        let atlas=&source.tileset.tileset_id;
+        let collision=runtime.data().tileset_collision(atlas)?;
+        let layout=runtime.runtime_file(&format!("data/tilesets/{atlas}_metatiles.bin"))
+            .ok_or_else(||anyhow::anyhow!("missing terrace source layout {atlas}"))?;
+        for y in 0..source.height {for x in 0..source.width {
+            let block=source.map.blocks[(y as usize/4)*source.map.attributes.width as usize+x as usize/4];
+            let tile=*layout.get(block as usize*16+(y as usize%4)*4+x as usize%4)
+                .ok_or_else(||anyhow::anyhow!("missing terrace source metatile {block}"))?;
+            let permission=collision.metatiles[block as usize].collision[(y as usize%4/2)*2+x as usize%4/2];
+            let land=crystal_core::world::collision::describe_collision(permission).terrain
+                ==crystal_core::world::collision::Terrain::Land
+                || [Direction::Up,Direction::Down,Direction::Left,Direction::Right].into_iter()
+                    .any(|d|crystal_core::world::collision::allows_ledge_direction(permission,d));
+            cells.push((IVec2::new(source.origin_x+x,source.origin_y+y),crystal_render_api::VisualTileSource {
+                tileset_id:atlas.as_str().into(),metatile_id:block,subtile_column:(x%4)as u8,
+                subtile_row:(y%4)as u8,tile_index:u16::from(tile),
+            },land));
+        }}
+    }
+    Ok(crystal_voxel_view::source_terrace_datum(&primary.map.map_name,edges,&cells))
+}
+
 pub(super) fn collect(
     sources: &[ResolvedRenderSource<'_>],
     data: &crystal_assets::GameDataSet,

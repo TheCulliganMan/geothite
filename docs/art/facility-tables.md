@@ -79,3 +79,23 @@ finished bounds, stale-source atomicity and custom profile priority.
 Native front/back/side composition, player passage and the actual NPC
 interactions remain required integration checks after staging. Standalone
 source and geometry checks do not replace those checks.
+
+## Live source finish and serving direction (2026-10-18)
+
+Production maps the four original kits' named parts onto their own guarded
+source gold, brown, light and ink fields. Unknown part/material contracts yield
+to the native drawing before any append. The selected Silph meeting-table mesh
+and its source finish stay unchanged. Cached models, geometry, support and the
+small printed page face are preserved. Twenty chairs have nearby authenticated
+serving targets; ten turn toward their table, while twelve retain their source
+heading, including two separate waiting chairs. Actor facing is unchanged.
+
+Two finish tests cover all32 objects/260 cells and immutable geometry/material
+contracts; three chair-facing tests cover all22 chairs, four rotations and
+source/custom-target refusal. The final headless finish review individually
+inspected16 native/source pairs plus two moving images. The full311-map audit
+pins exactly17,732 triangles transferred between material passes,306 unaffected
+map records and all225 alternatives unchanged. This is scoped material and
+direction acceptance. Adjacent instrument-workbench finishes, actor alignment,
+whole-room composition, dynamic reveal and authored interactions remain open;
+see the newest checkpoint in [the remaining-families guide](../3d-remaining-families.md).

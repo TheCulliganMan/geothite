@@ -20,6 +20,7 @@ COLORS={
  'roof_red':(0.62,0.20,0.15), 'roof_red_light':(0.76,0.29,0.20), 'roof_red_dark':(0.43,0.14,0.12),
  'roof_red_warm':(0.69,0.25,0.16), 'roof_teal':(0.16,0.40,0.39), 'roof_teal_light':(0.24,0.51,0.46),
  'roof_teal_dark':(0.12,0.28,0.29), 'roof_teal_warm':(0.22,0.44,0.39),
+ 'stone_chimney_cap':(0.35,0.38,0.36),
  'stone':(0.43,0.47,0.41), 'stone_light':(0.62,0.65,0.54), 'stone_dark':(0.32,0.35,0.31),
  'glass':(0.27,0.52,0.58), 'glass_light':(0.63,0.82,0.79), 'glass_dark':(0.17,0.34,0.40),
  'leaf':(0.18,0.38,0.23), 'leaf_light':(0.35,0.53,0.29), 'leaf_dark':(0.11,0.28,0.20), 'leaf_gold':(0.48,0.61,0.33),
@@ -159,14 +160,14 @@ def closed_town_roof_courses(width,depth,eave,ridge,palette,rows=10,columns=10):
     material=palette+'_light' if shade==0 else palette+'_warm' if shade==7 else palette
     mesh('Small closed ceramic course',vs,faces,material)
 
-def town_roof(width,depth,eave,ridge,palette,gable_material=None):
+def town_roof(width,depth,eave,ridge,palette,gable_material=None,columns=10):
  previous=set(COL.objects)
  roof(width,depth,eave,ridge,palette,6,gable_material)
  for o in set(COL.objects)-previous:
   if o.name.startswith('Individual roof course'):
    data=o.data;bpy.data.objects.remove(o,do_unlink=True)
    if data.users==0:bpy.data.meshes.remove(data)
- closed_town_roof_courses(width,depth,eave,ridge,palette)
+ closed_town_roof_courses(width,depth,eave,ridge,palette,columns=columns)
 
 def foundation(w,d):
  cube('Solid stone plinth',(0,0,.13),(w,d,.26),'stone',.035)
@@ -203,7 +204,7 @@ def make_house():
  # squared masonry chimney behind ridge
  cube('Chimney stack',(-1.08,.48,2.95),(.39,.42,1.17),'plaster_shadow',.018)
  for z in [2.69,2.94,3.19,3.43]:cube('Chimney mortar course',(-1.08,.48,z),(.414,.444,.04),'plaster_light')
- cube('Chimney upper cap',(-1.08,.48,3.56),(.53,.56,.13),'roof_red_dark',.025)
+ cube('Chimney upper cap',(-1.08,.48,3.56),(.53,.56,.13),'stone_chimney_cap',.025)
  cube('Chimney dark opening',(-1.08,.48,3.632),(.29,.32,.02),'ink')
  # brass lantern near entry
  facade_cube('Lantern backing',.51,1.37,.09,.29,fy-.025,.10,'timber')
@@ -242,15 +243,46 @@ def make_lab():
 
 def petal(n,center,angle,r,mat):
  cx,cy,cz=center;ca=math.cos(angle);sa=math.sin(angle)
- verts=[(cx,cy,cz-.015),(cx+ca*r*.60-sa*r*.37,cy+sa*r*.60+ca*r*.37,cz+.015),(cx+ca*r,cy+sa*r,cz+.035),(cx+ca*r*.60+sa*r*.37,cy+sa*r*.60-ca*r*.37,cz+.015),(cx+ca*r*.50,cy+sa*r*.50,cz+.060)]
- mesh(n,verts,[(0,1,4),(1,2,4),(2,3,4),(3,0,4),(3,2,1,0)],mat)
+ # Eight rounded rim points and separate front/back crowns form a closed
+ # low-volume petal. Keep the old radial reach and flower-height envelope.
+ verts=[]
+ for j in range(8):
+  a=j*math.tau/8;along=r*(.52+.48*math.cos(a));across=r*.37*math.sin(a)
+  verts.append((cx+ca*along-sa*across,cy+sa*along+ca*across,cz+.015+.020*math.cos(a)))
+ verts.extend([(cx+ca*r*.52,cy+sa*r*.52,cz+.050),
+               (cx+ca*r*.52,cy+sa*r*.52,cz-.012)])
+ faces=[]
+ for j in range(8):
+  k=(j+1)%8;faces.extend([(j,k,8),(k,j,9)])
+ mesh(n,verts,faces,mat)
+
+def flower_leaf(n,root,side):
+ # Three oval sections follow a bent midrib. The closed thin leaf reads
+ # from both sides, without the former flat folded-paper triangle.
+ root=Vector(root);delta=Vector((side*.14,0,.075));across=Vector((0,1,0))
+ verts=[tuple(root)]
+ for t in [.25,.5,.75]:
+  center=root+delta*t+Vector((0,0,.018*math.sin(math.pi*t)))
+  tangent=(delta+Vector((0,0,.018*math.pi*math.cos(math.pi*t)))).normalized()
+  normal=tangent.cross(across).normalized();profile=math.sin(math.pi*t)
+  for j in range(6):
+   a=j*math.tau/6
+   verts.append(tuple(center+across*(.038*profile*math.cos(a))+normal*(.006*profile*math.sin(a))))
+ verts.append(tuple(root+delta));faces=[]
+ for j in range(6):
+  k=(j+1)%6;faces.extend([(0,1+k,1+j),(13+j,13+k,19)])
+ for ring in range(2):
+  for j in range(6):
+   k=(j+1)%6;a=1+ring*6+j;b=1+ring*6+k
+   faces.append((a,b,b+6,a+6))
+ mesh(n,verts,faces,'leaf_light')
 
 def make_flowers():
  begin('flowers')
  for i,(x,y,h) in enumerate([(-.23,-.09,.33),(.11,-.17,.40),(.24,.15,.32),(-.11,.2,.45),(0,.035,.49)]):
   rod('Flower stem',(x,y,0),(x+.018,y,h),.014,'leaf_dark',5)
   for s,z in [(-1,h*.30),(1,h*.56)]:
-   mesh('Folded flower leaf',[(x,y,z),(x+s*.13,y-.035,z+.09),(x+s*.14,y+.024,z+.065),(x+s*.03,y+.035,z+.012)],[(0,1,2),(0,2,3)],'leaf_light')
+   flower_leaf('Curved flower leaf',(x,y,z),s)
   for j in range(5):petal('Sculpted flower petal',(x+.018,y,h),j*math.tau/5+i,.112,'pink' if i%2 else 'coral')
   ico('Golden flower center',(x+.018,y,h+.034),(.047,.047,.026),'yellow',1)
 
@@ -332,7 +364,16 @@ def make_npc(kind):
   facade_cube('Glasses bridge',0,1.314,.061,.016,-.191,.020,'ink')
   cube('Scientist top hair',(0,.031,1.57),(.257,.245,.06),'stone_light',.025)
 
-make_house();make_lab();make_flowers();make_trainer();make_npc('teacher');make_npc('scientist')
+builders={'house':make_house,'lab':make_lab,'flowers':make_flowers,
+          'trainer':make_trainer,'teacher':lambda:make_npc('teacher'),'scientist':lambda:make_npc('scientist')}
+only=args[args.index('--only')+1] if '--only' in args else None
+if only is not None and only not in builders:raise ValueError('Unknown model selection: '+only)
+for name,build in builders.items():
+ if only is None or name==only:build()
+# Keep the selected flower source's individually named editable parts before
+# the runtime exporter joins meshes by material. Never publish other kit assets
+# when refining one shared model.
+if only=='flowers':bpy.ops.wm.save_as_mainfile(filepath=str(P/'flowers-source.blend'),compress=False)
 # Export each model as a compact primitive per material. Unapplied camera/light geometry never enters a model.
 def export_asset(name,col):
  bpy.ops.object.select_all(action='DESELECT')

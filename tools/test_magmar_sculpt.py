@@ -12,14 +12,17 @@ import test_nidorina_sculpt as attachment_checks
 ROOT=Path(os.environ.get('CRYSTAL_MAGMAR_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class MagmarTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'magmar.mesh.json').read_bytes())
+ def setUpClass(cls):
+  from magmar_glb import read_magmar
+  cls.model=read_magmar(ROOT/'magmar.glb')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachment_checks.NidorinaTests.find
  overlap=attachment_checks.NidorinaTests.overlap
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'magmar':self.m})
  def test_shading_tracks_actual_faces(self):assert_model_shading(self,{'magmar':self.m})
  def test_recipe_bounds_budget_and_distinct_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),115000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from magmar_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),115000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for prefix,count in (('Body /',1),('Collar /',1),('Head /',1),('Forehead lobe /',2),('Eye /',2),('Belly /',1),('Bill /',2),('Tongue /',1),('Shoulder /',2),('Arm /',2),('Cuff /',4),('Hand /',2),('Hand claw /',6),('Thigh /',2),('Shin band /',2),('Foot /',2),('Toe claw /',4),('Dorsal point /',3),('Tail /',1),('Crown flame /',2),('Crown glow /',4),('Tail flame /',1),('Tail glow /',2)):self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),count,prefix)
  def test_head_lobes_collar_bill_tongue_and_spines_are_rooted(self):
   head=self.find('Head /');body=self.find('Body /');collar=self.find('Collar /');upper=self.find('Bill / rooted cream');lower=self.find('Bill / rooted open')

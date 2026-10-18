@@ -95,6 +95,11 @@
   `CRYSTAL_PACK_BUILD_DIR` to choose its Linux cache directory and
   `CRYSTAL_PACK_BUILD_PROFILE` to `release` (default) or `wasm-dev`.
   Windows forwards both settings into WSL.
+- Automated render checks must be offscreen and must not open windows, steal
+  focus, or switch applications. Use `CRYSTAL_RENDER_TEST_HEADLESS=1` and
+  `CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image` for native screenshot captures.
+  Only launch a visible render or live review when the user explicitly requests
+  it. Native one-shot screenshots default to headless image capture.
 - Visually inspect production work against 2D at the same position, time,
   facing, and game state. Critique composition, scale, materials, lighting,
   readability, and character/scenery fidelity; fix defects and inspect again

@@ -31,6 +31,7 @@ struct Review {
     roots: Vec<Entity>,
     people: Vec<Person>,
     run_phase: Option<f32>,
+    idle_seconds: f32,
     bicycle: bool,
     run_weight: f32,
     run_blend: f32,
@@ -50,6 +51,17 @@ enum CaptureOutcome { Saved, Blank }
 struct ReviewTarget(Option<Handle<Image>>);
 
 pub fn run() -> AppExit {
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::args().nth(1).as_deref() == Some("--validate-instances") {
+        crate::open_people_skin::tests::validate_instances();
+        eprintln!("Production character instance checks passed: spawn poses, independent joint palettes, stable proportions, mounted grips and pedal contacts.");
+        return AppExit::Success;
+    }
+    if std::env::args().nth(1).as_deref() == Some("--validate-idle") {
+        crate::human_idle::validation::validate();
+        eprintln!("Human idle checks passed: relaxed silhouettes, planted soles, stable bones, smooth clocks, distinct identities and walk transitions.");
+        return AppExit::Success;
+    }
     if std::env::args().nth(1).as_deref() == Some("--validate-walk") {
         crate::human_locomotion::validation::validate();
         eprintln!("Human locomotion checks passed for every identity: contacts, ground speed, bone lengths, loop seams, shoe floor and culling bounds.");
@@ -88,8 +100,8 @@ pub fn run() -> AppExit {
     let bicycle = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_BICYCLE").is_some();
     if bicycle {
         assert!(kinds.iter().all(|kind| matches!(kind,
-            CharacterKind::Trainer | CharacterKind::TrainerFemale)),
-            "bicycle review requires a chris/kris filter");
+            CharacterKind::Trainer | CharacterKind::TrainerFemale | CharacterKind::Biker)),
+            "bicycle review requires a chris/kris/biker filter");
     }
     // Export precisely the production paintings, never a legacy source face.
     if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_ATLASES").is_some() {
@@ -105,21 +117,33 @@ pub fn run() -> AppExit {
                 &pixels, size.0, size.1, image::ColorType::Rgba8).expect("write review atlas");
         }
     }
-    let mut app = App::new();
-    app
-        // Offline captures must wait for their render pipelines; counting
-        // update frames alone can finish before asynchronous compilation.
-        .add_plugins(DefaultPlugins.set(bevy::render::RenderPlugin {
+    let headless = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_HEADLESS").is_some();
+    assert!(!headless || std::env::var_os("CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET").is_some(),
+        "headless review requires the image target");
+    let plugins = DefaultPlugins.build()
+        .set(bevy::render::RenderPlugin {
             synchronous_pipeline_compilation: true,
             ..default()
         }).set(WindowPlugin {
-            primary_window: Some(Window {
+            primary_window: (!headless).then(|| Window {
                 title: "NPC angle review".into(),
                 resolution: (1600, 600).into(),
                 ..default()
             }),
+            exit_condition: if headless { bevy::window::ExitCondition::DontExit }
+                else { bevy::window::ExitCondition::OnAllClosed },
             ..default()
-        }))
+        });
+    let plugins = if headless { plugins.disable::<bevy::winit::WinitPlugin>() } else { plugins };
+    let mut app = App::new();
+    if headless {
+        app.add_plugins(bevy::app::ScheduleRunnerPlugin::run_loop(
+            std::time::Duration::from_millis(16)));
+    }
+    app
+        // Offline captures must wait for their render pipelines; counting
+        // update frames alone can finish before asynchronous compilation.
+        .add_plugins(plugins)
         // Screenshot batches must keep settling and reading back when another
         // window has focus; this setting belongs only to the offline reviewer.
         .insert_resource(WinitSettings {
@@ -133,6 +157,11 @@ pub fn run() -> AppExit {
             roots: vec![],
             people: vec![],
             run_phase,
+            idle_seconds: std::env::var("CRYSTAL_PEOPLE_REVIEW_IDLE_SECONDS").ok().map(|value| {
+                let seconds: f32 = value.parse().expect("idle seconds must be numeric");
+                assert!(seconds.is_finite() && seconds >= 0., "idle seconds must be finite and nonnegative");
+                seconds
+            }).unwrap_or(0.),
             bicycle,
             run_blend: std::env::var("CRYSTAL_PEOPLE_REVIEW_RUN_BLEND").ok().map(|value| {
                 let blend: f32 = value.parse().expect("review run blend must be numeric");
@@ -372,7 +401,7 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + i as f32 * 1.6 }, 0
                         .with_rotation(Quat::from_rotation_y(yaw))
                         .with_scale(Vec3::new(scale * look.width, scale, scale)),))
                 .id();
-            let bicycle = review.bicycle;
+            let bicycle = review.bicycle || kind == CharacterKind::Biker;
             let person = review.gpu.spawn(
                 look.base,
                 kind,
@@ -429,6 +458,7 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + i as f32 * 1.6 }, 0
         }
     }
     let run_phase = review.run_phase;
+    let idle_seconds = review.idle_seconds;
     let run_weight = review.run_weight;
     let run_blend = review.run_blend;
     let head_scale = review.head_scale;
@@ -464,7 +494,7 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + i as f32 * 1.6 }, 0
         // Every capture must drive the production animation/proportion
         // path, including plain Idle without experimental overrides.
         person.update(run_phase.unwrap_or(0.),
-            if run_phase.is_some() { run_weight } else { 0. }, 0.0, &mut transforms);
+            if run_phase.is_some() { run_weight } else { 0. }, idle_seconds, &mut transforms);
         if let Some(scale) = head_scale {
             person.review_head_scale(scale, &mut transforms);
         }

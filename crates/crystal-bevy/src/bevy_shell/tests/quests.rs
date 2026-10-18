@@ -2635,8 +2635,8 @@ fn moomoo_slow_cry_validates_base_pcm_and_keeps_distinct_output_and_cache() {
     assert!(shell.visible_wait_sfx_boundary);
     assert!(!visible_wait_sfx_finished(&mut shell), "queued cry must hold the script");
     let slow = shell.pending_audio[0].clone();
-    assert_eq!(slow.audio_id, "CRY_MON_MILTANK");
-    let source = shell.runtime.audio().require_cry(&slow.audio_id).unwrap().source.clone();
+    assert_eq!(slow.audio_id, shell.runtime.data().pokemon_cries["MILTANK"].cry);
+    let source = source_for_visible_audio_command(&shell.runtime,&slow).unwrap();
     let source_copy = source.clone();
     let AudioProgramSource::Midi { midi_base64, format, byte_len, payload_hash,
         loop_start_sample, loop_end_sample } = source else { panic!("browser species cry must retain its MIDI program") };

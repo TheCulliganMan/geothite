@@ -14,7 +14,9 @@ ROOT=Path(os.environ.get('CRYSTAL_ELECTRIC_PAIR_TEST_MODELS',Path(__file__).reso
 
 class ElectricPairTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={n:read_elekid(ROOT/'elekid.glb') if n=='elekid' else json.loads((ROOT/(n+'.mesh.json')).read_bytes()) for n in SPECIES}
+ def setUpClass(cls):
+  from electabuzz_glb import read_electabuzz
+  cls.models={n:read_elekid(ROOT/'elekid.glb') if n=='elekid' else read_electabuzz(ROOT/'electabuzz.glb') for n in SPECIES}
  find=attachment_checks.NidorinaTests.find
  overlap=attachment_checks.NidorinaTests.overlap
  def each(self):

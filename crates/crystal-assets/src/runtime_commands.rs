@@ -1201,6 +1201,13 @@ impl DecorationActionOutcome {
 #[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct GameDataSet {
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub trainer_rematches: bool,
+    /// Enables the competitive planner and its battle presentation. Absent in stock packs.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub competitive_battles: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wild_challenge: Option<crate::WildChallengeRules>,
     /// Default modpack enables running from the start; explicit false opts out.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub running_shoes: Option<bool>,

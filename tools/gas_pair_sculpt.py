@@ -2,7 +2,9 @@
 """Original cratered gas bodies with a cheerful grin and strained joined faces."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import ellipsoid,part,translate
+from functools import lru_cache
+from copy import deepcopy
+from sculpt_geometry import ellipsoid,part,translate,fitted_adaptive_contour
 from bovine_sculpt import curved_tube,oval
 from cubone_sculpt import skin_shading
 from raptor_bird_sculpt import paint
@@ -14,11 +16,13 @@ INK=(.16,.12,.20);TONGUE=(.83,.48,.59)
 GAS=(.86,.86,.68)
 HEIGHTS={'koffing':1.00,'weezing':1.20}
 VENTS=((0,1,.08),(-.88,.47,.10),(.88,.47,.10),(-.96,-.2,.20),(.96,-.2,.20),(-.70,-.71,.12),(.70,-.71,.12),(0,-1,.10),(-.55,.30,-.80),(.55,.30,-.80),(0,.55,-.84),(.40,-.60,-.70),(-.55,-.50,-.75))
+CLOUDS={'koffing':((-.55,.88,-.12),(.60,.32,-.12)),'weezing':((-.76,.88,-.16),(.77,1.10,-.13))}
+LOBE_SHAPES=((- .060,.034,0,.081,.084,.075),(.039,.060,-.015,.082,.082,.074),(.065,-.038,0,.078,.080,.071),(-.025,-.061,.008,.080,.082,.073))
 def unit(v):
  n=math.sqrt(sum(x*x for x in v));return tuple(x/n for x in v)
 
 def body(name,c,r,adult=False):
- p=ellipsoid(name,PURPLE,c,r,88,64);vertices=[];directions=[unit(v) for v in VENTS]
+ p=ellipsoid(name,PURPLE,c,r,64,44);vertices=[];directions=[unit(v) for v in VENTS]
  for i in range(0,len(p['positions']),3):
   x,y,z=p['positions'][i:i+3];u=unit(((x-c[0])/r[0],(y-c[1])/r[1],(z-c[2])/r[2]));delta=0
   for j,d in enumerate(directions):
@@ -32,16 +36,16 @@ def body(name,c,r,adult=False):
  return part(name,PURPLE,vertices,[tuple(p['indices'][i:i+3]) for i in range(0,len(p['indices']),3)],True)
 
 def fitted(name,color,xy,parent,offset=.004,sub=3):
- return skin_shading(paint(name,color,xy,parent,offset,sub),parent)
+ return skin_shading(fitted_adaptive_contour(name,color,xy,parent,offset,surface_at=surface(parent),initial_subdivisions=1),parent)
 
 def billows(p,species):
  # Emitted vapor floats around the body. Its lobes form connected cloud
  # volumes; it is not an anatomical appendage attached by a rigid rod.
- groups=[(-.55,.88,-.12),(.60,.32,-.12)] if species=='koffing' else [(-.76,.88,-.16),(.77,1.10,-.13)]
+ groups=CLOUDS[species]
  for j,c in enumerate(groups):
-  p.append(ellipsoid(f'Gas cloud / floating pale {species} cloud core {j}',GAS,c,(.098,.103,.079),36,26))
-  for k,(dx,dy,dz,rx,ry,rz) in enumerate(((-.060,.034,0,.081,.084,.075),(.039,.060,-.015,.082,.082,.074),(.065,-.038,0,.078,.080,.071),(-.025,-.061,.008,.080,.082,.073))):
-   p.append(ellipsoid(f'Gas lobe / rooted rounded {species} cloud lobe {j} {k}',GAS,(c[0]+dx,c[1]+dy,c[2]+dz),(rx,ry,rz),32,24))
+  p.append(ellipsoid(f'Gas cloud / floating pale {species} cloud core {j}',GAS,c,(.098,.103,.079),24,16))
+  for k,(dx,dy,dz,rx,ry,rz) in enumerate(LOBE_SHAPES):
+   p.append(ellipsoid(f'Gas lobe / rooted rounded {species} cloud lobe {j} {k}',GAS,(c[0]+dx,c[1]+dy,c[2]+dz),(rx,ry,rz),24,16))
 
 def face(p,parent,c,r,label,adult=False,small=False):
  x,y,z=c;rx,ry,rz=r
@@ -66,7 +70,7 @@ def face(p,parent,c,r,label,adult=False,small=False):
   fz=surface(parent)(fy,fx)
   dy=ry*(.25 if adult and not small else -.115)
   radius=rx*(.071 if adult and not small else .037)
-  p.append(curved_tube(f'Fang / rooted white {label} canine {s}',WHITE,[(fx,fy,fz-.014),(fx,fy+dy*.55,fz+.018),(fx,fy+dy,fz+.028)],[radius,radius*.66,.0015],28))
+  p.append(curved_tube(f'Fang / rooted white {label} canine {s}',WHITE,[(fx,fy,fz-.014),(fx,fy+dy*.55,fz+.018),(fx,fy+dy,fz+.028)],[radius,radius*.66,.0015],20))
  # The cream emblem is a skull-shaped ring, not a through-hole in the body.
  skull=fitted(f'Skull mark / fitted cream {label} skull',CREAM,xy(flowing([(-.22,-.43),(-.16,-.31),(0,-.28),(.16,-.31),(.22,-.43),(.16,-.54),(.07,-.57),(0,-.60),(-.07,-.57),(-.16,-.54)],3)),parent,.005,3);p.append(skull)
  p.append(fitted(f'Skull center / fitted purple {label} skull center',PURPLE,oval(x,y-ry*.415,rx*.115,ry*.060,32),skull,.003,3))
@@ -83,15 +87,22 @@ def anatomy(species):
  c=(-.22,.51,0);r=(.43,.42,.375);main=body('Body / large strained cratered Weezing gas orb',c,r,True)
  c2=(.40,.86,-.025);r2=(.27,.28,.25);small=body('Small body / upper cratered Weezing gas orb',c2,r2,True)
  p=[main,small,curved_tube('Main stalk / rooted purple Weezing joining neck',PURPLE,[(-.05,.70,-.045),(.12,.81,-.05),(.23,.84,-.05)],[.082,.072,.075],32)]
- p.append(ellipsoid('Rear node / rooted small purple Weezing rear gas node',PURPLE,(.27,.35,-.13),(.105,.11,.095),40,28))
+ p.append(ellipsoid('Rear node / rooted small purple Weezing rear gas node',PURPLE,(.27,.35,-.13),(.105,.11,.095),28,18))
  p.append(curved_tube('Rear stalk / rooted purple Weezing rear gas connector',PURPLE,[(.065,.35,-.13),(.18,.37,-.13),(.27,.35,-.13)],[.050,.043,.040],28))
  face(p,main,c,r,'large Weezing',True);face(p,small,c2,r2,'small Weezing',True,True);billows(p,species);return p
 
-def sculpture(species):
- p=anatomy(species);lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[species]/(hi-lo)
+@lru_cache(maxsize=2)
+def raw_sculpture(species):return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':anatomy(species)}
+
+def sculpture(species,normalize=True):
+ m=deepcopy(raw_sculpture(species));p=m['primitives']
+ if not normalize:return m
+ lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[species]/(hi-lo)
  for q in p:
   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
- return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
+ return m
+
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);a.add_argument('--species',choices=HEIGHTS,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/(args.species+'.mesh.json')).write_text(json.dumps(sculpture(args.species),separators=(',',':')))
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);a.add_argument('--species',choices=HEIGHTS,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);from gas_pair_glb import export_gas
+ (args.output/(args.species+'.glb')).write_bytes(export_gas(args.species))
 if __name__=='__main__':main()

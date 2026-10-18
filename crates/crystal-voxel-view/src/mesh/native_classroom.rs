@@ -101,6 +101,35 @@ pub(super) fn append(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f3
     }
 }
 
+/// The room returns continue plain wall paint, never the rear blackboard.
+/// Authenticate the complete native rear course before borrowing its last
+/// plain tile. The original board remains in append's rear-wall geometry.
+pub(super) fn perimeter_template(out:&mut SurfaceMeshData,map:&str,cells:&[&VisualTile],
+    g:&GridGeometry,placements:&[Placement])->Option<usize> {
+    let p=placements.iter().find(|p|p.kind==ModelKind::WallPanel&&matches(map,p,cells,g))?;
+    let scale=g.tile_height/8.;
+    let w=g.origin_x+p.column as f32*g.tile_width;
+    let e=w+2.*g.tile_width;
+    let s=g.origin_z+(p.row+p.height)as f32*g.tile_height;
+    let n=s-3.*scale;
+    let paint=native_source_swatches(p,g,[[64,16]])[0];
+    let first=out.positions.len();let indices=out.indices.len();
+    architecture_box(out,[w,e,0.,32.*scale,n,s],[1.;3]);
+    out.uvs[first..].fill(paint);
+    out.indices.drain(indices+6..indices+12);
+    let uv=g.uv(p.column+8,p.row+2);
+    for y in 0..3 {for x in 0..2 {
+        let a=w+x as f32*g.tile_width;let b=a+g.tile_width;
+        let bottom=(3-y)as f32*8.*scale;let top=bottom+8.*scale;
+        append_quad(out,[[b,bottom,s],[b,top,s],[a,top,s],[a,bottom,s]],Vec3::Z.to_array(),
+            [[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2],[uv.0,uv.3]],
+            crate::interior_models::authored_face_color([1.;4],Vec3::Z));
+    }}
+    append_quad(out,[[e,0.,s],[e,8.*scale,s],[w,8.*scale,s],[w,0.,s]],
+        Vec3::Z.to_array(),[paint;4],crate::interior_models::authored_face_color([1.;4],Vec3::Z));
+    Some(p.row)
+}
+
 fn chair_triangle(out:&mut SurfaceMeshData,mut points:[Vec3;3],outside:Vec3,uv:[f32;2]) {
     let mut normal=(points[1]-points[0]).cross(points[2]-points[0]);
     if normal.length_squared()<1e-12 {return;}
@@ -192,6 +221,19 @@ mod tests {
             assert_eq!(placements.iter().filter(|p|p.kind==kind).count(),count,"{kind:?}");
         }
         assert_eq!(traditional_tabletop_height("EarlsPokemonAcademy",&refs,&g,None,5,9),Some(8.),"book rests on actual first desktop");
+        let mut returns=SurfaceMeshData::default();
+        let rear=placements.iter().find(|p|p.kind==ModelKind::WallPanel).unwrap();
+        assert_eq!(perimeter_template(&mut returns,"EarlsPokemonAcademy",&refs,&g,&placements),Some(rear.row));
+        let plain=g.uv(rear.column+8,rear.row+2);
+        assert!(returns.uvs.iter().all(|uv|uv[0]>=plain.0&&uv[0]<=plain.1&&uv[1]>=plain.2&&uv[1]<=plain.3),
+            "returns use only the plain striped wall tile, never blackboard art");
+        assert_eq!(returns.positions.iter().map(|p|p[1]).fold(0.,f32::max),32.);
+        assert_eq!(perimeter_template(&mut SurfaceMeshData::default(),"ElmsLab",&refs,&g,&placements),None);
+        assert_eq!(perimeter_template(&mut SurfaceMeshData::default(),"EarlsPokemonAcademy",&refs,&g,&[]),None);
+        let mut stale=tiles.clone();stale[rear.row*w+rear.column+2].source.tile_index^=1;
+        assert_eq!(perimeter_template(&mut SurfaceMeshData::default(),"EarlsPokemonAcademy",
+            &stale.iter().collect::<Vec<_>>(),&g,&placements),None);
+
         let frame=crystal_render_api::VisualWorldFrame{active:true,map_id:"EarlsPokemonAcademy".into(),
             grid_size:bevy::prelude::UVec2::new(w as u32,h as u32),tile_size:Vec2::splat(8.),tiles:tiles.clone(),..Default::default()};
         let seats=crate::mesh::seating_surfaces(&frame,None);

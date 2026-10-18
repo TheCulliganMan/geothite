@@ -53,3 +53,7 @@ This verifies the native image target and roster loading; live-window,
 browser, animation and gameplay paths remain unapproved. The queued Cargo integration job also finished with exit zero; its roster
 check ran one test and passed in 2.70 seconds. Completed temporary review
 images and logs have been removed.
+
+The later [canonical stone-pair skins](stone-pair-skins.md) preserve this
+boulder sculpture and add four independent arm/wrist chains, fixed battle feet
+and two-support world walking. Current captures use the headless image path.

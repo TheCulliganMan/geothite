@@ -26,6 +26,10 @@ pub fn configure_tree_vertex_weld_diagnostics(legacy: bool) {
 
 
 const RESIDUAL_OPACITY: f32 = 0.20;
+// Common screen coverage keeps layered scenery faint without accumulating
+// opacity over the player. Preserve enough form to locate the obstruction.
+const BUILDING_REVEAL_OPACITY: f32 = 0.18;
+const FOLIAGE_REVEAL_OPACITY: f32 = 0.24;
 const EXIT_HOLD_SECONDS: f32 = 0.12;
 const FADE_RATE: f32 = 14.0;
 const RESTORE_RATE: f32 = 8.0;
@@ -95,6 +99,35 @@ pub(super) fn use_source_coverage_fade(groups: &mut [PreparedGroup], ranges: &[R
         }
     }
 }
+fn set_residual(groups: &mut [PreparedGroup], opacity: f32) {
+    for group in groups {
+        group.residual_opacity=opacity;
+        if let Some(overlay)=&mut group.overlay {
+            set_residual(std::slice::from_mut(overlay.as_mut()),opacity);
+        }
+    }
+}
+/// Outdoor buildings retain a faint complete form while the player is behind
+/// them. Room camera walls keep their separate fully open cutaway policy.
+pub(super) fn use_building_reveal(groups: &mut [PreparedGroup], ranges: &[Range<usize>]) {
+    // Retain a smooth silhouette instead of speckling the street with the
+    // building's opaque source pigments. Depth rejection keeps hidden layers
+    // ordered; only buildings already opted into depth coverage receive it.
+    // In particular the forest gate's existing coverage policy stays intact.
+    use_source_coverage_fade(groups,ranges,BUILDING_REVEAL_OPACITY);
+    for group in groups {
+        if group.depth_coverage_fade && ranges.contains(&group.source_range) {
+            set_coverage_fade(std::slice::from_mut(group),false);
+        }
+    }
+}
+/// A slightly stronger crown remains legible against similarly colored ground.
+/// This changes presentation only; all source leaves and shadows stay intact.
+pub(super) fn use_foliage_reveal(groups: &mut [PreparedGroup], coverage: bool) {
+    set_coverage_fade(groups,coverage);
+    set_residual(groups,FOLIAGE_REVEAL_OPACITY);
+}
+
 /// Closed source cabinets retain depth ordering while a common pixel mask
 /// reveals the player. Opt in by exact owned range, preserving other fades.
 pub(super) fn use_source_depth_coverage_fade(groups: &mut [PreparedGroup], ranges: &[Range<usize>]) {
@@ -1370,11 +1403,52 @@ fn target_rays(uniform: CutawayUniform, camera: Mat4) -> Option<(Vec3, [Vec3; 9]
     });
     Some((camera.w_axis.truncate(), targets))
 }
+
+// Nearby conversation partners need the same clear sight line as the player.
+// Keep the interest small and source-backed; props, distant crowds, trees and
+// interior camera walls must not make the outdoor neighborhood disappear.
+fn nearby_character_targets(frame: &crystal_render_api::VisualWorldFrame,
+    heights: &[f32], player: CutawayUniform, camera: Mat4) -> Vec<Vec3> {
+    use crystal_render_api::VisualActorId;
+    if player.bottom_radius.w<=0. || !crate::cave_water::outdoor(&frame.map_id)
+        || frame.map_id.contains("Forest") || !frame.tile_size.is_finite()
+        || frame.tile_size.min_element()<=0. {return Vec::new();}
+    let scale=frame.tile_size.y*2.;
+    let mut interest=Vec::new();
+    for actor in &frame.actors {
+        let VisualActorId::Object(id)=actor.id else {continue;};
+        let Some(height)=crate::new_bark_actors::modeled_character_height(frame,actor)
+        else {continue;};
+        let ground=crate::footing::actor_ground_point(frame,actor);
+        if crate::footing::tile_at_visual_point(frame,ground).is_none() {continue;}
+        let Some(support)=crate::resolved_footing_height(frame,ground,heights) else {continue;};
+        let foot=crate::visual_point_to_voxel(ground,support+0.04);
+        let delta=foot-player.bottom_radius.truncate();
+        let distance=delta.length_squared();
+        if !foot.is_finite() || distance>(scale*2.25).powi(2) {continue;}
+        let Some(mut body)=CutawayUniform::for_player(foot,scale) else {continue;};
+        body.top_feather= (foot+Vec3::Y*height).extend(body.top_feather.w);
+        if let Some((_,targets))=target_rays(body,camera) {interest.push((distance,id,targets));}
+    }
+    interest.sort_by(|a,b|a.0.total_cmp(&b.0).then(a.1.cmp(&b.1)));
+    interest.into_iter().take(2).flat_map(|(_,_,targets)|targets).collect()
+}
+
+// Whole-building fading retains its silhouette; the body aperture prevents
+// that residual paint from covering the trainer. Other reveal styles
+// keep their existing capsule policy, including foliage and room walls.
+fn building_aperture(material: &mut VoxelMaterial, player: CutawayUniform, enabled: bool) {
+    if enabled {
+        material.extension.cutaway.bottom_radius = player.bottom_radius;
+        material.extension.cutaway.top_feather = player.top_feather;
+    }
+}
 fn sync(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     status: Res<VoxelViewStatus>,
     cache: Res<TerrainRevisionCache>,
+    frame: Option<Res<crystal_render_api::VisualWorldFrame>>,
     // Occluder opacity is presentation state. It must settle while virtual
     // gameplay time is paused, including strict paired render captures.
     time: Res<Time<Real>>,
@@ -1385,6 +1459,8 @@ fn sync(
         Option<&OpaqueObjectLeaf>, Option<&SortedObjectLeaf>, &mut Visibility,
         Option<&mut DeferredMesh>)>,
     mut previous: Local<Option<(Mat4, CutawayUniform, bool)>>,
+    mut previous_pit_targets: Local<Vec<Vec3>>,
+    mut previous_character_targets: Local<Vec<Vec3>>,
 ) {
     let _trace = crate::loading_trace::span("frame.occluder_fades", || {
         let (count, blocked, faded, deferred, leaf_entities, pending_leaves) = groups.iter()
@@ -1408,8 +1484,28 @@ fn sync(
         .map(|m| m.extension.cutaway)
         .unwrap_or_default();
     let input = (camera, uniform, status.active && active);
-    let changed = previous.as_ref() != Some(&input);
+    let mut pit_targets=if input.2&&uniform.bottom_radius.w>0.&&cache.built_profiles.is_some() {
+        frame.as_ref().filter(|frame|cache.built_frame.as_ref()
+            .is_some_and(|built|built.map_id==frame.map_id))
+            .map(|frame|crate::mesh::lighthouse_pit_reveal_targets(frame,uniform.bottom_radius.truncate()))
+            .unwrap_or_default()
+    } else {Vec::new()};
+    if !pit_targets.is_empty() {
+        let view=camera.inverse();
+        pit_targets.retain(|target|view.is_finite()&&target.is_finite()
+            &&view.transform_point3(*target).z < -0.001);
+    }
+    let character_targets=if input.2 {
+        frame.as_ref().filter(|frame|cache.built_frame.as_ref()
+            .is_some_and(|built|built.map_id==frame.map_id))
+            .map(|frame|nearby_character_targets(frame,&cache.footing_heights,uniform,camera))
+            .unwrap_or_default()
+    } else {Vec::new()};
+    let changed = previous.as_ref() != Some(&input)||*previous_pit_targets!=pit_targets
+        ||*previous_character_targets!=character_targets;
     *previous = Some(input);
+    (*previous_pit_targets).clone_from(&pit_targets);
+    (*previous_character_targets).clone_from(&character_targets);
     let rays = if input.2 {
         target_rays(uniform, camera)
     } else {
@@ -1417,13 +1513,20 @@ fn sync(
     };
     for (group_entity, mut group, transform, children, lazy_sorted) in &mut groups {
         if changed || transform.is_changed() || group.is_added() {
-            let blocked = if let Some(plane)=group.camera_wall {
-                input.2 && outside_room_wall(plane, transform.to_matrix().inverse().transform_point3(camera.w_axis.truncate()))
-            } else { rays.is_some_and(|(eye, targets)| {
+            let outside=group.camera_wall.is_some_and(|plane|input.2&&outside_room_wall(plane,
+                transform.to_matrix().inverse().transform_point3(camera.w_axis.truncate())));
+            let has_ray_targets=group.camera_wall.is_none()||!pit_targets.is_empty();
+            let blocked = outside || (has_ray_targets && rays.is_some_and(|(eye, targets)| {
                 let local = transform.to_matrix().inverse();
                 let start = local.transform_point3(eye);
+                // Camera-plane walls retain their existing outside-room
+                // policy. Nearby fall openings independently test actual
+                // triangles, even when the player body itself is unobstructed.
+                let body=targets.into_iter().filter(|_|group.camera_wall.is_none());
+                let people=character_targets.iter().copied().filter(|_|
+                    group.camera_wall.is_none() && group.fade.residual_opacity==BUILDING_REVEAL_OPACITY);
                 local.is_finite()
-                    && targets.into_iter().any(|target| {
+                    && body.chain(pit_targets.iter().copied()).chain(people).any(|target| {
                         let end = local.transform_point3(target);
                         group.surface.blocks(start, end)
                             || group
@@ -1431,8 +1534,7 @@ fn sync(
                                 .as_ref()
                                 .is_some_and(|surface| surface.blocks(start, end))
                     })
-            })
-            };
+            }));
             if blocked != group.blocked {
                 group.blocked = blocked;
             }
@@ -1510,13 +1612,18 @@ fn sync(
             }
             group.blending = blending;
         }
-        if group.fade.opacity != previous_alpha {
+        if group.fade.opacity != previous_alpha || changed {
+            let clear_body = (group.coverage_fade || group.depth_coverage_fade)
+                && group.fade.residual_opacity == BUILDING_REVEAL_OPACITY
+                && group.camera_wall.is_none();
             if let Some(mut material) = materials.get_mut(&group.transparent) {
                 material.extension.cutaway.fade.x = 1.0 - group.fade.opacity;
+                building_aperture(&mut material, uniform, clear_body);
             }
             if let Some((_, transparent)) = &group.overlay_materials {
                 if let Some(mut material) = materials.get_mut(transparent) {
                     material.extension.cutaway.fade.x = 1.0 - group.fade.opacity;
+                    building_aperture(&mut material, uniform, clear_body);
                 }
             }
         }
@@ -1525,6 +1632,115 @@ fn sync(
 
 #[cfg(test)]
 mod tests {
+    fn nearby_npc_frame() -> crystal_render_api::VisualWorldFrame {
+        crystal_render_api::VisualWorldFrame {map_id:"SaffronCity".into(),
+            grid_size:UVec2::splat(16),tile_size:Vec2::splat(8.),viewport_size:Vec2::splat(128.),
+            actors:vec![crystal_render_api::VisualActor {id:crystal_render_api::VisualActorId::Object(1),
+                source_id:"youngster".into(),model_palette:None,texture:default(),
+                center:Vec2::new(12.,-8.),size:Vec2::splat(16.),flip_x:false,
+                above_priority:false,facing:Some(Vec2::X)}],..default()}
+    }
+    #[test]
+    fn nearby_npc_reveals_a_real_roof_that_misses_every_player_ray() {
+        let frame=nearby_npc_frame();let foot=Vec3::new(-20.,0.04,8.);
+        let player=CutawayUniform::for_player(foot,16.).unwrap();
+        let camera=Transform::from_translation(Vec3::new(-20.,80.,128.))
+            .looking_at(foot+Vec3::Y*12.,Vec3::Y).to_matrix();
+        let mut roof=SurfaceMeshData::default();
+        quad(&mut roof,[[0.,32.,20.],[32.,32.,20.],[32.,32.,60.],[0.,32.,60.]],false);
+        let tree=TriangleTree::new(&roof);
+        let (eye,body)=target_rays(player,camera).unwrap();
+        assert!(!body.into_iter().any(|target|tree.blocks(eye,target)));
+        let targets=nearby_character_targets(&frame,&vec![0.;256],player,camera);
+        assert_eq!(targets.len(),9);
+        assert!(targets.iter().any(|&target|tree.blocks(eye,target)),
+            "the nearby source NPC has a real blocked line of sight even when the player is clear");
+        assert!(!targets.iter().any(|&target|tree.blocks(target,target+(target-eye))),
+            "a roof behind the actor cannot trigger its reveal");
+    }
+    #[test]
+    fn nearby_npc_interest_is_bounded_source_backed_and_tracks_motion_and_support() {
+        use crystal_render_api::{VisualActorId,VisualEffectId};
+        let mut frame=nearby_npc_frame();let foot=Vec3::new(-20.,0.04,8.);
+        let player=CutawayUniform::for_player(foot,16.).unwrap();
+        let camera=Transform::from_translation(Vec3::new(-20.,80.,128.))
+            .looking_at(foot+Vec3::Y*12.,Vec3::Y).to_matrix();
+        let original=frame.actors[0].clone();
+        for (id,source,center) in [(VisualActorId::Object(2),"rock",Vec2::new(2.,-8.)),
+            (VisualActorId::Object(3),"youngster",Vec2::new(60.,-60.)),
+            (VisualActorId::Effect(VisualEffectId::GrassRustle),"youngster",Vec2::ZERO),
+            (VisualActorId::RemotePlayer(4),"youngster",Vec2::ZERO),
+            (VisualActorId::Object(5),"youngster",Vec2::splat(f32::NAN))] {
+            frame.actors.push(crystal_render_api::VisualActor {id,source_id:source.into(),center,..original.clone()});
+        }
+        let heights=vec![0.;256];
+        let first=nearby_character_targets(&frame,&heights,player,camera);assert_eq!(first.len(),9);
+        assert!(nearby_character_targets(&frame,&[],player,camera).is_empty());
+        assert!(nearby_character_targets(&frame,&vec![40.;256],player,camera).is_empty());
+        let mut raised=frame.clone();raised.actors[0].center.x=-4.;
+        assert_eq!(nearby_character_targets(&raised,&vec![24.;256],player,camera).len(),9,
+            "a nearby character on one raised land shelf remains a conversation partner");
+        frame.actors[0].center.x-=1.;
+        assert_ne!(nearby_character_targets(&frame,&heights,player,camera),first);
+        assert_ne!(nearby_character_targets(&frame,&vec![1.;256],player,camera),
+            nearby_character_targets(&frame,&heights,player,camera));
+        for (id,x) in [(6,2.),(7,4.)] {
+            frame.actors.push(crystal_render_api::VisualActor {id:VisualActorId::Object(id),center:Vec2::new(x,-8.),..original.clone()});
+        }
+        let selected=nearby_character_targets(&frame,&heights,player,camera);
+        assert_eq!(selected.len(),18,"at most two nearby conversation partners");
+        for (targets,x) in selected.chunks_exact(9).zip([2.,4.]) {
+            assert!((targets.iter().map(|p|p.x).sum::<f32>()/9.-x).abs()<0.001);
+        }
+        for map in ["PlayersHouse1F","IlexForest"] {
+            frame.map_id=map.into();
+            assert!(nearby_character_targets(&frame,&heights,player,camera).is_empty());
+        }
+    }
+    #[test]
+    fn lighthouse_pit_focus_detects_a_cap_that_does_not_hide_the_player() {
+        let mut data=SurfaceMeshData::default();
+        quad(&mut data,[[-12.,32.,20.],[32.,32.,20.],[32.,32.,60.],[-12.,32.,60.]],false);
+        let tree=TriangleTree::new(&data);
+        let foot=Vec3::new(-24.,0.04,8.);
+        let camera=Transform::from_translation(Vec3::new(-24.,80.,128.))
+            .looking_at(foot+Vec3::Y*12.,Vec3::Y).to_matrix();
+        let uniform=CutawayUniform::for_player(foot,16.).unwrap();
+        let (eye,body)=target_rays(uniform,camera).unwrap();
+        assert!(!body.into_iter().any(|target|tree.blocks(eye,target)),"player alone does not reveal this cap");
+        let tiles=(0..16).map(|i| {
+            let (x,y)=(i%4,i/4);
+            crystal_render_api::VisualTile {column:x as u32,row:y as u32,
+                texture:default(),priority:false,animation_frames:None,
+                source:crystal_render_api::VisualTileSource {tileset_id:"lighthouse".into(),
+                    metatile_id:0x28,subtile_column:x as u8,subtile_row:y as u8,
+                    tile_index:if y>=2 {1}else if (x+y)%2==0 {0x2e}else{0x2f}}}
+        }).collect();
+        let frame=crystal_render_api::VisualWorldFrame {map_id:"OlivineLighthouse2F".into(),
+            grid_size:UVec2::new(4,4),tile_size:Vec2::splat(8.),tiles,..default()};
+        let pit=crate::mesh::lighthouse_pit_reveal_targets(&frame,foot);
+        assert_eq!(pit.len(),5);
+        assert!(pit.into_iter().any(|target|tree.blocks(eye,target)),"nearby opening reveals its actual blocker");
+        assert_eq!(uniform.bottom_radius.w,10.4,"player body radius stays unchanged");
+    }
+    #[test]
+    fn building_body_aperture_tracks_support_without_changing_other_fades() {
+        let mut material = crate::solid_terrain_material();
+        material.extension.cutaway.fade = Vec4::new(0.82, 0., 0., -1.);
+        let fade = material.extension.cutaway.fade;
+        for foot in [Vec3::new(8., 0., 16.), Vec3::new(24., 12., 32.)] {
+            let player = CutawayUniform::for_player(foot,16.).unwrap();
+            building_aperture(&mut material,player,false);
+            if foot.x == 8. {assert_eq!(material.extension.cutaway.bottom_radius,Vec4::ZERO);}
+            building_aperture(&mut material,player,true);
+            assert_eq!(material.extension.cutaway.bottom_radius,player.bottom_radius);
+            assert_eq!(material.extension.cutaway.top_feather,player.top_feather);
+            assert_eq!(material.extension.cutaway.fade,fade);
+        }
+        building_aperture(&mut material,CutawayUniform::default(),true);
+        assert_eq!(material.extension.cutaway.bottom_radius,Vec4::ZERO);
+        assert_eq!(material.extension.cutaway.fade,fade);
+    }
     fn palette_weld_mesh(rgb: bool, wide: bool) -> Mesh {
         use bevy::mesh::{Indices, VertexAttributeValues};
         let mut mesh = Mesh::new(bevy::mesh::PrimitiveTopology::TriangleList,
@@ -2079,6 +2295,38 @@ mod tests {
         let (_,_,unmatched,_)=prepare_linked_with_layered_alpha(data,
             SurfaceMeshData::default(),Vec::new(),&[0..9999]);
         assert_eq!(unmatched[0].leaves.len(),baseline[0].leaves.len());
+    }
+
+    #[test]
+    fn outdoor_reveal_keeps_scenery_legible_and_clears_most_player_pixels() {
+        for (foliage,depth) in [(false,false),(false,true),(true,false)] {
+            let mut data=SurfaceMeshData::default();
+            quad(&mut data,[[0.,0.,0.],[0.,1.,0.],[1.,1.,0.],[1.,0.,0.]],true);
+            quad(&mut data,[[2.,0.,0.],[2.,1.,0.],[3.,1.,0.],[3.,0.,0.]],true);
+            let (_,mut groups)=prepare(data);
+            let bounds=prepared_bounds(&groups);let range=groups[1].source_range.clone();
+            let surfaces=groups.iter().map(|g|g.surface.clone()).collect::<Vec<_>>();
+            if foliage {use_foliage_reveal(&mut groups,true);}
+            else {
+                if depth {use_source_depth_coverage_fade(&mut groups,std::slice::from_ref(&range));}
+                use_building_reveal(&mut groups,std::slice::from_ref(&range));
+            }
+            assert_eq!(prepared_bounds(&groups),bounds);
+            for (i,group) in groups.iter().enumerate() {assert!(Arc::ptr_eq(&group.surface,&surfaces[i]));}
+            assert_eq!(groups[0].residual_opacity,if foliage {FOLIAGE_REVEAL_OPACITY} else {RESIDUAL_OPACITY});
+            assert_eq!(groups[1].residual_opacity,if foliage {FOLIAGE_REVEAL_OPACITY} else {BUILDING_REVEAL_OPACITY});
+            let mut fade=Fade {residual_opacity:groups[1].residual_opacity,..Default::default()};
+            for _ in 0..120 {fade.advance(true,1./60.);}
+            assert!(fade.opacity>=0.15 && fade.opacity<=0.25,"retain a ghost with at least75% clear pixels");
+            for _ in 0..240 {fade.advance(false,1./60.);}
+            assert_eq!(fade.opacity,1.,"restore the whole object after clearing it");
+            share_groups(&mut groups);
+            let cached=WeakPreparedGroup::new(&groups[1]).upgrade().unwrap();
+            assert_eq!(cached.residual_opacity,groups[1].residual_opacity);
+            assert_eq!(cached.source_range,range);
+            assert_eq!(cached.coverage_fade,foliage||!depth);
+            assert_eq!(cached.depth_coverage_fade,depth);
+        }
     }
 
     #[test]

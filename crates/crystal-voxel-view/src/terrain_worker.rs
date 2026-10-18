@@ -336,7 +336,11 @@ mod tests {
         let profiles = crate::live_profiles::LiveProfiles::default();
         for (job, map_name) in [
             "NewBarkTown",
+            "ViridianCity",
+            "Route2",
             "PlayersHouse1F",
+            "GoldenrodMagnetTrainStation",
+            "SaffronMagnetTrainStation",
             "DarkCaveVioletEntrance",
             "Route29",
         ]
@@ -470,6 +474,8 @@ mod tests {
                 .into_streamed(),
                 &frame,
             );
+            assert_eq!(direct.train_doors,matches!(map_name,"GoldenrodMagnetTrainStation"|"SaffronMagnetTrainStation"),
+                "{map_name}: selected train metadata");
             let direct_ms = started.elapsed().as_secs_f64() * 1000.;
             let (_, mut bindings) = request::Frame::capture(&frame);
             let expected = encode(

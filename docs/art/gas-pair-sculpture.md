@@ -1,5 +1,11 @@
 # Koffing and Weezing sculptures
 
+Current assets use the canonical skins described under
+[bounded geometry and animation](#canonical-skins-and-bounded-geometry).
+The earlier static review below records the original anatomy.
+
+## Original static anatomy review
+
 The canonical meshes use original geometry from `tools/gas_pair_sculpt.py`:
 
 | Species | Closed named parts | Triangles | Grounded floor | Normalized height | SHA-256 |
@@ -81,3 +87,85 @@ or gameplay behavior. All gas-pair verification jobs are terminal. Task-owned ig
 and capture scratch was removed after the final proofs. The isolated ignored
 dependency cache remains in use for the ongoing full species upgrade; build
 products are temporary verification output, not deliverables.
+
+
+## Canonical skins and bounded geometry
+
+`tools/gas_pair_glb.py` now writes the canonical Koffing and Weezing skins.
+Both static JSON duplicates are removed. Runtime skin routing, strict model
+readers and the main Blender builder use the GLBs. The pure sculpture recipe
+still authors all 23/35 original named parts.
+
+Redundant orb, cloud and patch sampling was reduced locally. Both orbs use
+64-by-44 sampling while retaining all thirteen actual radial crater recesses.
+The expression recesses, Koffing grin/tongue, strained Weezing frowns, rooted
+canines, skull rings, crossbones and adult stalks remain. Adaptive fitted
+patches refine only where needed to clear their actual stored parents, with
+matching skin shading. Cloud cores and lobes retain their original centers,
+radii and rounded silhouettes with lower surface redundancy. Heights and
+species registration are unchanged.
+
+| Species | Vertices | Triangles | Parts | Joints | Accessors | Bytes | Authoring height | Verified pack height |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Koffing | 10,563 | 18,264 | 23 | 12 | 127 | 442,308 | 1.00 | 0.6096 m |
+| Weezing | 16,974 | 28,756 | 35 | 14 | 188 | 687,324 | 1.20 | 1.1938 m |
+
+Both fit the unchanged 20,000-vertex, 40,000-triangle, 64-primitive,
+256-accessor and 1 MiB limits. Rest geometry SHA-256 pins:
+
+- Koffing: `ba5c5ad08e422850b832e4cb9412e18bcecbc53b62530186b11fa4f879b957de`
+- Weezing: `b655fa7a75abd024c672927149600b45231e833200036b2c7bc97ed9ddba0c70`
+
+The main orb yaws as a coherent solid with all fitted features and fangs.
+Weezing's small upper orb and rear node move on independent carriers, with
+both stalks blending continuously between their actual parent orbs. Two gas
+clouds per species are parented to the root and move independently, each with
+four additional lobe carriers. Lobes blend from occupied cloud-core roots to
+free rounded ends. Distinct idle phases give the eight lobes separate motion.
+Tiny polar rings share one compact weight field so quantized weight steps do
+not pinch the cap edges. The existing intentional battle/world hover is
+preserved; these are floating species, and the gas remains detached vapor.
+No particle simulation or anatomical stalks attaching the clouds are added.
+
+Idle uses 81 keys over 3.2 seconds; attack/hit use 65 keys over one second.
+Source battle cues own timing, with neutral endpoints. All 20 combined Python
+checks pass in 21.851 seconds, including thirteen empty crater probes per orb
+at rest and under motion, fitted face/edge clearance, original negative
+controls, occupied canine/stalk/lobe roots through all clips, coherent feature
+owners, hierarchy/weights/binds, floor, winding and bounded strain, isolated
+carriers, distinct gas phases and strict canonical readers.
+
+Final front, side and rear old/idle/attack/hit sheets were inspected. Both
+Blender exports match the final canonical files byte for byte. Rust/native
+proof follows below. Shiny checks
+remain skipped, grass height is untouched, and browser visual acceptance
+remains open.
+
+
+Four focused Rust checks pass (1.78 seconds): GPU activation for each species
+at its verified pack height, all independent carriers with coherent features,
+animated floor/culling bounds and preserved intentional battle hover, and 64
+world floating phases with every authored influence preserved. Both world rigs
+have no walk legs or additional limb motion.
+
+
+The rebuilt native Koffing/Sentret Route 29 3D/2D pair was inspected at preserved
+state: frame 2506, checksum 2573841080, LCD frame 3143 and virtual time
+55.148248124. The cheerful grin, tongue/canines, cratered silhouette, lower
+skull/crossbones and separate billows remain readable, with the correct KOFFING
+HUD and intentional hovering clearance. Normal terrain admission passed at the
+original 0.6096 m pack height and existing -110-degree review yaw, with normal
+support/omission/whole-body/frustum constraints active, no fallback and no
+shader errors. Ignored evidence: `target/pokemon-native-review/koffing-normal`.
+
+
+The native Weezing/Pidgey Route 29 pair was also inspected at preserved state:
+frame 2347, checksum 3242319440, LCD frame 3031 and virtual time 54.178510084.
+The linked main/upper orbs, rear node, strained expressions, solid canines,
+craters, cream emblems and independent billows remain readable, with the
+correct WEEZING HUD and intentional hovering clearance. Normal admission
+passed at the original 1.1938 m pack height and existing -110-degree review
+yaw with normal support/omission/whole-body/frustum checks active, no fallback
+and no shader errors. Ignored evidence: `target/pokemon-native-review/weezing-normal`.
+Browser visual acceptance remains open. Shiny checks and grass-height edits
+remain skipped.

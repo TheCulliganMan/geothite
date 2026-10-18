@@ -89,7 +89,7 @@ mod tests {
         sources: Vec<VisualTileSource>,
     ) -> VisualWorldFrame {
         assert_eq!(sources.len(), (width * height) as usize);
-        VisualWorldFrame {
+        VisualWorldFrame { terrace_datum: None,
             active: true,
             // Generic mesher fixtures must not opt into a named map's
             // authored scenery/material override. Map-specific tests opt in.
@@ -1416,7 +1416,7 @@ mod tests {
     }
 
     #[test]
-    fn kanto_path_bollards_are_independent_thin_objects() {
+    fn kanto_cliff_side_ink_does_not_spawn_round_barrier_cards() {
         let mut sources = Vec::new();
         for origin_row in [0, 2] {
             for row in 0..2 {
@@ -1442,18 +1442,8 @@ mod tests {
             origin_z: 0.0,
         };
 
-        let placements = kanto_round_path_barrier_placements(&cells, &geometry);
-        assert_eq!(placements.len(), 2);
-        assert_eq!(placements[0].column, 0);
-        assert_eq!(placements[0].row, 0);
-        assert_eq!(placements[1].column, 0);
-        assert_eq!(placements[1].row, 2);
-        assert!(placements.iter().all(|placement| !placement.rounded));
-        assert!(
-            placements
-                .iter()
-                .all(|placement| placement.card_thickness == 1.0)
-        );
+        assert!(kanto_round_barrier_placements(&cells, &geometry).is_empty());
+        assert!(kanto_shoreline_round_barrier_placements(&cells, &geometry).is_empty());
     }
 
     #[test]
@@ -4121,6 +4111,19 @@ mod tests {
                 .iter()
                 .all(|position| position[1] == 0.0)
         );
+    }
+
+    #[test]
+    fn connected_cutout_cannot_borrow_another_atlas_ground_number() {
+        let flower=source_for_tileset("johto_modern",0x01,0,0,0x03);
+        let foreign_ground=source_for_tileset("johto",0x01,1,0,0x05);
+        let scene=frame(2,1,vec![flower,foreign_ground]);
+        let mesh=build_terrain_mesh(&scene)
+            .expect("a clipped native underlay must not disable the complete connected scene");
+        assert_eq!(mesh.textured.quad_count(),2);
+        assert!(mesh.textured.positions.iter().all(|p|p[1]==0.));
+        assert!(mesh.solid.positions.is_empty());
+        assert_eq!(mesh.footing_heights,vec![0.;2]);
     }
 
     #[test]

@@ -1,5 +1,5 @@
-//! One shared gym for the complete Kanto 0c/0d/0e + 10/11/12 drawing.
-use super::kanto_craft::{block, face, mix, source_ink as ink};
+//! One shared civic/gym building: native end caps and repeatable sign/window bays.
+use super::kanto_craft::{block, ceramic_tile, face, mix, source_ink as ink};
 use super::*;
 
 const TILES: [[u16; 12]; 8] = [
@@ -26,6 +26,7 @@ const TILES: [[u16; 12]; 8] = [
         0x1d, 0x1a, 0x1a, 0x1a, 0x1a, 0x1a, 0x1a, 0x1a, 0x1b, 0x1c, 0x1a, 0x3c,
     ],
 ];
+#[cfg(test)]
 const WINDOWS: [(usize, usize); 12] = [
     (2, 4),
     (3, 4),
@@ -41,13 +42,35 @@ const WINDOWS: [(usize, usize); 12] = [
     (10, 6),
 ];
 
-#[derive(Clone, Copy)]
+fn source_tile(width: usize, x: usize, y: usize) -> u16 {
+    let template_x=if x<4 {x} else if x>=width-4 {8+x-(width-4)} else {4+x%4};
+    TILES[y][template_x]
+}
+pub(super) fn matches(cells: &[&VisualTile], g: &GridGeometry, p: BuildingPlacement) -> bool {
+    (8..=24).contains(&p.width) && p.width%4==0 && p.height==8 && p.roof_rows==4
+        && p.column+p.width<=g.width && p.row+p.height<=g.height
+        && (0..8).all(|y|(0..p.width).all(|x| {
+            let block=if y<4 {
+                if x<4 {0x0c} else if x>=p.width-4 {0x0e} else {0x0d}
+            } else if x<4 {0x10} else if x>=p.width-4 {0x12} else {0x11};
+            cells.get((p.row+y)*g.width+p.column+x).is_some_and(|c| {
+                let s=&c.source;
+                s.tileset_id.as_ref()=="kanto" && s.metatile_id==block
+                    && s.subtile_column as usize==x%4 && s.subtile_row as usize==y%4
+                    && s.tile_index==source_tile(p.width,x,y)
+            })
+        }))
+}
+
+#[derive(Clone)]
 pub(super) struct Paint {
     roof: [[f32; 3]; 2],
     wall: [f32; 3],
     trim: [f32; 3],
     ink: [f32; 3],
-    windows: [[f32; 3]; 12],
+    windows: Vec<[f32;3]>,
+    pane_cells: Vec<[usize;2]>,
+    signs: Vec<f32>,
     door: [f32; 3],
     glass: [f32; 3],
 }
@@ -67,17 +90,7 @@ pub(super) fn paint(
     p: BuildingPlacement,
     images: &TerrainImageSamples,
 ) -> Option<Paint> {
-    if p.width != 12 || p.height != 8 || p.column + 12 > g.width || p.row + 8 > g.height {
-        return None;
-    }
-    for (y, row) in TILES.iter().enumerate() {
-        for (x, &index) in row.iter().enumerate() {
-            let s = &cells.get((p.row + y) * g.width + p.column + x)?.source;
-            if s.tileset_id.as_ref() != "kanto" || s.tile_index != index {
-                return None;
-            }
-        }
-    }
+    if !matches(cells,g,p) {return None;}
     let sample = |x: usize, y: usize| -> Option<[Option<[u8; 4]>; 4]> {
         let cell = cells[(p.row + y) * g.width + p.column + x];
         let rgba = tile_rgba(images, cell).ok()?;
@@ -103,23 +116,22 @@ pub(super) fn paint(
     if roof[1] == roof[2] || wall[0] == wall[1] {
         return None;
     }
-    let mut windows = [[0.; 3]; 12];
-    for (i, (x, y)) in WINDOWS.into_iter().enumerate() {
-        let c = sample(x, y)?;
-        if c[0] == c[3] {
-            return None;
-        }
-        windows[i] = linear(c[0]?);
-    }
+    let mut windows=Vec::new();let mut pane_cells=Vec::new();
+    for y in [4,6] {for x in 0..p.width {
+        if source_tile(p.width,x,y)!=0x0a {continue;}
+        let c=sample(x,y)?;
+        if c[0]==c[3] {return None;}
+        windows.push(linear(c[0]?));pane_cells.push([x,y]);
+    }}
     let window = sample(2, 4)?;
-    let upper = sample(8, 6)?;
-    let door = sample(8, 7)?;
+    let upper = sample(p.width-4, 6)?;
+    let door = sample(p.width-4, 7)?;
     Some(Paint {
         roof: [linear(roof[2]?), linear(roof[1]?)],
         wall: linear(wall[0]?),
         trim: linear(wall[1]?),
         ink: linear(window[3]?),
-        windows,
+        windows,pane_cells,signs:(4..p.width-4).step_by(4).map(|x|x as f32+2.).collect(),
         door: linear(door[2]?),
         glass: linear(upper[0]?),
     })
@@ -145,7 +157,7 @@ fn prism(out: &mut SurfaceMeshData, top: Vec<Vec3>, thickness: f32, color: [f32;
         );
     }
 }
-fn roof(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: Paint) {
+fn roof(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: &Paint) {
     let ceramic = mix(p.roof[0], p.roof[1], 0.20);
     let mineral = Vec3::from_array(ceramic).dot(Vec3::new(0.2126, 0.7152, 0.0722));
     let ceramic = mix(ceramic, [mineral; 3], 0.28);
@@ -179,10 +191,12 @@ fn roof(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: Paint) {
             mix(p.roof[0], p.ink, 0.30),
             unit,
         );
-        // Small closed ceramic courses follow all four slopes. The hip's
-        // triangular tips use three vertices, avoiding degenerate quads.
-        let columns = if side < 2 { 20 } else { 12 };
-        let rows = 6;
+        // Closed barrel courses share the museum's ceramic profile. Each
+        // course narrows with the hip while retaining its curved shoulders.
+        let columns = if side < 2 {((e-w)/(unit*0.60)).round().max(1.) as usize} else {12};
+        // Long barrel tiles read as roofing rather than square paving.
+        // Three courses also keep the curved kit below its former mesh cost.
+        let rows = 3;
         for row in 0..rows {
             for col in 0..columns {
                 let a = (col as f32 + 0.025) / columns as f32;
@@ -197,9 +211,9 @@ fn roof(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: Paint) {
                     };
                     plane[0].lerp(plane[1], u).lerp(upper, t) + Vec3::Y * unit * 0.035
                 };
-                let tile = vec![at(a, c), at(b, c), at(b, d), at(a, d)];
+                let ends = [[at(a, c), at(b, c)], [at(a, d), at(b, d)]];
                 let gain = 0.82 + ((row * 7 + col * 3 + side) % 5) as f32 * 0.018;
-                prism(out, tile, unit * 0.065, ceramic.map(|v| v * gain), unit);
+                ceramic_tile(out, ends, unit, unit * 0.045, ceramic.map(|v| v * gain));
             }
         }
     }
@@ -328,7 +342,7 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, door: f3
             s - unit * 0.20,
         ],
         unit,
-        p,
+        &p,
     );
     let mut pane = |x: f32, y: f32, width: f32, height: f32, glass: [f32; 3]| {
         block(
@@ -396,7 +410,7 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, door: f3
             unit,
         );
     };
-    for (i, (x, y)) in WINDOWS.into_iter().enumerate() {
+    for (i, &[x, y]) in p.pane_cells.iter().enumerate() {
         pane(
             w + unit * (x as f32 + 0.5),
             unit * if y == 4 { 3.60 } else { 1.08 },
@@ -521,7 +535,8 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, door: f3
         unit,
     );
     // Source sign content in real raised strokes; no substitute medal icons.
-    let sign_x = w + unit * 6.;
+    for &sign in &p.signs {
+    let sign_x = w + unit * sign;
     let sign_y = unit * 3.62;
     block(
         out,
@@ -570,6 +585,7 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, door: f3
                 );
             }
         }
+    }
     }
     for position in &mut out.positions[first..] {
         *position = (Vec3::from_array(*position) + origin).to_array();
@@ -664,6 +680,18 @@ pub(super) fn fixture() -> (
 }
 
 #[cfg(test)]
+pub(super) fn fixture_width(width: usize) -> (Vec<VisualTile>,GridGeometry,BuildingPlacement,TerrainImageSamples) {
+    let (original,g,p,images)=fixture();
+    let mut cells=Vec::new();
+    for y in 0..g.height {for x in 0..width {
+        let old_x=if x<4 {x} else if x>=width-4 {x-(width-4)+8} else {4+x%4};
+        let mut tile=original[y*g.width+old_x].clone();tile.column=x as u32;
+        tile.source.subtile_column=(x%4) as u8;cells.push(tile);
+    }}
+    (cells,GridGeometry {width,..g},BuildingPlacement {width,..p},images)
+}
+
+#[cfg(test)]
 mod tests {
     use super::*;
     fn closed(out: &SurfaceMeshData) {
@@ -712,14 +740,60 @@ mod tests {
         }
     }
     #[test]
+    fn repeated_civic_bays_keep_native_panes_signs_door_and_bounded_roof() {
+        for width in [8,12,16,20,24] {
+            let (mut tiles,g,p,mut images)=fixture_width(width);
+            let refs=tiles.iter().collect::<Vec<_>>();
+            let day=paint(&refs,&g,p,&images).unwrap();
+            assert_eq!(day.windows.len(),width);
+            assert_eq!(day.pane_cells.len(),width);
+            assert_eq!(day.signs,(4..width-4).step_by(4).map(|x|x as f32+2.).collect::<Vec<_>>());
+            let mut a=SurfaceMeshData::default();let door=(width-3) as f32*8.;
+            append(&mut a,[0.,width as f32*8.,0.,64.],8.,door,day.clone());
+            assert!(a.positions.iter().all(|p|p[0]>=0. && p[0]<=width as f32*8.
+                && (0. ..=64.).contains(&p[2]) && (0. ..52.).contains(&p[1])));
+            assert!(a.indices.len()/3<20_000);
+            for t in a.indices.chunks_exact(3) {
+                let [x,y,z]=std::array::from_fn(|i|Vec3::from_array(a.positions[t[i] as usize]));
+                assert!((y-x).cross(z-x).dot(Vec3::from_array(a.normals[t[0] as usize]))>1e-8);
+            }
+            let mut moved=SurfaceMeshData::default();
+            append(&mut moved,[112.,112.+width as f32*8.,-96.,-32.],8.,112.+door,day.clone());
+            assert_eq!(a.uvs,moved.uvs);assert_eq!(a.colors,moved.colors);assert_eq!(a.indices,moved.indices);
+            for (local,world) in a.positions.iter().zip(&moved.positions) {
+                assert_eq!(*world,(Vec3::from_array(*local)+Vec3::new(112.,0.,-96.)).to_array());
+            }
+            // A live change in one native end window changes paint, never geometry.
+            let pane=tiles[4*g.width+width-3].texture.id();
+            if let TileImageSample::Rgba(data)=images.pixels.get_mut(&pane).unwrap() {
+                for i in 0..64 {if ink(0x0a,i%8,i/8)==0 {
+                    data[i*4..i*4+4].copy_from_slice(&[255,255,132,255]);
+                }}
+            }
+            let night=paint(&refs,&g,p,&images).unwrap();
+            assert_ne!(day.windows,night.windows);
+            let mut changed=SurfaceMeshData::default();
+            append(&mut changed,[0.,width as f32*8.,0.,64.],8.,door,night);
+            assert_eq!(a.positions,changed.positions);assert_eq!(a.indices,changed.indices);
+            assert_ne!(a.colors,changed.colors);
+            drop(refs);
+            tiles[0].source.subtile_column=1;
+            assert!(!matches(&tiles.iter().collect::<Vec<_>>(),&g,p));
+            tiles[0].source.subtile_column=0;
+            tiles[6*g.width+width-4].source.tile_index=0xffff;
+            assert!(!matches(&tiles.iter().collect::<Vec<_>>(),&g,p));
+        }
+    }
+
+    #[test]
     fn gym_keeps_plot_budget_offset_entrance_and_live_independent_windows() {
         let (cells, g, p, mut images) = fixture();
         let refs = cells.iter().collect::<Vec<_>>();
         let day = paint(&refs, &g, p, &images).unwrap();
         let mut a = SurfaceMeshData::default();
-        append(&mut a, [0., 96., 0., 64.], 8., 72., day);
+        append(&mut a, [0., 96., 0., 64.], 8., 72., day.clone());
         let mut translated = SurfaceMeshData::default();
-        append(&mut translated, [144., 240., -288., -224.], 8., 216., day);
+        append(&mut translated, [144., 240., -288., -224.], 8., 216., day.clone());
         assert_eq!(
             translated.uvs, a.uvs,
             "viewport translation cannot change material domains"

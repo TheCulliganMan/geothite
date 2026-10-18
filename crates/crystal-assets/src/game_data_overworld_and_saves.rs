@@ -2196,10 +2196,24 @@ impl GameDataSet {
         roaming_pokemon: &[RoamingPokemonState; 3],
         roaming_map_history: &crystal_core::state::RoamingMapHistory,
     ) -> Result<()> {
+        anyhow::ensure!(self.wild_challenge.is_some() || roaming_pokemon.iter().all(|r| r.scaled_hp.is_none()),
+            "full-width roaming HP requires the wild challenge rules");
+        // Keep the core's exact slot/species/location validation. Only the level
+        // certificate changes, and only for an enabled challenge pack.
+        let mut catalog = self.roaming_pokemon.clone();
+        if self.wild_challenge.is_some() {
+            for write in &mut catalog.init_writes {
+                if let Some(saved) = roaming_pokemon.get(usize::from(write.slot)) {
+                    if self.challenge_origin_level(write.level, saved.level) {
+                        write.level = saved.level;
+                    }
+                }
+            }
+        }
         core_validate_saved_roaming_references(
             roaming_pokemon,
             roaming_map_history,
-            &self.roaming_pokemon,
+            &catalog,
             |species| self.saved_species_exact_exists(species),
             |map_group, map_number| {
                 self.runtime_map_group_number_exists(u16::from(map_group), u16::from(map_number))
@@ -2228,9 +2242,9 @@ impl GameDataSet {
             )
             .max_hp;
             anyhow::ensure!(
-                u16::from(roaming.hp) <= max_hp,
+                roaming.current_hp() <= max_hp,
                 "saved roaming_pokemon[{index}] hp {} exceeds {} level {} max HP {max_hp} for saved DVs {:02x}{:02x}",
-                roaming.hp,
+                roaming.current_hp(),
                 species_id,
                 roaming.level,
                 roaming.dvs_be[0],
@@ -3289,7 +3303,7 @@ impl GameDataSet {
         anyhow::ensure!(
             self.roaming_pokemon
                 .init_write(usize::from(roaming_slot))
-                .is_some_and(|write| write.species == species && write.level == roaming.level),
+                .is_some_and(|write| write.species == species && self.challenge_origin_level(write.level, roaming.level)),
             "saved roaming battle slot {roaming_slot} identity {species} level {} does not match compiled init slot",
             roaming.level
         );
@@ -3302,6 +3316,28 @@ impl GameDataSet {
         enemy_party: &[Pokemon],
         enemy_pokemon: &Pokemon,
     ) -> Result<()> {
+        self.validate_saved_trainer_enemy_party_for_script(trainer, enemy_party, enemy_pokemon, "")
+    }
+
+    pub fn validate_saved_trainer_enemy_party_for_script(
+        &self,
+        trainer: &Trainer,
+        enemy_party: &[Pokemon],
+        enemy_pokemon: &Pokemon,
+        source_script: &str,
+    ) -> Result<()> {
+        let rematch_trainer;
+        let trainer = if self.is_trainer_rematch_script(source_script) {
+            let ace = enemy_party
+                .iter()
+                .map(|p| p.level)
+                .max()
+                .context("empty saved rematch team")?;
+            rematch_trainer = self.rematch_trainer_at_ace(trainer, ace)?;
+            &rematch_trainer
+        } else {
+            trainer
+        };
         let expected_party = materialize_trainer_party(
             trainer,
             &self.pokemon,

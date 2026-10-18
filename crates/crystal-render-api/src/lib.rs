@@ -55,6 +55,7 @@ impl Plugin for VisualWorldRenderPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<VisualWorldFrame>()
             .init_resource::<VisualSurfRider>()
+            .init_resource::<VisualPokemonDimensions>()
             .init_resource::<VisualPlayerTraversal>()
             .init_resource::<VisualWorldLighting>()
             .init_resource::<VisualWorldClock>()
@@ -87,8 +88,15 @@ impl VisualWorldLighting {
     }
 }
 
-/// Read-only local clock for maps using PALETTE_AUTO. `None` keeps fixed
-/// indoor/cave palettes and producers without a clock on their source period.
+/// Known open-air terraces sharing otherwise enclosed source atlases.
+/// Their 3D sky can use the RTC while native fixed-palette pixels stay exact.
+pub fn is_open_air_rooftop(map:&str,tileset:&str)->bool {
+    matches!((map,tileset),("CeladonMansionRoof","mansion")
+        |("GoldenrodDeptStoreRoof","mart")|("TinTowerRoof","tower"))
+}
+
+/// Read-only local clock for PALETTE_AUTO maps and known open-air terraces.
+/// `None` keeps enclosed fixed-palette scenes on their source period.
 #[derive(Resource, Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct VisualWorldClock {
     pub minute_of_day: Option<u16>,
@@ -181,6 +189,13 @@ pub struct VisualSurfRider {
     pub female: bool,
 }
 
+/// Physical dimensions from the loaded pack's Pokédex, shared by every
+/// overworld role. A carrying Pokémon keeps the same dimension as a follower.
+#[derive(Resource, Default)]
+pub struct VisualPokemonDimensions {
+    pub meters: std::collections::BTreeMap<String, f32>,
+}
+
 /// Read-only endpoints and timing of the player's currently presented step.
 /// Coordinates are ground feet in the current visual frame, without sprite lift.
 #[derive(Resource, Default, Clone, Debug)]
@@ -230,6 +245,57 @@ pub struct VisualJumpLedge {
 }
 
 /// Immutable-by-convention snapshot consumed by optional world renderers.
+#[derive(Clone, Debug, PartialEq)]
+pub struct VisualTerraceDatum {
+    /// Complete source-map/connection extent, independent of the camera crop.
+    pub origin: bevy::prelude::IVec2,
+    pub size: UVec2,
+    /// Calibrated NW/SW/SE/NE corner levels, in authored ledge-rise units.
+    /// Standing-water entries stay flat and never carry an inland slope.
+    pub levels: Arc<[[f32;4]]>,
+    /// Source-complete water-backed barrier cells, sorted by (y,x), not camera crop.
+    /// Empty preserves the legacy authored-underlay classification.
+    pub water_barriers: Arc<[bevy::prelude::IVec2]>,
+    /// Source-proven inland river level and its cells, including gaps in the
+    /// connected-map rectangle. Rendered border water continues this plane.
+    pub open_water: Option<VisualOpenWaterDatum>,
+}
+#[derive(Clone, Debug, PartialEq)]
+pub struct VisualOpenWaterDatum {
+    pub level: f32,
+    pub cells: Arc<[bevy::prelude::IVec2]>,
+}
+impl VisualTerraceDatum {
+    pub fn water_barrier_at(&self,point:bevy::prelude::IVec2)->bool {
+        self.water_barriers.binary_search_by_key(&(point.y,point.x),|p|(p.y,p.x)).is_ok()
+    }
+    pub fn open_water_at(&self,point:bevy::prelude::IVec2)->Option<f32> {
+        let river=self.open_water.as_ref()?;
+        let p=point-self.origin;
+        (p.x<0 || p.y<0 || p.x>=self.size.x as i32 || p.y>=self.size.y as i32
+            || river.cells.binary_search_by_key(&(point.y,point.x),|p|(p.y,p.x)).is_ok())
+            .then_some(river.level)
+    }
+    pub fn valid_open_water(&self)->bool {
+        self.open_water.as_ref().is_none_or(|river|river.level.is_finite() && river.level>=0.
+            && river.cells.len()as u64<=u64::from(self.size.x)*u64::from(self.size.y)
+            && river.cells.iter().all(|p| {
+                let x=i64::from(p.x)-i64::from(self.origin.x);
+                let y=i64::from(p.y)-i64::from(self.origin.y);
+                x>=0 && y>=0 && x<i64::from(self.size.x) && y<i64::from(self.size.y)
+            }) && river.cells.windows(2).all(|p|(p[0].y,p[0].x)<(p[1].y,p[1].x)))
+    }
+    pub fn valid_water_barriers(&self)->bool {
+        self.water_barriers.len() as u64<=u64::from(self.size.x)*u64::from(self.size.y)
+            && self.water_barriers.iter().all(|p| {
+                let x=i64::from(p.x)-i64::from(self.origin.x);
+                let y=i64::from(p.y)-i64::from(self.origin.y);
+                x>=0 && y>=0 && x<i64::from(self.size.x) && y<i64::from(self.size.y)
+            }) && self.water_barriers.windows(2).all(|p|(p[0].y,p[0].x)<(p[1].y,p[1].x))
+    }
+}
+
+/// Immutable-by-convention snapshot consumed by optional world renderers.
 ///
 /// An inactive frame is intentionally empty and valid. When `active` is true,
 /// producers must publish a real map texture and valid finite geometry before
@@ -251,6 +317,8 @@ pub struct VisualWorldFrame {
     /// Complete active-map/connection ledges, retained independently of the
     /// camera crop so terrace elevation cannot reset while walking.
     pub jump_ledges: Arc<[VisualJumpLedge]>,
+    /// Source-complete coastal land-domain calibration. Legacy frames omit it.
+    pub terrace_datum: Option<Arc<VisualTerraceDatum>>,
     /// Changes whenever the visible tile sources or their live art change.
     pub terrain_revision: u64,
     /// Map tile coordinate of the grid northwest corner; independent of camera interpolation.
@@ -288,6 +356,12 @@ impl VisualWorldFrame {
         }
         if self.map_texture == Handle::<Image>::default() {
             return Err(VisualWorldFrameError::MissingMapTexture);
+        }
+        if self.terrace_datum.as_ref().is_some_and(|d|d.size.x==0 || d.size.y==0
+            || u64::from(d.size.x)*u64::from(d.size.y)>2_000_000
+            || d.levels.len()as u64!=u64::from(d.size.x)*u64::from(d.size.y)
+            || d.levels.iter().flatten().any(|&v|!v.is_finite() || v<0.) || !d.valid_water_barriers() || !d.valid_open_water()) {
+            return Err(VisualWorldFrameError::InvalidTerraceDatum);
         }
         if !self.center.is_finite() {
             return Err(VisualWorldFrameError::NonFiniteCenter);
@@ -388,6 +462,7 @@ fn is_positive_finite(value: Vec2) -> bool {
 pub enum VisualWorldFrameError {
     EmptyMapId,
     InvalidSourceMapSize,
+    InvalidTerraceDatum,
     MissingMapTexture,
     NonFiniteCenter,
     InvalidViewportSize,
@@ -454,6 +529,7 @@ mod tests {
     fn active_frame() -> VisualWorldFrame {
         VisualWorldFrame {
             jump_ledges: Default::default(),
+            terrace_datum: None,
             boundary_warps: Default::default(),
             active: true,
             map_id: Arc::from("NewBarkTown"),
@@ -711,6 +787,38 @@ mod tests {
     }
 
     #[test]
+    fn coastal_terrace_field_rejects_invalid_corner_evidence() {
+        let mut frame=active_frame();
+        for (size,levels) in [(UVec2::ZERO,vec![]),(UVec2::new(2,1),vec![[0.;4]]),
+            (UVec2::ONE,vec![[f32::NAN;4]]),(UVec2::ONE,vec![[-1.;4]])] {
+            frame.terrace_datum=Some(Arc::new(VisualTerraceDatum {origin:bevy::prelude::IVec2::ZERO,size,levels:levels.into(),open_water:None,water_barriers:Arc::from([])}));
+            assert_eq!(frame.validate(),Err(VisualWorldFrameError::InvalidTerraceDatum));
+        }
+        frame.terrace_datum=Some(Arc::new(VisualTerraceDatum {
+            open_water:None,water_barriers:Arc::from([]),
+            origin:bevy::prelude::IVec2::new(-40,20),size:UVec2::ONE,levels:vec![[0.,1.,2.,1.]].into(),
+        }));
+        assert!(frame.validate().is_ok());
+        let mut valid=frame.terrace_datum.as_ref().unwrap().as_ref().clone();
+        valid.size=UVec2::splat(2);valid.levels=vec![[0.;4];4].into();
+        for cells in [vec![bevy::prelude::IVec2::ZERO],vec![valid.origin,valid.origin],
+            vec![valid.origin+bevy::prelude::IVec2::X,valid.origin]] {
+            let mut invalid=valid.clone();invalid.water_barriers=cells.into();
+            frame.terrace_datum=Some(Arc::new(invalid));
+            assert_eq!(frame.validate(),Err(VisualWorldFrameError::InvalidTerraceDatum));
+        }
+        let mut valid=valid;valid.water_barriers=vec![valid.origin].into();
+        assert!(valid.water_barrier_at(valid.origin));
+        for (level,cells) in [(f32::NAN,vec![valid.origin]),(-1.,vec![valid.origin]),
+            (1.,vec![valid.origin,valid.origin]),(1.,vec![valid.origin-bevy::prelude::IVec2::ONE])] {
+            let mut invalid=valid.clone();invalid.open_water=Some(VisualOpenWaterDatum {level,cells:cells.into()});
+            frame.terrace_datum=Some(Arc::new(invalid));
+            assert_eq!(frame.validate(),Err(VisualWorldFrameError::InvalidTerraceDatum));
+        }
+        frame.terrace_datum=Some(Arc::new(valid));assert!(frame.validate().is_ok());
+    }
+
+    #[test]
     fn battle_terrain_correspondence_rejects_missing_or_different_source_extent() {
         let mut frame = active_frame();
         frame.source_map_size_core_tiles = Some(UVec2::new(30, 18));
@@ -772,4 +880,16 @@ mod tests {
             ]
         );
     }
+    #[test]
+    fn open_air_rooftop_identity_does_not_reclassify_roof_houses_or_other_atlases() {
+        for (map,atlas) in [("CeladonMansionRoof","mansion"),("GoldenrodDeptStoreRoof","mart"),("TinTowerRoof","tower")] {
+            assert!(is_open_air_rooftop(map,atlas));
+            assert!(!is_open_air_rooftop(map,"house"));
+        }
+        assert!(!is_open_air_rooftop("CeladonMansionRoofHouse","mansion"));
+        assert!(!is_open_air_rooftop("CeladonMansion1F","mansion"));
+        assert!(!is_open_air_rooftop("GoldenrodDeptStore1F","mart"));
+        assert!(!is_open_air_rooftop("TinTower1F","tower"));
+    }
+
 }

@@ -12,14 +12,15 @@ import test_nidorina_sculpt as attachments
 ROOT=Path(os.environ.get('CRYSTAL_GOLEM_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class GolemTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'golem.mesh.json').read_bytes())
+ def setUpClass(cls):cls.model=__import__('stone_pair_glb').read_stone_pair(ROOT/'golem.glb', 'golem')
  def setUp(self):self.m=self.model;self.ps=self.m['primitives']
  find=attachments.NidorinaTests.find
  overlap=attachments.NidorinaTests.overlap
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'golem':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'golem':self.m})
  def test_recipe_parity_height_floor_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
+  from stone_pair_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for label,n in (('Shell /',1),('Shell plate /',32),('Head /',1),('Arm /',2),('Forearm /',2),('Hand claw /',6),('Foot claw /',6),('Heel claw /',2),('Fang /',2),('Lower tooth /',3)):self.assertEqual(sum(p['part'].startswith(label) for p in self.ps),n,label)
  def test_polygon_cell_edges_cover_a_complete_spherical_shell(self):
   cells=shell_cells();self.assertEqual(sum(len(c)==5 for c in cells),12);self.assertEqual(sum(len(c)==6 for c in cells),20)

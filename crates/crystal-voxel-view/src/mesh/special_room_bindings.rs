@@ -118,7 +118,7 @@ const OBJECTS: &[Object] = &[
         width: 2,
         height: 2,
         fingerprint: 0xf80d0da4ced615d5,
-        detail: Detail::LivePlaque,
+        detail: Detail::TowerStagingDoor,
         rise: 18.,
         depth: 4.,
     },

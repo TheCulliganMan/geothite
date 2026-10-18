@@ -38,6 +38,61 @@ tree rows are handled explicitly rather than guessed from repeated roof IDs.
 Trees vary deterministically within the source plot. Ground shading and detail
 are render-only; the original footing remains authoritative.
 
+Town and route pines have tall, irregular crowns inspired by Japanese red pine:
+high spreading, upright and swept forms, open lower trunks, sparse short lower
+limbs and warm upper bark. Their leaders rise above ordinary house roofs.
+Horizontal crown fitting preserves that height; streaming bounds include the
+complete treetop. Ancient forest and formal park trees retain their own forms.
+The revised pines were checked in native headless image-target captures against
+matching 2D at New Bark `(8, 8)` at noon and Cherrygrove `(26, 8)` at noon and
+22:00; every pair preserved game state. A wider New Bark capture checked the
+complete crowns above the houses.
+
+Pine plots and eligible Ilex canopy junctions carry individual CC0 Quaternius
+ferns, upright leafy stems, clover and occasional wildflowers. Curved leaf
+silhouettes and painted vein gradients use the terrain's existing solid palette.
+The imported purple clover and autumn foliage receive restrained moss/sage greens.
+See `crates/crystal-voxel-view/models/understory/README.md` for provenance and the
+Rust importer.
+
+Ordinary Kanto shrub drawings use three distinct CC0 Quaternius broadleaf models:
+a spreading crown, an asymmetric forked crown and an upright high crown. Source
+coordinates choose exactly three shared meshes deterministically; stable height,
+width, yaw and root offsets vary their planting. The Rust importer preserves
+modeled branches and replaces square leaf cards with closed, cupped oval leaves.
+Their roots stay inside the original blocked plots and use the same connected
+understory as Johto. See `crates/crystal-voxel-view/models/deciduous/README.md` for
+provenance and regeneration. Johto pines, Ilex ancient trees, formal park trees,
+fruit trees and Cut trees retain their existing models.
+
+Plant placement follows source cells across contiguous native tree plots.
+Neighbor occupancy includes partial contacts and concave corners; interior
+plot edges do not clip or restart the planting. Deterministic jitter, rotation,
+height, species and exposed-edge setbacks create an irregular outline while
+keeping leaves off authored walking surfaces. Individual plants share a bounded
+species/palette library and keep their proportions on rectangular source plots.
+Tree geometry, root positions and footing remain unchanged.
+
+Planting is checked with matching 2D captures at Ilex `(10, 12)` and New Bark
+`(5, 6)` / `(2, 6)` at noon, and Cherrygrove `(26, 8)` at 22:00, using headless image targets.
+All pairs preserved game state. A 64-frame left/right walk in the installed
+native client crossed five grid origins without additional terrain builds and
+preserved its final paired state.
+
+The deciduous/understory review compared matching production 3D/2D views on 21
+maps: New Bark, Routes 29/30/35, Violet, Azalea, Ilex, Goldenrod, Ecruteak,
+Cherrygrove, Pallet, Viridian, Pewter, Cerulean, Celadon, Fuchsia, Saffron,
+Routes 1/2/15 and National Park. Cherrygrove was reviewed at 22:00; the others
+at noon. Viridian was also checked at 22:00. Every pair preserved game state.
+The review caught and fixed streamed
+Kanto trees using Johto terrace levels: trees and plants now use the same
+Kanto shelf as the ground, including retained positive terrace data without
+local jump edges. Dense Kanto crowns use coverage reveal to keep the player
+visible through overlapping leaves. The installed native build passed a
+64-frame Route 2 left/right walk across four grid origins with no additional
+terrain builds and preserved its final paired state. All 46 targeted tree, plant,
+terrace, cache and terrain-worker checks passed with the external pack.
+
 New Bark's four warps stay at lab (6,3), player home (13,5), neighbor (3,11),
 and Elm's home (11,13). Cherrygrove's Center/Mart doors stay at (29,3)/(23,3).
 Violet's Center/Gym doors stay at (31,25)/(18,17).

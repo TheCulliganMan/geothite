@@ -67,5 +67,6 @@ def sculpture():
  return {'name':'steelix','version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'steelix.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ from steelix_glb import export_steelix
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'steelix.glb').write_bytes(export_steelix())
 if __name__=='__main__':main()

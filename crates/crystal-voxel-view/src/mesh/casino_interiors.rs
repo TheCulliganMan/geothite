@@ -325,7 +325,7 @@ mod casino_interior_tests {
         }
         let mut wall = SurfaceMeshData::default();
         model(ModelKind::ArcadeWall).append_fitted(
-            &mut wall, [16.0, 32.0, 5.0, 8.0], 0.0, 28.0);
+            &mut wall, [16.0, 32.0, 5.0, 8.0], 0.0, 32.0);
         assert!(mesh.solid.positions.windows(wall.positions.len())
             .any(|part| part == wall.positions.as_slice()));
         assert!(mesh.solid.positions.iter().any(|p| p[2] > 8.19));
@@ -354,11 +354,13 @@ mod casino_interior_tests {
             }
             assert!(mesh.solid.positions.iter().all(|p|
                 p[2] >= 5.0 - 0.001 && p[2] <= 8.0 + 0.001
-                    && p[1] >= 0.0 && p[1] <= 28.0 + 0.001));
+                    && p[1] >= 0.0 && p[1] <= 32.0 + 0.001));
+            assert_eq!(mesh.solid.positions.iter().map(|p|p[1]).fold(0.,f32::max),32.,
+                "one ceiling datum must remain above29px rear appliances");
             let units = if block == 0x28 { 1 } else { 2 };
             let mut unit = SurfaceMeshData::default();
             model(ModelKind::ArcadeWall).append_fitted(
-                &mut unit, [0.0, 16.0, 5.0, 8.0], 0.0, 28.0);
+                &mut unit, [0.0, 16.0, 5.0, 8.0], 0.0, 32.0);
             assert_eq!(mesh.solid.positions.len(), unit.positions.len() * units);
             assert_eq!(claimed.iter().filter(|&&v| v).count(),
                 walls.iter().map(|p| p.width * p.height).sum::<usize>());

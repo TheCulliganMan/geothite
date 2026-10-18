@@ -324,10 +324,10 @@
     {
       "file": "connected-johto.blend",
       "encoding": "gzip-blend",
-      "bytes": 1218950,
-      "sha256": "cecc87845f2a299c49b3e8e5925da881eb09e1e9f5695371c0a0ba802ced3e2c",
-      "uncompressed_bytes": 17829124,
-      "uncompressed_sha256": "de6c212f3b453fd77e768b6ac2151d1ca873f32e00d6589bfa3975b1f6a3578d"
+      "bytes": 1407228,
+      "sha256": "5d4311455f33e9921fb44292fb10f8935dd66416bf2e69e7f0ecb7bf7fea20f7",
+      "uncompressed_bytes": 20996505,
+      "uncompressed_sha256": "cd2e98689750abf676319e0b89b3f22c47f3b2a5620ce1cb012b05e9d238907d"
     },
     {
       "file": "department-store.blend",
@@ -412,10 +412,10 @@
     {
       "file": "kanto-capped-posts.blend",
       "encoding": "gzip-blend",
-      "bytes": 102860,
-      "sha256": "c6120f07880b63e4cbd4995519a491da1e0442c32a176c79750a8afde2da4001",
-      "uncompressed_bytes": 682228,
-      "uncompressed_sha256": "84ffc137634a53357f5bf2d1316f49178d4fa6f8f02e0effeacedfbfb3c4dcc6"
+      "bytes": 112630,
+      "sha256": "b4d656a597be1ab18f62b1675214244887a3ef0dafd499c8c0051cbb89886b76",
+      "uncompressed_bytes": 801256,
+      "uncompressed_sha256": "69fa8630a7aef29388dd525d7305d72b6718688948eed4ab72ed4399a67d8d6d"
     },
     {
       "file": "lighthouse-chamber.blend",

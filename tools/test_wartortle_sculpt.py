@@ -12,7 +12,9 @@ ROOT=Path(os.environ.get('CRYSTAL_WARTORTLE_TEST_MODELS',Path(__file__).resolve(
 
 class WartortleTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'wartortle.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):
+  from turtle_glb import read_turtle
+  cls.m=read_turtle(ROOT/'wartortle.glb','wartortle');cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def overlap(self,a,b):
   xl=max(min(a['positions'][::3]),min(b['positions'][::3]));xh=min(max(a['positions'][::3]),max(b['positions'][::3]));yl=max(min(a['positions'][1::3]),min(b['positions'][1::3]));yh=min(max(a['positions'][1::3]),max(b['positions'][1::3]))
@@ -25,9 +27,9 @@ class WartortleTests(unittest.TestCase):
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'wartortle':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'wartortle':self.m})
  def test_recipe_parity_height_grounding_budget_and_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000)
+  from turtle_glb import geometry_digest;self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
-  for prefix,n in (('Ear /',2),('Ear lobe /',2),('Ear inset /',2),('Tail /',1),('Tail fold /',4),('Arm /',2),('Hand /',2),('Hand claw /',6),('Haunch /',2),('Leg /',2),('Foot /',2),('Toe /',6),('Fang /',2),('Shell seam /',11)):
+  for prefix,n in (('Ear /',2),('Ear lobe /',2),('Ear inset /',2),('Tail /',1),('Tail fold /',4),('Arm /',2),('Hand /',0),('Hand claw /',6),('Haunch /',2),('Leg /',2),('Foot /',2),('Toe /',6),('Fang /',2),('Shell seam /',11)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)
  def test_shell_belly_head_muzzle_and_tail_have_actual_volume_roots(self):
   body=self.find('Body /');shell=self.find('Shell /');self.assertTrue(self.overlap(body,shell));self.assertTrue(self.overlap(self.find('Belly /'),body));self.assertTrue(self.overlap(self.find('Shell rim /'),shell));self.assertTrue(self.overlap(self.find('Head /'),body));self.assertTrue(self.overlap(self.find('Muzzle /'),self.find('Head /')));self.assertTrue(self.overlap(self.find('Tail /'),shell))
@@ -42,10 +44,10 @@ class WartortleTests(unittest.TestCase):
  def test_all_ears_lobes_and_fangs_are_rooted(self):
   for s in (-1,1):
    ear=self.find('Ear /',s);self.assertTrue(self.overlap(ear,self.find('Head /')));self.assertTrue(self.overlap(self.find('Ear lobe /',s),ear));self.assertTrue(self.overlap(self.find('Fang /',s),self.find('Muzzle /')))
- def test_arms_hands_and_all_six_claws_have_actual_roots(self):
+ def test_continuous_forelimbs_and_all_six_claws_have_actual_roots(self):
   for s in (-1,1):
-   arm=self.find('Arm /',s);hand=self.find('Hand /',s);self.assertTrue(self.overlap(arm,self.find('Body /')));self.assertTrue(self.overlap(hand,arm))
-   for j in range(3):self.assertTrue(self.overlap(hand,self.find('Hand claw /',f'{s} {j}')))
+   arm=self.find('Arm /',s);self.assertTrue(self.overlap(arm,self.find('Body /')))
+   for j in range(3):self.assertTrue(self.overlap(arm,self.find('Hand claw /',f'{s} {j}')))
  def test_haunches_ankles_feet_and_toes_are_rooted_and_grounded(self):
   for s in (-1,1):
    thigh=self.find('Haunch /',s);leg=self.find('Leg /',s);foot=self.find('Foot /',s);self.assertTrue(self.overlap(thigh,self.find('Body /')));self.assertTrue(self.overlap(leg,thigh));self.assertTrue(self.overlap(foot,leg));self.assertLess(min(foot['positions'][1::3]),.002)
@@ -53,6 +55,14 @@ class WartortleTests(unittest.TestCase):
  def test_cloud_tail_and_feather_ears_do_not_cross_themselves(self):
   for p in self.ps:
    if p['part'].startswith(('Tail /','Tail fold /','Ear /','Ear lobe /','Arm /','Leg /')):self.assertIsNone(crossed_faces(p),p['part'])
+ def test_cloud_tail_has_billowing_volume_between_both_curled_faces(self):
+  tail=self.find('Tail /');thickness=[]
+  xmin,xmax=min(tail['positions'][::3]),max(tail['positions'][::3]);ymin,ymax=min(tail['positions'][1::3]),max(tail['positions'][1::3])
+  for i in range(1,25):
+   for j in range(1,25):
+    hits=ray_intersections(tail,xmin+(xmax-xmin)*i/25,ymin+(ymax-ymin)*j/25)
+    if len(hits)>=2:thickness.append(max(hits)-min(hits))
+  self.assertGreater(len(thickness),100);self.assertGreater(max(thickness),.15);self.assertGreater(max(thickness)-min(thickness),.05)
  def pairs(self):
   for p in self.ps:
    n=p['part'];s=n.split()[-1];parent=None

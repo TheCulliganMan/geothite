@@ -4,7 +4,7 @@ import math
 from pathlib import Path
 import unittest
 import oddish_glb as author
-from sculpt_test_support import assert_closed_models,assert_model_shading
+from sculpt_test_support import assert_closed_models,assert_model_shading,crossed_faces
 from skin_glb_test_support import IDENTITY
 from test_gengar_glb import Model,winding_alignment
 ASSET=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/oddish.glb'
@@ -15,13 +15,59 @@ class OddishTests(unittest.TestCase):
     def test_canonical_single_source_and_bounded_schema(self):
         self.assertEqual(self.blob,author.export_oddish())
         self.assertEqual(len(self.m.parts),19)
-        self.assertEqual(sum(len(v) for v in self.m.vertices),8865)
+        self.assertEqual(sum(len(v) for v in self.m.vertices),8845)
         self.assertEqual(sum(len(v)//3 for v in self.m.indices),14620)
         self.assertLess(len(self.blob),1024*1024)
         self.assertLessEqual(len(self.m.doc['accessors']),256)
         self.assertFalse(ASSET.with_suffix('.mesh.json').exists())
     def test_closed_outward_solids_and_smooth_normals(self):
         m=self.m.neutral_model();assert_closed_models(self,{'oddish':m});assert_model_shading(self,{'oddish':m})
+    def test_leaf_caps_do_not_cross_at_rest_or_through_animation(self):
+        m=self.m
+        for clip in m.clips:
+            for t in (0.,.18,.34,.52,.76,1.):
+                mats=m.matrices(clip,t)
+                for i,name in enumerate(m.names):
+                    if name.startswith('Leaf '):
+                        part=dict(positions=[v for point in m.posed(i,mats) for v in point],indices=m.indices[i])
+                        self.assertIsNone(crossed_faces(part),(clip,t,name))
+    def test_legacy_concave_fan_negative_control_crosses_leaf_walls(self):
+        from pitcher_sculpt import leaf
+        from oddish_sculpt import LEAVES,GREEN
+        for j,(start,end,width) in enumerate(LEAVES):
+            blade,_=leaf('legacy',start,end,width,GREEN,bend=.035 if j%2==0 else -.012)
+            self.assertIsNotNone(crossed_faces(blade),j)
+    def test_cap_fix_preserves_boundary_positions_and_other_anatomy(self):
+        from unittest.mock import patch
+        import oddish_sculpt
+        from pitcher_sculpt import leaf
+        def legacy(*args,**kwargs):
+            kwargs['solid_caps']=False
+            return leaf(*args,**kwargs)
+        with patch.object(oddish_sculpt,'leaf',legacy):
+            old=oddish_sculpt.sculpture()
+            prior=Model(author.export_oddish())
+        current=self.m.neutral_model()
+        for before,after in zip(old['primitives'],current['primitives']):
+            def points(p):
+                import struct
+                values=struct.unpack('<'+'f'*len(p['positions']),struct.pack('<'+'f'*len(p['positions']),*p['positions']))
+                return set(zip(values[::3],values[1::3],values[2::3]))
+            self.assertEqual(points(before),points(after),before['part'])
+            if not before['part'].endswith('cupped blade'):
+                self.assertEqual(author.geometry_digest({'primitives':[before]}),author.geometry_digest({'primitives':[after]}))
+        self.assertEqual(prior.doc['nodes'],self.m.doc['nodes'])
+        self.assertEqual(prior.doc['materials'],self.m.doc['materials'])
+        for i in range(len(self.m.parts)):
+            def bindings(model):
+                return {(tuple(p),tuple(js),tuple(ws)) for p,js,ws in zip(model.vertices[i],model.ids[i],model.weights[i])}
+            self.assertEqual(bindings(prior),bindings(self.m),self.m.names[i])
+        from skin_glb_test_support import values
+        self.assertEqual(prior.doc['animations'],self.m.doc['animations'])
+        for animation in self.m.doc['animations']:
+            for sampler in animation['samplers']:
+                for field in ('input','output'):
+                    self.assertEqual(values(prior.doc,prior.binary,sampler[field]),values(self.m.doc,self.m.binary,sampler[field]))
     def test_anatomy_and_physical_height(self):
         for prefix,count in [('Foot /',2),('Eye /',2),('Eye glint /',2),('Mouth /',1),('Tongue /',1),('Leaf ',10)]:
             self.assertEqual(sum(n.startswith(prefix) for n in self.m.names),count,prefix)

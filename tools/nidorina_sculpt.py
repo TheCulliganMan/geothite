@@ -5,13 +5,21 @@ from pathlib import Path
 from sculpt_geometry import ellipsoid,loft,curved_profiles,crease_normals
 from bovine_sculpt import oval,curved_tube,reverse_front
 from lugia_sculpt import paddle
-from raptor_bird_sculpt import sheet,paint
+from raptor_bird_sculpt import sheet as legacy_sheet,paint as legacy_paint
+from sculpt_geometry import fitted_triangle_contour
+from cubone_sculpt import skin_shading
 from goldfish_sculpt import zy
 from skin_glb import COORDINATES
 from wing_insect_sculpt import contour
 HEIGHT=1.12
 BLUE=(.53,.70,.77);PALE=(.69,.81,.85);NAVY=(.23,.32,.53)
 WHITE=(.98,.98,.94);INK=(.065,.08,.12);ORANGE=(.76,.30,.18)
+
+def sheet(name,color,xy,depth,th=.018,sub=2):
+ # The ear depth is planar; retain its outline without recursive interior subdivision.
+ return legacy_sheet(name,color,xy,depth,th,0)
+def paint(name,color,xy,parent,th=.006,sub=3):
+ return skin_shading(crease_normals(fitted_triangle_contour(name,color,xy,parent,th,precision=7),35.),parent)
 
 def ears(p):
  for s in (-1,1):
@@ -46,7 +54,7 @@ def limbs(p,body):
    side_mark(p,thigh,s,oval(z,y,rz,ry,24),f'Haunch spot / fitted navy poison marking {s} {j}')
   side_mark(p,body,s,oval(-.125,.554,.023,.032,24),'Flank spot / fitted navy poison marking '+str(s))
 
-def sculpture():
+def sculpture(normalize=True):
  body=crease_normals(loft('Body / continuous squat blue poison-pin pear',BLUE,curved_profiles(((.119,.115,.135,-.077),(.235,.238,.216,-.083),(.414,.284,.230,-.053),(.568,.256,.202,-.029),(.678,.184,.144,.011),(.745,.075,.073,.042)),4),44),45)
  head=crease_normals(loft('Head / broad hornless blue angular cranium',BLUE,curved_profiles(((.637,.075,.079,.121),(.726,.186,.142,.157),(.843,.235,.180,.100),(.964,.197,.152,.061),(1.029,.103,.083,.049),(1.041,.025,.025,.049)),4),48),45)
  muzzle=ellipsoid('Muzzle / low broad hornless blue snout',BLUE,(0,.746,.256),(.176,.075,.123),44,26)
@@ -67,6 +75,7 @@ def sculpture():
  for j,(y,z,tipy,tipz,r) in enumerate(((.629,-.135,.835,-.259,.091),(.555,-.250,.740,-.376,.079),(.443,-.283,.590,-.432,.066))):
   p.append(curved_tube('Back spine / rooted swept blue poison barb '+str(j),BLUE,[(0,y,z),(0,y+.067,z-.049),(0,tipy,tipz)],[r,r*.65,.002],28))
  p.append(curved_tube('Tail / short rooted blue rear point',BLUE,[(0,.291,-.205),(0,.311,-.390),(.02,.421,-.531)],[.100,.081,.002],28))
+ if not normalize:return {'name':'nidorina','version':1,'coordinate_system':COORDINATES,'primitives':p}
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
  for q in p:
   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]

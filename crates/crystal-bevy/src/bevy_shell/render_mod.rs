@@ -449,7 +449,7 @@ fn publish_visual_world_frame(
     }
 
     #[cfg(feature="voxel-view")]
-    if crystal_voxel_view::native_clinic_healing_map(map_id) {
+    if map_id == "HallOfFame" || crystal_voxel_view::native_clinic_healing_map(map_id) {
         for (marker,sprite,transform) in &healing {
             let source=match marker.0 {
                 crystal_render_api::VisualEffectId::HealMachineBall(_)=>"effect_heal_ball",
@@ -473,6 +473,7 @@ fn publish_visual_world_frame(
         && published.map_id.as_ref() == map_id
         && published.source_map_size_core_tiles == rendered.source_map_size_core_tiles
         && published.jump_ledges == rendered.visual_jump_ledges
+        && published.terrace_datum == rendered.visual_terrace_datum
         && published.terrain_revision == terrain_revision
         && published.map_texture == published_map_texture
         && published.viewport_size == Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)
@@ -523,6 +524,7 @@ fn publish_visual_world_frame(
                 .collect()
         },
         jump_ledges: rendered.visual_jump_ledges.clone(),
+        terrace_datum: rendered.visual_terrace_datum.clone(),
         terrain_revision,
         grid_origin: {
             let (x, y) = rendered

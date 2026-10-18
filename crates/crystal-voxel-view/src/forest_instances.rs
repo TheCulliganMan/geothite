@@ -19,7 +19,7 @@ pub fn configure_lazy_tree_entities_diagnostics(eager: bool) {
 }
 
 const VARIANTS: usize = 12; // three branch architectures, four height/phase recipes
-const CAPACITY: usize = 128; // all 120 family/density/variant combinations fit
+const CAPACITY: usize = 128; // 120 evergreen/ancient combinations plus three deciduous meshes fit
 const PROTOTYPE_TILE: f32 = 16.;
 const PROTOTYPE_BOUNDS: [f32; 4] = [-16., 16., -16., 16.];
 struct PrototypeGeometry {
@@ -45,15 +45,11 @@ impl Key {
     fn new(family: GroveFamily, coordinates: [i32; 2], neighbors: [bool; 4]) -> Self {
         let (shape, height, _) = foliage::instance_variation(coordinates);
         let bucket = (((height - 0.9) / 0.7 * 4.).floor() as usize).min(3);
-        let density = neighbors.iter().filter(|&&v| v).count() as u8;
+        let density = if family==GroveFamily::KantoDeciduous {0} else {neighbors.iter().filter(|&&v| v).count() as u8};
         Self {
-            family: if family == GroveFamily::JohtoPine {
-                0
-            } else {
-                1
-            },
+            family: match family {GroveFamily::JohtoPine=>0,GroveFamily::AncientForest=>1,GroveFamily::KantoDeciduous=>2},
             density,
-            variant: (shape * 4 + bucket) as u8,
+            variant: (shape * 4 + if family==GroveFamily::KantoDeciduous {0} else {bucket}) as u8,
         }
     }
 }
@@ -116,7 +112,10 @@ impl Library {
             );
             let trunk_bounds = Some({
                 let count = if family == GroveFamily::JohtoPine { 13 } else { 17 };
-                mesh.solid.positions[..count].iter().fold(
+                let roots = if family==GroveFamily::KantoDeciduous {
+                    mesh.solid.positions.iter().filter(|p|p[1]<=PROTOTYPE_TILE*0.18).copied().collect::<Vec<_>>()
+                } else {mesh.solid.positions[..count].to_vec()};
+                roots.iter().fold(
                     (Vec3::splat(f32::INFINITY),Vec3::splat(f32::NEG_INFINITY)),
                     |(low,high), &p| (low.min(Vec3::from_array(p)),high.max(Vec3::from_array(p))),
                 )
@@ -128,43 +127,35 @@ impl Library {
         .clone()
     }
 
-    fn prepare_ground(&self, key: Key, bounds: [f32;4], base: f32, tile: f32,
-        coordinates: [i32;2]) -> Vec<PreparedGroup> {
+    fn ground_prototype(&self, variant: usize) -> Arc<Vec<PreparedGroup>> {
         let cell = {
             let mut entries = self.ground.lock().unwrap();
-            if let Some((_,cell)) = entries.iter().find(|(variant,_)| *variant == key.variant) {
+            if let Some((_,cell)) = entries.iter().find(|(v,_)| *v == variant as u8) {
                 cell.clone()
             } else {
-                if entries.len() == VARIANTS { entries.pop_front(); }
                 let cell = Arc::new(OnceLock::new());
-                entries.push_back((key.variant,cell.clone()));
+                entries.push_back((variant as u8,cell.clone()));
                 cell
             }
         };
-        let prototype = cell.get_or_init(|| {
-            let mut mesh = TerrainMeshData::default();
-            crate::understory::append(&mut mesh.solid,PROTOTYPE_BOUNDS,0.,PROTOTYPE_TILE,
-                seeds()[key.variant as usize]);
-            mesh.solid.cutaway_ranges.push(0..mesh.solid.positions.len());
-            Arc::new(crate::shared_groves::prepare_surface(mesh.solid))
-        });
-        Self::place_ground(prototype, bounds, base, tile, coordinates)
+        cell.get_or_init(|| {
+            let mut mesh = crate::understory::prototype(variant);
+            mesh.cutaway_ranges.push(0..mesh.positions.len());
+            Arc::new(crate::shared_groves::prepare_surface(mesh))
+        }).clone()
     }
 
-    fn place_ground(prototype: &Arc<Vec<PreparedGroup>>, bounds: [f32;4], base: f32,
-        tile: f32, coordinates: [i32;2]) -> Vec<PreparedGroup> {
-        let (_,_,turn) = foliage::instance_variation([coordinates[1] ^ 0x317b, coordinates[0]]);
-        // A half turn preserves even rectangular source plots. Ground cover
-        // never inherits the canopy's lean, height, shift or crown fitting.
-        let turn = if turn < std::f32::consts::PI { 0. } else { std::f32::consts::PI };
+    fn prepare_ground(&self, plot: crate::understory::Plot, base: f32,
+        coordinates: [i32;2]) -> Vec<PreparedGroup> {
+        crate::understory::plants(plot,base,coordinates).into_iter().flat_map(|plant| {
+            Self::place_ground(&self.ground_prototype(plant.variant),plant)
+        }).collect()
+    }
+
+    fn place_ground(prototype: &Arc<Vec<PreparedGroup>>, plant: crate::understory::Plant)
+        -> Vec<PreparedGroup> {
         let mut groups = prototype.as_ref().clone();
-        occluder_fade::place_groups(&mut groups,Transform {
-            translation: Vec3::new((bounds[0]+bounds[1])*0.5,base,(bounds[2]+bounds[3])*0.5),
-            rotation: Quat::from_rotation_y(turn),
-            scale: Vec3::new((bounds[1]-bounds[0])/32.,
-                (tile/PROTOTYPE_TILE).min((bounds[1]-bounds[0]).min(bounds[3]-bounds[2])/32.),
-                (bounds[3]-bounds[2])/32.),
-        });
+        occluder_fade::place_groups(&mut groups,plant.transform);
         groups
     }
 
@@ -183,12 +174,12 @@ impl Library {
 
     pub(crate) fn prepare_with_ground(&self, bounds: [f32;4], base: f32, tile: f32,
         coordinates: [i32;2], neighbors: [bool;4], family: GroveFamily,
-        ground_bounds: Option<[f32;4]>) -> Vec<PreparedGroup> {
+        ground_bounds: Option<crate::understory::Plot>) -> Vec<PreparedGroup> {
         let key = Key::new(family, coordinates, neighbors);
         let source = self.prototype(key, family);
         let mut groups = Self::place_canopy(key, &source, bounds, base, tile, coordinates);
         if let Some(ground_bounds) = ground_bounds {
-            groups.extend(self.prepare_ground(key,ground_bounds,base,tile,coordinates));
+            groups.extend(self.prepare_ground(ground_bounds,base,coordinates));
         }
         Self::finish_instances(&mut groups);
         groups
@@ -207,21 +198,26 @@ impl Library {
     #[cfg(not(target_arch = "wasm32"))]
     pub(crate) fn prepare_if_cached_with_ground(&self, bounds: [f32;4], base: f32, tile: f32,
         coordinates: [i32;2], neighbors: [bool;4], family: GroveFamily,
-        ground_bounds: Option<[f32;4]>) -> Option<Vec<PreparedGroup>> {
+        ground_bounds: Option<crate::understory::Plot>) -> Option<Vec<PreparedGroup>> {
         let key = Key::new(family, coordinates, neighbors);
         let source = {
             let entries = self.entries.lock().unwrap();
             entries.iter().find(|(candidate,_)| *candidate == key)?.1.get()?.clone()
         };
-        let ground = if ground_bounds.is_some() {
+        let plants = ground_bounds.map(|plot|crate::understory::plants(plot,base,coordinates))
+            .unwrap_or_default();
+        let ground = {
             let entries = self.ground.lock().unwrap();
-            Some(entries.iter().find(|(variant,_)| *variant == key.variant)?.1.get()?.clone())
-        } else { None };
+            plants.into_iter().map(|plant| {
+                let source = entries.iter().find(|(variant,_)| *variant == plant.variant as u8)?.1.get()?.clone();
+                Some((source,plant))
+            }).collect::<Option<Vec<_>>>()?
+        };
         let _trace = crate::loading_trace::span("tree.prepare_cached_instance", ||
             serde_json::json!({"coordinates":coordinates,"variant":key.variant,"density":key.density}));
         let mut groups = Self::place_canopy(key, &source, bounds, base, tile, coordinates);
-        if let Some(ground) = ground {
-            groups.extend(Self::place_ground(&ground,ground_bounds.unwrap(),base,tile,coordinates));
+        for (source,plant) in ground {
+            groups.extend(Self::place_ground(&source,plant));
         }
         Self::finish_instances(&mut groups);
         Some(groups)
@@ -232,7 +228,7 @@ impl Library {
         let (_, _, turn) = foliage::instance_variation(coordinates);
         let (_, _, prototype_turn) =
             foliage::instance_variation(seeds()[key.variant as usize]);
-        let family = if key.family == 0 { GroveFamily::JohtoPine } else { GroveFamily::AncientForest };
+        let family = match key.family {0=>GroveFamily::JohtoPine,1=>GroveFamily::AncientForest,_=>GroveFamily::KantoDeciduous};
         let vertical_ratio = foliage::instance_vertical_ratio(family,coordinates,
             seeds()[key.variant as usize], std::array::from_fn(|i| i < key.density as usize));
         let rotation = Quat::from_rotation_y(turn - prototype_turn);
@@ -242,10 +238,11 @@ impl Library {
         let prototype_offset = foliage::grove_trunk_offset(seeds()[key.variant as usize], 32.);
         let prototype_root = Vec3::new(prototype_offset.x, 0., prototype_offset.y);
         let offset = foliage::grove_trunk_offset(coordinates, spacing);
+        let width_ratio=foliage::instance_width_ratio(family,coordinates,seeds()[key.variant as usize]);
         let scale = Vec3::new(
-            (bounds[1] - bounds[0]) / 32.,
+            (bounds[1] - bounds[0]) / 32. * width_ratio,
             tile / PROTOTYPE_TILE * vertical_ratio,
-            (bounds[3] - bounds[2]) / 32.,
+            (bounds[3] - bounds[2]) / 32. * width_ratio,
         );
         let mut transform = Transform {
             translation: Vec3::new(
@@ -303,7 +300,9 @@ impl Library {
             - rotation * (transform.scale * prototype_root);
         let _trace = crate::loading_trace::span("tree.instance", || {
             serde_json::json!({
-        "coordinates":coordinates,"variant":key.variant,"density":key.density})
+        "coordinates":coordinates,"variant":key.variant,"density":key.density,
+        "family":key.family,"base":base,"tile":tile,"bounds":bounds,
+        "translation":transform.translation.to_array(),"scale":transform.scale.to_array()})
         });
         let mut groups = source.groups.clone();
         occluder_fade::place_groups(&mut groups, transform);
@@ -321,17 +320,42 @@ impl Library {
 mod tests {
     use super::*;
     #[test]
-    fn adding_understory_preserves_every_ancient_tree_triangle_and_placement() {
+    fn deciduous_placements_choose_exactly_three_shared_authored_models() {
+        let library=Library::default();let mut keys=Vec::new();
+        for z in -12..12 {for x in -12..12 {
+            for neighbors in [[false;4],[true;4],[true,false,true,false]] {
+                let key=Key::new(GroveFamily::KantoDeciduous,[x,z],neighbors);
+                if !keys.contains(&key) {keys.push(key);}
+                assert_eq!(key,Key::new(GroveFamily::KantoDeciduous,[x,z],[false;4]));
+            }
+        }}
+        assert_eq!(keys.len(),3,"position and neighbors must not create additional deciduous meshes");
+        let mut signatures=Vec::new();
+        for key in keys {
+            let source=library.prototype(key,GroveFamily::KantoDeciduous);
+            let same=library.prototype(key,GroveFamily::KantoDeciduous);
+            assert!(Arc::ptr_eq(&source,&same));
+            signatures.push(occluder_fade::geometry_signature(
+                &crate::mesh::SurfaceMeshData::default(),source.groups.clone()));
+        }
+        assert!(signatures[0]!=signatures[1] && signatures[1]!=signatures[2] && signatures[0]!=signatures[2]);
+        assert_eq!(library.entries.lock().unwrap().len(),3);
+    }
+
+    #[test]
+    fn adding_understory_preserves_every_tree_triangle_and_placement() {
         let library = Library::default();
+        for family in [GroveFamily::JohtoPine,GroveFamily::AncientForest,GroveFamily::KantoDeciduous] {
         let tree = library.prepare_with_ground([-16.,16.,-16.,16.],3.,16.,[4,8],
-            [true;4],GroveFamily::AncientForest,None);
+            [true;4],family,None);
         let augmented = library.prepare_with_ground([-16.,16.,-16.,16.],3.,16.,[4,8],
-            [true;4],GroveFamily::AncientForest,Some([-32.,32.,-32.,32.]));
+            [true;4],family,Some(crate::understory::Plot::isolated([-32.,32.,-32.,32.])));
         assert!(augmented.len() > tree.len());
         let signature = |groups| occluder_fade::geometry_signature(
             &crate::mesh::SurfaceMeshData::default(),groups);
         assert_eq!(signature(tree.clone()),signature(augmented[..tree.len()].to_vec()),
             "adding ground flora must not alter any existing tree geometry or transform");
+        }
     }
     #[cfg(not(target_arch = "wasm32"))]
     #[test]
@@ -347,13 +371,16 @@ mod tests {
         let key = Key::new(GroveFamily::JohtoPine,coordinates,neighbors);
         let source = library.prototype(key,GroveFamily::JohtoPine);
         assert!(library.prepare_if_cached(bounds,3.,16.,coordinates,neighbors,
-            GroveFamily::JohtoPine).is_none(), "missing ground cover must remain asynchronous");
+            GroveFamily::JohtoPine).is_some(), "a canopy-only request does not need ground cover");
+        assert!(library.prepare_if_cached_with_ground(bounds,3.,16.,coordinates,neighbors,
+            GroveFamily::JohtoPine,Some(crate::understory::Plot::isolated(bounds))).is_none(), "missing requested ground cover must remain asynchronous");
         assert!(library.ground.lock().unwrap().is_empty());
-        let expected = library.prepare(bounds,3.,16.,coordinates,neighbors,GroveFamily::JohtoPine);
+        let expected = library.prepare_with_ground(bounds,3.,16.,coordinates,neighbors,
+            GroveFamily::JohtoPine,Some(crate::understory::Plot::isolated(bounds)));
         let count = library.entries.lock().unwrap().len();
         let ground_count = library.ground.lock().unwrap().len();
-        let cached = library.prepare_if_cached(bounds,3.,16.,coordinates,neighbors,
-            GroveFamily::JohtoPine).unwrap();
+        let cached = library.prepare_if_cached_with_ground(bounds,3.,16.,coordinates,neighbors,
+            GroveFamily::JohtoPine,Some(crate::understory::Plot::isolated(bounds))).unwrap();
         let signature = |groups| occluder_fade::geometry_signature(
             &crate::mesh::SurfaceMeshData::default(),groups);
         assert_eq!(signature(cached),signature(expected));
@@ -416,7 +443,7 @@ mod tests {
         assert!(keys.len() <= CAPACITY);
     }
     #[test]
-    fn many_tree_and_ground_placements_share_two_meshes_and_the_material() {
+    fn many_tree_and_ground_placements_share_a_bounded_plant_library_and_the_material() {
         let library = Library::default();
         let mut world = World::new();
         let root = world
@@ -432,12 +459,15 @@ mod tests {
             .take(64).collect::<Vec<_>>();
         assert_eq!(coordinates.len(), 64);
         let mut expected_roots = Vec::new();
+        let mut expected_draws = 64;
         {
             let mut commands = Commands::new(&mut queue, &world);
             for (i, &coordinates) in coordinates.iter().enumerate() {
                 let x = i as f32 * 40.;
                 let offset = foliage::grove_trunk_offset(coordinates, 32.);
                 expected_roots.push(Vec3::new(x + 16. + offset.x, 3., 16. + offset.y));
+                expected_draws += crate::understory::plants(
+                    crate::understory::Plot::isolated([x,x+32.,0.,32.]),3.,coordinates).len();
                 let groups = library.prepare_with_ground(
                     [x, x + 32., 0., 32.],
                     3.,
@@ -445,7 +475,7 @@ mod tests {
                     coordinates,
                     [true,false,true,false],
                     GroveFamily::JohtoPine,
-                    Some([x, x + 32., 0., 32.]),
+                    Some(crate::understory::Plot::isolated([x, x + 32., 0., 32.])),
                 );
                 occluder_fade::spawn_groups(
                     &mut commands,
@@ -463,7 +493,12 @@ mod tests {
         let prototype_root = Vec3::new(offset.x, 0., offset.y);
         let mut parents = world.query::<(&Mesh3d,&ChildOf)>();
         for (mesh,parent) in parents.iter(&world) {
-            if meshes.get(&mesh.0).unwrap().count_vertices() <= crate::understory::MAX_VERTICES { continue; }
+            let bevy::mesh::VertexAttributeValues::Float32x3(positions) =
+                meshes.get(&mesh.0).unwrap().attribute(Mesh::ATTRIBUTE_POSITION).unwrap()
+                else {panic!("expected plant/tree positions")};
+            let bottom=positions.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min);
+            let top=positions.iter().map(|p|p[1]).fold(f32::NEG_INFINITY,f32::max);
+            if top-bottom < PROTOTYPE_TILE {continue;}
             // The prototype root is in group coordinates. Mesh children carry
             // only leaf-local centering; placement belongs to their group.
             let group = world.get::<Transform>(parent.parent()).unwrap();
@@ -477,19 +512,39 @@ mod tests {
         assert!(expected_roots.is_empty(), "every placement must own exactly one opaque draw");
         let mut query = world.query::<(&Mesh3d, &MeshMaterial3d<crate::VoxelMaterial>)>();
         let draws = query.iter(&world).collect::<Vec<_>>();
-        assert_eq!(draws.len(), 128);
+        assert_eq!(draws.len(), expected_draws);
         assert!(
             draws
                 .iter()
                 .all(|(_, material)| material.0 == opaque)
         );
         assert_eq!(draws.iter().map(|(mesh,_)| mesh.0.id())
-            .collect::<std::collections::HashSet<_>>().len(),2);
-        assert_eq!(
-            meshes.len(),
-            2,
-            "placement count must not duplicate uploaded tree or ground geometry"
-        );
+            .collect::<std::collections::HashSet<_>>().len(),meshes.len());
+        assert!(meshes.len() > 2 && meshes.len() <= 1 + crate::understory::VARIANTS,
+            "placements must share the bounded species/palette library");
+        assert!(library.ground.lock().unwrap().len() <= crate::understory::VARIANTS);
+    }
+
+    #[test]
+    fn shared_pines_retain_full_leader_height_at_every_plot_scale() {
+        let library = Library::default();
+        for coordinates in seeds().iter().copied().chain([[4,8],[-12,4],[29,4]]) {
+            for neighbors in [[false;4], [true;4], [true,false,true,false]] {
+                for tile in [8.,16.] {
+                    let groups = library.prepare([0.,tile*2.,0.,tile*2.],3.,tile,
+                        coordinates,neighbors,GroveFamily::JohtoPine);
+                    let (low,high) = occluder_fade::prepared_bounds(&groups).unwrap();
+                    let mut direct = TerrainMeshData::default();
+                    foliage::append_family_canopy(&mut direct,[0.,tile*2.,0.,tile*2.],
+                        3.,tile,coordinates,neighbors,GroveFamily::JohtoPine);
+                    let leader = direct.solid.positions[12*13][1];
+                    assert!((low.y - 3.).abs() < 0.001);
+                    assert!(high.y >= leader - 0.001,
+                        "runtime prototype compressed the mature leader: {coordinates:?}, {neighbors:?}, {tile}, {high:?}, {leader}");
+                    assert!(high.y > 3. + tile * 8.);
+                }
+            }
+        }
     }
 
     #[test]

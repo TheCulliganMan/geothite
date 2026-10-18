@@ -110,7 +110,9 @@ fn dominant_flat_source(
             let source = &cells[index].source;
             // Object masking changes its classification to Flat but retains
             // the original atlas pixels. That is never a ground sample.
-            if source.tile_index == u16::MAX {
+            if source.tile_index == u16::MAX || super::kanto_shore::source_bank(source) {
+                // Native shore corners are flat drawing cells, not a ground
+                // field. Repeating one stamps tiny island icons over the horizon.
                 continue;
             }
             let key = (
@@ -207,6 +209,27 @@ mod tests {
         frame.tiles[799].source.tile_index = u16::MAX;
         assert_eq!(dominant_flat_source(40, 40,
             &frame.tiles.iter().collect::<Vec<_>>(), &shapes), None);
+    }
+
+    #[test]
+    fn flat_native_shore_corners_cannot_become_repeated_horizon_art() {
+        let mut frame=test_frame_with_grid(40,40);
+        let shapes=vec![CellShape::Flat;1600];
+        for (block,x,y,tile) in [(0x2d,3,0,0x33),(0x1d,0,1,0x33),(0x1e,3,1,0x54)] {
+            for t in &mut frame.tiles {
+                t.source=super::super::tests::source_with_tile(block,x,y,tile);
+                t.source.tileset_id="kanto".into();
+            }
+            let cells=frame.tiles.iter().collect::<Vec<_>>();
+            assert_eq!(dominant_flat_source(40,40,&cells,&shapes),None,
+                "a flat bank corner is not repeatable ground");
+            frame.tiles[799].source=super::super::tests::source_with_tile(0x31,0,0,0x39);
+            frame.tiles[799].source.tileset_id="kanto".into();
+            let before=frame.clone();
+            let cells=frame.tiles.iter().collect::<Vec<_>>();
+            assert_eq!(dominant_flat_source(40,40,&cells,&shapes),Some((39,19)));
+            assert_eq!(frame,before,"donor selection never rewrites source scenery");
+        }
     }
 
     #[test]
@@ -369,7 +392,7 @@ mod tests {
 
         use bevy::prelude::{Handle, UVec2, Vec2};
 
-        let mut frame = VisualWorldFrame {
+        let mut frame = VisualWorldFrame { terrace_datum: None,
             active: true,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_id: Arc::from("test"),

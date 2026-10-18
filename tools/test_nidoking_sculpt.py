@@ -13,16 +13,19 @@ ROOT=Path(os.environ.get('CRYSTAL_NIDOKING_TEST_MODELS',Path(__file__).resolve()
 
 class NidokingTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'nidoking.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):
+  from nido_royal_glb import read_nido_royal
+  cls.m=read_nido_royal(ROOT/'nidoking.glb','nidoking');cls.ps=cls.m['primitives']
  find=attachment_checks.NidorinaTests.find
- overlap=attachment_checks.NidorinaTests.overlap
+ overlap=attachment_checks.NidorinaTests.occupied_overlap
  jaw_gap=jaw_checks.LugiaTests.jaw_gap
  test_fitted_layers_follow_actual_stored_parent=attachment_checks.NidorinaTests.test_fitted_layers_follow_actual_stored_parent
  test_fitted_face_centers_and_edges_clear_parent=attachment_checks.NidorinaTests.test_fitted_face_centers_and_edges_clear_parent
  def test_closed_connected_outward_solids(self):assert_closed_models(self,{'nidoking':self.m})
  def test_shading_tracks_actual_faces(self):assert_model_shading(self,{'nidoking':self.m})
  def test_parity_floor_size_budget_and_species_anatomy(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),110000)
+  from nido_royal_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   for prefix,n in (('Ear /',2),('Ear inset /',2),('Eye /',2),('Horn /',1),('Fang /',6),('Cheek barb /',4),('Chest plate /',1),('Belly plate /',4),('Shoulder /',2),('Knee /',2),('Hand claw /',6),('Foot claw /',2),('Back spine /',3),('Tail spine /',3),('Tail collar /',3),('Tail /',1)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)

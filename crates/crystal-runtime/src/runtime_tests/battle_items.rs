@@ -3237,6 +3237,7 @@ fn runtime_save_rejects_special_saved_pokemon_references_missing_from_compiled_p
 
     let mut state = GameState::default();
     state.roaming_pokemon[0] = crystal_core::state::RoamingPokemonState {
+        scaled_hp: None,
         species: Some("CYNDAQUIL".to_string()),
         level: 40,
         map_group: 1,
@@ -3252,6 +3253,7 @@ fn runtime_save_rejects_special_saved_pokemon_references_missing_from_compiled_p
 
     let mut state = GameState::default();
     state.roaming_pokemon[0] = crystal_core::state::RoamingPokemonState {
+        scaled_hp: None,
         species: Some("CHIKORITA".to_string()),
         level: 41,
         map_group: 1,
@@ -3271,6 +3273,7 @@ fn runtime_save_rejects_special_saved_pokemon_references_missing_from_compiled_p
 
     let mut state = GameState::default();
     state.roaming_pokemon[0] = crystal_core::state::RoamingPokemonState {
+        scaled_hp: None,
         species: Some("CHIKORITA".to_string()),
         level: 40,
         map_group: 1,
@@ -3288,6 +3291,7 @@ fn runtime_save_rejects_special_saved_pokemon_references_missing_from_compiled_p
 
     let mut state = GameState::default();
     state.roaming_pokemon[0] = crystal_core::state::RoamingPokemonState {
+        scaled_hp: None,
         species: Some("CHIKORITA".to_string()),
         level: 40,
         map_group: 1,

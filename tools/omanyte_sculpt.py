@@ -9,6 +9,7 @@ from goldfish_sculpt import surface
 from raptor_bird_sculpt import paint
 from cubone_sculpt import skin_shading
 from skin_glb import COORDINATES
+from abra_sculpt import polygon_caps
 HEIGHT=.80
 CREAM=(.95,.92,.75);GROOVE=(.49,.46,.33);BLUE=(.48,.77,.86)
 WHITE=(.98,.98,.96);INK=(.075,.09,.10);GLEAM=(.34,.36,.37)
@@ -22,7 +23,10 @@ def shell_parts():
   for j in range(segments):
    a=math.tau*j/segments;r=.99+.01*math.cos(12*a)
    vertices.append((.245*math.cos(b),.49+.32*math.cos(a)*math.sin(b)*r,-.045+.275*math.sin(a)*math.sin(b)*r))
- faces=[tuple(reversed(range(segments))),tuple(rings*segments+i for i in range(segments))]
+ # Ribbing makes these polar rings slightly concave. A fan reverses one ear;
+ # triangulate their actual YZ outlines without changing the shell vertices.
+ caps=polygon_caps([(y,z,x) for x,y,z in vertices[:segments]])
+ faces=[tuple(reversed(f)) for f in caps]+[tuple(rings*segments+i for i in f) for f in caps]
  for k in range(rings):
   for i in range(segments):
    a=k*segments+i;b=k*segments+(i+1)%segments;faces.append((a,b,b+segments,a+segments))
@@ -57,11 +61,18 @@ def anatomy():
    floor=min(tentacle['positions'][1::3]);tentacle['positions']=[v-floor if i%3==1 else v for i,v in enumerate(tentacle['positions'])];p.append(tentacle)
  return p
 
-def sculpture():
+def sculpture(normalize=True):
  p=anatomy();lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
  for q in p:
-  q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+  if normalize:q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])]
+  q['normals']=[round(v,7) for v in q['normals']]
+  for key in ('positions','normals'):q[key]=[0. if v==0 else v for v in q[key]]
  return {'name':'omanyte','version':1,'coordinate_system':COORDINATES,'primitives':p}
+def write_canonical(output):
+    from nautilus_glb import export_nautilus
+    (output/'omanyte.glb').write_bytes(export_nautilus('omanyte'))
+
+
 def main():
- a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);(args.output/'omanyte.mesh.json').write_text(json.dumps(sculpture(),separators=(',',':')))
+ a=argparse.ArgumentParser(description=__doc__);a.add_argument('--output',type=Path,required=True);args=a.parse_args();args.output.mkdir(parents=True,exist_ok=True);write_canonical(args.output)
 if __name__=='__main__':main()

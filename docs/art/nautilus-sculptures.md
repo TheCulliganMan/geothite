@@ -101,3 +101,8 @@ A fresh neutral software roster review inspected all 225 dedicated bodies in
 ten sheets. Existing refinement priorities include Kabuto/Kabutops, the Eevee
 and fox family, and Mew/Mewtwo. The pack-based catalog reports 26 missing bodies.
 Neither the roster load tests nor a single neutral angle approves every model.
+
+The later [canonical nautilus skins](nautilus-skins.md) add independent shell,
+gaze, tentacle and adult beak controls, correct the concave polar caps and reuse
+the canonical tentacle hinges for world crawling. Current captures use the
+headless image path and never open a window.

@@ -1,6 +1,6 @@
 //! The shared closed Kanto museum hall: source0c/0d*/0e +75/71*/76 +37/7d*/7e.
 //! Source windows are continuous; this drawing contains no entrance.
-use super::kanto_craft::{block, face, mix, source_ink};
+use super::kanto_craft::{block, ceramic_tile, face, mix, source_ink};
 use super::*;
 
 const WEST: [[u16; 4]; 8] = [
@@ -98,6 +98,7 @@ pub(super) struct Paint {
     stone: [f32; 3],
     ink: [f32; 3],
     windows: Vec<[f32; 3]>,
+    lit_windows: Vec<bool>,
 }
 fn linear(c: [u8; 4]) -> [f32; 3] {
     std::array::from_fn(|i| {
@@ -145,12 +146,14 @@ pub(super) fn paint(
         return None;
     }
     let mut windows = Vec::new();
+    let mut lit_windows = Vec::new();
     for x in 1..p.width - 1 {
         let pane = sample(x, 8)?;
         if pane[0] == pane[3] {
             return None;
         }
         windows.push(linear(pane[0]?));
+        lit_windows.push(cells[(p.row+8)*g.width+p.column+x].source.tile_index==0x0a);
     }
     Some(Paint {
         roof: [linear(roof[1]?), linear(roof[2]?)],
@@ -159,6 +162,7 @@ pub(super) fn paint(
         stone: linear(stone[1]?),
         ink: linear(sample(1, 8)?[3]?),
         windows,
+        lit_windows,
     })
 }
 fn prism(out: &mut SurfaceMeshData, top: Vec<Vec3>, thick: f32, color: [f32; 3], unit: f32) {
@@ -176,30 +180,6 @@ fn prism(out: &mut SurfaceMeshData, top: Vec<Vec3>, thick: f32, color: [f32; 3],
             0.,
             unit,
         );
-    }
-}
-/// A closed shallow barrel tile, with three physical ceramic shoulders.
-/// The two sections may narrow independently to follow a hip without cards
-/// or exposed undersides at the ends of a course.
-fn ceramic_tile(out: &mut SurfaceMeshData, ends: [[Vec3;2];2], unit: f32,
-    crown: f32, color: [f32;3]) {
-    let sections=ends.map(|[a,b]| {
-        let mut ring=Vec::new();
-        for i in 0..4 {
-            let t=i as f32/3.;
-            ring.push(a+(b-a)*t+Vec3::Y*(std::f32::consts::PI*t).sin()*crown);
-        }
-        ring.push(b-Vec3::Y*unit*0.035);
-        ring.push(a-Vec3::Y*unit*0.035);
-        ring
-    });
-    let center=sections.iter().flatten().copied().sum::<Vec3>()/12.;
-    face(out,sections[0].clone(),center,color,0.,unit);
-    face(out,sections[1].clone(),center,color,0.,unit);
-    for i in 0..6 {
-        let j=(i+1)%6;
-        face(out,vec![sections[0][i],sections[0][j],sections[1][j],sections[1][i]],
-            center,color,0.,unit);
     }
 }
 fn roof(out: &mut SurfaceMeshData, width: f32, depth: f32, unit: f32, p: &Paint) {
@@ -400,6 +380,7 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: Paint
             1.,
             u,
         );
+        let first_glass=out.positions.len();
         block(
             out,
             [
@@ -415,6 +396,8 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: Paint
             -1.,
             u,
         );
+        crate::scenery_finish::mark_source_glass(out,first_glass..out.positions.len(),
+            [x-half,x+half,u*3.20,u*4.21],p.lit_windows[index]);
         for xx in [x - half - u * 0.028, x + half + u * 0.028] {
             block(
                 out,
@@ -482,6 +465,22 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: Paint
         u,
     );
     roof(out, width, depth, u, &p);
+    // Deep museum hips and wide halls exceed the town material's bounded
+    // local UV domain. Fit only those paint coordinates before placement;
+    // source-colored panes retain their separate normalized glass domain.
+    let paint_coordinates=|uv:[f32;2]| {
+        let kind=((uv[1]-crate::scenery_finish::TOWN_PAINT_BASE)/32.).round();
+        let v=uv[1]-(crate::scenery_finish::TOWN_PAINT_BASE+kind*32.);
+        ((0. ..=3.).contains(&kind) && v.abs()<16.).then_some((kind,v))
+    };
+    let scale=out.uvs[start..].iter().filter_map(|&uv|
+        paint_coordinates(uv).map(|(_,v)|(uv[0].abs()/15.).max(v.abs()/7.5)))
+        .fold(1.,f32::max);
+    for uv in &mut out.uvs[start..] {
+        if let Some((kind,v))=paint_coordinates(*uv) {
+            *uv=[uv[0]/scale,crate::scenery_finish::TOWN_PAINT_BASE+kind*32.+v/scale];
+        }
+    }
     let origin = Vec3::new(b[0], 0., b[2]);
     for v in &mut out.positions[start..] {
         *v = (Vec3::from_array(*v) + origin).to_array();
@@ -586,6 +585,36 @@ pub(super) fn fixture(
 mod tests {
     use super::*;
     #[test]
+    fn museum_glass_retains_each_native_lamp_without_lighting_dark_panes() {
+        for width in [8,16,20] {
+            let (tiles,g,p,images)=fixture(width);
+            let cells=tiles.iter().collect::<Vec<_>>();
+            let paint=paint(&cells,&g,p,&images).unwrap();
+            let expected=(1..width-1).filter(|&x|cells[8*width+x].source.tile_index==0x0a).count();
+            let mut day=SurfaceMeshData::default();
+            append(&mut day,[0.,width as f32*8.,0.,96.],8.,paint.clone());
+            assert_eq!(crate::city_lights::collect(&day).len(),expected,
+                "exact native lamp count, not every pane");
+            let tagged=day.uvs.iter().filter_map(|&uv|crate::scenery_finish::source_glass_coordinates(uv))
+                .collect::<Vec<_>>();
+            assert!(tagged.iter().any(|(_,lit)|*lit));
+            assert!(tagged.iter().any(|(_,lit)|!*lit));
+            let mut changed=paint.clone();changed.windows.fill([0.01,0.02,0.03]);
+            let mut dim=SurfaceMeshData::default();
+            append(&mut dim,[0.,width as f32*8.,0.,96.],8.,changed.clone());
+            assert_eq!(crate::city_lights::collect(&dim).len(),expected,
+                "day/dusk pigment cannot remove an authored lamp");
+            assert_eq!(dim.positions,day.positions);assert_eq!(dim.indices,day.indices);
+            assert_eq!(dim.uvs,day.uvs);assert_ne!(dim.colors,day.colors);
+            changed.lit_windows.fill(false);
+            let mut dark=SurfaceMeshData::default();
+            append(&mut dark,[0.,width as f32*8.,0.,96.],8.,changed);
+            assert!(crate::city_lights::collect(&dark).is_empty());
+            assert_eq!(dark.positions,day.positions);assert_eq!(dark.indices,day.indices);
+        }
+    }
+
+    #[test]
     fn museum_preserves_each_source_pane_at_night_and_rejects_changed_paint() {
         let (tiles, g, p, mut images) = fixture(16);
         let cells = tiles.iter().collect::<Vec<_>>();
@@ -642,6 +671,22 @@ mod tests {
             let shoulders=mesh.normals.iter().filter(|n|n[1]>0.5)
                 .map(|n|n.map(|v|(v*1000.).round() as i32)).collect::<std::collections::BTreeSet<_>>();
             assert!(shoulders.len()>=3,"curved shoulders must be real geometry");
+        }
+    }
+
+    #[test]
+    fn museum_paint_keeps_native_material_roles_across_wide_and_deep_roofs() {
+        for width in [8,12,16,20] {
+            let (tiles,g,p,images)=fixture(width);
+            let paint=paint(&tiles.iter().collect::<Vec<_>>(),&g,p,&images).unwrap();
+            let mut mesh=SurfaceMeshData::default();
+            append(&mut mesh,[0.,width as f32*8.,0.,96.],8.,paint);
+            for &uv in &mesh.uvs {
+                assert!(crate::scenery_finish::town_paint_kind(uv).is_some()
+                    ||crate::scenery_finish::source_glass_coordinates(uv).is_some()
+                    ||uv==crate::scenery_finish::SOURCE_PAINT_UV,
+                    "every museum face must retain its source material, including the front hip: {uv:?}");
+            }
         }
     }
 

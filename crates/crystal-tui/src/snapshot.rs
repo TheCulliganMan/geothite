@@ -41,6 +41,7 @@ impl SnapshotLine {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct TextSnapshot {
+    pub competitive_battle: bool,
     pub viewport_title: String,
     pub viewport: Vec<SnapshotLine>,
     pub info_title: String,
@@ -148,6 +149,7 @@ impl RuntimeTextRenderer {
             source.overworld.facing
         );
         TextSnapshot {
+            competitive_battle: source.competitive_battle.is_some(),
             viewport_title,
             viewport,
             info_title: "Trainer".to_string(),
@@ -351,6 +353,38 @@ fn battle_lines(
         .find(|slot| slot.is_active_battle_pokemon)
         .or_else(|| source.party.slots.first())
         .map(|slot| &slot.pokemon);
+    if let Some(view) = &source.competitive_battle {
+        let mut lines = vec![SnapshotLine::new(
+            format!(
+                "Foe {} Lv{} HP {}/{}{}",
+                enemy.nickname,
+                enemy.level,
+                enemy.hp,
+                enemy.max_hp,
+                status_suffix(enemy.status.as_deref())
+            ),
+            hp_kind(enemy.hp, enemy.max_hp),
+        )];
+        if let Some(player) = player {
+            lines.push(SnapshotLine::new(
+                format!(
+                    "You {} Lv{} HP {}/{}{}",
+                    player.nickname,
+                    player.level,
+                    player.hp,
+                    player.max_hp,
+                    status_suffix(player.status.as_deref())
+                ),
+                hp_kind(player.hp, player.max_hp),
+            ));
+        }
+        lines.extend(
+            view.field_detail_lines()
+                .into_iter()
+                .map(|text| SnapshotLine::new(text, LineKind::Hint)),
+        );
+        return lines;
+    }
     let mut lines = vec![
         SnapshotLine::new(
             format!("{}  Lv{}", enemy.nickname, enemy.level),
@@ -498,6 +532,7 @@ fn menu_lines(source: &RuntimeShellSnapshot, selected: usize) -> Vec<SnapshotLin
             } else {
                 option.as_str()
             };
+            let option = crystal_bevy::visible_script_menu_option_label(menu, option);
             SnapshotLine::new(
                 format!("{} {option}", if active { ">" } else { " " }),
                 if active {

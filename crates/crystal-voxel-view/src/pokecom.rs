@@ -79,6 +79,19 @@ pub(crate) fn workstation_local(map_id: &str, source: &VisualTileSource) -> Opti
         .then_some((local_column, source.subtile_row))
 }
 
+/// Complete monitor plus the adjacent keyboard tray, including its header.
+pub(crate) fn station_local(map: &str, s: &VisualTileSource) -> Option<(u8,u8)> {
+    if let Some(p) = workstation_local(map,s) { return Some(p); }
+    if map != ADMIN_OFFICE || s.tileset_id.as_ref() != "pokecom_center" || s.subtile_row >= 3 { return None; }
+    let x = match s.metatile_id {
+        0x36 if s.subtile_column < 2 => s.subtile_column,
+        0x37 if (2..4).contains(&s.subtile_column) => s.subtile_column-2,
+        _ => return None,
+    };
+    let art = [[0x24,0x24],[0xc6,0xc7],[0xd6,0xd7]];
+    (s.tile_index == art[s.subtile_row as usize][x as usize]).then_some((x+2,s.subtile_row))
+}
+
 /// Block $34 contains two independent 16x24 potted-plant drawings. Each is
 /// segmented as its own thin card so adjacent plants cannot fuse laterally.
 pub(crate) fn plant_local(map_id: &str, source: &VisualTileSource) -> Option<(u8, u8)> {

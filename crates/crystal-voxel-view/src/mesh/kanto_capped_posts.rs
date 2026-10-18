@@ -119,10 +119,31 @@ pub(super) fn append(
     g: &GridGeometry,
     claimed: &mut [bool],
 ) {
+    append_with_samples(mesh, cells, shapes, g, claimed, None);
+}
+
+pub(super) fn append_with_samples(
+    mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile],
+    shapes: &[CellShape],
+    g: &GridGeometry,
+    claimed: &mut [bool],
+    images: Option<&TerrainImageSamples>,
+) {
     for p in resolve(cells, shapes, g) {
         if !clear(claimed, g, p.rect) {
             continue;
         }
+        let source = [cells[p.rect[1]*g.width+p.rect[0]],
+            cells[(p.rect[1]+1)*g.width+p.rect[0]]];
+        let palette=images.and_then(|images| {
+            // Source drawings are opaque 8px tiles. Incomplete uploads or
+            // custom multicolor art retain the ordinary source fallback.
+            if !source.iter().all(|tile| tile_rgba(images,tile).is_ok_and(|rgba|
+                rgba.len()==256 && rgba.chunks_exact(4).all(|p|p[3]==255))) {return None;}
+            fence_palette(images,&source)
+        });
+        if images.is_some() && palette.is_none() {continue;}
         floor(mesh, cells, shapes, g, p.rect, p.sample, claimed);
         let [west, east, _, south] = bounds(g, p.rect);
         // Preserve the individual narrow silhouette and the source course's
@@ -135,6 +156,7 @@ pub(super) fn append(
             south - g.tile_height * 0.02,
         ];
         let m = model(Kind::KantoCappedPost);
+        let first=mesh.solid.positions.len();
         m.append_fitted(
             &mut mesh.solid,
             fitted,
@@ -142,6 +164,7 @@ pub(super) fn append(
             g.tile_height * 1.55 / (m.max[1] - m.min[1]),
             None,
         );
+        if let Some(palette)=palette {m.recolor_fitted_capped_post(&mut mesh.solid,first,palette);}
         mark_authored_rect(mesh, g, p.rect, Kind::KantoCappedPost.label());
     }
 }
@@ -212,6 +235,79 @@ mod tests {
             }
         }
         result
+    }
+
+    #[test]
+    fn source_post_paint_tracks_palette_without_changing_geometry_or_support() {
+        let (tiles,shapes,g)=fixture(0x77,0,2);
+        let original=tiles.clone();let cells=tiles.iter().collect::<Vec<_>>();
+        let render=|images:Option<&TerrainImageSamples>| {
+            let mut mesh=TerrainMeshData {footing_heights:vec![3.25;4],
+                authored_cells:vec![None;4],..Default::default()};
+            let mut claimed=[false;4];
+            append_with_samples(&mut mesh,&cells,&shapes,&g,&mut claimed,images);
+            (mesh,claimed)
+        };
+        let (baseline,claimed)=render(None);
+        let mut images=TerrainImageSamples::default();
+        let paint=|colors:[[u8;4];4]| TileImageSample::Rgba(colors.repeat(16)
+            .into_iter().flatten().collect());
+        images.pixels.insert(tiles[0].texture.id(),paint([
+            [57,57,57,255],[165,123,24,255],[198,148,57,255],[222,255,222,255]]));
+        let (day,day_claimed)=render(Some(&images));
+        assert_eq!(day_claimed,claimed);
+        assert_eq!(day.solid.positions,baseline.solid.positions);
+        assert_eq!(day.solid.normals,baseline.solid.normals);
+        assert_eq!(day.solid.indices,baseline.solid.indices);
+        assert_eq!(day.footing_heights,baseline.footing_heights);
+        assert_eq!(day.authored_cells,baseline.authored_cells);
+        let m=model(Kind::KantoCappedPost);
+        assert_eq!(m.material_ranges().count(),8);
+        assert!(m.material_ranges().any(|(_,name)|name=="Post | weathered timber shaft"));
+        let mut grain=0;let mut caps=0;
+        for (i,&uv) in day.solid.uvs.iter().enumerate() {
+            match m.vertex_material(i) {
+                "Post | bevelled dark foot" | "Post | weathered timber shaft"
+                    | "Post | shaft facet" | "Post | collar shadow" => {
+                    let p=crate::scenery_finish::town_timber_coordinates(uv).expect("vertical timber finish");
+                    assert!((p[1]-(m.surface.positions[i][1]-m.min[1])*1.55/(m.max[1]-m.min[1])).abs()<0.0001);
+                    grain+=1;
+                }
+                "Post | cap rim" | "Post | bevelled painted cap" | "Post | cap crown" => {
+                    assert_eq!(crate::scenery_finish::town_paint_kind(uv),Some(3));caps+=1;
+                }
+                _=>assert_eq!(uv,crate::scenery_finish::SOURCE_PAINT_UV),
+            }
+        }
+        assert!(grain>100 && caps>100);
+        for (i,c) in day.solid.colors.iter().enumerate() {
+            if m.vertex_material(i)=="Post | weathered timber shaft" {
+                assert!(c[0]>c[1]*1.15 && c[1]>c[2]*1.3,"warm weathered timber retains the live source exposure");
+            }
+        }
+        images.pixels.insert(tiles[0].texture.id(),paint([
+            [20,18,40,255],[55,40,90,255],[92,65,135,255],[140,150,195,255]]));
+        let (night,night_claimed)=render(Some(&images));
+        assert_eq!(night_claimed,claimed);
+        assert_eq!(night.solid.positions,day.solid.positions);
+        assert_eq!(night.solid.indices,day.solid.indices);
+        assert_eq!(night.solid.uvs,day.solid.uvs);
+        assert_ne!(night.solid.colors,day.solid.colors,"live time-of-day source palette");
+        assert_eq!(tiles,original);
+    }
+
+    #[test]
+    fn incomplete_post_paint_keeps_the_whole_source_drawing_unclaimed() {
+        let (tiles,shapes,g)=fixture(0x77,0,2);let cells=tiles.iter().collect::<Vec<_>>();
+        for data in [None,Some(vec![255;252]),Some([50,60,70,128].repeat(64)),
+            Some((0..64).flat_map(|v|[v,60,70,255]).collect())] {
+            let mut images=TerrainImageSamples::default();
+            if let Some(rgba)=data {images.pixels.insert(tiles[0].texture.id(),TileImageSample::Rgba(rgba));}
+            let mut mesh=TerrainMeshData::default();let mut claimed=[false;4];
+            append_with_samples(&mut mesh,&cells,&shapes,&g,&mut claimed,Some(&images));
+            assert_eq!(claimed,[false;4]);
+            assert!(mesh.solid.positions.is_empty());assert!(mesh.textured.positions.is_empty());
+        }
     }
 
     #[test]
@@ -531,9 +627,33 @@ mod tests {
     }
 
     #[test]
-    fn capped_post_is_one_closed_sculpt_with_a_narrow_shaft_and_rounded_crown() {
+    fn capped_post_has_a_flat_cut_crown_and_crisp_shaft_facets() {
         let m = model(Kind::KantoCappedPost);
-        assert_eq!(m.surface.indices.len() / 3, 288);
+        let mut crown = std::collections::BTreeSet::new();
+        let mut shaft = std::collections::BTreeMap::new();
+        for (i,(&p, &n)) in m.surface.positions.iter().zip(&m.surface.normals).enumerate() {
+            let key = p.map(|v| (v * 1_000_000.0).round() as i32);
+            if m.vertex_material(i)=="Post | cap crown" {
+                assert!((p[1]-m.max[1]).abs()<0.00001);
+                assert!(n[1]>0.999,"cut crown has one flat top normal");
+                crown.insert(key);
+            }
+            if (0.15..0.80).contains(&p[1]) {
+                shaft.entry(key).or_insert_with(Vec::new).push(n);
+            }
+        }
+        assert!(crown.len() >= 49, "the full cut crown closes both cap rings");
+        assert!(shaft.values().any(|ns| ns.iter().any(|a| ns.iter().any(|b|
+            Vec3::from_array(*a).distance(Vec3::from_array(*b)) > 0.1))),
+            "shaft facets must keep their hard corner normals");
+    }
+
+    #[test]
+    fn capped_post_is_one_closed_sculpt_with_a_restrained_cap_and_unchanged_envelope() {
+        let m = model(Kind::KantoCappedPost);
+        assert!(m.surface.indices.len() / 3 <= 600);
+        assert_eq!(m.min, [-0.28205, 0.0, -0.28205]);
+        assert_eq!(m.max, [0.28205, 1.212, 0.28205]);
         assert_eq!(m.min[1], 0.0);
         assert!(m.max[1] > 2.0 * (m.max[0] - m.min[0]));
         let shaft = m
@@ -550,7 +670,7 @@ mod tests {
             .filter(|v| v[1] > 0.90)
             .map(|v| v[0].abs())
             .fold(0.0_f32, f32::max);
-        assert!(cap > shaft * 1.25, "the pale cap overhangs the slim shaft");
+        assert!(cap>shaft && cap<shaft*1.2,"painted cap has a small shoulder instead of a swollen dome");
         let vertex =
             |i: u32| m.surface.positions[i as usize].map(|v| (v * 1_000_000.0).round() as i32);
         let mut edges = std::collections::BTreeMap::new();

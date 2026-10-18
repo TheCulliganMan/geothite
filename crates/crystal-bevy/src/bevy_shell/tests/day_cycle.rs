@@ -1,10 +1,11 @@
 #[test]
-fn day_cycle_publishes_live_clock_only_for_automatic_outdoor_palettes() {
+fn day_cycle_publishes_live_clock_for_automatic_outdoors_and_fixed_palette_roofs() {
     use bevy::ecs::system::RunSystemOnce;
     use crystal_render_api::{VisualWorldClock, VisualWorldFrame};
     for (map, x, y, expected) in [
         ("NewBarkTown", 8, 8, Some(1080)),
         ("PlayersHouse2F", 3, 3, None),
+        ("CeladonMansionRoof", 4, 5, Some(1080)),
         ("UnionCave1F", 9, 26, None),
     ] {
         let root = AssetRoot::new(

@@ -23,7 +23,8 @@ pub use battle_source_projection::{
 mod barn;
 mod battle_species_models;
 mod pokemon_appearance;
-mod pidgeotto_rig;
+mod pokemon_follow;
+pub use pokemon_follow::pokemon_following_distance;
 mod species_rig;
 mod battle_tower;
 mod battle_view;
@@ -33,6 +34,7 @@ mod open_models;
 mod open_people;
 mod open_people_skin;
 mod human_locomotion;
+mod human_idle;
 mod bicycle;
 mod seating;
 #[cfg(feature = "people-review")]
@@ -102,6 +104,7 @@ mod camera;
 mod casino;
 mod cave;
 mod cave_water;
+mod border_water;
 mod cave_lighting;
 mod water_surface;
 mod celadon_gym;
@@ -234,6 +237,7 @@ pub use mesh::{
     CellCoverageKind, SurfaceMeshData, TerrainImageSamples, TerrainMeshError, audit_cell_coverage,
     audit_cell_coverage_on_map, audit_terrain_mesh_with_images, build_terrain_mesh, jump_changes_floor_level,
     build_terrain_mesh_with_images, build_terrain_mesh_with_samples,
+    source_terrace_datum,
 };
 pub use profile::{
     COMPACT_BUILDING_HEIGHT, CellShape, GROUND_HEIGHT, LARGE_BUILDING_HEIGHT, MAX_PROFILE_HEIGHT,
@@ -567,6 +571,8 @@ struct TerrainRevisionCache {
     built_animated_bounds: [Option<bevy::camera::primitives::Aabb>; 2],
     built_footing_heights: Vec<f32>,
     built_animated_pillars: Vec<[usize; 2]>,
+    built_train_doors: bool,
+    built_train_open: Option<u32>,
     footing_origin: Option<IVec2>,
     key: Option<TerrainCacheKey>,
     instances_root: Option<Entity>,
@@ -648,6 +654,7 @@ fn prepare_runtime_terrain(
     let animated_textured_mesh = std::mem::take(&mut terrain.animated_textured).into_mesh();
     let animated_solid_mesh = std::mem::take(&mut terrain.animated_solid).into_mesh();
     let animated_pillars = std::mem::take(&mut terrain.animated_pillars);
+    let train_doors = terrain.animated_train_doors;
     let enclosure = std::mem::take(&mut terrain.cave_enclosure);
     let cave_enclosure = (!enclosure.indices.is_empty()).then(|| enclosure.into_mesh());
     let background = terrain
@@ -677,9 +684,9 @@ fn prepare_runtime_terrain(
         &terrain.depth_coverage_solid_ranges);
     occluder_fade::use_camera_walls(&mut fade_solid_groups, &terrain.camera_wall_solid_ranges);
     occluder_fade::use_camera_walls(&mut fade_textured_groups, &terrain.camera_wall_textured_ranges);
-    // Opted-in buildings fully reveal the playable ground when blocked.
-    // Layered roof/wall fragments must not accumulate over the street.
-    occluder_fade::use_source_coverage_fade(&mut fade_solid_groups, &terrain.coverage_fade_ranges, 0.);
+    // Retain the obstructing building as a smooth faint form, with depth
+    // ordering and an authoritative player aperture keeping the trainer clear.
+    occluder_fade::use_building_reveal(&mut fade_solid_groups, &terrain.coverage_fade_ranges);
     // Grove ownership is independent of linked wall/label anchors.
     fade_solid_groups.extend(grove_groups);
     let source_bounds = authentic_mesh_bounds(&build_frame);
@@ -756,6 +763,7 @@ fn prepare_runtime_terrain(
         animated_textured_mesh,
         animated_solid_mesh,
         animated_pillars,
+        train_doors,
     }
 }
 
@@ -776,6 +784,7 @@ struct BuiltTerrain {
     animated_textured_mesh: Mesh,
     animated_solid_mesh: Mesh,
     animated_pillars: Vec<[usize; 2]>,
+    train_doors: bool,
 }
 
 fn should_start_terrain_build(
@@ -1069,7 +1078,7 @@ fn sync_voxel_view(
         // cells on every display refresh.
         *validated_frame_key = Some(TerrainCacheKey::from_frame(&frame));
     }
-    let pose = settings.camera.world_pose_with_traversal(&frame, &terrain_cache.footing_heights, traversal.as_deref());
+    let mut pose = settings.camera.world_pose_with_traversal(&frame, &terrain_cache.footing_heights, traversal.as_deref());
     let valid = failure.is_none();
     let output_ready = if valid&&holding_lighthouse {
         // Hold both room coordinates and camera pose, rather than applying
@@ -1135,6 +1144,12 @@ fn sync_voxel_view(
     }
     status.terrain_pending = matches!(terrain_state, TerrainSyncState::Pending);
     if matches!(terrain_state, TerrainSyncState::Ready) {
+        // The completed build may have published new support in this call.
+        // Resolve the camera again before drawing that terrain; otherwise an
+        // idle first frame keeps the pre-build pose until the player moves.
+        pose = settings.camera.world_pose_with_traversal(&frame,
+            &terrain_cache.footing_heights, traversal.as_deref());
+        if !holding_lighthouse { set_output_active(&scene, true, &mut cameras, pose); }
         let projection = cameras.iter().find_map(|(_, projection, _)| match projection {
             Projection::Perspective(p) => Some(Mat4::perspective_rh(pose.vertical_fov_radians, p.aspect_ratio, pose.near, pose.far)),
             _ => None,
@@ -1346,8 +1361,7 @@ fn sync_voxel_atmosphere(
     mut ambient: Option<ResMut<GlobalAmbientLight>>,
 ) {
     let cycle = clock.as_ref().and_then(|clock| clock.seconds_of_day())
-        .filter(|_| !interior_cutaway::is_cave(&frame)
-            && !frame.tiles.first().is_some_and(|tile| crate::interior::has_back_wall(&tile.source.tileset_id)))
+        .filter(|_| sky::outdoors(&frame))
         .map(day_cycle::DayCycle::at_seconds);
     let unlit_map = lighting.as_ref().is_some_and(|period|
         **period == crystal_render_api::VisualWorldLighting::Dark);
@@ -1547,7 +1561,9 @@ fn voxel_clear_color(frame: &VisualWorldFrame) -> Color {
         .tiles
         .first()
         .map(|tile| tile.source.tileset_id.as_ref());
-    if tileset == Some("game_corner") {
+    if tileset.is_some_and(|tileset|interior::open_air_roof(&frame.map_id,tileset)) {
+        Color::srgb(0.72, 0.83, 0.78)
+    } else if tileset == Some("game_corner") {
         // The casino wall backs onto unlit interior void, not an outdoor
         // horizon. This also matches the black source course above the wall.
         Color::srgb(0.10, 0.09, 0.08)
@@ -1811,7 +1827,8 @@ fn sync_terrain(
                 let geometry_changed = terrain_tracking::refresh_animation(built, frame, images)
                     .map_err(|()| TerrainSyncError::SourceTextureUnavailable)?;
                 if geometry_changed {
-                    let (textured, solid) = mesh::build_animated_flowers(built, images, &cache.built_animated_pillars)
+                    let (textured, solid) = mesh::build_animated_scene(built, images, &cache.built_animated_pillars,
+                        cache.built_train_doors.then(||mesh::station_train_door_openness(frame)))
                         .map_err(TerrainSyncError::Mesh)?;
                     cache.built_animated_bounds = [textured.get_aabb(), solid.get_aabb()];
                     update_mesh_asset(meshes, &mut cache.animated_textured_mesh, retain_animated_mesh_cpu(textured));
@@ -1891,6 +1908,8 @@ fn apply_built_terrain(
         terrain.animated_solid_mesh.get_aabb()];
     cache.built_footing_heights = terrain.footing_heights;
     cache.built_animated_pillars = terrain.animated_pillars;
+    cache.built_train_doors = terrain.train_doors;
+    cache.built_train_open = None;
 
     drop(publish_setup);
     let publish_animated = loading_trace::span("region.publish_animated_meshes", || serde_json::json!({}));
@@ -2461,6 +2480,8 @@ impl MaterialExtension for VoxelSurface {
             fragment.shader_defs.push(bevy::shader::ShaderDefVal::Bool(
                 "VOXEL_COVERAGE_FADE".into(), key.bind_group_data.coverage_fade));
             fragment.shader_defs.push(bevy::shader::ShaderDefVal::Bool(
+                "VOXEL_SMOOTH_DEPTH_FADE".into(), key.bind_group_data.smooth_depth_fade));
+            fragment.shader_defs.push(bevy::shader::ShaderDefVal::Bool(
                 "VOXEL_CAVE_APERTURE".into(), key.bind_group_data.forward_apertures.cave));
             fragment.shader_defs.push(bevy::shader::ShaderDefVal::Bool(
                 "VOXEL_GRASS_APERTURE".into(), key.bind_group_data.forward_apertures.grass));
@@ -2621,6 +2642,9 @@ fn sync_interior_cutaway(
     }
 }
 
+#[cfg(test)]
+mod surf_defaults_tests;
+
 #[allow(clippy::too_many_arguments)]
 fn sync_actor_cards(
     frame: &VisualWorldFrame,
@@ -2652,6 +2676,10 @@ fn sync_actor_cards(
     // retiring the whole optional world here caused a 2D flash while walking.
     let mut prepared = Vec::with_capacity(frame.actors.len());
     for actor in &frame.actors {
+        // Surf has one 3D presentation: the trainer on the actual user's
+        // canonical body. Neither the source avatar nor a mount sprite is a
+        // substitute while identity/artwork is unavailable.
+        if new_bark_actors::is_surf_avatar(actor) || actor.id == VisualActorId::SurfMount { continue; }
         // Native blades consume this event; the source sprite belongs to 2D.
         if grass_rustle::is_rustle(actor) { continue; }
         if healing_effects::is_healing(actor)&&!healing_allowed {continue;}
@@ -2765,7 +2793,8 @@ fn sync_player_silhouette_system(
     };
     // A card silhouette would be occluded by the player's own 3D body and
     // incorrectly paint the old pixel sprite across its front.
-    if !status.active || settings.camera.first_person || new_bark_actors::has_modeled_player(&frame) {
+    if !status.active || settings.camera.first_person || new_bark_actors::has_modeled_player(&frame)
+        || frame.actors.iter().any(new_bark_actors::is_surf_avatar) {
         if let Some(entity) = cache.entity
             && let Ok((_, mut visibility, _)) = entities.get_mut(entity)
         {
@@ -2811,6 +2840,7 @@ fn sync_player_silhouette(
         .actors
         .iter()
         .find(|actor| actor.id == VisualActorId::Player)
+        .filter(|actor| !new_bark_actors::is_surf_avatar(actor))
     else {
         if let Some(entity) = cache.entity.take() {
             commands.entity(entity).despawn();
@@ -3558,7 +3588,7 @@ mod renderer_tests {
                 solid_meshes: vec![actor_quad_mesh().into()],
                 animated_textured_mesh: actor_quad_mesh(),
                 animated_solid_mesh: actor_quad_mesh(),
-                animated_pillars: Vec::new(),
+                animated_pillars: Vec::new(), train_doors: false,
             };
             apply_built_terrain(
                 &frame,
@@ -3812,7 +3842,7 @@ mod renderer_tests {
                 fade_solid_groups:Vec::new(),footing_heights:vec![0.],
                 textured_meshes:Vec::new(),solid_meshes:Vec::new(),
                 animated_textured_mesh:mesh::SurfaceMeshData::default().into_mesh(),
-                animated_solid_mesh:mesh::SurfaceMeshData::default().into_mesh(),animated_pillars:Vec::new(),
+                animated_solid_mesh:mesh::SurfaceMeshData::default().into_mesh(),animated_pillars:Vec::new(),train_doors:false,
             };
             let mut builds = TerrainBuildQueue {key:Some(key),..default()};
             builds.task=Some(pool.spawn(async move {TerrainBuildResult {
@@ -3878,7 +3908,7 @@ mod renderer_tests {
             textured_meshes: Vec::new(), solid_meshes: Vec::new(),
             animated_textured_mesh: mesh::SurfaceMeshData::default().into_mesh(),
             animated_solid_mesh: mesh::SurfaceMeshData::default().into_mesh(),
-            animated_pillars: Vec::new(),
+            animated_pillars: Vec::new(), train_doors: false,
         };
         let mut builds = TerrainBuildQueue { key: Some(key.clone()), ..default() };
         builds.task = Some(pool.spawn(async move { TerrainBuildResult {
@@ -4300,6 +4330,10 @@ Visibility::Hidden,))).id();
             Color::srgb(0.055, 0.050, 0.045),
             "enclosed ordinary interiors must not inherit the outdoor horizon"
         );
+        frame.map_id="CeladonMansionRoof".into();frame.tiles[0].source.tileset_id="mansion".into();
+        assert_eq!(voxel_clear_color(&frame),Color::srgb(0.72,0.83,0.78));
+        frame.map_id="CeladonMansionRoofHouse".into();
+        assert_eq!(voxel_clear_color(&frame),Color::srgb(0.055,0.050,0.045));
     }
 
     #[test]
@@ -4430,6 +4464,48 @@ Visibility::Hidden,))).id();
         });
 
         assert!(!voxel_projection_needs_update(&projection, pose));
+    }
+
+    #[test]
+    fn first_ready_frame_uses_newly_published_camera_support() {
+        use crystal_render_api::{VisualTile, VisualTileSource};
+        let mut app = App::new();
+        app.init_resource::<Assets<Image>>().init_resource::<Assets<Mesh>>()
+            .init_resource::<Assets<VoxelMaterial>>().init_resource::<live_profiles::LiveProfiles>()
+            .init_resource::<VoxelViewSettings>().init_resource::<VoxelViewStatus>()
+            .init_resource::<NativeHealingEffectsStatus>().init_resource::<TerrainBuildQueue>()
+            .init_resource::<ActorIdCache>();
+        app.world_mut().resource_mut::<VoxelViewSettings>().enabled = true;
+        let atlas = app.world_mut().resource_mut::<Assets<Image>>().add(Image::default());
+        let frame = VisualWorldFrame {
+            active: true, map_id: "NewBarkTown".into(), map_texture: atlas.clone(),
+            grid_size: UVec2::splat(2), viewport_size: Vec2::splat(16.), tile_size: Vec2::splat(8.),
+            tiles: (0..4).map(|i| VisualTile {
+                column: i % 2, row: i / 2, texture: atlas.clone(), priority: false, animation_frames: None,
+                source: VisualTileSource { tileset_id: "johto".into(), metatile_id: 1, tile_index: 1,
+                    subtile_column: (i % 2) as u8, subtile_row: (i / 2) as u8 },
+            }).collect(),
+            actors: vec![VisualActor { id: VisualActorId::Player, source_id: "player".into(),
+                model_palette: None, texture: atlas, center: Vec2::ZERO, size: Vec2::splat(16.),
+                flip_x: false, above_priority: false, facing: None }], ..default()
+        };
+        let expected = VoxelCameraControls::default().world_pose(&frame, &[7.; 4]).transform();
+        let camera = app.world_mut().spawn((Camera::default(), Projection::default(),
+            Transform::IDENTITY, VoxelWorldCamera)).id();
+        let actor_quad = app.world_mut().resource_mut::<Assets<Mesh>>()
+            .add(Mesh::from(Rectangle::new(1., 1.)));
+        app.insert_resource(TerrainRevisionCache {
+            key: Some(TerrainCacheKey::from_frame(&frame)), built_frame: Some(frame.clone()),
+            built_footing_heights: vec![7.; 4], ..default()
+        }).insert_resource(VoxelScene { camera: Some(camera), actor_quad: Some(actor_quad) })
+            .insert_resource(frame).add_systems(Update, sync_voxel_view);
+        app.update();
+        let status = app.world().resource::<VoxelViewStatus>();
+        assert!(status.active, "{:?}", status.inactive_reason);
+        assert_eq!(app.world().resource::<TerrainRevisionCache>().footing_heights, vec![7.; 4]);
+        assert_eq!(*app.world().get::<Transform>(camera).unwrap(), expected);
+        app.update();
+        assert_eq!(*app.world().get::<Transform>(camera).unwrap(), expected);
     }
 
     #[test]

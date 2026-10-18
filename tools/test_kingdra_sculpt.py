@@ -13,15 +13,18 @@ from sculpt_test_support import crossed_faces
 
 class KingdraTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.model=json.loads((ROOT/'kingdra.mesh.json').read_bytes());cls.ps=cls.model['primitives']
+ def setUpClass(cls):
+  from seahorse_glb import read_kingdra
+  cls.model=json.loads((ROOT/'kingdra.mesh.json').read_bytes()) if os.environ.get('KINGDRA_TEST_MODELS') and not (ROOT/'kingdra.glb').exists() else read_kingdra(ROOT/'kingdra.glb');cls.ps=cls.model['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_closed_connected_outward_anatomy(self):assert_closed_models(self,{'kingdra':self.model})
  def test_actual_triangle_shading(self):assert_model_shading(self,{'kingdra':self.model})
  def test_recipe_ground_height_budget_and_identity(self):
-  self.assertEqual(self.model,sculpture());names=[p['part'] for p in self.ps];self.assertEqual(len(names),len(set(names)))
+  from seahorse_glb import geometry_digest
+  self.assertEqual(geometry_digest(self.model),geometry_digest(sculpture()));names=[p['part'] for p in self.ps];self.assertEqual(len(names),len(set(names)))
   self.assertEqual(min(y for p in self.ps for y in p['positions'][1::3]),0.)
   self.assertAlmostEqual(max(y for p in self.ps for y in p['positions'][1::3]),HEIGHT,places=6)
-  self.assertLess(sum(len(p['indices'])//3 for p in self.ps),65000)
+  self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
   for prefix,count in {'Crown /':2,'Crown branch /':4,'Cheek /':2,'Neck fin /':2,'Dorsal fin /':2,'Dorsal horn /':2,'Dorsal fork /':2,'Belly fold /':5,'Body seam /':3,'Snout /':3,'Iris /':2}.items():self.assertEqual(sum(x.startswith(prefix) for x in names),count,prefix)
  def test_anatomy_has_real_solid_roots(self):
   body=self.find('Body /');head=self.find('Head /');muzzle=self.find('Snout / long');bore=self.find('Snout / recessed');floor=self.find('Snout / deep')

@@ -316,7 +316,8 @@ impl GameDataSet {
                     && exact_resume
                     && request.battle_type == battle_type
                     && request.species == species
-                    && request.level == level
+                    && (request.level == level || (battle_type != "BATTLETYPE_TUTORIAL"
+                        && self.challenge_origin_level(request.level, level)))
                     && request.source_script == source_script
             })
         });
@@ -343,14 +344,14 @@ impl GameDataSet {
                                 .flat_map(|table| {
                                     table.morning.iter().chain(&table.day).chain(&table.night)
                                 })
-                                .any(|entry| entry.species == species && entry.level == level)
+                                .any(|entry| entry.species == species && self.challenge_origin_level(entry.level, level))
                         })
                 }
                 "BATTLETYPE_ROAMING" => self
                     .roaming_pokemon
                     .init_writes
                     .iter()
-                    .any(|write| write.species == species && write.level == level),
+                    .any(|write| write.species == species && self.challenge_origin_level(write.level, level)),
                 _ => false,
             };
         }
@@ -381,7 +382,7 @@ impl GameDataSet {
                     .common
                     .iter()
                     .chain(&table.rare)
-                    .any(|entry| entry.species == species && entry.level == level)
+                    .any(|entry| entry.species == species && self.challenge_origin_level(entry.level, level))
             })
     }
 
@@ -988,7 +989,7 @@ impl GameDataSet {
                 land_encounters_on_any_land,
             )?;
         }
-        let roll = session
+        let mut roll = session
             .check_wild_encounter_exact(
                 encounters,
                 &self.encounter_slot_tables,
@@ -998,7 +999,7 @@ impl GameDataSet {
                     time: state.time.time_of_day,
                     music_token: state.script_runtime.current_music.clone(),
                     has_cleanse_tag: Self::party_has_cleanse_tag(state),
-                    active_repel_item,
+                    active_repel_item: if self.wild_challenge.is_some() && !contest_mode { None } else { active_repel_item.clone() },
                     lead_party_level: leading_usable_party_level(state),
                     land_encounters_on_any_land,
                     ..EncounterCheckOptions::default()
@@ -1011,6 +1012,24 @@ impl GameDataSet {
                 },
             )
             .map_err(|error| anyhow::anyhow!("check exact wild encounter: {error}"))?;
+        if self.wild_challenge.is_some() && !contest_mode {
+            if let Some(roll) = roll.as_mut() {
+                if let Some(resolved) = roll.resolved.as_mut() {
+                    let variation = roll.slot_percent_roll.unwrap_or(0).wrapping_add(roll.level_roll.unwrap_or(0));
+                    resolved.level = if let Some(slot) = roll.roaming_slot {
+                        self.scale_challenge_roamer(state, usize::from(slot), 2)?
+                    } else {
+                        self.challenge_level(state, resolved.level, variation)
+                    };
+                    if let Some(item) = active_repel_item {
+                        if leading_usable_party_level(state).is_some_and(|lead| resolved.level < lead) {
+                            roll.resolved = None;
+                            roll.repelled_by = Some(item);
+                        }
+                    }
+                }
+            }
+        }
         Ok(roll)
     }
 
@@ -1153,9 +1172,9 @@ impl GameDataSet {
                             format!("preflight selectable roaming species {species}")
                         })?;
                         anyhow::ensure!(
-                            roaming.hp == 0 || u16::from(roaming.hp) <= candidate.max_hp,
+                            roaming.hp == 0 || roaming.current_hp() <= candidate.max_hp,
                             "selectable roaming species {species} saved HP {} exceeds max {}",
-                            roaming.hp,
+                            roaming.current_hp(),
                             candidate.max_hp
                         );
                         if roaming.hp == 0 {
@@ -1168,7 +1187,7 @@ impl GameDataSet {
                                 &self.growth_rates,
                             )?;
                             anyhow::ensure!(
-                                maximum_hp_candidate.max_hp <= u16::from(u8::MAX),
+                                self.wild_challenge.is_some() || maximum_hp_candidate.max_hp <= u16::from(u8::MAX),
                                 "fresh selectable roaming species {species} can exceed the source HP byte: {}",
                                 maximum_hp_candidate.max_hp
                             );
@@ -1441,7 +1460,7 @@ impl GameDataSet {
             u8::try_from(metadata.group_id).context("wild battle map group exceeds byte")?,
             u8::try_from(metadata.map_id).context("wild battle map number exceeds byte")?,
         );
-        let (enemy_pokemon, battle_type) = if let Some(slot) = encounter.roaming_slot {
+        let (mut enemy_pokemon, battle_type) = if let Some(slot) = encounter.roaming_slot {
             let roaming = state
                 .roaming_pokemon
                 .get(usize::from(slot))
@@ -1500,6 +1519,7 @@ impl GameDataSet {
             .map_err(|error| anyhow::anyhow!("materialize wild battle: {error}"))?;
             (enemy, battle_type)
         };
+        if battle_type != "BATTLETYPE_CONTEST" { self.equip_wild_challenge_moves(&mut enemy_pokemon)?; }
         let battle_music =
             self.wild_battle_music_for_map_time(&encounter.map_name, encounter.time)?;
         let battle = WildBattleStart {
@@ -1531,6 +1551,13 @@ impl GameDataSet {
     }
 
     pub fn saved_wild_encounter_exists(&self, map_name: &str, species: &str, level: u8) -> bool {
+        if self.wild_challenge.is_some() && (1..=100).contains(&level) {
+            return (1..=level).any(|authored| self.authored_wild_encounter_exists(map_name, species, authored));
+        }
+        self.authored_wild_encounter_exists(map_name, species, level)
+    }
+
+    fn authored_wild_encounter_exists(&self, map_name: &str, species: &str, level: u8) -> bool {
         self.wild_encounters
             .get(map_name)
             .is_some_and(|encounters| wild_encounter_data_has(encounters, species, level))
@@ -2912,7 +2939,7 @@ impl GameDataSet {
         );
         self.validate_runtime_map_tile("exact fishing battle", map_name, tile)?;
         let resolved = ResolvedWildEncounter {
-            level: encounter.level,
+            level: self.challenge_level(state, encounter.level, slot_roll),
             encounter,
             slot: 0,
         };
@@ -2947,7 +2974,7 @@ impl GameDataSet {
         } else {
             current_map
         };
-        let enemy_pokemon = materialize_non_roaming_wild_battle_with_rng(
+        let mut enemy_pokemon = materialize_non_roaming_wild_battle_with_rng(
             &roll,
             "BATTLETYPE_FISH",
             species,
@@ -2962,6 +2989,7 @@ impl GameDataSet {
             rng,
         )
         .map_err(|error| anyhow::anyhow!("materialize exact fishing battle: {error}"))?;
+        self.equip_wild_challenge_moves(&mut enemy_pokemon)?;
         let battle = WildBattleStart {
             battle_type: "BATTLETYPE_FISH".to_string(),
             battle_music: self.wild_battle_music_for_map_time(map_name, time)?,
@@ -3069,6 +3097,9 @@ impl GameDataSet {
         state: &crystal_core::state::GameState,
         request: TrainerBattleRequest,
     ) -> Result<TrainerBattleStartStatus> {
+        if self.is_trainer_rematch_script(&request.source_script) {
+            return self.rematch_battle_start(state, request);
+        }
         Ok(trainer_battle_start(
             state,
             &self.trainers,

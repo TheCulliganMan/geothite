@@ -1,3 +1,35 @@
+## Outdoor mountain relief and mineral contrast — 2026-10-16
+
+Outdoor permanent rock now has unequal planar ridges and broken spurs, with
+cooler mineral beds and lighter seams across the existing layered faces.
+Cinnabar uses a grayer volcanic finish and now reaches the outdoor mineral
+producer; Route10North/South now reach the mountain relief pass. The relief
+changes only vertex height and pigment, retaining horizontal coordinates,
+triangle counts, walking support, ground contacts and cave openings. Cave
+interiors, grassy jump ledges and tree support geometry remain unchanged.
+
+Final production 2D/native pairs were inspected at noon with matching position,
+facing and preserved game state: Route10South `(8,5)` outside Rock Tunnel toward
+Lavender, LavenderTown `(3,2)`, CinnabarIsland `(9,6)`, and CianwoodCity `(10,20)`
+on the open shoreline path. Broad fractured faces remain readable; small peaks
+are restrained, the cave mouth stays open, and Cianwood retains its beach width.
+Route29 `(20,7)` is the control for the existing grassy banks and vegetation.
+
+All 52 focused regressions pass: 6 mountain tests, 24 outdoor mineral tests,
+21 terrace tests and the Kanto outdoor material regression. This includes the
+external pack's Lavender, Cinnabar, Cianwood and Route29 footprints, Route26
+relief, the wider route cap-winding checks and Blackthorn's shared contacts.
+Packs and generated verification output are not source deliverables.
+
+Reproduce a matching-state pair with the completed local pack:
+
+```sh
+cargo run --locked -p crystal-bevy --features location-tester \
+  --example render_at_location -- --pack content-packs/core-modular.crystalpack \
+  --map Route10South --x 8 --y 5 --hour 12 --view both \
+  --screenshot target/route10-cliff-review.png
+```
+
 ## New Route22 perimeter defects — 2026-10-14
 
 All eight perimeter source/native pairs are inspected with preserved state
@@ -2548,3 +2580,1787 @@ The normal 45-degree IlexForest `(10,12)` review exposed a second blue nighttime
 Native build passed. The exact test executable passed 37 distinct targeted lighting, water, shoreline, forest, material-registration and cave-restoration tests; one existing opt-in forest benchmark remains ignored. Matching source-state 2D/native captures were inspected at IlexForest `(10,12)` and CherrygroveCity `(9,8)`, hour 12, normal 45-degree camera. A first forest render was too yellow; the final shader reduces that floor cast and cools the pond. The final shader was compiled and inspected through the existing native shader-review override on the current optimized client. Opt-zero capture attempts timed out under concurrent build load; those attempts are not visual or performance evidence.
 
 No new lights, draw passes or texture reads were introduced in this pass. Damp shoreline cells reuse bounded floor subdivisions; other ground geometry is unchanged. FPS remains unbenchmarked. Forest canopy repetition, sparse-looking needle crowns and rigid bank outlines still limit composition and source-scenery fidelity; whole-scene/reference acceptance remains open. Review scratch outputs were removed; content packs and other build caches were preserved.
+
+
+## Shared smashable rock readability — 2026-10-17
+
+The canonical smashable `rock` has broader shoulders and a 0.64 × 0.54
+footprint, retaining its 0.43 height, floor root, closed 98-triangle body and
+shared native-palette material. It stays within one source actor cell and
+remains smaller than the separate Strength boulder. Its focused editable source
+is `art/johto/source/actor-props-rock-refinement.blend`; the original generator
+reproduces the canonical runtime JSON with `--only=rock --skip-preview`.
+
+A dark live palette previously selected only its nearly black dominant tone,
+then shaded that tone again across the facets. Stone props now select a real
+significant highlight from that same palette when the dominant tone is very
+dark. Day pigment is preserved, and absent highlights are never invented.
+
+The native build and all 10 focused Rust checks pass: seven actor-prop registry,
+geometry and palette checks plus native palette/movement, cave, and Strength
+boulder controls. The broader Python kit audit still stops at an unrelated
+retired `slowpoke.mesh.json` reference; no full Python-kit pass is claimed.
+
+Matched 3D/2D production pairs were personally inspected offscreen at
+CianwoodCity `(10,18)` at hours 12 and 22 and Route40 `(9,6)` at hour 12, with
+the normal orbit-1/zoom-0 camera. All paired states are preserved. The night
+Cianwood and day Route40 checks each record 64 frames, two positions and an
+LR return, with terrain active and never pending. The first maroon night
+candidate was rejected; the accepted stone has readable muted-purple facets.
+Captures and the receipt remain ignored under `target/outside-art-*-stone-final*`
+and `target/outside-art-smashable-stone-verification.txt`. All captures explicitly
+used headless image targets and muted audio. This is a shared-prop improvement,
+not acceptance of the complete outdoor scene goal.
+
+
+## Continuous native Kanto road fields — 2026-10-17
+
+Cycling Road's blank native pavement was modeled as one inset slab per source
+cell, producing a conspicuous mint tile grid. Authenticated Kanto road drawings
+now give only their blank `$23` fields a continuous warm mineral plane with
+map-registered paving grain. Authored curb strips, circular covers, brick bonds,
+water-edge geometry and standing heights retain their existing construction.
+The complete-drawing and opaque-palette guards are unchanged; this is one shared
+source finish across maps, not a Route17-specific asset.
+
+All 14 focused paving regressions pass. The new regression checks full area,
+edge coverage, native standing datum and material registration after translation.
+Existing controls cover all ten outlined road drawings, live palettes, malformed
+art, source ownership, raised pier/bridge contacts and the tournament brick path.
+The native client build passed.
+
+Matched 3D/2D production views were personally inspected offscreen at Route17
+`(9,45)` at noon, Route17 `(8,45)` at 22h, and the Route18 preview position at
+noon. All pairs report preserved state, using orbit 1, zoom 0 and 640×640.
+The night Route17 UD check records 64 frames and a return through `(8,44)`
+to `(8,45)`, with terrain active and never pending. The first moving native
+sample was also reviewed. The initial automatic Route17 pose was in the canal;
+that image is a material diagnostic, not Surf or movement evidence.
+
+Fuchsia's central `(20,14)` source/native review showed coherent existing
+architecture, paving and post composition; no separate town redesign was made.
+Route18's grass-covered NPC deserves a closer actor/priority comparison before
+calling its readability a defect. These checks do not prove complete outdoor
+scene acceptance. Captures and the receipt remain ignored under
+`target/outside-art-route1*-continuous-road-*` and
+`target/outside-art-continuous-road-verification.txt`. Every capture used a
+headless image target and muted audio; no visible preview was opened.
+
+
+## Johto side-entrance cloth coverage — 2026-10-17
+
+The Ruins of Alph research entrance still showed a pixel-checkered floor mat.
+The shared cloth finisher now authenticates both complete Johto side-approach
+drawings: `$0b` has two mat columns followed by two path columns, while `$0e`
+mirrors that layout. Both use the existing 16×32 woven finish, live averaged
+source pigment, binding and stitching. No shader, asset or town-specific clone
+was added. Original submitted triangles, contour normals, walking support and
+source ownership guards remain authoritative.
+
+Both cloth regressions pass, including the two atlases and both side orientations,
+full weave extents, contoured floors, source phase/claim guards and live pigment.
+The three connected north-gate controls and native doorway control also pass:
+six focused tests total. Native client and audit builds passed. The freshly
+built audit confirms 24 cloth cells at Alph (eight existing plus 16 side cells),
+zero remaining `$40` mat fallback and no mesher errors. Route39's source-family
+counts remain unchanged.
+
+Production 3D/2D day and night pairs were personally inspected at the Alph
+preview pose, orbit 1, zoom 0, 640×640; both preserve state. The side mat now
+reads as a woven surface rather than enlarged source pixels. These were static
+material checks, not movement or whole-scene acceptance. All captures remained
+headless and muted. Source-audit JSONs were temporary and removed after the
+counts were recorded in `target/outside-art-johto-side-cloth-verification.txt`.
+
+The Route18 close comparison also cleared the suspected grass-height defect:
+its native 2D grass substantially covers the same characters, while 3D retains
+heads and clothing. Grass height was preserved. Route39's farmhouse appearance
+was retained after confirming its shared native house/gate drawing; the separate
+asset named `JohtoBarn` was not treated as authority to replace that picture.
+Overall outdoor quality acceptance remains open.
+
+## Outdoor rooftop sky and clock — 2026-10-17
+
+Celadon Mansion, Goldenrod Department Store and Tin Tower roofs now share an
+explicit map-and-atlas outdoor classification. Their finite-map border filler
+reveals the sky rather than forming a saturated blue ground plane. Tin Tower's
+internal sky blocks additionally require a complete native drawing with uniform,
+opaque live source pixels. Authored scenery claims take priority over sky removal;
+changed art, foreign atlases, missing map bounds and enclosed rooms retain their
+existing fallback. Native deck geometry and standing heights were preserved.
+
+These fixed-palette maps now publish the authoritative live RTC for exterior sky,
+lighting and sky reflections. Their native 2D palette remains unchanged. The
+enclosed Celadon rooftop house stays indoors. One shared identity predicate serves
+the presenter and renderer, without separate town assets or additional cubemaps.
+
+Eleven distinct focused tests pass: roof identity, two source/bounds masks, two
+skybox checks, two cave-light controls, environment reflections, clear-color
+classification, the mansion deck datum and retained-frame RTC publication. The
+client build passed. A full-source coverage audit retained every existing authored
+family count on all three roofs, added 432 authenticated Tin Tower sky cells, and
+reported no mesher errors. This checks coverage rather than complete geometry
+equivalence. Temporary source-audit files were removed after recording the result.
+
+Matched production 3D/2D pairs were personally inspected at noon on all three
+roofs and at 22h on Celadon Mansion, using orbit 1, zoom 0 and 640×640. All four
+pairs report preserved state. The first night candidate incorrectly retained a
+daytime sky; the live-RTC correction was rebuilt and verified with a new capture.
+Every capture used a headless image target and muted audio, without opening a
+window. Evidence remains ignored under `target/outside-art-*-rooftop-*` and
+`target/outside-art-rooftop-sky-verification.txt`. This accepts the background and
+clock correction only; rooftop architecture/material polish and overall outdoor
+scene acceptance remain open.
+
+## Native tower rooftop ceramic paint — 2026-10-17
+
+The Tin Tower roof's authored slopes and ridge retained hard-coded blue-gray
+paint, losing the warm ceramic identity visible in the native drawing. The shared
+roof finisher now samples the live opaque palette of complete `$1c`/`$23` slope
+drawings and paired `$50`/`$51` ridge tiles. Body tones supply the ceramic field;
+existing facet brightness is preserved, with the established ceramic grain and
+reflection role. No separate town model, texture, shader or roof geometry was
+added. Missing pixels, altered source identities, transparency or an unsupported
+palette retain the previous finish. Ordinary scenery keeps its connected-body
+append path.
+
+Three new focused regressions pass. They check positions, normals, triangle
+indices, existing vertex prefixes, textured geometry and standing support;
+live pigment changes; incomplete drawing and invalid paint rejection; ridge
+volume; and material registration after translation. Translation uses a
+`0.00001` UV tolerance for floating-point subtraction of faceted centers.
+The existing slope endpoint/datum check and both rooftop sky guards also pass:
+six focused checks total. The native client build passed.
+
+The production day and night pairs were personally inspected against native 2D
+at the same Tin Tower rooftop pose, orbit 1, zoom 0, 640×640. Both report preserved
+state. The roof now reads as warm gold at noon and follows the source's purple
+night palette at 22h; the walking deck, slope silhouette and ridge stay in place.
+These are static material checks, not movement or complete scene acceptance.
+All captures were muted, headless image targets. Evidence remains ignored at
+`target/outside-art-tin-rooftop-ceramic-{day,night}{,-2d}.png` and
+`target/outside-art-tower-roof-paint-verification.txt`. Wider outdoor review
+remains open.
+
+## Docked ferry proportions and continuous sea — 2026-10-17
+
+Vermilion's port showed two linked defects: the ferry's complete model was
+vertically compressed into a shallow barge, while its native sprite rectangle
+seeded a pale, square shoreline beneath the hull. The shared ferry fit now
+derives vertical scale from ship length and aligns the actual authored gangway
+top (`1.1075` model units) to the quay. Its north docking seam and horizontal
+plot are unchanged; the keel sits below the sea and the cabin, bridge windows
+and rails retain their authored vertical proportions. The canonical ferry asset
+and editable source were retained without modification or town-specific copies.
+
+Both ports also give the complete, authenticated eight-block ship drawing a
+continuous optical sea backing. The model resolver and shore preparation share
+one source signature, including the same sixteen bow, cabin and keel anchors.
+Incomplete, clipped, foreign-atlas or altered drawings retain their original
+shoreline fallback. Real quay cells remain dry. This changes optical shore
+distance only: standing water stays at its existing height, and source art,
+collision, gameplay support, ledges and terrain geometry are unchanged.
+
+Twenty-one distinct focused checks pass: four ferry checks, fourteen water-surface
+checks (including one repeated ferry check) and four port controls. They cover
+the actual gangway vertices, length-derived vertical scale, unit normals, retained
+indices, the existing recessed-window geometry, both ports' sea continuity,
+real quay contacts, altered source rejection, partial ships, buoys and rock
+contacts. The native client build and whitespace checks passed.
+
+Matched production 3D/2D views were personally inspected at Vermilion's default
+berth pose at noon and 22h, and Olivine's berth approach `(7,22)` at noon. All
+report preserved state, at orbit 1, zoom 0 and 800×640. The default Olivine pose
+was also inspected as a quay control; it does not show the ferry, so it was not
+counted as vessel evidence. Vermilion City's original street/waterfront view was
+retained after review. These are static presentation checks, not boarding or
+movement regressions. All captures were headless image targets with muted audio.
+Evidence remains ignored under `target/outside-art-*-ferry-*` and
+`target/outside-art-harbor-ferry-verification.txt`. Overall outdoor acceptance
+remains open.
+
+## Shared port stair landing and material clarity — 2026-10-17
+
+The Olivine close review confirmed a modeled flight rather than a flat sprite,
+but its darker treads and green ground-colored nosings/handrails made it read as
+a grille. The shared harbor-stair treatment now uses the native flight's light
+gray for stone, middle gray for metal and darkest gray for its recess. An external
+pack regression checks those actual PNG swatches, including the old ground
+swatch. No source palette, shader or canonical stair asset was changed.
+
+The flight also placed its highest treads against the eastern water barrier.
+It now turns within its original square opening to meet the dry western quay.
+The resolver additionally authenticates all four west-landing source cells;
+altered or unavailable landing art retains fallback. Three recessed concrete
+faces close the shaft's north, east and south sides, preventing sky/sea from
+showing behind the lower steps. The west landing stays open. Source claims,
+opening bounds, tread heights, water level, collision, warp coordinates and
+authoritative support remain unchanged. Both ports use the same treatment.
+
+Seven focused checks pass: external pack swatches, complete flight/landing
+identity and geometry, the shared stair material/cache control, and four port
+controls. The geometry regression checks the west-facing grade, original bounds,
+source-paint UV ownership and unchanged support. The client build and whitespace
+checks passed. A south-facing trial was rejected because it hid the flight at
+the gameplay camera angle; the final west-facing version was rebuilt and reviewed.
+
+Matched production 3D/2D pairs were personally inspected in Olivine at `(10,8)`
+at noon and 22h and in Vermilion at `(8,6)` at noon. All preserve state, using
+orbit 1, zoom 1 and 800×640. These are static scene checks, not movement or
+passage-warp regressions. Every capture was headless and muted. Accepted images
+remain ignored under `target/outside-art-{olivine,vermilion}-stair-final-*`, with
+the receipt at `target/outside-art-harbor-stair-verification.txt`. Rejected capture
+trials were removed. Overall outdoor quality acceptance remains open.
+
+## Shared Kanto front-entry cloth — 2026-10-17
+
+Route 5's standard front gate carpet still displayed enlarged source pixels.
+The shared cloth finisher now recognizes the complete Kanto `$04` drawing:
+its two ground courses followed by eight `$4f` carpet cells. It reuses the
+existing 32×16 weave, binding, stitching and live averaged source pigment.
+No town-specific asset, texture or shader was added. Submitted floor triangles,
+contour normals, support and custom ownership remain authoritative; incomplete
+or altered drawings retain their native fallback.
+
+All three cloth checks and fourteen paving controls pass: seventeen focused
+checks total. The new front-entry regression checks exact contour triangles and
+normals, unchanged support, full weave extents, live pigment changes, all sixteen
+source cells' identity guards and custom ownership. The client and audit builds
+passed. A fresh full-source audit reports no mesher errors and no remaining
+unclaimed `$04/$4f` carpet cells in Route 5, Saffron or Celadon. Cloth totals are
+eight in Route 5, eight in Celadon, and twenty-four in Saffron including its
+existing side mats. Route 5's earlier authored-family counts are preserved;
+Saffron's footing range remains exactly zero. Temporary source audits were
+removed after recording those results.
+
+Matched production 3D/2D pairs were personally inspected in Route 5 at `(8,16)`
+at noon and 22h, Saffron at `(16,32)` at noon, and Celadon's rear entry at `(16,2)`
+at noon. All preserve state, using orbit 3, zoom 1 and 800×640. The Celadon view
+has the retained building cutaway active; it verifies the mat rather than full
+architecture acceptance. These are static material checks, not warp or movement
+tests. Every capture was headless and muted. Route 5's long white bypass strips
+were retained after the native art and walking permissions confirmed their
+horizontal role. Accepted captures and the receipt remain ignored under
+`target/outside-art-*-cloth-*` and
+`target/outside-art-kanto-front-cloth-verification.txt`. Overall outdoor quality
+acceptance remains open.
+
+## East Kanto exterior verification — 2026-10-17
+
+Fresh full-source audits of Routes 6, 7, 8, 9, 10 North, 11, 14 and 15 report
+no mesher errors. The remaining raw source entries were used to choose review
+positions, not treated as proof of visible missing scenery. Route 6 demonstrates
+the distinction: its host-only source audit has a clipped north-gate frontage,
+while the production 3D/2D pair includes the neighboring map context and renders
+the complete brick gate, roof, door, windows and steps. Existing bindings were
+preserved.
+
+The Power Plant was inspected at the automatic Route 10 North pose and from its
+actual front approach `(3,10)`, at noon, orbit 1, zoom 0 and 800×640. The closer
+default view legitimately fades the tall frontage to expose the player; the
+door approach retains the opaque source-bound building. Production occupancy
+validation already checks walking permissions, so the initial wall-spawn
+diagnosis was rejected and the preview spawn code was preserved. The retained
+building reveal keeps a faint whole silhouette, opaque ground backing and a
+clear player aperture. Both focused reveal/aperture controls pass.
+
+The Route 6 north-gate pair was inspected at `(10,2)` with the same capture
+settings. All three production pairs report preserved state. These checks
+verify specific views, not every audited route or complete outdoor acceptance.
+Every capture was headless and muted. The source-audit JSON and log were removed
+after recording the result in `target/outside-art-east-kanto-verification.txt`;
+accepted images remain ignored under `target/outside-art-*power*-day*` and
+`target/outside-art-route6-north-gate-day*`. No renderer, asset, controller or
+preview-placement change was justified by this review. Overall outdoor quality
+acceptance remains open.
+
+
+## Native Kanto sand correction — 2026-10-17
+
+The alternating $30/$39 speckles in native Kanto blocks $79/$7b are sand,
+not a flagstone plaza. Their shared ground binding now uses the existing warm,
+grain-finished path surface and no longer enables city paving. The separate
+prop quadrant in $79 retains its original source faces. Source phase guards,
+standing heights and authored claims remain unchanged. Genuine bridge/street
+masonry retains its existing producer.
+
+The Power Plant front approach (Route10North, 3,10; noon; orbit 1; zoom 0;
+800×640) was inspected in a fresh headless, muted production 3D/2D pair.
+The former staggered forecourt slabs are gone, replaced by continuous textured
+sand. Focused sand and prop-preservation regressions pass. The broader Kanto
+filter reports 278 passed, one ignored and one separate failure:
+`kanto_directed_bank_replaces_owned_detail_and_grains_caps_without_support_changes`
+expects a closed mineral-lip UV marker on its block-$07 fixture. No ledge code
+was changed as part of the sand correction.
+
+The FuchsiaCity (13,10; noon; orbit 1; zoom 4; 800×640) matched pair
+also shows continuous sandy paths, with preserved source layout and state.
+Both pairs report `state_preserved=true`; all captures were offscreen and muted.
+Evidence: `target/outside-art-power-plant-sand-final-day*` and
+`target/outside-art-fuchsia-sand-day*`.
+
+The pending shared generic flower refinement was also inspected in the Fuchsia
+pair: rounded closed petals and curved closed leaves replace the pointed petals
+and flat leaf cards. All five original head/stem placements, material colors and
+exact bounds remain unchanged. The canonical flower mesh has 940 triangles;
+its editable flower-only source is
+`art/johto/source/new-bark-flowers-refinement.blend`. Geometry checks verified
+closed, consistently wound components with positive volume; the flower-filter
+suite reports 35 passed, one ignored. No town-specific duplicate was added.
+The temporary Blender export workspace was removed after publishing the shared
+mesh and editable source.
+
+
+## Seafoam coast and ground-supported approach — 2026-10-17
+
+Route 20's Seafoam beach must meet sea level. It no longer inherits cumulative
+terrace elevation from its one-way collision edge. The shared map policy is
+used by terrain generation, deferred finishing and actor-support correction;
+the native cave mass and collision remain intact.
+
+A native Kanto brick strip enclosed by source-$31 sand can be ground-supported.
+Its connected drawing now follows the actual ground datum instead of acquiring
+the suspended pier's rise. Opposing water contacts on any part of the connected
+strip preserve the original crossing behavior, including connected approaches.
+Unknown or missing contacts retain the existing pier fallback. This is shared
+geometry and source-context classification, with no map-specific model copy.
+
+The external-pack pier regression verifies all 32 Seafoam approach cells have
+zero-height ground support while the separate 32-cell offshore bridge retains
+its original raised deck. It also covers ten other pier maps, including Route25.
+Seven pier controls and the mesh/actor-support flat-floor control pass. The
+latter now explicitly covers Route20 while retaining ordinary outdoor terraces.
+The initial overly broad ground-contact candidate was rejected by the Route25
+bridge check; final code preserves its raised support.
+
+The Route20 (37,11), noon, orbit 1, zoom 0, 800×640 production 3D/2D pair
+was inspected offscreen and muted. The tall artificial shoreline wall and pale
+blue ramp wedge are gone; the sandy beach and brick approach meet the cave at
+the coastal datum. The pair reports preserved state. Evidence is retained in
+`target/outside-art-seafoam-level-day*`. Audits of Route20, Route21 and Cinnabar
+report no mesher errors and unchanged authored-family coverage; these host-only
+audits are not used as proof of finished terrace heights. No water level,
+waterfall, cave-mouth asset, tree asset or source game data was changed.
+
+The separate offshore platform was also inspected at Route20 (13,9), noon,
+orbit 1, zoom 1, 800×640. Its matched native drawing retains the raised deck,
+frame and pilings over level water. This pair also preserves state and was
+captured headlessly and muted (`target/outside-art-seafoam-offshore-bridge-day*`).
+
+
+## Softer coastal sky reflections — 2026-10-17
+
+The ocean's broad dark checker pattern came from the cloud-reflection field,
+whose sharp contours repeated across the short-wave normals. A diagnostic
+capture with that layer disabled isolated the problem while retaining ripples,
+shore wash and glints. The production wind-water branch now uses a wider sky
+field, a softer cloud transition and lower cloud contrast. Existing wave
+motion, source palette and scene-light exposure remain authoritative. The
+change affects reflected color only; no surface heights or shore geometry
+were edited.
+
+Fresh production 3D/2D pairs were inspected at Route20 (37,11), noon and
+midnight, orbit 1, zoom 0, 800×640, plus OlivinePort (10,8), noon, orbit 1,
+zoom 1, 800×640. Seafoam retains the corrected coastal ground level and level
+cave approach. Its foreground water has quiet blue depth with scattered
+highlights instead of blocky dark cloud stamps; night retains the native
+palette and dim exposure. The harbor preserves quay, stair opening and post
+contacts. All three pairs report `state_preserved=true`. Captures were muted,
+headless image targets using the rebuilt embedded shader, with no review
+shader override.
+
+All 14 `water_surface::tests` pass, covering source-clock motion, scrolling
+registration, shoreline distances, swimmer contacts, pier/ferry coverage and
+separate water styles. Production captures also verify shader compilation.
+Evidence: `target/outside-art-seafoam-water-{day,night}*`,
+`target/outside-art-olivine-water-day*` and
+`target/outside-art-water-cloud-verification.txt`. Diagnostic shader copies
+and their captures were removed after production verification. Twelve retired
+tree JSON paths remain absent in both model roots; no tree assets were edited
+or restored. Overall outdoor quality acceptance remains open.
+
+
+## Shared cottage ceramic course refinement — 2026-10-17
+
+Bill's cottage exposed oversized roof sheets in the shared native cottage
+renderer. The existing closed barrel-tile primitive now forms five shorter,
+staggered courses instead of three aligned courses. Clipped half-tiles finish
+alternating row ends, and stronger rounded shoulders give the ceramic more
+physical depth. Native roof pigment, silhouette, support deck, ridge, chimney,
+facade and independent window roles remain intact. No per-town asset was added;
+the changed append arm is the authenticated `Asset::KantoHouse` path, separate
+from Pokémon Centers and Marts.
+
+All five `kanto_house`-filtered tests pass. Existing controls cover complete
+narrow/extended source bindings, independent paint roles, closed primitives,
+translation invariance, bounds and the existing triangle limit. Fresh production
+3D/2D pairs were personally inspected for Route25 (47,6), noon and midnight,
+orbit 1, zoom 0, 800×640, plus the compact cottage at PewterCity (29,14), noon,
+orbit 1, zoom 1, 800×640. The roof reads as individual ceramic courses at both
+scales. The native day blue and night purple remain distinct; Bill's lower
+windows retain their nighttime light. All three pairs preserve state. Captures
+were headless and muted, with no shader review override.
+
+Evidence: `target/outside-art-bill-cottage-roof-{day,night}*`,
+`target/outside-art-pewter-cottage-roof-day*` and
+`target/outside-art-cottage-roof-verification.txt`. The initial Route22/24/25
+source audit reported no mesher errors; those host-only counts are not visual
+acceptance of the three complete maps. Its JSON/log were removed after recording
+the result. No tree assets, ledges, sea levels or source game data were edited.
+Overall outdoor acceptance remains open.
+
+
+## Kanto canyon cutaway backing — 2026-10-17
+
+Route22's southeast canyon cutaway exposed the pale horizon through the
+removed foreground rock. The existing shared mineral backing now has a late
+Kanto pass after final terrain support. It projects only within actual sculpted
+cap triangles, borrowing authenticated nearby dry-source support and native
+mineral material. It excludes water, custom ownership and volcanic surfaces.
+The Johto pass and cutaway shader remain unchanged. Narrower shader feathering
+was rejected because it made a hard pale crescent; that diagnostic was removed.
+
+Eight outdoor-mountain tests and three external-pack mountain footprint
+regressions passed. Production 3D/2D pairs were inspected for Route22 (37,15),
+noon and midnight, and (20,15), noon, all orbit 1, zoom 0, 800×640. State was
+preserved in all pairs. The pale halo is gone while the player and mineral
+backing remain readable. Evidence: `target/outside-art-route22-canyon-backed-*`
+and `target/outside-art-route22-south-backed-day*`. All captures were offscreen
+and muted, without shader overrides. This is local cutaway acceptance; overall
+outdoor review remains open.
+
+
+## Enclosed Kanto pond datum and bank grading — 2026-10-17
+
+Route22's pond stayed at the base water datum while its surrounding land rose,
+creating a deep rectangular pit. A shared source-based pass now gives each
+complete, unclaimed native Kanto pond one level at its lowest authenticated dry
+rim. The whole water surface and its existing actor/Surf support offset move
+together. Native rocky bank caps and relieved support faces slope from the
+existing outer terrace contact to that rim; the tall retaining wall is gone.
+The pass preserves source footprints, source collision, dry outer contacts and
+existing rocky detail. It excludes open/clipped seas, waterfalls, custom banks
+and owned water. No per-map asset or sea-level exception was added.
+
+Three focused regressions cover flat water geometry/support, bank contact and
+relieved-wall grading with actor footing, plus unchanged open water, cascades
+and custom controls. All pass, alongside eight footing and three native Kanto
+shore regressions. The production client builds successfully and diff whitespace
+checks pass. Production 3D/2D pairs were personally inspected at Route22 (24,10),
+noon and midnight, orbit 1, zoom 1; Route22 (20,15), noon, orbit 1, zoom 0; and
+the Seafoam coast, Route20 (37,11), noon, orbit 1, zoom 0. All are 800×640 and
+preserve paired state. The pond is locally accepted without the deep wall; the
+coast remains low with a continuous level ocean. Captures were offscreen and
+muted, with no shader override. No tree assets or game content packs were edited.
+
+Evidence: `target/outside-art-route22-pond-graded-{day,night}*`,
+`target/outside-art-route22-pond-wide-day*`,
+`target/outside-art-pond-sea-level-control*` and
+`target/outside-art-enclosed-pond-verification.txt`. Overall outdoor review
+remains open.
+
+
+## Native shoreline night pigment and neutral grain — 2026-10-18
+
+Fresh same-state surveys extended review to southern Cycling Road, Route17
+(8,68), and the Tohjo Falls approach, Route27 (33,9), both noon, orbit 1, zoom 0,
+800×640. Cycling Road's canals remain level, the biker and path readable, and
+the native outlined road strips remain walkable curbs. Their all-FLOOR source
+collision does not justify raising guardrails. Route27 retains its source house,
+mountain mass and open approach. These are reviewed views, not whole-map or
+gameplay acceptance. Captures: `target/outside-art-route17-south-survey*` and
+`target/outside-art-route27-house-survey*`, both paired-state preserved.
+
+Pallet's Oak's Lab review at (12,13), noon and 22h, exposed nearly black shoreline
+rocks at night. The shared native bank producer already derives its pigment
+from the current atlas palette; the ordinary scene lighting then applied a
+second night tint. Its material coordinates now use a separate -70000 Z band.
+The shader decodes the same map-space grain and uses source-paint lighting only
+for that band. Mineral texture supplies neutral value detail rather than
+replacing the native pigment with brown bedrock. Fixed-color mineral lips,
+stairs and canyon backing keep their original -20000 band and lighting.
+No vertex position, normal, topology, rock silhouette, support or water datum
+changed in this pass. Kanto and Johto share the same native-bank producer.
+
+The direct native-bank scrolling/material-band regression passes, alongside
+34 shore-filtered checks, three fixed mineral-lip controls and four outdoor
+stair controls: 42 distinct passing checks. The production client builds and
+diff whitespace checks pass. Final embedded-shader 3D/2D pairs were personally
+inspected for Route22 (24,10), noon and midnight, orbit 1, zoom 1; NewBarkTown
+(13,10), noon, orbit 1, zoom 0; and PalletTown (12,13), 22h, orbit 1, zoom 0.
+All are 800×640 and preserve paired state. Native stone texture remains visible
+at night, daylight banks retain natural mineral variation, and the Route22
+pond stays level with its accepted graded banks. The New Bark view is a
+material control, not acceptance of its complete waterfront geometry.
+
+Evidence: `target/outside-art-route22-source-shore-{day,night}*`,
+`target/outside-art-new-bark-source-shore-day*`,
+`target/outside-art-pallet-source-shore-night*` and
+`target/outside-art-source-shore-verification.txt`. The broader all-shore
+source-lighting diagnostic was rejected because fixed-color terrain shares
+the old material band. Its brown-pigment result was also rejected. Diagnostic
+shader copies and captures were removed. Final captures were headless, muted,
+and used the embedded production shader with no override. Trees and game
+content packs were not edited; twelve retired tree paths and the removed
+renders directory remain absent. Overall outdoor quality remains open.
+
+
+## Mt. Moon Square outdoor domain and border-water continuation — 2026-10-18
+
+The preceding shoreline-material turn was verified progress. New Bark's fresh
+waterfront angle and Route39's Moomoo Farm corral were inspected against paired
+2D. New Bark's immediate edge is shallow; its distant connected-route bank was
+not mistaken for a local pit. The farm's shared Tauros models and white corral
+fencing retain their native sprite identities. No art changes were justified
+in those two views. Evidence: `target/outside-art-new-bark-waterfront-east*`
+and `target/outside-art-moomoo-corral-review*`, paired-state preserved.
+
+Mt. Moon Square exposed a pale untextured rock enclosure and a regular grid of
+false islands beyond its native bounds. Its source declares a Kanto outdoor
+route site, but the named map was absent from the shared land/water domain.
+It now receives the existing mountain relief, mineral grain, outdoor light and
+sheltered source-water optics. MountMoon and MountMoonGiftShop retain their
+indoor classification. No new mountain or building asset was created.
+
+A complete native $2d border block repeats one shore corner among fifteen
+animated water cells. Outside this isolated map's authoritative extent, those
+corners now borrow the live water slot from their own block. Exact atlas,
+metatile, all sixteen phases, original tile indices, complete outside placement
+and a genuine animation family are required. Actual map cells, foreign atlases,
+changed/cropped drawings and missing metadata retain their original treatment.
+The render-only replacement has a water surface and water depth mask; the
+source map, native 2D and gameplay collision remain untouched. The late terrace
+backing pass also honors this proven water continuation, preventing it from
+recreating walls around the retired corners or raising their support. Genuine
+raised shores keep their backing. The distant apron donor selector now rejects
+flat native shore corners as repeatable ground. Beyond-map water remains
+presentation-only continuation of the existing native border.
+
+The production trace identified 648 complete border corners in the reviewed
+116×114 source grid, origin (-44,-39), with a real 30×18 core-tile map extent.
+The first replacement still left late terrace walls; the added regression
+reproduces that failure while preserving a genuine raised shore and flat water.
+Diagnostic traces and interim captures were removed after the final check.
+A concurrent shared Model schema addition also required carrying link-material
+roles through the existing planter vertex remap; both planter occlusion controls
+pass. No source export or content-pack publication was needed.
+
+All 67 distinct focused checks pass: two border-source/depth tests, 25 terrace
+checks (including the new late-wall/support regression), six apron controls,
+16 water-role/palette checks, 14 water-surface checks, one named-site material
+check, the external-pack four-site mountain footprint check and two planter
+controls. The production client build and diff whitespace checks pass.
+Final embedded-shader pairs were personally inspected at MountMoonSquare (7,9),
+noon and 22h, and (17,9), noon, plus the sea-level control Route20 (37,11), noon.
+All use orbit 1, zoom 0, 800×640 and preserve paired state. The rock grid is gone,
+the mountain mass is articulated, garden/shop/cave source layout remains clear,
+and the Seafoam coast retains its low level, continuous ocean. These are static
+scene checks; no weekday Clefairy scene or whole-outdoor acceptance is claimed.
+
+Evidence: `target/outside-art-moon-square-final-{day,night}*`,
+`target/outside-art-moon-square-approach-day*`,
+`target/outside-art-moon-sea-level-control*` and
+`target/outside-art-moon-square-verification.txt`. The initial same-state
+`target/outside-art-moon-square-review*` pair supplies before evidence. Every
+capture was headless and muted; final captures have no tracing or shader
+override. No tree assets, Center/Mart models, audio or content packs were edited.
+The twelve retired tree paths and removed renders directory remain absent.
+Overall outdoor quality review remains open.
+
+## Route23 League facade: shared twin entrances — 2026-10-18
+
+The Route23 approach at (9,8) exposed the League's entire repeated-story
+facade painted on the ground. Its native Kanto drawing starts with $68/$7f/$69
+story rows at the map boundary and ends with adjacent $53/$3a entrance bays.
+The shared brick-building producer now accepts that complete drawing, retains
+every native window and both door positions, and provides the existing closed
+roof, masonry, recessed glass and vents. The two doors share one threshold.
+There is no map-specific building asset. Both exact native doorway glyphs are
+required; damaged drawings cannot fall through to a different tower model.
+Ordinary single-door buildings retain their existing branch. Center and Mart
+source bindings, trees, land ledges, water and content packs were not edited.
+
+The production client build succeeds. Twenty-four targeted checks pass: sixteen
+brick-building controls, the new twin-door/source-ownership regression, the
+shared civic-binding control and six city-light checks. The new regression
+checks every source pane, separate door lights, unchanged source/support,
+complete building ownership and rejection of a damaged second door.
+
+Paired production captures preserve state at (9,11), noon and 22h, orbit 1,
+zoom 0, 800×640. Both doors and the native lit/dark window pattern are visible.
+The tall building's roof is cropped in the ordinary street view. A separate
+(9,8) noon capture uses the supported 90-degree diagnostic field of view to
+inspect its full roof and silhouette; this is not ordinary-camera acceptance.
+All captures are headless, muted and use the embedded shader. The raw red
+native approach strip remains a separate unresolved visual issue.
+
+One ordinary Up input from Route23 (9,6) and (10,6) also commits both authored
+door warps into IndigoPlateauPokecenter1F, respectively (5,13) and (6,13).
+Both final trace rows have matching runtime/terrain maps, no pending terrain,
+no warp phase and zero fade alpha. Their arrival 3D/2D pairs preserve state.
+The headless QA input copies keys into the existing production dispatcher in
+process; it sends no desktop keyboard events. A focus-gated keyboard attempt
+was stopped before the successful in-process checks. Evidence:
+`target/outside-art-route23-{west,east}-door-walk*`.
+
+Evidence: `target/outside-art-route23-approach-review*`,
+`target/outside-art-route23-building-final-{day,night}*`,
+`target/outside-art-route23-roof-wide-review*` and
+`target/outside-art-double-entry-final-*.log`. Overall outdoor quality remains
+open; this does not resolve the user's unlocated water-pit report.
+
+## Shared paired Kanto approach carpet — 2026-10-18
+
+The preceding Route23 entrance verification completed both real warp checks;
+its remaining bright red source-pixel strip was then investigated. Native
+Kanto blocks $46/$4a contain a central four-by-two $4f carpet flanked by
+round-rock drawings. The shared outdoor entry finisher now recognizes all
+32 cells of that complete pair before transferring only the eight carpet
+cells to its existing woven finish. The same source pair occurs at Fuchsia's
+south exit and Vermilion's waterfront approach; no town-name branch or new
+asset was added. This resolves the raw-strip issue recorded above.
+
+The existing 32×16 weave, binding, stitching and live averaged native pigment
+are reused. Floor positions, normals, indices' triangle coverage, walking
+support and source tiles remain authoritative. Rock/cave producers retain
+their cells. Partial/altered drawings and custom-owned carpet retain fallback.
+Four entry-surface tests pass, including the new complete-pair regression that
+alters each of the 32 source cells in turn. The production client builds and
+diff whitespace checks pass. No shader, water, land-ledge, tree, service-building,
+audio or content-pack changes were made in this pass.
+
+Final embedded-shader 3D/2D pairs were personally inspected at Route23 (9,11),
+noon and 22h, orbit 1, zoom 0, and FuchsiaCity (8,33), noon, orbit 3, zoom 1.
+Every 800×640 capture is headless, muted and preserves paired state. Route23's
+native red/pink drawing now reads as continuous cloth by day and night;
+Fuchsia verifies the same shared treatment on another native threshold.
+These are material/static-scene checks, not new movement or water-pit proof.
+
+Evidence: `target/outside-art-route23-entry-cloth-{day,night}*`,
+`target/outside-art-fuchsia-entry-cloth-day*`,
+`target/outside-art-cave-entry-{tests,build}.log` and
+`target/outside-art-paired-entry-verification.txt`. The wider outdoor objective
+and unlocated water-pit report remain open.
+
+## Coastal pit diagnosis: terrace field crosses water — 2026-10-18
+
+A fresh Route27 west-inlet review at (5,8), noon, orbit 1, zoom 0, 800×640,
+reproduces a boxed, tall coastal wall. Its paired native frame preserves state.
+This is a Surf-state static capture; the faint/invisible 3D player is a separate
+unresolved presentation defect, not accepted actor fidelity.
+
+Temporary opt-in counters established that all 136 authenticated native shore
+cells in this source halo already carry positive terrace support: 69 at 24,
+two each at 27, 36 and 45, and 61 at 48 render units. Standing water retains its
+original datum. NewBarkTown (13,10), noon, likewise has native shoreline support
+from 48 through 72. The gray walls are therefore not just the native shallow
+two-source-pixel water recess. Inland terrace elevation is reaching the coast.
+
+`terrain_ledges::collect` supplies directed edges from all resolved source maps;
+`terrace_levels::Levels::build` solves and normalizes their ground field without
+native water/land connectivity evidence. The terrace pass skips standing-water
+height, then closes the resulting gap with shore backing. Thus level water
+alone does not prevent a coastal pit. The next correction must constrain the
+land field to the actual source land domains and a stable coastal datum,
+independently of camera cropping, while preserving authored drops, actor/prop
+support, map continuity and waterfall-owned levels.
+
+A low-bank grading prototype passed its synthetic geometry/support checks
+and 94 distinct focused controls but affected zero production banks in this
+view because they were already raised. Its first production capture remained
+boxed. The prototype, its temporary trace code and test additions were removed;
+no shoreline geometry or material change from that attempt is retained.
+Those passing synthetic checks are not evidence of a fixed production pit.
+The restored production client builds successfully; whitespace checks pass.
+Evidence: `target/outside-art-coastal-investigation-restored-build.log`.
+
+Evidence: `target/outside-art-route27-west-coast-current*` and
+`target/outside-art-coastal-pit-investigation.txt`. This diagnosis is progress;
+the coastal defect, the user's exact reported location and the overall outdoor
+objective remain unresolved. No water heights, trees, ordinary Centers/Marts,
+source content or game packs were changed.
+
+## Shared coastal land fields and low-water contact — 2026-10-18
+
+The New Bark/Route27 inlet's extra vertical coast wall is removed. The original
+shallow water recess, native shore footprint, varied mineral finish and level
+water remain. The land-side shelf now grades to its ordinary low-water contact
+instead of carrying remote inland terrace elevation into a retaining wall.
+
+The renderer derives a source-complete corner field from the active map and
+its resolved connections. Native land/hop collision evidence separates walking
+domains; blocked mountain/tree art cannot link them. Real jump landings remain
+connected across their authored barriers. Each coastal domain uses its own
+directed ledges. Shared corners stay continuous except at actual jump cuts,
+and fixed low-water contacts constrain the added land elevation. This changes
+presentation support, never movement permissions or source 2D content.
+
+`VisualTerraceDatum` carries the same calibrated field through terrain fitting,
+rigid building roots, foliage roots, animated ground details and production
+actor footing. It is independent of camera cropping and active-map coordinate
+translation. Map-identity retention and a bounded complete-input cache avoid
+recalculating it for ordinary camera/animation changes. The optional worker
+boundary transfers corner data in bounded typed pages, preserving float bits
+without making the full raster an inline metadata header. Kernel identity
+continues to guard worker compatibility. Legacy frames can omit the field.
+
+Johto's closed bays/lakes retain their fixed low-water datum. The existing
+Kanto enclosed-pond producer keeps its independent level and bank grading;
+waterfall-connected pools keep their authored ownership. Forest and interior
+maps retain their legacy treatment. The terrace pass leaves standing-water
+geometry and support unchanged. No shoreline palette, bank asset, tree asset,
+Center/Mart facade or roof, audio, content pack or gameplay dispatcher was
+edited. Foliage only follows the corrected common ground field.
+
+All 158 distinct focused checks pass: 131 voxel/worker checks and all 27 render
+API checks. They include the remote-island failure, blocked dry connections,
+real hop links, source-overlap priority, stable crop/map-origin sampling,
+enclosed-pond and waterfall guards, exact water preservation, production actor
+support, cache invalidation and a 512×256 corner-field paged round trip. The
+production renderer and authored-asset auditor build successfully. A fresh
+external-pack audit passes CinnabarIsland, NewBarkTown, Route20, Route22,
+Route26, Route27 and SaffronCity with zero mesher/jump errors and 93 actual
+authored jump cases. Route22 keeps the existing pond branch; Saffron's support
+range remains exactly zero. This is geometry/input-evidence verification,
+not a new claim that the gameplay clients were certified end to end.
+
+Final embedded-shader 3D/2D pairs were personally inspected at Route27 (5,8),
+noon and 22h, orbit 1, zoom 0; NewBarkTown (13,9), noon, orbit -3, zoom 0; and
+Route20 (37,11), noon, orbit 1, zoom 0. All are 800×640, headless, muted and
+state-preserving, with no camera/FOV/shader override. The bay's extra wall is
+gone, its water stays level, New Bark's channel has the same low contact, and
+Seafoam retains its low island/continuous sea. The faint Surf actor in the
+Route27 review remains a separate unresolved presentation issue; these static
+captures do not establish actor fidelity or whole-outdoor acceptance.
+
+Evidence: `target/outside-art-route27-coast-final-{day,night}*`,
+`target/outside-art-newbark-coast-final-east*`,
+`target/outside-art-coast-seafoam-final-control*`,
+`target/outside-art-terrace-final-tests.log`,
+`target/outside-art-datum-final-*.log`,
+`target/outside-art-terrace-api-all.log`,
+`target/outside-art-terrace-pack-final.log` and
+`target/outside-art-coastal-field-verification.txt`. The same-position
+`target/outside-art-route27-west-coast-current*` pair supplies before evidence.
+Rejected field prototypes, temporary traces and generated audit JSON were
+removed. The twelve retired tree paths and removed renders directory remain
+absent. Overall outdoor quality review remains open.
+
+## Offshore boundary stone finish — 2026-10-18
+
+The Cinnabar coastal review showed level water, but its shared offshore rocks
+read as white capped posts. The Kanto sea-rock model now retains its authored
+sloping shoulders instead of receiving the land/path post's flattened crown.
+Its existing native pigment blends continuously from a darker wet foot into
+a muted mineral highlight. The existing rooted-water paint domain adds broad
+weathering and pixel-filtered fine pores in stable world coordinates. Shared
+closed topology, seated contacts, placement variants and source footprints
+remain intact; land/path boundary styles retain their prior crown treatment.
+No new assets, map-specific copies, tree edits, source collision changes,
+water-height changes, pack exports or service-building changes were made.
+
+Thirty boundary checks, one shared variant topology/footprint check and all
+fourteen water optics checks pass. The production native renderer rebuilt with
+its embedded shader. Personally inspected same-state 3D/2D pairs cover
+CinnabarIsland `(12,12)` at noon and 22h and Route20/Seafoam `(37,11)` at noon,
+orbit 1, zoom 0, 800×640. All pairs preserve state; captures used the headless
+image target and muted audio, without shader/camera/FOV overrides. The offshore
+stones read as weathered rocks, and the low island coast and level sea remain.
+The existing Cinnabar mountain and Center are outside this finish's scope.
+
+Evidence: `target/outside-art-cinnabar-coast-field-review*` before;
+`target/outside-art-cinnabar-sea-stone-{day,night}*` and
+`target/outside-art-seafoam-sea-stone-day*` after;
+`target/outside-art-sea-stone-{tests,variants,water,build}.log` and
+`target/outside-art-sea-stone-verification.txt`. The twelve retired tree paths
+and removed renders directory remain absent. Overall outdoor acceptance remains
+open.
+
+
+## Shared Kanto office slate material — 2026-10-18
+
+The Saffron `(18,7)` production street review showed large, uniformly gray
+roof grids. Its existing diagonal stone flags were receiving ceramic glaze.
+Shared Kanto brick-office roof decks and closed diagonal flags now use a
+separate matte mineral-slate material, with restrained cleft/grain detail,
+nonperiodic per-slate value variation and narrower physical joints. Native
+roof outlines, story counts, coping, vents, windows, entrances and ground
+support retain their prior construction. Ceramic roofs and service-building
+styles keep their existing material domains. No new asset or per-city copy
+was introduced, and no source collision, trees, water or terrain heights changed.
+
+A first night review exposed a new material-tag overlap with legacy city
+emitters; that rejected capture was replaced after moving slate into a separate
+reserved band. A regression now excludes all legacy window/cream/neon roles,
+source-window tags, glass and the original four town-paint domains. All 24
+focused checks pass: sixteen source/building/topology checks, one domain check,
+one civic-asset selection check and six city-light checks. The production
+native client rebuilt successfully. Scoped diff whitespace checks pass.
+
+Final same-state 3D/2D pairs were personally inspected at SaffronCity `(18,7)`,
+noon and 22h, and CeladonCity `(16,2)`, noon, orbit 1, zoom 0, 800×640. All
+preserve state. Captures used the headless image target, muted audio and the
+embedded production shader without camera/FOV/shader overrides. Final night
+roofs remain dark and textured while their original windows emit. The Celadon
+view verifies the same finish on its taller, partially occluded office form.
+The pale Saffron street surface, overall building scale and nearby foreground
+NPC occlusion still need broader scene review; this is roof-material acceptance.
+
+Evidence: `target/outside-art-saffron-street-review*` before;
+`target/outside-art-saffron-slate-roof-{day,night}*` and
+`target/outside-art-celadon-slate-roof-day*` after;
+`target/outside-art-slate-roof-{tests,domain,civic,lights,build}.log` and
+`target/outside-art-slate-roof-verification.txt`. The twelve retired tree paths
+and removed renders directory remain absent. Overall outdoor acceptance remains
+open.
+
+
+## Shared blank-road mineral aggregate — 2026-10-18
+
+Saffron's `(18,7)` street review showed an excessively pale native road field
+beside its modeled curbs. The complete native `$23` pavement already had a
+continuous plane; it now has a separate shared mineral-road finish with a
+lower source-paint gain, restrained wear and fine neutral grain sampled from
+the existing painted-bedrock resource. Map-registered, gradient-filtered detail
+stays continuous across source cells and camera crops. A coarse procedural
+aggregate prototype read as frosted patches and was rejected; its captures
+were overwritten after reducing broad mottling and using finer mineral detail.
+No joints or brick bonds were invented in the blank source field. Actual sand,
+brick paths/decks, curb strips, circular covers and buildings retain their
+existing finish. No geometry, collision, standing heights, water, trees, audio,
+source game content, new assets or per-map copies changed.
+
+Fifteen Kanto paving checks and four elevated-pier checks pass. Coverage includes
+full blank-field area at the original zero datum, material registration through
+translation/crops, native palette changes, malformed/claimed/elevated controls,
+and actual external-pack pier support. The external test used the absolute
+completed `content-packs/text-tui.crystalpack` path. The initial Saffron source
+lookup found one map and zero mesher errors; it was a baseline source lookup,
+not changed-material acceptance, and its generated audit JSON was removed.
+
+The production native renderer rebuilt with the embedded shader. Final
+same-state 3D/2D pairs were personally inspected at SaffronCity `(18,7)`, noon
+and 22h, and Route17 `(9,45)`, noon, orbit 1, zoom 0, 800×640. Every pair
+preserves state. The final roads read as muted mineral pavement by day and
+retain their dark source-night value. Saffron remains flat; Cycling Road's
+continuous road/curbs and level canals retain their prior geometry. Captures
+were headless image targets and muted, without shader/camera/FOV overrides.
+Scoped diff whitespace checks pass. Broader building scale and nearby foreground
+NPC occlusion remain open; this is road-material acceptance only.
+
+Evidence: `target/outside-art-saffron-slate-roof-day*` before;
+`target/outside-art-saffron-road-aggregate-{day,night}*` and
+`target/outside-art-route17-road-aggregate-day*` after;
+`target/outside-art-road-aggregate-{tests,piers,build}.log` and
+`target/outside-art-road-aggregate-verification.txt`. The twelve retired tree
+paths and removed renders directory remain absent. Overall outdoor acceptance
+remains open.
+
+
+## Nearby outdoor NPC building sightlines — 2026-10-18
+
+Saffron's `(18,7)` street review showed only the nearby NPC's head above the
+foreground office roof. Outdoor building reveal now considers up to two close,
+source-backed human object actors as well as the player. It tests their actual
+body sightlines against the existing original triangle surfaces, using the
+rendered rig's visible stature and calibrated standing support. Interest is
+bounded to 2.25 gameplay tiles in three dimensions and follows moving actors
+and support changes independently of the player's camera/body cache. A nearby
+actor on a raised land shelf remains eligible. Swimmer targets use the visible
+head-and-shoulders height above the waterline, matching the existing pose.
+Props, effects, remote players, distant actors and missing support do not add
+interest. Only groups already using outdoor building reveal receive these
+additional targets; room walls, foliage and forest maps keep their prior rules.
+
+No meshes, opacity constants, shaders, assets, building styles, water, terrain,
+collision, audio, packs or gameplay ownership changed. Existing fade settling,
+restoration, linked captions, shadows and retained building form remain shared.
+No old pixel card or duplicate character body is drawn over a modeled actor.
+
+All 43 focused checks pass: the complete 42-test occluder-fade suite, including
+two new NPC cases, plus the existing swimmer-pose test extended to the sightline
+height. Tests prove a real roof can miss every player ray yet block the nearby
+NPC, enforce bounded nearest-character selection, reject unrelated source
+roles and support, and track movement/height while preserving room/forest
+exclusions. The production native client rebuilt successfully; scoped diff
+whitespace checks pass.
+
+Final same-state 3D/2D pairs were personally inspected at SaffronCity `(18,7)`,
+noon and 22h, and FuchsiaCity `(20,14)`, noon, orbit 1, zoom 0, 800×640. Every
+pair preserves state. Saffron's NPC is visible from head to foot while the
+foreground office retains its faint form. Fuchsia's clear actors and opaque
+building remain intact. Captures were headless image targets and muted, using
+the embedded shader without camera/FOV/shader overrides. This verifies the
+nearby building sightline correction; broader scene scale, actor appearance
+fidelity and whole outdoor acceptance remain open.
+
+Evidence: `target/outside-art-saffron-road-aggregate-{day,night}*` before;
+`target/outside-art-saffron-nearby-npc-{day,night}*` and
+`target/outside-art-fuchsia-nearby-npc-control*` after;
+`target/outside-art-nearby-npc-{tests,fade-tests,swimmer-tests,build}.log` and
+`target/outside-art-nearby-npc-verification.txt`. The twelve retired tree paths
+and removed renders directory remain absent. No task-generated audit manifest
+or exported game data was retained.
+
+
+## Shared Sprout Tower pagoda roof — 2026-10-18
+
+Violet City's `(23,7)` approach showed three broad gabled awnings on the tower.
+The single shared Sprout Tower model now has three swept, four-sided hip roofs,
+staggered closed ceramic courses, physical overlapping lips, curved timber
+fascia and exposed corner brackets. The source drawing still owns its live
+gold/day and dark-purple/night roof paint. Initial long aligned tile strips
+were rejected after the normal-camera review; staggered joints and course
+steps now read as ceramic rows. Existing authored-course metadata bypasses the
+legacy slab refinement, preserving the new closed geometry in the renderer.
+This is a source-pattern/model-type change, with no per-town duplicate.
+
+The original authoring script replayed the current shipped tower exactly.
+Its original fit was retained before replacing only the roof parts. Bounds
+remain `[-2,0,-4]..[2,6.39,4]`, and the door anchor remains `[0,0,4]`. The complete
+stone, light stone, plaster, light plaster, glass, door-detail and finial-detail
+primitive groups compare byte-for-byte with that baseline. Walls, windows,
+steps and doorway keep their prior placement. No water, ledges, trees, actor
+appearance, service buildings, audio, packs or controller behavior changed.
+The authoring loader now stops at the explicit vocabulary boundary rather than
+accidentally running unrelated New Bark builders during a selected export.
+
+All 33 focused Rust checks pass: 23 shared-model checks, four legacy-roof
+adapter checks and six city-light checks. The legacy adapter fixture now
+contains only its three actual legacy models; authored Gym/pagoda courses have
+separate raw-geometry preservation checks. The new tower regression covers
+fixed bounds/threshold, upward corners, all four roof slopes on each tier,
+unchanged authored ceramic vertices and bounded runtime geometry. All 591 new
+roof/support parts have closed positive-volume shells and no zero-area
+triangles. They contribute 10,644 triangles; the complete authored tower has
+12,308 triangles within its selected 13,000-triangle export limit.
+
+The production native renderer rebuilt successfully. Final paired 3D/2D
+views were personally inspected in VioletCity at `(23,7)`, noon, orbit 1, and
+`(22,7)`, noon and 22h, orbit 2, all zoom 0 and 800×640. Every pair preserves
+state. The approach verifies the entrance and lower roof hierarchy; the side
+views expose all three tiled hips/tiers, with only the unchanged finial tip
+partly clipped by the normal frame. Captures were headless image targets and
+muted, using the embedded shader without FOV/camera/shader overrides. Wider
+path framing and early roof prototypes were discarded. Scoped whitespace
+checks pass. Overall outdoor acceptance remains open.
+
+The existing `art/johto/source/connected-johto.blend` now contains the updated
+685-object tower collection. Geometry/material/transform snapshots preserve
+all 2,145 unrelated source objects. Only its existing manifest identity changed,
+and its compressed/expanded hashes verify. The general source-store helper
+refused publication because `gym-scenery-kit.blend` already mismatched its
+manifest before this work. A scoped replacement updated only the connected
+scene and its own identity, preserving every unrelated manifest record and the
+gym source bytes. Sixty-six source identities verify; the standard global
+`python3 tools/johto_art_sources.py --check` still reports that pre-existing gym
+identity mismatch. No validator was weakened or unrelated identity refreshed.
+
+Evidence: `target/outside-art-violet-tower-approach-review*` before;
+`target/outside-art-violet-pagoda-approach-day*` and
+`target/outside-art-violet-pagoda-side-{day,night}*` after;
+`target/outside-art-sprout-{model-tests,roof-tests,lights-tests,build}.log`,
+`target/outside-art-sprout-{closed-parts,source-merge,source-check,canonical-source}.log`
+and `target/outside-art-sprout-{source-verification,verification}.txt`.
+Task-owned authoring directories, temporary GLBs, baseline model copies,
+working Blender backups, merge script and generated statistics were removed.
+The twelve retired tree paths and removed renders directory remain absent.
+
+
+### Enclosed Johto lake level — 2026-10-18
+
+Blackthorn Gym's enclosed lake was treated as open sea while the surrounding
+terraces rose above it. This produced a deep artificial water recess and
+stretched bank caps. The complete native source field now distinguishes closed
+Johto lakes from open water and assigns each lake its lowest surrounding terrace
+level. Water vertices, ripple accents, shoreline contacts and Surf support share
+that constant level. The complete body determines the level before camera
+cropping; a partial view cannot invent a different rim. Open oceans remain at
+sea level. Waterfall pools and the existing Kanto enclosed-pond producer retain
+separate ownership. This changes shared terrain fitting, without adding town
+asset variants or altering collision, native jumps, forests or building models.
+
+Production headless paired captures were inspected at BlackthornCity `(20,12)`,
+orbit 1, zoom 0, 800×640, at hours 12 and 22:
+`target/outside-art-blackthorn-lake-level-{day,night}{,-2d}.png`.
+The lake now meets the Gym island's rocky bank; its surrounding native mountain
+walls remain. The NewBarkTown `(13,9)` sea-level control uses orbit -3 at hour 12,
+with `target/outside-art-new-bark-lake-control{,-2d}.png`.
+All paired states are preserved and no windows were opened.
+
+Validation: 105 distinct Rust checks across terrace, shore and water-surface
+suites pass. Read-only production pack audits retain 47 native Blackthorn jumps,
+12 on Route27, and 3 on CinnabarIsland; NewBarkTown remains at zero land support
+height. The scalar receipt is `target/outside-art-lake-level-verification.txt`;
+generated audit JSON and the rejected blocked-position capture were removed.
+These checks establish this water-level correction, not acceptance of every
+outdoor scene.
+
+
+### Steep shoreline-cap mineral finish — 2026-10-18
+
+The corrected Blackthorn lake still exposed stretched grass and pale path paint
+on steep native bank caps beneath its cliffs. Authenticated bank caps now retain
+separate grass/earth material roles through terrace fitting. Gentle caps keep
+the previous floor finish. Steep caps blend into muted earth-brown mineral paint, using the
+existing stone texture projected across three axes rather than stretched along
+the source floor. Ordinary grass/path floors, the surrounding cliff models,
+rocky edge geometry, water levels and building materials are unchanged. Forest
+maps and forest-source frames retain their previous bank material tags.
+
+The production renderer was checked headlessly at BlackthornCity `(20,12)`,
+12h and 22h, orbit 1, zoom 0, 800×640, with matching native 2D state:
+`target/outside-art-blackthorn-bank-earth-{day,night}{,-2d}.png`.
+The pale and green strips now read as exposed stone continuous with the cliffs;
+the Gym's approach and the lake's corrected level remain intact. NewBarkTown's
+coastline control is `(13,9)`, 12h, orbit -3, zoom 0:
+`target/outside-art-new-bark-bank-earth{,-2d}.png`.
+
+The bank ownership regression preserves positions, normals, indices, footing,
+other assets' UVs/colors, and forest-map tagging. It and the 37 shoreline checks
+pass (38 distinct checks). The shader compiled in the production captures.
+No new texture assets, town variants, source packs or visible windows were
+introduced. This material correction does not establish acceptance of every
+outdoor scene.
+
+
+### Shared Kanto flat-hall proportions — 2026-10-18
+
+Cerulean's compact doorless halls had a wall height of 4.60 source units and
+narrow glass nearly three times as tall as its width. The shared authenticated
+`kanto_flat_house` producer now uses the cottage's 3.08-unit single-story eave,
+with a lower closed roof assembly. At unit 8 the maximum height changes from
+42.656 to 30.496. Source panes keep their original columns and native lit/dark
+identity, with an aspect near 1.275 and a slender horizontal meeting rail.
+Roof pans, coping, vent, native pigment and footprint stay intact. Source
+recognition, service buildings, collision, water and forest assets are unchanged.
+No town-specific model or new asset file was introduced.
+
+Three focused regressions pass across widths 8–32, verifying complete source
+recognition, opacity rejection, pane proportions/locations, native lamps,
+material translation stability, bounded geometry and day/night geometry
+identity. The shared-producer regression covers Cerulean, Vermilion and an
+otherwise unnamed town. Read-only pack audits before/after preserve the same
+family counts, coverage, source bounds, native pane identities, footing range
+and actual jump cases: Cerulean has 192 hall cells, 19 panes and 11 jumps;
+Vermilion has 32 hall cells, 3 panes and no jumps. Temporary audit JSON was
+removed; the receipt is `target/outside-art-flat-hall-verification.txt`.
+
+Production offscreen native 2D/3D pairs, all personally inspected with preserved
+state, normal camera settings and 800×640 image targets:
+
+- Cerulean `(23,18)`, orbit 1, zoom 0, 12h:
+  `target/outside-art-cerulean-hall-road-{before,day}{,-2d}.png`.
+- Cerulean `(16,17)`, orbit 1, zoom 0, 12h/22h:
+  `target/outside-art-cerulean-hall-close-{day,night}{,-2d}.png`.
+- Vermilion `(19,31)`, orbit 1, zoom 0, 12h:
+  `target/outside-art-vermilion-hall-control{,-2d}.png`.
+
+The close Cerulean view confirms that the compact hall now sits at cottage
+scale, its square sash bays retain native night lighting, and its roof profile
+stays distinct. Initial exploratory positions were removed from acceptance.
+All captures were muted and headless, with no opened windows.
+
+The Vermilion control exposed a separate unresolved scene defect: water-surrounded
+barriers sit on square grass platforms absent from native 2D. The current
+boundary adapter chooses a family-specific remote floor sample, and its land
+family supplies lawn. Before changing that path, trace the exact owners, source
+metatile phases and live atlas backgrounds at this harbor. Preserve the native
+barrier locations, neighboring actual land, standing-water datum and source
+fallback guards. The image is evidence of the defect, not acceptance of the
+harbor. The full outdoor goal remains incomplete.
+
+
+### Harbor barrier water backing — 2026-10-18
+
+The Vermilion defect recorded above is corrected in the shared boundary
+adapter. The same native barrier glyphs occur on dry land, so their metatile
+IDs cannot globally select water. Complete coherent barrier components now
+use surrounding native water/ground evidence to resolve their backing. An
+immutable, validated source-coordinate mask travels with the terrace datum,
+cache and bounded worker pages; moving the camera cannot change the decision.
+No map allowlist or town-specific model was added.
+
+At Vermilion, 120 source cells (30 barriers) use the existing shore-rock model
+and water underlay instead of raised lawn platforms. The entry mat, path,
+actual island, native positions and standing-water datum are retained. Land
+barrier coverage changes from 264 to 144 cells and shore coverage from 292 to
+412; total modeled coverage remains 2194. Borrowed water beds prefer an
+authenticated animated sample with inset texels.
+
+The verification receipt is `target/outside-art-harbor-domain-verification.txt`.
+There are 120 distinct passing checks, including complete/partial source
+recognition, dry reuse across actual Kanto maps, shifted-camera mesh identity,
+mask validation, worker page roundtrip and mask-only cache invalidation.
+PewterCity, CinnabarIsland and Route17 preserve exact family counts, mesh
+counts, footing ranges and jump samples against the pre-change audits.
+Temporary source/audit JSON and rejected prototype captures were removed.
+All 12 retired tree assets remain absent from both asset roots.
+
+Production offscreen pairs at 800×640, orbit 1 and zoom 0:
+
+- VermilionCity `(19,31)`, 12h and 22h:
+  `target/outside-art-vermilion-harbor-final-{day,night}{,-2d}.png`.
+- PewterCity `(2,18)`, 12h, dry reuse control:
+  `target/outside-art-harbor-pewter-control{,-2d}.png`.
+- CinnabarIsland `(12,12)`, 12h, existing coastline control:
+  `target/outside-art-harbor-cinnabar-control{,-2d}.png`.
+
+The paired-state receipts preserve native state. These checks address the
+incorrect backing of harbor barriers. Dense rock groups still show some
+rectilinear shallow-water bands in daylight; this is not acceptance of all
+harbor optics or the broader outdoor goal. Captures remain muted and headless.
+
+
+### Mineral plateau ponds and source-owned cliff contacts — 2026-10-18
+
+Cinnabar's native pond sat below its surrounding mineral plateau. Decorative
+relief also grew across Kanto's walkable plateau caps and folded cliff courses.
+That pass initially removed Kanto mountain relief and lowered Johto ridges.
+The user rejected that flattening; the mountain restoration below supersedes
+those geometry and pigment changes. The source-owned pond calibration below
+remains in place.
+
+The new shared `mountain_ponds` source pass recognizes complete mineral-enclosed
+ponds and their authenticated narrow banks. A complete mixed barrier drawing
+can continue the adjacent mineral apron when it belongs to such a pond.
+Isolated stone paths retain their original level. The pond and bank receive one
+level at the lowest surrounding plateau contact. Open water stays at sea level;
+unknown, altered and incomplete boundaries do not authorize this calibration.
+The existing immutable terrace snapshot carries the result through caching and
+worker transport, independently of the camera crop. No town allowlist or new
+model/texture variant was introduced.
+
+The final contact corrections preserve the original geometry's source owner:
+
+- Mineral sampling decodes the existing volcanic UV band and selects the
+  original rock-side cell. Folded courses recover their authored grid plane
+  before choosing that side; their narrow UV thickness cannot select water.
+- A resolved pond's natural bank receives one offset across each sculpted
+  surface. A mesh trace found neighboring vertices receiving offsets 16 units
+  apart, which stretched the bank into needles. Uniform bank translation
+  preserves its source palette, footprint and varied rock detail.
+- The shallow shore backing includes a neighboring mineral plateau's native
+  base in addition to its calibrated terrace. This closes the front contact
+  without a tall retaining wall or a water-height transition.
+- The ordinary pond fallback skips already resolved water, preventing a second
+  lift of Surf support. Existing jump-contact compensation remains in place.
+
+An initial apron-only fallback was rejected after the control audit found it
+flattened Pewter's unresolved terrain field. Aprons are now committed only for
+a proven closed pond, and unresolved nonempty ledge fields retain their original
+fallback. The final nine-map controls preserve model families, source coverage,
+footing ranges and 169 native jump takeoff/landing cases without audit errors:
+Blackthorn, Cerulean, Cinnabar, Pewter, Route15, Route23, Route26, Saffron and
+Vermilion. The final production-build Cinnabar/Pewter recheck also reports no
+errors, with modeled coverage unchanged at 825/2186 cells.
+
+There are 141 distinct passing checks across terrace/source calibration,
+external-pack footprints, mineral geometry, boundary recognition, water masks
+and pond support. Regressions cover all 42 native volcanic-pond water cells,
+unchanged ocean levels, dry/altered/cropped apron rejection, protruding caps,
+folded wall ownership, uniform sculpted-bank translation and no double support
+lift. Receipt: `target/outside-art-mineral-pond-verification.txt`.
+All 12 retired tree assets remain absent from both asset roots. This pass adds
+no source pack, audio data, service-building asset or forest redesign.
+
+
+Production captures use muted headless image targets, normal camera settings,
+orbit 1, zoom 0 and 800×640 output. Matching native 2D/3D states are preserved:
+
+- Cinnabar `(15,6)`, noon, the native walkable mineral shelf beside the pond:
+  `target/outside-art-cinnabar-pond-shore-day{,-2d}.png`.
+- Cinnabar `(12,12)`, noon, overview and unchanged Center control:
+  `target/outside-art-cinnabar-pond-finished-day{,-2d}.png`.
+- Pewter `(2,18)`, noon, dry boundary/floor control:
+  `target/outside-art-mineral-pond-pewter-final{,-2d}.png`.
+- Blackthorn `(20,12)`, 22h, retained lake and broader ridge control:
+  `target/outside-art-blackthorn-ridge-final-night{,-2d}.png`.
+- Route26 `(9,28)`, noon, native walkable mineral shelf and ridge control:
+  `target/outside-art-route26-ridge-final-day{,-2d}.png`.
+
+The close Cinnabar pair confirms a level native pond meeting its walking shelf,
+with a complete rocky lip and no stretched bank or cliff needles. The overview
+retains the existing Center and open ocean. No visible windows were opened.
+Temporary source/audit JSON, mesh traces and rejected prototype captures were
+removed after recording scalar results. This is acceptance of the corrected
+pond/contact behavior, not the complete outdoor target.
+
+The close Cinnabar view also exposes a separate offshore yellow panel and pale
+rectangular outlines to the northeast. Their source/connection ownership still
+needs investigation before any geometry change. Overall outdoor acceptance
+remains open.
+
+### Water pit final check — 2026-10-18
+
+The production Cinnabar `(15,6)` noon pair confirms the mineral pond meets
+its shelf without a deep pit. Open ocean remains at sea level. Captures
+`target/outside-art-cinnabar-pond-shore-day{,-2d}.png` use muted headless image targets;
+the paired receipt confirms `state_preserved=true`.
+
+A separate experiment generalized connected bridge ownership. Although six
+checks and a five-map audit passed, the Celadon production control exposed an
+unwanted pale edge. The experiment was rejected and removed; the verified pond
+correction remains. Temporary source/audit JSON and source-usage traces were
+removed. No asset, content pack or forest changes were needed. The offshore
+panel and outlines remain unresolved; this is not full outdoor acceptance.
+
+### Native-map gaps cannot lift the ocean — 2026-10-18
+
+The large pale offshore rectangles were gaps in the rendered water, not a
+shoreline pigment defect. A diagnostic surface isolation and camera ray trace
+located four affected Cinnabar halo cells at `(40,-7)`, `(41,-7)`, `(42,-2)` and
+`(42,-1)`. The complete native-map rectangle contained no source samples there,
+but nearest-land domain propagation still supplied varying elevations. Water
+in the repeated camera halo inherited support offsets of 12/24/24/12 at the
+production scale, opening gaps between neighboring water tiles.
+
+The shared datum builder now leaves unauthored gaps at zero. Standing water
+also refuses a clamped land-edge sample outside the native rectangle. Ordinary
+land continuation retains its previous edge behavior; complete elevated ponds
+still consume their authenticated level. All four traced problem points now
+have zero support offset and intersect the same ocean surface at `y=-8`.
+No shoreline texture, model, source pack or forest asset changed.
+
+The production build passes 61 terrace, datum and pond checks. New regressions
+cover gaps between native maps, all sides of the repeated outer halo, retained
+raised-pond support and geometry, unchanged UVs/topology and existing land-edge
+sampling. Nine native-map audits report zero mesh errors across 135 jump
+takeoff/landing samples. Saffron remains flat. Scalar receipt:
+`target/outside-art-ocean-halo-verification.txt`.
+
+Final 800×640 muted headless image captures were personally inspected against
+native 2D with `state_preserved=true`, normal camera settings, orbit 1, zoom 0:
+
+- Cinnabar `(15,6)`, noon: `target/outside-art-ocean-halo-final{,-2d}.png`.
+- Route20, runtime-selected walkable spawn, noon:
+  `target/outside-art-ocean-route20-final{,-2d}.png`.
+- Blackthorn `(20,12)`, 22h: `target/outside-art-ocean-lake-night-final{,-2d}.png`.
+
+Cinnabar's large offshore gaps are gone, and its pond/rocky lip remain intact.
+Blackthorn retains its night lake and native ridge. Route20 still shows a
+smaller bright plot corner beneath a shoreline rock, a distinct unresolved
+contact defect. The flat offshore deck panel also remains. Temporary surface
+probes, source traces, raw audit JSON and diagnostic captures were removed.
+All 12 retired tree assets remain absent. Full outdoor acceptance remains open.
+
+### Shared outdoor cliff finish — 2026-10-18
+
+Review correction: the user subsequently rejected using the Cinnabar cliff
+result as the direction for mountains throughout the app. The mountain
+restoration below supersedes that part of this intermediate review. Preserve
+mountain masses and their own pigment; do not flatten them into shore ledges.
+
+The user rejected the shoreline-only ledge treatment. Town and route shore
+faces now use the shared fractured cliff generator and the same mineral
+shader projection/scale as inland cliffs. Separate shoreline pebble crowns,
+the raised-pond backing crown and shoreline-specific texture overrides were
+removed. Source ownership tags still serve terrain shaping, then resolve to
+the shared material instead of being cleared to an untextured face.
+
+A cliff's dry cap continues its actual adjacent ground. Applying cliff paint
+to every horizontal bank cell made a separate paved-looking band, which was
+rejected during production visual review. The final material pass inherits
+the completed neighboring floor's texture coordinates and pigment at the
+same elevation. It accepts verified native ground/mineral floors, excludes
+buildings and unrelated higher shelves, and caches the choice per source
+cell so shared triangles cannot acquire different materials. It changes no
+positions, normals, indices, source claims, collision or walking support.
+
+Recessed modeled sea-rock beds also close the exposed underside of adjacent
+flat ground. Route20's flat-map policy remains authoritative even when an
+imported neighbor has elevation. Only the missing mineral support face is
+added; neither a new rim nor a water-height transition is introduced.
+
+Forest presentation is explicitly retained through its existing unpainted
+finish. No town-specific assets or new terrain texture files are introduced.
+The old tests requiring a pebble crown are replaced by checks for shared
+cliff relief below the unchanged cap, alongside all existing contact,
+water, source-ownership and footing assertions.
+
+Faces also inherit the common cliff pigment and lighting, including at night;
+verified mineral floors retain their native stone pigment. There is no separate
+shoreline color treatment.
+
+The production build and 110 distinct terrain/material regressions pass. The
+four final muted headless 800×640 production/native-2D pairs were personally
+inspected with `state_preserved=true`: Blackthorn `(20,12)` at 22h, Cinnabar
+`(15,6)` at noon, Route20's runtime-selected walkable spawn at noon, and
+Route26 `(9,28)` at noon. All use orbit 1, zoom 0 and the normal camera.
+The shoreline-only cap band is gone; Blackthorn's bank now shares the night
+cliff finish, and Route20's exposed rock-side corners are closed.
+
+The nine-map control audit reports zero mesh errors across 132 jump samples.
+A final four-map recheck of Cinnabar, Route20, Ecruteak and Saffron also reports
+zero errors, retaining coverage and footing ranges. Scalar receipt and final
+image pairs: `target/outside-art-unified-cliff-verification.txt` and
+`target/outside-art-unified-cliff-*{,-2d}.png`. Temporary probes, source traces,
+raw audit JSON and superseded captures were removed. All 12 retired tree
+assets remain absent. The offshore deck panel remains a separate defect;
+full outdoor acceptance remains open.
+
+### Connected bridges retain their shared structure — 2026-10-18
+
+The yellow offshore panel visible from Cinnabar was a connected Route21 deck
+whose pier renderer depended on the host map name. The exact native Kanto
+`05/4b` deck now uses the existing shared deck, frame, pilings and support
+height across that connection. The native pack confirms all sixteen cells
+of this metatile are the same deck drawing. Ambiguous `78/31` edge art is
+recognized outside its original host only beside an actual authenticated
+deck; standalone city-edge and level classifications remain unchanged.
+This avoids the earlier rejected global edge-classification experiment.
+
+The build and 34 distinct bridge, paving and datum checks pass. The new
+external-pack regression compares complete Route21 pier geometry, ownership,
+water and footing under Route21 and Cinnabar hosts and rejects isolated city
+edges. Five native-map audits report zero mesh errors across 40 jump samples:
+Celadon, Cinnabar, Pewter, Route20 and Route21.
+
+Four muted headless production/native-2D pairs were personally inspected at
+noon, orbit 1 and 800×640 with normal camera settings and preserved state:
+Cinnabar `(15,6)` and Celadon `(16,2)` at zoom 0; Route20 `(13,9)` and Route21
+`(16,22)` at zoom 1. A fresh Celadon before capture confirms no new pale edge;
+Route21's actors stand on the deck, and native 2D confirms its brick drawing.
+The distant Cinnabar panel now shows the same suspended structure. Ocean
+levels, the island pond, the shared cliffs and city buildings are retained.
+
+Evidence: `target/outside-art-connected-deck-{cinnabar,celadon,route20,route21}*`
+and `target/outside-art-connected-deck-verification.txt`. Raw audit JSON was
+removed after recording scalar results. No assets, packs, forests or service
+buildings were changed. All twelve retired tree paths remain absent. The
+offshore panel's missing structure is resolved; its strong source-yellow
+paint and the repetitive coastal boulder rows remain broader visual-review
+candidates. Full outdoor acceptance remains open.
+
+### Mineral bridge finish and tall-grass bank contact — 2026-10-18
+
+The shared Kanto/Johto brick deck now uses the existing live mineral pigment
+instead of reproducing saturated gold/purple source paint with white mortar.
+Recessed joints derive their exposure from the brick pigment. The three-course
+bond, bevels, frame, pilings, source authentication and walking support are
+retained. City paths, granular sand and tournament paving keep their existing
+material branches. This introduces no assets or map-specific model variants.
+
+The Route32 control exposed a separate sky-colored gap at the north landing.
+The shore-contact recognizer expected glyph `03` for Johto tall-grass block
+`03`; the native pack proves its sixteen cells actually use glyph `04`.
+The ignored bank stood at render height 48 beside a deck fixed at 16. Correcting
+that shared identity allows the existing sixteen-source-cell approach to meet
+the bank. No bank, cliff or water datum was changed. The regression checks
+native art, the joined edge, continuous grade, actor support, unchanged water,
+rejection of the wrong glyph and protection against double terrain lifting.
+
+The build and 21 distinct bridge/paving regressions pass. Five muted headless
+800×640 production/native-2D pairs were personally inspected with preserved
+state, orbit 1 and normal camera settings: Route21 `(16,22)` at noon and 22h,
+zoom 1; Route20 `(37,11)` at noon, zoom 0; Route32 `(8,48)` at noon and 22h,
+zoom 1. The Seafoam sand remains granular, the actual cave approach remains
+brick, and Route32's bank join is closed in both lighting conditions. Evidence:
+`target/outside-art-bridge-mineral-{day,night,sand-control,johto-final-day,johto-final-night}*`
+and `target/outside-art-bridge-mineral-verification.txt`.
+
+Final Route26/27/32 audits report zero mesh errors across 68 native jump
+takeoff/landing samples, retaining modeled coverage at 5164/3412/4602 cells.
+Temporary contact probes, raw audit JSON and rejected diagnostic captures have
+been removed after recording scalar results. The user is directing tree and
+forest style with another agent; this pass makes no tree or forest edits.
+Full outdoor acceptance remains open.
+
+### Shared painted timber posts — 2026-10-18
+
+The Fuchsia east-street review at `(30,26)` showed swollen mint-colored caps
+on narrow shafts. The existing shared Kanto capped-post asset now has a flat
+cut crown, a small bevelled shoulder and a sturdier timber shaft. Its original
+576-triangle closed topology, native fitting bounds and height are retained:
+`[-0.28205,0,-0.28205]` to `[0.28205,1.212,0.28205]`. The cap is less than
+1.2 times the shaft radius instead of a large dome. There are no town-specific
+models, added rails, changed post gaps or placement/support changes.
+
+Live native pigment now gives the shaft a weathered warm timber finish and
+the cap a more neutral painted white. The existing model-local wood grain and
+paint finish remain stationary through camera movement and RTC palette changes.
+The authoring script, single runtime mesh, dedicated editable Blender source
+and that source's manifest entry were updated together. Only the capped-post
+record was replaced; unrelated source records and forest assets were retained.
+
+All ten capped-post regressions pass, including closed edges, positive volume,
+winding, flat crown normals, crisp shaft facets, unchanged fitting envelope,
+four source blocks/fourteen courses, open course gaps, support and source
+immutability, live day/night paint and unknown/cropped-art rejection. The
+Blender rebuild reports one closed component, eight materials, 576 triangles
+and volume `0.2289288821`. The owned source hashes validate. The global
+`tools/johto_art_sources.py --check` still fails on the pre-existing unrelated
+`gym-scenery-kit.blend` identity mismatch; that source was not changed.
+
+Three muted headless 800×640 production/native-2D pairs were personally
+inspected with preserved state, orbit 1, zoom 0 and normal camera settings:
+Fuchsia `(30,26)` at noon and 22h, and Pallet `(10,10)` at noon. The caps read
+as cut painted timber rather than rounded ornaments, retain night readability,
+and keep their native spacing in both locations. Fuchsia/Pallet/Route13 audits
+report zero mesh errors across 32 native jump samples, consuming 200/32/800
+source cells with the same shared post family. These are post-specific visual
+checks. Parallel tree edits produced black canopies in these captures; tree
+assets remain with the user's other agent and are outside this acceptance.
+
+Evidence: `target/outside-art-timber-post-{fuchsia-day,fuchsia-night,pallet-day}*`
+and `target/outside-art-timber-post-verification.txt`. Raw map audits and the
+temporary authoring workspace were removed after recording scalar results.
+Overall outdoor acceptance remains open.
+
+
+### Softer shared house-roof paint — 2026-10-18
+
+Ordinary Kanto hip roofs and flat-house pans now share a muted blue-gray
+mineral paint response to the authenticated live source pigment. This reduces
+the dominant cyan seen in Pallet/Fuchsia while retaining the native hue and
+night exposure. The existing hip-only desaturation was replaced by that shared
+response. Roof geometry, physical ceramic courses, ridge/height, source
+guards, facade/window roles and placement/support are unchanged. The helper
+has exactly two callers: the Kanto house and flat-house appenders. It is not a
+global shader or service-building material change.
+
+Eight existing house/roof/flat-house/service-binding checks and the production
+build pass. Four muted headless 800×640 production/native-2D pairs were
+personally inspected with preserved state, orbit 1, zoom 0 and normal camera:
+Fuchsia `(30,26)` at noon and 22h; Pallet `(10,10)` at noon; Cinnabar `(12,12)`
+at noon. Roof relief remains readable by day and night, with native lamps
+retained. Cinnabar's Center was compared to the approved prior pond-overview
+capture: its red roof, awning, doors, windows and walls retain their form.
+The native Center/Mart binding test and the two-caller scope guard the service
+assets; no new Mart-specific visual acceptance is claimed.
+
+Evidence: `target/outside-art-house-roof-{fuchsia-day,fuchsia-night,pallet-day,center-control}*`
+and `target/outside-art-house-roof-verification.txt`. No assets, packs, terrain,
+water or trees were edited in this pass. Fuchsia/Pallet foliage is green in
+the latest captures during the parallel tree work, which remains with the
+user's other agent. All twelve retired tree paths remain absent.
+
+Full outdoor acceptance remains open. The cottage foundation lawn strips
+beside native quiet paths in Pallet/Fuchsia deserve a source-underlay check;
+that is separate from this roof material correction, and genuine flower-plot
+lawn must be preserved.
+
+
+### Restored mountain masses and Cerulean river level — 2026-10-18
+
+The user rejected flattening the mountains behind northern Cerulean. Kanto's
+permanent rock recognition, original ridge profile and rise-weighted mainland
+pigment are restored. Source-owned cave mouths and ground contacts retain their
+openings, and walking support remains independent of decorative mountain relief.
+The shoreline shader no longer promotes every bank into the canyon material.
+Cinnabar's volcanic pigment stays local rather than becoming a mountain default.
+
+The river needed a complete-source height calculation, not another cliff restyle.
+Rock-lined inland bodies now resolve whether the connected maps leave them open
+or fully enclose them. Each connected body has one level at its real walkable
+rim. Open inland continuation carries explicit, validated water ownership through
+native gaps, camera borders, worker messages and terrain-cache invalidation.
+Separate closed bodies keep their own levels. Oceans retain sea level and
+waterfall pools keep their separate authored treatment. Finite inland shelves do
+not borrow the route-wide northward course extrapolation from a distant ledge.
+
+Both the bridge deck and its water underlay use that same river datum. Structures
+already fitted to their deck cannot receive a second land-height lift merely
+because the river places them above an old fixed-height cutoff. Native deck
+corners remain valid; offshore continuation cannot borrow a high land-edge level.
+
+Production headless, muted 3D/native-2D pairs were personally inspected at
+Cerulean `(20,4)` and `(31,11)`, noon, orbit 1, zoom 0, 1280×960. Both preserve
+state. The final files are `target/outside-art-cerulean-corrected-{bridge,cottage}`
+with `.png`, `-2d.png` and `.paired-state.txt` suffixes. A Cinnabar `(12,12)`
+control retained the ocean baseline and Center model while showing restored
+volcanic mass; this is not full-island visual acceptance. All captures remained
+offscreen and no tree/forest assets were edited.
+
+All 91 focused Rust checks pass, including complete closed-river recognition,
+open continuation, bridge clearance/underlay, high-deck fitting, source masks,
+worker bulk transport, cache invalidation and invalid-metadata rejection. Six
+native map controls preserve 82 actual jump takeoff/landing checks with no audit
+errors; the final Cerulean/Route24 recheck preserves 12. Saffron remains flat and
+Route26 retains its directed drops. Raw catalog/source diagnostics were removed.
+The scalar receipt is `target/outside-art-cerulean-river-verification.txt`.
+
+Route 24 river-bank joins were then checked at `(4,8)`, noon, orbit 1,
+zoom 0. The raised river had incorrectly activated the rigid mineral-pond
+bank fit, separating the bank from the graded grass shelf beside the stairs.
+That fit now requires an actual native mineral rim. Ordinary river banks retain
+their land-corner heights; the water datum and cliff finish are unchanged.
+The corrected `target/outside-art-route24-shelf-fixed` 3D/native-2D pair closes
+the visible openings. The matching Cerulean `(31,11)` cottage control is
+`target/outside-art-cerulean-bank-control`. Both pairs were inspected offscreen
+with state preserved. All 31 terrace tests pass, including the new graded-bank
+regression and the existing rigid mineral-pond regression. No forest assets
+or implementation were edited.
+
+## Shore backing at bridge corners — 2026-10-18
+
+Fresh Route 25 views at `(20,8)` and Bill's cottage `(47,6)` exposed a pale
+triangle below the bank at the cottage bridge's west corner. Final production
+mesh inspection showed the cap at height 48 while one backing endpoint sampled
+the neighboring bridge's zero terrain datum. The shared shoreline backing now
+samples both endpoints just inside its actual neighboring bank cell, matching
+the cap's ownership. Face positions and materials stay in place; bridge support,
+water levels, buildings, posts and forests are unchanged. Exploratory return-wall
+and cap-material changes did not close the opening and were removed.
+
+The final headless, muted production 3D/native-2D pairs were personally inspected
+at Route 25 `(47,6)` and Route 24 `(4,8)`, noon, orbit 1, zoom 0, 1280×960.
+Both preserve state. The triangle is closed, and the earlier Route 24 shelf
+repair remains intact. Evidence is `target/outside-art-route25-bank-endpoint-fixed*`
+and `target/outside-art-route24-bank-endpoint-control*`. All 43 focused checks
+pass: 32 terrace tests, seven elevated-pier tests and four enclosed-pond tests.
+The new regression directly reproduces the high bank/zero bridge endpoint,
+checks both bank contacts and preserves the water datum and flat-bank control.
+Temporary geometry probes and raw audit catalogs were removed. The retired
+tree assets and deleted renders directory remain absent. Overall outdoor
+acceptance remains open.
+
+## Flat shoreline-cap contacts beside sea rocks — 2026-10-18
+
+Vermilion `(20,24)` exposed pale triangular openings at two walkway/rock
+contacts. The recessed-rock closure pass admitted ordinary flat lawn and path
+donors but excluded authenticated native shoreline-bank glyphs. These caps now
+receive the same concealed rocky side from the existing sea level to the dry
+cap. The shared predicate still requires a modeled recessed rock bed, a flat
+neighbor and an authenticated bank drawing. It adds no cap, rim, water plane,
+height change or town-specific asset. Buildings and forest work are untouched.
+
+All 33 terrace tests pass. The new native-bank regression checks closure within
+the existing rock relief envelope, exact top/toe contact, and unchanged water
+geometry, footing and ownership. The initial test's planar-face tolerance was
+corrected to admit the existing fractured rock relief; the implementation does
+not flatten that relief.
+
+Production headless, muted 3D/native-2D pairs were personally inspected at
+Vermilion `(20,24)`, 12h and 22h, plus Route 20/Seafoam `(37,11)`, 12h,
+orbit 1, zoom 0, 1280×960. All preserve state. The Vermilion openings are closed;
+Seafoam retains its coastal datum, mountain mass and cave approach. Evidence:
+`target/outside-art-vermilion-bank-contact-{fixed,night}*` and
+`target/outside-art-harbor-bank-seafoam-control*`. Dense harbor rock groups still
+show square-looking shallow-water shading in daylight. That optical issue is
+separate from the repaired geometry and remains open, along with overall
+outdoor acceptance.
+
+## Sea-rock contact and land-depth optics — 2026-10-18
+
+The remaining broad pale patches beneath sea-rock groups were isolated with
+an offscreen shader diagnostic: replacing shore distance with open water
+removed them. The retained field was rasterizing small model feet into binary
+dry samples and using those same contacts to imply broad shallow ground.
+
+Complete authenticated sea-rock drawings now seed signed distances to their
+fitted model's outer footprint. Internal triangulation edges do not become
+shorelines. The same four-sample RGBA texture carries contact distance in R
+and actual land distance in G. Contact still damps waves and carries a thin,
+broken wash; broad depth tint and caustic strength follow real land. Small
+rock contacts have a narrower, quieter wash than a bank. Ordinary banks keep
+identical contact/depth values. Source fallback guards, native rock placement,
+mesh geometry, water height, swimming support, source clocks and live palette
+selection remain intact. No town-specific assets or forest changes were made.
+
+All 31 focused checks pass: 15 shoreline tests and 16 native water/palette/phase
+tests. New coverage checks the actual model-contour distances at retained
+samples, signed distance without internal triangle seams, open sea depth under
+isolated rocks, preserved real-land shallows, and both channels across a
+streamed crop. Existing worker/background image preparation comparisons,
+incomplete/custom source controls, piers, ferries and source animation checks
+also pass. Texture dimensions and image count are unchanged; preparation uses
+an additional CPU distance buffer in the existing background path.
+
+Final muted headless production 3D/native-2D pairs were personally inspected
+at Vermilion `(20,24)` at 12h and 22h, and Route 20/Seafoam `(37,11)` at 12h,
+orbit 1, zoom 0, 1280×960. Each preserves state. Rock rows no longer carry the
+former broad beach-like halos offshore; real bank shallows remain visible.
+The prior bank-contact geometry repairs remain closed. Evidence:
+`target/outside-art-vermilion-rock-wash-{day,night}*` and
+`target/outside-art-seafoam-rock-wash-control*`, with test logs
+`target/outside-art-rock-optics-tests.log` and
+`target/outside-art-rock-wash-palette-tests.log`. Diagnostic shaders, images
+and source probes were removed. Retired tree paths and the removed renders
+directory remain absent. This is acceptance of this optical refinement;
+overall outdoor quality acceptance remains open.
+
+## Northern Rock Tunnel source binding — 2026-10-18
+
+The Route 10 north approach showed a flat pixel-art cave mouth and adjacent
+rock strip. The source belongs to Route 9 in the connected scene: native block
+`70` embeds the same four mouth tiles as block `06`, but neither its portal
+nor surrounding cliff had a complete geometric binding. The existing shared
+Kanto portal producer now admits that exact mouth variant. Verified cells in
+the rest of block `70` use the existing plateau and east/south cliff profiles;
+the four mouth cells retain flat walking support. Changed ink and foreign
+atlases are rejected. No town-specific asset, new cliff style, building change,
+forest change or water/elevation policy was introduced.
+
+All 30 focused checks pass: 16 Kanto cliff tests, the portal matrix covering
+four authenticated drawings, 12 mountain controls and the outdoor Kanto
+material/footing control. The new external-pack regression checks every native
+block phase, the four level mouth cells and custom/foreign-source rejection.
+Native audits report no mesher errors. Route 9 gains exactly 16 modeled cells
+(2300 to 2316), with no block-70 cells left as flat source artwork. Native Route 10
+north/south family counts are unchanged; all three maps preserve their footing
+ranges and their 59 directed jump checks. Those ranges do not claim that the
+newly corrected mineral cap cells kept their former flat height. The scalar
+receipt is `target/outside-art-route10-portal-scalars.txt`; raw catalogs were
+removed.
+
+Production headless, muted 3D/native-2D pairs were personally inspected at
+Route 10 north `(9,0)`, noon, orbit 1/zoom 0 and orbit 0/zoom 1, plus the
+southern cave `(8,5)`, noon, orbit 1/zoom 0, all 1280×960. Each preserves state.
+The northern arch now joins the mineral body without a remaining pixel strip;
+the existing southern entrance stays intact. Final evidence is
+`target/outside-art-route10-complete-portal-fixed*`,
+`target/outside-art-route10-portal-front*` and
+`target/outside-art-route10-southern-portal-control*`. The mouth-only
+intermediate was removed. Retired tree assets and the removed renders
+directory remain absent. Overall outdoor acceptance remains open.
+
+## Shared Johto framed notice boards — 2026-10-18
+
+Violet's street signs used the older compact board with three generic raised
+strokes. Three complete Johto source signatures (`45`, `47`, `78`) now use the
+existing modern framed-sign mesh and its live native inscription inset. The
+posts, projecting sill, header and recessed panel read as a physical fixture at
+the normal camera scale. No model, texture or town-specific asset was added.
+Actual source lettering and its changing palette remain in the scene atlas.
+Custom profile ownership retains priority, including New Bark's existing signs.
+
+All eight framed-sign regressions pass across the 13 supported source
+signatures. Coverage includes complete identity and backing, changed/cropped
+drawings, custom ownership, atomic four-cell claims, live text coordinates,
+footing, raised-pier placement, and preserved roots/coverage around clearances.
+Two existing controls now select the intended Kanto/park signatures by identity
+rather than their former list positions. The native Violet audit replaces
+24 legacy sign cells with 24 framed sign cells; all other family counts, total
+modeled coverage, footing range and three jump checks are unchanged. Native
+New Bark still reports its 16 profile-owned legacy sign cells. Both audits have
+no mesher errors. The scalar receipt is
+`target/outside-art-johto-framed-sign-verification.txt`; raw catalogs were removed.
+
+Matched production 3D/native-2D pairs were personally inspected at Violet
+`(18,18)` at 12h and 22h, and Cherrygrove `(23,8)` at 12h, all orbit 1,
+zoom 0, 1280×960. Every pair preserves state. Evidence is
+`target/outside-art-violet-framed-signs-{day,night}*` and
+`target/outside-art-cherrygrove-street-sign-control*`. The initial Cherrygrove
+shore-only view was removed from sign evidence. Violet's initial northern
+channel view remains an exploratory terrain view, not a repaired water defect;
+this pass changes only sign bindings and their tests. Buildings, water/ledge
+implementations and the other agent's forest work are untouched. Captures stayed
+muted and offscreen. Retired tree assets and the removed renders directory
+remain absent. Overall outdoor acceptance remains open.
+
+## Actual Surf users and body immersion — 2026-10-18
+
+The Route 24 location preview at `(4,8)` contains a source Surf sprite but no
+retained field-move user. Its missing 3D rider is not evidence that production
+should invent a Pokémon or restore a generic Surf card. The location was also
+confirmed against the northeast Cerulean cottage at `(31,11)` with an offscreen,
+state-preserving 3D/native-2D pair. The tall river-bank composition remains open;
+this pass does not change its height or finish.
+
+For valid Surf review, the existing production-controller regressions created
+settled Route 44 QA saves by actually using Surf with a non-lead Lapras and with
+Goldeen. These are seeded QA fixtures, not a user's playthrough. Capture must use
+the same pack identity as the save: these fixtures use the completed text-TUI
+pack, whose graphics also render through the production graphical client. The
+browser pack correctly rejects their different modpack identity.
+
+The real Lapras capture exposed a separate defect: its lowest body vertex sat
+on top of the water, leaving its belly and flippers exposed as if it were walking.
+The shared Surf fit now derives a local waterline from the same authenticated
+torso/shell used to find the rider's seat. Forty percent of that body's vertical
+range is immersed, bounded below the carrying surface. Only `SurfMount` receives
+this offset. The rider continues to follow the mount's animated skin; ordinary
+followers, actual Pokédex dimensions, water planes and terrain support stay on
+their existing paths. No species asset or town-specific clone was added.
+
+Five focused regressions pass: the two actual-field-move controller fixtures,
+the body-seat/animated-skin check, the both-trainers/five-species turning and
+dismount check, and the no-generic-avatar-or-mount-card check. The turning test
+now verifies that the body-local waterline meets the water plane while the seat
+remains above it, preserving uniform physical scale and animated rider contact.
+
+Fresh headless, muted production pairs were personally inspected at Route 44
+`(38,4)` for both Lapras and Goldeen, 1280×800, retained save time/facing and
+default saved-session camera. Both report `state_preserved=true`. Lapras now
+sits partly in the water, and Goldeen retains its smaller physical body with
+the trainer seated above it. Evidence is
+`target/outside-art-surf-{lapras,goldeen}-waterline-{2d,3d}.png`; the Lapras
+before image is `target/outside-art-surf-lapras-review-3d.png`. Build and test
+logs remain ignored under `target/`; temporary QA saves were removed after
+verification. Forest implementation, building assets and cliff geometry were
+not edited. Full outdoor acceptance remains unproved.
+
+## Inland banks retain their own authored ledges — 2026-10-18
+
+The river-bank investigation found a real height-ownership defect. Sea-facing
+land already filtered the complete connected-source ledge list to its own dry
+domain, but inland river domains inherited every ledge in that list. A ledge
+across the water could therefore raise an unrelated bank. The new regression
+reproduced the old failure on a flat bank, yielding roughly `0.79` terrace levels
+instead of zero despite that bank having no ledge.
+
+Rock-lined inland river domains now use only ledges whose actual takeoff and
+landing belong to that dry domain, expressed in its local coordinates. The
+regression proves that the opposite bank stays flat, the real ledge retains its
+directed drop, the connected water retains one level, and translating the
+complete map inputs preserves both banks and the water datum. Existing ordinary
+inland/forest treatment remains on its prior path. An exploratory rim-outcrop
+change was removed; this repair does not replace the shared cliff finish.
+
+All 63 focused checks pass: 56 terrace/datum/course/mineral-pond checks and seven
+elevated-pier checks, including their external-pack controls. Six native audits
+retain all 82 jump samples with no mesher errors. Source/model cell counts stay
+the same. Cinnabar's height range and ocean ownership, Route 26's directed
+terraces, and Saffron's flat zero datum retain their previous scalar results.
+Cerulean's native maximum footing changes from `27.1106` to `16`, Route 24's
+from `21.8098` to `17.2480`, and Route 25's from `21.25` to `20.5`. Their native
+river controls now resolve to zero, rather than Cerulean and Route 24 acquiring
+different nonzero river offsets from unrelated land constraints.
+
+Production headless, muted 3D/native-2D pairs were personally inspected at
+Cerulean `(31,11)`, Route 25/Bill's cottage `(47,6)`, and Route 24 `(3,8)`, noon,
+orbit 1, zoom 0, 1280×960. All preserve state. The Route 24 review starts on dry
+ground and retains its actual human actor rather than an unmounted Surf preview.
+Evidence is `target/outside-art-inland-bank-{cerulean,bill,route24}{,-2d}.png`;
+the scalar receipt is `target/outside-art-inland-bank-verification.txt`. Raw
+audit catalogs and discarded experiment logs were removed. No tree/forest
+implementation, building, species asset, cliff texture or water shader edits
+were made in this pass.
+
+This proves a domain-isolation repair, not complete acceptance of the bank's
+appearance. Bill's cottage and the northbound route still show substantial
+straight bank faces, and the mountain backdrop still needs a stronger visual
+review. Overall outdoor quality remains open.
+
+## Native Kanto cliff ink no longer spawns boulders — 2026-10-18
+
+The repeated `$24` ink in Kanto block `$29` is an east-facing cliff beside a
+plateau, not a drawing of round barriers. Removed its modeled boulder and card
+fallback bindings, restored its native mineral plateau/side geometry, and
+removed the obsolete flat mineral apron compensation that otherwise doubled
+Cinnabar's cliff lift. Genuine native land and shoreline round barriers retain
+their existing bindings. The legacy path asset enum remains unbound.
+
+Source-proven permanent Kanto mountains now use the existing shared mineral
+shoulder shaping, retaining their existing pigment and texture. Complete native
+Kanto cave mouths pin their arch seating joint, fading back into the shared
+sculpting outside the opening. The regression checks that the actual portal
+vertices stay seated while remote mountain faces still receive shaping.
+
+The production examples build and 159 unique focused tests pass. Six native
+map audits remove 264 false source-cell boulder claims while preserving real
+land/shore barrier counts and all 34 authored jump samples, with no mesher errors.
+Cinnabar's maximum footing remains 22, Saffron stays at zero, and the native
+Cerulean/Route 24/Route 25 water controls stay at zero. Route 24's blocked mineral
+maximum changes to 21.9387 as the actual native cliff is recognized.
+
+Personally inspected production headless, muted 3D/native-2D pairs at Route 24
+`(3,8)`, Cinnabar `(12,12)`, and Route 10 North `(9,0)`, noon, orbit 1, zoom 0,
+1280×960. All preserve state. Route 24's false left boulder row is gone; the
+final tunnel view retains a closed seating joint around its open cave mouth.
+Evidence is `target/outside-art-kanto-no-false-boulders-{route24-day,cinnabar,tunnel}{,-2d}.png`.
+The compact receipt is `target/outside-art-no-false-cliff-boulders-verification.txt`;
+raw audit catalogs were removed after verification. No forest implementation,
+building assets or water shaders were edited. Full outdoor acceptance remains
+unproved; this pass does not establish final visual acceptance for all six maps.

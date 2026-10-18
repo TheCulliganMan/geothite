@@ -197,7 +197,18 @@ pub(super) fn parse_planter<'a>(
         }
         filtered
     });
+    let link_materials = original.link_materials.map(|roles| {
+        let mut filtered = vec![0; surface.positions.len()];
+        for (old, &new) in remap.iter().enumerate() {
+            if new != u32::MAX { filtered[new as usize] = roles[old]; }
+        }
+        filtered
+    });
     Ok(Model {
+        link_materials,
+        broad_tree_pixels: None,
+        league_wall_pixels: None,
+        harbor_pixels: None,
         shrine_materials,
         theater_stage_materials,
         hall_terminal_pixels,
