@@ -13,6 +13,7 @@ pub use crystal_net::hosted::{
 
 pub const MAX_NAME_BYTES: usize = 32;
 pub const MAX_TOKEN_BYTES: usize = 128;
+const MAX_MODPACK_ID_BYTES: usize = 4096;
 pub const MAX_RATING_RANGE: u32 = 1_000;
 const PRESENCE_RADIUS_X: u32 = 12;
 const PRESENCE_RADIUS_Y: u32 = 10;
@@ -1028,7 +1029,9 @@ fn validate_identity(identity: &ClientIdentity) -> Result<(), String> {
 }
 
 fn validate_modpack_id(value: &str) -> Result<(), String> {
-    if value.len() > MAX_TOKEN_BYTES {
+    // A composed pack retains every manifest ID; bound the composition
+    // separately while preserving the token limit on each component.
+    if value.len() > MAX_MODPACK_ID_BYTES {
         return Err("invalid modpack id".into());
     }
     for manifest in value.split('+') {
@@ -1074,6 +1077,11 @@ mod tests {
     #[test]
     fn composed_modpack_identity_is_accepted_but_empty_segments_are_rejected() {
         assert!(validate_modpack_id("core+all-251-catchable-v1").is_ok());
+        let production = "core-modular+all-251-catchable-v1+solo-evolutions-v1+modern-move-split+competitive-battles+wild-challenge+realtime-clock+player-customization";
+        assert!(production.len() > MAX_TOKEN_BYTES);
+        assert!(validate_modpack_id(production).is_ok());
+        assert!(validate_modpack_id(&"a".repeat(MAX_TOKEN_BYTES + 1)).is_err());
+        assert!(validate_modpack_id(&vec!["a"; MAX_MODPACK_ID_BYTES].join("+")).is_err());
         for invalid in ["+core", "core+", "core++mod", "core/other", "core+bad pack"] {
             assert!(validate_modpack_id(invalid).is_err(), "{invalid}");
         }

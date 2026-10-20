@@ -46,6 +46,28 @@ try {
  assert.equal(state.status.screen,'battle','resumed Route29 grass must start a real wild battle');
  await page.waitForTimeout(5000);state=await observe();
  report.battle=state;assert.ok(state.observe.battle);
+ assert.ok(state.observe.rendered_text.length, 'battle must reach visible presentation after arrow-only input');
+ const press = async () => {
+  await page.keyboard.press('z', {delay: 80});
+  await page.waitForTimeout(350);
+  state=await observe();
+ };
+ const hasMenu = label => state.observe.menus?.some(menu => (menu.entries ?? menu.options)?.some(option => option.includes(label)));
+ for(let i=0;!hasMenu('FIGHT')&&i<40;i++)await press();
+ assert.ok(hasMenu('FIGHT'), 'wild battle must expose production command menu');
+ report.commands=state;
+ await press();
+ for(let i=0;!hasMenu('TACKLE')&&i<20;i++)await press();
+ assert.ok(hasMenu('TACKLE'), 'Fight must expose real move selection');
+ report.moves=state;
+ await press();
+ for(let i=0;i<30;i++) {
+  await page.waitForTimeout(200);state=await observe();
+  if(JSON.stringify(state.observe.battle)!==JSON.stringify(report.moves.observe.battle))break;
+ }
+ report.turn=state;
+ assert.match(report.moves.observe.battle, /TACKLE pp=35/);
+ assert.match(state.observe.battle, /TACKLE pp=34/, 'selected move must consume authoritative PP');
  console.log(JSON.stringify({presentation:state.observe.rendered_text,menus:state.observe.menus,message:state.observe.battle_message}));
  assert.deepEqual(report.errors,[]);assert.deepEqual(report.console,[]);
  await page.screenshot({path:output.replace(/\.json$/,'-battle.png')});

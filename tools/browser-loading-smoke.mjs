@@ -11,7 +11,7 @@ try {
   ['webkit-online-3d', webkit, devices['iPhone 13'], '/?view=3d'],
   ['firefox-online-2d', firefox, {viewport:{width:1280,height:900}}, '/?view=2d'],
   ['chromium-tui-alias', chromium, {viewport:{width:1280,height:900}}, '/tui/'],
- ]) {
+ ].filter(([name]) => !process.env.BROWSER_SMOKE_CASE || name.includes(process.env.BROWSER_SMOKE_CASE))) {
   const browser = await engine.launch({headless:true, args:engine===chromium
    ? process.platform==='darwin'?['--use-angle=metal','--mute-audio']:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--mute-audio'] : undefined});
   const result = {name, path, console:[], errors:[], requests:[], swaps:[]}; reports.push(result);

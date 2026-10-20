@@ -1579,3 +1579,80 @@ fn location_indoor_flag_fixtures_apply_declared_gym_and_basement_layouts() {
         assert!(changed.shell.session().state().flags.is_script_flag_set(flag).unwrap());
     }
 }
+
+#[test]
+fn browser_reload_route29_save_resumes_real_grass_encounters() {
+    std::thread::Builder::new()
+        .stack_size(32 * 1024 * 1024)
+        .spawn(|| {
+            let (mut app, from, _to, facing) = walking_anchor_route29_app_with_run(3);
+            let scratch = AssetRoot::new_temporary_in(std::env::temp_dir()).expect("save scratch");
+            let save = scratch.repository_root.join("route29.crystalsave");
+            {
+                let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+                shell.shell.save(&save).expect("save Route29");
+                if let Some(destination) = std::env::var_os("CRYSTAL_TEST_SAVE_EXPORT") {
+                    std::fs::copy(&save, destination)
+                        .expect("export disposable browser resume fixture");
+                }
+                let resumed = initialize_bevy_runtime_shell(
+                    shell.asset_root.clone(),
+                    shell.shell.runtime().clone(),
+                    BevyShellStart::LoadSave {
+                        save_path: save.clone(),
+                    },
+                    BevyShellConfig::default(),
+                )
+                .expect("browser automatic resume");
+                *shell = resumed;
+                assert!(
+                    !shell
+                        .shell
+                        .session()
+                        .state()
+                        .flags
+                        .is_engine_flag_set("STATUSFLAGS_NO_WILD_ENCOUNTERS_F")
+                        .expect("wild encounter gate")
+                );
+                assert!(
+                    !shell.shell.session().state().party.pokemon.is_empty(),
+                    "starter must survive Continue"
+                );
+                shell.shell.session_mut().state_mut().random_state = Default::default();
+                *shell.shell.session_mut().divider_mut_for_tests() =
+                    crate::core::random::RuntimeDividerSource::replay(vec![0; 65536]);
+            }
+            for _ in 0..256 {
+                let direction = {
+                    let shell = app.world().resource::<BevyRuntimeShell>();
+                    if shell.shell.session().state().battle
+                        != crate::core::state::BattleMemory::Inactive
+                    {
+                        break;
+                    }
+                    if shell.shell.session().snapshot().tile == from {
+                        facing
+                    } else {
+                        visible_opposite_direction(facing)
+                    }
+                };
+                let key = match direction {
+                    Direction::Up => KeyCode::ArrowUp,
+                    Direction::Down => KeyCode::ArrowDown,
+                    Direction::Left => KeyCode::ArrowLeft,
+                    Direction::Right => KeyCode::ArrowRight,
+                };
+                press_key_for_runtime_hotkey_app(&mut app, key);
+                assert_eq!(app.world().resource::<BevyRuntimeShell>().last_error, None);
+            }
+            let shell = app.world().resource::<BevyRuntimeShell>();
+            assert!(
+                shell.shell.session().state().battle != crate::core::state::BattleMemory::Inactive,
+                "resumed Route29 grass must start the authoritative wild battle; cooldown={}",
+                shell.shell.session().state().wild_encounter_cooldown
+            );
+        })
+        .expect("spawn reload regression")
+        .join()
+        .expect("reload regression");
+}
