@@ -81,6 +81,13 @@ pub(super) fn append_over_water(mesh:&mut TerrainMeshData,points:[[f32;3];4],nor
     cells:&[&VisualTile],g:&GridGeometry,index:usize,origin:[i32;2])->bool {
     append_impl(mesh,points,normal,cells,g,index,origin,true)
 }
+pub(super) fn append_over_water_at(mesh:&mut TerrainMeshData,points:[[f32;3];4],normal:[f32;3],
+    cells:&[&VisualTile],g:&GridGeometry,index:usize,origin:[i32;2],level:f32)->bool {
+    let start=mesh.solid.positions.len();
+    if !append_over_water(mesh,points,normal,cells,g,index,origin) {return false;}
+    for p in &mut mesh.solid.positions[start..] {p[1]+=level;}
+    true
+}
 fn append_impl(
     mesh: &mut TerrainMeshData,
     points: [[f32; 3]; 4],

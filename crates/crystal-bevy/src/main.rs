@@ -174,6 +174,8 @@ async fn run_browser() -> Result<()> {
         // Dense is a same-build QA control; authored models stay full-detail.
         let dense = params.as_ref().and_then(|params| params.get("understory")).as_deref() == Some("dense");
         crystal_voxel_view::configure_understory_density(dense).map_err(anyhow::Error::msg)?;
+        crystal_voxel_view::configure_route_shadow_filter(params.as_ref()
+            .and_then(|params| params.get("route-shadows")).as_deref() == Some("gaussian"));
         let tree_depth = params.as_ref().and_then(|params| params.get("tree-depth-prepass")).as_deref() == Some("on");
         crystal_voxel_view::configure_tree_depth_prepass_diagnostics(tree_depth)
             .map_err(anyhow::Error::msg)?;

@@ -186,6 +186,7 @@ impl PersonRig {
         self.refined_body.get_or_init(|| {
             let _trace = crate::loading_trace::span("actor.refine_shared_body", || serde_json::json!({}));
             let mut body = RefinedBody { mesh:self.mesh.clone(), ids:self.ids.clone(), weights:self.weights.clone() };
+            crate::limb_surface::refine(self, &mut body.mesh, &mut body.ids, &mut body.weights);
             crate::hand_surface::smooth(self, &mut body.mesh, &mut body.ids, &mut body.weights);
             crate::hand_digits::sculpt(self, &mut body.mesh, &mut body.ids, &mut body.weights);
             crate::head_surface::smooth(self, &mut body.mesh, &mut body.ids, &mut body.weights);

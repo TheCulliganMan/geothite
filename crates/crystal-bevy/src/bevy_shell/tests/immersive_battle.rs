@@ -371,7 +371,12 @@ fn immersive_source_animation(
     move_id: &str,
 ) -> VisibleMoveAnimation {
     let (animation_label, total_frames, sound_events, cry_events, object_events, bg_events) =
-        visible_move_animation_definition(snapshot, move_id, 0).expect("actual pack move script");
+        visible_move_animation_definition(snapshot, move_id, 0).unwrap_or_else(|| {
+            let index = snapshot.moves.iter().find(|m| m.move_id == move_id).map(|m| m.source_index);
+            panic!("actual pack move script {move_id}: source index {index:?}, table label {:?}, catalog {} scripts",
+                index.and_then(|i| snapshot.presentation.battle_animation_table.get(usize::from(i))),
+                snapshot.presentation.battle_animations.len());
+        });
     VisibleMoveAnimation {
         trigger_message: String::new(),
         move_id: move_id.into(),
@@ -2375,4 +2380,43 @@ fn battle_entry_prepares_the_upcoming_scene_without_presenting_or_advancing_it()
     world.run_system_once(clear_inactive_visual_battle).unwrap();
     assert!(!world.resource::<VisualBattleFrame>().active,
         "a stale presented battle still retires during a field transition");
+}
+
+#[test]
+fn immersive_battle_faint_and_return_keep_three_dimensional_scene() {
+    let mut shell = immersive_battle_fixture();
+    let snapshot = shell.shell.snapshot().unwrap();
+    let before = snapshot.state_checksum.clone();
+    for (move_id, effect) in [("FAINT_MON", "BATTLE_BG_EFFECT_FAINT_MON"),
+        ("RETURN_MON", "BATTLE_BG_EFFECT_RETURN_MON"),
+        ("REMOVE_MON", "BATTLE_BG_EFFECT_REMOVE_MON"),
+        ("WATER_GUN", "BATTLE_BG_EFFECT_BATTLEROBJ_2ROW")] {
+        for player_move in [false, true] {
+            for tick in [1, 3, 7, 13] {
+                shell.visible_move_animations = VecDeque::from([VisibleMoveAnimation {
+                    trigger_message: String::new(), move_id: move_id.into(),
+                    animation_label: format!("BattleAnim_{move_id}"), player_move,
+                    started: true, waiting_for_hp: false, frame: tick, total_frames: 40,
+                    sound_events: Vec::new(), next_sound_event: 0,
+                    cry_events: Vec::new(), next_cry_event: 0, object_events: Vec::new(),
+                    bg_events: vec![VisibleMoveBgEvent { frame: 0, effect_id: effect.into(),
+                        duration: 0, target: "BG_EFFECT_USER".into(), param: 0, incremented: false }],
+                    actor_species_override: None, actor_shiny_override: None,
+                }]);
+                let frame = extract_immersive_battle_fixture(&shell, &snapshot, true);
+                assert!(frame.active && !frame.use_source_scene, "{move_id} tick {tick}");
+                frame.validate().unwrap();
+                if move_id == "RETURN_MON" && tick >= 12 {
+                    assert!(!frame.battlers[usize::from(!player_move)].as_ref().unwrap().visible);
+                }
+                if move_id != "RETURN_MON" || tick < 12 {
+                    assert!(frame.cues.iter().any(|cue| cue.kind == VisualBattleCueKind::SourcePicture
+                        && cue.side == if player_move {VisualBattleSide::Player} else {VisualBattleSide::Enemy}),
+                        "{move_id} player={player_move} tick={tick}");
+                }
+                assert_eq!(shell.shell.snapshot().unwrap().state_checksum, before,
+                    "source clipping must not advance gameplay");
+            }
+        }
+    }
 }

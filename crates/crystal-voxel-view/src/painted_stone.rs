@@ -8,7 +8,7 @@ use bevy::{
 
 pub(super) fn image() -> Image {
     decode(include_bytes!(
-        "../../../assets/terrain/painted-sandstone.png"
+        "../../../assets/terrain/painted-granite.png"
     ))
 }
 

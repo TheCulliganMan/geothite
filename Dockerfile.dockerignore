@@ -33,3 +33,8 @@
 !art/
 !art/battles/
 !art/battles/arena-palettes.json
+
+!tools/version-tui-bundle.sh
+!tools/tui-ascii/
+!tools/tui-ascii/package.json
+!tools/tui-ascii/package-lock.json

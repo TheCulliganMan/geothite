@@ -153,5 +153,69 @@ fn summit_panorama_reads_the_complete_connected_outdoors_without_changing_the_se
         image_count,
         "idle extraction must not rebuild the panorama atlases"
     );
+    let initial_images=images.len();
+    let mut progressive=crystal_voxel_view::SummitBackdrop::default();
+    for count in 1..=backdrop.maps.len() {
+        let previous_handles=progressive.maps.iter().map(|m|m.frame.map_texture.id()).collect::<Vec<_>>();
+        progressive=summit_backdrop::source_maps_budgeted(&snapshot,&shell,&mut cache,&mut images,&progressive,1)
+            .unwrap().expect("each bounded update publishes one new source map");
+        assert_eq!(progressive.maps.len(),count);
+        assert_eq!(progressive.source_pending,count<backdrop.maps.len());
+        assert_eq!(progressive.border.is_some(),count==backdrop.maps.len());
+        assert_eq!(progressive.revision,backdrop.revision);
+        assert_eq!(progressive.animation_frame,backdrop.animation_frame,
+            "all chunks keep the authenticated phase chosen at the start");
+        for (old,map) in previous_handles.iter().zip(&progressive.maps) {
+            assert_eq!(*old,map.frame.map_texture.id(),"completed atlases must not be rebuilt");
+        }
+        shell.lcd_animation_frame=shell.lcd_animation_frame.wrapping_add(17);
+    }
+    assert_eq!(images.len(),initial_images+backdrop.maps.len()+1);
+    for (a,b) in backdrop.maps.iter().zip(&progressive.maps) {
+        assert_eq!(a.origin_source,b.origin_source);
+        assert_eq!(a.frame.map_id,b.frame.map_id);
+        assert_eq!(a.frame.grid_size,b.frame.grid_size);
+        assert_eq!(a.frame.tiles,b.frame.tiles);
+        assert_eq!(a.frame.jump_ledges,b.frame.jump_ledges);
+        assert_eq!(a.frame.terrace_datum,b.frame.terrace_datum);
+        assert_eq!(images.get(&a.frame.map_texture).unwrap().data,images.get(&b.frame.map_texture).unwrap().data);
+    }
+    assert_eq!(images.get(&backdrop.border.as_ref().unwrap().map_texture).unwrap().data,
+        images.get(&progressive.border.as_ref().unwrap().map_texture).unwrap().data);
+    assert!(summit_backdrop::source_maps_budgeted(&snapshot,&shell,&mut cache,&mut images,&progressive,1).unwrap().is_none());
+    let mut night=snapshot.clone();
+    night.progression.time.time_of_day=crystal_runtime::core::world::encounters::TimeOfDay::Night;
+    let restarted=summit_backdrop::source_maps_budgeted(&night,&shell,&mut cache,&mut images,&progressive,1).unwrap().unwrap();
+    assert!(restarted.source_pending);
+    assert_eq!(restarted.maps.len(),1);
+    assert_ne!(restarted.revision,progressive.revision);
+    assert_eq!(restarted.animation_frame,shell.lcd_animation_frame);
     assert_eq!(shell.shell.snapshot().unwrap().state_checksum, before);
+    shell.cached_snapshot=Some((shell.snapshot_revision,Arc::new(snapshot.clone())));
+    let mut app=App::new();
+    app.insert_resource(shell).insert_resource(cache).insert_resource(images)
+        .insert_resource(crystal_voxel_view::SummitBackdrop::default())
+        .insert_resource(crystal_voxel_view::VoxelViewSettings {enabled:true,..default()})
+        .insert_resource(crystal_voxel_view::VoxelViewStatus::default())
+        .insert_resource(crystal_render_api::VisualWorldFrame {active:true,map_id:"TinTower7F".into(),..default()})
+        .add_systems(Update,summit_backdrop::publish);
+    app.update();
+    assert!(app.world().resource::<crystal_voxel_view::SummitBackdrop>().maps.is_empty(),
+        "the initial room gets priority over speculative catalog work");
+    *app.world_mut().resource_mut::<crystal_voxel_view::VoxelViewStatus>()=
+        crystal_voxel_view::VoxelViewStatus {active:true,active_frames:30,..default()};
+    app.update();
+    assert_eq!(app.world().resource::<crystal_voxel_view::SummitBackdrop>().maps.len(),1);
+    app.world_mut().resource_mut::<crystal_render_api::VisualWorldFrame>().map_id="TinTower8F".into();
+    app.update();
+    assert_eq!(app.world().resource::<crystal_voxel_view::SummitBackdrop>().maps.len(),2,
+        "stairs preserve progressive publication instead of restarting it");
+    app.world_mut().resource_mut::<crystal_voxel_view::VoxelViewSettings>().enabled=false;
+    app.update();
+    assert_eq!(app.world().resource::<crystal_voxel_view::SummitBackdrop>().maps.len(),2);
+    app.world_mut().resource_mut::<crystal_render_api::VisualWorldFrame>().map_id="TinTower6F".into();
+    app.update();
+    assert!(app.world().resource::<crystal_voxel_view::SummitBackdrop>().revision.is_none());
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().shell.snapshot().unwrap().state_checksum,before);
+
 }

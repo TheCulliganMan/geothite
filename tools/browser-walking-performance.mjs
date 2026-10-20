@@ -277,13 +277,17 @@ try {
   if (scenario === 'stationary') await page.waitForTimeout(10000);
   let midpoint = null;
   let leg = 0;
+  const legMs = Number(process.env.WALK_LEG_MS ?? 1000);
+  assert.ok(Number.isFinite(legMs) && legMs >= 250 && legMs <= 10000);
+  report.walkLegMs = legMs;
   const walkingKeys = process.env.WALK_AXIS === 'vertical'
     ? ['ArrowUp', 'ArrowDown', 'ArrowUp', 'ArrowDown', 'ArrowUp', 'ArrowDown']
     : ['ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft'];
+  if (process.env.WALK_FIRST === 'negative') walkingKeys.reverse();
   for (const key of (scenario === 'stationary' ? [] : scenario === 'lab-exit' ? ['ArrowDown', 'ArrowDown', 'ArrowDown'] : scenario === 'route-exit' ? Array(3).fill('ArrowLeft') : walkingKeys)) {
     await page.keyboard.down(key);
     if (leg === 0) report.walkTraceStartFrame = await beginTraceWindow();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(legMs);
     await page.keyboard.up(key);
     ++leg;
     if (scenario === 'walking') {

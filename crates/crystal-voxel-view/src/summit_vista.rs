@@ -21,6 +21,9 @@ pub struct SummitBackdropMap {
 #[derive(Resource, Default)]
 pub struct SummitBackdrop {
     pub revision: Option<u64>,
+    /// Source maps arrive progressively, before their geometry is complete.
+    pub source_pending: bool,
+    pub animation_frame: u64,
     pub tower_core: IVec2,
     pub maps: Vec<SummitBackdropMap>,
     /// One real exterior border metatile, meshed once and shared outside maps.
@@ -66,7 +69,7 @@ pub struct SummitBackdropStatus {
 }
 #[derive(Component)]
 struct SummitVista;
-#[derive(Default)]
+#[derive(Resource, Default)]
 struct Build {
     revision: Option<u64>,
     profile_revision: u64,
@@ -81,9 +84,25 @@ struct Build {
             >,
         >,
     >,
+    publication: Option<MapPublication>,
     solid: Option<Handle<VoxelMaterial>>,
     water: Vec<(Handle<VoxelMaterial>, usize)>,
 }
+/// These upper floors provide lead time for the full roof panorama.
+pub fn summit_preload_interior(map: &str) -> bool {
+    // This async pool is a CPU worker on native. Do not move whole-map meshing
+    // onto a browser's frame thread as speculative work.
+    #[cfg(not(target_arch = "wasm32"))]
+    { matches!(map, "TinTower7F" | "TinTower8F" | "TinTower9F") }
+    #[cfg(target_arch = "wasm32")]
+    { let _ = map; false }
+}
+
+/// Give the foreground scene and its initial GPU preparation priority.
+pub fn summit_preload_foreground_ready(status: &VoxelViewStatus) -> bool {
+    status.active && !status.terrain_pending && !status.profiles_pending && status.active_frames >= 30
+}
+
 pub(crate) fn enabled(frame: &VisualWorldFrame) -> bool {
     frame.active
         && frame.map_id.as_ref() == "TinTowerRoof"
@@ -156,6 +175,7 @@ pub(crate) fn tower_attachment(
 pub(super) fn register(app: &mut App) {
     app.init_resource::<SummitBackdrop>()
         .init_resource::<SummitBackdropStatus>()
+        .init_resource::<Build>()
         .add_systems(Update, sync.after(crate::sync_voxel_view))
         .add_systems(Update, summit_fog.after(crate::sync_voxel_atmosphere));
 }
@@ -177,34 +197,60 @@ fn summit_fog(
         };
     }
 }
-fn spawn_mesh(
-    commands: &mut Commands,
-    meshes: &mut Assets<Mesh>,
+const PRELOAD_PLACEMENTS_PER_FRAME: usize = 8;
+const ENTRY_PLACEMENTS_PER_FRAME: usize = 128;
+
+struct MapPublication {
     root: Entity,
-    mesh: crate::mesh::SurfaceMeshData,
-    material: Handle<VoxelMaterial>,
-    translations: &[Vec3],
-) {
-    if mesh.indices.is_empty() {
-        return;
+    translations: Vec<Vec3>,
+    next: usize,
+    surfaces: Vec<(Handle<Mesh>, Handle<VoxelMaterial>)>,
+    trees: Vec<(Handle<Mesh>, Vec<[f32; 3]>)>,
+    groves: Vec<crate::occluder_fade::PreparedGroup>,
+    solid: Handle<VoxelMaterial>,
+    textured: Handle<VoxelMaterial>,
+}
+impl MapPublication {
+    // Bound repeated border placement without duplicating its uploaded assets.
+    fn advance(&mut self, commands: &mut Commands, meshes: &mut Assets<Mesh>,
+        materials: &mut Assets<VoxelMaterial>, budget: usize) -> bool {
+        let end = (self.next + budget).min(self.translations.len());
+        for &translation in &self.translations[self.next..end] {
+            for (mesh, material) in &self.surfaces {
+                self.spawn_draw(commands, mesh.clone(), material.clone(), translation);
+            }
+            for (mesh, origins) in &self.trees {
+                for at in origins {
+                    self.spawn_draw(commands, mesh.clone(), self.textured.clone(),
+                        translation + Vec3::from_array(*at));
+                }
+            }
+            let root = commands.spawn((Transform::from_translation(translation),
+                Visibility::Inherited)).id();
+            commands.entity(self.root).add_child(root);
+            for leaf in crate::occluder_fade::spawn_groups(commands, meshes, materials,
+                root, self.groves.clone(), self.solid.clone(), None) {
+                commands.entity(leaf).insert((NotShadowCaster, NotShadowReceiver));
+            }
+        }
+        self.next = end;
+        end == self.translations.len()
     }
-    let mesh = meshes.add(mesh.into_mesh());
-    for &translation in translations {
-        let entity = commands
-            .spawn((
-                Mesh3d(mesh.clone()),
-                MeshMaterial3d(material.clone()),
-                Transform::from_translation(translation),
-                bevy::camera::visibility::RenderLayers::layer(VOXEL_RENDER_LAYER),
-                NotShadowCaster,
-                NotShadowReceiver,
-            ))
-            .id();
-        commands.entity(root).add_child(entity);
+    fn spawn_draw(&self, commands: &mut Commands, mesh: Handle<Mesh>,
+        material: Handle<VoxelMaterial>, translation: Vec3) {
+        let entity = commands.spawn((Mesh3d(mesh), MeshMaterial3d(material),
+            Transform::from_translation(translation),
+            bevy::camera::visibility::RenderLayers::layer(VOXEL_RENDER_LAYER),
+            NotShadowCaster, NotShadowReceiver)).id();
+        commands.entity(self.root).add_child(entity);
     }
 }
-fn publish_map(
-    commands: &mut Commands,
+fn prepare_surface(meshes: &mut Assets<Mesh>,
+    surfaces: &mut Vec<(Handle<Mesh>, Handle<VoxelMaterial>)>,
+    mesh: crate::mesh::SurfaceMeshData, material: Handle<VoxelMaterial>) {
+    if !mesh.indices.is_empty() { surfaces.push((meshes.add(mesh.into_mesh()), material)); }
+}
+fn prepare_map(
     meshes: &mut Assets<Mesh>,
     images: &mut Assets<Image>,
     materials: &mut Assets<VoxelMaterial>,
@@ -214,7 +260,7 @@ fn publish_map(
     solid: Handle<VoxelMaterial>,
     groves: Vec<crate::occluder_fade::PreparedGroup>,
     border_positions: Option<&[IVec2]>,
-) -> Handle<VoxelMaterial> {
+) -> MapPublication {
     let frame = &source.frame;
     if border_positions.is_some() {
         // The fifth source column supplies real lawn paint to the native grove
@@ -274,6 +320,7 @@ fn publish_map(
     // Actual connected maps own their own complete rectangles. Repeating one
     // map's apron across its neighbors would cover their water and lower ground.
     terrain.background = None;
+    let mut surfaces = Vec::new();
     for surface in std::mem::take(&mut terrain.scenery) {
         let mut material = crate::textured_terrain_material(images.add(surface.texture.image()));
         material.extension.cave_reveal = Vec4::new(0., 0., 2., 0.);
@@ -283,82 +330,17 @@ fn publish_map(
             material.base.cull_mode = None;
         }
         let handle = materials.add(material);
-        spawn_mesh(commands, meshes, root, surface.mesh, handle, &translations);
+        prepare_surface(meshes, &mut surfaces, surface.mesh, handle);
     }
-    for instance in std::mem::take(&mut terrain.tree_instances) {
-        let mesh = meshes.add(instance.mesh.into_mesh());
-        for &translation in &translations {
-            for at in &instance.origins {
-                let entity = commands
-                    .spawn((
-                        Mesh3d(mesh.clone()),
-                        MeshMaterial3d(textured.clone()),
-                        Transform::from_translation(translation + Vec3::from_array(*at)),
-                        bevy::camera::visibility::RenderLayers::layer(VOXEL_RENDER_LAYER),
-                        NotShadowCaster,
-                        NotShadowReceiver,
-                    ))
-                    .id();
-                commands.entity(root).add_child(entity);
-            }
-        }
-    }
-    for &translation in &translations {
-        let grove_root = commands
-            .spawn((
-                Transform::from_translation(translation),
-                Visibility::Inherited,
-            ))
-            .id();
-        commands.entity(root).add_child(grove_root);
-        for leaf in crate::occluder_fade::spawn_groups(
-            commands,
-            meshes,
-            materials,
-            grove_root,
-            groves.clone(),
-            solid.clone(),
-            None,
-        ) {
-            commands
-                .entity(leaf)
-                .insert((NotShadowCaster, NotShadowReceiver));
-        }
-    }
-    spawn_mesh(
-        commands,
-        meshes,
-        root,
-        terrain.textured,
-        textured.clone(),
-        &translations,
-    );
-    spawn_mesh(
-        commands,
-        meshes,
-        root,
-        terrain.animated_textured,
-        textured.clone(),
-        &translations,
-    );
-    spawn_mesh(
-        commands,
-        meshes,
-        root,
-        terrain.solid,
-        solid.clone(),
-        &translations,
-    );
-    spawn_mesh(
-        commands,
-        meshes,
-        root,
-        terrain.animated_solid,
-        solid,
-        &translations,
-    );
-    textured
+    let trees = std::mem::take(&mut terrain.tree_instances).into_iter()
+        .map(|instance| (meshes.add(instance.mesh.into_mesh()), instance.origins)).collect();
+    prepare_surface(meshes, &mut surfaces, terrain.textured, textured.clone());
+    prepare_surface(meshes, &mut surfaces, terrain.animated_textured, textured.clone());
+    prepare_surface(meshes, &mut surfaces, terrain.solid, solid.clone());
+    prepare_surface(meshes, &mut surfaces, terrain.animated_solid, solid.clone());
+    MapPublication {root, translations, next:0, surfaces, trees, groves, solid, textured}
 }
+
 fn sync(
     mut commands: Commands,
     frame: Res<VisualWorldFrame>,
@@ -368,15 +350,18 @@ fn sync(
     profiles: Res<crate::live_profiles::LiveProfiles>,
     mut status: ResMut<SummitBackdropStatus>,
     mut world_status: ResMut<VoxelViewStatus>,
-    mut build: Local<Build>,
+    mut build: ResMut<Build>,
     mut roots: Query<(&mut Transform, &mut Visibility), With<SummitVista>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut images: ResMut<Assets<Image>>,
     mut materials: ResMut<Assets<VoxelMaterial>>,
 ) {
     let visible = enabled(&frame) && settings.enabled;
+    let related = frame.map_id.as_ref() == "TinTowerRoof" || summit_preload_interior(&frame.map_id);
+    let preparing = frame.active && settings.enabled
+        && (enabled(&frame) || summit_preload_interior(&frame.map_id));
     for (mut transform, mut visibility) in &mut roots {
-        visibility.set_if_neq(if visible {
+        visibility.set_if_neq(if visible && status.ready {
             Visibility::Visible
         } else {
             Visibility::Hidden
@@ -386,8 +371,8 @@ fn sync(
             if transform.translation != next { transform.translation = next; }
         }
     }
-    if !visible {
-        if frame.active && frame.map_id.as_ref() != "TinTowerRoof" {
+    if !preparing {
+        if frame.active && !related {
             if let Some(root) = build.root.take() {
                 commands.entity(root).despawn();
             }
@@ -396,9 +381,12 @@ fn sync(
         }
         return;
     }
+    if !visible && !summit_preload_foreground_ready(&world_status) { return; }
     if backdrop.revision.is_none() || backdrop.maps.is_empty() {
-        world_status.terrain_pending = true;
-        world_status.active_frames = 0;
+        if visible {
+            world_status.terrain_pending = true;
+            world_status.active_frames = 0;
+        }
         return;
     }
     if build.revision != backdrop.revision || build.profile_revision != profiles.revision {
@@ -408,8 +396,10 @@ fn sync(
         let (Some(stone), Some(bedrock)) =
             (&terrain_cache.painted_stone, &terrain_cache.painted_bedrock)
         else {
-            world_status.terrain_pending = true;
-            world_status.active_frames = 0;
+            if visible {
+                world_status.terrain_pending = true;
+                world_status.active_frames = 0;
+            }
             return;
         };
         if let Some(root) = build.root.take() {
@@ -420,9 +410,11 @@ fn sync(
                 SummitVista,
                 Transform::from_translation(origin(&frame, backdrop.tower_core, build.attachment))
                     .with_scale(Vec3::splat(SCALE)),
-                Visibility::Visible,
+                Visibility::Hidden,
             ))
             .id();
+        #[cfg(not(target_arch = "wasm32"))]
+        commands.entity(root).insert(crate::pipeline_preload::HiddenDestination);
         let mut material = crate::solid_terrain_material();
         material.extension.cave_reveal = Vec4::new(0., 0., 2., 0.);
         material.extension.painted_stone = Some(stone.clone());
@@ -433,6 +425,7 @@ fn sync(
         build.water.clear();
         build.next = 0;
         build.task = None;
+        build.publication = None;
         build.revision = backdrop.revision;
         build.profile_revision = profiles.revision;
         *status = SummitBackdropStatus::default();
@@ -486,8 +479,7 @@ fn sync(
                     }
                 }
                 let positions = is_border.then(|| border_origins(&backdrop));
-                let handle = publish_map(
-                    &mut commands,
+                let publication = prepare_map(
                     &mut meshes,
                     &mut images,
                     &mut materials,
@@ -500,18 +492,29 @@ fn sync(
                 );
                 let index = build.next;
                 if !is_border {
-                    build.water.push((handle, index));
+                    build.water.push((publication.textured.clone(), index));
                     status.maps.push(source.frame.map_id.to_string());
                 }
-                build.next += 1;
+                build.publication = Some(publication);
             }
             Err(error) => {
                 status.error = Some(format!("source panorama mesh failed: {error:?}"));
             }
         }
     }
+    if let Some(publication) = &mut build.publication {
+        if publication.advance(&mut commands, &mut meshes, &mut materials,
+            if visible { ENTRY_PLACEMENTS_PER_FRAME } else { PRELOAD_PLACEMENTS_PER_FRAME }) {
+            build.publication = None;
+            build.next += 1;
+        } else {
+            if visible { world_status.terrain_pending = true; world_status.active_frames = 0; }
+            return;
+        }
+    }
+    if visible {
     for (handle, index) in &build.water {
-        if let Some(mut material) = materials.get_mut(handle) {
+        if let Some(current) = materials.get(handle).map(|m|m.extension.water_enabled) {
             let map_zero = origin(&frame, backdrop.tower_core, build.attachment)
                 + Vec3::new(
                     backdrop.maps[*index].origin_source.x as f32
@@ -522,25 +525,44 @@ fn sync(
                         * backdrop.maps[*index].frame.tile_size.y
                         * SCALE,
                 );
-            let kind = material.extension.water_enabled.x;
-            material.extension.water_enabled = Vec4::new(
-                kind,
+            let next = Vec4::new(
+                current.x,
                 backdrop.maps[*index].frame.tile_size.x * SCALE,
                 -map_zero.x,
                 -map_zero.z,
             );
+            if current != next {
+                materials.get_mut(handle).unwrap().extension.water_enabled = next;
+            }
         }
     }
+    }
     if status.error.is_some() {
-        world_status.terrain_pending = true;
-        world_status.active_frames = 0;
+        if visible {
+            world_status.terrain_pending = true;
+            world_status.active_frames = 0;
+        }
         return;
     }
-    status.ready = build.next == backdrop.maps.len() + usize::from(backdrop.border.is_some());
+    status.ready = !backdrop.source_pending
+        && build.next == backdrop.maps.len() + usize::from(backdrop.border.is_some());
+    // This scene holds entry readiness until it is complete. Avoid rendering
+    // its growing geometry behind that loading transition. Hidden materials
+    // use the existing staged-destination pipeline warmup before the reveal.
+    for (_, mut visibility) in &mut roots {
+        visibility.set_if_neq(if visible && status.ready {
+            Visibility::Visible
+        } else {
+            Visibility::Hidden
+        });
+    }
     if !status.ready {
-        world_status.terrain_pending = true;
-        world_status.active_frames = 0;
+        if visible {
+            world_status.terrain_pending = true;
+            world_status.active_frames = 0;
+        }
         if build.task.is_none() {
+            if backdrop.source_pending && build.next == backdrop.maps.len() { return; }
             let source = if build.next == backdrop.maps.len() {
                 backdrop.border.as_ref().unwrap().clone()
             } else {
@@ -576,14 +598,53 @@ fn sync(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn progressive_border_places_every_instance_with_one_shared_asset_set() {
+        for (count,budget) in [(19_usize,PRELOAD_PLACEMENTS_PER_FRAME),(300,ENTRY_PLACEMENTS_PER_FRAME)] {
+        let mut world = World::new();
+        let root = world.spawn((Transform::default(), Visibility::Hidden)).id();
+        let mut meshes = Assets::<Mesh>::default();
+        let mut materials = Assets::<VoxelMaterial>::default();
+        let mesh = meshes.add(Mesh::from(Cuboid::default()));
+        let material = materials.add(crate::solid_terrain_material());
+        let translations = (0..count).map(|i|Vec3::new(i as f32 * 32.,0.,64.)).collect::<Vec<_>>();
+        let groves = crate::shared_groves::prepare([-4.,4.,-4.,4.],0.,8.,[0,0],[false;4]);
+        assert!(!groves.is_empty(),"exercise actual shared source groves");
+        let mut publication = MapPublication {root, translations:translations.clone(), next:0,
+            surfaces:vec![(mesh.clone(),material.clone())], trees:Vec::new(), groves,
+            solid:material.clone(),textured:material};
+        let mut counts = Vec::new();
+        let mut done = false;
+        for step in 0..3 {
+            let mut queue = bevy::ecs::world::CommandQueue::default();
+            { let mut commands = Commands::new(&mut queue,&world);
+                done = publication.advance(&mut commands,&mut meshes,&mut materials,budget); }
+            queue.apply(&mut world);
+            counts.push(meshes.len());
+            let count = world.query::<(&Mesh3d,&Transform)>().iter(&world)
+                .filter(|(m,_)|m.0==mesh).count();
+            assert!(count <= (step+1)*budget,"per-update placement budget");
+            assert_eq!(done,step==2,"partial border must not report readiness");
+        }
+        assert!(done);
+        assert!(counts.windows(2).all(|pair|pair[0]==pair[1]),
+            "later placements must reuse the uploaded geometry, including groves");
+        let mut actual = world.query::<(&Mesh3d,&Transform)>().iter(&world)
+            .filter(|(m,_)|m.0==mesh).map(|(_,t)|t.translation).collect::<Vec<_>>();
+        actual.sort_by(|a,b|a.x.total_cmp(&b.x));
+        assert_eq!(actual,translations,"no omitted, repeated, or displaced source instances");
+        }
+    }
+
     #[cfg(not(target_arch = "wasm32"))]
     #[test]
     fn panorama_waits_for_shared_paint_and_reuses_the_active_image_handles() {
         use crystal_render_api::{VisualTile,VisualTileSource};
         AsyncComputeTaskPool::get_or_init(||bevy::tasks::TaskPoolBuilder::new().num_threads(1).build());
+        for map in ["TinTowerRoof","TinTower7F","TinTower8F","TinTower9F"] {
         let mut app=App::new();
         app.insert_resource(VisualWorldFrame {
-            active:true,map_id:"TinTowerRoof".into(),
+            active:true,map_id:map.into(),
             tiles:vec![VisualTile {column:0,row:0,texture:Handle::default(),animation_frames:None,priority:false,
                 source:VisualTileSource {tileset_id:"tower".into(),metatile_id:0,tile_index:0,subtile_column:0,subtile_row:0}}],
             ..default()
@@ -594,13 +655,15 @@ mod tests {
             .init_resource::<crate::TerrainRevisionCache>()
             .init_resource::<crate::live_profiles::LiveProfiles>()
             .init_resource::<SummitBackdropStatus>()
-            .init_resource::<VoxelViewStatus>()
+            .init_resource::<Build>()
+            .insert_resource(VoxelViewStatus {active:true,active_frames:123,..default()})
             .init_resource::<Assets<Mesh>>()
             .init_resource::<Assets<Image>>()
             .init_resource::<Assets<VoxelMaterial>>()
             .add_systems(Update,sync);
         app.update();
-        assert!(app.world().resource::<VoxelViewStatus>().terrain_pending);
+        assert_eq!(app.world().resource::<VoxelViewStatus>().terrain_pending,map=="TinTowerRoof");
+        if map!="TinTowerRoof" {assert_eq!(app.world().resource::<VoxelViewStatus>().active_frames,123);}
         assert_eq!(app.world().resource::<Assets<Image>>().len(),0);
         assert_eq!(app.world().resource::<Assets<VoxelMaterial>>().len(),0,
             "pending paint must not create a fallback material or decode on the frame thread");
@@ -620,6 +683,120 @@ mod tests {
         let material=materials.iter().next().unwrap().1;
         assert_eq!(material.extension.painted_stone.as_ref(),Some(&stone));
         assert_eq!(material.extension.painted_bedrock.as_ref(),Some(&bedrock));
+        let root=app.world().resource::<Build>().root.unwrap();
+        assert!(!app.world().resource::<SummitBackdropStatus>().ready);
+        assert_eq!(*app.world().get::<Visibility>(root).unwrap(),Visibility::Hidden,
+            "sharing paint does not make the unfinished panorama visible");
+        assert!(app.world().get::<crate::pipeline_preload::HiddenDestination>(root).is_some());
+        }
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    fn cached_panorama_app() -> (App,Entity,Handle<Mesh>,Handle<VoxelMaterial>) {
+        use bevy::asset::AssetPlugin;
+        use crystal_render_api::{VisualTile,VisualTileSource};
+        AsyncComputeTaskPool::get_or_init(||bevy::tasks::TaskPoolBuilder::new().num_threads(1).build());
+        let mut app=App::new();
+        app.add_plugins((MinimalPlugins,AssetPlugin::default())).init_asset::<VoxelMaterial>();
+        app.insert_resource(VisualWorldFrame {
+            active:true,map_id:"TinTower7F".into(),tile_size:Vec2::splat(8.),grid_size:UVec2::splat(16),
+            source_map_size_core_tiles:Some(UVec2::splat(8)),
+            tiles:vec![VisualTile {column:0,row:0,texture:Handle::default(),animation_frames:None,priority:false,
+                source:VisualTileSource {tileset_id:"tower".into(),metatile_id:0,tile_index:0,subtile_column:0,subtile_row:0}}],
+            ..default()
+        }).insert_resource(VoxelViewSettings {enabled:true,..default()})
+            .insert_resource(SummitBackdrop {revision:Some(1),
+                maps:vec![SummitBackdropMap {origin_source:IVec2::ZERO,
+                    frame:Arc::new(VisualWorldFrame {tile_size:Vec2::splat(8.),..default()})}],..default()})
+            .init_resource::<crate::TerrainRevisionCache>()
+            .init_resource::<crate::live_profiles::LiveProfiles>()
+            .insert_resource(SummitBackdropStatus {ready:true,maps:vec!["cached".into()],error:None})
+            .insert_resource(VoxelViewStatus {active:true,active_frames:123,..default()})
+            .init_resource::<Assets<Mesh>>().init_resource::<Assets<Image>>()
+            .add_systems(Update,sync);
+        let (stone,bedrock)={let mut images=app.world_mut().resource_mut::<Assets<Image>>();
+            (images.add(Image::default()),images.add(Image::default()))};
+        {let mut cache=app.world_mut().resource_mut::<crate::TerrainRevisionCache>();
+            cache.painted_stone=Some(stone);cache.painted_bedrock=Some(bedrock);}
+        let material=app.world_mut().resource_mut::<Assets<VoxelMaterial>>().add(crate::solid_terrain_material());
+        let mesh=app.world_mut().resource_mut::<Assets<Mesh>>().add(Mesh::from(Cuboid::default()));
+        let root=app.world_mut().spawn((SummitVista,Transform::default(),Visibility::Visible)).id();
+        let child=app.world_mut().spawn((Mesh3d(mesh.clone()),MeshMaterial3d(material.clone()))).id();
+        app.world_mut().entity_mut(root).add_child(child);
+        app.insert_resource(Build {revision:Some(1),root:Some(root),next:1,
+            solid:Some(material.clone()),water:vec![(material.clone(),0)],..default()});
+        (app,root,mesh,material)
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn hidden_upper_floor_cache_reuses_geometry_and_never_blocks_the_room() {
+        use bevy::asset::AssetEvent;
+        let (mut app,root,mesh,material)=cached_panorama_app();
+        app.update();
+        app.world_mut().resource_mut::<Messages<AssetEvent<VoxelMaterial>>>().clear();
+        for map in ["TinTower7F","TinTower8F","TinTower9F"] {
+            app.world_mut().resource_mut::<VisualWorldFrame>().map_id=map.into();
+            for _ in 0..16 {
+                app.update();
+                let events=app.world_mut().resource_mut::<Messages<AssetEvent<VoxelMaterial>>>().drain().collect::<Vec<_>>();
+                assert!(!events.iter().any(|event|event.is_modified(&material)));
+                assert!(!app.world().resource::<VoxelViewStatus>().terrain_pending);
+                assert_eq!(app.world().resource::<VoxelViewStatus>().active_frames,123);
+            }
+            assert_eq!(app.world().resource::<Build>().root,Some(root));
+            assert!(app.world().resource::<Build>().task.is_none());
+            assert_eq!(*app.world().get::<Visibility>(root).unwrap(),Visibility::Hidden);
+        }
+        app.world_mut().resource_mut::<SummitBackdrop>().source_pending=true;
+        app.world_mut().resource_mut::<VisualWorldFrame>().map_id="TinTowerRoof".into();
+        app.update();
+        assert!(!app.world().resource::<SummitBackdropStatus>().ready);
+        assert!(app.world().resource::<VoxelViewStatus>().terrain_pending);
+        assert_eq!(*app.world().get::<Visibility>(root).unwrap(),Visibility::Hidden,
+            "unfinished geometry must not consume roof rendering while entry waits");
+        assert!(app.world().resource::<Build>().task.is_none(),"wait for the next source map, not a missing border");
+        app.world_mut().resource_mut::<SummitBackdrop>().source_pending=false;
+        app.world_mut().resource_mut::<VoxelViewStatus>().terrain_pending=false;
+        app.update();
+        assert!(app.world().resource::<SummitBackdropStatus>().ready);
+        assert_eq!(*app.world().get::<Visibility>(root).unwrap(),Visibility::Visible);
+        assert_eq!(app.world().resource::<Build>().root,Some(root));
+        assert_eq!(app.world().resource::<Build>().solid.as_ref(),Some(&material));
+        assert!(app.world().resource::<Assets<Mesh>>().get(&mesh).is_some());
+        assert_eq!(app.world().resource::<Assets<Mesh>>().len(),1);
+        app.world_mut().resource_mut::<Messages<AssetEvent<VoxelMaterial>>>().clear();
+        for _ in 0..64 {
+            app.update();
+            let events=app.world_mut().resource_mut::<Messages<AssetEvent<VoxelMaterial>>>().drain().collect::<Vec<_>>();
+            assert!(!events.iter().any(|event|event.is_modified(&material)),"unchanged water registration must retain its material");
+        }
+        app.world_mut().resource_mut::<VisualWorldFrame>().grid_origin.x+=4;
+        app.update();
+        let events=app.world_mut().resource_mut::<Messages<AssetEvent<VoxelMaterial>>>().drain().collect::<Vec<_>>();
+        assert!(events.iter().any(|event|event.is_modified(&material)),"real anchor changes still update water coordinates");
+        app.world_mut().resource_mut::<VisualWorldFrame>().map_id="TinTower6F".into();
+        app.update();
+        assert!(app.world().get_entity(root).is_err());
+        assert!(app.world().resource::<Build>().root.is_none());
+        assert!(app.world().resource::<SummitBackdropStatus>().maps.is_empty());
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn cached_panorama_revalidates_source_and_profile_revisions_before_reuse() {
+        for profile in [false,true] {
+            let (mut app,root,_,_)=cached_panorama_app();
+            if profile {app.world_mut().resource_mut::<crate::live_profiles::LiveProfiles>().revision+=1;}
+            else {app.world_mut().resource_mut::<SummitBackdrop>().revision=Some(2);}
+            app.update();
+            assert!(app.world().get_entity(root).is_err());
+            let new_root=app.world().resource::<Build>().root.unwrap();
+            assert_ne!(new_root,root);
+            assert_eq!(*app.world().get::<Visibility>(new_root).unwrap(),Visibility::Hidden);
+            assert!(!app.world().resource::<VoxelViewStatus>().terrain_pending);
+            assert!(!app.world().resource::<SummitBackdropStatus>().ready);
+        }
     }
 
     #[test]

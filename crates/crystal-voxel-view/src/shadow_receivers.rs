@@ -78,14 +78,15 @@ struct ReceiverInput {
 }
 
 struct Decision {
-    points: [Vec3; 8],
+    bounds: Aabb,
+    transform: GlobalTransform,
     keep: bool,
     seen: u64,
 }
 #[derive(Default)]
 struct CachedCascade {
     input: Option<ReceiverInput>,
-    decisions: HashMap<Entity, Decision>,
+    decisions: bevy::ecs::entity::EntityHashMap<Decision>,
     seen: u64,
 }
 impl CachedCascade {
@@ -96,19 +97,20 @@ impl CachedCascade {
         }
         self.seen = frame;
     }
-    fn keep(&mut self, entity: Entity, points: [Vec3; 8], frame: u64) -> (bool, bool) {
+    fn keep(&mut self, entity: Entity, bounds: &Aabb, transform: &GlobalTransform, frame: u64) -> (bool, bool) {
         if let Some(previous) = self.decisions.get_mut(&entity) {
-            if previous.points == points {
+            if previous.bounds == *bounds && previous.transform == *transform {
                 previous.seen = frame;
                 return (previous.keep, true);
             }
         }
         let input = self.input.expect("receiver inputs precede caster decisions");
-        let keep = may_reach(points, input.planes, input.sun, input.bottom, input.top);
+        let keep = may_reach(corners(bounds, transform), input.planes, input.sun, input.bottom, input.top);
         self.decisions.insert(
             entity,
             Decision {
-                points,
+                bounds: *bounds,
+                transform: *transform,
                 keep,
                 seen: frame,
             },
@@ -377,7 +379,7 @@ fn prune(
                     return true;
                 };
                 let (keep, hit) =
-                    cached.keep(*entity, corners(bounds, transform), stamp);
+                    cached.keep(*entity, bounds, transform, stamp);
                 if hit {
                     hits += 1;
                 } else {
@@ -569,14 +571,21 @@ mod tests {
             top: 1.,
         };
         let entity = Entity::PLACEHOLDER;
-        let hidden = [Vec3::new(-10., 2., 0.); 8];
-        let visible = [Vec3::new(0., 2., 0.5); 8];
+        let hidden = Aabb { center: Vec3::new(-10., 2., 0.).into(), half_extents: Vec3::ZERO.into() };
+        let visible = Aabb { center: Vec3::new(0., 2., 0.5).into(), half_extents: Vec3::ZERO.into() };
+        let transform = GlobalTransform::IDENTITY;
         let mut cache = CachedCascade::default();
         cache.set_input(input, 1);
-        assert_eq!(cache.keep(entity, hidden, 1), (false, false));
+        assert_eq!(cache.keep(entity, &hidden, &transform, 1), (false, false));
         cache.set_input(input, 2);
-        assert_eq!(cache.keep(entity, hidden, 2), (false, true));
-        assert_eq!(cache.keep(entity, visible, 2), (true, false));
+        assert_eq!(cache.keep(entity, &hidden, &transform, 2), (false, true));
+        assert_eq!(cache.keep(entity, &visible, &transform, 2), (true, false));
+        // Identical local bounds with a changed transform must not reuse a
+        // stationary decision; bounds-only animation also invalidates it.
+        let moved = GlobalTransform::from_translation(Vec3::new(-10., 0., 0.));
+        assert_eq!(cache.keep(entity, &visible, &moved, 2), (false, false));
+        assert_eq!(cache.keep(entity, &visible, &moved, 2), (false, true));
+        assert_eq!(cache.keep(entity, &visible, &transform, 2), (true, false));
         for changed in [
             ReceiverInput {
                 sun: DVec3::new(1., 1., 0.).normalize(),
@@ -594,10 +603,10 @@ mod tests {
         ] {
             cache.set_input(changed, 3);
             assert_eq!(
-                cache.keep(entity, visible, 3),
+                cache.keep(entity, &visible, &transform, 3),
                 (
                     may_reach(
-                        visible,
+                        corners(&visible, &transform),
                         changed.planes,
                         changed.sun,
                         changed.bottom,

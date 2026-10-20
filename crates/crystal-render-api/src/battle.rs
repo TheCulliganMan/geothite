@@ -112,6 +112,8 @@ pub struct VisualBattleCapture {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum VisualBattleCueKind {
+    /// Preserve exact source clipping locally without replacing the 3D scene.
+    SourcePicture,
     Move,
     Impact,
     Faint,

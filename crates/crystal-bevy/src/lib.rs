@@ -1,8 +1,7 @@
 //! Bevy frontend for the shared Geothite runtime.
 
 mod battle_anim_machine;
-mod menu_labels;
-pub use menu_labels::visible_script_menu_option_label;
+pub use crystal_tui_view::visible_script_menu_option_label;
 #[cfg(feature = "voxel-view")]
 pub mod loading_pack_trace;
 #[cfg(feature = "browser-webgpu")]

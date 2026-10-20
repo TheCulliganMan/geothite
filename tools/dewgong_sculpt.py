@@ -5,7 +5,7 @@ from pathlib import Path
 from functools import lru_cache
 from copy import deepcopy
 from sculpt_geometry import part,ellipsoid,loft,curved_profiles,fitted_patch,fitted_contour,crease_normals,tube
-from seel_sculpt import pillow
+from seel_sculpt import pillow,surface_stroke
 from bovine_sculpt import oval,smooth,curved_tube
 from abra_sculpt import surface
 from wing_insect_sculpt import contour
@@ -35,7 +35,7 @@ def raw_sculpture():
   fs=surface(flipper)
   # Curved short folds end before the rim and follow the actual solid fan.
   for j,path in enumerate([[(.211,.380),(.264,.295),(.323,.230),(.363,.190)],[(.253,.364),(.310,.313),(.373,.278)]]):
-   pts=[(sign*x,y,fs(y,sign*x)+.002) for x,y in path];p.append(curved_tube('Flipper fold / supported flowing crease '+str(sign)+' '+str(j),FOLD,pts,[.0018]*len(pts),10))
+   pts=[(sign*x,y,fs(y,sign*x)+.002) for x,y in path];p.append(surface_stroke('Flipper fold / supported flowing crease '+str(sign)+' '+str(j),FOLD,pts,[.0018]*len(pts),flipper))
   x=sign*.085;y=.786;outline=contour((((x-.025,y-.034),(x-.022,y+.008),(x-.015,y+.040),(x+.006,y+.046)),((x+.006,y+.046),(x+.029,y+.044),(x+.034,y+.010),(x+.025,y-.036)),((x+.025,y-.036),(x+.004,y-.030),(x-.007,y-.032),(x-.025,y-.034))),10)
   eye=fitted_contour('Eye / fitted tall dark tapered seal eye '+str(sign),INK,outline,skin,.005,subdivisions=3);p.append(eye)
   p.append(fitted_patch('Eye sheen / fitted soft brown lower reflection '+str(sign),BROWN,oval(x,y-.018,.015,.010,24),surface(eye),.002))

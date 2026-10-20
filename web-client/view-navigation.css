@@ -1,0 +1,16 @@
+#view-navigation { position: fixed; top: max(8px, env(safe-area-inset-top)); left: max(8px, env(safe-area-inset-left)); z-index: 20; display: flex; padding: 3px; gap: 2px; border: 1px solid #ffffff26; border-radius: 10px; background: #11121bed; font: 600 12px system-ui, sans-serif; }
+#view-navigation a { display: grid; place-items: center; min-width: 44px; min-height: 38px; padding: 0 10px; color: #b9bdca; text-decoration: none; border-radius: 7px; touch-action: manipulation; }
+#view-navigation a:hover { color: white; background: #ffffff16; }
+#view-navigation a[aria-current="page"] { color: #fff; background: #434557; }
+#view-navigation a:focus-visible { outline: 2px solid #f6c271; outline-offset: 2px; }
+.flygon-embedded #view-navigation { display: none; }
+#view-navigation a { box-sizing: border-box; padding: 0 6px; }
+#view-navigation button { height: 38px; font: inherit; padding: 0 8px; min-width: 44px; border: 0; }
+#view-navigation [hidden] { display: none; }
+#tui-surface { position: fixed; inset: 62px 0 0; z-index: 2; background: #030312; display: grid; place-items: center; overflow: hidden; }
+#tui-surface[hidden] { display: none; }
+#tui-screen { position: absolute; inset: 0; opacity: 0; white-space: pre; font: 14px/1.25 ui-monospace, monospace; margin: 0; pointer-events: none; }
+#game-stage #tui-canvas { width: auto !important; height: auto !important; max-width: 100%; max-height: 100%; pointer-events: none; }
+body[data-view="tui"] #crystal-canvas { opacity: 0; }
+@media (pointer: coarse) { #tui-surface { bottom: 180px; } }
+#game-stage #tui-canvas { width: var(--tui-width, 100%) !important; image-rendering: auto; }

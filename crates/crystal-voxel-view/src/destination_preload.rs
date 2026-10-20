@@ -142,7 +142,8 @@ pub(super) fn prepare(
     // Native background work may overlap the initial room. Browser workers
     // retain their existing foreground-first scheduling and memory budget.
     #[cfg(target_arch = "wasm32")]
-    if !status.active || status.terrain_pending { return; }
+    if !status.active || status.profiles_pending
+        || status.terrain_map.as_deref() != Some(current.map_id.as_ref()) { return; }
     // Never run a blocking fallback mesher as speculative work on the browser
     // frame thread. A worker-capable browser uses the same paged path as play.
     #[cfg(target_arch = "wasm32")]

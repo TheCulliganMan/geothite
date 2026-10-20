@@ -646,142 +646,7 @@ impl VisibleShellController {
     }
 
     pub fn snapshot(&mut self) -> Result<RuntimeShellSnapshot> {
-        let mut snapshot = self.shell.shell.presentation_snapshot()?;
-        if let Some(pages) = visible_field_dialog_pages(&snapshot, &self.shell)
-            && let Some(reveal) = self.shell.field_text_reveal.as_ref()
-            && reveal.text == pages.join("\u{1e}")
-            && let Some(page) = pages.get(reveal.page_index)
-            && let Some(text) = snapshot.ui.text.as_mut()
-        {
-            // Runtime text bodies contain every authored page. Graphical Bevy
-            // crops that stream through its printer; renderer-neutral clients
-            // need the same current-page projection or A appears to do nothing.
-            text.asm_text = Some(page.clone());
-            text.body = None;
-        }
-        if snapshot.battle.is_none()
-            && (self.shell.field_notice.is_some() || self.shell.pc_notice.is_some()
-                || visible_pokecenter_pc_text_boundary(&self.shell).is_some())
-            && let Some(pages) = visible_field_dialog_pages(&snapshot, &self.shell)
-        {
-            // Match the graphical notice owner rather than exposing a source
-            // menu or stale writetext history underneath it to text clients.
-            let page_index = self.shell.field_text_reveal.as_ref()
-                .filter(|reveal| reveal.text == pages.join("\u{1e}"))
-                .map_or(0, |reveal| reveal.page_index.min(pages.len().saturating_sub(1)));
-            if let Some(page) = pages.get(page_index) {
-                snapshot.phase = RuntimeShellPhase::Text;
-                snapshot.ui.menu = None;
-                snapshot.ui.text = Some(RuntimeTextSnapshot {
-                    label: if self.shell.field_notice.is_some() {
-                        "visible-shell:field-notice"
-                    } else if self.shell.pc_notice.is_some() {
-                        "visible-shell:pc-notice"
-                    } else {
-                        &visible_pokecenter_pc_text_boundary(&self.shell).unwrap().label
-                    }.to_string(),
-                    source: RuntimeTextSource::AsmText,
-                    asm_text: Some(page.clone()),
-                    body: None,
-                    queued_text_events: pages.len().saturating_sub(page_index+1)
-                        + self.shell.field_notice_queue.len(),
-                });
-                snapshot.ui.text_window_open = true;
-                snapshot.ui.window_open = true;
-            }
-        }
-        if self.shell.pc_hub_session_open
-            && visible_field_dialog_pages(&snapshot, &self.shell).is_none()
-        {
-            // PCScript suspends the core chooser while the visible controller
-            // owns Bill's menus and storage lists. Do not expose that retained
-            // chooser in place of the menu that accepts keyboard/MCP input.
-            // Boot text and transfer notices keep the field printer above it.
-            snapshot.ui.menu = None;
-            snapshot.ui.text = None;
-            snapshot.ui.text_window_open = false;
-        }
-        if let Some(message) = self.shell.battle_messages.front() {
-            // Battle dialogue is owned by the visible controller rather than
-            // RuntimeGameShell's script text surface. Project the currently
-            // revealed page so renderer-neutral clients see the same textbox
-            // that the graphical battle renderer draws instead of a blank HUD
-            // or the command menu hidden underneath it.
-            snapshot.ui.menu = None;
-            snapshot.ui.text = Some(RuntimeTextSnapshot {
-                label: "visible-shell:battle-message".to_string(),
-                source: RuntimeTextSource::AsmText,
-                asm_text: Some(visible_battle_message_text(&self.shell, message)),
-                body: None,
-                queued_text_events: self.shell.battle_messages.len().saturating_sub(1),
-            });
-            snapshot.ui.text_window_open = true;
-        }
-        let tower_entries = if snapshot.battle.is_none() {
-            visible_battle_tower_controller_entries(&self.shell)?
-        } else { None };
-        if tower_entries.is_some() { snapshot.ui.menu = None; }
-        if tower_entries.is_some() || (snapshot.ui.menu.is_none() && !snapshot.ui.text_window_open) {
-            // Runtime text records are retained as execution history after
-            // closetext. They are not a visible surface and must not hide a
-            // production-controller menu such as Start, Pack, or Party.
-            if tower_entries.is_none() { snapshot.ui.text = None; }
-            let mut entries = if let Some(entries) = tower_entries {
-                entries
-            } else if let Some(battle) = snapshot.battle.as_ref() {
-                visible_battle_command_menu_entries(&snapshot, &self.shell, battle)?
-            } else {
-                visible_field_command_entries(&snapshot, &self.shell)?
-            };
-            if entries.is_empty() {
-                entries = visible_scene_dialog_entries(&snapshot, &self.shell)?;
-            }
-            if !entries.is_empty() {
-                if entries
-                    .iter()
-                    .any(|entry| entry.trim_start().starts_with('>'))
-                {
-                    if snapshot.battle.is_none() {
-                        snapshot.phase = RuntimeShellPhase::Menu;
-                    }
-                    snapshot.ui.menu = Some(RuntimeMenuSnapshot {
-                        menu_id: "visible-shell:text-frontend".to_string(),
-                        source: RuntimeMenuSource::SpecialRoutine,
-                        definition: None,
-                        layout: RuntimeMenuLayoutSnapshot {
-                            declared_coords: None,
-                            data_commands: Vec::new(),
-                            vertical_menus: vec![RuntimeVerticalMenuSnapshot {
-                                source_script: "visible-shell:text-frontend".to_string(),
-                                loadmenu_command_index: 0,
-                                verticalmenu_command_index: 0,
-                                header_label: "visible-shell:text-frontend".to_string(),
-                                data_label: None,
-                                options: entries,
-                                two_dimensional: false,
-                                rows: None,
-                                columns: None,
-                                spacing: None,
-                            }],
-                        },
-                        window_open: true,
-                        coords: None,
-                        menu_2d_requested: false,
-                    });
-                } else {
-                    snapshot.phase = RuntimeShellPhase::Text;
-                    snapshot.ui.text = Some(RuntimeTextSnapshot {
-                        label: "visible-shell:text-frontend".to_string(),
-                        source: RuntimeTextSource::AsmText,
-                        asm_text: Some(entries.join("\n")),
-                        body: None,
-                        queued_text_events: 0,
-                    });
-                    snapshot.ui.text_window_open = true;
-                }
-            }
-        }
-        Ok(snapshot)
+        visible_controller_snapshot(&mut self.shell)
     }
 
     /// Frozen presentation provenance for the pending or displayed battle.
@@ -4937,6 +4802,8 @@ struct RenderedTilesetArt {
     battle_anim_object_cache: HashMap<String, BattleAnimRenderedFrame>,
     battle_anim_object_errors: HashMap<String, String>,
     battle_battler_overlay_cache: HashMap<(AssetId<Image>, [u8; 3]), SpriteFrame>,
+    #[cfg(feature = "voxel-view")]
+    battle_source_picture_cache: HashMap<(AssetId<Image>, Vec<u8>), SpriteFrame>,
     battle_battler_bgp_cache: HashMap<(AssetId<Image>, u8), SpriteFrame>,
     #[cfg(feature = "voxel-view")]
     battle_source_palette_cache: HashMap<AssetId<Image>, [[f32; 4]; 4]>,
@@ -6373,6 +6240,7 @@ pub fn run_bevy_shell(
             .before(apply_keyboard_input),
     )
     .add_systems(PostUpdate, finish_webmcp_request)
+    .add_systems(PostUpdate, publish_browser_text_view.after(finish_webmcp_request))
     .add_systems(PostUpdate, autosave_browser_progress);
     #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
     app.add_systems(PostUpdate, trace_browser_render_memory);
@@ -9147,3 +9015,145 @@ mod native_window_lifetime;
 mod handheld_input;
 
 mod natural_movement;
+
+
+fn visible_controller_snapshot(runtime_shell: &mut BevyRuntimeShell) -> Result<RuntimeShellSnapshot> {
+        let mut snapshot = runtime_shell.shell.presentation_snapshot()?;
+        if let Some(pages) = visible_field_dialog_pages(&snapshot, &runtime_shell)
+            && let Some(reveal) = runtime_shell.field_text_reveal.as_ref()
+            && reveal.text == pages.join("\u{1e}")
+            && let Some(page) = pages.get(reveal.page_index)
+            && let Some(text) = snapshot.ui.text.as_mut()
+        {
+            // Runtime text bodies contain every authored page. Graphical Bevy
+            // crops that stream through its printer; renderer-neutral clients
+            // need the same current-page projection or A appears to do nothing.
+            text.asm_text = Some(page.clone());
+            text.body = None;
+        }
+        if snapshot.battle.is_none()
+            && (runtime_shell.field_notice.is_some() || runtime_shell.pc_notice.is_some()
+                || visible_pokecenter_pc_text_boundary(&runtime_shell).is_some())
+            && let Some(pages) = visible_field_dialog_pages(&snapshot, &runtime_shell)
+        {
+            // Match the graphical notice owner rather than exposing a source
+            // menu or stale writetext history underneath it to text clients.
+            let page_index = runtime_shell.field_text_reveal.as_ref()
+                .filter(|reveal| reveal.text == pages.join("\u{1e}"))
+                .map_or(0, |reveal| reveal.page_index.min(pages.len().saturating_sub(1)));
+            if let Some(page) = pages.get(page_index) {
+                snapshot.phase = RuntimeShellPhase::Text;
+                snapshot.ui.menu = None;
+                snapshot.ui.text = Some(RuntimeTextSnapshot {
+                    label: if runtime_shell.field_notice.is_some() {
+                        "visible-shell:field-notice"
+                    } else if runtime_shell.pc_notice.is_some() {
+                        "visible-shell:pc-notice"
+                    } else {
+                        &visible_pokecenter_pc_text_boundary(&runtime_shell).unwrap().label
+                    }.to_string(),
+                    source: RuntimeTextSource::AsmText,
+                    asm_text: Some(page.clone()),
+                    body: None,
+                    queued_text_events: pages.len().saturating_sub(page_index+1)
+                        + runtime_shell.field_notice_queue.len(),
+                });
+                snapshot.ui.text_window_open = true;
+                snapshot.ui.window_open = true;
+            }
+        }
+        if runtime_shell.pc_hub_session_open
+            && visible_field_dialog_pages(&snapshot, &runtime_shell).is_none()
+        {
+            // PCScript suspends the core chooser while the visible controller
+            // owns Bill's menus and storage lists. Do not expose that retained
+            // chooser in place of the menu that accepts keyboard/MCP input.
+            // Boot text and transfer notices keep the field printer above it.
+            snapshot.ui.menu = None;
+            snapshot.ui.text = None;
+            snapshot.ui.text_window_open = false;
+        }
+        if let Some(message) = runtime_shell.battle_messages.front() {
+            // Battle dialogue is owned by the visible controller rather than
+            // RuntimeGameShell's script text surface. Project the currently
+            // revealed page so renderer-neutral clients see the same textbox
+            // that the graphical battle renderer draws instead of a blank HUD
+            // or the command menu hidden underneath it.
+            snapshot.ui.menu = None;
+            snapshot.ui.text = Some(RuntimeTextSnapshot {
+                label: "visible-shell:battle-message".to_string(),
+                source: RuntimeTextSource::AsmText,
+                asm_text: Some(visible_battle_message_text(&runtime_shell, message)),
+                body: None,
+                queued_text_events: runtime_shell.battle_messages.len().saturating_sub(1),
+            });
+            snapshot.ui.text_window_open = true;
+        }
+        let tower_entries = if snapshot.battle.is_none() {
+            visible_battle_tower_controller_entries(&runtime_shell)?
+        } else { None };
+        if tower_entries.is_some() { snapshot.ui.menu = None; }
+        if tower_entries.is_some() || (snapshot.ui.menu.is_none() && !snapshot.ui.text_window_open) {
+            // Runtime text records are retained as execution history after
+            // closetext. They are not a visible surface and must not hide a
+            // production-controller menu such as Start, Pack, or Party.
+            if tower_entries.is_none() { snapshot.ui.text = None; }
+            let mut entries = if let Some(entries) = tower_entries {
+                entries
+            } else if let Some(battle) = snapshot.battle.as_ref() {
+                visible_battle_command_menu_entries(&snapshot, &runtime_shell, battle)?
+            } else {
+                visible_field_command_entries(&snapshot, &runtime_shell)?
+            };
+            if entries.is_empty() {
+                entries = visible_scene_dialog_entries(&snapshot, &runtime_shell)?;
+            }
+            if !entries.is_empty() {
+                if entries
+                    .iter()
+                    .any(|entry| entry.trim_start().starts_with('>'))
+                {
+                    if snapshot.battle.is_none() {
+                        snapshot.phase = RuntimeShellPhase::Menu;
+                    }
+                    snapshot.ui.menu = Some(RuntimeMenuSnapshot {
+                        menu_id: "visible-shell:text-frontend".to_string(),
+                        source: RuntimeMenuSource::SpecialRoutine,
+                        definition: None,
+                        layout: RuntimeMenuLayoutSnapshot {
+                            declared_coords: None,
+                            data_commands: Vec::new(),
+                            vertical_menus: vec![RuntimeVerticalMenuSnapshot {
+                                source_script: "visible-shell:text-frontend".to_string(),
+                                loadmenu_command_index: 0,
+                                verticalmenu_command_index: 0,
+                                header_label: "visible-shell:text-frontend".to_string(),
+                                data_label: None,
+                                options: entries,
+                                two_dimensional: false,
+                                rows: None,
+                                columns: None,
+                                spacing: None,
+                            }],
+                        },
+                        window_open: true,
+                        coords: None,
+                        menu_2d_requested: false,
+                    });
+                } else {
+                    snapshot.phase = RuntimeShellPhase::Text;
+                    snapshot.ui.text = Some(RuntimeTextSnapshot {
+                        label: "visible-shell:text-frontend".to_string(),
+                        source: RuntimeTextSource::AsmText,
+                        asm_text: Some(entries.join("\n")),
+                        body: None,
+                        queued_text_events: 0,
+                    });
+                    snapshot.ui.text_window_open = true;
+                }
+            }
+        }
+        Ok(snapshot)
+    }
+
+include!("bevy_shell/browser_text_view.rs");

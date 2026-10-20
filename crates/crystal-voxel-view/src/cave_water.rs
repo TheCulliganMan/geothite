@@ -124,7 +124,8 @@ pub(super) fn native_cave_source(frame: &VisualWorldFrame) -> bool {
 
 pub(super) fn registration(frame: &VisualWorldFrame) -> Vec4 {
     Vec4::new(
-        if frame.map_id.as_ref()=="TohjoFalls" || native_cave_source(frame) { 3. }
+        if frame.map_id.as_ref()=="TohjoFalls" { 4. }
+            else if native_cave_source(frame) { 3. }
             else if outdoor(&frame.map_id) { 2. } else { 1. },
         frame.tile_size.x,
         (frame.grid_origin.x as f32 + frame.grid_size.x as f32 * 0.5) * frame.tile_size.x
@@ -920,7 +921,7 @@ mod tests {
         water.animation_frames=Some(vec![first.clone(),second.clone()].into());
         let mut frame=VisualWorldFrame{map_id:"TohjoFalls".into(),grid_size:UVec2::ONE,
             grid_origin:IVec2::new(10,30),tile_size:Vec2::splat(8.),tiles:vec![water],..default()};
-        let native=registration(&frame);assert_eq!(native.x,3.);
+        let native=registration(&frame);assert_eq!(native.x,4.);
         let before=mask(&frame).unwrap();
         assert_eq!(&before.data.as_ref().unwrap()[..4],&[255,0,0,255]);
         frame.tiles[0].texture=second.clone();

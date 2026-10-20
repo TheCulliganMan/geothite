@@ -9,6 +9,7 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+crystal-tui-view.workspace = true
 anyhow.workspace = true
 crystal-assets.workspace = true
 crystal-bevy.workspace = true

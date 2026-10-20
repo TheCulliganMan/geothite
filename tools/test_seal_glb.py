@@ -112,4 +112,58 @@ class SealSkinTests(unittest.TestCase):
         root=max(root,min(ah,bh)-max(al,bl));front=max(front,ah-bh)
      self.assertGreater(root,.00015,(clip,t,section,'unrooted section'))
      self.assertGreater(front,.0003,(clip,t,section,'buried smile'))
+
+ def assert_surface_stroke(self, mark, parent, label):
+  # Sample actual occupied cross-sections, without recipe paths or radii.
+  # Local stripe bounds avoid missing a narrow diagonal crease on a coarse grid.
+  if max(mark['positions'][1::3])-min(mark['positions'][1::3]) > max(mark['positions'][::3])-min(mark['positions'][::3]):
+   def turn(p):return dict(p,positions=[v for x,y,z in zip(p['positions'][::3],p['positions'][1::3],p['positions'][2::3]) for v in (y,-x,z)])
+   mark,parent=turn(mark),turn(parent)
+  vs=[mark['positions'][i:i+3] for i in range(0,len(mark['positions']),3)]
+  triangles=[tuple(vs[j] for j in mark['indices'][i:i+3]) for i in range(0,len(mark['indices']),3)]
+  xl,xh=min(p[0] for p in vs),max(p[0] for p in vs)
+  for section in range(1,16):
+   x=xl+(xh-xl)*section/16;crossings=[]
+   for tri in triangles:
+    for a,b in zip(tri,tri[1:]+tri[:1]):
+     if min(a[0],b[0])<=x<max(a[0],b[0]):crossings.append(a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]))
+   self.assertTrue(crossings,(label,section,'missing stroke'))
+   yl,yh=min(crossings),max(crossings);root=front=-float('inf')
+   for row in range(1,32):
+    y=yl+(yh-yl)*row/32
+    aa=sorted({round(z,10) for z in rays(mark,x,y)});bb=sorted({round(z,10) for z in rays(parent,x,y)})
+    for al,ah in zip(aa[::2],aa[1::2]):
+     for bl,bh in zip(bb[::2],bb[1::2]):
+      root=max(root,min(ah,bh)-max(al,bl));front=max(front,ah-bh)
+   self.assertGreater(root,.00015,(label,section,'floating stroke'))
+   self.assertGreater(front,.0003,(label,section,'buried stroke'))
+
+ def surface_strokes(self, species, model, matrices):
+  parts=model.neutral_model()['primitives']
+  posed=[dict(p,positions=sum(model.posed(i,matrices),[])) for i,p in enumerate(parts)]
+  for i,name in enumerate(model.names):
+   if name.startswith('Brow /'):parent=self.find(model,'Head /')
+   elif name.startswith('Tongue crease /'):parent=self.find(model,'Tongue /')
+   elif name.startswith('Flipper fold /'):parent=self.find(model,'Flipper /',[name.split()[-2]])
+   else:continue
+   mark,support=posed[i],posed[parent]
+   if species=='seel' and name.startswith('Flipper fold /'):
+    def top(p):return dict(p,positions=[v for x,y,z in zip(p['positions'][::3],p['positions'][1::3],p['positions'][2::3]) for v in (x,-z,y)])
+    mark,support=top(mark),top(support)
+   yield name,mark,support
+
+ def test_folds_brows_and_tongue_crease_keep_continuous_visible_occupied_roots(self):
+  for species,model in self.models.items():
+   for clip in model.clips:
+    for t in (0.,.31,.67):
+     strokes=list(self.surface_strokes(species,model,model.matrices(clip,t)))
+     self.assertEqual(len(strokes),7 if species=='seel' else 4)
+     for name,mark,parent in strokes:self.assert_surface_stroke(mark,parent,(species,clip,t,name))
+
+ def test_surface_stroke_oracle_rejects_floating_and_buried_details(self):
+  for species,model in self.models.items():
+   for name,mark,parent in self.surface_strokes(species,model,model.matrices()):
+    for offset in (-.01,.01):
+     broken=dict(mark,positions=[v+(offset if i%3==2 else 0.) for i,v in enumerate(mark['positions'])])
+     with self.assertRaises(AssertionError):self.assert_surface_stroke(broken,parent,(species,name,offset))
 if __name__=='__main__':unittest.main()

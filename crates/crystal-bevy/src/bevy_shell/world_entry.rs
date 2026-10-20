@@ -1,5 +1,6 @@
 // The production transition clock supplies effects for the retained 3D field.
 // This is presentation extraction only; no scene or gameplay clock advances.
+#[cfg(test)]
 fn battle_transition_outro_step(transition: VisibleBattleTransition) -> Option<(usize, usize)> {
     let prefix = if transition.trainer_battle { 4 } else { 3 };
     let (between, frames) = match (transition.cave_environment, transition.stronger_enemy) {
@@ -9,6 +10,7 @@ fn battle_transition_outro_step(transition: VisibleBattleTransition) -> Option<(
     Some((usize::from(transition.frame).checked_sub(prefix + 75 + between)? + 1, frames))
 }
 
+#[cfg(test)]
 fn battle_transition_black_cells(transition: VisibleBattleTransition) -> [bool; 360] {
     let mut cells = [false; 360];
     let Some((step, frames)) = battle_transition_outro_step(transition) else { return cells; };
@@ -44,6 +46,7 @@ fn battle_transition_black_cells(transition: VisibleBattleTransition) -> [bool; 
     cells
 }
 
+#[cfg(test)]
 fn battle_transition_world_effect(
     transition: VisibleBattleTransition,
     dark: bool,
@@ -103,28 +106,18 @@ fn battle_transition_world_effect(
 
 fn publish_visual_world_entry_effect(
     shell: Res<BevyRuntimeShell>,
-    rendered: Res<RenderedViewport>,
     settings: Res<crystal_voxel_view::VoxelViewSettings>,
     frame: Res<crystal_render_api::VisualWorldFrame>,
-    flash: Option<Res<crystal_render_api::BattleFlashMode>>,
     mut published: ResMut<crystal_render_api::VisualWorldEntryEffect>,
 ) {
-    let transition = shell.visible_battle_transition.filter(|_|
-        settings.enabled && frame.active && !matches!(shell.pending_overworld_step_boundary,
-            Some(PendingOverworldStepBoundary::WildBattle)));
-    let next = transition.map(|transition| battle_transition_world_effect(transition,
-        rendered.visual_lighting == crystal_render_api::VisualWorldLighting::Dark,
-        flash.as_deref().copied().unwrap_or_default().palette_strength(), &shell.asset_root))
-        .transpose();
-    match next {
-        Ok(effect) => { let next = effect.unwrap_or_default(); if *published != next { *published = next; } }
-        Err(error) => {
-            // The same missing source art is reported by the classic presenter.
-            // Never retain an earlier flash while that source is unavailable.
-            published.set_if_neq(Default::default());
-            bevy::log::warn!("3D entry source effect unavailable: {error:#}");
-        }
-    }
+    // Keep the production entry clock/input ownership, but retain the clear
+    // 3D field instead of replaying LCD strobes, palette blanks and wipe tiles
+    // over it. Classic mode still presents its complete original transition.
+    let active = settings.enabled && frame.active && shell.visible_battle_transition.is_some()
+        && !matches!(shell.pending_overworld_step_boundary,
+            Some(PendingOverworldStepBoundary::WildBattle));
+    let next = crystal_render_api::VisualWorldEntryEffect { active, ..default() };
+    if *published != next { *published = next; }
 }
 
 #[cfg(test)]

@@ -28,6 +28,8 @@ crystal-audio.workspace = true
 crystal-core.workspace = true
 crystal-runtime.workspace = true
 crystal-net.workspace = true
+ratatui = { version = "0.30", default-features = false }
+crystal-tui-view.workspace = true
 crystal-render-api = { workspace = true, optional = true }
 crystal-voxel-view = { workspace = true, optional = true }
 image.workspace = true

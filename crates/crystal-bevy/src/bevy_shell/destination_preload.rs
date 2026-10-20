@@ -73,7 +73,7 @@ fn destination(snapshot: &RuntimeShellSnapshot) -> Option<(&crate::RuntimeMapCat
             _ => return None,
         };
         // Start before the boundary enters view; only one hidden scene is resident.
-        if distance > 24 { return None; }
+        if distance > 40 { return None; }
         Some((distance, target, TilePosition::new(ax as i16, ay as i16)))
     }).min_by_key(|(distance, _, _)| *distance);
     doorway.into_iter().chain(connection).min_by_key(|(distance, _, _)| *distance)
@@ -95,7 +95,8 @@ pub(super) fn publish(
     if !current.active || !crystal_voxel_view::destination_preload_supported() { return; }
     // Keep the browser's existing initial-room memory/worker budget.
     #[cfg(target_arch = "wasm32")]
-    if !status.active || status.terrain_pending { return; }
+    if !status.active || status.profiles_pending
+        || status.terrain_map.as_deref() != Some(current.map_id.as_ref()) { return; }
     let Some((_, snapshot)) = runtime.cached_snapshot.as_ref() else { return; };
     // Animation/camera updates retain this immutable snapshot. Do not traverse
     // the map graph and hash every connected block again on display refreshes.

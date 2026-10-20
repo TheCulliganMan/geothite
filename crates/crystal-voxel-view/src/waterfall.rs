@@ -15,6 +15,64 @@ pub(crate) struct WaterfallPlacement {
     pub height: usize,
 }
 
+/// The upper basin sits just below the rock plateau that encloses it. The
+/// receiving pool uses the native cave floor, not the outdoor water recess.
+pub(crate) fn tohjo_levels(cells: &[&VisualTile], width: usize, fall: WaterfallPlacement) -> [f32; 2] {
+    let source = &cells[fall.row * width + fall.column].source;
+    [crate::cave::rock_height(source) + crate::profile::WATER_HEIGHT,
+        crate::profile::GROUND_HEIGHT]
+}
+
+/// A short level lip rolls into the falling sheet and flattens into the pool.
+/// Terrain and rendered Surf support must sample the same longitudinal curve.
+pub(crate) fn cascade_fraction(along: f32) -> f32 {
+    let t = ((along - 0.10) / 0.80).clamp(0.0, 1.0);
+    1.0 - t * t * (3.0 - 2.0 * t)
+}
+
+/// Match the quarter-cell triangles used by the sheet while an actor moves
+/// between tile centers. A waterfall ride must not jump between height rows.
+pub(crate) fn support_correction(
+    frame: &crystal_render_api::VisualWorldFrame,
+    cell: bevy::prelude::UVec2,
+    foot: bevy::prelude::Vec2,
+    heights: &[f32],
+) -> f32 {
+    if frame.map_id.as_ref() != "TohjoFalls" { return 0.; }
+    let tile = |x: u32, y: u32| {
+        frame.tiles.get(y as usize * frame.grid_size.x as usize + x as usize)
+            .filter(|t| t.column == x && t.row == y)
+            .or_else(|| frame.tiles.iter().find(|t| t.column == x && t.row == y))
+    };
+    let is_fall = |x, y| tile(x, y).is_some_and(|t| {
+        let s = &t.source;
+        matches!(s.tileset_id.as_ref(), "cave" | "dark_cave")
+            && s.metatile_id == WATERFALL_METATILE && s.tile_index == WATERFALL_TILE
+    });
+    if !is_fall(cell.x, cell.y) { return 0.; }
+    let mut north = cell.y;
+    let mut south = cell.y + 1;
+    while north > 0 && is_fall(cell.x, north - 1) { north -= 1; }
+    while south < frame.grid_size.y && is_fall(cell.x, south) { south += 1; }
+    if north == 0 || south == frame.grid_size.y { return 0.; }
+    let width = frame.grid_size.x as usize;
+    let Some(&resolved) = heights.get(cell.y as usize * width + cell.x as usize) else { return 0.; };
+    let scale = frame.tile_size.y / crate::profile::SOURCE_TILE_HEIGHT;
+    let head = (crate::cave::rock_height(&tile(cell.x, cell.y).unwrap().source)
+        + crate::profile::WATER_HEIGHT) * scale;
+    if heights.get((north - 1) as usize * width + cell.x as usize)
+        .is_none_or(|&y| (y - head).abs() > 0.001) { return 0.; }
+    let rows = (south - north) as f32;
+    let center = (cell.y - north) as f32 + 0.5;
+    if (resolved - head * cascade_fraction(center / rows)).abs() > 0.001 { return 0.; }
+    let top = frame.center.y + frame.grid_size.y as f32 * frame.tile_size.y * 0.5;
+    let along = ((top - foot.y) / frame.tile_size.y - north as f32).clamp(0., rows);
+    let knot = (along * 4.).floor() / 4.;
+    let a = cascade_fraction(knot / rows);
+    let b = cascade_fraction((knot + 0.25) / rows);
+    head * (a + (b - a) * (along - knot) * 4.) - resolved
+}
+
 pub(crate) fn waterfall_placements(
     cells: &[&VisualTile],
     width: usize,

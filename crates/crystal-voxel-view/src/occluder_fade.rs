@@ -1564,7 +1564,7 @@ fn body_aperture(material: &mut VoxelMaterial, player: CutawayUniform, enabled: 
 // Match Bevy's visibility inheritance: Visible overrides ancestors, Hidden
 // stops the chain, and a missing parent/component defaults to visible.
 fn hierarchy_is_visible(entity: Entity, query: &Query<(&Visibility, Option<&ChildOf>)>,
-    cache: &mut std::collections::HashMap<Entity, bool>) -> bool {
+    cache: &mut bevy::ecs::entity::EntityHashMap<bool>) -> bool {
     if let Some(&visible) = cache.get(&entity) { return visible; }
     let visible = match query.get(entity) {
         Ok((Visibility::Hidden, _)) => false,
@@ -1595,7 +1595,7 @@ fn sync(
             Option<&OpaqueObjectLeaf>, Option<&SortedObjectLeaf>, &mut Visibility,
             Option<&mut DeferredMesh>)>,
     )>,
-    mut visible_hierarchy: Local<std::collections::HashMap<Entity, bool>>,
+    mut visible_hierarchy: Local<bevy::ecs::entity::EntityHashMap<bool>>,
     mut previous: Local<Option<(Mat4, CutawayUniform, bool, bool)>>,
     mut previous_pit_targets: Local<Vec<Vec3>>,
     mut previous_character_targets: Local<Vec<Vec3>>,

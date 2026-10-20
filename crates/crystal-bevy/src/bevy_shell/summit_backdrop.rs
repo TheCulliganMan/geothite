@@ -8,17 +8,24 @@ pub(super) fn publish(
     mut art_cache: ResMut<RenderedTilesetArt>,
     mut images: ResMut<Assets<Image>>,
     mut backdrop: ResMut<SummitBackdrop>,
+    settings: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
+    status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
 ) {
-    if !frame.active || frame.map_id.as_ref() != "TinTowerRoof" {
-        if frame.active && backdrop.revision.is_some() {
+    if !frame.active { return; }
+    if frame.map_id.as_ref() != "TinTowerRoof"
+        && !crystal_voxel_view::summit_preload_interior(&frame.map_id) {
+        if backdrop.revision.is_some() {
             *backdrop = SummitBackdrop::default();
         }
         return;
     }
+    if !settings.as_ref().is_some_and(|settings| settings.enabled) { return; }
+    if frame.map_id.as_ref() != "TinTowerRoof"
+        && !status.as_ref().is_some_and(|s|crystal_voxel_view::summit_preload_foreground_ready(s)) { return; }
     let Some((_, snapshot)) = runtime.cached_snapshot.as_ref() else {
         return;
     };
-    match source_maps(snapshot, &runtime, &mut art_cache, &mut images, &backdrop) {
+    match source_maps_budgeted(snapshot, &runtime, &mut art_cache, &mut images, &backdrop, 1) {
         Ok(Some(next)) => *backdrop = next,
         Ok(None) => {}
         Err(error) => bevy::log::warn!("summit source panorama unavailable: {error:#}"),
@@ -30,6 +37,17 @@ pub(super) fn source_maps(
     cache: &mut RenderedTilesetArt,
     images: &mut Assets<Image>,
     previous: &SummitBackdrop,
+) -> Result<Option<SummitBackdrop>> {
+    source_maps_budgeted(snapshot, runtime, cache, images, previous, usize::MAX)
+}
+
+pub(super) fn source_maps_budgeted(
+    snapshot: &RuntimeShellSnapshot,
+    runtime: &BevyRuntimeShell,
+    cache: &mut RenderedTilesetArt,
+    images: &mut Assets<Image>,
+    previous: &SummitBackdrop,
+    budget: usize,
 ) -> Result<Option<SummitBackdrop>> {
     let placements = connected_render_map_placements_to_depth("EcruteakCity", &snapshot.maps, None)?;
     let city = placements[0].0;
@@ -67,10 +85,12 @@ pub(super) fn source_maps(
         }
     }
     let revision = hash.finish();
-    if previous.revision == Some(revision) {
+    if previous.revision == Some(revision) && !previous.source_pending {
         return Ok(None);
     }
-    if std::env::var_os("CRYSTAL_SUMMIT_TRACE").is_some() {
+    let continuing = previous.revision == Some(revision);
+    let animation_frame = if continuing { previous.animation_frame } else { runtime.lcd_animation_frame };
+    if !continuing && std::env::var_os("CRYSTAL_SUMMIT_TRACE").is_some() {
         eprintln!("summit source maps ({}): {:?}", placements.len(),
             placements.iter().map(|(map, _, _)| map.map_name.as_str()).collect::<Vec<_>>());
     }
@@ -86,16 +106,6 @@ pub(super) fn source_maps(
             time_of_day: visible_effective_map_time_of_day(map, period, false).into(),
             palette_map: tileset.palette_map.clone(),
         };
-        if !cache.cache.contains_key(&key) {
-            let art = load_tileset_art(
-                &runtime.asset_root,
-                &key.tileset_id,
-                &key.time_of_day,
-                &key.palette_map,
-                images,
-            )?;
-            cache.cache.insert(key.clone(), art);
-        }
         sources.push(ResolvedRenderSource {
             map,
             tileset,
@@ -106,8 +116,20 @@ pub(super) fn source_maps(
             height: i32::from(map.attributes.height) * 4,
         });
     }
-    let mut maps = Vec::new();
-    for source in &sources {
+    let mut maps = if continuing { previous.maps.clone() } else { Vec::new() };
+    let first = maps.len();
+    for source in sources.iter().skip(first).take(budget.max(1)) {
+        let key = source.art_key.clone();
+        if !cache.cache.contains_key(&key) {
+            let art = load_tileset_art(
+                &runtime.asset_root,
+                &key.tileset_id,
+                &key.time_of_day,
+                &key.palette_map,
+                images,
+            )?;
+            cache.cache.insert(key.clone(), art);
+        }
         let art = &cache.cache[&source.art_key];
         let w = source.width as usize;
         let h = source.height as usize;
@@ -121,7 +143,7 @@ pub(super) fn source_maps(
                     .get(block as usize * 16 + y % 4 * 4 + x % 4)
                     .context("panorama metatile")?;
                 let texture = art
-                    .tile_handle_at_frame(block, x % 4, y % 4, runtime.lcd_animation_frame, false)
+                    .tile_handle_at_frame(block, x % 4, y % 4, animation_frame, false)
                     .context("panorama tile art")?;
                 handles.push(texture.clone());
                 tiles.push(crystal_render_api::VisualTile {
@@ -182,6 +204,12 @@ pub(super) fn source_maps(
             origin_source: IVec2::new(source.origin_x, source.origin_y),
         });
     }
+    if maps.len() < sources.len() {
+        return Ok(Some(SummitBackdrop {
+            revision: Some(revision), source_pending: true, animation_frame,
+            tower_core: IVec2::new(tower.x.into(), tower.y.into()), maps, border: None,
+        }));
+    }
     // Match the ordinary exterior renderer's source-authored border, without
     // repeating finite map roads, water, or buildings over their neighbors.
     let source = &sources[0];
@@ -216,7 +244,7 @@ pub(super) fn source_maps(
                 .get(block as usize * 16 + y * 4 + x)
                 .context("summit authored border metatile")?;
             let texture = art
-                .tile_handle_at_frame(block, x, y, runtime.lcd_animation_frame, false)
+                .tile_handle_at_frame(block, x, y, animation_frame, false)
                 .context("summit authored border art")?;
             handles.push(texture.clone());
             tiles.push(crystal_render_api::VisualTile {
@@ -251,6 +279,8 @@ pub(super) fn source_maps(
     });
     Ok(Some(SummitBackdrop {
         revision: Some(revision),
+        source_pending: false,
+        animation_frame,
         tower_core: IVec2::new(tower.x.into(), tower.y.into()),
         maps,
         border: Some(border),

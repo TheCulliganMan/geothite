@@ -3,9 +3,7 @@
 import json,os,unittest
 from pathlib import Path
 from seel_sculpt import sculpture,HEIGHT
-from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_axolotl_sculpt import ray_intersections
-import test_donphan_sculpt as joins
+from sculpt_test_support import assert_closed_models,assert_model_shading,parts_overlap,indexed_ray_intersections as ray_intersections
 ROOT=Path(os.environ.get('SEEL_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/seel.glb'))
 class SeelTests(unittest.TestCase):
  @classmethod
@@ -43,7 +41,7 @@ class SeelTests(unittest.TestCase):
   pairs=[(body,head),(head,self.find('Horn /')),(head,muzzle),(muzzle,mouth),(mouth,self.find('Tongue /')),(muzzle,self.find('Nose /'))]
   pairs += [(body,p) for p in self.ps if p['part'].startswith(('Flipper /','Tail fluke /'))]
   pairs += [(muzzle,p) for p in self.ps if p['part'].startswith('Tusk /')]
-  for a,b in pairs:self.assertTrue(joins.DonphanTests.overlap(self,a,b),(a['part'],b['part']))
+  for a,b in pairs:self.assertTrue(parts_overlap(a,b),(a['part'],b['part']))
  def test_tail_fans_are_raised_and_paddles_are_broad_and_low(self):
   head=self.find('Head /');headtop=max(head['positions'][1::3]);headwidth=max(abs(v) for v in head['positions'][::3])
   for p in self.ps:

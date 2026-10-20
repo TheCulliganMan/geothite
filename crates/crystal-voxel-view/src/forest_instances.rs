@@ -20,8 +20,7 @@ pub(crate) fn dense_understory() -> bool {
         #[cfg(target_arch = "wasm32")]
         { false }
         #[cfg(not(target_arch = "wasm32"))]
-        { crate::new_bark_models::scenery_full_detail()
-            || std::env::var_os("CRYSTAL_UNDERSTORY_FULL_DETAIL").is_some() }
+        { std::env::var_os("CRYSTAL_UNDERSTORY_FULL_DETAIL").is_some() }
     })
 }
 pub(crate) fn validate_understory_density(dense: bool) -> Result<(), String> {

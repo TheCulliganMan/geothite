@@ -358,7 +358,7 @@ impl PeopleGpu {
             }
             Some(node)
         })).collect::<Vec<_>>();
-        let locomotion = crate::human_locomotion::HumanLocomotion::new(&rig);
+        let locomotion = crate::human_locomotion::HumanLocomotion::for_character(&rig, kind);
         let idle_motion = crate::human_idle::HumanIdle::new(&rig, kind);
         let mut idle = rig.nodes.clone();
         idle_motion.sample(&rig, &locomotion, 0., &mut idle);
@@ -366,7 +366,6 @@ impl PeopleGpu {
             rig.sample("Idle", 0., &mut idle);
             crate::bicycle::pose(&rig, &mut idle, 0., model_scale);
         }
-        else { crate::hand_pose::relax(&rig, &mut idle); }
         // Deferred entities must already contain the final visible pose.
         // Keep the animation buffers unscaled so updates never accumulate it.
         let mut presented = idle.clone();
@@ -530,9 +529,8 @@ impl Person {
             self.rig.sample("Jump", progress.clamp(0.0, 1.0) * self.rig.duration("Jump"), &mut self.hop);
             crate::hand_pose::relax(&self.rig, &mut self.hop);
         }
-        if !self.bicycle {
+        if self.surfing && !self.bicycle {
             crate::hand_pose::relax(&self.rig, &mut self.idle);
-            if walking { crate::hand_pose::relax(&self.rig, &mut self.run); }
         }
         if self.surfing {
             crate::bicycle::surf_pose(&self.rig, &mut self.idle, self.model_scale, self.surf_half_width);
@@ -998,7 +996,6 @@ pub(crate) mod tests {
         let mut expected = rig.nodes.clone();
         people[0].locomotion.sample(&rig,std::f32::consts::FRAC_PI_2,
             people[0].run_blend,&mut expected);
-        crate::hand_pose::relax(&rig,&mut expected);
         let head_scale = match kind {
             CharacterKind::PokefanF => 0.60,
             CharacterKind::Youngster | CharacterKind::StandingYoungster | CharacterKind::BugCatcher => 0.84,

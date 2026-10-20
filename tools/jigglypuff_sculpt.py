@@ -10,9 +10,9 @@ from wing_insect_sculpt import contour
 from skin_glb import COORDINATES
 HEIGHT=.82
 PINK=(.98,.77,.83);INK=(.13,.15,.20);WHITE=(.98,.99,.97);BLUE=(.13,.63,.73);LOWER=(.41,.79,.84)
-def pillow_ear(name,outline):
+def pillow_ear(name,outline,*,center=None):
  # Closed concentric front/back surfaces round the rim as well as the face.
- n=len(outline);cx=sum(x for x,y in outline)/n;cy=sum(y for x,y in outline)/n
+ n=len(outline);cx,cy=center if center is not None else (sum(x for x,y in outline)/n,sum(y for x,y in outline)/n)
  xy=[(cx,cy,0.)]
  for r in (.23,.47,.70,.88,1.):xy.extend((cx+(x-cx)*r,cy+(y-cy)*r,r) for x,y in outline)
  count=len(xy);v=[(x,y,.01+sign*.060*math.sqrt(max(.0005,1-r*r))) for sign in (1,-1) for x,y,r in xy]

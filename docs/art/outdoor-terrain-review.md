@@ -1,3 +1,47 @@
+## Current art direction — 2026-10-20
+
+The user's current direction is to make outdoor routes look amazing as 3D
+environments from every angle. Matching the 2D appearance is not an acceptance
+criterion. Judge silhouettes, surface craft, lighting, natural transitions,
+composition, player visibility and path readability through full camera orbits,
+low views and close views. Preserve gameplay and navigation while improving
+the 3D art. The older 2D comparison receipts below are historical diagnostics;
+they do not establish acceptance against this direction.
+
+### Painted granite and full-orbit review
+
+The shared outdoor stone binding now loads `assets/terrain/painted-granite.png`.
+The surface shader projects its angular plates around mountain faces and caps,
+adds restrained shelf lichen, and lights the sculpt against the actual sun.
+Native cave bedrock keeps its separate image. The asset's full built-in
+imagegen prompt is recorded in `assets/terrain/README.md`.
+
+Eight headless 3D headings at Route26 `(9,28)`, noon, zoom 0 were personally
+inspected. Headings 0/2/3/4/6/7 use pitch 35 and 960×720; heading 1 uses
+pitch 45 and 1280×960, and heading 5 uses pitch 35 and 960×720. The painted
+plates carry around the complete mass without the former uniform orange
+bands. Evidence is the ignored `target/outdoor-granite-orbit-review.png`,
+its constituent `outdoor-granite-orbit/` images, and
+`outdoor-route26-granite-{retry,reverse}.png`. Five existing painted-image
+preparation, sharing, sampling and moving-stone tests pass.
+
+The orbit exposes a larger geometry problem: the trainer is covered by rock
+at a permitted wall-adjacent position. An in-memory probe of the exact browser
+pack identifies `(9,28)` as block `6a`, permission `b2`, and `(10,28)` as
+block `70`, permission `b2`. This is an UP_WALL directional land permission;
+it is not an impassable mountain cell. `(10,27)` and `(10,54)` are ordinary
+floor. Investigate decorative mountain relief above the unchanged walking
+support on these accessible caps before enlarging the reveal aperture.
+The source probe and temporary binary are verification scratch only.
+
+The inspected 22:00 view also exposes an overly saturated violet cast and
+poor trainer readability. DayCycle's night tint has been changed from the
+palette-matching blue to restrained cool moonlight, retaining its energy,
+clock interpolation and direction. Visual verification of that change and
+the final optimized executable remain pending. Forest clutter, terrain mass,
+walking views, eye-level views, further route families and whole-route visual
+acceptance remain open.
+
 ## Outdoor mountain relief and mineral contrast — 2026-10-16
 
 Outdoor permanent rock now has unequal planar ridges and broken spurs, with

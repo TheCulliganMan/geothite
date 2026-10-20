@@ -2827,6 +2827,7 @@ dependencies = [
  "crystal-net",
  "crystal-render-api",
  "crystal-runtime",
+ "crystal-tui-view",
  "crystal-voxel-view",
  "getrandom 0.3.4",
  "image",
@@ -2834,6 +2835,7 @@ dependencies = [
  "naga",
  "objc2 0.5.2",
  "objc2-foundation 0.2.2",
+ "ratatui",
  "rodio 0.18.1",
  "serde",
  "serde_json",
@@ -2936,6 +2938,22 @@ version = "0.1.0"
 dependencies = [
  "crystal-voxel-view",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "crystal-tui-view"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "crossterm",
+ "crystal-assets",
+ "crystal-bevy",
+ "crystal-core",
+ "crystal-runtime",
+ "image",
+ "ratatui",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -3553,6 +3571,7 @@ dependencies = [
  "crystal-bevy",
  "crystal-core",
  "crystal-runtime",
+ "crystal-tui-view",
  "ratatui",
  "serde",
  "serde_json",

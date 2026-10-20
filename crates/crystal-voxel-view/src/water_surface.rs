@@ -134,7 +134,11 @@ pub(super) fn bounds(frame: &VisualWorldFrame) -> Vec4 {
 
 /// Wavelength, normal strength, bank foam and exposed sky contribution.
 pub(super) fn style(frame: &VisualWorldFrame) -> Vec4 {
-    if frame.map_id.as_ref() == "CeruleanGym" {
+    if frame.map_id.as_ref() == "TohjoFalls" {
+        // The connected basins carry small source-driven ripples and very
+        // little reflected fill under the cave roof.
+        Vec4::new(0.95, 0.14, 0.10, 0.10)
+    } else if frame.map_id.as_ref() == "CeruleanGym" {
         Vec4::new(1.35, 0.055, 0.0, 0.12)
     } else if matches!(frame.map_id.as_ref(), "NationalPark" | "NationalParkBugContest" | "SafariZoneBeta")
         && frame.tiles.iter().any(|tile| tile.source.tileset_id.as_ref() == "park")

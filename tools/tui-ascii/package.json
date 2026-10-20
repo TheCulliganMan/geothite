@@ -1,0 +1,5 @@
+{
+  "private": true,
+  "description": "Pinned browser-only ASCII painter; gameplay and layout stay in Rust",
+  "dependencies": { "ascii.rest": "0.2.1" }
+}

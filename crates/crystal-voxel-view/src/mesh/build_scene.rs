@@ -2322,17 +2322,22 @@ fn build_terrain_mesh_internal_with_background(
     let native_falls=waterfall_placements(&cells,width,height);
     let native_upper_pool=crate::waterfall::tohjo_upstream_pool(frame.map_id.as_ref(),&original_cells,width,height,&native_falls);
     let water_scale=geometry.tile_height/SOURCE_TILE_HEIGHT;
+    let upper_level=native_falls.first().map(|&fall|
+        crate::waterfall::tohjo_levels(&original_cells,width,fall)[0]).unwrap_or(0.);
+    let mut native_fall_surface=vec![false;cell_count];
     for (i,upper) in native_upper_pool.iter().enumerate() {
-        if *upper {mesh.footing_heights[i]=(crate::cave::CAVE_SHELF_HEIGHT+crate::profile::WATER_HEIGHT)*water_scale;}
+        if *upper {mesh.footing_heights[i]=upper_level*water_scale;}
     }
     for fall in &native_falls {
         if fall.row==0 || !(fall.column..fall.column+fall.width)
             .all(|x|native_upper_pool[(fall.row-1)*width+x]) {continue;}
         for row in fall.row..fall.row+fall.height {
             let along=(row-fall.row) as f32+0.5;
-            let y=(crate::profile::WATER_HEIGHT+crate::cave::CAVE_SHELF_HEIGHT
-                *(1.-along/fall.height as f32))*water_scale;
-            for column in fall.column..fall.column+fall.width {mesh.footing_heights[row*width+column]=y;}
+            let y=upper_level*crate::waterfall::cascade_fraction(along/fall.height as f32)*water_scale;
+            for column in fall.column..fall.column+fall.width {
+                mesh.footing_heights[row*width+column]=y;
+                native_fall_surface[row*width+column]=true;
+            }
         }
     }
 
@@ -2341,8 +2346,8 @@ fn build_terrain_mesh_internal_with_background(
             let index = row * width + column;
             if let Some(donor)=cave_pool_underlays[index] {
                 let source=original_cells[donor];
-                let level=if native_upper_pool[index] {
-                    (crate::cave::CAVE_SHELF_HEIGHT+crate::profile::WATER_HEIGHT)*water_scale
+                let level=if native_upper_pool[donor] {
+                    upper_level*water_scale
                 } else {shape_for_source_on_map(&frame.map_id,&source.source).surface_height(geometry.tile_height)};
                 let [w,e,n,s]:[f32;4]=geometry.bounds(column,row).into();
                 append_top(&mut mesh.textured,[w,e,n,s],level,
@@ -2351,9 +2356,9 @@ fn build_terrain_mesh_internal_with_background(
                 // Existing shaft cuts above explicitly opt out of this sheet.
                 if donor==index || mesh.authored_cells[index].is_some() {continue;}
                 if source_shapes[index].surface_height(geometry.tile_height).abs()<0.001
-                    && cave_shore::append_over_water(&mut mesh,
+                    && cave_shore::append_over_water_at(&mut mesh,
                     [[w,0.,n],[w,0.,s],[e,0.,s],[e,0.,n]],[0.,1.,0.],
-                    &original_cells,&geometry,index,frame.grid_origin.to_array()) {continue;}
+                    &original_cells,&geometry,index,frame.grid_origin.to_array(),level) {continue;}
             }
             if claimed_by_building[index]
                 || claimed_by_tree[index]
@@ -2362,6 +2367,9 @@ fn build_terrain_mesh_internal_with_background(
             {
                 continue;
             }
+            // The complete curved sheet owns this plot, including its level
+            // landing. A second zero-height water plane would fight that lip.
+            if native_fall_surface[index] {continue;}
             if images.is_some()
                 && let CellShape::Cutout {
                     ground_tile_index,
@@ -2441,8 +2449,7 @@ fn build_terrain_mesh_internal_with_background(
             }
             if native_upper_pool[index] {
                 append_top(&mut mesh.textured,geometry.bounds(column,row).into(),
-                    (crate::cave::CAVE_SHELF_HEIGHT+crate::profile::WATER_HEIGHT)
-                        *geometry.tile_height/SOURCE_TILE_HEIGHT,
+                    upper_level*water_scale,
                     cave_pool_uv(cells[index],geometry.uv(column,row)));
             } else {
                 append_textured_cell(
@@ -2457,7 +2464,7 @@ fn build_terrain_mesh_internal_with_background(
     for placement in native_falls {
         let levels=(placement.row>0 && (placement.column..placement.column+placement.width)
             .all(|x|native_upper_pool[(placement.row-1)*width+x]))
-            .then_some([crate::cave::CAVE_SHELF_HEIGHT+crate::profile::WATER_HEIGHT,crate::profile::WATER_HEIGHT]);
+            .then(||crate::waterfall::tohjo_levels(&original_cells,width,placement));
         append_waterfall(&mut mesh.textured, &geometry, &cells, placement, frame.grid_origin.to_array(),levels);
     }
 

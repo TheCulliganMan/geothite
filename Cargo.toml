@@ -12,6 +12,7 @@ members = [
     "crates/crystal-terrain-worker",
     "crates/crystal-actor-worker",
     "crates/crystal-tui",
+    "crates/crystal-tui-view",
     "crates/crystal-voxel-view",
     "crates/crystal-web-server",
     "crates/offset-allocator",
@@ -111,6 +112,7 @@ rust-version = "1.99"
 [workspace.dependencies]
 crystal-assets = { path = "crates/crystal-assets" }
 crystal-audio = { path = "crates/crystal-audio" }
+crystal-tui-view = { path = "crates/crystal-tui-view" }
 crystal-bevy = { path = "crates/crystal-bevy" }
 crystal-core = { path = "crates/crystal-core" }
 crystal-net = { path = "crates/crystal-net" }

@@ -1,4 +1,5 @@
 use crate::{LineKind, SnapshotLine, TextSnapshot, TuiTheme, wrap_lines};
+#[cfg(not(target_arch = "wasm32"))]
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use crystal_core::input::GameButton;
 use ratatui::{
@@ -23,6 +24,7 @@ pub enum TerminalAction {
     None,
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 pub fn map_key_event(event: KeyEvent, modal_selection: bool) -> TerminalAction {
     if event.modifiers.contains(KeyModifiers::CONTROL) && matches!(event.code, KeyCode::Char('c')) {
         return TerminalAction::Quit;
@@ -352,7 +354,8 @@ fn centered_rect(width: u16, height: u16, area: Rect) -> Rect {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crossterm::event::KeyEventKind;
+    #[cfg(not(target_arch = "wasm32"))]
+use crossterm::event::KeyEventKind;
     use ratatui::{Terminal, backend::TestBackend};
 
     #[test]

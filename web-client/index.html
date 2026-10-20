@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <base href="/">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <title>Geothite</title>
@@ -98,10 +99,18 @@
     <link rel="stylesheet" href="./player-customization.css?v=3">
     <link rel="stylesheet" href="./save-management.css?v=2">
     <link rel="stylesheet" href="./mobile-player.css?v=20261014-gesture-controls">
+  <link rel="stylesheet" href="/view-navigation.css">
   </head>
   <body>
+    <nav id="view-navigation" aria-label="Game view">
+      <a href="/?view=2d" data-view="2d">2D</a>
+      <a href="/?view=3d" data-view="3d">3D</a>
+      <a href="/?view=tui" data-view="tui">TUI</a>
+      <button id="tui-style-toggle" type="button" hidden>Text</button>
+    </nav>
     <main id="game-stage" aria-label="Geothite game">
       <canvas id="crystal-canvas" tabindex="0" aria-label="Game screen. Drag to control the camera. Use a controller or arrow keys or WASD, Z, X and Space. Enter opens chat."></canvas>
+      <section id="tui-surface" hidden aria-label="Game terminal"><pre id="tui-screen" aria-live="off"></pre><canvas id="tui-canvas" aria-hidden="true"></canvas></section>
       <div id="loading" role="status"><div class="loading-card"><h1 id="loading-message">Loading game</h1><div id="game-loading-assets"></div></div></div>
     </main>
     <fieldset id="touch-controls" hidden disabled></fieldset>
@@ -197,6 +206,7 @@
       import { mountGamepadControls } from './gamepad-controls.js';
       import { mountGameAudio } from './audio-unlock.js?v=20261018-playback';
       import { mountTouchControls } from './touch-controls.js?v=20261014-gesture-controls';
+      import { mountRendererViews, mountViewNavigation, preferredRendererView } from './view-navigation.js';
       import { mountViewToggle } from './view-toggle.js';
       import { mountSaveManagement } from './save-management.js?v=2';
       import { mountPlayerCustomization } from './player-customization.js?v=5';
@@ -221,6 +231,11 @@
         return packRequests.get(key);
       };
       const canvas = document.querySelector('canvas');
+      let pendingRendererView = preferredRendererView(location, localStorage, localStorage.getItem('crystal.display.voxel') === 'true');
+      mountViewNavigation({ document, location, history,
+        currentMode: () => pendingRendererView,
+        setMode: mode => { pendingRendererView = mode; localStorage.setItem('crystal.display.mode', mode); },
+      });
       const fitMenuViewport = () => {
         const viewport = window.visualViewport;
         document.documentElement.style.setProperty('--menu-viewport-height', `${viewport?.height ?? window.innerHeight}px`);
@@ -293,7 +308,7 @@
           let audioResolve, audioReject;
           const audioReady = new Promise((resolve, reject) => { audioResolve = resolve; audioReject = reject; });
           audioReady.catch(() => {});
-          const audioWorker = new Worker(new URL('./audio-worker.js', import.meta.url), { type: 'module' });
+          const audioWorker = new Worker(new URL('./audio-worker.js', document.baseURI), { type: 'module' });
           globalThis.__crystalPollMidi = createMidiPreparation(audioWorker, { onProgress: progress => { reportAsset(progress); if (progress.phase === 'ready') audioResolve(); if (progress.phase === 'error') audioReject(Error(progress.error)); } });
           // The browser build always opens this generated pack. Begin it beside
           // the game and audio WASM downloads; __crystalFetchPack reuses it.
@@ -360,9 +375,10 @@
           mountSaveManagement(wasm, { document, window });
           viewControls = mountViewToggle(wasm, {
             button: document.querySelector('#view-toggle'), canvas, storage: localStorage,
-            startIn2D: document.documentElement.classList.contains("flygon-embedded"),
+            startIn2D: document.documentElement.classList.contains("flygon-embedded") || new URLSearchParams(location.search).get("view") === "2d",
             startIn3D: workerPolicy.preview3D,
           });
+          mountRendererViews(wasm, viewControls, { document, window, canvas, startIn3D: workerPolicy.preview3D });
           const bridge = createGameBridge(wasm);
           if (new URLSearchParams(location.search).get("flygon") === "1") {
             window.__flygonGameBridge = bridge;

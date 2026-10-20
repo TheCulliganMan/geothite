@@ -50,7 +50,16 @@ enum CaptureOutcome { Saved, Blank }
 #[derive(Resource)]
 struct ReviewTarget(Option<Handle<Image>>);
 
+fn all_angles() -> bool {
+    std::env::var_os("CRYSTAL_PEOPLE_REVIEW_ALL_ANGLES").is_some()
+}
+
 pub fn run() -> AppExit {
+    if std::env::args().nth(1).as_deref() == Some("--validate-hands") {
+        crate::hand_pose::validation::native_fingers_relax_and_close_without_wrist_or_skin_drift();
+        eprintln!("Native hand checks passed: resting curl, loose running fists, pinned wrists, fixed bone lengths and skinned bounds.");
+        return AppExit::Success;
+    }
     #[cfg(not(target_arch = "wasm32"))]
     if std::env::args().nth(1).as_deref() == Some("--validate-instances") {
         crate::open_people_skin::tests::validate_instances();
@@ -64,7 +73,7 @@ pub fn run() -> AppExit {
     }
     if std::env::args().nth(1).as_deref() == Some("--validate-walk") {
         crate::human_locomotion::validation::validate();
-        eprintln!("Human locomotion checks passed for every identity: contacts, ground speed, bone lengths, loop seams, shoe floor and culling bounds.");
+        eprintln!("Human locomotion checks passed for every identity: rounded limb seams, character gaits, arm follow-through, contacts, ground speed, bone lengths, loop seams, shoe floor and culling bounds.");
         return AppExit::Success;
     }
     let output = std::env::args()
@@ -120,6 +129,8 @@ pub fn run() -> AppExit {
     let headless = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_HEADLESS").is_some();
     assert!(!headless || std::env::var_os("CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET").is_some(),
         "headless review requires the image target");
+    assert!(!all_angles() || single_view().is_none(),
+        "all-angle sheets cannot be combined with a single detail view");
     let plugins = DefaultPlugins.build()
         .set(bevy::render::RenderPlugin {
             synchronous_pipeline_compilation: true,
@@ -127,7 +138,7 @@ pub fn run() -> AppExit {
         }).set(WindowPlugin {
             primary_window: (!headless).then(|| Window {
                 title: "NPC angle review".into(),
-                resolution: (1600, 600).into(),
+                resolution: (1600, if all_angles() { 1050 } else { 600 }).into(),
                 ..default()
             }),
             exit_condition: if headless { bevy::window::ExitCondition::DontExit }
@@ -276,7 +287,8 @@ fn setup(mut commands: Commands, mut images: ResMut<Assets<Image>>) {
     let hands = region.as_deref() == Some("hands");
     let close_up = feet || hands;
     let image = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET").map(|_| {
-        let (width, height) = if detail { (1000, 1000) } else { (1600, 600) };
+        let (width, height) = if detail { (1000, 1000) }
+            else if all_angles() { (1600, 1050) } else { (1600, 600) };
         images.add(Image::new_target_texture(width, height,
             bevy::render::render_resource::TextureFormat::Rgba8UnormSrgb, None))
     });
@@ -288,7 +300,7 @@ fn setup(mut commands: Commands, mut images: ResMut<Assets<Image>>) {
 Projection::Orthographic(OrthographicProjection {
                 scaling_mode: ScalingMode::Fixed {
                     width: if close_up { 0.62 } else if detail { 2.4 } else { 6.4 },
-                    height: if close_up { 0.62 } else { 2.4 },
+                    height: if close_up { 0.62 } else if all_angles() { 4.2 } else { 2.4 },
                 },
                 near: 0.1,
                 far: 100.,
@@ -306,8 +318,9 @@ if hands {
     Transform::from_xyz(0., 2.5, 8.)
         .looking_at(Vec3::new(0., 0.12, 0.), Vec3::Y)
 } else {
-    Transform::from_xyz(0., 1.4, 8.)
-        .looking_at(Vec3::new(0., 0.85, 0.), Vec3::Y)
+    let target_y = if all_angles() { 0.75 } else { 0.85 };
+    Transform::from_xyz(0., target_y + 0.55, 8.)
+        .looking_at(Vec3::new(0., target_y, 0.), Vec3::Y)
 },
 Camera {
                 clear_color: ClearColorConfig::Custom(Color::srgb(0.87, 0.86, 0.82)),
@@ -384,12 +397,12 @@ fn capture(
             .expect("review requires the external rig")
             .clone();
         let scale = look.height / rig.height;
-        for (i, yaw) in [
-            0.,
-            -std::f32::consts::FRAC_PI_4,
-            -std::f32::consts::FRAC_PI_2,
-            std::f32::consts::PI,
-        ]
+        use std::f32::consts::{FRAC_PI_2, FRAC_PI_4, PI};
+        let angles: &[f32] = if all_angles() {
+            &[0., -FRAC_PI_4, -FRAC_PI_2, -3. * FRAC_PI_4,
+                PI, 3. * FRAC_PI_4, FRAC_PI_2, FRAC_PI_4]
+        } else { &[0., -FRAC_PI_4, -FRAC_PI_2, PI] };
+        for (i, yaw) in angles.iter().copied()
         .into_iter()
         .enumerate()
         {
@@ -397,7 +410,8 @@ fn capture(
             if single.is_some_and(|view| view != i) { continue; }
             let root = commands
                 .spawn((Visibility::default(),
-Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + i as f32 * 1.6 }, 0., 0.)
+Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + (i % 4) as f32 * 1.6 },
+                        if all_angles() { if i < 4 { 1.05 } else { -1.05 } } else { 0. }, 0.)
                         .with_rotation(Quat::from_rotation_y(yaw))
                         .with_scale(Vec3::new(scale * look.width, scale, scale)),))
                 .id();
@@ -409,6 +423,7 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + i as f32 * 1.6 }, 0
                 root,
                 false,
                 bicycle,
+                None,
                 &mut commands,
                 &mut meshes,
                 &mut materials,

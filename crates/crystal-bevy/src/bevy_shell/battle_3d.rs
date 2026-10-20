@@ -8,6 +8,7 @@ use crystal_render_api::{
 };
 
 include!("battle_measurements.rs");
+include!("battle_source_picture.rs");
 
 #[derive(Component, Clone, Copy)]
 struct ImmersiveBattleReplaced;
@@ -38,12 +39,9 @@ fn capture_presented_battle(
     let Some(battle) = snapshot.battle.as_ref().filter(|_| canvas_active || preparing) else {
         return Ok(());
     };
-    // Entry portraits remain controller-timed overlays above the modeled map.
-    // Do not switch the entire scene to the classic LCD during their narration.
-    if visible_trainer_result_frame(shell).is_some()
-    {
-        return Ok(());
-    }
+    // Trainer portraits remain controller-timed overlays over the retained
+    // encounter, including result narration. Ending the Pokémon's turn does
+    // not authorize a switch of the entire scene to the classic LCD.
     let environment = snapshot
         .maps
         .iter()
@@ -65,6 +63,7 @@ fn capture_presented_battle(
         ..Default::default()
     };
     let animation = shell.visible_move_animations.front();
+    let mut source_pictures: [Option<SpriteFrame>; 2] = [None, None];
     let (player_visible, enemy_visible) = visible_move_battler_visibility(animation);
     let (player_art, enemy_art) = visible_move_battler_art_overrides(animation);
     let (player_species, enemy_species) = visible_move_battler_species_overrides(animation);
@@ -192,6 +191,35 @@ fn capture_presented_battle(
         } else {
             source_frame
         };
+        let neutral_picture = source_frame.clone();
+        source_pictures[side.index()] = Some(neutral_picture.clone());
+        let started = animation.filter(|a| a.started);
+        let clips = visible_move_battler_clip_tiles(started);
+        let remove = visible_remove_mon_clips(started);
+        let extraction = immersive_picture_extractions(started, art)[side.index()];
+        let clip = if is_player { clips.0 } else { clips.1 };
+        let remove = if is_player { remove.0 } else { remove.1 };
+        let source_picture = clip.is_some() || remove.is_some() || extraction.is_some();
+        let source_frame = if source_picture {
+            let frame = if !minimize && !substitute && let Some(tiles) = clip {
+                battle_pic_resize_frame(art, images, &source_frame,
+                    if is_player { PokemonSpriteSide::Back } else { PokemonSpriteSide::Front }, tiles)?
+            } else { source_frame };
+            let mask = immersive_picture_mask(frame.size,
+                if minimize || substitute { clip } else { None }, remove, extraction, false);
+            immersive_masked_picture(art, images, &frame, mask)?
+        } else { source_frame };
+        if source_picture {
+            if let Some(pixels) = images.get(&neutral_picture.handle).and_then(|image| image.data.as_ref()) {
+                art.battle_source_palette_cache.entry(source_frame.handle.id())
+                    .or_insert_with(|| immersive_source_palette(pixels));
+            }
+            frame.cues.push(VisualBattleCue {
+                kind: VisualBattleCueKind::SourcePicture, side,
+                move_id: Arc::from("SOURCE_PICTURE"), element: Arc::from("NORMAL"),
+                progress: 0., damaging: false,
+            });
+        }
         let size = if minimize || substitute {
             Vec2::splat(16.0)
         } else {
@@ -205,12 +233,12 @@ fn capture_presented_battle(
         let source_rect = Rect::from_corners(anchor, anchor + size);
         let opaque = match art
             .battle_source_bounds_cache
-            .entry(source_frame.handle.id())
+            .entry(neutral_picture.handle.id())
         {
             std::collections::hash_map::Entry::Occupied(entry) => *entry.get(),
             std::collections::hash_map::Entry::Vacant(entry) => {
                 let image = images
-                    .get(&source_frame.handle)
+                    .get(&neutral_picture.handle)
                     .context("source battler bounds image")?;
                 *entry.insert(immersive_source_opaque_bounds(
                     &image.data.as_ref().expect("CPU image pixels"),
@@ -254,8 +282,9 @@ fn capture_presented_battle(
                 shell.battle_entry_messages_remaining == 0
                     && battle.battle_type != "BATTLETYPE_TUTORIAL"
             } else {
-                !matches!(battle.kind, RuntimeBattleKind::Trainer { .. })
-                    || shell.battle_entry_messages_remaining < 2
+                visible_trainer_result_frame(shell).is_none()
+                    && (!matches!(battle.kind, RuntimeBattleKind::Trainer { .. })
+                        || shell.battle_entry_messages_remaining < 2)
             };
         let visible = entry_visible
             && (pokemon.hp > 0 || unchecked || pending_faints[side.index()])
@@ -343,7 +372,15 @@ fn capture_presented_battle(
                 source.battler_offsets = [Vec2::ZERO; 2];
                 source.line_x_offsets = immersive_row_prototype_tackle_scx(animation);
             }
+            if let Some(source) = &frame.source {
+                frame.cues.retain(|cue| cue.kind != VisualBattleCueKind::SourcePicture
+                    || source.battler_rows[cue.side.index()].is_none());
+            }
             frame.use_source_scene = immersive_battle_requires_source_scene_inner(shell, true);
+        }
+        if let Some(source) = &mut frame.source {
+            immersive_source_picture_rows(source, animation, &source_pictures, art, images)?;
+            retain_complete_immersive_source_placement(&mut source.objects);
         }
         let side = if animation.player_move {
             VisualBattleSide::Player
@@ -1821,10 +1858,9 @@ fn publish_immersive_battle_canvas(
     });
 }
 
-/// These phases use the complete original presentation until their exact
-/// clipping/reveal sequences have a 3D equivalent. SCX/SCY rows are supported
-/// by the background-only 3D composite and do not trigger this fallback. Do not replace them
-/// with invented shrinking, rolling, recoil, particles or capture choreography.
+/// Capture and the legacy per-line send-out palette retain their original
+/// full-canvas presentation until supported. Faints, withdrawals and row
+/// extraction use exact local picture banks over the retained 3D environment.
 fn immersive_battle_requires_source_scene(shell: &BevyRuntimeShell) -> bool {
     immersive_battle_requires_source_scene_inner(shell, false)
 }
@@ -1847,20 +1883,9 @@ fn immersive_battle_requires_source_scene_supported(
         .visible_move_animations
         .front()
         .filter(|animation| animation.started);
-    let clips = visible_move_battler_clip_tiles(animation);
-    let remove = visible_remove_mon_clips(animation);
-    let rows = visible_move_battler_row_extractions(animation);
+    let _ = allow_rows; // Modeled strips and exact source strips share the 3D scene.
     (!allow_capture && shell.visible_capture_animation.is_some())
         || visible_beta_send_out_mon1_line_bgps(animation).is_some()
-        || clips.0.is_some()
-        || clips.1.is_some()
-        || remove.0.is_some()
-        || remove.1.is_some()
-        || (!allow_rows && (rows.0.is_some() || rows.1.is_some()))
-        || animation.is_some_and(|animation| {
-            matches!(animation.move_id.as_str(), "FAINT_MON" | "RETURN_MON")
-                || animation.animation_label == "BattleAnim_ReturnMon"
-        })
 }
 
 fn visible_capture_present_state(capture: &VisibleCaptureAnimation) -> VisualBattleCapture {

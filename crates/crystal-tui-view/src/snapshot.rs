@@ -62,6 +62,13 @@ pub struct ViewportSize {
     pub height: u16,
 }
 
+impl TextSnapshot {
+    pub fn confirmation_input_owned(&self) -> bool {
+        !self.menu.is_empty() || !self.prompt.is_empty() || !self.dialogue.is_empty()
+            || self.status_line.contains("Battle") || self.status_line.starts_with("Text")
+    }
+}
+
 impl Default for ViewportSize {
     fn default() -> Self {
         Self {
@@ -95,6 +102,14 @@ impl RuntimeTextRenderer {
         }
     }
 
+    pub fn set_viewport(&mut self, viewport: ViewportSize) {
+        self.viewport = ViewportSize { width: viewport.width.clamp(1, 21), height: viewport.height.clamp(1, 15) };
+    }
+    /// Display-only mirror of the authoritative frontend cursors.
+    pub fn set_selection(&mut self, menu_index: usize, yes_no_index: usize) {
+        self.menu_index = menu_index;
+        self.yes_no_index = yes_no_index.min(1);
+    }
     pub fn menu_index(&self) -> usize {
         self.menu_index
     }
@@ -263,7 +278,7 @@ fn background_event_token(script: &str) -> char {
     }
 }
 
-fn event_runtime_tile(x: u16, y: u16) -> Option<TilePosition> {
+pub(crate) fn event_runtime_tile(x: u16, y: u16) -> Option<TilePosition> {
     raw_event_tile_to_runtime_tile_checked(x, y)
 }
 
@@ -276,7 +291,7 @@ fn player_token(facing: Direction) -> &'static str {
     }
 }
 
-fn terrain_glyph(
+pub(crate) fn terrain_glyph(
     source: &RuntimeShellSnapshot,
     map: &RuntimeMapCatalogSnapshot,
     tile: TilePosition,
@@ -532,7 +547,7 @@ fn menu_lines(source: &RuntimeShellSnapshot, selected: usize) -> Vec<SnapshotLin
             } else {
                 option.as_str()
             };
-            let option = crystal_bevy::visible_script_menu_option_label(menu, option);
+            let option = crate::visible_script_menu_option_label(menu, option);
             SnapshotLine::new(
                 format!("{} {option}", if active { ">" } else { " " }),
                 if active {

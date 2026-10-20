@@ -3,9 +3,7 @@
 import json,os,unittest
 from pathlib import Path
 from dewgong_sculpt import sculpture,HEIGHT
-from sculpt_test_support import assert_closed_models,assert_model_shading
-from test_axolotl_sculpt import ray_intersections
-import test_donphan_sculpt as joins
+from sculpt_test_support import assert_closed_models,assert_model_shading,parts_overlap,indexed_ray_intersections as ray_intersections
 ROOT=Path(os.environ.get('DEWGONG_TEST_MODEL',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/dewgong.glb'))
 class DewgongTests(unittest.TestCase):
  @classmethod
@@ -45,7 +43,7 @@ class DewgongTests(unittest.TestCase):
   body=self.find('Body /');muzzle=self.find('Muzzle /');pairs=[(body,muzzle)]
   pairs += [(body,p) for p in self.ps if p['part'].startswith(('Flipper /','Tail fluke /','Horn /'))]
   pairs += [(muzzle,p) for p in self.ps if p['part'].startswith('Fang /')]
-  for a,b in pairs:self.assertTrue(joins.DonphanTests.overlap(self,a,b),(a['part'],b['part']))
+  for a,b in pairs:self.assertTrue(parts_overlap(a,b),(a['part'],b['part']))
  def test_smile_and_fan_folds_follow_actual_surfaces(self):
   for p in self.ps:
    if p['part'].startswith('Mouth /'):parent=self.find('Muzzle /')

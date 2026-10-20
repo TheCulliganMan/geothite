@@ -37,6 +37,12 @@ remain unchanged.
 
 ## Human locomotion
 
+Shared arm and leg surfaces receive two connected refinement passes before
+costumes are fitted. The neck, torso, hands and ankle/sole boundaries remain
+pinned; UV islands stay separate and new vertices interpolate the existing
+skin weights. This preparation is cached per supplied body rig, with no
+per-frame CPU mesh deformation or additional artwork catalog.
+
 `human_locomotion` supplies distinct distance-driven walk and run poses to the
 shared weighted renderer. Each stance foot travels backward at the actor's
 published speed; a smooth lifted return, forward knee bend, restrained pelvis
@@ -44,6 +50,17 @@ motion and opposing arm swing complete the cycle. Stride scales with character
 height. The production motion tracker passes its smoothed speed blend to the
 skin, including NPCs and remote players. Idle, jumping, sitting, surfing and
 bicycle poses retain their separate presentation paths.
+
+Walking retains the character's idle shoulder spacing. Children, older people,
+composed staff, athletes and confident trainers have different arm amplitudes,
+elbow bends, torso twist and lean. Arm swing opposes the actual foot trajectory,
+including the short running stance; changing elbow flexion and delayed wrists
+provide follow-through. Small pelvis/chest counter-roll keeps the head steady.
+The distance-driven feet and authoritative game position remain unchanged.
+The complete art pass remains open: running hands still read as open palms,
+and individual head proportions, hairstyles and garment silhouettes need
+further work. Skirts still intersect raised knees in Run. Passing
+contact/continuity checks does not approve that artwork.
 
 Overworld `biker` NPCs use the shared bicycle frame, articulated pedals and
 mounted human pose. Bikes follow each NPC's ground anchor, smoothed facing and
@@ -62,7 +79,24 @@ third argument. `CRYSTAL_PEOPLE_REVIEW_RUN_BLEND=0` selects walking (the default
 `1` selects running, and intermediate values inspect the transition.
 `CRYSTAL_PEOPLE_REVIEW_RUN_WEIGHT` still controls the blend from idle to motion.
 The reviewer's `--validate-walk` mode runs the same CPU gait regressions as the
-unit suite against the supplied rigs, without opening a graphics window.
+unit suite against the supplied rigs, without opening a graphics window. It
+also checks rounded limb seams, protected surface landmarks, distinct gait
+poses, smooth animation joins, arm bone lengths and visible counterbalance
+while the legs are spread.
+
+Set `CRYSTAL_PEOPLE_REVIEW_ALL_ANGLES=1` for an eight-direction sheet per
+character. The top row is front, front-left, left and rear-left; the bottom is
+back, rear-right, right and front-right. Omit the character filter to render
+all 75 identities. This option can also capture a fixed walk/run phase:
+
+```sh
+CRYSTAL_PEOPLE_REVIEW_HEADLESS=1 \
+CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET=1 \
+CRYSTAL_PEOPLE_REVIEW_ALL_ANGLES=1 \
+CRYSTAL_PREVIEW_MUTE=1 \
+cargo run --locked -p crystal-voxel-view --features people-review \
+  --bin render_people_review -- target/people-review/all-angles
+```
 
 ## Relaxed human idles
 

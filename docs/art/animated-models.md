@@ -7,6 +7,9 @@ and numerical fixes for Gyarados, Onix and closed Unown strokes.
 The [Dewgong smile fit](dewgong-smile-fit.md) roots its mouth in the muzzle and
 preserves the canonical nose across the two tested Python versions.
 
+The [seal surface strokes](seal-surface-strokes.md) root Seel's brows and tongue
+crease and both seals' flipper folds while preserving their bodies and rigs.
+
 The [Wooper smile fit](wooper-smile-fit.md) embeds its detached mouth tube in
 the actual head surface while preserving its outline and rig.
 

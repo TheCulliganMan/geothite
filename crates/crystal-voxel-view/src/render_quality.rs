@@ -21,6 +21,7 @@ struct WorldOverlayHdr;
 
 pub(super) fn register(app: &mut App) {
     tilt_shift::register(app);
+    app.add_systems(Update, sync_route_shadow_filter.after(crate::sync_voxel_view));
     app.add_systems(Update, sync_cave_palette_tonemapping.after(crate::sync_voxel_view));
     app.add_systems(
         PostUpdate,
@@ -29,6 +30,32 @@ pub(super) fn register(app: &mut App) {
             sync_tilt_shift.after(bevy::camera::CameraUpdateSystems),
         ),
     );
+}
+
+static ROUTE_GAUSSIAN_SHADOWS: OnceLock<bool> = OnceLock::new();
+/// Startup-only comparison control; it does not change geometry or shadows' extent.
+pub fn configure_route_shadow_filter(gaussian: bool) {
+    let _ = ROUTE_GAUSSIAN_SHADOWS.set(gaussian);
+}
+
+fn route_shadow_filter(route: bool, gaussian: bool) -> ShadowFilteringMethod {
+    if route && !gaussian { ShadowFilteringMethod::Hardware2x2 }
+    else { ShadowFilteringMethod::Gaussian }
+}
+
+fn sync_route_shadow_filter(
+    frame: Option<Res<crystal_render_api::VisualWorldFrame>>,
+    mut cameras: Query<&mut ShadowFilteringMethod, With<crate::VoxelWorldCamera>>,
+) {
+    let gaussian = *ROUTE_GAUSSIAN_SHADOWS.get_or_init(||
+        std::env::var("CRYSTAL_ROUTE_SHADOW_FILTER").as_deref() == Ok("gaussian"));
+    // Connected towns and routes must share the same filter/pipeline: changing
+    // it on the boundary would introduce another cold shader compilation.
+    let route = frame.as_ref().is_some_and(|frame| crate::cave_water::outdoor(&frame.map_id));
+    let next = route_shadow_filter(route, gaussian);
+    for mut filter in &mut cameras {
+        if *filter != next { *filter = next; }
+    }
 }
 
 /// The LDR cave palette already encodes dark mineral pigment. PBR Neutral's

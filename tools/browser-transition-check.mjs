@@ -3,11 +3,11 @@ import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 const [url, out, mode = 'battle'] = process.argv.slice(2);
-assert.ok(url && out && ['battle','crossing','reference'].includes(mode),
- 'usage: node tools/browser-transition-check.mjs URL OUTPUT_DIR [battle|crossing|reference]');
+assert.ok(url && out && ['battle','battle-cycle','crossing','cold-crossing','reference'].includes(mode),
+ 'usage: node tools/browser-transition-check.mjs URL OUTPUT_DIR [battle|battle-cycle|crossing|reference]');
 assert.equal(new URL(url).searchParams.get('multiplayer'), 'off', 'use a disposable local preview');
 assert.equal(new URL(url).searchParams.get('loading-trace'), 'on', 'per-frame state evidence is required');
-const crossing = mode === 'crossing';
+const crossing = mode === 'crossing' || mode === 'cold-crossing';
 const reference = mode === 'reference';
 await fs.mkdir(out, { recursive: true });
 const server = await chromium.launchServer({ headless: true, args: ['--mute-audio','--enable-gpu'] });
@@ -68,7 +68,10 @@ try {
   assert.ok(Object.values(workers).every(m => !m || ['fallback','initFailures','failed'].every(key => m[key] === 0)),
    `worker warmup failed: ${JSON.stringify(workers)}`);
   const workersReady = Object.values(workers).length === 2 && Object.values(workers).every(m => m?.completed > 0);
-  if (state.presentation?.voxel?.active && !state.presentation.voxel.terrain_pending && !state.presentation.voxel.profiles_pending && state.presentation.voxel.active_frames >= 30 && workersReady) break;
+  const voxel = state.presentation?.voxel;
+  if (mode === 'cold-crossing'
+    ? voxel?.active && !voxel.profiles_pending && voxel.active_frames >= 2
+    : voxel?.active && !voxel.terrain_pending && !voxel.profiles_pending && voxel.active_frames >= 30 && workersReady) break;
   assert.ok(Date.now() < deadline, '3D terrain warmup timed out');
   await page.waitForTimeout(250);
  } while (true);
@@ -79,6 +82,16 @@ try {
  report.renderer = await page.evaluate(async () => ({ bundle: window.__crystalRendererBundle, adapter: await navigator.gpu?.requestAdapter().then(a => a ? { vendor: a.info.vendor, architecture: a.info.architecture, device: a.info.device, description: a.info.description, fallback: a.isFallbackAdapter } : null) }));
  if (process.env.REQUIRE_WEBGPU === '1') assert.match(report.renderer.bundle?.binary ?? '', /webgpu/, 'this QA run requires the WebGPU renderer bundle');
  await page.screenshot({ path: `${out}/before.png` });
+ if (process.env.RECORD_TRANSITION_VIDEO === '1') {
+  await page.evaluate(() => {
+   const marker = document.createElement('div'); marker.id = 'qa-video-marker';
+   marker.style.cssText = 'position:fixed;left:0;top:0;width:16px;height:16px;background:rgb(0,255,0);z-index:2147483647';
+   document.body.append(marker);
+  });
+  await page.waitForTimeout(500);
+  await page.evaluate(() => document.querySelector('#qa-video-marker').remove());
+  report.videoAlignment = 'The last green marker frame immediately precedes trace start; use video PTS rather than wall time under load.';
+ }
  report.videoTraceOffsetSeconds = (Date.now() - videoStarted) / 1000;
  await page.evaluate(() => { entryWasm.crystal_loading_trace_start(); entryMeasuring = true; });
  if (reference) {
@@ -87,7 +100,11 @@ try {
  } else if (crossing) {
   const button = new URL(url).searchParams.get('preview') === 'route26-border' ? 'left' : 'right';
   report.steps = [];
-  for (let i = 0; i < 4; i++) report.steps.push(await page.evaluate(button => entryBridge.execute({ kind: 'press', button, frames: 8 }), button));
+  for (let i = 0; i < 4; i++) {
+   const started = Date.now();
+   const result = await page.evaluate(button => entryBridge.execute({ kind: 'press', button, frames: 8 }), button);
+   report.steps.push({ wallMs: Date.now() - started, ...result });
+  }
  } else {
   const trainer = new URL(url).searchParams.get('preview') === 'falkner-battle';
   report.encounterInputs = [];
@@ -100,6 +117,27 @@ try {
    if (next.status.screen === 'battle') break;
   }
   assert.equal((await observe()).status.screen, 'battle', 'ordinary inputs must trigger the production encounter');
+ }
+ if (mode === 'battle-cycle') {
+  report.cycle = [];
+  for (let i = 0; i < 600; i++) {
+   const current = await observe();
+   report.cycle.push({ status: current.status, battle: current.reward_state?.battle,
+    menus: current.observe.menus, text: current.observe.battle_message,
+    view: current.presentation?.battle_view });
+   if (current.status.screen !== 'battle') break;
+   if (process.env.BATTLE_COMPLETE !== '1' && /fainted/i.test(current.observe.battle_message ?? '')) break;
+   if (current.flow_state.animating) { await page.waitForTimeout(100); continue; }
+   const entries = current.observe.menus.find(menu => menu.kind === 'battle')?.entries ?? [];
+   const attack = entries.findIndex(entry => /EMBER|WATER.GUN|TACKLE|SCRATCH/.test(entry));
+   const cursor = entries.findIndex(entry => entry.startsWith('>'));
+   const button = attack >= 0 && cursor >= 0 && attack !== cursor ? 'down' : 'a';
+   await page.evaluate(button => entryBridge.execute({ kind: 'press', button, frames: 8 }), button);
+  }
+  await fs.writeFile(`${out}/cycle.json`, JSON.stringify(report.cycle, null, 2));
+  assert.ok(report.cycle.some(s => s.status.party.some((p, i) =>
+   JSON.stringify(p.moves) !== JSON.stringify(report.cycle[0].status.party[i]?.moves))),
+   'battle cycle must spend PP through ordinary inputs');
  }
  await page.waitForTimeout(reference ? 1000 : crossing ? 5000 : 20000);
  report.gpu = await page.evaluate(() => entryGpu);
@@ -120,6 +158,10 @@ try {
  const entries = rows.filter(e => e.args.entry_fx_active);
  const battles = rows.filter(e => e.args.battle_frame_active && !e.args.battle_preparing);
  const gaps = rows.filter(e => !e.args.world_3d_active && !e.args.battle_3d_active);
+ const rendererSequence = rows.map(e => e.args.battle_3d_active ? 'battle' : e.args.world_3d_active ? 'world' : 'classic')
+  .filter((value, index, all) => index === 0 || value !== all[index - 1]);
+ report.rendererSequence = rendererSequence;
+ report.faintRows = rows.filter(e => e.args.battle_cues?.some(c => c.startsWith('Faint:'))).length;
  const ordered = [...intervals].sort((a,b) => a-b);
  report.presentation = { rows: rows.length, entryRows: entries.length, entryNot3d: entries.filter(e => !e.args.world_3d_active).length,
   battleRows: battles.length, battleNot3d: battles.filter(e => !e.args.battle_3d_active).length,

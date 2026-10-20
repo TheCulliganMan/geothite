@@ -1,0 +1,23 @@
+[package]
+name = "crystal-tui-view"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+crystal-assets.workspace = true
+crystal-core.workspace = true
+crystal-runtime.workspace = true
+image.workspace = true
+ratatui = { version = "0.30", default-features = false }
+serde.workspace = true
+serde_json.workspace = true
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+crossterm = "0.29"
+
+[dev-dependencies]
+crystal-bevy.workspace = true

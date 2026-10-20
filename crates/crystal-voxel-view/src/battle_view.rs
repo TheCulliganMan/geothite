@@ -726,6 +726,11 @@ fn normal_send_out_reveal(frame: &VisualBattleFrame, battler: &VisualBattleBattl
             && cue.side == battler.side && cue.move_id.as_ref() == "SEND_OUT")
 }
 
+fn uses_source_picture(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
+    frame.cues.iter().any(|cue| cue.side == battler.side
+        && cue.kind == VisualBattleCueKind::SourcePicture)
+}
+
 fn layout_uses_species_model(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
     battler.allow_species_model || normal_send_out_reveal(frame, battler)
 }
@@ -862,7 +867,18 @@ fn sync_battle_layout(
                 }
                 let (_, search) = pending.search.get_or_insert_with(|| (key,
                     encounter_terrain::CameraFitSearch::new(scenery.clone(), anchored.clone(), supported, viewport)));
-                let Some(accepted) = search.advance_frame() else {
+                // Spend the entry animation on incremental preparation. Once
+                // the controller presents battle, finish any remaining search
+                // before publishing: yielding here would expose the classic
+                // canvas between the retained field and the checked 3D shot.
+                let result = if frame.preparing {
+                    search.advance_frame()
+                } else {
+                    loop {
+                        if let Some(result) = search.advance() { break Some(result); }
+                    }
+                };
+                let Some(accepted) = result else {
                     scenery.reject_layout("battle camera is preparing offscreen");
                     return;
                 };
@@ -1676,10 +1692,17 @@ fn sync_battle_scene(
     #[cfg(feature = "operation-trace")]
     let _span = bevy::log::info_span!("crystal_battle_render_sync").entered();
     let valid = frame.validate();
-    let ground_clearance = scenery.permits_displacements(
-        &layout,
-        frame.source.as_ref().map_or([Vec2::ZERO; 2], |source| source.battler_offsets),
-    );
+    // A clipped picture is a source raster operation, not a Pokémon walking
+    // below the floor or through the map's collision boundary. Its validated
+    // physical support stays at the captured anchor while its pixels move.
+    let mut support_offsets = frame.source.as_ref()
+        .map_or([Vec2::ZERO; 2], |source| source.battler_offsets);
+    for (index, battler) in frame.battlers.iter().enumerate() {
+        if battler.as_ref().is_some_and(|b| uses_source_picture(&frame, b)) {
+            support_offsets[index] = Vec2::ZERO;
+        }
+    }
+    let ground_clearance = scenery.permits_displacements(&layout, support_offsets);
     let map_ready = scenery.accepted();
     #[cfg(test)]
     let map_ready = map_ready || scene.isolated_renderer_test;
@@ -1826,6 +1849,7 @@ fn sync_battle_scene(
                 .insert(Arc::from(battler.model_id()), mesh);
         }
         let modeled_data = if battler.allow_species_model
+            && !uses_source_picture(&frame, battler)
             && (!battler.shiny || battler.model_palette.is_some())
             && battler
                 .pokedex_size_m

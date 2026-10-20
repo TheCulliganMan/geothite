@@ -154,6 +154,11 @@ required toolchains and copies your locally supplied game pack into the image;
 a separate Rust installation is unnecessary for the Docker build.
 
 Keep `.env` across updates. For remote access, put the server behind HTTPS.
+The web **2D / 3D / TUI** chooser swaps renderers within the same game session.
+Use `/?view=tui` or `/tui/` to open the original painted terminal surface;
+`/?view=2d` and `/?view=3d` select the graphical views. Switching keeps the
+current trainer, position, dialogue, battle, menu, and save state.
+
 See the [deployment guide](docs/deployment.md) for configuration, reverse
 proxying, upgrades, health checks, persistence, and cleanup.
 

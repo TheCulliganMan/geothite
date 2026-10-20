@@ -1,43 +1,226 @@
 # Connected Johto presentation and performance checks
 
-## Progressive upper-floor panorama preloading under validation
+## Retina release baseline and entity-cache CPU work
 
-A private implementation now prepares the full panorama on TinTower7F–9F,
-keeps it hidden there, and preserves its cache across those floors and the roof.
-It clears the cache when leaving that bounded group and revalidates source and
-profile revisions. Speculation is native-only because the browser async pool
-cannot run this whole-map mesher away from the frame thread.
+A separate release QA executable was built successfully in 4m08s, preserving
+the installed production executable (which has no location-tester feature).
+The immutable baseline SHA256 is
+`c4bbf223560e1049d2bd96366ece66295f649a72eaa9187b9c1152bff8add19a`.
+Quiet 15-second runs at 2560x1600 physical pixels, noon, full native quality:
 
-Source publication now appends one map per update, loads its art when needed,
-and pins the authenticated animation phase across chunks. A source_pending
-prerequisite prevents geometry/readiness from finishing before every real map
-and the border arrive. Hidden preparation never changes the active floor's
-terrain_pending/active_frames. Water registration writes only real coordinate
-changes, and is untouched for hidden scenes. No user switch was added.
+| Scene | Update median / p95 | GPU queue completions/s |
+| --- | --- | --- |
+| New Bark (13,5) | 32.42 / 34.74 ms | 30.783 |
+| Route29 default valid position | 36.31 / 38.31 ms | 27.279 |
+| Roof (9,13), low-horizon camera | 85.46 / 99.86 ms | 11.473 |
 
-Renderer test filter: nine passed, one ignored (not counted). Production-system
-checks cover hidden visibility, unchanged room readiness, retained mesh/material
-handles across stairs, partial-source waiting, source/profile invalidation,
-cache disposal outside the upper floors, and real material AssetEvents across
-48 hidden and 64 settled visible frames. The external-pack source regression
-passed: all 32 maps and the border match complete publication, including source
-tiles, ledges, terrace datum and atlas bytes; existing handles are retained,
-phase stays pinned while the display counter advances, epoch changes restart,
-and publication does not change the authoritative game checksum. Its publisher
-also retains progress across floors, pauses in 2D mode and clears outside them.
+All three passed existing 3D validation, with no readback during the interval
+and no polling errors. Queue outstanding counts stayed at 36. These are
+headless render/update observations, not display-presented FPS or GPU pass
+timestamps. They establish that broader Retina performance is still inadequate.
 
-The first native floor capture exposed foreground startup contention: 7F capture
-readiness took 6.48 seconds with speculative loading versus 1.06 seconds in the
-installed-equivalent baseline. Both paired captures preserved state and showed
-no leaked panorama. This is a regression, not a speedup. The private correction
-now gates both source and geometry publication on an active foreground with no
-terrain/profile work pending and 30 settled frames. Actual roof loading bypasses
-that gate to avoid a readiness deadlock. The corrected renderer regression
-passed nine tests (one unrelated external-export test ignored); the corrected
-external-pack regression and native capture/frame-budget checks remain pending.
-Browser speculation stays off until its whole-map mesher can use a real worker. This preloading implementation is private and not installed. The
-installed app still contains only the previously verified improvements.
+The live CPU sample identified repeated randomized SipHash work on Entity IDs
+in occluder_fade's per-frame visibility cache. Two type declarations now use
+Bevy's EntityHashMap instead. Membership/visibility logic is unchanged. Shared
+source checking passed in 9.52s; all 55 existing occluder/visibility regressions
+passed, with no ignored tests. A separate release candidate built in 5m18s;
+SHA256 `9007a3381b9e010d0b755346da0ba5d1b99b2de4e4fd8c380d3396f732485b48`.
+Retina New Bark ABBA runs passed: baseline queue rates 31.242/30.803 per
+second, entity-map candidate 31.544/31.182. Means 31.0225/31.363 differ by about
+1.1%, too small to claim a meaningful frame-rate gain. It is a narrow CPU
+cleanup, not the GPU solution; the installed app still has the prior type.
 
+The first 10-second Metal recording was stopped by an overly short harness
+finalization deadline. Export failed with Document Missing Template Error, so
+it supplies no GPU attribution evidence. A shorter two-second recording used
+no external finalization deadline. Instrumented runs are diagnostic,
+not quiet FPS comparisons. The shorter capture completed and saved normally,
+and its table exports succeeded. It contains 14,251 GPU interval rows, 2,285
+encoder rows and 37,412 object-label rows. Process filtering is necessary:
+Battle.net Helper also performs substantial GPU work. Earlier "quiet" runs
+mean no competing own native/compiler job, not exclusive GPU access. Permission
+to quit Battle.net was requested and is pending; it has not been closed.
+Target-only labeled GPU work includes the shadow cascades, main opaque pass,
+normal/depth prepass and SSAO. Vertex and fragment engine intervals overlap,
+and many queued encoders lack labels; raw interval sums are not percentages of
+frame time.
+
+A private native culling probe now admits the roof and accepts the existing
+NormalPrepass as genuine depth support, without requiring the separate tree-
+depth diagnostic. Bevy's required DepthPrepass is still installed and owned
+components are removed on unsupported maps. Existing diagnostics activate the
+probe; no new runtime toggle was added, and no culling change is installed or
+published. All ten component/lifecycle tests passed and its release build passed in
+5m56s. Native camera-culling trials passed content validation but did not improve
+throughput: town 30.949 queue completions/s (entity-map direct mean 31.363),
+roof 10.160 (direct baseline 11.473), with roof median/p95 94.30/127.15 ms.
+The private source was restored; no culling change was published or installed.
+Shadow-only release/Retina diagnostics were also rejected. The stock-clamp
+trial produced 315 updates, median/p95 46.62/58.08 ms, but its conservative
+near-clamp guard activated zero cascades: that is fallback overhead, not an
+active-culling result. The existing verified orthographic correction then
+activated both cascades, certified all five skinned candidates and passed the
+visible screenshot check. It produced only 96 updates over 15.04 seconds,
+median/p95 126.81/374.30 ms. Its screenshot was visually inspected; throughput
+is unacceptable regardless. These diagnostic runs remain subject to concurrent
+Battle.net GPU activity. Neither camera nor shadow experiment is promoted to
+production; no new product switch or profiler/timing implementation was added.
+
+## Current verification load
+
+The shadow-cache release build remains live. System inspection found multiple
+unrelated Rust builds and approximately 19 GB of swap in use. The user declined
+temporarily suspending other builds, so none are suspended or terminated.
+Continue correctness work and preserve the running build; contended timings
+must not be presented as an uncontended frame-rate improvement. This load is
+not evidence of a game-source failure or a reason to restart a live compiler.
+
+## Further CPU/GPU candidates under verification
+
+A private shadow-receiver cache candidate compares the exact source Aabb and
+GlobalTransform before recomputing a caster's eight transformed corners. The
+receiver-plane/sun/height invalidation and stale-entity cleanup remain intact;
+changed bounds/transforms recompute the original proof. The per-entity cache
+also uses EntityHashMap. All ten receiver regressions, including transform-change coverage, passed
+with zero ignored tests after a 13m51s contended build. The source change is
+published to the shared working tree. Its separate release QA build is running
+(log: `/tmp/geothite-shadow-input-cache-release-build.log`); it is not yet
+installed or a verified frame-rate improvement.
+
+Local Bevy 0.20 WgpuSettings::default source keeps VALIDATION_INDIRECT_CALL
+when the requested backends include DX12. The native default is Backends::all,
+so a Metal-selected renderer retains the extra validation passes. Bevy's own
+release path removes this flag when DX12 is excluded. The valid Metal trace
+contains indirect-draw validation encoders. No registry source was modified.
+An existing release QA executable with WGPU_BACKEND=metal passed native scene
+validation: 283 updates/15.01s, median/p95 47.57/110.29 ms. The immediately
+following default-path run passed too: 236 updates/15.02s, 59.16/146.50 ms.
+Multiple unrelated rustc jobs were active throughout, in addition to previously
+observed Battle.net GPU activity. These contended sequential observations do
+not establish a production gain; quiet repeated comparisons are still required.
+The original candidate executable's existing corrected shadow bridge was also
+checked with Metal-only selection: both cascades activated, all five skin
+candidates certified, scene validation passed, but only 229 updates/15.13s
+(median/p95 54.88/141.52 ms). This does not establish a culling benefit over
+the direct Metal run, and remains contended. No culling source is reinstated.
+No startup/backend change has been published or installed. Official Bevy
+[0.19 rendering notes](https://bevy.org/news/bevy-0-19/) also describe Metal's
+partial bindless support, but adapting this game's uniform-heavy material
+extension would require a separate implementation and validation.
+
+## GPU follow-up: instance preparation versus raster work
+
+The successful Metal trace was rejoined using the encoder label (encoder-table
+column 8), not the enclosing command-buffer label (column 6). Target-process,
+Active, depth-zero intervals attributable to indirect-draw validation total
+2.363 ms on Compute across 200 split intervals, plus 0.246 ms on Fragment.
+Early mesh preprocessing totals 3.748 ms Compute; early shadow indirect-argument
+building 3.244 ms; main indirect arguments 1.910 ms. These are split/overlapping
+interval sums within a two-second instrumented capture, with some queued
+encoders still unlabelled, not full-frame percentages. They do not support
+attributing the main slowdown to these passes. A one-setting private CPU
+instance-builder comparison was prepared but not applied; no production
+preparation/backend setting has changed. Vertex work in the opaque and shadow
+passes remains the stronger lead. Runtime foliage currently merges each full
+opaque tree into one bounding box, while retaining up to 16 finer fade leaves;
+full-detail opaque partitioning may improve culling granularity without LOD.
+A private four-section prototype is now prepared outside the frozen build
+source, not applied or compiled. It sorts existing fade-leaf references along
+their largest center extent and merges four opaque sections, keeping source
+collision/fade leaves intact. Sharing, upload, normal compression, exact vertex
+welding and draw publication include every section. The worker wire stays
+unchanged (sections are native-only and explicitly rejected by that serializer).
+Its new test compares multisets of per-triangle hashes of every indexed vertex
+attribute before and after partitioning, then repeats against the packed,
+welded and reordered GPU copies for pine, ancient and deciduous trees. It also
+checks unchanged collision/fade ownership and shared section handles. Syntax
+checking passed; type checking, all tests and actual render comparisons remain.
+Prepared files are `candidate-files/{occluder,shared-groves,gpu-culling,occluder-wire}-opaque-sections-probe.rs`
+under the ignored grass-material-check workspace. The optional camera comparison
+accepts the existing NormalPrepass and the roof through the existing QA switch;
+no new product switch or culling change is published. The release-cache baseline
+must finish and be copied before these files replace any frozen build inputs.
+This remains an unverified hypothesis, not a measured improvement.
+
+## Upper-floor panorama preloading installed
+
+The shared implementation prepares the complete roof panorama on native
+TinTower7F–9F after the foreground has settled for 30 active frames. It retains
+that cache across those floors and the roof, pauses in 2D/menu ownership, clears
+outside the bounded group and revalidates source/profile revisions. Browser
+speculation remains off because its whole-map mesher does not use a CPU worker.
+
+Source publication appends one map per update, loading its art as needed and
+pinning the authenticated animation phase. All 32 connected maps and the border
+remain present. GPU handles and grove recipes are shared across repeated border
+placements: eight placements per update during background preparation, 128
+while roof entry waits. The growing panorama stays hidden until complete and
+uses the existing staged-destination pipeline warmup. No new user switch, LOD,
+resolution reduction, color reduction or timing-tool implementation was added.
+Hidden work never owns the room's terrain_pending/active_frames. Water material
+registration changes only when its coordinates actually change.
+
+Validation:
+
+- Ten fresh renderer tests passed; one unrelated external cave-export test was
+  ignored. They cover foreground priority, pending paint, exact image reuse,
+  partial-source waiting, hidden/complete visibility, cache reuse/invalidation,
+  disposal and real material AssetEvents. Border coverage/asset reuse is tested
+  with actual groves under both placement budgets.
+- The external-pack source regression passed: progressive extraction matches
+  complete extraction for all 32 maps, tiles, ledges, terrace datum and atlas
+  bytes; handles/animation phase remain stable across chunks, epoch changes
+  restart correctly and the authoritative game checksum is unchanged.
+- The final ordinary-input native stair run passed: 5,792 movement rows, three
+  grid origins, zero additional foreground terrain builds, zero pending-terrain
+  rows. All panorama sources were published before the Down step from walkable
+  9F (7,8) onto the real stair (7,9). First roof row was (9,13), active and ready.
+  An earlier requested start at (7,10) was rejected as unwalkable and is not
+  counted. The final run included a system-profiler interval, so its timing is
+  not an uninstrumented FPS benchmark.
+- A preliminary quiet bounded-placement run reduced the longest update gap
+  from 1,448 to 237 ms and p95 from 27.36 to 24.92 ms. This is a single controlled
+  comparison of the earlier bounded candidate, not a repeated final FPS proof.
+- Final cold full-scene capture took 33.64 seconds (paired 2D at 44.45), versus
+  baseline 31.50/42.03. These include preparation, warmup and readback, not just
+  gameplay fade. This is a small cold-load cost, not a cold-start speedup; the
+  demonstrated benefit is preparing before the normal stair transition.
+- Final paired captures preserved state and were visually inspected against 2D
+  and baseline at identical position/camera/hour. The 700x200 roof region is
+  exactly RGB-identical (140,000 pixels); cloud animation phases differ.
+- Shared-source type checking passed in 26.80 seconds. The production build
+  passed in 6m14s with desktop-app/voxel-view and no location-tester feature.
+  Pre-sign executable SHA256:
+  `cfc16a6ebdf912dc83e96a7494da1198fe1f0d6e9819e2ddd2a3e85813183199`.
+  Installation completed in 31.6 seconds at ~/Applications/Geothite.app.
+  Strict deep codesign verification passed. The independent installed
+  --check-installation run from /tmp, with the model-root override removed,
+  passed and resolved the bundled pack/resources and the unchanged save path.
+
+Rejected private trials were not shipped: worker-only mesh conversion regressed
+quiet update timing; a fixed eight-placement budget stretched cold capture past
+2m32s and was stopped; hiding the unfinished scene alone still took 101.14s.
+The dual budget removes that severe regression. Two profiler attempts missed
+already-exited captures and provide no profile evidence. The final live sample
+succeeded and shows visibility/query work and repeated hierarchy hashing; it
+identifies further CPU investigation, not a proven dominant bottleneck.
+
+The native pack remains unchanged (SHA256
+`a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007`).
+The implementation was published only after comparing the installed source
+snapshots; unrelated lib.rs changes were preserved. Nothing was staged or
+committed.
+
+Hardware is Apple M5 with a 2880x1864 Retina display. The comparisons above use
+1280x800 physical targets and the wasm-dev QA profile (six workspace crates at
+opt-level 1). They do not establish shipped release FPS at Retina resolution.
+Release/Retina frame-rate validation and broader GPU optimization remain
+outstanding; the full performance goal is not complete. A separate release QA
+example build is now running. The installed executable was built without
+location-tester; its exact pre-sign production binary was retained before the
+separate example build. No tester build is being installed. Apple Instruments
+is available, including Metal System Trace and Game Performance, for subsequent
+GPU diagnosis using existing tools.
 
 ## Summit panorama shared painted textures
 
@@ -2873,3 +3056,18 @@ paired gym captures were visually reviewed. Its median and p95 rAF interval
 were 16.7 ms, with a cold maximum of 466.7 ms (not a zero-hitch claim).
 The final production-controller suite passed eight tests; MCP movement/Start
 and clean-stderr regressions also passed.
+
+Browser camera searches run incrementally during entry. If a search remains
+when the controller presents battle, its remaining stages finish before the
+first battle shot is published. This prevents the classic canvas appearing
+between the retained field and the checked 3D camera; residual cold search work
+can still cause a frame hitch. A follow-up final-build run retained 3D for all
+66 wild-entry and 410 wild-battle rows, and all 137 trainer-entry and 1,079
+trainer-battle rows. Both passed worker/GPU/state-pair checks with zero gaps or
+dropped events. These runs overlapped other workspace compilation and are
+continuity checks, not replacements for the isolated walking measurements.
+Their cold maximum rAF intervals were 816.6 ms (wild) and 749.8 ms (trainer).
+A second final-build wild run also passed all 66 entry and 421 battle rows
+with zero 3D gaps, worker/GPU failures or game-state changes between views.
+Both final wild runs encountered Sentret; the earlier Pidgey run is the case
+that identified the deadline defect. No final Pidgey acceptance is claimed.

@@ -1,6 +1,12 @@
 # Original painted terrain materials
 
-Generated with the built-in imagegen tool on 2026-10-10. These are original rendering assets; they do not contain game-pack exports. Rust embeds them for native and browser parity. Sandstone supplies canyon wall strata; bedrock supplies fractured caps and stone walls, including Union Cave and the desaturated rock beneath Ice Path’s blue frost. Map-space projection is defined in `crates/crystal-voxel-view/src/voxel_surface.wgsl`.
+These are original rendering assets made with the built-in imagegen tool; they do not contain game-pack exports. Rust embeds them for native and browser parity. The October 20 granite material supplies outdoor mountain faces, caps and exposed mineral beneath grassy banks. The October 10 bedrock supplies other stone walls, including Union Cave and the desaturated rock beneath Ice Path's blue frost. The earlier sandstone remains available as source artwork. Map-space projection is defined in `crates/crystal-voxel-view/src/voxel_surface.wesl`.
+
+## Granite prompt — 2026-10-20
+
+File: `painted-granite.png`, 1254 × 1254, opaque RGB. Used with triplanar projection, filtered mip levels and the existing texture binding. The material is part of the outdoor 3D art direction; the native 2D drawing does not select its palette or paint style.
+
+Use case: stylized-concept. Asset type: a square seamlessly tileable albedo texture for triplanar projection onto 3D outdoor mountain cliffs in a polished stylized adventure game. Create the flat 2D material texture only, not a scene or render of a rock. Hand-painted broad angular fractured granite plates, irregular intersecting diagonal and vertical fissures, bevel-like quiet painted edge wear, several large restful faces with smaller broken plates only in the recesses. Warm neutral limestone/taupe with muted sage-gray mineral variation and subtle pale warm edges, narrow charcoal-brown cracks. Sophisticated clean painterly 3D game art with deliberate large shapes, moderate contrast, very sparse fine grain. Exactly orthographic straight-on texture, uniform diffuse illumination, no overall light direction and no cast shadows. Every edge must tile seamlessly in both axes. Avoid round cobblestones, regular brick grids, thin repeated horizontal sediment stripes, piled individual rocks, moss, plants, landscape, perspective, borders, text, labels and watermarks. 1024 by 1024 square; opaque surface edge to edge.
 
 ## Sandstone prompt
 

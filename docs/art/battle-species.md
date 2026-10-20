@@ -1,9 +1,8 @@
-# Exact-species battle sculpture kit
+# Exact-species Pokémon model catalog
 
 The render-only registry in `crates/crystal-voxel-view/src/battle_species_models.rs`
-contains 225 dedicated species bodies, including the canonical articulated
-models. This is incomplete coverage of the 251-species game catalog. Species
-without a dedicated body retain their original 2D source art. Generic
+contains all 251 species. Canonical GLB skins cover 276 variants, including all
+26 Unown letters; the base Unown identity resolves to I. Generic
 icon families never count as species support. `mesh(species)` returns `None` for unknown identities, and
 `supported_species()` enumerates only models with embedded runtime geometry.
 
@@ -17,41 +16,47 @@ an ear form, horn, flower, shell, crest, number of limbs, tail shape, or wing
 structure. No generic family model is assigned to a different species through
 palette substitution.
 
-`tools/build-battle-species.py` is the original editable generator. It reads no
-content packs, PNGs, models, textures, disassembly, ROMs or external catalogs.
-Temporary contact sheets from the locally supplied ignored content pack were
-used only as a visual reference during authoring. Neither those sheets nor
-source game pixels are part of the repository or exported meshes.
+`tools/build-battle-species.py` dispatches the species authoring recipes and
+canonical GLB exporters before its legacy Blender batches. Most recipes build
+original geometry with the Python standard library. Gengar, Raticate,
+Pidgeotto and Totodile retain their stored geometry as authoring input, and
+Meganium retains its reviewed-container equivalence path. See
+[authoring portability](pokemon-authoring-portability.md) for the exact scope.
+Local pack pixels serve only as review references; they are not exported into
+the original model geometry or committed as a duplicate catalog.
 
-Every Blender collection has a species-named floor root and separate named mesh
-objects for relevant anatomy. Parts are suitable for subsequent animation
-rigging and remain editable; these exports currently present the authored idle
-pose. The kit does not claim a skeletal animation rig, alternative forms,
-gender-specific variants, or shiny palettes. Presentation must preserve the
-source-specific fallback for forms the model does not represent.
+The GLBs retain named anatomical parts, joint hierarchies, skin weights, inverse
+binds and idle, attack and hit clips. World locomotion uses the same canonical
+anatomy with species-specific movement and support controls. Pack measurements
+determine physical game size; normalized authoring heights do not replace them.
+Presentation preserves source-specific fallback for transformations and forms
+the exact model does not represent.
 
-Dedicated GLB models retain their actual authored skins and clips through the
-species rig runtime. The static kit's coverage count does not establish that
-every species is rigged or visually approved. The latest
-[nautilus review](nautilus-sculptures.md) records the Omanyte/Omastar replacements
-and the currently failing global triangle-budget audit.
+Coverage and numerical validation do not establish appearance. The
+[roster review](pokemon-authoring-portability.md) records windowless GPU pose
+inspection and its limits. Individual species guides document matched-state
+production reviews. Earlier partial-coverage and static-mesh audit reports are
+historical; the current geometry validator follows canonical GLB routing and
+the unchanged Rust loader limits.
 
 ## Rebuild and review
 
-Use Blender 4.3 or newer, bounded batches, and two workers:
+Use Blender 4.3 or newer with a focused authoring selection:
 
 ```sh
 blender -b -t 2 --python tools/build-battle-species.py -- \
-  /tmp/geothite-battle-species --preview
+  target/battle-species-review --only seel,dewgong
 ```
 
-The output includes original runtime `.mesh.json`, numbered editable `.blend`
-source scenes, and optional review-only PNGs. Use `--only raichu,wartortle` for a
-focused authoring pass, or `--batch-size 12` to adjust bounded scene size. Names
+Canonical recipes emit GLBs; their own CLI modules can also export without
+Blender. The legacy batching path emits mesh JSON, editable Blender scenes and
+optional previews only for recipes still using that path. Names
 and registry identities are ASCII and match the public battle species IDs,
 including `FARFETCH_D`, `MR__MIME`, and `PORYGON2`.
 
-Only approved runtime mesh JSON belongs in `models/battle_species`. Do not copy
+Only approved canonical runtime assets belong in `models/battle_species`.
+Actor-space species retain their single canonical files in `models/actor_props`.
+Do not copy
 preview images, logs, Python caches, or other build products into tracked paths.
 Editable Blender scenes are transported through the existing hash-verified
 `art/johto/source` source-chunk convention; restore them with the common art
@@ -60,7 +65,7 @@ as a coherent increment.
 
 ## Geometry contract and verification
 
-Exports use meters in a consistent stylized scale, +Y up, front +Z, and a
+Exports use a consistent stylized authoring scale, +Y up, front +Z, and a
 floor-centered root. Blender sources use +Z up and front -Y. Each primitive has a
 semantic `part` name, XYZ positions, outward unit normals, triangle indices, and
 linear RGBA material color. Objects are fully three-dimensional; fins and leaves
@@ -70,13 +75,14 @@ of game simulation and does not mutate battle state.
 Run:
 
 ```sh
-python tools/check-battle-species.py
+python3 tools/check-battle-species.py --progress
+python3 tools/check-model-layout.py
 ```
 
 The check proves generator/registry/file parity, no repeated registry identities,
 named parts, finite attributes, valid indices, unit normals, consistent outward
 triangle winding, positive closed volumes, volumetric bounds, floor anchoring,
-triangle budgets, bounded encounter-scale dimensions, and distinct species geometry
+current runtime storage budgets, bounded encounter-scale dimensions, and distinct species geometry
 independently of palette colors. Young and evolved stages also have explicitly
 authored presentation heights.
 For a deliberately partial authoring increment only, `--allow-pending` permits

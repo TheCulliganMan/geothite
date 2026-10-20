@@ -122,6 +122,9 @@ export function mountViewToggle(wasm, { button, canvas, storage, startIn2D = fal
   document.addEventListener('visibilitychange', () => { if (document.hidden) endDrag(); });
   let moving = false;
   return {
+    setEnabled(value) {
+      enabled = Boolean(value); update(); storage.setItem(VIEW_KEY, String(enabled));
+    },
     cycleCamera() {
       if (blocked() || typeof wasm.crystal_cycle_voxel_camera !== 'function') return false;
       const state = wasm.crystal_cycle_voxel_camera();

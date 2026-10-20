@@ -250,6 +250,8 @@ async fn main() -> Result<()> {
         .precompressed_gzip()
         .append_index_html_on_directories(true);
     let app = Router::new()
+        .route_service("/tui", ServeFile::new(config.root.join("index.html")))
+        .route_service("/tui/", ServeFile::new(config.root.join("index.html")))
         .route_service("/flygon", ServeFile::new(config.root.join("flygon.html")))
         .route_service("/flygon/", ServeFile::new(config.root.join("flygon.html")))
         .route_service(

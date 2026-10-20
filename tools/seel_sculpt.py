@@ -4,9 +4,9 @@ import argparse,json,math
 from pathlib import Path
 from functools import lru_cache
 from copy import deepcopy
-from sculpt_geometry import part,loft,ellipsoid,curved_profiles,fitted_patch,crease_normals
+from sculpt_geometry import part,loft,ellipsoid,curved_profiles,fitted_patch,crease_normals,tube
 from abra_sculpt import surface
-from bovine_sculpt import oval,curved_tube
+from bovine_sculpt import oval,curved_tube,smooth
 from jigglypuff_sculpt import pillow_ear
 from chikorita_sculpt import linear
 from wing_insect_sculpt import contour
@@ -16,7 +16,10 @@ WHITE=(.86,.92,.97);IVORY=(.99,.97,.88);CREAM=(.99,.90,.66);INK=(.10,.14,.16);TE
 
 def pillow(name,color,xy,z,depth):
  # Reuse the closed rounded perimeter; transform normals by inverse scale.
- q=pillow_ear(name,xy);q['base_color']=linear(color);scale=depth/.060
+ # An explicit centroid keeps reviewed signed-zero normals on old and new
+ # Python summation implementations, without normalizing unrelated zeros.
+ center=tuple(math.fsum(p[i] for p in xy)/len(xy) for i in (0,1))
+ q=pillow_ear(name,xy,center=center);q['base_color']=linear(color);scale=depth/.060
  q['positions']=[v if i%3!=2 else z+(v-.01)*scale for i,v in enumerate(q['positions'])]
  normals=[]
  for i in range(0,len(q['normals']),3):
@@ -29,6 +32,14 @@ def horizontal(q):
   q[field]=[v for i in range(0,len(q[field]),3) for x,y,z in [q[field][i:i+3]] for v in (x,z,-y)]
  return q
 
+def surface_stroke(name,color,points,radii,parent,segments=10):
+ # Smooth the original XY controls first, then seat every resulting ring in
+ # the stored surface. Interpolating sparse depths left the narrow folds and
+ # brows floating between controls. Preserve their outlines and round radii.
+ centers,rr=smooth(points,radii);skin=surface(parent)
+ centers=[(x,y,skin(y,x)+r*.35) for (x,y,z),r in zip(centers,rr)]
+ return crease_normals(tube(name,color,centers,rr,segments),35.)
+
 @lru_cache(maxsize=1)
 def raw_sculpture():
  rows=((- .28,.050,.060,.235),(-.19,.210,.180,.235),(.02,.280,.190,.230),(.20,.260,.220,.250),(.39,.215,.220,.310),(.57,.140,.160,.430),(.72,.075,.110,.620),(.84,.047,.070,.770),(.87,.025,.035,.800))
@@ -40,7 +51,7 @@ def raw_sculpture():
   p.append(horizontal(deepcopy(paddle)))
   for j,path in enumerate((((.230,-.080),(.320,-.080),(.430,-.090)),((.280,-.140),(.360,-.180),(.440,-.220)))):
    points=[(sign*x,y,fs(y,sign*x)+.0016) for x,y in path]
-   p.append(horizontal(curved_tube(f'Flipper fold / supported rounded paddle crease {sign} {j}',(.55,.65,.74),points,[.0014]*len(points),8)))
+   p.append(horizontal(surface_stroke(f'Flipper fold / supported rounded paddle crease {sign} {j}',(.55,.65,.74),points,[.0014]*len(points),paddle,8)))
   xy=contour((((.010,.762),(.047,.894),(.035,.956),(.098,1.017)),((.098,1.017),(.172,1.091),(.290,1.104),(.329,1.053)),((.329,1.053),(.370,1.016),(.362,.974),(.328,.966)),((.328,.966),(.347,.926),(.324,.888),(.290,.900)),((.290,.900),(.285,.855),(.242,.845),(.211,.868)),((.211,.868),(.150,.901),(.095,.788),(.010,.762))),8)
   p.append(pillow('Tail fluke / raised rounded three-lobed fan '+str(sign),WHITE,[(sign*x,y) for x,y in xy],-.855,.040))
   x=sign*.102;y=.339;eye=fitted_patch('Eye / fitted glossy dark seal oval '+str(sign),INK,oval(x,y,.023,.035,32),hs,.005);p.append(eye)
@@ -49,13 +60,13 @@ def raw_sculpture():
   points=[]
   for k in range(17):
    t=k/16;xx=x-.025+.050*t;yy=.389+.017*math.sin(math.pi*t);points.append((xx,yy,hs(yy,xx)+.003))
-  p.append(curved_tube('Brow / supported gentle seal arch '+str(sign),INK,points,[.0021]*len(points),10))
+  p.append(surface_stroke('Brow / supported gentle seal arch '+str(sign),INK,points,[.0021]*len(points),head))
  horn=loft('Horn / short tapered ice-breaking crown',WHITE,curved_profiles(((.445,.065,.056,.302),(.487,.052,.046,.309),(.550,.030,.029,.320),(.619,.013,.012,.333),(.654,.0025,.003,.343)),4),32);p.append(horn)
  xy=contour((((0,.253),(.072,.272),(.123,.284),(.169,.258)),((.169,.258),(.219,.235),(.215,.166),(.165,.139)),((.165,.139),(.101,.121),(.066,.167),(0,.155)),((0,.155),(-.066,.167),(-.101,.121),(-.165,.139)),((-.165,.139),(-.215,.166),(-.219,.235),(-.169,.258)),((-.169,.258),(-.123,.284),(-.072,.272),(0,.253))),8)
  muzzle=pillow('Muzzle / continuous cream bilobed cheek pad',CREAM,xy,.493,.061);p.append(muzzle)
  mouth=ellipsoid('Mouth / rooted dark playful opening',INK,(0,.141,.532),(.087,.050,.041),32,22);p.append(mouth)
  tongue=ellipsoid('Tongue / broad rounded lilac playful tongue',PINK,(0,.111,.555),(.075,.045,.026),32,22);p.append(tongue)
- ts=surface(tongue);points=[(0,y,ts(y,0)+.002) for y in (.115,.122,.129,.136,.142)];p.append(curved_tube('Tongue crease / fitted central short fold',(.50,.34,.45),points,[.0018]*len(points),10))
+ ts=surface(tongue);points=[(0,y,ts(y,0)+.002) for y in (.115,.122,.129,.136,.142)];p.append(surface_stroke('Tongue crease / fitted central short fold',(.50,.34,.45),points,[.0018]*len(points),tongue))
  nose=ellipsoid('Nose / small glossy charcoal seal nose',INK,(0,.245,surface(muzzle)(.245,0)+.008),(.027,.015,.018),32,20);p.append(nose)
  p.append(fitted_patch('Nose glint / fitted tiny seal highlight',IVORY,oval(-.005,.250,.007,.003,20),surface(nose),.001))
  for sign in (-1,1):

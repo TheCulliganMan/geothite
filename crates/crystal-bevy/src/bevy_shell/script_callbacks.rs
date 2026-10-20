@@ -82,9 +82,9 @@ fn tick_visible_screen_fade(
     let released_render_wait = {
         if runtime_shell.visible_walk_warp_phase == Some(VisibleWalkWarpPhase::FadeIn)
             && voxel_settings.as_ref().is_some_and(|settings| settings.enabled)
-            && voxel_status.as_ref().is_some_and(|status| status.terrain_pending
-                || (status.active && status.terrain_map.as_deref()
-                    != Some(runtime_shell.shell.current_map_name())))
+            && voxel_status.as_ref().is_some_and(|status| !status.connected_terrain
+                && (status.terrain_pending || (status.active && status.terrain_map.as_deref()
+                    != Some(runtime_shell.shell.current_map_name()))))
         {
             // MAPSETUP_DOOR loads the destination before FadeInFromWhite. Keep
             // that white palette while asynchronous terrain/actor preparation

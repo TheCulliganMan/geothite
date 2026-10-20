@@ -89,6 +89,7 @@ pub fn resolved_footing_height(
     let resolved = resolved_heights.get(index).copied()?;
     Some(resolved + crate::mesh::lighthouse_stair_support(frame,coordinate,foot,resolved_heights)
         .map_or(0.,|height|height-resolved)
+        + crate::waterfall::support_correction(frame,coordinate,foot,resolved_heights)
         + crate::mesh::terrace_support_correction(frame,coordinate,foot)
         + crate::mesh::pond_support_correction(frame,coordinate,foot,resolved_heights)
         + crate::mesh::league_stair_support_correction(frame,coordinate,foot,resolved_heights)

@@ -413,6 +413,7 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
     var enclosing_wall = false;
     var frozen_platform = false;
     var cave_portal = false;
+    var styled_outdoor_rock = false;
     var source_painted = source_atlas;
     var source_paving = false;
     var source_road = false;
@@ -869,7 +870,8 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
         let detail = (0.94 + mineral * 0.12) * mix(1.0, mix(0.88, 1.0, fissure), wall);
         // Triplanar map-space projection keeps sediment horizontal on both
         // wall directions and avoids stretched cliff caps at camera rotations.
-        let weights_raw = pow(abs(surface.world_normal), vec3<f32>(2.0));
+        let weights_raw = pow(abs(surface.world_normal),
+            vec3<f32>(select(2.0, 4.0, canyon && !volcanic)));
         let weights = weights_raw / max(dot(weights_raw, vec3<f32>(1.0)), 0.0001);
         let scale = 1.0 / 128.0;
         let x_layer = sample_detail(painted_stone, painted_stone_sampler, rock.zy * scale, rock_dx.zy * scale, rock_dy.zy * scale).rgb;
@@ -899,7 +901,37 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
         let canyon_bed = mix(vec3<f32>(0.49, 0.37, 0.20), reference, wall);
         let broad_pigment = select(reference, canyon_bed * (0.96 + weather * 0.08), canyon);
         let pigment = mix(broad_pigment, paint, paint_strength);
-        let finished_rock = pigment * surface.material.base_color.rgb / reference * detail;
+        var finished_rock = pigment * surface.material.base_color.rgb / reference * detail;
+        if canyon && !volcanic {
+            styled_outdoor_rock = true;
+            // Broad warm granite and cool mineral beds carry the 3D form.
+            // Project the same paint around every face; fine horizontal ink
+            // must not flatten a mountain into a stack of brown stripes.
+            let geology = mineral_field(rock * 0.018);
+            let warm_stone = vec3<f32>(0.47, 0.405, 0.295);
+            let cool_stone = vec3<f32>(0.285, 0.285, 0.245);
+            let stone = mix(cool_stone, warm_stone, smoothstep(0.25, 0.77, geology));
+            let granite = x_layer * weights.x + y_layer * weights.y + z_layer * weights.z;
+            let rise = smoothstep(0.15, 0.9, surface.world_normal.y);
+            let cap_light = mix(vec3<f32>(1.0), vec3<f32>(1.16, 1.13, 1.04), rise);
+            let bed = mineral_field(vec3<f32>(rock.x * 0.022,
+                rock.y * 0.07 + rock.x * 0.006, rock.z * 0.022));
+            let bedding = 0.91 + smoothstep(0.20, 0.76, bed) * 0.14;
+            var styled = mix(stone, granite * vec3<f32>(1.10, 1.10, 1.02), 0.68)
+                * cap_light * bedding;
+            // Broken lichen and moss settle on upward-facing shelves, rather
+            // than drawing a bright border along a source tile or camera cut.
+            let growth = mineral_field(rock * vec3<f32>(0.045, 0.065, 0.045));
+            let moss = rise * smoothstep(0.48, 0.73, growth) * 0.42;
+            let lichen = mix(vec3<f32>(0.21, 0.285, 0.105),
+                vec3<f32>(0.34, 0.365, 0.18), geology);
+            styled = mix(styled, lichen, moss);
+            // Keep the recessed tunnel's authored darkness and the broad
+            // sculpt's value shading without inheriting its orange pigment.
+            let shade = min(1.0, dot(surface.material.base_color.rgb / reference,
+                vec3<f32>(0.2126, 0.7152, 0.0722)) * 1.65);
+            finished_rock = styled * shade;
+        }
         surface.material.base_color = vec4<f32>(finished_rock,
             surface.material.base_color.a);
     }
@@ -974,13 +1006,14 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
             let phase = water.b * 6.2831853 - step * (1.0 - blend);
             let map = (surface.world_position.xz + terrain.water_enabled.zw) / max(terrain.water_enabled.y, 0.001);
             let open_water = terrain.water_enabled.x == 2.0;
-            let native_cave_water = terrain.water_enabled.x == 3.0;
+            let tohjo_water = terrain.water_enabled.x == 4.0;
+            let native_cave_water = terrain.water_enabled.x == 3.0 || tohjo_water;
             let source_water = surface.material.base_color.rgb;
             let source_outdoor_water = open_water && abs(terrain.water_deep.w) > 1.5;
             let palette_current = (native_cave_water && terrain.water_deep.w > 0.5)
                 || (source_outdoor_water && terrain.water_deep.w > 1.5);
-            source_painted = source_painted || source_outdoor_water;
-            let indoor_pool = terrain.water_style.w > 0.0 && terrain.water_style.w < 0.2;
+            source_painted = source_painted || source_outdoor_water || (tohjo_water && palette_current);
+            let indoor_pool = !native_cave_water && terrain.water_style.w > 0.0 && terrain.water_style.w < 0.2;
             let deep_hint = select(select(vec3<f32>(0.018, 0.095, 0.125),
                 vec3<f32>(0.023, 0.12, 0.18), open_water), vec3<f32>(0.018, 0.075, 0.24), indoor_pool);
             let crest_hint = select(select(vec3<f32>(0.24, 0.46, 0.46),
@@ -1014,6 +1047,9 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
                 let shallow_color = mix(depth_color, terrain.water_foam.rgb, 0.22);
                 optics = rippled_pool_optics(map, distance, depth_distance, pool_phase, water_pixel,
                     depth_color, shallow_color, crest, terrain.water_style, surface.V);
+            } else if tohjo_water && palette_current {
+                optics = rippled_pool_optics(map, distance, depth_distance, pool_phase, water_pixel,
+                    deep * 0.88, mix(deep, crest, 0.10), crest, terrain.water_style, surface.V);
             } else if indoor_pool {
                 // The authenticated Cerulean pool uses short, low ripples and
                 // shallow caustics. Keep its blue pool pigment and quiet indoor
@@ -1070,7 +1106,8 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
             let sheet = smoothstep(0.26, 0.76, turbulence);
             let filament = pow(max(sin(map.x * 21.3 + turbulence * 3.0
                 + sin(map.y * 2.1 - phase) * 0.4), 0.0), 10.0) * breaks;
-            let froth = clamp(sheet * 0.29 + streak * breaks * 0.36 + filament * 0.25, 0.0, 0.88);
+            let froth = clamp(sheet * 0.29 + streak * breaks * 0.36 + filament * 0.25
+                + select(0.0, 0.12, tohjo_water), 0.0, 0.88);
             // Entrained air lightens the authenticated hue toward its own
             // brightest channel, never replacing a native cave palette with teal.
             let aerated = mix(crest, vec3<f32>(max(max(crest.r, crest.g), crest.b)), 0.28);
@@ -1102,6 +1139,12 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
             // this cascade, with a smooth footprint in its own mask channel.
             receiving_pool = mix(rippled, select(vec3<f32>(0.43, 0.65, 0.64),aerated,palette_current),
                 spray * 0.26 * pool_impact);
+            }
+            if tohjo_water {
+                // Aeration builds as the sheet turns over its rounded lip.
+                // Both level ends retain the neighboring basin's exact optics.
+                let slope = 1.0 - abs(surface.world_normal.y);
+                falling = mix(rippled, falling, smoothstep(0.015, 0.18, slope));
             }
             // Only complete Dragon's Den source drawings use the middle
             // role value. Their current shares the adjacent live pool phase.
@@ -1222,6 +1265,16 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
         // separates their volume without full PBR or another lighting pass.
         let hemisphere = 0.88 + 0.12 * max(surface.world_normal.y, 0.0);
         shaded = surface.material.base_color.rgb * daylight * hemisphere;
+    }
+    if styled_outdoor_rock {
+        // Outdoor mineral is sculpted volume. Let its facets face the real
+        // sun instead of retaining the flat fill used for source paintings.
+        let hemisphere = mix(vec3<f32>(0.33, 0.355, 0.36),
+            vec3<f32>(0.48, 0.49, 0.45),
+            clamp(surface.world_normal.y * 0.5 + 0.5, 0.0, 1.0));
+        let sky = hemisphere * ambient_tint * ambient_gain * indirect_occlusion;
+        let direct = sun_tint * sunlight_facing * sun_gain * visibility * 0.82;
+        shaded = surface.material.base_color.rgb * (sky + direct);
     }
     if source_painted {
         // Source paint is independent of the older map-specific daylight

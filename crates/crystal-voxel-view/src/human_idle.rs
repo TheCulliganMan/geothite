@@ -102,6 +102,7 @@ pub(crate) struct HumanIdle {
     hips: Vec3,
     manner: Manner,
     phase: f32,
+    hands: crate::hand_pose::Hands,
 }
 
 impl HumanIdle {
@@ -155,6 +156,7 @@ impl HumanIdle {
             hips,
             manner,
             phase: (seed % 997) as f32 / 997. * TAU,
+            hands: crate::hand_pose::Hands::new(rig),
         }
     }
 
@@ -228,6 +230,7 @@ impl HumanIdle {
             );
         }
         gait.plant_idle(rig, &self.feet, pose);
+        self.hands.sample(0., breath, pose);
     }
 }
 
@@ -376,10 +379,8 @@ pub(crate) mod validation {
             for frame in 0..24 {
                 let seconds = frame as f32 * 0.83;
                 idle.sample(rig, &gait, seconds, &mut standing);
-                crate::hand_pose::relax(rig, &mut standing);
                 for run in [0., 1.] {
                     gait.sample(rig, frame as f32 / 24. * TAU, run, &mut moving);
-                    crate::hand_pose::relax(rig, &mut moving);
                     for weight in [0., 0.15, 0.5, 0.85, 1.] {
                         for ((p, a), b) in pose.iter_mut().zip(&standing).zip(&moving) {
                             *p = Transform {

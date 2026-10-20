@@ -280,6 +280,10 @@ fn finish_webmcp_request(
     voxel_status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
     #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
     battle_status: Option<Res<crystal_voxel_view::BattleViewStatus>>,
+    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+    filters: Query<(&Camera, &bevy::camera::RenderTarget, &bevy::light::ShadowFilteringMethod)>,
+    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+    battle_frame: Option<Res<VisualBattleFrame>>,
 ) {
     WEBMCP_BRIDGE.with_borrow_mut(|bridge| {
         let Some(pending) = bridge.pending.as_ref() else { return; };
@@ -312,6 +316,9 @@ fn finish_webmcp_request(
                     #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
                     if let Some(status) = voxel_status.as_ref() {
                         value["presentation"]["voxel"] = serde_json::json!({
+                            "shadow_filters": filters.iter().filter(|(camera, target, _)| camera.is_active
+                                && matches!(target, bevy::camera::RenderTarget::Window(_)))
+                                .map(|(_, _, filter)| format!("{filter:?}")).collect::<Vec<_>>(),
                             "active": status.active,
                             "active_frames": status.active_frames,
                             "terrain_builds": status.terrain_builds,
@@ -334,6 +341,8 @@ fn finish_webmcp_request(
                                 "minimum_revision":bound.candidate.minimum_snapshot_revision,
                                 "map":bound.candidate.source.map_name,
                             })),
+                            "cues":battle_frame.as_ref().map(|frame| frame.cues.iter()
+                                .map(|cue|format!("{:?}:{}",cue.kind,cue.move_id)).collect::<Vec<_>>()),
                             "active":status.active,"prepared":status.prepared,
                             "last_error":status.last_error,
                             "scenery":status.map_scenery_id,

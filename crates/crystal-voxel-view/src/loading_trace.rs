@@ -378,6 +378,10 @@ pub(crate) fn register(app: &mut App) {
             "battle_source_scene": battle.as_ref().is_some_and(|f| f.use_source_scene),
             "battle_3d_active": battle_view.as_ref().is_some_and(|s| s.active),
             "battle_prepared": battle_view.as_ref().is_some_and(|s| s.prepared),
+            "battle_error": battle_view.as_ref().and_then(|s| s.last_error.as_deref()),
+            "scenery_error": battle_view.as_ref().and_then(|s| s.map_scenery_fallback_reason),
+            "battle_cues": battle.as_ref().map(|f| f.cues.iter().map(|c|
+                format!("{:?}:{}:{:?}", c.kind, c.move_id, c.side)).collect::<Vec<_>>()),
         })));
     }).run_if(trace_enabled));
     if let Some(render) = app.get_sub_app_mut(RenderApp) {

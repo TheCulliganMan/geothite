@@ -8463,18 +8463,25 @@ fn append_waterfall(
     let at = |column: f32, row: f32| {
         let across = column - placement.column as f32;
         let along = (row - placement.row as f32) / placement.height as f32;
-        let envelope = (along * std::f32::consts::PI).sin().max(0.);
+        let body = if levels.is_some() { ((along - 0.10) / 0.80).clamp(0., 1.) } else { along };
+        let envelope = (body * std::f32::consts::PI).sin().max(0.);
         let x = column + map_origin[0] as f32;
         let z = row + map_origin[1] as f32;
         let noise = new_bark::meadow_noise(x * 0.61 + 43., z * 1.35 - 17.);
         let left = (1. - across / 0.5).clamp(0., 1.);
         let right = (1. - (placement.width as f32 - across) / 0.5).clamp(0., 1.);
-        let inset = geometry.tile_width * (0.09 + noise * 0.045) * envelope;
-        let relief = geometry.tile_height * 0.045 * envelope
-            * (1. - left.max(right)) * (x * 2.6 + z * 0.9 + noise * 2.).sin();
+        let inset = if levels.is_some() { 0. } else {
+            geometry.tile_width * (0.09 + noise * 0.045) * envelope
+        };
+        let relief = if levels.is_some() { 0. } else {
+            geometry.tile_height * 0.045 * envelope
+                * (1. - left.max(right)) * (x * 2.6 + z * 0.9 + noise * 2.).sin()
+        };
         Vec3::new(
             geometry.origin_x + column * geometry.tile_width + inset * (left - right),
-            base + drop * (1. - along) + relief,
+            base + drop * if levels.is_some() {
+                crate::waterfall::cascade_fraction(along)
+            } else { 1. - along } + relief,
             geometry.origin_z + row * geometry.tile_height,
         )
     };
