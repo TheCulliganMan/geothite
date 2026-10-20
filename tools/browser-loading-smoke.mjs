@@ -14,7 +14,7 @@ try {
  ].filter(([name]) => !process.env.BROWSER_SMOKE_CASE || name.includes(process.env.BROWSER_SMOKE_CASE))) {
   const browser = await engine.launch({headless:true, args:engine===chromium
    ? process.platform==='darwin'?['--use-angle=metal','--mute-audio']:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--mute-audio'] : undefined});
-  const result = {name, path, console:[], errors:[], requests:[], swaps:[]}; reports.push(result);
+  const result = {name, path, console:[], browserAdvisories:[], errors:[], requests:[], swaps:[]}; reports.push(result);
   let collecting=true;
   try {
    const context=await browser.newContext(options);const page=await context.newPage();
@@ -22,7 +22,13 @@ try {
     if(!collecting)return;
     const entry={level:message.type(),text:message.text()};
     if(['error','warning'].includes(entry.level)||/\bERROR\b/.test(entry.text)) {
-     result.console.push(entry);console.log(JSON.stringify({name,...entry}));
+     result.console.push(entry);
+     // Firefox reports these upstream WebGL driver advisories for wgpu's
+     // adapter inspection and vertex-index-only fullscreen triangles. Retain
+     // them in the report; they are not failed requests or rendering errors.
+     if(name.startsWith('firefox') && entry.level==='warning' &&
+       /WEBGL_debug_renderer_info is deprecated in Firefox|WebGL warning: drawArraysInstanced: Drawing without vertex attrib 0 array enabled/.test(entry.text)) result.browserAdvisories.push(entry);
+     console.log(JSON.stringify({name,...entry}));
     }
    });
    page.on('pageerror',error=>{if(collecting)result.errors.push(error.stack);});
@@ -49,7 +55,7 @@ try {
    await page.screenshot({path:output.replace(/\.json$/,`-${name}.png`)});
    assert.deepEqual(result.errors,[],`${name}: JavaScript exceptions`);
    assert.deepEqual(result.requests,[],`${name}: failed asset/API requests`);
-   assert.deepEqual(result.console,[],`${name}: browser/renderer diagnostics`);
+   assert.deepEqual(result.console.filter(entry=>!result.browserAdvisories.includes(entry)),[],`${name}: unexpected browser/renderer diagnostics`);
    console.log(JSON.stringify({name,passed:true,swaps:result.swaps}));
   } finally {collecting=false;await browser.close();}
  }
