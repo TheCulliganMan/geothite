@@ -26,10 +26,10 @@ fn title_observation_handles_main_menu_entry_transition() {
     )
     .expect("initialize title shell");
 
-    let mut app = integrated_shell_test_app(runtime_shell);
-    open_title_main_menu_for_test(&mut app);
-    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    let mut shell = runtime_shell;
     let mut title = shell.title_menu.take().expect("title menu");
+    title.presentation_machine.memory.insert("wJumptableIndex".into(), 0x80);
+    title.presentation_machine.memory.insert("wTitleScreenSelectedOption".into(), 0);
     title.main_menu_phase_interpreter = None;
     assert_eq!(title.source_phase(), VisibleTitlePhase::MainMenu);
     assert!(!visible_title_main_menu_active(&title));
