@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import { chromium, devices } from 'playwright';
 const [base, output] = process.argv.slice(2);
 assert.ok(base && output, 'usage: node tools/browser-view-smoke.mjs BASE_URL REPORT_JSON');
-const browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--mute-audio']});
+const browser=await chromium.launch({headless:true,args:process.platform==='darwin'?['--use-angle=metal','--mute-audio']:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--mute-audio']});
 const report={base,errors:[],swaps:[]};
 try {
  const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
@@ -23,11 +23,11 @@ try {
  const observe=()=>page.evaluate(()=>viewTestBridge.execute({kind:'observe'}));
  let state=await observe(); console.log("Started",JSON.stringify(state.status));
  const press=async button=>{
-  state=await page.evaluate(button=>viewTestBridge.execute({kind:'press',button,frames:8}),button);
+  state=await page.evaluate(({button,frames})=>viewTestBridge.execute({kind:'press',button,frames}),{button,frames:state.status.screen==='naming'?1:8});
   for(let i=0;state.flow_state?.animating&&!state.observe.visible_dialogue&&!state.observe.menus?.length&&i<180;i++){
    await page.waitForTimeout(50);state=await observe();
   }
-  console.log("Input",button,JSON.stringify({status:state.status,menus:state.observe.menus,text:state.observe.text,flow:state.flow_state}));
+  console.log("Input",button,JSON.stringify({status:state.status,position:state.map_info.player,map:state.map_info.name,menus:state.observe.menus,text:state.observe.text,flow:state.flow_state}));
   return state;
  };
  const stable=s=>({name:s.status.player_name,screen:s.status.screen,position:s.map_info.player,map:s.map_info.name,menus:s.observe.menus,dialogue:s.observe.visible_dialogue,battle:s.observe.battle});
@@ -67,14 +67,11 @@ try {
  await page.waitForFunction(()=>document.querySelector('#tui-screen').textContent.includes('PACK'),null,{timeout:60000});
  await press('down');const selected=stable(state);await swap('3d');assert.deepEqual(stable(state),selected);
  await swap('tui');await press('b');
- const move=async(button,count)=>{
-  for(let i=0;i<count;i++){
-   const before=JSON.stringify([state.map_info.name,state.map_info.player]);
-   for(let n=0;n<4;n++){await press(button);if(JSON.stringify([state.map_info.name,state.map_info.player])!==before)break;}
-  }
- };
- await move('right',4);await move('up',3);assert.equal(state.map_info.name,'PlayersHouse1F');
- for(let i=0;!state.observe.visible_dialogue&&i<8;i++)await move('down',1);
+ for(let i=0;state.map_info.player.x<7&&i<64;i++)await press('right');
+ assert.equal(state.map_info.player.x,7);
+ for(let i=0;state.map_info.name==='PlayersHouse2F'&&i<64;i++)await press('up');
+ assert.equal(state.map_info.name,'PlayersHouse1F');
+ for(let i=0;!state.observe.visible_dialogue&&i<64;i++)await press('down');
  assert.ok(state.observe.visible_dialogue,'Mom must intercept through the shared production controller');
  await page.waitForTimeout(3000);state=await observe();
  const motherPosition=state.map_info.player;

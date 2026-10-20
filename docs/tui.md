@@ -15,3 +15,15 @@ Rust produces the shared Ratatui buffer from the live production controller's
 visible snapshot. JavaScript only paints that buffer and selects the renderer.
 The standalone text client reuses the same renderer crate; see
 [the native text-client guide](../modpacks/text-tui/README.md).
+
+Validate a running deployment headlessly with:
+
+```sh
+node tools/browser-view-smoke.mjs https://geothite.ryanculligan.com /tmp/geothite-views.json
+```
+
+This opens the direct TUI URL, starts CHRIS's game through the production input
+path, checks nine in-place renderer swaps, retains Start-menu selection, walks
+into Mom's dialogue, verifies input ownership and dialogue advancement, and
+checks the phone chooser. Reports and screenshots stay outside the repository.
+On macOS the headless test uses Metal; other platforms use SwiftShader.
