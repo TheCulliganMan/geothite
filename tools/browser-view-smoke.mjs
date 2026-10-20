@@ -90,6 +90,7 @@ try {
  await mobile.waitForFunction(()=>document.querySelector('#loading').hidden||document.querySelector('#startup-error').open,null,{timeout:240000});
  assert.equal(await mobile.locator('#startup-error').evaluate(e=>e.open?e.textContent:null),null);
  assert.ok(await mobile.locator('#tui-surface').isVisible());
+ assert.equal(await mobile.evaluate(()=>document.elementFromPoint(innerWidth/2,innerHeight/3)?.id),'crystal-canvas','TUI presentation must preserve the production touch input target');
  for(const mode of ['2d','3d','tui'])assert.ok(await mobile.locator(`#view-navigation [data-view="${mode}"]`).isVisible());
  await mobile.screenshot({path:output.replace(/\.json$/,'-phone.png')});
  await phone.close();assert.deepEqual(report.errors,[]);

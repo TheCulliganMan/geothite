@@ -7,7 +7,7 @@
 #view-navigation a { box-sizing: border-box; padding: 0 6px; }
 #view-navigation button { height: 38px; font: inherit; padding: 0 8px; min-width: 44px; border: 0; }
 #view-navigation [hidden] { display: none; }
-#tui-surface { position: fixed; inset: 62px 0 0; z-index: 2; background: #030312; display: grid; place-items: center; overflow: hidden; }
+#tui-surface { pointer-events: none; position: fixed; inset: 62px 0 0; z-index: 2; background: #030312; display: grid; place-items: center; overflow: hidden; }
 #tui-surface[hidden] { display: none; }
 #tui-screen { position: absolute; inset: 0; opacity: 0; white-space: pre; font: 14px/1.25 ui-monospace, monospace; margin: 0; pointer-events: none; }
 #game-stage #tui-canvas { width: auto !important; height: auto !important; max-width: 100%; max-height: 100%; pointer-events: none; }
