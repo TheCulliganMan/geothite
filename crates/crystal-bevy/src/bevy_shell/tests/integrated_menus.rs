@@ -4,12 +4,14 @@ fn title_observation_handles_main_menu_entry_transition() {
         .join("../..")
         .canonicalize()
         .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+        .map(PathBuf::from)
+        .unwrap_or_else(|| repo_root.join("content-packs/text-tui.crystalpack"));
+    let asset_root = AssetRoot::new(pack.parent().expect("pack parent"));
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack)
+        .expect("read external title pack");
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)
+        .expect("load external title pack");
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
