@@ -829,7 +829,7 @@ mod cached_grove_tests {
         let recipe=new_bark::GroveRecipe {family:crate::foliage::GroveFamily::KantoDeciduous,
             bounds:[0.,16.,0.,16.],base_height:0.,tile_height:16.,coordinates:[0,0],
             neighbors:[false;4],understory_bounds:None,coverage_fade:true};
-        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:UVec2::ONE,
+        let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:IVec2::ZERO,size:UVec2::ONE,
             levels:vec![[2.;4]].into(),open_water:None,water_barriers:Default::default()};
         let source=DeferredGroves {geometry:Some(GridGeometry {width:1,height:1,tile_width:16.,
             tile_height:16.,origin_x:0.,origin_z:0.}),terrace_datum:Some(std::sync::Arc::new(datum)),

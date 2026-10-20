@@ -278,6 +278,9 @@ pub struct VisualTerraceDatum {
     /// Source-complete water-backed barrier cells, sorted by (y,x), not camera crop.
     /// Empty preserves the legacy authored-underlay classification.
     pub water_barriers: Arc<[bevy::prelude::IVec2]>,
+    /// Source-complete mineral cells with authored land collision, sorted by
+    /// (y,x). Decorative mountain relief must preserve walking support here.
+    pub walkable_mineral: Arc<[bevy::prelude::IVec2]>,
     /// Source-proven inland river level and its cells, including gaps in the
     /// connected-map rectangle. Rendered border water continues this plane.
     pub open_water: Option<VisualOpenWaterDatum>,
@@ -308,12 +311,18 @@ impl VisualTerraceDatum {
             }) && river.cells.windows(2).all(|p|(p[0].y,p[0].x)<(p[1].y,p[1].x)))
     }
     pub fn valid_water_barriers(&self)->bool {
-        self.water_barriers.len() as u64<=u64::from(self.size.x)*u64::from(self.size.y)
-            && self.water_barriers.iter().all(|p| {
+        self.valid_source_cells(&self.water_barriers)
+    }
+    pub fn valid_walkable_mineral(&self)->bool {
+        self.valid_source_cells(&self.walkable_mineral)
+    }
+    fn valid_source_cells(&self,cells:&[bevy::prelude::IVec2])->bool {
+        cells.len() as u64<=u64::from(self.size.x)*u64::from(self.size.y)
+            && cells.iter().all(|p| {
                 let x=i64::from(p.x)-i64::from(self.origin.x);
                 let y=i64::from(p.y)-i64::from(self.origin.y);
                 x>=0 && y>=0 && x<i64::from(self.size.x) && y<i64::from(self.size.y)
-            }) && self.water_barriers.windows(2).all(|p|(p[0].y,p[0].x)<(p[1].y,p[1].x))
+            }) && cells.windows(2).all(|p|(p[0].y,p[0].x)<(p[1].y,p[1].x))
     }
 }
 
@@ -479,7 +488,8 @@ impl VisualWorldFrame {
         if self.terrace_datum.as_ref().is_some_and(|d|d.size.x==0 || d.size.y==0
             || u64::from(d.size.x)*u64::from(d.size.y)>2_000_000
             || d.levels.len()as u64!=u64::from(d.size.x)*u64::from(d.size.y)
-            || d.levels.iter().flatten().any(|&v|!v.is_finite() || v<0.) || !d.valid_water_barriers() || !d.valid_open_water()) {
+            || d.levels.iter().flatten().any(|&v|!v.is_finite() || v<0.) || !d.valid_water_barriers()
+            || !d.valid_walkable_mineral() || !d.valid_open_water()) {
             return Err(VisualWorldFrameError::InvalidTerraceDatum);
         }
         if !self.center.is_finite() || !self.view_center.is_finite() {
@@ -990,10 +1000,10 @@ mod tests {
         let mut frame=active_frame();
         for (size,levels) in [(UVec2::ZERO,vec![]),(UVec2::new(2,1),vec![[0.;4]]),
             (UVec2::ONE,vec![[f32::NAN;4]]),(UVec2::ONE,vec![[-1.;4]])] {
-            frame.terrace_datum=Some(Arc::new(VisualTerraceDatum {origin:bevy::prelude::IVec2::ZERO,size,levels:levels.into(),open_water:None,water_barriers:Arc::from([])}));
+            frame.terrace_datum=Some(Arc::new(VisualTerraceDatum {walkable_mineral:Default::default(),origin:bevy::prelude::IVec2::ZERO,size,levels:levels.into(),open_water:None,water_barriers:Arc::from([])}));
             assert_eq!(frame.validate(),Err(VisualWorldFrameError::InvalidTerraceDatum));
         }
-        frame.terrace_datum=Some(Arc::new(VisualTerraceDatum {
+        frame.terrace_datum=Some(Arc::new(VisualTerraceDatum {walkable_mineral:Default::default(),
             open_water:None,water_barriers:Arc::from([]),
             origin:bevy::prelude::IVec2::new(-40,20),size:UVec2::ONE,levels:vec![[0.,1.,2.,1.]].into(),
         }));
@@ -1003,6 +1013,12 @@ mod tests {
         for cells in [vec![bevy::prelude::IVec2::ZERO],vec![valid.origin,valid.origin],
             vec![valid.origin+bevy::prelude::IVec2::X,valid.origin]] {
             let mut invalid=valid.clone();invalid.water_barriers=cells.into();
+            frame.terrace_datum=Some(Arc::new(invalid));
+            assert_eq!(frame.validate(),Err(VisualWorldFrameError::InvalidTerraceDatum));
+        }
+        for cells in [vec![bevy::prelude::IVec2::ZERO],vec![valid.origin,valid.origin],
+            vec![valid.origin+bevy::prelude::IVec2::X,valid.origin]] {
+            let mut invalid=valid.clone();invalid.walkable_mineral=cells.into();
             frame.terrace_datum=Some(Arc::new(invalid));
             assert_eq!(frame.validate(),Err(VisualWorldFrameError::InvalidTerraceDatum));
         }

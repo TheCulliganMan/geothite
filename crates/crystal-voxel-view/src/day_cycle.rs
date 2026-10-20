@@ -43,11 +43,10 @@ impl DayCycle {
 
     pub fn at_seconds(second: u32) -> Self {
         let night = Self::stop(
-            // Cool moonlight preserves the 3D materials' warm/cool separation.
-            // A saturated palette-blue light erased their pigment and turned
-            // pale rock and people into the same flat violet silhouette.
-            [0.72, 0.82, 1.08],
-            [0.78, 0.88, 1.15],
+            // Preserve the original blue night mood across native 3D surfaces.
+            // Source-painted materials avoid applying this tint a second time.
+            [0.40, 0.55, 2.0],
+            [0.40, 0.55, 2.0],
             [0.42, 0.40],
             [-180.0, 260.0, 220.0],
             [0.055, 0.085, 0.17],

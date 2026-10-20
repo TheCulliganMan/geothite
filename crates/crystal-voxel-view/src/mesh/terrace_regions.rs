@@ -294,6 +294,9 @@ fn build(
         size: UVec2::new(w as u32, h as u32),
         levels: levels.into(),
         water_barriers: barriers.into(),
+        walkable_mineral:native.iter().filter_map(|(&(y,x),(_,s,land))|
+            (*land && outdoor_mountains::permanent(s,shape_for_source(s)))
+                .then_some(IVec2::new(x,y))).collect(),
         open_water,
     }))
 }

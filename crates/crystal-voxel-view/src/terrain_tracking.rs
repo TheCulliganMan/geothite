@@ -331,7 +331,7 @@ mod tests {
         }].into();
         assert!(!can_reuse(&built, &changed), "changed authored jump levels require new terrain support");
         changed = frame(IVec2::new(2, 0));
-        changed.terrace_datum=Some(std::sync::Arc::new(crystal_render_api::VisualTerraceDatum {open_water:None,water_barriers:std::sync::Arc::from([]),
+        changed.terrace_datum=Some(std::sync::Arc::new(crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),open_water:None,water_barriers:std::sync::Arc::from([]),
             origin:IVec2::ZERO,size:UVec2::ONE,levels:vec![[0.;4]].into(),
         }));
         assert!(!can_reuse(&built,&changed),"changed source land domains require new terrain and support");

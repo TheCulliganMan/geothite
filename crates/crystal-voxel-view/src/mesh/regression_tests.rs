@@ -1567,19 +1567,19 @@ mod tests {
         let mut legacy=native.clone();legacy.map_id="UnionCave1F".into();
         let other=build_terrain_mesh(&legacy).unwrap();
         for i in 0..12 {
-            let expected=if i<2 {38.}else if i==3 || i==4 {34.493164}
-                else if i==6 || i==7 {3.506836}else{other.footing_heights[i]};
+            let expected=if i<2 {32.}else if i==3 || i==4 {29.046875}
+                else if i==6 || i==7 {2.953125}else{other.footing_heights[i]};
             assert!((mesh.footing_heights[i]-expected).abs()<0.00001,"rendered actor support for cell {i}");
         }
         let g=GridGeometry {width:3,height:4,tile_width:8.,tile_height:8.,origin_x:-12.,origin_z:-16.};
         let mut sheet=SurfaceMeshData::default();
-        append_waterfall(&mut sheet,&g,&cells,falls[0],[0,0],Some([38.,0.]));
+        append_waterfall(&mut sheet,&g,&cells,falls[0],[0,0],Some([32.,0.]));
         let north=g.origin_z+8.;let south=g.origin_z+24.;
-        assert!(sheet.positions.iter().filter(|p|p[2]==north).all(|p|p[1]==38.));
+        assert!(sheet.positions.iter().filter(|p|p[2]==north).all(|p|p[1]==32.));
         assert!(sheet.positions.iter().filter(|p|p[2]==south).all(|p|p[1]==0.));
         assert!(sheet.positions.iter().any(|p|p[2]==north));
         assert!(sheet.positions.iter().any(|p|p[2]==south));
-        for (i,y) in [(0,38.),(1,38.),(9,0.),(10,0.)] {
+        for (i,y) in [(0,32.),(1,32.),(9,0.),(10,0.)] {
             let uv=g.uv(i%3,i/3);
             assert!(mesh.textured.positions.iter().zip(&mesh.textured.uvs)
                 .any(|(p,u)|p[1]==y && *u==[uv.0,uv.2]),"pool and fall must meet their common tier");

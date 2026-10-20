@@ -32,7 +32,9 @@ try {
  const stable=s=>({name:s.status.player_name,screen:s.status.screen,position:s.map_info.player,map:s.map_info.name,menus:s.observe.menus,dialogue:s.observe.visible_dialogue,battle:s.observe.battle});
  const swap=async(mode,{preserve=true}={})=>{
   const before=await observe();
-  await page.locator(`#view-navigation [data-view="${mode}"]`).click();
+  const choice=page.locator(`#view-navigation [data-view="${mode}"]`);
+  if(mode==='tui'){await choice.focus();await page.keyboard.press('Enter');}
+  else await choice.click();
   assert.equal(new URL(page.url()).pathname,'/tui/');
   assert.equal(await page.evaluate(()=>viewTestMarker),marker);
   assert.ok(await page.evaluate(async()=>viewTestEngine===await viewTestWasm.default()),'view swap restarted WASM');

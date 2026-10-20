@@ -85,7 +85,8 @@ fn adjoining_support(distance: f32, reach: f32, floor: f32) -> f32 {
 /// Sculpt native outdoor rock masses with shared source-coordinate fields.
 /// Exposed rims erode; floor contacts and planted-tree seats stay anchored.
 pub(super) fn finish_rock_geometry(mesh: &mut TerrainMeshData, map: &str,
-    cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32; 2]) {
+    cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32; 2],
+    datum:Option<&crystal_render_api::VisualTerraceDatum>) {
     {
         let _trace = crate::loading_trace::span("region.rock_sculpt_rims", || serde_json::json!({}));
         sculpt_rock_rims_on_map(mesh, map, cells, shapes, g, origin);
@@ -95,7 +96,7 @@ pub(super) fn finish_rock_geometry(mesh: &mut TerrainMeshData, map: &str,
         let _trace = crate::loading_trace::span("region.rock_round_contacts", || serde_json::json!({}));
         super::rock_bases::round_geometry(mesh, map, cells, shapes, g, origin);
     }
-    super::outdoor_mountains::finish(mesh, map, cells, shapes, g, origin);
+    super::outdoor_mountains::finish(mesh, map, cells, shapes, g, origin,datum);
     // Project backing from the final cap, including its mountain relief.
     super::outdoor_mountains::append_reveal_floor(mesh, map, cells, shapes, g, origin);
     {
@@ -1500,7 +1501,7 @@ mod tests {
             let mut classified = mesh.clone();
             sculpt_rock_rims_on_map(&mut classified, map, &cells, &shapes, &g, [0,0]);
             let footing = mesh.footing_heights.clone();
-            finish_rock_geometry(&mut mesh, map, &cells, &shapes, &g, [0,0]);
+            finish_rock_geometry(&mut mesh, map, &cells, &shapes, &g, [0,0],None);
             assert_eq!(mesh.footing_heights, footing, "{map} source support changed");
             assert!(mesh.authored_cells.iter().all(Option::is_none), "{map} claims changed");
             if map=="BlackthornCity" {

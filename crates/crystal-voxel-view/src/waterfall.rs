@@ -6,6 +6,7 @@ use crystal_render_api::VisualTile;
 
 const WATERFALL_METATILE: u16 = 0x2c;
 const WATERFALL_TILE: u16 = 0x40;
+pub(crate) const CASCADE_LIP: f32 = 0.10;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct WaterfallPlacement {
@@ -15,18 +16,22 @@ pub(crate) struct WaterfallPlacement {
     pub height: usize,
 }
 
-/// The upper basin sits just below the rock plateau that encloses it. The
+/// The upper basin sits below the rock plateau that encloses it. The
 /// receiving pool uses the native cave floor, not the outdoor water recess.
+fn upper_level(source: &crystal_render_api::VisualTileSource) -> f32 {
+    // One source-cell recess clears the enclosing rock's sculpted relief.
+    crate::cave::rock_height(source) - crate::profile::SOURCE_TILE_HEIGHT
+}
+
 pub(crate) fn tohjo_levels(cells: &[&VisualTile], width: usize, fall: WaterfallPlacement) -> [f32; 2] {
     let source = &cells[fall.row * width + fall.column].source;
-    [crate::cave::rock_height(source) + crate::profile::WATER_HEIGHT,
-        crate::profile::GROUND_HEIGHT]
+    [upper_level(source), crate::profile::GROUND_HEIGHT]
 }
 
 /// A short level lip rolls into the falling sheet and flattens into the pool.
 /// Terrain and rendered Surf support must sample the same longitudinal curve.
 pub(crate) fn cascade_fraction(along: f32) -> f32 {
-    let t = ((along - 0.10) / 0.80).clamp(0.0, 1.0);
+    let t = ((along - CASCADE_LIP) / (1.0 - 2.0 * CASCADE_LIP)).clamp(0.0, 1.0);
     1.0 - t * t * (3.0 - 2.0 * t)
 }
 
@@ -58,8 +63,7 @@ pub(crate) fn support_correction(
     let width = frame.grid_size.x as usize;
     let Some(&resolved) = heights.get(cell.y as usize * width + cell.x as usize) else { return 0.; };
     let scale = frame.tile_size.y / crate::profile::SOURCE_TILE_HEIGHT;
-    let head = (crate::cave::rock_height(&tile(cell.x, cell.y).unwrap().source)
-        + crate::profile::WATER_HEIGHT) * scale;
+    let head = upper_level(&tile(cell.x, cell.y).unwrap().source) * scale;
     if heights.get((north - 1) as usize * width + cell.x as usize)
         .is_none_or(|&y| (y - head).abs() > 0.001) { return 0.; }
     let rows = (south - north) as f32;

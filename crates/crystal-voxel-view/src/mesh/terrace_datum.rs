@@ -105,12 +105,16 @@ fn build_source_terrace_datum(
     let (w, h) = (size.x as usize, size.y as usize);
     let n = w * h;
     let water_barriers=water_barrier_domains::resolve(&native);
+    let walkable_mineral:Arc<[_]>=native.iter().filter_map(|(&(y,x),(source,land))|
+        (*land && outdoor_mountains::permanent(source,shape_for_source(source)))
+            .then_some(IVec2::new(x,y))).collect();
     let flat=|mineral:bool| {
         let mut levels=vec![[0.;4];n];
         let ponds=mineral && mountain_ponds::raise(&native,lo,w,&mut levels);
-        (ponds || !water_barriers.is_empty()).then(||Arc::new(VisualTerraceDatum {
+        (ponds || !water_barriers.is_empty() || !walkable_mineral.is_empty()).then(||Arc::new(VisualTerraceDatum {
             origin:lo,size:UVec2::new(w as u32,h as u32),levels:levels.into(),
             open_water:None,water_barriers:water_barriers.clone(),
+            walkable_mineral:walkable_mineral.clone(),
         }))
     };
     if edges.is_empty() {return flat(true);}
@@ -482,6 +486,7 @@ fn build_source_terrace_datum(
         size: UVec2::new(w as u32, h as u32),
         levels: levels.into(),
         water_barriers,
+        walkable_mineral,
         open_water,
     }))
 }

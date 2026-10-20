@@ -332,8 +332,8 @@ mod tests {
             "local edge candidates must preserve the full mineral field exactly at {origin:?}");
         let sculpted_positions = classified.solid.positions.clone();
         round_geometry(&mut classified, map, &cells, &shapes, &g, origin);
-        super::super::outdoor_mountains::finish(&mut classified, map, &cells, &shapes, &g, origin);
-        outdoor_stone::finish_rock_geometry(&mut mesh, map, &cells, &shapes, &g, origin);
+        super::super::outdoor_mountains::finish(&mut classified, map, &cells, &shapes, &g, origin,None);
+        outdoor_stone::finish_rock_geometry(&mut mesh, map, &cells, &shapes, &g, origin,None);
         assert_eq!(mesh.solid.positions, classified.solid.positions);
         assert_eq!(mesh.solid.indices, classified.solid.indices);
         let mut shared_source_positions = HashMap::new();

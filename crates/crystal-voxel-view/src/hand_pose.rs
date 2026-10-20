@@ -12,46 +12,64 @@ struct Finger {
 
 /// Cache the supplied grip's finger rotations only. The combat crouch, wrist
 /// rotation and arm placement never enter the native standing/walking pose.
-pub(crate) struct Hands(Vec<Finger>);
+pub(crate) struct Hands {
+    fingers: Vec<Finger>,
+    run_curl: f32,
+}
 
 impl Hands {
     pub(crate) fn new(rig: &PersonRig) -> Self {
         let mut grip = rig.nodes.clone();
         rig.sample("Idle", 0., &mut grip);
-        Self(
-            rig.finger_nodes
-                .iter()
-                .map(|&node| {
-                    let descendant = |root: usize| {
-                        let mut current = Some(node);
-                        while let Some(n) = current {
-                            if n == root {
-                                return true;
-                            }
-                            current = rig.parents[n];
+        let fingers = rig
+            .finger_nodes
+            .iter()
+            .map(|&node| {
+                let descendant = |root: usize| {
+                    let mut current = Some(node);
+                    while let Some(n) = current {
+                        if n == root {
+                            return true;
                         }
-                        false
-                    };
-                    let thumb = rig
-                        .thumb_nodes
-                        .iter()
-                        .flatten()
-                        .any(|&root| descendant(root));
-                    let side = usize::from(
-                        rig.hand_joints[1]
-                            .iter()
-                            .any(|&j| rig.skin_nodes[j] == node),
-                    );
-                    Finger {
-                        node,
-                        open: rig.nodes[node].rotation,
-                        grip: grip[node].rotation,
-                        thumb,
-                        side,
+                        current = rig.parents[n];
                     }
-                })
-                .collect(),
-        )
+                    false
+                };
+                let thumb = rig
+                    .thumb_nodes
+                    .iter()
+                    .flatten()
+                    .any(|&root| descendant(root));
+                let side = usize::from(
+                    rig.hand_joints[1]
+                        .iter()
+                        .any(|&j| rig.skin_nodes[j] == node),
+                );
+                Finger {
+                    node,
+                    open: rig.nodes[node].rotation,
+                    grip: grip[node].rotation,
+                    thumb,
+                    side,
+                }
+            })
+            .collect();
+        let run_curl = 0.85;
+        // An offline art control, parsed once rather than on the animation
+        // path. Production clients always use the reviewed constant above.
+        #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+        let run_curl = std::env::var("CRYSTAL_PEOPLE_REVIEW_FINGER_CURL")
+            .ok()
+            .map(|value| {
+                let curl: f32 = value.parse().expect("finger curl must be numeric");
+                assert!(
+                    curl.is_finite() && (0.3..=0.95).contains(&curl),
+                    "finger curl must be from 0.3 to 0.95"
+                );
+                curl
+            })
+            .unwrap_or(run_curl);
+        Self { fingers, run_curl }
     }
 
     /// Activity blends relaxed fingers into a loose fist. Thumb opposition
@@ -59,12 +77,12 @@ impl Hands {
     /// Pulse is a tiny, continuous change in tension, never a grasp event.
     pub(crate) fn sample(&self, activity: f32, pulse: f32, pose: &mut [Transform]) {
         let activity = activity.clamp(0., 1.);
-        for finger in &self.0 {
+        for finger in &self.fingers {
             let pulse = pulse.clamp(-1., 1.) * if finger.side == 0 { 1. } else { -1. };
             let amount = if finger.thumb {
-                0.18 + 0.25 * activity + pulse * (0.004 + 0.008 * activity)
+                0.18 + 0.32 * activity + pulse * (0.004 + 0.008 * activity)
             } else {
-                0.22 + 0.42 * activity + pulse * (0.006 + 0.018 * activity)
+                0.22 + (self.run_curl - 0.22) * activity + pulse * (0.006 + 0.018 * activity)
             };
             pose[finger.node].rotation = finger.open.slerp(finger.grip, amount).normalize();
         }
@@ -95,14 +113,18 @@ pub(crate) mod validation {
         for name in ["human-male", "human-female"] {
             let rig = crate::open_people::get(name).unwrap();
             let hands = Hands::new(rig);
-            assert_eq!(hands.0.len(), 10, "{name}: both index and thumb chains");
+            assert_eq!(
+                hands.fingers.len(),
+                10,
+                "{name}: both index and thumb chains"
+            );
             let mut rest = rig.nodes.clone();
             hands.sample(0., 0., &mut rest);
             let mut running = rig.nodes.clone();
             hands.sample(1., 0., &mut running);
             let sum_curl = |pose: &[Transform]| {
                 hands
-                    .0
+                    .fingers
                     .iter()
                     .map(|finger| {
                         rig.nodes[finger.node]
@@ -127,7 +149,7 @@ pub(crate) mod validation {
                 // The index chain carries the connected four-finger surface.
                 // Its terminal marker must move inward as the hand closes.
                 let tip = hands
-                    .0
+                    .fingers
                     .iter()
                     .filter(|finger| {
                         !finger.thumb && hand.iter().any(|&j| rig.skin_nodes[j] == finger.node)

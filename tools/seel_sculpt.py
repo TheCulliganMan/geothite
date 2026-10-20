@@ -4,9 +4,10 @@ import argparse,json,math
 from pathlib import Path
 from functools import lru_cache
 from copy import deepcopy
-from sculpt_geometry import part,loft,ellipsoid,curved_profiles,fitted_patch,crease_normals,tube
+from sculpt_geometry import part,loft,ellipsoid,curved_profiles,fitted_patch,crease_normals
 from abra_sculpt import surface
-from bovine_sculpt import oval,curved_tube,smooth
+from bovine_sculpt import oval,curved_tube
+from surface_strokes import surface_stroke
 from jigglypuff_sculpt import pillow_ear
 from chikorita_sculpt import linear
 from wing_insect_sculpt import contour
@@ -31,14 +32,6 @@ def horizontal(q):
  for field in ('positions','normals'):
   q[field]=[v for i in range(0,len(q[field]),3) for x,y,z in [q[field][i:i+3]] for v in (x,z,-y)]
  return q
-
-def surface_stroke(name,color,points,radii,parent,segments=10):
- # Smooth the original XY controls first, then seat every resulting ring in
- # the stored surface. Interpolating sparse depths left the narrow folds and
- # brows floating between controls. Preserve their outlines and round radii.
- centers,rr=smooth(points,radii);skin=surface(parent)
- centers=[(x,y,skin(y,x)+r*.35) for (x,y,z),r in zip(centers,rr)]
- return crease_normals(tube(name,color,centers,rr,segments),35.)
 
 @lru_cache(maxsize=1)
 def raw_sculpture():

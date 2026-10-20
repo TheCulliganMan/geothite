@@ -57,9 +57,9 @@ elbow bends, torso twist and lean. Arm swing opposes the actual foot trajectory,
 including the short running stance; changing elbow flexion and delayed wrists
 provide follow-through. Small pelvis/chest counter-roll keeps the head steady.
 The distance-driven feet and authoritative game position remain unchanged.
-The complete art pass remains open: running hands still read as open palms,
-and individual head proportions, hairstyles and garment silhouettes need
-further work. Skirts still intersect raised knees in Run. Passing
+The complete art pass remains open: individual head proportions, hairstyles,
+hand anatomy and garment silhouettes need further work. Skirts still
+intersect raised knees in Run. Passing
 contact/continuity checks does not approve that artwork.
 
 Overworld `biker` NPCs use the shared bicycle frame, articulated pedals and
@@ -132,6 +132,26 @@ with the supplied artwork. Eleven characters were inspected from four angles,
 with four also inspected at a later idle time. A held-state 2D/3D comparison in
 `GoldenrodDeptStore1F` at `(8, 6)`, noon, preserved actor positions and facing.
 This verifies the relaxed posing; the broader anatomy and painting review remains open.
+
+## Finger posing
+
+Native standing and locomotion poses cache finger rotations from the supplied
+grip, with a mild resting curl, a relaxed walking curl and a loose running fist.
+Thumb opposition stays gentler than the index-chain bend. Small continuous
+changes in tension follow the idle breath or step cycle. Sampling changes only
+finger rotations; wrists, bone lengths and root placement stay under their
+existing controls. Idle/movement blending also blends the hand shape.
+
+The native samplers own this curl directly, so the source-clip relaxation
+cannot flatten it afterward. Jump, bicycle, surfing and seated poses keep their
+separate fitting paths. The supplied skeleton has one index chain and one thumb
+chain on each hand; the connected fingertip contours do not have independent
+four-finger articulation.
+
+The reviewer's `--validate-hands` check covers both production rigs, visible
+fingertip closure, preserved wrist/body transforms, finite unit rotations,
+unchanged translations/scales and skinned hand bounds through movement. It
+does not certify hand self-intersection or finished anatomy.
 
 ## Validation of legacy human removal
 

@@ -4,7 +4,7 @@ use super::*;
 use bevy::math::{Vec2, Vec4};
 
 pub(super) fn enabled(map: &str) -> bool {
-    matches!(map, "VictoryRoad" | "SilverCaveRoom2" | "SilverCaveRoom3" | "BurnedTowerB1F")
+    matches!(map, "VictoryRoad" | "SilverCaveRoom2" | "SilverCaveRoom3" | "BurnedTowerB1F" | "TohjoFalls")
 }
 
 pub(super) fn resolve(
@@ -18,6 +18,10 @@ pub(super) fn resolve(
     if !enabled(frame.map_id.as_ref()) {
         return;
     }
+    let upstream=(frame.map_id.as_ref()=="TohjoFalls").then(|| {
+        let falls=crate::waterfall::waterfall_placements(cells,g.width,g.height);
+        crate::waterfall::tohjo_upstream_pool("TohjoFalls",cells,g.width,g.height,&falls)
+    });
     let within = |i: usize| {
         let x = frame.grid_origin.x + i as i32 % g.width as i32;
         let z = frame.grid_origin.y + i as i32 / g.width as i32;
@@ -76,7 +80,19 @@ pub(super) fn resolve(
                 }
             }
         }
-        if cap && !open {
+        let joins_upper_pool=upstream.as_ref().is_none_or(|upper|region.iter().any(|&i| {
+            let (x,z)=((i%g.width)as isize,(i/g.width)as isize);
+            [(-1,0),(1,0),(0,-1),(0,1)].into_iter().any(|(dx,dz)| {
+                let (x1,z1,x2,z2)=(x+dx,z+dz,x+dx*2,z+dz*2);
+                if x1<0 || z1<0 || x1>=g.width as isize || z1>=g.height as isize {return false;}
+                let rim=z1 as usize*g.width+x1 as usize;
+                upper[rim] || (x2>=0 && z2>=0 && x2<g.width as isize && z2<g.height as isize
+                    && matches!(shapes[rim],CellShape::LedgeBand {height,..}
+                        if height==crate::cave::CAVE_SHELF_HEIGHT)
+                    && upper[z2 as usize*g.width+x2 as usize])
+            })
+        }));
+        if cap && !open && joins_upper_pool {
             for &i in &region {
                 let source = &cells[i].source;
                 crown_blocks.insert((
@@ -85,7 +101,9 @@ pub(super) fn resolve(
                     source.tileset_id.clone(),
                 ));
                 shapes[i] = CellShape::RaisedTop {
-                    height: crate::cave::CAVE_ROCK_HEIGHT,
+                    height: if frame.map_id.as_ref()=="TohjoFalls" {
+                        crate::cave::rock_height(source)
+                    } else {crate::cave::CAVE_ROCK_HEIGHT},
                     solid: SolidKind::Bank,
                 };
             }
@@ -103,18 +121,25 @@ pub(super) fn resolve(
         if !crown_blocks.contains(&block) {
             continue;
         }
+        // Tohjo's island joins the same high rock tier as its two cascade
+        // heads. Its native shallow rim must join the raised walking dust;
+        // otherwise the northern path is submerged beneath the upper basin.
+        let crown_height=if frame.map_id.as_ref()=="TohjoFalls" {
+            crate::cave::rock_height(s)
+        } else {crate::cave::CAVE_ROCK_HEIGHT};
         match &mut shapes[i] {
             CellShape::RaisedTop { height, .. } | CellShape::LedgeBand { height, .. }
-                if *height == crate::cave::rock_height(s) =>
+                if *height == crate::cave::rock_height(s)
+                    || frame.map_id.as_ref()=="TohjoFalls" && *height==crate::cave::CAVE_SHELF_HEIGHT =>
             {
-                *height = crate::cave::CAVE_ROCK_HEIGHT
+                *height = crown_height
             }
             CellShape::LedgeBand {
                 height,
                 top_tile_index,
                 ..
             } if s.tile_index == 0x24 && matches!(s.metatile_id, 0x04 | 0x05 | 0x06) => {
-                *height = crate::cave::CAVE_ROCK_HEIGHT;
+                *height = crown_height;
                 *top_tile_index = 0x16;
             }
             _ => {}

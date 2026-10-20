@@ -7,6 +7,7 @@ from copy import deepcopy
 from sculpt_geometry import part,loft,curved_profiles,ellipsoid,fitted_patch,fitted_contour,crease_normals
 from abra_sculpt import surface
 from bovine_sculpt import oval,curved_tube,reverse_front
+from surface_strokes import surface_stroke
 from wing_insect_sculpt import contour
 from skin_glb import COORDINATES
 SPECIES=('grimer','muk','ditto');HEIGHT={s:.96 for s in SPECIES}
@@ -96,7 +97,7 @@ def raw_sculpture(species):
     points=[]
     for k in range(17):
      x=-span+2*span*k/16;yy=y+.014*math.sin(x/span*math.pi+1.1);points.append((x,yy,ss(yy,x)+.0025))
-    q=curved_tube('Body fold / supported soft sludge crease '+str(int(rear))+' '+str(j),FOLD if adult else (.46,.37,.53),points,[.0025]*len(points),10);p.append(reverse_front(q) if rear else q)
+    q=surface_stroke('Body fold / supported soft sludge crease '+str(int(rear))+' '+str(j),FOLD if adult else (.46,.37,.53),points,[.0025]*len(points),parent);p.append(reverse_front(q) if rear else q)
  for i,q in enumerate(p):
   if q['part'].startswith(('Eye /','Eye border /','Eye white /','Pupil /','Mouth /','Tongue /','Smile interior /','Body sheen /')):p[i]=crease_normals(q,35)
  return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}

@@ -7,6 +7,11 @@ pub(super) fn shot(
     bodies: [Option<BattleBody>; 2],
     frame: &VisualBattleFrame,
 ) -> BattleSceneLayout {
+    // A faint is a short, source-timed picture-bank drop. Keep its established
+    // camera steady rather than adding a rapid orbit around the disappearance.
+    if frame.cues.iter().any(|cue| cue.kind == VisualBattleCueKind::Faint) {
+        return base.clone();
+    }
     // Captured source rows keep their registration. Retained-map cards have
     // an axis-aligned envelope proving every upright billboard yaw; older
     // arena cards keep the established projection instead.
@@ -163,6 +168,16 @@ mod tests {
         };
         (base, bodies, frame)
     }
+    #[test]
+    fn faint_holds_the_establishing_camera_for_every_source_frame() {
+        let (base, bodies, mut frame) = fixture();
+        frame.cues[0].kind = VisualBattleCueKind::Faint;
+        for tick in 0..=14 {
+            frame.cues[0].progress = tick as f32 / 14.;
+            assert_eq!(shot(&base, bodies, &frame), base);
+        }
+    }
+
     #[test]
     fn already_low_establishing_views_never_dip_through_the_ground() {
         let (initial, bodies, mut frame) = fixture();

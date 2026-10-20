@@ -99,6 +99,36 @@ def indexed_ray_intersections(parent,x,y):
  return hits
 
 
+def assert_visible_surface_stroke(self, mark, parent, label):
+    """Require exposed, occupied roots across a stored closed stroke's width."""
+    # Local stripe bounds avoid missing a narrow diagonal crease on a coarse
+    # grid. Neither the author's centerline nor its radius supplies the oracle.
+    if max(mark['positions'][1::3])-min(mark['positions'][1::3]) > max(mark['positions'][::3])-min(mark['positions'][::3]):
+        def turn(p):
+            return dict(p,positions=[v for x,y,z in zip(p['positions'][::3],p['positions'][1::3],p['positions'][2::3]) for v in (y,-x,z)])
+        mark,parent=turn(mark),turn(parent)
+    vs=[mark['positions'][i:i+3] for i in range(0,len(mark['positions']),3)]
+    triangles=[tuple(vs[j] for j in mark['indices'][i:i+3]) for i in range(0,len(mark['indices']),3)]
+    xl,xh=min(p[0] for p in vs),max(p[0] for p in vs)
+    for section in range(1,16):
+        x=xl+(xh-xl)*section/16;crossings=[]
+        for tri in triangles:
+            for a,b in zip(tri,tri[1:]+tri[:1]):
+                if min(a[0],b[0])<=x<max(a[0],b[0]):
+                    crossings.append(a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]))
+        self.assertTrue(crossings,(label,section,'missing stroke'))
+        yl,yh=min(crossings),max(crossings);root=front=-float('inf')
+        for row in range(1,32):
+            y=yl+(yh-yl)*row/32
+            aa=sorted({round(z,10) for z in indexed_ray_intersections(mark,x,y)})
+            bb=sorted({round(z,10) for z in indexed_ray_intersections(parent,x,y)})
+            for al,ah in zip(aa[::2],aa[1::2]):
+                for bl,bh in zip(bb[::2],bb[1::2]):
+                    root=max(root,min(ah,bh)-max(al,bl));front=max(front,ah-bh)
+        self.assertGreater(root,.00015,(label,section,'floating stroke'))
+        self.assertGreater(front,.0003,(label,section,'buried stroke'))
+
+
 def crossed_faces(p):
  """Independent spatially culled proper segment/triangle intersection test."""
  def sub(a,b):return tuple(x-y for x,y in zip(a,b))

@@ -1,14 +1,15 @@
 ## Current art direction — 2026-10-20
 
-The user's current direction is to make outdoor routes look amazing as 3D
-environments from every angle. Matching the 2D appearance is not an acceptance
-criterion. Judge silhouettes, surface craft, lighting, natural transitions,
-composition, player visibility and path readability through full camera orbits,
-low views and close views. Preserve gameplay and navigation while improving
-the 3D art. The older 2D comparison receipts below are historical diagnostics;
-they do not establish acceptance against this direction.
+Make outdoor routes look amazing as 3D environments from every angle while
+preserving the original game's feel. The original colors, time-of-day mood,
+recognizable shapes, scale and route readability guide the art direction.
+Translate those qualities into sculpted forms, crafted surfaces and lighting
+that hold up through full camera orbits, low views and close views. Literal
+pixel matching alone cannot establish 3D quality. Same-state 2D references
+remain useful for judging identity and readability. Preserve gameplay and
+navigation throughout the work.
 
-### Painted granite and full-orbit review
+### Painted stone candidate and full-orbit review
 
 The shared outdoor stone binding now loads `assets/terrain/painted-granite.png`.
 The surface shader projects its angular plates around mountain faces and caps,
@@ -34,11 +35,13 @@ floor. Investigate decorative mountain relief above the unchanged walking
 support on these accessible caps before enlarging the reveal aperture.
 The source probe and temporary binary are verification scratch only.
 
-The inspected 22:00 view also exposes an overly saturated violet cast and
-poor trainer readability. DayCycle's night tint has been changed from the
-palette-matching blue to restrained cool moonlight, retaining its energy,
-clock interpolation and direction. Visual verification of that change and
-the final optimized executable remain pending. Forest clutter, terrain mass,
+The granite candidate's neutral palette drifted away from the original feel.
+Retain the useful fractured surface craft while restoring warm ochre mineral
+pigment. The inspected 22:00 view also exposes poor trainer readability;
+preserve the original blue night mood while assessing material and lighting
+readability. Neutralizing the entire night is not the chosen direction.
+Visual verification of these corrections and the final optimized executable
+remain pending. Forest clutter, terrain mass,
 walking views, eye-level views, further route families and whole-route visual
 acceptance remain open.
 

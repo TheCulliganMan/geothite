@@ -142,6 +142,53 @@ no new product switch or culling change is published. The release-cache baseline
 must finish and be copied before these files replace any frozen build inputs.
 This remains an unverified hypothesis, not a measured improvement.
 
+## Upstream culling edge fix identified
+
+[Bevy PR #26170](https://github.com/bevyengine/bevy/pull/26170/files)
+merged October 20. It clamps depth-pyramid reads before unsigned conversion,
+preventing out-of-range samples from forcing false visibility near the right
+and bottom edges. The local pinned Bevy 0.20 sources still contain the old
+unclamped code in both affected shaders. Local SHA256 values:
+
+- `bevy_pbr/src/render/occlusion_culling.wesl`:
+  `296459c7e90f4ed8c72fbce1d8316eba3bc52fa0b9d8aad5fdb253d64cc68489`
+- `bevy_core_pipeline/src/mip_generation/experimental/downsample_depth.wesl`:
+  `b6af6beaee45da0968df79aac22b72588c77cdcdd52c558af81ed89e8c009f34`
+
+The downstream culling comparison should account for that fix before treating
+the previous negative trial as final. The current normal-prepass camera uses
+MSAA off, so its occlusion-depth sampling correction is relevant even without
+the MSAA downsample branch. No registry source, pinned dependency, product
+shader or current build input was modified. A local adoption still needs
+source verification, conservative edge tests and actual Metal image/performance
+checks; no speedup is established by the upstream report.
+
+An app-owned Rust patch is prepared outside frozen build inputs as
+`candidate-files/edge-clamp-probe.rs`. It verifies the two exact stock digests,
+changes one occlusion quad and two source-load clauses in memory, and preserves
+all imports/paths/definitions. Asset events trigger revalidation; steady frames
+skip hashing. The prepared culling integration waits for both sources to verify
+and removes its owned culling state if verification is lost. Two exact pure
+Rust tests passed in a standalone harness (the replacement function and f32
+edge/one-pixel-mip coordinate coverage). Full-source matching and reversible
+replacement checks passed against both installed files without modifying them.
+Corrected digests are `318b8ed74b72d2446296ce989692b0f0f09e0c7c55b7849e6ae8fc2275530b7f`
+and `b855ee7997b4be24d620191d735de106ab6009923786f8d7308c79c38ab4f128`.
+The prepared helper also passed metadata type checking against the exact Bevy
+and SHA2 libraries used by the live release build. A small isolated harness then
+ran seven tests successfully against the cached dependencies from the passing
+renderer-test fingerprint: the two source/coordinate checks and five actual
+Bevy ECS culling/ownership guards, including verification loss and an existing
+normal prepass. The harness substitutes the unrelated shadow bridge registration
+hook, camera/sun marker types and trace sink; it does not prove that the full
+renderer or GPU shader pipeline works. Its first direct release-library linking
+attempts failed because of abort/unwind strategy and Apple/Rust LLVM-bitcode
+mismatch; using the existing non-LTO test-profile libraries resolved the harness
+linking. The real release Cargo build was untouched and remains running.
+Full-crate partition compilation, actual shader-asset event lifecycle, shader
+compilation and Metal comparisons remain pending. This code is not installed
+or applied to the currently compiling source snapshot.
+
 ## Upper-floor panorama preloading installed
 
 The shared implementation prepares the complete roof panorama on native

@@ -13,7 +13,7 @@ pub(crate) struct Frame {
     source_regions: Vec<(String, [i32; 2], [u32; 2])>,
     boundary_warps: Vec<[i32; 2]>,
     ledges: Vec<[[i32; 2]; 3]>,
-    datum: Option<([i32;2],[u32;2],super::blobs::Bulk<[u32;4]>,super::blobs::Bulk<[i32;2]>)>,
+    datum: Option<([i32;2],[u32;2],super::blobs::Bulk<[u32;4]>,super::blobs::Bulk<[i32;2]>,super::blobs::Bulk<[i32;2]>)>,
     #[serde(default)]
     open_water: Option<(u32,super::blobs::Bulk<[i32;2]>)>,
     revision: u64,
@@ -191,7 +191,10 @@ impl Frame {
             map: frame.map_id.to_string(),
             source_size: frame.source_map_size_core_tiles.map(|v| v.to_array()),
             source_regions: frame.source_regions.iter().map(|r| (r.map_id.to_string(), r.origin.to_array(), r.size.to_array())).collect(),
-            datum: frame.terrace_datum.as_ref().map(|d|(d.origin.to_array(),d.size.to_array(),d.levels.iter().map(|v|v.map(f32::to_bits)).collect(),d.water_barriers.iter().map(|p|p.to_array()).collect())),
+            datum: frame.terrace_datum.as_ref().map(|d|(d.origin.to_array(),d.size.to_array(),
+                d.levels.iter().map(|v|v.map(f32::to_bits)).collect(),
+                d.water_barriers.iter().map(|p|p.to_array()).collect(),
+                d.walkable_mineral.iter().map(|p|p.to_array()).collect())),
             open_water:frame.terrace_datum.as_ref().and_then(|d|d.open_water.as_ref())
                 .map(|r|(r.level.to_bits(),r.cells.iter().map(|p|p.to_array()).collect())),
             boundary_warps: frame.boundary_warps.iter().map(|v| v.to_array()).collect(),
@@ -220,16 +223,17 @@ impl Frame {
         deadline: bevy::platform::time::Instant,
         max_elements: usize,
     ) -> Result<bool, String> {
-        if let Some((_,size,levels,water))=&self.datum {
+        if let Some((_,size,levels,water,walking))=&self.datum {
             let n=u64::from(size[0])*u64::from(size[1]);
-            if n==0 || n>2_000_000 || levels.len()as u64!=n || water.len()as u64>n {
+            if n==0 || n>2_000_000 || levels.len()as u64!=n || water.len()as u64>n || walking.len()as u64>n {
                 return Err("invalid source-domain buffer lengths".into());
             }
         }
-        let datum_ready=if let Some((_,_,levels,water))=self.datum.as_mut() {
+        let datum_ready=if let Some((_,_,levels,water,walking))=self.datum.as_mut() {
             let levels_ready=levels.resolve(blobs)?;
             let water_ready=water.resolve(blobs)?;
-            levels_ready && water_ready
+            let walking_ready=walking.resolve(blobs)?;
+            levels_ready && water_ready && walking_ready
         }else{true};
         let river_ready=if let Some((_,cells))=&mut self.open_water {
             if cells.len()>2_000_000 {return Err("invalid river source-domain length".into());}
@@ -239,11 +243,12 @@ impl Frame {
     }
 
     pub(crate) fn restore(&self, bindings: &TextureBindings) -> Result<VisualWorldFrame, String> {
-        if let Some((_,size,levels,water))=&self.datum {
+        if let Some((_,size,levels,water,walking))=&self.datum {
             let values=levels.as_slice()?;
             if size[0]==0 || size[1]==0 || u64::from(size[0])*u64::from(size[1])>2_000_000
                 || values.len()as u64!=u64::from(size[0])*u64::from(size[1])
                 || water.len()as u64>u64::from(size[0])*u64::from(size[1])
+                || walking.len()as u64>u64::from(size[0])*u64::from(size[1])
                 || values.iter().flatten().any(|&bits|{let v=f32::from_bits(bits);!v.is_finite()||v<0.}) {
                 return Err("invalid source-complete terrace datum".into());
             }
@@ -260,7 +265,7 @@ impl Frame {
                 map_id: map.as_str().into(), origin: IVec2::from_array(*origin), size: UVec2::from_array(*size),
             }).collect(),
             source_map_size_core_tiles: self.source_size.map(UVec2::from_array),
-            terrace_datum: self.datum.as_ref().map(|(origin,size,levels,water)|->Result<_,String>{
+            terrace_datum: self.datum.as_ref().map(|(origin,size,levels,water,walking)|->Result<_,String>{
                 let datum=VisualTerraceDatum {
                     origin:IVec2::from_array(*origin),size:UVec2::from_array(*size),
                     levels:levels.as_slice()?.iter().map(|v|v.map(f32::from_bits)).collect(),
@@ -268,8 +273,11 @@ impl Frame {
                         Ok(VisualOpenWaterDatum {level:f32::from_bits(*level),
                             cells:cells.as_slice()?.iter().copied().map(IVec2::from_array).collect()})
                     }).transpose()?,water_barriers:water.as_slice()?.iter().copied().map(IVec2::from_array).collect(),
+                    walkable_mineral:walking.as_slice()?.iter().copied().map(IVec2::from_array).collect(),
                 };
-                if !datum.valid_water_barriers() || !datum.valid_open_water() {return Err("invalid source-complete water barrier domain".into());}
+                if !datum.valid_water_barriers() || !datum.valid_walkable_mineral() || !datum.valid_open_water() {
+                    return Err("invalid source-complete surface domain".into());
+                }
                 Ok(Arc::new(datum))
             }).transpose()?,
             boundary_warps: self.boundary_warps.iter().copied().map(IVec2::from_array).collect(),
@@ -367,6 +375,7 @@ mod tests {
     #[test]
     fn source_complete_terrace_field_uses_bounded_pages_and_preserves_all_corners() {
         let datum=Arc::new(VisualTerraceDatum {
+            walkable_mineral:(0..512*256).step_by(5).map(|i|IVec2::new(-40+i%512,-80+i/512)).collect(),
             open_water:Some(VisualOpenWaterDatum {level:f32::from_bits(0x3f123456),
                 cells:(0..512*256).step_by(3).map(|i|IVec2::new(-40+i%512,-80+i/512)).collect()}),
             water_barriers:(0..512*256).step_by(2).map(|i|IVec2::new(-40+i%512,-80+i/512)).collect(),
@@ -404,7 +413,7 @@ mod tests {
             view_center: Vec2::new(f32::from_bits(0x41412345), -0.),
             map_texture: a.clone(),
             source_map_size_core_tiles: Some(UVec2::ONE),
-            terrace_datum:Some(Arc::new(VisualTerraceDatum {open_water:None,water_barriers:vec![IVec2::new(-8,4)].into(),
+            terrace_datum:Some(Arc::new(VisualTerraceDatum {walkable_mineral:vec![IVec2::new(-8,4)].into(),open_water:None,water_barriers:vec![IVec2::new(-8,4)].into(),
                 origin:IVec2::new(-8,4),size:UVec2::ONE,
                 levels:vec![[0.,f32::from_bits(0x3f123456),1.,2.]].into(),
             })),

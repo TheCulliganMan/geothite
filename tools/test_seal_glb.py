@@ -5,7 +5,7 @@ from pathlib import Path
 import seal_glb as author
 import test_gengar_glb as skin
 from skin_glb_test_support import IDENTITY
-from sculpt_test_support import parts_overlap,crossed_faces,indexed_ray_intersections as rays
+from sculpt_test_support import parts_overlap,crossed_faces,indexed_ray_intersections as rays,assert_visible_surface_stroke
 ROOT=Path(os.environ.get('CRYSTAL_SEAL_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class SealSkinTests(unittest.TestCase):
  @classmethod
@@ -113,30 +113,7 @@ class SealSkinTests(unittest.TestCase):
      self.assertGreater(root,.00015,(clip,t,section,'unrooted section'))
      self.assertGreater(front,.0003,(clip,t,section,'buried smile'))
 
- def assert_surface_stroke(self, mark, parent, label):
-  # Sample actual occupied cross-sections, without recipe paths or radii.
-  # Local stripe bounds avoid missing a narrow diagonal crease on a coarse grid.
-  if max(mark['positions'][1::3])-min(mark['positions'][1::3]) > max(mark['positions'][::3])-min(mark['positions'][::3]):
-   def turn(p):return dict(p,positions=[v for x,y,z in zip(p['positions'][::3],p['positions'][1::3],p['positions'][2::3]) for v in (y,-x,z)])
-   mark,parent=turn(mark),turn(parent)
-  vs=[mark['positions'][i:i+3] for i in range(0,len(mark['positions']),3)]
-  triangles=[tuple(vs[j] for j in mark['indices'][i:i+3]) for i in range(0,len(mark['indices']),3)]
-  xl,xh=min(p[0] for p in vs),max(p[0] for p in vs)
-  for section in range(1,16):
-   x=xl+(xh-xl)*section/16;crossings=[]
-   for tri in triangles:
-    for a,b in zip(tri,tri[1:]+tri[:1]):
-     if min(a[0],b[0])<=x<max(a[0],b[0]):crossings.append(a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]))
-   self.assertTrue(crossings,(label,section,'missing stroke'))
-   yl,yh=min(crossings),max(crossings);root=front=-float('inf')
-   for row in range(1,32):
-    y=yl+(yh-yl)*row/32
-    aa=sorted({round(z,10) for z in rays(mark,x,y)});bb=sorted({round(z,10) for z in rays(parent,x,y)})
-    for al,ah in zip(aa[::2],aa[1::2]):
-     for bl,bh in zip(bb[::2],bb[1::2]):
-      root=max(root,min(ah,bh)-max(al,bl));front=max(front,ah-bh)
-   self.assertGreater(root,.00015,(label,section,'floating stroke'))
-   self.assertGreater(front,.0003,(label,section,'buried stroke'))
+ assert_surface_stroke=assert_visible_surface_stroke
 
  def surface_strokes(self, species, model, matrices):
   parts=model.neutral_model()['primitives']

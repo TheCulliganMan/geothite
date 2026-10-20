@@ -61,6 +61,7 @@ sha2.workspace = true
 
 [dev-dependencies]
 crystal-assets.workspace = true
+crystal-core.workspace = true
 
 [[bin]]
 name = "render_people_review"

@@ -1817,7 +1817,7 @@ mod tests {
         // An additional bridge/deck above that same water must remain land.
         a.source_id = "species:GYARADOS:icon_gyarados".into();
         let aquatic = crate::species_rig::for_species("GYARADOS").unwrap();
-        frame.terrace_datum = Some(std::sync::Arc::new(crystal_render_api::VisualTerraceDatum {
+        frame.terrace_datum = Some(std::sync::Arc::new(crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),
             origin: IVec2::ZERO, size: UVec2::ONE, levels: vec![[1.;4]].into(),
             water_barriers: vec![].into(), open_water: None,
         }));

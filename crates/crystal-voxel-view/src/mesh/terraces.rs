@@ -973,7 +973,7 @@ mod tests {
         let mut corner=make(1,0x26,0x27,0);corner.source.subtile_row=0;
         let tiles=vec![make(0,0x14,0x2c,0),corner,make(2,0x16,2,0)];
         let g=GridGeometry {width:3,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(3,1),
+        let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(3,1),
             levels:vec![[2.;4];3].into(),water_barriers:vec![].into(),open_water:None};
         (tiles,g,datum)
     }
@@ -981,7 +981,7 @@ mod tests {
     #[test]
     fn authored_datum_does_not_build_an_unused_legacy_terrace_field() {
         let g=GridGeometry {width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,
+        let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:IVec2::ZERO,
             size:bevy::prelude::UVec2::ONE,levels:vec![[2.;4]].into(),
             open_water:None,water_barriers:Default::default()};
         let field=Field::new(&[],&g,[0,0]).with_kanto_levels().with_datum(Some(&datum));
@@ -1042,7 +1042,7 @@ mod tests {
             }).collect());
             let cells=frame.tiles.iter().collect::<Vec<_>>();
             let edges=[VisualJumpLedge {start:IVec2::new(0,4),end:IVec2::new(8,4),descent:IVec2::Y}];
-            let datum=crystal_render_api::VisualTerraceDatum {
+            let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),
                 origin:IVec2::ZERO,size:bevy::prelude::UVec2::splat(8),
                 levels:(0..64).map(|i| {
                     let a=0.25+(i%8)as f32*0.75/8.;
@@ -1086,7 +1086,7 @@ mod tests {
         }).collect());
         let cells=frame.tiles.iter().collect::<Vec<_>>();
         let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ONE,
+        let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:IVec2::ONE,
             size:bevy::prelude::UVec2::splat(2),levels:vec![[0.;4];4].into(),water_barriers:Default::default(),
             open_water:Some(crystal_render_api::VisualOpenWaterDatum {level:2.,cells:vec![IVec2::ONE].into()})};
         let field=Field::with_source(&[],&g,[0,0],&cells).with_datum(Some(&datum));
@@ -1129,7 +1129,7 @@ mod tests {
             let cells = frame.tiles.iter().collect::<Vec<_>>();
             let g = GridGeometry { width: 6, height: 6, tile_width: 8., tile_height: 8.,
                 origin_x: -17., origin_z: 23. };
-            let datum = crystal_render_api::VisualTerraceDatum {
+            let datum = crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),
                 origin: IVec2::new(7, 11), size: bevy::prelude::UVec2::splat(2),
                 levels: vec![[1.;4];4].into(), open_water:None,water_barriers: Default::default(),
             };
@@ -1167,7 +1167,7 @@ mod tests {
         let cells=frame.tiles.iter().collect::<Vec<_>>();
         let g=GridGeometry {width:2,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
         let mut levels=vec![[0.;4];4];levels[0]=[8.;4];
-        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:bevy::prelude::UVec2::splat(2),
+        let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:IVec2::ZERO,size:bevy::prelude::UVec2::splat(2),
             levels:levels.into(),open_water:None,water_barriers:Default::default()};
         let field=Field::new(&[],&g,[0,0]).with_datum(Some(&datum));
         let mut surface=SurfaceMeshData::default();
@@ -1196,7 +1196,7 @@ mod tests {
         let cells=frame.tiles.iter().collect::<Vec<_>>();
         let g=GridGeometry {width:3,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
         let mut levels=vec![[1.;4];6];levels[1]=[2.,1.,1.,2.];
-        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(3,2),
+        let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(3,2),
             levels:levels.into(),open_water:None,water_barriers:Default::default()};
         let field=Field::new(&[],&g,[0,0]).with_datum(Some(&datum));
         let mut bank=SurfaceMeshData::default();
@@ -1220,7 +1220,7 @@ mod tests {
         let cells=frame.tiles.iter().collect::<Vec<_>>();
         let g=GridGeometry {width:3,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
         let mut levels=vec![[1.;4];6];levels[1]=[22./crate::profile::JUMP_LEDGE_HEIGHT;4];levels[4]=levels[1];
-        let mut datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(3,2),
+        let mut datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(3,2),
             levels:levels.into(),open_water:None,water_barriers:std::sync::Arc::from([])};
         let points=vec![[15.7,0.,5.],[16.2,0.2,5.2],[15.8,0.8,7.]];
         let original=SurfaceMeshData {uvs:points.iter().map(|p|[88000.+p[0]/8.,-70000.-p[2]/8.]).collect(),
@@ -1246,7 +1246,7 @@ mod tests {
         let frame=super::super::tests::frame(2,1,vec![rock,water]);
         let cells=frame.tiles.iter().collect::<Vec<_>>();
         let g=GridGeometry {width:2,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(2,1),
+        let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(2,1),
             levels:vec![[0.;4],[16./crate::profile::JUMP_LEDGE_HEIGHT;4]].into(),open_water:None,water_barriers:std::sync::Arc::from([])};
         let field=Field::new(&[],&g,[0,0]).with_datum(Some(&datum));
         let mut surface=SurfaceMeshData {positions:vec![[8.1,16.,1.],[8.1,16.,7.],[8.9,16.,7.]],
@@ -1325,7 +1325,7 @@ mod tests {
         append_solid_quad(&mut mesh.solid,[[1.,crate::profile::WATER_HEIGHT,1.],[1.,3.,1.],[7.,3.,1.],[7.,crate::profile::WATER_HEIGHT,1.]],
             [0.,0.,1.],[0.5;4]);
         let original=mesh.clone();
-        let neighboring_terrace=crystal_render_api::VisualTerraceDatum {
+        let neighboring_terrace=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),
             origin:IVec2::ZERO,size:bevy::prelude::UVec2::splat(4),
             levels:vec![[2.;4];16].into(),open_water:None,water_barriers:Default::default(),
         };

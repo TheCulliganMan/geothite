@@ -928,7 +928,7 @@ mod tests {
         frame.map_id="CeruleanCity".into();
         let g=GridGeometry {width:4,height:20,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
         let cells=frame.tiles.iter().collect::<Vec<_>>();
-        let datum=crystal_render_api::VisualTerraceDatum {origin:bevy::prelude::IVec2::ZERO,
+        let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:bevy::prelude::IVec2::ZERO,
             size:bevy::prelude::UVec2::new(4,20),levels:vec![[2.;4];80].into(),water_barriers:Default::default(),
             open_water:Some(crystal_render_api::VisualOpenWaterDatum {level:2.,
                 cells:(0..80).map(|i|bevy::prelude::IVec2::new(i%4,i/4)).collect()})};

@@ -726,9 +726,36 @@ fn normal_send_out_reveal(frame: &VisualBattleFrame, battler: &VisualBattleBattl
             && cue.side == battler.side && cue.move_id.as_ref() == "SEND_OUT")
 }
 
-fn uses_source_picture(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
+fn has_picture_clipping(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
     frame.cues.iter().any(|cue| cue.side == battler.side
         && cue.kind == VisualBattleCueKind::SourcePicture)
+}
+
+fn fainting(frame: &VisualBattleFrame, side: VisualBattleSide) -> bool {
+    frame.cues.iter().any(|cue| cue.side == side && cue.kind == VisualBattleCueKind::Faint)
+}
+
+fn uses_source_picture(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
+    // The original faint is a downward bank shift, not a replacement picture.
+    // Keep available models and consume the same source displacement below.
+    has_picture_clipping(frame, battler) && !fainting(frame, battler.side)
+}
+
+fn battler_displacement(frame: &VisualBattleFrame, battler: &VisualBattleBattler,
+    layout: &BattleSceneLayout, bounds: Option<BattleModelBounds>, pose: Transform) -> Vec3 {
+    let offset = frame.source.as_ref().map_or(Vec2::ZERO,
+        |source| source.battler_offsets[battler.side.index()]);
+    let mut delta = layout.source_displacement(offset);
+    if fainting(frame, battler.side) && let Some(bounds) = bounds {
+        // Map the source's exact eight-pixel shifts to the neutral silhouette.
+        // Transparent padding below its feet is consumed before sinking; the
+        // retained real floor clips the model, with no sprite/model swap.
+        let height = (bounds.max.y - bounds.min.y) * pose.scale.y.abs();
+        let pixels = battler.source_opaque_rect.height().max(1.);
+        let padding = (battler.source_rect.max.y - battler.source_opaque_rect.max.y).max(0.);
+        delta.y = -(-offset.y - padding).max(0.) * height / pixels;
+    }
+    delta
 }
 
 fn layout_uses_species_model(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
@@ -1698,7 +1725,7 @@ fn sync_battle_scene(
     let mut support_offsets = frame.source.as_ref()
         .map_or([Vec2::ZERO; 2], |source| source.battler_offsets);
     for (index, battler) in frame.battlers.iter().enumerate() {
-        if battler.as_ref().is_some_and(|b| uses_source_picture(&frame, b)) {
+        if battler.as_ref().is_some_and(|b| has_picture_clipping(&frame, b)) {
             support_offsets[index] = Vec2::ZERO;
         }
     }
@@ -1920,9 +1947,7 @@ fn sync_battle_scene(
             // Deferred entities cannot be reached by the actor query below
             // until the next update. Present this source offset on spawn too.
             let mut transform = base_pose;
-            if let Some(source) = &frame.source {
-                transform.translation += layout.source_displacement(source.battler_offsets[index]);
-            }
+            transform.translation += battler_displacement(&frame, battler, &layout, modeled_bounds, base_pose);
             let contact_bounds = if crate::species_rig::motion::battle_hovers(battler.model_id()) {
                 None
             } else {
@@ -2070,9 +2095,7 @@ if battler.visible {
                     captures.prewarm_actor(&frame, index) && modeled && !instance.is_articulated(),
                 ));
                 let mut pose = instance.base_pose;
-                if let Some(source) = &frame.source {
-                    pose.translation += layout.source_displacement(source.battler_offsets[index]);
-                }
+                pose.translation += battler_displacement(&frame, battler, &layout, modeled_bounds, instance.base_pose);
                 transform.set_if_neq(pose);
                 visibility.set_if_neq(if battler.visible {
                     Visibility::Visible
@@ -3114,6 +3137,44 @@ fn capture_ball_mesh() -> SurfaceMeshData {
 #[cfg(test)]
 pub(super) mod tests {
     use super::*;
+
+    #[test]
+    fn faint_keeps_model_entity_and_maps_each_source_drop_to_its_silhouette() {
+        let mut app = headless_battle_app();
+        app.update();
+        let original = app.world().resource::<BattleSceneLayout>().clone();
+        let actor = app.world().resource::<BattleScene>().actors[0].as_ref().unwrap().entity;
+        for dropped in [8., 16., 24., 40., 56.] {
+            {
+                let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+                let mut source = source_test_frame(0xe4);
+                source.battler_offsets[0].y = -dropped;
+                frame.source = Some(source);
+                frame.cues = [VisualBattleCueKind::SourcePicture, VisualBattleCueKind::Faint]
+                    .map(|kind| VisualBattleCue { kind, side: VisualBattleSide::Player,
+                        move_id: Arc::from("FAINT_MON"), element: Arc::from("NORMAL"),
+                        progress: dropped / 56., damaging: false }).to_vec();
+            }
+            let packet = app.world().resource::<VisualBattleFrame>().clone();
+            app.update();
+            assert!(app.world().resource::<BattleViewStatus>().active);
+            let scene = app.world().resource::<BattleScene>();
+            let instance = scene.actors[0].as_ref().unwrap();
+            assert_eq!(instance.entity, actor, "fainting must not swap a model for a sprite");
+            assert!(instance.key.modeled);
+            let bounds = scene.species_bounds.get("CYNDAQUIL").unwrap();
+            let battler = packet.battlers[0].as_ref().unwrap();
+            let padding = (battler.source_rect.max.y - battler.source_opaque_rect.max.y).max(0.);
+            let height = (bounds.max.y - bounds.min.y) * instance.base_pose.scale.y.abs();
+            let expected = instance.base_pose.translation.y
+                - (dropped - padding).max(0.) * height / battler.source_opaque_rect.height().max(1.);
+            let position = app.world().get::<Transform>(actor).unwrap().translation;
+            assert!((position.y - expected).abs() < 0.0001);
+            assert_eq!(app.world().resource::<BattleSceneLayout>().origins, original.origins);
+            assert_eq!(*app.world().resource::<VisualBattleFrame>(), packet,
+                "rendering cannot advance the source faint clock");
+        }
+    }
 
     #[test]
     fn send_out_handoff_fits_once_and_registers_the_grounded_source_bank() {

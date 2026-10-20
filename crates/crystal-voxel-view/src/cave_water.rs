@@ -157,6 +157,7 @@ pub(super) fn encounter_registration(frame: &VisualWorldFrame, translation: Vec3
 struct CascadeImpact {
     fall: crate::waterfall::WaterfallPlacement,
     pool: std::collections::HashSet<(usize,usize)>,
+    landing_lip: f32,
 }
 
 fn receiving_falls(frame: &VisualWorldFrame) -> Vec<CascadeImpact> {
@@ -191,7 +192,10 @@ fn receiving_falls(frame: &VisualWorldFrame) -> Vec<CascadeImpact> {
                 if pool.insert((x,z)) { queue.push_back((x,z)); }
             }
         }
-        CascadeImpact { fall,pool }
+        let landing_lip=if frame.map_id.as_ref()=="TohjoFalls" {
+            (fall.height as f32*crate::waterfall::CASCADE_LIP).max(0.25)
+        } else {0.25};
+        CascadeImpact { fall,pool,landing_lip }
     }).collect()
 }
 
@@ -204,9 +208,9 @@ fn impact(falls: &[CascadeImpact], x: f32, z: f32, pool: bool) -> u8 {
         } else if x<fall.column as f32 || x>=(fall.column+fall.width) as f32
             || z<fall.row as f32 || z>=(fall.row+fall.height) as f32 { continue; }
         let downstream = z - (fall.row + fall.height) as f32;
-        // The last quarter of the sheet supplies the interpolation sample at
-        // the join. Foam never spreads into the upstream pool above the head.
-        if downstream < -0.25 { continue; }
+        // Cover the curved sheet's complete level landing, so its foam joins
+        // the receiving pool without a dry-looking band between them.
+        if downstream < -cascade.landing_lip { continue; }
         let side = (fall.column as f32 - x).max(0.)
             .max(x - (fall.column + fall.width) as f32);
         let distance = side.hypot(downstream.max(0.));

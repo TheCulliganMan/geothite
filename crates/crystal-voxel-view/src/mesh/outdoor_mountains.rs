@@ -184,16 +184,29 @@ struct Relief {
 }
 
 impl Relief {
+    #[cfg(test)]
     fn new(
         cells: &[&VisualTile],
         shapes: &[CellShape],
         g: &GridGeometry,
         origin: [i32; 2],
     ) -> Self {
+        Self::with_datum(cells,shapes,g,origin,None)
+    }
+
+    fn with_datum(cells:&[&VisualTile],shapes:&[CellShape],g:&GridGeometry,
+        origin:[i32;2],datum:Option<&crystal_render_api::VisualTerraceDatum>)->Self {
         let rock: Vec<_> = cells
             .iter()
             .zip(shapes)
-            .map(|(cell, &shape)| permanent(&cell.source, shape))
+            .enumerate()
+            .map(|(i,(cell,&shape))| {
+                let point=bevy::prelude::IVec2::new(origin[0]+(i%g.width)as i32,
+                    origin[1]+(i/g.width)as i32);
+                let walking=datum.is_some_and(|d|d.walkable_mineral
+                    .binary_search_by_key(&(point.y,point.x),|p|(p.y,p.x)).is_ok());
+                permanent(&cell.source,shape) && !walking
+            })
             .collect();
         let mut peaks = vec![0.; (g.width + 1) * (g.height + 1)];
         for z in 0..=g.height {
@@ -263,6 +276,7 @@ pub(super) fn finish(
     shapes: &[CellShape],
     g: &GridGeometry,
     origin: [i32; 2],
+    datum: Option<&crystal_render_api::VisualTerraceDatum>,
 ) {
     if !enabled(map)
         || g.width == 0
@@ -275,7 +289,7 @@ pub(super) fn finish(
     {
         return;
     }
-    let relief = Relief::new(cells, shapes, g, origin);
+    let relief = Relief::with_datum(cells, shapes, g, origin,datum);
     for (i, (position, uv)) in mesh
         .solid
         .positions
@@ -407,7 +421,7 @@ mod tests {
                 mesh.solid.positions=vec![[52.,16.,52.]];
                 mesh.solid.uvs=vec![[-10052.,-40052.]];
                 let before=mesh.clone();
-                finish(&mut mesh,"CianwoodCity",&cells,&shapes,&g,[0,0]);
+                finish(&mut mesh,"CianwoodCity",&cells,&shapes,&g,[0,0],None);
                 assert!(mesh.solid.positions[0][1]>16.);
                 assert_eq!(mesh.footing_heights,before.footing_heights);
                 assert_eq!(mesh.authored_cells,before.authored_cells);
@@ -499,7 +513,7 @@ mod tests {
         append_quad_colors(&mut mesh.solid,p,[0.,1.,0.],
             p.map(|p|[-10000.-p[0],-40000.-p[2]]),[[0.3,0.2,0.1,1.];4]);
         let support=mesh.footing_heights.clone();
-        outdoor_stone::finish_rock_geometry(&mut mesh,"BlackthornCity",&cells,&shapes,&g,[0,0]);
+        outdoor_stone::finish_rock_geometry(&mut mesh,"BlackthornCity",&cells,&shapes,&g,[0,0],None);
         assert!(mesh.solid.positions[..4].iter().all(|p|p[1]>16.),
             "fixture must reproduce relief rising above its walking support");
         let floor=mesh.solid.positions.iter().zip(&mesh.solid.uvs)
@@ -587,8 +601,8 @@ mod tests {
         original.solid.uvs = vec![[-10048.,-40048.],[-10048.,-20048.],crate::scenery_finish::SOURCE_PAINT_UV];
         let mut island = original.clone();
         let mut mainland = original.clone();
-        finish(&mut island,"CinnabarIsland",&cells,&shapes,&g,[0,0]);
-        finish(&mut mainland,"LavenderTown",&cells,&shapes,&g,[0,0]);
+        finish(&mut island,"CinnabarIsland",&cells,&shapes,&g,[0,0],None);
+        finish(&mut mainland,"LavenderTown",&cells,&shapes,&g,[0,0],None);
         assert_eq!(island.solid.positions,mainland.solid.positions);
         assert_eq!(island.footing_heights,original.footing_heights);
         assert_eq!(mainland.solid.uvs,original.solid.uvs);
@@ -637,13 +651,95 @@ mod tests {
         mesh.solid.colors=vec![[0.4,0.3,0.2,1.];3];
         mesh.footing_heights=vec![16.;144];
         let before=mesh.clone();
-        finish(&mut mesh,"CinnabarIsland",&cells,&shapes,&g,[0,0]);
+        finish(&mut mesh,"CinnabarIsland",&cells,&shapes,&g,[0,0],None);
         assert!(mesh.solid.positions[..2].iter().zip(&before.solid.positions).all(|(a,b)|a[1]>b[1]));
         assert_eq!(mesh.solid.positions[2],before.solid.positions[2],"water stays on its level plane");
         assert_eq!(mesh.solid.colors[2],before.solid.colors[2]);
         assert_eq!(mesh.solid.uvs[2],before.solid.uvs[2]);
         assert_eq!(mesh.footing_heights,before.footing_heights);
         assert!(mesh.solid.colors[..2].iter().all(|c|c[2]>c[0]));
+    }
+
+    #[test]
+    fn walkable_mineral_preserves_support_and_keeps_distant_ridges() {
+        use bevy::prelude::IVec2;
+        let (frame,g)=fixture("johto",0x0a);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        let sources=cells.iter().enumerate().map(|(i,c)| {
+            let p=IVec2::new((i%g.width)as i32,(i/g.width)as i32);
+            let walking=(5..7).contains(&p.x) && (5..7).contains(&p.y);
+            (p,c.source.clone(),walking || !permanent(&c.source,shapes[i]))
+        }).collect::<Vec<_>>();
+        let datum=source_terrace_datum("Route26",&[],&sources).unwrap();
+        assert_eq!(datum.walkable_mineral.len(),4);
+        let field=Relief::with_datum(&cells,&shapes,&g,[0,0],Some(&datum));
+        for z in 5..7 {for x in 5..7 {for (u,v) in [(0.,0.),(0.25,0.75),(0.5,0.5),(1.,1.)] {
+            assert_eq!(field.height(x as f32+u,z as f32+v),0.,"walking cap {x},{z}");
+        }}}
+        assert!(field.height(8.5,8.5)>g.tile_height,"inaccessible masses retain their mountain silhouette");
+        let shift=IVec2::new(-31,72);
+        let shifted=sources.iter().map(|(p,s,l)|(*p+shift,s.clone(),*l)).collect::<Vec<_>>();
+        let shifted=source_terrace_datum("Route26",&[],&shifted).unwrap();
+        let shifted=Relief::with_datum(&cells,&shapes,&g,shift.to_array(),Some(&shifted));
+        assert_eq!(shifted.height(5.5,5.5),0.,"complete map coordinates survive camera crops and connected origins");
+        let mut mesh=TerrainMeshData::default();
+        mesh.solid.positions=vec![[44.,16.,44.],[68.,16.,68.]];
+        mesh.solid.uvs=vec![[-10044.,-40044.],[-10068.,-40068.]];
+        mesh.footing_heights=vec![16.;cells.len()];
+        let before=mesh.clone();
+        finish(&mut mesh,"Route26",&cells,&shapes,&g,[0,0],Some(&datum));
+        assert_eq!(mesh.solid.positions[0],before.solid.positions[0]);
+        assert!(mesh.solid.positions[1][1]>before.solid.positions[1][1]);
+        assert_eq!(mesh.footing_heights,before.footing_heights);
+    }
+
+    #[test]
+    #[ignore = "requires a completed external CRYSTAL_RENDER_TEST_PACK"]
+    fn external_directional_mountain_land_retains_walking_support() {
+        use bevy::prelude::IVec2;
+        use crystal_core::world::collision::{describe_collision,Terrain,allows_ledge_direction};
+        use crystal_core::world::map::Direction;
+        let path=std::env::var("CRYSTAL_RENDER_TEST_PACK").unwrap();
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let pack=loaded.pack();
+        let map=&pack.data().maps["Route26"];
+        let atlas=&map.attributes.tileset_name;
+        let layout=&pack.runtime_files()[&format!("data/tilesets/{atlas}_metatiles.bin")];
+        let collision=pack.data().tileset_collision(atlas).unwrap();
+        let (w,h)=(usize::from(map.attributes.width)*4,usize::from(map.attributes.height)*4);
+        let mut sources=Vec::with_capacity(w*h);
+        for y in 0..h {for x in 0..w {
+            let block=map.blocks[y/4*(w/4)+x/4];
+            let permission=collision.metatiles[block as usize].collision[(y%4/2)*2+x%4/2];
+            let land=describe_collision(permission).terrain==Terrain::Land
+                || [Direction::Up,Direction::Down,Direction::Left,Direction::Right].into_iter()
+                    .any(|d|allows_ledge_direction(permission,d));
+            sources.push((IVec2::new(x as i32,y as i32),VisualTileSource {
+                tileset_id:atlas.as_str().into(),metatile_id:block,subtile_column:(x%4)as u8,
+                subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+(y%4)*4+x%4]as u16,
+            },land));
+        }}
+        let region=TerraceSourceRegion {map:"Route26".into(),edges:Vec::new(),cells:sources.clone()};
+        let datum=connected_source_terrace_datum("Route26",&[region],&[]).unwrap();
+        let frame=super::super::tests::frame(w as u32,h as u32,sources.iter().map(|(_,s,_)|s.clone()).collect());
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        let g=GridGeometry {width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let field=Relief::with_datum(&cells,&shapes,&g,[0,0],Some(&datum));
+        for (x,y) in [(9usize,28usize),(10,28)] {
+            let block=map.blocks[y/2*(w/4)+x/2];
+            assert_eq!(collision.metatiles[block as usize].collision[(y%2)*2+x%2],0xb2,
+                "fixture must exercise the directional UP_WALL land permission");
+            for dy in 0..2 {for dx in 0..2 {
+                let p=IVec2::new((x*2+dx)as i32,(y*2+dy)as i32);
+                assert!(datum.walkable_mineral.contains(&p),"missing authored walking cap {p}");
+                for (u,v) in [(0.,0.),(0.5,0.5),(1.,1.)] {
+                    assert_eq!(field.height(p.x as f32+u,p.y as f32+v),0.,"relief covers land {p}");
+                }
+            }}
+        }
+        assert!(field.peaks.iter().any(|&p|p>g.tile_height*2.),"unwalkable mountain masses retain relief");
     }
 
     #[test]
@@ -689,7 +785,7 @@ mod tests {
         mesh.footing_heights = vec![16.; 144];
         let support = mesh.footing_heights.clone();
         let original = mesh.solid.clone();
-        finish(&mut mesh, "Route26", &cells, &shapes, &g, [0, 0]);
+        finish(&mut mesh, "Route26", &cells, &shapes, &g, [0, 0],None);
         assert_eq!(mesh.solid.positions[0][1], mesh.solid.positions[1][1]);
         assert_eq!(
             mesh.solid.colors[0], mesh.solid.colors[1],
@@ -773,7 +869,7 @@ mod tests {
             mesh.solid.positions = vec![[48., 16., 48.]];
             mesh.solid.uvs = vec![[-10048., -20048.]];
             let before = mesh.clone();
-            finish(&mut mesh, map, &cells, &shapes, &g, [0, 0]);
+            finish(&mut mesh, map, &cells, &shapes, &g, [0, 0],None);
             assert_eq!(mesh, before, "{tileset}/{block:02x} in {map}");
         }
     }

@@ -324,7 +324,7 @@ impl HumanLocomotion {
                 Quat::from_rotation_x(pitch) * leg.rotation * current.inverse(),
             );
         }
-        self.hands.sample(0.25 + 0.75 * run, phase.sin(), pose);
+        self.hands.sample(0.10 + 0.90 * run, phase.sin(), pose);
     }
 
     /// Rotation blending alone shortens the leg's world-space reach and can

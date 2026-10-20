@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Decoded soft bodies, broad fixed puddles and independent palms, digits and lobes."""
-import copy,math,unittest
+import copy,math,os,unittest
 from pathlib import Path
 import slime_glb as author
 import test_gengar_glb as skin
 from skin_glb_test_support import IDENTITY,transform
-from sculpt_test_support import parts_overlap,indexed_ray_intersections as rays
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
+from sculpt_test_support import parts_overlap,indexed_ray_intersections as rays,assert_visible_surface_stroke
+from bovine_sculpt import reverse_front
+ROOT=Path(os.environ.get('CRYSTAL_SLIME_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class SlimeSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
@@ -92,4 +93,29 @@ class SlimeSkinTests(unittest.TestCase):
   for m in self.models.values():
    for clip in m.doc['animations']:
     idle=clip['name'].endswith('.idle');self.assertEqual(clip['extras']['loopSuggested'],idle);self.assertEqual(clip['extras']['cueRelative'],not idle);self.assertEqual({c['target']['path'] for c in clip['channels']},{'rotation'})
+
+ def folds(self, model, matrices):
+  parts=model.neutral_model()['primitives'];body=next(i for i,n in enumerate(model.names) if n.startswith('Body /'))
+  parent=dict(parts[body],positions=sum(model.posed(body,matrices),[]))
+  for i,part in enumerate(parts):
+   if not part['part'].startswith('Body fold /'):continue
+   mark=dict(part,positions=sum(model.posed(i,matrices),[]));support=parent
+   if part['part'].split()[-2]=='1':mark,support=reverse_front(mark),reverse_front(support)
+   yield part['part'],mark,support
+
+ def test_body_folds_keep_continuous_visible_occupied_roots_through_clips(self):
+  for species in ('grimer','muk'):
+   model=self.models[species]
+   for clip in model.clips:
+    for t in (0.,.31,.67):
+     folds=list(self.folds(model,model.matrices(clip,t)));self.assertEqual(len(folds),6)
+     for name,mark,parent in folds:assert_visible_surface_stroke(self,mark,parent,(species,clip,t,name))
+
+ def test_body_fold_oracle_rejects_floating_and_buried_copies(self):
+  for species in ('grimer','muk'):
+   model=self.models[species]
+   for name,mark,parent in self.folds(model,model.matrices()):
+    for offset in (-.02,.02):
+     broken=dict(mark,positions=[v+(offset if i%3==2 else 0.) for i,v in enumerate(mark['positions'])])
+     with self.assertRaises(AssertionError):assert_visible_surface_stroke(self,broken,parent,(species,name,offset))
 if __name__=='__main__':unittest.main()

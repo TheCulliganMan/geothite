@@ -377,7 +377,7 @@ mod tests {
         for surface in [&mut mesh.solid,&mut mesh.textured,&mut mesh.animated_solid,&mut mesh.animated_textured] {
             for p in &mut surface.positions {p[1]+=16.;}
         }
-        let datum=crystal_render_api::VisualTerraceDatum {origin:bevy::prelude::IVec2::ZERO,
+        let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:bevy::prelude::IVec2::ZERO,
             size:bevy::prelude::UVec2::splat(7),levels:levels.into(),open_water:None,water_barriers:std::sync::Arc::from([])};
         let original=mesh.clone();
         finish_with_datum(&mut mesh,&tiles.iter().collect::<Vec<_>>(),&g,&[],[0,0],Some(&datum));

@@ -155,6 +155,8 @@ def main():
     hashes = {}
     triangles = vertices = 0
     for index, (name, path) in enumerate(targets.items(), 1):
+        if args.progress:
+            print(f'checking {index}/{len(targets)} variants: {name}', flush=True)
         model = read_species_model(path)
         count_v, count_t, digest = validate_geometry(name, path, model, limits)
         if path.suffix == '.glb':
@@ -163,8 +165,6 @@ def main():
         hashes[digest] = name
         vertices += count_v
         triangles += count_t
-        if args.progress and index % 25 == 0:
-            print(f'checked {index}/{len(targets)} variants: {name}', flush=True)
     print(f'PASS: {len(registry)} species; {len(targets)} variants; {triangles:,} triangles; {vertices:,} source vertices; '
           'canonical routing, unique geometry, finite attributes, outward winding, unit normals, floor roots and current runtime storage limits')
     if args.allow_pending:

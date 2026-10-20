@@ -2965,6 +2965,7 @@ dependencies = [
  "bytemuck",
  "ciborium",
  "crystal-assets",
+ "crystal-core",
  "crystal-render-api",
  "flate2",
  "gltf",

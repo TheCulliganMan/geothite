@@ -356,7 +356,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     }
     if (event.type !== 'keydown' || event.ctrlKey || event.metaKey || event.altKey || event.repeat ||
         document.querySelector('dialog[open]') || document.activeElement?.isContentEditable ||
-        /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(document.activeElement?.tagName)) return;
+        /^(INPUT|TEXTAREA|SELECT|BUTTON|A|SUMMARY)$/.test(document.activeElement?.tagName)) return;
     const bindings = loadKeyBindings(window);
     const code = event.code || (event.key.length === 1 ? `Key${event.key.toUpperCase()}` : event.key);
     if (code === bindings.chat || event.key === '/') {

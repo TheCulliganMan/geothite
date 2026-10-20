@@ -323,7 +323,7 @@ mod tests {
             shapes[5]=CellShape::Flat;
             let mut mesh=TerrainMeshData {footing_heights:vec![3.25;6],authored_cells:vec![None;6],..Default::default()};
             let mut claimed=vec![false;6];
-            let datum=crystal_render_api::VisualTerraceDatum {origin:bevy::prelude::IVec2::ZERO,
+            let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:bevy::prelude::IVec2::ZERO,
                 size:bevy::prelude::UVec2::new(3,2),levels:vec![[0.;4];6].into(),
                 open_water:None,water_barriers:vec![bevy::prelude::IVec2::new(0,0),bevy::prelude::IVec2::new(1,0),
                     bevy::prelude::IVec2::new(0,1),bevy::prelude::IVec2::new(1,1)].into()};

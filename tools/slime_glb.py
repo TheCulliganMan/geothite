@@ -15,7 +15,7 @@ def geometry_digest(model):
 
 @lru_cache(maxsize=3)
 def authoring_model(species):return sculpture(species)
-REST_DIGESTS={'grimer': '01ccaddd323bf25f60a019cbc0642316ec52af5c7cd650ecc625d54d607c3a03', 'muk': '373608073b4024110aaaf4e23d345ca1c07c2fd6a2725f72fe985893224ca8c3', 'ditto': '1a3fc7b87714f7c4c5b82db35cecc4fb7bc3d3679f52f0ccf2336727626327e8'}
+REST_DIGESTS={'grimer': 'efd59abdeaebc370eabfeac2aa8ec133ddfd0106e2114b787d776b6d38d06511', 'muk': '60179e88f045db6353cea68824224ae5e1ffa2db3b802e91910cb5949452f75d', 'ditto': '1a3fc7b87714f7c4c5b82db35cecc4fb7bc3d3679f52f0ccf2336727626327e8'}
 PARTS={species:tuple(p['part'] for p in authoring_model(species)['primitives']) for species in SPECIES}
 BODY_REFERENCE_HEIGHTS=HEIGHTS.copy()
 MAX_BYTES=1024*1024

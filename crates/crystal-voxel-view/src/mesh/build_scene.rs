@@ -2561,7 +2561,7 @@ fn build_terrain_mesh_internal_with_background(
     {
         let _trace = crate::loading_trace::span("region.finish_rock_geometry", || serde_json::json!({}));
         outdoor_stone::finish_rock_geometry(&mut mesh, &frame.map_id, &original_cells,
-            &source_shapes, &geometry, frame.grid_origin.to_array());
+            &source_shapes, &geometry, frame.grid_origin.to_array(),frame.terrace_datum.as_deref());
     }
     if cave_crowns::enabled(frame.map_id.as_ref()) {
         let _trace = crate::loading_trace::span("region.finish_cave_crowns", || serde_json::json!({}));

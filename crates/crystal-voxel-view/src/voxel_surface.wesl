@@ -904,12 +904,12 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
         var finished_rock = pigment * surface.material.base_color.rgb / reference * detail;
         if canyon && !volcanic {
             styled_outdoor_rock = true;
-            // Broad warm granite and cool mineral beds carry the 3D form.
-            // Project the same paint around every face; fine horizontal ink
-            // must not flatten a mountain into a stack of brown stripes.
+            // Keep the original warm ochre cliffs while fractured paint and
+            // cooler mineral beds describe their sculpted 3D form. Carry the
+            // same material around every face and onto the weathered cap.
             let geology = mineral_field(rock * 0.018);
-            let warm_stone = vec3<f32>(0.47, 0.405, 0.295);
-            let cool_stone = vec3<f32>(0.285, 0.285, 0.245);
+            let warm_stone = vec3<f32>(0.46, 0.31, 0.14);
+            let cool_stone = vec3<f32>(0.28, 0.24, 0.15);
             let stone = mix(cool_stone, warm_stone, smoothstep(0.25, 0.77, geology));
             let granite = x_layer * weights.x + y_layer * weights.y + z_layer * weights.z;
             let rise = smoothstep(0.15, 0.9, surface.world_normal.y);
@@ -917,7 +917,7 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
             let bed = mineral_field(vec3<f32>(rock.x * 0.022,
                 rock.y * 0.07 + rock.x * 0.006, rock.z * 0.022));
             let bedding = 0.91 + smoothstep(0.20, 0.76, bed) * 0.14;
-            var styled = mix(stone, granite * vec3<f32>(1.10, 1.10, 1.02), 0.68)
+            var styled = mix(stone, granite * vec3<f32>(1.20, 0.91, 0.60), 0.68)
                 * cap_light * bedding;
             // Broken lichen and moss settle on upward-facing shelves, rather
             // than drawing a bright border along a source tile or camera cut.
@@ -927,7 +927,7 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
                 vec3<f32>(0.34, 0.365, 0.18), geology);
             styled = mix(styled, lichen, moss);
             // Keep the recessed tunnel's authored darkness and the broad
-            // sculpt's value shading without inheriting its orange pigment.
+            // sculpt's value shading beneath the warm mineral pigment.
             let shade = min(1.0, dot(surface.material.base_color.rgb / reference,
                 vec3<f32>(0.2126, 0.7152, 0.0722)) * 1.65);
             finished_rock = styled * shade;
@@ -1144,7 +1144,7 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
                 // Aeration builds as the sheet turns over its rounded lip.
                 // Both level ends retain the neighboring basin's exact optics.
                 let slope = 1.0 - abs(surface.world_normal.y);
-                falling = mix(rippled, falling, smoothstep(0.015, 0.18, slope));
+                falling = mix(receiving_pool, falling, smoothstep(0.015, 0.18, slope));
             }
             // Only complete Dragon's Den source drawings use the middle
             // role value. Their current shares the adjacent live pool phase.
