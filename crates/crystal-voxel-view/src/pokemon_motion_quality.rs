@@ -17,10 +17,10 @@ fn posed(rig: &SpeciesRig, pose: &[Transform]) -> Vec<Vec3> {
 fn seams(rig: &SpeciesRig) -> Vec<(usize, usize)> {
     let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
     let epsilon = height * 0.0001;
-    let mut cells: HashMap<[i32; 3], Vec<usize>> = HashMap::new();
+    let mut cells: HashMap<([i32; 3], u16), Vec<usize>> = HashMap::new();
     let mut result = Vec::new();
     for (i, p) in rig.neutral.positions.iter().enumerate() {
-        let cell = p.map(|v| (v / epsilon).round() as i32);
+        let cell = (p.map(|v| (v / epsilon).round() as i32), ladybird_flight::weld_domain(rig, i));
         if let Some(previous) = cells.get(&cell) {
             if let Some(&other) = previous.iter().find(|&&j| {
                 (rig.joint_indices[i] != rig.joint_indices[j]
@@ -353,7 +353,8 @@ fn pokemon_motion_gpu_review() {
             ..default()
         });
     app.world_mut()
-        .spawn((Mesh3d(floor), MeshMaterial3d(floor_material)));
+        .spawn((Mesh3d(floor), MeshMaterial3d(floor_material),
+            Transform::from_xyz(0., if std::env::var_os("CRYSTAL_POKEMON_REVIEW_SWIMMING").is_some() { -0.35 } else { 0. }, 0.)));
     let material = app
         .world_mut()
         .resource_mut::<Assets<StandardMaterial>>()
@@ -383,6 +384,12 @@ fn pokemon_motion_gpu_review() {
                 }
                 1 | 2 if std::env::var_os("CRYSTAL_POKEMON_REVIEW_SWIMMING").is_some() => rig.sample_swimming(
                     if frame == 1 { 0.20 } else { 0.80 },
+                    if frame == 1 { TAU * 0.125 } else { TAU * 0.625 },
+                    1., &mut pose,
+                ),
+                1 | 2 if std::env::var_os("CRYSTAL_POKEMON_REVIEW_WING_EXTREMES").is_some()
+                    && locomotion(rig.species.name()) == Locomotion::Fly => rig.sample_locomotion(
+                    (if frame == 1 { 0.25 } else { 0.75 }) / flight_beat(rig.species.name()).0,
                     if frame == 1 { TAU * 0.20 } else { TAU * 0.80 },
                     1., &mut pose,
                 ),

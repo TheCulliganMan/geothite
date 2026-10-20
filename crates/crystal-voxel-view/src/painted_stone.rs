@@ -21,38 +21,74 @@ pub(super) fn bedrock_image() -> Image {
 /// Owned CPU results, moved into Assets exactly once. No global decoded copy.
 #[cfg(not(target_arch = "wasm32"))]
 pub(super) struct PreparedImages {
-    pub stone: Option<Image>,
-    pub bedrock: Option<Image>,
+    pub stone: Image,
+    pub bedrock: Image,
 }
 #[cfg(not(target_arch = "wasm32"))]
 impl PreparedImages {
     pub(super) fn decode() -> Self {
         let _trace = crate::loading_trace::span("region.prepare_painted_assets", || serde_json::json!({}));
-        Self { stone: Some(image()), bedrock: Some(bedrock_image()) }
+        Self { stone: image(), bedrock: bedrock_image() }
     }
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub(super) struct NativePreparation {
-    pub task: Option<bevy::tasks::Task<PreparedImages>>,
+    shared: std::sync::Arc<std::sync::Mutex<Preparation>>,
+}
+#[cfg(not(target_arch = "wasm32"))]
+#[derive(Default)]
+struct Preparation {
+    task: Option<bevy::tasks::Task<PreparedImages>>,
+    images: Option<(bevy::prelude::Handle<Image>, bevy::prelude::Handle<Image>)>,
 }
 #[cfg(not(target_arch = "wasm32"))]
 impl NativePreparation {
     pub fn start(&mut self) {
-        if self.task.is_some() || std::env::var("CRYSTAL_PAINTED_IMAGE_WARMUP")
+        if std::env::var("CRYSTAL_PAINTED_IMAGE_WARMUP")
             .is_ok_and(|value| matches!(value.as_str(), "0" | "off" | "false")) { return; }
+        let mut shared = self.shared.lock().expect("painted image preparation");
+        if shared.task.is_some() || shared.images.is_some() { return; }
         let Some(pool) = bevy::tasks::AsyncComputeTaskPool::try_get() else { return; };
-        self.task = Some(pool.spawn(async { PreparedImages::decode() }));
+        shared.task = Some(pool.spawn(async { PreparedImages::decode() }));
     }
-    pub fn poll(&mut self) -> Option<PreparedImages> {
+    pub fn started(&self) -> bool {
+        let shared = self.shared.lock().expect("painted image preparation");
+        shared.task.is_some() || shared.images.is_some()
+    }
+    #[cfg(test)]
+    pub fn pending(&self) -> bool {
+        self.shared.lock().expect("painted image preparation").task.is_some()
+    }
+    /// All scenes receive the same handles. The decoded bytes enter Assets
+    /// once, even if the hidden destination reaches this point first.
+    pub fn poll(&mut self, images: &mut bevy::prelude::Assets<Image>)
+        -> Option<(bevy::prelude::Handle<Image>, bevy::prelude::Handle<Image>)> {
         use bevy::tasks::futures_lite::future;
-        let result = self.task.as_mut().and_then(|task|
+        let mut shared = self.shared.lock().expect("painted image preparation");
+        if let Some(handles) = &shared.images { return Some(handles.clone()); }
+        let result = shared.task.as_mut().and_then(|task|
             future::block_on(future::poll_once(task)));
-        if result.is_some() { self.task = None; }
-        result
+        let prepared = result?;
+        shared.task = None;
+        let handles = (
+            crate::add_terrain_image(images, prepared.stone, "painted_stone"),
+            crate::add_terrain_image(images, prepared.bedrock, "painted_bedrock"),
+        );
+        shared.images = Some(handles.clone());
+        Some(handles)
     }
-    pub fn cancel(&mut self) { self.task = None; }
+    pub fn cancel(&mut self) {
+        // Detach this scene, preserving work still owned by another scene.
+        if self.started() { *self = Self::default(); }
+    }
+    #[cfg(test)]
+    pub(super) fn from_task(task: bevy::tasks::Task<PreparedImages>) -> Self {
+        Self { shared: std::sync::Arc::new(std::sync::Mutex::new(Preparation {
+            task: Some(task), images: None,
+        })) }
+    }
 }
 
 /// Relative mineral detail for vertex-painted moving cave stones. Ice keeps
@@ -113,22 +149,26 @@ mod tests {
     #[test]
     fn background_painted_images_match_exact_decode_and_transfer_once() {
         let pool = bevy::tasks::TaskPoolBuilder::new().num_threads(1).build();
-        let mut preparation = NativePreparation { task: Some(pool.spawn(async { PreparedImages::decode() })) };
+        let mut preparation = NativePreparation::from_task(pool.spawn(async { PreparedImages::decode() }));
+        let mut destination = preparation.clone();
+        let mut assets = bevy::prelude::Assets::<Image>::default();
         let deadline = std::time::Instant::now()+std::time::Duration::from_secs(10);
-        let mut prepared = loop {
-            if let Some(images) = preparation.poll() { break images; }
+        let handles = loop {
+            if let Some(images) = destination.poll(&mut assets) { break images; }
             assert!(std::time::Instant::now()<deadline);
             std::thread::yield_now();
         };
-        for (background,direct) in [(prepared.stone.take().unwrap(),image()),
-            (prepared.bedrock.take().unwrap(),bedrock_image())] {
+        for (handle,direct) in [(&handles.0,image()), (&handles.1,bedrock_image())] {
+            let background = assets.get(handle).unwrap();
             assert_eq!(background.data,direct.data);
             assert_eq!(format!("{:?}",background.texture_descriptor),format!("{:?}",direct.texture_descriptor));
             assert_eq!(format!("{:?}",background.sampler),format!("{:?}",direct.sampler));
             assert_eq!(background.asset_usage,direct.asset_usage);
         }
-        assert!(prepared.stone.is_none() && prepared.bedrock.is_none());
-        assert!(preparation.task.is_none() && preparation.poll().is_none());
+        assert!(!preparation.pending());
+        assert_eq!(preparation.poll(&mut assets),Some(handles.clone()));
+        assert_eq!(destination.poll(&mut assets),Some(handles));
+        assert_eq!(assets.len(),2,"both scenes must reuse the same GPU image assets");
     }
     #[cfg(not(target_arch = "wasm32"))]
     #[test]
@@ -139,17 +179,43 @@ mod tests {
         let pool = bevy::tasks::TaskPoolBuilder::new().num_threads(1).build();
         let dropped = Arc::new(AtomicBool::new(false));
         let witness = Dropped(dropped.clone());
-        let mut preparation = NativePreparation { task: Some(pool.spawn(async move {
+        let mut preparation = NativePreparation::from_task(pool.spawn(async move {
             let _witness = witness;
             bevy::tasks::futures_lite::future::pending::<PreparedImages>().await
-        })) };
+        }));
         preparation.cancel();
         let deadline = std::time::Instant::now()+std::time::Duration::from_secs(5);
         while !dropped.load(Ordering::SeqCst) {
             assert!(std::time::Instant::now()<deadline);
             std::thread::yield_now();
         }
-        assert!(preparation.poll().is_none());
+        assert!(preparation.poll(&mut bevy::prelude::Assets::default()).is_none());
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn canceling_one_scene_preserves_the_other_scenes_pending_images() {
+        use std::sync::{Arc,atomic::{AtomicUsize,Ordering}};
+        let runs=Arc::new(AtomicUsize::new(0));
+        let worker_runs=runs.clone();
+        let pool=bevy::tasks::TaskPoolBuilder::new().num_threads(1).build();
+        let mut foreground=NativePreparation::from_task(pool.spawn(async move {
+            worker_runs.fetch_add(1,Ordering::SeqCst);
+            PreparedImages {stone:Image::default(),bedrock:Image::default()}
+        }));
+        let mut destination=foreground.clone();
+        foreground.cancel();
+        assert!(!foreground.started());
+        destination.start();
+        let mut assets=bevy::prelude::Assets::default();
+        let deadline=std::time::Instant::now()+std::time::Duration::from_secs(5);
+        let handles=loop {
+            if let Some(handles)=destination.poll(&mut assets) {break handles;}
+            assert!(std::time::Instant::now()<deadline);
+            std::thread::yield_now();
+        };
+        assert_eq!(runs.load(Ordering::SeqCst),1);
+        assert_eq!(destination.poll(&mut assets),Some(handles));
+        assert_eq!(assets.len(),2);
     }
     #[test]
     fn frozen_moving_stone_detail_is_neutral_opaque_and_varied() {

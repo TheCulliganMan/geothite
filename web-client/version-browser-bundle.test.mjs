@@ -52,3 +52,28 @@ test('Docker ships the content-versioning script and runs it after page assembly
  assert.match(docker,/COPY tools\/version-browser-bundle\.sh/);
  assert.ok(docker.indexOf('sh /source/version-browser-bundle.sh /out/web') > docker.indexOf('cp /source/web-client/index.html'));
 });
+
+
+test('production renderer selector resolves the versioned game pair', async () => {
+ const dir = await mkdtemp(join(tmpdir(), 'crystal-selector-'));
+ try {
+  await writeFile(join(dir, 'index.html'), "await import('./renderer-bundle.js'); new Worker(new URL('./audio-worker.js', import.meta.url));");
+  await writeFile(join(dir, 'renderer-bundle.js'), await readFile(new URL('./renderer-bundle.js', import.meta.url)));
+  for (const name of ['crystal-bevy', 'crystal-audio']) {
+   await writeFile(join(dir, name + '.js'), `new URL('${name}_bg.wasm', import.meta.url);`);
+   await writeFile(join(dir, name + '_bg.wasm'), 'wasm-fixture');
+  }
+  await writeFile(join(dir, 'audio-worker.js'), "import init from './crystal-audio.js';");
+  execFileSync('sh', [new URL('../tools/version-browser-bundle.sh', import.meta.url).pathname, dir]);
+  const page = await readFile(join(dir, 'index.html'), 'utf8');
+  const selector = page.match(/renderer-bundle-[a-f0-9]{64}\.js/)?.[0];
+  assert.ok(selector);
+  const source = await readFile(join(dir, selector), 'utf8');
+  const { selectRendererBundle } = await import('data:text/javascript,' + encodeURIComponent(source));
+  const bundle = await selectRendererBundle({fetch: async () => ({ok: false}), navigator: {}, url: 'https://game.test/'});
+  assert.match(bundle.module, /crystal-bevy-[a-f0-9]{64}\.js$/);
+  assert.match(bundle.binary, /crystal-bevy-[a-f0-9]{64}\.wasm$/);
+  await readFile(join(dir, bundle.module));
+  await readFile(join(dir, bundle.binary));
+ } finally { await rm(dir, {recursive: true, force: true}); }
+});

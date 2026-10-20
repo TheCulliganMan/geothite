@@ -194,6 +194,23 @@ pub(crate) fn terrace_support_correction(frame: &VisualWorldFrame, cell: bevy::p
     foot: bevy::prelude::Vec2) -> f32 {
     terraces::support_correction(frame,cell,foot)
 }
+/// The same native standing-water lift used by the completed terrain mesh.
+/// A positive lake datum is water, while additional deck support is land.
+pub(crate) fn native_water_support_offset(frame: &VisualWorldFrame,
+    cell: bevy::prelude::UVec2) -> f32 {
+    let g = GridGeometry {
+        width: frame.grid_size.x as usize, height: frame.grid_size.y as usize,
+        tile_width: frame.tile_size.x, tile_height: frame.tile_size.y,
+        origin_x: 0., origin_z: 0.,
+    };
+    if cell.x >= frame.grid_size.x || cell.y >= frame.grid_size.y
+        || frame.tiles.len() != g.width * g.height { return 0.; }
+    let cells = frame.tiles.iter().collect::<Vec<_>>();
+    let field = terraces::Field::with_source(&frame.jump_ledges, &g,
+        [frame.grid_origin.x, frame.grid_origin.y], &cells)
+        .with_datum(frame.terrace_datum.as_deref());
+    field.water_offset(cell.y as usize * g.width + cell.x as usize, &cells)
+}
 #[path = "mesh/outdoor_stone.rs"]
 mod outdoor_stone;
 #[path = "mesh/slowpoke_well.rs"]
@@ -733,12 +750,23 @@ pub(crate) struct PendingRuntimeTerrain {
     result: RuntimeTerrainBuild,
     groves: DeferredGroves,
 }
-pub(crate) struct StreamedGroves { source: DeferredGroves }
+pub(crate) struct StreamedGroves {
+    source: DeferredGroves,
+    bounds: Vec<(Vec3, Vec3)>,
+}
 impl StreamedGroves {
+    fn new(source: DeferredGroves) -> Self {
+        // Resolve authored terrace support alongside terrain preparation, not
+        // while publishing the completed worker result on the render thread.
+        let bounds = source.recipes.iter().map(|recipe| {
+            recipe.clone().on_terrace(&source.jump_ledges,
+                source.geometry.as_ref().unwrap(), source.origin,
+                source.terrace_datum.as_deref()).conservative_bounds()
+        }).collect();
+        Self { source, bounds }
+    }
     pub(crate) fn bounds(&self, index: usize) -> (Vec3, Vec3) {
-        let recipe = self.source.recipes[index].clone().on_terrace(&self.source.jump_ledges,
-            self.source.geometry.as_ref().unwrap(), self.source.origin,self.source.terrace_datum.as_deref());
-        recipe.conservative_bounds()
+        self.bounds[index]
     }
     pub(crate) fn len(&self) -> usize { self.source.recipes.len() }
     pub(crate) fn prepare(&self, index: usize, library: &crate::forest_instances::Library) -> Vec<crate::occluder_fade::PreparedGroup> {
@@ -808,8 +836,11 @@ mod cached_grove_tests {
             recipes:std::collections::VecDeque::from([recipe.clone()]),..Default::default()};
         assert!(source.uses_terrace());
         let mut expected=recipe;expected.base_height=24.;
+        let expected_bounds=expected.conservative_bounds();
         let expected=expected.prepare_instanced(&library);
-        let streamed=StreamedGroves {source};
+        let streamed=StreamedGroves::new(source);
+        assert_eq!(streamed.bounds(0),expected_bounds,
+            "prepared bounds must retain the authored positive terrace support");
         let actual=streamed.prepare(0,&library);
         let cached=streamed.prepare_if_cached(0,&library).unwrap();
         let signature=|groups|crate::occluder_fade::geometry_signature(&SurfaceMeshData::default(),groups);
@@ -827,16 +858,16 @@ mod cached_grove_tests {
         let mut source = DeferredGroves { geometry: Some(GridGeometry {
             width: 1, height: 1, tile_width: 16., tile_height: 16., origin_x: 0., origin_z: 0.,
         }), recipes: std::collections::VecDeque::from([recipe]), ..Default::default() };
-        let uninitialized = StreamedGroves { source: source.clone() };
+        let uninitialized = StreamedGroves::new(source.clone());
         assert!(uninitialized.prepare_if_cached(0,&library).is_none());
         assert!(uninitialized.source.bank_regions.get().is_none(),
             "cached placement must never build regional metadata on the frame thread");
         source.bank_regions.set(Vec::new()).unwrap();
-        let ordinary = StreamedGroves { source: source.clone() };
+        let ordinary = StreamedGroves::new(source.clone());
         assert!(ordinary.prepare_if_cached(0,&library).is_some());
         source.bank_regions = std::sync::OnceLock::new();
         source.bank_regions.set(vec![[-8.,8.,-8.,8.]]).unwrap();
-        let bank = StreamedGroves { source };
+        let bank = StreamedGroves::new(source);
         assert!(bank.prepare_if_cached(0,&library).is_none(),
             "a completed canopy must not bypass unique bank-conforming geometry");
     }
@@ -845,7 +876,7 @@ mod cached_grove_tests {
 impl PendingRuntimeTerrain {
     pub(crate) fn into_streamed(mut self) -> RuntimeTerrainBuild {
         if !self.groves.recipes.is_empty() {
-            self.result.streamed_groves = Some(std::sync::Arc::new(StreamedGroves { source: self.groves }));
+            self.result.streamed_groves = Some(std::sync::Arc::new(StreamedGroves::new(self.groves)));
         }
         self.result
     }

@@ -144,16 +144,78 @@ fn immersive_battle_uses_retained_transform_without_sampling_future_authority() 
 }
 
 #[test]
-fn immersive_battle_closes_for_world_and_waits_for_existing_intro() {
+fn immersive_battle_entry_keeps_modeled_background_and_controller_owned_reveals() {
     let mut shell = immersive_battle_fixture();
     let snapshot = shell.shell.snapshot().unwrap();
     assert!(!extract_immersive_battle_fixture(&shell, &snapshot, false).active);
-    shell.battle_entry_messages_remaining = 1;
-    assert!(!extract_immersive_battle_fixture(&shell, &snapshot, true).active);
+    let before = shell.shell.snapshot().unwrap().state_checksum;
+    for remaining in [2, 1, 0] {
+        shell.battle_entry_messages_remaining = remaining;
+        for intro in [Some(0), Some(40), None] {
+            shell.visible_battle_sliding_intro = intro;
+            let frame = extract_immersive_battle_fixture(&shell, &snapshot, true);
+            assert!(frame.active && !frame.use_source_scene, "entry {remaining}, intro {intro:?}");
+            assert_eq!(frame.battlers[0].as_ref().unwrap().visible, remaining == 0 && intro.is_none());
+            assert_eq!(frame.battlers[1].as_ref().unwrap().visible, intro.is_none());
+            assert_eq!(shell.shell.snapshot().unwrap().state_checksum, before);
+        }
+    }
+    shell.visible_battle_sliding_intro = None;
     shell.battle_entry_messages_remaining = 0;
     let mut world = snapshot;
     world.battle = None;
     assert!(!extract_immersive_battle_fixture(&shell, &world, true).active);
+}
+
+#[test]
+fn immersive_entry_compositor_retains_portraits_and_parks_only_replaced_pixels() {
+    let mut shell = immersive_battle_fixture();
+    shell.visible_battle_sliding_intro = Some(0);
+    let mut app = App::new();
+    app.insert_resource(shell)
+        .insert_resource(crystal_voxel_view::BattleViewStatus { active: true, ..default() })
+        .init_resource::<VisualBattleFrame>()
+        .init_resource::<crystal_voxel_view::VoxelViewStatus>()
+        .insert_resource(crystal_voxel_view::VoxelViewSettings { enabled: true, ..default() })
+        .init_resource::<RenderedViewport>()
+        .add_systems(Update, sync_immersive_battle_layers);
+    let portrait = app.world_mut().spawn((BattleBattlerMarker, BattlePortraitMarker)).id();
+    let source_mon = app.world_mut().spawn(BattleBattlerMarker).id();
+    let source_canvas = app.world_mut().spawn(FixedBattleCanvasMarker).id();
+    app.update();
+    type Layers = bevy::camera::visibility::RenderLayers;
+    assert!(app.world().get::<Layers>(portrait).is_none(), "intro portrait must survive the 3D handoff");
+    for entity in [source_mon, source_canvas] {
+        assert_eq!(app.world().get::<Layers>(entity), Some(&Layers::layer(
+            crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER)));
+    }
+    app.world_mut().resource_mut::<crystal_voxel_view::VoxelViewSettings>().enabled = false;
+    app.update();
+    for entity in [portrait, source_mon, source_canvas] {
+        assert!(app.world().get::<Layers>(entity).is_none(), "classic mode must restore all source layers");
+    }
+}
+
+#[test]
+fn immersive_entry_portraits_follow_camera_order_and_restore_classic_transforms() {
+    let mut app = App::new();
+    app.insert_resource(crystal_voxel_view::BattleViewStatus { active: true, ..default() })
+        .add_systems(Update, sync_immersive_battle_portrait_layout);
+    let base = Transform::from_xyz(-128., -32., 3.).with_scale(Vec3::new(2., 3., 1.));
+    let portrait = app.world_mut().spawn((BattlePortraitMarker, base)).id();
+    let unrelated = app.world_mut().spawn(base).id();
+    for right in [false, true, true, false, true] {
+        app.world_mut().resource_mut::<crystal_voxel_view::BattleViewStatus>().player_on_right = right;
+        app.update();
+        let mut expected = base;
+        if right { expected.translation.x = -base.translation.x; expected.scale.x = -base.scale.x; }
+        assert_eq!(*app.world().get::<Transform>(portrait).unwrap(), expected);
+        assert_eq!(*app.world().get::<Transform>(unrelated).unwrap(), base);
+    }
+    app.world_mut().resource_mut::<crystal_voxel_view::BattleViewStatus>().active = false;
+    app.update();
+    assert_eq!(*app.world().get::<Transform>(portrait).unwrap(), base);
+    assert!(app.world().get::<ImmersiveBattlePortraitSource>(portrait).is_none());
 }
 
 #[test]
@@ -2254,4 +2316,63 @@ fn immersive_unown_transform_publishes_the_selected_form_at_picture_boundary() {
             }
         }
     }
+}
+
+#[test]
+fn battle_transition_retains_the_selected_3d_field_without_advancing_authority() {
+    use bevy::ecs::system::RunSystemOnce;
+    let mut app = encounter_anchor_app();
+    app.insert_resource(crystal_voxel_view::VoxelViewSettings { enabled: true, ..default() });
+    let before = app.world().resource::<crystal_render_api::VisualWorldFrame>().clone();
+    assert!(before.active);
+    let checksum = app.world_mut().resource_mut::<BevyRuntimeShell>().shell.snapshot().unwrap().state_checksum;
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        shell.visible_battle_transition = Some(VisibleBattleTransition { frame: 30,
+            stronger_enemy: false, cave_environment: false, trainer_battle: false });
+        shell.battle_lcd_animation_active = true;
+    }
+    app.world_mut().spawn((BattleCommandMarker, BattleTransitionMarker));
+    app.world_mut().run_system_once(publish_visual_world_frame).unwrap();
+    assert_eq!(*app.world().resource::<crystal_render_api::VisualWorldFrame>(), before);
+    assert_eq!(app.world_mut().resource_mut::<BevyRuntimeShell>().shell.snapshot().unwrap().state_checksum, checksum);
+    app.world_mut().resource_mut::<crystal_voxel_view::VoxelViewSettings>().enabled = false;
+    app.world_mut().run_system_once(publish_visual_world_frame).unwrap();
+    assert!(!app.world().resource::<crystal_render_api::VisualWorldFrame>().active);
+}
+
+#[test]
+fn battle_entry_prepares_the_upcoming_scene_without_presenting_or_advancing_it() {
+    let mut shell = immersive_battle_fixture();
+    shell.visible_battle_transition = Some(VisibleBattleTransition { frame: 30,
+        stronger_enemy: false, cave_environment: false, trainer_battle: false });
+    let snapshot = shell.shell.snapshot().unwrap();
+    let before = snapshot.state_checksum.clone();
+    let frame = extract_immersive_battle_fixture(&shell, &snapshot, false);
+    assert!(frame.active && frame.preparing);
+    assert_eq!(frame.map_id.as_ref(), snapshot.overworld.map_name);
+    assert!(frame.battlers.iter().all(|body| body.as_ref().is_some_and(|body| body.visible)));
+    assert!(frame.source.is_none() && frame.cues.is_empty());
+    assert_eq!(shell.shell.snapshot().unwrap().state_checksum, before);
+    shell.pending_overworld_step_boundary = Some(PendingOverworldStepBoundary::WildBattle);
+    assert!(!extract_immersive_battle_fixture(&shell, &snapshot, false).active,
+        "the committed final walk retains ownership before preparation");
+    shell.pending_overworld_step_boundary = None;
+    shell.visible_battle_transition = None;
+    let presented = extract_immersive_battle_fixture(&shell, &snapshot, true);
+    assert!(presented.active && !presented.preparing);
+    use bevy::ecs::system::RunSystemOnce;
+    shell.visible_battle_transition = Some(VisibleBattleTransition { frame: 30,
+        stronger_enemy: false, cave_environment: false, trainer_battle: false });
+    let mut world = World::new();
+    world.insert_resource(shell);
+    world.insert_resource(RenderedViewport::default());
+    world.insert_resource(frame.clone());
+    world.run_system_once(clear_inactive_visual_battle).unwrap();
+    assert_eq!(*world.resource::<VisualBattleFrame>(), frame,
+        "transition retirement must preserve the hidden preparation packet");
+    world.resource_mut::<VisualBattleFrame>().preparing = false;
+    world.run_system_once(clear_inactive_visual_battle).unwrap();
+    assert!(!world.resource::<VisualBattleFrame>().active,
+        "a stale presented battle still retires during a field transition");
 }

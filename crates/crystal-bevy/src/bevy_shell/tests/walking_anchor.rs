@@ -455,7 +455,9 @@ fn walking_anchor_rejects_invalid_pre_step_witnesses_without_late_repair() {
                     .iter_mut()
                     .find(|actor| actor.id == crystal_render_api::VisualActorId::Player)
                     .unwrap()
-                    .center += step_delta
+                    // A destination foot cannot claim stale starting-cell metadata.
+                    // An intermediate foot is now a valid continuous-step witness.
+                    .center += step_delta * 1.5
             }
             _ => unreachable!(),
         }
@@ -471,6 +473,28 @@ fn walking_anchor_rejects_invalid_pre_step_witnesses_without_late_repair() {
             bound.anchors.is_none(),
             "later destination evidence cannot repair pre-step witness {defect}"
         );
+    }
+}
+
+#[test]
+fn walking_anchor_continuous_pre_step_uses_the_actual_authenticated_foot() {
+    let (_, mut rendered, frame, prototype) = walking_anchor_projection_fixture();
+    rendered.tile = Some(prototype.from);
+    rendered.snapshot_revision = Some(prototype.minimum_snapshot_revision.wrapping_sub(1));
+    let delta = visual_facing(prototype.origin.source.facing) * frame.tile_size * 2.0;
+    for progress in [0.125, 0.5, 0.875] {
+        let mut frame = frame.clone();
+        let mut bound = prototype.clone();
+        let player = frame.actors.iter_mut().find(|actor|
+            actor.id == crystal_render_api::VisualActorId::Player).unwrap();
+        player.center += delta * (progress - 0.5);
+        let origin = bound.origin.clone();
+        freeze_visible_walking_anchors(&mut bound, &rendered, Some(&frame), true);
+        let anchors = bound.anchors.as_ref().expect("coherent continuous foot before classic cell publication");
+        assert!(anchors.terrain.matches_built_frame(&frame));
+        assert!((anchors.source_foot - bound.placement.witnessed_player_foot.unwrap()
+            - delta * (1.0 - progress)).length() < 0.01);
+        assert!(Arc::ptr_eq(&bound.origin, &origin));
     }
 }
 

@@ -4755,6 +4755,9 @@ struct RenderedViewport {
     /// Effective palette period of the retained successfully rendered map.
     visual_lighting: crystal_render_api::VisualWorldLighting,
     visual_clock_enabled: bool,
+    /// Controller-owned sub-cell displacement used by the published player.
+    /// This receipt validates contact against the actual retained field pose.
+    visual_player_displacement: Vec2,
     tile: Option<TilePosition>,
     map_texture: Option<Handle<Image>>,
     map_priority_texture: Option<Handle<Image>>,
@@ -4766,6 +4769,8 @@ struct RenderedViewport {
     /// `map_texture`; they never participate in collision or movement.
     #[cfg(any(test, feature = "voxel-view"))]
     visual_tiles: Vec<crystal_render_api::VisualTile>,
+    #[cfg(any(test, feature = "voxel-view"))]
+    visual_source_regions: std::sync::Arc<[crystal_render_api::VisualSourceRegion]>,
     #[cfg(any(test, feature = "voxel-view"))]
     visual_jump_ledges: std::sync::Arc<[crystal_render_api::VisualJumpLedge]>,
     #[cfg(any(test, feature = "voxel-view"))]
@@ -4788,6 +4793,8 @@ struct RenderedViewport {
     /// must not pay to compose the 84x82 terrain source on every camera step.
     #[cfg(feature = "voxel-view")]
     visual_world_enabled: bool,
+    #[cfg(feature = "voxel-view")]
+    transition_modeled: bool,
     viewport_origin: Option<(i16, i16)>,
     /// The viewport origin shown immediately before a committed walking step.
     /// Retaining it lets the renderer scroll the replacement texture over the
@@ -5804,6 +5811,13 @@ struct PoisonFlashOverlay;
 #[derive(Component)]
 struct BattleBattlerMarker;
 
+/// Controller-timed portrait overlay retained above the modeled battle map.
+#[derive(Component)]
+struct BattlePortraitMarker;
+
+#[derive(Component)]
+struct BattleTransitionMarker;
+
 #[derive(Component)]
 struct BattleHudMarker;
 
@@ -6092,9 +6106,9 @@ pub fn run_bevy_shell(
     #[cfg(not(all(feature = "location-tester", not(target_arch = "wasm32"))))]
     let headless_capture = false;
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
-    anyhow::ensure!(!headless_capture || ((render_test_screenshot.is_some() || render_test_measure.is_some())
+    anyhow::ensure!(!headless_capture || ((render_test_screenshot.is_some() || render_test_measure.is_some() || render_test_record.is_some())
         && !render_test_live && render_capture::requested_image_target(render_test_live)?),
-        "headless capture requires a screenshot or measurement with an image target");
+        "headless capture requires a screenshot, recording or measurement with an image target");
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     anyhow::ensure!(!headless_capture || render_test_measure.is_none()
         || std::env::var("CRYSTAL_MEASURE_3D_VALIDATION").as_deref() == Ok("on"),
@@ -6117,7 +6131,7 @@ pub fn run_bevy_shell(
         ..default()
     });
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
-    let plugins = if headless_capture || (render_test_screenshot.is_some() && !render_test_live) {
+    let plugins = if render_test_screenshot.is_some() && !render_test_live {
         // One-shot capture exits from the image-save callback. Keeping its
         // render world on the main thread avoids waiting for RenderAppChannels
         // during Winit teardown. Live review and ordinary play stay pipelined.
@@ -6316,6 +6330,9 @@ pub fn run_bevy_shell(
             .after(publish_party_follower)
             .in_set(crystal_render_api::WorldRenderSet::PresentationExtract));
     #[cfg(feature = "voxel-view")]
+    app.add_systems(Update, publish_visual_world_entry_effect.after(publish_visual_world_frame)
+        .in_set(crystal_render_api::WorldRenderSet::PresentationExtract));
+    #[cfg(feature = "voxel-view")]
     app.init_resource::<destination_preload::PublishedDestination>()
         .add_systems(Update, destination_preload::publish.after(publish_visual_world_frame)
             .in_set(crystal_render_api::WorldRenderSet::PresentationExtract));
@@ -6332,6 +6349,7 @@ pub fn run_bevy_shell(
         let battle_ui_layout = (
             publish_immersive_battle_canvas,
             sync_immersive_battle_ui_layout,
+            sync_immersive_battle_portrait_layout,
             sync_immersive_battle_source_object_layout,
         )
             .chain()
@@ -9067,6 +9085,8 @@ include!("bevy_shell/battle_sliding_intro.rs");
 mod projected_source_oam;
 #[cfg(feature = "voxel-view")]
 include!("bevy_shell/battle_3d.rs");
+#[cfg(feature = "voxel-view")]
+include!("bevy_shell/world_entry.rs");
 #[cfg(feature = "voxel-view")]
 include!("bevy_shell/party_follower.rs");
 #[cfg(feature = "voxel-view")]

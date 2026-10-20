@@ -83,7 +83,7 @@ pub(super) fn resolve(
         &customized,
     )
     .into_iter()
-    .filter(|p|p.kind()!=Kind::Workbench || model(0).has_native_facility_furniture_materials())
+    .filter(|p|p.kind()!=Kind::Workbench || model(0).has_native_facility_workbench())
     .map(|resolved| Placement { resolved })
     .collect()
 }
@@ -187,7 +187,7 @@ pub(super) fn append(
     if !p.coherent(&identities, g.width, g.height) {
         return false;
     }
-    if p.kind()==Kind::Workbench && !model(0).has_native_facility_furniture_materials() {
+    if p.kind()==Kind::Workbench && !model(0).has_native_facility_workbench() {
         return false;
     }
     let (west, _, north, _) = g.bounds(p.column, p.row);
@@ -236,7 +236,7 @@ pub(super) fn append(
                 |part|radio_affine(kind,part),swatches),"canonical radio furniture requires its named material parts");
         }
         Kind::Workbench => {
-            assert!(model(0).append_native_facility_furniture(&mut mesh.textured,bounds,
+            assert!(model(0).append_native_facility_workbench(&mut mesh.textured,bounds,
                 rise*sy,workbench_swatches(g,p)),"complete facility workbench requires named live materials");
         }
     }

@@ -28,14 +28,19 @@ fn capture_presented_battle(
     let _span = bevy::log::info_span!("crystal_battle_extract").entered();
     // Clear first so an art error restores the complete classic renderer.
     commands.insert_resource(VisualBattleFrame::default());
-    let Some(battle) = snapshot.battle.as_ref().filter(|_| canvas_active) else {
+    let preparing = !canvas_active && shell.visible_battle_transition.is_some()
+        && !matches!(shell.pending_overworld_step_boundary, Some(PendingOverworldStepBoundary::WildBattle));
+    let _preparation_trace = shell.visible_battle_transition.and_then(|transition|
+        crystal_voxel_view::loading_trace::span("battle.prepare_extract", || serde_json::json!({
+            "frame": transition.frame, "preparing": preparing,
+            "battle": snapshot.battle.is_some(), "canvas": canvas_active,
+        })));
+    let Some(battle) = snapshot.battle.as_ref().filter(|_| canvas_active || preparing) else {
         return Ok(());
     };
-    // Trainer portraits and the source sliding introduction remain faithful.
-    // Arena handover happens only after their existing presentation completes.
-    if shell.visible_battle_sliding_intro.is_some()
-        || shell.battle_entry_messages_remaining > 0
-        || visible_trainer_result_frame(shell).is_some()
+    // Entry portraits remain controller-timed overlays above the modeled map.
+    // Do not switch the entire scene to the classic LCD during their narration.
+    if visible_trainer_result_frame(shell).is_some()
     {
         return Ok(());
     }
@@ -53,6 +58,7 @@ fn capture_presented_battle(
         .unwrap_or("");
     let mut frame = VisualBattleFrame {
         active: true,
+        preparing,
         use_source_scene: immersive_battle_requires_source_scene(shell),
         map_id: Arc::from(snapshot.overworld.map_name.as_str()),
         environment: immersive_battle_environment(&snapshot.overworld.map_name, environment),
@@ -243,7 +249,16 @@ fn capture_presented_battle(
             .is_some_and(|exit| {
                 (exit.side == crate::core::battle::turn::BattleSide::Player) == is_player
             });
-        let visible = (pokemon.hp > 0 || unchecked || pending_faints[side.index()])
+        let entry_visible = shell.visible_battle_sliding_intro.is_none()
+            && if is_player {
+                shell.battle_entry_messages_remaining == 0
+                    && battle.battle_type != "BATTLETYPE_TUTORIAL"
+            } else {
+                !matches!(battle.kind, RuntimeBattleKind::Trainer { .. })
+                    || shell.battle_entry_messages_remaining < 2
+            };
+        let visible = entry_visible
+            && (pokemon.hp > 0 || unchecked || pending_faints[side.index()])
             && (if is_player {
                 player_visible
             } else {
@@ -465,6 +480,13 @@ fn capture_presented_battle(
         }
     }
     debug_assert!(frame.validate().is_ok());
+    if preparing {
+        // Exercise the actual actor/material pipelines in the hidden image.
+        // Source timing still controls the first presented battle frame.
+        for battler in frame.battlers.iter_mut().flatten() { battler.visible = true; }
+        frame.cues.clear();
+        frame.source = None;
+    }
     commands.insert_resource(frame);
     Ok(())
 }
@@ -769,11 +791,14 @@ fn sync_immersive_battle_layers(
             Entity,
             Option<&bevy::camera::visibility::RenderLayers>,
             Option<&ImmersiveBattleSourceObject>,
+            Option<&BattlePortraitMarker>,
+            Option<&BattleTransitionMarker>,
         ),
         Or<(
             With<FixedBattleCanvasMarker>,
             With<BattleBattlerMarker>,
             With<ImmersiveBattleReplaced>,
+            With<BattleTransitionMarker>,
         )>,
     >,
     overlay_enabled: Option<ResMut<ImmersiveBattleSourceOverlayEnabled>>,
@@ -801,12 +826,14 @@ fn sync_immersive_battle_layers(
     // in the native HUD pass throughout the move, including zero-scroll frames,
     // so global-only shake cannot shift it or switch its renderer mid-sequence.
     let retain_source_objects = active && frame.source.is_some();
-    for (entity, layers, source_object) in &replaced {
+    let world_entry = settings.enabled && world_status.active && shell.visible_battle_transition.is_some();
+    for (entity, layers, source_object, portrait, transition) in &replaced {
         set_immersive_hidden_layer(
             &mut commands,
             entity,
             layers,
-            active && !(retain_source_objects && source_object.is_some()),
+            (world_entry && transition.is_some())
+                || (active && portrait.is_none() && !(retain_source_objects && source_object.is_some())),
         );
     }
     if let Some(mut enabled) = overlay_enabled {
@@ -884,15 +911,15 @@ fn immersive_battle_hud_is_erased(point: Vec2, cleared: [bool; 2]) -> bool {
     })
 }
 
-/// Early title, transition and post-capture Dex branches can return before
-/// the ordinary scene extractor. Explicitly retire the arena in those states.
+/// Early title and post-capture Dex branches can return before extraction.
+/// A transition may retain an explicitly hidden preparation packet.
 fn clear_inactive_visual_battle(
     mut frame: ResMut<VisualBattleFrame>,
     rendered: Res<RenderedViewport>,
     shell: Res<BevyRuntimeShell>,
 ) {
     if rendered.title_active
-        || shell.visible_battle_transition.is_some()
+        || (shell.visible_battle_transition.is_some() && !frame.preparing)
         || (shell.pokedex_menu_open
             && shell.pokedex_scripted_entry
             && shell.pending_standard_capture.is_some())
@@ -1824,7 +1851,6 @@ fn immersive_battle_requires_source_scene_supported(
     let remove = visible_remove_mon_clips(animation);
     let rows = visible_move_battler_row_extractions(animation);
     (!allow_capture && shell.visible_capture_animation.is_some())
-        || shell.visible_trainer_exit_animation.is_some()
         || visible_beta_send_out_mon1_line_bgps(animation).is_some()
         || clips.0.is_some()
         || clips.1.is_some()
@@ -1986,6 +2012,34 @@ fn native_competitive_board_retains_readable_text_inside_its_reserved_strip() {
                 assert!(reserved<=physical.y*0.25+0.01,
                     "the dense board must stay below the established complete-battler strip");
             }
+        }
+    }
+}
+
+#[derive(Component)]
+struct ImmersiveBattlePortraitSource(Transform);
+
+/// Match source portraits to the selected camera's player/enemy screen order.
+/// The controller still owns their clipping, slide offsets and lifetime.
+fn sync_immersive_battle_portrait_layout(
+    mut commands: Commands,
+    status: Res<crystal_voxel_view::BattleViewStatus>,
+    mut portraits: Query<(Entity, &mut Transform, Option<&ImmersiveBattlePortraitSource>), With<BattlePortraitMarker>>,
+) {
+    for (entity, mut transform, source) in &mut portraits {
+        let base = source.map_or(*transform, |source| source.0);
+        if status.active {
+            if source.is_none() {
+                commands.entity(entity).insert(ImmersiveBattlePortraitSource(base));
+            }
+            *transform = base;
+            if status.player_on_right {
+                transform.translation.x = -base.translation.x;
+                transform.scale.x = -base.scale.x;
+            }
+        } else if source.is_some() {
+            *transform = base;
+            commands.entity(entity).remove::<ImmersiveBattlePortraitSource>();
         }
     }
 }

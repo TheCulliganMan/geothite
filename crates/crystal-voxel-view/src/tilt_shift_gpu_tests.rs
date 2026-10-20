@@ -51,7 +51,7 @@ fn incremental_gaussian_preserves_pixels_and_reduces_filter_work() {
         min_filter: FilterMode::Linear, mag_filter: FilterMode::Linear, ..default()
     });
     let uniform = device.create_buffer(&BufferDescriptor { label: Some("blur_test_band"),
-        size: 16, usage: BufferUsages::UNIFORM | BufferUsages::COPY_DST, mapped_at_creation: false });
+        size: TiltShift::min_size().get(), usage: BufferUsages::UNIFORM | BufferUsages::COPY_DST, mapped_at_creation: false });
     for (width, height) in [(127u32, 65u32), (320, 257), (1184, 812)] {
         let extent = Extent3d { width, height, depth_or_array_layers: 1 };
         let image = || device.create_texture(&TextureDescriptor {
@@ -127,7 +127,70 @@ fn incremental_gaussian_preserves_pixels_and_reduces_filter_work() {
             assert!(max <= 1 && mean < 0.01, "{width}x{height} {band:?}: max={max} mean={mean}");
             for buffer in readbacks { buffer.unmap(); }
         }
-        if width == 1184 {
+        // Exercise the actual production entry shader with no blur: full-view
+        // masks/flash, native SCX direction/wrapping and square-pixel trainer art.
+        for case in 0..5 {
+            let mut effect = crystal_render_api::VisualWorldEntryEffect { active: true, ..default() };
+            match case {
+                0 => effect.black_cells = [UVec4::MAX; 3],
+                1 => effect.light = 1.,
+                2 => effect.line_x_offsets = [1; 144],
+                3 => effect.black_cells[2][3] = 1 << 7, // final source cell (19,17)
+                4 => {
+                    effect.trainer_cells = [UVec4::MAX; 3];
+                    effect.trainer_pixels = UVec4::splat(0xe4e4e4e4);
+                    effect.trainer_palette = [Vec4::new(1.,0.,0.,1.), Vec4::new(0.,1.,0.,1.),
+                        Vec4::new(0.,0.,1.,1.), Vec4::ONE];
+                }
+                _ => unreachable!(),
+            }
+            if case == 2 && width != 320 { continue; } // integer two-output-pixel source shift
+            let settings = TiltShift::entry_only(&effect);
+            let mut bytes = bevy::render::render_resource::encase::UniformBuffer::new(Vec::new());
+            bytes.write(&settings).unwrap();
+            queue.write_buffer(&uniform, 0, bytes.as_ref());
+            let stride = (width * 4).div_ceil(256) * 256;
+            let output = device.create_buffer(&BufferDescriptor { label: Some("entry_pixel_readback"),
+                size: u64::from(stride * height), usage: BufferUsages::COPY_DST | BufferUsages::MAP_READ,
+                mapped_at_creation: false });
+            let mut encoder = device.create_command_encoder(&default());
+            encode(&mut encoder, 1);
+            encoder.copy_texture_to_buffer(TexelCopyTextureInfo { texture: &textures[1][1],
+                mip_level: 0, origin: Origin3d::ZERO, aspect: TextureAspect::All },
+                TexelCopyBufferInfo { buffer: &output, layout: TexelCopyBufferLayout {
+                    offset: 0, bytes_per_row: Some(stride), rows_per_image: None } }, extent);
+            queue.submit([encoder.finish()]);
+            let (send, recv) = std::sync::mpsc::channel();
+            output.slice(..).map_async(MapMode::Read, move |result| { send.send(result).unwrap(); });
+            device.poll(PollType::wait_indefinitely()).unwrap();
+            recv.recv_timeout(std::time::Duration::from_secs(10)).unwrap().unwrap();
+            let mapped = output.slice(..).get_mapped_range().unwrap();
+            for y in 0..height { for x in 0..width {
+                let offset = (y * stride + x * 4) as usize;
+                let uv = Vec2::new((x as f32 + 0.5) / width as f32, (y as f32 + 0.5) / height as f32);
+                let mut expected: [u8;4] = pixels[((y * width + x) * 4) as usize..][..4].try_into().unwrap();
+                match case {
+                    0 => expected = [0,0,0,255],
+                    1 => expected[..3].fill(255),
+                    2 => { let from = ((y * width + (x + width - 2) % width) * 4) as usize;
+                        expected = pixels[from..from+4].try_into().unwrap(); }
+                    3 if (uv.x * 20.) as u32 == 19 && (uv.y * 18.) as u32 == 17 => expected = [0,0,0,255],
+                    4 => {
+                        let source_x = (x as f32 + 0.5 - width as f32 * 0.5) * 144. / height as f32 + 80.;
+                        if (0.0..160.0).contains(&source_x) {
+                            expected = [[255,0,0,255],[0,255,0,255],[0,0,255,255],[255;4]][source_x.floor() as usize % 4];
+                        }
+                    }
+                    _ => {}
+                }
+                assert!(mapped[offset..offset+4].iter().zip(expected).all(|(a,b)|a.abs_diff(b)<=1),
+                    "entry case {case}, {width}x{height}, pixel {x},{y}: {:?} vs {expected:?}", &mapped[offset..offset+4]);
+            }}
+            drop(mapped); output.unmap();
+        }
+        // Restore a neutral effect before measuring the unchanged blur kernel.
+        queue.write_buffer(&uniform, 0, &vec![0; TiltShift::min_size().get() as usize]);
+        if width == 1184 && std::env::var_os("CRYSTAL_TILT_SHIFT_PIXEL_ONLY").is_none() {
           for diameter in [3.0, (height as f32 * 0.018).clamp(3.0, 36.0) * 0.55, 36.0] {
             let band: Vec<u8> = Vec4::new(0.5, 0.20, 2.5, diameter).to_array()
                 .into_iter().flat_map(f32::to_le_bytes).collect();

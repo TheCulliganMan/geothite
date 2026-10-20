@@ -29,6 +29,7 @@ pub(super) enum AuthenticDomain {
 
 pub(super) struct PreparedBatch {
     pub mesh: Mesh,
+    pub rooted_grass: bool,
     pub bounds: Option<Aabb>,
     pub authentic_domain: AuthenticDomain,
     pub coverage: Option<std::sync::Arc<[Aabb]>>,
@@ -159,14 +160,24 @@ fn triangle_coverages(mesh: &Mesh) -> [Option<std::sync::Arc<[Aabb]>>; 3] {
         bucket.into_values().map(|(min, max)| Aabb::from_min_max(min, max)).collect()))
 }
 
+/// Match the vertex shader's tag test, including mixed tagged triangles.
+/// Compute before CPU buffers retire; publication never scans vertex arrays.
+pub(super) fn has_rooted_grass(mesh: &Mesh) -> bool {
+    matches!(mesh.attribute(Mesh::ATTRIBUTE_UV_0),
+        Some(bevy::mesh::VertexAttributeValues::Float32x2(uvs))
+            if uvs.iter().any(|uv| (uv[0] - 84000.0).abs() < 0.5))
+}
+
 impl From<Mesh> for PreparedBatch {
     fn from(mesh: Mesh) -> Self {
         // Compute on the terrain worker, before render extraction moves the
         // CPU buffers. Never scan full vertex buffers when applying a build.
         let bounds = mesh.get_aabb();
+        let rooted_grass = has_rooted_grass(&mesh);
         let [coverage, sight_coverage, grass_coverage] = triangle_coverages(&mesh);
         Self {
             mesh,
+            rooted_grass,
             bounds,
             authentic_domain: AuthenticDomain::Unspecified,
             coverage,
@@ -816,6 +827,20 @@ mod tests {
         data
     }
 
+    #[test]
+    fn rooted_grass_identity_matches_shader_tags_even_on_mixed_triangles() {
+        for (tag, expected) in [(0.0, false), (84000.0, true), (83999.75, true),
+            (84000.5, false), (86000.0, false)] {
+            let mut mesh = crate::actor_quad_mesh();
+            mesh.insert_attribute(Mesh::ATTRIBUTE_UV_0,
+                vec![[tag, 0.5], [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]]);
+            let batch = PreparedBatch::from(mesh);
+            assert_eq!(batch.rooted_grass, expected, "shader tag {tag}");
+            assert!(batch.grass_coverage.unwrap().is_empty(),
+                "mixed triangles cannot use whole-grass triangle coverage as shader identity");
+        }
+    }
+
     #[cfg(not(target_arch = "wasm32"))]
     fn assert_prepared_batches_exact(expected:&[PreparedBatch],actual:&[PreparedBatch]) {
         let bounds_bits=|bounds:Aabb| {
@@ -827,6 +852,7 @@ mod tests {
         assert_eq!(actual.len(),expected.len());
         for (a,b) in expected.iter().zip(actual) {
             assert_eq!(a.authentic_domain,b.authentic_domain);
+            assert_eq!(a.rooted_grass,b.rooted_grass);
             assert_eq!(a.mesh.asset_usage,b.mesh.asset_usage);
             assert_eq!(a.mesh.primitive_topology(),b.mesh.primitive_topology());
             assert_eq!(a.mesh.indices(),b.mesh.indices(),"index values AND widths remain exact");

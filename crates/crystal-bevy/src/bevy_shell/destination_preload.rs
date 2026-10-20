@@ -7,6 +7,7 @@ pub(super) struct PublishedDestination {
     actor_map: String,
     anchor: Option<(String, TilePosition)>,
     snapshot: Option<Arc<RuntimeShellSnapshot>>,
+    last_error: Option<String>,
 }
 
 fn is_outdoors(map: &crate::RuntimeMapCatalogSnapshot) -> bool {
@@ -37,7 +38,7 @@ fn exterior_destination(snapshot: &RuntimeShellSnapshot) -> Option<(&crate::Runt
 }
 
 // Keep one nearby destination warm. Indoors, retain the exterior lookahead
-// across stairs; outdoors, prepare the building the player is approaching.
+// across stairs; outdoors, prepare the nearest doorway or connected boundary.
 fn destination(snapshot: &RuntimeShellSnapshot) -> Option<(&crate::RuntimeMapCatalogSnapshot, TilePosition)> {
     let current = snapshot.maps.iter().find(|m| m.map_name == snapshot.overworld.map_name)?;
     if !is_outdoors(current) { return exterior_destination(snapshot); }
@@ -72,7 +73,7 @@ fn destination(snapshot: &RuntimeShellSnapshot) -> Option<(&crate::RuntimeMapCat
             _ => return None,
         };
         // Start before the boundary enters view; only one hidden scene is resident.
-        if distance > 12 { return None; }
+        if distance > 24 { return None; }
         Some((distance, target, TilePosition::new(ax as i16, ay as i16)))
     }).min_by_key(|(distance, _, _)| *distance);
     doorway.into_iter().chain(connection).min_by_key(|(distance, _, _)| *distance)
@@ -133,6 +134,7 @@ pub(super) fn publish(
     }
     match source_frame(snapshot, &runtime, map, arrival, period, &mut cache, &mut images) {
         Ok(frame) => {
+            previous.last_error = None;
             request.actor_sources = lookahead_actor_sources(snapshot, &runtime, map);
             previous.actor_map=snapshot.overworld.map_name.clone();
             request.frame = Some(frame);
@@ -142,6 +144,7 @@ pub(super) fn publish(
         Err(error) => {
             // Speculation must not block a real warp. The ordinary renderer
             // still validates and builds its actual destination on arrival.
+            previous.last_error = Some(format!("{error:#}"));
             bevy::log::warn!("outdoor preload source unavailable: {error:#}");
             previous.key = Some(key);
         }
@@ -217,7 +220,7 @@ pub(super) fn source_frame(
     let mut handles = Vec::with_capacity(tiles.capacity());
     let restless = snapshot.progression.active_engine_flags.contains("ENGINE_FOREST_IS_RESTLESS");
     for row in 0..h { for column in 0..w {
-        let (source, sx, sy) = resolved_render_source_at(&sources,
+        let (source, sx, sy) = resolved_visual_render_source_at(&sources,
             i32::from(x + column - halo), i32::from(y + row - halo));
         let art = &cache.cache[&source.art_key];
         let (block, sub_x, sub_y, index, texture, priority, _) = source_tile_art(
@@ -237,6 +240,7 @@ pub(super) fn source_frame(
     for tile in &tiles { tile.texture.id().hash(&mut identity); }
     let revision = visual_terrain_revision(identity.finish(), (x, y), &tiles);
     let mut frame = crystal_render_api::VisualWorldFrame { active: true, map_id: map.map_name.as_str().into(),
+        source_regions: visual_source_regions(&sources),
         source_map_size_core_tiles: Some(UVec2::new(width as u32 / 2, height as u32 / 2)),
         boundary_warps: map.events.warps.iter().filter_map(warp_tile_position_checked)
             .map(|tile| IVec2::new(i32::from(tile.x), i32::from(tile.y))).collect(),
@@ -261,41 +265,125 @@ mod tests {
             .unwrap_or_else(|| root.repository_root.join("content-packs/text-tui.crystalpack"));
         let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack).unwrap();
         let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded).unwrap();
-        let shell = initialize_bevy_runtime_shell(root, runtime.clone(),
+        let initial = initialize_bevy_runtime_shell(root.clone(), runtime.clone(),
             BevyShellStart::NewGameAtRuntimeTile {
                 spawn_identifier: runtime.title_new_game_spawn_identifier().unwrap(),
                 map_name: "Route29".into(), tile_x: 50, tile_y: 9,
             }, BevyShellConfig::default()).unwrap();
-        let mut snapshot = shell.shell.snapshot().unwrap();
+        let mut catalog = initial.shell.snapshot().unwrap();
         for name in ["Route26", "Route29"] {
-            let map = snapshot.maps.iter().find(|m| m.map_name == name).unwrap().clone();
-            let mut checked = 0;
-            for connection in &map.attributes.connections {
-                let target = snapshot.maps.iter().find(|m| m.map_name == connection.target_map).unwrap();
-                if !is_outdoors(target) { continue; }
-                let w = map.attributes.width as i16 * 2;
-                let h = map.attributes.height as i16 * 2;
-                let tw = target.attributes.width as i16 * 2;
-                let th = target.attributes.height as i16 * 2;
-                let offset = connection.offset as i16 * 2;
-                let (tile, expected) = match connection.direction.to_ascii_lowercase().as_str() {
-                    "north" => (TilePosition::new(offset.max(0), 0), TilePosition::new((-offset).max(0), th - 1)),
-                    "south" => (TilePosition::new(offset.max(0), h - 1), TilePosition::new((-offset).max(0), 0)),
-                    "west" => (TilePosition::new(0, offset.max(0)), TilePosition::new(tw - 1, (-offset).max(0))),
-                    "east" => (TilePosition::new(w - 1, offset.max(0)), TilePosition::new(0, (-offset).max(0))),
+            let (w, h) = runtime.data().saved_map_tile_bounds(name).unwrap();
+            catalog.overworld.map_name = name.into();
+            let connections = catalog.maps.iter().find(|map| map.map_name == name).unwrap()
+                .attributes.connections.clone();
+            let mut fixture = None;
+            for connection in &connections {
+                let (button, direction, mut candidates): (_, _, Vec<_>) = match connection.direction.to_ascii_lowercase().as_str() {
+                    "north" => (GameButton::Up, Direction::Up, (0..w).map(|x| TilePosition::new(x as i16, 0)).collect()),
+                    "south" => (GameButton::Down, Direction::Down, (0..w).map(|x| TilePosition::new(x as i16, h as i16 - 1)).collect()),
+                    "west" => (GameButton::Left, Direction::Left, (0..h).map(|y| TilePosition::new(0, y as i16)).collect()),
+                    "east" => (GameButton::Right, Direction::Right, (0..h).map(|y| TilePosition::new(w as i16 - 1, y as i16)).collect()),
                     _ => continue,
                 };
-                let target_name = target.map_name.clone();
-                snapshot.overworld.map_name = name.into();
-                snapshot.overworld.tile = tile;
-                let before = snapshot.state_checksum.clone();
-                let (selected, arrival) = destination(&snapshot).expect("connected destination");
-                assert_eq!(selected.map_name, target_name, "{name} {}", connection.direction);
-                assert_eq!(arrival, expected);
-                assert_eq!(snapshot.state_checksum, before);
-                checked += 1;
+                candidates.sort_by_key(|tile| (i32::from(tile.x) - i32::from(w / 2)).abs()
+                    + (i32::from(tile.y) - i32::from(h / 2)).abs());
+                // Saved connection sources can occupy blocked border cells;
+                // select a real walking path using the core collision rules.
+                let tile = candidates.into_iter().find(|&tile| {
+                    let Ok(source) = runtime.data().overworld_session(name, tile, 0) else { return false; };
+                    if !crate::core::world::collision::can_enter_tile(&source.map, &source.tileset,
+                        tile, direction, crate::core::world::collision::PlayerTraversalState::Walk) { return false; }
+                    catalog.overworld.tile = tile;
+                    let Some((target, arrival)) = destination(&catalog) else { return false; };
+                    if target.map_name != connection.target_map || !is_outdoors(target) { return false; }
+                    let Ok(target) = runtime.data().overworld_session(&target.map_name, arrival, 0) else { return false; };
+                    crate::core::world::collision::can_enter_tile(&target.map, &target.tileset,
+                        arrival, direction, crate::core::world::collision::PlayerTraversalState::Walk)
+                });
+                if let Some(tile) = tile { fixture = Some((tile, button)); break; }
             }
-            assert!(checked > 0, "{name} must exercise real pack connections");
+            let (tile, button) = fixture.unwrap_or_else(|| panic!("{name} needs a walkable connection fixture: {connections:?}"));
+            let shell = initialize_bevy_runtime_shell(root.clone(), runtime.clone(),
+                BevyShellStart::NewGameAtRuntimeTile {
+                    spawn_identifier: runtime.title_new_game_spawn_identifier().unwrap(),
+                    map_name: name.into(), tile_x: tile.x, tile_y: tile.y,
+                }, BevyShellConfig { smoke_player_name: Some("CHRIS".into()), ..default() }).unwrap();
+            let mut controller = VisibleShellController { shell };
+            let before = controller.snapshot().unwrap();
+            let (selected, arrival) = destination(&before).expect("nearby route connection");
+            assert!(is_outdoors(selected));
+            let predicted = (selected.map_name.clone(), arrival);
+            println!("connection fixture: {name} {tile:?} {button:?} -> {predicted:?}");
+            assert_eq!(controller.snapshot().unwrap().state_checksum, before.state_checksum,
+                "lookahead must not advance gameplay");
+            // Compare against production controller movement, rather than
+            // reimplementing the connection-offset formula in the test.
+            let mut crossed = None;
+            for _ in 0..16 {
+                controller.press(button).unwrap();
+                let after = controller.snapshot().unwrap();
+                if after.overworld.map_name != name { crossed = Some(after); break; }
+            }
+            let after = crossed.unwrap_or_else(|| {
+                let after = controller.snapshot().unwrap();
+                panic!("{name} connection did not execute: {:?} -> {} {:?}; phase {:?}; error {:?}",
+                    tile, after.overworld.map_name, after.overworld.tile, after.phase, controller.shell.last_error)
+            });
+            assert_eq!((after.overworld.map_name, after.overworld.tile), predicted,
+                "{name} must preload the authoritative arrival");
+        }
+    }
+
+    #[test]
+    fn connected_route_views_retain_the_same_pack_cells_across_controller_crossings() {
+        let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap());
+        let pack = std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(PathBuf::from)
+            .unwrap_or_else(|| root.repository_root.join("content-packs/text-tui.crystalpack"));
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack).unwrap();
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded).unwrap();
+        for (name, x, y, button) in [("Route29", 58, 9, GameButton::Right), ("Route26", 1, 94, GameButton::Left)] {
+            let shell = initialize_bevy_runtime_shell(root.clone(), runtime.clone(),
+                BevyShellStart::NewGameAtRuntimeTile {
+                    spawn_identifier: runtime.title_new_game_spawn_identifier().unwrap(),
+                    map_name: name.into(), tile_x: x, tile_y: y,
+                }, BevyShellConfig { render_test_hour: Some(12), smoke_player_name: Some("CHRIS".into()), ..default() }).unwrap();
+            let mut controller = VisibleShellController { shell };
+            let before = controller.snapshot().unwrap();
+            let mut art = RenderedTilesetArt::default();
+            let mut images = Assets::<Image>::default();
+            let map = before.maps.iter().find(|m| m.map_name == name).unwrap();
+            let built = source_frame(&before, &controller.shell, map, before.overworld.tile, "day", &mut art, &mut images).unwrap();
+            let after = (0..8).find_map(|_| {
+                controller.press(button).unwrap();
+                let next = controller.snapshot().unwrap();
+                (next.overworld.map_name != name).then_some(next)
+            }).expect("production connection must execute");
+            let map = after.maps.iter().find(|m| m.map_name == after.overworld.map_name).unwrap();
+            let live = source_frame(&after, &controller.shell, map, after.overworld.tile, "day", &mut art, &mut images).unwrap();
+            let shift = crystal_voxel_view::connected_frame_shift(&built, &live);
+            assert!(shift.is_ok(), "{name} -> {}: {shift:?}; grids {:?}/{:?}; origins {:?}/{:?}; placements {:?}/{:?}",
+                live.map_id, built.grid_size, live.grid_size, built.grid_origin, live.grid_origin,
+                built.source_regions, live.source_regions);
+            let mut changed = live.clone();
+            let index = changed.tiles.iter().position(|tile| {
+                let p = changed.grid_origin + IVec2::new(tile.column as i32, tile.row as i32);
+                tile.column > 40 && tile.column < 75 && tile.row > 40 && tile.row < 75
+                    && changed.source_regions.iter().any(|r| {
+                        let q = p-r.origin;
+                        q.cmpge(IVec2::ZERO).all() && q.cmplt(r.size.as_ivec2()).all()
+                    })
+            }).expect("crossing retains actual authored acreage near the player");
+            changed.tiles[index].priority = !changed.tiles[index].priority;
+            assert!(crystal_voxel_view::connected_frame_shift(&built, &changed).is_err(),
+                "a changed authored cell must reject retention");
+            let mut changed = live.clone();
+            let tile = &changed.tiles[index];
+            let point = changed.grid_origin + IVec2::new(tile.column as i32, tile.row as i32);
+            let datum = Arc::make_mut(changed.terrace_datum.as_mut().expect("outdoor elevation"));
+            let local = point-datum.origin;
+            Arc::make_mut(&mut datum.levels)[(local.y as u32*datum.size.x+local.x as u32) as usize][0] += 1.;
+            assert!(crystal_voxel_view::connected_frame_shift(&built, &changed).is_err(),
+                "a changed authored elevation must reject retention");
         }
     }
 
@@ -347,7 +435,9 @@ mod tests {
                     .add_systems(Update,publish);
                 app.update();
                 let request=app.world().resource::<crystal_voxel_view::DestinationPreload>();
-                let early=request.frame.as_ref().expect("publish exterior before the room is playable");
+                let early=request.frame.as_ref().unwrap_or_else(|| panic!(
+                    "publish exterior before the room is playable: {:?}",
+                    app.world().resource::<PublishedDestination>().last_error));
                 early.validate().unwrap();
                 assert_eq!(early.map_id.as_ref(),"NewBarkTown");
                 assert!(request.actor_sources.iter().any(|id|id.as_ref()=="mom"));
@@ -413,6 +503,15 @@ mod tests {
             assert!(map.events.warps.iter().filter_map(warp_tile_position_checked).any(|p| p == arrival));
         }
         snapshot.overworld.tile = TilePosition::new(0, 0);
+        let current = snapshot.maps.iter().find(|map| map.map_name == "NewBarkTown").unwrap();
+        let (selected, _) = destination(&snapshot).expect("nearby authored route connection");
+        assert!(current.attributes.connections.iter().any(|connection|
+            connection.target_map == selected.map_name),
+            "a nearby route may be prepared even when every door is distant");
+        // Isolate the distant-door contract from the independent connection
+        // lookahead. Clearing this disposable catalog cannot change gameplay.
+        let current = snapshot.maps.iter_mut().find(|map| map.map_name == "NewBarkTown").unwrap();
+        Arc::make_mut(current).attributes.connections.clear();
         assert!(destination(&snapshot).is_none(), "distant doors must not displace the spare scene");
     }
 

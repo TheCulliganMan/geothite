@@ -284,7 +284,7 @@ pub(super) fn sync(
         } else {
             VisualBattleSide::Enemy
         };
-        let shown = status.active
+        let shown = (status.active || status.prepared)
             && frame.battlers[index].as_ref().is_some_and(|b| {
                 b.visible && b.allow_species_model && b.model_id() == actor.key.species.as_ref()
             });

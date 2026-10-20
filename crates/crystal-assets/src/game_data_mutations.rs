@@ -90,12 +90,13 @@ impl GameDataSet {
                     next_state.time.time_of_day,
                 );
                 let mut divider = ReplayDivider::new(command.divider_trace.samples.iter().copied());
-                let frame = self.apply_overworld_input(
+                let frame = self.apply_overworld_input_with_movement(
                     &mut next_state,
                     &mut next_session,
                     command.buttons,
                     music_ids,
                     &mut divider,
+                    command.continuous_step,
                 )?;
                 require_consumed_divider_trace("apply overworld input", &divider)?;
                 *state = next_state;

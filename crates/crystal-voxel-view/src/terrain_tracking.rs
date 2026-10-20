@@ -5,7 +5,90 @@ use bevy::prelude::*;
 use crystal_render_api::VisualWorldFrame;
 
 pub(super) fn offset(built: &VisualWorldFrame, live: &VisualWorldFrame) -> Vec2 {
-    (built.grid_origin - live.grid_origin).as_vec2() * live.tile_size
+    let shift = built.connected_source_shift(live).unwrap_or(IVec2::ZERO);
+    (built.grid_origin + shift - live.grid_origin).as_vec2() * live.tile_size
+}
+
+/// Prove that the same retained source cells cover a connected viewport.
+/// The atlas and build receipt remain owned by their original source frame.
+pub fn connected_frame_shift(built: &VisualWorldFrame, live: &VisualWorldFrame) -> Result<IVec2, &'static str> {
+    if built.map_id == live.map_id { return Err("same map uses ordinary retention"); }
+    let _trace=crate::loading_trace::span("region.prove_connected", || serde_json::json!({"map":live.map_id.as_ref()}));
+    if !built.active || !live.active || built.validate().is_err() || live.validate().is_err() {
+        return Err("invalid connected frame");
+    }
+    let shift = built.connected_source_shift(live).ok_or("unproven connected placement")?;
+    if built.grid_size != live.grid_size || built.tile_size != live.tile_size
+        || built.viewport_size != live.viewport_size || built.tiles.len() != live.tiles.len()
+        || built.tiles.is_empty() { return Err("different retained grid geometry"); }
+    if crate::interior_cutaway::is_cave(built) || crate::interior_cutaway::is_cave(live)
+        || built.tiles.iter().chain(&live.tiles).any(|t| crate::interior::has_back_wall(&t.source.tileset_id)) {
+        return Err("connected retention requires outdoor terrain");
+    }
+    let delta = live.grid_origin - built.grid_origin - shift;
+    let visible = (live.viewport_size / live.tile_size).ceil().as_ivec2();
+    let allowance = ((live.grid_size.as_ivec2() - visible) / 4).max(IVec2::ZERO);
+    if delta.abs().cmpgt(allowance).any() { return Err("connected view exhausts retained halo"); }
+    let owned = |frame: &VisualWorldFrame, p: IVec2| frame.source_regions.iter().any(|r| {
+        let q = p - r.origin;
+        q.cmpge(IVec2::ZERO).all() && q.cmplt(r.size.as_ivec2()).all()
+    });
+    let levels = |frame: &VisualWorldFrame, p: IVec2| -> ([f32; 4], bool, Option<f32>) {
+        let Some(d) = frame.terrace_datum.as_deref() else { return ([0.; 4], false, None); };
+        let q = p - d.origin;
+        let height = if q.cmpge(IVec2::ZERO).all() && q.cmplt(d.size.as_ivec2()).all() {
+            d.levels[(q.y as u32 * d.size.x + q.x as u32) as usize]
+        } else { [0.; 4] };
+        (height, d.water_barrier_at(p), d.open_water_at(p))
+    };
+    let width = built.grid_size.x as i32;
+    let height = built.grid_size.y as i32;
+    for tile in &live.tiles {
+        let new = IVec2::new(tile.column as i32, tile.row as i32);
+        let old = new + delta;
+        // The outer quarter halo is reserved for replacement work, as in
+        // ordinary same-map retention. Compare the complete retained inner
+        // band, including its context beyond the LCD viewport.
+        if new.cmplt(allowance).any()
+            || new.cmpge(live.grid_size.as_ivec2() - allowance).any() { continue; }
+        if old.x < 0 || old.y < 0 || old.x >= width || old.y >= height { continue; }
+        let previous = &built.tiles[(old.y * width + old.x) as usize];
+        let old_point = built.grid_origin + old;
+        let new_point = live.grid_origin + new;
+        if previous.source != tile.source || previous.priority != tile.priority {
+            return Err("connected source cells differ");
+        }
+        if previous.texture != tile.texture && !(previous.animation_frames.is_some()
+            && previous.animation_frames == tile.animation_frames) {
+            return Err("connected source art differs");
+        }
+        if !owned(built, old_point) && !owned(live, new_point) {
+            // Synthetic fill is not native acreage, but its source border,
+            // local seeds and paint must remain stable through the handoff.
+            if built.scenery_map_at(old.x as u32,old.y as u32) != live.scenery_map_at(tile.column,tile.row)
+                || built.scenery_grid_origin_at(old.x as u32,old.y as u32)+old
+                    != live.scenery_grid_origin_at(tile.column,tile.row)+new {
+                return Err("connected border style differs");
+            }
+            continue;
+        }
+        if owned(built, old_point) || owned(live, new_point) {
+            if !owned(built, old_point) || !owned(live, new_point)
+                || built.source_map_at(old.x as u32, old.y as u32) != live.source_map_at(tile.column, tile.row)
+                || built.source_grid_origin_at(old.x as u32, old.y as u32) + old
+                    != live.source_grid_origin_at(tile.column, tile.row) + new {
+                return Err("connected source ownership differs");
+            }
+        }
+        if crate::profile::shape_for_source_on_map(&built.map_id, &previous.source)
+            != crate::profile::shape_for_source_on_map(&live.map_id, &tile.source) {
+            return Err("connected shape context differs");
+        }
+        if levels(built, old_point) != levels(live, new_point) {
+            return Err("connected elevation context differs");
+        }
+    }
+    Ok(shift)
 }
 
 pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bool {
@@ -22,7 +105,8 @@ pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bo
     {
         return false;
     }
-    let delta = live.grid_origin - built.grid_origin;
+    let delta = live.grid_origin - built.grid_origin
+        - built.connected_source_shift(live).unwrap_or(IVec2::ZERO);
     // Retain half the authored halo for camera pitch and complete objects.
     let visible = (live.viewport_size / live.tile_size).ceil().as_ivec2();
     let allowance = ((live.grid_size.as_ivec2() - visible) / 4).max(IVec2::ZERO);
@@ -71,7 +155,8 @@ pub(super) fn refresh_animation(
     live: &VisualWorldFrame,
     images: &mut Assets<Image>,
 ) -> Result<bool, ()> {
-    let delta = live.grid_origin - built.grid_origin;
+    let delta = live.grid_origin - built.grid_origin
+        - built.connected_source_shift(live).unwrap_or(IVec2::ZERO);
     let width = built.grid_size.x as i32;
     let height = built.grid_size.y as i32;
     let mut updates = Vec::new();
@@ -118,7 +203,8 @@ pub(super) fn align_footings(
     output: &mut Vec<f32>,
 ) {
     output.clear();
-    let delta = live.grid_origin - built.grid_origin;
+    let delta = live.grid_origin - built.grid_origin
+        - built.connected_source_shift(live).unwrap_or(IVec2::ZERO);
     let width = built.grid_size.x as i32;
     let height = built.grid_size.y as i32;
     for y in 0..live.grid_size.y as i32 {

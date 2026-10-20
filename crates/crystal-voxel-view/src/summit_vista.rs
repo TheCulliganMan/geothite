@@ -402,6 +402,16 @@ fn sync(
         return;
     }
     if build.revision != backdrop.revision || build.profile_revision != profiles.revision {
+        // The active scene already prepares these exact images. Wait for its
+        // publication instead of decoding PNGs on the frame thread and making
+        // a second pair of GPU textures for the panorama.
+        let (Some(stone), Some(bedrock)) =
+            (&terrain_cache.painted_stone, &terrain_cache.painted_bedrock)
+        else {
+            world_status.terrain_pending = true;
+            world_status.active_frames = 0;
+            return;
+        };
         if let Some(root) = build.root.take() {
             commands.entity(root).despawn();
         }
@@ -415,9 +425,8 @@ fn sync(
             .id();
         let mut material = crate::solid_terrain_material();
         material.extension.cave_reveal = Vec4::new(0., 0., 2., 0.);
-        material.extension.painted_stone = Some(images.add(crate::painted_stone::image()));
-        material.extension.painted_bedrock =
-            Some(images.add(crate::painted_stone::bedrock_image()));
+        material.extension.painted_stone = Some(stone.clone());
+        material.extension.painted_bedrock = Some(bedrock.clone());
         build.solid = Some(materials.add(material));
         build.root = Some(root);
         build.attachment = None;
@@ -567,6 +576,52 @@ fn sync(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn panorama_waits_for_shared_paint_and_reuses_the_active_image_handles() {
+        use crystal_render_api::{VisualTile,VisualTileSource};
+        AsyncComputeTaskPool::get_or_init(||bevy::tasks::TaskPoolBuilder::new().num_threads(1).build());
+        let mut app=App::new();
+        app.insert_resource(VisualWorldFrame {
+            active:true,map_id:"TinTowerRoof".into(),
+            tiles:vec![VisualTile {column:0,row:0,texture:Handle::default(),animation_frames:None,priority:false,
+                source:VisualTileSource {tileset_id:"tower".into(),metatile_id:0,tile_index:0,subtile_column:0,subtile_row:0}}],
+            ..default()
+        }).insert_resource(VoxelViewSettings {enabled:true,..default()})
+            .insert_resource(SummitBackdrop {revision:Some(1),
+                maps:vec![SummitBackdropMap {frame:Arc::new(VisualWorldFrame::default()),origin_source:IVec2::ZERO}],
+                ..default()})
+            .init_resource::<crate::TerrainRevisionCache>()
+            .init_resource::<crate::live_profiles::LiveProfiles>()
+            .init_resource::<SummitBackdropStatus>()
+            .init_resource::<VoxelViewStatus>()
+            .init_resource::<Assets<Mesh>>()
+            .init_resource::<Assets<Image>>()
+            .init_resource::<Assets<VoxelMaterial>>()
+            .add_systems(Update,sync);
+        app.update();
+        assert!(app.world().resource::<VoxelViewStatus>().terrain_pending);
+        assert_eq!(app.world().resource::<Assets<Image>>().len(),0);
+        assert_eq!(app.world().resource::<Assets<VoxelMaterial>>().len(),0,
+            "pending paint must not create a fallback material or decode on the frame thread");
+        let (stone,bedrock)={
+            let mut images=app.world_mut().resource_mut::<Assets<Image>>();
+            (images.add(Image::default()),images.add(Image::default()))
+        };
+        {
+            let mut cache=app.world_mut().resource_mut::<crate::TerrainRevisionCache>();
+            cache.painted_stone=Some(stone.clone());cache.painted_bedrock=Some(bedrock.clone());
+        }
+        app.update();
+        assert_eq!(app.world().resource::<Assets<Image>>().len(),2,
+            "the panorama must allocate no duplicate painted images");
+        let materials=app.world().resource::<Assets<VoxelMaterial>>();
+        assert_eq!(materials.len(),1);
+        let material=materials.iter().next().unwrap().1;
+        assert_eq!(material.extension.painted_stone.as_ref(),Some(&stone));
+        assert_eq!(material.extension.painted_bedrock.as_ref(),Some(&bedrock));
+    }
+
     #[test]
     fn authored_border_fills_every_gap_without_covering_any_map_cell() {
         let maps = [

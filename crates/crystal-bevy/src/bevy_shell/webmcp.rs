@@ -278,6 +278,8 @@ fn finish_webmcp_request(
     glyphs: Query<(&Sprite, &Transform, &Visibility)>,
     #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
     voxel_status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
+    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+    battle_status: Option<Res<crystal_voxel_view::BattleViewStatus>>,
 ) {
     WEBMCP_BRIDGE.with_borrow_mut(|bridge| {
         let Some(pending) = bridge.pending.as_ref() else { return; };
@@ -315,9 +317,32 @@ fn finish_webmcp_request(
                             "terrain_builds": status.terrain_builds,
                             "terrain_map": status.terrain_map,
                             "terrain_pending": status.terrain_pending,
+                            "connected_terrain": status.connected_terrain,
                             "profiles_pending": status.profiles_pending,
                             "inactive_reason": status.inactive_reason,
                             "scenery_full_detail": crystal_voxel_view::scenery_full_detail_enabled(),
+                            "understory_full_detail": crystal_voxel_view::understory_full_detail_enabled(),
+                        });
+                    }
+                    #[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+                    if let Some(status) = battle_status.as_ref() {
+                        value["presentation"]["battle_view"] = serde_json::json!({
+                            "trainer_anchor":runtime.battle_origin.bound_trainer.as_ref().map(|bound|serde_json::json!({
+                                "warm_checked":bound.candidate.warm_checked,
+                                "capture_attempted":bound.candidate.capture_attempted,
+                                "has_anchors":bound.candidate.anchors.is_some(),
+                                "minimum_revision":bound.candidate.minimum_snapshot_revision,
+                                "map":bound.candidate.source.map_name,
+                            })),
+                            "active":status.active,"prepared":status.prepared,
+                            "last_error":status.last_error,
+                            "scenery":status.map_scenery_id,
+                            "scenery_error":status.map_scenery_fallback_reason,
+                            "capture_error":status.capture_fallback_reason,
+                            "capture_ready":status.row_capture_ready,
+                            "capture_pending":status.row_capture_pending,
+                            "modeled_species":status.modeled_species,
+                            "source_art_species":status.source_art_species,
                         });
                     }
                     value

@@ -3507,6 +3507,7 @@ fn spawn_battle_trainer_marker_columns(
             },
 Transform::from_translation(position),),
         BattleBattlerMarker,
+        BattlePortraitMarker,
     ));
     Ok(())
 }

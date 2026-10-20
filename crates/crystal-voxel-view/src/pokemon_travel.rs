@@ -35,15 +35,15 @@ pub(super) fn style(name: &str) -> Style {
         | "articuno" | "zapdos" | "moltres" | "dragonite" | "noctowl" | "ledyba" | "ledian"
         | "yanma" | "togetic" | "murkrow" | "skarmory" | "lugia" | "ho_oh" | "celebi" => Fly,
         "gligar" | "mantine" | "jumpluff" | "hoppip" | "skiploom" => Glide,
-        "horsea" | "seadra" | "kingdra" | "gyarados" | "goldeen" | "seaking"
-        | "chinchou" | "lanturn" | "remoraid" | "qwilfish" | "lapras" => Swim,
+        "horsea" | "seadra" | "kingdra" | "gyarados"
+        | "chinchou" | "lanturn" | "qwilfish" => Swim,
         "cloyster" | "shellder" | "mew" | "gastly" | "haunter" | "misdreavus" | "magnemite"
         | "magneton" | "geodude" | "koffing" | "weezing" | "porygon" | "porygon2" | "tentacool"
         | "tentacruel" | "staryu" | "starmie" => Float,
         "ekans" | "arbok" | "onix" | "steelix" | "dratini" | "dragonair" | "dunsparce" => Slither,
         "bulbasaur" | "ivysaur" | "venusaur" => Toad,
         "exeggcute" => ClusterHop,
-        "magikarp" => Flop,
+        "magikarp" | "goldeen" | "seaking" | "remoraid" => Flop,
         "poliwag" | "politoed" | "natu" | "sentret" | "kangaskhan" | "sunkern" | "cleffa"
         | "igglybuff" | "pichu" | "togepi" | "azumarill" | "marill" | "oddish" | "bellsprout"
         | "weepinbell" | "victreebel" | "pineco" | "forretress" | "kakuna" | "metapod"
@@ -64,7 +64,7 @@ pub(super) fn style(name: &str) -> Style {
         | "snubbull" | "flaaffy" | "tangela" => Waddle,
         "caterpie" | "weedle" | "shuckle" | "omanyte" | "omastar" => Crawl,
         "paras" | "parasect" | "spinarak" | "ariados" | "kabuto" | "krabby" | "kingler" => Scuttle,
-        "seel" | "dewgong" | "grimer" | "muk" | "ditto" | "slugma" | "magcargo" | "jynx"
+        "lapras" | "seel" | "dewgong" | "grimer" | "muk" | "ditto" | "slugma" | "magcargo" | "jynx"
         | "octillery" => Slide,
         "diglett" | "dugtrio" => Burrow,
         "voltorb" | "electrode" => Roll,
@@ -154,6 +154,40 @@ pub(super) fn build(rig: &mut SpeciesRig) {
     let kind = style(rig.species.name());
     let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
     let swimming_wave = rig.species.name() == "gyarados";
+    if kind == Style::Flop {
+        fish_fins::build(rig);
+    }
+    if matches!(rig.species.name(), "seel" | "dewgong") {
+        // The canonical resting paddle tips were fixed on the presentation
+        // root. A world pull needs the complete fan and its folds on one hinge.
+        for part in &rig.anatomy {
+            if !part.name.starts_with("Flipper") { continue; }
+            let side = part.name.split_ascii_whitespace().find_map(|word|word.parse::<i32>().ok())
+                .expect("authored seal flipper side");
+            let suffix = if side < 0 { "/flipper_left" } else { "/flipper_right" };
+            let owner = rig.joints.iter().position(|joint|joint.name.ends_with(suffix)).unwrap();
+            for v in part.vertices.clone() {
+                rig.joint_indices[v] = [owner as u16,0,0,0];
+                rig.joint_weights[v] = [1.,0.,0.,0.];
+            }
+        }
+    }
+    if rig.species.name() == "lapras" {
+        for part in &rig.anatomy {
+            if !part.name.to_ascii_lowercase().contains("flipper") { continue; }
+            let rear=part.name.to_ascii_lowercase().contains("rear");
+            let side: i32=part.name.split_ascii_whitespace().last().unwrap().parse().unwrap();
+            let suffix=match (rear,side<0) {
+                (false,true)=>"/flipper_left",(false,false)=>"/flipper_right",
+                (true,true)=>"/rear_left",(true,false)=>"/rear_right",
+            };
+            let owner=rig.joints.iter().position(|joint|joint.name.ends_with(suffix)).unwrap();
+            for v in part.vertices.clone() {
+                rig.joint_indices[v]=[owner as u16,0,0,0];
+                rig.joint_weights[v]=[1.,0.,0.,0.];
+            }
+        }
+    }
     if swimming_wave || kind == Style::Slither && !matches!(rig.species.name(), "onix" | "steelix") {
         const STRIPS: usize = 12;
         let start = rig.joints.len();
@@ -194,6 +228,38 @@ pub(super) fn build(rig: &mut SpeciesRig) {
             for (slot, &(joint, weight)) in contributions.iter().take(4).enumerate() {
                 rig.joint_indices[v][slot] = joint;
                 rig.joint_weights[v][slot] = weight / total;
+            }
+        }
+    }
+    if matches!(rig.species.name(), "slugma" | "magcargo") {
+        // Only the soft foot receives peristaltic skin. The authored neck,
+        // eyes and Magcargo shell keep their existing rigid owners.
+        let start = rig.joints.len();
+        let lo = rig.neutral_bounds.0.z;
+        let span = (rig.neutral_bounds.1.z - lo).max(height * 0.01);
+        for strip in 0..10 {
+            let pivot = Vec3::Z * (lo + span * strip as f32 / 9.);
+            rig.joints.push(Joint { name: format!("{}/slide_foot_{strip}", rig.species.name()),
+                parent: Some(0), bind: Transform::from_translation(pivot),
+                inverse_bind: Mat4::from_translation(-pivot) });
+        }
+        for v in 0..rig.neutral.positions.len() {
+            let point = Vec3::from_array(rig.neutral.positions[v]);
+            let soft = rig.joint_indices[v].iter().zip(rig.joint_weights[v])
+                .all(|(&joint, weight)| weight == 0. || joint == 0
+                    || rig.joints[joint as usize].name.ends_with("/mantle"));
+            let blend = (1. - (point.y - rig.neutral_bounds.0.y) / (height * 0.32)).clamp(0., 1.);
+            if !soft || blend == 0. { continue; }
+            let position = ((point.z - lo) / span * 9.).clamp(0., 9.);
+            let a = (position.floor() as usize).min(8);
+            let t = position - a as f32;
+            let mut weights: Vec<_> = rig.joint_indices[v].iter().copied()
+                .zip(rig.joint_weights[v]).map(|(joint,w)|(joint,w*(1.-blend))).collect();
+            weights.extend([((start+a) as u16,blend*(1.-t)),((start+a+1) as u16,blend*t)]);
+            weights.sort_by(|a,b|b.1.total_cmp(&a.1));
+            let total: f32 = weights.iter().take(4).map(|p|p.1).sum();
+            for (slot,(joint,w)) in weights.into_iter().take(4).enumerate() {
+                rig.joint_indices[v][slot]=joint;rig.joint_weights[v][slot]=w/total;
             }
         }
     }
@@ -287,6 +353,49 @@ pub(super) fn prepare(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Tra
             * Quat::from_euler(bevy::prelude::EulerRot::XYZ, pitch, yaw, roll))
         .normalize();
     }
+    if matches!(name, "slugma" | "magcargo") {
+        for (i,joint) in rig.joints.iter().enumerate() {
+            if let Some(strip) = joint.name.rsplit('/').next().unwrap().strip_prefix("slide_foot_") {
+                let strip: usize = strip.parse().expect("soft-foot strip");
+                let clock = phase - strip as f32 * TAU / 9.;
+                pose[i].rotation = Quat::from_rotation_z(clock.sin() * 0.12 * weight);
+                pose[i].translation.z += height * clock.sin() * 0.025 * weight;
+                pose[i].translation.y += height * (1. - clock.cos()) * 0.012 * weight;
+            }
+        }
+    }
+    if name == "lapras" {
+        for (i,joint) in rig.joints.iter().enumerate() {
+            let label=joint.name.rsplit('/').next().unwrap();
+            let rear=matches!(label,"rear_left"|"rear_right");
+            if !rear && !matches!(label,"flipper_left"|"flipper_right") { continue; }
+            let side=if label.ends_with("left") {-1.} else {1.};
+            let clock=phase-if rear {0.8} else {0.};
+            let rotation=Quat::from_rotation_y(side*clock.sin()*if rear {0.12} else {0.35}*weight)
+                *Quat::from_rotation_z(side*(1.-clock.cos())*if rear {0.03} else {0.06}*weight);
+            pose[i].rotation=(pose[i].rotation*rotation).normalize();
+        }
+    }
+    if matches!(name, "seel" | "dewgong") {
+        // Seals pull with paired foreflippers, then flex the trunk and tail.
+        // Their authored flippers are not humanoid arms or walking feet.
+        for (i, joint) in rig.joints.iter().enumerate() {
+            let suffix = joint.name.rsplit('/').next().unwrap();
+            let rotation = match suffix {
+                "body" => Quat::from_rotation_x(phase.sin() * 0.10 * weight),
+                "head" => Quat::from_rotation_x(-phase.sin() * 0.06 * weight),
+                "tail_base" => Quat::from_rotation_x((phase - 0.7).sin() * 0.18 * weight),
+                "tail_tip" => Quat::from_rotation_x((phase - 1.2).sin() * 0.14 * weight),
+                "flipper_left" | "flipper_right" => {
+                    let side = if suffix.ends_with("left") { -1. } else { 1. };
+                    Quat::from_rotation_y(side * phase.sin() * 0.48 * weight)
+                        * Quat::from_rotation_z(side * (1. + phase.cos()) * 0.12 * weight)
+                }
+                _ => continue,
+            };
+            pose[i].rotation = (pose[i].rotation * rotation).normalize();
+        }
+    }
     if name == "octillery" {
         for (i, joint) in rig.joints.iter().enumerate() {
             if let Some(tentacle) = joint
@@ -327,6 +436,39 @@ pub(super) fn finish(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Tran
     let name = rig.species.name();
     let kind = style(name);
     let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+    if matches!(name, "seel" | "dewgong" | "lapras") {
+        let mut matrices = [Mat4::IDENTITY;256];
+        rig.skin_matrices_into(pose,&mut matrices[..rig.joints.len()]).unwrap();
+        let belly = rig.anatomy.iter().filter(|part|part.name.starts_with(
+            if name=="lapras" {"Belly /"} else {"Body /"}))
+            .flat_map(|part|part.vertices.clone()).map(|v|rig.skin_point(v,&matrices).y)
+            .fold(f32::INFINITY,f32::min);
+        pose[0].translation.y -= belly;
+        // Clear the head and paddles independently instead of lifting the
+        // weight-bearing belly when a pulling tip or low muzzle reaches land.
+        for (i,joint) in rig.joints.iter().enumerate() {
+            if !joint.name.ends_with("/head") && !joint.name.ends_with("/flipper_left")
+                && !joint.name.ends_with("/flipper_right")
+                && !(name=="lapras" && (joint.name.ends_with("/rear_left")
+                    || joint.name.ends_with("/rear_right"))) { continue; }
+            rig.skin_matrices_into(pose,&mut matrices[..rig.joints.len()]).unwrap();
+            let lift = (0..rig.neutral.positions.len()).filter_map(|v| {
+                let weight: f32 = rig.joint_indices[v].iter().zip(rig.joint_weights[v])
+                    .filter(|(owner,_)| {
+                        let mut owner=**owner as usize;
+                        loop {
+                            if owner==i { return true; }
+                            let Some(parent)=rig.joints[owner].parent else { return false; };
+                            owner=parent;
+                        }
+                    }).map(|(_,w)|w).sum();
+                (weight>0.01).then(||(-rig.skin_point(v,&matrices).y/weight).max(0.))
+            }).fold(0.0_f32,f32::max);
+            let parent = joint.parent.expect("aquatic appendage parent");
+            let rotation = gait::world(rig,pose,parent).to_scale_rotation_translation().1;
+            pose[i].translation += rotation.inverse() * (Vec3::Y*lift);
+        }
+    }
     if kind == Style::Spin {
         // Turn the complete assembly after planting; solving again would
         // cancel the spin at the feet and twist the body off its supports.
@@ -372,15 +514,20 @@ pub(super) fn finish(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Tran
 pub(super) fn flop(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Transform]) {
     let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
     let pulse = airborne(phase);
-    let roll = Quat::from_rotation_z(1.15 + phase.sin() * 0.30 * weight);
+    let rock = phase.sin() * 0.30 * weight;
+    let roll = Quat::from_rotation_z(std::f32::consts::FRAC_PI_2 + rock);
     let pivot = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
     pose[0].rotation = roll * pose[0].rotation;
     pose[0].translation += pivot - roll * pivot;
     for (i, joint) in rig.joints.iter().enumerate().skip(1) {
         let label = joint.name.rsplit('/').next().unwrap();
-        let flex = if label == "tail" { 0.65 } else if label.starts_with("pectoral_") { 0.30 } else { 0. };
+        let flex = if label == "tail" { -0.65*(1.-phase.cos())*0.5*weight } else { 0. };
         pose[i].rotation = (pose[i].rotation
-            * Quat::from_rotation_y((phase - 0.5).sin() * flex * weight)).normalize();
+            * Quat::from_rotation_y(flex)).normalize();
+    }
+    for &(joint, fold) in &rig.flop_folds {
+        let flutter=Quat::from_rotation_z(-rock+(phase+joint as f32*0.9).sin()*0.08*weight);
+        pose[joint].rotation=(flutter*fold*pose[joint].rotation).normalize();
     }
     let mut matrices = [Mat4::IDENTITY; 256];
     rig.skin_matrices_into(pose, &mut matrices[..rig.joints.len()]).unwrap();
@@ -395,6 +542,34 @@ pub(super) fn swim(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Transf
         return;
     }
     swim_strokes(rig, phase, weight, pose);
+}
+
+/// Free-water articulation, separate from the grounded tentacle support path.
+pub(super) fn water_tentacles(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Transform]) {
+    let jelly = matches!(rig.species.name(), "tentacool" | "tentacruel");
+    let octopus = rig.species.name() == "octillery";
+    let nautilus = matches!(rig.species.name(), "omanyte" | "omastar");
+    if !(jelly || octopus || nautilus) { return; }
+    for (i,joint) in rig.joints.iter().enumerate().skip(1) {
+        let label = joint.name.rsplit('/').next().unwrap();
+        if jelly && label == "bell" {
+            let pulse = phase.cos() * weight;
+            pose[i].scale *= Vec3::new(1. + pulse*0.035, 1. - pulse*0.025, 1. + pulse*0.035);
+        }
+        let Some((_, suffix)) = label.split_once("tentacle_") else { continue; };
+        let order: usize = suffix.split('_').next().unwrap().parse().expect("authored tentacle number");
+        let bend = label.ends_with("_bend");
+        let clock = phase - order as f32 * 0.55 - if bend { 0.65 } else { 0. };
+        let rotation = if jelly {
+            Quat::from_euler(bevy::prelude::EulerRot::XYZ,
+                clock.sin() * if bend {0.22} else {0.13} * weight,
+                clock.cos()*0.08*weight, 0.)
+        } else {
+            Quat::from_euler(bevy::prelude::EulerRot::XYZ,
+                clock.cos()*0.14*weight, clock.sin()*0.18*weight, 0.)
+        };
+        pose[i].rotation = (pose[i].rotation * rotation).normalize();
+    }
 }
 
 pub(super) fn swim_strokes(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Transform]) {
@@ -434,11 +609,27 @@ pub(super) fn swim_strokes(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut
             Role::Tail => Quat::from_rotation_y(phase.sin() * 0.18 * weight),
             Role::Arm => Quat::from_euler(bevy::prelude::EulerRot::XYZ,
                 phase.cos() * 0.32 * weight, 0., side * phase.sin() * 0.20 * weight),
-            Role::Leg => Quat::from_rotation_x((phase + side * std::f32::consts::FRAC_PI_2).sin() * 0.22 * weight),
             Role::Wing => Quat::from_rotation_z(side * (phase + side * 0.35).sin() * 0.15 * weight),
             _ => Quat::IDENTITY,
         };
         pose[limb.joint].rotation = (pose[limb.joint].rotation * rotation).normalize();
+    }
+    // Land motion keeps legs out of `motion_limbs` because the IK solver owns
+    // them. Water has no planting solver, so stroke each top-level leg here.
+    for (i, joint) in rig.joints.iter().enumerate().skip(1) {
+        if role(&joint.name) != Role::Leg { continue; }
+        let mut ancestor = joint.parent;
+        let mut inherited = false;
+        while let Some(parent) = ancestor {
+            if role(&rig.joints[parent].name) == Role::Leg { inherited = true; break; }
+            ancestor = rig.joints[parent].parent;
+        }
+        if inherited { continue; }
+        let pivot = joint.inverse_bind.inverse().transform_point3(Vec3::ZERO);
+        let side = if pivot.x < 0. { -1. } else { 1. };
+        let rear = if rig.walk_legs.len() > 2 && pivot.z < 0. { std::f32::consts::PI } else { 0. };
+        let clock = phase + side * std::f32::consts::FRAC_PI_2 + rear;
+        pose[i].rotation = (pose[i].rotation * Quat::from_rotation_x(clock.sin() * 0.22 * weight)).normalize();
     }
     for (i, joint) in rig.joints.iter().enumerate().skip(1) {
         let label = joint.name.rsplit('/').next().unwrap();
@@ -479,6 +670,27 @@ pub(super) fn assert_contact(rig: &SpeciesRig, phase: f32, floor: f32) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn swimming_paddlers_move_their_feet_not_only_their_arms() {
+        for name in ["SQUIRTLE", "TOTODILE", "QUAGSIRE"] {
+            let rig=world_rig(crate::species_rig::for_species(name).unwrap());
+            let feet:Vec<_>=rig.anatomy.iter().filter(|p| role(&p.name)==Role::Leg)
+                .flat_map(|p|p.vertices.clone()).collect();
+            assert!(!feet.is_empty(), "{name} needs real leg surfaces for this regression");
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];
+            let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];
+            rig.sample_swimming(0.,0.,1.,&mut pose);
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            let first:Vec<_>=feet.iter().map(|&v|rig.skin_point(v,&matrices)).collect();
+            rig.sample_swimming(0.,std::f32::consts::PI,1.,&mut pose);
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            let movement=feet.iter().zip(first).map(|(&v,p)|rig.skin_point(v,&matrices).distance(p))
+                .fold(0.0_f32,f32::max);
+            let height=rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
+            assert!(movement>height*0.005,"{name} has no actual swimming foot movement");
+        }
+    }
 
     #[test]
     fn swimming_lean_keeps_the_head_looking_forward() {
@@ -557,14 +769,17 @@ mod tests {
 
     #[test]
     fn travel_magikarp_flops_on_its_side_then_lands_and_stops() {
-        let canonical = crate::species_rig::for_species("MAGIKARP").unwrap();
+        for name in ["MAGIKARP", "GOLDEEN", "SEAKING", "REMORAID"] {
+        let canonical = crate::species_rig::for_species(name).unwrap();
         let rig = world_rig(canonical);
-        assert_eq!(style("magikarp"), Style::Flop);
+        assert_eq!(style(canonical.species.name()), Style::Flop);
         let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
         let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
         let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
         let mut rise = 0.0_f32;
         let mut landings = 0;
+        let body_vertices=rig.anatomy.iter().filter(|part|part.name.starts_with("Body /"))
+            .flat_map(|part|part.vertices.clone()).collect::<Vec<_>>();
         for tick in 0..64 {
             rig.sample_locomotion(0., tick as f32 * TAU / 64., 1., &mut pose);
             assert!(pose[0].rotation * Vec3::Y != Vec3::Y);
@@ -573,6 +788,12 @@ mod tests {
                 .map(|v| rig.skin_point(v, &matrices).y)
                 .fold(f32::INFINITY, f32::min);
             assert!(floor >= -height * 0.001, "fish penetrates floor");
+            if (tick as f32/64.) < 0.60 {
+                let body_floor=body_vertices.iter().map(|&v|rig.skin_point(v,&matrices).y)
+                    .fold(f32::INFINITY,f32::min);
+                assert!(body_floor < height*0.025,
+                    "{name} stands on a fin during grounded phase {tick}: {body_floor}");
+            }
             rise = rise.max(floor);
             if floor.abs() < height * 0.001 { landings += 1; }
         }
@@ -585,7 +806,18 @@ mod tests {
             assert!(a.translation.distance(b.translation) < 1e-6);
             assert!(a.rotation.abs_diff_eq(b.rotation, 1e-6));
         }
-        assert!(battle_hovers("magikarp"), "battle presentation changed");
+        assert!(battle_hovers(canonical.species.name()), "battle presentation changed");
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        let body_floor=rig.anatomy.iter().filter(|part|part.name.starts_with("Body /"))
+            .flat_map(|part|part.vertices.clone()).map(|v|rig.skin_point(v,&matrices).y)
+            .fold(f32::INFINITY,f32::min);
+        assert!(body_floor < height*0.025,"{name} rests on a projecting appendage: {body_floor}");
+        assert!(!rig.flop_folds.is_empty());
+        assert!(canonical.flop_folds.is_empty());
+        rig.sample_swimming(0., 1.7, 1., &mut pose);
+        assert!(pose[0].rotation.abs_diff_eq(Quat::IDENTITY,0.00001),
+            "{name} remained stranded while swimming");
+        }
     }
 
     #[test]
@@ -773,4 +1005,105 @@ mod tests {
             "three moles move as a rigid group"
         );
     }
+    #[test]
+    fn slug_foot_wave_deforms_soft_tissue_keeps_shell_rigid_and_stops() {
+        for name in ["SLUGMA", "MAGCARGO"] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+            assert_eq!(rig.neutral.positions, canonical.neutral.positions);
+            let soft: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v|
+                rig.joint_indices[v].iter().zip(rig.joint_weights[v]).any(|(&j,w)|
+                    w > 0.2 && rig.joints[j as usize].name.contains("/slide_foot_"))).collect();
+            assert!(!soft.is_empty());
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let mut first = Vec::new();
+            let mut motion = 0.0_f32;
+            for frame in 0..16 {
+                rig.sample_locomotion(0., frame as f32 * TAU / 16., 1., &mut pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let floor = rig.ground_vertices.iter().map(|&v|rig.skin_point(v,&matrices).y)
+                    .fold(f32::INFINITY,f32::min);
+                assert!(floor >= -height*0.00001 && floor < height*0.005, "{name} foot lost contact: {floor}");
+                let points: Vec<_> = soft.iter().map(|&v|rig.skin_point(v,&matrices)).collect();
+                if frame == 0 { first = points; }
+                else { for (a,b) in first.iter().zip(points) { motion=motion.max(a.distance(b)); } }
+                for v in 0..canonical.neutral.positions.len() {
+                    if canonical.joint_indices[v].iter().zip(canonical.joint_weights[v]).any(|(&j,w)|
+                        w > 0. && canonical.joints[j as usize].name.ends_with("/shell")) {
+                        assert_eq!(rig.joint_indices[v],canonical.joint_indices[v]);
+                        assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);
+                    }
+                }
+            }
+            assert!(motion > height*0.01, "{name} still slides rigidly");
+            rig.sample_locomotion(0., 1.7, 0., &mut pose);
+            rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+            for &v in &soft { assert!(rig.skin_point(v,&matrices)
+                .distance(Vec3::from_array(rig.neutral.positions[v])) < height*0.00001); }
+        }
+    }
+
+    #[test]
+    fn seals_pull_with_flippers_keep_belly_contact_and_stop_on_land() {
+        for name in ["SEEL", "DEWGONG"] {
+            let rig = world_rig(crate::species_rig::for_species(name).unwrap());
+            let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+            let vertices: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v|
+                rig.joint_indices[v].iter().zip(rig.joint_weights[v]).any(|(&j,w)|
+                    w > 0.2 && rig.joints[j as usize].name.contains("/flipper_"))).collect();
+            assert!(!vertices.is_empty(), "{name} has no flipper surfaces");
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            let mut first = Vec::new();
+            let mut movement = 0.0_f32;
+            for tick in 0..32 {
+                rig.sample_locomotion(0., tick as f32 * TAU / 32., 1., &mut pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let points: Vec<_> = vertices.iter().map(|&v|rig.skin_point(v,&matrices)).collect();
+                if tick == 0 { first = points; }
+                else { for (a,b) in first.iter().zip(points) { movement=movement.max(a.distance(b)); } }
+                let floor = (0..rig.neutral.positions.len()).map(|v|rig.skin_point(v,&matrices).y)
+                    .fold(f32::INFINITY,f32::min);
+                assert!(floor >= -height*0.00001 && floor < height*0.01,
+                    "{name} belly lost the substrate: {floor}");
+            }
+            assert!(movement > height*0.025, "{name} still slides without pulling");
+            rig.sample_locomotion(0., 1.3, 0., &mut pose);
+            let stopped = pose.clone();
+            rig.sample_locomotion(0., 4.8, 0., &mut pose);
+            for (a,b) in pose.iter().zip(stopped) {
+                assert!(a.translation.abs_diff_eq(b.translation, 0.00001));
+                assert!(a.rotation.abs_diff_eq(b.rotation, 0.00001));
+            }
+        }
+    }
+
+    #[test]
+    fn water_tentacles_stroke_actual_surfaces_and_stop_without_land_planting() {
+        for name in ["OCTILLERY", "TENTACOOL", "TENTACRUEL", "OMANYTE", "OMASTAR"] {
+            let rig = world_rig(crate::species_rig::for_species(name).unwrap());
+            let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+            let vertices: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v|
+                rig.joint_indices[v].iter().zip(rig.joint_weights[v]).any(|(&j,w)|
+                    w > 0.2 && rig.joints[j as usize].name.contains("tentacle_"))).collect();
+            assert!(!vertices.is_empty(), "{name} lacks tentacle surfaces");
+            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];
+            let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];
+            rig.sample_swimming(0.,0.,1.,&mut pose);
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            let first:Vec<_>=vertices.iter().map(|&v|rig.skin_point(v,&matrices)).collect();
+            rig.sample_swimming(0.,std::f32::consts::PI,1.,&mut pose);
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            let motion=vertices.iter().zip(first).map(|(&v,p)|rig.skin_point(v,&matrices).distance(p))
+                .fold(0.0_f32,f32::max);
+            assert!(motion > height*0.005, "{name} tentacles remain rigid: {motion}");
+            rig.sample_swimming(0.,1.7,0.,&mut pose);
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for &v in &vertices {assert!(rig.skin_point(v,&matrices)
+                .distance(Vec3::from_array(rig.neutral.positions[v])) < height*0.00001);}
+        }
+    }
+
 }

@@ -163,7 +163,7 @@ struct Bounds {
 /// Immutable scenery bounds, indexed once when the encounter is frozen.
 /// Branch bounds only reject impossible hits; leaves retain the exact sight
 /// predicate used by the original flat scan.
-#[derive(Default)]
+#[derive(Clone, Default)]
 struct StaticBlockers {
     bounds: Vec<Bounds>,
     indices: Vec<usize>,
@@ -173,6 +173,7 @@ impl std::ops::Deref for StaticBlockers {
     type Target = [Bounds];
     fn deref(&self) -> &Self::Target { &self.bounds }
 }
+#[derive(Clone)]
 struct BlockerNode {
     bounds: Bounds,
     range: std::ops::Range<usize>,
@@ -433,17 +434,50 @@ struct FrozenLeaf {
     sight_coverage: Option<std::sync::Arc<[Aabb]>>,
     grass_coverage: Option<std::sync::Arc<[Aabb]>>,
 }
+#[derive(Clone)]
 struct FrozenMaterial {
     alpha_cutoff: Option<f32>,
     handle: Handle<VoxelMaterial>,
     object: Option<Entity>,
 }
+#[derive(Clone)]
 struct FrozenObject {
     bounds: Bounds,
     backdrop: Vec<Bounds>,
     surface: Option<(crate::occluder_fade::RetainedSurface, Transform)>,
     faded: bool,
     opacity: f32,
+}
+/// The frozen generation never changes object bounds. Keep the exact retained
+/// surface predicate at leaves; union bounds only prune impossible ray hits.
+#[derive(Clone)]
+struct ObjectSightIndex {
+    entities: Vec<Entity>,
+    bounds: StaticBlockers,
+}
+impl ObjectSightIndex {
+    fn new(objects: &HashMap<Entity, FrozenObject>) -> Self {
+        let entities: Vec<_> = objects.keys().copied().collect();
+        let bounds = StaticBlockers::new(entities.iter().map(|id| objects[id].bounds).collect());
+        Self { entities, bounds }
+    }
+
+    fn blocks(&self, objects: &HashMap<Entity, FrozenObject>, start: Vec3, end: Vec3, height: f32) -> bool {
+        !self.bounds.nodes.is_empty() && self.query(0, objects, start, end, height)
+    }
+
+    fn query(&self, index: usize, objects: &HashMap<Entity, FrozenObject>, start: Vec3, end: Vec3, height: f32) -> bool {
+        let node = &self.bounds.nodes[index];
+        if node.bounds.max.y <= height || !node.bounds.segment(start, end) { return false; }
+        if let Some([left, right]) = node.children {
+            return self.query(left, objects, start, end, height)
+                || self.query(right, objects, start, end, height);
+        }
+        self.bounds.indices[node.range.clone()].iter().any(|&index| {
+            let object = &objects[&self.entities[index]];
+            object.bounds.max.y > height && object.blocks(start, end)
+        })
+    }
 }
 impl FrozenObject {
     fn blocks(&self, start: Vec3, end: Vec3) -> bool {
@@ -476,6 +510,7 @@ fn opacity_mode(opacity: f32) -> AlphaMode {
         AlphaMode::Blend
     }
 }
+#[derive(Clone)]
 struct FrozenScene {
     derived_stage: bool,
     /// Original source feet remain immutable when Pokémon staging moves onto
@@ -488,6 +523,7 @@ struct FrozenScene {
     static_blockers: StaticBlockers,
     grass_lens_blockers: StaticBlockers,
     objects: HashMap<Entity, FrozenObject>,
+    object_sight: Option<ObjectSightIndex>,
     backdrop_bounds: Vec<Bounds>,
     materials: Vec<FrozenMaterial>,
     images: Vec<Handle<Image>>,
@@ -502,8 +538,16 @@ struct FrozenScene {
     grass_contact: [Vec4; 2],
     contact_shape: [Vec4; 2],
 }
+impl FrozenScene {
+    fn objects_block(&self, start: Vec3, end: Vec3, height: f32) -> bool {
+        self.object_sight.as_ref().map_or_else(
+            || self.objects.values().any(|object| object.bounds.max.y > height && object.blocks(start, end)),
+            |index| index.blocks(&self.objects, start, end, height),
+        )
+    }
+}
 
-#[derive(Resource, Default)]
+#[derive(Resource, Clone, Default)]
 pub(super) struct EncounterTerrain {
     shot_score: Option<f32>,
     generation: Option<u64>,
@@ -513,7 +557,111 @@ pub(super) struct EncounterTerrain {
     fog: Option<(f32, f32)>,
     reason: Option<&'static str>,
 }
+/// Resumable exhaustive camera search for single-threaded render hosts. Each
+/// call evaluates at most one supported stage; the live retained scene is never
+/// mutated until its completed fit is rechecked by `apply_fit`.
+#[cfg(any(target_arch = "wasm32", test))]
+pub(super) struct CameraFitSearch {
+    pub scenery: EncounterTerrain,
+    pub layout: BattleSceneLayout,
+    bodies: [Option<BattleBody>; 2],
+    viewport: Vec2,
+    tier: usize,
+    pairs: Option<Vec<[Vec3; 2]>>,
+    stage: usize,
+    best: Option<(f32, BattleSceneLayout, [Vec3; 2])>,
+}
+#[cfg(any(target_arch = "wasm32", test))]
+impl CameraFitSearch {
+    pub fn new(scenery: EncounterTerrain, layout: BattleSceneLayout,
+        bodies: [Option<BattleBody>; 2], viewport: Vec2) -> Self {
+        Self { scenery, layout, bodies, viewport, tier: 0, pairs: None, stage: 0, best: None }
+    }
+    /// Amortize skipped/unsupported stages while limiting work between stage
+    /// boundaries. One stage remains indivisible; this is not a hard deadline.
+    pub fn advance_frame(&mut self) -> Option<bool> {
+        let start = bevy::platform::time::Instant::now();
+        loop {
+            if let Some(result) = self.advance() { return Some(result); }
+            if start.elapsed() >= std::time::Duration::from_millis(4) { return None; }
+        }
+    }
+    /// None means that further preparation frames are required.
+    pub fn advance(&mut self) -> Option<bool> {
+        let (elevations, yaws): (&[f32], &[f32]) = match self.tier {
+            0 => (&LOW_SHOT_ELEVATIONS, &SHOT_YAWS),
+            1 => (&HIGH_SHOT_ELEVATIONS, &SHOT_YAWS),
+            2 => (&HIGH_SHOT_ELEVATIONS, &END_ON_SHOT_YAWS),
+            _ => return Some(false),
+        };
+        let state = &mut self.scenery;
+        if self.pairs.is_none() {
+            let mut candidate = self.layout.clone();
+            if state.establish_camera_at(&mut candidate, self.bodies, self.viewport, elevations, yaws) {
+                let scene = state.frozen.as_ref().unwrap();
+                let grass = scene.walking.as_ref().map_or(0, |g| g.grass_contacts(scene.anchors));
+                self.best = Some((state.shot_score.unwrap() + grass as f32 * 40., candidate, scene.anchors));
+            }
+            self.pairs = Some(state.frozen.as_ref().filter(|s| s.derived_stage)
+                .and_then(|s| s.walking.as_ref().map(|g| g.nearby_stage_pairs(s.source_anchors, self.bodies)))
+                .unwrap_or_default());
+            return None;
+        }
+        if let Some(anchors) = self.pairs.as_ref().unwrap().get(self.stage).copied() {
+            self.stage += 1;
+            let scene = state.frozen.as_ref().unwrap();
+            let distance = anchors[0].distance(scene.source_anchors[0]);
+            let grass = scene.walking.as_ref().map_or(0, |g| g.grass_contacts(anchors));
+            if self.best.as_ref().is_some_and(|(score, _, _)|
+                maximum_shot_score() + grass as f32 * 40. - distance * 2. <= *score - 0.02) {
+                return None;
+            }
+            let Some(candidate) = BattleSceneLayout::for_map_bodies(self.bodies, anchors, self.viewport)
+                else { return None; };
+            let mut candidate = candidate.reserve_ui(self.bodies, self.layout.visible_y_range());
+            let Some(ground) = &scene.walking else { return None; };
+            if !self.bodies.into_iter().zip(candidate.body_poses).zip(anchors)
+                .all(|((body, pose), anchor)| body.zip(pose).is_none_or(|(body, pose)| ground.contains(body, pose, anchor.y))) {
+                return None;
+            }
+            state.frozen.as_mut().unwrap().anchors = anchors;
+            if state.establish_camera_at(&mut candidate, self.bodies, self.viewport, elevations, yaws) {
+                let score = state.shot_score.unwrap() - distance * 2. + grass as f32 * 40.;
+                if self.best.as_ref().is_none_or(|(previous, _, _)| score > *previous + 0.01) {
+                    self.best = Some((score, candidate, anchors));
+                }
+            }
+            return None;
+        }
+        if let Some((_, mut candidate, anchors)) = self.best.take() {
+            state.frozen.as_mut().unwrap().anchors = anchors;
+            if state.constrain_camera(&mut candidate, self.bodies, self.viewport) {
+                self.layout = candidate;
+                return Some(true);
+            }
+        }
+        if let Some(scene) = &mut state.frozen { scene.anchors = scene.source_anchors; }
+        self.tier += 1;
+        self.pairs = None;
+        self.stage = 0;
+        (self.tier == 3).then_some(false)
+    }
+}
+
 impl EncounterTerrain {
+    /// Apply only a checked shot to the live generation. Worker snapshots never
+    /// replace live opacity, handles, retained roots or animation state.
+    pub(super) fn fit_anchors(&self) -> Option<[Vec3; 2]> {
+        self.frozen.as_ref().map(|scene| scene.anchors)
+    }
+    pub(super) fn apply_fit(&mut self, layout: &mut BattleSceneLayout, anchors: [Vec3; 2], bodies: [Option<BattleBody>; 2], viewport: Vec2) -> bool {
+        let Some(scene) = &mut self.frozen else { return false; };
+        let previous = scene.anchors;
+        scene.anchors = anchors;
+        if self.constrain_camera(layout, bodies, viewport) { return true; }
+        self.frozen.as_mut().unwrap().anchors = previous;
+        false
+    }
     pub(super) fn set_visible_apertures(&mut self, camera: Transform, bodies: [Option<(BattleBody, Transform)>; 2], contacts: [Option<(BattleBody, Transform)>; 2]) {
         let Some(scene) = self.frozen.as_mut().filter(|_| self.accepted) else { return; };
         for (index, body) in bodies.into_iter().enumerate() {
@@ -817,14 +965,14 @@ impl EncounterTerrain {
         if scene.derived_stage && (scene.static_blockers.blocker(
             layout.hit_anchors[0], layout.hit_anchors[1],
             scene.anchors[0].y.min(scene.anchors[1].y) + 0.25).is_some()
-            || scene.objects.values().any(|object| object.blocks(layout.hit_anchors[0], layout.hit_anchors[1]))) {
+            || scene.objects_block(layout.hit_anchors[0], layout.hit_anchors[1], f32::NEG_INFINITY)) {
             self.reason = Some("scenery separates the battlers");
             return false;
         }
         for fraction in [0.25, 0.5, 0.75] {
             let point = layout.hit_anchors[0].lerp(layout.hit_anchors[1], fraction);
             if scene.static_blockers.blocker(layout.camera.translation, point, point.y * 0.5).is_some()
-                || scene.objects.values().any(|object| object.blocks(layout.camera.translation, point)) {
+                || scene.objects_block(layout.camera.translation, point, f32::NEG_INFINITY) {
                 self.reason = Some("foreground scenery divides the battle composition");
                 return false;
             }
@@ -840,9 +988,8 @@ impl EncounterTerrain {
                 sight_points.extend(body.sight_corners(pose).into_iter()
                     .filter(|point| point.y > scene.anchors[index].y + 0.25));
             }
-            if scene.objects.values().any(|object|
-                object.bounds.max.y > scene.anchors[index].y + 0.25
-                    && sight_points.iter().any(|&point| object.blocks(layout.camera.translation, point))) {
+            if sight_points.iter().any(|&point| scene.objects_block(
+                layout.camera.translation, point, scene.anchors[index].y + 0.25)) {
                 self.reason = Some("foreground scenery obstructs the battle shot");
                 return false;
             }
@@ -1017,12 +1164,14 @@ fn resolve_context_with_images(
         .built_source_texture
         .as_ref()
         .unwrap_or(&built.map_texture);
-    if original != &anchors.terrain.map_texture {
+    if original != &anchors.terrain.map_texture
+        && cache.verified_source_texture.as_ref() != Some(&anchors.terrain.map_texture) {
         return Err("terrain atlas provenance does not match");
     }
     let mut evidence = anchors.terrain.clone();
     // A build owns an immutable atlas copy. Its original handle is recorded at
-    // submission, so this substitution does not weaken any geometry evidence.
+    // submission; a preload may additionally authenticate the live compositor
+    // through matching source/art cells. Neither binding replaces build evidence.
     evidence.map_texture = built.map_texture.clone();
     let correspondence = if evidence.matches_built_frame(built) {
         None
@@ -1816,6 +1965,7 @@ leaf.transform,),
         omitted: StaticBlockers::new(omitted),
         static_blockers: StaticBlockers::new(static_blockers),
         grass_lens_blockers: StaticBlockers::new(grass_lens_blockers),
+        object_sight: Some(ObjectSightIndex::new(&objects)),
         objects,
         backdrop_bounds,
         materials: frozen_materials,
@@ -1863,7 +2013,7 @@ pub(super) fn sync(
     mut roots: Query<&mut Visibility, With<EncounterTerrainRoot>>,
     materials: Option<ResMut<Assets<VoxelMaterial>>>,
 ) {
-    let shown = status.active && state.accepted;
+    let shown = (status.active || status.prepared) && state.accepted;
     let Some(scene) = &mut state.frozen else {
         return;
     };
@@ -1911,6 +2061,30 @@ pub(super) fn sync(
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn indexed_objects_preserve_flat_sight_at_edges_and_height_limits() {
+        let mut objects = HashMap::new();
+        for x in -8_i32..=8 { for z in -8_i32..=8 {
+            let id = Entity::from_raw_u32(objects.len() as u32 + 1).unwrap();
+            let min = Vec3::new(x as f32 * 2.0, 0.0, z as f32 * 2.0);
+            objects.insert(id, FrozenObject {
+                bounds: Bounds { min, max: min + Vec3::new(1.0, 0.25 + (x*z).rem_euclid(7) as f32, 1.0) },
+                backdrop: Vec::new(), surface: None, faded: false, opacity: 1.0,
+            });
+        }}
+        let index = ObjectSightIndex::new(&objects);
+        for start in [Vec3::new(-20., 4., -20.), Vec3::new(20., 0.5, 20.), Vec3::new(0., 8., 0.)] {
+            for x in -10..=10 { for z in -10..=10 {
+                let end = Vec3::new(x as f32 * 2. + 1., 1., z as f32 * 2.);
+                for height in [f32::NEG_INFINITY, -1., 0.25, 1., 6., 10.] {
+                    let flat = objects.values().any(|object| object.bounds.max.y > height && object.blocks(start, end));
+                    assert_eq!(index.blocks(&objects, start, end, height), flat,
+                        "{start:?} -> {end:?}, height={height}");
+                }
+            }}
+        }
+    }
+
     #[test]
     fn indexed_scenery_preserves_flat_sight_checks_and_fixture_retirement() {
         let mut bounds = Vec::new();
@@ -2506,6 +2680,17 @@ use bevy::camera::primitives::MeshAabb;
     }
 
     #[test]
+    fn trainer_ground_preserves_verified_continuous_source_position() {
+        let (frame, mut location, heights) = trainer_fixture();
+        let cache = cache(&frame, heights);
+        Arc::make_mut(location.anchors.as_mut().unwrap()).source_foot.x += 14.08;
+        let (_, root, _) = resolve_context(&location, &cache).unwrap();
+        assert!(WalkingGround::from_context(&location, &cache, root).is_ok());
+        Arc::make_mut(location.anchors.as_mut().unwrap()).source_foot.x += frame.tile_size.x;
+        assert!(WalkingGround::from_context(&location, &cache, root).is_err());
+    }
+
+    #[test]
     fn trainer_ground_preserves_body_envelopes_elevations_and_source_displacement() {
         let (frame, location, mut heights) = trainer_fixture();
         let cell = IVec2::new(24, 22) - frame.grid_origin;
@@ -2765,6 +2950,34 @@ use bevy::camera::primitives::MeshAabb;
         );
     }
     #[test]
+    fn promoted_preload_authenticates_live_atlas_without_rewriting_its_receipt() {
+        let (mut frame, mut location, heights) = fixture();
+        for row in 0..frame.grid_size.y { for column in 0..frame.grid_size.x {
+            frame.tiles.push(crystal_render_api::VisualTile { row,column,
+                texture:frame.map_texture.clone(),priority:false,animation_frames:None,
+                source:crystal_render_api::VisualTileSource {tileset_id:"johto".into(),
+                    metatile_id:1,tile_index:1,subtile_column:0,subtile_row:0}});
+        }}
+        Arc::make_mut(location.anchors.as_mut().unwrap()).terrain.tiles=frame.tiles.clone().into();
+        frame.validate().unwrap();
+        let mut retained = cache(&frame, heights);
+        let receipt=Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(53),std::marker::PhantomData);
+        retained.built_source_texture=Some(receipt.clone());
+        retained.built_frame.as_mut().unwrap().map_texture=
+            Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(52),std::marker::PhantomData);
+        assert!(resolve_context(&location,&retained).is_err());
+        crate::bind_preloaded_compositor(&frame,&mut retained);
+        assert_eq!(retained.built_source_texture,Some(receipt.clone()));
+        assert_eq!(retained.verified_source_texture,Some(frame.map_texture.clone()));
+        assert!(resolve_context(&location,&retained).is_ok());
+        retained.built_frame.as_mut().unwrap().tiles[0].priority ^= true;
+        crate::bind_preloaded_compositor(&frame,&mut retained);
+        assert!(retained.verified_source_texture.is_none(),"changed art ownership cannot authenticate a preload");
+        assert_eq!(retained.built_source_texture,Some(receipt));
+        assert!(resolve_context(&location,&retained).is_err());
+    }
+
+    #[test]
     fn fishing_water_contact_keeps_real_support_and_rejects_missing_target_height() {
         let (frame, mut location, mut heights) = fixture();
         location.target = VisualBattleTarget::FishingWater {
@@ -2838,7 +3051,7 @@ use bevy::camera::primitives::MeshAabb;
             frozen: Some(FrozenScene {
                 root: Entity::from_raw_u32(1).unwrap(), anchors,
                 authentic,
-                omitted: StaticBlockers::default(), static_blockers: StaticBlockers::default(), grass_lens_blockers: StaticBlockers::default(), objects: HashMap::new(), backdrop_bounds: Vec::new(), materials: Vec::new(),
+                omitted: StaticBlockers::default(), static_blockers: StaticBlockers::default(), grass_lens_blockers: StaticBlockers::default(), objects: HashMap::new(), object_sight: None, backdrop_bounds: Vec::new(), materials: Vec::new(),
                 images: Vec::new(), meshes: Vec::new(), ground: 0.0,
                 walking: None, water: false, bodies: [None, None], clearance: [Vec4::ZERO; 2], clearance_shape: [Vec4::ZERO; 2], grass_contact: [Vec4::ZERO; 2], contact_shape: [Vec4::ZERO; 2], derived_stage: false, source_anchors: anchors,
             }),
@@ -2854,8 +3067,20 @@ use bevy::camera::primitives::MeshAabb;
                 }
             }
         }
+        let mut resumed = CameraFitSearch::new(state.clone(), original.clone(), bodies, viewport);
+        assert_eq!(resumed.advance(), None, "the initial low tier must yield");
+        let mut resumed_steps = 1;
+        let resumed_result = loop {
+            resumed_steps += 1;
+            assert!(resumed_steps < 10000);
+            if let Some(result) = resumed.advance_frame() { break result; }
+        };
         let mut layout = original.clone();
         assert!(state.establish_camera(&mut layout, bodies, viewport), "{:?}", state.reason());
+        assert!(resumed_result);
+        assert_eq!(resumed.layout.camera, layout.camera);
+        assert_eq!(resumed.layout.body_poses, layout.body_poses);
+        assert_eq!(resumed.scenery.fit_anchors(), state.fit_anchors());
         assert_eq!(layout.origins, original.origins);
         for (body, pose) in bodies.into_iter().zip(layout.body_poses) {
             let body = body.unwrap();let pose = pose.unwrap();
@@ -2871,9 +3096,53 @@ use bevy::camera::primitives::MeshAabb;
         let mut chosen = original.clone();
         assert!(state.establish_camera(&mut chosen, bodies, viewport));
         assert_eq!(chosen.camera, lower.camera, "a valid low shot must take precedence");
+        let worker_anchors = state.fit_anchors().unwrap();
+        let live_anchors = state.frozen.as_ref().unwrap().anchors;
+        assert!(state.apply_fit(&mut chosen.clone(), worker_anchors, bodies, viewport));
         // Removing the full wing's original ground remains a rejection.
         state.frozen.as_mut().unwrap().authentic = AuthenticBounds { min: Vec2::splat(-5.0), max: Vec2::splat(5.0) };
+        assert!(!state.apply_fit(&mut chosen.clone(), worker_anchors, bodies, viewport),
+            "a completed worker fit must recheck the actual retained ground");
+        assert_eq!(state.frozen.as_ref().unwrap().anchors, live_anchors);
+        let mut rejected = CameraFitSearch::new(state.clone(), original.clone(), bodies, viewport);
+        let rejected_result = loop {
+            if let Some(result) = rejected.advance_frame() { break result; }
+        };
+        assert!(!rejected_result);
+        assert_eq!(rejected.scenery.fit_anchors(), Some(anchors));
         assert!(!state.establish_camera(&mut original.clone(), bodies, viewport));
+
+        // Also exercise the resumable stage relocation search on witnessed
+        // source ground, including support rejection and distance pruning.
+        let (frame, location, heights) = trainer_fixture();
+        let retained = cache(&frame, heights);
+        let (feet, _, authentic) = resolve_context(&location, &retained).unwrap();
+        let ground = walking_region(&location, &retained);
+        let small = Some(BattleBody::modeled("TEST", Vec3::splat(-0.25), Vec3::new(0.25, 1., 0.25), 1.));
+        let pair = [small; 2];
+        assert!(!ground.nearby_stage_pairs(feet, pair).is_empty());
+        let scene = state.frozen.as_mut().unwrap();
+        scene.anchors = feet;
+        scene.source_anchors = feet;
+        scene.authentic = authentic;
+        scene.walking = Some(ground);
+        scene.derived_stage = true;
+        let initial = BattleSceneLayout::for_map_bodies(pair, feet, viewport).unwrap();
+        let mut resumed = CameraFitSearch::new(state.clone(), initial.clone(), pair, viewport);
+        let mut expected = initial;
+        let accepted = state.establish_camera(&mut expected, pair, viewport);
+        let mut steps = 0;
+        let actual = loop {
+            steps += 1;
+            assert!(steps < 10000);
+            if let Some(result) = resumed.advance() { break result; }
+        };
+        assert!(steps > 3, "nearby stages must resume across calls");
+        assert_eq!(actual, accepted);
+        assert_eq!(resumed.scenery.fit_anchors(), state.fit_anchors());
+        if accepted {
+            assert_eq!(resumed.layout, expected);
+        }
     }
 
     #[test]
@@ -2893,7 +3162,7 @@ use bevy::camera::primitives::MeshAabb;
             frozen: Some(FrozenScene {
                 root: Entity::from_raw_u32(1).unwrap(), anchors,
                 authentic: AuthenticBounds { min: Vec2::splat(-40.0), max: Vec2::splat(40.0) },
-                omitted: StaticBlockers::default(), static_blockers: StaticBlockers::default(), grass_lens_blockers: StaticBlockers::default(), objects: HashMap::new(), backdrop_bounds: Vec::new(), materials: Vec::new(),
+                omitted: StaticBlockers::default(), static_blockers: StaticBlockers::default(), grass_lens_blockers: StaticBlockers::default(), objects: HashMap::new(), object_sight: None, backdrop_bounds: Vec::new(), materials: Vec::new(),
                 images: Vec::new(), meshes: Vec::new(), ground: 0.0,
                 walking: None, water: false, bodies: [None, None], clearance: [Vec4::ZERO; 2], clearance_shape: [Vec4::ZERO; 2], grass_contact: [Vec4::ZERO; 2], contact_shape: [Vec4::ZERO; 2], derived_stage: false, source_anchors: anchors,
             }),
@@ -3263,7 +3532,7 @@ MeshMaterial3d(material.clone()),),
             frozen: Some(FrozenScene {
                 root: Entity::from_raw_u32(1).unwrap(), anchors,
                 authentic: AuthenticBounds { min: Vec2::new(-18.0, -12.0), max: Vec2::new(22.0, 52.0) },
-                omitted: StaticBlockers::default(), static_blockers: StaticBlockers::default(), grass_lens_blockers: StaticBlockers::default(), objects: HashMap::new(), backdrop_bounds: Vec::new(), materials: Vec::new(),
+                omitted: StaticBlockers::default(), static_blockers: StaticBlockers::default(), grass_lens_blockers: StaticBlockers::default(), objects: HashMap::new(), object_sight: None, backdrop_bounds: Vec::new(), materials: Vec::new(),
                 images: Vec::new(), meshes: Vec::new(), ground: 0.0,
                 walking: None, water: false, bodies: [None, None], clearance: [Vec4::ZERO; 2], clearance_shape: [Vec4::ZERO; 2], grass_contact: [Vec4::ZERO; 2], contact_shape: [Vec4::ZERO; 2], derived_stage: false, source_anchors: anchors,
             }),
@@ -3411,10 +3680,14 @@ MeshMaterial3d(material.clone()),),
             surface: None,
             faded: true, opacity: RESIDUAL_OPACITY,
         });
+        let scene = state.frozen.as_mut().unwrap();
+        scene.object_sight = Some(ObjectSightIndex::new(&scene.objects));
         assert!(!state.constrain_camera(&mut trial, bodies, viewport),
             "a faded wall is still an obstruction to a readable battle shot");
         assert_eq!(state.reason(), Some("foreground scenery obstructs the battle shot"));
         state.frozen.as_mut().unwrap().objects.clear();
+        let scene = state.frozen.as_mut().unwrap();
+        scene.object_sight = Some(ObjectSightIndex::new(&scene.objects));
         assert!(state.constrain_camera(&mut trial, bodies, viewport));
         state.frozen.as_mut().unwrap().derived_stage = true;
         let divider = (trial.hit_anchors[0] + trial.hit_anchors[1]) * 0.5;

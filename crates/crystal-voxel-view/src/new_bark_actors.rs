@@ -827,9 +827,25 @@ fn pokemon_world_scale(frame: &VisualWorldFrame, rig: &crate::species_rig::Speci
     let species = if rig.species.name().starts_with("unown_") { "UNOWN".into() }
         else { rig.species.name().to_ascii_uppercase() };
     let meters = *dimensions?.meters.get(&species)?;
-    let reference = crate::battle_layout::reference_span(&species, rig.neutral_bounds.0, rig.neutral_bounds.1);
+    // The travelling Furret's long body is measured nose to tail. Reposing
+    // onto four paws must not turn its listed length into shoulder height.
+    let reference = crate::battle_layout::world_reference_span(&species,rig);
     (meters.is_finite() && meters > 0. && reference > 0.).then_some(
         frame.tile_size.y * 2. * meters / reference)
+}
+
+/// Use actual published water, never map names or a sprite's shared icon.
+/// Raised support (a deck/bridge/table) keeps its ordinary land presentation.
+fn pokemon_swims_here(frame: &VisualWorldFrame, actor: &VisualActor,
+    rig: &crate::species_rig::SpeciesRig, support: f32) -> bool {
+    if !support.is_finite() || actor.source_id.starts_with("display:")
+        || !crate::species_rig::motion::swims_in_water(rig.species.name()) { return false; }
+    let Some(cell) = crate::tile_at_visual_point(frame,
+        actor_ground_point(frame, actor) + Vec2::Y * 0.01) else { return false; };
+    frame.tiles.iter().any(|tile| tile.column == cell.x && tile.row == cell.y
+        && crate::shape_for_source(&tile.source) == crate::CellShape::Water)
+        && (support <= 0.01
+            || support <= crate::mesh::native_water_support_offset(frame, cell) + 0.01)
 }
 
 fn surf_mount_seat(frame: &VisualWorldFrame,
@@ -923,7 +939,14 @@ pub(crate) fn sync(
         let requested = frame.active && enabled_map(&frame.map_id)
             && settings.as_ref().is_none_or(|settings| settings.enabled);
         let ModeledActors { actor_warmup, people_gpu, .. } = &mut *state;
-        if actor_warmup.pending(&frame, requested, people_gpu) && status.active {
+        let waiting = actor_warmup.pending(&frame, requested, people_gpu);
+        // Match native publication: a completed worker batch must not upload
+        // every new NPC body and painting on the same interactive frame.
+        let upload_pending = requested && !waiting && actor_warmup.prepared_uploads_enabled()
+            && !people_gpu.upload_next_prepared(
+                &frame.actors.iter().filter_map(character_kind).collect::<Vec<_>>(),
+                &mut meshes, &mut materials, &mut images, &mut binds);
+        if (waiting || upload_pending) && status.active {
             status.terrain_pending = true;
             status.active_frames = 0;
             return;
@@ -1124,8 +1147,12 @@ pub(crate) fn sync(
         } else if kind == actor_props::PropKind::PokeBall { scale * 0.5 }
         else { scale * kind.display_scale() };
 
+        let water_actor = rig.is_some_and(|rig| pokemon_swims_here(&frame, actor, rig, height));
+        let swimming = actor.id == VisualActorId::SurfMount || water_actor;
         let immersion = if actor.id == VisualActorId::SurfMount {
             mount_seat.map_or(0., |(seat, scale)| seat.waterline * scale)
+        } else if water_actor {
+            surf_riding::SurfSeat::for_rig(rig.expect("living aquatic rig")).waterline * prop_scale
         } else { 0. };
         let transform = Transform::from_translation(visual_point_to_voxel(render_foot, height + 0.04 - immersion))
             .with_rotation(Quat::from_rotation_y(facing_yaw(facing)))
@@ -1150,10 +1177,25 @@ pub(crate) fn sync(
                 let scroll=frame.center-Vec2::new(frame.grid_origin.x as f32*frame.tile_size.x,
                     -frame.grid_origin.y as f32*frame.tile_size.y);
                 skin.advance(time.delta_secs(), render_foot-scroll, actor.facing, prop_scale,
-                    actor.id == VisualActorId::SurfMount, &mut transforms);
+                    swimming, &mut transforms);
             }
         } else {
             let key=(kind,stone,gold_gym_stone,actor.model_palette,perched);
+            if let Some(rig) = rig {
+                let _trace = crate::loading_trace::span("pokemon.world_placement", || {
+                    let cell = crate::tile_at_visual_point(&frame,
+                        actor_ground_point(&frame, actor) + Vec2::Y * 0.01);
+                    let source = cell.and_then(|cell| frame.tiles.iter()
+                        .find(|tile| tile.column == cell.x && tile.row == cell.y));
+                    serde_json::json!({"species":rig.species.name(),
+                        "source":actor.source_id.as_ref(),"support":height,
+                        "swimming":swimming,"immersion":immersion,"scale":prop_scale,
+                        "native_water_support":cell.map(|cell|crate::mesh::native_water_support_offset(&frame,cell)),
+                        "waterline":surf_riding::SurfSeat::for_rig(rig).waterline,
+                        "tile":source.map(|tile|format!("{:?}",tile.source)),
+                        "shape":source.map(|tile|format!("{:?}",crate::shape_for_source(&tile.source)))})
+                });
+            }
             if perched && !state.prop_meshes.contains_key(&key) {
                 let rig=rig.expect("perched skin");
                 let data=actor.model_palette.map_or(rig.neutral.clone(),|palette|
@@ -1200,7 +1242,9 @@ pub(crate) fn sync(
                     }
                     data.into_mesh()
                 } else {
-                    let data = actor_props::mesh(kind);
+                    // World rigs may add flight membranes while preserving
+                    // the canonical body. Mesh and skin must share that rig.
+                    let data = rig.map_or_else(|| actor_props::mesh(kind), |rig| rig.neutral.clone());
                     let mut mesh = actor.model_palette.map_or(data.clone(), |palette|
                         crate::pokemon_appearance::mesh(&data, palette)).into_mesh();
                     if let Some(rig) = rig {
@@ -1748,6 +1792,110 @@ mod tests {
     }
 
     #[test]
+    fn aquatic_presentation_requires_real_water_and_unraised_support() {
+        let mut a = actor(); a.id = VisualActorId::Object(7); a.center = Vec2::ZERO;
+        a.source_id = "species:MAGIKARP:icon_monster".into();
+        let mut frame = VisualWorldFrame::default();
+        frame.grid_size = UVec2::ONE; frame.viewport_size = Vec2::splat(8.); frame.tile_size = Vec2::splat(8.);
+        frame.tiles.push(crystal_render_api::VisualTile {
+            column:0,row:0,texture:Handle::default(),animation_frames:None,priority:false,
+            source:crystal_render_api::VisualTileSource { tileset_id:"kanto".into(),metatile_id:0x43,
+                subtile_column:0,subtile_row:0,tile_index:0x14 },
+        });
+        for name in ["MAGIKARP", "LAPRAS", "TOTODILE", "TENTACOOL", "MANTINE", "VAPOREON"] {
+            a.source_id=format!("species:{name}:icon_monster").into();
+            let rig=crate::species_rig::for_species(name).unwrap();
+            assert!(pokemon_swims_here(&frame,&a,rig,0.), "{name}");
+            assert!(!pokemon_swims_here(&frame,&a,rig,2.), "{name} sank through a bridge");
+        }
+        for name in ["PIDGEOT", "GASTLY", "KOFFING", "PIKACHU"] {
+            a.source_id=format!("species:{name}:icon_monster").into();
+            assert!(!pokemon_swims_here(&frame,&a,crate::species_rig::for_species(name).unwrap(),0.),
+                "{name} must not be forced to swim while above water");
+        }
+        // Native standing-water bodies can share an elevated terrace datum.
+        // An additional bridge/deck above that same water must remain land.
+        a.source_id = "species:GYARADOS:icon_gyarados".into();
+        let aquatic = crate::species_rig::for_species("GYARADOS").unwrap();
+        frame.terrace_datum = Some(std::sync::Arc::new(crystal_render_api::VisualTerraceDatum {
+            origin: IVec2::ZERO, size: UVec2::ONE, levels: vec![[1.;4]].into(),
+            water_barriers: vec![].into(), open_water: None,
+        }));
+        let water = crate::profile::JUMP_LEDGE_HEIGHT;
+        assert!(pokemon_swims_here(&frame,&a,aquatic,water), "elevated lake was treated as land");
+        assert!(!pokemon_swims_here(&frame,&a,aquatic,water+2.), "deck above an elevated lake sank");
+        frame.terrace_datum = None;
+        let rig=crate::species_rig::for_species("MAGIKARP").unwrap();
+        frame.tiles[0].source.tile_index=0x2c;
+        assert!(!pokemon_swims_here(&frame,&a,rig,0.));
+        frame.tiles[0].source.tile_index=0x14;
+        a.source_id="display:MAGIKARP:icon_monster".into();
+        assert!(!pokemon_swims_here(&frame,&a,rig,0.));
+        a.source_id="species:MAGIKARP:icon_monster".into();
+        a.center=Vec2::splat(100.);
+        assert!(!pokemon_swims_here(&frame,&a,rig,0.), "unknown terrain is not water");
+    }
+
+    #[test]
+    #[ignore = "requires supplied actor assets"]
+    fn ledyba_world_actor_publishes_its_flight_membranes_with_matching_skin() {
+        let mut app = actor_test_app();
+        {
+            let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.actors[0].id = VisualActorId::Object(7);
+            frame.actors[0].source_id = "species:LEDYBA:icon_monster".into();
+        }
+        for _ in 0..3 { app.update(); }
+        let state = app.world().resource::<ModeledActors>();
+        let instance = &state.props[&VisualActorId::Object(7)];
+        let skin = instance.skin.as_ref().unwrap();
+        let canonical = crate::species_rig::for_species("LEDYBA").unwrap();
+        assert!(skin.rig.neutral.positions.len() > canonical.neutral.positions.len());
+        let mesh = app.world().get::<Mesh3d>(instance.entity).unwrap();
+        let mesh = app.world().resource::<Assets<Mesh>>().get(&mesh.0).unwrap();
+        assert_eq!(mesh.count_vertices(), skin.rig.neutral.positions.len());
+        let Some(bevy::mesh::VertexAttributeValues::Uint16x4(joints)) =
+            mesh.attribute(Mesh::ATTRIBUTE_JOINT_INDEX) else { panic!("flight mesh lacks skin"); };
+        for part in skin.rig.anatomy.iter().filter(|part| part.name.starts_with("Wing /")) {
+            assert!(part.vertices.clone().all(|v| joints[v][0] as usize >= canonical.joints.len()));
+        }
+    }
+
+    #[test]
+    #[ignore = "requires supplied actor assets"]
+    fn magikarp_switches_between_land_flop_and_water_swim_without_moving_gameplay() {
+        let mut app=actor_test_app();
+        {
+            let mut frame=app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.grid_size=UVec2::ONE;frame.viewport_size=Vec2::splat(8.);
+            frame.actors[0].id=VisualActorId::Object(7);frame.actors[0].center=Vec2::ZERO;
+            frame.actors[0].source_id="species:MAGIKARP:icon_monster".into();
+            frame.tiles.push(crystal_render_api::VisualTile {column:0,row:0,texture:Handle::default(),
+                animation_frames:None,priority:false,source:crystal_render_api::VisualTileSource {
+                    tileset_id:"kanto".into(),metatile_id:0x43,subtile_column:0,subtile_row:0,tile_index:0x2c }});
+        }
+        app.world_mut().resource_mut::<TerrainRevisionCache>().footing_heights=vec![0.];
+        for water in [false,true,false] {
+            app.world_mut().resource_mut::<VisualWorldFrame>().tiles[0].source.tile_index=if water {0x14}else{0x2c};
+            let before=app.world().resource::<VisualWorldFrame>().clone();
+            for _ in 0..3 {
+                app.world_mut().resource_mut::<Time>().advance_by(std::time::Duration::from_secs_f32(1./60.));
+                app.update();
+            }
+            let state=app.world().resource::<ModeledActors>();
+            let instance=&state.props[&VisualActorId::Object(7)];let skin=instance.skin.as_ref().unwrap();
+            let root=app.world().get::<Transform>(instance.entity).unwrap();
+            let immersion=if water {surf_riding::SurfSeat::for_rig(skin.rig).waterline*root.scale.y}else{0.};
+            assert!((root.translation.y-(0.04-immersion)).abs()<0.0001);
+            let side_tilt=(skin.pose[0].rotation*Vec3::Y).x.abs();
+            if water {assert!(side_tilt<0.01,"fish kept flopping in water");}
+            else {assert!(side_tilt>0.5,"fish floated above land");}
+            assert_eq!(*app.world().resource::<VisualWorldFrame>(),before,
+                "presentation changed authoritative actors or terrain");
+        }
+    }
+
+    #[test]
     #[ignore = "requires supplied rider rigs and paintings"]
     fn surf_riders_stay_on_the_animated_mount_through_turns_and_dismount() {
         for female in [false, true] {
@@ -1948,7 +2096,7 @@ mod tests {
         let b_skin=app.world().get::<SkinnedMesh>(b.entity).unwrap();
         assert_eq!(a_skin.inverse_bindposes,b_skin.inverse_bindposes);
         assert_eq!(app.world().get::<Mesh3d>(a.entity).unwrap().0,app.world().get::<Mesh3d>(b.entity).unwrap().0);
-        assert_eq!(a_skin.joints.len(),20); // canonical 14 plus two complete three-joint leg chains
+        assert_eq!(a_skin.joints.len(),26); // canonical 14 plus four complete three-joint leg chains
         assert!(a_skin.joints.iter().all(|joint|!b_skin.joints.contains(joint)));
         let root_transform=*app.world().get::<Transform>(roots[0]).unwrap();
         app.world_mut().resource_mut::<Time>().advance_by(std::time::Duration::from_millis(250));

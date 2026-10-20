@@ -1548,6 +1548,9 @@ pub struct RuntimeCaptureCompletionCommand {
 #[serde(deny_unknown_fields)]
 pub struct RuntimeOverworldInputCommand {
     pub buttons: Vec<GameButton>,
+    /// A continuous controller already turned while approaching this cell.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub continuous_step: bool,
     pub divider_trace: RuntimeDividerTrace,
 }
 

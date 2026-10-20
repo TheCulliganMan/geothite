@@ -171,11 +171,21 @@ impl RuntimeGameShell {
         &mut self,
         buttons: impl IntoIterator<Item = GameButton>,
     ) -> Result<&RuntimeOverworldFrame> {
+        self.tick_with_movement_after_vblank(buttons, false)
+    }
+
+    /// The continuous controller calls this at a cell boundary. It changes
+    /// turn cadence only; the same transaction owns collision and scripts.
+    pub fn tick_with_movement_after_vblank(
+        &mut self,
+        buttons: impl IntoIterator<Item = GameButton>,
+        continuous_step: bool,
+    ) -> Result<&RuntimeOverworldFrame> {
         let buttons = buttons.into_iter().collect::<Vec<_>>();
         if !self.retain_runtime_journal {
             let frame = self
                 .session
-                .apply_overworld_input_live(&self.runtime, buttons)?;
+                .apply_overworld_input_live(&self.runtime, buttons, continuous_step)?;
             self.last_frame = Some(frame);
             return self
                 .last_frame
@@ -186,6 +196,7 @@ impl RuntimeGameShell {
             &self.runtime,
             buttons,
             self.retain_runtime_journal,
+            continuous_step,
         )?;
         let mutation = self
             .apply_recorded_runtime_mutation(recorded)
@@ -222,8 +233,17 @@ impl RuntimeGameShell {
         buttons: impl IntoIterator<Item = GameButton>,
         rtc: RuntimeRtcSample,
     ) -> Result<&RuntimeOverworldFrame> {
+        self.tick_with_rtc_and_movement_after_vblank(buttons, rtc, false)
+    }
+
+    pub fn tick_with_rtc_and_movement_after_vblank(
+        &mut self,
+        buttons: impl IntoIterator<Item = GameButton>,
+        rtc: RuntimeRtcSample,
+        continuous_step: bool,
+    ) -> Result<&RuntimeOverworldFrame> {
         self.update_clock_from_datetime(rtc.date, rtc.hour, rtc.minute, rtc.second)?;
-        self.tick_after_vblank(buttons)
+        self.tick_with_movement_after_vblank(buttons, continuous_step)
     }
 
     pub fn state_checksum_frame(&self, player_id: PlayerId) -> Result<StateChecksumFrame> {

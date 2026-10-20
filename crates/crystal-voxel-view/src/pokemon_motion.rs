@@ -39,6 +39,18 @@ pub(crate) fn locomotion(name: &str) -> Locomotion {
     }
 }
 
+/// Intrinsic aquatic presentation for living map actors. Surf mounts select
+/// water motion explicitly, including species that normally travel on land.
+pub(crate) fn swims_in_water(name: &str) -> bool {
+    matches!(travel::style(name), travel::Style::Swim | travel::Style::Flop)
+        || matches!(name, "mantine" | "tentacool" | "tentacruel" | "shellder" | "cloyster"
+            | "staryu" | "starmie" | "squirtle" | "wartortle" | "blastoise" | "psyduck"
+            | "golduck" | "poliwag" | "poliwhirl" | "poliwrath" | "politoed" | "slowpoke"
+            | "slowbro" | "slowking" | "lapras" | "seel" | "dewgong" | "vaporeon" | "omanyte" | "omastar"
+            | "kabuto" | "kabutops" | "totodile" | "croconaw" | "feraligatr" | "marill"
+            | "azumarill" | "wooper" | "quagsire" | "corsola" | "octillery")
+}
+
 /// These authored tendrils support the bell instead of hovering above land.
 fn rests_on_tentacles(name: &str) -> bool {
     name.eq_ignore_ascii_case("tentacool") || name.eq_ignore_ascii_case("tentacruel")
@@ -157,6 +169,7 @@ fn quadruped(name: &str) -> bool {
     matches!(
         name,
         "bulbasaur"
+            | "furret"
             | "ivysaur"
             | "venusaur"
             | "rattata"
@@ -487,6 +500,7 @@ pub(crate) fn from_mesh(
         walk_legs: Vec::new(),
         walk_cycle: 0.72,
         ground_vertices: Vec::new(),
+        flop_folds: Vec::new(),
     };
     weld_weights(&mut rig);
     rig.animated_bounds = rig.compute_envelope();
@@ -498,10 +512,10 @@ pub(crate) fn from_mesh(
 fn weld_weights(rig: &mut SpeciesRig) {
     use std::collections::HashMap;
     let epsilon = (rig.neutral_bounds.1.y - rig.neutral_bounds.0.y) * 0.0001;
-    let mut groups: HashMap<[i32; 3], Vec<usize>> = HashMap::new();
+    let mut groups: HashMap<([i32; 3], u16), Vec<usize>> = HashMap::new();
     for (i, p) in rig.neutral.positions.iter().enumerate() {
         groups
-            .entry(p.map(|v| (v / epsilon).round() as i32))
+            .entry((p.map(|v| (v / epsilon).round() as i32), ladybird_flight::weld_domain(rig, i)))
             .or_default()
             .push(i);
     }
@@ -545,16 +559,47 @@ pub(crate) struct MotionLimb {
     joint: usize,
     role: Role,
     authored_flight: bool,
+    levelled_flight: Option<(Quat, Vec3, usize)>,
 }
 
 fn flight_beat(name: &str) -> (f32, f32) {
     match name {
         "lugia" | "ho_oh" | "articuno" | "zapdos" | "moltres" => (0.85, 0.36),
         "charizard" | "dragonite" | "aerodactyl" => (1.25, 0.40),
-        "butterfree" | "beedrill" | "venomoth" | "yanma" | "celebi" => (6., 0.45),
+        "butterfree" | "beedrill" | "venomoth" | "yanma" | "celebi" | "togetic" | "ledyba" | "ledian" => (6., 0.45),
         "zubat" | "golbat" | "crobat" => (3.5, 0.45),
         _ => (2.5, 0.38),
     }
+}
+
+fn levelled_flight_wing(rig: &SpeciesRig, joint: usize) -> Option<(Quat, Vec3, usize)> {
+    if !matches!(rig.species.name(), "pidgey" | "pidgeotto" | "pidgeot" | "spearow"
+        | "fearow" | "noctowl" | "murkrow" | "skarmory" | "articuno" | "zapdos"
+        | "moltres" | "ho_oh" | "lugia" | "togetic"
+        | "aerodactyl" | "charizard" | "dragonite" | "ledyba" | "ledian") { return None; }
+    let pivot = rig.joints[joint].inverse_bind.inverse().transform_point3(Vec3::ZERO);
+    let belongs = |mut owner: usize| {
+        loop {
+            if owner == joint { return true; }
+            let Some(parent) = rig.joints[owner].parent else { return false; };
+            owner = parent;
+        }
+    };
+    let tip = (0..rig.neutral.positions.len()).filter(|&v| {
+        rig.joint_indices[v].iter().zip(rig.joint_weights[v])
+            .any(|(&owner, weight)| weight > 0.2 && belongs(owner as usize))
+    }).max_by(|&a, &b| (Vec3::from_array(rig.neutral.positions[a]) - pivot).length_squared()
+        .total_cmp(&(Vec3::from_array(rig.neutral.positions[b]) - pivot).length_squared()))?;
+    let span = Vec3::from_array(rig.neutral.positions[tip]) - pivot;
+    let side = if rig.joints[joint].name.contains("left") { -1. } else { 1. };
+    // Folded wings can point down and backward. Level their full span in model
+    // space, then express that correction in the shoulder parent's frame.
+    let parent_rotation = rig.joints[joint].parent.map(|parent|
+        rig.joints[parent].inverse_bind.inverse().to_scale_rotation_translation().1
+    ).unwrap_or(Quat::IDENTITY);
+    let level = Quat::from_rotation_arc(span.normalize(), Vec3::X * side);
+    Some((parent_rotation.inverse() * level * parent_rotation,
+        parent_rotation.inverse() * Vec3::Z, tip))
 }
 
 fn motion_limbs(rig: &SpeciesRig) -> Vec<MotionLimb> {
@@ -600,6 +645,7 @@ fn motion_limbs(rig: &SpeciesRig) -> Vec<MotionLimb> {
                 joint,
                 role: r,
                 authored_flight,
+                levelled_flight: (r == Role::Wing).then(|| levelled_flight_wing(rig, joint)).flatten(),
             })
         })
         .collect()
@@ -636,6 +682,16 @@ impl SpeciesRig {
                     travel::Style::Hop => Quat::from_rotation_x(-stride * 0.18),
                     _ => Quat::from_rotation_x(-stride * side * 0.32),
                 },
+                (Locomotion::Fly, Role::Wing) if limb.levelled_flight.is_some() => {
+                    // A raised or folded battle wing is not a complete flight
+                    // stroke. Centre the world wing on its measured span, then
+                    // carry it above and below the shoulder each wingbeat.
+                    let (level, axis, _) = limb.levelled_flight.unwrap();
+                    let flap = Quat::from_axis_angle(axis, side * 0.65
+                        * (seconds * TAU * flight_beat(self.species.name()).0).sin());
+                    pose[limb.joint].rotation = flap * level * joint.bind.rotation;
+                    Quat::IDENTITY
+                }
                 (Locomotion::Fly, Role::Wing) if !limb.authored_flight => {
                     let (frequency, amplitude) = flight_beat(self.species.name());
                     Quat::from_rotation_z(side * amplitude * (seconds * TAU * frequency).sin())
@@ -644,11 +700,13 @@ impl SpeciesRig {
                 (Locomotion::Glide, Role::Wing | Role::Arm) => {
                     Quat::from_rotation_z(side * (0.10 * weight + 0.025 * (seconds * TAU).sin()))
                 }
+                (_, Role::Tail) if travel::style(self.species.name()) == travel::Style::Flop => Quat::IDENTITY,
                 (_, Role::Tail) => Quat::from_rotation_y(stride * 0.13),
                 _ => Quat::IDENTITY,
             };
             pose[limb.joint].rotation = (pose[limb.joint].rotation * rotation).normalize();
         }
+        ladybird_flight::open_cases(self, pose);
         if self.crawl_segments.is_empty() && role(&self.joints[1].name) == Role::Body {
             let rotation = match mode {
                 Locomotion::Walk => Quat::from_rotation_z(stride * 0.012),
@@ -659,6 +717,11 @@ impl SpeciesRig {
         }
         if travel::style(self.species.name()) == travel::Style::Flop {
             travel::flop(self, phase, weight, pose);
+            return;
+        }
+        if self.species.name() == "lapras" {
+            travel::prepare(self,phase,weight,pose);
+            travel::finish(self,phase,weight,pose);
             return;
         }
         pose[0].translation.y += self.hover_clearance
@@ -695,6 +758,16 @@ impl SpeciesRig {
         self.sample_into(Clip::Idle, seconds, Playback::Loop, pose)
             .expect("finite swimming clock");
         travel::swim_strokes(self, phase, weight.clamp(0., 1.), pose);
+        travel::water_tentacles(self, phase, weight.clamp(0., 1.), pose);
+        if matches!(self.species.name(), "staryu" | "starmie") {
+            // A surface-swimming star presents its broad face upward. Centre
+            // the horizontal body at its actor anchor instead of leaving its
+            // former upright floor origin at one point of the star.
+            let rotation = Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2);
+            let middle = (self.neutral_bounds.0 + self.neutral_bounds.1) * 0.5;
+            pose[0].rotation = (rotation * pose[0].rotation).normalize();
+            pose[0].translation += Vec3::new(middle.x, 0., middle.z) - rotation * middle;
+        }
         let height = self.neutral_bounds.1.y - self.neutral_bounds.0.y;
         pose[0].translation.y += height * 0.012 * (seconds * TAU * 0.7).sin();
     }
@@ -739,19 +812,21 @@ pub(crate) fn world_rig(canonical: &'static SpeciesRig) -> &'static SpeciesRig {
     let mut rigs = RIGS.get_or_init(Default::default).lock().unwrap();
     rigs.entry(canonical.species.name()).or_insert_with(|| {
         let mut rig = canonical.clone();
+        furret_walk::build(&mut rig);
         if locomotion(rig.species.name()) == Locomotion::Walk {
             crawl::build(&mut rig);
             gait::build(&mut rig);
             travel::build(&mut rig);
         } else if travel::style(rig.species.name()) == travel::Style::Flop
-            || rig.species.name() == "gyarados" {
+            || matches!(rig.species.name(), "gyarados" | "lapras") {
             travel::build(&mut rig);
         }
+        ladybird_flight::build(&mut rig);
         rig.motion_limbs = motion_limbs(&rig);
         weld_weights(&mut rig);
         if locomotion(rig.species.name()) != Locomotion::Walk
             && travel::style(rig.species.name()) != travel::Style::Flop
-            && !rests_on_tentacles(rig.species.name()) {
+            && !rests_on_tentacles(rig.species.name()) && rig.species.name() != "lapras" {
             // Broad bat wings may extend below the feet on the downstroke.
             // Resolve their clearance once from actual poses, not each frame.
             let mut pose = rig.joints.iter().map(|j| j.bind).collect::<Vec<_>>();
@@ -765,7 +840,10 @@ pub(crate) fn world_rig(canonical: &'static SpeciesRig) -> &'static SpeciesRig {
                 }
             }
             let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
-            rig.hover_clearance = (height * 0.04 - floor).max(0.);
+            // Keep a visible air gap even at the lowest wingtip, rather than
+            // merely avoiding intersection with the ground.
+            let gap = if locomotion(rig.species.name()) == Locomotion::Fly { 0.16 } else { 0.04 };
+            rig.hover_clearance = (height * gap - floor).max(0.);
         }
         rig.animated_bounds = rig.locomotion_bounds();
         Box::leak(Box::new(rig))
@@ -775,6 +853,50 @@ pub(crate) fn world_rig(canonical: &'static SpeciesRig) -> &'static SpeciesRig {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn lapras_land_belly_drag_stays_grounded_and_keeps_water_motion_separate() {
+        let canonical=crate::species_rig::for_species("LAPRAS").unwrap();
+        let rig=world_rig(canonical);
+        assert_eq!(rig.neutral.positions,canonical.neutral.positions);
+        assert_eq!(rig.neutral.colors,canonical.neutral.colors);
+        assert_eq!(rig.neutral.indices,canonical.neutral.indices);
+        assert_eq!(travel::style("lapras"),travel::Style::Slide);
+        assert!(swims_in_water("lapras"));
+        assert!(!battle_hovers("lapras"));
+        let belly=rig.anatomy.iter().find(|part|part.name.starts_with("Belly /")).unwrap();
+        let flipper=rig.anatomy.iter().find(|part|part.name.starts_with("Fore flipper /")).unwrap();
+        let height=rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
+        let mut pose=vec![Transform::IDENTITY;rig.joints.len()];
+        let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];
+        rig.sample_locomotion(0.2,0.,1.,&mut pose);
+        rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        let before:Vec<_>=flipper.vertices.clone().map(|v|rig.skin_point(v,&matrices)).collect();
+        let mut pull=0.0_f32;
+        for tick in 0..64 {
+            rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            let contact=belly.vertices.clone().map(|v|rig.skin_point(v,&matrices).y)
+                .fold(f32::INFINITY,f32::min);
+            assert!(contact.abs()<0.00001,"Lapras belly left the path: {contact}");
+            for v in 0..rig.neutral.positions.len() {
+                assert!(rig.skin_point(v,&matrices).y>=-0.00001,"Lapras penetrated the path");
+            }
+            for (v,old) in flipper.vertices.clone().zip(&before) {
+                pull=pull.max(rig.skin_point(v,&matrices).distance(*old));
+            }
+        }
+        assert!(pull>height*0.025,"Lapras must pull with its complete foreflippers");
+        rig.sample_locomotion(0.2,1.,0.,&mut pose);
+        let stopped=pose.clone();
+        rig.sample_locomotion(0.2,4.,0.,&mut pose);
+        assert_eq!(pose,stopped,"stopped land pull retained phase motion");
+        rig.sample_swimming(0.2,1.,1.,&mut pose);
+        assert!(pose[0].translation.y.abs()<=height*0.012+0.000001,
+            "water retained the land correction or hover lift");
+        assert!(pose.iter().zip(&stopped).any(|(a,b)|!a.rotation.abs_diff_eq(b.rotation,0.01)),
+            "water must retain its separate strokes");
+    }
 
     #[test]
     fn pokemon_motion_tiny_supports_keep_a_readable_cadence_at_map_speed() {
@@ -1270,18 +1392,23 @@ mod tests {
     }
 
     #[test]
-    fn pokemon_motion_seals_slide_without_lifting_their_low_supports() {
+    fn pokemon_motion_seals_slide_with_continuous_belly_contact() {
         for name in ["SEEL","DEWGONG"] {
             let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
             assert_eq!(locomotion(name),Locomotion::Walk);assert!(rig.walk_legs.is_empty());assert_eq!(rig.joints.len(),canonical.joints.len());
-            let floor:Vec<_>=rig.neutral.positions.iter().enumerate().filter_map(|(v,p)|(p[1]<0.0000001).then_some(v)).collect();assert!(!floor.is_empty());
+            let belly:Vec<_>=rig.anatomy.iter().filter(|part|part.name.starts_with("Body /"))
+                .flat_map(|part|part.vertices.clone()).collect();assert!(!belly.is_empty());
             let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
             for tick in 0..64 {
                 rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();
                 for v in 0..rig.neutral.positions.len() {
                     let p=rig.skin_point(v,&matrices);assert!(p.y>=-0.00001,"{name} slides through the floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
                 }
-                for &v in &floor {assert!(rig.skin_point(v,&matrices).y.abs()<0.000001,"{name} lifted its low support");}
+                // A pulling seal changes which belly point bears its weight;
+                // foreflippers and every former contact point are not pins.
+                let contact=belly.iter().map(|&v|rig.skin_point(v,&matrices).y)
+                    .fold(f32::INFINITY,f32::min);
+                assert!(contact.abs()<0.000001,"{name} lifted its belly: {contact}");
             }
         }
     }
@@ -1327,15 +1454,28 @@ mod tests {
     }
 
     #[test]
-    fn goldfish_skin_preserves_painted_fins_mouths_and_swimming_clearance() {
+    fn goldfish_skin_preserves_painted_fins_mouths_and_separates_water_from_land() {
         for name in ["GOLDEEN","SEAKING","MAGIKARP"] {
             let canonical=crate::species_rig::for_species(name).unwrap();let rig=world_rig(canonical);
-            assert_eq!(locomotion(name),Locomotion::Float);assert!(battle_hovers(name));assert!(rig.walk_legs.is_empty());assert_eq!(rig.motion_limbs.len(),1);assert!(rig.motion_limbs.iter().all(|limb|limb.role==Role::Tail));assert_eq!(rig.joints.len(),canonical.joints.len());
-            for v in 0..rig.neutral.positions.len() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{name} vertex {v}");assert_eq!(rig.joint_weights[v],canonical.joint_weights[v],"{name} vertex {v}");}
+            assert_eq!(locomotion(name),Locomotion::Float);assert!(battle_hovers(name));assert!(rig.walk_legs.is_empty());assert_eq!(rig.motion_limbs.len(),1);assert!(rig.motion_limbs.iter().all(|limb|limb.role==Role::Tail));
+            assert_eq!(rig.joints.len(),canonical.joints.len()+if name=="MAGIKARP" {0}else{2});
+            assert_eq!(rig.neutral.positions,canonical.neutral.positions);
+            assert_eq!(rig.neutral.colors,canonical.neutral.colors);
+            assert_eq!(rig.neutral.indices,canonical.neutral.indices);
+            for part in canonical.anatomy.iter().filter(|part|role(&part.name)==Role::Head
+                && !part.name.starts_with("Whisker /")) {
+                for v in part.vertices.clone() {
+                    assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{name} {}",part.name);
+                    assert_eq!(rig.joint_weights[v],canonical.joint_weights[v],"{name} {}",part.name);
+                }
+            }
             let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();let height=rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
             for tick in 0..64 {
                 rig.sample_locomotion(tick as f32/32.,tick as f32,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();
-                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);if name == "MAGIKARP" { assert!(p.y >= -height * 0.001, "Magikarp flop penetrates floor"); } else { assert!(p.y>height*0.14,"{name} lost floating clearance"); }assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");}
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);assert!(p.y >= -height * 0.001, "{name} flop penetrates floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");}
+                rig.sample_swimming(tick as f32/32.,tick as f32,1.,&mut pose);
+                assert!(pose[0].rotation.abs_diff_eq(Quat::IDENTITY,0.00001),"{name} flops underwater");
+                assert!(pose[0].translation.y.abs() <= height*0.012+0.00001,"{name} hovers above its water anchor");
             }
         }
     }
@@ -1701,6 +1841,37 @@ mod tests {
                 assert!(p.cmpge(lo).all() && p.cmple(hi).all(), "vertex {v} leaves flight bounds");
             }
             for &v in &floor { assert!(rig.skin_point(v, &matrices).distance(Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation) < 0.000001); }
+        }
+    }
+
+    #[test]
+    fn bird_world_flight_has_upstroke_and_downstroke_instead_of_an_idle_shrug() {
+        for name in ["PIDGEY", "PIDGEOTTO", "PIDGEOT", "SPEAROW", "FEAROW", "NOCTOWL", "MURKROW", "SKARMORY",
+            "ARTICUNO", "ZAPDOS", "MOLTRES", "HO_OH", "LUGIA", "TOGETIC",
+            "AERODACTYL", "CHARIZARD", "DRAGONITE"] {
+            let canonical = crate::species_rig::for_species(name).unwrap();
+            let rig = world_rig(canonical);
+            let wings: Vec<_> = rig.motion_limbs.iter().filter(|l| l.levelled_flight.is_some()).collect();
+            assert_eq!(wings.len(), 2, "{name} needs two moving flight wings");
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            for wing in wings {
+                let tip = wing.levelled_flight.unwrap().2;
+                let mut low = f32::INFINITY;
+                let mut high = f32::NEG_INFINITY;
+                let mut length = 0.0_f32;
+                for tick in 0..32 {
+                    rig.sample_locomotion(tick as f32 / (32. * flight_beat(rig.species.name()).0), 0., 1., &mut pose);
+                    rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                    let shoulder = gait::world(rig, &pose, wing.joint).transform_point3(Vec3::ZERO);
+                    let relative = rig.skin_point(tip, &matrices) - shoulder;
+                    low = low.min(relative.y); high = high.max(relative.y);
+                    length = length.max(relative.length());
+                }
+                assert!(low < -length * 0.25 && high > length * 0.25,
+                    "{name} never completes a wing stroke: {low}..{high}, span {length}");
+            }
+            assert_eq!(rig.neutral.positions, canonical.neutral.positions);
         }
     }
 
@@ -2297,3 +2468,12 @@ pub(crate) use crawl::CrawlSegment;
 
 #[path = "pokemon_travel.rs"]
 mod travel;
+
+#[path = "pokemon_ladybird_flight.rs"]
+mod ladybird_flight;
+
+#[path = "pokemon_furret_walk.rs"]
+mod furret_walk;
+
+#[path = "pokemon_fish_fins.rs"]
+mod fish_fins;

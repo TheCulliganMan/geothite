@@ -56,17 +56,19 @@ impl RuntimeOverworldSession {
         runtime: &CrystalRuntime,
         buttons: Vec<GameButton>,
         checksum: bool,
+        continuous_step: bool,
     ) -> Result<RecordedRuntimeMutation> {
         let mut state = self.state.clone();
         let mut overworld = self.overworld.clone();
         let mut divider_after = self.divider.clone();
         let mut recording = RecordingDivider::new(&mut divider_after);
-        let frame = runtime.data.apply_overworld_input(
+        let frame = runtime.data.apply_overworld_input_with_movement(
             &mut state,
             &mut overworld,
             buttons.clone(),
             &runtime.music_ids(),
             &mut recording,
+            continuous_step,
         )?;
         let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
         drop(recording);
@@ -81,6 +83,7 @@ impl RuntimeOverworldSession {
         Ok(RecordedRuntimeMutation {
             command: RuntimeMutationCommand::ApplyOverworldInput(RuntimeOverworldInputCommand {
                 buttons,
+                continuous_step,
                 divider_trace,
             }),
             state,
@@ -98,13 +101,15 @@ impl RuntimeOverworldSession {
         &mut self,
         runtime: &CrystalRuntime,
         buttons: Vec<GameButton>,
+        continuous_step: bool,
     ) -> Result<RuntimeOverworldFrame> {
-        let frame = runtime.data.apply_overworld_input(
+        let frame = runtime.data.apply_overworld_input_with_movement(
             &mut self.state,
             &mut self.overworld,
             buttons,
             &runtime.music_ids(),
             &mut self.divider,
+            continuous_step,
         )?;
         self.joypad = JoypadState::from_previous_mask(frame.input_mask);
         Ok(RuntimeOverworldFrame::from_input_frame(
@@ -1690,7 +1695,7 @@ impl RuntimeOverworldSession {
         _asset_root: &AssetRoot,
         buttons: impl IntoIterator<Item = GameButton>,
     ) -> Result<RuntimeOverworldFrame> {
-        let recorded = self.stage_overworld_input(runtime, buttons.into_iter().collect(), true)?;
+        let recorded = self.stage_overworld_input(runtime, buttons.into_iter().collect(), true, false)?;
         let mutation = self.commit_recorded_mutation(recorded);
         let RuntimeMutationResult::OverworldInputApplied(frame) = mutation.result else {
             anyhow::bail!("runtime mutation returned non-overworld-input result");

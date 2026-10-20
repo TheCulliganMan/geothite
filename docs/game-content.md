@@ -564,3 +564,18 @@ prior pack. The resulting client was launched with
 `target/kanto-resume/wasm-dev/geothite play content-packs/text-tui.crystalpack`;
 Start opened its production menu and the client exited cleanly. This reused
 source and build caches and is not another cold-start proof.
+
+## Natural controller movement
+
+The 3D client defaults to continuous movement for existing and new packs;
+2D and the text client retain tile controls. The optional Rust
+`pack_natural_movement` builder records that choice explicitly in an external
+pack, preserving all content and audio. See
+[the movement modpack](../modpacks/natural-movement/README.md) for controls,
+build arguments, and the `natural_movement: false` opt-out.
+
+The verified outputs are `content-packs/natural-movement.crystalpack` and
+`content-packs/natural-movement.browser.crystalpack`, built from the matching
+core modular packs. Both remain ignored. Native validation used the production
+`render_at_location` example in headless image mode; controller, battle, MCP,
+and clean-stdio regressions use the completed external text pack.

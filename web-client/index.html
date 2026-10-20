@@ -234,7 +234,8 @@
       let cancelAgentInput = () => {};
       const touchControls = mountTouchControls({ document, window, canvas, onInput: () => cancelAgentInput() });
       let viewControls;
-      mountGamepadControls({ document, window, canvas, controls: touchControls, onInput: () => cancelAgentInput(), onCamera: (axes, dt) => viewControls?.moveCamera(axes, dt), onCameraSelect: () => viewControls?.cycleCamera() });
+      let movementAxes = () => {};
+      mountGamepadControls({ document, window, canvas, controls: touchControls, onInput: () => cancelAgentInput(), onCamera: (axes, dt) => viewControls?.moveCamera(axes, dt), onCameraSelect: () => viewControls?.cycleCamera(), onMovement: (x,y,dpad) => movementAxes(x,y,dpad) });
       const fullscreenButton = document.querySelector('#fullscreen');
       fullscreenButton.hidden = !document.fullscreenEnabled;
       fullscreenButton.addEventListener('click', async () => {
@@ -335,6 +336,7 @@
           installGpuShaderNormalization(wasm);
           const { default: init } = wasm;
           await loadWasm(init, bundle.binary, 'Game engine', reportAsset);
+          movementAxes = wasm.crystal_set_movement_axes ?? (() => {});
           await meshtasticBridge?.connect(wasm);
           const resumeAudio = mountGameAudio(wasm, document, {
             button: document.querySelector('#mute'), canvas, storage: localStorage,

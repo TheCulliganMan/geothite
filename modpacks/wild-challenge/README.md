@@ -29,6 +29,9 @@ recovery/status/setup, and complementary coverage. Bulky species can use paired
 Rest/Sleep Talk. TM and egg attack power is limited to 50 before level 10, 65 before 20,
 85 before 30, and 150 thereafter. Species with restricted move pools retain
 those restrictions. Captured Pokémon keep their level and moves.
+Elm’s three starter gifts receive the same expanded movesets at their gift level
+when Wild Challenge is enabled, so both sides use the same move pool rules.
+Existing starters in saves keep their current moves.
 
 The selector respects the pack's damage categories. Standard packs use the
 full competitive planner; standalone overlays on older packs retain Basic,

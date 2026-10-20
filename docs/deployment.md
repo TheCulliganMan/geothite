@@ -28,7 +28,9 @@ curl --fail http://localhost:3003/healthz
 curl --fail http://localhost:3003/v1/clock
 ```
 
-Open `http://localhost:3003` for local play. Remote browser play requires HTTPS
+Open `http://localhost:3003` for local play. The **3D view** button switches
+between the 2D and modeled renderers. Add `?view=3d` to open in 3D directly
+(for example, `https://geothite.ryanculligan.com/?view=3d`). Remote browser play requires HTTPS
 for the per-player Web Lock. The browser obtains its identity automatically
 from `POST /v1/session`; no manually issued token or account is required.
 

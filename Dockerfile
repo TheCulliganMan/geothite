@@ -8,6 +8,8 @@ WORKDIR /source/rust
 COPY Cargo.toml Cargo.lock ./
 COPY .cargo ./.cargo
 COPY crates ./crates
+COPY assets ./assets
+COPY art/battles/arena-palettes.json ./art/battles/arena-palettes.json
 COPY modpacks/modern-move-split/data.json ./modpacks/modern-move-split/data.json
 COPY modpacks/all-pokemon/encounters.json ./modpacks/all-pokemon/encounters.json
 COPY modpacks/voxel-view/profiles.json ./modpacks/voxel-view/profiles.json
@@ -24,6 +26,8 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
         --features browser-synth --target wasm32-unknown-unknown \
     && cargo build --locked --profile web-release --package crystal-flygon --lib --target wasm32-unknown-unknown \
     && mkdir -p /out/web/flygon \
+    && cargo run --locked --release -p crystal-voxel-view --bin bundle_open_models -- assets/open-models /out/web/open-models.json \
+    && cargo run --locked --release -p crystal-voxel-view --bin bundle_open_people -- assets/open-models /out/web/open-people.json \
     && cp target/release/crystal-web-server /out/crystal-web-server \
     && wasm-bindgen --target web --no-typescript --out-dir /out/web --out-name crystal-bevy \
         target/wasm32-unknown-unknown/web-release/crystal-bevy.wasm \
@@ -40,10 +44,9 @@ COPY tools/version-browser-bundle.sh /source/version-browser-bundle.sh
 # Supply this ignored file locally; see docs/game-content.md.
 COPY --from=game_content /core-modular.browser.crystalpack /out/web/core-modular.browser.crystalpack
 COPY modpacks/flygon /source/flygon-config
-RUN cp /source/web-client/asset-progress.js /source/web-client/loading-progress.css /out/web/ \
-    && cp /source/web-client/save-management.js /source/web-client/save-management.css /out/web/ \
-    && cp /source/web-client/server-clock.js /source/web-client/audio-worker.js /source/web-client/audio-worker-client.js /out/web/ \
-    && cp /source/web-client/player-customization.js /source/web-client/player-customization.css /source/web-client/index.html /source/web-client/audio-unlock.js /source/web-client/view-toggle.js /source/web-client/touch-controls.js /source/web-client/gamepad-controls.js /source/web-client/mobile-player.css /source/web-client/browser-session.js /source/web-client/webmcp.js /source/web-client/social-chat.js /source/web-client/social-chat.css /out/web/ \
+RUN cp /source/web-client/index.html /out/web/ \
+    && cp /source/web-client/audio-unlock.js /out/web/ \
+    && cp /source/web-client/*.js /source/web-client/*.css /out/web/ \
     && gzip -9 -k /out/web/core-modular.browser.crystalpack \
     && cp /source/web-client/flygon* /out/web/ \
     && for source in /source/flygon-config/*.json; do cp "$source" "/out/web/flygon-$(basename "$source")"; done \

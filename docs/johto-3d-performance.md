@@ -1,5 +1,453 @@
 # Connected Johto presentation and performance checks
 
+## Progressive upper-floor panorama preloading under validation
+
+A private implementation now prepares the full panorama on TinTower7F–9F,
+keeps it hidden there, and preserves its cache across those floors and the roof.
+It clears the cache when leaving that bounded group and revalidates source and
+profile revisions. Speculation is native-only because the browser async pool
+cannot run this whole-map mesher away from the frame thread.
+
+Source publication now appends one map per update, loads its art when needed,
+and pins the authenticated animation phase across chunks. A source_pending
+prerequisite prevents geometry/readiness from finishing before every real map
+and the border arrive. Hidden preparation never changes the active floor's
+terrain_pending/active_frames. Water registration writes only real coordinate
+changes, and is untouched for hidden scenes. No user switch was added.
+
+Renderer test filter: nine passed, one ignored (not counted). Production-system
+checks cover hidden visibility, unchanged room readiness, retained mesh/material
+handles across stairs, partial-source waiting, source/profile invalidation,
+cache disposal outside the upper floors, and real material AssetEvents across
+48 hidden and 64 settled visible frames. The external-pack source regression
+passed: all 32 maps and the border match complete publication, including source
+tiles, ledges, terrace datum and atlas bytes; existing handles are retained,
+phase stays pinned while the display counter advances, epoch changes restart,
+and publication does not change the authoritative game checksum. Its publisher
+also retains progress across floors, pauses in 2D mode and clears outside them.
+
+The first native floor capture exposed foreground startup contention: 7F capture
+readiness took 6.48 seconds with speculative loading versus 1.06 seconds in the
+installed-equivalent baseline. Both paired captures preserved state and showed
+no leaked panorama. This is a regression, not a speedup. The private correction
+now gates both source and geometry publication on an active foreground with no
+terrain/profile work pending and 30 settled frames. Actual roof loading bypasses
+that gate to avoid a readiness deadlock. The corrected renderer regression
+passed nine tests (one unrelated external-export test ignored); the corrected
+external-pack regression and native capture/frame-budget checks remain pending.
+Browser speculation stays off until its whole-map mesher can use a real worker. This preloading implementation is private and not installed. The
+installed app still contains only the previously verified improvements.
+
+
+## Summit panorama shared painted textures
+
+The panorama previously synchronously called painted_stone::image and
+bedrock_image, including PNG decoding and mip generation, then allocated two
+new Image assets. It now waits for the active terrain's published pair and
+clones those exact handles into its material. The original samplers, mip chains,
+formats and source pixels are therefore shared; no fallback decoder runs on
+the frame thread and no duplicate pair is uploaded for this scene.
+
+Five summit tests passed, including the production sync regression proving
+pending preparation allocates no material/images, then readiness uses exactly
+the two supplied Image assets and the same handles. Eleven sky, five painted
+image and 42 renderer checks also passed on that fresh harness (counts overlap
+other runs). This implementation is in shared source. Its isolated native QA
+build completed in 4m01s, with the sky-prepass experiment excluded from that
+binary (SHA256 `8465a0fdbf89baa3f5b876b4172e05188ffdb72b581df35ea9a44fc2adea2058`).
+Baseline and candidate roof 3D/2D captures both passed state_preserved=true.
+The inspected scene preserves appearance; the same 1000x200 roof region is
+pixel-identical. The baseline used bounded loading tracing, whose ring dropped
+startup events. Candidate capture disabled tracing. Neither elapsed capture
+times nor the truncated trace establish a loading-time or decode-count result;
+the production-system regression establishes image handle reuse/allocation.
+No timing/capture implementation was changed. The combined production build with the independently verified sky-prepass
+removal finished in 8m33s. Installation at `~/Applications/Geothite.app` completed
+in 32.1s. Strict deep codesign verification passed. Pre-sign executable SHA256:
+`e6579afd043edcc3cf211e3cd72788672ee6f580f529ea2ab91d24562ee76b2c`.
+The native pack SHA256 remains
+`a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007`.
+An independent installed `--check-installation` run from `/tmp`, with the model
+root override removed, passed and resolved resources from the app bundle. The
+existing save identity/path is unchanged.
+
+Further source evidence: script_callbacks::tick_visible_screen_fade holds the
+entry fade while terrain_pending is true. Summit preparation keeps that flag
+until all 32 connected Johto source maps plus the border finish, and starts only
+after arrival on TinTowerRoof. This is a larger remaining transition issue.
+Leaving TinTowerRoof currently discards the built
+panorama, so return visits rebuild it. Also the GPU occlusion-culling experiment
+only admits NewBarkTown/Route29, not the panorama-heavy roof. Neither behavior
+has been changed. A roof-specific reuse/culling investigation may be more useful
+than more vertex codecs, subject to retained-state and full-quality validation.
+
+
+## Sky prepass removal installed
+
+SkyMaterial now opts out of Bevy's depth/normal prepass and shadow work. Its
+existing specializer disables depth writes in forward and prepass pipelines;
+the dome is already NotShadowCaster/NotShadowReceiver. Bevy 0.20's prepass queue
+skips materials with prepass_enabled=false. The color shader, geometry, camera
+and depth-write policy are unchanged; no replacement pass was added.
+
+An isolated native build completed in 3m16s (SHA256
+`4fe9bbb185d8753ed11ef69a6a66e184abfa332cb0eb31ae5703675fca6ebfb1`).
+The first roof baseline timed out before its paired 2D result and is not counted.
+With the existing 180-second capture allowance, all four low-horizon day/night
+baseline/candidate captures passed state_preserved=true. Visual inspection found
+no new defect; the 1000x200 roof region (150,550)-(1150,750) is pixel-identical
+between baseline and candidate in both lighting conditions. Sky cloud phases
+differ across runs. This verifies the pass removal's inspected appearance, not
+a throughput gain. The change is installed with panorama texture reuse above.
+No capture or timing implementation changed.
+
+## Packing comparison retry
+
+A fresh ABBA retry completed at 30.475, 24.846, 31.423 and 23.405 queue completions/s.
+The first two runs overlapped rustc PID 83176, the third also overlapped a voxel
+test process, and only the final baseline had no observed competing process.
+This retry is not a clean comparison and does not establish a packing speedup.
+The implementation was not accepted. Its compiled client, candidate source copy
+and measurement artifacts were removed after recording these results; no
+packing default or toggle remains in the shared source.
+
+## Static terrain normal packing trial (not accepted)
+
+A temporary exact-attribute grass reuse probe found just 24 duplicate vertices
+among 48,384 across nine family/scale cases (Meadow, ParkShort, ParkLong; units
+8, 32, 64). Meadow had no duplicates. The probe was removed; adding global
+welding here would spend preparation work for negligible reuse.
+
+The trial applied Bevy's established Snorm16x2 normal
+encoding to native static spatial batches after exact coverage publication.
+It preserves source positions, colors, UVs, triangles, bounds and ownership;
+worker/browser float attributes remain unchanged. Existing native grove normal
+packing uses the same decoder and precision. The new grass regression passed at units 8/32/64: eight bytes saved per
+vertex, every index/position/color/UV and coverage/bound unchanged, decoded
+normal-vector error below 0.00015. The first terrain suite passed 23/24; the
+remaining cave regression assumed Float32 storage, and now checks exact float
+normals or decoded packed normals within the same bound while keeping exact
+position/UV and triangle assertions. The corrected terrain suite passed all 24 checks. Renderer 42, shadow
+receiver 10 and grass-rustle seven checks also passed on the fresh harness.
+The pipeline-preload test filter ran zero tests (one GPU test is ignored); it
+is not counted as validation. The native comparison build completed in 3m59s. Route29 and ordinary-input
+house-exit 3D/2D captures both completed with state_preserved=true. The inspected
+geometry, pigment, lighting and shadows match the prior appearance, including
+existing canopy stipple; NPC/water animation phases differ across runs.
+Baseline client SHA256 `99f10c9fda7ea3c7e72f917662c1aaca46c303e51c00f1f0a039d45e4289a2ed`;
+candidate `38e0bd0df3a76967fff8482fe6c741a5ee22c75d73863d3f240080b911fa9510`.
+The Route29 ABBA run completed with rates 18.203, 16.374, 16.902, 14.67
+queue completions/s. All four runs overlapped varying compiler jobs; the
+candidate did not establish a speedup. The shared terrain implementation and
+cave regression were restored byte-for-byte to their verified baseline. The
+private candidate and its added tests were subsequently removed. No toggle or unverified default change
+was retained in the shared source. The private packing prototype and its
+artifacts were subsequently removed after inconclusive retries. The house-exit CSV also verifies 384 frames,
+zero additional terrain builds, and active NewBarkTown terrain on its first
+authoritative arrival frame (13,5).
+Native visual checks passed for the inspected route and house scenes. The trial
+was not accepted or installed. Existing installed grove normal packing is
+unaffected by this rejected extension to static terrain.
+
+
+## Current native bottleneck evidence
+
+A five-second macOS sample of the corrected native Route29 client at (50, 9),
+noon, 1280x800, during an existing 20-second measurement run showed repeated
+Metal command-buffer-capacity waits under Bevy PendingCommandBuffers::finish
+and wgpu command_encoder_finish. This supports investigating GPU work and
+submission pressure next; it does not identify a single shader or prove a
+displayed FPS limit. The client and sample both exited successfully. No timing
+tool, queue-depth override, engine fork or new runtime toggle was added.
+The pinned Bevy 0.20 render_context.rs uses parallel finishing on native and
+exposes no runtime sequential-finishing switch. Bevy’s release guidance on
+retained rendering/change-driven specialization agrees with the already
+installed material isolation fixes, rather than suggesting per-frame mutation
+of static terrain. Sources: https://bevy.org/news/bevy-0-19/ and the installed
+bevy_render-0.20.0/src/renderer/render_context.rs.
+
+## Resolution diagnostic after the receiver correction
+
+Same-client Route29 (50,9), noon, full native effects, sequential 15-second
+1280x800 / 2560x1600 / 2560x1600 / 1280x800 runs completed successfully. Queue
+completions/s were 23.203, 18.919, 18.477, 25.589 respectively. Four times the
+pixels reduced the average rate by about 23%, but unrelated compilation and
+the production install overlapped parts of these runs. This is diagnostic
+evidence only, not a clean speedup comparison or displayed FPS. Geometry,
+shadow/submission work and pixel effects require further investigation.
+The first 640x400 probe failed the existing minimum-height screenshot verifier;
+it was stopped, is not counted, and its outputs were removed. No timing code,
+production quality setting or resolution policy was changed.
+
+## Shadow receiver-height correction installed
+
+The receiver-height scan now excludes standard nonreceivers, including the
+3,000-unit sky sphere. VoxelMaterial geometry remains conservative because its
+shader samples directional shadows explicitly. Nonreceiving objects retain
+their ability to cast shadows, and morph/unknown-bound/grass safety guards remain.
+Ten receiver tests, 42 renderer tests, 11 sky tests, 47 fade tests and seven grass
+tests passed in the frozen native QA source. A New Bark capture at (13, 6), noon,
+1280x800 emitted an early-loading trace of 150 to 106 retained casters
+(213 candidates in both runs). This is an initial streaming count, not a
+settled-scene count; subsequent house-exit traces contain thousands of candidates.
+Fresh five-second settled runs then verified 2,622 candidates in both cases,
+with 1,911 retained before and 1,567 after (344 fewer, 18.0%). These tracing
+runs overlapped the production compile and establish counts, not a separate
+FPS gain. Both clients exited successfully.
+The inspected scene preserved geometry and visible shadows; NPC animation phases
+differ between runs. Sequential ABBA runs at 2560x1600 measured GPU queue completions/s
+29.832, 30.326, 30.094, 29.543. Baseline mean 29.688; candidate mean 30.21.
+These are queue completions, not display-presented FPS, and do not prove a
+material fluidity improvement.
+Native synthetic-keyboard house exit and Route29 DDLLDD grass walk subsequently
+passed with state_preserved=true in both 3D/2D pairs. Inspected house and grass
+captures retain existing appearance, including the previously observed canopy
+stipple. The production build finished in 7m37s and installation completed in 69.6s at
+`~/Applications/Geothite.app`. Strict deep codesign verification passed. The
+pre-sign release executable SHA256 is
+`e9681df57d9312e20336377cad4a23a10ad499075a8a64ba3cb5e8f57f5b1f08`.
+The external native pack SHA256 remains
+`a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007`. The correction is now installed in production. An independent run from `/tmp`
+with `CRYSTAL_OPEN_MODEL_ROOT` removed passed `--check-installation`, resolving
+resources inside the installed bundle and preserving the existing save path.
+
+
+## Rejected opaque position packing
+
+A native Bevy position-packing trial reduced opaque position storage from 12 to
+8 bytes per vertex (28 to 24 total bytes for the existing RGB/packed-normal
+layout). Sorted fades and source collision stayed exact; nine family/scale
+cases retained every nondegenerate face without reversals. The unchanged
+bank-geometry regression and the grove suites passed. A speculative fade-layout
+adapter also preserved pipeline prewarming for the exact float-position fades.
+
+Native capture caught a Bevy 0.20 extraction issue: `Mesh::take_gpu_data`
+overwrites the precomputed packed AABB with a failed Float32 recomputation.
+Trees disappeared with render-only usage. Retaining main-world data selected
+Bevy's clone extraction and restored the full rendered scene. This workaround
+also retains CPU vertex data, making actual frame benefit essential.
+
+Matched frozen-source optimized-development clients then ran ABBA comparisons
+at noon, full default quality, 15 seconds per run, with validated warmup and no
+readback during measurement. No competing Geothite renderer or compiler was
+observed in any of the eight runs. GPU queue depth was 36 at both endpoints,
+with no polling errors. These are completion rates, not displayed FPS:
+
+| Scene | Baseline completions/s, mean | Packed completions/s, mean |
+| --- | ---: | ---: |
+| Route 29 (50,9), 1280x800 | 28.8095 | 28.6335 |
+| New Bark (13,6), 2560x1600 | 30.1645 | 30.0835 |
+
+There was no useful rendering gain. The entire packing trial, CPU-retention
+workaround, fade-layout adapter and trial-only tests were removed. The three
+runtime files were restored byte-for-byte to their saved baseline; the isolated
+forest test adjustment was reverted without touching concurrent density work.
+No toggle was added or left behind. The installed grass-material CPU fix is
+unaffected. Shadow receiver-height handling is the next active investigation.
+
+## Rooted-grass material isolation (installed)
+
+Walking springs previously wrote `grass_rustle.contact` to every VoxelMaterial.
+Bevy 0.20's `mark_meshes_as_changed_if_their_materials_changed` marks meshes
+using a changed material for extraction again. The spring therefore dirtied
+static buildings, grove finishes, actors and destination preparation even
+though those vertices do not carry the rooted-grass shader tag.
+
+A retained grass material now clones the exact configured solid finish when
+terrain publishes. Only static batches containing a shader-tagged grass vertex
+bind it; buildings and trees keep the static finish, and flowers retain their
+own clock material. Worker preparation records that identity before CPU vertex
+buffers retire, and the worker response carries the bit. Legacy responses
+without the field derive it from their restored UVs. The shader, geometry,
+spring curve, contact coordinates and rebound are unchanged. Cutaway and map
+finish updates include the grass material. At destination-cache handoff the
+previous grass material settles once, preventing a hidden spring value from
+keeping the conservative shadow-culling guard active.
+
+Seven grass regressions pass, including 64 real Bevy asset-event updates proving
+positive/rebound/settling motion without Modified events for static, actor or
+flower materials. Renderer publication (42), terrain batching (23), and
+hidden-destination (5) tests pass. These prove removed invalidation and retained
+bindings/finish; they do not establish an overall FPS improvement. The external
+pack worker roundtrip passes on eight source maps with exact prepared output.
+The handoff regression also passes: previous hidden grass settles once and
+removing the active handle settles its last spring without modifying static
+finishes.
+
+Corrected frozen-source native checks used ordinary production input at noon,
+1280x800, and offscreen image capture. The house route `DDBBBBBBBBBB` entered
+New Bark (13,5), then settled at (13,6), with the first town frame active/not
+pending and the foreground build count fixed at one. Route 29 `DDLRLRUU`
+returned to (50,9), and `DDLLDD` entered the grass interior at (48,13), all
+without additional terrain builds. Each paired 3D/2D capture preserved game
+state. Existing receiver traces showed two spring intervals (seven frames
+without pruning) during the interior walk, then resumed pruning. The first
+edge-only walk did not activate the spring and is not used as spring evidence.
+The Route 29 canopy fade also appeared in the earlier client; it is not a new
+material-ownership defect.
+
+Visual checks used the optimized development profile, not release FPS data.
+The production-only desktop release built successfully in 15m16s; installation
+took 59.6s. Installed `~/Applications/Geothite.app` passed its own installation
+check from `/tmp` with the artwork override removed, plus deep/strict codesign
+verification. Native pack hash and the existing external save path are
+unchanged. This is the verified grass CPU-invalidation fix, not proof of the
+broader fluid-FPS goal. The frozen build predates an unrelated later public
+understory-diagnostic API addition; that addition is preserved in the checkout.
+
+## Release GPU investigation (unresolved)
+
+Offscreen release checks at New Bark (13,6), noon, retained full quality,
+showed about 39 ms median graph submission versus 0.6 ms graph encoding.
+Existing diagnostic shadow/SSAO controls isolated substantial GPU cost; they
+are not shipped quality changes. Completion throughput from this unpaced,
+deeply queued harness is not displayed FPS. Baseline CPU compilation overlap
+also prevents treating diagnostic differences as precise speedup percentages.
+
+A conservative paired-plane shadow-ray prototype passed ten
+culling regression tests and preserved 20,000 generated receiving rays, but retained
+1,876 versus 1,911 shadow submissions out of 2,622. It showed no convincing
+frame-rate gain and was removed, including its test and runtime code. No new
+performance toggle was added. The earlier installed preload/image-sharing and
+flower-material fixes remain in place.
+
+A remaining walking-specific issue is the existing shadow-culling fallback
+while grass springs: shader deformation exceeds the stored mesh bounds, so
+the system deliberately keeps stock shadow lists. A safe improvement needs
+bounds covering both positive and rebound motion, with matching receiver and
+caster treatment; removing that guard alone would be incorrect. No such
+change has been implemented or accepted yet.
+
+## Shared native painted-image preparation (installed)
+
+Early destination work could start a separate painted-image worker before the
+foreground had image handles to lend. Native preparation now shares one task
+and one resulting pair of image handles between the foreground and destination
+queues. The first consumer transfers the decoded images into Assets; every
+consumer then receives those exact handles. No extra decoded global copy is
+retained. Geometry jobs and source atlases remain independently owned.
+
+The decoded bytes, mip levels, texture descriptors, samplers and usage flags
+are unchanged. Image upload may overlap unfinished geometry, while terrain
+publication still waits for its prerequisites. Canceling one scene detaches
+its owner; work needed by another scene survives, and dropping the last owner
+cancels pending work. No user-facing control was added. Cargo check passes.
+All five painted-image tests pass, covering exact bytes/descriptors/samplers,
+one shared image pair, last-owner cancellation and retained work for a second
+scene. All five destination-preload checks pass. The hidden-scene test initially
+omitted the destination's independent atlas from its expected count; the
+corrected assertion requires four total images (source, retained atlas, and the
+single painted pair), and verifies the foreground receives the same pair.
+All 42 renderer checks pass, including atomic publication and map-handle reuse;
+the flower filter still passes 37 checks with one existing skip. Counts overlap.
+
+Matched shared/separate-owner review clients are building from an ignored
+frozen source snapshot: 1,045 source files and 848 linked static inputs are
+hash-guarded. Only three runtime source files differ. An initial private build
+failed because its removed allocator directory was still listed as a workspace
+member; that private manifest is corrected, keeping the original patched
+allocator. The shared checkout was not changed by the snapshot repair. The shared-image implementation is now installed; no latency or FPS gain
+is accepted from these contended comparisons.
+
+The model compiler also rejected symlinked model inputs in the private snapshot;
+those 623 files now use hard links. Shared and separate-owner clients built in
+4m22s and 3m37s. A first baseline attempt incorrectly reused the shared artifact
+because copy2 preserved old source timestamps. Their identical executable hashes
+caught this before measurement. The invalid copy was removed, source files were
+written with current timestamps, and the baseline rebuilt. Final executable
+hashes differ, and all source/static guards passed. The snapshot is restored to
+the shared-owner source after the builds.
+
+Real-pack paired house exits then confirmed two preparation jobs/four PNG
+decodes with separate owners versus one job/two PNG decodes with shared owners.
+Both paths already reused the finished painted images in this scenario: two
+painted uploads totaling 16,768,144 bytes each. The proven saving is redundant
+CPU decoding and mip preparation, not reduced GPU upload traffic. Each paired
+capture preserved its game state; both reached New Bark with active terrain,
+no pending terrain and zero additional foreground builds. The reviewed 3D views
+retain the same geometry, finish, lighting and readability. Native roof styling
+still differs from the 2D source as before. Compilation overlapped all runs, so
+no latency or displayed-FPS gain is attributed to these timings. The first
+shared run also confirms one preparation job. The production release build
+passed in 11m03s; complete desktop content verification took 692.5s. A late
+two-line source-region cache-key addition changed lib.rs during compilation;
+review confirmed that all image-ownership code still matches the validated
+build. That later cache-key edit remains in the checkout for its subsequent
+build. The verified app was installed at `~/Applications/Geothite.app` in 60.5s.
+The installed copy passed `--check-installation` from outside the checkout with
+the model-root override removed, and strict deep signature verification passed.
+It resolves the same existing save path. No visible window was opened.
+Own temporary frozen clients, model links, source snapshot, capture images and
+receipts were removed after validation; Cargo build caches remain.
+
+## Flower clock material isolation (installed)
+
+A three-second macOS CPU sample of settled headless New Bark succeeded. It shows
+material specialization (including repeated MeshPipeline/MeshLayouts clones),
+mesh metadata and GPU-buffer preparation during steady play. This is sampled
+CPU evidence under compilation load, not GPU timing or a frame-rate claim.
+The sample is `/tmp/geothite-render-cpu-sample.txt`; the paired headless run
+completed and preserved its state, with no additional terrain builds.
+
+Production `flower::animate` previously changed `cache.solid_material` on every
+frame. The installed Bevy 0.20 `mark_meshes_as_changed_if_their_materials_changed`
+marks every Mesh3d using a changed material, so the blossom clock invalidated
+shared static terrain/grove users. Animated solid geometry now owns a separate
+retained material cloned from the complete configured solid finish. Publication
+reuses its handle and binds the animated entity to it on every rebuild. The
+clock, phase, geometry, shader, shadow behavior and texture handles are unchanged.
+Cutaway updates still reach both solid domains. No new control was added.
+
+Two new production tests check handle reuse/finish refresh and 64 actual Bevy
+asset-event updates: only the animated material may be modified by the clock.
+The existing production publication regression now checks the animated binding
+and environment fields across its map/revision sequence. The flower-filtered
+suite passed 37 checks (one existing external-rig check ignored), including
+both new asset ownership tests. Compilation completed in 5m14s; execution took
+0.08 seconds. Its output is `/tmp/geothite-flower-material-tests.log`. The
+publication regression also passes (2m55s rebuild; 0.05s execution). Its
+output is `/tmp/geothite-flower-material-publication-tests.log`. The same
+completed test harness passes all 42 renderer checks, 55 occluder-fade checks
+and nine shadow-receiver checks. These filter counts overlap other runs and
+are not a unique-test total. No displayed-FPS gain is claimed yet. The change is now installed in the
+release app. Frozen clients isolated the original and flower variants during
+verification; their temporary capture/build snapshot is removed afterward.
+
+A fresh three-second macOS CPU sample comparison used the frozen shared-clock
+client and frozen flower-only client at New Bark (13,6), noon, 1280x800, after
+GPU-validated warmup. Both render runs and samples exited successfully. The
+shared-clock call tree includes base_specialize (26 samples at its observed
+node) and MeshLayouts clone descendants; the flower-only sample contains no
+base_specialize node. This supports removal of the sampled repeated CPU work,
+not a numerical CPU percentage, GPU-time saving, or displayed-FPS gain. Samples
+are `/tmp/geothite-cpu-cache-original.sample.txt` and
+`/tmp/geothite-cpu-cache-flower.sample.txt`. Sampling and concurrent scheduling
+make these runs unsuitable as frame-rate benchmarks.
+
+A further flower-only rightward route reached New Bark x=13 through x=17
+at y=6, retaining zero additional terrain builds across 384 frames. Its
+three-second sample also contains no base_specialize node. The route completed
+successfully; sampling and concurrent compilers exclude it from FPS comparisons.
+The fresh renderer-neutral controller suite passed eight checks (one existing
+ignored), including Mom/New Bark and authoritative battle execution. All five
+renderer preload and 55 fade checks also pass using the completed renderer
+harness. The fade command initially omitted CRYSTAL_RENDER_TEST_PACK; its
+external-pack assertion failed, then passed with that required input set.
+The first production release build succeeded in 15m16s; full desktop build and
+content verification took 953.7s. The pack verifier reported 388 maps, 251
+species, 251 moves and 377 audio programs. Eleven source inputs changed during
+that build, so it was not installed. The release refresh passed in 8m27s (534.8s including content verification).
+Its flower material, renderer integration, destination preload and tilt-shift
+shader inputs match the checked source. Three later Pokemon gait edits changed
+during compilation; this app contains the compiled gait revision, not those
+subsequent edits. Those source edits are preserved. The app was installed at
+`~/Applications/Geothite.app` in 66.7s. The installed executable passed `--check-installation`, resolving its pack and
+resources from the installed bundle. `codesign --verify --deep --strict` also
+passed. Own frozen clients, linked source snapshot, captures and receipts were
+removed from ignored `.local/early-destination-check`; Cargo caches remain.
+No visible app window was opened. The wasm-dev comparison clients inherit dev debug assertions;
+their driver overhead and intervals must not be presented as release-app FPS.
+
 ## Native initial-room preload trial (verification in progress)
 
 Native destination-source publication and hidden-scene preparation no longer
@@ -16,13 +464,121 @@ a valid New Bark source frame, Mom lookahead and an unchanged controller checksu
 A renderer regression requires a destination to finish while the initial room
 is pending, remain hidden, start exactly one build and leave the current frame
 and renderer status unchanged. All five renderer preload regressions pass,
-including that new hidden-scene check. The real-pack publisher check and client
-build are still running; no latency gain is claimed. The installed app remains the verified
-map-space version below. The existing completed development executable was
-saved in ignored `.local/early-destination-check/before` for comparison; this
-trial has not been installed. Its targeted test output is in
+including that new hidden-scene check. The real-pack publisher check also
+passes for both house floors (one test, 1.75 seconds). The first invocation
+encountered stale dependency libraries after concurrent movement API changes;
+it was stopped and retried successfully against current sources. The headless
+review client built successfully in 6m48s. Eight production controller checks pass (one
+existing ignored), including Mom/New Bark and authoritative battle execution.
+The broader publisher suite passed the real connection-arrival check but found
+a stale distant-door assertion: it expected no destination at a corner with an
+authenticated nearby route connection. The test now requires that route, then
+clears only its disposable catalog connections to independently verify distant
+doors produce no request. Production selection is unchanged. The corrected
+three-test publisher suite passes (100.43 seconds under compilation load).
+No latency gain is claimed. The release app now includes the early native
+publication path and flower material isolation described above. The existing completed development executable was
+saved in ignored `.local/early-destination-check/before`. It predates concurrent
+natural-movement changes and is not an isolated preload baseline. A matching
+baseline is required before attributing a latency difference to this trial,
+now included in the installed release. Its targeted test output is in
 `/tmp/geothite-early-destination-tests.log`. First-room readiness and cold-door
 latency must both be checked before keeping the change.
+
+Current-source headless captures at 1280x800 were inspected against their
+state-preserved 2D pairs for PlayersHouse1F and the New Bark house exit. Room
+props, actor positions, town geometry, materials, shadows and readability remain
+aligned; this is not full-game visual acceptance. With exact-step input, a
+single D stops at house tile (6,7), so the crossing route is `DDBBBBBBBBBB`.
+The actual crossing reached New Bark with no new foreground terrain build,
+`terrain_pending=false` on its first visible map frame, and completed fade/input
+settling in 549.093 ms. Its moving-frame median was 85.07 ms / p95 263.56 ms,
+and screenshot production took 67.51 seconds. Compilers overlapped this whole
+run, including pack decode and GPU preparation; neither exit nor frame numbers
+establish a speedup. The earlier saved executable also predates movement and
+camera changes, so it is not a matched baseline. The speculative camera differs
+from the live actor-follow camera, but the measured arrival did not wait for
+missing terrain; no camera/preload patch was made from that hypothesis.
+
+
+The existing render-walk harness waits for 90 ready-renderer frames before its
+first input. A route without extra B buttons still has that fixed warmup; it is
+not a zero-warmup first-image door press. Keep this identical in comparisons
+and examine startup as well as the doorway interval so extra preparation time
+is not mistaken for reduced total latency. No harness timing has been changed.
+
+The current-source baseline built in 10m25s, and its wrapper restored both
+shared source gates. Five source files changed during compilation (script data,
+wild-challenge implementation/test, natural movement and frame publication), so
+that executable is excluded from isolated preload attribution. To avoid repeated
+moving-source comparisons, an ignored source snapshot is now building baseline
+and candidate sequentially. Only the two native readiness gates differ within
+that snapshot. Root assets/models remain linked to their existing originals;
+no game programs, packs or generated audio were copied. The snapshot keeps the
+original patched allocator implementation and guards it as a linked input;
+its first attempt failed with a duplicate allocator lockfile identity, repaired
+by removing only the snapshot's unused allocator workspace member. The retry is
+no longer running: it reached a missing `art/battles/arena-palettes.json` include
+and failed. The private art-directory link is repaired. Part of the Bevy graph
+was rebuilt as well. The repaired retry completed all three clients: baseline (6m07s),
+early preload (3m35s), and early preload plus flower material isolation (4m06s).
+All source and 744 linked static-input hash guards passed. The private snapshot
+ends at the flower variant; no wrapper remains live. All artifacts are ignored.
+
+Paired warm house exits preserved their 2D state and showed the destination
+ready on its first visible frame, with no extra foreground terrain build.
+However, baseline settling took 591.514ms and the flower variant 3015.082ms,
+including a 2741ms render-submit stall. These are exploratory measurements under
+concurrent compilation, not an improvement claim. The harness waits 90 ready
+frames before walking, so neither is a cold-door test.
+
+Four stationary unpaced GPU-validated runs and four paced screenshot routes
+also produced mixed results. Every set overlapped compilation. Additionally,
+the original renderer monitor matched only a short executable-name list and
+missed other tasks' `immersive_battle_3d` clients. Its `renderer_overlap=false`
+receipts do not establish GPU isolation. Future comparisons must monitor all
+Geothite example clients. Unpaced offscreen completion counts are not displayed
+FPS, and the screenshot path uses a different render schedule. No frame-rate
+or transition gain is accepted from these results; neither trial was installed during those comparisons.
+
+## Rejected extra terrain pipeline cache callback
+
+The installed Bevy 0.20 color specializer clones MeshPipeline before checking
+its specialization cache. Its prepass specializer already checks the same kind
+of cache first. A trial gave terrain materials that cache-first color callback,
+delegating misses to Bevy unchanged. Installation ran after asset preparation
+and before specialization, only for uniquely owned VoxelMaterial properties
+still using Bevy's stock callback. Shared properties, other material types and
+custom callbacks remain untouched. Reprepared materials are eligible again.
+No shader, key, layout, geometry, draw, or quality setting changes. No toggle
+was added. Cargo check and both ownership/repreparation tests passed; the
+flower filter still passes 37 checks (one existing ignored). Test compilation
+took 5m59s, and all 42 renderer checks also pass. The fourth frozen client adds
+only this module and registration to the flower variant. Its source and all
+744 linked inputs passed guards before and after the 2m11s build. An initial
+command omitted the required location-tester feature and did not build.
+
+The real house exit completes with state-preserved 2D pairing, zero additional
+terrain builds and New Bark ready on its first visible frame. Its full 3D image
+was inspected against the paired 2D view: buildings, foliage, actors, water,
+shadowing and readability remain present. Native roof styling differs from 2D
+as before. This is not full-game visual acceptance. The cache variant settled
+in 219.544ms across ten route frames; the flower variant took 213.977ms. Neither
+establishes an exit improvement. The cache run overlapped compilation, whereas
+the subsequent flower run's monitor observed no compiler or renderer overlap.
+
+Four further alternating runs all overlapped compilation. Cache route medians
+were 42.98/74.18ms, flower medians 52.38/70.53ms; results are mixed and excluded
+from speedup attribution. All completed with zero new terrain builds and the
+same pack hash. These screenshot schedules are not displayed FPS. Three-second CPU samples succeeded for both the flower-only and callback
+variants. Neither sample showed base_specialize, while the callback sample
+included its per-frame material scan. Absence in a short sample is not proof
+of zero calls, but this provided no evidence that the extra callback benefits
+the flower-only scene. The callback module and registration were removed from
+production source. No toggle or fallback experiment remains. Its passing tests
+and frozen executable are trial evidence, not an accepted optimization or an
+installed update. The fresh shared-clock sample does show repeated specialization and layout
+cloning; see the flower-material evidence above.
 
 ## Map-space walking and static scenery
 
@@ -101,15 +657,13 @@ Cargo caches remain.
 
 ### Remaining performance leads
 
-The host's `bevy_shell/destination_preload.rs::publish` and renderer's
-`destination_preload.rs::prepare` both wait for the current room to be active
-and no longer pending. This deliberately prioritizes the initial room, but also
-holds a known exterior's preparation until the room is fully playable. A native
-initial-room/exterior overlap trial should measure both time to first playable
-room and cold exit; publishing a hidden scene must never make it visible or
-advance controller state. Existing warp-graph selection already finds New Bark
-from both house floors, so no new dispatcher or source pack is needed. This
-trial has not been implemented.
+The native initial-room/exterior overlap trial above removes the readiness
+wait from `bevy_shell/destination_preload.rs::publish` and
+`destination_preload.rs::prepare`; browser scheduling is unchanged. Both first
+playable room and cold exit still need comparison. The five renderer checks
+pass, and current-source real-pack publisher verification passes for both
+house floors. The headless client and paired exit captures pass; an isolated
+latency comparison remains pending.
 
 The installed Bevy 0.20 source also offers camera-level `NoCpuCulling` and
 incremental GPU-visible entity storage. With static terrain transforms now
@@ -118,7 +672,35 @@ work while preserving the existing CPU shadow/receiver filtering on meshes.
 This needs actual GPU-preprocessing support, conservative animated bounds,
 matched edge/cutaway/shadow checks and real frame evidence. It is distinct from
 the rejected hardware-occlusion and direct-drawing prototypes; no new culling
-policy has been enabled by this work.
+policy has been enabled by this work. Further installed-source review shows
+`reset_view_visibility` and `SetViewVisibility::set_visible` already bypass
+change detection when an entity remains visible. Static visible meshes therefore
+do not necessarily trigger repeated extraction through `Changed<ViewVisibility>`.
+That proposed extraction rationale does not justify a culling-policy change;
+entity-level opt-out would also bypass the existing CPU receiver filter.
+
+The CPU sample also captures `bevy_pbr::material::base_specialize` repeatedly
+cloning MeshPipeline/MeshLayouts before asking SpecializedMeshPipelines for an
+already-cached result. Bevy's prepass specialization checks `get_pipeline` first.
+A future VoxelMaterial-only callback could do that lookup and delegate misses to
+the stock function, using the public MaterialProperties callback. Ownership,
+scheduling, exact cache semantics, GPU validation and actual benefit still need
+proof; no callback override or Bevy dependency patch has been implemented.
+
+A standalone world-bounds cache prototype was rejected without integration.
+It reused the exact Aabb/GlobalTransform results across receiver/cascade scans.
+All 21 isolated checks passed, including equal caster lists across 192 frames
+of camera motion, actor transforms, resized bounds and missing bounds. Its
+fixture used small material/trace stubs, so those checks were not production
+render acceptance. Optimized same-process comparisons on 3,000 boxes and two
+cascades kept the same results but were slower with the cache. Four stationary
+64-update samples measured 32.728/36.564/33.555/37.178 ms original versus
+46.036/119.407/41.426/37.039 ms cached. Four moving samples measured
+47.518/50.174/49.459/60.005 ms original versus
+70.590/70.905/68.709/67.176 ms cached. Concurrent compilation affected absolute
+costs, but there was no useful improvement to justify integration. The prototype
+source, harnesses and binaries were removed; no production cache or toggle was
+added. Evidence remains in `/tmp/geothite-shadow-bounds-cost.log`.
 
 ## Prepared scenery and animated bounds ownership
 
@@ -1564,3 +2146,730 @@ with only the initial terrain build. Inspected movement/final images retain
 complete characters and scenery. Movement update traces under contention were
 31.91/76.80 ms median/p95 in New Bark and 15.51/35.79 ms on Route 29. These are
 movement observations, not FPS; stationary throughput does not erase that cost.
+
+## Route clarity and connected-area preparation (macOS)
+
+Route woodland fog now has at most 12% opacity and starts 16 source tiles
+beyond the camera target, ending at 40 tiles. Dedicated forest atmosphere is
+preserved. Paired production 2D/3D captures at noon were inspected on Route 29
+(50,9) and Route 26 (10,54), at 1280×800. Nearby paths and landmarks remain clear.
+Woodland density and sky sectors retain source-keyed results; source animation
+updates skip unchanged phases while still resynchronizing replacement atlases
+and re-entry into 3D.
+
+Outdoor lookahead prepares the nearest connected boundary within 24 core tiles,
+as well as nearby doors. Its source snapshot is immutable; arrival prediction
+must not advance gameplay. Small tangential movements retain an in-flight
+arrival anchor. This improves preparation lead time without adding another
+resident hidden scene.
+
+An offscreen production synthetic walk east from Route 29 (58,9), using
+`render_at_location --map Route29 --x 58 --y 9 --hour 12 --view 2.5d --walk RRRR`,
+crossed into New Bark Town. All 128 recorded frames retained active terrain,
+with no pending terrain, no fade, and only the initial terrain build. The
+`Wait, RENDER!` authored scene still executed. This verifies that crossing's
+loading behavior; neighboring building/tree style changes at map ownership
+boundaries remain a separate visual continuity limitation.
+
+Timing uses the native `new_bark_3d` measurement harness, image target, focused
+update policy, 1280×800, noon, 15-second ready intervals, Apple M5 / Metal.
+Set `CRYSTAL_RENDER_TEST_HEADLESS=1`,
+`CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image`,
+`CRYSTAL_RENDER_TEST_UPDATE_POLICY=focused`, and
+`CRYSTAL_MEASURE_3D_VALIDATION=on`, then run:
+
+```sh
+cargo build --locked -p crystal-bevy --features location-tester --example new_bark_3d
+./target/debug/examples/new_bark_3d content-packs/core-modular.browser.crystalpack \
+  --map Route29 --x 50 --y 9 --hour 12 --size 1280x800 \
+  --measure target/route29-measure --seconds 15
+```
+
+The output directory must be fresh. Warmup validates a rendered image; timed
+intervals omit image readback. Headless measurement keeps pipelined rendering
+and uses an unthrottled schedule, avoiding the screenshot timer's artificial
+62.5 Hz limit. Queue callbacks report completed submissions per second, **not
+display-presented FPS or GPU timestamp duration**.
+
+Early heavily contended checks measured 8.512 completed submissions/s on Route
+29 (106.24 ms median / 214.06 ms p95 application intervals) and 10.175/s on Route
+26 (86.17 / 208.31 ms). These establish poor throughput, not a controlled
+before/after comparison. Camera occlusion culling fell to 5.940/s on Route 29
+and remains disabled. Adding Route 26 to the conservative shadow receiver
+filter produced inconsistent off/on/on/off results: 19.794, 12.455, 18.524,
+16.702 submissions/s. That experiment was removed. No stable performance gain
+or target framerate is claimed from these contended comparisons.
+
+The external-pack destination regressions passed all three checks: both house
+floors, doorway approach, and actual controller crossings. Route 26 crossed
+west from (0,94) into Route 27 (79,4); Route 29 crossed west from (0,7) into
+Cherrygrove City (39,7). Predicted destinations matched authoritative controller
+results, and prediction left the gameplay checksum unchanged. Eleven sky
+checks, seven terrain-animation checks, and the retained-water-palette check
+also passed.
+
+The rendered Route 26 (1,94) `LLLL` crossing into Route 27 likewise passed:
+128 frames, five grid origins, one initial terrain build, zero additional
+builds, terrain active throughout, no pending terrain, no fade, and no warp
+phase. Its inspected image retained complete player/follower geometry. Under
+concurrent compilation, movement intervals were 62.24 ms median / 185.84 ms
+p95; these are movement observations, not stationary FPS.
+
+### Adaptive decorative woodland floor
+
+The ordinary scenery mode now retains at most one original understory plant
+per source-anchored 2×2-cell patch. This bounds decorative mesh/entity work
+without moving or simplifying any retained plant. Every tree, gameplay grass
+cell, object and collision remains unchanged. Dedicated ancient forests keep
+their dense floor. Source-cell selection is stable across chunk splits.
+`CRYSTAL_UNDERSTORY_FULL_DETAIL=1` restores only the old decorative floor for
+native A/B timing; `CRYSTAL_SCENERY_FULL_DETAIL=1` also retains it alongside
+that mode's existing scenery policies.
+
+The adaptive-cover check verifies a strict subset of original plants, at most
+one draw per aligned patch, deterministic selection, and more than two-thirds
+fewer decorative draws across 1,024 source patches. The chunk-splitting
+invariant passes in both density modes. All nine forest-library checks passed
+with adaptive cover and again with `CRYSTAL_UNDERSTORY_FULL_DETAIL=1`, including
+cached/worker agreement and unchanged tree triangles and placement.
+
+One frozen optimized native executable then compared only decorative floor
+density, with the same settings and 15-second intervals described above. Run
+order was Route 29 dense/adaptive, then Route 26 adaptive/dense. Every timed
+row retained its requested route; battle timing files contained no samples.
+
+| Scene | Decorative floor | Median update | p95 update | Completed submissions/s |
+| --- | --- | ---: | ---: | ---: |
+| Route 29 (50,9) | dense override | 59.77 ms | 71.93 ms | 15.992 |
+| Route 29 (50,9) | adaptive default | 36.70 ms | 74.20 ms | 23.877 |
+| Route 26 (10,54) | dense override | 45.75 ms | 138.55 ms | 13.498 |
+| Route 26 (10,54) | adaptive default | 39.85 ms | 75.72 ms | 22.573 |
+
+Observed queue throughput improved approximately 49% and 67%, respectively.
+Outstanding submissions were 36→35, 13→8, 2→36 and 5→2 in table order; all
+receipts recorded zero poll errors. This is headless completed-work throughput,
+not presented FPS. Host contention remains, Route 29 p95 did not improve, and
+these results do not establish smooth 60 FPS. Warmup images were validated
+before timing, with no readback during timed intervals. The adaptive images
+retain full trees, source grass, paths and landmarks with a less crowded floor.
+
+Final paired 2D/3D captures were inspected again at both measured positions
+with adaptive cover enabled. Paths, encounter-grass footprints, landmarks and
+full character geometry remain readable. The final adaptive Route 26→27
+synthetic crossing repeated all 128 frames with active terrain, zero pending
+terrain, no fade/warp phase and no additional terrain build.
+
+## Battle entry and continuous walking
+
+The battle bridge now publishes its modeled background during the source
+sliding introduction and entry narration. Source portraits remain overlays
+with controller-owned clipping, offsets and lifetime. Pokémon remain hidden
+until their existing reveal boundary; entry extraction does not advance the
+battle. Portraits follow the chosen camera's player/enemy screen order and
+restore their original transforms in classic mode. Route battle fog now shares
+the field view's 12% opacity cap; dedicated forest fog remains unchanged.
+
+A real Route 29 walking encounter exposed another source of persistent 2D
+fallback: its retained metadata still named the starting cell while the
+continuous avatar was already halfway toward the committed destination. The
+old anchor classifier accepted a centered pre-step avatar or a committed
+landing, and rejected that legitimate intermediate foot. The classifier now
+accepts the actual foot on the same authenticated source corridor before cell
+publication. Source map/grid/texture/revision, facing and exact corridor checks
+remain; a destination endpoint cannot use stale starting-cell metadata.
+
+The initial native recording had 2,008 battle rows in source 2D with
+`encounter has no checked terrain anchors`. With the anchor fix, all 647
+published battle rows used modeled 3D and the actual Route 29 scenery, without
+a terrain fallback. Native traces validated the observed midpoint rather than
+inventing an anchor or changing the authoritative encounter. All twenty
+walking-anchor checks passed, including continuous positions and rejection of
+cold, stale, mismatched and off-corridor evidence. The production battle-command
+regression also passed, including authoritative move execution and PP mutation.
+The existing five intro checks and send-out timing check passed. Camera-order /
+classic restoration compositor tests and route/forest battle-fog checks passed.
+
+A final frozen paired capture at production FIGHT/PKMN/PACK/RUN was inspected
+in both 3D and 2D. It retained the same Cyndaquil/Pidgey battle, levels, HP and
+menu state. The clearer 3D view preserves the grass and terrain, complete
+bodies and readable HUD. The selected opposite camera correctly places the
+player and its HUD on the right.
+
+These observations do not yet prove seamless battle entry. An earlier traced
+handoff included a 2.739-second application interval during preparation. A
+subsequent non-traced Route 29 recording observed an 847 ms interval after
+handoff; these different host/instrumentation conditions are not a controlled
+before/after comparison. Preparation still needs profiling and removal from
+the visible handoff. The selected 3D field now remains under the transition as
+described below. Diagonal continuous movement and additional encounter sources
+also need native coverage before making a general no-fallback claim.
+
+Build the native review client with:
+
+```sh
+CARGO_TARGET_DIR=target/route-performance-build cargo build --locked \
+  -p crystal-bevy --features location-tester --example immersive_battle_3d
+```
+
+Headless image recording can now use `--record` directly without a dummy
+`--screenshot`. Keep `CRYSTAL_RENDER_TEST_HEADLESS=1` and
+`CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image`; the recording owns its image target
+and does not require a nonexistent one-shot file.
+
+A final native Violet Gym trainer recording completed successfully: 1,707
+published battle rows all used modeled 3D with the witnessed gym floor and no
+terrain fallback. Its intro, trainer narration, send-out and ready-battle
+images were inspected. This verifies one real trainer path in addition to the
+Route 29 wild encounter; it does not close the remaining preparation and
+transition work above. The direct headless `--record` path also exited
+successfully without requiring a dummy one-shot screenshot.
+
+
+### Battle-entry effects stay on the 3D field
+
+The selected 3D field now remains active through the controller's transition.
+Its final movement and actor poses continue to extract from the authenticated
+field. Palette flashes, spin/scatter/box masks, trainer graphics and cave SCX
+rows apply to that field through the existing post-process pass. A 3D entry
+skips construction/upload of flat-map transition textures. Classic mode retains
+its original presenter and clock. F3 invalidates the transition presenter even
+when a passive paired capture retains the same source atlas.
+
+Eleven transition checks passed, including every native wipe frame and every
+cave scanline, source trainer-pixel equality, retained field extraction and
+unchanged gameplay checksum. A direct native GPU pixel check passed at
+127×65, 320×257 and 1184×812: neutral blur output is preserved, full-view
+masks/flash work, SCX direction/wrapping matches native pixels, and trainer
+art retains square pixels. The effect remains available with blur disabled.
+Recording and opt-in source-hold checks also passed.
+
+An offscreen Violet Gym pair froze actual controller frame 110 after ordinary
+input. Its receipt reports `state_preserved=true`, the same checksum/LCD frame
+and actor poses in 3D and classic views. Both images were visually inspected:
+the wipe covers the selected viewport while the 3D floor, characters and
+scenery remain underneath. No flat field replaces the 3D field. Reproduce the
+same source-phase review with the built review executable and a fresh output
+prefix:
+
+```sh
+CRYSTAL_RENDER_TEST_HEADLESS=1 CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image \
+CRYSTAL_RENDER_TEST_WALK_INPUT=synthetic CRYSTAL_RENDER_TEST_WALK_STEPS=1 \
+CRYSTAL_RENDER_TEST_HOLD_ENTRY_AFTER=110 \
+./target/route-performance-build/debug/examples/immersive_battle_3d \
+  content-packs/core-modular.browser.crystalpack --gym-encounter \
+  --walk UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA \
+  --size 1280x800 --screenshot target/entry-review-3d.png \
+  --second target/entry-review-2d.png
+```
+
+The hold pins the first actually observed source frame at/after the requested
+value; it never rewinds or manufactures a transition frame. It pauses only
+this explicit native QA review and requires an ordinary input route.
+
+A full native trainer recording completed with all 130 observed transition
+updates retaining active 3D field/effects, followed by 1,772 modeled battle
+updates. A Route 29 Cyndaquil/Sentret recording completed with all 58 observed
+transition updates retaining the 3D field, followed by 1,193 modeled battle
+updates. Eight frame-zero updates correctly left effects neutral while the
+committed final walk finished. Flash, wipe, intro and narration images were
+inspected; the reversed camera's trainer portrait stays beside its own side.
+The Route 29 recording still exposes the 847 ms preparation interval above,
+so a general seamless-entry claim remains premature. Recording CSVs now name
+field/battle renderer activity, effect activity and controller transition/intro
+frames, making this remaining gap distinguishable from a 2D fallback.
+
+A subsequent Route 29 run used `--measure` with
+`CRYSTAL_MEASURE_3D_VALIDATION=on` and `CRYSTAL_LOADING_TRACE` instead of
+continuous screenshot readback. Its trace isolates a 595.69 ms
+`battle.establish_camera` span inside a 681.50 ms main frame, followed by a
+311.19 ms render submission interval. Terrain freezing occurred earlier and
+took 78.33 ms. Camera fitting and the following GPU preparation/submission
+must therefore be addressed separately; eliminating recording readback alone
+does not eliminate the entry pause. This is diagnostic evidence, not a
+controlled improvement measurement or a seamless-entry acceptance result.
+
+CPU sampling located repeated full object scans in the camera sight proof.
+Frozen encounters now index those immutable object bounds once per generation.
+The index prunes impossible ray hits and retains the original detailed surface
+predicate at every candidate leaf; it does not remove camera candidates or
+relax admission. All 50 encounter-terrain and four walking-ground checks
+passed, including 7,938 indexed-versus-flat ray/height comparisons and the
+indexed faded-wall obstruction check. A subsequent native Route 29 replay
+retained modeled 3D scenery for all 285 battle rows, with no fallback. Its
+camera fit still took 523.94 ms. Overall update timing differed substantially
+from the earlier run, so these timings do not establish a controlled speedup.
+The synchronous exhaustive fit and following render submission remain entry
+latency work; the spatial index alone is not seamless-entry acceptance.
+
+### Native battle preparation overlaps the field transition
+
+`VisualBattleFrame.preparing` separates the upcoming offscreen scene from
+presented battle ownership. Once the committed final walk has completed, the
+retained battle-start snapshot supplies the upcoming bodies during the source
+field transition. On native builds, the exhaustive camera search runs on an
+async worker copy of the frozen encounter. Its request key includes bodies,
+viewport, UI reservation and retained generation. A changed key discards the
+pending request; a completed fit reapplies only its checked anchors/layout and
+rechecks live geometry, preserving live handles, opacity and actor state.
+Browser camera fitting currently retains its synchronous implementation.
+
+The hidden image target, retained terrain, skinned actors and aura pipelines
+can render during preparation. The battle composite and source UI remain
+unpresented until the controller's existing handoff. Classic transitions do
+not request this preparation. The transition cleanup guard now preserves an
+explicit preparation packet while still retiring stale presented battles.
+This guard is covered by the external-pack extraction/checksum regression.
+The hidden-target check, all 50 terrain checks (including live-fit
+revalidation), 11 source transition checks and 13 recording checks passed.
+
+A native Route 29 replay with ordinary synthetic input, no continuous image
+readback and opt-in loading tracing published 42 transition updates, all with
+active 3D field, then 564 presented battle updates, all modeled 3D with no map
+fallback. Thirty-four transition updates carried a preparation packet; eight
+frame-zero updates correctly waited for the committed walk. Camera fitting ran
+once on worker thread 6 from trace time 23.027 to 24.254 seconds. Sixteen main
+frames continued on other threads during that search. The last transition
+extraction occurred at 26.793 seconds; there was no handoff camera refit.
+The worker's 1,226.77 ms duration is not a computation-speed improvement claim.
+
+The first two seconds of presented battle still contained a 135.99 ms update
+interval. Render preparation around the handoff also remained substantial.
+The CPU search no longer blocks the handoff in this replay, but GPU work,
+overlap cost and broader entry coverage still need improvement before claiming
+seamless entry. Recording CSVs explicitly distinguish `battle_preparing` from
+presented `battle_frame_active` and `battle_3d_active`.
+
+A new Violet Gym 3D/classic pair held the actual source transition at frame
+110. Both images were inspected: the 3D gym remains beneath the authored wipe
+and trainer graphic, with no hidden battle scene leaking into the field. The
+receipt reports `state_preserved=true`, checksum frame 310/hash 236677086,
+LCD frame 595 and matching source actor positions/facings. This is a matched
+source-phase presentation check, not latency acceptance.
+
+The subsequent native Violet Gym trainer replay retained the 3D field on all
+147 transition updates and modeled battle scenery on all 2,770 presented
+battle updates, with no map fallback. Its only camera fit ran on worker thread
+4 for 23.03 ms, well before the last transition extraction at trace time
+10.446 seconds. The largest update interval in the first two seconds of
+presented battle was 31.99 ms. This verifies the trainer handoff separately
+from the slower Route 29 case; it does not establish equivalent timing for all
+encounter sources or browser builds.
+
+### Connected scenery retains source-map ownership
+
+The host now publishes compact `VisualSourceRegion` rectangles from the same
+resolved map placements used by the source-tile renderer. Base-map priority,
+connected-map reverse lookup and off-map border fallback follow that resolver.
+Live extraction and destination preparation both retain the regions. Terrain
+cache identity includes them, and worker requests preserve them through asset
+rebinding. Legacy frames without regions retain their previous map behavior.
+
+Building asset selection and tree/grove variants now use the placement's source
+map and that map's local tile coordinates. A New Bark lab visible from Route
+29 therefore selects the lab before crossing; entering New Bark no longer
+changes its asset from the generic gym. Tree variant coordinates likewise
+survive the active-map coordinate rebase. Source-map shape lookup in the main
+terrain build also uses cell ownership. This metadata does not change gameplay
+coordinates, collision, scripts or source art.
+
+The 30 render-API checks passed, including ownership/local-coordinate stability
+across a map handoff and invalid-region rejection. The complete native lab
+drawing selects the same lab asset on both sides. Worker roundtrip/rebinding
+and retained-terrain checks passed. Four related external-pack checks also
+passed with the completed TUI pack configured.
+
+A fresh offscreen production walk from Route 29 `(58,9)` east into New Bark
+was visually reviewed, including moving frames and a matched 3D/classic pair.
+The lab keeps its green-roofed 3D model before and after the boundary. All 128
+movement rows retained active terrain, none had pending terrain or fade, and
+only the initial terrain build occurred. The authored `Wait, RENDER!` scene
+still ran. The paired receipt reports `state_preserved=true`, checksum frame
+844/hash 2864923885, LCD frame 1178 and matching source actor positions/facings.
+Reproduce with the built location tester:
+
+```sh
+CRYSTAL_RENDER_TEST_HEADLESS=1 CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image \
+CRYSTAL_RENDER_TEST_WINDOW_SIZE=1280x800 \
+CRYSTAL_RENDER_TEST_WALK_INPUT=synthetic CRYSTAL_RENDER_TEST_WALK_STEPS=1 \
+./target/route-performance-build/debug/examples/render_at_location \
+  --pack content-packs/core-modular.browser.crystalpack \
+  --map Route29 --x 58 --y 9 --hour 12 --view both --walk RRRR \
+  --screenshot target/route-source-review.png
+```
+
+That review also exposed ground-finish discontinuity: connected town ground
+used route dirt before the active map changed, then town paving afterward.
+The source-owned ground pass below addresses that case. Other crossings still
+need review; the building/variant correction alone was not complete transition
+acceptance.
+
+### Connected ground retains its own palette and grain
+
+The production ground pass now selects its map style and local grain/shader
+coordinates from the physical surface's source region. Town gravel therefore
+appears while viewed from the route and retains the same finish at handoff.
+Tree-contact shadow offsets use the same source-local coordinates as their
+grove variants. Courtyard expansion and paving eligibility also honor cell
+ownership. The blend field and shadow index remain shared across the scene;
+this does not run an additional full finishing pass for each connected map.
+Frames without region metadata retain the legacy path.
+
+A two-map handoff regression compares the same connected floor before and
+after the active-map rebase. Colors, grain/shader coordinates, vertices and
+indices are identical; a separate assertion proves town cells already differ
+from the old route-only pigment. Eleven existing ground, paving and shadow
+checks passed, covering contact-shadow lookup, prop exclusion, courtyard
+limits, bank colors and retained support geometry.
+
+A fresh 1280×800 offscreen Route 29 `(58,9)` eastward crossing was inspected at
+moving frames and as a matched 3D/classic pair. New Bark paving is present
+before the crossing and remains afterward, alongside the unchanged lab asset.
+All 128 movement updates retained active terrain, with no pending terrain,
+fade or additional terrain build. `Wait, RENDER!` still executed. The pair
+reports `state_preserved=true`, checksum frame 610/hash 1953177725, LCD frame
+893 and matching source actor positions/facings. Broader crossing coverage,
+remaining battle-entry render intervals and browser camera preparation remain
+separate outstanding work.
+
+The current native build was also remeasured after the ground change using the
+same executable, completed browser pack, 1280×800 image target, noon, focused
+update policy and 15-second ready intervals without continuous readback. Order
+was Route 29 dense/adaptive, then Route 26 adaptive/dense. Dense mode sets
+`CRYSTAL_UNDERSTORY_FULL_DETAIL=1`; adaptive leaves that override unset.
+
+| Scene | Decorative plants | Median update | P95 update | Completed GPU submissions/s |
+| --- | --- | ---: | ---: | ---: |
+| Route 29 (50,9) | dense override | 63.85 ms | 95.30 ms | 14.527 |
+| Route 29 (50,9) | adaptive default | 49.65 ms | 85.89 ms | 18.343 |
+| Route 26 (10,54) | adaptive default | 45.37 ms | 76.54 ms | 20.100 |
+| Route 26 (10,54) | dense override | 67.22 ms | 136.79 ms | 12.967 |
+
+All timed updates retained active 3D world rendering; none entered battle, and
+all queue-poll error counts were zero. Adaptive throughput was about 26% higher
+on Route 29 and 55% higher on Route 26 in this pass. Both adaptive warmup images
+were inspected. These are queue callbacks, not displayed FPS or GPU timestamp
+durations. The host was not isolated from other work, and this compares plant
+density within the current executable rather than measuring a before/after
+speedup from ground finishing. Absolute route performance remains insufficient
+evidence for a general smooth-gameplay claim and needs further optimization.
+
+
+### Native Route 29 shadow cost investigation
+
+A further same-executable diagnostic pass used the completed external browser
+pack, Route 29 (50,9), noon, 1280×800 offscreen image target, focused updates,
+and 15-second ready intervals without continuous readback. These are temporary
+QA overrides; production shadows, filtering, resolution and blur remain intact.
+
+| Probe | Completed GPU submissions/s |
+| --- | ---: |
+| Default | 18.916 |
+| Modeled shadows disabled | 42.758 |
+| Tilt-shift disabled | 22.572 |
+| Both disabled | 41.031 |
+| Shadow resolution 1024 | 21.335 |
+| Shadow resolution 512 | 18.382 |
+
+Shadow rendering is the largest identified cost in this pass. Lower resolution
+alone was inconsistent. Shadow-only GPU culling without the orthographic clamp
+patch did not activate its guarded optimization. With the existing opt-in patch,
+it activated two safe cascades but measured only 10.112 completions/s; neither
+option was enabled by default. Receiver-culling CPU traces were typically below
+1 ms and do not explain the entire shadow cost. The host also ran unrelated
+work, so these results are diagnostic evidence rather than isolated benchmarks.
+
+A temporary hardware-2x2 shadow-filter probe measured 21.102 completions/s
+(43.34 ms median update); a subsequent Gaussian baseline measured 26.066
+(32.71 ms). Both warmup images were inspected. That did not establish a repeatable
+filter improvement, so the temporary selector was removed and Gaussian remains
+the default. An interrupted initial Gaussian startup is excluded from results.
+
+The GPU timing investigation exposed a separate diagnostic failure on M5 Metal:
+basic timestamp queries are enabled but timestamps inside passes and encoders
+are unavailable. Bevy's recorder still allocated counter buffers and eventually
+lost the device. Diagnostic recorder installation now checks all required device
+features before initialization. Boundary-only devices report unavailable timing
+without allocating those unusable queries; CPU-only devices without basic
+queries can still use safe CPU diagnostics. Five diagnostic policy/schema tests
+passed. The guarded native run exited successfully with all 234 timed updates
+in active 3D and zero captured GPU timestamp frames, correctly reporting
+`bevy_gpu_timestamps_unavailable_for_device`. The earlier failed trace is not a
+valid completed performance run. These controls are opt-in and do not affect
+normal gameplay. Queue callbacks remain neither displayed FPS nor GPU duration.
+
+
+### Resumable browser battle-camera preparation
+
+Browser hidden battle preparation now retains a camera-search snapshot between
+render updates rather than running the entire stage search in one update. It
+preserves the ordinary low-angle tier, higher fallback tier, end-on fallback,
+source-ground support checks, score/distance pruning and final admission proof.
+A preparation update batches inexpensive rejections for up to four milliseconds
+between stages. A complete stage remains indivisible, so this is a scheduling
+budget rather than a hard four-millisecond deadline. Native preparation retains
+its existing background task.
+
+Pending browser searches use the same body/support/viewport/UI/terrain identity
+as native preparation. A changed identity replaces the search; leaving the battle
+cancels it. The completed result contributes only layout and anchors and must
+pass the current live terrain proof before presentation. Hidden preparation
+continues to avoid claiming that the battle has been presented. This change
+requires a live browser entry recording before it can establish a stall-free
+handoff; source inspection or a successful compile alone is insufficient.
+
+The native regression compares resumed and exhaustive results for a tall body
+requiring a higher shot, a rejected retained footprint, and a derived stage with
+nearby source-ground candidates. It passed with exact camera/body-pose/anchor
+agreement, including the relocated-stage result. The separate hidden-target
+preparation regression also passed. These are scheduling/geometry proofs, not
+browser frame-time measurements.
+
+`cargo check --locked -p crystal-voxel-view --target wasm32-unknown-unknown
+--features terrain-worker` completed successfully using the isolated route
+performance target directory. A disposable production browser bundle is being
+built for live measurements; no stall-free browser result is claimed yet.
+
+
+Pending browser verification now has two disposable location-tester starts:
+`preview=route29-border` at Route 29 (58,9), and `preview=route26-border` at
+Route 26 (1,94), both requiring `multiplayer=off`. They select only a starting
+position; crossing still uses ordinary controller input and source connections.
+The opt-in loading trace also records a bounded `presentation.frame` event at
+Last with world/battle 3D activity, pending terrain, entry-effect state and hidden
+battle preparation. This is submitted app state, not proof of a GPU-presented
+frame; screenshots and interval measurements are still required. It avoids
+missing single-frame fallback states between bridge polls. Normal untraced play
+does not emit these events.
+
+The disposable bundle build uses the existing matching wasm-bindgen 0.2.128
+executable through `WASM_BINDGEN`; the globally installed 0.2.129 was correctly
+rejected by the build script. The first full wasm-dev build remains in progress.
+Inspection found that the worker-enabled browser build's
+`scenery-full-detail` selection also forced dense decorative plants. Decorative
+plant density is now separate: browser routes use adaptive placement while
+retaining full authored models; `understory=dense` is a same-build location-tester
+comparison. Dedicated ancient-forest ground remains dense. Native full-detail
+environment overrides preserve their existing behavior. The immutable density
+choice travels in terrain-worker requests, rejects an already configured
+mismatch before geometry construction, and is reported separately by WebMCP.
+Workers configure it only after request validation. The build was intentionally
+restarted after this protocol change so the main and worker artifacts agree.
+Native adaptive-density speedups still must not be presented as browser
+speedups; actual browser A/B measurements remain required.
+
+The final native worker-policy regression passed, including rejection of a
+mismatched density request before any geometry build. Both other worker policy
+and trace-scope checks passed. The explicitly enabled external-pack round trip
+also passed for New Bark, Viridian, Route 2, the player's ground floor, both
+Magnet Train stations, Dark Cave and Route 29, comparing exact prepared output.
+Eight understory geometry regressions passed, including unchanged tree triangles,
+source footing, adaptive-budget subset selection and connected-plot placement.
+These checks validate the request boundary and native behavior; browser speed
+and handoff acceptance remain pending the completed production client.
+
+
+### Hardware browser validation and battle composite repair
+
+The first completed production browser bundle exposed a real WebGPU failure on
+battle entry. The camera fit finished during the field effect, but the battle
+composite shader failed validation and the app stopped updating behind a black
+canvas. Per-frame activity flags alone had appeared correct. Capturing shader
+compilation information identified the exact error: Naga's decimal emission of
+f32::MAX rounded above WebGPU's representable range in `capture_finite2`.
+The helper now tests the all-ones IEEE exponent instead. It still rejects both
+infinities and every NaN payload, and accepts all finite values including signed
+zero, subnormals and maximum finite values; it no longer emits that float limit.
+
+On the M5's offscreen Metal WebGPU adapter, the captured original shader
+reproduced the error and the repaired shader compiled without errors. A direct
+GPU check of the production helper matched the independent finite-number
+reference for 16,673 boundary and randomized pairs. The rebuilt full browser
+client then passed `tools/browser-transition-check.mjs`: all 80 field-entry
+rows and 726 presented battle rows retained 3D, with zero shader errors,
+validation errors, device losses, worker failures or fallback jobs. The 3D
+Pidgey/retained-forest image and classic counterpart were visually inspected;
+the production view toggle preserved the observed game state. This verifies
+one browser wild-entry path, not all transitions or hitch-free timing.
+
+The same browser investigation found a separate route blocker. An immediate
+Route 29 (58,9) crossing entered New Bark correctly but recorded 110 app frames
+without active 3D while destination terrain was pending. The in-flight
+preload currently replaces the live scene before its geometry is resident.
+The trace also found speculative New Bark asset publication occupying hundreds
+of milliseconds during a Route 29 battle effect. Continuous connected-scene
+retention and budgeted/preemptible speculative publication remain required;
+this crossing is explicitly not accepted as seamless.
+
+The new route-border preview names also needed entries in the browser's 3D
+worker policy; they now agree with the Rust starts. The existing worker-policy
+checks pass. Browser reference captures use the production view-toggle button,
+since the native F3 shortcut is not a reliable browser control.
+
+Default headless Chromium on this machine selected SwiftShader and exposed no
+WebGPU adapter. With `--enable-gpu`, both its headless shell and unified headless
+binary reported Apple Metal and the M5 renderer, with timestamp-query support.
+This matches [Chromium's headless GPU guidance](https://chromium.googlesource.com/chromium/src/+/HEAD/docs/gpu/using-gpu-hardware-in-headless-chrome.md).
+The walking performance tool now enables hardware selection for headless runs,
+records adapter/renderer identity, and can require it with
+`REQUIRE_HARDWARE_GPU=1`. It also reports active-3D app update throughput:
+requestAnimationFrame can keep ticking when the game app has stopped, so its
+intervals alone cannot establish the game's frame rate. These counters and
+GPU timestamps still do not prove display-presented FPS.
+
+### Lower concurrent-build-load native diagnostic
+
+The existing QA executable was remeasured at the earlier Route 29/26 positions,
+noon and 1280×800 for 15-second ready intervals after other compiler jobs had
+finished. Our browser build remained active, so this is not an isolated host
+or final-source acceptance run. The executable retained the temporary shadow
+filter selector; that selector remains removed from production source.
+
+| Scene/filter | Median update | P95 update | Completed GPU submissions/s |
+| --- | ---: | ---: | ---: |
+| Route 29 Gaussian | 32.95 ms | 54.70 ms | 25.121 |
+| Route 26 Gaussian | 39.71 ms | 80.18 ms | 22.621 |
+| Route 26 hardware 2x2 | 35.52 ms | 70.01 ms | 25.373 |
+| Route 29 hardware 2x2 | 34.63 ms | 74.38 ms | 25.541 |
+
+All 1,501 timed updates retained 3D and all poll-error counts were zero. The
+filter again did not establish a consistent improvement on both routes, so
+Gaussian was retained. The change in absolute readings reinforces the host-load
+limitation on earlier numbers; it is not another code speedup. In the earlier
+guarded trace's final 15 seconds, render preparation/submission dominated the
+CPU-side render envelopes while light visibility and receiver pruning remained
+below one millisecond at the median. Those envelopes can include driver waits
+and are nested; do not sum them or present them as GPU timestamps. Browser GPU
+pass timing is the next direct measurement of that cost.
+
+
+A first clean hardware-browser stationary Route 29 sample completed on the fixed
+bundle using the standard preview (50,9), fixed preview hour 16, 1280×900,
+wasm-dev, default workers, adaptive decorative plants and full authored models.
+`REQUIRE_HARDWARE_GPU=1`, `REQUIRE_DEFAULT_WORKERS=1`, `REQUIRE_EMPTY_PARTY=1`
+and `GPU_WATERFALL=1` all passed. It recorded 344 active-3D app updates over
+10.071 seconds (34.157 updates/s), requestAnimationFrame median 33.3 ms and P95
+33.4 ms, with a 416.6 ms maximum. This is one adaptive sample, not a browser
+before/after gain and not directly comparable to the native noon/1280×800 runs.
+
+Thirty timestamped GPU samples were available. Median directional-shadow pass
+time was 13.959 ms and the main opaque pass was 11.796 ms; the transparent 3D
+pass was 0.721 ms and each blur pass about 0.098 ms. This directly identifies
+shadow and opaque geometry rendering as the dominant GPU work. The run reported
+zero device/context losses, GPU validation or shader errors, texture allocations
+or composed texture upload bytes during measurement. The long maximum and
+observed speculative publication stalls still prevent a smooth-gameplay claim.
+
+
+The complete same-build hardware browser density comparison also passed. Order
+was Route 29 adaptive/dense, then Route 26 dense/adaptive; all cases used the
+same fixed bundle, Apple Metal adapter, 1280×900, fixed preview hour 16,
+wasm-dev and 10-second stationary windows. Full authored model detail stayed
+enabled. Dense selected only `understory=dense`; the default used adaptive
+plants. Each case retained the original empty party, completed both workers
+without failures/fallbacks, and reported zero GPU, shader or context/device errors.
+
+| Scene | Decorative plants | Active 3D app updates/s | rAF median / P95 | Maximum rAF interval |
+| --- | --- | ---: | ---: | ---: |
+| Route 29 (50,9) | adaptive | 34.157 | 33.3 / 33.4 ms | 416.6 ms |
+| Route 29 (50,9) | dense | 23.831 | 33.4 / 50.1 ms | 483.3 ms |
+| Route 26 (10,54) | dense | 34.144 | 33.3 / 33.4 ms | 50.1 ms |
+| Route 26 (10,54) | adaptive | 48.244 | 16.7 / 33.4 ms | 33.5 ms |
+
+Adaptive update throughput was about 43% higher on Route 29 and 41% higher on
+Route 26 in this pass. Thirty timestamped GPU samples per case showed shadow
+medians changing from 21.561 to 13.959 ms on Route 29 and 16.810 to 10.879 ms on
+Route 26; opaque-pass medians changed from 16.253 to 11.796 ms and 10.486 to
+8.094 ms respectively. No composed texture allocations/uploads occurred during
+the measured windows. App update throughput, rAF cadence and GPU pass duration
+are distinct measurements; none is a direct display-presented FPS counter.
+These are stationary results; movement/crossing timing still needs acceptance.
+
+Both adaptive routes were additionally captured through the production Start
+menu to keep gameplay state fixed while selecting the 3D and classic views.
+`tools/browser-transition-check.mjs ... reference` passed with exact equality
+of the observed player/map/status/menu/flow state, healthy workers, and no GPU
+errors. Both pairs were visually inspected: path/grass/flowers, route buildings,
+cliffs, character placement, restrained fog and retained tree scenery remain
+readable. The extra decorative plants are reduced while source encounter grass,
+trees and gameplay geometry remain intact. These reference cases do not
+supersede the failed fast border-crossing result above.
+
+The subsequent implementation retains the completed scene while adopting an
+in-flight connected destination's work queue. The original atlas/build receipt
+stays intact; root transforms and actor footings use reciprocal source-region
+coordinates. Retention checks the authored acreage in the existing inner halo
+for matching source cells, art, ownership, shapes and elevation. The outer
+replacement margin and synthetic active-map border fill are not claimed as
+identical authored terrain. Actual Route29 → NewBarkTown and Route26 → Route27
+controller crossings passed this check. A shoreline discrepancy at the Route26
+edge was repaired: synthetic perimeter water now uses the adjacent native map's
+border instead of whichever map became active, preserving the neighboring
+cliff's corners.
+
+Speculative scene publication waits during battle preparation/entry. Grove
+bounds are resolved with terrain preparation and transported from the worker;
+publishing a completed scene no longer recomputes every grove's terrace
+support on the frame thread. Six preload tests, three cached-grove tests and
+six retained-terrain/animation tests passed. The browser bundle is rebuilding;
+these implementation tests do not yet supersede the failed browser crossing
+or establish a new frame-time result.
+
+The first browser retention build crossed both tested borders with zero 3D
+gaps: Route29 produced 164 presentation rows (81 retained) and Route26 produced
+233 (29 retained), with healthy workers and no GPU errors. This is not yet
+seamless acceptance: rAF maxima were 1.53/1.45 seconds during concurrent CPU
+compilation, and the Route26 recording showed synthetic border forest changing
+to water when the completed destination arrived. Publication setup itself fell
+to 0.5 ms; the remaining long frame includes uninstrumented terrain/camera work
+and GPU asset preparation. Follow-up code caches connected coverage proofs,
+avoids validating ordinary same-map frames through that path, samples complete
+authored height data without eagerly solving an unused legacy terrace field,
+and assigns 3D border fill/style to the nearest native source. Classic LCD border
+selection remains unchanged. Forty terrace tests passed, including a check that
+authored datum sampling never initializes the legacy solver. Browser retesting
+of these follow-ups is still required.
+
+
+### Final walking GPU comparison
+
+A frozen source snapshot avoids concurrent sky/scenery edits changing the CPU
+kernel between worker and client builds. The four walking runs used headless
+Chromium on Apple M5 Metal, a 1280×900 viewport, 16:00, the same wasm-dev build,
+full authored models, normal shadows, healthy default workers and an empty
+party. Route29 walked horizontally; Route26 walked vertically. No Cargo/rustc
+processes were running during the matrix. Other OS graphics activity was not
+inventoried.
+
+| Route | Old dense decoration | Adaptive decoration | Gain | rAF p95, dense → adaptive |
+| --- | ---: | ---: | ---: | ---: |
+| 29 | 26.60 canvas frames/s | 38.27 canvas frames/s | 43.9% | 50.0 → 33.4 ms |
+| 26 | 32.35 canvas frames/s | 45.92 canvas frames/s | 42.0% | 33.4 → 33.4 ms |
+
+These rates count successful WebGPU canvas texture acquisitions in the active
+keyboard windows over full interaction wall time, including observation
+overhead. They establish actual canvas rendering activity, not OS/display
+presentation confirmation. All cases reported Apple/metal-3, fallback=false,
+full models, and the requested density policy; their worker, GPU, original-party
+and authoritative-movement checks passed.
+
+The latest route handoffs retained active 3D for all 294 Route26 and 254 Route29
+presentation rows, with zero gaps/dropped events and matching classic game
+state. Their rAF medians were 16.7 ms and p95 33.4 ms. Fast startup crossings
+still recorded cold publication spikes of 250/283 ms, so these are not claimed
+as a guarantee of zero first-use stalls. Browser people now reuse the existing
+one-prepared-appearance-per-frame uploader; its asset-reuse regression passed.
+
+A valid wild encounter retained 3D through all 82 field-entry rows and 682
+battle rows. Falkner testing exposed an assumption that the player always
+stands at a tile center. Continuous movement can stop inside that tile beside
+the trainer. The host now captures its published displacement, and the ground
+proof accepts that bounded position while retaining the separate exact NPC
+witness, source terrain, occupied-tile exclusion, and corridor checks. All 52
+encounter-ground tests and the continuous-approach host regression pass.
+The final browser trainer run passed: all 142 field-entry and 1,077 battle
+presentation rows stayed in 3D, with zero gaps, dropped events, GPU errors or
+worker fallbacks. The production classic toggle preserved the game state; the
+paired gym captures were visually reviewed. Its median and p95 rAF interval
+were 16.7 ms, with a cold maximum of 466.7 ms (not a zero-hitch claim).
+The final production-controller suite passed eight tests; MCP movement/Start
+and clean-stderr regressions also passed.

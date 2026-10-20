@@ -11,7 +11,7 @@ assert.ok(url && storage && ['2d', '2.5d'].includes(mode) && output,
 const scenario = process.env.SCENARIO ?? 'walking';
 assert.ok(['walking', 'stationary', 'lab-exit', 'route-exit'].includes(scenario));
 const headless = process.env.BROWSER_HEADLESS === '1';
-const browserServer = await chromium.launchServer({ headless, args: ['--mute-audio'],
+const browserServer = await chromium.launchServer({ headless, args: ['--mute-audio', ...(headless ? ['--enable-gpu'] : [])],
   ...(process.env.BROWSER_CHANNEL ? { channel: process.env.BROWSER_CHANNEL } : {}) });
 const browser = await chromium.connect(browserServer.wsEndpoint());
 // Host deadline survives a renderer blocked in a synchronous geometry build.
@@ -41,6 +41,15 @@ try {
       drawCalls: 0, bindBufferRanges: 0, textureParameterCalls: 0, bufferUploadBytes: 0,
       startupLongTasks: [], startupComplete: false,
       contextLosses: [], deviceLosses: [], gpuErrors: [], shaderErrors: [] };
+    walkingMetrics.webgpuCanvasFrames = 0;
+    if (typeof GPUCanvasContext !== 'undefined') {
+      const acquire = GPUCanvasContext.prototype.getCurrentTexture;
+      GPUCanvasContext.prototype.getCurrentTexture = function (...args) {
+        const texture = acquire.apply(this, args);
+        if (walkingMetrics.active) walkingMetrics.webgpuCanvasFrames++;
+        return texture;
+      };
+    }
     document.addEventListener('webglcontextlost', event => {
       walkingMetrics.contextLosses.push({ time: performance.now(),
         gameCanvas: event.target === document.querySelector('canvas') });
@@ -253,6 +262,8 @@ try {
   const actorSubmissionsBeforeWalk = await page.evaluate(() => globalThis.__crystalActorWorkerMetrics?.submitted ?? 0);
   const workerSubmissionsBeforeWalk = await page.evaluate(() => globalThis.__crystalTerrainWorkerMetrics?.submitted ?? 0);
   const loadBefore = os.loadavg();
+  const counterStartedAt = Date.now();
+  state = await observe();
   const beginTraceWindow = () => page.evaluate(() => {
     const trace = JSON.parse(walkingWasm.crystal_loading_trace_read());
     const frame = Math.max(0, ...trace.traceEvents
@@ -266,7 +277,10 @@ try {
   if (scenario === 'stationary') await page.waitForTimeout(10000);
   let midpoint = null;
   let leg = 0;
-  for (const key of (scenario === 'stationary' ? [] : scenario === 'lab-exit' ? ['ArrowDown', 'ArrowDown', 'ArrowDown'] : scenario === 'route-exit' ? Array(3).fill('ArrowLeft') : ['ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft'])) {
+  const walkingKeys = process.env.WALK_AXIS === 'vertical'
+    ? ['ArrowUp', 'ArrowDown', 'ArrowUp', 'ArrowDown', 'ArrowUp', 'ArrowDown']
+    : ['ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'ArrowLeft'];
+  for (const key of (scenario === 'stationary' ? [] : scenario === 'lab-exit' ? ['ArrowDown', 'ArrowDown', 'ArrowDown'] : scenario === 'route-exit' ? Array(3).fill('ArrowLeft') : walkingKeys)) {
     await page.keyboard.down(key);
     if (leg === 0) report.walkTraceStartFrame = await beginTraceWindow();
     await page.waitForTimeout(1000);
@@ -288,6 +302,20 @@ try {
     return { ...walkingMetrics, audioPreparation, visible: !document.hidden, focused: document.hasFocus() };
   });
   const after = await observe();
+  const counterElapsedSeconds = (Date.now() - counterStartedAt) / 1000;
+  report.webgpuCanvasThroughput = metrics.webgpuCanvasFrames > 0
+    ? { count: metrics.webgpuCanvasFrames, elapsedSeconds: counterElapsedSeconds,
+      framesPerSecond: metrics.webgpuCanvasFrames / counterElapsedSeconds,
+      meaning: 'Successful WebGPU canvas texture acquisitions in the active measurement windows over full interaction wall time, including observation overhead; not display-present confirmation.' }
+    : { unavailable: 'No WebGPU canvas acquisitions were recorded.' };
+  const beforeActive = state.presentation?.voxel;
+  const afterActive = after.presentation?.voxel;
+  const counterDelta = afterActive?.active_frames - beforeActive?.active_frames;
+  report.active3dUpdates = beforeActive?.active && afterActive?.active && counterDelta >= 0
+    ? { count: counterDelta, elapsedSeconds: counterElapsedSeconds,
+      updatesPerSecond: counterDelta / counterElapsedSeconds,
+      meaning: 'Active 3D app updates over the whole measured interaction, including observation overhead; not display-presented FPS.' }
+    : { unavailable: 'The active-3D counter was inactive or reset during this interaction.' };
   if (process.env.REQUIRE_EMPTY_PARTY === '1') {
     assert.deepEqual(after.status.party, [], 'walking must preserve the empty party without an automatic starter');
     assert.equal(after.status.screen, 'overworld', 'empty-party walking must remain playable in the overworld');
@@ -336,6 +364,26 @@ try {
   report.mainLinearMemoryBytes = diagnostics.mainLinearMemoryBytes;
   report.jsHeapApproximate = diagnostics.jsHeapApproximate;
   report.rendererModule = diagnostics.rendererModule;
+  report.graphicsHardware = await page.evaluate(async () => {
+    const adapter = await navigator.gpu?.requestAdapter();
+    const webgpu = window.__crystalRendererBundle?.module?.includes('webgpu');
+    const gl = webgpu ? null : document.querySelector('canvas')?.getContext('webgl2');
+    const debug = gl?.getExtension('WEBGL_debug_renderer_info');
+    return { webgpuAdapter: adapter ? { vendor: adapter.info.vendor,
+      architecture: adapter.info.architecture, description: adapter.info.description,
+      fallback: adapter.info.isFallbackAdapter ?? adapter.isFallbackAdapter ?? null } : null,
+      webglRenderer: debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : null };
+  });
+  if (process.env.REQUIRE_HARDWARE_GPU === '1') {
+    const gpu = report.graphicsHardware;
+    const modern = report.rendererModule?.includes('webgpu');
+    const identity = modern ? [gpu.webgpuAdapter?.vendor, gpu.webgpuAdapter?.architecture,
+      gpu.webgpuAdapter?.description].filter(Boolean).join(' ') : gpu.webglRenderer ?? '';
+    assert.ok(identity && !/swiftshader|llvmpipe|software/i.test(identity)
+      && (!modern || gpu.webgpuAdapter?.fallback !== true),
+      'performance acceptance requires an observed hardware renderer');
+  }
+
   if (diagnostics.terrainWorker || new URL(url).searchParams.get('terrainWorker') === '1') {
     report.terrainWorker = diagnostics.terrainWorker;
     if (report.terrainWorker && diagnostics.trace) {

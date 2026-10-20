@@ -162,6 +162,24 @@ fn capture_visible_fishing_source_frame(
     let Some(map_size) = map_size else {
         return None;
     };
+    macro_rules! source_reject {
+        ($reason:expr) => {
+            #[cfg(feature="voxel-view")]
+            drop(crystal_voxel_view::loading_trace::span("battle.source_frame_reject", || serde_json::json!({
+                "reason":$reason,"source_tile":[source.tile.x,source.tile.y],
+                "rendered_tile":rendered.tile.map(|t|[t.x,t.y]),
+                "source_mode":format!("{:?}",source.mode),"rendered_mode":format!("{:?}",rendered.player_sprite_mode),
+                "frame_map":frame.map_id.as_ref(),"source_map":source.map_name,
+                "map_size":map_size.to_array(),"frame_map_size":frame.source_map_size_core_tiles.map(|s|s.to_array()),
+                "rendered_map_size":rendered.source_map_size_core_tiles.map(|s|s.to_array()),
+                "frame_origin":frame.grid_origin.to_array(),"rendered_origin":rendered.viewport_origin,
+                "frame_grid":frame.grid_size.to_array(),"tile_size":frame.tile_size.to_array(),
+                "frame_viewport":frame.viewport_size.to_array(),
+                "player":frame.actors.iter().find(|a|a.id==VisualActorId::Player).map(|a|serde_json::json!({
+                    "foot":(a.center-Vec2::Y*a.size.y*0.5).to_array(),"facing":a.facing.map(|v|v.to_array())})),
+            })));
+        }
+    }
     if frame.map_id.as_ref() != source.map_name
         || frame.source_map_size_core_tiles != Some(map_size)
         || rendered.source_map_size_core_tiles != Some(map_size)
@@ -171,6 +189,7 @@ fn capture_visible_fishing_source_frame(
         || rendered.player_sprite_mode != Some(source.mode)
         || rendered.visual_tiles_revision != Some(frame.terrain_revision)
     {
+        source_reject!("field metadata differs");
         return None;
     }
     let Some((start_x, start_y)) = rendered.viewport_origin else {
@@ -195,6 +214,7 @@ fn capture_visible_fishing_source_frame(
         || frame.tile_size != Vec2::splat(TILE_SIZE)
         || frame.viewport_size != Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)
     {
+        source_reject!("atlas or grid geometry differs");
         return None;
     }
     let Some(player) = frame
@@ -216,10 +236,20 @@ fn capture_visible_fishing_source_frame(
         map_texture: frame.map_texture.clone(),
         tiles: frame.tiles.clone().into(),
     };
-    let source_foot = fishing_source_support(&terrain, source.tile)?;
+    let displacement = rendered.visual_player_displacement;
+    if !displacement.is_finite()
+        || displacement.abs().cmpgt(Vec2::splat(TILE_SIZE * f32::from(RENDER_TILES_PER_RUNTIME_TILE) * 0.5 + 0.0001)).any() {
+        return None;
+    }
+    // The extractor records this controller-owned displacement alongside the
+    // same field publication. A continuous collision stop is not tile-centered.
+    let source_foot = fishing_source_support(&terrain, source.tile)? + displacement;
     if (player.center - Vec2::Y * player.size.y * 0.5 - source_foot).length_squared() > 0.0001
         || player.facing != Some(visual_facing(source.facing))
     {
+        source_reject!("player foot or facing differs");
+        #[cfg(feature="voxel-view")]
+        drop(crystal_voxel_view::loading_trace::span("battle.expected_player_foot",||serde_json::json!({"foot":source_foot.to_array()})));
         return None;
     }
     Some(VisibleFishingSourceFrame {

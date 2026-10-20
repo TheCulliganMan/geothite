@@ -137,3 +137,23 @@ test('Select cycles the camera once per press and retains gameplay Select outsid
   pads = [pad()]; frame(112);
   assert.deepEqual(events, [['gamepad:select', 'select'], ['gamepad:select', null]]);
 });
+
+test('raw movement axes reach Rust unchanged and clear on focus loss', () => {
+  const window = new EventTarget();
+  let frame;
+  window.requestAnimationFrame = callback => { frame = callback; };
+  window.navigator = { getGamepads: () => [pad([], [.43, -.62])] };
+  const document = new EventTarget();
+  let focused = true;
+  document.hasFocus = () => focused;
+  document.body = { classList: { add() {}, remove() {} } };
+  document.querySelector = selector => selector === '#touch-controls' ? { disabled: false } : null;
+  const axes = [];
+  mountGamepadControls({ document, window, canvas: { focus() {} }, controls: { setButton() {} },
+    onInput() {}, onMovement: (...values) => axes.push(values) });
+  frame(0);
+  assert.deepEqual(axes.at(-1), [.43, -.62, false]);
+  focused = false;
+  window.dispatchEvent(new Event('blur'));
+  assert.deepEqual(axes.at(-1), [0, 0, false]);
+});

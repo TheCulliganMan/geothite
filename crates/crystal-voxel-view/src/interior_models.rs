@@ -9,6 +9,8 @@ use std::sync::OnceLock;
 mod native_pokecom_station_model;
 #[path = "native_lab_workstation_model.rs"]
 mod native_lab_workstation_model;
+#[path = "native_facility_workbench_model.rs"]
+mod native_facility_workbench_model;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub(crate) enum ModelKind {
@@ -303,6 +305,7 @@ pub(crate) struct Model {
     native_house_radio_materials: Option<Vec<u8>>,
     native_dining_table_materials: Option<Vec<u8>>,
     native_facility_furniture_materials: Option<Vec<u8>>,
+    native_workbench_parts: Option<Vec<native_facility_workbench_model::Part>>,
     native_stair_materials: Option<Vec<u8>>,
     native_television_materials: Option<Vec<u8>>,
     native_trashcan_materials: Option<Vec<u8>>,
@@ -396,6 +399,8 @@ impl Model {
         let mut native_facility_furniture_materials=Vec::new();
         let mut native_facility_furniture_valid=facility_materials::expected(&export.name);
         let mut native_facility_furniture_seen=0u8;
+        let mut native_workbench_parts=Vec::new();
+        let mut native_workbench_counts=[0u8;24];
         let mut native_dining_table_materials=Vec::new();
         let mut native_dining_table_valid=matches!(export.name.as_str(),"tableCrossCloth"|"dining_table");
         let mut native_dining_table_seen=0u8;
@@ -803,6 +808,12 @@ impl Model {
                         surface.positions.len()-base as usize));
                 } else {native_facility_furniture_valid=false;}
             }
+            if export.name=="facility_workbench" {
+                if let Some((index,part))=native_facility_workbench_model::classify(&p.name) {
+                    native_workbench_counts[index]=native_workbench_counts[index].saturating_add(1);
+                    native_workbench_parts.extend(std::iter::repeat_n(part,surface.positions.len()-base as usize));
+                }
+            }
             if matches!(export.name.as_str(),"tableCrossCloth"|"dining_table") {
                 let role=match (export.name.as_str(),p.name.as_str(),p.material.as_str()) {
                     ("tableCrossCloth","tableCrossCloth(Clone)","wood")=>Some(0),
@@ -1036,7 +1047,15 @@ impl Model {
             && native_facility_furniture_seen==15
             && native_facility_furniture_materials.len()==surface.positions.len())
             .then_some(native_facility_furniture_materials);
+        let native_workbench_parts=(export.name=="facility_workbench"
+            &&native_facility_furniture_materials.is_some()
+            &&native_workbench_counts==native_facility_workbench_model::expected_counts()
+            &&native_workbench_parts.len()==surface.positions.len()
+            &&min==[0.,0.,0.]&&max==[32.,18.,18.]
+            &&!export.preserve_aspect&&!export.align_footprint&&!export.fit_footprint)
+            .then_some(native_workbench_parts);
         Ok(Self {
+            native_workbench_parts,
             native_facility_furniture_materials,
             native_radio_equipment_materials:(equipment_valid&&equipment_seen==31&&equipment_roles.len()==surface.positions.len()).then_some(equipment_roles),
             native_radio_materials:(native_radio_valid&&Some(native_radio_seen)==radio_materials::expected(&export.name)

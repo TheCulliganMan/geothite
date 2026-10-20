@@ -124,17 +124,24 @@ pub(super) fn sync(
     mut images: ResMut<Assets<Image>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<VoxelMaterial>>,
+    mut applied: Local<Option<(Option<TerrainCacheKey>, bevy::asset::AssetId<Image>)>>,
 ) {
     if !status.active || !frame.active {
+        *applied = None;
         return;
     }
-    let selected = cache.built_animated_pillars.clone();
     let train_open=cache.built_train_doors.then(||mesh::station_train_door_openness(&frame));
     let train_changed=train_open.map(f32::to_bits)!=cache.built_train_open;
+    let Some(atlas) = cache.built_frame.as_ref().map(|built| built.map_texture.id()) else { return; };
+    let next = (cache.key.clone(), atlas);
+    let refresh_needed = applied.as_ref() != Some(&next)
+        || phases.as_ref().is_some_and(|phases| phases.is_changed());
+    if !refresh_needed && !train_changed { return; }
+    let selected = cache.built_animated_pillars.clone();
     let Some(built) = cache.built_frame.as_mut() else {return;};
-    if built.map_id!=frame.map_id {return;}
+    if built.map_id!=frame.map_id { *applied = None; return; }
     let change=if let Some(phases)=phases.as_deref().filter(|p|
-        p.map_id==frame.map_id&&!p.tiles.is_empty()) {
+        refresh_needed&&p.map_id==frame.map_id&&!p.tiles.is_empty()) {
         match refresh(built, phases, &selected, &mut images) {
             Ok(change)=>change,
             Err(())=>{
@@ -144,7 +151,7 @@ pub(super) fn sync(
             }
         }
     }else{Change::None};
-    if change==Change::None&&!train_changed {return;}
+    if change==Change::None&&!train_changed { *applied = Some(next); return; }
     if change==Change::Geometry||train_changed {
         let (textured,solid)=match mesh::build_animated_scene(built,&images,&selected,train_open) {
             Ok(meshes)=>meshes,
@@ -159,6 +166,7 @@ pub(super) fn sync(
         update_domain(&mut meshes,&mut cache.animated_solid_mesh,solid);
         cache.built_train_open=train_open.map(f32::to_bits);
     }
+    *applied = Some(next);
     if change==Change::None {return;}
     // Standard atlas uploads replace their GPU texture. Streamed atlases keep
     // the existing view/bindings, so touching all cloned materials is wasted
@@ -572,6 +580,42 @@ mod tests {
             assert!(app.world().resource::<VoxelViewStatus>().active);
         }
     }
+    #[test]
+    fn retained_phase_is_applied_to_a_replacement_atlas_without_new_input() {
+        let (frame, images) = fixture();
+        let phase = phases(&frame);
+        let mut app = App::new();
+        app.insert_resource(frame.clone()).insert_resource(images)
+            .init_resource::<Assets<VoxelMaterial>>().init_resource::<Assets<Mesh>>()
+            .insert_resource(phase)
+            .insert_resource(VoxelViewStatus { active: true, ..default() })
+            .insert_resource(TerrainRevisionCache { built_frame: Some(frame.clone()), ..default() })
+            .add_systems(Update, sync);
+        app.update();
+        app.update(); // A retained phase needs no repeated atlas scan.
+        let changed = app.world().get_resource_ref::<VisualTileAnimationFrame>().unwrap().last_changed();
+        let next = app.world_mut().resource_mut::<Assets<Image>>()
+            .add(image(32, 48, [50, 80, 100, 255]));
+        let mut rebuilt = frame;
+        rebuilt.map_texture = next.clone();
+        app.world_mut().resource_mut::<TerrainRevisionCache>().built_frame = Some(rebuilt);
+        app.update();
+        assert_eq!(app.world().get_resource_ref::<VisualTileAnimationFrame>().unwrap().last_changed(), changed);
+        assert_eq!(&app.world().resource::<Assets<Image>>().get(&next).unwrap().data.as_ref().unwrap()[..4],
+            &[120, 80, 100, 255], "new terrain must receive the retained authenticated phase");
+        // Source clocks keep running while 3D is inactive. Re-entry must
+        // consume a phase published during that interval, even on an idle tick.
+        app.world_mut().resource_mut::<VoxelViewStatus>().active = false;
+        for tile in &mut app.world_mut().resource_mut::<VisualTileAnimationFrame>().tiles {
+            tile.texture = tile.animation_frames.as_ref().unwrap()[1].clone();
+        }
+        app.update();
+        app.world_mut().resource_mut::<VoxelViewStatus>().active = true;
+        app.update();
+        assert_eq!(&app.world().resource::<Assets<Image>>().get(&next).unwrap().data.as_ref().unwrap()[..4],
+            &[30, 80, 100, 255], "re-entering 3D must catch up with the source clock");
+    }
+
     #[test]
     fn streamed_water_phases_keep_material_bindings_while_standard_images_refresh_them() {
         for streamed in [false, true] {

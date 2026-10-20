@@ -29,6 +29,23 @@ pub(super) fn retained_height_scale(tile_height: f32) -> Vec4 {
     Vec4::new(SOURCE_TILE_HEIGHT / tile_height, 0.0, 0.0, 0.0)
 }
 
+/// Retain the exact terrain finish on a material owned only by rooted grass.
+/// A walking spring must not invalidate buildings, trees or actors.
+pub(super) fn material(
+    cached: &mut Option<Handle<VoxelMaterial>>,
+    source: &Handle<VoxelMaterial>,
+    materials: &mut Assets<VoxelMaterial>,
+) -> Handle<VoxelMaterial> {
+    let material = materials.get(source).expect("published solid terrain material").clone();
+    if let Some(handle) = cached {
+        *materials.get_mut(&*handle).expect("retained grass material") = material;
+        return handle.clone();
+    }
+    let handle = materials.add(material);
+    *cached = Some(handle.clone());
+    handle
+}
+
 pub(super) fn register(app: &mut App) {
     app.init_resource::<Rustle>().add_systems(
         Update,
@@ -104,7 +121,9 @@ fn sync(
     traversal: Option<Res<VisualPlayerTraversal>>,
     time: Res<Time>,
     mut rustle: ResMut<Rustle>,
+    cache: Res<TerrainRevisionCache>,
     mut materials: ResMut<Assets<VoxelMaterial>>,
+    mut previous_material: Local<Option<Handle<VoxelMaterial>>>,
 ) {
     let next = rustle.advance(
         &frame,
@@ -112,13 +131,24 @@ fn sync(
         traversal.as_deref(),
         time.delta_secs(),
     );
-    let changed: Vec<_> = materials
-        .iter()
-        .filter_map(|(id, m)| (m.extension.grass_rustle.contact != next.contact).then_some(id))
-        .collect();
-    for id in changed {
-        if let Some(mut material) = materials.get_mut(id) {
-            material.extension.grass_rustle.contact = next.contact;
+    if previous_material.as_ref() != cache.grass_material.as_ref() {
+        // A promoted destination retains the previous room's material in its
+        // hidden cache. Settle it once so that stale contact cannot keep the
+        // conservative shadow-culling safety guard active indefinitely.
+        if let Some(handle) = previous_material.take() {
+            if materials.get(&handle).is_some_and(|m| m.extension.grass_rustle.contact != Vec4::ZERO) {
+                if let Some(mut material) = materials.get_mut(&handle) {
+                    material.extension.grass_rustle.contact = Vec4::ZERO;
+                }
+            }
+        }
+        *previous_material = cache.grass_material.clone();
+    }
+    if let Some(handle) = cache.grass_material.as_ref() {
+        if materials.get(handle).is_some_and(|m| m.extension.grass_rustle.contact != next.contact) {
+            if let Some(mut material) = materials.get_mut(handle) {
+                material.extension.grass_rustle.contact = next.contact;
+            }
         }
     }
 }
@@ -155,6 +185,7 @@ mod tests {
             .init_resource::<VoxelViewStatus>()
             .init_resource::<Time>()
             .init_resource::<Rustle>()
+            .init_resource::<TerrainRevisionCache>()
             .init_resource::<Assets<VoxelMaterial>>()
             .add_systems(Update, sync);
         let mut material = voxel_material(StandardMaterial::default());
@@ -164,11 +195,104 @@ mod tests {
             .world_mut()
             .resource_mut::<Assets<VoxelMaterial>>()
             .add(material);
+        app.world_mut().resource_mut::<TerrainRevisionCache>().grass_material = Some(handle.clone());
         app.update();
         let materials = app.world().resource::<Assets<VoxelMaterial>>();
         let grass = materials.get(&handle).unwrap().extension.grass_rustle;
         assert_eq!(grass.contact, Vec4::ZERO);
         assert_eq!(grass.height_scale.x, 0.125);
+    }
+
+    #[test]
+    fn walking_spring_never_modifies_static_actor_or_flower_materials() {
+        use bevy::asset::{AssetEvent, AssetPlugin};
+        let mut app = App::new();
+        app.add_plugins((MinimalPlugins, AssetPlugin::default())).init_asset::<VoxelMaterial>();
+        app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            std::time::Duration::from_secs_f64(1. / 60.)));
+        let (source, grass, actor, flower) = {
+            let mut materials = app.world_mut().resource_mut::<Assets<VoxelMaterial>>();
+            let source = materials.add(solid_terrain_material());
+            let grass = material(&mut None, &source, &mut materials);
+            let actor = materials.add(solid_terrain_material());
+            let flower = materials.add(solid_terrain_material());
+            (source, grass, actor, flower)
+        };
+        app.insert_resource(frame())
+            .insert_resource(VoxelViewStatus { active: true, ..default() })
+            .insert_resource(TerrainRevisionCache {
+                solid_material: Some(source.clone()), grass_material: Some(grass.clone()),
+                animated_solid_material: Some(flower.clone()), ..default()
+            })
+            .init_resource::<Rustle>()
+            .add_systems(Update, sync);
+        app.update();
+        app.world_mut().resource_mut::<Messages<AssetEvent<VoxelMaterial>>>().clear();
+        let mut modified = 0;
+        let mut positive = false;
+        let mut rebound = false;
+        for _ in 0..64 {
+            app.update();
+            let events = app.world_mut().resource_mut::<Messages<AssetEvent<VoxelMaterial>>>()
+                .drain().collect::<Vec<_>>();
+            modified += usize::from(events.iter().any(|e| e.is_modified(&grass)));
+            for handle in [&source, &actor, &flower] {
+                assert!(!events.iter().any(|e| e.is_modified(handle)),
+                    "walking must not invalidate a non-grass material");
+            }
+            let materials = app.world().resource::<Assets<VoxelMaterial>>();
+            let contact = materials.get(&grass).unwrap().extension.grass_rustle.contact;
+            positive |= contact.w > 0.0;
+            rebound |= contact.w < 0.0;
+            for handle in [&source, &actor, &flower] {
+                assert_eq!(materials.get(handle).unwrap().extension.grass_rustle.contact, Vec4::ZERO);
+            }
+        }
+        assert!(modified > 5 && positive && rebound);
+        assert_eq!(app.world().resource::<Assets<VoxelMaterial>>().get(&grass).unwrap()
+            .extension.grass_rustle.contact, Vec4::ZERO);
+    }
+
+    #[test]
+    fn destination_handoff_settles_previous_grass_without_touching_static_finish() {
+        use bevy::asset::{AssetEvent, AssetPlugin};
+        let mut app = App::new();
+        app.add_plugins((MinimalPlugins, AssetPlugin::default())).init_asset::<VoxelMaterial>();
+        app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+            std::time::Duration::from_secs_f64(1. / 60.)));
+        let (source, grass, destination) = {
+            let mut materials = app.world_mut().resource_mut::<Assets<VoxelMaterial>>();
+            let source = materials.add(solid_terrain_material());
+            let grass = material(&mut None, &source, &mut materials);
+            let destination = material(&mut None, &source, &mut materials);
+            (source, grass, destination)
+        };
+        app.insert_resource(frame())
+            .insert_resource(VoxelViewStatus { active: true, ..default() })
+            .insert_resource(TerrainRevisionCache { grass_material: Some(grass.clone()), ..default() })
+            .init_resource::<Rustle>()
+            .add_systems(Update, sync);
+        app.update(); app.update();
+        assert!(app.world().resource::<Assets<VoxelMaterial>>().get(&grass).unwrap()
+            .extension.grass_rustle.contact.w > 0.0);
+        app.world_mut().resource_mut::<Messages<AssetEvent<VoxelMaterial>>>().clear();
+        app.world_mut().resource_mut::<TerrainRevisionCache>().grass_material = Some(destination.clone());
+        app.update();
+        let materials = app.world().resource::<Assets<VoxelMaterial>>();
+        assert_eq!(materials.get(&grass).unwrap().extension.grass_rustle.contact, Vec4::ZERO);
+        assert!(materials.get(&destination).unwrap().extension.grass_rustle.contact.w > 0.0);
+        let events = app.world_mut().resource_mut::<Messages<AssetEvent<VoxelMaterial>>>()
+            .drain().collect::<Vec<_>>();
+        assert!(events.iter().any(|e| e.is_modified(&grass)));
+        assert!(!events.iter().any(|e| e.is_modified(&source)));
+        app.update();
+        let events = app.world_mut().resource_mut::<Messages<AssetEvent<VoxelMaterial>>>()
+            .drain().collect::<Vec<_>>();
+        assert!(!events.iter().any(|e| e.is_modified(&grass)), "hidden grass settles only once");
+        app.world_mut().resource_mut::<TerrainRevisionCache>().grass_material = None;
+        app.update();
+        assert_eq!(app.world().resource::<Assets<VoxelMaterial>>().get(&destination).unwrap()
+            .extension.grass_rustle.contact, Vec4::ZERO);
     }
 
     #[test]

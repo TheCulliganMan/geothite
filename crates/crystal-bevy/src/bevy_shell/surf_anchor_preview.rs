@@ -119,10 +119,12 @@ fn prepare_surf_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRun
         initial.trainer.player_id,
         Dv::from_non_hp(9, 9, 9, 9),
     )?;
+    let replacement = (shell.shell.snapshot()?.party.slots[0].pokemon.moves.len() == 4)
+        .then_some(0);
     shell.shell.add_bag_item("HM_SURF", 1)?;
     shell
         .shell
-        .use_bag_tmhm_on_party_pokemon("HM_SURF", 0, Some(0))?;
+        .use_bag_tmhm_on_party_pokemon("HM_SURF", 0, replacement)?;
     shell
         .shell
         .award_badge(RuntimeBadgeRegion::Johto, 3)?;
@@ -149,7 +151,7 @@ fn prepare_surf_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRun
             && ready.overworld.tile == from
             && ready.overworld.facing == Direction::Down
             && ready.overworld.mode == MovementMode::Normal
-            && ready.party.slots[0].pokemon.moves[0].name == "SURF",
+            && ready.party.slots[0].pokemon.moves.iter().any(|m| m.name == "SURF"),
         "Surf fixture must await A/Yes on its checked source shore"
     );
     let overworld = shell.shell.session().overworld();

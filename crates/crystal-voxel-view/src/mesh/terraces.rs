@@ -46,7 +46,7 @@ pub(super) fn support_correction(
             ||super::elevated_piers::level_surface(&frame.map_id,&t.source)) {return 0.;}
     let mut field = Field::new(&frame.jump_ledges, &g, [0, 0]).with_datum(frame.terrace_datum.as_deref());
     if kanto_family(frame.tiles.iter()) {
-        field.levels=super::terrace_levels::get_for_family(&frame.jump_ledges,true);
+        field=field.with_kanto_levels();
     }
     let start = frame.grid_origin.as_vec2() + cell.as_vec2();
     let grid_size = frame.grid_size.as_vec2() * frame.tile_size;
@@ -82,22 +82,24 @@ pub(super) struct Field<'a> {
     edges: &'a [VisualJumpLedge],
     g: &'a GridGeometry,
     origin: [i32; 2],
-    levels: std::sync::Arc<super::terrace_levels::Levels>,
+    levels: std::sync::OnceLock<std::sync::Arc<super::terrace_levels::Levels>>,
+    kanto: bool,
 }
 impl<'a> Field<'a> {
     pub(super) fn new(edges: &'a [VisualJumpLedge], g: &'a GridGeometry, origin: [i32; 2]) -> Self {
-        let levels = super::terrace_levels::get(edges);
         Self {
             datum: None,
             edges,
             g,
             origin,
-            levels,
+            levels: std::sync::OnceLock::new(),
+            kanto: false,
         }
     }
 
     pub(super) fn with_kanto_levels(mut self) -> Self {
-        self.levels=super::terrace_levels::get_for_family(self.edges,true);
+        self.kanto=true;
+        self.levels=std::sync::OnceLock::new();
         self
     }
 
@@ -105,7 +107,7 @@ impl<'a> Field<'a> {
         origin:[i32;2],cells:&[&VisualTile])->Self {
         let mut field=Self::new(edges,g,origin);
         if kanto_family(cells.iter().copied()) {
-            field.levels=super::terrace_levels::get_for_family(edges,true);
+            field=field.with_kanto_levels();
         }
         field
     }
@@ -125,7 +127,12 @@ impl<'a> Field<'a> {
     }
     fn map_height(&self, p: Vec2) -> f32 {
         let rise = crate::profile::JUMP_LEDGE_HEIGHT * self.g.tile_height / SOURCE_TILE_HEIGHT;
-        super::terrace_datum::sample(self.datum,p).unwrap_or_else(||self.levels.height(p)) * rise
+        super::terrace_datum::sample(self.datum,p).unwrap_or_else(|| {
+            self.levels.get_or_init(|| {
+                if self.kanto { super::terrace_levels::get_for_family(self.edges,true) }
+                else { super::terrace_levels::get(self.edges) }
+            }).height(p)
+        }) * rise
     }
 
     fn water_owned(&self,i:usize,cells:&[&VisualTile])->bool {
@@ -240,7 +247,7 @@ pub(super) fn finish_with_datum(mesh:&mut TerrainMeshData,map:&str,cells:&[&Visu
     }
     let mut field = Field::new(edges, g, origin).with_datum(datum);
     if kanto_family(cells.iter().copied()) {
-        field.levels=super::terrace_levels::get_for_family(edges,true);
+        field=field.with_kanto_levels();
     }
     let h = crate::profile::JUMP_LEDGE_HEIGHT * g.tile_height / SOURCE_TILE_HEIGHT;
     let water_continuation=mesh.authored_cells.iter().map(|owner|
@@ -407,7 +414,7 @@ pub(super) fn fit_animated_outdoor(surface: &mut SurfaceMeshData, map:&str,cells
     let kanto=kanto_family(cells.iter().copied());
     if !kanto && !super::new_bark::ordinary_lawn_map(map) {return;}
     let mut field = Field::new(edges, g, origin).with_datum(datum);
-    if kanto {field.levels=super::terrace_levels::get_for_family(edges,true);}
+    if kanto {field=field.with_kanto_levels();}
     let preserved=(!kanto).then(||surface.positions.iter().map(|p|
         cell_at(g,p[0],p[2]).is_none_or(|i|!super::source_bound_outdoor_ground(&cells[i].source)))
         .collect::<Vec<_>>());
@@ -969,6 +976,21 @@ mod tests {
         let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(3,1),
             levels:vec![[2.;4];3].into(),water_barriers:vec![].into(),open_water:None};
         (tiles,g,datum)
+    }
+
+    #[test]
+    fn authored_datum_does_not_build_an_unused_legacy_terrace_field() {
+        let g=GridGeometry {width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let datum=crystal_render_api::VisualTerraceDatum {origin:IVec2::ZERO,
+            size:bevy::prelude::UVec2::ONE,levels:vec![[2.;4]].into(),
+            open_water:None,water_barriers:Default::default()};
+        let field=Field::new(&[],&g,[0,0]).with_kanto_levels().with_datum(Some(&datum));
+        assert!(field.levels.get().is_none());
+        assert_eq!(field.map_height(Vec2::splat(0.5)),2.*crate::profile::JUMP_LEDGE_HEIGHT);
+        assert!(field.levels.get().is_none(),"complete authored heights make the legacy solve unnecessary");
+        let legacy=Field::new(&[],&g,[0,0]).with_kanto_levels();
+        assert_eq!(legacy.map_height(Vec2::splat(0.5)),0.);
+        assert!(legacy.levels.get().is_some(),"legacy sources still use their original solver");
     }
 
     #[test]
@@ -1807,7 +1829,7 @@ mod tests {
         let cells=frame.tiles.iter().collect::<Vec<_>>();
         let edges=[VisualJumpLedge{start:IVec2::new(0,4),end:IVec2::new(4,4),descent:IVec2::Y}];
         let mut field=Field::new(&edges,&g,[0,0]);
-        field.levels=super::super::terrace_levels::get_for_family(&edges,true);
+        field=field.with_kanto_levels();
         let mut detail=SurfaceMeshData::default();
         append_solid_quad(&mut detail,[[12.,6.012,12.],[12.,6.04,12.],
             [12.,6.04,13.],[12.,6.012,13.]],[1.,0.,0.],[0.3,0.2,0.1,1.]);
@@ -1828,7 +1850,7 @@ mod tests {
         let cells=frame.tiles.iter().collect::<Vec<_>>();
         let edges=[VisualJumpLedge{start:IVec2::new(0,4),end:IVec2::new(2,4),descent:IVec2::Y}];
         let mut field=Field::new(&edges,&g,[0,0]);
-        field.levels=super::super::terrace_levels::get_for_family(&edges,true);
+        field=field.with_kanto_levels();
         let mut wall=SurfaceMeshData::default();
         append_solid_quad(&mut wall,[[16.,1.,16.],[16.4,3.,16.],
             [16.3,3.,24.],[16.1,1.,24.]],[1.,0.,0.],[0.3,0.2,0.1,1.]);
@@ -1851,7 +1873,7 @@ mod tests {
         let cells=frame.tiles.iter().collect::<Vec<_>>();
         let edges=[VisualJumpLedge{start:IVec2::new(0,4),end:IVec2::new(2,4),descent:IVec2::Y}];
         let mut field=Field::new(&edges,&g,[0,0]);
-        field.levels=super::super::terrace_levels::get_for_family(&edges,true);
+        field=field.with_kanto_levels();
         let mut wall=SurfaceMeshData::default();
         append_solid_quad(&mut wall,[[16.4,0.,24.],[16.4,6.,24.],
             [16.4,6.,32.],[16.4,0.,32.]],[1.,0.,0.],[0.3,0.2,0.1,1.]);

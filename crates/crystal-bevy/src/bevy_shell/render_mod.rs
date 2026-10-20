@@ -1,10 +1,9 @@
-/// Publish the already-rendered overworld as a read-only frame for optional
-/// presentation plugins.  This is intentionally downstream of
-/// `render_playfield`: it observes presentation state and entities only and
-/// never reads or mutates authoritative movement, collision, scripts, or game
-/// state.
+/// Publish the rendered overworld and controller-owned continuous pose as a
+/// read-only frame for optional presentation plugins. Extraction runs after
+/// `render_playfield`; gameplay movement, collisions, scripts and input ownership
+/// remain in the production controller.
 fn publish_visual_world_frame(
-    rendered: Res<RenderedViewport>,
+    mut rendered: ResMut<RenderedViewport>,
     runtime_shell: Res<BevyRuntimeShell>,
     #[cfg(feature = "voxel-view")] settings: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
     #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
@@ -153,6 +152,20 @@ fn publish_visual_world_frame(
             Some(PendingOverworldStepBoundary::WildBattle))
             || runtime_shell.visible_battle_transition
                 .is_some_and(|transition| transition.frame < 3));
+    // The selected 3D field owns the source flash/wipe. Continue extracting
+    // its authenticated source actors so the final movement pose settles;
+    // battle canvas entities must not clear that field during the transition.
+    #[cfg(feature = "voxel-view")]
+    let retain_entry = settings.as_ref().is_some_and(|settings| settings.enabled) || {
+        #[cfg(feature = "location-tester")]
+        { capture_hold.as_ref().is_some_and(|hold| hold.frozen) }
+        #[cfg(not(feature = "location-tester"))]
+        { false }
+    };
+    #[cfg(feature = "voxel-view")]
+    let entry_field = retain_entry && published.active && runtime_shell.visible_battle_transition.is_some();
+    #[cfg(not(feature = "voxel-view"))]
+    let entry_field = false;
     if rendered.title_active
         // The naming screen is committed through Commands later in the classic
         // render pass. Check its live state too: waiting for the presenter
@@ -161,8 +174,8 @@ fn publish_visual_world_frame(
         || naming_screen_blocks_world_presentation(runtime_shell.pending_name_input.as_ref())
         || runtime_shell.pending_mail_input.is_some()
         || runtime_shell.pending_mail_read.is_some()
-        || (runtime_shell.battle_lcd_animation_active && !step_field_visible)
-        || battle_entities.iter().next().is_some()
+        || (runtime_shell.battle_lcd_animation_active && !step_field_visible && !entry_field)
+        || (!entry_field && battle_entities.iter().next().is_some())
         || fullscreen_entities.iter().next().is_some()
         || rendered.map_name.is_none()
         || rendered.visual_tiles_revision.is_none()
@@ -306,6 +319,10 @@ fn publish_visual_world_frame(
                     });
                 }
             }
+        }
+        if let Some(tile) = rendered.tile {
+            actor.center += runtime_shell.natural_movement.displacement(map_id, tile);
+            if let Some(facing) = runtime_shell.natural_movement.facing(map_id, tile) { actor.facing = Some(facing); }
         }
         actors.push(actor);
     }
@@ -470,6 +487,7 @@ fn publish_visual_world_frame(
     actors.extend(published.actors.iter().filter(|actor| matches!(actor.id,
         crystal_render_api::VisualActorId::PartyFollower | crystal_render_api::VisualActorId::SurfMount)).cloned());
     let terrain_unchanged = published.active
+        && published.source_regions == rendered.visual_source_regions
         && published.map_id.as_ref() == map_id
         && published.source_map_size_core_tiles == rendered.source_map_size_core_tiles
         && published.jump_ledges == rendered.visual_jump_ledges
@@ -507,6 +525,7 @@ fn publish_visual_world_frame(
             - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32)) / 2;
     let anchored_center = grid_origin.as_vec2() * Vec2::new(TILE_SIZE, -TILE_SIZE);
     let view_center = anchored_center - center;
+    let camera_movement = rendered.tile.map_or(Vec2::ZERO, |tile| runtime_shell.natural_movement.displacement(map_id,tile));
     let center = anchored_center;
     for actor in &mut actors { actor.center += view_center; }
     if let Some(traversal) = traversal.as_mut() {
@@ -515,12 +534,16 @@ fn publish_visual_world_frame(
             step.to += view_center;
         }
     }
+    let view_center = view_center + camera_movement;
     if terrain_unchanged && published.center == center && published.view_center == view_center
         && published.actors == actors {
         // The optional renderer consumes change detection. Do not republish an
         // identical 6,888-tile frame on every host update: that cloned the
         // complete grid and forced validation/profile work while standing
         // still, even though neither simulation nor presentation had moved.
+        if rendered.visual_player_displacement != camera_movement {
+            rendered.visual_player_displacement = camera_movement;
+        }
         return;
     }
     let tiles = if terrain_unchanged {
@@ -531,6 +554,7 @@ fn publish_visual_world_frame(
     let next = crystal_render_api::VisualWorldFrame {
         active: true,
         map_id: Arc::from(map_id),
+        source_regions: rendered.visual_source_regions.clone(),
         source_map_size_core_tiles: rendered.source_map_size_core_tiles,
         boundary_warps: if published.map_id.as_ref() == map_id {
             published.boundary_warps.clone()
@@ -564,6 +588,9 @@ fn publish_visual_world_frame(
     };
     if terrain_unchanged || next.validate().is_ok() {
         *published = next;
+        if rendered.visual_player_displacement != camera_movement {
+            rendered.visual_player_displacement = camera_movement;
+        }
     } else {
         clear_published_visual_world(&mut published);
     }

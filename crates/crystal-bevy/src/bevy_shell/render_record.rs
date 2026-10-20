@@ -403,7 +403,7 @@ pub(super) fn install(
         std::fs::read_dir(directory)?.next().is_none(),
         "recording output directory must be empty"
     );
-    let header = "frame,seconds,map,origin_x,origin_y,player_x,player_y,capture_ball,capture_frame,capture_caught,capture_blocked,capture_shakes,capture_started,capture_complete\n";
+    let header = "frame,seconds,map,origin_x,origin_y,player_x,player_y,capture_ball,capture_frame,capture_caught,capture_blocked,capture_shakes,capture_started,capture_complete,world_frame_active,world_3d_active,entry_fx_active,transition_frame,intro_frame,battle_frame_active,battle_3d_active,battle_preparing\n";
     app.insert_resource(Recording {
         directory: directory.to_owned(),
         seconds: f64::from(seconds),
@@ -459,6 +459,7 @@ fn row(
     elapsed: f64,
     frame: &crystal_render_api::VisualWorldFrame,
     capture: Option<&VisibleCaptureAnimation>,
+    presentation: &str,
 ) -> String {
     let player = frame
         .actors
@@ -473,7 +474,7 @@ fn row(
         })
         .unwrap_or(Vec2::splat(f32::NAN));
     format!(
-        "{index},{elapsed:.6},{},{},{},{:.3},{:.3},{}\n",
+        "{index},{elapsed:.6},{},{},{},{:.3},{:.3},{},{presentation}\n",
         frame.map_id,
         frame.grid_origin.x,
         frame.grid_origin.y,
@@ -501,7 +502,8 @@ fn record(
     flash_mode: Res<crystal_render_api::BattleFlashMode>,
     frame: Res<crystal_render_api::VisualWorldFrame>,
     runtime: Res<BevyRuntimeShell>,
-    review: (Option<Res<super::render_walk::RenderWalk>>, Option<Res<super::render_capture::Capture>>),
+    review: (Option<Res<super::render_walk::RenderWalk>>, Option<Res<super::render_capture::Capture>>,
+        Option<Res<crystal_render_api::VisualWorldEntryEffect>>),
     windows: Query<(Entity, &Window), With<PrimaryWindow>>,
     mut commands: Commands,
     assets: RecordingAssets,
@@ -510,7 +512,13 @@ fn record(
     let images = &assets.images;
     let meshes = &assets.meshes;
     let materials = &assets.materials;
-    let (walk, capture_target) = review;
+    let (walk, capture_target, entry_effect) = review;
+    let battle_presented = battle_frame.active && !battle_frame.preparing;
+    let presentation = format!("{},{},{},{},{},{},{},{}", frame.active, status.active,
+        entry_effect.as_ref().is_some_and(|entry| entry.active),
+        runtime.visible_battle_transition.map_or(String::new(), |transition| transition.frame.to_string()),
+        runtime.visible_battle_sliding_intro.map_or(String::new(), |frame| frame.to_string()),
+        battle_presented, battle_status.active, battle_frame.preparing);
     if let Some(error) = runtime.render_test_error.as_ref() {
         eprintln!("capture rejected after runtime error: {error}");
         exit.write(AppExit::error());
@@ -554,7 +562,7 @@ fn record(
         exit.write(AppExit::error());
         return;
     }
-    recording.presented_battle_frames = if battle_frame.active {
+    recording.presented_battle_frames = if battle_presented {
         recording.presented_battle_frames.saturating_add(1)
     } else {
         0
@@ -574,7 +582,7 @@ fn record(
         let world_ready = (status.active && status.active_frames >= 30 && !status.profiles_pending)
             || (!settings.enabled && walk.as_ref().is_some_and(|walk| walk.started()));
         let battle_ready = recording_battle_ready(
-            battle_frame.active,
+            battle_presented,
             recording.presented_battle_frames,
             battle_status.active,
             battle_status.active_frames,
@@ -681,8 +689,9 @@ fn record(
         elapsed,
         &frame,
         runtime.visible_capture_animation.as_ref(),
+        &presentation,
     ));
-    if battle_frame.active {
+    if battle_presented {
         let species = |side: usize| {
             battle_frame.battlers[side]
                 .as_ref()
@@ -853,6 +862,7 @@ fn record(
         elapsed,
         &frame,
         runtime.visible_capture_animation.as_ref(),
+        &presentation,
     ));
     recording.cadence.admitted(elapsed);
     recording.outstanding += 1;

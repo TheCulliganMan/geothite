@@ -935,6 +935,24 @@ impl GameDataSet {
         S: DividerSource + ?Sized,
         S::Error: std::fmt::Display,
     {
+        self.apply_overworld_input_with_movement(state, session, buttons, music_ids, divider, false)
+    }
+
+    /// Cell entries from a continuous controller retain every ordinary world
+    /// event and collision check, without replaying the grid turn delay.
+    pub fn apply_overworld_input_with_movement<S>(
+        &self,
+        state: &mut GameState,
+        session: &mut OverworldSession,
+        buttons: impl IntoIterator<Item = GameButton>,
+        music_ids: &BTreeSet<String>,
+        divider: &mut S,
+        continuous_step: bool,
+    ) -> Result<OverworldInputFrame>
+    where
+        S: DividerSource + ?Sized,
+        S::Error: std::fmt::Display,
+    {
         let input_candidate = JoypadState::compute_mask(buttons);
         let mut staged_state = state.clone();
         let mut staged_session = session.clone();
@@ -1186,7 +1204,7 @@ impl GameDataSet {
                     // continue directly. Downhill instead enters through the
                     // joypad path and must preserve CheckTurning's four-frame
                     // facing change before its forced downward step.
-                    force_step_after_turn: tile_forced_direction.is_some(),
+                    force_step_after_turn: tile_forced_direction.is_some() || continuous_step,
                     ..StepOptions::default()
                 };
                 let strength_active = staged_state

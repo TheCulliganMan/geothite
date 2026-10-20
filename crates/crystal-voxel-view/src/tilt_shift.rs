@@ -31,9 +31,32 @@ pub(super) struct TiltShift {
     // Focus Y, sharp half-width, falloff exponent, maximum blur diameter.
     // A vec4 keeps the exact same uniform layout on WebGL and WebGPU.
     pub band: Vec4,
+    pub entry: Vec4,
+    pub entry_rows: [Vec4; 36],
+    pub black_cells: [UVec4; 3],
+    pub trainer_cells: [UVec4; 3],
+    pub trainer_pixels: UVec4,
+    pub trainer_palette: [Vec4; 4],
 }
 
 impl TiltShift {
+    pub fn entry_only(effect: &crystal_render_api::VisualWorldEntryEffect) -> Self {
+        Self { band: Vec4::new(0.5, 0.5, 2.5, 0.), entry: Vec4::ZERO,
+            entry_rows: [Vec4::ZERO; 36], black_cells: [UVec4::ZERO; 3],
+            trainer_cells: [UVec4::ZERO; 3], trainer_pixels: UVec4::ZERO,
+            trainer_palette: [Vec4::ZERO; 4] }.with_entry(effect)
+    }
+
+    pub fn with_entry(mut self, effect: &crystal_render_api::VisualWorldEntryEffect) -> Self {
+        self.entry = Vec4::new(effect.dark, effect.light, if effect.active { 1. } else { 0. }, 0.);
+        self.entry_rows = std::array::from_fn(|row| Vec4::from_array(
+            std::array::from_fn(|lane| f32::from(effect.line_x_offsets[row * 4 + lane]))));
+        self.black_cells = effect.black_cells;
+        self.trainer_cells = effect.trainer_cells;
+        self.trainer_pixels = effect.trainer_pixels;
+        self.trainer_palette = effect.trainer_palette;
+        self
+    }
     /// Exploration needs nearby architecture and people to stay readable.
     /// Retain a gentle miniature falloff at the edges without erasing the
     /// scenery detail that occupies the upper and lower thirds of a town view.
@@ -68,6 +91,7 @@ impl TiltShift {
                 2.5,
                 (framebuffer_height * 0.018).clamp(3.0, 36.0),
             ),
+            ..Self::entry_only(&Default::default())
         })
     }
 

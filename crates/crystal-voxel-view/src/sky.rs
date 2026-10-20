@@ -40,6 +40,11 @@ struct SkyMaterial {
     woodland_sectors: [Vec4; 16],
 }
 impl Material for SkyMaterial {
+    // The dome paints the background without writing depth. It cannot supply
+    // scene geometry to SSAO, a depth prepass or a shadow map.
+    fn enable_prepass() -> bool { false }
+    fn enable_shadows() -> bool { false }
+
     fn fragment_shader() -> ShaderRef {
         SHADER.into()
     }

@@ -142,6 +142,28 @@ pub(crate) fn plants(plot: Plot, base: f32, coordinates: [i32; 2]) -> Vec<Plant>
     }
     result
 }
+/// Adaptive scenery retains one original plant per source-anchored 2x2 patch.
+/// Selection never moves or rescales a plant and is independent of chunk splits.
+pub(crate) fn adaptive_plants(plot: Plot, base: f32, coordinates: [i32; 2]) -> Vec<Plant> {
+    let mut result = plants(plot, base, coordinates);
+    if result.is_empty() { return result; }
+    let [w, d] = plot.cell();
+    let mut occupied = 0u16;
+    result.retain(|plant| {
+        let ix = ((plant.transform.translation.x - plot.bounds[0]) / w).floor() as i32;
+        let iz = ((plant.transform.translation.z - plot.bounds[2]) / d).floor() as i32;
+        let x = coordinates[0] + ix;
+        let z = coordinates[1] + iz;
+        let selected = ((seed(x.div_euclid(2), z.div_euclid(2), 137) * 4.) as i32).min(3);
+        if x.rem_euclid(2) + z.rem_euclid(2) * 2 != selected { return false; }
+        let bit = 1u16 << (ix + iz * 4);
+        if occupied & bit != 0 { return false; }
+        occupied |= bit;
+        true
+    });
+    result
+}
+
 #[derive(serde::Deserialize)]
 struct Model {
     positions: Vec<[f32; 3]>,
@@ -257,22 +279,42 @@ mod tests {
             cells: [2, 4],
             occupied: right_mask,
         };
-        let mut split = plants(left, 3., [0, 0]);
-        split.extend(plants(right, 3., [2, 0]));
-        let all = plants(whole, 3., [0, 0]);
-        assert_eq!(split.len(), all.len());
-        for plant in all {
-            assert!(
-                split.contains(&plant),
-                "plant changes at internal plot seam: {plant:?}"
-            );
+        for plants in [plants, adaptive_plants] {
+            let mut split = plants(left, 3., [0, 0]);
+            split.extend(plants(right, 3., [2, 0]));
+            let all = plants(whole, 3., [0, 0]);
+            assert_eq!(split.len(), all.len());
+            for plant in all {
+                assert!(
+                    split.contains(&plant),
+                    "plant changes at internal plot seam: {plant:?}"
+                );
+            }
+            if split.len() > 4 {
+                assert!(split.iter().any(|p| (p.transform.translation.x - 16.).abs() < p.transform.scale.x));
+            }
         }
-        assert!(
-            split
-                .iter()
-                .any(|p| (p.transform.translation.x - 16.).abs() < p.transform.scale.x)
-        );
     }
+    #[test]
+    fn adaptive_cover_retains_exact_original_plants_with_a_bounded_draw_budget() {
+        let mut dense_count = 0;
+        let mut adaptive_count = 0;
+        for z in -16..16 {
+            for x in -16..16 {
+                let plot = Plot::isolated([0., 32., 0., 32.]);
+                let dense = plants(plot, 3., [x * 2, z * 2]);
+                let sparse = adaptive_plants(plot, 3., [x * 2, z * 2]);
+                assert!(sparse.len() <= 1, "one decorative draw per aligned 2x2 source patch");
+                assert!(sparse.iter().all(|plant| dense.contains(plant)), "retain exact source transforms and geometry");
+                assert_eq!(sparse, adaptive_plants(plot, 3., [x * 2, z * 2]));
+                dense_count += dense.len();
+                adaptive_count += sparse.len();
+            }
+        }
+        assert!(adaptive_count > 0);
+        assert!(adaptive_count * 3 < dense_count);
+    }
+
     #[test]
     fn plants_have_varied_silhouettes_and_irregular_exposed_edges() {
         let mut species = std::collections::HashSet::new();

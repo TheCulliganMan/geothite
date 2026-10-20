@@ -268,7 +268,7 @@ fn build_terrain_mesh_internal_with_background(
     let original_cells = cells.clone();
     let mut source_shapes: Vec<_> = original_cells
         .iter()
-        .map(|tile| shape_for_source_on_map(frame.map_id.as_ref(), &tile.source))
+        .map(|tile| shape_for_source_on_map(frame.scenery_map_at(tile.column, tile.row), &tile.source))
         .collect();
     cave_crowns::resolve(frame, &original_cells, &mut source_shapes, &geometry);
     resolve_rock_platform_tiers(&original_cells, &mut source_shapes, width);
@@ -652,7 +652,7 @@ fn build_terrain_mesh_internal_with_background(
             // Keep genuine ground texture identities available to other props.
             // Ownership suppresses drawing, not sampling from the immutable atlas.
             let sampleable = matches!(
-                shape_for_source_on_map(frame.map_id.as_ref(), &cells[index].source),
+                shape_for_source_on_map(frame.scenery_map_at(cells[index].column, cells[index].row), &cells[index].source),
                 CellShape::Flat | CellShape::Water
             );
             live_cells[index].source.metatile_id = u16::MAX;
@@ -676,7 +676,7 @@ fn build_terrain_mesh_internal_with_background(
     };
     let mut shapes: Vec<_> = cells
         .iter()
-        .map(|tile| shape_for_source_on_map(frame.map_id.as_ref(), &tile.source))
+        .map(|tile| shape_for_source_on_map(frame.scenery_map_at(tile.column, tile.row), &tile.source))
         .collect();
     for (i, shape) in shapes.iter_mut().enumerate() {
         if cells[i].source == original_cells[i].source
@@ -1198,12 +1198,14 @@ fn build_terrain_mesh_internal_with_background(
             new_bark::building_placements(frame.map_id.as_ref(), &cells, &geometry)
         };
         for placement in &placements {
+            let owner = frame.scenery_map_at(placement.column as u32, placement.row as u32);
+            let owner_origin = frame.scenery_grid_origin_at(placement.column as u32, placement.row as u32).to_array();
             if new_bark::append_building_with_samples(
                 &mut mesh,
                 &cells,
                 &shapes,
                 &geometry,
-                frame.map_id.as_ref(),
+                owner,
                 *placement,
                 &mut claimed_by_building,
                 Some(images),
@@ -1216,10 +1218,10 @@ fn build_terrain_mesh_internal_with_background(
                     &cells,
                     &shapes,
                     &geometry,
-                    &frame.map_id,
+                    owner,
                     *placement,
                     &mut claimed_by_building,
-                    frame.grid_origin.to_array(),
+                    owner_origin,
                     Some(images),
                 )
             {
@@ -1230,7 +1232,7 @@ fn build_terrain_mesh_internal_with_background(
                 images,
                 &cells,
                 &geometry,
-                frame.map_id.as_ref(),
+                owner,
                 *placement,
                 &mut claimed_by_building,
             )?;
@@ -1256,17 +1258,19 @@ fn build_terrain_mesh_internal_with_background(
         // Missing 3D trees retain exact source tiles. Never substitute the
         // legacy voxel hull for unavailable canonical tree assets.
         for placement in new_bark::tree_placements(frame.map_id.as_ref(), &cells, &geometry) {
+            let owner = frame.scenery_map_at(placement.column as u32, placement.row as u32);
+            let owner_origin = frame.scenery_grid_origin_at(placement.column as u32, placement.row as u32).to_array();
             let appended = if grove_sink.is_some() || deferred_groves.is_some() {
                 if let Some(grove) = new_bark::claim_grove(&mut mesh, &cells, &shapes,
-                    &geometry, frame.map_id.as_ref(), placement, &mut claimed_by_tree,
-                    frame.grid_origin.to_array()) {
+                    &geometry, owner, placement, &mut claimed_by_tree,
+                    owner_origin) {
                     detached_groves.push(grove);
                     true
                 } else { false }
             } else {
                 new_bark::append_tree(&mut mesh, &cells, &shapes, &geometry,
-                    frame.map_id.as_ref(), placement, &mut claimed_by_tree,
-                    frame.grid_origin.to_array())
+                    owner, placement, &mut claimed_by_tree,
+                    owner_origin)
             };
             if appended {
                 continue;
@@ -1277,10 +1281,10 @@ fn build_terrain_mesh_internal_with_background(
                     &cells,
                     &shapes,
                     &geometry,
-                    &frame.map_id,
+                    owner,
                     placement,
                     &mut claimed_by_tree,
-                    frame.grid_origin.to_array(),
+                    owner_origin,
                     (grove_sink.is_some() || deferred_groves.is_some()).then_some(&mut detached_groves),
                 )
             {
@@ -2503,12 +2507,11 @@ fn build_terrain_mesh_internal_with_background(
         frame.grid_origin.to_array()) {
         // Johto's source art belongs to this cavern, not the outdoor meadow.
     } else if authored_enabled {
-        new_bark::polish_world_surfaces_with_shapes(
+        new_bark::polish_world_surfaces_from_frame(
             &mut mesh,
-            &frame.map_id,
+            frame,
             &original_cells,
             &geometry,
-            frame.grid_origin.to_array(),
             &source_shapes,
         );
     } else {

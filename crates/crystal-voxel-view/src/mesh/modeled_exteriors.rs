@@ -1824,6 +1824,28 @@ pub(super) fn append_flower(
 mod tests {
     use super::*;
     #[test]
+    fn connected_lab_uses_its_source_town_before_and_after_handoff() {
+        use bevy::prelude::{IVec2, UVec2};
+        let (tiles, geometry, placement) = drawing_cells("johto", &[
+            &[0x18, 0x1f, 0x19], &[0x1c, 0x1d, 0x1e],
+        ]);
+        let cells = tiles.iter().collect::<Vec<_>>();
+        let mut frame = crystal_render_api::VisualWorldFrame { map_id: "Route29".into(),
+            grid_origin: IVec2::new(80, 0), source_regions: vec![
+                crystal_render_api::VisualSourceRegion { map_id: "Route29".into(), origin: IVec2::ZERO, size: UVec2::new(80,40) },
+                crystal_render_api::VisualSourceRegion { map_id: "NewBarkTown".into(), origin: IVec2::new(80,0), size: UVec2::new(40,40) },
+            ].into(), ..Default::default() };
+        assert_eq!(descriptor(&frame.map_id, &cells, &geometry, placement).unwrap().asset, Asset::Johto(Johto::VioletGym));
+        let expected = descriptor(frame.source_map_at(0,0), &cells, &geometry, placement).unwrap().asset;
+        assert_eq!(expected, Asset::Johto(Johto::Lab));
+        frame.map_id = "NewBarkTown".into();
+        frame.grid_origin = IVec2::ZERO;
+        frame.source_regions = vec![crystal_render_api::VisualSourceRegion {
+            map_id: "NewBarkTown".into(), origin: IVec2::ZERO, size: UVec2::new(40,40),
+        }].into();
+        assert_eq!(descriptor(frame.source_map_at(0,0), &cells, &geometry, placement).unwrap().asset, expected);
+    }
+    #[test]
     fn source_bound_flat_hall_uses_one_producer_across_towns_and_widths() {
         for width in [8,12,16] {
             let (tiles,g,p,_)=kanto_flat_house::fixture(width);

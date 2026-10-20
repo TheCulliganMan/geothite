@@ -18,7 +18,7 @@ pub use streamed_images::{stream_composed_image, is_streamed_image};
 use std::{collections::HashSet, sync::Arc};
 
 use bevy::prelude::{
-    App, Handle, Image, IntoScheduleConfigs, Plugin, Resource, SystemSet, UVec2, Update, Vec2,
+    App, Handle, Image, IntoScheduleConfigs, Plugin, Resource, SystemSet, UVec2, UVec4, Update, Vec2, Vec4,
 };
 
 /// Ordered phases for publishing and consuming one visual world frame.
@@ -59,9 +59,31 @@ impl Plugin for VisualWorldRenderPlugin {
             .init_resource::<VisualPlayerTraversal>()
             .init_resource::<VisualWorldLighting>()
             .init_resource::<VisualWorldClock>()
+            .init_resource::<VisualWorldEntryEffect>()
             .init_resource::<VisualTileAnimationFrame>();
         configure_world_render_sets(app);
         streamed_images::install(app);
+    }
+}
+
+/// Controller-authored battle-entry effects applied to the selected 3D field.
+/// Packed masks use one bit per native 20x18 cell; offsets are native pixels.
+#[derive(Resource, Clone, Copy, Debug, PartialEq)]
+pub struct VisualWorldEntryEffect {
+    pub active: bool,
+    pub dark: f32,
+    pub light: f32,
+    pub line_x_offsets: [i8; 144],
+    pub black_cells: [UVec4; 3],
+    pub trainer_cells: [UVec4; 3],
+    pub trainer_pixels: UVec4,
+    pub trainer_palette: [Vec4; 4],
+}
+impl Default for VisualWorldEntryEffect {
+    fn default() -> Self {
+        Self { active: false, dark: 0., light: 0., line_x_offsets: [0; 144],
+            black_cells: [UVec4::ZERO; 3], trainer_cells: [UVec4::ZERO; 3],
+            trainer_pixels: UVec4::ZERO, trainer_palette: [Vec4::ZERO; 4] }
     }
 }
 
@@ -295,16 +317,25 @@ impl VisualTerraceDatum {
     }
 }
 
+/// A source map rectangle in the active map's 8x8 tile coordinate space.
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+pub struct VisualSourceRegion {
+    pub map_id: Arc<str>,
+    pub origin: bevy::prelude::IVec2,
+    pub size: UVec2,
+}
+
 /// Immutable-by-convention snapshot consumed by optional world renderers.
-///
-/// An inactive frame is intentionally empty and valid. When `active` is true,
-/// producers must publish a real map texture and valid finite geometry before
-/// optional renderers consume the resource.
+/// Inactive frames are empty and valid; active frames require real source art
+/// and valid finite geometry before a renderer can consume them.
 #[derive(Resource, Clone, Debug, Default, PartialEq)]
 pub struct VisualWorldFrame {
     pub active: bool,
     /// Stable compiled map identifier for presentation-profile selection.
     pub map_id: Arc<str>,
+    /// Authenticated map placements in the active map's 8x8 source-tile space.
+    /// Base map first; connected rectangles follow host resolution order.
+    pub source_regions: Arc<[VisualSourceRegion]>,
     /// Actual source-map extent captured with this rendered terrain grid, in
     /// core 16x16 source-pixel tiles (+X east, +Y south). Northwest is (0, 0);
     /// the southeast bound is exclusive. Border/connection halo is excluded.
@@ -340,6 +371,69 @@ pub struct VisualWorldFrame {
 }
 
 impl VisualWorldFrame {
+    /// Translate source-cell coordinates into a reciprocally placed connected
+    /// map. This proves a coordinate basis only, not retained geometry coverage.
+    pub fn connected_source_shift(&self, next: &Self) -> Option<bevy::prelude::IVec2> {
+        use bevy::prelude::IVec2;
+        if self.map_id == next.map_id { return Some(IVec2::ZERO); }
+        let a = self.source_regions.first()?;
+        let b = next.source_regions.first()?;
+        if a.map_id != self.map_id || b.map_id != next.map_id
+            || a.origin != IVec2::ZERO || b.origin != IVec2::ZERO { return None; }
+        let target = self.source_regions.iter().find(|r| r.map_id == next.map_id)?;
+        let back = next.source_regions.iter().find(|r| r.map_id == self.map_id)?;
+        let add = |point: IVec2, shift: IVec2| Some(IVec2::new(
+            point.x.checked_add(shift.x)?, point.y.checked_add(shift.y)?));
+        let shift = back.origin;
+        if target.size != b.size || back.size != a.size
+            || add(target.origin, shift)? != IVec2::ZERO { return None; }
+        for old in self.source_regions.iter() {
+            for new in next.source_regions.iter().filter(|r| r.map_id == old.map_id) {
+                if old.size != new.size || add(old.origin, shift)? != new.origin { return None; }
+            }
+        }
+        Some(shift)
+    }
+
+    pub fn source_region_at(&self, column: u32, row: u32) -> Option<&VisualSourceRegion> {
+        let point = self.grid_origin + bevy::prelude::IVec2::new(column as i32, row as i32);
+        let contains = |region: &&VisualSourceRegion| {
+            let local = point - region.origin;
+            local.cmpge(bevy::prelude::IVec2::ZERO).all()
+                && local.cmplt(region.size.as_ivec2()).all()
+        };
+        let base = self.source_regions.first()?;
+        if contains(&base) { return Some(base); }
+        self.source_regions.iter().skip(1).rev().find(contains).or(Some(base))
+    }
+    /// Presentation-only border fill follows the nearest native rectangle.
+    /// Authored ownership remains available through `source_region_at`.
+    fn scenery_region_at(&self, column: u32, row: u32) -> Option<&VisualSourceRegion> {
+        let point=self.grid_origin.as_i64vec2()+bevy::math::I64Vec2::new(i64::from(column),i64::from(row));
+        let source=self.source_region_at(column,row)?;
+        let local=point-source.origin.as_i64vec2();
+        if local.cmpge(bevy::math::I64Vec2::ZERO).all()
+            && local.cmplt(source.size.as_i64vec2()).all() { return Some(source); }
+        self.source_regions.iter().min_by_key(|region| {
+            let lo=region.origin.as_i64vec2();
+            let hi=lo+region.size.as_i64vec2()-bevy::math::I64Vec2::ONE;
+            let d=(lo-point).max(bevy::math::I64Vec2::ZERO)+(point-hi).max(bevy::math::I64Vec2::ZERO);
+            (d.element_sum(),region.map_id.as_ref())
+        })
+    }
+    pub fn scenery_map_at(&self, column: u32, row: u32) -> &str {
+        self.scenery_region_at(column,row).map_or(self.map_id.as_ref(),|r|r.map_id.as_ref())
+    }
+    pub fn scenery_grid_origin_at(&self, column: u32, row: u32) -> bevy::prelude::IVec2 {
+        self.grid_origin-self.scenery_region_at(column,row).map_or(bevy::prelude::IVec2::ZERO,|r|r.origin)
+    }
+    pub fn source_map_at(&self, column: u32, row: u32) -> &str {
+        self.source_region_at(column, row).map_or(self.map_id.as_ref(), |region| region.map_id.as_ref())
+    }
+    pub fn source_grid_origin_at(&self, column: u32, row: u32) -> bevy::prelude::IVec2 {
+        self.grid_origin - self.source_region_at(column, row)
+            .map_or(bevy::prelude::IVec2::ZERO, |region| region.origin)
+    }
     /// Rebase presentation coordinates into stable source-map space without
     /// changing source tiles, actor offsets, geometry or gameplay state.
     /// Returns the translation to apply to external presentation endpoints.
@@ -360,6 +454,14 @@ impl VisualWorldFrame {
     pub fn validate(&self) -> Result<(), VisualWorldFrameError> {
         if !self.active {
             return Ok(());
+        }
+        if self.source_regions.len() > 512
+            || self.source_regions.first().is_some_and(|base|
+                base.map_id != self.map_id || base.origin != bevy::prelude::IVec2::ZERO)
+            || self.source_regions.iter().any(|region| region.map_id.is_empty()
+                || region.size.min_element() == 0 || region.size.max_element() > 1_000_000
+                || region.origin.as_i64vec2().abs().max_element() > 1_000_000) {
+            return Err(VisualWorldFrameError::InvalidSourceRegions);
         }
 
         if self.map_id.is_empty() {
@@ -478,6 +580,7 @@ fn is_positive_finite(value: Vec2) -> bool {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum VisualWorldFrameError {
     EmptyMapId,
+    InvalidSourceRegions,
     InvalidSourceMapSize,
     InvalidTerraceDatum,
     MissingMapTexture,
@@ -522,6 +625,60 @@ pub enum VisualWorldFrameError {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn connected_owner_and_local_seed_coordinates_survive_map_handoff() {
+        use bevy::prelude::IVec2;
+        let region = |map: &str, x, width| VisualSourceRegion {
+            map_id: Arc::from(map), origin: IVec2::new(x, 0), size: UVec2::new(width, 40),
+        };
+        let mut before = active_frame();
+        before.map_id = "Route29".into();
+        before.grid_origin = IVec2::new(72, 0);
+        before.source_regions = vec![region("Route29", 0, 80), region("NewBarkTown", 80, 40)].into();
+        let mut after = before.clone();
+        after.map_id = "NewBarkTown".into();
+        after.grid_origin -= IVec2::new(80, 0);
+        after.source_regions = vec![region("NewBarkTown", 0, 40), region("Route29", -80, 80)].into();
+        for (column, owner) in [(4, "Route29"), (12, "NewBarkTown")] {
+            assert_eq!(before.source_map_at(column, 8), owner);
+            assert_eq!(after.source_map_at(column, 8), owner);
+            let position = IVec2::new(column as i32, 8);
+            assert_eq!(before.source_grid_origin_at(column, 8) + position,
+                after.source_grid_origin_at(column, 8) + position);
+        }
+        for (column,owner) in [(4,"Route29"),(12,"NewBarkTown")] {
+            assert_eq!(before.scenery_map_at(column,48),owner);
+            assert_eq!(after.scenery_map_at(column,48),owner,
+                "off-map 3D fill must not switch with the active map");
+            let p=IVec2::new(column as i32,48);
+            assert_eq!(before.scenery_grid_origin_at(column,48)+p,
+                after.scenery_grid_origin_at(column,48)+p);
+        }
+        assert_eq!(before.connected_source_shift(&after), Some(IVec2::new(-80, 0)));
+        assert_eq!(after.connected_source_shift(&before), Some(IVec2::new(80, 0)));
+        let mut inconsistent = after.clone();
+        Arc::make_mut(&mut inconsistent.source_regions)[1].origin.x += 1;
+        assert_eq!(before.connected_source_shift(&inconsistent), None);
+        assert_eq!(before.source_map_at(1000, 1000), "Route29", "off-map borders belong to the base");
+        before.source_regions = Arc::from([]);
+        assert_eq!(before.source_map_at(12, 8), "Route29", "legacy frames keep their map identity");
+    }
+
+    #[test]
+    fn connected_regions_require_a_valid_base_and_bounded_dimensions() {
+        let mut frame = active_frame();
+        let valid = VisualSourceRegion { map_id: frame.map_id.clone(),
+            origin: bevy::prelude::IVec2::ZERO, size: UVec2::splat(20) };
+        frame.source_regions = vec![valid.clone()].into();
+        assert!(frame.validate().is_ok());
+        for invalid in [VisualSourceRegion { map_id: "other".into(), ..valid.clone() },
+            VisualSourceRegion { size: UVec2::ZERO, ..valid.clone() },
+            VisualSourceRegion { origin: bevy::prelude::IVec2::splat(i32::MIN), ..valid }] {
+            frame.source_regions = vec![invalid].into();
+            assert_eq!(frame.validate(), Err(VisualWorldFrameError::InvalidSourceRegions));
+        }
+    }
+
     use bevy::prelude::{App, IntoScheduleConfigs, ResMut, Resource, Update};
 
     use super::*;
@@ -573,6 +730,7 @@ mod tests {
             boundary_warps: Default::default(),
             active: true,
             map_id: Arc::from("NewBarkTown"),
+            source_regions: Arc::from([]),
             source_map_size_core_tiles: None,
             terrain_revision: 7,
             grid_origin: bevy::prelude::IVec2::ZERO,

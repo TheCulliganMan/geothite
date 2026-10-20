@@ -357,6 +357,29 @@ pub(crate) fn register(app: &mut App) {
             flush_background();
         }
     });
+    // Browser QA needs every submitted presentation state: bridge polling can
+    // miss a one-frame 2D fallback. This bounded, opt-in trace is read-only.
+    app.add_systems(Last, (|world: Option<Res<crystal_render_api::VisualWorldFrame>>,
+        voxel: Option<Res<crate::VoxelViewStatus>>,
+        battle: Option<Res<crystal_render_api::VisualBattleFrame>>,
+        battle_view: Option<Res<crate::battle_view::BattleViewStatus>>,
+        entry: Option<Res<crystal_render_api::VisualWorldEntryEffect>>| {
+        drop(span("presentation.frame", || json!({
+            "map": world.as_ref().map(|f| f.map_id.as_ref()),
+            "world_frame_active": world.as_ref().is_some_and(|f| f.active),
+            "world_3d_active": voxel.as_ref().is_some_and(|s| s.active),
+            "terrain_pending": voxel.as_ref().is_some_and(|s| s.terrain_pending),
+            "connected_terrain": voxel.as_ref().is_some_and(|s| s.connected_terrain),
+            "terrain_builds": voxel.as_ref().map(|s| s.terrain_builds),
+            "terrain_map": voxel.as_ref().and_then(|s| s.terrain_map.as_deref()),
+            "entry_fx_active": entry.as_ref().is_some_and(|e| e.active),
+            "battle_frame_active": battle.as_ref().is_some_and(|f| f.active),
+            "battle_preparing": battle.as_ref().is_some_and(|f| f.preparing),
+            "battle_source_scene": battle.as_ref().is_some_and(|f| f.use_source_scene),
+            "battle_3d_active": battle_view.as_ref().is_some_and(|s| s.active),
+            "battle_prepared": battle_view.as_ref().is_some_and(|s| s.prepared),
+        })));
+    }).run_if(trace_enabled));
     if let Some(render) = app.get_sub_app_mut(RenderApp) {
         // The engine graph uses weak ordering so independent stages may
         // overlap. Diagnostic envelopes need barriers, and must never install

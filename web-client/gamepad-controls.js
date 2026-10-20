@@ -57,7 +57,7 @@ export function gamepadCamera(pads) {
   return { yaw: 0, zoom: 0 };
 }
 
-export function mountGamepadControls({ document, window, canvas, controls, onInput, onCamera = () => false, onCameraSelect = () => false }) {
+export function mountGamepadControls({ document, window, canvas, controls, onInput, onCamera = () => false, onCameraSelect = () => false, onMovement = () => {} }) {
   if (!window.navigator.getGamepads) return;
   let cameraSelectOwned = false;
   const input = createGamepadInput((button, down) => {
@@ -82,10 +82,13 @@ export function mountGamepadControls({ document, window, canvas, controls, onInp
     /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
   let lastFrame;
   let cameraActive = false;
+  let movementActive = false;
   const clear = () => {
     input.clear();
+    onMovement(0, 0, false);
     lastFrame = undefined;
     cameraActive = false;
+    movementActive = false;
     onCamera({ yaw: 0, zoom: 0 }, 0);
   };
   const poll = timestamp => {
@@ -95,6 +98,18 @@ export function mountGamepadControls({ document, window, canvas, controls, onInp
     else {
       const pads = window.navigator.getGamepads();
       input.update(pads);
+      // Transport raw axes only; Rust integrates movement and collision.
+      const pad = Array.from(pads).find(p => p?.connected && p.mapping === 'standard' &&
+        (p.axes[0] || p.axes[1] || [12, 13, 14, 15].some(i => p.buttons[i]?.pressed)));
+      const pressed = i => Number(Boolean(pad?.buttons[i]?.pressed));
+      const dx = pressed(15) - pressed(14), dy = pressed(13) - pressed(12);
+      const moving = Boolean(onMovement(dx || dy ? dx : pad?.axes[0] ?? 0, dx || dy ? dy : pad?.axes[1] ?? 0, Boolean(dx || dy)));
+      if (moving && !movementActive) {
+        onInput();
+        canvas.focus({ preventScroll: true });
+        document.body.classList.add('controller-active');
+      }
+      movementActive = moving;
       const movingCamera = Boolean(onCamera(gamepadCamera(pads), seconds));
       if (movingCamera && !cameraActive) {
         onInput();

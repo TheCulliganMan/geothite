@@ -35,6 +35,13 @@ pub(crate) fn reference_span(species: &str, min: Vec3, max: Vec3) -> f32 {
     extent.y * height_ratio
 }
 
+/// A world repose changes the measured axis, not the pack's physical size.
+pub(crate) fn world_reference_span(species: &str, rig: &crate::species_rig::SpeciesRig) -> f32 {
+    if rig.species == crate::species_rig::Species::Furret {
+        rig.neutral_bounds.1.z-rig.neutral_bounds.0.z
+    } else { reference_span(species,rig.neutral_bounds.0,rig.neutral_bounds.1) }
+}
+
 pub(crate) fn model_scale(
     species: &str,
     pokedex_size_m: Option<f32>,

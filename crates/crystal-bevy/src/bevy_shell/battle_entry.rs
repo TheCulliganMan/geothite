@@ -197,18 +197,7 @@ fn battle_transition_bgp(transition: VisibleBattleTransition, dark: bool) -> u8 
     }
 }
 
-fn prepare_battle_transition_texture(
-    root: &AssetRoot,
-    transition: VisibleBattleTransition,
-    tiles: &[BattleTransitionTile],
-    camera_offset: Vec2,
-    dark: bool,
-    priority_only: bool,
-    existing: Option<Handle<Image>>,
-    images: &mut Assets<Image>,
-) -> Result<Handle<Image>> {
-    let trainer = transition.trainer_battle && transition.frame >= 2;
-    let (ball_tile, trainer_palette) = if trainer {
+fn battle_transition_trainer_art(root: &AssetRoot, dark: bool) -> Result<(Vec<u8>, [[u8; 3]; 4])> {
         let path = root.runtime_assets().join("gfx/overworld");
         let tile = crate::read_runtime_asset(&path.join("battle_transition_tiles.2bpp"))?;
         anyhow::ensure!(tile.len() >= 16, "battle transition square tile is missing");
@@ -221,7 +210,22 @@ fn prepare_battle_transition_texture(
             .into_iter()
             .next()
             .context("trainer battle palette is missing")?;
-        (tile, palette)
+        Ok((tile, palette))
+}
+
+fn prepare_battle_transition_texture(
+    root: &AssetRoot,
+    transition: VisibleBattleTransition,
+    tiles: &[BattleTransitionTile],
+    camera_offset: Vec2,
+    dark: bool,
+    priority_only: bool,
+    existing: Option<Handle<Image>>,
+    images: &mut Assets<Image>,
+) -> Result<Handle<Image>> {
+    let trainer = transition.trainer_battle && transition.frame >= 2;
+    let (ball_tile, trainer_palette) = if trainer {
+        battle_transition_trainer_art(root, dark)?
     } else {
         (Vec::new(), [[0; 3]; 4])
     };
@@ -337,6 +341,7 @@ fn spawn_visible_battle_transition(
                 },
 Transform::from_xyz(0.0, 0.0, 2.76),),
             BattleCommandMarker,
+                BattleTransitionMarker,
         ));
         return;
     }
@@ -367,6 +372,7 @@ Transform::from_xyz(0.0, 0.0, 2.76),),
                     },
 Transform::from_xyz(0.0, 0.0, 2.7),),
                 BattleCommandMarker,
+                BattleTransitionMarker,
             ));
         }
         (false, true) => {
@@ -457,6 +463,7 @@ Transform::from_xyz(
                                         z,
                                     ),),
                                 BattleCommandMarker,
+                BattleTransitionMarker,
                             ));
                         }
                     }
@@ -476,10 +483,12 @@ fn spawn_visible_battle_transition_black_tile(commands: &mut Commands, x: usize,
             },
 Transform::from_xyz(tile_x, tile_y, 2.7),),
         BattleCommandMarker,
+                BattleTransitionMarker,
     ));
 }
 
-fn spawn_visible_battle_transition_wedge(commands: &mut Commands, wedge_index: usize) {
+fn battle_transition_wedge_cells(wedge_index: usize) -> Vec<(usize, usize)> {
+    let mut cells = Vec::new();
     const WEDGE_1: &[i8] = &[2, 3, 5, 4, 9];
     const WEDGE_2: &[i8] = &[1, 1, 2, 2, 4, 2, 4, 2, 3];
     const WEDGE_3: &[i8] = &[2, 1, 3, 1, 4, 1, 4, 1, 4, 1, 3, 1, 2, 1, 1, 1, 1];
@@ -509,7 +518,7 @@ fn spawn_visible_battle_transition_wedge(commands: &mut Commands, wedge_index: u
         (2, WEDGE_1, 1, 11),
     ];
     let Some(&(quadrant, data, mut x, mut y)) = ENTRIES.get(wedge_index) else {
-        return;
+        return cells;
     };
     let right = quadrant & 1 != 0;
     let lower = quadrant & 2 != 0;
@@ -520,16 +529,7 @@ fn spawn_visible_battle_transition_wedge(commands: &mut Commands, wedge_index: u
         let row_start_x = x;
         for _ in 0..width {
             if (0..20).contains(&x) && (0..18).contains(&y) {
-                let (tile_x, tile_y) = render_tile_playfield_position(i16::from(x), i16::from(y));
-                commands.spawn((
-                    (Sprite {
-                            color: Color::BLACK,
-                            custom_size: Some(Vec2::splat(TILE_SIZE)),
-                            ..default()
-                        },
-Transform::from_xyz(tile_x, tile_y, 2.7),),
-                    BattleCommandMarker,
-                ));
+                cells.push((x as usize, y as usize));
             }
             x += if right { 1 } else { -1 };
         }
@@ -540,6 +540,13 @@ Transform::from_xyz(tile_x, tile_y, 2.7),),
         };
         cursor += 1;
         x += if right { -gap } else { gap };
+    }
+    cells
+}
+
+fn spawn_visible_battle_transition_wedge(commands: &mut Commands, wedge_index: usize) {
+    for (x, y) in battle_transition_wedge_cells(wedge_index) {
+        spawn_visible_battle_transition_black_tile(commands, x, y);
     }
 }
 

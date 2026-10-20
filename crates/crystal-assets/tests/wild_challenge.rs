@@ -71,6 +71,59 @@ fn can_know_move(
 }
 
 #[test]
+fn starters_receive_the_same_expanded_moves_as_wild_pokemon() {
+    use crystal_core::systems::gift_pokemon::GiftPokemonRequest;
+    for id in ["CHIKORITA", "CYNDAQUIL", "TOTODILE"] {
+        let script = match id {
+            "CHIKORITA" => "ChikoritaPokeBallScript",
+            "CYNDAQUIL" => "CyndaquilPokeBallScript",
+            _ => "TotodilePokeBallScript",
+        };
+        for enabled in [false, true] {
+            let mut data = packs().1.data().clone();
+            if !enabled {
+                data.wild_challenge = None;
+            }
+            let mut state = GameState::reset_wram_for_new_game();
+            let pokemon = data
+                .create_pokemon(id, 5, Dv::from_non_hp(10, 10, 10, 10))
+                .unwrap();
+            let expected = if enabled {
+                data.competitive_wild_moves(&pokemon).unwrap()
+            } else {
+                pokemon.moves.clone()
+            };
+            let outcome = data
+                .grant_gift_pokemon_to_state(
+                    &mut state,
+                    GiftPokemonRequest {
+                        species_id: id.into(),
+                        level: 5,
+                        held_item_id: None,
+                        nickname: None,
+                        original_trainer_name: "CHRIS".into(),
+                        original_trainer_id: 1234,
+                        caught_data: None,
+                        source_script: script.into(),
+                        command_index: 0,
+                        egg: false,
+                        dvs: Dv::from_non_hp(10, 10, 10, 10),
+                    },
+                )
+                .unwrap();
+            assert_eq!(outcome.pokemon.moves, expected, "{id} enabled={enabled}");
+            assert_eq!(
+                state.storage.party.pokemon[0].as_ref().unwrap().moves,
+                expected
+            );
+            if enabled {
+                assert_ne!(expected, pokemon.moves, "{id} should gain expanded moves");
+            }
+        }
+    }
+}
+
+#[test]
 fn wild_challenge_pack_roundtrips_without_changing_content_or_audio() {
     let (base, pack) = packs();
     let mut unchanged = pack.data().clone();

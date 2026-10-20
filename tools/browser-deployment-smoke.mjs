@@ -30,7 +30,7 @@ try {
     assert.equal(startup.worker,'function');
     const state=await page.evaluate(async()=>{
      const script=[...document.scripts].map(s=>s.textContent).join('\n');
-     const path=script.match(/import\('(\.\/crystal-bevy(?:-[a-f0-9]{64})?\.js)'\)/)?.[1];
+     const path=globalThis.__crystalRendererBundle?.module ?? script.match(/import\('(\.\/crystal-bevy(?:-[a-f0-9]{64})?\.js)'\)/)?.[1];
      if(!path) throw new Error('Missing compiled bundle import');
      const wasm=await import(path);
      const {createGameBridge}=await import('./webmcp.js');

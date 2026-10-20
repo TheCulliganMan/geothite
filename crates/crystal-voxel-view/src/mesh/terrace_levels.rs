@@ -32,6 +32,7 @@ pub(super) fn get_for_family(edges: &[VisualJumpLedge], kanto: bool) -> Arc<Leve
         cache.push_back(item);
         return answer;
     }
+    let _trace=crate::loading_trace::span("region.resolve_legacy_terraces", || serde_json::json!({"edges":edges.len(),"kanto":kanto}));
     let levels = Arc::new(Levels::build(edges, kanto));
     if cache.len() == 4 {
         cache.pop_front();

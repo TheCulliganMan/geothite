@@ -277,6 +277,13 @@ cargo run --release --locked -p crystal-bevy --features voxel-view -- \
 ```
 
 Add `--load-save content-packs/player.crystalsave` to load that save.
+3D uses natural movement by default: walk diagonally, stop between tiles, and
+use partial left-stick tilt for slower movement. The stick follows the camera;
+the D-pad and arrow keys follow the map. Collision, encounters, doors, and
+scripts still use the shared production controller. 2D and the text client
+retain their normal tile controls. See [natural movement](modpacks/natural-movement/README.md)
+for the optional pack builder and opt-out setting.
+
 Native controls use `Enter` for Start, alongside the arrow keys, `Z`, `X`,
 and Right Shift. Hold B (`X`) with a direction to run at twice walking speed;
 [running shoes](modpacks/running-shoes/README.md) are enabled by default.

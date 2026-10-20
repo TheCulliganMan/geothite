@@ -4,6 +4,7 @@
 use super::*;
 use crystal_render_api::{VisualActorId, VisualBattleTarget};
 
+#[derive(Clone)]
 pub(super) struct WalkingGround {
     origin: Vec2,
     cells: HashMap<IVec2, f32>,
@@ -132,9 +133,18 @@ impl WalkingGround {
             Vec2::new(local.x + center.x, -local.y + center.y)
         };
         let landed = source_foot(source);
+        // Trainer contact can stop continuous movement inside the logical
+        // source tile. The host captures that exact published player foot;
+        // keep it within this tile while retaining the separate NPC witness.
+        let source_displacement = anchors.source_foot - landed;
+        let source_position_valid = if matches!(location.target, VisualBattleTarget::Trainer { .. }) {
+            source_displacement.abs().cmple(frame.tile_size + Vec2::splat(0.0001)).all()
+        } else {
+            source_displacement.length_squared() <= 0.0001
+        };
         if !anchors.source_foot.is_finite()
             || !anchors.target_foot.is_finite()
-            || anchors.source_foot.distance_squared(landed) > 0.0001
+            || !source_position_valid
             || anchors.target_foot.distance_squared(source_foot(target)) > 0.0001
         {
             return Err(invalid);
@@ -491,6 +501,7 @@ mod onix_camera_tests {
                 authentic:AuthenticBounds{min:Vec2::new(-26.,-36.),max:Vec2::new(14.,36.)},
                 omitted:StaticBlockers::default(),static_blockers:StaticBlockers::default(),
                 grass_lens_blockers:StaticBlockers::default(),objects:HashMap::new(),
+                object_sight:None,
                 backdrop_bounds:vec![],materials:vec![],images:vec![],meshes:vec![],ground:0.,
                 walking:Some(WalkingGround{origin:Vec2::new(-26.,-36.),cells,grass_cells:default()}),
                 water:false,bodies:[None,None],clearance:[Vec4::ZERO;2],clearance_shape:[Vec4::ZERO;2],

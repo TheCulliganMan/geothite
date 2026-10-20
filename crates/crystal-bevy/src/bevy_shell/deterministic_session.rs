@@ -122,6 +122,7 @@ Transform::from_xyz(165.0, 216.0, 4.0),),
 const SERVER_CLOCK_UNAVAILABLE: &str = "Server clock unavailable. Restore the connection to resume.";
 
 fn apply_keyboard_input(
+    #[cfg(feature = "voxel-view")] voxel: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
     time: Res<Time>,
     #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
     keys: Res<ButtonInput<KeyCode>>,
@@ -166,6 +167,19 @@ fn apply_keyboard_input(
     } else {
         &*keys
     };
+    #[cfg(feature = "voxel-view")]
+    {
+        runtime_shell.natural_movement.enabled = voxel.as_ref().is_some_and(|v| v.enabled)
+            && runtime_shell.shell.runtime().data().natural_movement.unwrap_or(true);
+    }
+    #[cfg(not(feature = "voxel-view"))]
+    { runtime_shell.natural_movement.enabled = false; }
+    let movement_vector = natural_movement::keyboard_vector(&keys);
+    #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
+    let movement_vector = natural_movement::browser_vector(voxel.as_ref().map_or(0.0,
+        |v|v.camera.rotation_step*std::f32::consts::FRAC_PI_4)).unwrap_or(movement_vector);
+    #[cfg(not(target_arch = "wasm32"))]
+    let movement_vector = handheld.as_ref().map_or(movement_vector, |h| h.movement);
     runtime_shell.field_text_consumed_a = false;
     runtime_shell.field_text_consumed_b = false;
     log_visible_key_presses(&mut runtime_shell, &keys);
@@ -269,6 +283,18 @@ fn apply_keyboard_input(
         runtime_shell.field_text_consumed_b = keys.just_pressed(KeyCode::KeyX);
     }
     let pending_direction_press = runtime_shell.pending_overworld_direction_press.take();
+    // Preserve a short physical tap sampled between gameplay ticks. Free
+    // movement consumes its one sampled displacement instead of discarding
+    // the latched edge just because the key has already been released.
+    let movement_vector = if movement_vector == Vec2::ZERO {
+        just_pressed_overworld_direction(&keys).or(pending_direction_press)
+            .and_then(game_button_direction)
+            .map(|direction| match direction {
+                Direction::Up => Vec2::NEG_Y, Direction::Down => Vec2::Y,
+                Direction::Left => Vec2::NEG_X, Direction::Right => Vec2::X,
+            }).unwrap_or(Vec2::ZERO)
+    } else { movement_vector };
+
     // GameTimer is a VBlank hook, not an overworld-input side effect. Run it
     // for every authoritative catch-up VBlank before any presentation/modal
     // early return; dialogue, menus, battles, and interpolation all consume
@@ -1829,7 +1855,8 @@ fn apply_keyboard_input(
         && keys.pressed(KeyCode::ShiftRight)
         && has_visible_shell_select_action(&mut runtime_shell);
     let direction_requested = plain_input
-        && (pending_direction_press.is_some()
+        && ((runtime_shell.natural_movement.enabled && movement_vector != Vec2::ZERO)
+            || pending_direction_press.is_some()
             || [
                 KeyCode::ArrowUp,
                 KeyCode::ArrowDown,
@@ -1881,7 +1908,8 @@ fn apply_keyboard_input(
         // input remains live so held walking can chain without a dead frame.
         buttons.retain(|button| is_direction_button(*button));
     }
-    let direction_held = buttons.iter().any(|button| is_direction_button(*button));
+    let direction_held = buttons.iter().any(|button| is_direction_button(*button))
+        || (plain_input && runtime_shell.natural_movement.enabled && movement_vector != Vec2::ZERO);
     if ledge_jump_in_flight {
         // STEP_LEDGE owns sixteen visible frames independently of ordinary
         // walk interpolation. Keep a
@@ -1980,7 +2008,9 @@ fn apply_keyboard_input(
                 return;
             }
         } else {
-            throttle_held_overworld_direction(&mut runtime_shell, &mut buttons);
+            if !runtime_shell.natural_movement.enabled {
+                throttle_held_overworld_direction(&mut runtime_shell, &mut buttons);
+            }
         }
     }
     let input_active = !buttons.is_empty() || direction_held;
@@ -2005,7 +2035,15 @@ fn apply_keyboard_input(
     let mut tick_error = None;
     let mut player_facing_changed = false;
     let mut remaining_catch_up_ticks = 0;
+    let mut natural_step = false;
     for tick_index in 0..elapsed_ticks {
+        if plain_input && !shell_consumes_direction {
+            match natural_movement::prepare(&mut runtime_shell, movement_vector, &mut buttons) {
+                Ok(active) => natural_step = active,
+                Err(error) => { tick_error = Some(error); break; }
+            }
+        }
+
         let movement_scene_before_tick = if buttons.iter().copied().any(is_direction_button)
             || runtime_shell
                 .shell
@@ -2061,19 +2099,22 @@ fn apply_keyboard_input(
             .object_facings
             .clone();
         let player_facing_before_tick = runtime_shell.shell.session().overworld().player.facing;
+        let continuous_step = natural_step && runtime_shell.natural_movement.crossing();
         let tick = if rtc_changed {
             rtc_changed = false;
             runtime_shell
                 .shell
-                .tick_with_rtc_after_vblank(buttons.clone(), rtc_sample)
+                .tick_with_rtc_and_movement_after_vblank(buttons.clone(), rtc_sample, continuous_step)
         } else {
-            runtime_shell.shell.tick_after_vblank(buttons.clone())
+            runtime_shell.shell.tick_with_movement_after_vblank(buttons.clone(), continuous_step)
         };
         match tick.map(Clone::clone) {
             Ok(frame) => {
                 player_facing_changed |= runtime_shell.shell.session().overworld().player.facing
                     != player_facing_before_tick;
                 let reached_boundary = overworld_frame_reaches_presentation_boundary(&frame);
+                if natural_step { natural_movement::finish(&mut runtime_shell, &frame); }
+
                 let object_tiles_after_tick = runtime_shell
                     .shell
                     .session()
@@ -2346,6 +2387,12 @@ fn apply_keyboard_input(
                 runtime_shell.player_walk_frame_ticks =
                     visible_new_step_frames_remaining(step_ticks, remaining_catch_up_ticks);
                 runtime_shell.overworld_direction_repeat_ticks = step_ticks.saturating_sub(1);
+                if natural_step && !overworld_frame_reaches_presentation_boundary(&frame) {
+                    runtime_shell.player_walk_frame_ticks = 0;
+                    runtime_shell.player_walk_from = None;
+                    runtime_shell.overworld_direction_repeat_ticks = 0;
+                }
+
             }
             if let Some(LedgeJumpOutcome::Jumped { from, to, .. }) = frame.ledge_jump {
                 // Keep the map's scrolling path active throughout the sixteen

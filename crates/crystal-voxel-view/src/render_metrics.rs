@@ -40,9 +40,7 @@ pub(super) fn register(app: &mut App) {
     if !cpu_log && output.is_none() {
         return;
     }
-    if !app.is_plugin_added::<RenderDiagnosticsPlugin>() {
-        app.add_plugins(RenderDiagnosticsPlugin);
-    }
+    app.add_plugins(GatedRenderDiagnostics);
     if cpu_log {
         app.add_systems(Update, report);
     }
@@ -68,14 +66,67 @@ pub(super) fn register(app: &mut App) {
         render_app
             .insert_resource(shared)
             .init_resource::<ExtractedFrame>()
-            .add_systems(ExtractSchedule, extract_identity)
-            .add_systems(
-                RenderGraph,
-                mark_frame
-                    .after(RenderGraphSystems::Render)
-                    .before(resolve_encoder)
-                    .before(RenderGraphSystems::Submit),
-            );
+            .add_systems(ExtractSchedule, extract_identity);
+    }
+}
+
+fn supports_pass_diagnostics(features: WgpuFeatures) -> bool {
+    features.contains(WgpuFeatures::TIMESTAMP_QUERY
+        | WgpuFeatures::TIMESTAMP_QUERY_INSIDE_ENCODERS
+        | WgpuFeatures::TIMESTAMP_QUERY_INSIDE_PASSES)
+}
+
+fn recorder_is_safe(features: WgpuFeatures, cpu_requested: bool) -> bool {
+    supports_pass_diagnostics(features)
+        || (cpu_requested && !features.contains(WgpuFeatures::TIMESTAMP_QUERY))
+}
+
+/// RenderDevice is installed by RenderPlugin::finish, after the build phase.
+/// Forward recorder initialization only after proving its timestamp support.
+/// Bevy allocates query sets even on boundary-only devices where its interior
+/// timestamps cannot work; leaving that recorder active can exhaust Metal's
+/// counter buffers despite our report already saying timings are unavailable.
+struct GatedRenderDiagnostics;
+impl Plugin for GatedRenderDiagnostics {
+    fn build(&self, _: &mut App) {}
+    fn finish(&self, app: &mut App) {
+        let Some(render) = app.get_sub_app_mut(RenderApp) else { return; };
+        let world = render.world();
+        let Some(device) = world.get_resource::<RenderDevice>() else { return; };
+        let features = device.features();
+        if let Some(shared) = world.get_resource::<SharedTiming>()
+            && let (Some(adapter), Some(queue)) = (world.get_resource::<RenderAdapterInfo>(), world.get_resource::<RenderQueue>())
+            && let Ok(mut data) = shared.data.lock()
+        {
+            data.adapter = Some(AdapterTiming {
+                name: adapter.name.clone(), backend: format!("{:?}",adapter.backend),
+                timestamp_query_enabled: features.contains(WgpuFeatures::TIMESTAMP_QUERY),
+                timestamp_inside_encoders_enabled: features.contains(WgpuFeatures::TIMESTAMP_QUERY_INSIDE_ENCODERS),
+                timestamp_inside_passes_enabled: features.contains(WgpuFeatures::TIMESTAMP_QUERY_INSIDE_PASSES),
+                timestamp_period_ns: queue.get_timestamp_period(),
+            });
+        }
+        let cpu_requested = std::env::var("CRYSTAL_RENDER_PASS_TIMING").as_deref() == Ok("on");
+        if !recorder_is_safe(features, cpu_requested) {
+            if cpu_requested {
+                bevy::log::warn!("Per-pass timing is unavailable for this device; use CRYSTAL_LOADING_TRACE for CPU schedule timings");
+            }
+            return;
+        }
+        // Compose the underlying plugin here rather than adding it to the
+        // registry during finish (new registry entries need not be finished).
+        if !app.is_plugin_added::<RenderDiagnosticsPlugin>() {
+            RenderDiagnosticsPlugin.build(app);
+            RenderDiagnosticsPlugin.finish(app);
+        }
+        if let Some(render) = app.get_sub_app_mut(RenderApp)
+            && supports_pass_diagnostics(features)
+            && render.world().contains_resource::<SharedTiming>()
+        {
+            render.add_systems(RenderGraph, mark_frame
+                .after(RenderGraphSystems::Render).before(resolve_encoder)
+                .before(RenderGraphSystems::Submit));
+        }
     }
 }
 
@@ -476,6 +527,26 @@ fn report(time: Res<Time<Real>>, diagnostics: Res<DiagnosticsStore>, mut next: L
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn boundary_only_timestamp_devices_do_not_install_a_recorder() {
+        assert!(super::recorder_is_safe(bevy::render::render_resource::WgpuFeatures::empty(), true));
+        assert!(!super::recorder_is_safe(bevy::render::render_resource::WgpuFeatures::empty(), false));
+        assert!(!super::recorder_is_safe(bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY, true));
+        assert!(!super::supports_pass_diagnostics(bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY));
+        let all = bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY
+            | bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY_INSIDE_ENCODERS
+            | bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY_INSIDE_PASSES;
+        assert!(super::supports_pass_diagnostics(all));
+        for missing in [bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY,
+            bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY_INSIDE_ENCODERS,
+            bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY_INSIDE_PASSES] {
+            assert!(!super::supports_pass_diagnostics(all - missing));
+        }
+        let mut app = bevy::prelude::App::new();
+        app.add_plugins(super::GatedRenderDiagnostics);
+        app.finish();
+        assert!(!app.is_plugin_added::<bevy::render::diagnostic::RenderDiagnosticsPlugin>());
+    }
     use super::*;
     use bevy::diagnostic::{Diagnostic, DiagnosticMeasurement, DiagnosticPath};
     fn frame(id: u32) -> CompletedFrame {

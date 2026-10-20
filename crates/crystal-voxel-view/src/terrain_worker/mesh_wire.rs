@@ -53,6 +53,7 @@ impl SamplesWire {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub(crate) struct StreamWire {
+    bounds: Vec<([u32; 3], [u32; 3])>,
     bank_regions: Option<Vec<[u32; 4]>>,
     recipes: Records<RecipeWire>,
     geometry: Option<([u64; 2], [u32; 4])>,
@@ -87,6 +88,7 @@ impl StreamWire {
         cells.tiles = source.cells.clone();
         cells.actors.clear();
         Self {
+            bounds: stream.bounds.iter().map(|(lo, hi)| (lo.to_array().map(f32::to_bits), hi.to_array().map(f32::to_bits))).collect(),
             bank_regions: source
                 .bank_regions
                 .get()
@@ -158,6 +160,17 @@ impl StreamWire {
 
     pub(crate) fn restore(self, bindings: &TextureBindings) -> Result<Arc<StreamedGroves>, String> {
         let frame = self.cells.restore(bindings)?;
+        if self.bounds.len() != self.recipes.len() {
+            return Err("grove bounds do not match source recipes".into());
+        }
+        let bounds = self.bounds.into_iter().map(|(lo,hi)| {
+            let lo = Vec3::from_array(lo.map(f32::from_bits));
+            let hi = Vec3::from_array(hi.map(f32::from_bits));
+            if !lo.is_finite() || !hi.is_finite() || lo.cmpgt(hi).any() {
+                return Err("invalid prepared grove bounds".to_string());
+            }
+            Ok((lo,hi))
+        }).collect::<Result<Vec<_>,String>>()?;
         if self.recipes.len() > 65_536
             || self.ledges.len() > 65_536
             || self.shapes.len() > 262_144
@@ -223,6 +236,7 @@ impl StreamWire {
             })
             .collect::<Result<_, String>>()?;
         Ok(Arc::new(StreamedGroves {
+            bounds,
             source: DeferredGroves {
                 terrace_datum: frame.terrace_datum.clone(),
                 bank_regions,

@@ -98,6 +98,8 @@ impl BoundsList {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 struct Batch {
     mesh: MeshWire,
+    #[serde(default)]
+    rooted_grass: Option<bool>,
     bounds: Option<Bounds>,
     domain: u8,
     coverage: Option<BoundsList>,
@@ -130,6 +132,7 @@ impl Batch {
         }
         Ok(Self {
             mesh: MeshWire::capture(&b.mesh)?,
+            rooted_grass: Some(b.rooted_grass),
             bounds: b.bounds.map(Bounds::capture),
             domain: domain(b.authentic_domain),
             coverage: coverage(&b.coverage),
@@ -144,6 +147,7 @@ impl Batch {
         }
         Ok(Self {
             mesh: MeshWire::capture_owned(b.mesh)?,
+            rooted_grass: Some(b.rooted_grass),
             bounds: b.bounds.map(Bounds::capture),
             domain: domain(b.authentic_domain),
             coverage: coverage(&b.coverage),
@@ -164,8 +168,11 @@ impl Batch {
         fn coverage(v: Option<BoundsList>) -> Result<Option<Arc<[Aabb]>>, String> {
             v.map(BoundsList::restore).transpose()
         }
+        let mesh = self.mesh.into_mesh()?;
+        let rooted_grass = self.rooted_grass.unwrap_or_else(|| crate::terrain_batches::has_rooted_grass(&mesh));
         Ok(PreparedBatch {
-            mesh: self.mesh.into_mesh()?,
+            mesh,
+            rooted_grass,
             bounds: self.bounds.map(Bounds::restore),
             authentic_domain: restore_domain(self.domain)?,
             coverage: coverage(self.coverage)?,

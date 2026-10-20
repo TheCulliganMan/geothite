@@ -76,6 +76,7 @@ fn sync_tilt_shift(
     frame: Option<Res<crystal_render_api::VisualWorldFrame>>,
     terrain: Option<Res<crate::TerrainRevisionCache>>,
     traversal: Option<Res<crystal_render_api::VisualPlayerTraversal>>,
+    entry: Option<Res<crystal_render_api::VisualWorldEntryEffect>>,
     adapter: Option<Res<RenderAdapterInfo>>,
     mut cameras: Query<
         (
@@ -120,10 +121,16 @@ fn sync_tilt_shift(
         let height = camera
             .physical_viewport_size()
             .map_or(frame.viewport_size.y, |s| s.y as f32);
+        let entry = entry.as_deref().filter(|e| e.active && camera.is_active && frame.active && settings.enabled);
         let band = focus.filter(|_| active).and_then(|focus| {
             TiltShift::for_trainer(projection, transform, focus, frame.tile_size.y, height)
                 .map(|band|if exploration_focus(&frame) {band.readable_exterior()} else {band})
         });
+        let band = match (band, entry) {
+            (Some(band), Some(entry)) => Some(band.with_entry(entry)),
+            (None, Some(entry)) => Some(TiltShift::entry_only(entry)),
+            (band, None) => band,
+        };
         let Some(band) = band else {
             if current.is_some() {
                 commands.entity(entity).remove::<TiltShift>();
@@ -370,6 +377,27 @@ mod tests {
         for quality in [Quality::Low, Quality::Legacy] {
             assert!(smaa_preset(quality, Some("smaa-ultra")) == None);
         }
+    }
+
+    #[test]
+    fn entry_effect_survives_disabled_blur_and_releases_its_camera_component() {
+        let mut app = App::new();
+        let mut settings = crate::VoxelViewSettings::default();
+        settings.enabled = true;
+        settings.camera.first_person = true; // deliberately disables the focus blur
+        app.insert_resource(settings)
+            .insert_resource(crystal_render_api::VisualWorldFrame { active: true, ..default() })
+            .insert_resource(crystal_render_api::VisualWorldEntryEffect { active: true, light: 1., ..default() })
+            .add_systems(Update, sync_tilt_shift);
+        let camera = app.world_mut().spawn((crate::VoxelWorldCamera, Camera::default(),
+            Projection::Perspective(PerspectiveProjection::default()), Transform::default())).id();
+        app.update();
+        let effect = app.world().get::<TiltShift>(camera).unwrap();
+        assert_eq!(effect.band.w, 0.);
+        assert_eq!(effect.entry, Vec4::new(0., 1., 1., 0.));
+        app.world_mut().resource_mut::<crystal_render_api::VisualWorldEntryEffect>().active = false;
+        app.update();
+        assert!(app.world().get::<TiltShift>(camera).is_none());
     }
 
     #[test]

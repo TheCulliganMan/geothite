@@ -490,7 +490,7 @@ pub(super) fn sync(
                 }
             }
         }
-        let shown = status.active
+        let shown = (status.active || status.prepared)
             && frame.battlers[side]
                 .as_ref()
                 .is_some_and(|b| b.visible && b.allow_species_model);
@@ -535,7 +535,7 @@ pub(super) fn sync(
     }
     for (volume, mut transform, mut visibility, mut layers) in &mut surfaces {
         let side = volume.side;
-        let shown = status.active
+        let shown = (status.active || status.prepared)
             && frame.battlers[side]
                 .as_ref()
                 .is_some_and(|b| b.visible && b.allow_species_model);
@@ -564,7 +564,7 @@ pub(super) fn sync(
     }
     for (particle, mut transform, mut visibility, mut layers) in &mut particles {
         let side = particle.side;
-        let shown = status.active
+        let shown = (status.active || status.prepared)
             && frame.battlers[side]
                 .as_ref()
                 .is_some_and(|b| b.visible && b.allow_species_model);

@@ -374,6 +374,15 @@ fn freeze_visible_step_source_frame(
         return None;
     }
     if rendered.tile == Some(from) {
+        // Continuous movement may already display part of this committed step
+        // while the retained classic metadata still names its starting cell.
+        // Authenticate that actual foot against the same source corridor,
+        // excluding the destination endpoint until its metadata is published.
+        if let Some(scene) = capture_visible_walking_source_frame_at(
+            source, from, map_size, rendered, frame, true,
+        ) {
+            return Some(scene);
+        }
         // An exact settled pre-step sprite is already a sufficient witness.
         // Its expected tile comes from this committed StepOutcome.from. The
         // authoritative origin is unchanged, and both eventual support points
@@ -466,6 +475,18 @@ fn capture_visible_walking_source_frame(
     rendered: &RenderedViewport,
     frame: Option<&crystal_render_api::VisualWorldFrame>,
 ) -> Option<VisibleFishingSourceFrame> {
+    capture_visible_walking_source_frame_at(source, from, map_size, rendered, frame, false)
+}
+
+#[cfg(any(test, feature = "voxel-view"))]
+fn capture_visible_walking_source_frame_at(
+    source: &crate::core::world::session::OverworldSnapshot,
+    from: TilePosition,
+    map_size: UVec2,
+    rendered: &RenderedViewport,
+    frame: Option<&crystal_render_api::VisualWorldFrame>,
+    pre_step: bool,
+) -> Option<VisibleFishingSourceFrame> {
     use crystal_render_api::{VisualActorId, VisualBattleTerrainEvidence};
     let Some(frame) = frame.filter(|frame| frame.active && frame.validate().is_ok()) else {
         return None;
@@ -474,7 +495,7 @@ fn capture_visible_walking_source_frame(
         || frame.source_map_size_core_tiles != Some(map_size)
         || rendered.source_map_size_core_tiles != Some(map_size)
         || rendered.map_name.as_deref() != Some(source.map_name.as_str())
-        || rendered.tile != Some(source.tile)
+        || rendered.tile != Some(if pre_step { from } else { source.tile })
         || rendered.player_sprite_facing != Some(source.facing)
         || rendered.player_sprite_mode != Some(source.mode)
         || rendered.visual_tiles_revision != Some(frame.terrain_revision)
@@ -528,6 +549,7 @@ fn capture_visible_walking_source_frame(
     let to_foot = fishing_source_support(&terrain, source.tile)?;
     let source_foot = player.center - Vec2::Y * player.size.y * 0.5;
     if !walking_foot_is_on_original_step(source_foot, from_foot, to_foot)
+        || (pre_step && source_foot.distance_squared(to_foot) < 0.01)
         || player.facing != Some(visual_facing(source.facing))
     {
         return None;

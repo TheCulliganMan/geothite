@@ -32,6 +32,7 @@ struct Request {
     job: u64,
     kernel: [u8; 32],
     full_detail: bool,
+    dense_understory: bool,
     frame: request::Frame,
     samples: crate::mesh::worker_wire::SamplesWire,
     profiles: serde_json::Value,
@@ -65,6 +66,7 @@ pub(crate) fn capture_request(
         job,
         kernel: TERRAIN_KERNEL_ID,
         full_detail: crate::new_bark_models::scenery_full_detail(),
+        dense_understory: crate::forest_instances::dense_understory(),
         frame: frame_wire,
         samples,
         profiles: profiles::capture(document),
@@ -88,6 +90,7 @@ fn build_cpu_response(bytes: &[u8]) -> Result<response::Response, String> {
     if request.full_detail != crate::new_bark_models::scenery_full_detail() {
         return Err("terrain worker scenery detail configuration mismatch".into());
     }
+    crate::forest_instances::validate_understory_density(request.dense_understory)?;
     let mut bindings = request::TextureBindings::worker(request.frame.texture_count())?;
     let frame = request.frame.restore(&bindings)?;
     if !frame.active {
@@ -95,6 +98,7 @@ fn build_cpu_response(bytes: &[u8]) -> Result<response::Response, String> {
     }
     let samples = request.samples.restore(&bindings)?;
     let profiles = profiles::restore(request.profiles)?;
+    crate::forest_instances::configure_understory_density(request.dense_understory)?;
     let pending =
         crate::mesh::begin_runtime_terrain_mesh_with_profiles(&frame, &samples, &profiles)
             .map_err(|e| format!("terrain build failed: {e:?}"))?;
@@ -302,6 +306,7 @@ mod tests {
             job: 1,
             kernel,
             full_detail: crate::new_bark_models::scenery_full_detail(),
+            dense_understory: crate::forest_instances::dense_understory(),
             frame: frame_wire,
             samples,
             profiles: serde_json::Value::Null,
@@ -312,6 +317,13 @@ mod tests {
                 .unwrap_err()
                 .contains("kernel identity mismatch")
         );
+        let mut mismatched: Request = decode(&bytes).unwrap();
+        mismatched.kernel = TERRAIN_KERNEL_ID;
+        mismatched.dense_understory = !crate::forest_instances::dense_understory();
+        assert!(execute_cpu_job(&encode(&mismatched).unwrap()).unwrap_err()
+            .contains("density configuration mismatch"));
+        let captured: Request = decode(&bytes).unwrap();
+        assert_eq!(captured.dense_understory, crate::forest_instances::dense_understory());
         bytes[..8].copy_from_slice(b"GTRNW002");
         assert!(execute_cpu_job(&bytes).unwrap_err().contains("unsupported"));
     }

@@ -92,27 +92,18 @@ fn external_facility_workbench_finish_keeps_all_ten_native_bodies_readouts_and_f
             assert_eq!(tiles, original);
             assert!(mesh.solid.indices.is_empty());
             let (w, _, n, _) = g.bounds(p.resolved.column, p.resolved.row);
-            let mut old = SurfaceMeshData::default();
-            model(0).append_fitted(&mut old, [w, w + 32., n + 6., n + 24.], 0., 18.);
-            let first = 48;
-            let end = first + old.positions.len();
-            assert_eq!(mesh.textured.positions[first..end], old.positions);
-            assert_eq!(mesh.textured.normals[first..end], old.normals);
-            assert_eq!(
-                mesh.textured.indices[72..72 + old.indices.len()]
-                    .iter()
-                    .map(|i| i - first as u32)
-                    .collect::<Vec<_>>(),
-                old.indices
-            );
-            assert!(mesh.textured.positions[..first].iter().all(|v| v[1] == 0.));
-            // The 11-pixel display spans two cells: eight unchanged live vertices.
-            assert_eq!(mesh.textured.positions.len() - end, 8);
-            assert!(
-                mesh.textured.positions[end..]
-                    .iter()
-                    .all(|v| v[1] > 11. && v[1] < 17. && (v[2] - (n + 14.2)).abs() < 0.001)
-            );
+            let first=48;let end=mesh.textured.positions.len()-8;
+            assert!(end>first);
+            assert!(mesh.textured.positions[..first].iter().all(|v|v[1]==0.));
+            assert!(mesh.textured.positions[first..end].iter().any(|v|v[0]<w+16.&&v[1]>16.),
+                "{map}: retain the original upright monitor");
+            assert!(mesh.textured.positions[first..end].iter().zip(&mesh.textured.normals[first..end])
+                .any(|(v,n)|v[0]>w+18.&&v[1]>11.&&n[0]< -0.4&&n[2]>0.1),
+                "{map}: right enclosure faces its keyboard/operator");
+            assert!(mesh.textured.positions[end..].iter().all(|v|
+                v[1]>11.&&v[1]<17.&&(v[2]-(n+14.2)).abs()<0.001),
+                "{map}: live source display keeps its original monitor face");
+            assert!(mesh.textured.normals[end..].iter().all(|n|*n==[0.,0.,1.]));
             let swatches = workbench_swatches(&g, &p.resolved);
             for uv in swatches {
                 assert!(mesh.textured.uvs[first..end].contains(&uv));

@@ -43,7 +43,7 @@ fn hide(cache: &TerrainRevisionCache, commands: &mut Commands) {
     }
 }
 
-fn compatible(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bool {
+pub(super) fn compatible(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bool {
     if !terrain_tracking::can_reuse(built, live) { return false; }
     let delta = live.grid_origin - built.grid_origin;
     let width = built.grid_size.x as i32;
@@ -75,10 +75,24 @@ pub(super) fn activate(
         key.profiles_revision == profiles.revision && key.map_id == frame.map_id)
         && destination.source_frame.as_ref().is_some_and(|old| compatible(old, frame));
     if !ready && !in_flight { return; }
+    if in_flight && !ready && retain_connected_terrain(frame, live) {
+        // Adopt only the work queue. The completed old scene covers the shared
+        // authored acreage and keeps its immutable atlas until publication.
+        // Swapping an empty pending cache here used to expose the classic view.
+        let started = builds.started;
+        std::mem::swap(builds, &mut destination.builds);
+        builds.started = started;
+        destination.builds = TerrainBuildQueue::default();
+        destination.source_frame = None;
+        destination.settled_key = None;
+        request.hits += 1;
+        return;
+    }
     // Keep the old room resident for the return journey. Both scenes retain
     // their own immutable atlas; the host's live compositor never aliases it.
     hide(live, commands);
     std::mem::swap(live, &mut destination.cache);
+    if ready { bind_preloaded_compositor(frame, live); }
     let started = builds.started;
     if in_flight && !ready {
         // A fast exit adopts the already-running task instead of throwing it
@@ -104,12 +118,15 @@ pub(super) fn activate(
 pub(super) fn prepare(
     request: Res<DestinationPreload>,
     current: Res<VisualWorldFrame>,
+    battle: Option<Res<crystal_render_api::VisualBattleFrame>>,
     #[cfg(target_arch = "wasm32")]
     status: Res<VoxelViewStatus>,
     settings: Res<VoxelViewSettings>,
     profiles: Res<live_profiles::LiveProfiles>,
     sun: Query<(&DirectionalLight, &Transform), (With<VoxelSun>, Without<VoxelTerrain>, Without<VoxelActorCard>)>,
     active: Res<TerrainRevisionCache>,
+    #[cfg(not(target_arch = "wasm32"))]
+    active_builds: Res<TerrainBuildQueue>,
     mut destination: ResMut<PreparedDestination>,
     mut commands: Commands,
     mut images: ResMut<Assets<Image>>,
@@ -119,6 +136,9 @@ pub(super) fn prepare(
 ) {
     let Some(frame) = request.frame.as_ref() else { return; };
     if !settings.enabled || !current.active || frame.map_id == current.map_id { return; }
+    // Finished speculative work can wait; GPU publication must not interrupt
+    // the authored field wipe or the battle's own preparation/handoff.
+    if battle.as_ref().is_some_and(|frame| frame.active || frame.preparing) { return; }
     // Native background work may overlap the initial room. Browser workers
     // retain their existing foreground-first scheduling and memory budget.
     #[cfg(target_arch = "wasm32")]
@@ -157,6 +177,10 @@ pub(super) fn prepare(
 
     if cache.built_frame.is_none() && builds.key.is_none() {
         cache.forest_library = active.forest_library.clone();
+        // Join the foreground's immutable image work before it has handles.
+        // Each scene still owns its independent geometry task and atlas.
+        #[cfg(not(target_arch = "wasm32"))]
+        { builds.painted = active_builds.painted.clone(); }
     }
     if cache.painted_stone.is_none() { cache.painted_stone = active.painted_stone.clone(); }
     if cache.painted_bedrock.is_none() { cache.painted_bedrock = active.painted_bedrock.clone(); }
@@ -305,9 +329,62 @@ mod tests {
         assert_eq!(*app.world().get::<Visibility>(old_root).unwrap(), Visibility::Hidden);
     }
 
+    #[test]
+    fn pending_connected_destination_keeps_the_completed_scene_visible() {
+        use crystal_render_api::{VisualSourceRegion, VisualTile, VisualTileSource};
+        let texture=Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1),std::marker::PhantomData);
+        let mut built = VisualWorldFrame { map_texture:texture.clone(), active: true, map_id: "RouteA".into(),
+            grid_size: UVec2::splat(28), tile_size: Vec2::splat(8.),
+            viewport_size: Vec2::splat(8.), source_regions: vec![
+                VisualSourceRegion {map_id:"RouteA".into(),origin:IVec2::ZERO,size:UVec2::new(20,28)},
+                VisualSourceRegion {map_id:"RouteB".into(),origin:IVec2::new(20,0),size:UVec2::new(20,28)},
+            ].into(), ..default() };
+        for row in 0..28 { for column in 0..28 {
+            built.tiles.push(VisualTile {row,column,texture:texture.clone(),priority:false,
+                animation_frames:None, source:VisualTileSource {tileset_id:"johto".into(),
+                    metatile_id:1,tile_index:1,subtile_column:0,subtile_row:0}});
+        }}
+        let mut frame=built.clone();frame.map_id="RouteB".into();frame.grid_origin=IVec2::new(-20,0);
+        frame.source_regions=vec![
+            VisualSourceRegion {map_id:"RouteB".into(),origin:IVec2::ZERO,size:UVec2::new(20,28)},
+            VisualSourceRegion {map_id:"RouteA".into(),origin:IVec2::new(-20,0),size:UVec2::new(20,28)},
+        ].into();
+        assert!(terrain_tracking::connected_frame_shift(&built,&frame).is_ok());
+        let mut app=App::new();let root=app.world_mut().spawn(Visibility::Visible).id();
+        let mut live=TerrainRevisionCache {key:Some(TerrainCacheKey::from_frame(&built)),
+            built_frame:Some(built),solid_entity:Some(root),..default()};
+        let mut destination=PreparedDestination {source_frame:Some(frame.clone()),
+            builds:TerrainBuildQueue {key:Some(TerrainCacheKey::from_frame(&frame)),..default()},..default()};
+        let mut request=DestinationPreload::default();let mut builds=TerrainBuildQueue {started:7,..default()};
+        let mut queue=bevy::ecs::world::CommandQueue::default();
+        {
+            let mut commands=Commands::new(&mut queue,app.world());
+            activate(&frame,&live_profiles::LiveProfiles::default(),&mut destination,
+                &mut request,&mut live,&mut builds,&mut commands);
+        }
+        queue.apply(app.world_mut());
+        assert_eq!(request.hits,1);
+        assert_eq!(live.solid_entity,Some(root));
+        assert_eq!(live.built_frame.as_ref().unwrap().map_id.as_ref(),"RouteA");
+        assert_eq!(*app.world().get::<Visibility>(root).unwrap(),Visibility::Visible);
+        assert_eq!(builds.key.as_ref().unwrap().map_id.as_ref(),"RouteB");
+        assert_eq!(builds.started,7);
+        assert!(destination.builds.key.is_none());
+    }
+
     #[cfg(not(target_arch = "wasm32"))]
     #[test]
     fn destination_builds_and_stays_hidden_while_initial_room_is_pending() {
+        use std::sync::{Arc, atomic::{AtomicBool, Ordering}};
+        let pool=bevy::tasks::TaskPoolBuilder::new().num_threads(1).build();
+        let gate=Arc::new(AtomicBool::new(false));
+        let worker_gate=gate.clone();
+        let painted=painted_stone::NativePreparation::from_task(pool.spawn(async move {
+            while !worker_gate.load(Ordering::SeqCst) {
+                bevy::tasks::futures_lite::future::yield_now().await;
+            }
+            painted_stone::PreparedImages {stone:Image::default(),bedrock:Image::default()}
+        }));
         let mut app=App::new();
         app.add_plugins((MinimalPlugins,bevy::transform::TransformPlugin));
         let mut images=Assets::<Image>::default();
@@ -324,18 +401,29 @@ mod tests {
             .insert_resource(VoxelViewStatus {active:false,terrain_pending:true,..default()})
             .insert_resource(VoxelViewSettings {enabled:true,..default()})
             .insert_resource(DestinationPreload {frame:Some(frame),..default()})
-            .insert_resource(TerrainRevisionCache {painted_stone:Some(texture.clone()),
-                painted_bedrock:Some(texture),..default()})
+            .init_resource::<TerrainRevisionCache>()
+            .insert_resource(TerrainBuildQueue {painted,..default()})
             .init_resource::<PreparedDestination>().init_resource::<live_profiles::LiveProfiles>()
             .init_resource::<Assets<Mesh>>().init_resource::<Assets<VoxelMaterial>>()
             .add_systems(Update,prepare);
         app.update();
         assert_eq!(app.world().resource::<PreparedDestination>().builds.started,1);
+        assert!(app.world().resource::<PreparedDestination>().builds.painted.pending());
+        assert!(app.world().resource::<PreparedDestination>().cache.key.is_none());
+        assert_eq!(app.world().resource::<Assets<Image>>().len(),2,
+            "the destination retains its independent source-atlas snapshot");
+        gate.store(true,Ordering::SeqCst);
         let started=std::time::Instant::now();
         while app.world().resource::<PreparedDestination>().ready_frames < 3
             && started.elapsed()<std::time::Duration::from_secs(5) {
             app.update();std::thread::sleep(std::time::Duration::from_millis(2));
         }
+        let cache=&app.world().resource::<PreparedDestination>().cache;
+        let expected=(cache.painted_stone.clone().unwrap(),cache.painted_bedrock.clone().unwrap());
+        let mut foreground=app.world().resource::<TerrainBuildQueue>().painted.clone();
+        assert_eq!(foreground.poll(&mut app.world_mut().resource_mut::<Assets<Image>>()),Some(expected));
+        assert_eq!(app.world().resource::<Assets<Image>>().len(),4,
+            "foreground and destination must publish each immutable image only once");
         let destination=app.world().resource::<PreparedDestination>();
         assert_eq!(destination.ready_frames,3,"the hidden destination must finish before the room is ready");
         assert_eq!(destination.builds.started,1,"pending room must not restart destination work");
@@ -364,6 +452,7 @@ mod tests {
             .insert_resource(settings.clone())
             .init_resource::<live_profiles::LiveProfiles>()
             .init_resource::<TerrainRevisionCache>()
+            .init_resource::<TerrainBuildQueue>()
             .init_resource::<Assets<Image>>()
             .init_resource::<Assets<Mesh>>()
             .init_resource::<Assets<VoxelMaterial>>()

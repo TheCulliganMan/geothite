@@ -193,7 +193,7 @@ pub(super) fn build(rig: &mut SpeciesRig) {
     // torso sway through planted feet.
     let mut legs = Vec::new();
     let mut support_vertices = vec![false; rig.neutral.positions.len()];
-    for (order, parts) in groups.values().enumerate() {
+    for (order, (&group, parts)) in groups.iter().enumerate() {
         let (lo, hi) = point_bounds(
             parts
                 .iter()
@@ -254,7 +254,9 @@ pub(super) fn build(rig: &mut SpeciesRig) {
             continue;
         }
         let side = if ankle.x < center.x { -1. } else { 1. };
-        let rear = ankle.z < center.z;
+        // Preserve the anatomical front/rear grouping. A long tail can move
+        // the silhouette midpoint behind all four paws (notably Furret).
+        let rear = if is_quad { group >= 2 } else { ankle.z < center.z };
         let pole = if is_crawl {
             Vec3::X * side
         } else {
@@ -482,7 +484,9 @@ pub(super) fn settle(rig: &SpeciesRig, pose: &mut [Transform]) {
             .iter()
             .map(|&v| rig.skin_point(v, &matrices).y)
             .fold(f32::INFINITY, f32::min);
-        if floor < 0. {
+        // Slugs and seals keep belly/foot contact with the substrate even
+        // when the entire contact surface rises during their pulling wave.
+        if floor < 0. || matches!(rig.species.name(), "slugma" | "magcargo" | "seel" | "dewgong") {
             pose[0].translation.y -= floor;
         }
     }
@@ -493,10 +497,21 @@ mod support_center_tests {
     use super::*;
 
     #[test]
+    fn furret_long_tail_does_not_turn_its_diagonal_scurry_into_a_pace() {
+        let rig = world_rig(crate::species_rig::for_species("FURRET").unwrap());
+        assert_eq!(rig.walk_legs.len(),4);
+        let legs=&rig.walk_legs;
+        assert!(legs[0].a.z>legs[2].a.z && legs[1].a.z>legs[3].a.z);
+        assert_eq!(legs[0].phase,legs[3].phase);
+        assert_eq!(legs[1].phase,legs[2].phase);
+        assert_eq!((legs[0].phase-legs[1].phase).abs(),0.5);
+    }
+
+    #[test]
     fn pokemon_motion_biped_steps_are_centered_under_hips_not_toes() {
         for name in ["PIKACHU", "RAICHU", "MACHOP", "MACHOKE", "MACHAMP",
             "CHARMANDER", "CHARMELEON", "ELECTABUZZ", "MAGMAR", "KANGASKHAN",
-            "MEOWTH", "FURRET", "RATICATE"] {
+            "MEOWTH", "RATICATE"] {
             let rig = world_rig(crate::species_rig::for_species(name).unwrap());
             assert_eq!(rig.walk_legs.len(), 2, "{name}");
             let mut pose = vec![Transform::IDENTITY; rig.joints.len()];

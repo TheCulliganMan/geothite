@@ -2258,7 +2258,19 @@ impl GameDataSet {
         state: &mut GameState,
         request: GiftPokemonRequest,
     ) -> Result<GiftPokemonOutcome> {
-        core_grant_gift_pokemon_to_state(
+        let starter = !request.egg && matches!(
+            (request.species_id.as_str(), request.source_script.as_str()),
+            ("CHIKORITA", "ChikoritaPokeBallScript")
+                | ("CYNDAQUIL", "CyndaquilPokeBallScript")
+                | ("TOTODILE", "TotodilePokeBallScript")
+        );
+        let starter_moves = if starter && self.wild_challenge.is_some() {
+            let pokemon = self.create_pokemon(&request.species_id, request.level, request.dvs)?;
+            Some(self.competitive_wild_moves(&pokemon)?)
+        } else {
+            None
+        };
+        let mut outcome = core_grant_gift_pokemon_to_state(
             state,
             &self.pokemon,
             &self.learnsets,
@@ -2267,7 +2279,22 @@ impl GameDataSet {
             &self.items,
             request,
         )
-        .map_err(|error| anyhow::anyhow!("grant gift Pokemon: {error:?}"))
+        .map_err(|error| anyhow::anyhow!("grant gift Pokemon: {error:?}"))?;
+        if let (Some(moves), Some(location)) = (starter_moves, outcome.location.as_ref()) {
+            use crystal_core::models::CaptureStorageLocation;
+            let stored = match *location {
+                CaptureStorageLocation::Party { slot } => &mut state.storage.party.pokemon[slot],
+                CaptureStorageLocation::Pc { box_index, slot } => {
+                    &mut state.storage.pc_boxes[box_index].pokemon[slot]
+                }
+            };
+            if let Some(pokemon) = stored {
+                pokemon.moves = moves.clone();
+            }
+            outcome.pokemon.moves = moves;
+            state.sync_party_from_storage();
+        }
+        Ok(outcome)
     }
 
     pub fn grant_scripted_gift_pokemon(

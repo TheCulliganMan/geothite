@@ -1,8 +1,8 @@
 // Keep worker availability separate from activation: a 2D session installs only
 // dormant callbacks, retaining the original model string until its first 3D use.
 export function cpuWorkerPolicy({ params, wasm, storage, embedded, workerSupported }) {
-  const preview3D = ['new-bark', 'bedroom', 'goldenrod', 'saffron', 'department-store',
-    'underground', 'route26', 'route26-canyon', 'route29', 'route29-battle',
+  const preview3D = params.get('view') === '3d' || ['new-bark', 'bedroom', 'goldenrod', 'saffron', 'department-store',
+    'underground', 'route26', 'route26-border', 'route26-canyon', 'route29', 'route29-border', 'route29-battle',
     'falkner-battle', 'national-park', 'national-park-pool', 'ilex', 'ilex-forest',
     'union-cave', 'ice-path', 'whirl-islands', 'mount-silver'].includes(params.get('preview'));
   const enabled = (flag, exported) => workerSupported && params.get(flag) !== '0'

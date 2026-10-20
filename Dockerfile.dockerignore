@@ -27,3 +27,9 @@
 !modpacks/flygon/
 !modpacks/flygon/*.json
 !modpacks/flygon/*.md
+
+!assets/
+!assets/**
+!art/
+!art/battles/
+!art/battles/arena-palettes.json

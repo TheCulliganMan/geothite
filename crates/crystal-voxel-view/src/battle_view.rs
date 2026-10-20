@@ -186,6 +186,8 @@ impl Plugin for BattleViewPlugin {
 #[derive(Resource, Clone, Debug, Default, PartialEq, Eq)]
 pub struct BattleViewStatus {
     pub active: bool,
+    /// Offscreen scene ready for rendering, independently of field ownership.
+    pub prepared: bool,
     pub active_frames: u32,
     pub modeled_species: Vec<String>,
     pub source_art_species: Vec<String>,
@@ -763,6 +765,15 @@ fn modeled_layout_body(scene: &mut BattleScene, battler: &VisualBattleBattler) -
     None
 }
 
+type BattleLayoutKey = ([Option<BattleBody>; 2], Option<[Option<BattleBody>; 2]>, Vec2, Vec2, (Option<u64>, bool));
+#[derive(Default)]
+struct PendingBattleCameraFit {
+    #[cfg(target_arch = "wasm32")]
+    search: Option<(BattleLayoutKey, encounter_terrain::CameraFitSearch)>,
+    #[cfg(not(target_arch = "wasm32"))]
+    task: Option<(BattleLayoutKey, bevy::tasks::Task<Result<(BattleSceneLayout, [Vec3; 2]), &'static str>>)>,
+}
+
 fn sync_battle_layout(
     frame: Res<VisualBattleFrame>,
     canvas: Res<VisualBattleCanvas>,
@@ -771,10 +782,15 @@ fn sync_battle_layout(
     mut scene: ResMut<BattleScene>,
     mut layout: ResMut<BattleSceneLayout>,
     mut scenery: ResMut<EncounterTerrain>,
-    mut previous: Local<Option<([Option<BattleBody>; 2], Option<[Option<BattleBody>; 2]>, Vec2, Vec2, (Option<u64>, bool))>>,
+    mut previous: Local<Option<BattleLayoutKey>>,
     mut establishing: Local<Option<BattleSceneLayout>>,
+    mut pending: Local<PendingBattleCameraFit>,
 ) {
     if !frame.active || frame.use_source_scene || frame.validate().is_err() {
+        #[cfg(not(target_arch = "wasm32"))]
+        { pending.task = None; }
+        #[cfg(target_arch = "wasm32")]
+        { pending.search = None; }
         return;
     }
     let viewport = windows
@@ -835,7 +851,68 @@ fn sync_battle_layout(
                 .map(|layout| (layout.reserve_ui(supported, safe_y), supported))
         });
         let next = if let Some((mut anchored, supported)) = anchored {
-            if scenery.establish_camera(&mut anchored, supported, viewport) {
+            #[cfg(not(target_arch = "wasm32"))]
+            let asynchronous = frame.preparing || pending.task.is_some();
+            #[cfg(target_arch = "wasm32")]
+            let asynchronous = frame.preparing || pending.search.is_some();
+            #[cfg(target_arch = "wasm32")]
+            if asynchronous {
+                if pending.search.as_ref().is_some_and(|(requested, _)| requested != &key) {
+                    pending.search = None;
+                }
+                let (_, search) = pending.search.get_or_insert_with(|| (key,
+                    encounter_terrain::CameraFitSearch::new(scenery.clone(), anchored.clone(), supported, viewport)));
+                let Some(accepted) = search.advance_frame() else {
+                    scenery.reject_layout("battle camera is preparing offscreen");
+                    return;
+                };
+                if accepted {
+                    let mut candidate = search.layout.clone();
+                    let anchors = search.scenery.fit_anchors().unwrap();
+                    if !scenery.apply_fit(&mut candidate, anchors, supported, viewport) {
+                        pending.search = None;
+                        return;
+                    }
+                    anchored = candidate;
+                } else {
+                    scenery.reject_layout(search.scenery.reason().unwrap_or("no checked battle camera"));
+                }
+                pending.search = None;
+            }
+            #[cfg(not(target_arch = "wasm32"))]
+            if asynchronous {
+                use bevy::tasks::{AsyncComputeTaskPool, futures_lite::future};
+                if pending.task.as_ref().is_some_and(|(requested, _)| requested != &key) {
+                    pending.task = None;
+                }
+                if pending.task.is_none() {
+                    let mut snapshot = scenery.clone();
+                    let mut candidate = anchored.clone();
+                    pending.task = Some((key, AsyncComputeTaskPool::get().spawn(async move {
+                        if snapshot.establish_camera(&mut candidate, supported, viewport) {
+                            Ok((candidate, snapshot.fit_anchors().unwrap()))
+                        } else {
+                            Err(snapshot.reason().unwrap_or("no checked battle camera"))
+                        }
+                    })));
+                }
+                let completed = pending.task.as_mut()
+                    .and_then(|(_, task)| future::block_on(future::poll_once(task)));
+                let Some(completed) = completed else {
+                    scenery.reject_layout("battle camera is preparing offscreen");
+                    return;
+                };
+                pending.task = None;
+                match completed {
+                    Ok((mut candidate, anchors)) => {
+                        if !scenery.apply_fit(&mut candidate, anchors, supported, viewport) { return; }
+                        anchored = candidate;
+                    }
+                    Err(reason) => { scenery.reject_layout(reason); }
+                }
+            }
+            if (asynchronous && scenery.accepted())
+                || (!asynchronous && scenery.establish_camera(&mut anchored, supported, viewport)) {
                 anchored
             } else {
                 BattleSceneLayout::for_bodies(bodies, viewport).reserve_ui(bodies, safe_y)
@@ -1290,7 +1367,7 @@ fn sync_battle_target(
         output
     };
     status.render_size = scene.quality.target_size(canvas_pixels);
-    let active = status.active && output.min_element() > 0;
+    let active = (status.active || status.prepared) && output.min_element() > 0;
     if !active && scene.render_target.is_some() {
         status.render_size = scene.render_size;
     }
@@ -1615,8 +1692,9 @@ fn sync_battle_scene(
         && valid.is_ok()
         && capture_bridge.allows_scene()
         && ground_clearance;
-    status.active = active;
-    status.active_frames = if active {
+    status.prepared = active;
+    status.active = active && !frame.preparing;
+    status.active_frames = if status.active {
         status.active_frames.saturating_add(1)
     } else {
         0
@@ -1651,8 +1729,11 @@ fn sync_battle_scene(
             if !matches!(camera.clear_color, ClearColorConfig::Custom(color) if color == sky) {
                 camera.clear_color = ClearColorConfig::Custom(sky);
             }
-            if fog.color != sky {
-                fog.color = sky;
+            // Keep route battle backgrounds as clear as their field view.
+            // Dedicated forests retain the existing authored atmosphere.
+            let fog_color = if frame.map_id.starts_with("Route") { sky.with_alpha(0.12) } else { sky };
+            if fog.color != fog_color {
+                fog.color = fog_color;
             }
         }
     }
@@ -3977,6 +4058,23 @@ hud_transform,),
     }
 
     #[test]
+    fn preparing_scene_warms_the_hidden_target_without_claiming_presentation() {
+        let mut app = headless_battle_app();
+        app.world_mut().resource_mut::<VisualBattleFrame>().preparing = true;
+        app.update();
+        let status = app.world().resource::<BattleViewStatus>();
+        assert!(status.prepared);
+        assert!(!status.active);
+        assert_eq!(status.active_frames, 0);
+        assert!(app.world().resource::<BattleScene>().actors.iter().all(Option::is_some));
+        let mut sprites = app.world_mut().query_filtered::<&Visibility, With<BattleCompositeSprite>>();
+        assert!(sprites.iter(app.world()).all(|visible| *visible == Visibility::Hidden));
+        app.world_mut().resource_mut::<VisualBattleFrame>().preparing = false;
+        app.update();
+        assert!(app.world().resource::<BattleViewStatus>().active);
+    }
+
+    #[test]
     fn verified_effect_registration_caches_neutral_geometry_and_resets_with_the_scene() {
         let mut app = headless_battle_app();
         let window = app
@@ -4095,6 +4193,19 @@ hud_transform,),
             "wall time cannot invent idle or camera movement"
         );
         assert_eq!(*app.world().resource::<VisualBattleFrame>(), source);
+    }
+
+    #[test]
+    fn route_battle_fog_stays_faint_without_changing_forest_atmosphere() {
+        let mut app = headless_battle_app();
+        for (map, alpha) in [("Route29", 0.12), ("Route26", 0.12), ("IlexForest", 1.0)] {
+            app.world_mut().resource_mut::<VisualBattleFrame>().map_id = map.into();
+            app.update();
+            assert!(app.world().resource::<BattleViewStatus>().active);
+            let world = app.world_mut();
+            let fog = world.query_filtered::<&DistanceFog, With<BattleCamera>>().single(world).unwrap();
+            assert!((fog.color.alpha() - alpha).abs() < 0.001, "{map}");
+        }
     }
 
     #[test]

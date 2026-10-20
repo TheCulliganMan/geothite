@@ -146,6 +146,7 @@ Transform::from_xyz(
                 3.0,
             ),),
         BattleBattlerMarker,
+        BattlePortraitMarker,
     ));
 }
 

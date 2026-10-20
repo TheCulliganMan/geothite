@@ -89,7 +89,7 @@ mod tests {
         sources: Vec<VisualTileSource>,
     ) -> VisualWorldFrame {
         assert_eq!(sources.len(), (width * height) as usize);
-        VisualWorldFrame { view_center: Vec2::ZERO, terrace_datum: None,
+        VisualWorldFrame { source_regions: Default::default(), view_center: Vec2::ZERO, terrace_datum: None,
             active: true,
             // Generic mesher fixtures must not opt into a named map's
             // authored scenery/material override. Map-specific tests opt in.

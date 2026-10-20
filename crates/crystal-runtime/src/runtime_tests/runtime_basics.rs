@@ -8928,6 +8928,7 @@ fn runtime_game_shell_ticks_snapshots_and_saves_against_exact_pack_impl() {
             1,
             framed_sequence,
             RuntimeMutationCommand::ApplyOverworldInput(RuntimeOverworldInputCommand {
+                continuous_step: false,
                 buttons: vec![GameButton::Down],
                 divider_trace: RuntimeDividerTrace::new([]),
             }),

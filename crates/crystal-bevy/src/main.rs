@@ -171,6 +171,9 @@ async fn run_browser() -> Result<()> {
         let params = web_sys::UrlSearchParams::new_with_str(
             &web_sys::window().context("browser window is unavailable")?.location().search().unwrap_or_default(),
         ).ok();
+        // Dense is a same-build QA control; authored models stay full-detail.
+        let dense = params.as_ref().and_then(|params| params.get("understory")).as_deref() == Some("dense");
+        crystal_voxel_view::configure_understory_density(dense).map_err(anyhow::Error::msg)?;
         let tree_depth = params.as_ref().and_then(|params| params.get("tree-depth-prepass")).as_deref() == Some("on");
         crystal_voxel_view::configure_tree_depth_prepass_diagnostics(tree_depth)
             .map_err(anyhow::Error::msg)?;
@@ -266,9 +269,11 @@ async fn run_browser() -> Result<()> {
             Some("department-store") => Some(("GoldenrodDeptStore1F", 8, 4)),
             Some("underground") => Some(("GoldenrodUnderground", 3, 18)),
             Some("route26") => Some(("Route26", 10, 54)),
+            Some("route26-border") => Some(("Route26", 1, 94)),
             Some("route26-canyon") => Some(("Route26", 10, 28)),
             Some("ilex" | "ilex-forest") => Some(("IlexForest", 1, 37)),
             Some("route29") => Some(("Route29", 50, 9)),
+            Some("route29-border") => Some(("Route29", 58, 9)),
             Some("route29-battle") => Some(("Route29", 50, 9)),
             Some("azalea-well") => Some(("AzaleaTown", 33, 9)),
             Some("falkner-battle") => Some(("VioletGym", 4, 1)),
@@ -315,7 +320,7 @@ async fn run_browser() -> Result<()> {
                         Some("ice-path" | "mount-silver") => (1, 0),
                         Some("whirl-islands") => (0, 0),
                         Some("saffron") => (0, 1),
-                        Some("ilex" | "ilex-forest" | "route26" | "route26-canyon" | "route29" | "route29-battle"
+                        Some("ilex" | "ilex-forest" | "route26" | "route26-border" | "route26-canyon" | "route29" | "route29-border" | "route29-battle"
                             | "national-park" | "national-park-pool") => (0, 1),
                         _ => (0, -1),
                     }),

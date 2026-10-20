@@ -93,6 +93,9 @@ pub(crate) struct Warmup {
     failed: bool,
 }
 impl Warmup {
+    pub(crate) fn prepared_uploads_enabled(&self) -> bool {
+        !self.failed && js_ready(false).unwrap_or(0) == 2
+    }
     pub(crate) fn pending(
         &mut self,
         frame: &crystal_render_api::VisualWorldFrame,

@@ -580,3 +580,6 @@ pub use all_pokemon_modpack::{
     STONE_MART_ID, EVOLUTION_STONES, build_all_251_catchable_modpack,
     build_solo_evolution_modpack, build_all_pokemon_modpack, verify_all_251_coverage,
 };
+
+mod natural_movement_modpack;
+pub use natural_movement_modpack::{build_natural_movement_modpack, NATURAL_MOVEMENT_MANIFEST_ID};

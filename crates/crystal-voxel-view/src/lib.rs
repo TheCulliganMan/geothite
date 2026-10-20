@@ -466,6 +466,11 @@ fn project_actor_heads(
     }
 }
 
+pub use terrain_tracking::connected_frame_shift;
+pub use forest_instances::configure_understory_density;
+/// Decorative plant density, independent of full-detail authored models.
+pub fn understory_full_detail_enabled() -> bool { forest_instances::dense_understory() }
+
 /// Report the existing scenery-detail selection for read-only diagnostics.
 pub fn scenery_full_detail_enabled() -> bool {
     new_bark_models::scenery_full_detail()
@@ -486,6 +491,8 @@ pub struct VoxelViewStatus {
     pub terrain_map: Option<String>,
     /// The desired terrain revision has not reached the scene yet.
     pub terrain_pending: bool,
+    /// Authored connected acreage remains visible while its new scene builds.
+    pub connected_terrain: bool,
     /// True until the current profile revision has reached the GPU scene.
     pub profiles_pending: bool,
     pub inactive_reason: Option<String>,
@@ -538,6 +545,7 @@ struct VoxelScene {
 #[derive(Clone, Debug, PartialEq, Eq)]
 struct TerrainCacheKey {
     map_id: std::sync::Arc<str>,
+    source_regions: std::sync::Arc<[crystal_render_api::VisualSourceRegion]>,
     source_map_size_core_tiles: Option<UVec2>,
     boundary_warps: std::sync::Arc<[IVec2]>,
     jump_ledges: std::sync::Arc<[crystal_render_api::VisualJumpLedge]>,
@@ -553,6 +561,7 @@ impl TerrainCacheKey {
     fn from_frame(frame: &VisualWorldFrame) -> Self {
         Self {
             map_id: frame.map_id.clone(),
+            source_regions: frame.source_regions.clone(),
             source_map_size_core_tiles: frame.source_map_size_core_tiles,
             boundary_warps: frame.boundary_warps.clone(),
             jump_ledges: frame.jump_ledges.clone(),
@@ -576,13 +585,14 @@ struct TerrainRevisionCache {
     groves: Option<grove_stream::Stream>,
     painted_stone: Option<Handle<Image>>,
     painted_bedrock: Option<Handle<Image>>,
-    #[cfg(not(target_arch = "wasm32"))]
-    prepared_painted: Option<painted_stone::PreparedImages>,
     built_frame: Option<VisualWorldFrame>,
     // Exact profile document consumed by the completed build, never a desired revision.
     built_profiles: Option<std::sync::Arc<live_profiles::Document>>,
     // Original compositor handle at build submission; built_frame owns its atlas copy.
     built_source_texture: Option<Handle<Image>>,
+    // Live compositor authenticated against the completed preload's cells.
+    // Keep this separate from its original submission receipt above.
+    verified_source_texture: Option<Handle<Image>>,
     // Exact current bounds for the two mutable animated material domains.
     built_animated_bounds: [Option<bevy::camera::primitives::Aabb>; 2],
     built_footing_heights: Vec<f32>,
@@ -590,6 +600,8 @@ struct TerrainRevisionCache {
     built_train_doors: bool,
     built_train_open: Option<u32>,
     footing_origin: Option<IVec2>,
+    footing_map: Option<std::sync::Arc<str>>,
+    connected_proof: Option<ConnectedTerrainProof>,
     key: Option<TerrainCacheKey>,
     instances_root: Option<Entity>,
     textured_entity: Option<Entity>,
@@ -600,6 +612,8 @@ struct TerrainRevisionCache {
     animated_solid_mesh: Option<Handle<Mesh>>,
     textured_material: Option<Handle<VoxelMaterial>>,
     solid_material: Option<Handle<VoxelMaterial>>,
+    animated_solid_material: Option<Handle<VoxelMaterial>>,
+    grass_material: Option<Handle<VoxelMaterial>>,
     footing_heights: Vec<f32>,
 }
 
@@ -831,6 +845,38 @@ fn lighthouse_room(map:&str)->bool {
     matches!(map,"OlivineLighthouse1F"|"OlivineLighthouse2F"|"OlivineLighthouse3F"
         |"OlivineLighthouse4F"|"OlivineLighthouse5F"|"OlivineLighthouse6F")
 }
+fn bind_preloaded_compositor(frame: &VisualWorldFrame, cache: &mut TerrainRevisionCache) {
+    cache.verified_source_texture = if cache.built_source_texture.as_ref() == Some(&frame.map_texture) {
+        None
+    } else {
+        cache.built_frame.as_ref().filter(|built|
+            built.validate().is_ok() && frame.validate().is_ok()
+                && destination_preload::compatible(built, frame))
+            .map(|_| frame.map_texture.clone())
+    };
+}
+
+struct ConnectedTerrainProof {
+    key: TerrainCacheKey,
+    datum: Option<std::sync::Arc<crystal_render_api::VisualTerraceDatum>>,
+    valid: bool,
+}
+fn retain_connected_terrain(frame: &VisualWorldFrame, cache: &mut TerrainRevisionCache) -> bool {
+    let Some(built) = cache.built_frame.as_ref().filter(|built|
+        cache.key.is_some() && built.map_id != frame.map_id) else { return false; };
+    let key = TerrainCacheKey::from_frame(frame);
+    let same_datum = |old: &Option<std::sync::Arc<crystal_render_api::VisualTerraceDatum>>| match (old, &frame.terrace_datum) {
+        (None,None) => true,
+        (Some(a),Some(b)) => std::sync::Arc::ptr_eq(a,b),
+        _ => false,
+    };
+    if let Some(proof) = cache.connected_proof.as_ref().filter(|proof|
+        proof.key == key && same_datum(&proof.datum)) { return proof.valid; }
+    let valid = terrain_tracking::connected_frame_shift(built, frame).is_ok();
+    cache.connected_proof = Some(ConnectedTerrainProof { key, datum: frame.terrace_datum.clone(), valid });
+    valid
+}
+
 fn retain_lighthouse_room(frame:&VisualWorldFrame,cache:&TerrainRevisionCache)->bool {
     cache.key.is_some() && lighthouse_room(&frame.map_id)
         && cache.built_frame.as_ref().is_some_and(|old|old.map_id!=frame.map_id&&lighthouse_room(&old.map_id)
@@ -1048,6 +1094,7 @@ fn sync_voxel_view(
     >,
 ) {
     let (settings, profiles, sun,mut healing_status, traversal, mut preload, mut prepared_destination) = presentation;
+    status.connected_terrain = false;
     if settings.enabled && frame.active {
         if let (Some(request), Some(destination)) = (preload.as_mut(), prepared_destination.as_mut()) {
             destination_preload::activate(&frame, &profiles, destination, request,
@@ -1102,7 +1149,10 @@ fn sync_voxel_view(
         // cells on every display refresh.
         *validated_frame_key = Some(TerrainCacheKey::from_frame(&frame));
     }
-    let mut pose = settings.camera.world_pose_with_traversal(&frame, &terrain_cache.footing_heights, traversal.as_deref());
+    let mut pose = {
+        let _trace=loading_trace::span("frame.resolve_world_camera", || serde_json::json!({"map":frame.map_id.as_ref()}));
+        settings.camera.world_pose_with_traversal(&frame, &terrain_cache.footing_heights, traversal.as_deref())
+    };
     let valid = failure.is_none();
     let output_ready = if valid&&holding_lighthouse {
         // Hold both room coordinates and camera pose, rather than applying
@@ -1124,7 +1174,6 @@ fn sync_voxel_view(
         #[cfg(not(target_arch = "wasm32"))]
         {
             terrain_builds.painted.cancel();
-            terrain_cache.prepared_painted = None;
         }
         #[cfg(target_arch = "wasm32")]
         { terrain_builds.pending = None; terrain_builds.key = None; }
@@ -1161,6 +1210,14 @@ fn sync_voxel_view(
             return;
         }
     };
+    status.connected_terrain = retain_connected_terrain(&frame, &mut terrain_cache);
+    if status.connected_terrain {
+        // A connection changes the coordinate basis even before its new mesh
+        // arrives. Use the aligned retained support for the moving camera too.
+        pose = settings.camera.world_pose_with_traversal(&frame,
+            &terrain_cache.footing_heights, traversal.as_deref());
+        set_output_active(&scene, true, &mut cameras, pose);
+    }
     status.terrain_builds = terrain_builds.started;
     let applied_map = terrain_cache.key.as_ref().map(|key| key.map_id.as_ref());
     if status.terrain_map.as_deref() != applied_map {
@@ -1317,8 +1374,10 @@ fn sync_cave_water_phases(
     mut cache: ResMut<TerrainRevisionCache>,
     mut images: ResMut<Assets<Image>>,
     mut materials: ResMut<Assets<VoxelMaterial>>,
+    mut applied: Local<Option<(Option<TerrainCacheKey>, Option<bevy::asset::AssetId<Image>>, bevy::asset::AssetId<Image>)>>,
 ) {
     if !status.active || !frame.active {
+        *applied = None;
         return;
     }
     let Some(phases) = phases else { return; };
@@ -1326,14 +1385,20 @@ fn sync_cave_water_phases(
     let mask = material_handle.as_ref()
         .and_then(|handle| materials.get(handle))
         .and_then(|material| material.extension.water_mask.clone());
-    let Some(built) = cache.built_frame.as_mut() else { return; };
-    if phases.map_id != frame.map_id {
-        return;
-    }
+    let Some(atlas) = cache.built_frame.as_ref().map(|built| built.map_texture.id()) else { return; };
+    let next = (cache.key.clone(), mask.as_ref().map(Handle::id), atlas);
+    // Source animation is sparse. Scanning every retained water tile and its
+    // mask on every display refresh cannot advance an authenticated phase.
+    // A new terrain/atlas/mask must still receive the current phase once.
+    let refresh_source = applied.as_ref() != Some(&next) || phases.is_changed();
+    if !refresh_source { return; }
+    if phases.map_id != frame.map_id { *applied = None; return; }
+    *applied = Some(next);
+    let built = cache.built_frame.as_mut().unwrap();
     cave_water::refresh_phases(built, &phases, &mut images);
     if let Some(mask) = mask {
         let (changed, steps) = cave_water::refresh_mask_with_steps(built, &mask, &mut images);
-        let palette=if (changed || phases.is_changed())
+        let palette=if (changed || refresh_source)
             && (cave_water::outdoor_source_palette(built) || cave_water::native_cave_source(built)) {
             // A missing/dark replacement must clear an earlier lit swatch too.
             Some(cave_water::native_palette(built,&images).unwrap_or([Vec4::ZERO;2]))
@@ -1665,12 +1730,12 @@ fn sync_terrain(
     materials: &mut Assets<VoxelMaterial>,
     terrain_entities: &mut Query<(&mut Visibility, &mut Transform), VoxelTerrainFilter>,
 ) -> Result<TerrainSyncState, TerrainSyncError> {
+    let _trace=loading_trace::span("region.sync_terrain", || serde_json::json!({"map":frame.map_id.as_ref()}));
     let mut next_key = TerrainCacheKey::from_frame(frame);
     next_key.profiles_revision = profiles.revision;
     #[cfg(not(target_arch = "wasm32"))]
     if cache.key.as_ref() != Some(&next_key)
-        && (cache.painted_stone.is_none() || cache.painted_bedrock.is_none())
-        && cache.prepared_painted.is_none() {
+        && (cache.painted_stone.is_none() || cache.painted_bedrock.is_none()) {
         // Immutable images may finish while a retired map is being removed or
         // the independent terrain task is still building its CPU geometry.
         builds.painted.start();
@@ -1695,13 +1760,13 @@ fn sync_terrain(
         .as_ref()
         .is_some_and(|built| built.map_id != frame.map_id)
         && !retain_lighthouse_room(frame,cache)
+        && !(cache.key.as_ref().is_some_and(|key| key.profiles_revision == profiles.revision)
+            && retain_connected_terrain(frame, cache))
     {
         let retirement=terrain_retirement_frames(cache.built_frame.as_ref(),frame);
         let retired = std::mem::take(cache);
         cache.painted_stone = retired.painted_stone;
         cache.painted_bedrock = retired.painted_bedrock;
-        #[cfg(not(target_arch = "wasm32"))]
-        { cache.prepared_painted = retired.prepared_painted; }
         for entity in [
             retired.instances_root,
             retired.textured_entity,
@@ -1808,13 +1873,14 @@ fn sync_terrain(
     }
 
     #[cfg(not(target_arch = "wasm32"))]
-    if builds.painted.task.is_some() {
-        let Some(prepared) = builds.painted.poll() else {
+    if (cache.painted_stone.is_none() || cache.painted_bedrock.is_none()) && builds.painted.started() {
+        let Some((stone, bedrock)) = builds.painted.poll(images) else {
             // Keep the completed geometry owned by its task until every
             // publication prerequisite is ready. Never decode on main here.
             return Ok(TerrainSyncState::Pending);
         };
-        cache.prepared_painted = Some(prepared);
+        cache.painted_stone = Some(stone);
+        cache.painted_bedrock = Some(bedrock);
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -1883,6 +1949,7 @@ fn sync_terrain(
             )?;
             cache.built_source_texture = Some(completed.source_texture);
             cache.built_profiles = Some(completed.profiles);
+            bind_preloaded_compositor(frame, cache);
             if profile_changed {
                 println!(
                     "geometry profile mesh applied: revision {}",
@@ -1910,7 +1977,8 @@ fn sync_terrain(
         }
     }
     if !ready&&retain_lighthouse_room(frame,cache) {return Ok(TerrainSyncState::Pending);}
-    if cache.footing_origin != Some(frame.grid_origin) {
+    if cache.footing_origin != Some(frame.grid_origin)
+        || cache.footing_map.as_ref() != Some(&frame.map_id) {
         if let Some(built) = &cache.built_frame {
             terrain_tracking::align_footings(
                 built,
@@ -1919,6 +1987,7 @@ fn sync_terrain(
                 &mut cache.footing_heights,
             );
             cache.footing_origin = Some(frame.grid_origin);
+            cache.footing_map = Some(frame.map_id.clone());
         }
     }
     // Geometry and atlas keep their built grid origin; only camera motion
@@ -1972,10 +2041,13 @@ fn apply_built_terrain(
     let publish_setup = loading_trace::span("region.publish_setup", || serde_json::json!({}));
     cache.city_emitters = terrain.city_emitters;
     cache.footing_origin = None;
+    cache.footing_map = None;
+    cache.connected_proof = None;
     cache.groves = terrain.streamed_groves.map(|source| grove_stream::Stream::new(source, cache.forest_library.clone()));
     cache.built_frame = Some(frame.clone());
     cache.built_profiles = None;
     cache.built_source_texture = Some(frame.map_texture.clone());
+    cache.verified_source_texture = None;
     cache.built_animated_bounds = [terrain.animated_textured_mesh.get_aabb(),
         terrain.animated_solid_mesh.get_aabb()];
     cache.built_footing_heights = terrain.footing_heights;
@@ -2041,23 +2113,13 @@ fn apply_built_terrain(
     };
 
     if cache.painted_stone.is_none() {
-        #[cfg(not(target_arch = "wasm32"))]
-        let prepared = cache.prepared_painted.as_mut().and_then(|pair| pair.stone.take());
-        #[cfg(target_arch = "wasm32")]
-        let prepared: Option<Image> = None;
         cache.painted_stone = Some(add_terrain_image(images,
-            prepared.unwrap_or_else(painted_stone::image), "painted_stone"));
+            painted_stone::image(), "painted_stone"));
     }
     if cache.painted_bedrock.is_none() {
-        #[cfg(not(target_arch = "wasm32"))]
-        let prepared = cache.prepared_painted.as_mut().and_then(|pair| pair.bedrock.take());
-        #[cfg(target_arch = "wasm32")]
-        let prepared: Option<Image> = None;
         cache.painted_bedrock = Some(add_terrain_image(images,
-            prepared.unwrap_or_else(painted_stone::bedrock_image), "painted_bedrock"));
+            painted_stone::bedrock_image(), "painted_bedrock"));
     }
-    #[cfg(not(target_arch = "wasm32"))]
-    { cache.prepared_painted = None; }
     let painted_stone = cache.painted_stone.as_ref().unwrap().clone();
     let painted_bedrock = cache.painted_bedrock.as_ref().unwrap().clone();
     if let Some(mut material) = materials.get_mut(&solid_material_handle) {
@@ -2083,6 +2145,12 @@ fn apply_built_terrain(
             material.extension.cave_reveal = cave_reveal;
         }
     }
+    let animated_solid_material_handle = flower::animated_material(
+        &mut cache.animated_solid_material, &solid_material_handle, materials,
+    );
+    let grass_material_handle = grass_rustle::material(
+        &mut cache.grass_material, &solid_material_handle, materials,
+    );
 
     drop(publish_materials);
     let publish_instances = loading_trace::span("region.publish_instances_and_scenery", || serde_json::json!({}));
@@ -2206,11 +2274,13 @@ Transform::from_translation(Vec3::from_array(origin)),),
             frame,
         ));
     }
-    if cache.animated_solid_entity.is_none() {
+    if let Some(entity) = cache.animated_solid_entity {
+        commands.entity(entity).insert(MeshMaterial3d(animated_solid_material_handle));
+    } else {
         cache.animated_solid_entity = Some(spawn_terrain_entity(
             commands,
             animated_solid,
-            solid_material_handle.clone(),
+            animated_solid_material_handle,
             frame,
         ));
     }
@@ -2220,6 +2290,7 @@ Transform::from_translation(Vec3::from_array(origin)),),
         &mut cache.textured_entity,
         terrain.textured_meshes,
         textured_material_handle,
+        None,
         frame,
     );
     replace_static_terrain_batches(
@@ -2228,6 +2299,7 @@ Transform::from_translation(Vec3::from_array(origin)),),
         &mut cache.solid_entity,
         terrain.solid_meshes,
         solid_material_handle,
+        Some(grass_material_handle),
         frame,
     );
 
@@ -2254,6 +2326,7 @@ fn replace_static_terrain_batches(
     cached_root: &mut Option<Entity>,
     batches: Vec<terrain_batches::PreparedBatch>,
     material: Handle<VoxelMaterial>,
+    grass_material: Option<Handle<VoxelMaterial>>,
     frame: &VisualWorldFrame,
 ) {
     if let Some(root) = cached_root.take() {
@@ -2268,16 +2341,19 @@ terrain_transform(frame),),
         .id();
     for terrain_batches::PreparedBatch {
         mesh,
+        rooted_grass,
         bounds,
         authentic_domain,
         coverage,
         sight_coverage,
         grass_coverage,
     } in batches {
+        let batch_material = grass_material.as_ref().filter(|_| rooted_grass)
+            .unwrap_or(&material).clone();
         let mesh = meshes.add(mesh);
         let mut child = commands.spawn((
             (Mesh3d(mesh.clone()),
-MeshMaterial3d(material.clone()),
+MeshMaterial3d(batch_material),
 Visibility::Inherited,),
             RenderLayers::layer(VOXEL_RENDER_LAYER),
             authentic_domain,
@@ -2692,12 +2768,11 @@ fn sync_interior_cutaway(
         }
     }
     // Avoid marking a material changed while the published player is idle.
-    if materials
-        .get(handle)
-        .is_some_and(|material| material.extension.cutaway != next)
-    {
-        if let Some(mut material) = materials.get_mut(handle) {
-            material.extension.cutaway = next;
+    for handle in [Some(handle), cache.animated_solid_material.as_ref(), cache.grass_material.as_ref()].into_iter().flatten() {
+        if materials.get(handle).is_some_and(|material| material.extension.cutaway != next) {
+            if let Some(mut material) = materials.get_mut(handle) {
+                material.extension.cutaway = next;
+            }
         }
     }
 }
@@ -3667,6 +3742,8 @@ mod renderer_tests {
             };
             let mut queue = bevy::ecs::world::CommandQueue::default();
             let mut commands = Commands::new(&mut queue, &world);
+            let mut grass_mesh = actor_quad_mesh();
+            grass_mesh.insert_attribute(Mesh::ATTRIBUTE_UV_0, vec![[84000.0, 0.5]; 4]);
             let terrain = BuiltTerrain {
                 city_emitters: Vec::new(),
                 streamed_groves: None,
@@ -3680,7 +3757,7 @@ mod renderer_tests {
                 fade_solid_groups: Vec::new(),
                 footing_heights: Vec::new(),
                 textured_meshes: vec![actor_quad_mesh().into()],
-                solid_meshes: vec![actor_quad_mesh().into()],
+                solid_meshes: vec![actor_quad_mesh().into(), grass_mesh.into()],
                 animated_textured_mesh: actor_quad_mesh(),
                 animated_solid_mesh: actor_quad_mesh(),
                 animated_pillars: Vec::new(), train_doors: false,
@@ -3697,7 +3774,8 @@ mod renderer_tests {
                 None,
             )
             .unwrap();
-            for handle in [cache.textured_material.as_ref().unwrap(), cache.solid_material.as_ref().unwrap()] {
+            for handle in [cache.textured_material.as_ref().unwrap(), cache.solid_material.as_ref().unwrap(),
+                cache.animated_solid_material.as_ref().unwrap(), cache.grass_material.as_ref().unwrap()] {
                 let environment = materials.get(handle).unwrap().extension.cave_reveal;
                 assert_eq!(environment.x > 0.5, reveal);
                 assert_eq!(environment.y > 0.5, tileset == "dark_cave");
@@ -3710,6 +3788,18 @@ mod renderer_tests {
             }
             assert_eq!(materials.get(&actor_material).unwrap().extension.cave_reveal, Vec4::ZERO);
             queue.apply(&mut world);
+            let solid_children = world.get::<Children>(cache.solid_entity.unwrap()).unwrap();
+            assert_eq!(solid_children.len(), 2);
+            assert_eq!(&world.get::<MeshMaterial3d<VoxelMaterial>>(solid_children[0]).unwrap().0,
+                cache.solid_material.as_ref().unwrap());
+            assert_eq!(&world.get::<MeshMaterial3d<VoxelMaterial>>(solid_children[1]).unwrap().0,
+                cache.grass_material.as_ref().unwrap());
+            assert_ne!(cache.grass_material, cache.solid_material);
+            let animated = world.get::<MeshMaterial3d<VoxelMaterial>>(
+                cache.animated_solid_entity.unwrap()).unwrap();
+            assert_eq!(Some(&animated.0), cache.animated_solid_material.as_ref());
+            assert_ne!(Some(&animated.0), cache.solid_material.as_ref(),
+                "flower animation must not invalidate static terrain in {map}");
             for old in previous.drain(..) {
                 assert!(world.get_entity(old).is_err());
             }
@@ -3773,6 +3863,7 @@ mod renderer_tests {
                         &mut root,
                         vec![first.into(), actor_quad_mesh().into()],
                         material.clone(),
+                        None,
                         &frame,
                     );
                     queue.apply(world);
@@ -4012,7 +4103,7 @@ mod renderer_tests {
             terrain: Ok(terrain),
             water: None,
         }}));
-        builds.painted.task = Some(pool.spawn(async move {
+        builds.painted = painted_stone::NativePreparation::from_task(pool.spawn(async move {
             while !job_gate.load(Ordering::SeqCst) {
                 bevy::tasks::futures_lite::future::yield_now().await;
             }
@@ -4042,15 +4133,13 @@ mod renderer_tests {
         let cache = app.world().resource::<TerrainRevisionCache>();
         let handles = (cache.painted_stone.clone(),cache.painted_bedrock.clone());
         assert!(handles.0.is_some() && handles.1.is_some());
-        assert!(cache.prepared_painted.is_none(),"no decoded duplicate remains after upload");
-        assert!(app.world().resource::<TerrainBuildQueue>().painted.task.is_none());
+        assert!(!app.world().resource::<TerrainBuildQueue>().painted.pending());
         assert_eq!(app.world().resource::<Assets<Image>>().len(),3);
         app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "PaintedNextMap".into();
         app.update();
         let cache = app.world().resource::<TerrainRevisionCache>();
         assert_eq!((cache.painted_stone.clone(),cache.painted_bedrock.clone()),handles);
-        assert!(cache.prepared_painted.is_none());
-        assert!(app.world().resource::<TerrainBuildQueue>().painted.task.is_none());
+        assert!(!app.world().resource::<TerrainBuildQueue>().painted.pending());
         assert_eq!(app.world().resource::<Assets<Image>>().len(),3);
     }
 
@@ -4557,7 +4646,7 @@ Visibility::Hidden,))).id();
             TerrainSyncState::Pending,
             &cache
         ));
-        cache.key = Some(TerrainCacheKey {
+        cache.key = Some(TerrainCacheKey { source_regions: Default::default(),
             map_id: Default::default(),
             source_map_size_core_tiles: None,
             jump_ledges: Default::default(),
@@ -4589,7 +4678,7 @@ Visibility::Hidden,))).id();
 
     #[test]
     fn movement_coalesces_terrain_rebuilds_while_one_is_in_flight() {
-        let key = |revision| TerrainCacheKey {
+        let key = |revision| TerrainCacheKey { source_regions: Default::default(),
             map_id: Default::default(),
             source_map_size_core_tiles: None,
             jump_ledges: Default::default(),

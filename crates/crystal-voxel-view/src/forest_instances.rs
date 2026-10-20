@@ -12,6 +12,33 @@ use std::{
     sync::{Arc, Mutex, OnceLock},
 };
 
+// Density is fixed before the first terrain job so shared prototype metadata
+// cannot mix policies. It is independent of authored model complexity.
+static DENSE_UNDERSTORY: OnceLock<bool> = OnceLock::new();
+pub(crate) fn dense_understory() -> bool {
+    *DENSE_UNDERSTORY.get_or_init(|| {
+        #[cfg(target_arch = "wasm32")]
+        { false }
+        #[cfg(not(target_arch = "wasm32"))]
+        { crate::new_bark_models::scenery_full_detail()
+            || std::env::var_os("CRYSTAL_UNDERSTORY_FULL_DETAIL").is_some() }
+    })
+}
+pub(crate) fn validate_understory_density(dense: bool) -> Result<(), String> {
+    if DENSE_UNDERSTORY.get().is_some_and(|current| *current != dense) {
+        Err("terrain worker understory density configuration mismatch".into())
+    } else { Ok(()) }
+}
+/// Startup-only density choice, also checked at the worker boundary.
+pub fn configure_understory_density(dense: bool) -> Result<(), String> {
+    if let Some(current) = DENSE_UNDERSTORY.get() {
+        return if *current == dense { Ok(()) }
+            else { Err("terrain worker understory density configuration mismatch".into()) };
+    }
+    DENSE_UNDERSTORY.set(dense)
+        .map_err(|_| "understory density already configured".into())
+}
+
 static EAGER_SORTED_ENTITIES: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 /// Startup-only QA control; geometry, collisions and draw policy stay identical.
 pub fn configure_lazy_tree_entities_diagnostics(eager: bool) {
@@ -144,9 +171,20 @@ impl Library {
         }).clone()
     }
 
+    fn ground_plants(plot: crate::understory::Plot, base: f32, coordinates: [i32; 2],
+        family: GroveFamily) -> Vec<crate::understory::Plant> {
+        // Dedicated forests retain their dense floor. Trees, source encounter
+        // grass and collision never enter this decorative-plant selection.
+        if family == GroveFamily::AncientForest || dense_understory() {
+            crate::understory::plants(plot, base, coordinates)
+        } else {
+            crate::understory::adaptive_plants(plot, base, coordinates)
+        }
+    }
+
     fn prepare_ground(&self, plot: crate::understory::Plot, base: f32,
-        coordinates: [i32;2]) -> Vec<PreparedGroup> {
-        crate::understory::plants(plot,base,coordinates).into_iter().flat_map(|plant| {
+        coordinates: [i32;2], family: GroveFamily) -> Vec<PreparedGroup> {
+        Self::ground_plants(plot,base,coordinates,family).into_iter().flat_map(|plant| {
             Self::place_ground(&self.ground_prototype(plant.variant),plant)
         }).collect()
     }
@@ -178,7 +216,7 @@ impl Library {
         let source = self.prototype(key, family);
         let mut groups = Self::place_canopy(key, &source, bounds, base, tile, coordinates);
         if let Some(ground_bounds) = ground_bounds {
-            groups.extend(self.prepare_ground(ground_bounds,base,coordinates));
+            groups.extend(self.prepare_ground(ground_bounds,base,coordinates,family));
         }
         Self::finish_instances(&mut groups);
         groups
@@ -204,7 +242,7 @@ impl Library {
             let entries = self.entries.try_lock().ok()?;
             entries.iter().find(|(candidate,_)| *candidate == key)?.1.get()?.clone()
         };
-        let plants = ground_bounds.map(|plot|crate::understory::plants(plot,base,coordinates))
+        let plants = ground_bounds.map(|plot|Self::ground_plants(plot,base,coordinates,family))
             .unwrap_or_default();
         let ground = if plants.is_empty() { Vec::new() } else {
             let entries = self.ground.try_lock().ok()?;
@@ -499,8 +537,8 @@ mod tests {
                 let x = i as f32 * 40.;
                 let offset = foliage::grove_trunk_offset(coordinates, 32.);
                 expected_roots.push(Vec3::new(x + 16. + offset.x, 3., 16. + offset.y));
-                expected_draws += crate::understory::plants(
-                    crate::understory::Plot::isolated([x,x+32.,0.,32.]),3.,coordinates).len();
+                expected_draws += Library::ground_plants(
+                    crate::understory::Plot::isolated([x,x+32.,0.,32.]),3.,coordinates,GroveFamily::JohtoPine).len();
                 let groups = library.prepare_with_ground(
                     [x, x + 32., 0., 32.],
                     3.,

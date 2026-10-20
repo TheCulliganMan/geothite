@@ -392,7 +392,7 @@ mod tests {
 
         use bevy::prelude::{Handle, UVec2, Vec2};
 
-        let mut frame = VisualWorldFrame { view_center: Vec2::ZERO, terrace_datum: None,
+        let mut frame = VisualWorldFrame { source_regions: Default::default(), view_center: Vec2::ZERO, terrace_datum: None,
             active: true,
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_id: Arc::from("test"),

@@ -4451,7 +4451,13 @@ fn render_playfield(
         Res<crystal_voxel_view::VoxelViewSettings>,
     >,
     #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
+    #[cfg(feature = "voxel-view")] world_status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
 ) {
+    #[cfg(feature = "voxel-view")]
+    let modeled_entry = voxel_settings.as_ref().is_some_and(|settings| settings.enabled)
+        && world_status.as_ref().is_some_and(|status| status.active);
+    #[cfg(not(feature = "voxel-view"))]
+    let modeled_entry = false;
     let movement_subframe = tick_timer.map_or(0.0, |timer| timer.presentation_subframe());
     #[cfg(feature = "voxel-view")]
     // Production always installs the setting. Feature-gated extraction tests
@@ -4468,7 +4474,8 @@ fn render_playfield(
     #[cfg(not(feature = "voxel-view"))]
     let visual_world_enabled = false;
     #[cfg(feature = "voxel-view")]
-    let visual_world_mode_unchanged = rendered.visual_world_enabled == visual_world_enabled;
+    let visual_world_mode_unchanged = rendered.visual_world_enabled == visual_world_enabled
+        && (runtime_shell.visible_battle_transition.is_none() || rendered.transition_modeled == modeled_entry);
     #[cfg(not(feature = "voxel-view"))]
     let visual_world_mode_unchanged = true;
     let RenderEntityQueries {
@@ -5295,7 +5302,9 @@ fn render_playfield(
         && !capture_pokedex_active
         && (snapshot.battle.is_some() || terminal_battle_scene.is_some());
     #[cfg(feature = "voxel-view")]
-    if let Err(error) = capture_presented_battle(
+    if !battle_canvas_active && !visual_world_enabled {
+        commands.insert_resource(crystal_render_api::VisualBattleFrame::default());
+    } else if let Err(error) = capture_presented_battle(
         &mut commands,
         &snapshot,
         &runtime_shell,
@@ -6301,7 +6310,6 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             let map_y = i32::from(start_y) + i32::from(y);
             let (source, source_x, source_y) =
                 resolved_render_source_at(&render_sources, map_x, map_y);
-            let source_tileset = source.tileset;
             let source_art = source_art_by_map.get(source.map.map_name.as_str()).copied().flatten();
             let resolved = source_art.context("required tileset art is missing").and_then(|art|
                 source_tile_art(source, art, source_x, source_y, runtime_shell.lcd_animation_frame,
@@ -6339,12 +6347,26 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                     transition_tiles.push(tile);
                 }
             }
-            #[cfg(feature = "voxel-view")]
-            if visual_world_enabled {
-                visual_world_tile_handles.push(tile_handle.clone());
-            }
             #[cfg(any(test, feature = "voxel-view"))]
             {
+                let (visual_source,sx,sy)=if visual_world_enabled {
+                    resolved_visual_render_source_at(&render_sources,map_x,map_y)
+                } else {(source,source_x,source_y)};
+                let source_tileset=visual_source.tileset;
+                let source_art=source_art_by_map.get(visual_source.map.map_name.as_str()).copied().flatten();
+                let resolved=if std::ptr::eq(visual_source,source) && sx==source_x && sy==source_y {
+                    Ok((block,sub_x,sub_y,source_tile_index,tile_handle.clone(),priority,foreground_bottom))
+                } else {
+                    source_art.context("required visual border art is missing").and_then(|art|
+                        source_tile_art(visual_source,art,sx,sy,runtime_shell.lcd_animation_frame,
+                            snapshot.progression.active_engine_flags.contains("ENGINE_FOREST_IS_RESTLESS")))
+                };
+                let (block,sub_x,sub_y,source_tile_index,tile_handle,priority,_)=match resolved {
+                    Ok(tile)=>tile,
+                    Err(error)=>{record_visible_render_error(&mut commands,&mut runtime_shell,error);return;}
+                };
+                #[cfg(feature="voxel-view")]
+                if visual_world_enabled {visual_world_tile_handles.push(tile_handle.clone());}
                 let visual_tileset_id = visual_tileset_ids
                     .entry(source_tileset.tileset_id.as_str())
                     .or_insert_with(|| Arc::from(source_tileset.tileset_id.as_str()))
@@ -6514,6 +6536,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         rendered.visual_world_grid_size =
             UVec2::new(visual_world_tiles_x as u32, visual_world_tiles_y as u32);
         rendered.visual_world_enabled = visual_world_enabled;
+        rendered.transition_modeled = modeled_entry;
     }
     #[cfg(any(test, feature = "voxel-view"))]
     {
@@ -6537,6 +6560,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         rendered.visual_tiles_revision = visual_tile_grid_is_complete(&visual_tiles)
             .then(|| visual_terrain_revision(map_visual_key, (start_x, start_y), &visual_tiles));
         rendered.visual_tiles = visual_tiles;
+        rendered.visual_source_regions = visual_source_regions(&render_sources);
         // Capture the verified bounds of the map used for THIS terrain build.
         // The live session can already point elsewhere during a retained scene;
         // neither its current map nor the padded viewport defines source bounds.
@@ -7835,6 +7859,7 @@ Transform::from_xyz(
     }
 
     if let Some(transition) = runtime_shell.visible_battle_transition
+        && !modeled_entry
         && !matches!(
             runtime_shell.pending_overworld_step_boundary,
             Some(PendingOverworldStepBoundary::WildBattle)
@@ -7882,6 +7907,7 @@ Transform::from_xyz(
                                 },
 Transform::from_xyz(0.0, 0.0, z),),
                             BattleCommandMarker,
+                            BattleTransitionMarker,
                         ));
                     }
                 }
@@ -8235,6 +8261,7 @@ Transform::from_xyz(0.0, 0.0, z),),
     #[cfg(feature = "voxel-view")]
     {
         rendered.visual_world_enabled = visual_world_enabled;
+        rendered.transition_modeled = modeled_entry;
     }
 }
 

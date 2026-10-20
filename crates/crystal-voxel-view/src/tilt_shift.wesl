@@ -2,7 +2,11 @@ import bevy_core_pipeline::fullscreen_vertex_shader::FullscreenVertexOutput;
 
 @group(0) @binding(0) var scene: texture_2d<f32>;
 @group(0) @binding(1) var scene_sampler: sampler;
-struct TiltShift { band: vec4<f32> }
+struct TiltShift {
+    band: vec4<f32>, entry: vec4<f32>, entry_rows: array<vec4<f32>, 36>,
+    black_cells: array<vec4<u32>, 3>, trainer_cells: array<vec4<u32>, 3>,
+    trainer_pixels: vec4<u32>, trainer_palette: array<vec4<f32>, 4>,
+}
 @group(0) @binding(2) var<uniform> settings: TiltShift;
 
 fn blur(in: FullscreenVertexOutput, direction: vec2<f32>) -> vec4<f32> {
@@ -69,5 +73,32 @@ fn horizontal(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
 
 @fragment
 fn vertical(in: FullscreenVertexOutput) -> @location(0) vec4<f32> {
-    return blur(in, vec2<f32>(0.0, 1.0));
+    if settings.entry.z == 0.0 { return blur(in, vec2<f32>(0.0, 1.0)); }
+    var shifted = in;
+    let row = min(u32(in.uv.y * 144.0), 143u);
+    shifted.uv.x = fract(in.uv.x - settings.entry_rows[row / 4u][row % 4u] / 160.0);
+    let cell_xy = min(vec2<u32>(shifted.uv * vec2<f32>(20.0, 18.0) + vec2<f32>(0.00001)), vec2<u32>(19u, 17u));
+    let cell = cell_xy.y * 20u + cell_xy.x;
+    let word = cell / 32u;
+    let bit = 1u << (cell % 32u);
+    if (settings.black_cells[word / 4u][word % 4u] & bit) != 0u {
+        return vec4<f32>(0.0, 0.0, 0.0, 1.0);
+    }
+    // Trainer artwork keeps native square pixels, centered in the full view.
+    let size = vec2<f32>(textureDimensions(scene));
+    // Snap arithmetic noise at exact native-pixel boundaries consistently.
+    let trainer_pixel = (shifted.uv - vec2<f32>(0.5)) * vec2<f32>(size.x / size.y * 144.0, 144.0)
+        + vec2<f32>(80.0001, 72.0001);
+    let trainer_xy = min(vec2<u32>(max(trainer_pixel, vec2<f32>(0.0)) / 8.0), vec2<u32>(19u, 17u));
+    let trainer_cell = trainer_xy.y * 20u + trainer_xy.x;
+    let trainer_word = trainer_cell / 32u;
+    if all(trainer_pixel >= vec2<f32>(0.0)) && all(trainer_pixel < vec2<f32>(160.0, 144.0))
+        && (settings.trainer_cells[trainer_word / 4u][trainer_word % 4u] & (1u << (trainer_cell % 32u))) != 0u {
+        let pixel_xy = min(vec2<u32>(trainer_pixel), vec2<u32>(159u, 143u)) % vec2<u32>(8u);
+        let pixel = pixel_xy.y * 8u + pixel_xy.x;
+        let index = (settings.trainer_pixels[pixel / 16u] >> ((pixel % 16u) * 2u)) & 3u;
+        return settings.trainer_palette[index];
+    }
+    let color = blur(shifted, vec2<f32>(0.0, 1.0));
+    return vec4<f32>(mix(color.rgb * (1.0 - settings.entry.x), vec3<f32>(1.0), settings.entry.y), color.a);
 }

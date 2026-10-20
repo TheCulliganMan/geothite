@@ -45,8 +45,17 @@ fn scripted_trainer_preview_first_a_uses_the_authoritative_falkner_contact() {
 }
 
 fn scripted_trainer_anchor_dialogue_app() -> App {
-    let shell = scripted_trainer_anchor_fresh_shell();
+    scripted_trainer_anchor_dialogue_app_with_approach(false)
+}
+
+fn scripted_trainer_anchor_dialogue_app_with_approach(approach: bool) -> App {
+    let mut shell = scripted_trainer_anchor_fresh_shell();
+    if approach { shell.natural_movement.enabled = true; }
     let mut app = menu_render_test_app(shell);
+    #[cfg(feature="voxel-view")]
+    if approach {
+        app.insert_resource(crystal_voxel_view::VoxelViewSettings {enabled:true,..Default::default()});
+    }
     app.init_resource::<crystal_render_api::VisualWorldFrame>()
         .init_resource::<crystal_render_api::BattleLocationFrame>()
         .add_systems(
@@ -65,6 +74,14 @@ fn scripted_trainer_anchor_dialogue_app() -> App {
         );
     app.update();
     app.update();
+    if approach {
+        for _ in 0..8 { press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowRight); }
+        app.update();
+        let shell=app.world().resource::<BevyRuntimeShell>();
+        assert_eq!(shell.shell.session().snapshot().tile,TilePosition::new(4,1));
+        assert!(shell.natural_movement.displacement("VioletGym",TilePosition::new(4,1)).x>0.,
+            "ordinary blocked approach must retain its real continuous position");
+    }
     press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
     for _ in 0..240 {
         app.update();
@@ -101,6 +118,38 @@ fn scripted_trainer_anchor_start_from_dialogue(app: &mut App) {
         assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
     }
     panic!("Falkner dialogue never reached the authoritative trainer start");
+}
+
+#[cfg(feature="voxel-view")]
+#[test]
+fn scripted_trainer_anchor_preserves_continuous_blocked_approach_receipt() {
+    let mut app=scripted_trainer_anchor_dialogue_app_with_approach(true);
+    let shell=app.world().resource::<BevyRuntimeShell>();
+    let evidence=shell.battle_origin.scripted_trainer_candidate.as_ref().unwrap().evidence.clone();
+    let anchors=evidence.anchors.as_ref().expect("the real off-center field must supply checked anchors");
+    let frame=app.world().resource::<crystal_render_api::VisualWorldFrame>().clone();
+    let player=frame.actors.iter().find(|a|a.id==crystal_render_api::VisualActorId::Player).unwrap();
+    assert_eq!(anchors.source_foot,player.center-Vec2::Y*player.size.y*0.5);
+    let expected=anchors.source_foot;
+    let checksum=shell.shell.snapshot().unwrap().state_checksum;
+    let mut rendered=app.world_mut().remove_resource::<RenderedViewport>().unwrap();
+    let displacement=rendered.visual_player_displacement;
+    assert!(displacement.x>0. && displacement.x<TILE_SIZE);
+    for invalid in [Vec2::ZERO,Vec2::splat(f32::NAN),Vec2::splat(TILE_SIZE*2.)] {
+        rendered.visual_player_displacement=invalid;
+        assert!(capture_visible_fishing_source_frame(&evidence.source,Some(evidence.map_size),
+            &rendered,Some(&frame)).is_none(),"an absent or invalid displacement receipt must fail closed");
+    }
+    rendered.visual_player_displacement=displacement;
+    assert!(capture_visible_fishing_source_frame(&evidence.source,Some(evidence.map_size),
+        &rendered,Some(&frame)).is_some());
+    app.world_mut().insert_resource(rendered);
+    assert_eq!(app.world().resource::<BevyRuntimeShell>().shell.snapshot().unwrap().state_checksum,checksum);
+    scripted_trainer_anchor_start_from_dialogue(&mut app);
+    let shell=app.world().resource::<BevyRuntimeShell>();
+    let bound=shell.battle_origin.bound_trainer.as_ref().unwrap();
+    assert_eq!(bound.candidate.anchors.as_ref().unwrap().source_foot,expected);
+    assert_eq!(shell.shell.session().snapshot().tile,TilePosition::new(4,1));
 }
 
 #[test]

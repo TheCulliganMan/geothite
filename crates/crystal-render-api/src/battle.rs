@@ -253,6 +253,8 @@ pub struct BattleCanvasExtract;
 #[derive(Resource, Clone, Debug, Default, PartialEq)]
 pub struct VisualBattleFrame {
     pub active: bool,
+    /// Render the upcoming encounter offscreen while the authored field entry owns presentation.
+    pub preparing: bool,
     /// Preserve exact original clipping/row sampling/transition sequences until
     /// the 3D renderer can reproduce them. Source data remains available to QA.
     pub use_source_scene: bool,

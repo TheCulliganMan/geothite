@@ -31,6 +31,54 @@ pub(super) struct PairedCaptureHold {
 }
 
 #[derive(Resource)]
+struct EntryFrameHold { after: u16, held: bool }
+
+fn requested_entry_after(value: Option<&str>) -> Result<Option<u16>> {
+    value.map(|value| {
+        let frame: u16 = value.parse().context("entry hold must be an integer source frame")?;
+        anyhow::ensure!((2..=180).contains(&frame), "entry hold frame must be 2–180");
+        Ok(frame)
+    }).transpose()
+}
+
+fn install_entry_hold(app: &mut App, after: Option<u16>) {
+    if let Some(after) = after {
+        app.insert_resource(EntryFrameHold { after, held: false })
+            .add_systems(PreUpdate, hold_presented_entry
+                .after(bevy::input::InputSystems).before(super::render_walk::drive));
+    }
+}
+
+fn hold_presented_entry(
+    mut request: ResMut<EntryFrameHold>,
+    runtime: Res<BevyRuntimeShell>,
+    mut walk: Option<ResMut<super::render_walk::RenderWalk>>,
+    mut hold: ResMut<PairedCaptureHold>,
+    mut virtual_time: ResMut<Time<Virtual>>,
+    mut keys: ResMut<ButtonInput<KeyCode>>,
+    mut exit: MessageWriter<AppExit>,
+) {
+    if request.held { return; }
+    let Some(walk) = walk.as_mut() else {
+        eprintln!("entry capture requires --walk and ordinary production input");
+        exit.write(AppExit::error()); return;
+    };
+    let Some(transition) = runtime.visible_battle_transition.filter(|_| walk.started()) else { return; };
+    if request.after >= visible_battle_transition_total_frames(&transition) {
+        eprintln!("entry hold lies beyond this source transition");
+        exit.write(AppExit::error()); return;
+    }
+    if transition.frame < request.after { return; }
+    // Pin the actually observed frame; never manufacture or rewind the clock.
+    if let Err(error) = walk.hold_for_source_capture() {
+        eprintln!("entry capture could not pin its source frame: {error:#}");
+        exit.write(AppExit::error()); return;
+    }
+    request.held = true;
+    keys.reset_all(); hold.frozen = true; virtual_time.pause();
+}
+
+#[derive(Resource)]
 struct SendOutFrameHold {
     target: u8,
     held: Option<HeldSendOut>,
@@ -337,7 +385,10 @@ pub(super) fn install(
     })
     .add_systems(Update, (prepare_image_target, capture).chain()
         .after(crystal_render_api::WorldRenderSet::RenderSync));
+    let entry_after = requested_entry_after(std::env::var("CRYSTAL_RENDER_TEST_HOLD_ENTRY_AFTER").ok().as_deref())?;
+    anyhow::ensure!(entry_after.is_none() || send_out_frame.is_none(), "choose entry or send-out source hold");
     install_send_out_hold(app, send_out_frame);
+    install_entry_hold(app, entry_after);
     Ok(())
 }
 
@@ -762,6 +813,9 @@ fn capture(
         } else {
             format!("{}|{:?}|{:?}", frame.map_id, frame.center, settings.camera)
         };
+        if let Some(transition) = runtime.visible_battle_transition {
+            capture.identity.push_str(&format!("|entry_frame={}", transition.frame));
+        }
     }
     if std::env::var_os("CRYSTAL_RENDER_TEST_TRACE_FRAME").is_some() {
         println!("capture frame: map={} center={:?} origin={:?} grid={:?} tile={:?} viewport={:?} camera={:?}",
@@ -895,6 +949,20 @@ mod image_target_tests {
             bevy::time::TimeUpdateStrategy::ManualDuration(step)
             if *step == std::time::Duration::from_secs_f64(1.0 / 60.0)));
         assert!(app.world().resource::<SendOutFrameHold>().held.is_none());
+    }
+
+    #[test]
+    fn entry_hold_is_opt_in_and_does_not_replace_the_game_clock() {
+        assert_eq!(requested_entry_after(None).unwrap(), None);
+        assert_eq!(requested_entry_after(Some("110")).unwrap(), Some(110));
+        for invalid in ["0", "1", "181", "-1", "no"] { assert!(requested_entry_after(Some(invalid)).is_err()); }
+        let mut app = App::new();
+        install_entry_hold(&mut app, None);
+        assert!(!app.world().contains_resource::<EntryFrameHold>());
+        install_entry_hold(&mut app, Some(110));
+        assert_eq!(app.world().resource::<EntryFrameHold>().after, 110);
+        assert!(!app.world().resource::<EntryFrameHold>().held);
+        assert!(!app.world().contains_resource::<bevy::time::TimeUpdateStrategy>());
     }
 
     #[test]

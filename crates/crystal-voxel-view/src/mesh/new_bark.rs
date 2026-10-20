@@ -2465,12 +2465,25 @@ impl<'a> GroundFinish<'a> {
         geometry: &'a GridGeometry,
         map_origin: [i32; 2],
     ) -> Self {
+        Self::new_with_sources(map, cells, geometry, map_origin, None)
+    }
+
+    fn new_with_sources(
+        map: &str, cells: &[&VisualTile], geometry: &'a GridGeometry,
+        map_origin: [i32; 2], frame: Option<&crystal_render_api::VisualWorldFrame>,
+    ) -> Self {
+        let owner = |column: usize, row: usize| frame.map_or(map,
+            |frame| frame.scenery_map_at(column as u32, row as u32));
+        let origin = |column: usize, row: usize| frame.map_or(map_origin,
+            |frame| frame.scenery_grid_origin_at(column as u32, row as u32).to_array());
         let shapes: Vec<_> = cells
             .iter()
             .map(|tile| shape_for_source(&tile.source))
             .collect();
         let mut shadows = Vec::new();
         for placement in tree_placements(map, cells, geometry) {
+            let map = owner(placement.column, placement.row);
+            let map_origin = origin(placement.column, placement.row);
             let ground = if matches!(map, "NationalPark" | "NationalParkBugContest") {
                 super::modeled_exteriors::park_tree_ground(map, cells, &shapes, geometry, placement)
             } else {
@@ -2499,6 +2512,7 @@ impl<'a> GroundFinish<'a> {
             });
         }
         for placement in building_placements(map, cells, geometry) {
+            let map = owner(placement.column, placement.row);
             if building_model(map, cells, geometry, placement).is_none() {
                 continue;
             }
@@ -2594,8 +2608,9 @@ impl<'a> GroundFinish<'a> {
         // Ecruteak's residential courtyards continue the town's earth right
         // up to the walls, including the borrowed floor beneath nearby trees.
         // This is terrain styling; the shared house and tree assets stay shared.
-        if map == "EcruteakCity" {
+        if cells.iter().any(|t| owner(t.column as usize,t.row as usize)=="EcruteakCity") {
             for p in building_placements(map,cells,geometry) {
+                if owner(p.column,p.row)!="EcruteakCity" {continue;}
                 let source=&cells[p.row*geometry.width+p.column].source;
                 if source.tileset_id.as_ref()!="johto"
                     || !matches!((source.metatile_id,p.height),(0x2c,6)|(0x14,4)|(0x18,8)) {continue;}
@@ -2603,6 +2618,7 @@ impl<'a> GroundFinish<'a> {
                 for row in p.row.saturating_sub(pad)..(p.row+p.height+pad).min(geometry.height) {
                     for col in p.column.saturating_sub(pad)..(p.column+p.width+pad).min(geometry.width) {
                         let i=row*geometry.width+col;
+                        if owner(col,row)!="EcruteakCity" {continue;}
                         if shapes[i]!=CellShape::Water && matches!(materials[i],None|Some(GroundMaterial::Lawn)) {
                             materials[i]=Some(GroundMaterial::Path);
                         }
@@ -2610,19 +2626,23 @@ impl<'a> GroundFinish<'a> {
                 }
             }
         }
-        let park_paving = matches!(map, "NationalPark" | "NationalParkBugContest");
         let tower_courtyard=cells.iter().any(|t|tower_courtyard_source(&t.source));
-        let city_paving = (map == "GoldenrodCity" || park_paving || tower_courtyard).then(|| {
+        let city_paving = (cells.iter().any(|t| matches!(owner(t.column as usize,t.row as usize),
+            "GoldenrodCity"|"NationalPark"|"NationalParkBugContest")) || tower_courtyard).then(|| {
             let eligible: Vec<_> = cells
                 .iter()
                 .enumerate()
                 .map(|(i, t)| {
+                    let map = owner(t.column as usize,t.row as usize);
+                    let map_origin = origin(t.column as usize,t.row as usize);
+                    let park_paving = matches!(map,"NationalPark"|"NationalParkBugContest");
                     if tower_courtyard_source(&t.source) {return materials[i]==Some(GroundMaterial::Pavers);}
                     if kanto_sand_material(&t.source).is_some() {return false;}
                     if park_paving {
                         return crate::park::masonry_ground(&t.source)
                             && materials[i] == Some(GroundMaterial::Pavers);
                     }
+                    if frame.is_some() && map!="GoldenrodCity" {return false;}
                     city_paving::city_cell(
                         t.source.tileset_id.as_ref(),
                         [
@@ -2640,7 +2660,8 @@ impl<'a> GroundFinish<'a> {
             let mut flags = city_paving::borders(&local, geometry);
             for (i, flag) in flags.iter_mut().enumerate() {
                 if eligible[i] {
-                    *flag |= if park_paving || tower_courtyard_source(&cells[i].source) { 0x40 } else { 0x80 };
+                    *flag |= if matches!(owner(i%geometry.width,i/geometry.width),"NationalPark"|"NationalParkBugContest")
+                        || tower_courtyard_source(&cells[i].source) { 0x40 } else { 0x80 };
                 }
             }
             flags
@@ -2667,6 +2688,16 @@ impl<'a> GroundFinish<'a> {
             shadows,
             shadow_cells: Some(shadow_cells),
         }
+    }
+
+    fn select_source_style(&mut self, map: &str, origin: [i32; 2], forest: bool, johto: bool) {
+        self.map_origin = origin;
+        self.cerulean_pool = map == "CeruleanGym";
+        self.urban_courtyards = map == "EcruteakCity";
+        self.path_palette = (map == "NewBarkTown").then_some([0.50,0.54,0.46]);
+        self.sunlit_grove = ((map.starts_with("Route") || map == "LakeOfRage") && johto)
+            || matches!(map,"NationalPark"|"NationalParkBugContest");
+        self.forest = forest;
     }
 
     fn darkness(&self, p: [f32; 3]) -> f32 {
@@ -3202,13 +3233,46 @@ pub(super) fn polish_world_surfaces_with_shapes(
     map_origin: [i32; 2],
     shapes: &[CellShape],
 ) {
-    let finish = GroundFinish::new(map, cells, geometry, map_origin);
+    polish_world_surfaces_from_sources(mesh,map,cells,geometry,map_origin,shapes,None);
+}
+
+pub(super) fn polish_world_surfaces_from_frame(
+    mesh: &mut TerrainMeshData, frame: &crystal_render_api::VisualWorldFrame,
+    cells: &[&VisualTile], geometry: &GridGeometry, shapes: &[CellShape],
+) {
+    polish_world_surfaces_from_sources(mesh,&frame.map_id,cells,geometry,
+        frame.grid_origin.to_array(),shapes,(!frame.source_regions.is_empty()).then_some(frame));
+}
+
+fn polish_world_surfaces_from_sources(
+    mesh: &mut TerrainMeshData, map: &str, cells: &[&VisualTile], geometry: &GridGeometry,
+    map_origin: [i32;2], shapes: &[CellShape], frame: Option<&crystal_render_api::VisualWorldFrame>,
+) {
+    let mut finish = GroundFinish::new_with_sources(map, cells, geometry, map_origin, frame);
+    let mut styles = std::collections::HashMap::<&str,(bool,bool)>::new();
+    if let Some(frame) = frame {
+        for tile in cells {
+            let style = styles.entry(frame.scenery_map_at(tile.column,tile.row)).or_default();
+            style.0 |= tile.source.tileset_id.as_ref()=="forest";
+            style.1 |= matches!(tile.source.tileset_id.as_ref(),"johto"|"johto_modern");
+        }
+    }
+    let source_at = |p: [f32;3]| {
+        let column = ((p[0]-geometry.origin_x)/geometry.tile_width).floor()
+            .clamp(0.,geometry.width.saturating_sub(1) as f32) as u32;
+        let row = ((p[2]-geometry.origin_z)/geometry.tile_height).floor()
+            .clamp(0.,geometry.height.saturating_sub(1) as f32) as u32;
+        frame.map_or((map,map_origin),|frame| (frame.scenery_map_at(column,row),
+            frame.scenery_grid_origin_at(column,row).to_array()))
+    };
     // Natural banks continue the adjacent floor; their mineral stones and
     // submerged faces keep independent pigments. Never recolour other assets.
     let mut bank_materials = std::collections::HashMap::new();
     for vertex in 0..mesh.solid.positions.len() {
         if mesh.solid.uvs[vertex] != ledge_finish::BANK_GROUND_UV { continue; }
         let p = mesh.solid.positions[vertex];
+        let (map,map_origin) = source_at(p);
+        if let Some(&(forest,johto))=styles.get(map) {finish.select_source_style(map,map_origin,forest,johto);}
         // A vertex on a cell boundary still belongs to the tagged bank face.
         // Nearest dry source ground is independent of triangle/chunk order.
         let column = ((p[0]-geometry.origin_x)/geometry.tile_width).floor() as isize;
@@ -3277,6 +3341,9 @@ pub(super) fn polish_world_surfaces_with_shapes(
         let positions: [[f32; 3]; 4] = old.positions[base..base + 4].try_into().unwrap();
         let uvs: [[f32; 2]; 4] = old.uvs[base..base + 4].try_into().unwrap();
         let normal = old.normals[base];
+        let midpoint = positions.iter().map(|p|Vec3::from_array(*p)).sum::<Vec3>()/4.;
+        let (map,map_origin) = source_at(midpoint.to_array());
+        if let Some(&(forest,johto))=styles.get(map) {finish.select_source_style(map,map_origin,forest,johto);}
         if let Some(i) = sampled_cell(&uvs, geometry).filter(|&i|
             lawn_water_bank(map, &positions, normal, &cells[i].source,
                 cells, geometry, &mesh.authored_cells)) {
@@ -3707,6 +3774,47 @@ mod tests {
     use super::super::tests::{frame, source_with_tile};
     use super::*;
     use bevy::prelude::IVec2;
+    #[test]
+    fn source_owned_ground_retains_palette_grain_and_geometry_across_handoff() {
+        use crystal_render_api::VisualSourceRegion;
+        let mut before = frame(20,4,vec![source_with_tile(1,0,0,6);80]);
+        before.map_id = "Route29".into();
+        before.grid_origin = IVec2::new(72,0);
+        before.source_regions = vec![
+            VisualSourceRegion {map_id:"Route29".into(),origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(80,40)},
+            VisualSourceRegion {map_id:"NewBarkTown".into(),origin:IVec2::new(80,0),size:bevy::prelude::UVec2::new(40,40)},
+        ].into();
+        let mut after = before.clone();
+        after.map_id = "NewBarkTown".into();
+        after.grid_origin -= IVec2::new(80,0);
+        after.source_regions = vec![
+            VisualSourceRegion {map_id:"NewBarkTown".into(),origin:IVec2::ZERO,size:bevy::prelude::UVec2::new(40,40)},
+            VisualSourceRegion {map_id:"Route29".into(),origin:IVec2::new(-80,0),size:bevy::prelude::UVec2::new(80,40)},
+        ].into();
+        let g = geometry(&before);
+        let render = |frame: &VisualWorldFrame| {
+            let cells = frame.tiles.iter().collect::<Vec<_>>();
+            let mut mesh = TerrainMeshData {authored_cells:vec![None;80],footing_heights:vec![0.;80],..Default::default()};
+            for i in 0..80 {
+                let (w,e,n,s) = g.bounds(i%20,i/20);
+                append_top(&mut mesh.textured,[w,e,n,s],0.,g.uv(i%20,i/20));
+            }
+            polish_world_surfaces_from_frame(&mut mesh,frame,&cells,&g,&vec![CellShape::Flat;80]);
+            mesh
+        };
+        let first = render(&before);
+        let second = render(&after);
+        assert!(!first.solid.positions.is_empty());
+        assert_eq!(first.solid.positions,second.solid.positions);
+        assert_eq!(first.solid.indices,second.solid.indices);
+        assert_eq!(first.solid.colors,second.solid.colors,"source palette and grain must not change at the handoff");
+        assert_eq!(first.solid.uvs,second.solid.uvs,"shader ground coordinates stay in the owning map");
+        assert_eq!(first.textured.positions,second.textured.positions);
+        let mut legacy = before.clone();
+        legacy.source_regions = Default::default();
+        assert_ne!(first.solid.colors,render(&legacy).solid.colors,
+            "the connected town must receive town pigment while the route still owns the camera");
+    }
     #[test]
     fn named_outdoor_sites_finish_the_same_rock_platform_without_reclassifying_support() {
         let mut source=source_with_tile(0x0a,0,0,0x2b);source.tileset_id="johto".into();

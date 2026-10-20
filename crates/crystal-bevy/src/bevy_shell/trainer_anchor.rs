@@ -435,6 +435,20 @@ fn freeze_visible_trainer_anchors(
     frame: Option<&crystal_render_api::VisualWorldFrame>,
     objects: &[(usize, Option<&str>, &str)],
 ) {
+    macro_rules! anchor_reject {
+        ($reason:expr) => {
+            #[cfg(feature="voxel-view")]
+            drop(crystal_voxel_view::loading_trace::span("battle.trainer_anchor_reject", || serde_json::json!({
+                "reason":$reason,"map":candidate.source.map_name,
+                "minimum_revision":candidate.minimum_snapshot_revision,"rendered_revision":rendered.snapshot_revision,
+                "source_facing":format!("{:?}",candidate.source.facing),
+                "rendered_facing":format!("{:?}",rendered.player_sprite_facing),
+                "frame_revision":frame.map(|f|f.terrain_revision),
+                "tile_revision":rendered.visual_tiles_revision,
+                "target_facing":format!("{:?}",candidate.target_facing),
+            })));
+        }
+    }
     if candidate.capture_attempted {
         return;
     }
@@ -448,6 +462,7 @@ fn freeze_visible_trainer_anchors(
         }) || rendered.map_name.as_deref() != Some(candidate.source.map_name.as_str())
             || rendered.tile != Some(candidate.source.tile)
         {
+            anchor_reject!("cold or mismatched initial field");
             candidate.capture_attempted = true;
             return;
         }
@@ -467,6 +482,7 @@ fn freeze_visible_trainer_anchors(
         rendered,
         frame,
     ) else {
+        anchor_reject!("source frame does not match settled player/terrain");
         return;
     };
     let Some(frame) = frame else {
@@ -476,6 +492,7 @@ fn freeze_visible_trainer_anchors(
         .iter()
         .filter(|(_, identifier, _)| *identifier == Some(candidate.target_identifier.as_str()));
     let Some((index, _, source_id)) = targets.next() else {
+        anchor_reject!("target roster missing");
         return;
     };
     if *index != candidate.target_index
@@ -489,6 +506,7 @@ fn freeze_visible_trainer_anchors(
     };
     let actor_id = crystal_render_api::VisualActorId::Object(index);
     let Some(actor) = frame.actors.iter().find(|actor| actor.id == actor_id) else {
+        anchor_reject!("target actor missing");
         return;
     };
     let Some(contact_foot) = fishing_source_support(&scene.terrain, candidate.target_tile) else {
@@ -500,6 +518,7 @@ fn freeze_visible_trainer_anchors(
         || (actual_foot - contact_foot).length_squared() > 0.0001
         || actor.facing != Some(visual_facing(candidate.target_facing))
     {
+        anchor_reject!("target source, foot or facing differs");
         return;
     }
     let target = candidate.placement.presentation_core_tile;

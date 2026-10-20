@@ -9,6 +9,8 @@ pub(crate) struct Frame {
     active: bool,
     map: String,
     source_size: Option<[u32; 2]>,
+    #[serde(default)]
+    source_regions: Vec<(String, [i32; 2], [u32; 2])>,
     boundary_warps: Vec<[i32; 2]>,
     ledges: Vec<[[i32; 2]; 3]>,
     datum: Option<([i32;2],[u32;2],super::blobs::Bulk<[u32;4]>,super::blobs::Bulk<[i32;2]>)>,
@@ -188,6 +190,7 @@ impl Frame {
             active: frame.active,
             map: frame.map_id.to_string(),
             source_size: frame.source_map_size_core_tiles.map(|v| v.to_array()),
+            source_regions: frame.source_regions.iter().map(|r| (r.map_id.to_string(), r.origin.to_array(), r.size.to_array())).collect(),
             datum: frame.terrace_datum.as_ref().map(|d|(d.origin.to_array(),d.size.to_array(),d.levels.iter().map(|v|v.map(f32::to_bits)).collect(),d.water_barriers.iter().map(|p|p.to_array()).collect())),
             open_water:frame.terrace_datum.as_ref().and_then(|d|d.open_water.as_ref())
                 .map(|r|(r.level.to_bits(),r.cells.iter().map(|p|p.to_array()).collect())),
@@ -247,12 +250,15 @@ impl Frame {
         }
         if self.open_water.is_some() && self.datum.is_none() {return Err("river requires complete terrace source bounds".into());}
         if self.tiles.len() > 262_144 || self.actors.len() > 65_536 || self.ledges.len() > 65_536
-            || self.boundary_warps.len() > 65_536 {
+            || self.boundary_warps.len() > 65_536 || self.source_regions.len() > 512 {
             return Err("terrain frame exceeds element limits".into());
         }
         let frame = VisualWorldFrame {
             active: self.active,
             map_id: Arc::from(self.map.as_str()),
+            source_regions: self.source_regions.iter().map(|(map, origin, size)| VisualSourceRegion {
+                map_id: map.as_str().into(), origin: IVec2::from_array(*origin), size: UVec2::from_array(*size),
+            }).collect(),
             source_map_size_core_tiles: self.source_size.map(UVec2::from_array),
             terrace_datum: self.datum.as_ref().map(|(origin,size,levels,water)|->Result<_,String>{
                 let datum=VisualTerraceDatum {
@@ -388,6 +394,9 @@ mod tests {
         let mut frame = VisualWorldFrame {
             active: true,
             map_id: Arc::from("NewBarkTown"),
+            source_regions: vec![VisualSourceRegion { map_id: "NewBarkTown".into(),
+                origin: IVec2::ZERO, size: UVec2::splat(20) },
+                VisualSourceRegion { map_id: "Route29".into(), origin: IVec2::new(-80, 0), size: UVec2::new(80, 40) }].into(),
             grid_size: UVec2::ONE,
             tile_size: Vec2::splat(8.),
             viewport_size: Vec2::splat(8.),

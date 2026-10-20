@@ -14,6 +14,7 @@ const STICK_RELEASE: f32 = 0.35;
 #[derive(Resource, Default)]
 pub(super) struct HandheldInput {
     pub(super) keys: ButtonInput<KeyCode>,
+    pub(super) movement: Vec2,
     controller_keys: ButtonInput<KeyCode>,
     active: Option<Entity>,
     direction: Option<KeyCode>,
@@ -197,7 +198,7 @@ impl HandheldInput {
         // Keep a held controller; an idle built-in pad must not steal a docked controller.
         if current.is_empty() {
             if let Some((id, _)) = pads.iter().find(|(_, pad)| {
-                !sample_pad(pad, None).is_empty() || pad.right_stick().length() > 0.2
+                !sample_pad(pad, None).is_empty() || pad.left_stick().length() > 0.18 || pad.right_stick().length() > 0.2
             }) {
                 if self.active != Some(*id) {
                     self.direction = None;
@@ -232,18 +233,34 @@ impl HandheldInput {
                 }
             }
         }
+        self.movement = super::natural_movement::keyboard_vector(keyboard);
+        if self.movement == Vec2::ZERO {
+            if let Some((_, pad)) = pads.iter().find(|(id,_)| Some(*id) == self.active) {
+                let down = |b| i32::from(pad.pressed(b));
+                let dpad=Vec2::new((down(GamepadButton::DPadRight)-down(GamepadButton::DPadLeft)) as f32,
+                    (down(GamepadButton::DPadDown)-down(GamepadButton::DPadUp)) as f32);
+                if dpad!=Vec2::ZERO {self.movement=dpad.clamp_length_max(1.0);}
+                else {
+                    let mut analog=super::natural_movement::analog_vector(pad.left_stick());
+                    if let Some(yaw)=self.camera_rotation {analog=Vec2::from_angle(yaw).rotate(analog);}
+                    self.movement=Vec2::new(analog.x,-analog.y);
+                }
+            }
+        }
         if self.wait_for_neutral {
             // Require every connected pad to be released after an overlay/suspend.
             let neutral = pads.iter().all(|(_, pad)| {
-                sample_pad(pad, self.direction).is_empty() && pad.right_stick().length() <= 0.2
+                sample_pad(pad, self.direction).is_empty() && pad.left_stick().length() <= 0.18 && pad.right_stick().length() <= 0.2
             });
             if neutral && !self.unfocused && !blocked {
                 self.wait_for_neutral = false;
             }
             mapped.clear();
+            self.movement = Vec2::ZERO;
         }
         if self.unfocused || blocked {
             self.wait_for_neutral = true;
+            self.movement = Vec2::ZERO;
             self.keys.reset_all();
             self.controller_keys.reset_all();
             return;

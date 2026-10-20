@@ -4823,6 +4823,15 @@ struct ResolvedRenderSource<'a> {
     height: i32,
 }
 
+#[cfg(any(test, feature = "voxel-view"))]
+fn visual_source_regions(sources: &[ResolvedRenderSource<'_>]) -> Arc<[crystal_render_api::VisualSourceRegion]> {
+    sources.iter().map(|source| crystal_render_api::VisualSourceRegion {
+        map_id: source.map.map_name.as_str().into(),
+        origin: IVec2::new(source.origin_x, source.origin_y),
+        size: UVec2::new(source.width as u32, source.height as u32),
+    }).collect()
+}
+
 /// Cherrygrove's original sea border repeats behind the Center when the
 /// camera exposes scenery beyond the map. Extend its land-side grove there.
 /// This only selects off-map scenery; connections and playable blocks retain
@@ -4866,6 +4875,20 @@ fn resolved_render_source_at<'a>(
     // every connected rectangle deliberately remain in the base coordinate
     // space so its repeating sub-tile phase is preserved.
     (base, x, y)
+}
+
+// 3D can see well beyond the LCD. Keep synthetic scenery attached to the
+// nearest source border instead of changing it with the active map identity.
+fn resolved_visual_render_source_at<'a>(sources: &'a [ResolvedRenderSource<'a>],x:i32,y:i32)
+    -> (&'a ResolvedRenderSource<'a>,i32,i32) {
+    let (source,sx,sy)=resolved_render_source_at(sources,x,y);
+    if (0..source.width).contains(&sx) && (0..source.height).contains(&sy) {return (source,sx,sy);}
+    let source=sources.iter().min_by_key(|s| {
+        let dx=(s.origin_x-x).max(0)+(x-(s.origin_x+s.width-1)).max(0);
+        let dy=(s.origin_y-y).max(0)+(y-(s.origin_y+s.height-1)).max(0);
+        (dx+dy,s.map.map_name.as_str())
+    }).expect("render source always has a base map");
+    (source,x-source.origin_x,y-source.origin_y)
 }
 
 fn priority_collision_token(token: &str) -> bool {

@@ -2131,6 +2131,8 @@ pub(crate) struct SpeciesRig {
     pub walk_legs: Vec<motion::WalkLeg>,
     pub walk_cycle: f32,
     pub ground_vertices: Vec<usize>,
+    /// Parent-local trailing folds used only by stranded world fish.
+    pub flop_folds: Vec<(usize, Quat)>,
 }
 
 pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
@@ -3657,7 +3659,7 @@ impl SpeciesRig {
             clips,
             neutral_bounds,
             animated_bounds: neutral_bounds,
-            hover_clearance: 0.,motion_limbs: Vec::new(),crawl_segments: Vec::new(),walk_legs: Vec::new(),walk_cycle: 0.72,ground_vertices: Vec::new(),
+            hover_clearance: 0.,motion_limbs: Vec::new(),crawl_segments: Vec::new(),walk_legs: Vec::new(),walk_cycle: 0.72,ground_vertices: Vec::new(),flop_folds: Vec::new(),
         };
         rig.animated_bounds = rig.compute_envelope();
         Ok(rig)

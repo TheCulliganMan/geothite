@@ -114,7 +114,11 @@ struct CaptureLookup {
 }
 
 fn capture_finite2(value: vec2<f32>) -> bool {
-    return all(abs(value) <= vec2<f32>(3.4028234663852886e38));
+    // All-ones exponents identify infinities and NaNs, including signed and
+    // payload variants. Avoid a maximum-float literal: WGSL re-emission can
+    // round its decimal spelling above f32's range, invalidating WebGPU.
+    let exponent = bitcast<vec2<u32>>(value) & vec2<u32>(0x7f800000u);
+    return all(exponent != vec2<u32>(0x7f800000u));
 }
 
 fn capture_inside(point: vec2<f32>, lo: vec2<f32>, hi: vec2<f32>) -> bool {

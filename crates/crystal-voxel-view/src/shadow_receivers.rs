@@ -229,6 +229,8 @@ fn prune(
         Option<&RenderLayers>,
         &InheritedVisibility,
         Has<bevy::mesh::morph::MeshMorphWeights>,
+        Has<bevy::light::NotShadowReceiver>,
+        Has<MeshMaterial3d<VoxelMaterial>>,
     )>,
     meshes: Res<Assets<Mesh>>,
     materials: Option<Res<Assets<VoxelMaterial>>>,
@@ -282,13 +284,17 @@ fn prune(
     let stamp = cache.frame;
     let mut bottom = f64::INFINITY;
     let mut top = f64::NEG_INFINITY;
-    for (mesh, bounds, transform, layers, visible, morph) in &receivers {
+    for (mesh, bounds, transform, layers, visible, morph, not_receiver, voxel) in &receivers {
         if !visible.get() || !layers.unwrap_or_default().intersects(&layer) {
             continue;
         }
         // Morph bounds are not guaranteed to include the active target.
         // Skinned production actors explicitly provide animated sweep bounds.
         if morph { return; }
+        // Sky and standard nonreceivers cannot establish receiver heights.
+        // VoxelSurface samples shadows explicitly, so retain its geometry
+        // conservatively even if an owner attaches NotShadowReceiver.
+        if not_receiver && !voxel { continue; }
         let Some(bounds) = bounds else {
             if proven_empty(meshes.get(&mesh.0)) {
                 continue;
@@ -367,7 +373,7 @@ fn prune(
             );
             before += cascade.entities.len();
             cascade.entities.retain(|entity| {
-                let Ok((_, Some(bounds), transform, _, _, _)) = receivers.get(*entity) else {
+                let Ok((_, Some(bounds), transform, _, _, _, _, _)) = receivers.get(*entity) else {
                     return true;
                 };
                 let (keep, hit) =
@@ -484,6 +490,42 @@ mod tests {
         assert_eq!(visible.entities[&f.camera][0].entities, [f.reachable]);
         assert_eq!(visible.entities[&f.capture_camera][0].entities, [f.reachable, f.offscreen],
             "retained battle/image camera lists must not inherit world-camera pruning");
+    }
+
+    #[test]
+    fn sky_is_not_a_receiver_and_nonreceiving_objects_still_cast() {
+        for sky_has_bounds in [false,true] {
+            for voxel_receiver in [false,true] {
+                let mut f=fixture();
+                let mut frustum=Frustum::default();
+                let mut wide=planes();wide[1][3]=12.;wide[3][3]=12.;
+                frustum.half_spaces=wide.map(|p|
+                    bevy::shape::HalfSpace::new(Vec4::from_array(p.map(|v|v as f32))));
+                f.app.world_mut().entity_mut(f.camera).insert(frustum);
+                f.app.world_mut().entity_mut(f.sun).insert(GlobalTransform::from(
+                    Transform::from_translation(Vec3::new(-10.,10.,0.)).looking_at(Vec3::ZERO,Vec3::Y)));
+                for caster in [f.reachable,f.offscreen] {
+                    f.app.world_mut().entity_mut(caster).insert(bevy::light::NotShadowReceiver);
+                }
+                f.app.world_mut().entity_mut(f.offscreen)
+                    .insert(GlobalTransform::from_translation(Vec3::new(10.,10.,-0.5)));
+                if voxel_receiver {
+                    f.app.world_mut().entity_mut(f.offscreen)
+                        .insert(MeshMaterial3d::<VoxelMaterial>(Handle::default()));
+                }
+                let mesh=f.app.world_mut().resource_mut::<Assets<Mesh>>().add(Mesh::from(Cuboid::default()));
+                let mut sky=f.app.world_mut().spawn((Mesh3d(mesh),GlobalTransform::IDENTITY,
+                    InheritedVisibility::VISIBLE,RenderLayers::layer(VOXEL_RENDER_LAYER),
+                    bevy::light::NotShadowCaster,bevy::light::NotShadowReceiver));
+                if sky_has_bounds {sky.insert(Aabb::from_min_max(Vec3::splat(-3000.),Vec3::splat(3000.)));}
+                f.app.update();
+                let visible=f.app.world().get::<CascadesVisibleEntities>(f.sun).unwrap();
+                let expected=if voxel_receiver {vec![f.reachable,f.offscreen]} else {vec![f.reachable]};
+                assert_eq!(visible.entities[&f.camera][0].entities,expected,
+                    "nonreceivers must not enlarge the scene slab; VoxelSurface still samples shadows");
+                assert_eq!(visible.entities[&f.capture_camera][0].entities,[f.reachable,f.offscreen]);
+            }
+        }
     }
 
     #[test]

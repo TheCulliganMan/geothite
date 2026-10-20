@@ -13,13 +13,15 @@ pub fn pokemon_following_distance(
     dimensions: &VisualPokemonDimensions,
 ) -> Option<f32> {
     let meters = *dimensions.meters.get(species)?;
-    let rig = crate::battle_species_models::rig(species)?;
-    let reference = crate::battle_layout::reference_span(species, rig.neutral_bounds.0, rig.neutral_bounds.1);
+    let canonical = crate::battle_species_models::rig(species)?;
+    let reposed = canonical.species == crate::species_rig::Species::Furret;
+    let rig = if reposed { crate::species_rig::motion::world_rig(canonical) } else { canonical };
+    let reference = crate::battle_layout::world_reference_span(species,rig);
     let pixels_per_meter = frame.tile_size.y * 2.;
     if !meters.is_finite() || meters <= 0. || !reference.is_finite() || reference <= 0.
         || !pixels_per_meter.is_finite() || pixels_per_meter <= 0. { return None; }
     let scale = meters / reference;
-    let (lo, hi) = rig.animated_bounds;
+    let (lo, hi) = if reposed { furret_following_bounds(rig) } else { rig.animated_bounds };
     let eye = frame.actors.iter().find(|a| a.id == VisualActorId::Player)
         .map(crate::new_bark_actors::player_eye_height)?;
     // A neutral, wide first-person view looks down 20 degrees. Reserve five
@@ -30,6 +32,28 @@ pub fn pokemon_following_distance(
     let clearance = 0.5_f32.max(above_eye).max(half_width);
     let distance = (hi.z.max(0.) * scale + clearance).max(1.) * pixels_per_meter;
     distance.is_finite().then_some(distance)
+}
+
+fn furret_following_bounds(rig: &'static crate::species_rig::SpeciesRig) -> (Vec3,Vec3) {
+    static BOUNDS:std::sync::OnceLock<(Vec3,Vec3)>=std::sync::OnceLock::new();
+    *BOUNDS.get_or_init(|| {
+        let mut bounds=rig.neutral_bounds;
+        let mut pose=rig.joints.iter().map(|joint|joint.bind).collect::<Vec<_>>();
+        let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];
+        // Cache a tight visible envelope, rather than the deliberately large
+        // culling sphere or the unrelated upright battle pose.
+        for clock in 0..16 { for phase in 0..32 {
+            rig.sample_locomotion(rig.clip(crate::species_rig::Clip::Idle).duration*clock as f32/16.,
+                std::f32::consts::TAU*phase as f32/32.,1.,&mut pose);
+            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for v in 0..rig.neutral.positions.len() {
+                let p=rig.skin_point(v,&matrices);
+                bounds.0=bounds.0.min(p);bounds.1=bounds.1.max(p);
+            }
+        }}
+        let margin=Vec3::splat((rig.neutral_bounds.1.y-rig.neutral_bounds.0.y)*0.01);
+        (bounds.0-margin,bounds.1+margin)
+    })
 }
 
 #[cfg(test)]
@@ -64,13 +88,13 @@ mod tests {
         let pose=crate::camera::VoxelCameraControls::with_pose(0.,0.,20.,true).world_pose(&frame,&[]);
         let projection=Mat4::perspective_rh(pose.vertical_fov_radians,1000./700.,pose.near,pose.far)
             * Mat4::look_at_rh(pose.eye,pose.target,pose.up);
-        for (name,meters) in [("NIDOKING",1.397),("NIDOQUEEN",1.2954),("ARCANINE",1.905),("FERALIGATR",2.3114),("SLOWKING",1.4986),("PIKACHU",0.4064)] {
+        for (name,meters) in [("NIDOKING",1.397),("NIDOQUEEN",1.2954),("ARCANINE",1.905),("FERALIGATR",2.3114),("SLOWKING",1.4986),("PIKACHU",0.4064),("FURRET",1.8)] {
             let mut dimensions=VisualPokemonDimensions::default();dimensions.meters.insert(name.into(),meters);
             let gap=pokemon_following_distance(&frame,name,&dimensions).unwrap();
             let canonical=crate::battle_species_models::rig(name).unwrap();
-            let reference=crate::battle_layout::reference_span(name,canonical.neutral_bounds.0,canonical.neutral_bounds.1);
-            let scale=pixels*meters/reference;
             let rig=crate::species_rig::motion::world_rig(canonical);
+            let reference=crate::battle_layout::world_reference_span(name,rig);
+            let scale=pixels*meters/reference;
             let mut transforms=rig.joints.iter().map(|j|j.bind).collect::<Vec<_>>();
             let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];
             for tick in 0..32 {

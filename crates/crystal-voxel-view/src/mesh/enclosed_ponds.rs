@@ -430,7 +430,7 @@ mod tests {
             mesh.footing_heights[bank], 24.,
             "cached bank retains outer datum"
         );
-        let frame = VisualWorldFrame { view_center: bevy::prelude::Vec2::ZERO, terrace_datum: None,
+        let frame = VisualWorldFrame { source_regions: Default::default(), view_center: bevy::prelude::Vec2::ZERO, terrace_datum: None,
             active: true,
             map_id: "Route22".into(),
             source_map_size_core_tiles: None,

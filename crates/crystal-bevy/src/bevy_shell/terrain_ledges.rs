@@ -37,8 +37,7 @@ pub(super) fn datum(sources:&[ResolvedRenderSource<'_>],runtime:&CrystalRuntime,
         });
     }
     if crystal_voxel_view::outdoor_water_map(&primary.map.map_name) {
-        // The compositor repeats the active map's border outside every native
-        // rectangle. Include its real water at the complete source perimeter so
+        // Include adjacent source border water at the complete perimeter so
         // a clipped camera cannot leave that water beneath a raised dry terrace.
         // Native maps always retain ownership, including connected-map overlaps.
         let mut perimeter=std::collections::BTreeSet::new();
@@ -53,23 +52,31 @@ pub(super) fn datum(sources:&[ResolvedRenderSource<'_>],runtime:&CrystalRuntime,
                 }
             }
         }
-        let atlas=&primary.tileset.tileset_id;
-        let layout=runtime.runtime_file(&format!("data/tilesets/{atlas}_metatiles.bin"))
-            .ok_or_else(||anyhow::anyhow!("missing border terrace source layout {atlas}"))?;
         let mut border_water=Vec::new();
         for (y,x) in perimeter {
-            let (local_x,local_y)=(x-primary.origin_x,y-primary.origin_y);
-            let block=exterior_border_block(&primary.map.map_name,&primary.map.attributes.tileset_name,
-                primary.map.attributes.border_block,primary.width,local_x,local_y);
+            // A synthetic perimeter must use its adjacent native map's border,
+            // otherwise crossing into a watery route lowers the neighbor's
+            // existing cliff corners during shoreline fitting.
+            let source = sources.iter().min_by_key(|s| {
+                let dx=(s.origin_x-x).max(0)+(x-(s.origin_x+s.width-1)).max(0);
+                let dy=(s.origin_y-y).max(0)+(y-(s.origin_y+s.height-1)).max(0);
+                (dx+dy,s.map.map_name.as_str())
+            }).expect("primary source exists");
+            let atlas=&source.tileset.tileset_id;
+            let layout=runtime.runtime_file(&format!("data/tilesets/{atlas}_metatiles.bin"))
+                .ok_or_else(||anyhow::anyhow!("missing border terrace source layout {atlas}"))?;
+            let (local_x,local_y)=(x-source.origin_x,y-source.origin_y);
+            let block=exterior_border_block(&source.map.map_name,&source.map.attributes.tileset_name,
+                source.map.attributes.border_block,source.width,local_x,local_y);
             let (column,row)=(local_x.rem_euclid(4) as usize,local_y.rem_euclid(4) as usize);
             let tile=*layout.get(block as usize*16+row*4+column)
                 .ok_or_else(||anyhow::anyhow!("missing border terrace source metatile {block}"))?;
-            let source=crystal_render_api::VisualTileSource {
+            let cell=crystal_render_api::VisualTileSource {
                 tileset_id:atlas.as_str().into(),metatile_id:block,subtile_column:column as u8,
                 subtile_row:row as u8,tile_index:u16::from(tile),
             };
-            if crystal_voxel_view::shape_for_source(&source)==crystal_voxel_view::CellShape::Water {
-                border_water.push((IVec2::new(x,y),source,false));
+            if crystal_voxel_view::shape_for_source(&cell)==crystal_voxel_view::CellShape::Water {
+                border_water.push((IVec2::new(x,y),cell,false));
             }
         }
         if !border_water.is_empty() {
