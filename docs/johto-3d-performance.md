@@ -263,6 +263,13 @@ culling overhead, the private application hook and SHA2 dependency placement
 are restored to the pre-probe baseline. The voxel section implementation stays
 unchanged for a release comparison with ordinary native culling. The saved
 combined executable remains immutable; shared production sources are unchanged.
+The subdivision-only release build passed in 9m17s; log:
+`/tmp/geothite-opaque-sections-direct-release-build.log`. Its saved executable
+SHA256 is `6e70c6baa8bb1dd12788afa8c9568cbefd5f00be9a0c9dbf3b0602f9d7a41816`.
+The application source and dependency placement exactly match the pre-probe
+baseline. The shader-correction hook is not registered. A 60-second roof run
+is underway with the existing native render path and full geometry.
+
  The static images do not establish
 animated culling bounds or paired-2D acceptance.
 

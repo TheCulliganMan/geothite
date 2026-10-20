@@ -360,7 +360,7 @@ async fn cache_policy_headers(State(config): State<Arc<Config>>, request: Reques
         .insert("origin-agent-cluster", HeaderValue::from_static("?1"));
     response.headers_mut().insert(
         "permissions-policy",
-        HeaderValue::from_static("tools=(self), camera=(), microphone=(), geolocation=(), payment=(), usb=()"),
+        HeaderValue::from_static("camera=(), microphone=(), geolocation=(), payment=(), usb=()"),
     );
     for (name, value) in [
         ("x-content-type-options", "nosniff"),

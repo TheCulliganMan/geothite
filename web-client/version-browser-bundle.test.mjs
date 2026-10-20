@@ -70,7 +70,9 @@ test('production renderer selector resolves the versioned game pair', async () =
   assert.ok(selector);
   const source = await readFile(join(dir, selector), 'utf8');
   const { selectRendererBundle } = await import('data:text/javascript,' + encodeURIComponent(source));
-  const bundle = await selectRendererBundle({fetch: async () => ({ok: false}), navigator: {}, url: 'https://game.test/'});
+  const manifest = JSON.parse(await readFile(join(dir, 'renderer-bundles.json'), 'utf8'));
+  const bundle = await selectRendererBundle({fetch: async () => ({ok: true, json: async () => manifest}), navigator: {}, url: 'https://game.test/'});
+  assert.deepEqual(bundle, manifest.webgl);
   assert.match(bundle.module, /crystal-bevy-[a-f0-9]{64}\.js$/);
   assert.match(bundle.binary, /crystal-bevy-[a-f0-9]{64}\.wasm$/);
   await readFile(join(dir, bundle.module));

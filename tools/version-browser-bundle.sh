@@ -20,6 +20,9 @@ gzip -9 -c "$bundle_name.js" > "$bundle_name.js.gz"
 sed "s|'./crystal-bevy.js'|'./$bundle_name.js'|g; s|./crystal-bevy_bg.wasm|./$bundle_name.wasm|g" index.html > index.html.versioned
 mv index.html.versioned index.html
 if test -f renderer-bundle.js; then
+    # The selector probes this manifest on every startup. Ship its WebGL pair
+    # even when this build has no optional WebGPU artifact.
+    printf '{"webgl":{"module":"./%s.js","binary":"./%s.wasm"}}\n' "$bundle_name" "$bundle_name" > renderer-bundles.json
     sed "s|./crystal-bevy.js|./$bundle_name.js|g; s|./crystal-bevy_bg.wasm|./$bundle_name.wasm|g" renderer-bundle.js > renderer-bundle.next.js
     selector_hash=$(sha256sum renderer-bundle.next.js | cut -d ' ' -f 1)
     mv renderer-bundle.next.js "renderer-bundle-$selector_hash.js"
