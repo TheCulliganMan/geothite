@@ -1211,6 +1211,9 @@ pub struct GameDataSet {
     /// Default modpack enables running from the start; explicit false opts out.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub running_shoes: Option<bool>,
+    /// Continuous movement defaults on in 3D; explicit false retains tile stepping.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub natural_movement: Option<bool>,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub server_clock: bool,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]

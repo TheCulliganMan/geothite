@@ -1131,6 +1131,7 @@ struct BevyRuntimeShell {
     field_text_consumed_b: bool,
     // Authoritative movement commits at a tile boundary. Retain its previous
     // tile so presentation can cross that boundary over real LCD frames.
+    natural_movement: natural_movement::NaturalMovement,
     player_walk_from: Option<TilePosition>,
     player_walk_frame_ticks: u8,
     player_walk_total_ticks: u8,
@@ -8627,6 +8628,7 @@ fn initialize_bevy_runtime_shell(
         overworld_interaction_consumed_a: false,
         field_text_consumed_a: false,
         field_text_consumed_b: false,
+        natural_movement: Default::default(),
         player_walk_from: None,
         player_walk_frame_ticks: 0,
         player_walk_total_ticks: WALK_FRAME_HOLD_TICKS,
@@ -9123,3 +9125,5 @@ mod native_window_lifetime;
 #[cfg(not(target_arch = "wasm32"))]
 #[path = "bevy_shell/handheld_input.rs"]
 mod handheld_input;
+
+mod natural_movement;

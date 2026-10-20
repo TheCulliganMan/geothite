@@ -187,3 +187,18 @@ establish water immersion or every-frame visual acceptance.
 The corrected build passed all 81 motion tests, plus the animated Surf-seat
 and production Surf turn/dismount regressions. Upright resting poses remain
 when propulsion stops; the land and water paths remain separate.
+
+## Fresh neutral roster inspection (in progress)
+
+The explicit model paths in the current rig registry resolve to 276 distinct
+assets: 271 files in `models/battle_species` and five in `models/actor_props`.
+Every referenced file exists, and the battle-species folder has no additional
+model outside that path set. The extra bodies are Chikorita, Cyndaquil,
+Totodile, Clefairy, and Jigglypuff.
+
+The first five alphabetical contact sheets (Abra through Mantine, 120 files)
+and the separate five-body sheet were opened and inspected. This pass has not
+found an obvious absent body part or broken silhouette in those neutral views.
+It does not establish animation, every-angle anatomy, production lighting,
+water immersion, or visual acceptance of the uninspected remainder. The full
+neutral render and fresh production capture build are still running.
