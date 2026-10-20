@@ -5,10 +5,16 @@ import { chromium, devices } from 'playwright';
 const [base, output] = process.argv.slice(2);
 assert.ok(base && output, 'usage: node tools/browser-view-smoke.mjs BASE_URL REPORT_JSON');
 const browser=await chromium.launch({headless:true,args:process.platform==='darwin'?['--use-angle=metal','--mute-audio']:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--mute-audio']});
-const report={base,errors:[],swaps:[]};
+const report={base,errors:[],console:[],failedRequests:[],swaps:[]};
+const inspectPage=page=>{
+ page.on('pageerror',e=>report.errors.push(e.message));
+ page.on('console',message=>{if(['error','warning'].includes(message.type())||/\bERROR\b/.test(message.text()))report.console.push({level:message.type(),text:message.text()});});
+ page.on('response',response=>{if(response.status()>=400)report.failedRequests.push({status:response.status(),url:response.url()});});
+ page.on('requestfailed',request=>report.failedRequests.push({url:request.url(),failure:request.failure()}));
+};
 try {
  const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
- const page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.message));page.on('console',message=>{if(message.type()==='error')console.error(message.text());});
+ const page=await context.newPage();inspectPage(page);
  await page.goto(new URL('/tui/?multiplayer=off',base).href);
  await page.waitForFunction(()=>document.querySelector('#loading').hidden||document.querySelector('#startup-error').open,null,{timeout:240000});
  assert.equal(await page.locator('#startup-error').evaluate(e=>e.open?e.textContent:null),null);
@@ -82,11 +88,13 @@ try {
  const first=state.observe.visible_dialogue;await press('a');
  assert.notEqual(state.observe.visible_dialogue,first,'A must advance the actual dialogue');
  assert.deepEqual(report.errors,[]);
+ assert.deepEqual(report.console,[]);
+ assert.deepEqual(report.failedRequests,[]);
  report.navigationCount=await page.evaluate(()=>performance.getEntriesByType('navigation').length);
  assert.equal(report.navigationCount,1);
  await context.close();
  const phone=await browser.newContext({...devices['iPhone 13'],reducedMotion:'reduce'});
- const mobile=await phone.newPage();mobile.on('pageerror',e=>report.errors.push(e.message));
+ const mobile=await phone.newPage();inspectPage(mobile);
  await mobile.goto(new URL('/?view=tui&multiplayer=off',base).href);
  await mobile.waitForFunction(()=>document.querySelector('#loading').hidden||document.querySelector('#startup-error').open,null,{timeout:240000});
  assert.equal(await mobile.locator('#startup-error').evaluate(e=>e.open?e.textContent:null),null);
@@ -94,6 +102,7 @@ try {
  assert.equal(await mobile.evaluate(()=>document.elementFromPoint(innerWidth/2,innerHeight/3)?.id),'crystal-canvas','TUI presentation must preserve the production touch input target');
  for(const mode of ['2d','3d','tui'])assert.ok(await mobile.locator(`#view-navigation [data-view="${mode}"]`).isVisible());
  await mobile.screenshot({path:output.replace(/\.json$/,'-phone.png')});
- await phone.close();assert.deepEqual(report.errors,[]);
+ assert.deepEqual(report.errors,[]);assert.deepEqual(report.console,[]);assert.deepEqual(report.failedRequests,[]);
+ await phone.close();
  console.log(JSON.stringify({base,swaps:report.swaps.length,navigations:report.navigationCount,errors:report.errors}));
 }finally{await fs.writeFile(output,JSON.stringify(report,null,2));await browser.close();}

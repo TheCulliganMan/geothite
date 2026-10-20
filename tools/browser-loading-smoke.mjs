@@ -1,5 +1,5 @@
 // Check real loading, console diagnostics, asset requests, and in-page view swaps.
-import { chromium, webkit, devices } from 'playwright';
+import { chromium, firefox, webkit, devices } from 'playwright';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 const [base, output] = process.argv.slice(2);
@@ -9,6 +9,7 @@ try {
  for (const [name, engine, options, path] of [
   ['chromium-online-tui', chromium, {viewport:{width:1280,height:900}}, '/?view=tui'],
   ['webkit-online-3d', webkit, devices['iPhone 13'], '/?view=3d'],
+  ['firefox-online-2d', firefox, {viewport:{width:1280,height:900}}, '/?view=2d'],
   ['chromium-tui-alias', chromium, {viewport:{width:1280,height:900}}, '/tui/'],
  ]) {
   const browser = await engine.launch({headless:true, args:engine===chromium

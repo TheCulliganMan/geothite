@@ -21,10 +21,13 @@ COPY modpacks/voxel-view/profiles.json ./modpacks/voxel-view/profiles.json
 ARG CARGO_BUILD_JOBS=2
 # Keep dependency and target caches across source edits. Run from the workspace
 # so Cargo reads its WASM target configuration.
+# Git archive mtimes can predate cached artifacts; refresh workspace inputs so
+# Cargo cannot combine a new crate with an old dependency from another release.
 RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,target=/usr/local/cargo/git,sharing=locked \
     --mount=type=cache,target=/source/rust/target,sharing=locked \
-    cargo build --locked --release --package crystal-web-server --bin crystal-web-server \
+    find crates -type f -exec touch {} + \
+    && cargo build --locked --release --package crystal-web-server --bin crystal-web-server \
     && cargo build --locked --profile web-release --package crystal-bevy \
         --bin crystal-bevy --features fullscreen-scaling,voxel-view --target wasm32-unknown-unknown \
     && cargo rustc --locked --profile web-release --package crystal-audio --lib --crate-type cdylib \
