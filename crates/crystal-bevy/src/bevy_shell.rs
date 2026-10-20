@@ -10,6 +10,8 @@ mod render_record;
 mod render_measure_validation;
 #[cfg(feature = "location-tester")]
 mod render_walk;
+#[cfg(feature = "location-tester")]
+mod model_preview;
 mod battle_anim_graphics;
 #[cfg(not(target_arch = "wasm32"))]
 mod native_tasks;

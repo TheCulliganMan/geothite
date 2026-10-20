@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 const [url, out, mode = 'battle'] = process.argv.slice(2);
 assert.ok(url && out && ['battle','battle-cycle','crossing','cold-crossing','reference'].includes(mode),
- 'usage: node tools/browser-transition-check.mjs URL OUTPUT_DIR [battle|battle-cycle|crossing|reference]');
+ 'usage: node tools/browser-transition-check.mjs URL OUTPUT_DIR [battle|battle-cycle|crossing|cold-crossing|reference]');
 assert.equal(new URL(url).searchParams.get('multiplayer'), 'off', 'use a disposable local preview');
 assert.equal(new URL(url).searchParams.get('loading-trace'), 'on', 'per-frame state evidence is required');
 const crossing = mode === 'crossing' || mode === 'cold-crossing';
@@ -77,6 +77,10 @@ try {
  } while (true);
  await page.bringToFront();
  await page.locator('canvas').focus();
+ // A trusted gesture starts the muted source-audio clock too. Without it,
+ // authored WaitSFX (including the badge fanfare) can wait for audio unlock.
+ await page.keyboard.press('ControlLeft');
+ report.audioControl = 'Muted browser output and game gain; trusted modifier gesture unlocks source WaitSFX timing.';
  report.before = state;
  console.log('phase: field ready');
  report.renderer = await page.evaluate(async () => ({ bundle: window.__crystalRendererBundle, adapter: await navigator.gpu?.requestAdapter().then(a => a ? { vendor: a.info.vendor, architecture: a.info.architecture, device: a.info.device, description: a.info.description, fallback: a.isFallbackAdapter } : null) }));
@@ -93,7 +97,21 @@ try {
   report.videoAlignment = 'The last green marker frame immediately precedes trace start; use video PTS rather than wall time under load.';
  }
  report.videoTraceOffsetSeconds = (Date.now() - videoStarted) / 1000;
- await page.evaluate(() => { entryWasm.crystal_loading_trace_start(); entryMeasuring = true; });
+ const traceStarted = await page.evaluate(() => {
+  const now = performance.now(); entryWasm.crystal_loading_trace_start(); entryMeasuring = true; return now;
+ });
+ let traceEpoch = traceStarted;
+ const traceChunks = [];
+ const collectTrace = async () => {
+  const slice = await page.evaluate(() => {
+   const trace = JSON.parse(entryWasm.crystal_loading_trace_read());
+   const next = performance.now(); entryWasm.crystal_loading_trace_start(); return { trace, next };
+  });
+  const offset = (traceEpoch - traceStarted) * 1000;
+  traceChunks.push({ ...slice.trace, traceEvents: slice.trace.traceEvents
+   .filter(event => !event.inProgress).map(event => ({ ...event, ts: event.ts + offset })) });
+  traceEpoch = slice.next;
+ };
  if (reference) {
   const menu = await page.evaluate(() => entryBridge.execute({ kind: 'press', button: 'start', frames: 8 }));
   assert.ok(menu.observe.menus.length > 0, 'the production Start menu must own reference input');
@@ -120,18 +138,36 @@ try {
  }
  if (mode === 'battle-cycle') {
   report.cycle = [];
+  let openingStatusUsed = false;
   for (let i = 0; i < 600; i++) {
    const current = await observe();
    report.cycle.push({ status: current.status, battle: current.reward_state?.battle,
     menus: current.observe.menus, text: current.observe.battle_message,
+    dialogue: current.observe.visible_dialogue,
     view: current.presentation?.battle_view });
-   if (current.status.screen !== 'battle') break;
+   if (i % 25 === 0) {
+    console.log(`phase: cycle ${i} ${current.status.screen} ${JSON.stringify(current.observe.visible_dialogue ?? current.observe.battle_message ?? '')}`);
+    await fs.writeFile(`${out}/cycle-progress.json`, JSON.stringify(report.cycle));
+    await collectTrace();
+   }
+   if (current.status.screen !== 'battle' && !current.presentation?.battle_view?.active
+     && !current.observe.visible_dialogue && !current.flow_state.animating) break;
    if (process.env.BATTLE_COMPLETE !== '1' && /fainted/i.test(current.observe.battle_message ?? '')) break;
    if (current.flow_state.animating) { await page.waitForTimeout(100); continue; }
+   if (current.status.screen !== 'battle') {
+    // Complete authored field dialogue with ordinary browser keyboard input,
+    // including its real key-up edge, before taking a stable reference pair.
+    await page.locator('canvas').focus();
+    await page.keyboard.press('KeyZ', { delay: 80 });
+    await page.waitForTimeout(150);
+    continue;
+   }
    const entries = current.observe.menus.find(menu => menu.kind === 'battle')?.entries ?? [];
-   const attack = entries.findIndex(entry => /EMBER|WATER.GUN|TACKLE|SCRATCH/.test(entry));
+   const opening = !openingStatusUsed ? entries.findIndex(entry => /\bLEER\b/.test(entry)) : -1;
+   const attack = opening >= 0 ? opening : entries.findIndex(entry => /EMBER|WATER.GUN|TACKLE|SCRATCH/.test(entry));
    const cursor = entries.findIndex(entry => entry.startsWith('>'));
    const button = attack >= 0 && cursor >= 0 && attack !== cursor ? 'down' : 'a';
+   if (opening >= 0 && cursor === opening && button === 'a') { openingStatusUsed = true; report.openingStatusMove = 'LEER'; }
    await page.evaluate(button => entryBridge.execute({ kind: 'press', button, frames: 8 }), button);
   }
   await fs.writeFile(`${out}/cycle.json`, JSON.stringify(report.cycle, null, 2));
@@ -151,7 +187,10 @@ try {
  report.workerPolicyHealthy = Object.values(report.workers).length === 2
   && Object.values(report.workers).every(m => m && m.completed > 0
    && ['fallback', 'initFailures', 'failed'].every(key => m[key] === 0));
- const trace = await page.evaluate(() => JSON.parse(entryWasm.crystal_loading_trace_read()));
+ await collectTrace();
+ const trace = { traceEvents: traceChunks.flatMap(chunk => chunk.traceEvents),
+  droppedEvents: traceChunks.reduce((sum, chunk) => sum + chunk.droppedEvents, 0), displayTimeUnit: 'ms' };
+ report.traceCollection = 'Complete trace epochs rebased with performance.now; periodic collection can delay rAF and is not an FPS benchmark.';
  const intervals = await page.evaluate(() => { entryMeasuring = false; return entryIntervals; });
  await fs.writeFile(`${out}/trace.json`, JSON.stringify(trace));
  const rows = trace.traceEvents.filter(e => e.name === 'presentation.frame' && !e.inProgress);
@@ -162,6 +201,11 @@ try {
   .filter((value, index, all) => index === 0 || value !== all[index - 1]);
  report.rendererSequence = rendererSequence;
  report.faintRows = rows.filter(e => e.args.battle_cues?.some(c => c.startsWith('Faint:'))).length;
+ report.enemyMoveCues = [...new Set(rows.flatMap(e => e.args.battle_cues ?? [])
+  .filter(cue => cue.startsWith('Move:') && cue.endsWith(':Enemy')))];
+ report.enemyTurnVerified = report.cycle?.some(state => state.battle?.enemy_turns > 0) ?? false;
+ report.playerDamage = report.cycle?.length ? Math.max(0,
+  report.cycle[0].status.party[0].hp - Math.min(...report.cycle.map(state => state.status.party[0].hp))) : 0;
  const ordered = [...intervals].sort((a,b) => a-b);
  report.presentation = { rows: rows.length, entryRows: entries.length, entryNot3d: entries.filter(e => !e.args.world_3d_active).length,
   battleRows: battles.length, battleNot3d: battles.filter(e => !e.args.battle_3d_active).length,
@@ -174,6 +218,18 @@ try {
  assert.deepEqual(report.gpu.shaderErrors, [], 'transition shaders must compile');
  assert.deepEqual(report.gpu.lost, [], 'transition must not lose its GPU device');
  report.after = await observe();
+ if (mode === 'battle-cycle') {
+  if (report.openingStatusMove) assert.ok(report.enemyTurnVerified && report.playerDamage > 0,
+   'the opening status move must allow an authoritative damaging enemy turn');
+  assert.ok(report.faintRows > 0, 'the cycle must actually render a source faint');
+  assert.equal(gaps.length, 0, 'moves, faints and result narration must retain 3D');
+  if (process.env.BATTLE_COMPLETE === '1') {
+   assert.equal(report.after.status.screen, 'overworld', 'the full cycle must finish the battle');
+   assert.equal(report.after.presentation?.battle_view?.active, false,
+    'result dialogue must finish and release the retained battle camera');
+   assert.ok(!report.after.observe.visible_dialogue, 'finish post-battle script pages before comparing views');
+  }
+ }
  const toggle = page.locator('#view-toggle');
  const options = page.locator('#player-options');
  if (!await toggle.isVisible()) await options.locator('summary').click();

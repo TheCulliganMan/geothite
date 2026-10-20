@@ -98,7 +98,7 @@ impl Warmup {
     }
     pub(crate) fn pending(
         &mut self,
-        frame: &crystal_render_api::VisualWorldFrame,
+        keys: Vec<Key>,
         enabled: bool,
         gpu: &mut PeopleGpu,
     ) -> bool {
@@ -111,7 +111,6 @@ impl Warmup {
         if self.failed {
             return false;
         }
-        let keys = crate::new_bark_actors::worker_interests(frame);
         if self.interest != keys {
             self.pending = None;
             self.interest = keys;

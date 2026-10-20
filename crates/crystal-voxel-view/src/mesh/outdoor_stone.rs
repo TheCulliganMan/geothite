@@ -151,10 +151,10 @@ pub(super) fn sculpt_rock_rims(
 
 pub(super) fn sculpt_rock_rims_on_map(mesh: &mut TerrainMeshData, map: &str,
     cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32;2]) {
-    // Blackthorn's short adjoining beds cannot absorb the old near-half-tile
-    // lateral crest recession on top of both corner cuts. Retain broad caps
-    // and keep their projected samples ordered through these narrow joins.
-    let recession=if map=="BlackthornCity" {0.0}else{0.48};
+    // Retain a broad weathered cap instead of eroding both sides into a thin
+    // blade. Blackthorn's short adjoining beds keep their existing full crest
+    // so projected samples remain ordered through those narrow joins.
+    let recession=if map=="BlackthornCity" {0.0}else{0.28};
     sculpt_rock_rims_with_edge_index(mesh,cells,shapes,g,origin,true,recession);
 }
 
@@ -168,7 +168,7 @@ pub(super) fn sculpt_rock_rims_reference(mesh: &mut TerrainMeshData,
 pub(super) fn sculpt_rock_rims_reference_on_map(mesh: &mut TerrainMeshData, map: &str,
     cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32;2]) {
     sculpt_rock_rims_with_edge_index(mesh,cells,shapes,g,origin,false,
-        if map=="BlackthornCity" {0.0}else{0.48});
+        if map=="BlackthornCity" {0.0}else{0.28});
 }
 
 struct CapTriangle {

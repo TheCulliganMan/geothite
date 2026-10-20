@@ -83,7 +83,11 @@ def raw_sculpture(species):
  else:
   p+=arms(species,color);adult=species=='muk';cx=-.025 if adult else 0;cy=.580 if adult else .586;rx=.150 if adult else .110;ry=.110 if adult else .133
   mouth=fitted_contour('Mouth / fitted deep open sludge cavity',INK,oval(cx,cy,rx,ry,40),skin,.012,subdivisions=2);p.append(mouth);p.append(lip(color,cx,cy,rx,ry,skin))
-  p.append(fitted_patch('Tongue / fitted blue-gray lower sludge tongue',TONGUE,oval(cx,cy-ry*.56,rx*.75,ry*.26,40),surface(mouth),.005))
+  tongue=oval(cx,cy-ry*.56,rx*.75,ry*.26,40)
+  # Preserve the reviewed positive-zero center on Python versions whose sum
+  # uses left-to-right accumulation rather than compensated addition.
+  tongue_center=tuple(math.fsum(v[k] for v in tongue)/len(tongue) for k in (0,1))
+  p.append(fitted_patch('Tongue / fitted blue-gray lower sludge tongue',TONGUE,tongue,surface(mouth),.005,center=tongue_center))
   for sign in (-1,1):
    x=sign*(.098 if adult else .094)+(-.034 if adult else 0);y=.726 if adult else .765
    if adult:xy=[(x-.038,y+.008),(x+.034,y+.030),(x+.029,y-.013),(x-.031,y-.011)]

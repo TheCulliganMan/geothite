@@ -79,6 +79,8 @@ mod grass_blades;
 mod grass_rustle;
 mod garment_fit;
 mod garment_body;
+#[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+mod garment_drape_trial;
 mod limb_surface;
 mod hand_surface;
 mod hand_digits;
@@ -2131,7 +2133,10 @@ fn apply_built_terrain(
     let cave_reveal = if interior_cutaway::is_cave(frame) {
         let dark = frame.tiles.first().is_some_and(|tile| tile.source.tileset_id.as_ref() == "dark_cave")
             && std::env::var_os("CRYSTAL_CAVE_GEOMETRY_REVIEW").is_none();
-        Vec4::new(1.0, if dark { 1.0 } else { 0.0 }, 0.0, 0.0)
+        // The reveal policy also reaches untextured rock materials, which do
+        // not carry the live-water registration used by the surface shader.
+        Vec4::new(if frame.map_id.as_ref()=="TohjoFalls" {2.0} else {1.0},
+            if dark { 1.0 } else { 0.0 }, 0.0, 0.0)
     } else if cave_water::outdoor(frame.map_id.as_ref()) && frame.tiles.first().is_some_and(|tile|
         matches!(tile.source.tileset_id.as_ref(), "johto" | "johto_modern" | "kanto"
             | "forest" | "park" | "battle_tower_outside" | "port")) {
@@ -2170,7 +2175,7 @@ terrain_transform(frame),),
         let mut material = solid_terrain_material();
         // Outer rock keeps its mass. Only the broad player aperture reveals
         // the room through it; whole-front-wall fading belongs to inner walls.
-        material.extension.cave_reveal = Vec4::new(1., cave_reveal.y, 0., 1.);
+        material.extension.cave_reveal = Vec4::new(cave_reveal.x.max(1.), cave_reveal.y, 0., 1.);
         material.extension.painted_bedrock = cache.painted_bedrock.clone();
         let child = commands.spawn(((Mesh3d(meshes.add(mesh)),
 MeshMaterial3d(materials.add(material)),), RenderLayers::layer(VOXEL_RENDER_LAYER), encounter_terrain::SyntheticTerrainApron)).id();

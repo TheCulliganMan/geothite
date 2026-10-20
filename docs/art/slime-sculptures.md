@@ -21,14 +21,14 @@ and colors. No reference pixels or external geometry are shipped.
 | Species | Parts | Vertices | Triangles | Joints | Accessors | Bytes | Authoring height | Pack height |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Grimer | 26 | 18,739 | 25,172 | 13 | 146 | 730,324 | 0.96 | 0.889 m |
-| Muk | 26 | 16,163 | 21,396 | 13 | 139 | 633,072 | 0.96 | 1.1938 m |
+| Muk | 26 | 16,163 | 21,396 | 13 | 139 | 633,076 | 0.96 | 1.1938 m |
 | Ditto | 8 | 9,310 | 13,980 | 5 | 51 | 403,272 | 0.96 | 0.3048 m |
 
 The verified local pack supplies height digits 211 (SLUDGE), 311 (SLUDGE) and
 100 (TRANSFORM), respectively. Neutral geometry digests:
 
-- Grimer: `01ccaddd323bf25f60a019cbc0642316ec52af5c7cd650ecc625d54d607c3a03`.
-- Muk: `373608073b4024110aaaf4e23d345ca1c07c2fd6a2725f72fe985893224ca8c3`.
+- Grimer: `efd59abdeaebc370eabfeac2aa8ec133ddfd0106e2114b787d776b6d38d06511`.
+- Muk: `60179e88f045db6353cea68824224ae5e1ffa2db3b802e91910cb5949452f75d`.
 - Ditto: `1a3fc7b87714f7c4c5b82db35cecc4fb7bc3d3679f52f0ccf2336727626327e8`.
 
 At least 48 sole vertices remain fixed to the floor root. The continuous body
@@ -84,3 +84,54 @@ The captures select the existing supported -110-degree angle while retaining
 normal size, source support, scenery omission and whole-body/frustum checks.
 Both shared all-species grounded/volumetric and exact source-cue pose timing
 regressions pass. Browser visual acceptance remains open.
+
+## Continuous fold roots
+
+A later front/side/rear review found broken-looking folds on both sludge
+bodies. The former sparse depth samples left real gaps: a decoded posed-mesh
+audit found 27 nonpositive root sections in Grimer and 46 in Muk out of 810
+sections per species. The worst gaps were 0.000205 and 0.000316 authoring units.
+
+The six folds per model now use `tools/surface_strokes.py`. It smooths the
+original XY paths and fits each ring to the actual supporting body triangles.
+The same round radii remain, with each center 35% of its radius above the
+surface. Only these twelve folds' positions and normals change. Body and face
+geometry, complete bounds, materials, hierarchy, inverse binds and decoded
+animation keys are preserved. Ditto's GLB remains byte-for-byte unchanged.
+
+Nineteen candidate and installed anatomy and skin checks pass. The added stored-triangle
+oracle requires an occupied root and an exposed front at fifteen cross-sections
+of every fold through idle, attack and hit at three times each. Both previous
+assets fail; deliberately floating and buried copies fail as well. Fresh
+windowless GPU front/side/rear views of the installed models were inspected.
+These normalized studio views supplement the production captures below.
+
+All three exporters reproduce the installed bytes on Python 3.9.6 and 3.14.6.
+Grimer's tongue supplies an explicit `fsum` centroid to retain two reviewed
+positive-zero coordinates across those versions. The former implicit `sum`
+changed only their sign bits on Python 3.9; Muk and Ditto already matched.
+This source correction changes no canonical GLB bytes.
+
+## Refit production review
+
+Both installed models were reviewed in four fresh, muted, windowless native
+2D/3D pairs: close front views in `PlayersHouse2F` and oblique views after
+ordinary walking in New Bark Town. The reviewer contains all 276 current
+canonical compressed GLBs; source and executable hashes remained unchanged.
+
+| Species / view | Core frame | Checksum | LCD frame | Virtual seconds |
+| --- | ---: | ---: | ---: | ---: |
+| Grimer front | 80 | 3737093225 | 80 | 2.995400958 |
+| Muk front | 54 | 41366297 | 54 | 1.303911042 |
+| Grimer outdoor walk | 806 | 1109307622 | 833 | 15.269307292 |
+| Muk outdoor walk | 727 | 2696047226 | 750 | 14.559234709 |
+
+Every accepted pair reports `state_preserved=true` and the expected companion
+identity. The open outdoor path was chosen from the pack's real walkable floor
+and NPC occupancy. Each walk exercises 64 input/render samples. Both puddles
+remain supported, with their creases attached through the shown poses. Room
+walking trials put Muk too close to the floor edge and were replaced by these
+outdoor views. A nearby building partially occludes its unchanged raised arm;
+the studio angles retain full arm inspection. The classic world view does not
+draw the additional 3D companion, so these pairs establish matching game state
+and placement rather than a new source-sprite likeness assessment.

@@ -153,6 +153,56 @@ fingertip closure, preserved wrist/body transforms, finite unit rotations,
 unchanged translations/scales and skinned hand bounds through movement. It
 does not certify hand self-intersection or finished anatomy.
 
+The selected running index curl is 0.85 of the supplied grip, with gentler
+thumb opposition. Offline reviewers can compare other index curls with
+`CRYSTAL_PEOPLE_REVIEW_FINGER_CURL` (0.3–0.95); ordinary clients use the fixed
+production value. Standing and running closeups of Chris, Kris, Nurse, Will,
+Youngster and Blue supplied the hand review, with opposite-stride views of
+Chris, Kris and Will. Existing skirt crossings and wrist/costume seams remain
+visible in those captures.
+
+The current hands were also checked in a fresh offscreen production pair in
+`GoldenrodDeptStore1F`, player tile `(8, 6)`, noon. The paired receipt reports
+`state_preserved=true` and matches the positions/facing of Chris, Receptionist,
+Pokefan F, Bug Catcher and Gentleman, with the same Totodile follower. Clothing
+intersections remain visible; this scene does not approve the broader art pass.
+
+## Current roster and garment review
+
+The October 20 native review revisited all 75 identities in Idle and Run at
+phase 0.25, from front, left and back: 450 views drawn from the eight-angle
+gallery. This is triage, not individual artistic acceptance. Flat facial
+profiles, rigid rear hair, shoulder/armpit material seams, blocky exposed feet
+and generic rear clothing remain visible across the cast. The desired anime
+direction and the unfinished model-first redesign remain in force.
+
+Receptionist now uses the players' small nose/chin profile correction in
+source. Before/after native front, oblique and side views were inspected;
+the cleaner chin is retained for production verification. Her painting,
+UVs, joint influences and topology remain the same. The downstream hair
+finishing responds slightly to the changed head bounds. The fresh combined
+reviewer/client build and the final profile regression are still pending;
+the earlier hand scene does not verify this subsequent head change.
+
+`CRYSTAL_PEOPLE_REVIEW_DRAPE_TRIAL` enables a native frozen-pose experiment,
+not production cloth animation. It fits continuous, length-limited columns
+around a convex envelope of the posed leg cage and pins them to the waist's
+skin field. The reviewer's `--validate-drape` mode checks the projected hull
+against independent all-pairs slice supports. Native captures additionally
+require a positive deformation Jacobian and reproduce candidate positions
+and normals through the actual Bevy skin palette.
+
+Eight-direction Run 0.25 trials of Nurse, Karen and Kurt were rendered and
+inspected. Strict lower-body crossing pairs disappear for Nurse and Karen
+in this pose, but upper-body/waist crossings remain, and the skirts/robe flare
+too broadly. The shape is rejected as final art. Existing body masks also
+remove upper-leg surfaces on many outfits, so crossing counts alone cannot
+approve raised hems. No drape candidate has been installed in gameplay.
+
+The fixed `head` detail camera is useful for the adult idle comparison; its
+initial running close-ups clipped the chin and were discarded. Complete
+full-body motion sheets remain required while that framing is improved.
+
 ## Validation of legacy human removal
 
 The regression exercises all 77 resolved human source identities through the production weighted body/costume renderer and passes. Actor lifecycle, motion and prop checks pass (16 checks), mandatory-rig failure checks pass (2 checks), and bicycle triangle normals pass. The browser target compiled with mandatory person bundle loading. These checks cover renderer integration; they do not establish that the character art is approved or that gameplay is playable.

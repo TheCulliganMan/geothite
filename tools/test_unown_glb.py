@@ -1,10 +1,10 @@
 """Independent checks of all 26 stored Unown glyphs, topology, eye clearance and clips."""
-import math,unittest
+import copy,math,os,unittest
 from pathlib import Path
 import unown_glb as author
 from test_gengar_glb import Model,winding_alignment
-from sculpt_test_support import assert_closed_models,assert_model_shading,ray_intersections
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
+from sculpt_test_support import assert_closed_models,assert_model_shading,parts_overlap,ray_intersections
+ROOT=Path(os.environ.get('CRYSTAL_UNOWN_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class UnownSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
@@ -83,4 +83,15 @@ class UnownSkinTests(unittest.TestCase):
     self.assertTrue(any(max(math.dist(a,b) for a,b in zip(m.vertices[p],m.posed(p,mats)))>.001 for p in range(4,len(m.parts))))
    for animation in m.doc['animations']:
     self.assertEqual({c['target']['path'] for c in animation['channels']},{'rotation'});idle=animation['name'].endswith('.idle');self.assertEqual(animation['extras']['loopSuggested'],idle);self.assertEqual(animation['extras']['cueRelative'],not idle)
+ def test_y_stem_keeps_an_occupied_root_in_its_separate_foot_through_clips(self):
+  m=self.models['unown_y'];parts=m.neutral_model()['primitives']
+  stem=next(i for i,n in enumerate(m.names) if n=='Glyph / Y authored letter stroke 2')
+  foot=next(i for i,n in enumerate(m.names) if n=='Glyph / Y authored letter stroke 3')
+  for clip in m.clips:
+   for step in range(9):
+    mats=m.matrices(clip,step/8)
+    a=dict(parts[stem],positions=sum(m.posed(stem,mats),[]));b=dict(parts[foot],positions=sum(m.posed(foot,mats),[]))
+    self.assertTrue(parts_overlap(a,b),(clip,step,'detached Y foot'))
+  detached=copy.deepcopy(parts[foot]);detached['positions']=[v-(.10 if i%3==1 else 0.) for i,v in enumerate(detached['positions'])]
+  self.assertFalse(parts_overlap(parts[stem],detached))
 if __name__=='__main__':unittest.main()

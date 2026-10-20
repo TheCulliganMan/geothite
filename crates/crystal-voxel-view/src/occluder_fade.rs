@@ -29,7 +29,9 @@ const RESIDUAL_OPACITY: f32 = 0.20;
 // Common screen coverage keeps layered scenery faint without accumulating
 // opacity over the player. Preserve enough form to locate the obstruction.
 const BUILDING_REVEAL_OPACITY: f32 = 0.18;
-const FOLIAGE_REVEAL_OPACITY: f32 = 0.24;
+// Fine foliage needs only a faint outline over the body. Keep most pixels
+// clear so the forest's reveal does not repaint the trainer with green grain.
+const FOLIAGE_REVEAL_OPACITY: f32 = 0.10;
 const EXIT_HOLD_SECONDS: f32 = 0.12;
 const FADE_RATE: f32 = 14.0;
 const RESTORE_RATE: f32 = 8.0;
@@ -71,6 +73,16 @@ pub(super) struct PreparedGroup {
     residual_opacity: f32,
     camera_wall: Option<[f32; 3]>,
     runtime_lazy_sorted: bool,
+}
+#[cfg(test)]
+pub(crate) fn prepared_reveal_policies(groups:&[PreparedGroup])->Vec<(bool,bool,u32)> {
+    fn collect(group:&PreparedGroup,out:&mut Vec<(bool,bool,u32)>) {
+        out.push((group.coverage_fade,group.depth_coverage_fade,group.residual_opacity.to_bits()));
+        if let Some(overlay)=&group.overlay {collect(overlay,out);}
+    }
+    let mut policies=Vec::new();
+    for group in groups {collect(group,&mut policies);}
+    policies
 }
 /// Layered palette foliage shares one visibility sample across all needles.
 /// Keep ordinary walls and their existing translucent reveal unchanged.
@@ -121,7 +133,7 @@ pub(super) fn use_building_reveal(groups: &mut [PreparedGroup], ranges: &[Range<
         }
     }
 }
-/// A slightly stronger crown remains legible against similarly colored ground.
+/// A faint crown outline keeps the obstruction legible around the clear player.
 /// This changes presentation only; all source leaves and shadows stay intact.
 pub(super) fn use_foliage_reveal(groups: &mut [PreparedGroup], coverage: bool) {
     set_coverage_fade(groups,coverage);
@@ -1789,7 +1801,8 @@ fn sync(
         }
         if group.fade.opacity != previous_alpha || changed {
             let clear_body = (group.coverage_fade || group.depth_coverage_fade)
-                && group.fade.residual_opacity == BUILDING_REVEAL_OPACITY
+                && (group.fade.residual_opacity == BUILDING_REVEAL_OPACITY
+                    || group.fade.residual_opacity == FOLIAGE_REVEAL_OPACITY)
                 && group.camera_wall.is_none();
             let furniture_aperture=group.furniture_aperture;
             let furniture=interior_furniture && interior_npc_reveal::source_object(&group);
@@ -2079,6 +2092,53 @@ mod tests {
         assert!(pit.into_iter().any(|target|tree.blocks(eye,target)),"nearby opening reveals its actual blocker");
         assert_eq!(uniform.bottom_radius.w,10.4,"player body radius stays unchanged");
     }
+    #[test]
+    fn foliage_reveal_keeps_the_real_body_clear_at_ground_and_on_a_terrace() {
+        let mut app=App::new();
+        app.add_plugins((MinimalPlugins,bevy::transform::TransformPlugin))
+            .init_resource::<Assets<Mesh>>().init_resource::<Assets<VoxelMaterial>>()
+            .init_resource::<TerrainRevisionCache>()
+            .insert_resource(VoxelViewStatus {active:true,..default()})
+            .insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+                std::time::Duration::from_secs_f64(1./60.)));
+        register(&mut app);
+        let opaque=app.world_mut().resource_mut::<Assets<VoxelMaterial>>()
+            .add(crate::solid_terrain_material());
+        app.world_mut().resource_mut::<TerrainRevisionCache>().solid_material=Some(opaque.clone());
+        app.world_mut().spawn((Camera3d::default(),Msaa::Off,
+            Transform::from_xyz(0.,20.,80.).looking_at(Vec3::Y*10.,Vec3::Y),VoxelWorldCamera));
+        let root=app.world_mut().spawn((Transform::default(),Visibility::Inherited)).id();
+        let (_,mut groups)=prepare_grove(wall(20.125));
+        use_foliage_reveal(&mut groups,true);
+        app.world_mut().resource_scope(|world,mut meshes:Mut<Assets<Mesh>>| {
+            world.resource_scope(|world,mut materials:Mut<Assets<VoxelMaterial>>| {
+                spawn_groups(&mut world.commands(),&mut meshes,&mut materials,
+                    root,groups,opaque.clone(),None);
+            });
+        });
+        app.world_mut().flush();
+        for foot in [Vec3::ZERO,Vec3::new(0.,12.,0.)] {
+            let body=CutawayUniform::for_player(foot,16.).unwrap();
+            app.world_mut().resource_mut::<Assets<VoxelMaterial>>().get_mut(&opaque).unwrap()
+                .extension.cutaway=body;
+            for _ in 0..120 {app.update();}
+            let faded={
+                let world=app.world_mut();
+                let mut query=world.query::<&OccluderGroup>();
+                let group=query.single(world).unwrap();
+                assert!(group.blocked,"the foliage fixture must intersect the actual player rays");
+                group.transparent.clone()
+            };
+            let materials=app.world().resource::<Assets<VoxelMaterial>>();
+            let material=materials.get(&faded).unwrap();
+            assert_eq!(material.extension.cutaway.bottom_radius,body.bottom_radius);
+            assert_eq!(material.extension.cutaway.top_feather,body.top_feather);
+            assert!(material.extension.cutaway.fade.x>0.85);
+            assert_eq!(materials.get(&opaque).unwrap().extension.cutaway.fade.x,0.,
+                "body reveal must not modify the opaque tree material");
+        }
+    }
+
     #[test]
     fn building_body_aperture_tracks_support_without_changing_other_fades() {
         let mut material = crate::solid_terrain_material();
@@ -2690,7 +2750,8 @@ mod tests {
             assert_eq!(groups[1].residual_opacity,if foliage {FOLIAGE_REVEAL_OPACITY} else {BUILDING_REVEAL_OPACITY});
             let mut fade=Fade {residual_opacity:groups[1].residual_opacity,..Default::default()};
             for _ in 0..120 {fade.advance(true,1./60.);}
-            assert!(fade.opacity>=0.15 && fade.opacity<=0.25,"retain a ghost with at least75% clear pixels");
+            let ghost=if foliage {0.08..=0.12}else{0.15..=0.25};
+            assert!(ghost.contains(&fade.opacity),"retain a faint outline with most player pixels clear");
             for _ in 0..240 {fade.advance(false,1./60.);}
             assert_eq!(fade.opacity,1.,"restore the whole object after clearing it");
             share_groups(&mut groups);

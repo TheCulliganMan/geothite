@@ -2213,7 +2213,9 @@ fn slowpoke_registry_articulates_head_and_tail_with_four_planted_feet() {
 
 #[test]
 fn unown_registry_preserves_all_forms_and_coherent_eye_owners() {
-    assert!(super::for_species("UNOWN").is_none(), "generic species cannot choose a DV form");
+    assert!(super::authored_for_species("UNOWN").is_none(), "a DV form requires an explicit authored identity");
+    assert!(std::ptr::eq(super::for_species("UNOWN").unwrap(), super::rig(Species::Unown(8))),
+        "the world roster retains its explicit generic Unown-to-I binding");
     for unknown in ["UNOWN_!", "UNOWN_AA", "UNOWN_UNRESOLVED"] {
         assert!(super::for_species(unknown).is_none());
     }

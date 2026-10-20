@@ -50,7 +50,7 @@ const UNOWN_DIGESTS: [&str; 26] = [
     "1026bb702cf9c9f5fa8d1b3f006605390b26dafc4a16943b3031489a529274bb",
     "b62999e5454a604d8a1f68300934f850fff420ecb1ccd906f748a88d1196352c",
     "22acc7dc272833b0f1e80ae84c76b538633fa6884b0d42ca8b262d1f77519a02",
-    "1074672b12d5ef711208bbab10713eb1d6f232092b254c8dafcb0538bfe7d4e7",
+    "72e1bd20e574cc7072e5be213be73e32c4bcee6c2f4245e05ca2236af55d490f",
     "c47914a33662a3304752409e05e0227748bbc7abf7ba333a1c997aa467174323",
 ];
 
@@ -1898,8 +1898,8 @@ impl Species {
             Self::Dewgong => "ff6eb75423ffe9f943dd2686e74fc2309992c09d2f9b09e388ca5461da2122aa",
             Self::Seel => "7861c1e3c0fdc0cda8bf0656ecc9c64fee172776b69ba18940c21528ad587de7",
             Self::Ditto => "1a3fc7b87714f7c4c5b82db35cecc4fb7bc3d3679f52f0ccf2336727626327e8",
-            Self::Muk => "373608073b4024110aaaf4e23d345ca1c07c2fd6a2725f72fe985893224ca8c3",
-            Self::Grimer => "01ccaddd323bf25f60a019cbc0642316ec52af5c7cd650ecc625d54d607c3a03",
+            Self::Muk => "60179e88f045db6353cea68824224ae5e1ffa2db3b802e91910cb5949452f75d",
+            Self::Grimer => "efd59abdeaebc370eabfeac2aa8ec133ddfd0106e2114b787d776b6d38d06511",
             Self::Cloyster => "714eb4a74d131c5a8b303d1fde4af07a30dd0c739fa0741176cee1efbb336d74",
             Self::Shellder => "9603bdedd0b70757c615251f8ea5ea6b258a33c53c3ce6ab434f2f441edd95e9",
             Self::Kingler => "77ef337fdce8469cd785876b536b3c92953ebd6a1b026f7b12001c2a592cfc36",

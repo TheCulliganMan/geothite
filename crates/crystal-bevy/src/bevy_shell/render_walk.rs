@@ -673,12 +673,22 @@ pub(super) fn drive(
         walk.player_moved |= span.x >= frame.tile_size.x || span.y >= frame.tile_size.y;
         walk.player_bounds = Some((low, high));
     }
-    let requested_key = if walk.pc_mail_review {
+    // Once the real encounter starts, route arrows can select PKMN while
+    // differently timed introductions finish. This opt-in review advances
+    // source pages and opens FIGHT with ordinary A inputs instead.
+    let review_battle_menu = walk.hold_on_move_menu
+        && battle.as_ref().is_some_and(|battle| battle.active);
+    let requested_key = if review_battle_menu {
+        KeyCode::KeyZ
+    } else if walk.pc_mail_review {
         pc_mail_review_key(&runtime).unwrap_or(walk.route[segment])
     } else if walk.pc_item_review {
         pc_item_review_key(&runtime,walk.hold_menu_id.as_deref().expect("validated item review target")).unwrap_or(walk.route[segment])
     } else {walk.route[segment]};
-    if walk.tick % 32 == 0 || walk.segment_key.is_none() {
+    let replace_battle_arrow = review_battle_menu && walk.segment_key.is_some_and(|key|
+        matches!(key, KeyCode::ArrowUp | KeyCode::ArrowRight | KeyCode::ArrowDown | KeyCode::ArrowLeft));
+    if walk.tick % 32 == 0 || walk.segment_key.is_none() || replace_battle_arrow {
+        if replace_battle_arrow { keyboard.release(walk.segment_key.unwrap()); }
         // Opt-in QA policy: keep the current battler by pressing ordinary B
         // at the actual Shift choice. Latch for this whole input segment so
         // closing the prompt cannot leave both A and B held simultaneously.
@@ -694,12 +704,15 @@ pub(super) fn drive(
     // Hold the ordinary key until one authoritative step commits, then let
     // its production interpolation settle. Turns can consume an initial press.
     // Hold through the source menu's BG upload, then leave an actual release
-    // between presses, as required by MailboxPC's JoyTextDelay history.
+    // between presses, as required by its JoyTextDelay history.
     let pulse_pc=walk.pc_input_pulse && (runtime.pc_hub_session_open
         || walk.hold_menu_id.as_deref()==Some("service:name-rater-entry")
         || (walk.hold_menu_id.as_deref()==Some("field:save-confirmation")
             &&(runtime.start_menu_cursor.is_some()||runtime.save_menu_open)));
-    if (pulse_pc && walk.tick%32>=8)
+    // Reaching the source move owner is enough to stop choosing actions while
+    // the native menu finishes rendering; the capture still waits for it.
+    if (review_battle_menu && move_menu_is_presented(&runtime, true))
+        || ((pulse_pc || review_battle_menu) && walk.tick%32>=8)
         || (walk.step_input && position_changed(walk.segment_position.as_ref(), map, tile)) {
         keyboard.release(key);
     } else {

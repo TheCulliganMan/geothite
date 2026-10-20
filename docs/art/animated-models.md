@@ -1,5 +1,8 @@
 # Animated model assets
 
+The [full Pokémon angle review](pokemon-roster-angle-review.md) covers front,
+side and rear views of all 251 species and 276 current variants.
+
 The [authoring portability and roster checks](pokemon-authoring-portability.md)
 record full-source and runtime motion coverage, preserved canonical assets,
 and numerical fixes for Gyarados, Onix and closed Unown strokes.
@@ -9,6 +12,9 @@ preserves the canonical nose across the two tested Python versions.
 
 The [seal surface strokes](seal-surface-strokes.md) root Seel's brows and tongue
 crease and both seals' flipper folds while preserving their bodies and rigs.
+
+The [slime fold refit](slime-sculptures.md#continuous-fold-roots) embeds Grimer's
+and Muk's twelve creases in their posed body surfaces; Ditto is unchanged.
 
 The [Wooper smile fit](wooper-smile-fit.md) embeds its detached mouth tube in
 the actual head surface while preserving its outline and rig.
@@ -5533,7 +5539,7 @@ use the canonical GLBs. Details are in [slime-sculptures.md](slime-sculptures.md
 
 Grimer has 26 parts, 18,739 vertices, 25,172 triangles, 13 joints,
 146 accessors and 730,324 bytes. Muk has 26 parts, 16,163 vertices,
-21,396 triangles, 13 joints, 139 accessors and 633,072 bytes. Ditto has
+21,396 triangles, 13 joints, 139 accessors and 633,076 bytes. Ditto has
 eight parts, 9,310 vertices, 13,980 triangles, five joints, 51 accessors
 and 403,272 bytes. All authoring heights remain 0.96; verified pack sizes
 remain 0.889 m, 1.1938 m and 0.3048 m. Existing limits remain unchanged.

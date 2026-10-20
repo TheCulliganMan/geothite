@@ -43,6 +43,7 @@ struct Review {
     frame: u32,
     pending: bool,
     blank_attempts: u32,
+    drape_applied: bool,
     result: Arc<Mutex<Option<Result<CaptureOutcome, String>>>>,
 }
 enum CaptureOutcome { Saved, Blank }
@@ -55,6 +56,18 @@ fn all_angles() -> bool {
 }
 
 pub fn run() -> AppExit {
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::args().nth(1).as_deref() == Some("--validate-faces") {
+        crate::head_surface::review_validation::validate();
+        eprintln!("Anime profile checks passed for both supplied rigs: unchanged UVs, skinning, body, face projection and anchors, finite shading and animated bounds.");
+        return AppExit::Success;
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::args().nth(1).as_deref() == Some("--validate-drape") {
+        crate::garment_drape_trial::validate_support();
+        eprintln!("Drape trial support checks passed: convex cage slices match independent all-pairs supports. Frozen art trials still require mapped and collision review.");
+        return AppExit::Success;
+    }
     if std::env::args().nth(1).as_deref() == Some("--validate-hands") {
         crate::hand_pose::validation::native_fingers_relax_and_close_without_wrist_or_skin_drift();
         eprintln!("Native hand checks passed: resting curl, loose running fists, pinned wrists, fixed bone lengths and skinned bounds.");
@@ -107,6 +120,9 @@ pub fn run() -> AppExit {
         phase * std::f32::consts::TAU
     });
     let bicycle = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_BICYCLE").is_some();
+    assert!(std::env::var_os("CRYSTAL_PEOPLE_REVIEW_DRAPE_TRIAL").is_none()
+        || (!bicycle && std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_RUN_SWEEP").is_none()),
+        "frozen drape trial requires a single unmounted pose, without a run sweep");
     if bicycle {
         assert!(kinds.iter().all(|kind| matches!(kind,
             CharacterKind::Trainer | CharacterKind::TrainerFemale | CharacterKind::Biker)),
@@ -209,6 +225,7 @@ pub fn run() -> AppExit {
             frame: 0,
             pending: false,
             blank_attempts: 0,
+            drape_applied: false,
             result: default(),
         })
         .add_systems(Startup, setup)
@@ -278,14 +295,15 @@ fn setup(mut commands: Commands, mut images: ResMut<Assets<Image>>) {
     // camera, meshes and materials, and never changes production rendering.
     let detail = single_view().is_some();
     let region = std::env::var("CRYSTAL_PEOPLE_REVIEW_DETAIL").ok().map(|value| {
-        assert!(matches!(value.as_str(), "feet" | "hands"),
-            "supported detail regions are feet and hands");
+        assert!(matches!(value.as_str(), "feet" | "hands" | "head"),
+            "supported detail regions are feet, hands and head");
         assert!(detail, "detail review requires a single image-target view");
         value
     });
     let feet = region.as_deref() == Some("feet");
     let hands = region.as_deref() == Some("hands");
-    let close_up = feet || hands;
+    let head = region.as_deref() == Some("head");
+    let close_up = feet || hands || head;
     let image = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET").map(|_| {
         let (width, height) = if detail { (1000, 1000) }
             else if all_angles() { (1600, 1050) } else { (1600, 600) };
@@ -306,7 +324,11 @@ Projection::Orthographic(OrthographicProjection {
                 far: 100.,
                 ..OrthographicProjection::default_3d()
             }),
-if hands {
+if head {
+    let target = Vec3::new(0., 1.15, 0.);
+    Transform::from_translation(target + Vec3::new(0., 0.12, 8.))
+        .looking_at(target, Vec3::Y)
+} else if hands {
     let target = if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_BICYCLE").is_some() {
         Vec3::new(0., 0.72, 0.25)
     } else {
@@ -382,6 +404,7 @@ fn capture(
         }
         review.people.clear();
         review.index += 1;
+        review.drape_applied = false;
         review.pending = false;
         review.frame = 0;
         review.blank_attempts = 0;
@@ -525,6 +548,16 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + (i % 4) as f32 * 1.
                     .expect("write review palette");
             }
         }
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    if !review.drape_applied && review.frame >= 3
+        && std::env::var_os("CRYSTAL_PEOPLE_REVIEW_DRAPE_TRIAL").is_some() {
+        let person = &review.people[0];
+        let palette: Vec<_> = person.review_skin_palette(&transforms).iter()
+            .map(Mat4::from_cols_array).collect();
+        review.gpu.review_frozen_drape(review.kinds[review.index], &person.rig,
+            &palette, &mut meshes);
+        review.drape_applied = true;
     }
     review.frame += 1;
     if review.pending || review.frame < 30 {

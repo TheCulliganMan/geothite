@@ -83,7 +83,7 @@ pub(crate) fn prepare_appearance(rig: &PersonRig, kind: CharacterKind) -> Prepar
         | CharacterKind::SwimmerGuy | CharacterKind::SwimmerGirl | CharacterKind::Twin) {
         crate::head_surface::adventure_profile(&rig, &mut body, &mut body_joints, &mut body_weights);
     }
-    if matches!(kind, CharacterKind::Trainer | CharacterKind::TrainerFemale) {
+    if matches!(kind, CharacterKind::Trainer | CharacterKind::TrainerFemale | CharacterKind::Receptionist) {
         crate::head_surface::player_profile(&rig, &mut body, &body_joints, &body_weights);
     }
     if matches!(kind, CharacterKind::Kurt | CharacterKind::KurtOutside) {
@@ -166,6 +166,12 @@ pub(crate) fn prepare_appearance(rig: &PersonRig, kind: CharacterKind) -> Prepar
                         .expect("write review costume");
                 }
                 let mut mesh = costume.surface.into_mesh();
+                #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+                if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_DRAPE_TRIAL").is_some() {
+                    // Frozen art trials edit after the actual pose is sampled.
+                    // Ordinary clients keep their render-only mesh allocation.
+                    mesh.asset_usage |= bevy::asset::RenderAssetUsages::MAIN_WORLD;
+                }
                 mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_INDEX,
                     VertexAttributeValues::Uint16x4(costume.joints));
                 mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, costume.weights);
@@ -209,6 +215,15 @@ pub(crate) struct Person {
     posed: Vec<Transform>,
 }
 impl PeopleGpu {
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    pub(crate) fn review_frozen_drape(&self, kind: CharacterKind, rig: &PersonRig,
+        palette: &[Mat4], meshes: &mut Assets<Mesh>) {
+        let look = crate::npc_appearance::look(kind);
+        if crate::garment_body::hem(look).is_none() { return; }
+        let costume = self.0.get(&(look.base, kind)).unwrap().costume.as_ref().unwrap();
+        crate::garment_drape_trial::freeze(look.texture_key, rig,
+            &mut meshes.get_mut(&costume.mesh).unwrap(), palette);
+    }
     pub(super) fn retain_kinds(&mut self, kinds: &std::collections::HashSet<CharacterKind>) {
         self.0.retain(|(_, kind), _| kinds.contains(kind));
         self.3.retain(|(_, kind, _), _| kinds.contains(kind));

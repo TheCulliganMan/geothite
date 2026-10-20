@@ -338,6 +338,26 @@ mod tests {
     }
 
     #[test]
+    fn walkable_mineral_keeps_native_ownership_at_overlapping_connections() {
+        let mut main=region("Route26",IVec2::new(-16,32),4,Vec::new());
+        let mut neighbor=main.clone();
+        neighbor.map="Route27".into();
+        for (i,land) in [(18,true),(20,false)] {
+            main.cells[i].1=crate::mesh::tests::source_with_tile(0x0a,1,1,0x3c);
+            main.cells[i].2=land;
+            neighbor.cells[i].1=main.cells[i].1.clone();
+            neighbor.cells[i].2=!land;
+        }
+        let expected=vec![main.cells[18].0];
+        let datum=connected_source_terrace_datum("Route26",&[main.clone(),neighbor],&[]).unwrap();
+        assert_eq!(&*datum.walkable_mineral,&expected);
+        assert!(datum.valid_walkable_mineral());
+        let standalone=connected_source_terrace_datum("Route26",&[main],&[]).unwrap();
+        assert_eq!(datum.walkable_mineral,standalone.walkable_mineral,
+            "a connected overlap cannot bury or invent a native walking cap");
+    }
+
+    #[test]
     fn johto_town_shore_does_not_inherit_connected_route_courses() {
         let main = region("NewBarkTown", IVec2::ZERO, 16, Vec::new());
         let edges = vec![VisualJumpLedge {

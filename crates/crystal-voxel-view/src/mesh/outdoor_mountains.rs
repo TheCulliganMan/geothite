@@ -228,14 +228,16 @@ impl Relief {
                         distance = distance.min(px.hypot(pz));
                     }
                 }
-                // Large intersecting planar beds form unequal ridges rather than
-                // a cone repeated at every metatile. World coordinates preserve
-                // the formation through connected-map origins and camera crops.
+                // Broad mineral beds vary the large mass. A soft shoulder
+                // keeps thin strips from growing into tall knife edges; wide
+                // formations retain their depth and unequal summit heights.
+                // World coordinates preserve the sculpt through camera crops.
                 let wx = x as f32 + origin[0] as f32;
                 let wz = z as f32 + origin[1] as f32;
                 let bed = super::cave_cliff::slab(wx * 0.105 + 17., wz * 0.105 - 31.);
-                let ridge = 2.5 + bed.abs() * 3.;
-                peaks[z * (g.width + 1) + x] = distance.min(ridge) * 1.85 * g.tile_height;
+                let ridge = 4.2 + bed * 2.8;
+                let shoulder = distance * distance / (distance * distance + 3.5);
+                peaks[z * (g.width + 1) + x] = ridge * shoulder * g.tile_height;
             }
         }
         Self {
@@ -682,7 +684,13 @@ mod tests {
         let shifted=sources.iter().map(|(p,s,l)|(*p+shift,s.clone(),*l)).collect::<Vec<_>>();
         let shifted=source_terrace_datum("Route26",&[],&shifted).unwrap();
         let shifted=Relief::with_datum(&cells,&shapes,&g,shift.to_array(),Some(&shifted));
-        assert_eq!(shifted.height(5.5,5.5),0.,"complete map coordinates survive camera crops and connected origins");
+        assert_eq!(shifted.height(5.5,5.5),0.,"complete map coordinates survive connected origins");
+        let cropped=cells.chunks_exact(g.width).skip(1).take(10)
+            .flat_map(|row|row[1..11].iter().copied()).collect::<Vec<_>>();
+        let cropped_shapes=cropped.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        let cropped_g=GridGeometry {width:10,height:10,..g};
+        let cropped=Relief::with_datum(&cropped,&cropped_shapes,&cropped_g,[1,1],Some(&datum));
+        assert_eq!(cropped.height(4.5,4.5),0.,"a camera crop must retain the complete source walking cap");
         let mut mesh=TerrainMeshData::default();
         mesh.solid.positions=vec![[44.,16.,44.],[68.,16.,68.]];
         mesh.solid.uvs=vec![[-10044.,-40044.],[-10068.,-40068.]];

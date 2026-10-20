@@ -791,7 +791,7 @@ impl StreamedGroves {
         let mut groups = library.prepare_if_cached_with_ground(recipe.bounds, recipe.base_height,
             recipe.tile_height, recipe.coordinates, recipe.neighbors, recipe.family,
             recipe.understory_bounds)?;
-        crate::occluder_fade::set_coverage_fade(&mut groups, recipe.coverage_fade);
+        crate::occluder_fade::use_foliage_reveal(&mut groups, recipe.coverage_fade);
         Some(groups)
     }
 }
@@ -800,6 +800,30 @@ impl StreamedGroves {
 mod cached_grove_tests {
     use super::*;
     use bevy::prelude::{IVec2,UVec2,Vec2};
+
+    #[test]
+    fn cached_groves_keep_the_full_preparations_reveal_policy() {
+        use crate::foliage::GroveFamily;
+        let library=crate::forest_instances::Library::default();
+        for family in [GroveFamily::JohtoPine,GroveFamily::AncientForest,GroveFamily::KantoDeciduous] {
+            for coverage_fade in [false,true] {
+                let recipe=new_bark::GroveRecipe {family,bounds:[-16.,16.,-16.,16.],
+                    base_height:0.,tile_height:16.,coordinates:[4,8],neighbors:[false;4],
+                    understory_bounds:None,coverage_fade};
+                let expected=recipe.clone().prepare_instanced(&library);
+                let source=DeferredGroves {geometry:Some(GridGeometry {width:1,height:1,
+                    tile_width:16.,tile_height:16.,origin_x:0.,origin_z:0.}),
+                    recipes:std::collections::VecDeque::from([recipe]),..Default::default()};
+                source.bank_regions.set(Vec::new()).unwrap();
+                let cached=StreamedGroves::new(source).prepare_if_cached(0,&library).unwrap();
+                assert_eq!(crate::occluder_fade::prepared_reveal_policies(&cached),
+                    crate::occluder_fade::prepared_reveal_policies(&expected),
+                    "cached {family:?} trees must retain the full preparation's reveal strength and coverage");
+                let signature=|groups|crate::occluder_fade::geometry_signature(&SurfaceMeshData::default(),groups);
+                assert_eq!(signature(cached),signature(expected),"reveal policy cannot alter source geometry");
+            }
+        }
+    }
 
     #[test]
     fn deciduous_groves_use_the_same_kanto_shelf_as_the_rendered_ground() {

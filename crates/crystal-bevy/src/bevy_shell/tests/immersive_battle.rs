@@ -168,7 +168,7 @@ fn immersive_battle_entry_keeps_modeled_background_and_controller_owned_reveals(
 }
 
 #[test]
-fn immersive_entry_compositor_retains_portraits_and_parks_only_replaced_pixels() {
+fn immersive_entry_compositor_hides_classic_portraits_and_restores_them_on_toggle() {
     let mut shell = immersive_battle_fixture();
     shell.visible_battle_sliding_intro = Some(0);
     let mut app = App::new();
@@ -180,18 +180,34 @@ fn immersive_entry_compositor_retains_portraits_and_parks_only_replaced_pixels()
         .init_resource::<RenderedViewport>()
         .add_systems(Update, sync_immersive_battle_layers);
     let portrait = app.world_mut().spawn((BattleBattlerMarker, BattlePortraitMarker)).id();
+    let standalone_portrait = app.world_mut().spawn(BattlePortraitMarker).id();
     let source_mon = app.world_mut().spawn(BattleBattlerMarker).id();
     let source_canvas = app.world_mut().spawn(FixedBattleCanvasMarker).id();
     app.update();
     type Layers = bevy::camera::visibility::RenderLayers;
-    assert!(app.world().get::<Layers>(portrait).is_none(), "intro portrait must survive the 3D handoff");
-    for entity in [source_mon, source_canvas] {
+    for entity in [portrait, standalone_portrait, source_mon, source_canvas] {
         assert_eq!(app.world().get::<Layers>(entity), Some(&Layers::layer(
             crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER)));
     }
+    // Preparation can retain the world before the battle camera is active.
+    app.world_mut().resource_mut::<crystal_voxel_view::BattleViewStatus>().active = false;
+    app.world_mut().resource_mut::<crystal_voxel_view::VoxelViewStatus>().active = true;
+    app.update();
+    for entity in [portrait, standalone_portrait] {
+        assert_eq!(app.world().get::<Layers>(entity), Some(&Layers::layer(
+            crystal_voxel_view::HIDDEN_CLASSIC_WORLD_RENDER_LAYER)));
+    }
+    // A real classic fallback must remain complete even with 3D requested.
+    app.world_mut().resource_mut::<crystal_voxel_view::VoxelViewStatus>().active = false;
+    app.update();
+    for entity in [portrait, standalone_portrait, source_mon, source_canvas] {
+        assert!(app.world().get::<Layers>(entity).is_none());
+    }
+    app.world_mut().resource_mut::<crystal_voxel_view::BattleViewStatus>().active = true;
+    app.update();
     app.world_mut().resource_mut::<crystal_voxel_view::VoxelViewSettings>().enabled = false;
     app.update();
-    for entity in [portrait, source_mon, source_canvas] {
+    for entity in [portrait, standalone_portrait, source_mon, source_canvas] {
         assert!(app.world().get::<Layers>(entity).is_none(), "classic mode must restore all source layers");
     }
 }

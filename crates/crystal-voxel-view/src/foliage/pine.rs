@@ -14,9 +14,9 @@ struct Recipe {
 // Red-pine-inspired high spreading, upright and windswept crowns. Their
 // widest limbs sit well above the open lower trunk, rather than at its base.
 const RECIPES: [Recipe; 3] = [
-    Recipe { width: 1.08, height: 0.94, drop: 0.025, courses: 7, crown_start: 0.60, lean: 0.12 },
-    Recipe { width: 0.92, height: 1.06, drop: -0.005, courses: 8, crown_start: 0.48, lean: 0.055 },
-    Recipe { width: 1.00, height: 1.00, drop: 0.045, courses: 7, crown_start: 0.56, lean: 0.20 },
+    Recipe { width: 1.08, height: 0.94, drop: 0.025, courses: 6, crown_start: 0.50, lean: 0.12 },
+    Recipe { width: 0.92, height: 1.06, drop: -0.005, courses: 7, crown_start: 0.45, lean: 0.055 },
+    Recipe { width: 1.00, height: 1.00, drop: 0.045, courses: 6, crown_start: 0.48, lean: 0.20 },
 ];
 
 pub(super) fn stem_height(tile: f32, coordinates: [i32;2], neighbors: [bool;4]) -> f32 {
@@ -100,12 +100,11 @@ pub(super) fn append_canopy(
                 .push((radial + Vec3::Y * 0.04).normalize().to_array());
             mesh.solid.uvs.push([0.; 2]);
             let grain = 0.78 + 0.22 * (a * 7. + phase + t).cos();
-            // Dark rooted bark warms to the orange-red upper stem visible
-            // between the sparse branches of a mature red pine.
+            // Warm brown bark stays quieter than the surrounding foliage.
             mesh.solid.colors.push([
-                (0.17 + t * 0.17) * grain,
-                (0.105 + t * 0.065) * grain,
-                (0.065 + t * 0.015) * grain,
+                (0.17 + t * 0.08) * grain,
+                (0.105 + t * 0.07) * grain,
+                (0.065 + t * 0.025) * grain,
                 1.,
             ]);
         }
@@ -164,8 +163,8 @@ pub(super) fn append_canopy(
                 spacing * 0.026 * (1. - t * 0.65),
             );
             let across = Vec3::new(-direction.z, 0., direction.x);
-            for twig in 0..6 {
-                let f = 0.22 + twig as f32 * 0.145;
+            for twig in 0..4 {
+                let f = 0.22 + twig as f32 * 0.23;
                 let anchor = root.lerp(tip, f);
                 for side in [-1., 1.] {
                     let length = foliage_width
@@ -308,8 +307,10 @@ fn spray(
         .cross(if axis.y.abs() > 0.9 { Vec3::Z } else { Vec3::Y })
         .normalize();
     let up = side.cross(axis).normalize();
-    for pair in 0..7 {
-        let t = (pair as f32 + 0.5) / 7.;
+    // Fewer, larger fascicles read as foliage at gameplay distance instead
+    // of a cloud of subpixel needles and exposed orange twigs.
+    for pair in 0..5 {
+        let t = (pair as f32 + 0.5) / 5.;
         let p = root.lerp(tip, t);
         for sign in [-1., 1.] {
             // Stagger needle planes around the twig instead of laying every
@@ -317,7 +318,7 @@ fn spray(
             let twist = (phase + pair as f32 * 1.9 + sign * 0.7).sin() * 0.6;
             let radial = side * sign * twist.cos() + up * twist.sin();
             let needle_up = up * twist.cos() - side * sign * twist.sin();
-            let length = width
+            let length = width * 1.6
                 * (0.48 + 0.52 * (std::f32::consts::PI * t).sin())
                 * (0.86 + 0.14 * (phase + pair as f32 * 2.7 + sign).sin());
             let end = p
@@ -329,9 +330,9 @@ fn spray(
             let direction = (end - p).normalize();
             let across = direction.cross(needle_up).normalize();
             let mid = p.lerp(end, 0.44);
-            let points = [p, mid + across * length * 0.10
-                + needle_up * length * 0.065, end,
-                mid - across * length * 0.10 + needle_up * length * 0.065];
+            let points = [p, mid + across * length * 0.115
+                + needle_up * length * 0.10, end,
+                mid - across * length * 0.115 + needle_up * length * 0.10];
             let center = points.iter().copied().sum::<Vec3>() / 4.;
             let patch = leaf_pigment(center,width*5.);
             let mut normals = [Vec3::ZERO; 4];
@@ -358,7 +359,7 @@ fn spray(
                 let needle = if weathered {
                     [0.10 + 0.20 * tip, 0.052 + 0.10 * tip, 0.025 + 0.026 * tip]
                 } else {
-                    [0.025 + 0.12 * tip, 0.09 + 0.22 * tip, 0.06 + 0.015 * tip]
+                    [0.03 + 0.12 * tip, 0.12 + 0.26 * tip, 0.035 + 0.03 * tip]
                 };
                 mesh.colors.push([
                     needle[0] * tint[0] * light * pigment * patch[0],
@@ -391,7 +392,7 @@ fn append_twig(mesh: &mut SurfaceMeshData, root: Vec3, tip: Vec3, radius: f32) {
                 .push((root.lerp(tip, t) + normal * radius * (1. - 0.75 * t)).to_array());
             mesh.normals.push(normal.to_array());
             mesh.uvs.push([0.; 2]);
-            mesh.colors.push([0.20, 0.095, 0.035, 1.]);
+            mesh.colors.push([0.16, 0.11, 0.065, 1.]);
         }
     }
     for row in 0..2 {
@@ -441,13 +442,13 @@ mod tests {
     }
 
     #[test]
-    fn needle_tufts_are_closed_slender_bundles_with_unchanged_triangle_budget() {
+    fn needle_tufts_are_closed_slender_bundles_within_the_existing_triangle_budget() {
         for phase in [0.0, 0.7, 2.9] {
             for axis in [Vec3::X, Vec3::Y, Vec3::new(1., -0.3, 0.5)] {
                 let mut mesh = SurfaceMeshData::default();
                 spray(&mut mesh, Vec3::ZERO, axis * 2., 1., phase, [1.; 3], false);
-                assert_eq!(mesh.indices.len(), 7 * 2 * 4 * 3);
-                assert_eq!(mesh.positions.len(), 7 * 2 * 4);
+                assert!(mesh.indices.len() <= 7 * 2 * 4 * 3);
+                assert!(mesh.positions.len() <= 7 * 2 * 4);
                 for (bundle, faces) in mesh.positions.chunks_exact(4)
                     .zip(mesh.indices.chunks_exact(12)) {
                     let p: Vec<_> = bundle.iter().map(|p| Vec3::from_array(*p)).collect();

@@ -834,6 +834,7 @@ fn sync_immersive_battle_layers(
         Or<(
             With<FixedBattleCanvasMarker>,
             With<BattleBattlerMarker>,
+            With<BattlePortraitMarker>,
             With<ImmersiveBattleReplaced>,
             With<BattleTransitionMarker>,
         )>,
@@ -864,13 +865,20 @@ fn sync_immersive_battle_layers(
     // so global-only shake cannot shift it or switch its renderer mid-sequence.
     let retain_source_objects = active && frame.source.is_some();
     let world_entry = settings.enabled && world_status.active && shell.visible_battle_transition.is_some();
+    // Trainer back/front pictures belong to the classic LCD presentation.
+    // Park them during both the retained-field preparation and the 3D shot,
+    // including portraits spawned without a battler marker. The controller
+    // still owns their timing; switching to classic restores the same entity.
+    let hide_portraits = settings.enabled && !rendered.title_active
+        && (status.active || world_status.active);
     for (entity, layers, source_object, portrait, transition) in &replaced {
         set_immersive_hidden_layer(
             &mut commands,
             entity,
             layers,
-            (world_entry && transition.is_some())
-                || (active && portrait.is_none() && !(retain_source_objects && source_object.is_some())),
+            (hide_portraits && portrait.is_some())
+                || (world_entry && transition.is_some())
+                || (active && !(retain_source_objects && source_object.is_some())),
         );
     }
     if let Some(mut enabled) = overlay_enabled {
@@ -1081,18 +1089,7 @@ fn prepare_immersive_battle_preview(
     shiny: bool,
     unown_form: Option<u8>,
 ) -> Result<BevyRuntimeShell> {
-    anyhow::ensure!(unown_form.is_none() || starter == Some("UNOWN"), "--unown-form requires --species UNOWN");
-    let model_dvs = if let Some(form) = unown_form {
-        anyhow::ensure!((1..=26).contains(&form), "Unown form must be A..Z");
-        if shiny {
-            anyhow::ensure!(matches!(form, 9 | 22), "Crystal shiny Unown DVs select I or V");
-            Dv::from_non_hp(if form == 9 {2} else {14}, 10, 10, 10)
-        } else {
-            let packed = (form - 1) * 10;
-            Dv::from_non_hp(((packed >> 6) & 3) << 1, ((packed >> 4) & 3) << 1,
-                ((packed >> 2) & 3) << 1, (packed & 3) << 1)
-        }
-    } else if shiny { Dv::from_non_hp(2, 10, 10, 10) } else { Dv::from_non_hp(9, 9, 9, 9) };
+    let model_dvs = model_preview::dvs(starter.unwrap_or(""), shiny, unown_form)?;
 
     anyhow::ensure!(
         starter.is_none()
@@ -1415,7 +1412,13 @@ fn field_model_review_party(shell: &BevyRuntimeShell) -> Result<(String, Dv)> {
         Ok("1") => true,
         _ => anyhow::bail!("CRYSTAL_RENDER_TEST_PARTY_SHINY must be 0 or 1"),
     };
-    Ok((species, if shiny { Dv::from_non_hp(2, 10, 10, 10) } else { Dv::from_non_hp(9, 9, 9, 9) }))
+    let form = match std::env::var("CRYSTAL_RENDER_TEST_PARTY_UNOWN_FORM") {
+        Ok(letter) => Some(model_preview::unown_form(&letter)?),
+        Err(std::env::VarError::NotPresent) => None,
+        Err(error) => return Err(error).context("read preview Unown form"),
+    };
+    let dvs = model_preview::dvs(&species, shiny, form)?;
+    Ok((species, dvs))
 }
 
 /// Disposable source-location setup. All watering, narration and battle entry

@@ -87,6 +87,12 @@ fn external_tohjo_basins_join_both_falls_and_support_a_continuous_ride() {
     ordinary.map_id = "UnionCave1F".into();
     let baseline = build_terrain_mesh(&ordinary).unwrap();
     for (i, tile) in native.tiles.iter().enumerate() {
+        if tile.source.tile_index == 0x14 {
+            assert!(
+                [0., 32.].contains(&mesh.footing_heights[i]),
+                "each basin keeps one level"
+            );
+        }
         if (24..36).contains(&(i % width)) && (12..16).contains(&(i / width)) {
             assert_eq!(
                 mesh.footing_heights[i], 40.,
@@ -101,4 +107,24 @@ fn external_tohjo_basins_join_both_falls_and_support_a_continuous_ride() {
             );
         }
     }
+    // A crop beginning inside the western cascade cannot prove its head.
+    // It must retain the source fallback instead of inventing raised support.
+    let mut clipped = native.clone();
+    clipped.grid_size = UVec2::new(8, 10);
+    clipped.viewport_size = Vec2::new(64., 80.);
+    clipped.tiles = (16..26)
+        .flat_map(|row| (16..24).map(move |column| (row, column)))
+        .map(|(row, column)| {
+            let mut tile = native.tiles[row * width + column].clone();
+            tile.row = (row - 16) as u32;
+            tile.column = (column - 16) as u32;
+            tile
+        })
+        .collect();
+    let fallback = build_terrain_mesh(&clipped).unwrap();
+    assert!(fallback.footing_heights.iter().all(|&y| y == 0.));
+    assert_eq!(
+        resolved_footing_height(&clipped, Vec2::new(0., 0.), &fallback.footing_heights),
+        Some(0.)
+    );
 }

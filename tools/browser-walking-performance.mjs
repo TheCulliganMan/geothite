@@ -259,6 +259,15 @@ try {
       encodedBytes: entry.encodedBodySize, decodedBytes: entry.decodedBodySize })));
   await Promise.allSettled(networkTasks);
   report.networkRequests = networkRequests;
+  if (process.env.WALK_SETUP) {
+    report.walkSetup = [];
+    for (const button of process.env.WALK_SETUP.split(',')) {
+      assert.ok(['up', 'down', 'left', 'right'].includes(button));
+      const result = await press(button);
+      report.walkSetup.push({ button, map: result.map_info });
+      assert.equal(result.map_info.name, expectedMap, 'walking setup must stay on the measured route');
+    }
+  }
   const actorSubmissionsBeforeWalk = await page.evaluate(() => globalThis.__crystalActorWorkerMetrics?.submitted ?? 0);
   const workerSubmissionsBeforeWalk = await page.evaluate(() => globalThis.__crystalTerrainWorkerMetrics?.submitted ?? 0);
   const loadBefore = os.loadavg();
@@ -296,7 +305,13 @@ try {
       await page.evaluate(() => { walkingMetrics.active = false; walkingMetrics.last = 0; });
       const legState = await observe();
       report.walkObservations ??= [];
+      const previousPosition = report.walkObservations.at(-1)?.map.player ?? state.map_info.player;
+      assert.ok(legState.map_info.player.x !== previousPosition.x
+        || legState.map_info.player.y !== previousPosition.y,
+        'every measured walking leg must move; do not accept a blocked ledge or NPC as walking FPS');
       report.walkObservations.push({ leg, key, map: legState.map_info, flow: legState.flow_state });
+      assert.equal(legState.map_info.name, expectedMap,
+        'a route walking comparison must stay on its named map; use route-exit for handoffs');
       if (leg === 3) midpoint = legState;
       await page.evaluate(() => { walkingMetrics.active = true; });
     }

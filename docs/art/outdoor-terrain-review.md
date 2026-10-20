@@ -9,41 +9,59 @@ pixel matching alone cannot establish 3D quality. Same-state 2D references
 remain useful for judging identity and readability. Preserve gameplay and
 navigation throughout the work.
 
-### Painted stone candidate and full-orbit review
+### Original feel in 3D and protected walking caps
 
-The shared outdoor stone binding now loads `assets/terrain/painted-granite.png`.
-The surface shader projects its angular plates around mountain faces and caps,
-adds restrained shelf lichen, and lights the sculpt against the actual sun.
-Native cave bedrock keeps its separate image. The asset's full built-in
-imagegen prompt is recorded in `assets/terrain/README.md`.
+The first neutral granite candidate drifted away from the original feel.
+The corrected surface shader keeps its fractured painted detail, restores
+warm ochre pigment, adds restrained shelf lichen and lights the actual 3D
+faces. DayCycle retains the original blue night tint. Source-painted materials
+keep their existing protection against a second night tint. The original
+bitmap and its generation prompt are in `assets/terrain/README.md`; cave
+bedrock keeps its separate image. No pack content changed.
 
-Eight headless 3D headings at Route26 `(9,28)`, noon, zoom 0 were personally
-inspected. Headings 0/2/3/4/6/7 use pitch 35 and 960×720; heading 1 uses
-pitch 45 and 1280×960, and heading 5 uses pitch 35 and 960×720. The painted
-plates carry around the complete mass without the former uniform orange
-bands. Evidence is the ignored `target/outdoor-granite-orbit-review.png`,
-its constituent `outdoor-granite-orbit/` images, and
-`outdoor-route26-granite-{retry,reverse}.png`. Five existing painted-image
-preparation, sharing, sampling and moving-stone tests pass.
+Decorative relief previously buried the trainer at Route26 `(9,28)` and
+`(10,28)`. The external pack identifies those cells as blocks `6a` and `70`
+with permission `b2`: directional UP_WALL land, rather than impassable rock.
+The existing complete-source terrace datum now carries those accessible
+mineral cells through native and browser-worker preparation. Mountain relief
+treats them as openings, preserves their walking support and retains distant
+inaccessible ridges. The runtime still owns all movement permissions.
 
-The orbit exposes a larger geometry problem: the trainer is covered by rock
-at a permitted wall-adjacent position. An in-memory probe of the exact browser
-pack identifies `(9,28)` as block `6a`, permission `b2`, and `(10,28)` as
-block `70`, permission `b2`. This is an UP_WALL directional land permission;
-it is not an impassable mountain cell. `(10,27)` and `(10,54)` are ordinary
-floor. Investigate decorative mountain relief above the unchanged walking
-support on these accessible caps before enlarging the reveal aperture.
-The source probe and temporary binary are verification scratch only.
+The optimized native executable built successfully. All eight Route26
+headings at `(9,28)`, noon, zoom 0, pitch 35, 960×720 were personally inspected:
+the trainer stands clear on the ledge throughout the orbit. The lower view
+at `(10,28)`, heading 5, pitch 20 and the eye-level view at `(10,27)`, heading
+0, pitch 5 were also inspected. Same-state 2D pairs preserve position, facing,
+clock and game state. Receipts are ignored verification output:
+`target/outdoor-og-feel-orbit/route26-{0..7}.png`,
+`outdoor-route26-og-feel-protected*`, `outdoor-route26-og-feel-low-retry*` and
+`outdoor-route26-og-feel-eye-level*`. The first low-view capture timed out;
+its completed retry used the existing 300-second capture allowance.
 
-The granite candidate's neutral palette drifted away from the original feel.
-Retain the useful fractured surface craft while restoring warm ochre mineral
-pigment. The inspected 22:00 view also exposes poor trainer readability;
-preserve the original blue night mood while assessing material and lighting
-readability. Neutralizing the entire night is not the chosen direction.
-Visual verification of these corrections and the final optimized executable
-remain pending. Forest clutter, terrain mass,
-walking views, eye-level views, further route families and whole-route visual
-acceptance remain open.
+The production MountMoonSquare `(20,12)` pair at 22:00, zoom 1, heading 0.5,
+pitch 45 retains blue-purple night and warm cabin windows. Accessible upper
+rock remains a plateau and its cave entrance is visible. Its paired game
+state is preserved (`target/outdoor-moon-og-feel-production-night*`). Earlier
+shader-only noon/night studies remain material diagnostics. The Route31
+`(14,9)` control pair at noon, heading 5, pitch 35 also preserves game state.
+
+All 76 focused checks pass: 37 terrain and worker checks, four explicitly run
+external-pack regressions, five clock/lighting checks and 30 render API checks
+(one pre-existing API test remains ignored). Coverage includes native source
+ownership, camera crops, connected origins, protected walking support, retained
+ridges, bounded worker pages and the external pack's actual `b2` permissions.
+The lighting integration fixture now publishes an outdoor map; its former
+empty frame exercised the indoor fallback. Logs are
+`target/outdoor-og-feel-{focused,external,clock,api}-tests.log`.
+The focused log retains the initial empty-frame lighting failure; the clock
+log records its corrected fixture and passing rerun.
+
+Whole-route visual acceptance remains open. The orbit still exposes overly
+sharp ridge shapes and a gray surface at the water edge in heading 2. Route31
+and the Route29 control retain busy needle foliage and dense tall grass.
+Walking views, further route families and those remaining art defects still
+need work. Successful material and walking-cap reviews do not complete the
+outdoor art goal.
 
 ## Outdoor mountain relief and mineral contrast — 2026-10-16
 

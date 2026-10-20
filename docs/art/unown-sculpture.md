@@ -73,11 +73,27 @@ Representative final receipts: A checksum 4060871309, O checksum 99271016,
 shiny I 2943203603 and shiny V 1045820805. Each pair has its own held LCD frame
 and virtual time; temporary receipts and review images remain ignored.
 This verifies the held native views and form selection, not full source-frame
-motion or browser fidelity. There are now 64 registered standard skins covering 39 Pokémon species and
-248 dedicated battle bodies. Entei, Raikou and Suicune remain catalogue gaps.
-The complete all-Pokémon objective remains active; world-specific
-motion, hovering, detailed source-frame motion and browser fidelity remain
-separate work. Packs and audio are unchanged.
+motion or browser fidelity. Those captures predate the subsequent full catalog;
+current coverage is recorded in the [species guide](battle-species.md). Packs
+and audio are unchanged.
+
+## Y foot attachment
+
+A later three-angle roster review found that Y's lower stem stopped above its
+separate horizontal foot. The supplied pack's front animation frames and
+back picture show a continuous connection. The stem now ends at the foot's
+center instead of 0.07 authoring units above it. Only that stroke's positions
+and position-dependent weights change. The foot, other strokes, eye, normals,
+materials, complete bounds, hierarchy, inverse binds and decoded animation keys
+remain identical; the other 25 forms are preserved.
+
+The stored-triangle regression checks occupied stem/foot overlap at nine times
+in each of the three clips. A deliberately detached copy fails, and the
+previous Y GLB also fails its neutral contact check. Overall normalized height
+remains 1.0, so the pack's 0.5080 m presentation size is unchanged.
+All nine stored-model checks pass across the 26 candidate forms, and Y's
+installed bytes reproduce on Python 3.9.6 and 3.14.6. The corrected front,
+side and rear windowless GPU views were inspected again.
 
 
 ```sh
@@ -85,9 +101,10 @@ python3 tools/unown_glb.py --form all
 PYTHONPATH=tools python3 -m unittest test_unown_glb -v
 CARGO_TARGET_DIR=target/pokemon-models cargo test --locked -p crystal-voxel-view \
   unown --lib -j2 \
-  --config profile.dev.package.crystal-voxel-view.opt-level=0 \
-  --config profile.dev.package.crystal-bevy.opt-level=0
-CRYSTAL_PREVIEW_MUTE=1 CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image \
+  --config profile.test.opt-level=0 \
+  --config profile.test.package.offset-allocator.opt-level=2
+CRYSTAL_PREVIEW_MUTE=1 CRYSTAL_RENDER_TEST_HEADLESS=1 \
+  CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image \
   ./target/pokemon-models/debug/examples/immersive_battle_3d \
   content-packs/core-modular.browser.crystalpack --wild-species UNOWN \
   --unown-form A --size 1000x700 \

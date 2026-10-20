@@ -165,9 +165,84 @@ pub(crate) fn nape_normals(rig: &PersonRig, mesh: &mut SurfaceMeshData,
     }
 }
 
+#[cfg(any(test, all(feature = "people-review", not(target_arch = "wasm32"))))]
+pub(crate) mod review_validation {
+    use super::*;
+    pub(crate) fn validate() {
+        for name in ["human-male", "human-female"] {
+            let rig = crate::open_people::get(name).expect("profile review needs the supplied rig");
+            let crate::open_people::RefinedBody { mut mesh, mut ids, mut weights } = rig.refined_body();
+            adventure_profile(rig, &mut mesh, &mut ids, &mut weights);
+            let before = mesh.clone();
+            let old_ids = ids.clone(); let old_weights = weights.clone();
+            let mut head_min = Vec3::splat(f32::INFINITY);
+            let mut head_max = Vec3::splat(f32::NEG_INFINITY);
+            for ((&p, ids), weights) in before.positions.iter().zip(&ids).zip(&weights) {
+                let head: f32 = (0..4).filter(|&i| ids[i] as usize == rig.head_joint).map(|i| weights[i]).sum();
+                if head > 0.5 { head_min = head_min.min(Vec3::from_array(p)); head_max = head_max.max(Vec3::from_array(p)); }
+            }
+            // Bound recession in the supplied head's anatomy. Fixed source
+            // units impose different constraints on the two production rigs.
+            let profile_limit = (head_max.z - head_min.z) * 0.125 + 0.00001;
+            player_profile(rig, &mut mesh, &ids, &weights);
+            assert_eq!(mesh.indices, before.indices);
+            assert_eq!(mesh.uvs, before.uvs); assert_eq!(mesh.colors, before.colors);
+            assert_eq!(mesh.normals, before.normals);
+            assert_eq!(ids, old_ids); assert_eq!(weights, old_weights);
+            let mut changed = Vec::new();
+            for i in 0..mesh.positions.len() {
+                let a = Vec3::from_array(before.positions[i]); let b = Vec3::from_array(mesh.positions[i]);
+                assert_eq!(a.x.to_bits(), b.x.to_bits()); assert_eq!(a.y.to_bits(), b.y.to_bits());
+                assert!(b.is_finite() && a.distance(b) <= profile_limit,
+                    "{name}: profile displacement {} exceeds {profile_limit}", a.distance(b));
+                let head: f32 = (0..4).filter(|&j| ids[i][j] as usize == rig.head_joint).map(|j| weights[i][j]).sum();
+                if head < 0.85 { assert_eq!(before.positions[i], mesh.positions[i], "body or neck moved"); }
+                if a.y >= head_max.y - (head_max.y - head_min.y) * 0.15 {
+                    assert_eq!(before.positions[i], mesh.positions[i], "crown anchor moved");
+                }
+                if before.positions[i] != mesh.positions[i] { changed.push(i); }
+            }
+            assert!(changed.len() > 10, "profile has no visible geometry change");
+            let mut moved = vec![false; mesh.positions.len()];
+            for &i in &changed { moved[i] = true; }
+            for face in mesh.indices.chunks_exact(3) {
+                if !face.iter().any(|&i| moved[i as usize]) { continue; }
+                let a = [face[0], face[1], face[2]].map(|i| Vec3::from_array(before.positions[i as usize]));
+                let b = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+                let old = (a[1] - a[0]).cross(a[2] - a[0]);
+                let new = (b[1] - b[0]).cross(b[2] - b[0]);
+                if old.length_squared() > 1e-18 {
+                    assert!(old.dot(new) > 0. && new.length_squared() > old.length_squared() * 0.1,
+                        "profile reversed or collapsed a face");
+                }
+            }
+            let bounds = rig.locomotion_bounds();
+            let gait = crate::human_locomotion::HumanLocomotion::new(rig);
+            let mut pose = rig.nodes.clone();
+            for run in [0., 0.5, 1.] { for step in 0..16 {
+                gait.sample(rig, step as f32 / 16. * std::f32::consts::TAU, run, &mut pose);
+                let inverse = crate::human_locomotion::world(rig, &pose, rig.mesh_node).inverse();
+                let palette: Vec<_> = rig.skin_nodes.iter().zip(&rig.inverse_binds).map(|(&node, bind)|
+                    inverse * crate::human_locomotion::world(rig, &pose, node) * *bind).collect();
+                for &i in &changed {
+                    let p = Vec3::from_array(mesh.positions[i]);
+                    let skinned: Vec3 = (0..4).map(|j| palette[ids[i][j] as usize].transform_point3(p) * weights[i][j]).sum();
+                    assert!(skinned.is_finite() && skinned.cmpge(bounds.0).all() && skinned.cmple(bounds.1).all(),
+                        "profile leaves animated bounds");
+                }
+            }}
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    #[ignore = "requires supplied male and female rigs in CRYSTAL_OPEN_MODEL_ROOT"]
+    fn anime_profile_preserves_artwork_projection_body_and_animated_bounds() {
+        super::review_validation::validate();
+    }
     #[test]
     #[ignore = "requires supplied Kurt rig in CRYSTAL_OPEN_MODEL_ROOT"]
     fn kurt_nape_refinement_preserves_painted_front_and_collared_body() {

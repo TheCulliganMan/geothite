@@ -916,6 +916,7 @@ pub(crate) fn sync(
         Option<Res<crystal_render_api::VisualSurfRider>>,
         Option<Res<crystal_render_api::VisualPlayerTraversal>>,
         Option<Res<crystal_render_api::VisualPokemonDimensions>>,
+        Option<Res<crate::DestinationPreload>>,
     ),
     footing: Res<TerrainRevisionCache>,
     cards: Res<ActorIdCache>,
@@ -930,7 +931,7 @@ pub(crate) fn sync(
     mut transforms: Query<&mut Transform, With<ModeledActor>>,
 ) {
     let _trace = crate::loading_trace::span("frame.modeled_actors", || serde_json::json!({"map":frame.map_id.as_ref()}));
-    let (surf_rider, traversal, dimensions) = presentation;
+    let (surf_rider, traversal, dimensions, _destination) = presentation;
     let player_visibility = if settings.as_ref().is_some_and(|s| s.camera.first_person) {
         Visibility::Hidden
     } else { Visibility::Inherited };
@@ -938,15 +939,42 @@ pub(crate) fn sync(
     {
         let requested = frame.active && enabled_map(&frame.map_id)
             && settings.as_ref().is_none_or(|settings| settings.enabled);
+        let current = worker_interests(&frame);
+        let mut interests = current.clone();
+        // Share the single worker queue with the approaching destination.
+        // Current roles stay first; preparing future roles must never freeze
+        // already-uploaded actors on the live map.
+        if requested && status.active && !status.profiles_pending {
+            if let Some(destination) = _destination.as_deref().filter(|request|
+                request.frame.as_ref().is_some_and(|target| target.map_id != frame.map_id)) {
+                for source in &destination.actor_sources {
+                    if let Ok(key) = crate::actor_worker::key_for_source(source)
+                        && !interests.contains(&key) { interests.push(key); }
+                }
+            }
+        }
         let ModeledActors { actor_warmup, people_gpu, .. } = &mut *state;
-        let waiting = actor_warmup.pending(&frame, requested, people_gpu);
+        let kinds = interests.iter().map(|key| key.kind).collect::<Vec<_>>();
+        if requested {
+            people_gpu.retain_kinds(&kinds.iter().copied().collect());
+        }
+        let waiting = actor_warmup.pending(interests, requested, people_gpu);
         // Match native publication: a completed worker batch must not upload
         // every new NPC body and painting on the same interactive frame.
-        let upload_pending = requested && !waiting && actor_warmup.prepared_uploads_enabled()
+        let uploaded_before = people_gpu.0.len();
+        let upload_pending = requested && actor_warmup.prepared_uploads_enabled()
             && !people_gpu.upload_next_prepared(
                 &frame.actors.iter().filter_map(character_kind).collect::<Vec<_>>(),
                 &mut meshes, &mut materials, &mut images, &mut binds);
-        if (waiting || upload_pending) && status.active {
+        let foreground_ready = current.iter().all(|key| people_gpu.0.contains_key(&(key.base, key.kind)));
+        if requested && foreground_ready && people_gpu.0.len() == uploaded_before
+            && actor_warmup.prepared_uploads_enabled() {
+            // At most one new appearance is uploaded per frame, including
+            // lookahead. Common roles retain exactly their existing handles.
+            people_gpu.upload_next_prepared(&kinds,
+                &mut meshes, &mut materials, &mut images, &mut binds);
+        }
+        if ((waiting && !foreground_ready) || upload_pending) && status.active {
             status.terrain_pending = true;
             status.active_frames = 0;
             return;
@@ -986,8 +1014,11 @@ pub(crate) fn sync(
         // Retain common roles (especially the player) across the transition,
         // but release uploaded bodies and paintings belonging only to old maps.
         // Entity handles keep the retiring frame alive until deferred despawns.
-        let needed = frame.actors.iter().filter_map(character_kind).collect();
-        state.people_gpu.retain_kinds(&needed);
+        #[cfg(not(all(target_arch = "wasm32", feature = "actor-worker-browser")))]
+        {
+            let needed = frame.actors.iter().filter_map(character_kind).collect();
+            state.people_gpu.retain_kinds(&needed);
+        }
         state.gpu_map_id = frame.map_id.to_string();
     }
     if state.material.is_none() {

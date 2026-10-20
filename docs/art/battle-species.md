@@ -34,7 +34,8 @@ the exact model does not represent.
 
 Coverage and numerical validation do not establish appearance. The
 [roster review](pokemon-authoring-portability.md) records windowless GPU pose
-inspection and its limits. Individual species guides document matched-state
+inspection and its limits. The [angle review](pokemon-roster-angle-review.md)
+adds front, side and rear inspection of every current variant. Individual species guides document matched-state
 production reviews. Earlier partial-coverage and static-mesh audit reports are
 historical; the current geometry validator follows canonical GLB routing and
 the unchanged Rust loader limits.

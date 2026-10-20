@@ -550,9 +550,15 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
     // Only a nearly horizontal lip at the actual foot plane is support.
     // A sloping wall facet below the trainer's head is still an occluder;
     // preserving those facets leaves opaque blades inside faded rock.
-    let supported_crown = surface.world_normal.y > 0.85
+    // Tohjo's low island and surrounding sculpted crown have broad relief
+    // above their support. Keep that rock intact while the
+    // trainer is on the upper tier; the tall walls still reveal a lower rider.
+    let tohjo_crown = terrain.cave_reveal.x > 1.5;
+    let crown_clearance = select(terrain.cutaway.bottom_radius.w * 0.10,
+        terrain.cutaway.bottom_radius.w * 1.25, tohjo_crown);
+    let supported_crown = surface.world_normal.y > select(0.85, 0.55, tohjo_crown)
         && surface.world_position.y <= terrain.cutaway.bottom_radius.y
-            + terrain.cutaway.bottom_radius.w * 0.10;
+            + crown_clearance;
     if enclosing_wall && !(below_support || supported_crown) {
         reveal_cave_player(surface.world_position, in.position.xy, false, 4.5);
     }
@@ -652,9 +658,9 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
 }
 @if(VOXEL_COVERAGE_FADE) {
     if masked_cutaway {
-        // Building reveal keeps a faint complete silhouette, but its retained
-        // pixels must not stipple a character. Buildings and opted-in furniture
-        // supply a body capsule; foliage and room walls retain their policy.
+        // Faded scenery keeps a faint complete silhouette around a clear
+        // source-backed body capsule. Camera-plane walls retain their own
+        // cutaway policy and do not supply this capsule.
         reveal_player(surface.world_position, in.position.xy, true, 2.0, false);
         let coverage = fract(52.9829189 * fract(dot(floor(in.position.xy), vec2<f32>(0.06711056, 0.00583715))));
         if coverage < terrain.cutaway.fade.x { discard; }
@@ -1126,19 +1132,23 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
             // scales form soft, overlapping clusters rather than bright grit.
             let foam_map = vec2<f32>(map.x * 0.82 - map.y * 0.57,
                 map.x * 0.57 + map.y * 0.82);
-            let foam_bend = vec2<f32>(sin(map.y * 1.3 + sin(phase)),
-                cos(map.x * 1.1 + cos(phase))) * 0.19;
+            // Impact foam belongs to the receiving water's clock on both
+            // sides of the join; a separate cascade phase would split it.
+            let foam_phase = select(phase, pool_phase, tohjo_water);
+            let foam_bend = vec2<f32>(sin(map.y * 1.3 + sin(foam_phase)),
+                cos(map.x * 1.1 + cos(foam_phase))) * 0.19;
             let mist = foam_clusters((foam_map + foam_bend) * vec2<f32>(1.9, 1.6)
-                + vec2<f32>(sin(phase), cos(phase)) * 0.24);
+                + vec2<f32>(sin(foam_phase), cos(foam_phase)) * 0.24);
             let droplets = mineral_field(vec3<f32>((foam_map - foam_bend) * vec2<f32>(7.3, 6.1)
-                + vec2<f32>(7.1 + sin(phase) * 0.38, cos(phase) * 0.38), 71.9));
+                + vec2<f32>(7.1 + sin(foam_phase) * 0.38, cos(foam_phase) * 0.38), 71.9));
             let spray = smoothstep(0.18, 0.94, mist * 0.62 + droplets * 0.38);
-            let landing = mix(rippled, select(vec3<f32>(0.43, 0.65, 0.64),aerated,palette_current), spray * 0.26);
+            let foam_strength = select(spray * 0.26, 0.12 + spray * 0.42, tohjo_water);
+            let landing = mix(rippled, select(vec3<f32>(0.43, 0.65, 0.64),aerated,palette_current), foam_strength);
             falling = mix(falling_sheet, landing, impact);
             // The same fine foam continues onto authenticated pool slots below
             // this cascade, with a smooth footprint in its own mask channel.
             receiving_pool = mix(rippled, select(vec3<f32>(0.43, 0.65, 0.64),aerated,palette_current),
-                spray * 0.26 * pool_impact);
+                foam_strength * pool_impact);
             }
             if tohjo_water {
                 // Aeration builds as the sheet turns over its rounded lip.

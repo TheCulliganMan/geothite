@@ -68,10 +68,10 @@ production; no new product switch or profiler/timing implementation was added.
 
 ## Current verification load
 
-The shadow-cache release build remains live. System inspection found multiple
+The shadow-cache release build finished successfully in 61m11s. System inspection found multiple
 unrelated Rust builds and approximately 19 GB of swap in use. The user declined
 temporarily suspending other builds, so none are suspended or terminated.
-Continue correctness work and preserve the running build; contended timings
+The private application correction release build completed successfully. Preserve its saved executable; contended timings
 must not be presented as an uncontended frame-rate improvement. This load is
 not evidence of a game-source failure or a reason to restart a live compiler.
 
@@ -83,9 +83,11 @@ receiver-plane/sun/height invalidation and stale-entity cleanup remain intact;
 changed bounds/transforms recompute the original proof. The per-entity cache
 also uses EntityHashMap. All ten receiver regressions, including transform-change coverage, passed
 with zero ignored tests after a 13m51s contended build. The source change is
-published to the shared working tree. Its separate release QA build is running
-(log: `/tmp/geothite-shadow-input-cache-release-build.log`); it is not yet
-installed or a verified frame-rate improvement.
+published to the shared working tree. Its separate release QA build passed
+in 61m11s (log: `/tmp/geothite-shadow-input-cache-release-build.log`). The
+immutable executable is `retina-release-shadow-input-cache-client`, SHA256
+`98f90394dcf0605f01594e3b8750774c61cd0b08c9f58718e42290b2fa04c579`. It is
+not installed or a verified frame-rate improvement.
 
 Local Bevy 0.20 WgpuSettings::default source keeps VALIDATION_INDIRECT_CALL
 when the requested backends include DX12. The native default is Backends::all,
@@ -184,10 +186,155 @@ hook, camera/sun marker types and trace sink; it does not prove that the full
 renderer or GPU shader pipeline works. Its first direct release-library linking
 attempts failed because of abort/unwind strategy and Apple/Rust LLVM-bitcode
 mismatch; using the existing non-LTO test-profile libraries resolved the harness
-linking. The real release Cargo build was untouched and remains running.
-Full-crate partition compilation, actual shader-asset event lifecycle, shader
-compilation and Metal comparisons remain pending. This code is not installed
-or applied to the currently compiling source snapshot.
+linking. The real release Cargo build was untouched by these harness attempts and later
+completed successfully, as recorded in the full-tree trial section.
+An eighth isolated test then passed using both actual installed shader files
+in a MinimalPlugins/AssetPlugin Bevy App, without a window or GPU. It starts
+with no sources, adds them individually, verifies the exact corrected content,
+observes 64 steady frames with zero Modified events, rejects an unknown reload,
+recovers from stock reload, rejects duplicate target paths, recovers after
+removing the duplicate, and becomes unverified when a source is removed.
+All eight isolated tests passed (zero ignored); the fixture's cache paths are
+local to the temporary verification harness, not project code or shipped data.
+Full-crate partition compilation, GPU shader compilation and Metal comparisons
+remain pending. The correction is now applied only to the private application trial described
+below; it is not installed or integrated into the shared voxel renderer.
+
+## Native opaque tree sections under verification
+
+The installed Bevy 0.20 source was also checked for its MeshletPlugin path.
+It supports Metal and the adapter exposes its required atomic/subgroup features,
+but MeshletMesh::from_mesh requires exactly POSITION/NORMAL/UV_0, omits the
+trees' vertex colors, quantizes positions and constructs simplified LODs. Using
+that stock conversion would violate this task's geometry/color preservation
+requirements. No meshlet feature, converter, dependency or asset was added.
+
+
+Following the corrected whole-tree culling run, the private snapshot now trials
+up to four spatial opaque sections per source tree. Every source triangle is
+retained; the original collision surface and sorted fade leaves remain shared.
+Preparation, normal packing, index localization, upload and weak cache reuse
+include all sections. Browser/terrain-worker preparation remains unchanged;
+the worker wire rejects native sections rather than silently dropping them.
+The private voxel regression build passed in 18m45s; log:
+`/tmp/geothite-opaque-sections-tests.log`. Its new test passed per-triangle
+hash comparisons of every vertex attribute, including actual packed/localized
+copies, across pine, ancient forest and deciduous trees. All 56 occluder/visibility
+tests and all three shared-grove cache tests passed, with no ignored tests.
+The private release example build passed in 11m22s; log:
+`/tmp/geothite-opaque-sections-release-build.log`. Its saved executable SHA256 is
+`e23a2949820e7572e681abc00058dfce8630b2557bfb2689bfa44a7672f080c0`.
+The native New Bark Retina comparison is running. It retains the same corrected
+camera-culling application probe for comparison against the saved whole-tree
+correction and unchanged-renderer executables. No section changes are
+published or installed. More draw sections may cost more CPU; an actual native
+comparison is required before acceptance. The saved corrected whole-tree
+executable remains immutable for comparisons.
+
+At New Bark (13,5), noon, 2560x1600, the section candidate passed screenshot
+validation and visual inspection (buildings, characters, forest, water and
+ground present). The 15-second sequence produced candidate/control/whole-tree
+correction update counts of 365/361/371, median update times of
+41.77/41.56/40.92 ms and p95 times of 59.27/48.15/46.03 ms. Candidate/control
+queue completions were 23.448/24.038 per second with zero polling errors.
+This is no useful New Bark improvement. The first roof comparison recorded candidate/control medians of 79.99/100.91 ms,
+p95 119.31/110.61 ms, and queue completion rates of 11.755/9.904 per second.
+Both passed visible screenshot validation and inspection with zero polling
+errors. Candidate outstanding work changed from 1 to 12 versus a steady 36
+in the control, so this is not yet an isolated GPU-throughput estimate.
+The reverse-order control/candidate repeat recorded 192/179 updates,
+median 71.84/84.09 ms, p95 133.71/92.98 ms, and queue completion rates
+10.458/11.842 per second. The repeated candidate queue rate is close to its
+first run (11.755), but the second control accumulated 34 outstanding submissions,
+so its CPU update median is not steady GPU throughput. A 60-second control and
+candidate comparison using the existing measurement path is next, to reduce
+queue-startup effects. No new measurement tooling was added. The panorama keeps
+active_frames at zero until every source map and border placement is complete;
+the existing 30-active-frame warmup therefore does not accept partial scenery.
+No result is accepted for production yet.
+
+The 60-second comparison reversed the apparent short-run benefit. Control:
+638 updates, median/p95 89.88/127.54 ms, 10.654 queue completions/s, outstanding
+36→34. Section+culling candidate: 512 updates, median/p95 114.82/169.20 ms,
+8.532 queue completions/s, outstanding 1→1. Both had zero polling errors.
+The combined candidate is rejected for promotion; the short-run roof gain is
+not accepted evidence of a sustained improvement. To isolate subdivision from
+culling overhead, the private application hook and SHA2 dependency placement
+are restored to the pre-probe baseline. The voxel section implementation stays
+unchanged for a release comparison with ordinary native culling. The saved
+combined executable remains immutable; shared production sources are unchanged.
+ The static images do not establish
+animated culling bounds or paired-2D acceptance.
+
+## Full-tree corrected culling trial
+
+The saved shadow-cache release executable passed the full-quality native New
+Bark warmup at (13,5), noon, 2560x1600. Its screenshot was inspected: the houses,
+characters, forest, water and ground remain present. This is a baseline scene
+check, not a new paired-2D visual acceptance. The contended 15.24-second sample
+had 169 updates, median/p95 59.37/217.85 ms. It cannot establish a gain over the
+earlier quieter runs. The native pack SHA256 remains
+`a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007`.
+
+The next private trial isolates corrected camera culling on the existing whole
+trees. Only frozen crystal-bevy application inputs changed: `bevy_shell.rs`,
+`bevy_shell/culling_edge_probe.rs` and its `edge_clamp.rs` child. The voxel crate,
+mesh layout, resolution, materials, geometry and production bundle are unchanged.
+The trial is compiled only with location-tester. It observes the current native
+world layer (31), an active perspective camera and its existing depth/normal
+prepasses, genuine GPU preprocessing support and both verified shader sources.
+It owns only culling components it inserts. Orthographic/foreign views and
+unsupported maps retain their existing state. This temporary app-level boundary
+is for comparison; any accepted production integration belongs in the voxel
+renderer. No new player or diagnostic switch was introduced.
+
+All 13 isolated tests passed, including three application-boundary checks in
+addition to the prior guards/real-source lifecycle tests. These do not prove
+Metal shader execution or performance. The first private build failed because crystal-bevy exposes SHA2 only as a
+development dependency; the application library needs it as a normal dependency.
+The private manifest now moves that existing workspace dependency into the normal
+section. No new package or lockfile change is needed. The retry completed successfully in 28m49s; its log is
+`/tmp/geothite-edge-app-release-build-retry.log`; the original failure remains in
+`/tmp/geothite-edge-app-release-build.log`. The private pre-trial manifest is saved
+for restoration. The shared repository manifest is unchanged. The tree-section prototype is still
+unapplied. Before promotion, actual screenshots, movement/warps and animated
+bounds (including grass/flower vertex displacement and skinned actors) need
+verification, as do cold-entry pipeline readiness and matched frame-rate runs.
+The current user decision is to leave other builds running.
+
+The immutable corrected trial executable SHA256 is
+`581c1936f951798d9d24f32dfa586cfab13b1361225abf8eaeabff90da33ce55`.
+The actual Metal run verified both shader corrections and activated exactly one
+world-camera culling view. The full-quality New Bark screenshot passed the
+existing validation and was inspected: buildings, forest, ground, water and
+characters remain visible. Static inspection does not establish animated-bound
+correctness. The 15.03-second sample recorded only 83 updates, median/p95
+149.87/390.58 ms under concurrent compilation. The immediately following control recorded 105 updates in 15.01 seconds,
+median/p95 107.34/312.00 ms and 6.898 queue completions/s, versus 5.593/s
+for the correction. Both runs had zero polling errors. Sequential runs under
+variable contention are not an isolated performance estimate, but provide no
+evidence for promotion. The trial is not installed; enabling this path by
+itself is rejected as the current performance solution.
+
+The pinned Bevy source resolves one warmup concern: gpu_preprocess.rs
+prepare_preprocess_pipelines queues both early/late occlusion kernels whenever
+the device supports culling, independently of any camera's opt-in. The core
+create_downsample_depth_pipelines function likewise queues both phases and
+multisample variants once at initialization. No extra warmup timer or player
+setting is needed for that queueing. Actual pipeline readiness, depth-texture
+allocation and doorway behavior still need runtime verification. MeshCullingData
+uses the entity Aabb directly; animated grass/flower displacement bounds must be
+validated rather than assuming NoFrustumCulling bypasses occlusion (it does not
+in the pinned mesh_preprocess shader).
+The frozen scene confirms the concrete animated-bound path: terrain entities
+use terrain_transform (translation only); spawn_terrain_entity supplies no swept
+Aabb. Bevy calculate_bounds derives/refreshes bounds from Mesh geometry through
+AssetChanged<Mesh3d>, while grass_vertex.wesl subsequently bends rooted grass
+and sways flower tags 86000/86200. MeshCullingData consumes the entity Aabb.
+No visible popping is established yet, but static position bounds alone do not
+prove conservative coverage of shader displacement. Preserve that distinction
+when reviewing any performance gain. No animated-bound change is applied in
+the current isolated correction trial.
 
 ## Upper-floor panorama preloading installed
 
@@ -3118,3 +3265,170 @@ A second final-build wild run also passed all 66 entry and 421 battle rows
 with zero 3D gaps, worker/GPU failures or game-state changes between views.
 Both final wild runs encountered Sentret; the earlier Pidgey run is the case
 that identified the deadline defect. No final Pidgey acceptance is claimed.
+
+
+### Follow-up: source faints, battle entry and destination lead time
+
+The original entry-only check did not cover a full attack/faint cycle. A new
+normal-input Falkner regression reproduced fourteen presentation frames in
+classic view during the first faint, despite healthy WebGPU workers. It also
+revealed that the original field-entry palette flash still strobed the whole
+3D field even when its presentation flag stayed active. The immersive field
+now stays clear during that controller-owned interval. Classic mode retains
+the original entry effect and both modes retain the same input/audio timing.
+
+Picture resizing, removal and extracted OAM rows now remain local to the
+battler over the retained 3D scenery instead of requiring the entire classic
+scene. Available species models stay modeled during a faint: original picture
+shifts are mapped to their neutral silhouette height and the existing floor
+occludes them. The camera stays fixed during this short source animation.
+Unsupported source pictures still use exact source art; this is not a claim
+that every move, capture or legacy palette effect has a modeled replacement.
+Trainer result narration retains the proven encounter ground until the
+controller returns to the field.
+
+Six targeted faint/fog tests and six battle-camera tests passed. The model
+regression checks entity identity, original frame preservation, floor-relative
+drop and stable layout. The external-pack source regression covers faint,
+return, removal and both sides of Water Gun's generic row extraction. The
+production controller suite passed eight tests, with one existing ignored
+test. A broader legacy immersive fixture suite is not a passing acceptance:
+some pack scripts, including PsychicM at table index 94, do not compile into a
+fixture timeline. Its failures must not be represented as tested move support.
+
+Connected destinations begin warming forty core tiles before the edge. Base
+terrain and profiles must be available, but decorative grove streaming no
+longer postpones that work. An already-proven connected terrain union also
+avoids an unnecessary script fade-in wait while the destination replaces it.
+Outdoor cameras share the same hardware shadow-filter pipeline across routes
+and towns, avoiding a filter change at their boundary. Native decoration uses
+the adaptive policy unless full understory is explicitly requested.
+
+The first Route29 filter probe used headless Chromium, Apple M5 Metal,
+1280×900, 16:00, full models, an empty party and healthy default workers. Across
+thirty GPU timestamp frames, median opaque-pass cost was 17.83 ms with Gaussian
+filtering and 16.61 ms with Hardware2x2; the shadow-map pass was 17.07 and
+16.78 ms respectively. Canvas acquisition throughput was 20.78 and 21.49/s.
+Concurrent workspace compilation produced very high system load, so those
+rates do not establish isolated FPS or hitch-free play. Hardware filtering
+makes shadow edges sharper; geometry and shadow-map resolution are unchanged.
+A three-second-leg exploratory walk crossed into New Bark and is excluded
+from route-only FPS comparisons. The walking harness now rejects that mistake.
+
+The follow-up also found that the original Route26 vertical path can stop
+between a one-way ledge and an NPC. That blocked run is excluded. Ordinary
+left inputs first move the test to x=8; six subsequent 1.5-second vertical
+legs travel between y=44 and y=55. Every measured leg must now change the
+authoritative position and remain on the named map. This stricter corridor
+pair recorded 25.16 canvas acquisitions/s with Hardware2x2 and 26.08/s with
+Gaussian under concurrent compilation; it does not establish an FPS gain.
+Route29's corresponding 1.5-second pair recorded 19.46/s and 20.17/s. These
+loaded-machine results are a limitation, not acceptance of route smoothness.
+
+A cold Route26→27 crossing retained 3D in all 193 presentation rows, including
+92 connected-retention rows, with no worker/GPU errors or dropped events. Its
+maximum rAF interval was still 450 ms. The crossing input took 613 ms over
+eight controller frames; the trace included 291.5 ms in modeled actor sync and
+237.6 ms in GPU asset preparation. This identifies remaining foreground
+character costs rather than proving a seamless handoff. The clean-stderr
+production MCP regression passed again.
+
+Frame-aligned video review confirms a modeled enemy sinking below the actual
+gym floor throughout its faint, with a steady camera, and a clear field during
+entry instead of the old palette strobe. A full Falkner run then passed through
+both faints, result narration, Zephyr Badge, TM31 and return to the field: all
+6,147 presentation rows retained 3D (117 entry and 2,691 battle), with no dropped
+events, worker/GPU failures or changes between the final classic/3D state pair.
+It used Ember; it is not evidence for every enemy move. The longer harness
+collects bounded trace epochs and rebases their timestamps; that collection
+can stall rAF and must not be used as an FPS benchmark. A trusted gesture
+unlocks the muted source-audio clock so authored badge WaitSFX can finish.
+Earlier attempts that stopped before dialogue settled or overflowed the trace
+are not passing full-cycle evidence.
+
+Before browser character lookahead, the outdoor-filter build's cold
+Route29→New Bark check kept 3D for all 301 rows, with 289 connected-retention
+rows, but still recorded a 649.9 ms maximum rAF interval. The crossing command
+took 752 ms over eight controller frames. Actor upload/instance preparation
+remained visible in the trace. Neither cold-crossing check establishes zero
+loading delay.
+
+The final browser build also warms destination character roles through the
+existing single worker queue, prioritizing current-map roles. It retains live
+actor updates while future roles prepare, keeps uploaded handles shared, and
+uploads at most one new prepared appearance per frame. It does not retire the
+live GPU cache while battle owns presentation. Matching worker/client kernels
+were built from one frozen source snapshot, excluding concurrent art changes.
+
+All four final border continuity cases passed with identical classic game
+state, healthy workers, no GPU errors, no dropped events and no 2D gaps:
+
+| Border | Cold rows / peak rAF | Warm rows / peak rAF |
+| --- | --- | --- |
+| Route29→New Bark | 204 / 699.9 ms | 190 / 700.0 ms |
+| Route26→27 | 218 / 499.9 ms | 196 / 500.0 ms |
+
+These peaks are unresolved stalls. Route29's warm trace still spends 548.3 ms
+in GPU asset preparation, while Route27 actor setup still peaks at 308.7 ms.
+The four eight-frame commands in the warm Route29 case took 371/472/452/374 ms;
+Route26 took 433/765/392/364 ms. Character lookahead has not established a
+hitch-free transition or an overall FPS gain. Final paired images were reviewed
+at the same authoritative position/state, including the real New Bark gate
+text. The landscape stays visible and characters retain their footing; this
+is continuity acceptance, not acceptance of all scenery art or performance.
+
+The expanded battle driver opens with Leer before Ember and verifies an enemy
+turn and actual HP loss. The observed Gust counterattack changed player HP
+from 51 to 46 while retaining 3D, but no Gust move cue was published by this
+pack: this is not evidence for a complete Gust animation. An overly strict
+intermediate assertion expecting that missing cue failed and is not recorded
+as passing animation support. Browser bridge/bundle tests passed twelve cases;
+worker policy/transport checks passed two.
+
+The final expanded battle regression passed: 8,075 presentation rows (106
+entry, 2,964 battle and eighteen source-faint rows), world→battle→world,
+verified PP spending, a five-HP enemy counterattack, badge/TM completion,
+matching final classic state, no 2D gaps/dropped events and healthy workers/GPU.
+The worst rAF interval was 1,966.6 ms during this instrumented long run; it is
+not smoothness acceptance. The final run used the browser character-lookahead
+build and the stricter chunked-trace harness.
+
+Final walking checks used that same optimized WebGPU build on Apple M5 Metal,
+1280×900, 16:00, full models, Hardware2x2 shadows, default workers and an empty
+party. Six 1.5-second legs each changed the authoritative position and stayed
+on their route. Route29 alternated horizontally from x=44 to x=54–56; Route26
+used ordinary left inputs to reach x=8, then alternated vertically between
+y=44 and y=55. Both passed hardware, worker, GPU, movement and party checks,
+with no texture allocations/uploads during measurement.
+
+| Route | Canvas acquisitions/s | rAF median / p95 / peak |
+| --- | ---: | --- |
+| 29 | 19.52 | 33.4 / 66.8 / 133.3 ms |
+| 26 | 24.21 | 33.3 / 66.8 / 200.0 ms |
+
+These are canvas acquisitions over interaction wall time, not confirmed display
+presentation. This task's compilation had finished, but other system activity
+remained and the recorded load averages were about 33 and 31. They do not
+establish isolated performance or an improvement over the earlier idle matrix.
+Route lag and border upload/setup spikes remain unresolved. The local test
+servers, frozen source snapshot and generated QA recordings/bundles were
+removed after verification; ignored source content packs were preserved.
+
+
+### Trainer portrait overlay correction
+
+A user screenshot exposed a separate defect that continuity-only checks missed:
+classic player/trainer portrait sprites were deliberately exempted from the
+immersive compositor's hidden layer. A fully active 3D battlefield could still
+show the oversized pixel trainer. The compositor now hides all portrait-tagged
+entities while either the retained 3D field or battle is active, including
+standalone portrait entities. Classic mode and genuine classic fallback restore
+the original entities. Controller timing, dialogue and send-out state are
+unchanged. The compositor regression now rejects the old exemption and checks
+field preparation, battle, classic fallback and the view toggle separately.
+
+The corrected compositor regression and classic-transform restoration regression
+both passed on the native test build. An additional legacy backpic PNG check
+could not load its filesystem fixture (`apps/web/assets/gfx/player/chris_back.png`);
+that check is not passing evidence. This correction was verified through render
+layers, not a newly rebuilt browser screenshot or deployed client.
