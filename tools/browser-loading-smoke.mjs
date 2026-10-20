@@ -32,6 +32,8 @@ try {
    assert.equal(response.status(),200);
    await page.waitForFunction(()=>document.querySelector('#loading')?.hidden||document.querySelector('#startup-error')?.open,null,{timeout:300000});
    assert.equal(await page.locator('#startup-error').evaluate(e=>e.open?e.textContent:null),null);
+   await page.waitForFunction(() => document.querySelector('.chat-status')?.dataset.connected === 'true', null, {timeout:60000});
+   result.connected = true;
    await page.waitForTimeout(10000);
    const href=page.url();
    for(const mode of ['2d','3d','tui']) {
