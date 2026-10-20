@@ -7,14 +7,16 @@ assert.ok(base && output, 'usage: node tools/browser-view-smoke.mjs BASE_URL REP
 const browser=await chromium.launch({headless:true,args:process.platform==='darwin'?['--use-angle=metal','--mute-audio']:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--mute-audio']});
 const report={base,errors:[],console:[],failedRequests:[],swaps:[]};
 const inspectPage=page=>{
- page.on('pageerror',e=>report.errors.push(e.message));
- page.on('console',message=>{if(['error','warning'].includes(message.type())||/\bERROR\b/.test(message.text()))report.console.push({level:message.type(),text:message.text()});});
- page.on('response',response=>{if(response.status()>=400)report.failedRequests.push({status:response.status(),url:response.url()});});
- page.on('requestfailed',request=>report.failedRequests.push({url:request.url(),failure:request.failure()}));
+ let collecting=true;
+ page.on('pageerror',e=>{if(collecting)report.errors.push(e.message);});
+ page.on('console',message=>{if(collecting&&(['error','warning'].includes(message.type())||/\bERROR\b/.test(message.text())))report.console.push({level:message.type(),text:message.text()});});
+ page.on('response',response=>{if(collecting&&response.status()>=400)report.failedRequests.push({status:response.status(),url:response.url()});});
+ page.on('requestfailed',request=>{if(collecting)report.failedRequests.push({url:request.url(),failure:request.failure()});});
+ return ()=>{collecting=false;};
 };
 try {
  const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
- const page=await context.newPage();inspectPage(page);
+ const page=await context.newPage();const stopInspection=inspectPage(page);
  await page.goto(new URL('/tui/?multiplayer=off',base).href);
  await page.waitForFunction(()=>document.querySelector('#loading').hidden||document.querySelector('#startup-error').open,null,{timeout:240000});
  assert.equal(await page.locator('#startup-error').evaluate(e=>e.open?e.textContent:null),null);
@@ -92,9 +94,9 @@ try {
  assert.deepEqual(report.failedRequests,[]);
  report.navigationCount=await page.evaluate(()=>performance.getEntriesByType('navigation').length);
  assert.equal(report.navigationCount,1);
- await context.close();
+ stopInspection();await context.close();
  const phone=await browser.newContext({...devices['iPhone 13'],reducedMotion:'reduce'});
- const mobile=await phone.newPage();inspectPage(mobile);
+ const mobile=await phone.newPage();const stopMobileInspection=inspectPage(mobile);
  await mobile.goto(new URL('/?view=tui&multiplayer=off',base).href);
  await mobile.waitForFunction(()=>document.querySelector('#loading').hidden||document.querySelector('#startup-error').open,null,{timeout:240000});
  assert.equal(await mobile.locator('#startup-error').evaluate(e=>e.open?e.textContent:null),null);
@@ -103,6 +105,6 @@ try {
  for(const mode of ['2d','3d','tui'])assert.ok(await mobile.locator(`#view-navigation [data-view="${mode}"]`).isVisible());
  await mobile.screenshot({path:output.replace(/\.json$/,'-phone.png')});
  assert.deepEqual(report.errors,[]);assert.deepEqual(report.console,[]);assert.deepEqual(report.failedRequests,[]);
- await phone.close();
+ stopMobileInspection();await phone.close();
  console.log(JSON.stringify({base,swaps:report.swaps.length,navigations:report.navigationCount,errors:report.errors}));
 }finally{await fs.writeFile(output,JSON.stringify(report,null,2));await browser.close();}

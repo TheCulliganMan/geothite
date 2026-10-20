@@ -204,7 +204,7 @@
       import { createGameBridge, registerGameTools } from './webmcp.js';
       import { mountGamepadControls } from './gamepad-controls.js';
       import { mountGameAudio } from './audio-unlock.js?v=20261018-playback';
-      import { mountTouchControls } from './touch-controls.js?v=20261014-gesture-controls';
+      import { mountTouchControls } from './touch-controls.js?v=20261020-trusted-input';
       import { mountRendererViews, mountViewNavigation, preferredRendererView } from './view-navigation.js';
       import { mountViewToggle } from './view-toggle.js';
       import { mountSaveManagement } from './save-management.js?v=2';
@@ -246,7 +246,13 @@
       window.visualViewport?.addEventListener('scroll', fitMenuViewport);
       for (const id of ['close-settings', 'settings-backdrop']) document.getElementById(id).addEventListener('click', () => { document.querySelector('#player-options').open = false; canvas.focus({ preventScroll: true }); });
       let cancelAgentInput = () => {};
-      const touchControls = mountTouchControls({ document, window, canvas, onInput: () => cancelAgentInput() });
+      let resumeAudioFromInput = () => {};
+      const touchControls = mountTouchControls({ document, window, canvas, onInput: event => {
+        cancelAgentInput();
+        // Movement is intercepted at window capture before document audio
+        // listeners. Preserve the original gesture before synthesizing input.
+        resumeAudioFromInput(event);
+      } });
       let viewControls;
       let movementAxes = () => {};
       mountGamepadControls({ document, window, canvas, controls: touchControls, onInput: () => cancelAgentInput(), onCamera: (axes, dt) => viewControls?.moveCamera(axes, dt), onCameraSelect: () => viewControls?.cycleCamera(), onMovement: (x,y,dpad) => movementAxes(x,y,dpad) });
@@ -357,6 +363,7 @@
             params: new URLSearchParams(location.search),
             embedded: document.documentElement.classList.contains('flygon-embedded'),
           });
+          resumeAudioFromInput = resumeAudio;
           // WASM initialization starts asynchronous pack loading. Enable input
           // only after the actual game loop has produced its first observation.
           await createGameBridge(wasm, { timeoutMs: 120000 }).execute({ kind: 'observe' });

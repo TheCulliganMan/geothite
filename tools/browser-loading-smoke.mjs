@@ -15,17 +15,19 @@ try {
   const browser = await engine.launch({headless:true, args:engine===chromium
    ? process.platform==='darwin'?['--use-angle=metal','--mute-audio']:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--mute-audio'] : undefined});
   const result = {name, path, console:[], errors:[], requests:[], swaps:[]}; reports.push(result);
+  let collecting=true;
   try {
    const context=await browser.newContext(options);const page=await context.newPage();
    page.on('console',message=>{
+    if(!collecting)return;
     const entry={level:message.type(),text:message.text()};
     if(['error','warning'].includes(entry.level)||/\bERROR\b/.test(entry.text)) {
      result.console.push(entry);console.log(JSON.stringify({name,...entry}));
     }
    });
-   page.on('pageerror',error=>result.errors.push(error.stack));
-   page.on('response',response=>{if(response.status()>=400)result.requests.push({status:response.status(),url:response.url()});});
-   page.on('requestfailed',request=>result.requests.push({url:request.url(),failure:request.failure()}));
+   page.on('pageerror',error=>{if(collecting)result.errors.push(error.stack);});
+   page.on('response',response=>{if(collecting&&response.status()>=400)result.requests.push({status:response.status(),url:response.url()});});
+   page.on('requestfailed',request=>{if(collecting)result.requests.push({url:request.url(),failure:request.failure()});});
    const response=await page.goto(new URL(path,base).href);
    assert.equal(response.status(),200);
    await page.waitForFunction(()=>document.querySelector('#loading')?.hidden||document.querySelector('#startup-error')?.open,null,{timeout:300000});
@@ -47,6 +49,6 @@ try {
    assert.deepEqual(result.requests,[],`${name}: failed asset/API requests`);
    assert.deepEqual(result.console,[],`${name}: browser/renderer diagnostics`);
    console.log(JSON.stringify({name,passed:true,swaps:result.swaps}));
-  } finally {await browser.close();}
+  } finally {collecting=false;await browser.close();}
  }
 } finally {await fs.writeFile(output,JSON.stringify(reports,null,2)+'\n');}

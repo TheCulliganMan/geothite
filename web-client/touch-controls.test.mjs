@@ -40,7 +40,7 @@ test('touch cancellation does not drop a controller holding the same button', ()
 });
 
 import { mountTouchControls } from './touch-controls.js';
-function mountedPad() {
+function mountedPad(onInput = () => {}) {
   class Element extends EventTarget {
     constructor(button) { super(); this.dataset = { gameButton: button }; this.classList = { toggle() {} }; }
     setPointerCapture() {}
@@ -63,7 +63,7 @@ function mountedPad() {
   window.KeyboardEvent = class extends Event { constructor(type, options) { super(type, options); this.code = options.code; } };
   const canvas = new Element(); const events = [];
   for (const type of ['keydown', 'keyup']) canvas.addEventListener(type, event => events.push([type, event.code]));
-  mountTouchControls({ document, window, canvas });
+  mountTouchControls({ document, window, canvas, onInput });
   return { window, document, events, buttons, dpad, flush: () => { for (const fn of timers.values()) fn(); timers.clear(); },
     fire(element, type, id = 1, x = 90, y = 10) {
       const event = new Event(type, { cancelable: true });
@@ -122,4 +122,18 @@ test('typing does not move, blur releases WASD, and browser shortcuts remain ava
   pad.document.activeElement = null;
   keyboard(pad, 'keydown', 'KeyD'); pad.window.dispatchEvent(new Event('blur'));
   assert.deepEqual(pad.events.slice(-2), [['keydown','ArrowRight'],['keyup','ArrowRight']]);
+});
+
+
+test('intercepted movement preserves the original gesture before synthetic game input', () => {
+  const received = [];
+  let pad;
+  pad = mountedPad(event => received.push({ event, gameEvents: [...pad.events] }));
+  const event = new Event('keydown', { cancelable: true });
+  Object.assign(event, { code: 'ArrowLeft', repeat: false });
+  pad.window.dispatchEvent(event);
+  assert.equal(received.length, 1);
+  assert.equal(received[0].event, event);
+  assert.deepEqual(received[0].gameEvents, []);
+  assert.deepEqual(pad.events, [['keydown', 'ArrowLeft']]);
 });
