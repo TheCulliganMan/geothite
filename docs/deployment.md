@@ -4,7 +4,10 @@
 
 Use Docker Engine with BuildKit and the Docker Compose plugin. Run commands
 from the repository root. The Dockerfile includes the Rust and WASM toolchains;
-no host Rust installation is required for the Docker build. Supply the browser
+no host Rust installation is required for the Docker build. Install Git LFS and
+run `git lfs pull` before building so the tracked 3D artwork contains its actual
+payloads. Build from that hydrated local checkout; a remote Git build context
+does not hydrate LFS artwork. Supply the browser
 pack first using [Game content setup](game-content.md). The initial build
 compiles the game and takes substantially longer than a cached rebuild.
 
@@ -80,8 +83,9 @@ docker compose -f docker-compose.production.yml ps
 
 Rebuilding compiles the checked-out revision and recreates the service when
 its image changes. Plain Compose up against a local checkout does not fetch
-Git changes. For a stack using a remote Git build context, specify its main
-branch and `pull_policy: build` to resolve and build that branch on each up.
+Git changes. For a stack deploying a feature branch, check out and hydrate that
+branch locally, then point its build context at that checkout. Pin the image to the
+verified commit and keep the previous image for rollback.
 Do not use `--no-build` when you need a fresh build.
 
 BuildKit caches dependencies and compiled targets. The build uses two Cargo
