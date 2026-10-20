@@ -21,12 +21,13 @@ try {
  });
  const marker=await page.evaluate(()=>viewTestMarker);
  const observe=()=>page.evaluate(()=>viewTestBridge.execute({kind:'observe'}));
- let state=await observe();
+ let state=await observe(); console.log("Started",JSON.stringify(state.status));
  const press=async button=>{
-  state=await page.evaluate(button=>viewTestBridge.execute({kind:'press',button,frames:1}),button);
+  state=await page.evaluate(button=>viewTestBridge.execute({kind:'press',button,frames:8}),button);
   for(let i=0;state.flow_state?.animating&&!state.observe.visible_dialogue&&!state.observe.menus?.length&&i<180;i++){
    await page.waitForTimeout(50);state=await observe();
   }
+  console.log("Input",button,JSON.stringify({status:state.status,menus:state.observe.menus,text:state.observe.text,flow:state.flow_state}));
   return state;
  };
  const stable=s=>({name:s.status.player_name,screen:s.status.screen,position:s.map_info.player,map:s.map_info.name,menus:s.observe.menus,dialogue:s.observe.visible_dialogue,battle:s.observe.battle});

@@ -79,6 +79,15 @@ fn publish_browser_text_view(mut runtime: ResMut<BevyRuntimeShell>) {
                 else if runtime.pending_gender_selection.is_some() { Some(format_gender_dialog(&runtime)) }
                 else if runtime.pending_time_set.is_some() { Some(format_time_set_dialog_overlay(&runtime)) }
                 else if runtime.pending_oak_intro.is_some() { Some(format_oak_intro_dialog_overlay(&runtime)) }
+                else if let Some(choice) = runtime.pending_name_choice.as_ref() {
+                    Some(choice.options.iter().enumerate().map(|(index, option)|
+                        format!("{} {}", if index == choice.selected { ">" } else { " " }, option)
+                    ).collect::<Vec<_>>().join("\n"))
+                }
+                else if let Some(input) = runtime.pending_name_input.as_ref() {
+                    Some(format!("{}\n{}\n{}\nCursor: {}, {}", input.label, input.value,
+                        visible_name_input_layout(input.case).join("\n"), input.cursor_column + 1, input.cursor_row + 1))
+                }
                 else { None };
             let columns = view.columns; let rows = view.rows;
             let use_paint = view.painted && opening.is_none();
