@@ -491,7 +491,7 @@ async fn fetch_browser_open_models(url: &str, people: bool) -> Result<()> {
         timer = window
             .set_timeout_with_callback_and_timeout_and_arguments_0(
                 done.as_ref().unchecked_ref(),
-                10_000,
+                120_000,
             )
             .ok();
         callback = Some(done);

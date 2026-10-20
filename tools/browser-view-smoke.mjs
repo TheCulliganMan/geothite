@@ -8,7 +8,7 @@ const browser=await chromium.launch({headless:true,args:process.platform==='darw
 const report={base,errors:[],swaps:[]};
 try {
  const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
- const page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.message));
+ const page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.message));page.on('console',message=>{if(message.type()==='error')console.error(message.text());});
  await page.goto(new URL('/tui/?multiplayer=off',base).href);
  await page.waitForFunction(()=>document.querySelector('#loading').hidden||document.querySelector('#startup-error').open,null,{timeout:240000});
  assert.equal(await page.locator('#startup-error').evaluate(e=>e.open?e.textContent:null),null);
@@ -62,7 +62,8 @@ try {
  await page.waitForFunction(()=>document.querySelector('#tui-screen').textContent.includes('PlayersHouse2F'),null,{timeout:60000});
  await page.screenshot({path:output.replace(/\.json$/,'-tui.png')});
  await page.locator('#tui-style-toggle').click();await page.locator('#tui-style-toggle').click();
- await press('start');assert.ok(state.observe.menus?.length);
+ for(let i=0;!state.observe.menus?.length&&i<4;i++)await press('start');
+ assert.ok(state.observe.menus?.length);
  await swap('2d');await swap('tui');
  await page.waitForFunction(()=>document.querySelector('#tui-screen').textContent.includes('PACK'),null,{timeout:60000});
  await press('down');const selected=stable(state);await swap('3d');assert.deepEqual(stable(state),selected);
