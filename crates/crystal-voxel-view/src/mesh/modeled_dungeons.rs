@@ -228,6 +228,11 @@ pub(super) fn tin_tower_guardian_map(map:&str)->bool {
     matches!(map,"TinTower1F"|"TinTower2F"|"TinTower3F"|"TinTower4F"|"TinTower5F"
         |"TinTower6F"|"TinTower7F"|"TinTower8F"|"TinTower9F")
 }
+// The entrance hall shares the tower's actual timber/statue drawings, but
+// has separate rooms and external doors. Keep its perimeter/warp rules distinct.
+pub(super) fn tin_tower_architecture_map(map:&str)->bool {
+    tin_tower_guardian_map(map) || map=="EcruteakTinTowerEntrance"
+}
 pub(super) fn lighthouse_map(map:&str)->bool {lighthouse::applies(map)}
 pub(super) fn lighthouse_stair_support(frame:&VisualWorldFrame,cell:bevy::prelude::UVec2,
     foot:bevy::prelude::Vec2,resolved:&[f32])->Option<f32> {
@@ -287,7 +292,7 @@ impl Resolver<'_> {
                     Form::GymBoulder
                 } else if kind == Kind::TowerGuardian && (matches!(self.map,
                     "PewterGym"|"FuchsiaGym"|"ViridianGym"|"CeruleanGym"|"CeladonGym"|"VermilionGym")
-                    || tin_tower_guardian_map(self.map) || self.map=="BurnedTower1F") {
+                    || tin_tower_architecture_map(self.map) || self.map=="BurnedTower1F") {
                     Form::NativeGymGuardian
                 } else if kind == Kind::TowerGuardian
                     && matches!(self.map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
@@ -298,7 +303,7 @@ impl Resolver<'_> {
                     && tileset == "underground" {
                     Form::RocketPersian
                 } else if kind == Kind::TimberWall
-                    && (tin_tower_guardian_map(self.map)
+                    && (tin_tower_architecture_map(self.map)
                         ||matches!(self.map, "CianwoodGym" | "EcruteakGym" | "SproutTower1F" | "SproutTower2F" | "SproutTower3F" | "BurnedTower1F")) {
                     Form::TowerTimber
                 } else {
@@ -509,7 +514,7 @@ pub(super) fn resolve(
             tower_boulder_placements(cells, g),
         );
     }
-    if matches!(map, "CianwoodGym" | "EcruteakGym" | "PewterGym" | "BurnedTower1F") || tin_tower_guardian_map(map) {
+    if matches!(map, "CianwoodGym" | "EcruteakGym" | "PewterGym" | "BurnedTower1F") || tin_tower_architecture_map(map) {
         let guardians = grouped_flat_card_placements(cells,g,crate::tower::TOWER_FLOOR_TILE,false,|s| {
             if s.tileset_id.as_ref()!="tower" || s.subtile_row>=4 { return None; }
             let (ox, lower) = match s.metatile_id {
@@ -822,7 +827,7 @@ pub(super) fn resolve(
             });
         }
     }
-    if tin_tower_guardian_map(map)||matches!(map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
+    if tin_tower_architecture_map(map)||matches!(map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F") {
         if let Some(ground) = ground(map, cells, "tower", crate::tower::TOWER_FLOOR_TILE) {
             let ladders = grouped_flat_card_placements(cells, g, crate::tower::TOWER_FLOOR_TILE, false, |s| {
                 if s.tileset_id.as_ref() != "tower" || s.subtile_column >= 4 || s.subtile_row >= 4 { return None; }
@@ -1024,8 +1029,9 @@ fn append_internal(
     let floor_uv = g.uv(p.ground % g.width, p.ground / g.width);
     for i in p.indices(g.width) {
         if cerulean_statue {
-            extension::append_cerulean_deck(&mut mesh.solid,
-                g.bounds(i%g.width,i/g.width).into(),g.tile_height/8.,cells[i].source.subtile_row as usize);
+            extension::append_native_cerulean_deck(mesh,
+                g.bounds(i%g.width,i/g.width).into(),g.tile_height/8.,cells[i].source.subtile_row as usize,
+                floor_uv,crate::mesh::elevated_piers::cerulean_timber_uv(cells,g));
             continue;
         }
         if matches!(p.form, Form::FrozenWall | Form::CaveCorner(_)) {
@@ -2033,15 +2039,20 @@ mod tests {
         assert!(native_cerulean_statue_source(&p,&refs,&g));
         let mut mesh=TerrainMeshData{footing_heights:vec![1.25;16],authored_cells:vec![None;16],..Default::default()};
         append(&mut mesh,&g,&p,&refs,[0,0]);
-        let mut expected=SurfaceMeshData::default();
+        let mut expected=TerrainMeshData::default();
         for i in p.indices(4) {
-            extension::append_cerulean_deck(&mut expected,g.bounds(i%4,i/4).into(),1.,i/4);
+            extension::append_native_cerulean_deck(&mut expected,g.bounds(i%4,i/4).into(),1.,i/4,
+                g.uv(2,0),None);
         }
-        assert_eq!(mesh.solid.positions,expected.positions);
-        assert_eq!(mesh.solid.normals,expected.normals);
-        assert_eq!(mesh.solid.colors,expected.colors);
-        assert_eq!(mesh.solid.indices,expected.indices);
-        assert!(mesh.solid.positions.iter().any(|p|p[1]==crate::port::PIER_HEIGHT));
+        assert_eq!(mesh.solid.positions,expected.solid.positions);
+        assert_eq!(mesh.solid.normals,expected.solid.normals);
+        assert_eq!(mesh.solid.indices,expected.solid.indices);
+        let count=expected.textured.positions.len();
+        assert_eq!(&mesh.textured.positions[..count],expected.textured.positions);
+        assert_eq!(&mesh.textured.normals[..count],expected.textured.normals);
+        assert_eq!(&mesh.textured.uvs[..count],expected.textured.uvs,"borrow actual adjacent deck, not statue art");
+        assert_eq!(&mesh.textured.colors[..count],expected.textured.colors);
+        assert!(mesh.textured.positions.iter().any(|p|p[1]==crate::port::PIER_HEIGHT));
         assert!(mesh.textured.positions.iter().any(|p|p[1]>27.+crate::port::PIER_HEIGHT));
         assert_eq!(mesh.footing_heights,vec![1.25;16]);
         assert_eq!(mesh.authored_cells,vec![None;16]);
@@ -3059,8 +3070,9 @@ mod tests {
         let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();let pack=loaded.pack();
         let art=&pack.runtime_files()["data/tilesets/tower_metatiles.bin"];
         let png=image::load_from_memory(&pack.runtime_files()["gfx/tilesets/tower.png"]).unwrap().to_luma8();
-        for level in 1..=9 {
-            let name=format!("TinTower{level}F");let map=&pack.data().maps[&name];
+        for level in 0..=9 {
+            let name=if level==0 {"EcruteakTinTowerEntrance".into()}else{format!("TinTower{level}F")};
+            let map=&pack.data().maps[&name];
             let (w,h)=(map.attributes.width as usize*4,map.attributes.height as usize*4);
             let t=(0..w*h).map(|i| {
                 let (x,y)=(i%w,i/w);let b=map.blocks[y/4*(w/4)+x/4];
@@ -3069,6 +3081,14 @@ mod tests {
                         subtile_row:(y%4)as u8,tile_index:art[b as usize*16+y%4*4+x%4]as u16}}
             }).collect::<Vec<_>>();
             let refs=t.iter().collect::<Vec<_>>();let g=grid(w,h);let placements=resolve(&name,&refs,&g,None);
+            assert!(placements.iter().any(|p|matches!(p.form,Form::TowerTimber)),
+                "{name}: native source timber must actually bind");
+            if level==0 {
+                assert_eq!(placements.iter().filter(|p|matches!(p.form,Form::NativeGymGuardian)).count(),4,
+                    "the entrance hall has four source guardians");
+                assert!(!tin_tower_guardian_map(&name),
+                    "shared architecture must not replace entrance-hall perimeter rules");
+            }
             if level == 5 {
                 assert!(placements.iter().any(|p| matches!(p.form, Form::TowerTimber)
                     && p.column == 8 && p.row == 2),
@@ -3094,13 +3114,15 @@ mod tests {
                     "{name}: all floor triangles stay in the opaque static mesh");
             }
             let pillars=placements.iter().filter(|p|matches!(p.form,Form::Special(extension::Detail::TinPillar))).collect::<Vec<_>>();
-            assert_eq!(pillars.len(),1,"{name} must model its complete center pillar");
+            assert_eq!(pillars.len(),usize::from(level!=0),"{name}: only actual tower floors have a center pillar");
+            if level!=0 {
             let mut pillar_mesh=TerrainMeshData{footing_heights:vec![5.;w*h],..Default::default()};
             append(&mut pillar_mesh,&g,pillars[0],&refs,[0,0]);
             assert_eq!(pillars[0].indices(w).count(),24);
             assert!(!pillar_mesh.animated_textured.indices.is_empty());
             assert_eq!(pillar_mesh.animated_pillars,vec![[pillars[0].column,pillars[0].row]]);
             assert_eq!(pillar_mesh.footing_heights,vec![5.;w*h]);
+            }
             let interiors=super::super::modeled_interiors::resolve(&name,&refs,&g,None);
             let mut reserved=vec![false;w*h];for p in &interiors {for i in p.indices(w){reserved[i]=true;}}
             let mut expected=0;
@@ -3113,7 +3135,7 @@ mod tests {
                 }
             }
             let ladders=placements.iter().filter(|p|matches!(p.form,Form::Room(rooms::Detail::TowerLadder{..},_))).collect::<Vec<_>>();
-            assert_eq!(expected,[1,2,2,4,4,2,1,0,1][level-1],"{name}: upper-floor teleport pads are not ladders");
+            assert_eq!(expected,if level==0 {3}else{[1,2,2,4,4,2,1,0,1][level-1]},"{name}: upper-floor teleport pads are not ladders");
             assert_eq!(ladders.len(),expected);
             for p in ladders {
                 assert!(p.indices(w).all(|i|!reserved[i]),"perimeters cannot steal a stair warp");

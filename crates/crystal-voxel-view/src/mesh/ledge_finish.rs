@@ -17,9 +17,9 @@ pub(in crate::mesh) fn append_natural_bank(
         std::array::from_fn(|i|color[i]*0.12+light*[1.06,1.02,0.94][i]*0.88)
     });
     if normal[1]>0.99 {
-        let uvs=p.map(|position|[88000.+(position[0]-g.origin_x+origin[0] as f32*g.tile_width)/8.,
-            -70000.-(position[2]-g.origin_z+origin[1] as f32*g.tile_height)/8.]);
-        append_quad_colors(mesh,p,normal,uvs,
+        // The broad horizontal shore is dry ground, not a cliff face. The
+        // world floor pass resolves this marker to the adjacent lawn or path.
+        append_quad_colors(mesh,p,normal,[BANK_GROUND_UV;4],
             [[palette[0][0],palette[0][1],palette[0][2],1.];4]);
         return;
     }

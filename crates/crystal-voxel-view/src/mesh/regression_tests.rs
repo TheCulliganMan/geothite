@@ -89,7 +89,7 @@ mod tests {
         sources: Vec<VisualTileSource>,
     ) -> VisualWorldFrame {
         assert_eq!(sources.len(), (width * height) as usize);
-        VisualWorldFrame { terrace_datum: None,
+        VisualWorldFrame { view_center: Vec2::ZERO, terrace_datum: None,
             active: true,
             // Generic mesher fixtures must not opt into a named map's
             // authored scenery/material override. Map-specific tests opt in.
@@ -1547,7 +1547,7 @@ mod tests {
             .iter()
             .map(|uv| uv[1])
             .fold(f32::NEG_INFINITY, f32::max);
-        assert!((max_v - min_v - 0.25).abs() < f32::EPSILON);
+        assert!((max_v - min_v - 1./16.).abs() < f32::EPSILON);
     }
 
     #[test]
@@ -1567,8 +1567,8 @@ mod tests {
         let mut legacy=native.clone();legacy.map_id="UnionCave1F".into();
         let other=build_terrain_mesh(&legacy).unwrap();
         for i in 0..12 {
-            let expected=if i<2 {4.}else if i==3 || i==4 {2.5}
-                else if i==6 || i==7 {-0.5}else{other.footing_heights[i]};
+            let expected=if i<2 {crate::profile::WATER_HEIGHT+6.}else if i==3 || i==4 {crate::profile::WATER_HEIGHT+4.5}
+                else if i==6 || i==7 {crate::profile::WATER_HEIGHT+1.5}else{other.footing_heights[i]};
             assert_eq!(mesh.footing_heights[i],expected,"rendered actor support for cell {i}");
         }
         let g=GridGeometry {width:3,height:4,tile_width:8.,tile_height:8.,origin_x:-12.,origin_z:-16.};
@@ -1579,7 +1579,7 @@ mod tests {
         assert!(sheet.positions.iter().filter(|p|p[2]==south).all(|p|p[1]==-2.));
         assert!(sheet.positions.iter().any(|p|p[2]==north));
         assert!(sheet.positions.iter().any(|p|p[2]==south));
-        for (i,y) in [(0,4.),(1,4.),(9,-2.),(10,-2.)] {
+        for (i,y) in [(0,crate::profile::WATER_HEIGHT+6.),(1,crate::profile::WATER_HEIGHT+6.),(9,crate::profile::WATER_HEIGHT),(10,crate::profile::WATER_HEIGHT)] {
             let uv=g.uv(i%3,i/3);
             assert!(mesh.textured.positions.iter().zip(&mesh.textured.uvs)
                 .any(|(p,u)|p[1]==y && *u==[uv.0,uv.2]),"pool and fall must meet their common tier");

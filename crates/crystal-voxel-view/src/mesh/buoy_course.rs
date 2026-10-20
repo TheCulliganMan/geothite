@@ -234,115 +234,84 @@ fn retire_raised_banks(surface: &mut SurfaceMeshData, raised: &std::collections:
 }
 
 fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint: [[f32; 2]; 2]) {
-    // A molded float, rather than a white cone. The source's gray pigment
-    // remains visible on the narrow seam above the water; the pale shoulder
-    // rounds into a small recessed cap. Keep the original footprint and
-    // vertical envelope, including the mostly submerged lower rim.
+    // A rounded floating collar with water visible through its center. Retain
+    // the source silhouette, waterline envelope and live white/blue pigment.
     const SIDES: usize = 16;
-    let levels = [(-0.10, 0.65), (-0.01, 0.96), (0.03, 1.0),
-        (0.055, 0.98), (0.13, 0.83), (0.185, 0.52), (0.20, 0.24)];
-    let rings: Vec<[Vec3; SIDES]> = levels
-        .into_iter()
-        .map(|(y, r)| {
-            std::array::from_fn(|i| {
-                let a = i as f32 * std::f32::consts::TAU / SIDES as f32;
-                center + Vec3::new(a.cos() * radius * r, y * tile, a.sin() * radius * r)
-            })
-        })
-        .collect();
-    for row in 0..rings.len()-1 {
-        for side in 0..SIDES {
-            let next = (side + 1) % SIDES;
-            let outward = (rings[row][side] - center).with_y(0.);
-            let uv = if row<=2 {paint[1]} else {paint[0]};
-            face(
-                out,
-                [rings[row][side], rings[row + 1][side], rings[row + 1][next]],
-                outward,
-                uv,
+    const SECTIONS: usize = 8;
+    let sample = |side: usize, section: usize| {
+        // Wrap indices before trig so both seams have identical float bits.
+        let (s, c) = (std::f32::consts::TAU * (side % SIDES) as f32 / SIDES as f32).sin_cos();
+        let (v, r) =
+            (std::f32::consts::TAU * (section % SECTIONS) as f32 / SECTIONS as f32).sin_cos();
+        let p = center
+            + Vec3::new(
+                c * radius * (0.70 + 0.30 * r),
+                tile * (0.05 + 0.15 * v),
+                s * radius * (0.70 + 0.30 * r),
             );
-            face(
-                out,
-                [rings[row][side], rings[row + 1][next], rings[row][next]],
-                outward,
-                uv,
-            );
-        }
-    }
-    for side in 0..SIDES {
-        face(
-            out,
-            [
-                rings[rings.len()-1][side],
-                center + Vec3::Y * tile * 0.18,
-                rings[rings.len()-1][(side + 1) % SIDES],
-            ],
-            Vec3::Y,
-            paint[1],
-        );
-        face(
-            out,
-            [
-                rings[0][side],
-                center - Vec3::Y * tile * 0.10,
-                rings[0][(side + 1) % SIDES],
-            ],
-            Vec3::NEG_Y,
-            paint[1],
-        );
-    }
-}
-
-fn face(out: &mut SurfaceMeshData, mut p: [Vec3; 3], outward: Vec3, uv: [f32; 2]) {
-    // The live atlas already supplies the current time-of-day pigment.
-    // Keep native face shading without applying the night palette twice.
-    let uv = crate::scenery_finish::source_atlas_uv(uv);
-    if (p[1] - p[0]).cross(p[2] - p[0]).dot(outward) < 0. {
-        p.swap(1, 2);
-    }
-    let normal = (p[1] - p[0]).cross(p[2] - p[0]).normalize().to_array();
-    // Reuse the native prop face lighting on the source-painted surface.
-    let n = Vec3::from_array(normal);
-    let x = direction_shade(if n.x < 0. {
-        Direction::West
-    } else {
-        Direction::East
-    });
-    let z = direction_shade(if n.z < 0. {
-        Direction::North
-    } else {
-        Direction::South
-    });
-    let y = if n.y > 0. {
-        1.
-    } else {
-        direction_shade(Direction::North)
+        // Elliptical cross-section: normals follow its actual world dimensions.
+        let n = Vec3::new(
+            c * r / (radius * 0.30),
+            v / (tile * 0.15),
+            s * r / (radius * 0.30),
+        )
+        .normalize();
+        (p.to_array(), n.to_array())
     };
-    let shade =
-        (x * n.x.abs() + z * n.z.abs() + y * n.y.abs()) / (n.x.abs() + n.y.abs() + n.z.abs());
-    let color = [shade, shade, shade, 1.];
-    // Ground finishing stores faces as quads. Split the fan triangle into
-    // three genuine planar quads so it remains compatible with that path.
-    let center = (p[0] + p[1] + p[2]) / 3.;
-    for i in 0..3 {
-        append_quad(
-            out,
-            [
-                p[i].to_array(),
-                ((p[i] + p[(i + 1) % 3]) * 0.5).to_array(),
-                center.to_array(),
-                ((p[i] + p[(i + 2) % 3]) * 0.5).to_array(),
-            ],
-            normal,
-            [uv; 4],
-            color,
-        );
+    for side in 0..SIDES {
+        for section in 0..SECTIONS {
+            let vertices = [
+                (side, section),
+                (side, section + 1),
+                (side + 1, section + 1),
+                (side + 1, section),
+            ]
+            .map(|(s, t)| sample(s, t));
+            let first = out.positions.len();
+            let swatch = if side == 0 || side == SIDES / 2 || section >= SECTIONS / 2 {
+                paint[1]
+            } else {
+                paint[0]
+            };
+            let colors = vertices.map(|(_, n)| {
+                let n = Vec3::from_array(n);
+                let x = direction_shade(if n.x < 0. {
+                    Direction::West
+                } else {
+                    Direction::East
+                });
+                let z = direction_shade(if n.z < 0. {
+                    Direction::North
+                } else {
+                    Direction::South
+                });
+                let y = if n.y > 0. {
+                    1.
+                } else {
+                    direction_shade(Direction::North)
+                };
+                let shade = (x * n.x.abs() + z * n.z.abs() + y * n.y.abs())
+                    / (n.x.abs() + n.y.abs() + n.z.abs());
+                [shade * 0.90, shade * 0.90, shade * 0.90, 1.]
+            });
+            append_quad_colors(
+                out,
+                vertices.map(|v| v.0),
+                vertices[0].1,
+                [crate::scenery_finish::source_atlas_uv(swatch); 4],
+                colors,
+            );
+            for (n, v) in out.normals[first..].iter_mut().zip(vertices) {
+                *n = v.1;
+            }
+        }
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use bevy::prelude::Vec2;
     fn pixels() -> Vec<u8> {
         let mut p = [20, 70, 120, 255].repeat(64);
         for z in 2..6 {
@@ -391,11 +360,11 @@ mod tests {
             .insert(f.tiles[0].texture.id(), TileImageSample::Rgba(pixels()));
         let mut mesh = TerrainMeshData {
             authored_cells: vec![None; 2],
-            footing_heights: vec![0., -2.],
+            footing_heights: vec![0., crate::profile::WATER_HEIGHT],
             ..Default::default()
         };
-        append_top(&mut mesh.textured, [0., 8., 0., 8.], -2., g.uv(0, 0));
-        append_top(&mut mesh.textured, [8., 16., 0., 8.], -2., g.uv(1, 0));
+        append_top(&mut mesh.textured, [0., 8., 0., 8.], crate::profile::WATER_HEIGHT, g.uv(0, 0));
+        append_top(&mut mesh.textured, [8., 16., 0., 8.], crate::profile::WATER_HEIGHT, g.uv(1, 0));
         (f.tiles, g, samples, mesh)
     }
     #[test]
@@ -412,7 +381,7 @@ mod tests {
             append(&mut mesh,&tiles.iter().collect::<Vec<_>>(),&g,&samples,&[false;2]);
             assert_eq!(mesh.authored_cells[0],Some(LABEL));
             assert_eq!(mesh.footing_heights,footing);
-            assert!(mesh.textured.positions[..4].iter().all(|p|p[1]==-2.));
+            assert!(mesh.textured.positions[..4].iter().all(|p|p[1]==crate::profile::WATER_HEIGHT));
             tiles[0].source.subtile_row=0;
             assert!(!source(&tiles[0].source),"the water quadrant is not a float");
         }
@@ -426,10 +395,10 @@ mod tests {
         assert!(source(&tiles[0].source));
         for p in &mut mesh.textured.positions[..4] {p[1]=0.;}
         append_textured_shoreline(&mut mesh.textured,&g,0,0,Direction::East,
-            [0.,8.,0.,8.],-2.,0.);
+            [0.,8.,0.,8.],crate::profile::WATER_HEIGHT,0.);
         append_top(&mut mesh.textured,[24.,32.,0.,8.],3.,g.uv(1,0));
         mesh.textured.cutaway_ranges.push(12..16);
-        append_quad_colors(&mut mesh.solid,[[0.,-2.,8.],[0.,0.,8.],[0.,0.,0.],[0.,-2.,0.]],
+        append_quad_colors(&mut mesh.solid,[[0.,crate::profile::WATER_HEIGHT,8.],[0.,0.,8.],[0.,0.,0.],[0.,crate::profile::WATER_HEIGHT,0.]],
             [-1.,0.,0.],[[0.;2];4],[[0.3,0.2,0.1,1.];4]);
         append_quad_colors(&mut mesh.solid,[[24.,3.,8.],[32.,3.,8.],[32.,3.,0.],[24.,3.,0.]],
             [0.,1.,0.],[[0.;2];4],[[0.4,0.4,0.4,1.];4]);
@@ -439,7 +408,7 @@ mod tests {
         append(&mut mesh,&tiles.iter().collect::<Vec<_>>(),&g,&samples,&[false;2]);
         assert_eq!(mesh.authored_cells[0],Some(LABEL));
         assert_eq!(mesh.footing_heights,footing);
-        assert!(mesh.textured.positions[..4].iter().all(|p|p[1]==-2.));
+        assert!(mesh.textured.positions[..4].iter().all(|p|p[1]==crate::profile::WATER_HEIGHT));
         assert!(mesh.textured.positions.len()>8,"a native float replaces the source glyph");
         assert_eq!(mesh.textured.cutaway_ranges,vec![8..12],"unrelated cutaways survive compaction");
         assert_eq!(mesh.solid.indices,solid_kept,"only the false solid bank is retired");
@@ -447,7 +416,7 @@ mod tests {
         assert!(mesh.textured.positions.contains(&[24.,3.,8.]));
         assert!(!mesh.textured.positions.chunks_exact(4).enumerate().any(|(q,p)|
             mesh.textured.normals[q*4][1].abs()<0.0001
-                && p.iter().all(|p|p[0]==8.) && p.iter().any(|p|p[1]>-2.)),
+                && p.iter().all(|p|p[0]==8.) && p.iter().any(|p|p[1]>crate::profile::WATER_HEIGHT)),
             "the old buoy tile cannot leave a vertical raster bank");
         tiles[0].source.subtile_column=0;
         assert!(!source(&tiles[0].source),"the whirlpool quadrant is not a buoy");
@@ -461,7 +430,7 @@ mod tests {
         let (tiles, g, samples, mut mesh) = fixture();
         let refs: Vec<_> = tiles.iter().collect();
         append(&mut mesh, &refs, &g, &samples, &[false; 2]);
-        assert_eq!(mesh.footing_heights, vec![0., -2.]);
+        assert_eq!(mesh.footing_heights, vec![0., crate::profile::WATER_HEIGHT]);
         assert_eq!(mesh.authored_cells, vec![Some(LABEL), None]);
         assert_eq!(new_bark::sampled_cell(&mesh.textured.uvs[..4], &g), Some(1));
         let float = &mesh.textured.positions[8..];
@@ -471,7 +440,7 @@ mod tests {
                 .iter()
                 .all(|p| p[0] > 0. && p[0] < 8. && p[2] > 0. && p[2] < 8.)
         );
-        assert!(float.iter().any(|p| p[1] < -2.));
+        assert!(float.iter().any(|p| p[1] < crate::profile::WATER_HEIGHT));
         assert!(float.iter().any(|p| p[1] > -1.5),"the float emerges above its water bed");
         assert!(
             mesh.textured.uvs[8..]
@@ -488,16 +457,16 @@ mod tests {
             "the same cell cannot be claimed twice"
         );
         new_bark::polish_world_surfaces(&mut mesh, "CherrygroveCity", &refs, &g, [0, 0]);
-        assert!(mesh.solid.positions.contains(&[0., -2., 8.]));
+        assert!(mesh.solid.positions.contains(&[0., crate::profile::WATER_HEIGHT, 8.]));
         assert!(
             !mesh
                 .textured
                 .positions
                 .chunks_exact(4)
-                .any(|q| q.iter().all(|p| p[1] == -2.)),
+                .any(|q| q.iter().all(|p| p[1] == crate::profile::WATER_HEIGHT)),
             "old buoy and water planes must use the shared water finish"
         );
-        assert_eq!(mesh.footing_heights, vec![0., -2.]);
+        assert_eq!(mesh.footing_heights, vec![0., crate::profile::WATER_HEIGHT]);
         assert!(
             mesh.textured.positions.iter().any(|p| p[1] > -1.5),
             "the float survives ground finishing"
@@ -534,26 +503,50 @@ mod tests {
         }
     }
     #[test]
-    fn float_retains_its_envelope_with_visible_source_seam_and_recessed_cap() {
-        let mut mesh=SurfaceMeshData::default();
-        let center=Vec3::new(4.,-2.,4.);
-        let paint=[[0.1,0.2],[0.3,0.4]];
-        float(&mut mesh,center,2.,8.,paint);
-        let low=mesh.positions.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min);
-        let high=mesh.positions.iter().map(|p|p[1]).fold(f32::NEG_INFINITY,f32::max);
-        assert!((low+2.8).abs()<0.0001 && (high+0.4).abs()<0.0001,
-            "the new shoulder must retain the original waterline envelope");
-        assert!(mesh.positions.iter().all(|p|p[0]>=2. && p[0]<=6. && p[2]>=2. && p[2]<=6.),
-            "the native silhouette still owns the whole footprint");
-        let cap=mesh.positions.iter().filter(|p|(p[0]-4.).abs()<0.0001
-            && (p[2]-4.).abs()<0.0001 && p[1]>center.y)
-            .map(|p|p[1]).fold(f32::NEG_INFINITY,f32::max);
-        assert!(cap>center.y && cap<high-0.1,"the cap is visibly recessed below its pale rim");
-        assert!(mesh.positions.iter().zip(&mesh.uvs).any(|(p,uv)|
-            p[1]>center.y && p[1]<center.y+0.5
-                && crate::scenery_finish::source_atlas_coordinates(*uv)
-                    .is_some_and(|p|p.into_iter().zip(paint[1]).all(|(a,b)|(a-b).abs()<0.0001))),
-            "the gray source seam must remain visible above the unchanged water plane");
+    fn float_retains_its_envelope_and_native_paint_with_a_real_open_center() {
+        let mut mesh = SurfaceMeshData::default();
+        let center = Vec3::new(4., crate::profile::WATER_HEIGHT, 4.);
+        let paint = [[0.1, 0.2], [0.3, 0.4]];
+        float(&mut mesh, center, 2., 8., paint);
+        let low = mesh
+            .positions
+            .iter()
+            .map(|p| p[1])
+            .fold(f32::INFINITY, f32::min);
+        let high = mesh
+            .positions
+            .iter()
+            .map(|p| p[1])
+            .fold(f32::NEG_INFINITY, f32::max);
+        assert!(
+            (low + 2.8).abs() < 0.0001 && (high + 0.4).abs() < 0.0001,
+            "the collar retains the original waterline envelope"
+        );
+        assert!(
+            mesh.positions
+                .iter()
+                .all(|p| p[0] >= 2. && p[0] <= 6. && p[2] >= 2. && p[2] <= 6.),
+            "the native silhouette still owns the whole footprint"
+        );
+        assert!(
+            mesh.positions
+                .iter()
+                .all(|p| Vec2::new(p[0] - center.x, p[2] - center.z).length() >= 0.799),
+            "open water must remain visible through the center"
+        );
+        for swatch in paint {
+            assert!(
+                mesh.positions
+                    .iter()
+                    .zip(&mesh.uvs)
+                    .any(|(p, uv)| p[1] > center.y
+                        && crate::scenery_finish::source_atlas_coordinates(*uv).is_some_and(|p| p
+                            .into_iter()
+                            .zip(swatch)
+                            .all(|(a, b)| (a - b).abs() < 0.0001))),
+                "both native paint roles remain visible above the water"
+            );
+        }
     }
 
     #[test]
@@ -561,7 +554,7 @@ mod tests {
         let mut mesh = SurfaceMeshData::default();
         float(
             &mut mesh,
-            Vec3::new(4., -2., 4.),
+            Vec3::new(4., crate::profile::WATER_HEIGHT, 4.),
             2.,
             8.,
             [[0.1, 0.2], [0.3, 0.4]],

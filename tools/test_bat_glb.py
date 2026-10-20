@@ -1,15 +1,35 @@
 #!/usr/bin/env python3
 """Independent stored bat skin, face ownership and wing deformation checks."""
-import math,unittest
+import math,os,unittest
 from pathlib import Path
 import bat_glb as author
 from test_gengar_glb import Model,winding_alignment
 from skin_glb_test_support import IDENTITY
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
-COUNTS={'zubat':(28,2368,3352,10),'golbat':(32,3545,4784,10),'crobat':(28,4153,4116,14)}
+ROOT=Path(os.environ.get('CRYSTAL_BAT_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
+COUNTS={'zubat':(28,2368,3352,10),'golbat':(32,3762,4784,10),'crobat':(28,4653,4116,14)}
 class BatSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.models={n:Model((ROOT/(n+'.glb')).read_bytes()) for n in author.SPECIES}
+ def test_pupils_are_rooted_in_actual_eye_surfaces_through_clips(self):
+  from sculpt_test_support import parts_overlap,indexed_ray_intersections as rays
+  for species in ['golbat','crobat']:
+   m=self.models[species]
+   for side in [-1,1]:
+    parent=next(i for i,n in enumerate(m.names) if n==('Eye / fitted ivory wedge ' if species=='golbat' else 'Eye / angry fitted yellow wedge ')+str(side))
+    child=next(i for i,n in enumerate(m.names) if n==('Eye / narrow black pupil ' if species=='golbat' else 'Eye / narrow vertical pupil ')+str(side))
+    for clip in m.clips:
+     for t in [0.,.31,.67]:
+      mats=m.matrices(clip,t);eye={'positions':[v for p in m.posed(parent,mats) for v in p],'indices':m.indices[parent]}
+      points=m.posed(child,mats);pupil={'positions':[v for p in points for v in p],'indices':m.indices[child]}
+      self.assertTrue(parts_overlap(eye,pupil),(species,side,clip,t,'detached pupil'))
+      for k in range(0,len(m.indices[child]),3):
+       ids=m.indices[child][k:k+3];a,b,c=[m.vertices[child][i] for i in ids]
+       if (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<=1e-12:continue
+       tri=[points[i] for i in ids]
+       for weights in [(1/3,1/3,1/3),(.5,.5,0),(.5,0,.5),(0,.5,.5)]:
+        x,y,z=[sum(weights[j]*tri[j][axis] for j in range(3)) for axis in range(3)]
+        hits=rays(eye,x,y);self.assertTrue(hits,(species,side,clip,t))
+        gap=z-max(hits);self.assertGreater(gap,.0003);self.assertLess(gap,.0045)
  def test_neutral_anatomy_and_reader_bounds(self):
   for n,m in self.models.items():
    blob=(ROOT/(n+'.glb')).read_bytes();neutral=author.decode_bat(blob,n)

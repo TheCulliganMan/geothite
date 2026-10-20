@@ -3578,6 +3578,10 @@ fn pc_item_move_render_matches_source_select_place_and_cancel_frames() {
         queue.apply(&mut world);
         assert_eq!(art.font_error, None);
         let canvas = render_pc_audit_canvas(&mut world, &images, "pc-items-move");
+        if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).unwrap();
+            canvas.save(PathBuf::from(directory).join(format!("pc-items-move-{index}.png"))).unwrap();
+        }
         let reference = image::load_from_memory(references[index])
             .unwrap()
             .to_rgba8();
@@ -3673,6 +3677,10 @@ fn pc_withdraw_quantity_matches_real_source_menu_frames() {
         .unwrap();
         queue.apply(&mut world);
         let canvas = render_pc_audit_canvas(&mut world, &images, "pc-withdraw-quantity");
+        if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).unwrap();
+            canvas.save(PathBuf::from(directory).join(format!("pc-withdraw-quantity-{index}.png"))).unwrap();
+        }
         let reference = image::load_from_memory(references[index])
             .unwrap()
             .to_rgba8();
@@ -3748,6 +3756,10 @@ fn pc_deposit_quantity_matches_real_source_menu_frames() {
         .unwrap();
         queue.apply(&mut world);
         let canvas = render_pc_audit_canvas(&mut world, &images, "pc-deposit-quantity");
+        if let Ok(directory) = std::env::var("POKEGEAR_PC_RENDER_DIR") {
+            std::fs::create_dir_all(&directory).unwrap();
+            canvas.save(PathBuf::from(directory).join(format!("pc-deposit-quantity-{index}.png"))).unwrap();
+        }
         let reference = image::load_from_memory(references[index])
             .unwrap()
             .to_rgba8();

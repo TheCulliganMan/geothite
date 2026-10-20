@@ -1297,10 +1297,12 @@ fn bills_pc_move_mode_rejects_mail_before_save_confirmation() {
 
     assert!(runtime_shell.save_flow.is_none());
     assert!(!runtime_shell.bill_pc_move_open);
-    assert_eq!(
-        runtime_shell.pc_notice.as_deref(),
-        Some("There is a #MON holding MAIL.\n\nPlease remove the MAIL."),
-    );
+    let boundary=runtime_shell.special_boundary.as_ref().expect("source Mail refusal owns the printer");
+    assert_eq!(boundary.label,"PokecenterMoveMailText");
+    assert_eq!(boundary.details.len(),2);
+    assert!(boundary.details[0].contains("holding MAIL."));
+    assert!(boundary.details[1].contains("Please remove the"));
+    assert!(runtime_shell.pc_notice.is_none());
 }
 
 #[test]

@@ -3,9 +3,9 @@
 fn append_cafe_basket(out:&mut SurfaceMeshData,center:[f32;2],scale:f32,
     swatches:[[f32;2];3]) {
     let point=|rx:f32,rz:f32,y:f32,angle:f32| {
-        [center[0]+rx*scale*angle.cos(),y*scale,center[1]+rz*scale*angle.sin()]
+        [center[0]+rx*scale*angle.cos(),(crate::cafe::NATIVE_TABLE_HEIGHT+y)*scale,center[1]+rz*scale*angle.sin()]
     };
-    let rings=[(3.9,5.2,16.1),(5.2,6.5,18.3),(4.6,5.9,18.3),(3.4,4.7,16.7)];
+    let rings=[(3.9,5.2,0.1),(5.2,6.5,2.3),(4.6,5.9,2.3),(3.4,4.7,0.7)];
     for ring in 0..3 {for side in 0..16 {
         let a=side as f32*std::f32::consts::TAU/16.;
         let b=(side+1) as f32*std::f32::consts::TAU/16.;
@@ -31,7 +31,7 @@ fn append_cafe_basket(out:&mut SurfaceMeshData,center:[f32;2],scale:f32,
     // large pixel picture printed onto the tabletop. Closed six-pole forms
     // keep the same source gold family with individually shaded facets.
     for (x,z) in [(-2.2,-2.5),(0.4,-2.5),(2.5,-0.1),(-2.5,0.4),(-0.1,0.2),(0.6,2.6)] {
-        let c=Vec3::new(center[0]+x*scale,18.1*scale,center[1]+z*scale);
+        let c=Vec3::new(center[0]+x*scale,(crate::cafe::NATIVE_TABLE_HEIGHT+2.1)*scale,center[1]+z*scale);
         let poles=[Vec3::X,Vec3::Z,-Vec3::X,-Vec3::Z,Vec3::Y,-Vec3::Y]
             .map(|v|(c+v*Vec3::new(1.6,1.2,1.7)*scale).to_array());
         for i in 0..4 {

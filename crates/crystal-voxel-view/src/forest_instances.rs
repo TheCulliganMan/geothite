@@ -120,9 +120,8 @@ impl Library {
                     |(low,high), &p| (low.min(Vec3::from_array(p)),high.max(Vec3::from_array(p))),
                 )
             });
-            Arc::new(PrototypeGeometry {
-                groups: crate::shared_groves::prepare_surface(mesh.solid), trunk_bounds,
-            })
+            let groups=crate::shared_groves::prepare_surface(mesh.solid);
+            Arc::new(PrototypeGeometry {groups,trunk_bounds})
         })
         .clone()
     }
@@ -186,7 +185,8 @@ impl Library {
     }
 
     /// Clone and place completed prototypes only. No initialization, geometry
-    /// generation or waits on another thread's OnceLock occur on this path.
+    /// generation or waits on worker-owned locks occur on this frame-thread path.
+    /// Busy metadata is a cache miss; ordinary asynchronous jobs retry it.
     #[cfg(not(target_arch = "wasm32"))]
     pub(crate) fn prepare_if_cached(&self, bounds: [f32;4], base: f32, tile: f32,
         coordinates: [i32;2], neighbors: [bool;4], family: GroveFamily)
@@ -201,13 +201,13 @@ impl Library {
         ground_bounds: Option<crate::understory::Plot>) -> Option<Vec<PreparedGroup>> {
         let key = Key::new(family, coordinates, neighbors);
         let source = {
-            let entries = self.entries.lock().unwrap();
+            let entries = self.entries.try_lock().ok()?;
             entries.iter().find(|(candidate,_)| *candidate == key)?.1.get()?.clone()
         };
         let plants = ground_bounds.map(|plot|crate::understory::plants(plot,base,coordinates))
             .unwrap_or_default();
-        let ground = {
-            let entries = self.ground.lock().unwrap();
+        let ground = if plants.is_empty() { Vec::new() } else {
+            let entries = self.ground.try_lock().ok()?;
             plants.into_iter().map(|plant| {
                 let source = entries.iter().find(|(variant,_)| *variant == plant.variant as u8)?.1.get()?.clone();
                 Some((source,plant))
@@ -319,6 +319,8 @@ impl Library {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+
     #[test]
     fn deciduous_placements_choose_exactly_three_shared_authored_models() {
         let library=Library::default();let mut keys=Vec::new();
@@ -387,6 +389,37 @@ mod tests {
         assert_eq!(library.entries.lock().unwrap().len(),count);
         assert_eq!(library.ground.lock().unwrap().len(),ground_count);
         assert!(Arc::ptr_eq(&source,&library.prototype(key,GroveFamily::JohtoPine)));
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn cached_frame_path_defers_busy_worker_metadata_and_recovers_exact_geometry() {
+        let library = Library::default();
+        let bounds = [-16.,16.,-16.,16.];
+        let coordinates = [4,8];
+        let neighbors = [true;4];
+        let plot = crate::understory::Plot::isolated(bounds);
+        let expected = library.prepare_with_ground(bounds,3.,16.,coordinates,neighbors,
+            GroveFamily::JohtoPine,Some(plot));
+        // Holding the actual worker mutex on this thread makes an accidental
+        // blocking lookup deadlock, independent of scheduler timing.
+        {
+            let _worker = library.entries.lock().unwrap();
+            assert!(library.prepare_if_cached(bounds,3.,16.,coordinates,neighbors,
+                GroveFamily::JohtoPine).is_none());
+        }
+        {
+            let _worker = library.ground.lock().unwrap();
+            assert!(library.prepare_if_cached_with_ground(bounds,3.,16.,coordinates,neighbors,
+                GroveFamily::JohtoPine,Some(plot)).is_none());
+            assert!(library.prepare_if_cached(bounds,3.,16.,coordinates,neighbors,
+                GroveFamily::JohtoPine).is_some(), "canopy-only placements must not touch ground metadata");
+        }
+        let recovered = library.prepare_if_cached_with_ground(bounds,3.,16.,coordinates,neighbors,
+            GroveFamily::JohtoPine,Some(plot)).unwrap();
+        let signature = |groups| occluder_fade::geometry_signature(
+            &crate::mesh::SurfaceMeshData::default(),groups);
+        assert_eq!(signature(expected),signature(recovered));
     }
 
     #[test]

@@ -15,6 +15,9 @@ use crystal_bevy::{
 use crystal_core::save::SAVE_EXTENSION;
 use crystal_runtime::CrystalRuntime;
 
+#[cfg(not(target_arch = "wasm32"))]
+mod desktop_paths;
+
 const DEFAULT_PACK_FILENAME: &str = "core-modular.crystalpack";
 #[cfg(target_arch = "wasm32")]
 const DEFAULT_BROWSER_PACK_FILENAME: &str = "realtime-clock.browser.crystalpack";
@@ -22,9 +25,15 @@ const DEFAULT_BROWSER_PACK_FILENAME: &str = "realtime-clock.browser.crystalpack"
 #[cfg(not(target_arch = "wasm32"))]
 fn main() -> Result<()> {
     let result = run_native();
-    #[cfg(all(target_os = "windows", feature = "desktop-app"))]
+    #[cfg(all(any(target_os = "windows", target_os = "macos"), feature = "desktop-app"))]
     if let Err(error) = &result {
-        show_desktop_startup_error(&format!("Geothite could not start.\n\n{error:#}"));
+        if !env::args().any(|argument| argument == "--check-installation") {
+            let message = format!("Geothite could not start.\n\n{error:#}");
+            #[cfg(target_os = "windows")]
+            show_desktop_startup_error(&message);
+            #[cfg(target_os = "macos")]
+            desktop_paths::show_startup_error(&message);
+        }
     }
     result
 }
@@ -82,7 +91,37 @@ fn run_native() -> Result<()> {
         let _span = bevy::log::info_span!("crystal_runtime_load").entered();
         CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?
     };
-    let default_save_path = default_save_path(&pack_directory, &runtime);
+    let default_save_path = match args.save_path {
+        Some(path) => path,
+        None => default_save_path(&pack_directory, &runtime)?,
+    };
+    if args.check_installation {
+        anyhow::ensure!(cfg!(feature = "desktop-app"),
+            "installation checks require a client built with desktop-app");
+        desktop_paths::check_save_writes(&default_save_path)
+            .with_context(|| format!("verify writable save location {}", default_save_path.display()))?;
+        let resources = desktop_resource_directory(&env::current_exe()?)?;
+        #[cfg(feature = "voxel-view")]
+        for relative in [
+            "people/kenney/human-male.glb",
+            "people/kenney/human-female.glb",
+        ] {
+            anyhow::ensure!(
+                resources
+                    .join("assets/open-models")
+                    .join(relative)
+                    .is_file(),
+                "missing installed artwork {relative}"
+            );
+        }
+        println!(
+            "Verified game pack: {}\nResources: {}\nSave: {}",
+            pack_path.display(),
+            resources.display(),
+            default_save_path.display()
+        );
+        return Ok(());
+    }
     let start = match args.load_save {
         Some(save_path) => BevyShellStart::LoadSave { save_path },
         None => BevyShellStart::Title {
@@ -100,7 +139,8 @@ fn run_native() -> Result<()> {
         runtime,
         start,
         BevyShellConfig {
-            quick_save_path: Some(args.save_path.unwrap_or(default_save_path)),
+            quick_save_path: Some(default_save_path),
+            window_title: Some("Geothite".into()),
             multiplayer,
             ..Default::default()
         },
@@ -565,6 +605,7 @@ async fn fetch_browser_pack() -> Result<Vec<u8>> {
 #[derive(Debug, Default, PartialEq, Eq)]
 struct Args {
     help: bool,
+    check_installation: bool,
     pack: Option<String>,
     load_save: Option<PathBuf>,
     save_path: Option<PathBuf>,
@@ -587,6 +628,7 @@ fn parse_args_from(values: impl IntoIterator<Item = String>) -> Result<Args> {
     while let Some(arg) = values.next() {
         match arg.as_str() {
             "-h" | "--help" => args.help = true,
+            "--check-installation" => args.check_installation = true,
             "--pack" => {
                 let value = values
                     .next()
@@ -833,10 +875,19 @@ fn resolve_pack_path_from(explicit_pack: Option<&str>, executable: &Path) -> Res
     if let Some(explicit_pack) = explicit_pack {
         return Ok(PathBuf::from(explicit_pack));
     }
-    let executable_directory = executable
-        .parent()
-        .context("current executable path has no parent directory")?;
+    let executable_directory = desktop_resource_directory(executable)?;
     Ok(executable_directory.join(DEFAULT_PACK_FILENAME))
+}
+
+fn desktop_resource_directory(executable: &Path) -> Result<PathBuf> {
+    #[cfg(not(target_arch = "wasm32"))]
+    return desktop_paths::resources(executable)
+        .context("current executable path has no parent directory");
+    #[cfg(target_arch = "wasm32")]
+    Ok(executable
+        .parent()
+        .context("executable directory")?
+        .to_path_buf())
 }
 
 fn parse_pack_arg(flag: &str, value: String) -> Result<String> {
@@ -858,19 +909,40 @@ fn parse_save_path_arg(flag: &str, value: String) -> Result<PathBuf> {
     Ok(path)
 }
 
-fn default_save_path(pack_directory: &Path, runtime: &CrystalRuntime) -> PathBuf {
-    pack_directory.join("saves").join(format!(
+#[cfg(not(target_arch = "wasm32"))]
+fn default_save_path(pack_directory: &Path, runtime: &CrystalRuntime) -> Result<PathBuf> {
+    let filename = format!(
         "{}-{}-{}.{}",
         runtime.modpack().id(),
         runtime.modpack().hash(),
         runtime.pack_identity().content_hash,
         SAVE_EXTENSION
-    ))
+    );
+    let legacy = pack_directory.join("saves").join(&filename);
+    #[cfg(feature = "desktop-app")]
+    let directory = desktop_paths::save_root().context("user data directory is unavailable")?;
+    #[cfg(not(feature = "desktop-app"))]
+    let directory = pack_directory.join("saves");
+    let preferred = directory.join(format!("{}.{}", desktop_paths::save_stem(
+        runtime.modpack().id(), runtime.modpack().hash(), &runtime.pack_identity().content_hash), SAVE_EXTENSION));
+    if preferred.exists() || crystal_core::save::save_backup_path(&preferred).exists() {
+        return Ok(preferred);
+    }
+    if legacy.exists() || crystal_core::save::save_backup_path(&legacy).exists() {
+        // Keep usable portable paths; move overly long names to a bounded
+        // name without deleting or overwriting either recovery generation.
+        if filename.len() <= 200 { return Ok(legacy); }
+        for (source, destination) in [(legacy.clone(), preferred.clone()),
+            (crystal_core::save::save_backup_path(&legacy), crystal_core::save::save_backup_path(&preferred))] {
+            if source.exists() { desktop_paths::copy_save_if_missing(&source, &destination)?; }
+        }
+    }
+    Ok(preferred)
 }
 
 fn print_usage() {
     println!(
-        "crystal-bevy [--pack <path.crystalpack>] [--load-save <path.{SAVE_EXTENSION}>] [--save-path <path.{SAVE_EXTENSION}>] [--multiplayer-server <ws-url> --multiplayer-player-id <id> --multiplayer-player-name <name>] [--multiplayer-token <token>] [--multiplayer-world <id>] [--meshtastic-serial <port> | --meshtastic-tcp <host:port> | --meshtastic-ble <name-or-mac>] [--meshtastic-channel <0..7>]"
+        "crystal-bevy [--check-installation] [--pack <path.crystalpack>] [--load-save <path.{SAVE_EXTENSION}>] [--save-path <path.{SAVE_EXTENSION}>] [--multiplayer-server <ws-url> --multiplayer-player-id <id> --multiplayer-player-name <name>] [--multiplayer-token <token>] [--multiplayer-world <id>] [--meshtastic-serial <port> | --meshtastic-tcp <host:port> | --meshtastic-ble <name-or-mac>] [--meshtastic-channel <0..7>]"
     );
 }
 
@@ -905,6 +977,7 @@ mod tests {
             args,
             Args {
                 help: false,
+                check_installation: false,
                 pack: Some("/tmp/game.crystalpack".to_string()),
                 load_save: Some(PathBuf::from("/tmp/input.crystalsave")),
                 save_path: Some(PathBuf::from("/tmp/output.crystalsave")),
@@ -1016,6 +1089,10 @@ mod tests {
             resolve_pack_path_from(None, Path::new("/opt/crystal/crystal-bevy"))
                 .expect("default pack path"),
             PathBuf::from("/opt/crystal/core-modular.crystalpack")
+        );
+        assert_eq!(
+            resolve_pack_path_from(None, Path::new("/Applications/Geothite.app/Contents/MacOS/Geothite")).unwrap(),
+            PathBuf::from("/Applications/Geothite.app/Contents/Resources/core-modular.crystalpack")
         );
     }
 

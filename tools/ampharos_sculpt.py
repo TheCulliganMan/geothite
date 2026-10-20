@@ -7,7 +7,9 @@ horns and curved banded tail. No Blender, source sprites or content pack needed.
 import argparse,json,math
 from pathlib import Path
 from skin_glb import COORDINATES
-from sculpt_geometry import part as _part, loft as _loft, ellipsoid as _ellipsoid, tube as _tube, translate
+from sculpt_geometry import part as _part, loft as _loft, ellipsoid as _ellipsoid, tube as _tube, translate,curved_profiles,fitted_triangle_contour,crease_normals
+from goldfish_sculpt import surface as stored_surface
+from bovine_sculpt import oval
 
 HEIGHT=1.35
 # Local normal RGB555: yellow (31,31,2), lamp (21,10,1).
@@ -29,26 +31,15 @@ def sculpture(normalize=True):
         (.83,.095,.09,-.004),(.94,.095,.092,.008),
         (1.015,.139,.134,.033),(1.09,.174,.167,.047),
         (1.16,.166,.16,.05),(1.23,.125,.127,.03),(1.275,.06,.067,.022),(1.29,.015,.018,.018))
-    parts=[loft('Body / continuous pear torso slender neck and rounded muzzle','yellow',body_profiles,24)]
-    def surface(y,x):
-        for (ya,wa,da,za),(yb,wb,db,zb) in zip(body_profiles,body_profiles[1:]):
-            if ya<=y<=yb:
-                t=(y-ya)/(yb-ya);w=wa+(wb-wa)*t;d=da+(db-da)*t;z=za+(zb-za)*t
-                return z+d*math.sqrt(max(0.,1-(x/w)**2))
-        raise ValueError('surface outside body loft')
-    # Belly is a fitted closed lenticular surface, rather than a second sphere.
-    v=[];rows=((.22,.04,.150),(.28,.104,.184),(.38,.142,.199),(.49,.112,.172),(.59,.055,.136),(.625,.016,.122));segments=12
-    for y,w,z in rows:
-        for i in range(segments+1):
-            q=-1+2*i/segments;v.append((q*w,y,surface(y,q*w)+.009))
-    front=len(v);v+=[(x,y,z-.012) for x,y,z in v];f=[]
-    for k in range(len(rows)-1):
-        for i in range(segments):
-            a=k*(segments+1)+i;b=a+1;c=b+segments+1;d=a+segments+1
-            f.extend(((a,b,c,d),(d+front,c+front,b+front,a+front)))
-    boundary=list(range(segments+1))+[k*(segments+1)+segments for k in range(1,len(rows))]+list(range(front-2,front-segments-2,-1))+[k*(segments+1) for k in range(len(rows)-2,0,-1)]
-    f.extend((b,a,a+front,b+front) for a,b in zip(boundary,boundary[1:]+boundary[:1]))
-    parts.append(part('Belly / fitted tapering ivory chest panel','belly',v,f,True))
+    body=loft('Body / continuous pear torso slender neck and rounded muzzle','yellow',curved_profiles(body_profiles,2),32)
+    parts=[body];surface=stored_surface(body)
+    def fitted(name,color,outline,parent=body,thickness=.0015):
+        return crease_normals(fitted_triangle_contour(name,PALETTE[color],outline,parent,thickness),45.)
+    # Clip every marking to stored triangles, rather than an analytic surface
+    # that can bridge the real body or leave small facial solids floating.
+    outline=[(.137*math.sin(a)*(1-.25*math.cos(a)),.423+.201*math.cos(a))
+        for a in (math.tau*i/40 for i in range(40))]
+    parts.append(fitted('Belly / fitted tapering ivory chest panel','belly',outline))
     for side in (-1,1):
         paw=ellipsoid('Foot / broad planted '+str(side),'yellow',(side*.151,.062,.069),(.10,.063,.148))
         low=min(paw['positions'][1::3]);paw=translate(paw,0,-low,0);parts.append(paw)
@@ -64,15 +55,20 @@ def sculpture(normalize=True):
         parts.append(tube('Horn / rounded black taper '+str(side),'ink',earpoints,[.046,.044,.032,.015]))
         parts.append(tube('Horn / fitted gold band '+str(side),'yellow',[earpoints[1],(side*.224,1.265,-.012)],[.045,.040]))
         # Fitted narrow almond eyes, without protruding white ball eyes.
-        parts.append(ellipsoid('Eye / black almond '+str(side),'ink',(side*.092,1.15,.182),(.023,.035,.010),12,8))
-        parts.append(ellipsoid('Eye / catchlight '+str(side),'belly',(side*.087,1.162,.192),(.007,.010,.003),10,6))
-        parts.append(ellipsoid('Nostril / tiny muzzle inset '+str(side),'ink',(side*.033,1.078,.215),(.005,.004,.003),8,6))
+        eye=fitted('Eye / black almond '+str(side),'ink',oval(side*.092,1.15,.023,.035,24));parts.append(eye)
+        parts.append(fitted('Eye / catchlight '+str(side),'belly',oval(side*.087,1.162,.007,.010,16),eye,.0007))
+        parts.append(fitted('Nostril / tiny muzzle inset '+str(side),'ink',oval(side*.033,1.078,.005,.004,16),thickness=.0008))
     for y in (.835,.902):
         parts.append(loft('Neck / charcoal fitted collar '+str(y),'ink',((y-.014,.098,.093,.002),(y+.014,.098,.095,.004)),24))
-    smile=[(x,1.068+.09*abs(x),surface(1.068+.09*abs(x),x)+.005) for x in (-.038,-.02,0.,.02,.038)]
-    parts.append(tube('Muzzle / quiet curved smile','ink',smile,[.0025]*5,8))
-    parts.append(ellipsoid('Forehead / inset red beacon','red',(0,1.232,.145),(.036,.043,.014)))
-    parts.append(ellipsoid('Forehead / restrained highlight','shine',(-.010,1.247,.157),(.008,.011,.003),10,6))
+    smile=[]
+    for i in range(17):
+        x=-.038+.076*i/16;y=1.068+.0034*(x/.038)**2
+        smile.append((x,y,surface(y,x)+.0008))
+    parts.append(tube('Muzzle / quiet curved smile','ink',smile,[.0025]*len(smile),8))
+    # Keep the outline off the exact 1.275 body-ring tangency, which otherwise
+    # produces a sliver that collapses when the stored float32 mesh is rounded.
+    beacon=fitted('Forehead / inset red beacon','red',oval(0,1.233,.036,.043,28),thickness=.0025);parts.append(beacon)
+    parts.append(fitted('Forehead / restrained highlight','shine',oval(-.010,1.247,.008,.011,16),beacon,.0007))
     tail=[(0,.225,-.156),(.014,.245,-.29),(.029,.282,-.42),(.042,.35,-.52),(.052,.433,-.58),(.06,.49,-.601)]
     parts.append(tube('Tail / continuous rising taper','yellow',tail,[.064,.055,.047,.038,.029,.022]))
     for k in (1,3):

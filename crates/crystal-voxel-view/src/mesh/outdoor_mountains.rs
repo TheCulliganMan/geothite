@@ -80,8 +80,14 @@ fn append_family_reveal_floor(mesh:&mut TerrainMeshData,map:&str,
         }
     }
     let mut caps=Vec::new();
+    let cap_vertices=mesh.mineral_cap_ranges.as_ref().map(|ranges| {
+        let mut selected=vec![false;mesh.solid.positions.len()];
+        for range in ranges {selected[range.clone()].fill(true);}
+        selected
+    });
     for indices in mesh.solid.indices.chunks_exact(3) {
         let ids=[indices[0] as usize,indices[1] as usize,indices[2] as usize];
+        if cap_vertices.as_ref().is_some_and(|selected|ids.iter().any(|&i|!selected[i])) {continue;}
         if !ids.iter().all(|&i|mesh.solid.uvs.get(i)
             .is_some_and(|uv|uv[0]< -9000. && uv[1]< -30000.)) {continue;}
         if kanto && ids.iter().any(|&i|mesh.solid.uvs[i][1]< -50000.) {continue;}
@@ -97,15 +103,20 @@ fn append_family_reveal_floor(mesh:&mut TerrainMeshData,map:&str,
         let Some(ground)=donors[cell] else {continue;};
         let support_cell=if kanto {ground}else{cell};
         let support=mesh.footing_heights.get(support_cell).copied().filter(|h|h.is_finite()).unwrap_or(0.);
-        let floor=if support>0.02 {support-g.tile_height*0.01/SOURCE_TILE_HEIGHT}else{support};
-        // Clip descending rims before projection so no backing rises above
-        // the cap it belongs beneath. The original visible mesh is untouched.
+        let seat_bias=g.tile_height*0.01/SOURCE_TILE_HEIGHT;
+        let floor=if support>0.02 {support-seat_bias}else{support};
+        let clearance=g.tile_height/SOURCE_TILE_HEIGHT;
+        let clip_height=floor+clearance;
+        // Keep a strict interior gap. Clipping at the floor itself makes its
+        // edge touch descending rock, exposing a pale line in the depth pass.
+        // Require one source pixel of rock above this hidden floor. A cap
+        // merely seating at walking height needs no backing through its rim.
         let mut clipped=Vec::with_capacity(4);
         for edge in 0..3 {
             let (a,b)=(p[edge],p[(edge+1)%3]);
-            let (inside_a,inside_b)=(a.y>=floor,b.y>=floor);
+            let (inside_a,inside_b)=(a.y>=clip_height,b.y>=clip_height);
             if inside_a {clipped.push(a);}
-            if inside_a!=inside_b {clipped.push(a.lerp(b,(floor-a.y)/(b.y-a.y)));}
+            if inside_a!=inside_b {clipped.push(a.lerp(b,(clip_height-a.y)/(b.y-a.y)));}
         }
         for i in 1..clipped.len().saturating_sub(1) {
             let triangle=[clipped[0],clipped[i],clipped[i+1]]
@@ -114,6 +125,21 @@ fn append_family_reveal_floor(mesh:&mut TerrainMeshData,map:&str,
         }
     }
     new_bark::append_rock_reveal_caps(&mut mesh.solid,map,cells,g,origin,&caps);
+}
+
+/// These native corner drawings contain mineral courses, not planted trees.
+/// Match their actual ink so custom planted art keeps the existing flat seat.
+pub(super) fn native_rock_corner(source: &VisualTileSource) -> bool {
+    if !matches!(source.tileset_id.as_ref(), "johto" | "johto_modern")
+        || source.subtile_column >= 4 || source.subtile_row >= 4 {return false;}
+    let drawing = match source.metatile_id {
+        0x6a => [0x3c,0x2b,0x2c,0x2c,0x2b,0x3b,0x3c,0x3c,
+            0x3b,0x3b,0x3c,0x3c,0x3b,0x3b,0x3c,0x3c],
+        0x6c => [0x3b,0x3b,0x3c,0x3c,0x3b,0x3b,0x3c,0x3c,
+            0x3b,0x4b,0x4c,0x4c,0x4b,0x4c,0x4c,0x4c],
+        _ => return false,
+    };
+    source.tile_index == drawing[source.subtile_row as usize*4+source.subtile_column as usize]
 }
 
 pub(super) fn permanent(source: &VisualTileSource, shape: CellShape) -> bool {
@@ -137,7 +163,8 @@ pub(super) fn permanent(source: &VisualTileSource, shape: CellShape) -> bool {
         "johto" | "johto_modern" => {
             source.metatile_id == 0x0a
                 || ((0x68..=0x73).contains(&source.metatile_id)
-                    && !matches!(source.metatile_id, 0x6a | 0x6c))
+                    && (!matches!(source.metatile_id, 0x6a | 0x6c)
+                        || native_rock_corner(source)))
         }
         "kanto" => crate::kanto_cliff::kanto_cliff_shape(source).is_some_and(|native| {
             native.surface_height(SOURCE_TILE_HEIGHT) >= crate::kanto_cliff::KANTO_CLIFF_HEIGHT
@@ -305,6 +332,91 @@ pub(super) fn finish(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn descending_caps_keep_their_hidden_floor_strictly_inside_the_rock() {
+        let (frame,g)=fixture("johto",0x0a);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;cells.len()],
+            footing_heights:vec![16.;cells.len()],..Default::default()};
+        let p=[[48.8,15.5,48.8],[48.8,18.,55.2],[55.2,18.,55.2],[55.2,15.5,48.8]];
+        append_quad_colors(&mut mesh.solid,p,[0.,1.,0.],
+            p.map(|p|[-10000.-p[0],-40000.-p[2]]),[[0.3,0.2,0.1,1.];4]);
+        outdoor_stone::retain_mineral_cap_ownership(&mut mesh);
+        let before=mesh.clone();
+        append_reveal_floor(&mut mesh,"CianwoodCity",&cells,&shapes,&g,[0,0]);
+        let floor=mesh.solid.positions.iter().zip(&mesh.solid.uvs)
+            .filter(|(_,uv)|uv[0]>87000. && uv[0]<90000.).collect::<Vec<_>>();
+        assert!(!floor.is_empty());
+        for (p,_) in floor {
+            let rock=15.5+(p[2]-48.8)/(55.2-48.8)*2.5;
+            assert!(rock>=16.9899,"the backing needs one source pixel inside the descending cap: {p:?}");
+            assert!((p[1]-15.99).abs()<0.0001,"the actual hidden-floor height stays unchanged");
+        }
+        assert_eq!(&mesh.solid.positions[..before.solid.positions.len()],&before.solid.positions);
+        assert_eq!(mesh.footing_heights,before.footing_heights);
+    }
+
+    #[test]
+    fn weathered_upward_wall_facets_cannot_project_hidden_floor_shelves() {
+        let (frame,g)=fixture("johto",0x0a);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;cells.len()],
+            footing_heights:vec![16.;cells.len()],..Default::default()};
+        let cap=[[48.8,32.,48.8],[48.8,32.,55.2],[55.2,32.,55.2],[55.2,32.,48.8]];
+        append_quad_colors(&mut mesh.solid,cap,[0.,1.,0.],
+            cap.map(|p|[-10000.-p[0],-40000.-p[2]]),[[0.3,0.2,0.1,1.];4]);
+        let wall=[[56.5,20.,49.],[57.5,20.,49.],[57.5,32.,48.8],[56.5,32.,48.8]];
+        let n=(Vec3::from_array(wall[1])-Vec3::from_array(wall[0]))
+            .cross(Vec3::from_array(wall[3])-Vec3::from_array(wall[0])).normalize();
+        assert!(n.y>0.,"fixture must reproduce an upward-facing wall facet");
+        append_quad_colors(&mut mesh.solid,wall,n.to_array(),
+            wall.map(|p|[-10000.-p[0],-40000.-p[2]]),[[0.3,0.2,0.1,1.];4]);
+        outdoor_stone::retain_mineral_cap_ownership(&mut mesh);
+        let before=mesh.clone();
+        append_reveal_floor(&mut mesh,"CianwoodCity",&cells,&shapes,&g,[0,0]);
+        let floor=mesh.solid.positions.iter().zip(&mesh.solid.uvs)
+            .filter(|(_,uv)|uv[0]>87000. && uv[0]<90000.).collect::<Vec<_>>();
+        assert_eq!(floor.len(),6,"only the true cap supplies its two backing triangles");
+        assert!(floor.iter().all(|(p,_)|p[0]>=48.8 && p[0]<=55.2 && p[2]>=48.8 && p[2]<=55.2),
+            "a vertical wall cannot extend the hidden floor beyond the original cap");
+        assert_eq!(&mesh.solid.positions[..before.solid.positions.len()],&before.solid.positions);
+        assert_eq!(mesh.footing_heights,before.footing_heights);
+        assert_eq!(mesh.authored_cells,before.authored_cells);
+    }
+
+    #[test]
+    fn native_corner_courses_continue_the_mountain_but_custom_planted_ink_keeps_its_seat() {
+        for family in ["johto", "johto_modern"] {
+            for (block,column,row,tile) in [(0x6a,1,1,0x3b),(0x6c,2,2,0x4c)] {
+                let (mut frame,g)=fixture(family,0x0a);
+                let index=6*g.width+6;
+                let mut source=super::super::tests::source_with_tile(block,column,row,tile);
+                source.tileset_id=family.into();
+                assert!(native_rock_corner(&source));
+                frame.tiles[index].source=source.clone();
+                let cells=frame.tiles.iter().collect::<Vec<_>>();
+                let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+                let relief=Relief::new(&cells,&shapes,&g,[0,0]);
+                assert!(relief.height(6.5,6.5)>g.tile_height*2.,
+                    "a native corner cannot cut a flat shelf into a continuous mountain");
+                let mut mesh=TerrainMeshData {footing_heights:vec![0.;cells.len()],
+                    authored_cells:vec![None;cells.len()],..Default::default()};
+                mesh.solid.positions=vec![[52.,16.,52.]];
+                mesh.solid.uvs=vec![[-10052.,-40052.]];
+                let before=mesh.clone();
+                finish(&mut mesh,"CianwoodCity",&cells,&shapes,&g,[0,0]);
+                assert!(mesh.solid.positions[0][1]>16.);
+                assert_eq!(mesh.footing_heights,before.footing_heights);
+                assert_eq!(mesh.authored_cells,before.authored_cells);
+                source.tile_index=0x20;
+                assert!(!native_rock_corner(&source));
+                assert!(!permanent(&source,shapes[index]),"custom planted art retains its exclusion");
+            }
+        }
+    }
 
     #[test]
     fn reveal_floor_stays_inside_native_rock_without_changing_support_or_covering_water() {

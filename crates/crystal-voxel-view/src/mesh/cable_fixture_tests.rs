@@ -200,3 +200,62 @@ fn upstairs_custom_profiles_keep_ownership_over_source_fixture_and_door_guard() 
         );
     }
 }
+
+fn rear_sign_fixture(second:bool)->(Vec<VisualTile>,GridGeometry,[i32;2]) {
+    let (_,mut cells,g)=fixture(if second {"Pokecenter upstairs wall displays 0a"}
+        else {"Pokecenter upstairs wall displays 2b"});
+    // Include the actual adjacent door, mobile-entry corner and wall baseline
+    // in the guard. Only the sign's two columns acquire supporting geometry.
+    let rows=if second {[[38,39,34,35,2,2],[40,41,50,51,2,15],[1,1,1,1,1,15]]}
+        else {[[8,9,34,35,2,2],[24,25,50,51,2,15],[1,1,1,1,1,15]]};
+    for y in 0..3 {for x in 0..6 {
+        cells[y*g.width+x].source=VisualTileSource {
+            tileset_id:Arc::from("pokecenter"),metatile_id:if x<4 {if second {10}else{43}}else{11},
+            subtile_column:(x%4)as u8,subtile_row:y as u8,tile_index:rows[y][x],
+        };
+    }}
+    (cells,g,[if second {16}else{8},0])
+}
+#[test]
+fn upstairs_signs_have_full_backing_and_visible_raised_art_without_owning_doors() {
+    for second in [false,true] {
+        let (cells,g,origin)=rear_sign_fixture(second);let refs=cells.iter().collect::<Vec<_>>();
+        for map in ["Pokecenter2F","PewterPokecenter2FBeta"] {
+            let placements=resolve(map,&refs,&g,None);
+            let p=placements.iter().find(|p|p.kind==ModelKind::PictureFrame).unwrap();
+            let mut mesh=TerrainMeshData::default();mesh.footing_heights=vec![2.5;cells.len()];
+            mesh.authored_cells=vec![None;cells.len()];let mut claimed=vec![false;cells.len()];
+            assert!(append(&mut mesh,map,&refs,&g,p,&mut claimed,origin));
+            assert!(mesh.solid.positions.iter().any(|v|v[1]==24.),"the supporting wall reaches the adjacent ceiling course");
+            assert!(mesh.solid.positions.iter().all(|v|v[0]<=16.),"no wall in the door or mobile entry");
+            assert!(mesh.footing_heights.iter().all(|&h|h==2.5));
+            assert_eq!(claimed.iter().filter(|&&v|v).count(),4,"support must not inflate source ownership");
+            let art=mesh.textured.positions.iter().zip(&mesh.textured.normals)
+                .filter(|(_,normal)|normal[2]>0.9).map(|(v,_)|v).collect::<Vec<_>>();
+            assert_eq!(art.len(),16,"retain every source sign quad");
+            assert!(art.iter().all(|v|v[1]>4.&&v[1]<20.&&v[2]>16.),"raise the live inscription clear of its backing");
+        }
+    }
+}
+#[test]
+fn upstairs_sign_backing_requires_complete_source_and_actual_map_anchor() {
+    for second in [false,true] {
+        let (cells,g,origin)=rear_sign_fixture(second);
+        let check=|cells:&[VisualTile],map,origin| {
+            let mut mesh=TerrainMeshData::default();
+            let ok=super::super::cable_club::append_sign_backing(&mut mesh,map,
+                &cells.iter().collect::<Vec<_>>(),&g,0,0,origin);
+            if !ok {assert!(mesh.solid.positions.is_empty());}
+            ok
+        };
+        assert!(check(&cells,"PewterPokecenter2FBeta",origin));
+        assert!(!check(&cells,"OtherPokecenter2FBeta",origin));
+        assert!(!check(&cells,"PewterPokecenter2FBeta",[origin[0]+1,0]));
+        for y in 0..3 {for x in 0..6 {for field in 0..5 {
+            let mut changed=cells.clone();let s=&mut changed[y*g.width+x].source;
+            match field {0=>s.tileset_id=Arc::from("mart"),1=>s.metatile_id^=1,
+                2=>s.subtile_column^=1,3=>s.subtile_row^=1,_=>s.tile_index^=1}
+            assert!(!check(&changed,"PewterPokecenter2FBeta",origin),"{second}, {x},{y}, field {field}");
+        }}}
+    }
+}

@@ -41,7 +41,7 @@ try {
   }
   const installBufferMemoryAccounting = () => {
     Error.stackTraceLimit = 32;
-    localStorage.setItem('crystal.audio.muted', 'true');
+    localStorage.setItem('crystal.audio.preference', 'muted');
     window.houseMemory = { backend:'webgl', largestBuffer: 0, bufferUploadBytes: 0,
       liveBufferBytes: 0, peakBufferBytes: 0, contextLost: 0,
       drawCalls: 0, framebufferBlits: 0, defaultFramebufferDrawCalls: 0,

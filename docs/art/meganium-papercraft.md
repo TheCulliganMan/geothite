@@ -6,7 +6,7 @@ form one flower around the neck. Paired curved golden antennae and a low,
 tapered tail replace the earlier rods and disconnected spike collar.
 
 The canonical asset is `models/battle_species/meganium.glb` under
-`crates/crystal-voxel-view`: 33 anatomy parts, 4,520 triangles, 11,353 split-normal
+`crates/crystal-voxel-view`: 33 anatomy parts, 4,520 triangles, 6,817 split-normal
 vertices and 23 named joints. The previous same-species JSON is removed.
 No duplicate STL, neutral mesh or generated Blender file is added. The older
 multi-species Blender archive remains historical authoring material.
@@ -51,3 +51,12 @@ HP damage and survival for both actors. Body Slam still uses the honest classic
 presentation fallback for its unsupported deformation; this fixture change does
 not broaden move-renderer coverage. This is one species increment, not a
 claim that all 251 species have completed the same art and animation review.
+
+## Rounded body shading
+
+The [shared body shading refinement](leaf-saur-body-shading.md) removes hard
+lighting panels from the living body while retaining the folded botanical
+features. Triangle positions, original scale, supports, fitted artwork, skin
+weights and clip keys remain preserved. The current asset uses fewer normal
+splits. Its close native pair and actual moving field frame passed offscreen
+review, alongside the shared preservation and runtime checks.

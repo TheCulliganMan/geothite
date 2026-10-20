@@ -9,6 +9,9 @@ pub(super) fn native_johto_facility_floor_source(source: &VisualTileSource) -> b
 #[path = "native_patterned_facility_floor.rs"]
 mod native_patterned_facility_floor;
 #[cfg(test)]
+#[path = "native_mart_floor_tests.rs"]
+mod native_mart_floor_tests;
+#[cfg(test)]
 #[path = "native_pokecom_floor_tests.rs"]
 mod native_pokecom_floor_tests;
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -830,19 +833,11 @@ fn native_center_material_floor_cell(mesh:&mut SurfaceMeshData,b:[f32;4],height:
 }
 fn native_mart_material_floor_cell(
     mesh: &mut SurfaceMeshData, b: [f32; 4], height: f32,
-    world: [i32; 2], uv: (f32, f32, f32, f32),
+    _world: [i32; 2], uv: (f32, f32, f32, f32),
 ) {
-    let (u0, u1, v0, v1) = uv;
-    let sample = |pixel: [usize; 2]| [
-        u0 + (u1 - u0) * (pixel[0] as f32 + 0.5) / 8.,
-        v0 + (v1 - v0) * (pixel[1] as f32 + 0.5) / 8.,
-    ];
-    // Keep the standard mart floor's live greens instead of its pixel lattice.
-    let dark = sample([0, 0]);
-    let light = sample([3, 3]);
-    // The source has one continuous green field with small light details;
-    // alternating entire tiles invents a large checkerboard absent from it.
-    native_source_ceramic_floor_cell(mesh, b, height, world, dark, light);
+    // The small light crosshatch is the floor's drawing, not ceramic joints.
+    // Keep every source pixel and its phase on the original flat walking datum.
+    append_top(mesh,b,height,uv);
 }
 
 fn native_silph_material_floor_cell(
@@ -1689,12 +1684,10 @@ fn append_native_fixture_backing(mesh:&mut TerrainMeshData,map:&str,cells:&[&Vis
         let west=g.origin_x+fixture.column as f32*g.tile_width;
         let east=west+fixture.width as f32*g.tile_width;
         let bounds=[west,east,front-3.*g.tile_height/8.,front];
-        if map=="ElmsLab" && wall.kind==ModelKind::WallClinical {
-            // Reuse the adjacent clinical panel, including its blue lower
-            // band and cap. Only a complete source-proven furniture/window
-            // chain can continue that panel behind the rear bookcases.
-            model(wall.kind).append_fitted(&mut mesh.solid,bounds,0.,
-                wall.height_pixels*g.tile_height/8.);
+        if native_lab_walls::source(map,wall,cells,g) {
+            // Continue the actual lab checker band behind the authenticated
+            // rear furniture chain, using the same native pitch as the wall.
+            native_lab_walls::append(&mut mesh.textured,g,wall,bounds);
         }else if native_mansion_architecture::wall(map,wall,cells,g) {
             native_mansion_architecture::append_wall(mesh,g,wall,cells,bounds);
         }else{
@@ -2675,14 +2668,14 @@ mod kanto_room_floor_tests {
             mesh
         };
         let mesh=build(&tiles,"ElmsLab",&[]);
-        assert!(!mesh.solid.indices.is_empty(),"the rear shelves must have a wall behind them");
-        assert!(mesh.textured.indices.is_empty());
-        assert!(mesh.solid.positions.iter().all(|p|p[0]>=96. && p[0]<=160. && p[2]>=13. && p[2]<=16.),
+        assert!(mesh.solid.indices.is_empty());
+        assert!(!mesh.textured.indices.is_empty(),"rear shelves need their source-painted wall");
+        assert!(mesh.textured.positions.iter().all(|p|p[0]>=96. && p[0]<=160. && p[2]>=13. && p[2]<=16.),
             "only the rear shelf run receives backing; freestanding shelves stay freestanding");
         for column in 12..20 {
             let center=(column as f32+0.5)*8.;
-            assert!(mesh.solid.indices.chunks_exact(3).any(|triangle| {
-                let v=[0,1,2].map(|j|mesh.solid.positions[triangle[j]as usize]);
+            assert!(mesh.textured.indices.chunks_exact(3).any(|triangle| {
+                let v=[0,1,2].map(|j|mesh.textured.positions[triangle[j]as usize]);
                 v.iter().all(|p|(p[1]-32.).abs()<0.001)
                     &&v.iter().any(|p|p[0]<=center)&&v.iter().any(|p|p[0]>=center)
             }),
@@ -2692,17 +2685,16 @@ mod kanto_room_floor_tests {
         let wall=resolve("ElmsLab",&cells,&g,None).into_iter()
             .find(|p|p.kind==ModelKind::WallClinical&&p.column==4&&p.row==0).unwrap();
         let mut reference=TerrainMeshData::default();
-        model(wall.kind).append_fitted(&mut reference.solid,[96.,112.,13.,16.],0.,32.);
-        assert!(mesh.solid.colors.iter().all(|color|reference.solid.colors.iter().any(|paint|
-            color.iter().zip(paint).all(|(a,b)|(a-b).abs()<0.0001))),
-            "continue the same clinical paint and cap materials");
-        assert!(build(&tiles,"UnreviewedLab",&[]).solid.indices.is_empty());
-        assert!(build(&tiles,"ElmsLab",&vec![true;w*h]).solid.indices.is_empty(),
+        native_lab_walls::append(&mut reference.textured,&g,&wall,[96.,112.,13.,16.]);
+        assert!(mesh.textured.uvs.iter().all(|uv|reference.textured.uvs.contains(uv)),
+            "continue the same authenticated wall paint at its native pitch");
+        assert!(build(&tiles,"UnreviewedLab",&[]).textured.indices.is_empty());
+        assert!(build(&tiles,"ElmsLab",&vec![true;w*h]).textured.indices.is_empty(),
             "custom profiles retain ownership");
         // The connecting window drawing is evidence of a continuous course.
         // Changed source art must break that chain instead of guessing a wall.
         tiles[8].source.tile_index^=0x80;
-        assert!(build(&tiles,"ElmsLab",&[]).solid.indices.is_empty());
+        assert!(build(&tiles,"ElmsLab",&[]).textured.indices.is_empty());
     }
     #[test]
     fn external_native_cabinets_and_tvs_keep_contiguous_walls_without_claiming_support() {
@@ -2888,36 +2880,38 @@ mod kanto_room_floor_tests {
     }
 
     #[test]
-    fn johto_standard_mart_floor_field_does_not_invent_large_checker_squares() {
-        let uv=(0.,1.,0.,1.);
-        let field=[0.5/8.,0.5/8.];
-        for world in [[0,0],[2,0],[0,2],[2,2]] {
-            let mut mesh=SurfaceMeshData::default();
-            native_mart_material_floor_cell(&mut mesh,[0.,8.,0.,8.],0.,world,uv);
-            let mut area=0.;
-            for tri in mesh.indices.chunks_exact(3) {
-                let points=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
-                let a=(points[1]-points[0]).cross(points[2]-points[0]).length()*0.5;
-                if a>5. {
-                    assert!(tri.iter().all(|i|mesh.uvs[*i as usize]==field));
-                    area+=a;
-                }
+    fn standard_mart_floor_keeps_complete_native_motif_without_invented_seams() {
+        for world in [[0,0],[2,0],[0,2],[2,2],[-3,7]] {
+            for (b,height,uv) in [([0.,8.,0.,8.],0.,(0.,1.,0.,1.)),
+                ([-12.,0.,7.,11.],3.25,(0.2,0.3,0.4,0.6))] {
+                let mut mesh=SurfaceMeshData::default();
+                native_mart_material_floor_cell(&mut mesh,b,height,world,uv);
+                assert_eq!(mesh.positions.len(),4);assert_eq!(mesh.indices.len(),6);
+                assert!(mesh.positions.iter().all(|v|v[1]==height));
+                assert_eq!(mesh.uvs,vec![[uv.0,uv.2],[uv.0,uv.3],[uv.1,uv.3],[uv.1,uv.2]],
+                    "retain all sixty-four source pixels rather than two constant swatches");
+                let area=mesh.indices.chunks_exact(3).map(|t| {
+                    let [a,b,c]=[t[0],t[1],t[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
+                    let cross=(b-a).cross(c-a);assert!(cross.y>0.);cross.length()*0.5
+                }).sum::<f32>();
+                assert!((area-(b[1]-b[0])*(b[3]-b[2])).abs()<0.0001);
             }
-            assert!(area>60.,"continuous field covers the floor, retaining narrow seams");
         }
     }
 
     #[test]
-    fn johto_standard_mart_floors_use_green_source_swatches_without_footing_changes() {
-        for map in ["AzaleaMart","BlackthornMart","CherrygroveMart","EcruteakMart","OlivineMart","VioletMart"] {
-        let (mut tiles,g,mut mesh)=fixture();
-        for tile in &mut tiles {tile.source.tileset_id="mart".into();tile.source.tile_index=crate::mart::STANDARD_MART_FLOOR_TILE;}
-        assert_eq!(finish_surfaces(&mut mesh,map,&tiles.iter().collect::<Vec<_>>(),&g,[0,0]),4);
-        assert!(mesh.solid.positions.is_empty());assert_eq!(mesh.footing_heights,vec![3.25;4]);
-        for uv in &mesh.textured.uvs {
-            let x=(uv[0]*16.).rem_euclid(8.);let y=(uv[1]*16.).rem_euclid(8.);
-            assert!((near(x,0.5)&&near(y,0.5))||(near(x,3.5)&&near(y,3.5)));
-        }
+    fn standard_mart_floors_keep_full_source_uvs_and_footing_in_kanto_and_johto() {
+        for map in ["AzaleaMart","BlackthornMart","CherrygroveMart","EcruteakMart","OlivineMart","VioletMart",
+            "CeruleanMart","FuchsiaMart","LavenderMart","PewterMart","SaffronMart","VermilionMart","ViridianMart"] {
+            let (mut tiles,g,mut mesh)=fixture();
+            for tile in &mut tiles {tile.source.tileset_id="mart".into();tile.source.tile_index=crate::mart::STANDARD_MART_FLOOR_TILE;}
+            let before=mesh.clone();
+            assert_eq!(finish_surfaces(&mut mesh,map,&tiles.iter().collect::<Vec<_>>(),&g,[-3,7]),4);
+            assert!(mesh.solid.positions.is_empty());assert_eq!(mesh.footing_heights,before.footing_heights);
+            assert_eq!(mesh.authored_cells,before.authored_cells);
+            assert_eq!(mesh.textured.positions,before.textured.positions);
+            assert_eq!(mesh.textured.indices,before.textured.indices);
+            assert_eq!(mesh.textured.uvs,before.textured.uvs,"{map}: source lattice remains at its original phase and scale");
         }
         assert!(!kanto_native_floor_map("UnreviewedJohtoMart"));
     }

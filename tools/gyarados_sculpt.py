@@ -96,6 +96,10 @@ def sculpture():
     low=min(v for q in p for v in q['positions'][1::3]);high=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(high-low)
     for q in p:
         q['positions']=[round((v-(low if i%3==1 else 0.))*scale,7) for i,v in enumerate(q['positions'])]
+        # Reviewed belly centerline coordinates use positive zero. Tiny frame
+        # cancellation changes its sign across Python's sum implementations.
+        if q['part'].startswith('Belly /'):
+            q['positions']=[0. if v==0. else v for v in q['positions']]
         q['normals']=[round(v,7) for v in q['normals']]
     return {'name':'gyarados','version':1,'coordinate_system':COORDINATES,'primitives':p}
 

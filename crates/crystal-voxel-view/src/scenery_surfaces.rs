@@ -129,6 +129,14 @@ impl SceneryTexture {
     }
     /// A shared neutral texture lets authored glazing supply its own tint and
     /// alpha without changing the opaque/cutout policy of imported scenery.
+    /// Already paletted live map pixels; glass opacity belongs to the named
+    /// pane vertices, leaving the source atlas and opaque frames untouched.
+    pub(crate) fn live_glazing(width: u32, height: u32, pixels: Vec<u8>) -> Arc<Self> {
+        assert_eq!(pixels.len(), width as usize * height as usize * 4);
+        Arc::new(Self { blend:true,width,height,pixels,alpha_cutoff:None,double_sided:true,
+            wrap_u:TextureWrap::Clamp,wrap_v:TextureWrap::Clamp })
+    }
+
     pub fn glass_panel() -> Arc<Self> {
         static GLASS: std::sync::OnceLock<Arc<SceneryTexture>>=std::sync::OnceLock::new();
         GLASS.get_or_init(||Arc::new(Self{blend:true,width:1,height:1,pixels:vec![255;4],

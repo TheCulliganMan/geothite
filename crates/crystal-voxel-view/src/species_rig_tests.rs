@@ -21,7 +21,7 @@ fn candidate(species: Species) -> Vec<u8> {
         Species::Chikorita | Species::Cyndaquil | Species::Totodile => {
             format!("models/actor_props/battle_{}.glb", species.name())
         }
-        Species::Bayleef | Species::Meganium | Species::Gengar | Species::Spearow | Species::Wooper | Species::Gyarados | Species::Sudowoodo | Species::Lapras | Species::Snorlax | Species::Pikachu | Species::Bulbasaur | Species::Charmander | Species::Squirtle | Species::Geodude | Species::Pidgey | Species::Oddish | Species::Poliwag | Species::Poliwhirl | Species::Poliwrath | Species::Politoed | Species::Sandshrew | Species::Sandslash | Species::Horsea | Species::Seadra | Species::Kingdra | Species::Goldeen | Species::Seaking | Species::Magikarp | Species::Larvitar | Species::Pupitar | Species::Tyranitar | Species::Quilava | Species::Typhlosion | Species::Charmeleon | Species::Charizard | Species::Graveler | Species::Golem | Species::Omanyte | Species::Omastar | Species::Aerodactyl | Species::Dratini | Species::Dragonair | Species::Dragonite | Species::Clefable | Species::Wigglytuff | Species::Rattata | Species::Raticate | Species::Psyduck | Species::Golduck | Species::Zubat | Species::Golbat | Species::Crobat | Species::Butterfree | Species::Beedrill | Species::Hoothoot | Species::Sentret | Species::Staryu | Species::Voltorb | Species::Bellsprout | Species::Weepinbell | Species::Victreebel | Species::Gloom | Species::Vileplume | Species::Raichu | Species::Ekans | Species::Arbok | Species::Steelix | Species::Pineco | Species::Forretress | Species::Kabuto | Species::Kabutops | Species::Electrode | Species::Onix | Species::Diglett | Species::Dugtrio | Species::Tentacool | Species::Tentacruel | Species::Jynx | Species::Mankey | Species::Primeape | Species::Meowth | Species::Persian | Species::Doduo | Species::Dodrio | Species::Pidgeotto | Species::Fearow | Species::Pidgeot | Species::Slowpoke | Species::Entei | Species::Raikou | Species::Suicune | Species::Furret | Species::Noctowl | Species::Ledyba | Species::Ledian | Species::Spinarak | Species::Ariados | Species::Quagsire | Species::Hoppip | Species::Bellossom | Species::Qwilfish | Species::Wobbuffet | Species::Dunsparce | Species::Shuckle | Species::Gligar | Species::Yanma | Species::Murkrow | Species::Misdreavus | Species::Teddiursa | Species::Ursaring | Species::Snubbull | Species::Granbull | Species::Houndour | Species::Houndoom | Species::Miltank | Species::Tauros | Species::Delibird | Species::Stantler | Species::Girafarig | Species::Phanpy | Species::Marill | Species::Natu | Species::Remoraid | Species::Octillery | Species::Swinub | Species::Piloswine | Species::Sneasel | Species::Skarmory | Species::Smeargle | Species::Mew | Species::Mewtwo | Species::Heracross | Species::Pinsir | Species::Scizor | Species::Scyther | Species::Starmie | Species::Gastly | Species::Haunter | Species::Eevee | Species::Vulpix | Species::Ninetales | Species::Venonat | Species::Venomoth | Species::Paras | Species::Parasect | Species::Metapod | Species::Kakuna | Species::Caterpie | Species::Weedle | Species::Drowzee | Species::Hypno | Species::Abra | Species::Alakazam | Species::Kadabra | Species::Koffing | Species::Weezing | Species::Wartortle | Species::Blastoise | Species::Croconaw | Species::Feraligatr | Species::Cubone | Species::Marowak | Species::Magnemite | Species::Magneton | Species::Tangela | Species::Kangaskhan | Species::Ponyta | Species::Rapidash | Species::Machop | Species::Machoke | Species::Machamp | Species::Rhyhorn | Species::Rhydon | Species::Seel | Species::Dewgong | Species::Grimer | Species::Muk | Species::Ditto | Species::Shellder | Species::Cloyster | Species::Krabby | Species::Kingler | Species::Umbreon | Species::Jolteon | Species::Flareon | Species::Espeon | Species::Vaporeon | Species::Celebi | Species::HoOh | Species::Lugia | Species::Articuno | Species::Zapdos | Species::Moltres | Species::Corsola | Species::Mantine | Species::Porygon | Species::Porygon2 | Species::Chinchou | Species::Lanturn | Species::Slugma | Species::Magcargo | Species::Togepi | Species::Togetic | Species::Hitmonlee | Species::Hitmonchan | Species::Hitmontop | Species::Tyrogue | Species::Smoochum | Species::Elekid | Species::Magby | Species::Magmar | Species::Electabuzz | Species::Slowbro | Species::Slowking | Species::Lickitung | Species::MrMime | Species::Chansey | Species::Blissey | Species::Growlithe | Species::Arcanine | Species::NidoranF | Species::NidoranM | Species::Nidorina | Species::Nidorino | Species::Nidoqueen | Species::Nidoking | Species::Pichu | Species::Cleffa | Species::Igglybuff | Species::Mareep | Species::Flaaffy | Species::Ampharos | Species::Xatu | Species::Azumarill | Species::Donphan | Species::Sunkern | Species::Sunflora | Species::Aipom | Species::Skiploom | Species::Jumpluff | Species::Unown(_) => {
+        Species::Bayleef | Species::Meganium | Species::Gengar | Species::Spearow | Species::Wooper | Species::Gyarados | Species::Sudowoodo | Species::Lapras | Species::Snorlax | Species::Pikachu | Species::Bulbasaur | Species::Charmander | Species::Squirtle | Species::Geodude | Species::Pidgey | Species::Oddish | Species::Poliwag | Species::Poliwhirl | Species::Poliwrath | Species::Politoed | Species::Sandshrew | Species::Sandslash | Species::Horsea | Species::Seadra | Species::Kingdra | Species::Goldeen | Species::Seaking | Species::Magikarp | Species::Larvitar | Species::Pupitar | Species::Tyranitar | Species::Quilava | Species::Typhlosion | Species::Charmeleon | Species::Charizard | Species::Graveler | Species::Golem | Species::Omanyte | Species::Omastar | Species::Aerodactyl | Species::Dratini | Species::Dragonair | Species::Dragonite | Species::Clefable | Species::Wigglytuff | Species::Rattata | Species::Raticate | Species::Psyduck | Species::Golduck | Species::Zubat | Species::Golbat | Species::Crobat | Species::Butterfree | Species::Beedrill | Species::Hoothoot | Species::Sentret | Species::Staryu | Species::Voltorb | Species::Bellsprout | Species::Weepinbell | Species::Victreebel | Species::Gloom | Species::Vileplume | Species::Raichu | Species::Ekans | Species::Arbok | Species::Steelix | Species::Pineco | Species::Forretress | Species::Kabuto | Species::Kabutops | Species::Electrode | Species::Onix | Species::Diglett | Species::Dugtrio | Species::Tentacool | Species::Tentacruel | Species::Jynx | Species::Mankey | Species::Primeape | Species::Meowth | Species::Persian | Species::Doduo | Species::Dodrio | Species::Pidgeotto | Species::FarfetchD | Species::Ivysaur | Species::Venusaur | Species::Exeggcute | Species::Exeggutor | Species::Fearow | Species::Pidgeot | Species::Slowpoke | Species::Entei | Species::Raikou | Species::Suicune | Species::Furret | Species::Noctowl | Species::Ledyba | Species::Ledian | Species::Spinarak | Species::Ariados | Species::Quagsire | Species::Hoppip | Species::Bellossom | Species::Qwilfish | Species::Wobbuffet | Species::Dunsparce | Species::Shuckle | Species::Gligar | Species::Yanma | Species::Murkrow | Species::Misdreavus | Species::Teddiursa | Species::Ursaring | Species::Snubbull | Species::Granbull | Species::Houndour | Species::Houndoom | Species::Miltank | Species::Tauros | Species::Delibird | Species::Stantler | Species::Girafarig | Species::Phanpy | Species::Marill | Species::Natu | Species::Remoraid | Species::Octillery | Species::Swinub | Species::Piloswine | Species::Sneasel | Species::Skarmory | Species::Smeargle | Species::Mew | Species::Mewtwo | Species::Heracross | Species::Pinsir | Species::Scizor | Species::Scyther | Species::Starmie | Species::Gastly | Species::Haunter | Species::Eevee | Species::Vulpix | Species::Ninetales | Species::Venonat | Species::Venomoth | Species::Paras | Species::Parasect | Species::Metapod | Species::Kakuna | Species::Caterpie | Species::Weedle | Species::Drowzee | Species::Hypno | Species::Abra | Species::Alakazam | Species::Kadabra | Species::Koffing | Species::Weezing | Species::Wartortle | Species::Blastoise | Species::Croconaw | Species::Feraligatr | Species::Cubone | Species::Marowak | Species::Magnemite | Species::Magneton | Species::Tangela | Species::Kangaskhan | Species::Ponyta | Species::Rapidash | Species::Machop | Species::Machoke | Species::Machamp | Species::Rhyhorn | Species::Rhydon | Species::Seel | Species::Dewgong | Species::Grimer | Species::Muk | Species::Ditto | Species::Shellder | Species::Cloyster | Species::Krabby | Species::Kingler | Species::Umbreon | Species::Jolteon | Species::Flareon | Species::Espeon | Species::Vaporeon | Species::Celebi | Species::HoOh | Species::Lugia | Species::Articuno | Species::Zapdos | Species::Moltres | Species::Corsola | Species::Mantine | Species::Porygon | Species::Porygon2 | Species::Chinchou | Species::Lanturn | Species::Slugma | Species::Magcargo | Species::Togepi | Species::Togetic | Species::Hitmonlee | Species::Hitmonchan | Species::Hitmontop | Species::Tyrogue | Species::Smoochum | Species::Elekid | Species::Magby | Species::Magmar | Species::Electabuzz | Species::Slowbro | Species::Slowking | Species::Lickitung | Species::MrMime | Species::Chansey | Species::Blissey | Species::Growlithe | Species::Arcanine | Species::NidoranF | Species::NidoranM | Species::Nidorina | Species::Nidorino | Species::Nidoqueen | Species::Nidoking | Species::Pichu | Species::Cleffa | Species::Igglybuff | Species::Mareep | Species::Flaaffy | Species::Ampharos | Species::Xatu | Species::Azumarill | Species::Donphan | Species::Sunkern | Species::Sunflora | Species::Aipom | Species::Skiploom | Species::Jumpluff | Species::Unown(_) => {
             format!("models/battle_species/{}.glb", species.name())
         }
     });
@@ -86,6 +86,11 @@ fn fixture(species: Species) -> &'static SpeciesRig {
     static DODUO: OnceLock<SpeciesRig> = OnceLock::new();
     static DODRIO: OnceLock<SpeciesRig> = OnceLock::new();
     static PIDGEOTTO: OnceLock<SpeciesRig> = OnceLock::new();
+    static EXEGGCUTE: OnceLock<SpeciesRig> = OnceLock::new();
+    static EXEGGUTOR: OnceLock<SpeciesRig> = OnceLock::new();
+    static IVYSAUR: OnceLock<SpeciesRig> = OnceLock::new();
+    static VENUSAUR: OnceLock<SpeciesRig> = OnceLock::new();
+    static FARFETCH_D: OnceLock<SpeciesRig> = OnceLock::new();
     static FEAROW: OnceLock<SpeciesRig> = OnceLock::new();
     static PIDGEOT: OnceLock<SpeciesRig> = OnceLock::new();
     static SLOWPOKE: OnceLock<SpeciesRig> = OnceLock::new();
@@ -374,6 +379,11 @@ fn fixture(species: Species) -> &'static SpeciesRig {
         Species::Doduo => &DODUO,
         Species::Dodrio => &DODRIO,
         Species::Pidgeotto => &PIDGEOTTO,
+        Species::Exeggcute => &EXEGGCUTE,
+        Species::Exeggutor => &EXEGGUTOR,
+        Species::Ivysaur => &IVYSAUR,
+        Species::Venusaur => &VENUSAUR,
+        Species::FarfetchD => &FARFETCH_D,
         Species::Fearow => &FEAROW,
         Species::Pidgeot => &PIDGEOT,
         Species::Slowpoke => &SLOWPOKE,
@@ -563,9 +573,9 @@ fn assert_bits(a: impl Iterator<Item = f32>, b: impl Iterator<Item = f32>) {
 #[test]
 fn species_schema_retains_anatomy_skin_order_and_physical_size() {
     for (species, vertices, triangles, height) in [
-        (Species::Chikorita, 7463, 3220, 1.0_f32),
-        (Species::Bayleef, 9626, 3836, 1.15_f32),
-        (Species::Meganium, 11353, 4520, 1.48_f32),
+        (Species::Chikorita, 4989, 3220, 1.0_f32),
+        (Species::Bayleef, 5695, 3836, 1.15_f32),
+        (Species::Meganium, 6817, 4520, 1.48_f32),
         (Species::Cyndaquil, 16314, 8138, 1.25_f32),
         (Species::Totodile, 7531, 7078, 1.02_f32),
         (Species::Gengar, 6952, 5560, 1.05_f32),
@@ -618,8 +628,8 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Psyduck, 3754, 3828, 1.03_f32),
         (Species::Golduck, 4974, 4460, 1.03_f32),
         (Species::Zubat, 2368, 3352, 1.0_f32),
-        (Species::Golbat, 3545, 4784, 1.0_f32),
-        (Species::Crobat, 4153, 4116, 1.0_f32),
+        (Species::Golbat, 3762, 4784, 1.0_f32),
+        (Species::Crobat, 4653, 4116, 1.0_f32),
         (Species::Butterfree, 5428, 9420, 1.04_f32),
         (Species::Beedrill, 4304, 7304, 1.04_f32),
         (Species::Hoothoot, 16597, 25884, 1.0_f32),
@@ -654,6 +664,11 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Doduo, 11294, 18988, 1.22_f32),
         (Species::Dodrio, 19801, 33196, 1.22_f32),
         (Species::Pidgeotto, 6293, 5776, 1.0_f32),
+        (Species::Exeggcute, 19868, 35472, 1.22_f32),
+        (Species::Exeggutor, 19278, 30396, 1.22_f32),
+        (Species::Ivysaur, 18609, 29796, 1.20_f32),
+        (Species::Venusaur, 19789, 31500, 1.20_f32),
+        (Species::FarfetchD, 17863, 26972, 1.10_f32),
         (Species::Fearow, 18030, 22512, 1.23_f32),
         (Species::Pidgeot, 18224, 23952, 1.35_f32),
         (Species::Slowpoke, 19574, 32984, 1.0_f32),
@@ -783,7 +798,7 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Slowking, 18831, 31512, 1.25_f32),
         (Species::Slowbro, 19322, 32532, 1.2_f32),
         (Species::Lickitung, 17028, 29256, 1.18_f32),
-        (Species::MrMime, 19663, 33212, 1.20_f32),
+        (Species::MrMime, 19916, 33656, 1.20_f32),
         (Species::Chansey, 10390, 18704, 1.10_f32),
         (Species::Blissey, 19379, 34472, 1.20_f32),
         (Species::Growlithe, 16302, 26140, 0.90_f32),
@@ -799,7 +814,7 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Igglybuff, 16964, 28684, 0.58_f32),
         (Species::Mareep, 6382, 11840, 0.85_f32),
         (Species::Flaaffy, 10302, 16636, 1.0_f32),
-        (Species::Ampharos, 2402, 4700, 1.35_f32),
+        (Species::Ampharos, 3494, 5636, 1.35_f32),
         (Species::Xatu, 15289, 24060, 1.04_f32),
         (Species::Azumarill, 4873, 7448, 1.02_f32),
         (Species::Donphan, 17395, 29596, 1.02_f32),
@@ -5647,7 +5662,7 @@ fn lickitung_skin_keeps_recessed_face_supported_toes_and_independent_tongue_tail
 #[test]
 fn mr_mime_skin_keeps_recessed_smile_fixed_slippers_and_ten_independent_digits() {
     let rig=fixture(Species::MrMime);
-    assert_eq!((rig.joints.len(),rig.anatomy.len(),rig.neutral.positions.len(),rig.neutral.indices.len()),(26,34,19663,33212*3));
+    assert_eq!((rig.joints.len(),rig.anatomy.len(),rig.neutral.positions.len(),rig.neutral.indices.len()),(26,34,19916,33656*3));
     assert!(std::ptr::eq(super::for_species("MR__MIME").unwrap(),super::rig(Species::MrMime)));
     for part in &rig.anatomy {
         let owner=if part.name.starts_with("Shoe /") || part.name.starts_with("Shoe curl /") {Some(0)} else if ["Head /","Upper lip /","Lower lip /","Mouth back /","Tongue /","Mouth lining /","Eye /","Pupil /","Eye glint /","Cheek /"].iter().any(|p|part.name.starts_with(p)) {Some(3)} else if part.name.starts_with("Palm /") {Some(if part.name.ends_with("-1") {6} else {9})} else {None};
@@ -6418,6 +6433,61 @@ fn raptor_bird_skin_keeps_coherent_anatomy_and_grounded_claws() {
         for clip in Clip::ALL {for step in 0..=64 {
             rig.sample_into(clip,rig.clip(clip).duration*step as f32/64.,Playback::Clamp,&mut pose).unwrap();rig.skin_matrices_into(&pose,&mut matrices).unwrap();
             for p in &toes {for v in p.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+            for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);assert!(p.y>=-0.000001);assert!(p.cmpge(rig.animated_bounds.0).all()&&p.cmple(rig.animated_bounds.1).all());}
+        }}
+    }
+}
+
+#[test]
+fn leek_duck_skin_keeps_canonical_anatomy_and_fixed_complete_webs() {
+    let rig=fixture(Species::FarfetchD);assert_eq!(rig.joints.len(),21);
+    assert!(std::ptr::eq(super::for_species("FARFETCH_D").unwrap(),super::rig(Species::FarfetchD)));
+    assert_bits(crate::battle_species_models::mesh("FARFETCH_D").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+    let feet:Vec<_>=rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /")).collect();assert_eq!(feet.len(),4);
+    let (mut pose,mut matrices)=storage(rig);
+    for clip in Clip::ALL {for step in 0..=64 {
+        rig.sample_into(clip,rig.clip(clip).duration*step as f32/64.,Playback::Clamp,&mut pose).unwrap();rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+        for p in &feet {for v in p.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+        for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);assert!(p.y>=-0.000001);assert!(p.cmpge(rig.animated_bounds.0).all()&&p.cmple(rig.animated_bounds.1).all());}
+    }}
+}
+
+#[test]
+fn psychic_palm_skin_keeps_coherent_anatomy_grounding_and_complete_feet() {
+    for (species,name,joints,parts,source_parts) in [(Species::Exeggcute,"EXEGGCUTE",7,17,46),(Species::Exeggutor,"EXEGGUTOR",30,24,70)] {
+        let rig=fixture(species);assert_eq!(rig.joints.len(),joints);assert_eq!(rig.anatomy.len(),parts);
+        let bytes=candidate(species);let glb=gltf::binary::Glb::from_slice(&bytes).unwrap();let doc:Value=serde_json::from_slice(&glb.json).unwrap();
+        let ranges=doc["extras"]["source_part_ranges"].as_array().unwrap();assert_eq!(ranges.len(),parts);
+        assert_eq!(ranges.iter().map(|r|r["source_parts"].as_array().map_or(1,Vec::len)).sum::<usize>(),source_parts);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        let supports:Vec<_>=rig.anatomy.iter().filter(|p|p.name.starts_with("Foot /")||p.name.starts_with("Sole /")||p.name.starts_with("Claw /")).collect();
+        assert_eq!(supports.len(),if species==Species::Exeggutor {6} else {0});
+        assert_eq!(supports.iter().map(|p|p.vertices.len()).sum::<usize>(),if species==Species::Exeggutor {3718} else {0});
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=64 {
+            rig.sample_into(clip,rig.clip(clip).duration*step as f32/64.,Playback::Clamp,&mut pose).unwrap();rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for p in &supports {for v in p.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+            for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);assert!(p.y>=-0.000001);assert!(p.cmpge(rig.animated_bounds.0).all()&&p.cmple(rig.animated_bounds.1).all());}
+        }}
+    }
+}
+
+#[test]
+fn bulb_saur_skin_keeps_complete_supports_anatomy_and_animation_envelopes() {
+    for (species,name,joints,parts,logical) in [(Species::Ivysaur,"IVYSAUR",21,26,58),(Species::Venusaur,"VENUSAUR",32,29,100)] {
+        let rig=fixture(species);assert_eq!(rig.joints.len(),joints);assert_eq!(rig.anatomy.len(),parts);
+        let bytes=candidate(species);let glb=gltf::binary::Glb::from_slice(&bytes).unwrap();let doc:Value=serde_json::from_slice(&glb.json).unwrap();
+        let ranges=doc["extras"]["source_part_ranges"].as_array().unwrap();assert_eq!(ranges.len(),parts);
+        assert_eq!(ranges.iter().map(|r|r["source_parts"].as_array().map_or(1,Vec::len)).sum::<usize>(),logical);
+        assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
+        assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
+        let feet:Vec<_>=rig.anatomy.iter().filter(|p|p.name.starts_with("Forefoot /")||p.name.starts_with("Hindfoot /")).collect();
+        assert_eq!(feet.len(),8);assert_eq!(feet.iter().map(|p|p.vertices.len()).sum::<usize>(),2688);
+        let (mut pose,mut matrices)=storage(rig);
+        for clip in Clip::ALL {for step in 0..=64 {
+            rig.sample_into(clip,rig.clip(clip).duration*step as f32/64.,Playback::Clamp,&mut pose).unwrap();rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+            for part in &feet {for v in part.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
             for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);assert!(p.y>=-0.000001);assert!(p.cmpge(rig.animated_bounds.0).all()&&p.cmple(rig.animated_bounds.1).all());}
         }}
     }

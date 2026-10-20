@@ -318,9 +318,18 @@ fn apply_keyboard_input(
         rtc_changed = false;
     }
 
+    let previous_lcd_frame = runtime_shell.lcd_animation_frame;
     runtime_shell.lcd_animation_frame = runtime_shell
         .lcd_animation_frame
         .wrapping_add(u64::from(elapsed_input_ticks));
+    if runtime_shell.pending_name_input.as_ref().is_some_and(|input|
+        previous_lcd_frame / 4 != runtime_shell.lcd_animation_frame / 4
+        || (input.label == "POKéMON'S NAME?"
+            && previous_lcd_frame / 18 != runtime_shell.lcd_animation_frame / 18)) {
+        // Naming cursor/icon animations have no semantic game-state change.
+        // Wake the retained renderer only when their source phase changes.
+        mark_runtime_presentation_dirty(&mut runtime_shell);
+    }
     // Modal profile editing blocks gameplay input, while the presentation clock
     // keeps input release, browser observation, and real-time clock updates live.
     if customization_is_open() || save_manager_is_open() { return; }
@@ -1777,6 +1786,10 @@ fn apply_keyboard_input(
         || runtime_shell.save_menu_open
         || runtime_shell.storage_cursor.is_some()
         || runtime_shell.pc_item_cursor.is_some()
+        // MailboxPC's scrolling/vertical menus poll releases as well as
+        // presses. Idle frames must keep the modal input budget, otherwise
+        // GetJoypad retains A and the next A cannot open READ MAIL.
+        || runtime_shell.mailbox_cursor.is_some()
         || visible_field_pack_is_open(&runtime_shell)
         || !matches!(
             runtime_shell.shell.session().state().battle,
@@ -4538,8 +4551,8 @@ fn apply_visible_runtime_controls(
     let mailbox_menu_active = runtime_shell.mailbox_cursor.is_some()
         && runtime_shell.pc_notice.is_none() && runtime_shell.pc_confirmation.is_none()
         && runtime_shell.pending_mail_read.is_none() && !runtime_shell.party_menu_open;
-    let mailbox_confirmation_active = matches!(runtime_shell.pc_confirmation,
-        Some(VisiblePcConfirmation::PutMailInPack(_)));
+    let mailbox_confirmation_active = visible_pc_has_timed_yes_no(runtime_shell)
+        && !(visible_name_rater_confirmation(runtime_shell) && runtime_shell.special_boundary.is_some());
     let pc_a_consumed = if pc_item_list_active || pc_item_quantity_active || mailbox_menu_active || mailbox_confirmation_active {
         std::mem::take(&mut runtime_shell.overworld_interaction_consumed_a)
             || runtime_shell.field_text_consumed_a
@@ -4674,6 +4687,12 @@ fn apply_visible_runtime_controls(
             Ok(true) => {
                 let pokegear_was_open = runtime_shell.pokegear_menu_open;
                 run_bevy_action(runtime_shell, press_visible_a_button);
+                if runtime_shell.mailbox_cursor.is_some() {
+                    // The parent VerticalMenu already sampled this A. Carry
+                    // its physical history into MailboxPC so a held opening
+                    // press cannot also choose the first letter.
+                    runtime_shell.pc_joypad.get_joypad(visible_menu_physical_down(keys));
+                }
                 if !pokegear_was_open && runtime_shell.pokegear_menu_open {
                     // A menu confirmation can span many source frames on a
                     // touchscreen. Only buttons held at entry are suppressed,
@@ -5134,6 +5153,8 @@ fn visible_non_text_player_boundary(
         || runtime_shell.credits_screen.is_some()
         || visible_field_pack_is_open(runtime_shell)
         || runtime_shell.bill_pc_action_cursor.is_some()
+        || runtime_shell.bill_pc_box_cursor.is_some()
+        || runtime_shell.bill_pc_box_action_cursor.is_some()
         || runtime_shell.pc_hub_cursor.is_some()
         || runtime_shell.decoration_menu.is_some()
         || runtime_shell.player_pc_action_cursor.is_some()

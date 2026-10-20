@@ -2731,17 +2731,18 @@ fn close_visible_special_boundary(runtime_shell: &mut BevyRuntimeShell) -> Resul
     {
         let party_index = selected_party_index(runtime_shell)?;
         let snapshot = runtime_shell.shell.snapshot()?;
-        let nickname = snapshot
+        snapshot
             .party
             .slots
             .iter()
             .find(|slot| slot.index == party_index)
-            .map(|slot| slot.pokemon.nickname.clone())
             .context("Name Rater selection is no longer in the party")?;
         runtime_shell.pending_script_party_selection = None;
         runtime_shell.pending_name_input = Some(PendingNameInput {
             label: "POKéMON'S NAME?".to_string(),
-            value: nickname,
+            // NamingScreen_InitNameEntry clears its destination. An empty
+            // submission is handled later by NameRater's same-name branch.
+            value: String::new(),
             max_length: 10,
             cursor_column: 0,
             cursor_row: 0,
@@ -2878,7 +2879,8 @@ fn close_visible_special_boundary(runtime_shell: &mut BevyRuntimeShell) -> Resul
     }
     if matches!(
         boundary.label.as_str(),
-        "PokecenterBillsPCText" | "PokecenterPlayersPCText"
+        "PokecenterBillsPCText" | "PokecenterPlayersPCText" | "PokecenterChangeBoxSaveText" | "PokecenterMoveSaveText"
+            | "PokecenterMoveMailText"
     ) {
         mark_runtime_snapshot_dirty(runtime_shell);
         return Ok(());
@@ -2895,8 +2897,14 @@ fn close_visible_special_boundary(runtime_shell: &mut BevyRuntimeShell) -> Resul
         }
         return continue_visible_script_after_prompt(runtime_shell);
     }
+    if runtime_shell.pc_hub_session_open && boundary.label == "PokecenterOaksPCText" {
+        return open_visible_oak_rating_question(runtime_shell);
+    }
+    if runtime_shell.pc_hub_session_open && boundary.label == "ProfOaksPcBoot" {
+        return open_visible_oak_pc_shutdown(runtime_shell);
+    }
     if runtime_shell.pc_hub_session_open
-        && matches!(boundary.label.as_str(), "ProfOaksPcBoot" | "HallOfFamePC")
+        && matches!(boundary.label.as_str(), "OakPCShutdown" | "HallOfFamePC")
     {
         runtime_shell.hall_of_fame_pc_index = None;
         runtime_shell.pc_hub_cursor = Some(MenuCursor {
@@ -4256,7 +4264,11 @@ fn selected_party_species_label(
 }
 
 fn move_visible_primary_cursor_up(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if !runtime_shell.battle_messages.is_empty() {
+    // PC PrintText/CONT owns directions even when the Bill/save cursor is
+    // already retained underneath it. Both keyboard and controller use these
+    // direction helpers, so neither frontend can change that hidden choice.
+    if runtime_shell.pending_mail_read.is_some() || !runtime_shell.battle_messages.is_empty()
+        || visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         return Ok(());
     }
     if runtime_shell.visible_slot_machine.is_some() {
@@ -4266,7 +4278,8 @@ fn move_visible_primary_cursor_up(runtime_shell: &mut BevyRuntimeShell) -> Resul
 }
 
 fn move_visible_primary_cursor_down(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if !runtime_shell.battle_messages.is_empty() {
+    if runtime_shell.pending_mail_read.is_some() || !runtime_shell.battle_messages.is_empty()
+        || visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         return Ok(());
     }
     if runtime_shell.visible_slot_machine.is_some() {
@@ -4276,7 +4289,8 @@ fn move_visible_primary_cursor_down(runtime_shell: &mut BevyRuntimeShell) -> Res
 }
 
 fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if !runtime_shell.battle_messages.is_empty() {
+    if runtime_shell.pending_mail_read.is_some() || !runtime_shell.battle_messages.is_empty()
+        || visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         return Ok(());
     }
     if runtime_shell.visible_buena_password.is_some()
@@ -4357,6 +4371,8 @@ fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Res
         return Ok(());
     }
     if runtime_shell.pc_confirmation.is_some() {
+        if visible_pc_uses_source_yes_no(runtime_shell) {return Ok(());}
+        if !visible_pc_toss_confirmation_ready(runtime_shell) {return Ok(());}
         return move_visible_cursor_slot(
             &mut runtime_shell.yes_no_cursor,
             "pc:confirmation".to_string(),
@@ -4549,7 +4565,8 @@ fn move_visible_primary_cursor_left(runtime_shell: &mut BevyRuntimeShell) -> Res
 }
 
 fn move_visible_primary_cursor_right(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    if !runtime_shell.battle_messages.is_empty() {
+    if runtime_shell.pending_mail_read.is_some() || !runtime_shell.battle_messages.is_empty()
+        || visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         return Ok(());
     }
     if runtime_shell.visible_buena_password.is_some()
@@ -4630,6 +4647,8 @@ fn move_visible_primary_cursor_right(runtime_shell: &mut BevyRuntimeShell) -> Re
         return Ok(());
     }
     if runtime_shell.pc_confirmation.is_some() {
+        if visible_pc_uses_source_yes_no(runtime_shell) {return Ok(());}
+        if !visible_pc_toss_confirmation_ready(runtime_shell) {return Ok(());}
         return move_visible_cursor_slot(
             &mut runtime_shell.yes_no_cursor,
             "pc:confirmation".to_string(),
@@ -5138,6 +5157,10 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
         return move_visible_mailbox_confirmation_cursor(runtime_shell, delta);
     }
     if runtime_shell.pc_confirmation.is_some() {
+        if visible_pc_uses_source_yes_no(runtime_shell) {
+            return move_visible_pc_toss_confirmation_cursor(runtime_shell,delta);
+        }
+        if !visible_pc_toss_confirmation_ready(runtime_shell) {return Ok(());}
         return move_visible_cursor_slot(
             &mut runtime_shell.yes_no_cursor,
             "pc:confirmation".to_string(),

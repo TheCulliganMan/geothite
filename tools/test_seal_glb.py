@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Decoded seal supports, coherent faces and rooted tail/flipper articulation."""
-import copy,math,unittest
+import copy,math,os,unittest
 from pathlib import Path
 import seal_glb as author
 import test_gengar_glb as skin
 from skin_glb_test_support import IDENTITY
 from sculpt_test_support import parts_overlap,crossed_faces,indexed_ray_intersections as rays
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
+ROOT=Path(os.environ.get('CRYSTAL_SEAL_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class SealSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
@@ -90,4 +90,26 @@ class SealSkinTests(unittest.TestCase):
   for m in self.models.values():
    for clip in m.doc['animations']:
     idle=clip['name'].endswith('.idle');self.assertEqual(clip['extras']['loopSuggested'],idle);self.assertEqual(clip['extras']['cueRelative'],not idle);self.assertEqual({c['target']['path'] for c in clip['channels']},{'rotation'})
+
+ def test_dewgong_smile_has_occupied_muzzle_roots_across_its_width_through_clips(self):
+  m=self.models['dewgong'];mouth=self.find(m,'Mouth /');muzzle=self.find(m,'Muzzle /')
+  for clip in m.clips:
+   for t in (0.,.31,.67):
+    mats=m.matrices(clip,t)
+    a={'positions':sum(m.posed(mouth,mats),[]),'indices':m.indices[mouth]}
+    b={'positions':sum(m.posed(muzzle,mats),[]),'indices':m.indices[muzzle]}
+    self.assertTrue(parts_overlap(a,b),(clip,t,'detached smile'))
+    xl,xh=min(a['positions'][::3]),max(a['positions'][::3])
+    yl,yh=min(a['positions'][1::3]),max(a['positions'][1::3])
+    for section in range(1,16):
+     x=xl+(xh-xl)*section/16;root=front=-float('inf')
+     for row in range(1,80):
+      y=yl+(yh-yl)*row/80
+      aa=sorted({round(z,10) for z in rays(a,x,y)})
+      bb=sorted({round(z,10) for z in rays(b,x,y)})
+      for al,ah in zip(aa[::2],aa[1::2]):
+       for bl,bh in zip(bb[::2],bb[1::2]):
+        root=max(root,min(ah,bh)-max(al,bl));front=max(front,ah-bh)
+     self.assertGreater(root,.00015,(clip,t,section,'unrooted section'))
+     self.assertGreater(front,.0003,(clip,t,section,'buried smile'))
 if __name__=='__main__':unittest.main()

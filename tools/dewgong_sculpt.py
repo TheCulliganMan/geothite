@@ -4,7 +4,7 @@ import argparse,json,math
 from pathlib import Path
 from functools import lru_cache
 from copy import deepcopy
-from sculpt_geometry import part,ellipsoid,loft,curved_profiles,fitted_patch,fitted_contour,crease_normals
+from sculpt_geometry import part,ellipsoid,loft,curved_profiles,fitted_patch,fitted_contour,crease_normals,tube
 from seel_sculpt import pillow
 from bovine_sculpt import oval,smooth,curved_tube
 from abra_sculpt import surface
@@ -43,12 +43,20 @@ def raw_sculpture():
  xy=contour((((.017,.936),(.069,1.008),(.159,1.094),(.275,1.137)),((.275,1.137),(.311,1.076),(.328,1.089),(.321,1.024)),((.321,1.024),(.313,.984),(.331,.962),(.300,.926)),((.300,.926),(.298,.885),(.264,.870),(.224,.902)),((.224,.902),(.150,.960),(.076,.909),(.017,.936))),10)
  for sign in (-1,1):p.append(pillow('Tail fluke / broad curved scalloped fan '+str(sign),WHITE,[(sign*x,y) for x,y in xy],-.523,.036))
  muzzle=ellipsoid('Muzzle / rounded white seal snout',WHITE,(0,.715,skin(.715,0)+.025),(.142,.052,.066),40,24);p.append(muzzle);ms=surface(muzzle)
- nose=fitted_patch('Nose / small fitted charcoal nostril',INK,oval(0,.740,.019,.006,28),ms,.003);p.append(nose)
+ # Retain the canonical centroid (including its signed zero) across Python's
+ # old and compensated sum implementations; the actual nose stays identical.
+ nose_outline=oval(0,.740,.019,.006,28)
+ nose_center=tuple(math.fsum(q[i] for q in nose_outline)/len(nose_outline) for i in (0,1))
+ nose=fitted_patch('Nose / small fitted charcoal nostril',INK,nose_outline,ms,.003,center=nose_center);p.append(nose)
  p.append(fitted_patch('Nose glint / fitted tiny ivory reflection',IVORY,oval(-.006,.742,.004,.0015,16),surface(nose),.001))
  pts=[]
  for k in range(25):
-  x=-.107+.214*k/24;y=.689+.85*x*x;pts.append((x,y,ms(y,x)+.0025))
- p.append(curved_tube('Mouth / supported gentle white-seal smile',INK,pts,[.0020]*len(pts),10))
+  x=-.107+.214*k/24;y=.689+.85*x*x;pts.append((x,y,0.))
+ # Fit every smoothed centerline sample to the actual muzzle triangles. Merely
+ # offsetting sparse controls let the interpolated narrow tube float above it.
+ centers,_=smooth(pts,[.0020]*len(pts))
+ centers=[(x,y,ms(y,x)+.0006) for x,y,_ in centers]
+ p.append(crease_normals(tube('Mouth / supported gentle white-seal smile',INK,centers,[.0020]*len(centers),10),35.))
  for sign in (-1,1):
   x=sign*.083;y=.697;z=ms(y,x)
   p.append(curved_tube('Fang / small rooted ivory lower canine '+str(sign),IVORY,[(x,y,z+.004),(sign*.080,.668,z+.019),(sign*.070,.645,z+.024)],[.013,.014,.0025],20))

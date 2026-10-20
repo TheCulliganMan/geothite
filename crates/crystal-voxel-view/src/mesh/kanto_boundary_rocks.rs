@@ -575,15 +575,15 @@ mod tests {
         let (tiles, shapes, g) = fixture(Kind::KantoBoundaryShore, 16.0);
         let cells = tiles.iter().collect::<Vec<_>>();
         let p = resolve(&cells, &shapes, &g)[0];
-        assert_eq!(p.base, -4.0);
+        assert_eq!(p.base, crate::profile::WATER_HEIGHT * 2.);
         let mut mesh = TerrainMeshData {
             authored_cells: vec![None; 6],
             ..Default::default()
         };
         append(&mut mesh, &cells, &shapes, &g, &mut [false; 6], [0; 2]);
-        assert!(mesh.textured.positions.iter().all(|v| v[1] == -4.0));
-        assert!(mesh.solid.positions.iter().all(|v| v[1] >= -4.0));
-        assert!(mesh.solid.positions.iter().any(|v| v[1] == -4.0));
+        assert!(mesh.textured.positions.iter().all(|v| v[1] == crate::profile::WATER_HEIGHT * 2.));
+        assert!(mesh.solid.positions.iter().all(|v| v[1] >= crate::profile::WATER_HEIGHT * 2.));
+        assert!(mesh.solid.positions.iter().any(|v| v[1] == crate::profile::WATER_HEIGHT * 2.));
         let original = mesh.clone();
         let edges = [crystal_render_api::VisualJumpLedge {
             start: bevy::prelude::IVec2::new(0,1), end: bevy::prelude::IVec2::new(3,1),

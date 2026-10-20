@@ -2157,7 +2157,9 @@ fn every_oak_rating_resolves_its_authored_far_text() {
         assert_eq!(pages[0], "Current POKéDEX\ncompletion level:");
         assert!(pages[1].contains(&format!("{} POKéMON seen", rating.caught_count_limit)));
         assert!(pages[1].contains(&format!("{} POKéMON owned", rating.caught_count_limit)));
-        assert!(shell.pc_hub_cursor.is_some(), "return to PC after the final page");
+        assert_eq!(pages.last().map(String::as_str),Some("The link to PROF.\nOAK's PC closed."),
+            "the PC link closes after the rating, as in ProfOaksPC");
+        assert!(shell.pc_hub_cursor.is_some(), "return to PC after the closing page");
     }
 }
 
@@ -2229,7 +2231,11 @@ fn oak_rating_fanfare_waits_for_final_text_and_remembers_acknowledgement() {
         assert!(shell.special_boundary.is_some(), "retain text while sound plays");
         shell.transient_audio_playing = false;
         advance_visible_special_text_pause(&mut shell).unwrap();
-        assert!(shell.special_boundary.is_none(), "no second button press required");
+        assert_eq!(shell.special_boundary.as_ref().map(|b|b.label.as_str()),Some("OakPCShutdown"),
+            "finished fanfare advances directly to the source shutdown text");
+        assert!(shell.pc_hub_cursor.is_none(),"closing text owns input before the hub returns");
+        close_visible_special_boundary(&mut shell).unwrap();
+        assert!(shell.special_boundary.is_none());
         assert!(shell.pc_hub_cursor.is_some());
     }
 }

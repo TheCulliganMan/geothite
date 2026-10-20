@@ -296,6 +296,10 @@ pub(crate) fn append(cloth: &mut CostumeMesh, rig: &PersonRig, look: Look) {
 }
 
 pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
+    build_with_uniform(rig, look, None)
+}
+
+pub(crate) fn build_with_uniform(rig: &PersonRig, look: Look, uniform: Option<[u8; 3]>) -> Option<CostumeMesh> {
     if look.texture_key == "rocket" { return rocket_details(rig, look); }
     if !matches!(look.texture_key, "officer" | "captain" | "sailor" | "clerk" | "biker" | "black_belt" | "gentleman" | "gym_guide" | "unused_guy" | "cal") {
         return None;
@@ -475,7 +479,8 @@ pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
             } else if captain {
                 [234, 233, 220]
             } else {
-                [62, 88, 128]
+                uniform.map(|rgb| rgb.map(|v| (f32::from(v)*1.18).round().min(255.) as u8))
+                    .unwrap_or([62, 88, 128])
             },
         );
     }

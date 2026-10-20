@@ -8280,3 +8280,3094 @@ whole-room obligations open. No geometry, gameplay dispatcher, source flags,
 packs or audio changed for this harness. The deleted
 docs/handoff/kanto-interiors.md remains deleted; this checkpoint and
 docs/modeled-interiors.md retain the current handoff.
+
+Bruno lava-platform correction — 2026-10-18
+
+Human clarified that the blue courses support the green platform over lava.
+The previous four freestanding blue walls above the green floor were wrong.
+Bruno now keeps the green approach and central platform at the entrance datum,
+with the lava sixteen source pixels below it. The original blue courses face
+outward below the green caps, and continuous blue edge supports close the
+walkway sides. Native stairs, walking support and source collision are retained.
+Will’s pool and bank heights are unchanged. Native render build passed in
+8m38s. Three matched 2D/native pairs (production-default front, east and west)
+and both moving samples were individually inspected offscreen. Blue faces now
+sit under the green platform; both approach edges connect down to lava without
+exposed gaps. All paired receipts preserve state. The 64-frame UD pass walks
+(4,12) to (4,11) and back in Bruno’s room. All three focused external-pack
+regressions passed on the final source (4.09s after compilation). Pack size/hash remain
+582005378/a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Evidence: target/kanto-resume/bruno-support-headless-review and receipts/
+bruno-support-*.log. This is scoped platform acceptance, not whole-room or
+all311 acceptance; no new global asset audit was run.
+
+Continuous native League status from the preceding work is incomplete: v4
+actually earned Will/Koga/Bruno/Karen wins, then Lance failed native camera
+admission (no readable higher shot on checked ground). No native five-win,
+Hall ceremony or Continue completion is claimed. The HUD readability focused
+regression passed, with native visual verification still pending. The old v3
+live-build descriptions below are historical and superseded by this status.
+
+Lance native camera diagnosis — 2026-10-18 (in progress)
+
+Reproduced the saved native-pack Mew/Gyarados battle offscreen with ordinary
+U18+A160 and opt-in encounter tracing. The renderer rejects all shots: 398
+leave authentic retained bounds, 208 exceed checked source ground, 174 cannot
+fit complete battlers inside authentic terrain, 14 are statically occluded and
+6 have scenery dividing the composition. Only four stage pairs pass the floor
+check (348 rejected) in each elevation tier. The resulting source-art move
+menu is diagnostic fallback and is rejected as native acceptance.
+
+A hypothesis that trainer ground radius three was starving this scene was
+tested, built and disproved: Lance binds ScriptedGround, already radius five;
+the stage counts and rejection reasons were identical. That radius/API change
+and its unneeded tests were removed, with no camera admission gate relaxed.
+The new opt-in checked-floor trace reports actual retained cells/elevations.
+Build session69440/Cargo91813/rustc94369 writes receipts/lance-floor-trace-build.log;
+last confirmed active at 13m50s of the Bevy compiler. Pipeline20619 waits on that
+exact Cargo and then automatically runs the saved diagnostic into
+lance-floor-trace-headless-review with receipts/lance-floor-trace-native.log.
+It checks that the input save remains unchanged and rejects shader errors.
+Revalidate these actual handles; do not start a competing diagnostic/build.
+The shader source correction predates this tracing build and is embedded by
+load_internal_asset; shader source edits cannot repair an already-built binary.
+An initial producer-test build was explicitly stopped and superseded, then
+stopped when the tested hypothesis was rejected; no test pass is claimed.
+
+All36 images of native continuous League v4 have now been individually viewed;
+individual-room-review.json records that review. Arrival player crop, old tiny
+native HUD, obsolete Bruno freestanding walls, and Lance fallback prevent full
+acceptance. Fresh Bruno support review supersedes only those blue banks. The
+full original16/all311/shared furniture and continuous native Hall gates remain
+open. The human-deleted docs/handoff/kanto-interiors.md remains absent.
+
+Fresh continuous v5 (session39235/PID95495) was explicitly stopped after actual
+voxel_surface.wesl shader parse errors. Its Will battle pair was individually
+viewed: the bigger HUD is legible, but terrain is completely absent while scene
+metadata misleadingly reports ready. The entire v5 visual run is rejected;
+individual-room-review.json records that failure. The current shader already
+has the parenthesized XOR expression; it belongs to other concurrent work and
+was not changed here. V5 cannot prove HUD/room acceptance despite the clear
+font improvement, and is not continuous native League completion.
+
+Interior arrival framing and Lance stage separation — 2026-10-18 (verification pending)
+
+Previous turn made progress: the complete v4 image set was reviewed and the
+saved native failure reproduced; its final wait was on confirmed live Cargo.
+Tracing build69440 finished successfully in28m43s. Pipeline20619 then completed
+the diagnostic: source save unchanged, zero terrain shader errors, source-art
+fallback still rejected. The new trace proves ScriptedGround radius5 with164
+retained cells and multiple actual terrace/stair heights. The old radius
+hypothesis was removed; it did not fix Lance.
+
+Replaying those exact floor cells and full recorded body envelopes through
+production layout/ground methods reproduces four supported stages and zero
+geometrically admissible shots. Adding a 1.5-core-tile gap between the existing
+1/2-core choices yields15 supported stages and13 shots satisfying complete-body
+floor, authentic bounds and far-plane proof. Production now searches that gap;
+it does not enlarge floor evidence, shrink bodies or relax camera checks.
+The landing regression proves one tile overlaps, two crosses the real edge,
+and 1.5 fits. Its isolated compilation passed. Full native static-occlusion
+and GPU acceptance are still required. Existing staging tests are preserved.
+
+The confirmed default-camera arrival crop is also addressed: interior orbit
+cameras pan in their own up-plane enough to contain the modeled player's
+actual foot and full stature with a visible margin. Existing yaw, pitch, FOV,
+distance, body size and depth stay fixed. Outdoor clearance and first-person
+logic are retained. The actual projection regression passed in isolation at
+four yaw angles; full-crate and fresh native image checks remain pending.
+Isolated source/test scratch binaries were removed after recording scoped
+results in receipts/interior-camera-stage-isolated-results.json.
+
+Live work to revalidate, not restart: camera Cargo test session11829 writes
+receipts/interior-arrival-camera-test.log (voxel test compiler99862 was live
+at9m59s). Production examples build session60837/Cargo1612 is queued behind it,
+writing receipts/lance-half-tile-stage-build.log. Pipeline12123 waits on that
+exact Cargo and then captures a native Lance move-menu pair WITHOUT permitting
+source fallback, rejects shader errors, checks the original save hash, and
+captures production-default Will(4,17), Lance(4,23), home(7,7) arrival pairs.
+Outputs go to lance-half-tile-headless-review. Inspect each full image before
+acceptance. The full continuous native League/Hall/Continue session is still
+required after this isolated native gate passes. All311, shared furniture,
+original16 and whole-room composition/material obligations remain open.
+
+Full-scope artifact reconciliation — 2026-10-18
+
+The prior goal turn was a verified wait on the still-live camera test compiler;
+no timeout was treated as a failed build. The saved scope metadata audit lists
+311 non-Town/Route rooms and225 declared alternatives across22 maps. The
+original16 requirement remains the three declared states in each of the five
+League rooms plus CeladonDeptStore6F’s sale callback, not all225 states.
+
+A filesystem provenance inventory finds754 canonical-core-pack identity records
+covering68 rooms with source/native pair files (46 Johto/22 Kanto);2451 identity
+records name the browser pack. This is artifact provenance, not proof of visual
+acceptance or a semantic difference between those packs.243 rooms lack a
+canonical-native pair identity in this format and need reconciliation with
+saved-session/continuous captures before calling them uncaptured. No old
+browser-pack baseline is promoted to current-source visual acceptance.
+The scoped records themselves leave whole-room acceptance false.
+
+The inventory is target/kanto-resume/receipts/interior-native-artifact-coverage.json.
+It explicitly does not certify current geometry, shader readiness, whole-room
+composition, hidden areas, scripted states or reachability. After the pending
+native camera checks, refresh the full311 native baseline and prioritize actual
+defects across the full scope; camera/League work must not replace shared
+furniture, Johto, unused rooms, original16 or actual service obligations.
+
+
+Native arrival, move-board and broad review checkpoint — 2026-10-18
+
+The camera Cargo regression and all19 camera tests passed. Optimized native
+Will/Lance/home arrival pairs were individually inspected with preserved source
+state and complete player framing. The actual Mew/Gyarados gap admission passes
+with default stack and no source fallback; whole battle composition stays open.
+The revised expanded native move board clears Gyarados, hides duplicate HP and
+retains readable16px board/24px HUD text; its matched source image is unchanged.
+Two actual-source layout tests pass. See the current checkpoint at the top of
+3d-remaining-families.md for build limitations and exact receipts.
+
+Runtime-reuse headless batch validation completed ten rooms, all individually
+viewed with matching source state and no shader/logger errors. Findings remain
+explicit in native-runtime-reuse-ten-room-headless-review/individual-room-review.json;
+center crops do not prove whole-room acceptance. A fresh311-map native baseline
+is running (session36009, native-full311-runtime-reuse.log).
+
+Every native action/move command is now gated, exposing an actual Bruno/Onix
+camera failure in v6 (exit101), after earned Will/Koga wins. Ordinary source
+battle text explains Koga's Ariados-to-Forretress switch; no species mapping bug
+is established. A new traced ordinary-input run (session20223,
+native-continuous-league-v7-trace.log) will diagnose Onix's checked floor.
+All311/shared furniture/original16 and continuous native Hall/Continue remain
+open. The deleted handoff was not restored; no content-pack/audio changes.
+
+The next reviewer revision compiles with verified unchanged-source provenance:
+separate species-labeled command captures, rendered/presented species matching,
+and authoritative enemy IDs in receipts. V8 is live (session18174,
+native-continuous-league-v8-opponent.log); its runtime gate is not yet accepted.
+Eight fresh Kanto center comparisons and three v6 battle pairs were individually
+viewed, with narrow findings recorded beside their images. The full311 center
+batch had77 pairs at that checkpoint; hidden areas/full-room states remain open.
+
+
+Ecruteak hall and Onix admission — 2026-10-18 (verification pending)
+
+Fresh baseline review found EcruteakTinTowerEntrance omitted from native timber
+and guardian-backing guards. A separate architecture selector now covers its
+existing source drawings without changing Tin Tower perimeter/warp rules.
+Focused external-pack test61280 and optimized renderer/perimeter pipeline6376
+are running/queued. The hall's actual four guardians and three ladders are
+included in the regression. No finished visual acceptance is claimed.
+
+V7/V8 terminated at Bruno's Onix. Actual trace/replay finds28 supported stages,
+zero shots at old angles and ten geometric shots at yaw180/elevation75.
+A final high-angle end-on search tier is implemented after the entire original
+search, with all physical/admission checks retained. Recorded-floor test54731
+and optimized native build/run16639 remain pending. The revised review also
+labels opponent party slots, preserving distinct evidence for Will's two Xatu.
+Earlier v8 Xatu/Jynx matched pairs and species gates were individually verified.
+
+The center baseline stopped after186 comparisons at genuinely unlit
+RockTunnelB1F; both dark images were inspected and rejected for room-art review.
+Flash-enabled evidence remains required. Remaining124 centers resume in
+session87576/PID24476 (native-full311-runtime-reuse-remaining.log). All311 stay in
+scope; the baseline predates the newest source fixes. See the top checkpoint
+in 3d-remaining-families.md for exact evidence, handles and remaining gates.
+
+
+Refreshed311 baseline and verified native Onix — 2026-10-18
+
+All311 selected center pairs are now present with preserved state:298 ordinary
+plus13 separate disposable Flash fixtures. The thirteen Flash comparison images
+were individually inspected. The coverage record explicitly retains full-room
+acceptance false and identifies the frozen build; latest Ecruteak/Onix changes
+are separate. Explicit --maps batches now forward the existing preview flag to
+fresh shells, verified by the completed thirteen-room batch. Johto dark-cave
+fill and generic teal water remain real defects; no repair is claimed yet.
+
+Ecruteak's actual external-pack/nine-floor regression passed7.76s. The new Onix
+regression passed0.06s in the same fresh test binary; redundant queued Cargo
+was cancelled after that success. Optimized renderer build38m34s and all24
+perimeter comparisons completed. Comparisons were individually viewed, with
+full original source/native Sprout south frames additionally checked. Internal
+wood joins/backing improve, but Ecruteak's left-hall east component edge remains
+open; do not bridge its black separation or close real exits. Tin player reveal,
+beast composition, Sprout foreground/reverse views and movement remain open.
+
+Optimized native v9 earned all five League wins and natively admitted Onix.
+The inspected complete Onix pair has preserved state, matching IDs, real floor/
+lava/supports and no source fallback, but tiny Mew/steep framing prevent whole
+composition acceptance. V9 stopped at the Hall save because its example used
+.save.json; the filename is corrected to .crystalsave. V10 is live in
+session32322/PID36458, native-continuous-league-v10-crystalsave.log, linked
+against the exact completed optimized production graph. Hall/Continue is still
+unproven. The current checkpoint at the top of 3d-remaining-families.md records
+all receipts, source limitations and remaining full-scope obligations.
+
+Tin Tower summit inspection — 2026-10-18
+
+The requested Ho-Oh tower peak is TinTowerRoof. It is already modeled with
+pitched roof volumes and curved ridge tiles; it is not an absent rooftop.
+Headless production captures at (9,9) were inspected in full from the default,
+east and reverse cameras, against the full default 2D source. Paired states
+are preserved. Evidence: target/kanto-resume/ho-oh-tower-peak-headless-review/
+individual-review.json. No windows were opened. This is inspection, not a new
+model implementation or whole-roof acceptance: source-art end/ladder details
+remain flat, the center walkway has a wood finish unlike the gold reference,
+and the roof reads as a repeated broad sheet at distance. Roof refinement
+remains open alongside the existing interiors work.
+
+
+Tin Tower summit sky and village backdrop — 2026-10-18
+
+Implemented a summit-only lower-atmosphere sky treatment and a separate native
+distant Ecruteak vista in summit_vista.rs: pitched/timber houses, theater, gym,
+Mart, Center, pond, ruined Burned Tower shell, gardens, broad-canopy trees and
+continuous surrounding hills. It is an authored distant interpretation, not
+another playable/source-exported map. It creates no terrain support, collisions
+or actors. Geometry is built lazily only on entering the verified tower-atlas
+TinTowerRoof; it stays anchored to source-map coordinates as the render grid
+moves, hides on departure, and follows the actual clock. Night energy was
+corrected after the first capture made the valley glow blue. Other-map sky
+behavior retains the existing zero-valued summit parameter.
+
+Actual-source direct Rust compilation succeeded for the full voxel library,
+Bevy root and location example using the completed dependency graph; these
+are opt-level=0 visual QA builds, not performance acceptance. Three new geometry/
+anchor/lifecycle-clock tests and eight existing sky controls passed. Final
+full original day/night native frames were inspected, with preserved paired
+source states; the day source image is pixel-identical to the prior rooftop
+source. Default/east views were also inspected before the final night-only tint
+correction. Evidence: target/kanto-resume/summit-vista-verified/review.json.
+The shared overview uses camera "0.75 1 25 0"; production default camera
+behavior is unchanged. No windows opened. Roof-end flat details, walkway finish,
+whole-roof art acceptance and the broader interior/furniture goals remain open.
+
+Separately, the previously running native League v10 reached Hall and wrote
+earned-champion.crystalsave, then failed its review assertion "continuous native
+review missed WillsRoom battle". No completed Hall/credits/Continue claim is
+made; that prior goal remains open.
+
+
+Actual Ecruteak and all surrounding summit routes — 2026-10-18
+
+Supersedes the authored village approximation below: it has been fully removed.
+TinTowerRoof now displays the actual pack maps EcruteakCity, Route36, Route37,
+Route38, Route39, Route42 and MahoganyTown, placed by the existing production
+connection graph. Each full map keeps its own identity, blocks, source atlas,
+current palette, animation families, connected terrace evidence, native models
+and normal TILE_SIZE=32 scale. No second player, NPC session or dispatcher is
+created. The summit attaches to the actual Tin Tower exterior model's footprint
+center and measured roof height, including its terrace, rather than the western
+entrance hall. Scroll and sub-tile camera movement retain the source anchor.
+
+The ordinary repeated map apron is disabled only for distant finite meshes;
+repeating it over adjacent maps previously covered their terrain and water.
+Unmapped interstitial cells instead receive the actual Ecruteak/Johto border
+metatile 5. A separate real city lawn sample lets the unchanged native grove
+builder recognize its complete trees; that sample column is removed from the
+visible ground. Shared native trees and mesh handles cover only source-border
+plots outside all seven map rectangles. Flat green source-card strips from the
+first border attempt were rejected and replaced. The background creates no
+footing/collision data in the live world. Summit-only haze, lower sky and far
+depth retain the actual clock and ordinary camera pose.
+
+Full actual voxel, Bevy root and location-example compilation succeeded against
+the completed dependency graph. These are opt-level=0 visual QA builds, not
+optimized-load/performance acceptance. Seventeen voxel regressions pass (four
+summit, two finite-map/apron/attachment, three separate entrance-perimeter and
+eight sky controls). The external-pack host regression passes: exactly all five
+routes plus the two towns, every actual map tile/atlas at native scale, complete
+native border-tree ownership, stable extraction cache and unchanged authoritative
+session checksum. Pack SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+Current visual evidence is in target/kanto-resume/actual-summit-native-border/;
+full southwest day and south night native/source originals have been inspected,
+with preserved paired state. All captures explicitly use the headless image target and mute;
+no windows are opened. Whole-roof finishes, the broader all311/interior/furniture
+review and earned Hall/credits/Continue acceptance remain separate open work.
+The preceding native League v10 assertion failure is not resolved by this change.
+
+Café dining height and native League completion check — 2026-10-18
+
+Fresh full source/native originals for CeladonCafe, EarlsPokemonAcademy and
+TeamRocketBaseB3F were inspected in interior-resume-current. The academy has
+its compact source-blue chairs facing the desks; the Rocket facility has the
+ceiling-height connected divider network. These center views do not prove all
+facings, room edges, interactions or whole-room acceptance. The café still
+showed its tables near the characters' shoulders: both authentic café drawings
+were fitted to16-source-pixel height, twice the normal8-pixel dining datum.
+Celadon and Olivine tables now use that8-pixel dining height. Table footprints,
+source/palette bindings and seats stay intact; Celadon's closed serving basket
+and contents retain their original heights relative to the new tabletop.
+The complete source selectors and custom-profile ownership are preserved.
+
+The full actual voxel/root/location sources compiled against the completed
+native dependency graph (opt0 QA, not optimized performance acceptance).
+All14 café regressions pass, including corrected geometry bounds, unchanged
+footing/claims, complete closed basket, source edits/crops/custom ownership,
+shared gray seats, display cabinets and connected counter controls. Final full
+Celadon/Olivine source/native originals and the final aisle pair were inspected
+in target/kanto-resume/cafe-dining-height-native. Every paired state is
+preserved. The64-frame ordinary synthetic UD route reaches authoritative café
+rows1 through5 at x6, keeping the current native map active with no pending
+terrain or extra terrain builds. Logs are receipts/cafe-height-{build,tests}.log
+and receipts/cafe-dining-height-{native,aisle}.log. This accepts the bounded
+height correction, not café completion: the bin still visibly has a closed cap
+and needs the human-requested open-can appearance; actor seating/interactions
+and other full-room details remain open.
+
+Native League v10 is terminal, not waiting: its history contains five earned
+wins and species/party-slot battle pairs, Hall phases, credits and Continue,
+but its final check still expected the removed generic room-battle label.
+The final room validator now accepts the actual species-and-known-party-slot
+capture format while retaining every room's arrival, walking and earned gates.
+Three new regressions pass: distinct same-species slots, removal of each room/
+field phase, and rejection of generic, unknown-slot and malformed battle labels.
+This does not claim all opponents or animation are covered; those visual gates
+remain separate. Full actual Bevy root/reviewer compilation passed.
+
+A fresh native v11 run uses the explicit headless image target, synthetic keys,
+muted audio and a fresh save/output directory. Its live session64395 was
+revalidated after the café checks; history shows Will/Koga earned wins and entry into
+Bruno's room with carried PP. Output is
+native-continuous-league-v11-checkpoint-headless-review/continued-home-3d.league;
+log is receipts/native-continuous-league-v11-checkpoint.log. Poll this same
+handle and inspect current history before considering any restart. Hall/
+credits/Continue final acceptance is still unproven until this run completes
+and its images are inspected. No windows, pack/audio exports, staging or
+commits. The deleted handoff remains absent; these checkpoints retain the full
+Kanto120/all311/shared-furniture/original16 scope and its remaining requirements.
+
+Open shared cans and supported Will platform — 2026-10-18
+
+Fresh café/gym originals proved the shared canonical gym_bin still had a
+light cap above its intended dark opening. Its original Blender authoring now
+uses an uncapped tapered outer body, inward dark walls and a deeply recessed
+floor. Only gym_bin.mesh.json was published from the temporary authoring kit;
+all unrelated asset exports and the temporary blend were removed. Bounds remain
+exactly min[-.475,.015,-.46], max[.475,.94,.46], and the same ink/metal_light/steel
+roles retain each source drawing's palette. No new bin or duplicate catalog was
+added. The shared geometry/Arc binding is preserved.
+
+A new native-mesh regression casts five downward sight lines through the mouth
+and requires the first visible surface to be the source-dark floor below one
+quarter of the fitted height; the old light cap fails this condition. Thirty-six
+distinct focused regressions pass (37 executions across trashcan, all19 dungeon
+models, puzzle-source and café filters), including unchanged footprint/footing,
+complete-art guards and shared native geometry. The focused Python asset
+validator passes324 finite, correctly wound triangles with exact bounds. The
+broader Python dungeon checker separately fails at the pre-existing gym_plaque
+missing material key; this is recorded in open-bin-existing-dungeon-checker-
+failure.log, not misreported as a successful full checker run. Actual full
+voxel/root/location compilation passed; these are opt0 QA builds.
+
+Full fresh CeladonCafe and VermilionGym native/source originals were inspected
+in target/kanto-resume/open-bin-native. The café mouth is now visibly open and
+dark; the existing procedural open gym bins retain their appearance. Paired
+states are preserved. This does not accept the whole rooms: Vermilion's rear
+wall/return continuity still needs source-topology work.
+
+V11's actual Will arrival view exposed a second source interpretation error:
+blue courses stood16 pixels above the green walkway. Will now shares Bruno's
+underside construction: every authenticated bank is a closed32×16×16-source-
+pixel supporting body below the unchanged green datum, without an upright
+cutaway obstacle. Its water and original foam row are lowered16 pixels, and
+side-course paint comes from the actual blue source. Bruno's construction is
+preserved. Two external-pack regressions pass for all four supports in both
+rooms: volumes/normals/blue faces, complete source/custom-owner guards, untouched
+UV/animation bindings, opaque backing, exact footing and unchanged claims.
+
+Fresh full default Will/Bruno native/source originals, Will's full east
+native/source pair and the final walk pair were inspected in
+will-supported-platform-native. All paired states are preserved. The64-frame
+ordinary UD bridge route reaches authoritative Will rows8 through12 at x5;
+every frame retains the correct active native map, no pending terrain and one
+terrain build. Side views still expose rear perimeter/cap fragments, and water
+finish/whole-room/actor approval remains open. Logs are receipts/will-platform-
+{build,tests}.log and will-supported-platform-{native,east,walk}.log. These
+bounded repairs do not certify all original16 alternatives or all311 rooms.
+
+The same native League v11 session64395 is now terminal134. It earned all five
+wins, captured Hall room/ceremony phases and wrote earned-champion.crystalsave,
+then aborted on a Compute Task Pool stack overflow after credits, before
+Continue completion. The macOS crash report identifies bincode/serde
+RawPokemonStorage/PokemonStorage deserialization in save loading. The Bevy
+worker builder leaves stack size unspecified, so the unoptimized QA root uses
+Rust's default worker stack. No save-format/gameplay mutation or broad core
+rewrite was made. Full originals viewed this turn: Will arrival, Bruno/Onix
+command, Hall arrival, PokemonHold and PlayerFront pairs. Hall room is native;
+the ceremony panels are existing faithful source UI in both rendering modes,
+not evidence of new3D ceremony models. Onix's tiny Mew/overhead composition
+remains unaccepted; all other v11 images are not implicitly approved.
+
+A fresh v12 reviewer was linked from the current compiled source (including
+open cans and corrected Will supports) and launched with RUST_MIN_STACK=16777216,
+explicit headless image capture, muted audio and ordinary synthetic input.
+It uses a fresh output/save directory and leaves v11's earned save intact.
+Session29443 is confirmed live; output is
+native-continuous-league-v12-worker-stack-headless-review/continued-home-3d.league;
+log receipts/native-continuous-league-v12-worker-stack.log. Poll this exact
+handle; the larger QA stack is still a hypothesis until Continue succeeds.
+No window opened. Read-only coordination confirmed the Pokemon-model goal
+active and outdoor goal idle; their source/rig/landscape work was preserved.
+No pack/audio export, staging, restored deleted handoff or global completion.
+Full Kanto120/all311/shared furniture/original16/services/reachability work
+remains active in these checkpoints.
+
+Vermilion stepped walls and completed continuous League QA — 2026-10-18
+
+VermilionGym's actual20×36-source-cell plan has an inset leader alcove and a
+wider main room. The former rectangular perimeter left its rear blue bar flat,
+continued returns outside that alcove, and retained floating cap/floor fragments.
+The new source-scoped vermilion_room.rs authenticates the complete three header
+bands, source phases/art, finite bounds and both real exit warps. It closes the
+alcove's north/east/west walls and joins them to the native threshold panels and
+main-room returns at the32-source-pixel ceiling height. The central passage and
+both southern doors stay open. Changed/cropped/foreign layouts and live custom
+owners decline the inferred shell. Header ownership is46 nonblank source cells;
+footing/collision/object positions and the original panels/guardians/cans remain
+unchanged.
+
+The perimeter samples its own rear blue field and light cap rather than copying
+the internal partition's black upper panels. The two original illustrated wall
+footprints no longer leave gray floor pads outside the room. Their required
+inside backing continues the actual four checker-floor source phases; removed
+source indices and backing remain independent of game support. All11 focused
+regressions pass, including the three new stepped-outline/source/custom-owner/
+external-pack/translated-origin tests, palette provenance and existing panel,
+guardian and puzzle-bin controls. Actual full voxel/root/location compilation
+passed against the completed dependency graph (opt0 QA, not optimized runtime
+performance acceptance). Logs: receipts/gym-outline-{build,tests}.log.
+
+Final full native originals were inspected in
+ target/kanto-resume/vermilion-blue-wall-clipped/{default,east,west}/.
+Their2D source PNGs are byte-identical; the full matched source was inspected.
+The final passage native/source pair was also inspected. All paired states are
+preserved. The64-frame ordinary UD route from(5,6) traverses authoritative
+rows3..6 through the central opening, with three grid origins, one terrain build
+and the correct active native map throughout. An earlier probe from(5,8) was
+correctly blocked between two cans and failed the movement gate; it was not
+counted as a pass or used to weaken that gate. The ordinary south-door control
+from(5,16) reaches VermilionCity(10,19); its full final source/native pair was
+inspected in vermilion-blue-wall-final/exit-*.png. That exit control precedes
+only the final floor-backing cleanup. Room/actor/furniture/service and full
+variant acceptance remain separate open requirements.
+
+The same native League v12 process/session29443 is now terminal0, not live.
+It finished in1061s using RUST_MIN_STACK=16777216 for the opt0 worker stack.
+There are1039 ordinary key decisions, five earned wins,57 preserved paired
+checkpoints, a22,647-byte earned-champion.crystalsave, Hall count1, credits,
+Continue summary and an authoritative NewBarkTown return at(13,6). The completion
+path also requires the pending champion spawn to clear and the game timer to
+resume. Earned PP progresses [24,9,16,32] → [24,9,11,32] → [18,9,11,32] →
+[16,8,9,32] → [15,4,8,32], with Full Restore stock5→4; no victories are seeded.
+Hall's normal healing then restores the party. This is the explicit fresh QA
+fixture's legal initial MEW100 party, not a claim of a main-story playthrough.
+The larger QA stack resolves the concrete save-deserialization overflow seen
+in v11; no production save schema or gameplay dispatcher was rewritten.
+
+All25 paired battle receipts report native figures, exact presented/modeled
+species equality, matching room scenery and no source-art/scenery fallback.
+The final New Bark, credits-end and Continue-summary full source/native pairs
+were individually inspected; the final pair preserves state. The remaining
+checkpoint images are not implicitly visually approved. Koga slot3 has no
+stable paired-command capture, and native battle composition/animation/all-party
+coverage remains open. The ceremony panels retain the existing faithful source
+UI in both rendering modes; this is not new3D ceremony-model evidence. Two
+nonfatal stale-entity warnings occurred during Continue; the run still exited
+successfully with the final captures. No optimized performance claim is made.
+Evidence: native-continuous-league-v12-worker-stack-headless-review/review.json,
+continued-home-3d.league/{history,completed}.json and
+receipts/native-continuous-league-v12-worker-stack.log. The frozen v12 build
+includes the earlier open cans/Will supports; Vermilion's later repair does not
+affect that League route. Do not restart a completed run merely to re-observe it.
+
+All work stayed headless and muted. The canonical native pack hash remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Unrelated source/rig/landscape work was preserved; no pack/audio export, staging,
+commit or restored deleted handoff. Full Kanto120/all311/shared-furniture,
+original16 source alternatives, services/reachability and individual whole-room
+visual acceptance remain active. The completed continuous controller gate does
+not replace those requirements.
+
+All connected summit routes — 2026-10-19
+
+Expanded TinTowerRoof's real-map panorama from a two-connection neighborhood
+(seven maps/five routes) to the complete connected outdoor component: 32 maps,
+20 routes (26, 27 and 29–46), eleven towns/landmarks and BattleTowerOutside.
+The existing authored connection offsets place every map at its actual scale;
+no replacement city layout, gameplay connection, actor session or collision
+surface is introduced. A breadth-first traversal admits each distant map once
+and terminates reciprocal/cyclic connections. Nearby scenery builds first.
+Ordinary field rendering retains its two-hop scope and overlap precedence.
+
+Every panorama map keeps the same local two-hop terrace evidence used during
+native play. Extending the panorama no longer runs a whole-region terrace solve
+for every route. Actual finite map rectangles also exclude the shared border
+forest, so additional roads, towns, coasts and water replace the earlier filler
+where their source maps belong. Native TILE_SIZE=32 and actual tower attachment
+are preserved.
+
+Seven distinct topology/source/session regressions pass in the final eight test
+executions: the real pack contains exactly all 32 expected maps; every authored
+connection meets at its actual offset; each map retains every source tile and
+atlas; native border admission, idle cache and authoritative checksum are
+preserved; synthetic cycles terminate; and the five existing bounded-neighbor,
+landmark/gate and runtime-write identity controls remain green.
+
+Evidence: target/kanto-resume/all-surrounding-routes-native/review.json. All four
+full native/source originals were inspected: southwest daylight at camera
+(0,3,45,0), and opposite northeast night at (0,7,20,0), with the same roof player
+position (9,9) within each pair. Both paired-state receipts preserve the actual
+session. Both runs publish all 32 actual native maps and the source border
+before capture. Every capture explicitly uses HEADLESS=1, CAPTURE_TARGET=image
+and mute; no windows are opened. Pack SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+The initial opt-level=0 capture hit its 300-second limit before completing the
+last maps; its failure receipt is retained. Actual host/voxel opt-level=1 QA
+builds complete both paired captures (about 142–151 seconds before shutdown),
+but loading/memory cost and optimized production performance remain open.
+This establishes complete connected source coverage and two reviewed summit
+views, not individual art acceptance for every route, every roof finish, or the
+broader interiors/furniture work. No completed League QA is restarted.
+
+Flash cave pigment, complete pools and bank closure — 2026-10-19
+
+Finished the renderer-only cave work that was in progress after the surrounding
+summit routes. Published Flash uses the source Night palette; lit Johto caves no
+longer receive a second darkness multiplier. Genuine Dark state retains the
+existing concealment. Cave water now reads its own live opaque blue source
+swatches, including Johto cave families. Missing, black or transparent paint
+clears stale colors on primary and cloned materials without advancing phases.
+The HDR world camera uses Linear transfer in native caves so PBR Neutral does
+not subtract the weak green channel from dark mineral pigment. HDR, bloom,
+dithering and color grading remain; exiting, F3, inactive frames and missing
+resources restore the exact previous camera curve. UI cameras stay independent.
+
+The mineral foundation now excludes authenticated water and wet shore cells
+from the original source, including cells covered by native models. Real source
+water sheets extend beneath those owners; ladder shafts remain cuts. Shore
+triangles borrowing pool UVs keep the pool level while their rock rim continues
+to follow dry land. New source-colored mineral faces close the drop below raised
+banks without repainting already-finished caps or changing upper sculpture,
+collision, support heights or authored movement. The rejected shader UV
+experiment was removed. A stale cutaway test expectation was corrected from
+Z=0 to the existing actor-derived Z=-8 after reproducing the same failure in the
+older binary; production actor positioning was not changed.
+
+Actual current voxel library, host and location example compiled successfully
+(opt-level=1 QA). All84 focused regressions pass: Flash/source state,17 water
+checks,10 quality checks,36 terrace checks, source mineral finish, foundation,
+shore, cutaway, hatches and the old outdoor/palette controls. Final receipts are
+receipts/flash-cave-palette-linear-tests-{0..15}.log. Earlier failed hypothesis
+and stale-filter receipts remain diagnostic, not passing evidence.
+
+All30 full native/source originals were individually inspected in
+ target/kanto-resume/flash-cave-palette-native/verified-linear/:
+Dark Cave's two entrances, Rock Tunnel's two floors, all eight Whirl Island
+rooms, SilverCaveRoom1, UnionCave1F and TohjoFalls. These are13 Flash-dark rooms
+and two normal cave controls, high quality at hour12 with the explicit Flash
+preview flag. All15 paired states are preserved; no tone/dither warnings remain.
+Blackthorn's full lake now shows source-blue water instead of foundation or
+black gaps, with rock closing the bank bases. review.json records each exact
+position and the inspected originals. The ordinary UD controller walk from
+DarkCaveVioletEntrance(20,18) covers64 frames and authoritative rows17..18,
+keeps the correct active terrain and returns to(20,18). Its final source/native
+pair was inspected and preserves state. Every capture is explicitly headless,
+image-targeted and muted; no windows were opened. Pack/audio/game data remain
+unchanged; SHA256 is
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+This verifies pigment, pool visibility and bank backing at the captured views.
+The small rim-like formations in Whirl Island B1F/SE were initially flagged
+as hollow columns. A subsequent direct native-pack check confirms block31
+explicitly surrounds four lower-floor tile16 cells with cap/face art; filling
+those centers would erase authored topology. Preserve those openings. Broader
+rock finish, opposite sides, every approach, Surf, battle backdrop contrast and
+the wider311-room/furniture/service review are not certified here. The connected32-map summit coverage above remains
+complete; its loading/performance limit remains open. Completed League QA was
+not restarted. The deleted handoff document stays deleted.
+
+Shared CRT screen/bezel correction and source-rim interpretation — 2026-10-19
+
+The preceding turn completed the Flash/pool repair and verified the connected
+summit routes; that was concrete progress. AGENTS.md was reread. The deleted
+handoff remains absent; these two canonical guides retain the complete scope.
+A direct bounded native-pack probe confirms Whirl Island's small block31
+formations explicitly surround lower tile16 floor with cap/face art. The earlier
+hollow-column diagnosis was incorrect for those rings; their centers must stay
+open. The prior checkpoint and ignored visual receipt now state that evidence.
+No cave geometry or support changed in this turn.
+
+Fresh full native/source centers were individually inspected for BluesHouse,
+CeladonMansion2F, CeladonDeptStore4F and CeruleanPokecenter1F. Blue's TV still
+showed a pale CRT inside a blue bezel despite the source blue glass. The selected
+canonical television mesh uses `metal` for its curved inset and `metalMedium`
+for its narrow surround. Their existing source-swatch roles were reversed.
+interior_models.rs now assigns the glass to the existing live screen pigment
+and the surround to the existing pale pigment. Cabinet, body and control roles,
+selected closed geometry, dimensions, source matching, floor and support remain
+unchanged. No model assets, palettes or packs were regenerated.
+
+A new regression traces nine sight lines through the actual curved front and
+one through its narrow bezel, rather than merely requiring every color to occur
+somewhere. All54 interior-model tests and the separate source-placement test
+pass (55 unique checks; the four-TV selection overlaps three model checks).
+Existing controls preserve exact selected positions/normals/indices/cache,
+screen-only geometry, dimensions, complete source guards and unknown-contract
+rejection. Actual current voxel/host/location compilation succeeds at opt-level1
+against completed dependencies. The first helper attempts lacked a build-script
+dependency or a private library search path; those tool setup errors were fixed
+and are retained in receipts, not counted as passing builds.
+
+All24 full source/native originals from12 preserved pairs were individually
+inspected in target/kanto-resume/tv-pigment-native/: six centers (Blue, both Red
+floors, both player floors and GuideGentsHouse), four approach/rotated views,
+one closer Blue view, and the final ordinary RL walk. Blue's reference PNG is
+byte-identical to the pre-fix center. The initial six-name batch completed five
+valid maps before rejecting the misspelled guide map; GuideGentsHouse then
+completed separately with the correct batch arguments. That initial batch error
+is retained and is not represented as a successful six-map process. The walk
+traverses(3,2)->(4,2)->(3,2),64 frames, with active settled BluesHouse terrain,
+no extra terrain build and a preserved final pair. High-quality captures all
+use explicit headless image targets and mute, without windows or focus changes.
+
+Two fresh audits use the same current example source against the before/after
+actual voxel/host libraries. All311 map records and all225 declared variants
+are exactly equal, with no mesher errors: geometry, source coverage, ownership,
+support and every reported field are retained. The material correction is
+established by the ray test and native images, not inferred from those counts.
+Receipts use tv-pigment prefixes; tv-pigment-native/review.json records exact
+poses and individually inspected images. Pack SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Task scratch helpers were removed; ignored build caches and evidence remain.
+
+This accepts the bounded screen/bezel correction. TV highlight detail, broader
+appliance finish, the reviewed mansion's stair/door approaches, department-store
+counter/edge stock beyond the center crop, clinic services and full camera/room
+coverage remain open. Center views and unchanged audit counts do not certify
+those requirements. All311/original16/shared furniture, reachable states and
+broader scene/animation fidelity remain active; completed League QA was not
+restarted. No staging or commit occurred.
+
+Clinic service coverage, PC snapshot ownership and remaining Indigo stock — 2026-10-19
+
+The preceding TV turn made verified progress. The handoff remains deleted;
+these maintained guides retain the full all311/original16/shared-furniture goal.
+Current source adds tests/clinic_services.rs and broadens the existing nurse
+regression from two Kanto rooms to all22 authored clinic lobbies (11 Kanto,
+11 Johto). Exact discovered names are pinned so missing rooms cannot silently
+reduce coverage. Initial locations, CHRIS identity and parties/HP/PP are explicit
+disposable fixtures, not earned arrivals or a main-story playthrough.
+
+Nurse input now proves visible dialogue rejects movement, HP1 and PP1 restore
+to source maxima, Start returns and ordinary walking resumes in each lobby.
+The public-PC case authenticates each actual block08 approach, boots through
+PCScript, verifies all five Bill choices, deposits Cyndaquil into real storage,
+withdraws it, preserves both original Pokémon exactly, closes the PC and walks.
+The first broad run exposed a real controller presentation bug: snapshot()
+returned the suspended core chooser instead of the menu accepting input.
+VisibleShellController now projects the current boot/notice page above it and
+publishes the controller-owned Bill/menu/list surface when that printer closes.
+No second dispatcher, game-state mutation or storage implementation was added.
+
+All seven named controller regressions pass in eight final executions, including
+the PC case in the default renderer-neutral build as well as the native build.
+These exercise44 distinct nurse/PC room cases, plus22 repeated default-PC cases.
+Existing six-ball/four-palette nurse publication, three owned-bed variants,
+Mom/New Bark gate, actual battle-turn/PP and integrated PC controls remain green.
+Three actual-pack clinic geometry controls also pass (stairs/support, complete
+terminal and rear backing). Final logs are receipts/clinic-final-verified-{0..7}
+and clinic-voxel-controls.log. Early failures are retained: Violet uses its
+actual VioletPokecenterNurse label; returning from the party list selects
+WITHDRAW rather than retaining DEPOSIT; named fixtures use the existing smoke
+setup in both feature sets. The first default helper selected a stale dependency
+graph; the complete current graph then compiled both feature configurations.
+
+Actual current host and native wrappers compile at opt-level1 against the
+completed dependencies; this is QA, not release-performance certification.
+The read-only native review hold now observes actual pc:hub/pc:bill-actions
+owners and their production rows, excluding boot text and transfer notices.
+It freezes an already reached menu after ordinary A input without setting a
+cursor or selecting a service. Its rows agree with the controller snapshot in
+the external-pack PC case. Default-feature code does not reference this QA hook.
+
+All44 full originals from22 selected paired captures were individually inspected:
+all11 Kanto centers, seven Indigo perimeter positions, Pewter's actual six-ball
+nurse sequence, named PC boot, chooser and Bill actions. All pairs preserve
+state. Location captures use noon; saved PC captures retain their saved clock
+within each pair. Explicit HEADLESS=1/CAPTURE_TARGET=image/mute/high quality are
+used throughout, without windows or focus changes. review.json under
+ target/kanto-resume/clinic-current-native records exact poses and limitations.
+The final boot and chooser commands pass. Bill's final native/source PNGs show
+all five legible rows and preserve state, but the generic screenshot verifier
+rejects the faithful three-color source menu (exit1, luma range255). That is
+recorded as a failed command, not a green gate; the verifier was not weakened.
+Its receipt is receipts/clinic-final-native-pc-bill-actions.log.
+
+The larger views expose real unfinished furniture: Indigo's source block2c at
+block(7,3), source-cell plot(28,12) size4x4, contains two stock shelves whose art
+is still laid across a shallow block. All16 cells are unmodeled in the latest
+full audit. Build complete upright, source-owned cabinets there next; do not
+call Indigo finished from its working nurse/PC or continuous main-room walls.
+Actor fidelity, full camera/room and upstairs coverage, PC rating/box/mail/item/
+release branches and the wider311/original16/furniture requirements remain open.
+No geometry, support, pack, audio or gameplay dispatch changed in this turn;
+no fresh CLI/stdio/playability or global art acceptance is claimed. Pack SHA256
+remains a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Task scratch helpers were removed; ignored caches/receipts remain. No staging,
+commit, pack export or restart of completed League QA occurred.
+
+Indigo stock cabinets and continuous backing — 2026-10-19
+
+The preceding route turn rechecked existing coverage; this turn returns to the
+remaining interior work and makes a verified furniture repair. AGENTS.md was
+read, and the deleted handoff remains absent. These two maintained guides retain
+the full Kanto/shared-furniture, all311, original16 and reachable-state scope.
+
+IndigoPlateauPokecenter1F block2c at block(7,3), source plot(28,12) size4x4,
+now produces two upright stock cabinets. Each uses its own upper source course
+on the roof and its three lower courses on the recessed vertical shelves, with
+closed sides, back and underside. Nominal source width16, face height24 and
+depth8 preserve the drawing's proportions. The complete original16-cell block,
+including tileset, metatile, local phase and every tile index, authenticates both
+units together. A custom claim anywhere prevents the whole replacement; an
+actual custom-profile resolver test also verifies ownership. Ground remains
+source-derived and original footing heights remain untouched.
+
+The first native pair exposed a missing rear wall beyond the old stock cards.
+The repair continues the verified adjacent plain wall across the two cabinets,
+using the same source row12/course ending at row14. It stops at the actual stair
+corridor. The higher stair-alcove wall cannot donate the backing position. This
+is scoped to this source-complete stock family; other equipment keeps its
+existing wall behavior. No new model export, game dispatch, collision, pack or
+audio change was introduced.
+
+Thirteen distinct focused regressions pass on the final source: two new source/
+custom-owner/proportion/support tests, one external-pack cabinet/backing seam
+case, six existing clinic controls, three external clinic terminal/stair/rear
+wall controls and the existing native retail finish control. Actual voxel and
+host libraries and native wrappers compile at opt-level1 against the completed
+dependency graph; tests compile at opt-level0. This is local QA rather than a
+release-performance claim. Logs: target/kanto-resume/receipts/indigo-stock-*
+(final-tests, clinic-controls-final, external-clinic-final and retail-control).
+
+The final full audit uses exactly the existing311-map inventory and225 scripted
+block variants. No mesher errors occur. Indigo is the only changed map report:
+modeled cells148->164, exactly16 retail-shelf cells at(28,12)-(31,15), with no
+remaining block2c drawings. All225 variant reports are exactly unchanged, as
+are every other map, actor-source and battle-species report. Evidence:
+receipts/indigo-stock-full311-final.json and indigo-stock-invariants.json under
+ target/kanto-resume. An initial intermediate audit included all388 maps and is
+retained under indigo-stock-intermediate-all-maps.json; it is not the311 gate.
+
+Five final matched pairs were captured without windows or focus changes: noon
+east(16,7), southeast(15,11), rear(15,2) at opposite orbit, west(12,7) at side
+orbit, and night(15,11) after ordinary RL input. All ten full originals were
+individually inspected. Cabinet fronts, finished side/top, rear wall continuity
+and corridor clearance hold in these views; the rear wall correctly occludes
+furniture from behind. All commands exit0 and every paired-state receipt says
+state_preserved=true. The night walk records64 frames through actual tiles
+(13..17,11), one terrain origin and no additional terrain builds. Initial visual
+positions are disposable fixtures, not earned arrivals. Explicit HEADLESS=1,
+CAPTURE_TARGET=image, mute and high quality are used. The first final-capture
+batch used an invalid comma-separated camera request and failed before capture;
+the corrected whitespace-separated batch passes. Receipt details and source
+hashes: target/kanto-resume/indigo-stock-native/review.json.
+
+This closes the exposed stock-family defect, not whole-room or whole-game art
+acceptance. Upstairs/link rooms, full room/actor review and PC rating/box/mail/
+item/release branches still require their broader checks. The earlier faithful
+three-color Bill-menu screenshot-verifier rejection remains recorded and open;
+its threshold has not been weakened. Full all311/original16/shared-furniture and
+reachable-service requirements remain active. No completed League run was
+restarted. Pack SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Task scratch build helper was removed; ignored QA binaries/receipts remain.
+No staging, commit or unrelated model/outdoor changes occurred in this repair.
+
+Clinic CHANGE BOX persistence, native ownership and source paging — 2026-10-19
+
+The Indigo stock turn made verified progress. This continuation read AGENTS.md
+and the maintained scope, confirmed that the deleted handoff remains absent,
+and broadened real PC services instead of certifying the wider goal from
+furniture coverage. The full all311/original16/shared-furniture and reachable
+service requirements remain active in these maintained guides.
+
+Real input exposed several defects that manually seeded menu tests missed.
+CHANGE BOX could refuse its file write because PCScript retained a core text
+window, discard that refusal, switch boxes and play the saved sound anyway.
+The Bill save policy now distinguishes that suspended window from a live boot/
+notice printer; a refused write propagates failure. Native automatic script
+advancement now recognizes both the box list and its action menu as player
+boundaries, preventing a256-step confirmation loop. Native save dialogs take
+priority over the suspended source chooser, matching controller presentation.
+
+Source ChangeBoxSaveText has a CONT acknowledgement before YesNoBox. Its first
+two lines now use the existing field printer; the final scrolled pair includes
+"will be saved. OK?" before YES/NO appears. No alternate input dispatcher or
+replacement text catalog was added. Returning from the full-LCD box list also
+requires one complete field compositor pass: the text-only fast path must not
+retain the old modal canvas/frame. The final native introduction shows the
+actual room and both source lines without an early YES/NO box.
+
+Reload verification found that the earlier file retained an invisible core PC
+menu that blocked Start. Bill's actual PC saves now close only transient menu,
+window and textbox surfaces on a cloned persistence shell through existing
+runtime mutation APIs. The live PC stays open. Party, boxes, map, variables and
+progression are preserved. Save-before-switch ordering matches the pinned
+external source3bc8daa4173e96a7f4011dad3922eb6fa5dad5c6 in pret-source.lock.json:
+ChangeBoxSaveGame calls SaveBox before assigning wCurBox. The live box changes
+0->1; loading correctly restores saved box0, with both original Pokémon.
+Start and ordinary walking then work on the loaded controller.
+
+The shared source-PC fixture authenticates block08 in each of all22 authored
+lobbies, names CHRIS and supplies two explicit initial Pokémon. Service actions
+then use ordinary VisibleShellController input. In every lobby, the new case
+reaches both box menus, checks native auto-advance waits without mutating state,
+prints/acknowledges the source introduction, declines without writing, accepts
+a real save, loads it, opens/closes Start and walks. It also cancels RELEASE
+without mutation, accepts RELEASE, verifies exact party compaction, refuses the
+last remaining Pokémon with the production wrong sound, closes the PC and
+walks. Last-party refusal text is a timed transient drained by controller
+settling; no current-page text assertion is substituted for that sequence.
+
+Four service regressions pass in both native and default renderer-neutral
+builds: the existing22-lobby deposit/withdraw flow, new22-lobby box/save/reload/
+release flow, live-boot/pending-map-work save protection and a real write-error
+case that keeps box0, preserves the obstructing file and queues no saved sound.
+Four existing box controls, save-policy, Mom/New Bark gate, actual battle turn/
+PP and Elm dialogue/world-retention controls also pass. Total12 distinct tests,
+16 executions. The Elm test's old ../../../apps input location was corrected
+to this repository and the explicit CRYSTAL_RENDER_TEST_PACK; its first missing-
+file failure is retained. Final records: target/kanto-resume/receipts/
+clinic-branches-final-verification.json and clinic-branches-verified-*.log.
+Actual host/wrapper builds use opt-level1 against completed dependencies; test
+builds use opt-level0. These are local QA builds, not release certification.
+
+All eight full originals from four final matched pairs were inspected:
+introduction, scrolled question, saved confirmation, and a64-frame DU walk
+loaded from that native-written file. All four commands exit0 and preserve
+paired state. The reload walk visits(9,2),(9,3),(9,2), with no extra terrain
+build. Saved confirmation corresponds to an actual file; introduction/question
+holds create none. Captures explicitly use HEADLESS=1, CAPTURE_TARGET=image,
+mute and high quality, without windows or focus changes. The read-only save
+review hooks freeze already reached production surfaces; they do not seed
+cursors or save results. Evidence and exact source hashes:
+ target/kanto-resume/clinic-branches-native/review.json.
+
+Earlier failures remain evidence, not accepted gates: a too-short replay route,
+the native256-step loop, a hidden prompt, a clipped question, a stale fullscreen
+intro and the invisible owner after reload. The deliberately obstructed native
+write-error capture was rejected by the runtime-error gate in the earlier
+pre-pagination build; no accepted write-error image is claimed. Current API
+error behavior passes in both builds. The earlier faithful three-color Bill
+menu screenshot-verifier rejection also remains open; no verifier was weakened.
+
+Next verify the actual MOVE W/O MAIL save/move path and its separate CONT text;
+this source paging change is specific to CHANGE BOX. Mailbox/items/Oak rating,
+box naming/printing through real input, timed release/refusal native frames,
+upstairs/link rooms and whole-room/actor review remain broader obligations.
+No new voxel/model/collision edit or full311/225 audit occurred in this turn;
+the preceding Indigo audit is not promoted to global visual acceptance. No
+completed League run was restarted. Pack/audio are unchanged; SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Task build helpers and failed-test temporary saves were removed; ignored QA
+binaries, fixtures and receipts remain. No staging or commit occurred.
+
+Clinic MOVE W/O MAIL, authored Mail pages and hidden-cursor ownership — 2026-10-19
+
+The preceding CHANGE BOX continuation made verified progress. AGENTS.md and the
+current implementation were inspected; the deleted handoff remains absent.
+The maintained guides retain the complete Kanto/shared-furniture, all311,
+original16 and reachable-service goal. This turn broadens the actual MOVE
+service and its source text rather than treating the prior PC checks as whole-
+room or whole-service acceptance.
+
+Before images and a real-input regression exposed MOVE's clipped save prompt:
+YES/NO appeared beside its first two lines while "will be saved. OK?" was hidden.
+MOVE now shares the source CONT/scrolling helper with CHANGE BOX. Its initial
+page prints through the existing field printer; acknowledgement then exposes
+the final two source lines and YES/NO. No replacement dispatcher or text catalog
+was added. The source comparison uses the external pinned revision
+3bc8daa4173e96a7f4011dad3922eb6fa5dad5c6, matching pret-source.lock.json.
+
+The Mail gate also discarded its second paragraph after A. It now reads the
+actual _PCMonHoldingMailText pages from the verified pack, preserving both
+"holding MAIL." and the subsequent removal instruction. The held-item check
+follows IsAnyMonHoldingMail's party-item scan instead of scanning unrelated
+stores or detached message payloads. Initial Mail fixtures use either actual
+party slot, with complete Mail data; no impossible boxed-Mail fixture is used.
+
+The new text revealed another input defect: directions changed Bill's hidden
+cursor while the Mail page owned the screen. The guard belongs in the shared
+primary direction helpers, used by both controller and keyboard paths. A first
+attempt in the native dispatcher alone did not protect controller input; that
+failed test is retained and the incomplete guard was removed. All four
+directions are now checked on both Mail pages without moving the hidden choice.
+Hall-of-Fame browsing remains outside this field-printer owner.
+
+The source-PC MOVE case runs in every one of the22 authored lobbies through
+ordinary VisibleShellController input after explicit initial trainer/party/room
+fixtures. It checks source paging, decline without a file or storage mutation,
+entry save, pickup cancellation without rewriting the save, party->box0,
+box0->box1, box1->party, exact original Pokémon preservation and actual storage
+contents in every per-insertion save. Browsing does not change the authoritative
+current-box selector. The final file loads, exposes Start, and PC closure
+releases walking. Mail cases cover either party slot in all22 lobbies:44 cases
+per feature build, preserving storage and writing no save. Thus the two new
+regressions add66 positive cases per feature configuration.
+
+All six clinic service regressions pass in native and renderer-neutral default
+builds. Seven existing MOVE controls, four box controls, save-policy, Mom/New
+Bark gate, real battle turn/PP and Elm dialog/world retention also pass. Total:
+21 distinct regressions,27 executions, with no zero-test result counted. Logs
+and process outcomes: target/kanto-resume/receipts/clinic-move-final-verification.json
+and clinic-move-verified-*.log. Actual host/wrapper builds use opt-level1 against
+completed dependencies; tests use opt-level0. This is local QA, not a release-
+performance, browser, CLI/stdio or full playable-game certification.
+
+All fourteen full originals from seven final paired captures were inspected:
+MOVE introduction, final question, saved confirmation, both Mail pages, carried-
+Pokémon selector and a64-frame DU walk loaded from the real party->box autosave.
+All seven commands exit0 and preserve paired state. Introduction/question/Mail
+holds create no files; saved confirmation corresponds to a real write. The
+carried selector uses the original source LCD intentionally; its800x720 LCD
+pixels are exactly equal in both modes. It is UI evidence, not3D scenery/model
+acceptance. The only inactive-world admission added is the named pc:move-carry
+review, requiring an actual carried source, fullscreen storage owner, settled
+ordinary input and frozen state. Ordinary model/scenery and screenshot-color
+gates are unchanged. A real per-move autosave supplies its boxed Pokémon;
+neither boxed data nor a menu cursor is seeded for rendering. Initial fixtures
+are not earned arrivals or a main-story run. Captures explicitly use HEADLESS=1,
+CAPTURE_TARGET=image, mute/high quality, with no windows or focus changes.
+Evidence and exact source hashes: target/kanto-resume/clinic-move-native/review.json.
+
+Next audit per-insertion write-error recovery; entry-save error tests do not
+cover failure after an insertion has begun. The20/24-frame insertion-save
+animation still needs native temporal coverage. Mailbox/items/Oak rating,
+real-input box naming/printing, wider party/species variants, upstairs/link
+rooms, whole-room/actor fidelity and the full all311/original16 obligations
+remain open. Earlier expected-error capture rejection and faithful three-color
+Bill-menu verifier rejection remain recorded; neither is relabeled as passed.
+No voxel/model/collision edit or fresh311/225 audit occurred. The completed
+League run was not restarted. Pack/audio remain unchanged; SHA256 is
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Task helpers and failed-test temporary directories were removed; ignored QA
+binaries, fixtures and receipts remain. No staging or commit occurred.
+
+Clinic MOVE insertion write failure: rollback and deliberate retry — 2026-10-19
+
+Revalidated the current implementation after the route-only coverage check and
+continued the pending service audit. AGENTS.md was read; the deleted handoff
+remains absent. No existing room/model work was reverted.
+
+An ordinary-input Pewter PC regression reproduced a distinct insertion failure:
+MOVE's entry save succeeded, then a filesystem obstruction made the insertion
+save fail after party storage had already changed. BeforeMove remained armed.
+The retained before-storage.log proves the storage mismatch, rather than merely
+inferring the defect from code. The obstruction changes only the filesystem;
+all PC entry, pickup, insertion, acknowledgement and retry use
+VisibleShellController::press/wait_frames after the initial room/party fixture.
+
+The insertion now retains the pre-move runtime shell until saving succeeds.
+On write failure it restores that shell, clears the timed commit, retains the
+original pickup and its cancellation scroll, leaves the destination cursor in
+place, and presents SAVE FAILED / Try again through the existing PC notice
+owner. No success sound is queued. Sixty-four further controller frames leave
+storage unchanged. Restoring the filesystem, acknowledging the notice and
+explicitly retrying moves exactly the original Pokemon; the resulting file
+loads with exactly that storage. The prior entry file and obstruction bytes
+remain unchanged during failure. This is application-level recovery for the
+verified write failure, not a new filesystem crash-durability guarantee.
+
+The actual reached notice was rendered offscreen through the production LCD
+sprite compositor and inspected. Its first wording wrapped into three lines;
+the final wording fits two. This CPU UI evidence does not certify native room
+geometry, GPU composition, or the20/24-frame animation. Evidence, exact source
+hashes and logs: target/kanto-resume/pc-move-recovery-build/review.json.
+
+The seven clinic regressions pass with native/location features and again with
+renderer-neutral default features; existing positive cases still cover all22
+lobbies. Seven MOVE controls pass, and the final recovery/render case is checked
+separately in both builds. These are actual-source QA compilations against the
+completed dependency cache, not production release/Cargo-build certification.
+The pack remains a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+Remaining: native temporal save evidence, mailbox/items/Oak/naming/printing,
+wider party variants, upstairs/link rooms, whole-room/actor and all311/original16
+visual acceptance. Return to the broader room/furniture review after this
+bounded service fix; the whole objective is still open. No geometry, audio or
+pack was edited, no League run restarted, and no staging/commit occurred.
+
+Cable Club rear-wall joins and shared gold-seat/blue-counter finishes — 2026-10-19
+
+The preceding insertion-save turn made verified progress. This continuation
+returns to room/furniture work, reads AGENTS.md and current implementation,
+and keeps the deleted handoff absent. The full all311/original16/shared-furniture
+and reachable-service requirements remain active.
+
+An offscreen native/source comparison of PewterPokecenter2FBeta exposed the
+rear-wall break behind both signs and their adjoining doors. Each sign now has
+24px clinical backing, with its original frame and live inscription raised 4px
+and moved 2.25px forward so neither embeds in the wall. Each 18px doorway frame
+gets a header through 24px, with the lower aperture clear. Complete existing
+sign/door/mobile-corner source identities and actual map anchors guard the
+backing. The mobile entries at source x12..14 and20..22, rows0..2, remain open;
+console negative corners and all existing source ownership are preserved.
+
+The main Pokecenter2F view exposed two related missing bindings: blue generic
+seats instead of source gold, and peach counter fronts instead of source blue.
+The main room now shares the existing native source-sampled seat and counter
+finishes with the beta rooms. Counter coverage uses its actual blocks05/38;
+lobby-only06/07 fixtures retain their original classifier scope. No alternate
+furniture model or replacement palette catalog was introduced.
+
+Twenty Cable Club regressions, the broadened main/beta seat control and the
+broadened main/Kanto counter control pass: 22 distinct focused checks. New tests
+cover backing height, all five source identity fields, map/anchor rejection,
+live sign clearance, header height, open portal/mobile entry, unchanged source
+claims and unchanged walking support. The source-only fixture initially tried
+a lobby-only block06 in the main room; its failed log is retained and the final
+main fixture follows that room's actual block plan. Actual Rust source and a
+fresh generated model inventory were built against completed dependencies;
+this is local QA, not a normal Cargo or production release certification.
+
+Four final native/source pairs are reviewed at matching position (8,4), clock,
+facing and state: main front/east daylight, beta front daylight and beta west
+night with a 64-frame ordinary LR walk. All eight full originals were inspected,
+all commands exit0, and every paired receipt preserves state. The walk retains
+an active native terrain owner and visits multiple actual positions. Captures
+explicitly use HEADLESS=1, CAPTURE_TARGET=image, mute/high quality. No window or
+focus changes occur. Earlier before/wall-only/seat-only diagnoses are retained.
+Evidence: target/kanto-resume/clinic-upper-review/review.json and final/.
+
+The final full 311/225 audit has no mesher errors. Only the eleven declared
+upstairs maps change geometry fields; all other 300 map reports, all 225 variant
+reports, actor-source and battle-species reports remain exact. Source/model
+ownership, family counts and footing reports are unchanged. This is invariant
+coverage, not whole-room/variant visual acceptance. Pack SHA256 remains
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+Next concrete room defect: the three source-green link receptionists still
+render in pink uniforms. Actor palette/fidelity, main/beta services and mobile
+entry routes, wider room/furniture compositions, native save-animation timing,
+remaining PC branches and full all311/original16 acceptance remain open. No
+pack/audio edit, League restart, staging or commit occurred. Task scratch
+builder was removed; ignored receipts, binaries and images remain.
+
+Cable Club source uniform palettes and isolated GPU variants — 2026-10-19
+
+The prior wall/furniture turn made verified progress. Current implementation
+and AGENTS.md were inspected; the deleted handoff remains absent. This continues
+the same complete interior/shared-furniture and all311/original16 objective.
+
+The three actual Pokecenter2F link receptionists used a fixed pink external
+painting despite their source-green object palettes. Native presentation now
+reads the green/blue uniform color from each actor's already-paletted source
+sprite. Only LinkReceptionist qualifies. Transparent pixels, skin, paper and
+outline do not supply a uniform color. The existing source ID, map object,
+texture and gameplay session are never rewritten.
+
+A per-instance GPU variant keeps the canonical body, head, bind poses and bounds.
+Only pink cloth in documented clothing UV islands is recolored; the collar,
+badge, seams, hair, face, cap and alpha remain intact. Costume colors use the
+same resolved color with unchanged geometry/joints/weights. Variants cache by
+rig, kind and actual source color, so simultaneous green/blue uniforms cannot
+alias. A source color change refreshes only the affected actor; unchanged
+animation frames keep their existing entity. Region retirement drops unused
+variant handles. External paintings remain immutable and no new raster asset,
+model, content catalog or render-API field was added.
+
+Four new checks pass: source-color/alpha filtering, pixel-island preservation,
+actual body/costume GPU-cache separation and geometry identity, and production
+actor refresh without mutating the frame or rebuilding the player. Three
+existing controls also pass: asynchronous/direct publication byte identity,
+independent costume animation/joints, and region asset retirement. The costume
+control requires its documented explicit CRYSTAL_OPEN_MODEL_ROOT; the missing-
+variable failure is retained separately, then the actual supplied root passes.
+The first pixel assertion compared an entire appended mip chain with mip zero;
+that diagnostic is retained without its huge pixel arrays. Final checks verify
+unchanged mip-zero pixels through the normal filtered upload path.
+
+Three final paired captures, six full originals, were inspected: actual main
+room front daylight, main east at night with a64-frame ordinary LR walk, and
+an unaffected Cinnabar nurse/control room. Both main views show green uniforms
+with the existing white caps and faces; the nurse is not recolored. Commands
+exit0, all paired-state receipts preserve the actual session, and the walk
+retains active native terrain. Captures explicitly use HEADLESS=1,
+CAPTURE_TARGET=image, mute/high quality. No window/focus changes occur.
+Evidence: target/kanto-resume/clinic-uniform-review/review.json and final/.
+
+The blue Goldenrod receptionist is declared at(16,8), outside this pack's base
+10x8 clinic. An attempted base-room capture at(16,10) correctly fails its bounds
+check and produces no accepted image. Blue material/cache behavior is checked
+with an explicit presentation fixture, not claimed as an earned visible GS Ball
+scene or an arrival/service proof. Keep that native scene as remaining work.
+
+Fresh full311/225 reports are exactly equal to the preceding final audit:
+all map geometry/source/footing/family reports, all225 variants, actor-source
+and battle-species reports remain unchanged; no mesher errors. This proves
+preservation, not whole-room or all-actor visual acceptance. Pack SHA256 stays
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Actual source/current model inventory QA builds use completed dependencies;
+normal Cargo/release/browser certification is not implied.
+
+Next concrete visual findings: Cinnabar's fisher still wears blue versus source
+green, and cooltrainer_f's clothing also differs from source. Its clinic rear
+apparatus/materials require a fuller room review despite positive family counts.
+These are remaining fidelity work, not newly accepted rooms. Link/mobile/GS Ball
+services, wider furniture/room/actor review, native save-animation timing,
+remaining PC branches and all311/original16 acceptance remain open. No audio or
+pack edit, League restart, staging or commit occurred. The task scratch builder
+was removed; ignored QA images, logs and binaries remain.
+
+Shared clinic apparatus relief and six-ball clearance — 2026-10-19
+
+The uniform turn made verified progress. Current implementation and AGENTS.md
+were inspected; the deleted handoff remains absent. The complete Kanto/shared-
+furniture, all311/original16 and reachable-service objective remains active.
+
+The Cinnabar before comparison showed that the authored machine still read as
+a mostly flat front on a shallow enclosure. Its empty bay now recedes4px rather
+than1.5px. Four thin chamfered bezel rails stay outside the aperture; the four
+source side controls gain metal rims and cream push surfaces, and the source
+red cross gains shallow relief. Fourteen closed chamfered pieces add448
+triangles per apparatus. Colors come from the same actual source-art pixels,
+not a replacement palette. The original front artwork, source claims, floor,
+height, selected-model guard and healing-animation coordinates are retained.
+No idle capsules or another opaque surface are placed in the bay.
+
+The expanded enclosure regression checks all face winding, exact source-front
+area, every source course, the4px cavity, actual control relief and clear bay,
+plus unchanged claims/support and damaged-source rejection. Three healing-
+effect controls, four actual-pack clinic terminal/stair/backing/stock controls,
+and the actual-pack PokéCom apparatus control also pass. Two current-source
+controller regressions pass: real HP/PP recovery through the nurse in all22
+lobbies, and production publication/overlay consumption of all six healing
+balls. Total:11 distinct focused regressions. Actual Rust source and a fresh
+model inventory were compiled against completed dependencies; this is local
+QA, not normal Cargo/release/browser certification.
+
+Four final native/source pairs, eight full originals, were inspected: Cinnabar
+quarter daylight, Pewter's actual six-ball healing scene, PokéCom's clinic
+apparatus, and a Violet night UD walk. All commands exit0 and paired receipts
+preserve the session. The six-ball case starts with an explicit disposable
+six-member party, then uses ordinary native synthetic Up/A input and freezes
+only after the sixth real effect publishes. All six drawn effects remain
+visible with the new bezel. It is a service-presentation fixture, not an earned
+arrival/main-story claim. The Violet walk retains active native terrain and
+visits actual positions. Captures explicitly use HEADLESS=1,
+CAPTURE_TARGET=image and mute/high quality, with no windows/focus changes.
+Evidence: target/kanto-resume/clinic-relief-review/review.json and final/.
+
+The first six-ball attempt used keyboard input and exhausted its route; its
+rejected log is retained. The successful run uses the existing documented
+WALK_INPUT=synthetic path. PokéCom's default center(16,16) is blocked; the rejected
+start is retained, and the final view uses the previously verified walkable
+clinic approach(5,10). Neither failure is relabeled as accepted evidence.
+
+The full311/225 audit found the actual shared scope:22 clinic lobbies plus
+PokéCom's existing source-identical apparatus. Only their textured vertex/
+triangle fields change, each by448 triangles. All other288 map reports and
+all225 variant reports remain exact, as do source/model family ownership,
+footing, actor-source and battle-species reports. No mesher errors. The initial
+comparison expected only22 maps; tracing the additional map confirmed its
+existing shared helper, so its source test and native view were added rather
+than suppressing the shared improvement. Pack SHA256 remains
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+Whole-room wall/material and other equipment fidelity remain open, alongside
+Cinnabar fisher/cooltrainer_f palettes, live link/mobile/GS Ball scenes, wider
+room/furniture review, native PC save-animation timing, remaining PC branches
+and all311/original16 acceptance. This apparatus repair does not certify those
+rooms complete. No pack/audio edit, League restart, staging or commit occurred.
+The task scratch builder was removed; ignored QA receipts/images/binaries remain.
+
+Cinnabar fisher/cooltrainer source palette roles — 2026-10-19
+
+The preceding route turn rechecked existing evidence and made no new interior
+implementation progress. Current source and AGENTS.md were revalidated; the
+deleted handoff remains absent. This closes the pending clinic palette repair
+within the unchanged Kanto/shared-furniture and all311/original16 objective.
+
+The fisher now takes his shirt and cap color from the actual paletted actor
+sprite; cooltrainer_f takes her shirt accents and hair color from her sprite.
+The existing LinkReceptionist per-instance palette cache supports these two
+reviewed families. Blue shirt pixels and brown hair pixels are recolored only
+inside their respective UV islands. Fisher hair, both dark lower garments,
+faces, skin, badges, white details and alpha remain intact. A rigid head color
+variant preserves every non-color attribute and index; body meshes, bounds,
+binds, costume geometry and live independent joints remain shared/unchanged.
+Canonical external paintings are immutable. No source actor/session rewrite,
+new raster asset, content catalog or pack edit was introduced.
+
+All17 tests selected by uniform_ pass, including seven source-palette, pixel-
+island, cache/geometry-isolation and actor-refresh checks, plus ten existing
+controls. Actual Rust source and fresh model inventory were compiled against
+completed local dependencies for QA, not normal Cargo/release certification.
+The full311-map/225-variant audit JSON exactly matches the preceding apparatus
+baseline, including ownership, footing, geometry, actor-source and battle
+reports; no mesher errors.
+
+Three final native/source pairs, six full originals, were inspected: Cinnabar
+quarter daylight, Cinnabar opposite night with an ordinary64-frame UD walk,
+and the existing shared Cable Club green-uniform control. All paired receipts
+preserve the actual session. The night walk reaches(5,3) through(5,7), retains
+active Cinnabar terrain throughout, and requires no additional terrain build.
+Explicit headless image capture, mute and high quality keep verification
+non-disruptive. Evidence: target/kanto-resume/clinic-palette-review/review.json
+and final/. Pack SHA256 remains
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+Only LinkReceptionist, Fisher and CooltrainerF are supported by this palette
+path. Warm/brown and other NPC palettes remain unreviewed; this is not global
+actor fidelity acceptance. Whole-room wall/material/equipment review, live
+link/mobile/GS Ball scenes, wider shared furniture, native PC save timing and
+remaining PC branches, and all311/original16 acceptance remain open. No League
+restart, staging or commit occurred. The task scratch builder was removed;
+ignored QA evidence and caches remain.
+
+Department-store ceiling-height glazing and continuous equipment backing — 2026-10-19
+
+The preceding turn completed the pending clinic palette visual/evidence gate.
+AGENTS.md and current worktree were revalidated; the deleted handoff remains
+absent. The complete Kanto/shared-furniture and all311/original16 objective
+remains active, with unrelated renderer and model changes preserved.
+
+Fresh Celadon6F front/east source comparisons exposed16px glazing and side
+walls below24px vending machines, plus missing wall behind the bank. The
+shared architectural courses and lift fronts now fit32px room height, with
+unchanged3px depth and original pane widths/materials. Directory and call-panel
+inscriptions keep their original size and move8px upward. Furniture, stair
+flights, thresholds, floor underlays and source claims keep their own datums.
+
+The wider floor review then found the same missing backing behind2F equipment
+shelves and4F refrigerators. The complete authenticated north-wall networks
+now continue the same glazing behind actual blocks13/14/21 on2F/4F/6F in both
+stores. These sections add no machine/floor claims or support heights. Full
+network identity, map/floor/anchor, block and subtile phase remain required;
+actual stair and lift openings are not filled. No new asset, pack or event
+catalog is introduced.
+
+All27 selected store geometry/material/source/retirement checks pass, including
+an actual-pack test of all12 floors plus Celadon's post-callback layout. It
+checks ceiling-height rear faces, backing rays through the full authored final
+finisher, exact original claims/support and rejection of every hidden equipment
+cell mutation. Existing stair/lift aperture, live inscription, source/crop,
+custom-profile and counter checks remain green. Two current controller tests
+also pass: the actual sixth-floor callback and both department-store clerks'
+shop entry/exit. Total29 distinct focused checks.
+
+Fourteen final native/source pairs,28 full originals, were inspected: every
+floor1F–6F of both stores, plus Celadon6F east and Goldenrod6F opposite night
+with an ordinary64-frame UD walk. All commands exit0 and all paired receipts
+preserve state. The walk visits(8,3) through(8,7), retains active native terrain
+and needs no additional terrain build. All captures explicitly use headless
+image targets, mute and high quality. Source-correct openings and complete
+rear/side height are visible; foreground furniture crops are not accepted as
+whole-room coverage. Evidence: target/kanto-resume/retail-shell-review/review.json.
+
+The full311/225 audit has no mesher errors. Only six map reports change solid
+geometry counts:2F gains984 triangles per store,4F/6F gain656 each. The other305
+map reports and all other report sections, including225 variants, ownership,
+footing, actor sources and battle species, are exact. Height-only changes do
+not change counts; the geometry tests and twelve-floor native review provide
+that separate evidence. Pack SHA256 remains
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+The first final-finisher fixture incorrectly used a geometry-only path and
+uncentered coordinates; the retained failure is superseded by explicit neutral
+opaque samples through the authored path at actual centered coordinates. The
+initial blocked Celadon6F(5,4) and Goldenrod4F(8,4) starts were rejected; accepted
+positions are(8,4) and(8,3). Intermediate wall-height-only images are retained
+separately. Concurrent streamed-image API work required private current API
+rebuilds; no concurrent source was reverted. Actual source was compiled for
+local QA against completed dependencies, not normal Cargo/release certification.
+
+Equipment face depth/materials, source seating interpretation, varied NPC
+palettes, further room poses/services and all311/original16 acceptance remain
+open, alongside native PC timing/remaining branches and link/mobile/GS Ball
+scenes. No League restart, staging or commit occurred. The task scratch builder
+was removed; ignored QA receipts, images and caches remain.
+
+Mailbox services, native input ownership and source notice layout — 2026-10-19
+
+AGENTS.md and the worktree were revalidated; the deleted handoff remains absent.
+The complete Kanto/shared-furniture and all311/original16 objective stays active.
+The preceding summit coverage check also passed against the unchanged pack.
+
+Two actual-pack service regressions now cover all22 clinic lobbies. Ordinary
+PCScript input opens the player PC and Mailbox, reads the second letter, closes
+it, cancels and accepts PUT IN PACK, cancels party selection, attaches the exact
+remaining MailData to the selected Pokemon, acknowledges the notice, handles
+the empty list and logs off before real one-tile walking resumes. The negative
+fixture checks Eggs, an already-held item and a full item pocket, preserving
+the full message, party and bag on each refusal. Initial parties, letters and
+bag contents are explicit disposable fixtures; subsequent actions use the
+production controller rather than writing cursors, progression or outcomes.
+
+The reader now owns directional, Start and Select input as well as A/B, so
+reading cannot move its hidden Mailbox cursor. Expected attachment/full-bag
+errors are recognized from their actual root causes and show the exported
+source refusal text instead of failing with the generic mutation context.
+Party attachment notices use the source20x6 PrintText window in rows12..17,
+with two authored baselines; the oversized nested frame is gone. Empty-Mailbox
+text is now drawn above the retained player-PC chooser. Other PC notice
+layouts retain their existing behavior.
+
+Native keyboard review exposed two further defects missed by direct service
+tests. Idle/release frames previously lost their modal input budget to the
+overworld loop, leaving A recorded as held and preventing READ MAIL. Mailbox
+now retains that budget. The parent player's-PC confirmation also carries its
+physical button history into the list, preventing held opening A from selecting
+the first letter. A real-PCScript integration test now holds/releases ordinary
+keys through source WaitBGMap, opens the list without selecting, opens and
+closes the reader, reopens the submenu and changes its selection. It preserves
+Mail and the player's actual position. Both native and default configurations
+pass all8 focused Mailbox tests, including the two all22 service tests, five
+existing control checks and this native keyboard regression. Earlier two
+stationery/reader source-art checks and seven other clinic service checks also
+have passing receipts; these are distinct scopes, not whole-room acceptance.
+
+Eight full source-UI captures were inspected: list, Surf Mail reader, warning,
+attachment acknowledgement, empty Mailbox, Egg/item refusals and full pack.
+Their eight default-renderer counterparts are byte-identical. Four full
+native/source originals were inspected for the PC hub and selected Surf Mail
+reader. The final513-frame native route walks in the actual room, uses ordinary
+keyboard input, selects the second letter and reaches CD's MEET IN KANTO at
+PewterPokecenter1F(9,2). Its receipt preserves the paired session; all800x720
+pixels of the displayed Mail LCD match between3D and2D. The initial first-letter
+capture is retained as superseded evidence, not the selected-letter acceptance.
+The QA policy only observes live owners/cursors and emits bounded keys; its
+capture gate asserts the selected index and complete second MailData.
+
+Evidence: target/kanto-resume/clinic-mail-build/review.json. All GPU captures
+explicitly use HEADLESS=1, CAPTURE_TARGET=image and mute; no window is opened.
+The pack remains ignored and SHA256 is unchanged:
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Current Rust source was compiled against the completed native dependency cache
+in private QA outputs, including a private current voxel rebuild after a
+concurrent outdoor-water API change. This is local QA, not Cargo/release or
+browser certification; unrelated source/model work was preserved.
+
+The independent mailbox_windows_match_original_rom_lcd comparison still fails
+because its external nine-image fixture directory is absent; the first missing
+reference is /Users/ryanculligan/GitHub/tools/asm-oracle/fixtures/mailbox/rom-mailbox-0.png.
+No golden was fabricated or verifier weakened. That independent ROM-pixel gate,
+parent PC palette/spacing review, remaining item/Oak/naming/printing branches,
+native PC save-animation timing, link/mobile/GS Ball scenes, wider furniture
+and all311/original16 visual acceptance remain open. No League restart, export,
+staging or commit occurred. Task scratch builders were removed; ignored QA
+receipts, images and caches remain.
+
+Recessed retail roof vents across Kanto and Johto — 2026-10-19
+
+Continued the full Kanto/shared-furniture and all311/original16 objective after
+the Mailbox fixes. AGENTS.md and current source were revalidated; the deleted
+handoff remains absent. No unrelated source/model changes were reverted.
+
+The actual Mart0c/0d header draws two four-by-one-pixel vent slots. These now
+recess0.35 source pixels into the roof, with closed inner walls, rather than
+remaining flat paint. Only complete authenticated retail cabinet adapters use
+the finish. Source UVs remain continuous, the old cap datum stays fixed, and
+door/display attributes, placement, source claims and player support are exact.
+Blue ticket boxes, long lids, electronics headers, clinic stock and existing
+sixth-floor vending vents retain their separate treatments.
+
+All28 focused store/retail checks pass. The new geometry test casts rays into
+both openings and surrounding cap, rejects any covering plane, checks outward
+triangle winding and unchanged height/claims/support, and compares every
+original body/front attribute exactly across fridge/shelf fixtures in Kanto
+and Johto. The old normal-only door assertion incorrectly included the new
+inner roof walls; it now guards the actual front plane. Its initial failure
+is retained alongside the final passing suite.
+
+Fresh before/after audits cover all311 established interior maps and225 block
+variants. Both have no mesher errors. Only textured geometry counts change in
+fifteen maps: thirteen marts gain364 triangles/728 vertices each; Celadon4F
+and Goldenrod4F gain624/1248 each. This is115 cabinets at52 triangles per cap.
+The other296 complete map reports and every other report section are exact,
+including source ownership, support, actors, battle species and all225 variants.
+The initial Kanto-only120-map reports remain distinctly named before120/after120.
+
+Four final headless native/source pairs, eight full originals, were inspected:
+Celadon4F front, Goldenrod4F east/high angle, PewterMart quarter daylight and
+EcruteakMart opposite night with an ordinary64-frame LR walk. All paired-state
+receipts preserve the session. The walk visits(5,3) and(6,3), keeps native
+terrain active and requires no additional terrain build. All captures use
+HEADLESS=1, CAPTURE_TARGET=image, mute and high quality; no windows are opened.
+A comma-separated camera argument was rejected; final requests use whitespace.
+Both the default mart center(6,4) and guessed(4,4) were blocked; accepted(6,3)
+starts come from prior source-checked map receipts.
+
+Evidence: target/kanto-resume/retail-vent-review/review.json and
+target/kanto-resume/retail-vent-build/invariants.json. Pack SHA256 is unchanged:
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Current Rust mesh code, tests and examples were built privately against the
+completed native dependency cache for local QA, not Cargo/release or browser
+certification. No pack, source-content export, new asset or gameplay change
+was introduced. The task scratch builder was removed; ignored QA evidence and
+caches remain. No staging, commit or League restart occurred.
+
+This accepts the scoped roof finish, not whole-room art. The oblique mart
+views leave checkout continuity/register detail and source floor hatching open;
+trace counter geometry and cutaway ownership before changing the split-looking
+tops. Foreground crops, further equipment faces, seating, actors, other poses,
+remaining PC/item/Oak/naming/printing/link/mobile/GS Ball services and complete
+all311/original16 visual acceptance remain unfinished.
+
+Connected Mart checkouts and actual department-store counter joins — 2026-10-19
+
+Continued the full Kanto/shared-furniture and all311/original16 objective.
+AGENTS.md and current implementation were inspected. The deleted handoff stays
+absent; these two maintained guides retain completion evidence and open work.
+The preceding summit turn rechecked all 32 connected maps/20 surrounding routes:
+both source/topology regressions pass, day/night originals were reviewed and
+the actual pack hash is unchanged. That coverage does not accept every route's art.
+
+All thirteen standard Marts now use their actual complete return drawing rather
+than a separate register cabinet and fragmented legacy sides. Twenty source
+cells authenticate the back-wall join and the complete drawing; sixteen counter
+cells are owned, with the source south face folded upright. A continuous cap
+runs from the wall to the front end at height eight. The existing mechanical
+register is seated on that cap and faces west toward the actual clerk. Its
+four finishes sample the source register; no new asset/content export is added.
+All thirteen real source shop scripts open and browse their authored inventory,
+close without mutating bag or money, and return to actual one-tile walking.
+Initial room placement is a disposable fixture; interactions use the production
+VisibleShellController, not direct cursor or progression mutation.
+
+A shared loader defect was also repaired: body-only counter indices were saved
+before surface refinement replaced a primitive's vertices and triangles. They
+now come from the final refined material range. The regression compares the
+exact material triangle mask and checks winding/normals and immutable cache.
+This fixes malformed body faces in eight department-store floors as well.
+
+Actual-map review found a further gap in both stores' 1F and 3F front strips.
+Their two-row source drawings previously occupied one physical row, and the
+standalone inset top still left a slit after enlarging the footprint. These
+four maps now use their full sixteen-pixel depth and the same separate seven-
+pixel body/eight-pixel continuous cap as the returns. A final-finisher test
+loads all four actual pack maps and sweeps both return/front joins; it failed
+at source depth32.25 before this fix and now passes. Source ownership, floor
+underlay, support, shop scripts and unrelated clinic counters stay unchanged.
+
+All 32 focused retail/store checks and four actual shop/controller checks pass.
+The final audit covers 311 established interior maps and all 225 block variants,
+with no mesher errors. Only thirteen Marts and eight store-floor reports change;
+the other 290 complete reports are exact. Each Mart gains twelve modeled cells,
+296 textured triangles and 768 vertices. Store 1F/3F each lose228 triangles and
+288 vertices with the continuous cap; 2F gains1080 vertices and 4F gains540,
+with their triangle counts unchanged. Actor sources, battle species, every
+script variant and all audited support fields are exact. Counts establish
+bounded scope; geometry tests and native views establish the counter joins.
+
+Twenty-three final native/source pairs, 46 full originals, were inspected:
+all thirteen Marts in daylight, both stores' floors1F–4F, and extra EcruteakMart
+and Goldenrod4F night/high-angle LR walks. Fresh four-map join-final captures
+supersede the earlier rejected 1F/3F gap views. The unaffected Mart/2F/4F pairs
+retain the same audited meshes. All paired-state receipts preserve the session.
+Each 64-frame walk visits two adjacent source positions, keeps terrain active
+and stays at one terrain build. All captures are headless image targets, muted
+and high quality; no windows or application focus changes occur.
+
+Evidence: target/kanto-resume/mart-checkout-review/review.json and
+mart-checkout-build/invariants.json, final-full311.json, final-focused-tests.log
+and final-services.log under the same ignored QA root. The source hashes are
+recorded there. Pack SHA256 remains
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Current Rust libraries/tests/examples were built privately against the completed
+native dependency cache for local QA; this is not Cargo/release/browser
+certification. The task scratch builder and probe source were removed. Ignored
+QA evidence/caches remain; no pack export, staging, commit or League restart.
+
+Scoped acceptance covers connected counter geometry/register placement, not
+whole-room fidelity. Next source comparisons must address the dark counter
+fascia versus the source's gold horizontal bands, Mart green floor hatching,
+store pink seating, remaining equipment faces and NPC palette differences.
+Foreground crops, other poses/reachability/services, remaining PC/item/Oak/
+naming/printing/link/mobile/GS Ball branches, missing independent Mailbox ROM
+goldens and complete all311/original16 visual acceptance remain open. The full
+goal remains active; it is not redefined around this bounded repair.
+
+Source gold courses on Mart and department-store counter fronts — 2026-10-19
+
+Continued the complete Kanto/shared-furniture and all311/original16 objective.
+AGENTS.md and current source were revalidated. The deleted handoff remains
+absent; both maintained guides carry this identical checkpoint. The previous
+turn made concrete source/geometry/service progress rather than a status-only
+wait. Unrelated source, models, caches and other goals' work are preserved.
+
+The thirteen Mart returns and both stores' floors1F–4F now sample the complete
+actual tile$1a front strip by world height across vertical panels, framing and
+bevels. The old adapter stretched a single dark edge sample across inset panels,
+creating black rectangles where the source has gold bands and dark separators.
+The new paint uses the existing room atlas; no second asset, image or catalog is
+added. Horizontal body plates, caps and registers retain their finishes. Mesh
+positions, indices, normals, colors, claims, support and interaction paths are
+unchanged. Unknown/missing front art retains the previous whole-object finish.
+
+Initial production review caught an incomplete lookup: floors2F/4F carry this
+same source tile in different metatiles, so the narrow $0c–$0e/$29 filter left
+their counters dark. The final lookup recognizes tile$1a within the already
+authenticated native counter layouts. A new actual-pack regression requires
+the real front strip in all eight store maps and rejects a foreign tileset.
+The initial2F/4F captures remain separately named; stores-final supersedes them.
+The original1F/3F views use exactly the same first source sample after that fix.
+
+All34 focused store/retail tests pass. The thirteen-Marts source test now casts
+independent rays through exposed overlapping body panels, interpolates visible
+UVs and verifies the six inner source courses against the actual pack PNG.
+It detects the old solid-dark-panel finish. A separate paint test compares
+geometry, indices, normals and colors exactly and preserves cap/horizontal UVs
+and missing-source behavior. The existing final-finisher join and support tests
+remain green. No gameplay code changed; the preceding four shop/controller
+regressions remain their separately recorded service evidence, not new runs.
+
+Final headless inspection covers22 native/source pairs,44 full originals:
+all thirteen Marts at a high quarter angle, both stores' floors1F–4F, and an
+opposite/lower PewterMart night view exposing the long return face. Every pair
+preserves the actual session. Its64-frame LR walk visits(3,3) through(7,3), keeps
+terrain active and stays at one terrain build. Foreground store crops and Mart
+views dominated by tops are explicit limits; the opposite view plus source rays
+establish the return's striped finish. No windows or focus changes occur.
+
+The final311-map/225-variant audit is exactly equal to the preceding checkout
+report, with zero mesher errors. This proves unchanged report fields, including
+coverage/support/actors/battle species/variants; the report does not fingerprint
+UVs. Geometry-invariance tests and matched native views are additional required
+evidence for this UV-only change. Pack SHA256 is unchanged:
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Evidence: target/kanto-resume/mart-fascia-review/review.json and
+mart-fascia-build/invariants.json, final-full311.json and final-focused-tests.log
+under that ignored QA root. Source/image hashes are recorded there. Current
+Rust libraries/tests/examples were built privately against the completed native
+dependency cache for local QA, not Cargo/release/browser certification. The
+scratch builder was removed. No pack export, staging, commit or League restart.
+
+This accepts the scoped gold-course finish, not every counter silhouette or
+whole-room art. Next address the large plain green Mart pavers versus the source
+hatching. Pink store seating, equipment backs/remaining faces, NPC palettes,
+other poses, reachability and remaining PC/item/Oak/naming/printing/link/mobile/
+GS Ball services remain open. Missing independent Mailbox ROM goldens and full
+all311/original16 visual acceptance still prevent completion. The complete goal
+remains active without narrowing its requirements.
+
+Native green Mart floor crosshatch at the flat source datum — 2026-10-19
+
+Continued the full Kanto/shared-furniture and all311/original16 objective.
+AGENTS.md and current implementation were inspected; the deleted handoff stays
+absent. The previous turn completed a source-backed counter finish with tests
+and renders, so this is continued concrete progress rather than a blocked wait.
+Unrelated work remains intact. Both maintained progress guides carry this same
+checkpoint; no separate replacement handoff is created.
+
+The thirteen standard Marts now retain the complete native green tile$48
+crosshatch at its original scale and phase. The former two-swatch ceramic pass
+removed the source lattice and introduced large green pavers, narrow grout and
+shallow beveled seams. The finish now uses the full live atlas drawing on the
+original flat floor plane, including existing furniture floor underlays. No new
+texture, content catalog, furnishing claim, support height or gameplay behavior
+is introduced. Department-store yellow floors and other room finishes retain
+their own adapters.
+
+All35 focused store/retail checks pass. The two old Mart tests asserted the
+invented two-swatch paver treatment; they now require the complete UV rectangle,
+flat height, exact area/winding, negative world origins and unequal tile axes,
+and compare floor geometry/UVs/support/claims against the original source
+surface in all thirteen rooms. A new actual-pack final-finisher regression
+checks every plain tile$48 cell in every Mart: each is covered exactly once,
+every floor vertex samples its original atlas position, walking support stays
+zero and no floor is credited as a furnishing. Its opaque geometry fixture is
+explicit; the actual pack PNG confirms a real motif and native/source captures
+verify palette and appearance. All existing counter, roof, cabinet, wall and
+shared store controls remain green. No service/controller code changed.
+
+The complete311-map/225-variant audit has no mesher errors. Only thirteen Mart
+reports change, each solely by4984 fewer textured triangles and15664 fewer
+vertices. The other298 whole map reports are exact. All coverage/source bounds,
+support, family ownership, actors, battle species, totals and225 block variants
+are exact. This is bounded geometry evidence; it does not replace UV or visual
+verification. No performance benchmark or production release claim is inferred
+from the reduced triangle counts.
+
+Fourteen headless native/source pairs,28 full originals, were inspected: all
+thirteen Marts in daylight and an additional PewterMart oblique night LR walk.
+Both native movement stills were also inspected. The crosshatch remains aligned
+under furniture and walking actors; no large tile seams remain. Every pair
+preserves the actual session. The64-frame walk visits(3,3) through(7,3), keeps
+terrain active and remains at one terrain build. All captures use headless image
+targets, mute and high quality; no windows or application focus changes occur.
+
+Evidence: target/kanto-resume/mart-floor-review/review.json and
+mart-floor-build/invariants.json, full311.json, actual-source-floors.log and
+focused-tests.log under that ignored QA root. Source/image hashes are recorded.
+Pack SHA256 is unchanged:
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Current Rust libraries/tests/examples were built privately against the completed
+native dependency cache for local QA, not Cargo/release/browser certification.
+The scratch builder was removed; ignored QA evidence and caches remain. No
+pack export, staging, commit or League restart occurred.
+
+This accepts the scoped Mart floor finish, not whole rooms. Next examine the
+pink department-store seating against its source drawings. Equipment backs and
+remaining faces, NPC palettes/occlusion, other poses and reachable services
+remain open. Remaining PC/item/Oak/naming/printing/link/mobile/GS Ball branches,
+missing independent Mailbox ROM goldens and full all311/original16 visual
+acceptance still prevent goal completion. The full objective remains active.
+
+Source-complete two-cushion department-store benches — 2026-10-19
+
+Continued the full Kanto/shared-furniture and all311/original16 objective.
+AGENTS.md, current source and fresh actual-pack drawings were inspected. The
+previous turn completed the Mart floor repair with source/geometry/native QA;
+this turn makes further authoritative progress. The deleted handoff remains
+absent. Both maintained progress guides carry this identical checkpoint, and
+unrelated source/assets/caches and other goals' work remain intact.
+
+The pink store drawing is two connected cushions on one base: its upper half
+already begins the next cushion, while the final six source pixels draw the
+front apron/feet. The old adapters split the halves into separate puffy stools;
+the6F right-hand complete drawing instead became only one pad. Both stores'
+1F/5F/6F now resolve20 complete two-by-four-cell benches, with40 pads, one
+continuous base and four grounded feet per bench. They reuse the canonical
+Cushion mesh with the unsupported central button omitted, thinner padding and
+live source upholstery/front/foot colors. The source frame's orange/red shade
+is sampled from its actual front row, not invented generic metal paint.
+
+The physical depth is26 source pixels after folding the drawn front upright;
+seat tops remain at the established seven-pixel datum. Each complete eight-cell
+guard retains the old total ownership and its floor underlay. Reservations and
+altered/incomplete drawings never become partial native stools. Actor seating
+exposes two separate pad rectangles ending before the folded apron, so merging
+the source claim does not collapse the sitting positions to the center seam.
+This is presentation geometry/targeting; authoritative collision, position,
+scripts and input ownership remain unchanged.
+
+There are49 distinct passing checks: the focused suite executes47 and initially
+skips two supplied-rig checks; those two were then run explicitly and both pass.
+New actual-pack checks cover all six rooms and every bench, both seven-pixel pad
+tops, the closed common seam, the vacated front-floor row, four foot-contact
+areas, triangle winding, unchanged support and eight claims. Production
+seating_surfaces emits40 targets; each target agrees with its actual cushion
+center/height. Guard checks mutate every source identity field in every owned
+cell, exercise both left/right drawings, unknown maps, missing ground, each
+reserved cell and unequal-axis/negative-origin geometry. Existing candidate,
+NPC occupancy/cache, sitting transitions, supplied-rig hip/foot and all prior
+retail/floor/counter controls remain green. The old synthetic half-stool test
+now supplies the complete drawing and asserts a supported bench.
+
+The311-map/225-variant audit has no mesher errors. Only the six store-floor
+reports change, solely in textured geometry counts; the other305 complete
+reports and all other fields/sections are exact, including ownership, support,
+source bounds, actors, battle species and all225 variants. Each1F loses240
+triangles/480 vertices and each5F loses120/240 by sharing bases/feet. Each6F
+gains4160 triangles/2160 vertices because its formerly incomplete right-hand
+assemblies now include both source pads. Counts alone did not detect that old
+missing-pad defect; actual source/geometry/seating/native evidence is required.
+
+Twelve headless native/source pairs,24 full originals, were inspected: all six
+rooms in daylight, additional left/closer1F and5F views in both cities, and
+opposite/lower6F night LR walks in both cities. The default5F poses crop the
+benches; the closer pairs supply their actual inspection. Four movement stills
+were also inspected, showing the existing renderer's seated presentation on a
+cushion followed by walking away. Both64-frame walks keep their authoritative
+approach outside the blocked source bench, visit(6,4) through(10,4), retain
+active terrain and stay at one terrain build. Every final pair preserves its
+actual session. No visible windows or application focus changes occur.
+
+Evidence: target/kanto-resume/store-bench-review/review.json and
+store-bench-build/invariants.json, full311.json, focused-tests.log and
+supplied-rig-seating.log under that ignored QA root. Source/image hashes are
+recorded. Pack SHA256 remains
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Current Rust libraries/tests/examples were built privately against the completed
+native dependency cache for local QA, not Cargo/release/browser certification.
+The scratch builder was removed. No asset/content export, staging, commit or
+League restart occurred; ignored QA evidence/caches remain.
+
+This accepts the scoped paired-bench geometry and sitting targets, not every
+actor/party/animation or whole-room state. Fresh5F views still expose clerk/NPC
+palette differences: trace their actual source object palettes next, especially
+the left Goldenrod clerk and both Celadon clerks. Equipment backs/remaining
+faces, NPC occlusion, other poses/reachability and remaining PC/item/Oak/naming/
+printing/link/mobile/GS Ball services remain open. Missing independent Mailbox
+ROM goldens and full all311/original16 visual acceptance still prevent overall
+completion. The full goal remains active without narrowing its requirements.
+
+Actual source colors for store clerks and receptionists — 2026-10-19
+
+Continued the full Kanto/shared-furniture and all311/original16 objective.
+AGENTS.md and current implementation were inspected. The previous summit
+recheck supplied no new interior implementation; this turn takes the available
+store-palette repair forward. The deleted handoff remains absent, and both
+maintained progress guides carry this identical checkpoint. Unrelated changes
+and shared caches remain intact.
+
+Celadon5F's two SPRITE_CLERK objects explicitly use blue palettes, but the native
+models retained green shirts. Goldenrod5F's left booth person is a distinct
+SPRITE_RECEPTIONIST with a red palette, not another clerk; her blue suit/skirt
+also ignored the source. Both roles now use the existing per-instance source
+sprite color and GPU variant cache throughout the game. This covers29 Clerk and
+18 Receptionist objects. Clerk shirts change while dark trousers and the cream
+apron remain fixed. Receptionist shirt/trouser UV clothing islands change, and
+her fitted skirt now receives the same explicit pigment instead of resampling
+the immutable default blue painting. Skin, hair, collar, badge, ink, alpha,
+head accessories, rigs, binds, positions and non-color garment attributes stay
+unchanged. Existing LinkReceptionist/Fisher/CooltrainerF behavior is preserved.
+No runtime script, collision, actor position or source pack changes are made.
+
+All22 distinct uniform checks pass. The initial broad selection passes20 and
+fails two supplied-rig controls solely because their explicit asset-root
+variable is absent; rerunning those two with the existing assets/open-models
+root passes both. New external-pack checks enumerate every actual object and
+its resolved source palette, verify all six sprite frames and four lighting
+banks for each used role/palette (144 combinations), and preserve source-style
+border-connected transparency. Pixel-role checks protect non-clothing regions.
+Supplied-rig GPU checks verify immutable base paintings, variant reuse and
+cleanup, separate color materials, shared body/binds/head, unchanged garment
+geometry and the cream Clerk apron; Receptionist skirt colors differ as
+required. Prior link, Fisher and Cooltrainer tests remain green.
+
+Ten headless source/native pairs,20 full originals, plus two movement stills
+were inspected: daylight Celadon/Goldenrod1F and5F, TrainerHouse1F,
+RadioTower1F and SilphCo1F; opposite55-degree5F views in both cities at21:00;
+and a quarter-turn50-degree PewterMart night LR walk. The reviewed blue/red/
+green clothing follows the actual source, including the green standard Mart
+clerk and green Trainer House receptionist. The64-frame Mart walk visits
+(3,3) through(7,3), retains active terrain and one terrain build. All ten paired
+receipts preserve their actual sessions. Some views crop or shadow actors;
+these establish scoped clothing acceptance, not every actor/face/room angle.
+No visible window, focus change, asset export, staging or commit occurs.
+
+The fresh311-map/225-variant terrain audit has no errors and is exactly equal
+to the complete preceding bench report in every section. That audit does not
+serialize actor pigment, so the actual sprite/GPU/image checks above are
+necessary. Evidence: target/kanto-resume/service-uniform-review/review.json and
+service-uniform-build/{invariants.json,full311.json,uniform-tests.log,
+supplied-uniform-tests.log}. Current private opt-level1 Rust libraries and
+examples use the completed dependency cache; Cargo/release/browser production
+certification is not claimed. Scratch builders were removed; ignored QA
+receipts/caches remain. Pack SHA256 stays
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+A separate current shared foliage test remains failing:
+occluder_fade::tests::opaque_sections_preserve_complete_triangles_collision_and_shared_fade_owner
+fails leaf-bound containment. Its two Vec3A-to-Vec3 test conversions were
+required for the current suite to compile; the actual containment assertion is
+preserved and its failure receipt is service-uniform-build/occluder-test.log.
+This is not hidden as a passing check. Equipment backs/remaining faces, other
+NPC palettes and occlusion, remaining poses/reachability, PC/item/Oak/naming/
+printing/link/mobile/GS Ball services, missing independent Mailbox ROM goldens
+and complete all311/original16 visual acceptance remain open. The first
+external Mailbox golden is still absent at tools/asm-oracle/fixtures/mailbox/
+rom-mailbox-0.png outside this checkout. No completed League QA is restarted.
+The full goal remains active.
+
+Actual retail cabinet backs and exposed ends reviewed — 2026-10-19
+
+Continued the full Kanto/shared-furniture and all311/original16 objective.
+AGENTS.md and current source were reread. The previous staff-palette repair
+was concrete progress; this turn completes another bounded acceptance check.
+The deleted handoff stays absent, and this identical checkpoint is recorded in
+both maintained progress guides. Other goals' changes and shared caches remain
+intact.
+
+The source layouts resolve299 complete native retail cabinet shells across19
+rooms: nineteen in each of the thirteen standard Marts; six per department-store
+2F, four per3F and sixteen per4F. Of these,115 use the previously repaired
+vented roof and184 use their original unvented source roof. This cohort is
+larger than the initial17-room estimate because both2F rooms also contain the
+same native source display. They are not all electronics: the same source
+adapter also supplies ordinary Mart stock displays.
+
+The new actual-pack regression runs the production source resolver and append
+path for every shell, with12x6 world pixels and translated origin(-31,17).
+It checks full projected area on rear, front and exposed ends, authenticated
+removal of buried joined ends, positive triangle winding/finite normals,
+floor-to-cap contact, each cabinet's live casing UV sample, eight owned cells,
+unchanged actor footing and no extra roof-header height. All299 pass. Three
+existing display/source-guard, roof-recess/body-invariance and electronics-volume
+controls also pass. The initial regression's geometry checks passed, but its
+room-count assumption failed; actual enumeration established the exact19-room,
+299-cabinet cohort retained by the final passing check. Both receipts remain.
+
+Twenty-three fresh offscreen source/native pairs,46 full originals, were
+inspected: all19 rooms from the reverse50-degree daylight camera, then
+PewterMart, FuchsiaMart, CeladonDeptStore3F and GoldenrodDeptStore4F from the
+side45-degree camera at21:00. The reviewed freestanding rear panels and ends
+are closed, grounded and painted; the existing plain casing finish is retained.
+No cabinet repair or added rear detail was necessary for these surfaces.
+Some wall-backed displays are hidden by the opaque room wall in reverse views;
+the geometry regression covers them, while these camera views establish only
+the surfaces actually visible. All23 paired-state receipts preserve the actual
+session. No window or focus change occurs.
+
+Evidence: target/kanto-resume/retail-shell-faces-review/review.json,
+retail-shell-faces-build/shell-tests-final.log and existing-display-controls.log.
+This turn adds the regression and its test-only module registration; production
+geometry, source content, input, actors, collision and support are unchanged.
+Current Rust libraries/examples were rebuilt privately against the completed
+dependency cache. A fresh311 audit was not needed for this test-only change;
+the latest complete311/225 baseline remains service-uniform-build/full311.json.
+No Cargo/release/browser certification is implied. Scratch builders were
+removed; ignored QA receipts/caches remain. No export, staging, commit or League
+restart occurs. Pack SHA256 remains
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+This closes the scoped shell/visible-back review, not whole-room acceptance.
+Blue aisle cases/ticket boxes, clinic stock and sixth-floor vending machines
+use separate adapters and are not included in these299 shells. NPC readability
+behind the tall stock rows remains visibly incomplete; source2D still shows
+actors that some native angles obscure. Other NPC palettes, every remaining
+pose/reachable service, PC/item/Oak/naming/printing/link/mobile/GS Ball work,
+independent Mailbox ROM goldens and full all311/original16 visual acceptance
+remain open. The previously recorded shared foliage containment failure was
+not rerun or silently reclassified in this unrelated surface review. Continue
+with the actual occluded actors/remaining palette roles and remaining services.
+The full goal remains active.
+
+Indoor NPC sight lines through source furniture — 2026-10-19
+
+Continued the full Kanto/shared-furniture and all311/original16 objective.
+AGENTS.md and current implementation were reread. The preceding cabinet-shell
+review supplied new acceptance evidence; this turn fixes its concrete NPC
+occlusion defect. The deleted handoff remains absent. Both maintained guides
+carry this identical checkpoint, preserving unrelated work and other goals'
+shared source changes.
+
+The existing nearby-NPC reveal covered outdoor buildings only, while most
+native stock cabinets were never registered as whole-object occluders. All299
+reviewed source-complete cabinets in19 Mart/store rooms now register their
+complete roof/front/back/ends with the existing depth-coverage furniture fade.
+Their floor underlays remain opaque. Geometry, source ownership, support,
+collision, shadows, scripts and authoritative actor state remain unchanged.
+
+Source-backed indoor Object actors can now reveal explicitly registered
+furniture that actually obstructs their lower torso or head. Targets use each
+modeled character's stature and resolved terrain support; props, remote players,
+invalid/out-of-grid actors and outdoor maps are excluded. Selection is stable
+by source object ID and bounded to16; the external pack confirms every original
+map fits that budget. The outdoor two-partner policy and ordinary/camera wall
+rules retain their existing behavior. Cached mismatched-room footing cannot
+supply these targets.
+
+Each furniture piece uses the existing body-aperture shader with a union of its
+actually blocked player/NPC bodies, so retained casing pixels do not stipple
+characters or jump between two staff sharing a bay. Furniture restores its
+original opacity after the line clears. The first visual pass exposed NPCs but
+speckled their bodies; adding the aperture fixed that. A subsequent pass exposed
+legs through low counters; NPC obstruction now tests torso/head instead. A
+chest-only ray still grazed above a cabinet in Goldenrod2F, so the lower-torso
+sample is40% of actual stature, with a dedicated grazing-top regression. The
+low-counter regression remains green. Shader edits document the existing
+aperture's additional caller; its fragment algorithm is unchanged.
+
+All56 distinct focused checks pass: the current full52-test occluder suite and
+four cabinet/display controls. New checks cover the real ECS fade/material
+update with player rays clear, opaque restoration after NPC movement, wall and
+stale-room exclusions, source support/stature, props/outdoor exclusions, stable
+crowd limits against the actual pack, two-body aperture containment, low-counter
+leg occlusion and the grazing cabinet edge. The actual299-cabinet regression
+also requires one complete reveal owner, retained depth policy and opaque floor
+underlays, alongside its geometry/claim/support checks. Existing outdoor, room
+camera, cache, collision, source partition, packed-geometry and display controls
+remain green. Shared packed-normal changes were preserved. The historical
+leaf-containment check is absent from current shared source; it is not reported
+as the same test rerun and passing.
+
+Nine final headless source/native pairs,18 full originals, and four movement
+stills were inspected: reverse50-degree daylight views in Azalea/Pewter Marts
+and both stores'2F/4F, side45-degree21:00 LR walks in PewterMart and
+Goldenrod4F, plus a PlayersHouse1F wall/furniture control. The affected NPCs now
+read clearly through the tall stock rows while low service counters remain
+opaque. The house control retains its connected full-height wall/divider and
+ordinary furniture. Both64-frame walks retain active terrain and one terrain
+build; Pewter visits(3,3)..(7,3), Goldenrod4F visits(5,3)..(9,3). Their measured
+medians are20.77/20.27ms and p95 values43.90/28.08ms in these private QA builds;
+this is not production performance certification. Every final pair preserves
+its actual session. Rejected/intermediate visual passes remain separately
+identified as evidence, not accepted final views. No windows or focus changes
+occur.
+
+The fresh311-map/225-variant static audit has no errors and is exactly equal
+to service-uniform-build/full311.json in every section. That audit does not
+serialize reveal eligibility/apertures; the actual source-owner and live
+ECS/material checks above prove those separately. Evidence:
+target/kanto-resume/interior-npc-review/review.json and
+interior-npc-build/{occluder-tests-final.log,cabinet-tests-final.log,
+full311-final.json,invariants.json}. Current Rust libraries/tests/examples were
+built privately against the completed dependency cache. The scratch builder
+was removed; ignored QA receipts/caches remain. Pack SHA256 stays
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+No content/asset export, staging, commit or completed League restart occurs.
+
+This accepts the scoped source-furniture NPC repair and reviewed poses, not
+all actor/party/camera states or every room. Separate blue aisle/ticket-box,
+clinic and vending adapters still need their remaining registration/reveal
+review where applicable; ordinary-wall occlusion remains a separate policy.
+Other NPC palettes, remaining reachable services (PC/item/Oak/naming/printing/
+link/mobile/GS Ball), independent Mailbox ROM goldens and full all311/original16
+visual acceptance remain open. The first external Mailbox golden is still
+absent. The full goal remains active without narrowing its requirements.
+
+Shared blue cases, ticket boxes and vending services — 2026-10-19
+
+Continued the full Kanto/shared-furniture and all311/original16 objective.
+AGENTS.md and current implementation were inspected. The preceding summit
+verification confirmed coverage but did not advance the remaining interiors;
+this turn repairs a concrete missing furniture family and finishes the pending
+shared-furniture ownership and vending checks. The deleted handoff stays absent.
+Other goals' source/model changes remain intact.
+
+Ordinary Marts used blue-case blocks $23/$28 rather than department-store $12.
+Their eight furniture cells are identical; only the west-side floor is $48.
+The complete-drawing matcher now admits both variants and the existing native
+case adapter consumes them: two grounded cases in each of13 Marts,26 previously
+flat/unmodeled units. They retain the established24px long lid,8px body, flat
+sides and0.6px top-only ridges. Goldenrod's separately authored taller ticket
+boxes retain their existing model and orientation. Every changed-cell mutation
+in all26 actual Mart cases rejects the complete native placement; the floor
+half never becomes furniture.
+
+All48 blue cases, eight beverage machines, two Indigo stock cabinets and four
+station ticket boxes now have complete furniture reveal owners across21 rooms.
+The four station units are independent owners, not one fading bank. Vending
+roof vents share their own machine's owner. Indigo's rear wall backing is
+appended before the furniture range and remains opaque; floor underlays also
+stay opaque. Actual source ownership, support sentinels, complete indexed
+triangles, separate ranges and real prepare_linked grouping are checked against
+the verified external pack. Existing collision and scripts are unchanged.
+
+Goldenrod and Celadon6F now share production-controller vending acceptance:
+all three drinks at their source prices, funded/no-money/full-pocket cases,
+exactly one item and charge on success, unchanged inventory/money on refusal,
+item-notice input ownership, the original qualified source menu, cancellation,
+real departure movement and production Start access. All18 scenarios pass.
+The first movement assertion was too strict about the first input frame;
+the final check permits at most eight actual Down presses, requires the real
+customer tile to change, and checks no runtime error. No movement or menu state
+is assigned to bypass the controller.
+
+All74 focused checks pass:52 occluder tests,18 Mart controls, one actual62-owner
+regression, the existing299-cabinet control and two vending-controller tests.
+The final311-map/225-variant audit has no errors. Only13 Marts change: each gains
+16 modeled cells,92 triangles and184 vertices, and only the sixteen blue-case
+cells leave unmodeled coverage. All298 other maps and225 variants remain exact;
+actor/battle sources and all other top-level audit sections remain exact apart
+from expected family/geometry totals. Static audits do not encode reveal policy;
+the source/range/grouping and live ECS controls cover that separately.
+
+Twenty-four headless native/source pairs,48 full originals, plus four movement
+stills were inspected: reverse daylight in the eight shared-adapter rooms,
+front daylight in all13 Marts and Indigo, and21:00 side/aisle walks in Pewter
+and Goldenrod6F. All paired states are preserved. Both64-frame walks retain
+active terrain and one build; Pewter visits(3,3)..(7,3), Goldenrod(9,2)..(9,6).
+The initial Goldenrod lateral walk was blocked by the actual neighboring NPCs;
+its failure is retained and the accepted walk uses the open aisle. Indigo's
+reverse view correctly keeps the backing wall opaque and cannot certify player
+readability through that architecture; the front view verifies the stock.
+Other NPC palette mismatches remain visible and require separate work.
+No window, app switch or focus change occurred.
+
+Evidence: target/kanto-resume/shared-furniture-review/review.json and
+shared-furniture-build/{shared-owners-final.log,occluder-final.log,
+mart-controls-final.log,cabinet-control.log,vending-controller-final.log,
+full311-final.json,invariants.json}. Pack SHA256 remains
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+The private scratch builder was removed; ignored QA receipts/caches remain.
+No content export, staging, commit or completed League restart occurs.
+
+This completes the scoped missing-case/owner/vending repair. Ordinary-wall
+occlusion, remaining actor palettes and camera/party poses, reachable PC/item/
+Oak/naming/printing/link/mobile/GS Ball services, independent Mailbox ROM goldens
+and full all311/original16 visual acceptance remain open. The first external
+Mailbox golden is still absent. The original full goal remains active.
+
+Source clothing for Lasses, Youngsters, Cooltrainers and Super Nerds — 2026-10-19
+
+Continued the full Kanto/shared-furniture and all311/original16 objective.
+AGENTS.md and current implementation were inspected. The preceding turn repaired
+26 missing Mart cases and verified shared furniture/service ownership; this turn
+addresses the visible fixed-color NPC clothing left in those reviews. The
+deleted handoff remains absent. Shared files and unrelated model work are
+preserved; no other goal's build cache or generated assets were changed.
+
+The source sprite confirms that female Cooltrainer hair deliberately shares its
+palette accent. That existing behavior is preserved, correcting the initial
+suspicion that all colored hair was erroneous. The actual mismatches were fixed
+red/blue clothing on Lass, Youngster, male Cooltrainer and Super Nerd models.
+Their per-instance clothing now uses the already paletted source image, including
+actual brown variants. Hair, faces, skin, white details, ink and alpha remain
+unchanged. Lass skirts and male Cooltrainer trousers follow the source accent;
+Youngster/Super Nerd dark trousers retain their existing dark role. The first
+pass still left male Cooltrainer trousers blue; that source-role defect was
+fixed and all final views were captured again. No actor identity, physical
+scale, source position, controller input, rig, topology or collision changes.
+
+The actual external-pack corpus covers63 Lasses,124 Youngsters,38 male
+Cooltrainers and61 Super Nerds:286 newly supported objects. Every actual palette
+across all six sprite frames and four palette banks passes,360 new combinations.
+With the existing29 Clerks and18 Receptionists, the same regression checks333
+objects and504 palette/frame combinations. It uses pack PNGs and palette data,
+including border-connected transparency, rather than a duplicate source catalog.
+
+All23 distinct uniform/role/cache/geometry controls pass. The GPU variant check
+now covers all six staff/community types: shared body/bind/head meshes and
+physical bounds, distinct source-colored materials, immutable base paintings,
+alpha and protected UV roles, actual nonempty repainted cloth, preserved Clerk
+aprons, source-colored Lass/Receptionist skirts and equal costume geometry.
+The live actor-refresh regression was subsequently expanded and passes for the
+four new source types plus Link Receptionist: only the affected Object actor
+refreshes when its palette changes, the player stays intact, old entities are
+removed, steady frames reuse the variant, and the VisualWorldFrame is exact.
+Existing Fisher/cap, female Cooltrainer/hair, link, uniform-cap and detail
+controls remain green. No test is skipped in the23-check run.
+
+Eleven final headless native/source pairs,22 full originals, plus four moving
+stills were inspected: daylight in Pewter/Cerulean/Saffron/Viridian Marts, both
+6F stores, TrainerHouse1F, RadioTower1F and FuchsiaMart;21:00 side Pewter and
+reverse Goldenrod6F walks. They show source blue/red/green/brown cloth with
+retained faces, hair and accessories. Fuchsia retains the previous correctly
+source-colored female Cooltrainer/Fisher behavior. Both64-frame walks preserve
+active terrain and one build: Pewter visits(3,3)..(7,3), Goldenrod(9,2)..(9,6).
+Every paired state is preserved. Superseded first-pass captures are separately
+identified; only their Saffron/Goldenrod originals were inspected and they are
+not counted as accepted final views. No windows or focus changes occur.
+
+The fresh311-map/225-variant static audit is exactly equal to
+shared-furniture-build/full311-final.json in every section, with no errors.
+It cannot certify actor painting; the actual source, GPU and live-instance
+checks provide that evidence. Receipts:
+target/kanto-resume/community-colors-review/review.json and
+community-colors-build/{uniform-tests-final.log,live-refresh-final.log,
+full311-final.json,invariants.json}. Pack SHA256 remains
+ a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Current Rust libraries/tests/examples were privately built against the completed
+dependency cache. Temporary source enlargements and the scratch builder were
+removed; ignored production QA receipts/caches remain. No content export,
+staging, commit or completed League restart occurs.
+
+This accepts these four clothing roles and the reviewed views, not every one
+of286 actors or all poses. Other unsupported NPC palettes/details, ordinary-wall
+occlusion, remaining camera/party states and reachable PC/item/Oak/naming/
+printing/link/mobile/GS Ball services remain open. Independent Mailbox ROM
+goldens are still absent, including the first required image. Full
+all311/original16 visual acceptance remains incomplete. The original full goal
+stays active without narrowing its scope.
+
+Surrounding routes coverage rechecked — 2026-10-19
+
+The Tin Tower roof panorama uses the complete connected source component:
+32 actual maps, including all 20 routes 26, 27 and 29–46, their connected
+settlements and BattleTowerOutside. Existing authored offsets and native scale
+are retained. Re-ran both current production-host summit regressions: complete
+pack coverage/source tiles/seams/session preservation and cyclic traversal;
+2 passed, 0 failed. Log: target/kanto-resume/all-surrounding-routes-native/current-route-check.log.
+Re-inspected the existing four full day/night native/source originals from
+all-surrounding-routes-native; no visible windows were opened. This confirms
+panorama coverage, not individual route art acceptance. The recorded panorama
+loading cost remains unresolved. No geometry or gameplay changes were needed
+for this recheck.
+
+Item PC notices and Oak's complete PC question flow — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective after the
+surrounding-route coverage check. AGENTS.md and current source were inspected;
+the deleted docs/handoff/kanto-interiors.md remains absent. Checkpoints continue
+here and in modeled-interiors.md. Shared and unrelated changes are preserved;
+no pack export, source catalog, staged content, or geometry change was made.
+
+The preceding item-PC work is now recorded: actual PCScript entry in all22
+clinic lobbies, withdrawal/deposit/cancellation, all four source pockets,
+protected single items, full-PC/full-Pack/empty refusals, and safe Toss NO/YES.
+Notices now use the pack's authored two-line text instead of clipped invented
+sentences; the older pack's retained decimal slot is resolved for quantities.
+Toss waits for its question to print, ignores horizontal input, clamps YES/NO,
+and draws the source6x5 box with two-row baselines. The retained LCD render key
+now includes notice reveal, quantity, confirmation and actual cursor, fixing
+blank native quantity/Toss windows. The narrow three-color screenshot admission
+requires live frozen fullscreen-PC ownership; ordinary scene checks remain.
+Prior evidence: target/kanto-resume/item-pc-review/review.json,33 passing checks,
+three matched pairs/six inspected originals plus ten production-UI rasters.
+Earlier blank/clipped/rejected captures are explicitly superseded.
+
+Oak's PC previously bypassed ProfOaksPC's question and decline path. It now
+prints the actual access text, asks the source rating question, and waits for
+printing before accepting YES, NO or B. YES invokes the existing authoritative
+rating and source fanfare; NO/B skip both. All branches print _OakPCText4 before
+returning to the hub. Oak lab assessments retain their separate script return.
+Question geometry/input uses the source PC YesNoBox. Access, rating, question
+and shutdown use the actual map text palette, including its yellow background.
+
+Native QA caught a real defect in the first implementation: reusing item-window
+battle markers suppressed the clinic behind the field question. A field-owned
+palette window now retains the actual room; the live-render regression rejects
+those world-suppressing markers and verifies printed text/cursor repainting.
+The initial blackout/timed-out native run is retained as a failure, not accepted.
+
+Final-source checks: two new Oak tests pass, including all22 lobbies times
+YES/NO/B (66 actual PCScript visits), nonzero recorded seen/owned counts,
+unchanged party/storage/bag/money/Pokedex, pre-print input ownership, and return
+to walking and production Start. Five existing Oak checks pass: all19 source
+ratings, complete lab text, original lab script continuation, all19 fanfare
+waits and acknowledgements, and pack PCM hash/frame/loop integrity. All seven
+item-PC integration/UI tests pass again on final source (14 distinct final-source
+checks total). Twenty available item controls also passed before the scoped
+field-window refinements. Full original PC-item acceptance is not claimed:
+its three missing independent ROM fixtures still fail, as recorded below.
+
+Final evidence: target/kanto-resume/oak-pc-review/review.json. All six full
+native/source originals were inspected: question/YES, B-decline shutdown, and
+actual3-seen/2-owned totals at Pewter's real PC. Every pair preserves session
+state and its textbox pixels match exactly; the question's YesNo pixels also
+match. Three final production-UI rasters show YES, NO and shutdown. These nine
+images are current-source evidence, not independent ROM screenshots. All renders
+use HEADLESS=1 and CAPTURE_TARGET=image, with no windows or focus changes.
+Pack SHA256 remains a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007;
+source revision remains3bc8daa4173e96a7f4011dad3922eb6fa5dad5c6. Scratch builders
+and generated save backups were removed; verification artifacts remain ignored.
+No fresh311 geometry audit was needed/run for these controller/UI-only changes.
+
+Remaining: source YesNoBox's post-answer15-frame pause and independent complete
+ROM timing/pixel acceptance; generic YesNo geometry outside these source PC
+boxes; absent tools/asm-oracle/fixtures/pc-items-initial.png,
+pc-items-scroll.json and pc-items-move.json, plus the independent Mailbox ROM
+goldens. Other reachable naming/printing/link/mobile/GS Ball services, remaining
+actor palettes/details/poses, ordinary-wall occlusion, and full all311/original16
+visual acceptance remain open. The overall objective remains active.
+
+Shared field YES/NO layout and live Save acceptance — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective. AGENTS.md
+is unchanged (SHA1 7e2e3189e2cfed182daa4c841955e9b8a4b3a5ed); current code and
+remaining checkpoints were inspected. The deleted handoff remains absent.
+Unrelated/shared changes are preserved. This resolves the preceding checkpoint's
+open generic YesNo geometry issue, without claiming the wider objective complete.
+
+The original home/menu.asm sets inclusive borders(14,7)..(19,11), cursor column15,
+labels from16, and YES/NO rows8/10. The shared field presenter incorrectly used
+6x4, adjacent answer rows and glyphs starting on the left border. Its initial
+draw and retained glyph update now both use the source6x5 geometry and inset
+labels. The complete speech-plus-prompt frame has66 perimeter tiles. Separate
+source item/Oak/nickname presenters retain their existing five-row geometry.
+No room, furniture, collision, actor, script, pack or audio source was changed.
+Maintenance reference: docs/art/field-yes-no.md.
+
+Three focused tests pass: eight phone/day/PC/Save cursor-owner/answer layout
+fixtures authenticate all18 literal source border tiles and seven glyph slots;
+a retained cursor update preserves all frame entities and is pixel-identical
+to a fresh draw; and44 production Save visits in all22 clinic lobbies decline
+with NO/B, preserve party/storage/bag/money, write no save and return walking.
+The layout fixtures are explicitly isolated renderer phases, not claims of
+end-to-end acceptance for every corresponding service.
+
+All18 distinct selected checks pass, including those three, shared cursor and
+orphan-frame controls, actual title-to-Save writing/reloading, the production
+Mom/New Bark gate controller, seven item-PC checks and both Oak PC checks.
+The full Mom-to-starter keyboard test also passes: all Mom dialogue/YesNo and
+weekday/DST presentation, input release, house exit/re-entry with one regular
+Mom sprite, route to Elm and actual starter selection. Its existing input and
+leak thresholds were retained. Previously dead test setup now loads the verified
+external pack and correct repository root; title setup finishes the actual boot
+splash; live entity checks use Bevy0.20 World.entity_count rather than allocated
+index capacity. The geometric warp planner now recognizes source directional
+door coordinates/facing and the outward input, including arrival on the door.
+Every planned step/warp is still replayed through production keyboard input.
+
+Native QA additionally exposed an old route alias: S sent Select/ShiftRight and
+cycled the camera. It now sends the production Start key, Enter. A field-Save
+observer admits only the real Start-origin prompt and cursor; it does not seed
+service state or bypass world/capture gates. A menu-only replay was correctly
+rejected by movement QA; the final DU approach retains the ordinary requirement.
+
+Evidence: target/kanto-resume/shared-yes-no-review/review.json. Both full final
+native/source Save originals plus four production UI rasters were inspected
+(six images). The pair preserves the authoritative state, and both its textbox
+and YesNo pixels match exactly. The room remains visible, labels fit, and no
+save file is written by the review. Every native render uses HEADLESS=1 and
+CAPTURE_TARGET=image; no windows/focus changes. Failures are retained separately
+and not accepted. Scratch builder and temporary instruction-read file removed.
+Pack SHA256 remains a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007;
+pinned external source remains3bc8daa4173e96a7f4011dad3922eb6fa5dad5c6. No pack
+publication or fresh311 geometry audit was needed/run for these UI/test changes.
+
+Remaining: source post-answer15-frame timing, generic field palette fidelity,
+custom two-option caller layouts and independent ROM pixel/frame acceptance;
+the three item-list/scroll/move fixtures and Mailbox goldens remain absent.
+Other reachable naming/printing/link/mobile/GS Ball services, remaining actor
+palettes/details/poses, ordinary-wall occlusion and full all311/original16 visual
+acceptance remain open. The full objective remains active.
+
+Body-aware smooth partitions and source objects — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective after the
+shared dialog work. AGENTS.md remains unchanged; current implementation and
+remaining checkpoints were inspected. The deleted handoff remains absent.
+Scoped edits preserve shared/unrelated work and the existing pack.
+
+The ordinary wall review found a narrower concrete defect: the indoor people
+reveal required coverage rendering even for an already registered depth-aware
+source object. Smooth WiseTriosRoom partitions tinted the player, and smooth
+PowerPlant partitions hid workers clear of the player's rays. Coverage is a
+blend choice, not source ownership. Eligibility now admits both registered
+smooth and coverage owners, retaining residual opacity0.20 and excluding
+camera-wall planes. The existing per-owner union clears only its obstructed
+player/NPC bodies. Source model stature/footing and torso/head obstruction stay
+authoritative; low counters hiding shoes still stay opaque. No mesh, range,
+wall height, join, opening, source floor/support, collision or shadow change.
+Unregistered ordinary walls retain their previous policy and remain open.
+Maintenance reference: docs/art/interior-people-reveal.md.
+
+All69 distinct selected checks pass:54 occluder/people/fade/cache controls,
+12 PowerPlant source/finish/ownership controls and three additional unique
+partition/table/Rocket controls. The smooth and coverage live-system cases now
+both prove NPC-only obstruction with player rays clear, player-only obstruction,
+fully opaque restoration, unchanged blend recipe, stable mesh/material counts,
+camera-wall exclusion and map/cache identity. The source fixtures retain
+ceiling-height sides, original openings, table bodies, floor paint and support.
+A concurrent packed-grove pigment test appeared in the shared fade file; that
+work is preserved and included in the final54-check pass. Shared-file
+coordination was sent under the original objective. No exporter was run.
+
+Fresh static audit in target/kanto-resume/wall-reveal-build/full311.json is
+exact against community-colors-build/full311-final.json in every section:
+all311 map records,225 script-block variants, source claims, support, family
+bounds and geometry counts, with zero mesher errors. This is static verification,
+not whole-room art acceptance or certification of concurrent grove optimization.
+
+Evidence: target/kanto-resume/wall-reveal-review/review.json. Eight final matched
+native/source pairs (16 full originals) plus four moving stills were inspected:
+WiseTriosRoom front/east/west, PowerPlant east and opposite night walk,
+TeamRocketBaseB1F ordinary-wall control, and MrPokemonsHouse wide-table control.
+The final20 images show clear body clothing through the affected partitions,
+retained surrounding form and floors, connected full-height wall geometry and
+unaffected controls. Six diagnostic before pairs (12 further originals) were
+also inspected. Independent runs can differ in idle NPC facing; each individual
+2D/3D pair preserves its exact authoritative state and presentation phase.
+
+Both ordinary UD walks retain64 active/settled frames, one terrain build and no
+warp/fade: WiseTriosRoom(4,4)->(4,3)->(4,4), PowerPlant(9,9)->(9,8)->(9,9).
+All captures explicitly use HEADLESS=1/CAPTURE_TARGET=image and mute; no windows
+or focus changes. The default MrPokemon center(4,4) was correctly rejected as
+an unwalkable source table. Its accepted source entrance fixture is(3,7);
+the failed attempts are retained and not accepted. Scratch builder removed;
+verification binaries/images/reports remain ignored. Pack SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+
+Remaining: unregistered ordinary walls and additional camera/body poses; visible
+NPC palette/detail inaccuracies (including PowerPlant staff), other room finish
+and service acceptance; post-answer timing, generic field palette/custom-menu
+checks and absent independent item/Mailbox ROM fixtures; reachable naming,
+printing/link/mobile/GS Ball services and full all311/original16 visual review.
+The full objective remains active.
+
+Officer source uniforms and fitted collars — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective after the
+surrounding-route coverage recheck. Current implementation and AGENTS.md were
+inspected; AGENTS.md SHA1 remains 7e2e3189e2cfed182daa4c841955e9b8a4b3a5ed.
+The deleted handoff remains absent. Shared/unrelated changes are preserved;
+localized renderer edits were coordinated with the active performance goal.
+
+PowerPlant's two green source Officers were fixed-blue native models. Officer
+instances now derive their cloth pigment from the already paletted sprite,
+including jacket and trousers, fitted cap crown and raised collar. The first
+native review caught the separate collar still blue; the final implementation
+also colors that mesh. Faces, hair, hands, shoes, white trim, transparent pixels,
+gold badges, dark visors/bands and seams retain their roles. Body dimensions,
+geometry, rig/joints/weights and gameplay remain unchanged. Default accessory
+callers retain their existing appearance. Reference: docs/art/officer-source-colors.md.
+
+All13 distinct selected checks pass: seven source/pigment/painting controls,
+three cap geometry/fit/color checks, actual-rig GPU variant isolation, animated
+uniform-detail fit and live source-color refresh. The pack corpus covers all33
+Officer objects, their three used palettes, four palette banks and six sprite
+frames (72 combinations). Actual paints change both shirt and trouser islands
+while retaining protected pixels and alpha. The live-system test now includes
+Officer: source palette changes replace only that actor, preserve the player
+and authoritative frame, and ordinary animation retains the resulting entity.
+The initial cap-fit invocation omitted its required model-root variable;
+rerunning with the supplied artwork passes. Its failed receipt is retained.
+
+Evidence: target/kanto-resume/officer-colors-review/review.json. Seven final
+matched pairs (14 full originals) and two walking stills were inspected:
+PowerPlant east/day, west/night and ordinary UD walk; Lavender radio Officer
+front/east; blue Route15FuchsiaGate and red Route31VioletGate. Both PowerPlant
+Officers and Lavender's Officer now use green cloth, and red/blue gate Officers
+follow their own source palettes. Two additional diagnostic pairs (four full
+originals) were inspected. Exact state preservation is proved within every
+2D/3D pair; independent runs can differ in idle NPC facing. The Lavender14,3
+start was correctly rejected as unwalkable. Its entrance3,6 diagnostic leaves
+the Officer offscreen; final walkable15,2 views expose the actual Officer.
+
+The final PowerPlant walk has64 active settled frames, one terrain build,
+no fade/warp and actual(9,9)->(9,8)->(9,9) movement. Captures explicitly use
+HEADLESS=1/CAPTURE_TARGET=image and mute, with no windows/focus changes.
+Fresh final static audit officer-colors-build/full311-final.json exactly equals
+wall-reveal-build/full311.json in every section:311 maps,225 script variants,
+source/support/family bounds and geometry counts, zero mesher errors. This
+proves static invariants, not whole-room or concurrent-performance acceptance.
+Pack SHA256 remains a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+No exporter ran. Scratch builder/capture scripts were removed; evidence stays
+ignored. No generated pack, audio, source catalog or build artifact was staged.
+
+Remaining: unregistered ordinary walls and additional camera/body poses; other
+NPC details, room finishes and reachable services; post-answer timing, generic
+field palettes/custom menus and absent independent item/Mailbox ROM fixtures;
+naming, printing/link/mobile/GS Ball services and full all311/original16 visual
+acceptance. This scoped uniform correction is complete; the full goal remains
+active.
+
+Transparent radio studio glazing and clear doorway — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective after the
+Officer correction. That preceding turn made verified source/visual progress.
+AGENTS.md and current implementation were inspected; SHA1 remains
+7e2e3189e2cfed182daa4c841955e9b8a4b3a5ed. The deleted handoff remains absent.
+Shared renderer work is preserved and localized changes were coordinated with
+the active performance goal; no exporter or competing Cargo cache was used.
+
+The radio studio partitions were connected but their pane bodies and reflection
+faces were opaque textured geometry. Explicit glass roles now publish through
+the existing blended scenery path using an atlas assembled from the immutable,
+already paletted live tile samples. Source UVs/colors remain authoritative;
+there is no replacement palette or exported content. A faint body tint and
+stronger reflection surface reveal floors, people and apparatus behind the
+panes. Header caps, bottom rails, dark bands, side mullions and grille equipment
+stay opaque. Physical front end stiles retain the pane silhouette independently
+of reflection paint. Connected east returns and the fifth-floor opening retain
+their authored placement. Vertex ownership ranges remain stable for existing
+fade grouping; only referenced glass triangles move from the opaque draw.
+Missing/invalid pixels retain an opaque source drawing and ordinary rooms
+retain their previous policy. Reference: docs/art/radio-glazing.md.
+
+All37 distinct radio-related checks pass, including two new live-atlas/blend
+and missing-data/ordinary-room controls, complete source pane/table/grille/claim
+controls, stairs/support/warp endpoints, equipment/material identity and existing
+exterior/house-radio controls. The blend test verifies exact base source atlas
+pixels (before generated mip levels), unchanged framing geometry/ranges and
+support, immutable source alpha and a separate double-sided blended pane mesh.
+The first fixture compared generated mip bytes with base pixels; it was corrected
+to verify the exact base bytes while allowing normal mip generation.
+
+Fresh full audit: radio-glazing-build/full311.json against
+officer-colors-build/full311-final.json. All311 maps retain exact source claims,
+floor/support, family bounds and other non-geometry fields. All225 script-block
+variants and every other report section are exact; mesher errors remain empty.
+Only four opaque geometry records differ, as glass moves to scenery and front
+stiles are added: LavRadioTower1F -144 triangles/-288 vertices, RadioTower2F
+-216/-432, RadioTower4F -84/-168 and RadioTower5F -132/-264. The remaining307 map
+records are exact, including RadioTower3F's ordinary office control.
+
+Evidence: target/kanto-resume/radio-glazing-review/review.json. Ten final matched
+pairs (20 full originals) plus six walking stills were inspected: Radio2 front
+and west, Radio3 control, Radio4, Radio5 front/east, Lavender front/east, and two
+Radio5 west walks. Two additional diagnostic before pairs (four originals) were
+also inspected. Panes read as glass with visible background and retained caps,
+frames and continuous returns. Each native/2D pair preserves its authoritative
+state. Independent before/after runs can differ in idle NPC facing.
+
+The Radio5 night LR walk has64 frames and moves(10,7)->(9,7)->(10,7). The ordinary
+DDUU doorway walk has128 frames, crossing(16,2)->(16,3)->(16,4) and back through
+the authored opening. Both retain one build, active terrain with no pending
+state, zero fade and no warp on every frame. All captures explicitly use
+HEADLESS=1/CAPTURE_TARGET=image and mute, with no windows or focus changes.
+Pack SHA256 remains a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Scratch build/capture/audit scripts removed; verification artifacts stay ignored.
+No pack, audio content, generated audit catalog or compiled artifact was staged.
+
+Remaining: unregistered ordinary walls and further camera/body poses; other NPC
+and room finishes; source post-answer timing, generic field palette/custom-menu
+checks and missing independent item/Mailbox ROM fixtures; reachable naming,
+printing/link/mobile/GS Ball services and full all311/original16 visual/service
+acceptance. This completes the scoped glazing correction, not the full goal.
+
+PC source YES/NO closing delay and retained drawing — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective after the
+verified radio-glazing correction. AGENTS.md and current implementation were
+inspected; its SHA1 remains 7e2e3189e2cfed182daa4c841955e9b8a4b3a5ed. The deleted
+handoff remains absent. Shared/unrelated work is preserved and the localized
+service edits were coordinated with the active performance goal.
+
+The pinned source home/menu.asm InterpretTwoOptionMenu calls VerticalMenu,
+DelayFrames($f), then CloseWindow. Mailbox confirmations already implemented
+this wait; Toss and Oak's rating question resolved immediately. Those three PC
+source YES/NO owners now share the existing PC joypad wait and result field.
+The selected window/cursor stay visible for15 VBlanks; item removal, Oak rating
+and fanfare, or shutdown occur only afterward. B returns NO without moving the
+displayed cursor; A+B gives B priority. During closing, direct A/B, directions,
+Start and Select cannot bypass the phase. The next menu keeps its four-frame
+background-upload fence. Renderer-neutral VisibleShellController settling now
+crosses this same noninteractive wait before exposing another input boundary.
+The existing production confirmation dispatcher remains authoritative.
+
+Drawing readiness is separate from input readiness: inspection caught that
+using the input guard to draw the box would hide it during closing. Printed
+questions now retain the frame, choice arrow and YES/NO while input is blocked.
+The live Oak UI regression verifies retained glyphs, then shutdown repainting.
+Its immediate post-direction B fixture now crosses the existing four-frame
+source upload fence before pressing B. Reference: docs/art/pc-yes-no-timing.md.
+
+All19 distinct selected checks pass: the new eight-case frame-by-frame
+Toss/Oak YES/NO/B/A+B regression; both Oak PC integration/render checks; seven
+item PC checks including all22 public-PC lobbies; the existing15-frame Mailbox
+control, both Mailbox clinic cases and its native keyboard-release control;
+and five Oak source-text/fanfare/acknowledgement/lab checks. The new test retains
+exact core state, question and cursor through the first14 frames, blocks all
+eight direct controls, and proves mutation/branching only on frame15. Actual
+PCScript entry and YES/NO/B decisions pass in every one of the22 lobbies, with
+real input release/walking and inventory/party invariants. Audio metadata
+checks still pass against the unchanged external pack.
+
+Evidence: target/kanto-resume/pc-yes-no-timing-review/review.json. Three final
+native/2D pairs (six full originals) were inspected: Oak's selected question
+frozen with15 VBlanks remaining, Toss's selected question at that same actual
+closing boundary, and Oak's subsequent shutdown. New read-only closing
+observers reach these owners through ordinary input; they never create a
+confirmation or choose its result. All paired-state receipts preserve the
+session. Question and YES/NO regions are pixel-exact within each pair; Toss's
+complete source LCD region is exact. The Oak room stays visible and Toss
+intentionally owns the original fullscreen item LCD. No save files were written.
+
+The first replay omitted single-step movement and overshot the PC approach;
+its rejected route logs remain. A valid Toss closing capture was initially
+rejected by the three-color scenery validator. The existing narrow PC LCD
+proof now recognizes the actual frozen Toss closing owner too; general scene
+color/contrast and blank-frame checks remain unchanged, and the final capture
+passes with three source colors. These calibration failures are not accepted
+captures. A broader Oak test run also exposed two unrelated failures, both
+reproduced in the preceding test binary: oak_intro_renders_real_oak_wooper_and_player_portraits
+and title_new_game_opens_gender_then_oak_clock_intro_before_name_input. Their
+baseline logs are retained; this is not a claim of a fully green library suite.
+
+All native captures explicitly use HEADLESS=1/CAPTURE_TARGET=image and mute;
+no windows or focus changes. Host/controller code was built against the
+completed radio-glazing voxel QA library; no terrain or pack exporter changed
+in this turn and no fresh static geometry acceptance is claimed. Pack SHA256
+remains a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+Scratch builder/capture scripts removed; verification artifacts remain ignored.
+No generated content, audio catalog, pack or compiled artifact was staged.
+
+Remaining: source closing timing for other field YES/NO owners and generic
+field palettes/custom menus; the two baseline intro-test failures; independent
+item/Mailbox ROM fixtures; unregistered ordinary walls, further camera/body
+poses and other NPC/room finishes; reachable naming, printing/link/mobile/GS
+Ball services and full all311/original16 visual/service acceptance. The scoped
+PC closing behavior is verified; the complete objective remains active.
+
+Independent PC and Mailbox ROM references — 2026-10-19
+
+Resumed the full Kanto/shared-furniture/all311/original16 objective. The preceding
+route-only recheck repeated existing summit evidence and did not advance the
+interior objective. This batch closes the pending independent PC/Mailbox source
+reference gates. AGENTS.md and current implementation were inspected; the deleted
+handoff remains absent. Shared and unrelated changes are preserved.
+
+Added tools/capture-pc-menu-oracle.py, an optional isolated QA capture tool.
+PyBoy2.8.1 executes the pinned external assembled ROM with a null window, audio
+emulation disabled and save writes disabled. Only initial fixture RAM and a CPU
+entry boundary are supplied. Original ROM font/palette/screen/menu routines and
+ordinary joypad input produce the references; no Geothite renderer or rendered
+menu/font/palette pixels are used. ROM, symbols, emulator environment, PNGs,
+traces and provenance remain external. This adds no pack builder, audio exporter,
+Cargo/runtime/bundle dependency or committed generated content. The tool pins
+ROM SHA1 f4cd194bdee0d04ca4eac29e09b8e4e9d818c133 and emulator version, refuses
+repository-local output, and records source/symbol/constants/generator hashes.
+
+Generated38 independent source PNGs: initial item list1, item move/select/cancel8,
+withdraw quantities4, deposit quantities4, deposit scrolling12 and Mailbox9.
+Source cursor/scroll/switch/quantity traces accompany them. The Mailbox test now
+uses the existing GEOTHITE_ORACLE_FIXTURES runtime helper instead of a hardcoded
+sibling-checkout path. Three existing PC tests gained opt-in CPU LCD PNG output;
+comparison assertions and production rendering/gameplay behavior are unchanged.
+
+All31 distinct selected checks pass: pc_item_23, pc_deposit_6, withdrawal-quantity1
+and Mailbox1. This includes the formerly missing initial/scroll/move PC gates,
+source quantity controls, deposit Cancel clamping/reentry and all9Mailbox frames.
+The first deposit trace matched its images but ended on the wrong row for the
+existing reentry contract. Its input sequence was corrected to initial +8Down
++3Up; no expected renderer state/assertion was relaxed. Final tests ran only
+after capture completed. Early rejected/stale diagnostics remain ignored.
+
+All38 source/production pairs (76 full originals) were inspected, including the
+final9Mailbox pairs in small batches after an oversized tool result was
+truncated. An independent whole-image check finds zero differing RGB5 pixels
+for every pixel of every4x production LCD, with opaque production alpha. This
+also verifies the initial list's palette beyond its existing ink-only assertion.
+Two completed reference regenerations produce identical hashes for all38PNGs.
+Evidence: target/kanto-resume/menu-oracle-review/review.json and comparison.json;
+source provenance: external menu-oracle-fixtures/menu-oracle-provenance.json.
+The reproducible optional workflow, fixture contracts and exact verification
+scope are documented in docs/menu-oracle.md, linked from README and content guide.
+
+No visible windows, focus changes, pack export, audio change or save writes.
+Pack SHA256 remains a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007;
+the external ROM hash is unchanged. Scratch build/probe scripts removed; QA logs,
+images and binaries remain ignored. Nothing was staged. No fresh GPU room,
+whole311 geometry or continuous original-ROM playthrough acceptance is claimed.
+
+Remaining: generic field YES/NO closing timing and palettes/custom menus; the
+two reproduced baseline intro-test failures; other oracle families; unregistered
+ordinary walls and further room/actor poses/finishes; reachable naming,
+printing/link/mobile/GS Ball services and complete all311/original16 shared
+furniture/visual/service acceptance. The full goal remains active.
+
+Mounted classroom blackboard and source-sized ledge — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective after the
+independent PC/Mailbox reference gates were completed. That turn made concrete
+acceptance progress. AGENTS.md and current source were inspected; the deleted
+handoff stays absent and unrelated/shared changes are preserved. Localized work
+was coordinated with the active performance goal; no competing exporter ran.
+
+Current headless front/east native comparisons showed Earl's blackboard still
+painted flush onto the wall. native_classroom.rs now gives its actual48x16-source-
+pixel drawing a shallow mounted body, closed sides/back and a lower ledge.
+All twelve board source cells keep their original frame and chalk lettering on
+a front plane0.75source pixels forward; other wall cells retain their plane.
+The ledge projects2source pixels and is0.5pixel thick, using the source charcoal
+frame swatch. The32pixel ceiling height, joined plain side returns, furniture
+layout, source ownership and floor support are preserved. This exact complete
+classroom drawing remains map/source/custom-owner guarded. No generic wall or
+other classroom furniture model changes. Guide: docs/art/classroom-furniture.md.
+
+All18 distinct selected checks pass in a private current-source voxel test
+build: classroom2, seating11, opt-in seated-body/footing2 and dining-table3.
+The external-pack classroom check verifies all eight desks/sixteen chairs/the
+lectern/rear course, every source face UV and its actual wall/board depth,
+outward winding, unchanged support, edited/cropped/foreign-map rejection and
+custom ownership. Existing chair direction and seated body controls pass.
+
+Fresh production-host paired captures cover front(4,7), east(4,3), and west(4,3).
+All six final native/source originals and four before originals were individually
+inspected. Every final paired-state receipt preserves authoritative state;
+front/east before-versus-after2D images are pixel-identical. The board now has
+readable shallow edges and a ledge while its source lettering stays intact;
+chairs continue to face desks and seated bodies remain supported. The low side
+views crop some entrance geometry, so they do not establish whole-room acceptance.
+Every capture is explicitly HEADLESS=1/CAPTURE_TARGET=image and mute, with no
+windows/focus changes. An initial comma-separated camera request was rejected
+before capture; the corrected whitespace request produced the accepted pair.
+
+Fresh full audit completes388maps and288script-state variants with no mesher
+errors. It includes all311maps/225variants from radio-glazing-build/full311.json.
+Comparison by map identity finds only Earl's textured geometry changed:
+18860->18882triangles,45264->45308vertices. All other310map records are exact;
+all nongeometry fields for Earl and all225original state records are exact.
+Actor-source/species/format/limitations sections are also exact. The additional
+77maps/63variants are newly audited, not a claim of prior-to-current geometry
+identity or visual acceptance. Evidence: school-board-build/full388.json and
+audit-delta.json, school-room-review/review.json. Private host/voxel builds use
+opt-level1 QA libraries; no production performance certification is inferred.
+
+Pack SHA256 remains a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+No pack, audio, gameplay, save or external source content changed. No generated
+content/artifact was staged; build/capture/audit output remains ignored and no
+scratch script remains. git diff --check passes.
+
+Remaining: broader classroom interactions/room composition; remaining room and
+actor finishes/poses, ordinary-wall occlusion, generic field YES/NO timing and
+palettes/custom menus, the two baseline intro-test failures, other independent
+oracle families, reachable naming/printing/link/mobile/GS Ball services and full
+all311/original16 shared-furniture/visual/service acceptance. The goal is active.
+
+Name Rater normal entry, source pages and shared editing — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective after the
+verified classroom finish. That preceding turn made concrete model/visual
+progress. AGENTS.md and current implementation were inspected. The deleted
+handoff remains absent; shared/unrelated work is preserved and service changes
+were coordinated with the active performance goal. No exporter ran.
+
+A new real-input regression initially failed when talking to Lavender's actual
+NPC: run_compiled_script_until_boundary executed LavenderNameRater command2,
+special NameRater, before any party selection, reporting missing _party_slot.
+Existing tests opened the interceptor directly and missed normal entry. The
+runtime now exposes NameRaterPrompt before that opcode, leaving its existing
+VisibleShellController interceptor authoritative. It stops even when a prior
+service left selection variables, so revisits cannot silently reuse them.
+
+Further real-input review found that pending choices could consume A/B while
+introduction/better-name pages were still active, and that the editor prefilled
+the old nickname instead of the original NamingScreen_InitNameEntry's empty
+entry. Those source pages now retain A/B until acknowledged. Only the printed
+question enters the existing source YES/NO sampler, border layout and shared
+15-VBlank closing phase. Naming starts empty; blank/unchanged/new names preserve
+their separate original completion pages. Egg/foreign-OT refusals stay separate.
+
+The renderer-neutral controller also lacked naming-grid dispatch. Its ordinary
+direction/A/B/Start buttons did not edit the screen. It now adapts all eight
+buttons to the existing native apply_visible_name_input_keys handler. Cursor,
+case, deletion, END and nickname completion remain owned by that same handler;
+no second frontend editor/dispatcher or authoritative renderer cursor was added.
+
+Native review then caught the generic heading touching the right border.
+Presentation now uses the existing selected-species two-line heading in both
+LCD and text observation, preserving the logical completion owner. General
+heading placement keeps both border columns intact and preserves the old
+short-label offset. Guide: docs/art/name-rater-services.md.
+
+All13 distinct selected checks pass against current production code: seven
+Name Rater checks, the Mom/New Bark controller gate, existing eight-case PC
+15-frame control, live Oak question repaint, and three naming asset/layout/
+opaque-LCD controls. The new production-controller regression proves26 cases
+across Lavender and Goldenrod plus two repeat visits: renaming, blank/same-name
+submission, ten-character limit, B deletion/Select case, egg, foreign ID/name,
+NO/B at both questions, party cancel, exact storage/inventory/money/Pokedex
+invariants, walking and Start-menu return. Only initial room/party data are
+fixtures; no post-start service cursor, choice, nickname or script variable is
+seeded. Source heading conversion preserves the logical input and checksum.
+
+Both final native/source naming pairs (four full originals) were individually
+inspected. Ordinary DU movement and released A pulses reach the actual editor;
+the read-only service:name-rater-entry observer freezes its existing owner.
+Each receipt records LEN0/10, the actual species heading and preserved session.
+Complete1280x800 RGBA images are byte-exact within each pair; both strict visible
+frame validators pass with four colors. A Lavender baseline room pair and the
+earlier clipped-heading pair were also inspected as diagnosis, not whole-room
+acceptance. All captures explicitly use HEADLESS=1/CAPTURE_TARGET=image and
+mute; no visible windows or focus changes. Native transitions still emit
+deferred UI entity-teardown warnings; their cleanup remains open.
+
+The asset-render regression initially tried the missing sibling raw-assets path
+/Users/ryanculligan/GitHub/apps/web/assets/gfx/sgb/predef.pal. It now materializes
+the supplied verified pack's runtime assets, and two naming test roots correctly
+point to this repository. Assertions are unchanged. Early route/input diagnostics
+are rejected: a wrong capture input variable, held A without release, a bump-only
+route lacking required movement, and a revisit that turned before walking back.
+Their corrected final routes prove real movement. An obsolete cursor-loop test
+was sampled and stopped once its missing input handler was identified; cursor
+loops are now bounded. A private example's missing dependency search path was
+also repaired. None of those failures counts as an accepted render/test.
+
+Evidence: target/kanto-resume/name-rater-review/review.json and the individual
+*-accepted/-final logs in name-rater-build. Private runtime/host builds use
+opt-level1 QA libraries and the unchanged school-board voxel library; no new
+terrain or static geometry acceptance is claimed. Pack SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007. No pack/audio
+content, user save or compiled artifact was staged. Only ignored disposable
+fixture saves were written; backups, obsolete moving captures and scratch
+sampling output were removed. git diff --check passes.
+
+Remaining: naming-screen independent ROM pixel comparison, Pokemon icon and
+animation, deferred UI teardown warnings, other party-selection specials and
+printing/link/mobile/GS Ball services; generic field YES/NO timing/palettes,
+the two baseline intro-test failures, ordinary-wall/actor/room finishes and
+complete all311/original16 shared-furniture/visual/service acceptance. Name Rater
+normal entry/editing is scoped verified; the full goal remains active.
+
+Fullscreen presenter cleanup and field return — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective. The
+preceding route-only recheck repeated existing evidence and did not advance
+interior acceptance. AGENTS.md and current source were inspected. The deleted
+handoff remains absent; unrelated changes and the completed pack are preserved.
+
+Native Name Rater backtraces identified two ownership removals queued against
+a fullscreen presenter already retired earlier in render_playfield. The intro
+query still contained that entity until deferred commands applied. Retirement
+now records its ID in the render pass's existing queued-despawn set; later intro
+cleanup skips those IDs. Live ownership cleanup executes as one EntityCommand
+with the configured error handler. No warning suppression or try_remove was
+introduced. An experimental strict-capture fallback option was removed because
+Bevy's original component removals explicitly selected the warning handler.
+
+The new real CommandQueue regression fails before the retired-ID guard and
+passes afterward, testing both retained and cleared live intro ownership.
+Production-renderer phase fixtures also verify party/naming/Name Rater returns,
+actual presenter removal, reuse of the LCD image, preservation of both field
+layers and absence of shell errors. These fixtures do not replace real-input
+service reachability tests from the preceding checkpoint.
+
+Seven distinct selected checks pass: the two new lifecycle checks, complete
+naming LCD, heading layout, Name Rater presentation, live party/stats retention,
+and cold fullscreen-to-field handoff. The cold fixture initially failed in both
+current and prior binaries because it cleared intro/title but left the newer
+boot splash active. It now clears that splash as part of its explicit phase
+fixture; its map-layer and delayed-retirement assertions remain unchanged.
+The two separately recorded baseline intro failures remain open.
+
+Both headless native Name Rater transitions complete without Entity despawned
+or Encountered an error in command messages. All four final native/source
+originals were inspected. Complete RGBA bytes match within each pair and the
+previous accepted captures; both paired receipts preserve the actual session.
+Other empty-mesh/optional-renderer warnings remain. No windows or focus changes
+were used. Evidence: target/kanto-resume/lcd-lifecycle-review/review.json and
+lcd-lifecycle-build logs, including atomic-before.log, strict-native-before.log,
+the selected final logs and cold-handoff-corrected.log. Private QA builds are
+not a full Cargo/release or full-library acceptance claim.
+
+Guide: docs/art/name-rater-services.md. Pack SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007. No exporter,
+terrain/model, audio or user-save changes were needed. Disposable moving
+captures were removed; accepted originals and diagnostic logs remain ignored.
+
+Remaining: independent naming ROM pixels/icon animation, other party specials,
+printing/link/mobile/GS Ball services, generic field YES/NO timing/palettes,
+baseline intro failures and the full all311/original16 room/furniture/service
+acceptance. This closes the specific stale-presenter defect; the goal is active.
+
+Independent nickname pixels, source icon/gender and idle animation — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective after the
+fullscreen cleanup was verified and recorded. That turn made concrete lifecycle
+progress. AGENTS.md/current implementation were inspected. The deleted handoff
+stays absent; shared changes were coordinated with the active performance goal,
+and unrelated work is preserved. No exporter ran.
+
+Extended the existing optional headless ROM reference tool with --family naming.
+The pinned external ROM's actual NamingScreen draws male/female Cyndaquil and
+genderless Magnemite from initial party/DV fixtures; ordinary joypad input then
+enters/deletes letters, changes case and selects END. No Geothite pixels or
+screen data are supplied. The corpus has 120 source PNGs: 32 idle and 8 editing
+frames per case. A second generation repeats every PNG hash. All 38 existing
+PC/Mailbox reference PNG hashes remain unchanged. ROM/references/traces stay
+external. See docs/menu-oracle.md and docs/art/name-rater-services.md.
+
+Independent comparison exposed the missing Pokémon icon/gender marker and a
+static naming cursor. Name Rater presentation now uses its actual selected
+species' pack icon mapping, existing party icon decoder/palette and source LCD
+position (16,12). Gender combines Attack and Speed DVs and uses the source's
+inclusive ratio threshold, with fixed-gender/genderless rules. Icon frames last
+18 VBlanks; cursor visibility alternates every 4. These bounded phases enter the
+naming art/cache key without changing the logical service owner or shared input
+editor. Temporary icon-decoder images are removed after composition.
+
+An actual idle-render check then exposed the snapshot-revision fast path keeping
+the new phases static. Native clock advancement now marks presentation dirty
+only when naming crosses a cursor/icon phase boundary, including catch-up
+ranges. The final regression runs 74 ordinary clock updates without keys and
+observes all 4 actual LCD combinations, one retained entity/texture and 4 cached
+compositions. Party/bag/money/Pokedex/location remain unchanged. Initial fixture
+assertions incorrectly expected the entire checksum to survive the original
+VBlank GameTimer; that test was corrected to distinguish timer advancement from
+gameplay mutations. The pixel comparison's initially detected 32-pixel cursor
+mismatches and 94-pixel END mismatch remain documented in diagnostic logs.
+
+All 21 distinct selected current-source checks pass: 9 Name Rater, 2 fullscreen
+cleanup/return, complete naming LCD, party/stats, cold handoff, 3 player naming,
+Pokemon heading, Mom/New Bark, live Oak and source PC 15-frame controls. The real
+service regression retains 26 cases and 2 revisits. All 120 complete CPU LCD
+comparisons are RGB5-exact at matching source icon/cursor phases, without masked
+regions. Three source/production comparison sheets cover 4 idle variants and all 8
+editing states per case and were inspected.
+
+Both final headless native/source pairs (four originals) were individually
+inspected. Each whole pair is RGBA-byte-identical and its receipt preserves the
+actual session. Each native LCD also matches the independent ROM at every pixel
+of its 5× expansion: Lavender phase 3, Goldenrod phase 15. Both production screenshot
+validators pass 1280×800 / 6 colors; both input receipts prove 449 frames, 2 grid origins
+and 0 additional terrain builds. Neither transition emits stale-entity errors;
+other optional-renderer/empty-mesh warnings remain. No visible window or focus
+change was used. Evidence: target/kanto-resume/naming-pixels-review/review.json,
+comparison.json, naming-pixels-native/ and naming-pixels-build logs/commands.
+
+Private host/runtime QA libraries are not a full Cargo/release-performance claim.
+The voxel library and pack are unchanged; pack SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007. No model/audio,
+content export or user-save changes were needed. Disposable moving captures were
+removed; selected originals, comparisons and logs remain ignored. git diff
+--check passes. No generated content or compiled product was staged.
+
+Remaining: exact source naming entry-clock/joypad-subframe synchronization,
+other naming owners/species and party specials, printing/link/mobile/GS Ball,
+generic field YES/NO timing/palettes, previously recorded intro issues not
+re-audited here, ordinary-wall/actor/room finishes and full all311/original16
+visual/furniture/service acceptance. The full goal remains active.
+
+Cerulean raised walkway source material — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective after the
+independent Name Rater pixel/icon work was completed. That turn made concrete
+production and acceptance progress. AGENTS.md/current source were inspected;
+the deleted handoff remains absent. Shared files were coordinated with the
+active performance goal and unrelated changes preserved. No exporter ran.
+
+Fresh headless middle and entrance comparisons confirmed CeruleanGym's pink
+deck still used generic color triangles, losing the original brick print and
+introducing diagonal facet patches. dungeon_extension.rs now partitions only
+exposed upward deck/grout caps into the textured buffer with live source UVs
+and uniform source shading. Every original triangle/normal, shallow relief,
+suspended body, post and footing remains. There is no additional coplanar sheet.
+The same finish under the two complete guardians borrows their authenticated
+adjacent deck donor. The existing entry grade transforms both material buffers
+so the cap follows its body; source admission and custom owners are unchanged.
+
+All 34 distinct selected checks pass: eight Cerulean, ten elevated-pier, thirteen
+seating and three dining-table controls. The new regression compares complete
+triangle/normal sets before and after material partition at two scales and all
+four source rows, checks live UV placement/uniform shading, and preserves
+footing/claims. The guardian control retains source-mutation and support gates.
+An exact [0,1,0] assertion initially rejected an existing normalized float
+[0,0.99999994,0]; its upward-direction tolerance was corrected while the separate
+bit-exact original triangle/normal comparison remains unchanged.
+
+Four final native/source pairs (eight originals) were individually inspected:
+middle, entrance, east-side view and ordinary UUDD input. Both before pairs
+(four originals) and two actual moving originals were inspected as well. All
+six paired receipts preserve the actual session. Complete before/after classic
+RGBA images are byte-identical at middle and entrance. The walk records 128
+frames, nine authoritative tile positions and six viewport origins with zero
+additional terrain builds. Entry support and the deck beneath guardians remain
+coherent. Every capture explicitly uses HEADLESS=1/CAPTURE_TARGET=image and
+mute; no window or focus change was used. See docs/art/cerulean-walkways.md.
+
+The final full audit passes 388 maps and 288 scripted states with zero mesher
+errors, including all 120 Kanto interiors and 16 states. Only CeruleanGym's
+four material-buffer counts differ from the preceding full audit: 2,560 triangles
+and 7,680 vertices move from solid to textured. Its total 27,088 triangles and
+75,408 vertices are unchanged. Source/support/claim/family fields, all other
+387 map records and all 288 scripted-state records match exactly. Evidence:
+target/kanto-resume/cerulean-deck-build/full388.json and audit-delta.json;
+cerulean-deck-review/review.json, original images and paired/movement receipts.
+
+The first example compile lacked the newer dependency search paths, and the
+first voxel-test invocation omitted OUT_DIR. Both private build commands were
+corrected using existing generated caches (all 613 model metadata files agree
+between the two used caches). No source/model data was regenerated. The first
+full audit hit its 240-second wrapper limit and was confirmed terminal; that
+failure is retained. Its completed replacement uses the current runtime and a
+600-second limit without concurrent captures. These opt0 test/opt1 native QA
+builds are not a full Cargo/release performance claim. No build is left running.
+
+Pack SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007. No pack/audio,
+model asset, gameplay dispatcher, collision, user save or exported content was
+changed or staged. Unreviewed disposable moving images were removed; selected
+verification evidence stays ignored. git diff --check passes. The current bridge
+queue row now distinguishes accepted caps from its remaining timber-face work.
+
+Remaining: Cerulean's vertical deck/timber finishes, water/wall/guardian/actor
+and room/quest acceptance; other rooms/shared furniture and full all311/original16
+visual/service acceptance; remaining naming owners/timing, party specials,
+printing/link/mobile/GS Ball and generic field YES/NO work. The full goal stays
+active; this closes the demonstrated deck-cap material defect only.
+
+Cerulean gray-bank identity and live timber paint — 2026-10-19
+
+Continued the full Kanto/shared-furniture/all311/original16 objective after the
+raised-deck cap repair passed its visual and full-audit gates. That preceding
+turn made concrete production/acceptance progress. AGENTS.md and current source
+were inspected; the deleted handoff stays absent. Shared files were coordinated
+with the active performance goal and unrelated work preserved. No exporter ran.
+
+Primary source/pack review corrected a real identity error in the remaining
+queue: port tile0b is flat GRAY bank/shadow art, not timber. The actual wooden
+support drawing is tile22 with the BROWN palette. The prior “foam22” wording was
+also incorrect for this tileset. A new external-pack regression verifies both
+palette IDs, the flat bank bitmap and the actual beam/post/highlight/underside
+source samples. No graphic/catalog copy or source-program export was added.
+
+Sixteen former CeruleanBridgeFace bindings now use CeruleanBankFace and the
+special:cerulean-gray-bank label. Their continuous closed body keeps its original
+bounds and samples its own gray source; two invented timber posts per bank cell
+are removed. Exact column guards distinguish real bank art from the gray rim.
+The existing authenticated water backing, source ownership and footing remain.
+
+Real deck bodies, posts and tile22 edge frames now use live source swatches:
+beam sides, lighter post fronts, upper highlights and undersides remain distinct.
+Thin brick risers use their own tile05 pink while the accepted cap print/UVs stay
+unchanged. A timber donor must be an actual support drawing below a genuine
+deck; gray banks, unrelated port art, corrupt fields and missing decks reject it.
+Missing donors retain the prior body paint. Other maps keep their pier treatment.
+The same finish reaches the deck beneath both complete guardians. Existing grade
+transforms apply to both material buffers; deck/beam/post geometry and normals,
+footing, collision, claims and walking joins are preserved.
+
+All 39 distinct focused checks pass in 43 executions: thirteen Cerulean, fourteen
+elevated-pier, thirteen seating and three dining-table executions overlap on four
+new timber checks. Controls cover source identity, donor mutations, real edge
+consumption, exact beam/post geometry, preserved brick UVs and existing support.
+The original external piling/ramp test initially queried only the solid buffer.
+It now verifies Cerulean's actual textured timber, requiring vertical pilings
+below -5.9 source pixels and a raised beam face. Exact ramp-height tolerance and
+all other routes' original assertions remain. Initial failures are retained.
+
+Five final native/source pairs (ten full originals) were individually inspected:
+middle, entrance, east, north bank and ordinary UUDD input. Two actual moving
+native originals were also inspected. All paired receipts preserve their actual
+held session. Middle and entrance classic before/after images are full-RGBA
+byte-exact. The east before/after differs in 13,968 pixels, exclusively source
+blue/cream water-animation swaps; no whole-image equality is claimed there.
+Its current pair still holds the same actual state. The walk records 128 frames,
+six viewport origins and zero additional terrain builds. All captures explicitly
+use HEADLESS=1/CAPTURE_TARGET=image and mute; no window or focus change was used.
+Guide/current queue: docs/art/cerulean-walkways.md.
+
+The final full audit passes 388 maps / 288 scripted states, including Kanto120/16,
+with zero mesher errors. Only CeruleanGym's record changes: the intentional
+16-cell bank identity rename and material/geometry counts. Removing 32 invented
+bank posts removes 768 triangles / 2,304 vertices, leaving 26,320 triangles /
+73,104 vertices. After normalizing that one bank label, all source/support/
+coverage/family fields are exact. Other 387 map records and all 288 scripted-state
+records match the preceding accepted cap-stage audit. Evidence:
+target/kanto-resume/cerulean-timber-build/full388.json and audit-delta.json;
+cerulean-timber-review/review.json, original captures and paired/walk receipts.
+
+The first builds encountered the other goal's new VisualWorldFrame.view_center
+and anchor_to_map API with an older cached render-api rlib. Both failed attempts
+were terminal. Current crystal-render-api was rebuilt privately and all dependent
+arguments refreshed; the shared renderer changes were preserved. The final QA
+libraries/examples and tests use that current API. These opt0 test/opt1 native
+builds are not a full Cargo/release performance claim. All jobs are terminal.
+
+Pack SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007. No pack/audio,
+model asset, gameplay dispatcher, user save or source content was regenerated
+or staged. Unreviewed disposable moving captures were removed; selected ignored
+evidence remains. git diff --check passes. The queue now names gray banks and
+real timber correctly instead of carrying the old interpretation forward.
+
+Remaining: Cerulean water/wall/guardian/actor/quest and whole-room acceptance;
+other rooms/shared furniture and complete all311/original16 visual/service
+acceptance; other naming owners/timing, party specials, printing/link/mobile/
+GS Ball and generic field YES/NO work. These demonstrated identity/material
+repairs are verified; the full goal remains active.
+
+Oak/Elm workstation reconstruction and missing starter balls — 2026-10-19
+
+The previous summit turn repeated completed route coverage and did not advance
+interior work. Revalidated AGENTS.md, current source and the active queue; the
+deleted handoff remains absent. Coordinated shared files with the performance
+goal. Preserved unrelated renderer, camera and actor work; no exporter ran.
+
+Fresh paired source reviews showed a concrete workstation form defect in both
+labs: one wide generic monitor replaced a compact left CRT, separate centre
+unit and tall right enclosure. A source-authenticated Rust assembly now supplies
+all three closed chamfered bodies, shallow controls and keyboard, on a low gold
+workbench. Existing 32px source width / 12px depth / 22px maximum height remain;
+worktop is 8.5px, left CRT 19px, centre 16.5px and right enclosure 22px. All paint
+samples the live atlas. The selected material contract, complete twelve-cell
+source guards, custom ownership, floor and support remain. The generic computer
+asset and mansion use are unchanged. No generated model artifact was added.
+
+Broader Elm testing reproduced the user's missing starter balls: the source
+showed three while both modeled props and fallback cards explicitly suppressed
+all Elm PokeBall objects. Removed that unconditional room-name suppression.
+Ordinary source actor visibility and existing real-table support now render all
+three. The existing actor regression failed with zero props before the repair
+and passes afterward, checks all three at the actual 10.04px root, and verifies
+that removing one authoritative actor retires its model. No static decorative
+balls, game-state edits, collision or script-dispatch changes were introduced.
+
+Ten distinct focused checks pass in eleven final executions: workstation five,
+Elm five (one overlap), ordinary item-ball one. A supplied-coat test remains
+explicitly ignored for its external rig. Closed shells/outward winding and
+bounds pass at three scales; immutable generic geometry, source mutations,
+custom profiles, claims, floor/support and actual pack placement are covered.
+An initial unqualified pack-path test failed canonical-path validation; the
+same selection passes with the absolute CRYSTAL_RENDER_TEST_PACK path.
+
+The full terrain audit passes 388 maps / 288 scripted states with no errors.
+Only Oak and Elm geometry counts change, each -1,332 textured triangles and
+-3,996 vertices. All source/family/support fields, the other 386 map records
+and all scripted-state records are exact. This terrain audit preceded the actor
+suppression removal; it does not prove actor visibility. That repair has the
+separate failing-then-passing regression and two final production visual pairs.
+
+Four new native/source pairs (eight full originals) were individually inspected:
+Oak and Elm workstations, then final restored Elm balls from the default view
+and an opposite side approach. Every paired receipt preserves its held actual
+session. Before/after captures have different idle NPC phases, so whole-image
+pixel identity is not claimed. The side approach retains the existing table
+reveal around the player; the three balls remain visible at tabletop height.
+All captures use HEADLESS=1, CAPTURE_TARGET=image and mute; no windows opened.
+Guide: docs/art/lab-workstations.md. Evidence:
+target/kanto-resume/lab-assembly-build/{full388.json,audit-delta.json,*tests*.log};
+target/kanto-resume/lab-followup-review/review.json and original paired captures.
+
+QA rebuilt actual Rust voxel/host/render sources against the completed local
+dependency graph (tests opt0, native opt1), preserving concurrent camera changes.
+This is not a full Cargo/release performance or installed-app update claim.
+Pack SHA256 remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+No pack, audio, user save, source content or compiled deliverable was staged.
+Disposable analysis crop removed; selected evidence remains ignored. Jobs are
+terminal and git diff --check passes.
+
+Remaining: lab wall/window and whole-room/actor/service acceptance; other rooms,
+shared furniture and full all311/original16 visual/service acceptance; other
+naming owners/timing, party specials, printing/link/mobile/GS Ball and generic
+field YES/NO work. The full goal remains active.
+
+Oak/Elm native wall, window and perimeter finish — 2026-10-19
+
+Continued after the verified three-unit workstation and restored Elm starter
+balls, which made concrete production/acceptance progress. Read AGENTS.md and
+current implementation/queue; the deleted handoff stays absent. Coordinated
+shared files with the performance goal and preserved unrelated actor/camera/API
+changes. No exporter ran and no window or application focus was changed.
+
+Fresh source comparison showed broad generic clinical blue panels and aqua
+crossbar windows in place of the actual blue checker course and two pane
+patterns. Native Rust now authenticates both labs' complete wall08/0d/17 and
+window09/20 drawings, including both two-column panes and the complete four-
+column profile. A closed 32px wall retains one 16px source course near its crown,
+with a plain 16px cream course underneath. The actual panes keep source-sized
+14×9px framed faces, 0.4px relief and finished edges. The front is partitioned
+rather than overlaid. Atlas/block/phase/tile, crop, raised/custom ownership and
+foreign-map guards remain strict; other lab-tileset rooms keep their treatment.
+
+The same source course continues behind authenticated rear bookcases/pictures
+and around both side/front returns. Freestanding shelves receive no backing.
+Initial native review caught the generic perimeter stretching a four-column
+donor into two-column sections. The lab now supplies a two-column donor; short
+aperture/corner runs crop its continuous source interval instead of squeezing
+the checker. World-to-atlas pitch is pinned at 3px, 11px and 16px section widths.
+Walls remain ceiling height and contiguous; existing warp openings, cutaway
+behavior, source/family ownership, floor and support remain authoritative.
+
+Sixteen distinct focused checks pass in seventeen final executions: source/
+geometry two, all 255 perimeter donors one, Elm five, cabinet/TV backing one,
+workstation five and Vermilion three (one shared Elm/workstation test overlaps).
+A supplied-coat test remains explicitly ignored for its external rig. Tests
+cover every source-field mutation/custom owner, outward surfaces and bounds at
+three scales, one complete front, frame relief, native checker pitch, rear
+backing and existing workstation/three-ball support and source visibility.
+
+The broad perimeter control initially failed identically with the preceding
+lab-assembly executable: its old zero-source-ownership assumption contradicts
+Vermilion's already-authored stepped header. The corrected test requires the
+exact 46 cap/return cells, no void/floor claims, and exactly 32 permanent checker
+floor quads at the actual inset threshold. Every other wall vertex must remain
+in a cutaway section. The existing three dedicated topology/source/shifted-
+origin controls pass. No Vermilion production code changed; its audit record is
+identical. Initial failures and baseline reproduction remain diagnostic evidence.
+
+All three final native/source pairs (six full originals) were individually
+inspected: Elm (4,5), Oak (4,6), opposite-side Elm approach (7,4). Each pair holds
+the same actual session. The source pane patterns, source-colored trim, full
+wall joins and native checker scale are readable; the three starter balls and
+accepted workstation remain intact. Initial three pairs were also inspected
+before the pitch repair. Different idle NPC phases prevent a whole-image
+before/after identity claim. All captures explicitly use HEADLESS=1,
+CAPTURE_TARGET=image and mute. Guide: docs/art/lab-workstations.md.
+
+The final audit passes 388 maps / 288 scripted states, no mesher errors. Only
+Oak and Elm geometry counts change: Elm -8,476 triangles/-18,616 vertices and
+Oak -7,424 triangles/-16,304 vertices. Their source coverage/family bounds and
+support fields are exact; the other 386 map records, all 288 scripted-state
+records and every other top-level audit field are identical to the accepted
+lab-assembly baseline. Evidence: target/kanto-resume/lab-walls-build/
+{full388.json,audit-delta.json,*final.log}; lab-walls-review/review.json and
+final original paired captures/receipts. The first wall-stage audit is retained
+as full388-initial.json; the final audit was rerun after the verified pitch fix.
+
+Actual Rust voxel/host/test/example sources were rebuilt against the completed
+local dependency graph: tests opt0, native opt1. No full Cargo/release/FPS or
+installed-app update is claimed. Final jobs are terminal; git diff --check and
+new-module rustfmt check pass. The pack checksum remains
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007.
+No pack/audio/model asset, gameplay state, user save or compiled deliverable was
+regenerated or staged. Selected verification evidence stays ignored.
+
+Remaining: whole-lab actor/service and broader room acceptance; remaining rooms,
+shared furniture and full all311/original16 visual/service acceptance; other
+naming owners/timing, party specials, printing/link/mobile/GS Ball and generic
+field YES/NO work. The full goal remains active.

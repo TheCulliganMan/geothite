@@ -7,6 +7,8 @@ use serde::Deserialize;
 use std::sync::OnceLock;
 #[path = "native_pokecom_station_model.rs"]
 mod native_pokecom_station_model;
+#[path = "native_lab_workstation_model.rs"]
+mod native_lab_workstation_model;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub(crate) enum ModelKind {
@@ -466,7 +468,6 @@ impl Model {
                 };
                 if let Some(role) = role {
                     counter_seen |= 1 << role;
-                    if role < 3 { counter_body.extend(p.indices.iter().map(|i|i+base)); }
                 } else { counter_valid = false; }
             }
             if export.name == "closed_u_display" {
@@ -524,6 +525,14 @@ impl Model {
                     &p.material,
                     &export.name,
                 );
+            }
+            if export.name == "reception_counter"
+                && matches!(p.material.as_str(), "plaster" | "roof_red" | "timber")
+            {
+                // Refinement replaces primitive vertices and triangles. Body
+                // masks must refer to that final geometry, like material roles,
+                // rather than retaining indices from the original primitive.
+                counter_body.extend_from_slice(&surface.indices[index_start..]);
             }
             if matches!(export.name.as_str(), "bookcase" | "lab_bookcase") {
                 // Structural ownership follows the authored material names,
@@ -775,8 +784,10 @@ impl Model {
                 let role=match (p.name.as_str(),p.material.as_str()) {
                     ("cabinetTelevision(Clone)","wood")=>Some(0),
                     ("televisionVintage(Clone)","wood")=>Some(1),
-                    ("televisionVintage(Clone)","metal")=>Some(2),
-                    ("televisionVintage(Clone)","metalMedium")=>Some(3),
+                    // The curved inset is `metal`; `metalMedium` is the
+                    // surrounding bezel. Their source pigments differ.
+                    ("televisionVintage(Clone)","metal")=>Some(3),
+                    ("televisionVintage(Clone)","metalMedium")=>Some(2),
                     ("televisionVintage(Clone)","metalDark")=>Some(4),_=>None,
                 };
                 if let Some(role)=role {
@@ -1247,27 +1258,6 @@ impl Model {
         for (i,&role) in roles.iter().enumerate() {
             target.uvs[first+i]=swatches[role as usize];
             target.colors[first+i]=authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));
-        }true
-    }
-    /// The published desk's enamel worktop spans y=0.73..0.85. The tower,
-    /// keyboard and monitor keep their equipment roles even below desk height.
-    /// Paint whole faces from live source swatches so atlas regions never interpolate.
-    pub(crate) fn append_native_lab_workstation(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
-        swatches:[[f32;2];8],desk:[[f32;2];2])->bool {
-        let Some(roles)=&self.native_workstation_materials else{return false;};
-        let mut fitted=SurfaceMeshData::default();self.append_fitted(&mut fitted,bounds,0.,height);
-        for tri in fitted.indices.chunks_exact(3) {
-            let worktop=roles[tri[0]as usize]==2 && tri.iter().all(|&i|
-                (0.72..=0.855).contains(&self.surface.positions[i as usize][1]));
-            let desk_uv=desk[usize::from(tri.iter().map(|&i|fitted.normals[i as usize][1]).sum::<f32>()>1.5)];
-            let first=target.positions.len()as u32;
-            for &i in tri {
-                let j=i as usize;let role=roles[j]as usize;
-                let uv=if worktop {desk_uv}else{swatches[role]};
-                target.positions.push(fitted.positions[j]);target.normals.push(fitted.normals[j]);target.uvs.push(uv);
-                target.colors.push(authored_face_color([1.;4],Vec3::from_array(fitted.normals[j])));
-            }
-            target.indices.extend([first,first+1,first+2]);
         }true
     }
     pub(crate) fn append_native_workstation(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
@@ -2498,6 +2488,27 @@ mod tests {
         }
     }
     #[test]
+    fn store_counter_body_mask_tracks_refined_material_triangles() {
+        let model=Model::parse(include_str!("../models/interiors/reception_counter.mesh.json")).unwrap();
+        let roles=model.native_store_counter_materials.as_ref().unwrap();
+        let expected=model.surface.indices.chunks_exact(3).filter(|tri|
+            tri.iter().all(|&i|roles[i as usize]<3)).flatten().copied().collect::<Vec<_>>();
+        let body=model.store_counter_body_indices.as_ref().unwrap();
+        assert_eq!(body,&expected,"body mask must contain every final non-cap material triangle, without stale primitive indices");
+        assert!(!body.is_empty());
+        for tri in body.chunks_exact(3) {
+            let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(model.surface.positions[i as usize]));
+            assert!((b-a).cross(c-a).dot(Vec3::from_array(model.surface.normals[tri[0]as usize]))>0.,
+                "refined body triangles must retain valid winding and normals");
+        }
+        let before=model.surface.clone();let mut fitted=SurfaceMeshData::default();
+        assert!(model.append_store_counter_body(&mut fitted,[0.,56.,0.,16.],7.));
+        assert!((fitted.indices.iter().map(|&i|fitted.positions[i as usize][1]).fold(0.,f32::max)-7.).abs()<0.0001);
+        assert_eq!(model.surface.positions,before.positions);
+        assert_eq!(model.surface.indices,before.indices);
+    }
+
+    #[test]
     fn kanto_native_store_counter_paint_preserves_full_and_body_geometry_and_cache() {
         let source=include_str!("../models/interiors/reception_counter.mesh.json");
         let model=Model::parse(source).unwrap();let before=model.surface.clone();
@@ -2945,6 +2956,30 @@ mod tests {
     }
 
     #[test]
+    fn shared_trashcan_mouth_exposes_a_deep_dark_floor_instead_of_a_lid() {
+        let mut out=SurfaceMeshData::default();
+        let paint=[[0.1,0.2],[0.3,0.4],[0.5,0.6]];
+        assert!(model(ModelKind::TrashCan).append_native_trashcan(
+            &mut out,[-5.,5.,-5.,5.],8.,paint));
+        // Downward sight lines through the mouth must reach the dark cavity
+        // floor, well below the rim, rather than a hidden outer-shell cap.
+        for [x,z] in [[0.,0.],[-1.,0.],[1.,0.],[0.,-1.],[0.,1.]] {
+            let hit=out.indices.chunks_exact(3).filter_map(|tri| {
+                let [a,b,c]=[0,1,2].map(|j|out.positions[tri[j] as usize]);
+                let d=(b[2]-c[2])*(a[0]-c[0])+(c[0]-b[0])*(a[2]-c[2]);
+                if d.abs()<1e-6 {return None;}
+                let u=((b[2]-c[2])*(x-c[0])+(c[0]-b[0])*(z-c[2]))/d;
+                let v=((c[2]-a[2])*(x-c[0])+(a[0]-c[0])*(z-c[2]))/d;
+                let w=1.-u-v;
+                (u>=-1e-5&&v>=-1e-5&&w>=-1e-5).then_some((
+                    u*a[1]+v*b[1]+w*c[1],out.uvs[tri[0] as usize]))
+            }).max_by(|a,b|a.0.total_cmp(&b.0)).expect("closed cavity floor");
+            assert!(hit.0>0. && hit.0<2.,"mouth {x},{z} is capped at {}",hit.0);
+            assert_eq!(hit.1,paint[0],"the visible cavity floor uses the source ink");
+        }
+    }
+
+    #[test]
     fn kanto_native_television_keeps_selected_crt_geometry_and_rejects_unknown_roles() {
         let source=include_str!("../../../assets/open-models/interiors/television.mesh.json");
         let tv=Model::parse(source).unwrap();let before=tv.surface.clone();
@@ -2962,6 +2997,33 @@ mod tests {
             assert!(!unknown.append_native_television(&mut rejected,[0.,16.,0.,9.],20.,swatches));
             assert!(rejected.positions.is_empty());
         }
+    }
+
+    #[test]
+    fn native_television_front_has_a_blue_curved_screen_inside_a_pale_bezel() {
+        let tv=Model::parse(include_str!("../../../assets/open-models/interiors/television.mesh.json")).unwrap();
+        let swatches=[[0.1,0.2],[0.2,0.3],[0.3,0.4],[0.4,0.5],[0.5,0.6]];
+        let mut native=SurfaceMeshData::default();
+        assert!(tv.append_native_television(&mut native,[0.,16.,0.,9.],20.,swatches));
+        // Trace through the actual front geometry, independently of primitive
+        // names. The original curved glass spans this nine-point screen area;
+        // the narrow surround is a different visible surface.
+        let front_uv=|x:f32,y:f32| {
+            tv.surface.indices.chunks_exact(3).filter_map(|tri| {
+                let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|tv.surface.positions[i as usize]);
+                let d=(b[1]-c[1])*(a[0]-c[0])+(c[0]-b[0])*(a[1]-c[1]);
+                if d.abs()<1e-8 {return None;}
+                let u=((b[1]-c[1])*(x-c[0])+(c[0]-b[0])*(y-c[1]))/d;
+                let v=((c[1]-a[1])*(x-c[0])+(a[0]-c[0])*(y-c[1]))/d;
+                let w=1.-u-v;
+                (u>=-1e-5&&v>=-1e-5&&w>=-1e-5).then_some((
+                    u*a[2]+v*b[2]+w*c[2],native.uvs[tri[0]as usize]))
+            }).max_by(|a,b|a.0.total_cmp(&b.0)).expect("closed television front").1
+        };
+        for x in [0.25,0.35,0.45] {for y in [0.4,0.5,0.6] {
+            assert_eq!(front_uv(x,y),swatches[3],"glass at {x},{y} must use the source blue");
+        }}
+        assert_eq!(front_uv(0.14,0.5),swatches[2],"the narrow bezel keeps its pale source pigment");
     }
 
     #[test]

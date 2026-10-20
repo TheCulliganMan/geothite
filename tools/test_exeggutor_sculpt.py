@@ -7,15 +7,28 @@ from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_slime_sculpt import ray_intersections
 from bovine_sculpt import reverse_front
 import test_donphan_sculpt as joins
+RIG_READY=os.environ.get('EXEGGUTOR_TEST_RIG_READY')=='1'
 ROOT=Path(os.environ.get('EXEGGUTOR_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class PalmTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'exeggutor.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):
+  cls.skin_source=(ROOT/'exeggutor.glb').exists()
+  if cls.skin_source:
+   from psychic_palm_glb import read_exeggutor
+   cls.m=read_exeggutor(ROOT/'exeggutor.glb')
+  else:cls.m=json.loads((ROOT/'exeggutor.mesh.json').read_bytes())
+  cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'exeggutor':self.m})
  def test_unit_normals_and_actual_winding(self):assert_model_shading(self,{'exeggutor':self.m})
  def test_recipe_grounding_height_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),75000)
+  mode=RIG_READY or self.skin_source
+  if self.skin_source:
+   from psychic_palm_glb import geometry_digest
+   self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture(rig_ready=mode)))
+  else:self.assertEqual(self.m,sculpture(rig_ready=mode))
+  self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000 if mode else 75000)
+  if mode:self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
  def test_distinct_heads_clawed_feet_and_folded_canopy(self):
   for prefix,n in (('Trunk /',1),('Head /',3),('Leg /',2),('Foot /',2),('Sole /',2),('Claw /',6),('Eye white /',6),('Pupil /',6),('Mouth /',3),('Tongue /',1),('Slack tongue /',1),('Fang /',2),('Frond /',11),('Midrib /',11),('Trunk crease /',6)):self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)
  def test_heads_limbs_claws_and_fronds_have_real_roots(self):

@@ -25,7 +25,9 @@ use crate::sign::sign_shape;
 use crate::tower::tower_shape;
 
 pub const GROUND_HEIGHT: f32 = 0.0;
-pub const WATER_HEIGHT: f32 = -2.0;
+// Standing water meets its shoreline with a short lip (1/16 of a tile).
+// Keep this shared by water planes, shore closures and water-bound props.
+pub const WATER_HEIGHT: f32 = -0.5;
 pub const COMPACT_BUILDING_HEIGHT: f32 = 16.0;
 pub const LARGE_BUILDING_HEIGHT: f32 = 32.0;
 pub const MOUNTAIN_LEDGE_HEIGHT: f32 = 16.0;
@@ -36,7 +38,8 @@ pub const MOUNTAIN_CLIFF_HEIGHT: f32 = 16.0;
 // rock platform or cliff course.
 pub const JUMP_LEDGE_HEIGHT: f32 = 6.0;
 pub const MAX_PROFILE_HEIGHT: f32 = LARGE_BUILDING_HEIGHT;
-pub const MIN_PROFILE_HEIGHT: f32 = WATER_HEIGHT;
+// Keep the camera's conservative framing envelope independent of water depth.
+pub const MIN_PROFILE_HEIGHT: f32 = -2.0;
 pub const SOURCE_TILE_HEIGHT: f32 = 8.0;
 
 const JOHTO_TILESET: &str = "johto";
@@ -115,7 +118,7 @@ pub enum CellShape {
         base_height: f32,
     },
     /// Exact rocky shore artwork remains on the land cap and also supplies
-    /// the cropped two-pixel land-to-water face.
+    /// the cropped shallow land-to-water face.
     ShoreBand,
     RaisedTop {
         height: f32,
@@ -574,7 +577,7 @@ pub fn shape_for_source(source: &VisualTileSource) -> CellShape {
 
     // Johto shoreline blocks mix animated $14 water with one-cell rocky cap
     // drawings. The cap stays top-facing and its outer rows also fold into
-    // the shallow two-pixel drop, preserving the visible stone shoreline.
+    // the short land-to-water drop, preserving the visible stone shoreline.
     if matches!(
         source.metatile_id,
         0x54 | 0x55 | 0x58 | 0x59 | 0x76 | 0x79 | 0x7a

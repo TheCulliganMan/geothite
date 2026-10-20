@@ -1282,20 +1282,26 @@ impl RuntimeGameShell {
                     ended: false,
                 });
             }
-            let day_of_week_prompt = command.is_some_and(|command| {
-                    command.get("command").and_then(serde_json::Value::as_str) == Some("special")
-                        && command
-                            .get("args")
-                            .and_then(serde_json::Value::as_array)
-                            .and_then(|args| args.first())
-                            .and_then(serde_json::Value::as_str)
-                            == Some("SetDayOfWeek")
-                });
-            if day_of_week_prompt {
+            let modal_special = command.filter(|command|
+                command.get("command").and_then(serde_json::Value::as_str) == Some("special"))
+                .and_then(|command| command.get("args"))
+                .and_then(serde_json::Value::as_array)
+                .and_then(|args| args.first())
+                .and_then(serde_json::Value::as_str);
+            let prompt = match modal_special {
+                Some("SetDayOfWeek") => Some(RuntimeCompiledScriptBoundary::DayOfWeekPrompt),
+                // NameRater contains its own introduction, YES/NO and party
+                // selection. Stop before executing it, even if an earlier
+                // service left a party-slot variable behind. The production
+                // controller must ask this visit's player for every choice.
+                Some("NameRater") => Some(RuntimeCompiledScriptBoundary::NameRaterPrompt),
+                _ => None,
+            };
+            if let Some(prompt) = prompt {
                 return Ok(RuntimeCompiledScriptRun {
                     steps,
                     next_cursor: Some(current),
-                    boundary: Some(RuntimeCompiledScriptBoundary::DayOfWeekPrompt),
+                    boundary: Some(prompt),
                     ended: false,
                 });
             }

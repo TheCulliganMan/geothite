@@ -8080,6 +8080,15 @@ fn spawn_battle_move_menu(
 }
 
 fn spawn_battle_window(
+    commands: &mut Commands, rendered_art: &mut RenderedTilesetArt,
+    asset_root: &AssetRoot, images: &mut Assets<Image>,
+    tile_x: f32, tile_y: f32, width_tiles: f32, height_tiles: f32, z: f32,
+) {
+    spawn_battle_window_tagged(commands, rendered_art, asset_root, images,
+        tile_x, tile_y, width_tiles, height_tiles, z, ());
+}
+
+fn spawn_battle_window_tagged<M: Bundle + Clone>(
     commands: &mut Commands,
     rendered_art: &mut RenderedTilesetArt,
     asset_root: &AssetRoot,
@@ -8089,6 +8098,7 @@ fn spawn_battle_window(
     width_tiles: f32,
     height_tiles: f32,
     z: f32,
+    marker: M,
 ) {
     let (center_x, center_y) = battle_window_center(tile_x, tile_y, width_tiles, height_tiles);
     // Textbox replaces whole tiles, including the white pixels in its border.
@@ -8102,13 +8112,14 @@ fn spawn_battle_window(
                 },
 Transform::from_xyz(center_x, center_y, z),),
             BattleCommandMarker,
+            marker.clone(),
         ));
     }
     if let Some(frame) = battle_window_frame_art(rendered_art, asset_root, images) {
         let width = width_tiles.round().max(0.0) as usize;
         let height = height_tiles.round().max(0.0) as usize;
         if width >= 2 && height >= 2 {
-            spawn_battle_window_frame_tiles(
+            spawn_battle_window_frame_tiles_tagged(
                 commands,
                 frame,
                 tile_x,
@@ -8116,6 +8127,7 @@ Transform::from_xyz(center_x, center_y, z),),
                 width,
                 height,
                 z + 0.05,
+                marker.clone(),
             );
             return;
         }
@@ -8277,6 +8289,13 @@ fn window_frame_art<'a>(
 }
 
 fn spawn_battle_window_frame_tiles(
+    commands: &mut Commands, frame: &WindowFrameArt,
+    tile_x: f32, tile_y: f32, width: usize, height: usize, z: f32,
+) {
+    spawn_battle_window_frame_tiles_tagged(commands, frame, tile_x, tile_y, width, height, z, ());
+}
+
+fn spawn_battle_window_frame_tiles_tagged<M: Bundle + Clone>(
     commands: &mut Commands,
     frame: &WindowFrameArt,
     tile_x: f32,
@@ -8284,25 +8303,26 @@ fn spawn_battle_window_frame_tiles(
     width: usize,
     height: usize,
     z: f32,
+    marker: M,
 ) {
     let top_y = tile_y;
     let bottom_y = tile_y + height.saturating_sub(1) as f32;
     let left_x = tile_x;
     let right_x = tile_x + width.saturating_sub(1) as f32;
-    spawn_battle_window_frame_tile(commands, &frame.top_left, left_x, top_y, z);
-    spawn_battle_window_frame_tile(commands, &frame.top_right, right_x, top_y, z);
-    spawn_battle_window_frame_tile(commands, &frame.bottom_left, left_x, bottom_y, z);
-    spawn_battle_window_frame_tile(commands, &frame.bottom_right, right_x, bottom_y, z);
+    spawn_battle_window_frame_tile_tagged(commands, &frame.top_left, left_x, top_y, z, marker.clone());
+    spawn_battle_window_frame_tile_tagged(commands, &frame.top_right, right_x, top_y, z, marker.clone());
+    spawn_battle_window_frame_tile_tagged(commands, &frame.bottom_left, left_x, bottom_y, z, marker.clone());
+    spawn_battle_window_frame_tile_tagged(commands, &frame.bottom_right, right_x, bottom_y, z, marker.clone());
 
     for col in 1..width.saturating_sub(1) {
         let x = tile_x + col as f32;
-        spawn_battle_window_frame_tile(commands, &frame.top_edge, x, top_y, z);
-        spawn_battle_window_frame_tile(commands, &frame.top_edge, x, bottom_y, z);
+        spawn_battle_window_frame_tile_tagged(commands, &frame.top_edge, x, top_y, z, marker.clone());
+        spawn_battle_window_frame_tile_tagged(commands, &frame.top_edge, x, bottom_y, z, marker.clone());
     }
     for row in 1..height.saturating_sub(1) {
         let y = tile_y + row as f32;
-        spawn_battle_window_frame_tile(commands, &frame.side_edge, left_x, y, z);
-        spawn_battle_window_frame_tile(commands, &frame.side_edge, right_x, y, z);
+        spawn_battle_window_frame_tile_tagged(commands, &frame.side_edge, left_x, y, z, marker.clone());
+        spawn_battle_window_frame_tile_tagged(commands, &frame.side_edge, right_x, y, z, marker.clone());
     }
 }
 
@@ -8313,12 +8333,13 @@ fn battle_window_frame_tile_count(width: usize, height: usize) -> usize {
     width * 2 + height.saturating_sub(2) * 2
 }
 
-fn spawn_battle_window_frame_tile(
+fn spawn_battle_window_frame_tile_tagged<M: Bundle>(
     commands: &mut Commands,
     frame: &SpriteFrame,
     tile_x: f32,
     tile_y: f32,
     z: f32,
+    marker: M,
 ) {
     let (x, y) = battle_hud_tile_origin(tile_x, tile_y);
     commands.spawn((
@@ -8329,6 +8350,7 @@ fn spawn_battle_window_frame_tile(
 Transform::from_xyz(x, y, z),),
         BattleCommandMarker,
         BattleWindowFrameMarker,
+        marker,
     ));
 }
 

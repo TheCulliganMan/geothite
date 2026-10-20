@@ -17,6 +17,12 @@ mod native_arcade_pairs;
 mod native_arcade_banks;
 #[path = "native_facility_bookcase.rs"]
 mod native_facility_bookcase;
+#[path = "native_mart_checkout.rs"]
+mod native_mart_checkout;
+#[path = "native_store_bench.rs"]
+mod native_store_bench;
+#[path = "native_lab_walls.rs"]
+mod native_lab_walls;
 
 #[derive(Clone, Debug)]
 pub(super) struct Placement {
@@ -337,7 +343,7 @@ fn mart_display_model(source: &VisualTileSource) -> Option<ModelKind> {
         0x0b => Some(ModelKind::PottedPlant),
         0x07 | 0x20 => Some(ModelKind::Cushion),
         0x21 => Some(ModelKind::VendingMachine),
-        0x12 | 0x13 | 0x2c | 0x2d => Some(ModelKind::RetailShelf),
+        0x12 | 0x13 | 0x23 | 0x28 | 0x2c | 0x2d => Some(ModelKind::RetailShelf),
         _ => None,
     }
 }
@@ -380,7 +386,7 @@ pub(super) fn traditional_tabletop_height(map:&str,cells:&[&VisualTile],g:&GridG
 
 // The apron is part of the complete source claim, beyond the actual tabletop.
 fn native_dining_table_rows(p:&Placement)->usize {
-    match (p.width,p.height) {(4,5)=>4,(4,3)=>2,_=>p.height}
+    match (p.width,p.height) {(4,5)=>4,(4,3)|(6,3)=>2,_=>p.height}
 }
 
 /// A conservative seat candidate test, derived from the same profile kinds
@@ -442,7 +448,7 @@ pub(super) fn resolve(
                             || native_bookcase_room(map)
                             || map == "CianwoodGym" || map=="GoldenrodUnderground" || map=="BurnedTower1F"
                             || native_radio_room::is_map(map)
-                            || super::modeled_dungeons::tin_tower_guardian_map(map)
+                            || super::modeled_dungeons::tin_tower_architecture_map(map)
                             || super::modeled_dungeons::lighthouse_map(map))
                             && !built_in_profiles().objects.iter().any(|canonical| canonical == *object))
                 })
@@ -462,7 +468,9 @@ pub(super) fn resolve(
             }
         }
     }
+    native_store_bench::candidates(map,cells,geometry,&mut claimed,&mut out);
     native_clinic_fixtures::candidates(map,cells,geometry,&mut claimed,&mut out);
+    native_clinic::append_stock_candidates(map,cells,geometry,&mut claimed,&mut out);
     native_safari_office::candidates(map,cells,geometry,&mut claimed,&mut out);
     native_classroom::candidates(map,cells,geometry,&mut claimed,&mut out);
     native_tower_furniture::candidates(map,cells,geometry,&mut claimed,&mut out);
@@ -476,6 +484,7 @@ pub(super) fn resolve(
         let Some(kind) = profile_kind(object) else {
             continue;
         };
+        if native_store_bench::is_map(map)&&kind==ModelKind::Cushion&&object.tileset=="mart" {continue;}
         // This room's solid plank course uses its own complete native drawing.
         if map=="WiseTriosRoom"&&object.tileset=="traditional_house"
             &&object.metatile==3&&kind==ModelKind::WallTraditional {continue;}
@@ -560,12 +569,19 @@ pub(super) fn resolve(
                     base_pixels: 0.0,
                     footing_pixels: object.footing_pixels,
                 };
+                if native_oak_table(map,&p,cells,geometry) {
+                    // The last source row is a perspective apron over walkable
+                    // floor, not another 8px of physical desk. Furniture must
+                    // never publish a raised walking surface for the player.
+                    p.depth_pixels=16.;
+                    p.footing_pixels=None;
+                }
                 if native_elm_fixture_source(map,&p,cells,geometry).is_some() {
                     p.depth_pixels=24.;p.height_pixels=8.;
                 }
                 if reviewed_arcade_room(map) && matches!(kind,ModelKind::ArcadeMachine|ModelKind::ArcadePair)
                     && native_arcade_source(map,&p,cells,geometry).is_none() {continue;}
-                if kind==ModelKind::LinkSeat && kanto_native_floor_map(map) && map.ends_with("Pokecenter2FBeta")
+                if kind==ModelKind::LinkSeat && super::cable_club::is_map(map)
                     && native_link_seat_source(map,&p,cells,geometry).is_none() {continue;}
                 if kind==ModelKind::LowTable && object.tileset=="house" && matches!(object.metatile,0x30|0x31)
                     && reviewed_native_room(map) && !native_small_display_source(map,&p,cells,geometry) {continue;}
@@ -583,6 +599,8 @@ pub(super) fn resolve(
         for group in groups {
             let source = &cells[group.row * geometry.width + group.column].source;
             let kind = kind_for(source);
+            if native_store_bench::is_map(map)&&kind==ModelKind::Cushion&&source.tileset_id.as_ref()=="mart"
+                &&matches!(source.metatile_id,7|0x20){continue;}
             // A damaged full rank must not silently become partial machines.
             if reviewed_arcade_room(map) && kind==ModelKind::ArcadeMachine
                 && matches!(source.metatile_id,7|11) {continue;}
@@ -616,6 +634,8 @@ pub(super) fn resolve(
                 (group.height as f32*8.,20.)
             } else if source.tileset_id.as_ref()=="train_station" && kind==ModelKind::LongPlanter {
                 (group.height as f32*6.,17.)
+            } else if matches!(map,"CeladonCafe"|"OlivineCafe") && kind==ModelKind::CafeTable {
+                (24.,crate::cafe::NATIVE_TABLE_HEIGHT)
             } else { proportions(kind, group.width, group.height) };
             let p = Placement {
                 kind,
@@ -635,7 +655,7 @@ pub(super) fn resolve(
                     || (kind==ModelKind::VendingMachine && !native_station_ticket_source(map,&p,cells,geometry))) {continue;}
             if reviewed_arcade_room(map) && matches!(kind,ModelKind::ArcadeMachine|ModelKind::ArcadePair)
                 && native_arcade_source(map,&p,cells,geometry).is_none() {continue;}
-            if kind==ModelKind::LinkSeat && kanto_native_floor_map(map) && map.ends_with("Pokecenter2FBeta")
+            if kind==ModelKind::LinkSeat && super::cable_club::is_map(map)
                 && native_link_seat_source(map,&p,cells,geometry).is_none() {continue;}
             if matches!(map,"CeladonMansion2F"|"CeladonMansion3F")
                 && ((kind==ModelKind::LabWorkstation && native_mansion_workstation_source(map,&p,cells,geometry).is_none())
@@ -863,6 +883,7 @@ pub(super) fn resolve(
     native_pokecom_clinic::candidates(map,cells,geometry,&mut claimed,&mut out);
     native_pokecom_clinic_wall::candidates(map,cells,geometry,&mut claimed,&mut out);
     native_pokecom_windows::candidates(map,cells,geometry,&mut claimed,&mut out);
+    native_mart_checkout::append_candidates(map,cells,geometry,&mut claimed,&mut out);
     append_counter_candidates(map, cells, geometry, &mut claimed, &mut out);
     append_casino_candidates(map, cells, geometry, &mut claimed, &mut out);
     append_cafe_architecture_candidates(map,cells,geometry,&mut claimed,&mut out);
@@ -1041,14 +1062,20 @@ fn append_counter_candidates(
             width: w,
             height: 2,
             ground,
-            depth_pixels: 8.0,
+            // These complete two-row source strips meet the store's two-row
+            // returns. Using only the front row leaves an eight-pixel trench
+            // between their tops despite contiguous source counter cells.
+            depth_pixels: if s.tileset_id.as_ref()=="mart"
+                &&matches!(s.metatile_id,0x0c..=0x0e)
+                &&matches!(map,"CeladonDeptStore1F"|"CeladonDeptStore3F"
+                    |"GoldenrodDeptStore1F"|"GoldenrodDeptStore3F") {16.}else{8.},
             height_pixels: 8.0,
             base_pixels: 0.0,
             footing_pixels: None,
         };
         if s.tileset_id.as_ref()=="mart" && (kanto_native_floor_map(map)||store_floor_map(map))
             && native_mart_counter_source(map,&p,cells,geometry).is_none() {continue;}
-        if s.tileset_id.as_ref()=="pokecenter" && kanto_native_floor_map(map)
+        if s.tileset_id.as_ref()=="pokecenter" && (kanto_native_floor_map(map) || map == "Pokecenter2F")
             && native_center_counter_source(map,&p,cells,geometry).is_none() {continue;}
         for i in p.indices(geometry.width) {
             claimed[i] = true;
@@ -1615,7 +1642,7 @@ fn native_link_seat_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeo
             ==Some(((j%2)as u8,(j/2)as u8,2,2))) {
         return Some(native_source_swatches(p,g,[[4,4],[6,5],[5,11],[5,4]]));
     }
-    if !kanto_native_floor_map(map) || !map.ends_with("Pokecenter2FBeta") {return None;}
+    if !super::cable_club::is_map(map) {return None;}
     let source=&cells[p.row*g.width+p.column].source;
     if source.subtile_row!=0 || !matches!(source.subtile_column,0|2) || !matches!(source.metatile_id,0x29|0x2d) {return None;}
     if !p.indices(g.width).enumerate().all(|(j,i)| {let s=&cells[i].source;
@@ -1682,7 +1709,7 @@ pub(super) fn trace_arcade_palette(map:&str,cells:&[&VisualTile],g:&GridGeometry
 }
 
 fn native_center_counter_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->Option<[[f32;2];5]> {
-    if !kanto_native_floor_map(map) || !map.contains("Pokecenter")
+    if !(kanto_native_floor_map(map) || map == "Pokecenter2F") || !map.contains("Pokecenter")
         || p.kind!=ModelKind::ReceptionCounter || p.height!=2 {return None;}
     let s=&cells[p.row*g.width+p.column].source;
     if s.tileset_id.as_ref()!="pokecenter" || s.subtile_column!=0 || s.subtile_row!=0 {return None;}
@@ -1693,6 +1720,29 @@ fn native_center_counter_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&Gr
             && c.tile_index==if j<p.width {top[j]}else{0x24}}) {return None;}
     let cap=top.iter().position(|&t|t==0x34).unwrap();
     Some(native_source_swatches(p,g,[[1,12],[0,10],[cap*8+2,4],[cap*8+2,4],[1,9]]))
+}
+// Read the actual shared front strip from this map's atlas. Returns and
+// horizontal runs share its height courses even when their tops face another
+// direction; no extra source cells are claimed for this paint sample.
+pub(super) fn mart_counter_fascia_uv(cells:&[&VisualTile],g:&GridGeometry)->Option<[f32;3]> {
+    // The authenticated store networks also carry this tile in metatiles
+    // $10/$11/$1a/$1b/$2c/$2d/$2e. Its tile art and palette identity are shared.
+    let i=cells.iter().position(|t|t.source.tileset_id.as_ref()=="mart"
+        &&t.source.tile_index==0x1a)?;
+    let (u0,u1,v0,v1)=g.uv(i%g.width,i/g.width);
+    Some([u0+(u1-u0)*3.5/8.,v0+(v1-v0)*0.5/8.,v0+(v1-v0)*7.5/8.])
+}
+pub(super) fn paint_mart_counter_fascia(out:&mut SurfaceMeshData,first:usize,
+    strip:Option<[f32;3]>,height:f32) {
+    let Some([u,top,bottom])=strip else{return;};
+    for i in first..out.positions.len() {
+        // Horizontal body plates stay on their existing finish. Every vertical
+        // panel/frame uses the same world-height stripe, including bevels.
+        let y=out.positions[i][1];
+        if out.normals[i][1].abs()<0.99&&y<=height+0.0001 {
+            out.uvs[i]=[u,bottom+(top-bottom)*(y/height).clamp(0.,1.)];
+        }
+    }
 }
 pub(super) fn mart_counter_swatches(g:&GridGeometry,index:usize,tile:u16)->Option<[[f32;2];5]> {
     let (cream,gold,ink)=match tile {
@@ -1838,7 +1888,8 @@ pub(super) fn append_with_tables(
     if native_arcade_source(map,p,cells,geometry).is_some() && !selected.has_native_arcade_materials() {
         append_missing_source(mesh,geometry,p,claimed);return true;
     }
-    if (native_mart_counter_source(map,p,cells,geometry).is_some()
+    if (native_mart_checkout::matches(map,p,cells,geometry)
+        || native_mart_counter_source(map,p,cells,geometry).is_some()
         || native_center_counter_source(map,p,cells,geometry).is_some()) && !selected.has_native_store_counter_materials() {
         append_missing_source(mesh,geometry,p,claimed);return true;
     }
@@ -2022,7 +2073,8 @@ pub(super) fn append_with_tables(
         && piece_source.tileset_id.as_ref()=="players_house"
         && p.indices(geometry.width).all(|i|cells[i].source.tile_index==0x11);
     let native_appliance_header=reviewed_native_room(map)&&native_house_appliance_header_source(p,cells,geometry);
-    let south_row = if native_appliance_header {p.row+2}
+    let south_row = if native_mart_checkout::matches(map,p,cells,geometry) {p.row+p.height-1}
+    else if native_appliance_header {p.row+2}
     else if let Some(row)=native_pokecom_office::south_row(map,p,cells,geometry) {row}
     else if native_pokecom_long_returns::side(map,p,cells,geometry) {p.row+12}
     else if native_pokecom_long_returns::header(map,p,cells,geometry) {p.row+2}
@@ -2066,6 +2118,10 @@ pub(super) fn append_with_tables(
     let poster_relief = if arcade_poster { 0.2 * geometry.tile_height / 8.0 } else { 0.0 };
     let mut south = geometry.origin_z + south_row as f32 * geometry.tile_height + poster_relief;
     let mut north = south - p.depth_pixels * geometry.tile_height / 8.0;
+    if native_store_bench::matches(map,p,cells,geometry) {
+        north=geometry.origin_z+p.row as f32*geometry.tile_height;
+        south=north+p.depth_pixels*geometry.tile_height/8.;
+    }
     if p.height==2 && matches!(p.kind,ModelKind::GameConsole|ModelKind::Stool|ModelKind::ArcadeStool
         |ModelKind::Chair|ModelKind::LinkSeat) {
         let center=geometry.origin_z+(p.row as f32+
@@ -2100,7 +2156,8 @@ pub(super) fn append_with_tables(
     // The guarded 2f/30 lower band is already covered by its complete upper
     // course. Retain its source claim/underlay without a duplicate wall volume.
     let repeats = if native_cafe_wall || native_safari_office::matches(map,p,cells,geometry)
-        ||native_pokecom_windows::source(map,p,cells,geometry) {1} else if p.kind == ModelKind::ArcadeWall && piece_source.subtile_row == 1 {
+        ||native_pokecom_windows::source(map,p,cells,geometry)
+        ||native_lab_walls::source(map,p,cells,geometry) {1} else if p.kind == ModelKind::ArcadeWall && piece_source.subtile_row == 1 {
         debug_assert!(matches!(piece_source.metatile_id, 0x2f | 0x30));
         0
     } else if (matches!(
@@ -2118,6 +2175,10 @@ pub(super) fn append_with_tables(
     } else {
         1
     };
+    let cable_sign_backing = p.kind == ModelKind::PictureFrame && p.width == 2
+        && p.height == 2 && p.base_pixels == 0. && p.height_pixels == 16.
+        && p.depth_pixels == 2. && super::cable_club::append_sign_backing(
+            mesh, map, cells, geometry, p.column, p.row, world_origin);
     let corridor_furniture_first=mesh.textured.positions.len();
     let object_solid_first=mesh.solid.positions.len();
     native_radio_room::append_bookcase_backing(&mut mesh.textured,geometry,p,cells,world_origin,map);
@@ -2216,6 +2277,8 @@ pub(super) fn append_with_tables(
                 native_source_swatches(p,geometry,[[2,2],[2,7],[6,4],[3,25],[4,25],[6,16]])));
         } else if native_classroom::matches(map,p,cells,geometry) {
             native_classroom::append(&mut mesh.textured,geometry,p,[left,right,north,south],selected);
+        } else if native_lab_walls::source(map,p,cells,geometry) {
+            native_lab_walls::append(&mut mesh.textured,geometry,p,[left,right,north,south]);
         } else if native_safari_office::matches(map,p,cells,geometry) {
             native_safari_office::append(&mut mesh.textured,geometry,p,
                 [left+inset,right-inset,north,south]);
@@ -2312,11 +2375,32 @@ pub(super) fn append_with_tables(
                 append_quad(&mut mesh.textured,[[w,h,north],[w,h,south],[e,h,south],[e,h,north]],
                     [0.,1.,0.],[[uv.0,uv.2],[uv.0,uv.3],[uv.1,uv.3],[uv.1,uv.2]],[1.;4]);
             }
+        } else if native_mart_checkout::matches(map,p,cells,geometry) {
+            native_mart_checkout::append(&mut mesh.textured,geometry,p,selected,[left,right,north,south]);
         } else if let Some(swatches)=native_mart_counter_source(map,p,cells,geometry) {
-            assert!(selected.append_native_store_counter(&mut mesh.textured,[left,right,north,south],
-                p.height_pixels*geometry.tile_height/8.,swatches,false));
+            if p.depth_pixels==16. && matches!(map,"CeladonDeptStore1F"|"CeladonDeptStore3F"
+                |"GoldenrodDeptStore1F"|"GoldenrodDeptStore3F") {
+                // Match the adjacent return's continuous cap. The canonical
+                // standalone top is inset and leaves a slit at this join.
+                let sy=geometry.tile_height/8.;
+                let body_first=mesh.textured.positions.len();
+                assert!(selected.append_native_store_counter(&mut mesh.textured,[left,right,north,south],
+                    7.*sy,swatches,true));
+                paint_mart_counter_fascia(&mut mesh.textured,body_first,mart_counter_fascia_uv(cells,geometry),7.*sy);
+                let first=mesh.textured.positions.len();
+                architecture_box(&mut mesh.textured,[left,right,7.*sy,8.*sy,north,south],[1.;3]);
+                for i in first..mesh.textured.positions.len() {
+                    mesh.textured.uvs[i]=swatches[if mesh.textured.normals[i][1]>0.5 {3}else{4}];
+                }
+            } else {
+                assert!(selected.append_native_store_counter(&mut mesh.textured,[left,right,north,south],
+                    p.height_pixels*geometry.tile_height/8.,swatches,false));
+            }
         } else if native_station_ticket_source(map,p,cells,geometry) {
-            append_native_station_ticket_boxes(&mut mesh.textured,geometry,p,selected,[left,right,north,south]);
+            for range in append_native_station_ticket_boxes(&mut mesh.textured,geometry,p,selected,[left,right,north,south]) {
+                mesh.textured.cutaway_ranges.push(range.clone());
+                mesh.depth_coverage_textured_ranges.push(range);
+            }
         } else if native_store_vending_source(map,p,cells,geometry) {
             let first=mesh.textured.positions.len();
             let swatches=native_source_swatches(p,geometry,[[1,1],[4,10],[0,8],[2,1],[2,8]]);
@@ -2324,6 +2408,9 @@ pub(super) fn append_with_tables(
                 p.height_pixels*geometry.tile_height/8.,swatches));
             append_store_vending_roof(&mut mesh.textured,first,
                 p.height_pixels*geometry.tile_height/8.,geometry.tile_height/8.,swatches);
+            let range=first..mesh.textured.positions.len();
+            mesh.textured.cutaway_ranges.push(range.clone());
+            mesh.depth_coverage_textured_ranges.push(range);
         } else if native_station_wall_source(map,p,cells,geometry) {
             append_native_station_wall(&mut mesh.textured,geometry,p,[left,right,north,south],piece_source.metatile_id==0x0a);
         } else if p.kind==ModelKind::WallPanel && matches!(p.width,2|4) && p.height==2
@@ -2451,10 +2538,20 @@ pub(super) fn append_with_tables(
                 [left+inset,right-inset,north,south],
                 p.base_pixels*geometry.tile_height/8.,p.height_pixels*geometry.tile_height/8.,
                 [sample([1,1]),sample([4,3]),sample([4,1])]));
+        } else if native_clinic::stock_source(map,p,cells,geometry) {
+            native_clinic_fixtures::append_backing(&mut mesh.textured,map,p,cells,geometry,tables);
+            let first=mesh.textured.positions.len();
+            append_native_retail_display(&mut mesh.textured,geometry,p,
+                [left,right,north,south],false,false);
+            // The continuous clinic wall behind the stock is architecture,
+            // separate from the cabinet's body and its reveal owner.
+            let range=first..mesh.textured.positions.len();
+            mesh.textured.cutaway_ranges.push(range.clone());
+            mesh.depth_coverage_textured_ranges.push(range);
         } else if p.width==2 && p.height==4 && piece_source.tileset_id.as_ref()=="mart"
             && ((p.kind==ModelKind::RetailShelf && piece_source.metatile_id==0x13)
                 || (reviewed_retail_room(map) && matches!((p.kind,piece_source.metatile_id,piece_source.tile_index),
-                    (ModelKind::RetailShelf,0x12|0x2c,0x26)
+                    (ModelKind::RetailShelf,0x12|0x23|0x28|0x2c,0x26)
                     |(ModelKind::RetailShelf,0x15|0x27,0x0c)
                     |(ModelKind::RetailRefrigerator,0x14,0x0c)))) {
             let cabinet_start=mesh.textured.positions.len();
@@ -2463,7 +2560,8 @@ pub(super) fn append_with_tables(
                 append_native_store_ticket_boxes(&mut mesh.textured,geometry,p,[left,right,north,south]);
             } else {
                 append_native_retail_display(&mut mesh.textured,geometry,p,
-                    [left,right,north,south],piece_source.tile_index==0x26);
+                    [left,right,north,south],piece_source.tile_index==0x26,
+                    piece_source.tile_index==0x0c);
             }
             if native_store_aisle_shelf_source(map,p,cells,geometry) {
                 let joins=native_store_shelf_neighbors(map,p,cells,geometry);
@@ -2474,10 +2572,12 @@ pub(super) fn append_with_tables(
                             &&mesh.textured.normals[i as usize][0]==normal)
                     })
                 }).flatten().copied());
-                let range=cabinet_start..mesh.textured.positions.len();
-                mesh.textured.cutaway_ranges.push(range.clone());
-                mesh.depth_coverage_textured_ranges.push(range);
             }
+            // Blue aisle/ticket units and stock cabinets each retain their
+            // complete body, roof and front under one reveal owner.
+            let range=cabinet_start..mesh.textured.positions.len();
+            mesh.textured.cutaway_ranges.push(range.clone());
+            mesh.depth_coverage_textured_ranges.push(range);
         } else if native_store_plant_source(map,p,cells,geometry) {
             assert!(selected.append_native_facility_plant(&mut mesh.textured,
                 [left+inset,right-inset,north,south],p.height_pixels*geometry.tile_height/8.,
@@ -2486,7 +2586,9 @@ pub(super) fn append_with_tables(
                 native_source_swatches(p,geometry,[[3,2],[3,4],[3,1],[3,26],[2,25],[0,24]])));
         } else if p.kind == ModelKind::Cushion
             && cells[p.row * geometry.width + p.column].source.tileset_id.as_ref()=="mart" {
-            if native_store_seat_source(map,p,cells,geometry) {
+            if native_store_bench::matches(map,p,cells,geometry) {
+                native_store_bench::append(&mut mesh.textured,geometry,p,[left,right,north,south]);
+            } else if native_store_seat_source(map,p,cells,geometry) {
                 append_native_store_seat(&mut mesh.textured,[left+inset,right-inset,north,south],
                     geometry.tile_height/8.,native_source_swatches(p,geometry,[[1,1],[3,3],[0,1]]));
             } else {
@@ -2520,7 +2622,7 @@ pub(super) fn append_with_tables(
                 native_source_swatches(p,geometry,[[3,2],[5,2],[3,3],[9,27],[5,27],[5,20]])));
         } else if map=="OlivineCafe" && p.kind==ModelKind::CafeTable {
             assert!(selected.append_native_cafe_table(&mut mesh.textured,
-                [left+inset,right-inset,north,south],16.*geometry.tile_height/8.,
+                [left+inset,right-inset,north,south],p.height_pixels*geometry.tile_height/8.,
                 native_source_swatches(p,geometry,[[4,14],[12,26],[14,22]])));
         } else if map=="CeladonCafe" && p.kind==ModelKind::CafeTable {
             let sample=|pixel:[usize;2]| {
@@ -2530,7 +2632,7 @@ pub(super) fn append_with_tables(
             };
             let scale=geometry.tile_height/8.;
             assert!(selected.append_native_cafe_table(&mut mesh.textured,
-                [left+inset,right-inset,north,south],16.*scale,
+                [left+inset,right-inset,north,south],p.height_pixels*scale,
                 [sample([4,14]),sample([12,34]),sample([14,30])]));
             append_cafe_basket(&mut mesh.textured,[(left+right)*0.5,(north+south)*0.5],
                 scale,[sample([11,13]),sample([13,10]),sample([15,12])]);
@@ -2778,6 +2880,18 @@ pub(super) fn append_with_tables(
         && !native_pokecom_clinic_wall::mounted(map,p,cells,geometry)
         && !native_radio_room::matches(map,p,cells,geometry) {
         append_framed_source_art(mesh, geometry, p, [west, east, north, south], repeats);
+        if cable_sign_backing {
+            // Put both the frame and its live source inscription in front of
+            // the supporting wall, centered vertically with a clear cap.
+            for v in &mut mesh.solid.positions[object_solid_first..] {
+                v[1] += 4. * geometry.tile_height / 8.;
+                v[2] += 2.25 * geometry.tile_height / 8.;
+            }
+            for v in &mut mesh.textured.positions[corridor_furniture_first..] {
+                v[1] += 4. * geometry.tile_height / 8.;
+                v[2] += 2.25 * geometry.tile_height / 8.;
+            }
+        }
         if reviewed_native_room(map)&&(native_mounted_picture
             ||matches!(piece_source.tileset_id.as_ref(),"house"|"mansion")) {
             // Mount the frame on the connected wall instead of embedding its
@@ -3101,8 +3215,9 @@ fn append_native_store_ticket_boxes(out:&mut SurfaceMeshData,g:&GridGeometry,p:&
 }
 
 fn append_native_station_ticket_boxes(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,
-    selected:&crate::interior_models::Model,b:[f32;4]) {
+    selected:&crate::interior_models::Model,b:[f32;4])->[std::ops::Range<usize>;4] {
     let scale=g.tile_height/8.;let [_,e,n,_]=b;
+    let mut owners=std::array::from_fn(|_|0..0);
     for unit in 0..4 {
         let sample=|x:usize,y:usize| {let uv=g.uv(p.column+x/8,p.row+unit*2+y/8);
             [uv.0+(uv.1-uv.0)*((x%8)as f32+0.5)/8.,uv.2+(uv.3-uv.2)*((y%8)as f32+0.5)/8.]};
@@ -3117,7 +3232,9 @@ fn append_native_station_ticket_boxes(out:&mut SurfaceMeshData,g:&GridGeometry,p
         for (normal,color) in out.normals[first..].iter().zip(&mut out.colors[first..]) {
             *color=crate::interior_models::authored_face_color([1.;4],Vec3::from_array(*normal));
         }
+        owners[unit]=first..out.positions.len();
     }
+    owners
 }
 
 fn append_native_station_wall(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4],pillar:bool) {
@@ -3619,7 +3736,7 @@ fn append_store_vending_roof(mesh:&mut SurfaceMeshData,first:usize,height:f32,sc
     true
 }
 
-fn append_native_retail_display(mesh:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4],blue_case:bool) {
+fn append_native_retail_display(mesh:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4],blue_case:bool,vented_roof:bool) {
     if blue_case {
         append_native_blue_case(mesh,g,p,b);
         return;
@@ -3647,10 +3764,12 @@ fn append_native_retail_display(mesh:&mut SurfaceMeshData,g:&GridGeometry,p:&Pla
     mesh.indices.extend(faces.chunks_exact(3)
         .filter(|tri|mesh.normals[tri[0]as usize][2]<0.5
             &&mesh.normals[tri[0]as usize][1]<0.5).flatten().copied());
-    for x in 0..p.width {
+    if vented_roof {
+        append_native_retail_vent_roof(mesh,g,p,b,height);
+    } else {for x in 0..p.width {
         append_top(mesh,[w+(e-w)*x as f32/p.width as f32,
             w+(e-w)*(x+1)as f32/p.width as f32,n,s],height,g.uv(p.column+x,p.row));
-    }
+    }}
     // Recessed bays meet raised shelf lips and a beveled outer frame.
     // All shared knots coincide: the inset front seals the same casing rather
     // than putting floating graphics or intersecting boxes in front of it.
@@ -3680,6 +3799,43 @@ fn append_native_retail_display(mesh:&mut SurfaceMeshData,g:&GridGeometry,p:&Pla
             mesh.indices.extend([first,first+1,first+2]);
         }
     }}
+}
+
+// Mart header tiles0c/0d draw two four-pixel ventilation slots on the roof.
+// Replace only those top faces: no dark plane remains underneath the cap,
+// and the closed recess walls meet the existing cabinet at its original datum.
+fn append_native_retail_vent_roof(mesh:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4],height:f32) {
+    let [w,e,n,s]=b;
+    let floor=height-0.35*g.tile_height/8.;
+    let x=|pixel:f32|w+(e-w)*pixel/16.;
+    let z=|pixel:f32|n+(s-n)*pixel/8.;
+    let (u0,_,v0,v1)=g.uv(p.column,p.row);
+    let (_,u1,_,_)=g.uv(p.column+1,p.row);
+    let xs=[0.,6.,8.,10.,16.];
+    let ys=[0.,2.,3.,4.,5.,8.];
+    for xx in xs.windows(2) {for yy in ys.windows(2) {
+        let recessed=xx[0]>=6.&&xx[1]<=10.&&matches!(yy[0],2.|4.);
+        append_top(mesh,[x(xx[0]),x(xx[1]),z(yy[0]),z(yy[1])],
+            if recessed {floor}else{height},
+            (u0+(u1-u0)*xx[0]/16.,u0+(u1-u0)*xx[1]/16.,
+             v0+(v1-v0)*yy[0]/8.,v0+(v1-v0)*yy[1]/8.));
+    }}
+    // Use the source's pale slot edge for the actual vertical inner walls.
+    let edge=[u0+(u1-u0)*5.5/16.,v0+(v1-v0)*2.5/8.];
+    for row in [2.,4.] {
+        let (a,b,c,d)=(x(6.),x(10.),z(row),z(row+1.));
+        for (points,normal) in [
+            ([[a,floor,c],[a,height,c],[b,height,c],[b,floor,c]],[0.,0.,1.]),
+            ([[b,floor,d],[b,height,d],[a,height,d],[a,floor,d]],[0.,0.,-1.]),
+            ([[a,floor,d],[a,height,d],[a,height,c],[a,floor,c]],[1.,0.,0.]),
+            ([[b,floor,c],[b,height,c],[b,height,d],[b,floor,d]],[-1.,0.,0.]),
+        ] {
+            let start=mesh.positions.len();
+            append_solid_quad(mesh,[points[3],points[2],points[1],points[0]],normal,
+                crate::interior_models::authored_face_color([1.;4],Vec3::from_array(normal)));
+            mesh.uvs[start..].fill(edge);
+        }
+    }
 }
 
 fn append_native_blue_case(mesh:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4]) {
@@ -3933,10 +4089,13 @@ mod tests {
         }
     }
     #[test]
-    fn kanto_native_center_counters_keep_blue_fronts_markings_claims_and_footing() {
+    fn native_center_counters_keep_blue_fronts_markings_claims_and_footing_in_main_and_kanto_rooms() {
         for (block,top) in [(5,vec![0x34;4]),(6,vec![0x0c,0x0c,0x34,0x34]),
             (7,vec![0x34,0x0c]),(0x38,vec![0x34;2])] {
-            let map=if block==0x38 {"CinnabarPokecenter2FBeta"}else{"CinnabarPokecenter1F"};
+            let kanto=if block==0x38 {"CinnabarPokecenter2FBeta"}else{"CinnabarPokecenter1F"};
+            // The actual shared upstairs map has blocks05/38; blocks06/07
+            // belong to the lobby and retain that classifier's scope.
+            for map in [kanto].into_iter().chain(matches!(block,5|0x38).then_some("Pokecenter2F")) {
             let mut object=profile("Shared lab computer workstation");
             object.tileset="pokecenter".into();object.metatile=block;object.origin=[0,0];
             object.metatiles=None;object.tiles=vec![top.clone(),vec![0x24;top.len()]];object.ground=0x11;
@@ -3959,6 +4118,7 @@ mod tests {
             for i in p.indices(g.width) {let mut changed=tiles.clone();changed[i].source.tile_index^=0x80;
                 assert!(!resolve(map,&changed.iter().collect::<Vec<_>>(),&g,None)
                     .iter().any(|q|q.kind==ModelKind::ReceptionCounter));
+            }
             }
         }
     }
@@ -3995,24 +4155,29 @@ mod tests {
         }
     }
     #[test]
-    fn kanto_native_upstairs_seats_bind_whole_yellow_art_without_changing_johto() {
+    fn native_upstairs_seats_bind_whole_yellow_art_in_shared_main_and_beta_rooms() {
         for name in ["Pokecenter upstairs seat 2d 0","Pokecenter upstairs seat 2d 2","Pokecenter upstairs seat 29 0"] {
             let object=profile(name);let (tiles,g)=fixture(&object);let refs=tiles.iter().collect::<Vec<_>>();
-            let p=resolve("CinnabarPokecenter2FBeta",&refs,&g,None).into_iter()
+            for map in ["Pokecenter2F","CinnabarPokecenter2FBeta"] {
+            let p=resolve(map,&refs,&g,None).into_iter()
                 .find(|p|p.kind==ModelKind::LinkSeat).unwrap();
-            assert!(native_link_seat_source("CinnabarPokecenter2FBeta",&p,&refs,&g).is_some());
+            assert!(native_link_seat_source(map,&p,&refs,&g).is_some());
             assert!(native_link_seat_source("GoldenrodPokecenter2F",&p,&refs,&g).is_none());
             let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],..Default::default()};
             let mut claimed=vec![false;tiles.len()];
-            assert!(append(&mut mesh,"CinnabarPokecenter2FBeta",&refs,&g,&p,&mut claimed,[0,0]));
+            assert!(append(&mut mesh,map,&refs,&g,&p,&mut claimed,[0,0]));
             assert!(mesh.solid.indices.is_empty());assert_eq!(claimed.iter().filter(|&&v|v).count(),4);
             assert_eq!(mesh.footing_heights,vec![1.25;tiles.len()]);
             let mut johto=TerrainMeshData::default();
             assert!(append(&mut johto,"GoldenrodPokecenter2F",&refs,&g,&p,&mut vec![false;tiles.len()],[0,0]));
             assert!(!johto.solid.indices.is_empty());
-            for i in p.indices(g.width) {let mut changed=tiles.clone();changed[i].source.tile_index^=0x80;
-                assert!(!resolve("CinnabarPokecenter2FBeta",&changed.iter().collect::<Vec<_>>(),&g,None)
+            for i in p.indices(g.width) {for field in 0..5 {
+                let mut changed=tiles.clone();let source=&mut changed[i].source;
+                match field {0=>source.tileset_id=std::sync::Arc::from("mart"),1=>source.metatile_id^=1,
+                    2=>source.subtile_column^=1,3=>source.subtile_row^=1,_=>source.tile_index^=0x80}
+                assert!(!resolve(map,&changed.iter().collect::<Vec<_>>(),&g,None)
                     .iter().any(|q|q.kind==ModelKind::LinkSeat));
+            }}
             }
         }
     }
@@ -4644,18 +4809,23 @@ mod tests {
         let p=resolve("OaksLab",&refs,&g,None).into_iter()
             .find(|p|native_oak_table("OaksLab",p,&refs,&g)).unwrap();
         assert_eq!(p.height_pixels,10.);
-        assert_eq!(p.footing_pixels,object.footing_pixels);
+        assert_eq!(p.footing_pixels,None);
+        assert_eq!(p.depth_pixels,16.);
+        assert_eq!(native_dining_table_rows(&p),2);
         let elm=resolve("ElmsLab",&refs,&g,None).into_iter().find(|p|p.kind==ModelKind::DiningTable).unwrap();
         assert_eq!(traditional_tabletop_height("ElmsLab",&refs,&g,None,elm.column,elm.row),Some(10.));
         let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],..Default::default()};
         let mut claimed=vec![false;tiles.len()];
         assert!(append(&mut mesh,"OaksLab",&refs,&g,&p,&mut claimed,[0,0]));
         assert_eq!(claimed.iter().filter(|&&v|v).count(),18);
+        assert_eq!(mesh.footing_heights,vec![1.25;tiles.len()],"table cannot lift the walking surface");
+        assert!(mesh.textured.positions.iter().filter(|v|v[1]>0.001).all(|v|v[2] <= g.origin_z+(p.row+2)as f32*g.tile_height+0.001),
+            "table cannot extend over its walkable source apron");
         let ordinary=resolve("UnreviewedLab",&refs,&g,None).into_iter()
             .find(|p|p.kind==ModelKind::LabDisplayTable).unwrap();
         let mut old=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],..Default::default()};
         assert!(append(&mut old,"UnreviewedLab",&refs,&g,&ordinary,&mut vec![false;tiles.len()],[0,0]));
-        assert_eq!(mesh.footing_heights,old.footing_heights);
+        assert_ne!(mesh.footing_heights,old.footing_heights,"legacy display support must not raise native lab walking ground");
         assert!(mesh.solid.positions.is_empty());
         assert!(mesh.textured.positions.iter().all(|v|v[1]<=10.001));
         let swatch=native_source_swatches(&p,&g,[[10,4]])[0];
@@ -4954,6 +5124,57 @@ mod tests {
         }
     }
     #[test]
+    fn retail_vent_headers_have_open_recesses_without_changing_doors_or_support() {
+        fn roof_at(mesh:&SurfaceMeshData,x:f32,z:f32)->f32 {
+            mesh.indices.chunks_exact(3).filter_map(|tri| {
+                let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
+                if mesh.normals[tri[0]as usize][1]<0.999 {return None;}
+                let side=|a:Vec3,b:Vec3|(b.x-a.x)*(z-a.z)-(b.z-a.z)*(x-a.x);
+                let signs=[side(a,b),side(b,c),side(c,a)];
+                (signs.iter().all(|v|*v>=-0.0001)||signs.iter().all(|v|*v<=0.0001)).then_some(a.y)
+            }).fold(f32::NEG_INFINITY,f32::max)
+        }
+        for name in ["Shared Mart Ecruteak Mart refrigerator 0","Shared Mart Ecruteak Mart shelf 0"] {
+            for map in ["PewterMart","EcruteakMart","CeladonDeptStore4F","GoldenrodDeptStore4F"] {
+                let object=profile(name);let (mut tiles,g)=fixture(&object);
+                tiles.last_mut().unwrap().source.tile_index=crate::mart::ground_tile_for_map(map);
+                let refs=tiles.iter().collect::<Vec<_>>();
+                let placements=resolve(map,&refs,&g,None);
+                let p=placements.iter().find(|p|matches!(p.kind,ModelKind::RetailRefrigerator|ModelKind::RetailShelf)).unwrap();
+                assert_eq!(refs[p.row*g.width+p.column].source.tile_index,0x0c);
+                let mut mesh=TerrainMeshData{footing_heights:vec![2.5;tiles.len()],..Default::default()};
+                let mut claims=vec![false;tiles.len()];
+                assert!(append(&mut mesh,map,&refs,&g,p,&mut claims,[0,0]));
+                assert_eq!(claims.iter().filter(|&&v|v).count(),8);
+                assert!(mesh.footing_heights.iter().all(|h|*h==2.5));
+                let top=p.height_pixels*0.75*g.tile_height/8.;
+                let x=g.origin_x+p.column as f32*g.tile_width;
+                let south=g.origin_z+(p.row+p.height)as f32*g.tile_height;
+                let depth=p.depth_pixels*g.tile_height/8.;let north=south-depth;
+                for row in [2.5,4.5] {
+                    assert!((roof_at(&mesh.textured,x+7.25*g.tile_width/8.,north+depth*row/8.)
+                        -(top-0.35*g.tile_height/8.)).abs()<0.0001,"{map}: vent is open, with no flat cap above it");
+                    assert!((roof_at(&mesh.textured,x+4.*g.tile_width/8.,north+depth*row/8.)-top).abs()<0.0001);
+                }
+                assert!(mesh.textured.positions.iter().all(|v|v[1]<=top+0.0001));
+                for tri in mesh.textured.indices.chunks_exact(3) {
+                    let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
+                    assert!((b-a).cross(c-a).dot(Vec3::from_array(mesh.textured.normals[tri[0]as usize]))>0.);
+                }
+                let body=|surface:&SurfaceMeshData|surface.indices.chunks_exact(3)
+                    .filter(|tri|tri.iter().any(|&i|surface.positions[i as usize][1]<top-0.36*g.tile_height/8.))
+                    .flat_map(|tri|tri.iter().map(|&i|{let i=i as usize;
+                        (surface.positions[i],surface.normals[i],surface.uvs[i],surface.colors[i])})).collect::<Vec<_>>();
+                let mut flat=SurfaceMeshData::default();let mut vented=SurfaceMeshData::default();
+                let bounds=[x,x+p.width as f32*g.tile_width,north,south];
+                append_native_retail_display(&mut flat,&g,p,bounds,false,false);
+                append_native_retail_display(&mut vented,&g,p,bounds,false,true);
+                assert_eq!(body(&flat),body(&vented),"{map}: every original body/front attribute stays exact");
+            }
+        }
+    }
+
+    #[test]
     fn store_electronics_preserve_both_native_fronts_on_closed_cabinets() {
         let mut object=profile("Shared department store cushion 2");
         object.metatile=0x13;object.metatiles=None;object.origin=[0,0];object.ground=1;
@@ -4966,7 +5187,7 @@ mod tests {
             assert_eq!(cabinets.len(),2);
             for p in cabinets {
                 let mut mesh=SurfaceMeshData::default();
-                append_native_retail_display(&mut mesh,&g,p,[0.,16.,0.,10.],false);
+                append_native_retail_display(&mut mesh,&g,p,[0.,16.,0.,10.],false,false);
                 let mut volume=0.;let mut front_area=0.;
                 for tri in mesh.indices.chunks_exact(3) {
                     let points=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
@@ -5041,7 +5262,7 @@ mod tests {
             let seats=resolve(map,&tiles.iter().collect::<Vec<_>>(),&g,None);
             assert_eq!(seats.len(),1);
             assert_eq!(seats[0].kind,ModelKind::Cushion);
-            assert_eq!((seats[0].depth_pixels,seats[0].height_pixels),(12.,7.));
+            assert_eq!((seats[0].depth_pixels,seats[0].height_pixels),(26.,7.));
             let old=tiles[0].source.tile_index;
             tiles[0].source.tile_index=0xffff;
             assert!(resolve(map,&tiles.iter().collect::<Vec<_>>(),&g,None).is_empty());
@@ -5050,30 +5271,28 @@ mod tests {
     }
     #[test]
     fn department_store_seating_uses_native_height_and_keeps_support() {
-        for object in built_in_profiles().objects.iter().filter(|o| o.tileset=="mart" && o.name.starts_with("Shared department store cushion")) {
-            let (mut tiles,g)=fixture(object);
-            let cells=tiles.iter().collect::<Vec<_>>();
-            let p=resolve("GoldenrodDeptStore1F",&cells,&g,None);
-            let seat=p.iter().find(|p|p.kind==ModelKind::Cushion).unwrap();
-            assert_eq!(seat.height_pixels,7.0);
-            assert_eq!(seat.depth_pixels,12.0);
-            let mut mesh=TerrainMeshData {footing_heights:vec![2.5;tiles.len()],..Default::default()};
-            assert!(append(&mut mesh,"GoldenrodDeptStore1F",&cells,&g,seat,&mut vec![false;tiles.len()],[0,0]));
-            assert!(mesh.footing_heights.iter().all(|h|*h==2.5));
-            assert!(mesh.solid.positions.is_empty());
-            let top=mesh.textured.positions.iter().map(|p|p[1]).fold(0.0,f32::max);
-            assert!((top-7.0).abs()<0.001);
-            assert!(mesh.textured.positions.iter().any(|p|p[1]==0.0));
-            let swatches=native_source_swatches(seat,&g,[[1,1],[3,3],[0,1]]);
-            assert!(mesh.textured.positions.iter().zip(&mesh.textured.uvs)
-                .filter(|(position,_)|position[1]>0.)
-                .all(|(_,uv)|swatches.contains(uv)));
-            assert!(native_store_seat_source("GoldenrodDeptStore1F",seat,&cells,&g));
-            assert!(!native_store_seat_source("UnreviewedStore",seat,&cells,&g));
-            let mut raised=seat.clone();raised.base_pixels=4.;
-            assert!(!native_store_seat_source("GoldenrodDeptStore1F",&raised,&cells,&g));
-            tiles[0].source.tile_index=0xffff;
-            assert!(resolve("GoldenrodDeptStore1F",&tiles.iter().collect::<Vec<_>>(),&g,None).iter().all(|p|p.kind!=ModelKind::Cushion));
+        let mut object=profile("Shared department store cushion 0");
+        object.origin=[0,0];object.tiles=vec![vec![0x22,0x23],vec![0x32,0x33],vec![0x24,0x25],vec![0x34,0x35]];
+        let (mut tiles,g)=fixture(&object);let cells=tiles.iter().collect::<Vec<_>>();
+        let seats=resolve("GoldenrodDeptStore1F",&cells,&g,None);
+        assert_eq!(seats.len(),1,"one complete supported bench, not two independent stools");let seat=&seats[0];
+        assert_eq!((seat.height_pixels,seat.depth_pixels),(7.,26.));
+        let mut mesh=TerrainMeshData{footing_heights:vec![2.5;tiles.len()],..Default::default()};
+        let mut claims=vec![false;tiles.len()];
+        assert!(append(&mut mesh,"GoldenrodDeptStore1F",&cells,&g,seat,&mut claims,[0,0]));
+        assert_eq!(claims.iter().filter(|&&c|c).count(),8);
+        assert!(mesh.footing_heights.iter().all(|h|*h==2.5));assert!(mesh.solid.positions.is_empty());
+        let top=mesh.textured.positions.iter().map(|p|p[1]).fold(0.,f32::max);assert!((top-7.).abs()<0.001);
+        let swatches=native_source_swatches(seat,&g,[[1,1],[3,3],[0,1],[3,27],[3,30]]);
+        assert!(mesh.textured.positions.iter().zip(&mesh.textured.uvs).filter(|(p,_)|p[1]>0.)
+            .all(|(_,uv)|swatches.contains(uv)));
+        assert!(native_store_seat_source("GoldenrodDeptStore1F",seat,&cells,&g));
+        assert!(!native_store_seat_source("UnreviewedStore",seat,&cells,&g));
+        for i in seat.indices(g.width) {
+            let old=tiles[i].source.tile_index;tiles[i].source.tile_index^=1;
+            assert!(resolve("GoldenrodDeptStore1F",&tiles.iter().collect::<Vec<_>>(),&g,None).iter()
+                .all(|p|p.kind!=ModelKind::Cushion),"damaged benches never become half stools");
+            tiles[i].source.tile_index=old;
         }
     }
     #[test]
@@ -6276,10 +6495,13 @@ mod tests {
             let (_,_,v0,_)=g.uv(cabinet.column,cabinet.row);
             let (_,_,_,v1)=g.uv(cabinet.column+1,cabinet.row+3);
             let door_v=v0+(v1-v0)*0.25;
+            let front=(cabinet.row+cabinet.height) as f32*g.tile_height;
             assert!(mesh.textured.positions.iter().all(|v|v[1]<=top+0.001),
                 "roof perspective must not add another eight pixels to the cabinet front");
             for i in mesh.textured.indices.iter().map(|&i|i as usize) {
-                if mesh.textured.normals[i][2]>0.5 {
+                // The tiny inner vent walls are on the roof. This assertion
+                // guards the upright door/display plane at the front.
+                if mesh.textured.normals[i][2]>0.5 && mesh.textured.positions[i][2]>=front-1. {
                     assert!(mesh.textured.uvs[i][1]>=door_v-0.00001,
                         "vent header belongs on the roof, never on the door face");
                 }
@@ -6296,7 +6518,6 @@ mod tests {
                 assert!(mesh.textured.uvs.contains(&[uv.0,uv.2]));
                 assert!(mesh.textured.uvs.contains(&[uv.1,uv.3]));
             }}
-            let front=(cabinet.row+cabinet.height) as f32*g.tile_height;
             assert!(mesh.textured.positions.iter().any(|p|p[2]>front-1. && p[2]<front),"recessed front volume");
             }
             let mut johto=TerrainMeshData::default();
@@ -6336,7 +6557,7 @@ mod tests {
             assert!(append(&mut mesh,"OlivineCafe",&refs,&g,p,&mut claimed,[0,0]));
             assert_eq!(claimed.iter().filter(|&&v|v).count(),count);
             assert!(mesh.footing_heights.iter().all(|h|*h==1.5));assert!(mesh.solid.indices.is_empty());
-            let height=if kind==ModelKind::CafeTable {16.}else{23.};
+            let height=if kind==ModelKind::CafeTable {8.}else{23.};
             assert!((mesh.textured.positions.iter().map(|v|v[1]).fold(0.,f32::max)-height).abs()<0.001);
             if kind==ModelKind::PottedPlant {
                 for (j,i) in p.indices(g.width).enumerate() {
@@ -6380,8 +6601,9 @@ mod tests {
         assert_eq!(claimed.iter().filter(|&&c|c).count(),20);
         assert!(mesh.footing_heights.iter().all(|h|*h==0.75));
         assert!(mesh.solid.indices.is_empty());
-        assert!(mesh.textured.positions.iter().any(|p|p[1]>18.));
-        assert!(mesh.textured.positions.iter().all(|p|p[1]>=0. &&p[1]<=19.31));
+        assert_eq!(table.height_pixels,8.);
+        assert!(mesh.textured.positions.iter().any(|p|p[1]>10.));
+        assert!(mesh.textured.positions.iter().all(|p|p[1]>=0. &&p[1]<=11.31));
         let mut basket=SurfaceMeshData::default();
         append_cafe_basket(&mut basket,[0.,0.],1.,[[0.1,0.2],[0.3,0.4],[0.5,0.6]]);
         for tri in basket.indices.chunks_exact(3) {
@@ -6516,7 +6738,102 @@ mod tests {
     }
 
     #[test]
-    fn kanto_oak_workstation_keeps_native_desk_gray_console_and_exact_geometry() {
+    fn native_lab_wall_sources_require_complete_phase_and_preserve_floor_ownership() {
+        for name in ["Lab wall 08","Lab wall 0d","Lab wall 17","Lab windows 09"] {
+            let object=profile(name);let (mut tiles,g)=fixture(&object);
+            let p=Placement{kind:if name=="Lab windows 09" {ModelKind::WindowWall}else{ModelKind::WallClinical},
+                column:0,row:0,width:4,height:2,ground:tiles.len()-1,depth_pixels:3.,height_pixels:32.,
+                base_pixels:0.,footing_pixels:None};
+            for map in ["OaksLab","ElmsLab"] {
+                let refs=tiles.iter().collect::<Vec<_>>();
+                assert!(native_lab_walls::source(map,&p,&refs,&g));
+                let mut mesh=TerrainMeshData{footing_heights:vec![3.25;tiles.len()],..Default::default()};
+                let mut claims=vec![false;tiles.len()];
+                assert!(append(&mut mesh,map,&refs,&g,&p,&mut claims,[0,0]));
+                assert_eq!(claims.iter().filter(|&&v|v).count(),8);
+                assert_eq!(mesh.footing_heights,vec![3.25;tiles.len()]);
+                assert!(mesh.solid.indices.is_empty());
+                if p.kind==ModelKind::WallClinical {
+                    let mut template=SurfaceMeshData::default();
+                    assert_eq!(native_lab_walls::perimeter_template(&mut template,map,&refs,&g,&[p.clone()]),Some(0));
+                    let left=template.positions.iter().map(|p|p[0]).fold(f32::INFINITY,f32::min);
+                    let right=template.positions.iter().map(|p|p[0]).fold(f32::NEG_INFINITY,f32::max);
+                    assert_eq!(right-left,16.,"two-column perimeter sections keep the native source width");
+                    for width in [3.,11.,16.] {
+                    let section=native_lab_walls::section_template(&template,map,&refs,&g,&[p.clone()],width).unwrap();
+                    assert_eq!(section.positions,template.positions);
+                    assert_eq!(section.normals,template.normals);
+                    for tri in section.indices.chunks_exact(3) {
+                        let a=tri[0]as usize;
+                        if section.normals[a]!=Vec3::Z.to_array() {continue;}
+                        for &b in &tri[1..] {
+                            let b=b as usize;let du=section.uvs[b][0]-section.uvs[a][0];
+                            if du.abs()>0.00001 {
+                                let ratio=(section.positions[b][0]-section.positions[a][0])*width/16./du;
+                                assert!((ratio-g.width as f32*g.tile_width).abs()<0.001,
+                                    "the checker keeps square source texels even beside doors and corners");
+                            }
+                        }
+                    }
+                    }
+                }
+            }
+            for map in ["FuchsiaGym","EarlsPokemonAcademy","DragonShrine","UnreviewedLab"] {
+                assert!(!native_lab_walls::source(map,&p,&tiles.iter().collect::<Vec<_>>(),&g));
+            }
+            for i in p.indices(g.width) {
+                let before=tiles[i].source.clone();
+                for field in 0..5 {
+                    match field {0=>tiles[i].source.tile_index^=0x80,
+                        1=>tiles[i].source.metatile_id^=0x80,2=>tiles[i].source.subtile_column^=1,
+                        3=>tiles[i].source.subtile_row^=1,_=>tiles[i].source.tileset_id="house".into()};
+                    assert!(!native_lab_walls::source("ElmsLab",&p,&tiles.iter().collect::<Vec<_>>(),&g));
+                    tiles[i].source=before.clone();
+                }
+            }
+            assert!(!native_lab_walls::source("ElmsLab",&Placement{base_pixels:1.,..p.clone()},
+                &tiles.iter().collect::<Vec<_>>(),&g));
+            let mut custom=object;custom.name="Custom laboratory wall".into();
+            let custom=Document{objects:vec![custom],atmosphere:None};
+            assert!(!resolve("ElmsLab",&tiles.iter().collect::<Vec<_>>(),&g,Some(&custom)).iter()
+                .any(|p|native_lab_walls::source("ElmsLab",p,&tiles.iter().collect::<Vec<_>>(),&g)));
+        }
+    }
+
+    #[test]
+    fn native_lab_walls_keep_one_source_course_full_height_and_finished_window_edges() {
+        for name in ["Lab wall 08","Lab windows 09"] {
+            let object=profile(name);let (tiles,mut g)=fixture(&object);
+            let p=Placement{kind:if name=="Lab windows 09" {ModelKind::WindowWall}else{ModelKind::WallClinical},
+                column:0,row:0,width:4,height:2,ground:tiles.len()-1,depth_pixels:3.,height_pixels:32.,
+                base_pixels:0.,footing_pixels:None};
+            for scale in [0.5,1.,4.] {
+                g.tile_width=8.*scale;g.tile_height=8.*scale;
+                let mut out=SurfaceMeshData::default();
+                native_lab_walls::append(&mut out,&g,&p,[3.,3.+32.*scale,5.,5.+3.*scale]);
+                let mut area=0.;let mut relief_area=0.;
+                for tri in out.indices.chunks_exact(3) {
+                    let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(out.positions[i as usize]));
+                    let n=Vec3::from_array(out.normals[tri[0]as usize]);
+                    let cross=(b-a).cross(c-a);assert!(cross.dot(n)>0.);
+                    if n==Vec3::Z {area+=cross.length()*0.5;
+                        if a.z>5.+3.1*scale {relief_area+=cross.length()*0.5;}
+                    }
+                }
+                assert!((area-32.*32.*scale*scale).abs()<0.01,
+                    "one complete front, no duplicate underlying window or repeated facade");
+                let expected=if p.kind==ModelKind::WindowWall {2.*14.*9.*scale*scale}else{0.};
+                assert!((relief_area-expected).abs()<0.01,"both source-sized windows keep their edges");
+                assert_eq!(out.positions.iter().map(|p|p[1]).fold(0.,f32::max),32.*scale);
+                let cream=native_source_swatches(&p,&g,[[0,0]])[0];
+                assert!(out.positions.iter().zip(&out.uvs).filter(|(p,_)|p[1]<16.*scale)
+                    .all(|(_,uv)|*uv==cream),"plain lower course never repeats the window/blue band");
+            }
+        }
+    }
+
+    #[test]
+    fn kanto_oak_workstation_reconstructs_three_units_and_preserves_source_ownership() {
         let object=profile("Shared lab computer workstation");let (mut tiles,g)=fixture(&object);
         let refs=tiles.iter().collect::<Vec<_>>();
         let p=resolve("OaksLab",&refs,&g,Some(built_in_profiles())).into_iter()
@@ -6531,15 +6848,20 @@ mod tests {
         let floor_indices=other.textured.indices.len();
         let source_geometry=|surface:&SurfaceMeshData,skip:usize|surface.indices[skip..].iter()
             .map(|&i|(surface.positions[i as usize],surface.normals[i as usize])).collect::<Vec<_>>();
-        assert_eq!(source_geometry(&mesh.textured,floor_indices),source_geometry(&other.solid,0),
-            "native paint retains every fitted triangle position and normal");
+        assert_ne!(source_geometry(&mesh.textured,floor_indices),source_geometry(&other.solid,0),
+            "authenticated lab assembly replaces the generic widescreen form");
+        let native=&mesh.textured.positions[p.width*p.height*4..];
+        assert_eq!(native.iter().map(|p|p[1]).fold(0.,f32::max),22.);
+        assert!(native.iter().any(|p|p[0]>20. && p[1]==22.),"tall enclosure at right");
+        assert!(native.iter().any(|p|p[0]<14. && p[1]==19.),"compact left CRT");
+        assert!(native.iter().any(|p|p[0]>14. && p[0]<22. && p[1]==16.5),"separate centre unit");
         assert!(mesh.textured.uvs.contains(&desk[0]),"source gold desk region retained");
         assert!(mesh.textured.uvs.contains(&swatches[2]),"source gray console retained");
         assert!(mesh.textured.uvs.contains(&swatches[6]),"source dark display retained");
         for (&position,&uv) in mesh.textured.positions.iter().zip(&mesh.textured.uvs) {
             if desk.contains(&uv) {
-                assert!((9.6..=11.7).contains(&position[1]),
-                    "gold stays on the fitted worktop, away from tower and keyboard");
+                assert!((0.0..=8.5).contains(&position[1]),
+                    "gold stays on the low workbench and legs, away from equipment");
             }
         }
         for tri in mesh.textured.indices[floor_indices..].chunks_exact(3) {
@@ -6888,14 +7210,25 @@ mod tests {
             let n=Vec3::from_array(mesh.textured.normals[tri[0]as usize]);
             let area=(points[1]-points[0]).cross(points[2]-points[0]);
             assert!(area.dot(n)>0.,"all enclosure/bay faces point outward");
-            if n==Vec3::Z {
+            let uv=[tri[0],tri[1],tri[2]].map(|i|mesh.textured.uvs[i as usize]);
+            if n==Vec3::Z && (uv[0]!=uv[1] || uv[0]!=uv[2]) {
                 front_area+=area.length()*0.5;
                 let y=points.iter().map(|p|p.y).sum::<f32>()/3.;
                 let x=points.iter().map(|p|p.x).sum::<f32>()/3.;
                 if x>8.&&x<24.&&y>7.5&&y<22.5 {bay_z=Some(points[0].z);}else{frame_z=Some(points[0].z);}
             }
         }
-        assert!(bay_z.unwrap()<frame_z.unwrap(),"idle bay is recessed and has no raised capsules");
+        assert!((frame_z.unwrap()-bay_z.unwrap()-4.).abs()<0.001,
+            "the empty bay has physical depth instead of a shallow inset");
+        let frame_z=frame_z.unwrap();
+        assert!(mesh.textured.positions.iter().any(|v|v[2]>frame_z+0.65),"side controls have actual relief");
+        for tri in mesh.textured.indices[floor_indices..].chunks_exact(3) {
+            let uv=[tri[0],tri[1],tri[2]].map(|i|mesh.textured.uvs[i as usize]);
+            if uv[0]!=uv[1] || uv[0]!=uv[2] {continue;}
+            let points=[tri[0],tri[1],tri[2]].map(|i|mesh.textured.positions[i as usize]);
+            assert!(!points.iter().all(|v|v[0]>8.5&&v[0]<23.5&&v[1]>7.5&&v[1]<22.5&&v[2]>frame_z),
+                "idle physical controls must not fill the healing bay");
+        }
         let bounds=mesh.textured.positions[16*4..].iter().fold([f32::INFINITY,f32::NEG_INFINITY],|[lo,hi],p|[lo.min(p[0]),hi.max(p[0])]);
         assert!((front_area-(bounds[1]-bounds[0]-1.)*30.).abs()<0.001,"complete native front is retained");
         for y in 0..4 {for x in 0..4 {let uv=g.uv(p.column+x,p.row+y);
@@ -6905,6 +7238,72 @@ mod tests {
         for i in p.indices(g.width) {tiles[i].source.tile_index^=1;
             assert!(!resolve("PewterPokecenter1F",&tiles.iter().collect::<Vec<_>>(),&g,None).iter()
                 .any(|p|p.kind==ModelKind::HealingMachine));tiles[i].source.tile_index^=1;}
+    }
+    fn indigo_stock_fixture() -> (Vec<VisualTile>,GridGeometry) {
+        let mut object=profile("Shared Pokecenter healing machine");
+        object.metatile=0x2c;
+        object.tiles=vec![vec![0x5c,0x5d,0x5c,0x5d],vec![0x5e,0x5f,0x5e,0x5f],
+            vec![0x5e,0x5f,0x5e,0x5f],vec![0x2a,0x2b,0x2a,0x2b]];
+        fixture(&object)
+    }
+    #[test]
+    fn indigo_stock_requires_complete_source_and_respects_custom_ownership() {
+        let (mut tiles,g)=indigo_stock_fixture();
+        let check=|tiles:&[VisualTile],map:&str|resolve(map,&tiles.iter().collect::<Vec<_>>(),&g,None)
+            .into_iter().filter(|p|p.kind==ModelKind::RetailShelf).collect::<Vec<_>>();
+        assert_eq!(check(&tiles,"IndigoPlateauPokecenter1F").len(),2);
+        assert!(check(&tiles,"PewterPokecenter1F").is_empty());
+        let mut custom=profile("Shared Pokecenter healing machine");
+        custom.name="Custom Indigo stock".into();custom.metatile=0x2c;
+        custom.tiles=(0..4).map(|y|(0..4).map(|x|tiles[y*g.width+x].source.tile_index).collect()).collect();
+        let document=Document{objects:vec![custom],atmosphere:None};
+        assert!(!resolve("IndigoPlateauPokecenter1F",&tiles.iter().collect::<Vec<_>>(),&g,Some(&document))
+            .iter().any(|p|p.kind==ModelKind::RetailShelf));
+        for row in 0..4 {for column in 0..4 {
+            let i=row*g.width+column;
+            for field in 0..5 {
+                let original=tiles[i].source.clone();
+                match field {0=>tiles[i].source.tile_index^=1,1=>tiles[i].source.subtile_column^=1,
+                    2=>tiles[i].source.metatile_id^=1,3=>tiles[i].source.subtile_row^=1,
+                    _=>tiles[i].source.tileset_id="mart".into()};
+                assert!(check(&tiles,"IndigoPlateauPokecenter1F").is_empty());
+                tiles[i].source=original;
+            }
+            let refs=tiles.iter().collect::<Vec<_>>();
+            let mut claimed=vec![false;tiles.len()];claimed[i]=true;let mut out=Vec::new();
+            native_clinic::append_stock_candidates("IndigoPlateauPokecenter1F",&refs,&g,&mut claimed,&mut out);
+            assert!(out.is_empty(),"one custom claim protects the complete two-cabinet drawing");
+            assert_eq!(claimed.iter().filter(|&&v|v).count(),1);
+        }}
+    }
+    #[test]
+    fn indigo_stock_is_upright_recessed_and_keeps_floor_and_support() {
+        let (tiles,g)=indigo_stock_fixture();let refs=tiles.iter().collect::<Vec<_>>();
+        let shelves=resolve("IndigoPlateauPokecenter1F",&refs,&g,None).into_iter()
+            .filter(|p|p.kind==ModelKind::RetailShelf).collect::<Vec<_>>();
+        let mut claims=vec![false;tiles.len()];
+        let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],..Default::default()};
+        for p in &shelves {
+            assert_eq!((p.width,p.height,p.depth_pixels,p.height_pixels),(2,4,8.,32.));
+            let first=mesh.textured.positions.len();
+            assert!(append(&mut mesh,"IndigoPlateauPokecenter1F",&refs,&g,p,&mut claims,[0,0]));
+            let body=first+8*4; // the original floor is restored under all eight source cells
+            let positions=&mesh.textured.positions[body..];
+            assert_eq!(positions.iter().map(|v|v[1]).fold(0.,f32::max),24.);
+            assert_eq!(positions.iter().map(|v|v[2]).fold(f32::INFINITY,f32::min),24.);
+            assert_eq!(positions.iter().map(|v|v[2]).fold(0.,f32::max),32.);
+            assert!(positions.iter().any(|v|v[2]>31.&&v[2]<32.),"recessed shelf bays");
+            for axis in [[0.,1.,0.],[0.,-1.,0.],[-1.,0.,0.],[1.,0.,0.],[0.,0.,-1.]] {
+                assert!(mesh.textured.normals[body..].contains(&axis),"finished casing {axis:?}");
+            }
+            for row in 0..4 {for col in 0..2 {
+                let uv=g.uv(p.column+col,p.row+row);
+                assert!(mesh.textured.uvs[body..].iter().any(|v|
+                    v[0]>=uv.0&&v[0]<=uv.1&&v[1]>=uv.2&&v[1]<=uv.3),"own source course {col},{row}");
+            }}
+        }
+        assert_eq!(claims.iter().filter(|&&v|v).count(),16);
+        assert!(mesh.footing_heights.iter().all(|&v|v==1.25));
     }
     #[test]
     fn complete_machine_claims_only_its_drawing_and_appends_original_ground() {
@@ -7041,3 +7440,15 @@ include!("bedroom_carpet.rs");
 include!("interior_variation.rs");
 
 include!("prize_booth.rs");
+
+pub(super) fn store_bench_seat_rects(map:&str,p:&Placement,s:&VisualTileSource)->Option<[[f32;4];2]> {
+    native_store_bench::seat_rects(map,p,s)
+}
+
+#[cfg(test)]
+#[path = "native_retail_shell_tests.rs"]
+mod native_retail_shell_tests;
+
+#[cfg(test)]
+#[path = "native_shared_reveal_tests.rs"]
+mod native_shared_reveal_tests;

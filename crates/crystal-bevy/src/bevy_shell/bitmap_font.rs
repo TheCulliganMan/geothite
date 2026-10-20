@@ -4515,6 +4515,9 @@ fn visible_map_object_model_source_id(
         ("RadioTower4F", Some("RADIOTOWER4F_GROWLITHE"), "RadioTowerMeowth") => {
             Some(("MEOWTH", "SPRITE_GROWLITHE", "growlithe"))
         }
+        ("VermilionCity", Some("VERMILIONCITY_BIG_SNORLAX"), "VermilionSnorlax") => {
+            Some(("SNORLAX", "SPRITE_BIG_SNORLAX", "big_snorlax"))
+        }
         ("CeladonMansion1F", Some("CELADONMANSION1F_GROWLITHE1"), "CeladonMansion1FMeowth") => {
             Some(("MEOWTH", "SPRITE_GROWLITHE", "growlithe"))
         }
@@ -4609,6 +4612,15 @@ fn visible_object_model_source_id(
         .unwrap_or(visible_sprite);
     let normalized = requested.trim().to_ascii_uppercase();
     let species = normalized.strip_prefix("SPRITE_").unwrap_or(&normalized);
+    let doll_slot=map=="PlayersHouse2F"
+        && matches!(original_sprite,"SPRITE_DOLL_1"|"SPRITE_DOLL_2"|"SPRITE_BIG_DOLL");
+    let surfing_doll=doll_slot
+        && matches!(original_sprite,"SPRITE_DOLL_1"|"SPRITE_DOLL_2")
+        && species=="SURFING_PIKACHU" && bitmap_source=="surfing_pikachu";
+    let species=if surfing_doll {"PIKACHU"} else {species};
+    let species=if doll_slot && original_sprite=="SPRITE_BIG_DOLL" {
+        species.strip_prefix("BIG_").unwrap_or(species)
+    } else {species};
     // The original decoration catalog calls the STARYU doll SPRITE_STARMIE.
     // This exception belongs only to the two bedroom doll slots. A visible
     // Starmie elsewhere remains Starmie, including Day Care and variable NPCs.
@@ -4621,7 +4633,8 @@ fn visible_object_model_source_id(
         species
     };
     if menu_icons.contains_key(species) {
-        format!("species:{species}:{bitmap_source}")
+        let role=if doll_slot {"display"}else{"species"};
+        format!("{role}:{species}:{bitmap_source}")
     } else {
         bitmap_source.to_string()
     }
@@ -5014,6 +5027,47 @@ mod visible_species_source_tests {
             "SPRITE_MONSTER", "monster", &variables, &icons), "monster");
     }
     #[test]
+    fn doll_slots_publish_inert_species_models_and_doll_labels() {
+        let icons=BTreeMap::from([
+            ("LAPRAS".into(),"ICON_LAPRAS".into()),
+            ("SNORLAX".into(),"ICON_SNORLAX".into()),
+            ("ONIX".into(),"ICON_SERPENT".into()),
+            ("BLASTOISE".into(),"ICON_SQUIRTLE".into()),
+        ]);
+        for (slot,sprite,art,species) in [
+            ("SPRITE_BIG_DOLL","SPRITE_BIG_LAPRAS","big_lapras","LAPRAS"),
+            ("SPRITE_BIG_DOLL","SPRITE_BIG_SNORLAX","big_snorlax","SNORLAX"),
+            ("SPRITE_BIG_DOLL","SPRITE_BIG_ONIX","big_onix","ONIX"),
+            ("SPRITE_DOLL_1","SPRITE_BLASTOISE","icon_squirtle","BLASTOISE"),
+        ] {
+            let variables=BTreeMap::from([(slot.into(),sprite.into())]);
+            let source=visible_object_model_source_id("PlayersHouse2F",slot,slot,art,&variables,&icons);
+            assert_eq!(source,format!("display:{species}:{art}"));
+            assert_eq!(resolved_object_species_label(&source),Some(format!("{species} DOLL")));
+        }
+        assert_eq!(visible_object_model_source_id("DayCare","SPRITE_LAPRAS",
+            "SPRITE_LAPRAS","icon_lapras",&BTreeMap::new(),&icons),"species:LAPRAS:icon_lapras");
+    }
+
+    #[test]
+    fn surfing_pikachu_identity_is_scoped_to_bedroom_ornaments() {
+        let icons=BTreeMap::from([("PIKACHU".into(),"ICON_PIKACHU".into())]);
+        for slot in ["SPRITE_DOLL_1","SPRITE_DOLL_2"] {
+            let variables=BTreeMap::from([(slot.into(),"SPRITE_SURFING_PIKACHU".into())]);
+            let source=visible_object_model_source_id("PlayersHouse2F",slot,slot,
+                "surfing_pikachu",&variables,&icons);
+            assert_eq!(source,"display:PIKACHU:surfing_pikachu");
+            assert_eq!(resolved_object_species_label(&source),Some("SURFING PIKACHU DOLL".into()));
+            assert_eq!(visible_object_model_source_id("DayCare",slot,slot,
+                "surfing_pikachu",&variables,&icons),"surfing_pikachu");
+        }
+        assert_eq!(visible_object_model_source_id("PlayersHouse2F","SPRITE_SURFING_PIKACHU",
+            "SPRITE_SURFING_PIKACHU","surfing_pikachu",&BTreeMap::new(),&icons),"surfing_pikachu");
+        assert_eq!(visible_object_model_source_id("PlayersHouse2F","SPRITE_DOLL_1",
+            "SPRITE_SURFING_PIKACHU","unknown_art",&BTreeMap::new(),&icons),"unknown_art");
+    }
+
+    #[test]
     fn compiled_catalog_publishes_all_30_live_actor_decoration_sources() {
         let root = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("../..")
@@ -5045,9 +5099,13 @@ mod visible_species_source_tests {
             let model = visible_object_model_source_id("PlayersHouse2F", slot, slot, &bitmap, &variables, icons);
             assert!(!model.contains(slot), "unresolved {}", decoration.id);
             let requested = decoration.sprite.strip_prefix("SPRITE_").unwrap();
-            if icons.contains_key(requested) {
+            let requested=requested.strip_prefix("BIG_").unwrap_or(requested);
+            if requested=="SURFING_PIKACHU" {
+                assert_eq!(model,"display:PIKACHU:surfing_pikachu");
+                assert_eq!(resolved_object_species_label(&model),Some("SURFING PIKACHU DOLL".into()));
+            } else if icons.contains_key(requested) {
                 let species = if decoration.id == "DECO_STARYU_DOLL" { "STARYU" } else { requested };
-                assert_eq!(model, format!("species:{species}:{bitmap}"), "{}", decoration.id);
+                assert_eq!(model, format!("display:{species}:{bitmap}"), "{}", decoration.id);
             } else {
                 assert_eq!(model, bitmap, "{}", decoration.id);
             }
@@ -5062,7 +5120,7 @@ mod visible_species_source_tests {
         for slot in ["SPRITE_DOLL_1", "SPRITE_DOLL_2"] {
             let variables = BTreeMap::from([(slot.into(), "SPRITE_STARMIE".into())]);
             assert_eq!(visible_object_model_source_id("PlayersHouse2F", slot, slot,
-                "icon_staryu", &variables, &icons), "species:STARYU:icon_staryu");
+                "icon_staryu", &variables, &icons), "display:STARYU:icon_staryu");
             assert_eq!(visible_object_model_source_id("DayCare", slot, slot,
                 "icon_staryu", &variables, &icons), "species:STARMIE:icon_staryu");
         }
@@ -5093,6 +5151,28 @@ mod named_object_species_source_tests {
             object_identifier: Some("OLIVINELIGHTHOUSE6F_MONSTER".into()),
             sightline_direction_override: None,
         }
+    }
+
+    #[test]
+    fn vermilion_snorlax_is_living_but_its_bedroom_doll_is_a_display() {
+        let mut object=amphy();
+        object.sprite="SPRITE_BIG_SNORLAX".into();
+        object.script="VermilionSnorlax".into();
+        object.object_identifier=Some("VERMILIONCITY_BIG_SNORLAX".into());
+        let icons=BTreeMap::from([("SNORLAX".into(),"ICON_SNORLAX".into())]);
+        let source=visible_map_object_model_source_id("VermilionCity",&object,
+            &object.sprite,"big_snorlax",&BTreeMap::new(),&icons);
+        assert_eq!(source,"species:SNORLAX:big_snorlax");
+        assert_eq!(resolved_object_scene_label(&object,&source),"SNORLAX");
+        assert_eq!(field_object_prompt_for_source(&object,&source),"A SNORLAX");
+        let variables=BTreeMap::from([("SPRITE_BIG_DOLL".into(),"SPRITE_BIG_SNORLAX".into())]);
+        let doll=visible_object_model_source_id("PlayersHouse2F","SPRITE_BIG_DOLL",
+            "SPRITE_BIG_DOLL","big_snorlax",&variables,&icons);
+        assert_eq!(doll,"display:SNORLAX:big_snorlax");
+        assert_eq!(resolved_object_scene_label(&object,&doll),"SNORLAX DOLL");
+        object.script="OtherObject".into();
+        assert_eq!(visible_map_object_model_source_id("VermilionCity",&object,
+            &object.sprite,"big_snorlax",&BTreeMap::new(),&icons),"big_snorlax");
     }
 
     #[test]
@@ -5198,6 +5278,27 @@ mod named_object_species_source_tests {
 #[cfg(test)]
 mod compiled_amphy_identity_tests {
     use super::*;
+
+    #[test]
+    fn compiled_vermilion_snorlax_keeps_species_identity_and_source_object() {
+        let root=std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
+        let pack=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(std::path::PathBuf::from)
+            .unwrap_or_else(||root.join("content-packs/core-modular.browser.crystalpack"));
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&pack).unwrap();
+        let runtime=CrystalRuntime::from_loaded_compiled_pack(&AssetRoot::new(root),loaded).unwrap();
+        let map=&runtime.data().maps["VermilionCity"];
+        let object=map.objects.iter().find(|o|o.object_identifier.as_deref()==Some("VERMILIONCITY_BIG_SNORLAX")).unwrap();
+        assert_eq!(object.script,"VermilionSnorlax");
+        assert_eq!(object.sprite,"SPRITE_BIG_SNORLAX");
+        assert!(map.scripted_wild_battles.iter().any(|battle|
+            battle.source_script.starts_with("VermilionSnorlax") && battle.request.species=="SNORLAX"));
+        let before=object.clone();
+        let source=visible_map_object_model_source_id("VermilionCity",object,
+            &object.sprite,"big_snorlax",&BTreeMap::new(),&runtime.data().menu_icons);
+        assert_eq!(source,"species:SNORLAX:big_snorlax");
+        assert_eq!(resolved_object_scene_label(object,&source),"SNORLAX");
+        assert_eq!(object,&before);
+    }
 
     #[test]
     fn compiled_named_pokemon_match_dialogue_and_cry_instead_of_shared_icon_art() {

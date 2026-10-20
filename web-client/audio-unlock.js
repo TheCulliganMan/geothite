@@ -23,3 +23,36 @@ export function mountAudioUnlock(wasm, document, { onState = () => {}, control }
   }
   return resume;
 }
+
+// The old page wrote a forced mute on every visit. Store only deliberate user
+// choices under a new key, so that obsolete default cannot silence normal play.
+export function mountGameAudio(wasm, document, { button, canvas, storage, params, embedded = false }) {
+  const development = embedded || params.has('preview') || params.get('development') === '1';
+  let muted = development || storage.getItem('crystal.audio.preference') === 'muted';
+  let audioState = 'idle';
+  const update = () => {
+    wasm.crystal_set_muted(muted);
+    button.dataset.audible = String(!muted && audioState === 'ready');
+    button.setAttribute('aria-pressed', String(muted));
+    button.setAttribute('aria-label', development ? 'Sound muted in development'
+      : muted || audioState !== 'ready' ? 'Enable sound' : 'Mute sound');
+    button.title = button.getAttribute('aria-label');
+  };
+  button.disabled = development;
+  update();
+  const resume = mountAudioUnlock(wasm, document, {
+    control: button,
+    onState: state => { audioState = state; update(); },
+  });
+  // Muted playback still advances source WaitSFX timing in development.
+  // Keep gesture-driven activation, with master gain fixed at zero.
+  if (development) return resume;
+  button.addEventListener('click', event => {
+    muted = muted || audioState !== 'ready' ? false : true;
+    update();
+    storage.setItem('crystal.audio.preference', muted ? 'muted' : 'audible');
+    resume(event);
+    canvas.focus({ preventScroll: true });
+  });
+  return resume;
+}

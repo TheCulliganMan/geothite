@@ -5675,7 +5675,9 @@ fn quick_save_from_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
 }
 
 fn quick_save_from_bill_pc(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
-    quick_save_with_policy(runtime_shell, true, true, true).map(|_| ())
+    anyhow::ensure!(quick_save_with_policy(runtime_shell, true, true, true)?,
+        "Bill's PC could not save the game");
+    Ok(())
 }
 
 fn persist_visible_battle_tower_sram(
@@ -5795,7 +5797,19 @@ fn quick_save_with_policy(
             pack_content_hash
         ),
     )?;
-    runtime_shell.shell.save(&path)?;
+    if allow_bill_pc && runtime_shell.pc_hub_session_open {
+        // SRAM does not restore PCScript's open menu/textbox on Continue.
+        // Close only those transient surfaces on a persistence copy, using
+        // the ordinary runtime mutations. The live PC owner and all party,
+        // box, map, script-variable and progression data remain intact.
+        let mut checkpoint=runtime_shell.shell.clone();
+        if snapshot_before_save.ui.menu.is_some() {checkpoint.close_active_menu()?;}
+        if snapshot_before_save.ui.window_open {checkpoint.close_runtime_window()?;}
+        if snapshot_before_save.ui.text_window_open {checkpoint.close_text_window()?;}
+        checkpoint.save(&path)?;
+    } else {
+        runtime_shell.shell.save(&path)?;
+    }
     let summary = runtime_shell.shell.runtime().load_save_summary(&path)?;
     runtime_shell.last_audio_events.push(format!(
         "saved {} frame={} pack_hash={} state_hash={:#010x}",

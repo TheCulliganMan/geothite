@@ -619,3 +619,62 @@ fn renderer_neutral_controller_opens_and_closes_both_department_store_clerks() {
         assert_eq!(controller.snapshot().unwrap().overworld.tile,TilePosition::new(8,2),"{map}: movement resumes");
     }
 }
+
+#[test]
+#[ignore = "requires an external verified pack via CRYSTAL_RENDER_TEST_PACK"]
+fn renderer_neutral_controller_standard_mart_checkout_browses_and_returns_walking_in_all_thirteen_rooms() {
+    let pack=PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").expect("external pack"));
+    let root=AssetRoot::new(pack.parent().unwrap());
+    let runtime=CrystalRuntime::from_loaded_compiled_pack(&root,
+        crystal_assets::read_loaded_verified_compiled_game_pack(&pack).unwrap()).unwrap();
+    let maps=["AzaleaMart","BlackthornMart","CherrygroveMart","EcruteakMart","OlivineMart","VioletMart",
+        "CeruleanMart","FuchsiaMart","LavenderMart","PewterMart","SaffronMart","VermilionMart","ViridianMart"];
+    for map in maps {
+        // Only room/player placement is a disposable fixture. Facing, counter
+        // interaction, shop navigation, logoff and walking use real input.
+        let shell=initialize_bevy_runtime_shell(root.clone(),runtime.clone(),
+            BevyShellStart::NewGameAtRuntimeTile{spawn_identifier:runtime.title_new_game_spawn_identifier().unwrap(),
+                map_name:map.into(),tile_x:3,tile_y:3},
+            BevyShellConfig{smoke_player_name:Some("CHRIS".into()),..Default::default()}).unwrap();
+        let mut controller=VisibleShellController{shell};
+        complete_visible_smoke_player_name_if_needed(&mut controller.shell,Some("CHRIS")).unwrap();
+        settle_visible_shell_until_input(&mut controller.shell).unwrap();
+        let money=controller.shell.shell.session().state().money;
+        let bag=controller.shell.shell.session().state().bag.clone();
+        controller.press(GameButton::Left).unwrap();
+        assert_eq!(controller.snapshot().unwrap().overworld.tile,TilePosition::new(3,3));
+        let clerk=&runtime.data().maps[map].objects[0];
+        assert_eq!(clerk.sprite,"SPRITE_CLERK");
+        let expected=&clerk.script;
+        assert_eq!(controller.shell.shell.current_overworld_interaction_checked().unwrap().map(|i|i.script),Some(expected.clone()),
+            "{map}: interact across the authoritative counter");
+        for _ in 0..16 {
+            if controller.snapshot().unwrap().pending_shop.is_some() && controller.shell.shop_top_cursor.is_some() {break;}
+            controller.press(GameButton::A).unwrap();
+        }
+        let shop=controller.snapshot().unwrap().pending_shop.expect("real authored shop");
+        assert_eq!(shop.source_script.rsplit('@').next(),Some(expected.as_str()));
+        assert!(!shop.inventory.is_empty());assert!(controller.shell.shop_top_cursor.is_some());
+        for _ in 0..8 {
+            controller.press(GameButton::A).unwrap();
+            if controller.shell.shop_top_cursor.is_none() {break;}
+        }
+        assert!(controller.shell.shop_top_cursor.is_none());
+        assert!(controller.snapshot().unwrap().pending_shop.is_some(),"BUY opens the actual inventory");
+        for _ in 0..16 {
+            let snapshot=controller.snapshot().unwrap();
+            if snapshot.pending_shop.is_none()&&!snapshot.ui.text_window_open&&snapshot.ui.menu.is_none() {break;}
+            controller.press(GameButton::B).unwrap();
+        }
+        let closed=controller.snapshot().unwrap();assert!(closed.pending_shop.is_none());
+        assert!(!closed.ui.text_window_open&&closed.ui.menu.is_none());
+        assert_eq!(controller.shell.shell.session().state().money,money);
+        assert_eq!(controller.shell.shell.session().state().bag,bag);
+        for _ in 0..8 {
+            controller.press(GameButton::Down).unwrap();
+            if controller.snapshot().unwrap().overworld.tile==TilePosition::new(3,4) {break;}
+        }
+        assert_eq!(controller.snapshot().unwrap().overworld.tile,TilePosition::new(3,4),"{map}: modal input released");
+        assert_eq!(controller.shell.last_error,None);
+    }
+}

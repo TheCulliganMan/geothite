@@ -9,7 +9,7 @@ use crystal_render_api::{
 
 include!("battle_measurements.rs");
 
-#[derive(Component)]
+#[derive(Component, Clone, Copy)]
 struct ImmersiveBattleReplaced;
 #[derive(Component)]
 struct ImmersiveBattleSourceObject(usize);
@@ -1930,6 +1930,12 @@ fn immersive_battle_source_ui_scale(view_width:f32,pixels_per_unit:f32,display_d
     (source_pixels/(4.0*pixels_per_unit)).min(preferred)
 }
 
+fn immersive_battle_board_scale(hud_scale:f32,pixels_per_unit:f32,display_dpi:f32)->f32 {
+    // Two display pixels per source pixel keep the eleven-row board readable
+    // without covering the whole battler strip. HP panels retain their larger font.
+    hud_scale.min(2.0*display_dpi/(4.0*pixels_per_unit))
+}
+
 #[cfg(test)]
 #[test]
 fn native_battle_hud_glyphs_remain_readable_without_overlapping_panels() {
@@ -1948,6 +1954,38 @@ fn native_battle_hud_glyphs_remain_readable_without_overlapping_panels() {
             // both outer gutters; each name/HP panel must fit beside the other.
             let combined=(704.0*scale+64.0)*pixels_per_unit;
             assert!(combined<=physical.x,"HUD panels overlap at {width}x{height}/{dpi}x");
+        }
+    }
+}
+
+#[cfg(test)]
+#[test]
+fn native_competitive_board_retains_readable_text_inside_its_reserved_strip() {
+    for (width,height) in [(640.0,576.0),(1280.0,800.0)] {
+        for dpi in [1.0,2.0,3.0] {
+            let physical=Vec2::new(width,height)*dpi;
+            #[cfg(feature="fullscreen-scaling")]
+            let pixels_per_unit=fullscreen_pixels_per_world_unit(physical,dpi)*dpi;
+            #[cfg(not(feature="fullscreen-scaling"))]
+            let pixels_per_unit=(physical/Vec2::new(640.0,576.0)).min_element();
+            let hud=immersive_battle_source_ui_scale(physical.x/pixels_per_unit,pixels_per_unit,dpi);
+            let board=immersive_battle_board_scale(hud,pixels_per_unit,dpi);
+            let glyph_css=TILE_SIZE*board*pixels_per_unit/dpi;
+            assert!((15.99..=16.01).contains(&glyph_css));
+            let (_,source_center)=battle_window_center(0.,7.,20.,COMPETITIVE_MOVE_BOARD_HEIGHT_TILES);
+            let source_half=COMPETITIVE_MOVE_BOARD_HEIGHT_TILES*TILE_SIZE*0.5;
+            let view_height=physical.y/pixels_per_unit;
+            let command_center=-view_height*0.5+24.+96.*board;
+            let bottom=(command_center+(source_center-source_half+192.)*board+view_height*0.5)*pixels_per_unit;
+            let top=(command_center+(source_center+source_half+192.)*board+view_height*0.5)*pixels_per_unit;
+            assert!((bottom-24.*pixels_per_unit).abs()<0.01,
+                "the full board keeps the bottom gutter when the font changes");
+            let reserved=(24.+COMPETITIVE_MOVE_BOARD_HEIGHT_TILES*TILE_SIZE*board+8.)*pixels_per_unit;
+            assert!(top+7.99*pixels_per_unit<=reserved);
+            if width==1280. && height==800. {
+                assert!(reserved<=physical.y*0.25+0.01,
+                    "the dense board must stay below the established complete-battler strip");
+            }
         }
     }
 }
@@ -2066,6 +2104,16 @@ Visibility::Hidden,),
     #[cfg(not(target_arch = "wasm32"))]
     let display_dpi = window.scale_factor();
     let scale = immersive_battle_source_ui_scale(view.x, pixels_per_unit, display_dpi);
+    let board_scale = immersive_battle_board_scale(scale, pixels_per_unit, display_dpi);
+    let expanded_board = shell.battle_move_cursor.is_some() && ui.iter().any(|(_, sprite, _, _, _)|
+        sprite.custom_size == Some(Vec2::new(20.0 * TILE_SIZE,
+            COMPETITIVE_MOVE_BOARD_HEIGHT_TILES * TILE_SIZE)));
+    let competitive = expanded_board || shell.cached_snapshot.as_ref()
+        .is_some_and(|(_, snapshot)| snapshot.competitive_battle.is_some());
+    let command_scale = if expanded_board { board_scale } else { scale };
+    let command_height = if competitive {
+        COMPETITIVE_MOVE_BOARD_HEIGHT_TILES * TILE_SIZE * board_scale
+    } else { 192.0 * scale };
     let mut bounds = [None::<Rect>; 2];
     for (_, sprite, transform, source, hud) in &ui {
         if hud.is_none() {
@@ -2086,7 +2134,7 @@ Visibility::Hidden,),
     // cannot reframe the battle halfway through a turn.
     if let Some(height) = bounds.iter().flatten().map(|rect| rect.height()).reduce(f32::max) {
         let top = (32.0 + height * scale + 14.0 + 8.0) * pixels_per_unit / physical.y;
-        let bottom = 1.0 - (24.0 + 192.0 * scale + 8.0) * pixels_per_unit / physical.y;
+        let bottom = 1.0 - (24.0 + command_height + 8.0) * pixels_per_unit / physical.y;
         ui_bounds.reserve(physical, top, bottom);
     }
     let panel_center = |side: usize, rect: Rect| {
@@ -2120,7 +2168,7 @@ Visibility::Hidden,),
     } else {
         Vec2::new(0.0, -192.0)
     };
-    let command_center = Vec2::new(0.0, -view.y * 0.5 + 24.0 + 96.0 * scale);
+    let command_center = Vec2::new(0.0, -view.y * 0.5 + 24.0 + 96.0 * command_scale);
     for (entity, sprite, mut transform, source, hud) in &mut ui {
         let base = source.map_or(*transform, |source| source.0);
         if source.is_none() {
@@ -2157,10 +2205,10 @@ Visibility::Hidden,),
                     .entity(entity)
                     .remove::<bevy::camera::visibility::RenderLayers>();
             }
-            let point = command_center + (base.translation.truncate() - command_anchor) * scale;
+            let point = command_center + (base.translation.truncate() - command_anchor) * command_scale;
             transform.translation.x = point.x;
             transform.translation.y = point.y;
-            transform.scale = base.scale * Vec3::new(scale, scale, 1.0);
+            transform.scale = base.scale * Vec3::new(command_scale, command_scale, 1.0);
         }
     }
     let mut cleared = shell.battle_fainted_hud;

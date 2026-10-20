@@ -2382,11 +2382,7 @@ fn integrated_title_to_save_menu_schedule_renders_and_writes_with_live_keys() {
     ));
     let _ = std::fs::remove_file(&save_path);
     let asset_root = AssetRoot::new(repo_root);
-    let runtime = CrystalRuntime::load_from_compiled_pack(
-        &asset_root,
-        "content-packs/core-modular.crystalpack",
-    )
-    .expect("load compiled pack");
+    let runtime = workspace_desktop_runtime(&asset_root);
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("title new-game spawn");
@@ -2405,6 +2401,14 @@ fn integrated_title_to_save_menu_schedule_renders_and_writes_with_live_keys() {
     .expect("initialize title shell");
 
     let mut app = integrated_shell_test_app(runtime_shell);
+    // The verified desktop pack includes the source boot splash before the
+    // Crystal intro. Let its real Start input and schedule finish first.
+    for _ in 0..512 {
+        if app.world().resource::<BevyRuntimeShell>().splash_screen.is_none() {break;}
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::Enter);
+        for _ in 0..8 {app.update();}
+    }
+    assert!(app.world().resource::<BevyRuntimeShell>().splash_screen.is_none());
     open_title_main_menu_for_test(&mut app);
     press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
     confirm_gender_for_test(&mut app, VisiblePlayerGender::Boy);

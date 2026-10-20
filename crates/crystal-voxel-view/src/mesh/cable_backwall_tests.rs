@@ -148,3 +148,30 @@ fn link_console_preserves_mobile_warp_and_native_negative_corner() {
     );
     assert!(mesh.footing_heights.iter().all(|&h| h == 1.25));
 }
+
+#[test]
+fn rear_door_header_connects_at_ceiling_without_closing_portal_or_mobile_entry() {
+    let g=GridGeometry{width:6,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+    for (anchor,block,sign) in [(8,43,[[8,9],[24,25]]),(16,10,[[38,39],[40,41]])] {
+        let rows=[[sign[0][0],sign[0][1],34,35,2,2],
+            [sign[1][0],sign[1][1],50,51,2,15],[1,1,1,1,1,15],[17;6]];
+        let cells=(0..4).flat_map(|y|(0..6).map(move|x|(x,y))).map(|(x,y)|VisualTile {
+            column:x as u32,row:y as u32,animation_frames:None,texture:Default::default(),priority:false,
+            source:VisualTileSource{tileset_id:Arc::from("pokecenter"),
+                metatile_id:if y==3 {4}else if x<4 {block}else{11},
+                subtile_column:(x%4)as u8,subtile_row:y as u8,tile_index:rows[y][x]},
+        }).collect::<Vec<_>>();let refs=cells.iter().collect::<Vec<_>>();
+        let mut claimed=vec![false;cells.len()];
+        let found=resolve("Pokecenter2F",&refs,&g,[anchor,0],None,&claimed);
+        let p=found.iter().find(|p|p.network.finish==Finish::Doorway).unwrap();
+        let mut mesh=TerrainMeshData::default();mesh.footing_heights=vec![1.25;cells.len()];
+        assert!(append(&mut mesh,&refs,&g,p,&mut claimed));
+        assert!(mesh.solid.positions.iter().any(|v|v[1]==24.));
+        assert!(mesh.solid.positions.iter().all(|v|(16.0..=32.0).contains(&v[0])));
+        assert!(mesh.solid.positions.iter().all(|v|!(20.0..28.0).contains(&v[0])||!(1.0..15.0).contains(&v[1])),
+            "the header must not add a plane across the actual opening");
+        assert!(mesh.footing_heights.iter().all(|&h|h==1.25));
+        assert_eq!(claimed.iter().filter(|&&v|v).count(),4);
+        assert!((0..2).all(|y|(4..6).all(|x|!claimed[y*g.width+x])));
+    }
+}

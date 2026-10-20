@@ -18,7 +18,7 @@ pub(super) struct SurfSeat {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::species_rig::{self, Clip, Playback, Species};
+    use crate::species_rig::{self, Species};
 
     #[test]
     fn surf_seats_use_body_surfaces_and_follow_the_animated_skin() {
@@ -31,6 +31,12 @@ mod tests {
         ] {
             let rig = species_rig::motion::world_rig(species_rig::rig(species));
             let seat = SurfSeat::for_rig(rig);
+            if species == Species::Gyarados {
+                let original = SurfSeat::fit(species_rig::rig(species));
+                assert!(seat.point.abs_diff_eq(original.point, 0.0001),
+                    "world body joints changed the neutral rider seat");
+                assert!((seat.waterline-original.waterline).abs() < 0.0001);
+            }
             assert!(seat.point.is_finite() && seat.half_width.is_finite());
             assert!(
                 seat.point.y > 0.1 && seat.point.y < rig.neutral_bounds.1.y * 0.85,
@@ -47,8 +53,8 @@ mod tests {
                     .abs_diff_eq(seat.point, 0.0001)
             );
             for tick in 0..32 {
-                rig.sample_into(Clip::Idle, tick as f32 / 16., Playback::Loop, &mut pose)
-                    .unwrap();
+                rig.sample_swimming(tick as f32 / 16., tick as f32 * std::f32::consts::TAU / 32.,
+                    1., &mut pose);
                 // The rider must inherit swimming lift as well as joint motion.
                 pose[0].translation += Vec3::new(0.02, 0.16, -0.01);
                 rig.skin_matrices_into(&pose, &mut matrices).unwrap();
@@ -84,6 +90,8 @@ impl SurfSeat {
                             rig.joints[**j as usize].name.rsplit('/').next(),
                             Some("body" | "torso" | "shell")
                         )
+                        || rig.joints[**j as usize].name.rsplit('/').next()
+                            .is_some_and(|name| name.starts_with("swim_wave_"))
                 })
                 .map(|(_, weight)| weight)
                 .sum::<f32>()

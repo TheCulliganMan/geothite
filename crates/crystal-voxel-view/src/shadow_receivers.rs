@@ -1,5 +1,5 @@
 //! Conservative camera-receiver shadow culling. No cascade or mesh changes.
-//! Opt-in experiment; disabled until image and timing comparisons establish a gain.
+//! Verified native outdoor maps use the filter; browser remains opt-in.
 use crate::{VoxelMaterial, VoxelSun, VoxelWorldCamera, VOXEL_RENDER_LAYER};
 use bevy::{
     camera::{
@@ -25,7 +25,17 @@ pub fn configure_shadow_receiver_diagnostics(enabled: bool) -> Result<(), String
 fn enabled() -> bool {
     DIAGNOSTIC_ENABLED.get().copied().unwrap_or_else(|| {
         #[cfg(not(target_arch = "wasm32"))]
-        { std::env::var("CRYSTAL_SHADOW_RECEIVERS").as_deref() == Ok("on") }
+        { std::env::var("CRYSTAL_SHADOW_RECEIVERS").as_deref() != Ok("off") }
+        #[cfg(target_arch = "wasm32")]
+        { false }
+    })
+}
+
+fn trace_enabled() -> bool {
+    static TRACE: OnceLock<bool> = OnceLock::new();
+    *TRACE.get_or_init(|| {
+        #[cfg(not(target_arch = "wasm32"))]
+        { std::env::var_os("CRYSTAL_SHADOW_RECEIVER_TRACE").is_some() }
         #[cfg(target_arch = "wasm32")]
         { false }
     })
@@ -93,9 +103,7 @@ impl CachedCascade {
                 return (previous.keep, true);
             }
         }
-        let input = self
-            .input
-            .expect("receiver inputs precede caster decisions");
+        let input = self.input.expect("receiver inputs precede caster decisions");
         let keep = may_reach(points, input.planes, input.sun, input.bottom, input.top);
         self.decisions.insert(
             entity,
@@ -207,6 +215,10 @@ fn cascade_planes(
     Some(planes.map(|[x, y, z, d]| [x, y, z, d + padding * DVec3::new(x, y, z).length()]))
 }
 
+fn supported_map(map: &str) -> bool {
+    matches!(map, "NewBarkTown" | "Route29" | "CherrygroveCity")
+}
+
 fn prune(
     frame: Res<VisualWorldFrame>,
     cameras: Query<(Entity, &Camera, &Frustum, &GlobalTransform, Option<&ShadowFilteringMethod>), With<VoxelWorldCamera>>,
@@ -235,7 +247,7 @@ fn prune(
     time: Res<Time<Real>>,
     mut cache: Local<DecisionCache>,
 ) {
-    if !frame.active || !matches!(frame.map_id.as_ref(), "NewBarkTown" | "Route29") {
+    if !frame.active || !supported_map(&frame.map_id) {
         cache.cascades.clear();
         return;
     }
@@ -243,6 +255,10 @@ fn prune(
         return;
     };
     if !camera.is_active || !supported_filter(filter) {
+        cache.cascades.clear();
+        return;
+    }
+    if !lights.iter().any(|(_, _, light, _, _, _)| light.shadow_maps_enabled) {
         cache.cascades.clear();
         return;
     }
@@ -261,7 +277,7 @@ fn prune(
     }
     let layer = RenderLayers::layer(VOXEL_RENDER_LAYER);
     #[cfg(not(target_arch = "wasm32"))]
-    let started = std::time::Instant::now();
+    let started = trace_enabled().then(std::time::Instant::now);
     cache.frame = cache.frame.wrapping_add(1);
     let stamp = cache.frame;
     let mut bottom = f64::INFINITY;
@@ -279,12 +295,10 @@ fn prune(
             }
             return; // Unknown geometry cannot prove a global receiver-height bound.
         };
-        for p in corners(bounds, transform) {
-            if !p.is_finite() {
-                return;
-            }
-            bottom = bottom.min(f64::from(p.y));
-            top = top.max(f64::from(p.y));
+        for point in corners(bounds, transform) {
+            if !point.is_finite() { return; }
+            bottom = bottom.min(f64::from(point.y));
+            top = top.max(f64::from(point.y));
         }
     }
     let base_planes = frustum
@@ -377,12 +391,12 @@ fn prune(
         "before": before, "after": after, "cache_hits": hits, "cache_misses": misses,
     })));
     let now = time.elapsed_secs_f64();
-    if now >= *next_report {
+    if trace_enabled() && now >= *next_report {
         *next_report = now + 2.0;
         #[cfg(not(target_arch = "wasm32"))]
         eprintln!(
             "shadow_receiver_culling map={} before={} after={} cache_hits={} cache_misses={} system_ms={:.3}",
-            frame.map_id, before, after, hits, misses, started.elapsed().as_secs_f64() * 1000.0
+            frame.map_id, before, after, hits, misses, started.map_or(0., |started| started.elapsed().as_secs_f64() * 1000.0)
         );
     }
 }
@@ -446,6 +460,20 @@ mod tests {
             bevy::light::CascadeShadowConfigBuilder { num_cascades: 1, maximum_distance: 2.0, ..default() }.build(),
             cascades, visible)).id();
         Fixture { app, sun, camera, capture_camera, reachable, offscreen }
+    }
+
+    #[test]
+    fn cherrygrove_uses_the_same_receiver_proof_and_unsupported_maps_keep_stock_lists() {
+        for (map, pruned) in [("CherrygroveCity", true), ("PlayersHouse1F", false),
+            ("IlexForest", false), ("Route30", false)] {
+            let mut f = fixture();
+            f.app.world_mut().resource_mut::<VisualWorldFrame>().map_id = map.into();
+            f.app.update();
+            let visible = f.app.world().get::<CascadesVisibleEntities>(f.sun).unwrap();
+            let expected = if pruned { vec![f.reachable] } else { vec![f.reachable, f.offscreen] };
+            assert_eq!(visible.entities[&f.camera][0].entities, expected, "{map}");
+            assert_eq!(visible.entities[&f.capture_camera][0].entities, [f.reachable, f.offscreen]);
+        }
     }
 
     #[test]

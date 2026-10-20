@@ -4377,6 +4377,17 @@ fn queue_existing_entity_despawn(
     }
 }
 
+fn clear_intro_surface_ownership(commands: &mut Commands, entity: Entity,
+    queued_despawns: &std::collections::HashSet<Entity>, clear_visible: bool) {
+    // Queries still contain an entity retired earlier in this render pass.
+    // Its ownership disappears with the entity; do not queue stale removals.
+    if queued_despawns.contains(&entity) { return; }
+    commands.entity(entity).queue(move |mut surface: EntityWorldMut| {
+        surface.remove::<TitleScreenMarker>();
+        if clear_visible { surface.remove::<VisibleIntroSurface>(); }
+    });
+}
+
 fn visual_world_grid_dimensions(_enabled: bool) -> (i16, i16, i16) {
     #[cfg(feature = "voxel-view")]
     if _enabled {
@@ -5163,6 +5174,9 @@ fn render_playfield(
         && map_base_surfaces.iter().next().is_some()
         && map_priority_surfaces.iter().next().is_some()
     {
+        if let Some(entity) = tileset_art.presented_fullscreen_entity {
+            queued_despawns.insert(entity);
+        }
         remove_presented_fullscreen_entity(&mut commands, &mut tileset_art);
     }
     let object_motion_active = runtime_shell.object_walk_frame_ticks > 0
@@ -5310,12 +5324,22 @@ fn render_playfield(
         // Shop entries describe the complete message, while its pixels
         // come from the typewriter. Do not retain the initial blank page
         // when only the revealed character count has changed.
-        if snapshot.pending_shop.is_some() {
+        if snapshot.pending_shop.is_some() || runtime_shell.pc_notice.is_some() {
             runtime_shell
                 .field_text_reveal
                 .as_ref()
                 .map(|reveal| (&reveal.text, reveal.page_index, reveal.visible_chars))
                 .hash(&mut hasher);
+            // PC item entries retain the inventory while their overlaid text,
+            // quantity and YesNoBox change. Those pixels must invalidate the
+            // dialog cache even when the selected inventory row is unchanged.
+            runtime_shell.pc_notice.hash(&mut hasher);
+            runtime_shell.pc_item_quantity.hash(&mut hasher);
+            runtime_shell.pc_confirmation.hash(&mut hasher);
+            if runtime_shell.pc_confirmation.is_some() {
+                runtime_shell.yes_no_cursor.as_ref().map(|cursor|
+                    (&cursor.surface_id,cursor.option_index)).hash(&mut hasher);
+            }
         }
         field_dialogue_prompt_arrow_visible(&snapshot, &runtime_shell).hash(&mut hasher);
         strict_readonly_cursor_index(&runtime_shell.yes_no_cursor, "ui:yes-no", 2)
@@ -5360,6 +5384,11 @@ fn render_playfield(
     let stale_healing_effects=runtime_shell.visible_heal_machine.is_none()
         &&healing_effects.iter().next().is_some();
     let dialog_only_update = !stale_healing_effects && rendered.title_active == false
+        // Returning from a full-LCD PC box list needs one complete field
+        // compositor pass. Updating only text leaves its old modal canvas
+        // and menu frame alive behind the new source save introduction.
+        && intro_surfaces.iter().next().is_none()
+        && title_markers.iter().next().is_none()
         && visual_world_mode_unchanged
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         && rendered.tile == Some(snapshot.overworld.tile)
@@ -5396,7 +5425,7 @@ fn render_playfield(
             desired_yes_no_prompt,
         );
         // Every field dialog owns one 20x6 frame and, while yes/no is active,
-        // exactly one additional 6x4 frame. Looking only for any retained
+        // exactly one additional 6x5 frame. Looking only for any retained
         // frame mistook orphaned YesNoBox tiles for the next field textbox;
         // its blank surface then survived while the text fast path updated no
         // usable glyphs. Validate the complete layer before mutating it.
@@ -5714,11 +5743,8 @@ fn render_playfield(
         // overworld LCD surface later in this system. Retire only its
         // full-screen ownership markers; despawning it would invalidate the
         // queued map texture/transform updates applied at the command flush.
-        let mut retained_surface = commands.entity(entity);
-        retained_surface.remove::<TitleScreenMarker>();
-        if map_layers_were_query_visible && !retained_field_fullscreen_active(&runtime_shell) {
-            retained_surface.remove::<VisibleIntroSurface>();
-        }
+        clear_intro_surface_ownership(&mut commands, entity, &queued_despawns,
+            map_layers_were_query_visible && !retained_field_fullscreen_active(&runtime_shell));
     }
     for entity in battlers.iter() {
         queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
@@ -6275,73 +6301,17 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             let map_y = i32::from(start_y) + i32::from(y);
             let (source, source_x, source_y) =
                 resolved_render_source_at(&render_sources, map_x, map_y);
-            let source_map = source.map;
             let source_tileset = source.tileset;
-            let source_art_key = &source.art_key;
-            let source_art = source_art_by_map
-                .get(source.map.map_name.as_str())
-                .copied()
-                .flatten();
-            let (block, sub_x, sub_y) = if source_x >= 0
-                && source_y >= 0
-                && source_x < source.width
-                && source_y < source.height
-            {
-                let block_x = source_x.div_euclid(i32::from(RENDER_METATILE_WIDTH));
-                let block_y = source_y.div_euclid(i32::from(RENDER_METATILE_WIDTH));
-                let sub_x = source_x.rem_euclid(i32::from(RENDER_METATILE_WIDTH)) as usize;
-                let sub_y = source_y.rem_euclid(i32::from(RENDER_METATILE_WIDTH)) as usize;
-                let index =
-                    (block_y as usize * source_map.attributes.width as usize) + block_x as usize;
-                (source_map.blocks[index], sub_x, sub_y)
-            } else {
-                let sub_x = source_x.rem_euclid(i32::from(RENDER_METATILE_WIDTH)) as usize;
-                let sub_y = source_y.rem_euclid(i32::from(RENDER_METATILE_WIDTH)) as usize;
-                (
-                    exterior_border_block(
-                        &source_map.map_name,
-                        &source_map.attributes.tileset_name,
-                        source_map.attributes.border_block,
-                        source.width,
-                        source_x,
-                        source_y,
-                    ),
-                    sub_x,
-                    sub_y,
-                )
-            };
-            let Some((source_tile_index, tile_handle)) =
-                source_art.and_then(|art| {
-                    let offset = usize::from(block)
-                        .checked_mul(METATILE_TILE_COUNT)?
-                        .checked_add(sub_y.checked_mul(RENDER_METATILE_WIDTH as usize)?)?
-                        .checked_add(sub_x)?;
-                    let tile_index = *art.metatile_layout.get(offset)?;
-                    let handle = art.tile_handle_at_frame(
-                        block,
-                        sub_x,
-                        sub_y,
-                        runtime_shell.lcd_animation_frame,
-                        snapshot
-                            .progression
-                            .active_engine_flags
-                            .contains("ENGINE_FOREST_IS_RESTLESS"),
-                    )?;
-                    Some((tile_index, handle))
-                })
-            else {
-                record_visible_render_error(
-                    &mut commands,
-                    &mut runtime_shell,
-                    anyhow::anyhow!(
-                        "required tileset art {} missing metatile {} sub-tile ({}, {})",
-                        source_art_key.tileset_id,
-                        block,
-                        sub_x,
-                        sub_y
-                    ),
-                );
-                return;
+            let source_art = source_art_by_map.get(source.map.map_name.as_str()).copied().flatten();
+            let resolved = source_art.context("required tileset art is missing").and_then(|art|
+                source_tile_art(source, art, source_x, source_y, runtime_shell.lcd_animation_frame,
+                    snapshot.progression.active_engine_flags.contains("ENGINE_FOREST_IS_RESTLESS")));
+            let (block, sub_x, sub_y, source_tile_index, tile_handle, priority, foreground_bottom) = match resolved {
+                Ok(tile) => tile,
+                Err(error) => {
+                    record_visible_render_error(&mut commands, &mut runtime_shell, error);
+                    return;
+                }
             };
             if inside_scroll_surface {
                 viewport_tile_handles.push(tile_handle.clone());
@@ -6373,42 +6343,6 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             if visual_world_enabled {
                 visual_world_tile_handles.push(tile_handle.clone());
             }
-            // Collision data remains private to the faithful 2D compositor:
-            // it selects the classic foreground-priority layer, but is never
-            // exported as optional-renderer height or shape information.
-            let Some(collision) = tileset_collision_tokens(source_tileset, block) else {
-                record_visible_render_error(
-                    &mut commands,
-                    &mut runtime_shell,
-                    anyhow::anyhow!(
-                        "required tileset {} collision row {} is missing",
-                        source_tileset.tileset_id,
-                        block,
-                    ),
-                );
-                return;
-            };
-            if collision.len() != 4 {
-                record_visible_render_error(
-                    &mut commands,
-                    &mut runtime_shell,
-                    anyhow::anyhow!(
-                        "tileset {} collision row {} has {} quadrants instead of 4",
-                        source_tileset.tileset_id,
-                        block,
-                        collision.len(),
-                    ),
-                );
-                return;
-            }
-            let foreground_bottom = collision[0] == "FLOOR"
-                && collision[1] == "FLOOR"
-                && collision[2..4]
-                    .iter()
-                    .all(|token| token == "WALL" || priority_collision_token(token));
-            let collision_index = (if sub_y < 2 { 0 } else { 2 }) + if sub_x < 2 { 0 } else { 1 };
-            let priority = priority_collision_token(&collision[collision_index])
-                || (foreground_bottom && sub_y >= 1);
             #[cfg(any(test, feature = "voxel-view"))]
             {
                 let visual_tileset_id = visual_tileset_ids
@@ -6445,7 +6379,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                         &mut runtime_shell,
                         anyhow::anyhow!(
                             "required priority art {} missing metatile {} sub-tile ({}, {})",
-                            source_art_key.tileset_id,
+                            source.art_key.tileset_id,
                             block,
                             sub_x,
                             sub_y,

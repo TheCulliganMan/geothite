@@ -25,6 +25,12 @@ fn refresh(
     }
     let delta = live.grid_origin - built.grid_origin;
     let mut updates = Vec::new();
+    // A water/flower phase repeats a handful of images across many atlas
+    // slots. Retain one validated snapshot per image, not a heap allocation
+    // and 256-byte copy for every occurrence. Snapshot before atlas mutation
+    // also preserves the existing all-or-nothing source validation.
+    let mut source_slots = std::collections::HashMap::new();
+    let mut sources: Vec<[u8; 256]> = Vec::new();
     let mut geometry_changed = false;
     for tile in &live.tiles {
         let slot = IVec2::new(tile.column as i32, tile.row as i32) + delta;
@@ -46,18 +52,26 @@ fn refresh(
         if !family.contains(&tile.texture) {
             continue;
         }
-        let source = images.get(&tile.texture).ok_or(())?;
-        let pixels = source.data.as_ref().ok_or(())?;
-        if source.width() != 8 || source.height() != 8 || pixels.len() != 256 {
-            return Err(());
-        }
+        let source_slot = if let Some(&slot) = source_slots.get(&tile.texture.id()) {
+            slot
+        } else {
+            let source = images.get(&tile.texture).ok_or(())?;
+            let pixels = source.data.as_ref().ok_or(())?;
+            if source.width() != 8 || source.height() != 8 || pixels.len() != 256 {
+                return Err(());
+            }
+            let slot = sources.len();
+            sources.push(pixels.as_slice().try_into().map_err(|_| ())?);
+            source_slots.insert(tile.texture.id(), slot);
+            slot
+        };
         // Native blooms persist across source animation phases; only authored
         // pillar poses need a geometry upload.
         geometry_changed |= mesh::animated_pillar_source(&built.map_id, &tile.source)
             && selected
                 .iter()
                 .any(|&[a, b]| x >= a && x - a < 4 && y >= b && y - b < 6);
-        updates.push((index, tile.texture.clone(), pixels.clone()));
+        updates.push((index, tile.texture.clone(), source_slot));
     }
     if updates.is_empty() {
         return Ok(Change::None);
@@ -70,7 +84,8 @@ fn refresh(
     if pixels.len() != width * height * 256 {
         return Err(());
     }
-    for (index, handle, source) in updates {
+    for (index, handle, source_slot) in updates {
+        let source = &sources[source_slot];
         let x = index % width * 8;
         let y = index / width * 8;
         for row in 0..8 {
@@ -145,15 +160,21 @@ pub(super) fn sync(
         cache.built_train_open=train_open.map(f32::to_bits);
     }
     if change==Change::None {return;}
-    // Atlas uploads replace their GPU texture. Refresh every bound material,
-    // including cutaway/reveal clones, without rebuilding static geometry.
+    // Standard atlas uploads replace their GPU texture. Streamed atlases keep
+    // the existing view/bindings, so touching all cloned materials is wasted
+    // extraction and bind-group preparation on every animation phase.
     let atlas = cache.built_frame.as_ref().unwrap().map_texture.clone();
+    if images.get(&atlas).is_some_and(crystal_render_api::is_streamed_image) { return; }
     let users: Vec<_> = materials
         .iter()
         .filter_map(|(id, m)| (m.base.base_color_texture.as_ref() == Some(&atlas)).then_some(id))
         .collect();
     for id in users {
-        let _ = materials.get_mut(id);
+        if let Some(material) = materials.get_mut(id) {
+            // Bevy 0.20's AssetMut is lazy: obtaining it alone does not emit
+            // Modified. Standard-image replacement really needs a rebind.
+            let _ = material.into_inner();
+        }
     }
 }
 
@@ -551,4 +572,39 @@ mod tests {
             assert!(app.world().resource::<VoxelViewStatus>().active);
         }
     }
+    #[test]
+    fn streamed_water_phases_keep_material_bindings_while_standard_images_refresh_them() {
+        for streamed in [false, true] {
+            let (mut frame, mut images) = fixture();
+            frame.map_id = "CeruleanGym".into();
+            for tile in &mut frame.tiles {
+                tile.source.tileset_id = "port".into();
+                tile.source.tile_index = 0x14;
+            }
+            if streamed { crystal_render_api::stream_composed_image(&mut images.get_mut(&frame.map_texture).unwrap()); }
+            let phase = phases(&frame);
+            let atlas = frame.map_texture.clone();
+            let mut materials = Assets::<VoxelMaterial>::default();
+            let handle = materials.add(textured_terrain_material(atlas.clone()));
+            let mut app = App::new();
+            app.insert_resource(frame.clone()).insert_resource(images).insert_resource(materials)
+                .init_resource::<Assets<Mesh>>()
+                .init_resource::<VisualTileAnimationFrame>()
+                .insert_resource(VoxelViewStatus { active: true, ..default() })
+                .insert_resource(TerrainRevisionCache { built_frame: Some(frame), ..default() })
+                .add_systems(Update, sync);
+            app.update();
+            let before = app.world().get_resource_ref::<Assets<VoxelMaterial>>().unwrap().last_changed();
+            app.insert_resource(phase);
+            app.update();
+            let after = app.world().get_resource_ref::<Assets<VoxelMaterial>>().unwrap().last_changed();
+            assert_eq!(before == after, streamed,
+                "retained GPU views must not trigger material extraction; standard replacements still must");
+            let images = app.world().resource::<Assets<Image>>();
+            assert_eq!(&images.get(&atlas).unwrap().data.as_ref().unwrap()[..4], &[120,80,100,255]);
+            assert_eq!(app.world().resource::<Assets<VoxelMaterial>>().get(&handle).unwrap()
+                .base.base_color_texture.as_ref(), Some(&atlas));
+        }
+    }
+
 }

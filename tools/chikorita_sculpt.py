@@ -240,7 +240,10 @@ def leaf_mesh():
 
 
 def sculpt():
-    body=body_cage();parts=[mesh(BODY,'body',*body)]
+    # Round living skin while retaining the exact cage and sharp sole edges.
+    # Local import avoids the shared geometry module's base-mesh dependency.
+    from sculpt_geometry import crease_normals
+    body=body_cage();parts=[crease_normals(mesh(BODY,'body',*body),35.)]
     # Tall fitted eyes lie on the actual front panels, with a pale crescent
     # and a tiny highlight. No spherical white buttons or invented red iris.
     for side,label in ((-1,'left'),(1,'right')):

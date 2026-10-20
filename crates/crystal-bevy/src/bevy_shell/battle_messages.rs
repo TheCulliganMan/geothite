@@ -7227,6 +7227,29 @@ fn visible_pc_source_text_pages(
     Ok(pages)
 }
 
+fn visible_pc_item_source_text(shell:&BevyRuntimeShell,snapshot:&RuntimeShellSnapshot,
+    label:&str,item_name:&str,quantity:u16)->Result<String> {
+    let text=shell.shell.text_snapshot(label)?;
+    let source=text.asm_text.as_deref().with_context(||format!("PC item text {label} has no exported source"))?;
+    let mut buffers=snapshot.script_events.named_buffers.clone();
+    buffers.insert("wStringBuffer1".into(),item_name.into());
+    buffers.insert("wStringBuffer2".into(),item_name.into());
+    buffers.insert("wItemQuantityChange".into(),quantity.to_string());
+    // Flattened exported ASM text retains string terminators around RAM/decimal
+    // chunks. They move the source text cursor; @ is never a visible glyph.
+    // Older verified packs encode text_decimal's two digit columns as @@.
+    // Resolve that retained quantity slot before removing string terminators;
+    // newer packs may carry the explicit DECIMAL buffer token instead.
+    let source=if label=="_ItemsThrowAwayText"&&source.contains("@@") {
+        source.replacen("@@",&quantity.to_string(),1)
+    } else {source.to_owned()};
+    let source=source.replace('@',"");
+    let mut pages=render_visible_asm_text_pages(&source,&buffers,&snapshot.trainer.player_name,
+        visible_rival_name(snapshot),snapshot.progression.time.day_of_week);
+    anyhow::ensure!(pages.len()==1,"PC item notice {label} must retain its single authored page");
+    Ok(pages.remove(0))
+}
+
 fn visible_pc_hub_actions(snapshot: &RuntimeShellSnapshot) -> Vec<VisiblePcHubAction> {
     let mut actions = vec![VisiblePcHubAction::BillsPc, VisiblePcHubAction::PlayerPc];
     if snapshot
@@ -7246,6 +7269,28 @@ fn visible_pc_hub_actions(snapshot: &RuntimeShellSnapshot) -> Vec<VisiblePcHubAc
     }
     actions.push(VisiblePcHubAction::TurnOff);
     actions
+}
+
+fn visible_bill_pc_save_pages(shell:&BevyRuntimeShell,snapshot:&RuntimeShellSnapshot,label:&str)->Result<Vec<String>> {
+    // The exported CONT course retains three lines in one paragraph. Use
+    // the shared two-line scrolling window rather than treating it as one
+    // oversized field page or dropping its final question.
+    Ok(visible_pc_source_text_pages(shell,snapshot,label)?.iter()
+        .flat_map(|paragraph|visible_field_notice_pages(paragraph)).collect())
+}
+
+fn begin_visible_bill_pc_save_intro(shell:&mut BevyRuntimeShell,snapshot:&RuntimeShellSnapshot,label:&str)->Result<()> {
+    if !shell.pc_hub_session_open {return Ok(());}
+    let mut pages=visible_bill_pc_save_pages(shell,snapshot,label)?;
+    pages.pop(); // YesNoBox retains the final scrolled pair after CONT.
+    if !pages.is_empty() {
+        shell.special_boundary=Some(SpecialBoundaryDisplay {
+            label:if label==SAVE_TEXT_CHANGE_BOX {"PokecenterChangeBoxSaveText"}else{"PokecenterMoveSaveText"}.into(),
+            details:pages,
+        });
+        shell.field_text_reveal=None;
+    }
+    Ok(())
 }
 
 fn visible_pc_hub_action_label(
@@ -7325,9 +7370,12 @@ fn confirm_visible_bill_pc_action(runtime_shell: &mut BevyRuntimeShell) -> Resul
         }
         VisibleBillPcAction::MoveWithoutMail => {
             let snapshot = runtime_shell.shell.snapshot()?;
-            if visible_storage_contains_mail(&snapshot) {
-                runtime_shell.pc_notice =
-                    Some("There is a #MON holding MAIL.\n\nPlease remove the MAIL.".to_string());
+            if visible_party_holds_mail(&snapshot) {
+                runtime_shell.special_boundary=Some(SpecialBoundaryDisplay {
+                    label:"PokecenterMoveMailText".into(),
+                    details:visible_pc_source_text_pages(runtime_shell,&snapshot,"_PCMonHoldingMailText")?,
+                });
+                runtime_shell.field_text_reveal=None;
                 runtime_shell.bill_pc_action_cursor = Some(MenuCursor {
                     surface_id: "pc:bill-actions".to_string(),
                     option_index: 3,
@@ -7350,6 +7398,7 @@ fn confirm_visible_bill_pc_action(runtime_shell: &mut BevyRuntimeShell) -> Resul
                     .is_ok(),
                 yes_no_index: 0,
             });
+            begin_visible_bill_pc_save_intro(runtime_shell,&snapshot,SAVE_TEXT_MOVE_MON_WITHOUT_MAIL)?;
             set_shell_action_status(runtime_shell, "MOVE POKEMON SAVE");
         }
         VisibleBillPcAction::SeeYa => return close_visible_bill_pc_actions(runtime_shell),
@@ -7468,6 +7517,7 @@ fn begin_visible_bill_pc_box_switch(
             .is_ok(),
         yes_no_index: 0,
     });
+    begin_visible_bill_pc_save_intro(runtime_shell,&snapshot,SAVE_TEXT_CHANGE_BOX)?;
     set_shell_action_status(runtime_shell, "CHANGE BOX SAVE");
     Ok(())
 }
@@ -7591,10 +7641,13 @@ fn confirm_visible_bill_pc_move(runtime_shell: &mut BevyRuntimeShell) -> Result<
         cursor: runtime_shell.storage_cursor.clone().context("Move save has no insertion cursor")?,
         scroll: runtime_shell.pc_list_scroll,
     };
+    let source_scroll = runtime_shell.bill_pc_move_source.as_ref()
+        .context("Move insertion lost its pickup")?.scroll;
     runtime_shell.bill_pc_move_source = None;
     runtime_shell.bill_pc_move_save = Some(VisibleBillPcMoveSave {
         presentation,
         source,
+        source_scroll,
         target,
         phase: VisibleBillPcMoveSavePhase::BeforeMove,
         frames_remaining: 20,
@@ -7644,9 +7697,27 @@ fn commit_visible_bill_pc_move_save(runtime_shell: &mut BevyRuntimeShell) -> Res
         })
         .cloned()
         .context("Bill's PC MOVE save reached commit without its completed 20-frame hold")?;
+    // Retain the pre-move shell and leave the destination cursor unchanged
+    // until persistence succeeds. A failed write must not leave BeforeMove armed against a
+    // source slot whose Pokemon has already been removed.
+    let before_move = runtime_shell.shell.clone();
     let moved = runtime_shell
         .shell
-        .move_pokemon_without_mail(pending.source, pending.target)?;
+        .move_pokemon_without_mail(pending.source.clone(), pending.target)?;
+    if let Err(error) = quick_save_from_bill_pc(runtime_shell) {
+        runtime_shell.shell = before_move;
+        runtime_shell.bill_pc_move_save = None;
+        runtime_shell.bill_pc_move_source = Some(VisiblePcMoveSource {
+            location: pending.source,
+            scroll: pending.source_scroll,
+        });
+        runtime_shell.pc_notice = Some("SAVE FAILED.\nTry again.".to_string());
+        runtime_shell.last_audio_events.push(format!("PC move save failed: {error:#}"));
+        trim_event_log(&mut runtime_shell.last_audio_events);
+        set_shell_action_status(runtime_shell, "SAVE FAILED");
+        mark_runtime_snapshot_dirty(runtime_shell);
+        return Ok(());
+    }
     let (surface_id, slot) = match moved.target {
         crystal_assets::RuntimePokemonStorageLocation::Party { slot } => {
             runtime_shell.bill_pc_move_party_open = true;
@@ -7663,7 +7734,6 @@ fn commit_visible_bill_pc_move_save(runtime_shell: &mut BevyRuntimeShell) -> Res
     runtime_shell.pc_list_scroll = runtime_shell.pc_list_scroll.min(slot);
     runtime_shell.storage_cursor = Some(MenuCursor { surface_id, option_index: slot });
     mark_runtime_snapshot_dirty(runtime_shell);
-    quick_save_from_bill_pc(runtime_shell)?;
     queue_visible_shell_sound_effect(runtime_shell, "SFX_SAVE")?;
     let active = runtime_shell
         .bill_pc_move_save
@@ -7674,25 +7744,17 @@ fn commit_visible_bill_pc_move_save(runtime_shell: &mut BevyRuntimeShell) -> Res
     Ok(())
 }
 
-fn visible_storage_contains_mail(snapshot: &RuntimeShellSnapshot) -> bool {
+fn visible_party_holds_mail(snapshot: &RuntimeShellSnapshot) -> bool {
+    // IsAnyMonHoldingMail walks wPartyMon1Item through wPartyCount. Boxed
+    // Pokémon cannot hold Mail in the source game; do not scan other stores
+    // or use a detached message payload as a replacement for the held item.
     snapshot
         .party
         .slots
         .iter()
         .map(|slot| &slot.pokemon)
-        .chain(
-            snapshot
-                .storage
-                .boxes
-                .iter()
-                .flat_map(|pc_box| pc_box.slots.iter().map(|slot| &slot.pokemon)),
-        )
         .any(|pokemon| {
-            pokemon.mail.is_some()
-                || pokemon
-                    .item
-                    .as_deref()
-                    .is_some_and(crate::core::models::item::is_mail_item_id)
+            pokemon.item.as_deref().is_some_and(crate::core::models::item::is_mail_item_id)
         })
 }
 
@@ -7779,29 +7841,9 @@ fn confirm_visible_pc_hub(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
             set_shell_action_status(runtime_shell, "PLAYER'S PC");
         }
         VisiblePcHubAction::OakPc => {
-            let oak = runtime_shell.shell.show_prof_oaks_pc_boot()?;
-            let SpecialRoutineEffect::ProfOaksPcBoot {
-                seen_count,
-                caught_count,
-                rating_label,
-            } = &oak.outcome.effect
-            else {
-                anyhow::bail!("Prof. Oak PC returned the wrong special effect");
-            };
-            open_visible_prof_oak_rating(runtime_shell, *seen_count, *caught_count, rating_label)?;
-            let rating_boundary = runtime_shell
-                .special_boundary
-                .take()
-                .context("Prof. Oak PC did not open its rating boundary")?;
-            runtime_shell
-                .special_boundary_queue
-                .push_front(rating_boundary);
             runtime_shell.special_boundary = Some(SpecialBoundaryDisplay {
                 label: "PokecenterOaksPCText".to_string(),
-                details: vec![
-                    "PROF.OAK'S PC accessed.".to_string(),
-                    "#DEX Rating System opened.".to_string(),
-                ],
+                details: visible_pc_source_text_pages(runtime_shell, &snapshot, "_PokecenterOaksPCText")?,
             });
         }
         VisiblePcHubAction::HallOfFame => {
@@ -7818,6 +7860,27 @@ fn confirm_visible_pc_hub(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         }
     }
     trim_event_log(&mut runtime_shell.last_audio_events);
+    Ok(())
+}
+
+fn open_visible_oak_rating_question(shell: &mut BevyRuntimeShell) -> Result<()> {
+    let snapshot = shell.shell.snapshot()?;
+    let pages = visible_pc_source_text_pages(shell, &snapshot, "_OakPCText1")?;
+    anyhow::ensure!(pages.len() == 1, "Oak PC question must be one source page");
+    shell.pc_notice = pages.into_iter().next();
+    shell.pc_confirmation = Some(VisiblePcConfirmation::OakRating);
+    shell.yes_no_cursor = Some(MenuCursor { surface_id: "pc:confirmation".into(), option_index: 0 });
+    mark_runtime_presentation_dirty(shell);
+    Ok(())
+}
+
+fn open_visible_oak_pc_shutdown(shell: &mut BevyRuntimeShell) -> Result<()> {
+    let snapshot = shell.shell.snapshot()?;
+    shell.special_boundary = Some(SpecialBoundaryDisplay {
+        label: "OakPCShutdown".into(),
+        details: visible_pc_source_text_pages(shell, &snapshot, "_OakPCText4")?,
+    });
+    mark_runtime_presentation_dirty(shell);
     Ok(())
 }
 
@@ -8450,6 +8513,7 @@ fn resolve_visible_pc_confirmation(
         && !matches!(
             &confirmation,
             VisiblePcConfirmation::LinkTrade
+                | VisiblePcConfirmation::OakRating
                 | VisiblePcConfirmation::NpcTrade(_)
                 | VisiblePcConfirmation::ScriptPartyIntro(_)
                 | VisiblePcConfirmation::NameRaterRename
@@ -8463,6 +8527,17 @@ fn resolve_visible_pc_confirmation(
         return Ok(());
     }
     match confirmation {
+        VisiblePcConfirmation::OakRating => {
+            if accepted {
+                let oak = runtime_shell.shell.show_prof_oaks_pc_boot()?;
+                let SpecialRoutineEffect::ProfOaksPcBoot { seen_count, caught_count, rating_label } = &oak.outcome.effect else {
+                    anyhow::bail!("Prof. Oak PC returned the wrong special effect");
+                };
+                open_visible_prof_oak_rating(runtime_shell, *seen_count, *caught_count, rating_label)?;
+            } else {
+                open_visible_oak_pc_shutdown(runtime_shell)?;
+            }
+        }
         VisiblePcConfirmation::LinkTrade => {
             runtime_shell.pending_link_trade_confirmation = Some(accepted);
             runtime_shell.last_action_status = Some(if accepted {
@@ -8483,10 +8558,9 @@ fn resolve_visible_pc_confirmation(
             let transfer = runtime_shell
                 .shell
                 .toss_pc_item(&item_id, stack_index, quantity)?;
-            runtime_shell.pc_notice = Some(format!(
-                "Discarded\n{}(S).",
-                item_display_name(&runtime_shell.shell.snapshot()?, &transfer.item_id)
-            ));
+            let snapshot=runtime_shell.shell.snapshot()?;
+            runtime_shell.pc_notice=Some(visible_pc_item_source_text(runtime_shell,&snapshot,
+                "_ItemsDiscardedText",&item_display_name(&snapshot,&transfer.item_id),quantity)?);
             restore_visible_pc_item_list_position(runtime_shell)?;
         }
         VisiblePcConfirmation::PutMailInPack(mailbox_index) => {
@@ -8495,8 +8569,9 @@ fn resolve_visible_pc_confirmation(
                     runtime_shell.pc_notice = Some(visible_mailbox_text(
                         &runtime_shell.shell.snapshot()?, "_MailClearedPutAwayText")?)
                 }
-                Err(error) if error.to_string().contains("bag") => {
-                    runtime_shell.pc_notice = Some("The PACK is full.".to_string())
+                Err(error) if error.root_cause().to_string().starts_with("bag rejected Mail item ") => {
+                    runtime_shell.pc_notice = Some(visible_mailbox_text(
+                        &runtime_shell.shell.snapshot()?, "_MailPackFullText")?)
                 }
                 Err(error) => return Err(error),
             }
@@ -9061,11 +9136,11 @@ fn attach_visible_mailbox_mail(runtime_shell: &mut BevyRuntimeShell) -> Result<(
             // PrintText must finish before .exit2 calls CloseSubmenu.
             runtime_shell.mailbox_attach_return_index = Some(mailbox_index);
         }
-        Err(error) if error.to_string().contains("Egg") => {
+        Err(error) if error.root_cause().to_string()=="Mail cannot be attached to an Egg" => {
             runtime_shell.pc_notice = Some(visible_mailbox_text(
                 &runtime_shell.shell.snapshot()?, "_MailEggText")?)
         }
-        Err(error) if error.to_string().contains("already holding") => {
+        Err(error) if error.root_cause().to_string()=="party Pokemon is already holding an item" => {
             runtime_shell.pc_notice = Some(visible_mailbox_text(
                 &runtime_shell.shell.snapshot()?, "_MailAlreadyHoldingItemText")?)
         }

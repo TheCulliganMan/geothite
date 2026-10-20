@@ -36,11 +36,44 @@ def fitted_shading(parts):
   if name.startswith('Finger pad /'):parts[i]=skin_shading(p,find('Fingertip /',' '.join(name.split()[-2:])))
  return parts
 
+def refine_upper_smile(head):
+ # Split shared edges only around the upper oral recess. Project new points
+ # onto the original ellipsoid before denting it; neighbouring triangles use
+ # the same midpoint and conforming splits, without open seams or T junctions.
+ vertices=[tuple(head['positions'][i:i+3]) for i in range(0,len(head['positions']),3)]
+ faces=[tuple(head['indices'][i:i+3]) for i in range(0,len(head['indices']),3)]
+ mids={}
+ for face in faces:
+  for a,b in zip(face,face[1:]+face[:1]):
+   edge=tuple(sorted((a,b)))
+   if edge in mids:continue
+   x,y,z=[(u+v)/2 for u,v in zip(vertices[a],vertices[b])]
+   q=(x/.120)**2+((y-1.066)/.061)**2
+   if z<=.05 or q>1.4 or y<1.075:continue
+   unit=(x/.267,(y-1.167)/.25,z/.22);length=math.sqrt(sum(v*v for v in unit))
+   point=(.267*unit[0]/length,1.167+.25*unit[1]/length,.22*unit[2]/length)
+   mids[edge]=len(vertices);vertices.append(point)
+ refined=[]
+ for face in faces:
+  a,b,c=face;m=[mids.get(tuple(sorted(edge))) for edge in [(a,b),(b,c),(c,a)]]
+  count=sum(v is not None for v in m)
+  if count==0:refined.append(face)
+  elif count==3:
+   ab,bc,ca=m;refined.extend([(a,ab,ca),(ab,b,bc),(ca,bc,c),(ab,bc,ca)])
+  elif count==1:
+   i=next(i for i,v in enumerate(m) if v is not None);a,b,c=face[i:]+face[:i];mid=m[i]
+   refined.extend([(a,mid,c),(mid,b,c)])
+  else:
+   i=next(i for i in range(3) if m[i] is not None and m[(i+2)%3] is not None)
+   a,b,c=face[i:]+face[:i];ab=m[i];ca=m[(i+2)%3]
+   refined.extend([(a,ab,ca),(ab,b,c),(ab,c,ca)])
+ return part(head['part'],SKIN,vertices,refined,True)
+
 @lru_cache(maxsize=1)
 def anatomy():
  body=loft('Body / sculpted cream Mr Mime torso',WHITE,curved_profiles(((.37,.11,.12,.0),(.43,.22,.17,0),(.63,.27,.19,0),(.81,.24,.17,0),(.94,.13,.10,0)),4),32)
  neck=ellipsoid('Neck / rooted pale pink Mr Mime neck',SKIN,(0,.965,0),(.115,.13,.105),32,22)
- head=ellipsoid('Head / rounded pale pink Mr Mime head',SKIN,(0,1.167,0),(.267,.25,.22),80,56)
+ head=refine_upper_smile(ellipsoid('Head / rounded pale pink Mr Mime head',SKIN,(0,1.167,0),(.267,.25,.22),80,56))
  # Recess the actual closed face around the smile rather than attaching a bill.
  vertices=[]
  for i in range(0,len(head['positions']),3):

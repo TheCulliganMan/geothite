@@ -46,7 +46,8 @@ fn grass_position(world: vec4<f32>, uv: vec2<f32>, world_scale: f32) -> vec4<f32
     }
     if abs(uv.x - 86000.0) < 0.5 || abs(uv.x - 86200.0) < 0.5 {
         let t = grass.height_scale.y;
-        let phase = world.x * 0.045 + world.z * 0.031;
+        let phase = (world.x + grass.height_scale.z) * 0.045
+            + (world.z + grass.height_scale.w) * 0.031;
         let gust = pow(max(0.0, sin(t * 0.29)), 4.0);
         let bend = max(uv.y, 0.0) * world_scale
             * (0.055 * sin(t * 1.7 + phase) + 0.035 * gust);

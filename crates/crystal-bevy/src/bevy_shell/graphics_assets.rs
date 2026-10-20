@@ -98,8 +98,14 @@ fn resolved_object_scene_label(
 }
 
 fn resolved_object_species_label(model_source_id: &str) -> Option<String> {
-    let (species, _) = model_source_id.strip_prefix("species:")?.split_once(':')?;
-    Some(crate::core::models::pokemon_species_display_name(species))
+    let (identity, display)=model_source_id.strip_prefix("species:").map(|id|(id,false))
+        .or_else(||model_source_id.strip_prefix("display:").map(|id|(id,true)))?;
+    let (species, art)=identity.split_once(':')?;
+    if display && species=="PIKACHU" && art=="surfing_pikachu" {
+        return Some("SURFING PIKACHU DOLL".into());
+    }
+    let name=crate::core::models::pokemon_species_display_name(species);
+    Some(if display {format!("{name} DOLL")}else{name})
 }
 
 fn object_scene_label(object: &crate::core::map::ObjectEvent) -> String {
@@ -575,6 +581,8 @@ fn play_pending_audio(
     mut runtime_shell: ResMut<BevyRuntimeShell>,
     music_audio: Query<Entity, With<MusicAudioMarker>>,
     transient_audio: Query<Entity, With<TransientAudioMarker>>,
+    #[cfg(all(not(test), target_os = "macos", feature = "desktop-app"))]
+    desktop_settings: Option<Res<desktop_settings::DesktopSettings>>,
     #[cfg(all(not(test), not(target_arch = "wasm32")))] mut native_audio: NonSendMut<
         NativeAudioBackend,
     >,
@@ -595,6 +603,8 @@ fn play_pending_audio(
     }
     #[cfg(all(not(test), not(target_arch = "wasm32")))]
     {
+        #[cfg(all(target_os = "macos", feature = "desktop-app"))]
+        native_audio.set_master_volume(desktop_settings.as_ref().map_or(1.0, |settings| settings.gain()));
         native_audio.set_music_volume(runtime_shell.music_volume);
         runtime_shell.transient_audio_playing = !native_audio.transient_finished();
         if !runtime_shell.transient_audio_playing {
@@ -3425,4 +3435,31 @@ fn expand_fullscreen_object_presentation(
         snapshot.visible_object_slots.push(index);
     }
     Ok(())
+}
+
+/// The ordinary compositor and speculative destination use identical source
+/// and foreground selection, including finite-map borders and animation art.
+fn source_tile_art(
+    source: &ResolvedRenderSource<'_>, art: &TilesetArt,
+    x: i32, y: i32, frame: u64, restless: bool,
+) -> Result<(u16, usize, usize, u8, Handle<Image>, bool, bool)> {
+    let sub_x = x.rem_euclid(4) as usize;
+    let sub_y = y.rem_euclid(4) as usize;
+    let block = if x >= 0 && y >= 0 && x < source.width && y < source.height {
+        source.map.blocks[y as usize / 4 * source.map.attributes.width as usize + x as usize / 4]
+    } else {
+        exterior_border_block(&source.map.map_name, &source.map.attributes.tileset_name,
+            source.map.attributes.border_block, source.width, x, y)
+    };
+    let index = *art.metatile_layout.get(block as usize * 16 + sub_y * 4 + sub_x)
+        .context("source metatile art")?;
+    let texture = art.tile_handle_at_frame(block, sub_x, sub_y, frame, restless)
+        .context("source tile image")?;
+    let collision = tileset_collision_tokens(source.tileset, block).context("source collision row")?;
+    anyhow::ensure!(collision.len() == 4, "source collision row must have four quadrants");
+    let foreground = collision[0] == "FLOOR" && collision[1] == "FLOOR"
+        && collision[2..4].iter().all(|token| token == "WALL" || priority_collision_token(token));
+    let priority = priority_collision_token(&collision[(if sub_y < 2 { 0 } else { 2 }) + usize::from(sub_x >= 2)])
+        || (foreground && sub_y >= 1);
+    Ok((block, sub_x, sub_y, index, texture, priority, foreground))
 }

@@ -1,6 +1,15 @@
+const COMPETITIVE_MOVE_BOARD_HEIGHT_TILES: f32 = 11.0;
+
 #[cfg(feature = "location-tester")]
 #[derive(Component)]
 struct CompetitiveMoveMenuMarker;
+
+fn competitive_summary_source_marker() -> impl Bundle + Clone {
+    #[cfg(feature = "voxel-view")]
+    { ImmersiveBattleReplaced }
+    #[cfg(not(feature = "voxel-view"))]
+    { () }
+}
 
 /// A denser move board inside the same LCD bounds in 2D and 3D. Production
 /// cursors and commands remain the sole owners of selection and execution.
@@ -26,12 +35,12 @@ fn spawn_competitive_move_menu(
         0.0,
         7.0,
         20.0,
-        11.0,
+        COMPETITIVE_MOVE_BOARD_HEIGHT_TILES,
         6.0,
     );
     // The expanded board covers the source player HUD. Keep its important
     // information visible above the board, beside the opponent's sprite.
-    spawn_battle_window(
+    spawn_battle_window_tagged(
         commands,
         rendered_art,
         asset_root,
@@ -41,8 +50,9 @@ fn spawn_competitive_move_menu(
         12.0,
         4.0,
         6.0,
+        competitive_summary_source_marker(),
     );
-    spawn_competitive_move_info_text(
+    spawn_competitive_move_info_text_tagged(
         commands,
         rendered_art,
         asset_root,
@@ -50,6 +60,7 @@ fn spawn_competitive_move_menu(
         &competitive_board_label(&active.pokemon.nickname, 10),
         1.0,
         5.0,
+        competitive_summary_source_marker(),
     );
     let status = match active.pokemon.status.as_deref() {
         Some("BURN") => "BRN",
@@ -59,7 +70,7 @@ fn spawn_competitive_move_menu(
         Some("POISON" | "BAD_POISON" | "TOXIC") => "PSN",
         _ => "HP",
     };
-    spawn_competitive_move_info_text(
+    spawn_competitive_move_info_text_tagged(
         commands,
         rendered_art,
         asset_root,
@@ -67,6 +78,7 @@ fn spawn_competitive_move_menu(
         &format!("{status}{}/{}", active.pokemon.hp, active.pokemon.max_hp),
         1.0,
         6.0,
+        competitive_summary_source_marker(),
     );
     let selected_name = battle.player_moves.get(selected).map_or_else(
         || "CANCEL".into(),
@@ -226,6 +238,13 @@ fn competitive_board_label(label: &str, width: usize) -> String {
 /// Keep each dense row in one draw, using the pack's existing bitmap glyphs.
 /// Opaque font cells must not interleave with adjacent rows or source HUD art.
 fn spawn_competitive_move_info_text(
+    commands: &mut Commands, art: &mut RenderedTilesetArt, root: &AssetRoot,
+    images: &mut Assets<Image>, text: &str, tile_x: f32, tile_y: f32,
+) {
+    spawn_competitive_move_info_text_tagged(commands, art, root, images, text, tile_x, tile_y, ());
+}
+
+fn spawn_competitive_move_info_text_tagged<M: Bundle>(
     commands: &mut Commands,
     art: &mut RenderedTilesetArt,
     root: &AssetRoot,
@@ -233,6 +252,7 @@ fn spawn_competitive_move_info_text(
     text: &str,
     tile_x: f32,
     tile_y: f32,
+    marker: M,
 ) {
     let frames = bitmap_text_frames(art, root, images, text);
     if frames.is_empty() {
@@ -278,5 +298,6 @@ fn spawn_competitive_move_info_text(
         },
         Transform::from_xyz(x + (frames.len() - 1) as f32 * TILE_SIZE * 0.5, y, 6.2),
         BattleCommandMarker,
+        marker,
     ));
 }

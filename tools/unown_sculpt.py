@@ -48,7 +48,11 @@ def closed_glyph_tube(name,path):
  points=path[:-1];n=len(points);sides=16;vertices=[];faces=[]
  for i,(x,y) in enumerate(points):
   previous=points[(i-1)%n];following=points[(i+1)%n]
-  tx=following[0]-previous[0];ty=following[1]-previous[1];length=math.hypot(tx,ty)
+  tx=following[0]-previous[0];ty=following[1]-previous[1]
+  # Explicit scaled hypot retains the reviewed stroke frames when Python's
+  # platform hypot implementation changes its final rounding bit.
+  scale=max(abs(tx),abs(ty))
+  length=scale*math.sqrt((tx/scale)**2+(ty/scale)**2) if scale else 0.
   if length<1e-9:raise ValueError('closed glyph loop has no tangent')
   nx,ny=ty/length,-tx/length
   for j in range(sides):

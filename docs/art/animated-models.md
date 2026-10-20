@@ -1,5 +1,28 @@
 # Animated model assets
 
+The [authoring portability and roster checks](pokemon-authoring-portability.md)
+record full-source and runtime motion coverage, preserved canonical assets,
+and numerical fixes for Gyarados, Onix and closed Unown strokes.
+
+The [Dewgong smile fit](dewgong-smile-fit.md) roots its mouth in the muzzle and
+preserves the canonical nose across the two tested Python versions.
+
+The [Wooper smile fit](wooper-smile-fit.md) embeds its detached mouth tube in
+the actual head surface while preserving its outline and rig.
+
+The [Golbat and Crobat eye fitting](bat-eye-fitting.md) roots pupils in their
+actual eye meshes while preserving wing rigs and physical bounds.
+
+The [Ampharos surface refit](ampharos-surface-fit.md) replaces floating facial
+details and rounds its chest/body transitions while preserving the existing rig.
+
+The [Mr. Mime upper smile refinement](mr-mime-smile.md) records its local
+surface correction, preserved rig contract, and offscreen production review.
+
+World Pokémon and inert bedroom dolls share canonical species geometry; see
+[world models and bedroom dolls](pokemon-world-displays.md) for role, sizing,
+identity, and disposable offscreen review details.
+
 `crates/crystal-voxel-view/models/johto_characters/catalog.glb` is the canonical
 human runtime asset: 75 distinct named scenes, each with the original sixteen
 rigid joints, materials, and parent-relative bind translations. Its 977 shared
@@ -7600,6 +7623,119 @@ rejected early Fearow stages before finding a valid Route 29 composition;
 size, FOV, bounds and terrain guards remain unchanged. Independent asset and
 binary identity audits pass across all six captures.
 
-The registry now contains 271 standard variants and five static species:
-Exeggcute, Exeggutor, Farfetch’d, Ivysaur and Venusaur. All 251 species retain
+After that migration the registry contained 271 standard variants and five
+static species. Farfetch’d’s later migration below updates the count. All 251 species retain
 model paths. Full-roster model and rig improvement remains active.
+
+
+## Farfetch’d standard-skin production migration
+
+The [duck skin guide](leek-duck-skin.md) documents its canonical 21-control skin:
+coherent stern face and bill, raised feather fan, articulated shoulder/elbow/
+grip carry chain, held stalk and sheath, three leaf blades, three crown and
+tail feathers, and two webbed walking supports. The complete webs and fitted
+folds stay fixed during battle. All 45 anatomy names and colors, 35 untouched
+parts and six original neutral bounds are preserved. Six fitted caps use
+adaptive refinement; four pupil/glint layers retain XY coordinates and triangle
+order while refitting to those parents. The skin has 17,863 vertices and 26,972
+triangles in 21 packed primitives, within the shared limits.
+
+Twenty-seven scoped checks pass. Background builder bytes and neutral STL
+exports match the canonical asset. Native front, clear world and battle pairs,
+plus moving world frames, were inspected inline with headless/image/muted
+rendering. The battle HUD identifies FARFETCH’D and PIDGEY; webs rest on the
+stage and the stalk stays in the grip. The first world orbit hid the duck behind
+a tree; rotating only the review camera gives a clear same-state comparison.
+Fine facial detail remains small at wide world distance. Route 29’s existing
+search rejected early compositions before admitting a valid stage; scale, FOV,
+full bounds and terrain guards remain unchanged. Independent state, source and
+binary-identity audits pass across the original three pairs and the clear repeat.
+
+The registry now has 272 standard variants and four static species:
+Exeggcute, Exeggutor, Ivysaur and Venusaur. All 251 species retain model paths;
+the broader model and rig improvement goal remains active.
+
+
+## Psychic egg pile and coconut palm migration in progress
+
+[Exeggcute and Exeggutor](psychic-palm-skins.md) now use standard articulated
+skins from their original sculptures. Exeggcute retains six supported eggs,
+five distinct expressions and the hollow broken shell with its rooted yolk.
+Exeggutor retains three independently expressive coconuts, complete planted
+clawed feet and eleven independently bending fronds with matching midribs.
+Both retain their exact neutral bounds at authoring height 1.22, with local
+pack dimensions of 0.4064 and 2.0066 metres. No palette or grass changes are
+included. Dedicated shiny checks remain skipped.
+
+The shared registry now contains 274 standard variants. Ivysaur and Venusaur
+remain static. Canonical readers and the main builder select the new GLBs;
+the two obsolete JSON copies are retired. Source and decoded pose checks,
+Rust integration checks and native offscreen review are tracked in the linked
+guide. Native visual acceptance is still pending; software previews alone
+do not complete this migration or the full-roster quality goal.
+
+
+## Complete standard-skin asset coverage and native saur review
+
+The [psychic egg/palm migration](psychic-palm-skins.md) passed 35 scoped checks,
+six selected same-state native pairs and two walking-frame inspections. The
+source-ground guards rejected Exeggutor's Route29 battle view; NationalPark
+provided an admitted original-size view without relaxing any guard. The
+independent audit matches the current GLBs and stable native binaries.
+
+[Ivysaur and Venusaur](bulb-saur-skins.md) now replace the final generic static
+Pokemon bodies with original articulated quadrupeds and rooted botanical
+crowns. Their installed GLBs passed nine anatomy checks, twelve decoded skin
+checks, two focused Rust checks and byte-exact background-builder parity.
+Full-registry schema and animation-cue checks passed. Both species completed
+three same-state headless native pairs and actual walking-frame inspection.
+Venusaur's final refinement broadens its lower body, replaces angular forehead
+marks with rounded bumps, and retains all six full neutral bounds. National
+Park admits its full animation at the original 2.0066 metre size; independent
+state, asset, movement and capture-binary audits passed. The source registry
+has 276 standard variants; all 251 species resolve uniquely to GLBs.
+Asset counts alone do not establish full-roster visual acceptance. The broader
+model fidelity goal remains active, and shiny checks remain skipped.
+
+An offscreen CPU survey rendered all 251 canonical neutral bodies alongside
+normal front sprites read directly from the local pack. All eleven labeled
+sheets were inspected. This normalizes silhouettes for comparison and does
+not replace native physical-scale, animation or browser evidence. The older
+Chikorita, Bayleef and Meganium bodies show conspicuous flat panels across
+their rounded necks and haunches. Mankey and Primeape share a very similar
+white pelt and pose. An enlarged reference comparison confirmed the exact
+normal pack palettes, Primeape's broader pelt and fists, dark wrist/ankle bands,
+and absence of Mankey's tail; these are distinct authored assets and rigs.
+Existing close mouth-rim and belly shadow issues guide further fidelity work;
+the survey is not a claim that the full roster has reached visual acceptance.
+
+The [leaf starter body refinement](leaf-saur-body-shading.md) now smooths those
+three living surfaces through the existing crease-normal helper. Chikorita,
+Bayleef and Meganium retain every triangle, physical dimension, support, fitted
+feature, skin weight and animation key while using 4,989, 5,695 and 6,817
+vertices. Thirty-eight focused Python checks, six production Rust registry/GPU
+checks and the full schema regression pass: 45 checks. Three close native pairs
+and three actual moving field frames passed offscreen review and independent
+asset/state/binary auditing. A separate normal-sprite sheet covering all 26
+Unown forms was also inspected offscreen.
+
+Fresh close captures also rechecked Mr. Mime, Lickitung and Magmar without
+changing their assets. Mr. Mime retains a small irregularity at the mouth rim.
+Lickitung's lining appears smooth in this front view, and Magmar's previously
+noted diagonal belly bands are not apparent under this lighting. These
+observations have this camera/light scope; they do not establish acceptance
+across other views. No global shading workaround accompanies the body update.
+
+Source palette clothing roles — 2026-10-19
+
+Lass, Youngster, male Cooltrainer and Super Nerd clothing now follows the
+already paletted source sprite through per-instance material variants. The
+source accent also colors Lass skirts and male Cooltrainer trousers; keep
+Youngster/Super Nerd dark trousers, hair, skin, white details, ink and alpha
+intact. Female Cooltrainer hair deliberately shares the source accent and keeps
+its existing behavior. Never recolor the immutable base painting or change
+shared rigs/head meshes to implement these variants. The actual-pack corpus
+checks286 new objects and360 palette/frame combinations; GPU/cache/live-actor
+controls and eleven native/source pairs are recorded in
+`target/kanto-resume/community-colors-review/review.json`. Broader character and
+all-room art acceptance remains open.

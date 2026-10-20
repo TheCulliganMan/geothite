@@ -147,6 +147,11 @@ pub(crate) enum Species {
     Doduo,
     Dodrio,
     Pidgeotto,
+    FarfetchD,
+    Venusaur,
+    Ivysaur,
+    Exeggutor,
+    Exeggcute,
     Fearow,
     Pidgeot,
     Tentacruel,
@@ -307,7 +312,7 @@ pub(crate) enum Species {
 }
 
 impl Species {
-    pub const ALL: [Self; 271] = [
+    pub const ALL: [Self; 276] = [
         Self::Chikorita,
         Self::Bayleef,
         Self::Meganium,
@@ -397,6 +402,11 @@ impl Species {
         Self::Doduo,
         Self::Dodrio,
         Self::Pidgeotto,
+        Self::FarfetchD,
+        Self::Venusaur,
+        Self::Ivysaur,
+        Self::Exeggutor,
+        Self::Exeggcute,
         Self::Fearow,
         Self::Pidgeot,
         Self::Tentacruel,
@@ -675,6 +685,11 @@ impl Species {
             Self::Doduo => "doduo",
             Self::Dodrio => "dodrio",
             Self::Pidgeotto => "pidgeotto",
+            Self::FarfetchD => "farfetch_d",
+            Self::Venusaur => "venusaur",
+            Self::Ivysaur => "ivysaur",
+            Self::Exeggutor => "exeggutor",
+            Self::Exeggcute => "exeggcute",
             Self::Fearow => "fearow",
             Self::Pidgeot => "pidgeot",
             Self::Entei => "entei",
@@ -851,6 +866,11 @@ impl Species {
             Self::Doduo => &["root", "body", "neck_base_0", "neck_tip_0", "head_0", "jaw_0", "neck_base_1", "neck_tip_1", "head_1", "jaw_1", "leg_left", "leg_right"],
             Self::Dodrio => &["root", "body", "neck_base_0", "neck_tip_0", "head_0", "jaw_0", "neck_base_1", "neck_tip_1", "head_1", "jaw_1", "neck_base_2", "neck_tip_2", "head_2", "jaw_2", "leg_left", "leg_right", "tail_0", "tail_1", "tail_2"],
             Self::Pidgeotto => &["root", "body", "head", "wing_left", "wrist_left", "wing_right", "wrist_right", "leg_left", "leg_right", "tail_base", "tail_outer", "tail_middle", "tail_center", "crest"],
+            Self::FarfetchD => &["root", "body", "head", "wing_raised", "wing_wrist_raised", "wing_holding", "wing_elbow_holding", "grip", "leek_base", "leek_tip", "leek_leaf_0", "leek_leaf_1", "leek_leaf_2", "tail_0", "tail_1", "tail_2", "crest_0", "crest_1", "crest_2", "leg_left", "leg_right"],
+            Self::Venusaur => &["root", "torso", "head", "foreleg_left", "foreleg_right", "hindleg_left", "hindleg_right", "plant_base", "flower_crown", "leaf_base_0", "leaf_tip_0", "leaf_base_1", "leaf_tip_1", "leaf_base_2", "leaf_tip_2", "leaf_base_3", "leaf_tip_3", "leaf_base_4", "leaf_tip_4", "leaf_base_5", "leaf_tip_5", "petal_base_0", "petal_tip_0", "petal_base_1", "petal_tip_1", "petal_base_2", "petal_tip_2", "petal_base_3", "petal_tip_3", "petal_base_4", "petal_tip_4", "flower_heart"],
+            Self::Ivysaur => &["root", "torso", "head", "foreleg_left", "foreleg_right", "hindleg_left", "hindleg_right", "plant_base", "bud_tip", "leaf_base_0", "leaf_tip_0", "leaf_base_1", "leaf_tip_1", "leaf_base_2", "leaf_tip_2", "leaf_base_3", "leaf_tip_3", "leaf_base_4", "leaf_tip_4", "leaf_base_5", "leaf_tip_5"],
+            Self::Exeggutor => &["root", "trunk_base", "crown_core", "head_0", "head_1", "head_2", "leg_left", "leg_right", "frond_base_0", "frond_tip_0", "frond_base_1", "frond_tip_1", "frond_base_2", "frond_tip_2", "frond_base_3", "frond_tip_3", "frond_base_4", "frond_tip_4", "frond_base_5", "frond_tip_5", "frond_base_6", "frond_tip_6", "frond_base_7", "frond_tip_7", "frond_base_8", "frond_tip_8", "frond_base_9", "frond_tip_9", "frond_base_10", "frond_tip_10"],
+            Self::Exeggcute => &["root", "egg_0", "egg_1", "egg_2", "egg_3", "egg_4", "egg_5"],
             Self::Fearow => &["root", "body", "neck_base", "neck_tip", "head", "lower_bill", "wing_left", "wrist_left", "wing_right", "wrist_right", "tail_0", "tail_1", "tail_2", "tail_3", "tail_4", "leg_left", "leg_right", "crown", "mane"],
             Self::Pidgeot => &["root", "body", "neck_base", "neck_tip", "head", "lower_bill", "wing_left", "wrist_left", "wing_right", "wrist_right", "tail_0", "tail_1", "tail_2", "tail_3", "tail_4", "leg_left", "leg_right", "crest_-1", "crest_0", "crest_1"],
             Self::Unown(_) => &["root", "eye", "glyph"],
@@ -1184,6 +1204,11 @@ impl Species {
             Self::Doduo => &[None, Some(0), Some(1), Some(2), Some(3), Some(4), Some(1), Some(6), Some(7), Some(8), Some(0), Some(0)],
             Self::Dodrio => &[None, Some(0), Some(1), Some(2), Some(3), Some(4), Some(1), Some(6), Some(7), Some(8), Some(1), Some(10), Some(11), Some(12), Some(0), Some(0), Some(1), Some(1), Some(1)],
             Self::Pidgeotto => &[None, Some(0), Some(1), Some(1), Some(3), Some(1), Some(5), Some(0), Some(0), Some(1), Some(9), Some(9), Some(9), Some(2)],
+            Self::FarfetchD => &[None, Some(0), Some(1), Some(1), Some(3), Some(1), Some(5), Some(6), Some(7), Some(8), Some(9), Some(9), Some(9), Some(1), Some(1), Some(1), Some(2), Some(2), Some(2), Some(0), Some(0)],
+            Self::Venusaur => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(7), Some(7), Some(9), Some(7), Some(11), Some(7), Some(13), Some(7), Some(15), Some(7), Some(17), Some(7), Some(19), Some(8), Some(21), Some(8), Some(23), Some(8), Some(25), Some(8), Some(27), Some(8), Some(29), Some(8)],
+            Self::Ivysaur => &[None, Some(0), Some(1), Some(1), Some(1), Some(1), Some(1), Some(1), Some(7), Some(7), Some(9), Some(7), Some(11), Some(7), Some(13), Some(7), Some(15), Some(7), Some(17), Some(7), Some(19)],
+            Self::Exeggutor => &[None, Some(0), Some(1), Some(2), Some(2), Some(2), Some(0), Some(0), Some(2), Some(8), Some(2), Some(10), Some(2), Some(12), Some(2), Some(14), Some(2), Some(16), Some(2), Some(18), Some(2), Some(20), Some(2), Some(22), Some(2), Some(24), Some(2), Some(26), Some(2), Some(28)],
+            Self::Exeggcute => &[None, Some(0), Some(0), Some(0), Some(1), Some(2), Some(3)],
             Self::Fearow => &[None, Some(0), Some(1), Some(2), Some(3), Some(4), Some(1), Some(6), Some(1), Some(8), Some(1), Some(1), Some(1), Some(1), Some(1), Some(0), Some(0), Some(4), Some(2)],
             Self::Pidgeot => &[None, Some(0), Some(1), Some(2), Some(3), Some(4), Some(1), Some(6), Some(1), Some(8), Some(1), Some(1), Some(1), Some(1), Some(1), Some(0), Some(0), Some(4), Some(4), Some(4)],
             Self::Unown(_) => &[None, Some(0), Some(1)],
@@ -1513,6 +1538,11 @@ impl Species {
             Self::Doduo => 19,
             Self::Dodrio => 32,
             Self::Pidgeotto => 34,
+            Self::FarfetchD => 21,
+            Self::Venusaur => 29,
+            Self::Ivysaur => 26,
+            Self::Exeggutor => 24,
+            Self::Exeggcute => 17,
             Self::Fearow => 21,
             Self::Pidgeot => 25,
             Self::Entei => 59,
@@ -1765,6 +1795,11 @@ impl Species {
             Self::Doduo => "94090facb05decd9d763ba5fc85c0ad67866d7b05745eb98dcae903ab934f190",
             Self::Dodrio => "21ca4a7aeec485dac57a7c5f2a54692259c76b131b22661383cd2e84ef7dd811",
             Self::Pidgeotto => "a9a41d37c7ee99cc44e3be2513069b47edd87bbb73c47abc5e5bf02890f10650",
+            Self::FarfetchD => "37528f1600a372ff12c162bd213c8e2fe9099e224aa8028582fa00a94fa76a3c",
+            Self::Venusaur => "68b82bacf260770f0ef9db47eb72c1547c3d962acf4dcd15d365cd7a87185673",
+            Self::Ivysaur => "05ae76219415afb128f34a59f243f170231d578d3e99a2959d55419aaff5bfda",
+            Self::Exeggutor => "22e3a7b6c82b33b797f06d8e8d1e143dfbea7063adfe20f3c345da215d7053ea",
+            Self::Exeggcute => "627e7883a07875496f6221bad5ca019ee5a4904ed8071cc21d714d0d60a3df7b",
             Self::Fearow => "9d317f1778d94a75d2c959dd71d7eacfe45293d7171419b9782fdc04ea114f1a",
             Self::Pidgeot => "4290723e8ee8dd56c9e7aba24fc9e65aafe69384cc58f960f2cffdc2f84b7241",
             Self::Entei => "db453e0d91aa89189660d76f63e17f62e26c4d80e750455f9fb7e066cbcc249c",
@@ -1802,7 +1837,7 @@ impl Species {
             Self::Marill => "39c4a5f6e20db9f7c4aeddef3353131a3dda11ddd1befd021dfcb5aa1e88fbe7",
             Self::Xatu => "5196df1ef836e954c4904ec06cf3448e3a701eba946050d5a38a477d116e785b",
             Self::Natu => "42b91ce42d9cbfb2367f3640cdd1641c5da72aedb65da5cc41b412d9d8b09fd1",
-            Self::Ampharos => "19d3138402ccf1b0ffed193b47dea3a25ec684a5f40a1593079e3c5fac04527e",
+            Self::Ampharos => "415ea89d9f82cd86b510cb8d455cf9625022765f8475c4cea4dc76f50b0cc765",
             Self::Flaaffy => "eaabe519c0cb6edfa85b9b9ddc5a9b1ca5f5a4fa3bbdedfe948dc57bb68bb8d6",
             Self::Togepi => "975cb4f931bddf2545df3621a30a743f70bb3662f218c61eb5ae90879d34b53b",
             Self::Togetic => "5971f35977b196a3a2a62472e147b9b0743a53573c66770e9b4bdbc892dea912",
@@ -1860,7 +1895,7 @@ impl Species {
             Self::Machoke => "4b0b6d1f8f12e160831ba3ec746729bf11fcceffffec0fa4c9ef8932bd8313ae",
             Self::Machamp => "c70bd3ba26597bfadc1fafae6d459a9334b41bd63b22f022578d5a6db4793ca6",
             Self::Rhyhorn => "e6ad87610f6a2b99b8e1780fddffabfb97166fdb1c8d50278ca6e765dcbc0188",
-            Self::Dewgong => "07d7f5f2e844cd65944949d81004e5de86d9493fb99bf220dbc9c552830ae5e9",
+            Self::Dewgong => "0efac101ffd20a33f75f7f67954878fad79f1323bf867e348cab34588f58a7ff",
             Self::Seel => "e1b358039ce8dba65f99bfde6d01438da48fa17f8532ea107117e290e7fae852",
             Self::Ditto => "1a3fc7b87714f7c4c5b82db35cecc4fb7bc3d3679f52f0ccf2336727626327e8",
             Self::Muk => "373608073b4024110aaaf4e23d345ca1c07c2fd6a2725f72fe985893224ca8c3",
@@ -1897,7 +1932,7 @@ impl Species {
             Self::Slowking => "c66499f5fae82d1d849da07acc4b7d5e48ce75270cac872bdee5681bb1f5320b",
             Self::Slowbro => "33741cd0059c20dfaee09820fe9898e00eee22e21fce8e153eda4985ed38fc14",
             Self::Lickitung => "972f51bfd45847d1dcda324c713ac66537d2eb19a6a9407ae395279d9bc99156",
-            Self::MrMime => "d583990f629188f68ad7098a02d6fca3b854f80187ac1bc00ac935bbf9bd1ab2",
+            Self::MrMime => "f2409770cbce156b43cca909213fbcdcbda84094b050618144544ef3e3eeb81d",
             Self::Chansey => "9b0d87c52e08fad76e7ee66f2983e075382f8a3da37b989e4cc025be0061021e",
             Self::Blissey => "316186bb6e6a3a5c2eac8d4040d19e52536c3d642bdb23d6dba0288056f62a0e",
             Self::Growlithe => "93977ea316f368e22fd7a1061f565e63ca5fd01264a654a6b628f2d65961ab99",
@@ -1943,8 +1978,8 @@ impl Species {
             Self::Butterfree => "4b94b9ecfabca7dee88ec0d5b725d50116cb1f2a139d5a2817342e53cd4ee550",
             Self::Beedrill => "998ef3cf0f5f76c6ada93622528f1806dab5361c60d1b8ecb43c991f1979b900",
             Self::Zubat => "737d2dad1c97b82b0fead248d72ac003e5e759ce90debf0c4cabb06d80c851d0",
-            Self::Golbat => "db6b0c4bcb4c3f268b98ca45678c143db637a570e2cacc1867629fa2f2f558d4",
-            Self::Crobat => "d01d5cfb92de35f18629800273962eb8a9719f659891ad7f397d44202ff717bd",
+            Self::Golbat => "2b4111963c9a7224224eacf4a70ec2359fd0e36d6426c7a992543e66e763379a",
+            Self::Crobat => "87f89cd4cc0e7d68b7f29292721ea068514dcdc982722d76fddcb8d23f69ced4",
             Self::Psyduck => "4d28e9c51e3d5ed94fcccfe356d5cc60dc9ee2d7645332334c7bb7d6ef5b9b4c",
             Self::Golduck => "e7ab59e4de9d3d78f761557cc5b62d6e41442f54c3e25b7fffbecba18892178d",
             Self::Raticate => "f6043d52ed1588580d3e4c8f44480d8d3cb2b8b2f268e6ccd7220287d76edd0d",
@@ -1991,10 +2026,10 @@ impl Species {
             Self::Lapras => "7a083c865c869d1fa5f832195c3ed2ec042b1267773294cc39fe47cd3c6b789b",
             Self::Sudowoodo => "010b92720972b99c2bee10df2b6a074d605fce9fef79d4f8eef8c49b2e079275",
             Self::Gyarados => "555f2c6aace148f0fa0e3412cdb5912581b5f6d6f60341c6eeaecdcb7d4ac045",
-            Self::Wooper => "5a306ae7d1f9b79c7ce3897c0d538b2752c7cdf85c68f050fe8a1aa0b1bb801a",
-            Self::Chikorita => "f2a79d3d20fc56f5584b35c3e7655b0d0654ba12273775dc0e62cca7a8bd9774",
-            Self::Bayleef => "3a47bbf1035133575ef25812194da3caec7ea9596b6cc9a5261317acec7864c0",
-            Self::Meganium => "9573b5a8f0df3ae27e03195807cf2ca92cfff5067d3f83af6ea294a9d7712643",
+            Self::Wooper => "d23893a24e7dd83f9711b2309ece7d7b24094ea0184ffa86237d9ab059e0bf88",
+            Self::Chikorita => "0e77b09b2db90bbc252933d54d4fa3b7948e464e2d2c27cbd38f81efe43a5142",
+            Self::Bayleef => "4f0f8b38c600b13d5180cbf39719a5b4620b2e5eed525e79bd8100ad03762891",
+            Self::Meganium => "a2305f2aca111722d9bf59710f5be879cc4bc09f2a7f4d0c9736f5b87bad339c",
             Self::Cyndaquil => "343dc219a6151db3baa8b52459f911b33746aa2cac61ad77497efd434bd4d9ea",
             Self::Totodile => "e2e34e5ee22c9e86a70f23ec28511f2075b6d2a3f529d7996b3025288bb86a18",
             Self::Gengar => "d458acb7c2853288efef3b83c24ac453bcb409f9db01d24a96008e9a937485aa",
@@ -2152,6 +2187,11 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
     static DODUO: OnceLock<SpeciesRig> = OnceLock::new();
     static DODRIO: OnceLock<SpeciesRig> = OnceLock::new();
     static PIDGEOTTO: OnceLock<SpeciesRig> = OnceLock::new();
+    static FARFETCH_D: OnceLock<SpeciesRig> = OnceLock::new();
+    static VENUSAUR: OnceLock<SpeciesRig> = OnceLock::new();
+    static IVYSAUR: OnceLock<SpeciesRig> = OnceLock::new();
+    static EXEGGUTOR: OnceLock<SpeciesRig> = OnceLock::new();
+    static EXEGGCUTE: OnceLock<SpeciesRig> = OnceLock::new();
     static FEAROW: OnceLock<SpeciesRig> = OnceLock::new();
     static PIDGEOT: OnceLock<SpeciesRig> = OnceLock::new();
             static SLOWPOKE: OnceLock<SpeciesRig> = OnceLock::new();
@@ -2439,6 +2479,11 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
         Species::Doduo => &DODUO,
         Species::Dodrio => &DODRIO,
         Species::Pidgeotto => &PIDGEOTTO,
+        Species::FarfetchD => &FARFETCH_D,
+        Species::Venusaur => &VENUSAUR,
+        Species::Ivysaur => &IVYSAUR,
+        Species::Exeggutor => &EXEGGUTOR,
+        Species::Exeggcute => &EXEGGCUTE,
         Species::Fearow => &FEAROW,
         Species::Pidgeot => &PIDGEOT,
             Species::Slowpoke => &SLOWPOKE,
@@ -2617,6 +2662,11 @@ pub(crate) fn rig(species: Species) -> &'static SpeciesRig {
             Species::Doduo => { crate::model_storage::include_model!("models/battle_species/doduo.glb") }
             Species::Dodrio => { crate::model_storage::include_model!("models/battle_species/dodrio.glb") }
             Species::Pidgeotto => { crate::model_storage::include_model!("models/battle_species/pidgeotto.glb") }
+            Species::FarfetchD => { crate::model_storage::include_model!("models/battle_species/farfetch_d.glb") }
+            Species::Venusaur => { crate::model_storage::include_model!("models/battle_species/venusaur.glb") }
+            Species::Ivysaur => { crate::model_storage::include_model!("models/battle_species/ivysaur.glb") }
+            Species::Exeggutor => { crate::model_storage::include_model!("models/battle_species/exeggutor.glb") }
+            Species::Exeggcute => { crate::model_storage::include_model!("models/battle_species/exeggcute.glb") }
             Species::Fearow => { crate::model_storage::include_model!("models/battle_species/fearow.glb") }
             Species::Pidgeot => { crate::model_storage::include_model!("models/battle_species/pidgeot.glb") }
             Species::Unown(form) => match form {
@@ -3237,6 +3287,16 @@ pub(crate) fn authored_for_species(species: &str) -> Option<&'static SpeciesRig>
         Some(rig(Species::Pidgeot))
     } else if species.eq_ignore_ascii_case("FEAROW") {
         Some(rig(Species::Fearow))
+    } else if species.eq_ignore_ascii_case("EXEGGCUTE") {
+        Some(rig(Species::Exeggcute))
+    } else if species.eq_ignore_ascii_case("EXEGGUTOR") {
+        Some(rig(Species::Exeggutor))
+    } else if species.eq_ignore_ascii_case("IVYSAUR") {
+        Some(rig(Species::Ivysaur))
+    } else if species.eq_ignore_ascii_case("VENUSAUR") {
+        Some(rig(Species::Venusaur))
+    } else if species.eq_ignore_ascii_case("FARFETCH_D") {
+        Some(rig(Species::FarfetchD))
     } else if species.eq_ignore_ascii_case("PIDGEOTTO") {
         Some(rig(Species::Pidgeotto))
     } else if species.eq_ignore_ascii_case("DODRIO") {
@@ -3768,10 +3828,22 @@ impl SpeciesRig {
             // whole camera box. Thin Unown glyphs need the same tighter padding.
             // This runs once when the GLB is loaded; frame
             // playback still uses the authored keys and original cue clock.
-            let envelope_hz = match self.species {
+            let base_hz: f32 = match self.species {
                 Species::Chikorita | Species::Bayleef | Species::Meganium | Species::Spearow | Species::Unown(_) => 90.0,
                 _ => ENVELOPE_HZ,
             };
+            // Small bodies otherwise inherit too much padding from the fastest
+            // appendage. Pick only the extra cached samples their speed needs,
+            // instead of raising every species to a fixed high rate. Bound the
+            // added diameter to 9% of the smallest neutral span when the 120 Hz
+            // preparation cap permits it. The analytic margin below remains
+            // conservative even at the cap; playback keeps its original clock.
+            let margin_budget = (self.neutral_bounds.1 - self.neutral_bounds.0)
+                .min_element() * 0.045 - FLOAT_MARGIN;
+            let tight_hz = if margin_budget > 0.0 {
+                (maximum_speed / (2.0 * margin_budget)).ceil().min(120.0)
+            } else { base_hz };
+            let envelope_hz = base_hz.max(tight_hz);
             let steps = (clip.duration * envelope_hz).ceil() as usize;
             let margin =
                 Vec3::splat(maximum_speed * (clip.duration / steps as f32) * 0.5 + FLOAT_MARGIN);

@@ -144,6 +144,9 @@ struct Network {
     label: &'static str,
 }
 include!("department_store_bindings.rs");
+// The source's two wall rows describe a ceiling-height course, not a low
+// partition. Furniture and stair flights keep their separate height rules.
+const WALL_HEIGHT: f32 = 32.;
 pub(super) struct Placement {
     network: &'static Network,
     column: usize,
@@ -249,7 +252,7 @@ pub(super) fn perimeter_template(mesh:&mut TerrainMeshData,map:&str,cells:&[&Vis
     let row=p.row+part.y;let (w,_,n,_)=g.bounds(p.column+part.x,row);
     let s=n+part.depth as f32*g.tile_height;
     part.asset.model().append_fitted(&mut mesh.solid,
-        [w,w+part.width as f32*g.tile_width,s-3.*g.tile_height/8.,s],0.,16.*g.tile_height/8.);
+        [w,w+part.width as f32*g.tile_width,s-3.*g.tile_height/8.,s],0.,WALL_HEIGHT*g.tile_height/8.);
     Some(row)
 }
 fn resolve_networks(
@@ -405,7 +408,8 @@ pub(super) fn append(
             let solid_indices=mesh.solid.indices.len();
             let painted_indices=mesh.textured.indices.len();
             if let Some(swatches)=counter_swatches {
-                append_native_service_counter(&mut mesh.textured,part.asset,[w,e,n,s],sy,swatches);
+                append_native_service_counter(&mut mesh.textured,part.asset,[w,e,n,s],sy,swatches,
+                    super::modeled_interiors::mart_counter_fascia_uv(cells,g));
             }else {append_service_counter(&mut mesh.solid, part.asset, [w, e, n, s], sy);}
             let joined=counter_joins(part,p.network.parts);
             omit_counter_join_faces(&mut mesh.solid,solid_start,solid_indices,[w,e,n,s],joined);
@@ -503,7 +507,7 @@ pub(super) fn append(
             &mut mesh.solid,
             [w, e, north, s],
             0.,
-            16. * sy,
+            WALL_HEIGHT * sy,
         );
         // Window glass, reflections, frames and shadows carry explicit authored
         // material paint. Never infer their role from RGB channel comparisons.
@@ -513,7 +517,7 @@ pub(super) fn append(
                 g,
                 [p.column + part.x, p.row + part.y],
                 [2, 2],
-                [w + 1.5 * sx, e - 1.5 * sx, 1.5 * sy, 14.5 * sy],
+                [w + 1.5 * sx, e - 1.5 * sx, 9.5 * sy, 22.5 * sy],
                 s + 0.015 * sy,
             );
         } else if part.asset == Asset::LiftSide {
@@ -522,11 +526,12 @@ pub(super) fn append(
                 g,
                 [p.column + part.x, p.row + part.y],
                 [1, 1],
-                [w + 1.5 * sx, w + 7. * sx, 8. * sy, 13.5 * sy],
+                [w + 1.5 * sx, w + 7. * sx, 16. * sy, 21.5 * sy],
                 s + 0.015 * sy,
             );
         }
     }
+    append_rear_equipment_backing(&mut mesh.solid,cells,g,p);
     // Counters own individual bay ranges above; the closed display owns only
     // its front. Architecture keeps its existing whole-object reveal.
     let reveal = !matches!(
@@ -553,6 +558,29 @@ pub(super) fn append(
         }
     }
     true
+}
+
+// The complete rear-wall network authenticates both the neighboring glazing
+// and its equipment bank. Equipment occludes the wall in 2D; it does not remove
+// it. Continue the same two-pane course behind each whole source block, at
+// the existing rear plane, without claiming equipment/floor cells a second time.
+fn append_rear_equipment_backing(out:&mut SurfaceMeshData,cells:&[&VisualTile],g:&GridGeometry,p:&Placement) {
+    if !matches!(p.network.floor,2|4|6) || p.network.label!="mart/department_store_wall"
+        ||p.network.anchor[1]!=0 ||!complete(cells,g,p.grid_origin,p.column,p.row,p.network) {return;}
+    let block=match p.network.floor {2=>0x13,4=>0x14,6=>0x21,_=>unreachable!()};
+    for dx in (0..p.network.width.saturating_sub(3)).step_by(4) {
+        let column=p.column+dx;
+        if !(0..4).all(|y|(0..4).all(|x| {
+            let source=&cells[(p.row+y)*g.width+column+x].source;
+            source.tileset_id.as_ref()=="mart" && source.metatile_id==block
+                && source.subtile_column==x as u8 &&source.subtile_row==y as u8
+        })) {continue;}
+        let (west,_,north,_)=g.bounds(column,p.row);
+        let south=north+2.*g.tile_height;
+        Asset::Window2.model().append_fitted(out,
+            [west,west+4.*g.tile_width,south-3.*g.tile_height/8.,south],
+            0.,WALL_HEIGHT*g.tile_height/8.);
+    }
 }
 fn append_service_counter(out: &mut SurfaceMeshData, asset: Asset, b: [f32; 4], sy: f32) {
     let [w, e, n, s] = b;
@@ -593,7 +621,7 @@ fn append_service_counter(out: &mut SurfaceMeshData, asset: Asset, b: [f32; 4], 
     super::modeled_interiors::architecture_box(out,[w,e,7.*sy,8.*sy,n,s],
         [0.76,0.75,0.65]);
 }
-fn append_native_service_counter(out:&mut SurfaceMeshData,asset:Asset,b:[f32;4],sy:f32,swatches:[[f32;2];5]) {
+fn append_native_service_counter(out:&mut SurfaceMeshData,asset:Asset,b:[f32;4],sy:f32,swatches:[[f32;2];5],fascia:Option<[f32;3]>) {
     let [w,e,n,s]=b;let bounds=match asset {Asset::CounterNorth=>[-e,-w,-s,-n],
         Asset::CounterWest=>[n,s,-e,-w],_=>b};
     let first=out.positions.len();
@@ -604,6 +632,7 @@ fn append_native_service_counter(out:&mut SurfaceMeshData,asset:Asset,b:[f32;4],
     for (normal,color) in out.normals[first..].iter().zip(&mut out.colors[first..]) {
         *color=crate::interior_models::authored_face_color([1.;4],Vec3::from_array(*normal));
     }
+    super::modeled_interiors::paint_mart_counter_fascia(out,first,fascia,7.*sy);
     let first=out.positions.len();super::modeled_interiors::architecture_box(out,[w,e,7.*sy,8.*sy,n,s],[1.;3]);
     for i in first..out.positions.len() {out.uvs[i]=swatches[if out.normals[i][1]>0.5 {3}else{4}];}
 }
@@ -659,7 +688,7 @@ fn append_lift_threshold(out: &mut SurfaceMeshData, b: [f32; 4], sx: f32, sy: f3
 
 // A mechanical register, with a cash drawer, sloping keypad and receipt hood.
 // The west-facing controls face the clerk inside the U-shaped service counter.
-fn append_cash_register(out: &mut SurfaceMeshData, b: [f32; 4], sy: f32) {
+pub(super) fn append_cash_register(out: &mut SurfaceMeshData, b: [f32; 4], sy: f32) {
     let [w, e, n, s] = b;
     // A register occupies part of a counter bay, rather than nearly its full
     // width/depth. Keep the drawer seated on the same countertop datum.
@@ -771,7 +800,7 @@ mod native_counter_tests {
         for asset in [Asset::CounterPlain,Asset::CounterNorth,Asset::CounterWest] {
             let mut old=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
             append_service_counter(&mut old,asset,[4.,20.,8.,24.],1.);
-            append_native_service_counter(&mut painted,asset,[4.,20.,8.,24.],1.,swatches);
+            append_native_service_counter(&mut painted,asset,[4.,20.,8.,24.],1.,swatches,None);
             assert_eq!(old.positions,painted.positions);assert_eq!(old.normals,painted.normals);
             assert_eq!(old.indices,painted.indices);assert!(painted.uvs.iter().all(|uv|swatches.contains(uv)));
         }

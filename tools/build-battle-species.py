@@ -454,19 +454,7 @@ def pitcher_plants(n):
 
 @register('IVYSAUR VENUSAUR',1.20)
 def bulb_evolutions(n):
- giant=n=='VENUSAUR';quad('teal',(.35,.40,.28),(.28,-.35,.52),False);eyes(.57,-.595,.17,.043,'red');mouth(-.616,.44,.16)
- for s in (-1,1):leaf('Triangular saur ear',(s*.17,-.29,.66),(s*.25,-.21,.85),.11,'teal')
- for x,y,z in [(-.23,-.46,.46),(.24,-.43,.47),(-.26,.02,.57),(.22,.15,.53)]:fin('Dark hide spot',[(x-.045,y,z),(x+.045,y,z+.035),(x+.026,y-.02,z-.05)],'darkgreen',.01)
- for i in range(6):a=i*math.tau/6;leaf('Broad back foliage',(0,.10,.57),(.53*math.cos(a),.10+.43*math.sin(a),.62),.18,'green')
- if giant:
-  rod('Woody flower trunk',(0,.10,.57),(0,.10,.92),.12,'brown',.09)
-  for i in range(7):a=i*math.tau/7;leaf('Large red flower petal',(0,.10,.99),(.57*math.cos(a),.10+.47*math.sin(a),.91),.22,'coral')
-  sph('Raised golden flower center',(0,.10,1.05),(.18,.17,.10),'gold')
-  for i in range(8):a=i*math.tau/8;sph('Flower cream speckle',(.33*math.cos(a),.10+.28*math.sin(a),1.00),(.036,.036,.014),'cream')
- else:sph('Closed rose bulb',(0,.12,.91),(.22,.19,.27),'rose');leaf('Bud seam',(0,-.06,.68),(0,.1,1.18),.015,'pink')
- for x in (-.20,.20):
-  for y in (-.20,.26):
-   for d in (-.04,0,.04):rod('White toe',(x+d,y-.10,.08),(x+d,y-.18,.025),.021,'white',.004)
+ raise ValueError('Ivysaur and Venusaur use bulb_saur_glb before Blender batching')
 @register('CHARMELEON CHARIZARD',1.35)
 def flame_dragons(n):
  raise RuntimeError("Fire dragons use dedicated sculptures before Blender batching")
@@ -597,7 +585,7 @@ def papercraft_pidgeotto():
 def birds(n):
  if n=='PIDGEOTTO':papercraft_pidgeotto();return
  if n in ('PIDGEOT','FEAROW'):raise ValueError('Pidgeot and Fearow use raptor_bird_glb')
- if n=='FARFETCH_D':raise RuntimeError('Farfetch_d uses its dedicated pure sculpture recipe before Blender batching')
+ if n=='FARFETCH_D':raise RuntimeError('Farfetch_d uses its dedicated standard skin recipe before Blender batching')
  if n=='MURKROW':raise RuntimeError('Murkrow uses its dedicated pure sculpture recipe before Blender batching')
  fear=n=='FEAROW';murk=n=='MURKROW';deli=n=='DELIBIRD';c='navy' if murk else ('red' if deli else 'brown');sph('Bird body',(0,.03,.42),(.23,.21,.31),c);sph('Light breast',(0,-.155,.43),(.18,.055,.23),'white' if deli else ('brown' if murk else 'cream'));hz=.97 if fear else .77
  if fear:rod('Long narrow neck',(0,-.025,.54),(0,-.05,.94),.075,c)
@@ -877,7 +865,7 @@ def electrode(n):
  raise ValueError('Electrode uses its canonical coherent shell skin before Blender')
 @register('EXEGGCUTE EXEGGUTOR',1.22)
 def eggs_palms(n):
- pass # both identities use original pure egg and coconut-palm recipes
+ raise ValueError('Exeggcute and Exeggutor use psychic_palm_glb before Blender batching')
 @register('CUBONE MAROWAK',1.06)
 def skull_dinosaurs(n):
  raise ValueError('Cubone and Marowak use their original separate skull-and-bone sculpture recipes')
@@ -1081,8 +1069,9 @@ def run():
   print(species+': original ribbed nautilus shell and ten rooted tentacles',flush=True)
  if 'farfetch_d' in names:
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from leek_duck_sculpt import sculpture as leek_duck_sculpture
-  (OUT/'farfetch_d.mesh.json').write_text(json.dumps(leek_duck_sculpture(),separators=(',',':')))
+  from leek_duck_glb import export_leek_duck
+  (OUT/'farfetch_d.glb').write_bytes(export_leek_duck('farfetch_d'))
+  (OUT/'farfetch_d.mesh.json').unlink(missing_ok=True)
   names.remove('farfetch_d')
   print('farfetch_d: original stern gray-brown duck with wing-held leek and webbed feet',flush=True)
  for species in ('doduo','dodrio'):
@@ -1101,18 +1090,22 @@ def run():
   (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
   names.remove(species)
   print(species+': canonical articulated steel orbs, hinged open magnets and independently rotating screws',flush=True)
- if 'exeggutor' in names:
+ for species in ('ivysaur','venusaur'):
+  if species not in names:continue
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from exeggutor_sculpt import sculpture as palm_sculpture
-  (OUT/'exeggutor.mesh.json').write_text(json.dumps(palm_sculpture(),separators=(',',':')))
-  names.remove('exeggutor')
-  print('exeggutor: original three-faced coconut palm with curved folded fronds',flush=True)
- if 'exeggcute' in names:
+  from bulb_saur_glb import export_bulb_saur
+  (OUT/(species+'.glb')).write_bytes(export_bulb_saur(species))
+  (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
+  names.remove(species)
+  print(species+': original articulated growing or mature seed saur, complete quadruped and rooted botanical crown',flush=True)
+ for species in ('exeggcute','exeggutor'):
+  if species not in names:continue
   sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from exeggcute_sculpt import sculpture as egg_sculpture
-  (OUT/'exeggcute.mesh.json').write_text(json.dumps(egg_sculpture(),separators=(',',':')))
-  names.remove('exeggcute')
-  print('exeggcute: original six distinct psychic eggs and hollow broken shell',flush=True)
+  from psychic_palm_glb import export_psychic_palm
+  (OUT/(species+'.glb')).write_bytes(export_psychic_palm(species))
+  (OUT/(species+'.mesh.json')).unlink(missing_ok=True)
+  names.remove(species)
+  print(species+': canonical grounded psychic eggs or independently bending coconut palm',flush=True)
  for species in ('kabuto','kabutops'):
   if species not in names:continue
   sys.path.insert(0,str(Path(__file__).resolve().parent))

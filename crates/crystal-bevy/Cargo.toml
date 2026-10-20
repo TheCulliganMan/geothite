@@ -41,6 +41,10 @@ uuid = { workspace = true, features = ["js"] }
 bevy = { workspace = true, optional = true, features = ["multi_threaded", "x11", "bevy_gilrs"] }
 rodio = { version = "0.18.1", default-features = false }
 
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = { version = "0.5.2", optional = true }
+objc2-foundation = { version = "0.2.2", features = ["NSString", "NSGeometry"], optional = true }
+
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = { version = "0.3", features = ["wasm_js"] }
 js-sys.workspace = true
@@ -69,8 +73,8 @@ default = ["bevy-shell", "fullscreen-scaling"]
 bevy-shell = ["dep:bevy", "dep:crystal-render-api"]
 intro-certification = ["bevy-shell", "crystal-assets/test-fixtures", "crystal-runtime/test-fixtures"]
 fullscreen-scaling = ["bevy-shell"]
-# Installed Windows app: no console window; startup errors get a native dialog.
-desktop-app = ["bevy-shell"]
+# Installed desktop app: per-user saves; Windows omits the console window.
+desktop-app = ["bevy-shell", "dep:objc2", "dep:objc2-foundation"]
 voxel-view = ["bevy-shell", "dep:crystal-voxel-view"]
 # Automatic adapter selection keeps WebGL available when WebGPU is absent.
 browser-webgpu = ["bevy-shell", "bevy/webgpu", "dep:naga"]

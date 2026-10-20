@@ -149,3 +149,13 @@ include!("tests/queued_source_scene.rs");
 
 #[cfg(feature = "location-tester")]
 include!("tests/day_cycle.rs");
+
+#[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+include!("tests/native_terrace_regions.rs");
+
+#[cfg(all(feature = "location-tester", feature = "voxel-view"))]
+include!("tests/summit_backdrop.rs");
+
+include!("tests/shared_yes_no_layout.rs");
+
+include!("tests/pc_yes_no_timing.rs");

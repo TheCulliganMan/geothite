@@ -19,6 +19,44 @@ original zero-height footprint. The frame has a real empty central aperture,
 not an opaque picture backing. The narrow rear strip above the PC uses the
 existing clinical wall component, matching its adjacent wall.
 
+## Connected sign walls and shared furniture
+
+The two rear signs now mount on complete 24px clinical backing rather than
+replacing the wall with their frames. Their live source inscriptions and frame
+geometry move up 4px and forward 2.25px, clear of that backing. Each adjacent
+18px open door frame gains a wall header from 18px to 24px. The portal below
+stays open, and the neighboring mobile-entry footprints remain untouched.
+Backing uses the complete existing sign/door/mobile-corner source guard and
+actual map anchor, including scrolled and padded frames; it adds no source-cell
+ownership or walking height. Edited source, unknown maps and wrong anchors do
+not acquire backing. This repairs the visible break between the sign and booth
+partition without treating mobile openings as missing walls.
+
+The shared `Pokecenter2F` now uses the same source-sampled gold seat finish as
+the ten beta rooms, plus the existing blue-front counter finish for its actual
+blocks05/38. Lobby-only counter drawings retain their original scope. Native
+seat guards check all five source identity fields in each supported phase.
+Link receptionists now bind each actual green/blue source palette as described
+below; complete link-service/room acceptance remains unfinished.
+
+## Per-instance link uniforms
+
+Link receptionists use the green or blue color already present in their live
+paletted source sprite. Native painting variants affect only pink cloth in the
+existing clothing UV islands; caps, faces, hair, collar, badge and alpha remain
+unchanged. The canonical external painting stays immutable. GPU variants are
+keyed by rig/kind/color, reuse the body and bind poses, and keep identical
+costume geometry and joint weights. A palette change refreshes only its actor;
+ordinary animation frames reuse it. Other character kinds keep their current
+paintings. No gameplay state, source ID or texture is rewritten.
+
+The actual upstairs green uniforms have paired native/source review in day and
+night views, including a64-frame walk. Blue variant isolation has an explicit
+presentation/cache test. The declared Goldenrod blue receptionist lies outside
+the base clinic and still needs its visible GS Ball scene reviewed; the initial
+out-of-bounds capture was rejected, not accepted as blue-scene evidence. Other
+NPC palette discrepancies and whole-room/service acceptance remain open.
+
 ## Exact ownership and conservative retained art
 
 Six new source fingerprint groups extend the existing eight Cable Club groups.

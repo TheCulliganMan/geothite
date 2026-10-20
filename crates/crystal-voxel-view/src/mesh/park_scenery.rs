@@ -272,12 +272,12 @@ mod tests {
                     .collect();
                 assert_eq!(
                     ys,
-                    [(-2.0f32).to_bits()]
+                    [crate::profile::WATER_HEIGHT.to_bits()]
                         .into_iter()
                         .collect()
                 );
-                assert!(mesh.solid.positions.iter().any(|p| p[1] == 4.));
-                assert!(mesh.solid.positions.iter().any(|p| p[1] == 3.));
+                assert!(mesh.solid.positions.iter().any(|p| p[1] == crate::profile::WATER_HEIGHT + 6.));
+                assert!(mesh.solid.positions.iter().any(|p| p[1] == crate::profile::WATER_HEIGHT + 5.));
                 assert!(
                     resolve(
                         "SafariZoneBeta",

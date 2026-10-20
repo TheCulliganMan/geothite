@@ -1,5 +1,40 @@
 //! Native idle healing enclosure with an empty recessed bay.
 use super::*;
+
+// Indigo's two stock cabinets share one complete block. The upper course is
+// the visible roof; the remaining three courses are upright recessed shelves.
+fn stock_block(map:&str,column:usize,row:usize,cells:&[&VisualTile],g:&GridGeometry)->bool {
+ if map!="IndigoPlateauPokecenter1F" || g.width.checked_mul(g.height)!=Some(cells.len())
+  || column+4>g.width || row+4>g.height {return false;}
+ (0..16).all(|j| {
+  let s=&cells[(row+j/4)*g.width+column+j%4].source;
+  s.tileset_id.as_ref()=="pokecenter" && s.metatile_id==0x2c
+   && s.subtile_column==(j%4)as u8 && s.subtile_row==(j/4)as u8
+   && s.tile_index==[[0x5c,0x5d,0x5c,0x5d],[0x5e,0x5f,0x5e,0x5f],
+    [0x5e,0x5f,0x5e,0x5f],[0x2a,0x2b,0x2a,0x2b]][j/4][j%4]
+ })
+}
+pub(super) fn stock_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
+ if p.kind!=ModelKind::RetailShelf || p.width!=2 || p.height!=4 || p.base_pixels!=0.
+  || p.column>=g.width || p.row>=g.height || g.width.checked_mul(g.height)!=Some(cells.len()) {return false;}
+ let offset=usize::from(cells[p.row*g.width+p.column].source.subtile_column);
+ matches!(offset,0|2) && p.column>=offset
+  && stock_block(map,p.column-offset,p.row,cells,g)
+}
+pub(super) fn append_stock_candidates(map:&str,cells:&[&VisualTile],g:&GridGeometry,claimed:&mut[bool],out:&mut Vec<Placement>) {
+ if map!="IndigoPlateauPokecenter1F" || g.width<4 || g.height<4 {return;}
+ let Some(ground)=ground_sample(cells,map,"pokecenter",0x11) else{return;};
+ for row in 0..=g.height-4 {for column in 0..=g.width-4 {
+  if !stock_block(map,column,row,cells,g)
+   || (0..16).any(|j|claimed[(row+j/4)*g.width+column+j%4]) {continue;}
+  for offset in [0,2] {
+   let p=Placement{kind:ModelKind::RetailShelf,column:column+offset,row,width:2,height:4,
+    ground,depth_pixels:8.,height_pixels:32.,base_pixels:0.,footing_pixels:None};
+   for i in p.indices(g.width) {claimed[i]=true;}
+   out.push(p);
+  }
+ }}
+}
 pub(super) fn healing_source(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry)->bool {
  kanto_native_floor_map(map)&&map.ends_with("Pokecenter1F")&&p.kind==ModelKind::HealingMachine
   &&p.width==4&&p.height==4&&p.indices(g.width).enumerate().all(|(j,i)| {
@@ -116,10 +151,57 @@ fn triangle(out:&mut SurfaceMeshData,p:[[f32;3];3],normal:[f32;3],uv:[f32;2]) {
 }
 pub(super) fn append_healing(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4],height:f32) {
  append_enclosure(out,g,p,b,height,true);
+ append_healing_controls(out,g,p,b,height);
 }
 pub(super) fn append_terminal(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4],height:f32) {
  append_enclosure(out,g,p,b,height,false);
 }
+// A closed, chamfered plate faces south. Its side faces give small source
+// controls actual relief without substituting blocks for the apparatus.
+fn front_plate(out:&mut SurfaceMeshData,rect:[f32;4],z:[f32;2],radius:f32,paint:[f32;2]) {
+ let [w,e,low,high]=rect;let [rear,front]=z;
+ let r=radius.min((e-w)*0.5).min((high-low)*0.5);
+ let points=[[w+r,low],[e-r,low],[e,low+r],[e,high-r],
+  [e-r,high],[w+r,high],[w,high-r],[w,low+r]];
+ let c=[(w+e)*0.5,(low+high)*0.5];
+ for i in 0..8 {
+  let a=points[i];let b=points[(i+1)%8];
+  triangle(out,[[c[0],c[1],front],[a[0],a[1],front],[b[0],b[1],front]],[0.,0.,1.],paint);
+  triangle(out,[[c[0],c[1],rear],[b[0],b[1],rear],[a[0],a[1],rear]],[0.,0.,-1.],paint);
+  let normal=Vec3::new(b[1]-a[1],a[0]-b[0],0.).normalize().to_array();
+  append_quad(out,[[a[0],a[1],rear],[b[0],b[1],rear],[b[0],b[1],front],[a[0],a[1],front]],
+   normal,[paint;4],TEXTURED_SHADE);
+ }
+}
+fn append_healing_controls(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4],height:f32) {
+ let [w,e,_,south]=b;let scale=g.tile_height/8.;
+ let left=w+0.5*scale;let right=e-0.5*scale;let width=right-left;
+ let x=|pixel:f32|left+width*pixel/32.;let y=|pixel:f32|height*(1.-pixel/32.);
+ let [metal,pale,red]=native_source_swatches(p,g,[[2,13],[3,13],[15,27]]);
+ let back=south-0.05*scale;
+ // The narrow frame stays outside the bay; the original source ball cards
+ // and all sixteen live front-art cells keep their existing presentation.
+ let rail=0.45*scale;let x0=x(8.);let x1=x(24.);let low=y(24.);let high=y(8.);
+ for rect in [[x0-rail,x0,low-rail,high+rail],[x1,x1+rail,low-rail,high+rail],
+  [x0,x1,low-rail,low],[x0,x1,high,high+rail]] {
+  front_plate(out,rect,[back,south+0.45*scale],0.15*scale,metal);
+ }
+ // Four source side controls have a metal rim and a cream push surface.
+ for source_x in [3.,29.] {for source_y in [12.,20.] {
+  let cx=x(source_x);let cy=y(source_y);let half=0.85*scale;
+  front_plate(out,[cx-half,cx+half,cy-half,cy+half],
+   [back,south+0.45*scale],0.3*scale,metal);
+  let half=0.5*scale;
+  front_plate(out,[cx-half,cx+half,cy-half,cy+half],
+   [south+0.4*scale,south+0.7*scale],0.2*scale,pale);
+ }}
+ // Retain the source's red service cross as a shallow raised badge.
+ let cx=x(16.);let cy=y(28.);let h=1.5*scale;let bar=0.45*scale;
+ for rect in [[cx-h,cx+h,cy-bar,cy+bar],[cx-bar,cx+bar,cy-h,cy+h]] {
+  front_plate(out,rect,[back,south+0.35*scale],0.15*scale,red);
+ }
+}
+
 fn append_enclosure(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32;4],height:f32,bay:bool) {
  let [w,e,n,s]=b;let scale=g.tile_height/8.;let bevel=0.5*scale;
  let uv=g.uv(p.column,p.row+if bay {2}else{p.height-1});
@@ -137,7 +219,7 @@ fn append_enclosure(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f32
   }
  }
  let left=w+bevel;let right=e-bevel;let width=right-left;
- let recessed=s-1.5*scale;
+ let recessed=s-if bay {4.}else{1.5}*scale;
  for row in 0..p.height {for col in 0..p.width {
   let x0=left+width*col as f32/p.width as f32;let x1=left+width*(col+1)as f32/p.width as f32;
   let top=height*(p.height-row)as f32/p.height as f32;let bottom=height*(p.height-1-row)as f32/p.height as f32;

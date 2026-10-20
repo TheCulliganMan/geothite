@@ -112,9 +112,9 @@ mod tests {
         let selected=append(&mut mesh,&tiles.iter().collect::<Vec<_>>(),&g,[0,0]);
         assert_eq!(selected.len(),8);assert!(selected.iter().all(|&i|i<8));
         assert_eq!(mesh.footing_heights,vec![0.;16]);
-        assert!(mesh.textured.positions.iter().all(|p|p[1]==-2.));
+        assert!(mesh.textured.positions.iter().all(|p|p[1]==crate::profile::WATER_HEIGHT));
         assert!(mesh.solid.positions.iter().all(|p|p[0]>=0. && p[0]<=32. && p[2]>=0. && p[2]<=16.
-            && p[1]>=-2.49 && p[1]<=1.69));
+            && p[1]>=crate::profile::WATER_HEIGHT-0.49 && p[1]<=crate::profile::WATER_HEIGHT+3.69));
         assert!(mesh.solid.normals.iter().all(|n|Vec3::from_array(*n).is_finite()));
         // The first float has closed top and bottom and outward side normals.
         assert!(mesh.solid.normals[..288].iter().any(|n|n[1]>0.9));

@@ -50,12 +50,20 @@ struct Args {
     hour: u8,
     live: bool,
     preview_flag: Option<String>,
+    preview_doll: Option<String>,
 }
 
 fn main() -> Result<()> {
     #[cfg(feature = "operation-trace")]
     let _trace = crystal_bevy::operation_trace::start();
     let args = parse_args(env::args().skip(1))?;
+    if args.preview_doll.is_some()
+        && (args.map.as_deref() != Some("PlayersHouse2F") || args.screenshot.is_none()
+            || args.live || args.all_maps || !args.maps.is_empty()
+            || args.tile_x.is_some() || args.tile_y.is_some())
+    {
+        bail!("--preview-doll requires one PlayersHouse2F screenshot at its title spawn; omit --x/--y");
+    }
     // The existing same-view capture mode can compare two actual 3D poses
     // without a visible-window readback. Normal single-view captures stay single.
     let temporal_3d = args.view == ViewMode::TwoPointFiveD
@@ -76,8 +84,9 @@ fn main() -> Result<()> {
             || args.all_maps
             || !args.maps.is_empty()
             || args.screenshot.is_none())
+        && (args.maps.is_empty() || args.all_maps || args.output_dir.is_none())
     {
-        bail!("--preview-flag requires one --map and --screenshot; it seeds a disposable visual fixture");
+        bail!("--preview-flag requires --map/--screenshot or an explicit --maps list/--output-dir; it seeds disposable visual fixtures");
     }
     if args.walk.is_some()
         && (args.view == ViewMode::TwoD
@@ -130,9 +139,19 @@ fn main() -> Result<()> {
     }
 
     if args.all_maps || !args.maps.is_empty() {
-        return render_map_batch(&args, &runtime);
+        return render_map_batch(&args, &runtime, &asset_root, &pack_path);
     }
+    render_single_map(args, runtime, asset_root, pack_path, temporal_3d, started)
+}
 
+fn render_single_map(
+    args: Args,
+    runtime: CrystalRuntime,
+    asset_root: AssetRoot,
+    pack_path: PathBuf,
+    temporal_3d: bool,
+    started: std::time::Instant,
+) -> Result<()> {
     let map = args
         .map
         .clone()
@@ -171,11 +190,12 @@ fn main() -> Result<()> {
         .filter(|_| pair)
         .map(|path| suffixed_output(path, if temporal_3d { "3d-end" } else { "2.5d" }));
     let identity = format!(
-        "{}|{:?}|{map}|{tile_x}|{tile_y}|{}|{:?}",
+        "{}|{:?}|{map}|{tile_x}|{tile_y}|{}|{:?}|{:?}",
         pack_path.display(),
         std::fs::metadata(&pack_path)?.modified()?,
         args.hour,
-        args.preview_flag
+        args.preview_flag,
+        args.preview_doll
     );
     let previous = second
         .as_ref()
@@ -221,6 +241,7 @@ fn main() -> Result<()> {
                 })
                 .transpose()?,
             render_test_preview_flag: args.preview_flag,
+            render_test_preview_doll: args.preview_doll,
             render_test_party: true,
             ..Default::default()
         },
@@ -242,7 +263,12 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn render_map_batch(args: &Args, runtime: &CrystalRuntime) -> Result<()> {
+fn render_map_batch(
+    args: &Args,
+    runtime: &CrystalRuntime,
+    asset_root: &AssetRoot,
+    pack_path: &PathBuf,
+) -> Result<()> {
     let output_dir = args
         .output_dir
         .as_ref()
@@ -320,6 +346,22 @@ fn render_map_batch(args: &Args, runtime: &CrystalRuntime) -> Result<()> {
                 ViewMode::TwoPointFiveD => "2.5d",
                 ViewMode::Both => "both",
             };
+            if env::var("CRYSTAL_RENDER_TEST_HEADLESS").as_deref() == Ok("1") {
+                // Offscreen Apps use ScheduleRunner, so they can finish and
+                // restart in this process. Keep the verified immutable pack,
+                // but initialize a fresh production shell and renderer per map.
+                let mut single = parse_args([
+                    "--pack".to_owned(), args.pack.to_string_lossy().into_owned(),
+                    "--map".into(), map.clone(), "--x".into(), tile_x.to_string(),
+                    "--y".into(), tile_y.to_string(), "--view".into(), view.into(),
+                    "--hour".into(), args.hour.to_string(), "--screenshot".into(),
+                    output.to_string_lossy().into_owned(),
+                ])?;
+                single.preview_flag = args.preview_flag.clone();
+                render_single_map(single, runtime.clone(), asset_root.clone(), pack_path.clone(),
+                    false, std::time::Instant::now())?;
+                continue;
+            }
             let status = Command::new(&executable)
                 .arg("--pack")
                 .arg(&args.pack)
@@ -335,6 +377,7 @@ fn render_map_batch(args: &Args, runtime: &CrystalRuntime) -> Result<()> {
                 .arg(args.hour.to_string())
                 .arg("--screenshot")
                 .arg(&output)
+                .args(args.preview_flag.iter().flat_map(|flag| ["--preview-flag", flag.as_str()]))
                 .status()
                 .with_context(|| format!("launch batch render for {map}"))?;
             if !status.success() {
@@ -509,6 +552,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
     let mut hour = 12;
     let mut live = false;
     let mut preview_flag = None;
+    let mut preview_doll = None;
     let mut values = values.into_iter();
     while let Some(flag) = values.next() {
         match flag.as_str() {
@@ -532,6 +576,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
             }
             "--live" => live = true,
             "--preview-flag" => preview_flag = Some(next_value(&mut values, "--preview-flag")?),
+            "--preview-doll" | "--preview-big-doll" => preview_doll = Some(next_value(&mut values, &flag)?),
             "--x" => tile_x = Some(next_value(&mut values, "--x")?.parse::<i16>()?),
             "--y" => tile_y = Some(next_value(&mut values, "--y")?.parse::<i16>()?),
             "--view" => view = ViewMode::parse(&next_value(&mut values, "--view")?)?,
@@ -572,6 +617,7 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
         hour,
         live,
         preview_flag,
+        preview_doll,
     })
 }
 
@@ -593,9 +639,10 @@ fn print_usage() {
         r#"cargo run -p crystal-bevy --example render_at_location --features location-tester -- \
          --pack <game.crystalpack> [--list-maps | --map <id> [--x <tile>] [--y <tile>] \
          [--view 2d|2.5d|both] [--hour <0..23>] [--screenshot <output-or-prefix.png>] [--live] [--walk RDLU] \
-         [--preview-flag <verified-flag>] | \
+         [--preview-flag <verified-flag>] [--preview-doll <decoration-id>] | \
          (--maps <id,id,...> | --all-maps | --outdoors | --kanto-interiors) --output-dir <directory> [--perimeter] \
-         [--view 2d|2.5d|both] [--hour <0..23>]]"#
+         [--view 2d|2.5d|both] [--hour <0..23>]]
+Preview flags also support explicit --maps lists; each map gets a fresh disposable fixture."#
     );
 }
 

@@ -227,6 +227,11 @@ fn nurse_cap(mesh: &mut SurfaceMeshData, origin: Vec3, half: Vec3) {
 
 /// Returns false for hats handled by the other head accessory styles.
 pub(crate) fn append(mesh: &mut SurfaceMeshData, center: Vec3, half: Vec3, hat: &str) -> bool {
+    append_with_color(mesh, center, half, hat, None)
+}
+
+/// Only the police cloth crown follows the source pigment; visor, band and badge retain their materials.
+pub(crate) fn append_with_color(mesh: &mut SurfaceMeshData, center: Vec3, half: Vec3, hat: &str, color: Option<[u8; 3]>) -> bool {
     if !matches!(
         hat,
         "trainer" | "kris" | "police" | "captain" | "sailor" | "top" | "nurse"
@@ -401,7 +406,7 @@ pub(crate) fn append(mesh: &mut SurfaceMeshData, center: Vec3, half: Vec3, hat: 
             if hat == "captain" {
                 [239, 238, 223]
             } else {
-                [36, 64, 117]
+                color.unwrap_or([36, 64, 117])
             },
         );
         peak(mesh, origin, half, [25, 31, 40], [25, 31, 40], 0.028, 0.045);
@@ -535,5 +540,30 @@ mod tests {
         }
         assert_ne!(shapes[0].positions, shapes[2].positions);
         assert_ne!(shapes[0].colors, shapes[1].colors);
+    }
+}
+
+#[cfg(test)]
+mod source_color_tests {
+    use super::*;
+    #[test]
+    fn police_source_crown_preserves_geometry_visor_band_and_badge() {
+        let mut blue = SurfaceMeshData::default();
+        let mut green = SurfaceMeshData::default();
+        assert!(append(&mut blue, Vec3::ZERO, Vec3::splat(0.3), "police"));
+        assert!(append_with_color(&mut green, Vec3::ZERO, Vec3::splat(0.3), "police", Some([57,189,24])));
+        assert_eq!(blue.positions, green.positions);
+        assert_eq!(blue.normals, green.normals);
+        assert_eq!(blue.uvs, green.uvs);
+        assert_eq!(blue.indices, green.indices);
+        let base = Color::srgb_u8(36,64,117).to_linear().to_f32_array();
+        let target = Color::srgb_u8(57,189,24).to_linear().to_f32_array();
+        let mut changed = 0;
+        for (a,b) in blue.colors.iter().zip(&green.colors) {
+            if *a == base { assert_eq!(*b,target); changed += 1; }
+            else { assert_eq!(a,b); }
+        }
+        assert!(changed > 100);
+        assert!(changed < blue.colors.len());
     }
 }

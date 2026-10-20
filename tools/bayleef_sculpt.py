@@ -228,7 +228,10 @@ def toe_claw(cx,cz,index):
 
 
 def sculpt():
-    body=body_cage();parts=[mesh(BODY,'body',*body)]
+    # Round living skin while retaining the exact cage and sharp sole edges.
+    # Local import avoids the shared geometry module's base-mesh dependency.
+    from sculpt_geometry import crease_normals
+    body=body_cage();parts=[crease_normals(mesh(BODY,'body',*body),35.)]
     for side,label in ((-1,'left'),(1,'right')):
         cx=side*.107;cy=.857
         eye=[(cx+side*x,cy+y) for x,y in ((-.022,-.041),(-.030,-.009),(-.026,.028),(-.010,.052),(.013,.050),(.028,.027),(.029,-.017),(.014,-.043))]

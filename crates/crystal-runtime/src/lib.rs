@@ -2340,6 +2340,7 @@ pub struct RuntimeCompiledScriptStep {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum RuntimeCompiledScriptBoundary {
     DayOfWeekPrompt,
+    NameRaterPrompt,
     PhoneNumberPrompt,
     TextLabel(String),
     TextWait(ScriptTextWait),

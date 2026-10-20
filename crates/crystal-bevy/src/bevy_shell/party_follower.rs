@@ -104,12 +104,24 @@ fn party_follower_seed_is_clear(
 #[derive(Default)]
 struct PartyFollowerPresentation {
     trail: PartyFollowerTrail,
+    trace_reason: Option<String>,
     art: Option<(
         String,
         bool,
         SpriteFrame,
         Option<crystal_render_api::VisualPokemonModelPalette>,
     )>,
+}
+
+impl PartyFollowerPresentation {
+    fn trace(&mut self, reason: impl FnOnce() -> String) {
+        if std::env::var_os("CRYSTAL_POKEMON_FOLLOW_TRACE").is_none() { return; }
+        let reason = reason();
+        if self.trace_reason.as_ref() != Some(&reason) {
+            eprintln!("pokemon follower: {reason}");
+            self.trace_reason = Some(reason);
+        }
+    }
 }
 
 fn readonly_companion_snapshot(shell: &BevyRuntimeShell) -> Result<Arc<RuntimeShellSnapshot>> {
@@ -179,6 +191,7 @@ fn publish_party_follower(
         .trail
         .follow(&frame.map_id, leader, facing, gap, sprite_size, seed_clear)
     else {
+        follower.trace(|| format!("{species}: waiting for {gap:.3}px of clear trail (seed_clear={seed_clear})"));
         frame
             .actors
             .retain(|actor| actor.id != VisualActorId::PartyFollower);
@@ -208,14 +221,18 @@ fn publish_party_follower(
         .as_ref()
         .is_none_or(|(id, appearance, _, _)| id != &asset_id || *appearance != shiny)
     {
-        let Ok(texture) = load_pokemon_frame(
+        let texture = match load_pokemon_frame(
             &shell.asset_root,
             &asset_id,
             PokemonSpriteSide::Front,
             shiny,
             &mut images,
-        ) else {
-            return;
+        ) {
+            Ok(texture) => texture,
+            Err(error) => {
+                follower.trace(|| format!("{species}: cannot load {asset_id}: {error:#}"));
+                return;
+            }
         };
         let palette = if shiny {
             let (Ok(normal), Ok(appearance)) = (
@@ -235,6 +252,7 @@ fn publish_party_follower(
         };
         follower.art = Some((asset_id, shiny, texture, palette));
     }
+    follower.trace(|| format!("{species}: published with {gap:.3}px trail gap"));
     let (_, _, texture, palette) = follower.art.as_ref().unwrap();
     // Exact models use the existing species resolver; every other species
     // keeps its own pack front sprite as the ordinary card fallback.

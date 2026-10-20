@@ -1263,10 +1263,10 @@ fn expanded_world_walk_publishes_every_host_frame_at_60_30_and_9_hz() {
             }
 
             assert!(
-                published.center.abs_diff_eq(expected, 0.001),
+                (published.center - published.view_center).abs_diff_eq(expected, 0.001),
                 "{host_hz} Hz frame {host_frame}: movement timer advanced to {}, but published camera froze at {:?} instead of {expected:?}",
                 shell.player_walk_frame_ticks,
-                published.center,
+                published.center - published.view_center,
             );
             let player = published.actors.iter()
                 .find(|actor| actor.id == crystal_render_api::VisualActorId::Player)

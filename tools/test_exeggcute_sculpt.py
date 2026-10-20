@@ -7,15 +7,28 @@ from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_slime_sculpt import ray_intersections
 from bivalve_sculpt import top_view
 import test_donphan_sculpt as joins
+RIG_READY=os.environ.get('EXEGGCUTE_TEST_RIG_READY')=='1'
 ROOT=Path(os.environ.get('EXEGGCUTE_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class EggTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'exeggcute.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):
+  cls.skin_source=(ROOT/'exeggcute.glb').exists()
+  if cls.skin_source:
+   from psychic_palm_glb import read_exeggcute
+   cls.m=read_exeggcute(ROOT/'exeggcute.glb')
+  else:cls.m=json.loads((ROOT/'exeggcute.mesh.json').read_bytes())
+  cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_closed_connected_outward_parts(self):assert_closed_models(self,{'exeggcute':self.m})
  def test_unit_normals_and_actual_winding(self):assert_model_shading(self,{'exeggcute':self.m})
  def test_recipe_height_ground_budget(self):
-  self.assertEqual(self.m,sculpture());self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),100000)
+  mode=RIG_READY or self.skin_source
+  if self.skin_source:
+   from psychic_palm_glb import geometry_digest
+   self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture(rig_ready=mode)))
+  else:self.assertEqual(self.m,sculpture(rig_ready=mode))
+  self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000 if mode else 100000)
+  if mode:self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
  def test_six_eggs_five_distinct_faces_and_one_yolk(self):
   for prefix,n in (('Egg /',6),('Eye white /',10),('Pupil /',10),('Lid /',10),('Mouth /',5),('Crack /',4),('Yolk /',1)):self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n)
   self.assertEqual(len({tuple(self.find('Mouth /',j)['positions']) for j in (0,1,2,4,5)}),5)

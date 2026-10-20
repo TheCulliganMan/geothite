@@ -57,7 +57,7 @@ try {
   }, 1000);
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   await context.addInitScript(accountBuffers => {
-    localStorage.setItem('crystal.audio.muted', 'true');
+    localStorage.setItem('crystal.audio.preference', 'muted');
     window.goldenrodMetrics = { largestBuffer: 0, bufferUploadBytes: 0, liveBufferBytes: 0,
       peakBufferBytes: 0, contextLost: 0,
       active: false, last: 0, intervals: [], longTasks: [], renderer: null };

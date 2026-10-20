@@ -16,7 +16,7 @@ def geometry_digest(model):
  return h.hexdigest()
 @lru_cache(maxsize=1)
 def authoring_model(species='mr__mime'):return sculpture(species)
-REST_DIGESTS={'mr__mime':'120668b1f7eb02e42729ae3939a5c4e3ff1258f6ec57b837aec6f3fda6f1a8e9'}
+REST_DIGESTS={'mr__mime':'ad8800eb073db2e70ef3592284742d3380177a0c92bbda870f398059868ece60'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 BODY_REFERENCE_HEIGHTS=HEIGHTS.copy();MAX_BYTES=1024*1024
 @lru_cache(maxsize=1)
@@ -86,7 +86,7 @@ def pack_parts(species,model):
    joined={'part':kind+' / complete barrier-mime assembly','positions':[],'normals':[],'indices':[],'base_color':part['base_color']};meta={'source_parts':[]};groups[key]=(joined,meta);parts.append((joined,meta))
   joined,meta=groups[key];assert joined['base_color']==part['base_color'];start=len(joined['positions'])//3;first=len(joined['indices']);meta['source_parts'].append({'part':name,'order':order,'vertex_start':start,'vertex_count':len(part['positions'])//3,'index_start':first,'index_count':len(part['indices'])});joined['positions']+=part['positions'];joined['normals']+=part['normals'];joined['indices'] += [i+start for i in part['indices']]
  return parts
-PACKED_REST_DIGESTS={'mr__mime': 'd583990f629188f68ad7098a02d6fca3b854f80187ac1bc00ac935bbf9bd1ab2'}
+PACKED_REST_DIGESTS={'mr__mime': 'f2409770cbce156b43cca909213fbcdcbda84094b050618144544ef3e3eeb81d'}
 def export_mime(species,model=None):
  if species not in SPECIES:raise ValueError('unknown mime species')
  if model is None:model=authoring_model(species)

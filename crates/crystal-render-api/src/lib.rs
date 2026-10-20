@@ -13,7 +13,7 @@ mod battle_location;
 mod streamed_images;
 pub use battle::*;
 pub use battle_location::*;
-pub use streamed_images::stream_composed_image;
+pub use streamed_images::{stream_composed_image, is_streamed_image};
 
 use std::{collections::HashSet, sync::Arc};
 
@@ -326,6 +326,10 @@ pub struct VisualWorldFrame {
     pub map_texture: Handle<Image>,
     /// Center of the composited map surface / visual viewport in world pixels.
     pub center: Vec2,
+    /// Horizontal camera-rig origin in the same coordinates as terrain/actors.
+    /// Zero preserves screen-centred producers. Map-anchored producers move
+    /// this origin while retaining static scenery transforms.
+    pub view_center: Vec2,
     /// Visible world extent in world pixels.
     pub viewport_size: Vec2,
     /// Width and height of a visual tile in world pixels.
@@ -336,6 +340,19 @@ pub struct VisualWorldFrame {
 }
 
 impl VisualWorldFrame {
+    /// Rebase presentation coordinates into stable source-map space without
+    /// changing source tiles, actor offsets, geometry or gameplay state.
+    /// Returns the translation to apply to external presentation endpoints.
+    pub fn anchor_to_map(&mut self) -> Vec2 {
+        if !self.active { return Vec2::ZERO; }
+        let center = self.grid_origin.as_vec2() * self.tile_size * Vec2::new(1., -1.);
+        let shift = center - self.center;
+        self.center = center;
+        self.view_center += shift;
+        for actor in &mut self.actors { actor.center += shift; }
+        shift
+    }
+
     /// Checks the geometry and identity invariants required by render mods.
     ///
     /// Inactive frames are always accepted because consumers must ignore all
@@ -363,7 +380,7 @@ impl VisualWorldFrame {
             || d.levels.iter().flatten().any(|&v|!v.is_finite() || v<0.) || !d.valid_water_barriers() || !d.valid_open_water()) {
             return Err(VisualWorldFrameError::InvalidTerraceDatum);
         }
-        if !self.center.is_finite() {
+        if !self.center.is_finite() || !self.view_center.is_finite() {
             return Err(VisualWorldFrameError::NonFiniteCenter);
         }
         if !is_positive_finite(self.viewport_size) {
@@ -526,6 +543,29 @@ mod tests {
         }
     }
 
+    #[test]
+    fn map_anchoring_preserves_source_and_screen_correspondence() {
+        let mut frame = active_frame();
+        frame.grid_origin = bevy::prelude::IVec2::new(13, -7);
+        let source = frame.clone();
+        let shift = frame.anchor_to_map();
+        assert_eq!(frame.center, Vec2::new(13., 7.) * source.tile_size);
+        assert_eq!(frame.center - frame.view_center, source.center);
+        assert_eq!(frame.tiles, source.tiles);
+        assert_eq!(frame.terrain_revision, source.terrain_revision);
+        assert_eq!(frame.grid_origin, source.grid_origin);
+        for (actor, old) in frame.actors.iter().zip(&source.actors) {
+            assert_eq!(actor.center, old.center + shift);
+            assert_eq!(actor.center-frame.center, old.center-source.center);
+        }
+        let anchored = frame.clone();
+        assert_eq!(frame.anchor_to_map(), Vec2::ZERO);
+        assert_eq!(frame, anchored);
+        assert!(frame.validate().is_ok());
+        frame.view_center.x = f32::NAN;
+        assert!(frame.validate().is_err());
+    }
+
     fn active_frame() -> VisualWorldFrame {
         VisualWorldFrame {
             jump_ledges: Default::default(),
@@ -538,6 +578,7 @@ mod tests {
             grid_origin: bevy::prelude::IVec2::ZERO,
             map_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
             center: Vec2::new(8.0, 4.0),
+            view_center: Vec2::ZERO,
             viewport_size: Vec2::new(16.0, 8.0),
             tile_size: Vec2::splat(8.0),
             grid_size: UVec2::new(2, 1),

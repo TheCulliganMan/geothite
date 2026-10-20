@@ -21,7 +21,7 @@ fn main() -> Result<()> {
             && std::env::var("CRYSTAL_RENDER_TEST_WALK_INPUT").as_deref() == Ok("synthetic"),
         "native League review requires explicit headless image capture and synthetic keyboard input"
     );
-    let save = directory.join("earned-champion.save.json");
+    let save = directory.join("earned-champion.crystalsave");
     anyhow::ensure!(
         !save.exists(),
         "use a fresh output directory; preserve previous earned saves"

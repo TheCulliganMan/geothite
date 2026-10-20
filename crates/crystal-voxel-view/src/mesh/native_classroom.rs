@@ -64,13 +64,29 @@ pub(super) fn append(out:&mut SurfaceMeshData,g:&GridGeometry,p:&Placement,b:[f3
             architecture_box(out,[w,e,0.,32.*scale,n,s],[1.;3]);
             out.uvs[first..].fill(native_source_swatches(p,g,[[0,16]])[0]);
             out.indices.drain(indices+6..indices+12);
+            // The board is a shallow mounted object, not wall paint. Keep
+            // every source frame/letter pixel on its front, with closed dark
+            // edges and a physical ledge beneath it. It stays inside the
+            // existing ceiling height and source ownership footprint.
+            let board_w=w+g.tile_width;
+            let board_e=w+7.*g.tile_width;
+            let board_front=s+0.75*scale;
+            let edge=native_source_swatches(p,g,[[8,0]])[0];
+            let first=out.positions.len();let indices=out.indices.len();
+            architecture_box(out,[board_w,board_e,16.*scale,32.*scale,s,board_front],[1.;3]);
+            out.uvs[first..].fill(edge);
+            out.indices.drain(indices+6..indices+12);
+            let first=out.positions.len();
+            architecture_box(out,[board_w,board_e,15.5*scale,16.*scale,s,s+2.*scale],[1.;3]);
+            out.uvs[first..].fill(edge);
             // Keep one source-sized blackboard near the ceiling, with an
             // additional plain wall course below it.
             for y in 0..3 {for x in 0..12 {
                 let uv=g.uv(p.column+x,p.row+y);
                 let a=w+(e-w)*x as f32/12.;let b=w+(e-w)*(x+1)as f32/12.;
                 let bottom=(3-y)as f32*8.*scale;let top=bottom+8.*scale;
-                append_quad(out,[[b,bottom,s],[b,top,s],[a,top,s],[a,bottom,s]],Vec3::Z.to_array(),
+                let front=if y<2&&(1..7).contains(&x) {board_front}else{s};
+                append_quad(out,[[b,bottom,front],[b,top,front],[a,top,front],[a,bottom,front]],Vec3::Z.to_array(),
                     [[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2],[uv.0,uv.3]],
                     crate::interior_models::authored_face_color([1.;4],Vec3::Z));
             }}
@@ -254,13 +270,15 @@ mod tests {
             if p.kind==ModelKind::WallPanel {
                 let north=mesh.textured.positions.iter().filter(|v|v[1]>0.).map(|v|v[2]).fold(f32::INFINITY,f32::min);
                 let south=mesh.textured.positions.iter().filter(|v|v[1]>0.).map(|v|v[2]).fold(f32::NEG_INFINITY,f32::max);
-                assert!((south-north-3.).abs()<0.001,"wall has a thin physical depth");
+                assert!((south-north-5.).abs()<0.001,"wall plus shallow board ledge, not a deep cabinet");
+                let wall_front=south-2.;
                 for y in 0..3 {for x in 0..12 {
                     let uv=g.uv(p.column+x,p.row+y);
-                    let expected=[[(x+1+p.column)as f32*8.,(3-y)as f32*8.,south],
-                        [(x+1+p.column)as f32*8.,(4-y)as f32*8.,south],
-                        [(x+p.column)as f32*8.,(4-y)as f32*8.,south],
-                        [(x+p.column)as f32*8.,(3-y)as f32*8.,south]];
+                    let front=wall_front+if y<2&&(1..7).contains(&x) {0.75}else{0.};
+                    let expected=[[(x+1+p.column)as f32*8.,(3-y)as f32*8.,front],
+                        [(x+1+p.column)as f32*8.,(4-y)as f32*8.,front],
+                        [(x+p.column)as f32*8.,(4-y)as f32*8.,front],
+                        [(x+p.column)as f32*8.,(3-y)as f32*8.,front]];
                     let tex=[[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2],[uv.0,uv.3]];
                     assert!(mesh.textured.positions.windows(4).zip(mesh.textured.uvs.windows(4))
                         .any(|(positions,uvs)|positions==expected&&uvs==tex),"upright source cell ({x},{y})");

@@ -1759,8 +1759,8 @@ fn yes_no_prompt_owns_all_yes_no_text_variants() {
             FIELD_YES_NO_WIDTH_TILES,
             FIELD_YES_NO_HEIGHT_TILES,
         ),
-        (14.0, 7.0, 6.0, 4.0),
-        "ASM/TypeScript YesNoBox uses the 6x4 outer window at tile (14, 7)"
+        (14.0, 7.0, 6.0, 5.0),
+        "home/menu.asm _YesNoBox has inclusive borders (14,7)..(19,11)"
     );
     assert!(is_visible_yes_no_prompt_entry("YES"));
     assert!(is_visible_yes_no_prompt_entry(">NO"));

@@ -20,6 +20,9 @@ pub(super) struct RenderWalk {
     capture_steps: bool,
     arrival_reveal_captured: bool,
     synthetic_input: bool,
+    pc_input_pulse: bool,
+    pc_mail_review: bool,
+    pc_item_review: bool,
     step_input: bool,
     segment_position: Option<(String, TilePosition)>,
     running_input: bool,
@@ -62,6 +65,56 @@ pub(super) fn move_menu_is_presented(shell: &BevyRuntimeShell, rendered: bool) -
         && !shell.battle_level_stats.front().is_some_and(|stats| stats.active)
 }
 
+// A bounded native QA policy observes the actual PC owner and emits only
+// ordinary keys. It never dispatches a game action, writes a cursor, seeds
+// progression or bypasses a text page. The initial field walk stays authored
+// by --walk; after PC entry this avoids timing-dependent blind A counts.
+fn pc_mail_review_key(runtime:&BevyRuntimeShell)->Option<KeyCode> {
+    if !runtime.pc_hub_session_open {return None;}
+    if runtime.special_boundary.is_some() || runtime.field_notice.is_some() || runtime.pc_notice.is_some() {
+        return Some(KeyCode::KeyZ);
+    }
+    if let Some(cursor)=runtime.pc_hub_cursor.as_ref() {
+        return Some(if cursor.option_index==1 {KeyCode::KeyZ}
+            else if cursor.option_index<1 {KeyCode::ArrowDown}else{KeyCode::ArrowUp});
+    }
+    if let Some(cursor)=runtime.player_pc_action_cursor.as_ref() {
+        return Some(if cursor.option_index==3 {KeyCode::KeyZ}
+            else if cursor.option_index<3 {KeyCode::ArrowDown}else{KeyCode::ArrowUp});
+    }
+    if let Some(cursor)=runtime.mailbox_action_cursor.as_ref() {
+        return Some(if cursor.option_index==0 {KeyCode::KeyZ}else{KeyCode::ArrowUp});
+    }
+    if let Some(cursor)=runtime.mailbox_cursor.as_ref() {
+        return Some(if cursor.option_index==1 {KeyCode::KeyZ}
+            else if cursor.option_index<1 {KeyCode::ArrowDown}else{KeyCode::ArrowUp});
+    }
+    None
+}
+
+// Like the Mail policy, this observes real input owners and emits only ordinary
+// keys. The named capture stops input when the actual item surface is ready.
+fn pc_item_review_key(runtime:&BevyRuntimeShell,wanted:&str)->Option<KeyCode> {
+    if !runtime.pc_hub_session_open {return None;}
+    if wanted=="pc:oak-shutdown" && matches!(runtime.pc_confirmation,Some(VisiblePcConfirmation::OakRating)) {
+        return Some(KeyCode::KeyX);
+    }
+    if runtime.special_boundary.is_some() || runtime.field_notice.is_some() || runtime.pc_notice.is_some() {
+        return Some(KeyCode::KeyZ);
+    }
+    if let Some(cursor)=runtime.pc_hub_cursor.as_ref() {
+        let selected=if wanted.starts_with("pc:oak-") {2}else{1};
+        return Some(if cursor.option_index==selected {KeyCode::KeyZ}
+            else if cursor.option_index<selected {KeyCode::ArrowDown}else{KeyCode::ArrowUp});
+    }
+    if let Some(cursor)=runtime.player_pc_action_cursor.as_ref() {
+        let action=if matches!(wanted,"pc:toss-confirmation"|"pc:toss-closing") {2}else{0};
+        return Some(if cursor.option_index==action {KeyCode::KeyZ}
+            else if cursor.option_index<action {KeyCode::ArrowDown}else{KeyCode::ArrowUp});
+    }
+    runtime.pc_item_cursor.as_ref().map(|_|KeyCode::KeyZ)
+}
+
 // Distinct maps can share the same arrival coordinates (Red's two floors do).
 // A committed warp must release a step-mode key even at identical coordinates.
 fn position_changed(start: Option<&(String, TilePosition)>, map: &str, tile: TilePosition) -> bool {
@@ -81,6 +134,133 @@ pub(super) fn revealed_dialogue_page(
         && pages.get(reveal.page_index).is_some_and(|page| page == wanted)
         && reveal.visible_chars >= wanted.chars().count())
         .then_some((reveal.page_index, reveal.visible_chars))
+}
+
+/// These menus belong to the production controller while PCScript retains its
+/// suspended core chooser. Observe that owner; never seed a review cursor.
+pub(super) fn retained_pc_review_menu(runtime:&BevyRuntimeShell,wanted:&str)->Result<Option<Vec<String>>> {
+    // A read-only hold after ordinary Name Rater script/party/YES inputs.
+    // Naming owns the full LCD, so the dormant room is not its readiness gate.
+    if wanted=="service:name-rater-entry" {
+        if matches!(runtime.shell.current_map_name(),"LavenderNameRater"|"GoldenrodNameRater")
+            &&runtime.special_boundary.is_none()&&runtime.pc_confirmation.is_none()
+            &&runtime.pending_name_input.as_ref().is_some_and(|input|input.label=="POKéMON'S NAME?") {
+            let mut entries=Vec::new();
+            push_visible_name_input_entries(&mut entries,runtime)?;
+            return Ok(Some(entries));
+        }
+        return Ok(None);
+    }
+    // Field Save is a shell-owned YesNoBox above the actual room. Observe
+    // its production flow/cursor rather than the suspended core menu below it.
+    if wanted=="field:save-confirmation" && runtime.save_menu_open
+        && runtime.special_boundary.is_none()
+        && runtime.save_flow.as_ref().is_some_and(|flow|flow.stage==VisibleSaveFlowStage::Prompt
+            &&matches!(flow.origin,VisibleSaveFlowOrigin::StartMenu)) {
+        let mut entries=Vec::new();
+        let snapshot=runtime.shell.presentation_snapshot()?;
+        scene_dialog_yes_no_cursor_index(&snapshot,runtime)?;
+        push_visible_save_dialog_entries(&mut entries,&snapshot,runtime)?;
+        return Ok(Some(entries));
+    }
+    if runtime.pc_hub_session_open && let Some(boundary)=runtime.special_boundary.as_ref() {
+        let expected=match wanted {
+            "pc:oak-shutdown"=>boundary.label=="OakPCShutdown",
+            "pc:oak-counts"=>boundary.label=="ProfOaksPcBoot"&&boundary.details.iter().any(|text|text.contains("POKéMON seen")),
+            _=>false,
+        };
+        if expected && let Some(text)=boundary.details.first()
+            && revealed_dialogue_page(runtime,&runtime.shell.presentation_snapshot()?,text).is_some() {
+            return Ok(Some(boundary.details.clone()));
+        }
+    }
+    if !runtime.pc_hub_session_open || runtime.special_boundary.is_some()
+        ||runtime.field_notice.is_some()
+        ||runtime.pc_transfer_sequence.is_some() {return Ok(None);}
+    let item_question=runtime.pc_notice.as_deref().is_some_and(|text|
+        visible_field_text_reveal_is_complete_for_text(runtime,text));
+    if runtime.pc_notice.is_some() && !(item_question&&(
+        (wanted=="pc:quantity"&&runtime.pc_item_quantity.is_some())
+        ||(wanted=="pc:toss-confirmation"&&matches!(runtime.pc_confirmation,Some(VisiblePcConfirmation::TossItem{..})))
+        ||(wanted=="pc:oak-confirmation"&&matches!(runtime.pc_confirmation,Some(VisiblePcConfirmation::OakRating)))
+        ||(wanted=="pc:oak-closing"&&runtime.mailbox_confirmation_response.is_some()&&matches!(runtime.pc_confirmation,Some(VisiblePcConfirmation::OakRating)))
+        ||(wanted=="pc:toss-closing"&&runtime.mailbox_confirmation_response.is_some()&&matches!(runtime.pc_confirmation,Some(VisiblePcConfirmation::TossItem{..}))))) {return Ok(None);}
+    match wanted {
+        "pc:hub" if runtime.pc_hub_cursor.is_some()=> {
+            let mut entries=Vec::new();
+            push_visible_pc_hub_dialog_entries(&mut entries,&runtime.shell.presentation_snapshot()?,runtime)?;
+            Ok(Some(entries))
+        }
+        "pc:bill-actions" if runtime.bill_pc_action_cursor.is_some()=>
+            visible_bill_pc_action_entries(runtime).map(Some),
+        "pc:items" if runtime.pc_item_cursor.is_some() && !visible_field_pack_is_open(runtime)
+            &&runtime.pc_item_quantity.is_none()&&runtime.pc_confirmation.is_none()=> {
+            let mut entries=Vec::new();
+            push_visible_pc_item_dialog_entries(&mut entries,&runtime.shell.presentation_snapshot()?,runtime)?;
+            Ok(Some(entries))
+        }
+        "pc:quantity" if let Some(quantity)=runtime.pc_item_quantity.as_ref()
+            &&visible_pc_item_quantity_input_ready(runtime)=> {
+            Ok(Some(vec![runtime.pc_notice.clone().expect("printed quantity question"),
+                format!("{} x{}",quantity.item_id,quantity.quantity)]))
+        }
+        "pc:toss-confirmation" if matches!(runtime.pc_confirmation,Some(VisiblePcConfirmation::TossItem{..}))
+            &&runtime.yes_no_cursor.is_some()&&item_question=> {
+            Ok(Some(vec![runtime.pc_notice.clone().expect("printed toss question"),"YES / NO".into()]))
+        }
+        "pc:oak-closing"|"pc:toss-closing" if runtime.mailbox_confirmation_response.is_some()
+            &&runtime.yes_no_cursor.is_some()&&item_question=> {
+            Ok(Some(vec![runtime.pc_notice.clone().expect("printed closing question"),
+                format!("answer={:?} remaining_vblanks={}",runtime.mailbox_confirmation_response,runtime.pc_menu_input_wait_frames)]))
+        }
+        "pc:oak-confirmation" if matches!(runtime.pc_confirmation,Some(VisiblePcConfirmation::OakRating))
+            &&runtime.yes_no_cursor.is_some()&&item_question=> {
+            Ok(Some(vec![runtime.pc_notice.clone().expect("printed Oak rating question"),"YES / NO".into()]))
+        }
+        "pc:mailbox" if runtime.mailbox_cursor.is_some() && runtime.mailbox_action_cursor.is_none()
+            &&runtime.pending_mail_read.is_none()&&!runtime.party_menu_open=> {
+            let mut entries=Vec::new();
+            push_visible_mailbox_dialog_entries(&mut entries,&runtime.shell.presentation_snapshot()?,runtime)?;
+            Ok(Some(entries))
+        }
+        "pc:mail-read" if runtime.mailbox_cursor.is_some() && !runtime.party_menu_open
+            &&runtime.pending_mail_read.is_some()=> {
+            let reader=runtime.pending_mail_read.as_ref().unwrap();
+            Ok(Some(vec![reader.mail.author.clone(),reader.mail.message.clone()]))
+        }
+        "pc:move-carry" if pc_move_carry_review_ready(runtime)=> {
+            let mut entries=Vec::new();
+            push_visible_storage_dialog_entries(&mut entries,&runtime.shell.presentation_snapshot()?,runtime)?;
+            Ok(Some(entries))
+        }
+        "pc:save-prompt" | "pc:saved" | "pc:save-error" if runtime.save_flow.as_ref().is_some_and(|flow|
+            matches!(flow.origin,VisibleSaveFlowOrigin::BillsPcChangeBox{..}|VisibleSaveFlowOrigin::BillsPcMove)
+                && match wanted {
+                    "pc:save-prompt"=>flow.stage==VisibleSaveFlowStage::Prompt,
+                    "pc:saved"=>flow.stage==VisibleSaveFlowStage::Saved,
+                    _=>flow.stage==VisibleSaveFlowStage::Error,
+                })=> {
+            let mut entries=Vec::new();
+            push_visible_save_dialog_entries(&mut entries,&runtime.shell.presentation_snapshot()?,runtime)?;
+            Ok(Some(entries))
+        }
+        _=>Ok(None),
+    }
+}
+
+// Full-LCD PC captures require an explicitly named, actually reached owner.
+// This observer neither opens a surface nor changes a cursor/session.
+pub(super) fn pc_lcd_review_ready(runtime:&BevyRuntimeShell,wanted:&str)->bool {
+    matches!(wanted,"pc:move-carry"|"pc:mail-read"|"pc:items"|"pc:quantity"|"pc:toss-confirmation"|"pc:oak-confirmation"|"pc:oak-shutdown"|"pc:oak-counts"|"pc:oak-closing"|"pc:toss-closing"|"service:name-rater-entry")
+        &&retained_pc_review_menu(runtime,wanted).expect("observe current PC LCD owner").is_some()
+}
+
+pub(super) fn pc_move_carry_review_ready(runtime:&BevyRuntimeShell)->bool {
+    runtime.pc_hub_session_open && runtime.bill_pc_move_open && !runtime.party_menu_open
+        && runtime.bill_pc_move_source.is_some() && runtime.storage_cursor.is_some()
+        && runtime.bill_pc_pokemon_action_cursor.is_none() && runtime.bill_pc_move_save.is_none()
+        && runtime.special_boundary.is_none() && runtime.field_notice.is_none() && runtime.pc_notice.is_none()
+        && runtime.pc_transfer_sequence.is_none()
 }
 
 #[cfg(test)]
@@ -115,11 +295,15 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bo
             'D' => Ok(KeyCode::ArrowDown),
             'A' => Ok(KeyCode::KeyZ),
             'B' => Ok(KeyCode::KeyX),
-            'S' => Ok(KeyCode::ShiftRight),
+            'S' => Ok(KeyCode::Enter),
             _ => Err(anyhow::anyhow!("--walk accepts only R,L,U,D,A,B,S")),
         })
         .collect::<Result<Vec<_>>>()?;
     anyhow::ensure!(!route.is_empty(), "--walk must contain directions");
+    let pc_input_pulse=match std::env::var("CRYSTAL_RENDER_TEST_WALK_PC_PULSE").as_deref() {
+        Ok("1")=>true,Ok("0")|Err(std::env::VarError::NotPresent)=>false,
+        _=>anyhow::bail!("CRYSTAL_RENDER_TEST_WALK_PC_PULSE must be 0 or 1"),
+    };
     let hold_healing_balls=std::env::var("CRYSTAL_RENDER_TEST_HOLD_HEALING_BALLS").ok()
         .map(|v|v.parse::<u8>().context("healing hold count must be an integer")) .transpose()?;
     anyhow::ensure!(hold_healing_balls.is_none_or(|n|(1..=6).contains(&n)),"healing hold count must be between 1 and 6");
@@ -130,6 +314,20 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bo
     anyhow::ensure!(hold_menu_id.as_ref().is_none_or(|id|!id.is_empty()&&id.len()<=256),
         "menu capture target must contain 1..256 bytes");
     anyhow::ensure!(!league || synthetic_input, "League review requires synthetic native keyboard input");
+    let pc_mail_review=match std::env::var("CRYSTAL_RENDER_TEST_WALK_PC_MAIL").as_deref() {
+        Ok("1")=>true,Ok("0")|Err(std::env::VarError::NotPresent)=>false,
+        _=>anyhow::bail!("CRYSTAL_RENDER_TEST_WALK_PC_MAIL must be 0 or 1"),
+    };
+    anyhow::ensure!(!pc_mail_review || (synthetic_input && pc_input_pulse
+        &&hold_menu_id.as_deref()==Some("pc:mail-read")),
+        "PC Mail review requires synthetic pulse input and the actual pc:mail-read capture owner");
+    let pc_item_review=match std::env::var("CRYSTAL_RENDER_TEST_WALK_PC_ITEMS").as_deref() {
+        Ok("1")=>true,Ok("0")|Err(std::env::VarError::NotPresent)=>false,
+        _=>anyhow::bail!("CRYSTAL_RENDER_TEST_WALK_PC_ITEMS must be 0 or 1"),
+    };
+    anyhow::ensure!(!pc_item_review || (synthetic_input&&pc_input_pulse&&!pc_mail_review
+        &&matches!(hold_menu_id.as_deref(),Some("pc:items"|"pc:quantity"|"pc:toss-confirmation"|"pc:oak-confirmation"|"pc:oak-shutdown"|"pc:oak-counts"|"pc:oak-closing"|"pc:toss-closing"))),
+        "PC service review requires synthetic pulse input and an actual item or Oak confirmation owner");
     app.insert_resource(RenderWalk {
         league: league.then(|| league::LeagueReview::new(path)),
         route,
@@ -147,6 +345,9 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bo
         capture_steps,
         arrival_reveal_captured: false,
         synthetic_input,
+        pc_input_pulse,
+        pc_mail_review,
+        pc_item_review,
         step_input: std::env::var("CRYSTAL_RENDER_TEST_WALK_STEPS").as_deref()==Ok("1"),
         segment_position: None,
         running_input: std::env::var("CRYSTAL_RENDER_TEST_RUN").as_deref() == Ok("1"),
@@ -261,6 +462,26 @@ pub(super) fn drive(
                         crystal_render_api::VisualEffectId::HealMachineBall(n-1))))
         }) {
         walk.held_healing=true;walk.tick=walk.route.len()*32;walk.settle=30;
+        keyboard.reset_all();
+        if let Some(hold)=paired_hold.as_mut() {hold.frozen=true;virtual_time.pause();}
+    }
+    if walk.started()&&!walk.held_menu&&let Some(id)=walk.hold_menu_id.as_deref()
+        &&((status.active&&frame.active)||pc_lcd_review_ready(&runtime,id))
+        &&let Some(entries)=retained_pc_review_menu(&runtime,id).expect("read current PC review menu")
+    {
+        if walk.pc_mail_review {
+            assert_eq!(runtime.mailbox_cursor.as_ref().map(|c|c.option_index),Some(1),
+                "Mail review must reach the second letter through actual list navigation");
+            let expected=&runtime.shell.session().state().mailbox.get(1)
+                .expect("Mail review fixture has a second letter").mail;
+            assert_eq!(&runtime.pending_mail_read.as_ref().expect("actual Mail reader").mail,expected,
+                "Mail review must display the selected letter's complete data");
+        }
+        std::fs::write(walk.path.with_extension("menu-hold.txt"),format!(
+            "menu_id={id}\nmap={}\ntile={:?}\noptions={entries:?}\n",
+            runtime.shell.current_map_name(),runtime.shell.session().overworld().player.tile))
+            .expect("write observed controller menu capture state");
+        walk.held_menu=true;walk.tick=walk.route.len()*32;walk.settle=30;
         keyboard.reset_all();
         if let Some(hold)=paired_hold.as_mut() {hold.frozen=true;virtual_time.pause();}
     }
@@ -452,7 +673,11 @@ pub(super) fn drive(
         walk.player_moved |= span.x >= frame.tile_size.x || span.y >= frame.tile_size.y;
         walk.player_bounds = Some((low, high));
     }
-    let requested_key = walk.route[segment];
+    let requested_key = if walk.pc_mail_review {
+        pc_mail_review_key(&runtime).unwrap_or(walk.route[segment])
+    } else if walk.pc_item_review {
+        pc_item_review_key(&runtime,walk.hold_menu_id.as_deref().expect("validated item review target")).unwrap_or(walk.route[segment])
+    } else {walk.route[segment]};
     if walk.tick % 32 == 0 || walk.segment_key.is_none() {
         // Opt-in QA policy: keep the current battler by pressing ordinary B
         // at the actual Shift choice. Latch for this whole input segment so
@@ -468,7 +693,14 @@ pub(super) fn drive(
     }
     // Hold the ordinary key until one authoritative step commits, then let
     // its production interpolation settle. Turns can consume an initial press.
-    if walk.step_input && position_changed(walk.segment_position.as_ref(), map, tile) {
+    // Hold through the source menu's BG upload, then leave an actual release
+    // between presses, as required by MailboxPC's JoyTextDelay history.
+    let pulse_pc=walk.pc_input_pulse && (runtime.pc_hub_session_open
+        || walk.hold_menu_id.as_deref()==Some("service:name-rater-entry")
+        || (walk.hold_menu_id.as_deref()==Some("field:save-confirmation")
+            &&(runtime.start_menu_cursor.is_some()||runtime.save_menu_open)));
+    if (pulse_pc && walk.tick%32>=8)
+        || (walk.step_input && position_changed(walk.segment_position.as_ref(), map, tile)) {
         keyboard.release(key);
     } else {
         keyboard.press(key);

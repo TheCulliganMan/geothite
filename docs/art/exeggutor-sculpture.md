@@ -1,5 +1,9 @@
 # Exeggutor sculpture
 
+The original static sculpture below is the historical baseline. Production now
+uses the [articulated psychic/palm skin](psychic-palm-skins.md); native review
+of that migration is still pending.
+
 `tools/exeggutor_sculpt.py` authors an original coconut palm with a rounded
 continuous trunk, supported front and rear segment creases, two stout ankles,
 wide foot stumps, pale fitted pads and six rooted ivory claws. Three golden

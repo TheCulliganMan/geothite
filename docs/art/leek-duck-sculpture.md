@@ -1,4 +1,4 @@
-# Farfetch'd sculpture
+# Farfetch'd sculpture baseline
 
 `tools/leek_duck_sculpt.py` authors an original gray-brown duck with a rounded
 cream underside, upright hood, tall ivory eyes and fine dark pupils, fitted
@@ -15,7 +15,7 @@ lower body rather than an oval front marking. The first thin folded-feather
 overlays showed visual artifacts despite passing the sampled fitting checks;
 they were replaced with smooth rooted solid forms and reviewed again.
 
-The model has 45 parts and 43,988 triangles, retains its existing 1.10 authoring
+The original static model has 45 parts and 43,988 triangles, retains its existing 1.10 authoring
 height and grounds at zero. The main builder dispatches the pure recipe and
 bypasses its obsolete generic duck/leek branch.
 
@@ -36,9 +36,9 @@ Its scope is loading, bounds, grounding and normals.
 
 The [official artwork](https://assets.pokemon.com/assets/cms2/img/pokedex/full/083.png)
 was inspected and is not shipped. Searches did not establish an accessible
-original reusable rig. No external geometry was imported; the sculpture is
-static. Native presentation remains incomplete because fresh Bevy 0.20 battle
-captures are black, including classic and live control runs; see the
-[native review notes](native-pokemon-review.md). A software preview or a mesh
-loading check does not establish native presentation or gameplay. The full
-251-species visual goal and usable open rig search remain active.
+original reusable rig. No external geometry was imported. The original static
+sculpture has since migrated to the [standard production skin](leek-duck-skin.md),
+which preserves all anatomy names and original neutral bounds. Its native
+headless front, world, moving and battle reviews are complete; the earlier
+black-capture limitation is historical. The full 251-species model and
+rig improvement goal remains active.

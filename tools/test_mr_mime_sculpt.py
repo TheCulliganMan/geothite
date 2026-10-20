@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Stored mime anatomy, supported glove digits, fitted gaze and open smile."""
-import copy,json,os,unittest
+import copy,json,math,os,unittest
 from pathlib import Path
 from mr_mime_sculpt import sculpture,anatomy,HEIGHT
 from mr_mime_glb import read_mr_mime,geometry_digest
@@ -19,6 +19,20 @@ class MimeTests(unittest.TestCase):
  overlap=attachments.NidorinaTests.overlap
  def test_closed_connected_outward_surfaces(self):assert_closed_models(self,{'mr__mime':self.m})
  def test_normals_follow_actual_faces(self):assert_model_shading(self,{'mr__mime':self.m})
+ def test_upper_smile_tracks_analytic_recess_without_coarse_steps(self):
+  from goldfish_sculpt import surface
+  raw=anatomy();lo=min(v for p in raw for v in p['positions'][1::3]);hi=max(v for p in raw for v in p['positions'][1::3]);scale=HEIGHT/(hi-lo)
+  at=surface(self.find('Head /'));errors=[]
+  for i in range(65):
+   for j in range(23):
+    x=-.105+i*.21/64;y=1.078+j*.034/22;q=(x/.120)**2+((y-1.066)/.061)**2
+    if q>1.4:continue
+    z=.22*math.sqrt(1-(x/.267)**2-((y-1.167)/.25)**2)
+    if q<1:z*=1-.43*(1-q)**2
+    errors.append(abs(at((y-lo)*scale,x*scale)/scale-z))
+  self.assertEqual(len(errors),1495)
+  self.assertLess(max(errors),.002)
+  self.assertLess(sum(errors)/len(errors),.0004)
  def test_recipe_parity_floor_height_and_budget(self):
   self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
  def test_named_anatomy_and_five_digits_per_hand(self):

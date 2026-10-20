@@ -162,7 +162,7 @@ mod tests {
     }
 
     fn frame() -> VisualWorldFrame {
-        VisualWorldFrame { terrace_datum: None,
+        VisualWorldFrame { view_center: Vec2::ZERO, terrace_datum: None,
             active: true,
             map_id: Arc::from("NewBarkTown"),
             source_map_size_core_tiles: None,

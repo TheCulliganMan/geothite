@@ -932,7 +932,9 @@ Transform::from_xyz(0.0, 0.0, 4.0),),
                 FieldCommandMarker,
             ));
         }
-        spawn_pc_notice(commands, runtime_shell, rendered_art, asset_root, images);
+        if let Err(error)=spawn_pc_notice(commands, runtime_shell, rendered_art, asset_root, images) {
+            *render_error=Some(error);
+        }
         return;
     }
     let origin_x = PLAYFIELD_LEFT + TILE_SIZE * 11.0;
@@ -5635,8 +5637,24 @@ fn spawn_scene_dialog(
     if spawn_visible_incoming_phone(commands, snapshot, runtime_shell, rendered_art, asset_root, images)? {
         return Ok(());
     }
-    if visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
-        spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
+    if matches!(runtime_shell.pc_confirmation, Some(VisiblePcConfirmation::OakRating)) {
+        return spawn_pc_item_notice(commands, snapshot, runtime_shell, rendered_art, asset_root,
+            images, source_map_text_palette(snapshot, asset_root)?);
+    }
+    if let Some(boundary) = visible_pokecenter_pc_text_boundary(runtime_shell) {
+        if matches!(boundary.label.as_str(), "PokecenterOaksPCText" | "ProfOaksPcBoot" | "OakPCShutdown") {
+            let palette = source_map_text_palette(snapshot, asset_root)?;
+            let frame_id = textbox_frame_id(snapshot.trainer.options.frame);
+            let key = (frame_id, palette);
+            if !rendered_art.pc_window_frame_cache.contains_key(&key) {
+                let frame = load_window_frame_art_with_palette(asset_root, frame_id, &palette, images)?;
+                rendered_art.pc_window_frame_cache.insert(key, frame);
+            }
+            spawn_pc_field_palette_window(commands, &rendered_art.pc_window_frame_cache[&key],
+                palette[0], 0., 12., 20, 6, 4.0);
+        } else {
+            spawn_scene_dialog_text_box(commands, rendered_art, asset_root, images, 4.0);
+        }
         spawn_scene_dialog_text_content(commands, snapshot, runtime_shell, rendered_art, asset_root, images)?;
         return Ok(());
     }
@@ -5792,6 +5810,12 @@ fn spawn_scene_dialog(
             asset_root,
             images,
         )?;
+        // MAIL BOX can retain this chooser underneath its empty-mail notice.
+        // The notice must still own and visibly cover the lower text window.
+        if runtime_shell.pc_notice.is_some() {
+            spawn_pc_item_notice(commands,snapshot,runtime_shell,rendered_art,asset_root,images,
+                source_map_text_palette(snapshot,asset_root)?)?;
+        }
         return Ok(());
     }
     if runtime_shell.bill_pc_box_cursor.is_some() {
@@ -7666,7 +7690,7 @@ fn spawn_field_storage_screen(
     let clear_left_info = (runtime_shell.pc_release_sequence.is_some() || transfer_success.is_some()) && !waiting_for_cry;
     let timed_notice = refusal_notice || clear_left_info;
     if runtime_shell.pc_notice.is_some() && !timed_notice {
-        spawn_pc_notice(commands, runtime_shell, rendered_art, asset_root, images);
+        spawn_pc_notice(commands, runtime_shell, rendered_art, asset_root, images)?;
         return Ok(());
     }
     if let Some(summary) = runtime_shell.bill_pc_pokemon_summary.as_ref() {
@@ -8206,7 +8230,16 @@ fn spawn_pc_notice(
     rendered_art: &mut RenderedTilesetArt,
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
-) {
+) -> Result<()> {
+    if runtime_shell.party_menu_open && (runtime_shell.mailbox_attach_index.is_some()
+        || runtime_shell.mailbox_attach_return_index.is_some()) {
+        // MailboxPC.AttachMail uses PrintText on the white party LCD. Its
+        // authored two baselines replace the small party prompt completely.
+        // Keep the general PC/storage notice layout for its other owners.
+        let snapshot=runtime_shell.shell.presentation_snapshot()?;
+        return spawn_pc_item_notice(commands,&snapshot,runtime_shell,rendered_art,
+            asset_root,images,[[255,255,255],[170,170,170],[85,85,85],[0,0,0]]);
+    }
     if let Some(notice) = runtime_shell.pc_notice.as_deref() {
         let visible_notice = if runtime_shell.pc_release_sequence.is_some()
             || runtime_shell.pc_transfer_sequence.is_some()
@@ -8258,6 +8291,7 @@ fn spawn_pc_notice(
             );
         }
     }
+    Ok(())
 }
 
 // LoadMapPals / LoadSpecialMapPalette retain BG palette 7 for TextboxPalette.
@@ -8351,6 +8385,21 @@ Transform::from_xyz(x, y, z),),
     spawn_battle_window_frame_tiles(commands, frame, tile_x, tile_y, width, height, z + 0.05);
 }
 
+// Oak's question overlays the room. Item-list windows instead own a full LCD
+// and carry battle-screen markers; using those markers here hides the world.
+fn spawn_pc_field_palette_window(
+    commands: &mut Commands, frame: &WindowFrameArt, background: [u8; 3],
+    tile_x: f32, tile_y: f32, width: usize, height: usize, z: f32,
+) {
+    let (x, y) = battle_window_center(tile_x, tile_y, width as f32, height as f32);
+    commands.spawn((Sprite {
+        color: Color::srgb_u8(background[0], background[1], background[2]),
+        custom_size: Some(Vec2::new(TILE_SIZE * width as f32, TILE_SIZE * height as f32)),
+        ..default()
+    }, Transform::from_xyz(x, y, z), SceneDialogMarker));
+    spawn_scene_dialog_window_frame_tiles(commands, frame, tile_x, tile_y, width, height, z + 0.05);
+}
+
 fn spawn_pc_item_notice(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
@@ -8360,6 +8409,11 @@ fn spawn_pc_item_notice(
     images: &mut Assets<Image>,
     palette: Palette,
 ) -> Result<()> {
+    let spawn_window = if matches!(runtime_shell.pc_confirmation, Some(VisiblePcConfirmation::OakRating)) {
+        spawn_pc_field_palette_window
+    } else {
+        spawn_pc_item_palette_window
+    };
     if runtime_shell.pc_notice.is_none() {
         return Ok(());
     }
@@ -8371,7 +8425,7 @@ fn spawn_pc_item_notice(
     }
     if let Some(notice) = runtime_shell.pc_notice.as_deref() {
         let text = visible_revealed_shell_notice_text(runtime_shell, notice);
-        spawn_pc_item_palette_window(
+        spawn_window(
             commands,
             &rendered_art.pc_window_frame_cache[&key],
             palette[0],
@@ -8397,7 +8451,7 @@ fn spawn_pc_item_notice(
         if let Some(quantity) = runtime_shell.pc_item_quantity.as_ref()
             && visible_field_text_reveal_is_complete_for_text(runtime_shell, notice)
         {
-            spawn_pc_item_palette_window(
+            spawn_window(
                 commands,
                 &rendered_art.pc_window_frame_cache[&key],
                 palette[0],
@@ -8418,6 +8472,19 @@ fn spawn_pc_item_notice(
                 y,
                 4.8,
             );
+        } else if visible_pc_uses_source_yes_no(runtime_shell)
+            &&visible_pc_source_yes_no_printed(runtime_shell) {
+            // home/menu.asm _YesNoBox: inclusive (14,7)..(19,11).
+            // PlaceVerticalMenuItems advances two tile rows: YES at8, NO at10.
+            spawn_window(commands,&rendered_art.pc_window_frame_cache[&key],
+                palette[0],14.,7.,6,5,4.6);
+            let selected=strict_readonly_cursor_index(&runtime_shell.yes_no_cursor,"pc:confirmation",2)
+                .context("PC toss YesNoBox requires its production cursor")?;
+            for (i,label) in ["YES","NO"].iter().enumerate() {
+                let (x,y)=battle_hud_tile_origin(15.,8.+i as f32*2.);
+                spawn_scene_dialog_bitmap_text(commands,rendered_art,asset_root,images,
+                    &format!("{}{label}",if i==selected {"▶"}else{" "}),x,y,4.8);
+            }
         }
     }
     Ok(())
@@ -8817,6 +8884,7 @@ fn scene_dialog_yes_no_active(
             .as_ref()
             .is_some_and(|toss| toss.confirming)
         || runtime_shell.save_flow.as_ref().is_some_and(|flow| {
+            runtime_shell.special_boundary.is_none() &&
             matches!(
                 flow.stage,
                 VisibleSaveFlowStage::Prompt | VisibleSaveFlowStage::OverwritePrompt
@@ -9050,9 +9118,9 @@ fn spawn_visible_yes_no_prompt_box(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> Result<()> {
-    // `YesNoBox` in home/menu.asm sets b=SCREEN_WIDTH-6 and c=7, then
-    // `_YesNoBox` anchors at (14,7), and the TypeScript reference renders a
-    // 6x4-tile surface with YES/NO on consecutive interior rows 8 and 9.
+    // home/menu.asm _YesNoBox sets inclusive borders (14,7)..(19,11).
+    // GetMenuTextStartCoord reserves column15 for the cursor and starts the
+    // label at16; PlaceVerticalMenuItems advances two rows, from8 to10.
     let (center_x, center_y) = field_window_center(
         FIELD_YES_NO_LEFT_TILE,
         FIELD_YES_NO_TOP_TILE,
@@ -9087,8 +9155,8 @@ Transform::from_xyz(center_x, center_y, 4.25),),
     for (index, label) in ["YES", "NO"].into_iter().enumerate() {
         let marker = if index == selected { ">" } else { " " };
         let (x, y) = battle_hud_tile_origin(
-            FIELD_YES_NO_LEFT_TILE,
-            FIELD_YES_NO_TOP_TILE + 1.0 + index as f32,
+            FIELD_YES_NO_LEFT_TILE + 1.0,
+            FIELD_YES_NO_TOP_TILE + 1.0 + index as f32 * 2.0,
         );
         spawn_scene_dialog_bitmap_text(
             commands,
@@ -9166,15 +9234,55 @@ Transform::from_xyz(center_x, center_y, z),),
     background
 }
 
+fn visible_name_entry_presentation_input(runtime_shell: &BevyRuntimeShell, input: &PendingNameInput) -> Result<PendingNameInput> {
+    let mut presented = input.clone();
+    if input.label == "POKéMON'S NAME?" {
+        let snapshot = runtime_shell.shell.presentation_snapshot()?;
+        let pokemon = snapshot.party.slots.get(runtime_shell.party_cursor)
+            .context("Name Rater heading lost its selected party Pokemon")?;
+        presented.label = visible_pokemon_nickname_label(&pokemon.pokemon.species.id);
+    }
+    Ok(presented)
+}
+
+fn visible_name_entry_pokemon_art(runtime_shell: &BevyRuntimeShell, input: &PendingNameInput) -> Result<Option<NameEntryPokemonArt>> {
+    if input.label != "POKéMON'S NAME?" { return Ok(None); }
+    let snapshot = runtime_shell.shell.presentation_snapshot()?;
+    let pokemon = &snapshot.party.slots.get(runtime_shell.party_cursor)
+        .context("Name Rater icon lost its selected party Pokemon")?.pokemon;
+    // GetGender combines the Attack and Speed DVs, not Attack alone.
+    let gender_dv = (pokemon.dvs.attack << 4) | pokemon.dvs.speed;
+    let gender = match pokemon.species.gender_ratio {
+        255 => None,
+        254 => Some('♀'),
+        0 => Some('♂'),
+        ratio if gender_dv <= ratio => Some('♀'),
+        _ => Some('♂'),
+    };
+    Ok(Some(NameEntryPokemonArt {
+        icon_id: snapshot.presentation.menu_icons.get(&pokemon.species.id)
+            .context("Name Rater species has no source menu icon")?.clone(),
+        gender,
+        // The original eight-count frame includes its zero-count call, and
+        // NamingScreenJoypadLoop waits two VBlanks per animation call.
+        frame: ((runtime_shell.lcd_animation_frame / 18) & 1) as usize,
+    }))
+}
+
 fn spawn_visible_name_entry_screen(
     commands: &mut Commands,
-    _runtime_shell: &BevyRuntimeShell,
+    runtime_shell: &BevyRuntimeShell,
     rendered_art: &mut RenderedTilesetArt,
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
     input: &PendingNameInput,
 ) -> Result<()> {
+    let pokemon = visible_name_entry_pokemon_art(runtime_shell, input)?;
+    let presented = visible_name_entry_presentation_input(runtime_shell, input)?;
+    let input = &presented;
     let key = NameEntryArtKey {
+        pokemon: pokemon.clone(),
+        cursor_visible: (runtime_shell.lcd_animation_frame / 4) & 1 == 0,
         label: input.label.clone(),
         value: input.value.clone(),
         cursor_column: input.cursor_column,
@@ -9184,7 +9292,7 @@ fn spawn_visible_name_entry_screen(
     if !rendered_art.name_entry_cache.contains_key(&key)
         && !rendered_art.name_entry_errors.contains_key(&key)
     {
-        match load_name_entry_frame(asset_root, input, images) {
+        match load_name_entry_frame_with_pokemon(asset_root, input, pokemon.as_ref(), key.cursor_visible, images) {
             Ok(frame) => {
                 rendered_art.name_entry_errors.remove(&key);
                 rendered_art.name_entry_cache.insert(key.clone(), frame);
@@ -10663,8 +10771,8 @@ fn update_scene_dialog_text_content_in_place<F: QueryFilter>(
         for (index, label) in ["YES", "NO"].into_iter().enumerate() {
             let marker = if index == selected { ">" } else { " " };
             let (x, y) = battle_hud_tile_origin(
-                FIELD_YES_NO_LEFT_TILE,
-                FIELD_YES_NO_TOP_TILE + 1.0 + index as f32,
+                FIELD_YES_NO_LEFT_TILE + 1.0,
+                FIELD_YES_NO_TOP_TILE + 1.0 + index as f32 * 2.0,
             );
             let text = format!("{marker}{label}");
             for (glyph_index, frame) in bitmap_text_frames(rendered_art, asset_root, images, &text)
@@ -10782,6 +10890,16 @@ fn load_name_entry_frame(
     input: &PendingNameInput,
     images: &mut Assets<Image>,
 ) -> Result<SpriteFrame> {
+    load_name_entry_frame_with_pokemon(asset_root, input, None, true, images)
+}
+
+fn load_name_entry_frame_with_pokemon(
+    asset_root: &AssetRoot,
+    input: &PendingNameInput,
+    pokemon: Option<&NameEntryPokemonArt>,
+    cursor_visible: bool,
+    images: &mut Assets<Image>,
+) -> Result<SpriteFrame> {
     let assets = asset_root.runtime_assets();
     // GetSGBLayout(SCGB_DIPLOMA) first copies DiplomaPalettes, then
     // _CGB_Diploma::CopyFourPalettes overwrites BG palette 0 with the
@@ -10817,7 +10935,10 @@ fn load_name_entry_frame(
         apply_name_entry_background_palette(image, &background_palette);
     }
 
-    let tilemap = build_name_entry_tilemap(input)?;
+    let mut tilemap = build_name_entry_tilemap(input)?;
+    if let Some(gender) = pokemon.and_then(|mon| mon.gender) {
+        tilemap[2][1] = name_entry_char_tile(gender).context("naming gender glyph")?;
+    }
     let width = NAME_ENTRY_SCREEN_TILE_WIDTH * SOURCE_TILE_SIZE;
     let height = NAME_ENTRY_SCREEN_TILE_HEIGHT * SOURCE_TILE_SIZE;
     let mut data = vec![0_u8; width * height * 4];
@@ -10845,7 +10966,20 @@ fn load_name_entry_frame(
             )?;
         }
     }
-    draw_name_entry_cursor(input, &cursor, &mut data)?;
+    if cursor_visible { draw_name_entry_cursor(input, &cursor, &mut data)?; }
+    if let Some(mon) = pokemon {
+        let frames = load_party_icon_frame(asset_root, &mon.icon_id, images)?;
+        let frame = images.get(&frames[mon.frame].handle).context("decoded naming icon")?;
+        let pixels = frame.data.as_ref().context("naming icon CPU pixels")?;
+        // NamingScreen_InitAnimatedMonIcon's depixel 4,4,4,0 plus
+        // OAMData_RedWalk and hardware sprite offsets yield LCD (16,12).
+        for y in 0..16 { for x in 0..16 {
+            let from = (y * 16 + x) * 4;
+            let to = ((12 + y) * width + 16 + x) * 4;
+            if pixels[from + 3] != 0 { data[to..to+4].copy_from_slice(&pixels[from..from+4]); }
+        }}
+        for frame in frames { images.remove(&frame.handle); }
+    }
 
     let mut image = Image::new(
         Extent3d {
@@ -10889,13 +11023,17 @@ fn build_name_entry_tilemap(input: &PendingNameInput) -> Result<Vec<Vec<u8>>> {
     for (line_index, line) in input.label.lines().take(2).enumerate() {
         let line_y = 2 + line_index * 2;
         let line_width = tokenize_name_entry_string(line).len();
-        if line_width > NAME_ENTRY_SCREEN_TILE_WIDTH - NAME_ENTRY_NAME_X {
+        if line_width > NAME_ENTRY_SCREEN_TILE_WIDTH - 2 {
             anyhow::bail!(
                 "naming-screen heading line {line:?} is {line_width} tiles wide, maximum is {}",
-                NAME_ENTRY_SCREEN_TILE_WIDTH - NAME_ENTRY_NAME_X
+                NAME_ENTRY_SCREEN_TILE_WIDTH - 2
             );
         }
-        write_name_entry_string(&mut tilemap, line, NAME_ENTRY_NAME_X, line_y)?;
+        // Long service headings must stay inside both border columns.
+        // Preserve the source offset for short headings, shifting only as
+        // far left as needed for a longer label such as POKéMON'S NAME?.
+        let heading_x = NAME_ENTRY_NAME_X.min(NAME_ENTRY_SCREEN_TILE_WIDTH - 1 - line_width);
+        write_name_entry_string(&mut tilemap, line, heading_x, line_y)?;
     }
 
     let mut name_tiles = vec![NAME_ENTRY_MIDDLE_LINE_TILE; input.max_length];
@@ -11557,7 +11695,7 @@ fn visible_pokecenter_pc_text_boundary(
 ) -> Option<&SpecialBoundaryDisplay> {
     shell.special_boundary.as_ref().filter(|boundary| {
         (shell.pc_hub_session_open && boundary.label != "HallOfFamePC")
-            || matches!(boundary.label.as_str(), "PokecenterPCCantUseText" | "ProfOaksPcBoot")
+            || matches!(boundary.label.as_str(), "PokecenterPCCantUseText" | "ProfOaksPcBoot" | "PokecenterMoveMailText")
     })
 }
 
@@ -12148,7 +12286,15 @@ fn visible_scene_dialog_entries(
         return Ok(entries);
     }
     if runtime_shell.pending_name_input.is_some() {
-        push_visible_name_input_entries(&mut entries, runtime_shell);
+        push_visible_name_input_entries(&mut entries, runtime_shell)?;
+        return Ok(entries);
+    }
+    // Bill's save confirmation owns the screen above PCScript's suspended
+    // core chooser. Use this ordering for native rendering as well as the
+    // renderer-neutral controller's projected snapshot.
+    if runtime_shell.save_flow.is_some() {
+        push_visible_save_dialog_entries(&mut entries, snapshot, runtime_shell)?;
+        entries.truncate(SCENE_MENU_VISIBLE_ROWS);
         return Ok(entries);
     }
     if let Some(menu) = &snapshot.ui.menu {
@@ -12183,11 +12329,6 @@ fn visible_scene_dialog_entries(
     }
     if runtime_shell.pending_mail_input.is_some() {
         push_visible_mail_input_entries(&mut entries, runtime_shell);
-        return Ok(entries);
-    }
-    if runtime_shell.save_flow.is_some() {
-        push_visible_save_dialog_entries(&mut entries, snapshot, runtime_shell)?;
-        entries.truncate(SCENE_MENU_VISIBLE_ROWS);
         return Ok(entries);
     }
     let field_dialog_text = visible_field_dialog_text(snapshot, runtime_shell);
@@ -12335,7 +12476,11 @@ fn push_visible_save_dialog_entries(
         VisibleSaveFlowStage::Saved => SAVE_TEXT_SAVED,
         VisibleSaveFlowStage::Error => SAVE_TEXT_CORRUPTED,
     };
-    let text = visible_asm_text(snapshot, label)?;
+    let text = if runtime_shell.pc_hub_session_open && flow.stage==VisibleSaveFlowStage::Prompt
+        && matches!(flow.origin,VisibleSaveFlowOrigin::BillsPcChangeBox{..}|VisibleSaveFlowOrigin::BillsPcMove) {
+        visible_bill_pc_save_pages(runtime_shell,snapshot,label)?.pop()
+            .context("Bill's PC save prompt has no final source page")?
+    } else {visible_asm_text(snapshot, label)?};
     push_wrapped_scene_dialog_lines(entries, &text);
     if matches!(
         flow.stage,
@@ -12414,10 +12559,11 @@ fn push_visible_day_of_week_entries(entries: &mut Vec<String>, runtime_shell: &B
     }
 }
 
-fn push_visible_name_input_entries(entries: &mut Vec<String>, runtime_shell: &BevyRuntimeShell) {
+fn push_visible_name_input_entries(entries: &mut Vec<String>, runtime_shell: &BevyRuntimeShell) -> Result<()> {
     let Some(input) = runtime_shell.pending_name_input.as_ref() else {
-        return;
+        return Ok(());
     };
+    let input = visible_name_entry_presentation_input(runtime_shell, input)?;
     entries.push(compact_scene_label("NAME ENTRY", 30));
     entries.push(compact_scene_label(&input.label, 30));
     let cursor = if input.value.chars().count() < input.max_length {
@@ -12449,6 +12595,7 @@ fn push_visible_name_input_entries(entries: &mut Vec<String>, runtime_shell: &Be
         ),
         30,
     ));
+    Ok(())
 }
 
 fn push_visible_mail_input_entries(entries: &mut Vec<String>, runtime_shell: &BevyRuntimeShell) {

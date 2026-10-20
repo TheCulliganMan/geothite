@@ -55,9 +55,77 @@ fn append_cave_foundation(out: &mut SurfaceMeshData, g: &GridGeometry, dark: boo
     paint(out, [[w, -0.02, n], [w, -0.02, s], [e, -0.02, s], [e, -0.02, n]]);
 }
 
+/// The backing is dry mineral support, not a cap over a live pool. Terrace
+/// fitting can raise that backing above water even though it starts below it.
+/// Only authenticated opaque pool art may open it; shafts keep their own cuts.
+fn cave_pool_foundation_hole(tile:&VisualTile,map:&str,images:Option<&TerrainImageSamples>)->bool {
+    matches!(tile.source.tileset_id.as_ref(),"cave"|"dark_cave")
+        && crate::cave_water::role_for_map(tile,map)[0]>0
+        && images.is_some_and(|images|tile_rgba(images,tile).is_ok_and(|rgba|
+            rgba.len()==SOURCE_TILE_PIXELS*SOURCE_TILE_PIXELS*4
+                && rgba.chunks_exact(4).all(|pixel|pixel[3]==255)))
+}
+
+fn cave_pool_underlay_sources(map:&str,cells:&[&VisualTile],images:Option<&TerrainImageSamples>)->Vec<Option<usize>> {
+    cells.iter().enumerate().map(|(index,tile)| {
+        if cave_pool_foundation_hole(tile,map,images) {return Some(index);}
+        let donor=cave_shore::water_underlay_source(cells,index)?;
+        let own=images.and_then(|images|tile_rgba(images,tile).ok())?;
+        (own.len()==SOURCE_TILE_PIXELS*SOURCE_TILE_PIXELS*4
+            && own.chunks_exact(4).all(|p|p[3]==255)
+            && cave_pool_foundation_hole(cells[donor],map,images)).then_some(donor)
+    }).collect()
+}
+
 #[cfg(test)]
 mod cave_foundation_tests {
     use super::*;
+    #[test]
+    fn live_cave_pool_keeps_its_entire_surface_above_the_mineral_backing() {
+        let water=Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(618001),std::marker::PhantomData);
+        let second=Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(618002),std::marker::PhantomData);
+        let mut tile=VisualTile {column:0,row:0,texture:water.clone(),priority:false,
+            animation_frames:Some(vec![water.clone(),second].into()),
+            source:VisualTileSource {tileset_id:"dark_cave".into(),metatile_id:0x2c,
+                tile_index:0x14,subtile_column:0,subtile_row:0}};
+        let mut images=TerrainImageSamples::default();
+        images.pixels.insert(water.clone().id(),TileImageSample::Rgba([32,40,128,255].repeat(64)));
+        assert!(cave_pool_foundation_hole(&tile,"DarkCaveBlackthornEntrance",Some(&images)));
+        let g=GridGeometry {width:7,height:7,tile_width:8.,tile_height:8.,origin_x:-24.,origin_z:-24.};
+        let mut holes=vec![false;49];
+        for y in 2..5 {for x in 2..5 {holes[y*7+x]=cave_pool_foundation_hole(&tile,
+            "DarkCaveBlackthornEntrance",Some(&images));}}
+        let mut backing=SurfaceMeshData::default();
+        append_cave_foundation(&mut backing,&g,true,&holes,[-12,7]);
+        for y in 0..7 {for x in 0..7 {
+            let px=g.origin_x+(x as f32+0.5)*8.;let pz=g.origin_z+(y as f32+0.5)*8.;
+            let covered=backing.indices.chunks_exact(3).any(|t| {
+                let v=t.iter().map(|&i|backing.positions[i as usize]).collect::<Vec<_>>();
+                let side=|a:[f32;3],b:[f32;3]|(b[0]-a[0])*(pz-a[2])-(b[2]-a[2])*(px-a[0]);
+                let q=[side(v[0],v[1]),side(v[1],v[2]),side(v[2],v[0])];
+                q.iter().all(|v|*v>=-0.001)||q.iter().all(|v|*v<=0.001)
+            });
+            assert_eq!(covered,!holes[y*7+x],"source cell {x},{y}");
+        }}
+        assert!(backing.positions.iter().all(|p|p[1]==-0.02));
+        let mut corner=tile.clone();corner.column=1;corner.source.metatile_id=0x25;
+        corner.source.subtile_column=3;corner.source.subtile_row=1;corner.source.tile_index=0x15;
+        corner.animation_frames=None;
+        assert_eq!(cave_pool_underlay_sources("DarkCaveBlackthornEntrance",&[&tile,&corner],Some(&images)),
+            vec![Some(0),Some(0)],"the known rock/water rim needs the same closed water sheet");
+        let mut masked=tile.clone();masked.source.tile_index=0x2d;masked.animation_frames=None;
+        assert!(!cave_pool_foundation_hole(&masked,"DarkCaveBlackthornEntrance",Some(&images)));
+        assert!(cave_pool_foundation_hole(&tile,"DarkCaveBlackthornEntrance",Some(&images)),
+            "water evidence survives masking a native model's old source identity");
+        let original=tile.clone();
+        tile.animation_frames=None;assert!(!cave_pool_foundation_hole(&tile,"DarkCaveBlackthornEntrance",Some(&images)));
+        tile=original.clone();tile.source.tileset_id="house".into();
+        assert!(!cave_pool_foundation_hole(&tile,"DarkCaveBlackthornEntrance",Some(&images)));
+        tile=original;assert!(!cave_pool_foundation_hole(&tile,"DarkCaveBlackthornEntrance",None));
+        images.pixels.insert(water.id(),TileImageSample::Rgba([32,40,128,0].repeat(64)));
+        assert!(!cave_pool_foundation_hole(&tile,"DarkCaveBlackthornEntrance",Some(&images)));
+    }
+
     #[test]
     fn foundation_aperture_removes_only_the_complete_hatch_footprint() {
         let g = GridGeometry { width: 4, height: 4, tile_width: 8.,tile_height:8.,origin_x:0.,origin_z:0. };
@@ -117,13 +185,20 @@ mod cave_foundation_tests {
     }
 }
 
-fn build_terrain_mesh_internal(
+fn build_terrain_mesh_internal(frame:&VisualWorldFrame,images:Option<&TerrainImageSamples>,
+    instance_hulls:bool,profiles:Option<&crate::live_profiles::Document>,
+    grove_sink:Option<&mut dyn FnMut(SurfaceMeshData)>,deferred_groves:Option<&mut DeferredGroves>)
+    ->Result<TerrainMeshData,TerrainMeshError> {
+    build_terrain_mesh_internal_with_background(frame,images,instance_hulls,profiles,grove_sink,deferred_groves,true)
+}
+fn build_terrain_mesh_internal_with_background(
     frame: &VisualWorldFrame,
     images: Option<&TerrainImageSamples>,
     instance_hulls: bool,
     profiles: Option<&crate::live_profiles::Document>,
     mut grove_sink: Option<&mut dyn FnMut(SurfaceMeshData)>,
     deferred_groves: Option<&mut DeferredGroves>,
+    background_apron: bool,
 ) -> Result<TerrainMeshData, TerrainMeshError> {
     let _trace = crate::loading_trace::span("region.build_source", || serde_json::json!({
         "map": frame.map_id.as_ref(), "origin": frame.grid_origin.to_array(), "grid": frame.grid_size.to_array()}));
@@ -704,7 +779,7 @@ fn build_terrain_mesh_internal(
         authored_cells: vec![None; cell_count],
         ..Default::default()
     };
-    if let Some(tileset) = cells.first().map(|tile| tile.source.tileset_id.as_ref()) {
+    if background_apron && let Some(tileset) = cells.first().map(|tile| tile.source.tileset_id.as_ref()) {
         if !crate::interior::has_back_wall(tileset)
             && !crate::interior::has_room_perimeter(&frame.map_id,tileset)
             && !crate::interior_cutaway::is_cave(frame) {
@@ -717,13 +792,20 @@ fn build_terrain_mesh_internal(
     // source drawing here paints wall/ladder art onto the floor when a tall
     // foreground wall is cut away. The authenticated cave profile supplies
     // stone beneath those volumes; live authored surfaces remain above it.
+    let mut cave_pool_underlays=vec![None;cell_count];
     if cells
         .iter()
         .all(|tile| matches!(tile.source.tileset_id.as_ref(), "cave" | "dark_cave"))
     {
-        let mut foundation_holes = vec![false; cell_count];
+        // Model matching masks its source cells. Water ownership must instead
+        // observe the immutable source, including water beneath native banks.
+        cave_pool_underlays=cave_pool_underlay_sources(&frame.map_id,&original_cells,images);
+        let mut foundation_holes=cave_pool_underlays.iter().map(Option::is_some).collect::<Vec<_>>();
         for hatch in dungeon_placements.iter().filter(|p| p.cuts_foundation()) {
-            for index in hatch.indices(width) { foundation_holes[index] = true; }
+            for index in hatch.indices(width) {
+                foundation_holes[index]=true;
+                cave_pool_underlays[index]=None;
+            }
         }
         append_cave_foundation(
             &mut mesh.solid,
@@ -862,6 +944,9 @@ fn build_terrain_mesh_internal(
         );
         debug_assert!(appended, "validated interior reservation must append");
     }
+    // Explicit radio-pane roles use the live atlas on the existing blended
+    // scenery path. Their opaque framing and source footprint stay in place.
+    radio_glazing::publish(&mut mesh, &frame.map_id, &original_cells, &geometry, images);
     for placement in &gate_placements {
         let appended = gate_counters::append(
             &mut mesh,
@@ -2231,7 +2316,7 @@ fn build_terrain_mesh_internal(
     }
 
     let native_falls=waterfall_placements(&cells,width,height);
-    let native_upper_pool=crate::waterfall::tohjo_upstream_pool(frame.map_id.as_ref(),&cells,width,height,&native_falls);
+    let native_upper_pool=crate::waterfall::tohjo_upstream_pool(frame.map_id.as_ref(),&original_cells,width,height,&native_falls);
     let water_scale=geometry.tile_height/SOURCE_TILE_HEIGHT;
     for (i,upper) in native_upper_pool.iter().enumerate() {
         if *upper {mesh.footing_heights[i]=(crate::cave::CAVE_SHELF_HEIGHT+crate::profile::WATER_HEIGHT)*water_scale;}
@@ -2250,6 +2335,22 @@ fn build_terrain_mesh_internal(
     for row in 0..height {
         for column in 0..width {
             let index = row * width + column;
+            if let Some(donor)=cave_pool_underlays[index] {
+                let source=original_cells[donor];
+                let level=if native_upper_pool[index] {
+                    (crate::cave::CAVE_SHELF_HEIGHT+crate::profile::WATER_HEIGHT)*water_scale
+                } else {shape_for_source_on_map(&frame.map_id,&source.source).surface_height(geometry.tile_height)};
+                let [w,e,n,s]:[f32;4]=geometry.bounds(column,row).into();
+                append_top(&mut mesh.textured,[w,e,n,s],level,
+                    cave_pool_uv(source,geometry.uv(donor%width,donor/width)));
+                // Even a claimed/occluded bank retains its source water below.
+                // Existing shaft cuts above explicitly opt out of this sheet.
+                if donor==index || mesh.authored_cells[index].is_some() {continue;}
+                if source_shapes[index].surface_height(geometry.tile_height).abs()<0.001
+                    && cave_shore::append_over_water(&mut mesh,
+                    [[w,0.,n],[w,0.,s],[e,0.,s],[e,0.,n]],[0.,1.,0.],
+                    &original_cells,&geometry,index,frame.grid_origin.to_array()) {continue;}
+            }
             if claimed_by_building[index]
                 || claimed_by_tree[index]
                 || claimed_by_casino_stool[index]
@@ -2467,18 +2568,21 @@ fn build_terrain_mesh_internal(
         shore_ecology::append(&mut mesh, &frame.map_id, &original_cells,
             &shapes, &geometry, frame.grid_origin.to_array());
     }
+    let terrace_edges=jump_ledges.iter().filter(|edge|!traditional_room_placements.iter()
+        .any(|p|p.owns_jump_edge(edge,frame.grid_origin.to_array())))
+        .cloned().collect::<Vec<_>>();
     if !jump_ledges.is_empty() || frame.terrace_datum.as_ref().is_some_and(|d|d.levels.iter().flatten().any(|&h|h>0.)) {
         let _trace = crate::loading_trace::span("region.finish_terraces", || serde_json::json!({}));
-        let edges=jump_ledges.iter().filter(|edge|!traditional_room_placements.iter()
-            .any(|p|p.owns_jump_edge(edge,frame.grid_origin.to_array())))
-            .cloned().collect::<Vec<_>>();
         terraces::finish_with_datum(&mut mesh, &frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), &edges,frame.terrace_datum.as_deref());
+            frame.grid_origin.to_array(), &terrace_edges,frame.terrace_datum.as_deref());
     } else if authored_enabled {
         terraces::close_flat_rock_contacts(&mut mesh,&frame.map_id,&original_cells,&geometry,
             frame.grid_origin.to_array(),frame.terrace_datum.as_deref());
     }
     if authored_enabled && let Some(images)=images {
+        terraces::close_cave_water_banks(&mut mesh,&frame.map_id,&original_cells,&geometry,
+            &terrace_edges,frame.grid_origin.to_array(),frame.terrace_datum.as_deref());
+        kanto_cave_palette::finish_bank_backings(&mut mesh,&frame.map_id,&original_cells,images);
         outdoor_stairs::finish(&mut mesh,&original_cells,&geometry,images,frame.grid_origin.to_array());
         outdoor_entry_mat::finish(&mut mesh,&original_cells,&geometry,images);
     }
@@ -2503,6 +2607,7 @@ fn build_terrain_mesh_internal(
         enclosed_ponds::finish_with_datum(&mut mesh,&original_cells,&geometry,&frame.jump_ledges,frame.grid_origin.to_array(),frame.terrace_datum.as_deref());
         new_bark::ledge_finish::continue_shore_cap_ground(&mut mesh,&original_cells,&geometry,frame.grid_origin.to_array());
     }
+    mesh.mineral_cap_ranges=None;
     if let Some(deferred) = deferred_groves {
         deferred.terrace_datum=frame.terrace_datum.clone();
         deferred.recipes = detached_groves.into();

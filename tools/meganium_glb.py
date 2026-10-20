@@ -22,7 +22,7 @@ MAX_BYTES=640000
 # normal at signed near-zero without changing any expanded triangle position.
 # Keep that exact asset accepted; modified containers still require a fresh
 # deterministic authoring export rather than a permissive GLB comparison.
-REVIEWED_SHA256='c1b1396416dfb26c141402d9f9f77c1de841fa3431a945ab480810ef5ec7d347'
+REVIEWED_SHA256='38b341674cf32000b2f2feb856661d0db2e325035ebfa8f7d6b923b418836f77'
 JOINTS=(('root',None,(0.,0.,0.)),
         ('pelvis',0,(0.,.367,-.225)),('chest',1,(0.,.505,.157)),
         ('neck_base',2,(0.,.734,.141)),('neck_upper',3,(0.,.997,.310)),

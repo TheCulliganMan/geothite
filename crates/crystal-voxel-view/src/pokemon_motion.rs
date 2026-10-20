@@ -160,7 +160,6 @@ fn quadruped(name: &str) -> bool {
             | "ivysaur"
             | "venusaur"
             | "rattata"
-            | "raticate"
             | "vulpix"
             | "ninetales"
             | "nidoran_f"
@@ -168,7 +167,6 @@ fn quadruped(name: &str) -> bool {
             | "nidorino"
             | "tauros"
             | "mareep"
-            | "meowth"
             | "persian"
             | "growlithe"
             | "arcanine"
@@ -185,7 +183,6 @@ fn quadruped(name: &str) -> bool {
             | "meganium"
             | "cyndaquil"
             | "quilava"
-            | "furret"
             | "espeon"
             | "umbreon"
             | "girafarig"
@@ -612,11 +609,7 @@ impl SpeciesRig {
     /// Tiny prolegs must not turn map-speed travel into a strobing 30 Hz gait.
     /// Slow travel remains distance driven; faster travel uses a readable trot.
     pub(crate) fn locomotion_phase_delta(&self, distance: f32, delta: f32) -> f32 {
-        let frequency = if self.crawl_segments.is_empty() {
-            4.
-        } else {
-            2.2
-        };
+        let frequency = travel::style(self.species.name()).frequency();
         (distance / self.walk_cycle).min(delta.clamp(0., 0.25) * frequency) * TAU
     }
 
@@ -638,7 +631,11 @@ impl SpeciesRig {
             let joint = &self.joints[limb.joint];
             let side = if joint.name.contains("left") { -1. } else { 1. };
             let rotation = match (mode, limb.role) {
-                (Locomotion::Walk, Role::Arm) => Quat::from_rotation_x(-stride * side * 0.32),
+                (Locomotion::Walk, Role::Arm) => match travel::style(self.species.name()) {
+                    travel::Style::Scuttle => Quat::IDENTITY,
+                    travel::Style::Hop => Quat::from_rotation_x(-stride * 0.18),
+                    _ => Quat::from_rotation_x(-stride * side * 0.32),
+                },
                 (Locomotion::Fly, Role::Wing) if !limb.authored_flight => {
                     let (frequency, amplitude) = flight_beat(self.species.name());
                     Quat::from_rotation_z(side * amplitude * (seconds * TAU * frequency).sin())
@@ -660,6 +657,10 @@ impl SpeciesRig {
             };
             pose[1].rotation = (pose[1].rotation * rotation).normalize();
         }
+        if travel::style(self.species.name()) == travel::Style::Flop {
+            travel::flop(self, phase, weight, pose);
+            return;
+        }
         pose[0].translation.y += self.hover_clearance
             + match mode {
                 Locomotion::Walk => 0.,
@@ -672,10 +673,30 @@ impl SpeciesRig {
                 Locomotion::Float if rests_on_tentacles(self.species.name()) => 0.,
                 Locomotion::Float => height * (0.16 + 0.012 * (seconds * TAU * 0.7).sin()),
             };
-        if mode == Locomotion::Walk && weight > 0. {
+        // Rolling/spinning orientation belongs to accumulated travel, so it
+        // freezes at rest rather than snapping the face back upright.
+        let turns = matches!(travel::style(self.species.name()), travel::Style::Roll | travel::Style::Spin);
+        if mode == Locomotion::Walk && (weight > 0. || turns) {
+            travel::prepare(self, phase, weight, pose);
             crawl::sample(self, phase, weight, pose);
             gait::sample(self, phase, weight, pose);
+            travel::finish(self, phase, weight, pose);
+            gait::settle(self, pose);
+        } else if mode == Locomotion::Float && weight > 0. {
+            travel::swim(self, phase, weight, pose);
         }
+    }
+
+    /// Water travel deliberately bypasses ground planting and land flops.
+    /// The actor anchor supplies the waterline; no hover clearance is added.
+    pub(crate) fn sample_swimming(
+        &self, seconds: f32, phase: f32, weight: f32, pose: &mut [Transform],
+    ) {
+        self.sample_into(Clip::Idle, seconds, Playback::Loop, pose)
+            .expect("finite swimming clock");
+        travel::swim_strokes(self, phase, weight.clamp(0., 1.), pose);
+        let height = self.neutral_bounds.1.y - self.neutral_bounds.0.y;
+        pose[0].translation.y += height * 0.012 * (seconds * TAU * 0.7).sin();
     }
 
     /// Cached world culling bound valid for all composed locomotion poses.
@@ -721,10 +742,16 @@ pub(crate) fn world_rig(canonical: &'static SpeciesRig) -> &'static SpeciesRig {
         if locomotion(rig.species.name()) == Locomotion::Walk {
             crawl::build(&mut rig);
             gait::build(&mut rig);
+            travel::build(&mut rig);
+        } else if travel::style(rig.species.name()) == travel::Style::Flop
+            || rig.species.name() == "gyarados" {
+            travel::build(&mut rig);
         }
         rig.motion_limbs = motion_limbs(&rig);
         weld_weights(&mut rig);
-        if locomotion(rig.species.name()) != Locomotion::Walk && !rests_on_tentacles(rig.species.name()) {
+        if locomotion(rig.species.name()) != Locomotion::Walk
+            && travel::style(rig.species.name()) != travel::Style::Flop
+            && !rests_on_tentacles(rig.species.name()) {
             // Broad bat wings may extend below the feet on the downstroke.
             // Resolve their clearance once from actual poses, not each frame.
             let mut pose = rig.joints.iter().map(|j| j.bind).collect::<Vec<_>>();
@@ -830,7 +857,7 @@ mod tests {
                 for v in 0..rig.neutral.positions.len() {
                     let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through the floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");
                 }
-                assert!(low<0.005,"{name} lost ground contact: {low}");
+                travel::assert_contact(rig, tick as f32*TAU/64., low);
             }
         }
     }
@@ -949,7 +976,7 @@ mod tests {
             }}
             let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
             for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
-                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}travel::assert_contact(rig, tick as f32*TAU/64., low);}
         }
     }
 
@@ -974,7 +1001,7 @@ mod tests {
             }}
             let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
             for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;
-                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}travel::assert_contact(rig, tick as f32*TAU/64., low);}
         }
     }
 
@@ -989,7 +1016,7 @@ mod tests {
                 for prefix in prefixes {let parts=rig.anatomy.iter().filter(|p|p.name.starts_with(prefix) && p.name.ends_with(&suffix)).collect::<Vec<_>>();assert_eq!(parts.len(),1,"{name} {prefix}{suffix} missing or combined");for part in parts {for v in part.vertices.clone() {for (&joint,weight) in rig.joint_indices[v].iter().zip(rig.joint_weights[v]) {if weight>0. {assert!((owner-2..=owner).contains(&joint),"{name} {} follows another leg",part.name);}}if ["Foot /","Foot claw /","Claw /"].iter().any(|p|part.name.starts_with(p)) {assert_eq!(rig.joint_indices[v][0],owner);assert_eq!(rig.joint_weights[v][0],1.);}}}}
             }}
             let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
-            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}travel::assert_contact(rig, tick as f32*TAU/64., low);}
         }
     }
 
@@ -1119,7 +1146,7 @@ mod tests {
                 for prefix in prefixes {let parts=rig.anatomy.iter().filter(|p|p.name.starts_with(prefix) && p.name.ends_with(&suffix)).collect::<Vec<_>>();assert_eq!(parts.len(),1,"{name} {prefix}{suffix} missing or combined");for part in parts {for v in part.vertices.clone() {for (&joint,weight) in rig.joint_indices[v].iter().zip(rig.joint_weights[v]) {if weight>0. {assert!((owner-2..=owner).contains(&joint),"{name} {} follows another leg",part.name);}}if ["Foot /","Toe /"].iter().any(|p|part.name.starts_with(p)) {assert_eq!(rig.joint_indices[v][0],owner);assert_eq!(rig.joint_weights[v][0],1.);}}}}
             }}
             let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
-            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}assert!(low<0.005,"{name} lost ground contact: {low}");}
+            for tick in 0..64 {rig.sample_locomotion(0.2,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut low=f32::INFINITY;for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);low=low.min(p.y);assert!(p.y>=-0.00001,"{name} walks through floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all());}travel::assert_contact(rig, tick as f32*TAU/64., low);}
         }
     }
 
@@ -1308,7 +1335,7 @@ mod tests {
             let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();let height=rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
             for tick in 0..64 {
                 rig.sample_locomotion(tick as f32/32.,tick as f32,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();
-                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);assert!(p.y>height*0.14,"{name} lost floating clearance");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");}
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);if name == "MAGIKARP" { assert!(p.y >= -height * 0.001, "Magikarp flop penetrates floor"); } else { assert!(p.y>height*0.14,"{name} lost floating clearance"); }assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} left locomotion culling bounds");}
             }
         }
     }
@@ -1322,10 +1349,9 @@ mod tests {
             assert_eq!(locomotion(name), if flying { Locomotion::Fly } else { Locomotion::Walk });
             assert!(rig.walk_legs.is_empty());
             assert!(rig.crawl_segments.is_empty());
-            assert_eq!(rig.joints.len(), canonical.joints.len());
-            for v in 0..rig.neutral.positions.len() {
-                assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} vertex {v}");
-                assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "{name} vertex {v}");
+            assert_eq!(rig.neutral.positions, canonical.neutral.positions);
+            if !flying {
+                assert!(rig.joints.len() > canonical.joints.len(), "{name} needs a travelling coil");
             }
             let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
             assert!(!floor.is_empty());
@@ -1347,7 +1373,7 @@ mod tests {
                 if !flying { assert!(low < height * 0.005, "{name} lost coil contact"); }
                 for &v in &floor {
                     let expected = Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation;
-                    assert!(rig.skin_point(v, &matrices).distance(expected) < 0.000001, "{name} contact {v} left root");
+                    assert!((rig.skin_point(v, &matrices).y - expected.y).abs() < 0.000001, "{name} contact {v} left root");
                 }
             }
         }
@@ -1362,10 +1388,9 @@ mod tests {
             assert_eq!(locomotion(name), if flying { Locomotion::Fly } else { Locomotion::Walk });
             assert!(rig.walk_legs.is_empty());
             assert!(rig.crawl_segments.is_empty());
-            assert_eq!(rig.joints.len(), canonical.joints.len());
-            for v in 0..rig.neutral.positions.len() {
-                assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} vertex {v}");
-                assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "{name} vertex {v}");
+            assert_eq!(rig.neutral.positions, canonical.neutral.positions);
+            if !flying {
+                assert!(rig.joints.len() > canonical.joints.len(), "{name} needs a travelling coil");
             }
             let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
             assert!(!floor.is_empty());
@@ -1387,7 +1412,7 @@ mod tests {
                 if !flying { assert!(low < height * 0.005, "{name} lost coil contact"); }
                 for &v in &floor {
                     let expected = Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation;
-                    assert!(rig.skin_point(v, &matrices).distance(expected) < 0.000001, "{name} contact {v} left root");
+                    assert!((rig.skin_point(v, &matrices).y - expected.y).abs() < 0.000001, "{name} contact {v} left root");
                 }
             }
         }
@@ -1402,10 +1427,9 @@ mod tests {
             assert_eq!(locomotion(name), if flying { Locomotion::Fly } else { Locomotion::Walk });
             assert!(rig.walk_legs.is_empty());
             assert!(rig.crawl_segments.is_empty());
-            assert_eq!(rig.joints.len(), canonical.joints.len());
-            for v in 0..rig.neutral.positions.len() {
-                assert_eq!(rig.joint_indices[v], canonical.joint_indices[v], "{name} vertex {v}");
-                assert_eq!(rig.joint_weights[v], canonical.joint_weights[v], "{name} vertex {v}");
+            assert_eq!(rig.neutral.positions, canonical.neutral.positions);
+            if !flying {
+                assert!(rig.joints.len() > canonical.joints.len(), "{name} needs a travelling coil");
             }
             let floor: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
             assert!(!floor.is_empty());
@@ -1427,7 +1451,7 @@ mod tests {
                 if !flying { assert!(low < height * 0.005, "{name} lost coil contact"); }
                 for &v in &floor {
                     let expected = Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation;
-                    assert!(rig.skin_point(v, &matrices).distance(expected) < 0.000001, "{name} contact {v} left root");
+                    assert!((rig.skin_point(v, &matrices).y - expected.y).abs() < 0.000001, "{name} contact {v} left root");
                 }
             }
         }
@@ -1467,7 +1491,7 @@ mod tests {
                 if !flying { assert!(low < height * 0.005, "{name} lost coil contact"); }
                 for &v in &floor {
                     let expected = Vec3::from_array(rig.neutral.positions[v]) + pose[0].translation;
-                    assert!(rig.skin_point(v, &matrices).distance(expected) < 0.000001, "{name} contact {v} left root");
+                    assert!((rig.skin_point(v, &matrices).y - expected.y).abs() < 0.000001, "{name} contact {v} left root");
                 }
             }
         }
@@ -1527,6 +1551,23 @@ mod tests {
                 for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all()&&p.cmple(hi).all(),"{name} leaves bounds");}
                 assert!(floor<0.005,"{name} loses ground contact {floor}");
             }
+        }
+    }
+
+    #[test]
+    fn leek_duck_skin_walks_two_webbed_supports_and_preserves_the_carry_chain() {
+        let canonical=crate::species_rig::for_species("FARFETCH_D").unwrap();let rig=world_rig(canonical);
+        assert_eq!(locomotion("FARFETCH_D"),Locomotion::Walk);assert!(!battle_hovers("FARFETCH_D"));assert_eq!(rig.walk_legs.len(),2);
+        assert_eq!(rig.motion_limbs.iter().filter(|l|l.role==Role::Arm).count(),0,"carried leek must retain authored wing motion");
+        for part in &canonical.anatomy {
+            if ["Leg /","Foot /"].iter().any(|p|part.name.starts_with(p)) {continue;}
+            for v in part.vertices.clone() {assert_eq!(rig.joint_indices[v],canonical.joint_indices[v],"{}",part.name);assert_eq!(rig.joint_weights[v],canonical.joint_weights[v]);}
+        }
+        let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
+        for tick in 0..64 {
+            rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);gait::assert_supports(rig,&pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
+            for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"duck crosses floor");assert!(p.cmpge(lo).all()&&p.cmple(hi).all(),"duck leaves bounds");}
+            assert!(floor<0.005,"duck loses ground contact {floor}");
         }
     }
 
@@ -1753,7 +1794,7 @@ mod tests {
             let mut pose=vec![Transform::IDENTITY;rig.joints.len()];let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];let (lo,hi)=rig.locomotion_bounds();
             for tick in 0..64 {
                 rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);if legs>0 {gait::assert_supports(rig,&pose);}rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
-                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} leaves full bounds");}assert!(floor<0.005,"{name} loses ground contact {floor}");
+                for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} leaves full bounds");}travel::assert_contact(rig, tick as f32*TAU/64., floor);
             }
         }
     }
@@ -1768,7 +1809,7 @@ mod tests {
             for tick in 0..64 {
                 rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
                 for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} crosses floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} leaves full bounds");}
-                assert!(floor<0.005,"{name} loses ground contact {floor}");
+                travel::assert_contact(rig, tick as f32*TAU/64., floor);
             }
         }
     }
@@ -1870,7 +1911,7 @@ mod tests {
                 rig.sample_locomotion(tick as f32/20.,tick as f32*TAU/64.,1.,&mut pose);if legs>0 {gait::assert_supports(rig,&pose);}
                 rig.skin_matrices_into(&pose,&mut matrices).unwrap();let mut floor=f32::INFINITY;
                 for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);floor=floor.min(p.y);assert!(p.y>=-0.00001,"{name} vertex {v} crosses floor");assert!(p.cmpge(lo).all() && p.cmple(hi).all(),"{name} leaves full locomotion bounds");}
-                assert!(floor<0.005,"{name} loses ground contact: {floor}");
+                travel::assert_contact(rig, tick as f32*TAU/64., floor);
             }
         }
     }
@@ -2253,3 +2294,6 @@ pub(crate) use gait::WalkLeg;
 #[path = "pokemon_crawl.rs"]
 mod crawl;
 pub(crate) use crawl::CrawlSegment;
+
+#[path = "pokemon_travel.rs"]
+mod travel;

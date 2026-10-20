@@ -35,7 +35,7 @@ pub(super) enum Detail {
     Floor(Floor),
     PassageNetwork { open: [bool; 4], basement: bool, fade: bool },
     CeruleanBridgeDeck,
-    CeruleanBridgeFace,
+    CeruleanBankFace,
     StoreBasementLift,
     StoreBasementStair,
     HarborStair,
@@ -75,7 +75,7 @@ impl Detail {
             Self::Floor(Floor::Carpet | Floor::NativeCarpet) => "special:champion-carpet",
             Self::PassageNetwork { .. } => "special:connected-passage-walls",
             Self::CeruleanBridgeDeck => "special:cerulean-brick-bridge",
-            Self::CeruleanBridgeFace => "special:cerulean-wood-bridge-face",
+            Self::CeruleanBankFace => "special:cerulean-gray-bank",
             Self::StoreBasementLift => "special:store-basement-lift-front",
             Self::StoreBasementStair => "special:store-basement-warehouse-stair",
             Self::HarborStair => "special:harbor-stairwell",
@@ -244,15 +244,54 @@ pub(super) fn append_cerulean_deck(out:&mut SurfaceMeshData,bounds:[f32;4],scale
     }
 }
 
-fn cerulean_bridge_detail(s: &VisualTileSource) -> Option<(Detail, u16)> {
+// Preserve every support/brick triangle. Caps and risers use their own brick
+// source; an authenticated tile22 donor supplies timber paint without faceting.
+pub(super) fn append_native_cerulean_deck(mesh: &mut TerrainMeshData,
+    bounds: [f32;4], scale: f32, source_row: usize, uv: (f32,f32,f32,f32),
+    timber_uv: Option<(f32,f32,f32,f32)>) {
+    let mut body = SurfaceMeshData::default();
+    append_cerulean_deck(&mut body, bounds, scale, source_row);
+    let [w,e,n,s] = bounds;
+    let cap_low = (crate::port::PIER_HEIGHT - 0.151) * scale;
+    for triangle in body.indices.chunks_exact(3) {
+        let cap = triangle.iter().all(|&i| body.normals[i as usize][1] > 0.99
+            && body.positions[i as usize][1] >= cap_low);
+        let brick = triangle.iter().all(|&i| body.positions[i as usize][1] >= cap_low);
+        let post = triangle.iter().all(|&i| body.positions[i as usize][1]
+            <= (crate::port::PIER_HEIGHT-3.)*scale+1e-4*scale);
+        let native = cap || brick || timber_uv.is_some();
+        let out = if native { &mut mesh.textured } else { &mut mesh.solid };
+        let first = out.positions.len() as u32;
+        for &index in triangle {
+            let i = index as usize;
+            let point = body.positions[i];
+            out.positions.push(point);
+            out.normals.push(body.normals[i]);
+            out.colors.push(if native { TEXTURED_SHADE } else { body.colors[i] });
+            out.uvs.push(if cap {
+                [uv.0 + (uv.1-uv.0) * (point[0]-w)/(e-w),
+                 uv.2 + (uv.3-uv.2) * (point[2]-n)/(s-n)]
+            } else if brick {
+                [uv.0+(uv.1-uv.0)*1.5/8.,uv.2+(uv.3-uv.2)*1.5/8.]
+            } else if let Some(timber_uv)=timber_uv {
+                crate::mesh::elevated_piers::cerulean_timber_sample(timber_uv,body.normals[i],post)
+            } else { body.uvs[i] });
+        }
+        out.indices.extend([first,first+1,first+2]);
+    }
+}
+
+fn cerulean_source_detail(s: &VisualTileSource) -> Option<(Detail, u16)> {
     if s.tileset_id.as_ref() != "port" || s.subtile_column >= 4 || s.subtile_row >= 4 { return None; }
     // The gray perimeter/lobby is 0x0a. The pink brick walkway is 0x05,
     // including the floor beside the two statues and above the entry carpet.
     if s.tile_index == 0x05 && matches!(s.metatile_id,
         0x0c | 0x14 | 0x26 | 0x27 | 0x29 | 0x2d | 0x32 | 0x33 | 0x34 | 0x39) {
         Some((Detail::CeruleanBridgeDeck, 0x14))
-    } else if s.tile_index == 0x0b && s.subtile_row == 0 && matches!(s.metatile_id, 0x36..=0x39) {
-        Some((Detail::CeruleanBridgeFace, 0x14))
+    } else if s.tile_index == 0x0b && s.subtile_row == 0 && match s.metatile_id {
+        0x36 | 0x39 => true, 0x37 => s.subtile_column >= 2, 0x38 => s.subtile_column < 2, _ => false,
+    } {
+        Some((Detail::CeruleanBankFace, 0x14))
     } else { None }
 }
 fn cerulean_water_source(s: &VisualTileSource) -> bool {
@@ -691,9 +730,9 @@ pub(super) fn resolve_into(r: &mut Resolver<'_>, profiles: Option<&Document>) {
     }
     if map == "CeruleanGym" && ts == "port" {
         for (i, tile) in cells.iter().enumerate() {
-            if let Some((detail, _)) = cerulean_bridge_detail(&tile.source)
+            if let Some((detail, _)) = cerulean_source_detail(&tile.source)
             {
-                // Brick decks carry their own material. Upright wooden faces
+                // Brick decks carry their own material. Gray bank faces
                 // also expose water, so require its actual source sample rather
                 // than substituting a blue patch when the viewport omits it.
                 let floor = if matches!(detail, Detail::CeruleanBridgeDeck) {
@@ -1059,7 +1098,7 @@ pub(super) fn append(
         Detail::Floor(_)
             | Detail::SaffronFloor
             | Detail::CeruleanBridgeDeck
-            | Detail::CeruleanBridgeFace
+            | Detail::CeruleanBankFace
             | Detail::BlackthornCrossing
             | Detail::BlackthornChannel {..}
             | Detail::FloorGlyph
@@ -1312,28 +1351,31 @@ pub(super) fn append(
         Detail::CeruleanBridgeDeck => {
             let source=&cells[p.row*g.width+p.column].source;
             let first=mesh.solid.positions.len();
-            append_cerulean_deck(&mut mesh.solid,[w,e,n,s],scale,source.subtile_row as usize);
+            let first_textured=mesh.textured.positions.len();
+            append_native_cerulean_deck(mesh,[w,e,n,s],scale,source.subtile_row as usize,
+                g.uv(p.column,p.row),crate::mesh::elevated_piers::cerulean_timber_uv(cells,g));
             if let Some([north,south])=crate::mesh::elevated_piers::entry_levels(source) {
                 let slope=(south-north)*scale/(s-n);
-                for (point,normal) in mesh.solid.positions[first..].iter_mut().zip(&mut mesh.solid.normals[first..]) {
-                    point[1]+=(north-crate::port::PIER_HEIGHT)*scale+(point[2]-n)*slope;
-                    *normal=Vec3::new(normal[0],normal[1],normal[2]-normal[1]*slope).normalize().to_array();
+                for (surface,first) in [(&mut mesh.solid,first),(&mut mesh.textured,first_textured)] {
+                    for (point,normal) in surface.positions[first..].iter_mut().zip(&mut surface.normals[first..]) {
+                        point[1]+=(north-crate::port::PIER_HEIGHT)*scale+(point[2]-n)*slope;
+                        *normal=Vec3::new(normal[0],normal[1],normal[2]-normal[1]*slope).normalize().to_array();
+                    }
                 }
             }
         },
-        Detail::CeruleanBridgeFace => {
-            // The painted face belongs against the preceding deck's edge,
-            // not eight pixels farther into the water at the source row's end.
+        Detail::CeruleanBankFace => {
+            // Tile0b is flat gray bank/shadow, not the tile22 timber drawing.
+            // Keep a continuous closed retaining body; no invented support posts.
             let depth = 1.2 * scale;
-            append_top(&mut mesh.textured, [w, e, n, s], crate::profile::WATER_HEIGHT*scale, g.uv(p.ground % g.width, p.ground / g.width));
-            // This course fronts the gray, ground-level north rim. It is
-            // shoreline retaining timber, not a suspended pink pier.
-            let deck=0.;
-            slab(&mut mesh.solid, [w, e, n, n + depth], deck-3. * scale, deck, [0.47, 0.34, 0.15, 1.]);
-            for x in [w + (e - w) * 0.12, w + (e - w) * 0.62] {
-                slab(&mut mesh.solid, [x, x + (e - w) * 0.18, n, n + depth],
-                    -6. * scale, deck-3.*scale, [0.60, 0.46, 0.23, 1.]);
-            }
+            append_top(&mut mesh.textured, [w,e,n,s],crate::profile::WATER_HEIGHT*scale,
+                g.uv(p.ground%g.width,p.ground/g.width));
+            let uv=g.uv(p.column,p.row);
+            let sample=[(uv.0+uv.1)*0.5,(uv.2+uv.3)*0.5];
+            let first=mesh.textured.positions.len();
+            slab(&mut mesh.textured,[w,e,n,n+depth],-3.*scale,0.,TEXTURED_SHADE);
+            mesh.textured.uvs[first..].fill(sample);
+            mesh.textured.colors[first..].fill(TEXTURED_SHADE);
         }
         Detail::StoreBasementLift => {
             crate::interior_models::model(crate::interior_models::ModelKind::GateDoorFrame)
@@ -2833,10 +2875,64 @@ mod tests {
     }
 
     #[test]
-    fn cerulean_bridge_face_requires_water_and_deck_has_its_own_material() {
+    fn cerulean_native_caps_preserve_triangles_support_and_live_uvs() {
+        for scale in [1.,4.] { for row in 0..4 {
+            let bounds = [3.*scale,11.*scale,7.*scale,15.*scale];
+            let mut old = SurfaceMeshData::default();
+            append_cerulean_deck(&mut old,bounds,scale,row);
+            let mut mesh = TerrainMeshData { footing_heights: vec![1.25], authored_cells: vec![None], ..Default::default() };
+            let uv = (0.2,0.3,0.6,0.7);
+            append_native_cerulean_deck(&mut mesh,bounds,scale,row,uv,None);
+            let triangles = |surface: &SurfaceMeshData| surface.indices.chunks_exact(3).map(|tri|
+                tri.iter().map(|&i| [surface.positions[i as usize].map(f32::to_bits),
+                    surface.normals[i as usize].map(f32::to_bits)]).collect::<Vec<_>>()).collect::<Vec<_>>();
+            let mut expected = triangles(&old);
+            let mut actual = triangles(&mesh.solid); actual.extend(triangles(&mesh.textured));
+            expected.sort(); actual.sort(); assert_eq!(actual,expected,"only material ownership may change");
+            assert!(!mesh.textured.indices.is_empty());
+            for ((point,normal), (coord,color)) in mesh.textured.positions.iter().zip(&mesh.textured.normals)
+                .zip(mesh.textured.uvs.iter().zip(&mesh.textured.colors)) {
+                assert!(point[1] >= (crate::port::PIER_HEIGHT-0.151)*scale);
+                let expected = if normal[1]>0.99 {
+                    [uv.0+(uv.1-uv.0)*(point[0]-bounds[0])/(bounds[1]-bounds[0]),
+                     uv.2+(uv.3-uv.2)*(point[2]-bounds[2])/(bounds[3]-bounds[2])]
+                } else { [uv.0+(uv.1-uv.0)*1.5/8.,uv.2+(uv.3-uv.2)*1.5/8.] };
+                assert_eq!(*coord,expected); assert_eq!(*color,TEXTURED_SHADE);
+            }
+            assert_eq!(mesh.footing_heights,vec![1.25]); assert_eq!(mesh.authored_cells,vec![None]);
+        }}
+    }
+
+    #[test]
+    fn cerulean_native_timber_preserves_deck_geometry_and_existing_cap_uvs() {
+        for row in 0..4 {
+            let uv=(0.2,0.3,0.6,0.7);let timber=(0.7,0.8,0.1,0.2);
+            let mut old=TerrainMeshData::default();let mut new=TerrainMeshData::default();
+            append_native_cerulean_deck(&mut old,[0.,8.,0.,8.],1.,row,uv,None);
+            append_native_cerulean_deck(&mut new,[0.,8.,0.,8.],1.,row,uv,Some(timber));
+            let vertices=|mesh:&TerrainMeshData| {
+                let mut values=mesh.solid.positions.iter().zip(&mesh.solid.normals)
+                    .chain(mesh.textured.positions.iter().zip(&mesh.textured.normals))
+                    .map(|(p,n)|[p.map(f32::to_bits),n.map(f32::to_bits)]).collect::<Vec<_>>();
+                values.sort();values
+            };
+            assert_eq!(vertices(&new),vertices(&old));
+            assert_eq!(new.textured.indices.len(),old.solid.indices.len()+old.textured.indices.len());
+            assert!(new.solid.indices.is_empty());
+            for (i,point) in old.textured.positions.iter().enumerate() {
+                assert!(new.textured.positions.iter().enumerate().any(|(j,p)|
+                    p==point&&new.textured.normals[j]==old.textured.normals[i]
+                    &&new.textured.uvs[j]==old.textured.uvs[i]),"existing brick caps/risers must retain their actual source UVs");
+            }
+            assert!(new.textured.colors.iter().all(|c|*c==TEXTURED_SHADE));
+        }
+    }
+
+    #[test]
+    fn cerulean_gray_bank_requires_water_and_deck_has_its_own_material() {
         for (block, tile, label) in [
             (0x26, 0x05, "special:cerulean-brick-bridge"),
-            (0x36, 0x0b, "special:cerulean-wood-bridge-face"),
+            (0x36, 0x0b, "special:cerulean-gray-bank"),
         ] {
             let mut t = tiles(1, 1, "port", tile);
             t[0].source.metatile_id = block;
@@ -2860,20 +2956,25 @@ mod tests {
             mesh.footing_heights = vec![0.; t.len()];
             super::super::append(&mut mesh, &g, bridge, &t.iter().collect::<Vec<_>>(), [0, 0]);
             assert_eq!(mesh.footing_heights, vec![0.; t.len()]);
-            assert!(!mesh.solid.indices.is_empty());
-            assert!(mesh.solid.positions.iter().any(|v| v[1] < -2.9));
+            assert!(mesh.solid.positions.iter().chain(&mesh.textured.positions).any(|v| v[1] < -2.9));
             if tile == 0x05 {
-                assert!(mesh.solid.positions.iter().any(|v| v[1] == crate::port::PIER_HEIGHT));
-                assert!(mesh.textured.indices.is_empty(), "no coplanar floor backing beneath bridge bricks");
+                assert!(!mesh.solid.indices.is_empty(),"no authenticated timber donor in this cropped fixture");
+                assert!(mesh.textured.positions.iter().any(|v| v[1] == crate::port::PIER_HEIGHT));
+                assert!(mesh.textured.positions.iter().all(|v| v[1] >= crate::port::PIER_HEIGHT-0.151),
+                    "native caps retain raised relief; no coplanar ground backing beneath the bridge");
+            } else {
+                assert!(mesh.solid.indices.is_empty());
+                assert_eq!(mesh.textured.indices.len(),78,"one water quad and one closed bank, no timber posts");
+                assert!(mesh.textured.positions.iter().all(|point|point[1]>=-3.));
             }
             assert!(!super::super::resolve("OlivinePort", &t.iter().collect::<Vec<_>>(), &g, None)
                 .iter().any(|p| p.kind_label() == label));
             t[0].source.tile_index = 0x22;
-            assert!(cerulean_bridge_detail(&t[0].source).is_none(), "pool foam must remain water artwork");
+            assert!(cerulean_source_detail(&t[0].source).is_none(), "timber edge art is neither a brick deck nor a gray bank");
         }
         let mut gray = tiles(1, 1, "port", 0x0a);
         gray[0].source.metatile_id = 0x31;
-        assert!(cerulean_bridge_detail(&gray[0].source).is_none(), "gray perimeter must not become a pink walkway");
+        assert!(cerulean_source_detail(&gray[0].source).is_none(), "gray perimeter must not become a pink walkway");
     }
     #[test]
     fn kanto_port_walls_fade_as_closed_segments_without_fading_the_floor() {

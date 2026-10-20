@@ -28,7 +28,6 @@ struct CameraKey {
 struct StableSelection {
     key: CameraKey,
     interest: HashSet<usize>,
-    camera_count: Option<usize>,
 }
 impl StableSelection {
     fn for_key(&self, key: CameraKey) -> Option<&HashSet<usize>> {
@@ -167,7 +166,7 @@ pub(super) fn sync(
         return false;
     };
     let offset = crate::terrain_tracking::offset(built, frame);
-    let offset = Vec3::new(offset.x, 0., offset.y);
+    let offset = crate::terrain_transform(frame).translation + Vec3::new(offset.x, 0., offset.y);
     let ground = cache
         .built_footing_heights
         .iter()
@@ -183,24 +182,27 @@ pub(super) fn sync(
         "map":frame.map_id.as_ref(),"available":stream.source.len(),"resident":stream.active.len()})
     });
     let key = CameraKey { matrix, offset, sun, ground };
-    let cached = stream.stable.as_ref().and_then(|selection| selection.for_key(key));
-    let cache_hit = cached.is_some();
+    // Stable selections exist only after every requested placement has
+    // settled and draw visibility has been applied. No geometry, visibility
+    // or shadow input changed, so even cloning/sorting the resident set and
+    // retesting every tree is redundant. Battle warming invalidates this key.
+    if stream.stable.as_ref().is_some_and(|selection| selection.for_key(key).is_some()) {
+        return false;
+    }
     // Prepare ahead of the view, and retain a wider band to avoid destroying
     // and rebuilding exact meshes when the camera reverses near an edge.
-    let interest = cached.cloned().unwrap_or_else(|| stream.bounds.iter().enumerate()
+    let interest = stream.bounds.iter().enumerate()
         .filter_map(|(i, (low, high))| {
             let margin = if stream.active.contains_key(&i) { 1.45 } else { 1.30 };
             needed_margin(*low + offset, *high + offset, matrix, sun, ground, margin).then_some(i)
         })
-        .collect());
-    let mut camera_count = if cache_hit {
-        stream.stable.as_ref().and_then(|selection| selection.camera_count)
-    } else { None };
+        .collect::<HashSet<_>>();
+    let mut camera_count = None;
     let _interest_trace = crate::loading_trace::span("region.grove_interest", || {
         let camera = *camera_count.get_or_insert_with(|| stream.bounds.iter()
             .filter(|(low, high)| visible(*low + offset, *high + offset, matrix)).count());
         serde_json::json!({
-        "map":frame.map_id.as_ref(),"available":stream.source.len(),"requested":interest.len(),"camera":camera,"sun":sun.map(|v| v.to_array()),"ground":ground,"resident":stream.active.len(),"selection_cache_hit":cache_hit,
+        "map":frame.map_id.as_ref(),"available":stream.source.len(),"requested":interest.len(),"camera":camera,"sun":sun.map(|v| v.to_array()),"ground":ground,"resident":stream.active.len(),"selection_cache_hit":false,
         "view_projection":matrix.to_cols_array(),"source_offset":offset.to_array()})
     });
     let pending = sync_interest(cache, interest, commands, meshes, materials, |low, high|
@@ -219,20 +221,27 @@ pub(super) fn sync(
     }
     if pending {
         stream.stable = None;
-    } else if !cache_hit {
+    } else {
         // Preparation can tighten conservative recipe bounds. Publish only
         // the final active set after every requested object has settled.
-        if camera_count.is_some() {
-            camera_count = Some(stream.bounds.iter()
-                .filter(|(low, high)| visible(*low + offset, *high + offset, matrix)).count());
-        }
         stream.stable = Some(StableSelection {
-            key, interest: stream.active.keys().copied().collect(), camera_count,
+            key, interest: stream.active.keys().copied().collect(),
         });
-    } else if let Some(selection) = &mut stream.stable {
-        selection.camera_count = camera_count;
     }
-    pending
+    // The wider preload band is speculative. Keep preparing it, but do not
+    // hold a doorway fade/input for trees outside the draw/shadow footprint.
+    pending && presentation_pending(stream.missing_bounds(), offset, matrix, sun, ground)
+}
+
+fn presentation_pending(
+    mut missing: impl Iterator<Item = (Vec3, Vec3)>,
+    offset: Vec3,
+    matrix: Mat4,
+    sun: Option<Vec3>,
+    ground: f32,
+) -> bool {
+    missing.any(|(low, high)|
+        needed_margin(low + offset, high + offset, matrix, sun, ground, 1.15))
 }
 
 /// Warm the existing source grove recipes for the authentic battle neighborhood,
@@ -459,6 +468,26 @@ mod tests {
     }
 
     #[test]
+    fn doorway_releases_after_visible_and_shadow_work_without_waiting_for_preload_band() {
+        let matrix=Mat4::orthographic_rh(-10.,10.,-10.,10.,0.1,100.)
+            * Mat4::look_at_rh(Vec3::new(0.,0.,20.),Vec3::ZERO,Vec3::Y);
+        let remote=(Vec3::new(12.,-0.1,-0.1),Vec3::new(12.1,0.1,0.1));
+        assert!(needed_margin(remote.0,remote.1,matrix,None,0.,1.30));
+        assert!(!presentation_pending([remote].into_iter(),Vec3::ZERO,matrix,None,0.));
+        assert!(presentation_pending([(Vec3::splat(-1.),Vec3::splat(1.)),remote].into_iter(),
+            Vec3::ZERO,matrix,None,0.));
+        assert!(presentation_pending([remote].into_iter(),Vec3::new(-4.,0.,0.),matrix,None,0.),
+            "rebased foreground geometry still holds the fade");
+        let matrix=Mat4::orthographic_rh(-10.,10.,-10.,10.,0.1,100.)
+            * Mat4::look_at_rh(Vec3::new(0.,20.,20.),Vec3::ZERO,Vec3::Y);
+        let caster=(Vec3::new(14.,0.,-1.),Vec3::new(16.,8.,1.));
+        assert!(!visible(caster.0,caster.1,matrix));
+        assert!(presentation_pending([caster].into_iter(),Vec3::ZERO,matrix,
+            Some(Vec3::new(1.,1.,0.).normalize()),0.),"visible shadows must not pop into a finished fade");
+        assert!(!presentation_pending(std::iter::empty(),Vec3::ZERO,matrix,None,0.));
+    }
+
+    #[test]
     fn queue_priority_follows_camera_instead_of_map_origin() {
         let matrix = Mat4::orthographic_rh(-10., 10., -10., 10., 0.1, 100.)
             * Mat4::look_at_rh(Vec3::new(100., 0., 20.), Vec3::new(100., 0., 0.), Vec3::Y);
@@ -479,7 +508,7 @@ mod tests {
         let interest: HashSet<_> = bounds.iter().enumerate().filter_map(|(i,(lo,hi))|
             needed(*lo, *hi, key.matrix, key.sun, key.ground).then_some(i)).collect();
         assert_eq!(interest, HashSet::from([0, 1]), "retain the off-camera shadow caster");
-        let selection = StableSelection { key, interest, camera_count: Some(1) };
+        let selection = StableSelection { key, interest };
         assert_eq!(selection.for_key(key), Some(&selection.interest));
         for changed in [CameraKey { matrix: Mat4::IDENTITY, ..key },
             CameraKey { offset: Vec3::X, ..key }, CameraKey { sun: None, ..key },

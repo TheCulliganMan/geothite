@@ -139,6 +139,7 @@ pub(super) fn append(
     let first = out.positions.len();
     architecture_box(out, [west, east, 0., 30. * scale, start, end], [1.; 3]);
     out.uvs[first..].fill(paints[1]);
+    super::super::super::radio_glazing::mark(out, first, 0.05);
     let first = out.positions.len();
     architecture_box(
         out,
@@ -179,7 +180,9 @@ pub(super) fn append(
                     points.reverse();
                     uvs.reverse();
                 }
+                let first=out.positions.len();
                 append_quad(out, points, [normal, 0., 0.], uvs, TEXTURED_SHADE);
+                super::super::super::radio_glazing::mark(out, first, 0.12);
             }
         }
     }

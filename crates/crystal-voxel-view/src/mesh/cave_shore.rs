@@ -33,6 +33,18 @@ fn edges(s: &VisualTileSource) -> Option<u8> {
         _ => None,
     }
 }
+/// Keep wet source corners backed by the nearest live pool's own paint/phase.
+/// Native rock may cover that water, but fading it must not expose a void.
+pub(super) fn water_underlay_source(cells:&[&VisualTile],index:usize)->Option<usize> {
+    let target=cells.get(index)?;
+    edges(&target.source)?;
+    cells.iter().enumerate().filter(|(_,tile)|
+        tile.source.tileset_id==target.source.tileset_id && tile.source.tile_index==0x14
+            && tile.animation_frames.as_ref().is_some_and(|f|f.len()>1 && f.contains(&tile.texture)))
+        .min_by_key(|(_,tile)|tile.column.abs_diff(target.column).saturating_add(tile.row.abs_diff(target.row)))
+        .map(|(index,_)|index)
+}
+
 fn mineral_triangle(
     out: &mut SurfaceMeshData,
     p: [[f32; 3]; 3],
@@ -61,7 +73,15 @@ fn rim_width(p: Vec3, g: &GridGeometry, origin: [i32; 2]) -> f32 {
         / SOURCE_TILE_HEIGHT
 }
 
-pub(super) fn append(
+pub(super) fn append(mesh:&mut TerrainMeshData,points:[[f32;3];4],normal:[f32;3],
+    cells:&[&VisualTile],g:&GridGeometry,index:usize,origin:[i32;2])->bool {
+    append_impl(mesh,points,normal,cells,g,index,origin,false)
+}
+pub(super) fn append_over_water(mesh:&mut TerrainMeshData,points:[[f32;3];4],normal:[f32;3],
+    cells:&[&VisualTile],g:&GridGeometry,index:usize,origin:[i32;2])->bool {
+    append_impl(mesh,points,normal,cells,g,index,origin,true)
+}
+fn append_impl(
     mesh: &mut TerrainMeshData,
     points: [[f32; 3]; 4],
     normal: [f32; 3],
@@ -69,6 +89,7 @@ pub(super) fn append(
     g: &GridGeometry,
     index: usize,
     origin: [i32; 2],
+    water_present: bool,
 ) -> bool {
     let source = &cells[index].source;
     let Some(flags) = edges(source) else {
@@ -84,23 +105,17 @@ pub(super) fn append(
     {
         return false;
     }
-    let Some(water) = cells.iter().position(|t| {
-        t.source.tileset_id == source.tileset_id
-            && t.source.tile_index == 0x14
-            && t.animation_frames
-                .as_ref()
-                .is_some_and(|f| f.len() > 1 && f.contains(&t.texture))
-    }) else {
-        return false;
-    };
+    let Some(water)=water_underlay_source(cells,index) else {return false;};
     // Sampling the owned animated water slot preserves the existing palette,
     // phase updates and shader provenance. No synthesized animation clock.
+    if !water_present {
     append_top(
         &mut mesh.textured,
         [w, e, n, s],
         0.,
         cave_pool_uv(cells[water], g.uv(water % g.width, water / g.width)),
     );
+    }
     let u = g.tile_height / SOURCE_TILE_HEIGHT;
     let width = 1.4 * u;
     let h = 0.65 * u;

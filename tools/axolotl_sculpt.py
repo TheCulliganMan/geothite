@@ -96,7 +96,9 @@ def sculpture(species,*,normalize=True):
     smile=[]
     for j in range(15):
         x=-span+2*span*j/14;y=mouth_y+.12*x*x/span
-        smile.append((x,y,skin(y,x)+.003))
+        # Keep the narrow juvenile tube rooted in the stored head triangles.
+        # Its former .003 offset exceeded its .0027 cross-section radius.
+        smile.append((x,y,skin(y,x)+(.003 if big else .0008)))
     p.append(tube('Mouth / fitted broad curved smile',ink,smile,[.0027 if not big else .0034]*len(smile),8))
     for s in (-1,1):
         x=s*(.118 if not big else .192)

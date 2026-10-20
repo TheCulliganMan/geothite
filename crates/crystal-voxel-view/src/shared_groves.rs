@@ -105,6 +105,14 @@ pub(crate) fn prepare_surface(source: SurfaceMeshData) -> Vec<PreparedGroup> {
     ) {
         occluder_fade::compact_palette_group_uv0(&mut groups);
     }
+    // The worker wire currently carries float attributes. Keep its ABI and
+    // browser output unchanged; native render copies use Bevy's own decoder.
+    #[cfg(all(not(target_arch = "wasm32"), not(feature = "terrain-worker")))]
+    if std::env::var("CRYSTAL_PACKED_GROVE_NORMALS").as_deref() != Ok("off") {
+        occluder_fade::pack_palette_group_normals(&mut groups);
+    }
+    #[cfg(all(not(target_arch = "wasm32"), not(feature = "terrain-worker")))]
+    occluder_fade::localize_opaque_triangles(&mut groups);
     occluder_fade::share_groups(&mut groups);
     groups
 }

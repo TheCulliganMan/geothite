@@ -36,7 +36,7 @@ try {
   });
   if (process.env.GPU_WATERFALL === '1') await context.addInitScript(installWebGpuTiming);
   await context.addInitScript(() => {
-    localStorage.setItem('crystal.audio.muted', 'true');
+    localStorage.setItem('crystal.audio.preference', 'muted');
     window.walkingMetrics = { active: false, last: 0, frames: [], uploads: [], allocations: 0, longTasks: [],
       drawCalls: 0, bindBufferRanges: 0, textureParameterCalls: 0, bufferUploadBytes: 0,
       startupLongTasks: [], startupComplete: false,

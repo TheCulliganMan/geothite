@@ -2832,6 +2832,8 @@ dependencies = [
  "image",
  "js-sys",
  "naga",
+ "objc2 0.5.2",
+ "objc2-foundation 0.2.2",
  "rodio 0.18.1",
  "serde",
  "serde_json",

@@ -1321,10 +1321,11 @@ fn player_name_entry_moves_to_end_at_max_length_like_typescript() {
 #[test]
 fn player_name_entry_renders_real_naming_screen_assets() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
+    let runtime = workspace_desktop_runtime(&AssetRoot::new(repo_root));
+    let asset_root = runtime.materialize_runtime_files().expect("materialize supplied naming assets");
     let input = PendingNameInput {
         label: "YOUR NAME?".to_string(),
         value: "KRIS".to_string(),
@@ -1390,7 +1391,7 @@ fn pokemon_name_entry_uses_the_two_line_asm_heading_without_clipping() {
 #[test]
 fn name_entry_replaces_the_visible_overworld_with_one_complete_lcd() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
+        .join("../..")
         .canonicalize()
         .expect("repository root");
     let asset_root = AssetRoot::new(repo_root);

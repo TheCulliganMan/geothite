@@ -1226,6 +1226,9 @@ fn cold_fullscreen_to_field_handoff_waits_until_both_map_layers_are_query_visibl
 
     {
         let mut runtime_shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        // This is a presentation handoff fixture, not a boot-input test.
+        // Title startup now owns a splash before its intro/menu screens.
+        runtime_shell.splash_screen = None;
         runtime_shell.intro_screen = None;
         runtime_shell.title_menu = None;
         mark_runtime_snapshot_dirty(&mut runtime_shell);
@@ -1849,6 +1852,7 @@ fn pokegear_and_pc_render_audit_surfaces_fit_the_gameboy_screen() {
                     scroll: 0,
                 },
                 source: crystal_assets::RuntimePokemonStorageLocation::Box { box_index: 0, slot: 0 },
+                source_scroll: 0,
                 target: crystal_assets::RuntimePokemonStorageLocation::Box { box_index: 1, slot: 0 },
                 phase: VisibleBillPcMoveSavePhase::BeforeMove,
                 frames_remaining: 11,
@@ -3295,7 +3299,7 @@ fn mailbox_windows_match_original_rom_lcd() {
         crate::core::state::MailboxMail { item_id: "FLOWER_MAIL".into(), mail }
     }).collect();
     mark_runtime_snapshot_dirty(&mut shell);
-    let reference = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../../tools/asm-oracle/fixtures/mailbox");
+
     let mut differences = Vec::new();
     for index in 0usize..9 {
         let label = if index < 7 { format!("mailbox-{index}") }
@@ -3333,7 +3337,8 @@ fn mailbox_windows_match_original_rom_lcd() {
             std::fs::create_dir_all(&directory).unwrap();
             canvas.save(PathBuf::from(directory).join(format!("{label}.png"))).unwrap();
         }
-        let rom = image::open(reference.join(format!("rom-{label}.png"))).unwrap().to_rgba8();
+        let rom = image::load_from_memory(&external_oracle_fixture_bytes(&format!("mailbox/rom-{label}.png")))
+            .unwrap().to_rgba8();
         assert_eq!(rom.dimensions(), (160, 144));
         let scale = canvas.width() / 160;
         assert_eq!(canvas.dimensions(), (160 * scale, 144 * scale));

@@ -108,6 +108,9 @@ from tyrogue_glb import read_tyrogue
 from smoochum_glb import read_smoochum
 from jynx_glb import read_jynx
 from dodo_glb import read_doduo,read_dodrio
+from leek_duck_glb import read_farfetch_d
+from psychic_palm_glb import read_exeggcute,read_exeggutor
+from bulb_saur_glb import read_ivysaur,read_venusaur
 from raptor_bird_glb import read_pidgeot,read_fearow
 from feline_glb import read_meowth,read_persian
 from pig_monkey_glb import read_mankey,read_primeape
@@ -297,6 +300,11 @@ weighted_skins = {
     models / 'battle_species/smoochum.glb': (read_smoochum, 40),
     models / 'battle_species/jynx.glb': (read_jynx,45),
     models / 'battle_species/doduo.glb': (read_doduo,37),
+    models / 'battle_species/ivysaur.glb': (read_ivysaur,58),
+    models / 'battle_species/venusaur.glb': (read_venusaur,100),
+    models / 'battle_species/exeggcute.glb': (read_exeggcute,46),
+    models / 'battle_species/exeggutor.glb': (read_exeggutor,70),
+    models / 'battle_species/farfetch_d.glb': (read_farfetch_d,45),
     models / 'battle_species/pidgeot.glb': (read_pidgeot,105),
     models / 'battle_species/fearow.glb': (read_fearow,161),
     models / 'battle_species/dodrio.glb': (read_dodrio,61),

@@ -8,6 +8,8 @@ const FLOOR_TILE: u16 = 0x01;
 pub(crate) const TABLETOP_BOTTOM: f32 = 14.0;
 pub(crate) const TABLETOP_THICKNESS: f32 = 2.0;
 pub(crate) const SERVICE_COUNTER_HEIGHT: f32 = 8.0;
+/// Dining height above the floor, independent of the tall 2D table drawing.
+pub(crate) const NATIVE_TABLE_HEIGHT: f32 = 8.0;
 
 pub(crate) fn is_cafe_map(map_id: &str) -> bool {
     matches!(

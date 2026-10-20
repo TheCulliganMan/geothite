@@ -596,6 +596,10 @@ fn soft_box(mesh: &mut crate::mesh::SurfaceMeshData, center: bevy::prelude::Vec3
 }
 
 pub(crate) fn head_mesh(rig: &crate::open_people::PersonRig, look: Look) -> Option<crate::mesh::SurfaceMeshData> {
+    head_mesh_with_hat_color(rig,look,None)
+}
+pub(crate) fn head_mesh_with_hat_color(rig: &crate::open_people::PersonRig, look: Look,
+    hat_color: Option<[u8;3]>) -> Option<crate::mesh::SurfaceMeshData> {
     use bevy::prelude::*;
     let mut min = Vec3::splat(f32::INFINITY);
     let mut max = Vec3::splat(f32::NEG_INFINITY);
@@ -636,12 +640,12 @@ pub(crate) fn head_mesh(rig: &crate::open_people::PersonRig, look: Look) -> Opti
         "mohawk" => ellipsoid(&mut mesh, Vec3::new(center.x, top, center.z), Vec3::new(width * 0.2, width * 0.5, half.z * 0.8), hair),
         _ => {}
     }
-    if look.hat != "none" && !crate::uniform_caps::append(&mut mesh,center,half,look.hat) {
-        let color = match look.hat {
+    if look.hat != "none" && !crate::uniform_caps::append_with_color(&mut mesh,center,half,look.hat,hat_color) {
+        let color = hat_color.unwrap_or(match look.hat {
             "trainer" | "redcap" => [191, 35, 37], "bluecap" | "police" | "kris" => [32, 62, 128],
             "sailor" | "captain" | "reception" => [235, 234, 216],
             "straw" | "hiking" => [164, 133, 69], _ => [29, 31, 37],
-        };
+        });
         let baseball = matches!(look.hat, "trainer" | "redcap" | "bluecap");
         if baseball {
             // Fit a shallow crown to the actual head instead of stacking a
@@ -1141,18 +1145,22 @@ pub(crate) struct CostumeMesh {
 }
 
 pub(crate) fn costume_mesh(rig: &crate::open_people::PersonRig, look: Look) -> Option<CostumeMesh> {
-    costume_mesh_parts(rig, look, true)
+    costume_mesh_parts(rig, look, true, None)
 }
 
 #[cfg(test)]
 pub(crate) fn costume_shell_mesh(rig: &crate::open_people::PersonRig, look: Look) -> Option<CostumeMesh> {
-    costume_mesh_parts(rig, look, false)
+    costume_mesh_parts(rig, look, false, None)
 }
 
-fn costume_mesh_parts(rig: &crate::open_people::PersonRig, look: Look, details: bool) -> Option<CostumeMesh> {
+pub(crate) fn costume_mesh_with_uniform(rig: &crate::open_people::PersonRig, look: Look, color: [u8;3]) -> Option<CostumeMesh> {
+    costume_mesh_parts(rig, look, true, Some(color))
+}
+
+fn costume_mesh_parts(rig: &crate::open_people::PersonRig, look: Look, details: bool, uniform: Option<[u8;3]>) -> Option<CostumeMesh> {
     use bevy::prelude::*;
     if let Some(cape) = crate::cape::build(rig,look) { return details.then_some(cape); }
-    if let Some(uniform) = crate::uniform_details::build(rig,look) {return details.then_some(uniform);}
+    if let Some(uniform_mesh) = crate::uniform_details::build_with_uniform(rig,look,uniform) {return details.then_some(uniform_mesh);}
     let skirt = matches!(look.costume, "dress" | "kimono" | "robe") || look.accessories.contains("skirt");
     let coat = look.costume == "coat";
     if !skirt && !coat { return None; }
@@ -1179,6 +1187,11 @@ fn costume_mesh_parts(rig: &crate::open_people::PersonRig, look: Look, details: 
             }}
             color = sum.map(|c| (c/25) as u8);
         }
+    }
+    // A source-colored receptionist skirt must match her repainted suit,
+    // rather than sampling the immutable default blue painting again.
+    if look.texture_key == "receptionist" {
+        if let Some(uniform) = uniform { color = uniform; }
     }
     let hem = if coat { 0.43 } else { 0.52 };
     let profiles: [(f32,f32,f32);7] = [

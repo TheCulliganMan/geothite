@@ -2,7 +2,7 @@
 #[cfg(test)]
 use bevy::asset::RenderAssetUsages;
 use crate::{new_bark_actors::ModeledActor, open_people::PersonRig, VOXEL_RENDER_LAYER};
-use bevy::camera::{primitives::Aabb, visibility::RenderLayers};
+use bevy::camera::{primitives::Aabb, visibility::{NoAutoAabb, RenderLayers}};
 use bevy::{
     light::NotShadowReceiver,
     prelude::*,
@@ -27,7 +27,9 @@ pub(crate) struct PeopleGpu(
     pub HashMap<(&'static str, CharacterKind), Gpu>,
     HashMap<&'static str, Handle<Image>>,
     pub PreparedAppearances,
+    HashMap<(&'static str, CharacterKind, [u8; 3]), Gpu>,
 );
+#[derive(Clone)]
 pub(crate) struct Gpu {
     mesh: Handle<Mesh>,
     material: Handle<StandardMaterial>,
@@ -38,6 +40,7 @@ pub(crate) struct Gpu {
     costume: Option<AccessoryGpu>,
     backpack: Option<AccessoryGpu>,
 }
+#[derive(Clone)]
 struct AccessoryGpu {
     mesh: Handle<Mesh>,
     material: Handle<StandardMaterial>,
@@ -208,28 +211,19 @@ pub(crate) struct Person {
 impl PeopleGpu {
     pub(super) fn retain_kinds(&mut self, kinds: &std::collections::HashSet<CharacterKind>) {
         self.0.retain(|(_, kind), _| kinds.contains(kind));
+        self.3.retain(|(_, kind, _), _| kinds.contains(kind));
         let bodies = &self.0;
         self.1.retain(|texture, _| bodies.keys().any(|(_, kind)|
             crate::npc_appearance::look(*kind).texture_key == *texture));
     }
+    /// Register exactly the same appearance assets as spawn, without entities.
     #[allow(clippy::too_many_arguments)]
-    pub fn spawn(
-        &mut self,
-        name: &'static str,
-        kind: CharacterKind,
-        rig: Arc<PersonRig>,
-        root: Entity,
-        remote: bool,
-        bicycle: bool,
-        commands: &mut Commands,
-        meshes: &mut Assets<Mesh>,
-        materials: &mut Assets<StandardMaterial>,
-        images: &mut Assets<Image>,
-        binds: &mut Assets<SkinnedMeshInverseBindposes>,
-    ) -> Person {
+    fn upload(&mut self, name: &'static str, kind: CharacterKind, rig: &PersonRig,
+        meshes: &mut Assets<Mesh>, materials: &mut Assets<StandardMaterial>,
+        images: &mut Assets<Image>, binds: &mut Assets<SkinnedMeshInverseBindposes>) {
         let prepared = &self.2;
         let textures = &mut self.1;
-        let gpu = self.0.entry((name, kind)).or_insert_with(|| {
+        self.0.entry((name, kind)).or_insert_with(|| {
             let _trace = crate::loading_trace::span("actor.build_body", || serde_json::json!({
                 "rig":name,"kind":format!("{kind:?}")}));
             let look = crate::npc_appearance::look(kind);
@@ -268,6 +262,84 @@ impl PeopleGpu {
                 backpack: backpack.map(|mesh| accessory_mesh_gpu(mesh, meshes, materials)),
             }
         });
+    }
+
+    /// Publish at most one already-prepared appearance per host frame. Never
+    /// fall back to body refinement on the interactive frame thread.
+    pub(super) fn upload_next_prepared(&mut self, kinds: &[CharacterKind],
+        meshes: &mut Assets<Mesh>, materials: &mut Assets<StandardMaterial>,
+        images: &mut Assets<Image>, binds: &mut Assets<SkinnedMeshInverseBindposes>) -> bool {
+        for &kind in kinds {
+            let name = crate::npc_appearance::look(kind).base;
+            if self.0.contains_key(&(name, kind)) { continue; }
+            if !self.2.lock().expect("prepared actor lock").contains_key(&(name, kind)) {
+                return false;
+            }
+            let rig = crate::open_people::get(name).expect("prepared character rig");
+            self.upload(name, kind, &rig, meshes, materials, images, binds);
+            return kinds.iter().all(|&kind| self.0.contains_key(&(crate::npc_appearance::look(kind).base, kind)));
+        }
+        true
+    }
+
+    pub(super) fn adopt_uploaded_kinds(&mut self, other: &Self, kinds:&[CharacterKind]) {
+        for (&key, gpu) in &other.0 {
+            if kinds.contains(&key.1) {self.0.entry(key).or_insert_with(||gpu.clone());}
+        }
+        for (&key, texture) in &other.1 {
+            if kinds.iter().any(|kind|crate::npc_appearance::look(*kind).texture_key==key) {
+                self.1.entry(key).or_insert_with(||texture.clone());
+            }
+        }
+    }
+    #[allow(clippy::too_many_arguments)]
+    pub fn spawn(
+        &mut self,
+        name: &'static str,
+        kind: CharacterKind,
+        rig: Arc<PersonRig>,
+        root: Entity,
+        remote: bool,
+        bicycle: bool,
+        uniform: Option<[u8; 3]>,
+        commands: &mut Commands,
+        meshes: &mut Assets<Mesh>,
+        materials: &mut Assets<StandardMaterial>,
+        images: &mut Assets<Image>,
+        binds: &mut Assets<SkinnedMeshInverseBindposes>,
+    ) -> Person {
+        self.upload(name, kind, &rig, meshes, materials, images, binds);
+        let gpu = self.0.get(&(name, kind)).expect("uploaded appearance");
+        let gpu = if let Some(color) = uniform.filter(|_| crate::npc_uniform::supported(kind)) {
+            self.3.entry((name, kind, color)).or_insert_with(|| {
+                let mut variant = gpu.clone();
+                let mut look = crate::npc_appearance::look(kind);
+                let painting = crate::npc_textures::get(look.texture_key).expect("validated character painting");
+                let texture = images.add(crate::texture_filtering::painted_image(painting.size,
+                    crate::npc_uniform::painting_for(kind, &painting.rgba, painting.size, color)));
+                let mut material = materials.get(&gpu.material).expect("uploaded person material").clone();
+                material.base_color_texture = Some(texture.clone());
+                variant.material = materials.add(material);
+                let mut remote = materials.get(&gpu.remote).expect("uploaded remote material").clone();
+                remote.base_color_texture = Some(texture);
+                variant.remote = materials.add(remote);
+                look.shirt = color;
+                if crate::npc_uniform::lower_follows_source(kind) { look.lower = color; }
+                if kind == CharacterKind::CooltrainerF { look.hair = color; }
+                if matches!(kind,CharacterKind::Fisher|CharacterKind::CooltrainerF|CharacterKind::Officer) {
+                    variant.head = crate::npc_appearance::head_mesh_with_hat_color(&rig,look,
+                        matches!(kind,CharacterKind::Fisher|CharacterKind::Officer).then_some(color))
+                        .map(|mesh|accessory_mesh_gpu(mesh.into_mesh(),meshes,materials));
+                }
+                variant.costume = crate::npc_appearance::costume_mesh_with_uniform(&rig, look, color).map(|costume| {
+                    let mut mesh = costume.surface.into_mesh();
+                    mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_INDEX, VertexAttributeValues::Uint16x4(costume.joints));
+                    mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, costume.weights);
+                    accessory_mesh_gpu(mesh, meshes, materials)
+                });
+                variant
+            })
+        } else { gpu };
         let look = crate::npc_appearance::look(kind);
         let model_scale = Vec3::new(look.height / rig.height * look.width,
             look.height / rig.height, look.height / rig.height);
@@ -345,6 +417,7 @@ presented[rig.mesh_node],),
                 gpu.bounds.0 - Vec3::splat(0.02),
                 gpu.bounds.1 + Vec3::splat(0.02),
             ),
+            NoAutoAabb,
             RenderLayers::layer(VOXEL_RENDER_LAYER),
         ));
         if let Some(gpu) = &gpu.head {
@@ -362,7 +435,7 @@ MeshMaterial3d(if remote { pack.remote.clone() } else { pack.material.clone() })
 MeshMaterial3d(if remote { costume.remote.clone() } else { costume.material.clone() }),), SkinnedMesh {
                 inverse_bindposes: gpu.binds.clone(),
                 joints: rig.skin_nodes.iter().map(|&i| nodes[i]).collect(),
-            }, Aabb::from_min_max(rig.bounds.0-Vec3::splat(0.6), rig.bounds.1+Vec3::splat(0.6)),
+            }, Aabb::from_min_max(rig.bounds.0-Vec3::splat(0.6), rig.bounds.1+Vec3::splat(0.6)), NoAutoAabb,
                 ModeledActor, NotShadowReceiver, RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
             commands.entity(nodes[rig.mesh_node]).add_child(accessory);
         }
@@ -446,7 +519,12 @@ impl Person {
         } else {
             self.idle_motion.sample(&self.rig, &self.locomotion, seconds, &mut self.idle);
         }
-        self.locomotion.sample(&self.rig, phase, self.run_blend, &mut self.run);
+        // A fully idle or mounted actor never consumes a locomotion pose.
+        // Keep idle breathing live without sampling an unused walking rig.
+        let walking = weight != 0.0 && !self.bicycle && !self.surfing;
+        if walking {
+            self.locomotion.sample(&self.rig, phase, self.run_blend, &mut self.run);
+        }
         if let Some((progress, _)) = self.hop_step {
             self.hop.resize(self.idle.len(), Transform::IDENTITY);
             self.rig.sample("Jump", progress.clamp(0.0, 1.0) * self.rig.duration("Jump"), &mut self.hop);
@@ -454,7 +532,7 @@ impl Person {
         }
         if !self.bicycle {
             crate::hand_pose::relax(&self.rig, &mut self.idle);
-            crate::hand_pose::relax(&self.rig, &mut self.run);
+            if walking { crate::hand_pose::relax(&self.rig, &mut self.run); }
         }
         if self.surfing {
             crate::bicycle::surf_pose(&self.rig, &mut self.idle, self.model_scale, self.surf_half_width);
@@ -487,10 +565,14 @@ impl Person {
             crate::bicycle::seat_pose(&self.rig, &mut self.seated, self.model_scale, self.sitting.height);
         }
         for (index, ((t, a), b)) in self.posed.iter_mut().zip(&self.idle).zip(&self.run).enumerate() {
-            *t = Transform {
-                translation: a.translation.lerp(b.translation, weight),
-                rotation: a.rotation.slerp(b.rotation, weight).normalize(),
-                scale: a.scale.lerp(b.scale, weight),
+            *t = if weight == 0.0 {
+                Transform { rotation: a.rotation.normalize(), ..*a }
+            } else {
+                Transform {
+                    translation: a.translation.lerp(b.translation, weight),
+                    rotation: a.rotation.slerp(b.rotation, weight).normalize(),
+                    scale: a.scale.lerp(b.scale, weight),
+                }
             };
             if let Some((_, hop_weight)) = self.hop_step {
                 // Reuse authored limb articulation without importing its
@@ -507,14 +589,18 @@ impl Person {
         if weight > 0. && !self.bicycle && !self.surfing && self.hop_step.is_none() && sitting == 0. {
             self.locomotion.plant_blend(&self.rig, &self.idle, &self.run, weight, &mut self.posed);
         }
-        for (&entity, pose) in self.nodes.iter().zip(&self.posed) {
-            if let Ok(mut t) = transforms.get_mut(entity) { *t = *pose; }
+        // Compose proportions before publishing joints. Resetting and scaling
+        // the same joints separately marked every unchanged finger/head dirty,
+        // forcing transform propagation and skin extraction each frame.
+        let head = self.rig.skin_nodes[self.rig.head_joint];
+        for (index, (&entity, pose)) in self.nodes.iter().zip(&self.posed).enumerate() {
+            let mut pose = *pose;
+            if index == head { pose.scale *= self.head_scale; }
+            for &wrist in &self.wrist_nodes {
+                if index == wrist { pose.scale *= self.hand_scale; }
+            }
+            if let Ok(mut t) = transforms.get_mut(entity) { t.set_if_neq(pose); }
         }
-        // Apply after rebuilding every local transform from animation, so
-        // these proportions cannot accumulate across frames. Hats and hair
-        // inherit the head joint; fingers inherit each wrist exactly once.
-        self.scale_head(self.head_scale, transforms);
-        self.scale_hands(self.hand_scale, transforms);
     }
 }
 
@@ -527,6 +613,49 @@ pub(crate) mod tests {
         costume_instances_share_gpu_assets_and_own_their_animated_joint_palettes();
         mounted_production_hands_and_shoes_fit_grips_and_pedals_through_full_cycle();
     }
+    #[test]
+    fn destination_upload_is_incremental_and_spawn_reuses_every_asset_handle() {
+        use bevy::ecs::world::CommandQueue;
+        let kinds = [CharacterKind::Elm, CharacterKind::Scientist];
+        let mut staged = PeopleGpu::default();
+        let mut meshes = Assets::<Mesh>::default();
+        let mut materials = Assets::<StandardMaterial>::default();
+        let mut images = Assets::<Image>::default();
+        let mut binds = Assets::<SkinnedMeshInverseBindposes>::default();
+        assert!(!staged.upload_next_prepared(&kinds, &mut meshes, &mut materials, &mut images, &mut binds));
+        assert_eq!(meshes.len(), 0, "no synchronous refinement fallback");
+        for kind in kinds {
+            let base = crate::npc_appearance::look(kind).base;
+            let rig = crate::open_people::get(base).expect("character rig");
+            staged.2.lock().unwrap().insert((base, kind), prepare_appearance(&rig, kind));
+        }
+        assert!(!staged.upload_next_prepared(&kinds, &mut meshes, &mut materials, &mut images, &mut binds));
+        assert_eq!(staged.0.len(), 1, "one appearance per frame");
+        assert!(staged.upload_next_prepared(&kinds, &mut meshes, &mut materials, &mut images, &mut binds));
+        assert_eq!(staged.0.len(), 2);
+        assert!(staged.2.lock().unwrap().is_empty());
+        let mut live = PeopleGpu::default();
+        live.adopt_uploaded_kinds(&staged,&kinds);
+        let counts = (meshes.len(), materials.len(), images.len(), binds.len());
+        let mut world = World::new();
+        let mut queue = CommandQueue::default();
+        for kind in kinds {
+            let base = crate::npc_appearance::look(kind).base;
+            let rig = crate::open_people::get(base).unwrap();
+            let mut commands = Commands::new(&mut queue, &world);
+            let root = commands.spawn_empty().id();
+            live.spawn(base, kind, rig.clone(), root, false, false, None, &mut commands,
+                &mut meshes, &mut materials, &mut images, &mut binds);
+            let a = &live.0[&(base, kind)];
+            let b = &staged.0[&(base, kind)];
+            assert_eq!((a.mesh.id(), a.material.id(), a.remote.id(), a.binds.id()),
+                (b.mesh.id(), b.material.id(), b.remote.id(), b.binds.id()));
+        }
+        queue.apply(&mut world);
+        assert_eq!(counts, (meshes.len(), materials.len(), images.len(), binds.len()),
+            "arrival must only instantiate joints and reuse uploaded assets");
+    }
+
     /// Both routes must publish identical vertices, index widths, joints,
     /// accessories, bounds and material/image ordering. The staged route uses
     /// an actual worker task and consumes its owned CPU result exactly once.
@@ -565,7 +694,7 @@ pub(crate) mod tests {
                 let mut materials = Assets::<StandardMaterial>::default();
                 let mut images = Assets::<Image>::default();
                 let mut binds = Assets::<SkinnedMeshInverseBindposes>::default();
-                cache.spawn(look.base,kind,rig.clone(),root,false,true,&mut commands,
+                cache.spawn(look.base,kind,rig.clone(),root,false,true,None,&mut commands,
                     &mut meshes,&mut materials,&mut images,&mut binds);
                 assert!(cache.2.lock().unwrap().is_empty(),"staging consumed");
                 let gpu = &cache.0[&(look.base,kind)];
@@ -595,7 +724,7 @@ pub(crate) mod tests {
             let rig = crate::open_people::get(name).expect("supplied rig").clone();
             let mut commands = Commands::new(&mut queue, &world);
             let actor = commands.spawn((Transform::default(), Visibility::default())).id();
-            cache.spawn(name, kind, rig, actor, false, false, &mut commands,
+            cache.spawn(name, kind, rig, actor, false, false, None, &mut commands,
                 &mut meshes, &mut materials, &mut images, &mut binds);
         }
         let first = &cache.0[&("human-male", kind)];
@@ -679,7 +808,7 @@ pub(crate) mod tests {
             let mut cache = PeopleGpu::default();
             let mut commands = Commands::new(&mut queue, &world);
             let actor = commands.spawn((Transform::default(), Visibility::default())).id();
-            let mut person = cache.spawn(look.base, kind, rig.clone(), actor, false, true,
+            let mut person = cache.spawn(look.base, kind, rig.clone(), actor, false, true, None,
                 &mut commands, &mut meshes, &mut materials, &mut images, &mut binds);
             person.bicycle = true;
             queue.apply(&mut world);
@@ -776,7 +905,7 @@ pub(crate) mod tests {
             let rig = crate::open_people::get(look.base).unwrap().clone();
             let mut commands = Commands::new(&mut queue,&world);
             let actor = commands.spawn((Transform::default(),Visibility::default())).id();
-            let mut person = cache.spawn(look.base,kind,rig,actor,false,bicycle,
+            let mut person = cache.spawn(look.base,kind,rig,actor,false,bicycle,None,
                 &mut commands,&mut meshes,&mut materials,&mut images,&mut binds);
             queue.apply(&mut world);
             let initial = person.nodes.iter().map(|&node| *world.get::<Transform>(node).unwrap())
@@ -789,6 +918,12 @@ pub(crate) mod tests {
                     && first.scale.distance(current.scale)<1e-6
                     && first.rotation.abs_diff_eq(current.rotation,1e-5),
                     "{} mounted={bicycle}: first frame differs from settled production pose",look.texture_key);
+            }
+            world.clear_trackers();
+            person.update(0.,0.,0.,&mut state.get_mut(&mut world).unwrap());
+            for &node in &person.nodes {
+                assert!(!world.entity(node).get_ref::<Transform>().unwrap().is_changed(),
+                    "{}: unchanged joint marked dirty", look.texture_key);
             }
             world.entity_mut(actor).despawn();
         }
@@ -813,7 +948,7 @@ pub(crate) mod tests {
             let mut commands = Commands::new(&mut queue,&world);
             let root = commands.spawn((Transform::default(), Visibility::default())).id();
             roots.push(root);
-            people.push(cache.spawn(base,kind,rig.clone(),root,remote,false,
+            people.push(cache.spawn(base,kind,rig.clone(),root,remote,false,None,
                 &mut commands,&mut meshes,&mut materials,&mut images,&mut binds));
             queue.apply(&mut world);
         }
@@ -901,4 +1036,170 @@ pub(crate) mod tests {
         queue.apply(&mut world);
         assert_eq!(world.query::<&SkinnedMesh>().iter(&world).count(),0);
     }
+    #[test]
+    #[ignore = "requires supplied character rigs and paintings"]
+    fn link_uniform_variants_share_body_and_joints_but_never_alias_paint_or_costume() {
+        use bevy::ecs::world::CommandQueue;
+        let kind=CharacterKind::LinkReceptionist;
+        let look=crate::npc_appearance::look(kind);
+        let rig=crate::open_people::get(look.base).unwrap().clone();
+        let mut world=World::new();let mut queue=CommandQueue::default();
+        let mut meshes=Assets::<Mesh>::default();let mut materials=Assets::<StandardMaterial>::default();
+        let mut images=Assets::<Image>::default();let mut binds=Assets::<SkinnedMeshInverseBindposes>::default();
+        let mut cache=PeopleGpu::default();
+        let green=[80,192,48];let blue=[48,104,224];
+        for color in [Some(green),Some(blue),Some(green),None] {
+            let mut commands=Commands::new(&mut queue,&world);
+            let root=commands.spawn((Transform::default(),Visibility::default())).id();
+            cache.spawn(look.base,kind,rig.clone(),root,false,false,color,&mut commands,
+                &mut meshes,&mut materials,&mut images,&mut binds);
+            queue.apply(&mut world);
+        }
+        assert_eq!(cache.0.len(),1);assert_eq!(cache.3.len(),2);
+        let base=&cache.0[&(look.base,kind)];
+        let g=&cache.3[&(look.base,kind,green)];let b=&cache.3[&(look.base,kind,blue)];
+        assert_eq!(g.mesh,base.mesh);assert_eq!(g.mesh,b.mesh);assert_eq!(g.binds,b.binds);
+        assert_eq!(g.bounds,b.bounds);
+        assert_eq!(g.head.as_ref().map(|h|&h.mesh),base.head.as_ref().map(|h|&h.mesh));
+        let texture=|gpu:&Gpu|materials.get(&gpu.material).unwrap().base_color_texture.as_ref().unwrap();
+        assert_ne!(texture(g),texture(b));assert_ne!(texture(g),texture(base));
+        let original=crate::npc_textures::get(look.texture_key).unwrap();
+        // Upload appends filtered mip levels; mip zero remains exact.
+        assert!(images.get(texture(base)).unwrap().data.as_deref().unwrap().starts_with(&original.rgba));
+        let painted=crate::npc_uniform::painting(&original.rgba,original.size,green);
+        assert!(images.get(texture(g)).unwrap().data.as_deref().unwrap().starts_with(&painted));
+        let gm=meshes.get(&g.costume.as_ref().unwrap().mesh).unwrap();
+        let bm=meshes.get(&b.costume.as_ref().unwrap().mesh).unwrap();
+        assert_eq!(format!("{:?}",gm.indices()),format!("{:?}",bm.indices()));
+        for (attribute,values) in gm.attributes() {
+            let other=bm.attribute(attribute.id).unwrap();
+            if attribute.id!=Mesh::ATTRIBUTE_COLOR.id {assert_eq!(values.get_bytes(),other.get_bytes());}
+            else {assert_ne!(values.get_bytes(),other.get_bytes());}
+        }
+        cache.retain_kinds(&std::collections::HashSet::new());
+        assert!(cache.0.is_empty()&&cache.3.is_empty()&&cache.1.is_empty());
+    }
+
+    #[test]
+    #[ignore = "requires supplied character rigs and paintings"]
+    fn service_uniform_variants_keep_immutable_rigs_aprons_and_source_colored_skirts() {
+        use bevy::ecs::world::CommandQueue;
+        for kind in [CharacterKind::Clerk,CharacterKind::Receptionist,CharacterKind::Lass,
+            CharacterKind::Youngster,CharacterKind::CooltrainerM,CharacterKind::SuperNerd] {
+        let look=crate::npc_appearance::look(kind);
+        let rig=crate::open_people::get(look.base).unwrap().clone();
+        let mut world=World::new();let mut queue=CommandQueue::default();
+        let mut meshes=Assets::<Mesh>::default();let mut materials=Assets::<StandardMaterial>::default();
+        let mut images=Assets::<Image>::default();let mut binds=Assets::<SkinnedMeshInverseBindposes>::default();
+        let mut cache=PeopleGpu::default();
+        let green=[80,192,48];let blue=[48,104,224];
+        for color in [Some(green),Some(blue),Some(green),None] {
+            let mut commands=Commands::new(&mut queue,&world);
+            let root=commands.spawn((Transform::default(),Visibility::default())).id();
+            cache.spawn(look.base,kind,rig.clone(),root,false,false,color,&mut commands,
+                &mut meshes,&mut materials,&mut images,&mut binds);
+            queue.apply(&mut world);
+        }
+        assert_eq!(cache.0.len(),1);assert_eq!(cache.3.len(),2);
+        let base=&cache.0[&(look.base,kind)];
+        let g=&cache.3[&(look.base,kind,green)];let b=&cache.3[&(look.base,kind,blue)];
+        assert_eq!(g.mesh,base.mesh);assert_eq!(g.mesh,b.mesh);assert_eq!(g.binds,b.binds);
+        assert_eq!(g.bounds,b.bounds);
+        assert_eq!(g.head.as_ref().map(|h|&h.mesh),base.head.as_ref().map(|h|&h.mesh));
+        let texture=|gpu:&Gpu|materials.get(&gpu.material).unwrap().base_color_texture.as_ref().unwrap();
+        assert_ne!(texture(g),texture(b));assert_ne!(texture(g),texture(base));
+        let original=crate::npc_textures::get(look.texture_key).unwrap();
+        // Upload appends filtered mip levels; mip zero remains exact.
+        assert!(images.get(texture(base)).unwrap().data.as_deref().unwrap().starts_with(&original.rgba));
+        let painted=crate::npc_uniform::painting_for(kind,&original.rgba,original.size,green);
+        assert!(images.get(texture(g)).unwrap().data.as_deref().unwrap().starts_with(&painted));
+        let blue_painted=crate::npc_uniform::painting_for(kind,&original.rgba,original.size,blue);
+        assert_ne!(painted,blue_painted,"{kind:?}: the actual painting must change with its source palette");
+        let (w,h)=original.size;
+        let mut changed=0;
+        for (i,(before,after)) in original.rgba.chunks_exact(4).zip(painted.chunks_exact(4)).enumerate() {
+            let (x,y)=((i as u32%w)*256/w,(i as u32/w)*256/h);
+            assert_eq!(before[3],after[3]);
+            if y<128 || (x>=155 && !(matches!(kind,CharacterKind::Receptionist|CharacterKind::Lass|CharacterKind::CooltrainerM)&&x>=156&&y>=192)) {
+                assert_eq!(before,after,"{kind:?}: actual hair/face/accessory pixels stay immutable at {x},{y}");
+            }
+            changed+=usize::from(before!=after);
+        }
+        assert!(changed>256,"{kind:?}: real cloth islands, not an empty variant");
+        if let (Some(gc),Some(bc))=(&g.costume,&b.costume) {
+        let gm=meshes.get(&gc.mesh).unwrap();
+        let bm=meshes.get(&bc.mesh).unwrap();
+        assert_eq!(format!("{:?}",gm.indices()),format!("{:?}",bm.indices()));
+        for (attribute,values) in gm.attributes() {
+            let other=bm.attribute(attribute.id).unwrap();
+            if attribute.id!=Mesh::ATTRIBUTE_COLOR.id {assert_eq!(values.get_bytes(),other.get_bytes());}
+            else if matches!(kind,CharacterKind::Receptionist|CharacterKind::Lass) {assert_ne!(values.get_bytes(),other.get_bytes());}
+            else {assert_eq!(values.get_bytes(),other.get_bytes(),"clerk apron stays cream");}
+        }
+        } else {assert!(g.costume.is_none()&&b.costume.is_none());}
+        cache.retain_kinds(&std::collections::HashSet::new());
+        assert!(cache.0.is_empty()&&cache.3.is_empty()&&cache.1.is_empty());
+        }
+    }
+
+    #[test]
+    #[ignore = "requires supplied character rigs and paintings"]
+    fn reviewed_uniform_cache_keeps_fisher_caps_and_cooltrainer_hair_rigid_and_isolated() {
+        use bevy::ecs::world::CommandQueue;
+        for kind in [CharacterKind::Fisher,CharacterKind::CooltrainerF,CharacterKind::Officer] {
+            let look=crate::npc_appearance::look(kind);let rig=crate::open_people::get(look.base).unwrap().clone();
+            let mut world=World::new();let mut queue=CommandQueue::default();
+            let mut meshes=Assets::<Mesh>::default();let mut materials=Assets::<StandardMaterial>::default();
+            let mut images=Assets::<Image>::default();let mut binds=Assets::<SkinnedMeshInverseBindposes>::default();
+            let mut cache=PeopleGpu::default();let green=[57,189,24];let red=[255,57,8];
+            for color in [Some(green),Some(red),Some(green),None] {
+                let mut commands=Commands::new(&mut queue,&world);
+                let root=commands.spawn((Transform::default(),Visibility::default())).id();
+                cache.spawn(look.base,kind,rig.clone(),root,false,false,color,&mut commands,
+                    &mut meshes,&mut materials,&mut images,&mut binds);queue.apply(&mut world);
+            }
+            assert_eq!(cache.0.len(),1);assert_eq!(cache.3.len(),2);
+            let base=&cache.0[&(look.base,kind)];let g=&cache.3[&(look.base,kind,green)];let r=&cache.3[&(look.base,kind,red)];
+            assert_eq!(g.mesh,base.mesh);assert_eq!(g.binds,base.binds);assert_eq!(g.bounds,r.bounds);
+            let gh=meshes.get(&g.head.as_ref().unwrap().mesh).unwrap();
+            let rh=meshes.get(&r.head.as_ref().unwrap().mesh).unwrap();
+            let bh=meshes.get(&base.head.as_ref().unwrap().mesh).unwrap();
+            for (a,values) in gh.attributes() {
+                if a.id==Mesh::ATTRIBUTE_COLOR.id {assert!(values.get_bytes()!=rh.attribute(a.id).unwrap().get_bytes());}
+                else {assert!(values.get_bytes()==rh.attribute(a.id).unwrap().get_bytes());
+                    assert!(values.get_bytes()==bh.attribute(a.id).unwrap().get_bytes());}
+            }
+            assert_eq!(format!("{:?}",gh.indices()),format!("{:?}",bh.indices()));
+            let texture=|gpu:&Gpu|materials.get(&gpu.material).unwrap().base_color_texture.as_ref().unwrap();
+            assert_ne!(texture(g),texture(r));assert_ne!(texture(g),texture(base));
+            let original=crate::npc_textures::get(look.texture_key).unwrap();
+            assert!(images.get(texture(base)).unwrap().data.as_ref().unwrap().starts_with(&original.rgba));
+            let painted=crate::npc_uniform::painting_for(kind,&original.rgba,original.size,green);
+            assert!(images.get(texture(g)).unwrap().data.as_ref().unwrap().starts_with(&painted));
+            if kind == CharacterKind::Officer {
+                let mut shirt = 0; let mut trousers = 0;
+                for (i,(before,after)) in original.rgba.chunks_exact(4).zip(painted.chunks_exact(4)).enumerate() {
+                    let x=(i as u32%original.size.0)*256/original.size.0;
+                    let y=(i as u32/original.size.0)*256/original.size.1;
+                    assert_eq!(before[3],after[3]);
+                    let upper=x<155&&y>=128; let lower=x>=156&&y>=192;
+                    if !(upper||lower) { assert_eq!(before,after,"officer hair, face, hands and shoes"); }
+                    if before!=after { shirt+=usize::from(upper); trousers+=usize::from(lower); }
+                }
+                assert!(shirt>256 && trousers>256);
+            }
+            if let (Some(gc),Some(bc))=(&g.costume,&base.costume) {
+                let gm=meshes.get(&gc.mesh).unwrap();let bm=meshes.get(&bc.mesh).unwrap();
+                for (a,values) in gm.attributes() {if a.id!=Mesh::ATTRIBUTE_COLOR.id {
+                    assert!(values.get_bytes()==bm.attribute(a.id).unwrap().get_bytes());
+                }}
+                if kind == CharacterKind::Officer {
+                    assert_ne!(gm.attribute(Mesh::ATTRIBUTE_COLOR).unwrap().get_bytes(),
+                        bm.attribute(Mesh::ATTRIBUTE_COLOR).unwrap().get_bytes(),"officer collar follows source cloth");
+                }
+            }
+            cache.retain_kinds(&std::collections::HashSet::new());assert!(cache.0.is_empty()&&cache.3.is_empty());
+        }
+    }
+
 }

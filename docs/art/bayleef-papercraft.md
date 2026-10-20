@@ -6,7 +6,7 @@ panels, a notched folded canopy and curled collar buds. The tapered tail and
 four grounded legs preserve a distinct silhouette from Chikorita.
 
 The only canonical model is `models/battle_species/bayleef.glb` in
-`crates/crystal-voxel-view`: 33 anatomy parts, 3,836 triangles, 9,626 split-normal
+`crates/crystal-voxel-view`: 33 anatomy parts, 3,836 triangles, 5,695 split-normal
 vertices and a 16-joint standard glTF skin. The old same-species JSON is removed.
 No additional Blender archive, STL or neutral mesh copy is generated in Git.
 The existing multi-species archive remains historical authoring material.
@@ -44,3 +44,12 @@ Its natural level-25 learnset responds with Razor Leaf to the original trainer
 AI's Gust, through the production controller with real PP/HP updates and no
 save destination. The visual review is of actual stored geometry and clips,
 not a claim that all 251 species have completed this art/animation pass.
+
+## Rounded body shading
+
+The [shared body shading refinement](leaf-saur-body-shading.md) removes hard
+lighting panels from the living body while retaining the folded botanical
+features. Triangle positions, original scale, supports, fitted artwork, skin
+weights and clip keys remain preserved. The current asset uses fewer normal
+splits. Its close native pair and actual moving field frame passed offscreen
+review, alongside the shared preservation and runtime checks.

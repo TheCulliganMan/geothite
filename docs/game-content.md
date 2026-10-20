@@ -6,6 +6,137 @@ exports runtime catalogs, compiles and verifies the packs, and publishes local
 agent inputs. Source checkouts, ROMs, intermediate exports, PCM, and packs stay
 outside tracked source.
 
+## Desktop app packaging
+
+The packaging commands consume the completed local native pack; they do not
+re-export content or rebuild packs. The default is
+`content-packs/core-modular.crystalpack`. Packs are copied only into ignored local
+distribution output, never embedded into Rust source or tracked in Git.
+
+```sh
+just desktop-content     # Once: prepare external content, if missing
+just desktop-build       # Compile and validate; no window or installation
+just desktop             # Compile, validate and install for the current OS
+just desktop-run         # Launch the installed copy without rebuilding
+just desktop-package     # Compile and produce the native distributable
+just desktop-repack      # Repackage the last successful build, no Cargo
+just desktop-install     # Install the last successful build, no Cargo
+just desktop-check       # Revalidate content and artwork, no window
+```
+
+The Unix implementation is `python3 tools/desktop.py`, requiring Python 3.9+.
+Windows uses `tools/build-desktop.ps1`; its existing `-Pack`, `-InstallDirectory`
+and `-Launch` options remain available, with `-Action` and `-SkipBuild` added.
+All commands build for the current host OS and architecture. Windows/Linux
+runners need native verification before claiming release support there.
+
+Both use persistent `target/desktop-build` and the `wasm-dev` profile by default.
+The fast desktop build uses optimization level 1 for the large game crates and
+level 2 for engine dependencies, avoiding the expensive full game-code optimization
+passes during updates. Non-release desktop builds keep one incremental cache
+in this dedicated target directory; set `CARGO_INCREMENTAL=0` to disable it
+when disk space matters more than update time. Other build caches are unchanged. `CARGO_TARGET_DIR` selects another cache;
+`GEOTHITE_DESKTOP_PROFILE=release` selects full release optimization.
+The first toolchain/content/Bevy build is not a two-minute operation. Warm-cache
+updates and repackaging avoid that work; the script reports actual elapsed time.
+Each packaging run verifies the actual pack's desktop title/intro metadata.
+The Rust scenery and people validators also parse the artwork;
+all platforms load the staged production client with `--check-installation`
+before publishing. This checks resources and performs a temporary write probe at
+the save location, including atomic backup suffixes, without opening a window.
+A package check alone does not certify gameplay; use the AGENTS.md controller,
+battle, MCP and clean-stderr regressions when gameplay changes.
+
+Verified on Apple Silicon on 2026-10-18: `just desktop-package` completed in
+132.9 seconds with a warm cache, including incremental game-crate compilation,
+Rust content/art validation, signing and DMG creation. `just desktop-install`
+completed in 51.8 seconds. Initial compilation took over ten minutes. The DMG
+was mounted read-only, its SHA-256 and app signature checked, and its actual
+client passed `--check-installation` from `/tmp` with the artwork override unset.
+The bundled pack matched the original byte-for-byte. The installed app opened
+through Launch Services and reached trainer selection and the opening dialogue.
+
+| Host | Installed app | Distribution under `.local/desktop-dist/` |
+| --- | --- | --- |
+| macOS | `~/Applications/Geothite.app` | `Geothite-VERSION-macos-ARCH.dmg` and `.sha256` |
+| Windows | `%USERPROFILE%\Games\Geothite` and Desktop shortcut | `Geothite-VERSION-windows-ARCH.zip` and `.sha256` |
+| Linux | `~/.local/opt/geothite` and application-menu entry | `Geothite-VERSION-linux-ARCH.tar.gz` and `.sha256` |
+
+The macOS app uses `Contents/MacOS/Geothite`, `Contents/Resources` and an
+`Info.plist`, with no shell launcher. Resources and artwork resolve relative to
+the executable, including when opened from Finder or a mounted, read-only DMG.
+Only system dynamic libraries are accepted. Packaging uses Apple's `sips`,
+`iconutil`, `codesign`, `otool` and `hdiutil`, without an external bundler dependency.
+The DMG has an Applications shortcut for drag-and-drop installation; `just desktop`
+installs to the current user's Applications folder without administrator access.
+The bundled game starts through the production title flow, not a location preview.
+
+Packaged native clients (`desktop-app`, without `location-tester` or `dev-tools`)
+play music and sound effects by default. Native developer clients remain muted,
+including release builds of preview tools; `CRYSTAL_PREVIEW_SOUND` no longer
+enables them. `CRYSTAL_PREVIEW_MUTE=1` can explicitly silence a packaged client.
+Opt-in `CRYSTAL_AUDIO_TRACE=1` records the native sink volume and playback timing.
+The Mac window's title-bar Settings button and native Settings menu expose
+volume (0–100% in 10% steps), mute, the 2D/3D toggle, a direct checkable First Person
+toggle, default/close/wide orbit, camera reset, fullscreen and Reset Settings.
+Turning First Person off returns to orbit; enabling it from 2D also enables 3D.
+Orbit uses the interpolated trainer footing as its pivot, so clamped indoor
+viewports no longer rotate around the room center. These controls edit
+presentation resources, while the production controller retains gameplay input.
+The master gain scales music and sound effects separately from authored music
+fades and fanfare suppression. Developer mute remains authoritative.
+Preferences persist atomically in
+`~/Library/Application Support/Geothite/settings.json`; camera changes are
+debounced, and normal exit flushes pending settings. F3, mouse, controller and
+fullscreen changes are mirrored back to both menus. `CRYSTAL_SETTINGS_TRACE=1`
+records effective presentation preferences for live checks.
+After building, `python3 tools/test_desktop_settings.py` checks preference
+restoration, real AppKit target/action dispatch and Metal-layer preservation
+using an offscreen window that is never shown.
+Normal web play enables sound on its first trusted click, touch or keypress.
+Browser previews, `?development=1` and embedded training views keep their master
+gain muted while preserving source audio timing. A new `crystal.audio.preference` storage key
+records only deliberate user choices; the old forced-mute value is ignored.
+
+Audio-default verification on 2026-10-18 passed all 107 browser regressions and
+all 377 PCM hash/frame/loop comparisons in each native and browser pack. The
+installed Mac client started both title music and sound effects at sink volume
+`1.0`. Its executable matched the rebuilt DMG, whose signature and checksum passed.
+The commands used for the pack and browser checks were:
+
+```sh
+target/desktop-build/wasm-dev/verify_crystalpack content-packs/core-modular.crystalpack --desktop --audio
+target/desktop-build/wasm-dev/verify_crystalpack content-packs/core-modular.browser.crystalpack --desktop --audio
+npm run test:browser
+```
+
+New desktop saves use `~/Library/Application Support/Geothite/saves` on Mac,
+`%LOCALAPPDATA%\Geothite\saves` on Windows, and `$XDG_DATA_HOME/geothite/saves`
+(or `~/.local/share/geothite/saves`) on Linux. Usable existing portable saves beside the
+pack continue to use that location. Overlong legacy filenames are copied to the
+bounded user-data filename without deleting originals or replacing newer saves. Explicit `--save-path` now selects both the
+save target and the title menu's Continue lookup. Startup errors from the Mac
+GUI show a native alert and are recorded in `~/Library/Logs/Geothite/startup-error.log`.
+`--check-installation` suppresses alerts for automated checks.
+`just desktop-run` also captures normal launch output in
+`~/Library/Logs/Geothite/game.log` on macOS.
+
+Local Mac packages are ad-hoc signed and are not notarized. For public
+Gatekeeper distribution, install a Developer ID Application signing identity and
+configure an existing `notarytool` keychain profile. Then run:
+
+```sh
+GEOTHITE_SIGN_IDENTITY='Developer ID Application: Your configured identity' \
+GEOTHITE_NOTARY_PROFILE='your-existing-keychain-profile' just desktop-release
+```
+
+That command uploads the signed DMG to Apple's notary service, waits for an
+accepted result, then staples and validates its ticket. Normal build/install/
+package commands do not upload anything. See
+[Apple's notarization documentation](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution).
+An Intel Mac must build its own native artifact; this checkout's local Apple
+Silicon artifact does not establish Intel, Windows or Linux runtime acceptance.
+
 ## Initialize once
 
 The single platform-selecting command is `just crystalpack`.
@@ -157,6 +288,12 @@ directory and `CRYSTAL_RENDER_TEST_PACK` to a completed pack, then use
 `cargo test --locked -p crystal-assets --lib radio_ -- --ignored`. Missing
 configured inputs fail those tests; normal test compilation needs no sibling
 repository or game-content fixtures.
+
+Independent PC and Mailbox LCD references can be captured from the completed
+external ROM and symbols with the optional [menu QA tool](menu-oracle.md).
+Those tests use `GEOTHITE_ORACLE_FIXTURES`, separately from the radio fixture
+setting. The emulator environment and all generated reference content remain
+external; no pack, audio exporter, or shipped dependency changes are required.
 
 ### Fresh-source verification on 2026-10-13
 

@@ -230,6 +230,12 @@ pub(crate) fn nearest(
     (positions, directions)
 }
 
+// Preserve holes and emitter order, but never send the shader through unused
+// trailing slots. A zero-width emitter cannot contribute to the existing loop.
+fn emitter_span(positions: &[Vec4; MAX_LIGHTS]) -> usize {
+    positions.iter().rposition(|p| p.w > 0.).map_or(0, |i| i + 1)
+}
+
 pub(crate) fn sync(
     frame: Res<crystal_render_api::VisualWorldFrame>,
     clock: Option<Res<crystal_render_api::VisualWorldClock>>,
@@ -285,10 +291,11 @@ pub(crate) fn sync(
             p
         }
     });
+    let night = Vec4::new(strength, emitter_span(&positions) as f32, 0., 0.);
     let changed: Vec<_> = materials
         .iter()
         .filter_map(|(id, m)| {
-            (m.extension.city_night.x != strength
+            (m.extension.city_night != night
                 || m.extension.city_windows != positions
                 || m.extension.city_window_planes != directions)
                 .then_some(id)
@@ -296,7 +303,7 @@ pub(crate) fn sync(
         .collect();
     for id in changed {
         if let Some(mut m) = materials.get_mut(id) {
-            m.extension.city_night = Vec4::new(strength, 0., 0., 0.);
+            m.extension.city_night = night;
             m.extension.city_windows = positions;
             m.extension.city_window_planes = directions;
         }
@@ -306,6 +313,21 @@ pub(crate) fn sync(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn shader_emitter_span_keeps_holes_and_every_original_contributor() {
+        for last in 0..MAX_LIGHTS {
+            let mut positions = [Vec4::ZERO; MAX_LIGHTS];
+            positions[last] = Vec4::new(1., 2., 3., 4.);
+            positions[0].w = if last > 0 { -1. } else { 4. };
+            assert_eq!(emitter_span(&positions), last + 1);
+            let original: Vec<_> = positions.iter().enumerate().filter(|(_, p)| p.w > 0.).collect();
+            let bounded: Vec<_> = positions[..emitter_span(&positions)].iter().enumerate()
+                .filter(|(_, p)| p.w > 0.).collect();
+            assert_eq!(original, bounded);
+        }
+        assert_eq!(emitter_span(&[Vec4::ZERO; MAX_LIGHTS]), 0);
+    }
+
     #[test]
     fn city_lights_update_idle_clock_anchor_all_materials_and_clear_on_exit() {
         use crate::{TerrainCacheKey, TerrainRevisionCache, VoxelViewStatus};
@@ -351,7 +373,7 @@ mod tests {
                 .resource::<Assets<crate::VoxelMaterial>>()
                 .get(h)
                 .unwrap();
-            assert_eq!(m.extension.city_night.x, 1.);
+            assert_eq!(m.extension.city_night, Vec4::new(1., 1., 0., 0.));
         }
         assert_eq!(
             app.world()
@@ -370,7 +392,7 @@ mod tests {
         app.update();
         let material = app.world().resource::<Assets<crate::VoxelMaterial>>()
             .get(&late).unwrap();
-        assert_eq!(material.extension.city_night.x, 1.);
+        assert_eq!(material.extension.city_night, Vec4::new(1., 1., 0., 0.));
         assert_eq!(material.extension.city_windows[0], Vec4::new(65., 16., 34., 64.));
         app.world_mut()
             .resource_mut::<VisualWorldFrame>()
@@ -402,6 +424,14 @@ mod tests {
         app.world_mut()
             .resource_mut::<VisualWorldClock>()
             .minute_of_day = Some(0);
+        // No receiving lights must not disable authored night pane emission.
+        app.world_mut().resource_mut::<TerrainRevisionCache>().city_emitters.clear();
+        app.update();
+        for handle in &handles {
+            let material = app.world().resource::<Assets<crate::VoxelMaterial>>().get(handle).unwrap();
+            assert_eq!(material.extension.city_night, Vec4::new(1., 0., 0., 0.));
+            assert_eq!(material.extension.city_windows, [Vec4::ZERO; MAX_LIGHTS]);
+        }
         app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "GoldenrodDeptStore1F".into();
         app.update();
         assert_eq!(

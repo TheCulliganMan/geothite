@@ -17,7 +17,7 @@ pub(super) fn append(
             "johto_modern" => (0x73, 2, [[0x45, 0x22], [0x27, 0x28]], "johto/mountain_cave"),
             // The tall northern cliff embeds the same complete mouth in
             // block 70; block 06 supplies the separate low mound entrance.
-            "kanto" if matches!(s.metatile_id,0x06|0x70) => (
+            "kanto" if matches!(s.metatile_id, 0x06 | 0x70) => (
                 s.metatile_id,
                 0,
                 [[0x48, 0x49], [0x58, 0x59]],
@@ -165,6 +165,67 @@ pub(super) fn append(
                 [0.008, 0.006, 0.004, 1.],
             ],
         );
+        // The threshold is slightly above its authored walking floor. Close
+        // that thin slab instead of exposing sky through its paper-thin edge.
+        let (left, right) = (w + side, e - side);
+        for (points, normal) in [
+            (
+                [
+                    [left, 0., south],
+                    [right, 0., south],
+                    [right, floor, south],
+                    [left, floor, south],
+                ],
+                [0., 0., 1.],
+            ),
+            (
+                [
+                    [left, 0., n],
+                    [left, 0., south],
+                    [left, floor, south],
+                    [left, floor, n],
+                ],
+                [-1., 0., 0.],
+            ),
+            (
+                [
+                    [right, 0., south],
+                    [right, 0., n],
+                    [right, floor, n],
+                    [right, floor, south],
+                ],
+                [1., 0., 0.],
+            ),
+            (
+                [
+                    [right, 0., n],
+                    [left, 0., n],
+                    [left, floor, n],
+                    [right, floor, n],
+                ],
+                [0., 0., -1.],
+            ),
+            (
+                [
+                    [left, 0., n],
+                    [right, 0., n],
+                    [right, 0., south],
+                    [left, 0., south],
+                ],
+                [0., -1., 0.],
+            ),
+        ] {
+            append_quad_colors(
+                &mut mesh.solid,
+                points,
+                normal,
+                [[0., 0.]; 4],
+                points.map(|p| {
+                    let t = ((p[2] - n) / (south - n)).clamp(0., 1.);
+                    [0.008 + 0.152 * t, 0.006 + 0.109 * t, 0.004 + 0.061 * t, 1.]
+                }),
+            );
+        }
         for dy in 0..2 {
             for dx in 0..2 {
                 let at = (y + dy) * g.width + x + dx;
@@ -281,6 +342,28 @@ mod tests {
             assert!(
                 floor.iter().any(|c| *c < 0.01) && floor.iter().any(|c| *c > 0.1),
                 "a lit threshold must lead into a shaded tunnel floor"
+            );
+            let (_, _, _, front) = g.bounds(2, 2);
+            assert!(
+                mesh.solid
+                    .positions
+                    .iter()
+                    .zip(&mesh.solid.normals)
+                    .zip(&mesh.solid.uvs)
+                    .any(|((p, n), uv)| (p[2] - front).abs() < 0.0001
+                        && (p[1] - g.tile_height * 0.015).abs() < 0.0001
+                        && n[2] > 0.99
+                        && *uv == [0., 0.]),
+                "the threshold front needs a solid riser beneath its visible top"
+            );
+            assert!(
+                mesh.solid
+                    .positions
+                    .iter()
+                    .zip(&mesh.solid.normals)
+                    .zip(&mesh.solid.uvs)
+                    .any(|((p, n), uv)| p[1] == 0. && n[1] < -0.99 && *uv == [0., 0.]),
+                "the source-ground underside must close the threshold slab"
             );
             let h = g.tile_height * crate::profile::MOUNTAIN_CLIFF_HEIGHT / SOURCE_TILE_HEIGHT;
             let (_, _, north, _) = g.bounds(1, 1);

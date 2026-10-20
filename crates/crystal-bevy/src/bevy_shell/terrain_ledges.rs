@@ -7,10 +7,11 @@ use crystal_render_api::VisualJumpLedge;
 pub(super) fn datum(sources:&[ResolvedRenderSource<'_>],runtime:&CrystalRuntime,
     edges:&[VisualJumpLedge])->anyhow::Result<Option<std::sync::Arc<crystal_render_api::VisualTerraceDatum>>> {
     let Some(primary)=sources.first() else{return Ok(None);};
-    let mut cells=Vec::new();
+    let mut regions=Vec::new();
     // The active map wins; connected rectangles use the renderer's reverse
     // lookup order (nearest connections precede second-ring continuations).
     for source in sources.iter().take(1).chain(sources.iter().skip(1).rev()) {
+        let mut cells=Vec::new();
         let atlas=&source.tileset.tileset_id;
         let collision=runtime.data().tileset_collision(atlas)?;
         let layout=runtime.runtime_file(&format!("data/tilesets/{atlas}_metatiles.bin"))
@@ -29,8 +30,55 @@ pub(super) fn datum(sources:&[ResolvedRenderSource<'_>],runtime:&CrystalRuntime,
                 subtile_row:(y%4)as u8,tile_index:u16::from(tile),
             },land));
         }}
+        regions.push(crystal_voxel_view::TerraceSourceRegion {
+            map:source.map.map_name.to_string(),cells,
+            edges:from_map(source.map.attributes.width,&source.map.blocks,&collision,
+                IVec2::new(source.origin_x,source.origin_y))?.to_vec(),
+        });
     }
-    Ok(crystal_voxel_view::source_terrace_datum(&primary.map.map_name,edges,&cells))
+    if crystal_voxel_view::outdoor_water_map(&primary.map.map_name) {
+        // The compositor repeats the active map's border outside every native
+        // rectangle. Include its real water at the complete source perimeter so
+        // a clipped camera cannot leave that water beneath a raised dry terrace.
+        // Native maps always retain ownership, including connected-map overlaps.
+        let mut perimeter=std::collections::BTreeSet::new();
+        for source in sources {
+            for y in source.origin_y-1..=source.origin_y+source.height {
+                for x in source.origin_x-1..=source.origin_x+source.width {
+                    if x!=source.origin_x-1 && x!=source.origin_x+source.width
+                        && y!=source.origin_y-1 && y!=source.origin_y+source.height {continue;}
+                    if sources.iter().any(|s|(s.origin_x..s.origin_x+s.width).contains(&x)
+                        && (s.origin_y..s.origin_y+s.height).contains(&y)) {continue;}
+                    perimeter.insert((y,x));
+                }
+            }
+        }
+        let atlas=&primary.tileset.tileset_id;
+        let layout=runtime.runtime_file(&format!("data/tilesets/{atlas}_metatiles.bin"))
+            .ok_or_else(||anyhow::anyhow!("missing border terrace source layout {atlas}"))?;
+        let mut border_water=Vec::new();
+        for (y,x) in perimeter {
+            let (local_x,local_y)=(x-primary.origin_x,y-primary.origin_y);
+            let block=exterior_border_block(&primary.map.map_name,&primary.map.attributes.tileset_name,
+                primary.map.attributes.border_block,primary.width,local_x,local_y);
+            let (column,row)=(local_x.rem_euclid(4) as usize,local_y.rem_euclid(4) as usize);
+            let tile=*layout.get(block as usize*16+row*4+column)
+                .ok_or_else(||anyhow::anyhow!("missing border terrace source metatile {block}"))?;
+            let source=crystal_render_api::VisualTileSource {
+                tileset_id:atlas.as_str().into(),metatile_id:block,subtile_column:column as u8,
+                subtile_row:row as u8,tile_index:u16::from(tile),
+            };
+            if crystal_voxel_view::shape_for_source(&source)==crystal_voxel_view::CellShape::Water {
+                border_water.push((IVec2::new(x,y),source,false));
+            }
+        }
+        if !border_water.is_empty() {
+            regions.push(crystal_voxel_view::TerraceSourceRegion {
+                map:primary.map.map_name.to_string(),cells:border_water,edges:Vec::new(),
+            });
+        }
+    }
+    Ok(crystal_voxel_view::connected_source_terrace_datum(&primary.map.map_name,&regions,edges))
 }
 
 pub(super) fn collect(

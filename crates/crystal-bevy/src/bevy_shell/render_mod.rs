@@ -498,7 +498,25 @@ fn publish_visual_world_frame(
             };
         }
     }
-    if terrain_unchanged && published.center == center && published.actors == actors {
+    // Keep the retained terrain hierarchy fixed in source-map space. Camera,
+    // actors and traversal endpoints receive the same translation; classic
+    // sprite transforms and authoritative controller state remain untouched.
+    let (x, y) = rendered.viewport_origin.expect("validated viewport origin");
+    let grid_origin = IVec2::new(i32::from(x), i32::from(y))
+        - (published_grid_size.as_ivec2()
+            - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32)) / 2;
+    let anchored_center = grid_origin.as_vec2() * Vec2::new(TILE_SIZE, -TILE_SIZE);
+    let view_center = anchored_center - center;
+    let center = anchored_center;
+    for actor in &mut actors { actor.center += view_center; }
+    if let Some(traversal) = traversal.as_mut() {
+        if let Some(step) = traversal.step.as_mut() {
+            step.from += view_center;
+            step.to += view_center;
+        }
+    }
+    if terrain_unchanged && published.center == center && published.view_center == view_center
+        && published.actors == actors {
         // The optional renderer consumes change detection. Do not republish an
         // identical 6,888-tile frame on every host update: that cloned the
         // complete grid and forced validation/profile work while standing
@@ -537,6 +555,7 @@ fn publish_visual_world_frame(
         },
         map_texture: published_map_texture,
         center,
+        view_center,
         viewport_size: Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT),
         tile_size: Vec2::splat(TILE_SIZE),
         grid_size: published_grid_size,

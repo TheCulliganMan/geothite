@@ -21,6 +21,7 @@ struct WorldOverlayHdr;
 
 pub(super) fn register(app: &mut App) {
     tilt_shift::register(app);
+    app.add_systems(Update, sync_cave_palette_tonemapping.after(crate::sync_voxel_view));
     app.add_systems(
         PostUpdate,
         (
@@ -28,6 +29,31 @@ pub(super) fn register(app: &mut App) {
             sync_tilt_shift.after(bevy::camera::CameraUpdateSystems),
         ),
     );
+}
+
+/// The LDR cave palette already encodes dark mineral pigment. PBR Neutral's
+/// low-end subtraction removes its weak green channel and repaints it purple.
+/// Keep HDR/bloom/dithering and display source pigment with a linear transfer.
+/// Restore each camera's exact prior curve on exit, F3 or a hidden world.
+fn sync_cave_palette_tonemapping(
+    frame: Option<Res<crystal_render_api::VisualWorldFrame>>,
+    settings: Option<Res<crate::VoxelViewSettings>>,
+    mut cameras: Query<(Entity, &mut Tonemapping), With<crate::VoxelWorldCamera>>,
+    mut previous: Local<std::collections::HashMap<Entity, Tonemapping>>,
+) {
+    let source_palette = frame.as_deref().zip(settings.as_deref()).is_some_and(|(frame, settings)|
+        frame.active && settings.enabled && crate::cave_water::native_cave_source(frame));
+    for (entity, mut tone) in &mut cameras {
+        if source_palette {
+            if *tone != Tonemapping::Linear {
+                previous.insert(entity, *tone);
+                *tone = Tonemapping::Linear;
+            }
+        } else if let Some(original) = previous.remove(&entity) {
+            if *tone != original { *tone = original; }
+        }
+    }
+    previous.retain(|entity, _| cameras.contains(*entity));
 }
 
 fn tilt_shift_enabled(quality: Quality, first_person: bool) -> bool {
@@ -238,7 +264,9 @@ pub(super) fn configure_camera(
             commands
                 .entity(camera)
                 .insert(bevy::pbr::ScreenSpaceAmbientOcclusion {
-                    quality_level: bevy::pbr::ScreenSpaceAmbientOcclusionQualityLevel::High,
+                    // Eight spatial samples retain Bevy's depth-aware denoiser
+                    // and contact radius without the 18-sample full-screen cost.
+                    quality_level: bevy::pbr::ScreenSpaceAmbientOcclusionQualityLevel::Medium,
                     radius: 2.5,
                     constant_object_thickness: 0.8,
                 });
@@ -268,8 +296,9 @@ pub(super) fn shadow_config(
         } else {
             match quality {
                 Quality::Low => 1,
-                Quality::Balanced => 2,
-                _ => 3,
+                // Keep the nearest cascade's established range/resolution.
+                // A single outer cascade avoids a third full geometry pass.
+                _ => 2,
             }
         },
         maximum_distance: far,
@@ -282,6 +311,53 @@ pub(super) fn shadow_config(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn cave_palette_preserves_hdr_and_restores_the_exact_camera_curve() {
+        use crystal_render_api::{VisualWorldFrame,VisualTile,VisualTileSource};
+        let mut app=App::new();
+        app.init_resource::<VisualWorldFrame>().init_resource::<crate::VoxelViewSettings>()
+            .add_systems(Update,sync_cave_palette_tonemapping);
+        app.world_mut().resource_mut::<crate::VoxelViewSettings>().enabled=true;
+        let source=VisualWorldFrame {active:true,map_id:"DarkCaveVioletEntrance".into(),
+            tiles:vec![VisualTile {column:0,row:0,texture:Default::default(),priority:false,
+                animation_frames:None,source:VisualTileSource {tileset_id:"dark_cave".into(),
+                    metatile_id:2,tile_index:0x16,subtile_column:0,subtile_row:0}}],..default()};
+        let camera=app.world_mut().spawn((crate::VoxelWorldCamera,Hdr,Bloom::default(),DebandDither::Enabled,
+            Tonemapping::KhronosPbrNeutral)).id();
+        let other=app.world_mut().spawn(Tonemapping::KhronosPbrNeutral).id();
+        for original in [Tonemapping::None,Tonemapping::Linear,Tonemapping::KhronosPbrNeutral,Tonemapping::Reinhard] {
+            *app.world_mut().get_mut::<Tonemapping>(camera).unwrap()=original;
+            *app.world_mut().resource_mut::<VisualWorldFrame>()=source.clone();
+            app.update();
+            assert_eq!(app.world().get::<Tonemapping>(camera),Some(&Tonemapping::Linear));
+            assert!(app.world().get::<Hdr>(camera).is_some());
+            assert!(app.world().get::<Bloom>(camera).is_some());
+            assert_eq!(app.world().get::<DebandDither>(camera),Some(&DebandDither::Enabled));
+            assert_eq!(*app.world().resource::<VisualWorldFrame>(),source);
+            assert_eq!(app.world().get::<Tonemapping>(other),Some(&Tonemapping::KhronosPbrNeutral));
+            app.world_mut().resource_mut::<VisualWorldFrame>().active=false;
+            app.update();
+            assert_eq!(app.world().get::<Tonemapping>(camera),Some(&original));
+            app.world_mut().resource_mut::<VisualWorldFrame>().active=true;
+            app.update();
+            app.world_mut().resource_mut::<crate::VoxelViewSettings>().enabled=false;
+            app.update();
+            assert_eq!(app.world().get::<Tonemapping>(camera),Some(&original));
+            app.world_mut().resource_mut::<crate::VoxelViewSettings>().enabled=true;
+            app.update();
+            app.world_mut().resource_mut::<VisualWorldFrame>().map_id="PlayersHouse1F".into();
+            app.world_mut().resource_mut::<VisualWorldFrame>().tiles[0].source.tileset_id="house".into();
+            app.update();
+            assert_eq!(app.world().get::<Tonemapping>(camera),Some(&original));
+        }
+        *app.world_mut().resource_mut::<VisualWorldFrame>()=source;
+        app.update();
+        assert_eq!(app.world().get::<Tonemapping>(camera),Some(&Tonemapping::Linear));
+        app.world_mut().remove_resource::<VisualWorldFrame>();
+        app.update();
+        assert_eq!(app.world().get::<Tonemapping>(camera),Some(&Tonemapping::Reinhard));
+    }
 
     #[test]
     fn antialiasing_presets_keep_fallbacks_and_allow_a_same_binary_comparison() {

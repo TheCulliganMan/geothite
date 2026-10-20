@@ -13,9 +13,12 @@ class MimeSkinTests(unittest.TestCase):
  def setUpClass(cls):
   cls.blob=(ROOT/'mr__mime.glb').read_bytes();cls.runtime=Model(cls.blob);cls.m=logical_model(cls.runtime)
  def find(self,prefix,side=None):return next(i for i,n in enumerate(self.m.names) if n.startswith(prefix) and (side is None or n.endswith(' '+str(side))))
+ def test_upper_smile_refinement_preserves_non_facial_solids(self):
+  protected=[p for p in self.m.neutral_model()['primitives'] if not p['part'].startswith(('Head /','Mouth lining /','Cheek /'))]
+  self.assertEqual(author.geometry_digest({'primitives':protected}),'313ac706496b75c1ea6d6e40938d875e802558cbee8d988ac8db64858721b2bd')
  def test_exact_geometry_hierarchy_inverse_binds_and_budgets(self):
   m=self.m;self.assertEqual(self.blob,author.export_mr_mime());self.assertEqual(author.geometry_digest(m.neutral_model()),author.REST_DIGESTS['mr__mime']);self.assertEqual(author.geometry_digest(self.runtime.neutral_model()),author.PACKED_REST_DIGESTS['mr__mime'])
-  self.assertEqual((len(m.parts),len(self.runtime.parts),sum(map(len,m.vertices)),sum(len(i)//3 for i in m.indices),len(m.joints)),(67,34,19663,33212,26));self.assertLessEqual(len(m.doc['accessors']),256);self.assertLess(len(self.blob),1024*1024)
+  self.assertEqual((len(m.parts),len(self.runtime.parts),sum(map(len,m.vertices)),sum(len(i)//3 for i in m.indices),len(m.joints)),(67,34,19916,33656,26));self.assertLessEqual(len(m.doc['accessors']),256);self.assertLess(len(self.blob),1024*1024)
   self.assertEqual(m.parents[:26],[None,0,1,2,1,4,5,1,7,8,1,1,10,11,3,3]+[6]*5+[9]*5)
   self.assertEqual({j for ids,weights in zip(m.ids,m.weights) for js,ws in zip(ids,weights) for j,w in zip(js,ws) if w},set(range(26)))
   for mat in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(mat,IDENTITY)),1e-7)

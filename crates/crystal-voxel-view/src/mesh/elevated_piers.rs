@@ -2,6 +2,7 @@
 use super::*;
 use bevy::prelude::Vec2;
 const HEIGHT: f32 = crate::port::PIER_HEIGHT;
+const FRAME_DEPTH: f32 = 2.;
 // Sixteen 8px source cells give an eight-walking-tile shore approach. Share this
 // distance between graph propagation and height interpolation so the mesh and
 // actor support rise at the same gradual rate, including around corners.
@@ -116,6 +117,35 @@ fn edge_below_deck(map: &str, s: &VisualTileSource, north: Option<&VisualTileSou
         && s.tile_index == 0x31 && s.subtile_row == 0 && s.subtile_column < 4;
     (face(map,s) || connected) && north.is_some_and(|source| deck(map,source))
 }
+// A native timber sample must be an actual support drawing below an
+// authenticated deck, not the gray bank strip or an unrelated port tile.
+pub(super) fn cerulean_timber_uv(cells: &[&VisualTile], g: &GridGeometry) -> Option<(f32,f32,f32,f32)> {
+    cells.iter().enumerate().find_map(|(i,tile)|
+        (tile.source.tileset_id.as_ref()=="port" && tile.source.tile_index==0x22
+            && edge_below_deck("CeruleanGym", &tile.source,
+                i.checked_sub(g.width).map(|j| &cells[j].source)))
+        .then(|| g.uv(i%g.width,i/g.width)))
+}
+
+pub(super) fn cerulean_timber_sample(uv: (f32,f32,f32,f32), normal: [f32;3], post: bool) -> [f32;2] {
+    // Tile22: pale upper edge, dark beam, gold post centre, ink underside.
+    let [x,y] = if normal[1] < -0.5 { [0.,2.] }
+        else if normal[1] > 0.5 { [0.,1.] }
+        else if post && normal[2].abs()>0.5 { [3.,3.] }
+        else { [0.,0.] };
+    [uv.0+(uv.1-uv.0)*(x+0.5)/8.,uv.2+(uv.3-uv.2)*(y+0.5)/8.]
+}
+
+fn native_cerulean_timber(out: &mut SurfaceMeshData, bounds: [f32;4], low:f32, high:f32,
+    uv: (f32,f32,f32,f32), post: bool) {
+    let first=out.positions.len();
+    beam(out,bounds,low,high);
+    for i in first..out.positions.len() {
+        out.uvs[i]=cerulean_timber_sample(uv,out.normals[i],post);
+        out.colors[i]=TEXTURED_SHADE;
+    }
+}
+
 pub(super) fn entry_levels(s: &VisualTileSource) -> Option<[f32; 2]> {
     if s.tileset_id.as_ref() != "port"
         || s.metatile_id != 0x33
@@ -489,6 +519,18 @@ fn heights(
     ]
 }
 
+/// Bank closures meet the actual sloping deck's underside, rather than the
+/// nominal height of a distant, level pier. Heights are in world units.
+pub(super) fn bank_contact_floors(
+    map: &str, cells: &[&VisualTile], g: &GridGeometry, field: &terraces::Field<'_>,
+) -> Vec<Option<[f32; 4]>> {
+    let levels = PierLevels::new(map, cells, g, Some(field));
+    cells.iter().enumerate().map(|(i, tile)| {
+        deck(map, &tile.source).then(|| heights(map, cells, g, i, &levels)
+            .map(|h| (h - FRAME_DEPTH) * g.tile_height / SOURCE_TILE_HEIGHT))
+    }).collect()
+}
+
 pub(super) fn support(
     mesh: &mut TerrainMeshData,
     map: &str,
@@ -534,8 +576,11 @@ fn face(map: &str, s: &VisualTileSource) -> bool {
     ) {
         ("CeruleanCity" | "Route12" | "Route13" | "Route20" | "Route21" | "Route24" | "Route25", "kanto", 0x78, 0x31, 0) => true,
         ("Route26" | "Route27" | "Route32", "johto", 0x43, 0x49, 0) => true,
-        ("CeruleanGym", "port", 0x08 | 0x14 | 0x34, 0x22, 0) => true,
-        ("CeruleanGym", "port", 0x27 | 0x29, 0x22, 2) => true,
+        ("CeruleanGym", "port", 0x08, 0x22, 0) => true,
+        ("CeruleanGym", "port", 0x14, 0x22, 0) => s.subtile_column<2,
+        ("CeruleanGym", "port", 0x34, 0x22, 0) => s.subtile_column>=2,
+        ("CeruleanGym", "port", 0x27, 0x22, 2) => true,
+        ("CeruleanGym", "port", 0x29, 0x22, 2) => s.subtile_column<2,
         _ => false,
     }
 }
@@ -666,17 +711,19 @@ pub(super) fn append(
             );
             let deck = heights(map, cells, g, i - g.width, &levels);
             let [west, east] = [deck[1] * scale, deck[2] * scale];
-            let first = mesh.solid.positions.len();
-            beam(
-                &mut mesh.solid,
-                [w, e, n, n + 1.2 * scale],
-                (HEIGHT - 3.) * scale,
-                HEIGHT * scale,
-            );
+            let native=map=="CeruleanGym";
+            let timber=if native { &mut mesh.textured } else { &mut mesh.solid };
+            let first = timber.positions.len();
+            if native {
+                native_cerulean_timber(timber,[w,e,n,n+1.2*scale],(HEIGHT-3.)*scale,HEIGHT*scale,
+                    g.uv(i%g.width,i/g.width),false);
+            } else {
+                beam(timber,[w,e,n,n+1.2*scale],(HEIGHT-3.)*scale,HEIGHT*scale);
+            }
             let slope = (east - west) / (e - w);
-            for (point, normal) in mesh.solid.positions[first..]
+            for (point, normal) in timber.positions[first..]
                 .iter_mut()
-                .zip(&mut mesh.solid.normals[first..])
+                .zip(&mut timber.normals[first..])
             {
                 point[1] += west - HEIGHT * scale + (point[0] - w) * slope;
                 *normal = Vec3::new(normal[0] - normal[1] * slope, normal[1], normal[2])
@@ -685,12 +732,12 @@ pub(super) fn append(
             }
             if source.subtile_column % 2 == 0 {
                 let high = west + 2.5 * scale * slope - 3. * scale;
-                beam(
-                    &mut mesh.solid,
-                    [w + scale, w + 2.5 * scale, n, n + 1.5 * scale],
-                    -6. * scale,
-                    high,
-                );
+                if native {
+                    native_cerulean_timber(timber,[w+scale,w+2.5*scale,n,n+1.5*scale],-6.*scale,high,
+                        g.uv(i%g.width,i/g.width),true);
+                } else {
+                    beam(timber,[w+scale,w+2.5*scale,n,n+1.5*scale],-6.*scale,high);
+                }
             }
             mesh.authored_cells[i] = Some("outdoor/elevated-pier-edge");
             claimed[i] = true;
@@ -748,9 +795,9 @@ pub(super) fn append(
         for j in 0..4 {
             let k = (j + 1) % 4;
             let mut low_j = p[j];
-            low_j[1] -= 2. * scale;
+            low_j[1] -= FRAME_DEPTH * scale;
             let mut low_k = p[k];
-            low_k[1] -= 2. * scale;
+            low_k[1] -= FRAME_DEPTH * scale;
             let face = [low_j, low_k, p[k], p[j]];
             let normal = (Vec3::from_array(face[1]) - Vec3::from_array(face[0]))
                 .cross(Vec3::from_array(face[2]) - Vec3::from_array(face[0]))
@@ -1276,14 +1323,17 @@ mod tests {
             }
             let mut claimed = vec![false; w * h];
             append(&mut mesh, map, &cells, &g, &mut claimed, None, None,[0,0]);
-            assert!(
-                mesh.solid.positions.iter().any(|p| p[1] < 0.),
-                "{map}: pilings extend into water"
-            );
-            assert!(
-                mesh.solid.positions.iter().any(|p| p[1] >= HEIGHT - 0.03),
-                "{map}: raised beam"
-            );
+            if map=="CeruleanGym" {
+                assert!(mesh.textured.positions.iter().zip(&mesh.textured.normals)
+                    .any(|(point,normal)|point[1] < -5.9 && normal[1].abs()<0.5),
+                    "native timber pilings extend below the water quad, not merely to its surface");
+                assert!(mesh.textured.positions.iter().zip(&mesh.textured.normals)
+                    .any(|(point,normal)|point[1]>=HEIGHT-0.03 && normal[2].abs()>0.5),
+                    "native timber keeps an actual raised beam face");
+            } else {
+                assert!(mesh.solid.positions.iter().any(|p|p[1]<0.),"{map}: pilings extend into water");
+                assert!(mesh.solid.positions.iter().any(|p|p[1]>=HEIGHT-0.03),"{map}: raised beam");
+            }
             if map == "CeruleanGym" {
                 let x = 8;
                 assert_eq!(mesh.footing_heights[29 * w + x], HEIGHT * 0.625);
@@ -1305,10 +1355,8 @@ mod tests {
                 let (w, e, n, _) = g.bounds(i % g.width, i / g.width);
                 let edge = heights(map, &cells, &g, i - g.width, &levels);
                 for (x, expected) in [(w, edge[1]), (e, edge[2])] {
-                    let actual = mesh
-                        .solid
-                        .positions
-                        .iter()
+                    let timber=if map=="CeruleanGym" { &mesh.textured } else { &mesh.solid };
+                    let actual = timber.positions.iter()
                         .filter(|p| (p[0] - x).abs() < 0.0001 && (p[2] - n - 1.2).abs() < 0.0001)
                         .map(|p| p[1])
                         .fold(f32::NEG_INFINITY, f32::max);
@@ -1389,6 +1437,86 @@ mod tests {
                     );
                 }
             }
+        }
+    }
+}
+
+#[cfg(test)]
+mod cerulean_timber_tests {
+    use super::*;
+    fn fixture() -> (GridGeometry, Vec<VisualTile>) {
+        let g=GridGeometry { width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0. };
+        let tiles=(0..16).map(|i| VisualTile {
+            column:(i%4) as u32,row:(i/4) as u32,texture:Default::default(),priority:false,animation_frames:None,
+            source:VisualTileSource {tileset_id:"port".into(),metatile_id:0x27,
+                subtile_column:(i%4) as u8,subtile_row:(i/4) as u8,
+                tile_index:if i<8 {5} else if i==8 {0x22} else if i>=12 {0x14} else {0xffff} }
+        }).collect();
+        (g,tiles)
+    }
+    #[test]
+    fn donor_requires_the_native_timber_and_a_deck_above_it() {
+        let (g,tiles)=fixture();
+        assert_eq!(cerulean_timber_uv(&tiles.iter().collect::<Vec<_>>(),&g),Some(g.uv(0,2)));
+        for field in 0..6 {
+            let mut changed=tiles.clone();let source=&mut changed[8].source;
+            match field {0=>source.tileset_id="kanto".into(),1=>source.metatile_id=0x36,
+                2=>source.tile_index=0x0b,3=>source.subtile_column=4,4=>source.subtile_row=3,
+                _=>changed[4].source.tile_index=0x14}
+            assert!(cerulean_timber_uv(&changed.iter().collect::<Vec<_>>(),&g).is_none(),"mutation {field}");
+        }
+    }
+    #[test]
+    fn native_timber_keeps_every_beam_and_post_vertex() {
+        for post in [false,true] {
+            let mut old=SurfaceMeshData::default();let mut new=SurfaceMeshData::default();
+            beam(&mut old,[1.,2.5,3.,4.5],-6.,1.);
+            native_cerulean_timber(&mut new,[1.,2.5,3.,4.5],-6.,1.,(0.2,0.3,0.6,0.7),post);
+            assert_eq!(new.positions,old.positions);assert_eq!(new.normals,old.normals);
+            assert_eq!(new.indices,old.indices);
+            assert!(new.colors.iter().all(|c|*c==TEXTURED_SHADE));
+            let allowed=[[0.,0.],[0.,1.],[0.,2.],[3.,3.]].map(|[x,y]|
+                [0.2+0.1*(x+0.5)/8.,0.6+0.1*(y+0.5)/8.]);
+            assert!(new.uvs.iter().all(|uv|allowed.iter().any(|p|
+                (p[0]-uv[0]).abs()<1e-6&&(p[1]-uv[1]).abs()<1e-6)));
+            assert!(new.uvs.iter().any(|uv|(uv[0]-0.20625).abs()<1e-6));
+        }
+    }
+    #[test]
+    fn actual_edge_consumes_its_own_timber_without_changing_support() {
+        let (g,tiles)=fixture();let cells=tiles.iter().collect::<Vec<_>>();
+        for map in ["CeruleanGym","OtherRoom"] {
+            let mut mesh=TerrainMeshData {footing_heights:vec![1.25;16],authored_cells:vec![None;16],..Default::default()};
+            let mut claimed=vec![true;16];claimed[8]=false;
+            append(&mut mesh,map,&cells,&g,&mut claimed,None,None,[0,0]);
+            assert_eq!(mesh.footing_heights,vec![1.25;16]);
+            assert!(mesh.solid.indices.is_empty());
+            if map=="CeruleanGym" {
+                assert_eq!(mesh.authored_cells[8],Some("outdoor/elevated-pier-edge"));
+                assert!(claimed[8]);assert!(!mesh.textured.indices.is_empty());
+                // Four water vertices precede the original beam/post body.
+                let uv=g.uv(0,2);
+                assert!(mesh.textured.uvs[4..].iter().all(|p|p[0]>uv.0&&p[0]<uv.1&&p[1]>uv.2&&p[1]<uv.3));
+            } else {assert!(!claimed[8]);assert!(mesh.textured.indices.is_empty());}
+        }
+    }
+    #[test]
+    #[ignore="requires the verified external pack"]
+    fn external_bank_and_timber_art_have_distinct_source_materials() {
+        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(
+            std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap())).unwrap();
+        let pack=loaded.pack();let palette=&pack.data().tilesets["port"].palette_map;
+        assert_eq!(palette[0x0b]&7,0,"bank uses source GRAY, never BROWN");
+        assert_eq!(palette[0x22]&7,5,"support drawing uses source BROWN");
+        let sheet=image::load_from_memory(&pack.runtime_files()["gfx/tilesets/port.png"]).unwrap().to_rgba8();
+        let columns=sheet.width()/8;
+        for y in 0..8 {for x in 0..8 {
+            let pixel=sheet.get_pixel((0x0b%columns)*8+x,(0x0b/columns)*8+y);
+            assert_eq!(&pixel.0[..3],&[85,85,85],"bank is a flat shadow course");
+        }}
+        for ([x,y],gray) in [([0,0],85),([0,1],255),([0,2],0),([3,3],170)] {
+            let pixel=sheet.get_pixel((0x22%columns)*8+x,(0x22/columns)*8+y);
+            assert_eq!(&pixel.0[..3],&[gray;3],"source timber role {x},{y}");
         }
     }
 }

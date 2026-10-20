@@ -83,8 +83,8 @@ fn water_impact(uv: vec2<f32>) -> f32 {
 }
 
 // Forward-only aperture; floors, fragments behind the body and shadow
-// geometry remain intact. The capsule follows authoritative player support.
-fn reveal_player(world: vec4<f32>, pixel: vec2<f32>, aperture_only: bool, radius_scale: f32) {
+// geometry remain intact. The capsule follows source-backed body support.
+fn reveal_player(world: vec4<f32>, pixel: vec2<f32>, aperture_only: bool, radius_scale: f32, mineral_dissolve: bool) {
     if terrain.cutaway.bottom_radius.w <= 0.0 { return; }
     // A faded inner wall must fade down to its base. Keeping its bottom at a
     // player-relative height left opaque stumps that looked like false steps.
@@ -143,15 +143,24 @@ fn reveal_player(world: vec4<f32>, pixel: vec2<f32>, aperture_only: bool, radius
     let wall_fade = 0.88 * smoothstep(-terrain.cutaway.bottom_radius.w * 3.0,
         terrain.cutaway.bottom_radius.w * 1.20, front_depth);
     let strength = max(aperture, select(wall_fade, 0.0, terrain.cave_reveal.w > 0.5 || aperture_only));
-    // Continuous, screen-stable coverage avoids the sixteen visible opacity
-    // bands of a small Bayer matrix. No frame seed: the shoulder does not flicker.
-    let coverage = fract(52.9829189 * fract(dot(floor(pixel), vec2<f32>(0.06711056, 0.00583715))));
+    // Keep the mineral dissolve screen-stable without the diagonal stripes
+    // of interleaved-gradient noise on grazing faces. All rock layers share
+    // this pixel sample; no frame seed means the shoulder cannot flicker.
+    var coverage = fract(52.9829189 * fract(dot(floor(pixel), vec2<f32>(0.06711056, 0.00583715))));
+    if mineral_dissolve {
+        let pixel_id = vec2<u32>(floor(pixel));
+        var seed = (pixel_id.x * 1597334677u) ^ (pixel_id.y * 3812015801u);
+        seed = (seed ^ (seed >> 16u)) * 2246822519u;
+        seed = (seed ^ (seed >> 13u)) * 3266489917u;
+        seed = seed ^ (seed >> 16u);
+        coverage = f32(seed >> 8u) * (1.0 / 16777216.0);
+    }
     if strength > coverage { discard; }
 }
 
 fn reveal_cave_player(world: vec4<f32>, pixel: vec2<f32>, aperture_only: bool, radius_scale: f32) {
     if terrain.cave_reveal.x < 0.5 || terrain.cutaway.bottom_radius.w <= 0.0 { return; }
-    reveal_player(world, pixel, aperture_only, radius_scale);
+    reveal_player(world, pixel, aperture_only, radius_scale, false);
 }
 
 // The palette and baked face shade are the surface color. The sun pass
@@ -530,7 +539,7 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
         cave_portal = kind == 32.0 || kind == 34.0;
     }
 }
-@if(VOXEL_CAVE_APERTURE) {
+
     // Only enclosing rock participates. Walking planes, complete low stones,
     // authored stairs and live water retain their full geometry at all heights.
     // A walkable rock crown is the player's floor, not an occluding roof.
@@ -558,7 +567,7 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
     if cave_portal && !below_support {
         reveal_cave_player(surface.world_position, in.position.xy, true, 1.0);
     }
-}
+
 @if(VERTEX_UVS_A) {
     // Native outdoor canyon stone can cover the trainer in a narrow pass.
     // Open only the projected body, preserving the ridge outside that aperture
@@ -566,7 +575,7 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
     let outdoor_canyon = in.uv.x < -9000.0 && in.uv.y < -30000.0;
     if outdoor_canyon && terrain.cave_reveal.z > 0.5
         && surface.world_position.y > terrain.cutaway.bottom_radius.y + 0.02 {
-        reveal_player(surface.world_position, in.position.xy, true, 1.5);
+        reveal_player(surface.world_position, in.position.xy, true, 1.5, true);
     }
 }
     // A flat transparent shadow can disappear beneath the retained terrain.
@@ -599,7 +608,7 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
     // Retain the real route foliage while opening a camera aperture around
     // both complete battlers. Only explicitly tagged native grass participates;
     // floors, architecture and the overworld (zero radii) remain untouched.
-@if(VERTEX_UVS_A && VOXEL_GRASS_APERTURE) {
+@if(VERTEX_UVS_A) {
     // Material tags travel through perspective interpolation. Match the
     // neighboring painted-material tolerance rather than requiring exact bits.
     if abs(in.uv.x - 84000.0) < 0.5 {
@@ -633,19 +642,19 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
     // Native alpha cutouts still reject their transparent texels above, but
     // must not turn a smooth linked caption back into whole-object stipple.
     masked_cutaway = false;
-    // Only authored outdoor building fades carry a player capsule. Retain
-    // their smooth ghost outside it, with the same clear body aperture as
+    // Authored buildings and source furniture carry their blocked body capsule.
+    // Retain the smooth ghost outside it, with the same clear aperture as
     // the coverage path. Other layered alpha keeps a zero capsule radius.
     if terrain.cutaway.fade.x > 0.0 {
-        reveal_player(surface.world_position, in.position.xy, true, 2.0);
+        reveal_player(surface.world_position, in.position.xy, true, 2.0, false);
     }
 }
 @if(VOXEL_COVERAGE_FADE) {
     if masked_cutaway {
         // Building reveal keeps a faint complete silhouette, but its retained
-        // pixels must not stipple the trainer. Only building groups supply a
-        // player capsule here; foliage and room fades retain their policy.
-        reveal_player(surface.world_position, in.position.xy, true, 2.0);
+        // pixels must not stipple a character. Buildings and opted-in furniture
+        // supply a body capsule; foliage and room walls retain their policy.
+        reveal_player(surface.world_position, in.position.xy, true, 2.0, false);
         let coverage = fract(52.9829189 * fract(dot(floor(in.position.xy), vec2<f32>(0.06711056, 0.00583715))));
         if coverage < terrain.cutaway.fade.x { discard; }
     }
@@ -1406,7 +1415,8 @@ fn fragment(raw: VertexOutput, @builtin(front_facing) is_front: bool) -> Fragmen
         // naturally soft falloff, rather than point or spotlight hotspots.
         let identity=mat3x3<f32>(vec3<f32>(1.0,0.0,0.0),vec3<f32>(0.0,1.0,0.0),vec3<f32>(0.0,0.0,1.0));
         var window_light=0.0;
-        for (var i=0u; i<32u; i+=1u) {
+        let window_count = min(u32(terrain.city_night.y), 32u);
+        for (var i=0u; i<window_count; i+=1u) {
             let window=terrain.city_windows[i];
             if window.w<=0.0 {continue;}
             let plane=terrain.city_window_planes[i];

@@ -13,7 +13,7 @@ fn drawing(map:&str,block:u16)->Option<[[u16;4];4]> {
 }
 fn liquid_row(map:&str,block:u16,row:usize)->bool {
     match (map,block) {
-        ("WillsRoom",0x1f)=>row==3,
+        ("WillsRoom",0x1f)=>row>=2,
         ("BrunosRoom",0x2c)=>row>=2,
         _=>true,
     }
@@ -40,7 +40,14 @@ pub(super) fn finish(mesh:&mut TerrainMeshData,frame:&VisualWorldFrame,cells:&[&
     let mut blocked=mesh.authored_cells.iter().map(Option::is_some).collect::<Vec<_>>();
     for p in live::resolve(cells,g.width,g.height,map,profiles) {for i in p.indices(g.width) {blocked[i]=true;}}
     let native=mask(map,cells,g,&blocked);
-    let unit=g.tile_height/SOURCE_TILE_HEIGHT;let top=-2.*unit;let base=-4.*unit;
+    let unit=g.tile_height/SOURCE_TILE_HEIGHT;
+    // Water shares the short shoreline drop used throughout the world.
+    // The separately authored lava keeps its existing recess.
+    let depth=if map=="WillsRoom" {-crate::profile::WATER_HEIGHT}else{16.};
+    let (bank_block,bank_tile)=if map=="WillsRoom" {(0x1f,0x13)}else{(0x2c,0x39)};
+    let top=-depth*unit;let base=top-2.*unit;
+    let blue=cells.iter().position(|t|t.source.metatile_id==bank_block
+        && t.source.tile_index==bank_tile);
     let mut lowered=vec![false;cells.len()];
     for surface in [&mut mesh.textured,&mut mesh.solid,&mut mesh.animated_textured,&mut mesh.animated_solid] {
         let mut vertices=vec![false;surface.positions.len()];
@@ -65,7 +72,13 @@ pub(super) fn finish(mesh:&mut TerrainMeshData,frame:&VisualWorldFrame,cells:&[&
             (y+1<g.height).then_some(i+g.width),x.checked_sub(1).map(|x|y*g.width+x)];
         for (side,other) in neighbors.into_iter().enumerate() {
             if other.is_some_and(|j|lowered[j]) {continue;}
-            let donor=other.unwrap_or(i);let uv=g.uv(donor%g.width,donor/g.width);
+            // The complete bank drawing supplies its own two-course face.
+            // Do not put a second coplanar rim over that blue source art.
+            if other.is_some_and(|j| {
+                let s=&cells[j].source;
+                s.metatile_id==bank_block && s.subtile_row<2 && s.tile_index==bank_tile
+            }) {continue;}
+            let donor=blue.unwrap_or_else(||other.unwrap_or(i));let uv=g.uv(donor%g.width,donor/g.width);
             let paint=[uv.0+(uv.1-uv.0)*2.5/8.,uv.2+(uv.3-uv.2)*2.5/8.];
             let (a,b,normal)=match side {
                 0=>([e,n],[w,n],[0.,0.,1.]),1=>([e,s],[e,n],[-1.,0.,0.]),
@@ -85,7 +98,8 @@ mod tests {
         let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(
             std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap())).unwrap();
         let pack=loaded.pack();let art=&pack.runtime_files()["data/tilesets/elite_four_room_metatiles.bin"];
-        for (map,pure,count,edge_count) in [("WillsRoom",0x24,144,16),("BrunosRoom",0x2b,160,32)] {
+        for (map,pure,count,edge_count) in [("WillsRoom",0x24,160,32),("BrunosRoom",0x2b,160,32)] {
+            let depth=if map=="WillsRoom" {-crate::profile::WATER_HEIGHT}else{16.};
             let data=&pack.data().maps[map];let (w,h)=(data.attributes.width as usize*4,data.attributes.height as usize*4);
             let tiles=(0..w*h).map(|i| {
                 let (x,y)=(i%w,i/w);let block=data.blocks[y/4*(w/4)+x/4];
@@ -107,14 +121,14 @@ mod tests {
             assert_eq!(out.footing_heights,baseline.footing_heights);
             assert_eq!(out.authored_cells,baseline.authored_cells,"a pool finish never earns object claims");
             for (i,&liquid) in eligible.iter().enumerate() {for v in 0..4 {
-                assert_eq!(out.textured.positions[i*4+v][1],if liquid {-2.}else{0.});
+                assert_eq!(out.textured.positions[i*4+v][1],if liquid {-depth}else{0.});
             }}
             let mut bottom_area=0.;
             for tri in out.textured.indices[baseline.textured.indices.len()..].chunks_exact(3) {
                 let p=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(out.textured.positions[i as usize]));
                 let normal=Vec3::from_array(out.textured.normals[tri[0]as usize]);
                 let area=(p[1]-p[0]).cross(p[2]-p[0]);assert!(area.dot(normal)>0.);
-                assert!(p.iter().all(|p|(-4.0..=0.0).contains(&p.y)));
+                assert!(p.iter().all(|p|(-depth-2.0..=0.0).contains(&p.y)));
                 if normal==Vec3::NEG_Y {bottom_area+=area.length()*0.5;}
             }
             assert_eq!(bottom_area,count as f32*64.);
@@ -125,13 +139,13 @@ mod tests {
                 .iter().filter(|&&v|v).count(),count-16,"an edited source rejects its whole drawing");
             let mut reserved=baseline.clone();reserved.authored_cells[first]=Some("custom:pool");
             finish(&mut reserved,&frame,&cells,&g,None);
-            assert_eq!(reserved.textured.positions[..w*h*4].iter().filter(|p|p[1]==-2.).count(),(count-16)*4);
+            assert_eq!(reserved.textured.positions[..w*h*4].iter().filter(|p|p[1]==-depth).count(),(count-16)*4);
             let tile=if map=="WillsRoom" {14}else{2};
             let custom:crate::live_profiles::Document=serde_json::from_value(serde_json::json!({"objects":[{
                 "name":"Custom pool","map":map,"tileset":"elite_four_room","metatile":pure,"origin":[0,0],
                 "tiles":[[tile]],"ground":1,"top_pixels":0,"depth_pixels":8}]})).unwrap();
             let mut out=baseline.clone();finish(&mut out,&frame,&cells,&g,Some(&custom));
-            assert_eq!(out.textured.positions[..w*h*4].iter().filter(|p|p[1]==-2.).count(),edge_count*4);
+            assert_eq!(out.textured.positions[..w*h*4].iter().filter(|p|p[1]==-depth).count(),edge_count*4);
             frame.map_id="KogasRoom".into();let mut out=baseline.clone();finish(&mut out,&frame,&cells,&g,None);
             assert_eq!(out,baseline);
         }

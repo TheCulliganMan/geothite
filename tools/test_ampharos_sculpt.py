@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Check the stored Ampharos sculpture's topology, shading and anatomy."""
-import json,math,unittest
+import json,math,os,unittest
 from collections import Counter,defaultdict
 from pathlib import Path
 from electric_sheep_glb import read_ampharos,geometry_digest
 from ampharos_sculpt import sculpture,HEIGHT
 from chikorita_sculpt import sub,cross,dot
 
-ASSET=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/ampharos.glb'
+ASSET=Path(os.environ.get('CRYSTAL_ELECTRIC_SHEEP_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))/'ampharos.glb'
 
 class AmpharosTests(unittest.TestCase):
     @classmethod

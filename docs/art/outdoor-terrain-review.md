@@ -4364,3 +4364,314 @@ The compact receipt is `target/outside-art-no-false-cliff-boulders-verification.
 raw audit catalogs were removed after verification. No forest implementation,
 building assets or water shaders were edited. Full outdoor acceptance remains
 unproved; this pass does not establish final visual acceptance for all six maps.
+
+
+## Native map heights replace the false Route 24 slope — 2026-10-18
+
+The connected Route 24 solve inherited 36 ledges from distant maps. Its dry
+right bank reached seven extra terrace levels, falling from `[7,7,0,0]` into
+water within one source cell. A material-only experiment did not repair that
+geometry and was removed.
+
+Production now supplies complete native regions in rendered ownership order.
+Kanto maps compute their own translation-normalized height profiles, joining
+only adjoining dry corners at map connections. Authored jump cuts remain
+separate. Standing water components retain one level, with explicit waterfall
+pools excluded from that flattening. Saffron's entire native border stays flat;
+its neighbor owns any approach. Non-Kanto primary maps keep the existing path.
+The shared brick bridge fascia also uses beveled masonry with live muted deck
+pigment; internal cell boundaries do not receive exposed edge ornament.
+
+The production examples build. Focused checks pass: 59 terrain tests, 15 paving
+tests and seven pier tests. The terrain suite reproduces the former seven-level
+false rise, verifies a flat native bank and water, preserves all seven actual
+remote jump drops, checks local connection ramps and translation invariance,
+and anchors the flat city boundary. A separate single-map six-map audit has no
+mesher errors and retains 82 authored jump samples; it is a native-map control,
+not evidence for the connected compositor by itself.
+
+Personally inspected offscreen, muted production/native-2D pairs at Route 24
+`(9,8)` (noon, orbit 1, zoom 0, pitch 30, 1280×960) and Bill's cottage/Route 25
+`(47,6)` (noon, zoom 0, pitch 45, 1280×960). Both preserve state. Route 24's bank
+is flat beside the bridge and no longer descends through a huge grass slope;
+Bill's courtyard and low pond banks remain closed. Evidence is
+`target/outside-art-native-terrace-{route24,bill}{,-2d}.png`, with scalar results
+in `target/outside-art-native-terrace-verification.txt`. The exact rejected
+Route 24 before view remains `target/outside-art-flat-kanto-route24.png`.
+Raw catalogs and temporary diagnostic/experiment output were removed. No forest
+implementation or building assets were edited. Other map joins and overall
+outdoor visual quality still require review; this is acceptance of the reported
+bank-height repair, not complete outdoor acceptance.
+
+
+## Connected route follow-through — 2026-10-18
+
+The next review follows the corrected bank to Route 24's north end `(9,0)` and
+Route 25's western turn `(3,6)`. Personally inspected paired production/native
+2D captures at noon, zoom 0, pitch 45, 1280×960, all headless and muted. Both
+preserve state. The bridge approach and adjacent native shelves remain flat;
+no second broad descent to water appears at this turn. Evidence is
+`target/outside-art-native-join-{route24-north,route25-west}{,-2d}.png`.
+
+Added a production integration regression using the external pack and the real
+renderer/controller app, not a second terrain fixture. It renders Route 24 at
+`(9,8)` and `(9,0)`, requires all corners of source bank cells `(22..27,16)` to
+remain zero, verifies water at `(30,16)` is zero, validates water/barrier metadata,
+and compares the complete published height fields across both positions. The
+new regression passes (one test, zero failures), with its build/run output in
+`target/outside-art-native-join-production-test.log`. The generated render
+pairs and tests prove these route controls; overall outdoor acceptance remains
+open. No forest or building assets were changed.
+
+A third paired control at Route 26 `(9,28)` (same offscreen settings) preserves
+state and retains successive native jump terraces. Its immediate foreground
+mineral contact shows a thin patterned edge that warrants closer diagnosis;
+this is not final mountain-art acceptance. Evidence is
+`target/outside-art-native-join-route26-control{,-2d}.png`; the compact review
+receipt is `target/outside-art-native-join-verification.txt`.
+
+
+## Outdoor rock dissolve banding — 2026-10-18
+
+The thin patterned Route 26 contact was not an open seam: an offscreen
+zero-radius diagnostic retained a closed opaque mineral face. The player-reveal
+aperture's interleaved-gradient threshold produced conspicuous diagonal stripes
+on that grazing face. Outdoor canyon apertures now use a shared pixel-anchored
+integer hash, retaining fine grain without those diagonal bands. Other reveal
+callers retain their previous coverage. Geometry, heights, source support,
+shadows, foliage and architecture remain unchanged.
+
+The viewer builds and the final GPU capture has no shader compilation errors.
+Personally inspected its production/native-2D pair at Route 26 `(9,28)`, noon,
+zoom 0, pitch 45, 1280×960, headless and muted, with `state_preserved=true`.
+Before is `target/outside-art-native-join-route26-control.png`; after is
+`target/outside-art-mineral-dissolve-route26{,-2d}.png`. The diagonal striping
+becomes fine stable grain while the player and enclosing rock remain readable.
+Two existing aperture specialization/source-contract tests pass. The CPU reveal
+tracking fixture still fails its foot-position expectation (`Z=-8` versus zero),
+reproduced identically in the old pre-change test binary and the new binary;
+this is not a passing full-suite claim. Diagnostic images were removed after
+the A/B review. The compact receipt is
+`target/outside-art-mineral-dissolve-verification.txt`. Overall outdoor visual
+acceptance remains open.
+
+
+## Conforming mineral wall edges; Mt. Moon light leak remains — 2026-10-18
+
+The shared sixth-cell wall lattice did not include six-pixel ledge floors.
+A shorter wall acquired its floor through clamping while its taller neighbor
+spanned past that point. Mineral walls now include the same authored floor
+multiples, snapping nearby regular rings to those exact values. Relief also
+returns boundary points directly instead of relying on approximate `sin(PI)`.
+The producer regression compares full XYZ float bits on adjoining tall/short
+edges at three scales and four ledge courses, including a zero-coordinate edge.
+Walking heights, source footprints, materials, and portal models are unchanged.
+
+The final production viewer builds. All 27 rock-geometry and 12 mountain tests
+pass (39 unique), including external native-route winding/cap/support and
+Route 26/Lavender/Cinnabar/Johto footprint controls. Personally inspected
+headless, muted production/native-2D pairs at Mount Moon Square `(20,12)`
+(noon, orbit 1, zoom 1, pitch 45, 1280×960) and Route 3 `(52,2)` (same settings,
+zoom 0). Both preserve state. Evidence is
+`target/outside-art-mineral-exact-edges-{square,route3}{,-2d}.png`; results are in
+`target/outside-art-mineral-exact-edges-verification.txt`.
+
+This establishes edge conformance, **not repair of the visible Square light
+leak**. Its mouth region still contains 63 cyan candidate pixels; the nearby
+grass corner changes from 186 to 184. Disabling player reveal did not remove
+those pixels, and a flat-color fragment diagnostic retained uncovered edge
+pixels. Sampled coincident mineral points after terrace fitting showed no
+height split; that check does not cover all noncoincident or nonmineral edges.
+The remaining coverage/assembly defect needs further diagnosis. Additional
+Route 4 and Square mouths were confirmed against native pack warps and retained.
+Rigid doorway, backing-overlap, and height-welding experiments were removed;
+no forest, landmark, building or source-pack changes remain from those trials.
+Raw catalogs, traces, temporary shaders and rejected captures were removed
+after recording scalar evidence. Overall outdoor visual acceptance stays open.
+
+## Solid cave thresholds close most doorway light leaks — 2026-10-18
+
+The shared cave threshold sat slightly above its source floor as an open,
+paper-thin quad. It now has four narrow side faces and an underside, closing
+that existing volume without changing the entrance, arch, source claims,
+walking heights, warps, or mountain profile. All four native portal variants
+pass the existing complete-drawing/footing regression, extended to require a
+solid front riser and bottom. The production viewer builds.
+
+Personally inspected muted, offscreen production/native-2D pairs at Mount
+Moon Square `(20,12)` and Route 3 `(52,2)`, noon, orbit 1, pitch 45, 1280×960;
+Square uses zoom 1 and Route 3 zoom 0. Both preserve game state. Route 3 retains
+its authored forecourt and recessed opening. At Square the fixed mouth region
+`(830,540)..(980,650)` falls from 63 to 20 cyan candidate pixels using the same
+`B > R + 15 && B > 120` check. This is a visible partial repair: the narrow
+side seam remains, and the separate grass/rock corner still contains 184
+candidate pixels. Neither remaining gap is accepted as finished scenery.
+
+Evidence is `target/outside-art-threshold-volume-{square,route3}{,-2d}.png`,
+its paired state files, build/test logs, and scalar verification receipt.
+Two-sided rendering and cap-backing experiments did not improve coverage and
+were removed. No forest, building, water-level, or pack assets were changed.
+
+## Cianwood shoreline follow-through — 2026-10-18
+
+Reviewed a new land pose at Cianwood City `(9,18)`, noon, orbit 1, zoom 0,
+pitch 45, 1280×960. The muted headless production/native-2D pair preserves
+state (`target/outside-art-cianwood-land-review{,-2d}.png`). The sandy forecourt,
+native house and movable rocks retain their source arrangement; open water
+remains level beside the low shore. This is not final art acceptance. The
+small upper rock return exposes a rough contact, while the offshore repeated
+buoy course reads as flat white discs. Source inspection subsequently confirmed
+these are already shallow capped meshes from the shared `buoy_course` producer,
+not unconverted raster planes. The classifier includes Johto/Modern `$58` in
+water blocks `$30..$39`, already seated at the water datum. Improving that
+existing producer must preserve its datum and native silhouette placement.
+
+An initial water-start fixture lacked a modeled Surf mount/rider and is
+excluded from visual acceptance; the land pair is the retained scene control.
+No actor, forest, shoreline or elevation implementation was changed for this
+review. Overall outdoor quality remains unfinished.
+
+## Shared offshore buoy collars — 2026-10-18
+
+Improved the existing `buoy_course` producer instead of adding a second buoy
+asset. Its shallow capped discs are now rounded collars with open water through
+their centers, two bindings using the native secondary swatch, and smoothly
+varying normals. The source silhouette still owns each center and radius.
+The old footprint and vertical envelope remain exact: `-0.10..+0.20` source
+tiles relative to water. Existing source recognition, palette sampling, water
+backing, authored claims and walking/swimming heights are unchanged. Wrapped
+ring indices keep both geometric seams coincident. No town-specific meshes,
+new assets, water elevations, forests or building models were introduced.
+
+All 11 focused buoy tests pass, covering closed winding/nondegenerate geometry,
+the open center and both native paint roles, preserved footprint/envelope,
+Johto/Modern source guards, cropped/reserved/custom-art fallback, water backing,
+footing preservation, no square shoreline, and exclusion from land terraces.
+The production viewer builds. Personally inspected headless, muted production
+and native-2D pairs at Cianwood `(12,18)` at noon and Olivine `(29,29)` at noon
+and 22h, orbit 1, zoom 0, pitch 45, 1280×960. Every pair preserves game state.
+The Cianwood before/after comparison shows a clear open collar in place of a
+bright closed disc; Olivine verifies the same shared mesh across the harbor
+course. At night the source palette dims the collars while their blue bindings
+and holes remain readable, without a white luminous cap.
+
+Evidence: `target/outside-art-johto-buoys-before{,-2d}.png` and
+`target/outside-art-buoy-collar-{cianwood,olivine,olivine-night}{,-2d}.png`,
+paired-state files, final build/test logs and scalar verification receipt.
+The duplicate trial implementation and its logs were removed. The rough
+Cianwood rock return and remaining Mt. Moon contacts are still open issues;
+this buoy improvement does not establish overall outdoor visual acceptance.
+
+## Native mineral corners no longer create false planted seats — 2026-10-18
+
+Traced Cianwood's flat rectangular rock shelf to two blanket exceptions for
+Johto/Modern blocks `$6a/$6c`. The rock passes assumed these drawings contained
+planted trees, suppressing both mountain relief and mineral erosion. The native
+drawings instead contain mineral courses. A source-phase-and-tile guard now
+recognizes those actual courses; they continue the shared mountain finish.
+Non-native planted ink retains its previous exclusion and level seat. Tree
+placement, forest assets, materials, building models, collision and water levels
+are unchanged. This is a shared source correction, with no Cianwood special case.
+
+The new regression reproduces the false interior opening in the mountain
+field, verifies native corners receive continuous relief in both atlases,
+preserves footing/ownership, and retains the custom planted-art guard. All 56
+focused outdoor tests pass with the completed external pack and ignored tests
+explicitly included: winding, caps, contacts, open paths, native footprints and
+the existing level-seat controls. The production viewer builds.
+
+Personally inspected headless, muted production/native-2D pairs at Cianwood
+`(12,18)` and Route 26 `(9,28)`, noon, orbit 1, zoom 0, pitch 45, 1280×960.
+Both preserve game state. Cianwood's former rectangular inset shelf now joins
+the adjoining mineral silhouette; the beach nook, movable rocks, house and
+shoreline retain their source layout. Route 26's matching control replaces
+the same false corner shelves with joined rock while preserving its visible
+terrace corridor. Evidence is `target/outside-art-native-corner-{cianwood,route26}{,-2d}.png`,
+the before controls `outside-art-buoy-collar-cianwood.png` and
+`outside-art-mineral-dissolve-route26.png`, and the final build/test logs and
+scalar receipt. A thin lower Cianwood seam and the Mt. Moon contacts remain
+unresolved; this is not complete cliff or outdoor visual acceptance.
+
+## Hidden mountain backing stays inside the mineral surface — 2026-10-18
+
+The pale line across Cianwood's lower cliff came from its hidden reveal floor
+protruding through descending rock. A native geometry A/B that omitted only
+that floor removed the line. The initial mineral-only fragment diagnostic was
+misleading because discarded surfaces still participated in the depth prepass;
+it did not establish an open cliff mesh. No visible cliff recut was needed.
+
+The backing producer now retains authored cap ownership before mineral normals
+are recomputed, excluding upward-facing weathered wall facets from floor
+projection. This ownership is temporary build metadata and is cleared before
+the mesh leaves the terrain builder. Projection also requires one source pixel
+of mineral clearance above the existing hidden floor. Its walking datum and
+seating bias are unchanged. The visible rock, palette, water, collision,
+forest assets and buildings remain untouched by this backing repair.
+
+Two new regressions cover wall facets falsely supplying backing and descending
+caps touching the floor. They retain the visible mesh and footing, require an
+interior backing boundary, and keep its original height. All 58 focused outdoor
+tests pass with the external pack and ignored tests included. The final
+production viewer builds.
+
+Personally inspected headless, muted production/native-2D pairs at Cianwood
+`(12,18)`, Route 26 `(9,28)` and Mount Moon Square `(20,12)`, noon, orbit 1,
+pitch 45, 1280×960. The first two use zoom 0; Square uses zoom 1. Every pair
+preserves game state. Cianwood's pale horizontal line is gone; Route 26 retains
+its floor beneath the player reveal and its native terrace corridor. Square's
+separate mouth-side and grass/rock gaps remain: the same candidate-pixel checks
+still measure 20 and 184 respectively. Those defects remain open.
+
+Evidence: `target/outside-art-backing-pixel-clearance-{cianwood,route26,moon}{,-2d}.png`,
+their paired states, final build/test logs and scalar receipt. The earlier
+normal Cianwood view remains in `outside-art-native-corner-cianwood.png`.
+Temporary shaders, the native backing-omission switch and diagnostic captures
+were removed after recording the A/B evidence. Overall outdoor quality is
+still unproven beyond the inspected fixes and controls.
+
+## Route 15–14–13 approach and fitted bank/deck closure — 2026-10-18
+
+Inspected fresh muted headless production/native-2D pairs at Route15 `(12,10)`,
+Route14 `(6,28)`, and Route13 `(50,6)` and `(54,6)`, noon, orbit 1, zoom 0,
+pitch 45, 1280×960. Every pair preserves game state. The western Route15
+ledge and Route14 junction follow the native layout without a broad coastal
+slope. These views expand the older component reviews; they do not establish
+whole-route visual acceptance. Repeated pale boundary posts and paving still
+need a separate quality review. Forest assets and styling were left alone.
+
+Route13 exposed a bright open slit between the raised grass bank and the
+sloping boardwalk. The bank closure used the nominal four-pixel pier height,
+although the real deck approaches have independently fitted corners. A trial
+one-pixel recess reduced the slit but did not close it and was superseded.
+The shared pier producer now supplies its actual fitted underside corners,
+using the same frame depth as its generated structural sides. Terrace closure
+interpolates that actual contact edge. It changes neither walking surfaces,
+water levels, the visible ledge crown nor source footprints, and has no
+Route13-specific asset or exception.
+
+The inspected Route13 join is closed in both views. In the fixed before/after
+rectangle `(140,670)..(400,775)`, cyan candidates (`B > R + 15`, `B > 120`)
+fall from 662 to zero; this is a local visual diagnostic, not a whole-scene
+hole count. The geometry regression compares the emitted bank toe against
+the actual generated sloping deck frame at two scales, including approaches
+below the old fixed cutoff, and preserves the original bank lip. All 37
+terrace tests, seven pier tests and 15 paving tests pass with the external
+pack and ignored tests included. A fresh Route24 `(9,8)` paired control keeps
+the previously repaired flat bank and level river.
+
+Evidence is in ignored `target/outside-art-route15-west-before*`,
+`outside-art-route14-south-before*`, `outside-art-route13-coast-before*`,
+`outside-art-route13-bank-contact*`, `outside-art-route13-deck-contact*`,
+and `outside-art-bank-contact-route24-control*`.
+
+The preceding Route31 review at `(14,9)` and the Dark Cave approach `(32,6)`
+also has preserved-state production/2D pairs. Its pond/terrace relationship
+remains open for investigation; no Johto height change was retained before
+the user redirected the review east of Fuchsia. The rejected Moon legacy-wall
+trial retained 336 old triangles but changed neither observed gap count
+(20 mouth-side, 184 grass-side); its diagnostic code and scratch captures
+were removed, leaving a scalar receipt.
+
+Final current-source viewer rebuild succeeds. Both Route13 pairs were recaptured
+from that build and personally inspected again; the slit remains closed, the
+local cyan diagnostic remains zero and both paired states are preserved.

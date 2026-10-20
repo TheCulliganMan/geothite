@@ -11,13 +11,24 @@ RIG_READY=os.environ.get('LEEK_DUCK_TEST_RIG_READY')=='1'
 ROOT=Path(os.environ.get('LEEK_DUCK_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class LeekDuckTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.m=json.loads((ROOT/'farfetch_d.mesh.json').read_bytes());cls.ps=cls.m['primitives']
+ def setUpClass(cls):
+  cls.skin_source=(ROOT/'farfetch_d.glb').exists()
+  if cls.skin_source:
+   from leek_duck_glb import read_farfetch_d
+   cls.m=read_farfetch_d(ROOT/'farfetch_d.glb')
+  else:cls.m=json.loads((ROOT/'farfetch_d.mesh.json').read_bytes())
+  cls.ps=cls.m['primitives']
  def find(self,prefix,suffix=None):return next(p for p in self.ps if p['part'].startswith(prefix) and (suffix is None or p['part'].endswith(' '+str(suffix))))
  def test_closed_connected_outward_geometry(self):assert_closed_models(self,{'farfetch_d':self.m})
  def test_finite_unit_normals_and_actual_winding(self):assert_model_shading(self,{'farfetch_d':self.m})
  def test_exact_recipe_grounding_height_budget(self):
-  self.assertEqual(self.m,sculpture(rig_ready=RIG_READY));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000 if RIG_READY else 85000);
-  if RIG_READY:self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
+  mode=RIG_READY or self.skin_source
+  if self.skin_source:
+   from leek_duck_glb import geometry_digest
+   self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture(rig_ready=mode)))
+  else:self.assertEqual(self.m,sculpture(rig_ready=mode))
+  self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000 if mode else 85000);
+  if mode:self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000)
   self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
  def test_distinct_identity_details(self):
   for prefix,count in (('Body /',1),('Head /',1),('Underbody /',1),('Eye border /',2),('Eye white /',2),('Pupil /',2),('Glint /',2),('Brow /',1),('Bill /',1),('Bill seam /',1),('Crest /',3),('Leg /',2),('Foot /',2),('Web crease /',6),('Raised wing /',1),('Raised feather /',3),('Holding wing /',1),('Holding feather /',3),('Grip /',2),('Leek stem /',1),('Leek neck /',1),('Leek leaf /',3),('Tail /',3)):self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),count,prefix)

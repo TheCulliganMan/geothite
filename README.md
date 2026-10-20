@@ -26,29 +26,74 @@ for implementation status and remaining differences from the original game.
 
 ## Setup
 
-### Windows desktop executable
+### Native desktop app
 
-With Rust 1.99, `just`, and the Visual Studio C++ tools/Windows SDK installed,
-run `just desktop-content` once to initialize game content, then `just desktop`.
-The desktop recipe validates `content-packs/core-modular.crystalpack`, including
-the production title and intro timing certification, then builds
-the release graphical client with the 2.5D renderer and an embedded crystal
-icon, and installs it with its pack and model assets under
-`%USERPROFILE%\Games\Geothite`. It creates `Geothite.lnk` on the Windows Desktop.
-Double-click the shortcut to play. Re-running the recipe updates the install
-and preserves saves. Close the game before updating. The installed build opens
-without a console window and reports startup failures in a Windows dialog.
+With the local content pack prepared, the same commands select your current OS:
 
-For a different completed native pack or installation directory:
-
-```powershell
-just desktop 'C:\Games\core-modular.crystalpack'
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/build-desktop.ps1 -Pack C:\Games\core-modular.crystalpack -InstallDirectory C:\Games\Geothite -Launch
+```sh
+just desktop             # Build, validate and install
+just desktop-run         # Open the installed app immediately
+just desktop-package     # Build a distributable in .local/desktop-dist/
+just desktop-repack      # Package the last build without compiling
 ```
 
-The executable resolves its default pack and model assets beside itself,
-independently of the launching working directory. Build products and game
-content stay outside tracked source.
+On macOS, `just desktop` installs **Geothite.app** in `~/Applications` with a
+crystal icon, the production title/new-game/Continue flow, the supplied native
+pack and 2.5D artwork. `just desktop-package` creates an architecture-specific
+DMG with an Applications shortcut and SHA-256 checksum. The app runs independently
+of this checkout; F3 switches between 2D and 3D. Saves live in
+`~/Library/Application Support/Geothite/saves`, so replacing the app preserves them.
+The desktop app plays music and sound effects by default. Normal web play enables
+sound on the first click, touch or keypress, subject to browser autoplay rules;
+the sound button remembers deliberate mute choices. Native developer clients,
+browser location previews (`?preview=...`), embedded training views and
+`?development=1` sessions always stay muted.
+
+On Mac, **Settings** appears in the window title bar and the Mac menu bar.
+It controls master volume, mute, 2D/3D view, a checkable First Person toggle,
+camera presets and fullscreen. Orbit rotation follows the character, including
+inside rooms where the classic viewport stops scrolling.
+Settings follow keyboard/controller changes and persist in
+`~/Library/Application Support/Geothite/settings.json`. Camera reset and
+Reset Settings are available in the same menu.
+
+On Windows, installation goes to `%USERPROFILE%\Games\Geothite` and creates a
+Desktop shortcut; packaging creates a ZIP. Linux installation goes to
+`~/.local/opt/geothite` with an application-menu entry; packaging creates a native
+`tar.gz`. Build on each target OS. Windows and Linux packaging are prepared;
+the macOS path is the focus of local verification. These are native host builds,
+not cross-compilation or a universal Mac binary.
+
+Install Rust 1.99 (selected by `rust-toolchain.toml`), `just`, and Git LFS.
+macOS also needs Xcode command line tools and Python 3.9+; Windows needs the Visual
+Studio C++ tools/Windows SDK; Linux needs the libraries in
+[the native runbook](docs/cold-start-3d.md). On a fresh checkout, run
+`git lfs pull` and `just desktop-content` once. Preparing source content and a cold
+Bevy build can take substantially longer than two minutes. The persistent desktop
+incremental cache and lighter game-code optimization make repeat builds faster; `desktop-repack`,
+`desktop-install` and `desktop-run` skip compilation.
+
+Verified on Apple Silicon: a cached `just desktop-package` rebuilt the changed
+game crates and produced the DMG in **2m 13s**. `just desktop-install` took
+**52s**. The initial desktop build took substantially longer. The installed app
+was opened through Launch Services and reached the interactive New Game flow.
+`just desktop-run` captures its launch log in `~/Library/Logs/Geothite/game.log`.
+
+`just desktop-install` installs the last build without compiling, and
+`just desktop-check` validates the last build's content/art without opening a
+window. Pass a different local pack as a recipe argument, for example
+`just desktop-package content-packs/all-pokemon.crystalpack`.
+Set `GEOTHITE_DESKTOP_PROFILE=release` for the slower ThinLTO release build.
+Close the installed app before updating it. All build products, copied packs,
+and distributables remain ignored; they are never source deliverables to commit.
+
+Mac packages use ad-hoc signing for local use by default. For public distribution,
+configure `GEOTHITE_SIGN_IDENTITY` with a Developer ID Application certificate
+and `GEOTHITE_NOTARY_PROFILE` with an existing `notarytool` keychain profile, then
+run `just desktop-release`. This signs with hardened runtime, submits the DMG to
+Apple, and staples/validates the notarization ticket. It requires your Apple
+Developer credentials; the local package is not notarized. See
+[Apple's distribution guide](https://developer.apple.com/documentation/xcode/packaging-mac-software-for-distribution).
 
 Generate local game content with the repository's Rust builders, then use Docker
 with Compose for your own server. [Game content setup](docs/game-content.md)
@@ -314,6 +359,10 @@ through the normal input system, and a human keypress cancels agent input.
 The game uses Bevy 0.20 and Rust 1.99.0, pinned in `rust-toolchain.toml`.
 Shared dependency versions and local crate paths live in the workspace
 `Cargo.toml`; each renderer selects its own Bevy features.
+
+For optional independent PC and Mailbox LCD comparisons, see the
+[menu reference capture guide](docs/menu-oracle.md). Its emulator environment
+and generated references remain external to the repository and game bundle.
 
 Run the graphical client with the optional Bevy development tools and a local pack:
 

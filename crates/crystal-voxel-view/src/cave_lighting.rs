@@ -149,14 +149,7 @@ pub(super) fn sky_tint(frame: &VisualWorldFrame, images: &Assets<Image>) -> Vec4
             let mut brightest = Vec3::ZERO;
             let weights = Vec3::new(0.2126, 0.7152, 0.0722);
             for pixel in data.chunks_exact(4) {
-                let color = Vec3::from_array([pixel[0], pixel[1], pixel[2]].map(|v| {
-                    let c = f32::from(v) / 255.;
-                    if c <= 0.04045 {
-                        c / 12.92
-                    } else {
-                        ((c + 0.055) / 1.055).powf(2.4)
-                    }
-                }));
+                let color = Vec3::from_array([pixel[0], pixel[1], pixel[2]].map(crate::source_color::linear));
                 if color.dot(weights) > brightest.dot(weights) {
                     brightest = color;
                 }

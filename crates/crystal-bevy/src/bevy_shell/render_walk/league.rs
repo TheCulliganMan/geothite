@@ -12,6 +12,29 @@ const ROOMS: [&str; 5] = [
     "LancesRoom",
 ];
 
+fn validate_room_checkpoints(checkpoints: &BTreeSet<String>) -> Result<()> {
+    for room in ROOMS {
+        for phase in ["arrival", "walking", "earned"] {
+            anyhow::ensure!(
+                checkpoints.contains(&format!("{room}-{phase}")),
+                "continuous native review missed {room} {phase}"
+            );
+        }
+        let prefix = format!("{room}-battle-");
+        anyhow::ensure!(
+            checkpoints.iter().any(|label| {
+                let Some((species, slot)) = label.strip_prefix(&prefix)
+                    .and_then(|suffix| suffix.rsplit_once("-slot")) else { return false; };
+                let species = species.split('-').collect::<Vec<_>>();
+                species.len() == 2 && species.iter().all(|id| !id.is_empty())
+                    && slot.parse::<usize>().is_ok_and(|slot| (1..=6).contains(&slot))
+            }),
+            "continuous native review missed {room} species-and-party-slot battle capture"
+        );
+    }
+    Ok(())
+}
+
 pub(in crate::bevy_shell) fn seed(shell: &mut RuntimeGameShell) -> Result<()> {
     anyhow::ensure!(
         shell.current_map_name() == "IndigoPlateauPokecenter1F",
@@ -244,6 +267,8 @@ impl LeagueReview {
         frame: &crystal_render_api::VisualWorldFrame,
         battle: bool,
         native_battle: bool,
+        modeled_species: &[String],
+        enemy_party_index: Option<usize>,
     ) -> Option<String> {
         if let Some(credits) = &runtime.credits_screen {
             if let Some(hall) = &credits.hall_of_fame {
@@ -283,7 +308,11 @@ impl LeagueReview {
             return Some("continue-summary".into());
         }
         if battle {
-            return native_battle.then(|| format!("{}-battle", runtime.shell.current_map_name()));
+            // Each opposing species needs its own paired evidence. A room's
+            // first opponent cannot certify later replacements or AI switches.
+            return native_battle.then(|| format!("{}-battle-{}-slot{}",
+                runtime.shell.current_map_name(), modeled_species.join("-"),
+                enemy_party_index.map_or_else(||"unknown".into(),|index|(index+1).to_string())));
         }
         if runtime.credits_screen.is_none()
             && runtime.title_menu.is_none()
@@ -352,15 +381,7 @@ impl LeagueReview {
         );
         let snapshot = runtime.shell.presentation_snapshot()?;
         let battle = snapshot.battle.is_some();
-        self.saw_battle |= battle;
-        if self.checkpoint.is_none() {
-            if let Some(label) = self
-                .milestone(
-                    runtime,
-                    status,
-                    frame,
-                    battle,
-                    battle_status.active
+        let native_battle_ready = battle_status.active
                         && battle_status.map_scenery_fallback_reason.is_none()
                         && battle_status.map_scenery_id.as_deref()
                             == Some(snapshot.overworld.map_name.as_str())
@@ -373,10 +394,35 @@ impl LeagueReview {
                             b.active
                                 && !b.use_source_scene
                                 && b.cues.is_empty()
+                                && battle_status.modeled_species.iter().map(String::as_str).eq(
+                                    b.battlers.iter().flatten().map(|b| b.species_id.as_ref()))
                                 && b.battlers
                                     .iter()
                                     .all(|slot| slot.as_ref().is_some_and(|b| b.visible))
-                        }),
+                        });
+        let native_command = battle
+            && (runtime.battle_action_cursor.is_some() || runtime.battle_move_cursor.is_some())
+            && runtime.battle_messages.is_empty()
+            && !visible_battle_command_animation_active(runtime)
+            && runtime.battle_switch_cursor.is_none()
+            && !runtime.battle_party_summary_open
+            && runtime.battle_pack_target_mode.is_none()
+            && runtime.bag_cursor.is_none()
+            && runtime.ball_cursor.is_none()
+            && runtime.key_item_cursor.is_none()
+            && runtime.tmhm_cursor.is_none()
+            && !runtime.battle_level_stats.front().is_some_and(|stats| stats.active);
+        self.saw_battle |= battle;
+        if self.checkpoint.is_none() {
+            if let Some(label) = self
+                .milestone(
+                    runtime,
+                    status,
+                    frame,
+                    battle,
+                    native_battle_ready && native_command,
+                    &battle_status.modeled_species,
+                    snapshot.battle.as_ref().and_then(|b|b.active_enemy_party_index),
                 )
                 .filter(|label| !self.checkpoints.contains(label))
             {
@@ -393,6 +439,9 @@ impl LeagueReview {
                         "field_active":status.active,"field_map":status.terrain_map,
                         "field_pending":status.terrain_pending,"battle_active":battle_status.active,
                         "modeled_species":battle_status.modeled_species,
+                        "presented_species":battle_frame.map(|frame|frame.battlers.iter().flatten().map(|b|b.species_id.as_ref()).collect::<Vec<_>>()),
+                        "enemy_species":snapshot.battle.as_ref().map(|b|b.enemy_pokemon.species.id.as_str()),
+                        "enemy_party_index":snapshot.battle.as_ref().and_then(|b|b.active_enemy_party_index),
                         "source_art_species":battle_status.source_art_species,
                         "scenery":battle_status.map_scenery_id,
                         "scenery_fallback":battle_status.map_scenery_fallback_reason,
@@ -542,13 +591,7 @@ impl LeagueReview {
         // Intro text must still advance through ordinary A. Once the actual
         // command surface owns input, wait for modeled GPU evidence before
         // issuing FIGHT; a source fallback cannot silently win the battle.
-        if battle
-            && runtime.battle_action_cursor.is_some()
-            && runtime.battle_messages.is_empty()
-            && !visible_battle_command_animation_active(runtime)
-            && !self
-                .checkpoints
-                .contains(&format!("{}-battle", snapshot.overworld.map_name))
+        if native_command && !native_battle_ready
         {
             let waiting = self.battle_wait.get_or_insert_with(std::time::Instant::now);
             anyhow::ensure!(
@@ -563,7 +606,11 @@ impl LeagueReview {
             self.actions += 1;
             self.history.push(serde_json::json!({"action":self.actions,"key":format!("{key:?}"),
                 "map":snapshot.overworld.map_name,"tile":[snapshot.overworld.tile.x,snapshot.overworld.tile.y],
-                "hp":snapshot.party.slots.first().map(|slot|slot.pokemon.hp),"pp":pp(&snapshot),"phase":Self::phase(runtime)}));
+                "hp":snapshot.party.slots.first().map(|slot|slot.pokemon.hp),"pp":pp(&snapshot),"phase":Self::phase(runtime),
+                "native_command":native_command,"native_ready":native_battle_ready,"native_species":battle_status.modeled_species,
+                "presented_species":battle_frame.map(|frame|frame.battlers.iter().flatten().map(|b|b.species_id.as_ref()).collect::<Vec<_>>()),
+                "enemy_species":snapshot.battle.as_ref().map(|b|b.enemy_pokemon.species.id.as_str()),
+                "enemy_party_index":snapshot.battle.as_ref().and_then(|b|b.active_enemy_party_index)}));
             self.write_history()?;
             if matches!(
                 key,
@@ -652,14 +699,7 @@ impl LeagueReview {
                     && state.game_timer_counting,
                 "Continue must finish the earned champion return"
             );
-            for room in ROOMS {
-                for phase in ["arrival", "walking", "battle", "earned"] {
-                    anyhow::ensure!(
-                        self.checkpoints.contains(&format!("{room}-{phase}")),
-                        "continuous native review missed {room} {phase}"
-                    );
-                }
-            }
+            validate_room_checkpoints(&self.checkpoints)?;
             for required in [
                 "PokemonBack",
                 "PokemonFront",
@@ -795,7 +835,7 @@ impl LeagueReview {
         }
         if won && !self.wins.contains(map) {
             anyhow::ensure!(
-                self.checkpoints.contains(&format!("{map}-battle")),
+                self.checkpoints.iter().any(|label|label.starts_with(&format!("{map}-battle-"))),
                 "{map}: actual native battle presentation must be captured before victory"
             );
             anyhow::ensure!(
@@ -945,4 +985,46 @@ impl LeagueReview {
 }
 fn battle_present(snapshot: &RuntimeShellSnapshot) -> bool {
     snapshot.battle.is_some()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn completed_rooms() -> BTreeSet<String> {
+        ROOMS.into_iter().flat_map(|room| [
+            format!("{room}-arrival"), format!("{room}-walking"),
+            format!("{room}-earned"), format!("{room}-battle-MEW-XATU-slot1"),
+        ]).collect()
+    }
+
+    #[test]
+    fn league_completion_accepts_species_and_distinct_party_slot_captures() {
+        let mut checkpoints = completed_rooms();
+        checkpoints.insert("WillsRoom-battle-MEW-XATU-slot5".into());
+        assert!(validate_room_checkpoints(&checkpoints).is_ok());
+        assert!(!checkpoints.contains("WillsRoom-battle"));
+    }
+
+    #[test]
+    fn league_completion_requires_every_room_and_field_phase() {
+        for room in ROOMS {
+            for phase in ["arrival", "walking", "earned", "battle-MEW-XATU-slot1"] {
+                let mut checkpoints = completed_rooms();
+                checkpoints.remove(&format!("{room}-{phase}"));
+                assert!(validate_room_checkpoints(&checkpoints).is_err(), "{room} {phase}");
+            }
+        }
+    }
+
+    #[test]
+    fn league_completion_rejects_generic_unknown_and_malformed_battle_evidence() {
+        for suffix in ["battle", "battle-MEW-XATU-slotunknown", "battle-MEW-XATU-slot0",
+            "battle-MEW-XATU-slot7", "battle-MEW-slot1", "battle-MEW--slot1"] {
+            let mut checkpoints = completed_rooms();
+            checkpoints.remove("WillsRoom-battle-MEW-XATU-slot1");
+            checkpoints.insert(format!("WillsRoom-{suffix}"));
+            assert!(validate_room_checkpoints(&checkpoints).is_err(), "{suffix}");
+        }
+    }
 }

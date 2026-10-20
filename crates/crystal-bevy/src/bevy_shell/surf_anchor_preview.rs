@@ -89,6 +89,15 @@ fn prepare_surf_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRun
         .water
         .as_ref()
         .context("Surf preview water encounter table")?;
+    // The shipped all-251 overlay deliberately replaces only this rare slot.
+    // Validate its declared content policy without rewriting the encounter
+    // table, rate, divider samples, or the battle selected by real gameplay.
+    let rare_slot = if runtime.pack_identity().runtime_modpack_id.split('+')
+        .any(|id| id == crystal_assets::ALL_251_MANIFEST_ID) {
+        ("REMORAID", 20)
+    } else {
+        ("POLIWHIRL", 25)
+    };
     anyhow::ensure!(
         encounters.water_rate == Some(5)
             && [&water.morning, &water.day, &water.night]
@@ -96,11 +105,13 @@ fn prepare_surf_encounter_preview(mut shell: BevyRuntimeShell) -> Result<BevyRun
                 .all(|slots| slots
                     .iter()
                     .map(|slot| (slot.species.as_str(), slot.level))
-                    .eq([("POLIWAG", 25), ("POLIWAG", 20), ("POLIWHIRL", 25)])),
-        "Surf preview requires the unchanged source water slots and rate"
+                    .eq([("POLIWAG", 25), ("POLIWAG", 20), rare_slot])),
+        "Surf preview requires the declared pack water slots and unchanged source rate"
     );
+    let review_species = std::env::var("CRYSTAL_RENDER_TEST_SURF_SPECIES")
+        .unwrap_or_else(|_| "TOTODILE".into()).to_ascii_uppercase();
     shell.shell.add_party_pokemon(
-        "TOTODILE",
+        &review_species,
         20,
         None,
         None,

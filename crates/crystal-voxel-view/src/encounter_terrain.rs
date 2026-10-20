@@ -32,6 +32,9 @@ const LOW_SHOT_ELEVATIONS: [f32; 7] = [6.0, 12.0, 18.0, 24.0, 32.0, 40.0, 48.0];
 const HIGH_SHOT_ELEVATIONS: [f32; 3] = [60.0, 68.0, 75.0];
 const RESIDUAL_OPACITY: f32 = 0.20;
 const SHOT_YAWS: [f32; 8] = [70.0, 90.0, 110.0, 140.0, -70.0, -90.0, -110.0, -140.0];
+// A tall body can require a view along the retained room's longer axis.
+// Consider this only after every ordinary low and high shot has failed.
+const END_ON_SHOT_YAWS: [f32; 1] = [180.0];
 
 fn review_shot_yaw(value: Option<&str>) -> Option<f32> {
     let yaw=value?.parse::<f32>().ok()?;
@@ -634,16 +637,22 @@ impl EncounterTerrain {
         let original = layout.clone();
         for elevations in [&LOW_SHOT_ELEVATIONS[..], &HIGH_SHOT_ELEVATIONS[..]] {
             let mut candidate = original.clone();
-            if self.establish_camera_tier(&mut candidate, bodies, viewport, elevations) {
+            if self.establish_camera_tier(&mut candidate, bodies, viewport, elevations, &SHOT_YAWS) {
                 *layout = candidate;
                 return true;
             }
         }
+        let mut candidate = original;
+        if self.establish_camera_tier(&mut candidate, bodies, viewport,
+            &HIGH_SHOT_ELEVATIONS, &END_ON_SHOT_YAWS) {
+            *layout = candidate;
+            return true;
+        }
         false
     }
 
-    fn establish_camera_tier(&mut self, layout: &mut BattleSceneLayout, bodies: [Option<BattleBody>; 2], viewport: Vec2, elevations: &[f32]) -> bool {
-        let mut best = if self.establish_camera_at(layout, bodies, viewport, elevations) {
+    fn establish_camera_tier(&mut self, layout: &mut BattleSceneLayout, bodies: [Option<BattleBody>; 2], viewport: Vec2, elevations: &[f32], yaws: &[f32]) -> bool {
+        let mut best = if self.establish_camera_at(layout, bodies, viewport, elevations, yaws) {
             let scene = self.frozen.as_ref().unwrap();
             let grass = scene.walking.as_ref().map_or(0, |ground| ground.grass_contacts(scene.anchors));
             Some((self.shot_score.unwrap() + grass as f32 * 40.0, layout.clone(), scene.anchors))
@@ -672,7 +681,7 @@ impl EncounterTerrain {
             }
             checked_stages += 1;
             scene.anchors = anchors;
-            if self.establish_camera_at(&mut candidate, bodies, viewport, elevations) {
+            if self.establish_camera_at(&mut candidate, bodies, viewport, elevations, yaws) {
                 let scene = self.frozen.as_ref().unwrap();
                 let grass = scene.walking.as_ref().map_or(0, |ground| ground.grass_contacts(anchors));
                 let score = self.shot_score.unwrap() - distance * 2.0 + grass as f32 * 40.0;
@@ -693,12 +702,12 @@ impl EncounterTerrain {
         false
     }
 
-    fn establish_camera_at(&mut self, layout: &mut BattleSceneLayout, bodies: [Option<BattleBody>; 2], viewport: Vec2, elevations: &[f32]) -> bool {
+    fn establish_camera_at(&mut self, layout: &mut BattleSceneLayout, bodies: [Option<BattleBody>; 2], viewport: Vec2, elevations: &[f32], yaws: &[f32]) -> bool {
         self.shot_score = None;
         let mut best: Option<(f32, BattleSceneLayout)> = None;
         let review_yaw=requested_review_yaw();
         for (yaw, elevation) in elevations.iter().copied().flat_map(|elevation|
-            SHOT_YAWS.map(|yaw| (yaw, elevation))) {
+            yaws.iter().copied().map(move |yaw| (yaw, elevation))) {
             if review_yaw.is_some_and(|selected| selected!=yaw) { continue; }
             let mut compact = layout.clone();
             compact.distance = 0.0;
@@ -2858,7 +2867,7 @@ use bevy::camera::primitives::MeshAabb;
         assert!((-layout.camera.forward().y).asin().to_degrees() > 48.0);
         state.frozen.as_mut().unwrap().authentic = AuthenticBounds { min: Vec2::splat(-80.0), max: Vec2::splat(80.0) };
         let mut lower = original.clone();
-        assert!(state.establish_camera_at(&mut lower, bodies, viewport, &LOW_SHOT_ELEVATIONS));
+        assert!(state.establish_camera_at(&mut lower, bodies, viewport, &LOW_SHOT_ELEVATIONS, &SHOT_YAWS));
         let mut chosen = original.clone();
         assert!(state.establish_camera(&mut chosen, bodies, viewport));
         assert_eq!(chosen.camera, lower.camera, "a valid low shot must take precedence");
@@ -3427,7 +3436,7 @@ MeshMaterial3d(material.clone()),),
         state.frozen.as_mut().unwrap().static_blockers.clear();
         let tiny = [Some(BattleBody::modeled("TEST", Vec3::new(-0.1, 0.0, -0.1), Vec3::new(0.1, 0.2, 0.1), 1.0)); 2];
         let mut too_small = BattleSceneLayout::for_map_bodies(tiny, anchors, viewport).unwrap();
-        assert!(!state.establish_camera_at(&mut too_small, tiny, viewport, &LOW_SHOT_ELEVATIONS),
+        assert!(!state.establish_camera_at(&mut too_small, tiny, viewport, &LOW_SHOT_ELEVATIONS, &SHOT_YAWS),
             "physical eligibility alone cannot accept an unreadably distant shot");
         assert!(!state.accepted());
         assert_eq!(state.reason(), Some("no readable low shot on checked ground"));

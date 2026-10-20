@@ -87,9 +87,14 @@ fn encoded_source(value: &serde_json::value::RawValue) -> Result<std::borrow::Co
 pub(crate) fn model_root() -> std::path::PathBuf {
     std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").map(std::path::PathBuf::from)
         .unwrap_or_else(|| {
-            if let Some(root) = std::env::current_exe().ok()
-                .and_then(|exe| exe.parent().map(|dir| dir.join("assets/open-models")))
-                .filter(|root| root.is_dir())
+            if let Some(root) = std::env::current_exe().ok().and_then(|exe| {
+                let directory = exe.parent()?;
+                let resources = if directory.file_name()? == "MacOS"
+                    && directory.parent()?.file_name()? == "Contents" {
+                    directory.parent()?.join("Resources")
+                } else { directory.to_path_buf() };
+                Some(resources.join("assets/open-models"))
+            }).filter(|root| root.is_dir())
             {
                 return root;
             }

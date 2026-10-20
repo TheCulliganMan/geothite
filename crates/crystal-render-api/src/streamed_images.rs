@@ -23,16 +23,19 @@ const LABEL: &str = "crystal-streamed-rgba";
 /// Ordinary source artwork continues through Bevy's standard image pipeline.
 pub fn stream_composed_image(image: &mut Image) {
     assert_eq!(image.texture_descriptor.dimension, TextureDimension::D2);
-    assert_eq!(
-        image.texture_descriptor.format,
-        TextureFormat::Rgba8UnormSrgb
-    );
+    assert!(matches!(image.texture_descriptor.format,
+        TextureFormat::Rgba8UnormSrgb | TextureFormat::Rgba8Unorm));
     assert_eq!(image.texture_descriptor.size.depth_or_array_layers, 1);
     assert_eq!(image.texture_descriptor.mip_level_count, 1);
     assert_eq!(image.texture_descriptor.sample_count, 1);
     image.texture_descriptor.label = Some(LABEL);
     image.asset_usage = RenderAssetUsages::MAIN_WORLD;
     image.sampler = ImageSampler::nearest();
+}
+
+/// Fixed-size, fixed-format streamed surfaces retain their GPU view on pixel updates.
+pub fn is_streamed_image(image: &Image) -> bool {
+    image.texture_descriptor.label == Some(LABEL)
 }
 
 pub(super) fn install(app: &mut App) {
@@ -59,7 +62,7 @@ struct PendingImages {
     removed: HashSet<AssetId<Image>>,
 }
 #[derive(Resource, Default)]
-struct ResidentImages(HashMap<AssetId<Image>, (UVec2, Vec<u8>)>);
+struct ResidentImages(HashMap<AssetId<Image>, (UVec2, TextureFormat, Vec<u8>)>);
 
 fn extract_images(
     mut events: Extract<MessageReader<AssetEvent<Image>>>,
@@ -80,7 +83,7 @@ fn extract_images(
     }
     for id in changed {
         if let Some(image) = images.get(id) {
-            if image.texture_descriptor.label == Some(LABEL) {
+            if is_streamed_image(image) {
                 pending.changed.push((id, image.clone()));
             }
         }
@@ -101,13 +104,15 @@ fn upload_images(
     }
     for (id, image) in pending.changed.drain(..) {
         let size = image.size();
+        let format = image.texture_descriptor.format;
         let data = image
             .data
             .as_ref()
             .expect("streamed images retain CPU pixels");
         assert_eq!(data.len(), size.x as usize * size.y as usize * 4);
-        if let Some((old_size, old_data)) = resident.0.get(&id)
+        if let Some((old_size, old_format, old_data)) = resident.0.get(&id)
             && *old_size == size
+            && *old_format == image.texture_descriptor.format
             && let Some(gpu) = gpu_images.get(id)
         {
             if let Some([x, y, width, height]) = changed_rect(old_data, data, size.x as usize) {
@@ -161,10 +166,82 @@ fn upload_images(
         }
         resident.0.insert(
             id,
-            (size, image.data.expect("streamed images retain CPU pixels")),
+            (size, format, image.data.expect("streamed images retain CPU pixels")),
         );
     }
 }
 
 mod changed_region;
 use changed_region::changed_rect;
+
+#[cfg(test)]
+mod gpu_tests {
+    use super::*;
+
+    #[test]
+    #[ignore = "requires a native GPU; renders offscreen without a window"]
+    fn linear_phase_mask_keeps_gpu_storage_and_exact_updated_bytes() {
+        use bevy::{app::PluginsState, window::{WindowPlugin, ExitCondition}};
+        use bevy::render::render_resource::{BufferDescriptor, BufferUsages,
+            CommandEncoderDescriptor, MapMode, PollType, TexelCopyBufferInfo};
+        let mut app = App::new();
+        app.add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: None, exit_condition: ExitCondition::DontExit, ..default()
+        })).add_plugins(crate::VisualWorldRenderPlugin);
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(30);
+        while app.plugins_state() != PluginsState::Ready {
+            assert!(std::time::Instant::now() < deadline, "GPU initialization timed out");
+            bevy::tasks::tick_global_task_pools_on_main_thread();
+            std::thread::yield_now();
+        }
+        app.finish(); app.cleanup();
+        let mut image = Image::new(Extent3d { width: 8, height: 8, depth_or_array_layers: 1 },
+            TextureDimension::D2, [128, 64, 32, 255].repeat(64),
+            TextureFormat::Rgba8Unorm, RenderAssetUsages::default());
+        stream_composed_image(&mut image);
+        let handle = app.world_mut().resource_mut::<Assets<Image>>().add(image);
+        for _ in 0..4 { app.update(); }
+        let (texture_id, view_id) = {
+            let gpu = app.sub_app(RenderApp).world().resource::<RenderAssets<GpuImage>>().get(&handle).unwrap();
+            assert_eq!(gpu.texture_descriptor.format, TextureFormat::Rgba8Unorm);
+            (gpu.texture.id(), gpu.texture_view.id())
+        };
+        app.world_mut().resource_mut::<Assets<Image>>().get_mut(&handle).unwrap()
+            .data.as_mut().unwrap()[2] = 96;
+        for _ in 0..2 { app.update(); }
+        let render = app.sub_app(RenderApp).world();
+        let gpu = render.resource::<RenderAssets<GpuImage>>().get(&handle).unwrap();
+        assert_eq!(gpu.texture.id(), texture_id, "phase changes must not allocate another texture");
+        assert_eq!(gpu.texture_view.id(), view_id, "bound materials must retain their existing view");
+        let device = render.resource::<RenderDevice>();
+        let queue = render.resource::<RenderQueue>();
+        let readback = device.create_buffer(&BufferDescriptor { label: Some("phase-mask-test"),
+            size: 256 * 8, usage: BufferUsages::MAP_READ | BufferUsages::COPY_DST, mapped_at_creation: false });
+        let mut encoder = device.create_command_encoder(&CommandEncoderDescriptor::default());
+        encoder.copy_texture_to_buffer(TexelCopyTextureInfo { texture: &gpu.texture,
+            mip_level: 0, origin: Origin3d::ZERO, aspect: TextureAspect::All },
+            TexelCopyBufferInfo { buffer: &readback, layout: TexelCopyBufferLayout {
+                offset: 0, bytes_per_row: Some(256), rows_per_image: None } },
+            Extent3d { width: 8, height: 8, depth_or_array_layers: 1 });
+        queue.submit([encoder.finish()]);
+        let (sender, receiver) = std::sync::mpsc::channel();
+        readback.slice(..).map_async(MapMode::Read, move |result| { sender.send(result).unwrap(); });
+        device.poll(PollType::wait_indefinitely()).unwrap();
+        receiver.recv_timeout(std::time::Duration::from_secs(5)).unwrap().unwrap();
+        {
+            let bytes = readback.slice(..).get_mapped_range().unwrap();
+            let images = app.world().resource::<Assets<Image>>();
+            let expected = images.get(&handle).unwrap().data.as_ref().unwrap();
+            for row in 0..8 { assert_eq!(&bytes[row * 256..row * 256 + 32], &expected[row * 32..row * 32 + 32]); }
+        }
+        readback.unmap();
+        // A true format replacement must still create a matching GPU image,
+        // even when dimensions and every source byte are identical.
+        app.world_mut().resource_mut::<Assets<Image>>().get_mut(&handle).unwrap()
+            .texture_descriptor.format = TextureFormat::Rgba8UnormSrgb;
+        for _ in 0..2 { app.update(); }
+        let gpu = app.sub_app(RenderApp).world().resource::<RenderAssets<GpuImage>>().get(&handle).unwrap();
+        assert_ne!(gpu.texture.id(), texture_id);
+        assert_eq!(gpu.texture_descriptor.format, TextureFormat::Rgba8UnormSrgb);
+    }
+}

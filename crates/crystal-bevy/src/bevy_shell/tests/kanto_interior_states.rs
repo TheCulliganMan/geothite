@@ -1,5 +1,8 @@
 // External-pack regressions exercise production callbacks and controller input.
 include!("kanto_pokecom_services.rs");
+include!("clinic_services.rs");
+include!("name_rater_services.rs");
+include!("fullscreen_lifecycle.rs");
 
 #[test]
 #[ignore = "requires an external verified pack via CRYSTAL_RENDER_TEST_PACK"]
@@ -752,10 +755,20 @@ fn kanto_department_store_sixth_floor_controller_applies_rooftop_stair_callback(
 #[test]
 #[ignore = "requires an external verified pack via CRYSTAL_RENDER_TEST_PACK"]
 fn kanto_celadon_vending_controller_buys_refuses_and_releases_input() {
-    fn menu_ready(controller:&mut VisibleShellController)->bool {
+    department_vending_controller_checks("CeladonDeptStore6F",8,"CeladonDeptStore6FVendingMachine");
+}
+
+#[test]
+#[ignore = "requires an external verified pack via CRYSTAL_RENDER_TEST_PACK"]
+fn goldenrod_vending_controller_buys_refuses_and_releases_input() {
+    department_vending_controller_checks("GoldenrodDeptStore6F",9,"GoldenrodVendingMachine");
+}
+
+fn department_vending_controller_checks(map:&str,customer_x:i16,script:&str) {
+    fn menu_ready(controller:&mut VisibleShellController,menu_id:&str)->bool {
         let snapshot=controller.snapshot().unwrap();
         snapshot.ui.menu.as_ref().is_some_and(|menu|
-            menu.menu_id==".MenuHeader@CeladonDeptStore6FVendingMachine")
+            menu.menu_id==menu_id)
             &&controller.shell.field_notice.is_none()
             &&controller.shell.field_notice_queue.is_empty()
             &&controller.shell.pending_item_notification.is_none()
@@ -766,6 +779,11 @@ fn kanto_celadon_vending_controller_buys_refuses_and_releases_input() {
     let root=AssetRoot::new(pack.parent().unwrap());
     let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&pack).unwrap();
     let runtime=CrystalRuntime::from_loaded_compiled_pack(&root,loaded).unwrap();
+    let menu_id=format!(".MenuHeader@{script}");
+    let module=&runtime.data().maps[map];
+    let source_ports=module.events.bg_events.iter().filter(|bg|bg.script==script)
+        .map(|bg|(bg.x,bg.y)).collect::<std::collections::BTreeSet<_>>();
+    assert_eq!(source_ports,[(8,1),(9,1),(10,1),(11,1)].into_iter().collect());
     let full_pocket=crate::core::models::bag::MAX_ITEM_STACK
         *u16::try_from(crate::core::models::bag::ITEM_POCKET_CAPACITY).unwrap();
     for (choice,item,price) in [(0,"FRESH_WATER",200),(1,"SODA_POP",300),(2,"LEMONADE",350)] {
@@ -773,7 +791,7 @@ fn kanto_celadon_vending_controller_buys_refuses_and_releases_input() {
             let mut shell=initialize_bevy_runtime_shell(root.clone(),runtime.clone(),
                 BevyShellStart::NewGameAtRuntimeTile {
                     spawn_identifier:runtime.title_new_game_spawn_identifier().unwrap(),
-                    map_name:"CeladonDeptStore6F".into(),tile_x:8,tile_y:2},
+                    map_name:map.into(),tile_x:customer_x,tile_y:2},
                 BevyShellConfig::default()).unwrap();
             shell.shell.set_trainer_identity("CHRIS",1).unwrap();
             shell.shell.session_mut().state_mut().money=money;
@@ -781,23 +799,25 @@ fn kanto_celadon_vending_controller_buys_refuses_and_releases_input() {
             let mut controller=VisibleShellController {shell};
             settle_visible_shell_until_input(&mut controller.shell).unwrap();
             // Face the actual background event from its customer-side tile.
+            assert!(!controller.shell.shell.session().overworld().object_runtime_tiles.values()
+                .any(|tile|*tile==TilePosition::new(customer_x,2)),"customer fixture cannot overlap an NPC");
             controller.press(GameButton::Up).unwrap();
             let tile=controller.snapshot().unwrap().overworld.tile;
-            assert_eq!(tile,TilePosition::new(8,2));
+            assert_eq!(tile,TilePosition::new(customer_x,2));
             assert_eq!(quest_item_quantity(&controller.shell,item),u16::from(stock));
             if let Some(directory)=std::env::var_os("KANTO_INTERIOR_STATE_REVIEW_DIR") {
-                let directory=PathBuf::from(directory).join("celadon-vending");
+                let directory=PathBuf::from(directory).join(format!("{map}-vending"));
                 std::fs::create_dir_all(&directory).unwrap();
                 let mode=if buys {"funded"}else if stock>0 {"full-pocket"}else{"no-money"};
                 controller.shell.shell.save(directory.join(format!("{item}-{mode}.crystalsave"))).unwrap();
             }
             controller.press(GameButton::A).unwrap();
             for _ in 0..32 {
-                if menu_ready(&mut controller) {break;}
+                if menu_ready(&mut controller,&menu_id) {break;}
                 controller.press(GameButton::A).unwrap();
             }
             let menu=controller.snapshot().unwrap().ui.menu.expect("vending source menu must be visible");
-            assert_eq!(menu.menu_id,".MenuHeader@CeladonDeptStore6FVendingMachine",
+            assert_eq!(menu.menu_id,menu_id,
                 "preserve the exact qualified source-menu identity");
             assert!(menu.layout.vertical_menus.iter().any(|vertical|
                 vertical.options.iter().any(|option|option.contains("FRESH WATER"))));
@@ -811,7 +831,7 @@ fn kanto_celadon_vending_controller_buys_refuses_and_releases_input() {
             // Stop there so the test cannot accidentally buy a second item.
             let mut saw_item_notice=false;
             for _ in 0..64 {
-                if menu_ready(&mut controller) {break;}
+                if menu_ready(&mut controller,&menu_id) {break;}
                 if controller.shell.field_notice.is_some() {
                     saw_item_notice=true;
                     assert_eq!(controller.shell.field_notice.as_deref(),
@@ -832,7 +852,7 @@ fn kanto_celadon_vending_controller_buys_refuses_and_releases_input() {
                     }
                 } else {controller.press(GameButton::A).unwrap();}
             }
-            assert!(menu_ready(&mut controller),"source vending loop must finish item notification before returning");
+            assert!(menu_ready(&mut controller,&menu_id),"source vending loop must finish item notification before returning");
             if buys {assert!(saw_item_notice,"successful purchase must present its pocket notification");}
             assert_eq!(quest_item_quantity(&controller.shell,item),u16::from(stock)+u16::from(buys));
             assert_eq!(controller.shell.shell.session().state().money,
@@ -844,10 +864,17 @@ fn kanto_celadon_vending_controller_buys_refuses_and_releases_input() {
                 "cancel must close the source text/menu and release input: ui={:?} cursor={:?} notice={:?} item={:?}",
                 closed.ui,controller.shell.active_script_cursor,controller.shell.field_notice,
                 controller.shell.pending_item_notification);
+            for _ in 0..8 {
+                controller.press(GameButton::Down).unwrap();
+                if controller.snapshot().unwrap().overworld.tile==TilePosition::new(customer_x,3) {break;}
+            }
+            assert_eq!(controller.snapshot().unwrap().overworld.tile,TilePosition::new(customer_x,3),
+                "cancel releases real movement through the production controller");
+            assert_eq!(controller.shell.last_error,None);
             controller.press(GameButton::Start).unwrap();
             assert!(controller.snapshot().unwrap().ui.menu.is_some(),
                 "production Start must work after leaving the vending machine");
-            println!("vending {item}: initial_money={money} initial_stock={stock} purchased={buys}; cancel/Start passed");
+            println!("{map} vending {item}: initial_money={money} initial_stock={stock} purchased={buys}; cancel/Start passed");
         }
     }
 }
@@ -939,14 +966,18 @@ fn kanto_pokecenter_controller_heals_real_hp_and_pp_through_nurse_input() {
     let root=AssetRoot::new(pack.parent().unwrap());
     let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&pack).unwrap();
     let runtime=CrystalRuntime::from_loaded_compiled_pack(&root,loaded).unwrap();
-    for map in ["PewterPokecenter1F","IndigoPlateauPokecenter1F"] {
+    for map in clinic_lobbies(&runtime) {
+        let map=map.as_str();
         let module=&runtime.data().maps[map];
-        let nurse=module.objects.iter().find(|o|o.script.ends_with("NurseScript")).unwrap();
+        let nurse=module.objects.iter().find(|o|o.script.ends_with("NurseScript")
+            ||o.script=="VioletPokecenterNurse").expect("authored clinic nurse");
         let tile=crate::core::world::session::object_tile_position_checked(nurse).unwrap();
         let shell=initialize_bevy_runtime_shell(root.clone(),runtime.clone(),
             BevyShellStart::NewGameAtRuntimeTile {spawn_identifier:runtime.title_new_game_spawn_identifier().unwrap(),
-                map_name:map.into(),tile_x:tile.x,tile_y:tile.y+2},BevyShellConfig::default()).unwrap();
+                map_name:map.into(),tile_x:tile.x,tile_y:tile.y+2},
+            BevyShellConfig{smoke_player_name:Some("CHRIS".into()),..default()}).unwrap();
         let mut controller=VisibleShellController{shell};
+        complete_visible_smoke_player_name_if_needed(&mut controller.shell,Some("CHRIS")).unwrap();
         controller.shell.shell.add_party_pokemon("CYNDAQUIL",5,None,None,"CHRIS",1,
             Dv::from_non_hp(10,10,10,10)).unwrap();
         let (max_hp,max_pp)={
@@ -961,9 +992,19 @@ fn kanto_pokecenter_controller_heals_real_hp_and_pp_through_nurse_input() {
         let overworld=controller.shell.shell.session().overworld();
         assert!(overworld.check_interaction_checked(1).unwrap().is_some(),
             "{map}: no nurse interaction from {:?}, nurse at {:?}",overworld.player.tile,tile);
+        if let Some(directory)=std::env::var_os("CLINIC_REVIEW_DIR") {
+            let directory=PathBuf::from(directory);std::fs::create_dir_all(&directory).unwrap();
+            controller.save(directory.join(format!("nurse-start-{map}.crystalsave"))).unwrap();
+        }
         let mut saw_prompt=false;
         for _ in 0..128 {
-            let snapshot=controller.snapshot().unwrap();saw_prompt|=snapshot.ui.text_window_open;
+            let snapshot=controller.snapshot().unwrap();
+            if snapshot.ui.text_window_open && !saw_prompt {
+                controller.press(GameButton::Left).unwrap();
+                assert_eq!(controller.snapshot().unwrap().overworld.tile,snapshot.overworld.tile,
+                    "{map}: nurse dialogue must own directional input");
+                saw_prompt=true;
+            }
             let pokemon=&controller.shell.shell.session().state().storage.party.pokemon[0];
             if pokemon.as_ref().is_some_and(|p|p.hp==max_hp&&p.moves[0].current_pp==max_pp) {break;}
             controller.press(GameButton::A).unwrap();
@@ -978,6 +1019,16 @@ fn kanto_pokecenter_controller_heals_real_hp_and_pp_through_nurse_input() {
         }
         controller.press(GameButton::Start).unwrap();
         assert!(controller.snapshot().unwrap().ui.menu.is_some(),"{map}: nurse retained input after healing");
+        controller.press(GameButton::B).unwrap();
+        let before=controller.snapshot().unwrap().overworld.tile;
+        for _ in 0..8 {
+            controller.press(GameButton::Down).unwrap();
+            if controller.snapshot().unwrap().overworld.tile!=before {break;}
+        }
+        assert_eq!(controller.snapshot().unwrap().overworld.tile,TilePosition::new(before.x,before.y+1),
+            "{map}: nurse must return ordinary walking input");
+        assert_eq!(controller.shell.last_error,None);
+        println!("{map}: real nurse dialogue/input ownership, HP/PP healing, Start and walking passed");
     }
 }
 

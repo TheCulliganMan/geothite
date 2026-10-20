@@ -120,6 +120,8 @@ mod mountain_portals;
 mod outdoor_mountains;
 #[path = "mesh/modeled_interiors.rs"]
 mod modeled_interiors;
+#[path = "mesh/radio_glazing.rs"]
+mod radio_glazing;
 #[path = "mesh/new_bark.rs"]
 mod new_bark;
 #[path = "mesh/source_forest_floor.rs"]
@@ -180,6 +182,9 @@ mod terrace_levels;
 #[path = "mesh/terrace_datum.rs"]
 mod terrace_datum;
 pub use terrace_datum::source_terrace_datum;
+#[path = "mesh/terrace_regions.rs"]
+mod terrace_regions;
+pub use terrace_regions::{TerraceSourceRegion, connected_source_terrace_datum};
 /// Saffron and the Seafoam coast are level ground; Tin Tower hops cross barriers on one floor.
 /// Their collision edges must not create cumulative outdoor hills.
 pub fn jump_changes_floor_level(map: &str) -> bool {
@@ -427,6 +432,9 @@ pub struct TerrainMeshData {
     tree_cache: Option<HashMap<TreeMeshKey, usize>>,
     /// Temporary source-plot occupancy, shared by all trees in one build.
     tree_neighborhood: Option<Vec<bool>>,
+    /// Temporary authored cap ownership, retained through mineral deformation.
+    /// Cleared after hidden backing is built; never uploaded to the renderer.
+    mineral_cap_ranges: Option<Vec<std::ops::Range<usize>>>,
     pub textured: SurfaceMeshData,
     pub solid: SurfaceMeshData,
     /// Rock beyond authenticated cave map bounds; separate reveal policy.
@@ -874,9 +882,21 @@ pub(crate) fn begin_runtime_terrain_mesh_with_profiles(
     frame: &VisualWorldFrame, samples: &TerrainImageSamples,
     profiles: &crate::live_profiles::Document,
 ) -> Result<PendingRuntimeTerrain, TerrainMeshError> {
+    begin_terrain_with_background(frame,samples,profiles,true)
+}
+/// Full native source geometry and shared grove recipes, with no synthetic
+/// repeated apron that could cover a neighboring panorama map.
+pub(crate) fn begin_distant_terrain_mesh_with_profiles(
+    frame: &VisualWorldFrame, samples: &TerrainImageSamples,
+    profiles: &crate::live_profiles::Document,
+) -> Result<PendingRuntimeTerrain, TerrainMeshError> {
+    begin_terrain_with_background(frame,samples,profiles,false)
+}
+fn begin_terrain_with_background(frame:&VisualWorldFrame,samples:&TerrainImageSamples,
+    profiles:&crate::live_profiles::Document,background:bool)->Result<PendingRuntimeTerrain,TerrainMeshError> {
     let mut groves = DeferredGroves::default();
-    let mut terrain = build_terrain_mesh_internal(frame, Some(samples), true,
-        Some(profiles), None, Some(&mut groves))?;
+    let mut terrain = build_terrain_mesh_internal_with_background(frame, Some(samples), true,
+        Some(profiles), None, Some(&mut groves),background)?;
     // This base remains live throughout progressive grove preparation. Free
     // builder growth slack now rather than carrying it into every later object.
     terrain.solid.compact_build_storage();
@@ -10173,9 +10193,12 @@ fn seating_surfaces_with_candidate_guard(frame: &VisualWorldFrame,
                 &&source.metatile_id==0x16&&p.kind==crate::interior_models::ModelKind::LinkSeat {
                 std::f32::consts::PI
             } else { 0. };
-            seats.push(crate::seating::Seat { rect: [p.column as f32, p.row as f32,
-                p.width as f32, p.height as f32], height: height * frame.tile_size.y / 8.,
-                yaw: matches!(p.kind, crate::interior_models::ModelKind::Chair | crate::interior_models::ModelKind::LinkSeat | crate::interior_models::ModelKind::StationBench).then_some(yaw) });
+            let rects=modeled_interiors::store_bench_seat_rects(&frame.map_id,p,source)
+                .map(Vec::from).unwrap_or_else(||vec![[p.column as f32,p.row as f32,p.width as f32,p.height as f32]]);
+            for rect in rects {
+                seats.push(crate::seating::Seat { rect, height: height * frame.tile_size.y / 8.,
+                    yaw: matches!(p.kind, crate::interior_models::ModelKind::Chair | crate::interior_models::ModelKind::LinkSeat | crate::interior_models::ModelKind::StationBench).then_some(yaw) });
+            }
         }
     }
     // Empty routes/rooms must not initialize the entire exterior model catalog
@@ -10384,3 +10407,7 @@ pub(crate) fn pond_support_correction(frame:&VisualWorldFrame,cell:bevy::prelude
     foot:bevy::prelude::Vec2,resolved:&[f32])->f32 {
     enclosed_ponds::support_correction(frame,cell,foot,resolved)
 }
+
+#[cfg(test)]
+#[path = "mesh/distant_background_tests.rs"]
+mod distant_background_tests;

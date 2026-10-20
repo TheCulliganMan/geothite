@@ -42,7 +42,11 @@ def anatomy():
 
 def body_reference_span():
  p=anatomy();lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);points=[q[:3] for q in CHAIN]+[(-.306,1.12,.10)]
- return sum(math.dist(a,b) for a,b in zip(points,points[1:]))*HEIGHT/(hi-lo)
+ # Preserve the reviewed metadata's left-to-right reduction across Python
+ # versions, rather than changing its last bit with compensated sum.
+ length=0.
+ for a,b in zip(points,points[1:]):length+=math.dist(a,b)
+ return length*HEIGHT/(hi-lo)
 
 def sculpture():
  p=anatomy()

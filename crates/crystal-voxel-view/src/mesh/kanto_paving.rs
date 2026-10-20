@@ -999,7 +999,7 @@ mod tests {
                         y,
                         d,
                         [w, e, n, s],
-                        -2.,
+                        crate::profile::WATER_HEIGHT,
                         0.,
                     );
                 }
@@ -1224,7 +1224,7 @@ mod tests {
             mesh.solid
                 .positions
                 .iter()
-                .all(|p| p[1] <= 0. && p[1] >= -2.)
+                .all(|p| p[1] <= 0. && p[1] >= crate::profile::WATER_HEIGHT)
         );
         for tri in mesh.solid.indices.chunks_exact(3) {
             let [a, b, c] =

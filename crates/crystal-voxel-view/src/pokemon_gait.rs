@@ -12,9 +12,10 @@ pub(crate) struct WalkLeg {
     c: Vec3,
     pole: Vec3,
     phase: f32,
+    support_z: f32,
 }
 
-fn world(rig: &SpeciesRig, pose: &[Transform], joint: usize) -> Mat4 {
+pub(super) fn world(rig: &SpeciesRig, pose: &[Transform], joint: usize) -> Mat4 {
     let local = pose[joint].to_matrix();
     rig.joints[joint]
         .parent
@@ -91,6 +92,7 @@ pub(super) fn build(rig: &mut SpeciesRig) {
     let center = support_center(rig);
     let is_crawl = crawl(rig.species.name());
     let is_quad = quadruped(rig.species.name());
+    let style = travel::style(rig.species.name());
     let mut groups: std::collections::BTreeMap<usize, Vec<(Range<usize>, bool)>> =
         Default::default();
     let mut seeds = Vec::new();
@@ -225,6 +227,19 @@ pub(super) fn build(rig: &mut SpeciesRig) {
             (flo.y + fhi.y) * 0.5,
             (flo.z + fhi.z) * 0.5,
         );
+        // Feet and long toes must not pull the hip pivot forward. Locate the
+        // attachment in the upper quarter of the actual leg, when available.
+        let leg_points: Vec<_> = parts.iter().filter(|(_, foot)| !*foot)
+            .flat_map(|(range, _)| range.clone())
+            .map(|v| Vec3::from_array(rig.neutral.positions[v])).collect();
+        let attachment = if is_crawl || is_quad || leg_points.is_empty() {
+            (lo + hi) * 0.5
+        } else {
+            let (min, max) = point_bounds(leg_points.iter().copied());
+            let (min, max) = point_bounds(leg_points.iter().copied()
+                .filter(|p| p.y >= max.y - (max.y - min.y) * 0.25));
+            (min + max) * 0.5
+        };
         let hip = Vec3::new(
             (lo.x + hi.x) * 0.5,
             hi.y + if hi.y - fhi.y < height * 0.08 {
@@ -232,7 +247,7 @@ pub(super) fn build(rig: &mut SpeciesRig) {
             } else {
                 0.
             },
-            (lo.z + hi.z) * 0.5,
+            attachment.z,
         );
         let distance = hip.distance(ankle);
         if distance < height * 0.01 {
@@ -294,7 +309,12 @@ pub(super) fn build(rig: &mut SpeciesRig) {
                 rig.joint_weights[v] = [w, 1. - w, 0., 0.];
             }
         }
-        let phase = if !rig.crawl_segments.is_empty() {
+        let phase = if style == travel::Style::Hop {
+            0.
+        } else if matches!(style, travel::Style::Toad | travel::Style::Bound) && is_quad {
+            // Paired hind-leg push followed by the paired foreleg catch.
+            if rear { 0. } else { 0.12 }
+        } else if !rig.crawl_segments.is_empty() {
             // Bilateral prolegs on one abdominal segment move together;
             // successive pairs follow the wave down the larva's body.
             -(rig
@@ -324,13 +344,17 @@ pub(super) fn build(rig: &mut SpeciesRig) {
             c: ankle,
             pole: bend,
             phase,
+            // A biped's support travels about its hip, not the center of its
+            // forward-projecting toes. Keep the authored front/rear support
+            // distribution for quadrupeds and independent crawler legs.
+            support_z: if is_crawl || is_quad { ankle.z } else { hip.z },
         });
     }
     rig.walk_cycle = legs
         .iter()
         .map(|leg| leg.a.distance(leg.b) + leg.b.distance(leg.c))
         .fold(f32::INFINITY, f32::min)
-        * 0.75;
+        * 0.75 * style.stride();
     if !rig.walk_cycle.is_finite() {
         rig.walk_cycle = height * 0.5;
     }
@@ -344,7 +368,10 @@ pub(super) fn build(rig: &mut SpeciesRig) {
 }
 
 fn step(phase: f32, cycle: f32) -> (f32, f32) {
-    let stance = 0.60;
+    step_with_stance(phase, cycle, 0.60)
+}
+
+fn step_with_stance(phase: f32, cycle: f32, stance: f32) -> (f32, f32) {
     let p = phase.rem_euclid(1.);
     let span = cycle * stance;
     if p < stance {
@@ -378,11 +405,8 @@ pub(super) fn assert_supports(rig: &SpeciesRig, pose: &[Transform]) {
             rig.species.name()
         );
         assert!(
-            foot_matrix
-                .to_scale_rotation_translation()
-                .1
-                .angle_between(Quat::IDENTITY)
-                < 0.001,
+            (foot_matrix.to_scale_rotation_translation().1 * Vec3::Y)
+                .distance(Vec3::Y) < 0.001,
             "{} planted foot tipped",
             rig.species.name()
         );
@@ -411,10 +435,17 @@ fn pokemon_motion_stance_matches_travel_and_swing_closes_smoothly() {
 
 pub(super) fn sample(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Transform]) {
     let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+    let style = travel::style(rig.species.name());
     for leg in &rig.walk_legs {
-        let (z, lift) = step(phase / TAU + leg.phase, rig.walk_cycle);
+        let (z, lift) = step_with_stance(phase / TAU + leg.phase, rig.walk_cycle, style.stance());
+        let clearance = match style {
+            travel::Style::Heavy | travel::Style::Scuttle => 0.10,
+            travel::Style::Toad => 0.14,
+            _ => 0.18,
+        };
         let target =
-            leg.c + Vec3::new(0., lift * height.min(leg.a.distance(leg.c)) * 0.18, z) * weight;
+            leg.c + Vec3::new(0., lift * height.min(leg.a.distance(leg.c)) * clearance,
+                z + leg.support_z - leg.c.z) * weight;
         let parent = rig.joints[leg.hip].parent.unwrap();
         let parent_world = world(rig, pose, parent);
         let hip = parent_world.transform_point3(rig.joints[leg.hip].bind.translation);
@@ -437,6 +468,9 @@ pub(super) fn sample(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Tran
         pose[leg.knee].rotation = (upper_rotation.inverse() * lower_rotation).normalize();
         pose[leg.foot].rotation = lower_rotation.inverse().normalize();
     }
+}
+
+pub(super) fn settle(rig: &SpeciesRig, pose: &mut [Transform]) {
     // Only the pose moves. Neither root travel nor the authoritative foot changes.
     // Cache support vertices; no geometry buffers are rebuilt during playback.
     if rig.joints.len() <= 256 && !rig.ground_vertices.is_empty() {
@@ -457,6 +491,34 @@ pub(super) fn sample(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Tran
 #[cfg(test)]
 mod support_center_tests {
     use super::*;
+
+    #[test]
+    fn pokemon_motion_biped_steps_are_centered_under_hips_not_toes() {
+        for name in ["PIKACHU", "RAICHU", "MACHOP", "MACHOKE", "MACHAMP",
+            "CHARMANDER", "CHARMELEON", "ELECTABUZZ", "MAGMAR", "KANGASKHAN",
+            "MEOWTH", "FURRET", "RATICATE"] {
+            let rig = world_rig(crate::species_rig::for_species(name).unwrap());
+            assert_eq!(rig.walk_legs.len(), 2, "{name}");
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            for leg in &rig.walk_legs {
+                // Opposite ends of stance must straddle the hip equally.
+                rig.sample_locomotion(0., -leg.phase * TAU, 1., &mut pose);
+                let front = world(rig, &pose, leg.foot).transform_point3(Vec3::ZERO).z;
+                rig.sample_locomotion(0., (0.6 - leg.phase) * TAU, 1., &mut pose);
+                let back = world(rig, &pose, leg.foot).transform_point3(Vec3::ZERO).z;
+                let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+                assert!(((front + back) * 0.5 - leg.a.z).abs() < height * 0.02,
+                    "{name}: stance is ahead of the hip");
+            }
+        }
+        for name in ["PONYTA", "RAPIDASH", "BULBASAUR", "CATERPIE", "WEEDLE"] {
+            let rig = world_rig(crate::species_rig::for_species(name).unwrap());
+            assert!(!rig.walk_legs.is_empty(), "{name}");
+            for leg in &rig.walk_legs {
+                assert_eq!(leg.support_z, leg.c.z, "{name}: authored support shifted");
+            }
+        }
+    }
 
     #[test]
     fn raichu_skin_support_center_uses_authored_hips_past_the_long_tail() {

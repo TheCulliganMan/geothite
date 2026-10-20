@@ -217,9 +217,9 @@ const FIELD_TEXT_BOX_TEXT_TOP_TILE: f32 = FIELD_TEXT_BOX_TOP_TILE + 2.0;
 const FIELD_YES_NO_LEFT_TILE: f32 = 14.0;
 const FIELD_YES_NO_TOP_TILE: f32 = 7.0;
 const FIELD_YES_NO_WIDTH_TILES: f32 = 6.0;
-// ASM `_YesNoBox` passes a 4x2 interior to `Textbox`, producing a 6x4
-// outer window. TypeScript's YesNoPrompt records the same 6x4 region.
-const FIELD_YES_NO_HEIGHT_TILES: f32 = 4.0;
+// _YesNoBox adds four to the top border coordinate. Inclusive rows7..=11
+// form a five-row window; PlaceVerticalMenuItems prints on rows8 and10.
+const FIELD_YES_NO_HEIGHT_TILES: f32 = 5.0;
 const FIELD_TEXT_BOX_ROW_SPACING_TILES: f32 = 2.0;
 const FIELD_TEXT_BOX_VISIBLE_ROWS: usize = 2;
 const START_MENU_LEFT_TILE: f32 = 9.0;
@@ -376,6 +376,10 @@ pub struct BevyShellConfig {
     /// entry callbacks. This is visual-state evidence, not progression.
     #[cfg(feature = "location-tester")]
     pub render_test_preview_flag: Option<String>,
+    /// Select an owned doll through the normal decoration mutation in a
+    /// disposable bedroom screenshot. Never reads or writes a player's save.
+    #[cfg(feature = "location-tester")]
+    pub render_test_preview_doll: Option<String>,
     /// Seed the location renderer's fresh session for incidental encounters.
     #[cfg(feature = "location-tester")]
     pub render_test_party: bool,
@@ -656,7 +660,8 @@ impl VisibleShellController {
             text.body = None;
         }
         if snapshot.battle.is_none()
-            && (self.shell.field_notice.is_some() || self.shell.pc_notice.is_some())
+            && (self.shell.field_notice.is_some() || self.shell.pc_notice.is_some()
+                || visible_pokecenter_pc_text_boundary(&self.shell).is_some())
             && let Some(pages) = visible_field_dialog_pages(&snapshot, &self.shell)
         {
             // Match the graphical notice owner rather than exposing a source
@@ -670,7 +675,11 @@ impl VisibleShellController {
                 snapshot.ui.text = Some(RuntimeTextSnapshot {
                     label: if self.shell.field_notice.is_some() {
                         "visible-shell:field-notice"
-                    } else { "visible-shell:pc-notice" }.to_string(),
+                    } else if self.shell.pc_notice.is_some() {
+                        "visible-shell:pc-notice"
+                    } else {
+                        &visible_pokecenter_pc_text_boundary(&self.shell).unwrap().label
+                    }.to_string(),
                     source: RuntimeTextSource::AsmText,
                     asm_text: Some(page.clone()),
                     body: None,
@@ -680,6 +689,17 @@ impl VisibleShellController {
                 snapshot.ui.text_window_open = true;
                 snapshot.ui.window_open = true;
             }
+        }
+        if self.shell.pc_hub_session_open
+            && visible_field_dialog_pages(&snapshot, &self.shell).is_none()
+        {
+            // PCScript suspends the core chooser while the visible controller
+            // owns Bill's menus and storage lists. Do not expose that retained
+            // chooser in place of the menu that accepts keyboard/MCP input.
+            // Boot text and transfer notices keep the field printer above it.
+            snapshot.ui.menu = None;
+            snapshot.ui.text = None;
+            snapshot.ui.text_window_open = false;
         }
         if let Some(message) = self.shell.battle_messages.front() {
             // Battle dialogue is owned by the visible controller rather than
@@ -1617,6 +1637,7 @@ struct VisiblePcMovePresentation {
 struct VisibleBillPcMoveSave {
     presentation: VisiblePcMovePresentation,
     source: crystal_assets::RuntimePokemonStorageLocation,
+    source_scroll: usize,
     target: crystal_assets::RuntimePokemonStorageLocation,
     phase: VisibleBillPcMoveSavePhase,
     frames_remaining: u8,
@@ -1688,6 +1709,7 @@ struct NativeAudioBackend {
     preview_muted: bool,
     music_sink: Option<rodio::Sink>,
     music_volume: f32,
+    master_volume: f32,
     transient_sinks: Vec<rodio::Sink>,
     transient_audio_id: Option<String>,
     transient_deadline: Option<Instant>,
@@ -1707,6 +1729,15 @@ struct NativeAudioOutput {
 }
 
 #[cfg(all(not(test), not(target_arch = "wasm32")))]
+macro_rules! native_audio_trace {
+    ($($argument:tt)*) => {
+        if std::env::var_os("CRYSTAL_AUDIO_TRACE").is_some() {
+            eprintln!($($argument)*);
+        }
+    };
+}
+
+#[cfg(all(not(test), not(target_arch = "wasm32")))]
 impl NativeAudioBackend {
     fn new() -> Result<Self> {
         // CoreAudio/device enumeration can block for hundreds of milliseconds.
@@ -1719,11 +1750,14 @@ impl NativeAudioBackend {
                 _stream: stream,
                 handle,
             },
-            // Preview launches stay silent unless sound is explicitly enabled.
-            preview_muted: std::env::var_os("CRYSTAL_PREVIEW_MUTE").is_some()
-                || std::env::var("CRYSTAL_PREVIEW_SOUND").as_deref() != Ok("1"),
+            // Packaged games play sound by default. Developer clients and
+            // render previews stay silent, including when built in release.
+            preview_muted: !cfg!(feature = "desktop-app")
+                || cfg!(any(feature = "location-tester", feature = "dev-tools"))
+                || std::env::var_os("CRYSTAL_PREVIEW_MUTE").is_some(),
             music_sink: None,
             music_volume: 1.0,
+            master_volume: 1.0,
             transient_sinks: Vec::new(),
             transient_audio_id: None,
             transient_deadline: None,
@@ -1745,7 +1779,7 @@ impl NativeAudioBackend {
                         .remove(&cache_key)
                         .expect("completed audio preparation exists");
                     let elapsed = preparation.started_at.elapsed();
-                    eprintln!(
+                    native_audio_trace!(
                         "crystal-bevy audio prepared {:?} {} worker_ms={}",
                         command.kind,
                         command.audio_id,
@@ -1776,7 +1810,7 @@ impl NativeAudioBackend {
                 let _ = sender.send(result);
             })
             .with_context(|| format!("spawn audio preparation worker for {}", command.audio_id))?;
-        eprintln!(
+        native_audio_trace!(
             "crystal-bevy audio queued preparation {:?} {}",
             command.kind, command.audio_id
         );
@@ -1801,13 +1835,24 @@ impl NativeAudioBackend {
         self.refresh_music_volume();
     }
 
+    fn set_master_volume(&mut self, volume: f32) {
+        let volume = if volume.is_finite() { volume.clamp(0.0, 1.0) } else { 1.0 };
+        if self.master_volume == volume { return; }
+        self.master_volume = volume;
+        self.refresh_music_volume();
+        for sink in &self.transient_sinks { sink.set_volume(self.output_volume()); }
+        native_audio_trace!("crystal-bevy master volume={} music_sink_volume={:?}",
+            self.output_volume(), self.music_sink.as_ref().map(rodio::Sink::volume));
+    }
+
+    fn output_volume(&self) -> f32 {
+        if self.preview_muted { 0.0 } else { self.master_volume }
+    }
+
     fn refresh_music_volume(&self) {
         if let Some(sink) = self.music_sink.as_ref() {
-            sink.set_volume(if self.preview_muted {
-                0.0
-            } else {
-                music_volume_during_transient(self.music_volume, self.transient_audio_id.as_deref())
-            });
+            sink.set_volume(music_volume_during_transient(
+                self.music_volume * self.output_volume(), self.transient_audio_id.as_deref()));
         }
     }
 
@@ -1828,7 +1873,7 @@ impl NativeAudioBackend {
             Instant::now(),
         ) {
             if let Some(audio_id) = self.transient_audio_id.as_deref() {
-                eprintln!("crystal-bevy audio completed transient {audio_id}");
+                native_audio_trace!("crystal-bevy audio completed transient {audio_id}");
             }
             self.stop_transient();
             return true;
@@ -1856,14 +1901,12 @@ impl NativeAudioBackend {
         }
         self.transient_sinks.retain(|sink| !sink.empty());
         let sink = rodio::Sink::try_new(&self.output.handle).context("create native audio sink")?;
-        if self.preview_muted {
-            sink.set_volume(0.0);
-        } else if matches!(command.kind, ModpackAudioKind::Music) {
+        if matches!(command.kind, ModpackAudioKind::Music) {
             sink.set_volume(music_volume_during_transient(
-                self.music_volume,
+                self.music_volume * self.output_volume(),
                 self.transient_audio_id.as_deref(),
             ));
-        }
+        } else { sink.set_volume(self.output_volume()); }
         let samples = pcm_samples_for_audio_command(&pcm_i16_samples(audio)?, sound, command);
         let channels = u16::from(audio.format.channels);
         let sample_rate = audio.format.sample_rate_hz;
@@ -1892,13 +1935,14 @@ impl NativeAudioBackend {
         }
         sink.play();
         if matches!(command.kind, ModpackAudioKind::Music) {
-            eprintln!(
-                "crystal-bevy audio started music {} frames={} sample_rate={} duration_ms={} dispatch_ms={}",
+            native_audio_trace!(
+                "crystal-bevy audio started music {} frames={} sample_rate={} duration_ms={} dispatch_ms={} volume={}",
                 command.audio_id,
                 frame_count,
                 sample_rate,
                 playback_duration.as_millis(),
-                dispatch_started_at.elapsed().as_millis()
+                dispatch_started_at.elapsed().as_millis(),
+                sink.volume()
             );
             self.music_sink = Some(sink);
         } else {
@@ -1907,13 +1951,14 @@ impl NativeAudioBackend {
             self.transient_deadline = (!command.looped)
                 .then(|| started_at.checked_add(playback_duration))
                 .flatten();
-            eprintln!(
-                "crystal-bevy audio started transient {} frames={} sample_rate={} duration_ms={} dispatch_ms={}",
+            native_audio_trace!(
+                "crystal-bevy audio started transient {} frames={} sample_rate={} duration_ms={} dispatch_ms={} volume={}",
                 command.audio_id,
                 frame_count,
                 sample_rate,
                 playback_duration.as_millis(),
-                dispatch_started_at.elapsed().as_millis()
+                dispatch_started_at.elapsed().as_millis(),
+                sink.volume()
             );
             self.transient_sinks.push(sink);
             self.refresh_music_volume();
@@ -4242,6 +4287,7 @@ enum VisiblePlayerPcAction {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 enum VisiblePcConfirmation {
     LinkTrade,
+    OakRating,
     TossItem {
         item_id: String,
         stack_index: usize,
@@ -5085,7 +5131,16 @@ struct OakIntroArtKey {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+struct NameEntryPokemonArt {
+    icon_id: String,
+    gender: Option<char>,
+    frame: usize,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 struct NameEntryArtKey {
+    pokemon: Option<NameEntryPokemonArt>,
+    cursor_visible: bool,
     label: String,
     value: String,
     cursor_column: usize,
@@ -6036,13 +6091,22 @@ pub fn run_bevy_shell(
     #[cfg(not(all(feature = "location-tester", not(target_arch = "wasm32"))))]
     let headless_capture = false;
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
-    anyhow::ensure!(!headless_capture || (render_test_screenshot.is_some() && !render_test_live
-        && render_capture::requested_image_target(render_test_live)?),
-        "headless capture requires a one-shot screenshot with an image target");
+    anyhow::ensure!(!headless_capture || ((render_test_screenshot.is_some() || render_test_measure.is_some())
+        && !render_test_live && render_capture::requested_image_target(render_test_live)?),
+        "headless capture requires a screenshot or measurement with an image target");
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    anyhow::ensure!(!headless_capture || render_test_measure.is_none()
+        || std::env::var("CRYSTAL_MEASURE_3D_VALIDATION").as_deref() == Ok("on"),
+        "headless measurement requires CRYSTAL_MEASURE_3D_VALIDATION=on");
     let plugins = DefaultPlugins.build();
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     let plugins = if headless_capture {
         plugins.disable::<bevy::winit::WinitPlugin>()
+    } else { plugins };
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+    let plugins = if headless_capture && bevy::log::tracing::dispatcher::has_been_set() {
+        // A headless batch creates fresh Apps but keeps the process subscriber.
+        plugins.disable::<bevy::log::LogPlugin>()
     } else { plugins };
     #[cfg(not(target_arch = "wasm32"))]
     let plugins = plugins.set(native_tasks::plugin());
@@ -6052,7 +6116,7 @@ pub fn run_bevy_shell(
         ..default()
     });
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
-    let plugins = if render_test_screenshot.is_some() && !render_test_live {
+    let plugins = if headless_capture || (render_test_screenshot.is_some() && !render_test_live) {
         // One-shot capture exits from the image-save callback. Keeping its
         // render world on the main thread avoids waiting for RenderAppChannels
         // during Winit teardown. Live review and ordinary play stay pipelined.
@@ -6237,6 +6301,9 @@ pub fn run_bevy_shell(
                 .after(apply_visible_battle_screen_offset)
                 .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
         )
+        .add_systems(Update, summit_backdrop::publish
+            .after(publish_visual_world_frame)
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract))
         .add_systems(Update, publish_pokemon_dimensions
             .after(publish_visual_world_frame)
             .in_set(crystal_render_api::WorldRenderSet::PresentationExtract))
@@ -6246,6 +6313,10 @@ pub fn run_bevy_shell(
             .in_set(crystal_render_api::WorldRenderSet::PresentationExtract))
         .add_systems(Update, publish_surf_mount
             .after(publish_party_follower)
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract));
+    #[cfg(feature = "voxel-view")]
+    app.init_resource::<destination_preload::PublishedDestination>()
+        .add_systems(Update, destination_preload::publish.after(publish_visual_world_frame)
             .in_set(crystal_render_api::WorldRenderSet::PresentationExtract));
     #[cfg(feature = "voxel-view")]
     app.add_systems(
@@ -6425,12 +6496,20 @@ pub fn run_bevy_shell(
     }
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     if headless_capture {
-        app.add_plugins(bevy::app::ScheduleRunnerPlugin::run_loop(std::time::Duration::from_millis(16)));
+        let interval = if render_test_measure.is_some() { std::time::Duration::ZERO }
+            else { std::time::Duration::from_millis(16) };
+        app.add_plugins(bevy::app::ScheduleRunnerPlugin::run_loop(interval));
     }
+    #[cfg(all(target_os = "macos", feature = "desktop-app"))]
+    if !headless_capture { desktop_settings::install(&mut app); }
     #[cfg(target_os = "macos")]
     let native_window_keepalive = if headless_capture { None } else {
         Some(native_window_lifetime::retain_primary(&mut app)?)
     };
+    #[cfg(feature = "location-tester")]
+    let verified_pc_lcd=VerifiedPcLcdCapture::default();
+    #[cfg(feature = "location-tester")]
+    app.insert_resource(verified_pc_lcd.clone());
     let app_exit = app.run();
     #[cfg(target_os = "macos")]
     // The runner has now returned/dropped its render world. Release the final
@@ -6440,11 +6519,11 @@ pub fn run_bevy_shell(
 
     #[cfg(feature = "location-tester")]
     if let Some(path) = render_test_screenshot.as_deref() {
-        validate_render_test_screenshot(path)?;
+        validate_render_test_screenshot_with_pc_lcd(path,verified_pc_lcd.0.load(std::sync::atomic::Ordering::Relaxed))?;
     }
     #[cfg(feature = "location-tester")]
     if let Some(path) = render_test_second_screenshot.as_deref() {
-        validate_render_test_screenshot(path)?;
+        validate_render_test_screenshot_with_pc_lcd(path,verified_pc_lcd.0.load(std::sync::atomic::Ordering::Relaxed))?;
     }
 
     Ok(())
@@ -6672,7 +6751,16 @@ fn sync_manual_world_view_layers(
 mod render_capture;
 
 #[cfg(feature = "location-tester")]
-fn validate_render_test_screenshot(path: &Path) -> Result<()> {
+#[derive(Resource,Clone,Default)]
+struct VerifiedPcLcdCapture(std::sync::Arc<std::sync::atomic::AtomicBool>);
+
+#[cfg(feature = "location-tester")]
+fn validate_render_test_screenshot(path:&Path)->Result<()> {
+    validate_render_test_screenshot_with_pc_lcd(path,false)
+}
+
+#[cfg(feature = "location-tester")]
+fn validate_render_test_screenshot_with_pc_lcd(path: &Path, verified_pc_lcd:bool) -> Result<()> {
     let screenshot = image::open(path)
         .with_context(|| format!("read Bevy render-test screenshot {}", path.display()))?
         .into_rgba8();
@@ -6697,7 +6785,8 @@ fn validate_render_test_screenshot(path: &Path) -> Result<()> {
         max_luma = max_luma.max(luma);
     }
     anyhow::ensure!(
-        colors.len() >= 4 && max_luma.saturating_sub(min_luma) >= 32_000,
+        colors.len() >= if verified_pc_lcd {3}else{4}
+            && max_luma.saturating_sub(min_luma) >= 32_000,
         "Bevy render-test screenshot {} is a blank/uniform frame ({} colors, luma range {})",
         path.display(),
         colors.len(),
@@ -7587,6 +7676,30 @@ fn apply_visible_shell_smoke_frame(
     runtime_shell: &mut BevyRuntimeShell,
     buttons: &[GameButton],
 ) -> Result<VisibleShellSmokeFrameOutcome> {
+    if runtime_shell.pending_name_input.is_some() {
+        // Renderer-neutral input must drive the native naming owner too.
+        // Adapt joypad buttons to its existing key handler; never maintain
+        // another naming cursor, editor, or completion dispatcher here.
+        let mut keys = ButtonInput::default();
+        for button in buttons {
+            keys.press(match button {
+                GameButton::Up => KeyCode::ArrowUp,
+                GameButton::Down => KeyCode::ArrowDown,
+                GameButton::Left => KeyCode::ArrowLeft,
+                GameButton::Right => KeyCode::ArrowRight,
+                GameButton::A => KeyCode::KeyZ,
+                GameButton::B => KeyCode::KeyX,
+                GameButton::Start => KeyCode::Enter,
+                GameButton::Select => KeyCode::ShiftRight,
+            });
+        }
+        let before = runtime_shell.last_error.clone();
+        apply_visible_name_input_keys(&keys, runtime_shell);
+        if runtime_shell.last_error != before && let Some(error) = &runtime_shell.last_error {
+            anyhow::bail!("name entry: {error}");
+        }
+        return Ok(VisibleShellSmokeFrameOutcome { frame: None, interaction: false });
+    }
     let mut overworld_buttons = Vec::new();
     let mut interaction = false;
     for button in buttons.iter().copied() {
@@ -7794,6 +7907,13 @@ fn settle_visible_shell_controller(
             } else {
                 begin_closing_visible_remember_password_prompt(runtime_shell, true)?;
             }
+            continue;
+        }
+        if runtime_shell.mailbox_confirmation_response.is_some() {
+            // This wait has no input owner. Neutral hosts must cross the same
+            // 15 VBlanks as the graphical PC before returning to a prompt.
+            advance_visible_pc_input_vblanks(runtime_shell, 1);
+            finish_visible_pc_yes_no_answer(runtime_shell)?;
             continue;
         }
         if runtime_shell.bill_pc_move_save.is_some() {
@@ -8426,6 +8546,13 @@ fn initialize_bevy_runtime_shell(
             "preview flag requires a fresh disposable location session without saving");
         shell.set_script_flag_for_smoke(flag)?;
     }
+    #[cfg(feature = "location-tester")]
+    if config.render_test_preview_doll.is_some() {
+        anyhow::ensure!(runtime_tile_start && config.quick_save_path.is_none()
+            && config.render_test_screenshot.is_some() && !config.render_test_live
+            && shell.current_map_name() == "PlayersHouse2F",
+            "doll preview requires a fresh bedroom screenshot without saving");
+    }
     if title_menu.is_some() || initial_player_name_prompt {
         // MainMenu clears GAME_TIMER_COUNTING_F. The bit is armed only when
         // the new-game introduction reaches FinishContinue.
@@ -8837,13 +8964,36 @@ fn initialize_bevy_runtime_shell(
         let preview_flag=config.render_test_preview_flag.as_deref();
         #[cfg(not(feature = "location-tester"))]
         let preview_flag:Option<&str>=None;
+        #[cfg(feature = "location-tester")]
+        let preview_doll = config.render_test_preview_doll.as_deref();
+        #[cfg(not(feature = "location-tester"))]
+        let preview_doll: Option<&str> = None;
         // The session constructor can decide a callback branch before the
         // fixture flag is installed. Settle that initial callback, then rerun
         // the same production map-entry callback path for the disposable state.
-        for refresh in 0..if preview_flag.is_some(){2}else{1} {
+        for refresh in 0..if preview_flag.is_some() || preview_doll.is_some(){2}else{1} {
             if refresh==1 {
-                runtime_shell.shell.set_script_flag_for_smoke(preview_flag.unwrap())?;
-                runtime_shell.shell.apply_current_map_setup_callbacks("MAPSETUP_WARP")?;
+                if let Some(flag) = preview_flag {
+                    runtime_shell.shell.set_script_flag_for_smoke(flag)?;
+                }
+                if let Some(id) = preview_doll {
+                    let decoration = runtime_shell.runtime.data().decorations.decorations.iter()
+                        .find(|entry| entry.id == id && matches!(entry.category,
+                            DecorationCategory::BigDoll | DecorationCategory::Ornament))
+                        .with_context(|| format!("unknown doll preview {id}"))?.clone();
+                    runtime_shell.shell.set_script_flag_for_smoke(&decoration.event_flag)?;
+                    let side=(decoration.category==DecorationCategory::Ornament)
+                        .then_some(DecorationSide::Left);
+                    runtime_shell.shell.set_up_decoration(&decoration.id, side)?;
+                    // Reload through ordinary map entry so the newly visible
+                    // doll receives a loaded object struct as well as a flag.
+                    let spawn = runtime_shell.runtime.title_new_game_spawn_identifier()?;
+                    runtime_shell.shell.transition_to_spawn_point(spawn, "MAPSETUP_WARP")?;
+                    anyhow::ensure!(runtime_shell.shell.current_map_name() == "PlayersHouse2F",
+                        "doll preview requires the title spawn to be in PlayersHouse2F");
+                } else {
+                    runtime_shell.shell.apply_current_map_setup_callbacks("MAPSETUP_WARP")?;
+                }
             }
             continue_visible_script_after_prompt(&mut runtime_shell)?;
             let snapshot = runtime_shell.shell.snapshot()?;
@@ -8927,6 +9077,10 @@ include!("bevy_shell/stats_screen.rs");
 include!("bevy_shell/render_mod.rs");
 #[path = "bevy_shell/terrain_ledges.rs"]
 mod terrain_ledges;
+#[cfg(feature = "voxel-view")]
+mod summit_backdrop;
+#[cfg(feature = "voxel-view")]
+mod destination_preload;
 /// Read-only authored ledge metadata shared by native rendering and pack
 /// verification. Collision remains authoritative in the production controller.
 pub fn authored_visual_jump_ledges(width:u16,blocks:&[u16],
@@ -8961,6 +9115,8 @@ include!("bevy_shell/catch_tutorial.rs");
 
 #[cfg(not(target_arch = "wasm32"))]
 mod native_navigation;
+#[cfg(all(target_os = "macos", feature = "desktop-app"))]
+mod desktop_settings;
 #[cfg(target_os = "macos")]
 mod native_window_lifetime;
 

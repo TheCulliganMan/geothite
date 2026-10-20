@@ -6,7 +6,7 @@ head, body and feet and the diamond-shaped leaf in the earlier static model.
 
 The canonical asset is `models/actor_props/battle_chikorita.glb` under
 `crates/crystal-voxel-view`. It contains 19 anatomy parts, 3,220 triangles,
-7,463 normal-split vertices and an 11-joint standard glTF skin. The previous
+4,989 normal-split vertices and an 11-joint standard glTF skin. The previous
 same-species JSON is removed. The existing multi-asset Blender archive remains
 available; no additional generated Blender or STL copy is added.
 
@@ -62,3 +62,12 @@ The stored-geometry regression now checks exact writer reproduction and absence
 of nonzero components below the threshold. This repairs canonical authoring;
 it does not claim new anatomical or animation work. Production visual and
 regression evidence is recorded in `animated-models.md`.
+
+## Rounded body shading
+
+The [shared body shading refinement](leaf-saur-body-shading.md) removes hard
+lighting panels from the living body while retaining the folded botanical
+features. Triangle positions, original scale, supports, fitted artwork, skin
+weights and clip keys remain preserved. The current asset uses fewer normal
+splits. Its close native pair and actual moving field frame passed offscreen
+review, alongside the shared preservation and runtime checks.

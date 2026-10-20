@@ -3824,6 +3824,12 @@ fn shell_render_key(runtime_shell: &BevyRuntimeShell) -> u64 {
     runtime_shell.pending_gender_selection.hash(&mut hasher);
     runtime_shell.selected_player_gender.hash(&mut hasher);
     runtime_shell.pending_name_input.hash(&mut hasher);
+    if let Some(input) = runtime_shell.pending_name_input.as_ref() {
+        // Source cursor frames alternate two animation calls (four VBlanks).
+        ((runtime_shell.lcd_animation_frame / 4) & 1).hash(&mut hasher);
+        // Include visual icon/gender ownership and its bounded idle phase.
+        visible_name_entry_pokemon_art(runtime_shell, input).ok().hash(&mut hasher);
+    }
     runtime_shell.pending_mail_input.hash(&mut hasher);
     runtime_shell.pending_mail_read.hash(&mut hasher);
     runtime_shell.pending_name_choice.hash(&mut hasher);
@@ -4145,6 +4151,14 @@ impl VisibleMapCatalogEntry for std::sync::Arc<crate::RuntimeMapCatalogSnapshot>
 fn connected_render_map_placements<'a, M: VisibleMapCatalogEntry>(
     active_map_name: &str, maps: &'a [M],
 ) -> Result<Vec<(&'a crate::RuntimeMapCatalogSnapshot, i32, i32)>> {
+    connected_render_map_placements_to_depth(active_map_name, maps, Some(2))
+}
+
+/// The summit consumes the complete connected outdoor component. Ordinary
+/// field composition retains its two-hop budget and overlap precedence.
+fn connected_render_map_placements_to_depth<'a, M: VisibleMapCatalogEntry>(
+    active_map_name: &str, maps: &'a [M], max_depth: Option<usize>,
+) -> Result<Vec<(&'a crate::RuntimeMapCatalogSnapshot, i32, i32)>> {
     let lookup = |name: &str| maps.iter().map(VisibleMapCatalogEntry::visible_map)
         .find(|map| map.map_name == name);
     let active = lookup(active_map_name)
@@ -4173,19 +4187,22 @@ fn connected_render_map_placements<'a, M: VisibleMapCatalogEntry>(
         let t=gate_plot(tower,&[&[0x2e,0x18,0x2f],&[0x30,0x16,0x31]],2)?;
         Some((route,tower,r.0-t.0,r.1-t.1))
     });
-    let mut pending = vec![(active, 0i32, 0i32, 0u8)];
+    let mut pending = vec![(active, 0i32, 0i32, 0usize)];
     let mut visited = std::collections::HashSet::from([(active.map_name.as_str(), 0i32, 0i32)]);
+    // A distant map has one canonical placement, even if a cycle or reciprocal
+    // connection reaches it again. This makes unbounded traversal finite.
+    let visit_key = |name, x, y| if max_depth.is_none() { (name, 0, 0) } else { (name, x, y) };
     let mut cursor = 0;
     while cursor < pending.len() {
         let (source, x, y, depth) = pending[cursor];
         cursor += 1;
-        if depth == 2 { continue; }
+        if max_depth.is_some_and(|limit| depth >= limit) { continue; }
         if let Some((route,tower,dx,dy))=gate_link {
             let link=if source.map_name==route.map_name {Some((tower,dx,dy))}
                 else if source.map_name==tower.map_name {Some((route,-dx,-dy))}else{None};
             if let Some((target,dx,dy))=link {
                 let next=(target.map_name.as_str(),x.saturating_add(dx),y.saturating_add(dy));
-                if visited.insert(next) {pending.push((target,next.1,next.2,depth+1));}
+                if visited.insert(visit_key(next.0, next.1, next.2)) {pending.push((target,next.1,next.2,depth+1));}
             }
         }
         for connection in &source.attributes.connections {
@@ -4202,10 +4219,12 @@ fn connected_render_map_placements<'a, M: VisibleMapCatalogEntry>(
                 _ => continue,
             };
             let next = (target.map_name.as_str(), x.saturating_add(dx), y.saturating_add(dy));
-            if visited.insert(next) { pending.push((target, next.1, next.2, depth+1)); }
+            if visited.insert(visit_key(next.0, next.1, next.2)) { pending.push((target, next.1, next.2, depth+1)); }
         }
     }
-    pending.sort_by_key(|(_,_,_,depth)| if *depth == 0 { 0 } else { 3-depth });
+    if max_depth.is_some() {
+        pending.sort_by_key(|(_,_,_,depth)| (*depth != 0, std::cmp::Reverse(*depth)));
+    }
     Ok(pending.into_iter().map(|(map,x,y,_)|(map,x,y)).collect())
 }
 
@@ -4295,6 +4314,24 @@ mod visible_map_block_identity_tests {
         }
         let mut changed=maps.clone();changed[1].blocks[113]^=1;
         assert_eq!(connected_render_map_placements("Route40",&changed).unwrap().len(),1);
+    }
+
+    #[test]
+    fn summit_connections_continue_beyond_two_hops_and_terminate_cycles() {
+        let link = |direction: &str, target: &str, offset| crystal_core::map::MapConnection {
+            direction: direction.into(), target_map: target.into(), offset,
+        };
+        let maps = vec![
+            map_snapshot("City", vec![1; 2], vec![link("east", "Near", 1)]),
+            map_snapshot("Near", vec![1; 2], vec![link("west", "City", -1), link("east", "Middle", 0)]),
+            map_snapshot("Middle", vec![1; 2], vec![link("east", "Far", 0)]),
+            map_snapshot("Far", vec![1; 2], vec![link("east", "City", 2)]),
+            map_snapshot("UnconnectedInterior", vec![1], vec![]),
+        ];
+        assert_eq!(connected_render_map_placements("City", &maps).unwrap().len(), 3);
+        let full = connected_render_map_placements_to_depth("City", &maps, None).unwrap();
+        assert_eq!(full.iter().map(|(m,x,y)| (m.map_name.as_str(), *x, *y)).collect::<Vec<_>>(),
+            vec![("City", 0, 0), ("Near", 8, 4), ("Middle", 16, 4), ("Far", 24, 4)]);
     }
 
     #[test]

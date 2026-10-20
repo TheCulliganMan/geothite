@@ -28,9 +28,29 @@ fn blur(in: FullscreenVertexOutput, direction: vec2<f32>) -> vec4<f32> {
     let tail = exp(-4.5);
     var sum = center.rgb * (1.0 - tail);
     var weight_sum = 1.0 - tail;
+@if(!DIRECT_GAUSSIAN) {
+    // Gaussian(n+1) / Gaussian(n) advances by a constant ratio. This keeps
+    // the same paired kernel while replacing per-tap exponentials with
+    // multiplications (two exponentials per blurred pixel in total).
+    var gaussian = 1.0;
+    var ratio = exp(exponent);
+    let ratio_step = exp(2.0 * exponent);
+}
     for (var i = 1; i <= support; i += 2) {
-        let w0 = max(exp(exponent * f32(i * i)) - tail, 0.0);
-        let w1 = max(exp(exponent * f32((i + 1) * (i + 1))) - tail, 0.0);
+        var w0: f32;
+        var w1: f32;
+@if(DIRECT_GAUSSIAN) {
+        w0 = max(exp(exponent * f32(i * i)) - tail, 0.0);
+        w1 = max(exp(exponent * f32((i + 1) * (i + 1))) - tail, 0.0);
+}
+@if(!DIRECT_GAUSSIAN) {
+        gaussian *= ratio;
+        ratio *= ratio_step;
+        w0 = max(gaussian - tail, 0.0);
+        gaussian *= ratio;
+        ratio *= ratio_step;
+        w1 = max(gaussian - tail, 0.0);
+}
         let weight = w0 + w1;
         if weight > 0.000001 {
             let offset = step * (f32(i) + w1 / weight);

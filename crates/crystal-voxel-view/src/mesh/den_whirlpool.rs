@@ -51,11 +51,11 @@ mod tests {
         let mut mesh=TerrainMeshData::default();mesh.authored_cells=vec![None;16];mesh.footing_heights=vec![0.;16];
         assert_eq!(append(&mut mesh,&cells,&g).len(),4);
         assert_eq!(mesh.footing_heights,vec![0.;16]);
-        assert!(mesh.textured.positions.contains(&[8.,-3.6,8.]));
+        assert!(mesh.textured.positions.contains(&[8.,(crate::profile::WATER_HEIGHT - 1.6),8.]));
         assert!(mesh.textured.positions.iter().all(|p|p[0]>=0. && p[0]<=16. && p[2]>=0. && p[2]<=16.
-            && p[1]>=-3.6 && p[1]<=-2.));
+            && p[1]>=(crate::profile::WATER_HEIGHT - 1.6) && p[1]<=crate::profile::WATER_HEIGHT));
         assert!(mesh.textured.positions.iter().filter(|p|p[0]==0. || p[0]==16. || p[2]==0. || p[2]==16.)
-            .all(|p|p[1]==-2.));
+            .all(|p|p[1]==crate::profile::WATER_HEIGHT));
         assert!(mesh.textured.normals.iter().all(|n|Vec3::from_array(*n).is_finite() && n[1]>0.));
         let mut integrated=TerrainMeshData::default();integrated.authored_cells=vec![None;16];integrated.footing_heights=vec![0.;16];
         for row in 0..4 {for col in 0..4 {

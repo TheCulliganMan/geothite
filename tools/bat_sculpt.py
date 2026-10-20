@@ -89,8 +89,8 @@ def sculpture(species, *, normalize=True):
         skin=surface(face)
         for s in (-1,1):
             outline=[(s*.030,.862),(s*.128,.823),(s*.119,.809),(s*.041,.842)]
-            p.append(face_patch('Eye / fitted ivory wedge '+str(s),IVORY,outline,skin,.009))
-            p.append(face_patch('Eye / narrow black pupil '+str(s),INK,[(s*.081,.839),(s*.094,.834),(s*.094,.821),(s*.081,.827)],lambda y,x:skin(y,x)+.011,.003))
+            eye=face_patch('Eye / fitted ivory wedge '+str(s),IVORY,outline,skin,.009);p.append(eye)
+            p.append(face_patch('Eye / narrow black pupil '+str(s),INK,[(s*.081,.839),(s*.094,.834),(s*.094,.821),(s*.081,.827)],surface(eye),.003))
             p.extend(ear_parts(s,color,True))
             for direction in (-1,1):
                 y=.56+direction*.262
@@ -113,8 +113,8 @@ def sculpture(species, *, normalize=True):
         for s in (-1,1):
             p.extend(ear_parts(s,color,False))
             outline=[(s*.042,.772),(s*.165,.798),(s*.157,.748),(s*.049,.749)]
-            p.append(face_patch('Eye / angry fitted yellow wedge '+str(s),YELLOW,outline,skin,.007))
-            p.append(face_patch('Eye / narrow vertical pupil '+str(s),INK,[(s*.101,.782),(s*.115,.784),(s*.115,.755),(s*.101,.755)],lambda y,x:skin(y,x)+.009,.003))
+            eye=face_patch('Eye / angry fitted yellow wedge '+str(s),YELLOW,outline,skin,.007);p.append(eye)
+            p.append(face_patch('Eye / narrow vertical pupil '+str(s),INK,[(s*.101,.782),(s*.115,.784),(s*.115,.755),(s*.101,.755)],surface(eye),.003))
         p.append(fitted_patch('Mouth / angular open slot',INK,[(-.09,.673),(.09,.673),(.064,.583),(-.064,.583)],skin,.0045))
         for s in (-1,1):
             for direction in (-1,1):

@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """Decoded electric sheep: planted supports, continuous band seams and fitted beacons."""
-import math,unittest
+import math,os,unittest
 from pathlib import Path
 import electric_sheep_glb as author
 from test_gengar_glb import Model,winding_alignment
 from skin_glb_test_support import IDENTITY
 from test_axolotl_sculpt import ray_intersections
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
+ROOT=Path(os.environ.get('CRYSTAL_ELECTRIC_SHEEP_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class ElectricSheepSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.blobs={s:(ROOT/(s+'.glb')).read_bytes() for s in author.SPECIES};cls.models={s:Model(b) for s,b in cls.blobs.items()}
  def test_canonical_anatomy_bind_and_budgets(self):
   for s,m in self.models.items():
    self.assertEqual(self.blobs[s],author.export_electric_sheep(s,author.decode_electric_sheep(self.blobs[s],s)))
-   self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),{'mareep':(26,6382,11840,13),'flaaffy':(33,10302,16636,13),'ampharos':(26,2402,4700,9)}[s])
+   self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),{'mareep':(26,6382,11840,13),'flaaffy':(33,10302,16636,13),'ampharos':(26,3494,5636,9)}[s])
    self.assertLess(len(self.blobs[s]),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
    for matrix in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(matrix,IDENTITY)),1e-7)
  def test_local_normal_palettes(self):
@@ -96,6 +96,37 @@ class ElectricSheepSkinTests(unittest.TestCase):
     elif n.startswith('Tail / fitted'):support=tail
     else:continue
     self.assertTrue(overlap(part(p,mats),part(support,mats)),(clip,n))
+ def test_ampharos_markings_follow_stored_surfaces_through_source_clips(self):
+  from sculpt_test_support import indexed_ray_intersections as rays
+  m=self.models['ampharos'];body=next(i for i,n in enumerate(m.names) if n.startswith('Body /'))
+  pairs=[]
+  for i,name in enumerate(m.names):
+   if name.startswith(('Belly /','Nostril /','Eye / black','Forehead / inset')):parent=body
+   elif name.startswith('Eye / catchlight'):parent=next(j for j,n in enumerate(m.names) if n=='Eye / black almond '+name.split()[-1])
+   elif name.startswith('Forehead / restrained'):parent=next(j for j,n in enumerate(m.names) if n.startswith('Forehead / inset'))
+   else:continue
+   pairs.append((i,parent))
+  self.assertEqual(len(pairs),9)
+  for clip in m.clips:
+   for t in (0.,.18,.31,.55,.80):
+    mats=m.matrices(clip,t);posed=[{'positions':[v for p in m.posed(i,mats) for v in p],'indices':m.indices[i]} for i in range(len(m.parts))]
+    for child,parent in pairs:
+     points=m.posed(child,mats)
+     for k in range(0,len(m.indices[child]),3):
+      ids=m.indices[child][k:k+3];a,b,c=[m.vertices[child][i] for i in ids]
+      if (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<=1e-12:continue
+      tri=[points[i] for i in ids]
+      for weights in [(1/3,1/3,1/3),(.5,.5,0),(.5,0,.5),(0,.5,.5)]:
+       x,y,z=[sum(weights[j]*tri[j][axis] for j in range(3)) for axis in range(3)]
+       hits=rays(posed[parent],x,y);self.assertTrue(hits,(clip,t,m.names[child]))
+       gap=z-max(hits);self.assertGreater(gap,.0002,(clip,t,m.names[child],gap));self.assertLess(gap,.004,(clip,t,m.names[child],gap))
+ def test_ampharos_smile_has_real_body_contact(self):
+  from sculpt_test_support import parts_overlap
+  m=self.models['ampharos'];body=next(i for i,n in enumerate(m.names) if n.startswith('Body /'));mouth=next(i for i,n in enumerate(m.names) if n.startswith('Muzzle /'))
+  for clip,t in [('idle',0.),('idle',.31),('attack',.31),('hit',.55)]:
+   mats=m.matrices(clip,t)
+   def solid(i):return {'positions':[v for p in m.posed(i,mats) for v in p],'indices':m.indices[i]}
+   self.assertTrue(parts_overlap(solid(body),solid(mouth)),(clip,t))
  def test_identity_root_rotation_only_and_delayed_beacon(self):
   for s,m in self.models.items():
    for a in m.doc['animations']:

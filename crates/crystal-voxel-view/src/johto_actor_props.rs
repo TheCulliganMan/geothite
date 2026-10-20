@@ -7,6 +7,7 @@
 use std::sync::OnceLock;
 
 use crate::mesh::SurfaceMeshData;
+use crate::species_rig::{self, Species};
 use bevy::prelude::Vec3;
 use serde::Deserialize;
 
@@ -176,68 +177,78 @@ pub(crate) fn gold_gym_boulder_mesh() -> SurfaceMeshData {
     ).expect("named Cianwood boulder palette")).clone()
 }
 
+// Canonical geometry can depict either a living creature or an inert display.
+// This metadata is presentation-only; source identity still comes from the publisher.
+macro_rules! prop_model {
+    () => { None };
+    ([$role:ident $species:expr $(, $height:literal)?]) => { Some(species_rig::rig($species)) };
+}
+macro_rules! prop_display_height {
+    () => { None };
+    ([rig $species:expr]) => { None };
+    ([display $species:expr, $height:literal]) => { Some($height) };
+}
 macro_rules! prop_mesh {
-    ("icon_unown") => { crate::species_rig::rig(crate::species_rig::Species::Unown(8)).neutral.clone() };
-    ("entei") => { crate::species_rig::rig(crate::species_rig::Species::Entei).neutral.clone() };
-    ("raikou") => { crate::species_rig::rig(crate::species_rig::Species::Raikou).neutral.clone() };
-    ("suicune") => { crate::species_rig::rig(crate::species_rig::Species::Suicune).neutral.clone() };
-    ("slowpoke") => { crate::species_rig::rig(crate::species_rig::Species::Slowpoke).neutral.clone() };
-    ("icon_slowpoke") => { crate::species_rig::rig(crate::species_rig::Species::Slowpoke).neutral.clone() };
-    ("icon_diglett") => { crate::species_rig::rig(crate::species_rig::Species::Diglett).neutral.clone() };
-    ("big_onix") => { crate::species_rig::rig(crate::species_rig::Species::Onix).neutral.clone() };
-    ("icon_voltorb") => { crate::species_rig::rig(crate::species_rig::Species::Voltorb).neutral.clone() };
-    ("icon_staryu") => { crate::species_rig::rig(crate::species_rig::Species::Staryu).neutral.clone() };
-    ("icon_jigglypuff") => { crate::species_rig::rig(crate::species_rig::Species::Jigglypuff).neutral.clone() };
-    ("icon_clefairy") => { crate::species_rig::rig(crate::species_rig::Species::Clefairy).neutral.clone() };
+    ($label:tt, [$role:ident $species:expr $(, $height:literal)?]) => {
+        species_rig::rig($species).neutral.clone()
+    };
     ("chris_bike") => { crate::bicycle::mesh(false) };
     ("kris_bike") => { crate::bicycle::mesh(true) };
     ("biker") => { crate::bicycle::mesh(false) };
-    ("battle_chikorita") => {
-        crate::species_rig::rig(crate::species_rig::Species::Chikorita)
-            .neutral
-            .clone()
-    };
-    ("battle_cyndaquil") => {
-        crate::species_rig::rig(crate::species_rig::Species::Cyndaquil)
-            .neutral
-            .clone()
-    };
-    ("battle_totodile") => {
-        crate::species_rig::rig(crate::species_rig::Species::Totodile)
-            .neutral
-            .clone()
-    };
     ($label:literal) => {{
         static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
-        MODEL
-            .get_or_init(|| {
-                parse_model(crate::model_storage::include_model!(concat!(
-                    "models/actor_props/",
-                    $label,
-                    ".mesh.json"
-                )))
-                .expect(concat!("valid original actor asset: ", $label))
-            })
-            .clone()
+        MODEL.get_or_init(|| {
+            parse_model(crate::model_storage::include_model!(concat!(
+                "models/actor_props/", $label, ".mesh.json"
+            ))).expect(concat!("valid original actor asset: ", $label))
+        }).clone()
     }};
 }
 
 macro_rules! authored_props {
-    ($( $variant:ident => $label:tt ),+ $(,)?) => {
+    ($( $variant:ident => $label:tt $( [$role:ident $species:expr $(, $height:literal)?] )? ),+ $(,)?) => {
         #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-        pub(crate) enum PropKind { $( $variant ),+, ExactSpecies(&'static str) }
+        pub(crate) enum PropKind { $( $variant ),+, ExactSpecies(&'static str), ExactDisplay(&'static str), SurfingPikachuDisplay }
         pub(crate) const ALL_KINDS: &[PropKind] = &[$( PropKind::$variant ),+];
         impl PropKind {
             pub(crate) fn label(self) -> &'static str {
-                match self { $( Self::$variant => $label ),+, Self::ExactSpecies(species) => species }
+                match self { $( Self::$variant => $label ),+, Self::ExactSpecies(species) | Self::ExactDisplay(species) => species,
+                    Self::SurfingPikachuDisplay => "surfing_pikachu_doll" }
+            }
+            /// The visual template never establishes a gameplay species identity.
+            pub(crate) fn pokemon_model(self) -> Option<&'static species_rig::SpeciesRig> {
+                match self {
+                    $( Self::$variant => prop_model!($([$role $species $(, $height)?])?), )+
+                    Self::ExactSpecies(name) | Self::ExactDisplay(name) => species_rig::for_species(name),
+                    Self::SurfingPikachuDisplay => Some(species_rig::rig(Species::Pikachu)),
+                }
+            }
+            pub(crate) fn display_height(self) -> Option<f32> {
+                match self {
+                    $( Self::$variant => prop_display_height!($([$role $species $(, $height)?])?), )+
+                    Self::ExactSpecies(_) => None,
+                    Self::ExactDisplay(_) => Some(0.82),
+                    Self::SurfingPikachuDisplay => Some(0.82),
+                }
+            }
+            pub(crate) fn pokemon_rig(self) -> Option<&'static species_rig::SpeciesRig> {
+                self.display_height().is_none().then(|| self.pokemon_model()).flatten()
+            }
+            pub(crate) fn display_scale(self) -> f32 {
+                self.display_height().map_or(1., |height| {
+                    let rig=self.pokemon_model().expect("named display model");
+                    let board = if self == Self::SurfingPikachuDisplay { SURFBOARD_DECK_Y } else { 0. };
+                    height / (rig.neutral_bounds.1.y-rig.neutral_bounds.0.y + board)
+                })
             }
         }
         pub(crate) fn mesh(kind: PropKind) -> SurfaceMeshData {
             match kind { $(
-                PropKind::$variant => prop_mesh!($label)
+                PropKind::$variant => prop_mesh!($label $(, [$role $species $(, $height)?])?)
             ),+ ,
-                PropKind::ExactSpecies(species) => crate::battle_species_models::mesh(species)
+                PropKind::ExactSpecies(species) | PropKind::ExactDisplay(species) => crate::battle_species_models::mesh(species)
                     .expect("verified exact visible species"),
+                PropKind::SurfingPikachuDisplay => surfing_pikachu_display(),
             }
         }
     };
@@ -259,58 +270,58 @@ authored_props! {
     Fairy => "fairy",
     Monster => "monster",
     Dragon => "dragon",
-    Slowpoke => "slowpoke",
-    Sudowoodo => "sudowoodo",
-    Entei => "entei",
-    Raikou => "raikou",
-    Suicune => "suicune",
-    BigSnorlax => "big_snorlax",
-    BigLapras => "big_lapras",
-    BigOnix => "big_onix",
+    Slowpoke => "slowpoke" [rig Species::Slowpoke],
+    Sudowoodo => "sudowoodo" [rig Species::Sudowoodo],
+    Entei => "entei" [rig Species::Entei],
+    Raikou => "raikou" [rig Species::Raikou],
+    Suicune => "suicune" [rig Species::Suicune],
+    BigSnorlax => "big_snorlax" [display Species::Snorlax, 1.48],
+    BigLapras => "big_lapras" [display Species::Lapras, 1.52],
+    BigOnix => "big_onix" [display Species::Onix, 1.72],
     IconBat => "icon_bat",
     IconBigmon => "icon_bigmon",
     IconBird => "icon_bird",
     IconBlob => "icon_blob",
     IconBug => "icon_bug",
-    IconBulbasaur => "icon_bulbasaur",
+    IconBulbasaur => "icon_bulbasaur" [display Species::Bulbasaur, 0.82],
     IconCaterpillar => "icon_caterpillar",
-    IconCharmander => "icon_charmander",
-    IconClefairy => "icon_clefairy",
-    IconDiglett => "icon_diglett",
+    IconCharmander => "icon_charmander" [display Species::Charmander, 0.82],
+    IconClefairy => "icon_clefairy" [display Species::Clefairy, 0.82],
+    IconDiglett => "icon_diglett" [display Species::Diglett, 0.82],
     IconEgg => "icon_egg",
     IconEquine => "icon_equine",
     IconFighter => "icon_fighter",
     IconFish => "icon_fish",
     IconFox => "icon_fox",
-    IconGeodude => "icon_geodude",
+    IconGeodude => "icon_geodude" [display Species::Geodude, 0.82],
     IconGhost => "icon_ghost",
-    IconGyarados => "icon_gyarados",
-    IconHoOh => "icon_ho_oh",
+    IconGyarados => "icon_gyarados" [display Species::Gyarados, 0.82],
+    IconHoOh => "icon_ho_oh" [display Species::HoOh, 0.82],
     IconHumanshape => "icon_humanshape",
     IconJellyfish => "icon_jellyfish",
-    IconJigglypuff => "icon_jigglypuff",
-    IconLapras => "icon_lapras",
-    IconLugia => "icon_lugia",
+    IconJigglypuff => "icon_jigglypuff" [display Species::Jigglypuff, 0.82],
+    IconLapras => "icon_lapras" [display Species::Lapras, 0.82],
+    IconLugia => "icon_lugia" [display Species::Lugia, 0.82],
     IconMonster => "icon_monster",
     IconMoth => "icon_moth",
-    IconOddish => "icon_oddish",
-    IconPikachu => "icon_pikachu",
-    IconPoliwag => "icon_poliwag",
+    IconOddish => "icon_oddish" [display Species::Oddish, 0.82],
+    IconPikachu => "icon_pikachu" [display Species::Pikachu, 0.82],
+    IconPoliwag => "icon_poliwag" [display Species::Poliwag, 0.82],
     IconSerpent => "icon_serpent",
     IconShell => "icon_shell",
-    IconSlowpoke => "icon_slowpoke",
-    IconSnorlax => "icon_snorlax",
+    IconSlowpoke => "icon_slowpoke" [display Species::Slowpoke, 0.82],
+    IconSnorlax => "icon_snorlax" [display Species::Snorlax, 0.82],
     ChrisBike => "chris_bike",
     KrisBike => "kris_bike",
     BikerBike => "biker",
-    BattleChikorita => "battle_chikorita",
-    BattleCyndaquil => "battle_cyndaquil",
-    BattleTotodile => "battle_totodile",
-    IconSquirtle => "icon_squirtle",
-    IconStaryu => "icon_staryu",
-    IconSudowoodo => "icon_sudowoodo",
-    IconUnown => "icon_unown",
-    IconVoltorb => "icon_voltorb",
+    BattleChikorita => "battle_chikorita" [rig Species::Chikorita],
+    BattleCyndaquil => "battle_cyndaquil" [rig Species::Cyndaquil],
+    BattleTotodile => "battle_totodile" [rig Species::Totodile],
+    IconSquirtle => "icon_squirtle" [display Species::Squirtle, 0.82],
+    IconStaryu => "icon_staryu" [display Species::Staryu, 0.82],
+    IconSudowoodo => "icon_sudowoodo" [display Species::Sudowoodo, 0.82],
+    IconUnown => "icon_unown" [display Species::Unown(8), 0.82],
+    IconVoltorb => "icon_voltorb" [display Species::Voltorb, 0.82],
 }
 
 impl PropKind {
@@ -324,8 +335,15 @@ impl PropKind {
 pub(crate) fn prop_kind_for_source(source: &str) -> Option<PropKind> {
     // The publisher supplies only the currently resolved visible species and
     // actual bitmap source. Never recover a species from a shared icon family.
-    if let Some(identity) = source.strip_prefix("species:") {
+    let identity=source.strip_prefix("species:").map(|id|(id,false))
+        .or_else(||source.strip_prefix("display:").map(|id|(id,true)));
+    if let Some((identity, display)) = identity {
         let (species, art) = identity.split_once(':')?;
+        // Only the explicitly published bedroom ornament receives a board.
+        // The raw Surf avatar and actual mounted Pikachu keep their own paths.
+        if display && species == "PIKACHU" && art == "surfing_pikachu" {
+            return Some(PropKind::SurfingPikachuDisplay);
+        }
         if art.contains(':') || art.contains('/') {
             return None;
         }
@@ -342,6 +360,18 @@ pub(crate) fn prop_kind_for_source(source: &str) -> Option<PropKind> {
         }
         let exact = crate::battle_species_models::supported_species()
             .find(|candidate| *candidate == species)?;
+        if display {
+            // Named big dolls keep their authored size. A shared small icon
+            // still depicts the explicitly published species, never its family.
+            if let Some(kind)=prop_kind_for_source(art) {
+                if kind.display_height().is_some()
+                    && kind.pokemon_model().is_some_and(|rig|
+                        Some(rig.species)==species_rig::for_species(exact).map(|r|r.species)) {
+                    return Some(kind);
+                }
+            }
+            return Some(PropKind::ExactDisplay(exact));
+        }
         return Some(PropKind::ExactSpecies(exact));
     }
     let source = if let Some(path) = source.strip_prefix("gfx/sprites/") {
@@ -373,10 +403,92 @@ pub(super) fn fruit_tree() -> SurfaceMeshData {
     mesh(PropKind::FruitTree)
 }
 
+const SURFBOARD_DECK_Y: f32 = 0.045;
+
+/// An inert ornament assembled from the unchanged canonical mouse and a
+/// separate closed, bevelled board. No duplicate Pokémon asset or rider rig.
+fn surfing_pikachu_display() -> SurfaceMeshData {
+    static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
+    MODEL.get_or_init(|| {
+        let mut mesh = species_rig::rig(Species::Pikachu).neutral.clone();
+        for point in &mut mesh.positions { point[1] += SURFBOARD_DECK_Y; }
+        let deck = [0.045, 0.25, 0.38, 1.];
+        let rail = [0.85, 0.88, 0.78, 1.];
+        let segments = 40;
+        let point = |i: usize, y: f32, radius: f32| {
+            let angle = i as f32 / segments as f32 * std::f32::consts::TAU;
+            Vec3::new(0.52 * radius * angle.cos(), y, 0.24 * radius * angle.sin())
+        };
+        let mut triangle = |points: [Vec3; 3], color: [f32; 4]| {
+            let normal = (points[1]-points[0]).cross(points[2]-points[0]).normalize();
+            let start = mesh.positions.len() as u32;
+            for point in points {
+                mesh.positions.push(point.to_array());
+                mesh.normals.push(normal.to_array());
+                mesh.colors.push(color);
+                mesh.uvs.push([0.,0.]);
+            }
+            mesh.indices.extend([start, start+1, start+2]);
+        };
+        for i in 0..segments {
+            let j = (i+1)%segments;
+            triangle([Vec3::Y*SURFBOARD_DECK_Y,
+                point(j,SURFBOARD_DECK_Y,0.95),point(i,SURFBOARD_DECK_Y,0.95)],deck);
+            triangle([Vec3::ZERO,point(i,0.,0.95),point(j,0.,0.95)],rail);
+            for (lo,hi,a,b) in [(0.,SURFBOARD_DECK_Y*0.5,0.95,1.),
+                (SURFBOARD_DECK_Y*0.5,SURFBOARD_DECK_Y,1.,0.95)] {
+                triangle([point(i,lo,a),point(i,hi,b),point(j,hi,b)],rail);
+                triangle([point(i,lo,a),point(j,hi,b),point(j,lo,a)],rail);
+            }
+        }
+        mesh
+    }).clone()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use std::collections::HashSet;
+
+    #[test]
+    fn surfing_pikachu_doll_keeps_canonical_body_and_closed_grounded_board() {
+        let kind=prop_kind_for_source("display:PIKACHU:surfing_pikachu").unwrap();
+        assert_eq!(kind,PropKind::SurfingPikachuDisplay);
+        assert!(kind.pokemon_rig().is_none());
+        let body=&species_rig::rig(Species::Pikachu).neutral;
+        let display=mesh(kind);let n=body.positions.len();
+        assert_eq!(&display.normals[..n],&body.normals);
+        assert_eq!(&display.colors[..n],&body.colors);
+        assert_eq!(&display.uvs[..n],&body.uvs);
+        assert_eq!(&display.indices[..body.indices.len()],&body.indices);
+        for (actual,original) in display.positions.iter().zip(&body.positions) {
+            assert_eq!(*actual,[original[0],original[1]+SURFBOARD_DECK_Y,original[2]]);
+        }
+        let board=&display.positions[n..];
+        assert_eq!(board.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min),0.);
+        assert_eq!(board.iter().map(|p|p[1]).fold(0.,f32::max),SURFBOARD_DECK_Y);
+        let mut edges=std::collections::BTreeMap::new();let mut volume=0.;
+        for tri in display.indices[body.indices.len()..].chunks_exact(3) {
+            let points=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(display.positions[i as usize]));
+            let normal=(points[1]-points[0]).cross(points[2]-points[0]);
+            assert!(normal.is_finite() && normal.length_squared()>1e-14);
+            assert!(normal.normalize().dot(Vec3::from_array(display.normals[tri[0] as usize]))>0.999);
+            volume+=points[0].dot(points[1].cross(points[2]))/6.;
+            let keys=points.map(|p|p.to_array().map(f32::to_bits));
+            for (a,b) in [(0,1),(1,2),(2,0)] {
+                let edge=if keys[a]<keys[b] {(keys[a],keys[b])}else{(keys[b],keys[a])};
+                *edges.entry(edge).or_insert(0)+=1;
+            }
+        }
+        assert!(volume>0.01,"board winding encloses solid volume");
+        assert!(edges.values().all(|&count|count==2),"closed board has no open or duplicate edges");
+        let high=display.positions.iter().map(|p|p[1]).fold(0.,f32::max);
+        assert!((high*kind.display_scale()-0.82).abs()<1e-5);
+        for source in ["surfing_pikachu","gfx/sprites/surfing_pikachu.png",
+            "species:PIKACHU:surfing_pikachu","display:RAICHU:surfing_pikachu"] {
+            assert_eq!(prop_kind_for_source(source),None,"{source} must not become a doll");
+        }
+    }
 
     #[test]
     fn native_stone_paint_ignores_background_and_preserves_the_shared_shape() {
@@ -534,6 +646,42 @@ mod tests {
             assert_eq!(prop_kind_for_source(&format!("species:{species}:{icon}")), Some(PropKind::ExactSpecies(species)));
             assert_eq!(mesh(kind), mesh(PropKind::ExactSpecies(species)));
         }
+    }
+
+    #[test]
+    fn named_pokemon_templates_share_canonical_geometry_and_keep_display_sizes() {
+        let mut count=0;
+        for &kind in ALL_KINDS {
+            if let Some(rig)=kind.pokemon_model() {
+                count+=1;
+                assert_eq!(mesh(kind),rig.neutral,"{}",kind.label());
+                if let Some(height)=kind.display_height() {
+                    assert!(kind.pokemon_rig().is_none(),"inert display: {}",kind.label());
+                    let span=rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
+                    assert!((span*kind.display_scale()-height).abs()<0.000001);
+                } else {
+                    assert!(std::ptr::eq(kind.pokemon_rig().unwrap(),rig));
+                }
+            }
+        }
+        assert_eq!(count,31);
+        for (kind,height) in [(PropKind::BigLapras,1.52),(PropKind::BigSnorlax,1.48),
+            (PropKind::IconLapras,0.82),(PropKind::IconSnorlax,0.82),(PropKind::BigOnix,1.72)] {
+            assert_eq!(kind.display_height(),Some(height));
+            assert_eq!(prop_kind_for_source(kind.label()),Some(kind));
+        }
+        for kind in [PropKind::IconBird,PropKind::IconFish,PropKind::Monster,
+            PropKind::PokeBall,PropKind::Boulder] {
+            assert!(kind.pokemon_model().is_none(),"do not guess a species from {}",kind.label());
+        }
+        let display=prop_kind_for_source("display:BLASTOISE:icon_squirtle").unwrap();
+        assert_eq!(display,PropKind::ExactDisplay("BLASTOISE"));
+        assert_eq!(display.pokemon_model().unwrap().species,Species::Blastoise);
+        assert!(display.pokemon_rig().is_none());
+        assert_eq!(mesh(display),mesh(PropKind::ExactSpecies("BLASTOISE")));
+        assert_eq!(prop_kind_for_source("display:LAPRAS:big_lapras"),Some(PropKind::BigLapras));
+        assert_eq!(prop_kind_for_source("display:ONIX:big_onix"),Some(PropKind::BigOnix));
+        assert_eq!(prop_kind_for_source("display:UNKNOWN:icon_fish"),None);
     }
 
     #[test]

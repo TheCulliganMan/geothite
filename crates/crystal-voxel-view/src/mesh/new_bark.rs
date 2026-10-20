@@ -3909,7 +3909,44 @@ mod tests {
     }
     #[test]
     fn runtime_groves_preserve_completed_bank_geometry_claims_and_footing() {
-        fn same_geometry(expected: Vec<Vec<u32>>, actual: Vec<Vec<u32>>) {
+        fn same_geometry(mut expected: Vec<Vec<u32>>, mut actual: Vec<Vec<u32>>) {
+            // Native render normals deliberately use Bevy's bounded octahedral
+            // representation. Compare the reference in that same format; every
+            // position, color, UV and winding bit remains exact.
+            #[cfg(all(not(target_arch = "wasm32"), not(feature = "terrain-worker")))]
+            if std::env::var("CRYSTAL_PACKED_GROVE_NORMALS").as_deref() != Ok("off") {
+                fn render_normals(triangles: &mut [Vec<u32>]) {
+                    use bevy::{mesh::{Mesh, PrimitiveTopology, VertexAttributeValues}, math::Vec2};
+                    let mut normals = Vec::new();
+                    let mut offsets = Vec::new();
+                    for (triangle, bits) in triangles.iter().enumerate() {
+                        for vertex in [0,12,24] {
+                            let normal = Vec3::from_array(std::array::from_fn(|axis|
+                                f32::from_bits(bits[vertex+3+axis])));
+                            if normal.try_normalize().is_some() {
+                                normals.push(normal.to_array()); offsets.push((triangle,vertex));
+                            }
+                        }
+                    }
+                    let mut mesh = Mesh::new(PrimitiveTopology::TriangleList,Default::default());
+                    mesh.insert_attribute(Mesh::ATTRIBUTE_NORMAL,normals.clone());
+                    mesh.compress_normals().unwrap();
+                    let Some(VertexAttributeValues::Snorm16x2(encoded)) = mesh.attribute(Mesh::ATTRIBUTE_NORMAL) else {panic!()};
+                    for ((&(triangle,vertex),normal),&[x,y]) in offsets.iter().zip(normals).zip(encoded) {
+                        let decoded = bevy::mesh::octahedral_decode_signed(Vec2::new(
+                            (f32::from(x)/32767.).max(-1.),(f32::from(y)/32767.).max(-1.)));
+                        assert!(Vec3::from_array(normal).normalize().distance(decoded)<0.00015);
+                        // Folded octahedral seam aliases can decode a zero
+                        // component as +/- one float epsilon. Canonicalize
+                        // that arithmetic residue, far below the codec bound.
+                        let normal_bits = decoded.to_array().map(|value|
+                            if value.abs() <= f32::EPSILON { 0.0 } else { value }).map(f32::to_bits);
+                        triangles[triangle][vertex+3..vertex+6].copy_from_slice(&normal_bits);
+                    }
+                    triangles.sort_unstable();
+                }
+                render_normals(&mut expected); render_normals(&mut actual);
+            }
             assert_eq!(expected.len(), actual.len(), "retain every triangle");
             if let Some(index) = expected.iter().zip(&actual).position(|(a, b)| a != b) {
                 assert_eq!(expected[index], actual[index], "triangle {index} differs");
@@ -5292,7 +5329,9 @@ mod tests {
             assert!(mesh.textured.positions.is_empty(), "{map} must use native rock at its water edge");
             assert!(mesh.solid.positions.iter().any(|p| p[2] > s + 0.05),
                 "{map} water wall needs physical rock relief");
-            assert!(mesh.solid.uvs.iter().all(|uv| *uv == [0.;2]));
+            assert!(mesh.solid.uvs.iter().all(|uv| *uv == [0.;2]
+                || (uv[0]>87000. && uv[0]<90000. && uv[1]< -10000.)),
+                "water banks retain solid or shader-finished mineral, never atlas sprites");
             assert_eq!(mesh.footing_heights, feet);
             assert!(mesh.authored_cells.iter().all(Option::is_none));
         }
@@ -5322,8 +5361,11 @@ mod tests {
             for corner in corners { assert!(mesh.solid.positions.contains(&corner)); }
             assert_eq!(mesh.footing_heights, floor);
             assert_eq!(mesh.authored_cells, claims);
+            // Raising the water must not move the existing buried rim stones.
+            // Their support extends below the new shallow liquid surface.
+            let buried=(low-g.tile_height*0.20).min(-g.tile_height*0.40);
             assert!(mesh.solid.positions.iter().all(|p|
-                p[1] >= low - g.tile_height * 0.20 && p[1] <= g.tile_height * 0.23));
+                p[1] >= buried && p[1] <= g.tile_height * 0.23));
             assert!(mesh.solid.positions.iter().any(|p| p[1] > 0.05),
                 "a dry-side rock lip must make the water boundary visible from above");
         }
@@ -6059,18 +6101,26 @@ mod tests {
         let original = f.clone();
         let g = geometry(&f);
         let cells: Vec<_> = f.tiles.iter().collect();
-        let mut mesh = TerrainMeshData { footing_heights: vec![0.,-2.],
+        let mut mesh = TerrainMeshData { footing_heights: vec![0.,crate::profile::WATER_HEIGHT],
             authored_cells: vec![None;2], ..Default::default() };
         let (w,e,n,s) = g.bounds(0,0);
         let corners = [[w,0.,n],[w,0.,s],[e,0.,s],[e,0.,n]];
         append_top(&mut mesh.textured,[w,e,n,s],0.,g.uv(0,0));
         polish_world_surfaces(&mut mesh,"IlexForest",&cells,&g,[0,0]);
         assert!(mesh.textured.positions.is_empty(), "verified rim must not remain pixel art");
-        assert_eq!(mesh.footing_heights,vec![0.,-2.]);
+        assert_eq!(mesh.footing_heights,vec![0.,crate::profile::WATER_HEIGHT]);
         assert_eq!(mesh.authored_cells,vec![None;2]);
         assert!(corners.iter().all(|p| mesh.solid.positions.contains(p)));
-        assert!((level_floor_area(&mesh.solid) - f64::from(g.tile_width*g.tile_height)).abs() < 0.001,
-            "native bank must retain complete source support beneath its accents");
+        // Measure the continuous ground, excluding the separately tagged litter.
+        let footprint=mesh.solid.indices.chunks_exact(3).filter(|ids|
+            ids.iter().all(|&i|(66000. ..67000.).contains(&mesh.solid.uvs[i as usize][0])))
+        .map(|ids| {
+            assert!(ids.iter().all(|&i|mesh.solid.normals[i as usize][1]>0.));
+            let p=[ids[0],ids[1],ids[2]].map(|i|Vec3::from_array(mesh.solid.positions[i as usize]));
+            f64::from((p[1]-p[0]).cross(p[2]-p[0]).y.abs())*0.5
+        }).sum::<f64>();
+        assert!((footprint-f64::from(g.tile_width*g.tile_height)).abs()<0.001,
+            "the relieved bank must still cover the complete source footprint");
         assert!(mesh.solid.positions.iter().all(|p| (0. ..0.9).contains(&p[1])));
         assert_eq!(f,original,"source tiles and gameplay state remain authoritative");
     }
@@ -6211,7 +6261,7 @@ mod tests {
                     if claims[neighbor].is_some() { continue; }
                     contacts += 1;
                     let (w,e,n,s) = g.bounds(x,y);
-                    let origin = Vec3::new((w+e)*0.5,-g.tile_height*0.125,(n+s)*0.5);
+                    let origin = Vec3::new((w+e)*0.5,CellShape::Water.surface_height(g.tile_height)*0.5,(n+s)*0.5);
                     let direction = Vec3::new(dx as f32,0.,dy as f32);
                     let hit = mesh.solid.indices.chunks_exact(3).any(|ids| {
                         let p = [ids[0],ids[1],ids[2]].map(|i| Vec3::from_array(mesh.solid.positions[i as usize]));
@@ -6231,8 +6281,8 @@ mod tests {
             assert!(mesh.solid.positions.iter().all(|p|
                 p[1]>=CellShape::Water.surface_height(g.tile_height)-g.tile_height*0.20
                     && p[1]<=g.tile_height*0.32));
-            assert!(mesh.solid.positions.iter().any(|p|p[1]>g.tile_height*0.05),
-                "the town's tree-lined bank needs physical rock volume too");
+            assert!(mesh.solid.normals.iter().any(|n|n[1].abs()>0.001 && n[1].abs()<0.9),
+                "the short submerged bank retains physical fracture relief");
             assert!(mesh.solid.uvs.iter().all(|uv|uv[0]>87000. && uv[0]<90000.
                 && uv[1] < -10000.),"the entire town waterfront shares the rock texture");
             for invalid in 0..3 {
@@ -6544,7 +6594,7 @@ mod tests {
             0,
             Direction::East,
             [w, e, n, s],
-            -2.0,
+            crate::profile::WATER_HEIGHT,
             0.0,
         );
         let original = mesh.textured.positions.clone();
@@ -6553,11 +6603,12 @@ mod tests {
         assert!(mesh.solid.positions.len() > original.len());
         for p in original { assert!(mesh.solid.positions.contains(&p), "native shoreline endpoints stay closed"); }
         assert!(mesh.solid.positions.iter().all(|p|
-            p[1] >= -2.0 - geometry.tile_height * 0.20
+            p[1] >= crate::profile::WATER_HEIGHT - geometry.tile_height * 0.20
                 && p[1] <= geometry.tile_height * 0.23));
         assert!(mesh.solid.positions.iter().any(|p|p[1]>0.05),
             "shore shelves need visible physical relief above the native datum");
-        assert!(mesh.solid.uvs.iter().all(|uv| *uv == [0.;2]),
+        assert!(mesh.solid.uvs.iter().all(|uv| *uv == [0.;2]
+            || (uv[0]>87000. && uv[0]<90000. && uv[1]< -10000.)),
             "shore caps and water faces use solid rock, never source sprites");
     }
 
@@ -6645,10 +6696,10 @@ mod tests {
         for x in 0..20 {
             let w = x as f32 * 8.0;
             let positions = [
-                [w, -2.0, 0.0],
-                [w, -2.0, 8.0],
-                [w + 8.0, -2.0, 8.0],
-                [w + 8.0, -2.0, 0.0],
+                [w, crate::profile::WATER_HEIGHT, 0.0],
+                [w, crate::profile::WATER_HEIGHT, 8.0],
+                [w + 8.0, crate::profile::WATER_HEIGHT, 8.0],
+                [w + 8.0, crate::profile::WATER_HEIGHT, 0.0],
             ];
             let mut mesh = SurfaceMeshData::default();
             append_water_ripple(&mut mesh, &positions, &geometry, [0, 0]);
@@ -6656,8 +6707,8 @@ mod tests {
                 && p[0] < w + 8.0
                 && p[2] > 0.0
                 && p[2] < 8.0
-                && p[1] > -2.0
-                && p[1] < -1.99));
+                && p[1] > crate::profile::WATER_HEIGHT
+                && p[1] < crate::profile::WATER_HEIGHT + 0.01));
             emitted += mesh.quad_count();
         }
         assert!(emitted > 0 && emitted < 10, "ripples should remain sparse");
@@ -6972,12 +7023,12 @@ mod tests {
         let mut previous = None;
         for (x,z) in [(0.,0.),(-8.,-16.)] {
             let g = GridGeometry { width:1,height:1,tile_width:8.,tile_height:8.,origin_x:x,origin_z:z };
-            let mut mesh = TerrainMeshData { footing_heights:vec![-2.],authored_cells:vec![None], ..Default::default() };
-            append_top(&mut mesh.textured,g.bounds(0,0).into(),-2.,g.uv(0,0));
+            let mut mesh = TerrainMeshData { footing_heights:vec![crate::profile::WATER_HEIGHT],authored_cells:vec![None], ..Default::default() };
+            append_top(&mut mesh.textured,g.bounds(0,0).into(),crate::profile::WATER_HEIGHT,g.uv(0,0));
             let before = mesh.textured.positions.clone();
             polish_world_surfaces(&mut mesh,"NationalPark",&cells,&g,[20,24]);
             assert_eq!(mesh.solid.positions,before);
-            assert_eq!(mesh.footing_heights,vec![-2.]);
+            assert_eq!(mesh.footing_heights,vec![crate::profile::WATER_HEIGHT]);
             assert!(mesh.textured.positions.is_empty());
             assert!(mesh.solid.uvs.iter().all(|uv| uv[0]>40000. && uv[0]<60000. && uv[1] < -40000.));
             if let Some(uvs) = previous { assert_eq!(mesh.solid.uvs,uvs); }
@@ -7022,7 +7073,7 @@ mod tests {
         let f = frame(1,1,vec![material_source("park",0x3f,3,0,0x5f)]);
         let cells: Vec<_> = f.tiles.iter().collect();
         let g = GridGeometry { width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0. };
-        let p = [[0.,-2.,0.],[0.,-2.,8.],[8.,-2.,8.],[8.,-2.,0.]];
+        let p = [[0.,crate::profile::WATER_HEIGHT,0.],[0.,crate::profile::WATER_HEIGHT,8.],[8.,crate::profile::WATER_HEIGHT,8.],[8.,crate::profile::WATER_HEIGHT,0.]];
         let water = material_source("park",0x3f,0,0,0x14);
         assert_eq!(surface_material("NationalPark",&p,[0.,1.,0.],&water,&cells,&g,
             &[Some("park/pond-basin")]),Some(GroundMaterial::Water));

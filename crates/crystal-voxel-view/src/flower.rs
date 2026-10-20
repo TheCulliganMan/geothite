@@ -39,6 +39,7 @@ pub(crate) fn mark_sway(mesh: &mut crate::mesh::SurfaceMeshData, start: usize, b
 /// bindings deliberately omit Bevy's forward globals. Only the retained solid
 /// terrain material owns blooms, so other scene materials remain unchanged.
 pub(super) fn animate(
+    frame: bevy::prelude::Res<crystal_render_api::VisualWorldFrame>,
     time: bevy::prelude::Res<bevy::prelude::Time>,
     status: bevy::prelude::Res<crate::VoxelViewStatus>,
     cache: bevy::prelude::Res<crate::TerrainRevisionCache>,
@@ -47,6 +48,8 @@ pub(super) fn animate(
     if !status.active || cache.built_animated_bounds[1].is_none() { return; }
     if let Some(mut material) = cache.solid_material.as_ref().and_then(|h| materials.get_mut(h)) {
         material.extension.grass_rustle.height_scale.y = time.elapsed_secs();
+        material.extension.grass_rustle.height_scale.z = -frame.view_center.x;
+        material.extension.grass_rustle.height_scale.w = frame.view_center.y;
     }
 }
 

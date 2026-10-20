@@ -222,6 +222,30 @@ fn resolve_networks(
     }
     out
 }
+/// The sign occupies the wall, rather than replacing its supporting volume.
+/// Its adjacent door and mobile-entry cells are guards only, never backing.
+pub(super) fn append_sign_backing(
+    mesh: &mut TerrainMeshData, map: &str, cells: &[&VisualTile],
+    g: &GridGeometry, column: usize, row: usize, origin: [i32; 2],
+) -> bool {
+    if !is_map(map) { return false; }
+    let supported = REAR_FIXTURES.iter().any(|n| {
+        n.finish == Finish::Doorway && n.anchor[1] == 0
+            && i64::from(origin[0]) + column as i64 == i64::from(n.anchor[0])
+            && i64::from(origin[1]) + row as i64 == i64::from(n.anchor[1])
+            && complete(cells, g, origin, column, row, n)
+    });
+    if !supported { return false; }
+    let (w, _, _, _) = g.bounds(column, row);
+    let south = g.bounds(column, row + 1).3;
+    crate::interior_models::model(crate::interior_models::ModelKind::WallClinical).append_fitted(
+        &mut mesh.solid,
+        [w, w + 2. * g.tile_width, south - 3. * g.tile_height / 8., south],
+        0., 24. * g.tile_height / 8.,
+    );
+    true
+}
+
 pub(super) fn append(
     mesh: &mut TerrainMeshData,
     cells: &[&VisualTile],
@@ -305,6 +329,16 @@ pub(super) fn append(
                 0.0,
                 rise * g.tile_height / 8.0,
             );
+            if is_door && matches!(p.network.anchor, [8, 0] | [16, 0]) {
+                // Connect above the clear portal. Neither the door aperture
+                // nor the adjacent mobile warp acquires a backing plane.
+                crate::interior_models::model(crate::interior_models::ModelKind::WallClinical).append_fitted(
+                    &mut mesh.solid,
+                    [w, w + width as f32 * g.tile_width,
+                        south - fitted_depth * g.tile_height / 8., south],
+                    18. * g.tile_height / 8., 6. * g.tile_height / 8.,
+                );
+            }
         }
         for i in p.indices(g.width) {
             claimed[i] = true;

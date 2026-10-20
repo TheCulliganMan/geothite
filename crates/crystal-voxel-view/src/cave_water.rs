@@ -60,7 +60,8 @@ fn den_whirlpool_water(frame: &VisualWorldFrame) -> std::collections::HashMap<(u
 
 fn role(tile: &VisualTile) -> [u8; 2] { role_for_map(tile, "") }
 
-pub(crate) fn outdoor(map: &str) -> bool {
+/// Maps whose standing water shares the outdoor shoreline rules.
+pub fn outdoor(map: &str) -> bool {
     map.starts_with("Route") || map.ends_with("City") || map.ends_with("Town")
         || matches!(map,"LakeOfRage"|"IlexForest"|"NationalPark"|"NationalParkBugContest"|"BattleTowerOutside"
             |"RuinsOfAlphOutside"|"SilverCaveOutside"|"OlivinePort"|"VermilionPort"
@@ -114,9 +115,16 @@ fn phase(tile: &VisualTile) -> u8 {
     ((index * 255) / frames.len().max(1)) as u8
 }
 
+/// Cave water uses its own live source paint rather than the generic teal
+/// surface. Foreign outdoor frames keep their existing regional registration.
+pub(super) fn native_cave_source(frame: &VisualWorldFrame) -> bool {
+    !outdoor(&frame.map_id) && frame.tiles.first().is_some_and(|tile|
+        matches!(tile.source.tileset_id.as_ref(), "cave" | "dark_cave"))
+}
+
 pub(super) fn registration(frame: &VisualWorldFrame) -> Vec4 {
     Vec4::new(
-        if frame.map_id.as_ref()=="TohjoFalls" { 3. }
+        if frame.map_id.as_ref()=="TohjoFalls" || native_cave_source(frame) { 3. }
             else if outdoor(&frame.map_id) { 2. } else { 1. },
         frame.tile_size.x,
         (frame.grid_origin.x as f32 + frame.grid_size.x as f32 * 0.5) * frame.tile_size.x
@@ -253,7 +261,8 @@ pub(super) fn mask(frame: &VisualWorldFrame) -> Option<Image> {
         TextureFormat::Rgba8Unorm,
         RenderAssetUsages::MAIN_WORLD | RenderAssetUsages::RENDER_WORLD,
     );
-    image.sampler = bevy::image::ImageSampler::nearest();
+    // Phase updates change bytes, not the texture bound by every terrain group.
+    crystal_render_api::stream_composed_image(&mut image);
     Some(image)
 }
 
@@ -864,12 +873,43 @@ mod tests {
         assert!(palette[0].z>palette[0].x && palette[1].z>palette[1].x);
         assert!(palette[1].y>palette[0].y);assert_eq!(palette[0].w,1.);
         frame.tiles[0].texture=second.clone();assert_eq!(native_palette(&frame,&images),Some(palette));
-        frame.map_id="UnionCave1F".into();assert!(native_palette(&frame,&images).is_none());
+        frame.map_id="UnionCave1F".into();assert_eq!(native_palette(&frame,&images),Some(palette));
         frame.map_id="TohjoFalls".into();frame.tiles[0].animation_frames=None;
         assert!(native_palette(&frame,&images).is_none());
         frame.tiles[0].animation_frames=Some(vec![first,second.clone()].into());
         images.get_mut(&second).unwrap().data.as_mut().unwrap()[3]=0;
         assert!(native_palette(&frame,&images).is_none());
+    }
+
+    #[test]
+    fn johto_cave_water_uses_live_blue_and_rejects_dark_missing_or_foreign_paint() {
+        let mut images=Assets::<Image>::default();
+        let texture=images.add(Image::new(Extent3d{width:8,height:8,depth_or_array_layers:1},
+            TextureDimension::D2,(0..64).flat_map(|i|if i%8==0 {[120,160,240,255]}
+                else {[32,40,128,255]}).collect(),TextureFormat::Rgba8UnormSrgb,RenderAssetUsages::MAIN_WORLD));
+        for (map,family) in [("DarkCaveVioletEntrance","dark_cave"),
+            ("WhirlIslandB2F","cave"),("SilverCaveRoom1","dark_cave"),("UnionCave1F","cave")] {
+            let mut water=tile(0x14);water.source.tileset_id=family.into();
+            water.texture=texture.clone();water.animation_frames=Some(vec![texture.clone(),texture.clone()].into());
+            let frame=VisualWorldFrame {map_id:map.into(),tiles:vec![water],..default()};
+            let before=frame.clone();
+            let palette=native_palette(&frame,&images).unwrap();
+            assert_eq!(palette[0].w,1.);assert_eq!(registration(&frame).x,3.);
+            assert!(palette[0].z>palette[0].y && palette[1].z>palette[1].y);
+            assert_eq!(frame,before,"paint extraction cannot change phases, pixels or source identity");
+            let mut invalid=frame.clone();invalid.tiles[0].animation_frames=None;
+            assert!(native_palette(&invalid,&images).is_none());
+            invalid=frame.clone();invalid.tiles[0].source.tileset_id="house".into();
+            assert!(!native_cave_source(&invalid));assert!(native_palette(&invalid,&images).is_none());
+        }
+        let mut water=tile(0x14);water.source.tileset_id="dark_cave".into();
+        water.texture=texture.clone();water.animation_frames=Some(vec![texture.clone(),texture.clone()].into());
+        let frame=VisualWorldFrame {map_id:"DarkCaveVioletEntrance".into(),tiles:vec![water],..default()};
+        images.get_mut(&texture).unwrap().data.as_mut().unwrap()[3]=0;
+        assert!(native_palette(&frame,&images).is_none());
+        images.get_mut(&texture).unwrap().data=Some([0,0,0,255].repeat(64));
+        assert!(native_palette(&frame,&images).is_none(),"unlit source supplies no invented water color");
+        images.remove(texture.id());assert!(native_palette(&frame,&images).is_none());
     }
 
     #[test]
@@ -888,7 +928,7 @@ mod tests {
         assert_eq!(&current.data.as_ref().unwrap()[..3],&[255,0,127]);
         assert_eq!(registration(&frame),native,"source phase must not move procedural flow");
         frame.map_id="UnionCave1F".into();let legacy=registration(&frame);
-        assert_eq!(legacy.x,1.);
+        assert_eq!(legacy.x,3.);
         assert_eq!([legacy.y,legacy.z,legacy.w],[native.y,native.z,native.w]);
         frame.map_id="VermilionPort".into();assert_eq!(registration(&frame).x,2.);
         frame.map_id="TohjoFalls".into();
@@ -1004,12 +1044,12 @@ pub(super) fn outdoor_source_palette(frame:&VisualWorldFrame)->bool {
 }
 
 /// Palette samples supply currents without repeating the source drawing.
-/// w=1 retains native Tohjo behavior; w=2 selects outdoor source paint;
+/// w=1 selects native cave paint; w=2 selects outdoor source paint;
 /// w=3 enables the shared regional/harbor wind surface. w=-2
 /// keeps the original source surface if an eligible outdoor palette is missing.
 pub(super) fn native_palette(frame:&VisualWorldFrame,images:&Assets<Image>)->Option<[Vec4;2]> {
     let open=outdoor_source_palette(frame);
-    if frame.map_id.as_ref()!="TohjoFalls" && !open {return None;}
+    if frame.map_id.as_ref()!="TohjoFalls" && !native_cave_source(frame) && !open {return None;}
     let palette=(|| {
         let mut colors=std::collections::BTreeSet::new();
         let mut sampled=std::collections::HashSet::new();
@@ -1021,15 +1061,11 @@ pub(super) fn native_palette(frame:&VisualWorldFrame,images:&Assets<Image>)->Opt
             let data=image.data.as_ref()?;
             if data.len()!=256 || data.chunks_exact(4).any(|p|p[3]!=255) {return None;}
             for pixel in data.chunks_exact(4) {
-                let c=Vec3::from_array([pixel[0],pixel[1],pixel[2]].map(|v|{
-                    let v=f32::from(v)/255.;if v<=0.04045 {v/12.92}else{((v+0.055)/1.055).powf(2.4)}
-                }));
+                let c=Vec3::from_array([pixel[0],pixel[1],pixel[2]].map(crate::source_color::linear));
                 if c.dot(Vec3::new(0.2126,0.7152,0.0722))>0.006 {colors.insert([pixel[0],pixel[1],pixel[2]]);}
             }
         }
-        let mut colors=colors.into_iter().map(|rgb|Vec3::from_array(rgb.map(|v|{
-            let v=f32::from(v)/255.;if v<=0.04045 {v/12.92}else{((v+0.055)/1.055).powf(2.4)}
-        }))).collect::<Vec<_>>();
+        let mut colors=colors.into_iter().map(|rgb|Vec3::from_array(rgb.map(crate::source_color::linear))).collect::<Vec<_>>();
         colors.sort_by(|a,b|a.dot(Vec3::new(0.2126,0.7152,0.0722)).total_cmp(&b.dot(Vec3::new(0.2126,0.7152,0.0722))));
         if colors.len()<2 {return None;}
         let mut deep=colors[0];

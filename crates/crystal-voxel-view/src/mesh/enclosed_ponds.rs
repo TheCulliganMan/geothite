@@ -325,7 +325,7 @@ mod tests {
             for (i, t) in tiles.iter().enumerate() {
                 if wet(t) {
                     let (w, e, n, s) = g.bounds(i % 7, i / 7);
-                    append_top(surface, [w, e, n, s], -2., g.uv(i % 7, i / 7));
+                    append_top(surface, [w, e, n, s], crate::profile::WATER_HEIGHT, g.uv(i % 7, i / 7));
                 }
             }
         }
@@ -345,7 +345,7 @@ mod tests {
             &mesh.animated_solid,
             &mesh.animated_textured,
         ] {
-            assert!(surface.positions.iter().all(|p| p[1] == 14.));
+            assert!(surface.positions.iter().all(|p| p[1] == 16. + crate::profile::WATER_HEIGHT));
             assert_eq!(surface.indices, original.solid.indices);
             assert_eq!(surface.uvs, original.solid.uvs);
             assert_eq!(surface.normals, original.solid.normals);
@@ -403,10 +403,10 @@ mod tests {
         append_solid_quad(
             &mut mesh.solid,
             [
-                [w, -2., s + 0.3],
+                [w, crate::profile::WATER_HEIGHT, s + 0.3],
                 [w, 24., s + 0.3],
                 [e, 24., s + 0.3],
-                [e, -2., s + 0.3],
+                [e, crate::profile::WATER_HEIGHT, s + 0.3],
             ],
             [0., 0., 1.],
             [0.3, 0.2, 0.1, 1.],
@@ -430,7 +430,7 @@ mod tests {
             mesh.footing_heights[bank], 24.,
             "cached bank retains outer datum"
         );
-        let frame = VisualWorldFrame { terrace_datum: None,
+        let frame = VisualWorldFrame { view_center: bevy::prelude::Vec2::ZERO, terrace_datum: None,
             active: true,
             map_id: "Route22".into(),
             source_map_size_core_tiles: None,

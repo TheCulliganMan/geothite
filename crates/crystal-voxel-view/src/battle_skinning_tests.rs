@@ -1610,3 +1610,20 @@ fn raptor_bird_skin_activates_gpu_at_verified_original_pack_heights() {
     assert_species_gpu_at_pack_size("PIDGEOT",Species::Pidgeot,20,1.4986);
     assert_species_gpu_at_pack_size("FEAROW",Species::Fearow,19,1.1938);
 }
+
+#[test]
+fn leek_duck_skin_activates_gpu_at_verified_original_pack_height() {
+    assert_species_gpu_at_pack_size("FARFETCH_D",Species::FarfetchD,21,0.7874);
+}
+
+#[test]
+fn psychic_palm_skin_activates_gpu_at_verified_original_pack_heights() {
+    assert_species_gpu_at_pack_size("EXEGGCUTE",Species::Exeggcute,7,0.4064);
+    assert_species_gpu_at_pack_size("EXEGGUTOR",Species::Exeggutor,30,2.0066);
+}
+
+#[test]
+fn bulb_saur_skin_activates_gpu_at_verified_original_pack_heights() {
+    assert_species_gpu_at_pack_size("IVYSAUR",Species::Ivysaur,21,0.9906);
+    assert_species_gpu_at_pack_size("VENUSAUR",Species::Venusaur,32,2.0066);
+}

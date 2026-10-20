@@ -184,12 +184,21 @@ impl GameDataSet {
 
     pub fn saved_sprite_exists(&self, sprite_id: &str) -> bool {
         self.sprite_palette_defaults.contains_key(sprite_id)
+            // Species-named variable sprites resolve through the pack's menu
+            // icon table (dolls and Day Care), rather than a sprite palette row.
+            || sprite_id.strip_prefix("SPRITE_")
+                .is_some_and(|species| self.menu_icons.contains_key(species))
     }
 
     pub fn saved_variable_sprite_exists(&self, sprite_id: &str) -> bool {
         self.initialize_events
             .variable_sprites
             .contains_key(sprite_id)
+            // The bedroom callback creates these bindings when a decoration
+            // is equipped; an empty room has no initializer binding for them.
+            || (self.special_routines.contains_key("ToggleDecorationsVisibility")
+                && matches!(sprite_id,
+                    "SPRITE_CONSOLE" | "SPRITE_DOLL_1" | "SPRITE_DOLL_2" | "SPRITE_BIG_DOLL"))
     }
 
     pub fn saved_menu_exists(&self, menu: &str) -> bool {

@@ -12,7 +12,7 @@ struct WindSites {
     leaves: Vec<Vec3>,
     gusts: Vec<Vec3>,
     nearby: [Vec<Vec3>; 2],
-    offset: Option<Vec3>,
+    offset: Option<(Vec3, Vec2)>,
 }
 
 pub(super) fn register(app: &mut App) {
@@ -171,7 +171,7 @@ fn sync(
         .translation;
     let bounds = authentic_mesh_bounds(source);
     let unit = frame.tile_size.min_element() / 8.;
-    if sites.offset != Some(offset) {
+    if sites.offset != Some((offset, frame.view_center)) {
         // Spend the bounded pool near the camera, including on long routes.
         let radius = frame.tile_size.min_element() * 7.;
         let nearby = |points: &[Vec3]| {
@@ -180,12 +180,12 @@ fn sync(
                 .copied()
                 .filter(|p| {
                     let world = *p + offset;
-                    Vec2::new(world.x, world.z).length_squared() < radius * radius
+                    (Vec2::new(world.x, -world.z) - frame.view_center).length_squared() < radius * radius
                 })
                 .collect()
         };
         sites.nearby = [nearby(&sites.leaves), nearby(&sites.gusts)];
-        sites.offset = Some(offset);
+        sites.offset = Some((offset, frame.view_center));
         #[cfg(not(target_arch = "wasm32"))]
         if std::env::var_os("CRYSTAL_WIND_TRACE").is_some() {
             eprintln!(

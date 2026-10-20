@@ -8,7 +8,7 @@ fn append_cianwood_walls(
     out: &mut Vec<Placement>,
 ) {
     let sprout = matches!(map, "SproutTower1F" | "SproutTower2F" | "SproutTower3F");
-    let tin=super::modeled_dungeons::tin_tower_guardian_map(map);
+    let tin=super::modeled_dungeons::tin_tower_architecture_map(map);
     if !sprout && !tin && !matches!(map, "CianwoodGym" | "EcruteakGym" | "BurnedTower1F") {
         return;
     }
@@ -80,7 +80,7 @@ fn append_cianwood_walls(
             }));
         // A longitudinal strip ends two source rows before the folded
         // transverse face. Carry its closed timber through that wall course.
-        let north_join = sprout && h == 4 && row + h + 2 <= g.height
+        let north_join = (sprout || map=="EcruteakTinTowerEntrance") && h == 4 && row + h + 2 <= g.height
             && (0..2).all(|dy| (0..2).all(|dx| {
                 let j = (row + h + dy) * g.width + column + dx;
                 !claimed[j] && matches!(crate::tower::tower_shape(&cells[j].source),
@@ -162,7 +162,7 @@ mod cianwood_wall_tests {
             }).collect();
             let refs=tiles.iter().collect::<Vec<_>>();
             for map in (1..=9).map(|level|format!("TinTower{level}F"))
-                .chain(["BurnedTower1F".into(),"CianwoodGym".into(),"EcruteakGym".into()]) {
+                .chain(["BurnedTower1F".into(),"CianwoodGym".into(),"EcruteakGym".into(),"EcruteakTinTowerEntrance".into()]) {
                 let mut claimed=vec![false;16];let mut out=vec![];
                 append_cianwood_walls(&map,&refs,&g,&mut claimed,&mut out);
                 assert_eq!(out.len(),1);
@@ -358,7 +358,7 @@ mod cianwood_wall_tests {
                     && p[0] <= (ox + 2) as f32 * 8.0
                     && p[2] >= oy as f32 * 8.0
                     && p[2] <= (oy + h) as f32 * 8.0));
-                if map.starts_with("SproutTower")||super::super::modeled_dungeons::tin_tower_guardian_map(map)||map=="BurnedTower1F" {
+                if map.starts_with("SproutTower")||super::super::modeled_dungeons::tin_tower_architecture_map(map)||map=="BurnedTower1F" {
                     for y in oy..oy+h {
                         for x in ox..ox+2 {
                             let i = y*4+x;
@@ -422,7 +422,7 @@ mod cianwood_wall_tests {
 fn guardian_wall_bounds(map:&str,p:&Placement,cells:&[&VisualTile],g:&GridGeometry,
     bounds:[f32;4])->[f32;4] {
     let s=&cells[p.row*g.width+p.column].source;
-    if !(super::modeled_dungeons::tin_tower_guardian_map(map)
+    if !(super::modeled_dungeons::tin_tower_architecture_map(map)
         ||matches!(map,"BurnedTower1F"|"CianwoodGym"|"EcruteakGym"))
         || !matches!(s.metatile_id,0x21|0x22) {return bounds;}
     let Some(block_x)=p.column.checked_sub(s.subtile_column as usize) else{return bounds;};

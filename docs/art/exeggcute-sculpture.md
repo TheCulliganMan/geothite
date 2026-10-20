@@ -1,5 +1,9 @@
 # Exeggcute sculpture
 
+The original static sculpture below is the historical baseline. Production now
+uses the [articulated psychic/palm skin](psychic-palm-skins.md); native review
+of that migration is still pending.
+
 `tools/exeggcute_sculpt.py` authors six original psychic eggs. Five rounded
 shells carry distinct fitted pale eyes, fine dark pupils, supported lids,
 angular cracks and angry, smirking or tired mouths. A sixth egg is a real

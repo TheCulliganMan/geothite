@@ -475,7 +475,7 @@ mod tests {
                 {
                     continue;
                 }
-                append_textured_shoreline(&mut mesh.textured, &g, x, y, d, [w, e, n, s], -2., 0.);
+                append_textured_shoreline(&mut mesh.textured, &g, x, y, d, [w, e, n, s], crate::profile::WATER_HEIGHT, 0.);
             }
         }
         (cells, shapes, g, images, mesh)
@@ -527,20 +527,20 @@ mod tests {
                 .solid
                 .positions
                 .iter()
-                .all(|p| p.iter().all(|v| v.is_finite()) && p[1] >= -2. - g.tile_height * 0.20 && p[1] <= g.tile_height * 0.32));
+                .all(|p| p.iter().all(|v| v.is_finite()) && p[1] >= crate::profile::WATER_HEIGHT - g.tile_height * 0.20 && p[1] <= g.tile_height * 0.32));
             assert!(source_corners.iter().all(|p| mesh.solid.positions.contains(p)),
                 "fractured shelves and walls preserve all source contact corners");
-            assert!(mesh.solid.positions.iter().all(|p|p[1]>=-2. && p[1]<=0.),
+            assert!(mesh.solid.positions.iter().all(|p|p[1]>=crate::profile::WATER_HEIGHT && p[1]<=0.),
                 "standard cliff faces cannot add a separate raised shoreline crown");
             assert!(mesh.solid.positions.iter().zip(&mesh.solid.normals).any(|(p,n)|
-                p[1]>-2. && p[1]<0. && n[1].abs()>0.001 && n[1].abs()<0.9),
+                p[1]>crate::profile::WATER_HEIGHT && p[1]<0. && n[1].abs()>0.001 && n[1].abs()<0.9),
                 "the shared cliff wall must retain real fractured relief");
             assert!(mesh.solid.uvs.iter().all(|uv| *uv == crate::scenery_finish::SOURCE_PAINT_UV
                 || *uv == new_bark::ledge_finish::BANK_GROUND_UV
                 || (uv[0] > 87000. && uv[0] < 90000. && uv[1] < -10000.)),
                 "shore rock must never sample a 2D sprite");
             assert!(mesh.solid.positions.iter().any(|p| p[1] == 0.));
-            assert!(mesh.solid.positions.iter().any(|p| p[1] == -2.));
+            assert!(mesh.solid.positions.iter().any(|p| p[1] == crate::profile::WATER_HEIGHT));
             for (tri, n) in mesh.solid.indices.chunks_exact(3).zip(
                 mesh.solid
                     .indices

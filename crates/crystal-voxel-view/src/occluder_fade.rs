@@ -11,7 +11,7 @@ use crate::{
 };
 use bevy::{
     prelude::*,
-    camera::{primitives::Aabb, visibility::RenderLayers},
+    camera::{primitives::Aabb, visibility::{NoAutoAabb, RenderLayers}},
 };
 use std::ops::Range;
 use std::sync::{Arc, Mutex, OnceLock, Weak};
@@ -205,7 +205,8 @@ struct PreparedLeaf {
     bounds: Aabb,
     shared: Option<Arc<Mutex<SharedLeaf>>>,
 }
-struct SharedLeaf { mesh: Option<Mesh>, uploaded: Option<Handle<Mesh>> }
+struct SharedLeaf { mesh: Option<Mesh>, uploaded: Option<Handle<Mesh>>,
+}
 // Instances own their shared geometry. The recipe lookup cache holds only
 // weak references, so leaving a region releases its CPU/GPU resources.
 #[derive(Component)]
@@ -279,6 +280,8 @@ impl WeakPreparedGroup {
         })
     }
 }
+
+
 fn empty_mesh() -> Mesh {
     Mesh::new(bevy::mesh::PrimitiveTopology::TriangleList, bevy::asset::RenderAssetUsages::RENDER_WORLD)
 }
@@ -366,6 +369,89 @@ pub(crate) fn stage_group_meshes(groups: &mut [PreparedGroup], meshes: &mut Asse
         }
     }
 }
+
+
+
+/// Keep connected opaque faces together after spatial leaf partitioning. The
+/// original collision and sorted transparency copies retain their own order.
+#[cfg(all(not(target_arch = "wasm32"), not(feature = "terrain-worker")))]
+pub(super) fn localize_opaque_triangles(groups: &mut [PreparedGroup]) {
+    use bevy::mesh::Indices;
+    for group in groups {
+        let Some(leaf)=group.opaque_leaf.as_mut() else {continue;};
+        if leaf.uploaded.is_some() || leaf.shared.is_some() {continue;}
+        let Ok(indices)=leaf.mesh.try_indices() else {continue;};
+        let source:Vec<u32>=indices.iter().map(|i|i as u32).collect();
+        let vertices=leaf.mesh.count_vertices();
+        if source.len()%3!=0 || source.iter().any(|&i|i as usize>=vertices) {continue;}
+        let mut offsets=vec![0usize;vertices+1];
+        for &v in &source {offsets[v as usize+1]+=1;}
+        for i in 1..offsets.len() {offsets[i]+=offsets[i-1];}
+        let mut cursor=offsets[..vertices].to_vec();
+        let mut adjacent=vec![0u32;source.len()];
+        for (face,triangle) in source.chunks_exact(3).enumerate() {
+            for &v in triangle {let i=v as usize;adjacent[cursor[i]]=face as u32;cursor[i]+=1;}
+        }
+        drop(cursor);
+        // Expanding each vertex's adjacency once gives linear preparation
+        // even for high-valence branch junctions. Later visits cannot queue
+        // anything new: every neighbor was queued on its first expansion.
+        let mut expanded=vec![false;vertices];
+        let mut queued=vec![false;source.len()/3];
+        let mut stack=Vec::new();
+        let mut reordered=Vec::with_capacity(source.len());
+        for seed in 0..queued.len() {
+            if queued[seed] {continue;}
+            queued[seed]=true;stack.push(seed);
+            while let Some(face)=stack.pop() {
+                let triangle=&source[face*3..face*3+3];
+                reordered.extend_from_slice(triangle);
+                for &v in triangle {
+                    if expanded[v as usize] {continue;}
+                    expanded[v as usize]=true;
+                    for &neighbor in &adjacent[offsets[v as usize]..offsets[v as usize+1]] {
+                        let neighbor=neighbor as usize;
+                        if !queued[neighbor] {queued[neighbor]=true;stack.push(neighbor);}
+                    }
+                }
+            }
+        }
+        let compact=matches!(indices,Indices::U16(_));
+        leaf.mesh.insert_indices(if compact {Indices::U16(reordered.into_iter().map(|i|i as u16).collect())}
+            else {Indices::U32(reordered)});
+    }
+}
+
+
+
+/// Encode the opaque and sorted render copies identically so destination
+/// precompilation also prepares the actual future fade layout. The original
+/// source collision data remains untouched.
+#[cfg(not(target_arch = "wasm32"))]
+pub(super) fn pack_palette_group_normals(groups: &mut [PreparedGroup]) -> usize {
+    use bevy::mesh::VertexAttributeValues;
+    fn eligible(leaf: &PreparedLeaf) -> bool {
+        if leaf.uploaded.is_some() || leaf.shared.is_some() { return false; }
+        let Some(VertexAttributeValues::Float32x3(normals)) = leaf.mesh.attribute(Mesh::ATTRIBUTE_NORMAL) else { return false; };
+        !normals.is_empty() && normals.len() == leaf.mesh.count_vertices()
+            && normals.iter().all(|normal| Vec3::from_array(*normal).try_normalize().is_some())
+    }
+    let mut saved = 0;
+    for group in groups {
+        let Some(opaque) = group.opaque_leaf.as_ref() else { continue; };
+        if opaque.mesh.count_vertices() < 1024
+            || !group.leaves.iter().chain(group.opaque_leaf.iter()).all(eligible) { continue; }
+        for leaf in group.leaves.iter_mut().chain(group.opaque_leaf.iter_mut()) {
+            let before = leaf.mesh.get_vertex_buffer_size();
+            if leaf.mesh.compress_normals().is_ok() {
+                saved += before - leaf.mesh.get_vertex_buffer_size();
+            }
+        }
+    }
+    saved
+}
+
+
 
 /// The caller must prove the owning material does not consume constant UV0.
 /// Linked textured overlays retain their own coordinates and material contract.
@@ -1192,12 +1278,13 @@ impl Fade {
     }
 }
 #[derive(Component)]
-struct OccluderGroup {
+pub(super) struct OccluderGroup {
     surface: Arc<CollisionSurface>,
     overlay_surface: Option<Arc<CollisionSurface>>,
     overlay_materials: Option<(Handle<VoxelMaterial>, Handle<VoxelMaterial>)>,
     fade: Fade,
     blocked: bool,
+    suspended: bool,
     opaque: Handle<VoxelMaterial>,
     transparent: Handle<VoxelMaterial>,
     transparent_ready: bool,
@@ -1205,6 +1292,13 @@ struct OccluderGroup {
     coverage_fade: bool,
     depth_coverage_fade: bool,
     camera_wall: Option<[f32;3]>,
+    furniture_aperture: Option<CutawayUniform>,
+}
+
+impl OccluderGroup {
+    pub(super) fn fade_recipe(&self) -> (bool, bool) {
+        (self.coverage_fade, self.depth_coverage_fade)
+    }
 }
 
 #[derive(Clone)]
@@ -1237,27 +1331,42 @@ pub(super) struct OpaqueObjectLeaf;
 pub(super) struct SortedObjectLeaf;
 
 fn blended(
-        materials: &mut Assets<VoxelMaterial>,
-        opaque: &Handle<VoxelMaterial>,
-        coverage_fade: bool,
-        depth_coverage_fade: bool,
-    ) -> Handle<VoxelMaterial> {
-        let mut material = materials
-            .get(opaque)
-            .expect("terrain material validated before group upload")
-            .clone();
-        // The stock shadow shader retains the original base alpha and geometry.
-        let cutoff = match material.base.alpha_mode {
-            AlphaMode::Mask(v) => v,
-            _ if coverage_fade => -1.0,
-            _ => 0.0,
-        };
-        material.base.alpha_mode = if depth_coverage_fade&&coverage_fade {AlphaMode::Mask(0.5)}else{AlphaMode::Blend};
-        material.extension.smooth_depth_fade=depth_coverage_fade&&!coverage_fade;
-        material.extension.cutaway = CutawayUniform::default();
-        material.extension.cutaway.fade.w = cutoff;
-        materials.add(material)
-    }
+    materials: &mut Assets<VoxelMaterial>,
+    opaque: &Handle<VoxelMaterial>,
+    coverage_fade: bool,
+    depth_coverage_fade: bool,
+) -> Handle<VoxelMaterial> {
+    let material = fade_material(
+        materials.get(opaque).expect("terrain material validated before group upload"),
+        coverage_fade,
+        depth_coverage_fade,
+    );
+    materials.add(material)
+}
+
+/// One authored fade recipe shared by live rendering and pipeline preparation.
+pub(super) fn fade_material(
+    original: &VoxelMaterial,
+    coverage_fade: bool,
+    depth_coverage_fade: bool,
+) -> VoxelMaterial {
+    let mut material = original.clone();
+    // The stock shadow shader retains the original base alpha and geometry.
+    let cutoff = match material.base.alpha_mode {
+        AlphaMode::Mask(v) => v,
+        _ if coverage_fade => -1.0,
+        _ => 0.0,
+    };
+    material.base.alpha_mode = if depth_coverage_fade && coverage_fade {
+        AlphaMode::Mask(0.5)
+    } else {
+        AlphaMode::Blend
+    };
+    material.extension.smooth_depth_fade = depth_coverage_fade && !coverage_fade;
+    material.extension.cutaway = CutawayUniform::default();
+    material.extension.cutaway.fade.w = cutoff;
+    material
+}
 
 pub(super) fn spawn_groups(
     commands: &mut Commands,
@@ -1313,6 +1422,8 @@ pub(super) fn spawn_groups(
                     overlay_materials: overlay_materials.clone(),
                     fade: Fade { residual_opacity, ..Default::default() },
                     blocked: false,
+                    furniture_aperture: None,
+                    suspended: false,
                     opaque: opaque.clone(),
                     transparent,
                     transparent_ready: !lazy,
@@ -1352,7 +1463,9 @@ pub(super) fn spawn_groups(
                     (MeshMaterial3d(material.clone()),
 Transform::from_translation(prepared.center),),
                     if combined && !opaque_only { Visibility::Hidden } else { Visibility::Inherited },
-                    prepared.bounds,
+                    // Prepared leaves own immutable positions and exact bounds.
+                    // Skip Bevy rescanning shared geometry on every insertion.
+                    prepared.bounds, NoAutoAabb,
                     RenderLayers::layer(VOXEL_RENDER_LAYER),
                 ));
                 if defer {
@@ -1382,7 +1495,13 @@ Transform::from_translation(prepared.center),),
     }
     spawned_leaves
 }
+#[path = "interior_npc_reveal.rs"]
+mod interior_npc_reveal;
+
 fn target_rays(uniform: CutawayUniform, camera: Mat4) -> Option<(Vec3, [Vec3; 9])> {
+    body_rays(uniform,camera,[0.12,0.52,0.92])
+}
+fn body_rays(uniform: CutawayUniform, camera: Mat4, levels: [f32;3]) -> Option<(Vec3, [Vec3; 9])> {
     if uniform.bottom_radius.w <= 0.0 || !camera.is_finite() {
         return None;
     }
@@ -1399,7 +1518,7 @@ fn target_rays(uniform: CutawayUniform, camera: Mat4) -> Option<(Vec3, [Vec3; 9]
     }
     let side = camera.x_axis.truncate().normalize_or_zero() * uniform.bottom_radius.w * 0.65;
     let targets = std::array::from_fn(|i| {
-        bottom.lerp(top, [0.12, 0.52, 0.92][i / 3]) + side * (i % 3) as f32 - side
+        bottom.lerp(top, levels[i / 3]) + side * (i % 3) as f32 - side
     });
     Some((camera.w_axis.truncate(), targets))
 }
@@ -1434,15 +1553,30 @@ fn nearby_character_targets(frame: &crystal_render_api::VisualWorldFrame,
     interest.into_iter().take(2).flat_map(|(_,_,targets)|targets).collect()
 }
 
-// Whole-building fading retains its silhouette; the body aperture prevents
-// that residual paint from covering the trainer. Other reveal styles
-// keep their existing capsule policy, including foliage and room walls.
-fn building_aperture(material: &mut VoxelMaterial, player: CutawayUniform, enabled: bool) {
+// Keep blocked bodies clear inside a retained object silhouette. Buildings
+// pass the trainer capsule; registered source objects pass their blocked body union.
+fn body_aperture(material: &mut VoxelMaterial, player: CutawayUniform, enabled: bool) {
     if enabled {
         material.extension.cutaway.bottom_radius = player.bottom_radius;
         material.extension.cutaway.top_feather = player.top_feather;
     }
 }
+// Match Bevy's visibility inheritance: Visible overrides ancestors, Hidden
+// stops the chain, and a missing parent/component defaults to visible.
+fn hierarchy_is_visible(entity: Entity, query: &Query<(&Visibility, Option<&ChildOf>)>,
+    cache: &mut std::collections::HashMap<Entity, bool>) -> bool {
+    if let Some(&visible) = cache.get(&entity) { return visible; }
+    let visible = match query.get(entity) {
+        Ok((Visibility::Hidden, _)) => false,
+        Ok((Visibility::Visible, _)) => true,
+        Ok((Visibility::Inherited, parent)) => parent
+            .is_none_or(|parent| hierarchy_is_visible(parent.parent(), query, cache)),
+        Err(_) => true,
+    };
+    cache.insert(entity, visible);
+    visible
+}
+
 fn sync(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -1455,12 +1589,17 @@ fn sync(
     cameras: Query<(&Camera, &GlobalTransform), With<VoxelWorldCamera>>,
     mut materials: ResMut<Assets<VoxelMaterial>>,
     mut groups: Query<(Entity, &mut OccluderGroup, Ref<GlobalTransform>, &Children, Option<&mut LazySortedLeaves>)>,
-    mut leaves: Query<(&mut MeshMaterial3d<VoxelMaterial>, Option<&OverlayLeaf>,
-        Option<&OpaqueObjectLeaf>, Option<&SortedObjectLeaf>, &mut Visibility,
-        Option<&mut DeferredMesh>)>,
-    mut previous: Local<Option<(Mat4, CutawayUniform, bool)>>,
+    mut visibility: ParamSet<(
+        Query<(&Visibility, Option<&ChildOf>)>,
+        Query<(&mut MeshMaterial3d<VoxelMaterial>, Option<&OverlayLeaf>,
+            Option<&OpaqueObjectLeaf>, Option<&SortedObjectLeaf>, &mut Visibility,
+            Option<&mut DeferredMesh>)>,
+    )>,
+    mut visible_hierarchy: Local<std::collections::HashMap<Entity, bool>>,
+    mut previous: Local<Option<(Mat4, CutawayUniform, bool, bool)>>,
     mut previous_pit_targets: Local<Vec<Vec3>>,
     mut previous_character_targets: Local<Vec<Vec3>>,
+    mut previous_furniture_targets: Local<Vec<interior_npc_reveal::Person>>,
 ) {
     let _trace = crate::loading_trace::span("frame.occluder_fades", || {
         let (count, blocked, faded, deferred, leaf_entities, pending_leaves) = groups.iter()
@@ -1483,7 +1622,10 @@ fn sync(
         .and_then(|h| materials.get(h))
         .map(|m| m.extension.cutaway)
         .unwrap_or_default();
-    let input = (camera, uniform, status.active && active);
+    let interior_furniture=frame.as_ref().is_some_and(|frame|
+        !frame.map_id.is_empty() && !crate::cave_water::outdoor(&frame.map_id)
+            &&cache.built_frame.as_ref().is_some_and(|built|built.map_id==frame.map_id));
+    let input = (camera, uniform, status.active && active, interior_furniture);
     let mut pit_targets=if input.2&&uniform.bottom_radius.w>0.&&cache.built_profiles.is_some() {
         frame.as_ref().filter(|frame|cache.built_frame.as_ref()
             .is_some_and(|built|built.map_id==frame.map_id))
@@ -1501,21 +1643,46 @@ fn sync(
             .map(|frame|nearby_character_targets(frame,&cache.footing_heights,uniform,camera))
             .unwrap_or_default()
     } else {Vec::new()};
+    let furniture_targets=if input.2 && uniform.bottom_radius.w>0. {
+        frame.as_ref().filter(|frame|cache.built_frame.as_ref()
+            .is_some_and(|built|built.map_id==frame.map_id))
+            .map(|frame|interior_npc_reveal::targets(frame,&cache.footing_heights,camera))
+            .unwrap_or_default()
+    } else {Vec::new()};
     let changed = previous.as_ref() != Some(&input)||*previous_pit_targets!=pit_targets
-        ||*previous_character_targets!=character_targets;
+        ||*previous_character_targets!=character_targets||*previous_furniture_targets!=furniture_targets;
     *previous = Some(input);
     (*previous_pit_targets).clone_from(&pit_targets);
     (*previous_character_targets).clone_from(&character_targets);
+    (*previous_furniture_targets).clone_from(&furniture_targets);
     let rays = if input.2 {
         target_rays(uniform, camera)
     } else {
         None
     };
+    // This system precedes visibility propagation so it can update render
+    // leaves before culling. Read the current hierarchy rather than last
+    // frame's InheritedVisibility, including on the first preload/unhide frame.
+    visible_hierarchy.clear();
+    {
+        let hierarchy = visibility.p0();
+        for (entity, _, _, _, _) in groups.iter() {
+            hierarchy_is_visible(entity, &hierarchy, &mut visible_hierarchy);
+        }
+    }
+    let mut leaves = visibility.p1();
     for (group_entity, mut group, transform, children, lazy_sorted) in &mut groups {
-        if changed || transform.is_changed() || group.is_added() {
+        if visible_hierarchy.get(&group_entity) == Some(&false) {
+            if !group.suspended { group.suspended = true; }
+            continue;
+        }
+        let resumed = group.suspended;
+        if resumed { group.suspended = false; }
+        if changed || resumed || transform.is_changed() || group.is_added() {
             let outside=group.camera_wall.is_some_and(|plane|input.2&&outside_room_wall(plane,
                 transform.to_matrix().inverse().transform_point3(camera.w_axis.truncate())));
             let has_ray_targets=group.camera_wall.is_none()||!pit_targets.is_empty();
+            let mut furniture_aperture=None;
             let blocked = outside || (has_ray_targets && rays.is_some_and(|(eye, targets)| {
                 let local = transform.to_matrix().inverse();
                 let start = local.transform_point3(eye);
@@ -1525,16 +1692,24 @@ fn sync(
                 let body=targets.into_iter().filter(|_|group.camera_wall.is_none());
                 let people=character_targets.iter().copied().filter(|_|
                     group.camera_wall.is_none() && group.fade.residual_opacity==BUILDING_REVEAL_OPACITY);
-                local.is_finite()
-                    && body.chain(pit_targets.iter().copied()).chain(people).any(|target| {
-                        let end = local.transform_point3(target);
-                        group.surface.blocks(start, end)
-                            || group
-                                .overlay_surface
-                                .as_ref()
-                                .is_some_and(|surface| surface.blocks(start, end))
-                    })
+                if !local.is_finite() {return false;}
+                let blocks=|target| {
+                    let end=local.transform_point3(target);
+                    group.surface.blocks(start,end)||group.overlay_surface.as_ref()
+                        .is_some_and(|surface|surface.blocks(start,end))
+                };
+                let primary=body.chain(pit_targets.iter().copied()).chain(people).any(blocks);
+                if interior_furniture && interior_npc_reveal::source_object(&group) {
+                    if primary {interior_npc_reveal::merge(&mut furniture_aperture,uniform);}
+                    for person in &furniture_targets {
+                        if person.obscured(blocks) {
+                            interior_npc_reveal::merge(&mut furniture_aperture,person.body);
+                        }
+                    }
+                }
+                primary||furniture_aperture.is_some()
             }));
+            group.furniture_aperture=furniture_aperture;
             if blocked != group.blocked {
                 group.blocked = blocked;
             }
@@ -1565,7 +1740,7 @@ fn sync(
                         let mut leaf = commands.spawn((Mesh3d(mesh),
                             MeshMaterial3d(group.transparent.clone()), local,
                             transform.mul_transform(local), Visibility::Inherited,
-                            prepared.bounds, RenderLayers::layer(VOXEL_RENDER_LAYER),
+                            prepared.bounds, NoAutoAabb, RenderLayers::layer(VOXEL_RENDER_LAYER),
                             SortedObjectLeaf));
                         if let Some(shared) = prepared.shared { leaf.insert(SharedGeometry(shared)); }
                         let leaf = leaf.id();
@@ -1616,14 +1791,19 @@ fn sync(
             let clear_body = (group.coverage_fade || group.depth_coverage_fade)
                 && group.fade.residual_opacity == BUILDING_REVEAL_OPACITY
                 && group.camera_wall.is_none();
+            let furniture_aperture=group.furniture_aperture;
+            let furniture=interior_furniture && interior_npc_reveal::source_object(&group);
+            let aperture=furniture_aperture.unwrap_or(uniform);
             if let Some(mut material) = materials.get_mut(&group.transparent) {
                 material.extension.cutaway.fade.x = 1.0 - group.fade.opacity;
-                building_aperture(&mut material, uniform, clear_body);
+                if furniture {material.extension.cutaway.bottom_radius=Vec4::ZERO;material.extension.cutaway.top_feather=Vec4::ZERO;}
+                body_aperture(&mut material, aperture, clear_body||furniture_aperture.is_some());
             }
             if let Some((_, transparent)) = &group.overlay_materials {
                 if let Some(mut material) = materials.get_mut(transparent) {
                     material.extension.cutaway.fade.x = 1.0 - group.fade.opacity;
-                    building_aperture(&mut material, uniform, clear_body);
+                    if furniture {material.extension.cutaway.bottom_radius=Vec4::ZERO;material.extension.cutaway.top_feather=Vec4::ZERO;}
+                    body_aperture(&mut material, aperture, clear_body||furniture_aperture.is_some());
                 }
             }
         }
@@ -1640,6 +1820,182 @@ mod tests {
                 center:Vec2::new(12.,-8.),size:Vec2::splat(16.),flip_x:false,
                 above_priority:false,facing:Some(Vec2::X)}],..default()}
     }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn packed_grove_normals_preserve_geometry_colors_collision_and_fade_layout() {
+        use bevy::mesh::{VertexAttributeValues, octahedral_decode_signed};
+        use bevy::camera::primitives::MeshAabb;
+        for family in [crate::foliage::GroveFamily::JohtoPine,
+            crate::foliage::GroveFamily::AncientForest, crate::foliage::GroveFamily::KantoDeciduous] {
+            let mut tree = crate::mesh::TerrainMeshData::default();
+            crate::foliage::append_family_canopy(&mut tree, [-16.,16.,-16.,16.],3.,16.,
+                [4,8],[true;4],family);
+            let (_,mut groups) = prepare_grove(tree.solid);
+            compact_palette_group_uv0(&mut groups);
+            let originals:Vec<_> = groups[0].leaves.iter().chain(groups[0].opaque_leaf.iter())
+                .map(|leaf|leaf.mesh.clone()).collect();
+            let collision = groups[0].surface.clone();
+            let saved = pack_palette_group_normals(&mut groups);
+            assert_eq!(saved,originals.iter().map(|mesh|mesh.count_vertices()*8).sum::<usize>());
+            assert!(Arc::ptr_eq(&collision,&groups[0].surface));
+            let mut layouts = bevy::mesh::MeshVertexBufferLayouts::default();
+            let fade_layout = groups[0].opaque_leaf.as_ref().unwrap().mesh
+                .get_mesh_vertex_buffer_layout(&mut layouts);
+            for leaf in &groups[0].leaves {
+                assert_eq!(leaf.mesh.get_mesh_vertex_buffer_layout(&mut layouts),fade_layout,
+                    "preloaded opaque geometry must specialize the actual future fade layout");
+            }
+            for (original,leaf) in originals.iter().zip(groups[0].leaves.iter().chain(groups[0].opaque_leaf.iter())) {
+                let packed = &leaf.mesh;
+                let Some(VertexAttributeValues::Float32x3(before)) = original.attribute(Mesh::ATTRIBUTE_NORMAL) else { panic!() };
+                let Some(VertexAttributeValues::Snorm16x2(after)) = packed.attribute(Mesh::ATTRIBUTE_NORMAL) else { panic!() };
+                assert_eq!(original.indices(),packed.indices());
+                for attribute in [Mesh::ATTRIBUTE_POSITION,Mesh::ATTRIBUTE_COLOR,Mesh::ATTRIBUTE_UV_0] {
+                    assert_eq!(original.attribute(attribute),packed.attribute(attribute));
+                }
+                assert_eq!(packed.get_aabb(),original.get_aabb());
+                for (before,after) in before.iter().zip(after) {
+                    let decoded=octahedral_decode_signed(Vec2::new(
+                        (f32::from(after[0])/32767.).max(-1.),(f32::from(after[1])/32767.).max(-1.)));
+                    assert!(Vec3::from_array(*before).normalize().distance(decoded)<0.00015);
+                }
+            }
+            assert_eq!(pack_palette_group_normals(&mut groups),0,"packing is idempotent");
+            share_groups(&mut groups);
+            assert!(WeakPreparedGroup::new(&groups[0]).upgrade().is_some());
+        }
+    }
+
+
+
+
+
+    #[cfg(all(not(target_arch = "wasm32"), not(feature = "terrain-worker")))]
+    #[test]
+    fn opaque_face_locality_preserves_every_triangle_and_reuses_transformed_vertices() {
+        fn misses(indices:&[u32])->usize {
+            let mut cache=std::collections::VecDeque::new();let mut misses=0;
+            for &i in indices {if !cache.contains(&i) {misses+=1;cache.push_back(i);if cache.len()>32 {cache.pop_front();}}}
+            misses
+        }
+        for family in [crate::foliage::GroveFamily::JohtoPine,crate::foliage::GroveFamily::AncientForest,
+            crate::foliage::GroveFamily::KantoDeciduous] {
+            let mut tree=crate::mesh::TerrainMeshData::default();
+            crate::foliage::append_family_canopy(&mut tree,[-16.,16.,-16.,16.],3.,16.,[4,8],[true;4],family);
+            let (_,mut groups)=prepare_grove(tree.solid);compact_palette_group_uv0(&mut groups);
+            let before=groups[0].opaque_leaf.as_ref().unwrap().mesh.clone();
+            let sorted:Vec<_>=groups[0].leaves.iter().map(|l|l.mesh.indices().cloned()).collect();
+            let collision=groups[0].surface.clone();
+            localize_opaque_triangles(&mut groups);
+            let after=&groups[0].opaque_leaf.as_ref().unwrap().mesh;
+            let old:Vec<u32>=before.indices().unwrap().iter().map(|i|i as u32).collect();
+            let new:Vec<u32>=after.indices().unwrap().iter().map(|i|i as u32).collect();
+            let mut old_faces:Vec<_>=old.chunks_exact(3).map(|t|[t[0],t[1],t[2]]).collect();
+            let mut new_faces:Vec<_>=new.chunks_exact(3).map(|t|[t[0],t[1],t[2]]).collect();
+            old_faces.sort_unstable();new_faces.sort_unstable();assert_eq!(old_faces,new_faces);
+            for (attribute,value) in before.attributes() {assert_eq!(Some(value),after.attribute(attribute.id));}
+            assert_eq!(sorted,groups[0].leaves.iter().map(|l|l.mesh.indices().cloned()).collect::<Vec<_>>());
+            assert!(Arc::ptr_eq(&collision,&groups[0].surface));
+            println!("{family:?}: FIFO32 vertex transforms {} -> {}, vertices {}",misses(&old),misses(&new),before.count_vertices());
+            assert!(misses(&new)<=misses(&old));
+        }
+    }
+
+
+
+    #[test]
+    fn immutable_prepared_leaves_publish_bounds_that_enclose_their_vertices() {
+        use bevy::mesh::VertexAttributeValues;
+        let mut world = World::new();
+        let mut meshes = Assets::<Mesh>::default();
+        let mut materials = Assets::<VoxelMaterial>::default();
+        let material = materials.add(crate::solid_terrain_material());
+        let root = world.spawn((Transform::default(), Visibility::Inherited)).id();
+        let mut tree = crate::mesh::TerrainMeshData::default();
+        crate::foliage::append_family_canopy(&mut tree, [-16.,16.,-16.,16.],3.,16.,
+            [4,8],[true;4],crate::foliage::GroveFamily::JohtoPine);
+        let (_, mut groups) = prepare_grove(tree.solid);
+        compact_palette_group_uv0(&mut groups);
+        let leaves = spawn_groups(&mut world.commands(), &mut meshes, &mut materials,
+            root, groups, material, None);
+        world.flush();
+        assert!(leaves.len() > 1, "exercise opaque and deferred sorted geometry");
+        for entity in leaves {
+            assert!(world.get::<NoAutoAabb>(entity).is_some());
+            let bounds = world.get::<Aabb>(entity).unwrap();
+            let mesh = world.get::<Mesh3d>(entity).map(|m| meshes.get(&m.0).unwrap())
+                .or_else(|| world.get::<DeferredMesh>(entity)
+                    .and_then(|deferred| deferred.0.as_ref()).map(|leaf| &leaf.mesh)).unwrap();
+            let VertexAttributeValues::Float32x3(positions) = mesh.attribute(Mesh::ATTRIBUTE_POSITION).unwrap()
+                else { panic!("prepared positions must remain explicit"); };
+            for point in positions {
+                let offset = (Vec3::from_array(*point) - Vec3::from(bounds.center)).abs();
+                assert!(offset.cmple(Vec3::from(bounds.half_extents) + Vec3::splat(0.001)).all());
+            }
+        }
+    }
+
+    #[test]
+    fn hidden_cached_hierarchy_does_not_build_blockers_and_rechecks_on_resume() {
+        let mut app = App::new();
+        app.add_plugins((MinimalPlugins, bevy::transform::TransformPlugin))
+            .init_resource::<Assets<Mesh>>().init_resource::<Assets<VoxelMaterial>>()
+            .init_resource::<TerrainRevisionCache>()
+            .insert_resource(VoxelViewStatus { active: true, ..default() })
+            .insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
+                std::time::Duration::from_secs_f64(1. / 60.)));
+        register(&mut app);
+        let mut material = crate::solid_terrain_material();
+        material.extension.cutaway = CutawayUniform::for_player(Vec3::ZERO, 16.).unwrap();
+        let handle = app.world_mut().resource_mut::<Assets<VoxelMaterial>>().add(material);
+        app.world_mut().resource_mut::<TerrainRevisionCache>().solid_material = Some(handle.clone());
+        let camera = app.world_mut().spawn((Camera3d::default(), Msaa::Off,
+            Transform::from_xyz(0., 20., 80.).looking_at(Vec3::Y * 10., Vec3::Y), VoxelWorldCamera)).id();
+        let root = app.world_mut().spawn((Transform::default(), Visibility::Hidden)).id();
+        let branch = app.world_mut().spawn((Transform::default(), Visibility::Inherited)).id();
+        app.world_mut().entity_mut(root).add_child(branch);
+        let (_, prepared) = prepare_grove(wall(20.125));
+        app.world_mut().resource_scope(|world, mut meshes: Mut<Assets<Mesh>>| {
+            world.resource_scope(|world, mut materials: Mut<Assets<VoxelMaterial>>| {
+                spawn_groups(&mut world.commands(), &mut meshes, &mut materials,
+                    branch, prepared, handle, None);
+            });
+        });
+        app.world_mut().flush();
+        let group = app.world_mut().query_filtered::<Entity, With<OccluderGroup>>()
+            .single(app.world()).unwrap();
+        let mesh_count = app.world().resource::<Assets<Mesh>>().len();
+        app.update();
+        let tick = app.world().entity(group).get_ref::<OccluderGroup>().unwrap().last_changed();
+        for _ in 0..10 { app.update(); }
+        let state = app.world().get::<OccluderGroup>(group).unwrap();
+        assert!(state.suspended && !state.blocked);
+        assert!(state.surface.tree.get().is_none(), "an unseen blocker must stay unbuilt");
+        assert_eq!(state.fade.opacity, 1.);
+        assert_eq!(app.world().entity(group).get_ref::<OccluderGroup>().unwrap().last_changed(), tick);
+        assert_eq!(app.world().resource::<Assets<Mesh>>().len(), mesh_count);
+        // No camera/player/transform changed. Visibility alone must resume
+        // exact obstruction tests before this frame reaches render culling.
+        *app.world_mut().get_mut::<Visibility>(root).unwrap() = Visibility::Inherited;
+        app.update();
+        let state = app.world().get::<OccluderGroup>(group).unwrap();
+        assert!(!state.suspended && state.blocked);
+        assert!(state.surface.tree.get().is_some());
+        assert!(state.fade.opacity < 1.);
+        *app.world_mut().get_mut::<Visibility>(root).unwrap() = Visibility::Hidden;
+        app.world_mut().get_mut::<Transform>(camera).unwrap().translation.x = 160.;
+        for _ in 0..10 { app.update(); }
+        // Explicit Visible follows Bevy's override semantics even with a
+        // hidden ancestor; it must not inherit a cached hidden decision.
+        *app.world_mut().get_mut::<Visibility>(group).unwrap() = Visibility::Visible;
+        app.update();
+        let state = app.world().get::<OccluderGroup>(group).unwrap();
+        assert!(!state.suspended && !state.blocked);
+        for _ in 0..120 { app.update(); }
+        assert_eq!(app.world().get::<OccluderGroup>(group).unwrap().fade.opacity, 1.);
+    }
+
     #[test]
     fn nearby_npc_reveals_a_real_roof_that_misses_every_player_ray() {
         let frame=nearby_npc_frame();let foot=Vec3::new(-20.,0.04,8.);
@@ -1730,14 +2086,14 @@ mod tests {
         let fade = material.extension.cutaway.fade;
         for foot in [Vec3::new(8., 0., 16.), Vec3::new(24., 12., 32.)] {
             let player = CutawayUniform::for_player(foot,16.).unwrap();
-            building_aperture(&mut material,player,false);
+            body_aperture(&mut material,player,false);
             if foot.x == 8. {assert_eq!(material.extension.cutaway.bottom_radius,Vec4::ZERO);}
-            building_aperture(&mut material,player,true);
+            body_aperture(&mut material,player,true);
             assert_eq!(material.extension.cutaway.bottom_radius,player.bottom_radius);
             assert_eq!(material.extension.cutaway.top_feather,player.top_feather);
             assert_eq!(material.extension.cutaway.fade,fade);
         }
-        building_aperture(&mut material,CutawayUniform::default(),true);
+        body_aperture(&mut material,CutawayUniform::default(),true);
         assert_eq!(material.extension.cutaway.bottom_radius,Vec4::ZERO);
         assert_eq!(material.extension.cutaway.fade,fade);
     }
@@ -1963,11 +2319,28 @@ mod tests {
 
     #[test]
     fn opaque_and_sorted_grove_draws_are_exclusive_through_fade_and_restore() {
+        opaque_and_sorted_grove_fade_case(false);
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
+    #[test]
+    fn packed_opaque_grove_restores_its_original_draw_after_sorted_fade() {
+        opaque_and_sorted_grove_fade_case(true);
+    }
+
+    fn opaque_and_sorted_grove_fade_case(packed: bool) {
         use bevy::asset::AssetApp;
         let mut source = crate::mesh::TerrainMeshData::default();
         crate::foliage::append_grove_tree(&mut source, [0.0, 32.0, 0.0, 32.0],
             3.0, 16.0, [4, 8], [false; 4]);
-        let (_, groups) = prepare(source.solid);
+        let (_, mut groups) = prepare(source.solid);
+        #[cfg(not(target_arch = "wasm32"))]
+        if packed {
+            compact_palette_group_uv0(&mut groups);
+            assert!(pack_palette_group_normals(&mut groups) > 0);
+        }
+        #[cfg(target_arch = "wasm32")]
+        let _ = packed;
         let mut app = App::new();
         app.add_plugins((MinimalPlugins, bevy::transform::TransformPlugin,
             bevy::asset::AssetPlugin::default()))
@@ -3268,8 +3641,13 @@ pub(crate) fn geometry_signature(
                 s.mesh.as_ref().expect("geometry signature requires an unuploaded CPU mesh"));
             let bevy::mesh::VertexAttributeValues::Float32x3(positions) =
                 mesh.attribute(Mesh::ATTRIBUTE_POSITION).unwrap() else { panic!() };
-            let bevy::mesh::VertexAttributeValues::Float32x3(normals) =
-                mesh.attribute(Mesh::ATTRIBUTE_NORMAL).unwrap() else { panic!() };
+            let normals = match mesh.attribute(Mesh::ATTRIBUTE_NORMAL).unwrap() {
+                bevy::mesh::VertexAttributeValues::Float32x3(normals) => normals.clone(),
+                bevy::mesh::VertexAttributeValues::Snorm16x2(normals) => normals.iter().map(|&[x,y]|
+                    bevy::mesh::octahedral_decode_signed(Vec2::new(
+                        (f32::from(x)/32767.).max(-1.),(f32::from(y)/32767.).max(-1.))).to_array()).collect(),
+                _ => panic!("unexpected normal representation"),
+            };
             // A compact palette leaf has implicit zero coordinates. Tagged
             // finishes retain their attribute and must still match exactly.
             let uvs = match mesh.attribute(Mesh::ATTRIBUTE_UV_0) {

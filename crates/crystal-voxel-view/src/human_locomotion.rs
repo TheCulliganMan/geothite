@@ -127,8 +127,9 @@ impl HumanLocomotion {
     }
 
     pub(crate) fn new(rig: &PersonRig) -> Self {
-        let mut neutral = rig.nodes.clone();
-        rig.sample("Idle", 0., &mut neutral);
+        // The supplied Idle is a combat crouch. Build locomotion from the
+        // upright bind anatomy and relax the arms with our standing pose.
+        let neutral = rig.nodes.clone();
         let point = |node| world(rig, &neutral, node).transform_point3(Vec3::ZERO);
         let hips = point(rig.skin_nodes[rig.hips_joint]);
         let legs = std::array::from_fn(|side| {
@@ -144,7 +145,7 @@ impl HumanLocomotion {
                 foot,
                 // Bind soles are level. Idle can already contain ankle rocking.
                 ankle: Vec3::new(
-                    point(foot).x,
+                    hips.x + if side == 0 { 0.085 } else { -0.085 } * rig.height / REFERENCE_HEIGHT,
                     world(rig, &rig.nodes, foot).transform_point3(Vec3::ZERO).y,
                     hips.z,
                 ),
@@ -173,12 +174,19 @@ impl HumanLocomotion {
                 lower,
             ]
         });
-        Self {
+        let mut gait = Self {
             hips,
             neutral,
             legs,
             arms,
-        }
+        };
+        let idle = crate::human_idle::HumanIdle::new(
+            rig, crate::new_bark_actors::character_meshes::CharacterKind::Trainer,
+        );
+        let mut relaxed = gait.neutral.clone();
+        idle.sample(rig, &gait, 0., &mut relaxed);
+        gait.neutral = relaxed;
+        gait
     }
 
     pub(crate) fn sample(&self, rig: &PersonRig, phase: f32, run: f32, pose: &mut [Transform]) {
@@ -197,14 +205,14 @@ impl HumanLocomotion {
                 pitch,
             )
         });
-        // Lower the pelvis just enough for a soft knee at the longest contact.
+        // Keep the pelvis upright with a nearly extended supporting leg.
         // The small two-beat rise accompanies weight transfer, rather than
         // importing the source run's large root bounce into an ordinary walk.
         let bounce = (1. - (2. * phase).cos()) * (0.006 + 0.018 * run) * units;
         let mut desired =
-            self.hips + Vec3::new(0.008 * units * phase.sin(), -0.02 * units + bounce, 0.);
+            self.hips + Vec3::new(0.008 * units * phase.sin(), bounce, 0.);
         for (leg, (target, _)) in self.legs.iter().zip(targets) {
-            let reach = (leg.lengths.x + leg.lengths.y) * 0.97;
+            let reach = (leg.lengths.x + leg.lengths.y) * 0.995;
             let horizontal = (target - desired - leg.hip_offset).xz().length_squared();
             let cap = target.y + (reach * reach - horizontal).max(0.).sqrt() - leg.hip_offset.y;
             // Smooth minimum avoids a pelvis velocity kink when support swaps.
@@ -386,6 +394,14 @@ pub(crate) mod validation {
                         && (t.rotation.length_squared() - 1.).abs() < 1e-4));
                     for (side, leg) in gait.legs.iter().enumerate() {
                         let p = |n| world(rig, &pose, n).transform_point3(Vec3::ZERO);
+                        if run == 0. && frame == side * 60 {
+                            // Heel contact must use a long supporting leg,
+                            // rather than preserving the combat Idle squat.
+                            let extension = p(leg.upper).distance(p(leg.foot))
+                                / (leg.lengths.x + leg.lengths.y);
+                            assert!(extension > 0.98,
+                                "{kind:?}: crouched walk contact ({extension})");
+                        }
                         assert!((p(leg.upper).distance(p(leg.lower)) - leg.lengths.x).abs() < 1e-4);
                         assert!((p(leg.lower).distance(p(leg.foot)) - leg.lengths.y).abs() < 1e-4);
                         let (z, lift, pitch) = step(phase + side as f32 * PI, run);

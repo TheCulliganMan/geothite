@@ -1,4 +1,4 @@
-//! Closed blue bank walls from complete native pool drawings.
+//! Native pool banks: blue courses support the green paving above each pool.
 use super::*;
 struct Bank {x:usize,y:usize,ground:[usize;4]}
 fn resolve(map:&str,cells:&[&VisualTile],g:&GridGeometry,blocked:&[bool])->Vec<Bank> {
@@ -45,7 +45,9 @@ pub(super) fn finish(mesh:&mut TerrainMeshData,frame:&VisualWorldFrame,cells:&[&
     let unit=g.tile_height/SOURCE_TILE_HEIGHT;
     for p in banks {
         let (w,_,n,_)=g.bounds(p.x,p.y);let e=w+4.*g.tile_width;let s=n+2.*g.tile_height;
-        let back=s-4.*unit;let height=16.*unit;
+        let back=n;
+        let height=0.;
+        let bottom=-16.*unit;
         for row in 0..2 {for column in 0..4 {
             let (west,east,north,south)=g.bounds(p.x+column,p.y+row);
             let end=south;let source=p.ground[column];let uv=g.uv(source%g.width,source/g.width);
@@ -54,7 +56,6 @@ pub(super) fn finish(mesh:&mut TerrainMeshData,frame:&VisualWorldFrame,cells:&[&
                     [0.,1.,0.],[[uv.0,uv.2],[uv.0,v],[uv.1,v],[uv.1,uv.2]],TEXTURED_SHADE);
             }
         }}
-        let start=mesh.textured.positions.len();
         for row in 0..2 {for column in 0..4 {
             let (west,east,_,_)=g.bounds(p.x+column,p.y+row);let uv=g.uv(p.x+column,p.y+row);
             let top=height-row as f32*8.*unit;let bottom=top-8.*unit;
@@ -63,15 +64,15 @@ pub(super) fn finish(mesh:&mut TerrainMeshData,frame:&VisualWorldFrame,cells:&[&
         }}
         let uv=g.uv(p.x,p.y);
         let top=[uv.0+(uv.1-uv.0)*2.5/8.,uv.2+(uv.3-uv.2)*0.5/8.];
-        let side=[top[0],uv.2+(uv.3-uv.2)*2.5/8.];
+        let side=[uv.0+(uv.1-uv.0)*2.5/8.,uv.2+(uv.3-uv.2)*2.5/8.];
         for (points,normal,paint) in [
             ([[w,height,back],[w,height,s],[e,height,s],[e,height,back]],[0.,1.,0.],top),
-            ([[w,0.,back],[e,0.,back],[e,0.,s],[w,0.,s]],[0.,-1.,0.],side),
-            ([[e,0.,back],[w,0.,back],[w,height,back],[e,height,back]],[0.,0.,-1.],side),
-            ([[w,0.,back],[w,0.,s],[w,height,s],[w,height,back]],[-1.,0.,0.],side),
-            ([[e,0.,s],[e,0.,back],[e,height,back],[e,height,s]],[1.,0.,0.],side),
-        ] {append_quad(&mut mesh.textured,points,normal,[paint;4],TEXTURED_SHADE);}
-        mesh.textured.cutaway_ranges.push(start..mesh.textured.positions.len());
+            ([[w,bottom,back],[e,bottom,back],[e,bottom,s],[w,bottom,s]],[0.,-1.,0.],side),
+            ([[e,bottom,back],[w,bottom,back],[w,height,back],[e,height,back]],[0.,0.,-1.],side),
+            ([[w,bottom,back],[w,bottom,s],[w,height,s],[w,height,back]],[-1.,0.,0.],side),
+            ([[e,bottom,s],[e,bottom,back],[e,height,back],[e,height,s]],[1.,0.,0.],side),
+         ] {if normal==[0.,1.,0.] {continue;}
+            append_quad(&mut mesh.textured,points,normal,[paint;4],TEXTURED_SHADE);}
         for row in 0..2 {for column in 0..4 {
             mesh.authored_cells[(p.y+row)*g.width+p.x+column]=Some("league:native-pool-bank");
         }}
@@ -83,7 +84,7 @@ mod tests {
     use super::*;
     use bevy::prelude::Vec2;
     #[test]
-    fn external_league_banks_fold_eight_source_rows_into_four_closed_native_walls() {
+    fn external_league_banks_support_both_walkways_from_below_without_changing_footing() {
         let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(
             std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap())).unwrap();
         let pack=loaded.pack();let art=&pack.runtime_files()["data/tilesets/elite_four_room_metatiles.bin"];
@@ -109,10 +110,18 @@ mod tests {
             assert_eq!(out.footing_heights,baseline.footing_heights);
             assert_eq!(&out.textured.uvs[..baseline.textured.uvs.len()],baseline.textured.uvs.as_slice());
             assert_eq!(out.authored_cells.iter().filter(|&&v|v==Some("league:native-pool-bank")).count(),32);
-            assert_eq!(out.textured.cutaway_ranges.len(),4);
-            for range in &out.textured.cutaway_ranges {
+            assert!(out.textured.cutaway_ranges.is_empty());
+            assert!(out.textured.positions[baseline.textured.positions.len()..].iter()
+                .all(|p|(-16.0..=0.0).contains(&p[1])),
+                "blue supports stay below the continuous green walkway in {map}");
+            for bank in &banks {
+                let (west,_,n,_)=g.bounds(bank.x,bank.y);
+                let (e,s)=(west+32.,n+16.);
                 let mut volume=0.;let mut front_area=0.;
-                for tri in out.textured.indices.chunks_exact(3).filter(|tri|tri.iter().all(|&i|range.contains(&(i as usize)))) {
+                for tri in out.textured.indices.chunks_exact(3).filter(|tri|tri.iter().all(|&i| {
+                    let p=out.textured.positions[i as usize];
+                    i as usize>=baseline.textured.positions.len() && p[0]>=west && p[0]<=e && p[2]>=n && p[2]<=s
+                })) {
                     let p=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(out.textured.positions[i as usize]));
                     let normal=Vec3::from_array(out.textured.normals[tri[0]as usize]);
                     let area=(p[1]-p[0]).cross(p[2]-p[0]);assert!(area.dot(normal)>0.);
@@ -123,11 +132,11 @@ mod tests {
                         assert_eq!(cells[(uv.y*h as f32)as usize*w+(uv.x*w as f32)as usize].source.tile_index,tile);
                     }
                 }
-                assert!((volume-32.*4.*16.).abs()<0.1,"the native bank is a closed body");
+                assert!((volume-32.*16.*16.).abs()<0.1,"{map}: each native support is a closed body");
                 assert_eq!(front_area,32.*16.);
             }
             let (opaque,groups)=crate::occluder_fade::prepare(out.textured.clone());
-            assert_eq!(groups.len(),4);assert!(!opaque.positions.is_empty(),"floor and pool backing remain opaque");
+            assert!(groups.is_empty());assert!(!opaque.positions.is_empty(),"floor and pool backing remain opaque");
             let mut backing=0.;
             for tri in opaque.indices.chunks_exact(3) {
                 let p=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(opaque.positions[i as usize]));

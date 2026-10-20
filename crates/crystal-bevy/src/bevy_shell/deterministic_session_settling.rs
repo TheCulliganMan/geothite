@@ -997,10 +997,14 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         return commit_visible_pc_item_quantity(runtime_shell);
     }
     if runtime_shell.pc_confirmation.is_some() {
+        if advance_visible_name_rater_intro(runtime_shell)? { return Ok(()); }
+        if !visible_pc_toss_confirmation_ready(runtime_shell) {return Ok(());}
         let selected =
             strict_readonly_cursor_index(&runtime_shell.yes_no_cursor, "pc:confirmation", 2)
                 .context("PC confirmation requires a valid cursor")?;
-        return resolve_visible_pc_confirmation(runtime_shell, selected == 0);
+        return if visible_pc_has_timed_yes_no(runtime_shell) {
+            begin_visible_pc_yes_no_answer(runtime_shell, selected == 0)
+        } else {resolve_visible_pc_confirmation(runtime_shell, selected == 0)};
     }
     if runtime_shell.party_mail_take_stage.is_some() {
         let surface = if runtime_shell.party_mail_take_stage == Some(1) {
@@ -2151,7 +2155,11 @@ fn press_visible_b_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
         return Ok(());
     }
     if runtime_shell.pc_confirmation.is_some() {
-        return resolve_visible_pc_confirmation(runtime_shell, false);
+        if advance_visible_name_rater_intro(runtime_shell)? { return Ok(()); }
+        if !visible_pc_toss_confirmation_ready(runtime_shell) {return Ok(());}
+        return if visible_pc_has_timed_yes_no(runtime_shell) {
+            begin_visible_pc_yes_no_answer(runtime_shell, false)
+        } else {resolve_visible_pc_confirmation(runtime_shell, false)};
     }
     if runtime_shell.party_mail_take_stage.is_some() {
         return resolve_visible_party_mail_take_prompt(runtime_shell, false);
@@ -3136,6 +3144,9 @@ fn move_visible_mom_bank(runtime_shell: &mut BevyRuntimeShell, delta: isize, hor
 }
 
 fn press_visible_select_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.mailbox_confirmation_response.is_some() {return Ok(());}
+    // ReadMailMessage waits for A/B; retain every covered menu unchanged.
+    if runtime_shell.pending_mail_read.is_some() { return Ok(()); }
     if runtime_shell.pokedex_menu_open { return press_visible_pokedex_select(runtime_shell); }
     if runtime_shell.pokegear_exit.is_some() { return Ok(()); }
     if runtime_shell
@@ -3376,6 +3387,9 @@ fn switch_visible_pack_item(runtime_shell: &mut BevyRuntimeShell) -> Result<()> 
 }
 
 fn press_visible_start_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+    if runtime_shell.mailbox_confirmation_response.is_some() {return Ok(());}
+    // ReadMailMessage waits for A/B; retain every covered menu unchanged.
+    if runtime_shell.pending_mail_read.is_some() { return Ok(()); }
     if runtime_shell.pokedex_menu_open { return press_visible_pokedex_start(runtime_shell); }
     if let Some(puzzle) = runtime_shell.visible_unown_puzzle.as_ref() {
         return if puzzle.solved { Ok(()) } else { close_visible_unown_puzzle(runtime_shell) };
@@ -5372,10 +5386,17 @@ fn visible_quick_save_blockers(
     allow_save_menu: bool,
     allow_bill_pc: bool,
 ) -> Vec<&'static str> {
+    // PCScript retains its core textbox while Bill's visible menus own input.
+    // That suspended window is not a live printer; notices and boot pages
+    // still block saving through the ordinary dialog-owner check.
+    let retained_pc_text = allow_bill_pc && runtime_shell.pc_hub_session_open
+        && runtime_shell.bill_pc_session_open
+        && visible_field_dialog_pages(snapshot, runtime_shell).is_none();
     let mut blockers = visible_start_menu_blockers(runtime_shell, snapshot)
         .into_iter()
         .filter(|blocker| {
             (*blocker != "save" || !allow_save_menu)
+                && (*blocker != "text_window" || !retained_pc_text)
                 && *blocker != "auto_script"
                 && (!allow_bill_pc
                     || !matches!(

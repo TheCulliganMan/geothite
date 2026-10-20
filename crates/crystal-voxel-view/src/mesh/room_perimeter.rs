@@ -4,6 +4,10 @@ use super::*;
 use bevy::prelude::IVec2;
 #[path = "tin_room_bounds.rs"]
 mod tin_room_bounds;
+#[path = "tin_entrance_perimeter.rs"]
+mod tin_entrance_perimeter;
+#[path = "vermilion_room.rs"]
+mod vermilion_room;
 #[path = "tin_north_outline.rs"]
 mod tin_north_outline;
 #[path = "pokecom_room_bounds.rs"]
@@ -475,9 +479,15 @@ pub(in crate::mesh) fn append(
             )
         });
     let mut template = TerrainMeshData::default();
-    let donor_row = if let Some(row)=cafe_rear_template(&mut template.textured,&frame.map_id,cells,g,placements) {
+    let donor_row = if frame.map_id.as_ref()=="VermilionGym" {
+        let Some(row)=vermilion_room::template(&mut template,frame,cells,g,profiles) else {return;};
+        row
+    } else if let Some(row)=cafe_rear_template(&mut template.textured,&frame.map_id,cells,g,placements) {
         row
     } else if let Some(row)=player_house_rear_template(&mut template.textured,&frame.map_id,cells,g) {
+        row
+    } else if let Some(row)=native_lab_walls::perimeter_template(
+        &mut template.textured,&frame.map_id,cells,g,placements) {
         row
     } else if let Some(row) = native_classroom::perimeter_template(
         &mut template.textured,&frame.map_id,cells,g,placements) {
@@ -491,7 +501,7 @@ pub(in crate::mesh) fn append(
     ) {
         row
     } else if let Some(donor) = dungeon_placements.iter()
-        .filter(|p| (super::super::modeled_dungeons::tin_tower_guardian_map(&frame.map_id)
+        .filter(|p| (super::super::modeled_dungeons::tin_tower_architecture_map(&frame.map_id)
             ||matches!(frame.map_id.as_ref(),"SproutTower1F"|"SproutTower2F"|"SproutTower3F"))
             &&p.native_tower_wall())
         .min_by_key(|p|p.source_row()) {
@@ -594,6 +604,16 @@ pub(in crate::mesh) fn append(
                 *n = Vec3::new(n[0], n[1] / scale, n[2]).normalize().to_array();
             }
         }
+    }
+    if frame.map_id.as_ref()=="VermilionGym" {
+        vermilion_room::append(mesh,frame,cells,g,profiles,&solid,&textured,b);
+        return;
+    }
+    if frame.map_id.as_ref()=="EcruteakTinTowerEntrance" {
+        let north=g.origin_z-frame.grid_origin.y as f32*g.tile_height;
+        let rear=north+b[2]-(g.origin_z+donor_row as f32*g.tile_height);
+        tin_entrance_perimeter::append(mesh,frame,cells,g,profiles,&solid,&textured,b,rear);
+        return;
     }
     let width = size.x as i32 * 2;
     let height = size.y as i32 * 2;
@@ -732,7 +752,9 @@ pub(in crate::mesh) fn append(
                 if e < grid_from || s > grid_to {
                     continue;
                 }
-                append_section(mesh,&solid,&textured,b,edge,at,s,e);
+                let clipped=native_lab_walls::section_template(
+                    &textured,&frame.map_id,cells,g,placements,e-s);
+                append_section(mesh,&solid,clipped.as_ref().unwrap_or(&textured),b,edge,at,s,e);
             }
             start = end;
         }
@@ -1178,11 +1200,19 @@ mod tests {
                     vec![2.75; w * h],
                     "{map}: floors remain authoritative"
                 );
-                assert_eq!(
-                    mesh.authored_cells,
-                    vec![None; w * h],
-                    "{map}: no source cells replaced"
-                );
+                let mut expected_claims=vec![None;w*h];
+                if map=="VermilionGym" {
+                    // Its authored stepped header deliberately replaces 46
+                    // cap/return drawings. The void corners and floor remain
+                    // unclaimed; ordinary inferred room edges claim nothing.
+                    for x in 0..20 {expected_claims[x]=Some("room:vermilion-stepped-boundary");}
+                    for x in 3..17 {expected_claims[w+x]=Some("room:vermilion-stepped-boundary");}
+                    for y in 2..8 {for x in [3,16] {
+                        expected_claims[y*w+x]=Some("room:vermilion-stepped-boundary");
+                    }}
+                }
+                assert_eq!(mesh.authored_cells,expected_claims,
+                    "{map}: only the exact authored stepped header may replace source cells");
                 for surface in [&mesh.solid, &mesh.textured] {
                     assert_eq!(surface.positions.len(), surface.normals.len());
                     assert_eq!(surface.positions.len(), surface.uvs.len());
@@ -1192,14 +1222,22 @@ mod tests {
                             .iter()
                             .all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.001)
                     );
-                    assert_eq!(
-                        surface
-                            .cutaway_ranges
-                            .iter()
-                            .map(|r| r.len())
-                            .sum::<usize>(),
-                        surface.positions.len()
-                    );
+                    let uncovered=(0..surface.positions.len()).filter(|i|
+                        !surface.cutaway_ranges.iter().any(|r|r.contains(i))).collect::<Vec<_>>();
+                    if map=="VermilionGym" && std::ptr::eq(surface,&mesh.textured) {
+                        assert_eq!(uncovered.len(),32*4,
+                            "the inset threshold needs exactly 32 permanent checker floor quads");
+                        for i in uncovered {
+                            let p=surface.positions[i];
+                            assert_eq!(p[1],0.);
+                            assert_eq!(surface.normals[i],[0.,1.,0.]);
+                            assert!(((32.0..=64.0).contains(&p[0])||(96.0..=128.0).contains(&p[0]))
+                                &&(64.0..=96.0).contains(&p[2]),
+                                "the non-cutaway floor must stay inside the actual inset threshold");
+                        }
+                    } else {
+                        assert!(uncovered.is_empty(),"{map}: all wall vertices belong to cutaway sections");
+                    }
                 }
                 for (surface, sections) in [
                     (&mesh.solid, &mesh.camera_wall_solid_ranges),

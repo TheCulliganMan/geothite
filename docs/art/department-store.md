@@ -1,5 +1,38 @@
 # Department store architectural courses and closed display islands
 
+NPC readability follow-up, 2026-10-19: all299 source-complete stock/equipment
+cabinets now own a whole-object depth-coverage reveal, excluding their floors.
+Indoor source characters can reveal registered furniture that obstructs their
+lower torso/head. An existing shader aperture encloses all bodies blocked by
+that piece, keeping people clear of its retained casing pixels. A low-counter
+control prevents leg-only obstruction from opening staffed counters; a separate
+grazing-top control protects lower-torso visibility. Ordinary/camera walls and
+outdoor policy retain their existing rules. Nine final headless pairs and two
+walks verify the reviewed poses; remaining actors/palettes/furniture families
+and full room acceptance remain open. See the maintained progress guides and
+target/kanto-resume/interior-npc-review/review.json.
+
+Cabinet shell review, 2026-10-19: all299 source-complete stock/equipment cabinets
+in thirteen Marts and both stores'2F/3F/4F pass the actual production append
+check for closed rear/front/exposed ends, floor-to-cap contact, live casing
+paint, correct winding, unchanged support and eight claims. The115 vented and
+184 unvented roofs retain their existing geometry. Twenty-three headless pairs
+verify the reviewed rear/side surfaces. Opaque walls hide some wall-backed
+cabinets; NPC readability behind stock remains open. No new rear details or
+production geometry changes were needed. Blue aisle cases/ticket boxes are a
+separate family. Evidence: target/kanto-resume/retail-shell-faces-review/review.json.
+
+Staff palette follow-up, 2026-10-19: actual Clerk and Receptionist objects now
+use their paletted source sprite pigment through the shared per-instance
+clothing cache. Celadon5F's two clerks wear blue shirts; Goldenrod5F's left
+receptionist wears a red suit and matching fitted skirt, while its other clerk
+keeps the source green. Clerk aprons, skin/hair, collars/badges and the immutable
+base paintings remain intact. All47 objects' used palettes/frames/lighting
+banks pass source checks; ten headless paired views and a Mart walk verify the
+reviewed presentation. This scoped repair leaves other NPC palette/occlusion
+and whole-room acceptance open. Evidence is recorded in the maintained progress
+guides and target/kanto-resume/service-uniform-review/review.json.
+
 Current correction, 2026-10-14: the user identified the fifth-floor staffed
 enclosure as counters on its north, west and east sides, with a glass wall
 toward the screen (+Z). The previous sealed lower display/lid interpretation
@@ -13,7 +46,7 @@ production visual review; geometry/source checks alone do not accept them.
 Current reviewed result: both stores'2F/3F blue cases and5F enclosure were
 inspected against2D, including additional5F south-side views. The longer flat
 blue cases and three-counter/front-glass interpretation are verified within
-that scope. See `docs/handoff/kanto-interiors.md` for receipts and remaining
+that scope. See `docs/modeled-interiors.md` and `docs/3d-remaining-families.md` for receipts and remaining
 walking, counter-reveal, scale and room-composition work.
 Counter reveal follow-up: authenticated adjacent bays now meet beneath their
 caps and omit buried end faces. Both solid and source-painted bays use depth
@@ -28,7 +61,78 @@ change runtime maps, collision, events, warps, actor support, inventory or shop
 logic. The eight cached prototypes use the existing bounded gzip-in-JSON model
 storage and are appended into the existing terrain batch.
 
+Ceiling/backing review, 2026-10-19: all twelve store floors were checked in
+fourteen final native/source pairs. The32px glazing/lift courses now join behind
+2F equipment,4F refrigerators and6F vending machines. Twenty-seven store checks
+and two controller checks pass. Evidence is in
+`target/kanto-resume/retail-shell-review/review.json`. This accepts the scoped
+architecture repair, not all equipment/actor/service fidelity.
+
 ## Source ownership and honest coverage
+
+Paired seating follow-up, 2026-10-19: complete2×4 drawings on both stores'1F/5F/
+6F now produce20 supported benches with40 plain thinner cushions. A common base
+and four feet replace the separate stool frames; the right6F assemblies now
+contain both pads. Physical depth26 folds the source apron upright, with the
+established seven-pixel seat height and two independent sitting targets. Source
+colors, total eight-cell ownership per bench, support and gameplay are retained.
+Forty-seven focused/store/seating checks plus two explicitly run supplied-rig
+checks pass. The311-map/225-variant audit confines geometry-count differences
+to these six rooms; other305 map reports and all source/support/ownership/variant
+fields are exact. Twelve headless pairs and four movement stills were inspected;
+closer5F views cover benches cropped from the default poses. See
+`target/kanto-resume/store-bench-review/review.json`. This supersedes the pink
+seating finding below. Clerk/NPC palettes, equipment details, other states and
+whole-room/service acceptance remain open.
+
+Shared Mart floor follow-up, 2026-10-19: thirteen standard Marts now keep the
+complete tile `$48` green crosshatch at its native scale/phase and flat walking
+datum, replacing the invented large ceramic pavers. Department-store yellow
+floors are unchanged. All35 focused checks pass, including every actual Mart
+floor cell's exact coverage and UV phase through the final finisher. Only13
+map geometry-count reports change in the311-map/225-variant audit; other298
+maps and all variants/support/ownership remain exact. Fourteen headless native/
+source pairs plus two walking stills were inspected; see
+`target/kanto-resume/mart-floor-review/review.json`. This supersedes the Mart
+floor-hatching finding below. Pink seating, equipment backs, NPC palettes and
+broader room/service acceptance remain open.
+
+Counter fascia finish, 2026-10-19: the actual tile `$1a` gold/dark courses now
+run horizontally across native vertical body panels and bevels, replacing the
+single dark panel swatch. This includes thirteen Marts and both stores'1F–4F.
+An initial metatile filter missed2F/4F; the final actual-pack check covers all
+eight store layouts and replacement captures verify them. All34 focused checks
+pass; the311-map/225-variant report is exact versus the checkout repair. Paint
+changes UVs only, with geometry/cap/fallback invariance tested separately.
+Twenty-two native/source pairs were inspected; see
+`target/kanto-resume/mart-fascia-review/review.json`. This supersedes the dark
+fascia finding below. Floor hatching, seating, other equipment/actor/room and
+service acceptance remain unfinished.
+
+Checkout follow-up, 2026-10-19: thirteen standard Marts now have source-complete
+continuous returns and a seated clerk-facing mechanical register. The shared
+counter-body mask now reads final refined triangles, repairing malformed faces
+on both stores' floors1F–4F. Actual 1F/3F strips also use their full source depth
+and continuous caps to join their returns. All32 focused checks and four actual
+shop checks pass. The 311-map/225-variant audit confines changes to21 rooms;
+other290 map reports, support fields and all variants remain exact. Twenty-three
+native/source pairs were inspected, including four refreshed join views and two
+night walks. See `target/kanto-resume/mart-checkout-review/review.json`.
+Counter geometry/register placement is accepted within these views. Dark fascia
+versus source gold bands, green floor hatching, seating, NPC palettes and broader
+room/service acceptance remain open.
+
+Roof vent finish, 2026-10-19: the exact Mart `$0c/$0d` cap now has two
+four-by-one source-pixel slots recessed0.35px, with sealed inner walls. The
+original cap datum, continuous source UVs, door/display attributes, placement
+and support remain unchanged. The complete311-map audit confines the change
+to115 cabinets in thirteen marts and the two stores'4F rooms; each gains52
+textured triangles. Other296 map reports and all225 block variants are exact.
+All28 focused store/retail checks pass, including roof-opening rays and exact
+body-attribute comparisons. Four headless native/source pairs were inspected;
+see `target/kanto-resume/retail-vent-review/review.json`. This accepts the vent
+finish, with checkout joins/registers, floor hatching and broader room review
+still open.
 
 The external `content-packs/core-modular.browser.crystalpack` was inspected in
 memory. Source images remain temporary review material, outside shipped source.
@@ -93,9 +197,19 @@ lettering is not baked into the original authored assets.
 The island has a connected sales rail, two returns, a sealed lower display lid,
 four shallow drawer/glazing fronts, copper pulls and a continuous dark toe.
 Its maximum height is the existing eight source pixels. Wall courses remain
-16 pixels high and three pixels deep, entirely within the native blocked north
-row. Models use exact source widths rather than stretching one pane across a
-long run. The staff floor inset stays at its original support height.
+32 pixels high and three pixels deep, entirely within the native blocked north
+row. Lift fronts share that ceiling height; their apertures stay open. Directory
+and call-button inscriptions keep their original size, raised eight pixels to
+sit on the taller housings. Models use exact source widths rather than
+stretching one pane across a long run. The staff floor inset stays at its
+original support height.
+
+The complete, source-authenticated north-wall networks continue the same
+window course behind rear equipment: block $13 shelves on2F, block $14
+refrigerators on4F, and block $21 vending machines on6F, in both stores.
+These presentation-only sections do not add source claims, floor underlays or
+walking support. Every block must retain its complete network identity and
+subtile phase. Actual stairs and lift openings remain separate owners.
 
 Marked housings and their live plaques share one authored camera-fade group,
 including when a player ray hits the housing but misses its small inscription.
@@ -298,3 +412,16 @@ Both 5F islands retain 56 source-owned cells and all reviewed store floors
 retain 140 modeled object cells, with finite footing and no mesher errors.
 The finish increment is verified; the broad display still has limited
 merchandise detail, and the archived Blender scene still needs its resave.
+
+Shared-case source variants and reveal ownership — 2026-10-19
+
+Mart blocks $23/$28 use the exact blue drawing of $12 over floor $48 rather
+than $01. Admit only their authenticated right-hand2×4 drawing, retaining the
+established low elongated case geometry; Goldenrod department-store cases keep
+the taller native ticket-box model. All48 source cases, eight6F beverage units,
+two Indigo stock cabinets and four station ticket units have separate complete
+reveal owners. Keep floors and Indigo architectural backing outside those
+ranges. The source/grouping tests cover all62 owners in21 rooms; both stores'
+18 vending scenarios pass through VisibleShellController. Full audit changes
+only the26 newly modeled Mart cases. Native/source evidence and limitations:
+`target/kanto-resume/shared-furniture-review/review.json`.

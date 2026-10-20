@@ -242,6 +242,7 @@ pub(super) fn append(out:&mut SurfaceMeshData,map:&str,p:&Placement,cells:&[&Vis
         let joined_grille=grille_ready(map,p,cells,g,furnishings);
         let first=out.positions.len();architecture_box(out,[w,e,0.,30.*scale,s-3.*scale,s],[1.;3]);
         out.uvs[first..].fill(paint[1]);
+        super::super::radio_glazing::mark(out, first, 0.05);
         // Header30/31 is the top cap; only its dark fascia faces forward.
         let first=out.positions.len();architecture_box(out,[w,e,30.*scale,32.*scale,n,s],[1.;3]);
         out.uvs[first..].fill(paint[2]);
@@ -254,8 +255,10 @@ pub(super) fn append(out:&mut SurfaceMeshData,map:&str,p:&Placement,cells:&[&Vis
             let source_row=if y>=p.height||mic_row||post_row {p.row+1}else{p.row+y};
             let uv=g.uv(p.column+x,source_row);let a=w+(e-w)*x as f32/2.;let z=a+(e-w)/2.;
             let top=(30.-(y-1)as f32*10.)*scale;let bottom=top-10.*scale;
+            let first=out.positions.len();
             append_quad(out,[[z,bottom,s+0.01*scale],[z,top,s+0.01*scale],[a,top,s+0.01*scale],[a,bottom,s+0.01*scale]],
                 Vec3::Z.to_array(),[[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2],[uv.0,uv.3]],TEXTURED_SHADE);
+            super::super::radio_glazing::mark(out, first, 0.12);
         }}
         let first=out.positions.len();
         architecture_box(out,[w,e,0.,scale,s-3.*scale,s+0.02*scale],[1.;3]);out.uvs[first..].fill(paint[0]);
@@ -268,6 +271,7 @@ pub(super) fn append(out:&mut SurfaceMeshData,map:&str,p:&Placement,cells:&[&Vis
             let first = out.positions.len();
             architecture_box(out,[e-3.*scale,e,0.,30.*scale,start,end],[1.;3]);
             out.uvs[first..].fill(paint[1]);
+            super::super::radio_glazing::mark(out, first, 0.05);
             let first = out.positions.len();
             architecture_box(out,[e-3.*scale,e,30.*scale,32.*scale,start,end],[1.;3]);
             out.uvs[first..].fill(paint[2]);
@@ -284,10 +288,17 @@ pub(super) fn append(out:&mut SurfaceMeshData,map:&str,p:&Placement,cells:&[&Vis
                         [a,top,near],[a,top-10.*scale,near]];
                     let mut uvs = [[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2],[uv.0,uv.3]];
                     if b > 0. {points.reverse();uvs.reverse();}
+                    let first=out.positions.len();
                     append_quad(out,points,[b,0.,0.],uvs,TEXTURED_SHADE);
+                    super::super::radio_glazing::mark(out, first, 0.12);
                 }
               }
             }
+        }
+        for [a,z] in [[w,w+0.3*scale],[e-0.3*scale,e]] {
+            let first=out.positions.len();
+            architecture_box(out,[a,z,0.,30.*scale,s-3.*scale,s],[1.;3]);
+            out.uvs[first..].fill(paint[0]);
         }
         if joined_grille {append_grille(out,p,g,[w,s]);}
         return;

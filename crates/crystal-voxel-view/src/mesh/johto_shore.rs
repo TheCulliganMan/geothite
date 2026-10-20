@@ -213,7 +213,7 @@ mod tests {
                     shape.surface_height(8.), g.uv(i % 3, i / 3));
             }
             append_textured_shoreline(&mut mesh.textured, &g, 1, 1, direction,
-                [8., 16., 8., 16.], -2., 0.);
+                [8., 16., 8., 16.], crate::profile::WATER_HEIGHT, 0.);
             let footing = mesh.footing_heights.clone();
             let mut new_bark = mesh.clone();
             finish(&mut mesh, "EcruteakCity", &cells, &shapes, &g, [0, 0], &images);
@@ -223,18 +223,21 @@ mod tests {
             assert_eq!(mesh.authored_cells[4], Some(LABEL));
             assert_eq!(mesh.authored_cells[water], None);
             assert_eq!(mesh.footing_heights, footing);
+            let drop = mesh.footing_heights[4] - mesh.footing_heights[water];
+            assert!(drop > 0. && drop <= g.tile_height / 16.,
+                "standing water must meet every bank orientation with a short drop: {drop}");
             assert_eq!(mesh.authored_cells.iter().filter(|v| v.is_some()).count(), 2,
                 "unknown neighboring artwork must retain its own presentation");
             assert_eq!(mesh.textured.quad_count(), 7);
-            assert!(mesh.textured.positions.iter().any(|p| p[1] == -2.),
+            assert!(mesh.textured.positions.iter().any(|p| p[1] == crate::profile::WATER_HEIGHT),
                 "the liquid surface keeps its original datum");
-            assert!(mesh.solid.positions.iter().all(|p|p[1]>=-2. && p[1]<=0.),
+            assert!(mesh.solid.positions.iter().all(|p|p[1]>=crate::profile::WATER_HEIGHT && p[1]<=0.),
                 "shore ledges use the standard cliff without a separate pebble crown");
             let normal=Vec3::new(dx as f32,0.,dz as f32);
             let edge=Vec3::new(if dx>0 {16.}else{8.},0.,if dz>0 {16.}else{8.});
             assert!(mesh.solid.positions.iter().any(|&p| {
                 let p=Vec3::from_array(p);let relief=(p-edge).dot(normal);
-                p.y>-2. && p.y<0. && relief>0.05 && relief<0.5
+                p.y>crate::profile::WATER_HEIGHT && p.y<0. && relief>0.05 && relief<0.5
                     && if dx==0 {p.x>8.&&p.x<16.} else {p.z>8.&&p.z<16.}
             }),"all four directions keep physical cliff-wall relief below the existing cap");
         }
@@ -295,7 +298,7 @@ mod tests {
             );
         }
         for d in [Direction::East, Direction::South] {
-            append_textured_shoreline(&mut mesh.textured, &g, 0, 0, d, [0., 8., 0., 8.], -2., 0.);
+            append_textured_shoreline(&mut mesh.textured, &g, 0, 0, d, [0., 8., 0., 8.], crate::profile::WATER_HEIGHT, 0.);
         }
         let cells = tiles.iter().collect::<Vec<_>>();
         let original = mesh.clone();
@@ -310,6 +313,12 @@ mod tests {
         );
         assert_eq!(mesh.footing_heights, original.footing_heights);
         assert_eq!(mesh.authored_cells, vec![Some(LABEL), None, None, None]);
+        let caps = mesh.solid.normals.iter().enumerate()
+            .filter(|(_, normal)| normal[1] > 0.99).collect::<Vec<_>>();
+        assert!(!caps.is_empty());
+        assert!(caps.iter().all(|(i, _)|
+            mesh.solid.uvs[*i] == new_bark::ledge_finish::BANK_GROUND_UV),
+            "horizontal banks must inherit dry ground rather than cliff paint");
         assert_eq!(
             mesh.textured.quad_count(),
             3,

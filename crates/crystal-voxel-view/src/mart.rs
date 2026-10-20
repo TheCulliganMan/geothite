@@ -218,7 +218,9 @@ pub(crate) fn display_rack_local(source: &VisualTileSource) -> Option<(u8, u8)> 
     }
     let (first_column, expected) = match source.metatile_id {
         0x07 => (0, [[0x22, 0x23], [0x32, 0x33], [0x24, 0x25], [0x34, 0x35]]),
-        0x12 => (2, [[0x26, 0x27], [0x36, 0x37], [0x28, 0x29], [0x38, 0x39]]),
+        // Standard Marts use the same complete blue drawing over floor $48.
+        // Only the unused west half differs from department-store block $12.
+        0x12 | 0x23 | 0x28 => (2, [[0x26, 0x27], [0x36, 0x37], [0x28, 0x29], [0x38, 0x39]]),
         _ => return None,
     };
     let local_column = source.subtile_column.checked_sub(first_column)?;
@@ -409,18 +411,22 @@ mod tests {
     }
 
     #[test]
-    fn block_12_claims_only_the_complete_right_hand_rack() {
+    fn blue_case_variants_claim_only_the_complete_right_hand_rack() {
         let rows = [[0x26, 0x27], [0x36, 0x37], [0x28, 0x29], [0x38, 0x39]];
+        for block in [0x12,0x23,0x28] {
         for row in 0..4 {
             for column in 0..2 {
                 let mut tile = source(2 + column, row, rows[usize::from(row)][usize::from(column)]);
-                tile.metatile_id = 0x12;
+                tile.metatile_id = block;
                 assert_eq!(display_rack_local(&tile), Some((column, row)));
+                tile.tile_index^=1;
+                assert_eq!(display_rack_local(&tile),None);
             }
         }
-        let mut floor = source(0, 0, FLOOR_TILE);
-        floor.metatile_id = 0x12;
+        let mut floor = source(0, 0, if block==0x12 {FLOOR_TILE}else{STANDARD_MART_FLOOR_TILE});
+        floor.metatile_id = block;
         assert_eq!(display_rack_local(&floor), None);
+        }
     }
 
     #[test]

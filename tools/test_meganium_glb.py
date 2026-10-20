@@ -141,7 +141,10 @@ class MeganiumTests(unittest.TestCase):
             edges=collections.Counter();directed=collections.Counter();neighbors=collections.defaultdict(set)
             for i in range(0,len(m.indices[p]),3):
                 tri=m.indices[p][i:i+3];cosine,area=winding_alignment(m.vertices[p],m.normals[p],tri)
-                self.assertGreater(cosine,.99,(name,i//3));self.assertGreater(area,1e-12,(name,i//3))
+                # Rounded body normals may differ from one facet; leaves retain hard folds.
+                # test_leaf_saur_shading also checks every body corner against 35 degrees.
+                self.assertGreater(cosine,math.cos(math.radians(35.)) if p==0 else .99,(name,i//3))
+                self.assertGreater(area,1e-12,(name,i//3))
                 points=[tuple(m.vertices[p][j]) for j in tri]
                 for a,b in zip(points,points[1:]+points[:1]):
                     edges[tuple(sorted((a,b)))]+=1;directed[(a,b)]+=1;neighbors[a].add(b);neighbors[b].add(a)

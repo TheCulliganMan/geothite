@@ -171,6 +171,9 @@ fn prepare(
                     vertex: pipeline.vertex.clone(),
                     fragment: Some(FragmentState {
                         shader: SHADER,
+                        shader_defs: if std::env::var("CRYSTAL_TILT_SHIFT_KERNEL").as_deref() == Ok("direct") {
+                            vec!["DIRECT_GAUSSIAN".into()]
+                        } else { vec![] },
                         entry_point: Some(entry.into()),
                         targets: vec![Some(ColorTargetState {
                             format,
@@ -253,3 +256,7 @@ fn draw(
         pass.draw(0..3, 0..1);
     }
 }
+
+#[cfg(all(test, not(target_arch = "wasm32")))]
+#[path = "tilt_shift_gpu_tests.rs"]
+mod gpu_tests;

@@ -76,7 +76,7 @@ pub(crate) fn non_ancient_height_factor([x,z]: [i32;2]) -> f32 {
     n ^= n >> 15;
     n = n.wrapping_mul(0x846ca68b);
     n ^= n >> 16;
-    0.6 + (n & 65535) as f32 / 65535. * 0.8
+    0.5 + (n & 65535) as f32 / 65535.
 }
 
 pub(crate) fn instance_vertical_ratio(family: GroveFamily, coordinates: [i32;2],
@@ -124,6 +124,8 @@ pub(crate) fn append_family_canopy(mesh: &mut TerrainMeshData, bounds: [f32;4], 
         mesh.solid.cutaway_ranges.push(first..mesh.solid.positions.len());
     }
 }
+
+
 
 pub(crate) fn instance_width_ratio(family:GroveFamily,coordinates:[i32;2],prototype:[i32;2])->f32 {
     if family==GroveFamily::KantoDeciduous {deciduous::width_ratio(coordinates,prototype)} else {1.}
@@ -263,15 +265,20 @@ mod tests {
     use super::*;
     use crate::new_bark_models::{self, ModelKind};
     #[test]
-    fn ordinary_tree_height_varies_by_at_most_forty_percent_without_changing_ancient_scale() {
+    fn ordinary_tree_height_uses_fifty_percent_variation_without_changing_ancient_scale() {
         let mut low = f32::INFINITY;
         let mut high = f32::NEG_INFINITY;
+        let mut leader_low = f32::INFINITY;
+        let mut leader_high = f32::NEG_INFINITY;
         for z in -32..32 {for x in -32..32 {
             let coordinates = [x,z];
             let height = non_ancient_height_factor(coordinates);
-            assert!((0.6..=1.400001).contains(&height));
+            assert!((0.5..=1.500001).contains(&height));
             assert_eq!(height,non_ancient_height_factor(coordinates));
             low=low.min(height); high=high.max(height);
+            let leader = pine::stem_height(16., coordinates, [false;4]);
+            leader_low = leader_low.min(leader);
+            leader_high = leader_high.max(leader);
             let prototype=[4,8];
             for neighbors in [[false;4],[true;4]] {
                 let ratio=instance_vertical_ratio(GroveFamily::JohtoPine,coordinates,prototype,neighbors);
@@ -283,7 +290,9 @@ mod tests {
                     "ordinary-tree variation must leave ancient scaling unchanged");
             }
         }}
-        assert!(low<0.62 && high>1.38,"ordinary trees must use the requested height range");
+        assert!(low<0.52 && high>1.48,"ordinary trees must use the requested height range");
+        assert!(leader_high > leader_low * 1.9,
+            "the rendered leaders must retain the wide range, rather than compressing it with a height floor");
     }
     #[test]
     fn foliage_pigment_varies_inside_one_crown_without_strong_color_swings() {

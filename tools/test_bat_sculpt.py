@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Validate canonical bat topology, anatomy and stored face contact."""
-import unittest
+import os,unittest
 from pathlib import Path
 from bat_glb import decode_bat
 from bat_sculpt import SPECIES,HEIGHT,sculpture
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
 
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
+ROOT=Path(os.environ.get('CRYSTAL_BAT_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 
 class BatTests(unittest.TestCase):
     @classmethod

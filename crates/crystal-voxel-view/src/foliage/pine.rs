@@ -20,13 +20,21 @@ const RECIPES: [Recipe; 3] = [
 ];
 
 pub(super) fn stem_height(tile: f32, coordinates: [i32;2], neighbors: [bool;4]) -> f32 {
+    authored_stem_height(tile, coordinates, neighbors) * HEIGHT_SCALE
+}
+
+// Compress the entire tree about its planted base, including limbs and needles.
+const HEIGHT_SCALE: f32 = 0.7;
+
+fn authored_stem_height(tile: f32, coordinates: [i32;2], neighbors: [bool;4]) -> f32 {
     let v = variation(coordinates[0],coordinates[1]);
     let interior = neighbors.iter().all(|&n| n);
-    // Mature leaders rise above town roofs even at the shortest seeded
-    // placement. Keep age variation additive so it cannot shrink a tree
-    // back to shrub height; interior trees still reach a little higher.
+    // Leaders span 10.5..21 source tiles: up to 50% above the 14-tile
+    // mature reference, with shorter crowns filling the gaps below them.
+    // Keep the minimum roof clearance and apply the same height recipe to
+    // direct meshes and shared instances; interior trees reach slightly higher.
     tile * (10.5 + (v.height - 0.9) * 0.9
-        + (non_ancient_height_factor(coordinates) - 0.6) * 4.
+        + (non_ancient_height_factor(coordinates) - 0.5) * 10.5
         + if interior { 1.2 } else { 0. }) * RECIPES[v.index].height
 }
 
@@ -60,7 +68,7 @@ pub(super) fn append_canopy(
         base,
         (bounds[2] + bounds[3]) * 0.5 + offset.y,
     );
-    let height = stem_height(tile,coordinates,neighbors);
+    let height = authored_stem_height(tile,coordinates,neighbors);
     let phase = v.turn + v.height * 5.31;
     // An occasional older lower limb keeps dry needles. Most trees have
     // none, and even a weathered tree keeps the rest of its crown evergreen.
@@ -178,8 +186,7 @@ pub(super) fn append_canopy(
                         foliage_width * 0.32,
                         seed + twig as f32 * 1.7 + side,
                         v.tint,
-                        weathered,
-                    );
+                        weathered);
                 }
             }
             spray(
@@ -189,8 +196,7 @@ pub(super) fn append_canopy(
                 foliage_width * 0.30,
                 seed,
                 v.tint,
-                weathered,
-            );
+                weathered);
         }
     }
     // Unequal upper boughs carry lateral sprays into the leader. A few
@@ -217,8 +223,7 @@ pub(super) fn append_canopy(
                 spacing * (0.26 - level as f32 * 0.05),
                 angle,
                 v.tint,
-                false,
-            );
+                false);
             for side in [-1., 1.] {
                 let anchor = root.lerp(tip, 0.58);
                 let end = anchor + direction * reach * 0.25
@@ -237,8 +242,7 @@ pub(super) fn append_canopy(
         spacing * 0.20,
         phase,
         v.tint,
-        false,
-    );
+        false);
     // Fit the whole organic crown proportionally inside the existing
     // readable margin. A uniform XZ fit retains branches, folded needles
     // and their winding; a per-vertex envelope can crease narrow tips.
@@ -282,8 +286,9 @@ pub(super) fn append_canopy(
         let p = &mut mesh.solid.positions[i];
         p[0] = center.x + (p[0] - center.x) * fit;
         p[2] = center.z + (p[2] - center.z) * fit;
+        p[1] = base + (p[1] - base) * HEIGHT_SCALE;
         let n = Vec3::from_array(mesh.solid.normals[i]);
-        mesh.solid.normals[i] = Vec3::new(n.x / fit, n.y, n.z / fit)
+        mesh.solid.normals[i] = Vec3::new(n.x / fit, n.y / HEIGHT_SCALE, n.z / fit)
             .normalize()
             .to_array();
     }
@@ -401,6 +406,8 @@ fn append_twig(mesh: &mut SurfaceMeshData, root: Vec3, tip: Vec3, radius: f32) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+
     #[test]
     fn mature_crowns_spread_above_sparse_lower_limbs() {
         for coordinates in [[0,0], [4,8], [-12,4], [6,8], [13,6], [29,4]] {

@@ -210,6 +210,10 @@ pub(super) struct Capture {
     image_target: Option<bevy::camera::ImageRenderTarget>,
     image_size: UVec2,
     paired_state: Option<PairedState>,
+    // Followers are presentation-only and excluded from paired-state equality.
+    // Retain the actual 3D actor list so a loaded map cannot masquerade as a
+    // successful species review when the requested companion is absent.
+    world_actor_sources: Option<serde_json::Value>,
     paired_stability: StablePairedState,
 }
 
@@ -319,6 +323,7 @@ pub(super) fn install(
         image_target: None,
         image_size: UVec2::ZERO,
         paired_state: None,
+        world_actor_sources: None,
         paired_stability: StablePairedState::default(),
         path,
         second,
@@ -456,13 +461,14 @@ fn capture(
     status: Res<crystal_voxel_view::VoxelViewStatus>,
     battle_status: Res<crystal_voxel_view::BattleViewStatus>,
     battle_frame: Res<crystal_render_api::VisualBattleFrame>,
-    send_out_hold: Option<Res<SendOutFrameHold>>,
+    review_proofs: (Option<Res<SendOutFrameHold>>,Option<Res<VerifiedPcLcdCapture>>),
     mut settings: ResMut<crystal_voxel_view::VoxelViewSettings>,
     primary_window: Query<Entity, With<PrimaryWindow>>,
     move_menu: Query<(), With<CompetitiveMoveMenuMarker>>,
     mut commands: Commands,
     mut exit: MessageWriter<AppExit>,
 ) {
+    let (send_out_hold,verified_pc_lcd)=review_proofs;
     if let Some(error) = runtime.render_test_error.as_ref() {
         eprintln!("capture rejected after runtime error: {error}");
         exit.write(AppExit::error());
@@ -596,6 +602,9 @@ fn capture(
                     serde_json::Value::Array(actor_sources),
                 );
                 receipt.push_str(&format!("presentation={}\n", capture.identity));
+                if let Some(actors) = &capture.world_actor_sources {
+                    receipt.push_str(&format!("world_actor_sources={actors}\n"));
+                }
                 if let Some(pinned) = send_out_hold.as_ref().and_then(|request| request.held.as_ref()) {
                     receipt.push_str(&format!(
                         "source_state_preserved=true\nsource_clock_hz=60\nsend_out_side={:?}\nsend_out_frame={}\nsource_frame={}\n",
@@ -638,10 +647,20 @@ fn capture(
         && battle_frame.active && !move_menu.is_empty()
         && battle_status.map_scenery_fallback_reason.is_some_and(|reason|
             reason != "actual battle groves are warming");
+    // PC carried-Pokemon and Mail readers intentionally own the original LCD.
+    // A named UI review may capture its actual fullscreen owner after its
+    // ordinary inputs have frozen. Scenery reviews still require native world
+    // or battle frames; this is not admission of a scenery-art fallback.
+    let pc_lcd_review = hold.frozen
+        && std::env::var("CRYSTAL_RENDER_TEST_HOLD_MENU_ID").ok()
+            .is_some_and(|id|render_walk::pc_lcd_review_ready(&runtime,&id))
+        && retained_field_fullscreen_active(&runtime)
+        && walk.as_ref().is_some_and(|walk|walk.settled());
     let settled = if settings.enabled {
         (status.active && !status.profiles_pending && status.active_frames >= 30)
             || (battle_status.active && battle_status.active_frames >= 30)
             || source_fallback
+            || pc_lcd_review
     } else {
         status.inactive_reason.as_deref() == Some("disabled")
     };
@@ -666,6 +685,14 @@ fn capture(
         let tone = source.bgp & 3;
         (0..4).all(|index| (source.bgp >> (index * 2)) & 3 == tone)
     }) { return; }
+    // Original item screens legitimately use only three displayed colors.
+    // Keep the general scenery check unchanged; certify this narrow exception
+    // only from the live, frozen production LCD owner, never from a file/env claim.
+    if pc_lcd_review && std::env::var("CRYSTAL_RENDER_TEST_HOLD_MENU_ID").ok()
+        .is_some_and(|id|matches!(id.as_str(),"pc:items"|"pc:quantity"|"pc:toss-confirmation"|"pc:toss-closing"))
+        &&let Some(proof)=verified_pc_lcd.as_ref() {
+        proof.0.store(true,std::sync::atomic::Ordering::Relaxed);
+    }
     let screenshot = if capture.image_target_mode {
         let Some(target) = capture.image_target.as_ref() else {
             return;
@@ -742,6 +769,15 @@ fn capture(
             frame.tile_size, frame.viewport_size, settings.camera);
     }
     let path = capture.path.clone();
+    if settings.enabled && capture.world_actor_sources.is_none() {
+        capture.world_actor_sources = Some(serde_json::Value::Array(frame.actors.iter().map(|actor|
+            serde_json::json!({
+                "id":format!("{:?}", actor.id), "source":actor.source_id.as_ref(),
+                "center":[actor.center.x,actor.center.y], "size":[actor.size.x,actor.size.y],
+                "facing":actor.facing.map(|f|[f.x,f.y]),
+            })
+        ).collect()));
+    }
     let preserve_alpha = capture.preserve_alpha;
     let completion = capture.completion.clone();
     commands
@@ -959,6 +995,7 @@ mod image_target_tests {
                 image_target: None,
                 image_size: UVec2::ZERO,
                 paired_state: None,
+                world_actor_sources: None,
         paired_stability: StablePairedState::default(),
             })
             .add_systems(Update, prepare_image_target);

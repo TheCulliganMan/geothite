@@ -90,6 +90,7 @@ pub(super) fn finish_rock_geometry(mesh: &mut TerrainMeshData, map: &str,
         let _trace = crate::loading_trace::span("region.rock_sculpt_rims", || serde_json::json!({}));
         sculpt_rock_rims_on_map(mesh, map, cells, shapes, g, origin);
     }
+    retain_mineral_cap_ownership(mesh);
     {
         let _trace = crate::loading_trace::span("region.rock_round_contacts", || serde_json::json!({}));
         super::rock_bases::round_geometry(mesh, map, cells, shapes, g, origin);
@@ -102,6 +103,18 @@ pub(super) fn finish_rock_geometry(mesh: &mut TerrainMeshData, map: &str,
         mineral_normals(&mut mesh.solid);
     }
     finish_mountain_cap_pigment(&mut mesh.solid, map);
+}
+
+pub(super) fn retain_mineral_cap_ownership(mesh: &mut TerrainMeshData) {
+    let mut ranges: Vec<std::ops::Range<usize>> = Vec::new();
+    // Normals still identify the authored faces here. Later smoothing and
+    // mountain relief can tilt a wall upward without turning it into a cap.
+    for (i,(normal,uv)) in mesh.solid.normals.iter().zip(&mesh.solid.uvs).enumerate() {
+        if uv[0]>=-9000. || normal[1]<0.9 {continue;}
+        if let Some(last)=ranges.last_mut() && last.end==i {last.end=i+1;}
+        else {ranges.push(i..i+1);}
+    }
+    mesh.mineral_cap_ranges=Some(ranges);
 }
 
 fn finish_mountain_cap_pigment(surface: &mut SurfaceMeshData, map: &str) {
@@ -557,11 +570,12 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
             }
         }
     }
-    // Plateau drawings containing planted trees need an unchanged seat.
-    // Fade the mass relief around the whole drawing, including shared edges.
+    // Preserve seats for non-native planted artwork. The native 6a/6c corner
+    // courses contain rock; flattening them exposes square shelves in cliffs.
     let planted: Vec<_> = cells.iter().enumerate().filter_map(|(i, cell)| {
         (rock_height(i, cell).is_some()
-            && matches!(cell.source.metatile_id, 0x6a | 0x6c))
+            && matches!(cell.source.metatile_id, 0x6a | 0x6c)
+            && !super::outdoor_mountains::native_rock_corner(&cell.source))
             .then(|| g.bounds(i % g.width, i / g.width))
     }).collect();
     // An authored entrance has its own closed arch and side blocks. Keep the
@@ -1163,7 +1177,9 @@ fn append_with_pigment(
     let normal = Vec3::from_array(n);
     let point = |u: f32, v: f32| {
         let q = p[0].lerp(p[3], u).lerp(p[1].lerp(p[2], u), v);
-        if normal.y.abs() > 0.3 {
+        if normal.y.abs() > 0.3 || u == 0. || u == 1. || v == 0. || v == 1. {
+            // sin(PI) is not exactly zero in f32. Keep shared endpoints
+            // bit-identical instead of introducing microscopic wall slits.
             return q;
         }
         // Chipped wall facets keep every cap and neighboring face perimeter
@@ -1207,11 +1223,26 @@ fn append_with_pigment(
             (u, a + (b - a) * u)
         }).collect();
     }
-    let rows = if wall {
-        (high / ring).ceil() as i32 - first
-    } else {
-        6
-    };
+    let height_rings = if wall {
+        let jump = crate::profile::JUMP_LEDGE_HEIGHT * g.tile_height / SOURCE_TILE_HEIGHT;
+        let epsilon = g.tile_height * 0.000001;
+        let mut levels = (first..=(high / ring).ceil() as i32).map(|k| {
+            let y = k as f32 * ring;
+            let authored = (y / jump).round() * jump;
+            if (y - authored).abs() < epsilon { authored } else { y }
+        }).collect::<Vec<_>>();
+        // The sixth-cell lattice misses six-pixel ledge floors. A wall
+        // starting there gains a clamped vertex while its taller neighbor
+        // spans past it. Include the same authored floors on every wall so
+        // their common edge remains conforming through mineral deformation.
+        for k in (low / jump).floor() as i32 + 1..(high / jump).ceil() as i32 {
+            levels.push(k as f32 * jump);
+        }
+        levels.sort_by(f32::total_cmp);
+        levels.dedup_by(|a,b| (*a-*b).abs() < epsilon);
+        levels
+    } else { Vec::new() };
+    let rows = if wall { height_rings.len() - 1 } else { 6 };
     for row in 0..rows {
         for interval in columns.windows(2) {
             let [(u, along), (end_u, end_along)] = [interval[0], interval[1]];
@@ -1231,8 +1262,8 @@ fn append_with_pigment(
                 q
             };
             let quad = if wall {
-                let lower = (first + row) as f32 * ring;
-                let upper = lower + ring;
+                let lower = height_rings[row];
+                let upper = height_rings[row + 1];
                 let (start, end) = if p[1].y >= p[0].y {
                     (lower, upper)
                 } else {
@@ -1277,6 +1308,33 @@ fn append_with_pigment(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn adjoining_mineral_walls_share_every_authored_ledge_floor_sample() {
+        for scale in [0.5,1.,2.] {
+            let g=GridGeometry {width:4,height:4,tile_width:8.*scale,tile_height:8.*scale,
+                origin_x:-13.*scale,origin_z:0.};
+            let (w,e,n,s)=g.bounds(0,0);
+            let height=32.*scale;
+            let jump=crate::profile::JUMP_LEDGE_HEIGHT*g.tile_height/SOURCE_TILE_HEIGHT;
+            for course in 1..=4 {
+                let floor=course as f32*jump;
+                let mut tall=SurfaceMeshData::default();
+                let mut short=SurfaceMeshData::default();
+                append_canyon(&mut tall,[[w,0.,n],[w,height,n],[e,height,n],[e,0.,n]],
+                    [0.,0.,-1.],&g,[11,-7]);
+                append_canyon(&mut short,[[e,floor,n],[e,height,n],[e,height,s],[e,floor,s]],
+                    [1.,0.,0.],&g,[11,-7]);
+                let samples=|mesh:&SurfaceMeshData|mesh.positions.iter()
+                    .filter(|p|(p[0]-e).abs()<0.0001 && (p[2]-n).abs()<0.0001 && p[1]>=floor)
+                    .map(|p|p.map(f32::to_bits)).collect::<std::collections::BTreeSet<_>>();
+                let tall=samples(&tall);let short=samples(&short);
+                assert!(tall.contains(&[e.to_bits(),floor.to_bits(),n.to_bits()]),
+                    "the taller wall must meet its neighbor's exact foot point");
+                assert_eq!(tall,short,"matching edge samples must survive scale {scale}, course {course}");
+            }
+        }
+    }
 
     #[test]
     fn kanto_portal_arch_keeps_its_seating_joint_while_remote_mineral_faces_erode() {
@@ -1923,6 +1981,7 @@ mod tests {
             .all(|p| Vec3::from_array(*p).is_finite()));
         let mut planted_tiles = f.tiles.clone();
         planted_tiles[24].source.metatile_id = 0x6c;
+        planted_tiles[24].source.tile_index = 0x20; // custom planted ink, not the native mineral corner
         let planted_cells: Vec<_> = planted_tiles.iter().collect();
         let planted_shapes: Vec<_> = planted_cells.iter().map(|c| shape_for_source(&c.source)).collect();
         let mut seated = unshaped.clone();

@@ -2176,7 +2176,8 @@ fn begin_visible_pc_item_quantity(runtime_shell: &mut BevyRuntimeShell) -> Resul
         .any(|flag| flag.trim() == "CANT_TOSS");
     if action == VisiblePlayerPcAction::TossItem {
         if !has_quantity {
-            runtime_shell.pc_notice = Some("That's too important to toss out!".to_string());
+            runtime_shell.pc_notice=Some(visible_pc_item_source_text(runtime_shell,&snapshot,
+                "_ItemsTooImportantText",&item_display_name(&snapshot,&item_id),1)?);
             mark_runtime_snapshot_dirty(runtime_shell);
             return Ok(());
         }
@@ -2274,6 +2275,51 @@ fn visible_pc_item_quantity_input_ready(runtime_shell: &BevyRuntimeShell) -> boo
     })
 }
 
+fn visible_pc_uses_source_yes_no(shell: &BevyRuntimeShell) -> bool {
+    matches!(shell.pc_confirmation, Some(VisiblePcConfirmation::TossItem { .. } | VisiblePcConfirmation::OakRating))
+        || visible_name_rater_confirmation(shell)
+}
+
+fn visible_name_rater_confirmation(shell: &BevyRuntimeShell) -> bool {
+    matches!(shell.pc_confirmation, Some(VisiblePcConfirmation::NameRaterRename
+        | VisiblePcConfirmation::ScriptPartyIntro(PendingScriptPartySelection::NameRater)))
+}
+
+fn advance_visible_name_rater_intro(shell: &mut BevyRuntimeShell) -> Result<bool> {
+    if !visible_name_rater_confirmation(shell) || shell.special_boundary.is_none() { return Ok(false); }
+    let snapshot = shell.shell.presentation_snapshot()?;
+    if visible_field_dialogue_is_fully_revealed(shell, &snapshot)
+        && !advance_visible_completed_field_text_page(shell, &snapshot)? {
+        close_visible_special_boundary(shell)?;
+    }
+    Ok(true)
+}
+
+fn visible_pc_has_timed_yes_no(shell: &BevyRuntimeShell) -> bool {
+    visible_pc_uses_source_yes_no(shell)
+        || matches!(shell.pc_confirmation, Some(VisiblePcConfirmation::PutMailInPack(_)))
+}
+
+fn visible_pc_source_yes_no_printed(shell: &BevyRuntimeShell) -> bool {
+    (!visible_name_rater_confirmation(shell) || shell.special_boundary.is_none())
+        && shell.pc_notice.as_deref().is_some_and(|text|
+        visible_field_text_reveal_is_complete_for_text(shell,text))
+}
+
+fn visible_pc_toss_confirmation_ready(shell:&BevyRuntimeShell)->bool {
+    shell.mailbox_confirmation_response.is_none()
+        && (!visible_pc_has_timed_yes_no(shell) || visible_pc_source_yes_no_printed(shell))
+}
+
+fn move_visible_pc_toss_confirmation_cursor(shell:&mut BevyRuntimeShell,delta:isize)->Result<()> {
+    if !visible_pc_toss_confirmation_ready(shell) {return Ok(());}
+    let selected=strict_readonly_cursor_index(&shell.yes_no_cursor,"pc:confirmation",2)
+        .context("PC toss YesNoBox requires a valid cursor")?;
+    shell.yes_no_cursor.as_mut().unwrap().option_index=selected.saturating_add_signed(delta).min(1);
+    mark_runtime_presentation_dirty(shell);
+    Ok(())
+}
+
 fn adjust_visible_pc_item_quantity(runtime_shell: &mut BevyRuntimeShell, delta: i16) -> Result<()> {
     let pending = runtime_shell
         .pc_item_quantity
@@ -2339,11 +2385,9 @@ fn commit_visible_pc_item_quantity(runtime_shell: &mut BevyRuntimeShell) -> Resu
         _ => pending.quantity,
     };
     if pending.quantity > destination_capacity {
-        runtime_shell.pc_notice = Some(if pending.action == VisiblePlayerPcAction::DepositItem {
-            "The PC is full.".to_string()
-        } else {
-            "The PACK is full.".to_string()
-        });
+        runtime_shell.pc_notice=Some(visible_pc_item_source_text(runtime_shell,&snapshot,
+            if pending.action==VisiblePlayerPcAction::DepositItem {"_PlayersPCNoRoomDepositText"}
+            else {"_PlayersPCNoRoomWithdrawText"},&item_display_name(&snapshot,&pending.item_id),pending.quantity)?);
         mark_runtime_snapshot_dirty(runtime_shell);
         return Ok(());
     }
@@ -2366,11 +2410,8 @@ fn commit_visible_pc_item_quantity(runtime_shell: &mut BevyRuntimeShell) -> Resu
                 surface_id: "pc:confirmation".to_string(),
                 option_index: 0,
             });
-            runtime_shell.pc_notice = Some(format!(
-                "Throw away {} x{}?",
-                item_display_name(&snapshot, &pending.item_id),
-                pending.quantity
-            ));
+            runtime_shell.pc_notice=Some(visible_pc_item_source_text(runtime_shell,&snapshot,
+                "_ItemsThrowAwayText",&item_display_name(&snapshot,&pending.item_id),pending.quantity)?);
             Ok(())
         }
         _ => anyhow::bail!("Player PC quantity is invalid for {pending:?}"),

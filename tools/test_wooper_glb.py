@@ -18,7 +18,7 @@ class WooperTests(unittest.TestCase):
 
     def test_canonical_storage_and_neutral_geometry(self):
         self.assertEqual(self.blob,author.export_wooper())
-        self.assertEqual(author.geometry_digest(self.m.neutral_model()),'5a306ae7d1f9b79c7ce3897c0d538b2752c7cdf85c68f050fe8a1aa0b1bb801a')
+        self.assertEqual(author.geometry_digest(self.m.neutral_model()),'d23893a24e7dd83f9711b2309ece7d7b24094ea0184ffa86237d9ab059e0bf88')
         self.assertEqual(len(self.m.parts),22)
         self.assertEqual(sum(len(v) for v in self.m.vertices),3991)
         self.assertEqual(sum(len(v)//3 for v in self.m.indices),5532)
@@ -41,6 +41,31 @@ class WooperTests(unittest.TestCase):
             if name.startswith(('Gill /','Gill branch /')):
                 side=name.split(' / ')[1].split()[0];joint=5 if side=='-1' else 6
                 self.assertTrue(all(js==[joint,0,0,0] for js in m.ids[i]))
+
+    def test_smile_has_occupied_roots_across_its_width_through_clips(self):
+        from sculpt_test_support import parts_overlap, indexed_ray_intersections as rays
+        m=self.m
+        parent=next(i for i,n in enumerate(m.names) if n.startswith('Body /'))
+        child=m.names.index('Mouth / fitted broad curved smile')
+        self.assertEqual(len(m.vertices[child]),15*8)
+        for clip in m.clips:
+            for t in (0.,.31,.67):
+                mats=m.matrices(clip,t)
+                body={'positions':sum(m.posed(parent,mats),[]),'indices':m.indices[parent]}
+                points=m.posed(child,mats)
+                mouth={'positions':sum(points,[]),'indices':m.indices[child]}
+                self.assertTrue(parts_overlap(body,mouth),(clip,t,'detached smile'))
+                # Each closed cross-section must straddle actual stored skin,
+                # including both ends; a single touching tip is insufficient.
+                for ring in range(15):
+                    gaps=[]
+                    for x,y,z in points[ring*8:(ring+1)*8]:
+                        hits=rays(body,x,y);self.assertTrue(hits,(clip,t,ring))
+                        gaps.append(z-max(hits))
+                    self.assertLess(min(gaps),-.0003,(clip,t,ring))
+                    self.assertGreater(max(gaps),.0003,(clip,t,ring))
+                    self.assertGreater(min(gaps),-.004)
+                    self.assertLess(max(gaps),.007)
 
     def test_clips_endpoints_and_idle_seam(self):
         m=self.m

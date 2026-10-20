@@ -230,9 +230,20 @@ cone('Red faceted warning lens',(0,0,1.37),.26,.17,.48,'red',10)
 cone('Beacon protective cap',(0,0,1.63),.24,.17,.09,'steel',10)
 for a in [0,math.pi/2,math.pi,3*math.pi/2]:rod('Beacon protective cage',(.27*math.cos(a),.27*math.sin(a),1.14),(.21*math.cos(a),.21*math.sin(a),1.6),.018,'steel',5)
 begin('gym_bin')
-cone('Tapered brushed metal bin',(0,0,.46),.38,.46,.89,'metal_light',10)
+# An uncapped tapered shell: the former closed cone put a light disk above
+# the dark interior, making the intended opening look like a fitted lid.
+vs=[]
+for z,r in [(.015,.38),(.905,.46)]:
+ vs.extend((r*math.cos(i*math.tau/10+math.pi/2),r*math.sin(i*math.tau/10+math.pi/2),z) for i in range(10))
+poly('Open tapered brushed metal body',vs,
+ [tuple(reversed(range(10)))]+[(i,(i+1)%10,(i+1)%10+10,i+10) for i in range(10)],'metal_light')
 ring('Raised bin rim',(0,0,.90),.475,.40,.08,'steel',10)
-cone('Dark open bin interior',(0,0,.88),.395,.395,.022,'ink',10)
+vs=[]
+for z,r in [(.12,.34),(.86,.40)]:
+ vs.extend((r*math.cos(i*math.tau/10),r*math.sin(i*math.tau/10),z) for i in range(10))
+poly('Recessed dark inner walls',vs,
+ [(i,i+10,(i+1)%10+10,(i+1)%10) for i in range(10)],'ink')
+cone('Deep dark bin floor',(0,0,.109),.36,.36,.022,'ink',10)
 for a in [i*math.tau/10 for i in range(10)]:rod('Bin pressed rib',(.365*math.cos(a),.365*math.sin(a),.08),(.444*math.cos(a),.444*math.sin(a),.82),.014,'steel',5)
 
 # Non-destructive export preserves individual authored objects in .blend.

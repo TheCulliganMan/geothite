@@ -6,8 +6,8 @@ from functools import lru_cache
 from bat_sculpt import sculpture,HEIGHT,SPECIES
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 REST_DIGESTS={'zubat':'737d2dad1c97b82b0fead248d72ac003e5e759ce90debf0c4cabb06d80c851d0',
- 'golbat':'db6b0c4bcb4c3f268b98ca45678c143db637a570e2cacc1867629fa2f2f558d4',
- 'crobat':'d01d5cfb92de35f18629800273962eb8a9719f659891ad7f397d44202ff717bd'}
+ 'golbat':'2b4111963c9a7224224eacf4a70ec2359fd0e36d6426c7a992543e66e763379a',
+ 'crobat':'87f89cd4cc0e7d68b7f29292721ea068514dcdc982722d76fddcb8d23f69ced4'}
 PARTS={n:tuple(p['part'] for p in sculpture(n)['primitives']) for n in SPECIES}
 MAX_BYTES=1024*1024
 

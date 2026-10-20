@@ -126,9 +126,58 @@ pub(super) fn finish_union(mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTil
         +apply(&mut mesh.cave_enclosure,pigment,shelf,cap,rock,g,1600000.)
 }
 
+/// Finish only the private faces appended below fitted cave banks. Existing
+/// native material roles must not be sampled/repainted a second time.
+pub(super) fn finish_bank_backings(mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTile],
+    images:&TerrainImageSamples)->usize {
+    if crate::cave_water::outdoor(map) || !cells.first().is_some_and(|t|
+        matches!(t.source.tileset_id.as_ref(),"cave"|"dark_cave")) {return 0;}
+    let pigment=field(cells,images,0x16).or_else(||field(cells,images,0x01));
+    let shift=if map=="DiglettsCave" || map.starts_with("UnionCave") {1600000.} else {800000.};
+    let out=&mut mesh.solid;let mut changed=0;
+    for i in 0..out.positions.len() {
+        if out.uvs[i][0]<=90000. || (out.uvs[i][1]/100000.).round()!=36. {continue;}
+        out.uvs[i][1]-=3_400_000.;
+        if let Some(pigment)=pigment {
+            let c=&mut out.colors[i];
+            let luma=Vec3::new(c[0],c[1],c[2]).dot(Vec3::new(0.2126,0.7152,0.0722));
+            c[..3].copy_from_slice(&(pigment*0.52*(luma/0.34).clamp(0.91,1.07)).to_array());
+            out.uvs[i][1]+=shift;
+        }
+        changed+=1;
+    }
+    changed
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn bank_backings_take_live_pigment_without_repainting_existing_native_faces() {
+        let tile=VisualTile {column:0,row:0,texture:Handle::default(),priority:false,animation_frames:None,
+            source:VisualTileSource {tileset_id:"dark_cave".into(),metatile_id:2,
+                subtile_column:0,subtile_row:0,tile_index:0x16}};
+        let mut images=TerrainImageSamples::default();
+        images.pixels.insert(tile.texture.id(),TileImageSample::Rgba([99,74,123,255].repeat(64)));
+        let mut mesh=TerrainMeshData::default();
+        mesh.solid.positions=vec![[0.,0.,0.],[1.,32.,0.]];
+        mesh.solid.normals=vec![[0.,0.,1.];2];mesh.solid.uvs=vec![[100002.,3600003.],[100002.,3000003.]];
+        mesh.solid.colors=vec![[0.34,0.34,0.34,0.8],[0.12,0.2,0.3,0.7]];
+        let before=mesh.clone();
+        assert_eq!(finish_bank_backings(&mut mesh,"DarkCaveBlackthornEntrance",&[&tile],&images),1);
+        let expected=linear([99,74,123])*0.52;
+        assert!(Vec3::from_slice(&mesh.solid.colors[0][..3]).abs_diff_eq(expected,0.000001));
+        assert_eq!(mesh.solid.colors[0][3],0.8);assert_eq!(mesh.solid.uvs[0],[100002.,1000003.]);
+        assert_eq!(mesh.solid.colors[1],before.solid.colors[1]);assert_eq!(mesh.solid.uvs[1],before.solid.uvs[1]);
+        assert_eq!(mesh.solid.positions,before.solid.positions);assert_eq!(mesh.solid.normals,before.solid.normals);
+        assert_eq!(finish_bank_backings(&mut mesh,"DarkCaveBlackthornEntrance",&[&tile],&images),0,
+            "a second finish must not darken the already-painted bank");
+        let mut missing=before;
+        assert_eq!(finish_bank_backings(&mut missing,"DarkCaveBlackthornEntrance",&[&tile],&TerrainImageSamples::default()),1);
+        assert_eq!(missing.solid.uvs[0],[100002.,200003.]);
+        assert_eq!(missing.solid.colors[0],[0.34,0.34,0.34,0.8]);
+    }
+
     #[test]
     fn floor_keeps_the_classic_dark_pigment_in_its_measured_color() {
         let tile=VisualTile{column:0,row:0,texture:Handle::default(),priority:false,

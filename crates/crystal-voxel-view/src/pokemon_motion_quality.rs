@@ -57,9 +57,17 @@ fn pokemon_motion_roster_preserves_supports_and_connected_surfaces() {
             rig.sample_locomotion(tick as f32 / 16., tick as f32 * TAU / 16., 1., &mut pose);
             if locomotion(&name) == Locomotion::Walk {
                 gait::assert_supports(rig, &pose);
+                let style = travel::style(rig.species.name());
+                let flight = if style == travel::Style::ClusterHop { 0. } else {
+                    style.hop_height(rig.species.name()) * travel::airborne(tick as f32 * TAU / 16.)
+                };
+                let roll_pivot = if style == travel::Style::Roll {
+                    let pivot = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
+                    (pivot - Quat::from_rotation_x(tick as f32 * TAU / 16.) * pivot).y
+                } else { 0. };
                 assert!(
-                    pose[0].translation.y < height * 0.06,
-                    "{name} needs excessive floor correction: {}",
+                    pose[0].translation.y - roll_pivot < height * (0.06 + flight),
+                    "{name} phase {tick}/16 needs excessive floor correction: {}",
                     pose[0].translation.y / height
                 );
             }
@@ -373,9 +381,14 @@ fn pokemon_motion_gpu_review() {
                         *p = j.bind;
                     }
                 }
+                1 | 2 if std::env::var_os("CRYSTAL_POKEMON_REVIEW_SWIMMING").is_some() => rig.sample_swimming(
+                    if frame == 1 { 0.20 } else { 0.80 },
+                    if frame == 1 { TAU * 0.20 } else { TAU * 0.80 },
+                    1., &mut pose,
+                ),
                 1 | 2 => rig.sample_locomotion(
-                    if frame == 1 { 0.125 } else { 0.625 },
-                    if frame == 1 { TAU * 0.125 } else { TAU * 0.625 },
+                    if frame == 1 { 0.20 } else { 0.80 },
+                    if frame == 1 { TAU * 0.20 } else { TAU * 0.80 },
                     1.,
                     &mut pose,
                 ),
@@ -416,7 +429,8 @@ fn pokemon_motion_gpu_review() {
                     Mesh3d(mesh),
                     MeshMaterial3d(material.clone()),
                     Transform::from_xyz((frame as f32 - 1.5) * 1.55, 0.002, 0.)
-                        .with_rotation(Quat::from_rotation_y(0.45))
+                        .with_rotation(Quat::from_rotation_y(std::env::var("CRYSTAL_POKEMON_REVIEW_YAW")
+                            .ok().and_then(|s| s.parse::<f32>().ok()).unwrap_or(0.45)))
                         .with_scale(Vec3::splat(fit)),
                 ))
                 .id();

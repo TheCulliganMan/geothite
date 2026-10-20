@@ -160,7 +160,7 @@ fn department_store_windows_keep_authored_material_paint_through_production_appe
                 let s = n + part.depth as f32 * g.tile_height;
                 let mut authored = SurfaceMeshData::default();
                 part.asset.model().append_fitted(&mut authored,
-                    [w, e, s - 3.0, s], 0.0, 16.0);
+                    [w, e, s - 3.0, s], 0.0, 32.0);
                 let first = mesh.solid.positions.windows(authored.positions.len())
                     .position(|v| v == authored.positions.as_slice())
                     .expect("complete authored window geometry must reach production mesh");
@@ -582,7 +582,8 @@ fn append_is_atomic_preserves_footing_owned_bounds_and_display_reveal() {
         } else {
             0.
         };
-        let top = base + if stair { 22.4 } else { 16. };
+        let top = base + if stair { 22.4 } else if matches!(n[0].label,
+            "mart/department_store_wall"|"mart/department_store_lift_front") { 32. } else { 16. };
         assert!(mesh.solid.positions.iter().all(|&[x, y, z]| x >= w
             && x <= w + n[0].width as f32 * g.tile_width
             && z >= north
@@ -663,4 +664,94 @@ fn live_directory_and_lift_button_use_original_uvs_and_outward_faces() {
         let c = Vec3::from_array(mesh.textured.positions[k + 2]);
         assert!((b - a).cross(c - a).z > 0.);
     }
+}
+
+fn wall_ray_hits(surface:&SurfaceMeshData,point:[f32;2],depth:[f32;2])->bool {
+    surface.indices.chunks_exact(3).any(|t| {
+        let [a,b,c]=[t[0],t[1],t[2]].map(|i|surface.positions[i as usize]);
+        let u=[b[0]-a[0],b[1]-a[1]];let v=[c[0]-a[0],c[1]-a[1]];
+        let p=[point[0]-a[0],point[1]-a[1]];let det=u[0]*v[1]-u[1]*v[0];
+        if det.abs()<0.000001 {return false;}
+        let s=(p[0]*v[1]-p[1]*v[0])/det;let q=(u[0]*p[1]-u[1]*p[0])/det;
+        let z=a[2]+s*(b[2]-a[2])+q*(c[2]-a[2]);
+        s>=-0.00001&&q>=-0.00001&&s+q<=1.00001&&z>=depth[0]&&z<=depth[1]
+    })
+}
+
+#[test]
+fn department_store_actual_walls_reach_ceiling_and_close_equipment_gaps_without_new_claims() {
+    let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(std::path::PathBuf::from)
+        .expect("requires external verified pack via CRYSTAL_RENDER_TEST_PACK");
+    let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(path).unwrap();
+    let pack=loaded.pack();
+    let art=&pack.runtime_files()["data/tilesets/mart_metatiles.bin"];
+    for city in ["Goldenrod","Celadon"] {for floor in 1..=6 {
+        let map=format!("{city}DeptStore{floor}F");let data=&pack.data().maps[&map];
+        let (w,h)=(data.attributes.width as usize*4,data.attributes.height as usize*4);
+        // Celadon's ordinary entry callback removes its unused roof flight.
+        // Test both the packed baseline and that already controller-verified
+        // source substitution; no live session or callback is bypassed here.
+        for callback in [false,true] {
+            if callback && map!="CeladonDeptStore6F" {continue;}
+            let tiles=(0..w*h).map(|i| {
+                let (x,y)=(i%w,i/w);let mut block=data.blocks[y/4*(w/4)+x/4];
+                if callback && (x/4,y/4)==(6,0) {block=3;}
+                VisualTile {column:x as u32,row:y as u32,texture:Default::default(),priority:false,
+                    animation_frames:None,source:VisualTileSource {
+                        tileset_id:"mart".into(),metatile_id:block,
+                        subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,
+                        tile_index:art[block as usize*16+y%4*4+x%4]as u16,
+                    }}
+            }).collect::<Vec<_>>();
+            let refs=tiles.iter().collect::<Vec<_>>();let g=GridGeometry {width:w,height:h,
+                tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+            let p=resolve(&map,&refs,&g,[0,0],None,&vec![false;w*h]);
+            let wall=p.iter().find(|p|p.network.label=="mart/department_store_wall")
+                .unwrap_or_else(||panic!("{map} callback={callback}: authenticate complete rear course"));
+            let mut mesh=TerrainMeshData {footing_heights:vec![2.75;w*h],authored_cells:vec![None;w*h],..Default::default()};
+            let mut claims=vec![false;w*h];assert!(append(&mut mesh,&refs,&g,wall,&mut claims));
+            assert_eq!(mesh.footing_heights,vec![2.75;w*h]);
+            assert_eq!(claims, (0..w*h).map(|i|wall.indices(w).any(|j|i==j)).collect::<Vec<_>>());
+            for part in wall.network.parts.iter().filter(|p|matches!(p.asset,
+                Asset::Window1|Asset::Window2|Asset::Window4|Asset::Window8|Asset::Window10)) {
+                for dx in 0..part.width {for y in [1.,15.,23.,31.] {
+                    assert!(wall_ray_hits(&mesh.solid,[(part.x+dx)as f32*8.+4.,y],[13.,16.1]),
+                        "{map}: continuous ceiling-height rear glazing at {},{y}",part.x+dx);
+                }}
+            }
+            let mut frame=crate::mesh::tests::frame(w as u32,h as u32,tiles.iter().map(|t|t.source.clone()).collect());
+            frame.map_id=map.as_str().into();frame.source_map_size_core_tiles=Some(bevy::prelude::UVec2::new(w as u32/2,h as u32/2));
+            // Neutral opaque samples enable the full authored/final-finisher
+            // path. Native paired captures separately verify actual paint.
+            let mut images=bevy::prelude::Assets::<bevy::prelude::Image>::default();
+            let texture=images.add(bevy::prelude::Image::new_fill(
+                bevy::render::render_resource::Extent3d{width:8,height:8,depth_or_array_layers:1},
+                bevy::render::render_resource::TextureDimension::D2,&[180,180,180,255],
+                bevy::render::render_resource::TextureFormat::Rgba8UnormSrgb,
+                bevy::asset::RenderAssetUsages::all()));
+            for tile in &mut frame.tiles {tile.texture=texture.clone();}
+            let built=crate::mesh::audit_terrain_mesh_with_images(&frame,&images).unwrap();
+            if matches!(floor,2|4|6) {
+                let block=match floor {2=>0x13,4=>0x14,6=>0x21,_=>unreachable!()};
+                let columns=(0..w).filter(|&x|tiles[x].source.metatile_id==block).collect::<Vec<_>>();
+                assert_eq!(columns.len(),if floor==2 {12}else{8},
+                    "complete rear shelves, refrigerators or vending machines");
+                for &x in &columns {for y in [1.,15.,23.,31.] {
+                    assert!(wall_ray_hits(&mesh.solid,[x as f32*8.+4.,y],[13.,16.1]));
+                    assert!(wall_ray_hits(&built.solid,[(x as f32-w as f32/2.)*8.+4.,y],
+                        [13.-h as f32*4.,16.1-h as f32*4.]),
+                        "{map}: final finisher must retain backing at {x},{y}");
+                    assert!(!claims[x],"backing must not take equipment ownership");
+                }}
+                // Reusing a placement after any source identity mutation must
+                // reject the entire backing, including hidden equipment pixels.
+                for y in 0..4 {for &x in &columns {
+                    let mut changed=tiles.clone();changed[y*w+x].source.tile_index^=1;
+                    let mut rejected=SurfaceMeshData::default();
+                    append_rear_equipment_backing(&mut rejected,&changed.iter().collect::<Vec<_>>(),&g,wall);
+                    assert!(rejected.indices.is_empty());
+                }}
+            }
+        }
+    }}
 }
