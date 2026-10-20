@@ -1,4 +1,40 @@
 #[test]
+fn title_observation_handles_main_menu_entry_transition() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = CrystalRuntime::load_from_compiled_pack(
+        &asset_root,
+        "content-packs/core-modular.crystalpack",
+    )
+    .expect("load compiled pack");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title new-game spawn");
+    let runtime_shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::Title {
+            spawn_identifier,
+            save_path: None,
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize title shell");
+
+    let mut app = integrated_shell_test_app(runtime_shell);
+    open_title_main_menu_for_test(&mut app);
+    let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    let mut title = shell.title_menu.take().expect("title menu");
+    title.main_menu_phase_interpreter = None;
+    assert_eq!(title.source_phase(), VisibleTitlePhase::MainMenu);
+    assert!(!visible_title_main_menu_active(&title));
+    assert_eq!(visible_title_menu_entries(&shell, &title).expect("transition observation"), vec!["TITLE TRANSITION"]);
+}
+
+#[test]
 fn integrated_title_launch_schedule_renders_menu_and_starts_music() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../..")

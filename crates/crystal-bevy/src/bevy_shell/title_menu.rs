@@ -7863,7 +7863,9 @@ fn visible_title_menu_entries(
         return Ok(vec![match title.source_phase() {
             VisibleTitlePhase::Entrance | VisibleTitlePhase::Timer => "TITLE SCREEN".to_string(),
             VisibleTitlePhase::PressStart => "PRESS START".to_string(),
-            VisibleTitlePhase::MainMenu => unreachable!(),
+            // The source phase changes before the menu-entry interpreter
+            // finishes. Read-only observations can sample that valid boundary.
+            VisibleTitlePhase::MainMenu => "TITLE TRANSITION".to_string(),
             VisibleTitlePhase::FadeOut => "FADE OUT".to_string(),
             VisibleTitlePhase::Teardown => "TITLE TRANSITION".to_string(),
             VisibleTitlePhase::Unknown(value) => {
