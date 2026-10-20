@@ -220,7 +220,7 @@
       const meshtasticBridge = prepareMeshtasticBridge({ global: globalThis, navigator, document, location });
       const packRequests = new Map();
       globalThis.__crystalFetchPack = url => {
-        const key = new URL(url, location.href).href;
+        const key = new URL(url, document.baseURI).href;
         if (!packRequests.has(key)) {
           packRequests.set(key, fetchAsset(key, { label: 'Game data', report: reportAsset })
             .then(bytes => {
