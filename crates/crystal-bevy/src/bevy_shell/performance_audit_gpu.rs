@@ -258,7 +258,12 @@ fn readback(
         slot.read.slice(..).map_async(MapMode::Read, move |result| {
             let mut output = output.0.lock().expect("GPU result lock");
             if result.is_ok() {
-                let data = buffer.slice(..).get_mapped_range();
+                let Ok(data) = buffer.slice(..).get_mapped_range() else {
+                    output.errors += 1;
+                    buffer.unmap();
+                    busy.store(false, Ordering::Release);
+                    return;
+                };
                 let start = u64::from_le_bytes(data[0..8].try_into().expect("timestamp width"));
                 let end = u64::from_le_bytes(data[8..16].try_into().expect("timestamp width"));
                 if end >= start && output.samples.len() < 100_000 {

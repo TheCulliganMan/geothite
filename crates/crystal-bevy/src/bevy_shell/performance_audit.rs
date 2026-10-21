@@ -11,7 +11,7 @@ use bevy::ecs::system::{Commands, Local, Res, ResMut};
 use bevy::ecs::world::World;
 use bevy::input::ButtonInput;
 use bevy::input::keyboard::KeyCode;
-use bevy::prelude::{MessageWriter, Resource};
+use bevy::prelude::Resource;
 use bevy::render::diagnostic::RenderDiagnosticsPlugin;
 use bevy::render::extract_resource::{ExtractResource, ExtractResourcePlugin};
 use bevy::render::renderer::{RenderAdapterInfo, RenderDevice};
@@ -29,6 +29,7 @@ use crate::performance_audit::{AuditExpectation, AuditRequest};
 mod gpu;
 
 #[derive(Clone, Default, ExtractResource, Resource)]
+#[extract_app(bevy::render::RenderApp)]
 struct FrameClock {
     id: u64,
     measured: bool,
