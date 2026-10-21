@@ -473,6 +473,7 @@ screenshots for visual changes and the checks you ran in pull requests.
 - [Deployment and maintenance](docs/deployment.md)
 - [Game fidelity audit](FIDELITY_AUDIT.md)
 - [Renderer inspection](RENDER_AT_LOCATION.md)
+- [Repeatable CPU/GPU gameplay audit](tools/PERFORMANCE_AUDIT.md)
 - [Operation profiling](tools/OPERATION_PROFILING.md)
 
 ## Alternative frontends

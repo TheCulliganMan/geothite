@@ -1,6 +1,10 @@
 # Crystal Bevy operation profiling
 
-Run from `rust/`. The opt-in `operation-trace` feature enables Bevy 0.20's
+For repeated gameplay scenarios, frame-linked GPU timestamps and baseline
+regression gates, use the [CPU/GPU gameplay auditor](PERFORMANCE_AUDIT.md).
+This page describes ad hoc CPU tracing.
+
+Run from the repository root. The opt-in `operation-trace` feature enables Bevy 0.20's
 system, command, schedule, asset, and render tracing, including detailed engine
 spans. Native entry points start capture before reading the pack, with named
 spans for pack verification, runtime loading, shell initialization, audio device
@@ -17,7 +21,7 @@ mkdir -p output/operation-profile
 TRACE_CHROME="$PWD/output/operation-profile/overworld.json" \
 RUST_LOG=info \
   target/debug/examples/render_at_location \
-  --pack "$PWD/../content-packs/core-modular.crystalpack" \
+  --pack "$PWD/content-packs/core-modular.crystalpack" \
   --map NewBarkTown --x 13 --y 6 --view 2.5d \
   --screenshot "$PWD/output/operation-profile/overworld.png"
 python3 tools/operation_waterfall.py output/operation-profile/overworld.json \
