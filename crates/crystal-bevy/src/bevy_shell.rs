@@ -8,6 +8,8 @@ mod dev_tools;
 mod render_record;
 #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
 mod render_measure_validation;
+#[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
+mod performance_audit;
 #[cfg(feature = "location-tester")]
 mod render_walk;
 #[cfg(feature = "location-tester")]
@@ -334,6 +336,9 @@ pub enum BevyMeshtasticConnection {
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct BevyShellConfig {
+    /// Disposable, offscreen performance scenario; never writes a player save.
+    #[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
+    pub performance_audit: Option<crate::performance_audit::AuditRequest>,
     pub quick_save_path: Option<PathBuf>,
     pub smoke_player_name: Option<String>,
     /// `None` keeps the optional voxel feature's normal enabled behavior;
@@ -5729,6 +5734,12 @@ pub fn run_bevy_shell(
     #[cfg(feature = "operation-trace")]
     let _trace = crate::operation_trace::start();
     let multiplayer_config = config.multiplayer.clone();
+    #[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
+    let audit_request = config.performance_audit.clone();
+    #[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
+    let auditing = audit_request.is_some();
+    #[cfg(not(all(feature = "performance-audit", not(target_arch = "wasm32"))))]
+    let auditing = false;
     #[cfg(feature = "voxel-view")]
     let voxel_view_enabled = config.voxel_view_enabled.unwrap_or(false);
     #[cfg(feature = "voxel-view")]
@@ -5977,7 +5988,7 @@ pub fn run_bevy_shell(
     #[cfg(not(all(feature = "location-tester", not(target_arch = "wasm32"))))]
     let headless_capture = false;
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
-    anyhow::ensure!(!headless_capture || ((render_test_screenshot.is_some() || render_test_measure.is_some() || render_test_record.is_some())
+    anyhow::ensure!(!headless_capture || ((auditing || render_test_screenshot.is_some() || render_test_measure.is_some() || render_test_record.is_some())
         && !render_test_live && render_capture::requested_image_target(render_test_live)?),
         "headless capture requires a screenshot, recording or measurement with an image target");
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
@@ -6390,9 +6401,13 @@ pub fn run_bevy_shell(
     }
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     if headless_capture {
-        let interval = if render_test_measure.is_some() { std::time::Duration::ZERO }
+        let interval = if auditing || render_test_measure.is_some() { std::time::Duration::ZERO }
             else { std::time::Duration::from_millis(16) };
         app.add_plugins(bevy::app::ScheduleRunnerPlugin::run_loop(interval));
+    }
+    #[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
+    if let Some(request) = audit_request {
+        performance_audit::install(&mut app, request)?;
     }
     #[cfg(all(target_os = "macos", feature = "desktop-app"))]
     if !headless_capture { desktop_settings::install(&mut app); }

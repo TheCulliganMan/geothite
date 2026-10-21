@@ -37,6 +37,7 @@ serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
 naga = { version = "30.0.1", features = ["wgsl-in", "wgsl-out"], optional = true }
+wgpu = { version = "30.0.1", default-features = false, optional = true }
 uuid = { workspace = true, features = ["js"] }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
@@ -81,6 +82,7 @@ voxel-view = ["bevy-shell", "dep:crystal-voxel-view"]
 # Automatic adapter selection keeps WebGL available when WebGPU is absent.
 browser-webgpu = ["bevy-shell", "bevy/webgpu", "dep:naga"]
 location-tester = ["crystal-runtime/location-tester", "crystal-runtime/test-fixtures", "voxel-view", "crystal-assets/test-fixtures"]
+performance-audit = ["location-tester", "dep:wgpu"]
 # Normal previews use System directly; allocation diagnostics are explicit.
 allocation-tester = ["location-tester"]
 # Opt-in same-binary runtime tree entity benchmark controls.
@@ -100,6 +102,10 @@ meshtastic = ["crystal-net/meshtastic"]
 [[example]]
 name = "render_at_location"
 required-features = ["location-tester"]
+
+[[example]]
+name = "performance_audit"
+required-features = ["performance-audit"]
 
 [[example]]
 name = "render_saved_session"

@@ -21,9 +21,10 @@ const byId=id=>document.getElementById(id), canvas=byId('plot'), ctx=canvas.getC
 const depths=data.threads.map(()=>0);for(const s of data.spans)depths[s[3]]=Math.max(depths[s[3]],s[4]);
 const offsets=[];let height=32;for(const d of depths){offsets.push(height);height+=28+(d+1)*19;}
 const shortName=n=>n.startsWith('system: name=\"')?n.slice(14,-1).split('<')[0].split('::').pop():n;
-const frames=byId('frame');data.frames.forEach((t,i)=>{const o=document.createElement('option');o.value=t;o.textContent=`${i} · ${t.toFixed(2)} ms`;frames.append(o);});
+const frames=byId('frame');data.frames.forEach((t,i)=>{const o=document.createElement('option');o.value=t;o.textContent=`${data.frame_ids?.[i]??i} · ${t.toFixed(2)} ms`;frames.append(o);});
 byId('stats').textContent=`${data.spans.length.toLocaleString()} completed spans · ${data.names.length} operations · ${data.threads.length} threads · ${data.end.toFixed(1)} ms captured`;
 byId('start').value=(data.frames[Math.min(90,data.frames.length-1)]||0).toFixed(3);
+const requestedFrame=new URLSearchParams(location.search).get('frame');if(requestedFrame!==null){const i=data.frame_ids?.indexOf(Number(requestedFrame));if(i>=0){byId('start').value=data.frames[i];byId('width').value=(data.frames[i+1]||data.end)-data.frames[i];}}
 let hits=[];
 function draw(){const start=Number(byId('start').value),width=Math.max(.1,Number(byId('width').value));const w=Math.max(800,byId('scroll').clientWidth);const ratio=devicePixelRatio||1;canvas.width=w*ratio;canvas.height=height*ratio;canvas.style.width=w+'px';canvas.style.height=height+'px';ctx.setTransform(ratio,0,0,ratio,0,0);ctx.fillStyle='#111820';ctx.fillRect(0,0,w,height);ctx.font='12px system-ui';hits=[];frames.selectedIndex=data.frames.findIndex(t=>Math.abs(t-start)<.001);
 const ticks=Math.max(2,Math.floor((w-250)/130));for(let i=0;i<=ticks;i++){let x=240+(w-250)*i/ticks;ctx.fillStyle='#aabccc';ctx.textAlign=i===0?'left':i===ticks?'right':'center';ctx.fillText((start+width*i/ticks).toFixed(2)+' ms',x,16);ctx.textAlign='left';ctx.strokeStyle='#253545';ctx.beginPath();ctx.moveTo(x,23);ctx.lineTo(x,height);ctx.stroke();}

@@ -14,6 +14,8 @@ mod browser_allocations;
 pub fn enable_loading_allocation_stacks() { browser_allocations::enable_stack_sampling(); }
 #[cfg(feature = "operation-trace")]
 pub mod operation_trace;
+#[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
+pub mod performance_audit;
 
 #[cfg(test)]
 use crystal_assets::RuntimePendingScriptRequestKind;

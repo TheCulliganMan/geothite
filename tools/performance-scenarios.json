@@ -1,0 +1,13 @@
+[
+  {"name":"outdoor-idle","map":"NewBarkTown","tile":[13,6],"fixture":"field","prepare":[],"steps":[],"seconds":4},
+  {"name":"indoor-idle","map":"PlayersHouse2F","tile":[3,3],"fixture":"field","prepare":[],"steps":[],"seconds":4},
+  {"name":"land-movement","map":"NewBarkTown","tile":[13,6],"fixture":"field","prepare":[],"steps":[{"key":"left","until":{"tile":[11,6]},"timeout_seconds":10},{"key":"right","until":{"tile":[13,6]},"timeout_seconds":10}],"seconds":4},
+  {"name":"indoor-movement","map":"PlayersHouse2F","tile":[3,3],"fixture":"field","prepare":[],"steps":[{"key":"left","until":{"tile":[1,3]},"timeout_seconds":10},{"key":"right","until":{"tile":[3,3]},"timeout_seconds":10}],"seconds":4},
+  {"name":"indoor-to-outdoor","map":"PlayersHouse1F","tile":[7,7],"fixture":"field","prepare":[],"steps":[{"key":"down","until":{"map":"NewBarkTown"},"timeout_seconds":15}],"seconds":4},
+  {"name":"outdoor-to-indoor","map":"NewBarkTown","tile":[13,7],"fixture":"field","prepare":[],"steps":[{"key":"up","until":{"map":"PlayersHouse1F"},"timeout_seconds":15}],"seconds":4},
+  {"name":"outdoor-connection","map":"Route29","tile":[1,8],"fixture":"field","prepare":[],"steps":[{"key":"left","until":{"map":"CherrygroveCity"},"timeout_seconds":15}],"seconds":4},
+  {"name":"region-boundary","map":"Route28","tile":[1,6],"fixture":"field","prepare":[],"steps":[{"key":"left","until":{"map":"SilverCaveOutside"},"timeout_seconds":15}],"seconds":4},
+  {"name":"water-movement","map":"Route44","tile":[38,3],"fixture":"surf_shore","prepare":[{"key":"a","until":{"mode":"Surf"},"timeout_seconds":20}],"steps":[{"key":"down","until":{"tile":[38,5],"mode":"Surf"},"timeout_seconds":10},{"key":"right","until":{"tile":[39,5],"mode":"Surf"},"timeout_seconds":10}],"seconds":4},
+  {"name":"battle-idle","map":"Route36","tile":[36,11],"fixture":"battle","prepare":[],"steps":[],"seconds":4},
+  {"name":"battle-turn","map":"Route36","tile":[36,11],"fixture":"battle","prepare":[],"steps":[{"key":"a","until":{"battle":true,"pp_consumed":true},"timeout_seconds":20}],"seconds":6}
+]
