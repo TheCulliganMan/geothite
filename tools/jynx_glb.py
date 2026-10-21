@@ -17,13 +17,13 @@ def authoring_model(s='jynx'):
  if s!='jynx':raise ValueError('unknown gown dancer')
  return source_model(s)
 PARTS=tuple(p['part'] for p in authoring_model()['primitives'])
-REST_DIGEST='d1a7fc03473ac5f3eb42d0f738ec5926ab96bcdeddbc5d0d0017e5a9a294ecf0'
+REST_DIGEST='6106c733209f0e0d60a6652f74f4f410e4d15902ff18cae67e0a1ce2e9b6918a'
 @lru_cache(maxsize=1)
 def authoring_transform():
  raw=source_model('jynx',normalize=False);lo=min(v for p in raw['primitives'] for v in p['positions'][1::3]);hi=max(v for p in raw['primitives'] for v in p['positions'][1::3]);return lo,HEIGHT/(hi-lo)
 def normalized(point):
  lo,k=authoring_transform();return tuple((v-(lo if i==1 else 0.))*k for i,v in enumerate(point))
-RAW_JOINTS=[('root',None,(0.,0.,0.)),('torso',0,(0.,.68,-.015)),('neck',1,(0.,.90,.018)),('head',2,(0.,1.02,.044)),('hair_left',3,(-.132,1.346,.023)),('hair_right',3,(.132,1.346,.023))]
+RAW_JOINTS=[('root',None,(0.,0.,0.)),('torso',0,(0.,.70,-.015)),('neck',1,(0.,.92,.016)),('head',2,(0.,.98,.037)),('hair_left',3,(-.155,1.379,.042)),('hair_right',3,(.155,1.379,.042))]
 for side,label in ((-1,'left'),(1,'right')):
  path=jynx_arm_path(side);start=len(RAW_JOINTS);RAW_JOINTS.extend(((f'arm_{label}',1,path[0]),(f'elbow_{label}',start,path[1]),(f'hand_{label}',start+1,path[2])))
 for side,label,wrist in ((-1,'left',8),(1,'right',11)):
@@ -44,13 +44,13 @@ def skin_weights(name,point):
   a=smoothstep(.88,.96,y);b=smoothstep(.98,1.08,y);return [1,2,3,0],[1.-a,a*(1.-b),a*b,0.]
  if name.startswith(('Chest trim /','Chest bridge /','Bodice /')):return rigid(1)
  if name.startswith('Sleeve /'):
-  side=int(name.split()[-1]);start=6 if side==-1 else 9;pp,rr=smooth(jynx_arm_path(side),[.074,.078,.056],4);t=fraction(raw,pp);a=smoothstep(.02,.24,t);b=smoothstep(.32,.68,t);c=smoothstep(.72,.97,t)
+  side=int(name.split()[-1]);start=6 if side==-1 else 9;pp,rr=smooth(jynx_arm_path(side),[.082,.082,.061],5);t=fraction(raw,pp);a=smoothstep(.02,.24,t);b=smoothstep(.32,.68,t);c=smoothstep(.72,.97,t)
   return [1,start,start+1,start+2],[1.-a,a*(1.-b),a*b*(1.-c),a*b*c]
  if name.startswith('Palm /'):return rigid(8 if name.endswith('-1') else 11)
  if name.startswith('Finger /'):
   side,j=map(int,name.split()[-2:]);wrist=8 if side==-1 else 11;owner=12+j if side==-1 else 17+j;path,radii=jynx_digit_paths(side)[j];pp,rr=smooth(path,radii,4);w=smoothstep(.03,.40,fraction(raw,pp));return [wrist,owner,0,0],[1.-w,w,0.,0.]
  if name.startswith(('Hair curtain /','Hair strand /','Hair tip /')):
-  side=int(name.split()[-2] if name.startswith('Hair tip /') else name.split()[-1]);w=1.-smoothstep(1.18,1.34,y);return [3,4 if side==-1 else 5,0,0],[1.-w,w,0.,0.]
+  side=int(name.split()[-2] if name.startswith('Hair tip /') else name.split()[-1]);w=1.-smoothstep(1.22,1.38,y);return [3,4 if side==-1 else 5,0,0],[1.-w,w,0.,0.]
  if name.startswith(('Head /','Eye socket /','Eye /','Pupil /','Lips /','Mouth /','Hair','Back hair strand /')):return rigid(3)
  raise ValueError('unowned adult dancer anatomy '+name)
 def pose_angles(clip,t):

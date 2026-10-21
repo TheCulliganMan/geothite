@@ -14,10 +14,17 @@ from abra_sculpt import polygon_caps
 from goldfish_sculpt import surface
 from skin_glb import COORDINATES
 HEIGHT=1.30
-BLUE=(.26,.67,.76);CREAM=(.96,.86,.53);RED=(.88,.30,.35)
+FORWARD_LEAN={'croconaw':.16,'feraligatr':.22}
+BLUE=(.34,.72,.81);CREAM=(.96,.87,.57);RED=(.88,.30,.35)
 WHITE=(.98,.97,.87);INK=(.10,.17,.18);ORANGE=(.82,.45,.21)
 
 def between(a,b,t):return tuple(x+(y-x)*t for x,y in zip(a,b))
+
+def posture_point(species,point):
+    x,y,z=point;return (x,y,z+FORWARD_LEAN[species]*y)
+
+def anatomy_point(species,point):
+    x,y,z=point;return (x,y,z-FORWARD_LEAN[species]*y)
 
 def limb(name,points,radii):
     # Carry the curved surface past each bend and bury its closing ring in
@@ -39,6 +46,22 @@ def axial(name,color,sections):
     for k in range(len(sections)-1):
         for i in range(8):a=k*8+i;b=k*8+(i+1)%8;f.append((a,b,b+8,a+8))
     return part(name,color,v,f) if name.startswith('Mouth /') else subdivided_part(name,color,v,f,2,True)
+
+
+def mouth_well(adult):
+    # A closed cup has a real open aperture, roof, floor and recessed rear.
+    # A capped dark extrusion made the old gape a flat rectangular billboard.
+    rows=([(.108,.130,.050,.882),(.267,.220,.064,.872),(.443,.210,.062,.872),
+           (.442,.205,.057,.872),(.267,.214,.058,.872),(.121,.124,.041,.882)] if adult else
+          [(.125,.170,.040,.830),(.263,.215,.050,.837),(.376,.170,.045,.842),
+           (.375,.165,.040,.842),(.263,.209,.044,.837),(.137,.164,.032,.830)])
+    n=32;v=[(w*math.cos(i*math.tau/n),center+h*math.sin(i*math.tau/n),z)
+            for z,w,h,center in rows for i in range(n)]
+    faces=[tuple(reversed(range(n))),tuple((len(rows)-1)*n+i for i in range(n))]
+    for row in range(len(rows)-1):
+        for i in range(n):
+            a=row*n+i;b=row*n+(i+1)%n;faces.append((a,b,b+n,a+n))
+    return crease_normals(part('Mouth / recessed dark interior',(.27,.12,.15),v,faces,True),35.)
 
 
 def fin(name,outline,width):
@@ -70,8 +93,17 @@ def plate(name,color,center,radii,skin,back=False):
             break
         except ValueError:w*=.85;h*=.85
     else:raise ValueError(('armor footprint outside occupied limb',name))
-    inset=[(x+a*w*.72,y+b*h*.72) for a,b in outline]
-    cap=fitted_adaptive_contour(name,color,inset,None,d,surface_at=skin,initial_subdivisions=1,max_surface_error=.0025)
+    # An overlapping curved limb can put a silhouette break through a plate.
+    # Fit a smaller occupied footprint instead of bridging the break or raising
+    # the allowed clearance. Retain the original depth and real outer bevel.
+    for attempt in range(5):
+        inset=[(x+a*w*.72,y+b*h*.72) for a,b in outline]
+        try:
+            cap=fitted_adaptive_contour(name,color,inset,None,d,surface_at=skin,initial_subdivisions=1,max_surface_error=.0025)
+            break
+        except ValueError:
+            if attempt==4:raise
+            w*=.85;h*=.85
     # Recover the front triangulation; extend its boundary through a real bevel.
     cap_points=[cap['positions'][i:i+3] for i in range(0,len(cap['positions']),3)]
     xy=[];lookup={};front=[]
@@ -117,19 +149,86 @@ def skin_of(parts,back=False):
     return surface({'positions':positions,'indices':indices})
 
 
+def wrapped_hide(body,profiles):
+    """Clip the real torso triangles into a closed, thin 360-degree hide.
+
+    Both edges vary around the body. Outer and buried inner surfaces share
+    topology, so the asymmetric collar and torn hem wrap through the rear.
+    """
+    def profile(y):
+        for a,b in zip(profiles,profiles[1:]):
+            if a[0]-1e-9<=y<=b[0]+1e-9:
+                t=(y-a[0])/(b[0]-a[0]);return tuple(a[i]+t*(b[i]-a[i]) for i in range(1,4))
+        raise ValueError(('hide outside body profile',y))
+    def marked(point):
+        x,y,z=point;rx,rz,center=profile(y);angle=math.atan2(x/rx,(z-center)/rz)
+        upper=.610-.055*math.sin(angle)+.040*math.cos(angle)-.110*math.exp(-(angle/.24)**4)
+        lower=.190+.024*abs(math.sin(angle))+.013*math.sin(7*angle+.5)
+        return (*point,y-lower,upper-y)
+    def clip(poly,axis):
+        out=[]
+        for a,b in zip(poly,poly[1:]+poly[:1]):
+            inside_a=a[axis]>=0.;inside_b=b[axis]>=0.
+            if inside_a:out.append(a)
+            if inside_a!=inside_b:
+                t=a[axis]/(a[axis]-b[axis]);out.append(tuple(x+t*(y-x) for x,y in zip(a,b)))
+        return out
+    vertices=[];faces=[];lookup={}
+    points=list(zip(*[iter(body['positions'])]*3))
+    for k in range(0,len(body['indices']),3):
+        tri=[points[i] for i in body['indices'][k:k+3]]
+        if max(v[1] for v in tri)<.16 or min(v[1] for v in tri)>.72:continue
+        poly=clip(clip([marked(v) for v in tri],3),4)
+        if len(poly)<3:continue
+        face=[]
+        for v in poly:
+            key=tuple(round(x,9) for x in v[:3])
+            if key not in lookup:lookup[key]=len(vertices);vertices.append(key)
+            face.append(lookup[key])
+        for i in range(1,len(face)-1):
+            if len({face[0],face[i],face[i+1]})==3:faces.append((face[0],face[i],face[i+1]))
+    edges={}
+    for face in faces:
+        for a,b in zip(face,face[1:]+face[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append((a,b))
+    count=len(vertices);shell=[]
+    for depth in (.006,-.003):
+        for x,y,z in vertices:
+            center=profile(y)[2];r=math.hypot(x,z-center)
+            shell.append((x+depth*x/r,y,z+depth*(z-center)/r))
+    caps=faces+[tuple(i+count for i in reversed(f)) for f in faces]
+    caps += [(b,a,a+count,b+count) for uses in edges.values() if len(uses)==1 for a,b in uses]
+    return part('Belly / fitted broad pale field',CREAM,shell,caps,True)
+
+
 @lru_cache(maxsize=2)
 def raw_sculpture(species):
     if species not in ('croconaw','feraligatr'):raise ValueError(species)
     adult=species=='feraligatr';p=[]
-    profiles=([(.15,.115,.136,-.015),(.255,.233,.197,-.020),(.405,.264,.210,-.032),(.535,.221,.185,-.031),(.658,.274,.185,-.028),(.774,.323,.191,-.020),(.839,.244,.174,-.015),(.905,.137,.136,.002),(.973,.197,.158,.016),(1.053,.225,.173,.017),(1.117,.201,.149,.003),(1.139,.107,.099,-.010),(1.145,.016,.022,-.016)] if adult else
-              [(.117,.11,.123,-.008),(.235,.266,.217,-.024),(.397,.305,.253,-.032),(.568,.278,.229,-.023),(.697,.220,.186,-.012),(.770,.155,.140,.017),(.840,.247,.188,.017),(.976,.253,.188,.012),(1.056,.206,.151,-.006),(1.087,.105,.095,-.009),(1.093,.020,.023,-.013)])
-    body=loft('Body / continuous crocodile pelvis belly chest neck and skull',BLUE,curved_profiles(profiles,4),48);p.append(body);surf=surface(body)
+    # Low, broad skulls and substantial necks keep the jaw/eye silhouette
+    # continuous. The juvenile has a pear-shaped belly, the adult a wide chest.
+    profiles=([(.15,.145,.155,-.015),(.255,.260,.220,-.020),(.405,.288,.235,-.032),(.535,.258,.209,-.031),(.658,.295,.205,-.028),(.774,.355,.215,-.020),(.839,.298,.201,-.015),(.905,.213,.175,.002),(.973,.251,.182,.016),(1.053,.277,.194,.017),(1.117,.248,.170,.003),(1.160,.167,.119,-.010),(1.176,.030,.030,-.016)] if adult else
+              [(.117,.13,.133,-.008),(.235,.288,.240,-.024),(.397,.325,.269,-.032),(.568,.296,.242,-.023),(.697,.237,.209,-.012),(.770,.204,.176,.017),(.840,.269,.203,.017),(.976,.288,.205,.012),(1.056,.256,.181,-.006),(1.108,.177,.126,-.009),(1.128,.030,.031,-.013)])
+    body_profiles=curved_profiles(profiles,4)
+    body=loft('Body / continuous crocodile pelvis belly chest neck and skull',BLUE,body_profiles,48)
+    vertices=[]
+    for k in range(0,len(body['positions']),3):
+        x,y,z=body['positions'][k:k+3]
+        if z>0.:
+            radius=(x/(.290 if adult else .280))**2+((y-(.840 if adult else .820))/(.110 if adult else .100))**2
+            z-=(.170 if adult else .160)*max(0.,1.-radius)**1.1
+        vertices.append((x,y,z))
+    body=part(body['part'],BLUE,vertices,[tuple(body['indices'][k:k+3]) for k in range(0,len(body['indices']),3)],True)
+    p.append(body);surf=surface(body)
     if adult:
-        upper=[(-.02,.177,.901,1.077),(.126,.246,.889,1.054),(.283,.226,.895,1.006),(.425,.156,.903,.968),(.445,.104,.915,.948)]
-        lower=[(.031,.12,.793,.839),(.185,.207,.758,.808),(.328,.187,.773,.822),(.431,.117,.805,.844),(.444,.066,.819,.840)]
+        upper=[(-.02,.222,.897,1.092),(.126,.298,.885,1.072),(.283,.284,.888,1.027),(.425,.226,.903,.995),(.476,.144,.923,.975)]
+        lower=[(.004,.190,.770,.900),(.155,.285,.680,.800),(.300,.274,.620,.740),(.438,.207,.620,.780),(.475,.123,.660,.790)]
     else:
-        upper=[(.002,.191,.806,.955),(.125,.264,.804,.930),(.263,.257,.810,.888),(.339,.184,.829,.877),(.356,.109,.839,.863)]
-        lower=[(.039,.147,.702,.814),(.125,.269,.668,.813),(.246,.267,.698,.817),(.329,.185,.748,.830),(.352,.097,.791,.838)]
+        upper=[(.002,.218,.824,.987),(.125,.297,.818,.956),(.263,.286,.827,.924),(.355,.225,.847,.910),(.386,.136,.860,.901)]
+        lower=[(.004,.195,.690,.833),(.125,.295,.625,.800),(.246,.289,.610,.750),(.352,.216,.630,.770),(.384,.125,.690,.790)]
+    # Captured battle idles carry the thick mandible under the muzzle; an
+    # extracted model's wide open mouth is not the resting battle expression.
+    jaw_raise=.070 if adult else .025
+    lower=[(z,w,lo+jaw_raise,hi+jaw_raise) for z,w,lo,hi in lower]
     upper_mesh=axial('Jaw / broad upper snout',BLUE,upper);p.append(upper_mesh);jaw_surface=surface(upper_mesh)
     lower_mesh=axial('Jaw / fitted pale lower shell',CREAM,lower);p.append(lower_mesh)
     # Seat tooth roots inside the actual triangulated jaw, preserving visible tips.
@@ -147,45 +246,50 @@ def raw_sculpture(species):
             y=min(hi-.008,max(base+.006,lo+.012)) if upper else max(lo+.008,min(base-.006,hi-.012))
             return (rx,y,z)
         raise ValueError(('no occupied jaw root for tooth',species,x,z))
-    p.append(axial('Mouth / recessed dark interior',(.27,.12,.15),[(.108,.11,.819,.898),(.267,.19,.811,.902),(.381,.126,.832,.900)] if adult else [(.125,.15,.808,.817),(.263,.198,.814,.829),(.350,.084,.835,.843)]))
+    p.append(mouth_well(adult))
+    if adult:p.append(ellipsoid('Mouth / rounded pink tongue',(.86,.43,.50),(0.,.860,.354),(.125,.023,.074),28,16))
     for s in (-1,1):
-        x=s*(.135 if adult else .153);y=1.037 if adult else .960
-        outline=[(x-s*.053,y-.023),(x-s*.034,y+.041),(x+s*.009,y+.057),(x+s*.056,y+.005),(x+s*.053,y-.026)]
-        p.append(adaptive_patch('Eye / fitted ivory '+str(s),WHITE,outline,surf,.007))
-        p.append(adaptive_patch('Eye / warm iris '+str(s),ORANGE,oval(x,y+.009,.016,.031,16),surf,.016))
-        p.append(adaptive_patch('Eye / slit pupil '+str(s),INK,oval(x,y+.008,.007,.023,12),surf,.022))
-        p.append(adaptive_patch('Nostril / fitted snout '+str(s),INK,oval(s*.057,.973 if adult else .894,.011,.004,12),jaw_surface,.005))
+        x=s*(.172 if adult else .182);y=1.060 if adult else 1.003
+        outline=[(x-s*.070,y-.030),(x-s*.060,y+.015),(x+s*.043,y+.065),(x+s*.073,y-.015),(x+s*.035,y-.036)]
+        eye=adaptive_patch('Eye / fitted ivory '+str(s),WHITE,outline,surf,.007);p.append(eye)
+        iris=adaptive_patch('Eye / warm iris '+str(s),ORANGE,oval(x+s*.021,y+.002,.020,.028,20),surface(eye),.006);p.append(iris)
+        p.append(adaptive_patch('Eye / slit pupil '+str(s),INK,oval(x+s*.023,y+.001,.009,.021,16),surface(iris),.004))
+        brow=[(x-s*.079,y+.007),(x+s*.034,y+.074),(x+s*.073,y+.041),(x+s*.076,y+.014),(x+s*.041,y+.048),(x-s*.065,y-.002)]
+        p.append(adaptive_patch('Eye / blue brow '+str(s),BLUE,brow,surf,.015))
+        p.append(adaptive_patch('Nostril / fitted snout '+str(s),INK,oval(s*.068,.990 if adult else .927,.014,.005,16),jaw_surface,.005))
         if adult:
-            p.append(curved_tube('Jaw / pale mouth corner '+str(s),CREAM,[(s*.216,.973,.145),(s*.232,.875,.211),(s*.185,.791,.288)],[.028,.027,.024],14))
+            p.append(curved_tube('Jaw / pale mouth corner '+str(s),CREAM,[(s*.244,.938,.116),(s*.266,.885,.188),(s*.233,.805,.279)],[.041,.039,.033],16))
         # Independent upper/lower teeth terminate at their real jaw surfaces.
         for tooth,(x,z) in enumerate(((.130,.340),(.196,.246),(.231,.164)) if adult else ((.195,.240),(.245,.130))):
             base=.908 if adult else .812
             p.append(tube('Tooth / upper '+str(s)+' '+str(tooth),WHITE,[tooth_root(s*x,z,base,True),(s*x,base,z),(s*x,base-(.048 if adult else .044),z)],[.022,.022,.0015],10))
         if adult:
             for tooth,(x,z) in enumerate(((.158,.306),(.192,.216))):
-                p.append(tube('Tooth / lower '+str(s)+' '+str(tooth),WHITE,[tooth_root(s*x,z,.807,False),(s*x,.807,z),(s*x,.851,z)],[.020,.020,.0015],10))
-        shoulder=(s*.283,.773,-.012) if adult else (s*.230,.651,-.006)
-        elbow=(s*.416,.625,.040) if adult else (s*.330,.615,.020)
-        wrist=(s*.456,.487,.159) if adult else (s*.389,.667,.123)
-        p.append(limb('Arm / shaped shoulder elbow '+str(s),[shoulder,between(shoulder,elbow,.5),elbow,between(elbow,wrist,.45)],[.104,.098,.066,.034] if adult else [.071,.066,.049,.027]))
-        p.append(limb('Arm / broad forearm '+str(s),[between(shoulder,elbow,.65),elbow,between(elbow,wrist,.5),wrist],[.037,.062,.091,.052] if adult else [.028,.045,.064,.038]))
-        p.append(ellipsoid('Hand / broad palm '+str(s),BLUE,wrist,(.085,.056,.061) if adult else (.061,.039,.048),24,16))
+                p.append(tube('Tooth / lower '+str(s)+' '+str(tooth),WHITE,[tooth_root(s*x,z,.805,False),(s*x,.805,z),(s*x,.857,z)],[.020,.020,.0015],10))
+        shoulder=(s*.303,.794,-.012) if adult else (s*.239,.690,-.006)
+        elbow=(s*.400,.630,.060) if adult else (s*.325,.590,.030)
+        wrist=(s*.470,.660,.250) if adult else (s*.365,.535,.160)
+        p.append(limb('Arm / shaped shoulder elbow '+str(s),[shoulder,between(shoulder,elbow,.5),elbow,between(elbow,wrist,.45)],[.120,.108,.079,.040] if adult else [.078,.070,.050,.029]))
+        p.append(limb('Arm / broad forearm '+str(s),[between(shoulder,elbow,.65),elbow,between(elbow,wrist,.5),wrist],[.045,.076,.100,.066] if adult else [.032,.050,.065,.043]))
+        p.append(ellipsoid('Hand / broad palm '+str(s),BLUE,wrist,(.101,.066,.077) if adult else (.066,.045,.052),24,16))
         for finger in range(3):
-            x=wrist[0]+(finger-1)*(.047 if adult else .034);y=wrist[1]
-            end=(x,y-(.058 if adult else .026),wrist[2]+.082)
-            finger_points=[(x,y+.024,wrist[2]+.021),(x,y+.006,wrist[2]+.078),end];finger_radii=[.025,.024,.013] if adult else [.019,.018,.009]
-            if not adult:finger_points.append((x,y-.034,wrist[2]+.084));finger_radii.append(.0015)
+            x=wrist[0]+(finger-1)*(.057 if adult else .035);y=wrist[1]
+            end=(x,y-(.058 if adult else .026),wrist[2]+.100)
+            finger_points=[(x,y+.024,wrist[2]+.021),(x,y+.006,wrist[2]+.085),end];finger_radii=[.030,.028,.017] if adult else [.021,.019,.010]
+            if not adult:
+                finger_points=[(x,y+.013,wrist[2]+.015),(x+s*.012,y-.012,wrist[2]+.040),(x+s*.018,y-.035,wrist[2]+.036),(x+s*.019,y-.043,wrist[2]+.035)]
+                finger_radii=[.020,.020,.012,.0015]
             p.append(curved_tube('Hand / curved finger '+str(s)+' '+str(finger),BLUE,finger_points,finger_radii,16))
-            if adult:p.append(tube('Hand / white claw '+str(s)+' '+str(finger),WHITE,[end,(x,y-.100,wrist[2]+.093)],[.016,.0015],10))
-        hip=(s*.180,.310,-.033) if adult else (s*.182,.265,-.011)
-        knee=(s*.282,.246,.054) if adult else (s*.268,.193,.071)
-        ankle=(s*.271,.068,.089) if adult else (s*.232,.062,.078)
-        p.append(limb('Leg / broad bent thigh '+str(s),[hip,between(hip,knee,.5),knee,between(knee,ankle,.55)],[.119,.133,.085,.033] if adult else [.112,.122,.077,.028]))
+            if adult:p.append(tube('Hand / white claw '+str(s)+' '+str(finger),WHITE,[end,(x,y-.108,wrist[2]+.122)],[.020,.0015],12))
+        hip=(s*.220,.330,-.033) if adult else (s*.225,.276,-.011)
+        knee=(s*.335,.250,.054) if adult else (s*.309,.193,.071)
+        ankle=(s*.323,.074,.089) if adult else (s*.292,.066,.092)
+        p.append(limb('Leg / broad bent thigh '+str(s),[hip,between(hip,knee,.5),knee,between(knee,ankle,.55)],[.145,.153,.105,.041] if adult else [.133,.143,.098,.040]))
         hock_root=between(hip,knee,.65) if adult else between(ankle,knee,1.3)
-        p.append(limb('Leg / planted hock '+str(s),[hock_root,knee,ankle],[.055,.074,.050] if adult else [.048,.062,.043]))
-        p.append(ellipsoid('Foot / raised broad instep '+str(s),BLUE,(ankle[0],.048,.134),(.103,.042,.111) if adult else (.09,.042,.096),28,16))
+        p.append(limb('Leg / planted hock '+str(s),[hock_root,knee,ankle],[.067,.091,.061] if adult else [.060,.085,.058]))
+        p.append(ellipsoid('Foot / raised broad instep '+str(s),BLUE,(ankle[0],.048,.147),(.123,.042,.130) if adult else (.109,.042,.119),28,16))
         for toe in range(3):
-            x=ankle[0]+(toe-1)*.057;z=.242 if adult else .227
+            x=ankle[0]+(toe-1)*.065;z=.270 if adult else .252
             toe_points=[(x,.041,.157),(x+(toe-1)*.010,.026,z)];toe_radii=[.031,.021]
             if not adult:toe_points.append((x+(toe-1)*.010,.026,z+.010));toe_radii.append(.0015)
             p.append((tube if adult else curved_tube)('Foot / splayed toe '+str(s)+' '+str(toe),BLUE,toe_points,toe_radii,16))
@@ -193,30 +297,33 @@ def raw_sculpture(species):
         if adult:
             # Knee armor spans the joined thigh/hock envelope. Both surfaces
             # share one continuous leg weight field through the bend.
-            for index,(x,y,z,rx,ry,rz) in enumerate(((.312,.752,.092,.061,.046,.016),(.362,.721,.109,.060,.034,.017),(.430,.603,.143,.063,.042,.017),(.450,.535,.207,.060,.031,.014),(.273,.235,.141,.078,.038,.018))):
-                prefix='Arm / shaped' if index<2 else 'Arm / broad' if index<4 else 'Leg / planted'
-                owners=[q for q in p if q['part'].startswith(('Leg / broad','Leg / planted') if index==4 else (prefix,)) and q['part'].endswith(' '+str(s))]
+            for index,(x,y,z,rx,ry,rz) in enumerate(((.315,.770,.040,.045,.022,.016),(.335,.735,.100,.036,.016,.017),(.430,.646,.130,.045,.023,.017),(.466,.660,.230,.046,.023,.014),(.332,.235,.141,.090,.043,.018))):
+                owners=[q for q in p if q['part'].startswith(('Leg / broad','Leg / planted') if index==4 else ('Arm / shaped','Arm / broad')) and q['part'].endswith(' '+str(s))]
                 p.append(plate('Armor / limb plate '+str(s)+' '+str(index),(.31,.70,.77),(s*x,y,z),(rx,ry,rz),skin_of(owners)))
     if adult:
         # Two convex halves form the characteristic shallow V plate.
         for s in (-1,1):p.append(adaptive_patch('Belly / pale V half '+str(s),CREAM,[(0.,.477),(s*.226,.625),(s*.187,.352),(0.,.308)],surf,.006))
     else:
-        p.append(adaptive_patch('Belly / fitted broad pale field',CREAM,oval(0,.425,.234,.218,28),surf,.006))
-        for index,(x,y,rx,ry) in enumerate(((-.10,.473,.043,.061),(.093,.562,.042,.064),(.096,.300,.039,.030),(-.111,.294,.035,.055))):
-            p.append(adaptive_patch('Belly / blue island '+str(index),BLUE,oval(x,y,rx,ry,16),surf,.014))
-    tailpoints=[(0.,.253,-.160),(.018,.220,-.384),(.078,.230,-.578),(.120,.302,-.752),(.127,.380,-.891)] if adult else [(0,.214,-.179),(.021,.220,-.371),(.102,.278,-.545),(.147,.350,-.689)]
-    p.append(curved_tube('Tail / heavy tapered counterbalance',BLUE,tailpoints,[.126,.145,.110,.064,.004] if adult else [.117,.122,.071,.004],22))
+        p.append(wrapped_hide(body,body_profiles))
+        islands=[([(-.225,.499),(-.184,.515),(-.149,.461),(-.181,.424),(-.224,.447)]),
+                 ([(.183,.557),(.240,.578),(.265,.538),(.244,.491),(.193,.485)]),
+                 ([(.094,.288),(.135,.326),(.172,.272),(.158,.241),(.119,.241)]),
+                 ([(-.154,.298),(-.102,.335),(-.063,.284),(-.088,.246),(-.133,.257)])]
+        for index,outline in enumerate(islands):
+            p.append(adaptive_patch('Belly / blue island '+str(index),BLUE,outline,surf,.014))
+    tailpoints=[(0.,.253,-.160),(.018,.190,-.384),(.040,.150,-.600),(.060,.125,-.820),(.065,.120,-.940)] if adult else [(0,.214,-.179),(.014,.170,-.371),(.025,.125,-.530),(.030,.095,-.700)]
+    p.append(curved_tube('Tail / heavy tapered counterbalance',BLUE,tailpoints,[.140,.160,.120,.055,.002] if adult else [.120,.125,.075,.002],22))
     if adult:
         p.append(fin('Crest / broad jagged cranial fin',[(1.070,.088),(1.344,.083),(1.281,-.001),(1.395,-.088),(1.086,-.164)],.039))
         p.append(fin('Crest / rear jagged cranial fin',[(1.062,-.148),(1.281,-.172),(1.232,-.216),(1.352,-.287),(.934,-.259)],.045))
         p.append(fin('Crest / dorsal blade',[(.756,-.165),(.913,-.250),(.822,-.335),(.582,-.263)],.047))
-        p.append(fin('Crest / tail blade',[(.282,-.552),(.455,-.606),(.389,-.710),(.333,-.794)],.038))
+        p.append(fin('Crest / tail blade',[(.160,-.550),(.340,-.590),(.280,-.640),(.390,-.720),(.220,-.750),(.270,-.850),(.130,-.900),(.130,-.550)],.038))
         for index,(y,z,w) in enumerate(((.684,-.203,.121),(.536,-.244,.119),(.376,-.233,.107))):
             p.append(plate('Armor / dorsal plate '+str(index),(.30,.68,.76),(0.,y,z),(w,.057,.010),skin_of([body],True),True))
     else:
         p.append(fin('Crest / three-point cranial sail',[(1.060,.060),(1.161,.128),(1.102,.011),(1.375,-.038),(1.173,-.105),(1.301,-.190),(1.000,-.168)],.042))
         p.append(fin('Crest / dorsal sail',[(.650,-.164),(.844,-.248),(.704,-.332),(.481,-.239)],.039))
-        p.append(fin('Crest / tail diamond',[(.303,-.547),(.449,-.578),(.471,-.632),(.382,-.676)],.028))
+        p.append(fin('Crest / tail diamond',[(.130,-.530),(.280,-.570),(.310,-.620),(.115,-.680)],.028))
     # The fin sits on the actual laterally curving counterbalance, not x=0.
     from bovine_sculpt import smooth
     path=smooth(tailpoints,[1.]*len(tailpoints))[0]
@@ -232,7 +339,17 @@ def raw_sculpture(species):
     # Broad organic surfaces blend their normals; authored crest folds stay crisp.
     p=[q if q['part'].startswith('Crest /') else crease_normals(q) for q in p]
     for i,q in enumerate(p):
-        if q['part'].startswith(('Eye /','Belly /')):p[i]=skin_shading(q,body)
+        if q['part'].startswith(('Eye /','Belly /')) and q['part']!='Belly / fitted broad pale field':p[i]=skin_shading(q,body)
+    # A forward-loaded stance keeps the feet flat and the muzzle level. This
+    # invertible affine lean applies equally to skin, paint and buried joins;
+    # the arms above are authored with lowered elbows and forward wrists.
+    lean=FORWARD_LEAN[species]
+    for q in p:
+        q['positions']=[v for k in range(0,len(q['positions']),3) for v in posture_point(species,q['positions'][k:k+3])]
+        normals=[]
+        for k in range(0,len(q['normals']),3):
+            x,y,z=q['normals'][k:k+3];n=(x,y-lean*z,z);length=math.sqrt(sum(v*v for v in n));normals.extend(v/length for v in n)
+        q['normals']=normals
     return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 

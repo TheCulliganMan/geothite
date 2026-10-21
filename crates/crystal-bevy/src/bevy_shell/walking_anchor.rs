@@ -502,23 +502,11 @@ fn capture_visible_walking_source_frame_at(
     {
         return None;
     }
-    let Some((start_x, start_y)) = rendered.viewport_origin else {
+    let Some((expected_texture, expected_grid, expected_origin)) = retained_encounter_grid(rendered)
+    else {
         return None;
     };
-    #[cfg(feature = "voxel-view")]
-    let (expected_texture, expected_grid) = (
-        rendered.visual_world_texture.as_ref(),
-        rendered.visual_world_grid_size,
-    );
-    #[cfg(not(feature = "voxel-view"))]
-    let (expected_texture, expected_grid) = (
-        rendered.map_texture.as_ref(),
-        UVec2::new(VISUAL_WORLD_TILES_X as u32, VISUAL_WORLD_TILES_Y as u32),
-    );
-    let expected_origin = IVec2::new(i32::from(start_x), i32::from(start_y))
-        - (expected_grid.as_ivec2() - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32))
-            / 2;
-    if expected_texture != Some(&frame.map_texture)
+    if expected_texture != &frame.map_texture
         || frame.grid_size != expected_grid
         || frame.grid_origin != expected_origin
         || frame.tile_size != Vec2::splat(TILE_SIZE)

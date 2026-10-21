@@ -1,5 +1,9 @@
 # Snorlax dedicated sculpture and skin
 
+The [October 21 volume revision](mantis-sleeper-fidelity.md) supersedes the
+earlier dimensions and inspection below, with a deeper barrel, larger hood
+and paws, bent resting arms and verified buried roots through motion.
+
 Snorlax replaces its missing exact battle body with an original seated sleeping
 bear sculpture and nine-joint standard glTF skin. The sole canonical runtime
 source is `crates/crystal-voxel-view/models/battle_species/snorlax.glb`.

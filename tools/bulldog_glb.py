@@ -15,8 +15,7 @@ def geometry_digest(model):
 
 @lru_cache(maxsize=2)
 def authoring_model(species):return sculpture(species)
-REST_DIGESTS={'snubbull':'70065daa04c182094aef38bc6772adf416da67efaf666cc9bffe28b7b2854412',
- 'granbull':'386b9e7d3742f158136ec0acd0401377fefafc9dc1cf76afbdebbebb5467276e'}
+REST_DIGESTS={'snubbull': '70065daa04c182094aef38bc6772adf416da67efaf666cc9bffe28b7b2854412', 'granbull': 'f724a10e0de09e5ecb92c5943b24bb23a1dacd35fa1909f888d8ee9142f4f344'}
 PARTS={species:tuple(p['part'] for p in authoring_model(species)['primitives']) for species in SPECIES}
 MAX_BYTES=1024*1024
 
@@ -28,16 +27,16 @@ def normalized(species,point):
  low,span=authoring_transform(species);return tuple((v-(low if i==1 else 0.))*HEIGHTS[species]/span for i,v in enumerate(point))
 
 def arm_path(species,side):
- return ((side*.14,.643,-.002),(side*.294,.671,.014),(side*.426,.640,.090)) if species=='granbull' else ((side*.099,.495,0.),(side*.193,.565,.021),(side*.278,.637,.078))
+ return ((side*.19,.68,.005),(side*.30,.55,.035),(side*.33,.56,.18)) if species=='granbull' else ((side*.099,.495,0.),(side*.193,.565,.021),(side*.278,.637,.078))
 def joints(species):
  big=species=='granbull';left=arm_path(species,-1);right=arm_path(species,1)
  raw=[('root',None,(0.,0.,0.)),('torso',0,(0.,.399 if big else .286,-.012 if big else -.006)),
  ('head',1,(0.,.732 if big else .54,.015 if big else .001)),
- ('jaw',2,(0.,.696 if big else .640,.10 if big else .17)),
+ ('jaw',2,(0.,.75 if big else .640,.08 if big else .17)),
  ('arm_left',1,left[0]),('hand_left',4,left[-1]),('arm_right',1,right[0]),('hand_right',6,right[-1]),
  ('tail',1,(0.,.332 if big else .293,-.105))]
  for side in (-1,1):raw.append(('ear_'+('left' if side<0 else 'right'),2,(side*.18,1.015 if big else .891,.001)))
- for side in (-1,1):raw.append(('leg_'+('left' if side<0 else 'right'),0,(side*(.193 if big else .132),.209 if big else .124,-.005 if big else .009)))
+ for side in (-1,1):raw.append(('leg_'+('left' if side<0 else 'right'),0,(side*(.225 if big else .132),.18 if big else .124,-.015 if big else .009)))
  return tuple((name,parent,(0.,0.,0.) if parent is None else normalized(species,pivot)) for name,parent,pivot in raw)
 JOINTS={species:joints(species) for species in SPECIES}
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
@@ -57,14 +56,20 @@ def skin_weights(species,part,position):
  if part.startswith(('Arm /','Hand /','Hand fold /','Wrist /')):
   side=int(part.split()[-2] if part.startswith('Hand fold /') else part.split()[-1]);base=4 if side<0 else 6
   if not part.startswith('Arm /'):return [base+1,0,0,0],[1.,0.,0.,0.]
-  t=path_fraction(raw,arm_path(species,side));a=smoothstep(0.,.35,t);b=smoothstep(.25,.75,t)
+  if big:
+   # A continuous chord field avoids nearest-segment switches across the
+   # inside of the bent elbow, which compressed neighboring skin edges.
+   path=arm_path(species,side);start,end=path[0],path[-1];delta=[b-a for a,b in zip(start,end)]
+   t=max(0.,min(1.,sum((p-a)*d for p,a,d in zip(raw,start,delta))/sum(d*d for d in delta)))
+  else:t=path_fraction(raw,arm_path(species,side))
+  a=smoothstep(0.,.35,t);b=smoothstep(.25,.75,t)
   return [1,base,base+1,0],[1.-a,a*(1.-b),a*b,0.]
  if part.startswith(('Ear /','Ear marking /')):return [9 if part.endswith('-1') else 10,0,0,0],[1.,0.,0.,0.]
  if part.startswith('Tail /'):return [8,0,0,0],[1.,0.,0.,0.]
  if part.startswith(('Body /','Neck /','Collar /','Spot /')):
   f=smoothstep(.67 if big else .50,.80 if big else .59,y)
   return [1,2,0,0],[1.-f,f,0.,0.]
- if part.startswith(('Jaw /','Tusk /')):return [3,0,0,0],[1.,0.,0.,0.]
+ if part.startswith(('Jaw /','Tusk /','Tongue /')):return [3,0,0,0],[1.,0.,0.,0.]
  return [2,0,0,0],[1.,0.,0.,0.]
 def pose_angles(species,clip,t):
  if species not in SPECIES or clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid bulldog clip/time')

@@ -12,7 +12,11 @@ fn cross(a: Vec2, b: Vec2) -> f32 {
 }
 pub(crate) fn section(rig: &PersonRig, y: f32, direction: Vec2) -> Option<Sample> {
     let center = Vec2::new(0.0, 0.05);
-    let mut closest = f32::INFINITY;
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    let outer = crate::garment_drape_trial::local_body();
+    #[cfg(not(all(feature = "people-review", not(target_arch = "wasm32"))))]
+    let outer = false;
+    let mut closest = if outer { 0. } else { f32::INFINITY };
     let mut result = None;
     for face in rig.mesh.indices.chunks_exact(3) {
         let ids = [face[0] as usize, face[1] as usize, face[2] as usize];
@@ -50,7 +54,8 @@ pub(crate) fn section(rig: &PersonRig, y: f32, direction: Vec2) -> Option<Sample
         let delta = hits[0].0 - center;
         let radius = cross(delta, segment) / denominator;
         let t = cross(delta, direction) / denominator;
-        if radius <= 0.0 || radius >= closest || !(-1e-5..=1.00001).contains(&t) {
+        if radius <= 0.0 || (if outer { radius <= closest } else { radius >= closest })
+            || !(-1e-5..=1.00001).contains(&t) {
             continue;
         }
         let t = t.clamp(0.0, 1.0);

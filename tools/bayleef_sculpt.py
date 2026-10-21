@@ -9,15 +9,15 @@ Coordinates are +Y up / +Z front. Neutral floor and full height are explicit.
 import math
 
 from chikorita_sculpt import (add, sub, mul, dot, cross, unit, mean, f32, linear,
-                              subdivide, front_at, mesh as _mesh)
+                              subdivide, front_at, gaze, mesh as _mesh)
 from skin_glb import COORDINATES
 
-PALETTE = {'body': (222/255,206/255,49/255), 'leaf': (90/255,132/255,16/255),
-           'ink': (.027,.035,.014), 'white': (1.,1.,.94)}
+PALETTE = {'body': (226/255,225/255,119/255), 'leaf': (92/255,139/255,55/255),
+           'ink': (.027,.035,.014), 'white': (1.,1.,.94), 'iris': (.73,.10,.22)}
 FULL_HEIGHT=1.15
 BODY_HEIGHT=.982
 BODY='Body / continuous haunch chest long neck muzzle and four legs'
-TAIL='Tail / short rising tapered curl'
+TAIL='Tail / thick rising tapered nub'
 STEM='Crown / fitted arched petiole'
 LEAF='Crown / asymmetric folded blade with deep edge notch'
 
@@ -121,11 +121,11 @@ def body_cage():
     count=16
     # y, z center, half width, half depth. The neck remains distinctly narrower
     # than the cheeks and haunch; the forward lower cheek creates a blunt muzzle.
-    profiles=((.112,-.060,.184,.254),(.274,-.047,.254,.333),
-              (.419,-.021,.241,.310),(.524,.097,.164,.205),
-              (.631,.183,.100,.114),(.750,.217,.109,.121),
-              (.804,.250,.154,.171),(.872,.254,.161,.179),
-              (.945,.225,.128,.123),(.992,.218,.043,.041))
+    profiles=((.112,-.075,.200,.280),(.274,-.080,.270,.380),
+              (.419,-.055,.260,.350),(.524,.120,.185,.200),
+              (.631,.210,.135,.140),(.750,.270,.130,.135),
+              (.804,.300,.175,.185),(.872,.310,.190,.180),
+              (.945,.270,.150,.140),(.992,.250,.060,.050))
     vertices=[(w*math.cos(math.tau*i/count),y,z+d*math.sin(math.tau*i/count))
               for y,z,w,d in profiles for i in range(count)]
     faces=[tuple(range(count-1,-1,-1)),tuple(range((len(profiles)-1)*count,len(profiles)*count))]
@@ -137,7 +137,7 @@ def body_cage():
     for h in holes:
         ids=(h,(h+1)%count,(h+2)%count,(h+2)%count+count,(h+1)%count+count,h+count)
         center=mean([vertices[i] for i in ids]);sx=1 if center[0]>0 else -1;sz=1 if center[2]>-.06 else -1
-        cx=sx*.178;cz=.205 if sz>0 else -.245
+        cx=sx*.198;cz=.230 if sz>0 else -.290
         direction=unit((center[0],0.,center[2]+.060));tangent=(-direction[2],0.,direction[0])
         if dot(sub(vertices[ids[2]],vertices[ids[0]]),tangent)<0:tangent=mul(tangent,-1)
         angles=[math.radians(a) for a in (210,270,330,30,90,150)];previous=ids
@@ -175,15 +175,15 @@ def neck_surface(y,angle,body):
 
 
 def collar_leaf(i,body):
-    # Alternating upward/sideways and drooping blades produce the source's
-    # uneven rolled ruff, instead of eight identical flat radial diamonds.
-    a=math.tau*(i+.5)/8;radial=(math.cos(a),0.,math.sin(a));u=(-math.sin(a),0.,math.cos(a))
+    # Broad folded leaves spread around the neck; the front pair hang down.
+    a=math.tau*(i+.5)/8;radial=(math.cos(a),0.,math.sin(a));roll=.45*math.cos(a)
+    u=(-math.sin(a)*math.cos(roll),math.sin(roll),math.cos(a)*math.cos(roll))
     center=neck_surface(.552+.010*math.cos(2*a),a,body)
-    lift=(.125,.038,-.060,.080,.120,.020,-.068,.062)[i]
-    length=(.168,.170,.161,.171,.155,.167,.153,.177)[i]
-    width=(.048,.051,.049,.050,.047,.051,.049,.050)[i]
+    lift=(.025,-.075,-.125,-.035,.025,.035,.040,.025)[i]
+    length=(.205,.230,.230,.205,.190,.200,.200,.190)[i]
+    width=(.075,.082,.085,.078,.071,.077,.077,.071)[i]
     path=[]
-    for travel,y,w,depth in ((0.,0.,.023,.014),(.28,.15,.84,.026),(.62,.43,1.,.030),(.91,.78,.65,.025),(1.04,1.15,.25,.013),(1.00,1.35,.025,.0015)):
+    for travel,y,w,depth in ((0.,0.,.023,.018),(.28,.15,.84,.038),(.62,.43,1.,.045),(.91,.78,.65,.034),(1.04,1.15,.25,.018),(1.00,1.35,.025,.0015)):
         p=add(center,add(mul(radial,travel*length),(0.,y*lift,0.)))
         path.append((p,w if travel==0. else w*width,depth))
     rings=[]
@@ -195,11 +195,11 @@ def collar_leaf(i,body):
 
 # left/right edge widths are independent. The re-entrant right edge at station
 # 6 is a true notch with closed sidewalls; it is never a painted-on dark mark.
-LEAF_PATH=((0.,1.006,.287,.015,.015),(.005,1.081,.246,.070,.058),
-           (.045,1.126,.134,.127,.110),(.095,1.138,-.001,.147,.130),
-           (.150,1.113,-.136,.135,.122),(.199,1.068,-.246,.101,.042),
-           (.232,1.037,-.314,.075,.005),(.257,1.025,-.369,.053,.093),
-           (.294,1.027,-.454,.012,.020),(.309,1.043,-.478,.001,.001))
+LEAF_PATH=((0.,1.006,.287,.015,.015),(.002,1.081,.246,.080,.073),
+           (.006,1.126,.134,.155,.145),(.012,1.138,-.001,.195,.185),
+           (.019,1.113,-.136,.185,.175),(.026,1.068,-.246,.140,.056),
+           (.030,1.037,-.314,.105,.005),(.033,1.025,-.369,.070,.125),
+           (.037,1.027,-.454,.017,.027),(.040,1.043,-.478,.001,.001))
 
 
 def leaf_mesh():
@@ -233,13 +233,9 @@ def sculpt():
     from sculpt_geometry import crease_normals
     body=body_cage();parts=[crease_normals(mesh(BODY,'body',*body),35.)]
     for side,label in ((-1,'left'),(1,'right')):
-        cx=side*.107;cy=.857
+        cx=side*.128;cy=.857
         eye=[(cx+side*x,cy+y) for x,y in ((-.022,-.041),(-.030,-.009),(-.026,.028),(-.010,.052),(.013,.050),(.028,.027),(.029,-.017),(.014,-.043))]
-        parts.append(face_patch('Eye / '+label+' fitted upright ink','ink',eye,body,.003))
-        crescent=[(cx+side*x,cy+y) for x,y in ((-.020,-.024),(-.023,.014),(-.010,.039),(.002,.040),(-.002,.018),(-.006,-.020))]
-        parts.append(face_patch('Eye / '+label+' pale crescent','white',crescent,body,.005))
-        highlight=[(cx+side*x,cy+y) for x,y in ((.008,.025),(.017,.025),(.017,.035),(.009,.035))]
-        parts.append(face_patch('Eye / '+label+' catchlight','white',highlight,body,.0054))
+        parts+=gaze(side,cx,cy,eye,body,face_patch)
     # A restrained mouth follows the broad lower muzzle. Two inset-looking
     # nostril facets echo the source's wedge muzzle without button geometry.
     line=((- .074,.801),(-.047,.789),(0.,.784),(.047,.789),(.074,.801))
@@ -249,16 +245,17 @@ def sculpt():
         outline=[(cx-.004,cy-.002),(cx+.005,cy-.002),(cx+.006,cy+.004),(cx-.003,cy+.005)]
         parts.append(face_patch('Muzzle / '+label+' nostril','ink',outline,body,.0027))
     parts += [collar_leaf(i,body) for i in range(8)]
-    for cx in (-.178,.178):
-        for cz in (.205,-.245):parts += [toe_claw(cx,cz,i) for i in range(3)]
-    parts.append(tube(TAIL,'body',[(0.,.336,-.313),(.007,.343,-.382),(.015,.385,-.454),(.020,.448,-.486),(.022,.465,-.475)],(.051,.044,.031,.014,.003),8))
+    for cx in (-.198,.198):
+        for cz in (.230,-.290):parts += [toe_claw(cx,cz,i) for i in range(3)]
+    parts.append(tube(TAIL,'body',[(0.,.340,-.360),(0.,.390,-.470),(0.,.460,-.590),(0.,.510,-.650)],(.085,.070,.040,.002),10))
     parts.append(tube(STEM,'leaf',[(0.,.962,.245),(0.,.994,.282),(.002,1.032,.278)],(.018,.017,.014),8))
     parts.append(leaf_mesh())
     # Axis points from trigonometric cage construction can retain platform-
-    # dependent residues around 1e-18. Snap only sub-femtometre positions,
-    # after topology construction, so the stored neutral bytes are portable.
+    # dependent residues around 1e-18. Normalize geometric zero after topology
+    # and shading, so Blender and ordinary Python serialize the same buffers.
     for part in parts:
         part['positions']=[0.0 if abs(v)<1e-15 else v for v in part['positions']]
+        part['normals']=[0.0 if abs(v)<1e-12 else v for v in part['normals']]
     return {'name':'bayleef','version':1,'coordinate_system':COORDINATES,'primitives':parts}
 
 

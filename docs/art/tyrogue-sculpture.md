@@ -1,54 +1,29 @@
 # Original Tyrogue sculpture and skin
 
-`tools/tyrogue_sculpt.py` authors the original small fighter;
-`tools/tyrogue_glb.py` exports and strictly reads its canonical standard GLB in
-`crates/crystal-voxel-view/models/battle_species/tyrogue.glb`. The duplicate
-static JSON is retired. No external model, rig or animation is imported.
+The [October 20 volume and posture audit](ice-fighter-fidelity.md) records the
+current authentic game, front/back sprite, full-orbit and production evidence.
+`tools/tyrogue_sculpt.py` authors the original geometry;
+`tools/tyrogue_glb.py` exports and strictly reads the canonical standard GLB.
 
-A continuous three-pronged crown carries fitted angular eyes, dark pupils and
-a determined mouth. Side ears have fitted contours. The compact torso meets a
-short neck, white waist band and joined brown shorts. Bent arms end in white
-wrist wraps, open palms and three curved fingers. Slim legs support grounded
-brown shoes with fitted toe contours. The local pack normal palette supplies
-pink (189,123,148), brown (140,57,24), white and black. Pack height `204` sets a
-0.7112 m production scale; authoring height remains 0.86.
+Three short points rise from a rounded, deep skull with broad side ears,
+narrow fitted eyes and a small determined mouth. A compact torso meets a short
+neck, white waist band and full poofy brown shorts. Short bent legs support
+broad shoes with actual flat soles. The lower shins avoid the previous forward
+slope; toe projection belongs to the shoes. One hand guards beside the face,
+while the other is low and outward. Each has a white wrap and three digits.
 
-Nineteen parts preserve exact previous neutral f32 geometry: body, belt, shorts,
-shorts legs, arms, wrist wraps, all fingers, legs and shoes. Crown, iris/glint,
-ear contour and shoe contour sampling is reduced; neck, ears and palms use fewer
-radial samples. Facial layers regenerate against the actual crown triangles.
-The toe contours sit far enough forward to clear the shoe at triangle centers
-and edge midpoints. The resulting asset has 40 parts, 19,924 vertices, 33,424
-triangles, 195 accessors and 764,016 bytes. Neutral digest:
-`6f08d0c81d0c633e32fd55a565109a56759eeb7250212e0e4dfef93812dc71a2`.
+Twelve joints follow the revised anatomy. Arm blending follows each bent path;
+wraps, palms and fingers share their forearm owner. Head and fitted gaze stay
+coherent. Ears have rooted pivots; shoes and toe contours remain fixed in the
+source clips. Production walking articulates both complete supports.
 
-Twelve joints control torso, neck, head, ears, two stages of each bent arm and
-leg middles. The root fixes shoes and their toe contours. Body/neck weights
-retain contact; crown and fitted gaze share the head owner. Each wrist wrap,
-palm and three fingers share the corresponding forearm owner. The shorts and
-belt stay with the torso. Idle, attack and hit clips rotate joints with neutral
-endpoints; production battle cues control attack/hit timing.
+The asset has 40 parts, 13,839 vertices, 21,596 triangles, 211 accessors and
+589,984 bytes. Source geometry pin:
+`bc412960c3d91d605676e5016c943c63bb509b728b3e4b81a94699c8f0601bcd`.
+Authoring height stays 0.86; pack height `204` supplies 0.7112 m. The normal
+palette remains pink (189,123,148), brown (140,57,24), white and black.
 
-```sh
-blender -b -t 2 --python tools/build-battle-species.py -- /tmp/geothite-tyrogue --only TYROGUE
-python3 -m unittest discover -s tools -p test_tyrogue_glb.py
-python3 -m unittest discover -s tools -p test_tyrogue_sculpt.py
-```
-
-All ten final sculpture checks and seven skin checks pass. They cover closed
-outward geometry, normals, canonical bytes, budgets, parity, anatomy, actual
-neutral/posed root volumes, fitted vertices/face centers/edge clearance, fixed
-shoes, neutral endpoints, winding, strain and detached negative controls.
-Blender regenerates byte-identical data; final front/rear software views were
-inspected. Both focused Rust checks, the native build and normal paired review
-pass. Shiny checks are skipped at the user's request. These checks do not establish TUI
-or MCP gameplay.
-
-The matched normal native 3D/2D review against Sentret passes. Tyrogue's
-continuous crown, fitted gaze, wrist wraps and three-finger hands, joined shorts
-and planted shoes remain readable at the verified scale. Terrain is accepted;
-the paired receipt preserves core frame 2543, hash 3028213223, LCD frame 3253,
-time 59.500983002 and `state_preserved=true`. Front/rear software views cover
-surfaces concealed by the production profile. Shiny checks remain skipped.
-
-The wider catalog grounding and actual elapsed battle pose regressions pass.
+The 17 sculpture/skin checks and shared fidelity regressions verify stored
+volume, roots, fitting, winding, strain, supports, canonical bytes and strict
+budgets. See the audit for executed commands, native coverage and limitations.
+No external geometry is imported. Nothing is staged or committed.

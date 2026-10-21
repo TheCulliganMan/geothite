@@ -438,8 +438,9 @@ fn assert_pair_gpu(mut app: App) {
             assert!(matches!(mesh.attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT),
             Some(VertexAttributeValues::Float32x4(values)) if values == &skin.rig.joint_weights));
             let aabb = world.get::<Aabb>(actor.entity).unwrap();
-            assert!((Vec3::from(aabb.min()) - skin.rig.animated_bounds.0).length() < 0.000001);
-            assert!((Vec3::from(aabb.max()) - skin.rig.animated_bounds.1).length() < 0.000001);
+            let (min, max) = species_rig::motion::battle_bounds(skin.rig);
+            assert!((Vec3::from(aabb.min()) - min).length() < 0.000001);
+            assert!((Vec3::from(aabb.max()) - max).length() < 0.000001);
             let placement = world
                 .get::<GlobalTransform>(actor.entity)
                 .unwrap()
@@ -621,7 +622,7 @@ fn hoothoot_activates_generic_gpu_skinning_at_verified_pack_height() {
 
 #[test]
 fn sentret_activates_generic_gpu_skinning_at_verified_pack_height() {
-    assert_species_gpu_at_pack_size("SENTRET", Species::Sentret, 13, 0.7874);
+    assert_species_gpu_at_pack_size("SENTRET", Species::Sentret, 11, 0.7874);
 }
 
 #[test]
@@ -1389,6 +1390,39 @@ fn aerodactyl_skin_activates_gpu_at_source_size() {
 }
 
 #[test]
+fn battle_hover_bounds_cover_rendered_clips_and_aerodactyl_keeps_air_clearance() {
+    assert!(species_rig::motion::battle_hovers("AERODACTYL"));
+    assert!(species_rig::motion::battle_hovers("FEAROW"));
+    for species in Species::ALL {
+        let rig = species_rig::rig(species);
+        if !species_rig::motion::battle_hovers(species.name()) { continue; }
+        let (min, max) = species_rig::motion::battle_bounds(rig);
+        assert!(rig.neutral_bounds.0.cmpge(min).all() && rig.neutral_bounds.1.cmple(max).all());
+        let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+        let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+        let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+        for clip in Clip::ALL {
+            for step in 0..=32 {
+                rig.sample_into(clip, rig.clip(clip).duration * step as f32 / 32., Playback::Clamp, &mut pose).unwrap();
+                species_rig::motion::battle_float(rig, &mut pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let mut floor = f32::INFINITY;
+                for v in 0..rig.neutral.positions.len() {
+                    let p = rig.skin_point(v, &matrices);
+                    floor = floor.min(p.y);
+                    assert!(p.cmpge(min - Vec3::splat(0.00001)).all() && p.cmple(max + Vec3::splat(0.00001)).all(),
+                        "{} {clip:?} step {step} vertex {v} leaves hover bounds", species.name());
+                }
+                if matches!(species, Species::Aerodactyl | Species::Fearow) {
+                    assert!((floor - height * 0.16).abs() < 0.000001,
+                        "{} {clip:?} step {step} lost air clearance: {floor}", species.name());
+                }
+            }
+        }
+    }
+}
+
+#[test]
 fn nautilus_skin_activates_omanyte_gpu_at_source_size() { assert_species_gpu_at_pack_size("OMANYTE", Species::Omanyte, 15, 0.4064); }
 
 #[test]
@@ -1408,6 +1442,9 @@ fn fire_dragon_skin_activates_charizard_gpu_at_source_size() { assert_species_gp
 
 #[test]
 fn fire_badger_skin_activates_quilava_gpu_at_source_size() { assert_species_gpu_at_pack_size("QUILAVA", Species::Quilava, 13, 0.889); }
+
+#[test]
+fn fire_starter_skin_activates_cyndaquil_gpu_at_source_body_size() { assert_species_gpu_at_pack_size("CYNDAQUIL", Species::Cyndaquil, 12, 0.508); }
 
 #[test]
 fn fire_badger_skin_activates_typhlosion_gpu_at_source_size() { assert_species_gpu_at_pack_size("TYPHLOSION", Species::Typhlosion, 17, 1.7018); }

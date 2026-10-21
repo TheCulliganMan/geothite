@@ -124,10 +124,41 @@ fn exposed_torso(
         p[0] *= 1. + fade * width;
         p[2] += fade * (front * depth - back * back_depth);
     }
-    // Refine the shaped surface and rebuild welded geometric normals while
-    // preserving separate UV islands and interpolated skin influences.
+    // Refine the shaped surface, preserving separate UV islands and skin
+    // influences. Normals are finished after all appearance refinement.
     let selected = selection(mesh);
     crate::hand_surface::smooth_selection_joined(mesh, joints, weights, &selected);
+}
+
+/// Finish normals on the actual prepared surface after sleeve and arm
+/// refinement. Rebuilding before those steps leaves coarse interpolated
+/// normals on the new underarm triangles.
+pub(crate) fn finish_normals(mesh: &mut SurfaceMeshData, look: Look) {
+    if !matches!(look.texture_key, "bruno" | "chuck" | "swimmer_guy") { return; }
+    let key = |p: [f32;3]| p.map(|v| (v * 100_000.).round() as i32);
+    // Sculpting changed the pectoral/waist surface, so interpolated source
+    // shirt normals no longer describe it. Rebuild across geometric UV welds
+    // while keeping the neck, arms, hands and lower garment's normals intact.
+    use bevy::prelude::Vec3;
+    let mut normals = std::collections::HashMap::<[i32;3], Vec3>::new();
+    for face in mesh.indices.chunks_exact(3) {
+        let p = [face[0],face[1],face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+        let normal = (p[1]-p[0]).cross(p[2]-p[0]).normalize_or_zero();
+        for corner in 0..3 {
+            let a = (p[(corner+1)%3]-p[corner]).normalize_or_zero();
+            let b = (p[(corner+2)%3]-p[corner]).normalize_or_zero();
+            *normals.entry(key(p[corner].to_array())).or_default() +=
+                normal * a.dot(b).clamp(-1.,1.).acos();
+        }
+    }
+    for i in 0..mesh.positions.len() {
+        let p = mesh.positions[i];
+        let uv = mesh.uvs[i];
+        if p[0].abs() < 0.43 && (1.34..2.50).contains(&p[1])
+            && uv[0] > 0.87 && (0.27..=0.40).contains(&uv[1]) {
+            mesh.normals[i] = normals[&key(mesh.positions[i])].normalize_or_zero().to_array();
+        }
+    }
 }
 
 pub(crate) fn sculpt(

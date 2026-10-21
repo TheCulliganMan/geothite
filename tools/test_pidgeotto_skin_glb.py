@@ -10,18 +10,14 @@ ROOT=Path(os.environ['CRYSTAL_PIDGEOTTO_SKIN_TEST_MODELS']) if 'CRYSTAL_PIDGEOTT
 class PidgeottoSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
-  cls.blob=(ROOT/'pidgeotto.glb').read_bytes() if ROOT else author.export_pidgeotto_skin('pidgeotto');cls.m=Model(cls.blob);cls.original=author.original_model(author.authoring_model('pidgeotto'))
- def test_exact_original_neutral_anatomy_and_existing_budgets(self):
-  m=self.m;self.assertEqual(self.blob,author.export_pidgeotto_skin('pidgeotto'));self.assertEqual(len(m.parts),34);self.assertEqual(len(m.joints),14);self.assertEqual(sum(map(len,m.vertices)),6293);self.assertEqual(sum(len(i)//3 for i in m.indices),5776)
-  self.assertEqual(author.geometry_digest(self.original),author.ORIGINAL_REST_DIGEST)
-  for index,(expected,actual) in enumerate(zip(self.original['primitives'],m.neutral_model()['primitives'])):
+  cls.blob=(ROOT/'pidgeotto.glb').read_bytes() if ROOT else author.export_pidgeotto_skin('pidgeotto');cls.m=Model(cls.blob);cls.original=author.authoring_model('pidgeotto')
+ def test_exact_procedural_neutral_anatomy_and_existing_budgets(self):
+  m=self.m;self.assertEqual(self.blob,author.export_pidgeotto_skin('pidgeotto'));self.assertEqual(len(m.parts),34);self.assertEqual(len(m.joints),14)
+  self.assertEqual(author.geometry_digest(self.original),author.REST_DIGESTS['pidgeotto'])
+  for expected,actual in zip(self.original['primitives'],m.neutral_model()['primitives']):
    self.assertEqual(expected['part'],actual['part'])
-   for k,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):
-    self.assertEqual(author.packed(expected[k],c),author.packed(actual[k][:len(expected[k])],c))
-    if index not in (14,23) or k=='base_color':self.assertEqual(len(actual[k]),len(expected[k]))
-  for axis in range(3):
-   old=[v for p in self.original['primitives'] for v in p['positions'][axis::3]];new=[p[axis] for ps in m.vertices for p in ps];self.assertEqual((min(old),max(old)),(min(new),max(new)))
-  self.assertEqual(author.geometry_digest(m.neutral_model()),author.REST_DIGESTS['pidgeotto']);self.assertLessEqual(len(self.blob),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
+   for k,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):self.assertEqual(author.packed(expected[k],c),author.packed(actual[k],c))
+  self.assertEqual(author.geometry_digest(m.neutral_model()),author.REST_DIGESTS['pidgeotto']);self.assertLessEqual(len(self.blob),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256);self.assertLessEqual(sum(map(len,m.vertices)),20000);self.assertLessEqual(sum(len(i)//3 for i in m.indices),40000)
  def test_stored_components_are_closed_outward_with_real_shading(self):
   models={}
   for p in self.m.neutral_model()['primitives']:
@@ -30,18 +26,15 @@ class PidgeottoSkinTests(unittest.TestCase):
  def test_hierarchy_inverse_binds_and_used_controls(self):
   m=self.m;self.assertEqual(m.parents[:14],[None,0,1,1,3,1,5,0,0,1,9,9,9,2]);self.assertEqual({j for ids,ws in zip(m.ids,m.weights) for js,ww in zip(ids,ws) for j,w in zip(js,ww) if w},set(range(14)))
   for mat in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(mat,IDENTITY)),1e-7)
- def test_exact_existing_shoulder_pivots_and_idle_wing_keys(self):
-  import animated_glb as original
-  m=self.m;groups,pivots=original.pidgeotto_groups(self.original);times,tracks=original.pidgeotto_idle_samples();clip=m.doc['animations'][0]
-  self.assertEqual(clip['name'],'pidgeotto.idle')
-  for j,side,track in ((3,'l',tracks[0]),(5,'r',tracks[1])):
-   inverse=m.inverse[j];self.assertEqual([-inverse[i] for i in (12,13,14)],pivots[side]);channel=next(c for c in clip['channels'] if c['target']['node']==j);sampler=clip['samplers'][channel['sampler']]
-   self.assertEqual(struct.pack('<65f',*values(m.doc,m.binary,sampler['input'])),struct.pack('<65f',*times));self.assertEqual(struct.pack('<260f',*values(m.doc,m.binary,sampler['output'])),struct.pack('<260f',*track))
-   for t in (.125,.25,.5,.75,.875):
-    mats=m.matrices('idle',t);angle=(1 if side=='l' else -1)*.42*math.sin(math.tau*t);c=math.cos(angle);sn=math.sin(angle);px,py,pz=pivots[side]
-    for i in groups[side]:
-     for a,b in zip(m.vertices[i][:len(self.original['primitives'][i]['positions'])//3],m.posed(i,mats)):
-      expected=(px+c*(a[0]-px)-sn*(a[1]-py),py+sn*(a[0]-px)+c*(a[1]-py),a[2]);self.assertLess(math.dist(expected,b),1e-7)
+ def test_revised_anatomical_pivots_and_flat_idle_join(self):
+  m=self.m;clip=m.doc['animations'][0];self.assertEqual(clip['name'],'pidgeotto.idle')
+  for j,pivot in ((3,author.PIVOTS[0]),(5,author.PIVOTS[1])):
+   expected=struct.unpack('<3f',struct.pack('<3f',*pivot));self.assertEqual([-m.inverse[j][i] for i in (12,13,14)],list(expected))
+  duration=m.clips['idle'][0][1][-1]
+  for t in (.00001/duration,1.-.00001/duration):
+   mats=m.matrices('idle',t)
+   for i,vs in enumerate(m.vertices):
+    for a,b in zip(vs,m.posed(i,mats)):self.assertLess(max(abs(x-y) for x,y in zip(a,b)),.00001,(t,m.names[i],a,b))
  def test_coherent_head_eyes_beak_cheek_masks_and_planted_claws(self):
   m=self.m
   for i,n in enumerate(m.names):
@@ -87,9 +80,10 @@ class PidgeottoSkinTests(unittest.TestCase):
    for t in (0.,.18,.30,.55,.80):
     mats=m.matrices(clip,t);ps={n:dict(part=n,positions=sum(m.posed(i,mats),[]),normals=sum(m.posed(i,mats,True),[]),indices=m.indices[i],base_color=[1.,1.,1.,1.]) for i,n in enumerate(names)}
     for a,b in pairs:self.assertTrue(parts_overlap(ps[a],ps[b]),(clip,t,a,b))
-    for i in (14,23):
-     p=ps[names[i]];source=self.original['primitives'][i];n=len(source['positions'])//3;k=len(source['indices']);old=dict(p,positions=p['positions'][:3*n],normals=p['normals'][:3*n],indices=p['indices'][:k]);cover=dict(p,positions=p['positions'][3*n:],normals=p['normals'][3*n:],indices=[j-n for j in p['indices'][k:]])
-     self.assertTrue(parts_overlap(cover,ps['Bird body']),(clip,t,'rooted shoulder cover'));self.assertTrue(parts_overlap(cover,old),(clip,t,'cover reaches original wing'))
+    for n in ('Layered wing','Layered wing.001'):
+     pieces=components(ps[n]);self.assertEqual(len(pieces),2)
+     self.assertTrue(parts_overlap(pieces[0],ps['Bird body']),(clip,t,'rooted shoulder'))
+     self.assertTrue(parts_overlap(pieces[0],pieces[1]),(clip,t,'shoulder reaches folded cover'))
     for c in components(ps['Light breast']):
      if min(c['positions'][1::3])>.65:self.assertTrue(parts_overlap(c,ps['Bird head']),(clip,t,'cheek mask'))
  def test_detached_head_wing_and_tail_negative_controls_are_rejected(self):
@@ -98,7 +92,7 @@ class PidgeottoSkinTests(unittest.TestCase):
   ps={p['part']:p for p in self.m.neutral_model()['primitives']}
   for child in ('Bird head','Layered wing','Tail feather'):self.assertFalse(parts_overlap(translate(copy.deepcopy(ps[child]),3.,0.,0.),ps['Bird body']))
  def test_decode_is_canonical_and_malformed_bytes_are_rejected(self):
-  decoded=author.decode_pidgeotto_skin(self.blob);self.assertEqual(author.geometry_digest(decoded),author.REST_DIGESTS['pidgeotto']);self.assertEqual(author.geometry_digest(author.original_model(decoded)),author.ORIGINAL_REST_DIGEST);self.assertEqual(author.export_pidgeotto_skin('pidgeotto',decoded),self.blob)
+  decoded=author.decode_pidgeotto_skin(self.blob);self.assertEqual(author.geometry_digest(decoded),author.REST_DIGESTS['pidgeotto']);self.assertEqual(author.export_pidgeotto_skin('pidgeotto',decoded),self.blob)
   model=copy.deepcopy(self.original);model['primitives'][0]['positions'][0]+=.001
   with self.assertRaises(ValueError):author.export_pidgeotto_skin('pidgeotto',model)
   changed=bytearray(self.blob);changed[-8]^=1

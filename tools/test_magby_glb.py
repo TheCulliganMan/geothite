@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 """Decoded Magby skin preserves open bill, fitted layers and planted claw supports."""
-import math,unittest
+import math,os,unittest
 from pathlib import Path
 import magby_glb as author
 import test_gengar_glb as skin
 import test_donphan_sculpt as joins
 from skin_glb_test_support import IDENTITY
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/magby.glb'
+from sculpt_test_support import indexed_ray_intersections as rays
+ROOT=Path(os.environ.get('CRYSTAL_MAGBY_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))/'magby.glb'
 class MagbySkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.blob=ROOT.read_bytes();cls.m=skin.Model(cls.blob)
  def test_canonical_anatomy_bind_and_budgets(self):
   m=self.m;self.assertEqual(self.blob,author.export_magby(author.decode_magby(self.blob)))
-  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(38,19764,35032,11))
+  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(40,12864,22336,11))
   self.assertLess(len(self.blob),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
   for matrix in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(matrix,IDENTITY)),1e-7)
  def test_local_normal_palette(self):
@@ -57,10 +58,10 @@ class MagbySkinTests(unittest.TestCase):
   for p,n in enumerate(m.names):
    if n.startswith('Crown lobe /'):pairs.append((p,head))
    elif n.startswith(('Arm /','Leg /')):pairs.append((p,body))
-   elif n.startswith('Hand /'):pairs.append((p,find('Arm / rooted raised red live-coal limb '+n.split()[-1])))
+   elif n.startswith('Hand /'):pairs.append((p,find('Arm / rooted low red live-coal limb '+n.split()[-1])))
    elif n.startswith('Hand claw /'):pairs.append((p,find('Hand / rooted red live-coal claw junction '+n.split()[-2])))
    elif n.startswith('Foot /'):pairs.append((p,find('Leg / rooted red live-coal shin '+n.split()[-1])))
-   elif n.startswith('Toe claw /'):pairs.append((p,find('Foot / grounded small red live-coal support '+n.split()[-2])))
+   elif n.startswith('Toe claw /'):pairs.append((p,find('Foot / grounded broad red live-coal support '+n.split()[-2])))
   for clip in m.clips:
    for t in (0.,.18,.55):
     mats=m.matrices(clip,t)
@@ -69,4 +70,18 @@ class MagbySkinTests(unittest.TestCase):
      self.assertTrue(joins.DonphanTests.overlap(self,part(a),part(b)),(clip,t,m.names[a],m.names[b]))
  def test_noncanonical_data_rejected(self):
   with self.assertRaises(ValueError):author.decode_magby(self.blob[:-1])
+ def test_bill_aperture_stays_clear_in_its_moving_head_with_occupied_backing(self):
+  m=self.m;parts=m.neutral_model()['primitives'];bill=next(i for i,n in enumerate(m.names) if n.startswith('Bill /'));back=next(i for i,n in enumerate(m.names) if n.startswith('Mouth back /'))
+  front=max(p[2] for p in m.vertices[bill]);lip=[p for p in m.vertices[bill] if abs(p[2]-front)<1e-7];y=sum(p[1] for p in lip)/len(lip)
+  for clip in m.clips:
+   for t in (0.,.18,.31,.55,.80):
+    mats=m.matrices(clip,t);matrix=mats[3]
+    def local(q):
+     q=[q[k]-matrix[12+k] for k in range(3)];return [sum(matrix[k*4+j]*q[j] for j in range(3)) for k in range(3)]
+    posed=[dict(p,positions=sum((local(q) for q in m.posed(i,mats)),[])) for i,p in enumerate(parts)]
+    for dx,dy in ((0.,0.),(.005,0.),(-.005,0.),(0.,.004),(0.,-.004)):
+     tissue=sorted(set(rays(posed[back],dx,y+dy)));self.assertTrue(tissue);rear=tissue[-1];self.assertGreater(front-rear,.025)
+     z=rear+.65*(front-rear)
+     for p in posed:
+      hits=sorted(set(rays(p,dx,y+dy)));self.assertFalse(any(a+.0001<z<b-.0001 for a,b in zip(hits[::2],hits[1::2])),(clip,t,p['part']))
 if __name__=='__main__':unittest.main()

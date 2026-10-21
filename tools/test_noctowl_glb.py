@@ -18,7 +18,7 @@ class NoctowlSkinTests(geometry_checks.NoctowlSculptTests):
         self.assertEqual(self.blob,author.export_noctowl())
         self.assertEqual(author.geometry_digest(self.model),author.REST_DIGESTS['noctowl'])
         self.assertEqual(len(self.m.parts),52)
-        self.assertEqual(sum(map(len,self.m.vertices)),14815)
+        self.assertEqual(sum(map(len,self.m.vertices)),7706)
         self.assertEqual(len(self.m.joints),14)
         self.assertLess(len(self.blob),1024*1024)
         self.assertLessEqual(len(self.m.doc['accessors']),256)
@@ -34,6 +34,7 @@ class NoctowlSkinTests(geometry_checks.NoctowlSculptTests):
             if name.startswith(('Wing /','Flight feather /')):
                 owner=7 if name.split()[-1]=='-1' or ' -1 ' in name else 8
                 self.assertTrue(all(ids==[owner,0,0,0] for ids in m.ids[p]))
+            if name.startswith(('Eye mask /','Eye ring /','Eye /','Iris /','Pupil /','Glint /','Beak /','Mouth /','Brow /')):self.assertTrue(all(ids==[4,0,0,0] for ids in m.ids[p]))
             for ids,ws in zip(m.ids[p],m.weights[p]):
                 self.assertTrue(all(i<14 for i in ids))
                 self.assertAlmostEqual(sum(ws),1.,places=7)

@@ -25,12 +25,20 @@ pub(crate) fn adventure_profile(
     }
     if !lo.is_finite() || !hi.is_finite() { return; }
     let height = hi.y - lo.y;
+    let half=(hi-lo)*0.5;
     for _ in 0..2 {
         let selected = mesh.positions.iter().zip(ids.iter()).zip(weights.iter())
             .map(|((p, j), w)| is_head(j, w)
                 && p[1] > lo.y + height * 0.05
                 && p[1] < hi.y - height * 0.08)
             .collect::<Vec<_>>();
+        let needs_detail=mesh.indices.chunks_exact(3).any(|face| {
+            let i=[face[0]as usize,face[1]as usize,face[2]as usize];
+            if i.iter().any(|&i|!selected[i]) {return false;}
+            let p=i.map(|i|Vec3::from_array(mesh.positions[i])/half);
+            [(0,1),(1,2),(2,0)].iter().any(|&(a,b)|p[a].distance(p[b])>0.32)
+        });
+        if !needs_detail {break;}
         crate::hand_surface::smooth_selection(mesh, ids, weights, &selected);
     }
     let center = (lo + hi) * 0.5;

@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 """Decoded Hitmonchan skin: fixed boots, fitted crown and coherent boxing gloves."""
-import math,unittest
+import math,os,unittest
 from pathlib import Path
 import hitmonchan_glb as author
 import test_gengar_glb as skin
 import test_donphan_sculpt as joins
 from skin_glb_test_support import IDENTITY
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/hitmonchan.glb'
+ROOT=Path(os.environ.get('CRYSTAL_HITMONCHAN_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))/'hitmonchan.glb'
 class HitmonchanSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.blob=ROOT.read_bytes();cls.m=skin.Model(cls.blob)
  def test_canonical_anatomy_bind_and_budgets(self):
   m=self.m;self.assertEqual(self.blob,author.export_hitmonchan(author.decode_hitmonchan(self.blob)))
-  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(36,18362,30096,12))
+  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(34,10981,16084,12))
   self.assertLess(len(self.blob),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
   for matrix in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(matrix,IDENTITY)),1e-7)
  def test_local_normal_palette(self):
   m=self.m
   for p,n in enumerate(m.names):
-   rgb=(0,0,0) if n.startswith(('Eye socket /','Pupil /','Mouth /','Belt /','Boot seam /','Glove seam /')) else (255,255,255) if n.startswith(('Eye /','Glint /')) else (222,24,148) if n.startswith(('Tunic /','Skirt /','Boot /','Boot cuff /','Glove')) else (173,123,99)
+   rgb=(0,0,0) if n.startswith(('Eye socket /','Iris /','Pupil /','Mouth /','Belt /','Glove seam /')) else (255,255,255) if n.startswith(('Eye /','Glint /')) else (222,24,148) if n.startswith(('Tunic /','Skirt /','Boot /','Boot cuff /','Boot seam /','Glove')) else (173,123,99)
    color=m.doc['materials'][m.parts[p]['material']]['pbrMetallicRoughness']['baseColorFactor']
    for v,a in zip(rgb,color):
     x=v/255;expected=x/12.92 if x<=.04045 else ((x+.055)/1.055)**2.4;self.assertAlmostEqual(a,expected,places=7)
@@ -61,8 +61,8 @@ class HitmonchanSkinTests(unittest.TestCase):
   body=find('Tunic /');head=find('Head /');neck=find('Neck /');skirt=find('Skirt /');belt=find('Belt /')
   pairs=[(neck,body),(head,neck),(skirt,body),(belt,body),(belt,skirt)]
   for side in ('-1','1'):
-   shoulder=find('Shoulder guard / rooted pointed tan boxing armor '+side);arm=find('Arm / rooted bent tan boxing forelimb '+side);cuff=find('Glove cuff / rooted dark red wrist collar '+side);glove=find('Glove / rounded red padded boxing mitt '+side);leg=find('Leg / rooted long tan boxing support '+side);boot=find('Boot / grounded rounded lavender boxing shoe '+side);ankle=find('Boot cuff / rooted lavender ankle collar '+side)
-   pairs += [(shoulder,body),(arm,shoulder),(arm,body),(cuff,arm),(glove,cuff),(find('Glove thumb / rooted red inner thumb '+side),glove),(leg,skirt),(boot,leg),(ankle,leg),(ankle,boot)]
+   shoulder=find('Shoulder guard / rooted pointed tan boxing armor '+side);arm=find('Arm / rooted bent tan boxing forelimb '+side);cuff=find('Glove cuff / rooted dark red wrist collar '+side);glove=find('Glove / rounded padded boxing mitt '+side);leg=find('Leg / rooted long tan boxing support '+side);boot=find('Boot / grounded broad lavender boxing shoe '+side);ankle=find('Boot cuff / rooted lavender ankle collar '+side)
+   pairs += [(shoulder,body),(arm,shoulder),(arm,body),(cuff,arm),(glove,cuff),(find('Glove thumb / rooted curled boxing fold '+side),glove),(leg,body),(boot,leg),(ankle,leg),(ankle,boot)]
   for clip in m.clips:
    for t in (0.,.18,.55):
     mats=m.matrices(clip,t)

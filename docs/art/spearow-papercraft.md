@@ -2,19 +2,22 @@
 
 Spearow now has one canonical asset at
 `crates/crystal-voxel-view/models/battle_species/spearow.glb`. Its editable source
-is the deterministic standard-library recipe `tools/spearow_glb.py`; there is no
+is the deterministic standard-library recipe `tools/spearow_sculpt.py`, exported
+by `tools/spearow_glb.py`; there is no
 parallel neutral JSON or new Blender geometry source.
 
-The sculpture follows the Crystal battle silhouette: a tapered chestnut head,
+The [2026-10-21 fidelity revision](spearow-fearow-fidelity.md) follows the
+Crystal battle silhouette: a tapered warm ochre head,
 swept brown crown and cheek points, a short pink wedge beak, small slanted ivory
-eyes, a ragged throat edge, broad coral wings with cream upper patches, short
+eyes, a ragged throat edge, rooted coral wings with white distal flight ends, short
 brown tail feathers, and planted pink toes. The body uses a shaped loft with
 smooth normals; the crown, coverts, flight feathers and tail have intentional
 solid paper folds. Eye surfaces follow the head loft instead of floating flat
 panels. Overlapping flight-feather layers share their anatomical hinge.
 
-The neutral model has 2,139 vertices, 1,929 triangles, 28 named anatomy parts and
-10 joints. Its bounds are `(-0.368, 0, -0.425)` to `(0.368, 0.75, 0.425)`. The
+The neutral model has 3,703 vertices, 2,848 triangles, 28 named anatomy parts and
+10 joints. Its bounds are `(-0.2993245, 0, -0.4881474)` to
+`(0.2993245, 0.75, 0.3335007)`. The
 original 0.75 authored height remains the full Y reference span. Runtime physical
 size continues to come from the loaded content pack and the shared meter scale.
 No per-species readability multiplier is introduced.

@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
-"""Canonical full-body Pidgeotto skin preserving every original neutral anatomy bit.
-
-The existing canonical asset remains the geometry source; no geometry sidecar is
-introduced. Both production frontends use this canonical standard skin.
-"""
-import copy,hashlib,json,math,struct
+"""Canonical original Pidgeotto sculpture and full-body standard skin."""
+import hashlib,json,math,struct
 from functools import lru_cache
 from pathlib import Path
 from skin_glb import Glb,COORDINATES,packed,quantized_weights,quaternion_xyz,envelope,smoothstep
@@ -15,45 +11,32 @@ def geometry_digest(model):
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
 @lru_cache(maxsize=1)
+def authoring_bundle():
+ from pidgeotto_sculpt import sculpture
+ return sculpture(with_transform=True)
 def authoring_model(s):
  if s!='pidgeotto':raise ValueError('unknown Pidgeotto skin')
- from pidgeotto_glb import read_pidgeotto
- return read_pidgeotto(Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/pidgeotto.glb')
-PARTS={'pidgeotto':('Bird body', 'Light breast', 'Bird head', 'Eye sclera.004', 'Eye iris.004', 'Eye catchlight.004', 'Eye sclera.005', 'Eye iris.005', 'Eye catchlight.005', 'Beak', 'Bird shin', 'Toe', 'Toe.001', 'Toe.002', 'Layered wing', 'Flight feather', 'Flight feather.001', 'Flight feather.002', 'Flight feather.003', 'Bird shin.001', 'Toe.003', 'Toe.004', 'Toe.005', 'Layered wing.001', 'Flight feather.004', 'Flight feather.005', 'Flight feather.006', 'Flight feather.007', 'Tail feather', 'Tail feather.001', 'Tail feather.002', 'Head crest', 'Head crest.001', 'Head crest.002')}
-ORIGINAL_REST_DIGEST='68043320a306517c7d21bd8135a91bfbfec38a9426ad1beebe5df73d32f7bf56'
-REST_DIGESTS={'pidgeotto':'a9a41d37c7ee99cc44e3be2513069b47edd87bbb73c47abc5e5bf02890f10650'}
+ return authoring_bundle()[0]
 
-def original_model(model):
- digest=geometry_digest(model)
- if digest==ORIGINAL_REST_DIGEST:return model
- if digest!=REST_DIGESTS['pidgeotto']:raise ValueError('unreviewed Pidgeotto skin anatomy')
- m=copy.deepcopy(model)
- for i in (14,23):
-  p=m['primitives'][i];end=next(j for j,v in enumerate(p['indices']) if v>=438)
-  p['positions']=p['positions'][:438*3];p['normals']=p['normals'][:438*3];p['indices']=p['indices'][:end]
- if geometry_digest(m)!=ORIGINAL_REST_DIGEST:raise ValueError('Pidgeotto original anatomy prefix changed')
- return m
+PARTS={'pidgeotto':('Bird body', 'Light breast', 'Bird head', 'Eye sclera.004', 'Eye iris.004', 'Eye catchlight.004', 'Eye sclera.005', 'Eye iris.005', 'Eye catchlight.005', 'Beak', 'Bird shin', 'Toe', 'Toe.001', 'Toe.002', 'Layered wing', 'Flight feather', 'Flight feather.001', 'Flight feather.002', 'Flight feather.003', 'Bird shin.001', 'Toe.003', 'Toe.004', 'Toe.005', 'Layered wing.001', 'Flight feather.004', 'Flight feather.005', 'Flight feather.006', 'Flight feather.007', 'Tail feather', 'Tail feather.001', 'Tail feather.002', 'Head crest', 'Head crest.001', 'Head crest.002')}
+REST_DIGESTS={'pidgeotto':'49c12b14c5250c0b106ea983d6d9239166200e27a9f444d3bf7e43cebe2abcf1'}
+
 def prepare_model(model):
- digest=geometry_digest(model)
- if digest==REST_DIGESTS['pidgeotto']:return model
- if digest!=ORIGINAL_REST_DIGEST:raise ValueError('unreviewed original Pidgeotto anatomy')
- from bovine_sculpt import curved_tube
- m=copy.deepcopy(model)
- for i,side in ((14,-1),(23,1)):
-  p=m['primitives'][i];q=curved_tube('Rooted shoulder cover',(.64,.43,.25),[(side*.105,.627,.155),(side*.165,.637,.155),(side*.235,.663,.150)],[.046,.042,.030],16)
-  start=len(p['positions'])//3;p['positions']+=q['positions'];p['normals']+=q['normals'];p['indices']+=[j+start for j in q['indices']]
- return m
-def shoulder_points(model):
- return {i:{struct.unpack('<3f',packed(p['positions'][j:j+3])) for j in range(438*3,len(p['positions']),3)} for i,p in enumerate(model['primitives']) if i in (14,23)}
-PIVOTS=((-0.15579399466514587,0.634859025478363,0.15481999516487122),(0.15579399466514587,0.634859025478363,0.15481999516487122))
-JOINTS={'pidgeotto':(
- ('root',None,(0.,0.,0.)),('body',0,(0.,.35,.16)),('head',1,(0.,.69,.28)),
- ('wing_left',1,PIVOTS[0]),('wrist_left',3,(-.53,.72,.14)),
- ('wing_right',1,PIVOTS[1]),('wrist_right',5,(.53,.72,.14)),
- ('leg_left',0,(-.112,.11,.24)),('leg_right',0,(.112,.11,.24)),
- ('tail_base',1,(0.,.28,.04)),('tail_outer',9,(0.,.20,-.20)),
- ('tail_middle',9,(0.,.20,-.20)),('tail_center',9,(0.,.20,-.20)),
- ('crest',2,(0.,.86,.33)))}
+ if geometry_digest(model)!=REST_DIGESTS['pidgeotto']:raise ValueError('unreviewed Pidgeotto anatomy')
+ return model
+
+def normalized(p):
+ lo,k=authoring_bundle()[1]
+ return tuple((v-(lo if i==1 else 0.))*k for i,v in enumerate(p))
+PIVOTS=(normalized((-.168,.491,-.038)),normalized((.168,.491,-.038)))
+JOINTS={'pidgeotto':tuple((n,parent,(0.,0.,0.) if parent is None else normalized(p)) for n,parent,p in (
+ ('root',None,(0.,0.,0.)),('body',0,(0.,.35,-.04)),('head',1,(0.,.63,.076)),
+ ('wing_left',1,(-.168,.491,-.038)),('wrist_left',3,(-.244,.429,-.13)),
+ ('wing_right',1,(.168,.491,-.038)),('wrist_right',5,(.244,.429,-.13)),
+ ('leg_left',0,(-.112,.116,-.004)),('leg_right',0,(.112,.116,-.004)),
+ ('tail_base',1,(0.,.262,-.225)),('tail_outer',9,(0.,.352,-.410)),
+ ('tail_middle',9,(0.,.352,-.410)),('tail_center',9,(0.,.352,-.410)),
+ ('crest',2,(0.,.772,.148))))}
 CLIPS=(('idle',.8,65),('attack',1.,65),('hit',1.,65))
 def rigid(j):return [j,0,0,0],[1.,0.,0.,0.]
 def face_mask_points(model):
@@ -62,35 +45,39 @@ def face_mask_points(model):
  for p in model['primitives']:
   if p['part']!='Light breast':continue
   for c in components(p):
-   if min(c['positions'][1::3])>.65:
+   if min(c['positions'][1::3])>normalized((0.,.55,0.))[1]:
     masks.update(struct.unpack('<3f',packed(c['positions'][i:i+3])) for i in range(0,len(c['positions']),3))
  return masks
+def shoulder_points(model):
+ from pidgeotto_contours import components
+ return {i:{struct.unpack('<3f',packed(p['positions'][j:j+3])) for p in components(model['primitives'][i])[:1] for j in range(0,len(p['positions']),3)} for i in (14,23)}
 def skin_weights(s,n,p,mask_points,shoulders):
- x,y,z=p
+ lo,k=authoring_bundle()[1];x,y,z=p[0]/k,p[1]/k+lo,p[2]/k
  if n.startswith('Toe'):return rigid(0)
  if n=='Bird body':return rigid(1)
  if n=='Light breast':return rigid(2 if tuple(p) in mask_points else 1)
  if n=='Bird head' or n.startswith('Eye ') or n=='Beak':return rigid(2)
  if n.startswith(('Layered wing','Flight feather')):
   base=3 if x<0 else 5
-  if n.startswith('Layered wing') and tuple(p) in shoulders[14 if x<0 else 23]:
-   w=smoothstep(.055,.27,abs(x));return [1,base,0,0],[1.-w,w,0.,0.]
-  w=smoothstep(.36,.84,abs(x));return [base,base+1,0,0],[1.-w,w,0.,0.]
+  if n.startswith('Layered wing'):
+   return rigid(1 if tuple(p) in shoulders[14 if x<0 else 23] else base)
+  w=smoothstep(.12,.37,-z);return [base,base+1,0,0],[1.-w,w,0.,0.]
  if n.startswith('Bird shin'):
-  a=smoothstep(.07,.22,y);bend=.38*smoothstep(.065,.10,y)*(1.-smoothstep(.15,.235,y));return [0,1,7 if x<0 else 8,0],[(1.-a)*(1.-bend),a*(1.-bend),bend,0.]
+  # Authored digits stay fixed even though they share the pink shank material.
+  a=smoothstep(.055,.205,y);bend=.32*smoothstep(.06,.11,y)*(1.-smoothstep(.14,.22,y));return [0,1,7 if x<0 else 8,0],[(1.-a)*(1.-bend),a*(1.-bend),bend,0.]
  if n.startswith('Tail feather'):
-  tip=10 if n=='Tail feather' else 11 if n.endswith('.001') else 12;a=1.-smoothstep(-.07,.035,z);b=1.-smoothstep(-.38,-.13,z);return [1,9,tip,0],[1.-a,a*(1.-b),a*b,0.]
+  tip=10 if n=='Tail feather' else 11 if n.endswith('.001') else 12;a=1.-smoothstep(-.32,-.19,z);b=1.-smoothstep(-.58,-.37,z);return [1,9,tip,0],[1.-a,a*(1.-b),a*b,0.]
  if n.startswith('Head crest'):
-  w=1.-smoothstep(-.03,.31,z);return [2,13,0,0],[1.-w,w,0.,0.]
+  w=1.-smoothstep(-.12,.14,z);return [2,13,0,0],[1.-w,w,0.,0.]
  raise ValueError('unowned Pidgeotto anatomy '+n)
 def pose_angles(s,clip,t):
  if s!='pidgeotto' or clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid Pidgeotto cue/time')
  if t in (0.,1.):return [(0.,0.,0.)]*14
- a=math.sin(math.tau*t)
- if clip=='idle':e=0.;flap=.42*a;head=.008*a;tail=.012*a;wrist=0.
+ a=math.sin(math.tau*t)*(1.-math.cos(math.tau*t))*.769800358919501
+ if clip=='idle':e=0.;flap=.025*a;head=.008*a;tail=.012*a;wrist=0.
  else:
   e=envelope(t,((0.,0.),(.18,1.),(.41,.65),(.69,.08),(1.,0.)))
-  flap=.42*a+.10*e if clip=='attack' else -.15*e
+  flap=.045*a+.10*e if clip=='attack' else -.15*e
   head=-.024*e if clip=='attack' else .028*e;tail=.030*e if clip=='attack' else -.020*e;wrist=.040*e if clip=='attack' else -.020*e
  return [(0.,0.,0.),(.009*e,0.,0.),(head,.010*a,0.),
          (0.,0.,flap),(.020*e,0.,wrist),(0.,0.,-flap),(.020*e,0.,-wrist),
@@ -120,13 +107,14 @@ def export_pidgeotto_skin(species, model=None):
         key = (packed(values,component),kind,component,target,normalized)
         if key not in shared:shared[key] = g.accessor(values,kind,component,target,normalized=normalized)
         return shared[key]
+    mask_points=face_mask_points(model);shoulders=shoulder_points(model)
     for p,meta in parts:
         color = tuple(p['base_color'])
         if color not in colors:
             colors[color] = len(colors)
             g.doc['materials'].append({'name':species+'/paper_'+str(colors[color]),'alphaMode':'OPAQUE',
                 'pbrMetallicRoughness':{'baseColorFactor':list(color),'metallicFactor':0.,'roughnessFactor':1.}})
-        ids = [];weights = [];mask_points = face_mask_points(model);shoulders = shoulder_points(model)
+        ids = [];weights = []
         for source in meta.get('source_parts',[dict(part=p['part'],vertex_start=0,vertex_count=len(p['positions'])//3)]):
             for i in range(source['vertex_start']*3,(source['vertex_start']+source['vertex_count'])*3,3):
                 point = struct.unpack('<3f',packed(p['positions'][i:i+3]));jj,ww = skin_weights(species,source['part'],point,mask_points,shoulders);ww = quantized_weights(ww)
@@ -147,8 +135,8 @@ def export_pidgeotto_skin(species, model=None):
     g.doc['extras'] = {'coordinate_system':COORDINATES,'source_name':species,'source_sha256':REST_DIGESTS[species],
         'source_part_ranges':[meta for p,meta in parts],'packed_sha256':geometry_digest({'primitives':[p for p,meta in parts]}),
         'reference_span':HEIGHTS[species],'body_reference_height':HEIGHTS[species],'full_silhouette_height':HEIGHTS[species],
-        'geometry_source':'tools/build-battle-species.py:papercraft_pidgeotto + tools/pidgeotto_contours.py + tools/pidgeotto_skin_glb.py:prepare_model','geometry_preservation':'exact source f32 anatomy, normals, colours and triangle order',
-        'animation_contract':'rotation-only idle/attack/hit source cues; exact original shoulder pivots and 0.8-second idle wing loop; coherent head and cheek masks; articulated wrists, swept crest and three tail layers; fixed claws and blended supports'}
+        'geometry_source':'tools/pidgeotto_sculpt.py:sculpture','geometry_preservation':'exact source f32 anatomy, normals, colours and triangle order',
+        'animation_contract':'rotation-only idle/attack/hit source cues; anatomical folded-wing pivots and flat-ended 0.8-second standing idle; coherent head and cheek masks; articulated wrists, swept crest and three tail layers; fixed claws and blended supports'}
     blob = g.bytes()
     if (len(g.doc['accessors'])>256 or len(parts)>64 or len(js)>64 or len(blob)>1024*1024
         or sum(len(p['positions'])//3 for p,meta in parts)>20000 or sum(len(p['indices'])//3 for p,meta in parts)>40000):

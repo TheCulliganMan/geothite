@@ -4,6 +4,13 @@ use super::*;
 
 const LABEL: &str = "outdoor/entry-cloth";
 fn local(s: &VisualTileSource) -> Option<[usize;2]> {
+    if s.tileset_id.as_ref()=="park" && s.tile_index==0x4f && s.subtile_column<4 && s.subtile_row<4 {
+        match s.metatile_id {
+            0x0a if s.subtile_row>=2 => return Some([s.subtile_column as usize,(s.subtile_row-2)as usize]),
+            0x0b if s.subtile_column>=2 => return Some([(s.subtile_column-2)as usize,s.subtile_row as usize]),
+            _=>{},
+        }
+    }
     if s.tileset_id.as_ref()=="kanto" && s.tile_index==0x4f && (2..4).contains(&s.subtile_row) {
         match (s.metatile_id,s.subtile_column) {
             (0x46,2..=3)=>return Some([(s.subtile_column-2)as usize,(s.subtile_row-2)as usize]),
@@ -146,6 +153,11 @@ pub(super) fn finish(mesh:&mut TerrainMeshData,cells:&[&VisualTile],g:&GridGeome
         if s.subtile_column!=0 || s.subtile_row!=0 {continue;}
         let (dx,dy,width,height)=if s.tileset_id.as_ref()=="johto" && s.metatile_id==0x0c
             && complete(cells,g,x,y) {(2,2,4,2)}
+            else if s.tileset_id.as_ref()=="park" {
+                let Some([dx,dy,width,height])=super::modeled_exteriors::park_gate::threshold(cells,g,x,y)
+                    else {continue;};
+                (dx,dy,width,height)
+            }
             else if s.tileset_id.as_ref()=="kanto" && s.metatile_id==0x46
                 && kanto_cave_approach(cells,g,x,y) {(2,2,4,2)}
             else if s.tileset_id.as_ref()=="kanto" && s.metatile_id==0x04

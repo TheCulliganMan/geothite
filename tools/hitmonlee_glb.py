@@ -2,7 +2,7 @@
 """Canonical Hitmonlee skin with a planted support foot, continuous coils and an articulated kick."""
 import argparse,hashlib,json,math,struct
 from pathlib import Path
-from hitmonlee_sculpt import sculpture,HEIGHT
+from hitmonlee_sculpt import sculpture,HEIGHT,arm_path
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 MAX_BYTES=1024*1024
 SOURCE=sculpture();RAW=sculpture(normalize=False)
@@ -14,13 +14,13 @@ def geometry_digest(model):
  for p in model['primitives']:
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
-REST_DIGEST='ac4facbaf5bc5ea34f73342afaa5bc98e8ffa962e8704c7c7d34da37f8ffd0ac'
+REST_DIGEST='ac905c2ea1ed344c5428f270e3ca7237dc8e3d4554d47166b5082b9b46861d54'
 def pivot(p):return tuple((v-(LOW if i==1 else 0.))*SCALE for i,v in enumerate(p))
 BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.85,-.014)),
- ('kick_hip',0,(-.085,.654,-.013)),('kick_knee',2,(-.213,.313,.077)),
- ('support_leg',0,(.213,.313,.077)),('upper_body',1,(0.,1.05,-.01)),
- ('arm_left',5,(-.208,1.067,.006)),('wrist_left',6,(-.411,.942,.094)),
- ('arm_right',5,(.208,1.067,.006)),('wrist_right',8,(.411,.942,.094)))
+ ('kick_hip',0,(-.139,.671,.014)),('kick_knee',2,(-.237,.319,.020)),
+ ('support_leg',0,(.237,.319,.020)),('upper_body',1,(0.,1.05,-.01)),
+ ('arm_left',5,arm_path(-1)[0][0]),('wrist_left',6,arm_path(-1)[1][0]),
+ ('arm_right',5,arm_path(1)[0][0]),('wrist_right',8,arm_path(1)[1][0]))
 JOINTS=tuple((n,parent,pivot(p) if parent is not None else p) for n,parent,p in BASE)
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def skin_weights(part,point):

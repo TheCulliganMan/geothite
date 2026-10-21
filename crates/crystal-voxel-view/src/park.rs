@@ -14,7 +14,7 @@ const PARK_WATER_TILE: u16 = 0x14;
 // uses the same graphics under a pale palette and creates visible holes.
 pub(crate) const PARK_TREE_GROUND_METATILE: u16 = 0x27;
 pub(crate) const PARK_TREE_GROUND_TILE: u16 = 0x01;
-const LARGE_TREE_METATILE: u16 = 0x06;
+const LARGE_TREE_METATILES: [u16; 2] = [0x00, 0x06];
 const BENCH_METATILE: u16 = 0x0e;
 pub(crate) const PARK_PLAZA_GROUND_TILE: u16 = 0x00;
 
@@ -115,12 +115,15 @@ pub(crate) fn park_shape(source: &VisualTileSource) -> Option<CellShape> {
     (source.tile_index == PARK_WATER_TILE).then_some(CellShape::Water)
 }
 
-/// Block `$06` is one complete 32x32 tree drawing. Keep it as a single
-/// masked upright card: splitting it into sixteen cells leaves the whole tree
-/// painted flat on the ground, while giving it a hull invents volume that the
-/// source art does not describe.
+/// Native blocks `$00` (the map border) and `$06` have the same complete 32x32
+/// tree drawing. Both need one modeled owner; retaining the border as flat art
+/// leaves a bright pixel band behind the mature interior trees at low angles.
 pub(crate) fn large_tree_local(source: &VisualTileSource) -> Option<(u8, u8)> {
-    if source.tileset_id.as_ref() != PARK_TILESET || source.metatile_id != LARGE_TREE_METATILE {
+    if source.tileset_id.as_ref() != PARK_TILESET
+        || !LARGE_TREE_METATILES.contains(&source.metatile_id)
+        || source.subtile_column >= 4
+        || source.subtile_row >= 4
+    {
         return None;
     }
     let expected = u16::from(source.subtile_row) * 0x10 + 0x0c + u16::from(source.subtile_column);
@@ -256,14 +259,17 @@ mod tests {
 
     #[test]
     fn large_park_tree_is_one_exact_four_by_four_drawing() {
-        for row in 0..4 {
-            for column in 0..4 {
-                let mut tile = source(0x06, row * 0x10 + 0x0c + column);
-                tile.subtile_column = column as u8;
-                tile.subtile_row = row as u8;
-                assert_eq!(large_tree_local(&tile), Some((column as u8, row as u8)));
+        for metatile in [0x00, 0x06] {
+            for row in 0..4 {
+                for column in 0..4 {
+                    let mut tile = source(metatile, row * 0x10 + 0x0c + column);
+                    tile.subtile_column = column as u8;
+                    tile.subtile_row = row as u8;
+                    assert_eq!(large_tree_local(&tile), Some((column as u8, row as u8)));
+                }
             }
         }
+        assert_eq!(large_tree_local(&source(0x00, 0x00)), None);
         assert_eq!(large_tree_local(&source(0x06, 0x00)), None);
         assert_eq!(large_tree_local(&source(0x05, 0x0c)), None);
     }

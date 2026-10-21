@@ -1,6 +1,7 @@
 //! One source-owned floating course for Johto and Johto Modern.
 //! Float paint comes from the existing atlas; its bed uses ordinary water.
 use super::*;
+use bevy::math::Vec2;
 
 pub(super) const LABEL: &str = "outdoor/buoy-course";
 
@@ -88,6 +89,7 @@ fn silhouette(pixels: &[u8]) -> Option<([usize; 4], [usize; 2])> {
     Some((b, [bright, mid]))
 }
 
+#[cfg(test)]
 pub(super) fn append(
     mesh: &mut TerrainMeshData,
     cells: &[&VisualTile],
@@ -95,6 +97,11 @@ pub(super) fn append(
     images: &TerrainImageSamples,
     reserved: &[bool],
 ) {
+    append_from_frame(mesh,cells,g,images,reserved,None);
+}
+
+pub(super) fn append_from_frame(mesh: &mut TerrainMeshData, cells: &[&VisualTile],
+    g: &GridGeometry, images: &TerrainImageSamples, reserved: &[bool], frame: Option<&VisualWorldFrame>) {
     let water = CellShape::Water.surface_height(g.tile_height);
     // Only a native, complete, unclaimed horizontal tile is replaceable.
     // Borrowed samples, cropped planes and custom live profiles retain their art.
@@ -164,7 +171,11 @@ pub(super) fn append(
         let radius =
             ((b[1] - b[0]) as f32 * g.tile_width).min((b[3] - b[2]) as f32 * g.tile_height) / 16.
                 * 0.90;
-        float(&mut mesh.textured, center, radius, g.tile_height, swatches);
+        let (map,origin)=frame.map_or(("",bevy::prelude::IVec2::ZERO),|frame|
+            (frame.scenery_map_at(i as u32%g.width as u32,i as u32/g.width as u32),
+                frame.scenery_grid_origin_at(i as u32%g.width as u32,i as u32/g.width as u32)));
+        let at=origin+bevy::prelude::IVec2::new((i%g.width) as i32,(i/g.width) as i32);
+        float_posed(&mut mesh.textured, center, radius, g.tile_height, swatches,FloatPose::at(map,at.to_array()));
         let (a, b, c, d) = g.uv(donor % g.width, donor / g.width);
         mesh.textured.uvs[q * 4..q * 4 + 4].copy_from_slice(&[[a, d], [b, d], [b, c], [a, c]]);
         for p in &mut mesh.textured.positions[q*4..q*4+4] {p[1]=water;}
@@ -233,77 +244,86 @@ fn retire_raised_banks(surface: &mut SurfaceMeshData, raised: &std::collections:
     }
 }
 
-fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint: [[f32; 2]; 2]) {
-    // A rounded floating collar with water visible through its center. Retain
-    // the source silhouette, waterline envelope and live white/blue pigment.
-    const SIDES: usize = 16;
-    const SECTIONS: usize = 8;
-    let sample = |side: usize, section: usize| {
-        // Wrap indices before trig so both seams have identical float bits.
-        let (s, c) = (std::f32::consts::TAU * (side % SIDES) as f32 / SIDES as f32).sin_cos();
-        let (v, r) =
-            (std::f32::consts::TAU * (section % SECTIONS) as f32 / SECTIONS as f32).sin_cos();
-        let p = center
-            + Vec3::new(
-                c * radius * (0.70 + 0.30 * r),
-                tile * (0.05 + 0.15 * v),
-                s * radius * (0.70 + 0.30 * r),
-            );
-        // Elliptical cross-section: normals follow its actual world dimensions.
-        let n = Vec3::new(
-            c * r / (radius * 0.30),
-            v / (tile * 0.15),
-            s * r / (radius * 0.30),
-        )
-        .normalize();
-        (p.to_array(), n.to_array())
+#[derive(Clone,Copy,Debug,PartialEq)]
+struct FloatPose { linear: bevy::math::Mat3 }
+impl FloatPose {
+    #[cfg(test)]
+    const NEUTRAL: Self = Self {linear:bevy::math::Mat3::IDENTITY};
+    fn at(map: &str, [x,z]: [i32;2]) -> Self {
+        let seed=map.bytes().fold(0x6b8b_4567u32,|h,b|h.wrapping_mul(16777619)^u32::from(b))
+            ^(x as u32).wrapping_mul(0x9e37_79b9)^(z as u32).wrapping_mul(0x85eb_ca6b);
+        let unit=|salt:u32| {
+            let mut h=seed^salt.wrapping_mul(0x7feb_352d);
+            h=(h^(h>>16)).wrapping_mul(0x846c_a68b);h^=h>>16;
+            (h&65535) as f32/65535.
+        };
+        let rotation=bevy::prelude::Quat::from_rotation_y(unit(1)*std::f32::consts::TAU)
+            *bevy::prelude::Quat::from_rotation_x((unit(2)-0.5)*0.16)
+            *bevy::prelude::Quat::from_rotation_z((unit(3)-0.5)*0.16);
+        Self {linear:bevy::math::Mat3::from_quat(rotation)
+            *bevy::math::Mat3::from_diagonal(Vec3::new(0.90+unit(4)*0.10,
+                0.88+unit(5)*0.14,0.86+unit(6)*0.14))}
+    }
+}
+
+#[cfg(test)]
+fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint: [[f32;2];2]) {
+    float_posed(out,center,radius,tile,paint,FloatPose::NEUTRAL);
+}
+
+fn float_posed(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32,
+    paint: [[f32;2];2], pose: FloatPose) {
+    // A rounded shoulder, tapered crown and closed recessed cap give the
+    // native white/blue float a molded body. No hole through to the sea.
+    // Six rings plus two closed quad fans retain the old 96-quad budget.
+    const SIDES: usize=16;
+    const PROFILE: [(f32,f32);6]=[
+        (-0.18,0.38),(-0.045,0.84),(0.035,0.94),
+        (0.085,1.),(0.225,0.64),(0.30,0.20),
+    ];
+    let circle: [Vec2;SIDES]=std::array::from_fn(|i| {
+        let angle=i as f32*std::f32::consts::TAU/SIDES as f32;
+        Vec2::new(angle.cos(),angle.sin())
+    });
+    let local: [[Vec3;SIDES];6]=PROFILE.map(|(y,r)|circle.map(|c|
+        Vec3::new(c.x*radius*r,y*tile,c.y*radius*r)));
+    let extent=local.iter().flatten().map(|p|pose.linear**p).fold(Vec3::ZERO,|e,p|
+        Vec3::new(e.x.max(Vec2::new(p.x,p.z).length()),e.y.max(p.y),e.z.max(-p.y)));
+    // Tilt and yaw never enter another source plot or increase the previous
+    // above/below-water envelope. This is independent of viewport dimensions.
+    let fit=(radius/extent.x).min(0.30*tile/extent.y).min(0.18*tile/extent.z).min(1.);
+    let linear=pose.linear*fit;
+    let normal_matrix=linear.inverse().transpose();
+    let point=|p:Vec3|(center+linear*p).to_array();
+    let normal=|n:Vec3|(normal_matrix*n).normalize().to_array();
+    let normals: [[Vec3;SIDES];6]=std::array::from_fn(|ring| {
+        let (before,after)=(PROFILE[ring.saturating_sub(1)],PROFILE[(ring+1).min(5)]);
+        let (dy,dr)=((after.0-before.0)*tile,(after.1-before.1)*radius);
+        circle.map(|c|Vec3::new(c.x*dy,-dr,c.y*dy).normalize())
+    });
+    let mut quad=|p:[Vec3;4],n:[Vec3;4],blue:bool| {
+        let first=out.positions.len();
+        let swatch=crate::scenery_finish::source_buoy_uv(paint[usize::from(blue)]);
+        let value=if blue {0.68}else{0.85};
+        append_quad_colors(out,p.map(point),normal(n[0]),[swatch;4],[[value,value,value,1.];4]);
+        out.normals[first..].copy_from_slice(&n.map(normal));
     };
-    for side in 0..SIDES {
-        for section in 0..SECTIONS {
-            let vertices = [
-                (side, section),
-                (side, section + 1),
-                (side + 1, section + 1),
-                (side + 1, section),
-            ]
-            .map(|(s, t)| sample(s, t));
-            let first = out.positions.len();
-            let swatch = if side == 0 || side == SIDES / 2 || section >= SECTIONS / 2 {
-                paint[1]
-            } else {
-                paint[0]
-            };
-            let colors = vertices.map(|(_, n)| {
-                let n = Vec3::from_array(n);
-                let x = direction_shade(if n.x < 0. {
-                    Direction::West
-                } else {
-                    Direction::East
-                });
-                let z = direction_shade(if n.z < 0. {
-                    Direction::North
-                } else {
-                    Direction::South
-                });
-                let y = if n.y > 0. {
-                    1.
-                } else {
-                    direction_shade(Direction::North)
-                };
-                let shade = (x * n.x.abs() + z * n.z.abs() + y * n.y.abs())
-                    / (n.x.abs() + n.y.abs() + n.z.abs());
-                [shade * 0.90, shade * 0.90, shade * 0.90, 1.]
-            });
-            append_quad_colors(
-                out,
-                vertices.map(|v| v.0),
-                vertices[0].1,
-                [crate::scenery_finish::source_atlas_uv(swatch); 4],
-                colors,
-            );
-            for (n, v) in out.normals[first..].iter_mut().zip(vertices) {
-                *n = v.1;
-            }
+    for ring in 0..5 {for i in 0..SIDES {
+        let j=(i+1)%SIDES;
+        quad([local[ring][i],local[ring+1][i],local[ring+1][j],local[ring][j]],
+            [normals[ring][i],normals[ring+1][i],normals[ring+1][j],normals[ring][j]],ring<2);
+    }}
+    for top in [false,true] {
+        let ring=if top {5}else{0};
+        let middle=Vec3::Y*tile*if top {0.275}else{-0.18};
+        let cap_normal=|i:usize|if top {
+            Vec3::new(-circle[i].x*0.025*tile,0.20*radius,-circle[i].y*0.025*tile).normalize()
+        } else {Vec3::NEG_Y};
+        for i in (0..SIDES).step_by(2) {
+            let (j,k)=((i+1)%SIDES,(i+2)%SIDES);
+            let order=if top {[k,j,i]}else{[i,j,k]};
+            quad([middle,local[ring][order[0]],local[ring][order[1]],local[ring][order[2]]],
+                [if top {Vec3::Y}else{Vec3::NEG_Y},cap_normal(order[0]),cap_normal(order[1]),cap_normal(order[2])],true);
         }
     }
 }
@@ -503,7 +523,7 @@ mod tests {
         }
     }
     #[test]
-    fn float_retains_its_envelope_and_native_paint_with_a_real_open_center() {
+    fn float_retains_source_footprint_and_a_complete_rounded_crown() {
         let mut mesh = SurfaceMeshData::default();
         let center = Vec3::new(4., crate::profile::WATER_HEIGHT, 4.);
         let paint = [[0.1, 0.2], [0.3, 0.4]];
@@ -519,8 +539,9 @@ mod tests {
             .map(|p| p[1])
             .fold(f32::NEG_INFINITY, f32::max);
         assert!(
-            (low + 2.8).abs() < 0.0001 && (high + 0.4).abs() < 0.0001,
-            "the collar retains the original waterline envelope"
+            (low - (center.y - 1.44)).abs() < 0.0001
+                && (high - (center.y + 2.4)).abs() < 0.0001,
+            "the rounded body stays seated across the native waterline"
         );
         assert!(
             mesh.positions
@@ -529,10 +550,9 @@ mod tests {
             "the native silhouette still owns the whole footprint"
         );
         assert!(
-            mesh.positions
-                .iter()
-                .all(|p| Vec2::new(p[0] - center.x, p[2] - center.z).length() >= 0.799),
-            "open water must remain visible through the center"
+            mesh.positions.iter().any(|p| p[1] > center.y
+                && Vec2::new(p[0] - center.x, p[2] - center.z).length() < 0.001),
+            "the visible crown must form one complete object"
         );
         for swatch in paint {
             assert!(
@@ -578,5 +598,71 @@ mod tests {
         }
         assert!(volume > 0.);
         assert!(edges.values().all(|e| *e == (2, 0)));
+    }
+
+    #[test]
+    fn tilted_float_bodies_keep_closed_volume_normals_native_bounds_and_paint() {
+        let center=Vec3::new(4.,crate::profile::WATER_HEIGHT,4.);
+        let paint=[[0.1,0.2],[0.3,0.4]];
+        let mut crowns=std::collections::BTreeSet::new();
+        for map in ["Route40","CianwoodCity","OlivineCity","CherrygroveCity"] {
+            for x in -8..8 {
+                let pose=FloatPose::at(map,[x,30]);
+                assert_eq!(pose,FloatPose::at(map,[x,30]));
+                let mut mesh=SurfaceMeshData::default();
+                float_posed(&mut mesh,center,2.,8.,paint,pose);
+                assert_eq!(mesh.quad_count(),96,"no extra terrain cost for the molded body");
+                let mut volume=0.;
+                let mut edges=std::collections::BTreeMap::new();
+                let key=|p:[f32;3]|p.map(|v|(v*10000.).round() as i32);
+                for tri in mesh.indices.chunks_exact(3) {
+                    let p=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
+                    let face=(p[1]-p[0]).cross(p[2]-p[0]);
+                    assert!(face.length_squared()>1e-10);
+                    volume+=p[0].dot(p[1].cross(p[2]))/6.;
+                    for j in 0..3 {
+                        let n=Vec3::from_array(mesh.normals[tri[j] as usize]);
+                        assert!((n.length()-1.).abs()<0.0001 && face.dot(n)>0.);
+                        let a=key(p[j].to_array());let b=key(p[(j+1)%3].to_array());
+                        let (edge,direction)=if a<b {((a,b),1)}else{((b,a),-1)};
+                        let e=edges.entry(edge).or_insert((0,0));e.0+=1;e.1+=direction;
+                    }
+                }
+                assert!(volume>0. && edges.values().all(|e|*e==(2,0)));
+                let mut high=f32::NEG_INFINITY;
+                for (&p,&uv) in mesh.positions.iter().zip(&mesh.uvs) {
+                    let local=Vec3::from_array(p)-center;
+                    assert!(Vec2::new(local.x,local.z).length()<=2.00001);
+                    assert!(local.y>=-1.44001 && local.y<=2.40001);
+                    high=high.max(local.y);
+                    assert!(crate::scenery_finish::source_buoy_coordinates(uv).is_some_and(|uv|
+                        paint.iter().any(|p|p.iter().zip(uv).all(|(a,b)|(a-b).abs()<0.00001))));
+                }
+                crowns.insert((high*10000.).round() as i32);
+            }
+        }
+        assert!(crowns.len()>20,"different floats cannot collapse to one repeated crown");
+    }
+
+    #[test]
+    fn connected_map_handoffs_keep_the_same_owned_float_pose() {
+        use bevy::prelude::{IVec2,UVec2};
+        use crystal_render_api::VisualSourceRegion;
+        let (tiles,g,samples,original)=fixture();
+        let cells=tiles.iter().collect::<Vec<_>>();
+        let frame=VisualWorldFrame {map_id:"Route40".into(),grid_origin:IVec2::new(40,20),
+            source_regions:vec![
+                VisualSourceRegion {map_id:"Route40".into(),origin:IVec2::ZERO,size:UVec2::splat(8)},
+                VisualSourceRegion {map_id:"CianwoodCity".into(),origin:IVec2::new(30,-10),size:UVec2::splat(100)},
+            ].into(),..Default::default()};
+        let local=VisualWorldFrame {map_id:"CianwoodCity".into(),grid_origin:IVec2::new(10,30),
+            source_regions:vec![VisualSourceRegion {map_id:"CianwoodCity".into(),
+                origin:IVec2::ZERO,size:UVec2::splat(100)}].into(),..Default::default()};
+        let mut a=original.clone();let mut b=original.clone();
+        append_from_frame(&mut a,&cells,&g,&samples,&[false;2],Some(&frame));
+        append_from_frame(&mut b,&cells,&g,&samples,&[false;2],Some(&local));
+        assert_eq!(a.textured,b.textured,"owner-local coordinates survive map handoff");
+        assert_eq!(a.footing_heights,original.footing_heights);
+        assert_eq!(a.authored_cells,vec![Some(LABEL),None]);
     }
 }

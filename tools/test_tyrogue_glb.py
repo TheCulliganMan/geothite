@@ -12,7 +12,7 @@ class TyrogueSkinTests(unittest.TestCase):
  def setUpClass(cls):cls.blob=ROOT.read_bytes();cls.m=skin.Model(cls.blob)
  def test_canonical_anatomy_bind_and_budgets(self):
   m=self.m;self.assertEqual(self.blob,author.export_tyrogue(author.decode_tyrogue(self.blob)))
-  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(40,19924,33424,12))
+  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(40,13839,21596,12))
   self.assertLess(len(self.blob),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
   for matrix in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(matrix,IDENTITY)),1e-7)
  def test_local_normal_palette(self):

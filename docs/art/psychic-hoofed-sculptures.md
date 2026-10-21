@@ -1,5 +1,9 @@
 # Girafarig and Stantler sculptures
 
+The [October 21 Sneasel/Stantler fidelity revision](claw-deer-fidelity.md)
+supersedes the historical shape, palette, metrics and coverage below for these
+two species. Girafarig remains unchanged.
+
 `tools/hoofed_sculpt.py` authors these distinct quadrupeds. Both species now use canonical standard skins from `tools/girafarig_glb.py`
 and `tools/stantler_glb.py`, sharing the production reader and GPU path. Their
 parallel static JSON models are retired.

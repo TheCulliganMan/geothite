@@ -1,5 +1,9 @@
 # Hitmon family source review
 
+The current [three-fighter volume and posture audit](hitmon-fidelity.md)
+supersedes the historical front-art access limitations below. It uses actual
+game reference orbits, captured front/back idles and the supplied pack pictures.
+
 The [official Hitmonlee artwork](https://sg.portal-pokemon.com/pokedex/0106/)
 was inspected in a background image-only browser tab, then the tab was closed.
 Its continuous headless tan body, sloping black eyes with small white pupils,

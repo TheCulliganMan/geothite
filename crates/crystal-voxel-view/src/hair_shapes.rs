@@ -42,7 +42,15 @@ pub(crate) fn sculpt(
     // Refine head faces, including their UV seam copies. Unchanged edges stay
     // collinear at the neck; the crown never meets an unrefined scalp edge.
     // Midpoints are shared along each indexed edge and remain in bind space.
-    for _ in 0..3 {
+    let refinements = if look.texture_key == "falkner" { 2 } else { 3 };
+    for _ in 0..refinements {
+        let needs_detail=mesh.indices.chunks_exact(3).any(|face| {
+            let i=[face[0]as usize,face[1]as usize,face[2]as usize];
+            if i.iter().any(|&i|!head(i,ids,weights)) {return false;}
+            let p=i.map(|i|Vec3::from_array(mesh.positions[i])/half);
+            [(0,1),(1,2),(2,0)].iter().any(|&(a,b)|p[a].distance(p[b])>0.16)
+        });
+        if !needs_detail {break;}
         let mut edges = HashMap::new();
         let old = std::mem::take(&mut mesh.indices);
         for face in old.chunks_exact(3) {
@@ -181,7 +189,9 @@ pub(crate) fn sculpt(
         let z = (p.z - center.z) / half.z;
         if look.hairstyle == "sidepart" {
             let (part, volume, sweep) = match look.texture_key {
-                "falkner" => (-0.38, 0.32, 0.13),
+                // Low swept crown; the long asymmetric fringe is actual
+                // geometry on the head accessory, not a raised central quiff.
+                "falkner" => (0.42, 0.12, 0.06),
                 // Keep Will's painted side part, with a low swept crown.
                 // The taller mass read as a pointed hat in actual renders.
                 "will" => (0.35, 0.12, -0.035),

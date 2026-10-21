@@ -200,6 +200,114 @@ Full-crate partition compilation, GPU shader compilation and Metal comparisons
 remain pending. The correction is now applied only to the private application trial described
 below; it is not installed or integrated into the shared voxel renderer.
 
+## Incremental GPU visibility trial
+
+The fitted-layout fresh roof control produced 412 updates in 60.12s,
+median/p95 130.43/299.88 ms, 6.848 queue completions/s, outstanding 1→1,
+zero polling errors. Its reverse-order control then failed the existing
+180-second validated-scene warmup. That failed run supplies no throughput
+comparison. Control variation is too large to accept the fitted candidate's
+apparent advantage; no fitted-layout source or app was promoted. The saved
+executable remains immutable. Whole-tree geometry, the original application
+source and its dependency placement are restored in the private snapshot.
+The verified edge-clamp/occlusion hook is no longer registered.
+
+Installed Bevy 0.20 source provides another concrete CPU path: entities marked
+NoCpuCulling skip the per-refresh CPU frustum/visibility work, and render-side
+GPU visibility tables process changed entities incrementally. This behavior is
+also described in the [official Bevy rendering notes](https://github.com/bevyengine/bevy-website/blob/main/content/news/2026-06-19-bevy-0.19/index.md).
+The private native gpu_static_visibility trial uses it for explicitly marked
+panorama draws, requiring non-shadow-casting/non-shadow-receiving VoxelMaterial
+meshes on the production world layer. Summit publication adds the marker; the
+foreground room is never admitted merely because its material flags match.
+Hidden upper-floor publication receives flags before roof entry, and cached
+ownership persists across adjacent floors without entry-time archetype churn.
+It requires actual GPU instance building, GPU frustum-culling support and
+compatible perspective/indirect world views. Unknown bounds, skinned/morph
+meshes, sky/no-frustum meshes and foreign layers retain their original path.
+It owns only flags it inserts, restores CPU handling on incompatible views or
+support loss, and retains hidden panorama ownership across adjacent floors.
+The existing engine InheritedVisibility remains authoritative. No geometry,
+material, shader, shadow configuration, controller state or content pack is
+changed; no new runtime switch exists. Source is private and unpromoted.
+The first four-guard run caught a missing ViewVisibility component in its
+minimal test fixture (3 passed, 1 failed); the fixture is corrected. A preload
+patch stopped on an exact-text mismatch, so only its own just-started partial
+verification processes were cancelled before fixing the patch; other builds
+were not interrupted. The corrected full-crate lifecycle build passed in 5m49s:
+`/tmp/geothite-gpu-static-visibility-preload-tests.log`, all five tests passed
+with zero ignored. They include hidden preload visibility, unchanged NoCpuCulling
+change ticks at roof entry, explicit ownership removal, hardware/direct-view
+fallback and preservation of foreign flags. All eight summit-vista regressions
+passed, and terrain-worker cargo check passed in 13.02s. The native release
+example build passed in 6m36s; log: `/tmp/geothite-gpu-static-visibility-release-build.log`.
+Its saved executable SHA256 is
+`35c2dea2961e00be28411c5a5460313cb1dff10158433b3c4925bb69b99f69cf`.
+The first full-quality Retina roof 60-second comparison completed.
+The first actual run confirmed GPU instance/frustum support and assigned
+193,915 panorama entities across 261 publication updates. No occlusion-culling
+or shader-correction hook is active. At 2560x1600, noon, Roof (9,13), camera
+0/-1/5/0, the candidate completed 681 updates in 60.02s, median/p95
+86.78/95.10 ms, 11.347 queue completions/s; the following unchanged-renderer
+control completed 608 updates in 60.06s, median/p95 95.82/116.88 ms,
+10.117 queue completions/s. Both had steady 36 outstanding submissions and
+zero polling errors. The candidate screenshot passed validation and visual
+inspection with the full roof, actor and forest present. The pair suggests
+about 12% more queue completions, but needs repeat/movement checks before
+acceptance. This is not displayed FPS or whole-game fluidity. An ordinary
+synthetic-keyboard UUDUDUDUDUD roof walk completed through the unchanged
+controller path; its mixed result is recorded below. Paired-2D fidelity and warm-stair latency remain unverified. Shared production source and the installed app are unchanged
+by this experiment.
+
+## Roof attribution and fitted tree-section follow-up
+
+The roof shadow-receiver candidate passed all ten full-crate regressions in a
+2m41s build, with no ignored tests. Before another release build, source
+inspection found that summit_vista already tags its distant surfaces and tree
+leaves NotShadowCaster. A new headless Metal recording of the unchanged
+shadow-cache executable (target PID 84788) completed and exported successfully:
+`/tmp/geothite-retina-roof-metal-whbbfE/roof.trace`. The two-second capture has
+6,192 GPU rows, 599 encoder rows and 18,159 object-label rows. Encoder IDs are
+joined using encoder-list column 12 to column 8; object-label fallbacks and all
+process filters are per-file ID-resolved. The labeled target sums include
+main opaque Vertex 361.279 ms and Fragment 85.760 ms, early prepass Vertex
+251.289 ms and Fragment 63.205 ms, and both shadow cascade Vertex sums only
+1.901 ms combined. Most target intervals are unlabeled (including 2218.670 ms
+of Vertex intervals), so these are not full-frame percentages. Another
+new_bark_3d process (85154) also performs GPU work; it was not interrupted.
+The sample supports concentrating on opaque/prepass geometry, rather than
+assuming the earlier New Bark shadow attribution applies to the panorama.
+The short CPU sample caught mainly waits and does not identify a generation
+bottleneck. No generator/disk cache is justified from it.
+
+The private roof shadow-map eligibility change is restored, without a release
+build or promotion. A new native-only section comparison retains exactly the
+same section/draw count as the prior subdivision. It compares that grouping
+with a three-axis, triangle-weighted bounding-surface-area partition, choosing
+fitted groups only when their aggregate bound cost is lower. Original source
+triangles, attributes, collision and sorted fade leaves are unchanged. The
+full geometry-preservation regression build passed in 3m05s:
+`/tmp/geothite-fitted-sections-tests.log`. All 56 occluder/visibility regressions
+and three shared-grove cache tests passed with zero ignored tests. Triangle-
+weighted bound cost changed from 1,139,330,962 to 907,555,991 for pine, from
+311,745,232 to 232,965,785 for ancient forest, and from 245,578,877 to
+208,586,101 for deciduous trees (about 20.3%, 25.3% and 15.1% lower). Draw
+counts remain equal. This cost is a geometry-fit proxy, not GPU time or FPS.
+Native helper feature guards were checked with the actual terrain-worker
+configuration; cargo check passed in 12.60s. The private application reinstates
+the identical verified shader/camera hook for the fitted-layout comparison;
+no new culling logic is introduced. The release example build passed in 4m51s; log:
+`/tmp/geothite-fitted-sections-release-build.log`. Its saved executable SHA256 is
+`156d24e75311167b78b886a734802d996e5640990c1fa0d57f77382b49a3ecca`.
+The 60-second full-quality Retina roof candidate completed: 703 updates in
+60.11s, median/p95 84.90/114.85 ms, 11.364 queue completions/s, outstanding
+11→31, zero polling errors. Both shader corrections verified and exactly one
+world culling view activated. The screenshot passed existing validation and was
+inspected: roof, actor and full forest remain present. A fresh unchanged-
+renderer control is running. These observations are not yet an accepted speedup
+or paired-2D/animated-bound visual acceptance. This is a geometry-layout experiment,
+not a frame-rate gain or production integration. No new runtime switch exists.
+
 ## Native opaque tree sections under verification
 
 The installed Bevy 0.20 source was also checked for its MeshletPlugin path.
@@ -268,7 +376,31 @@ The subdivision-only release build passed in 9m17s; log:
 SHA256 is `6e70c6baa8bb1dd12788afa8c9568cbefd5f00be9a0c9dbf3b0602f9d7a41816`.
 The application source and dependency placement exactly match the pre-probe
 baseline. The shader-correction hook is not registered. A 60-second roof run
-is underway with the existing native render path and full geometry.
+completed with the existing native render path and full geometry: 638 updates,
+median/p95 93.44/110.26 ms, 10.547 queue completions/s, outstanding 31→36.
+The immediately following control produced 498 updates, median/p95
+106.92/193.89 ms, 8.284 queue completions/s, outstanding 36→36. Both had
+zero polling errors. The control is also materially slower than the earlier
+control (10.654/s), so the apparent subdivision gain remains unaccepted under
+variable load. New Bark subdivision-only measured 1392 updates over 60.01s,
+median/p95 40.78/78.55 ms; the fresh control measured 1544 updates over 60.03s, median/p95
+38.54/44.76 ms. Queue completions were 22.608/s for subdivision versus
+25.714/s for control, both with zero polling errors. Subdivision is not
+promoted globally: New Bark regressed in this pair, and the apparent roof
+benefit is still confounded by differing control performance. The immutable
+subdivision executables remain available; the private voxel source is restored
+to whole-tree geometry before the next isolated trial.
+
+Source inspection identified another concrete shadow-work candidate:
+shadow_receivers::supported_map admits New Bark, Route29 and Cherrygrove but
+excludes TinTowerRoof. A separate private candidate now adds the roof
+and covers it in the existing world/capture-camera production-system guard.
+Its full crate test build is running in
+`/tmp/geothite-roof-shadow-receiver-tests.log`.
+Its geometric proof, bias padding, filter settings, receiver eligibility and
+unknown-bound fallbacks are unchanged. The comparison has restored
+whole-tree geometry, isolating the shadow filter from subdivision.
+No production source or app change has been made for either trial.
 
  The static images do not establish
 animated culling bounds or paired-2D acceptance.
@@ -3439,3 +3571,3042 @@ both passed on the native test build. An additional legacy backpic PNG check
 could not load its filesystem fixture (`apps/web/assets/gfx/player/chris_back.png`);
 that check is not passing evidence. This correction was verified through render
 layers, not a newly rebuilt browser screenshot or deployed client.
+
+## Dedicated panorama visibility layer verification
+
+The initial NoCpuCulling walking comparison did not establish a benefit. With
+ordinary synthetic keyboard input and the same 352 renderer updates, candidate
+movement median/p95 was 91.44/126.08 ms versus control 94.44/104.44 ms. Both
+covered three grid origins with zero additional terrain builds. The worse
+candidate tail prevents promotion based on the stationary result alone.
+
+A private refinement puts the explicitly non-shadow-casting panorama on layer
+32, keeps foreground and sunlight on 31, and lets the world camera see both.
+Bevy's actual GPU mesh collector otherwise includes these panorama entities
+in shadow candidate tables before the later caster rejection. The new test
+runs that collector directly: the world view retains all 129 fixture meshes,
+the actor-capture view remains empty, and the sun retains one foreground mesh
+instead of all 129. This preserves drawn geometry while avoiding irrelevant
+shadow candidate membership. It is not evidence that this caused walking tails.
+Receiver-bound proofs still include both layers. All six GPU visibility tests,
+eight summit tests and ten receiver tests pass; terrain-worker checking passes.
+The release build passed; the immutable QA executable SHA256 is
+`cd524c267a523d0eefc62c7dc046317910197971f6436cc6057f577299bc189e`.
+At full 2560x1600, noon, roof (9,13), the ordinary keyboard replay completed
+352 movement frames across three grid origins with zero additional terrain
+builds. Candidate movement median/p95 was 93.80/112.23 ms; the following
+control was 82.47/219.96 ms. Overall candidate/control update counts were
+632/648 over approximately 60 seconds each, median 93.25/81.91 ms.
+The candidate's lower tail comes with a slower median and no overall
+throughput gain; this pair does not justify production promotion. The actual
+candidate screenshot was inspected with roof, trainer and forest present,
+but paired-2D acceptance remains unperformed. No installed app or shared
+renderer source was changed by this experiment. No user switch was added.
+
+## Static panorama terrain batching trial
+
+The dedicated GPU visibility layer did not establish an overall gain and is
+removed from the next private candidate. The baseline native world layer and
+CPU visibility path are restored. Static panorama textured/solid terrain now
+uses the existing terrain_batches partitioner, rather than uploading one
+whole-map draw per material. Every original triangle and all attributes are
+retained; animated surfaces, textured scenery, tree geometry, materials and
+transforms keep their original path. Browser behavior is unchanged. No new
+runtime control is added. This path skips coverage scans that panorama draws
+do not consume. All 23 batching tests passed, including exact ordered corner,
+attribute and cutaway preservation, and all eight summit tests passed. Native
+release compilation passed. The saved candidate SHA256 is
+`e02b3399e5abd334bb004f096fd7cc44c63267e47b1be8761e380a8aab8bd039`.
+The first full-quality Retina keyboard walk produced 682 updates/60.05s,
+median/p95 87.48/98.73 ms, movement 84.49/94.19 ms. The subsequent baseline
+produced 619 updates/60.12s, median/p95 93.29/169.67 ms, movement
+97.18/176.94 ms. Both have 352 movement frames, three grid origins and zero
+additional terrain builds. Other Rust compilers were active. Reverse order produced a second baseline
+with 611 updates/60.08s, movement median/p95 93.86/127.48 ms, and a second
+candidate with 670 updates/60.03s, movement 85.43/152.66 ms. Candidate
+movement medians improved in both orders; mean update throughput rose about
+10%. Tail results varied, so this is a bounded scene improvement under the
+observed load, not isolated GPU timing or proof of overall fluid gameplay.
+All runs retained three grid origins and zero additional terrain builds.
+The first paired capture saved 3D but exceeded its existing 60-second deadline
+before 2D; a retry with the existing 180-second capture allowance passed both
+image verifications. Both images were visually inspected; the receipt reports
+state_preserved=true, matching actor source and coordinates. The full roof and
+forest remain present. The two-file batching change is now applied surgically
+to shared source; current-checkout tests and a production build are running.
+The installed application has not yet changed.
+
+### Current-checkout and transition follow-up
+
+All 23 batching tests passed against shared source, with zero ignored tests.
+All eight current-checkout summit tests also passed with zero ignored tests.
+Production app compilation is live, and destination-preload regressions are
+being rebuilt against the completed external TUI pack. A native candidate replay from TinTower9F (7,8),
+noon, 2560x1600 used ordinary synthetic keyboard input, 180 B inputs then D.
+All 5,792 movement rows completed: 5,770 on 9F and 22 on TinTowerRoof. There
+were zero additional foreground terrain builds. Every roof row reports
+terrain_pending=false and terrain_active=true; the first roof row at (9,13)
+is 30.649 ms, with the authoritative warp fade still in progress. This proves
+arrival readiness for this replay, not total fade duration or a faster door
+transition versus the earlier baseline. The full 180-second run completed
+5,934 updates, median/p95 28.11/52.40 ms; this is mostly the interior and must
+not be presented as roof frame rate.
+
+### Production installation of static panorama batching
+
+The current-checkout production build passed in 16m27s, with desktop-app and
+voxel-view enabled and location-tester absent. The normal desktop installer
+passed external-pack verification (388 maps, 251 species, 251 moves, 377 audio
+programs), scenery/people bundle validation, strict code-signature validation
+and its staged standalone installation check. It installed
+`~/Applications/Geothite.app` in 41.3 seconds. A second direct check from /tmp
+with CRYSTAL_OPEN_MODEL_ROOT unset passed against the installed resources and
+existing external save path. The installed signature also passed a fresh
+strict check. Both source and installed packs retain SHA256
+`a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007`;
+the installed executable SHA256 is
+`1cb0ac7b3bf5b418b848e0afc8e884cb46e8682d7e491f0ad0e2d2a6d289c682`.
+The existing new-bark destination-preload regression build is still active.
+No source/catalog/audio/pack regeneration, visual quality reduction, user
+performance switch, visible window launch, or commit was made. The broader
+fluidity objective remains incomplete: roof rendering remains around eleven
+updates per second in the full Retina QA scene, and tail stutter persists.
+
+## Native normal-layout follow-up
+
+The first destination-preload test invocation omitted voxel-view and therefore
+selected zero tests; it does not count as verification. Enabling voxel-view
+exposed that the fixtures also require location-tester fields (four compile
+errors for render_test_hour). The corrected command enables both features and
+remains compiling. No production code was changed to work around the fixtures.
+
+The existing normal-layout diagnostic was exercised using the same immutable
+static-batching QA executable and a full Retina synthetic keyboard roof walk.
+Full float normals: 691 updates/60.04s, movement median/p95 82.45/90.25 ms.
+Packed-normal controls: 671 updates/60.08s, movement 88.00/106.90 ms, then
+687 updates/60.01s, movement 86.16/96.23 ms. The final reverse-order float
+comparison is running. Every completed run has 352 movement rows, three grid
+origins and zero additional terrain builds. These small differences are not
+yet accepted as a speedup; no default or installed app has changed in this
+follow-up. No new diagnostic switch or timing implementation was added.
+
+The final float-normal run completed 732 updates/60.01s, movement median/p95
+79.70/145.33 ms. The float runs averaged roughly 4.8% more updates than the
+packed controls and both movement medians were lower, but tail behavior was
+mixed and the second overall p95 was 156.63 ms versus 96.23 ms for its
+preceding packed control. This does not establish a stutter fix or justify a
+new native-wide default. The installed packed-normal default is unchanged.
+A movement follow-up is now using the saved immutable fitted-tree-section
+executable, whose earlier stationary comparison was too noisy to accept.
+It is a distinct candidate (including the previously verified private GPU
+occlusion shader correction), not the installed static-batching executable.
+
+The corrected current-checkout destination-preload run passed all four tests,
+zero ignored, in 4.54 seconds after compilation. It covers both house floors
+preparing New Bark without gameplay advancement, connected source-coordinate
+retention, nearest real building selection and route arrivals.
+
+The saved fitted-tree candidate's movement follow-up completed 723
+updates/60.06s, movement median/p95 77.11/108.05 ms. A fresh static-batching
+control completed 697 updates/60.08s, movement 72.86/140.11 ms. Its slower
+movement median and small overall difference do not establish a reason to
+replace the installed batching renderer with this coupled experiment. It
+remains unpromoted.
+
+## Move panorama partitioning to its existing worker
+
+A private follow-up addresses a concrete main-thread path: static batching
+currently partitions all source triangles when a completed background map is
+published. The worker now returns PreparedMap with finished static Mesh
+vectors, leaving only GPU-asset/entity publication on the frame thread. The
+existing border-sample trimming is moved verbatim before worker partitioning;
+the tower attachment is calculated before source geometry retires. Animated
+terrain, materials, tree meshes, geometry and transforms preserve their prior
+paths. No new worker, cache, runtime option or timing tool is added. The
+existing summit regressions and a separate release QA build are running.
+This follow-up is private; the installed static batching version is unchanged.
+
+The private worker-partitioning candidate passed all eight summit tests and
+its release QA build. Its immutable executable SHA256 is
+`9b3b4315bde6d5c0ed81c6f13f78e01ff5af9a4e5032fb7f4971b5b45bf6519f`.
+Further source review found the same panorama publication path still builds
+water masks/shoreline images synchronously. The next private version returns
+those existing PreparedImages from the same terrain worker too. Existing
+water-surface regressions include byte-for-byte worker preparation checks
+across actual source roles/animation phases and authenticated dry results;
+that suite and the combined release QA build are running. No installed app
+or shared renderer source has changed in this follow-up.
+
+A separate hidden-panorama visibility experiment reused the previously saved
+NoCpuCulling executable and its matching pre-batching control, at TinTower9F
+(7,8), noon, full Retina resolution, 120 seconds. Candidate: 4,608 updates,
+median/p95 24.62/47.44 ms; control: 4,743 updates, 19.59/57.54 ms. The
+candidate trace assigned 174,489 eligible panorama entities. Whole-run
+throughput does not establish a gain. However, the final 30-second windows
+differ: candidate 994 intervals, median/p95 27.43/54.73 ms; control 663,
+39.93/84.09 ms. Both preload progress and concurrent compiler load can vary;
+cache-readiness equivalence and a reverse-order result remain unproven.
+This late-window evidence changes the next investigation toward hidden-cache
+CPU costs but does not justify a production promotion yet.
+
+### Combined worker verification and loading-time caveat
+
+The combined worker/water release QA build passed in 9m12s; saved executable
+SHA256 `aef541d20ef8c0f4939e9ed422e6b8f2fe599eb766fcc8d9cbdc2357912b2715`.
+All eight summit tests passed. The private water suite passed 14 tests,
+including byte-for-byte worker image preparation, and failed its older raised
+pier fixture. The current checkout already corrects that fixture from a
+repeated half-width Port14 face to the full-width Port08 drawing. Its existing
+compiled test binary passes all 15 water tests. Preserve that current fixture
+and the current Tohjo style change when merging; neither runtime water image
+algorithm nor source geometry was changed by the worker follow-up.
+
+The combined warm-stair replay ended at the 180-second measurement limit
+before reaching D: 4,608 movement rows, all on 9F. It supplies no roof-arrival
+proof. Interior median/p95/p99/max was 29.676/82.235/122.582/292.753 ms,
+112 rows over 100 ms and two over 250 ms. Compiler load differed from the
+earlier run; these statistics do not prove a reduction in loading stalls.
+
+A near-immediate D plus 30 B inputs completed all 992 movement rows and
+reached the roof with zero additional foreground builds. Critically, step QA
+pauses movement logging while terrain_pending is true (render_walk.rs). Its
+first ready row cannot measure total loading time. The unfiltered render
+log first shows Roof at frame 60, 0.578438s. Matching the next five movement
+intervals against the full render intervals identifies the first ready walk
+row at render frame 1501, 14.552441s: a 13.974003-second readiness gap.
+The unique five-interval match avoids treating skipped updates as zero time.
+The earlier first-ready-frame timings likewise do not prove short loading
+latency. No timing implementation was modified; this is analysis of existing
+records. A matching main-thread/static-batching control is running.
+The installed application and shared renderer source remain unchanged by
+the private worker follow-up, and fast cold entry is still unproven.
+
+The matching main-thread/static-batching near-immediate control completed all
+992 movement rows and zero additional foreground builds. Its full render log
+first shows Roof at 1.069899s; the unique next-five-interval match resumes
+ready movement at 31.407565s, a 30.337666-second readiness gap. The preceding
+worker candidate measured 13.974003 seconds by the same method. This single
+contended pair supports the worker move as a useful loading improvement, but
+does not establish isolated timing, general fluidity, or acceptable cold entry.
+
+A further private change replaces the single map task with a FIFO queue of
+at most two native tasks (one on browsers), using the existing async pool.
+Only the front completed task may publish, and current publication finishes
+before another result is consumed. Progressive sources cannot queue the
+border early; resetting/leaving the panorama cancels queued tasks. The
+foreground-ready gate and geometry/material paths stay intact. Two new
+regressions exercise bounded prefetch/cancellation and out-of-order completion
+with ordered publication. The private raised-pier fixture is aligned with the
+already-corrected checkout fixture; runtime shoreline code is unchanged.
+The expanded summit tests and separate release QA build are running. This
+queue change and the worker move remain private and uninstalled.
+
+All ten expanded summit tests passed with zero ignored tests, including
+bounded native prefetch, cancellation on unrelated maps and deliberately
+out-of-order completion with ordered publication. The release QA build is
+still live. The short reverse-control (DBB, 60 seconds) ended before the
+movement logger reached its first flush and provides no completed ready
+latency. It ran while own and unrelated compilers were active, so no timing
+comparison is accepted from it. Further performance comparisons will wait
+for own compilation to finish; unrelated builds remain untouched.
+
+The private queue candidate now passes all ten summit and all fifteen water
+regressions (zero ignored), and its release QA build passed in 9m11s. Own
+compilation is terminal before its near-immediate stair performance replay.
+The replay uses DBB and a 120-second recording window; this retains enough
+ready movement intervals for correlation with the complete render timeline.
+A matching single-worker replay will follow. The installed app remains the
+previously accepted static-batching version.
+
+### Queue comparison and main-source integration
+
+Own compilation was terminal during the two-map and matching single-worker
+120-second DBB recordings. Both completed all 96 movement rows, three grid
+origins and zero additional foreground builds. The two-map FIFO first
+showed Roof at 1.381140s and resumed ready movement at 23.169698s, giving a
+21.788558-second readiness gap. The following single-worker control first
+showed Roof at 1.423397s and resumed at 86.970697s, giving 85.547300s. Both
+use unique five-interval matches against the complete render timeline.
+Unrelated compilers remained active and load varied substantially; this pair
+supports overlapping preparation under the observed workload, not a stable
+fourfold speedup or acceptable cold-entry latency.
+
+The two-map executable SHA256 is
+`4e16db7639ab8bbcd2d5543f0e3c293e041f4cf2476cf86092b5d513828c1a1d`.
+Its full-resolution paired captures both passed validation and were visually
+inspected at Roof (9,13), noon, camera 0/-1/5/0. Roof, trainer, forest,
+lighting and scene extent remain present. The receipt states
+state_preserved=true with matching Chris source, position and facing.
+
+The worker/queue patch is now applied to the main summit module, preserving
+the checkout's native-only HiddenDestination insertion and existing shoreline
+fixture/Tohjo style changes. Current-checkout summit regression compilation
+is running; production rebuilding/installation is still pending. No content
+pack, controller, audio, geometry, material, source color, draw distance,
+resolution, runtime switch or browser JavaScript was changed.
+
+The main-source production build has now started with desktop-app/voxel-view
+and without location-tester. Its log is
+`/tmp/geothite-panorama-prefetch-production-build.log`. Current-checkout
+summit tests are also live. The accepted earlier static-batching app remains
+installed until these checks and packaging validation complete.
+
+All ten summit regressions now pass against the current checkout with zero
+ignored tests. The current-checkout water suite is running using that test
+artifact. The production build remains live; no rebuild was restarted on an
+observation timeout and the installed app has not yet been replaced.
+
+### Prefetch failure ordering fix before installation
+
+Review found that popping a failed front task left later tasks queued while
+next still identified the failed source. On a later update, a successful
+prefetched result could then be consumed using the wrong source index, even
+though error state prevented accepting the panorama. The error branch now
+clears all remaining tasks. A new regression feeds a failed first result and
+a successful later result, then requires no map publication, no index advance,
+no queued results and no blocking of the hidden preload's foreground room.
+
+Only the two own superseded build trees were terminated before editing their
+inputs (Cargo PIDs 58874 and 60623; process identities and descendants were
+checked). Both sessions returned terminal status 143. Other builds/apps were
+left untouched. The corrected current-checkout summit tests and production
+build are running in new sessions, with logs
+`/tmp/geothite-panorama-prefetch-error-shared-tests.log` and
+`/tmp/geothite-panorama-prefetch-error-production-build.log`. No installation
+of the superseded build was performed. Valid-pack rendering and loading paths
+are unchanged by this failure-only fix.
+
+Both corrected builds then terminated with E0308 in the concurrently updated
+water-ripple call: images.get_mut returns AssetMut<Image>, while update takes
+&mut Image. The closure now binds mut shore and passes &mut shore, preserving
+the ripple algorithm. The error was independent of the prefetch fix; neither
+failed build supplies a passing test/build result. New current-checkout test
+and production build invocations are running with logs
+`/tmp/geothite-panorama-prefetch-error-borrow-shared-tests.log` and
+`/tmp/geothite-panorama-prefetch-error-borrow-production-build.log`.
+
+The guarded borrow edit detected that the exact correction had already
+landed in shared source before it wrote. Inspection confirmed mut shore /
+&mut shore in the current file; no duplicate edit was applied. The subsequent
+builds are using that corrected state and were not restarted.
+
+### Worker/prefetch production installation completed
+
+The corrected current-checkout summit suite passed all eleven tests, including
+failed-source cancellation. The same compiled test artifact passed all fifteen
+water-surface and all four water-ripple tests; zero ignored tests in all three
+suites. The corrected production build passed in 11m56s. Desktop packaging
+passed pack/art validation, strict signing and staged standalone checks, and
+installed the app in 35.7 seconds. A direct installed-copy check from /tmp
+with CRYSTAL_OPEN_MODEL_ROOT unset passed, as did a fresh strict signature
+check. The installed executable SHA256 is
+`709a6516e65819befd5021c73dd609bf5efc4d18e6528bbec5c26651c67c5016`.
+Source and installed content packs both remain
+`a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007`,
+and the existing external save path is unchanged. No visible game was launched.
+The installed app now includes static panorama batching, worker preparation
+of static meshes/water images, bounded two-map native prefetch and failed-job
+cancellation. Broader fluidity and fast cold entry remain incomplete.
+
+Own compilation and packaging are terminal before the next GPU comparison.
+The immutable prefetch QA executable is now running the full-quality Retina
+roof keyboard replay with the existing WGPU_BACKEND=metal diagnostic. Installed
+Bevy 0.20 settings source removes VALIDATION_INDIRECT_CALL in release when
+DX12 is excluded from the backend mask, then reapplies environment overrides.
+The native default mask is all backends even when Metal is selected. This
+trial changes initialization flags, not geometry/materials/resolution; no
+new toggle or production renderer-setting change is introduced yet.
+
+## Metal backend-mask follow-up after installation
+
+Using the same immutable prefetch QA executable, full-quality Retina Roof
+(9,13), noon, camera 0/-1/5/0 and ordinary UUDUDUDUDUD keyboard replay:
+Metal-only completed 680 updates/60.02s, overall median/p95 82.41/131.61 ms,
+movement 79.83/117.43 ms. The following default-backend control completed
+671 updates/60.06s, overall 86.70/105.54 ms, movement 86.14/93.12 ms. Both
+completed 352 movement rows, three grid origins and zero additional terrain
+builds. Own compilation was terminal, but unrelated compilers were active.
+The approximately 1.4% throughput difference and worse candidate tail do not
+establish a useful roof improvement. No renderer setting is promoted. The
+same backend-mask diagnostic is now being exercised in New Bark, whose
+shadow workload differs. No new diagnostic or timing implementation is added.
+
+The matching New Bark (13,5), noon, Retina RRLLBB replay did not justify the
+Metal-only mask. Candidate: 1,301 updates/60.03s, overall median/p95
+42.41/73.93 ms, movement 36.22/46.52 ms. Default: 1,640 updates/60.03s,
+overall 31.02/65.36 ms, movement 28.17/29.64 ms. Both completed 192 movement
+rows, three grid origins and zero additional terrain builds. Own compilation
+was terminal; unrelated work remained active. This pair cannot establish a
+universal backend conclusion, but supplies no reason to change production
+initialization. The installed settings remain unchanged.
+
+## Private batching plus verified occlusion follow-up
+
+A private QA-only combination now registers the previously verified in-memory
+Bevy shader-edge correction/occlusion helper with the accepted static panorama
+batching and native prefetch. Earlier whole-map draws were too coarse for
+reliable benefit; the current terrain has bounded original-triangle batches.
+The helper is restricted to Roof and a new guard requires leaving Town/Route29
+on their original path. No geometry, normal/color precision, material or
+resolution is reduced. The existing shader-source hash/device/depth guards
+remain authoritative. The existing workspace sha2 dependency is made direct
+in the private app manifest for this verification. Its tests/release QA build
+are running; no new production GPU feature, player setting or timing tool is
+introduced. A first guarded edit stopped on formatting before writing; the
+corrected multi-file edit validated all replacements before writing them.
+
+The private build completed successfully in 8m30s. All six selected helper
+tests passed (two shader replacement/edge tests and four ownership/device/map
+guard tests). Runtime verified both shader hashes and activated one Roof view.
+The first full-quality Retina keyboard replay completed 642 updates/60.11s,
+overall median/p95 87.51/136.69 ms, movement 82.49/130.95 ms. Its following
+prefetch control completed 572 updates/60.08s, overall 103.18/183.04 ms,
+movement 98.69/192.67 ms. Both completed 352 movement rows, three grid origins,
+and zero additional terrain builds. No own compiler ran during these replays.
+The reverse-order repeat is pending; this single pair does not establish a
+repeatable improvement and the helper remains private, outside the installed app.
+
+The reverse-order repeat rejected this combination: control completed 638
+updates/60.10s, overall median/p95 90.65/112.19 ms, movement 88.81/102.29 ms;
+the following candidate completed 604 updates/60.03s, overall 95.95/146.88 ms,
+movement 94.39/138.67 ms. Both again completed all 352 rows, three grid origins,
+and zero additional builds. No rustc process was present in the observed
+candidate replay. The initial gain was not repeatable and the reverse trial
+was worse. No GPU helper is promoted or installed. These runs do not resolve
+the remaining full-quality roof frame-rate problem.
+
+## Private occluder inverse-cache candidate
+
+The next private candidate removes repeated full 4x4 inverses from visible
+occluder ray checks. Each runtime group retains an affine inverse, refreshed
+when its GlobalTransform changes, on first use, and after suspension. Camera
+and player motion still recompute exact triangle obstruction tests using that
+inverse. No geometry, fade policy, render distance, or player setting changes.
+The hidden-hierarchy regression now moves a hidden ancestor, lets change ticks
+elapse, and checks the resumed inverse against the current propagated pose.
+This candidate is not installed or applied to shared production source.
+
+Private release compilation and the explicitly selected voxel-view occluder
+tests are pending. The initial crystal-bevy-only test invocation does not
+select dependency unit tests and must not count as occluder coverage. The
+corrected command selects both crystal-voxel-view and crystal-bevy with the
+app's voxel-view/location-tester features, reusing the existing QA cache.
+
+The release build passed in 7m33s. The corrected test invocation passed 54
+checks and failed one unrelated pack-backed fixture because its environment
+path was absent. Rerunning the compiled voxel-view test executable with
+CRYSTAL_RENDER_TEST_PACK set to the completed external TUI pack passed all
+55 selected tests, zero ignored. The initial app-only invocation selected
+zero occluder tests and is not counted. The immutable candidate executable
+SHA256 is 1d231fed5da1bfcb0d2302f6a4fd290f1ebb2d8f6eeccee1f57b71249da7020c.
+
+Full-quality Retina Roof UUDUDUDUDUD replays, candidate/control/control/candidate:
+815/667/593/701 updates in approximately 60 seconds each. Overall median/p95
+frame times were 72.91/77.76, 85.96/132.73, 96.12/141.86, and 77.44/169.37 ms.
+Movement median/p95 were 72.84/78.45, 83.70/119.99, 95.38/131.84, and
+82.83/172.75 ms. All four completed 352 movement rows, three grid origins,
+and zero additional terrain builds. Own compilation was terminal throughout.
+Mean update throughput improved approximately 20%; the reverse candidate's
+tail remained worse, so this is not evidence that stutters are eliminated.
+New Bark and paired fidelity checks remain pending before promotion. The
+private regression was additionally extended to move a visible ancestor
+with a stationary camera/player; that extension has not yet been rerun.
+
+New Bark RRLLBB candidate/control/control/candidate completed
+1,383/1,504/2,004/1,505 updates in approximately 60 seconds each. Movement
+median/p95 were 46.63/73.04, 36.88/43.11, 27.98/30.78, and 36.30/41.58 ms;
+overall 42.66/68.07, 39.88/46.74, 29.06/38.33, and 40.07/45.54 ms.
+All completed 192 rows, three grid origins and zero additional terrain builds.
+Own compilation was terminal. This does not support global promotion: both
+town candidate runs were slower than their adjacent controls, although control
+variation was large. Full render-timing windows begin at different movement
+positions after warmup; the movement traces themselves retain matching
+first/last origins. Update counts should not be treated as an isolated
+continuous-walking frame-rate measurement.
+
+The older prefetch executable was used for those controls. To rule out source
+snapshot differences, an exact matching control is now building from the same
+private source tree and flags after restoring only the pre-cache occluder file.
+The candidate plus extended visible-ancestor regression is saved separately
+as candidate-files/occluder-inverse-cache-visible-regression.rs. Do not restore
+it while that control compiler is active. No cache change is in shared
+production source or the installed app, and paired fidelity remains pending
+if a candidate survives the matched comparison.
+
+While that control compiles, the unregistered private file
+candidate-files/occluder-ray-bounds-candidate.rs prepares a follow-up using a
+conservative world-space ray-bundle box. It retains the inverse cache, caches
+transformed complete primary/overlay bounds per pose, and rejects only disjoint
+boxes before exact triangle tests. The ray bundle includes the camera, all
+player body samples, pit targets, nearby outdoor people and the actual indoor
+furniture samples. Camera-wall outside-room policy and fade settling remain
+outside the rejection. Nonfinite/unknown bounds retain the original exact path;
+finite bounds are padded for transform rounding at large panorama coordinates.
+Three new tests cover translated/mirrored/nonuniform/sheared exact triangle and
+overlay hits, complete target inclusion, and fail-open invalid bounds. This
+file is not registered, compiled, tested, promoted, or installed yet; it is
+outside the current control compiler inputs. The earlier visible-ancestor
+regression remains part of this candidate.
+
+The exact matched control release build completed in 7m18s. Its immutable
+executable SHA256 is a9f5528954c577e05da880e363f0755109d50ca12e9b80de5f7a1427c3b0d6ef,
+different from the older prefetch control. A binary hash difference alone does
+not identify a source behavior difference, but the newly built control gives
+the required same-snapshot comparison. It is now running the New Bark replay;
+the inverse-only candidate will follow. Own compilation is terminal; other
+unrelated builds remain untouched. The production app remains unchanged.
+
+Same-snapshot New Bark control/candidate: 1,458/1,460 updates over
+60.06/60.05s, overall median/p95 39.77/76.45 versus 41.64/60.85 ms,
+movement 33.80/74.91 versus 35.80/60.73 ms. Both completed 192 rows,
+three grid origins and zero additional builds. The earlier town slowdown
+was not established by this matched pair; throughput is effectively equal
+and median/tail results are mixed. Other unrelated compilers were active
+during this pair; own compilation was terminal.
+
+Same-snapshot Roof control/candidate: 631/664 updates over 60.03/60.07s,
+overall median/p95 88.69/161.44 versus 89.85/108.46 ms, movement
+87.90/136.16 versus 88.95/116.82 ms. Both completed 352 rows, three grid
+origins and zero additional builds. No rustc/cargo process was present in
+the observed control replay. This is weaker than the earlier 20% estimate:
+throughput improved approximately 5%, the median walking frame did not,
+and longer pauses decreased. Neither pair proves consistently fluid play.
+The inverse-only candidate is not promoted or installed.
+
+The saved ray-bounds candidate is now the private source under test. The
+correct pack-backed occluder test command and release QA build are running
+against frozen private inputs. It includes the unverified visible-ancestor
+regression and three new conservative-bounds tests. Production source and
+the installed app remain unchanged. Future comparisons must use the new
+matched control executable rather than the older prefetch binary.
+
+## Lossless cluster data preparation (not a renderer)
+
+The isolated candidate-files/exact_clusters.rs now partitions full source
+triangles spatially into at most 64 triangles/192 vertices per cluster, with
+complete float32 positions, normals, UVs and RGBA colors. Its payload stores
+float bit patterns directly, including signed zero. Source face ordinals retain
+duplicates, degenerates and winding; unused source vertices need not be drawn.
+Five standalone Rust tests pass over generated adversarial fixtures: complete
+corner reconstruction/payload round trips, bounds and limits, duplicate and
+degenerate faces, winding/signed zero/HDR colors, invalid inputs, deterministic
+partitioning and extreme finite coordinates. Output is ignored temporary QA
+data. This is not integrated with Bevy, actual game models or a GPU renderer,
+and supplies no frame-rate evidence.
+
+Installed Bevy 0.20's native MeshletPlugin supports Metal and exposes its required
+device-feature list, but its stock asset stores quantized positions, encoded
+normals, UVs and no vertex colors. The new data preparation addresses preservation
+only; rendering integration would still need exact positions/colors/normals,
+no simplification/LOD selection, proper materials/prepass/fade behavior, verified
+device/shader compatibility, capacity handling and real model/paired render tests.
+Unsupported vertex layouts must retain the ordinary full-quality path. No
+meshlet feature, dependency, engine modification, player control or production
+rendering change has been added by this prototype.
+
+The ray-bounds voxel-view test executable finished linking before the app-only
+test target. After confirming its test list contained all three new bounds
+tests, direct execution with the verified external TUI pack passed all 58
+selected occluder tests, zero ignored, in 2.35s. This includes both hidden and
+visible ancestor movement in the extended cache regression. The broader Cargo
+invocation and release QA build remain active; no gameplay performance or
+paired-fidelity result is available for ray-bounds yet. No production change
+has been made by this candidate.
+
+Both full Cargo targets completed successfully: all 58 selected occluder
+tests passed, zero ignored (1.71s); the release QA build passed in 12m01s.
+The immutable ray-bounds client SHA256 is
+4120805bb5e738e9c5c393518d4ee7eea93ae0d9119730f267aa943cf9ebb3b1.
+
+Full-quality Retina Roof candidate/control/control/candidate replays completed
+692/617/533/614 updates over approximately 60 seconds each. Overall median/p95
+were 84.62/154.99, 97.25/136.59, 110.29/177.29, 92.25/189.26 ms;
+movement 84.08/134.69, 94.67/136.81, 109.76/176.01, 89.95/138.06 ms.
+All completed 352 movement rows, three grid origins and zero additional builds.
+Existing GPU completion receipts recorded 660/604/532/605 completed frames,
+11.002/10.052/8.866/10.081 completions per second. Thus the throughput benefit
+also appears in completed GPU work (about 9% and 14% in the two orders), not
+only CPU submission counts. The tail remains mixed and all runs remain far
+from fluid. Own compilation was terminal; unrelated work was left untouched.
+The New Bark candidate guard replay is now running. Paired fidelity and
+production promotion/installation remain pending.
+
+The private tree-generator proof has also been prepared and registered only
+under cfg(test), importing the standalone lossless geometry module. It checks
+all complete corner bits and source faces for three actual native tree families
+and two source seeds each. It has not been compiled or run; the five standalone
+synthetic-fixture tests remain the only cluster results so far. This test-only
+source edit occurred after both own compilers were terminal and does not alter
+the immutable executables or assets used by the current comparisons.
+
+## Ray-bounds production promotion
+
+New Bark candidate/control/control/candidate completed 1,100/1,602/2,079/2,023
+updates in approximately 60 seconds each. Overall median/p95 were
+50.73/93.01, 37.53/40.45, 29.12/31.26, 29.19/36.07 ms; movement
+34.32/56.47, 36.24/39.15, 28.45/29.88, 27.98/29.82 ms. GPU completion rates
+were 17.869/26.685/34.649/33.715 per second. All completed 192 rows, three
+grid origins and zero additional foreground builds. The large variation in
+the first pair prevents a town benefit claim. No rustc/cargo process remained
+in the observed later checks; the reversed pair has effectively equal median
+frame time and about 3% lower candidate throughput. It does not establish a
+material town slowdown, nor does it prove a town improvement.
+
+Paired 2560x1600 Roof captures passed with state_preserved=true and were both
+visually inspected. Full roof surfaces, forest, distant scenery, actor placement,
+lighting and materials remain intact. An initial house route DBBBBBBBBBB ended
+inside on carpet tile (6,7): that is an interior fidelity capture, not exit
+evidence. The production natural-movement/controller path explicitly handles
+directional edge carpets on an attempted outbound step. The corrected ordinary
+DDBBBBBBBBBB route exits into NewBarkTown, ends at (13,6), completes its warp
+with fade_alpha=0, and starts zero additional foreground terrain builds. Its
+384-row trace includes three grid origins. Both egress images were inspected;
+their paired receipt preserves state, all four source actors and placement.
+No total cold-transition latency is inferred from the movement trace.
+
+Camera clarification: CRYSTAL_RENDER_TEST_CAMERA is read by named screenshot
+installation, not measurement-only validation. These measurement-only replays
+therefore compare the same default gameplay camera, as their warmup images
+show. The named Roof pair uses the requested low view (rotation 7, pitch 5).
+Earlier descriptions of measurement-only runs as that low view are not
+supported. No timing/capture implementation was changed to address this.
+
+The accepted bounds algorithm is now applied surgically to shared production
+occluder_fade.rs, with the conservative helpers/tests extracted into
+occluder_fade/ray_bounds.rs. Unrelated source edits are preserved. There are no
+new player settings or quality cuts. Private build inputs were refreshed from
+the current shared Rust source, assets, modpacks and required build inputs;
+content packs were excluded. The extracted-module regression run and native
+release executable/bundlers are building against that frozen private snapshot.
+The installed app is still the earlier prefetch build until these checks and
+packaging finish. The private cluster test registration was removed by this
+source refresh; its two candidate source files remain backed up, and its
+native-generator test remains unrun. Only the five standalone cluster tests
+are verified so far. The broader frame-rate goal remains unfinished.
+
+The extracted-module regression compile found two missing names in its test
+scope (SurfaceMeshData and CutawayUniform). Their imports are fixed in shared
+source. A direct comparison proves the helper's runtime section is identical
+to the frozen release input and the only file delta is that test import line.
+The initial extracted-module Cargo test command ended with exit 101; it is not
+counted as passing. The release compilation is unaffected and remains active.
+Do not edit its private source while it runs. After it is terminal, copy this
+test-only import correction into the private helper and rerun the focused
+pack-backed occluder tests before installation. No runtime logic changed in
+this correction; the production executable and its bundlers are built together
+from the same frozen snapshot.
+
+The release command completed successfully in 6m20s. After it was terminal,
+the import-only test correction was copied into the private helper. The final
+focused Cargo run passed 59 voxel-view occluder checks, zero ignored (the
+current shared snapshot contains one additional existing check); the selected
+app target ran zero matching tests and is not counted as app coverage.
+
+Desktop content checking passed in 31.7s with the frozen artwork source and
+existing external pack: 388 maps, 251 species, 251 moves and 377 audio programs.
+Installation completed in 33.5s at ~/Applications/Geothite.app. A fresh direct
+installed --check-installation from /tmp with CRYSTAL_OPEN_MODEL_ROOT removed
+passed, as did strict deep signature verification. The installed executable
+SHA256 is 16e094cf6da0aa6ae91a828961d88ca357e3df3c5a5aa4083fc6bba69bd85139.
+The source and installed pack SHA256 both remain
+a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007;
+the external save path retains its existing 5474b1469c712c6703e195ae8d719d773d35b727b75822a7e324a0a1269befd5
+profile suffix. No running installed game process was found before replacement;
+no visible game was launched and no other app/build was closed or suspended.
+
+The installed increment now includes cached occluder poses and conservative
+complete-ray bounds automatically. No geometry, quality or user toggle changed.
+The remaining roof throughput/stutter problem is not solved. Following
+installation, the private cfg(test) native tree-generator cluster proof was
+restored and its focused Cargo test build started; that build is now the frozen
+private input owner. It has no production rendering integration yet and must
+not be described as a GPU speedup.
+
+The real native tree-generator proof passed all six selected checks. The
+subsequent exact meshlet asset codec run initially failed on a test-only
+AssetSourceBuilder API mismatch; after correction, all nine selected checks
+passed, zero ignored, including the actual Bevy loader/saver round trip of a
+Johto pine. These prove bit-preserving geometry/attribute and asset preparation,
+not GPU rendering or a frame-rate gain. The private shader decoder prototype
+is next; no meshlet rendering path is installed or promoted to shared source.
+Other applications and builds remain untouched, as requested.
+
+The private embedded-shader checks passed 11 selected tests. The following
+composition run passed 13 tests, zero ignored, in 0.23s after a 2m39s build:
+/tmp/geothite-native-exact-meshlet-shader-compose-tests.log. Both exact position
+decoding in the real raster bindings and full attribute/analytic-gradient
+resolution in the real material bindings compose via Bevy ShaderCache and pass
+Naga validation. Engine sources are read from the installed pinned dependency;
+no copied engine shader catalog is shipped. Narrow in-memory patches require
+exact SHA256 identities for bindings, visibility resolve and cull-shared shaders;
+unknown or already patched inputs are rejected. These are compiler/data checks,
+not GPU execution, visual acceptance, or measured performance evidence.
+
+Two integration constraints remain: the stock software raster always culls back
+faces, so two-sided materials must retain the original renderer; and the pinned
+meshlet material preparation cache keys by view/type, omitting per-material
+specialization keys. A dedicated fixed-contract material type is needed before
+using the game surface there. No engine dependency, production shader, material,
+meshlet plugin, or player setting has been changed in shared source. A private
+candidate adapting the actual painted surface to analytic derivatives is now
+being checked, including its normal/motion-vector prepass. The installed app
+remains the verified cached-pose/ray-bounds build above. The broader frame-rate
+goal is still active; no other application or build was stopped or suspended.
+
+The painted-surface check completed successfully: 15 selected tests passed,
+zero ignored, in 0.33s after a 2m46s build. Log:
+/tmp/geothite-native-exact-meshlet-painted-shader-tests.log. The actual game
+painted shader composes and validates with analytic world/UV gradients, and
+its normal/motion-vector prepass also validates. The ordinary shader path is
+retained in the private adaptation; UV atlas flips also flip analytic UV
+X derivatives. The decoder and native tree/codec checks were rerun in this
+same passing command:
+
+```sh
+CARGO_TARGET_DIR="$PWD/target/performance-visibility" cargo test \
+  --manifest-path .local/grass-material-check/source/Cargo.toml \
+  --locked --profile wasm-dev --jobs 2 -p crystal-voxel-view \
+  --lib exact_cluster_proof:: -- --test-threads=1
+```
+
+No GPU dispatch or gameplay throughput improvement is established for this
+prototype. Next requirements are a capability-gated plugin, a dedicated
+fixed-contract material type, conservative capacity accounting, matching
+visibility/fade ownership, actual headless GPU execution, paired production
+captures and repeated gameplay comparisons. Preserve the full-quality normal
+renderer as the automatic fallback. No private compiler command remains
+running from these checks, and no other app/build was interrupted.
+
+The private exact-cluster prototype now has actual offscreen GPU evidence on
+Apple M5, beyond the previous compiler-only checks. A native source Johto pine
+(seed [4,8]) draws through the full-precision meshlet decoder and the actual
+painted game material. Direct GPU readback verifies every serialized position,
+normal, UV and color word; 1,179,648 output words across 512 clusters are checked
+including unused zero padding. No source triangle, winding, color, resolution,
+view distance or model detail was reduced. Source face/corner CPU proofs still
+cover Johto pine, ancient forest and Kanto deciduous generators at two seeds.
+
+Several failed hardware attempts were retained as failures, not speedups.
+The initial magenta reference came from the fixture's default TonyMcMapface
+without its LUT feature, corrected to production Tonemapping::None. The initial
+blank candidate was a real pinned-Bevy mask bug: the per-view visibility Vec
+was cleared, but zero words were not uploaded when all instances became
+visible, so a previous hidden mask remained on the GPU. Fixed simultaneous
+views isolated that issue. An apparent color difference then came from a sun
+light assigned only to the reference view's layer; both views now receive the
+same light. Format/LOD/raster diagnostic trials did not explain the blank
+candidate and must not be cited as its cause.
+
+The actual normal prepass exposed two further pinned-Bevy defects. Its stock
+pbr_prepass shader reads flags in the meshlet branch without declaring them;
+a source-hash-verified conditional declaration corrects that shader. More
+fundamentally, the Rust meshlet prepass (and deferred prepass) binds material
+at group 2, replacing geometry bindings, although its pipeline expects the
+material at group 3. Disabling normals/SSAO or reducing quality is not an
+acceptable workaround.
+
+An isolated, licensed copy of published bevy_pbr 0.20.0 now lives only in the
+private source snapshot, crates/bevy-pbr. Its upstream source revision is
+b3bdd75becaffe9a16677cf5bae5bd6d198f052b. Four Rust files differ: reset/upload all
+per-view mask words, bind prepass materials at group 3, honor inherited
+visibility during instance extraction, and skip the stale raster table when
+no visible instance remains. The dependency is excluded from workspace
+membership, so offline resolution adds only the local bevy_pbr package rather
+than pulling unused upstream development/exporter dependencies. The initial
+member-based offline command failed for missing optional bevy_gltf; exclusion
+resolved it. Shared Cargo manifests/lockfile and installed app are unchanged.
+Shader extensions remain in the private harness, not in that source copy.
+
+The final passing command is:
+
+```sh
+CRYSTAL_RENDER_TEST_HEADLESS=1 CRYSTAL_RENDER_TEST_CAPTURE_TARGET=image \
+CARGO_TARGET_DIR="$PWD/target/performance-visibility" cargo test \
+  --manifest-path .local/grass-material-check/source/Cargo.toml \
+  --config 'profile.wasm-dev.package.crystal-voxel-view.opt-level=0' \
+  --locked --profile wasm-dev --jobs 2 -p crystal-voxel-view \
+  --lib exact_cluster_proof:: -- --include-ignored --test-threads=1 --nocapture
+```
+
+It passed 17 tests, zero ignored, in 6.14s after a 51.30s rebuild. Log:
+/tmp/geothite-exact-native-gpu-proof-33-instances.log. Both real GPU cases run:
+full source UV layout, and the production compact UV-less layout with normal
+and depth prepasses. The compact reference uses into_compact_mesh, removing
+the obsolete UV1 cutaway mask as production does. Bevy's meshlet PBR helper
+retains its required UV0 field; a separate derived source-UV shader flag keeps
+the original game's absent-UV semantics. There is no player-facing switch.
+
+Both cases have 10,218 foreground pixels in each image with zero foreground
+mask differences. Only 302 of 262,144 pixels differ; mean RGBA byte error is
+0.0003147125, maximum channel difference 7, and foreground RGB mean error is
+0.0107653 byte. Both source/candidate pairs were viewed. The matched images
+are under .local/grass-material-check/exact-gpu-native-tree and
+exact-gpu-native-tree-uvless-prepass. These are isolated native asset proofs,
+not production map/2D acceptance or FPS measurements.
+
+Both GPU cases put the visible object at instance 32, with 32 shared offscreen
+instances rejected by GPU frustum culling. Camera-layer hide/reveal therefore
+crosses a 32-bit mask-word boundary; restored images equal the initial GPU
+image byte for byte. Hiding their common ancestor removes the last visible
+instances. An ordinary red plane behind the old geometry fills every pixel
+with (204,25,25,255), proving no invisible meshlet depth survives. Restoring the
+ancestor reproduces the original GPU image byte for byte. Hidden camera images
+contain only clear color (8,10,13,255). The plane and restored image were viewed.
+
+No GPU renderer path is registered in the production game yet, and no meshlet
+speedup is established. The installed cached-pose/ray-bounds app remains the
+last verified release. Next work is automatic capability/readiness and capacity
+handling, worker-side opaque-tree preparation, original fade/material ownership,
+full production map integration, matched 3D/2D captures and repeated gameplay
+throughput/transition checks before promotion. No other application or build
+was stopped or suspended. All new implementation remains Rust/WESL and private;
+no pack, audio source, model, compiled deliverable or player toggle changed.
+The temporary official control asset in /tmp and failed diagnostic images were
+removed after isolation; accepted images and private candidates remain ignored
+for the continuing work. The PBR source and all prototype modules/manifests are
+backed up under candidate-files before any future source snapshot refresh.
+
+### Embedded exact-cluster shader loading, 2026-10-20
+
+The private PBR dependency now embeds the five verified shader extensions.
+The headless GPU harness uses the ordinary engine loader; its replacement
+loader and pre-camera shader mutations were removed. The final suite passed
+19 tests, zero failures and zero ignored tests, including both real GPU image
+and 33-instance visibility lifecycle checks. Log:
+`/tmp/geothite-exact-embedded-input-proof.log`. The source identity check pins
+the three embedded library assets loaded by a renderless app; culling and
+prepass execution are covered by the actual GPU cases.
+
+A prepared-Mesh adapter now accepts full and compact RGB/UV-less vertex
+contracts, retains indexed or non-indexed triangles, rejects animated UV tags
+and unsupported/incomplete attributes, and does not mutate the ordinary mesh.
+Its tests are included in the 19 checks. This adapter remains private and is
+not yet connected to production grove preparation. The native game has not
+yet registered the GPU path, and these checks establish no whole-game FPS
+or transition improvement.
+
+Bevy's meshlet documentation explicitly warns that low geometry/overdraw can
+be slower and consume more memory. This is why runtime adoption still needs
+full-scene measurements against the ordinary renderer at identical quality:
+<https://docs.rs/bevy/latest/bevy/pbr/experimental/meshlet/struct.MeshletPlugin.html>.
+
+### Private runtime cluster integration in progress
+
+The private voxel renderer now prepares exact opaque grove geometry before
+normal packing, retains it with the existing shared weak recipe cache, and
+registers an in-memory source before AssetPlugin. Native device support gates
+activation. The initial runtime scope is the existing non-shadow-casting and
+non-shadow-receiving panorama groves; ordinary fade ownership and sorted
+geometry stay authoritative. Raw geometry plus compressed input has a
+conservative 192 MiB live budget, and scene cluster capacity is bounded.
+
+The ordinary opaque draw remains available during asset/pipeline warmup. The
+GPU child inherits its visibility. Material uniform updates are mirrored, and
+ineligible materials or capacity overflow retain ordinary draws. This is
+private implementation, not accepted production behavior. A voxel-library
+`cargo check` passed (`/tmp/geothite-exact-runtime-check-2.log`); subsequent
+plugin lifecycle correction moved material-plugin registration into build so
+its nested render-asset plugin receives finish. The release location-tester
+build is running, logged at `/tmp/geothite-exact-runtime-release-build.log`.
+No full-map image or timing result is available yet.
+
+### First full-map runtime attempt
+
+The first release location-tester build completed in 8m32s, but its headless
+2560x1600 TinTowerRoof capture failed before producing an accepted image.
+wgpu reported multiple fragment entry points with automatic selection in
+`prepass_pipeline`. Logs are `/tmp/geothite-exact-runtime-roof-first.log` and
+`/tmp/geothite-exact-runtime-roof-pipeline-trace.log`. This is an integration
+failure; no FPS result or visual acceptance is claimed.
+
+Composition checks of the ordinary custom normal prepass and the stock normal
+and depth-only prepasses each found a single fragment entry. The focused test
+passed (`/tmp/geothite-exact-ordinary-prepass-depth-entries.log`), so it does
+not reproduce the complete client's module-selection context. The private
+prepass descriptors now select the canonical authored `fragment` entry
+explicitly. The next full-map run must establish whether that fixes the
+actual failure. The release rebuild is logged at
+`/tmp/geothite-exact-runtime-release-build-2.log`.
+
+Uniform-only material changes no longer restart GPU warmup, and in-flight
+in-memory source bytes are removed when their geometry owner disappears.
+Both corrections are in the rebuild. The installed app is unchanged.
+
+### Full-map rendering and first runtime measurements
+
+The second private release build completed successfully in 5m32s. Explicit
+prepass fragment selection cleared the observed full-client validation error.
+The full-quality 2560x1600 Roof capture completed; its trace recorded GPU draws
+active for 1,048,448 clusters, with 136,554,026 conservatively charged geometry
+bytes and one derived material asset. Source trace was moved from an accidentally
+relative scratch filename into ignored local verification output.
+
+The production-publisher GPU regression passed (one test, zero ignored):
+`/tmp/geothite-exact-runtime-gpu-regression-2.log`. It compares ordinary and
+GPU images, exercises depth/normal and alpha-mask shadow prepasses, checks
+automatic replacement layers and the actual meshlet child, changes a source
+uniform while requiring GPU-only camera layers to remain active, verifies
+changed GPU pixels, and hides the parent while requiring a clear image. This
+is a primitive runtime integration test, not full-map visual acceptance.
+
+`exact-runtime-roof-paired-3d.png` and `exact-runtime-roof-paired-2d.png` were
+viewed. Their receipt preserves state, actor source, position and facing at
+noon with camera `0 7 5 0`. The forest differs visibly from the older renderer
+captures; full-scene fidelity is not accepted until a matched dependency/feature
+control explains that difference. No game geometry or quality change is
+authorized as a performance tradeoff.
+
+Immutable candidate: `exact-runtime-release-v2-client`, SHA256
+`56221c2aefd5b335cf13abc2185f3a02f7c340ec47ecf6f8e9b8bbbd5875ece3`.
+Control is the existing ray-bounds client, SHA256
+`4120805bb5e738e9c5c393518d4ee7eea93ae0d9119730f267aa943cf9ebb3b1`.
+At identical 2560x1600 default measurement camera, noon, Roof (9,13), 60 seconds
+and synthetic `UUDUDUDUDUD`, the first candidate/control pair yielded:
+
+| Metric | GPU candidate | Ordinary control |
+| --- | ---: | ---: |
+| Queue completions/second | 14.155 | 14.001 |
+| Update median/p95 ms | 65.60 / 103.90 | 70.77 / 75.31 |
+| Movement median/p95 ms | 73.21 / 112.18 | 71.90 / 76.52 |
+
+Both completed all 352 movement rows, three grid origins and zero additional
+terrain builds. No owned compiler ran during measurement. Queue callbacks
+are not display-presented FPS. This pair establishes no useful gain: throughput
+is nearly equal and candidate tails are worse. The reverse control completed
+13.295 callbacks/sec, update 73.24/87.03 ms and movement 70.06/74.31 ms; the
+following GPU repeat is running. Its outputs use `exact-runtime-roof-*-reverse`.
+
+A subsequent source review found unconditional layer writes on already-published
+parents/children. A conditional-write correction is prepared outside compiler
+inputs as `candidate-files/exact_meshlets-stable-layers.rs`; it is not in the
+measured v2 binary. The GPU path remains private and uninstalled.
+
+### Streamed-instance readiness bug reproduced and repaired
+
+The v2 reverse GPU measurement completed 7.167 queue callbacks/sec, update
+median/p95 131.42/204.86 ms and movement 133.70/206.37 ms. The preceding control
+was 13.295 callbacks/sec. Both retain 352 movement rows, three grid origins
+and zero additional terrain builds. These data do not support installing v2.
+Other builds remain authorized to run; no process was stopped for this work.
+
+The private publisher now conditionally assigns render layers, avoiding
+unchanged-component modifications. A real GPU regression verifies that a
+settled parent's layer change tick remains unchanged across material updates.
+The fixture now uses a translated, rotated, one-eighth-scale parent at large
+world coordinates, matching panorama transform characteristics. That version
+passed (`/tmp/geothite-exact-runtime-stable-layers-regression.log`).
+
+A separate engine-source investigation found a concrete readiness defect:
+`MeshletMeshManager::add_meshlet_meshes` consumes the CPU asset with
+`Assets::remove_untracked` after uploading. Later instances sharing its handle
+therefore see no CPU asset despite `AssetServer::is_loaded_with_dependencies`
+remaining true. The publisher incorrectly interpreted absence as loading,
+left those instances unpublished, and prevented completion of global warmup.
+This could retain ordinary and GPU draws together indefinitely.
+
+The new GPU regression reproduces the exact consumed-asset state and adds a
+later shared instance. Before the repair it fails its 10-second publication
+deadline (`/tmp/geothite-exact-runtime-late-instance-before-fix.log`). After
+switching readiness to the authoritative asset-server load state, it passes
+in 1.84s (`/tmp/geothite-exact-runtime-late-instance-after-fix.log`). Pending
+unpublished instances remain ordinary layer-31 draws and no longer prevent
+already-prepared instances leaving double-draw warmup. New publications still
+reset warmup while their actual assets and pipelines prepare.
+
+The current 20-test exact-cluster suite also passes with both real GPU tests
+executed and zero ignored tests (`/tmp/geothite-exact-runtime-final-cluster-suite.log`).
+These are correctness checks, not a speedup claim. The corrected release
+location-tester build is running with log
+`/tmp/geothite-exact-runtime-release-build-3.log`; full-scene performance and
+forest fidelity must be checked again. No GPU prototype is installed.
+
+### Hardware back-face mismatch reproduced and repaired
+
+Release v3, containing streamed-asset readiness and stable-layer corrections,
+completed in 6m56s and was preserved as the ignored
+`exact-runtime-release-v3-client`. No performance or visual result is claimed
+for that binary. While it linked, only its cfg(test)-excluded fixture was
+changed: the release dependency files were checked and did not contain that
+fixture, so active release inputs remained fixed.
+
+The pinned meshlet hardware raster descriptor leaves culling at its default
+(None), unlike its software rasterizer, which rejects non-positive triangle
+area. Exact palette eligibility requires the ordinary material's back-face
+culling. Closed meshes can conceal this difference. An open back-facing red
+triangle added to the translated/rotated/scaled runtime fixture reproduced
+extra GPU pixels: mean RGBA byte error 0.317234 exceeded the existing 0.1
+image limit (`/tmp/geothite-exact-runtime-backface-before-fix.log`).
+
+The private main-view meshlet hardware pipeline now explicitly culls back
+faces, preserving the admitted ordinary palette contract. The shadow hardware
+pipeline is unchanged; admitted panorama geometry does not cast shadows. The
+same GPU regression now passes in 2.06s
+(`/tmp/geothite-exact-runtime-backface-after-fix.log`), including the open
+triangle, scaled placement, late shared instance, uniform mutation, stable
+change tick and parent hiding checks. The current 20-test cluster suite also
+passes with zero ignored tests (`/tmp/geothite-exact-backface-cluster-suite.log`).
+
+This establishes a concrete culling defect and correction, not complete
+forest visual acceptance or a new FPS result. The corrected release build is
+running (`/tmp/geothite-exact-runtime-release-build-4.log`). Its full-map image
+and walking comparisons remain required. The installed app is unchanged.
+
+### Panorama-only worker preparation and v4 verification
+
+Release v4 completed in 8m40s. Immutable QA client SHA256:
+`d98fdd22ac4f69a492583889a43122e24437010044f241bc40407e2b6cf5e8b0`
+(`exact-runtime-release-v4-client`). Its 2560x1600 Roof walk completed all 352
+movement rows, three grid origins and no additional terrain builds. It recorded
+7.192 queue completions/sec, update median/p95 130.66/233.99 ms and movement
+127.41/234.05 ms. Other compilers were observed active and were left alone.
+No useful performance improvement is established by this run.
+
+The v4 paired 3D/2D images were viewed and preserve state, position, facing and
+noon; receipt camera is `0 7 5 0`. The forest still differs from older control
+captures, so full-scene appearance is not accepted. Existing trace events
+confirm GPU-only activation at trace time 45.24s while the presentation remains
+3D until 57.02s. Capture-log elapsed times have a different origin and must not
+be compared directly to trace timestamps. The last 3D trace interval was
+contended by compilation during capture, not a benchmark.
+
+Worker review found unnecessary cluster encoding in every ordinary grove,
+including normal destination-preload work that never uses GPU panorama draws.
+The private source now defaults shared preparation and ordinary forest libraries
+to no cluster encoding. A dedicated bounded library enables it only for the
+native panorama worker, before normal packing. Browser preparation is unchanged.
+The GPU regression verifies ordinary metadata count zero, panorama metadata
+present and identical ordinary geometry signatures for both caches, while
+retaining all previous rendering/lifecycle checks. It passes in 2.20s
+(`/tmp/geothite-exact-panorama-scope-regression-2.log`); all ten forest-instance
+regressions also pass (`/tmp/geothite-exact-scope-forest-tests.log`). The initial
+scope test compile failed because its local closure shadowed the mesh prepare
+function; renaming the test closure resolved it.
+
+A fresh source/dependency-matched ordinary-renderer control is now building
+(`/tmp/geothite-exact-source-matched-control-build.log`). This temporary private
+comparison replaces only the app's exact-source registration call with a no-op,
+so the GPU plugin is not registered. There is no new runtime or player option.
+**After this compiler is terminal, preserve its client as the matched control
+and restore the source registration before any GPU candidate or production
+build.** The GPU-enabled app source is backed up at
+`candidate-files/gpu-enabled-bevy_shell-before-control.rs`. The temporary block
+is labelled `Temporary source-matched CPU reference` in private `bevy_shell.rs`.
+The shared checkout's app source and installed app are unchanged by this
+control. Full-map fidelity and performance are still unverified.
+
+### Fresh matched control and automatic raster routing
+
+The source/dependency-matched ordinary-renderer control completed in 6m19s
+and was preserved as `exact-runtime-source-matched-control-client`, SHA256
+`49f7a0b49f3f59727892c82bab9181b6a6cc83cda5e247f7dd53d99d96c5ce2c`.
+The private app source registration was restored after the compiler completed;
+no temporary control block remains. This control uses the current source and
+Bevy features and omits GPU-plugin activation, with no runtime/player toggle.
+
+Its same-quality 60-second Roof walk completed 963 queue callbacks, 16.022/sec,
+update median/p95 54.39/103.24 ms and movement 53.90/94.62 ms. All 352 movement
+rows, three grid origins and no additional terrain builds completed. The older
+ordinary-control executable is not an adequate current-source image reference.
+The fresh control warmup was viewed against v4 at the same pose. Mean RGB byte
+differences were 0.0585/0.0662/0.0329 overall; the sampled right forest strip
+was identical, while the left forest strip averaged 0.2272/0.3458/0.1449. These
+are much smaller differences than the old-control comparison. A matching
+low-camera 3D/2D control capture is running. Performance still favors the
+ordinary renderer over forced-hardware v4; the data are not a GPU speedup.
+
+The hardware-only routing override had remained from early debugging, even
+after the actual visibility-mask defect was found. A new explicit GPU test
+cleared only that reserved tag in memory and exercised Bevy's normal size-based
+software/hardware policy. It passed in 3.13s with 1,179,648 decoded vertex words
+across 512 clusters, 9090/9090 colored pixels, mean RGBA byte error 0.0015144,
+normal prepass and all 33-instance mask/ancestor/depth lifecycle checks. Its
+image was viewed. No existing threshold was relaxed. Log:
+`/tmp/geothite-exact-auto-raster-gpu-proof.log`.
+
+Game asset preparation now leaves the routing field zero to use this policy.
+The two hardware-reference fixtures explicitly set their reserved tag in test
+assets; the automatic fixture executes untouched production bytes. The focused
+current cluster suite passes 21 tests and the production runtime module passes
+11 tests, zero ignored in both (`/tmp/geothite-exact-auto-cluster-suite-focused.log`,
+`/tmp/geothite-exact-auto-runtime-suite-focused.log`). An earlier overbroad
+`exact_` filter ran 153 tests: 150 passed and three untouched model tests failed
+(Ho-Oh and Lugia icon/model position distinction assertions; neutral rig source
+comparison missing required source-path environment variables). That broad run
+is not green and is retained at `/tmp/geothite-exact-auto-production-suite.log`.
+No unrelated model source or asset was changed to bypass those failures.
+
+The GPU-enabled automatic-routing release build is now running:
+`/tmp/geothite-exact-runtime-release-build-5-auto.log`. It also includes the
+validated panorama-only worker scope. Full-scene automatic-routing performance
+and final visual acceptance remain pending. The installed game is unchanged.
+
+### Automatic-routing full-scene result and visible admission
+
+Release v5 automatic routing completed in 6m11s and was preserved as
+`exact-runtime-release-v5-auto-client`, SHA256
+`ea3ae8107d4f76e425d6fe9d9d4f29e0204829fd6e6e344c7f6894e0503ae34e`.
+Its Roof replay recorded 11.026 queue completions/sec, update median/p95
+87.43/116.53 ms and movement 82.42/107.37 ms. The following fresh matched
+ordinary control recorded 14.146 callbacks/sec, update 69.83/83.22 ms and
+movement 69.73/87.29 ms. Both completed 352 movement rows, three grid origins
+and no additional terrain builds. No owned compiler ran during either replay;
+other authorized builds remained running. Automatic routing improved over the
+forced-hardware trial but does not beat the matched ordinary renderer. No GPU
+prototype is accepted for installation from these results.
+
+The next private change limits admission to bounds intersecting an active
+world view. Previously offscreen maps could consume the bounded cluster table
+while useful visible geometry remained ordinary. Excluded or over-budget
+instances retain their full ordinary layer-31 draw; no geometry is dropped.
+Published GPU children leaving the view are hidden before inherited visibility
+propagation, so they do not remain logical GPU instances. Re-entry restores
+them. Bounds/frusta are updated before admission, and newly created children
+receive the source's current global transform immediately instead of spending
+their first extracted frame at the identity transform.
+
+World cameras are recognized by their existing layer-31 boundary, including
+secondary captures. Their other layers are preserved; actor-only cameras are
+untouched. Prepared palette identities remain cached while their source assets
+live, so ordinary view movement does not discard other views' warmup state.
+
+The expanded GPU regression passes: an offscreen shared instance remains
+ordinary without consuming a published GPU slot; a visible later instance
+reuses its uploaded asset; leaving/re-entering the view restores exact pixels;
+a secondary layer-31/7 capture retains geometry and layer 7; inactive views
+release logical GPU instances; activation restores exact pixels; the first
+GPU child transform matches its source; existing material, back-face, scaled
+placement and hidden-depth checks still hold. The focused production runtime
+module passes all 11 tests, zero ignored, in 6.01s:
+`/tmp/geothite-exact-visible-admission-runtime-suite.log`. The preceding
+prototype test also passed (`/tmp/geothite-exact-visible-admission-regression.log`).
+
+Release v6 is building with four jobs in the private target cache, without
+stopping other builds: `/tmp/geothite-exact-runtime-release-build-6-visible.log`.
+Full-scene benefit is unverified. The installed app remains unchanged.
+
+
+### Visible-admission v6 result and CPU follow-up
+
+The completed v6 full-resolution roof replay returned 763 updates in 60s,
+median/p95 76.62/104.00ms; movement 83.24/114.69ms, three grid origins and
+zero additional terrain builds. Queue completion callbacks were 12.714/s
+(764/60.090688s), with one outstanding at both endpoints and no poll errors.
+These are not display FPS or GPU timestamp durations. This remains slower
+than the nearby same-source ordinary control (14.146 callbacks/s), so v6 is
+not accepted or installed. Binary SHA256:
+`99b2608a45147d82056cb1cafe6d515f51774f253f86d70d8c571ab01c47c4ae`.
+Log: `/tmp/geothite-exact-runtime-v6-visible-roof-walk.log`.
+
+A private CPU follow-up retains occluder ancestor visibility results between
+frames and invalidates them on relevant visibility, parent-link and component
+removal changes. Changing a render leaf does not rebuild the ancestor cache.
+Current-frame hide/unhide and explicit Visible override semantics remain
+required. The existing hidden-cache regression now also exercises reparenting
+and removing parent/visibility components. Tests are running in
+`/tmp/geothite-hierarchy-cache-tests.log`; benefit is not yet measured.
+Other applications/builds remain untouched following the user's No.
+
+
+The refined CPU cache checks Ref change ticks only for cached ancestor entities;
+it does not scan all render leaves with Changed filters. All 59 focused
+occluder tests pass with the external TUI pack (2.65s):
+`/tmp/geothite-hierarchy-cache-focused-pack-tests.log`. The first broader run
+omitted CRYSTAL_RENDER_TEST_PACK and failed the pack-requiring NPC fixture;
+rerunning with the completed external pack passed all tests.
+
+An ordinary-renderer release with this CPU change is building in the private
+release target, session 91061, log
+`/tmp/geothite-hierarchy-cache-release-build.log`. The private app's exact
+geometry registration is temporarily omitted solely to match the existing
+ordinary-renderer control. Restore it from
+`.local/grass-material-check/candidate-files/gpu-enabled-bevy-shell-before-hierarchy-control.rs`
+after the build reaches terminal state and saving an immutable benchmark
+binary. No root source promotion or installation has happened for this cache.
+Do not edit these private compiler inputs while this build is live. Next:
+complete this exact build, save immutable client, restore registration, compare
+ordinary control and CPU-cache candidate with the same 60s roof route; accept
+only measured gains with unchanged visuals and passing visibility behavior.
+
+
+The CPU-cache ordinary-renderer release completed successfully in 5m12s.
+Immutable client: `.local/grass-material-check/hierarchy-cache-ordinary-client`,
+SHA256 `9e8851225e9ceb3319292c56d79aaef7642e0654efc7b9251b2e026bf766ce09`.
+The private app's GPU source registration has been restored after the build
+terminated. The candidate's first 60s roof replay is session 33276, log
+`/tmp/geothite-hierarchy-cache-roof-first.log`, output
+`.local/grass-material-check/hierarchy-cache-roof-first`. Follow it with the
+immutable same-source ordinary control (no CPU-cache change), same settings.
+No installation or root source promotion yet.
+
+The CPU approach is consistent with Bevy's documented query costs:
+https://docs.rs/bevy/latest/bevy/ecs/query/struct.Changed.html and
+https://docs.rs/bevy/latest/bevy/prelude/struct.Query.html.
+Change detection is not an archetype-only filter; inspecting a bounded set of
+known ancestors avoids scanning every matching scenery leaf. This is a design
+rationale, not evidence of a full-scene gain.
+
+
+CPU-cache first order (candidate then ordinary control), same 2560x1600 roof
+route, 60s each: candidate 900 updates, median/p95 59.29/122.48ms,
+movement 57.30/127.84ms, 14.608 queue completion callbacks/s (879/60.170528s).
+Control 816 updates, median/p95 73.63/101.99ms, movement 72.15/105.25ms,
+13.206 callbacks/s (794/60.124601s). Both three origins, zero extra terrain
+builds, zero poll errors. Outstanding submissions grew 6→28 and 14→36.
+The median/throughput improvement is accompanied by worse candidate tails;
+this pair alone does not establish smoother gameplay. Other builds remained
+running, untouched. Reverse-order repetition is required.
+
+Reverse-order control is running as session 48937, log
+`/tmp/geothite-hierarchy-cache-control-second.log`, output
+`.local/grass-material-check/hierarchy-cache-control-second`. After terminal
+completion, run the immutable `hierarchy-cache-ordinary-client` with output
+`hierarchy-cache-roof-second` and the same flags. No owned compiler is running;
+private GPU app registration is restored, and no root promotion/installation
+has occurred.
+
+
+Reverse order completed: ordinary control 841 updates, median/p95
+70.44/97.08ms, movement 71.28/91.14ms, 13.738 callbacks/s
+(825/60.054564s). CPU-cache candidate 939 updates, median/p95
+61.50/73.73ms, movement 60.53/72.67ms, 15.632 callbacks/s
+(940/60.134267s). Both three origins and zero extra terrain builds/poll errors;
+outstanding 20→36 and 36→36. Median and callback throughput improve in both
+orders, while first-order candidate tails were worse. The first warmup image
+RGB mean-byte differences were 0.045814/0.036533/0.023660; candidate viewed.
+This supports keeping the CPU change for production verification, not a claim
+of fluid gameplay or a general 60 FPS result.
+
+Only the ancestor-cache implementation and expanded hide/reparent/removal
+regression have been promoted into root `occluder_fade.rs`; a pre-promotion
+backup and exact patch are kept under ignored `.local/grass-material-check`.
+No GPU prototype code/dependency was promoted. Root tests run as session
+26536, `/tmp/geothite-hierarchy-cache-root-tests.log`, with the external TUI
+pack and shared isolated target `target/performance-visibility`. Paired
+candidate 3D/2D screenshots run as session 86582, log
+`/tmp/geothite-hierarchy-cache-roof-paired.log`; inspect both and the preserved
+state receipt before visual acceptance. No new app installation yet.
+
+
+Root focused tests completed successfully: 59 passed, zero failed/ignored,
+2.43s, `/tmp/geothite-hierarchy-cache-root-tests.log` (session 26536 terminal0).
+Paired candidate capture completed successfully (session 86582 terminal0).
+Both images were inspected: roof walkway/ridges and trainer placement remain
+consistent with the 2D location; forest depth, scenery colors, cloud lighting
+and character readability remain intact relative to the matched control.
+The 3D view is perspective while 2D is top-down; no model fidelity claim beyond
+preserving the cache control's scene is inferred. Receipt:
+`state_preserved=true`, frame577/hash1478414892, virtualseconds10.527715626,
+Chris center[-1248,960], facing[0,-1], presentation center[-1280,992],
+zoom0/rotation7/pitch5/first-personfalse. Capture durations17.43/24.96s are
+not door-transition measurements.
+
+A fresh production source snapshot was copied from current root into ignored
+`.local/hierarchy-cache-production/source` (Cargo files, crates, assets,
+modpacks, tools, docs, README and optional .cargo), preserving current shared
+model/source work without the private Bevy fork or GPU prototype. Its native
+release build is session27746, log
+`/tmp/geothite-hierarchy-cache-production-build.log`, target
+`target/performance-release-native`, jobs2. Do not edit those frozen inputs or
+restart a live build. It builds crystal-bevy desktop plus pack verification
+and artwork bundlers. No new app installation yet. Next: poll this exact handle,
+validate resulting pack/artifacts, run required controller/MCP/stdio regressions,
+then package/install and verify content/signing/save preservation. The full
+smoothness objective remains active; roof callback throughput15/s is not fluid
+performance or displayed FPS.
+
+
+Production build session27746 failed: the frozen snapshot lacked the compiled-in
+`art/battles/arena-palettes.json`, and current buoy-course geometry referenced
+Vec2 through a test-only import. Copied the small source palette directory and
+LICENSE into the snapshot, and added a normal Vec2 import to root and snapshot
+`mesh/buoy_course.rs`. An initial repair script wrongly asserted that `use
+super::*` occurred only once (it also occurs in the test module), so its import
+edit did not run; the subsequent build session42635 failed on the same three
+Vec2 references. This was corrected by replacing only the top-level import.
+Both failed sessions are terminal; no live build was restarted or modified.
+
+Corrected production build is now session65654:
+`/tmp/geothite-hierarchy-cache-production-build-fixed-2.log`. Its snapshot
+inputs are frozen again. The snapshot has no meshlet feature, Bevy PBR path
+fork or exact-geometry source registration. Required root gameplay regressions
+run sequentially in session12184 (wasm-dev/jobs2, external TUI pack, isolated
+performance-visibility target): `renderer_neutral_controller_`, then geothite
+`mcp_drives_real_movement_and_production_start_menu`, then `--test stdio_clean`.
+The test output is retained on the live command handle, not a separate log.
+No installation yet. Poll those exact handles before taking the next action.
+
+
+The renderer-neutral controller filter passed eight tests (14.11s), including
+the required battle command/PP mutation and Mom/New Bark gate regressions.
+One pre-existing department-store checkout test remained ignored; it is not
+counted as passed. Session12184 is still live, now building the geothite MCP
+and clean-stdio regressions. Corrected production session65654 remains live;
+no compiler inputs changed after it started. Save/pack/executable pre-install
+hashes were recorded under ignored
+`.local/hierarchy-cache-production/before-install.json` (one existing save).
+
+
+Required gameplay session12184 completed successfully (terminal0). Controller:
+eight passed, one existing ignored; battle-turn/PP and Mom/gate included. MCP
+movement/production Start regression: one passed in0.97s. Clean stdio
+`normal_mcp_gameplay_keeps_stderr_clean`: one passed in1.47s, asserting empty
+stderr through Mom dialogue in the spawned client. No additional testing is
+required for this unchanged controller surface unless a later failure appears.
+Production build session65654 remains live; packaging/install still pending.
+
+
+### CPU ancestor cache installed and verified
+
+Corrected production release session65654 completed in9m24s (terminal0).
+Installer session3512 completed in32.3s (terminal0), log
+`/tmp/geothite-hierarchy-cache-install.log`: external pack verified, scenery
+and people bundled from frozen production artwork, staged check-installation
+passed and strict deep signing verified before promotion. Installed app:
+`~/Applications/Geothite.app`. Final session71134 (terminal0) reran installed
+`--check-installation` from `/tmp` with CRYSTAL_OPEN_MODEL_ROOT unset, verified
+strict deep codesign, and asserted both source/bundled pack hashes plus the
+existing save hash unchanged. One save preserved byte-for-byte.
+
+Installed executable SHA256:
+`c111c64d1faac3f951071f600a92be87edc4fc0f5cf3299e4900e26229834d72`.
+Unsigned release SHA256:
+`3f2bdb0cdcd0fd2e431e1011857e597be7b68127daca39e07edc8bca75f39378`.
+Unchanged pack SHA256:
+`a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007`.
+Verification metadata is ignored at
+`.local/hierarchy-cache-production/installed-verification.json`.
+
+No new gameplay toggle, timing-tool implementation, GPU prototype dependency,
+pack generation, commit or visible window was introduced. This ships the CPU
+cache and the necessary normal-build Vec2 import; current shared source/model
+work was preserved in the frozen source. The earlier paired roof gains came
+from the isolated same-source ordinary-renderer comparison and must not be
+represented as measured display FPS for this newer production source snapshot.
+The full loading/fluidity objective remains active. Next useful work is to
+build the location-tester example from this same production snapshot (no
+experimental fork) and inspect current hot paths under actual walking. No
+owned compiler or test handle is live after these terminal completions.
+
+
+### Current production renderer trace and dense-panorama follow-up
+
+Production-snapshot location tester built successfully in6m21s (session40129
+terminal0), log `/tmp/geothite-production-cache-location-build.log`. Immutable
+ordinary client: `.local/hierarchy-cache-production/ordinary-frame-client`,
+SHA256 `a56ac8aabe3b0717e03740c27846db4a792473894e025f9d385a8a5ffa65be15`.
+Its 60s full-resolution roof walk with existing opt-in trace completed
+(session16459 terminal0), log `/tmp/geothite-production-ordinary-roof-profile.log`.
+805 updates, median/p95 76.60/99.07ms; movement70.88/98.90ms, two grid origins,
+zero extra terrain builds; queue callbacks12.953/s (778/60.063071s), outstanding
+8→36, no poll errors. Tracing and other builds make this diagnostic, not a new
+untraced A/B benchmark. The bounded trace has131072 events and drops older
+records; inspect retained late events rather than treating it as full startup.
+
+Last20s diagnostic medians: render frame73.09ms, main71.149ms,
+render.graph_submit55.687ms, prepare_gpu12.157ms, visibility envelope10.978ms,
+occluder span9.892ms, check-visibility envelope8.426ms, transforms2.214ms.
+Schedule envelopes nest/overlap, are not additive self times. A submission
+wait is not a GPU timestamp duration. Occluder metadata reports167987 groups,
+168841 leaf entities and1356360 deferred sorted leaves. Existing tracing also
+walks these groups to produce metadata, so it can affect this diagnostic cost.
+
+The native task allocation is4 foreground workers/5 background/1 IO on this
+10-core host. Expanding foreground workers is deferred: the trace points more
+strongly to render submission than scheduling. The next private experiment
+uses stock Bevy two-phase GPU occlusion culling plus DepthPrepass for this
+very dense panorama, retaining original geometry, detail, resolution and view.
+Earlier ordinary-route occlusion checks failed to improve; no global enablement
+is justified. This trial must prove a roof-specific benefit and exact visible
+results before any production context-specific use. Bevy's installed source
+confirms bounding-box conservative culling and depth-prepass requirement; GPU
+capability support must also be confirmed in the runtime log.
+
+Private trial only: added native world-camera DepthPrepass+OcclusionCulling in
+`.local/hierarchy-cache-production/source/.../lib.rs`, preserving the ordinary
+file at `.local/hierarchy-cache-production/ordinary-voxel-lib-before-occlusion.rs`.
+No root runtime source, dependency or player toggle changed for this trial.
+Build is live session72115, log `/tmp/geothite-panorama-occlusion-build.log`,
+existing release target/jobs2. Freeze those compiler inputs. After terminal
+completion, save an immutable candidate, verify capability/shader correctness,
+run untraced full-resolution roof candidate/control pairs, and inspect paired
+3D/2D plus motion/disocclusion behavior. Installed app stays the verified CPU
+cache release. Other apps/builds are untouched.
+
+
+Occlusion trial build session72115 completed successfully in5m41s (terminal0).
+Immutable candidate `.local/hierarchy-cache-production/occlusion-frame-client`,
+SHA256 `fd23b81750bce6fbf988383b189f70a0dffc008747f201fad1c799b3fa19cc36`.
+Saved experimental lib.rs as `occlusion-voxel-lib-prototype.rs` in that ignored
+directory and restored the production snapshot lib.rs to the ordinary renderer
+after compilation. No root occlusion change or player switch exists.
+
+Candidate first roof replay session3782 passed warmup/shader checks (terminal0).
+Runtime explicitly logs GPU preprocessing fully supported on this device.
+Untraced60s/2560x1600/UUDUDUDUDUD:1125 updates, median/p95 53.51/59.47ms,
+movement53.49/58.33ms, callbacks18.751/s (1127/60.104419s), outstanding32→31.
+Fresh ordinary control session58541 terminal0:909 updates,66.08/76.39ms,
+movement58.52/71.91ms, callbacks15.130/s (910/60.145664s), outstanding36→36.
+Both352movementrows/two origins/zero additional terrain builds/poll errors.
+Logs `/tmp/geothite-panorama-occlusion-{roof,control}-first.log`.
+No owned compiler was running; other compilers had completed without being
+stopped. These are queue callbacks and host intervals, not displayed FPS.
+
+The candidate warmup image was viewed and retained roof/trainer/forest detail.
+Relative to the prior production-profile warmup (different settled animation
+time), mean RGB byte differences were0.014296/0.012366/0.009049. This is an
+initial consistency check, not complete moving-camera/paired-state validation.
+Depth/prepass shader source applies the same grass deformation and clock as
+forward rendering. Native whole-route occlusion is still not justified by
+this roof result; earlier ordinary-route checks regressed.
+
+Reverse-order ordinary control is live session75108:
+`/tmp/geothite-panorama-occlusion-control-second.log`, output
+`.local/hierarchy-cache-production/occlusion-control-second`. After terminal,
+run immutable occlusion-frame-client with identical flags and output
+`occlusion-roof-second`. If both orders improve, implement and test a scoped
+automatic dense-panorama policy, including destination pipeline preparation,
+return to ordinary views, secondary cameras and retained pre-existing depth
+prepass ownership. Inspect paired3D/2D and moving/disocclusion captures before
+promotion/installation. Installed app remains the verified CPU-cache release.
+
+
+Reverse occlusion comparison completed. Ordinary session75108 terminal0:
+1110 updates,53.17/58.55ms median/p95, movement52.52/58.07ms,
+18.498 queue callbacks/s (1111/60.062003s), outstanding36→36. Candidate
+session25422 terminal0:1137 updates,53.11/59.53ms, movement51.70/56.15ms,
+18.951 callbacks/s (1139/60.103291s), outstanding32→31. Both zero extra
+terrain builds/poll errors. The strong first-order gain did not repeat in
+update intervals; culling remains rejected for promotion. Ordinary production
+snapshot lib.rs is restored; no app/source/runtime toggle changed.
+
+A direct current-source house-exit diagnostic completed session38264 terminal0,
+log `/tmp/geothite-house-exit-current-profile.log`, output
+`.local/hierarchy-cache-production/house-exit-current-profile`, trace
+`house-exit-current.trace.json` in the same ignored root. Route PlayersHouse1F
+(6,6), DDBBBBBBBBBB,20s,2560x1600,noon:896 updates,19.82/20.98ms,
+movement384rows/19.54/20.93ms,two origins,zero extra terrain builds. Trace has
+33325events,zero dropped. State changes: House3D/pendingfalse4.582751s;
+NewBark3D/pendingtrue6.460295s; NewBarkpendingfalse8.445886s. **This is a
+synchronous-pipeline QA trace, not normal-play door latency.** Median late
+render.submit17.485ms/graph_submit17.128ms, main2.168ms, prepare_gpu1.506ms.
+During entry, render.submit reaches1589.94ms while graph_submit remains small,
+pointing to compilation/work before graph submission. Four empty-mesh warnings
+are not a per-frame upload storm. Avoid dumping individual tree events: there
+are thousands; aggregate/bound output.
+
+Code inspection exposes a concrete preload mismatch: render_quality changes
+Gaussian indoors to Hardware2x2 outdoors, while pipeline_preload specializes
+hidden destination materials only using the current indoor WarmupView key.
+It already warms directional-shadow variants but not the alternate color-view
+shadow-filter key. Thus the first outdoor material needs another pipeline.
+Destination initial grove residency is12 versus325requested at entry, also
+worth investigating after the shader fix; do not conflate source-build hits
+with full scene readiness or infer normal-play pause from forced-sync QA.
+
+Expanded the private existing native GPU regression to start with a Gaussian
+warmup view, require a compiled Hardware2x2 variant while the destination is
+hidden, then switch the visible camera to Hardware2x2 and require exact cached
+pipeline ID reuse. The before-fix test is building as session67498, log
+`/tmp/geothite-destination-filter-regression-before.log`. Private snapshot
+pipeline_preload.rs contains ONLY this test change so far; original backup:
+`.local/hierarchy-cache-production/ordinary-pipeline-preload-before-filter-fix.rs`.
+No implementation fix or root runtime change yet. After terminal, inspect the
+specific failure, then prepare both legitimate color-filter variants while
+preserving all other view/material bits and existing bounded queues; rerun the
+same regression, and check the real house exit and matched 3D/2D. Do not add a
+player setting. Installed app remains the verified CPU-cache release.
+
+
+The expanded before-fix native GPU test session67498 failed as intended in0.97s
+(terminal101), specifically: "outdoor hardware-filter shader must be warmed
+while indoor view is Gaussian". This proves the missing specialization, not
+normal-play pause duration. Implemented warming the live view plus Gaussian
+and Hardware2x2 color-filter variants, clearing only the shadow-filter bits
+and preserving every other material/view bit. HashSet and existing pending/
+work/signature limits still bound speculative work; no camera, geometry,
+quality setting, additional draw, control or shader implementation changed.
+Prepass and directional-shadow key handling remains unchanged.
+
+After-fix GPU session94710 passed in2.03s (terminal0), including hidden-to-visible
+outdoor pipeline-ID reuse, directional shadow/camera-prepass reuse, exclusion
+of hidden placeholder actors and future player-reveal material compilation.
+The future-reveal selection then received an explicit Hardware2x2 filter to
+avoid nondeterministic selection from the newly warmed alternatives. Final
+session66359 passed in0.33s (terminal0), log
+`/tmp/geothite-destination-filter-regression-after-fixed-selection.log`.
+
+Root pipeline_preload.rs was byte-identical to the frozen original backup;
+after reasserting that equality, promoted this implementation and expanded
+regression to root without overwriting unrelated source work. The current app
+is NOT yet updated with this fix. A release QA example is building from the
+same corrected frozen production snapshot as session71490:
+`/tmp/geothite-destination-filter-release-build.log`, release target/jobs2.
+Freeze its private source inputs until terminal. On completion save immutable
+`destination-filter-frame-client`, run the identical PlayersHouse1F(6,6)
+DDBBBBBBBBBB diagnostic with separate output/trace and inspect presentation
+readiness/cold pipeline work relative to ordinary-frame-client. Remember these
+QA captures force synchronous compilation; never claim a production door latency
+from them. Verify matched 3D/2D appearance, root GPU regression and required
+gameplay checks before a native release/install. Also investigate why initial
+preloaded grove residency is12 versus325requested if the readiness gap remains.
+No other app/build was stopped; no owned build besides71490 remains live.
+
+
+Root native GPU regression session1838 passed in3.06s (terminal0), log
+`/tmp/geothite-destination-filter-root-regression.log`. QA release session71490
+completed in4m49s (terminal0), log
+`/tmp/geothite-destination-filter-release-build.log`. Immutable fixed client:
+`.local/hierarchy-cache-production/destination-filter-frame-client`, SHA256
+`d911ccad5734f2d3696c617d8361861e68131cff1e74f91d20eefca29cdac30f`.
+
+Identical20s house-exit diagnostic completed session4183 terminal0, log
+`/tmp/geothite-house-exit-filter-fixed-profile.log`, trace
+`house-exit-filter-fixed.trace.json` in the production scratch root.878 updates,
+median/p9525.35/31.18ms; movement384rows/24.61/28.95ms,two origins,zero extra
+terrain builds.31740trace events,zero dropped. Presentation: House3D ready
+6.452714s; NewBarkinactive/pending7.782711s; active/pending8.094859s;
+fully settled8.778181s. The pending span is shorter than the earlier forced-sync
+diagnostic, but startup/publication order differs and steady intervals are
+worse. Do not claim a production latency or overall FPS gain from this pair.
+Current QA forces synchronous pipeline compilation. The native regression
+provides direct proof of hidden outdoor shader compilation/cache reuse.
+
+Further confirmed source mismatch: destination_preload::prepare builds its
+perspective using frame.viewport_size.x/y (classic1.111...), while live
+sync_voxel_view uses the actual world-camera PerspectiveProjection.aspect_ratio
+(1.6 for this target). In the old trace, preloading requests325trees, and later
+actual wide view requests391. Initial residency12 is NOT a hard12tree preload
+limit: it reflects partial publication before entry; both the first preload
+and first activation already requested325. Do not invent a fixed small cap.
+The preload settled_key also omits output aspect, so a window resize can leave
+a hidden exterior settled for the old footprint. Next concrete fix: query the
+existing world camera's Projection for lookahead frustum aspect, preserve the
+fallback for minimal/headless fixtures, and invalidate settled readiness on
+aspect change (retain original camera FOV/near/far and bounded stream budget).
+An existing settled-destination regression can be expanded to cover resize;
+verify actual requested grove footprint, not only a projection helper formula.
+
+A related issue worth handling with care: host destination source_frame has
+actors empty and center/view_center initially zero, then anchor_to_map. Live
+camera.world_pose uses the player ground point, footing height and foreground
+terrain adjustment; empty actors fall back to view_center with no such support.
+Main publish_world also accounts for source-grid versus viewport-center offset
+before anchoring. Do not duplicate approximate coordinates or mutate controller
+state. Final fixed-run authoritative position is NewBarkTown, player visual
+center[-1056,1504], grid origin[-32,-48]. A stable runtime-tile visual center
+for a standard64px human has source coordinates
+(2*tile+1-grid_size/2)*tile_size with Y inverted; actor_ground_point subtracts
+half sprite height then adds one visual-cell height (zero offset for64/32).
+Any predicted player must remain renderer-only and match the shared production
+coordinate conversion; prefer reuse/refactoring over a second actor dispatcher.
+
+No render people-review/game process was observed during the final read-only
+process check. No other process was stopped. No owned compiler/test/replay is
+currently live. Shader fix is in root and frozen production source; installed
+app remains the previously verified CPU-cache release. Next: finish arrival-view
+matching, validate real route/paired images, and package the verified changes.
+
+
+### Arrival-view aspect and resize invalidation
+
+Expanded the existing settled-hidden-destination regression with a world
+camera and a1→2aspect resize while source/settings remain unchanged. Before
+implementation, session21580 failed as intended (terminal101), log
+`/tmp/geothite-destination-view-regression-before.log`: hidden destination was
+not refreshed. Changed private prepare to read the existing VoxelWorldCamera
+PerspectiveProjection.aspect_ratio (finite/positive), falling back to the
+classic aspect only when no valid perspective camera exists. The predicted
+FOV/near/far and world pose are retained. Added aspect.to_bits() to settled_key
+so resizing can refresh the predicted footprint without another terrain build.
+No player setting, geometry or rendering-quality change.
+
+The expanded old test stub required realistic terrain data once it actually
+re-entered prepare: its empty tile list caused cache retirement, then its empty
+footing array caused an align_footings bounds panic. Completed the one-cell
+fixture with image/tile and matching footing data. These failures were fixture
+incompleteness, not evidence that production source grids are empty. Final
+session38776 passed all6 destination tests in0.04s (terminal0), log
+`/tmp/geothite-destination-view-regression-after-complete-fixture.log`.
+Other terminal test sessions:61026 and51122 (fixture failures). A direct run of
+the owned compiled test binary identified the missing footing array; it was
+not a build restart or a stopped external process.
+
+Root destination_preload.rs was verified byte-identical to the frozen original
+backup `.local/hierarchy-cache-production/destination-preload-before-view-fix.rs`
+before promotion. Only this tested aspect implementation/regression was then
+copied into root. Source-frame player/pivot metadata has NOT been changed.
+Avoid speculative camera/actor rewrites until the new replay shows whether
+anything remains missing; the actual grove footprint must be inspected.
+
+Release QA example is now building as session90254, log
+`/tmp/geothite-destination-view-release-build.log`, existing isolated release
+target/jobs2, frozen production snapshot. Freeze its private inputs. Root six
+preload tests are live session86325, log
+`/tmp/geothite-destination-view-root-tests.log`, performance-visibility target,
+wasm-dev/crystal-voxel-view opt0/jobs2, external TUI pack. Next poll those exact
+handles. After release terminal, save immutable destination-view-frame-client,
+run PlayersHouse1F(6,6) DDBBBBBBBBBB20s profile with separate output/trace;
+check preloaded requested tree footprint versus actual wide arrival, retained
+3D/pending intervals, foreground build counts and the shader cache. Do not
+claim normal-play door latency from forced-synchronous QA. Then inspect a
+matched final NewBark3D/2D capture and required regressions before production
+packaging/install. Installed app remains CPU-cache release; shader+aspect
+fixes are in source only. No other apps/builds were stopped.
+
+
+Root destination tests session86325 completed terminal0:6passed/0failed/0ignored,
+0.04s, `/tmp/geothite-destination-view-root-tests.log`. Release90254 remains
+live on the exact original handle; do not restart it or edit its frozen inputs.
+
+
+Combined shader/aspect QA release90254 completed in4m51s (terminal0). Immutable
+`.local/hierarchy-cache-production/destination-view-frame-client`, SHA256
+`c2b438432163f5106f9dce3838c0bf2623fc348dc70b633dab1269258cf78568`.
+Required root regressions session97522 completed terminal0: controller8passed
+(including battle PP/Mom/gate),1existing ignored; MCP movement/Start1passed
+in0.89s; clean stdio1passed in1.44s. No controller bypass was added.
+
+Combined20s house-exit replay57174 completed terminal0:
+`/tmp/geothite-house-exit-view-fixed-profile.log`, trace
+`house-exit-view-fixed.trace.json` under the production scratch directory.
+1013updates, median/p9519.93/21.01ms; movement384rows,19.75/21.77ms,two origins,
+zero additional terrain builds.37014traceevents,zero dropped. House ready
+4.765572s, first NewBark presentation6.488525s is already3D-active/pendingfalse.
+There is no NewBark pending presentation in this replay. Preload uses actual
+projection xscale1.1548494, requesting426trees rather than old325 at logical
+xscale1.6629831. Later actual requests399–401, with399resident by6.9007s.
+Maximum render.submit in the first2s after NewBark is108.415ms, versus the
+old forced-sync entry maximum1589.94ms. These are synchronous-compilation QA
+observations, not normal-play door latency or display FPS. The stronger
+functional proof is correct wide-view preparation and ready3D on the first
+Town presentation without another foreground terrain build. Do not add a
+speculative actor/pivot rewrite when this verified footprint already covers
+arrival; investigate only if a later route exposes missing geometry.
+
+Paired final Town capture after the same house walk is live54396:
+`/tmp/geothite-house-exit-view-fixed-paired.log`, outputs
+`house-exit-view-fixed-{3d,2d}.png` in the production scratch root. Inspect both
+and paired-state receipt before acceptance. It may overlap compilation, so
+capture duration is not a latency benchmark. Native production release is
+live89869, log `/tmp/geothite-destination-preload-production-build.log`, frozen
+production snapshot, release target/jobs2. Freeze its inputs until terminal;
+do not restart. Save/pack/current executable hashes for this installation are
+at `before-preload-install.json` (separate from the earlier CPU-cache install).
+After successful build and visual checks, package/install with frozen artwork,
+verify content, outside-repo installed check, strict codesign and unchanged save.
+Installed app remains CPU-cache release until that succeeds.
+
+
+Paired final Town capture54396 completed terminal0. Both images were inspected:
+house/player relationship, nearby teacher/fisher placement, neighboring lab,
+forest, ground, water and materials remain present/readable, without a new
+preload-related composition/lighting/scenery defect. Existing authored3D house
+design differs from the classic facade; no model/color redesign was performed
+or accepted here. Receipt state_preserved=true, checksumframe632/hash783970903,
+lcdframe647, virtualseconds11.185214167, four actors with identical3D/2D
+sources/positions/facing. Chris[-1056,1504], facing[0,-1]; presentation
+NewBarkTown center[-1024,1536], zoom0/rotation7.5/pitch45/first-personfalse.
+The screenshots are2560x1600 and show completed Town after the real DD house
+exit; their capture durations overlap compilation and are not latency results.
+
+Production build89869 remains live; this is the only owned process left.
+Next poll that exact handle and inspect
+`/tmp/geothite-destination-preload-production-build.log`. After terminal success,
+install using:
+CRYSTAL_OPEN_MODEL_ROOT="$PWD/.local/hierarchy-cache-production/source/assets/open-models"
+python3 tools/desktop.py install --skip-build --profile release
+ --target-dir "$PWD/target/performance-release-native"
+ --pack "$PWD/content-packs/core-modular.crystalpack"
+(join these lines into one environment-prefixed command). The installer must
+verify pack/art, staged check-installation and signing before replacing app.
+Then run installed --check-installation from /tmp with OPEN_MODEL_ROOT unset,
+strict deep codesign, and compare save/source+bundled pack hashes against
+`.local/hierarchy-cache-production/before-preload-install.json`. Record the
+new executable hash. No visible window/app switch or process shutdown is needed.
+Do not claim the full fast/fluid objective complete: roof/wider-game throughput
+remains unresolved even though this house-exit readiness case now passes.
+
+
+### Shader and arrival-width preload fixes installed
+
+Native production89869 completed terminal0 in6m45s, log
+`/tmp/geothite-destination-preload-production-build.log`. Installer99618
+completed terminal0 in34.9s, log `/tmp/geothite-destination-preload-install.log`.
+Pack/art verification, staged external-directory check-installation and strict
+codesign passed before replacement. Installed `~/Applications/Geothite.app`
+now includes the CPU ancestor cache plus both shader-filter and actual-camera
+aspect/resize preload fixes. No meshlet fork, rejected occlusion trial, LOD,
+quality reduction or new player toggle was installed.
+
+Final installed verification24461 completed terminal0 from/tmp with
+CRYSTAL_OPEN_MODEL_ROOT unset: pack/resources/external save path resolved,
+strict deep codesign passed, bundled/source pack SHA and the existing save
+SHA matched `before-preload-install.json`. One save unchanged byte-for-byte.
+Installed executable SHA256:
+`48fc51d38a67c6949821b774c04664df14677a8139ad838da4b4fa2589723c43`.
+Unsigned release SHA256:
+`29bc3af4f92b2bc2bf1821bcec7ebef0519904d884d24f609f65978c10828a8a`.
+Pack SHA256 unchanged:
+`a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007`.
+Metadata: ignored `preload-installed-verification.json` in production scratch.
+
+The verified headless near-immediate house exit recorded NewBark3D ready on
+its first Town presentation, no extra foreground terrain build, with matched
+final3D/2D game state and readable scenery/actors. This must not be converted
+into a claimed normal-play latency or display FPS; QA forces synchronous
+compilation. Required controller battle PP/Mom/gate, MCP movement/menu and
+clean-stderr regressions passed as recorded above. Six destination tests and
+the native hidden-to-outdoor pipeline cache-reuse regression passed in root.
+No content pack was regenerated/staged/committed; no saved progress changed;
+no visible window or external process shutdown was used.
+
+All owned build/install/test handles are now terminal; no owned process needs
+polling. Goal remains active: the dense roof and wider-game throughput are
+not yet fluid. Do not call the full objective complete from the house-exit
+case. Ordinary GPU occlusion failed to repeat its roof gain; it is rejected.
+The older private meshlet prototype also failed matched throughput and is not
+in root/app. Next work should address the remaining measured renderer cost
+while preserving the installed appearance and current shared model edits.
+
+
+### Private panorama-only two-section trial
+
+Installed preload release is unchanged. Inspected panorama origin/transform:
+it is already stable for ordinary walking, so no redundant per-frame movement
+fix is justified. Stock GPU occlusion failed repeatability; the older four-
+section global/combined-culling trials are documented near the beginning of
+this journal and are not accepted gains. This new private experiment limits
+opaque subdivision to TWO fitted sections and ONLY native summit-panorama
+canopies, reducing the earlier entity-cost exposure. No new culling pass,
+shader, LOD, geometry/detail reduction, player control or dependency is added.
+
+Ported the existing tested opaque-section support into the current private
+snapshot via a359-line patch whose git-apply check passed. It preserves newer
+CPU/preload fixes. Original current files are backed up under ignored
+`.local/hierarchy-cache-production/panorama-section-baseline/` (occluder,
+worker wire, shared groves, forest library and summit vista). Port patch is
+`panorama-sections-port.patch`. Fitted split count is2. Source collision and
+sorted transparency remain whole; sharing, compression, exact vertex welding,
+localization, upload, overlay handling and OpaqueObjectLeaf publication include
+all sections. The unchanged worker wire explicitly rejects native sections
+rather than dropping geometry. Its default/browser/terrain-worker path never
+constructs them.
+
+Scoped preparation: default shared_groves::prepare_surface remains whole;
+prepare_panorama_surface invokes splitting before sharing. Native non-worker
+Library::for_panorama_sections has a distinct bounded cache and only partitions
+canopies; ground remains whole. SummitVista::Build lazily owns that library.
+Browser/terrain-worker configurations use their original library. Normal town/
+house/preload geometry is unaffected. No application culling probe from the
+older candidate was ported.
+
+Native occluder session70473 completed terminal0:61passed/0failed/0ignored,
+2.95s, `/tmp/geothite-panorama-two-sections-tests.log`. Tests compare every
+triangle's attribute bits before/after packing/localization for pine, ancient
+and deciduous trees, preserve collision/fade leaves, reuse section handles,
+and prove normal libraries remain unpartitioned while panorama libraries use
+two draws with the same source transform/fade ownership. Source draw order
+may differ, so actual pixel/visual comparisons are still mandatory.
+
+Private release QA build is live56926, log
+`/tmp/geothite-panorama-two-sections-release-build.log`, release target/jobs2.
+Freeze these inputs and poll that exact handle. Worker serialization check
+78732 is terminal101: build.rs finish_kernel_identity failed at line103 with
+"kernel input metadata: No such file or directory". The snapshot omitted
+root rust-toolchain.toml; other listed kernel inputs exist. This is a missing
+snapshot input, not proof the worker changes compile. After the release build
+is terminal, copy the root1.99.0 minimal toolchain manifest into the snapshot
+and rerun the exact terrain-worker/occluder_fade::worker_wire:: suite, log
+`/tmp/geothite-panorama-two-sections-worker-tests.log` (new log for retry).
+Do not modify frozen inputs or restart the live release build to do this.
+
+On successful release, save immutable panorama-two-section-client. Compare
+against destination-view-frame-client (same frozen source/appearance except
+this trial) on the60s full-resolution Roof9,13/noon UUDUDUDUDUD route, after
+owned compilers/tests terminate. Use untraced AB/BA pairs; initial warmup and
+queue callbacks are not display FPS. Retain only repeated gains with unchanged
+pixels/whole-tree fades and passing2D pairing. A test pass alone does not prove a speedup; implementation remains private
+until measured performance and visual checks justify root promotion/install. Do not touch other apps/builds, staging, packs or saved progress.
+
+
+### Two-section trial rejected after measured comparison
+
+Private release56926 completed terminal0 in6m58s. Immutable
+`panorama-two-section-client` SHA256:
+`e3f7c48628146bdf6dc2062cc593e34a3dc7a5405ec837f1e0c7580b00919b45`.
+After terminal completion, restored root rust-toolchain.toml into the frozen
+snapshot (same1.99.0 toolchain). Worker retry7780 completed terminal0:
+6passed/0failed/0ignored in0.03s,
+`/tmp/geothite-panorama-two-sections-worker-tests-fixed-input.log`.
+
+Candidate paired capture12868 exited1: first3D image completed60.74s, then
+classic second capture exceeded the shared60s QA deadline. The existing driver
+keeps the original startup deadline across the pair; this is an application
+capture timeout, not a missing live tool handle. No timing-tool code changed.
+Matching ordinary control67480 completed terminal0,3D34.83s/2D43.66s total.
+Candidate3D image was viewed: roof/player/forest retained; mean RGB byte
+differences against same-source ordinary3D were0.074863/0.052678/0.026578.
+These capture times are not controlled game load/door latency; candidate capture
+overlapped worker compilation. It did NOT pass the full paired-state gate.
+
+Untraced full-resolution roof walk candidate99921 completed terminal0:
+1073updates, median/p9552.18/70.40ms, movement51.28/54.02ms,352rows/two origins,
+zero extra terrain builds.1074queue callbacks/60.082251s=17.875/s,
+outstanding36→36,no poll errors. Fresh matching control91176 terminal0:
+1069updates,55.43/62.99ms, movement53.35/56.89ms,same rows/origins/zero builds;
+1070callbacks/60.097988s=17.804/s,outstanding36→36,no poll errors.
+GPU queue throughput differs only0.4%, and candidate tails are worse. This does
+not justify extra entities/draws or additional acceptance work. Trial rejected;
+no reverse-order claim, paired acceptance, root promotion or installation.
+
+Archived five private modified source files under ignored
+`panorama-two-section-source/`, then restored all five from
+`panorama-section-baseline/`. Native parts/factory/library markers are gone
+from active private source. The copied toolchain manifest remains, correcting
+the snapshot input. Shader/aspect/CPU-cache fixes remain intact. All owned
+build/test/capture/benchmark handles are terminal. Root/app/pack/save unchanged
+by this trial; installed preload release remains SHA48fc51d3... as above.
+
+Potential next CPU work (NOT implemented): inactive world views still scan all
+occluder groups every host frame, even after every fade is opaque/clear. A
+small local frame-history cache can skip this work only while input.2 is false
+and an inactive full pass has proven all groups unblocked, opacity1,hold0,
+blendingfalse. Do not scan again on active frames merely to maintain this cache.
+Keep settling non-opaque fades with Time<Real> as before. On wake, invalidate
+ancestor visibility and force refresh of cached inverse/bounds even when
+transform/visibility changes happened many skipped ticks ago. Test moving a
+clear object into the ray while inactive, then waking to a correct block; also
+hide/unhide during skipped frames and verify hierarchy recovery. This could
+remove retained-world CPU scans during battles/classic views without changing
+3D quality or adding a toggle. It does not solve the remaining GPU throughput
+ceiling and must not be presented as completion of the full objective.
+
+
+### Private inactive-world occluder sleep path
+
+Started from restored whole-tree/preload snapshot; no rejected subdivision or
+GPU culling code remains active. Backup before this change is ignored
+`inactive-fades-baseline.rs` in the production scratch root. Root occluder file
+still matches that baseline; no root promotion or installation yet.
+
+New lifecycle regression first failed on unchanged code (session25507 terminal101,
+`/tmp/geothite-inactive-fades-before.log`): moving an object while a settled
+owned camera was off changed its occluder cache tick32→122. The test then checks
+correct blocking/inverse on wake, frozen hidden fades, unhide while still off,
+real-time completion of visible fades, and recovery from old visibility ticks.
+
+Implementation is only in private occluder_fade.rs. Local FadeFrameHistory
+stores prior input, a dormant flag and IDs of hidden unsettled fades. After a
+full inactive pass proves visible fades clear/opaque, skip repeated group scans.
+Probe only hidden-fade ancestor chains while sleeping, so revealing one in
+another view wakes settling even if the world stays off. New groups always
+spawn with clear default fades; no gameplay/controller state is cached here.
+On wake, clear ancestor visibility and force inverse/bounds refresh: changes
+may have happened long before the last system change tick. Active walking
+frames do not get an extra scan; settling-state scans run only when eligible
+for sleep. Existing opt-in trace metadata is unchanged and may itself scan
+all groups; do not mistake trace overhead for the normal runtime path.
+
+First after-run27137 failed3 existing standalone fade tests (57passed), which
+manually drive fades without a world camera. Preserved that supported context
+without weakening those tests: cache only when cameras.single identifies one
+owned world view. No/multiple world cameras retain the old processing path.
+Owned-view version4539 passed all60tests in2.71s. Added the loading safeguard:
+terrain_pending or profiles_pending keeps preparation running while inactive,
+with regression checking new transforms still prepare during loading. Final
+55872 passed60/0failed/0ignored in4.23s,
+`/tmp/geothite-inactive-fades-loading-guard-tests.log`. No player toggle,
+render-quality/shader change, serialization change or dependency added.
+
+Private release QA build is live82619:
+`/tmp/geothite-inactive-fades-release-build.log`, frozen production snapshot,
+release target/jobs2. Freeze private inputs and poll the exact handle; do not
+restart on observation timeout. On terminal success save immutable
+`inactive-fades-frame-client`. Compare existing whole-tree baseline
+`destination-view-frame-client` and candidate using offscreen paired roof
+captures with existing CRYSTAL_LOADING_TRACE and sufficient existing capture
+budget (e.g. CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS=180). Use identical
+Roof9,13/noon/2560x1600/camera'0 7 5 0', sequential runs with no owned compiler.
+Capture separate `inactive-fades-{control,candidate}-{3d,2d}.png` and trace/logs.
+Analyze the classic phase AFTER a completed3D presentation, not initial loading;
+compare frame.occluder_fades/main CPU spans and inspect paired state/images.
+Spans nest/overlap; trace metadata adds overhead. Do not claim displayed FPS,
+startup/door latency or a3D GPU gain from this CPU-specific change.
+
+If useful, verify root equality before selective promotion, root regressions,
+required controller/MCP/stdio gates and current visual checks before native
+packaging. Installed app remains verified preload release48fc51d3...; the full
+fast/fluid objective remains active. This path targets retained-world CPU work
+while classic/battle/presentation views own output; it does not solve the
+remaining GPU throughput ceiling. No other app/build has been stopped.
+
+Continuation check: exact QA build session82619 was polled repeatedly and remains live; no terminal result or compile errors yet. Root occluder source still matches inactive-fades-baseline.rs byte-for-byte. No private inputs changed, no candidate promoted, no app replaced, and no other processes stopped. Continue by polling82619; observation waits are not failures and must not trigger a restart.
+
+Inactive-world QA build82619 completed successfully in10m23s. Immutable
+inactive-fades-frame-client SHA256
+6d01951dea6c49a1b710d6624ef49be852a626cddd81090b7e92abbe42d0c90e.
+Sequential paired roof captures51854(control),93951(candidate) both terminal0,
+180s existing budget, same whole-tree geometry/Roof9,13/noon/2560x1600/camera0,7,5,0.
+No owned compiler ran during captures. Both 3D/2D pairs preserve state; inspected
+candidate3D/2D and control3D: same roof/forest/tower/player/sky composition and
+detail, no visible regression. Pair receipts preserve each run's game state;
+wall-clock-driven animation/frame counters differ between runs.
+
+Trace ring131072events each; measured only after the first active3D presentation
+then inactive classic view, excluding first500ms. Control201samples: occluder
+median8.213125ms/p9512.781833, main26.557750/48.115041. Candidate272samples:
+occluder1.520166/2.438125, main18.753792/38.664333. Trace metadata still traverses
+groups, so this is an opt-in traced CPU comparison, not displayFPS, normal-play
+door latency, or an active3D GPU improvement. Paired artifacts and traces at
+.local/hierarchy-cache-production/inactive-fades-{control,candidate}-*;
+logs /tmp/geothite-inactive-fades-{control,candidate}-capture.log.
+
+Confirmed root occluder source byte-identical to baseline backup, then promoted
+only candidateoccluder_fade.rs. Root focused tests running58390,
+/tmp/geothite-inactive-fades-root-tests.log. Installed app remains unchanged;
+required gameplay gates, production build and packaging remain before install.
+
+Post-promotion checks terminal0: root58390 occluder60passed/0failed5.16s;
+controller14197 eightpassed/oneexistingignored35.03s (Mom/NewBarkgate and battle
+PP turn included); MCP68705 onepassed1.57s; stdio43501 onepassed2.51s.
+Logs /tmp/geothite-inactive-fades-{root,controller,mcp,stdio}-tests.log.
+Production frozen-snapshot release build12212 is confirmed live by exact handle
+poll after all tests. Log /tmp/geothite-inactive-fades-production-build.log.
+Do not mutate private compiler inputs or restart on observation timeout. On
+terminal success record app/pack/save hashes, install with desktop.py --skip-build
+from performance-release-native and frozen open-model root, then outside-repo
+check-installation/codesign/hash verification. Current installed app remains
+preload48fc51d3...; this optimization is promoted in source but not yet installed.
+Full fast/fluid objective remains active; active3D GPU ceiling remains unresolved.
+
+Continuation: production12212 remains confirmed live after repeated exact handle
+polls; latest process tree shows cargo79724 and active release rustc80194.
+No errors/terminal result, private inputs remain frozen. No restart, app install,
+or other-process interruption. Prepared before-inactive-fades-install.json:
+current app48fc51d3..., unchanged sourcepack and one external save hashes.
+Reviewed official Bevy custom instancing example (bevy.org/examples/shaders/custom-shader-instancing/):
+same mesh/material handles enable automatic batching; current panorama
+MapPublication already reuses handles, so no speculative instancing toggle added.
+Shared grove preparation also already removes unused zeroUV0 and welds exact
+opaque vertices; spawn-time COMPACT_SOLID_UVS opt-in is not a new discovery or
+measured improvement. No code change to these paths. Next action remains poll
+production12212 then package/verify using recorded hashes. Goal stays active.
+
+Inactive-world optimization production12212 terminal0 in8m14s. Installer46095
+terminal0 in32.4s, /tmp/geothite-inactive-fades-install.log. Installed check and
+strict deep codesign97645 terminal0 from/tmp with CRYSTAL_OPEN_MODEL_ROOT unset;
+/tmp/geothite-inactive-fades-installed-check.log confirms bundled pack/resources
+and existing external save. Hash verification passed: signed installed app
+0d74bff4d1885b8973be4d85a14e1fcac8dfe1b10abdb7be346a63bdfb52966a;
+source/bundled pack unchanged a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007;
+one existing save unchanged e542a84db0edff578ad84294304fd108583da067472d624dabf85cd1ec6bd9b2.
+Receipts before-inactive-fades-install.json and inactive-fades-installed-verification.json
+in ignored hierarchy-cache-production workspace. No visible app launched, no
+other processes stopped, no pack/generated asset committed.
+
+No owned live build/test/capture remains. This turn finishes deployment of the
+verified inactive-world CPU skip; full fast/fluid goal remains active and dense
+outdoor GPU throughput remains unresolved. Next work should use installed-source
+inactive-fades-frame-client as current whole-tree control. Shader inspection:
+shared tree materials already backface-cull, zeroUV compaction and exact opaque
+vertex welding already applied. Sky already has exact-zero cloud/star guards.
+Potential next investigation is material specialization of the large unified
+voxel_surface.wesl for palette foliage to eliminate unrelated source-atlas/water
+branches while preserving every executed tree operation; no implementation or
+performance claim yet. Reuse Bevy0.20 installed MaterialExtension key mechanism,
+check variant prewarming and full visual/fade compatibility before promotion.
+Do not repeat rejected sections/meshlets/occlusion trials without new evidence.
+
+Private next GPU trial: uniform-zero guards in voxel_surface.wesl only. Wrap
+battle contact loop in a uniform any-contact-W-positive check before its normal
+predicate; each actor still uses unchanged W/shape checks and exact calculations.
+Wrap cave-exit loop/addition in cave_sky.w!=0; disabled exposure contributes zero,
+active exposure retains unchanged calculations. No new material/pipeline key,
+shader variant, player toggle, geometry/resolution/detail change. No speed claim.
+Baseline saved uniform-guards-baseline.wesl; immutable current control is
+inactive-fades-frame-client6d01951d... (accepted installed source). Private QA
+release86763 live, /tmp/geothite-uniform-guards-release-build.log; freeze private
+inputs and poll exact handle. On success save uniform-guards-frame-client and
+run sequential paired visuals and untraced fullresolution roof walking versus
+current control; discard trial if improvement does not repeat. Also check
+active battle contacts and cave mouth lighting; disabled-path roof alone cannot
+prove enabled effects. Root WESL differs from frozen baseline at buoy_facing
+(line1443); preserve that unrelated root change via selective guard edits only
+if eventually accepted. Root/app currently retain unguarded shader. No owned
+other process was stopped or quality changed.
+
+Uniform-guards continuation: discovered existing native CRYSTAL_VOXEL_SHADER_REVIEW
+loader in lib.rs (no tooling change needed). Current accepted immutable client
+inactive-fades-frame-client loaded private candidate WESL and completed offscreen
+paired roof50567 terminal0:3D46.25s/2D55.18s,180s existing budget. Compilation was
+concurrent so capture duration is NOT performance evidence. Shader compilation
+succeeded; inspected both images, preserved roof/forest/sky/player and classic
+composition. uniform-guards-roof-3d.paired-state.txt state_preserved=true,
+Roof9,13/noon/camera0,7,5,0/player[-1312,1056]facingup; no visual acceptance beyond
+this disabled-effects scene. Logs /tmp/geothite-uniform-guards-roof-capture.log.
+Private release86763 still confirmed live by exact poll. Inputs remain frozen.
+Next: poll86763, save immutablecandidate when terminal0; sequential untraced
+roof measures versus inactive-fades-frame-client only when owned compilers stop.
+Use existing --measure outputdir --seconds60 --walk UUUUDDDD, headlessimage,
+CRYSTAL_MEASURE_3D_VALIDATION=on, syntheticwalkinput/steps1, sameRoof9,13/noon/
+2560x1600/camera0,7,5,0. Existing output includes summary.txt/render-timing.csv/
+walk.movement.csv/gpu-completions.txt. Repeat in reverse order if useful.
+Enabled cave sky and battle contact comparisons remain required before promoting.
+No root shader/app change; installed0d74bff4... remains verified CPU optimization.
+
+Uniform-guards enabled-scene check: candidate UnionCave1F explicit17,4 run12341
+terminal1 because runtime rejects that tile as nonwalkable. Corrected by using
+existing validated default walkable preview, not bypassing collision. Candidate
+3680 terminal0 (2.36s3D/2.64spair), control39684 terminal0 (2.33spair),1280x800/noon,
+same immutable inactive-fades-frame-client and candidate shader review only.
+Candidate and control paired receipts state_preserved=true; inspected candidate
+3D/2D and control3D: matching violet cave, tiered rock/water/ladder/player and NPC
+composition with no visible change. Pair at default center[-1280,768], player
+[-1248,800], camera0/7.5/45. This interior is away from a doorway and is not proof
+of a nonzero exit-fill pixel; actual cave-mouth and battle-contact enabled
+checks remain pending if performance justifies promotion. Captures under
+uniform-guards-cave-{candidate,control}-*, logs /tmp/geothite-uniform-guards-cave-*.log.
+Private release86763 remains confirmed live; no shader/root/app promotion and
+no other process interrupted. Wait for exact terminal before clean performance
+comparison. This turn adds shader/visual evidence, not a measured speed gain.
+
+Uniform-zero shader guards REJECTED after reverse-order walking comparison.
+QA86763 terminal0 in7m29s; immutable uniform-guards-frame-client SHA256
+52b79fda275f01f34f4a6f4f9eb136678f968df9778bd41ddd2720576c669997.
+Four sequential untraced fullresolution Roof9,13/noon/camera0,7,5,0/60s measures,
+UUUUDDDD synthetic step1; no owned compiler concurrent. All256movementrows,
+4origins,0extra terrain builds; no GPU poll errors. Sessions97127candidate-first,
+9158control-first,68830control-second,41060candidate-second allterminal0.
+Candidatefirst890updates median66.61/p9585.76ms; queue891/60.130916s=14.818/s,
+outstanding36to36. Controlfirst850updates71.22/79.40ms;845/60.099766=14.060/s,
+outstanding31to36. Reverse control912updates60.05/118.93ms;
+907/60.108680=15.089/s,outstanding3to8. Reverse candidate880updates67.65/74.53ms;
+881/60.095609=14.660/s,outstanding36to36. First throughput gain5.4% does not
+repeat (reversecandidate2.8%lower), and median/movement results mixed. These
+queue callbacks are not displayFPS/GPUtimestamps; background machine variation
+remains, no processes were stopped. No evidence of repeatable useful improvement.
+
+Artifacts at .local/hierarchy-cache-production/uniform-guards-{candidate,control}-{first,second},
+logs /tmp/geothite-uniform-guards-{candidate,control}-{first,second}.log.
+Archived trialshader uniform-guards-rejected.wesl, restored private source from
+uniform-guards-baseline.wesl. Root/app never received guards. No further enabled
+battle/cave-mouth acceptance needed for rejected code. No owned live processes
+remain. Installed verified0d74bff4... CPU/preload build remains current. Full
+loading/fluidity goal active; dense outdoor GPU ceiling unresolved. Do not
+rebuild/retry these guards without new evidence; next work must target a more
+substantial cost, preserving geometry/detail/quality and shared root edits.
+
+New private active-world CPU trial: skip redundant visibility-cache population
+scan when matched occluder query membership is unchanged. Existing everyframe
+cached-ancestor change checks and all group ray/fade processing remain. Add
+visible_group_count to existing FadeFrameHistory; QueryIter exact len uses
+archetype lengths (no dynamic filter). Populate only when cacheempty or count
+differs. Same-count substitutions also remove a required query component;
+HierarchyRemovals additionally consumes Children and GlobalTransform removals,
+invalidating when a cached entity is affected. Existing OccluderGroup/Visibility/
+ChildOf removal and hierarchy change invalidations retained. No shader/material/
+geometry/player toggle/quality/dependency change. Baseline membership-cache-baseline.rs;
+accepted candidate membership-cache-candidate.rs in ignored private workspace.
+
+Extended existing hidden hierarchy regression: remove old group's Children and
+spawn a replacement under a new hidden root at the same matched group count;
+replacement must suspend and stay unblocked. All60 focused occluder tests42385
+terminal0 in2.23s, /tmp/geothite-membership-cache-tests.log. Mutation check75708
+removed Children-event chain only and fails expected assertion at2155 (new
+replacement incorrectly visible), /tmp/geothite-membership-cache-negative-test.log.
+Restored byteexact tested candidate, then started frozen release QA60203 live,
+/tmp/geothite-membership-cache-release-build.log. Inputs now frozen; poll exact
+handle, do not restart on observation timeout. No root promotion/app change.
+
+On terminal0 save immutable membership-cache-frame-client. Current matching
+control inactive-fades-frame-client6d01951d... (installed0d74bff4 source). Use
+same fullresolution untraced walking comparison in both orders and existing
+paired roof visual gate. This CPU change saves one whole cache-population pass
+but leaves main pergroup processing and GPU cost, so no predicted speedup or full
+fluidity claim. If useful, promote selective code after rechecking root source,
+required focused/controller/MCP/stdio tests and visual verification, then
+production build/install/check/hashes. Full fast/fluid/loading objective active.
+
+Membership-cache QA60203 terminal0 in5m20s. Immutable
+membership-cache-frame-client SHA256
+565464e51256d4b51baeef230cc52c3d648b456c3243268321db71acd026c662.
+First untraced walking pair terminal0: candidate72340 1037updates median56.11/
+p9572.08ms, movement55.79/63.67ms;1038queuecallbacks/60.052229s=17.285/s,
+outstanding36to36/no pollerrors. Control21039 846updates70.27/80.18ms,
+movement69.78/75.10ms. Both256movementrows/4origins/0extraterrainbuilds, same
+Roof9,13/noon/2560x1600/camera0,7,5,0/UUUUDDDD/syntheticstep1. No owned compiler
+concurrent. These rates are queue callbacks, not displayFPS or GPUtimestamps.
+Promising first pair does not establish repeatability.
+
+Reverse control47920 is live now, /tmp/geothite-membership-cache-control-second.log,
+output .local/hierarchy-cache-production/membership-cache-control-second.
+Poll exact handle; on terminal run membership-cache-frame-client with identical
+env/args to membership-cache-candidate-second, then analyze both orders.
+No code edits/private compilers currently live; root/app unchanged. Still need
+traced active CPU/pairedvisual comparison and regression/promotion/install gates
+if repeatable gain or direct useful CPU savings established. Full goal active.
+
+Membership cache trial REJECTED. Reverse control47920 terminal0:841updates,
+median68.61/p9583.98ms, movement66.49/82.93;842callbacks/60.102897s=14.009/s,
+outstanding36to36. Reverse candidate41616 terminal0:754updates79.60/107.62ms,
+movement74.69/104.27;739callbacks/60.118496s=12.292/s,outstanding20to36.
+Bothsame256movementrows/4origins/0builds/no pollerrors. First apparent gain did
+not repeat. Sequential paired trace captures candidate96228/control77235 both
+terminal0; images inspected, pairedstate preserved, same complete roof/forest/
+player/sky and classicview. Active3D trace window fromfirstactive+500ms through
+lastactive: candidate188samples occludermedian5.02575/p9510.008833ms,
+main30.903542/148.455584. Control205samples occluder4.376208/9.596625,
+main19.160625/44.133125. No targeted CPU savings established either. Trace spans
+are nested and opt-inmetadata adds overhead; no FPS/normaldoorlatencyclaim.
+No further repeats justified for this trial. Archived membership-cache-rejected.rs,
+restored private occluder from membership-cache-baseline.rs. Root/app never
+received trial. No owned live process remains. Installed0d74bff4... accepted
+inactiveCPU/preload build unchanged. Full goal remains active/incomplete.
+Potential underlying invalidation frequency would require actual new evidence;
+do not assume counting groups bypasses cache population in real scenes or
+repeat this trial blindly. Preserve fidelity and other concurrent root edits.
+
+New private coarse-region occluder trial (not the rejected membership cache).
+Research rejected speculative outer-first triangle order before implementation:
+Apple's Harness Apple GPUs with Metal WWDC2020/10602 documents opaque HSR that
+already avoids overdraw independent of triangle order. Bevy0.20 bins expose
+immutable entity lists; no renderer fork or ordering patch added. Existing
+NoCpuCulling trials already recorded above are not a newly found solution.
+
+Instead implemented exact conservative map-region gating for panorama groups.
+New private occluder_fade/regions.rs; occluder_fade.rs adds spawn_region_groups
+and selective original group processing; summit_vista.rs uses it only for each
+owned MapPublication placement root. Every source collision surface, mesh,
+material, draw/leaf, opacity update and pergroup ray test retained. Region stores
+complete root-local union, transformed through current root GlobalTransform
+with conservative padding. Nonfinite/unknown bounds and camera-wall policy
+retain exact processing. Disjoint clear regions avoid per-member ray/inverse/
+visibility-cache scans; ordinary groups remain on original path. Regions with
+unsettled fades keep processing until clear; waking refreshes inverse/hierarchy.
+Member local motion grows union, reparenting/parent removal invalidates proof
+and falls back, removed region owners route live members to ordinary processing,
+selection dedup prevents duplicate fade advance after structural edits. No
+shader, quality, geometry, resolution, density, draw-distance, worker ABI,
+dependency or player toggle change. Source collision/sorted/fade leaves remain.
+
+Baselines region-gate-baseline.rs and region-gate-summit-baseline.rs saved under
+.local/hierarchy-cache-production. First compile89174 failed QueryManyIter API
+(Result items); corrected via fetch_next and let Ok elsecontinue. Fixed50845
+passes61occluder tests7.21s. Structural fallback refinement60981 passes61/0failed/
+0ignored2.23s, /tmp/geothite-region-gate-structural-tests.log. New integration
+regression proves disjoint region leaves member inverse unbuilt, root movement
+into rays blocks/fades, departing fades settle before sleep, memberlocalmotion
+wakes while rootstatic, reparented transform follows real obstruction, and
+removedRegion safely falls back. Summit focused suite passes11/0failed0.11s,
+/tmp/geothite-region-gate-summit-tests.log. Formatted only new module afterward.
+
+Private release QA49976 is live, /tmp/geothite-region-gate-release-build.log.
+Freeze private inputs and poll exact handle; do not restart on observationwait.
+On terminal0 save immutable region-gate-frame-client. Matching current control
+inactive-fades-frame-client6d01951d... (installed0d74bff4... source). Run same
+fullresolution untraced roof walking before/after and reverse if useful; paired
+3D/2D captures with existing loadingtrace should establish actual active CPU
+cost and unchanged visuals. No performance claim yet; GPU cost remains and
+full fluidity objective active. Root/app untouched. Need additional regional
+visibility/nonfinite/rotation/overriddenVisible checks before promotion if
+measurements justify it, plus root regression/controller/MCP/stdio and packaging.
+
+Additional installed-source house-exit evidence with NORMAL asynchronous shader
+compilation: immutable inactive-fades-frame-client used --record (neither
+--measure nor --screenshot, so bevy_shell synchronous_pipeline_compilation
+QA override is not selected). Headlessimage/full2560x1600/noon/PlayersHouse1F6,6,
+10seconds, syntheticstep1/DDBBBBBBBBBB; trace existing CRYSTAL_LOADING_TRACE.
+Session68540 terminal0, /tmp/geothite-async-house-exit.log. No tool changes.
+Functional capture overlapped private region compiler, so frame timings and
+capture overhead are NOT normal-play latency/FPS evidence. 278updates/144PNG
+captures. render-timing33House/245Town rows; firstTown atrecord0.847548s already
+world3dactive=true, entryfxfalse. 247Town presentationtraceevents, ZERO terrain
+pending, firstattime8.89912825s alreadyready/active3D. Fulltrace14250events.
+Walk256rows:34House/222Town, actualcontrollerdoorwarp; firstTownpendingfalse,
+terrainactive=true, normalwarpFadeOut63. Inspected frame17arrival,22midfade,
+35settled: player/house/trees/water/NPCs present; existing house occluder fades
+then restores, no incomplete/uncompiled body. This is stronger functional
+preload evidence than previous forced-synchronous captures, not a controlled
+before/after speedup. Artifacts async-house-exit/ and async-house-exit.trace.json.
+Removed140taskPNGscratchframes after inspection; retained0/17/22/35 plus
+originaltimestamps/render/walk receipts and retained-frames.txt. No sourcepack
+or save changed. Private region QA49976 still live by exactpoll; no restart.
+
+Region QA49976 completed terminal0 in5m01s. Saved immutable region-gate-frame-client
+SHA256 d555e6364a71d2199da2af5070f427e562a16b479cb4c0438616b36029b25abf.
+Untraced firstcandidate96888 terminal0:1014updates57.57median/68.50p95ms,
+movement56.50/63.89ms,256rows/4origins/0builds. Matching baseline firstcontrol
+nowlive (see current toolhandle), /tmp/geothite-region-gate-control-first.log,
+output region-gate-control-first. Current tests61occluder+11summit green; source
+stillprivate, no app/root promotion. Next poll control, analyze then reversepair
+and traced pairedvisual toprove actual CPU scanavoidance. No owned compiler
+concurrent with measurements; no other process stopped. No FPSgainclaimyet.
+
+Region whole-frame comparison completed, NOT a stable FPS proof: controlfirst
+30943 terminal0 996updates median58.42/p9571.31ms movement56.41/62.63;
+997queuecallbacks/60.107239s16.587/s,outstanding36to36. Candidatefirst96888
+1014updates57.57/68.50,movement56.50/63.89;1015/60.097160s16.889/s,36to36.
+Reverse control5936 terminal0 685updates72.74/172.29,movement66.38/101.16;
+721/60.102947s11.996/s,outstanding36to1. Candidate63848 terminal0 793updates
+74.68/121.26,movement73.14/108.44;795/60.080930s13.232/s,outstanding2to2.
+Allsame256movementrows/4origins/0builds/no pollerrors. Queue callbacks and
+varying queue depths are not displayFPS; global results mixed/no consistent
+frame-time gain. No owned compilers concurrent, other processes left alone.
+
+Direct CPU/visual firstpair: candidate3622/control27832 terminal0. Pairedstate
+preserved and candidate3D/2D/control3D inspected: same complete roof/forest/
+player/sky, no visible defect. Active3D eventwindow firstactive+500ms to last:
+candidate202occludersamples median1.9863955/p954.054791ms, main201samples
+17.584458/32.788084. Control200samples occluder4.903354/9.063542,
+main19.5854375/36.465167. Eachring131072events. This establishes promising
+specific occluder CPU reduction, not GPU/FPS/door latency; trace metadata still
+walks groups and CPU envelopes overlap. Need reverse CPU check before accept.
+
+Reverse traced control25900 now live, log
+/tmp/geothite-region-gate-control-second-capture.log, outputs
+region-gate-control-second-{3d,2d}.png and region-gate-control-second.trace.json.
+Poll exact handle, then run region-gate-frame-client identical command with
+candidate-second prefixes and existing CRYSTAL_LOADING_TRACE, 180sbudget,
+Roof9,13/noon/full2560x1600/camera0,7,5,0/headlessimage. Analyze activeCPU same
+window, then finish regional visibility/nonfinite/rotation tests before selective
+promotion/root gates/install if justified. All source remainsprivate, app
+unchanged0d74bff4...; fullgoalactive/incomplete. No other owned live process.
+
+Reversecontrol25900 terminal0; reversecandidate capture18534 nowlive, /tmp/geothite-region-gate-candidate-second-capture.log. Poll18534 then compare both reverse traces; no compiler/source edit during measurements.
+
+Region reverse CPU check PASSED: control25900/candidate18534 terminal0, each
+131072events and222active3Dpresentations. Same activewindow rule yields193control
+occludersamples3.449334median/6.616417p95ms; candidate193samples1.297042/2.066375.
+Maincontrol193samples11.040667/21.293125; candidate192samples9.082104/11.874541.
+Bothpairedstatepreserved; inspected reversecandidate3D/2D, samefullscene.
+Combined with firstCPU4.903354to1.9863955, this repeats targeted ~2–3ms CPU
+savings. Accept as CPU work reduction, not stable overall FPS gain or GPU fix.
+
+Added tests only (production logic unchanged): regional bounds enclose rotated,
+negative/nonuniform/singular scales at largecoordinates; nonfinite/unknown
+proofs retain exact path; hidden regional fades freeze and Visible overrides
+wake correctly; parent removal invalidates oldproof; removed membership cannot
+doubleadvancefade. Extracted regionalfixture helper. Private58290 passes64tests
+in2.25s, /tmp/geothite-region-gate-edge-tests.log. Reconfirmed root two source
+files byteidentical to baselines and new moduleabsent, then promoted only
+occluder_fade.rs, summit_vista.rs, occluder_fade/regions.rs. No unrelated root
+changes overwritten. Root28893 passes64/0failed3.13s; root summit11/0failed0.17s.
+Controller26753 eightpassed/oneexistingignored13.59s, Mom/NewBarkgate and battle
+PP mutation included. MCP46852 onepassed1.44s; stdio13561 onepassed1.83s. Logs
+/tmp/geothite-region-gate-{root,root-summit,controller,mcp,stdio}-tests.log.
+Scoped gitdiffcheckpassed. Root/source change now accepted, app not yet updated.
+
+Frozen private production release32373 confirmed live after tests;
+/tmp/geothite-region-gate-production-build.log. Freeze private inputs/poll exact
+handle, no restart on observationwait. Pre-installhashreceipt
+before-region-gate-install.json confirms currentinstalledapp still0d74bff4...;
+sourcepack and one save recorded. On terminal0 install desktop.py --skip-build
+from performance-release-native/frozenopenmodels, then outside-repo unsetmodel
+root check-installation, strictdeepcodesign and before/after pack/savehashes.
+Do not launch visiblewindows or stopotherprocesses. No other owned live handle.
+Goal remains active/incomplete: CPU reduction verified, GPU/fluidity unresolved.
+
+Region CPU optimization deployed: production32373 terminal0 in9m18s,
+/tmp/geothite-region-gate-production-build.log. Installer55691 terminal0 in32.6s,
+/tmp/geothite-region-gate-install.log. Outside-repo check8369 terminal0 with
+CRYSTAL_OPEN_MODEL_ROOT unset and independent strictdeepcodesign terminal0.
+Installed signed executable SHA256
+3734307d19a3bc1054e41799a8e78ddb05aa19c06c9fb6bee1cc27cc2f53208d.
+Source and bundled nativepack unchangeda0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007;
+one external save unchangede542a84db0edff578ad84294304fd108583da067472d624dabf85cd1ec6bd9b2.
+Receipt region-gate-installed-verification.json and check log
+/tmp/geothite-region-gate-installed-check.log. No visiblelaunch, no other
+process stopped, no generatedpack/buildasset staged/committed. No owned live
+handle remains. Installed and root include conservative regionalCPU gate plus
+accepted previous inactiveCPU/destinationpreload work. Immutable current QA
+control is region-gate-frame-clientd555e636..., runtime code matches production;
+later additions were testsonly. Full goal remainsactive/incomplete: repeated
+2–3msoccluderCPUsavings verified, overallFPSresults mixed, dense GPUwork remains.
+Next investigation should target substantive geometry/shadow work using current
+source; no need to repeat completed region tests or rejected shader/cache/section/
+meshlet/NoCpuCull trials without new evidence. Existing earlier layer32 fixture
+proves reduced shadow candidate membership but combined old NoCpuCull result
+was mixed; if revisiting, isolate layer change from unrelatedculling, preserve
+both world visibility and shadow receiver bounds, and require useful current
+source evidence. Keep all concurrent art/source changes intact.
+
+New private opaque-only GPU visibility trial. Source audit ruled out layer32
+alone: RenderGpuCulledEntities contains only NoCpuCulling entities, absent in
+currentclient. Old mixed NoCpuCull trial admitted masked/transparent surfaces;
+new trial explicitly limits admission to merged opaque leaves of regional
+panorama trees. No rerun of the old unrestricted policy. Apple opaque HSR
+research also ruled out speculative outer-first index ordering before changes.
+
+Private opaque_gpu_visibility.rs automatically requires actual GPU instance
+building plus frustum-culling support and compatible active perspective views.
+No enable toggle/trace tool added. Initial regional opaque leaves alone get
+PanoramaOpaque role/layer32; normal and future sorted/fading leaves remain31/
+CPU culling. Worldcamera sees31+32, sun31 excludes GPU-only tree candidates;
+shadow receiver/bounds/fitting proofs retain both layers because VoxelSurface
+samples shadows explicitly. Geometry/material/shader/raster resolution/density/
+drawdistance/pipelinekeys unchanged. GPU-only visibility follows inherited
+hidden state incrementally. MaterialProof observes asset events and alpha-mode
+class changes, avoiding an owner scan for ordinary uniform changes; changing
+to nonopaque restores CPU mode. Registration after AssetEventSystems and before
+VisibilityPropagate ensures same-frame fallback/reset. Unknown bounds, skin/
+morph/NoFrustum, foreign layers, removed proof components, unsupported device/
+projection/directdraw restore original CPU path. Inactive cached world retains
+ownership, avoiding mass migration on classic/hide. Nativeonly admission;
+browser tree leaves stay31. No Cargo/dependency/workerwire changes.
+
+Backups of five modified existing files at opaque-gpu-visibility-baseline/:
+lib.rs,occluder_fade.rs,shadow_bounds.rs,shadow_fit.rs,shadow_receivers.rs.
+Newmoduleprivate only. First test77974 compile101 missing HashSet hasher type;
+fixed explicit AssetId<VoxelMaterial> set. Script assertion initially prevented
+test insertion (no source partial test write); corrected exact registration text.
+Fixed24010 3pass/1fixturefail (missing ViewVisibility), added actual Visibility/
+ViewVisibility fixture,98791 fourpass. Actual GPU collector test proves world
+129meshes/capture0/sun129oldlayer versus1newlayer. Admission rejects Mask/Blend/
+AlphaToCoverage, respects hidden/unhide, restores CPU on material/device/NoIndirect/
+orthographic changes and preserves inactive ownership. Expanded existing lazy
+fade regression ordinary+regional: opaque role/layer32 only, future sorted
+leaves layer31/unmarked; exact pose/vertices/indices/material reuse/retention
+stilltested. Existing shadow receiver proof now exercises layers31and32.
+
+Final suite74178 terminal0: GPU4/occluder64/summit11/receiver10/shadowfit5/
+shadowbounds7 =101passed,0failed. Logs
+/tmp/geothite-opaque-gpu-final-{module}-tests.log. Source/root/app untouched by
+trial; currentinstalled3734307d... regionCPU/preload build remainsverified.
+Private release QA started /tmp/geothite-opaque-gpu-visibility-release-build.log;
+see current exact handle and freeze inputs until terminal. Then save immutable
+opaque-gpu-visibility-frame-client. Current matching control region-gate-frame-client
+d555e636... . Compare current fullresolution roof walking bothorders, existing
+traced CPUvisibility/pairedvisuals including firstfade, plus roofentry from upper
+floor before promotion: Bevy collect_render_mesh_instance queues removal when
+ViewVisibility false, so tagging hidden meshes alone does not prove GPU table
+upload is prepaid at unhide. No FPS/latency benefit claimed. Full goalactive.
+
+Opaque GPU visibility QA55346 terminal0 in5m17s. Immutable
+opaque-gpu-visibility-frame-client SHA256
+9e53dca0f50a0baf144eb5257b342023721086672b25a4f41deb50d4fb3d90cd.
+First untraced pair candidate60812/control69446 terminal0, full2560x1600/
+Roof9,13/noon/camera0,7,5,0/UUUUDDDD/syntheticstep1/60s. Candidate858updates
+median68.69/p9581.08ms,movement68.11/79.47; control836updates70.62/84.52,
+movement66.91/79.36. Both256rows/4origins/0extraterrainbuilds. Small/mixed first
+pair is not a gain claim. Reversecontrol32754 now live, log
+/tmp/geothite-opaque-gpu-control-second.log, output opaque-gpu-control-second.
+Poll exacthandle; then identical candidate-second run. No owned compilers
+concurrent, other processes untouched. Need traced CPUvisibility and paired
+visuals if useful, plus actual roofentry/unhide gate before promotion.
+
+Read-only localpack route probe91326 terminal0 using existing runtime/assets
+rlib reexports; task scratch roof_route_probe.rs/executable deleted after success.
+TinTower9F warp4 raw/runtime(7,9) ->Roof warp1(9,13); coordinates map directly
+(core raw_event_tile_to_runtime_tile_checked no rescale). Actual natural walking
+is camera-relative; one Down from(7,8) needs cardinal yaw0, not benchmarkyaw7.
+For warm-cache roof entry proof use startingRoof(9,12), camera0,0,45,0 and DUD:
+Down to9F, Up away from arrival stair, Down back toRoof. This must be validated
+through real controller (route not yet executed). InitialRoofload prewarms full
+panorama; related9F retains source geometry, testing hidden/unhide GPU instance
+upload instead of conflating cold source generation. A prior default9Fstart
+could reachroof beforepreloadready, so don't call it a warmed entry test without
+source readiness evidence. Use existing --record for normal asynchronous shader
+path, bound capture length and remove task PNG scratch after retaining transition
+evidence. No new timing/input tooling or game dispatcher added. Current root/
+installed3734307d... remain unchanged by this private trial; fullgoalactive.
+
+
+Opaque-only GPU visibility trial disposition (2026-10-21): not installed.
+The reverse walking pair completed: control 75.99/141.82 ms median/p95,
+candidate 69.58/80.37 ms; completion callbacks 12.970 versus 14.200/s.
+The first pair was 13.900 versus 14.211 callbacks/s. These are queue callbacks,
+not displayed FPS. Baseline variability limits the inference from both pairs.
+
+Paired stationary captures preserved state and the roof/forest composition.
+Active-scene CPU medians were control/candidate: check_visibility 0.568/0.425 ms,
+visibility_propagation 1.617/2.294 ms, main 8.755/8.769 ms. This does not establish
+an aggregate CPU improvement. Installed Bevy check_visibility_cpu_culling scans
+eligible entities on every active view; it does not skip the scan merely because
+the camera is stationary. No moving-camera benefit should be inferred from an
+assumed stationary-camera cache.
+
+Normal asynchronous roof round trips completed through actual controller input:
+start TinTowerRoof (9,12), camera 0 0 45 0, synthetic step 1, DUD followed by B.
+Both reached TinTower9F (7,9), stepped away, and returned to Roof (9,13).
+Both arrivals had terrain_pending=false and terrain_active=true. Candidate
+session 32896 and control 93392 exited successfully. Logs are
+/tmp/geothite-opaque-gpu[-control]-roof-roundtrip.log. Candidate recorded only
+14 frames versus control 108, so these readback-heavy runs cannot establish a
+comparative performance gain. Candidate returned-roof image was inspected;
+geometry and scenery remained present. First/final images and CSV/trace receipts
+remain ignored; intermediate task PNGs were removed.
+
+With no clear aggregate CPU saving and unresolved capture behavior, leave this
+trial unpromoted. Its six source files are archived under ignored
+.local/hierarchy-cache-production/opaque-gpu-visibility-unpromoted-source/.
+Restored all five original private source files from the recorded baseline and
+removed the trial module. No root renderer code, installed app, pack, save,
+other application, or other process was changed by this trial. The installed
+3734307d... build still contains the verified destination preloading and region
+fade CPU improvements. The broader fluid-gameplay goal remains active.
+
+
+Native opaque tree vertex-fetch trial (2026-10-21), private and uninstalled.
+The existing DFS triangle localization improves post-transform reuse but leaves
+vertex attributes in the pre-localization buffer order. The new Rust pass
+permutes opaque template attributes into first-index-reference order after
+triangle localization, before shared template publication. This follows the
+vertex-fetch stage described in https://github.com/zeux/meshoptimizer#vertex-fetch-optimization ;
+no library, exporter, dependency, shader, material key, geometry approximation,
+resolution change, per-frame scan, or player toggle was added.
+
+Only unuploaded, unshared opaque leaves are eligible. The pass preserves all
+ordered triangle attribute bits, winding, index width, vertex count (including
+unused vertices), packed normal format, independent sorted fade buffers and
+collision ownership. Unsupported formats and malformed indices return without
+mutation. Browser and worker wire paths remain unchanged. Source backups are
+ignored vertex-fetch-baseline/{occluder_fade,shared_groves}.rs; the two private
+source hashes are in vertex-fetch-source-receipt.json.
+
+Initial test build 38467 exited 101 because a test inspected Bevy's private
+attribute_compression field; replaced that assertion with public attribute format
+checks. Retry 27797 passed both new tests, including three real tree families,
+packed normals, signed zero/NaN payload bits, unused vertices, U16/U32 indices,
+malformed-index fallback and idempotence. Full occluder suite 35402 passed 66;
+shared_groves suite 83756 passed 3. No failures. Logs:
+/tmp/geothite-vertex-fetch-{tests,occluder-tests,shared-tests}.log.
+
+Release QA build 37097 is running with the frozen private source and release
+native target. Poll that exact handle; do not restart because an observation
+expires. Log /tmp/geothite-vertex-fetch-release-build.log. Once terminal, save
+an immutable candidate and compare full-resolution walking in both orders against
+region-gate-frame-client d555e636... with no owned compiler running. Paired
+visuals and normal asynchronous cached-entry behavior remain required before
+promotion. No frame-time or gameplay improvement claimed yet. Installed app,
+root renderer code, content packs, saves and other processes are unchanged.
+
+
+Vertex-fetch QA release 37097 completed successfully in 6m49s. Frozen source
+hashes still match the recorded receipt. Saved immutable vertex-fetch-frame-client,
+SHA256 cba0df36ffb0ea55009ef47bc3aba791626bcd7532fbbd9ea7af1d3dbab1a256.
+Started candidate-first full-resolution roof walking session 34145, log
+/tmp/geothite-vertex-fetch-candidate-first.log, output directory
+.local/hierarchy-cache-production/vertex-fetch-candidate-first. Same established
+Roof (9,13), noon, camera 0 7 5 0, 2560x1600, synthetic step 1, UUUUDDDD, 60s.
+No owned compiler runs concurrently. Poll 34145 until terminal, then run the
+identical region-gate-frame-client control before the reverse-order pair.
+No performance result or installation claimed while the measurement is live.
+
+
+Vertex-fetch first untraced pair completed: candidate 34145, control 29074,
+both exited 0. Candidate 857 updates, median/p95 69.66/86.08 ms; control 816,
+71.57/88.85 ms. Walking 256 rows/four origins/no extra builds in each;
+median/p95 candidate 68.46/81.11 ms versus control 72.73/90.51 ms.
+Completion callbacks candidate 13.956/s (outstanding 17 to 36) versus control
+13.592/s (36 to 36), no poll errors. These are queue callbacks, not displayed
+FPS. Candidate warm-up image inspected: roof, player and dense forest present.
+This modest first-pair difference needs repetition before a benefit claim.
+
+Reverse-order control session 1631 is now running, output vertex-fetch-control-second,
+log /tmp/geothite-vertex-fetch-control-second.log. Poll the same handle to terminal,
+then run candidate-second with identical inputs. No source changes, owned compiler,
+new installed build, quality reduction, or other-process termination.
+
+
+Vertex-fetch reverse pair completed: control 1631 and candidate 56743 exited 0.
+Control 814 updates, median/p95 71.56/92.54 ms; candidate 1019 updates,
+53.68/104.06 ms. Walking median/p95 control 72.71/100.26 versus candidate
+51.18/99.46 ms, both 256 rows/four origins/no extra builds. Completion callbacks
+13.552/s control and 16.554/s candidate; both no poll errors. Candidate outstanding
+11 to 36, control 36 to 36. These are callbacks, not display FPS.
+
+Both orders favor candidate medians, but the candidate varies substantially
+between runs and whole-run p95 worsens in the reverse pair. Do not claim a stable
+fluidity/tail improvement or the larger reverse gain as a general result.
+Further comparisons are justified by this unresolved variation, after visual
+and normal asynchronous cached-entry checks. Current installed executable still
+matches accepted 3734307d...; no installation or root renderer source promotion.
+
+Candidate paired 3D/2D roof capture session 38233 is live, existing 180-second
+capture deadline, no trace. Log /tmp/geothite-vertex-fetch-paired-capture.log;
+outputs vertex-fetch-candidate-{3d,2d}.png under ignored hierarchy-cache-production.
+Poll that exact handle, inspect both images and state-preservation receipt, then
+run normal asynchronous roof round trip with the existing DUD route. No compiler
+or other owned render runs concurrently, and no other process was stopped.
+
+
+Vertex-fetch visual and cached-entry gates completed. Paired capture 38233
+exited 0; candidate 3D/2D images inspected at the same TinTowerRoof position,
+noon, facing and game state. Paired receipt state_preserved=true, frame 1044,
+checksum 388821513. Roof surface, source color, player, tree silhouettes,
+distant scenery and sky remain intact; no new visual defect observed.
+
+Normal asynchronous cached roof round trip 95555 exited 0. Actual controller
+DUD route reached 9F (7,9) at walking row 9 and returned Roof (9,13) at row 74.
+Both arrivals terrain_pending=false, terrain_active=true, one source build;
+presentation trace also records both arrivals ready with 3D active. Final
+returned-roof frame 00113 inspected, geometry/scenery intact. First/final PNGs,
+CSV and trace retained ignored; 112 intermediate task PNGs removed. Recording
+readback timings are not comparative performance evidence.
+
+Because the two short walking comparisons favor candidate medians but disagree
+on slow-frame behavior, started a longer 120-second control 87637 using identical
+full-resolution roof settings. Output vertex-fetch-control-long; log
+/tmp/geothite-vertex-fetch-control-long.log. Poll that exact handle until terminal,
+then run the immutable vertex-fetch-frame-client candidate-long for 120 seconds
+with otherwise identical inputs. This extension addresses unresolved variance;
+it is not a general FPS or fluidity claim. Source still frozen; no owned compiler,
+root renderer promotion, installed app change, or other process termination.
+
+
+Long control 87637 exited 0: 1512 updates over 120.08s, median/p95
+77.93/114.54 ms. Walking 256 rows/four origins/no extra builds,
+51.56/170.03 ms; completion callbacks 12.359/s, outstanding 8 to 36,
+no poll errors. Its walking median also drops near the earlier candidate's
+fast run, confirming substantial within/between-run variation in this environment.
+Do not attribute the earlier larger candidate gain solely to vertex layout.
+
+Matched candidate-long session 8576 is running for 120 seconds, identical
+settings, output vertex-fetch-candidate-long, log
+/tmp/geothite-vertex-fetch-candidate-long.log. Poll the exact handle until terminal.
+No owned compiler or second renderer runs concurrently. No source promotion
+or installation. A read-only tool lookup confirms xctrace is installed at
+/Applications/Xcode.app/Contents/Developer/usr/bin/xctrace; no profiler was started
+and no measurement tooling code was changed. The full fluid-gameplay objective
+remains unresolved.
+
+
+Vertex-fetch long pair completed: candidate 8576 exited 0, 1577 updates over
+120.04s, median/p95 72.88/108.72 ms versus control 77.93/114.54 ms. Walking
+candidate 70.53/99.64 ms versus control 51.56/170.03 ms: movement median is
+mixed and must not be represented as a universal gain. Candidate callbacks
+13.241/s, outstanding 18 to 6 (queue drain contributes), no poll errors;
+control 12.359/s, outstanding 8 to 36. Callback rates are not displayed FPS.
+
+Disposition: keep the exact vertex-fetch permutation. All three whole-run
+comparisons favor candidate median (modest first-pair gain, larger variable
+second, about 6.5% long-pair median reduction). Two favor p95, one worsens;
+no stable global tail/FPS/fluidity claim. Unit bit proofs and inspected paired
+visual/cached-entry gates passed. The full performance goal remains incomplete.
+
+Both root target files matched the saved pre-trial baselines byte-for-byte,
+so promoted only the verified occluder_fade.rs/shared_groves.rs files. Scoped
+diff check clean, unrelated root changes preserved. Root occluder test session
+70932 is live, /tmp/geothite-vertex-fetch-root-occluder-tests.log. Production
+build also started against frozen private source, release native target,
+/tmp/geothite-vertex-fetch-production-build.log; use its exact returned handle.
+Benchmarks are finished; no rendering overlaps these compiler jobs. Before
+installing, finish root relevant/shared tests and controller/MCP/stdio gates,
+record current app/pack/save hashes, verify current installed build has not
+changed, then use existing installer and outside-repo installation verification.
+No install has occurred yet.
+
+
+Root occluder 70932 exited 0, 66 passed. Root shared-template compile 44151
+exited 101 after concurrent unrelated mountain source edits: outdoor_mountains.rs
+references missing mountain_flanks::edge_fraction, RELIEF_HEIGHT_SCALE and
+FILL_EDGE_REACH (seven E0425 errors). Full diagnostics remain in
+/tmp/geothite-vertex-fetch-root-shared-tests.log. Do not overwrite or repair
+another ongoing art change for this performance task. No regression assertion
+ran in that failed compile; do not count it as a passing root suite.
+
+Both promoted files still match the recorded, tested private source hashes.
+The frozen private source passed shared_groves 3 and occluder 66 already and
+remains the measured production source. Controller regressions now run against
+that snapshot, log /tmp/geothite-vertex-fetch-controller-tests.log; use returned
+exact handle. Production build 71614 remains active, unchanged frozen inputs.
+Run MCP and stdio against the same snapshot after controller completion. Root
+buildability is currently limited by the concurrent mountain edits; report that
+limitation separately from the production snapshot's verification.
+
+
+Vertex-fetch production-snapshot gameplay gates passed with the external TUI
+pack: controller 76809 exited 0, 8 passed/1 existing ignored (standard mart),
+including actual battle turn and Mom/New Bark gate. MCP 2705 exited 0, real
+movement and production Start menu test passed. Stdio 56415 exited 0,
+normal_mcp_gameplay_keeps_stderr_clean passed. Logs
+/tmp/geothite-vertex-fetch-{controller,mcp,stdio}-tests.log. These validate the
+frozen production source, not the concurrently changing root mountain edits.
+
+Recorded before-vertex-fetch-install.json with app, source/bundled pack and
+all current save hashes. Installed executable still accepted 3734307d...;
+source/bundled packs match, one save recorded, no installed-game process found.
+Production build 71614 remains live. Poll same handle to terminal; then recheck
+app/pack/save hashes and running game before using the existing installer.
+Do not overwrite a concurrent installation or change another running process.
+No installation yet. Full goal remains active; this is a modest exact-data
+render optimization, not evidence that dense scenes are already fluid.
+
+
+Vertex-fetch deployment verified (2026-10-21). Production 71614 exited 0 in
+9m59s. Pre-install app/pack/save and frozen-source hashes rechecked unchanged;
+no installed-game process running. Installer 74945 exited 0 in 39.3s, using
+existing desktop.py install --skip-build with frozen open-model root and native
+pack. Installed executable SHA256:
+e48c710abc24b26a6a62e3ab3d5c22d4a3ac9f033fc5f0b4c25b4229e2710729.
+
+Outside-repository /tmp invocation with CRYSTAL_OPEN_MODEL_ROOT unset,
+installed Geothite --check-installation session 17321 exited 0 and resolved
+bundled Resources/core-modular.crystalpack plus the existing external save.
+Independent codesign --verify --deep --strict exited 0. Source pack, bundled
+pack and all recorded saves remain byte-identical. Receipts:
+before-vertex-fetch-install.json and vertex-fetch-installed-verification.json
+under ignored .local/hierarchy-cache-production. Logs:
+/tmp/geothite-vertex-fetch-{production-build,install,installed-check}.log.
+No visible launch, process closure, staging, commit, pack regeneration or audio
+change. Scoped diff check remains clean. Concurrent root mountain compilation
+errors were reported separately; production-snapshot tests passed.
+
+This installs the exact-data vertex-fetch improvement while retaining all prior
+verified preloading and CPU-region fixes. The 120-second comparison improved
+median 77.93 to 72.88 ms, but the broader dense-scene fluidity objective remains
+unachieved. Next investigate the dominant GPU work with the installed Xcode
+Metal System Trace capability; template/help discovery completed successfully
+(72879/68788 exited 0) without starting a profiling recording or changing timing
+tools. Do not count profiler availability as a performance improvement.
+
+
+Current-source GPU profiling follow-up (2026-10-21). Initial xctrace launch
+98777 exited 54 because the existing headless guard required
+CRYSTAL_MEASURE_3D_VALIDATION=on; no GPU inference from that attempt. Corrected
+45-second launch 27406 reached the time limit but produced an oversized capture.
+At 5.8 GB it left only 6.8 GiB free; SIGINT and SIGTERM requested cancellation.
+xctrace then exhausted disk space while saving and aborted (134). A subsequent
+SIGKILL command was not executed because its here-document could not allocate
+space. Only task-owned profiling outputs were removed with validated Python
+path checks. Two closed temporary kernel traces were also proven to match the
+capture log creation times (1.96/2.04 seconds after their logs):
+instrumentsT7yHK9.ktrace and instrumentsOogNfS.ktrace. Removing these released
+5.96 GiB; free space recovered to 12 GiB and later 20 GiB. No other application,
+build cache or unrelated older capture was intentionally closed or deleted.
+The installed app, source/bundled pack and save hashes still matched the verified
+vertex-fetch installation receipt after recovery. Do not retry a long unbounded
+Metal recording on this disk.
+
+A smaller successful recording used already-warmed task-owned client PID 22788
+(session 28357), xctrace --attach 22788 --time-limit 5s --window 3s (session
+53112). Both exited 0. Trace vertex-fetch-metal-short.trace was about 45 MB;
+TOC export 93555, GPU interval export 58149 and encoder export 14101 exited 0.
+Logs /tmp/geothite-metal-short-{target,record,export,gpu-export,encoders-export}.log.
+Target-only Active depth-zero GPU intervals (230 rows): Vertex 77 intervals,
+sum 119.325 ms/largest 23.397 ms; Fragment 75, 46.219/6.016 ms; Compute 78,
+8.923/1.936 ms. Interval sums overlap, cover a limited sample and are not frame
+percentages or displayed FPS. Other-process rows were excluded. Application
+encoder labels are unavailable (encoder-list export has no rows), so do not
+attribute a named pass from this capture. Existing earlier labeled capture
+research already identifies vertex work as a stronger lead than indirect
+preparation. No new profiler/timing feature was implemented.
+
+Small derivable receipts under ignored hierarchy-cache-production:
+metal-short-{toc,gpu-intervals,encoders}.xml and metal-short-gpu-summary.json.
+This evidence supports a targeted current-roof normal-representation comparison,
+not another generic fragment-shader guard trial. Existing prior packed-normal
+Route29 comparisons were neutral; no current-roof conclusion follows from them.
+The native normal-packing startup override already exists, and exact welding,
+triangle/fetch localization and source geometry remain unchanged when it is off.
+
+Started float-normal roof comparison 5992 with
+CRYSTAL_PACKED_GROVE_NORMALS=off, same immutable vertex-fetch-frame-client and
+same 2560x1600/Roof9,13/noon/camera0,7,5,0/UUUUDDDD/step1/60s settings.
+Output float-normal-roof-first, log /tmp/geothite-float-normal-roof-first.log.
+Poll exact handle to terminal, then compare default packed normals using the
+same executable and reverse order if evidence warrants. No source or installed
+normal policy changed; do not claim a performance benefit before measurement.
+
+
+Current roof float-normal comparison completed: float 5992 exited 0,
+967 updates, median/p95 59.39/86.09 ms; packed 42387 exited 0, 958 updates,
+61.29/73.96 ms. Walking float 59.30/88.69 versus packed 58.83/66.15 ms;
+both 256 rows/four origins/no extra builds. This is no convincing float-normal
+win: whole-run median slightly improves while walking median is neutral and
+slow-frame behavior worsens. Keep the installed packed-normal default; no source,
+shader, normal policy or player toggle changed. No further repetition of this
+weak candidate is justified by these results alone.
+
+Bevy 0.20 mesh.rs RenderMeshInstanceGpuQueue::GpuCulling carries MeshCullingData
+for both changed_cpu_culling and changed_gpu_culling queues (around lines
+1090–1110). NoCpuCulling changes CPU visibility membership; its absence does
+not itself prove meshes lack GPU culling data. Do not revive an old camera-
+occlusion trial solely on that false premise.
+
+Bounded launch profiling 77005 used --time-limit 30s --window 2s and >15 GiB
+free-space preflight. Target validated the roof and finished its 15s diagnostic
+run; profiler saved a 144 MB trace but returned 54. Encoder export 30949 exited
+0 and again contains zero application encoder rows, so it provides no named-pass
+attribution. Logs /tmp/geothite-metal-labeled-{target,record,encoders-export}.log.
+Removed its raw trace and its single closed matching temporary instruments6Uul2I.ktrace
+(created during that capture); free space is 25.74 GiB. Compact prior target-only
+GPU XML/summary remains; completed profiler-run directories were removed.
+No profiling process remains live.
+
+Installed xctrace help list confirms instruments are enumerable. Its list
+contains a distinct Metal Application instrument alongside GPU and Metal GPU
+Counters; --instrument 'Metal Application' --show-recording-options succeeds
+without starting a recording. Next determine whether explicitly selecting that
+instrument supplies the missing application labels, retaining a bounded window
+and disk headroom. If not, do not keep repeating identical label-free captures.
+Apple's Metal developer workflow overview is at
+https://developer.apple.com/documentation/Xcode/Metal-developer-workflows .
+Full gameplay-performance goal remains active; current installed e48c710a...
+vertex-fetch build is unchanged by these diagnostics.
+
+
+Explicit Metal Application follow-up 24728 saved its bounded trace and returned
+54. Target completed the validated 15-second diagnostic run. Export 27619
+exited 0, but application encoder rows remain zero. Explicitly adding that
+instrument did not solve attribution; stop repeating this approach. Retained
+small metal-application-encoders.xml and logs; removed raw trace, target-only
+profiling directories and closed matching temporary instrumentsWgAIyi.ktrace
+(created 31.91s after its capture log). Free space 26.06 GiB. Prior target-only
+stage summary/XML remains available. No installed/source-pack/save policy change.
+
+Fine panorama occlusion preparation trial, private only. Saved nine current
+source baselines under fine-occlusion-baseline before edits. The old two-section
+trial alone was neutral; this trial targets up to sixteen spatial groups plus
+real two-phase occlusion, preserving all triangles and draw distance. Ported
+its five-file section ownership changes with a current-source three-way merge.
+Initial patch check rejected the occluder hunk; no partial patch applied. Git
+merge-file reported two additive test conflicts, resolved by retaining both
+installed vertex-fetch tests and both section proofs. Region gating and the
+installed vertex-fetch permutation remain intact; fetch permutation now also
+visits every additional opaque section. No lib/shadow/GPU-policy edits yet.
+
+Native panorama preparation uses up to sixteen fitted opaque sections. Ordinary
+grove preparation and browser/worker paths retain existing behavior. Original
+collision and sorted fade ownership remain whole; shared/weak-cache publication
+retains each section. The section proof checks every ordered triangle attribute
+hash before/after partitioning and again after packing, welding, triangle and
+vertex-fetch localization, across pine, ancient and deciduous source trees.
+Source fallback and unsupported-device behavior still need review before any
+production adoption; this is not a frame-rate claim.
+
+Section test session 3078 exited 0, all 68 occluder tests passed (including wire
+and new section/fetch fidelity tests). Follow-up 93196 exited 0: shared_groves 3,
+forest_instances 11, summit_vista 11. Total 93 passed, zero failed/ignored.
+Logs /tmp/geothite-fine-occlusion-{section,shared_groves,forest_instances,summit_vista}-tests.log.
+Current five private source hashes in fine-section-source-receipt.json. No
+compiler, profiler or render process from this task remains live.
+
+Next integrate conservative native camera occlusion using actual GPU-building/
+culling capability, compatible perspective/indirect projection and a real
+DepthPrepass. NormalPrepass alone does not imply a separately sampleable depth
+texture (Bevy prepass/mod.rs); check component ownership and deferred incompatibility.
+NoCpuCulling is not a prerequisite for GPU culling data. Incremental GPU-only
+membership can be considered separately if fine groups create a measured CPU
+visibility bottleneck. Then compare full-resolution current Roof walking both
+orders against vertex-fetch-frame-client cba0df36... and verify cached entry/
+visuals before promoting anything. Installed e48c710a... and root renderer code
+remain unchanged by this private trial. Full fluid-gameplay goal remains active.
+
+
+Combined fine-group/two-phase occlusion private trial implemented. Added native
+panorama_occlusion.rs and native-only lib registration. It detects actual
+RenderMeshInstances::GpuBuilding plus GpuPreprocessingSupport::Culling, then
+adds only OcclusionCulling to a compatible world camera with an existing
+DepthPrepass. Deferred, direct-draw, orthographic, missing-depth or unsupported
+GPU states remove only this module's owned component. Pre-existing culling,
+depth components, non-world cameras and sun remain untouched. Compatible
+inactive cached cameras retain ownership. Scope is Roof and the three existing
+summit-preload floors, allowing preparation during approach. No new environment
+or player toggle, shader, material, renderer output or per-mesh frame scan.
+The finer grouping remains a private trial and unsupported-device grouping
+fallback still needs review before any production adoption.
+
+Camera session 36721 exited 0: 3 lifecycle/capability tests passed. Expanded the
+existing production fade fixture to exercise packed partitioned trees: every
+opaque section is visible initially, all become hidden on fade while original
+sorted geometry publishes in the same update, and all return without mesh or
+material leaks. Session 82706 exited 0, both original and partitioned fade tests
+passed. Prior 93 geometry/cache/worker/panorama checks passed; no production
+performance claim follows from these tests.
+
+QA release build started with frozen seven-file source receipt
+fine-occlusion-source-receipt.json, log /tmp/geothite-fine-occlusion-release-build.log.
+Use its exact returned handle until terminal; no input changes during compilation.
+Then save an immutable fine-occlusion-frame-client and compare full-resolution
+Roof walking in both orders against vertex-fetch-frame-client cba0df36..., with
+no owned compiler concurrent. Confirm real culling activation/depth support,
+paired state-preserved visuals and cached roof round trip before any promotion.
+No root renderer or installed e48c710a... app change. Full goal remains active.
+
+
+Fine-occlusion QA release exact live handle: 78946. Continue polling the same
+build; no restart or source edit while it is active. This private trial currently
+requires existing DepthPrepass and excludes deferred/direct/orthographic paths.
+Source inspection confirms native High-quality SSAO requires both DepthPrepass
+and NormalPrepass (Bevy ssao/mod.rs lines 111–114), so the planned default-quality
+Roof measurements exercise the correct custom normal prepass.
+
+Additional correctness guard to resolve before any production promotion:
+require NormalPrepass as well. VoxelSurface's custom aperture/cutout fragment
+is selected for the normal prepass, while a depth-only unlit path can otherwise
+retain StandardMaterial's depth fragment. An explicitly retained depth texture
+without normal output must not become an occluder for a visually discarded
+surface. Preserve the frozen compiler input now; after it finishes, add the
+normal requirement and a missing-normal lifecycle test before production use.
+Also review unsupported-device coarse grouping fallback; finer groups remain
+prepared even when camera culling is unavailable in this private trial. Neither
+edge case is a claim of completion or approval for shipping. Installed app stays
+e48c710a... and no other process is touched.
+
+
+Fine-occlusion QA 78946 completed successfully in 5m24s; frozen seven-file
+source hashes matched its receipt. Saved immutable fine-occlusion-frame-client
+SHA256 6477dbfa5b23e8d936e7759c74564e91f3d6a8d032cee93b3e4a7586c8bb02b2.
+This executable predates the additional NormalPrepass compatibility guard;
+only use it for the default High/SSAO-on comparison, where both prepasses are
+present and the compatible branch is identical. Do not ship it as production.
+
+Added the NormalPrepass guard to private source and extended missing-normal
+fallback coverage. 30744 exited 0, 3 lifecycle tests passed, native GPU test
+initially ignored. Added an explicitly offscreen native test with no primary
+window and an image target. It verifies actual GPU-building/culling support,
+owned camera activation and real PreprocessBindGroups::IndirectOcclusionCulling
+with both early_indexed and late_indexed bind groups populated. 31874 passed
+on the native device in1.21s but exposed a fixture-only missing-LUT tonemapping
+warning. Set fixture Tonemapping::None and DebandDither::Disabled; clean repeat
+80276 passed in0.19s. No renderer/performance code changed for that fixture fix.
+Guarded source hashes are in fine-occlusion-guarded-source-receipt.json. Any
+production build must use this guarded source plus reviewed grouping fallback.
+
+First untraced full-resolution comparison completed with explicit unchanged
+High quality and SSAO on, no owned compiler concurrent: candidate 78898 and
+control 79253 exited 0. Roof9,13/noon/2560x1600/camera0,7,5,0/UUUUDDDD/step1/60s.
+Candidate1014 updates median/p95 56.75/79.22 ms; control868,69.53/93.76 ms.
+Walking candidate50.92/58.70 versus control63.38/87.06 ms. Both256rows/four
+origins/no extra builds. Queue callbacks candidate16.860/s (outstanding31to32)
+versus control13.922/s (3to36), no poll errors; callback rates are not displayed
+FPS and queue fill contributes to their difference. Median improvement is
+about18.4% for this first pair, not yet a repeatable/global fluidity claim.
+
+Reverse control 98868 is live, output fine-occlusion-control-second, log
+/tmp/geothite-fine-occlusion-control-second.log. Poll exactly that handle to
+terminal, then run candidate-second with identical explicit High/SSAO settings.
+No source or installed app promotion. Subsequent gates include paired visuals,
+normal asynchronous cached roof entry and unsupported-device coarse-grouping
+fallback. All baseline/candidate model assets are the same frozen private root.
+Full goal remains active.
+
+
+Reverse control 98868 has now exited 0:928 updates,64.42/107.14ms median/p95,
+walking62.19/94.71ms,256rows/fourorigins/no extra builds. Matched candidate-second
+73959 is live, output fine-occlusion-candidate-second, log
+/tmp/geothite-fine-occlusion-candidate-second.log. Poll this exact handle next;
+all owned compiler/test jobs are terminal. No new source edits or install.
+
+
+Fine occlusion reverse candidate 73959 exited 0:835 updates,61.82/114.39ms median/p95, walking56.05/91.25ms. Queue callbacks13.925/s versus reverse control14.887/s; no errors. The reverse pair does not establish stable throughput/tail improvement, so this candidate remains unpromoted.
+
+Matched production 3D/2D captures completed with state_preserved=true for both candidate and control. Roof/forest/building/player detail retained on inspection. Ready-state CPU trace medians (ms), candidate versus control: check_visibility11.198/2.533; visibility propagation3.867/2.530; transform propagation1.115/0.510; fades1.934/1.995; main24.535/11.319. Fine sections add substantial CPU scanning, motivating incremental GPU visibility only for proven static opaque sections.
+
+Private fine-incremental trial: admit only marked fine regional opaque noncaster/nonreceiver meshes with finite bounds, actual GPU culling support, compatible perspective indirect views, and opaque material. Move admitted draws from world31 to panorama32; world camera and receiver bounds include both, sun remains31. Restore original layer/culling on proof, material, device or view changes. Sorted fade draws remain on the original path. Unsupported views use the exact original coarse panorama library; unknown hardware defers job scheduling without consuming jobs. No player toggle.
+
+Validation: panorama filter10 passed/1 explicitly GPU-ignored; ownership5 passed; actual offscreen VoxelMaterial early+late indexed occlusion regression passed with GPU visibility/layer32. Geometry/cache/shadow filters passed: occluder69, shared3, forest11, summit13, bounds7, fit5, receivers10. Source receipt fine-incremental-source-receipt.json. Release comparison still required; neither root implementation nor installed application changed for this trial.
+
+
+Fine incremental release build48614 exited0. Immutable QA client SHA256 9341e7adead71374e4c407ce43cb0d3ea65622f52733c070238349bb4b5be74d. Full-detail High/SSAO roof2560x1600 60s comparisons, candidate/control then control/candidate; no owned compiler concurrent, other applications untouched. First candidate917updates62.59/88.47ms median/p95, walking58.716/68.891ms, callbacks15.279/s. First control682updates86.17/142.55ms, walking86.113/134.776ms, callbacks11.365/s. Reverse control814updates68.34/131.76ms, walking57.698/109.973ms, callbacks13.688/s. Reverse candidate807updates73.18/110.53ms, walking78.032/126.657ms, callbacks13.442/s. Every run256walkrows/fourorigins/oneinitialbuild/no pending terrain/no poll errors. Callback rates are not displayed FPS; queue backlogs varied.
+
+The reverse pair reverses median/throughput/walking benefit; do not promote this composition. Archived all11 candidate source files in fine-incremental-unpromoted-source and restored the9 pre-fine-trial baseline files, removing both trial modules. Installed accepted vertex-fetch app and root implementation remain unchanged. Fine grouping+stock occlusion+incremental GPU visibility has not demonstrated repeatable fluidity. Avoid claiming this trial fixed gameplay or rerunning the same composition without new evidence.
+
+
+Previous goal turn classified progress: tested and rejected fine/incremental composition using reverse-order full-resolution evidence; restored accepted private source. New investigation returns to transitions. Current accepted immutable vertex-fetch client47973 completed normal asynchronous --record10s, House1F6,6/noon/full2560x1600/High/SSAO/camera0,7.5,45,0/DDBBBBBBBBBB, no owned compiler concurrent. Trace vertex-fetch-house-exit.trace.json, log /tmp/geothite-vertex-fetch-house-exit.log. 220updates/112captures, median43.26/p95107.37ms includes PNG capture overhead, not normal gameplay FPS. 191Town presentationevents,2pending; first walk Town row alreadypendingfalse, terrainactive, normalFadeIn255. Settled frame32 inspected: player, houses, water, forest, NPCs present. Retained only frames0/17/32/111.
+
+Ready Town trace identifies recurring water.ripples.update median2.317ms/max14.498ms (19updates); publication median0.658ms/max1.044ms. Candidate water_ripples.rs precomputes wet-cell neighbor stencils until the wet mask changes; dry cells stay zero, no-flux banks and original floating addition order retained. Tile-block wet-mask expansion removes per-sample dynamic width divisions. No quality/resolution/cadence change or player switch. Initial10tests passed, including80-step bitwise old-vs-new physics across1x1/1x17/19x1/48x48/127x93 grids and wet/dry/sparse/banked masks, plus shoreline mutation. Tile-mask oracle added, tests pending91279. Scratch optimized Rust comparison of actual old/new step functions,192steps each/bothorders:256square 10%wet original0.044-0.053ms vsstencil0.012-0.013;50%0.069-0.080 vs0.037-0.040;100%0.113 vs0.069.512square10%0.123-0.128 vs0.042;50%0.273-0.279 vs0.151-0.156;100%0.457-0.459 vs0.280-0.282. Isolated evidence only; full renderer validation pending. Baseline water-stencil-baseline.rs matches rootSHA4f3ea93c73d8e13ace2f38fd6d7309179ff54e02217a5b13527fc918935f844b.
+
+Bevy0.20 research: https://docs.rs/bevy/0.20.0/bevy/render/render_asset/struct.RenderAssetBytesPerFrame.html and localrender_asset.rs/mesh/allocator.rs. Generic byte limiter is soft and accounts RenderMesh metadata preparation, while allocator independently walks ExtractedAssets meshes. Do not claim it bounds full mesh upload, or introduce delayed assets without verifying destination GPU readiness. No limiter change made.
+
+Water tile-mask regression91279 terminal0:11passed0failed in0.24s. Current accepted house exit firstTownpending-to-ready275.828ms; two trace frames, thenreadywhile normalfade stillcoversarrival. Baseline capture overhead prevents general latency claims. Removed owned microbenchmark source/binary after recording results. Water release QA build log /tmp/geothite-water-stencil-release-build.log; source frozen to water-stencil-source-receipt.json until terminal. Root/app unchanged pending full-renderer performance and paired visuals.
+
+
+Water release QA74917 terminal0, immutable water-stencil-frame-client SHA25607eb7184d374c971ef9b0c56e8c9328540469714b3a0195476ae47f4f1c70b45. Full-resolution NewBark13,6/noon/High/SSAO/camera0,7.5,45,0,30seconds/LLRR, existing trace, candidate-control-control-candidate21245 terminal0. No owned compiler concurrent. First candidate960updates29.19/43.12ms median/p95; control831updates35.36/47.77ms. Reverse control730updates38.95/81.89ms; candidate725updates39.61/75.67ms. Each128walkrows/twogridorigins/oneinitialbuild/no pendingterrain. Overall FPS improvement not established by reverse pair.
+
+Ready-state water.ripples.update median/p95 ms: candidatefirst1.585791/2.377875(69samples), controlfirst1.794937/2.888875(62); controlsecond3.518605/7.091583(48), candidatesecond3.401750/6.269667(51). Unchanged nested publication medians0.562583/0.550146/1.036375/1.128917 respectively demonstrate changed CPU contention between pairs. Simulation median improves in bothorders; infer modest CPU savings only, supported by exact old/new physics and optimized isolated tests. No global fluidity claim. MainCPUmedians candidate/control4.020708/4.244042 and reversecontrol/candidate8.303333/8.129333ms.
+
+Paired capture68135 terminal0, water-stencil-{3d,2d}.png and3d.paired-state.txt. Both visually inspected, state_preserved=true, frame119/hash3441219314, fouractors/samefacing/map/time. Forest/houses/shore/water/player retained. Initial CLI attempt --second-2d rejected; corrected actual --second option before successful capture. Promoted exactly water_ripples.rs after checking root baseline and frozen candidate hashes. No other root implementation touched. Private controller/MCP/stdio suite47495 live, /tmp/geothite-water-stencil-gameplay-tests.log; freeze private inputs until terminal. Root targeted11water tests and production app packaging still required. Installed app unchanged. Full loading/FPS/fluidity objective remains unmet.
+
+
+Water gameplay suite47495 terminal0: controller8passed/1existingignored9.67s, real MCP movement/menu1passed0.80s, stdio1passed1.32s. Root water suite54492 terminal0:11passed0failed0.26s, /tmp/geothite-water-stencil-root-tests.log. Thus root source compiles against current concurrent work; unrelated edits preserved. Production build59230 currently live (exactwrite_stdin revalidated), log /tmp/geothite-water-stencil-production-build.log. Freeze private source/assets; poll this handle to terminal before packaging. Installer not started, app unchanged. Before installation revalidate current executable expectedSHAe48c710abc24b26a6a62e3ab3d5c22d4a3ac9f033fc5f0b4c25b4229e2710729, source/bundledpackSHAa0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007 and all saves. Lastprocesscheck no installed Geothite process; recheck immediately before replacing app and leave all other processes alone. After install use outsidecwd/tmp unsetCRYSTAL_OPEN_MODEL_ROOT --check-installation, strictdeepcodesign, exactpack/savecomparison. No visible launch authorized. Full goal remains active: this modest CPU improvement does not prove broad fluidity or dense-roof GPU performance.
+
+
+Water optimization deployed. Production59230 terminal0, release6m21s, /tmp/geothite-water-stencil-production-build.log. Installer51017 terminal0 in38.8s, /tmp/geothite-water-stencil-install.log; used frozen open-model assets and completed shared native pack, --skip-build release target/performance-release-native. No installed game process before replace; other processes untouched. Fresh preinstall receipt before-water-stencil-install.json contains TWO current external saves (not the earlier one-save historical snapshot).
+
+Outsidecwd/tmp unsetCRYSTAL_OPEN_MODEL_ROOT installed --check-installation69825 terminal0; actual bundled pack/resources and external save resolved. codesign --verify --deep --strict terminal0. First naive verification compared signed installed whole-file hash to linked binary and correctly found a mismatch caused by signing. Corrected verification43751 terminal0: installed exact byte match to signed .local/desktop-dist/Geothite.app executable; all15 named nonzero Mach-O section hashes identical to compiled release binary, signature independently valid. InstalledSHA256c1b1029edc700824f4f7ce42f08087cb773adf18f53990405b692033b9697f47; compiledunsignedSHA0805a968fa40f2db3f53dc2d74cee0c8259c5c25fa4ad5c68b90e688957ea5d7. Source and bundled pack remaina0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007. Both external saves exactly unchanged. water-stencil-installed-verification.json retains receipt. No visible window launched.
+
+Previous turn progress: validated and promoted CPU water change; this turn progress: production built/installed/standaloneverified. Full goal remains active/unmet: broad smoothness and dense-roof GPU cost remain. Potential next research only, no source changed: grass_vertex.wesl evaluates length(world_from_local[1].xyz) as a function argument for any UV-bearing mesh, although only sentinel grass/flower branches need it; check native generated behavior/real eligible geometry before assuming measurable savings. Static index compaction already implemented; do not duplicate it. Both prior fine grouping/occlusion compositions remain rejected.
+
+
+Color-palette investigation59990 terminal0: actual native prepared/welded/packed opaque grove meshes across3placements per family retain exact colorbits. JohtoPine46331vertices/22185uniqueRGBA; RGBattributes555972bytes vsindex+RGBApalette540284 (2.8%less). Ancient13520/4745;162240vs130000 (19.9%less). Kanto79274/63894;951288vs1339400 (40.8%MORE). Palette lookup adds GPU indirection/storage binding, so no renderer implementation justified for denseJohto case from this evidence. Archived test-only probe color-palette-probe-unpromoted.rs and restored private occluder_fade.rs exactly; root/app unchanged. Shader grass-length hypothesis also ruled out for main densegrove draws by source: shared_groves always compacts allzeroUVs before upload, and grass vertexcall itself is VERTEX_UVS_A guarded. Do not spend a release build on that path for roofgroves.
+
+Unresolved evidence gap in rejected fine-incremental trial: actual production CPUtrace never collected, only unitGPUfixture and wallframe comparisons. Next diagnostic uses immutable rejected candidate9341e7ad and accepted control07eb7184 on same roof; does not reactivate/promote rejected source. Determine actual remaining visibility/transform cost before choosing another renderer change.
+
+
+Actual rejected fine-incremental production trace45497 terminal0, fine-incremental-ready.{trace.json,-3d.png,-2d.png}; matched accepted water-stencil control27327 terminal0, water-stencil-roof-ready.*. Roof9,13/noon/High/SSAO/2560x1600/camera0,7,5,0, no owned compiler concurrent. Ready+500ms schedule-envelope medians/p95ms candidate/control: check_visibility2.485/3.495(65samples) vs4.315/5.849(55); visibility_propagation7.061/10.168 vs3.830/4.574; transform1.135/1.863 vs0.748/0.967; fades2.244/4.011 vs2.944/3.476; main16.937/33.074 vs17.304/24.548; render.prepare_gpu4.825/11.786 vs3.873/5.600. These are envelopes, not exclusive system profiles. Real GPU admission does reduce CPUcheck cost relative to the earlier fine-only11ms evidence, but overall mainCPU is near-neutral and management overhead remains. Composition remains rejected; no new fine-group source promotion.
+
+New private native opaque triangle-cache ordering trial. Primary references: https://tomforsyth1000.github.io/papers/fast_vert_cache_opt.html (LRU model32, recent-three0.75, valenceboost2/sqrt, cachedecay1.5) and https://github.com/zeux/meshoptimizer/blob/master/src/vcacheoptimizer.cpp (researchonly; no C++ dependency/source added). Own Rust implementation vertex_cache_order.rs uses fixed32cache/CSR adjacency/bounded256valence, deterministic tie breaks, malformed/highvalence fallback to existing linear DFS. Only native non-worker opaque grove GPU copies; collision and sorted fading leaves unchanged. Existing first-reference vertex-fetch permutation runs afterward. No player/environment toggle added.
+
+Initial unit40449 terminal0:3passed, actual native prepared grove9recipes acrossJohto/Ancient/Kanto, triangle multiset/winding exact, no cache-model regressions acrossFIFO/LRU16/32/64. Johtoaggregate reductions12.19/11.56% at16,6.67/6.58% at32,2.34/2.44% at64. Ancient24.89/24.69%,20.83/20.66%,8.69/8.95%. Kanto5.48/5.42%,4.69/4.64%,3.70/3.66%. Simulations only, not GPU/FPS proof. Integrated productionpath22396 terminal0:3passed8.75s, exact actualattributes, triangle count/winding, direct candidate matches production output, cache-model assertions and malformed/degenerate/duplicate/unusedvertex/fan fallback tests. Added native/worker testguard and formatted only newmodule. Broader geometry/instance suite32307 live, /tmp/geothite-cache-order-regressions.log. Current private source receipt cache-order-source-receipt.json; installedacceptedwaterSHA c1b1029e... unchanged. Release GPU trial, paired visuals and transition readiness still required before promotion.
+
+Cache ordering geometry suite32307 terminal0:occluder67passed10.99s, shared3passed6.04s, forest11passed7.67s. Private source hash receipt reverified before release QA. Build log /tmp/geothite-cache-order-release-build.log; freeze source/assets until terminal, save immutable cache-order-frame-client on success, compare to water-stencil-frame-client07eb7184... with identical full-resolution roof conditions in both orders. Include normal asynchronous cached roof entry and paired3D/2D plus source-build-cost check before promotion. All installed/root implementation remains acceptedwater baseline.
+
+Previous goal turn classified progress: ruled out UV-shader/palette paths with actual geometry evidence; implemented and regression-tested private cache ordering. Current release QA1342 confirmed live by exactpoll; source remains frozen to cache-order-source-receipt.json. Comparison harness prepared with accepted water-stencil-frame-client baseline, roof9,13/noon/High/SSAO/full2560x1600/60s/UUUUDDDD/candidate-control-control-candidate. No renderer promotion until actual GPU, visual and transition gates pass.
+
+
+Cache-order release QA1342 terminal0 in10m31s; compilation overlapped two observed unrelated root builds, left untouched. Frozen candidate hashes reverified, immutablecache-order-frame-clientSHA4645656490b2093b02c4fbc09e5cf226b5ee6fe2f37782417435c53f38b82019. Before measured interval those two observed builds had exited. Benchmark58969 terminal0, full2560x1600/High/SSAO/Roof9,13/noon/camera0,7,5,0/UUUUDDDD/60s, candidate-control-control-candidate. Candidatefirst709updates80.45/148.90ms median/p95, walking82.890/156.718ms, callbacks11.824/s. Controlfirst812updates73.34/118.17ms, walking75.880/118.487ms, callbacks13.576/s. Reversecontrol928updates58.95/116.66ms, walking56.7385/105.287ms, callbacks15.530/s. Reversecandidate797updates72.41/120.52ms, walking67.7305/104.303ms, callbacks13.276/s. Everyrun256walkingrows/fourorigins/oneinitialbuild/no terrainpending/no poll errors. Callback rates are not display FPS.
+
+REJECTED: real median/throughput/walking behavior worsened in bothorders despite FIFO/LRU simulation gains. Do not promote from cache-model results or claim faster game. Archived three changed files in cache-order-unpromoted-source, restored exact pretriallib/occluder and removed vertex_cache_order.rs. Accepted water_ripples retained. Root and installed c1b1029e... app unchanged by this trial. Additional visual/transition acceptance gates unnecessary for a failed performance candidate; none claimed.
+
+Primary research caveat https://zeux.io/2017/07/31/optimal-grid-rendering-is-not-optimal/ explains modeled cache replacement can differ from real hardware; this does not establish this trial's precise slowdown cause. Apple reference https://developer.apple.com/documentation/metal/tailor-your-apps-for-apple-gpus-and-tile-based-deferred-rendering requiresJS; Markdown endpoint unsupported by web tool, so no unseen content claimed. Full performance goal remains active; next investigation should target measured per-pass GPU work or transition blocking rather than retrying this same index heuristic.
+
+
+Previous turn progress: rejected classic cache order from two-order measured regression and restored accepted source. This turn investigated actual CPU/RAM rather than another assumed index model. Baseline untraced roof11868 completed before sampler attachment (missed observation window, not a renderer failure). Automatic own-target sample98347 completed0, PID83360,5sCPU sample attached only after validated measurement began; /tmp/geothite-accepted-roof-cpu-profile.sample.txt (860KiB). Main-thread933samples,817inconditionwait; release strip=symbols prevents Rust function attribution. All-thread wait counts must not be interpreted as serial CPU percentages. Physicalfootprint9.4GiB/peak11.2GiB on24GiBmachine.
+
+Owned vmmap profile70853 completed0, PID84071. At measurement start physical11.5GiB/peak12.0GiB, CPUmalloc4.3GiBallocated across5.42millionallocations, graphics mapped2.9GiB plusowned-unmappedgraphics3.1GiB; processswapped6.5GiB. After15sphysical10.9GiB/swapped6.6GiB, allocatedCPUheapstill4.3GiB. Existing browser_memory caps native meshslabs16MiB already; do not duplicate that fix. Successful primary AppleMarkdown fetch viaurllib confirms TBDR evaluatesgeometry before visiblefragments: https://developer.apple.com/documentation/metal/tailor-your-apps-for-apple-gpus-and-tile-based-deferred-rendering.md . No new diagnostic product setting or instrumentation code.
+
+Concrete memory lead: BevyRuntimeShell retains bothruntime and RuntimeGameShell; CrystalRuntime derives deepClone of GameDataSet/runtime_files/audio. Native scenes/checkpoints can duplicate verified immutable content. Private candidate wraps those3fields inArc, shares browser runtimefileOnceLock too, retains mapcatalog/caches/mount lifetimes and publicborrowed APIs. No pack/schema/program/PCM change. Initial edit-script fixture assertion failed and a test invocation exposed9adaptationerrors; corrected iterator borrowing andtestfixture/COW edits. Sharing/isolation52707passed1test: all3pointerequal onclone, semantic equality, COWdata/filesleaveoriginaluntouched, audioexactequal.
+
+Fullruntime203passed/52failed/1ignored initially; manytests use legacyvendorasset roots rather than CRYSTAL_RENDER_TEST_PACK. Firstpacklinks resolved only2, giving205/50failed. Added symlinks (no copies) for both root/sourcecontent-packs andapps/web/assets/data/content-packs. Remaining baseline comparison must run before identifying regression. Candidate3files archivedruntime-sharing-candidate-source withhashreceipt, exactbaseline3files restored solely for baselinefullsuite. Rootimplementation/app unchanged. Facing-onlypreloadheuristic not implemented: catalog layout andlastcornerapproaches need validation, cannot assume nearest-behinddoor is the sole blocker.
+
+Runtime baseline1956 INVALID as comparison: source was restored with copy2 oldmtimes, Cargo reused candidate testbinary (newsharingtestappeared inbaselineoutput although sourcehasnone). 206passed/49failed/1ignored reflects candidatewithcompletepacklinks, not truebaseline. No regressionclassification fromthatresult. Touch restored3sources and rebuildbaseline; checknewtestABSENT in--list/output beforecomparing. Future source restores must copyfile or touch aftercopy2, never rely on oldmtime invalidation. Root/appunaffected.
+
+Fresh baseline9707terminal101:255tests,205passed49failed1ignored39.15s, newsharingtestabsent. This is validunchangedbaseline. Candidate3archivedsourcehashes reverified/restoredwithcopyfile (freshmtimes) beforefreshcandidatefullrun. Packlinks remainexactsharedcompletednative/browser/TUIpacks; noexports/buildpipeline rerun. QA releasecandidate canbuildinparallelwithunittests; noGPUmeasurementuntilbothterminal.
+
+Fresh candidate82907terminal101:256tests,206passed49failed1ignored52.13s. Exact failed-test set equals validfreshbaseline9707; all205previouspasses retained, onlyadditionalpassisnewsharing/isolationtest. Newfixturecount proves actualcandidatebinary. ConcurrentQAcompiler means suiteelapsedtimes are not performance evidence. Release17580 remainslive, /tmp/geothite-runtime-sharing-release-build.log. Source3hashesremainruntime-sharing-source-receipt.json; freezeprivateinputs. Saveimmutable runtime-sharing-frame-client onlyafterterminalsuccessfulbuild. Prepared one-off memory comparison runtime-sharing-memory-compare.py, control-candidate-candidate-control, nativefullroofHigh/SSAO, vmmapatmeasurementstart/+15s. It reportsCPUheapallocated bytes/counts andphysical/peak; its memory-probedframetimesareNOTcleanFPSgates. Untracedframecomparisons, normalasynchouseexit, paired3D/2D, mandatorycontroller/MCP/stdio androotchecksremainbeforepromotion. Root/appunchanged.
+
+Runtime sharing release17580terminal0 in6m54s. Frozen3sourcehashes reverified. Saved immutable runtime-sharing-frame-client SHA25665bb5988419a2aa340501768208ac22f5d765697e54073f63ec2d9b194130104. Memorycompare3604 live, controlfirst; allownedcompilers/tests terminal before GPU runs. Previousgoalturnprogress: validfreshbaseline andcandidatefullsuitecomparisonproved no lostpasses/newfailures; buildcompletedthisturn. No promotion/install yet.
+
+
+Runtime-sharing memory3604terminal0, fullroofHigh/SSAO2560x1600/30s/UUUUDDDD, control-candidate-candidate-control. Eachvmmapatmeasurementstart/+15s; profiler-probedtimingsdiagnosticonly. Latecontrolfirst:CPUallocated4.3G/5425130allocs,physical10.7G/peak11.6G. Candidatefirst:3.8G/4005987,physical10.2G/peak10.6G. Candidatesecond:3.8G/3998796,physical10.2G/peak10.6G. Controlsecond:4.3G/5429369,physical10.8G/peak11.2G. Consistent~0.5G lessCPUheap and~1.42-1.43millionfewerallocations; avoidexactMiBclaimfromroundedvmmapunits.
+
+Unprobed40231terminal0candidate-control-control-candidate60sfullroof: candidatefirst769updates75.08/140.46msmedian/p95, walking75.8985/126.062ms, callbacks12.799/s; controlfirst786updates70.97/136.78ms, walking71.2515/135.175, callbacks13.143/s. Reversecontrol842updates69.45/120.22ms,walking71.084/120.469,callbacks14.109/s; candidate729updates79.74/129.90ms,walking82.485/158.693,callbacks12.125/s. All256walkrows/fourorigins/oneinitialbuild/pendingfalse/no pollerrors. Finalrenderpositionsmatchpreviouscontrols exactly(-1356.088,1144.692;origin-44,-36), so motion-endpoint hypothesis ruledout. No frame-rate gain; bothpairsworse. Do notpromoteonmemoryresultalone.
+
+Audit log provescrystal-voxel-view DID compileinruntime-sharingrelease, notjustcachedwarnings; missingrestoredcachemodulewasproperlyinvalidated. No evidenceofstaleGPUindexordering inthiscandidate. Nextisfreshsame-sourcecontrol: verifycurrentcandidate3hashes, restorebaseline3withcopyfilefreshmtimes, buildidenticalreleaseQAflags. CurrentprivateRuntime sourceTEMPORARILYBASELINE, root/appremainacceptedwater. Preservefreshcontrolbinaryseparately, comparecode-sectionfingerprint witholderwaterclient ifpossible, thenrestorecandidatewithfreshmtimes BEFORE anycandidateproductionbuild. No needrebuildimmutablecandidate65bb5988...unlesssourcechanges. Memorybenefitreal,butFPSattribution/acceptanceunresolved.
+
+
+Fresh same-source runtime-sharing control89363 terminal0. Immutable runtime-sharing-source-matched-control-client SHA25607eb7184d374c971ef9b0c56e8c9328540469714b3a0195476ae47f4f1c70b45 is BYTE-IDENTICAL to accepted water-stencil-frame-client. This rules out full-snapshot/code drift as the reason both unprobed candidate comparisons worsened. No redundant four-run repeat needed. REJECT runtime-sharing candidate: repeatable memory reduction does not justify both-order frame-time regressions. Candidate retained only in ignored trial archive; private three runtime files restored with copyfile/fresh mtimes to exact accepted baseline and sharing test confirmed absent. Root implementation and installed c1b1029e app unchanged. No new gameplay quality settings/toggles. User No interpreted as leave other game/processes/builds untouched. Only owned QA build observed; no process was closed or suspended. Goal remains unmet/active.
+
+
+Previous goal turn progress: fresh control byte-identical to accepted client proved earlier runtime-sharing FPS regression was not source drift; candidate rejected/restored. New private CPU obstruction subdivision candidate subdivides explicit regional group ownership using conservative bounds, median-axis binary tree/maximum16members per leaf. Original render meshes/materials/collision/entities/fade state retained; no new quality toggle. Fades settle before sleeping, waking invalidates exact checks; later direct-member/reparent edits fall back to original all-member path. Added transform/parent Ref checks preserve initial authored proof. Finite/rotated/scaled bound comparison tests require all brute-force possible hits selected. Synthetic4096groups selects<=16nearby; tests retain settling/reentry/invalid-transform behavior. First occluder suite40980 terminal0:68passed. Added production ECS64group test requires distant group remain unvisited after initial propagation and immediately block after moving onto rays; whole suite67236 terminal0, see /tmp/geothite-subregion-tests.log. Private candidate archived subregion-candidate-source/hashreceipt; rootimplementation/app untouched. Root/private occluder pretrial difference only one whitespace line. Next release QA build and actual fullroof both-order comparisons plus async transition/pairedvisual/controller gates before any promotion. CPU selection reduction is NOT FPS evidence.
+
+Subregion release32663 confirmed live on launch. Suite67236 exact69passed0failed in3.82s. Frozen candidate hashes44794a45...(occluder_fade.rs),6b9c9962...(regions.rs). Do not change private source/assets until release terminal. Save immutable subregion-frame-client on success; subregion-compare.py prepared full2560x1600High/SSAO/Roof9,13/noon/60s/UUUUDDDD candidate-control-control-candidate with acceptedwater07eb7184...control. No actual GPU comparison yet; goalactive.
+
+Current continuation classified verified wait: release32663 re-polled live, rustc final new_bark_3d stage observed; no restart. Candidate2filehashreceipt revalidated, source remains frozen. Installed app/rootimplementation unchanged. Actual GPU comparisons cannot start until compiler terminal and immutableclient saved.
+
+
+Subregion release32663 terminal0 in6m44s, frozenhashesverified; immutable subregion-frame-client SHAb3b7536e3ea935258a871349da69b29bfc01f01e4ace056ac997faf0c2c87ad4. Untraced GPU comparison75007terminal0 at fullroof2560x1600High/SSAO60s: firstcandidate884updates66.63/76.19msmedian/p95, walking64.3845/72.416ms,callbacks14.719/s; firstcontrol838updates70.50/80.68ms,walking70.525/78.301,callbacks13.951/s. Reversecontrol861updates61.56/128.36ms,walking55.3825/117.35,callbacks13.802/s; reversecandidate826updates71.74/121.24ms,walking52.7465/112.613,callbacks13.163/s. All256walkrows/fourorigins/oneinitialbuild/pendingfalse/no pollerrors. Callbacks notdisplayFPS. Walkingmedian/tails improvedbothpairs, but reverseoverallmedian/throughputworsened. HOLD promotion: actualscene performance mixed, no FPSclaim. Next short bothorder existingCPUtrace comparison to establish whether fade work itself is reduced (trace includes allgroupdiagnosticfold, so notpureproductionexclusivecost). No new timingtools/producttoggles introduced. Root/appunchanged;goalactive.
+
+
+Subregion CPU trace56229terminal0, diagnostic bothorders10s, same167987groups allwindows. Last8active seconds: candidatefirstfade5.103/9.303msmedian/p95 vscontrolfirst5.069/10.789; reversecandidate4.757/8.176vscontrol4.954/8.667. Tracefold visitsallgroups and is inside span; envelopes are not exclusive/additive. Ringcapacity131072dropsoldestevents, finalwindowretained. Walkingcounts64/64/96/128?inspectexactCSVbeforeclaim; these short runs do NOT compare exactrouteendpoints. No consistentlargeCPUgain, mixeduntracedoverall performance stillHOLD. Code audit finds Branch::settle recursivelywalks EVERY subdivision everyframe evenwhile asleep, undermining spatial savings. Private refinement adds earlyreturn for !selected&&!awake, relying on tested selection/settling invariants; rerunwholeoccluder suite before rebuilding. Candidatev1b3b7536e...keptimmutable, root/appunchanged.
+
+Exact shortCPUtrace walking CSVrowcounts {'candidate-first': 64, 'control-first': 64, 'control-second': 96, 'candidate-second': 128}. Confirmed differentrouteprogress; only diagnostic CPUenvelopes, not acceptanceproof. Current refinementtest34467 confirmedlive on launch; /tmp/geothite-subregion-pruned-tests.log. Freeze sourceuntilterminal.
+
+Subregion-pruned suite34467terminal0:69passed0failed4.26s. Private v2 archived subregion-pruned-candidate-source and subregion-pruned-source-receipt.json: occluder44794a45...unchanged, regions994a5f0d3244895b27daa7f79b719250c37d08f2f0d0a589ff17cf4dca9b1620. Release58876 live, /tmp/geothite-subregion-pruned-release-build.log. Freezeinputs; onterminalsuccesssave distinct immutable subregion-pruned-frame-client; fullroof bothorder subregion-pruned-compare.py prepared against acceptedwater07eb7184...control. Originalv1fullscene result remainsmixed, no promotionclaimed. Currentturnprogress: completedCPUcomparison, identified all-subtree settling cost, refined/testedimplementation. Root/appremainacceptedwater; goalactive.
+
+Subregion-pruned release58876terminal0; frozen2sourcehashesverified; immutableclient subregion-pruned-frame-client SHAeb4a65b4693341c71cd9ba5a5abc7b6a46fb1a7e89d90c5ca7303650461621f0. New fullroof/untraced60s/bothordercomparison99647live, /tmp/geothite-subregion-pruned-compare.log. No other ownedcompiler remains before comparison. Root/appunchanged. Source inspection Bevy0.20 bevy_transform/src/systems.rs confirms StaticTransformOptimizations defaultEnabled; no togglerequired. Earlier fine16sections/occlusion compositions already tested/rejected, do not confuse new CPUsubdivision with those GPUmeshchanges. Currentturnprogress completedrelease and startedactualcomparison, goalstillunmet.
+
+
+Subregion-pruned untraced comparison99647terminal0: firstcandidate768updates73.38/141.97msmedian/p95, walking50.3195/118.018ms,callbacks13.041/s; firstcontrol691updates83.11/136.24ms,walking79.8055/130.137,callbacks11.511/s. Reversecontrol696updates83.68/130.73ms,walking88.0185/149.426,callbacks11.603/s; reversecandidate619updates89.48/162.19ms,walking94.021/157.060,callbacks10.293/s. All256walkrows/fourorigins/oneinitialbuild/pendingfalse/no pollerrors, exactfinalpositionequal acrossfourruns {'origin_x': '-44', 'origin_y': '-36', 'center_x': '-1408.000', 'center_y': '1152.000', 'tile_x': '8', 'tile_y': '12'}. Callbacks notdisplayFPS. REJECT CPUsubdivisionfamily: v1mixedoverall and tinyinconsistentfadeCPUchange; pruningv2stillfailsreversepair foroverall,walkingandtails. No repeatablefullgamegain. Archivedv1/v2source/hashreceipts remainignored; restoredbothprivatefilesexactacceptedbaselineusingcopyfile/freshmtimes. Rootimplementationandinstalledappunchanged. Additionalvisual/controller/installgates notclaimed/executedforfailedcandidate. Goalactive/unmet.
+
+Next directCPUattribution action: accepted-baseline symbolized QA build46855 live via cargo rustc --release --jobs2 -pcrystal-bevy --featureslocation-tester --example new_bark_3d -- -Cstrip=none, sameprivate manifest/target. Additional rustc flags only exampletarget, preserving releaseoptimization/dependencyprofile; no gameinstrumentation changes. Log /tmp/geothite-accepted-symbolized-build.log. Five touched runtime/voxel sources verifiedacceptedbaseline and receipt accepted-symbolized-source-receipt.json. Freezeinputs until terminal; save distinct accepted-symbolized-cpu-client on success, verify nm contains Rustfunctions and compare executable code sections to immutable acceptedwatercontrol wherepossible before attribution. Earlier sample failedfunctionattribution onlybecause stripped; no repeatlabellesssampleclaim. Attach existing OSsample to owned activeactualscenePID afterready, bounded5seconds; no otherprocessclosed. Root/appunchanged,goalactive.
+
+Current goalcontinuation classifiedverifiedwait: exactsymbolized build46855 re-polledlive; voxel/bevyoptimizedrustc processes observed, no restart/sourceedits. Frozenacceptedsource5filehashreceiptverified. Prepared ignored accepted-symbolized-sample.py for owned fullresolutionHighroof andNewBark30s runs; sample attaches ownPopenPID2safteractualmeasurementready,5s/1ms, no loadingtrace, 25sOSsampletimeout. Do not rununtilcompilerterminal and immutable accepted-symbolized-cpu-client saved plus Rustsymbolpresencechecked. Reports /tmp/geothite-accepted-symbolized-{roof,new-bark}.sample.txt; timingsprofilertaintednotFPSgate. Mac c++filt demangleslegacyRustfunctionnames successfully; systemtoolchainalsohasrustc_demangle rlib ifneeded, no helper/dependency introduced. Currentapp/root unchanged; goalstillactive.
+
+
+Accepted symbolized build46855terminal0 in11m16s, immutable accepted-symbolized-cpu-client SHA0547e416a94a6ae7f221c408b46601c4899fe4acd0774340fa45b772108d3d70. nm verifiesRustv0functions; read-onlyMachOparser accepted-symbolized-section-comparison.json proves ALL15namedsections (includingTEXTtext,const,DATA,unwind) byte-identical to acceptedwatercontrol07eb7184. Thus onlysymbol/metadata retention, nochangedgamecode. CPU sample43920terminal0:roofownedPID6557andNewBarkownedPID6802, ready+2s,5s/1ms, full2560x1600High/SSAO, no loadingtrace. OSsample raw/demangled reports /tmp/geothite-accepted-symbolized-{roof,new-bark}[.demangled].sample.txt; c++filt handlesv0. No othergame/processclosed; ownrunsnormalterminal. Diskobservedlow7GiBwhilelinkingthen10GiBafter; no cachesdeleted.
+
+Namedroof selfsamplecounts (NOTCPUpercent, allthreadwaitsnotadditivewalltime): CPUvisibility parallel317/serial148, city_lights::sync materialAssetIterator146, extract_meshes_for_gpu_building iterator129, wgputracker_drop98/UsageScopeDrop73, sync_interior_cutaway73, occluder_fade60, mark_dirty_trees45, visibility_propagation32, pipeline_preload_extract28. Main1087samples/936park; renderthread1087sample envelope containsactualencoding/submit+waiting. NewBark topCPUselfcounts lower: VisualTerraceDatumPartialEq25, streamed_imageupload18, siphash16, CPUvisibility13; allocator/Metal/waits dominate. Avoidconverting counts toexclusiveCPU% orGPUtime. ProfilertimingsnotFPSgates.
+
+Concrete nextcodelead: city_lights::sync scansALLVoxelMaterial assets andcomparescity_night plusTWO[Vec4;32]arrays evenwhen day/night/windowoutputs unchanged; broad resourceis_changed flags remaintrue dueunrelated material/frame/cachechanges. sync_interior_cutaway separatelyscansallmaterials twice for exits/sky/capsule. rg confirms ONLYcity_lights::sync writes city_night/windows/planes (allotheroccurrencesdefinitions); clonescopythesevalues. Potential exactCPU-onlylightingrevision stamp (unannotatedAsBindGroup, reflectignore) canavoid1024bytecomparisons per unchangedmaterial whilepreservingnewmaterial/clone/panoramaclass behavior; NOTimplemented yet. Need immutableclone stamp independentstorage (notsharedArcAtomic acrossdifferentclassclones), distinctrevisiontokens forpanorama/normal, allchanged/newmaterialsupdatebeforefirstdraw, noAssetEventchurnforcachedvalues, andsameGPUuniformbindings. Assessagainstexistingclock/panoramatests. No newtimingfeatures/toggles. Root/appacceptedunchanged;goalunmetactive. CurrentturnprogressactualnamedCPUevidencechangesnextimplementationchoice.
+
+
+Previous goalturn progress: bit-identical symbolizedacceptedbinary plusactualOSsamples identifiedcitymaterialscan146selfsamples vsfade60. New private citylightingrevision candidate: CPU-onlyreflectignored/unannotatedAsBindGroup Stamp(AtomicU64) field onVoxelSurface; independentclonestorage; monotonicallyuniqueper-systemHistory outputrevisions. Same cityuniforms comparedonceperframe asHistoryparameters, then8bytestamp perasset instead2x[Vec4;32]comparison. Unstamped/newmaterials retainexactoldcomparisonbeforewrite; alreadycorrectnew/clone stamprecordedviaAtomicwithoutAssetEventorGPUreupload. Sole productioncityuniformwriter verifiedbyrg inprivate ANDroot. No shader/binding/lightingmath/program/packchange. Rootcity_lights.rs has concurrentpanorama-emission enhancement absentfromfrozenprivatebaseline: PRESERVE atfuturepromotion, nevercopyprivateentirefileoverroot. Rootnormal/panorama statesneedseparaterevisions whenmergingthisoptimization.
+
+Initialcitysuite41052terminal0:7existingpassed1.48s. Addedcloneindependence/cross-systemrevision/pipelinekeyinvariance and32materialexactclockoutputs across7hourspluslateclones/noidleAssetEvents; final10163terminal0, see /tmp/geothite-city-revision-tests.log. Candidate2files archived city-revision-candidate-source/hashreceipt. Private baseline city-revision-baseline; rootimplementation/appuntouched. NextreleaseQA, actualbothorderfullroof andNewBarkuntraced comparisons, normalasynchouseexit, pairedvisual/controller/MCP/stdio beforepromotion. Metadata changes are notFPSproof.
+
+City-revision finalsuite exact9passed0failed1.13s. Release84354live, log /tmp/geothite-city-revision-release-build.log. Freezeprivateinputs tocity-revision-source-receipt.json (libbaba0472...,city626f78ea...). Saveimmutable city-revision-frame-client afterterminalsuccess. city-revision-compare.py prepared untracedfullroof60s/candidate-control-control-candidate againstacceptedwater07eb7184...; no current GPUjobs/CPUprofiles alive. Currentturnprogress implemented/testedactualprofileledCPUchange;root/appunchanged;goalactive.
+
+Current continuationverifiedwait: exactcityrevisionrelease84354 repeatedlylive (finalnew_bark_3d stageobserved), norestart/sourceedit; twofrozenhashesreverified. Rootcurrentlib/citysaved city-revision-root-before withhashreceipt forlaternarrowmerge preservingconcurrentpanoramaemission. Prepared city-revision-new-bark-{day,night}-compare.py withfull2560x1600High/SSAO/camera0,7.5,45,0/NewBark13,6/hour12or22/30s/LLRR/bothorders, to runonlyAFTERroofgate+compilerterminal. Notrunorclaimed. Source/appunchangedthiswait;goalactive.
+
+
+Cityrevisionrelease84354terminal0 in9m52s; immutable c139da139dd81b3af3d2328c43463ad43a87bf8291b46b0b2e9dba4c2caa9e37. Fullroof/untracedbothorder69023terminal0: firstcandidate850updates68.78/84.77msmedian/p95,walking67.9445/82.040,callbacks14.075/s; firstcontrol791updates74.92/105.40,walking68.794/90.012,callbacks12.882/s. Reversecontrol865updates70.20/110.73,walking56.3765/145.217,callbacks13.920/s; reversecandidate782updates73.65/99.59,walking75.536/108.190,callbacks13.017/s. All256rows/fourorigins/onebuild/pendingfalse/no pollerrors/exactfinalpositionequal. Mixedoverall andmarkedreversewalkingregression: doNOTpromote. Restoredprivate lib/city exactbaselinewithcopyfile;candidatearchive+9tests retainedignored. NoNewBarkday/night runsneededforfailedroofgate. Useraskedif13FPS; answered70ms~14updates/s, callbacksnotconfirmeddisplayFPS,andstilltooslow;continueauthorized.
+
+New actualsampleledvisibilitylead: Bevy0.20CPUculling query includesnonrenderOccluderGroup parents dueVisibility+GlobalTransform, withoptionalVisibilityClass; setsViewVisibility evenwhenclassNone. Currentgroupscount167987. NoCpuCulling skipsCPUfrustum/reset sweeps anduseschangedInheritedVisibility-onlyupdate; it isnotinheritedbychildren. Private candidate insertsNoCpuCulling ONLYonprovennonrenderOccluderGroup owners atspawn; leaves keepordinaryCPU/GPU/frustum/layers/shadows. No shader/mesh/cameraquality changes ordevice-support dependency fornonrendercontainers. This differsfromfailedfine16GPUcullingtrials: zeroGPUdraworleafpolicychange. Savebase container-cull-baseline/occluder_fade.rs; nexttestproductionvisibilityinheritance/overrides pluscurrentoccludersuite. Root/appuntouched;goalunmetactive.
+
+Container visibility71594terminal0:67passed0failed2.47s. New nonrender_fade_owners_skip_cpu_culling_without_changing_mesh_visibility usesactualAsset/Mesh/Visibility/Transformplugins andrealcameraFrustum, provesownerNoCpuCulling+noMesh, allmeshchildrenwithoutmarker, normalvisibleleaf, hiddenancestorInherited/Viewfalse, explicitVisiblechildoverride,trueInheritedbutViewfalseaftermovingfaroutoffrustum. Wholeoccluderfadesuiteincludingregionalmotion/sleep/fade regressionspasses. Candidateonlyoccluder_fade.rs archivedcontainer-cull-candidate-source/hashreceipt. Privatecity/librestoredacceptedexact;root/appunchanged. NextreleaseanduntracedbothordersGPUgate. No lossless-render/FPSclaimyet.
+
+Container-cull release28170live /tmp/geothite-container-cull-release-build.log. Freezeprivateinputs; onechangedsourcehash0fbce88479a26e639286c7fae871e27f0fe0c82ead349d71105b723a6d30b7d6. Onterminalsuccesssaveimmutablecontainer-cull-frame-client and runpreparedcontainer-cull-compare.py againstacceptedwater07eb7184... fullroof60sHigh/SSAO2560x1600bothorders. Currentturnprogresscompletedcitycomparison/rejectedmixedcandidate, implementedactualsamplelednonrenderCPUvisibilityskip and67regressionspassed. Root/appunchanged;goalunmetactive.
+
+Container-cull release28170terminal0; frozenoccluderhashverified andcity/libexactacceptedbaselineconfirmed. Immutablecontainer-cull-frame-client SHA2960440df67d7b139555e65e56ffc20d03fae68ad2c99b9ca9c33a5a5b70a30b. Fullroof/untraced/bothorder80712live /tmp/geothite-container-cull-compare.log. No ownedcompiler remainsduringcomparison. Root/appunchanged. CurrentturnprogresscompletedreleaseandstartedactualGPU/framecomparison;goalactiveunmet.
+
+
+Container-cull fullroof comparison80712terminal0. Firstcandidate899updates65.52/75.64msmedian/p95,walking62.962/76.808ms,callbacks14.973/s; firstcontrol794updates73.25/92.58ms,walking72.242/86.910,callbacks13.233/s. Reversecontrol687updates78.43/173.80ms,walking71.985/144.278,callbacks11.418/s; reversecandidate777updates78.31/110.51ms,walking54.3345/129.227,callbacks12.652/s. All256walkrows/fourorigins/oneinitialbuild/pendingfalse/no pollerrors/exactfinalpositionequal ('-44', '-36', '-1408.000', '1152.000', '8', '12'). Updatecountimproves13.2%/13.1%, walkingmedianreduces12.8%/24.5%; tailimprovesbothorders, reverseoverallmedianflat. Provisional CPU/performance gate passed; NOTglobalfluidity/displayFPSclaim. Nextactualpairedvisuals, normalasynchouseexit, mandatorycontroller/MCP/stdio/rootchecks beforepromotion/install. Root/appstillunchanged.
+
+Container acceptance jobsstarted afterframegate: pairedroof/NewBarkcaptures90635live (/tmp/geothite-container-cull-captures.log) viaimmutable2960440d...; privatecontroller/MCP/stdio sequentialsuite30078live (/tmp/geothite-container-cull-gameplay-tests.log) withabsoluteexternalTUIpack/headless/performance-visibilitytarget/wasm-dev/voxelopt0. Compiler contention permittedforvisuals, NOTforlatency/FPS; do normalasyncHouse1F6,6DDBBBBBBBBBB recordonlyAFTERsuitecompilerterminal. Inspecteachpairedstate receipt+3D/2Dimagesbeforepromotion. Roofupdatecounts13.2%/13.1%better, still~13-15updates/ssofullfluiditygoalunmet; notdisplayFPS. Bothcurrentjobsowned, noothergameclosed. Root/appunchanged;goalactive.
+
+Pairedcaptures90635terminal0; inspectedcontainer-cull-{roof,new-bark}-{3d,2d}.png andbothstate receipts. Roofstate_preservedtrue/checksumframe983/hash3648450576/lcd983/oneChris,samepose/time; NewBarkstate_preservedtrue/frame148/hash3011848586/lcd151/fouractorssamepositions/facing/time. Alsoviewedacceptedwater-stencil-roof-ready-3d.png andwater-stencil-3d.png. Optimizationpreservesgoldroofcomposition, Chrisreadability/scale, distanttreepanorama/fog; NewBarkhouse/lab/shore/foliage/water/NPCs/materials/shadows unchangedvisually. Existingstylized3Drooftints differfrom2Dsourcebutarealreadyinaccepted3Dbaseline; noartretint/detailcutintroduced. No visibledefectfromparentcullingpolicyfound; sameappearancegatepassed. Mandatorygameplaysuite30078repolledlive; houseexitlatencyrecordmustwaituntilownedcompilerterminal. Root/appstillunchanged;goalactive.
+
+
+Mandatorygameplay30078terminal0:controller8passed1preexistingignored11.54s (battlePP/commands,Mom/NewBarkgate,menus,scriptownership included), MCPproductionmovement/Start1passed0.82s, stdioClean1passed1.39s. /tmp/geothite-container-cull-gameplay-tests.log. NormalasyncHouseexit91870terminal0:323presentations,136House/187Town,0Townpending/allTownreadyfromfirstTownframe,no droppedtrace/scenery/battleerrors. HOWEVERmovementframe35takes1056.933ms afterfirstTownready, capturetimestamp17to18gap1.1116s. Do notcalltransitioninstant orclaim3secondproblementirelyfixedfromterrainreadyalone.
+
+Diskcrisisduringcapture:414MiBfreeobserved. Nootherprocess/cachetouched. Removed5exactSHAverifiedrejectedownedexecutablecopies(runtime-sharing,subregionv1/v2,cityrevision,cacheorder) aftertheirtrialsfinished, keepingarchives/receipts/logs. Thenverifiednoactiveownedcompilerusingperformance-visibilitytarget; removed36obsoleteMachOtestexecutablesinOWNperformance-visibility/wasm-dev/deps, keepinglatestTWO percrystal_bevy/crystal_voxel_view/geothite, includinglatestpassing67tests/controller/MCP. Logical7.13GiBreclaimed;df13GiBfreeafterOSrecovery. Cleanupreceiptignoredcontainer-cull-owned-artifact-cleanup.json; no packs/saves/source/otherbuildcachesmodified. Rejectedimmutableclientpathsnowintentionallyabsent; doNOTrerunoldcomparisonsblindly.
+
+Cleanasyncexitrerunneededbecausecriticallylowdiskmaytaintfirstcapturehitch. Preparedsamecommand/outputprefixcontainer-cull-house-exit-clean, preservefirstrecordforcomparison. Noownedcompiler/GPUjobactiveonlaunch. StillnotclaimhitchcauseorordinaryFPSfromPNGcapture. Root/appuntouchedpendingtransition/roottests/prodbuildinstall;goalactive.
+
+Cleanhouseexit31658terminal0 after13GiBfree:328Townpresentations,0pending,319Townwalkingrows,median/p95/max21.704/63.356/257.854ms. FirstTownrows33:13.550msFadeOut63,34:257.854msFadeOut63,35:10.175msFadeIn255,36:79.554msFadeIn255. OriginalcriticallylowdiskcaptureTownmedian40.105/p95114.204/max1056.933; donotattributeallimprovementtocodedelta. StillonlycapturediagnosticsnotordinaryFPS/absoluteUIlatency. Needacceptedwaterbaselinefreshsame13GiBconditions fortransitionhitchcomparison. Preparedcontrol-clean script onlyclientchangeswater-stencil07eb7184.../uniqueoutputprefix, hashverified; pack/camera/house6,6/noon/High2560x1600/DD10B/10s/normalasyncunchanged. Root/appstillunchanged;goalactive.
+
+Control-clean6130terminal0:374Townpresentations,0pending/fromfirstTownready, median/p95/maxTownwalking21.548/57.526/155.586ms. Candidateclean21.704/63.356/257.854ms; normalframesroughlyequal, maximumcaptureframevariable. No houseexitspeedupfromNoCpuclaim; firstdrawhitch155-258ms remainsfuturetarget, PNG/GPUreadback/clockphaseconfoundabsoluteUIlatency. Visuallyinspectedcandidatecleanframes0/18/33/164: correcthouse,firstTownunderexistingfade/fullbuild,clearsettledTown/final,Chrisreadablebuildings/forest/water/NPCsretained. Neithercleanrecordhasterrainpending. Existingprefetchcontractpreserved; fullfluiditygoalstillunmet.
+
+PromotedONLYNoCpuCullingnonrenderowner insertion+productionvisibilityregression intoROOToccluder_fade.rs afterassertingrootdifffromprivatebasewasONLYoneblankline; preservedthatblank. Rootbeforearchived container-cull-root-before/occluder_fade.rs. Privatecandidatehashunchanged. No citymetadata/Arc/BVH/index/GPUdraw/sourceartchange promoted. Runrootoccluderregressionsnow; appnotyetinstalled.
+
+Rootoccludertests88674live /tmp/geothite-container-cull-root-tests.log, performance-visibilitytarget. Production64681live /tmp/geothite-container-cull-production-build.log, privatefrozenmanifest/native-releasetarget/jobs2, binscrystal-bevy+verify_crystalpack+bundle_open_models+bundle_open_people/featuresvoxel-view,desktop-app. RootNoCpu/testsnowpromoted, appSTILLoldc1b1029e...untilbothchecks+productionterminal. Beforeinstallfreshallsavehashes/installedapp+packexpectedhashes/noinstalledappactive, preserveothersprocesses; strictcodesign,outsidecwdcheckinstallation andsigned-vscompiledMachOsection verification afterinstall. No fullgoalcompletionclaim; firstdrawcapturehitchandglobal14FPSrooftopremain.
+
+Current continuation verified both builds 88674/64681 still live. Root/private Cargo.lock byte-identical, both Bevy 0.20; fresh dependency compilation observed. Disk externally changed from 13 GiB free to 455 GiB free without additional cleanup by this agent; no attribution of external change. Own cleanup remains five rejected binary copies and 36 obsolete owned test executables. Do not restart builds based on space changes: poll their exact handles until terminal.
+
+Offline first-Town trace evidence: candidate clean render.frame 196.018 ms/render.submit 179.735 ms, internal render.graph 20.691 ms/graph_submit 19.598 ms, largest main envelope 59.162 ms. Accepted control render.frame 122.515/render.submit 116.270 ms, main 29.221 ms. These are CPU envelopes, not exclusive costs or GPU durations. Terrain was ready throughout. The hitch associates with rendering/submission rather than pending terrain; precise cause remains unproven. Source search finds explicit indefinite device polls only in GPU tests, not the capture controller. After compilers and installation finish, the existing code-identical accepted-symbolized client can support a bounded OS sample covering the house exit (attach when recording starts; first Town near 0.8 s), to distinguish submission, cleanup, upload or compilation stacks. No new product timing feature or toggle is needed. Full fluidity and first-draw latency remain unresolved. Root/app unchanged this continuation; goal active.
+
+
+Non-render fade-owner CPU culling optimization is now installed. Root session 88674 passed all 67 occluder regressions (0 failed, 14.56 s), including real camera visibility, hidden ancestor/explicit child override, and ordinary mesh frustum culling. Production session 64681 completed successfully (47m53s); install session 26085 and verification 85248 exited 0. Installed executable SHA256 `1f36ef1877996012cd93d63ae6c81b6550ad4f62c2ff03c42c12abb692b0e0f2`; compiled unsigned `8353a4cf55efbfcef9a4d076bd71912ac182d98d4438484ee405bac34e1e22db`. Strict deep codesign, signed distribution equality, all 15 named Mach-O section hashes versus compiled executable, and installed --check-installation from /tmp passed. Fresh before-container-cull-install.json and container-cull-installed-verification.json prove unchanged source/bundled pack and all external saves, rechecked after installation verification. No visible launch or other process termination.
+
+Bounded first-entry stack sample 72882 exited 0 on accepted code-identical symbolized baseline, owned PID 45378. It intentionally overlapped the still-running production compiler to gather named stacks; its timings are diagnostic only and include screenshot readback/PNG work. Shader processing and render pipeline creation occur in the transition sample. Trace submits 31 destination pipeline variants from 27.275s through 30.865s; first Town publication is 28.774s, so the existing warmup queue continues after entry. Terrain was ready at first Town. This does not prove which compilation or submission work causes a normal-play stall. Ignored accepted-entry-stack-analysis.json records evidence/limitations. Next work should identify late destination pipeline signatures or other first-draw costs before implementing another optimization. Dense scene remains roughly 13–15 updates/s in prior QA; full fluidity goal is still unmet.
+
+
+Next private candidate raises pipeline warmup submissions from 2 to 8 per frame, retaining all materials, keys, asynchronous compilation and draw policy. Archives pipeline-burst-{baseline,candidate-source}; pipeline-burst-source-receipt.json verifies frozen pipeline_preload.rs and accepted NoCpu occluder_fade.rs. Release QA build88511 live, /tmp/geothite-pipeline-burst-build.log. On success save distinct pipeline-burst-frame-client and verify source receipt. Prepared pipeline-burst-house-compare.py uses accepted NoCpu immutable control2960440d... in candidate/control/control/candidate order, normal async House1F6,6/noon/High2560x1600/DD10B10s, checking Town readiness, early-entry tails, final positions and late-preload counts. Run only after owned compilers/checks are terminal. Budget change not promoted or accepted.
+
+Current AGENTS.md Rust style requirements and official Google Rust guide read. Formatted only the new visibility regression; exact comparison against rustfmt output proves this and the retained preexisting blank line are the only root/private occluder differences. Private frozen inputs remain unchanged. cargo fmt --all -- --check exits1 on broad existing formatting differences (first offset-allocator); Clippy29343 exits101, with four deny-level expressions confirmed in pre-trial snapshot: bad bitmask in core multiplayer and approximate constants in scenery_finish/pine/shore_ecology. Logs /tmp/geothite-container-cull-{fmt-check,clippy}.log and ignored style-check-results receipt. Unrelated art/source remains untouched. Installed NoCpu optimization still verified; goal active.
+
+
+Pipeline-burst build88511 terminal0 (9m02s), immutable candidate SHA cac38643f39da1cb1b86026716dcaca8f75a44c8e085cb3860f12e3a0b9c3a21. Four-run normal-async comparison64876 terminal0: first candidate/control initial-eight Town max45.562/106.578ms, whole-route max119.922/207.627ms, whole-route p9590.452/90.888ms; reverse candidate/control initial-eight max199.170/39.665ms, whole-route max246.297/212.688ms, whole-route p95167.650/164.685ms. All runs endTown13,6 with active terrain/no pending and fade0/phaseNone. REJECT eight-pipeline submission burst: reverse entry and whole-route tails regress. Private pipeline_preload.rs restored exact root baseline with fresh mtime; root/app never received budget change. Trial verdict/receipts/source archives retained. SHA-verified rejected immutable executable and excess capture PNGs removed; first/arrival/final captures and CSV/trace results retained in ignored evidence. pipeline-burst-frame-client intentionally absent.
+
+Attribution correction: frame.publish_world is source publication, not proven first displayed Town image; post-swap speculative shaders may include return-House variants. Neither the 31 submissions nor post-source-Town timestamps alone identify the exact blocking Town shader. accepted-entry-stack-analysis.json and verdict record this caveat; avoid causal claims from those counters. Next CPU target from earlier named samples/source: sync_interior_cutaway performs two full material scans every frame (lighting then capsule). Combining them can preserve exact material state while reducing traversal; not yet implemented or performance-accepted. Installed NoCpu CPU optimization stays SHA1f36ef18...; full fluidity remains unmet.
+
+
+Cutaway material traversal fusion implemented privately, not promoted: src/interior_cutaway/material_sync.rs collects lighting/capsule changes in one immutable Assets traversal and mutates only affected handles, replacing the prior two full scans in sync_interior_cutaway. Base-terrain final full-cutaway updates remain unchanged. New tests assert exact cave exits/sky/darkness, actor capsule retention, fade and unrelated reveal components, late same-ID replacement, and no Modified events for idle/actor-only motion. Added leaf module and formatted it with pinned rustfmt; baseline files lib.rs/interior_cutaway.rs archived in cutaway-fusion-baseline; three candidate files archived and frozen by cutaway-fusion-source-receipt.json. Unit session3694 live /tmp/geothite-cutaway-fusion-tests.log, private manifest/performance-visibility/wasm-dev opt0 voxel/jobs2/filter interior_cutaway::. Freeze private inputs until terminal. After pass run existing cave_reveal_tracks_supported_player_and_preserves_actor_and_fade_materials regression, then release QA build and immutable cutaway-fusion-frame-client. Prepared cutaway-fusion-compare.py uses accepted NoCpu control2960440d... and full2560x1600High roof9,13/noon/60s UUUUDDDD in candidate/control/control/candidate order. No performance acceptance, paired visuals, gameplay gates or installation claimed for fusion yet. Root/app still accepted NoCpu; goal active.
+
+
+Cutaway fusion unit3694 terminal0:4passed/0failed in0.01s (two new material-state/replacement/event regressions plus existing capsule tests). Existing renderer_tests::cave_reveal_tracks_supported_player_and_preserves_actor_and_fade_materials also passed1/0 in0.00s; full production system verifies supported player, retained fade, actor capsule, darkness/daylight and disabled-state behavior. Frozen3-file receipt verified. Release QA build78873 now live /tmp/geothite-cutaway-fusion-build.log, private manifest/native release target/jobs2/location-tester/example new_bark_3d. Freeze private source/assets until terminal. On success save immutable cutaway-fusion-frame-client with hash receipt and run prepared fullroof both-order cutaway-fusion-compare.py after owned compiler jobs are terminal. No gameplay/performance/visual/install acceptance yet for fusion; root/app still accepted NoCpu.
+
+
+Cutaway fusion release78873 terminal0 (16m03s); three frozen candidate source hashes verified. Immutable cutaway-fusion-frame-client SHA0917606130717c31cd1fe05fc8f661916b005279b78d52f3ca6e28600da2a252, binary receipt saved. Fullroof both-order untraced comparison11488 now live, /tmp/geothite-cutaway-fusion-compare.log; candidate-first confirmed underway. No owned compiler remains during measurements. Retain frozen QA source/assets until comparison terminal. Existing material/capsule4-test suite and whole-system cave regression1-test passed; performance/paired visual/gameplay/installation acceptance still pending. Root/app remain installed accepted NoCpu.
+
+
+Cutaway fusion fullroof comparison11488 terminal0. First candidate639updates80.13/196.11ms median/p95, walking79.322/197.335; control728updates78.24/144.21, walking76.3135/138.423. Reverse control821updates72.66/116.08, walking75.568/114.062; candidate801updates69.72/125.64, walking67.5925/119.65. All256walkingrows/fourorigins/onebuild/no pendingterrain/no GPU pollerrors; exact finalRoof8,12/origin-44,-36 matches. REJECT fusion: lower update counts and worse tails in both orders, mixed medians. New unit4 and existing cave-system1 regressions passed but do not prove gameplay speedup. Restored private lib.rs/interior_cutaway.rs exact archived baseline with fresh mtimes; removed only newly created private leaf/directory. Root/app never received fusion. SHA-verified rejected immutable executable removed; cutaway-fusion-frame-client intentionally absent. Source archive, receipts, CSVs/validated warmup evidence and verdict retained ignored.
+
+Next attribution: resolution-attribution-compare.py runs the SAME accepted NoCpu executable2960440d... at1280x800/full2560x1600/full/small, High/SSAO/same16:10camera0,7,5,0/Roof9,13/noon/60s UUUUDDDD. Existing headless measurement validates readback before timing, drains30frames, no per-frame screenshot capture. Session6944 live, /tmp/geothite-resolution-attribution-compare.log; no owned compiler remains. Checks identical route/build/readiness and collects walking/overall frame times. This is diagnostic output-size attribution, not a proposed shipping resolution/quality change. Finish both orders and inspect composition before inferring whether pixel work dominates. Source/assets frozen until terminal.
+
+GPU source recheck: Bevy0.20 per-pass GPU timestamps unavailable on current Metal inside-pass/encoder feature set; existing render_metrics guard already handles this, no instrumentation changes made. Shared grove materials already backface-cull; opaque surface fade discard guards are already specialized, stock alpha_discard is guarded by MAY_DISCARD. Uniform guards and selective depth prepass were previously tested/rejected; no repeat shader candidate justified from that source inspection. Full fluidity goal remains unmet; installed NoCpu unchanged1f36ef18...
+
+
+Resolution attribution6944 terminal0. SAME accepted NoCpu binary: small-first992updates58.25/82.80ms median/p95, walking58.6985/93.712; full-first719updates76.08/123.96, walking72.7075/82.252; reverse full797updates73.62/100.78, walking74.5855/115.093; small1052updates56.26/65.71, walking54.1395/75.122. All256walkrows/fourorigins/onebuild/no pending, exactfinalRoof8,12/origin-44,-36. Inspected first small/full validated warmups: same composition, visible roof/player/forest extent/camera scale, differing output sampling. Quarter pixel count reduces overall median about24% both orders; most frame cost persists. This separates output-size-dependent work from remaining cost, not CPU vsgeometry vsfixed-resolution shadow work. No quality/resolution change proposed or shipped. Ignored resolution-attribution-verdict.json records evidence. Next inspect stock GPU frustum culling availability/policy on ORIGINAL opaque leaves, distinct from previously failed fine16+occlusion compositions; implementation unproven. Goal remains unmet, installed NoCpu unchanged.
+
+
+New private native GPU-frustum candidate on ORIGINAL combined opaque leaves (no fine subdivision, HZB, shadow bridge, layer change, geometry/material/pipeline change). Parent occluder_fade.rs wires native-only occluder_fade/gpu_frustum.rs. A per-App shared capability flag requires stock GpuPreprocessingSupport::Culling AND RenderMeshInstances::GpuBuilding; sync assigns NoCpuCulling only to bounded, frustum-cullable OpaqueObjectLeaf entities with actual AlphaMode::Opaque VoxelMaterial. Fading/sorted and base-alpha surfaces retain CPU policy. Active direct-draw Camera3d views intersecting layer31 restore only markers owned by this module; unrelated capture layers and foreign NoCpu markers are preserved. Unsupported/no-render apps remain CPU. No new player/env toggle. Baseline parent archived native-frustum-baseline; final2-file source archived native-frustum-candidate-source-v2 and frozen receipt.
+
+Initial policy63377 passed1; preliminary full suite20801 passed68/0 with1GPUignored. Tightened actual-material v2 suite11428 passed68/0,1ignored in2.55s. Explicit native GPU proof25068 passed1/0 in1.20s: production VoxelMaterial/shaders, windowless64px image, ready stock indexed frustum compute pipelines and main+shadow bind groups, real GPU collector membership, hidden parent removal/explicit-visible child, and direct-view CPU fallback. This proves selected/prepared paths, not elapsed GPU duration or indirect parameter count readback. Bevy teardown command-queue warnings occurred; no source logging added. Test verification receipt saved.
+
+Release QA build56158 live /tmp/geothite-native-frustum-build.log, native release target/private manifest/jobs2/location-tester/new_bark_3d. Clippy also started in performance-visibility, log /tmp/geothite-native-frustum-clippy.log (record exact returned handle next); prior preexisting errors outside this change documented. Freeze private source/assets until jobs terminal. On release success save immutable native-frustum-frame-client/hash and run prepared native-frustum-compare.py against accepted NoCpu2960440d... in both orders, original fullroof conditions. Normal async doorway/paired same-state3D2D/gameplay gates/install still required if perf succeeds. Root/app unchanged; goal active.
+
+Clippy exact session84279 confirmed live alongside native-frustum release56158; no restart or source edits.
+
+
+Native-frustum lint84279 terminal101: same four preexisting deny errors plus3 introduced warnings (two complex Query types,8-arg sync). To fix candidate before measurement, explicitly cancelled ONLY owned release56158 using exact private cargo command/descendants PIDs62684,63161; handle terminal143. This was a required source correction, not a restart after observation timeout. No other build/game/process touched. Replaced new-module glob imports with explicit imports and grouped query state in named SceneryMeshes SystemParam plus query aliases; culling/material/fallback logic unchanged. First v3 test51318 failed missing PluginGroup test import and one unused test import; corrected before retry. Final source archived native-frustum-candidate-source-v3 and active receipt refreshed; v2 receipt retained separately.
+
+Final v3 suite27129 terminal0:68passed/0failed/1GPUignored2.47s. Explicit offscreen GPU proof99627 terminal0:1passed/0failed1.15s. Clippy20572 terminal101 ONLYfour preexisting errors; zero diagnostics in new gpu_frustum.rs. All-target lint coverage incomplete because baseline errors stop it; not claiming globally clean. New leaf standalone rustfmt --check passes; private cargo fmt --all check7849 has broad preexisting differences. native-frustum-v3-test-verification.json records exact source/tests/limitations. Release54528 live /tmp/geothite-native-frustum-v3-build.log, same private/native-release/location-tester/jobs2/example. Freeze source/assets until terminal; save immutable native-frustum-frame-client only after success/hash verification, then run prepared native-frustum-compare.py after all owned compilers terminal. Root/app unchanged; no perf acceptance/install claimed; goal active.
+
+
+Native-frustum final release54528 terminal0 (8m02s), frozen2-file receipt verified. Immutable native-frustum-frame-client SHA0acf66213c2e78475ea2148f0b4799b77318870241e536ac26fdc9ac1c376463, receipt saved. Fullroof initial comparison80744 terminal0: candidate1046updates54.70/68.73ms median/p95, walking53.538/58.202; control660updates80.09/197.02, walking70.8005/160.533; reverse control629updates86.60/180.06, walking95.059/207.82; candidate555updates99.73/192.26, walking105.317/209.397. All256rows/fourorigins/onebuild/no pending/no pollerrors/exactfinalsameRoof8,12. Viewed first candidate/control validated warmups: roof/player/forest geometry, scale, materials and visible shadows match compositionally; not a paired-state visual acceptance yet.
+
+HOLD rather than accept/reject on this mixed quartet: strong first pair gain but reverse regression, with chronological slowdown across all four runs. Initial result receipt native-frustum-initial-comparison.json. One additional reversed counterbalanced replication28976 now live, /tmp/geothite-native-frustum-recheck.log: control/candidate/candidate/control, identical original fullroof60s settings, native-frustum-recheck-* outputs. Records deidentified host-start loadavg and aggregate CPU percentage via existing OS commands before each run, outside measured interval; no game instrumentation or defaults added. This tests unresolved order/load sensitivity; do not infer host load caused changes without evidence or accept first pair alone. No owned compiler active. Keep source/assets frozen; root/app still accepted NoCpu1f36ef18..., goal active.

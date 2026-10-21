@@ -1,5 +1,9 @@
 # Original Golem sculpture
 
+The current articulated GLB has a new low-carried skull, lowered claws and
+uneven shell relief. See the [October 20 fidelity review](stone-pair-fidelity.md).
+The static geometry and counts below describe its historical predecessor.
+
 `tools/golem_sculpt.py` authors a nearly spherical continuous dark-brown seam
 body with 32 fitted polygonal grey-green stone plates. Twelve pentagonal and
 twenty hexagonal cells cover the complete sphere; their shared 90 edges form

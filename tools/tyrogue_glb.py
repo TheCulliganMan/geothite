@@ -2,7 +2,8 @@
 """Canonical Tyrogue skin with planted shoes, a continuous crown and articulated bent arms."""
 import argparse,hashlib,json,math,struct
 from pathlib import Path
-from tyrogue_sculpt import sculpture,HEIGHT
+from tyrogue_sculpt import sculpture,HEIGHT,arm_path
+from bovine_sculpt import smooth
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 MAX_BYTES=1024*1024
 SOURCE=sculpture();RAW=sculpture(normalize=False)
@@ -14,30 +15,33 @@ def geometry_digest(model):
  for p in model['primitives']:
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
-REST_DIGEST='6f08d0c81d0c633e32fd55a565109a56759eeb7250212e0e4dfef93812dc71a2'
+REST_DIGEST='bc412960c3d91d605676e5016c943c63bb509b728b3e4b81a94699c8f0601bcd'
 def pivot(p):return tuple((v-(LOW if i==1 else 0.))*SCALE for i,v in enumerate(p))
-BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.60,.01)),('neck',1,(0.,.74,.06)),('head',2,(0.,.80,.08)),
- ('ear_left',3,(-.218,.987,.10)),('ear_right',3,(.218,.987,.10)),
- ('arm_left',1,(-.065,.695,.020)),('wrist_left',6,(-.257,.562,.057)),
- ('arm_right',1,(.065,.695,.020)),('wrist_right',8,(.257,.562,.057)),
- ('leg_left',0,(-.170,.230,.035)),('leg_right',0,(.170,.230,.035)))
+BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.57,0.)),('neck',1,(0.,.71,.016)),('head',2,(0.,.75,.016)),
+ ('ear_left',3,(-.254,.982,.005)),('ear_right',3,(.254,.982,.005)),
+ ('arm_left',1,arm_path(-1)[0]),('wrist_left',6,arm_path(-1)[1]),
+ ('arm_right',1,arm_path(1)[0]),('wrist_right',8,arm_path(1)[1]),
+ ('leg_left',0,(-.211,.225,.040)),('leg_right',0,(.211,.225,-.016)))
 JOINTS=tuple((n,parent,pivot(p) if parent is not None else p) for n,parent,p in BASE)
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def skin_weights(part,point):
  x,y,z=(point[0]/SCALE,point[1]/SCALE+LOW,point[2]/SCALE)
  if part.startswith(('Shoe /','Shoe seam /')):return [0,0,0,0],[1.,0.,0.,0.]
  if part.startswith('Leg /'):
-  a=smoothstep(.07,.36,y);g=.30*smoothstep(.06,.14,y)*(1.-smoothstep(.25,.38,y))
+  a=smoothstep(.08,.32,y);g=.30*smoothstep(.07,.13,y)*(1.-smoothstep(.24,.34,y))
   return [0,1,10 if part.endswith('-1') else 11,0],[(1.-a)*(1.-g),a*(1.-g),g,0.]
  if part.startswith('Arm /'):
-  a=1.-smoothstep(.50,.62,y);owner=6 if part.endswith('-1') else 8
+  side=-1 if part.endswith('-1') else 1;path,_=smooth(arm_path(side),[.060,.055,.043],5);best=(math.inf,0.);lengths=[math.dist(a,b) for a,b in zip(path,path[1:])];offset=0.;total=sum(lengths)
+  for start,end,length in zip(path,path[1:],lengths):
+   delta=[v-u for u,v in zip(start,end)];t=max(0.,min(1.,sum((v-u)*d for v,u,d in zip((x,y,z),start,delta))/(length*length)));near=[v+t*d for v,d in zip(start,delta)];best=min(best,(math.dist((x,y,z),near),(offset+t*length)/total));offset+=length
+  a=smoothstep(.25,.77,best[1]);owner=6 if side==-1 else 8
   return [owner,owner+1,0,0],[1.-a,a,0.,0.]
  if part.startswith(('Wrist band /','Palm /','Finger /')):
   side=part.split()[-2] if part.startswith('Finger /') else part.split()[-1]
   return [7 if side=='-1' else 9,0,0,0],[1.,0.,0.,0.]
  if part.startswith(('Ear /','Ear contour /')):return [4 if part.endswith('-1') else 5,0,0,0],[1.,0.,0.,0.]
  if part.startswith(('Head /','Eye socket /','Eye /','Iris /','Pupil /','Glint /','Mouth /')):return [3,0,0,0],[1.,0.,0.,0.]
- a=smoothstep(.71,.78,y);b=smoothstep(.78,.85,y)
+ a=smoothstep(.68,.74,y);b=smoothstep(.74,.79,y)
  return [1,2,3,0],[1.-a,a*(1.-b),a*b,0.]
 def pose_angles(clip,t):
  if clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid Tyrogue clip/time')

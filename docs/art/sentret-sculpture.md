@@ -1,5 +1,11 @@
 # Sentret sculpture and standard skin
 
+The [2026-10-21 fidelity revision](sentret-furret-fidelity.md) supersedes the
+shape, palette and measurements below. Sentret now balances on a broad rounded
+tail end, with a rounder body, cream annulus, tiny eyes and charcoal/pink ears.
+Its current skin has 40 parts, 14,430 vertices, 13,752 triangles and 11 joints in
+582,264 bytes. The remaining text records the earlier hooked-tail migration.
+
 Sentret fills a battle-catalogue body gap with one original canonical GLB at
 `models/battle_species/sentret.glb` under `crates/crystal-voxel-view`.
 `tools/sentret_sculpt.py` authors its pear-shaped body, long ears, raised paws,

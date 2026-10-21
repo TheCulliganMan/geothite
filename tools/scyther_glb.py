@@ -14,14 +14,14 @@ def geometry_digest(model):
  for p in model['primitives']:
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
-REST_DIGEST='ea4538d82e02fd1c896ad210cfe655355ddd53b56953e5ecdff59f86131452ea'
+REST_DIGEST='e7c84bdfd2b8b6f63bd9281c1fd0a717a12a8ee4cc208d409e6b4707dc87576b'
 def pivot(p):return tuple((v-(LOW if i==1 else 0.))*SCALE for i,v in enumerate(p))
 BASE=(('root',None,(0.,0.,0.)),('thorax',0,(0.,.78,.010)),('abdomen',1,(0.,.62,-.025)),
  ('neck',1,(0.,.93,.028)),('head',3,(0.,1.015,.072)),
- ('arm_left',1,(-.194,.835,.016)),('scythe_left',5,(-.304,.780,.092)),
- ('arm_right',1,(.194,.835,.016)),('scythe_right',7,(.304,.780,.092)),
- ('wing_left',1,(-.071,.85,-.082)),('wing_right',1,(.071,.85,-.082)),
- ('leg_left',2,(-.142,.453,-.027)),('leg_right',2,(.142,.453,-.027)))
+ ('arm_left',1,(-.17,.84,.03)),('scythe_left',5,(-.20,.81,.27)),
+ ('arm_right',1,(.17,.84,.03)),('scythe_right',7,(.20,.81,.27)),
+ ('wing_left',1,(-.071,.85,-.055)),('wing_right',1,(.071,.85,-.055)),
+ ('leg_left',2,(-.142,.453,-.040)),('leg_right',2,(.142,.453,-.040)))
 JOINTS=tuple((n,parent,pivot(p) if parent is not None else p) for n,parent,p in BASE)
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def skin_weights(part,point):
@@ -48,11 +48,11 @@ def pose_angles(clip,t):
  if clip=='idle':a=math.sin(math.tau*t);b=math.sin(math.tau*t-.45)+math.sin(.45);strength=1.;flutter=math.sin(5.*math.tau*t);slash=.025*b
  else:
   a=envelope(t,((0.,0.),(.18,1.),(.42,.60),(.72,.06),(1.,0.)))
-  b=envelope(t,((0.,0.),(.31,1.),(.55,.55),(.80,-.08),(1.,0.)));strength=2.4 if clip=='attack' else -2.;flutter=b*strength;slash=(.15 if clip=='attack' else -.035)*b
+  b=envelope(t,((0.,0.),(.31,1.),(.55,.55),(.80,-.08),(1.,0.)));strength=2.4 if clip=='attack' else -2.;flutter=b*strength;slash=(.18 if clip=='attack' else -.035)*b
  a*=strength;b*=strength
  return [(0.,0.,0.),(0.,.012*a,0.),(0.,-.016*b,0.),(.010*a,.012*b,0.),(.016*b,.022*a,.008*b),
-  (.018*a,.020*b,-.040*b),(.012*b,.025*a,-slash),
-  (.018*a,-.020*b,.040*b),(.012*b,-.025*a,slash),
+  (.018*a,.020*b,-.040*b),(-slash,.025*a,-.012*b),
+  (.018*a,-.020*b,.040*b),(-slash,-.025*a,.012*b),
   (.015*a,.085*flutter,.018*b),(.015*a,-.085*flutter,-.018*b),
   (0.,.020*a,0.),(0.,-.020*a,0.)]
 def rotation(clip,t,joint):return quaternion_xyz(*pose_angles(clip,t)[joint])
@@ -78,7 +78,7 @@ def pack_parts(model):
   metadata['source_parts'].append({'part':name,'order':order,'vertex_start':start,'vertex_count':len(source['positions'])//3,'index_start':first,'index_count':len(source['indices'])})
   joined['positions']+=source['positions'];joined['normals']+=source['normals'];joined['indices'] += [i+start for i in source['indices']]
  return parts
-PACKED_REST_DIGEST='549a4c15bda5cddc1bb41177a7aac6881f06e09d2e1d245940677f0beb3ea908'
+PACKED_REST_DIGEST='3636af80cadc38d3c0c3de404cbbc0448e6d897f82d590f080f7a8ceb7ec1472'
 
 def export_scyther(model=None):
  if model is None:model=SOURCE

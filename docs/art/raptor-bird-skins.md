@@ -1,5 +1,18 @@
 # Pidgeot and Fearow production skins
 
+The [2026-10-21 family fidelity revision](pidgey-family-fidelity.md) supersedes
+Pidgeot's geometry and resting wing motion below. Its current skin has 18,266
+vertices, 24,648 triangles, 105 source parts, 25 packed parts, 20 joints and
+834,244 bytes. Height remains 1.35 with zero footing and the original
+1.4986-metre pack size. The revised crest, folded-wing frame, wrist/tail
+fields and pivots follow the actual new anatomy. Fearow's bytes and motion
+are unchanged in that batch. The subsequent
+[Spearow/Fearow revision](spearow-fearow-fidelity.md) gives Fearow its airborne
+pose, revised pivots, body-owned tucked leg controls, broad wing planes and
+strictly closed idle seam. Its current skin has 13,219 vertices, 16,748 triangles,
+101 source parts, 21 packed parts, 19 joints and 602,768 bytes. The remaining
+migration record describes the earlier skins.
+
 The production models use canonical standard GLB skins authored by
 `tools/raptor_bird_glb.py` from the original recipe with `rig_ready=True`.
 The shared species registry, GPU renderer, asset readers, STL exporter and

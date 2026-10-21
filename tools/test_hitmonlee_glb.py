@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """Decoded Hitmonlee skin: rooted coils, one planted support and a real lifted kick."""
-import math,unittest
+import math,os,unittest
 from pathlib import Path
 import hitmonlee_glb as author
 import test_gengar_glb as skin
 import test_donphan_sculpt as joins
 from skin_glb_test_support import IDENTITY
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/hitmonlee.glb'
+ROOT=Path(os.environ.get('CRYSTAL_HITMONLEE_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))/'hitmonlee.glb'
 class HitmonleeSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.blob=ROOT.read_bytes();cls.m=skin.Model(cls.blob)
  def test_canonical_anatomy_bind_and_budgets(self):
   m=self.m;self.assertEqual(self.blob,author.export_hitmonlee(author.decode_hitmonlee(self.blob)))
-  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(33,19747,35276,10))
+  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(33,15445,25744,10))
   self.assertLess(len(self.blob),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
   for matrix in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(matrix,IDENTITY)),1e-7)
  def test_local_normal_palette(self):
@@ -78,7 +78,7 @@ class HitmonleeSkinTests(unittest.TestCase):
    if n.startswith(('Leg spring /','Wrist spring /')):
     self.assertEqual(len(set(map(tuple,m.vertices[p]))),1568,n)
     self.assertEqual(len(m.indices[p])//3,3132,n)
-    self.assertEqual(len(m.vertices[p]),1664 if n.startswith('Leg spring /') else 1679,n)
+    self.assertEqual(len(m.vertices[p]),1856 if n.startswith('Leg spring /') else 1753 if n.endswith('-1') else 1698,n)
  def test_noncanonical_data_rejected(self):
   with self.assertRaises(ValueError):author.decode_hitmonlee(self.blob[:-1])
 if __name__=='__main__':unittest.main()

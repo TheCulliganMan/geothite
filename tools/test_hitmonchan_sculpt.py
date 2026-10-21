@@ -35,7 +35,7 @@ class HitmonchanTests(unittest.TestCase):
   self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   for prefix,n in (('Head /',1),('Tunic /',1),('Skirt /',1),('Belt /',1),('Shoulder guard /',2),('Eye /',2),('Glove /',2),('Glove thumb /',2),('Glove cuff /',2),('Glove seam /',2),('Boot /',2),('Boot cuff /',2),('Boot seam /',2)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n,prefix)
-  h=self.find('Head /');self.assertGreater(max(h['positions'][1::3])-min(h['positions'][1::3]),.49)
+  h=self.find('Head /');self.assertGreater(max(h['positions'][1::3])-min(h['positions'][1::3]),.32*HEIGHT)
   skirt=self.find('Skirt /');low=[abs(skirt['positions'][i]) for i in range(0,len(skirt['positions']),3) if skirt['positions'][i+1]<.42];high=[abs(skirt['positions'][i]) for i in range(0,len(skirt['positions']),3) if skirt['positions'][i+1]>.51];self.assertGreater(max(low),max(high)*1.45)
   self.assertFalse(any('Crownlike hair' in p['part'] for p in self.ps))
  def test_clothes_neck_head_and_shoulders_have_real_volume_roots(self):
@@ -49,12 +49,12 @@ class HitmonchanTests(unittest.TestCase):
  def test_both_legs_boots_and_ankle_cuffs_are_supported_and_grounded(self):
   for s in (-1,1):
    leg=self.find('Leg /',s);boot=self.find('Boot /',s);cuff=self.find('Boot cuff /',s)
-   for a,b in ((leg,self.find('Skirt /')),(boot,leg),(cuff,leg),(cuff,boot)):self.assertTrue(self.overlap(a,b),a['part'])
+   for a,b in ((leg,self.find('Tunic /')),(boot,leg),(cuff,leg),(cuff,boot)):self.assertTrue(self.overlap(a,b),a['part'])
    self.assertLess(min(boot['positions'][1::3]),.002)
  def pairs(self):
   for p in self.ps:
    n=p['part'];s=n.split()[-1];parent=None
-   for child,base in (('Eye socket /','Head /'),('Eye /','Eye socket /'),('Iris /','Eye /'),('Pupil /','Iris /'),('Glint /','Pupil /'),('Glove seam /','Glove /'),('Boot seam /','Boot /')):
+   for child,base in (('Eye socket /','Head /'),('Eye /','Eye socket /'),('Iris /','Eye /'),('Glint /','Iris /'),('Glove seam /','Glove /'),('Boot seam /','Boot /')):
     if n.startswith(child):parent=self.find(base,s if base!='Head /' else None)
    if n.startswith('Mouth /'):parent=self.find('Head /')
    if parent:yield p,parent

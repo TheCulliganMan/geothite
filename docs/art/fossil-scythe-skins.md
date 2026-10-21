@@ -1,5 +1,9 @@
 # Kabuto and Kabutops fossil skins
 
+The [October 21 full-volume revision](fossil-pair-fidelity.md) supersedes
+Kabutops's initial geometry, pigments, posture and counts below. Kabuto remains
+byte-identical; the source and skin history is retained here.
+
 The old primitive assemblies are replaced by original closed sculptures and
 six/thirteen-joint canonical GLBs. Local normal front/back sprites inform the
 silhouettes; the earlier 3D palette's red Kabuto underside eyes and ivory

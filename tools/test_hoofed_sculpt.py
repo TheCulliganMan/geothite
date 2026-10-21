@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Stored psychic-hoofed anatomy, contact, loop and fitted-marking regressions."""
-import unittest
+import os,unittest
 from pathlib import Path
 from girafarig_glb import read_girafarig
 from stantler_glb import read_stantler,geometry_digest
@@ -10,7 +10,7 @@ from test_axolotl_sculpt import ray_intersections
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 class HoofedTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.models={s:read_stantler(ROOT/'stantler.glb') if s=='stantler' else read_girafarig(ROOT/'girafarig.glb') for s in SPECIES}
+ def setUpClass(cls):cls.models={s:read_stantler(Path(os.environ.get('STANTLER_GLB',str(ROOT/'stantler.glb')))) if s=='stantler' else read_girafarig(ROOT/'girafarig.glb') for s in SPECIES}
  def find(self,ps,prefix):return next(p for p in ps if p['part'].startswith(prefix))
  def test_closed_connected_oriented_parts(self):assert_closed_models(self,self.models)
  def test_normals_match_stored_triangles(self):assert_model_shading(self,self.models)
@@ -53,14 +53,16 @@ class HoofedTests(unittest.TestCase):
     if name.startswith(('Ear / broad','Horn /','Antler stem /')):self.overlap(p,head)
     elif name.startswith('Horn tip /'):self.overlap(p,self.find(ps,'Horn / short ivory ossicone '+side))
     elif name.startswith('Antler /'):self.overlap(p,self.find(ps,'Antler stem / pale rooted brow stalk '+side))
-    elif name.startswith('Antler tine /'):self.overlap(p,self.find(ps,'Antler / open branching oval loop '+name.split()[-2]))
-    elif name.startswith('Antler orb /'):self.overlap(p,self.find(ps,'Antler / open branching oval loop '+side))
+    elif name.startswith('Antler tine /'):self.overlap(p,self.find(ps,'Antler / open angular branching loop '+name.split()[-2]))
+    elif name.startswith('Antler orb /'):self.overlap(p,self.find(ps,'Antler / open angular branching loop '+side))
  def test_stantler_loops_are_hollow_and_tail_is_attached(self):
   ps=self.models['stantler']['primitives']
   for p in ps:
    if p['part'].startswith('Antler /'):
     x=(min(p['positions'][::3])+max(p['positions'][::3]))/2;y=(min(p['positions'][1::3])+max(p['positions'][1::3]))/2
-    self.assertFalse(ray_intersections(p,x,y));self.assertTrue(ray_intersections(p,x,max(p['positions'][1::3])-.010))
+    self.assertFalse(ray_intersections(p,x,y))
+    xl=min(p['positions'][::3]);xh=max(p['positions'][::3]);top=max(p['positions'][1::3])-.010
+    self.assertTrue(any(ray_intersections(p,xl+(xh-xl)*j/100,top) for j in range(1,100)))
   base=self.find(ps,'Tail / short');self.overlap(base,ps[0]);self.overlap(base,self.find(ps,'Tail / large'))
  def test_flank_and_neck_markings_follow_stored_side_skin(self):
   for s,m in self.models.items():

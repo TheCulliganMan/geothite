@@ -46,6 +46,9 @@ mod people_review;
 pub use people_review::run as run_people_review;
 mod npc_appearance;
 mod npc_uniform;
+mod hair_curtain;
+mod hair_paint;
+mod hair_scalp;
 mod hair_shapes;
 mod npc_textures;
 mod browser_memory;
@@ -79,14 +82,20 @@ mod grass_blades;
 mod grass_rustle;
 mod garment_fit;
 mod garment_body;
+mod tailored_trousers;
 #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
 mod garment_drape_trial;
 mod limb_surface;
+mod arm_skin;
+mod arm_deformation;
+mod arm_surface;
 mod hand_surface;
 mod hand_digits;
 mod handwear;
 mod hand_pose;
 mod head_surface;
+mod face_volume;
+mod people_mesh;
 #[cfg(test)]
 mod bald_scalp;
 mod footwear;
@@ -120,6 +129,7 @@ mod border_water;
 mod cave_lighting;
 mod source_color;
 mod water_surface;
+mod water_ripples;
 mod celadon_gym;
 mod cerulean_gym;
 mod cut_tree;
@@ -342,7 +352,7 @@ impl Plugin for VoxelViewPlugin {
         app.add_plugins(MaterialPlugin::<VoxelMaterial>::default());
         #[cfg(not(target_arch = "wasm32"))]
         {
-            app.add_systems(Update, native_model_camera.before(sync_voxel_view));
+            app.add_systems(Update, native_model_camera.in_set(VoxelCameraInput).before(sync_voxel_view));
             camera_gestures::register(app);
         }
         load_internal_asset!(
@@ -408,6 +418,8 @@ impl Plugin for VoxelViewPlugin {
         #[cfg(not(target_arch = "wasm32"))]
         app.add_systems(Update, new_bark_actors::prepare_destination_people
             .after(new_bark_actors::sync).in_set(WorldRenderSet::RenderSync));
+        #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+        garment_drape_trial::live::register(app);
         grass_rustle::register(app);
         outdoor_wind::register(app);
         app.add_systems(Update, flower::animate.after(sync_voxel_view)
@@ -430,6 +442,10 @@ pub struct VoxelViewSettings {
 pub struct ActorScreenHeads(pub HashMap<VisualActorId, Vec2>);
 #[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ActorHeadProjection;
+
+/// Camera input settles before the shell projects field movement into the world.
+#[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
+pub struct VoxelCameraInput;
 
 fn project_actor_heads(
     status: Res<VoxelViewStatus>,
@@ -1379,10 +1395,23 @@ fn sync_cave_water_phases(
     mut images: ResMut<Assets<Image>>,
     mut materials: ResMut<Assets<VoxelMaterial>>,
     mut applied: Local<Option<(Option<TerrainCacheKey>, Option<bevy::asset::AssetId<Image>>, bevy::asset::AssetId<Image>)>>,
+    mut ripples: Local<water_ripples::WaterRipples>,
 ) {
     if !status.active || !frame.active {
         *applied = None;
+        *ripples = default();
         return;
+    }
+    // Rooted sea stones use the same map coordinates as the water around
+    // them. Solid materials need that scale and retained-grid translation,
+    // while X stays zero so their geometry never enters water optics.
+    // Coordinate updates must not wait for an animation phase to advance.
+    if let (Some(built), Some(handle)) = (cache.built_frame.as_ref(), cache.solid_material.as_ref()) {
+        let mut registration = cave_water::retained_registration(built, &frame);
+        registration.x = 0.;
+        if materials.get(handle).is_some_and(|m|m.extension.water_enabled != registration) {
+            materials.get_mut(handle).unwrap().extension.water_enabled = registration;
+        }
     }
     let Some(phases) = phases else { return; };
     let material_handle = cache.textured_material.clone();
@@ -1394,7 +1423,8 @@ fn sync_cave_water_phases(
     // Source animation is sparse. Scanning every retained water tile and its
     // mask on every display refresh cannot advance an authenticated phase.
     // A new terrain/atlas/mask must still receive the current phase once.
-    let refresh_source = applied.as_ref() != Some(&next) || phases.is_changed();
+    let new_surface = applied.as_ref() != Some(&next);
+    let refresh_source = new_surface || phases.is_changed();
     if !refresh_source { return; }
     if phases.map_id != frame.map_id { *applied = None; return; }
     *applied = Some(next);
@@ -1407,7 +1437,15 @@ fn sync_cave_water_phases(
             // A missing/dark replacement must clear an earlier lit swatch too.
             Some(cave_water::native_palette(built,&images).unwrap_or([Vec4::ZERO;2]))
         } else {None};
-        if changed || palette.is_some() {
+        let ripple_height = if changed || new_surface {
+            let shore = material_handle.as_ref()
+                .and_then(|handle| materials.get(handle))
+                .and_then(|material| material.extension.water_shore.clone());
+            let active = shore.and_then(|shore| images.get_mut(&shore))
+                .is_some_and(|mut shore| ripples.update(built, water_surface::contact(&frame), steps, &mut shore));
+            Some(if active { water_ripples::HEIGHT_RANGE } else { 0.0 })
+        } else { None };
+        if changed || palette.is_some() || ripple_height.is_some() {
             // Re-uploading an Image replaces its GPU texture. Refresh every
             // material that binds it, including cloned cave occluder groups.
             let users: Vec<_> = materials.iter().filter_map(|(id, material)| {
@@ -1424,6 +1462,9 @@ fn sync_cave_water_phases(
                     if let Some(palette)=palette {
                         material.extension.water_deep=palette[0];
                         material.extension.water_foam=palette[1];
+                    }
+                    if let Some(height) = ripple_height {
+                        material.extension.water_motion.z = height;
                     }
                 }
             }
@@ -2097,6 +2138,7 @@ fn apply_built_terrain(
         material.extension.water_style = water_surface::style(frame);
         material.extension.water_phase = Vec4::ZERO;
         material.extension.water_motion.y = material.extension.water_motion.x;
+        material.extension.water_motion.z = 0.0;
         material.extension.water_contact = water_surface::contact(frame);
         let palette = {
             let _trace = loading_trace::span("region.prepare_water_palette", || serde_json::json!({}));
@@ -2129,6 +2171,9 @@ fn apply_built_terrain(
     if let Some(mut material) = materials.get_mut(&solid_material_handle) {
         material.extension.painted_stone = Some(painted_stone);
         material.extension.painted_bedrock = Some(painted_bedrock);
+        let mut registration = cave_water::registration(frame);
+        registration.x = 0.;
+        material.extension.water_enabled = registration;
     }
     let cave_reveal = if interior_cutaway::is_cave(frame) {
         let dark = frame.tiles.first().is_some_and(|tile| tile.source.tileset_id.as_ref() == "dark_cave")
@@ -3231,6 +3276,34 @@ mod renderer_tests {
     use bevy::render::render_resource::{DepthBiasState, StencilState, TextureFormat};
 
     use super::*;
+
+    #[test]
+    fn rooted_sea_stone_registration_tracks_retained_grid_without_animation_steps() {
+        let built = VisualWorldFrame { active: true, map_id: "Route19".into(),
+            tile_size: Vec2::splat(32.), grid_size: UVec2::new(44, 40),
+            grid_origin: IVec2::new(-12, 20), center: Vec2::new(48., -64.), ..default() };
+        let mut materials = Assets::<VoxelMaterial>::default();
+        let handle = materials.add(solid_terrain_material());
+        let mut app = App::new();
+        app.insert_resource(Time::<()>::default()).insert_resource(built.clone())
+            .insert_resource(VoxelViewStatus { active: true, ..default() })
+            .insert_resource(TerrainRevisionCache { built_frame: Some(built.clone()),
+                solid_material: Some(handle.clone()), ..default() })
+            .insert_resource(Assets::<Image>::default()).insert_resource(materials)
+            .add_systems(Update, sync_cave_water_phases);
+        for offset in [Vec2::ZERO, Vec2::new(80., -48.), Vec2::new(-32., 96.)] {
+            app.world_mut().resource_mut::<VisualWorldFrame>().center = built.center + offset;
+            app.update();
+            let frame = app.world().resource::<VisualWorldFrame>();
+            let expected = cave_water::retained_registration(&built, frame);
+            let material = app.world().resource::<Assets<VoxelMaterial>>().get(&handle).unwrap();
+            assert_eq!(material.extension.water_enabled, Vec4::new(0., expected.y, expected.z, expected.w));
+            assert_eq!(material.extension.water_enabled.y, 32.);
+            assert_eq!(material.extension.water_phase, Vec4::ZERO);
+            assert!(material.extension.water_mask.is_none());
+            assert_eq!(frame.tiles, built.tiles, "material coordinates never rewrite source scenery");
+        }
+    }
 
     #[test]
     fn outdoor_water_palette_refreshes_without_advancing_the_animation_mask() {
@@ -4990,7 +5063,10 @@ Visibility::Hidden,))).id();
                     camera: VoxelCameraControls::new(0., 0.),
                     ..default()
                 })
+                .init_resource::<Time>()
                 .add_systems(Update, native_model_camera);
+            app.world_mut().resource_mut::<Time>()
+                .advance_by(std::time::Duration::from_secs_f32(0.1));
             {
                 let mut keys = app.world_mut().resource_mut::<ButtonInput<KeyCode>>();
                 keys.press(KeyCode::KeyE);
@@ -4998,13 +5074,20 @@ Visibility::Hidden,))).id();
             }
             app.update();
             let moved = app.world().resource::<VoxelViewSettings>().camera;
-            assert_eq!(moved, VoxelCameraControls::new(1., 1.), "{map}");
+            assert_eq!(moved.zoom_step, 1., "{map}");
+            assert!((moved.rotation_step * std::f32::consts::FRAC_PI_4 - 0.25).abs() < 1e-6, "{map}");
 
-            // Holding a key is not another orbit step. The input plugin clears
-            // these edge flags between frames in the real application.
+            // Holding rotates continuously; zoom still consumes only the edge.
             app.world_mut().resource_mut::<ButtonInput<KeyCode>>().clear();
             app.update();
-            assert_eq!(app.world().resource::<VoxelViewSettings>().camera, moved);
+            let held = app.world().resource::<VoxelViewSettings>().camera;
+            assert_eq!(held.zoom_step, moved.zoom_step);
+            assert!((held.rotation_step * std::f32::consts::FRAC_PI_4 - 0.5).abs() < 1e-6);
+
+            app.world_mut().resource_mut::<ButtonInput<KeyCode>>().press(KeyCode::KeyQ);
+            app.update();
+            assert_eq!(app.world().resource::<VoxelViewSettings>().camera, held,
+                "opposite rotation keys cancel");
 
             app.world_mut().resource_mut::<VisualWorldFrame>().active = false;
             {
@@ -5013,7 +5096,7 @@ Visibility::Hidden,))).id();
                 keys.press(KeyCode::PageDown);
             }
             app.update();
-            assert_eq!(app.world().resource::<VoxelViewSettings>().camera, moved);
+            assert_eq!(app.world().resource::<VoxelViewSettings>().camera, held);
         }
     }
 }
@@ -5024,6 +5107,7 @@ fn native_model_camera(
     keyboard: Res<ButtonInput<KeyCode>>,
     frame: Res<VisualWorldFrame>,
     mut settings: ResMut<VoxelViewSettings>,
+    time: Option<Res<Time>>,
 ) {
     if !settings.enabled || !frame.active {
         return;
@@ -5041,12 +5125,10 @@ fn native_model_camera(
         );
     }
     let mut camera = settings.camera;
-    if keyboard.just_pressed(KeyCode::KeyQ) {
-        camera.rotation_step -= 1.0;
-    }
-    if keyboard.just_pressed(KeyCode::KeyE) {
-        camera.rotation_step += 1.0;
-    }
+    let orbit = i32::from(keyboard.pressed(KeyCode::KeyE))
+        - i32::from(keyboard.pressed(KeyCode::KeyQ));
+    let dt = time.as_ref().map_or(0.0, |time| time.delta_secs().min(0.1));
+    camera.steer(orbit as f32 * dt * 2.5, 0.0);
     if keyboard.just_pressed(KeyCode::PageUp) {
         camera.zoom_step += 1.0;
     }

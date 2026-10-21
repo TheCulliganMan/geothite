@@ -1,5 +1,9 @@
 # Graveler and Golem canonical skins
 
+The [October 20 fidelity revision](stone-pair-fidelity.md) supersedes the rest
+shapes, counts and visual acceptance recorded below. The canonical skin and
+support architecture remain in use; this page records their initial migration.
+
 The stone pair now uses canonical GLBs through the normal background builder,
 direct sculpture CLIs, strict logical readers and Rust dispatch. Registration
 reaches 237 skin variants and 38 static species files. Full-roster model and rig

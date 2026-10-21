@@ -98,8 +98,8 @@ class TotodileTests(unittest.TestCase):
         model = self.model.neutral_model()
         self.assertEqual(author.geometry_digest(model), author.REST_DIGEST)
         self.assertEqual(self.model.names, list(author.PARTS))
-        self.assertEqual(sum(len(p) for p in self.model.vertices), 7531)
-        self.assertEqual(sum(len(p['indices'])//3 for p in model['primitives']), 7078)
+        self.assertEqual(sum(len(p) for p in self.model.vertices), 5422)
+        self.assertEqual(sum(len(p['indices'])//3 for p in model['primitives']), 10552)
         source_path = os.environ.get('TOTODILE_MESH_SOURCE')
         if source_path:
             source = json.loads(Path(source_path).read_bytes())
@@ -225,7 +225,7 @@ class TotodileTests(unittest.TestCase):
                     self.assertAlmostEqual(math.dist(posed[0], posed[-1]),
                                            math.dist(self.model.vertices[i][0], self.model.vertices[i][-1]), places=7)
 
-    def test_open_grin_tongue_and_lower_teeth_follow_the_jaw(self):
+    def test_shallow_grin_tongue_and_lower_teeth_follow_the_jaw(self):
         # The defining grin must survive real decoded animation, with the
         # tongue and lower teeth attached to the lower jaw during a bite.
         m = self.model
@@ -241,8 +241,22 @@ class TotodileTests(unittest.TestCase):
                         math.dist(m.vertices[i][0], m.vertices[i][-1]), places=7)
         tongue = m.vertices[m.names.index('Rounded pink tongue')]
         upper = m.vertices[m.names.index('Upper ivory crocodile fang')]
-        self.assertGreater(max(p[1] for p in upper) - max(p[1] for p in tongue), .06)
+        gap=max(p[1] for p in upper)-max(p[1] for p in tongue)
+        self.assertGreater(gap,.015);self.assertLess(gap,.05)
         self.assertEqual(len([n for n in m.names if 'ivory crocodile fang' in n]), 4)
+    def test_eyes_wrap_the_sides_and_tail_keeps_its_wedge_depth(self):
+        m=self.model
+        for i,n in enumerate(m.names):
+            if not n.startswith('Inset ivory eye'):continue
+            points=m.vertices[i]
+            self.assertGreater(max(p[1] for p in points)-min(p[1] for p in points),
+                               (max(p[2] for p in points)-min(p[2] for p in points))*1.25)
+            self.assertTrue(all(abs(p[0])>.17 for p in points))
+        body=m.vertices[m.names.index('Totodile / continuous head muzzle torso limbs and tail')]
+        self.assertLess(max(p[0] for p in body)-min(p[0] for p in body),.78)
+        middle=[p for p in body if -.31<p[2]<-.25]
+        self.assertGreater(len(middle),12)
+        self.assertGreater(max(p[1] for p in middle)-min(p[1] for p in middle),.15)
 
     def test_shared_continuous_body_inlay_and_plate_field(self):
         signatures = {}

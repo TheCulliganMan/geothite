@@ -6,7 +6,7 @@ from functools import lru_cache
 from hoothoot_sculpt import sculpture as sculpt,HEIGHT
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 SPECIES=('hoothoot',)
-REST_DIGESTS={'hoothoot':'93fbea6a47abff0fff1f6ee6315f7ac09ea26bb1bf60a26b0d293a8ae7784555'}
+REST_DIGESTS={'hoothoot':'6c2a01196d5a856e6b3fbae5d5cef520d4f358b15121036a779479b17d821230'}
 PARTS={'hoothoot':tuple(p['part'] for p in sculpt()['primitives'])};MAX_BYTES=1024*1024
 
 def sculpture(species):
@@ -18,12 +18,12 @@ def authoring_transform(species):
 
 def normalized(point):
  low,span=authoring_transform('hoothoot');return tuple((v-(low if i==1 else 0.))*HEIGHT/span for i,v in enumerate(point))
-JOINTS={'hoothoot':(('root',None,(0.,0.,0.)),('body',0,normalized((0.,.37,0.))),
- ('brow_left',1,normalized((-.034,.629,.182))),('brow_tip_left',2,normalized((-.17,.745,.075))),
- ('brow_right',1,normalized((.034,.629,.182))),('brow_tip_right',4,normalized((.17,.745,.075))),
- ('wing_left',1,normalized((-.246,.47,-.01))),('wing_tip_left',6,normalized((-.285,.255,-.10))),
- ('wing_right',1,normalized((.246,.47,-.01))),('wing_tip_right',8,normalized((.285,.255,-.10))),
- ('tail',1,normalized((0.,.185,-.196))),('lower_beak',1,normalized((0.,.435,.224))))}
+JOINTS={'hoothoot':(('root',None,(0.,0.,0.)),('body',0,normalized((0.,.42,0.))),
+ ('brow_left',1,normalized((-.025,.635,.202))),('brow_tip_left',2,normalized((-.225,.779,.080))),
+ ('brow_right',1,normalized((.025,.635,.202))),('brow_tip_right',4,normalized((.225,.779,.080))),
+ ('wing_left',1,normalized((-.259,.323,-.008))),('wing_tip_left',6,normalized((-.365,.276,-.055))),
+ ('wing_right',1,normalized((.259,.323,-.008))),('wing_tip_right',8,normalized((.365,.276,-.055))),
+ ('tail',1,normalized((0.,.205,-.180))),('lower_beak',1,normalized((0.,.455,.264))))}
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 
 def geometry_digest(model):
@@ -34,17 +34,18 @@ def geometry_digest(model):
 
 def skin_weights(species,part,position):
  x,y,z=position;low,span=authoring_transform(species);raw_y=y*span/HEIGHT+low;rear=-z*span/HEIGHT
- if part.startswith(('Leg /','Foot /','Toe /','Claw /','Rear toe /')):return [0,0,0,0],[1.,0.,0.,0.]
+ if part.startswith(('Leg /','Leg band /','Foot /','Toe /','Claw /','Rear toe /')):return [0,0,0,0],[1.,0.,0.,0.]
  if part.startswith(('Body /','Breast mark /')):
   upper=smoothstep(.10,.20,raw_y);return [0,1,0,0],[1.-upper,upper,0.,0.]
  if part.startswith('Clock brow /'):
   root,tip=(2,3) if x<0 else (4,5);attach=smoothstep(.64,.70,raw_y);end=smoothstep(.735,.795,raw_y)
+  if 'terminal' in part:return [tip,0,0,0],[1.,0.,0.,0.]
   return [1,root,tip,0],[1.-attach,attach*(1.-end),attach*end,0.]
  if part.startswith(('Wing /','Flight feather /')):
-  root,tip=(6,7) if x<0 else (8,9);bend=1.-smoothstep(.19,.34,raw_y)
+  root,tip=(6,7) if x<0 else (8,9);bend=smoothstep(.325,.405,abs(x)*span/HEIGHT)
   return [root,tip,0,0],[1.-bend,bend,0.,0.]
  if part.startswith('Tail /'):
-  blend=smoothstep(.20,.29,rear);return [1,10,0,0],[1.-blend,blend,0.,0.]
+  blend=smoothstep(.19,.30,rear);return [1,10,0,0],[1.-blend,blend,0.,0.]
  if part.startswith('Lower beak /'):return [11,0,0,0],[1.,0.,0.,0.]
  return [1,0,0,0],[1.,0.,0.,0.]
 

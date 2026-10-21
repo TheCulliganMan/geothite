@@ -60,7 +60,7 @@ pub(crate) fn smooth_selection(
     weights: &mut Vec<[f32;4]>,
     selected: &[bool],
 ) {
-    refine_selection(mesh, ids, weights, selected, false);
+    refine_selection(mesh, ids, weights, selected, false, 0.55, 0., None);
 }
 
 /// Split neighboring triangles along a refined boundary too. Otherwise a
@@ -72,7 +72,39 @@ pub(crate) fn smooth_selection_joined(
     weights: &mut Vec<[f32;4]>,
     selected: &[bool],
 ) {
-    refine_selection(mesh, ids, weights, selected, true);
+    refine_selection(mesh, ids, weights, selected, true, 0.55, 0., None);
+}
+
+/// Round a joined region while only splitting edges that still need detail.
+/// Torso/sleeve borders can already contain dense painted refinement; repeated
+/// uniform splitting there adds vertices without improving the visible curve.
+pub(crate) fn round_selection_joined(
+    mesh: &mut SurfaceMeshData,
+    ids: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
+    selected: &[bool],
+    minimum_edge: f32,
+) {
+    refine_selection(mesh, ids, weights, selected, true, 0.55, minimum_edge, None);
+}
+
+/// Add joined, collinear edges without rounding positions or moving artwork.
+pub(crate) fn linear_selection_joined(
+    mesh: &mut SurfaceMeshData,
+    ids: &mut Vec<[u16;4]>,
+    weights: &mut Vec<[f32;4]>,
+    selected: &[bool],
+) {
+    refine_selection(mesh, ids, weights, selected, true, 0.0, 0., None);
+}
+
+/// Carry an unchanged decision surface through the same linear edge splits.
+/// Sculpting can then retain its original tessellation and attribute islands.
+pub(crate) fn linear_selection_joined_reference(
+    mesh: &mut SurfaceMeshData, ids: &mut Vec<[u16;4]>, weights: &mut Vec<[f32;4]>,
+    selected: &[bool], reference: &mut Vec<[f32;3]>,
+) {
+    refine_selection(mesh,ids,weights,selected,true,0.,0.,Some(reference));
 }
 
 fn refine_selection(
@@ -81,13 +113,18 @@ fn refine_selection(
     weights: &mut Vec<[f32;4]>,
     selected: &[bool],
     join_boundary: bool,
+    rounding: f32,
+    minimum_edge: f32,
+    mut reference: Option<&mut Vec<[f32;3]>>,
 ) {
     let _trace = crate::loading_trace::span("actor.refine_surface", || serde_json::json!({
         "vertices":mesh.positions.len(), "triangles":mesh.indices.len()/3,
         "selected":selected.iter().filter(|&&v|v).count(), "joined":join_boundary}));
     let old = mesh.indices.clone();
     let original = mesh.positions.clone();
-    let original_keys = original.iter().map(|&p|key(p)).collect::<Vec<_>>();
+    let decision_points=reference.as_ref().map(|p|p.as_slice()).unwrap_or(&original);
+    assert_eq!(decision_points.len(),original.len(),"refinement reference lost its vertices");
+    let original_keys = decision_points.iter().map(|&p|key(p)).collect::<Vec<_>>();
     // Lookup order has no geometric meaning. Neighbor sums keep their ordered
     // set so changing the outer tables cannot change floating-point results.
     let mut adjacent = HashMap::<[i32; 3], BTreeSet<[i32; 3]>>::new();
@@ -151,7 +188,7 @@ fn refine_selection(
             let loop_point = p * (1.0 - n as f32 * beta)
                 + neighbors.iter().map(|q| points[q] * beta).sum::<Vec3>();
             // Retain most of the authored grip and finger length.
-            p.lerp(loop_point, 0.55)
+            p.lerp(loop_point, rounding)
         };
         rounded.insert(k, target);
     }
@@ -170,7 +207,9 @@ fn refine_selection(
         let split = [(a, b), (b, c), (c, a)].map(|(a, b)| {
             let ka = original_keys[a as usize];
             let kb = original_keys[b as usize];
-            whole || (join_boundary && edge_faces.contains_key(&(ka.min(kb), ka.max(kb))))
+            (whole || (join_boundary && edge_faces.contains_key(&(ka.min(kb), ka.max(kb)))))
+                && (minimum_edge == 0. || Vec3::from_array(original[a as usize])
+                    .distance_squared(Vec3::from_array(original[b as usize])) > minimum_edge.powi(2))
         });
         if !split.iter().any(|&split| split) {
             mesh.indices.extend_from_slice(face);
@@ -187,11 +226,15 @@ fn refine_selection(
                 let p = if edge.len() == 2 && !pinned.contains(&ka) && !pinned.contains(&kb) {
                     let curve = (points[&ka] + points[&kb]) * 0.375
                         + (points[&edge[0]] + points[&edge[1]]) * 0.125;
-                    straight.lerp(curve, 0.55)
+                    straight.lerp(curve, rounding)
                 } else {
                     straight
                 };
                 let index = mesh.positions.len() as u32;
+                if let Some(reference)=reference.as_deref_mut() {
+                    let p=(Vec3::from_array(reference[a])+Vec3::from_array(reference[b]))*0.5;
+                    reference.push(p.to_array());
+                }
                 mesh.positions.push(p.to_array());
                 mesh.normals.push(
                     (Vec3::from_array(mesh.normals[a]) + Vec3::from_array(mesh.normals[b]))
@@ -250,6 +293,9 @@ fn refine_selection(
             _ => unreachable!(),
         }
     }
+    // Linear refinement did not change the surface. Keep its authored normal
+    // field, including the interpolated normals on newly split edges.
+    if rounding == 0.0 { return; }
     if target_pins {
         let new_keys = mesh.positions[original.len()..].iter().copied().map(key).collect::<HashSet<_>>();
         for (i, &key) in original_keys.iter().enumerate() {

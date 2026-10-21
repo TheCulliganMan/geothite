@@ -47,6 +47,8 @@ pub(super) mod park_hoop_fence;
 mod structure_extensions;
 #[path = "park_flowers.rs"]
 pub(super) mod park_flowers;
+#[path = "park_gate.rs"]
+pub(super) mod park_gate;
 use crate::exterior_models::{Kind, model, variant_model};
 use crate::new_bark_models::{ModelKind as Johto, model as johto_model};
 
@@ -574,6 +576,7 @@ pub(super) fn building_placements(
     g: &GridGeometry,
 ) -> Vec<BuildingPlacement> {
     let mut out = new_bark::building_placements(map, cells, g);
+    out.extend(park_gate::placements(cells, g));
     // A complete native rock drawing must join the surrounding canyon. The
     // old fitted mesa kit turned Blackthorn's ochre formation into a pale
     // isolated pedestal and prevented the shared rock finish from touching it.
@@ -731,6 +734,9 @@ pub(super) fn append_building_with_samples(
     map_origin: [i32;2], images: Option<&TerrainImageSamples>,
 ) -> bool {
     if structure_extensions::append_building(mesh, cells, shapes, g, p, claimed, map_origin) {
+        return true;
+    }
+    if park_gate::append(mesh, cells, shapes, g, p, claimed, images) {
         return true;
     }
     let Some(d) = descriptor(map, cells, g, p) else {
@@ -1107,12 +1113,18 @@ pub(super) fn park_tree_ground(
     g: &GridGeometry,
     p: TreePlacement,
 ) -> Option<usize> {
-    if p.width != 4 || p.height != 4
-        || p.column + 4 > g.width || p.row + 4 > g.height
-        || !(0..4).all(|y| (0..4).all(|x| {
-            crate::park::large_tree_local(&cells[(p.row + y) * g.width + p.column + x].source)
-                == Some((x as u8, y as u8))
-        }))
+    let metatile = cells.get(p.row * g.width + p.column)?.source.metatile_id;
+    if p.width != 4
+        || p.height != 4
+        || p.column + 4 > g.width
+        || p.row + 4 > g.height
+        || !(0..4).all(|y| {
+            (0..4).all(|x| {
+                let source = &cells[(p.row + y) * g.width + p.column + x].source;
+                source.metatile_id == metatile
+                    && crate::park::large_tree_local(source) == Some((x as u8, y as u8))
+            })
+        })
     {
         return None;
     }
@@ -1192,8 +1204,14 @@ pub(super) fn append_tree_with_groves(
     };
     floor(mesh, cells, shapes, g, rect, sample, claimed);
     if park_tree {
-        crate::foliage::append_park_tree(mesh, bounds(g, rect), p.base_height, g.tile_height,
-            [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32]);
+        let recipe = super::new_bark::GroveRecipe {
+            family: crate::foliage::GroveFamily::ParkBroadleaf,
+            bounds: bounds(g, rect), base_height: p.base_height, tile_height: g.tile_height,
+            coordinates: [map_origin[0] + p.column as i32, map_origin[1] + p.row as i32],
+            neighbors: [false;4], understory_bounds: None, coverage_fade: true,
+        };
+        if let Some(groves) = groves { groves.push(recipe); }
+        else { recipe.append(mesh); }
         mark_authored_rect(mesh, g, rect, "world-exterior/park_tree");
         return true;
     }
@@ -1957,39 +1975,142 @@ mod tests {
 
     #[test]
     fn park_outer_tree_uses_its_own_crown_only_for_a_complete_native_plot() {
-        let sources = (0..20).map(|i| {
-            let x = i % 5;
-            let y = i / 5;
-            let mut source = super::super::tests::source_with_tile(
-                if x < 4 { 6 } else { crate::park::PARK_TREE_GROUND_METATILE },
-                x.min(3) as u8, y as u8,
-                if x < 4 { (0x0c + x + y * 0x10) as u16 } else { 1 });
-            source.tileset_id = "park".into();
-            source
-        }).collect();
-        let frame = super::super::tests::frame(5, 4, sources);
-        let g = GridGeometry { width: 5, height: 4, tile_width: 8., tile_height: 8., origin_x: 0., origin_z: 0. };
-        let cells: Vec<_> = frame.tiles.iter().collect();
-        let placements = complete_tree_placements(&cells, &g);
-        assert_eq!(placements.len(), 1);
-        let shapes = vec![CellShape::Flat; 20];
-        let mut mesh = TerrainMeshData { footing_heights: vec![0.; 20], authored_cells: vec![None; 20], ..Default::default() };
-        let mut claimed = vec![false; 20];
-        assert!(append_tree(&mut mesh, &cells, &shapes, &g, "NationalPark", placements[0], &mut claimed, [0, 0]));
-        assert_eq!(mesh.authored_cells[0], Some("world-exterior/park_tree"));
-        assert_eq!(mesh.footing_heights, vec![0.; 20]);
-        assert_eq!(claimed.iter().filter(|&&v| v).count(), 16);
-        assert!((0..4).all(|y| !claimed[y * 5 + 4]));
-        for y in 0..4 { for x in 0..4 {
-            let mut changed = frame.tiles.clone();
-            changed[y * 5 + x].source.tile_index ^= 1;
-            let cells: Vec<_> = changed.iter().collect();
+        for metatile in [0x00, 0x06] {
+            let sources = (0..20)
+                .map(|i| {
+                    let x = i % 5;
+                    let y = i / 5;
+                    let mut source = super::super::tests::source_with_tile(
+                        if x < 4 {
+                            metatile
+                        } else {
+                            crate::park::PARK_TREE_GROUND_METATILE
+                        },
+                        x.min(3) as u8,
+                        y as u8,
+                        if x < 4 {
+                            (0x0c + x + y * 0x10) as u16
+                        } else {
+                            1
+                        },
+                    );
+                    source.tileset_id = "park".into();
+                    source
+                })
+                .collect();
+            let frame = super::super::tests::frame(5, 4, sources);
+            let g = GridGeometry {
+                width: 5,
+                height: 4,
+                tile_width: 8.,
+                tile_height: 8.,
+                origin_x: 0.,
+                origin_z: 0.,
+            };
+            let cells: Vec<_> = frame.tiles.iter().collect();
+            let placements = complete_tree_placements(&cells, &g);
+            assert_eq!(placements.len(), 1);
+            let shapes = vec![CellShape::Flat; 20];
+            let mut mesh = TerrainMeshData {
+                footing_heights: vec![0.; 20],
+                authored_cells: vec![None; 20],
+                ..Default::default()
+            };
+            let mut claimed = vec![false; 20];
+            assert!(append_tree(
+                &mut mesh,
+                &cells,
+                &shapes,
+                &g,
+                "NationalPark",
+                placements[0],
+                &mut claimed,
+                [0, 0]
+            ));
+            assert_eq!(mesh.authored_cells[0], Some("world-exterior/park_tree"));
+            assert_eq!(mesh.footing_heights, vec![0.; 20]);
+            assert_eq!(claimed.iter().filter(|&&v| v).count(), 16);
+            assert!((0..4).all(|y| !claimed[y * 5 + 4]));
+            let mut deferred = TerrainMeshData {
+                footing_heights: vec![0.; 20],
+                authored_cells: vec![None; 20],
+                ..Default::default()
+            };
+            let mut deferred_claims = vec![false; 20];
+            let mut recipes = Vec::new();
+            assert!(append_tree_with_groves(
+                &mut deferred,
+                &cells,
+                &shapes,
+                &g,
+                "NationalPark",
+                placements[0],
+                &mut deferred_claims,
+                [0, 0],
+                Some(&mut recipes)
+            ));
+            assert!(
+                deferred.solid.positions.is_empty(),
+                "runtime retains a recipe instead of expanding every tree"
+            );
+            assert_eq!(deferred.textured, mesh.textured);
+            assert_eq!(deferred.footing_heights, mesh.footing_heights);
+            assert_eq!(deferred.authored_cells, mesh.authored_cells);
+            assert_eq!(deferred_claims, claimed);
+            assert_eq!(recipes.len(), 1);
+            assert_eq!(
+                recipes[0].family,
+                crate::foliage::GroveFamily::ParkBroadleaf
+            );
+            assert!(recipes[0].coverage_fade);
+            recipes.pop().unwrap().append(&mut deferred);
+            assert_eq!(
+                deferred.solid, mesh.solid,
+                "both paths keep the full canonical tree"
+            );
+            for y in 0..4 {
+                for x in 0..4 {
+                    let mut changed = frame.tiles.clone();
+                    changed[y * 5 + x].source.tile_index ^= 1;
+                    let cells: Vec<_> = changed.iter().collect();
+                    let mut refused = TerrainMeshData::default();
+                    let mut claimed = vec![false; 20];
+                    assert!(!append_tree(
+                        &mut refused,
+                        &cells,
+                        &shapes,
+                        &g,
+                        "NationalPark",
+                        placements[0],
+                        &mut claimed,
+                        [0, 0]
+                    ));
+                    assert!(
+                        refused.solid.positions.is_empty() && refused.textured.positions.is_empty()
+                    );
+                    assert!(claimed.iter().all(|&v| !v));
+                }
+            }
+            let mut mixed = frame.tiles.clone();
+            mixed[0].source.metatile_id = if metatile == 0 { 6 } else { 0 };
+            let cells: Vec<_> = mixed.iter().collect();
             let mut refused = TerrainMeshData::default();
             let mut claimed = vec![false; 20];
-            assert!(!append_tree(&mut refused, &cells, &shapes, &g, "NationalPark", placements[0], &mut claimed, [0, 0]));
-            assert!(refused.solid.positions.is_empty() && refused.textured.positions.is_empty());
-            assert!(claimed.iter().all(|&v| !v));
-        }}
+            assert!(!append_tree(
+                &mut refused,
+                &cells,
+                &shapes,
+                &g,
+                "NationalPark",
+                placements[0],
+                &mut claimed,
+                [0, 0]
+            ));
+            assert!(
+                claimed.iter().all(|&v| !v),
+                "mixed source blocks cannot claim a complete tree"
+            );
+        }
     }
 
     #[test]

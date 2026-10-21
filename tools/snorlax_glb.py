@@ -9,11 +9,11 @@ from sculpt_geometry import sub
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 PARTS=tuple(p['part'] for p in sculpture()['primitives'])
 MAX_BYTES=1024000
-JOINTS=(('root',None,(0.,0.,0.)),('torso',0,(0.,.27,-.015)),
-        ('head',1,(0.,.93,.05)),('arm_left',1,(-.35,.85,0.)),
-        ('hand_left',3,(-.75,.62,.13)),('arm_right',1,(.35,.85,0.)),
-        ('hand_right',5,(.75,.62,.13)),('ear_left',2,(-.26,1.19,0.)),
-        ('ear_right',2,(.26,1.19,0.)))
+JOINTS=(('root',None,(0.,0.,0.)),('torso',0,(0.,.30,-.04)),
+        ('head',1,(0.,.90,-.04)),('arm_left',1,(-.30,.89,-.015)),
+        ('hand_left',3,(-.58,.78,.29)),('arm_right',1,(.30,.89,-.015)),
+        ('hand_right',5,(.58,.78,.29)),('ear_left',2,(-.27,1.22,-.08)),
+        ('ear_right',2,(.27,1.22,-.08)))
 CLIPS=(('idle',4.4,89),('attack',1.,65),('hit',1.,65))
 
 
@@ -27,10 +27,10 @@ def skin_weights(part,position):
     if part.startswith(('Foot /','Foot pad /','Foot claw /')):return [0,0,0,0],[1.,0.,0.,0.]
     if part.startswith(('Head /','Face /','Eye /','Mouth /','Fang /')):return [2,0,0,0],[1.,0.,0.,0.]
     if part.startswith('Ear /'):
-        joint=7 if x<0 else 8;flex=smoothstep(1.19,1.30,y)
+        joint=7 if x<0 else 8;flex=smoothstep(1.22,1.32,y)
         return [2,joint,0,0],[1.-flex,flex,0.,0.]
     if part.startswith('Arm /'):
-        joint=3 if x<0 else 5;arm=smoothstep(.34,.51,abs(x));wrist=smoothstep(.65,.75,abs(x))
+        joint=3 if x<0 else 5;arm=smoothstep(.30,.43,abs(x));wrist=smoothstep(.17,.25,z)
         return [1,joint,joint+1,0],[1.-arm,arm*(1.-wrist),arm*wrist,0.]
     if part.startswith(('Hand /','Hand claw /')):return [4 if x<0 else 6,0,0,0],[1.,0.,0.,0.]
     return torso_weights(position)

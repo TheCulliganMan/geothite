@@ -1,5 +1,10 @@
 # Rounded bodies for the leaf starter family
 
+This records the earlier shading-only pass. The
+[October 21 family fidelity revision](grass-starter-fidelity.md) intentionally
+changes anatomy, fitted surfaces, palettes and rig pivots. Its metrics and
+reviewed shading contract supersede the preservation snapshots below.
+
 A CPU silhouette survey of all 251 canonical species, paired with normal front
 sprites from the local pack, exposed pronounced lighting panels on Chikorita,
 Bayleef and Meganium. Their rounded necks, cheeks and haunches now use the

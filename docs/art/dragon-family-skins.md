@@ -1,5 +1,14 @@
 # Dratini, Dragonair and Dragonite skins
 
+The later [Charizard/Dragonite fidelity revision](dragon-pair-fidelity.md)
+supersedes Dragonite's shape, counts and hashes below. It adds a deeper pear
+and skull, compact rear-swept wings, bent forearms, upright ankles and a long
+low tail using complete game orbits and supplied front/back sprites. Dratini
+and Dragonair remain byte-identical. The linked guide records current metrics
+and verification; the following sections retain the initial skin publication.
+
+## Initial skin publication
+
 Canonical GLBs now replace the three static JSON exports. The normal background
 builder, direct sculpture CLI, strict logical readers and Rust dispatch use the
 same skins. Registration contains 232 skins and 43 static species files. The

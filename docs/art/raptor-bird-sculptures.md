@@ -1,5 +1,14 @@
 # Swept-crested Pidgeot and long-billed Fearow
 
+The [2026-10-21 family fidelity revision](pidgey-family-fidelity.md) replaces
+Pidgeot's raised-wing body with a deep breast, folded brown/cream wings,
+five broad swept gold/red crest feathers, short upright shanks and a raised
+red tail. That revision leaves Fearow unchanged; the subsequent
+[Spearow/Fearow fidelity revision](spearow-fearow-fidelity.md) replaces its
+upright grounded stance with the captured airborne posture, forward neck,
+sagittal comb, broad swept wings and tucked claws. The descriptions and measurements
+below record the earlier static baseline, rather than the current Pidgeot.
+
 `tools/raptor_bird_sculpt.py` replaces the shared generic bird construction
 with original individual anatomy. The main builder dispatches its pure recipes
 and rejects the obsolete Pidgeot/Fearow route. Pidgeotto now uses its separate [standard skin](pidgeotto-skin.md).

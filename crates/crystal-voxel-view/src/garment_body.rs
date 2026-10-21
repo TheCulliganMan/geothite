@@ -4,7 +4,9 @@ use bevy::prelude::*;
 use std::collections::{BTreeMap, HashMap};
 
 pub(crate) fn hem(look: Look) -> Option<f32> {
-    if matches!(look.costume, "robe" | "kimono") {
+    if look.costume == "hakama" {
+        Some(0.26)
+    } else if matches!(look.costume, "robe" | "kimono") {
         Some(0.36)
     } else if look.costume == "dress" || look.accessories.split(',').any(|a| a == "skirt") {
         Some(0.77)
@@ -21,7 +23,11 @@ pub(crate) fn nurse_legs(
     weights: &mut Vec<[f32; 4]>,
     look: Look,
 ) {
-    if look.texture_key != "nurse" { return; }
+    let bare = look.texture_key == "nurse";
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    let bare = bare || (crate::garment_drape_trial::local_body()
+        && look.texture_key == "karen");
+    if !bare { return; }
     for face in mesh.indices.chunks_exact_mut(3) {
         let ids = [face[0] as usize, face[1] as usize, face[2] as usize];
         if !ids.iter().all(|&i| mesh.uvs[i][0] >= 0.605 && mesh.uvs[i][1] >= 0.745) {
@@ -58,6 +64,13 @@ pub(crate) fn cover(
         let lower = ids
             .iter()
             .all(|&i| mesh.uvs[i][0] >= 0.605 && mesh.uvs[i][1] >= 0.745);
+        // Review complete anatomy together with the new cloth candidate.
+        // A collision count on the ordinary clipped body can hide missing legs.
+        #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+        if lower && crate::garment_drape_trial::local_body() {
+            mesh.indices.extend_from_slice(face);
+            continue;
+        }
         if !lower && !shirt {
             mesh.indices.extend_from_slice(face);
             continue;

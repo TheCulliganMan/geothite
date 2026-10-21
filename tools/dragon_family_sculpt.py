@@ -10,12 +10,16 @@ from wing_insect_sculpt import contour,membrane
 from abra_sculpt import surface
 from skin_glb import COORDINATES
 SPECIES=('dratini','dragonair','dragonite');HEIGHTS={'dratini':1.18,'dragonair':1.18,'dragonite':1.40}
-BLUE=(.49,.64,.85);DEEP=(.19,.43,.74);ORANGE=(.93,.64,.29);CREAM=(.96,.92,.76);WHITE=(.98,.98,.94);TEAL=(.21,.59,.58);INK=(.08,.09,.12);PURPLE=(.41,.20,.40);FOLD=(.64,.54,.35)
+BLUE=(.49,.64,.85);DEEP=(.19,.43,.74);ORANGE=(241/255,171/255,0.);CREAM=(231/255,227/255,181/255);WHITE=(.98,.98,.94);TEAL=(.21,.59,.58);INK=(.08,.09,.12);PURPLE=(.41,.20,.40);FOLD=(.64,.54,.35)
 
-def fitted(name,color,outline,parent,thickness=.001,subdivisions=2):
- if name.startswith(('Mouth /','Belly fold /')):
+def fitted(name,color,outline,parent,thickness=.001,subdivisions=2,*,precision=7):
+ if name.startswith('Belly fold /'):
+  # Weld clipped stripe boundaries before extrusion instead of repeatedly
+  # subdividing long narrow adaptive triangles across the whole breast.
+  return skin_shading(crease_normals(fitted_triangle_contour(name,color,outline,parent,thickness,precision=6),40),parent)
+ if name.startswith('Mouth /'):
   return skin_shading(fitted_adaptive_contour(name,color,outline,parent,thickness,initial_subdivisions=0,max_surface_error=.0006),parent)
- return skin_shading(crease_normals(fitted_triangle_contour(name,color,outline,parent,thickness,precision=7),35),parent)
+ return skin_shading(crease_normals(fitted_triangle_contour(name,color,outline,parent,thickness,precision=precision),35),parent)
 
 def painted_tube(name,color,points,radii,hint=(0,0,1),*,segments=48,steps=8):
  pts,rs=smooth(points,radii,steps);n=segments;v=[];side=None
@@ -49,16 +53,16 @@ def eyes(p,head,x,y,w,h,serpent):
  skin=head
  for sign in (-1,1):
   xx=sign*x
-  socket=fitted('Eye socket / fitted gentle dark oval ' + str(sign), INK, oval(xx, y, w, h, 32), skin, 0.005, subdivisions=2);p.append(socket)
+  socket=fitted('Eye socket / fitted gentle dark oval ' + str(sign), INK, oval(xx, y, w, h, 32), skin, 0.005, subdivisions=2,precision=7 if serpent else 6);p.append(socket)
   if serpent:
    iris=fitted('Iris / fitted violet serpent oval ' + str(sign), PURPLE, oval(xx, y - 0.005, w * 0.77, h * 0.78, 32), socket, 0.0025, subdivisions=2);p.append(iris);parent=iris
   else:
-   white=fitted('Eye white / fitted ivory guardian oval ' + str(sign), WHITE, oval(xx, y, w * 0.8, h * 0.84, 32), socket, 0.0025, subdivisions=2);p.append(white);parent=white
-  pupil=fitted('Pupil / fitted dark round dragon gaze ' + str(sign), INK, oval(xx + sign * 0.003, y - 0.002, w * 0.43, h * 0.58, 28), parent, 0.002, subdivisions=2);p.append(pupil)
-  p.append(fitted('Glint / small ivory eye reflection ' + str(sign), WHITE, oval(xx + sign * 0.003 - 0.003, y + h * 0.23, w * 0.09, h * 0.17, 20), pupil, 0.0018))
+   white=fitted('Eye white / fitted ivory guardian oval ' + str(sign), WHITE, oval(xx, y, w * 0.8, h * 0.84, 32), socket, 0.0025, subdivisions=2,precision=6);p.append(white);parent=white
+  pupil=fitted('Pupil / fitted dark round dragon gaze ' + str(sign), INK, oval(xx + sign * 0.003, y - 0.002, w * 0.43, h * 0.58, 28), parent, 0.002, subdivisions=2,precision=7 if serpent else 6);p.append(pupil)
+  p.append(fitted('Glint / small ivory eye reflection ' + str(sign), WHITE, oval(xx + sign * 0.003 - 0.003, y + h * 0.23, w * 0.09, h * 0.17, 20), pupil, 0.0018,precision=7 if serpent else 6))
 
 def spine_path(species):
- if species=='dragonite':return [(0, 0.28, -0.12), (0.08, 0.2, -0.38), (0.23, 0.22, -0.58), (0.38, 0.33, -0.75), (0.47, 0.47, -0.84), (0.49, 0.59, -0.88)],[0.13, 0.115, 0.08, 0.05, 0.025, 0.0015],(0, -1, 0),24,6
+ if species=='dragonite':return [(0.,.36,-.12),(.015,.235,-.41),(.06,.215,-.70),(.13,.22,-1.00),(.21,.25,-1.28),(.24,.28,-1.48)],[.145,.145,.115,.075,.035,.0015],(0,-1,0),24,6
  if species not in ('dratini','dragonair'):raise ValueError('unknown dragon spine')
  big=species=='dragonair'
  pts = [(0, 0.905, 0.13), (0, 0.58, 0.15), (0.03, 0.27, 0.25), (0.23, 0.16, 0.32), (0.46, 0.15, 0.1), (0.42, 0.11, -0.2), (0.04, 0.085, -0.39), (-0.38, 0.13, -0.35), (-0.53, 0.31, -0.26), (-0.52, 0.5, -0.24)] if big else [(0, 0.89, 0.12), (0.055, 0.64, 0.12), (0.17, 0.41, 0.105), (0.12713, 0.25, 0.08), (0.01, 0.13287, 0.052), (-0.15, 0.09, 0.023), (-0.4, 0.105, -0.02), (-0.65, 0.18, -0.06), (-0.85, 0.22, -0.08)]
@@ -95,35 +99,35 @@ def serpents(species):
  return p
 
 def arm_path(side):
- return [(side*.19,.78,.03),(side*.30,.67,.09),(side*.36,.54,.15),(side*.37,.47,.20)],[.073,.068,.065,.053]
+ return [(side*.13,.84,.01),(side*.24,.78,.055),(side*.32,.75,.12),(side*.355,.73,.20),(side*.35,.73,.28),(side*.34,.74,.34)],[.078,.075,.070,.065,.060,.055]
 
 def arm_samples(side):return smooth(*arm_path(side))
 
 def guardian():
- body=loft('Body / continuous orange guardian pear and neck',ORANGE,curved_profiles(((.16,.035,.047,-.025),(.27,.225,.190,-.02),(.45,.290,.235,-.015),(.63,.270,.215,-.015),(.79,.220,.170,0),(.94,.135,.120,.014),(1.08,.095,.087,.015)),4),36)
- head=ellipsoid('Head / rounded gentle guardian brow',ORANGE,(0,1.105,.050),(.165,.177,.145),36,22)
- muzzle=ellipsoid('Muzzle / broad rooted orange guardian snout',ORANGE,(0,1.024,.178),(.134,.075,.116),36,22);p=[body,head,muzzle];eyes(p,head,.080,1.140,.029,.045,False)
- belly=fitted('Belly / supported broad cream segmented breast', CREAM, [(-0.066, 1.028), (0.066, 1.028), (0.105, 0.96), (0.13, 0.8), (0.215, 0.5), (0.16, 0.25), (0, 0.2), (-0.16, 0.25), (-0.215, 0.5), (-0.13, 0.8), (-0.105, 0.96)], body, 0.012, subdivisions=4);p.append(belly);bs=belly
- for j,(y,w) in enumerate(((.30,.11),(.40,.17),(.50,.19),(.60,.175),(.70,.145),(.80,.113),(.89,.085),(.96,.066))):
+ body=loft('Body / continuous orange guardian pear and neck',ORANGE,curved_profiles(((.135,.055,.065,-.025),(.26,.285,.255,-.02),(.45,.360,.310,-.015),(.63,.330,.280,-.015),(.79,.260,.220,0),(.94,.170,.150,.014),(1.10,.120,.105,.015)),4),32)
+ head=ellipsoid('Head / rounded gentle guardian brow',ORANGE,(0,1.105,.045),(.175,.220,.185),32,20)
+ muzzle=ellipsoid('Muzzle / broad rooted orange guardian snout',ORANGE,(0,1.024,.235),(.150,.085,.125),32,20);p=[body,head,muzzle];eyes(p,head,.095,1.155,.031,.050,False)
+ belly=fitted('Belly / supported broad cream segmented breast',CREAM,[(-.08,1.028),(.08,1.028),(.13,.96),(.18,.8),(.290,.5),(.21,.25),(0.,.18),(-.21,.25),(-.290,.5),(-.18,.8),(-.13,.96)],body,.012,subdivisions=4);p.append(belly);bs=belly
+ for j,(y,w) in enumerate(((.30,.16),(.40,.23),(.50,.26),(.60,.235),(.70,.195),(.80,.15),(.89,.11),(.96,.08))):
   xy=[(-w,y+.006),(-w*.5,y-.001),(0,y-.004),(w*.5,y-.001),(w,y+.006),(w,y+.010),(w*.5,y+.003),(0,y),( -w*.5,y+.003),(-w,y+.010)]
   p.append(fitted('Belly fold / fitted curved cream plate seam ' + str(j), FOLD, xy, bs, 0.004, subdivisions=3))
- p.append(curved_tube('Horn / short rooted orange crown point',ORANGE,[(0,1.266,.02),(0,1.333,.04)],[.029,.0015],18))
+ p.append(curved_tube('Horn / short rooted orange crown point',ORANGE,[(0,1.292,.02),(0,1.36,.04)],[.029,.0015],18))
  ms=muzzle
  smile=contour([((-.09,1.005),(-.07,.962),(.07,.962),(.09,1.005)),((.09,1.005),(.07,.968),(-.07,.968),(-.09,1.005))],18)
  p.append(fitted('Mouth / supported gentle curved guardian smile', INK, smile, ms, 0.0025, subdivisions=2))
  for sign in (-1,1):
   p.append(fitted('Nostril / tiny supported guardian nasal slit ' + str(sign), INK, oval(sign * 0.044, 1.037, 0.005, 0.008, 24), ms, 0.0025))
-  p.append(curved_tube('Antenna / rooted long curved cream guardian feeler '+str(sign),CREAM,[(sign*.074,1.218,-.014),(sign*.18,1.30,-.07),(sign*.28,1.285,-.065),(sign*.36,1.31,-.040),(sign*.39,1.37,-.005),(sign*.375,1.414,.012)],[.014,.013,.012,.011,.009,.004],14))
+  p.append(curved_tube('Antenna / rooted long curved cream guardian feeler '+str(sign),CREAM,[(sign*.075,1.255,-.01),(sign*.14,1.335,-.035),(sign*.235,1.37,-.045),(sign*.30,1.40,-.02),(sign*.29,1.43,.005)],[.015,.013,.011,.008,.003],14))
   ap,ar=arm_samples(sign)
   arm=crease_normals(tube('Arm / rooted curved orange guardian forelimb '+str(sign),ORANGE,ap,ar,18),35);p.append(arm)
-  hand=ellipsoid('Hand / rounded orange guardian palm '+str(sign),ORANGE,(sign*.37,.48,.21),(.063,.060,.057),20,14);p.append(hand)
+  hand=ellipsoid('Hand / rounded orange guardian palm '+str(sign),ORANGE,(sign*.34,.75,.36),(.070,.065,.070),20,14);p.append(hand)
   for j,dx in enumerate((-.033,0,.033)):
-   p.append(curved_tube('Hand claw / rooted ivory guardian digit '+str(sign)+' '+str(j),WHITE,[(sign*.37+dx,.475,.250),(sign*.37+dx,.45,.285),(sign*.37+dx,.429,.309)],[.015,.011,.0015],12))
-  p.append(ellipsoid('Haunch / rooted broad orange guardian thigh '+str(sign),ORANGE,(sign*.22,.27,.01),(.117,.166,.143),28,16))
-  p.append(curved_tube('Leg / rooted short guardian ankle '+str(sign),ORANGE,[(sign*.23,.20,.04),(sign*.245,.10,.07),(sign*.25,.055,.11)],[.066,.057,.036],20))
-  foot=ellipsoid('Foot / broad grounded orange guardian pad '+str(sign),ORANGE,(sign*.25,.044,.135),(.105,.044,.134),28,16);p.append(foot)
+   p.append(curved_tube('Hand claw / rooted ivory guardian digit '+str(sign)+' '+str(j),WHITE,[(sign*.34+dx,.73,.41),(sign*.34+dx,.706,.445),(sign*.34+dx,.695,.47)],[.017,.012,.0015],12))
+  p.append(ellipsoid('Haunch / rooted broad orange guardian thigh '+str(sign),ORANGE,(sign*.25,.28,.01),(.150,.190,.170),28,16))
+  p.append(curved_tube('Leg / rooted short guardian ankle '+str(sign),ORANGE,[(sign*.25,.20,.04),(sign*.255,.10,.045),(sign*.26,.055,.047)],[.066,.057,.036],20))
+  foot=ellipsoid('Foot / broad grounded orange guardian pad '+str(sign),ORANGE,(sign*.26,.044,.135),(.115,.044,.160),28,16);p.append(foot)
   for j,dx in enumerate((-.065,0,.065)):
-   p.append(curved_tube('Foot claw / curved ivory guardian talon '+str(sign)+' '+str(j),WHITE,[(sign*.25+dx,.045,.225),(sign*.25+dx,.033,.295),(sign*.25+dx,.015,.332)],[.025,.020,.0015],12))
+   p.append(curved_tube('Foot claw / curved ivory guardian talon '+str(sign)+' '+str(j),WHITE,[(sign*.26+dx,.045,.225),(sign*.26+dx,.033,.295),(sign*.26+dx,.015,.332)],[.025,.020,.0015],12))
   outline=contour([((.13,.80),(.26,.89),(.37,1.02),(.42,1.14)),((.42,1.14),(.61,1.10),(.75,.84),(.75,.61)),((.75,.61),(.67,.74),(.55,.77),(.45,.64)),((.45,.64),(.34,.76),(.24,.75),(.13,.66)),((.13,.66),(.12,.71),(.12,.76),(.13,.80))],10)
   p.append(membrane('Wing border / rooted orange guardian sail '+str(sign),ORANGE,outline,sign,root_z=-.11,thickness=.012))
   p.append(membrane('Wing / inset teal guardian membrane on both faces '+str(sign),TEAL,outline,sign,root_z=-.11,inset=.91,thickness=.016))
@@ -135,6 +139,17 @@ def guardian():
    p.append(curved_tube('Wing rib / seated curved guardian support '+str(sign)+' '+str(j),ORANGE,[(sign*a,b,depth(a,b)) for a,b in pts],[.012,.009,.003],12))
  tp,tr,th,tn,ts=spine_path('dragonite')
  p.extend(painted_tube('Tail / continuous thick swept orange guardian tail',ORANGE,tp,tr,th,segments=tn,steps=ts))
+ # Compact back-swept wings carry their complete membranes and bones together.
+ for q in p:
+  if not q['part'].startswith(('Wing /','Wing border /','Wing spar /','Wing rib /')):continue
+  sign=int(q['part'].split()[-2] if q['part'].startswith('Wing rib /') else q['part'].split()[-1]);a=sign*math.radians(70.);c=math.cos(a);s=math.sin(a)
+  for field in ('positions','normals'):
+   values=[]
+   for i in range(0,len(q[field]),3):
+    x,y,z=q[field][i:i+3]
+    if field=='positions':x=(x-sign*.13)*.66;y=(y-.73)*.66;z=(z+.11)*.66
+    values.extend((c*x+s*z+(sign*.10 if field=='positions' else 0.),y+(.90 if field=='positions' else 0.),-s*x+c*z+(-.095 if field=='positions' else 0.)))
+   q[field]=values
  return p
 
 def sculpture(species,normalize=True):
@@ -142,8 +157,10 @@ def sculpture(species,normalize=True):
  p=guardian() if species=='dragonite' else serpents(species)
  if not normalize:return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHTS[species]/(hi-lo)
+ from chikorita_sculpt import f32
  for q in p:
-  q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) or 0. for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) or 0. for v in q['normals']]
+  fitted_guardian=species=='dragonite' and q['part'].startswith(('Belly /','Belly fold /','Eye','Pupil /','Glint /','Mouth /','Nostril /'))
+  q['positions']=[(f32((v-(lo if i%3==1 else 0))*scale) if fitted_guardian else round((v-(lo if i%3==1 else 0))*scale,7)) or 0. for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) or 0. for v in q['normals']]
  return {'name':species,'version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

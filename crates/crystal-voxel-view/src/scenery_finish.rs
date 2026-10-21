@@ -6,6 +6,8 @@ use bevy::prelude::Vec3;
 // Live source paint already contains the current map's time-of-day palette.
 // Retain shadow/contact modulation without applying a second colored light.
 pub(crate) const SOURCE_PAINT_UV: [f32;2] = [85000.,0.];
+// Native dry-stone pigment with the same world-anchored mineral detail as sea stones.
+pub(crate) const SOURCE_STONE_UV: [f32;2] = [85000.,85000.];
 // Raised brick geometry has already been fitted to its pier's source-corner
 // heights. Retain the same live-paint shader role while giving terrain passes
 // explicit ownership at clipped bevels exactly on a land/deck boundary.
@@ -37,6 +39,12 @@ pub(crate) fn paving_coordinates(uv: [f32;2]) -> Option<[f32;2]> {
 // Live atlas paint already carries time-of-day color. A reversible
 // negative U band marks that lighting policy without copying source pixels.
 pub(crate) fn source_atlas_uv(uv: [f32;2]) -> [f32;2] {[-2.-uv[0],uv[1]]}
+// Sculpted floats keep the live palette and receive their own face response.
+pub(crate) fn source_buoy_uv(uv: [f32;2]) -> [f32;2] {[-8.-uv[0],uv[1]]}
+pub(crate) fn source_buoy_coordinates(uv: [f32;2]) -> Option<[f32;2]> {
+    (uv.iter().all(|v|v.is_finite()) && (-9. ..=-8.).contains(&uv[0])
+        && (0. ..=1.).contains(&uv[1])).then(||[-8.-uv[0],uv[1]])
+}
 // Concrete samples live native pigment without magnifying its pixel speckles.
 pub(crate) fn source_concrete_uv(uv:[f32;2])->[f32;2] {[-6.-uv[0],uv[1]]}
 pub(crate) fn source_concrete_coordinates(uv:[f32;2])->Option<[f32;2]> {
@@ -50,6 +58,7 @@ pub(crate) fn source_mineral_coordinates(uv: [f32;2]) -> Option<[f32;2]> {
         && (0. ..=1.).contains(&uv[1])).then(||[-4.-uv[0],uv[1]])
 }
 pub(crate) fn source_atlas_coordinates(uv: [f32;2]) -> Option<[f32;2]> {
+    if let Some(p)=source_buoy_coordinates(uv) {return Some(p);}
     (uv.iter().all(|v|v.is_finite()) && (-3. ..=-2.).contains(&uv[0])
         && (0. ..=1.).contains(&uv[1])).then(||[-2.-uv[0],uv[1]])
 }
@@ -381,6 +390,25 @@ pub(crate) fn refine(
 }
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn float_paint_roundtrips_live_coordinates_without_selecting_another_material() {
+        for u in [0.,0.03125,0.5,0.96875,1.] {for v in [0.,0.5,1.] {
+            let uv=super::source_buoy_uv([u,v]);
+            assert_eq!(super::source_buoy_coordinates(uv),Some([u,v]));
+            assert_eq!(super::source_atlas_coordinates(uv),Some([u,v]));
+            assert!(super::source_concrete_coordinates(uv).is_none());
+            assert!(super::source_mineral_coordinates(uv).is_none());
+            assert!(super::town_paint_kind(uv).is_none());
+            for other in [super::source_atlas_uv([u,v]),super::source_concrete_uv([u,v]),
+                super::source_mineral_uv([u,v]),[u,v]] {
+                assert!(super::source_buoy_coordinates(other).is_none());
+            }
+        }}
+        for uv in [[f32::NAN,0.],[f32::INFINITY,0.],[-8.5,-0.01],[-8.5,1.01],[-9.01,0.],[-7.99,0.]] {
+            assert!(super::source_buoy_coordinates(uv).is_none());
+        }
+    }
+
     #[test]
     fn slate_material_domain_is_disjoint_from_glass_and_existing_town_paint() {
         for x in [-7.,0.,7.] {for y in [-7.,0.,7.] {

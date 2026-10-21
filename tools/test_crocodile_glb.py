@@ -17,7 +17,7 @@ class CrocodileSkinTests(unittest.TestCase):
  def find(self,m,prefix,suffix=None):return next(i for i,n in enumerate(m.names) if n.startswith(prefix) and (suffix is None or n.endswith(' '+str(suffix))))
  def test_lossless_packing_limits_hierarchy_and_identity_binds(self):
   for s,m in self.models.items():
-   self.assertEqual(self.blobs[s],author.export_crocodile(s));self.assertEqual(len(m.parts),49 if s=='croconaw' else 80);self.assertEqual(len(m.joints),14);self.assertEqual(m.parents[:14],[None,0,1,2,1,4,5,1,7,8,0,0,1,12])
+   self.assertEqual(self.blobs[s],author.export_crocodile(s));self.assertEqual(len(m.parts),51 if s=='croconaw' else 83);self.assertEqual(len(m.joints),14);self.assertEqual(m.parents[:14],[None,0,1,2,1,4,5,1,7,8,0,0,1,12])
    self.assertEqual(author.geometry_digest(m.neutral_model()),author.REST_DIGESTS[s]);self.assertEqual(author.geometry_digest(self.runtime[s].neutral_model()),author.PACKED_REST_DIGESTS[s]);self.assertEqual(author.geometry_digest(author.decode_crocodile(self.blobs[s],s)),author.REST_DIGESTS[s]);self.assertLessEqual(len(self.runtime[s].parts),64);self.assertLessEqual(sum(map(len,m.vertices)),20000);self.assertLessEqual(sum(map(len,m.indices)),120000);self.assertLessEqual(len(m.doc['accessors']),256);self.assertLess(len(self.blobs[s]),1024*1024)
    self.assertEqual({j for ids,weights in zip(m.ids,m.weights) for js,ws in zip(ids,weights) for j,w in zip(js,ws) if w},set(range(14)))
    for mat in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(mat,IDENTITY)),1e-7)
@@ -27,7 +27,7 @@ class CrocodileSkinTests(unittest.TestCase):
     owner=None
     if n.startswith('Foot /'):owner=0
     elif n.startswith(('Eye /','Nostril /','Jaw / broad upper','Tooth / upper','Crest / three-point cranial','Crest / broad jagged cranial','Crest / rear jagged cranial')):owner=2
-    elif n.startswith(('Jaw / fitted pale lower','Tooth / lower')):owner=3
+    elif n.startswith(('Jaw / fitted pale lower','Tooth / lower','Mouth / rounded pink tongue')):owner=3
     elif n.startswith('Hand /'):owner=6 if n.split()[-2 if n.startswith(('Hand / curved','Hand / white')) else -1]=='-1' else 9
     if owner is not None:self.assertEqual({j for js,ws in zip(m.ids[i],m.weights[i]) for j,w in zip(js,ws) if w},{owner},(s,n))
  def test_floor_strain_winding_and_cue_endpoints(self):
@@ -51,6 +51,16 @@ class CrocodileSkinTests(unittest.TestCase):
    for j in range(1,14):
     isolate=[[0.,0.,0.,1.] for _ in m.doc['nodes']];isolate[j]=rotations[j];mats=m.matrices(rotations=isolate)
     self.assertGreater(max(math.dist(p,q) for i,vs in enumerate(m.vertices) for p,q in zip(vs,m.posed(i,mats))),.0005,(s,j))
+ def test_resting_arms_are_lowered_and_adult_elbows_bend_under_the_wrists(self):
+  for s,m in self.models.items():
+   pivots=[]
+   for i,node in enumerate(m.doc['nodes'][:14]):
+    parent=m.parents[i];local=node.get('translation',[0.,0.,0.])
+    pivots.append([local[k]+(pivots[parent][k] if parent is not None else 0.) for k in range(3)])
+   for arm,elbow,wrist in ((4,5,6),(7,8,9)):
+    self.assertGreater(pivots[arm][1]-pivots[wrist][1],.10,(s,arm))
+    self.assertGreater(pivots[wrist][2]-pivots[arm][2],.12,(s,arm))
+    if s=='feraligatr':self.assertLess(pivots[elbow][1],pivots[wrist][1]-.02)
  def test_elbow_and_knee_closing_faces_stay_inside_adjoining_skin(self):
   # Find actual large planar closing rings in the stored mesh. Merely having
   # overlapping limbs allowed the old exposed end disks to pass root checks.

@@ -12,21 +12,23 @@ class FurretSkinTests(geometry_checks.FurretSculptTests):
   cls.blob=ASSET.read_bytes();cls.m=Model(cls.blob);cls.model=author.decode_banded_ferret(cls.blob,'furret');cls.parts=cls.model['primitives']
  def test_canonical_anatomy_and_limits(self):
   m=self.m;self.assertEqual(self.blob,author.export_furret());self.assertEqual(author.geometry_digest(self.model),author.REST_DIGESTS['furret'])
-  self.assertEqual(len(m.parts),33);self.assertEqual(sum(map(len,m.vertices)),11866);self.assertEqual(len(m.joints),14)
+  self.assertEqual(len(m.parts),38);self.assertEqual(sum(map(len,m.vertices)),17037);self.assertEqual(len(m.joints),14)
   self.assertLess(len(self.blob),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
  def test_hierarchy_and_support_owners(self):
   m=self.m;self.assertEqual(m.parents[:-1],[None,0,1,2,3,4,4,2,2,1,1,1,11,12])
   for p,name in enumerate(m.names):
    if name.startswith('Foot /'):self.assertTrue(all(ids==[0,0,0,0] for ids in m.ids[p]))
-   if name.startswith('Ear /'):
+   if name.startswith(('Ear /','Ear tip /')):
     owner=5 if name.endswith('-1') else 6;self.assertTrue(all(ids==[owner,0,0,0] for ids in m.ids[p]))
    for ids,ws in zip(m.ids[p],m.weights[p]):self.assertTrue(all(i<14 for i in ids));self.assertAlmostEqual(sum(ws),1.,places=7)
  def test_colored_seams_keep_identical_skin_influences(self):
   m=self.m
   for prefix in ('Body /','Tail /'):
-   parts=[p for p,n in enumerate(m.names) if n.startswith(prefix)]
+   parts=[[p] for p,n in enumerate(m.names) if n.startswith(prefix)]
+   if prefix=='Body /':
+    next(g for g in parts if m.names[g[0]]=='Body / joined cream neck front').append(next(i for i,n in enumerate(m.names) if n.startswith('Back coat /')))
    for left,right in zip(parts,parts[1:]):
-    def field(p):return {tuple(v):(tuple(ids),tuple(ws)) for v,ids,ws in zip(m.vertices[p],m.ids[p],m.weights[p])}
+    def field(group):return {tuple(v):(tuple(ids),tuple(ws)) for p in group for v,ids,ws in zip(m.vertices[p],m.ids[p],m.weights[p])}
     a,b=field(left),field(right);shared=a.keys()&b.keys();self.assertGreaterEqual(len(shared),24)
     for point in shared:self.assertEqual(a[point],b[point])
  def test_floor_fixed_paws_winding_and_strain(self):

@@ -18,7 +18,8 @@ fn service_uniforms_follow_all_actual_object_palettes_and_sprite_frames() {
         (CharacterKind::Youngster,"youngster","SPRITE_YOUNGSTER"),
         (CharacterKind::CooltrainerM,"cooltrainer_m","SPRITE_COOLTRAINER_M"),
         (CharacterKind::SuperNerd,"super_nerd","SPRITE_SUPER_NERD"),
-        (CharacterKind::Officer,"officer","SPRITE_OFFICER")] {
+        (CharacterKind::Officer,"officer","SPRITE_OFFICER"),
+        (CharacterKind::KimonoGirl,"kimono_girl","SPRITE_KIMONO_GIRL")] {
         let mut palettes=std::collections::BTreeSet::new();let mut objects=0;
         for map in pack.data().maps.values() {for object in &map.objects {
             if object.sprite!=key {continue;}
@@ -72,6 +73,36 @@ fn community_clothing_keeps_hair_faces_ink_and_dark_trousers() {
                 assert_eq!(&result[at..at+4],&rgba(color),"{kind:?}: clothing follows its actual source accent");
             }else {assert_eq!(&result[at..at+4],&before[at..at+4],"{kind:?}: protected role at {xy:?}");}
         }
+    }
+}
+
+#[test]
+fn kimono_palette_preserves_painted_flowers_collar_skin_ink_and_fold_shading() {
+    let kind = CharacterKind::KimonoGirl;
+    let mut pixels = vec![0;256*256*4];
+    let samples = [
+        (20,160,[209,56,59,255],Some([57,189,24,255])),
+        (30,160,[104,20,24,255],Some([28,94,12,255])),
+        (20,121,[209,56,59,255],Some([57,189,24,255])), // collar-side robe
+        (20,119,[209,56,59,255],None), // protected upper island
+        (200,220,[145,31,46,255],Some([57,189,24,255])),
+        (40,160,[230,150,165,255],None), // pink blossom
+        (50,160,[70,95,50,255],None), // stem
+        (60,160,[245,245,230,255],None), // pale collar
+        (70,160,[252,200,165,255],None), // skin
+        (80,160,[32,24,24,255],None), // ink
+        (90,160,[209,56,59,0],None), // transparent cloth
+        (20,20,[209,56,59,255],None), // protected head island
+        (200,160,[209,56,59,255],None), // protected hand/shoe island
+    ];
+    for &(x,y,rgba,_) in &samples {
+        pixels[(y*256+x)*4..(y*256+x)*4+4].copy_from_slice(&rgba);
+    }
+    let original = pixels.clone();
+    let painted = painting_for(kind,&pixels,(256,256),[57,189,24]);
+    assert_eq!(pixels,original);
+    for &(x,y,rgba,expected) in &samples {
+        assert_eq!(&painted[(y*256+x)*4..(y*256+x)*4+4],&expected.unwrap_or(rgba),"{x},{y}");
     }
 }
 

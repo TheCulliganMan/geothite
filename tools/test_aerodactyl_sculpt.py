@@ -22,20 +22,23 @@ class AerodactylTests(unittest.TestCase):
   from aerodactyl_glb import geometry_digest
   self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.)
   self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLessEqual(sum(len(p['positions'])//3 for p in self.ps),20000);self.assertLessEqual(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
-  for prefix,n in (('Skull /',1),('Jaw /',1),('Jaw hinge /',2),('Skull horn /',2),('Tooth /',12),('Wing /',2),('Wing arm /',2),('Wing finger /',4),('Wing claw /',6),('Foot claw /',6),('Tail tip /',1)):
+  for prefix,n in (('Skull /',1),('Jaw /',1),('Jaw hinge /',2),('Skull horn /',2),('Brow /',2),('Iris /',2),('Tooth /',12),('Wing /',2),('Wing back /',2),('Mouth back /',1),('Wing arm /',2),('Wing finger /',4),('Wing claw /',6),('Foot claw /',6),('Tail tip /',1)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n)
  def test_skull_jaw_cheeks_and_swept_horns_have_real_joins(self):
   skull=self.find('Skull /');jaw=self.find('Jaw /');self.assertTrue(self.overlap(skull,self.find('Body /')))
   for sign in (-1,1):
    cheek=self.find('Jaw hinge / rooted rear cheek '+str(sign));self.assertTrue(self.overlap(cheek,skull));self.assertTrue(self.overlap(cheek,jaw))
    self.assertTrue(self.overlap(skull,self.find('Skull horn / long swept backward fossil crest '+str(sign))))
- def test_open_jaw_is_actual_empty_space_between_stored_solids(self):
+   self.assertTrue(self.overlap(skull,self.find('Brow / swept gray fossil orbital ridge '+str(sign))))
+ def test_open_jaw_is_actual_empty_space_between_stored_solids(self,neutral=True):
   skull=rotate(self.find('Skull /'),True);jaw=rotate(self.find('Jaw /'),True)
-  # Interior vertical clearance at three independently chosen positions.
-  for z in (.24,.32,.40):
-   scale=max(self.find('Skull /')['positions'][2::3])/.585
-   x=0;y=-z*scale;upper=ray_intersections(skull,x,y);lower=ray_intersections(jaw,x,y);self.assertTrue(upper and lower)
-   self.assertGreater(min(upper)-max(lower),.12*HEIGHT)
+  # Probe the actual forward chamber. The former minimum forced an oversized
+  # gape; both lower and upper reference bounds now reject that old anatomy.
+  front=max(self.find('Skull /')['positions'][2::3])
+  for fraction in (.65,.76,.86):
+   x=0;y=-front*fraction;upper=ray_intersections(skull,x,y);lower=ray_intersections(jaw,x,y);self.assertTrue(upper and lower)
+   self.assertGreater(min(upper)-max(lower),.035*HEIGHT)
+   if neutral:self.assertLess(min(upper)-max(lower),.14*HEIGHT)
    middle=(min(upper)+max(lower))/2
    for p in self.ps:
     hits=ray_intersections(rotate(p,True),x,y)
@@ -43,15 +46,16 @@ class AerodactylTests(unittest.TestCase):
  def test_closed_mouth_negative_control_has_no_open_clearance(self):
   upper=rotate(self.find('Skull /'),True);lower=dict(self.find('Jaw /'))
   lower['positions']=[v+HEIGHT*.3 if i%3==1 else v for i,v in enumerate(lower['positions'])];lower=rotate(lower,True)
-  scale=max(self.find('Skull /')['positions'][2::3])/.585
-  a=ray_intersections(upper,0,-.32*scale);b=ray_intersections(lower,0,-.32*scale)
-  self.assertTrue(a and b);self.assertLess(min(a)-max(b),.12*HEIGHT)
- def test_arrowhead_has_visible_projected_area_in_front_view(self):
-  arrow=self.find('Tail tip /');area=0.
-  for i in range(0,len(arrow['indices']),3):
-   a,b,c=[arrow['positions'][3*j:3*j+3] for j in arrow['indices'][i:i+3]]
-   area+=abs((b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]))/2
-  self.assertGreater(area,.015*HEIGHT**2)
+  front=max(self.find('Skull /')['positions'][2::3]);a=ray_intersections(upper,0,-.76*front);b=ray_intersections(lower,0,-.76*front)
+  self.assertTrue(a and b);self.assertLess(min(a)-max(b),.035*HEIGHT)
+ def test_arrowhead_has_profile_area_without_a_frontal_fan(self):
+  arrow=self.find('Tail tip /');areas=[]
+  for u,v in ((0,1),(2,1)):
+   area=0.
+   for i in range(0,len(arrow['indices']),3):
+    a,b,c=[arrow['positions'][3*j:3*j+3] for j in arrow['indices'][i:i+3]];area+=abs((b[u]-a[u])*(c[v]-a[v])-(b[v]-a[v])*(c[u]-a[u]))/2
+   areas.append(area)
+  self.assertGreater(areas[1],.006*HEIGHT**2);self.assertLess(areas[0],areas[1]*.30)
  def test_upper_and_lower_teeth_are_rooted_in_their_actual_jaws(self):
   for p in self.ps:
    if p['part'].startswith('Tooth /'):
@@ -61,10 +65,16 @@ class AerodactylTests(unittest.TestCase):
    name=p['part'];sign=name.split()[-1];parent=None;up=None
    if name.startswith(('Eye socket /','Nostril /')):parent=self.find('Skull /')
    elif name.startswith('Eye white /'):parent=self.find('Eye socket / supported stern dark wedge '+sign)
-   elif name.startswith('Pupil /'):parent=self.find('Eye white / fitted narrow ivory wedge '+sign)
+   elif name.startswith('Iris /'):parent=self.find('Eye white / fitted narrow ivory wedge '+sign)
+   elif name.startswith('Pupil /'):parent=self.find('Iris / fitted red-violet fossil gaze '+sign)
    elif name.startswith('Mouth ceiling /'):parent=self.find('Skull /');up=False
    elif name.startswith(('Mouth floor /','Tongue /')):parent=self.find('Jaw /');up=True
-   if parent:yield (rotate(p,up),rotate(parent,up)) if up is not None else (p,parent)
+   if parent:
+    if name.startswith(('Eye socket /','Eye white /','Iris /','Pupil /')):
+     side=int(sign)
+     def side_frame(q):return dict(q,positions=[v for x,y,z in zip(q['positions'][::3],q['positions'][1::3],q['positions'][2::3]) for v in (-side*z,y,side*x)])
+     yield side_frame(p),side_frame(parent)
+    else:yield (rotate(p,up),rotate(parent,up)) if up is not None else (p,parent)
  def test_fitted_face_palate_and_tongue_vertices_follow_stored_surfaces(self):
   for p,parent in self.fitted_pairs():
    for x,y,z in {tuple(p['positions'][i:i+3]) for i in range(0,len(p['positions']),3)}:
@@ -78,7 +88,7 @@ class AerodactylTests(unittest.TestCase):
  def test_both_scalloped_sails_and_branching_spars_are_attached(self):
   body=self.find('Body /')
   for sign in (-1,1):
-   wing=self.find('Wing / broad scalloped violet fossil membrane '+str(sign));arm=self.find('Wing arm / continuous bent leading fossil arm '+str(sign));self.assertTrue(self.overlap(wing,body));self.assertTrue(self.overlap(wing,arm));self.assertTrue(self.overlap(arm,body))
+   wing=self.find('Wing / broad scalloped violet fossil membrane '+str(sign));case=self.find('Wing back / closed gray fossil sail '+str(sign));arm=self.find('Wing arm / continuous bent leading fossil arm '+str(sign));self.assertTrue(self.overlap(wing,body));self.assertTrue(self.overlap(wing,arm));self.assertTrue(self.overlap(arm,body));self.assertTrue(self.overlap(case,body));self.assertTrue(self.overlap(case,wing))
    for p in self.ps:
     if p['part'].startswith('Wing finger /') and p['part'].split()[-2]==str(sign):self.assertTrue(self.overlap(p,wing),p['part']);self.assertTrue(self.overlap(p,arm),p['part'])
     if p['part'].startswith('Wing claw /') and p['part'].split()[-2]==str(sign):self.assertTrue(self.overlap(p,arm),p['part'])

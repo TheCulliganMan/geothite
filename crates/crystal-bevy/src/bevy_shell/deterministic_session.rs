@@ -176,10 +176,10 @@ fn apply_keyboard_input(
     { runtime_shell.natural_movement.enabled = false; }
     let movement_vector = natural_movement::keyboard_vector(&keys);
     #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
-    let movement_vector = natural_movement::browser_vector(voxel.as_ref().map_or(0.0,
-        |v|v.camera.rotation_step*std::f32::consts::FRAC_PI_4)).unwrap_or(movement_vector);
+    let movement_vector = natural_movement::browser_vector().unwrap_or(movement_vector);
     #[cfg(not(target_arch = "wasm32"))]
-    let movement_vector = handheld.as_ref().map_or(movement_vector, |h| h.movement);
+    let movement_vector = handheld.as_ref().filter(|h| h.movement != Vec2::ZERO)
+        .map_or(movement_vector, |h| h.movement);
     runtime_shell.field_text_consumed_a = false;
     runtime_shell.field_text_consumed_b = false;
     log_visible_key_presses(&mut runtime_shell, &keys);
@@ -231,6 +231,13 @@ fn apply_keyboard_input(
     let elapsed_vblanks = timer.take_vblanks();
     let elapsed_input_ticks = timer.take_ticks();
     timer.stage_presentation_ticks(elapsed_input_ticks);
+    if runtime_shell.natural_movement.enabled && elapsed_input_ticks == 0
+        && ![KeyCode::ShiftLeft, KeyCode::ShiftRight, KeyCode::AltLeft,
+            KeyCode::AltRight, KeyCode::ControlLeft, KeyCode::ControlRight]
+            .into_iter().any(|key| keys.pressed(key))
+    {
+        runtime_shell.natural_movement.latch_input(movement_vector);
+    }
     if elapsed_vblanks == 0 && elapsed_input_ticks == 0 {
         let shift_pressed = keys.pressed(KeyCode::ShiftLeft) || keys.pressed(KeyCode::ShiftRight);
         let alt_pressed = keys.pressed(KeyCode::AltLeft) || keys.pressed(KeyCode::AltRight);
@@ -283,16 +290,14 @@ fn apply_keyboard_input(
         runtime_shell.field_text_consumed_b = keys.just_pressed(KeyCode::KeyX);
     }
     let pending_direction_press = runtime_shell.pending_overworld_direction_press.take();
-    // Preserve a short physical tap sampled between gameplay ticks. Free
-    // movement consumes its one sampled displacement instead of discarding
-    // the latched edge just because the key has already been released.
-    let movement_vector = if movement_vector == Vec2::ZERO {
-        just_pressed_overworld_direction(&keys).or(pending_direction_press)
-            .and_then(game_button_direction)
-            .map(|direction| match direction {
-                Direction::Up => Vec2::NEG_Y, Direction::Down => Vec2::Y,
-                Direction::Left => Vec2::NEG_X, Direction::Right => Vec2::X,
-            }).unwrap_or(Vec2::ZERO)
+    // Preserve the entire chord from short taps, including WASD and diagonals.
+    let movement_vector = if elapsed_input_ticks > 0 {
+        runtime_shell.natural_movement.take_input(movement_vector)
+    } else { movement_vector };
+    #[cfg(feature = "voxel-view")]
+    let movement_vector = if runtime_shell.natural_movement.enabled {
+        natural_movement::camera_relative_vector(movement_vector,
+            voxel.as_ref().map_or(0.0, |v| v.camera.rotation_step * std::f32::consts::FRAC_PI_4))
     } else { movement_vector };
 
     // GameTimer is a VBlank hook, not an overworld-input side effect. Run it
@@ -2831,6 +2836,7 @@ fn release_input_on_focus_loss(
     reset_keyboard_after_focus_loss(&mut keys);
     runtime_shell.pending_overworld_direction_press = None;
     runtime_shell.pending_ui_button_presses.clear();
+    let _ = runtime_shell.natural_movement.take_input(Vec2::ZERO);
     runtime_shell.ui_held_direction = None;
     runtime_shell.ui_direction_repeat_ticks = 0;
     runtime_shell.overworld_interaction_consumed_a = false;

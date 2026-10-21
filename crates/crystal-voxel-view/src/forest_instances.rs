@@ -45,16 +45,51 @@ pub fn configure_lazy_tree_entities_diagnostics(eager: bool) {
 }
 
 const VARIANTS: usize = 12; // three branch architectures, four height/phase recipes
-const CAPACITY: usize = 128; // 120 evergreen/ancient combinations plus three deciduous meshes fit
+const CAPACITY: usize = 144; // 120 evergreen/ancient combinations, twelve deciduous and twelve park recipes
 const PROTOTYPE_TILE: f32 = 16.;
 const PROTOTYPE_BOUNDS: [f32; 4] = [-16., 16., -16., 16.];
 struct PrototypeGeometry {
     groups: Vec<PreparedGroup>,
     trunk_bounds: Option<(Vec3, Vec3)>,
+    root_outline: Vec<Vec2>,
 }
 type Prototype = Arc<PrototypeGeometry>;
 type Cell = Arc<OnceLock<Prototype>>;
 type GroundCell = Arc<OnceLock<Arc<Vec<PreparedGroup>>>>;
+
+fn root_outline(roots: &[[f32;3]]) -> Vec<Vec2> {
+    let mut points=roots.iter().map(|p|Vec2::new(p[0],p[2])).collect::<Vec<_>>();
+    points.sort_by(|a,b|a.x.total_cmp(&b.x).then(a.y.total_cmp(&b.y)));
+    points.dedup();
+    if points.len()<3 {return points;}
+    let mut hull:Vec<Vec2>=Vec::new();
+    for &p in &points {
+        while hull.len()>=2 && (hull[hull.len()-1]-hull[hull.len()-2])
+            .perp_dot(p-hull[hull.len()-1])<=0. {hull.pop();}
+        hull.push(p);
+    }
+    let lower=hull.len();
+    for &p in points.iter().rev().skip(1) {
+        while hull.len()>lower && (hull[hull.len()-1]-hull[hull.len()-2])
+            .perp_dot(p-hull[hull.len()-1])<=0. {hull.pop();}
+        hull.push(p);
+    }
+    hull.pop();
+    hull
+}
+
+fn root_fit(outline:&[Vec2],prototype_root:Vec3,rotation:Quat,scale:Vec3,
+    offset:Vec2,bounds:[f32;4])->f32 {
+    let mut fit=1.0_f32;
+    for p in outline {
+        let p=rotation*(scale*(Vec3::new(p.x,0.,p.y)-prototype_root));
+        for (v,offset,radius) in [(p.x,offset.x,(bounds[1]-bounds[0])*0.5),
+            (p.z,offset.y,(bounds[3]-bounds[2])*0.5)] {
+            if v.abs()>0. {fit=fit.min((radius-v.signum()*offset)/v.abs());}
+        }
+    }
+    fit
+}
 #[derive(Default)]
 pub(crate) struct Library {
     entries: Mutex<VecDeque<(Key, Cell)>>,
@@ -70,25 +105,40 @@ struct Key {
 impl Key {
     fn new(family: GroveFamily, coordinates: [i32; 2], neighbors: [bool; 4]) -> Self {
         let (shape, height, _) = foliage::instance_variation(coordinates);
-        let bucket = (((height - 0.9) / 0.7 * 4.).floor() as usize).min(3);
-        let density = if family==GroveFamily::KantoDeciduous {0} else {neighbors.iter().filter(|&&v| v).count() as u8};
+        // Ordinary height uses its own age seed. Grouping by the older
+        // variation height could squash a mature prototype into a sapling,
+        // flattening foliage along with the trunk.
+        let age=if matches!(family,GroveFamily::JohtoPine|GroveFamily::KantoDeciduous) {
+            foliage::non_ancient_height_factor(coordinates)-0.5
+        } else {(height-0.9)/0.7};
+        let bucket=((age*4.).floor() as usize).min(3);
+        let density = if matches!(family,GroveFamily::KantoDeciduous|GroveFamily::ParkBroadleaf) {0} else {neighbors.iter().filter(|&&v| v).count() as u8};
         Self {
-            family: match family {GroveFamily::JohtoPine=>0,GroveFamily::AncientForest=>1,GroveFamily::KantoDeciduous=>2},
+            family: match family {GroveFamily::JohtoPine=>0,GroveFamily::AncientForest=>1,GroveFamily::KantoDeciduous=>2,GroveFamily::ParkBroadleaf=>3},
             density,
-            variant: (shape * 4 + if family==GroveFamily::KantoDeciduous {0} else {bucket}) as u8,
+            variant: (shape * 4 + bucket) as u8,
         }
     }
 }
 
 // Every source plot retains a canopy, including the interior of continuous blocks.
-fn seeds() -> &'static [[i32; 2]; VARIANTS] {
-    static SEEDS: OnceLock<[[i32; 2]; VARIANTS]> = OnceLock::new();
-    SEEDS.get_or_init(|| {
+fn seeds(family:GroveFamily) -> &'static [[i32; 2]; VARIANTS] {
+    static PINES: OnceLock<[[i32; 2]; VARIANTS]> = OnceLock::new();
+    static DECIDUOUS: OnceLock<[[i32; 2]; VARIANTS]> = OnceLock::new();
+    static OTHER: OnceLock<[[i32; 2]; VARIANTS]> = OnceLock::new();
+    static PARK: OnceLock<[[i32; 2]; VARIANTS]> = OnceLock::new();
+    let cache=match family {
+        GroveFamily::JohtoPine => &PINES,
+        GroveFamily::KantoDeciduous => &DECIDUOUS,
+        GroveFamily::AncientForest => &OTHER,
+        GroveFamily::ParkBroadleaf => &PARK,
+    };
+    cache.get_or_init(|| {
         let mut result = [[0; 2]; VARIANTS];
         let mut found = [false; VARIANTS];
         for z in 0..256 {
             for x in 0..256 {
-                let key = Key::new(GroveFamily::JohtoPine, [x,z], [true;4]);
+                let key = Key::new(family, [x,z], [true;4]);
                 let variant = key.variant as usize;
                 if !found[variant] {
                     result[variant] = [x,z];
@@ -129,25 +179,30 @@ impl Library {
             let neighbors = std::array::from_fn(|i| i < key.density as usize);
             foliage::append_family_canopy(
                 &mut mesh,
-                PROTOTYPE_BOUNDS,
+                if family==GroveFamily::ParkBroadleaf {[-32.,32.,-32.,32.]} else {PROTOTYPE_BOUNDS},
                 0.,
                 PROTOTYPE_TILE,
-                seeds()[key.variant as usize],
+                seeds(family)[key.variant as usize],
                 neighbors,
                 family,
             );
-            let trunk_bounds = Some({
+            let roots = {
                 let count = if family == GroveFamily::JohtoPine { 13 } else { 17 };
-                let roots = if family==GroveFamily::KantoDeciduous {
+                if family==GroveFamily::ParkBroadleaf {
+                    mesh.solid.positions.iter().filter(|p|p[1].abs()<0.000001).copied().collect::<Vec<_>>()
+                } else if family==GroveFamily::KantoDeciduous {
                     mesh.solid.positions.iter().filter(|p|p[1]<=PROTOTYPE_TILE*0.18).copied().collect::<Vec<_>>()
-                } else {mesh.solid.positions[..count].to_vec()};
+                } else {mesh.solid.positions[..count].to_vec()}
+            };
+            let trunk_bounds = Some({
                 roots.iter().fold(
                     (Vec3::splat(f32::INFINITY),Vec3::splat(f32::NEG_INFINITY)),
                     |(low,high), &p| (low.min(Vec3::from_array(p)),high.max(Vec3::from_array(p))),
                 )
             });
+            let root_outline=if matches!(family,GroveFamily::KantoDeciduous|GroveFamily::ParkBroadleaf) {root_outline(&roots)} else {Vec::new()};
             let groups=crate::shared_groves::prepare_surface(mesh.solid);
-            Arc::new(PrototypeGeometry {groups,trunk_bounds})
+            Arc::new(PrototypeGeometry {groups,trunk_bounds,root_outline})
         })
         .clone()
     }
@@ -262,24 +317,26 @@ impl Library {
 
     fn place_canopy(key: Key, source: &Prototype, bounds: [f32;4], base: f32,
         tile: f32, coordinates: [i32;2]) -> Vec<PreparedGroup> {
-        let (_, _, turn) = foliage::instance_variation(coordinates);
-        let (_, _, prototype_turn) =
-            foliage::instance_variation(seeds()[key.variant as usize]);
-        let family = match key.family {0=>GroveFamily::JohtoPine,1=>GroveFamily::AncientForest,_=>GroveFamily::KantoDeciduous};
+        let family = match key.family {0=>GroveFamily::JohtoPine,1=>GroveFamily::AncientForest,2=>GroveFamily::KantoDeciduous,3=>GroveFamily::ParkBroadleaf,_=>unreachable!("validated grove family")};
+        let turn = foliage::instance_turn(family,coordinates);
+        let prototype_turn = foliage::instance_turn(family,seeds(family)[key.variant as usize]);
         let vertical_ratio = foliage::instance_vertical_ratio(family,coordinates,
-            seeds()[key.variant as usize], std::array::from_fn(|i| i < key.density as usize));
+            seeds(family)[key.variant as usize], std::array::from_fn(|i| i < key.density as usize));
         let rotation = Quat::from_rotation_y(turn - prototype_turn);
         let spacing = (bounds[1] - bounds[0]).min(bounds[3] - bounds[2]);
         // The shared mesh already contains its seed's trunk offset. Replace it
         // with this placement's offset, independent of prototype and rotation.
-        let prototype_offset = foliage::grove_trunk_offset(seeds()[key.variant as usize], 32.);
+        let prototype_span = if family==GroveFamily::ParkBroadleaf {64.} else {32.};
+        let prototype_offset = if family==GroveFamily::ParkBroadleaf {Vec2::ZERO}
+            else {foliage::grove_trunk_offset(seeds(family)[key.variant as usize], 32.)};
         let prototype_root = Vec3::new(prototype_offset.x, 0., prototype_offset.y);
-        let offset = foliage::grove_trunk_offset(coordinates, spacing);
-        let width_ratio=foliage::instance_width_ratio(family,coordinates,seeds()[key.variant as usize]);
+        let offset = if family==GroveFamily::ParkBroadleaf {Vec2::ZERO}
+            else {foliage::grove_trunk_offset(coordinates, spacing)};
+        let width_ratio=foliage::instance_width_ratio(family,coordinates,seeds(family)[key.variant as usize]);
         let scale = Vec3::new(
-            (bounds[1] - bounds[0]) / 32. * width_ratio,
+            (bounds[1] - bounds[0]) / prototype_span * width_ratio,
             tile / PROTOTYPE_TILE * vertical_ratio,
-            (bounds[3] - bounds[2]) / 32. * width_ratio,
+            (bounds[3] - bounds[2]) / prototype_span * width_ratio,
         );
         let mut transform = Transform {
             translation: Vec3::new(
@@ -290,11 +347,11 @@ impl Library {
             rotation,
             scale,
         };
-        // Quarter turns and irregular source plots must stay inside the same
-        // authored crown margin. Fit the shared prototype with one instance scale;
+        // Crown growth and yaw retain their family-specific overhang allowance.
+        // Fit the shared prototype with one instance scale;
         // never rewrite vertices, normals or indices for placement.
         if let Some((low, high)) = occluder_fade::prepared_bounds(&source.groups) {
-            let margin = spacing * if key.family == 1 { 1.25 } else { 0.75 };
+            let margin = spacing * foliage::instance_canopy_margin(family,coordinates);
             let mut fit = 1.0_f32;
             for i in 0..8 {
                 let p = rotation
@@ -317,19 +374,14 @@ impl Library {
             transform.scale.x *= fit;
             transform.scale.z *= fit;
         }
-        // Offset roots retain the same authored collision footprint, including
-        // a quarter-turned, irregular flare on a rectangular source plot.
+        // Fit the real broadleaf root outline at arbitrary yaw. Rotating its
+        // enclosing rectangle can otherwise squeeze the entire mature crown.
+        // Existing evergreen/ancient footprints retain their four-corner fit.
         if let Some((low,high)) = source.trunk_bounds {
-            let mut fit = 1.0_f32;
-            for i in 0..4 {
-                let p = rotation * (transform.scale * (Vec3::new(
-                    if i&1==0 {low.x} else {high.x}, 0.,
-                    if i&2==0 {low.z} else {high.z}) - prototype_root));
-                for (v,offset,radius) in [(p.x,offset.x,(bounds[1]-bounds[0])*0.5),
-                    (p.z,offset.y,(bounds[3]-bounds[2])*0.5)] {
-                    if v.abs()>0. { fit=fit.min((radius-v.signum()*offset)/v.abs()); }
-                }
-            }
+            let corners=std::array::from_fn::<_,4,_>(|i|Vec2::new(
+                if i&1==0 {low.x}else{high.x},if i&2==0 {low.z}else{high.z}));
+            let outline=if source.root_outline.is_empty() {&corners[..]} else {&source.root_outline};
+            let fit=root_fit(outline,prototype_root,rotation,transform.scale,offset,bounds);
             transform.scale.x *= fit;
             transform.scale.z *= fit;
         }
@@ -357,9 +409,97 @@ impl Library {
 mod tests {
     use super::*;
 
+    #[test]
+    fn park_instances_keep_full_crowns_mature_height_and_clear_paths_in_twelve_shared_recipes() {
+        let library = Library::default();
+        let family = GroveFamily::ParkBroadleaf;
+        let bounds = [-32.,32.,-32.,32.];
+        let mut coordinates = seeds(family).to_vec();
+        coordinates.extend([[0,0],[4,8],[-12,20]]);
+        let mut heights = Vec::new();
+        for at in coordinates {
+            let key = Key::new(family,at,[false;4]);
+            assert_eq!(key,Key::new(family,at,[true;4]));
+            let prototype = library.prototype(key,family);
+            assert!(Arc::ptr_eq(&prototype,&library.prototype(key,family)));
+            let groups = library.prepare(bounds,3.,16.,at,[false;4],family);
+            assert_eq!(groups.len(),1,"one planted tree keeps one reveal owner");
+            let triangles = occluder_fade::geometry_signature(&crate::mesh::SurfaceMeshData::default(),groups);
+            let mut original = TerrainMeshData::default();
+            foliage::append_family_canopy(&mut original,bounds,3.,16.,at,[false;4],family);
+            assert_eq!(triangles.len(),original.solid.indices.len()/3,
+                "instances retain every full-detail tree triangle");
+            let mut top=3.0_f32;
+            let mut low=Vec2::splat(f32::INFINITY);
+            let mut high=Vec2::splat(f32::NEG_INFINITY);
+            for triangle in triangles {
+                for vertex in triangle.chunks_exact(12) {
+                    let p=Vec3::new(f32::from_bits(vertex[0]),f32::from_bits(vertex[1]),f32::from_bits(vertex[2]));
+                    assert!(p.is_finite() && p.y>=2.9999);
+                    top=top.max(p.y); low=low.min(Vec2::new(p.x,p.z)); high=high.max(Vec2::new(p.x,p.z));
+                    if p.x.abs()>32.0001 || p.z.abs()>32.0001 {
+                        assert!(p.y-3.>16.*3.,"branches over a promenade must clear visitors: {p:?}");
+                    }
+                }
+            }
+            assert!(top-3.>16.*9.,"shared park trees must retain their mature height");
+            assert!((high-low).max_element()>16.*6.,"the crown must remain broad");
+            heights.push(top);
+        }
+        assert_eq!(library.entries.lock().unwrap().len(),12);
+        let shortest=heights.iter().copied().fold(f32::INFINITY,f32::min);
+        let tallest=heights.iter().copied().fold(f32::NEG_INFINITY,f32::max);
+        assert!(tallest-shortest>16.*2.,"instances retain real height variation");
+    }
 
     #[test]
-    fn deciduous_placements_choose_exactly_three_shared_authored_models() {
+    fn arbitrary_tree_yaw_fits_the_actual_roots_without_false_rectangle_squeezing() {
+        let roots=[[1.,0.,0.],[0.,0.,1.],[-1.,0.,0.],[0.,0.,-1.],[0.,0.,0.]];
+        let outline=root_outline(&roots);
+        assert_eq!(outline.len(),4);
+        for step in 0..72 {
+            let rotation=Quat::from_rotation_y(step as f32*std::f32::consts::TAU/72.);
+            let fit=root_fit(&outline,Vec3::ZERO,rotation,Vec3::ONE,Vec2::ZERO,[-1.,1.,-1.,1.]);
+            assert!((fit-1.).abs()<0.00001,"rotating roots already inside their plot must retain crown width");
+            for bounds in [[-0.6,0.6,-1.,1.],[-1.,1.,-0.5,0.5]] {
+                let offset=Vec2::new(0.12,-0.08);
+                let fit=root_fit(&outline,Vec3::ZERO,rotation,Vec3::ONE,offset,bounds);
+                for point in roots {
+                    let p=rotation*(Vec3::from_array(point)*fit);
+                    assert!(p.x+offset.x>=bounds[0]-0.00001 && p.x+offset.x<=bounds[1]+0.00001
+                        && p.z+offset.y>=bounds[2]-0.00001 && p.z+offset.y<=bounds[3]+0.00001);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn all_broadleaf_root_hulls_protect_native_contacts_at_continuous_yaw() {
+        let family=GroveFamily::KantoDeciduous;
+        for at in seeds(family) {
+            let mut mesh=TerrainMeshData::default();
+            foliage::append_family_canopy(&mut mesh,PROTOTYPE_BOUNDS,0.,PROTOTYPE_TILE,*at,[false;4],family);
+            let roots=mesh.solid.positions.iter().filter(|p|p[1]<=PROTOTYPE_TILE*0.18).copied().collect::<Vec<_>>();
+            let outline=root_outline(&roots);
+            assert!(outline.len()>=3 && outline.len()<100);
+            let offset=foliage::grove_trunk_offset(*at,32.);
+            let origin=Vec3::new(offset.x,0.,offset.y);
+            for step in 0..24 {
+                let rotation=Quat::from_rotation_y(step as f32*std::f32::consts::TAU/24.);
+                let scale=Vec3::new(1.15,1.,0.9);
+                let fit=root_fit(&outline,origin,rotation,scale,offset,PROTOTYPE_BOUNDS);
+                for p in &roots {
+                    let p=rotation*(scale*fit*(Vec3::from_array(*p)-origin))+origin;
+                    assert!(p.x>=-16.0001 && p.x<=16.0001 && p.z>=-16.0001 && p.z<=16.0001,
+                        "the real modeled root must remain in its source plot at every yaw");
+                }
+            }
+        }
+    }
+
+
+    #[test]
+    fn deciduous_placements_share_three_branch_models_in_four_bounded_age_classes() {
         let library=Library::default();let mut keys=Vec::new();
         for z in -12..12 {for x in -12..12 {
             for neighbors in [[false;4],[true;4],[true,false,true,false]] {
@@ -368,17 +508,21 @@ mod tests {
                 assert_eq!(key,Key::new(GroveFamily::KantoDeciduous,[x,z],[false;4]));
             }
         }}
-        assert_eq!(keys.len(),3,"position and neighbors must not create additional deciduous meshes");
+        assert_eq!(keys.len(),12,"three branch models need four leaf-preserving age classes");
         let mut signatures=Vec::new();
         for key in keys {
+            assert_eq!(Key::new(GroveFamily::KantoDeciduous,
+                seeds(GroveFamily::KantoDeciduous)[key.variant as usize],[false;4]),key);
             let source=library.prototype(key,GroveFamily::KantoDeciduous);
             let same=library.prototype(key,GroveFamily::KantoDeciduous);
             assert!(Arc::ptr_eq(&source,&same));
             signatures.push(occluder_fade::geometry_signature(
                 &crate::mesh::SurfaceMeshData::default(),source.groups.clone()));
         }
-        assert!(signatures[0]!=signatures[1] && signatures[1]!=signatures[2] && signatures[0]!=signatures[2]);
-        assert_eq!(library.entries.lock().unwrap().len(),3);
+        for (i,signature) in signatures.iter().enumerate() {
+            assert!(!signatures[..i].contains(signature));
+        }
+        assert_eq!(library.entries.lock().unwrap().len(),12);
     }
 
     #[test]
@@ -469,7 +613,7 @@ mod tests {
         let mut indices = 0;
         for family in [GroveFamily::JohtoPine, GroveFamily::AncientForest] {
             for density in 0..=4 {
-                for &coordinates in seeds() {
+                for &coordinates in seeds(family) {
                         let mut mesh = TerrainMeshData::default();
                         foliage::append_family_canopy(&mut mesh, PROTOTYPE_BOUNDS, 0.,
                             PROTOTYPE_TILE, coordinates,
@@ -491,11 +635,45 @@ mod tests {
     }
 
     #[test]
+    fn pine_instances_keep_branch_depth_across_young_and_mature_heights() {
+        let family=GroveFamily::JohtoPine;
+        let mut low=f32::INFINITY;
+        let mut high=0.0_f32;
+        for z in -64..64 {for x in -64..64 {for neighbors in [[false;4],[true;4]] {
+            let coordinates=[x,z];
+            let key=Key::new(family,coordinates,neighbors);
+            let prototype=seeds(family)[key.variant as usize];
+            let ratio=foliage::instance_vertical_ratio(family,coordinates,prototype,neighbors);
+            low=low.min(ratio);high=high.max(ratio);
+            assert!((0.60..1.70).contains(&ratio),
+                "shared foliage must not flatten or stretch its needle volume: {coordinates:?}, {prototype:?}, {ratio}");
+        }}}
+        println!("pine prototype vertical ratios: {low:.6}..{high:.6}");
+    }
+
+    #[test]
+    fn deciduous_instances_keep_leaf_depth_across_young_and_mature_heights() {
+        let family=GroveFamily::KantoDeciduous;
+        let mut low=f32::INFINITY;
+        let mut high=0.0_f32;
+        for z in -64..64 {for x in -64..64 {
+            let at=[x,z];let key=Key::new(family,at,[false;4]);
+            let prototype=seeds(family)[key.variant as usize];
+            let ratio=foliage::instance_vertical_ratio(family,at,prototype,[false;4]);
+            low=low.min(ratio);high=high.max(ratio);
+            assert!((0.60..1.70).contains(&ratio),
+                "shared broadleaf blades must retain their depth: {at:?}, {prototype:?}, {ratio}");
+        }}
+        println!("deciduous prototype vertical ratios: {low:.6}..{high:.6}");
+    }
+
+    #[test]
     fn library_has_complete_variety_and_bounded_world_independent_keys() {
-        for (variant, &coordinates) in seeds().iter().enumerate() {
-            let key = Key::new(GroveFamily::JohtoPine, coordinates, [true; 4]);
+        for family in [GroveFamily::JohtoPine,GroveFamily::AncientForest] {
+        for (variant, &coordinates) in seeds(family).iter().enumerate() {
+            let key = Key::new(family, coordinates, [true; 4]);
             assert_eq!(key.variant as usize, variant);
-        }
+        }}
         let mut keys = Vec::new();
         for family in [GroveFamily::JohtoPine, GroveFamily::AncientForest] {
             for z in -40..40 {
@@ -559,7 +737,7 @@ mod tests {
             }
         }
         queue.apply(&mut world);
-        let offset = foliage::grove_trunk_offset(seeds()[key.variant as usize], 32.);
+        let offset = foliage::grove_trunk_offset(seeds(GroveFamily::JohtoPine)[key.variant as usize], 32.);
         let prototype_root = Vec3::new(offset.x, 0., offset.y);
         let mut parents = world.query::<(&Mesh3d,&ChildOf)>();
         for (mesh,parent) in parents.iter(&world) {
@@ -598,7 +776,7 @@ mod tests {
     #[test]
     fn shared_pines_retain_full_leader_height_at_every_plot_scale() {
         let library = Library::default();
-        for coordinates in seeds().iter().copied().chain([[4,8],[-12,4],[29,4]]) {
+        for coordinates in seeds(GroveFamily::JohtoPine).iter().copied().chain([[4,8],[-12,4],[29,4]]) {
             for neighbors in [[false;4], [true;4], [true,false,true,false]] {
                 for tile in [8.,16.] {
                     let groups = library.prepare([0.,tile*2.,0.,tile*2.],3.,tile,
@@ -611,7 +789,8 @@ mod tests {
                     assert!((low.y - 3.).abs() < 0.001);
                     assert!(high.y >= leader - 0.001,
                         "runtime prototype compressed the mature leader: {coordinates:?}, {neighbors:?}, {tile}, {high:?}, {leader}");
-                    assert!(high.y > 3. + tile * 8.);
+                    assert!(high.y > 3. + tile * 2.6,
+                        "young trees must keep their complete planted height");
                 }
             }
         }

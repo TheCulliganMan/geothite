@@ -5,7 +5,7 @@ from pathlib import Path
 import fighting_glb as author
 import test_gengar_glb as skin
 from skin_glb_test_support import IDENTITY
-from sculpt_test_support import parts_overlap,indexed_ray_intersections as rays
+from sculpt_test_support import parts_overlap,indexed_ray_intersections as rays,crossed_faces
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
 
 class FightingSkinTests(unittest.TestCase):
@@ -78,7 +78,7 @@ class FightingSkinTests(unittest.TestCase):
     mats=m.matrices(clip,.31);parent=dict(ps[body],positions=sum(m.posed(body,mats),[]))
     for i,n in enumerate(m.names):
      if not n.startswith(('Arm /','Leg /')):continue
-     count=24 if n.startswith('Arm /') else 14;points=m.posed(i,mats)
+     count=28 if n.startswith('Arm /') else 22;points=m.posed(i,mats)
      for j in set(m.indices[i][:(count-2)*3]):
       x,y,z=points[j];hits=rays(parent,x,y);self.assertTrue(hits,(s,clip,n));self.assertTrue(min(hits)<z<max(hits),(s,clip,n))
  def test_fitted_gaze_and_machoke_bands_clear_actual_parent_during_motion(self):
@@ -86,7 +86,9 @@ class FightingSkinTests(unittest.TestCase):
    ps=m.neutral_model()['primitives']
    for i,n in enumerate(m.names):
     if n.startswith('Eye / fitted'):parent=self.find(m,'Body /')
-    elif n.startswith('Eye / narrow'):parent=self.find(m,'Eye / fitted',[n.split()[-1]])
+    elif n.startswith('Eye / red iris'):parent=self.find(m,'Eye / fitted',[n.split()[-1]])
+    elif n.startswith('Eye / dark pupil'):parent=self.find(m,'Eye / red iris',[n.split()[-1]])
+    elif n.startswith('Eye / small catchlight'):parent=self.find(m,'Eye / dark pupil',[n.split()[-1]])
     elif n.startswith('Arm marking /'):parent=self.find(m,'Arm /',[n.split()[-2]])
     else:continue
     for clip in m.clips:
@@ -117,5 +119,51 @@ class FightingSkinTests(unittest.TestCase):
    for clip in m.doc['animations']:
     idle=clip['name'].endswith('.idle');self.assertEqual(clip['extras']['loopSuggested'],idle);self.assertEqual(clip['extras']['cueRelative'],not idle)
     self.assertTrue(all(c['target']['path']=='rotation' and c['target']['node']!=0 for c in clip['channels']))
+
+ def test_mature_mouths_have_empty_chambers_in_the_moving_head_frame(self):
+  for s in ('machoke','machamp'):
+   m=self.models[s];h=author.HEIGHTS[s]
+   for clip,t in (('idle',0.),('idle',.31),('attack',.18),('attack',.55),('hit',.18),('hit',.55)):
+    mats=m.matrices(clip,t);carrier=mats[3]
+    def local(point):return [sum(carrier[4*axis+j]*(point[j]-carrier[12+j]) for j in range(3)) for axis in range(3)]
+    ps={n:dict(positions=[v for p in m.posed(i,mats) for v in local(p)],indices=m.indices[i]) for i,n in enumerate(m.names)}
+    find=lambda prefix:next(p for n,p in ps.items() if n.startswith(prefix))
+    upper=find('Mouth / broad upper');jaw=find('Mouth / broad lower jaw');tongue=find('Mouth / seated tongue');lining=find('Mouth / recessed chamber')
+    points=list(zip(upper['positions'][::3],upper['positions'][1::3],upper['positions'][2::3]))
+    roof=min(y for x,y,z in points if abs(x)<.035*h and z>.16*h)
+    floor=max(max(jaw['positions'][1::3]),max(tongue['positions'][1::3]));self.assertGreater(roof-floor,.01*h,(s,clip,t,'closed mouth'))
+    y=(roof+floor)/2;front=max(upper['positions'][2::3]);body=find('Body /')
+    rim=min(max(rays(body,side*.11*h,y)) for side in (-1,1))
+    for x in (-.025*h,0.,.025*h):
+     backing=rays(lining,x,y);self.assertTrue(backing,(s,clip,t,'samples missed mouth backing'))
+     back=max(backing);self.assertGreater(rim-back,.03*h,(s,clip,t,'flat paint rather than a recessed chamber'))
+     self.assertGreater(front-back,.06*h,(s,clip,t,'mouth has no depth'))
+     for name,p in ps.items():
+      if not min(p['positions'][::3])<=x<=max(p['positions'][::3]) or not min(p['positions'][1::3])<=y<=max(p['positions'][1::3]):continue
+      hits=sorted({round(z,8) for z in rays(p,x,y)})
+      # Stay in front of the actual backing at this lateral slice. A fixed
+      # distance from a projecting lip can overshoot the throat tissue.
+      for fraction in (.1,.3,.6,.85):
+       self.assertEqual(sum(z>front-fraction*(front-back) for z in hits)%2,0,(s,clip,t,name,'solid fills aperture'))
+
+ def test_mature_lips_jaws_and_tongues_are_seated_in_actual_tissue(self):
+  for s in ('machoke','machamp'):
+   m=self.models[s];ps=m.neutral_model()['primitives'];body=next(p for p in ps if p['part'].startswith('Body /'))
+   for clip in m.clips:
+    mats=m.matrices(clip,.31);posed=[dict(p,positions=sum(m.posed(i,mats),[])) for i,p in enumerate(ps)];body=posed[self.find(m,'Body /')]
+    jaw=posed[self.find(m,'Mouth / broad lower jaw')]
+    for p in posed:
+     if p['part'].startswith(('Mouth / broad upper','Mouth / broad lower jaw')):self.assertTrue(parts_overlap(body,p),(s,clip,p['part']))
+     if p['part'].startswith('Mouth / seated tongue'):self.assertTrue(parts_overlap(jaw,p),(s,clip,'tongue detached'))
+
+ def test_major_volumes_and_bent_elbows_do_not_cross_themselves(self):
+  for s,m in self.models.items():
+   ps=m.neutral_model()['primitives']
+   for p in ps:
+    if p['part'].startswith(('Body /','Arm /','Leg /','Foot /','Hand /','Mouth / broad','Tail /')):self.assertIsNone(crossed_faces(p),(s,p['part']))
+   for clip in m.clips:
+    mats=m.matrices(clip,.31)
+    for i,p in enumerate(ps):
+     if p['part'].startswith('Arm /'):self.assertIsNone(crossed_faces(dict(p,positions=sum(m.posed(i,mats),[]))),(s,clip,p['part']))
 
 if __name__=='__main__':unittest.main()

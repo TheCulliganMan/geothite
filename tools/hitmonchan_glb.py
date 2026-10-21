@@ -2,7 +2,7 @@
 """Canonical Hitmonchan skin with planted boots, fitted crown gaze and articulated boxing gloves."""
 import argparse,hashlib,json,math,struct
 from pathlib import Path
-from hitmonchan_sculpt import sculpture,HEIGHT
+from hitmonchan_sculpt import sculpture,HEIGHT,arm_path
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 MAX_BYTES=1024*1024
 SOURCE=sculpture();RAW=sculpture(normalize=False)
@@ -14,13 +14,13 @@ def geometry_digest(model):
  for p in model['primitives']:
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
-REST_DIGEST='59c5d015861346b850e7aca45fa3056246a8d8bc950ce5d9793a0035d7856daf'
+REST_DIGEST='b3fad26422a1f21e80521d5d8c6520e78d82631230dd212f3243009466d21150'
 def pivot(p):return tuple((v-(LOW if i==1 else 0.))*SCALE for i,v in enumerate(p))
-BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.85,.015)),('neck',1,(0.,1.06,.06)),('head',2,(0.,1.12,.08)),
- ('shoulder_left',1,(-.19,1.08,.02)),('shoulder_right',1,(.19,1.08,.02)),
- ('arm_left',4,(-.210,1.069,.023)),('wrist_left',6,(-.374,1.033,.157)),
- ('arm_right',5,(.209,1.063,.028)),('wrist_right',8,(.396,.956,.244)),
- ('leg_left',0,(-.171,.319,.043)),('leg_right',0,(.171,.319,.043)))
+BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.85,.015)),('neck',1,(0.,1.06,.045)),('head',2,(0.,1.12,.028)),
+ ('shoulder_left',1,(-.20,1.08,.015)),('shoulder_right',1,(.20,1.08,.015)),
+ ('arm_left',4,arm_path(-1)[0][0]),('wrist_left',6,arm_path(-1)[0][1]),
+ ('arm_right',5,arm_path(1)[0][0]),('wrist_right',8,arm_path(1)[0][1]),
+ ('leg_left',0,(-.174,.340,.010)),('leg_right',0,(.174,.340,.010)))
 JOINTS=tuple((n,parent,pivot(p) if parent is not None else p) for n,parent,p in BASE)
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def skin_weights(part,point):

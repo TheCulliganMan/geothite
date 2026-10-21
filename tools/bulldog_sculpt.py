@@ -2,7 +2,7 @@
 """Original Snubbull and Granbull with distinct jowls, ears, collars and teeth."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch as _fitted_patch,crease_normals
+from sculpt_geometry import part,loft,curved_profiles,ellipsoid,tube,fitted_patch as _fitted_patch,crease_normals,fitted_triangle_contour
 from abra_sculpt import surface
 from bovine_sculpt import oval,curved_tube
 from wing_insect_sculpt import membrane,contour
@@ -20,10 +20,21 @@ def fitted_patch(name,color,outline,surface,thickness=.008):
     for x,y in outline:cx+=x;cy+=y
     return _fitted_patch(name,color,outline,surface,thickness,center=(cx/len(outline),cy/len(outline)))
 
+def rounded_loft(name,color,profiles,segments=32,power=.65):
+    """Beveled rectangular sections, retaining rounded corners and closed caps."""
+    from chikorita_sculpt import f32
+    p=loft(name,color,profiles,segments);sections={f32(y):(rx,rz,z) for y,rx,rz,z in profiles};vertices=[]
+    for x,y,z in zip(p['positions'][::3],p['positions'][1::3],p['positions'][2::3]):
+        rx,rz,cz=sections[y]
+        vertices.append((rx*math.copysign(abs(x/rx)**power,x),y,cz+rz*math.copysign(abs((z-cz)/rz)**power,z-cz)))
+    return crease_normals(part(name,color,vertices,[tuple(p['indices'][i:i+3]) for i in range(0,len(p['indices']),3)],True),40.)
+
 def ears(p,big):
     c=PURPLE if big else PINK;base=1.015 if big else .891
     for s in (-1,1):
-        outline=contour([((s*.18,base),(s*.185,base+.15),(s*.30,base+.215),(s*.37,base+.153)),((s*.37,base+.153),(s*.42,base+.121),(s*.452,base+.058),(s*.449,base+.002)),((s*.449,base+.002),(s*.357,base+.045),(s*.29,base+.022),(s*.18,base))],10)
+        if big:
+            outline=contour([((s*.18,base),(s*.20,base+.065),(s*.31,base+.090),(s*.40,base+.055)),((s*.40,base+.055),(s*.46,base+.035),(s*.47,base-.050),(s*.45,base-.085)),((s*.45,base-.085),(s*.35,base-.025),(s*.26,base-.025),(s*.18,base))],10)
+        else: outline=contour([((s*.18,base),(s*.185,base+.15),(s*.30,base+.215),(s*.37,base+.153)),((s*.37,base+.153),(s*.42,base+.121),(s*.452,base+.058),(s*.449,base+.002)),((s*.449,base+.002),(s*.357,base+.045),(s*.29,base+.022),(s*.18,base))],10)
         e=membrane('Ear / broad folded bulldog flap '+str(s),c,outline,1,root_z=.001,thickness=.035)
         # Lift the center ridge and fold the outer third toward the muzzle.
         v=[tuple(e['positions'][i:i+3]) for i in range(0,len(e['positions']),3)]
@@ -46,19 +57,32 @@ def eyes(p,head,big):
 def limbs(p,body,big):
     c=PURPLE if big else PINK
     for s in (-1,1):
-        pts=[(s*.15,.335,-.010),(s*.193,.209,-.005),(s*.222,.085,.041)] if big else [(s*.116,.237,0),(s*.132,.124,.009),(s*.154,.066,.048)]
-        p.append(curved_tube('Leg / bent muscular supporting shin '+str(s),c,pts,[.095,.068,.054] if big else [.047,.041,.034],22))
-        foot=ellipsoid('Foot / broad grounded bulldog paw '+str(s),c if big else CREAM,(s*(.224 if big else .157),.052 if big else .047,.092),(.101,.052,.134) if big else (.080,.047,.112),28,18);p.append(foot);fs=surface(foot)
+        # Granbull's short supports sit beneath the hips. Its toe projection
+        # comes from the paw, not from tilting the entire shin forward.
+        pts=[(s*.14,.33,-.012),(s*.225,.18,-.015),(s*.24,.062,-.018)] if big else [(s*.116,.237,0),(s*.132,.124,.009),(s*.154,.066,.048)]
+        p.append(curved_tube('Leg / upright muscular supporting shin '+str(s) if big else 'Leg / bent muscular supporting shin '+str(s),c,pts,[.102,.090,.062] if big else [.047,.041,.034],22))
+        if big:
+            # Retain the former exact floor datum so this paw correction does
+            # not change the upright legs or their physical normalization.
+            floor=.038+.038*math.cos(math.pi*(18+.025)/(18+.05))
+            foot=rounded_loft('Foot / broad grounded bulldog paw '+str(s),c,((floor,.090,.112,.05),(.018,.105,.130,.05),(.054,.095,.120,.045),(.076,.063,.075,-.005)),28,.5)
+            for i in range(0,len(foot['positions']),3):foot['positions'][i]+=s*.24
+        else:foot=ellipsoid('Foot / broad grounded bulldog paw '+str(s),CREAM,(s*.157,.047,.092),(.080,.047,.112),28,18)
+        p.append(foot);fs=surface(foot)
         for j,dx in enumerate((-.032,.032) if big else (-.025,.025)):
-            x=s*(.224 if big else .157)+dx;p.append(tube(f'Toe groove / fitted cleft {s} {j}',INK,[(x,y,fs(y,x)+.001) for y in (.025,.045,.067)],[.0014]*3,8))
-        pts=[(s*.14,.643,-.002),(s*.294,.671,.014),(s*.426,.640,.090)] if big else [(s*.099,.495,0),(s*.193,.565,.021),(s*.278,.637,.078)]
+            x=s*(.24 if big else .157)+dx;p.append(tube(f'Toe groove / fitted cleft {s} {j}',INK,[(x,y,fs(y,x)+.001) for y in ((.015,.030,.050) if big else (.025,.045,.067))],[.0014]*3,8))
+        pts=[(s*.19,.68,.005),(s*.30,.55,.035),(s*.33,.56,.18)] if big else [(s*.099,.495,0),(s*.193,.565,.021),(s*.278,.637,.078)]
         p.append(curved_tube('Arm / curved reaching bulldog forelimb '+str(s),c,pts,[.070,.067,.056] if big else [.037,.033,.027],22))
-        if big:p.append(curved_tube('Wrist / dark snug cuff '+str(s),INK,[(s*.372,.652,.059),(s*.397,.646,.073)],[.063,.061],22))
-        hand=ellipsoid('Hand / broad rounded bulldog fist '+str(s),c,pts[-1],(.077,.064,.078) if big else (.048,.035,.048),26,18);p.append(hand)
+        if big:p.append(curved_tube('Wrist / dark snug cuff '+str(s),INK,[(s*.32,.555,.13),(s*.328,.56,.16)],[.063,.061],22))
+        if big:
+            hand=rounded_loft('Hand / broad rounded bulldog fist '+str(s),c,((.496,.045,.055,.18),(.512,.074,.075,.18),(.56,.077,.078,.18),(.60,.060,.065,.17),(.624,.040,.045,.17)),26,.6)
+            for i in range(0,len(hand['positions']),3):hand['positions'][i]+=s*.33
+        else:hand=ellipsoid('Hand / broad rounded bulldog fist '+str(s),c,pts[-1],(.048,.035,.048),26,18)
+        p.append(hand)
         if big:
             hs=surface(hand)
             for j,dx in enumerate((-.022,.022)):
-                x=pts[-1][0]+dx;p.append(tube(f'Hand fold / fitted knuckle cleft {s} {j}',INK,[(x,y,hs(y,x)+.001) for y in (.608,.630,.652)],[.0014]*3,8))
+                x=pts[-1][0]+dx;p.append(tube(f'Hand fold / fitted knuckle cleft {s} {j}',INK,[(x,y,hs(y,x)+.001) for y in (.528,.550,.572)],[.0014]*3,8))
     p.append(curved_tube('Tail / short blunt canine tail',c,[(0,.332 if big else .293,-.105),(0,.383 if big else .330,-.207),(0,.423 if big else .365,-.259)],[.039,.026,.002],20))
 
 def snubbull():
@@ -77,19 +101,27 @@ def snubbull():
     limbs(p,body,False);return p
 
 def granbull():
-    body=loft('Body / powerful purple chest belly and hips',PURPLE,curved_profiles(((.234,.110,.078,-.006),(.29,.219,.149,-.012),(.399,.240,.178,-.012),(.526,.217,.165,-.002),(.645,.185,.125,.009),(.724,.104,.095,.013)),4),36)
+    body=loft('Body / powerful purple chest belly and hips',PURPLE,curved_profiles(((.13,.135,.09,-.006),(.25,.26,.17,-.012),(.399,.25,.185,-.012),(.526,.23,.17,-.002),(.645,.20,.14,.009),(.724,.104,.095,.013)),4),36)
     neck=ellipsoid('Neck / strong purple supporting neck',PURPLE,(0,.732,.015),(.107,.123,.090),28,18)
-    head=loft('Head / high canine forehead and heavy jaw support',PURPLE,curved_profiles(((.643,.044,.051,.10),(.706,.198,.158,.028),(.822,.261,.173,.015),(.965,.249,.176,-.006),(1.067,.189,.139,-.020),(1.102,.043,.032,-.020)),4),40)
+    head=rounded_loft('Head / high canine forehead and heavy jaw support',PURPLE,curved_profiles(((.643,.044,.051,.10),(.706,.198,.158,.028),(.822,.278,.173,.015),(.965,.263,.176,-.006),(1.067,.195,.139,-.020),(1.102,.043,.032,-.020)),4),40,.72)
+    vertices=[]
+    for x,y,z in zip(head['positions'][::3],head['positions'][1::3],head['positions'][2::3]):
+        r2=(x/.16)**2+((y-.85)/.075)**2
+        if z>.02 and r2<1.:z-=.15*(1.-r2)**1.5
+        vertices.append((x,y,z))
+    head=crease_normals(part(head['part'],PURPLE,vertices,[tuple(head['indices'][i:i+3]) for i in range(0,len(head['indices']),3)],True),40.)
     p=[body,neck,head];eyes(p,head,True);ears(p,True)
     bib=fitted_patch('Collar / fitted dark triangular chest bib',INK,[(-.120,.685),(.120,.685),(.079,.560),(0,.528),(-.079,.560)],surface(body),.012);p.append(bib)
-    mouth=fitted_patch('Mouth / broad open dark canine mouth',INK,oval(0,.790,.163,.094,36),surface(head),.010);p.append(mouth)
-    p.append(fitted_patch('Mouth / fitted rosy tongue',TONGUE,oval(0,.735,.089,.035,28),surface(mouth),.006))
-    jaw=ellipsoid('Jaw / heavy projecting purple lower jaw',PURPLE,(0,.696,.198),(.185,.065,.116),36,22);p.append(jaw)
-    muzzle=ellipsoid('Muzzle / short upper purple canine snout',PURPLE,(0,.889,.194),(.125,.058,.080),32,20);p.append(muzzle)
-    p.append(ellipsoid('Nose / broad black canine nose',INK,(0,.907,.260),(.046,.027,.034),28,18))
+    # The black lining follows a real recess in the head, not a flat disk
+    # spanning the opening. The lower jaw and tongue remain separate solids.
+    mouth=crease_normals(fitted_triangle_contour('Mouth / broad open dark canine mouth',INK,oval(0,.85,.155,.070,36),head,.0015),45.);p.append(mouth)
+    p.append(ellipsoid('Tongue / rounded lower-jaw tongue',TONGUE,(0,.835,.18),(.065,.016,.060),28,16))
+    jaw=rounded_loft('Jaw / heavy projecting purple lower jaw',PURPLE,((.66,.15,.10,.16),(.70,.21,.13,.16),(.76,.23,.14,.16),(.81,.20,.12,.18),(.83,.15,.09,.16)),36,.60);p.append(jaw)
+    muzzle=ellipsoid('Muzzle / short upper purple canine snout',PURPLE,(0,.910,.205),(.11,.035,.070),32,20);p.append(muzzle)
+    p.append(ellipsoid('Nose / broad black canine nose',INK,(0,.925,.270),(.025,.013,.020),28,18))
     for s in (-1,1):
-        p.append(curved_tube('Tusk / enormous upward ivory lower canine '+str(s),WHITE,[(s*.147,.710,.235),(s*.192,.782,.267),(s*.215,.882,.247),(s*.199,.981,.183),(s*.178,1.036,.150)],[.045,.048,.034,.013,.0015],24))
-        p.append(curved_tube('Fang / small downward upper canine '+str(s),WHITE,[(s*.062,.854,.238),(s*.068,.823,.260)],[.013,.0015],16))
+        p.append(curved_tube('Tusk / body-colored upward lower-jaw point '+str(s),PURPLE,[(s*.17,.765,.265),(s*.23,.82,.285),(s*.25,.92,.235),(s*.235,1.065,.155)],[.065,.060,.032,.0015],20))
+        p.append(curved_tube('Fang / small downward upper canine '+str(s),WHITE,[(s*.062,.884,.230),(s*.068,.865,.270)],[.011,.0015],16))
     limbs(p,body,True);return p
 
 def sculpture(species,normalize=True):
@@ -99,7 +131,7 @@ def sculpture(species,normalize=True):
     # Exact local Crystal normal RGB555 colors, expanded to sRGB8.
     for q in p:
         name=q['part'];big=species=='granbull'
-        rgb=(123,33,140) if name.startswith('Mouth / fitted rosy') else (0,0,0) if name.startswith(('Nose /','Pupil /','Eye / fitted','Ear marking /','Mouth /','Wrist /','Hand fold /','Toe groove /','Collar / fitted')) else (57,82,107) if name.startswith(('Spot /','Collar / continuous')) else (255,255,255) if name.startswith(('Fang /','Tusk /','Eye /')) or (not big and name.startswith('Foot /')) else ((189,99,181) if big else (231,115,107))
+        rgb=(123,33,140) if name.startswith(('Mouth / fitted rosy','Tongue /')) else (0,0,0) if name.startswith(('Nose /','Pupil /','Eye / fitted','Ear marking /','Mouth /','Wrist /','Hand fold /','Toe groove /','Collar / fitted')) else (57,82,107) if name.startswith(('Spot /','Collar / continuous')) else (255,255,255) if name.startswith(('Fang /','Eye /')) or (not big and name.startswith('Foot /')) else ((189,99,181) if big else (231,115,107))
         q['base_color']=linear(tuple(v/255 for v in rgb))
     if normalize:
         for q in p:

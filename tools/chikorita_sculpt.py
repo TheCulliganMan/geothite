@@ -12,9 +12,9 @@ import struct
 
 from skin_glb import COORDINATES
 
-PALETTE = {'body': (173/255,189/255,99/255), 'leaf': (24/255,165/255,0.),
+PALETTE = {'body': (193/255,214/255,124/255), 'leaf': (62/255,151/255,35/255),
            'leaf_fold': (30/255,151/255,8/255), 'ink': (.035,.043,.025),
-           'white': (1.,1.,.97)}
+           'white': (1.,1.,.97), 'iris': (.73,.10,.22)}
 FULL_HEIGHT = 1.
 BODY_HEIGHT = .688
 BODY = 'Body / continuous raised head throat pear and four supporting legs'
@@ -83,9 +83,9 @@ def body_cage():
     count=16
     # Height, Z-center, X-radius, Z-radius. This is one body through the
     # raised head: there is no intersecting head sphere or narrow neck join.
-    profiles=((.062,-.033,.186,.255),(.171,-.034,.235,.305),
-              (.340,-.012,.236,.304),(.455,.063,.215,.239),
-              (.555,.137,.185,.173),(.635,.164,.126,.112),
+    profiles=((.062,-.065,.200,.290),(.171,-.060,.250,.350),
+              (.340,-.055,.245,.350),(.455,.100,.210,.220),
+              (.555,.160,.180,.160),(.635,.170,.126,.112),
               (.684,.167,.045,.042))
     vertices=[(w*math.cos(math.tau*i/count),y,z+d*math.sin(math.tau*i/count))
               for y,z,w,d in profiles for i in range(count)]
@@ -99,7 +99,7 @@ def body_cage():
     for h in holes:
         ids=(h,(h+1)%count,(h+2)%count,(h+2)%count+count,(h+1)%count+count,h+count)
         center=mean([vertices[i] for i in ids]);sx=1 if center[0]>0 else -1;sz=1 if center[2]>0 else -1
-        cx=sx*.174;cz=.174 if sz>0 else -.224
+        cx=sx*.185;cz=.174 if sz>0 else -.270
         # The initial ring faces outwards; the bottom half continues inward
         # under the belly, and the upper half rounds the shoulder down outside.
         direction=unit((center[0],0.,center[2]+.033)); tangent=(-direction[2],0.,direction[0])
@@ -176,48 +176,45 @@ def collar_surface(y,angle,body):
     return add(origin,mul(direction,max(hits)-.004))
 
 
-def face_patch(name,color,outline,body,offset=.004):
-    # Ear-clip the flat artwork, then subdivide and conform every sample to
-    # the actual body surface. A fan alone bridges across facets and buries
-    # eyes in the forehead. The closed, thin fitted patch has no button rim.
-    vertices,faces=body
-    area=sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(outline,outline[1:]+outline[:1]))
-    if area<0:outline=list(reversed(outline))
-    def orient(a,b,c):return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
-    points=list(outline);active=list(range(len(points)));triangles=[]
-    while len(active)>3:
-        for j,b in enumerate(active):
-            a,c=active[j-1],active[(j+1)%len(active)]
-            if orient(points[a],points[b],points[c])<=1e-12:continue
-            if any(all(orient(points[u],points[v],points[q])>=-1e-12 for u,v in ((a,b),(b,c),(c,a))) for q in active if q not in (a,b,c)):continue
-            triangles.append((a,b,c));active.remove(b);break
-        else:raise ValueError('facial polygon cannot be triangulated')
-    triangles.append(tuple(active))
-    for _ in range(2):
-        mids={};out=[]
-        def midpoint(a,b):
-            edge=tuple(sorted((a,b)))
-            if edge not in mids:mids[edge]=len(points);points.append(mean([points[a],points[b]]))
-            return mids[edge]
-        for a,b,c in triangles:
-            d,e,f=midpoint(a,b),midpoint(b,c),midpoint(c,a)
-            out.extend(((a,d,f),(d,b,e),(f,e,c),(d,e,f)))
-        triangles=out
-    front=[(x,y,front_at(x,y,vertices,faces)+offset) for x,y in points]
-    back=[sub(p,(0.,0.,.0015)) for p in front];n=len(front)
-    edges={}
-    for tri in triangles:
-        for a,b in zip(tri,tri[1:]+tri[:1]):edges.setdefault(tuple(sorted((a,b))),[]).append((a,b))
-    fs=list(triangles)+[(c+n,b+n,a+n) for a,b,c in triangles]
-    fs += [(a,a+n,b+n,b) for edge in edges.values() if len(edge)==1 for a,b in edge]
-    return mesh(name,color,front+back,fs)
+def face_patch(name,color,outline,body,offset=.003):
+    """Clip every artwork face to the actual stored skull triangles."""
+    from sculpt_geometry import fitted_triangle_contour
+    parent=mesh(BODY,'body',*body)
+    p=fitted_triangle_contour(name,PALETTE[color],outline,parent,offset,precision=8)
+    # Normals describe serialized positions, including narrow clipped corners.
+    vertices=list(zip(p['positions'][::3],p['positions'][1::3],p['positions'][2::3]))
+    return mesh(name,color,vertices,[tuple(p['indices'][i:i+3]) for i in range(0,len(p['indices']),3)])
 
 
 # Root-to-tip path and blade half widths. The upper central crease has the
 # explicit height 1.0; no later bounding-box normalisation changes body scale.
-LEAF_PATH=((0.,.715,.152,.013),(.005,.803,.105,.058),(.030,.895,.025,.106),
-           (.070,.963,-.090,.129),(.119,.988,-.221,.117),(.164,.947,-.350,.085),
-           (.194,.858,-.452,.043),(.208,.769,-.508,.002))
+LEAF_PATH=((0.,.715,.152,.013),(.003,.803,.105,.058),(.009,.895,.025,.115),
+           (.018,.963,-.090,.158),(.029,.988,-.221,.151),(.042,.947,-.350,.110),
+           (.053,.858,-.452,.050),(.060,.769,-.508,.002))
+
+
+def gaze(side,cx,cy,outline,body,fit,kind='upright',iris='red'):
+    """Five nested fitted tissues on the actual skull facets."""
+    label='left' if side<0 else 'right'
+    parts=[fit('Eye / '+label+' fitted '+kind+' ink','ink',outline,body,.003)]
+    parts.append(fit('Eye / '+label+' fitted ivory sclera','white',
+        [(cx+(x-cx)*.83,cy+(y-cy)*.85) for x,y in outline],body,.0045))
+    rx=(max(x for x,y in outline)-min(x for x,y in outline))*.275
+    ry=(max(y for x,y in outline)-min(y for x,y in outline))*.345
+    def oval(x,y,w,h):return [(x+w*math.cos(math.tau*j/16),y+h*math.sin(math.tau*j/16)) for j in range(16)]
+    ex=cx+side*.0015;ey=cy+.002
+    parts.append(fit('Eye / '+label+' fitted '+iris+' iris','iris',oval(ex,ey,rx,ry),body,.0058))
+    parts.append(fit('Eye / '+label+' fitted narrow pupil','ink',oval(ex,ey,rx*.45,ry*.78),body,.0070))
+    parts.append(fit('Eye / '+label+' catchlight','white',oval(ex-side*rx*.16,ey+ry*.43,rx*.25,ry*.20),body,.0082))
+    return parts
+
+
+def small_claw(cx,cz,index):
+    x=cx+(-.025,0.,.025)[index];z=cz+.068
+    vertices=[(x-.009,.012,z-.014),(x+.009,.012,z-.014),(x+.009,.008,z+.018),(x-.009,.008,z+.018),
+              (x-.008,.030,z-.009),(x+.008,.030,z-.009),(x+.006,.022,z+.020),(x-.006,.022,z+.020)]
+    return mesh('Claw / '+('left ' if cx<0 else 'right ')+('front ' if cz>0 else 'rear ')+str(index+1),
+        'white',vertices,[(0,3,2,1),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7),(4,5,6,7)])
 
 
 def leaf_mesh():
@@ -244,16 +241,11 @@ def sculpt():
     # Local import avoids the shared geometry module's base-mesh dependency.
     from sculpt_geometry import crease_normals
     body=body_cage();parts=[crease_normals(mesh(BODY,'body',*body),35.)]
-    # Tall fitted eyes lie on the actual front panels, with a pale crescent
-    # and a tiny highlight. No spherical white buttons or invented red iris.
+    # Narrow red irises and pupils wrap the skull, within small ivory sclerae.
     for side,label in ((-1,'left'),(1,'right')):
         cx=side*.103;cy=.540
         outline=[(cx+side*dx,cy+dy) for dx,dy in ((-.025,-.047),(-.036,-.013),(-.032,.027),(-.014,.058),(.011,.061),(.027,.042),(.031,-.013),(.023,-.046),(.0,-.057))]
-        parts.append(face_patch('Eye / '+label+' fitted tall ink','ink',outline,body,.004))
-        crescent=[(cx+side*dx,cy+dy) for dx,dy in ((-.022,-.027),(-.026,.014),(-.014,.045),(-.002,.046),(-.005,.021),(-.008,-.019))]
-        parts.append(face_patch('Eye / '+label+' paper-white crescent','white',crescent,body,.0062))
-        tiny=[(cx+side*dx,cy+dy) for dx,dy in ((.007,.027),(.017,.027),(.018,.037),(.008,.039))]
-        parts.append(face_patch('Eye / '+label+' catchlight','white',tiny,body,.0064))
+        parts+=gaze(side,cx,cy,outline,body,face_patch,'tall')
     # A shallow tapered paper seam: no round tube pasted on the muzzle.
     line=((- .054,.452),(-.033,.441),(0.,.437),(.033,.441),(.054,.452))
     outline=[(x,y+.0018) for x,y in line]+[(x,y-.0037) for x,y in reversed(line)]
@@ -266,9 +258,11 @@ def sculpt():
         base=[add(add(center,mul(u,.030*math.cos(math.tau*j/6))),mul(v,.032*math.sin(math.tau*j/6))) for j in range(6)]
         outer=[add(center,add(mul(sub(p,center),.83),mul(normal,.024))) for p in base]
         rings=[base,outer];parts.append(loft('Collar / seated bud '+str(i+1),'leaf',rings))
-    parts.append(tube(TAIL,'body',[(0.,.230,-.285),(0.,.236,-.343),(0.,.274,-.383),(0.,.293,-.381)],(.061,.055,.043,.026),8))
+    parts.append(tube(TAIL,'body',[(0.,.260,-.350),(0.,.280,-.395),(0.,.325,-.430),(0.,.360,-.440)],(.055,.045,.027,.002),8))
     parts.append(tube(STEM,'leaf',[(0.,.653,.165),(0.,.699,.157),(.0,.741,.139)],(.019,.017,.013),8))
     parts.append(leaf_mesh())
+    for cx in (-.185,.185):
+        for cz in (.174,-.270):parts += [small_claw(cx,cz,i) for i in range(3)]
     # Axis-aligned coordinates and normals can retain tiny rounding residuals.
     # Serialize geometric zero consistently without changing visible anatomy.
     for part in parts:

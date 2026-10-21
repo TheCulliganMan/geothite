@@ -42,6 +42,20 @@ def assert_model_shading(self,models):
 
 
 
+def horizontal_section_bounds(part, height):
+    """Bounds of the stored triangle surface cut by a horizontal plane, in XZ."""
+    points=[part['positions'][i:i+3] for i in range(0,len(part['positions']),3)]
+    section=[]
+    for i in range(0,len(part['indices']),3):
+        tri=[points[j] for j in part['indices'][i:i+3]]
+        for a,b in zip(tri,tri[1:]+tri[:1]):
+            if not (a[1]<=height<b[1] or b[1]<=height<a[1]):continue
+            t=(height-a[1])/(b[1]-a[1])
+            section.append((a[0]+t*(b[0]-a[0]),a[2]+t*(b[2]-a[2])))
+    if not section:raise ValueError('No stored surface crosses the requested height')
+    return tuple(min(p[k] for p in section) for k in range(2)),tuple(max(p[k] for p in section) for k in range(2))
+
+
 def ray_intersections(part, x, y):
     """Independent +Z ray hits on stored triangles, without authoring surface math."""
     positions = [part['positions'][i:i+3] for i in range(0, len(part['positions']), 3)]

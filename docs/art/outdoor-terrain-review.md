@@ -4,10 +4,1367 @@ Make outdoor routes look amazing as 3D environments from every angle while
 preserving the original game's feel. The original colors, time-of-day mood,
 recognizable shapes, scale and route readability guide the art direction.
 Translate those qualities into sculpted forms, crafted surfaces and lighting
-that hold up through full camera orbits, low views and close views. Literal
-pixel matching alone cannot establish 3D quality. Same-state 2D references
-remain useful for judging identity and readability. Preserve gameplay and
-navigation throughout the work.
+that hold up through full camera orbits, low views and close views. The current
+colors are approved; source heights are not a target. Mountains need tall,
+continuous bodies whose interiors rise above their outer edges. A raised
+perimeter around a sunken middle is unacceptable. The latest tall canyon
+candidate is also rejected: reduce the overall relief while retaining rising
+interiors and the approved colors. Avoid towering walls along ordinary routes.
+Same-state 2D references remain useful for identity and readability, but cannot
+establish 3D shape quality. Preserve gameplay and navigation throughout the work.
+
+### Steep cap corner normals — 2026-10-21
+
+Shared cap corners now fall back to their angle-weighted geometric normal when
+neither steep adjoining face passes the crease filter. The former empty result
+retained an authored upward normal, producing bright triangular marks on
+sloping Route9 and Route46 shoulders. The regression covers both world scales
+and preserves positions, indices, pigment and source UVs. An actual 49,534-vertex
+Route9 window has identical positions and topology; 68 normals are corrected.
+
+All 215 distinct selected checks pass, including the eight external-pack checks
+listed below. Logs are `target/outdoor-mineral-normal-final-verified-tests.log`
+and `target/outdoor-mineral-normal-final-native-build.log`. Eight final paired
+views were personally inspected: two each on Routes9 and 46, plus Routes3, 26
+and 44 and National Park. Their state receipts are preserved. The complete capture directory is
+`target/outdoor-mineral-normal-final-review/`; seven additional pairs there were
+captured but not personally inspected. Broad physical shoulders and some edge
+teeth remain. The user accepted the current mountains as good enough and moved
+the current work to National Park trees. Subsequent park work uses code and
+geometry checks without render previews, as requested.
+
+### Whole mountain bodies and entrance ground — 2026-10-21
+
+The mountain surface now shapes the complete body. It no longer adds a crown
+to a native two/four-tile shaft or spreads a distant source course through the
+connected mass as a geometry target. The former regional fill and original
+relief remain paint evidence, preserving the current pigment recipe. The
+geological surface uses source-owned mineral beds, rising from low margins
+into unequal interiors. The ordinary crown has a 3.2–4.8-cell upper envelope;
+small footprints rise only as far as their width allows. Native pixel height
+does not establish that envelope. Caves and raised water retain the additional
+body needed for their real openings and banks.
+
+The horizontal inset now spans approximately 0.28–0.36 source cells. The former
+0.78–1.02-cell inset would leave a broad low apron under the complete-body
+profile. Cap/wall copies still share one ordered horizontal field, and walking
+plots retain their full source grid. Nearby proven standing ground extends
+under the body with a finite linear grade, rather than disappearing one vertex
+inside an exposed edge. Building roofs do not become that ground.
+
+Wall-only columns use their actual lower and upper geometry extents and the
+same horizontal fit as cap columns. The former native-height fallback retained
+chipped horizontal ribs. Distinct native courses meeting at one source column
+now keep separate wall-fit references. Using the lowest cap for both courses
+collapsed the taller course's upper height rings into a triangular fan in the
+unequal-course regression fixture. Cap
+vertices themselves meet the complete geological surface, including where an
+old upright rim stood above a lower cap. The former column fill still supplies
+the same pigment calculation independently of these new fit references.
+Fit references follow each face's source owner and actual upper geometry
+extent. Neighboring courses can receive the same resolved terrain tier, so
+that nominal height cannot identify their original wall extent.
+Neighboring float-UV samples within a subpixel column share one representative
+source point. The rooted bottom sixth retains its contact rounding; the upper
+height rings follow one flank. Short banks outside proven permanent mineral
+keep their original shape. Wall construction now encodes the analytic source
+before chipping. Projecting a chipped diagonal face back onto its plane had
+retained tangential drift from the shared-axis snap, separating successive
+height rings into different source columns.
+
+Walking mineral publishes the new upper surface, including its within-cell
+triangle interpolation. Actor support reads the same geological calculation
+and actual neighboring standing-ground heights. Ordinary source terrain
+offsets apply afterward to both geometry and support. The slope correction now
+also honors a source datum when the current frame has no visible jump edges;
+the old early return was hidden by the former compensated mineral fill.
+
+A complete cave mouth now receives its real zero-height floor before terrain
+offsets. Its four source cells formerly retained the roof drawing's support
+height. Counting that as surrounding ground inflated the first complete-body
+cave preview. The cave's claimed cells are seated explicitly; other cells keep
+their support. The shared ground calculation also recognizes complete entrance
+plots. Standing clearance, the dark lining, closed threshold and native warp
+coordinates retain their existing policies.
+
+All 214 distinct selected checks pass, including eight explicitly executed
+external-pack checks. The new wall-only diagonal fixture verifies the complete
+top, straight upper height rings, seated roots and unchanged short ground
+banks. The production Route26 directional-mineral regression checks actor
+contact against actual cap triangles at twelve fractional positions. The
+datum-only regression checks both geometry and actor support without visible
+jump edges. Existing cap closure, triangle ordering, cave clearance, shore,
+footing, renderer, terrain batch and worker checks pass, including the
+eleven-region worker roundtrip. Native compilation succeeds. Logs are
+`target/outdoor-whole-mountain-verified-tests.log` and
+`target/outdoor-whole-mountain-native-build.log`.
+
+The external cap/wall guard groups original source points by their face owner.
+Every cap copy coincides, and each wall face's actual upper endpoint must meet
+that cap within 0.001 world units. A lower native cap could previously intersect
+a taller wall halfway up. Reparameterizing the complete body moves that cap to
+the new wall top; the former middle height ring no longer represents the join.
+The unequal-course fixture separately requires distinct increasing wall rows,
+straight shared edges, and coincident roots and upper endpoints, even when
+the two courses have the same nominal terrain tier.
+
+Twenty-nine final native views and all their same-state 2D counterparts were
+personally inspected across fifteen maps: Routes2, 3, 9, 10South, 14, 20, 26,
+44, 45 and 46, Blackthorn, Cianwood, Cinnabar, MountMoonSquare and NationalPark.
+Twenty-six views use eye height; the two cap views and the Route26 movement
+view are elevated. Two views use 22:00 lighting. Every paired receipt preserves
+state, and every final image postdates the native binary built after the final
+terrain changes. The evidence is in `target/outdoor-whole-mountain-review/`.
+The two additional movement stills were also inspected. Both 32-frame keyboard
+walks retain active terrain, one build, no pending work, zero fade and no warp:
+Cianwood moves `(10,20)` to `(6,20)`, and Route26 moves `(9,28)` to `(13,28)`.
+The latter also shows the trainer's contact on the reshaped walking mineral.
+The static Route45 mineral pose remains an art diagnostic, not gameplay proof.
+
+The continuous lower bodies remove the broad aprons and tall underlying shafts
+from the previous height candidate. The improvement is clearest at Cianwood,
+Cinnabar and the smaller Seafoam island. Visual acceptance remains open.
+Repeated triangular corner marks are still visible in Route9 `eye4` and
+Route46 `eye6`, despite the new row-fit checks. Projecting shoulders remain in
+Route46 `eye2` and Route3 `eye5`; those checks do not establish the native
+artifacts' visual resolution. Long straight ridges and faint horizontal bands
+remain on Routes44 and 45. Some cuts and pointed feet remain coarse on Route26
+and at Blackthorn. Cinnabar retains its water-side platform, and distant small
+islands remain square or pyramidal. Rigid pond/shore margins, repeating rock
+and buoy courses, Seafoam's bright paving gaps, coarse and porous upper
+foliage, Route12's distant land wedge, and rectangular ground patches remain.
+These checks establish neither browser visual acceptance nor general
+performance. Earlier whole-body candidates remain in the ignored first-probe,
+column-before, course-before and course-sanity capture directories. Temporary
+geometry exports, trace probes, diagnostic source hooks and task helpers were
+removed; no generated game content was published.
+
+### Moderate summit height and low foothills — 2026-10-21
+
+The latest height direction is “Maybe not that tall.” The natural added
+mountain relief now uses 65% of the previous height. Its original 0.85 field
+still supplies pigment, while geometry, mineral footing and within-cell actor
+support share the reduced field. Required cave-roof growth stays full height:
+the first reduction also shortened low entrances, which the standing-clearance
+regression rejected. Native courses, terrace offsets and water levels keep
+their existing roles. This is a 35% reduction of added natural relief, not a
+35% reduction of every mountain's total height.
+
+Unreachable outer courses now start as low foothills, approximately 23–33% of
+their local native height above the neighboring ground. Source-owned mineral
+beds vary the amount. These low heights are sampled at shared grid corners
+before interpolation; looking up a new ground height independently at every
+surface vertex could otherwise leave a low ring beside raised ground. The
+existing two-cell transition restores the filled interior. Walking plots,
+complete entrances and raised-water contacts retain their native course while
+following the reduced natural relief. An adjacent building's standing ground,
+rather than its roof height, sets the foot of the slope.
+
+The old mid-height horizontal bevel is removed above the rooted bottom sixth.
+Compressing it into a much shorter outer face produced a projecting shoulder.
+A first attempt to shrink each cap's horizontal inset with its lowered height
+also folded a Blackthorn cap triangle. The final cap keeps one shared inset
+field; vertical walls approach it from their unchanged ground contacts. The
+topology regression is retained. No filler walls, new textures, extra entities
+or new mesh subdivisions are introduced.
+
+All 210 distinct selected checks pass, including eight explicitly executed
+external-pack tests. A new small-body fixture checks the low outer course,
+strictly rising samples toward the middle, the reduced center height, fixed
+ground contacts and an adjacent tall roof over both ordinary and raised ground.
+The existing cap/wall closure, outward winding, horizontal gradient, complete
+walking-triangle contact and cave-clearance checks remain. The height threshold
+for added summit relief follows the intentional 35% reduction. Terrace, shore,
+footing, renderer, batch and worker checks pass, including the eleven-region
+worker roundtrip. Native compilation succeeds. Logs are
+`target/outdoor-low-foothills-verified-tests.log` and
+`target/outdoor-low-foothills-native-build.log`.
+
+Twenty-five final native views and every same-state 2D counterpart were
+personally inspected across Routes2, 3, 9, 10South, 14, 20, 26, 44 and 46,
+Blackthorn, Cianwood, Cinnabar, MountMoonSquare and NationalPark: fourteen maps.
+Twenty-four views use eye height; one elevated Route44 view exposes the cap
+join. Two views use 22:00 lighting. Every paired receipt preserves state, and
+every final image postdates the final native binary. The 32-frame Cianwood
+keyboard walk reaches `(6,20)` from `(10,20)` with terrain active, one build,
+no pending job, zero fade and no warp. Its movement still was also inspected.
+Final evidence is in `target/outdoor-low-foothills-review/`.
+
+The smaller Seafoam island now has a lower, more continuous flank. The
+previously folded Route9 shoulder no longer projects over its face. Whole-route
+visual acceptance remains open: long straight faces and crests on Route44,
+Cinnabar and Route46 still read as walls in close views. Some native courses
+retain coarse cuts and angular feet, including Routes9 and 46 and Blackthorn.
+The wider low aprons remain too uniform, and Cinnabar's water-side foot still
+reads as a platform. Distant islands remain square or pyramidal. Rigid pond and
+shore margins, repeated rock/buoy courses, Seafoam's bright paving gaps, coarse
+foliage, porous upper leaders, Route12's distant land wedge and rectangular
+ground patches also remain. These checks establish neither browser visual
+acceptance nor general performance.
+
+Rejected early height/inset previews remain ignored in
+`target/outdoor-low-foothills-rejected-probe/` and
+`target/outdoor-low-foothills-bevel-probe/`. The temporary profile hook, raw
+diagnostic output and capture/verification scripts were removed. Packs and
+authored assets were not regenerated.
+
+### Lower outer courses and rock texture on slopes — 2026-10-21
+
+A production Route44 trace showed a native two-tile course, 64 world units at
+the current scale, being filled to roughly 129–130 units by a higher point in
+its connected rock mass. The fill now transitions from the local native course
+at exposed margins to the existing regional fill two source cells inward.
+Complete walking plots, cave entrances and raised-water contacts retain their
+published datum. The high interior and 0.85 relief scale remain. Ground contacts
+stay fixed. Existing pigment uses the previous filled-height calculation, so
+lowering the outer course does not choose a different native paint recipe.
+
+The first preview exposed broad horizontal bands and stretched texture. The
+material still used the original flat X/Z coordinates after the rock had been
+sculpted; an upward-facing portion of a sloped wall could consequently sample
+one texture row along its height. A final mineral-paint pass now registers detail
+on the finished 3D surface after geometry fitting. It preserves the existing
+material family and source-map coordinate basis through scrolling and connected
+paint. Atlas materials, other paint domains and distant repeated donor art are
+excluded. This stage changes UVs only. It adds no textures, geometry or entities.
+
+The shared flank profile also now follows one plane between its endpoints.
+Universal bends at 22% and 70% of every face's height made unrelated masses
+repeat the same horizontal shoulders. Lower mineral weathering remains, while
+those fixed-height bends are removed. The final side views retain angled
+slopes, and their paint has less directional stretching. This does not resolve
+the broader rectangular mountain silhouettes.
+
+All 209 distinct selected checks pass. Four new checks cover a high native
+course filling the center without doubling a lower outer face, unchanged
+native pigment and walking datum, detail coverage on actual slopes at three
+scales/material families, scroll/connection stability and excluded material
+domains. The existing filled-mass regression now checks the retained high
+interior beyond the transition and requires lowered wall samples to remain
+below their joined cap, preventing an upright perimeter above it. Its contact,
+gradient and walking-surface checks remain. Rock, cave, terrace, shore, footing,
+renderer, batch and worker checks pass, including eight explicitly executed
+external-pack tests and the eleven-region worker roundtrip. Native compilation
+succeeds. Logs are `target/outdoor-local-cliff-fill-verified-tests.log` and
+`target/outdoor-local-cliff-fill-native-build.log`.
+
+Thirty final native views and every same-state 2D counterpart were personally
+inspected across Routes2, 3, 9, 10South, 14, 20, 26, 44 and 46, Blackthorn,
+Cianwood, Cinnabar, MountMoonSquare and NationalPark: fourteen maps. All receipts
+preserve state. Twenty-nine views use eye height; one elevated Route44 view
+exposes the cap/face join. Three views use 22:00 lighting. Route44 includes four
+opposing headings, and Route46 adds two side views beside its close northern
+face. The 32-frame Cianwood keyboard walk reaches `(6,20)` from `(10,20)` with
+terrain active, one build, no pending job, zero fade and no warp. Its movement
+still was also inspected.
+
+Final evidence is in `target/outdoor-local-cliff-fill-review/`, with matching
+earlier views in `target/outdoor-retained-flanks-review/`. Three rejected banded
+previews remain in `target/outdoor-local-cliff-fill-banded-probe/`. The temporary
+source trace hook, diagnostic output and capture/verification scripts were
+removed. Packs and authored assets were not regenerated.
+
+Whole-route acceptance remains open. Route44 and Cinnabar still read as broad
+walls front-on. Route9 and Route46 expose block-like masses and coarse cuts;
+Seafoam's isolated island retains tiers, and other isolated islands remain
+square or pyramidal. Rigid shore/pond rims, repeated rock/buoy courses and
+Seafoam's bright paving gaps remain. Close Route3 foliage is coarse and crowded;
+porous upper broadleaf leaders and broad pine sprays still need work. Route12's
+distant green land wedge and rectangular ground patches on Routes2 and 9 also
+remain. These native checks do not establish browser visual acceptance or
+general performance.
+
+### Inward mountain slopes at the existing height — 2026-10-21
+
+Permanent native mineral bodies now have a shared horizontal slope field. Upper
+flanks recede into their existing rock footprints through broad angled sections
+above a short rooted toe. Source-owned mineral beds vary the amount along a
+run; the influence fades over four source cells. A cropped frame cannot create
+a new geological edge. Corner samples and interpolation are shared by cap and
+wall copies. This reshapes the existing mesh without adding triangles, filler
+volumes, textures or entities.
+
+The filled height field remains unchanged, including its rising interiors and
+0.85 relief scale. Native paint, material UVs, ground contacts, claims and
+walking heights retain their existing policies. Complete walking plots keep
+the source surface used by actor support; a shared two-cell fade protects their
+neighbors. Complete cave entrances and elevated standing-water contacts also
+retain their source outline. Ordinary dry ground, water, buildings and foliage
+are not displaced by this mineral field.
+
+Simply retaining the old upper weathering restored only a small bevel and left
+Cinnabar's broad face too vertical. Combining that old corner warp with the new
+slope also folded some cap triangles. The rock-contact regressions caught this
+before the final review. The final mapping first puts upper samples on one
+common horizontal surface, then applies the inward slope. Lower weathering
+eases into it. The formerly projecting Cianwood shelf beside the house now reads
+as a sloping body; Route26's nearby corners and Cinnabar's exposed flank also
+have more modeled shape.
+
+All 205 distinct selected checks pass. Four new regressions cover inward
+upper slopes, ordered cap triangles, unchanged filled heights and pigment,
+fixed ground contacts, joined cap/wall copies, walking-grid protection, source
+crops and connected-map placement. Existing rock-base, cave, terrace, footing,
+shore, renderer, batch and worker checks pass. Eight external-pack tests were
+explicitly executed, including the Blackthorn and Route44 cap/wall seams, five
+Kanto cap layouts, directional walking mineral and the eleven-region worker
+roundtrip. Native compilation succeeds. Logs are
+`target/outdoor-retained-flanks-verified-tests.log` and
+`target/outdoor-retained-flanks-native-build.log`.
+
+Twenty-four final native views and all same-state 2D counterparts were
+personally inspected across Cinnabar, Cianwood, Blackthorn, Lavender,
+MountMoonSquare, NationalPark, Routes2, 10South, 14, 20, 26 and 44: twelve maps.
+All receipts preserve state. Twenty-three views use eye height and one elevated
+Cinnabar view exposes the upper body and pond. The set includes opposing
+headings, two 22:00 views, cave entrances, town/building context and inland,
+forest and coast controls. The 32-frame Cianwood keyboard walk reaches `(6,20)`
+from `(10,20)` with terrain active, one build, no pending job, zero fade and no
+warp. Its movement still was also inspected.
+
+Final evidence is in `target/outdoor-retained-flanks-review/`. Matching earlier
+Cianwood, Cinnabar and Route26 views remain in
+`target/outdoor-beach-bank-review/`; the first weak bevel preview is in
+`target/outdoor-retained-flanks-probe/`. Temporary capture and verification
+scripts were removed. Packs and authored model assets were not regenerated.
+
+Whole-route acceptance remains open. Route44's close northern face still reads
+as a long straight cut, as do some protected Route26 faces. Cinnabar remains
+large and wall-like close up despite its improved flank. Seafoam's isolated
+mineral island has coarse tiers, and other isolated islands remain square or
+pyramidal. Rigid pond/shore rims, repeated mineral and buoy courses, Seafoam's
+bright interior paving gaps, crowded broadleaf foliage, porous upper leaders,
+broad pine sprays, Route12's distant green land wedge and rectangular Route2
+ground patches still need work. These native checks do not establish browser
+visual acceptance or general performance.
+
+### Sloping sand at coastal waterlines — 2026-10-21
+
+Eligible native sand caps now meet the lowered coastal water through closed,
+sloping sand shoulders. The dry cap stays at its previous height. Each shoulder
+extends 0.30–0.44 source cells into proven neighboring water, reaches the
+existing liquid level and closes twelve percent farther beneath it. Shared
+source-owned corner widths keep adjacent sections joined across connected-map
+handoffs. Rounded outer corners require water on both sides and diagonally.
+Only the exposed upper slopes share normals; hidden closure faces do not flatten
+their shading. The geometry joins the existing terrain batch.
+
+The new faces sample the completed cap's pigment, source coordinates and
+material role. Actual Route20 `$1f/$33` border caps use native sand role 11;
+the simpler fixed-palette sand fixture uses role 6. Both retain their finish.
+Wet shading darkens the received pigment by at most twenty percent, preserving
+the native day/night hue. Earlier previews added no native bank because their
+source and material guards were too narrow; those previews were rejected.
+A temporary source probe identified the actual role before the final change.
+Physical bank geometry also remains identical with paused water or native
+level-plane source shapes. It does not depend on animation metadata.
+
+Ground must have an authenticated sand source, an existing zero-height sand cap
+and an eligible coastal owner. Raised, priority, paved, indoor and other claimed
+surfaces are excluded. Source caps, liquid surfaces, actor support, claims and
+navigation remain unchanged. An existing cap-continuation regression also
+exposed the flat `BANK_GROUND_UV` marker being omitted from adjacent-ground
+finishing; that selection now includes it. The existing rock-local wave wash
+remains visible around the foreground Seafoam rocks. Mountain relief remains
+0.85, and the approved colors are preserved.
+
+All 133 distinct selected checks pass, including five new sand-bank regressions
+and the explicitly executed eleven-region external-pack worker roundtrip.
+Checks cover closed outward geometry, bounded growth, unchanged original cap
+and liquid bytes, native role-11 paint, rejected sources, paused-water
+equivalence and connected-map handoffs. Shore, water, footing, renderer, batch
+and worker checks also pass. Native compilation succeeds. Logs are
+`target/outdoor-beach-bank-verified-tests.log` and
+`target/outdoor-beach-bank-native-build.log`.
+
+Twenty-one final native views and every same-state 2D counterpart were
+personally inspected across Route20/Seafoam, Cinnabar, Cianwood, Olivine,
+Cherrygrove, Vermilion, Routes2, 14, 19, 26 and 40, and NationalPark: twelve
+maps in total. All receipts preserve state. Twenty views use eye height; one
+elevated Seafoam view exposes the rounded corners. Opposing views, two 22:00
+views, town harbors and inland/forest/mountain controls are included. Some sea
+positions are waterborne diagnostics. The 32-frame Cianwood keyboard walk
+reaches `(6,20)` from `(10,20)` with terrain active, one build, no pending job,
+zero fade and no warp. Its movement still was also inspected.
+
+Final evidence is in `target/outdoor-beach-bank-review/`; three original pairs
+remain in `target/outdoor-coastal-contact-before/`. The ineffective previews
+are in `target/outdoor-beach-bank-probe/` and
+`target/outdoor-beach-bank-border-probe/`. Temporary source hooks, diagnostic
+output and capture/verification/inspection scripts were removed. Packs and
+authored models were not regenerated.
+
+The sand toe and outer corners hold together, but whole-route acceptance remains
+open. Seafoam rotations 5 and 7 expose bright pinholes along the protected
+interior paving margin. The opposing Cinnabar view exposes a large flat grey
+volcanic wall; Route26 still has coarse planar cut faces. Rocky Johto rims,
+mineral overhangs, square or pyramidal isolated islands, rigid pool rims and
+repeated rock/buoy courses remain. Narrow or porous upper broadleaf leaders,
+crowded close foliage, broad pine sprays, Route12's distant green land wedge
+and rectangular Route2 ground patches also need work. These checks establish
+native evidence for this change, not browser visual acceptance or general
+performance.
+
+### Living growth along exposed broadleaf boughs — 2026-10-21
+
+The tallest broadleaf model's leafless side limbs and long bare supports made
+its lower crown read as a forked skeleton. Rust now identifies complete authored
+wood components once when loading the three models. It retains every component
+reaching the foliage and its complete lower support chain, then trims whole
+leafless terminal limbs. The supporting trunk surface remains intact; no kept
+limb is sliced into an open stump. Unreferenced bark vertices are removed from
+the rendered mesh as part of its index remap.
+
+Small leafy shoots now graft directly onto exposed living boughs and upper
+trunks in mature trees. Their roots use actual authored bark vertices and
+deformed surface normals. Existing leaf coverage excludes crowded attachment
+sites. Each curved stem has closed sides and both end caps; its twelve closed
+leaflets use the existing bounded leaf scale and native pigment. Short stems
+and varied roll keep the sprays from reading as parallel flat fronds. Young
+trees retain their existing crown clearance. The twelve shared age prototypes,
+planted plots, root contacts, height range and colors remain. Mountain relief
+remains 0.85. No crown hulls, filler walls or sky masks were introduced.
+
+Additional shoots are capped at one per three existing crown sprays. Each adds
+36 stem triangles and 144 leaf triangles; pruning also removes unused bark
+geometry. This is additional modeled growth, not a general performance result.
+The first candidate widened upright crowns but worsened close crowding while
+leaving bare supports obvious; that width change was reverted. A second preview
+had excessively flat sprays and was revised before the final review.
+
+All 136 distinct selected checks pass. New regressions retain bare parent limbs
+under leafy children, preserve all shipped foliage supports and roots, reject
+partial limb cuts, verify actual shoot attachment, enforce the growth budget
+and young-tree policy, and check closed outward stem geometry. Shared groves,
+footing, renderer, batches and the explicitly executed eleven-region external
+worker roundtrip also pass. Native compilation succeeds. Logs are
+`target/outdoor-living-boughs-verified-tests.log` and
+`target/outdoor-living-boughs-native-build.log`. Two existing test-fixture compile
+issues in `arm_skin.rs` were corrected with an explicit float type and default
+mesh fields; its production behavior was not changed.
+
+Nineteen final native views and every same-state 2D counterpart were personally
+inspected across Routes2, 13, 14, 15, 20, 25, 26 and 31, ViridianCity,
+IlexForest and NationalPark. All receipts preserve state. Eighteen views use
+eye height; one elevated view exposes crown coverage. The set includes opposing
+headings, Route15 at 22:00, and pine, ancient-tree, formal park, coast and
+mountain controls. The 32-frame Route14 keyboard walk reaches `(13,15)` from
+`(13,10)` with terrain active, build count one, no pending job and zero fade.
+Its final pair enters trainer dialogue; it does not prove traversal past that
+trainer. The movement still was also inspected.
+
+Final evidence is in `target/outdoor-living-boughs-review/`. Four original pairs
+remain in `target/outdoor-living-boughs-before/`; rejected width previews are in
+`target/outdoor-living-boughs-rejected/`, and flat-spray previews are in
+`target/outdoor-living-boughs-flat-sprays/`. Temporary capture/verification
+scripts and the scratch source copy were removed. Packs and authored model
+assets were not regenerated.
+
+Bare lower forks are less dominant, but whole-route acceptance remains open.
+Some isolated upper leaders are still narrow, straight and porous; close
+foliage remains crowded. Broad pine sprays, repeated stone/buoy courses, coarse
+mineral overhangs and cutaway planes, isolated island shapes, rigid pool rims,
+Route12's short distant green land segment and rectangular Route2 ground
+patches still need work. These native checks do not establish browser visual
+acceptance or general performance.
+
+### Broader crowns and finer broadleaf sprays — 2026-10-21
+
+Kanto broadleaf crowns now spread more with maturity and turn continuously
+around their planted centers. Mature foliage starts lower on the existing
+branch systems. A growing canopy allowance and fitting against the actual root
+outline prevent diagonal poses from squeezing the entire crown to fit a root
+bounding rectangle. The three authored branch architectures, twelve shared age
+prototypes, original planted trees, root contacts and roughly 2.6–12.2 tile
+height range remain. Pine and ancient-tree instance poses retain their previous
+rules. Mountain relief remains 0.85 with the approved colors.
+
+Each selected authored foliage site now carries twelve smaller closed, cupped
+leaflets with six-edge outlines and individual rolls. Alternating source sites
+limit overlapping sprays; this does not remove planted trees. Physical leaf
+growth stops at 1.35 times the stem scale while branch spread can continue to
+grow. The native pigment calculation remains. The first candidate still looked
+like large pointed shards close to camera and was rejected. The final leaves
+read as finer clusters, although close crowns remain crowded. No opaque crown
+hulls, filler walls or sky masks were added.
+
+The final spray uses 144 triangles at each selected site, approximately 2.25
+times the previous total leaf triangles after selecting alternate sites. The
+shared prototype capacity remains 144. All 133 distinct selected checks pass,
+including closed leaves, projected leaf area at the bounded physical scale,
+normals, continuous deterministic poses, actual-root fitting, shared grove
+placement, footing, renderer/batching checks and the explicitly executed
+eleven-region external-pack worker roundtrip. Native compilation succeeds.
+Logs are `target/outdoor-rounded-broadleaf-verified-tests.log` and
+`target/outdoor-rounded-broadleaf-native-build.log`.
+
+Twenty-one final native views and their same-state 2D counterparts were
+personally inspected across Routes2, 8, 13, 14, 15, 20, 25, 26 and 31,
+ViridianCity, IlexForest and NationalPark. All receipts preserve state. Twenty
+views use eye height; one elevated view exposes crown coverage. The set includes
+opposing headings, two 22:00 views and pine, ancient-tree, coast and mountain
+controls. A 32-frame production keyboard walk on Route14 reaches `(13,14)` from
+`(13,10)` with terrain active, build count one, no pending terrain job and zero
+fade. The final pair includes trainer attention; this is not evidence of
+uninterrupted traversal past that trainer. The movement still was also inspected.
+
+Final evidence is in `target/outdoor-rounded-broadleaf-review/`; five original
+pairs remain in `target/outdoor-rounded-broadleaf-before/`, and two rejected
+first-candidate pairs are in `target/outdoor-rounded-broadleaf-rejected/`.
+The capture script was removed. Packs and authored model assets were not
+regenerated. Whole-route acceptance remains open: upright trees still expose
+excessive lower forks, some tall coastal crowns remain narrow or porous, and
+close foliage remains crowded. Broad pine sprays, repeated stone courses,
+coarse mineral overhangs and cutaway planes, isolated island shapes, rigid pool
+rims and Route12's short distant green land segment need further work. These
+native checks do not establish browser acceptance or general performance.
+
+### Molded offshore floats — 2026-10-21
+
+The shared Johto/Modern float producer now has a rounded shoulder, tapered
+crown and small closed recessed cap. Its white body and blue collar/cap sample
+the same native atlas swatches. Six body rings and two closed quad fans retain
+the previous 96-quad budget. Gentle differences in tilt and proportions stay
+inside the source footprint and the previous `-0.18..+0.30` tile envelope
+relative to water. Source centers, course layout, water beds, footing and
+claims retain their existing policies. Resting poses use the owning map's
+coordinates, so connected-map handoffs cannot reseed the same float.
+
+A separate live-paint tag gives only these floats neutral face shading and
+a restrained plastic response. The game palette still supplies time-of-day
+color. The first night candidate lost most normal shading; this was corrected
+before the final review. Both day and night now retain modeled volume without
+a second moon tint. This does not add bobbing or another water material.
+
+All 150 distinct selected checks pass, including the external worker roundtrip
+expanded from eight to eleven source regions with Cianwood, Olivine and
+Route40. New checks exercise 64 poses for closed volume, outward faces and
+normals, nondegenerate triangles, footprint/envelope bounds, native paint and
+the unchanged geometry budget. A connected-map ownership regression compares
+the actual appended mesh across a handoff. The paint-role regression verifies
+coordinate roundtrips and separation from the other material domains. Final
+buoy, paint and renderer tests were rerun after the night-shading correction.
+Logs are `target/outdoor-molded-buoy-verified-tests.log` and
+`target/outdoor-molded-buoy-native-build.log`.
+
+Twenty final native views and all same-state 2D counterparts were personally
+inspected across Cianwood, Olivine, Cherrygrove and Routes13, 19, 26, 30, 40
+and 41. All receipts preserve state. Eighteen views use eye height; two use
+65-degree elevated cameras to expose the closed caps. The set includes
+opposing coast views, two 22:00 views, land/forest/mountain controls and a
+32-frame Cianwood keyboard walk from `(10,20)` through `(6,20)`. Its terrain
+stays active, build count stays one, no terrain job is pending and fade stays
+zero. The final walking pair and movement still were inspected. Route41,
+Cherrygrove and Olivine include waterborne diagnostic positions.
+
+Final evidence is in `target/outdoor-molded-buoy-review/`; three original coast
+pairs remain in `target/outdoor-molded-buoy-before/`, and the initial flat night
+pair is in `target/outdoor-molded-buoy-probe/`. The capture script was removed;
+packs and authored assets were not regenerated. Whole-route acceptance remains
+open: courses still dominate some distant views, foliage is crowded/repeated,
+and coarse mineral overhangs, isolated island shapes and rigid shore/pool rims
+need further work. Mountain relief remains 0.85 with the approved colors.
+These native checks do not establish browser visual acceptance.
+
+### Open sea beyond mixed coastal frames — 2026-10-21
+
+The tan Route13 and green Route14 ribbons were distant ground continuation,
+not sky paint. Route13 was absent from the coastal eligibility list. Route14's
+reviewed frame had 7,001 live-water cells out of 14,400, so the old whole-frame
+majority test selected ground despite wet top, bottom and right edges.
+
+Routes12–15 now participate in coastal continuation. Frames that already
+qualify as open sea retain their four water faces. Otherwise, each outer edge
+requires its own majority of verified animated water. Mixed continuation uses
+eight disjoint perimeter sectors; a sea edge's two outer corners also continue
+as water, preventing a dry strip beyond it. Other sectors retain their ground
+source. The water faces remain separate through source-cell fitting, then join
+the ordinary surface before the common quarter-tile waterline fit. No new
+footing, collision, walls, sky masks or authenticated source area is introduced.
+The approved colors and mountain relief of 0.85 remain.
+
+All 124 selected checks pass, including the external eight-region worker
+roundtrip. The new mixed-coast regression covers 64 combinations of route,
+edge direction, tile scale and instancing. It verifies sector coverage, closed
+corners, outward winding, native live-water UVs, the completed water level,
+unchanged source/ownership/support behavior and outside-domain classification.
+Negative cases reject inland maps, enclosed dry boundaries, unanimated art,
+single-frame art and priority scenery. Logs are
+`target/outdoor-sea-continuation-verified-tests.log` and
+`target/outdoor-sea-continuation-native-build.log`.
+
+Twenty-two final native eye-height views and all same-state 2D counterparts
+were personally inspected across thirteen maps: Routes12, 13, 14, 15, 19, 26,
+30 and 40, Cianwood, Cherrygrove, Olivine, LakeOfRage and NationalPark. All
+receipts preserve state. The set includes diagonal and land-facing controls,
+two 22:00 views, both inland pools, the lower mountain scale and a Route14
+keyboard walk. That 32-frame walk reaches `(13,15)` from `(13,10)` while the
+source origin scrolls; terrain stays active, build count stays one, no job is
+pending, and fade stays zero. Its final pair and movement still were inspected.
+Route12, Cherrygrove and Olivine include waterborne diagnostic positions.
+Final evidence is in `target/outdoor-sea-continuation-review/`; the two original
+paired coast comparisons remain in `target/outdoor-sea-continuation-probe/`.
+
+The full-width Route13/14 ribbons are gone. Whole-route acceptance remains
+open: Route12 retains a short distant green land segment requiring further
+boundary inspection; bright buoy courses, repetitive stone rows, crowded or
+repeated crowns, broad pine sprays, coarse mineral overhangs and rigid pool
+rims still need work. These native checks do not establish browser acceptance.
+Temporary trace hooks, count traces and capture scripts were removed; content
+packs and authored assets were not regenerated.
+
+### Complete cliff bodies beside modeled roofs — 2026-10-21
+
+The opening beside Cianwood's house persisted with player reveal disabled and
+with flat gray mineral paint. The source layout identifies the cause: cliff
+cells `(13..15,31)` and the roof immediately south both have a native height
+of 16. The terrain builder treated that roof as adjoining geological fill and
+omitted the shared cliff faces. The modeled roof does not cover their full
+area, leaving visible sky below the cap.
+
+Both outdoor terrain builders now distinguish raised object tops from their
+ground support. An adjacent roof, tree or other raised object supplies its
+standing floor as the cliff's lower contact, rather than suppressing the face
+at its old top. The common rule covers the connected mineral producer and
+the separate native rock-platform path across Johto, modern Johto and Kanto.
+The existing mineral footprint and source ownership remain; this repairs the
+rock's own side. Mountain relief stays at 0.85 with rising interiors, and the
+approved mineral palette remains. Source footing, ramps, water, cave corners
+and authored openings retain their separate policies.
+
+The new regression checks projected face coverage and outward winding for
+96 combinations of source family, terrain builder, direction, ground level
+and equal/taller roof. It also preserves the standing-height buffer and the
+neighboring model's ownership. An explicitly executed external-pack test
+verifies complete side faces at the three actual Cianwood source contacts.
+All 223 focused checks pass in `target/outdoor-house-rock-verified-tests.log`,
+including ten external-pack checks, the eight-region worker roundtrip and
+the existing cave-return regressions. Native compilation succeeds in
+`target/outdoor-house-rock-native-build.log`.
+
+Twenty final native eye-height views and all their same-state 2D counterparts
+were personally inspected across Cianwood, Blackthorn, Cinnabar, Lavender and
+Routes8, 26, 29, 31, 44 and 45. Cianwood includes the original view, three closer
+headings, a sea-facing control, 22:00 and a production keyboard walk. The set
+also includes opposing mineral/route views, Blackthorn at day/night, Cinnabar's
+volcanic pond and pine/Kanto controls. All twenty receipts preserve state.
+Route45 `(7,16)` and Cinnabar `(15,6)` remain static mineral diagnostics rather
+than ordinary walking proof.
+
+The 32-frame Cianwood walk records `(10,20)`, `(9,20)`, `(8,20)`, `(7,20)` and
+`(6,20)` through production keyboard input. Terrain remains active, no terrain
+job is pending, fade stays zero and build count stays one. Its final paired
+views and a movement still were inspected. Final evidence is in
+`target/outdoor-house-rock-review/`; the original comparison and negative
+reveal/paint probes remain in `target/outdoor-house-rock-probe/`. Temporary
+source-role probes, review shaders and duplicate candidates were removed.
+No content pack or authored model asset was regenerated.
+
+The reviewed opening is closed in the rock geometry. Whole-route acceptance
+remains open: close mineral overhangs and cutaway planes, Cinnabar's rigid pond
+rim, crowded foliage, repeated crowns and stone courses, bright buoys and
+distant coast strips still need improvement. These native checks do not
+establish browser visual acceptance.
+
+### Seat hidden ground below weathered mountain faces
+
+Cianwood's thin bright mountain line was source-ground backing at the old
+mineral standing height. That cap datum left a horizontal ground surface
+crossing the recessed rock face. Both Johto terrain families now use their
+authenticated neighboring ground's support height, as the separate Kanto
+backing already did. Existing rock vertices, normals, pigment and texture
+coordinates remain unchanged. The 0.85 mountain relief and rising interiors
+remain, as do source footing, ownership and navigation.
+
+Flat-material, normal and material-role probes identified the exposed ground.
+A hide-only fragment probe retained its depth mask and was unsuitable for
+judging a physical opening; the corrected production render supplies that
+visual evidence. Temporary geometry snapshots and their source hook were
+removed. The original paired comparison and diagnostic views remain in
+`target/outdoor-mineral-join-probe/`.
+
+Twenty final native eye-height views and all their same-state 2D counterparts
+were personally inspected across Cianwood, Blackthorn, Cinnabar, Lavender and
+Routes8, 26, 29, 31, 44 and 45. The set includes five Cianwood headings, two
+22:00 views, opposing mineral views, raised paths, connected ridges, volcanic
+paint and pine/Kanto controls. All twenty receipts preserve state. Route45
+`(7,16)` and Cinnabar `(15,6)` are static mineral diagnostics, not walking
+proof. Three obstructed initial shots remain in the probe's `rejected/`
+directory: Lavender's `(3,2)` building overlap, its `(5,10)` door-facing view
+and Cinnabar's occluded `(9,6)` view. The final Lavender view uses `(5,10)` at
+rotation step 2; the final Cinnabar view uses `(15,6)` at step 4.
+
+The 32-frame Cianwood production keyboard walk records `(10,20)`, `(9,20)`,
+`(8,20)`, `(7,20)` and `(6,20)`. Terrain stays active with no pending job, zero
+fade and a build count fixed at one. Its final native/source pair and a
+movement still were inspected. Final views and the movement receipt are in
+`target/outdoor-mineral-join-review/`.
+
+All 168 focused checks pass in `target/outdoor-mineral-join-verified-tests.log`.
+The regression distinguishes neighboring ground from the higher mineral seat
+in both Johto families, including raised ground, while retaining the original
+rock and authoritative support. Existing clipping, ownership, water exclusion,
+footing, terrace, renderer and worker checks pass. Nine external-pack checks
+were explicitly executed, including shared cap/wall samples on Route44 and
+Blackthorn and the complete eight-region worker roundtrip. The production
+native build succeeds in `target/outdoor-mineral-join-native-build.log`.
+Duplicate candidates and temporary review shaders were removed; no content
+pack or authored model asset was regenerated.
+
+The crossing bright line is resolved in the inspected views. A separate
+opening behind Cianwood's house remains visible at rotation step 0; the older
+lower-mountain comparison already shows it. Whole-route acceptance remains
+open, including that opening, crowded foliage, repeated crowns and stone
+courses, bright buoys, distant coast strips and elevated cutaway joins.
+These native checks do not establish browser visual acceptance.
+
+### Remove painted woodland sectors from the sky
+
+The dark rectangular horizon patches came from the sky material's directional
+woodland overlay. It sampled the farthest source cells into 64 azimuth sectors
+and painted their tree coverage onto empty sky. Native probes with modeled
+shadows, modeled occlusion and tilt shift individually disabled retained the
+patches. Removing that overlay clears the rectangles above the Route8 ridge
+and behind Route25's trees. The CPU sampler, cache and matching shader uniforms
+were removed with it. Actual trees supply the silhouettes; no backdrop geometry
+or replacement sky mask was added.
+
+Distance fog on real woodland geometry retains its existing source coverage,
+water exclusion and clock response. The original sky palette, clouds, sun,
+moon, stars and camera following remain. Cave and room sky exclusion and the
+open roof policy also remain. Mountain relief stays at 0.85, with interiors
+rising above their outer slopes and the approved source colors retained.
+
+Twenty final native eye-height views and all their same-state 2D counterparts
+were personally inspected across fourteen maps: Routes2, 8, 13, 14, 25, 31, 36
+and 45, Cianwood, National Park, Ilex Forest, Dark Cave's Violet entrance,
+PlayersHouse1F and CeladonMansionRoof. The set includes diagonal ridge views,
+two 22:00 comparisons, broadleaf and pine coverage, open coasts, the formal
+park and enclosed/open-roof controls. Ilex retains its authored dark palette.
+Dark Cave's unlit view is a sky-exclusion control, not geometric acceptance.
+Route45 `(7,16)` remains a static mineral diagnostic. All twenty paired-state
+receipts preserve state. The 32-frame Route36 production keyboard walk records
+`(30,8)`, `(31,8)` and `(32,8)`, active terrain, zero fade, no pending terrain
+and a build count fixed at one.
+
+All 73 focused checks pass in `target/outdoor-horizon-verified-tests.log`;
+one unrelated GPU blur comparison remains explicitly ignored. The checks cover
+the actual published sky material across forest, coast, water and land source
+frames, viewport origin changes, day/night continuity, geometry fog, room/roof
+visibility, lighting and renderer integration. The production native viewer
+build succeeds in `target/outdoor-horizon-native-build.log`. Final pairs and
+the movement receipt are in `target/outdoor-horizon-review/`. The original
+comparison and three negative diagnostic probes remain in
+`target/outdoor-horizon-probe/`; the duplicate candidate batch was removed.
+No content pack or authored model asset was regenerated.
+
+The painted horizon rectangles are resolved in the reviewed native views.
+Whole-route acceptance remains open: crowded close foliage, bare forks and
+repeated crowns, regular coast and barrier courses, bright buoys and elevated
+cutaway joins still need improvement. The coastal views expose a thin distant
+ground strip, and Cianwood retains a thin bright mineral join; neither is
+resolved by this sky change. These checks do not establish browser visual
+acceptance.
+
+### Natural barrier-stone shoulders and mineral surfaces
+
+Kanto's dry barrier stones no longer receive the flattened hand-cut crown.
+Their three existing cached derivatives now have unequal sloping shoulders.
+Each planted stone also receives deterministic heading, width, offset and rise
+variation inside its native plot. Dry-stone peaks span 1.35–1.75 source tiles,
+centered on 1.55. Fitting the actual sculpted height prevents the shoulder cuts
+from silently shortening the stones. Ground contacts, native underlays,
+authored ownership and gameplay footing retain their source domains. The
+separate path drawing keeps its existing treatment.
+
+Native light ink now grades continuously over the upper stone instead of
+forming an opaque white lid. Duplicate positions share the same pigment and
+sculpted normal across material partitions. The source palette and its night
+exposure remain authoritative. Dry stones opt into the same existing
+world-anchored mineral detail as the sea rocks, using a separate dry paint
+marker; they do not enter water optics or acquire water support. The retained
+solid-material registration already supplies scale and translation on dry maps.
+No new texture asset, geometry entity or model-cache entry was added, and the
+stone topology retains its existing triangle count.
+
+Twenty final native low-angle views and their same-state 2D counterparts were
+personally inspected across Routes2, 8, 14, 15, 20, 25, 31 and 45, Viridian and
+Cianwood. The review includes four opposing Route8 and Route14 views, nearby
+and distant barrier rows, two 22:00 views, sea-rock controls, the pine control
+and the user's lower Route45 mineral plot. All twenty paired-state receipts
+preserve state. Route45 `(7,16)` remains a static mineral diagnostic rather
+than ordinary path evidence. The 32-frame Route8 production keyboard walk
+records authoritative positions `(15,6)`, `(15,8)` and `(15,10)`, active terrain,
+zero fade and a build count fixed at one. Its final native and source views
+and an inspected movement still are retained.
+
+All 164 focused checks pass in `target/outdoor-land-stone-verified-tests.log`.
+They cover closed stone volumes, planted plots, actual posed peak height,
+outward winding and normals at square and rectangular scales, stable asset
+selection across camera crops, continuous native pigment, day/night refresh,
+unchanged footing and claims, matching sea-stone optical contacts, terraces,
+water registration and renderer integration. The explicitly executed external
+worker roundtrip completes all eight source regions. The production native
+viewer builds in `target/outdoor-land-stone-native-build.log`. Final views and
+the movement receipt are in `target/outdoor-land-stone-review/`; four original
+comparison pairs remain in `target/outdoor-land-stone-before/`. The duplicate
+candidate batch was removed. No pack or authored model asset was regenerated.
+
+The previously plain barrier surfaces now read as weathered stone. Whole-route
+acceptance remains open: regular barrier courses, dense close foliage, dark
+rectangular horizon patches, bright buoys and elevated cutaway joins still
+need improvement. The Cianwood control also exposes a thin bright mineral
+join that requires closer review. The approved palette and 0.85 mountain relief
+remain. These native checks do not establish browser visual acceptance.
+
+### Broadleaf branch spread and finer solid leaves
+
+Kanto route trees retain their three authored branch architectures and wide
+height variation. Mature upper branches now spread with age instead of keeping
+a narrow crown as the trunk grows. The upright architecture's mature foliage
+starts lower over its forks. Young trees retain their higher crown placement
+and original spread; the first unrestricted candidate crowded Route2's nearby
+grass-patch viewpoint. Root flares remain fitted inside the native planted
+plots. Heights, source placement, palette treatment and the lower 0.85 mountain
+relief remain unchanged.
+
+Each original oversized leaf site now carries four smaller closed pointed
+blades. Their aggregate projected area matches the original, and the original
+branch and foliage sites still determine the crown. Each blade has a raised
+midrib, a closed underside and normals from its actual triangles. Leaves are
+placed with their own proportions rather than stretching with the entire
+tree's trunk. Branch normals use the inverse transpose of the actual radial
+and vertical deformation. No scenery wall or opaque crown shell was added.
+
+The shared library now uses three broadleaf branch models in four age classes,
+chosen with the same age field as the actual trees. This keeps instance height
+ratios within 0.60–1.70 across the sampled world grid. The bounded library holds
+the 120 existing pine/ancient recipes and twelve broadleaf recipes in 144 slots.
+Pine, ancient and formal park geometry retain their own builders. The additional
+leaf detail costs 32 triangles per original leaf site, up from 20; the three
+broadleaf prototypes contain 15,856, 25,718 and 35,065 triangles before placement.
+These are shared meshes, not new meshes per planted tree.
+
+Twenty final native low-angle views and all their same-state 2D counterparts
+were personally inspected across Routes2, 8, 13, 14, 15, 20, 25 and 31,
+Viridian and National Park. The review includes four opposing Route14 views,
+multiple Route13 and Route2 views, two 22:00 controls, the pine and formal park
+controls and the repaired distant Route20 border. All twenty paired receipts
+preserve game state. The Route14 production keyboard walk runs 32 frames from
+`(13,10)` through `(13,11)`, `(13,12)`, `(13,13)` and `(13,14)` with active
+terrain and the build count fixed at one. Its final 2D view shows a trainer
+attention marker; this is movement evidence, not an uninterrupted traversal
+past that trainer. A requested Route25 point `(43,8)` was rejected as
+unwalkable by the production shell; that capture uses the verified `(14,5)`
+position instead.
+
+All 105 focused checks pass in `target/outdoor-broadleaf-verified-tests.log`,
+including rooted scale and determinism, projected leaf area, closed leaf faces,
+outward winding, deformed branch normals, bounded shared instances, source
+family identity, footing and renderer integration. The explicitly executed
+external-pack worker check completes all eight source regions and preserves
+the exact prepared output. Native compilation succeeds in
+`target/outdoor-broadleaf-native-build.log`. Final views, native placement
+traces and the walk receipt are in `target/outdoor-broadleaf-review/`; original
+comparisons are in `target/outdoor-broadleaf-before/`. Two rejected geometry
+comparisons remain in `target/outdoor-broadleaf-rejected/`. Superseded batches
+were removed. No pack or authored model asset was regenerated.
+
+The broadleaf silhouettes are fuller and the leaf edges are finer, but this
+does not establish whole-route acceptance. Route2's close foliage still crowds
+some views. Bare forks and repeated crown clusters remain visible; the pale
+plain barrier rocks, square coast courses, dark rectangular horizon patches
+and elevated cutaway joins also need work. Browser visual acceptance remains
+unproven.
+
+### Complete distant drawings and authored coastal swimmers
+
+The distant green/black fragment in Route20 was native Kanto tree artwork,
+not a floating actor. A temporary terrain-only material probe established
+that distinction. The retained source window cut through four-by-four source
+blocks, and the nearest-border selection could assign different maps to cells
+of the same block. Aligning the window alone still left six unclaimed tree
+cells at a diagonal source boundary. Unknown continuation now chooses one
+border owner per complete source block. Actual map and connection drawings
+keep their original selection. The final Route20 trace has zero unclaimed
+tree cells, and the native view contains complete 3D trees at that location.
+
+Expanded 3D windows retain complete blocks with a fixed 120-by-120 extent,
+up from 116-by-114: approximately 8.9 percent more source cells. Their explicit
+origin is shared by live publication and destination preparation. Camera,
+actors and traversal account for the resulting asymmetric padding. All source
+phases retain the previous minimum halo without resizing the window on each
+phase change. Classic scroll windows retain their existing size and origin.
+The complete-grid validator now checks the published dimensions rather than
+the previous constants. No scenery mask or filler wall was added.
+
+Seven authored male swimmers on Routes40 and 41 share the variable sprite
+token used by Olivine's rival scene. Fresh location previews can still carry
+its initial rival bitmap. The model publisher and destination preparation now
+use the pack's compiled `SWIMMERM` trainer header to identify those objects as
+male swimmers. The adaptation requires the exact shared token, initial rival
+assignment and trainer role; custom replacements retain their selected model.
+Classic pixels, story variables and gameplay state are unchanged. An opt-in
+human placement trace confirms Water support at -6 world units and the
+existing 60.0576-unit immersion for both affected Route40 objects. Land actors
+remain at zero support and immersion.
+
+Eighteen final native views and their same-state 2D counterparts were
+personally inspected across Routes13, 20, 31, 36, 40, 41 and 45, Cianwood,
+Olivine and Cerulean Gym. Seventeen use true eye height, two use 22:00 paint,
+and all eighteen receipts preserve state. Route45 `(7,16)` remains a mineral
+plot diagnostic, not walking evidence. Its two opposing views preserve the
+lower 0.85 mountain relief, rising centers and approved palette. The adjacent
+swimmer checks start in Surf; the Olivine default position faces a shop wall
+and is a publication control rather than a useful outdoor composition.
+
+The Cianwood production keyboard walk runs 32 frames through `(10,20)`,
+`(11,20)` and `(11,21)`. The Route36 walk runs 32 frames through `(30,8)`,
+`(31,8)` and `(32,8)`. Both retain active terrain and a build count of one.
+The first Route36 capture used the wrong camera-relative key and did not
+translate; the final capture uses `ArrowDown` and proves actual movement.
+Final views, traces and movement receipts are in
+`target/outdoor-source-border-final-review/`. Three earlier diagnostic views
+and the two six-cell traces remain in `target/outdoor-source-border-before/`;
+superseded capture batches and the temporary probe shader were removed.
+
+All 29 focused checks pass in `target/outdoor-source-window-verified-tests.log`,
+including the actual seven compiled trainer roles, replacement guards,
+classic actor art, preload identity, complete source blocks, authoritative
+player placement, published grid metadata, exact movement at 60/30/9 Hz and
+destination preparation gates. The movement regression accounts independently
+for source-window padding before comparing the original interpolation bounds;
+its displacement and cadence requirements are retained. The initial fixed-size
+validator failure, rejected native frame and old camera-origin expectation are
+preserved in the `outdoor-source-window-rejected-*` and
+`outdoor-source-window-camera-origin-tests.log` diagnostics. Unoptimized tests
+use `RUST_MIN_STACK=16777216`; the initial default-stack overflow remains in
+`target/outdoor-swimmer-source-initial-tests.log`. The native viewer build
+succeeds in `target/outdoor-source-window-native-build.log`. No pack was
+regenerated.
+
+These source and placement defects are corrected; whole-route art acceptance
+remains open. Square shoreline courses and barrier rows, bright buoys, rough
+broadleaf crowns and regular elevated cutaway cells still need improvement.
+
+### Outdoor waterline and bank depth
+
+The native half-pixel water recess left beaches looking like thin sheets.
+Sea-level outdoor water now sits a quarter tile below dry ground, giving the
+existing closed bank faces visible depth. A final monotone vertical fit keeps
+dry ground and the moderate mountains at their existing heights. Shoreline XZ
+coordinates, materials, palette colors, animation bindings and source gameplay
+domains are retained. Faces whose shape changes receive normals from their
+completed triangles, preserving the original hard creases.
+
+Rooted sea stones, aquatic plants and authenticated native buoys lower rigidly
+with the liquid. Resolved water-cell actor support lowers by the same amount,
+preserving its existing immersion relative to the surface. Raised inland
+water and its rooted scenery keep their own positive datum. Interior maps
+remain outside this outdoor fit. The source profile continues to identify
+native art; the completed mesh supplies the final rendered support.
+
+The first elevated native review exposed a separate old-height ocean apron.
+The retained water and distant continuation now receive the same final fit
+before publication. A regression requires both surfaces to meet at the new
+datum, preventing a bright rectangular horizon seam.
+
+Twenty final native views and their same-state 2D counterparts were personally
+inspected across fourteen maps: Routes19, 20, 21, 31, 40, 41 and 45, Cianwood,
+Cherrygrove, Olivine, both ports, Cerulean Gym and Dragon's Den. Eighteen use
+true eye height; the other two are an elevated Route20 control and a Cianwood
+keyboard walk. Two captures use 22:00 source paint. All twenty paired-state
+receipts preserve state. Route41, Cherrygrove and Olivine start in Surf, as
+their source images and actor receipts show; they are water-level composition
+checks, not dry-ground walking evidence. The Route19 and Route45 mineral
+positions likewise remain static geometry diagnostics.
+
+The Cianwood walk uses 32 production keyboard frames and reaches `(10,20)`,
+`(11,20)` and `(11,21)` with the terrain build count fixed at one. Its final
+source image places the trainer on the dry shoreline. The eight-second
+Route20 recording contains 240 native frames at 30 Hz; inspected samples show
+foam changing around the seated rock feet without reopening the ocean apron.
+The video is `target/outdoor-bank-depth-motion.mp4`; four inspected samples
+remain in `target/outdoor-bank-depth-motion-frames/`. Final stills, movement
+trace and paired receipts are in `target/outdoor-bank-depth-review/`. Six
+additional baseline pairs are in `target/outdoor-bank-depth-before/`; the
+rejected old-height apron is retained in `target/outdoor-bank-depth-apron-before/`.
+
+All 176 focused checks pass in `target/outdoor-bank-depth-verified-tests.log`,
+including the new bank/liquid closure, rigid water roots, actor immersion,
+raised-pool and interior exclusions, matching ocean continuation, water,
+piers, terraces, renderer integration and the explicitly executed eight-region
+external worker roundtrip. The production viewer builds in
+`target/outdoor-bank-depth-native-build.log`. No content pack was regenerated.
+
+Visible bank depth is improved, but whole-route acceptance remains open.
+Shoreline contours and barrier rows still follow conspicuous square source
+courses. Some distant actors float or appear as fragments, distant broadleaf
+forms remain rough, buoys are too bright, and the elevated walking view still
+exposes regular cutaway cells. The current palette and 0.85 mountain relief
+remain; none of these remaining defects is accepted as finished art.
+
+### Coastal stone placement and damp native banks
+
+Kanto sea stones now vary their heading, horizontal proportions, offset and
+height within their original source plots. The same deterministic transform
+places the closed mineral shell and its underside water-contact triangles, so
+the foam mask follows the actual stone. Normals use the world-space inverse
+transpose, including rectangular tile scales. Water beds, source collision and
+walking support retain their existing positions.
+
+The first placement candidate made the nearest stones too upright. The final
+range is broader and lower: nominal rise is 1.25–1.85 tiles, centered on the
+previous 1.55, with restrained offsets and full rotation. Rotation fits the
+actual sculpted envelope into its original plot rather than shrinking a square
+around the model. The three existing closed shoulder forms remain shared;
+there are no additional models or scenery entities. Land barrier posts and
+the lower mountain relief of 0.85 remain unchanged.
+
+Kanto's authenticated natural sand and native bank caps now receive the damp
+shore transition. Treating only ordinary sand missed the separate bank cap at
+the actual waterline. The wet target scales the received pigment, retaining
+the source day/night hue instead of introducing a daylight brown at night.
+This changes color, not shoreline geometry or elevation. The production bank
+cap regression verifies that the transition reaches the water-facing vertices
+while preserving positions, indices and footing.
+
+Fifteen final native views and their same-state 2D counterparts were personally
+inspected across Routes20, 21, 19, 13 and 31, Cinnabar and Cianwood. They include
+multiple true-eye headings, an elevated Route20 view, two 22:00 views and inland
+controls. Every paired-state receipt preserves game state. Route21's position
+is on the authored pier. Route19 and the elevated Cinnabar mineral position
+are static geometry diagnostics, not evidence of walking those approaches.
+The location tester accepts explicit positions; a `chris` actor alone does not
+authenticate walkable ground. Final evidence is in
+`target/outdoor-coast-balanced-review/`; eight before views remain in
+`target/outdoor-coast-pose-before/`. Superseded candidate captures were removed.
+
+All 147 focused checks pass in
+`target/outdoor-coast-balanced-verified-tests.log`, including deterministic
+placement, closed-volume bounds, exact rendered/contact-mask agreement,
+native bank paint, water, terraces, footing, renderer integration and the
+explicitly executed eight-region external worker roundtrip. The native viewer
+build succeeds in `target/outdoor-coast-balanced-native-build.log`. No content
+pack was regenerated.
+
+The coast still needs further work. Beach land has a thin physical edge; the
+new damp paint does not give it depth. The authored straight barrier rows are
+still evident despite varied stones. Route20's distant green/black fragment,
+Route21's rough distant tree/fog forms and Cianwood's bright buoy courses remain
+visible. This pass preserves the approved palette and moderate mountains;
+it does not establish whole-route visual acceptance.
+
+### Route pine branch volume and age-matched instances
+
+The shared pine library grouped trees by an older random height recipe while
+their actual stems used the newer age field. A bounded source calculation over
+32,768 sparse/dense placements found prototype vertical scales from about
+0.227 to 5.027. That could flatten a mature crown into a young tree or stretch
+its needle bundles into long upright blades. Pine prototype selection now
+uses the same age field as the actual tree. The executed Rust regression gives
+0.620746 through 1.516377 on the same placement range. The requested stem-height
+variation, source roots and plot bounds remain; ancient and deciduous trees
+retain their original prototype seeds.
+
+Needle fascicles now spiral around the complete twig instead of occupying two
+shallow opposed planes. Each spray retains its ten closed bundles and forty
+triangles. A full-orbit geometry regression checks all four radial sides and
+projected area through sixteen views, including the supported vertical scale
+range. Young trees keep their lower crown layer; mature trees retain sparse
+lower trunks and shortened woody limbs. The existing crown test now measures
+those woody limbs separately from needles hanging down from the crown.
+
+Thirteen final production views were personally inspected on Routes31, 36, 37,
+32, 13 and 20, including multiple true-eye headings, a high Route36 view and
+two 22:00 controls. All thirteen paired 2D receipts preserve state. Evidence is
+in `target/outdoor-pine-depth-review/`; the eight before views are in
+`target/outdoor-pine-orbit-before/`. Route36's production keyboard walk changes
+six authoritative positions through 32 input frames with no additional terrain
+build. Its final screenshot retains the trainer aperture and surrounding crowns.
+
+All 170 foliage, shared-library, reveal, batch, renderer and worker checks pass
+in `target/outdoor-pine-depth-verified-tests.log`, including the explicitly
+executed eight-region external worker roundtrip. The library still has 120
+pine/ancient combinations and three deciduous meshes within its existing bound.
+The production viewer builds; no content pack or model bundle was regenerated.
+
+This improves branch volume without establishing whole-route acceptance.
+The closest needle bundles remain broad and angular, and the coast controls
+still show thin land edges, repetitive boulder rows and bright buoy courses.
+The lower mountain height and current palette are retained.
+
+### Connected-route mineral coordinates
+
+Connected scenery keeps material coordinates in its owning map, while its
+geometry is placed in the active map. Mountain filling and the later terrace
+fit now recover that placement from the frame's authenticated source regions.
+Both producers use the same coordinate helper. Material UVs and palette recipes
+are retained, as are the current 0.85 relief scale and source walking domains.
+This closes the large distant openings in Route45's elevated view. Cianwood's
+largest proposed source-grid displacement falls from about 1,946 to 36.8 world
+units, within the existing local shoulder envelope.
+
+Seven production views on Route45, Route42, Route26, Route44, Cianwood and
+Cinnabar were personally inspected; all seven paired 2D receipts preserve game
+state. Captures and the bounded placement trace are in
+`target/outdoor-connected-mineral-review/`. All 169 focused and external-pack
+checks pass, including a mixed-coordinate fixture that requires identical
+fitted geometry, colors and walking support for active-map and connected-map
+material registration. The log is
+`target/outdoor-connected-mineral-verified-tests.log`. The full-region worker
+roundtrip was not run in that pass; the entrance verification below includes it.
+
+The subsequent entrance review exposed a separate Ice Path defect above the
+tunnel. Complete Johto entrances lacked Kanto's weathering protection, and
+independently fitted portal columns could separate the closed arch. The
+entrance work below addresses that additional defect.
+
+### Closed entrances at moderate mountain height
+
+Complete native Johto, Johto Modern and Kanto cave drawings share the same
+weathering protection. A complete entrance retains its source footprint,
+threshold and dark vertical recess while its connected roof fits the adjoining
+mountain. The dark lining extends inside the roof; it cannot expose a separate
+black horizontal cap. The ordinary per-column mountain deformation skips the
+closed portal volume, which instead uses one continuous vertical mapping.
+
+Scaling the entire entrance with the mountain made Ice Path a narrow, tall
+slit. Its existing opening now retains its useful height while only the rock
+above it grows to meet the mountain. Short native drawings need standing
+clearance: their roof receives a local shoulder that tapers into adjoining
+mineral over two tiles. The standing opening is bounded by the closed roof.
+Source walking floors stay seated; neighboring accessible mineral uses the
+same shoulder field for its triangular surface and within-cell footing.
+The route-wide relief remains 0.85 and the current palette is retained.
+The original sky tears are recorded in `target/outdoor-cave-front-review/`;
+`target/outdoor-seated-portal-review/ice-path-approach.png` retains the rejected
+whole-entrance stretch for comparison. Superseded intermediate captures were
+removed after the final review.
+
+Thirteen final production views were personally inspected on Route42, Route45
+and Blackthorn, including front and side views at true eye height, trainer-scale
+controls, elevated views and Ice Path at 22:00. All thirteen same-state 2D pairs
+preserve game state. The final captures are in
+`target/outdoor-integrated-portal-review/`. Mount Mortar and Dark Cave now have
+standing openings rather than low crawl holes; Ice Path retains its original
+useful opening height. The 32-frame production keyboard walk enters IcePath1F;
+the settled interior screenshot and paired-state receipt confirm the completed
+warp rather than relying on the CSV's intermediate fade-in frame.
+
+All 171 focused and external-pack checks pass. The final log is
+`target/outdoor-integrated-portal-final-tests.log`. The entrance regression
+exercises short and tall roofs on level and raised ground, tests front-facing
+roof closure and standing headroom, and verifies real approach-path triangles
+and footing beneath the overhead rock. Neighboring walking caps retain their
+triangle/footing agreement. The external footprint check now distinguishes
+authenticated cave-roof influence from walking ground; the earlier failed
+zero-ceiling assumption is retained in
+`target/outdoor-integrated-portal-verified-tests.log`. All nine external-pack
+checks were explicitly executed, including exact worker/direct prepared-output
+roundtrips on eight source regions. None of the selected checks remains skipped.
+
+The broader art goal remains open: Mount Mortar's oblique shoulder still exposes a
+thin straight mineral strip, some cliff courses remain too regular, coastal
+land edges remain thin and close pine sprays still need more volume. This work
+does not establish whole-route visual acceptance.
+
+### Mountain interiors and moderate relief
+
+The perimeter-only candidates are rejected. Native plateau art often carries
+ordinary or directional land permission, so excluding walking mineral from
+the mountain field left low interiors behind rising sides. The mountain body
+now includes those tops. Connected cap/wall columns rise together, and
+accessible mineral footing follows the actual triangular upper surface.
+Paths, cave mouths, planted plots and water retain their source footprints.
+
+The subsequent very tall Route45 candidate is also rejected. Added relief is
+reduced from 1.85 to 0.85 times the interior distance field. The current color
+and day/night treatment remain. Wall chips retain the original wall plane in
+their source coordinates so every height ring can find its matching cap.
+Material tags also need the actual geometric position to disambiguate them:
+large retained route grids cross their 10,000-unit tag ranges. Decoding the
+tag by threshold alone could pull a restored cap 20,000 units across the map.
+Connected scenery also retains its own map's material coordinates. Those
+coordinates cannot place a face in the active map. The production trace found
+proposed displacements of about 1,946 world units in Cianwood. Source-grid
+recovery is now limited to the existing local shoulder envelope; distant
+material registration cannot move the geometry. This closes the stretched
+bands in both Cianwood's low coast view and the user's Route45 view.
+Ordinary walking follows the mountain slope; actual source ledge jumps retain
+their existing arc and the runtime still owns all movement permissions.
+
+The production native preview builds successfully. Twelve final native views
+were personally inspected across Route45, Route44, Route26, Route19, Cianwood,
+Cinnabar and MountMoonSquare, including true eye height and two night controls.
+Ten same-state 2D pairs preserve game state. Final captures are in
+`target/outdoor-mountain-lowered-final-review/`. Route45 `(7,16)` is the user's
+rock-plot diagnostic, not ordinary path evidence; Route19 `(4,16)` is a water
+view. The Route26 keyboard recording starts at `(9,28)`, changes authoritative
+positions through 128 input frames and crosses raised mineral tops with no
+additional terrain rebuild. The eight-second video is
+`target/outdoor-mountain-walk-final.mp4`; retained sample frames and movement
+receipts are in `target/outdoor-mountain-walk-final/`.
+
+All 165 focused and external-pack checks pass. They include actual raised-cap
+triangle/footing intersections, walking and ledge arcs, ground contacts,
+mineral winding, source-coordinate reuse, source-tag boundaries, terraces,
+water registration, renderer integration and worker metadata. The external
+layouts include 1,681 shared Route44 cap/wall samples, 2,199 in Blackthorn and
+the Kanto mountain controls. One existing worker benchmark remains ignored.
+The verified log is `target/outdoor-mountain-final-verified-tests.log`.
+
+This is a lower mountain candidate, not whole-route visual acceptance.
+Route45's elevated view still exposes distant cave/land joins; some connected
+faces retain straight shelves, coast edges remain thin and ordinary rounded
+land posts remain too uniform. Earlier records below describe their respective
+revisions; the policy that flattened walking mineral is superseded here.
+
+### Coastal rock shoulders and rock-local wash
+
+Kanto boundary shore rocks retain their closed base and source footprint but
+use three unequal shoulder envelopes. Their source pigment and night palette
+remain; weighted shared normals describe the closed volume. Ordinary land
+posts retain their separate geometry. The shared sea-stone material now receives
+the retained grid registration even when the animation phase does not advance,
+keeping its painted mineral detail at the intended world scale.
+
+Rock-local wave wash uses the existing shoreline distance field and received
+water phase. The distance gradient identifies each rock's outward shore;
+incoming crests spread broken white wash around exposed feet, with quieter
+water on the lee side and a small reflected slope. The actual land-depth field
+still owns shallow water. No separate clock, water height or collision changes
+are introduced. The eight-second motion review is
+`target/outdoor-rock-wave-motion-review.mp4`; Route19's final eye-height control
+also retains the embedded production shader. These changes do not resolve the
+remaining ordinary post silhouettes or thin coastal land edges.
+
+### Coastal buoy volume and the water horizon
+
+The bright blue/white fragments along the Johto buoy courses came from open
+collars with contrasting patches across their upper faces. Each float now has
+a complete rounded crown and a quiet blue lower band, using the same native
+paint samples and footprint. Smooth modeled normals describe its volume. The
+closed six-face construction uses 96 quads instead of the previous 128.
+Source claims, water beds, support and the live time-of-day palette are retained.
+
+Route40's pale patterned horizon was a separate continuation defect. Unknown
+flat scenery could supply the repeated distant ground, while verified water
+was excluded. Ground donors now require a known lawn, path or paving source.
+On coastal frames dominated by authenticated animated water, with a wet outer
+edge, four level continuation faces use the ordinary world's water material,
+source palette and received animation phase. They are published after terrain
+fitting, outside the finite source grid, at the existing water datum. No extra
+water material, shader, collision or footing is introduced. Inland maps,
+enclosed basins and unverified still drawings cannot acquire this ocean apron.
+
+The production preview built successfully. Eleven final native views were
+personally inspected on Route40 `(6,11)`, Cianwood `(10,20)`, Route41 `(3,22)`,
+Cherrygrove `(9,8)`, Olivine `(34,31)`, Route19 `(10,11)` and a Route30 `(7,40)`
+forest control. Eight same-state 2D pairs preserve game state. The coastal
+views include true eye height, elevated controls and Route40 at 22:00. The
+Route41, Cherrygrove and Olivine positions are surfing views, not walking-path
+evidence. Route40's eye-level horizon strip is gone in both daylight and blue
+night. The final receipts are `target/outdoor-coastal-continuation-review/`;
+`target/outdoor-buoy-shape-review/route40-eye.png` retains the earlier horizon.
+
+All 53 focused buoy, background, live-water, shoreline and worker checks pass;
+one existing worker benchmark remains ignored. The verified log is
+`target/outdoor-coastal-continuation-verified-tests.log`. It retains the initial
+fixture failures and their passing repairs: the apron test now supplies known
+Johto lawn, and the pier test uses Port08's full-width timber phase rather than
+repeating Port14's left-only face across four columns. Those fixture repairs
+change no production pool behavior. The temporary source-inspection example
+and copied atlas images were removed; packs remain untouched.
+The extended coastal check also proves that ordinary authentic-domain
+partitioning marks every continuation triangle as outside the source grid,
+so the ocean apron cannot become a battle surface.
+
+The broader art goal remains open. The shoreline still has repetitive rounded
+rocks, thin land edges and overly geometric rock islands; Route42's cave arch
+still exposes joins. Some low pine sprays remain too flat. These buoy and
+horizon repairs do not establish whole-route visual acceptance.
+
+### Joined rock at native map borders
+
+Route44 `(38,3)` exposed a long sky-colored slit across the northern mineral
+mass and a distant hole through its cap. Coincident rock vertices could first
+receive different sculpting decisions. The later terrace pass then sampled
+adjoining synthetic and native caps on different sides of the map boundary,
+separating an otherwise joined edge. Sculpting now evaluates each shared
+source sample once. Terrace fitting samples the same source point on continuous
+mineral land, retaining owning-side behavior at actual authored drops, raised
+water and cliff/bank contacts. Walking support and source ownership stay intact.
+
+The final native render closes both Route44 openings. All four cardinal
+eye-level views, three third-person headings and controls on Routes 42 and 45,
+Cianwood, Route19 and the protected Route26 ledge were personally inspected:
+15 native views across six maps, including Route42 at 22:00. Nine paired 2D
+captures preserve the same game state. The final receipts are
+`target/outdoor-route44-final-rim*` and `target/outdoor-joined-rim-review/`;
+`target/outdoor-route44-seam-before*` records the initial defect.
+
+All 117 focused checks pass: 109 terrain, rock, terrace, datum and worker
+checks plus eight explicitly executed external-pack regressions. The Route44
+pack check exercises 1,681 shared cap/wall samples and 107,136 cap triangles.
+A separate border fixture proves both a joined cap and retained authored
+drops. Raised-pond ownership, tilted mineral walls, ordinary footing and the
+directional mountain walking cells retain their existing checks. One worker
+benchmark remains ignored. The verified log is
+`target/outdoor-joined-land-verified-tests.log`.
+
+These repairs close visible terrain gaps, but the broader art goal remains
+open. Route42's cave arch has exposed joins in eye-level views. The coastline
+still has repetitive rounded rocks and thin land edges. The subsequent buoy
+and horizon corrections are recorded above. Broad mountain beds and some pine
+sprays also retain overly regular silhouettes.
+
+### Route forest heights and low views
+
+Route tree blocks need overlapping crowns at different heights, including
+young trees below the mature canopy. The former Johto range still left long
+open corridors between equally tall bare trunks. Ordinary pines now span
+approximately 2.6–16.5 source tiles at full scale; ordinary Kanto broadleaf
+trees span approximately 2.6–12.1. The coordinate-seeded distribution favors
+shorter trees while retaining tall leaders. Direct meshes and shared runtime
+instances use the same height recipe. Existing tree models, planted positions
+and blocked plots are retained. Ancient and formal park trees keep their
+separate scale policies. The rejected forest fill and smooth bough blobs have
+been removed; neither is part of this implementation.
+
+The final height mix was personally inspected in 11 offscreen 960×720 noon
+views on Routes 2, 30, 31, 38 and 43. Every route includes a true eye-level
+capture; Route30 and Route2 also include elevated views. Five same-state 2D
+pairs preserve the game state. Evidence is in
+`target/outdoor-height-variation-review/`, particularly `route30-eye.png` for
+the user's open-trunk sightline. Shorter crowns now overlap beneath taller
+leaders and substantially reduce that horizontal opening. Some needle sprays
+still read flat in close low views; this height correction does not establish
+whole-route visual acceptance.
+
+The native preview built successfully. All 100 focused checks pass, covering
+foliage, shared instances, cached groves, local reveal, grass, understory and
+worker metadata; one pre-existing worker benchmark remains ignored. Mature
+crown checks retain their shape requirements for mature trees, while young
+trees are checked for complete leaders, stable roots and valid geometry.
+The verified log is `target/outdoor-varied-height-verified-focused-tests.log`.
+
+Foliage reveal now clears the trainer locally rather than dissolving whole
+crowns far above the trainer. Overworld grass uses a 0.45 default height
+multiplier; explicit battle normalization retains its existing scale. These
+changes address the earlier route views in which grass hid the trainer and
+whole-tree fading opened artificial holes in the forest.
+
+The wider review also covered Routes 12, 17, 19, 38, 42, 44 and 45, Cianwood,
+and ordinary route forests at true eye height. It exposed remaining coastal
+defects: thin shore edges, repeated rock/post silhouettes and patterned distant
+water edges. Route44's border seam is corrected by the joined mineral mapping
+above; the water-horizon correction is also recorded above. Thin shores and
+repeated coastal rocks remain open. Requested low third-person pitch can
+be raised automatically by
+terrain clearance, so first-person captures are required to judge sightlines
+at trainer height. A spawn inside a tree block or water is a diagnostic view,
+not evidence of normal walking composition.
 
 ### Original feel in 3D and protected walking caps
 

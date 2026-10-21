@@ -127,6 +127,21 @@ pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
     } else {
         [205, 187, 136]
     };
+    // The experimental trousers retain the full body and need more hip ease
+    // than the original garment. Fit the sash over that actual cut so its
+    // waist cannot break through the lower white edge.
+    let trousers = crate::tailored_trousers::build(rig, look);
+    let trouser_faces: Vec<_> = trousers
+        .as_ref()
+        .map(|trousers| {
+            trousers
+                .surface
+                .indices
+                .chunks_exact(3)
+                .map(|face| [face[0] as usize, face[1] as usize, face[2] as usize])
+                .collect()
+        })
+        .unwrap_or_default();
     const ROWS: usize = 8;
     const SIDES: usize = 64;
     let mut out = CostumeMesh {
@@ -134,18 +149,70 @@ pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
         joints: vec![],
         weights: vec![],
     };
-    let point = |y: f32, angle: f32, inner: bool| -> Option<Vec3> {
+    let body_radius = |y: f32, angle: f32, inner: bool| -> Option<f32> {
         let direction = Vec2::new(angle.sin(), angle.cos());
         let sample = crate::garment_fit::section(rig, y, direction)?;
-        let mut average = 0.0;
-        for offset in [-0.12, -0.06, 0.0, 0.06, 0.12] {
-            let a = angle + offset;
-            average +=
-                crate::garment_fit::section(rig, y, Vec2::new(a.sin(), a.cos()))?.radius / 5.0;
+        let mut average = 0.;
+        for offset in [-0.12, -0.06, 0., 0.06, 0.12] {
+            let angle = angle + offset;
+            average += crate::garment_fit::section(rig, y, Vec2::new(angle.sin(), angle.cos()))?
+                .radius
+                / 5.;
         }
-        // Round the source polygon corners without intersecting the garment.
-        let radius = (average + if inner { 0.025 } else { 0.044 })
-            .max(sample.radius + if inner { 0.020 } else { 0.033 });
+        Some(
+            (average + if inner { 0.025 } else { 0.044 })
+                .max(sample.radius + if inner { 0.020 } else { 0.033 }),
+        )
+    };
+    // One linear height profile avoids copying the trouser waist's changing
+    // curvature into a second bulging band. Solve the lower radius so the
+    // whole tapered strip encloses both body and cloth, with the top fixed.
+    let profiles = trousers.as_ref().map(|trousers| {
+        [false, true].map(|inner| {
+            (0..SIDES)
+                .map(|col| {
+                    let angle = std::f32::consts::TAU * col as f32 / SIDES as f32;
+                    let direction = Vec2::new(angle.sin(), angle.cos());
+                    let top = body_radius(1.87, angle, inner).unwrap();
+                    let mut bottom = body_radius(1.63, angle, inner).unwrap();
+                    for row in 1..=24 {
+                        let t = row as f32 / 24.;
+                        let y = 1.87 - 0.24 * t;
+                        let mut required = body_radius(y, angle, inner).unwrap();
+                        if y <= 1.70001 {
+                            if let Some(radius) = crate::tailored_trousers::section_radius(
+                                &trousers.surface.positions,
+                                &trouser_faces,
+                                y.min(1.689),
+                                Vec2::new(0., 0.05),
+                                direction,
+                                None,
+                            ) {
+                                required = required.max(radius + if inner { 0.014 } else { 0.031 });
+                            }
+                        }
+                        bottom = bottom.max((required - (1. - t) * top) / t);
+                    }
+                    [top, bottom]
+                })
+                .collect::<Vec<_>>()
+        })
+    });
+    let point = |y: f32, angle: f32, inner: bool| -> Option<Vec3> {
+        let direction = Vec2::new(angle.sin(), angle.cos());
+        let radius = if let Some(profiles) = &profiles {
+            let column =
+                angle.rem_euclid(std::f32::consts::TAU) / std::f32::consts::TAU * SIDES as f32;
+            let left = column.floor() as usize % SIDES;
+            let fraction = column - column.floor();
+            let profile = &profiles[usize::from(inner)];
+            let height = (1.87 - y) / 0.24;
+            let a = profile[left][0].lerp(profile[left][1], height);
+            let b = profile[(left + 1) % SIDES][0].lerp(profile[(left + 1) % SIDES][1], height);
+            a.lerp(b, fraction)
+        } else {
+            body_radius(y, angle, inner)?
+        };
         Some(Vec3::new(
             direction.x * radius,
             y,
@@ -207,14 +274,23 @@ pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
     }
     let sample = crate::garment_fit::section(rig, 1.745, Vec2::new(0., -1.))?;
     let bind = skin(rig, &sample.influences);
-    let z = 0.05 - sample.radius - if falkner { 0.048 } else { 0.072 };
+    let z = if trousers.is_some() {
+        point(1.745, std::f32::consts::PI, false)?.z - 0.010
+    } else {
+        0.05 - sample.radius - if falkner { 0.048 } else { 0.072 }
+    };
     if falkner {
         // A compact flat knot and short cloth ends distinguish this sash
         // from Erika's broad rear bow. Every part follows the torso palette.
+        let tail_z = if trousers.is_some() {
+            point(1.69, std::f32::consts::PI, false)?.z - 0.003
+        } else {
+            z
+        };
         for side in [-1., 1.] {
             oval(
                 &mut out,
-                Vec3::new(side * 0.025, 1.69, z),
+                Vec3::new(side * 0.025, 1.69, tail_z),
                 Vec3::new(0.027, 0.075, 0.010),
                 side * 0.22,
                 bow_color,
@@ -255,6 +331,83 @@ pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    #[ignore = "requires supplied Falkner rig in CRYSTAL_OPEN_MODEL_ROOT"]
+    fn supplied_trouser_sash_clears_the_waist_between_its_rings() {
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        let rig =
+            PersonRig::parse(&std::fs::read(root.join("people/kenney/human-male.glb")).unwrap())
+                .unwrap();
+        let mut look = crate::npc_appearance::look(
+            crate::new_bark_actors::character_meshes::CharacterKind::Falkner,
+        );
+        let original = build(&rig, look).unwrap();
+        look.costume = "hakama";
+        let trousers = crate::tailored_trousers::build(&rig, look).unwrap();
+        let sash = build(&rig, look).unwrap();
+        assert_eq!(sash.joints, original.joints);
+        assert_eq!(sash.weights, original.weights);
+        let mut edges = std::collections::HashMap::<(u32, u32), (usize, i32)>::new();
+        for face in sash.surface.indices.chunks_exact(3) {
+            let points = [face[0], face[1], face[2]]
+                .map(|i| Vec3::from_array(sash.surface.positions[i as usize]));
+            let normal = face
+                .iter()
+                .map(|&i| Vec3::from_array(sash.surface.normals[i as usize]))
+                .sum::<Vec3>();
+            assert!(
+                (points[1] - points[0])
+                    .cross(points[2] - points[0])
+                    .dot(normal)
+                    > 1e-9
+            );
+            for (a, b) in [(face[0], face[1]), (face[1], face[2]), (face[2], face[0])] {
+                let edge = edges.entry((a.min(b), a.max(b))).or_default();
+                edge.0 += 1;
+                edge.1 += if a < b { 1 } else { -1 };
+            }
+        }
+        assert!(edges.values().all(|&edge| edge == (2, 0)));
+        let pants_faces: Vec<_> = trousers
+            .surface
+            .indices
+            .chunks_exact(3)
+            .map(|f| [f[0] as usize, f[1] as usize, f[2] as usize])
+            .collect();
+        // Use the actual inner barrel triangles, excluding caps and bow.
+        // Intermediate heights/angles catch clipping between authored rings.
+        let inner = 9 * 64..18 * 64;
+        let sash_faces: Vec<_> = sash
+            .surface
+            .indices
+            .chunks_exact(3)
+            .filter(|face| face.iter().all(|&i| inner.contains(&(i as usize))))
+            .map(|f| [f[0] as usize, f[1] as usize, f[2] as usize])
+            .collect();
+        for row in 0..9 {
+            let y = 1.635 + 0.05 * row as f32 / 8.;
+            for col in 0..128 {
+                let angle = std::f32::consts::TAU * (col as f32 + 0.5) / 128.;
+                let direction = Vec2::new(angle.sin(), angle.cos());
+                let radius = |positions: &[[f32; 3]], faces: &[[usize; 3]]| {
+                    crate::tailored_trousers::section_radius(
+                        positions,
+                        faces,
+                        y,
+                        Vec2::new(0., 0.05),
+                        direction,
+                        None,
+                    )
+                    .unwrap()
+                };
+                let gap = radius(&sash.surface.positions, &sash_faces)
+                    - radius(&trousers.surface.positions, &pants_faces);
+                assert!(gap > 0.004, "sash clips trousers at {y}, {angle}: {gap}");
+            }
+        }
+    }
+
     #[test]
     #[ignore = "requires supplied male and female rigs in CRYSTAL_OPEN_MODEL_ROOT"]
     fn supplied_obi_is_closed_fitted_and_uses_torso_skinning() {

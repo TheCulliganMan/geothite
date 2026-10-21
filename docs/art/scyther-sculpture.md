@@ -1,9 +1,13 @@
 # Scyther green mantis and curved-scythe skin
 
-The current walking support packing and its revised runtime counts/pins are
+The [October 21 volume revision](mantis-sleeper-fidelity.md) supersedes the
+earlier anatomy and counts below. It corrects blade/wing planes, crown and
+cheek shape, upright greaves, rear shell seams, pivots and the blade action.
+
+The earlier walking support packing and its runtime counts/pins are
 recorded in [Bilateral walking support packing](world-support-packing.md).
-The original logical sculpture, battle weights and clips are unchanged; the
-earlier runtime packing and capture record below remains historical evidence.
+That packing preserved the then-current logical sculpture, battle weights and
+clips; the packing and capture record below remains historical evidence.
 
 `tools/scyther_sculpt.py` replaces the generic round-headed insect with an
 original dedicated green mantis guided by

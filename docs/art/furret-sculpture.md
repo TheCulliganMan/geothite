@@ -1,5 +1,11 @@
 # Furret continuous banded skin
 
+The [2026-10-21 fidelity revision](sentret-furret-fidelity.md) supersedes the
+shape, palette and measurements below. Furret now has cream/brown fur, a fuller
+curved body, one waist belt, a brown neck saddle, cream paws and a deeper muzzle.
+Its current skin has 38 parts, 17,037 vertices, 10,040 triangles and 14 joints in
+650,784 bytes. The remaining text records the earlier indexed-palette draft.
+
 The production baseline was inspected against its matching 2D state. Its
 protruding eyes, stacked body/tail bands, visible seams, and cream palette
 require refinement. The replacement recipe in `tools/furret_sculpt.py` uses

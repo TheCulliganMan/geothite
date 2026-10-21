@@ -15,7 +15,7 @@ class MagmarSkinTests(unittest.TestCase):
  def find(self,prefix,side=None):return next(i for i,n in enumerate(self.m.names) if n.startswith(prefix) and (side is None or n.endswith(' '+str(side))))
  def test_exact_geometry_hierarchy_inverse_binds_and_budgets(self):
   m=self.m;self.assertEqual(self.blob,author.export_magmar());self.assertEqual(author.geometry_digest(m.neutral_model()),author.REST_DIGESTS['magmar']);self.assertEqual(author.geometry_digest(self.runtime.neutral_model()),author.PACKED_REST_DIGESTS['magmar'])
-  self.assertEqual((len(m.parts),len(self.runtime.parts),sum(map(len,m.vertices)),sum(len(i)//3 for i in m.indices),len(m.joints)),(55,39,19923,30320,17));self.assertLessEqual(len(m.doc['accessors']),256);self.assertLess(len(self.blob),1024*1024)
+  self.assertEqual((len(m.parts),len(self.runtime.parts),sum(map(len,m.vertices)),sum(len(i)//3 for i in m.indices),len(m.joints)),(55,39,19024,29200,17));self.assertLessEqual(len(m.doc['accessors']),256);self.assertLess(len(self.blob),1024*1024)
   self.assertEqual(m.parents[:17],[None,0,1,2,1,4,5,1,7,8,0,0,3,3,1,14,15])
   for mat in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(mat,IDENTITY)),1e-7)
  def test_rigid_bill_gaze_claws_and_floor_owners(self):
@@ -45,7 +45,7 @@ class MagmarSkinTests(unittest.TestCase):
    self.assertGreater(max(math.dist(p,q) for i,vs in enumerate(m.vertices) for p,q in zip(vs,m.posed(i,mats))),.0005,j)
  def test_actual_anatomical_roots_remain_occupied(self):
   m=self.m;ps=m.neutral_model()['primitives'];pairs=[]
-  for a,b in (('Collar /','Body /'),('Head /','Collar /'),('Bill / rooted cream','Head /'),('Bill / rooted open','Head /'),('Tongue /','Bill / rooted open'),('Tail /','Body /'),('Tail flame /','Tail /')):pairs.append((self.find(a),self.find(b)))
+  for a,b in (('Collar /','Body /'),('Head /','Collar /'),('Bill / rooted golden','Head /'),('Bill / rooted open','Head /'),('Tongue /','Bill / rooted open'),('Tail /','Body /'),('Tail flame /','Tail /')):pairs.append((self.find(a),self.find(b)))
   for s in (-1,1):
    for a,b in (('Forehead lobe /','Head /'),('Crown flame /','Forehead lobe /'),('Shoulder /','Body /'),('Arm /','Shoulder /'),('Hand /','Arm /'),('Thigh /','Body /'),('Shin band /','Thigh /'),('Foot /','Shin band /')):pairs.append((self.find(a,s),self.find(b,None if b in ('Body /','Head /') else s)))
    for j in range(2):pairs.append((self.find('Cuff /',f'{s} {j}'),self.find('Arm /',s)));pairs.append((self.find('Toe claw /',f'{s} {j}'),self.find('Foot /',s)))
@@ -58,7 +58,7 @@ class MagmarSkinTests(unittest.TestCase):
   for p in self.m.neutral_model()['primitives']:
    if p['part'].startswith(('Arm /','Cuff /','Hand claw /','Shin band /','Toe claw /','Dorsal point /','Tail /','Crown flame /','Tail flame /')):self.assertIsNone(crossed_faces(p),p['part'])
  def test_open_bill_space_remains_empty_against_all_posed_solids(self):
-  m=self.m;ps=m.neutral_model()['primitives'];upper=self.find('Bill / rooted cream');lower=self.find('Bill / rooted open');y=(min(v[1] for v in m.vertices[upper])+max(v[1] for v in m.vertices[lower]))/2;z=.92*max(v[2] for v in m.vertices[lower])
+  m=self.m;ps=m.neutral_model()['primitives'];upper=self.find('Bill / rooted golden');lower=self.find('Bill / rooted open');y=(min(v[1] for v in m.vertices[upper])+max(v[1] for v in m.vertices[lower]))/2;z=.92*max(v[2] for v in m.vertices[lower])
   for clip in m.clips:
    for t in (0.,.13,.31,.67,.83):
     mats=m.matrices(clip,t);matrix=mats[3]

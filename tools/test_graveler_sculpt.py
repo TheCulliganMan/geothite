@@ -36,7 +36,10 @@ class GravelerTests(unittest.TestCase):
   for s in (-1,1):
    upper=self.find('Hand / broad upper',s);lower=self.find('Hand / broad lower',s)
    self.assertGreater(min(upper['positions'][1::3]),max(lower['positions'][1::3]))
-   self.assertGreater(max(abs(x) for x in upper['positions'][::3]),max(abs(x) for x in lower['positions'][::3])+.3)
+   self.assertGreater(max(abs(x) for x in upper['positions'][::3]),max(abs(x) for x in lower['positions'][::3])+.12)
+   # Lower wrists must read outside the belly, instead of becoming the old
+   # pair of tiny clasped fists at the center of the front silhouette.
+   self.assertGreater(sum(abs(x) for x in lower['positions'][::3])/(len(lower['positions'])//3),.39*HEIGHT)
  def test_both_short_feet_are_grounded(self):
   for s in (-1,1):self.assertEqual(min(self.find('Foot /',s)['positions'][1::3]),0)
  def pairs(self):

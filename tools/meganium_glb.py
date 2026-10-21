@@ -22,18 +22,18 @@ MAX_BYTES=640000
 # normal at signed near-zero without changing any expanded triangle position.
 # Keep that exact asset accepted; modified containers still require a fresh
 # deterministic authoring export rather than a permissive GLB comparison.
-REVIEWED_SHA256='38b341674cf32000b2f2feb856661d0db2e325035ebfa8f7d6b923b418836f77'
+REVIEWED_SHA256='fbffaa7d38de96f3d55a6bf6a1bc22461eaab82f09db67aa201b60372415f76e'
 JOINTS=(('root',None,(0.,0.,0.)),
-        ('pelvis',0,(0.,.367,-.225)),('chest',1,(0.,.505,.157)),
-        ('neck_base',2,(0.,.734,.141)),('neck_upper',3,(0.,.997,.310)),
-        ('head',4,(0.,1.130,.389)),
-        ('foreleg_left',2,(-.229,.358,.285)),('foreleg_right',2,(.229,.358,.285)),
-        ('hindleg_left',1,(-.229,.347,-.355)),('hindleg_right',1,(.229,.347,-.355)),
-        ('tail_base',1,(0.,.460,-.441)),('tail_tip',10,(.035,.467,-.704)),
-        ('antenna_left_base',5,(-.076,1.299,.409)),('antenna_left_tip',12,(-.212,1.461,.425)),
-        ('antenna_right_base',5,(.076,1.299,.409)),('antenna_right_tip',14,(.212,1.461,.425)),
+        ('pelvis',0,(0.,.335,-.225)),('chest',1,(0.,.485,.180)),
+        ('neck_base',2,(0.,.734,.220)),('neck_upper',3,(0.,.997,.300)),
+        ('head',4,(0.,1.130,.310)),
+        ('foreleg_left',2,(-.250,.310,.300)),('foreleg_right',2,(.250,.310,.300)),
+        ('hindleg_left',1,(-.250,.300,-.400)),('hindleg_right',1,(.250,.300,-.400)),
+        ('tail_base',1,(0.,.440,-.440)),('tail_tip',10,(0.,.590,-.800)),
+        ('antenna_left_base',5,(-.065,1.270,.310)),('antenna_left_tip',12,(-.135,1.465,.060)),
+        ('antenna_right_base',5,(.065,1.270,.310)),('antenna_right_tip',14,(.135,1.465,.060)),
         *tuple(('flower_petal_'+str(i+1),3,tuple(FLOWER_CENTER[k]+.119*flower_basis(a)[0][k] for k in range(3))) for i,a in enumerate(PETAL_ANGLES)),
-        ('lower_jaw',5,(0.,1.159,.424)))
+        ('lower_jaw',5,(0.,1.130,.310)))
 CLIPS=(('idle',4.2,81),('attack',1.,65),('hit',1.,65))
 
 
@@ -58,16 +58,18 @@ def skin_weights(part,position):
     x,y,z=position
     if part.startswith('Claw /'):return [0,0,0,0],[1.,0.,0.,0.]
     if part.startswith(('Eye /','Muzzle /')):return [5,0,0,0],[1.,0.,0.,0.]
-    if part==JAW:return [22,0,0,0],[1.,0.,0.,0.]
+    if part==JAW or part.startswith('Tongue /'):return [22,0,0,0],[1.,0.,0.,0.]
     if part==COLLAR:return [3,0,0,0],[1.,0.,0.,0.]
-    if part.startswith('Flower / folded'):
-        index=int(part.rsplit(' ',1)[-1])-1;radial,_=flower_basis(PETAL_ANGLES[index])
-        flex=smoothstep(.129,.309,dot(sub(position,FLOWER_CENTER),radial))
-        return [3,16+index,0,0],[1.-flex,flex,0.,0.]
+    if part.startswith(('Flower / folded','Flower / pale','Flower / stamen')):
+        # A folded petal and its fitted front/back tissue hinge together.
+        # Independent interpolated bend fields bury clipped artwork between
+        # the larger parent facets even when all rest positions fit exactly.
+        index=int(part.rsplit(' ',1)[-1])-1
+        return [16+index,0,0,0],[1.,0.,0.,0.]
     if part==TAIL:
-        tip=smoothstep(-.574,-.810,z);return [10,11,0,0],[1.-tip,tip,0.,0.]
+        tip=smoothstep(-.660,-.860,z);return [10,11,0,0],[1.-tip,tip,0.,0.]
     if part in (ANTENNA_LEFT,ANTENNA_RIGHT):
-        base=12 if part==ANTENNA_LEFT else 14;tip=smoothstep(.157,.258,abs(x))
+        base=12 if part==ANTENNA_LEFT else 14;tip=smoothstep(.180,-.240,z)
         return [base,base+1,0,0],[1.-tip,tip,0.,0.]
     return body_weights(position)
 
@@ -112,7 +114,7 @@ def pose_angles(clip,t):
             # cup would bury its back fold during the neck drive.
             flex=(-.030 if i==4 else .148+.035*math.sin(angle))*bloom
             pose.append(tuple(v*flex for v in tangent))
-        pose.append((.25*max(0.,head),0.,0.))
+        pose.append((.28*max(0.,head),0.,0.))
         return pose
     recoil=envelope(t,((0.,0.),(.17,1.),(.39,.32),(.64,-.11),(.84,.025),(1.,0.)))
     neck=envelope(t,((0.,0.),(.21,1.),(.45,.25),(.70,-.095),(1.,0.)))
@@ -141,6 +143,21 @@ def geometry_digest(model):
     return digest.hexdigest()
 
 
+def pack_parts(model):
+    """Batch the six gold stamens without losing anatomical ownership/ranges."""
+    parts=[];stamens=None
+    for order,p in enumerate(model['primitives']):
+        if not p['part'].startswith('Flower / stamen '):
+            parts.append((p,{'source_order':order}));continue
+        if stamens is None:
+            stamens=(dict(part='Flower / complete gold stamens',positions=[],normals=[],indices=[],base_color=p['base_color']),{'source_parts':[]})
+            parts.append(stamens)
+        q,meta=stamens;start=len(q['positions'])//3
+        meta['source_parts'].append(dict(part=p['part'],order=order,vertex_start=start,vertex_count=len(p['positions'])//3,index_start=len(q['indices']),index_count=len(p['indices'])))
+        q['positions']+=p['positions'];q['normals']+=p['normals'];q['indices'] += [i+start for i in p['indices']]
+    return parts
+
+
 def export_meganium(model=None):
     canonical=sculpt()
     if model is None:model=canonical
@@ -160,21 +177,26 @@ def export_meganium(model=None):
     g.doc['scenes']=[{'name':'meganium','nodes':[0,len(JOINTS)]}]
     g.doc['skins']=[{'name':'meganium','skeleton':0,'joints':list(range(len(JOINTS))),
                     'inverseBindMatrices':g.accessor(inverse,'MAT4')}]
-    colors,primitives={},[]
-    for part in model['primitives']:
+    colors,primitives={},[];shared={};parts=pack_parts(model)
+    def accessor(values,kind,component=5126,target=None,normalized=False):
+        key=(packed(values,component),kind,component,target,normalized)
+        if key not in shared:shared[key]=g.accessor(values,kind,component,target,normalized=normalized)
+        return shared[key]
+    for part,meta in parts:
         color=tuple(part['base_color'])
         if color not in colors:
             colors[color]=len(colors);g.doc['materials'].append({'name':'meganium/paper_'+str(colors[color]),
                 'pbrMetallicRoughness':{'baseColorFactor':list(color),'metallicFactor':0.,'roughnessFactor':1.},'alphaMode':'OPAQUE'})
         ids,weights=[],[]
-        for i in range(0,len(part['positions']),3):
-            js,ws=skin_weights(part['part'],part['positions'][i:i+3]);qs=quantized_weights(ws)
-            ids.extend(j if w else 0 for j,w in zip(js,qs));weights.extend(qs)
+        for source in meta.get('source_parts',[dict(part=part['part'],vertex_start=0,vertex_count=len(part['positions'])//3)]):
+            for i in range(source['vertex_start']*3,(source['vertex_start']+source['vertex_count'])*3,3):
+                js,ws=skin_weights(source['part'],part['positions'][i:i+3]);qs=quantized_weights(ws)
+                ids.extend(j if w else 0 for j,w in zip(js,qs));weights.extend(qs)
         primitives.append({'attributes':{'POSITION':g.accessor(part['positions'],'VEC3',target=34962,bounds=True),
-            'NORMAL':g.accessor(part['normals'],'VEC3',target=34962),
-            'JOINTS_0':g.accessor(ids,'VEC4',5121,34962),
-            'WEIGHTS_0':g.accessor(weights,'VEC4',5121,34962,normalized=True)},
-            'indices':g.accessor(part['indices'],'SCALAR',5123,34963),'material':colors[color],
+            'NORMAL':accessor(part['normals'],'VEC3',target=34962),
+            'JOINTS_0':accessor(ids,'VEC4',5121,34962),
+            'WEIGHTS_0':accessor(weights,'VEC4',5121,34962,normalized=True)},
+            'indices':accessor(part['indices'],'SCALAR',5123,34963),'material':colors[color],
             'mode':4,'extras':{'part':part['part']}})
     g.doc['meshes']=[{'name':'meganium','primitives':primitives}]
     for clip,duration,count in CLIPS:
@@ -182,12 +204,14 @@ def export_meganium(model=None):
         for joint in range(1,len(JOINTS)):
             rotations=[v for i in range(count) for v in quaternion_xyz(*pose_angles(clip,i/(count-1))[joint])]
             channels.append({'sampler':len(samplers),'target':{'node':joint,'path':'rotation'}})
-            samplers.append({'input':times,'output':g.accessor(rotations,'VEC4'),'interpolation':'LINEAR'})
+            samplers.append({'input':times,'output':accessor(rotations,'VEC4'),'interpolation':'LINEAR'})
         g.doc['animations'].append({'name':'meganium.'+clip,'channels':channels,'samplers':samplers,
             'extras':{'loopSuggested':clip=='idle','cueRelative':clip!='idle',
             'purpose':'planted mature stance; two-stage long-neck drive; six flower petals open and settle; curved antennae and low tail follow through; source move cues own timing'}})
     g.doc['extras']={'coordinate_system':COORDINATES,'source_name':'meganium',
         'source_sha256':geometry_digest(model),'reference_span':FULL_HEIGHT,
+        'source_part_ranges':[meta for part,meta in parts],
+        'packed_sha256':geometry_digest({'primitives':[part for part,meta in parts]}),
         'body_reference_height':BODY_HEIGHT,'full_silhouette_height':FULL_HEIGHT,
         'geometry_source':'tools/meganium_sculpt.py',
         'animation_contract':'identity floor root; fixed soles and claws; continuous mature quadruped; two-stage long neck; rigid fitted eyes and recessed mouth; hinged lower jaw; six articulated flower petals; paired two-stage antennae and tapered tail; rotation-only cue-relative clips'}
@@ -207,16 +231,23 @@ def reviewed_geometry_matches(blob, model):
         width={'VEC3':3,'SCALAR':1}[accessor['type']]
         return struct.unpack_from('<'+code*(width*accessor['count']),binary,
             view.get('byteOffset',0)+accessor.get('byteOffset',0))
-    stored=doc['meshes'][0]['primitives'];parts=model['primitives']
+    stored=[]
+    for primitive,meta in zip(doc['meshes'][0]['primitives'],doc['extras']['source_part_ranges']):
+        indices=values(primitive['indices']);positions=values(primitive['attributes']['POSITION']);normals=values(primitive['attributes']['NORMAL'])
+        sources=meta['source_parts'] if 'source_parts' in meta else [dict(part=primitive['extras']['part'],order=meta['source_order'],vertex_start=0,vertex_count=len(positions)//3,index_start=0,index_count=len(indices))]
+        for source in sources:
+            a=source['vertex_start'];b=a+source['vertex_count'];i=source['index_start'];j=i+source['index_count']
+            stored.append((source['order'],source['part'],[k-a for k in indices[i:j]],positions[3*a:3*b],normals[3*a:3*b],primitive['material']))
+    stored.sort();parts=model['primitives']
     if len(stored)!=len(parts):return False
-    for primitive,part in zip(stored,parts):
-        if primitive['extras']['part']!=part['part']:return False
-        color=doc['materials'][primitive['material']]['pbrMetallicRoughness']['baseColorFactor']
+    for (_,name,indices,positions,normals,material),part in zip(stored,parts):
+        if name!=part['part']:return False
+        color=doc['materials'][material]['pbrMetallicRoughness']['baseColorFactor']
         if color!=part['base_color']:return False
-        indices=values(primitive['indices']);authored=part['indices']
+        authored=part['indices']
         if len(indices)!=len(authored):return False
-        for attribute,key,tolerance in (('POSITION','positions',0.),('NORMAL','normals',1e-14)):
-            source=values(primitive['attributes'][attribute]);current=part[key]
+        for source,key,tolerance in ((positions,'positions',0.),(normals,'normals',1e-14)):
+            current=part[key]
             for old,new in zip(indices,authored):
                 for axis in range(3):
                     a,b=source[old*3+axis],current[new*3+axis]

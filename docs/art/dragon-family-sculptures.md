@@ -1,5 +1,10 @@
 # Dragon family sculptures
 
+This document records the original static publication. The later
+[canonical skins](dragon-family-skins.md) replace those exports, and the
+[Charizard/Dragonite fidelity revision](dragon-pair-fidelity.md) records
+Dragonite's current volume, posture, rig fit and verification.
+
 `tools/dragon_family_sculpt.py` supplies original, separate Dratini, Dragonair
 and Dragonite geometry through the main battle-species builder. The obsolete
 shared dragon routes reject these species. These are static sculptures; the

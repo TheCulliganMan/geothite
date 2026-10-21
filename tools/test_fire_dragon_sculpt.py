@@ -27,6 +27,9 @@ class FireDragonTests(unittest.TestCase):
  def test_skull_mandible_horns_and_tongue_have_actual_volume_roots(self):
   for s,m in self.models.items():
    body=self.find(s,'Body /');head=self.find(s,'Head /');jaw=self.find(s,'Jaw /');self.assertTrue(occupied_overlap(head,body),s);self.assertTrue(occupied_overlap(jaw,head),s);self.assertTrue(occupied_overlap(self.find(s,'Tongue /'),jaw),s)
+   if s=='charizard':
+    throat=self.find(s,'Throat /');floor=self.find(s,'Oral floor /')
+    for child,parent in ((throat,head),(throat,jaw),(floor,jaw)):self.assertTrue(occupied_overlap(child,parent),(s,child['part'],parent['part']))
    for p in m['primitives']:
     if p['part'].startswith(('Horn /','Fang /')):self.assertTrue(occupied_overlap(p,head),(s,p['part']))
  def test_all_arms_palms_digits_haunches_and_feet_are_rooted(self):
@@ -55,14 +58,16 @@ class FireDragonTests(unittest.TestCase):
    helper=fitted.NidorinaTests();helper.pairs=lambda:self.pairs(s);helper.test_fitted_layers_follow_actual_stored_parent();helper.test_fitted_face_centers_and_edges_clear_parent()
  def aperture_points(self,s):
   raw=sculpture(s,False);lo=min(v for p in raw['primitives'] for v in p['positions'][1::3]);hi=max(v for p in raw['primitives'] for v in p['positions'][1::3]);scale=HEIGHTS[s]/(hi-lo)
-  return [(x*scale,(y-lo)*scale,z*scale) for x in (-.025,0.,.025) for y in ((.947,.965) if s=='charizard' else (.800,.820)) for z in ((.23,.30,.37) if s=='charizard' else (.23,.29,.33))]
+  return [(x*scale,(y-lo)*scale,z*scale) for x in (-.025,0.,.025) for y in ((1.015,1.035) if s=='charizard' else (.800,.820)) for z in ((.30,.37,.44) if s=='charizard' else (.23,.29,.33))]
  def test_open_mouths_have_real_empty_apertures(self):
   for s,m in self.models.items():
    for point in self.aperture_points(s):self.assertFalse(any(occupied(p,point) for p in m['primitives']),(s,point))
  def test_scalloped_adult_wings_leading_arms_ribs_and_claws_are_attached(self):
   s='charizard'
   for side in (-1,1):
-   wing=self.find(s,'Wing /',side);arm=self.find(s,'Wing arm /',side);self.assertTrue(occupied_overlap(wing,self.find(s,'Body /')));self.assertTrue(occupied_overlap(arm,self.find(s,'Body /')));self.assertTrue(occupied_overlap(wing,arm));self.assertTrue(occupied_overlap(self.find(s,'Wing claw /',side),arm))
+   wing=self.find(s,'Wing /',side);case=self.find(s,'Wing back /',side);arm=self.find(s,'Wing arm /',side)
+   for child,parent in ((case,self.find(s,'Body /')),(wing,case),(arm,self.find(s,'Body /')),(wing,arm),(self.find(s,'Wing claw /',side),arm)):
+    self.assertTrue(occupied_overlap(child,parent),(side,child['part'],parent['part']))
    for j in range(3):
     rib=self.find(s,'Wing rib /',f'{side} {j}');self.assertTrue(occupied_overlap(rib,wing),(side,j));self.assertTrue(occupied_overlap(rib,arm),(side,j))
  def test_grounded_pads_and_uncrossed_continuous_limbs(self):

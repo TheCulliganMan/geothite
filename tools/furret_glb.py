@@ -12,7 +12,7 @@ def geometry_digest(model):
  return h.hexdigest()
 
 SPECIES=('furret',)
-REST_DIGESTS={'furret':'23d49398710d1399a28120ee0734869065766ebb09a5d9b19b7b48edb4f9565b'}
+REST_DIGESTS={'furret':'8fb8689f2753aaa7997768281386e3a57aa2c1370eb3187611fb24df924ee471'}
 PARTS={'furret':tuple(p['part'] for p in sculpt()['primitives'])};MAX_BYTES=1024*1024
 
 def sculpture(species):
@@ -24,11 +24,11 @@ def authoring_transform(species):
 
 def normalized(point):
  low,span=authoring_transform('furret');return tuple((v-(low if i==1 else 0.))*HEIGHT/span for i,v in enumerate(point))
-JOINTS={'furret':(('root',None,(0.,0.,0.)),('pelvis',0,normalized((0.,.26,-.10))),
- ('chest',1,normalized((0.,.58,.005))),('neck',2,normalized((0.,.84,.04))),('head',3,normalized((0.,1.045,.09))),
- ('ear_left',4,normalized((-.135,1.125,.084))),('ear_right',4,normalized((.135,1.125,.084))),
- ('arm_left',2,normalized((-.13,.73,.05))),('arm_right',2,normalized((.13,.73,.05))),
- ('leg_left',1,normalized((-.123,.24,-.10))),('leg_right',1,normalized((.123,.24,-.10))),
+JOINTS={'furret':(('root',None,(0.,0.,0.)),('pelvis',0,normalized((0.,.270,-.130))),
+ ('chest',1,normalized((0.,.570,.010))),('neck',2,normalized((0.,.870,.125))),('head',3,normalized((0.,.980,.165))),
+ ('ear_left',4,normalized((-.140,1.200,.105))),('ear_right',4,normalized((.140,1.200,.105))),
+ ('arm_left',2,normalized((-.095,.762,.074))),('arm_right',2,normalized((.095,.762,.074))),
+ ('leg_left',1,normalized((-.149,.237,-.085))),('leg_right',1,normalized((.149,.237,-.085))),
  ('tail_base',1,normalized(TAIL_KNOTS[0])),('tail_middle',11,normalized(TAIL_KNOTS[2])),('tail_tip',12,normalized(TAIL_KNOTS[4])))}
 
 CLIPS=(('idle',4.,85),('attack',1.,65),('hit',1.,65))
@@ -38,19 +38,19 @@ def skin_weights(species,part,position):
  x,y,z=position
  if part.startswith('Foot /'):return [0,0,0,0],[1.,0.,0.,0.]
  if part.startswith('Leg /'):
-  owner=9 if x<0 else 10;blend=smoothstep(normalized((0.,.065,0.))[1],normalized((0.,.22,0.))[1],y)
+  owner=9 if x<0 else 10;blend=smoothstep(normalized((0.,.070,0.))[1],normalized((0.,.237,0.))[1],y)
   return [0,owner,0,0],[1.-blend,blend,0.,0.]
  if part.startswith(('Arm /','Hand /')):return [7 if x<0 else 8,0,0,0],[1.,0.,0.,0.]
- if part.startswith('Ear /'):return [5 if part.endswith('-1') else 6,0,0,0],[1.,0.,0.,0.]
- if part.startswith(('Body /','Eye /','Glint /','Nose /','Mouth /','Face mark /')):
-  ranges=[(.16,.30,0,1),(.38,.66,1,2),(.76,.96,2,3),(1.00,1.07,3,4)]
+ if part.startswith(('Ear /','Ear tip /')):return [5 if part.endswith('-1') else 6,0,0,0],[1.,0.,0.,0.]
+ if part.startswith(('Body /','Eye /','Glint /','Nose /','Mouth /','Face mark /','Back coat /','Forehead /','Tongue /')):
+  ranges=[(.15,.27,0,1),(.34,.57,1,2),(.72,.87,2,3),(.94,.98,3,4)]
   for a,b,j,k in ranges:
    aa=normalized((0.,a,0.))[1];bb=normalized((0.,b,0.))[1]
    if y<aa:return [j,0,0,0],[1.,0.,0.,0.]
    if y<=bb:
     blend=smoothstep(aa,bb,y);return [j,k,0,0],[1.-blend,blend,0.,0.]
   return [4,0,0,0],[1.,0.,0.,0.]
- if part.startswith('Tail /'):
+ if part.startswith(('Tail /','Tail tuft /')):
   low,span=authoring_transform(species);raw=[position[k]*span/HEIGHT+(low if k==1 else 0.) for k in range(3)];best=float('inf');parameter=0.
   for j,(a,b) in enumerate(zip(TAIL_KNOTS,TAIL_KNOTS[1:])):
    delta=[b[k]-a[k] for k in range(3)];length=sum(v*v for v in delta);t=max(0.,min(1.,sum((raw[k]-a[k])*delta[k] for k in range(3))/length));distance=sum((raw[k]-a[k]-delta[k]*t)**2 for k in range(3))

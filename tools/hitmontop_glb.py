@@ -2,7 +2,7 @@
 """Canonical Hitmontop skin with a fixed spin point, coherent helmet and raised kicking limbs."""
 import argparse,hashlib,json,math,struct
 from pathlib import Path
-from hitmontop_sculpt import sculpture,HEIGHT
+from hitmontop_sculpt import sculpture,HEIGHT,arm_path
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 MAX_BYTES=1024*1024
 SOURCE=sculpture();RAW=sculpture(normalize=False)
@@ -14,19 +14,19 @@ def geometry_digest(model):
  for p in model['primitives']:
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
-REST_DIGEST='554e1edaafe9860ab6aa4b5c306a67549b3f8e7c2773e3adefad4901867a3de3'
+REST_DIGEST='f10c1cc4e0482bf05e4a25ba7f3624f04bd517d678f095f4da531de0af07e68b'
 def pivot(p):return tuple((v-(LOW if i==1 else 0.))*SCALE for i,v in enumerate(p))
-BASE=(('root',None,(0.,0.,0.)),('helmet',0,(0.,1.37,-.027)),('neck',1,(0.,.95,.03)),('torso',2,(0.,.84,.025)),
- ('arm_left',3,(-.148,.759,.029)),('arm_right',3,(.148,.759,.029)),
- ('leg_left',3,(-.127,.578,.018)),('leg_right',3,(.127,.578,.018)),
- ('tail_base',3,(0.,.563,-.099)),('tail_bend',8,(.076,.409,-.312)),('tail_ball',9,(.087,.171,-.579)))
+BASE=(('root',None,(0.,0.,0.)),('helmet',0,(0.,1.37,-.021)),('neck',1,(0.,.946,.017)),('torso',2,(0.,.755,.007)),
+ ('arm_left',3,arm_path(-1)[0]),('arm_right',3,arm_path(1)[0]),
+ ('leg_left',3,(-.150,.592,.015)),('leg_right',3,(.150,.592,.015)),
+ ('tail_base',3,(0.,.601,-.129)),('tail_bend',8,(.060,.490,-.314)),('tail_ball',9,(.165,.340,-.588)))
 # The sculpture rotates the upright authored cage 180 degrees around Z.
 JOINTS=tuple((n,parent,pivot((-p[0],-p[1],p[2])) if parent is not None else p) for n,parent,p in BASE)
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def skin_weights(part,point):
  x,y,z=(point[0]/SCALE,point[1]/SCALE+LOW,point[2]/SCALE);u=-y
  if part.startswith('Spin point /'):return [0,0,0,0],[1.,0.,0.,0.]
- if part.startswith(('Head /','Eye /','Pupil /','Helmet crease /','Mouth /')):return [1,0,0,0],[1.,0.,0.,0.]
+ if part.startswith(('Head /','Helmet flange /','Eye /','Pupil /','Helmet crease /','Mouth /')):return [1,0,0,0],[1.,0.,0.,0.]
  if part.startswith(('Arm /','Wrist wrap /','Hand /')):return [4 if part.endswith('-1') else 5,0,0,0],[1.,0.,0.,0.]
  if part.startswith(('Leg /','Ankle wrap /','Foot /','Foot spike /','Foot sole /')):
   side=part.split()[-2] if part.startswith('Foot spike /') else part.split()[-1]
@@ -49,7 +49,7 @@ def pose_angles(clip,t):
  # Literal identity endpoints use shortest-arc slerp across the +/-q seam.
  return [(0.,0.,0.),(0.,math.tau*t-.75*math.sin(math.tau*t)+.025*a if clip=='idle' else .025*a,0.),(0.,.015*a,0.),(.010*a,.020*a,0.),
   (.020*b,.020*a,-.025*b),(.020*b,-.020*a,.025*b),
-  (.020*a,.030*b,-.025*a),(.020*a,-.030*b,.025*a),
+  (.020*a,.030*b,.012*a*a),(.020*a,-.030*b,-.012*a*a),
   (0.,.025*a,0.),(.020*b,.030*b,0.),(.020*b,.025*b,0.)]
 def rotation(clip,t,joint):return quaternion_xyz(*pose_angles(clip,t)[joint])
 def export_hitmontop(model=None):

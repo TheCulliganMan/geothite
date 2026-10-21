@@ -20,7 +20,7 @@ class FossilScytheTests(unittest.TestCase):
    self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.);self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHTS[s],places=6);self.assertLessEqual(sum(len(p['positions'])//3 for p in ps),20000);self.assertLessEqual(sum(len(p['indices'])//3 for p in ps),40000)
  def test_dome_four_claws_and_hammer_head_paired_scythes_are_distinct(self):
   for s,m in self.models.items():
-   counts={'Shell /':1 if s=='kabuto' else 0,'Underside /':1 if s=='kabuto' else 0,'Shell pore /':2 if s=='kabuto' else 0,'Claw /':4 if s=='kabuto' else 0,'Leg /':4 if s=='kabuto' else 0,'Foot /':4 if s=='kabuto' else 2,'Head /':1 if s=='kabutops' else 0,'Head wing /':2 if s=='kabutops' else 0,'Scythe /':2 if s=='kabutops' else 0,'Rib plate /':5 if s=='kabutops' else 0,'Toe /':6 if s=='kabutops' else 0,'Back spur /':3 if s=='kabutops' else 0,'Tail /':1 if s=='kabutops' else 0,'Eye lens /':2,'Pupil /':2}
+   counts={'Shell /':1 if s=='kabuto' else 0,'Underside /':1 if s=='kabuto' else 0,'Shell pore /':2 if s=='kabuto' else 0,'Claw /':4 if s=='kabuto' else 0,'Leg /':4 if s=='kabuto' else 0,'Foot /':4 if s=='kabuto' else 2,'Head /':1 if s=='kabutops' else 0,'Head wing /':0,'Scythe /':2 if s=='kabutops' else 0,'Breast plate /':1 if s=='kabutops' else 0,'Rib plate /':3 if s=='kabutops' else 0,'Toe /':6 if s=='kabutops' else 0,'Back spur /':10 if s=='kabutops' else 0,'Tail /':1 if s=='kabutops' else 0,'Eye lens /':2,'Pupil /':2}
    for prefix,n in counts.items():self.assertEqual(sum(p['part'].startswith(prefix) for p in m['primitives']),n,(s,prefix))
  def attachments(self,s):
   if s=='kabuto':
@@ -32,9 +32,9 @@ class FossilScytheTests(unittest.TestCase):
   else:
    for child,parent in [('Neck /','Body /'),('Head /','Neck /'),('Tail /','Body /')]:yield self.find(s,child),self.find(s,parent)
    for side in (-1,1):
-    for child,parent in [('Head wing /','Head /'),('Upper arm /','Body /'),('Elbow /','Upper arm /'),('Forearm /','Elbow /'),('Wrist /','Forearm /'),('Scythe /','Wrist /'),('Thigh /','Body /'),('Shin /','Thigh /'),('Foot /','Shin /')]:yield self.find(s,child,side),self.find(s,parent,None if parent in ('Head /','Body /') else side)
+    for child,parent in [('Upper arm /','Body /'),('Elbow /','Upper arm /'),('Forearm /','Elbow /'),('Wrist /','Forearm /'),('Scythe /','Wrist /'),('Thigh /','Body /'),('Shin /','Thigh /'),('Foot /','Shin /')]:yield self.find(s,child,side),self.find(s,parent,None if parent in ('Head /','Body /') else side)
     for j in range(3):yield self.find(s,'Toe /',f'{side} {j}'),self.find(s,'Foot /',side)
-   for j in range(3):yield self.find(s,'Back spur /',j),self.find(s,'Body /')
+    for j in range(5):yield self.find(s,'Back spur /',f'{side} {j}'),self.find(s,'Body /')
  def test_complete_anatomy_has_occupied_volume_roots(self):
   for s in self.models:
    for child,parent in self.attachments(s):self.assertTrue(occupied_overlap(child,parent),(s,child['part'],parent['part']))
@@ -47,7 +47,8 @@ class FossilScytheTests(unittest.TestCase):
    elif n.startswith('Iris /'):parent=self.find(s,'Eye lens /',side)
    elif n.startswith('Pupil /'):parent=self.find(s,'Iris /' if s=='kabuto' else 'Eye lens /',side)
    elif n.startswith('Shell pore /'):parent=self.find(s,'Shell /')
-   elif n.startswith('Rib plate /'):parent=self.find(s,'Body /')
+   elif n.startswith('Breast plate /'):parent=self.find(s,'Body /')
+   elif n.startswith('Rib plate /'):parent=self.find(s,'Breast plate /')
    if parent:yield p,parent
  def test_faces_pores_ribs_and_rear_inset_follow_actual_parents(self):
   for s in self.models:

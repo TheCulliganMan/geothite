@@ -15,7 +15,7 @@ def geometry_digest(model):
 
 @lru_cache(maxsize=2)
 def authoring_model(species):return sculpture(species)
-REST_DIGESTS={'charmeleon': '1a2f4dde815962e0d07e93ba445c7b854b918cdb68bf0233c083aa789bbd0a66', 'charizard': 'fbcfbf20178a097dd6cd5b9d8329fd7e36bb955574921b780292c57d262b2f8d'}
+REST_DIGESTS={'charmeleon': '1a2f4dde815962e0d07e93ba445c7b854b918cdb68bf0233c083aa789bbd0a66', 'charizard': 'ecdc4bf08d2ef44835dcd364bd57ab9bc8ba1926c55877b934ac0a0156454f67'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 
 @lru_cache(maxsize=2)
@@ -26,11 +26,11 @@ def normalized(species,point):
 
 def joints(species):
  adult=species=='charizard';left,_=arm_path(species,-1);right,_=arm_path(species,1);tp,tr=tail_path(species);fire,tip,w,d=fire_path(species)
- raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.40,-.025) if adult else (0.,.36,-.015)),('head',1,(0.,1.03,.045) if adult else (0.,.84,.04)),('jaw',2,(0.,.9825,.055) if adult else (0.,.83,.055)),
+ raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.40,-.025) if adult else (0.,.36,-.015)),('head',1,(0.,1.08,.20) if adult else (0.,.84,.04)),('jaw',2,(0.,1.04,.17) if adult else (0.,.83,.055)),
       ('arm_left',1,left[0]),('arm_right',1,right[0]),('wrist_left',4,left[-1]),('wrist_right',5,right[-1]),
       ('leg_left',0,(-.20,.23,.03) if adult else (-.14,.17,.03)),('leg_right',0,(.20,.23,.03) if adult else (.14,.17,.03)),
       ('tail_base',1,tp[0]),('tail_tip',10,tp[3]),('flame',11,fire)]
- if adult:raw += [('wing_left',1,(-.095,.72,-.13969)),('wing_right',1,(.095,.72,-.13969))]
+ if adult:raw += [('wing_left',1,(-.095,.75,-.105)),('wing_right',1,(.095,.75,-.105))]
  return tuple((n,p,(0.,0.,0.) if p is None else normalized(species,v)) for n,p,v in raw)
 JOINTS={s:joints(s) for s in SPECIES}
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
@@ -55,17 +55,17 @@ def influences(pairs):
 def skin_weights(species,title,point):
  if title.startswith(('Foot /','Foot claw /')):return rigid(0)
  if title.startswith(('Body /','Belly /')):return rigid(1)
- if title.startswith(('Head /','Horn /','Eye socket /','Eye white /','Iris /','Pupil /','Glint /','Nostril /','Fang /')):return rigid(2)
- if title.startswith(('Jaw /','Tongue /')):return rigid(3)
+ if title.startswith(('Head /','Horn /','Eye socket /','Eye white /','Iris /','Pupil /','Glint /','Nostril /','Fang /','Throat /')):return rigid(2)
+ if title.startswith(('Jaw /','Tongue /','Oral floor /')):return rigid(3)
  if title.startswith('Arm /'):return rigid(4 if title.endswith('-1') else 5)
  if title.startswith(('Hand /','Finger /','Hand claw /')):
   side=int(title.split()[-2] if title.startswith(('Finger /','Hand claw /')) else title.split()[-1]);return rigid(6 if side<0 else 7)
- if title.startswith('Haunch /'):
+ if title.startswith(('Haunch /','Shin /')):
   lo,scale=authoring_transform(species);y=point[1]/scale+lo;a=smoothstep(.07,.26 if species=='charizard' else .20,y);j=8 if title.endswith('-1') else 9;return influences(((0,1.-a),(j,a)))
- if title.startswith('Tail /'):
+ if title.startswith(('Tail /','Tail underside /')):
   d=tail_distance(species,point);points,radii,distance=tail_samples(species);a=smoothstep(0.,.14,d);b=smoothstep(distance[8],distance[12],d);return influences(((1,1.-a),(10,a*(1.-b)),(11,a*b)))
  if title.startswith('Flame /'):return rigid(12)
- if title.startswith(('Wing /','Wing arm /','Wing rib /','Wing claw /')):
+ if title.startswith(('Wing /','Wing back /','Wing arm /','Wing rib /','Wing claw /')):
   side=int(title.split()[-2] if title.startswith('Wing rib /') else title.split()[-1]);return rigid(13 if side<0 else 14)
  raise ValueError('unowned fire dragon anatomy: '+title)
 
@@ -89,7 +89,9 @@ def pose_angles(species,clip,t):
   elif name=='tail_tip':angle=(0.,-.055*a,0.)
   elif name=='flame':angle=(.035*b,.025*a,.055*b)
   else:
-   beat=math.sin(math.tau*t*4) if clip=='idle' else a;angle=(.018*b,side*.018*a,side*(.22*beat if clip=='idle' else .18*a))
+   # Four complete beats retain their amplitude with zero velocity at each
+   # loop join, including interpolation through the stored endpoint keys.
+   phase=math.tau*t*4;beat=math.sin(phase)*(1.-math.cos(phase))*.769800358919501 if clip=='idle' else a;angle=(.018*b,side*.018*a,side*(.22*beat if clip=='idle' else .18*a))
   out.append(angle)
  return out
 

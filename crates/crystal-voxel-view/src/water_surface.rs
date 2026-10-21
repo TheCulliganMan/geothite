@@ -663,8 +663,10 @@ mod tests {
                 s.subtile_column=x as u8;s.subtile_row=y as u8;
             }}
             let (face_block,face_tile,face_row)=match tileset {
-                "kanto"=>(0x78,0x31,0),"johto"=>(0x43,0x49,0),_=>(0x14,0x22,0),
+                "kanto"=>(0x78,0x31,0),"johto"=>(0x43,0x49,0),_=>(0x08,0x22,0),
             };
+            // Port08 has a full-width timber face; Port14 owns only its
+            // left half, so repeating it across four columns is altered art.
             for x in 0..4 {
                 let s=&mut f.tiles[6*8+x+2].source;
                 s.tileset_id=tileset.into();s.metatile_id=face_block;s.tile_index=face_tile;

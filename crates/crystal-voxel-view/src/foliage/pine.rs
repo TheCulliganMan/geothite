@@ -29,13 +29,12 @@ const HEIGHT_SCALE: f32 = 0.7;
 fn authored_stem_height(tile: f32, coordinates: [i32;2], neighbors: [bool;4]) -> f32 {
     let v = variation(coordinates[0],coordinates[1]);
     let interior = neighbors.iter().all(|&n| n);
-    // Leaders span 10.5..21 source tiles: up to 50% above the 14-tile
-    // mature reference, with shorter crowns filling the gaps below them.
-    // Keep the minimum roof clearance and apply the same height recipe to
-    // direct meshes and shared instances; interior trees reach slightly higher.
-    tile * (10.5 + (v.height - 0.9) * 0.9
-        + (non_ancient_height_factor(coordinates) - 0.5) * 10.5
-        + if interior { 1.2 } else { 0. }) * RECIPES[v.index].height
+    // Young trees put real crowns below the mature canopy. Bias the range
+    // toward shorter trees so continuous route blocks overlap at several
+    // heights rather than leaving every crown above a bare-trunk corridor.
+    let age = non_ancient_height_factor(coordinates) - 0.5;
+    tile * (4.0 + age.powf(1.6) * 17.0
+        + if interior { age * 1.2 } else { 0. }) * RECIPES[v.index].height
 }
 
 pub(super) fn append(
@@ -313,11 +312,13 @@ fn spray(
         let t = (pair as f32 + 0.5) / 5.;
         let p = root.lerp(tip, t);
         for sign in [-1., 1.] {
-            // Stagger needle planes around the twig instead of laying every
-            // pair on one broad, visibly flat comb.
-            let twist = (phase + pair as f32 * 1.9 + sign * 0.7).sin() * 0.6;
-            let radial = side * sign * twist.cos() + up * twist.sin();
-            let needle_up = up * twist.cos() - side * sign * twist.sin();
+            // Successive fascicles spiral around the complete twig. Two
+            // shallow opposed planes still read as flat combs from below,
+            // even when each individual needle is a closed volume.
+            let twist=phase+pair as f32*2.399963
+                +if sign<0. {std::f32::consts::PI}else{0.};
+            let radial = side * twist.cos() + up * twist.sin();
+            let needle_up = up * twist.cos() - side * twist.sin();
             let length = width * 1.6
                 * (0.48 + 0.52 * (std::f32::consts::PI * t).sin())
                 * (0.86 + 0.14 * (phase + pair as f32 * 2.7 + sign).sin());
@@ -422,21 +423,68 @@ mod tests {
                 let mut crown_radius = 0.0_f32;
                 let mut needles = 0;
                 let mut low_needles = 0;
+                // Full needle bundles hang below their supporting bough.
+                // Young crowns deliberately occupy the lower forest layer;
+                // retain their bare rooted base and mature trees' open trunk.
+                let clear_trunk=if height>=16.*6. {0.40}else{0.22};
                 for (p,color) in tree.solid.positions.iter().zip(&tree.solid.colors) {
                     let t = (p[1] - 3.) / height;
                     let radius = Vec2::new(p[0],p[2]).distance(root);
-                    if t < 0.35 { lower_radius = lower_radius.max(radius); }
+                    let foliage=color[1]>color[0]*1.2 && color[1]>color[2]*1.2;
+                    // Measure the shortened woody limbs, not downward needle
+                    // tips hanging from the full, rounded crown above them.
+                    if t < 0.35 && !foliage { lower_radius = lower_radius.max(radius); }
                     if t > 0.55 { crown_radius = crown_radius.max(radius); }
-                    if color[1] > color[0] * 1.2 && color[1] > color[2] * 1.2 {
+                    if foliage {
                         needles += 1;
-                        if t < 0.4 { low_needles += 1; }
+                        if t < clear_trunk { low_needles += 1; }
                     }
                 }
                 assert!(needles > 1000);
                 assert!(low_needles * 40 < needles,
                     "lower trunk must remain sparsely needled: {coordinates:?}");
-                assert!(crown_radius > lower_radius * 1.7,
-                    "mature crown must broaden above the shortened lower limbs: {coordinates:?}");
+                // Young trees bring the same full-sized needle sprays lower
+                // on their shorter stems. The high spreading silhouette is a
+                // requirement for mature leaders, not that younger layer.
+                if height >= 16. * 6. {
+                    assert!(crown_radius > lower_radius * 1.7,
+                        "mature crown must broaden above the shortened lower limbs: {coordinates:?}");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn needle_sprays_occupy_every_side_of_the_twig_at_low_and_side_views() {
+        for phase in [0.,0.7,2.9] {
+            for axis in [Vec3::X,Vec3::Y,Vec3::new(1.,-0.3,0.5).normalize()] {
+                let mut mesh=SurfaceMeshData::default();
+                spray(&mut mesh,Vec3::ZERO,axis*2.,1.,phase,[1.;3],false);
+                let side=axis.cross(if axis.y.abs()>0.9 {Vec3::Z}else{Vec3::Y}).normalize();
+                let up=side.cross(axis).normalize();
+                let radial=mesh.positions.chunks_exact(4).map(|bundle| {
+                    let direction=Vec3::from_array(bundle[2])-Vec3::from_array(bundle[0]);
+                    (direction-axis*direction.dot(axis)).normalize()
+                }).collect::<Vec<_>>();
+                for view in [side,-side,up,-up] {
+                    assert!(radial.iter().any(|r|r.dot(view)>0.75),
+                        "the needle spray cannot leave a bare side around its twig: {axis:?}, {phase}, {view:?}");
+                }
+                for vertical_scale in [0.60,1.70] {
+                    let areas=(0..16).map(|step| {
+                        let angle=step as f32*std::f32::consts::TAU/16.;
+                        let view=side*angle.cos()+up*angle.sin();
+                        mesh.indices.chunks_exact(3).map(|ids| {
+                            let [a,b,c]=[ids[0],ids[1],ids[2]].map(|i|
+                                Vec3::from_array(mesh.positions[i as usize])*Vec3::new(1.,vertical_scale,1.));
+                            (b-a).cross(c-a).dot(view).abs()*0.5
+                        }).sum::<f32>()
+                    }).collect::<Vec<_>>();
+                    let low=areas.iter().copied().fold(f32::INFINITY,f32::min);
+                    let high=areas.iter().copied().fold(0.,f32::max);
+                    assert!(low>high*0.35,
+                        "a complete camera orbit cannot flatten the foliage silhouette: {low}/{high}");
+                }
             }
         }
     }
@@ -522,7 +570,9 @@ mod tests {
                             .iter()
                             .all(|p| p[0] > 0. && p[0] < 32. && p[2] > 0. && p[2] < 32.)
                     );
-                    assert!(a.solid.positions.iter().any(|p| p[1] > 3. + 16. * 5.));
+                    assert!(a.solid.positions.iter().any(|p|
+                        p[1] >= 3. + stem_height(16.,coordinates,neighbors)),
+                        "young and mature pines must retain their complete leader");
                     let (low, high) = a.solid.positions.iter().fold(
                         (Vec3::splat(f32::INFINITY), Vec3::splat(f32::NEG_INFINITY)),
                         |(low, high), &p| {

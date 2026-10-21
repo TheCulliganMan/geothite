@@ -35,15 +35,18 @@ struct Review {
     bicycle: bool,
     run_weight: f32,
     run_blend: f32,
+    uniform: Option<[u8;3]>,
     head_scale: Option<f32>,
     hand_scale: Option<f32>,
     unlit: bool,
+    clay: bool,
     albedo_fill: Option<f32>,
     gpu: PeopleGpu,
     frame: u32,
     pending: bool,
     blank_attempts: u32,
     drape_applied: bool,
+    skin_applied: bool,
     result: Arc<Mutex<Option<Result<CaptureOutcome, String>>>>,
 }
 enum CaptureOutcome { Saved, Blank }
@@ -55,17 +58,56 @@ fn all_angles() -> bool {
     std::env::var_os("CRYSTAL_PEOPLE_REVIEW_ALL_ANGLES").is_some()
 }
 
+const ORBIT_YAWS: [f32; 8] = {
+    use std::f32::consts::{FRAC_PI_2,FRAC_PI_4,PI};
+    [0.,-FRAC_PI_4,-FRAC_PI_2,-3.*FRAC_PI_4,PI,3.*FRAC_PI_4,FRAC_PI_2,FRAC_PI_4]
+};
+
 pub fn run() -> AppExit {
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::args().nth(1).as_deref() == Some("--validate-hair") {
+        crate::hair_curtain::validation::supplied_long_hair_keeps_closed_cuts_and_bends_between_head_and_back();
+        return AppExit::Success;
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::args().nth(1).as_deref() == Some("--validate-shoulders") {
+        crate::arm_surface::root_shape::validation::validate();
+        return AppExit::Success;
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::args().nth(1).as_deref() == Some("--validate-cuffs") {
+        crate::painted_torso::cuffs::validation::validate();
+        return AppExit::Success;
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::args().nth(1).as_deref() == Some("--validate-arms") {
+        crate::kimono_sleeves::tests::supplied_kimono_sleeves_preserve_skin_rig_and_unrelated_characters();
+        crate::arm_surface::tests::supplied_joined_arm_roots_round_without_opening_texture_seams();
+        crate::arm_deformation::validation::validate();
+        crate::arm_skin::validation::supplied_cast_arms_remain_outward_through_production_motion();
+        return AppExit::Success;
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::args().nth(1).as_deref() == Some("--validate-live-roster") {
+        crate::garment_drape_trial::live::validate_roster();
+        return AppExit::Success;
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    if std::env::args().nth(1).as_deref() == Some("--validate-live-drape") {
+        crate::garment_drape_trial::live::validate();
+        return AppExit::Success;
+    }
     #[cfg(not(target_arch = "wasm32"))]
     if std::env::args().nth(1).as_deref() == Some("--validate-faces") {
         crate::head_surface::review_validation::validate();
-        eprintln!("Anime profile checks passed for both supplied rigs: unchanged UVs, skinning, body, face projection and anchors, finite shading and animated bounds.");
+        crate::face_volume::validate_cast();
+        eprintln!("Anime face-volume checks passed for all 75 people: preserved frontal coordinates, artwork, skinning, body and anchors; finite outward shading, nose/chin depth and prepared vertex budgets.");
         return AppExit::Success;
     }
     #[cfg(not(target_arch = "wasm32"))]
     if std::env::args().nth(1).as_deref() == Some("--validate-drape") {
         crate::garment_drape_trial::validate_support();
-        eprintln!("Drape trial support checks passed: convex cage slices match independent all-pairs supports. Frozen art trials still require mapped and collision review.");
+        eprintln!("Drape geometry checks passed: exact hull slices, support-plane radii and reachable-hem clipping. Frozen art trials still require mapped and collision review.");
         return AppExit::Success;
     }
     if std::env::args().nth(1).as_deref() == Some("--validate-hands") {
@@ -104,6 +146,13 @@ pub fn run() -> AppExit {
         });
         assert!(!kinds.is_empty(), "filter selected no characters");
     }
+    let uniform = std::env::var("CRYSTAL_PEOPLE_REVIEW_UNIFORM_RGB").ok().map(|value| {
+        let channels: Vec<u8> = value.split(',').map(|v| v.trim().parse()
+            .expect("uniform RGB channels must be bytes")).collect();
+        assert!(kinds.iter().all(|&kind| crate::npc_uniform::supported(kind)),
+            "uniform review requires source-palette clothing roles");
+        <[u8;3]>::try_from(channels).expect("uniform RGB requires three channels")
+    });
     let expected: Vec<_> = kinds.iter().map(|&kind| {
         output.join(format!("{}.png", crate::npc_appearance::look(kind).texture_key))
     }).collect();
@@ -137,7 +186,9 @@ pub fn run() -> AppExit {
             let painting = crate::npc_textures::get(look.texture_key)
                 .expect("required production character painting");
             let size = painting.size;
-            let pixels = &painting.rgba;
+            let pixels = uniform.map(|color| crate::npc_uniform::painting_for(kind,
+                &painting.rgba, size, color));
+            let pixels = pixels.as_ref().unwrap_or(&painting.rgba);
             image::save_buffer(atlases.join(format!("{}.png", look.texture_key)),
                 &pixels, size.0, size.1, image::ColorType::Rgba8).expect("write review atlas");
         }
@@ -184,6 +235,7 @@ pub fn run() -> AppExit {
             roots: vec![],
             people: vec![],
             run_phase,
+            uniform,
             idle_seconds: std::env::var("CRYSTAL_PEOPLE_REVIEW_IDLE_SECONDS").ok().map(|value| {
                 let seconds: f32 = value.parse().expect("idle seconds must be numeric");
                 assert!(seconds.is_finite() && seconds >= 0., "idle seconds must be finite and nonnegative");
@@ -215,6 +267,7 @@ pub fn run() -> AppExit {
                 scale
             }),
             unlit: std::env::var_os("CRYSTAL_PEOPLE_REVIEW_UNLIT").is_some(),
+            clay: std::env::var_os("CRYSTAL_PEOPLE_REVIEW_CLAY").is_some(),
             albedo_fill: std::env::var("CRYSTAL_PEOPLE_REVIEW_ALBEDO_FILL").ok().map(|value| {
                 let fill: f32 = value.parse().expect("albedo fill must be a number");
                 assert!(fill.is_finite() && (0.0..=0.5).contains(&fill),
@@ -226,10 +279,13 @@ pub fn run() -> AppExit {
             pending: false,
             blank_attempts: 0,
             drape_applied: false,
+            skin_applied: false,
             result: default(),
         })
         .add_systems(Startup, setup)
         .add_systems(Update, capture);
+    #[cfg(not(target_arch = "wasm32"))]
+    crate::garment_drape_trial::live::register(&mut app);
     if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_TRACE").is_some() {
         app.get_sub_app_mut(bevy::render::RenderApp)
             .expect("review requires the render app")
@@ -283,7 +339,7 @@ fn trace_render_state(
 fn single_view() -> Option<usize> {
     std::env::var("CRYSTAL_PEOPLE_REVIEW_SINGLE_VIEW").ok().map(|value| {
         let view: usize = value.parse().expect("single review view must be an integer");
-        assert!(view < 4, "single review view must be from 0 to 3");
+        assert!(view < ORBIT_YAWS.len(), "single review view must be from 0 to 7");
         assert!(std::env::var_os("CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET").is_some(),
             "single review view requires the image target");
         view
@@ -295,15 +351,15 @@ fn setup(mut commands: Commands, mut images: ResMut<Assets<Image>>) {
     // camera, meshes and materials, and never changes production rendering.
     let detail = single_view().is_some();
     let region = std::env::var("CRYSTAL_PEOPLE_REVIEW_DETAIL").ok().map(|value| {
-        assert!(matches!(value.as_str(), "feet" | "hands" | "head"),
-            "supported detail regions are feet, hands and head");
+        assert!(matches!(value.as_str(), "feet" | "hands" | "head" | "hair" | "torso" | "garment"),
+            "supported detail regions are feet, hands, head, hair, torso and garment");
         assert!(detail, "detail review requires a single image-target view");
         value
     });
     let feet = region.as_deref() == Some("feet");
     let hands = region.as_deref() == Some("hands");
-    let head = region.as_deref() == Some("head");
-    let close_up = feet || hands || head;
+    let head = matches!(region.as_deref(), Some("head" | "hair"));
+    let close_up = feet || hands || head || matches!(region.as_deref(), Some("torso" | "garment"));
     let image = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_IMAGE_TARGET").map(|_| {
         let (width, height) = if detail { (1000, 1000) }
             else if all_angles() { (1600, 1050) } else { (1600, 600) };
@@ -364,6 +420,49 @@ Transform::from_xyz(180., 320., 220.).looking_at(Vec3::ZERO, Vec3::Y),),
     ));
 }
 
+/// Follow the posed source cage so child sizes and knee compression remain
+/// framed. Source vertices keep before/after cameras identical when a prepared
+/// surface or its skinning changes.
+#[cfg(not(target_arch = "wasm32"))]
+fn detail_frame(person: &Person, kind: CharacterKind, head: bool,
+    transforms: &Query<&mut Transform, With<ModeledActor>>) -> (Transform, f32) {
+    let rig = &person.rig;
+    let look = crate::npc_appearance::look(kind);
+    let hair = std::env::var("CRYSTAL_PEOPLE_REVIEW_DETAIL").as_deref() == Ok("hair");
+    if !head && std::env::var_os("CRYSTAL_PEOPLE_REVIEW_FIXED_TORSO").is_some() {
+        // Pose studies must not independently resize/recenter their subject.
+        let target = Vec3::new(0.,look.height * 0.66,0.);
+        return (Transform::from_translation(target + Vec3::new(0.,0.12,8.))
+            .looking_at(target,Vec3::Y),look.height * 0.50);
+    }
+    let scale = Vec3::new(look.width, 1., 1.) * (look.height / rig.height);
+    let yaw = ORBIT_YAWS[single_view().unwrap()];
+    let rotation = Quat::from_rotation_y(yaw);
+    let palette: Vec<_> = person.review_skin_palette(transforms).iter()
+        .map(Mat4::from_cols_array).collect();
+    let mut min = Vec3::splat(f32::INFINITY);
+    let mut max = Vec3::splat(f32::NEG_INFINITY);
+    for ((&p, ids), weights) in rig.mesh.positions.iter().zip(&rig.ids).zip(&rig.weights) {
+        let head_weight: f32 = (0..4).filter(|&i| ids[i] as usize == rig.head_joint)
+            .map(|i| weights[i]).sum();
+        let selected = if head { head_weight >= 0.5 || (hair && p[0].abs() < 0.5 && p[1] > 1.6) }
+            else { p[0].abs() < 1.06 && (1.9..2.6).contains(&p[1]) };
+        if !selected { continue; }
+        let posed: Vec3 = (0..4).map(|i| palette[ids[i] as usize]
+            .transform_point3(Vec3::from_array(p)) * weights[i]).sum();
+        let point = rotation * ((posed - Vec3::Y * rig.floor) * scale);
+        min = min.min(point);
+        max = max.max(point);
+    }
+    assert!(min.is_finite() && max.is_finite(), "detail needs a weighted source cage");
+    let target = (min + max) * 0.5;
+    // Include crown shaping and fitted head accessories beyond the source cage.
+    let (margin, padding) = if head { (1.30, 0.12) } else { (1.12, 0.04) };
+    let span = ((max - min).max_element() * margin + padding).max(0.62);
+    (Transform::from_translation(target + Vec3::new(0., 0.12, 8.))
+        .looking_at(target, Vec3::Y), span)
+}
+
 #[allow(clippy::too_many_arguments)]
 fn capture(
     mut commands: Commands,
@@ -375,6 +474,7 @@ fn capture(
     windows: Query<Entity, With<PrimaryWindow>>,
     target: Res<ReviewTarget>,
     mut transforms: Query<&mut Transform, With<ModeledActor>>,
+    mut cameras: Query<(&mut Transform, &mut Projection), (With<Camera3d>, Without<ModeledActor>)>,
 
     mut exit: MessageWriter<AppExit>,
 ) {
@@ -405,6 +505,7 @@ fn capture(
         review.people.clear();
         review.index += 1;
         review.drape_applied = false;
+        review.skin_applied = false;
         review.pending = false;
         review.frame = 0;
         review.blank_attempts = 0;
@@ -421,9 +522,8 @@ fn capture(
             .clone();
         let scale = look.height / rig.height;
         use std::f32::consts::{FRAC_PI_2, FRAC_PI_4, PI};
-        let angles: &[f32] = if all_angles() {
-            &[0., -FRAC_PI_4, -FRAC_PI_2, -3. * FRAC_PI_4,
-                PI, 3. * FRAC_PI_4, FRAC_PI_2, FRAC_PI_4]
+        let angles: &[f32] = if all_angles() || single_view().is_some() {
+            &ORBIT_YAWS
         } else { &[0., -FRAC_PI_4, -FRAC_PI_2, PI] };
         for (i, yaw) in angles.iter().copied()
         .into_iter()
@@ -439,6 +539,7 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + (i % 4) as f32 * 1.
                         .with_scale(Vec3::new(scale * look.width, scale, scale)),))
                 .id();
             let bicycle = review.bicycle || kind == CharacterKind::Biker;
+            let uniform = review.uniform;
             let person = review.gpu.spawn(
                 look.base,
                 kind,
@@ -446,7 +547,7 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + (i % 4) as f32 * 1.
                 root,
                 false,
                 bicycle,
-                None,
+                uniform,
                 &mut commands,
                 &mut meshes,
                 &mut materials,
@@ -478,6 +579,16 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + (i % 4) as f32 * 1.
         }
         // Albedo-only diagnostic separates painting/UV defects from lighting.
         // Production materials remain unchanged outside this offline reviewer.
+        if review.clay {
+            for (_, material) in materials.iter_mut() {
+                if material.base_color_texture.is_some() {
+                    material.base_color_texture=None;
+                    material.base_color=Color::srgb(0.65,0.65,0.65);
+                    material.emissive_texture=None;
+                    material.emissive=LinearRgba::BLACK;
+                }
+            }
+        }
         if review.unlit {
             for (_, material) in materials.iter_mut() {
                 material.unlit = true;
@@ -502,6 +613,9 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + (i % 4) as f32 * 1.
     let head_scale = review.head_scale;
     let hand_scale = review.hand_scale;
     let texture_key = crate::npc_appearance::look(review.kinds[review.index]).texture_key;
+    let kind = review.kinds[review.index];
+    let region = std::env::var("CRYSTAL_PEOPLE_REVIEW_DETAIL").unwrap_or_default();
+    let frame_detail = review.frame > 0 && matches!(region.as_str(), "head" | "hair" | "torso" | "garment");
     let export_pose = review.frame == 29;
     for (index, person) in review.people.iter_mut().enumerate() {
         person.run_blend = run_blend;
@@ -540,6 +654,24 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + (i % 4) as f32 * 1.
             person.review_hand_scale(scale, &mut transforms);
         }
         #[cfg(not(target_arch = "wasm32"))]
+        if index == 0 && frame_detail {
+            let (frame, span) = if region == "garment" {
+                // Use physical height, not the current hem/leg bounds. Before
+                // and candidate poses therefore keep exactly the same camera.
+                let height = crate::npc_appearance::look(kind).height;
+                let target = Vec3::new(0., height * 0.34, 0.);
+                (Transform::from_translation(target + Vec3::new(0., 0.12, 8.))
+                    .looking_at(target, Vec3::Y), height * 0.74)
+            } else {
+                detail_frame(person, kind, matches!(region.as_str(), "head" | "hair"), &transforms)
+            };
+            let (mut transform, mut projection) = cameras.single_mut().expect("detail review camera");
+            *transform = frame;
+            if let Projection::Orthographic(ortho) = &mut *projection {
+                ortho.scaling_mode = ScalingMode::Fixed { width: span, height: span };
+            }
+        }
+        #[cfg(not(target_arch = "wasm32"))]
         if export_pose && index == 0 {
             if let Some(directory) = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_MESHES") {
                 let palette = person.review_skin_palette(&transforms);
@@ -550,11 +682,29 @@ Transform::from_xyz(if single.is_some() { 0. } else { -2.4 + (i % 4) as f32 * 1.
         }
     }
     #[cfg(not(target_arch = "wasm32"))]
+    if !review.skin_applied && review.frame >= 3
+        && std::env::var_os("CRYSTAL_PEOPLE_REVIEW_DQ_SKIN").is_some() {
+        assert!(std::env::var_os("CRYSTAL_PEOPLE_REVIEW_DRAPE_TRIAL").is_none(),
+            "frozen DQ and garment trials must be reviewed separately");
+        let person = &review.people[0];
+        let palette: Vec<_> = person.review_skin_palette(&transforms).iter()
+            .map(Mat4::from_cols_array).collect();
+        review.gpu.review_frozen_arm_skin(review.kinds[review.index], &person.rig,
+            &palette, &mut meshes);
+        review.skin_applied = true;
+    }
+    #[cfg(not(target_arch = "wasm32"))]
     if !review.drape_applied && review.frame >= 3
+        && !crate::garment_drape_trial::live::enabled()
         && std::env::var_os("CRYSTAL_PEOPLE_REVIEW_DRAPE_TRIAL").is_some() {
         let person = &review.people[0];
         let palette: Vec<_> = person.review_skin_palette(&transforms).iter()
             .map(Mat4::from_cols_array).collect();
+        if let Some(directory) = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_MESHES") {
+            std::fs::write(std::path::PathBuf::from(directory).join(format!("{texture_key}.pose.json")),
+                serde_json::to_vec(&person.review_skin_palette(&transforms)).expect("encode trial palette"))
+                .expect("write trial palette before validation");
+        }
         review.gpu.review_frozen_drape(review.kinds[review.index], &person.rig,
             &palette, &mut meshes);
         review.drape_applied = true;

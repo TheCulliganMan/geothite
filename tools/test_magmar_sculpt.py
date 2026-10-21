@@ -25,7 +25,7 @@ class MagmarTests(unittest.TestCase):
   self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),115000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
   for prefix,count in (('Body /',1),('Collar /',1),('Head /',1),('Forehead lobe /',2),('Eye /',2),('Belly /',1),('Bill /',2),('Tongue /',1),('Shoulder /',2),('Arm /',2),('Cuff /',4),('Hand /',2),('Hand claw /',6),('Thigh /',2),('Shin band /',2),('Foot /',2),('Toe claw /',4),('Dorsal point /',3),('Tail /',1),('Crown flame /',2),('Crown glow /',4),('Tail flame /',1),('Tail glow /',2)):self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),count,prefix)
  def test_head_lobes_collar_bill_tongue_and_spines_are_rooted(self):
-  head=self.find('Head /');body=self.find('Body /');collar=self.find('Collar /');upper=self.find('Bill / rooted cream');lower=self.find('Bill / rooted open')
+  head=self.find('Head /');body=self.find('Body /');collar=self.find('Collar /');upper=self.find('Bill / rooted golden');lower=self.find('Bill / rooted open')
   for a,b in ((head,collar),(collar,body),(upper,head),(lower,head),(self.find('Mouth back /'),head),(self.find('Tongue /'),lower)):
    self.assertTrue(self.overlap(a,b),a['part'])
   for s in (-1,1):self.assertTrue(self.overlap(self.find('Forehead lobe /',s),head))
@@ -48,7 +48,7 @@ class MagmarTests(unittest.TestCase):
  def pairs(self):
   for p in self.ps:
    name=p['part'];s=name.split()[-1];parent=None
-   for child,base in (('Belly /','Body /'),('Eye socket /','Head /'),('Eye /','Eye socket /'),('Pupil /','Eye /')):
+   for child,base in (('Eye socket /','Head /'),('Eye /','Eye socket /'),('Pupil /','Eye /')):
     if name.startswith(child):parent=self.find(base,s if base not in ('Body /','Head /') else None)
    if name.startswith('Crown glow /'):parent=self.find('Crown flame /',name.split()[-2])
    if name.startswith('Tail glow /'):parent=self.find('Tail flame /')
@@ -61,7 +61,7 @@ class MagmarTests(unittest.TestCase):
   for p in self.ps:
    if p['part'].startswith(('Arm /','Cuff /','Hand claw /','Shin band /','Toe claw /','Dorsal point /','Tail /','Crown flame /','Tail flame /')):self.assertIsNone(crossed_faces(p),p['part'])
  def test_bill_gap_is_clear_and_rejects_a_fill(self):
-  upper=self.find('Bill / rooted cream');lower=self.find('Bill / rooted open');y=(min(upper['positions'][1::3])+max(lower['positions'][1::3]))/2;z=.92*max(lower['positions'][2::3])
+  upper=self.find('Bill / rooted golden');lower=self.find('Bill / rooted open');y=(min(upper['positions'][1::3])+max(lower['positions'][1::3]))/2;z=.92*max(lower['positions'][2::3])
   def occupied(p,x,y,z):
    hits=ray_intersections(p,x,y);return any(a+.0001<z<b-.0001 for a,b in zip(hits[::2],hits[1::2]))
   for dx,dy in ((0,0),(.015,0),(-.015,0),(0,-.006)):

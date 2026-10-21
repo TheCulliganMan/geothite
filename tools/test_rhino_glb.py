@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Decoded planted armored bodies, lossless packing, open jaw and independent appendages."""
-import copy,math,unittest
+import copy,math,os,unittest
 from pathlib import Path
 import rhino_glb as author
 import test_gengar_glb as skin
@@ -8,7 +8,7 @@ from test_ninetales_glb import logical_model
 from skin_glb_test_support import IDENTITY,transform
 from sculpt_test_support import parts_overlap,indexed_ray_intersections as rays
 from test_steelix_sculpt import occupied
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
+ROOT=Path(os.environ.get('CRYSTAL_RHINO_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 class RhinoSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
@@ -17,7 +17,7 @@ class RhinoSkinTests(unittest.TestCase):
  def test_canonical_limits_lossless_ranges_hierarchy_and_identity(self):
   for s,m in self.models.items():
    r=self.runtime[s];self.assertEqual(self.blobs[s],author.export_rhino(s));self.assertFalse((ROOT/(s+'.mesh.json')).exists());self.assertEqual(len(m.joints),11 if s=='rhyhorn' else 15)
-   self.assertEqual(len(r.parts),46 if s=='rhyhorn' else 48);self.assertEqual(len(m.parts),46 if s=='rhyhorn' else 64)
+   self.assertEqual(len(r.parts),51 if s=='rhyhorn' else 48);self.assertEqual(len(m.parts),51 if s=='rhyhorn' else 64)
    self.assertEqual(author.geometry_digest(m.neutral_model()),author.REST_DIGESTS[s]);self.assertEqual(author.geometry_digest(r.neutral_model()),author.PACKED_REST_DIGESTS[s]);self.assertEqual(author.geometry_digest(author.decode_rhino(self.blobs[s],s)),author.REST_DIGESTS[s])
    self.assertLessEqual(len(r.parts),64);self.assertLessEqual(sum(map(len,r.vertices)),20000);self.assertLessEqual(sum(map(len,r.indices)),120000);self.assertLessEqual(len(m.doc['accessors']),256);self.assertLess(len(self.blobs[s]),1024*1024)
    self.assertEqual(m.parents[:len(m.joints)],[None,0,1,1,0,0,0,0,2,2,2] if s=='rhyhorn' else [None,0,1,2,1,4,1,6,0,0,1,10,2,2,2])
@@ -38,7 +38,7 @@ class RhinoSkinTests(unittest.TestCase):
      if n.startswith(('Body /','Back armor /')):expected={1}
      elif n.startswith('Tail /'):expected={3}
      elif n.startswith('Jaw /'):expected={8}
-     elif n.startswith('Ear /'):expected={9 if n.endswith('-1') else 10}
+     elif n.startswith(('Ear /','Ear inset /')):expected={9 if n.endswith('-1') else 10}
      else:expected={2}
     else:
      if n.startswith(('Body /','Belly plate /','Collar /','Back armor /')):expected={1}
@@ -106,7 +106,8 @@ class RhinoSkinTests(unittest.TestCase):
       for t in (0,3):
        tri=[vs[k] for k in indices[offset+layer+t:offset+layer+t+3]];p=tuple(sum(v[k] for v in tri)/3 for k in range(3));self.assertEqual(occupied(body,p),inside,(clip,n,offset,layer,t))
  def test_rhydon_open_jaw_keeps_the_actual_aperture_clear(self):
-  m=self.models['rhydon'];ps=m.neutral_model()['primitives'];points=[author.normalized('rhydon',(x,y,z)) for x in (-.04,0.,.04) for y in (1.,1.02) for z in (.43,.46)]
+  import test_rhydon_sculpt
+  m=self.models['rhydon'];ps=m.neutral_model()['primitives'];helper=test_rhydon_sculpt.RhydonTests();helper.ps=ps;points=helper.aperture_points()
   for clip in m.clips:
    mats=m.matrices(clip,.31);posed=[dict(p,positions=sum(m.posed(i,mats),[])) for i,p in enumerate(ps)]
    for point in points:self.assertFalse(any(occupied(p,transform(mats[2],point)) for p in posed),(clip,point))

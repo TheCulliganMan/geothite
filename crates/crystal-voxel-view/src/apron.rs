@@ -213,6 +213,28 @@ fn front_normals(surface: &mut SurfaceMeshData, layer: usize) {
     }
 }
 
+/// The closing edge has its own normal at a fabric crease. Coincident copies
+/// keep exactly the same position, UV and skin; they remain joined in motion.
+#[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+fn rim_normals(surface: &mut SurfaceMeshData, joints: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>, first: usize) {
+    for at in (first..surface.indices.len()).step_by(3) {
+        let ids = [surface.indices[at], surface.indices[at + 1], surface.indices[at + 2]]
+            .map(|i| i as usize);
+        let p = ids.map(|i| Vec3::from_array(surface.positions[i]));
+        let normal = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
+        for (corner, i) in ids.into_iter().enumerate() {
+            surface.indices[at + corner] = surface.positions.len() as u32;
+            surface.positions.push(surface.positions[i]);
+            surface.normals.push(normal.to_array());
+            surface.uvs.push(surface.uvs[i]);
+            surface.colors.push(surface.colors[i]);
+            joints.push(joints[i]);
+            weights.push(weights[i]);
+        }
+    }
+}
+
 fn belt(source: &CostumeMesh, style: ApronStyle) -> CostumeMesh {
     let mut surface = SurfaceMeshData::default();
     let mut joints = Vec::new();
@@ -251,6 +273,8 @@ fn belt(source: &CostumeMesh, style: ApronStyle) -> CostumeMesh {
             }
         }
     }
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    let rim_start = surface.indices.len();
     for s in 0..BELT_SIDES {
         let a = at(0, s);
         let b = at(0, s + 1);
@@ -260,6 +284,10 @@ fn belt(source: &CostumeMesh, style: ApronStyle) -> CostumeMesh {
         surface.indices.extend([a, b, a + l, b, b + l, a + l]);
     }
     normals(&mut surface);
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    if crate::garment_drape_trial::live::enabled() {
+        rim_normals(&mut surface, &mut joints, &mut weights, rim_start);
+    }
     CostumeMesh {
         surface,
         joints,
@@ -377,6 +405,8 @@ fn panel(source: &CostumeMesh, pocket: bool, style: ApronStyle) -> CostumeMesh {
     for c in (1..COLS).rev() {
         edge.push(at(0, c));
     }
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    let rim_start = surface.indices.len();
     for i in 0..edge.len() {
         let a = edge[i];
         let b = edge[(i + 1) % edge.len()];
@@ -385,6 +415,10 @@ fn panel(source: &CostumeMesh, pocket: bool, style: ApronStyle) -> CostumeMesh {
     }
     normals(&mut surface);
     front_normals(&mut surface, layer);
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    if crate::garment_drape_trial::live::enabled() {
+        rim_normals(&mut surface, &mut joints, &mut weights, rim_start);
+    }
     CostumeMesh {
         surface,
         joints,

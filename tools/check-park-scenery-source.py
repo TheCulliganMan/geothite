@@ -61,7 +61,7 @@ fn check(map: &str,cells:Vec<Identity<'static>>,w:usize,h:usize,expected:[usize;
   let cw=p.column+p.guard_width()-1;
   let crop:Vec<_>=(0..h).flat_map(|y|cells[y*w..y*w+cw].iter().copied()).collect();
   assert!(!source::resolve(map,&crop,cw,h,[0,0],&vec![false;crop.len()]).iter().any(|q|q.column==p.column&&q.row==p.row));
-  assert_eq!(p.indices(w).count(),match p.kind{Kind::LitterBin=>4,Kind::PedestalFountain=>6,Kind::PondBasin=>4});
+  assert_eq!(p.indices(w).count(),match p.kind{Kind::LitterBin=>4,Kind::PedestalFountain=>6,Kind::PondBasin=>12});
   for (local,_)in p.indices(w).enumerate(){assert!(p.guard_indices(w).any(|i|i==p.ground(local,w)));}
  }
  let pad=3;let pw=w+6;let ph=h+6;let blank=Identity{tileset:"none",metatile:0,column:0,row:0,tile:0};let mut padded=vec![blank;pw*ph];
@@ -75,7 +75,7 @@ def main():
  parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--pack',type=Path,required=True);parser.add_argument('--rustc',default=os.getenv('RUSTC')or shutil.which('rustc'));args=parser.parse_args();assert args.rustc,'set RUSTC or pass --rustc'
  pack=load(args.pack);module=ROOT/'crates/crystal-voxel-view/src/mesh/park_scenery_source.rs'
  code=f'#[path={str(module)!r}] mod source;\n'.replace("'",'"')+'use source::{Identity,Kind};\n'+TEST_BODY+'\nfn main(){\n'
- cases={'NationalPark':[8,6,4],'NationalParkBugContest':[8,6,4],'SafariZoneBeta':[4,12,0]}
+ cases={'NationalPark':[8,6,12],'NationalParkBugContest':[8,6,12],'SafariZoneBeta':[4,12,0]}
  for name,expected in cases.items():
   m=pack['data']['maps'][name];ts=m['attributes']['tileset_name'];w=m['attributes']['width']*4;h=m['attributes']['height']*4;layout=pack['runtime_files'][f'data/tilesets/{ts}_metatiles.bin'];assert not m['script_block_changes'],'new native dynamic state needs review'
   code+='check("'+name+'",vec![\n'

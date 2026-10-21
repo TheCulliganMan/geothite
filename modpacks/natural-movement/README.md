@@ -4,9 +4,13 @@ Natural movement is the default whenever the 3D view is active, including
 existing packs that omit `natural_movement`. 2D and text clients keep their
 standard controls.
 
-The left stick supplies continuous, camera-relative movement with a radial
-deadzone and proportional walking speed. Arrow keys and the D-pad support
-map-relative diagonals. Release movement to stop between gameplay cells;
+Arrow keys, WASD, the D-pad, and the left stick supply continuous,
+camera-relative movement in 3D, including first person. Combine two keyboard
+directions to walk diagonally at the same speed as walking straight. Held
+movement follows the current camera angle smoothly as it rotates. The left
+stick adds a radial deadzone and proportional walking speed. On native Bevy,
+hold Q/E or the controller shoulders to rotate continuously; mouse dragging
+and the right stick steer yaw and pitch. Release movement to stop between gameplay cells;
 reverse or turn without waiting for a tile animation to finish. Hold B to run
 when the pack enables running shoes. Solid terrain and NPCs block movement,
 with clearance at walls and corners.
@@ -35,3 +39,4 @@ the production renderer with offscreen static and walking captures.
 
 Set `natural_movement` to `false` in the compiled dataset before compiling a
 custom pack to retain tile stepping in 3D. This setting has no effect on 2D.
+Existing Natural Movement packs use the updated controls without regeneration.

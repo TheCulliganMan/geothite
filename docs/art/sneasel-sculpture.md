@@ -1,5 +1,9 @@
 # Sneasel sculpture and skin
 
+The [October 21 Sneasel/Stantler fidelity revision](claw-deer-fidelity.md)
+supersedes the historical shape, palette, metrics and coverage below for these
+two species. Girafarig remains unchanged.
+
 `tools/sneasel_sculpt.py` authors the anatomy and `tools/sneasel_glb.py` exports
 the canonical `sneasel.glb` standard skin. The duplicate static JSON is removed.
 The battle builder dispatches this rig before generic Blender batching. Every

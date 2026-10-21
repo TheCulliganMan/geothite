@@ -1,9 +1,145 @@
-//! Mountain relief inside permanent outdoor rock footprints. Walking support,
-//! jump banks, planted trees and cave interiors keep their authored geometry.
+//! Mountain relief inside permanent outdoor rock footprints. Accessible
+//! mineral tops follow the same surface; paths, trees and caves keep their seats.
 use super::*;
 use bevy::math::Vec2;
 
 const REACH: i32 = 6;
+const RELIEF_SLOPE: f32 = 0.85;
+
+fn source_point(position:[f32;3],uv:[f32;2],g:&GridGeometry,origin:[i32;2],
+    regions:&[crystal_render_api::VisualSourceRegion])->Vec2 {
+    super::mineral_coords::point(position,uv,g,origin,regions)
+}
+
+/// A raised object's old roof/card top does not close adjoining mineral.
+/// Its standing ground still sets the lower end of that geological face.
+pub(super) fn object_floor_height(source: &VisualTileSource, shape: CellShape,
+    support: Option<f32>, tile_height: f32) -> Option<f32> {
+    matches!(shape, CellShape::RaisedTop {solid,..} if solid != SolidKind::Bank)
+        .then(||support.filter(|h|h.is_finite())
+            .unwrap_or_else(||support_height(source,tile_height)))
+}
+
+pub(super) fn walking_surface(frame: &VisualWorldFrame, cell: bevy::prelude::UVec2) -> bool {
+    let point = frame.grid_origin + cell.as_ivec2();
+    enabled(&frame.map_id) && frame.terrace_datum.as_ref().is_some_and(|datum|
+        datum.walkable_mineral.binary_search_by_key(&(point.y,point.x),|p|(p.y,p.x)).is_ok())
+}
+
+/// Within-cell contact on the same source grid as the mountain cap. Only
+/// published walking mineral needs this correction; ordinary paths, water
+/// and stairs retain their existing support policies.
+pub(super) fn support_correction(frame: &VisualWorldFrame, cell: bevy::prelude::UVec2,
+    foot: Vec2,resolved_heights:&[f32]) -> f32 {
+    if !enabled(&frame.map_id) || frame.tiles.len() != (frame.grid_size.x*frame.grid_size.y) as usize {return 0.;}
+    if !walking_surface(frame,cell) {return 0.;}
+    let (width,height) = (frame.grid_size.x as i32,frame.grid_size.y as i32);
+    let near_portal=(cell.y as i32-4..=cell.y as i32+4).any(|z|
+        (cell.x as i32-4..=cell.x as i32+4).any(|x| {
+            if x<0 || z<0 || x>=width || z>=height {return false;}
+            let s=&frame.tiles[(z*width+x) as usize].source;
+            s.subtile_row==2 && matches!(s.metatile_id,0x06|0x70|0x73)
+                && matches!(s.tile_index,0x46|0x45|0x48)
+        }));
+    let resolved_shapes=near_portal.then(|| {
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let mut shapes=cells.iter().map(|tile|shape_for_source_on_map(
+            frame.scenery_map_at(tile.column,tile.row),&tile.source)).collect::<Vec<_>>();
+        crate::rock_platform::resolve_rock_platform_tiers(&cells,&mut shapes,width as usize);
+        crate::elevation::resolve_authored_mountain_tiers(&mut shapes,width as usize,height as usize);
+        shapes
+    });
+    let g=GridGeometry {width:width as usize,height:height as usize,
+        tile_width:frame.tile_size.x,tile_height:frame.tile_size.y,origin_x:0.,origin_z:0.};
+    let portal_roofs=if let Some(shapes)=&resolved_shapes {
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        super::mountain_portals::sites(&cells,shapes,&g)
+    } else {Vec::new()};
+    let source=|i:usize| {
+        let tile=&frame.tiles[i];
+        (&tile.source,resolved_shapes.as_ref().map_or_else(||
+            shape_for_source_on_map(frame.scenery_map_at(tile.column,tile.row),&tile.source),|s|s[i]))
+    };
+    let heights=|i:usize|resolved_heights.get(i).copied().map(|height|
+        height-datum_offset(&g,frame.grid_origin.to_array(),frame.terrace_datum.as_deref(),
+            Vec2::new((i%g.width) as f32+0.5,(i/g.width) as f32+0.5)));
+    let corner = |x: i32,z: i32| {
+        let mut distance = REACH as f32;
+        for dz in -REACH..REACH {for dx in -REACH..REACH {
+            let (cx,cz) = (x+dx,z+dz);
+            if cx<0 || cz<0 || cx>=width || cz>=height {continue;}
+            let (s,shape)=source((cz*width+cx) as usize);
+            if permanent(s,shape) {continue;}
+            let px = (-(dx as f32)-1.).max(dx as f32).max(0.);
+            let pz = (-(dz as f32)-1.).max(dz as f32).max(0.);
+            distance = distance.min(px.hypot(pz));
+        }}
+        let point=Vec2::new(x as f32,z as f32);
+        geometry_corner(point,distance,&g,frame.grid_origin.to_array(),&frame.source_regions,
+            frame.terrace_datum.as_deref(),&portal_roofs,&source,&heights)
+    };
+    let (x,z) = (cell.x as i32,cell.y as i32);
+    let [a,b,c,d] = [corner(x,z),corner(x+1,z),corner(x,z+1),corner(x+1,z+1)];
+    let extent = frame.grid_size.as_vec2()*frame.tile_size;
+    let local = Vec2::new((foot.x-frame.center.x+extent.x*0.5)/frame.tile_size.x,
+        (frame.center.y+extent.y*0.5-foot.y)/frame.tile_size.y) - cell.as_vec2();
+    let (u,v) = (local.x.clamp(0.,1.),local.y.clamp(0.,1.));
+    let surface = if u<=v {a+(c-a)*v+(d-c)*u} else {a+(b-a)*u+(d-b)*v};
+    surface-(a+d)*0.5
+}
+
+fn datum_offset(g:&GridGeometry,origin:[i32;2],datum:Option<&crystal_render_api::VisualTerraceDatum>,
+    point:Vec2)->f32 {
+    super::terrace_datum::sample(datum,point+Vec2::new(origin[0] as f32,origin[1] as f32))
+        .unwrap_or(0.)*crate::profile::JUMP_LEDGE_HEIGHT*g.tile_height/SOURCE_TILE_HEIGHT
+}
+
+fn corner_floor<'a>(point:Vec2,g:&GridGeometry,
+    source:&impl Fn(usize)->(&'a VisualTileSource,CellShape),heights:&impl Fn(usize)->Option<f32>)->f32 {
+    let mut floor=0.0_f32;
+    for z in point.y.floor() as i32-REACH..=point.y.floor() as i32+REACH {
+    for x in point.x.floor() as i32-REACH..=point.x.floor() as i32+REACH {
+        if x<0 || z<0 || x>=g.width as i32 || z>=g.height as i32 {continue;}
+        let low=Vec2::new(x as f32,z as f32);
+        let weight=(1.-point.distance(point.clamp(low,low+Vec2::ONE))/REACH as f32).clamp(0.,1.);
+        if weight==0. {continue;}
+        let i=z as usize*g.width+x as usize;
+        let (s,shape)=source(i);
+        if permanent(s,shape) {continue;}
+        let ground=heights(i).filter(|h|h.is_finite()).unwrap_or_else(||
+            object_floor_height(s,shape,None,g.tile_height)
+                .unwrap_or_else(||shape.surface_height(g.tile_height)));
+        floor=floor.max(ground*weight);
+    }}
+    floor
+}
+
+fn geometry_corner<'a>(point:Vec2,distance:f32,g:&GridGeometry,origin:[i32;2],
+    regions:&[crystal_render_api::VisualSourceRegion],datum:Option<&crystal_render_api::VisualTerraceDatum>,
+    portals:&[super::mountain_portals::Site],source:&impl Fn(usize)->(&'a VisualTileSource,CellShape),
+    heights:&impl Fn(usize)->Option<f32>)->f32 {
+    let mut structural=portals.iter().map(|p|p.body_rise(point,g.tile_height)).fold(0.,f32::max);
+    let own_offset=datum_offset(g,origin,datum,point);
+    for z in point.y.floor() as i32-4..=point.y.floor() as i32+4 {
+        for x in point.x.floor() as i32-4..=point.x.floor() as i32+4 {
+            if x<0 || z<0 || x>=g.width as i32 || z>=g.height as i32 {continue;}
+            let (s,shape)=source(z as usize*g.width+x as usize);
+            if s.tile_index!=0x14 || !matches!(shape,CellShape::Water
+                |CellShape::PlaneAt {height:crate::profile::WATER_HEIGHT}) {continue;}
+            let water=datum_offset(g,origin,datum,Vec2::new(x as f32+0.5,z as f32+0.5));
+            if water<=0. {continue;}
+            let low=Vec2::new(x as f32,z as f32);
+            let weight=(1.-point.distance(point.clamp(low,low+Vec2::ONE))/4.).clamp(0.,1.);
+            structural=structural.max((water-own_offset).max(0.)*weight*weight*(3.-2.*weight));
+        }
+    }
+    let ground=|i:usize| {
+        if portals.iter().any(|p|p.owns_cell(i%g.width,i/g.width)) {Some(0.)}
+        else {heights(i)}
+    };
+    super::mountain_flanks::height(point,origin,regions,distance,g.tile_height)
+        +corner_floor(point,g,source,&ground)+structural
+}
 
 pub(super) fn enabled(map: &str) -> bool {
     new_bark::ordinary_lawn_map(map)
@@ -15,18 +151,29 @@ pub(super) fn enabled(map: &str) -> bool {
 /// This hidden base supplies presentation only, never walking support.
 pub(super) fn append_reveal_floor(mesh: &mut TerrainMeshData, map: &str,
     cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32;2]) {
-    append_family_reveal_floor(mesh,map,cells,shapes,g,origin,false);
+    append_family_reveal_floor(mesh,map,cells,shapes,g,origin,false,&[]);
+}
+pub(super) fn append_reveal_floor_with_source_regions(mesh:&mut TerrainMeshData,map:&str,
+    cells:&[&VisualTile],shapes:&[CellShape],g:&GridGeometry,origin:[i32;2],
+    regions:&[crystal_render_api::VisualSourceRegion]) {
+    append_family_reveal_floor(mesh,map,cells,shapes,g,origin,false,regions);
 }
 
 /// Kanto canyon backing runs after terraces, so its neighboring walking
 /// support is final. Volcanic rock retains its separate source paint domain.
 pub(super) fn append_kanto_reveal_floor(mesh:&mut TerrainMeshData,map:&str,
     cells:&[&VisualTile],shapes:&[CellShape],g:&GridGeometry,origin:[i32;2]) {
-    append_family_reveal_floor(mesh,map,cells,shapes,g,origin,true);
+    append_family_reveal_floor(mesh,map,cells,shapes,g,origin,true,&[]);
+}
+pub(super) fn append_kanto_reveal_floor_with_source_regions(mesh:&mut TerrainMeshData,map:&str,
+    cells:&[&VisualTile],shapes:&[CellShape],g:&GridGeometry,origin:[i32;2],
+    regions:&[crystal_render_api::VisualSourceRegion]) {
+    append_family_reveal_floor(mesh,map,cells,shapes,g,origin,true,regions);
 }
 
 fn append_family_reveal_floor(mesh:&mut TerrainMeshData,map:&str,
-    cells:&[&VisualTile],shapes:&[CellShape],g:&GridGeometry,origin:[i32;2],kanto:bool) {
+    cells:&[&VisualTile],shapes:&[CellShape],g:&GridGeometry,origin:[i32;2],kanto:bool,
+    regions:&[crystal_render_api::VisualSourceRegion]) {
     if !enabled(map) || g.width==0 || g.height==0 || cells.len()!=g.width*g.height
         || shapes.len()!=cells.len()
         || !mesh.solid.uvs.iter().any(|uv|uv[0]< -9000. && uv[1]< -30000.) {return;}
@@ -96,13 +243,16 @@ fn append_family_reveal_floor(mesh:&mut TerrainMeshData,map:&str,
         // Source UVs retain the unsculpted cell identity. The actual positions
         // retain its rounded boundary, which this backing must never exceed.
         let uv=ids.map(|i|Vec2::from_array(mesh.solid.uvs[i])).into_iter().sum::<Vec2>()/3.;
-        let x=((-10000.-uv.x)/g.tile_width-origin[0] as f32).floor() as isize;
-        let z=((-40000.-uv.y)/g.tile_height-origin[1] as f32).floor() as isize;
+        let center=p.into_iter().sum::<Vec3>()/3.;
+        let point=source_point(center.to_array(),uv.to_array(),g,origin,regions);
+        let (x,z)=(point.x.floor() as isize,point.y.floor() as isize);
         if x<0 || z<0 || x>=g.width as isize || z>=g.height as isize {continue;}
         let cell=z as usize*g.width+x as usize;
         let Some(ground)=donors[cell] else {continue;};
-        let support_cell=if kanto {ground}else{cell};
-        let support=mesh.footing_heights.get(support_cell).copied().filter(|h|h.is_finite()).unwrap_or(0.);
+        // Continue the neighboring ground at its own seat. The mineral cell's
+        // standing height is its cap; using that datum floats this backing
+        // through the recessed wall as an exposed horizontal shelf.
+        let support=mesh.footing_heights.get(ground).copied().filter(|h|h.is_finite()).unwrap_or(0.);
         let seat_bias=g.tile_height*0.01/SOURCE_TILE_HEIGHT;
         let floor=if support>0.02 {support-seat_bias}else{support};
         let clearance=g.tile_height/SOURCE_TILE_HEIGHT;
@@ -181,6 +331,221 @@ struct Relief {
     width: usize,
     height: usize,
     peaks: Vec<f32>,
+    geometry_peaks: Vec<f32>,
+    #[cfg(test)]
+    distances: Vec<f32>,
+}
+
+// Accessible mineral retains the source grid used by actor support. A shared
+// corner field fades this constraint beyond walking plots, allowing broad
+// inward slopes while preserving complete walking triangles.
+fn walking_grid_weights(g: &GridGeometry, origin: [i32; 2],
+    datum: Option<&crystal_render_api::VisualTerraceDatum>) -> Vec<f32> {
+    let mut weights = vec![0.; (g.width + 1) * (g.height + 1)];
+    let Some(datum) = datum else { return weights; };
+    for plot in datum.walkable_mineral.iter() {
+        constrain_grid_plot(&mut weights, g, plot.x - origin[0], plot.y - origin[1]);
+    }
+    weights
+}
+
+fn constrain_grid_plot(weights: &mut [f32], g: &GridGeometry, x: i32, z: i32) {
+    for dz in -2..=3 { for dx in -2..=3 {
+        let (cx, cz) = (x + dx, z + dz);
+        if cx < 0 || cz < 0 || cx > g.width as i32 || cz > g.height as i32 { continue; }
+        let distance = (-(dx as f32)).max(dx as f32 - 1.).max(0.)
+            .hypot((-(dz as f32)).max(dz as f32 - 1.).max(0.));
+        let t = (1. - distance / 2.).clamp(0., 1.);
+        let weight = t * t * (3. - 2. * t);
+        let i = cz as usize * (g.width + 1) + cx as usize;
+        weights[i] = f32::max(weights[i], weight);
+    }}
+}
+
+fn sample_grid(weights: &[f32], g: &GridGeometry, point: Vec2) -> f32 {
+    if point.x < 0. || point.y < 0. || point.x > g.width as f32 || point.y > g.height as f32 {
+        return 0.;
+    }
+    let (x, z) = ((point.x.floor() as usize).min(g.width - 1),
+        (point.y.floor() as usize).min(g.height - 1));
+    let (u, v) = (point.x - x as f32, point.y - z as f32);
+    let i = z * (g.width + 1) + x;
+    let a = weights[i] + (weights[i + 1] - weights[i]) * u;
+    let b = weights[i + g.width + 1] + (weights[i + g.width + 2] - weights[i + g.width + 1]) * u;
+    a + (b - a) * v
+}
+
+fn local_rock_top(cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry,
+    point: Vec2) -> Option<f32> {
+    [Vec2::new(-0.0001,-0.0001),Vec2::new(0.0001,-0.0001),
+        Vec2::new(-0.0001,0.0001),Vec2::new(0.0001,0.0001)].into_iter().filter_map(|delta| {
+        let p=(point+delta).floor().as_ivec2();
+        if p.x<0 || p.y<0 || p.x>=g.width as i32 || p.y>=g.height as i32 {return None;}
+        let i=p.y as usize*g.width+p.x as usize;
+        permanent(&cells[i].source,shapes[i]).then(||shapes[i].surface_height(g.tile_height))
+    }).reduce(f32::max)
+}
+
+#[derive(Clone,Copy,Debug)]
+struct MineralColumn {
+    source:Vec2,
+    top:f32,
+    ridge:f32,
+    floor:f32,
+    cap:bool,
+}
+
+fn column_key(columns:&std::collections::HashMap<[i64;2],MineralColumn>,point:Vec2)->[i64;2] {
+    let key=point.to_array().map(|v|(v*600.).round() as i64);
+    if columns.contains_key(&key) {return key;}
+    // World-registered float UVs can straddle a rounding boundary along one
+    // chipped wall. Weld only neighboring subpixel columns, never separate
+    // source lattice samples, and use one representative for the whole fit.
+    let mut nearest=None::<(f32,[i64;2])>;
+    for dz in -1..=1 {for dx in -1..=1 {
+        let k=[key[0]+dx,key[1]+dz];
+        let Some(c)=columns.get(&k) else {continue;};
+        let distance=c.source.distance_squared(point);
+        if distance<0.0025_f32.powi(2) && nearest.is_none_or(|(old,_)|distance<old) {
+            nearest=Some((distance,k));
+        }
+    }}
+    nearest.map_or(key,|(_,k)|k)
+}
+
+// Cap ownership preserves the original paint calculation. Wall-only source
+// columns also need their complete extent; dividing each height ring by a
+// nominal native course leaves chipped ribs beneath the geological surface.
+fn mineral_columns(mesh: &TerrainMeshData, cells: &[&VisualTile], shapes: &[CellShape],
+    g: &GridGeometry, origin: [i32; 2], datum: Option<&crystal_render_api::VisualTerraceDatum>,
+    regions:&[crystal_render_api::VisualSourceRegion])
+    -> std::collections::HashMap<[i64; 2], MineralColumn> {
+    let mut columns = std::collections::HashMap::<[i64;2],MineralColumn>::new();
+    let ranges=mesh.mineral_cap_ranges.as_deref().unwrap_or(&[]);
+    let portal=|i:usize|mesh.mountain_portals.iter().any(|p|p.vertices.contains(&i));
+    let terrain_offset = |point: Vec2| {
+        super::terrace_datum::sample(datum, point + Vec2::new(origin[0] as f32, origin[1] as f32))
+            .unwrap_or(0.) * crate::profile::JUMP_LEDGE_HEIGHT * g.tile_height / SOURCE_TILE_HEIGHT
+    };
+    let eligible = cells.iter().enumerate().map(|(i,c)|
+        permanent(&c.source,shapes[i])).collect::<Vec<_>>();
+    let mut region = vec![usize::MAX; cells.len()];
+    let mut ridges = Vec::<f32>::new();
+    for start in 0..cells.len() {
+        if !eligible[start] || region[start] != usize::MAX { continue; }
+        let id = ridges.len();
+        ridges.push(0.);
+        region[start] = id;
+        let mut queue = std::collections::VecDeque::from([start]);
+        while let Some(i) = queue.pop_front() {
+            let (x,z) = (i % g.width,i / g.width);
+            ridges[id] = ridges[id].max(shapes[i].surface_height(g.tile_height)
+                + terrain_offset(Vec2::new(x as f32+0.5,z as f32+0.5)));
+            for next in [x.checked_sub(1).map(|_|i-1),
+                (x+1<g.width).then_some(i+1),
+                z.checked_sub(1).map(|_|i-g.width),
+                (z+1<g.height).then_some(i+g.width)].into_iter().flatten() {
+                if eligible[next] && region[next] == usize::MAX {
+                    region[next] = id;
+                    queue.push_back(next);
+                }
+            }
+        }
+    }
+    let touching = |point: Vec2| {
+        [Vec2::new(-0.0001,-0.0001),Vec2::new(0.0001,-0.0001),
+            Vec2::new(-0.0001,0.0001),Vec2::new(0.0001,0.0001)].map(|offset| {
+            let c = (point+offset).floor().as_ivec2();
+            (c.x>=0 && c.y>=0 && c.x<g.width as i32 && c.y<g.height as i32)
+                .then(||c.y as usize*g.width+c.x as usize)
+        })
+    };
+    // A protected upright edge can be taller than the nearby cap. Read the
+    // actual geometry as well as the source datum, including its wall tops.
+    for (i,(position,uv)) in mesh.solid.positions.iter().zip(&mesh.solid.uvs).enumerate() {
+        if uv[0]>=-9000. {continue;}
+        let point = source_point(*position,*uv,g,origin,regions);
+        for j in touching(point).into_iter().flatten() {
+            if region[j]!=usize::MAX {
+                ridges[region[j]]=ridges[region[j]].max(position[1]+terrain_offset(point));
+            }
+        }
+        let target=Vec2::new(g.origin_x+point.x*g.tile_width,g.origin_z+point.y*g.tile_height);
+        if portal(i) || target.distance(Vec2::new(position[0],position[2]))>g.tile_width.max(g.tile_height)*2. {
+            continue;
+        }
+        let key=column_key(&columns,point);
+        let c=columns.entry(key).or_insert(MineralColumn {source:point,top:position[1],ridge:0.,floor:position[1],cap:false});
+        c.top=c.top.max(position[1]);c.floor=c.floor.min(position[1]);
+    }
+    for i in ranges.iter().flat_map(|range|range.clone()) {
+        if portal(i) {continue;}
+        let point = source_point(mesh.solid.positions[i],mesh.solid.uvs[i],g,origin,regions);
+        let mut upper = 0.0_f32;
+        let mut floor = 0.0_f32;
+        for j in touching(point).into_iter().flatten() {
+            let height = shapes[j].surface_height(g.tile_height);
+            if region[j]!=usize::MAX {upper=upper.max(ridges[region[j]]);}
+            else {
+                floor=floor.max(mesh.footing_heights.get(j).copied().filter(|h|h.is_finite())
+                    .unwrap_or_else(||object_floor_height(&cells[j].source,shapes[j],None,g.tile_height)
+                        .unwrap_or(height)));
+            }
+        }
+        if upper<=0. {continue;}
+        // Terraces are fitted later. Measure the minimum in final world
+        // height, then remove this point's future offset exactly once.
+        upper -= terrain_offset(point);
+        let key=column_key(&columns,point);
+        let current = mesh.solid.positions[i][1];
+        let column=columns.entry(key).or_insert(MineralColumn {source:point,top:current,ridge:upper,floor,cap:true});
+        if column.cap {
+            column.top=column.top.min(current);
+            column.ridge=column.ridge.max(upper);
+            column.floor=column.floor.max(floor);
+        } else {
+            *column=MineralColumn {source:point,top:current,ridge:upper,floor,cap:true};
+        }
+    }
+    columns
+}
+
+// Different native courses can meet at one source column. Each course needs
+// its own original top for the wall fit: using the lower cap for both collapses
+// the upper wall rings into a fan of triangles at the shared corner.
+fn face_fit_tops(mesh:&TerrainMeshData,cells:&[&VisualTile],shapes:&[CellShape],
+    g:&GridGeometry,origin:[i32;2],regions:&[crystal_render_api::VisualSourceRegion],
+    columns:&std::collections::HashMap<[i64;2],MineralColumn>)->Vec<f32> {
+    let mut owners=vec![u32::MAX;mesh.solid.positions.len()];
+    for tri in mesh.solid.indices.chunks_exact(3) {
+        let ids=[tri[0] as usize,tri[1] as usize,tri[2] as usize];
+        if !ids.iter().all(|&i|mesh.solid.uvs[i][0]< -9000.) {continue;}
+        let source=ids.map(|i|source_point(mesh.solid.positions[i],mesh.solid.uvs[i],g,origin,regions));
+        let normal=Vec3::from_array(mesh.solid.normals[ids[0]]);
+        let inside=if normal.y<0.9 {Vec2::new(normal.x,normal.z).normalize_or_zero()*0.01}
+            else {Vec2::ZERO};
+        let owner=(source.into_iter().sum::<Vec2>()/3.-inside).floor().as_ivec2();
+        if owner.x<0 || owner.y<0 || owner.x>=g.width as i32 || owner.y>=g.height as i32 {continue;}
+        let cell=owner.y as usize*g.width+owner.x as usize;
+        if !permanent(&cells[cell].source,shapes[cell]) {continue;}
+        // A resolved terrain tier can give neighboring source courses the
+        // same nominal height. Their actual wall geometry still has separate
+        // upper extents, so retain the face's source owner, not that height.
+        for i in ids {if owners[i]==u32::MAX {owners[i]=cell as u32;}}
+    }
+    let mut maxima=std::collections::HashMap::<([i64;2],u32),f32>::new();
+    for (i,&owner) in owners.iter().enumerate().filter(|(_,o)|**o!=u32::MAX) {
+        let point=source_point(mesh.solid.positions[i],mesh.solid.uvs[i],g,origin,regions);
+        let key=(column_key(columns,point),owner);
+        let top=maxima.entry(key).or_insert(mesh.solid.positions[i][1]);
+        *top=top.max(mesh.solid.positions[i][1]);
+    }
+    let mut tops=vec![0.;owners.len()];
+    for (i,&owner) in owners.iter().enumerate().filter(|(_,o)|**o!=u32::MAX) {
+        let point=source_point(mesh.solid.positions[i],mesh.solid.uvs[i],g,origin,regions);
+        tops[i]=maxima[&(column_key(columns,point),owner)];
+    }
+    tops
 }
 
 impl Relief {
@@ -194,21 +559,24 @@ impl Relief {
         Self::with_datum(cells,shapes,g,origin,None)
     }
 
+    #[cfg(test)]
     fn with_datum(cells:&[&VisualTile],shapes:&[CellShape],g:&GridGeometry,
         origin:[i32;2],datum:Option<&crystal_render_api::VisualTerraceDatum>)->Self {
-        let rock: Vec<_> = cells
-            .iter()
-            .zip(shapes)
-            .enumerate()
-            .map(|(i,(cell,&shape))| {
-                let point=bevy::prelude::IVec2::new(origin[0]+(i%g.width)as i32,
-                    origin[1]+(i/g.width)as i32);
-                let walking=datum.is_some_and(|d|d.walkable_mineral
-                    .binary_search_by_key(&(point.y,point.x),|p|(p.y,p.x)).is_ok());
-                permanent(&cell.source,shape) && !walking
-            })
-            .collect();
+        Self::with_ground(cells,shapes,g,origin,datum,&[],None)
+    }
+
+    fn with_ground(cells:&[&VisualTile],shapes:&[CellShape],g:&GridGeometry,
+        origin:[i32;2],datum:Option<&crystal_render_api::VisualTerraceDatum>,
+        regions:&[crystal_render_api::VisualSourceRegion],heights:Option<&[f32]>)->Self {
+        let rock: Vec<_> = cells.iter().zip(shapes)
+            .map(|(cell,&shape)|permanent(&cell.source,shape)).collect();
+        let portal_roofs=super::mountain_portals::sites(cells,shapes,g);
         let mut peaks = vec![0.; (g.width + 1) * (g.height + 1)];
+        let mut geometry_peaks=vec![0.;peaks.len()];
+        #[cfg(test)]
+        let mut distances=vec![0.;peaks.len()];
+        let source=|i:usize|(&cells[i].source,shapes[i]);
+        let footing=|i:usize|heights.and_then(|h|h.get(i).copied());
         for z in 0..=g.height {
             for x in 0..=g.width {
                 // Distance to the nearest real opening, including paths, stairs,
@@ -228,26 +596,48 @@ impl Relief {
                         distance = distance.min(px.hypot(pz));
                     }
                 }
-                // Broad mineral beds vary the large mass. A soft shoulder
-                // keeps thin strips from growing into tall knife edges; wide
-                // formations retain their depth and unequal summit heights.
+                // Intersecting mineral beds give the original broad slopes
+                // and unequal ridges. Keep the current paint independent of
+                // this restored shape and retain the real walking openings.
                 // World coordinates preserve the sculpt through camera crops.
                 let wx = x as f32 + origin[0] as f32;
                 let wz = z as f32 + origin[1] as f32;
                 let bed = super::cave_cliff::slab(wx * 0.105 + 17., wz * 0.105 - 31.);
-                let ridge = 4.2 + bed * 2.8;
-                let shoulder = distance * distance / (distance * distance + 3.5);
-                peaks[z * (g.width + 1) + x] = ridge * shoulder * g.tile_height;
+                let ridge = 2.5 + bed.abs() * 3.;
+                #[cfg(test)]
+                {distances[z*(g.width+1)+x]=distance;}
+                let hill=distance.min(ridge)*RELIEF_SLOPE*g.tile_height;
+                let roof=portal_roofs.iter().map(|p|p.roof_rise(Vec2::new(x as f32,z as f32),g.tile_height))
+                    .fold(0.,f32::max);
+                peaks[z*(g.width+1)+x]=hill+roof;
+                geometry_peaks[z*(g.width+1)+x]=geometry_corner(Vec2::new(x as f32,z as f32),
+                    distance,g,origin,regions,datum,&portal_roofs,&source,&footing);
             }
         }
         Self {
             width: g.width,
             height: g.height,
             peaks,
+            geometry_peaks,
+            #[cfg(test)]
+            distances,
         }
     }
 
     fn height(&self, x: f32, z: f32) -> f32 {
+        self.sample(&self.peaks,x,z)
+    }
+
+    fn geometry_height(&self,x:f32,z:f32)->f32 {
+        self.sample(&self.geometry_peaks,x,z)
+    }
+
+    #[cfg(test)]
+    fn distance(&self,x:f32,z:f32)->f32 {
+        self.sample(&self.distances,x,z)
+    }
+
+    fn sample(&self,field:&[f32],x:f32,z:f32)->f32 {
         if x < 0. || z < 0. || x > self.width as f32 || z > self.height as f32 {
             return 0.;
         }
@@ -256,10 +646,10 @@ impl Relief {
         let (u, v) = (x - cx as f32, z - cz as f32);
         let i = cz * (self.width + 1) + cx;
         let [a, b, c, d] = [
-            self.peaks[i],
-            self.peaks[i + 1],
-            self.peaks[i + self.width + 1],
-            self.peaks[i + self.width + 2],
+            field[i],
+            field[i + 1],
+            field[i + self.width + 1],
+            field[i + self.width + 2],
         ];
         // Follow the cap mesh's northwest/southeast diagonal so a mineral
         // bed remains one plane instead of acquiring extra crossing creases.
@@ -280,6 +670,13 @@ pub(super) fn finish(
     origin: [i32; 2],
     datum: Option<&crystal_render_api::VisualTerraceDatum>,
 ) {
+    finish_with_source_regions(mesh,map,cells,shapes,g,origin,datum,&[]);
+}
+
+pub(super) fn finish_with_source_regions(mesh:&mut TerrainMeshData,map:&str,
+    cells:&[&VisualTile],shapes:&[CellShape],g:&GridGeometry,origin:[i32;2],
+    datum:Option<&crystal_render_api::VisualTerraceDatum>,
+    regions:&[crystal_render_api::VisualSourceRegion]) {
     if !enabled(map)
         || g.width == 0
         || g.height == 0
@@ -291,7 +688,48 @@ pub(super) fn finish(
     {
         return;
     }
-    let relief = Relief::with_datum(cells, shapes, g, origin,datum);
+    let relief = Relief::with_ground(cells,shapes,g,origin,datum,regions,Some(&mesh.footing_heights));
+    let mut walking_grid = walking_grid_weights(g, origin, datum);
+    for (i, cell) in cells.iter().enumerate() {
+        let (x, z) = (i % g.width, i / g.width);
+        let portal = mesh.authored_cells.get(i).is_some_and(|claim|
+            matches!(claim, Some("johto/mountain_cave" | "outdoor/kanto_mountain_cave")));
+        let elevated_water = cell.source.tile_index == 0x14
+            && matches!(shapes[i], CellShape::Water | CellShape::PlaneAt {height: crate::profile::WATER_HEIGHT})
+            && super::terrace_datum::sample(datum,
+                Vec2::new(x as f32 + origin[0] as f32 + 0.5, z as f32 + origin[1] as f32 + 0.5))
+                .is_some_and(|height| height > 0.);
+        if portal || elevated_water {constrain_grid_plot(&mut walking_grid, g, x as i32, z as i32);}
+    }
+    let flanks = super::mountain_flanks::Field::new(cells, shapes, g, origin, regions);
+    let columns = mineral_columns(mesh,cells,shapes,g,origin,datum,regions);
+    let fit_tops=face_fit_tops(mesh,cells,shapes,g,origin,regions,&columns);
+    let mut cap_vertices=vec![false;mesh.solid.positions.len()];
+    if let Some(ranges)=&mesh.mineral_cap_ranges {
+        for range in ranges {cap_vertices[range.clone()].fill(true);}
+    }
+    let portals=std::mem::take(&mut mesh.mountain_portals);
+    let _trace=crate::loading_trace::span("mountain.source_alignment",|| {
+        let mut samples=Vec::new();
+        for (i,(p,uv)) in mesh.solid.positions.iter().zip(&mesh.solid.uvs).enumerate() {
+            if uv[0]>=-9000. {continue;}
+            let point=source_point(*p,*uv,g,origin,regions);
+            let key=column_key(&columns,point);
+            let Some(column)=columns.get(&key).filter(|c|c.cap) else {continue;};
+            let target=Vec2::new(g.origin_x+point.x*g.tile_width,g.origin_z+point.y*g.tile_height);
+            let distance=target.distance(Vec2::new(p[0],p[2]));
+            if samples.len()<8 || samples.last().is_some_and(|s:&(f32,usize,Vec2,(f32,f32,f32))|distance>s.0) {
+                samples.push((distance,i,target,(column.top,column.ridge,column.floor)));
+                samples.sort_by(|a,b|b.0.total_cmp(&a.0));samples.truncate(8);
+            }
+        }
+        serde_json::json!({"map":map,"origin":origin,"grid":[g.width,g.height],
+            "geometry_origin":[g.origin_x,g.origin_z],"tile":[g.tile_width,g.tile_height],
+            "largest":samples.into_iter().map(|(d,i,target,column)|serde_json::json!({
+                "distance":d,"position":mesh.solid.positions[i],"uv":mesh.solid.uvs[i],
+                "target":target.to_array(),"column":[column.0,column.1,column.2]})).collect::<Vec<_>>()})
+    });
+    let mut portal_index=0;
     for (i, (position, uv)) in mesh
         .solid
         .positions
@@ -299,20 +737,77 @@ pub(super) fn finish(
         .zip(&mesh.solid.uvs)
         .enumerate()
     {
+        while portals.get(portal_index).is_some_and(|p|p.vertices.end<=i) {portal_index+=1;}
+        if portals.get(portal_index).is_some_and(|p|p.vertices.contains(&i)) {continue;}
         if uv[0] >= -9000. {
             continue;
         }
         // Stone UVs retain the original source point through rim sculpting.
         // Use that point on both wall and cap to keep their seams joined.
-        let x = (-10000. - uv[0]) / g.tile_width - origin[0] as f32;
-        let tag = if uv[1] < -30000. { 40000. } else { 20000. };
-        let z = (-tag - uv[1]) / g.tile_height - origin[1] as f32;
+        let point=source_point(*position,*uv,g,origin,regions);
+        let (x,z)=(point.x,point.y);
         // Folded native cliff courses can extend their source footprint past
         // the exposed wall plane. Anchor every mineral toe at the real ground
         // instead of lifting the entire wall along with the mountain cap.
         let support = g.tile_height * crate::profile::MOUNTAIN_CLIFF_HEIGHT / SOURCE_TILE_HEIGHT;
-        let rise = relief.height(x, z) * (position[1] / support).clamp(0., 1.);
-        position[1] += rise;
+        let before = position[1];
+        let key=column_key(&columns,point);
+        let column=columns.get(&key);
+        let mut paint_rise=if column.is_some_and(|c|c.cap) {0.}
+            else {relief.height(x,z)*(before/support).clamp(0.,1.)};
+        if let Some(column) = column {
+            let old_top=column.top;
+            let native_top=column.ridge;
+            let fit_top=if fit_tops[i]>0. {fit_tops[i]}else{old_top};
+            let span=fit_top-column.floor;
+            let local=local_rock_top(cells,shapes,g,point);
+            let cap_like=!column.cap && span<0.0001 && local.is_some_and(|top|before>=top*0.75);
+            let floor=if cap_like {0.} else {column.floor};
+            let relief_height=relief.height(x,z);
+            let filled_top=native_top+relief_height;
+            let paint_floor=floor.min(old_top-g.tile_height/SOURCE_TILE_HEIGHT);
+            let floor = floor.min(fit_top - g.tile_height / SOURCE_TILE_HEIGHT);
+            // The complete body follows one geological surface. The old
+            // regional course remains paint evidence, not a height target.
+            let top=relief.geometry_height(column.source.x,column.source.y)
+                .max(floor+g.tile_height/SOURCE_TILE_HEIGHT);
+            if (before > floor || cap_vertices[i]) && (column.cap || span>0.0001 || cap_like) {
+                let fraction = if cap_vertices[i] {1.}
+                    else {((before - floor) / (fit_top - floor).max(0.0001)).clamp(0., 1.)};
+                // Pigment remains independent of this silhouette correction.
+                if column.cap {
+                    let paint_fraction=((before-paint_floor)/(old_top-paint_floor).max(0.0001)).clamp(0.,1.);
+                    paint_rise=(paint_floor+(filled_top-paint_floor)*paint_fraction-before).max(0.);
+                }
+                // One common horizontal surface keeps upper triangles ordered.
+                // The earlier height-dependent bevel cannot be combined with
+                // the filled cap directly: that can fold its corner triangles.
+                // Add the inward geological slope to this shared source field.
+                let constraint = sample_grid(&walking_grid, g, column.source);
+                // Keep the rooted toe's rounding over its bottom sixth.
+                // Compressing the old mid-height bevel into a low foothill
+                // leaves a projecting shoulder beneath the new upper slope.
+                let blend = (fraction*6.).clamp(0.,1.);
+                let target=Vec2::new(g.origin_x+column.source.x*g.tile_width,
+                    g.origin_z+column.source.y*g.tile_height);
+                // Repeated mineral geometry can retain the donor plot's UV
+                // registration. Only undo the bounded local shoulder sculpt;
+                // never drag a placed face back across the map to that donor.
+                if (column.cap || local.is_some())
+                    && target.distance(Vec2::new(position[0],position[2]))<=g.tile_width.max(g.tile_height)*2. {
+                    position[1]=floor+(top-floor)*fraction;
+                    if !cap_like {
+                        position[0]+=(target.x-position[0])*blend;
+                        position[2]+=(target.y-position[2])*blend;
+                        let inward=flanks.inset(column.source,g)
+                            *super::mountain_flanks::slope(fraction)*(1.-constraint);
+                        position[0]+=inward.x*g.tile_width;
+                        position[2]+=inward.y*g.tile_height;
+                    }
+                }
+            }
+        }
+        let rise = paint_rise;
         if map == "CinnabarIsland" {
             if let Some(color)=mesh.solid.colors.get_mut(i) {
                 *color=[0.20,0.205,0.215,color[3]];
@@ -333,6 +828,53 @@ pub(super) fn finish(
             }
         }
     }
+    // A portal is a closed volume, including its dark lining. Retain useful
+    // native clearance, but give short source drawings standing headroom.
+    // Fit the remaining rock above the intrados to the mountain. One monotone
+    // mapping keeps all shared entrance edges joined and the threshold seated.
+    let seat=g.tile_height*0.015;
+    for portal in &portals {
+        let point_at=|i:usize| {
+            let p=mesh.solid.positions[i];
+            if mesh.solid.uvs[i][0]< -9000. {
+                source_point(p,mesh.solid.uvs[i],g,origin,regions)
+            } else {Vec2::new((p[0]-g.origin_x)/g.tile_width,(p[2]-g.origin_z)/g.tile_height)}
+        };
+        let roof_at=|point:Vec2| {
+            relief.geometry_height(point.x,point.y).max(portal.height)
+        };
+        let lowest_roof=portal.vertices.clone().map(|i|roof_at(point_at(i)))
+            .fold(f32::INFINITY,f32::min);
+        let opening=portal.height*0.90;
+        // The modeled trainer is three tiles tall. Keep the authored width and
+        // leave a little space overhead; low mountain roofs still bound it.
+        let clearance=opening.max((g.tile_height*3.3).min(lowest_roof*0.90));
+        for i in portal.vertices.clone() {
+            let p=mesh.solid.positions[i];
+            if p[1]<=seat {continue;}
+            let point=if mesh.solid.uvs[i][0]< -9000. {
+                source_point(p,mesh.solid.uvs[i],g,origin,regions)
+            } else {Vec2::new((p[0]-g.origin_x)/g.tile_width,(p[2]-g.origin_z)/g.tile_height)};
+            let target=roof_at(point);
+            mesh.solid.positions[i][1]=if p[1]<=opening {
+                seat+(p[1]-seat)*(clearance-seat)/(opening-seat)
+            }
+                else if p[1]>=portal.height {target+p[1]-portal.height}
+                else {clearance+(target-clearance)*(p[1]-opening)/(portal.height-opening)};
+        }
+    }
+    if let Some(datum) = datum {
+        for (i,height) in mesh.footing_heights.iter_mut().enumerate() {
+            let point = bevy::prelude::IVec2::new(origin[0]+(i%g.width) as i32,
+                origin[1]+(i/g.width) as i32);
+            if datum.walkable_mineral.binary_search_by_key(&(point.y,point.x),|p|(p.y,p.x)).is_err() {continue;}
+            let local = Vec2::new((i%g.width) as f32+0.5,(i/g.width) as f32+0.5);
+            let key=column_key(&columns,local);
+            if columns.get(&key).is_some_and(|c|c.cap) {
+                *height = relief.geometry_height(local.x,local.y);
+            }
+        }
+    }
     if map == "CinnabarIsland" {
         // Keep the same rock geometry and world-registered texture field, but
         // retain the island's volcanic pigment through the shared shader.
@@ -348,6 +890,547 @@ pub(super) fn finish(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use bevy::prelude::Vec3Swizzles;
+
+    #[test]
+    fn connected_paint_bases_cannot_split_fitted_mountain_geometry_or_footing() {
+        use bevy::prelude::{IVec2,UVec2};
+        let (frame,g)=fixture("johto",0x0a);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        let origin=[32,-24];
+        let regions=[crystal_render_api::VisualSourceRegion {map_id:"neighbor".into(),
+            origin:IVec2::from_array(origin),size:UVec2::new(12,12)}];
+        let mut control=TerrainMeshData {footing_heights:shapes.iter()
+            .map(|s|s.surface_height(g.tile_height)).collect(),authored_cells:vec![None;144],..Default::default()};
+        for z in 2..10 {for x in 2..10 {
+            let (w,e,n,s)=g.bounds(x,z);
+            outdoor_stone::append_canyon(&mut control.solid,
+                [[w,16.,n],[w,16.,s],[e,16.,s],[e,16.,n]],Vec3::Y.to_array(),&g,origin);
+            for (exposed,a,b,normal) in [
+                (x==2,[w,16.,s],[w,16.,n],Vec3::NEG_X),
+                (x==9,[e,16.,n],[e,16.,s],Vec3::X),
+                (z==2,[w,16.,n],[e,16.,n],Vec3::NEG_Z),
+                (z==9,[e,16.,s],[w,16.,s],Vec3::Z),
+            ] {
+                if !exposed {continue;}
+                let mut low_a=a;low_a[1]=0.;let mut low_b=b;low_b[1]=0.;
+                outdoor_stone::append_canyon(&mut control.solid,[low_a,a,b,low_b],normal.to_array(),&g,origin);
+            }
+        }}
+        let mut connected=control.clone();
+        for (i,uv) in connected.solid.uvs.iter_mut().enumerate() {
+            if (i/4)%2==0 {
+                uv[0]+=origin[0] as f32*g.tile_width;
+                uv[1]+=origin[1] as f32*g.tile_height;
+            }
+        }
+        let datum=crystal_render_api::VisualTerraceDatum {
+            origin:IVec2::from_array(origin),size:UVec2::new(12,12),
+            levels:(0..144).map(|i| {
+                let x=(i%12) as f32;
+                [x*0.25,x*0.25,(x+1.)*0.25,(x+1.)*0.25]
+            }).collect::<Vec<_>>().into(),
+            walkable_mineral:(2..10).flat_map(|z|(2..10).map(move |x|
+                IVec2::new(origin[0]+x,origin[1]+z))).collect::<Vec<_>>().into(),
+            water_barriers:Default::default(),open_water:None,
+        };
+        for mesh in [&mut control,&mut connected] {
+            outdoor_stone::finish_rock_geometry_with_source_regions(mesh,"Route44",&cells,&shapes,
+                &g,origin,Some(&datum),&regions);
+            super::super::terraces::finish_with_source_regions(mesh,"Route44",&cells,&g,
+                origin,&[],Some(&datum),&regions);
+        }
+        assert_eq!(control.solid.indices,connected.solid.indices);
+        for (a,b) in control.solid.positions.iter().zip(&connected.solid.positions) {
+            assert!(Vec3::from_array(*a).distance(Vec3::from_array(*b))<0.002,
+                "a connected material basis cannot change the fitted surface: {a:?} != {b:?}");
+        }
+        for (a,b) in control.footing_heights.iter().zip(&connected.footing_heights) {
+            assert!((a-b).abs()<0.002,"paint registration cannot change walking support: {a} != {b}");
+        }
+        for (a,b) in control.solid.colors.iter().zip(&connected.solid.colors) {
+            assert!(a.iter().zip(b).all(|(a,b)|(a-b).abs()<0.0001),
+                "retain the existing source pigment: {a:?} != {b:?}");
+        }
+    }
+
+    #[test]
+    fn repeated_mineral_faces_keep_their_placement_when_source_uvs_are_reused() {
+        let (frame,g)=fixture("johto",0x0a);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        let mut mesh=TerrainMeshData::default();
+        for z in 2..10 {for x in 2..10 {
+            let (w,e,n,s)=g.bounds(x,z);
+            outdoor_stone::append_canyon(&mut mesh.solid,
+                [[w,16.,n],[w,16.,s],[e,16.,s],[e,16.,n]],Vec3::Y.to_array(),&g,[0,0]);
+        }}
+        // A retained repeated plot has placed geometry but donor coordinates
+        // in its mineral material. Those UVs must not become placement data.
+        for p in &mut mesh.solid.positions {p[0]+=g.tile_width*32.;}
+        outdoor_stone::retain_mineral_cap_ownership(&mut mesh);
+        let before=mesh.solid.positions.clone();
+        finish(&mut mesh,"Route44",&cells,&shapes,&g,[0,0],None);
+        for (a,b) in before.iter().zip(&mesh.solid.positions) {
+            assert_eq!([a[0],a[2]],[b[0],b[2]],"a repeated plot must keep its placed footprint");
+        }
+    }
+
+    #[test]
+    fn walking_and_unreachable_rock_share_one_geology_and_keep_their_paint() {
+        use bevy::prelude::{IVec2,UVec2};
+        let (frame,g)=fixture("johto",0x0a);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;cells.len()],
+            footing_heights:shapes.iter().map(|s|s.surface_height(g.tile_height)).collect(),
+            ..Default::default()};
+        for z in 2..10 {for x in 2..10 {
+            let (w,e,n,s)=g.bounds(x,z);
+            outdoor_stone::append_canyon(&mut mesh.solid,
+                [[w,16.,n],[w,16.,s],[e,16.,s],[e,16.,n]],Vec3::Y.to_array(),&g,[0,0]);
+            for (exposed,a,b,normal) in [
+                (x==2,[w,16.,s],[w,16.,n],Vec3::NEG_X),
+                (x==9,[e,16.,n],[e,16.,s],Vec3::X),
+                (z==2,[w,16.,n],[e,16.,n],Vec3::NEG_Z),
+                (z==9,[e,16.,s],[w,16.,s],Vec3::Z),
+            ] {
+                if !exposed {continue;}
+                let mut low_a=a;low_a[1]=0.;let mut low_b=b;low_b[1]=0.;
+                outdoor_stone::append_canyon(&mut mesh.solid,[low_a,a,b,low_b],normal.to_array(),&g,[0,0]);
+            }
+        }}
+        outdoor_stone::sculpt_rock_rims_on_map(&mut mesh,"Route44",&cells,&shapes,&g,[0,0]);
+        outdoor_stone::retain_mineral_cap_ownership(&mut mesh);
+        let sculpted=mesh.clone();
+        let mut walking=mesh.clone();
+        let datum=crystal_render_api::VisualTerraceDatum {
+            origin:IVec2::ZERO,size:UVec2::splat(12),levels:vec![[0.;4];144].into(),
+            walkable_mineral:(2..10).flat_map(|z|(2..10).map(move |x|IVec2::new(x,z)))
+                .collect::<Vec<_>>().into(),water_barriers:Default::default(),open_water:None,
+        };
+        finish(&mut mesh,"Route44",&cells,&shapes,&g,[0,0],None);
+        finish(&mut walking,"Route44",&cells,&shapes,&g,[0,0],Some(&datum));
+        let relief=Relief::new(&cells,&shapes,&g,[0,0]);
+        let mut retained_shoulders=0;
+        let mut lowered_margins=0;
+        let mut shared=std::collections::HashMap::new();
+        for (i,(after,before)) in mesh.solid.positions.iter().zip(&sculpted.solid.positions).enumerate() {
+            assert!(Vec2::new(after[0]-before[0],after[2]-before[2]).length()<g.tile_width*1.62,
+                "the inward slope remains bounded inside the mineral body");
+            if before[1]<=0. {
+                assert_eq!([after[0],after[2]],[before[0],before[2]],"rooted ground contacts stay fixed");
+            }
+            let full_height=walking.solid.positions[i][1];
+            assert_eq!(after[1],full_height,"walking plots follow the same complete geological height field");
+            let point=source_point(*before,sculpted.solid.uvs[i],&g,[0,0],&[]);
+            if sculpted.solid.normals[i][1]>0.9 && relief.distance(point.x,point.y)<0.5
+                && after[1]<g.tile_height {
+                lowered_margins+=1;
+            }
+            let key=before.map(|v|(v*10000.).round() as i64);
+            if let Some(previous)=shared.insert(key,*after) {
+                assert!(Vec3::from_array(previous).distance(Vec3::from_array(*after))<0.001,
+                    "cap and wall copies must stay joined");
+            }
+            if sculpted.solid.normals[i][1]>0.9 {
+                let source=source_point(*before,sculpted.solid.uvs[i],&g,[0,0],&[])*8.;
+                retained_shoulders+=usize::from(Vec2::new(after[0],after[2]).distance(source)>0.5);
+            }
+        }
+        assert!(retained_shoulders>100,"exercise sculpted upper shoulders, not just a flat interior");
+        assert!(lowered_margins>20,"lower the actual outer body, including walking plots");
+        assert_eq!(mesh.footing_heights,sculpted.footing_heights);
+        assert_eq!(mesh.authored_cells,sculpted.authored_cells);
+        assert_eq!(mesh.solid.indices,sculpted.solid.indices);
+        assert_eq!(mesh.solid.uvs,sculpted.solid.uvs);
+        assert_eq!(mesh.solid.colors,walking.solid.colors);
+    }
+
+    #[test]
+    fn walking_grid_constraint_is_complete_and_stable_through_a_source_crop() {
+        use bevy::prelude::{IVec2,UVec2};
+        let (_,g)=fixture("johto",0x0a);
+        let datum=crystal_render_api::VisualTerraceDatum {
+            origin:IVec2::ZERO,size:UVec2::splat(12),levels:vec![[0.;4];144].into(),
+            walkable_mineral:vec![IVec2::new(5,5),IVec2::new(6,5)].into(),
+            water_barriers:Default::default(),open_water:None,
+        };
+        let whole=walking_grid_weights(&g,[0,0],Some(&datum));
+        let crop=GridGeometry {width:10,height:10,..g};
+        let cropped=walking_grid_weights(&crop,[1,1],Some(&datum));
+        for z in 0..=32 {for x in 0..=32 {
+            let p=Vec2::new(x as f32/4.+2.,z as f32/4.+2.);
+            let w=sample_grid(&whole,&g,p);
+            assert!((w-sample_grid(&cropped,&crop,p-Vec2::ONE)).abs()<0.00001);
+            assert!((0.0..=1.0).contains(&w));
+            if (5.0..=7.0).contains(&p.x) && (5.0..=6.0).contains(&p.y) {
+                assert_eq!(w,1.,"every point on accessible source triangles keeps its full support constraint");
+            }
+        }}
+        assert_eq!(sample_grid(&whole,&g,Vec2::new(2.,2.)),0.,
+            "distant unreachable shoulders must not be pulled straight");
+    }
+
+    #[test]
+    fn a_distant_high_course_fills_the_center_without_doubling_the_local_outer_face() {
+        use bevy::prelude::{IVec2,UVec2};
+        let (frame,g)=fixture("johto",0x0a);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let mut shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        for z in 6..8 {for x in 6..8 {
+            shapes[z*g.width+x]=CellShape::RaisedTop {height:32.,solid:SolidKind::Bank};
+        }}
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;cells.len()],
+            footing_heights:shapes.iter().map(|s|s.surface_height(g.tile_height)).collect(),
+            ..Default::default()};
+        for z in 2..10 {for x in 2..10 {
+            let (w,e,n,s)=g.bounds(x,z);
+            let top=shapes[z*g.width+x].surface_height(g.tile_height);
+            outdoor_stone::append_canyon(&mut mesh.solid,
+                [[w,top,n],[w,top,s],[e,top,s],[e,top,n]],Vec3::Y.to_array(),&g,[0,0]);
+            for (exposed,a,b,normal) in [
+                (x==2,[w,top,s],[w,top,n],Vec3::NEG_X),
+                (x==9,[e,top,n],[e,top,s],Vec3::X),
+                (z==2,[w,top,n],[e,top,n],Vec3::NEG_Z),
+                (z==9,[e,top,s],[w,top,s],Vec3::Z),
+            ] {
+                if !exposed {continue;}
+                let mut low_a=a;low_a[1]=0.;let mut low_b=b;low_b[1]=0.;
+                outdoor_stone::append_canyon(&mut mesh.solid,[low_a,a,b,low_b],normal.to_array(),&g,[0,0]);
+            }
+        }}
+        let original=mesh.clone();
+        let mut walking=mesh.clone();
+        let datum=crystal_render_api::VisualTerraceDatum {
+            origin:IVec2::ZERO,size:UVec2::splat(12),levels:vec![[0.;4];144].into(),
+            walkable_mineral:(2..10).flat_map(|z|(2..10).map(move |x|IVec2::new(x,z)))
+                .collect::<Vec<_>>().into(),water_barriers:Default::default(),open_water:None,
+        };
+        outdoor_stone::finish_rock_geometry(&mut mesh,"Route44",&cells,&shapes,&g,[0,0],None);
+        outdoor_stone::finish_rock_geometry(&mut walking,"Route44",&cells,&shapes,&g,[0,0],Some(&datum));
+        let at=|p:[f32;3]|original.solid.positions.iter().zip(&original.solid.normals)
+            .position(|(position,normal)|*position==p && normal[1]>0.9).unwrap();
+        let edge=at([16.,16.,48.]);
+        let center=at([48.,32.,48.]);
+        assert!((0. ..8.).contains(&mesh.solid.positions[edge][1]),
+            "the outer slope starts below half of its old native course");
+        assert_eq!(mesh.solid.positions[edge][1],walking.solid.positions[edge][1],
+            "a walking mark must not restore the old tall source shaft");
+        assert_eq!(mesh.solid.positions[center][1],walking.solid.positions[center][1],
+            "the walking datum follows the geological interior");
+        assert!(mesh.solid.positions[center][1]>mesh.solid.positions[edge][1]+g.tile_height*2.);
+        for i in 0..original.solid.positions.len() {
+            assert_eq!(mesh.solid.colors[i],walking.solid.colors[i],
+                "silhouette changes retain existing native pigment at vertex {i}");
+            assert_eq!(mesh.solid.uvs[i],walking.solid.uvs[i],"native material coordinates remain at vertex {i}");
+        }
+        assert_eq!(mesh.solid.indices.len(),walking.solid.indices.len());
+        for (a,b) in mesh.solid.indices.iter().zip(&walking.solid.indices) {assert_eq!(a,b);}
+        assert_eq!(mesh.footing_heights,original.footing_heights);
+        assert_eq!(mesh.authored_cells,original.authored_cells);
+    }
+
+    #[test]
+    fn small_mountain_rises_from_low_foothills_without_using_an_adjacent_roof_as_ground() {
+        for ground in [0.,crate::profile::JUMP_LEDGE_HEIGHT] {
+            let (mut frame,g)=fixture("johto",0x0a);
+            let rock=frame.tiles[2*g.width+2].source.clone();
+            let flat=frame.tiles[0].source.clone();
+            for tile in &mut frame.tiles {
+                tile.source=if (4..8).contains(&tile.column) && (4..8).contains(&tile.row) {
+                    rock.clone()
+                } else {flat.clone()};
+            }
+            let cells=frame.tiles.iter().collect::<Vec<_>>();
+            let mut shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+            for shape in &mut shapes {
+                if !matches!(shape,CellShape::RaisedTop {solid:SolidKind::Bank,..}) {
+                    *shape=CellShape::PlaneAt {height:ground};
+                }
+            }
+            shapes[6*g.width+3]=CellShape::RaisedTop {height:96.,solid:SolidKind::Building};
+            let mut mesh=TerrainMeshData {authored_cells:vec![None;cells.len()],
+                footing_heights:shapes.iter().map(|s|s.surface_height(g.tile_height)).collect(),
+                ..Default::default()};
+            mesh.footing_heights[6*g.width+3]=ground;
+            for z in 4..8 {for x in 4..8 {
+                let (w,e,n,s)=g.bounds(x,z);
+                outdoor_stone::append_canyon(&mut mesh.solid,
+                    [[w,16.,n],[w,16.,s],[e,16.,s],[e,16.,n]],Vec3::Y.to_array(),&g,[0,0]);
+                for (exposed,a,b,normal) in [
+                    (x==4,[w,16.,s],[w,16.,n],Vec3::NEG_X),
+                    (x==7,[e,16.,n],[e,16.,s],Vec3::X),
+                    (z==4,[w,16.,n],[e,16.,n],Vec3::NEG_Z),
+                    (z==7,[e,16.,s],[w,16.,s],Vec3::Z),
+                ] {
+                    if !exposed {continue;}
+                    let mut low_a=a;low_a[1]=ground;let mut low_b=b;low_b[1]=ground;
+                    outdoor_stone::append_canyon(&mut mesh.solid,[low_a,a,b,low_b],normal.to_array(),&g,[0,0]);
+                }
+            }}
+            let original=mesh.clone();
+            outdoor_stone::finish_rock_geometry(&mut mesh,"Route44",&cells,&shapes,&g,[0,0],None);
+            let at=|x:f32|original.solid.positions.iter().zip(&original.solid.normals)
+                .position(|(p,n)|*p==[x,16.,48.] && n[1]>0.9).unwrap();
+            let edge=mesh.solid.positions[at(32.)][1];
+            let shoulder=mesh.solid.positions[at(40.)][1];
+            let center=mesh.solid.positions[at(48.)][1];
+            assert!(edge>ground && edge<ground+(16.-ground)*0.4,
+                "the foothill must use standing ground, not the neighboring roof: {ground}, {edge}");
+            assert!(center>shoulder && shoulder>edge,
+                "a small body rises continuously toward its middle: {edge}, {shoulder}, {center}");
+            let mut profile=original.solid.positions.iter().zip(&original.solid.normals).enumerate()
+                .filter(|(_, (p,n))|n[1]>0.9 && (p[2]-48.).abs()<0.001 && (32. ..=48.).contains(&p[0]))
+                .map(|(i,(p,_))|(p[0],mesh.solid.positions[i][1])).collect::<Vec<_>>();
+            profile.sort_by(|a,b|a.0.total_cmp(&b.0));
+            for pair in profile.windows(2) {
+                assert!(pair[1].1>=pair[0].1-0.001,"the foothill must not leave a lip or sunken strip: {pair:?}");
+            }
+            let expected=super::super::mountain_flanks::height(Vec2::new(6.,6.),[0,0],&[],2.,g.tile_height)
+                +ground*(1.-2./REACH as f32);
+            assert!((center-expected).abs()<0.001,
+                "the complete body has one moderate summit, without a source shaft: {center}");
+            for (before,after) in original.solid.positions.iter().zip(&mesh.solid.positions) {
+                if before[1]==ground {assert_eq!(before,after,"ground contacts remain seated");}
+            }
+            assert_eq!(mesh.footing_heights,original.footing_heights);
+            assert_eq!(mesh.authored_cells,original.authored_cells);
+        }
+    }
+
+    #[test]
+    fn distant_mineral_tags_cannot_pull_caps_across_the_map() {
+        let (frame,g)=fixture("johto",0x0a);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        for (canyon,origin) in [(false,[0,1800]),(true,[0,-1800])] {
+            let mut mesh=TerrainMeshData::default();
+            let append=if canyon {outdoor_stone::append_canyon}else{outdoor_stone::append};
+            for z in 2..10 {for x in 2..10 {
+                let (w,e,n,s)=g.bounds(x,z);
+                append(&mut mesh.solid,[[w,16.,n],[w,16.,s],[e,16.,s],[e,16.,n]],
+                    Vec3::Y.to_array(),&g,origin);
+            }}
+            outdoor_stone::sculpt_rock_rims_on_map(&mut mesh,"Route44",&cells,&shapes,&g,origin);
+            outdoor_stone::retain_mineral_cap_ownership(&mut mesh);
+            let before=mesh.solid.positions.clone();
+            finish(&mut mesh,"Route44",&cells,&shapes,&g,origin,None);
+            for (a,b) in before.iter().zip(&mesh.solid.positions) {
+                assert!(Vec3::from_array(*a).xz().distance(Vec3::from_array(*b).xz())<g.tile_width*2.,
+                    "material tag crossed into another map coordinate at {origin:?}: {a:?} -> {b:?}");
+            }
+            assert!(mesh.solid.positions.iter().any(|p|p[1]>g.tile_height*3.),
+                "distant caps still receive their actual interior relief");
+        }
+    }
+
+    #[test]
+    fn mountain_mass_fills_the_eroded_cap_above_its_edge_and_keeps_ground_contacts() {
+        for floor in [0., crate::profile::JUMP_LEDGE_HEIGHT] {
+        for sloped_ground in [false,true] {
+        let (mut frame, g) = fixture("johto", 0x0a);
+        // A complete low cave needs a local roof shoulder. Its neighboring
+        // accessible cap must retain the same triangle/footing agreement.
+        for z in 0..2 {for x in 0..2 {
+            frame.tiles[(8+z)*g.width+5+x].source=super::super::tests::source_with_tile(
+                0x73,x as u8,2+z as u8,[[0x46,0x47],[0x56,0x57]][z][x]);
+        }}
+        let cells = frame.tiles.iter().collect::<Vec<_>>();
+        let mut shapes = cells.iter().map(|c| shape_for_source(&c.source)).collect::<Vec<_>>();
+        for (cell, shape) in cells.iter().zip(&mut shapes) {
+            if !permanent(&cell.source, *shape) {
+                *shape = CellShape::RaisedTop { height: floor, solid: SolidKind::Bank };
+            }
+        }
+        let mut mesh = TerrainMeshData::default();
+        mesh.footing_heights = shapes.iter().map(|s| s.surface_height(g.tile_height)).collect();
+        for z in 2..10 { for x in 2..10 {
+            if !permanent(&cells[z*g.width+x].source,shapes[z*g.width+x]) {continue;}
+            let (w, e, n, s) = g.bounds(x, z);
+            let top = shapes[z * g.width + x].surface_height(g.tile_height);
+            outdoor_stone::append_canyon(&mut mesh.solid,
+                [[w,top,n],[w,top,s],[e,top,s],[e,top,n]], [0.,1.,0.], &g, [0,0]);
+            for (exposed, a, b, normal) in [
+                (x == 2, [w,top,s], [w,top,n], [-1.,0.,0.]),
+                (x == 9, [e,top,n], [e,top,s], [1.,0.,0.]),
+                (z == 2, [w,top,n], [e,top,n], [0.,0.,-1.]),
+                (z == 9, [e,top,s], [w,top,s], [0.,0.,1.]),
+            ] {
+                if !exposed { continue; }
+                let mut a = a; a[1] = 32.;
+                let mut b = b; b[1] = 32.;
+                let mut low_a = a; low_a[1] = floor;
+                let mut low_b = b; low_b[1] = floor;
+                outdoor_stone::append_canyon(&mut mesh.solid,
+                    [low_a,a,b,low_b], normal, &g, [0,0]);
+            }
+        }}
+        let authored_positions=mesh.solid.positions.clone();
+        outdoor_stone::sculpt_rock_rims_on_map(&mut mesh,"Route44",&cells,&shapes,&g,[0,0]);
+        outdoor_stone::retain_mineral_cap_ownership(&mut mesh);
+        let before = mesh.clone();
+        let cap_indices = mesh.mineral_cap_ranges.clone().unwrap();
+        let datum = sloped_ground.then(|| crystal_render_api::VisualTerraceDatum {
+            origin: bevy::prelude::IVec2::ZERO,
+            size: bevy::prelude::UVec2::new(g.width as u32,g.height as u32),
+            levels: (0..g.width*g.height).map(|i| {
+                [0.,0.,1.,1.].map(|dx| (4.-(i%g.width) as f32-dx).max(0.)*3.)
+            }).collect::<Vec<_>>().into(),
+            walkable_mineral: (2..10).flat_map(|z|(2..10).map(move |x|bevy::prelude::IVec2::new(x,z)))
+                .collect::<Vec<_>>().into(),
+            water_barriers: Default::default(), open_water: None,
+        });
+        let ridge = before.solid.positions.iter().zip(&before.solid.uvs).map(|(p,uv)| {
+            let point = Vec2::new((-10000.-uv[0])/g.tile_width,(-40000.-uv[1])/g.tile_height);
+            p[1] + super::super::terrace_datum::sample(datum.as_ref(),point).unwrap_or(0.)
+                * crate::profile::JUMP_LEDGE_HEIGHT * g.tile_height / SOURCE_TILE_HEIGHT
+        }).fold(0.0_f32,f32::max);
+        assert!(cap_indices.iter().flat_map(|r| r.clone())
+            .any(|i| mesh.solid.positions[i][1] < 16. - g.tile_height * 0.25),
+            "fixture must contain the sunken top beneath the authored rim");
+        finish(&mut mesh,"Route44",&cells,&shapes,&g,[0,0],datum.as_ref());
+        for (before, after) in before.solid.positions.iter().zip(&mesh.solid.positions) {
+            if before[1] == floor { assert_eq!(before, after, "the mountain toe stays grounded"); }
+        }
+        if datum.is_none() {assert_eq!(mesh.footing_heights, before.footing_heights);}
+        assert_eq!(mesh.solid.indices, before.solid.indices);
+        assert_eq!(mesh.solid.uvs, before.solid.uvs);
+        if let Some(datum) = &datum {
+            super::super::terraces::finish_with_datum(&mut mesh,"Route44",&cells,&g,[0,0],&[],Some(datum));
+        }
+        let relief=Relief::with_ground(&cells,&shapes,&g,[0,0],datum.as_ref(),&[],Some(&before.footing_heights));
+        let mut final_caps=std::collections::HashMap::<[i64;2],f32>::new();
+        for i in cap_indices.iter().flat_map(|r|r.clone()) {
+            let point=source_point(before.solid.positions[i],before.solid.uvs[i],&g,[0,0],&[]);
+            let key=point.to_array().map(|v|(v*600.).round() as i64);
+            final_caps.entry(key).and_modify(|y|*y=y.max(mesh.solid.positions[i][1]))
+                .or_insert(mesh.solid.positions[i][1]);
+            let expected=relief.geometry_height(point.x,point.y)+datum_offset(&g,[0,0],datum.as_ref(),point);
+            assert!((mesh.solid.positions[i][1]-expected).abs()<0.01,
+                "the cap follows the complete geological surface, not the old source ridge {ridge}: {:?} != {expected}",mesh.solid.positions[i]);
+        }
+        for (i,normal) in before.solid.normals.iter().enumerate() {
+            if normal[1]>0.9 {continue;}
+            let point=source_point(before.solid.positions[i],before.solid.uvs[i],&g,[0,0],&[]);
+            let key=point.to_array().map(|v|(v*600.).round() as i64);
+            if let Some(top)=final_caps.get(&key) {
+                assert!(mesh.solid.positions[i][1]<=*top+0.01,
+                    "a lowered outer course cannot leave an upright ring above its cap");
+            }
+        }
+        assert!(final_caps.iter().any(|(p,y)| {
+            let point=Vec2::new(p[0] as f32/600.,p[1] as f32/600.);
+            relief.distance(point.x,point.y)>=2.
+                && *y-datum_offset(&g,[0,0],datum.as_ref(),point)>g.tile_height*3.
+        }),"the filled body retains substantial interior relief above its ground datum");
+        for triangle in mesh.solid.indices.chunks_exact(3) {for edge in 0..3 {
+            let (a,b)=(triangle[edge] as usize,triangle[(edge+1)%3] as usize);
+            if a>=authored_positions.len() || b>=authored_positions.len() {continue;}
+            if (authored_positions[a][1]-authored_positions[b][1]).abs()>0.001 {continue;}
+            let along=Vec3::from_array(authored_positions[a]).xz()
+                .distance(Vec3::from_array(authored_positions[b]).xz());
+            if along>g.tile_width*0.3 {continue;}
+            assert!((mesh.solid.positions[a][1]-mesh.solid.positions[b][1]).abs()<g.tile_height*0.65,
+                "one horizontal wall ring cannot split into alternating raised strips: {:?} -> {:?}",
+                mesh.solid.positions[a],mesh.solid.positions[b]);
+        }}
+        if let Some(datum) = &datum {
+            let mut published = frame.clone();
+            published.map_id = "Route44".into();
+            published.terrace_datum = Some(std::sync::Arc::new(datum.clone()));
+            let mut cap_vertex = vec![false;mesh.solid.positions.len()];
+            for range in &cap_indices {cap_vertex[range.clone()].fill(true);}
+            for (x,z) in [(3,3),(5,6),(8,8)] {for (u,v) in [(0.1,0.2),(0.5,0.5),(0.8,0.7)] {
+                let point = Vec2::new(x as f32+u,z as f32+v)*g.tile_width;
+                let foot = Vec2::new(point.x-g.width as f32*g.tile_width*0.5,
+                    g.height as f32*g.tile_height*0.5-point.y);
+                let support = crate::footing::resolved_footing_height(&published,foot,&mesh.footing_heights).unwrap();
+                let mut surface = None::<f32>;
+                for tri in mesh.solid.indices.chunks_exact(3) {
+                    if tri.iter().any(|&i|!cap_vertex[i as usize]) {continue;}
+                    let [a,b,c] = [tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.solid.positions[i as usize]));
+                    let (ab,ac,ap) = (b.xz()-a.xz(),c.xz()-a.xz(),point-a.xz());
+                    let area = ab.perp_dot(ac);
+                    if area.abs()<0.00001 {continue;}
+                    let wb = ap.perp_dot(ac)/area;
+                    let wc = ab.perp_dot(ap)/area;
+                    if wb>=-0.0001 && wc>=-0.0001 && wb+wc<=1.0001 {
+                        let height = a.y+(b.y-a.y)*wb+(c.y-a.y)*wc;
+                        surface=Some(surface.map_or(height,|y|y.max(height)));
+                    }
+                }
+                let surface=surface.expect("the walking point lies on a real mountain triangle");
+                assert!((support-surface).abs()<0.01,"footing {support} must meet the raised surface {surface} at {point:?}");
+            }}
+            let ground_point = |x:f32,z:f32| Vec2::new(x*g.tile_width-g.width as f32*g.tile_width*0.5,
+                g.height as f32*g.tile_height*0.5-z*g.tile_height);
+            let from = ground_point(3.5,3.5);
+            let to = ground_point(4.5,3.5);
+            let mut actor = crystal_render_api::VisualActor {
+                id: crystal_render_api::VisualActorId::Player, source_id:"chris".into(),
+                model_palette:None,texture:Default::default(),center:from,size:Vec2::splat(16.),
+                flip_x:false,above_priority:false,facing:Some(Vec2::X),
+            };
+            let mut traversal = crystal_render_api::VisualPlayerTraversal {
+                map_id:published.map_id.clone(),step:Some(crystal_render_api::VisualTraversalStep {
+                    from:from-Vec2::Y*g.tile_height,to:to-Vec2::Y*g.tile_height,
+                    progress:0.,ledge_jump:false,
+                }),
+            };
+            for t in [0.,0.25,0.5,0.75,1.] {
+                actor.center=from.lerp(to,t);
+                traversal.step.as_mut().unwrap().progress=t;
+                let expected=crate::footing::resolved_footing_height(&published,actor.center,&mesh.footing_heights).unwrap();
+                let (height,arc)=crate::footing::traversal_height(&published,&actor,&mesh.footing_heights,Some(&traversal)).unwrap();
+                assert!((height-expected).abs()<0.001 && arc==0.,"ordinary mountain steps follow their real slope");
+            }
+            actor.center=from.lerp(to,0.5);
+            traversal.step.as_mut().unwrap().progress=0.5;
+            traversal.step.as_mut().unwrap().ledge_jump=true;
+            assert!(crate::footing::traversal_height(&published,&actor,&mesh.footing_heights,Some(&traversal)).unwrap().1>0.,
+                "an actual source ledge jump retains its arc");
+        }
+        }
+        }
+    }
+
+    #[test]
+    fn johto_reveal_ground_cannot_float_at_the_mountain_standing_height() {
+        for family in ["johto", "johto_modern"] {
+            for ground_height in [0., 7.] {
+                let (mut frame, g) = fixture(family, 0x0a);
+                for tile in &mut frame.tiles {
+                    tile.source.tileset_id = family.into();
+                }
+                let cells = frame.tiles.iter().collect::<Vec<_>>();
+                let shapes = cells.iter().map(|c| shape_for_source(&c.source)).collect::<Vec<_>>();
+                let mut mesh = TerrainMeshData {
+                    footing_heights: cells.iter().zip(&shapes).map(|(c, &s)| {
+                        if permanent(&c.source, s) { 16. } else { ground_height }
+                    }).collect(),
+                    authored_cells: vec![None; cells.len()],
+                    ..Default::default()
+                };
+                let cap = [[48.8, 32., 48.8], [48.8, 32., 55.2],
+                    [55.2, 32., 55.2], [55.2, 32., 48.8]];
+                append_quad_colors(&mut mesh.solid, cap, [0., 1., 0.],
+                    cap.map(|p| [-10000. - p[0], -40000. - p[2]]), [[0.3, 0.2, 0.1, 1.]; 4]);
+                outdoor_stone::retain_mineral_cap_ownership(&mut mesh);
+                let original = mesh.clone();
+                append_reveal_floor(&mut mesh, "CianwoodCity", &cells, &shapes, &g, [0, 0]);
+                let floor = &mesh.solid.positions[original.solid.positions.len()..];
+                assert_eq!(floor.len(), 6, "the wide mineral body still needs backing");
+                let expected = if ground_height > 0.02 { ground_height - 0.01 } else { ground_height };
+                assert!(floor.iter().all(|p| (p[1] - expected).abs() < 0.0001),
+                    "hidden ground must stay at its donor's seat, below the weathered wall: {floor:?}");
+                assert_eq!(&mesh.solid.positions[..original.solid.positions.len()], &original.solid.positions);
+                assert_eq!(mesh.footing_heights, original.footing_heights);
+                assert_eq!(mesh.authored_cells, original.authored_cells);
+            }
+        }
+    }
 
     #[test]
     fn descending_caps_keep_their_hidden_floor_strictly_inside_the_rock() {
@@ -663,7 +1746,7 @@ mod tests {
     }
 
     #[test]
-    fn walkable_mineral_preserves_support_and_keeps_distant_ridges() {
+    fn walkable_mineral_joins_the_mountain_and_keeps_distant_ridges() {
         use bevy::prelude::IVec2;
         let (frame,g)=fixture("johto",0x0a);
         let cells=frame.tiles.iter().collect::<Vec<_>>();
@@ -677,34 +1760,40 @@ mod tests {
         assert_eq!(datum.walkable_mineral.len(),4);
         let field=Relief::with_datum(&cells,&shapes,&g,[0,0],Some(&datum));
         for z in 5..7 {for x in 5..7 {for (u,v) in [(0.,0.),(0.25,0.75),(0.5,0.5),(1.,1.)] {
-            assert_eq!(field.height(x as f32+u,z as f32+v),0.,"walking cap {x},{z}");
+            assert!(field.height(x as f32+u,z as f32+v)>0.,"walking cap {x},{z} joins the mountain");
         }}}
         assert!(field.height(8.5,8.5)>g.tile_height,"inaccessible masses retain their mountain silhouette");
         let shift=IVec2::new(-31,72);
         let shifted=sources.iter().map(|(p,s,l)|(*p+shift,s.clone(),*l)).collect::<Vec<_>>();
         let shifted=source_terrace_datum("Route26",&[],&shifted).unwrap();
         let shifted=Relief::with_datum(&cells,&shapes,&g,shift.to_array(),Some(&shifted));
-        assert_eq!(shifted.height(5.5,5.5),0.,"complete map coordinates survive connected origins");
+        assert!(shifted.height(5.5,5.5)>g.tile_height,"complete map coordinates retain the raised surface");
         let cropped=cells.chunks_exact(g.width).skip(1).take(10)
             .flat_map(|row|row[1..11].iter().copied()).collect::<Vec<_>>();
         let cropped_shapes=cropped.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
         let cropped_g=GridGeometry {width:10,height:10,..g};
         let cropped=Relief::with_datum(&cropped,&cropped_shapes,&cropped_g,[1,1],Some(&datum));
-        assert_eq!(cropped.height(4.5,4.5),0.,"a camera crop must retain the complete source walking cap");
+        assert!((cropped.height(4.5,4.5)-field.height(5.5,5.5)).abs()<0.0001,"a camera crop retains the same mountain surface");
+        assert!((cropped.geometry_height(4.5,4.5)-field.geometry_height(5.5,5.5)).abs()<0.0001,
+            "the complete geological body is stable through a camera crop");
         let mut mesh=TerrainMeshData::default();
         mesh.solid.positions=vec![[44.,16.,44.],[68.,16.,68.]];
         mesh.solid.uvs=vec![[-10044.,-40044.],[-10068.,-40068.]];
-        mesh.footing_heights=vec![16.;cells.len()];
+        mesh.footing_heights=shapes.iter().map(|s|s.surface_height(g.tile_height)).collect();
         let before=mesh.clone();
         finish(&mut mesh,"Route26",&cells,&shapes,&g,[0,0],Some(&datum));
-        assert_eq!(mesh.solid.positions[0],before.solid.positions[0]);
-        assert!(mesh.solid.positions[1][1]>before.solid.positions[1][1]);
+        for (i,point) in [Vec2::new(5.5,5.5),Vec2::new(8.5,8.5)].into_iter().enumerate() {
+            assert!((mesh.solid.positions[i][1]-field.geometry_height(point.x,point.y)).abs()<0.001,
+                "walking and distant rock share the complete body profile");
+        }
+        assert!(mesh.solid.positions[0][1]>mesh.solid.positions[1][1]+g.tile_height*0.5,
+            "the interior rises above the outer slope instead of retaining a level shaft");
         assert_eq!(mesh.footing_heights,before.footing_heights);
     }
 
     #[test]
     #[ignore = "requires a completed external CRYSTAL_RENDER_TEST_PACK"]
-    fn external_directional_mountain_land_retains_walking_support() {
+    fn external_directional_mountain_land_joins_the_raised_surface() {
         use bevy::prelude::IVec2;
         use crystal_core::world::collision::{describe_collision,Terrain,allows_ledge_direction};
         use crystal_core::world::map::Direction;
@@ -730,7 +1819,9 @@ mod tests {
         }}
         let region=TerraceSourceRegion {map:"Route26".into(),edges:Vec::new(),cells:sources.clone()};
         let datum=connected_source_terrace_datum("Route26",&[region],&[]).unwrap();
-        let frame=super::super::tests::frame(w as u32,h as u32,sources.iter().map(|(_,s,_)|s.clone()).collect());
+        let mut frame=super::super::tests::frame(w as u32,h as u32,sources.iter().map(|(_,s,_)|s.clone()).collect());
+        frame.map_id="Route26".into();
+        frame.terrace_datum=Some(datum.clone());
         let cells=frame.tiles.iter().collect::<Vec<_>>();
         let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
         let g=GridGeometry {width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
@@ -743,11 +1834,51 @@ mod tests {
                 let p=IVec2::new((x*2+dx)as i32,(y*2+dy)as i32);
                 assert!(datum.walkable_mineral.contains(&p),"missing authored walking cap {p}");
                 for (u,v) in [(0.,0.),(0.5,0.5),(1.,1.)] {
-                    assert_eq!(field.height(p.x as f32+u,p.y as f32+v),0.,"relief covers land {p}");
+                    assert!(field.height(p.x as f32+u,p.y as f32+v).is_finite(),"walking terrain remains a finite surface {p}");
                 }
             }}
         }
         assert!(field.peaks.iter().any(|&p|p>g.tile_height*2.),"unwalkable mountain masses retain relief");
+        let mut resolved=shapes.clone();
+        crate::rock_platform::resolve_rock_platform_tiers(&cells,&mut resolved,w);
+        crate::elevation::resolve_authored_mountain_tiers(&mut resolved,w,h);
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;cells.len()],
+            footing_heights:cells.iter().map(|c|support_height(&c.source,g.tile_height)).collect(),
+            ..Default::default()};
+        let mut claimed=vec![false;cells.len()];
+        super::super::mountain_portals::append(&mut mesh,&cells,&resolved,&g,&mut claimed,[0,0]);
+        super::super::modeled_dungeons::append_terrain(&mut mesh,"Route26",&cells,&resolved,&g,&mut claimed,[0,0]);
+        outdoor_stone::finish_rock_geometry(&mut mesh,"Route26",&cells,&resolved,&g,[0,0],Some(&datum));
+        super::super::terraces::finish_with_datum(&mut mesh,"Route26",&cells,&g,[0,0],&[],Some(&datum));
+        let mut cap=vec![false;mesh.solid.positions.len()];
+        for range in mesh.mineral_cap_ranges.as_ref().unwrap() {cap[range.clone()].fill(true);}
+        let mut checked=0;
+        for (x,z) in [(18,56),(19,56),(20,56),(21,57)] {
+            for (u,v) in [(0.15,0.3),(0.5,0.5),(0.8,0.65)] {
+                let point=Vec2::new(x as f32+u,z as f32+v)*g.tile_width;
+                let foot=Vec2::new(point.x-w as f32*g.tile_width*0.5,
+                    h as f32*g.tile_height*0.5-point.y);
+                let support=crate::footing::resolved_footing_height(&frame,foot,&mesh.footing_heights).unwrap();
+                let mut surface=None::<f32>;
+                for tri in mesh.solid.indices.chunks_exact(3) {
+                    if tri.iter().any(|&i|!cap[i as usize]) {continue;}
+                    let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.solid.positions[i as usize]));
+                    let (ab,ac,ap)=(b.xz()-a.xz(),c.xz()-a.xz(),point-a.xz());
+                    let area=ab.perp_dot(ac);
+                    if area.abs()<0.00001 {continue;}
+                    let (wb,wc)=(ap.perp_dot(ac)/area,ab.perp_dot(ap)/area);
+                    if wb>=-0.0001 && wc>=-0.0001 && wb+wc<=1.0001 {
+                        let height=a.y+(b.y-a.y)*wb+(c.y-a.y)*wc;
+                        surface=Some(surface.map_or(height,|y|y.max(height)));
+                    }
+                }
+                let surface=surface.expect("the real UP_WALL walking point has a mineral cap triangle");
+                assert!((surface-support).abs()<0.02,
+                    "actual Route26 footing {support} must meet its reshaped cap {surface} at {point:?}");
+                checked+=1;
+            }
+        }
+        assert_eq!(checked,12);
     }
 
     #[test]
@@ -794,7 +1925,8 @@ mod tests {
         let support = mesh.footing_heights.clone();
         let original = mesh.solid.clone();
         finish(&mut mesh, "Route26", &cells, &shapes, &g, [0, 0],None);
-        assert_eq!(mesh.solid.positions[0][1], mesh.solid.positions[1][1]);
+        assert_eq!(mesh.solid.positions[0], mesh.solid.positions[1],
+            "upper cap/wall samples must meet on the same source column");
         assert_eq!(
             mesh.solid.colors[0], mesh.solid.colors[1],
             "cap and wall must share the same mineral pigment"
@@ -808,13 +1940,126 @@ mod tests {
         assert_eq!(mesh.footing_heights, support);
         assert_eq!(mesh.solid.uvs, original.uvs);
         assert_eq!(mesh.solid.indices, original.indices);
-        for (before, after) in original.positions.iter().zip(&mesh.solid.positions) {
-            assert_eq!(
-                [before[0], before[2]],
-                [after[0], after[2]],
-                "mountain detail cannot change the horizontal footprint"
-            );
+    }
+
+    #[test]
+    fn wall_only_columns_fit_one_flank_and_leave_short_ground_banks_alone() {
+        let (frame,g)=fixture("johto",0x0a);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;cells.len()],
+            footing_heights:shapes.iter().map(|s|s.surface_height(g.tile_height)).collect(),
+            ..Default::default()};
+        // A diagonal wall has no owned cap samples. Its chipped height rings
+        // also cross float-UV rounding boundaries, as real route corners do.
+        outdoor_stone::append_canyon(&mut mesh.solid,
+            [[34.,0.,34.],[34.,16.,34.],[41.,16.,43.],[41.,0.,43.]],
+            Vec3::new(9.,0.,-7.).normalize().to_array(),&g,[0,0]);
+        let wall_end=mesh.solid.positions.len();
+        outdoor_stone::append_canyon(&mut mesh.solid,
+            [[4.,0.,4.],[4.,6.,4.],[12.,6.,4.],[12.,0.,4.]],
+            Vec3::NEG_Z.to_array(),&g,[0,0]);
+        outdoor_stone::sculpt_rock_rims_on_map(&mut mesh,"Route44",&cells,&shapes,&g,[0,0]);
+        outdoor_stone::retain_mineral_cap_ownership(&mut mesh);
+        super::super::rock_bases::round_geometry(&mut mesh,"Route44",&cells,&shapes,&g,[0,0]);
+        assert!(mesh.mineral_cap_ranges.as_ref().unwrap().is_empty());
+        let before=mesh.clone();
+        let field=Relief::with_ground(&cells,&shapes,&g,[0,0],None,&[],Some(&mesh.footing_heights));
+        let fits=mineral_columns(&mesh,&cells,&shapes,&g,[0,0],None,&[]);
+        finish(&mut mesh,"Route44",&cells,&shapes,&g,[0,0],None);
+        let mut columns=Vec::<(Vec2,Vec<usize>)>::new();
+        for i in 0..wall_end {
+            let point=source_point(before.solid.positions[i],before.solid.uvs[i],&g,[0,0],&[]);
+            if let Some((_,ids))=columns.iter_mut().find(|(p,_)|p.distance(point)<0.001) {ids.push(i);}
+            else {columns.push((point,vec![i]));}
         }
+        assert!(columns.len()>=7,"exercise several distinct wall columns");
+        let mut fitted=0;
+        for (point,ids) in columns {
+            let top=*ids.iter().max_by(|&&a,&&b|
+                before.solid.positions[a][1].total_cmp(&before.solid.positions[b][1])).unwrap();
+            let old_high=before.solid.positions[top][1];
+            let high=Vec3::from_array(mesh.solid.positions[top]);
+            let root=Vec3::new(point.x*g.tile_width,0.,point.y*g.tile_height);
+            assert!((high.y-field.geometry_height(point.x,point.y)).abs()<0.01,
+                "a wall-only top must meet the complete mountain surface: {high:?} at {point:?}, expected {}, old {old_high}, fit {:?}",
+                field.geometry_height(point.x,point.y),fits.get(&column_key(&fits,point)));
+            for i in ids {
+                let fraction=before.solid.positions[i][1]/old_high;
+                if fraction==0. {
+                    assert_eq!(mesh.solid.positions[i],before.solid.positions[i],"rooted contacts stay seated");
+                } else if fraction>=1./6. {
+                    let expected=root.lerp(high,fraction);
+                    let actual=Vec3::from_array(mesh.solid.positions[i]);
+                    assert!(actual.distance(expected)<0.01,
+                        "upper height rings must share one flank instead of forming ribs: {actual:?} != {expected:?}");
+                    fitted+=1;
+                }
+            }
+        }
+        assert!(fitted>40);
+        assert_eq!(mesh.solid.positions[wall_end..],before.solid.positions[wall_end..],
+            "a short bank outside permanent mountain must keep its original shape");
+        assert_eq!(mesh.solid.colors[wall_end..],before.solid.colors[wall_end..]);
+        assert_eq!(mesh.footing_heights,before.footing_heights);
+        assert_eq!(mesh.solid.uvs,before.solid.uvs);
+        assert_eq!(mesh.solid.indices,before.solid.indices);
+    }
+
+    #[test]
+    fn unequal_native_courses_keep_distinct_wall_rows_at_their_shared_corner() {
+        let (frame,g)=fixture("johto",0x0a);
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let mut shapes=cells.iter().map(|c|shape_for_source(&c.source)).collect::<Vec<_>>();
+        // Nominal terrain tiers can agree while the two authored wall
+        // courses still have different original upper extents.
+        shapes[9*g.width+4]=CellShape::RaisedTop {height:32.,solid:SolidKind::Bank};
+        shapes[9*g.width+5]=CellShape::RaisedTop {height:32.,solid:SolidKind::Bank};
+        let mut mesh=TerrainMeshData {authored_cells:vec![None;cells.len()],
+            footing_heights:shapes.iter().map(|s|s.surface_height(g.tile_height)).collect(),
+            ..Default::default()};
+        let mut walls=Vec::new();
+        for (x,height) in [(4,16.),(5,32.)] {
+            let (w,e,n,s)=g.bounds(x,9);
+            let first=mesh.solid.positions.len();
+            outdoor_stone::append_canyon(&mut mesh.solid,
+                [[e,0.,s],[e,height,s],[w,height,s],[w,0.,s]],Vec3::Z.to_array(),&g,[0,0]);
+            walls.push(first..mesh.solid.positions.len());
+            outdoor_stone::append_canyon(&mut mesh.solid,
+                [[w,height,n],[w,height,s],[e,height,s],[e,height,n]],Vec3::Y.to_array(),&g,[0,0]);
+        }
+        outdoor_stone::sculpt_rock_rims_on_map(&mut mesh,"Route44",&cells,&shapes,&g,[0,0]);
+        outdoor_stone::retain_mineral_cap_ownership(&mut mesh);
+        super::super::rock_bases::round_geometry(&mut mesh,"Route44",&cells,&shapes,&g,[0,0]);
+        let before=mesh.clone();
+        finish(&mut mesh,"Route44",&cells,&shapes,&g,[0,0],None);
+        let mut ends=Vec::new();
+        for wall in walls {
+            let mut edge=wall.filter(|&i| {
+                let p=source_point(before.solid.positions[i],before.solid.uvs[i],&g,[0,0],&[]);
+                p.distance(Vec2::new(5.,10.))<0.001
+            }).collect::<Vec<_>>();
+            edge.sort_by(|&a,&b|before.solid.positions[a][1].total_cmp(&before.solid.positions[b][1]));
+            edge.dedup_by(|a,b|(before.solid.positions[*a][1]-before.solid.positions[*b][1]).abs()<0.0001);
+            assert!(edge.len()>10,"both native courses must exercise several height rings");
+            for pair in edge.windows(2) {
+                assert!(mesh.solid.positions[pair[1]][1]>mesh.solid.positions[pair[0]][1]+0.00001,
+                    "a taller course must not collapse its upper rows into the lower course's cap");
+            }
+            let first=Vec3::from_array(mesh.solid.positions[edge[0]]);
+            let last=Vec3::from_array(mesh.solid.positions[*edge.last().unwrap()]);
+            let old_high=before.solid.positions[*edge.last().unwrap()][1];
+            for i in edge {
+                if before.solid.positions[i][1]/old_high<1./6. {continue;}
+                let p=Vec3::from_array(mesh.solid.positions[i]);
+                let along=(p.y-first.y)/(last.y-first.y);
+                assert!(p.distance(first.lerp(last,along))<0.002,
+                    "the shared edge must stay straight through both tessellations");
+            }
+            ends.push((first,last));
+        }
+        assert!(ends[0].0.distance(ends[1].0)<0.002 && ends[0].1.distance(ends[1].1)<0.002,
+            "different source heights must meet at the same rooted toe and new mountain surface");
     }
 
     #[test]
@@ -976,6 +2221,7 @@ mod tests {
                 origin_z: 0.,
             };
             let field = Relief::new(&cells, &shapes, &g, [0, 0]);
+            let portal_roofs=super::super::mountain_portals::sites(&cells,&shapes,&g);
             let mut peaks = 0;
             for (i, cell) in cells.iter().enumerate() {
                 let x = (i % width) as f32;
@@ -983,6 +2229,14 @@ mod tests {
                 if permanent(&cell.source, shapes[i]) {
                     peaks += usize::from(field.height(x + 0.5, z + 0.5) > g.tile_height * 2.);
                 } else {
+                    // The mineral field also describes closed rock above a
+                    // complete native cave. It is not that opening's walking
+                    // floor. The portal regression tests actual path geometry
+                    // and footing beneath this local roof on both ground levels.
+                    let overhead=portal_roofs.iter().any(|roof|
+                        [(0.,0.),(0.,1.),(1.,0.),(1.,1.)].into_iter().any(|(dx,dz)|
+                            roof.roof_rise(Vec2::new(x+dx,z+dz),g.tile_height)>0.));
+                    if overhead {continue;}
                     for (dx, dz) in [(0., 0.), (0.5, 0.5), (1., 1.)] {
                         assert_eq!(
                             field.height(x + dx, z + dz),

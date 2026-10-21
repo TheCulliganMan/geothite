@@ -2,7 +2,7 @@
 """Canonical Elekid skin with planted feet, coherent striped arms and open plug blades."""
 import argparse,hashlib,json,math,struct
 from pathlib import Path
-from electric_pair_sculpt import sculpture as pair_sculpture,HEIGHTS
+from electric_pair_sculpt import sculpture as pair_sculpture,HEIGHTS,baby_arm
 HEIGHT=HEIGHTS['elekid']
 def sculpture(normalize=True):return pair_sculpture('elekid',normalize=normalize)
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
@@ -16,12 +16,12 @@ def geometry_digest(model):
  for p in model['primitives']:
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
-REST_DIGEST='5087eaed56db849c823c7e069ef7879375ebb39c6d3f68c84de469b858ad076a'
+REST_DIGEST='732c1d916e23c4165639128762c00e8ab323ab70903637e07aa455d8beaec635'
 def pivot(p):return tuple((v-(LOW if i==1 else 0.))*SCALE for i,v in enumerate(p))
 BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.36,.01)),('head',1,(0.,.45,.01)),
  ('plug_left',2,(-.125,.80,.026)),('plug_right',2,(.125,.80,.026)),
- ('arm_left',2,(-.209,.636,.009)),('arm_right',2,(.209,.636,.009)),
- ('leg_left',0,(-.126,.113,.033)),('leg_right',0,(.126,.113,.033)))
+ ('arm_left',2,baby_arm(-1)[0][0]),('arm_right',2,baby_arm(1)[0][0]),
+ ('leg_left',0,(-.143,.142,.015)),('leg_right',0,(.143,.142,.015)))
 JOINTS=tuple((n,parent,pivot(p) if parent is not None else p) for n,parent,p in BASE)
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def skin_weights(part,point):

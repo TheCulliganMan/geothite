@@ -17,7 +17,7 @@ from animated_glb import parse_glb
 from skin_glb import (COORDINATES, Glb, envelope, packed,
                         quantized_weights, quaternion_xyz, smoothstep)
 
-REST_DIGEST = 'e2e34e5ee22c9e86a70f23ec28511f2075b6d2a3f529d7996b3025288bb86a18'
+REST_DIGEST = '20fcb08f45628b3df849334ed0f9c345c73d024b864c8e4c2edb1d289c66db7e'
 FILE = 'totodile.glb'
 PARTS = (
     'Shallow inset nostril.001', 'Shallow inset nostril',
@@ -39,25 +39,25 @@ PARTS = (
 # Measured from the real Blender runtime body's object transform. The staged
 # scene's presentation root is excluded. No source coordinate is written back
 # into the immutable neutral mesh; these values only locate anatomical pivots.
-SOURCE_SCALE = .9770957827568054
-SOURCE_OFFSET = (.000048862897529033944, -.0013535707257688046, .050494443625211716)
+SOURCE_SCALE = 0.9833825421855563
+SOURCE_OFFSET = (0.00039379928169689537, -0.0017619265227584904, 0.017673021287668164)
 
 
 def source_point(x, y, z):
     return tuple(round(v, 6) for v in (SOURCE_OFFSET[0] + SOURCE_SCALE*x,
                                      SOURCE_OFFSET[1] + SOURCE_SCALE*z,
-                                     SOURCE_OFFSET[2] - SOURCE_SCALE*y))
+                                     SOURCE_OFFSET[2] - SOURCE_SCALE*(y-.12*z)))
 
 
 JOINTS = (
     ('root', None, (0., 0., 0.)),
     ('torso', 0, source_point(0., .025, .225)),
     ('head', 1, source_point(0., .015, .605)),
-    ('lower_jaw', 2, source_point(0., .006, .630)),
+    ('lower_jaw', 2, source_point(0., .012, .700)),
     ('forepaw_left', 1, source_point(-.160, .005, .490)),
     ('forepaw_right', 1, source_point(.160, .005, .490)),
     ('tail_base', 0, source_point(0., .100, .198)),
-    ('tail_tip', 6, source_point(.069, .435, .175)),
+    ('tail_tip', 6, source_point(.020, .435, .150)),
 )
 CLIPS = (('idle', 3.0, 65), ('attack', 1., 49), ('hit', 1., 49))
 MATERIAL_NAMES = ('charcoal_insets', 'mouth_interior', 'blue_paper_body', 'warm_iris',
@@ -105,11 +105,18 @@ def body_weights(position):
     field on dorsal-fin roots prevents layer drift at the attached surfaces.
     """
     x, y, z = position
+    raw_y=(y-SOURCE_OFFSET[1])/SOURCE_SCALE
+    # Remove the authored forward lean for the continuous anatomical field.
+    z-=.12*raw_y*SOURCE_SCALE
     tail = smoothstep(.075, .245, -z) * (1.-smoothstep(.335, .430, y))
+    # The enlarged tail root shares a low haunch with the feet. Keep that
+    # foundation fixed; lateral tail motion begins farther behind the heels.
+    raised=smoothstep(.145,.200,y)
+    tail*=raised+(1.-raised)*smoothstep(.140,.240,-z)
     tip = smoothstep(.280, .490, -z)
     upper = smoothstep(.145, .350, y)
     head = smoothstep(.480, .630, y)
-    arm = (smoothstep(.177, .280, abs(x-SOURCE_OFFSET[0]))
+    arm = (smoothstep(.177, .255, abs(x-SOURCE_OFFSET[0]))
            * smoothstep(.280, .345, y) * (1.-smoothstep(.505, .595, y))
            * smoothstep(-.005, .070, z))
     side = 4 if x < SOURCE_OFFSET[0] else 5
@@ -122,9 +129,9 @@ def body_weights(position):
 
 MOUTH_PROFILES = tuple((source_point(0., y, z)[2],
                        source_point(0., y, z)[1], SOURCE_SCALE*radius)
-                      for y, z, radius in ((-.087, .653, .040),
-                          (-.261, .639, .054), (-.426, .655, .067),
-                          (-.516, .672, .052)))
+                      for y, z, radius in ((-.070, .730, .035),
+                          (-.220, .731, .038), (-.380, .741, .033),
+                          (-.497, .747, .024)))
 
 
 def cavity_weights(position):

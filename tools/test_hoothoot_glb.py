@@ -1,29 +1,32 @@
 #!/usr/bin/env python3
 """Stored owl anatomy, palette, skin ownership and deformation regressions."""
-import math,unittest
+import math,os,unittest
 from pathlib import Path
 import hoothoot_glb as author
 from test_gengar_glb import Model,winding_alignment
 from skin_glb_test_support import IDENTITY
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_axolotl_sculpt import ray_intersections
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'
+ASSET=Path(os.environ.get('HOOTHOOT_GLB',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/hoothoot.glb'));ROOT=ASSET.parent
 class HoothootSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
-  cls.blob=(ROOT/'hoothoot.glb').read_bytes();cls.m=Model(cls.blob);cls.neutral=author.decode_owl(cls.blob,'hoothoot')
+  cls.blob=ASSET.read_bytes();cls.m=Model(cls.blob);cls.neutral=author.decode_owl(cls.blob,'hoothoot')
  def test_canonical_anatomy_reader_bounds_and_unique_species(self):
   m=self.m
   self.assertEqual(author.geometry_digest(self.neutral),author.REST_DIGESTS['hoothoot']);self.assertEqual(self.blob,author.export_hoothoot())
-  self.assertEqual((len(m.parts),sum(len(p) for p in m.vertices),sum(len(p)//3 for p in m.indices),len(m.joints)),(38,16597,25884,12))
+  self.assertEqual((len(m.parts),sum(len(p) for p in m.vertices),sum(len(p)//3 for p in m.indices),len(m.joints)),(38,7029,8684,12))
   self.assertLess(len(self.blob),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
   self.assertEqual(min(v[1] for p in m.vertices for v in p),0.);self.assertAlmostEqual(max(v[1] for p in m.vertices for v in p),1.,places=6)
   self.assertFalse((ROOT/'hoothoot.mesh.json').exists())
  def test_closed_outward_parts_and_stored_shading(self):
-  assert_closed_models(self,{'hoothoot':self.neutral});assert_model_shading(self,{'hoothoot':self.neutral})
- def test_body_and_clock_palette_match_verified_rgb555(self):
-  for prefix,rgb555 in [('Body /',(23,13,6)),('Clock brow /',(4,6,16))]:
-   rgb=[((c<<3)|(c>>2))/255 for c in rgb555];expected=[v/12.92 if v<=.04045 else ((v+.055)/1.055)**2.4 for v in rgb]
+  from pidgeotto_contours import components
+  ps=[q for p in self.neutral['primitives'] for q in (components(p) if p['part'].startswith(('Eye mask /','Leg band /')) or 'scalloped' in p['part'] else [p])]
+  assert_closed_models(self,{'hoothoot':dict(primitives=ps)});assert_model_shading(self,{'hoothoot':self.neutral})
+ def test_body_and_clock_use_inspected_full_colour_game_pigments(self):
+  # Crystal reuses one shadow index; it does not make the clock hands blue.
+  for prefix,rgb in [('Body /',(.67,.44,.25)),('Clock brow /',(.045,.038,.033))]:
+   expected=[v/12.92 if v<=.04045 else ((v+.055)/1.055)**2.4 for v in rgb]
    for p,name in zip(self.m.parts,self.m.names):
     if name.startswith(prefix):
      actual=self.m.doc['materials'][p['material']]['pbrMetallicRoughness']['baseColorFactor']
@@ -68,7 +71,7 @@ class HoothootSkinTests(unittest.TestCase):
     mats=m.matrices(clip,step/8)
     for p,name in enumerate(m.names):
      posed=m.posed(p,mats);normals=m.posed(p,mats,True);self.assertGreaterEqual(min(v[1] for v in posed),-1e-7,(clip,step,name))
-     if name.startswith(('Leg /','Foot /','Toe /','Claw /','Rear toe /')):self.assertEqual(posed,m.vertices[p],name)
+     if name.startswith(('Leg /','Leg band /','Foot /','Toe /','Claw /','Rear toe /')):self.assertEqual(posed,m.vertices[p],name)
      for i in range(0,len(m.indices[p]),3):
       tri=m.indices[p][i:i+3];cosine,area=winding_alignment(posed,normals,tri)
       self.assertGreater(cosine,0.,(clip,step,name,i));self.assertGreater(area,1e-12)

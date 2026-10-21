@@ -15,22 +15,21 @@ class RaptorSkinTests(unittest.TestCase):
  def test_exact_authored_geometry_ranges_and_existing_limits(self):
   for s,m in self.models.items():
    self.assertEqual(self.blobs[s],author.export_raptor_bird(s));self.assertEqual(author.geometry_digest(m.neutral_model()),author.REST_DIGESTS[s]);self.assertEqual(author.geometry_digest(author.decode_raptor_bird(self.blobs[s],s)),author.REST_DIGESTS[s]);self.assertLessEqual(sum(map(len,m.vertices)),20000);self.assertLessEqual(sum(len(i)//3 for i in m.indices),40000);self.assertLessEqual(len(self.blobs[s]),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256);self.assertLessEqual(len(self.runtime[s].parts),64)
-   self.assertEqual(len(m.parts),105 if s=='pidgeot' else 161);self.assertEqual(len(m.joints),20 if s=='pidgeot' else 19)
+   self.assertEqual(len(m.parts),105 if s=='pidgeot' else 101);self.assertEqual(len(m.joints),20 if s=='pidgeot' else 19)
  def test_original_neutral_bounds_and_uniform_physical_span(self):
-  expected={'pidgeot':((-1.0566399,1.0566399),(0.,1.35),(-.7216077,.3401865)),'fearow':((-.9640912,.9640912),(0.,1.23),(-.5295917,.8032525))}
   for s,m in self.models.items():
-   for axis,(lo,hi) in enumerate(expected[s]):
-    actual=(min(v[axis] for vs in m.vertices for v in vs),max(v[axis] for vs in m.vertices for v in vs));self.assertEqual(actual,struct.unpack('<2f',struct.pack('<2f',lo,hi)))
+   self.assertEqual(min(v[1] for vs in m.vertices for v in vs),0.);self.assertAlmostEqual(max(v[1] for vs in m.vertices for v in vs),author.HEIGHTS[s],places=6)
    self.assertEqual(m.doc['extras']['reference_span'],author.HEIGHTS[s])
  def test_hierarchy_inverse_binds_and_used_controls(self):
   for s,m in self.models.items():
-   self.assertEqual(m.parents[:len(m.joints)],[None,0,1,2,3,4,1,6,1,8]+[1]*5+[0,0]+([4,4,4] if s=='pidgeot' else [4,2]))
-   self.assertEqual({j for ids,ws in zip(m.ids,m.weights) for js,ww in zip(ids,ws) for j,w in zip(js,ww) if w},set(range(len(m.joints))))
+   self.assertEqual(m.parents[:len(m.joints)],[None,0,1,2,3,4,1,6,1,8]+[1]*5+([0,0,4,4,4] if s=='pidgeot' else [1,1,4,2]))
+   self.assertEqual({j for ids,ws in zip(m.ids,m.weights) for js,ww in zip(ids,ws) for j,w in zip(js,ww) if w},set(range(0 if s=='pidgeot' else 1,len(m.joints))))
    for mat in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(mat,IDENTITY)),1e-7)
  def test_coherent_head_facial_layers_bill_and_fixed_digits(self):
   for s,m in self.models.items():
    for i,n in enumerate(m.names):
     owner=0 if n.startswith(('Foot /','Toe /','Talon /')) else 4 if n.startswith(('Head /','Cheek /','Mask /','Eye /','Eye socket /','Pupil /','Glint /')) else 5 if n.startswith('Bill /') and any(k in n for k in ('lower','mandible','seam')) else 4 if n.startswith('Bill /') else None
+    if s=='fearow' and n.startswith(('Foot /','Toe /','Talon /','Leg /')):owner=15 if sum(v[0] for v in m.vertices[i])<0 else 16
     if owner is not None:self.assertTrue(all(js==[owner,0,0,0] for js in m.ids[i]),(s,n))
  def test_every_control_moves_and_independent_wrist_leaves_opposite_bank_fixed(self):
   for s,m in self.models.items():
@@ -46,7 +45,7 @@ class RaptorSkinTests(unittest.TestCase):
      mats=m.matrices(clip,t)
      for i,vs in enumerate(m.vertices):
       posed=m.posed(i,mats);normals=m.posed(i,mats,True);self.assertGreaterEqual(min(p[1] for p in posed),-1e-7,(s,clip,t,m.names[i]))
-      if m.names[i].startswith(('Foot /','Toe /','Talon /')):self.assertEqual(posed,vs)
+      if s=='pidgeot' and m.names[i].startswith(('Foot /','Toe /','Talon /')):self.assertEqual(posed,vs)
       for k in range(0,len(m.indices[i]),3):
        tri=m.indices[i][k:k+3];cosine,area=winding_alignment(posed,normals,tri);self.assertGreater(cosine,0.,(s,clip,t,m.names[i],k));self.assertGreater(area,1e-12)
        for a,b in zip(tri,tri[1:]+tri[:1]):
@@ -80,7 +79,8 @@ class RaptorSkinTests(unittest.TestCase):
       # Select actual authored front caps. A buried sidewall may acquire a
       # positive XY area when the neck bends; it must remain a rooted wall,
       # rather than being mistaken for a newly exposed front marking.
-      if (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<=1e-14:continue
+      u=[b[j]-a[j] for j in range(3)];v=[c[j]-a[j] for j in range(3)];normal=(u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0])
+      if normal[2]<=.5*math.sqrt(sum(x*x for x in normal)):continue
       a,b,c=[p['positions'][3*i:3*i+3] for i in ids]
       for q in (tuple((a[i]+b[i]+c[i])/3 for i in range(3)),tuple((a[i]+b[i])/2 for i in range(3)),tuple((b[i]+c[i])/2 for i in range(3)),tuple((c[i]+a[i])/2 for i in range(3))):
        hits=anatomy.ray_intersections(parent,q[0],q[1]);self.assertTrue(hits,(s,p['part'],k//3));self.assertGreater(q[2]-max(hits),.0001,(s,p['part'],k//3))

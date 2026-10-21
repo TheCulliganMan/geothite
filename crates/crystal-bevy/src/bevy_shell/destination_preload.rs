@@ -181,7 +181,7 @@ fn actor_sources(snapshot: &RuntimeShellSnapshot, runtime: &BevyRuntimeShell,
     for object in &map.objects {
         let bitmap = resolve_visible_object_sprite_asset_id(&runtime.asset_root, &object.sprite,
             &snapshot.script_events.variable_sprites, &snapshot.presentation.menu_icons);
-        sources.push(Arc::from(visible_map_object_model_source_id(&map.map_name, object,
+        sources.push(Arc::from(visible_map_object_model_source_from_data(runtime.shell.runtime().data(), &map.map_name, object,
             &object.sprite, &bitmap, &snapshot.script_events.variable_sprites,
             &snapshot.presentation.menu_icons)));
     }
@@ -216,13 +216,14 @@ pub(super) fn source_frame(
     let (width, height) = render_tile_bounds_i16(&map.map_name, map.attributes.width, map.attributes.height)?;
     let (x, y) = connection_composite_viewport_origin(snapshot, map, arrival.x * 2, arrival.y * 2, width, height)
         .context("destination viewport")?;
-    let (halo, w, h) = visual_world_grid_dimensions(true);
+    let window = visual_world_grid_window(true, IVec2::new(i32::from(x),i32::from(y)));
+    let (w,h) = (window.size.x as i16,window.size.y as i16);
     let mut tiles = Vec::with_capacity(w as usize * h as usize);
     let mut handles = Vec::with_capacity(tiles.capacity());
     let restless = snapshot.progression.active_engine_flags.contains("ENGINE_FOREST_IS_RESTLESS");
     for row in 0..h { for column in 0..w {
         let (source, sx, sy) = resolved_visual_render_source_at(&sources,
-            i32::from(x + column - halo), i32::from(y + row - halo));
+            window.origin.x + i32::from(column), window.origin.y + i32::from(row));
         let art = &cache.cache[&source.art_key];
         let (block, sub_x, sub_y, index, texture, priority, _) = source_tile_art(
             source, art, sx, sy, runtime.lcd_animation_frame, restless)?;
@@ -246,7 +247,7 @@ pub(super) fn source_frame(
         boundary_warps: map.events.warps.iter().filter_map(warp_tile_position_checked)
             .map(|tile| IVec2::new(i32::from(tile.x), i32::from(tile.y))).collect(),
         jump_ledges: ledges, terrace_datum: datum, terrain_revision: revision,
-        grid_origin: IVec2::new(i32::from(x - halo), i32::from(y - halo)),
+        grid_origin: window.origin,
         map_texture: compose_visual_world_tiles(&handles, w as usize, h as usize, None, images),
         center: Vec2::ZERO, view_center: Vec2::ZERO, viewport_size: Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT),
         tile_size: Vec2::splat(TILE_SIZE), grid_size: UVec2::new(w as u32, h as u32), tiles,

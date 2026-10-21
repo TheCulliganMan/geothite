@@ -1,31 +1,34 @@
 #!/usr/bin/env python3
 """Decoded Stantler skin: grounded hooves, coherent antler loops and independently curled tail."""
-import math,unittest
+import os,math,unittest
 from pathlib import Path
 import stantler_glb as author
 from test_gengar_glb import Model,winding_alignment
+from test_ninetales_glb import logical_model
 from skin_glb_test_support import IDENTITY
 ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/stantler.glb'
+ROOT=Path(os.environ.get('STANTLER_GLB',str(ROOT)))
 class StantlerSkinTests(unittest.TestCase):
  @classmethod
- def setUpClass(cls):cls.blob=ROOT.read_bytes();cls.m=Model(cls.blob)
+ def setUpClass(cls):cls.blob=ROOT.read_bytes();cls.runtime=Model(cls.blob);cls.m=logical_model(cls.runtime)
  def test_canonical_anatomy_bind_and_budgets(self):
   m=self.m;self.assertEqual(self.blob,author.export_stantler(author.decode_stantler(self.blob)))
-  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(51,15993,20548,12))
+  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(56,13113,12428,12))
   self.assertEqual(author.geometry_digest(author.decode_stantler(self.blob)),author.REST_DIGEST)
+  self.assertEqual(len(self.runtime.parts),51);self.assertEqual(author.geometry_digest(self.runtime.neutral_model()),self.runtime.doc['extras']['packed_sha256'])
   self.assertLess(len(self.blob),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
   for matrix in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(matrix,IDENTITY)),1e-7)
- def test_local_normal_palette(self):
+ def test_full_color_game_palette(self):
   m=self.m
   for p,n in enumerate(m.names):
-   rgb=(0,0,0) if n.startswith(('Eye / fitted dark','Eye / dark','Nostril /','Hoof groove /')) else (33,41,132) if n.startswith(('Muzzle /','Brow /','Hoof /','Ear / fitted','Antler orb /')) else (255,255,255) if n.startswith(('Antler /','Antler stem /','Antler tine /','Eye / fitted ivory','Chest /','Brow spot /','Spot /')) else (189,123,57)
+   rgb=(30,25,29) if n.startswith(('Eye / fitted dark','Eye / dark','Nostril /','Hoof groove /')) else (100,62,42) if n.startswith(('Muzzle /','Ear / fitted')) else (80,51,95) if n.startswith(('Hoof /','Antler orb /')) else (242,218,143) if n.startswith(('Antler /','Antler stem /','Antler tine /')) else (245,239,217) if n.startswith(('Eye / fitted ivory','Chest /','Brow spot /','Spot /','Rib /')) else (200,156,120)
    color=m.doc['materials'][m.parts[p]['material']]['pbrMetallicRoughness']['baseColorFactor']
    for v,a in zip(rgb,color):
     x=v/255;expected=x/12.92 if x<=.04045 else ((x+.055)/1.055)**2.4;self.assertAlmostEqual(a,expected,places=7)
  def test_fitted_gaze_antlers_orbs_ears_and_flank_markings_share_owners(self):
   m=self.m
   for p,n in enumerate(m.names):
-   owner=0 if n.startswith(('Hoof /','Hoof groove /')) else 3 if n.startswith(('Head /','Eye /','Brow /','Brow spot /','Muzzle /','Nostril /','Antler')) else (4 if n.endswith('-1') else 5) if n.startswith('Ear /') else 11 if n.startswith('Tail / large') else 1 if n.startswith(('Body /','Spot /')) else None
+   owner=0 if n.startswith(('Hoof /','Hoof groove /')) else 3 if n.startswith(('Head /','Eye /','Brow /','Brow spot /','Muzzle /','Muzzle pad /','Nostril /','Antler')) else (4 if n.endswith('-1') else 5) if n.startswith('Ear /') else 11 if n.startswith('Tail / large') else 1 if n.startswith(('Body /','Spot /','Rib /')) else None
    if owner is not None:self.assertTrue(all(ids==[owner,0,0,0] for ids in m.ids[p]),n)
  def test_floor_fixed_hooves_endpoints_and_articulation(self):
   m=self.m;moved=set()

@@ -87,6 +87,13 @@ fn adjoining_support(distance: f32, reach: f32, floor: f32) -> f32 {
 pub(super) fn finish_rock_geometry(mesh: &mut TerrainMeshData, map: &str,
     cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32; 2],
     datum:Option<&crystal_render_api::VisualTerraceDatum>) {
+    finish_rock_geometry_with_source_regions(mesh,map,cells,shapes,g,origin,datum,&[]);
+}
+
+pub(super) fn finish_rock_geometry_with_source_regions(mesh:&mut TerrainMeshData,map:&str,
+    cells:&[&VisualTile],shapes:&[CellShape],g:&GridGeometry,origin:[i32;2],
+    datum:Option<&crystal_render_api::VisualTerraceDatum>,
+    regions:&[crystal_render_api::VisualSourceRegion]) {
     {
         let _trace = crate::loading_trace::span("region.rock_sculpt_rims", || serde_json::json!({}));
         sculpt_rock_rims_on_map(mesh, map, cells, shapes, g, origin);
@@ -96,9 +103,9 @@ pub(super) fn finish_rock_geometry(mesh: &mut TerrainMeshData, map: &str,
         let _trace = crate::loading_trace::span("region.rock_round_contacts", || serde_json::json!({}));
         super::rock_bases::round_geometry(mesh, map, cells, shapes, g, origin);
     }
-    super::outdoor_mountains::finish(mesh, map, cells, shapes, g, origin,datum);
+    super::outdoor_mountains::finish_with_source_regions(mesh,map,cells,shapes,g,origin,datum,regions);
     // Project backing from the final cap, including its mountain relief.
-    super::outdoor_mountains::append_reveal_floor(mesh, map, cells, shapes, g, origin);
+    super::outdoor_mountains::append_reveal_floor_with_source_regions(mesh,map,cells,shapes,g,origin,regions);
     {
         let _trace = crate::loading_trace::span("region.rock_finish_normals", || serde_json::json!({}));
         mineral_normals(&mut mesh.solid);
@@ -151,10 +158,10 @@ pub(super) fn sculpt_rock_rims(
 
 pub(super) fn sculpt_rock_rims_on_map(mesh: &mut TerrainMeshData, map: &str,
     cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32;2]) {
-    // Retain a broad weathered cap instead of eroding both sides into a thin
-    // blade. Blackthorn's short adjoining beds keep their existing full crest
-    // so projected samples remain ordered through those narrow joins.
-    let recession=if map=="BlackthornCity" {0.0}else{0.28};
+    // Restore the mineral shoulder's original recession. The shallower cut
+    // retained an upright rim around the lowered cap. Blackthorn's short
+    // adjoining beds still need their existing full crest to keep joins ordered.
+    let recession=if map=="BlackthornCity" {0.0}else{0.48};
     sculpt_rock_rims_with_edge_index(mesh,cells,shapes,g,origin,true,recession);
 }
 
@@ -168,7 +175,7 @@ pub(super) fn sculpt_rock_rims_reference(mesh: &mut TerrainMeshData,
 pub(super) fn sculpt_rock_rims_reference_on_map(mesh: &mut TerrainMeshData, map: &str,
     cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry, origin: [i32;2]) {
     sculpt_rock_rims_with_edge_index(mesh,cells,shapes,g,origin,false,
-        if map=="BlackthornCity" {0.0}else{0.28});
+        if map=="BlackthornCity" {0.0}else{0.48});
 }
 
 struct CapTriangle {
@@ -584,15 +591,19 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
     // apart. Require the complete native mouth, not a tile number alone.
     let portals: Vec<_> = cells.iter().enumerate().filter_map(|(i,cell)| {
         let source=&cell.source;
-        if source.tileset_id.as_ref()!="kanto" || !matches!(source.metatile_id,0x06|0x70)
-            || source.subtile_column!=0 || source.subtile_row!=2 {return None;}
+        let (column,art)=match source.tileset_id.as_ref() {
+            "kanto" if matches!(source.metatile_id,0x06|0x70)=>(0,[[0x48,0x49],[0x58,0x59]]),
+            "johto" if source.metatile_id==0x73=>(0,[[0x46,0x47],[0x56,0x57]]),
+            "johto_modern" if source.metatile_id==0x73=>(2,[[0x45,0x22],[0x27,0x28]]),
+            _=>return None,
+        };
+        if source.subtile_column!=column || source.subtile_row!=2 {return None;}
         let (x,z)=(i%g.width,i/g.width);
         if x+2>g.width || z+2>g.height {return None;}
-        let art=[[0x48,0x49],[0x58,0x59]];
         if !(0..2).all(|dz|(0..2).all(|dx| {
             let s=&cells[(z+dz)*g.width+x+dx].source;
             s.tileset_id==source.tileset_id && s.metatile_id==source.metatile_id
-                && s.subtile_column==dx as u8 && s.subtile_row==2+dz as u8 && s.tile_index==art[dz][dx]
+                && s.subtile_column==column+dx as u8 && s.subtile_row==2+dz as u8 && s.tile_index==art[dz][dx]
         })) {return None;}
         let (w,_,n,_)=g.bounds(x,z);let (_,e,_,s)=g.bounds(x+1,z+1);
         Some((w,e,n,s))
@@ -604,7 +615,7 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
     // A sixth-cell wall/cap sample can differ by a float ULP. Mountain
     // coordinates need a tolerance comfortably below their mesh spacing,
     // rather than a decimal boundary that splits the same authored sample.
-    let sample_scale=if crest_recession<0.48 {100.}else{10000.};
+    let sample_scale=100.;
     // Authored cap samples include the identical endpoints on adjoining
     // wall faces. Classify before any bevel lowers their height; using the
     // rounded height here misclassified the cap shoulder as lower wall.
@@ -639,6 +650,17 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
         // shoulder constraint and open a slit. Reuse the position field at
         // source precision, without joining the distinct material/normal data.
         let source_key = s.positions[i].map(|value| (value * sample_scale).round() as i64);
+        if let Some((position, changed)) = shared_positions.get(&source_key) {
+            // Evaluate the deformation once for the authored sample. A later
+            // wall copy can lie across a float constraint even when its cap
+            // copy has already moved; merging only newly changed axes leaves
+            // the earlier copy behind and opens a visible slit.
+            // Axes untouched by the field retain their exact source contact.
+            for axis in 0..3 {
+                if changed[axis] { s.positions[i][axis] = position[axis]; }
+            }
+            continue;
+        }
         let source_point = Vec3::new(
             p.x + origin[0] as f32 * g.tile_width - g.origin_x,
             p.y,
@@ -931,19 +953,8 @@ fn sculpt_rock_rims_with_edge_index(mesh: &mut TerrainMeshData,
         // Exact source floor contacts, protected inside edges and unexposed
         // viewport interiors keep their own authored coordinates. Only the
         // deformed shoulder samples need a common evaluated position.
-        if s.positions[i] != p.to_array() {
-            let changed = [0, 1, 2].map(|axis| s.positions[i][axis] != p[axis]);
-            let (position, shared_axes) = shared_positions.entry(source_key)
-                .or_insert((s.positions[i], changed));
-            for axis in 0..3 {
-                if changed[axis] && shared_axes[axis] {
-                    s.positions[i][axis] = position[axis];
-                } else if changed[axis] {
-                    position[axis] = s.positions[i][axis];
-                    shared_axes[axis] = true;
-                }
-            }
-        }
+        let changed = [0, 1, 2].map(|axis| s.positions[i][axis] != p[axis]);
+        shared_positions.insert(source_key, (s.positions[i], changed));
     }
 }
 
@@ -1066,6 +1077,13 @@ fn joined_normals(s: &mut SurfaceMeshData, crease: f32) {
                 .fold(Vec3::ZERO, |sum, (normal, angle, _)| sum + *normal * *angle);
             if normal.length_squared() > 0.0001 {
                 s.normals[i] = normal.normalize().to_array();
+            } else {
+                // A shared quad corner can straddle two steep faces whose
+                // normals both lie outside the crease around their average.
+                // Keep its actual angle-weighted direction in that case;
+                // retaining the old cap normal draws an upward-facing spike
+                // at every diagonal grid step along a mountain ridge.
+                s.normals[i] = reference.to_array();
             }
         }
     }
@@ -1176,8 +1194,9 @@ fn append_with_pigment(
         origin[1] as f32 * g.tile_height - g.origin_z,
     );
     let normal = Vec3::from_array(n);
+    let unchipped = |u: f32, v: f32| p[0].lerp(p[3], u).lerp(p[1].lerp(p[2], u), v);
     let point = |u: f32, v: f32| {
-        let q = p[0].lerp(p[3], u).lerp(p[1].lerp(p[2], u), v);
+        let q = unchipped(u, v);
         if normal.y.abs() > 0.3 || u == 0. || u == 1. || v == 0. || v == 1. {
             // sin(PI) is not exactly zero in f32. Keep shared endpoints
             // bit-identical instead of introducing microscopic wall slits.
@@ -1256,11 +1275,16 @@ fn append_with_pigment(
                     0.0
                 };
                 let mut q = point(u, v);
-                if aligned { q[axis] = along - offset[axis]; }
+                let mut source = unchipped(u, v);
+                if aligned {
+                    q[axis] = along - offset[axis];
+                    source[axis] = along - offset[axis];
+                }
                 // Preserve the shared world ring exactly. Reconstructing Y
                 // through differently based lerps yields unequal seam bits.
                 q.y = level.clamp(bottom.min(top), bottom.max(top));
-                q
+                source.y = q.y;
+                (q, source)
             };
             let quad = if wall {
                 let lower = height_rings[row];
@@ -1284,8 +1308,10 @@ fn append_with_pigment(
                     point(u, v + step),
                     point(end_u, v + step),
                     point(end_u, v),
-                ]
+                ].map(|q| (q, q))
             };
+            let source_quad = quad.map(|(_, source)| source);
+            let quad = quad.map(|(q, _)| q);
             let area = (quad[1] - quad[0]).cross(quad[2] - quad[0])
                 + (quad[2] - quad[0]).cross(quad[3] - quad[0]);
             if area.length_squared() < 0.0000001 {
@@ -1296,8 +1322,12 @@ fn append_with_pigment(
                 s,
                 quad.map(|p| p.to_array()),
                 face.to_array(),
-                quad.map(|p| {
-                    let world = p + offset;
+                source_quad.map(|source| {
+                    // Use the analytic source before chipping or axis snaps.
+                    // Projecting a chipped diagonal wall back onto its plane
+                    // retains tangential drift from the axis snap, splitting
+                    // one source column across successive height rings.
+                    let world = source + offset;
                     [-10000.0 - world.x, -texture_tag - world.z]
                 }),
                 quad.map(|p| pigment(p + offset, face)),
@@ -1309,6 +1339,18 @@ fn append_with_pigment(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn chipped_wall_samples_retain_their_cap_column() {
+        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,
+            origin_x:0.,origin_z:0.};
+        let mut wall=SurfaceMeshData::default();
+        append_canyon(&mut wall,[[16.,0.,0.],[16.,32.,0.],[16.,32.,24.],[16.,0.,24.]],
+            Vec3::X.to_array(),&g,[11,-7]);
+        assert!(wall.positions.iter().any(|p|p[0]>16.01),"retain actual chipped wall relief");
+        assert!(wall.uvs.iter().all(|uv|uv[0]==-10000.-16.-11.*g.tile_width),
+            "every wall height ring must use the source plane shared with its cap");
+    }
 
     #[test]
     fn adjoining_mineral_walls_share_every_authored_ledge_floor_sample() {
@@ -1427,6 +1469,12 @@ mod tests {
 
     #[test]
     #[ignore = "requires a completed external CRYSTAL_RENDER_TEST_PACK"]
+    fn external_route44_cap_wall_samples_stay_closed_after_mountain_relief() {
+        check_external_rock_caps(&["Route44"],1_000);
+    }
+
+    #[test]
+    #[ignore = "requires a completed external CRYSTAL_RENDER_TEST_PACK"]
     fn external_kanto_mountain_shoulders_retain_caps_and_support() {
         check_external_rock_caps(&["CeruleanCity","Route24","Route25","Route10North",
             "CinnabarIsland"],1_000);
@@ -1504,28 +1552,48 @@ mod tests {
             finish_rock_geometry(&mut mesh, map, &cells, &shapes, &g, [0,0],None);
             assert_eq!(mesh.footing_heights, footing, "{map} source support changed");
             assert!(mesh.authored_cells.iter().all(Option::is_none), "{map} claims changed");
-            if map=="BlackthornCity" {
-                let mut groups=HashMap::<[i64;3],(Vec3,Vec3,bool,bool)>::new();
-                for &i in &mesh.solid.indices {
-                    let i=i as usize;
-                    if i>=original_positions.len() || mesh.solid.uvs[i][0]>=-9000. {continue;}
-                    let key=original_positions[i].map(|v|(v*100.).round() as i64);
-                    let p=Vec3::from_array(mesh.solid.positions[i]);
-                    let cap=original_normals[i][1]>0.9;
-                    let entry=groups.entry(key).or_insert((p,p,false,false));
-                    entry.0=entry.0.min(p);entry.1=entry.1.max(p);
-                    entry.2|=cap;entry.3|=!cap;
+            if matches!(map,"BlackthornCity"|"Route44") {
+                type Join=(Vec3,Vec3,bool,HashMap<[i32;2],Vec3>);
+                let mut groups=HashMap::<[i64;2],Join>::new();
+                for tri in mesh.solid.indices.chunks_exact(3) {
+                    let ids=[tri[0] as usize,tri[1] as usize,tri[2] as usize];
+                    if ids.iter().any(|&i|i>=original_positions.len() || mesh.solid.uvs[i][0]>=-9000.) {continue;}
+                    let source=ids.map(|i|super::super::mineral_coords::point(
+                        original_positions[i],mesh.solid.uvs[i],&g,[0,0],&[]));
+                    let normal=Vec3::from_array(original_normals[ids[0]]);
+                    let cap=normal.y>0.9;
+                    let inside=Vec2::new(normal.x,normal.z).normalize_or_zero()*0.01;
+                    let owner=(source.into_iter().sum::<Vec2>()/3.-inside).floor().as_ivec2().to_array();
+                    for (i,point) in ids.into_iter().zip(source) {
+                        let key=point.to_array().map(|v|(v*600.).round() as i64);
+                        let p=Vec3::from_array(mesh.solid.positions[i]);
+                        let entry=groups.entry(key).or_insert((Vec3::splat(f32::INFINITY),
+                            Vec3::splat(f32::NEG_INFINITY),false,HashMap::new()));
+                        if cap {entry.0=entry.0.min(p);entry.1=entry.1.max(p);entry.2=true;}
+                        else {
+                            let top=entry.3.entry(owner).or_insert(p);
+                            if p.y>top.y {*top=p;}
+                        }
+                    }
                 }
                 let mut shared=0;
-                for (key,(low,high,cap,wall)) in groups {
-                    if cap && wall {
+                // Complete-body fitting changes each native course's vertical
+                // parameterization. A former lower cap may have intersected a
+                // taller wall halfway up; its new edge must meet that wall's
+                // actual top, rather than the old middle height ring.
+                for (key,(low,high,cap,walls)) in groups {
+                    if cap && !walls.is_empty() {
                         assert!((high-low).max_element()<0.001,
-                            "{map} cap/wall seam split at {key:?}: {low:?}..{high:?}");
-                        shared+=1;
+                            "{map} cap copies split at {key:?}: {low:?}..{high:?}");
+                        for (owner,top) in walls {
+                            assert!(top.distance(high)<0.001,
+                                "{map} cap/wall top split at {key:?} for face {owner:?}: {high:?} != {top:?}");
+                            shared+=1;
+                        }
                     }
                 }
                 assert!(shared>100,"the real layout must exercise cap/wall joins");
-                println!("{map}: {shared} shared cap/wall samples checked");
+                println!("{map}: {shared} source cap/wall top joins checked");
             }
             let mut caps = 0;
             for ids in mesh.solid.indices.chunks_exact(3) {
@@ -1774,6 +1842,31 @@ mod tests {
                     assert_eq!(mesh.normals[i], mesh.normals[0]);
                 }
             }
+        }
+    }
+
+    #[test]
+    fn shared_steep_cap_corners_never_retain_the_flat_authored_normal() {
+        for scale in [1., 32.] {
+            let mut mesh = SurfaceMeshData::default();
+            mesh.positions = [Vec3::ZERO, Vec3::Z, Vec3::new(1., 2., 1.), Vec3::X]
+                .map(|p| (p * scale).to_array()).to_vec();
+            mesh.normals = vec![[0., 1., 0.]; 4];
+            mesh.uvs = vec![[-10000., -40000.]; 4];
+            mesh.colors = vec![[0.35, 0.245, 0.12, 1.]; 4];
+            mesh.indices = vec![0, 1, 2, 0, 2, 3];
+            let original = mesh.clone();
+            mineral_normals(&mut mesh);
+            let ridge = Vec3::new(-1., 1., -1.).normalize();
+            for i in [0, 2] {
+                assert!(Vec3::from_array(mesh.normals[i]).dot(ridge) > 0.99999,
+                    "a steep shared corner needs its geometric direction, not a flat cap normal");
+            }
+            assert!(mesh.normals.iter().all(|n| Vec3::from_array(*n).is_normalized()));
+            assert_eq!(mesh.positions, original.positions);
+            assert_eq!(mesh.uvs, original.uvs);
+            assert_eq!(mesh.colors, original.colors);
+            assert_eq!(mesh.indices, original.indices);
         }
     }
 

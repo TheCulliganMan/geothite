@@ -4883,9 +4883,14 @@ fn resolved_visual_render_source_at<'a>(sources: &'a [ResolvedRenderSource<'a>],
     -> (&'a ResolvedRenderSource<'a>,i32,i32) {
     let (source,sx,sy)=resolved_render_source_at(sources,x,y);
     if (0..source.width).contains(&sx) && (0..source.height).contains(&sy) {return (source,sx,sy);}
+    // Unknown continuation still uses native border art, but a whole 4x4
+    // drawing must have one owner. Per-cell nearest-map selection can cut a
+    // diagonal through a tree and leave three sprite cells floating at sea.
+    let sample_x=x.div_euclid(4)*4+2;
+    let sample_y=y.div_euclid(4)*4+2;
     let source=sources.iter().min_by_key(|s| {
-        let dx=(s.origin_x-x).max(0)+(x-(s.origin_x+s.width-1)).max(0);
-        let dy=(s.origin_y-y).max(0)+(y-(s.origin_y+s.height-1)).max(0);
+        let dx=(s.origin_x-sample_x).max(0)+(sample_x-(s.origin_x+s.width-1)).max(0);
+        let dy=(s.origin_y-sample_y).max(0)+(sample_y-(s.origin_y+s.height-1)).max(0);
         (dx+dy,s.map.map_name.as_str())
     }).expect("render source always has a base map");
     (source,x-source.origin_x,y-source.origin_y)

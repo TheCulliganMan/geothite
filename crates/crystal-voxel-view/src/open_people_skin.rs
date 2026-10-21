@@ -35,10 +35,15 @@ pub(crate) struct Gpu {
     material: Handle<StandardMaterial>,
     remote: Handle<StandardMaterial>,
     binds: Handle<SkinnedMeshInverseBindposes>,
+    source_binds: Handle<SkinnedMeshInverseBindposes>,
+    arm_deformation: Option<Arc<crate::arm_deformation::Recipe>>,
+    shoe_support: Arc<crate::human_locomotion::ShoeSupport>,
     bounds: (Vec3,Vec3),
     head: Option<AccessoryGpu>,
     costume: Option<AccessoryGpu>,
     backpack: Option<AccessoryGpu>,
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    live_drape: Option<(Arc<crate::garment_drape_trial::live::Template>, Handle<SkinnedMeshInverseBindposes>)>,
 }
 #[derive(Clone)]
 struct AccessoryGpu {
@@ -53,10 +58,21 @@ pub(crate) mod worker_wire;
 /// CPU-only final appearance. No asset handles or ECS state cross this boundary.
 pub(crate) struct PreparedAppearance {
     mesh: Mesh,
+    arm_deformation: Option<Arc<crate::arm_deformation::Recipe>>,
     bounds: (Vec3, Vec3),
     head: Option<Mesh>,
     costume: Option<Mesh>,
     backpack: Option<Mesh>,
+}
+#[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+impl PreparedAppearance {
+    pub(crate) fn review_body(&self) -> &Mesh { &self.mesh }
+    pub(crate) fn review_arm_deformation(&self) -> Option<&crate::arm_deformation::Recipe> {
+        self.arm_deformation.as_deref()
+    }
+    pub(crate) fn review_drape_meshes(&mut self) -> (&Mesh, &mut Mesh) {
+        (&self.mesh, self.costume.as_mut().expect("review garment mesh"))
+    }
 }
 pub(crate) type PreparedAppearances = Arc<std::sync::Mutex<HashMap<(&'static str, CharacterKind), PreparedAppearance>>>;
 
@@ -83,9 +99,6 @@ pub(crate) fn prepare_appearance(rig: &PersonRig, kind: CharacterKind) -> Prepar
         | CharacterKind::SwimmerGuy | CharacterKind::SwimmerGirl | CharacterKind::Twin) {
         crate::head_surface::adventure_profile(&rig, &mut body, &mut body_joints, &mut body_weights);
     }
-    if matches!(kind, CharacterKind::Trainer | CharacterKind::TrainerFemale | CharacterKind::Receptionist) {
-        crate::head_surface::player_profile(&rig, &mut body, &body_joints, &body_weights);
-    }
     if matches!(kind, CharacterKind::Kurt | CharacterKind::KurtOutside) {
         // Keep Kurt's drawn eyes, nose, mouth and forehead in place.
         // Extra refinement is restricted to the established jaw/nape
@@ -95,7 +108,9 @@ pub(crate) fn prepare_appearance(rig: &PersonRig, kind: CharacterKind) -> Prepar
         }
         crate::head_surface::nape_normals(&rig, &mut body, &body_joints, &body_weights);
     }
+    let face_frame=crate::face_volume::Frame::new(&rig,&body,&body_joints,&body_weights);
     let hair_extension=crate::hair_shapes::sculpt(&rig,&mut body,&mut body_joints,&mut body_weights,look);
+    crate::face_volume::sculpt(&rig,look,face_frame,&mut body,&mut body_joints,&mut body_weights);
     crate::npc_appearance::shorts_body(&rig,&mut body,&mut body_joints,&mut body_weights,look);
     crate::kimono_sleeves::sculpt(&mut body,&mut body_joints,&mut body_weights,look);
     crate::garment_body::cover(&mut body,&mut body_joints,&mut body_weights,look);
@@ -104,35 +119,66 @@ pub(crate) fn prepare_appearance(rig: &PersonRig, kind: CharacterKind) -> Prepar
     crate::painted_torso::avoid_shirt_gutter(&mut body, look, &mut body_joints, &mut body_weights);
     crate::painted_torso::map_front(&mut body, look, &mut body_joints, &mut body_weights);
     crate::painted_torso::long_sleeves(&mut body, &mut body_joints, &mut body_weights, look);
-    if matches!(look.texture_key, "red" | "misty" | "brock" | "pokefan_m" | "nurse") {
+    if crate::painted_torso::has_short_sleeves(look) {
         crate::painted_torso::short_sleeves(&mut body, &mut body_joints, &mut body_weights, look);
     }
     crate::bare_body::sculpt(&rig, &mut body, &mut body_joints, &mut body_weights, look);
     crate::footwear::adapt(&mut body,&mut body_joints,&mut body_weights,look);
     crate::handwear::adapt(&rig, &mut body, &mut body_joints, &mut body_weights, look);
-    // Offline review only: inspect the final production surface rather
-    // than diagnosing altered normals from the original GLB alone.
+    crate::arm_surface::round(&rig, &mut body, &mut body_joints, &mut body_weights);
+    let mut arm_reference=body.positions.clone();
+    crate::arm_surface::root_shape::finish(&rig,&mut body,&body_joints,&body_weights);
+    #[cfg(all(feature="people-review",not(target_arch="wasm32")))]
+    let late_normals=std::env::var_os("CRYSTAL_PEOPLE_REVIEW_LATE_ARM_NORMALS").is_some();
+    #[cfg(not(all(feature="people-review",not(target_arch="wasm32"))))]
+    let late_normals=false;
+    if !late_normals {
+        // Finish the smooth field on the curved surface, then interpolate it
+        // through collinear splits. Rebuilding normals on planar subfaces
+        // hardens the original cage's diagonal fans into visible facets.
+        crate::arm_surface::finish_normals(&rig,&mut body,&body_joints,&body_weights);
+        crate::bare_body::finish_normals(&mut body, look);
+        crate::kimono_sleeves::finish_normals(&mut body,look);
+    }
+    crate::arm_skin::refine_reference(&rig, &mut body, &mut body_joints, &mut body_weights,&mut arm_reference);
+    drop(arm_reference);
+    if late_normals {
+        crate::arm_surface::finish_normals(&rig,&mut body,&body_joints,&body_weights);
+        crate::bare_body::finish_normals(&mut body, look);
+        crate::kimono_sleeves::finish_normals(&mut body,look);
+    }
     #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
     if let Some(directory) = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_MESHES") {
         let directory = std::path::PathBuf::from(directory);
-        std::fs::create_dir_all(&directory).expect("create mesh review directory");
-        let snapshot = serde_json::json!({
-            "positions": body.positions,
-            "normals": body.normals,
-            "uvs": body.uvs,
-            "indices": body.indices,
-            "joints": body_joints,
-            "weights": body_weights,
-        });
-        std::fs::write(directory.join(format!("{}.json", look.texture_key)),
-            serde_json::to_vec(&snapshot).expect("encode review mesh"))
-            .expect("write review mesh");
+        std::fs::create_dir_all(&directory).expect("create arm input review directory");
+        std::fs::write(directory.join(format!("{}.unfitted.json", look.texture_key)),
+            serde_json::to_vec(&serde_json::json!({
+                "positions":body.positions,"normals":body.normals,"uvs":body.uvs,
+                "colors":body.colors,"cutaway_ranges":body.cutaway_ranges,
+                "indices":body.indices,"joints":body_joints,"weights":body_weights,
+            })).expect("encode arm fitting inputs"))
+            .expect("write arm fitting inputs");
     }
+    crate::arm_skin::fit(&rig, &body, &mut body_joints, &mut body_weights);
+    crate::painted_torso::cuffs::finish(&mut body, &mut body_joints, &mut body_weights, look);
+    crate::people_mesh::compact(&mut body,&mut body_joints,&mut body_weights);
+    let hair_bounds = crate::hair_curtain::append(
+        rig,
+        kind,
+        HEAD_SCALE,
+        &mut body,
+        &mut body_joints,
+        &mut body_weights,
+    );
     // Walking and mounted instances share GPU resources. Include both
     // envelopes even when the first instance happens to be on foot.
     let locomotion_bounds = rig.locomotion_bounds();
     let mut bounds = (locomotion_bounds.0-Vec3::splat(hair_extension),
         locomotion_bounds.1+Vec3::splat(hair_extension));
+    if let Some(hair) = hair_bounds {
+        bounds.0 = bounds.0.min(hair.min);
+        bounds.1 = bounds.1.max(hair.max);
+    }
     if matches!(kind, CharacterKind::Trainer | CharacterKind::TrainerFemale | CharacterKind::Biker) {
         let scale = Vec3::new(look.height / rig.height * look.width,
             look.height / rig.height, look.height / rig.height);
@@ -141,13 +187,46 @@ pub(crate) fn prepare_appearance(rig: &PersonRig, kind: CharacterKind) -> Prepar
         bounds.0 = bounds.0.min(mounted.0);
         bounds.1 = bounds.1.max(mounted.1);
     }
+    // Build the sparse blend palette off the interactive frame thread, with
+    // the rest of the appearance. Worker transport retains the same recipe.
+    #[allow(unused_mut)]
+    let mut arm_blends = true;
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_ARM_MATRIX_SKIN").is_some()
+        || std::env::var_os("CRYSTAL_PEOPLE_REVIEW_DQ_SKIN").is_some() {
+        arm_blends = false;
+    }
+    let arm_deformation = arm_blends.then(|| Arc::new(crate::arm_deformation::Recipe::prepare(
+        rig, &body, &mut body_joints, &mut body_weights)));
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    if let Some(directory) = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_EXPORT_MESHES") {
+        let directory = std::path::PathBuf::from(directory);
+        std::fs::create_dir_all(&directory).expect("create mesh review directory");
+        let snapshot = serde_json::json!({
+            "positions": body.positions, "normals": body.normals, "uvs": body.uvs,
+            "colors":body.colors,"cutaway_ranges":body.cutaway_ranges,
+            "indices": body.indices, "joints": body_joints, "weights": body_weights,
+            "arm_deformation": arm_deformation.as_deref(),
+        });
+        std::fs::write(directory.join(format!("{}.json", look.texture_key)),
+            serde_json::to_vec(&snapshot).expect("encode review mesh")).expect("write review mesh");
+    }
+    let head = crate::npc_appearance::head_mesh_on_body(&rig,look,&body).map(|mut mesh| {
+        // Falkner's fringe is already fitted against this prepared surface.
+        if look.texture_key!="falkner" {crate::face_volume::attachment(&rig,look,face_frame,&mut mesh);}
+        mesh.into_mesh()
+    });
     let mut mesh = body.into_mesh();
     mesh.insert_attribute(
         Mesh::ATTRIBUTE_JOINT_INDEX,
         VertexAttributeValues::Uint16x4(body_joints),
     );
     mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, body_weights);
-        let head = crate::npc_appearance::head_mesh(&rig, look).map(|mesh| mesh.into_mesh());
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    if crate::garment_drape_trial::local_body()
+        || std::env::var_os("CRYSTAL_PEOPLE_REVIEW_DQ_SKIN").is_some() {
+        mesh.asset_usage |= bevy::asset::RenderAssetUsages::MAIN_WORLD;
+    }
         let costume = crate::npc_appearance::costume_mesh(&rig, look)
             .map(|costume| {
                 #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
@@ -178,7 +257,7 @@ pub(crate) fn prepare_appearance(rig: &PersonRig, kind: CharacterKind) -> Prepar
                 mesh
             });
         let backpack = crate::npc_appearance::backpack_mesh(&rig, look).map(|mesh| mesh.into_mesh());
-    PreparedAppearance { mesh, bounds, head, costume, backpack }
+    PreparedAppearance { mesh, arm_deformation, bounds, head, costume, backpack }
 }
 fn accessory_mesh_gpu(mesh: Mesh, meshes: &mut Assets<Mesh>,
     materials: &mut Assets<StandardMaterial>) -> AccessoryGpu {
@@ -193,6 +272,7 @@ fn accessory_mesh_gpu(mesh: Mesh, meshes: &mut Assets<Mesh>,
         material: materials.add(material), remote: materials.add(ghost) }
 }
 pub(crate) struct Person {
+    arm_skin: Option<ArmInstance>,
     pub run_blend: f32,
     locomotion: crate::human_locomotion::HumanLocomotion,
     idle_motion: crate::human_idle::HumanIdle,
@@ -214,15 +294,30 @@ pub(crate) struct Person {
     run: Vec<Transform>,
     posed: Vec<Transform>,
 }
+struct ArmInstance {
+    recipe: Arc<crate::arm_deformation::Recipe>,
+    nodes: Vec<Entity>,
+    posed: Vec<Transform>,
+}
 impl PeopleGpu {
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    pub(crate) fn review_frozen_arm_skin(&self, kind: CharacterKind, rig: &PersonRig,
+        palette: &[Mat4], meshes: &mut Assets<Mesh>) {
+        let gpu = self.0.get(&(crate::npc_appearance::look(kind).base, kind)).unwrap();
+        crate::arm_deformation::freeze(rig,&mut meshes.get_mut(&gpu.mesh).expect("retained DQ preview body"),palette);
+    }
     #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
     pub(crate) fn review_frozen_drape(&self, kind: CharacterKind, rig: &PersonRig,
         palette: &[Mat4], meshes: &mut Assets<Mesh>) {
         let look = crate::npc_appearance::look(kind);
-        if crate::garment_body::hem(look).is_none() { return; }
-        let costume = self.0.get(&(look.base, kind)).unwrap().costume.as_ref().unwrap();
+        if crate::garment_body::hem(look).is_none() || look.costume == "hakama" { return; }
+        let gpu = self.0.get(&(look.base, kind)).unwrap();
+        let costume = gpu.costume.as_ref().unwrap();
+        let body = (crate::garment_drape_trial::local_body())
+            .then(|| crate::garment_drape_trial::body_collision(meshes.get(&gpu.mesh)
+                .expect("local cloth trial retains the final body"), rig, palette));
         crate::garment_drape_trial::freeze(look.texture_key, rig,
-            &mut meshes.get_mut(&costume.mesh).unwrap(), palette);
+            &mut meshes.get_mut(&costume.mesh).unwrap(), palette, body);
     }
     pub(super) fn retain_kinds(&mut self, kinds: &std::collections::HashSet<CharacterKind>) {
         self.0.retain(|(_, kind), _| kinds.contains(kind));
@@ -245,8 +340,13 @@ impl PeopleGpu {
             let painting = crate::npc_textures::get(look.texture_key)
                 .expect("required production character painting");
             let staged = prepared.lock().expect("prepared actor lock").remove(&(name, kind));
-            let PreparedAppearance { mesh, bounds, head, costume, backpack } =
+            let PreparedAppearance { mesh, arm_deformation, bounds, head, costume, backpack } =
                 staged.unwrap_or_else(|| prepare_appearance(&rig, kind));
+            let Some(VertexAttributeValues::Float32x3(positions)) = mesh.attribute(Mesh::ATTRIBUTE_POSITION) else { panic!("prepared feet require positions"); };
+            let Some(VertexAttributeValues::Uint16x4(ids)) = mesh.attribute(Mesh::ATTRIBUTE_JOINT_INDEX) else { panic!("prepared feet require skin indices"); };
+            let Some(VertexAttributeValues::Float32x4(weights)) = mesh.attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT) else { panic!("prepared feet require skin weights"); };
+            let shoe_support = Arc::new(crate::human_locomotion::ShoeSupport::from_surface(
+                rig, positions, ids, weights));
             // The validated painting catalog is immutable. Different body
             // rigs can share its exact pixels without sharing their geometry.
             let texture = textures.entry(look.texture_key).or_insert_with(|| {
@@ -266,15 +366,36 @@ impl PeopleGpu {
                 alpha_mode: AlphaMode::Blend,
                 ..material.clone()
             };
+            let mut costume = costume;
+            #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+            let live_drape = (crate::garment_drape_trial::live::enabled()
+                && crate::garment_body::hem(look).is_some()).then(|| {
+                let template = Arc::new(crate::garment_drape_trial::live::Template::new(
+                    look, rig, costume.as_mut().expect("live garment mesh")));
+                let palette = binds.add(template.binds(rig));
+                (template, palette)
+            });
+            let source_binds=binds.add(SkinnedMeshInverseBindposes::from(rig.inverse_binds.clone()));
+            let body_binds=if let Some(recipe)=&arm_deformation {
+                assert_eq!(recipe.original_count(),rig.skin_nodes.len());
+                let mut palette=rig.inverse_binds.clone();
+                palette.resize(palette.len()+recipe.helper_count(),Mat4::IDENTITY);
+                binds.add(SkinnedMeshInverseBindposes::from(palette))
+            } else {source_binds.clone()};
             Gpu {
                 bounds,
                 mesh: meshes.add(mesh),
                 material: materials.add(material),
                 remote: materials.add(ghost),
-                binds: binds.add(SkinnedMeshInverseBindposes::from(rig.inverse_binds.clone())),
+                binds: body_binds,
+                source_binds,
+                arm_deformation,
+                shoe_support,
                 head: head.map(|mesh| accessory_mesh_gpu(mesh, meshes, materials)),
                 costume: costume.map(|mesh| accessory_mesh_gpu(mesh, meshes, materials)),
                 backpack: backpack.map(|mesh| accessory_mesh_gpu(mesh, meshes, materials)),
+                #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+                live_drape,
             }
         });
     }
@@ -350,6 +471,11 @@ impl PeopleGpu {
                     let mut mesh = costume.surface.into_mesh();
                     mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_INDEX, VertexAttributeValues::Uint16x4(costume.joints));
                     mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, costume.weights);
+                    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+                    if crate::garment_drape_trial::live::enabled() && crate::garment_body::hem(look).is_some() {
+                        let template = Arc::new(crate::garment_drape_trial::live::Template::new(look, &rig, &mut mesh));
+                        variant.live_drape = Some((template.clone(), binds.add(template.binds(&rig))));
+                    }
                     accessory_mesh_gpu(mesh, meshes, materials)
                 });
                 variant
@@ -373,7 +499,8 @@ impl PeopleGpu {
             }
             Some(node)
         })).collect::<Vec<_>>();
-        let locomotion = crate::human_locomotion::HumanLocomotion::for_character(&rig, kind);
+        let locomotion = crate::human_locomotion::HumanLocomotion::with_support(
+            &rig, kind, gpu.shoe_support.clone());
         let idle_motion = crate::human_idle::HumanIdle::new(&rig, kind);
         let mut idle = rig.nodes.clone();
         idle_motion.sample(&rig, &locomotion, 0., &mut idle);
@@ -411,6 +538,18 @@ Transform::from_xyz(0.0, -rig.floor, 0.0),),
                 .entity(rig.parents[i].map(|p| nodes[p]).unwrap_or(pivot))
                 .add_child(entity);
         }
+        let arm_skin=gpu.arm_deformation.as_ref().map(|recipe| {
+            let mut posed=Vec::with_capacity(recipe.helper_count());
+            recipe.update(&rig,&idle,&mut posed);
+            let helpers: Vec<_>=posed.iter().map(|pose| {
+                let entity=commands.spawn((Visibility::default(),*pose,ModeledActor)).id();
+                commands.entity(nodes[rig.mesh_node]).add_child(entity);
+                entity
+            }).collect();
+            ArmInstance{recipe:recipe.clone(),nodes:helpers,posed}
+        });
+        let mut skin_joints: Vec<_>=rig.skin_nodes.iter().map(|&i|nodes[i]).collect();
+        if let Some(arm)=&arm_skin {skin_joints.extend_from_slice(&arm.nodes);}
         commands.entity(nodes[rig.mesh_node]).insert((
             (Mesh3d(gpu.mesh.clone()),
 MeshMaterial3d(if remote {
@@ -425,7 +564,7 @@ presented[rig.mesh_node],),
             NotShadowReceiver,
             SkinnedMesh {
                 inverse_bindposes: gpu.binds.clone(),
-                joints: rig.skin_nodes.iter().map(|&i| nodes[i]).collect(),
+                joints: skin_joints,
             },
             Aabb::from_min_max(
                 gpu.bounds.0 - Vec3::splat(0.02),
@@ -447,13 +586,21 @@ MeshMaterial3d(if remote { pack.remote.clone() } else { pack.material.clone() })
         if let Some(costume) = &gpu.costume {
             let accessory = commands.spawn(((Mesh3d(costume.mesh.clone()),
 MeshMaterial3d(if remote { costume.remote.clone() } else { costume.material.clone() }),), SkinnedMesh {
-                inverse_bindposes: gpu.binds.clone(),
+                inverse_bindposes: gpu.source_binds.clone(),
                 joints: rig.skin_nodes.iter().map(|&i| nodes[i]).collect(),
             }, Aabb::from_min_max(rig.bounds.0-Vec3::splat(0.6), rig.bounds.1+Vec3::splat(0.6)), NoAutoAabb,
                 ModeledActor, NotShadowReceiver, RenderLayers::layer(VOXEL_RENDER_LAYER))).id();
             commands.entity(nodes[rig.mesh_node]).add_child(accessory);
+            #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+            if let Some((template, palette)) = &gpu.live_drape {
+                let (skin, instance) = crate::garment_drape_trial::live::spawn(template.clone(), rig.clone(),
+                    gpu.mesh.clone(), palette.clone(), rig.skin_nodes.iter().map(|&i| nodes[i]).collect(),
+                    accessory, commands);
+                commands.entity(accessory).insert((skin, instance));
+            }
         }
         Person {
+            arm_skin,
             run_blend: 0.0,
             locomotion,
             idle_motion,
@@ -487,9 +634,14 @@ impl Person {
                 .unwrap_or(Mat4::IDENTITY) * local
         }
         let inverse = world(self.rig.mesh_node, &self.rig, &self.nodes, transforms).inverse();
-        self.rig.skin_nodes.iter().zip(&self.rig.inverse_binds)
+        let mut palette: Vec<_>=self.rig.skin_nodes.iter().zip(&self.rig.inverse_binds)
             .map(|(&node, bind)| (inverse * world(node, &self.rig, &self.nodes, transforms)
-                * *bind).to_cols_array()).collect()
+                * *bind).to_cols_array()).collect();
+        if let Some(arm)=&self.arm_skin {
+            palette.extend(arm.nodes.iter().map(|&node|transforms.get(node)
+                .expect("review arm blend transform").to_matrix().to_cols_array()));
+        }
+        palette
     }
 
     /// Offline proportion experiment. Applying scale at the head joint keeps
@@ -613,6 +765,12 @@ impl Person {
                 if index == wrist { pose.scale *= self.hand_scale; }
             }
             if let Ok(mut t) = transforms.get_mut(entity) { t.set_if_neq(pose); }
+        }
+        if let Some(arm)=&mut self.arm_skin {
+            arm.recipe.update(&self.rig,&self.posed,&mut arm.posed);
+            for (&entity,&pose) in arm.nodes.iter().zip(&arm.posed) {
+                if let Ok(mut transform)=transforms.get_mut(entity) {transform.set_if_neq(pose);}
+            }
         }
     }
 }
@@ -971,6 +1129,17 @@ pub(crate) mod tests {
         let bodies: Vec<_> = skins.iter(&world).filter(|(_,mesh,_)| mesh.0==gpu.mesh).collect();
         assert_eq!(bodies.len(),2);
         assert_ne!(bodies[0].0.joints,bodies[1].0.joints);
+        for (skin,_,_) in &bodies {
+            assert_eq!(skin.inverse_bindposes,gpu.binds);
+            assert_eq!(skin.joints.len(),binds.get(&gpu.binds).unwrap().len());
+            assert!(skin.joints.len()<=256);
+        }
+        let mut helper_entities=Vec::new();
+        if let (Some(a),Some(b))=(&people[0].arm_skin,&people[1].arm_skin) {
+            assert!(Arc::ptr_eq(&a.recipe,&b.recipe),"instances must share the immutable blend recipe");
+            assert!(a.nodes.iter().all(|node|!b.nodes.contains(node)),"instances share deformation helpers");
+            helper_entities.extend_from_slice(&a.nodes);helper_entities.extend_from_slice(&b.nodes);
+        }
         if let Some(cloth) = cloth {
         let costumes: Vec<_> = skins.iter(&world).filter(|(_,mesh,_)| mesh.0==cloth.mesh).collect();
         assert_eq!(costumes.len(),2);
@@ -979,17 +1148,29 @@ pub(crate) mod tests {
         assert_ne!(costumes[0].0.joints,costumes[1].0.joints,"instances may not share live joints");
         for (skin,_,parent) in costumes {
             assert_eq!(world.get::<Mesh3d>(parent.parent()).map(|mesh| &mesh.0),Some(&gpu.mesh));
-            assert_eq!(skin.inverse_bindposes,gpu.binds);
+            assert_eq!(skin.inverse_bindposes,gpu.source_binds);
+            let body=world.get::<SkinnedMesh>(parent.parent()).unwrap();
+            assert_eq!(skin.joints.as_slice(),&body.joints[..rig.skin_nodes.len()],
+                "garment and body must share the original source joints");
         }
         }
         let counts = (meshes.len(),materials.len(),images.len(),binds.len());
         let untouched = *world.get::<Transform>(people[1].nodes[rig.skin_nodes[rig.leg_joints[0][0]]]).unwrap();
         let finger = rig.finger_nodes[1];
         let other_finger = *world.get::<Transform>(people[1].nodes[finger]).unwrap();
+        let other_helpers: Vec<_>=people[1].arm_skin.as_ref().map(|arm|arm.nodes.iter()
+            .map(|&node|(node,*world.get::<Transform>(node).unwrap())).collect()).unwrap_or_default();
+        let first_helpers: Vec<_>=people[0].arm_skin.as_ref().map(|arm|arm.nodes.iter()
+            .map(|&node|*world.get::<Transform>(node).unwrap()).collect()).unwrap_or_default();
         let mut state = SystemState::<Query<&mut Transform,With<ModeledActor>>>::new(&mut world);
         people[0].update(std::f32::consts::FRAC_PI_2,1.0,0.0,&mut state.get_mut(&mut world).unwrap());
         assert_eq!(*world.get::<Transform>(people[1].nodes[rig.skin_nodes[rig.leg_joints[0][0]]]).unwrap(),untouched);
         assert_eq!(*world.get::<Transform>(people[1].nodes[finger]).unwrap(),other_finger);
+        for &(node,pose) in &other_helpers {assert_eq!(*world.get::<Transform>(node).unwrap(),pose);}
+        if let Some(arm)=&people[0].arm_skin {
+            assert!(arm.nodes.iter().zip(&first_helpers).any(|(&node,old)|
+                world.get::<Transform>(node).unwrap()!=old),"live helpers did not follow the running pose");
+        }
         let head_node = rig.skin_nodes[rig.head_joint];
         let head = *world.get::<Transform>(people[0].nodes[head_node]).unwrap();
         let foot_nodes = rig.leg_joints.map(|leg| rig.skin_nodes[leg[1]]);
@@ -1047,6 +1228,8 @@ pub(crate) mod tests {
         for root in roots { commands.entity(root).despawn(); }
         queue.apply(&mut world);
         assert_eq!(world.query::<&SkinnedMesh>().iter(&world).count(),0);
+        assert!(helper_entities.into_iter().all(|entity|world.get_entity(entity).is_err()),
+            "despawning a person leaked arm deformation helpers");
     }
     #[test]
     #[ignore = "requires supplied character rigs and paintings"]
@@ -1097,7 +1280,7 @@ pub(crate) mod tests {
     fn service_uniform_variants_keep_immutable_rigs_aprons_and_source_colored_skirts() {
         use bevy::ecs::world::CommandQueue;
         for kind in [CharacterKind::Clerk,CharacterKind::Receptionist,CharacterKind::Lass,
-            CharacterKind::Youngster,CharacterKind::CooltrainerM,CharacterKind::SuperNerd] {
+            CharacterKind::Youngster,CharacterKind::CooltrainerM,CharacterKind::SuperNerd,CharacterKind::KimonoGirl] {
         let look=crate::npc_appearance::look(kind);
         let rig=crate::open_people::get(look.base).unwrap().clone();
         let mut world=World::new();let mut queue=CommandQueue::default();
@@ -1132,7 +1315,8 @@ pub(crate) mod tests {
         for (i,(before,after)) in original.rgba.chunks_exact(4).zip(painted.chunks_exact(4)).enumerate() {
             let (x,y)=((i as u32%w)*256/w,(i as u32/w)*256/h);
             assert_eq!(before[3],after[3]);
-            if y<128 || (x>=155 && !(matches!(kind,CharacterKind::Receptionist|CharacterKind::Lass|CharacterKind::CooltrainerM)&&x>=156&&y>=192)) {
+            if y < if kind==CharacterKind::KimonoGirl {120} else {128}
+                || (x>=155 && !(matches!(kind,CharacterKind::Receptionist|CharacterKind::Lass|CharacterKind::CooltrainerM|CharacterKind::KimonoGirl)&&x>=156&&y>=192)) {
                 assert_eq!(before,after,"{kind:?}: actual hair/face/accessory pixels stay immutable at {x},{y}");
             }
             changed+=usize::from(before!=after);
@@ -1145,8 +1329,39 @@ pub(crate) mod tests {
         for (attribute,values) in gm.attributes() {
             let other=bm.attribute(attribute.id).unwrap();
             if attribute.id!=Mesh::ATTRIBUTE_COLOR.id {assert_eq!(values.get_bytes(),other.get_bytes());}
-            else if matches!(kind,CharacterKind::Receptionist|CharacterKind::Lass) {assert_ne!(values.get_bytes(),other.get_bytes());}
+            else if matches!(kind,CharacterKind::Receptionist|CharacterKind::Lass|CharacterKind::KimonoGirl) {assert_ne!(values.get_bytes(),other.get_bytes());}
             else {assert_eq!(values.get_bytes(),other.get_bytes(),"clerk apron stays cream");}
+        }
+        if kind == CharacterKind::KimonoGirl {
+            let original = meshes.get(&base.costume.as_ref().unwrap().mesh).unwrap();
+            assert_eq!(format!("{:?}",gm.indices()),format!("{:?}",original.indices()));
+            for (attribute,values) in gm.attributes() {
+                if attribute.id != Mesh::ATTRIBUTE_COLOR.id {
+                    assert_eq!(values.get_bytes(),original.attribute(attribute.id).unwrap().get_bytes(),
+                        "palette variants retain the default robe's geometry and skin");
+                }
+            }
+            let obi_vertices = crate::kimono_obi::build(&rig,look).unwrap().surface.positions.len();
+            let colors = |mesh: &Mesh| match mesh.attribute(Mesh::ATTRIBUTE_COLOR).unwrap() {
+                VertexAttributeValues::Float32x4(values) => values.clone(),
+                _ => panic!("kimono garment colors"),
+            };
+            let (gc,bc,oc) = (colors(gm),colors(bm),colors(original));
+            let shell = gc.len() - obi_vertices;
+            assert!(shell > 0 && obi_vertices > 0);
+            assert_eq!(&gc[shell..],&oc[shell..],"green robe preserves the authored obi and bow");
+            assert_eq!(&bc[shell..],&oc[shell..],"blue robe preserves the authored obi and bow");
+            assert_ne!(&gc[..shell],&oc[..shell]);
+            // The shell must sample the same recolored plain patch as the
+            // painted body, rather than the immutable red atlas again.
+            let (x,y) = ((w as f32*0.075) as i32,(h as f32*0.75) as i32);
+            let mut sum = [0u32;3];
+            for dy in -2..=2 {for dx in -2..=2 {
+                let at = (((y+dy) as u32*w+(x+dx) as u32)*4) as usize;
+                for c in 0..3 {sum[c] += u32::from(painted[at+c]);}
+            }}
+            let rgb = sum.map(|v| (v/25) as u8);
+            assert_eq!(gc[0],Color::srgb_u8(rgb[0],rgb[1],rgb[2]).to_linear().to_f32_array());
         }
         } else {assert!(g.costume.is_none()&&b.costume.is_none());}
         cache.retain_kinds(&std::collections::HashSet::new());

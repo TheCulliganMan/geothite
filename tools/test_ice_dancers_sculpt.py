@@ -82,7 +82,7 @@ class IceDancersTests(unittest.TestCase):
  def test_hair_gown_limbs_lips_and_digits_do_not_cross_themselves(self):
   for n in self.each():
    for p in self.ps:
-    if p['part'].startswith(('Gown /','Sleeve /','Arm /','Leg /','Finger /','Hair curtain /','Hair part /','Hair tip /','Hair side /','Hair tuft /','Bangs /','Lips /')):self.assertIsNone(crossed_faces(p),(n,p['part']))
+    if p['part'].startswith(('Gown /','Sleeve /','Arm /','Leg /','Finger /','Hair crown /','Hair curtain /','Hair part /','Hair tip /','Hair side /','Hair tuft /','Bangs /','Lips /')):self.assertIsNone(crossed_faces(p),(n,p['part']))
  def test_detached_hair_lips_hands_and_toes_are_rejected(self):
   for n in self.each():
    for child,parent in (('Hair crown /','Hair back /'),('Lips /','Head /'),('Finger /','Palm /' if n=='jynx' else 'Hand /')):

@@ -91,6 +91,7 @@ pub fn resolved_footing_height(
         .map_or(0.,|height|height-resolved)
         + crate::waterfall::support_correction(frame,coordinate,foot,resolved_heights)
         + crate::mesh::terrace_support_correction(frame,coordinate,foot)
+        + crate::mesh::mountain_support_correction(frame,coordinate,foot,resolved_heights)
         + crate::mesh::pond_support_correction(frame,coordinate,foot,resolved_heights)
         + crate::mesh::league_stair_support_correction(frame,coordinate,foot,resolved_heights)
         + crate::mesh::hall_stair_support_correction(frame,coordinate,foot,resolved_heights)
@@ -129,8 +130,11 @@ pub(crate) fn traversal_height(
     let lighthouse_flight=[from_point,to_point].into_iter().any(|point|
         tile_at_visual_point(frame,point+Vec2::Y*FOOTING_SAMPLE_EPSILON)
             .and_then(|cell|crate::mesh::lighthouse_stair_support(frame,cell,point,heights)).is_some());
+    let mountain_slope=[from_point,to_point].into_iter().all(|point|
+        tile_at_visual_point(frame,point+Vec2::Y*FOOTING_SAMPLE_EPSILON)
+            .is_some_and(|cell|crate::mesh::mountain_walking_surface(frame,cell)));
     // Stairs and shallow ramps keep their ordinary gait.
-    if !step.ledge_jump && (lighthouse_flight || rise < frame.tile_size.y * 0.4) {
+    if !step.ledge_jump && (lighthouse_flight || mountain_slope || rise < frame.tile_size.y * 0.4) {
         return Some((ground, 0.0));
     }
     let p = step.progress.clamp(0.0, 1.0);

@@ -17,6 +17,7 @@ import meganium_glb as author
 import meganium_sculpt as sculpture
 from skin_glb_test_support import IDENTITY, encode, raw_accessor, slerp, transform
 from test_gengar_glb import Model, winding_alignment
+from test_ninetales_glb import logical_model
 
 ASSET=Path(os.environ.get('MEGANIUM_GLB',Path(__file__).resolve().parent.parent/'crates/crystal-voxel-view/models/battle_species/meganium.glb'))
 NAMES=['root','pelvis','chest','neck_base','neck_upper','head','foreleg_left','foreleg_right',
@@ -35,7 +36,7 @@ def bounds(parts):
 class MeganiumTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.blob=ASSET.read_bytes();cls.m=Model(cls.blob)
+        cls.blob=ASSET.read_bytes();cls.runtime=Model(cls.blob);cls.m=logical_model(cls.runtime)
 
     def test_stored_attack_keys_match_author_recipe(self):
         m=self.m
@@ -67,7 +68,9 @@ class MeganiumTests(unittest.TestCase):
         self.assertEqual(author.export_meganium(author.decode_meganium(self.blob)),regenerated)
         self.assertLess(len(self.blob),author.MAX_BYTES)
         self.assertEqual([len(d[k]) for k in ('meshes','skins','scenes','buffers')],[1,1,1,1])
-        self.assertEqual(len(m.parts),33);self.assertEqual(len(set(m.names)),33)
+        self.assertEqual(len(m.parts),50);self.assertEqual(len(set(m.names)),50)
+        self.assertEqual(len(self.runtime.parts),45)
+        self.assertEqual(d['extras']['packed_sha256'],author.geometry_digest(self.runtime.neutral_model()))
         self.assertLessEqual(len(d['accessors']),256)
         self.assertEqual(d['extras']['source_sha256'],author.geometry_digest(m.neutral_model()))
         self.assertFalse(d.get('extensionsRequired'));self.assertNotIn('uri',d['buffers'][0])
@@ -86,7 +89,7 @@ class MeganiumTests(unittest.TestCase):
         with self.assertRaises(ValueError):author.decode_meganium(self.blob+b'\0\0\0\0')
 
     def test_platform_export_keeps_reviewed_expanded_geometry(self):
-        regenerated=Model(author.export_meganium())
+        regenerated=logical_model(Model(author.export_meganium()))
         self.assertEqual(regenerated.names,self.m.names)
         for part in range(len(self.m.parts)):
             old,new=self.m.indices[part],regenerated.indices[part]
@@ -114,7 +117,7 @@ class MeganiumTests(unittest.TestCase):
         self.assertEqual(lo[1],0.);self.assertAlmostEqual(hi[1],1.48,places=6)
         self.assertAlmostEqual(bhi[1],1.322,places=6)
         self.assertAlmostEqual(blo[0],-bhi[0],places=7)
-        self.assertEqual(sum(len(i)//3 for i in m.indices),4520)
+        self.assertEqual(sum(len(i)//3 for i in m.indices),7148)
         self.assertLess(sum(map(len,m.vertices)),20000)
         self.assertEqual(m.doc['extras']['reference_span'],1.48)
         colors={tuple(mat['pbrMetallicRoughness']['baseColorFactor']) for mat in m.doc['materials']}
@@ -122,16 +125,17 @@ class MeganiumTests(unittest.TestCase):
         neck=[p for p in m.vertices[0] if .890<p[1]<1.040]
         haunch=[p for p in m.vertices[0] if .310<p[1]<.540]
         cheek=[p for p in m.vertices[0] if 1.21<p[1]<1.29]
-        self.assertGreater(len(neck),50);self.assertLess(max(abs(p[0]) for p in neck),.125)
+        self.assertGreater(len(neck),50);self.assertTrue(.12<max(abs(p[0]) for p in neck)<.16)
         self.assertGreater(max(abs(p[0]) for p in haunch),.28)
-        self.assertGreater(max(abs(p[0]) for p in cheek),.178)
+        self.assertTrue(.13<max(abs(p[0]) for p in cheek)<.165)
         self.assertEqual(sum(n.startswith('Flower / folded') for n in m.names),6)
         tail=m.vertices[m.names.index(sculpture.TAIL)]
         self.assertLess(min(p[2] for p in tail),-.89)
-        self.assertLess(min(p[1] for p in tail),.30)
+        self.assertGreater(min(p[1] for p in tail),.32)
         for name in (sculpture.ANTENNA_LEFT,sculpture.ANTENNA_RIGHT):
             antenna=m.vertices[m.names.index(name)]
-            self.assertGreater(max(abs(p[0]) for p in antenna),.28)
+            self.assertLess(max(abs(p[0]) for p in antenna),.24)
+            self.assertLess(min(p[2] for p in antenna),-.35)
             self.assertGreater(max(p[1] for p in antenna)-min(p[1] for p in antenna),.18)
         print('\nMeganium neutral bounds:',[lo,hi],'body:',[blo,bhi])
 
@@ -220,7 +224,7 @@ class MeganiumTests(unittest.TestCase):
             self.assertEqual({j for ids,ws in zip(m.ids[p],m.weights[p]) for j,w in zip(ids,ws) if w},js)
         for i in range(6):
             p=m.names.index('Flower / folded oval petal '+str(i+1))
-            self.assertEqual({j for ids,ws in zip(m.ids[p],m.weights[p]) for j,w in zip(ids,ws) if w},{3,16+i})
+            self.assertEqual({j for ids,ws in zip(m.ids[p],m.weights[p]) for j,w in zip(ids,ws) if w},{16+i})
 
     def test_four_soles_and_twelve_claws_stay_fixed_across_clips_and_blends(self):
         m=self.m;probes=[(0,i) for i,p in enumerate(m.vertices[0]) if p[1]<=.080]
@@ -300,10 +304,14 @@ class MeganiumTests(unittest.TestCase):
 
     def test_lower_petal_clears_chest_and_jaw_never_overcloses(self):
         m=self.m;petal=m.names.index('Flower / folded oval petal 5')
+        # Select the free outer lobe from the current stored collar's center;
+        # an old world-space center can accidentally include its buried root.
+        collar=m.vertices[m.names.index(sculpture.COLLAR)]
+        center=[(min(p[k] for p in collar)+max(p[k] for p in collar))/2-v for k,v in enumerate((0.,.724*.015,.690*.015))]
         selected={tuple(v):i for i,v in enumerate(m.vertices[petal])
-                  if math.dist(v,(0.,.795,.165))>.23}
+                  if math.dist(v,center)>.23}
         triangles=[m.indices[petal][i:i+3] for i in range(0,len(m.indices[petal]),3)
-                   if all(math.dist(m.vertices[petal][j],(0.,.795,.165))>.23 for j in m.indices[petal][i:i+3])]
+                   if all(math.dist(m.vertices[petal][j],center)>.23 for j in m.indices[petal][i:i+3])]
         minimum=float('inf')
         for clip in ('idle','attack','hit'):
             for step in range(17):

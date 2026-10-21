@@ -788,7 +788,7 @@ fn modeled_layout_body(scene: &mut BattleScene, battler: &VisualBattleBattler) -
                 BattleBody::modeled(&battler.species_id, bounds.min, bounds.max, scale);
 
             if let Some(rig) = crate::species_rig::for_species(battler.model_id()) {
-                body.visual_bounds = Some(rig.animated_bounds);
+                body.visual_bounds = Some(crate::species_rig::motion::battle_bounds(rig));
             }
             return Some(body.with_source_card_envelope(
                 battler.texture_size.x / battler.texture_size.y));

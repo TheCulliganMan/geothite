@@ -14,6 +14,7 @@ const STICK_RELEASE: f32 = 0.35;
 #[derive(Resource, Default)]
 pub(super) struct HandheldInput {
     pub(super) keys: ButtonInput<KeyCode>,
+    /// Camera-local right/down axes; the field controller applies the current yaw.
     pub(super) movement: Vec2,
     controller_keys: ButtonInput<KeyCode>,
     active: Option<Entity>,
@@ -39,10 +40,14 @@ pub(super) fn install(app: &mut App) {
     #[cfg(feature = "fullscreen-scaling")]
     app.add_systems(Update, fit_initial_window.before(toggle_fullscreen));
     #[cfg(feature = "voxel-view")]
-    app.add_systems(
+    app.configure_sets(Update, crystal_voxel_view::VoxelCameraInput
+        .after(release_input_on_focus_loss)
+        .before(gather_input))
+    .add_systems(
         Update,
         controller_camera
             .after(gather_input)
+            .after(crystal_voxel_view::VoxelCameraInput)
             .before(apply_keyboard_input),
     );
 }
@@ -213,7 +218,8 @@ impl HandheldInput {
             .unwrap_or_default();
         self.direction = mapped.iter().find(|key| DIRECTIONS.contains(key)).copied();
         if let Some(yaw) = self.camera_rotation {
-            // Only the analog stick follows the view. D-pad remains world-cardinal.
+            // Preserve legacy tile-stepping keys. Continuous field vectors below
+            // stay camera-local for every device and are rotated by the shell.
             let dpad = pads
                 .iter()
                 .find(|(id, _)| Some(*id) == self.active)
@@ -241,8 +247,7 @@ impl HandheldInput {
                     (down(GamepadButton::DPadDown)-down(GamepadButton::DPadUp)) as f32);
                 if dpad!=Vec2::ZERO {self.movement=dpad.clamp_length_max(1.0);}
                 else {
-                    let mut analog=super::natural_movement::analog_vector(pad.left_stick());
-                    if let Some(yaw)=self.camera_rotation {analog=Vec2::from_angle(yaw).rotate(analog);}
+                    let analog=super::natural_movement::analog_vector(pad.left_stick());
                     self.movement=Vec2::new(analog.x,-analog.y);
                 }
             }
@@ -339,6 +344,10 @@ pub(super) fn gather_input(
         focused,
         customization_is_open() || save_manager_is_open(),
     );
+    #[cfg(feature = "voxel-view")]
+    if (input.unfocused || input.wait_for_neutral) && let Some(mut shell) = shell {
+        let _ = shell.natural_movement.take_input(Vec2::ZERO);
+    }
 }
 
 #[cfg(feature = "fullscreen-scaling")]
@@ -461,13 +470,12 @@ fn controller_camera(
             }
         }
     }
-    // Only controller edges: the voxel plugin already handles physical keyboard edges.
-    // Handheld shoulders are not synthesized into the physical keyboard resource.
-    if pressed(KeyCode::KeyQ) {
-        camera.rotation_step -= 1.0;
-    }
-    if pressed(KeyCode::KeyE) {
-        camera.rotation_step += 1.0;
+    // The voxel plugin owns physical Q/E. Avoid doubling Steam Input aliases.
+    if !input.unfocused && !input.wait_for_neutral {
+        let held = |key| input.controller_keys.pressed(key) && !keyboard.pressed(key);
+        let orbit = i32::from(held(KeyCode::KeyE)) - i32::from(held(KeyCode::KeyQ));
+        let dt = time.as_ref().map_or(0.0, |time| time.delta_secs().min(0.1));
+        camera.steer(orbit as f32 * dt * 2.5, 0.0);
     }
     if pressed(KeyCode::PageUp) {
         camera.zoom_step += 1.0;
@@ -509,6 +517,30 @@ mod tests {
         input.update(&keyboard, [(id(0), &pad)], None, false);
         assert!(input.keys.pressed(KeyCode::ArrowLeft));
         assert!(!input.keys.pressed(KeyCode::ArrowUp));
+    }
+
+    #[test]
+    fn continuous_keyboard_dpad_and_stick_share_camera_local_axes() {
+        let mut input = HandheldInput::default();
+        input.camera_rotation = Some(1.37);
+        let mut keyboard = ButtonInput::default();
+        keyboard.press(KeyCode::KeyW);
+        keyboard.press(KeyCode::KeyD);
+        input.update(&keyboard, [], None, false);
+        let diagonal = input.movement;
+        assert!(diagonal.abs_diff_eq(Vec2::new(1., -1.).normalize(), 1e-6));
+
+        let mut pad = Gamepad::default();
+        pad.digital_mut().press(GamepadButton::DPadUp);
+        pad.digital_mut().press(GamepadButton::DPadRight);
+        input.update(&ButtonInput::default(), [(id(0), &pad)], None, false);
+        assert!(input.movement.abs_diff_eq(diagonal, 1e-6));
+
+        pad.digital_mut().reset_all();
+        pad.analog_mut().set(GamepadAxis::LeftStickX, 1.);
+        pad.analog_mut().set(GamepadAxis::LeftStickY, 1.);
+        input.update(&ButtonInput::default(), [(id(0), &pad)], None, false);
+        assert!(input.movement.abs_diff_eq(diagonal, 1e-6));
     }
 
     #[cfg(feature = "voxel-view")]
@@ -921,7 +953,10 @@ mod tests {
             .init_resource::<ButtonInput<KeyCode>>()
             .init_resource::<crystal_render_api::VisualWorldFrame>()
             .init_resource::<crystal_voxel_view::VoxelViewSettings>()
+            .init_resource::<Time>()
             .add_systems(Update, controller_camera);
+        app.world_mut().resource_mut::<Time>()
+            .advance_by(std::time::Duration::from_secs_f32(0.1));
         app.world_mut()
             .resource_mut::<HandheldInput>()
             .controller_keys
@@ -978,12 +1013,13 @@ mod tests {
             .world()
             .resource::<crystal_voxel_view::VoxelViewSettings>()
             .camera;
-        assert_eq!(after.rotation_step, before.rotation_step + 1.0);
+        assert!(((after.rotation_step - before.rotation_step) * std::f32::consts::FRAC_PI_4
+            - 0.25).abs() < 1e-6);
         assert_eq!(after.zoom_step, before.zoom_step + 1.0);
         app.world_mut()
             .resource_mut::<HandheldInput>()
             .controller_keys
-            .clear();
+            .reset_all();
         app.update();
         assert_eq!(
             app.world()

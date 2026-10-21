@@ -12,7 +12,7 @@ def geometry_digest(model):
  return h.hexdigest()
 
 SPECIES=('noctowl',)
-REST_DIGESTS={'noctowl':'fc6025dcce69b1c6b5a9dd2a79254190efe7692e600171dddf3d316e29a1a713'}
+REST_DIGESTS={'noctowl':'5dd5b20d665adad2630f6883d047fb18f86b2c188874543decd3c7f99f4b9ec7'}
 PARTS={'noctowl':tuple(p['part'] for p in sculpt()['primitives'])};MAX_BYTES=1024*1024
 
 def sculpture(species):
@@ -24,18 +24,18 @@ def authoring_transform(species):
 
 def normalized(point):
  low,span=authoring_transform('noctowl');return tuple((v-(low if i==1 else 0.))*HEIGHT/span for i,v in enumerate(point))
-JOINTS={'noctowl':(('root',None,(0.,0.,0.)),('pelvis',0,normalized((0.,.31,0.))),
- ('chest',1,normalized((0.,.72,.02))),('neck',2,normalized((0.,.98,.05))),('head',3,normalized((0.,1.14,.065))),
- ('crown_left',4,normalized((-.240,1.35,.145))),('crown_right',4,normalized((.240,1.35,.145))),
- ('wing_left',2,normalized((-.224,1.02,.004))),('wing_right',2,normalized((.224,1.02,.004))),
- ('leg_left',1,normalized((-.107,.255,-.005))),('leg_right',1,normalized((.107,.255,-.005))),
- ('tail_base',1,normalized((0.,.355,-.168))),('tail_middle',11,normalized((0.,.268,-.324))),('tail_tip',12,normalized((0.,.237,-.490))))}
+JOINTS={'noctowl':(('root',None,(0.,0.,0.)),('pelvis',0,normalized((0.,.30,-.035))),
+ ('chest',1,normalized((0.,.59,-.025))),('neck',2,normalized((0.,.77,.015))),('head',3,normalized((0.,.85,.04))),
+ ('crown_left',4,normalized((-.210,1.09,.19))),('crown_right',4,normalized((.210,1.09,.19))),
+ ('wing_left',2,normalized((-.145,.780,-.025))),('wing_right',2,normalized((.145,.780,-.025))),
+ ('leg_left',1,normalized((-.108,.228,.005))),('leg_right',1,normalized((.108,.228,.005))),
+ ('tail_base',1,normalized((0.,.260,-.205))),('tail_middle',11,normalized((0.,.225,-.365))),('tail_tip',12,normalized((0.,.205,-.530))))}
 
 CLIPS=(('idle',4.,85),('attack',1.,65),('hit',1.,65))
 
 
 def body_weights(y):
- for a,b,j,k in ((.20,.38,0,1),(.55,.81,1,2),(.92,1.05,2,3),(1.08,1.20,3,4)):
+ for a,b,j,k in ((.16,.32,0,1),(.40,.64,1,2),(.74,.79,2,3),(.80,.85,3,4)):
   aa=normalized((0.,a,0.))[1];bb=normalized((0.,b,0.))[1]
   if y<aa:return [j,0,0,0],[1.,0.,0.,0.]
   if y<=bb:
@@ -46,17 +46,18 @@ def skin_weights(species,part,position):
  x,y,z=position
  if part.startswith(('Foot /','Toe /','Claw /','Rear toe /')):return [0,0,0,0],[1.,0.,0.,0.]
  if part.startswith('Leg /'):
-  owner=9 if x<0 else 10;blend=smoothstep(normalized((0.,.055,0.))[1],normalized((0.,.255,0.))[1],y)
+  owner=9 if x<0 else 10;blend=smoothstep(normalized((0.,.052,0.))[1],normalized((0.,.228,0.))[1],y)
   return [0,owner,0,0],[1.-blend,blend,0.,0.]
  if part.startswith(('Wing /','Flight feather /')):return [7 if x<0 else 8,0,0,0],[1.,0.,0.,0.]
  if part.startswith('Crown /'):
-  owner=5 if part.endswith('-1') else 6;blend=smoothstep(normalized((0.,1.26,0.))[1],normalized((0.,1.40,0.))[1],y)
+  owner=5 if part.endswith('-1') else 6;blend=smoothstep(normalized((0.,1.11,0.))[1],normalized((0.,1.26,0.))[1],y)
   return [4,owner,0,0],[1.-blend,blend,0.,0.]
  if part.startswith('Tail /'):
-  span=-z;middle=-normalized((0.,0.,-.324))[2]
+  span=-z;middle=-normalized((0.,0.,-.365))[2]
   if span<middle:
-   blend=smoothstep(-normalized((0.,0.,-.168))[2],middle,span);return [11,12,0,0],[1.-blend,blend,0.,0.]
-  blend=smoothstep(middle,-normalized((0.,0.,-.490))[2],span);return [12,13,0,0],[1.-blend,blend,0.,0.]
+   blend=smoothstep(-normalized((0.,0.,-.205))[2],middle,span);return [11,12,0,0],[1.-blend,blend,0.,0.]
+  blend=smoothstep(middle,-normalized((0.,0.,-.530))[2],span);return [12,13,0,0],[1.-blend,blend,0.,0.]
+ if part.startswith(('Eye mask /','Eye ring /','Eye /','Iris /','Pupil /','Glint /','Beak /','Mouth /','Brow /')):return [4,0,0,0],[1.,0.,0.,0.]
  return body_weights(y)
 
 def pose_angles(species,clip,t):

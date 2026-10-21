@@ -32,10 +32,16 @@ class FireBadgerSkinTests(unittest.TestCase):
    for i,n in enumerate(m.names):
     owner=None
     if n.startswith(('Foot /','Toe /')):owner=0
-    elif n.startswith(('Body /','Collar /')):owner=1
+    elif n.startswith('Body /'):
+     if s=='quilava':owner=1
+     else:
+      self.assertTrue(all({j for j,w in zip(js,ws) if w}<={0,1} for js,ws in zip(m.ids[i],m.weights[i])),n)
+      self.assertTrue(any(js==[0,0,0,0] and ws==[1.,0.,0.,0.] for js,ws in zip(m.ids[i],m.weights[i])),n)
+      self.assertTrue(any(js==[1,0,0,0] and ws==[1.,0.,0.,0.] for js,ws in zip(m.ids[i],m.weights[i])),n)
     elif n.startswith(('Head /','Ear /','Eye socket /','Eye white /','Iris /','Pupil /','Glint /','Nose /','Fang /','Lip /')):owner=2
     elif n.startswith(('Jaw /','Tongue /')):owner=3
-    elif n.startswith(('Hand /','Finger /')):owner=6 if int(n.split()[-2] if n.startswith('Finger /') else n.split()[-1])<0 else 7
+    elif n.startswith(('Hand /','Finger /')):
+     side=int(n.split()[-2] if n.startswith('Finger /') else n.split()[-1]);owner=(3 if side<0 else 4) if s=='quilava' else (6 if side<0 else 7)
     elif n.startswith('Fire /'):owner=(7 if s=='quilava' else 10)+[v[0] for v in author.fire_specs(s)].index(n.split(' / ')[1])
     if owner is not None:self.assertTrue(all(js==[owner,0,0,0] for js in m.ids[i]),(s,n));self.assertTrue(all(ws==[1.,0.,0.,0.] for ws in m.weights[i]))
  def test_fixed_soles_positive_winding_strain_and_neutral_endpoints(self):
@@ -68,11 +74,11 @@ class FireBadgerSkinTests(unittest.TestCase):
      # The anatomy helper intentionally checks one complete species at a time.
      fitted=anatomy.fitted.NidorinaTests();fitted.pairs=lambda:helper.pairs(s);fitted.test_fitted_layers_follow_actual_stored_parent();fitted.test_fitted_face_centers_and_edges_clear_parent()
  def test_adult_jaw_aperture_remains_empty_through_poses_and_negative_control_is_real(self):
-  helper=anatomy.FireBadgerTests();helper.models=self.models;m=self.logical['typhlosion'];points=helper.aperture_points()
+  helper=anatomy.FireBadgerTests();helper.models=self.models;m=self.logical['typhlosion']
   for clip in m.clips:
    for t in (.18,.34,.46,.76):
     mats=m.matrices(clip,t);parts=[inverse_rigid(self.part(m,i,mats),mats[2]) for i in range(len(m.parts))]
-    for point in points:self.assertFalse(any(occupied(p,point) for p in parts),(clip,t,point))
+    for point in helper.aperture_points(parts):self.assertFalse(any(occupied(p,point) for p in parts),(clip,t,point))
   helper.test_adult_jaw_has_real_empty_space_and_filled_negative_control()
  def test_source_bytes_and_species_mutations_are_rejected(self):
   for s,b in self.blobs.items():

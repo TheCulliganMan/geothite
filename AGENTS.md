@@ -15,6 +15,31 @@
 - Verify audio changes against the pack's PCM hashes, frame counts, and loop
   ranges. Preserve unaffected audio and unrelated game content.
 
+## Rust style
+
+- Follow [Google's Rust Style Guide](https://google.github.io/styleguide/rustguide.html)
+  for Rust implementation and review. Read the relevant sections before making
+  changes. Explicit repository rules take precedence; otherwise follow Google's
+  guide, then the official Rust Style Guide and Rust API Guidelines it references.
+- Respect the guide's exceptions and library/application distinction. Apply API
+  requirements to reusable libraries; keep application code simple and direct.
+  Chromium-, Android-, and Fuchsia-specific rules do not apply to this Cargo
+  workspace. Preserve its existing layout, Bevy integration, and test framework.
+- Keep implementations in focused leaf modules. Use clear names and explicit
+  imports grouped by source module.
+- Prefer borrowing over unnecessary cloning or shared ownership, standard traits
+  and derives over equivalent custom methods, and ordinary Rust over custom macros.
+- Use `Option` for missing values and `Result` for recoverable errors. Reserve
+  panics for violated invariants; prefer pattern matching and explanatory `expect`
+  messages over `unwrap`.
+- Document public API behavior, errors, panics, and safety contracts. Prefer safe
+  Rust; justify necessary unsafe code and explain correctness with `SAFETY:` comments.
+- Use the toolchain pinned in `rust-toolchain.toml`. Format changed Rust code and
+  check it with `cargo fmt --all -- --check`. Run
+  `cargo clippy --locked -p <affected-crate> --all-targets` with the applicable
+  features, plus relevant tests. Fix warnings introduced by the change and report
+  pre-existing failures. Keep formatting and refactoring within the task's scope.
+
 ## Crystalpack build and local runbook
 
 ### Pack-build requests are implementation work

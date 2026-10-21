@@ -206,6 +206,33 @@ fn take_matching_static_encounter_candidate(
     .then_some(candidate)
 }
 
+/// Identity of the retained terrain, independent of the classic viewport's
+/// centered padding. Native windows align to complete source metatiles and
+/// record their actual origin alongside the texture and extent.
+#[cfg(any(test, feature = "voxel-view"))]
+fn retained_encounter_grid(
+    rendered: &RenderedViewport,
+) -> Option<(&Handle<Image>, UVec2, IVec2)> {
+    rendered.viewport_origin?;
+    #[cfg(feature = "voxel-view")]
+    let grid = (
+        rendered.visual_world_texture.as_ref()?,
+        rendered.visual_world_grid_size,
+        rendered.visual_world_grid_origin,
+    );
+    #[cfg(not(feature = "voxel-view"))]
+    let grid = {
+        let (x, y) = rendered.viewport_origin?;
+        let size = UVec2::new(VISUAL_WORLD_TILES_X as u32, VISUAL_WORLD_TILES_Y as u32);
+        let origin = IVec2::new(i32::from(x), i32::from(y))
+            - (size.as_ivec2()
+                - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32))
+                / 2;
+        (rendered.map_texture.as_ref()?, size, origin)
+    };
+    Some(grid)
+}
+
 /// Read the previous completed world publication before render_playfield can
 /// clear it for battle/LCD entities. Try exactly once, including cold frames.
 #[cfg(any(test, feature = "voxel-view"))]
@@ -234,23 +261,11 @@ fn freeze_visible_static_encounter_anchors(
     {
         return;
     }
-    let Some((start_x, start_y)) = rendered.viewport_origin else {
+    let Some((expected_texture, expected_grid, expected_origin)) = retained_encounter_grid(rendered)
+    else {
         return;
     };
-    #[cfg(feature = "voxel-view")]
-    let (expected_texture, expected_grid) = (
-        rendered.visual_world_texture.as_ref(),
-        rendered.visual_world_grid_size,
-    );
-    #[cfg(not(feature = "voxel-view"))]
-    let (expected_texture, expected_grid) = (
-        rendered.map_texture.as_ref(),
-        UVec2::new(VISUAL_WORLD_TILES_X as u32, VISUAL_WORLD_TILES_Y as u32),
-    );
-    let expected_origin = IVec2::new(i32::from(start_x), i32::from(start_y))
-        - (expected_grid.as_ivec2() - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32))
-            / 2;
-    if expected_texture != Some(&frame.map_texture)
+    if expected_texture != &frame.map_texture
         || frame.grid_size != expected_grid
         || frame.grid_origin != expected_origin
         || frame.tile_size != Vec2::splat(TILE_SIZE)

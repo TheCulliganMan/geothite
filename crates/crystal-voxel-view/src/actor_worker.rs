@@ -19,7 +19,7 @@ pub fn browser_people_sources_value(json: wasm_bindgen::JsValue, bytes: usize) {
 }
 
 const REQUEST_MAGIC: &[u8; 8] = b"GACTR001";
-const RESPONSE_VERSION: u16 = 1;
+const RESPONSE_VERSION: u16 = 3;
 pub(crate) const MAX_APPEARANCES: usize = 8;
 const MAX_REQUEST_BYTES: usize = 4096;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

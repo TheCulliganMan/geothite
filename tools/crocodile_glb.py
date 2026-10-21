@@ -3,7 +3,7 @@
 import argparse,hashlib,json,math,struct
 from pathlib import Path
 from functools import lru_cache
-from crocodile_sculpt import sculpture,HEIGHT
+from crocodile_sculpt import sculpture,HEIGHT,posture_point,anatomy_point
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 SPECIES=('croconaw','feraligatr');HEIGHTS={s:HEIGHT for s in SPECIES}
 def geometry_digest(model):
@@ -13,23 +13,23 @@ def geometry_digest(model):
  return h.hexdigest()
 @lru_cache(maxsize=2)
 def authoring_model(species):return sculpture(species)
-REST_DIGESTS={'croconaw': '21a8baf8555e83fe873f7694e88b68010e84ba28f8f855895176f0a6b2a9f592', 'feraligatr': 'b5b3a8c4469fbc80406847fddb9e3f70914abf8afe8c56e73470ac98768a076d'}
+REST_DIGESTS={'croconaw': '7edb832ce86d2d9c0e093fbcec14c2b56312f4eb80e98df5bbf08297eec45677', 'feraligatr': 'd7059c539638a31894a34a8560250dc2cf5dbbf8f6905bd9690b7c18c69142ae'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 BODY_REFERENCE_HEIGHTS=HEIGHTS.copy();MAX_BYTES=1024*1024
 @lru_cache(maxsize=2)
 def authoring_transform(species):
  raw=sculpture(species,False);lo=min(v for p in raw['primitives'] for v in p['positions'][1::3]);hi=max(v for p in raw['primitives'] for v in p['positions'][1::3]);return lo,hi-lo
 def normalized(species,point):
- lo,span=authoring_transform(species);return tuple((v-(lo if i==1 else 0.))*HEIGHT/span for i,v in enumerate(point))
+ lo,span=authoring_transform(species);return tuple((v-(lo if i==1 else 0.))*HEIGHT/span for i,v in enumerate(posture_point(species,point)))
 def arms(species):
  adult=species=='feraligatr'
- return tuple(((s*.283,.773,-.012),(s*.416,.625,.040),(s*.456,.487,.159)) if adult else ((s*.230,.651,-.006),(s*.330,.615,.020),(s*.389,.667,.123)) for s in (-1,1))
+ return tuple(((s*.303,.794,-.012),(s*.400,.630,.060),(s*.470,.660,.250)) if adult else ((s*.239,.690,-.006),(s*.325,.590,.030),(s*.365,.535,.160)) for s in (-1,1))
 def joints(species):
  adult=species=='feraligatr'
- raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.48 if adult else .43,-.02)),('head',1,(0.,.91 if adult else .81,.01)),('jaw',2,(0.,.83 if adult else .79,.04))]
+ raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.48 if adult else .43,-.02)),('head',1,(0.,.91 if adult else .81,.01)),('jaw',2,(0.,.88 if adult else .80,.04))]
  for side,points in zip(('left','right'),arms(species)):
   base=len(raw);raw += [('arm_'+side,1,points[0]),('elbow_'+side,base,points[1]),('wrist_'+side,base+1,points[2])]
- raw += [('leg_left',0,(-.180,.310,-.033) if adult else (-.182,.265,-.011)),('leg_right',0,(.180,.310,-.033) if adult else (.182,.265,-.011)),('tail',1,(0.,.253,-.160) if adult else (0.,.214,-.179)),('tail_tip',12,(.018,.220,-.384) if adult else (.021,.220,-.371))]
+ raw += [('leg_left',0,(-.220,.330,-.033) if adult else (-.225,.276,-.011)),('leg_right',0,(.220,.330,-.033) if adult else (.225,.276,-.011)),('tail',1,(0.,.253,-.160) if adult else (0.,.214,-.179)),('tail_tip',12,(.018,.220,-.384) if adult else (.021,.220,-.371))]
  return tuple((name,parent,(0.,0.,0.) if parent is None else normalized(species,pivot)) for name,parent,pivot in raw)
 JOINTS={s:joints(s) for s in SPECIES};CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def body_weights(species,y):
@@ -46,7 +46,7 @@ def tail_weights(species,point):
  x,y,z=point;a=smoothstep(.15,.32,-z);b=smoothstep(.40,.72 if species=='feraligatr' else .60,-z);support=smoothstep(.16,.34,y)
  return [0,1,12,13],[(1.-a)*(1.-support),(1.-a)*support,a*(1.-b),a*b]
 def skin_weights(species,part,position):
- lo,span=authoring_transform(species);point=tuple(v*span/HEIGHT+(lo if i==1 else 0.) for i,v in enumerate(position));x,y,z=point;adult=species=='feraligatr'
+ lo,span=authoring_transform(species);point=anatomy_point(species,tuple(v*span/HEIGHT+(lo if i==1 else 0.) for i,v in enumerate(position)));x,y,z=point;adult=species=='feraligatr'
  def rigid(j):return [j,0,0,0],[1.,0.,0.,0.]
  if part.startswith('Foot /'):return rigid(0)
  if part.startswith(('Leg /','Armor / limb plate')):
@@ -57,9 +57,11 @@ def skin_weights(species,part,position):
  if part.startswith('Arm /'):return arm_weights(species,int(part.split()[-1]),point)
  if part.startswith(('Tail /','Crest / tail')):return tail_weights(species,point)
  if part.startswith(('Crest / broad jagged cranial','Crest / rear jagged cranial','Crest / three-point cranial','Eye /','Nostril /','Jaw / broad upper','Tooth / upper')):return rigid(2)
- if part.startswith(('Jaw / fitted pale lower','Tooth / lower')):return rigid(3)
+ if part.startswith(('Jaw / fitted pale lower','Tooth / lower','Mouth / rounded pink tongue')):return rigid(3)
  if part.startswith(('Mouth /','Jaw / pale mouth corner')):
-  a=smoothstep(.83 if adult else .811,.89 if adult else .838,y);return [3,2,0,0],[1.-a,a,0.,0.]
+  # Blend over the entire oral cup. A narrow band through its thin front rim
+  # sheared adjacent inner/outer walls when the jaw rotated independently.
+  a=smoothstep(.75 if adult else .77,.93 if adult else .89,y);return [3,2,0,0],[1.-a,a,0.,0.]
  if part.startswith('Crest / dorsal'):return rigid(1)
  return body_weights(species,y)
 def pose_angles(species,clip,t):
@@ -99,7 +101,7 @@ def pack_parts(species,model):
   metadata['source_parts'].append({'part':name,'order':order,'vertex_start':start,'vertex_count':len(source['positions'])//3,'index_start':first,'index_count':len(source['indices'])})
   joined['positions']+=source['positions'];joined['normals']+=source['normals'];joined['indices'] += [i+start for i in source['indices']]
  return parts
-PACKED_REST_DIGESTS={'croconaw': '5e931c599dd42d7e2ebbf57fa8174ae66023d02dea8875b09730c1efc1a1697f', 'feraligatr': 'd80bb181fae2556e57b3ef65e60fb42f4e816f7008c5e72ca1db8d1979719cad'}
+PACKED_REST_DIGESTS={'croconaw': 'e7d36b1fdaa47269e689e0e20eb3af13b4a950875d354e5705039bca66816eba', 'feraligatr': '5115b470f5bc4d168b48e84117b42884e5014c40cb6de97e1ec27dba957b8149'}
 
 def export_crocodile(species,model=None):
  if species not in SPECIES:raise ValueError('unknown crocodile species')

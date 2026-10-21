@@ -282,9 +282,11 @@ cargo run --release --locked -p crystal-bevy --features voxel-view -- \
 ```
 
 Add `--load-save content-packs/player.crystalsave` to load that save.
-3D uses natural movement by default: walk diagonally, stop between tiles, and
-use partial left-stick tilt for slower movement. The stick follows the camera;
-the D-pad and arrow keys follow the map. Collision, encounters, doors, and
+3D uses natural movement by default for every input device: walk diagonally,
+stop between tiles, and use partial left-stick tilt for slower movement.
+Arrow keys, WASD, the D-pad, and the left stick follow the camera, including
+while it rotates and in first person. Combine two directions for diagonals
+at the same walking speed. Collision, encounters, doors, and
 scripts still use the shared production controller. 2D and the text client
 retain their normal tile controls. See [natural movement](modpacks/natural-movement/README.md)
 for the optional pack builder and opt-out setting.
@@ -326,7 +328,7 @@ Steam Input's gamepad output; keyboard mappings remain available alongside it.
 | Toggle optional 2.5D view | Y (north) |
 | Steer 3D camera | Right stick (yaw and pitch), or hold either mouse button and drag |
 | Cycle close orbit / wide orbit / first person | Select / Back, or keyboard right Shift |
-| Rotate optional 2.5D camera | LB / RB |
+| Rotate 3D camera continuously | Hold LB / RB, or keyboard `Q` / `E` |
 | Zoom optional 2.5D camera out / in | LT / RT |
 
 Drag the game to rotate and tilt: use either mouse button on desktop, or the
@@ -337,11 +339,11 @@ trainer's facing direction. The right stick looks around in first person.
 Touch dragging rotates horizontally and zooms vertically in orbit view, and
 looks vertically in first person; two fingers pinch to zoom.
 
-In the 3D overworld, the left stick moves relative to the camera; the D-pad
-keeps compass directions. The first-person preset switches to the trainer’s eye level and hides
+In the 3D overworld, forward follows where the camera looks and left/right
+strafe across the view with keyboard, D-pad, or stick. The first-person preset switches to the trainer’s eye level and hides
 the local player model. Menus and 2D retain the original Select action.
 
-Sticks use a deadzone and stable cardinal directions. Disconnecting a controller
+Sticks use a deadzone; menus and tile movement keep stable cardinal selection. Disconnecting a controller
 releases its inputs; a docked controller can take over from an idle built-in pad.
 After focus loss or a native overlay, release the controls before resuming.
 Linux source builds also need the development package for `libudev` (for example,

@@ -32,12 +32,14 @@ class TyranitarSkinTests(unittest.TestCase):
    for i,n in enumerate(m.names):
     owner=None
     if n.startswith(('Foot /','Foot claw /')):owner=0
-    elif n.startswith(('Body /','Belly /','Belly armor /','Torso vent /','Back spike /')):owner=1
-    elif n.startswith(('Head /','Mouth back /','Eye socket /','Eye white /','Iris /','Pupil /','Glint /','Nostril /','Crown spike /','Cheek plate /','Fang /')):owner=2
+    elif n.startswith(('Body /','Belly /','Belly armor /','Mantle /','Torso vent /','Back armor /','Back vent /','Back spike /')):owner=1
+    elif n.startswith(('Head /','Brow keel /','Mouth back /','Eye socket /','Eye white /','Iris /','Pupil /','Glint /','Nostril /','Crown spike /','Cheek plate /','Fang /')):owner=2
     elif n.startswith(('Jaw /','Tongue /','Lower tooth /')):owner=3
     elif n.startswith('Arm /'):owner=4 if n.endswith('-1') else 5
     elif n.startswith('Forearm /'):owner=6 if n.endswith('-1') else 7
     elif n.startswith(('Hand /','Hand claw /')):owner=8 if int(n.split()[-2] if n.startswith('Hand claw /') else n.split()[-1])<0 else 9
+    elif n.startswith('Thigh vent /'):owner=10 if int(n.split()[-2])<0 else 11
+    elif n.startswith('Tail hub /'):owner=13
     if owner is not None:self.assertTrue(all(js==[owner,0,0,0] for js in m.ids[i]),n);self.assertTrue(all(ws==[1.,0.,0.,0.] for ws in m.weights[i]))
  def test_fixed_soles_positive_winding_strain_and_neutral_endpoints(self):
   for s,m in self.logical.items():
@@ -68,7 +70,7 @@ class TyranitarSkinTests(unittest.TestCase):
     mats=m.matrices(clip,t);helper=anatomy.TyranitarTests();helper.model=dict(primitives=[self.part(m,i,mats) for i in range(len(m.parts))]);indices={n:i for i,n in enumerate(m.names)}
     def pairs():
      for child,parent in helper.pairs():
-      i=indices[child['part']];j=m.ids[i][0][0];self.assertTrue(all(ids==[j,0,0,0] for ids in m.ids[i]));self.assertTrue(all(ws==[1.,0.,0.,0.] for ws in m.weights[i]));yield inverse_rigid(child,mats[j]),inverse_rigid(parent,mats[j])
+      i=indices[child['part']];j=m.ids[i][0][0];self.assertTrue(all(ids==[j,0,0,0] for ids in m.ids[i]));self.assertTrue(all(ws==[1.,0.,0.,0.] for ws in m.weights[i]));yield anatomy.front_pair(inverse_rigid(child,mats[j]),inverse_rigid(parent,mats[j]))
     fitted=anatomy.fitted.NidorinaTests();fitted.pairs=pairs;fitted.test_fitted_layers_follow_actual_stored_parent();fitted.test_fitted_face_centers_and_edges_clear_parent()
  def test_jaw_aperture_remains_empty_through_poses_and_negative_control_is_real(self):
   helper=anatomy.TyranitarTests();helper.model=self.models['tyranitar'];m=self.logical['tyranitar'];points=helper.aperture_points()

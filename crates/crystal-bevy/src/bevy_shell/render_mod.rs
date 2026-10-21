@@ -205,18 +205,32 @@ fn publish_visual_world_frame(
         return;
     }
     #[cfg(feature = "voxel-view")]
-    let (published_map_texture, published_grid_size) = {
+    let (published_map_texture, published_grid_size, grid_origin) = {
         let Some(texture) = rendered.visual_world_texture.as_ref() else {
             clear_published_visual_world(&mut published);
             return;
         };
-        (texture.clone(), rendered.visual_world_grid_size)
+        (texture.clone(), rendered.visual_world_grid_size, rendered.visual_world_grid_origin)
     };
     #[cfg(not(feature = "voxel-view"))]
-    let (published_map_texture, published_grid_size) = (
+    let (published_map_texture, published_grid_size, grid_origin) = (
         map_texture.clone(),
         UVec2::new(VISUAL_WORLD_TILES_X as u32, VISUAL_WORLD_TILES_Y as u32),
+        {
+            let (x,y)=rendered.viewport_origin.expect("validated viewport origin");
+            IVec2::new(i32::from(x),i32::from(y))
+                -(IVec2::new(VISUAL_WORLD_TILES_X as i32,VISUAL_WORLD_TILES_Y as i32)
+                    -IVec2::new(VIEWPORT_TILES_X as i32,VIEWPORT_TILES_Y as i32))/2
+        },
     );
+    #[cfg(feature = "voxel-view")]
+    let center = {
+        let (x,y)=rendered.viewport_origin.expect("validated viewport origin");
+        let source_center=grid_origin.as_vec2()+published_grid_size.as_vec2()*0.5;
+        let viewport_center=Vec2::new(x as f32,y as f32)
+            +Vec2::new(VIEWPORT_TILES_X as f32,VIEWPORT_TILES_Y as f32)*0.5;
+        center+(source_center-viewport_center)*Vec2::new(TILE_SIZE,-TILE_SIZE)
+    };
 
     let mut actors = Vec::with_capacity(
         players.iter().count()
@@ -496,12 +510,9 @@ fn publish_visual_world_frame(
         && published.map_texture == published_map_texture
         && published.viewport_size == Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)
         && published.tile_size == Vec2::splat(TILE_SIZE)
-        && published.grid_size == published_grid_size;
+        && published.grid_size == published_grid_size
+        && published.grid_origin == grid_origin;
     if let Some(mut phases) = phases {
-        let (x, y) = rendered.viewport_origin.expect("validated viewport origin");
-        let grid_origin = IVec2::new(i32::from(x), i32::from(y))
-            - (published_grid_size.as_ivec2()
-                - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32)) / 2;
         let animated = || rendered.visual_tiles.iter()
             .filter(|tile| tile.animation_frames.is_some());
         // Compare before allocating: an idle world retains both geometry and
@@ -519,10 +530,6 @@ fn publish_visual_world_frame(
     // Keep the retained terrain hierarchy fixed in source-map space. Camera,
     // actors and traversal endpoints receive the same translation; classic
     // sprite transforms and authoritative controller state remain untouched.
-    let (x, y) = rendered.viewport_origin.expect("validated viewport origin");
-    let grid_origin = IVec2::new(i32::from(x), i32::from(y))
-        - (published_grid_size.as_ivec2()
-            - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32)) / 2;
     let anchored_center = grid_origin.as_vec2() * Vec2::new(TILE_SIZE, -TILE_SIZE);
     let view_center = anchored_center - center;
     let camera_movement = rendered.tile.map_or(Vec2::ZERO, |tile| runtime_shell.natural_movement.displacement(map_id,tile));
@@ -568,15 +575,7 @@ fn publish_visual_world_frame(
         jump_ledges: rendered.visual_jump_ledges.clone(),
         terrace_datum: rendered.visual_terrace_datum.clone(),
         terrain_revision,
-        grid_origin: {
-            let (x, y) = rendered
-                .viewport_origin
-                .expect("published terrain has a viewport origin");
-            IVec2::new(i32::from(x), i32::from(y))
-                - (published_grid_size.as_ivec2()
-                    - IVec2::new(VIEWPORT_TILES_X as i32, VIEWPORT_TILES_Y as i32))
-                    / 2
-        },
+        grid_origin,
         map_texture: published_map_texture,
         center,
         view_center,
@@ -688,14 +687,14 @@ fn visual_actor_intersects_grid(
     delta.x.abs() <= half_grid.x + half_actor.x && delta.y.abs() <= half_grid.y + half_actor.y
 }
 
-fn visual_tile_grid_is_complete(tiles: &[crystal_render_api::VisualTile]) -> bool {
-    let Ok(width) = usize::try_from(VISUAL_WORLD_TILES_X) else {
+fn visual_tile_grid_is_complete(tiles: &[crystal_render_api::VisualTile], size: UVec2) -> bool {
+    let Ok(width) = usize::try_from(size.x) else {
         return false;
     };
-    let Ok(height) = usize::try_from(VISUAL_WORLD_TILES_Y) else {
+    let Ok(height) = usize::try_from(size.y) else {
         return false;
     };
-    tiles.len() == width * height
+    width > 0 && height > 0 && width.checked_mul(height) == Some(tiles.len())
         && tiles.iter().enumerate().all(|(index, tile)| {
             usize::try_from(tile.column).ok() == Some(index % width)
                 && usize::try_from(tile.row).ok() == Some(index / width)
@@ -766,14 +765,15 @@ mod render_mod_tests {
     #[test]
     fn visual_tile_grid_requires_one_row_major_cell_per_terrain_position() {
         let mut tiles = complete_visual_grid();
-        assert!(visual_tile_grid_is_complete(&tiles));
+        let size=UVec2::new(VISUAL_WORLD_TILES_X as u32,VISUAL_WORLD_TILES_Y as u32);
+        assert!(visual_tile_grid_is_complete(&tiles,size));
 
         tiles.pop();
-        assert!(!visual_tile_grid_is_complete(&tiles));
+        assert!(!visual_tile_grid_is_complete(&tiles,size));
 
         let mut tiles = complete_visual_grid();
         tiles.swap(0, 1);
-        assert!(!visual_tile_grid_is_complete(&tiles));
+        assert!(!visual_tile_grid_is_complete(&tiles,size));
     }
 
     #[test]
@@ -826,7 +826,8 @@ mod render_mod_tests {
         let iterations = 10_000;
         let start = Instant::now();
         for _ in 0..iterations {
-            assert!(visual_tile_grid_is_complete(black_box(&tiles)));
+            assert!(visual_tile_grid_is_complete(black_box(&tiles),
+                UVec2::new(VISUAL_WORLD_TILES_X as u32,VISUAL_WORLD_TILES_Y as u32)));
             black_box(visual_terrain_revision(7, (-4, 12), black_box(&tiles)));
         }
         let uncached = start.elapsed();

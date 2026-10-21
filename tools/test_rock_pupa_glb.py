@@ -32,13 +32,18 @@ class RockPupaSkinTests(unittest.TestCase):
    for i,n in enumerate(m.names):
     owner=None
     if n.startswith(('Foot /','Toe /')):owner=0
-    elif n.startswith(('Belly /','Body vent /','Shell seam /','Back seam /')) or n.startswith('Body /') and s=='larvitar':owner=1
+    elif n.startswith(('Belly /','Body vent /','Back vent /','Shell seam /','Back seam /')) or n.startswith('Body /') and s=='larvitar':owner=1
     elif n.startswith(('Head /','Eye socket /','Eye white /','Iris /','Pupil /','Glint /','Lip /','Cheek tear /','Nostril /','Horn /','Crown spike /')):owner=2
     elif n.startswith('Side spike /'):owner=2 if n.endswith(' 2') else 1
-    elif n.startswith('Arm /'):owner=3 if n.endswith('-1') else 4
+    elif n.startswith('Arm /'):
+     arm=3 if n.endswith('-1') else 4;wrist=5 if arm==3 else 6
+     owners={j for js,ws in zip(m.ids[i],m.weights[i]) for j,w in zip(js,ws) if w}
+     self.assertEqual(owners,{arm,wrist},n)
+     for joint in (arm,wrist):self.assertTrue(any(sum(w for j,w in zip(js,ws) if j==joint)>.95 for js,ws in zip(m.ids[i],m.weights[i])),(n,joint))
+     continue
     elif n.startswith(('Hand /','Finger /')):owner=5 if int(n.split()[-2] if n.startswith('Finger /') else n.split()[-1])<0 else 6
     elif n.startswith('Tail /'):owner=9
-    elif n.startswith('Tail prong /'):owner=10
+    elif n.startswith(('Tail prong /','Tail hub /')):owner=10
     if owner is not None:self.assertTrue(all(js==[owner,0,0,0] for js in m.ids[i]),n);self.assertTrue(all(ws==[1.,0.,0.,0.] for ws in m.weights[i]))
  def test_fixed_soles_positive_winding_strain_and_neutral_endpoints(self):
   for s,m in self.logical.items():
@@ -61,7 +66,7 @@ class RockPupaSkinTests(unittest.TestCase):
    for clip in m.clips:
     for t in (.18,.34,.46,.76):
      mats=m.matrices(clip,t);helper=anatomy.RockPupaTests();helper.models={s:dict(primitives=[self.part(m,i,mats) for i in range(len(m.parts))])}
-     helper.test_skulls_and_all_crown_points_have_occupied_volume_roots();helper.test_larva_complete_forelimbs_fingers_and_hind_supports_are_rooted();helper.test_larva_heavy_tail_and_all_three_fan_points_have_roots();helper.test_pupa_all_side_points_and_lower_fold_have_roots()
+     helper.test_skulls_and_all_crown_points_have_occupied_volume_roots();helper.test_larva_tapered_forelimbs_and_hind_supports_are_rooted();helper.test_larva_short_tail_hub_and_all_six_radial_points_have_roots();helper.test_pupa_all_side_points_and_lower_fold_have_roots()
  def test_posed_fitted_gaze_marks_and_front_back_seams_keep_parent_support(self):
   for s,m in self.logical.items():
    for clip in m.clips:
@@ -69,7 +74,7 @@ class RockPupaSkinTests(unittest.TestCase):
      mats=m.matrices(clip,t);helper=anatomy.RockPupaTests();helper.models={s:dict(primitives=[self.part(m,i,mats) for i in range(len(m.parts))])};indices={n:i for i,n in enumerate(m.names)}
      def pairs():
       for child,parent in helper.pairs(s):
-       back=child['part'].startswith('Back seam /')
+       back=child['part'].startswith(('Back seam /','Back vent /'))
        if back:child=anatomy.reverse_front(child);parent=anatomy.reverse_front(parent)
        i=indices[child['part']];j=m.ids[i][0][0];self.assertTrue(all(ids==[j,0,0,0] for ids in m.ids[i]));self.assertTrue(all(ws==[1.,0.,0.,0.] for ws in m.weights[i]));child=inverse_rigid(child,mats[j]);parent=inverse_rigid(parent,mats[j]);yield (anatomy.reverse_front(child),anatomy.reverse_front(parent)) if back else (child,parent)
      fitted=anatomy.fitted.NidorinaTests();fitted.pairs=pairs;fitted.test_fitted_layers_follow_actual_stored_parent();fitted.test_fitted_face_centers_and_edges_clear_parent()

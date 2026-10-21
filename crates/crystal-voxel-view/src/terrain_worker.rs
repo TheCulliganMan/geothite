@@ -257,6 +257,10 @@ pub(crate) fn restore_response(
 const MAGIC: &[u8; 8] = b"GTRNW003";
 const MAX_MESSAGE_BYTES: usize = 512 * 1024 * 1024;
 
+#[cfg(test)]
+#[path = "terrain_worker/region_paged_proof.rs"]
+mod region_paged_proof;
+
 fn encode<T: serde::Serialize>(value: &T) -> Result<Vec<u8>, String> {
     let mut bytes = MAGIC.to_vec();
     ciborium::into_writer(value, &mut bytes).map_err(|e| e.to_string())?;
@@ -346,6 +350,8 @@ mod tests {
         let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(path).unwrap();
         let pack = loaded.pack();
         let profiles = crate::live_profiles::LiveProfiles::default();
+        let selected_map = std::env::var("CRYSTAL_TERRAIN_WORKER_TEST_MAP").ok();
+        let mut tested_maps = 0;
         for (job, map_name) in [
             "NewBarkTown",
             "ViridianCity",
@@ -355,10 +361,17 @@ mod tests {
             "SaffronMagnetTrainStation",
             "DarkCaveVioletEntrance",
             "Route29",
+            "CianwoodCity",
+            "OlivineCity",
+            "Route40",
+            "NationalPark",
+            "NationalParkBugContest",
         ]
         .into_iter()
         .enumerate()
         {
+            if selected_map.as_deref().is_some_and(|selected| selected != map_name) { continue; }
+            tested_maps += 1;
             let module = &pack.data().maps[map_name];
             let tileset = &module.attributes.tileset_name;
             let layout = &pack.runtime_files()[&format!("data/tilesets/{tileset}_metatiles.bin")];
@@ -489,6 +502,13 @@ mod tests {
             assert_eq!(direct.train_doors,matches!(map_name,"GoldenrodMagnetTrainStation"|"SaffronMagnetTrainStation"),
                 "{map_name}: selected train metadata");
             let direct_ms = started.elapsed().as_secs_f64() * 1000.;
+            if matches!(map_name, "NationalPark" | "NationalParkBugContest") {
+                // The production browser transfers bounded raw pages. A
+                // monolithic legacy CBOR oracle can exceed its message cap
+                // for these detailed full-map fixtures before paging begins.
+                region_paged_proof::verify(job as u64, map_name, &frame, &submitted, direct);
+                continue;
+            }
             let (_, mut bindings) = request::Frame::capture(&frame);
             let expected = encode(
                 &response::Response::capture(job as u64, &direct, &frame, &mut bindings).unwrap(),
@@ -597,5 +617,6 @@ mod tests {
                 bytes.len()
             );
         }
+        assert!(tested_maps > 0, "selected terrain test map is not in the region matrix");
     }
 }

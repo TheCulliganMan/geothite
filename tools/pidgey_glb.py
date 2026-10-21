@@ -4,15 +4,22 @@ import argparse
 import hashlib
 import math
 from pathlib import Path
+from functools import lru_cache
 from pidgey_sculpt import sculpture,HEIGHT
 from sculpt_geometry import sub
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 PARTS=tuple(p['part'] for p in sculpture()['primitives'])
 MAX_BYTES=1024000
-JOINTS=(('root',None,(0.,0.,0.)),('torso',0,(0.,.26,-.04)),('head',1,(0.,.56,.07)),
-        ('lower_beak',2,(0.,.59,.23)),('wing_left',1,(-.18,.43,-.02)),
-        ('flight_left',4,(-.25,.25,-.14)),('wing_right',1,(.18,.43,-.02)),
-        ('flight_right',6,(.25,.25,-.14)),('tail_fan',1,(0.,.26,-.18)),('crown',2,(0.,.74,.03)))
+@lru_cache(maxsize=1)
+def authoring_bundle():return sculpture(with_transform=True)
+def normalized(p):
+    lo,k=authoring_bundle()[1];return tuple((v-(lo if i==1 else 0.))*k for i,v in enumerate(p))
+JOINTS=tuple((n,parent,(0.,0.,0.) if parent is None else normalized(p)) for n,parent,p in (
+        ('root',None,(0.,0.,0.)),('torso',0,(0.,.245,-.043)),('head',1,(0.,.415,.058)),
+        ('lower_beak',2,(0.,.453,.176)),('wing_left',1,(-.132,.340,-.019)),
+        ('flight_left',4,(-.200,.250,-.110)),('wing_right',1,(.132,.340,-.019)),
+        ('flight_right',6,(.200,.250,-.110)),('tail_fan',1,(0.,.208,-.142)),('crown',2,(0.,.55,.025))))
+
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 
 
@@ -21,7 +28,7 @@ def skin_weights(part,position):
     if part.startswith(('Foot /','Toe /','Rear toe /','Claw /')):return [0,0,0,0],[1.,0.,0.,0.]
     if part.startswith('Leg /'):
         flex=smoothstep(.05,.18,y);return [0,1,0,0],[1.-flex,flex,0.,0.]
-    if part.startswith(('Head /','Face /','Cheek /','Eye /','Pupil /','Brow /','Upper beak /')):return [2,0,0,0],[1.,0.,0.,0.]
+    if part.startswith(('Head /','Face /','Cheek /','Eye /','Pupil /','Brow /','Upper beak /','Mouth /')):return [2,0,0,0],[1.,0.,0.,0.]
     if part.startswith('Lower beak /'):return [3,0,0,0],[1.,0.,0.,0.]
     if part.startswith('Crown /'):return [9,0,0,0],[1.,0.,0.,0.]
     if part.startswith('Wing /'):return [4 if left else 6,0,0,0],[1.,0.,0.,0.]
@@ -33,7 +40,7 @@ def skin_weights(part,position):
 def pose_angles(clip,t):
     if clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid Pidgey clip/time')
     if t in (0.,1.):return [(0.,0.,0.)]*len(JOINTS)
-    wave=math.sin(math.tau*t);breath=.5-.5*math.cos(math.tau*t)
+    wave=math.sin(math.tau*t)*(1.-math.cos(math.tau*t))*.769800358919501;breath=.5-.5*math.cos(math.tau*t)
     if clip=='idle':return [(0.,0.,0.),(.010*breath,0.,.006*wave),(-.018*breath,.047*wave,.009*wave),
         (.012*breath,0.,0.),(.018*wave,0.,-.010*breath),(.012*wave,0.,-.007*breath),
         (.018*wave,0.,.010*breath),(.012*wave,0.,.007*breath),(.025*wave,.010*wave,0.),(.020*wave,0.,0.)]

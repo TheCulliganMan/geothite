@@ -1,5 +1,12 @@
 # Noctowl crowned owl skin
 
+The [2026-10-21 owl fidelity revision](owl-fidelity.md) supersedes the shape,
+palette and measurements below. Noctowl now has a deep breast and folded cases,
+buried shoulder caps, broad gold three-point plumes joined by solid gold brows,
+red irises, upright gold shanks and pink bill/claws. The current skin has 7,706
+vertices, 10,076 triangles, 52 parts, 14 joints and 372,248 bytes. The remaining
+text records the earlier migration and its limited indexed-palette assumptions.
+
 The existing production body was inspected against its matching 2D battle
 state. The protruding eye disks, cone-shaped brows, floating breast marks and
 thin pink feet lose Noctowl's owl silhouette. The preserved-state baseline

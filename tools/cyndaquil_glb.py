@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export the authored rounded quadrupedal Cyndaquil with its twelve-joint skin.
+"""Export the authored crouched Cyndaquil with its twelve-joint skin.
 
 Geometry is reproducible from cyndaquil_sculpt.py without Blender, inputs or
 third-party packages. The bounded canonical reader rejects unreviewed geometry
@@ -17,7 +17,7 @@ from animated_glb import parse_glb
 from skin_glb import (COORDINATES, Glb, envelope, packed,
                         quantized_weights, quaternion_xyz, smoothstep)
 
-REST_DIGEST = '343dc219a6151db3baa8b52459f911b33746aa2cac61ad77497efd434bd4d9ea'
+REST_DIGEST = '32786eb0607cde77e469338e2d262ff91e86b0e77c710ce72bcb5c96d1179d53'
 FILE = 'cyndaquil.glb'
 PARTS = (
     'Small soft charcoal nose',
@@ -50,10 +50,14 @@ PARTS = (
     'Upper right flame quill / back golden heart',
     'Lower left flame quill / front golden heart',
     'Upper left flame quill / front golden heart',
-    'Foreleg / left',
-    'Foreleg / right',
+    'Forearm / left',
+    'Forearm / right',
     'Hindleg / left',
     'Hindleg / right',
+    'Dorsal ignition spot / left 0',
+    'Dorsal ignition spot / right 0',
+    'Dorsal ignition spot / left 1',
+    'Dorsal ignition spot / right 1',
 )
 
 # Keep the original source-to-runtime rig datum. The three lower flame roots
@@ -71,20 +75,20 @@ def source_point(x, y, z):
 QUILLS = tuple((name,((x-SOURCE_OFFSET[0])/SOURCE_SCALE,
                     (SOURCE_OFFSET[2]-z)/SOURCE_SCALE,(y-SOURCE_OFFSET[1])/SOURCE_SCALE))
     for name,(x,y,z) in (
-        ('Upper left flame quill',(-.10,.59,-.10)),
-        ('Upper right flame quill',(.10,.59,-.10)),
-        ('Lower left flame quill',(-.10,.51,-.35)),
-        ('Lower right flame quill',(.10,.51,-.35)),
-        ('Central rear flame quill',(0.,.46,-.49))))
+        ('Upper left flame quill',(-.10,.49,-.15)),
+        ('Upper right flame quill',(.10,.49,-.15)),
+        ('Lower left flame quill',(-.10,.45,-.35)),
+        ('Lower right flame quill',(.10,.45,-.35)),
+        ('Central rear flame quill',(0.,.39,-.49))))
 JOINTS = (
     ('root', None, (0., 0., 0.)),
-    ('torso', 0, (0., .35, -.28)),
-    ('head', 1, (0., .49, .035)),
-    ('foreleg_left', 1, (-.16, .18, .02)),
-    ('foreleg_right', 1, (.16, .18, .02)),
+    ('torso', 0, (0., .29, -.25)),
+    ('head', 1, (0., .46, -.02)),
+    ('forearm_left', 1, (-.17, .34, .055)),
+    ('forearm_right', 1, (.17, .34, .055)),
 ) + tuple((name.lower().replace(' ', '_'), 1, source_point(*root))
           for name, root in QUILLS) + (
-    ('hindleg_left',1,(-.19,.18,-.38)),('hindleg_right',1,(.19,.18,-.38)))
+    ('hindleg_left',1,(-.20,.20,-.36)),('hindleg_right',1,(.20,.20,-.36)))
 CLIPS = (('idle', 3.2, 65), ('attack', 1., 49), ('hit', 1., 49))
 
 
@@ -102,7 +106,7 @@ def named_model(model):
     if model.get('name') not in ('battle_cyndaquil', 'cyndaquil') or model.get('version') != 1:
         raise ValueError('expected Cyndaquil source schema version 1')
     if model.get('coordinate_system') != COORDINATES or len(model.get('primitives', [])) != len(PARTS):
-        raise ValueError('expected refined Cyndaquil coordinates and 34 anatomy parts')
+        raise ValueError('expected refined Cyndaquil coordinates and 38 anatomy parts')
     if geometry_digest(model) != REST_DIGEST:
         raise ValueError('unreviewed neutral geometry; anatomy mapping must be reviewed again')
     result = copy.deepcopy(model)
@@ -133,8 +137,10 @@ def body_weights(position):
 
 
 def skin_weights(part, position):
-    if part.startswith(('Foreleg / ','Hindleg / ')):
-        joint=(3 if part.startswith('Foreleg') else 10)+(0 if part.endswith('left') else 1)
+    if part.startswith('Forearm / '):
+        return [3+(0 if part.endswith('left') else 1),0,0,0],[1.,0.,0.,0.]
+    if part.startswith('Hindleg / '):
+        joint=10+(0 if part.endswith('left') else 1)
         weight=smoothstep(.035,.14,position[1])
         if weight == 0.:return [0,0,0,0],[1.,0.,0.,0.]
         return [joint,0,0,0],[weight,1.-weight,0.,0.]
@@ -199,7 +205,7 @@ def pose_angles(clip, t):
 def export_cyndaquil(model):
     model = named_model(model)
     glb = Glb()
-    glb.doc['asset']['generator'] = 'Geothite Cyndaquil rounded quadruped authoring v3'
+    glb.doc['asset']['generator'] = 'Geothite original crouched Cyndaquil authoring v4'
     nodes = glb.doc['nodes']
     inverse = []
     for name, parent, pivot in JOINTS:

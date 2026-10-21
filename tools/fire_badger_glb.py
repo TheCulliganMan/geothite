@@ -14,7 +14,7 @@ def geometry_digest(model):
 
 @lru_cache(maxsize=2)
 def authoring_model(species):return sculpture(species)
-REST_DIGESTS={'quilava': '3257af9b39de38a6140fe858ea41e7f55a2372a26e2ea46b8dd3e2eadb53096c', 'typhlosion': '4a5f8f7b25c03d42556da0b55a6af3eaad6be1dc77cd684959bd2d11819072fe'}
+REST_DIGESTS={'quilava': '6e57c783a464cfc59e4d89808377df65f11b019c17b08c180c002f41f3396904', 'typhlosion': '464c12449f8fc3c7371ff95c8684cc6f3938cbcfa803bfaaa8b00dd1cf395e1a'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 
 @lru_cache(maxsize=2)
@@ -25,13 +25,13 @@ def normalized(species,point):
 
 def joints(species):
  if species=='quilava':
-  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.28,-.20)),('head',1,(0.,.43,.15))]
+  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.47,-.07)),('head',1,(0.,1.00,.06))]
   for row in (0,1):
-   for side in (-1,1):raw.append((('foreleg_' if row==0 else 'hindleg_')+('left' if side<0 else 'right'),0,arm_path(species,side,row)[0][0]))
+   for side in (-1,1):raw.append((('forearm_' if row==0 else 'hindleg_')+('left' if side<0 else 'right'),1 if row==0 else 0,arm_path(species,side,row)[0][0]))
  else:
-  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.50,0.)),('head',1,(0.,1.07,.045)),('jaw',2,(0.,1.07,.055)),
+  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.53,-.035)),('head',1,(0.,1.13,.13)),('jaw',2,(0.,1.10,.12)),
        ('arm_left',1,arm_path(species,-1)[0][0]),('arm_right',1,arm_path(species,1)[0][0]),('wrist_left',4,arm_path(species,-1)[0][-1]),('wrist_right',5,arm_path(species,1)[0][-1]),
-       ('leg_left',0,(-.19,.20,0.)),('leg_right',0,(.19,.20,0.))]
+       ('leg_left',0,(-.24,.18,-.015)),('leg_right',0,(.24,.18,-.015))]
  raw += [('fire_'+label.replace(' ','_'),1,root) for label,root,tip,w,twist in fire_specs(species)]
  return tuple((n,p,(0.,0.,0.) if p is None else normalized(species,v)) for n,p,v in raw)
 JOINTS={s:joints(s) for s in SPECIES}
@@ -44,7 +44,10 @@ def influences(pairs):
  return [j for j,w in pairs]+[0]*(4-len(pairs)),[w for j,w in pairs]+[0.]*(4-len(pairs))
 def skin_weights(species,title,point):
  if title.startswith(('Foot /','Toe /')):return rigid(0)
- if title.startswith(('Body /','Collar /')):return rigid(1)
+ if title.startswith('Body /'):
+  if species=='quilava':return rigid(1)
+  lo,scale=authoring_transform(species);a=smoothstep(.10,.32,point[1]/scale+lo)
+  return influences(((0,1.-a),(1,a)))
  if title.startswith(('Head /','Eye socket /','Eye white /','Iris /','Pupil /','Glint /','Nose /','Ear /','Fang /','Lip /')):return rigid(2)
  if title.startswith(('Jaw /','Tongue /')):return rigid(3)
  if title.startswith('Fire /'):
@@ -53,9 +56,9 @@ def skin_weights(species,title,point):
   side,row=map(int,title.split()[-2:]);lo,scale=authoring_transform(species);a=smoothstep(.065,.23,point[1]/scale+lo);return influences(((0,1.-a),(3+row*2+(0 if side<0 else 1),a)))
  if title.startswith('Haunch /'):
   lo,scale=authoring_transform(species);a=smoothstep(.06,.19,point[1]/scale+lo);return influences(((0,1.-a),(8 if title.endswith('-1') else 9,a)))
- if title.startswith('Arm /'):return rigid(4 if title.endswith('-1') else 5)
+ if title.startswith('Arm /'):return rigid((3 if title.endswith('-1') else 4) if species=='quilava' else (4 if title.endswith('-1') else 5))
  if title.startswith(('Hand /','Finger /')):
-  side=int(title.split()[-2] if title.startswith('Finger /') else title.split()[-1]);return rigid(6 if side<0 else 7)
+  side=int(title.split()[-2] if title.startswith('Finger /') else title.split()[-1]);return rigid((3 if side<0 else 4) if species=='quilava' else (6 if side<0 else 7))
  raise ValueError('unowned fire badger anatomy: '+title)
 
 def pose_angles(species,clip,t):
@@ -71,7 +74,7 @@ def pose_angles(species,clip,t):
   elif name=='body':angle=(0.,.010*a,0.)
   elif name=='head':angle=(.010*a,.025*b,0.)
   elif name=='jaw':angle=(.015*b if clip=='idle' else .060*abs(b),0.,0.)
-  elif name.startswith('arm_'):angle=(-.070*a,side*.025*b,side*.018*a)
+  elif name.startswith(('arm_','forearm_')):angle=(-.070*a,side*.025*b,side*.018*a)
   elif name.startswith('wrist_'):angle=(-.050*b,side*.025*a,side*.018*b)
   elif 'leg_' in name:angle=(0.,side*.022*b,0.)
   elif name.startswith('fire_'):

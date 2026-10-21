@@ -1,5 +1,9 @@
 # Chikorita papercraft sculpture and animation
 
+The [October 21 family fidelity revision](grass-starter-fidelity.md) supersedes
+the historical shape and count notes below with fuller depth, a broad centered
+crown, fitted red gaze, twelve nails and current verification.
+
 Chikorita now has one connected quadruped body, fitted facial surfaces, a
 curved folded leaf and a seated collar. This replaces the separate spherical
 head, body and feet and the diamond-shaped leaf in the earlier static model.

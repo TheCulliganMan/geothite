@@ -8,7 +8,7 @@ import test_golem_sculpt as adult
 from test_gengar_glb import Model,winding_alignment
 from test_ninetales_glb import logical_model
 from test_seahorse_glb import occupied_overlap,inverse_rigid
-from skin_glb_test_support import IDENTITY
+from skin_glb_test_support import IDENTITY,transform
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from test_steelix_sculpt import occupied
 ROOT=Path(os.environ.get('CRYSTAL_STONE_PAIR_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
@@ -95,8 +95,12 @@ class StoneSkinTests(unittest.TestCase):
   m=self.logical['golem'];helper=adult.GolemTests();points=helper.aperture_points()
   for clip in m.clips:
    for t in (.18,.34,.46,.76):
-    mats=m.matrices(clip,t);parts=[inverse_rigid(self.part(m,i,mats),mats[1]) for i in range(len(m.parts))]
-    for point in points:self.assertFalse(any(occupied(p,point) for p in parts),(clip,t,point))
+    mats=m.matrices(clip,t);parts=[self.part(m,i,mats) for i in range(len(m.parts))]
+    # A narrow rest gape travels with the skull. Fixed world samples can
+    # leave the mouth when the head nods, silently testing empty air instead.
+    for point in points:
+     posed=transform(mats[2],point)
+     self.assertFalse(any(occupied(p,posed) for p in parts),(clip,t,posed))
   helper.ps=self.models['golem']['primitives'];helper.test_filled_jaw_and_detached_armor_negatives()
  def test_source_byte_and_species_mutations_are_rejected(self):
   for s,b in self.blobs.items():

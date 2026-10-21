@@ -2,7 +2,7 @@
 """Actual stone-shell coverage, surface roots, reptile anatomy and open jaw."""
 import copy,json,os,unittest
 from pathlib import Path
-from golem_sculpt import anatomy,sculpture,shell_cells,HEIGHT,INK
+from golem_sculpt import anatomy,sculpture,shell_cells,head_point,HEIGHT,INK
 from steelix_sculpt import block
 from test_steelix_sculpt import occupied
 from sculpt_geometry import translate
@@ -53,6 +53,17 @@ class GolemTests(unittest.TestCase):
  def test_both_grounded_pads_support_the_raised_shell(self):
   for s in (-1,1):self.assertEqual(min(self.find('Foot /',s)['positions'][1::3]),0)
   self.assertGreater(min(self.find('Shell /')['positions'][1::3]),.1)
+ def test_low_skull_and_forward_lowered_claws_carry_the_shell(self):
+  head=self.find('Head /');shell=self.find('Shell /')
+  self.assertLess(max(head['positions'][1::3]),.60*HEIGHT)
+  self.assertLess(max(head['positions'][::3])-min(head['positions'][::3]),.45*(max(shell['positions'][::3])-min(shell['positions'][::3])))
+  for s in (-1,1):
+   hand=self.find('Hand /',s)
+   self.assertLess(max(hand['positions'][1::3]),.65*HEIGHT)
+   for j in range(3):
+    claw=self.find('Hand claw /',f'{s} {j}')
+    self.assertLess(max(claw['positions'][1::3]),max(hand['positions'][1::3]))
+    self.assertGreater(max(claw['positions'][2::3]),max(hand['positions'][2::3]))
  def pairs(self):
   for p in self.ps:
    s=p['part'].split()[-1]
@@ -62,9 +73,16 @@ class GolemTests(unittest.TestCase):
  def test_fitted_face_centers_and_edges_clear_actual_parent(self):attachments.NidorinaTests.test_fitted_face_centers_and_edges_clear_parent(self)
  def aperture_points(self):
   raw=anatomy();lo=min(v for p in raw for v in p['positions'][1::3]);hi=max(v for p in raw for v in p['positions'][1::3]);scale=HEIGHT/(hi-lo)
-  return [(x*scale,(y-lo)*scale,z*scale) for x in (-.04,0,.04) for y in (.688,.715) for z in (.67,.71)]
+  return [(px*scale,(py-lo)*scale,pz*scale) for x in (-.04,0,.04) for y in (.735,.742) for z in (.67,.71) for px,py,pz in (head_point((x,y,z)),)]
  def test_open_jaw_aperture_is_actually_unoccupied(self):
-  for point in self.aperture_points():self.assertFalse(any(occupied(p,point) for p in self.ps),point)
+  from sculpt_test_support import indexed_ray_intersections
+  def vertical(p):return dict(p,positions=[v for i in range(0,len(p['positions']),3) for v in (p['positions'][i],p['positions'][i+2],p['positions'][i+1])])
+  upper=vertical(self.find('Muzzle /'));lower=vertical(self.find('Jaw /'))
+  for point in self.aperture_points():
+   x,y,z=point;above=indexed_ray_intersections(upper,x,z);below=indexed_ray_intersections(lower,x,z)
+   self.assertTrue(above and below,('aperture sample left the actual jaws',point))
+   self.assertLess(max(below),y);self.assertLess(y,min(above))
+   self.assertFalse(any(occupied(p,point) for p in self.ps),point)
  def test_filled_jaw_and_detached_armor_negatives(self):
   points=self.aperture_points();xs,ys,zs=zip(*points);fill=block('Filled mouth negative',INK,tuple((min(q)+max(q))/2 for q in (xs,ys,zs)),tuple((max(q)-min(q))/2+.01 for q in (xs,ys,zs)))
   self.assertTrue(all(occupied(fill,q) for q in points))

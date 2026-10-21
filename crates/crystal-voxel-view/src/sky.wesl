@@ -7,8 +7,6 @@ struct SkyMaterial {
     cloud: vec4<f32>,
     sun: vec4<f32>,
     parameters: vec4<f32>,
-    woodland: vec4<f32>,
-    woodland_sectors: array<vec4<f32>, 16>,
 }
 @group(constants::MATERIAL_BIND_GROUP) @binding(0) var<uniform> sky: SkyMaterial;
 
@@ -78,16 +76,5 @@ fn fragment(in: VertexOutput) -> @location(0) vec4<f32> {
     let visible_disc = disc * mix(1.0-moon_cut,1.0,sky.parameters.z);
     let disc_color = mix(vec3<f32>(0.65,0.76,1.0),vec3<f32>(1.0,0.90,0.65),sky.parameters.z);
     color += disc_color * visible_disc * mix(0.65,1.8,sky.parameters.z);
-    // Continue the distance-fog color through the empty spaces between the
-    // trunks. A broad, smooth fade keeps the blue sky above the treetops.
-    if elevation < 0.32 {
-    let sector = fract(atan2(ray.z, ray.x) / 6.28318530718 + 1.0) * 64.0 - 0.5;
-    let a = u32(floor(sector + 64.0)) % 64u;
-    let b = (a + 1u) % 64u;
-    let woodland = mix(sky.woodland_sectors[a / 4u][a % 4u],
-        sky.woodland_sectors[b / 4u][b % 4u], fract(sector));
-    let woodland_haze = woodland * (1.0 - smoothstep(0.02, 0.32, elevation));
-    color = mix(color, sky.woodland.rgb, woodland_haze);
-    }
     return vec4<f32>(color,1.0);
 }

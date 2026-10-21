@@ -11,16 +11,14 @@ MODELS=ROOT/'crates/crystal-voxel-view/models'
 class PidgeottoGlbTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
-  cls.path=MODELS/'battle_species/pidgeotto.glb';cls.blob=cls.path.read_bytes();cls.model=public.read_pidgeotto(cls.path);cls.original=skin.original_model(cls.model);cls.doc,cls.binary=decode(cls.blob)
- def test_original_geometry_fingerprint_survives_the_skin_migration(self):
-  h=hashlib.sha256()
-  for p in self.original['primitives']:
-   n=p['part'].encode();h.update(struct.pack('<I',len(n)));h.update(n)
-   for k in (*glb.GEOMETRY_KEYS,'base_color'):h.update(struct.pack('<I',len(p[k])));h.update(glb.packed(p[k],'I' if k=='indices' else 'f'))
-  self.assertEqual(h.hexdigest(),'171a58c257ea427a62984594386d699d36afb82fe5b2e1377405b545526ad3cf')
+  cls.path=MODELS/'battle_species/pidgeotto.glb';cls.blob=cls.path.read_bytes();cls.model=public.read_pidgeotto(cls.path);cls.original=skin.authoring_model('pidgeotto');cls.doc,cls.binary=decode(cls.blob)
+ def test_original_procedural_source_rebuilds_without_a_canonical_input(self):
+  from pidgeotto_sculpt import sculpture
+  self.assertEqual(skin.geometry_digest(self.model),skin.geometry_digest(sculpture()))
+  self.assertEqual(public.export_pidgeotto(sculpture()),self.blob)
  def test_canonical_export_and_contour_rebuild_are_idempotent(self):
   from pidgeotto_contours import prepare
-  self.assertEqual(public.export_pidgeotto(self.model),self.blob);self.assertEqual(public.export_pidgeotto(self.original),self.blob);self.assertEqual(public.export_pidgeotto(prepare(self.original)),self.blob);self.assertEqual(public.load_pidgeotto(self.path.parent),self.model)
+  self.assertEqual(public.export_pidgeotto(self.model),self.blob);self.assertEqual(public.export_pidgeotto(self.original),self.blob);self.assertEqual(public.load_pidgeotto(self.path.parent),self.model)
  def test_decimal_builder_input_refines_like_serialized_f32_geometry(self):
   from pidgeotto_contours import prepare,refine
   from sculpt_geometry import loft

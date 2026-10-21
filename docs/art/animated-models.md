@@ -1,7 +1,55 @@
 # Animated model assets
 
-The [full Pokémon angle review](pokemon-roster-angle-review.md) covers front,
-side and rear views of all 251 species and 276 current variants.
+The [full Pokémon angle review](pokemon-roster-angle-review.md) records the
+earlier front, side and rear survey of 251 species and 276 variants. User
+feedback reopened its visual acceptance; the revisions below record current
+scoped improvements.
+
+The [Pidgey family fidelity revision](pidgey-family-fidelity.md) corrects facial
+layout, skull and breast depth, folded feather planes, swept crests, short
+upright shanks and tail carriage. Pidgeotto now rebuilds from a pure original
+recipe; its previously recorded idle seam passes the production sampler.
+
+The [Aerodactyl/Kabutops fidelity revision](fossil-pair-fidelity.md) corrects
+wing and scythe planes, jaw and eye depth, helmet and chest volume, hocks,
+paired back ridges and tail direction. Aerodactyl's idle seam now passes the
+production sampler without relaxing its tolerance.
+
+The [Charizard/Dragonite fidelity revision](dragon-pair-fidelity.md) corrects
+neck and skull depth, palm carriage, ankle direction, wing sweep/front/back
+surfaces and low tail volume using complete game orbits and supplied sprites.
+It also adds a fitted moving mouth chamber and corrects Charizard's idle join.
+
+The [Scyther/Snorlax fidelity revision](mantis-sleeper-fidelity.md) corrects
+blade/wing planes, greave direction, short crown points, wrapping shell seams,
+seated barrel/hood depth, resting arms and sole volume using complete game
+orbits and all supplied front frames and back pictures.
+
+The [Sneasel/Stantler fidelity revision](claw-deer-fidelity.md) corrects
+forward-sloping hocks, feather planes, antler branches, muzzle depth and
+cloven hoof support using genuine full game orbits.
+
+The [Chikorita family fidelity revision](grass-starter-fidelity.md) adds deeper
+body and skull volume, broad folded collar leaves, backward antennae, a backed
+mouth and articulated flower tissue visible from both sides.
+
+The [Cyndaquil family fidelity revision](fire-starter-fidelity.md) adds tucked
+forepaws, Crystal's upright Quilava stance, a compact Typhlosion muzzle and a
+long wrapping coat with a wide flame mantle.
+
+The [Rhyhorn/Rhydon/Larvitar fidelity revision](rhino-larva-fidelity.md)
+supersedes their historical shape/count notes with wrapping peaked armor,
+grounded shins, lowered hands, a deeper larva skull and a radial tail fan.
+
+The [outdoor Pokémon lighting revision](pokemon-lighting-fidelity.md) restores
+sky fill on their native backs, with gray, green and blue palette controls.
+
+The [Tyranitar fidelity revision](tyranitar-fidelity.md) adds a broader chest,
+compact muzzle, paired dorsal armor and a low tail with terminal radial points.
+
+The [Tyrogue/Smoochum/Jynx fidelity revision](ice-fighter-fidelity.md) supersedes
+their historical October 15 shape/count notes below with authentic full-orbit
+references, revised volume and posture, and current canonical metrics.
 
 The [authoring portability and roster checks](pokemon-authoring-portability.md)
 record full-source and runtime motion coverage, preserved canonical assets,

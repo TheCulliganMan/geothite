@@ -1250,6 +1250,14 @@ fn expanded_world_walk_publishes_every_host_frame_at_60_30_and_9_hz() {
             let published = world.resource::<crystal_render_api::VisualWorldFrame>();
             let subframe = world.resource::<RuntimeTickTimer>().presentation_subframe();
             let expected = visible_overworld_camera_offset(rendered, shell, subframe);
+            // The source window can have unequal padding while retaining
+            // complete metatiles. Compare camera scroll in the classic
+            // viewport's coordinates, independently of that fixed padding.
+            let (vx,vy)=rendered.viewport_origin.unwrap();
+            let grid_center=published.grid_origin.as_vec2()+published.grid_size.as_vec2()*0.5;
+            let viewport_center=Vec2::new(vx as f32,vy as f32)
+                +Vec2::new(VIEWPORT_TILES_X as f32,VIEWPORT_TILES_Y as f32)*0.5;
+            let source_padding=(grid_center-viewport_center)*Vec2::new(TILE_SIZE,-TILE_SIZE);
             assert!(published.active);
             let traversal = world.resource::<crystal_render_api::VisualPlayerTraversal>();
             if shell.player_walk_frame_ticks > 0 && shell.player_walk_from.is_some() {
@@ -1263,10 +1271,10 @@ fn expanded_world_walk_publishes_every_host_frame_at_60_30_and_9_hz() {
             }
 
             assert!(
-                (published.center - published.view_center).abs_diff_eq(expected, 0.001),
+                (published.center - published.view_center - source_padding).abs_diff_eq(expected, 0.001),
                 "{host_hz} Hz frame {host_frame}: movement timer advanced to {}, but published camera froze at {:?} instead of {expected:?}",
                 shell.player_walk_frame_ticks,
-                published.center - published.view_center,
+                published.center - published.view_center - source_padding,
             );
             let player = published.actors.iter()
                 .find(|actor| actor.id == crystal_render_api::VisualActorId::Player)

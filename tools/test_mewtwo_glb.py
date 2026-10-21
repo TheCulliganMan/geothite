@@ -17,7 +17,27 @@ class MewtwoTests(unittest.TestCase):
   self.assertLessEqual(sum(map(len,m.vertices)),20000);self.assertLessEqual(sum(map(len,m.indices)),120000);self.assertLessEqual(len(m.doc['accessors']),256);self.assertLess(len(self.blob),1024*1024)
   points=[p for v in m.vertices for p in v];self.assertEqual(min(p[1] for p in points),0.);self.assertAlmostEqual(max(p[1] for p in points),1.45,places=6)
   for prefix,count in [('Horn /',2),('Finger /',6),('Fingertip /',6),('Foot /',2),('Toe /',6),('Tail /',1),('Back tube /',1)]:self.assertEqual(sum(n.startswith(prefix) for n in m.names),count)
+ def test_wide_supports_and_long_low_counterbalance(self):
+  m=self.m
+  for side in (-1,1):
+   i=next(i for i,n in enumerate(m.names) if n.startswith('Foot /') and n.endswith(' '+str(side)))
+   self.assertGreater(abs(sum(p[0] for p in m.vertices[i])/len(m.vertices[i])),.13*author.HEIGHT)
+  i=next(i for i,n in enumerate(m.names) if n.startswith('Tail /'))
+  self.assertGreater(max(p[0] for p in m.vertices[i])-min(p[0] for p in m.vertices[i]),.90*author.HEIGHT)
+  self.assertLess(max(p[1] for p in m.vertices[i]),.62*author.HEIGHT)
  def test_closed_outward_solids(self):assert_closed_models(self,{'mewtwo':self.m.neutral_model()})
+ def test_lower_legs_descend_under_knees_without_forward_crouch(self):
+  from sculpt_test_support import horizontal_section_bounds
+  for side in (-1,1):
+   shin=self.find('Shin /',side)
+   sections=[horizontal_section_bounds(shin,y*author.HEIGHT) for y in (.085,.145,.215)]
+   depths=[(lo[1]+hi[1])/2 for lo,hi in sections]
+   # The game profile has a nearly vertical shaft and projecting toe pads,
+   # not a rearward hock followed by an exaggerated diagonal forward shin.
+   self.assertLess(max(depths)-min(depths),.035*author.HEIGHT)
+   self.assertLessEqual(depths[0]-depths[-1],.006*author.HEIGHT)
+   foot=self.find('Foot /',side)
+   self.assertGreater(sum(foot['positions'][2::3])/(len(foot['positions'])//3)-depths[0],.035*author.HEIGHT)
  def test_actual_face_normals(self):assert_model_shading(self,{'mewtwo':self.m.neutral_model()})
  def test_fitted_lenses_clear_stored_parents(self):
   for mark in self.parts:

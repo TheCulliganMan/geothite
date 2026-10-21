@@ -1771,9 +1771,19 @@ pub(super) fn append_terrain(
             let Some(ni) = neighbor else {
                 continue;
             };
-            let bottom = corner_edges[ni][(side+2)%4].map_or_else(
-                ||neighbor_edge_heights(shapes[ni],side,g.tile_height/SOURCE_TILE_HEIGHT),
-                |height|[height;2]);
+            // A source roof is an object above its ground, not adjoining
+            // geological fill. Its old top can equal the native cliff datum
+            // while the modeled roof recedes, exposing an omitted rock side.
+            // Keep the cliff seated at the object's real floor instead.
+            let object_floor = if canyon {
+                super::outdoor_mountains::object_floor_height(&cells[ni].source,
+                    shapes[ni],mesh.footing_heights.get(ni).copied(),g.tile_height)
+            } else {None};
+            let bottom = object_floor.map(|height|[height;2]).unwrap_or_else(|| {
+                corner_edges[ni][(side+2)%4].map_or_else(
+                    ||neighbor_edge_heights(shapes[ni],side,g.tile_height/SOURCE_TILE_HEIGHT),
+                    |height|[height;2])
+            });
             // A changing ramp may meet the cap at only one endpoint. Keep the
             // shared diagonal and emit a single triangle at that termination.
             let low = [bottom[0].min(h), bottom[1].min(h)];
@@ -1854,7 +1864,128 @@ pub(super) fn append_terrain(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use bevy::prelude::Vec2;
     use std::sync::Arc;
+
+    fn assert_cliff_contact(surface: &SurfaceMeshData, g: &GridGeometry,
+        cell: [usize; 2], side: usize, floor: f32, top: f32) {
+        let (w,e,n,s) = g.bounds(cell[0],cell[1]);
+        let (plane,lo,hi,normal) = match side {
+            0 => (n,w,e,Vec3::NEG_Z), 1 => (e,n,s,Vec3::X),
+            2 => (s,w,e,Vec3::Z), _ => (w,n,s,Vec3::NEG_X),
+        };
+        let vertical_x = side==1 || side==3;
+        let mut faces = Vec::new();
+        for ids in surface.indices.chunks_exact(3) {
+            let p = [ids[0],ids[1],ids[2]].map(|i|Vec3::from_array(surface.positions[i as usize]));
+            let same_plane = ids.iter().all(|&i| {
+                let uv = surface.uvs[i as usize];
+                let point = if uv[0]< -9000. {
+                    if vertical_x {-10000.-uv[0]} else {-40000.-uv[1]}
+                } else if vertical_x {surface.positions[i as usize][0]}
+                    else {surface.positions[i as usize][2]};
+                (point-plane).abs()<0.01
+            });
+            if !same_plane {continue;}
+            let projected = p.map(|p|Vec2::new(if vertical_x {p.z} else {p.x},p.y));
+            if projected.iter().any(|p|p.x<lo-0.001 || p.x>hi+0.001) {continue;}
+            let cross = (p[1]-p[0]).cross(p[2]-p[0]);
+            if cross.length_squared()<0.00001 {continue;}
+            assert!(cross.dot(normal)>0.,"a repaired cliff contact must face outward");
+            faces.push(projected);
+        }
+        assert!(!faces.is_empty(),"the modeled roof cannot replace a cliff side");
+        for u in [0.1,0.37,0.68,0.9] {for v in [0.1,0.38,0.67,0.92] {
+            let point = Vec2::new(lo+(hi-lo)*u,floor+(top-floor)*v);
+            assert!(faces.iter().any(|&[a,b,c]| {
+                let area = (b-a).perp_dot(c-a);
+                if area.abs()<0.00001 {return false;}
+                let wb = (point-a).perp_dot(c-a)/area;
+                let wc = (b-a).perp_dot(point-a)/area;
+                wb>=-0.0001 && wc>=-0.0001 && wb+wc<=1.0001
+            }),"cliff contact is open at {point:?}, side {side}, floor {floor}, top {top}");
+        }}
+    }
+
+    #[test]
+    fn outdoor_cliffs_close_against_object_floors_below_equal_or_taller_roofs() {
+        for (family,map,block,tile,height) in [
+            ("johto","CianwoodCity",0x72,0x3c,crate::profile::MOUNTAIN_CLIFF_HEIGHT),
+            ("johto_modern","BlackthornCity",0x72,0x3c,crate::profile::MOUNTAIN_CLIFF_HEIGHT),
+            ("kanto","Route8",0x2c,0x11,crate::kanto_cliff::KANTO_CLIFF_HEIGHT),
+        ] {
+            for generic in [false,true] {for side in 0..4 {for floor in [0.,6.] {for roof in [height,height*2.] {
+                let mut t = tiles(3,3,family);
+                t[4].source.metatile_id=if generic && family!="kanto" {0x0a} else {block};
+                t[4].source.tile_index=tile;
+                let neighbor = [1,5,7,3][side];
+                t[neighbor].source.metatile_id=0x15;t[neighbor].source.tile_index=0x11;
+                let cells = t.iter().collect::<Vec<_>>();
+                let mut shapes = vec![CellShape::Flat;9];
+                shapes[4]=CellShape::RaisedTop {height,solid:SolidKind::Bank};
+                shapes[neighbor]=CellShape::RaisedTop {height:roof,solid:SolidKind::Building};
+                let mut mesh = TerrainMeshData {footing_heights:vec![0.;9],
+                    authored_cells:vec![None;9],..Default::default()};
+                mesh.footing_heights[4]=height;mesh.footing_heights[neighbor]=floor;
+                mesh.authored_cells[neighbor]=Some("test:modeled-house");
+                let support = mesh.footing_heights.clone();
+                let mut claimed = vec![false;9];claimed[neighbor]=true;
+                let g = grid(3,3);
+                if generic {
+                    super::super::append_exposed_sides(&mut mesh,map,&g,&cells,&shapes,&[None;9],1,1);
+                } else {
+                    append_terrain(&mut mesh,map,&cells,&shapes,&g,&mut claimed,[0,0]);
+                }
+                assert_cliff_contact(&mesh.solid,&g,[1,1],side,floor,height);
+                assert_eq!(mesh.footing_heights,support);
+                assert_eq!(mesh.authored_cells[neighbor],Some("test:modeled-house"));
+                assert!(claimed[neighbor] && (generic || claimed[4]));
+            }}}}
+        }
+    }
+
+    #[test]
+    #[ignore = "requires a completed external CRYSTAL_RENDER_TEST_PACK"]
+    fn external_cianwood_house_cliff_has_complete_source_boundary_faces() {
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
+            std::env::var("CRYSTAL_RENDER_TEST_PACK").unwrap()).unwrap();
+        let pack = loaded.pack();
+        let module = &pack.data().maps["CianwoodCity"];
+        let family = &module.attributes.tileset_name;
+        let layout = &pack.runtime_files()[&format!("data/tilesets/{family}_metatiles.bin")];
+        let (width,height) = (module.attributes.width as usize*4,module.attributes.height as usize*4);
+        let sources = (0..height).flat_map(|z|(0..width).map(move |x| {
+            let block = module.blocks[z/4*(width/4)+x/4];
+            VisualTileSource {tileset_id:family.as_str().into(),metatile_id:block,
+                subtile_column:(x%4) as u8,subtile_row:(z%4) as u8,
+                tile_index:layout[block as usize*16+z%4*4+x%4] as u16}
+        })).collect();
+        let frame = super::super::tests::frame(width as u32,height as u32,sources);
+        let cells = frame.tiles.iter().collect::<Vec<_>>();
+        let mut shapes = cells.iter().map(|c|shape_for_source_on_map("CianwoodCity",&c.source)).collect::<Vec<_>>();
+        resolve_rock_platform_tiers(&cells,&mut shapes,width);
+        resolve_authored_mountain_tiers(&mut shapes,width,height);
+        let g = GridGeometry {width,height,tile_width:32.,tile_height:32.,origin_x:0.,origin_z:0.};
+        let mut mesh = TerrainMeshData {footing_heights:cells.iter().zip(&shapes).map(|(c,s)| {
+            if s.solid_kind()==SolidKind::Bank {s.surface_height(32.)} else {support_height(&c.source,32.)}
+        }).collect(),authored_cells:vec![None;cells.len()],..Default::default()};
+        let support = mesh.footing_heights.clone();
+        let mut claimed = vec![false;cells.len()];
+        for x in 13..16 {
+            let rock = 31*width+x;let roof = rock+width;
+            assert_eq!(cells[rock].source.metatile_id,0x72);
+            assert_eq!(cells[roof].source.metatile_id,0x15);
+            assert_eq!(shapes[rock].surface_height(32.),shapes[roof].surface_height(32.));
+            mesh.authored_cells[roof]=Some("test:modeled-house");claimed[roof]=true;
+        }
+        append_terrain(&mut mesh,"CianwoodCity",&cells,&shapes,&g,&mut claimed,[0,0]);
+        for x in 13..16 {
+            assert_cliff_contact(&mesh.solid,&g,[x,31],2,0.,shapes[31*width+x].surface_height(32.));
+            assert_eq!(mesh.authored_cells[32*width+x],Some("test:modeled-house"));
+        }
+        assert_eq!(mesh.footing_heights,support);
+    }
+
     #[test]
     fn kanto_outdoor_cliffs_use_ochre_mineral_without_mutating_footing() {
         for block in [0x2a, 0x2c] {

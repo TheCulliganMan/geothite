@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Stored raptor-bird anatomy, physical roots and fitted feather/face checks."""
-import json,os,unittest
+import json,os,unittest,math
 from pathlib import Path
 from raptor_bird_sculpt import sculpture,SPECIES,HEIGHTS
 from sculpt_test_support import assert_closed_models,assert_model_shading
@@ -29,7 +29,10 @@ class RaptorBirdTests(unittest.TestCase):
     aa=ray_intersections(a,xl+(xh-xl)*i/25,yl+(yh-yl)*j/25);bb=ray_intersections(b,xl+(xh-xl)*i/25,yl+(yh-yl)*j/25)
     if aa and bb and min(max(aa),max(bb))-max(min(aa),min(bb))>.0002:return True
   return False
- def test_closed_connected_outward_parts(self):assert_closed_models(self,self.ms)
+ def test_closed_connected_outward_parts(self):
+  from pidgeotto_contours import components
+  models={s:dict(primitives=[q for p in m['primitives'] for q in (components(p) if s=='fearow' and p['part'].startswith('Mane /') else [p])]) for s,m in self.ms.items()}
+  assert_closed_models(self,models)
  def test_finite_unit_normals_follow_actual_faces(self):assert_model_shading(self,self.ms)
  def test_regeneration_preserved_height_floor_and_budget(self):
   for s,m in self.ms.items():
@@ -44,7 +47,8 @@ class RaptorBirdTests(unittest.TestCase):
    self.assertEqual(len(m['primitives']),len({p['part'] for p in m['primitives']}))
  def test_species_specific_crest_and_feather_counts(self):
   for s,m in self.ms.items():
-   for prefix,n in (('Wing /',2),('Primary /',16),('Rear primary /',16),('Covert /',12),('Rear covert /',12),('Tail /',5),('Leg /',2),('Foot /',2),('Toe / three',6),('Toe / rear',2),('Talon /',8),('Crest /',3 if s=='pidgeot' else 0),('Crown /',1 if s=='fearow' else 0),('Primary tip /',32 if s=='fearow' else 0),('Rear primary tip /',32 if s=='fearow' else 0)):
+   for prefix,n in (('Wing /',2),('Primary /',16),('Rear primary /',16),('Covert /',12),('Rear covert /',12),('Tail /',5),('Leg /',2),('Foot /',2),('Toe / three',6),('Toe / rear',2),('Talon /',8),('Crest /',5 if s=='pidgeot' else 0),('Crown /',1 if s=='fearow' else 0),('Primary tip /',32 if s=='fearow' else 0),('Rear primary tip /',32 if s=='fearow' else 0)):
+    if s=='fearow' and prefix in ('Rear primary /','Rear covert /','Rear primary tip /'):n=0
     self.assertEqual(sum(p['part'].startswith(prefix) for p in m['primitives']),n,(s,prefix))
  def test_body_and_neck_have_no_nonadjacent_crossed_faces(self):
   for s in SPECIES:
@@ -96,7 +100,10 @@ class RaptorBirdTests(unittest.TestCase):
    if not uh or not lh:return False
    top=min(uh);bottom=max(lh)
    if top-bottom<.015:return False
-   if any(bottom+.0002<-y<top-.0002 for p in rotated for y in ray_intersections(p,0,z)):return False
+   for p in rotated:
+    hits=sorted(-y for y in ray_intersections(p,0,z))
+    for a,b in zip(hits[::2],hits[1::2]):
+     if min(b,top-.0002)>max(a,bottom+.0002):return False
   return True
  def test_fearow_has_actual_open_space_between_its_stored_mandibles(self):self.assertTrue(self.bill_gap(self.ms['fearow']['primitives']))
  def test_filled_bill_negative_control_is_rejected(self):
@@ -117,11 +124,37 @@ class RaptorBirdTests(unittest.TestCase):
     elif n.startswith('Glint /'):parent=self.find(s,'Pupil /',sign)
     elif n.startswith(('Primary tip /','Rear primary tip /')):
      sign,j,face=n.split()[-3:];parent=self.find(s,'Rear primary /' if n.startswith('Rear') else 'Primary /',f'{sign} {j}')
+     if s=='fearow':
+      from raptor_bird_glb import authoring_transform
+      from fearow_sculpt import wing_frame
+      lo,k=authoring_transform(s)
+      def inspect(q):
+       q=dict(q,positions=[v/k+(lo if i%3==1 else 0.) for i,v in enumerate(q['positions'])])
+       return wing_frame(q,int(sign),True)
+      p,parent=inspect(p),inspect(parent)
      if face=='-1':parent=reverse_front(parent);p=reverse_front(p)
     elif n.startswith('Wing field /'):
      sign,face=n.split()[-2:];parent=self.find(s,'Wing /',sign)
      if face=='-1':parent=reverse_front(parent);p=reverse_front(p)
-    if parent:yield s,p,parent
+    if parent:
+     if s=='fearow' and n.startswith(('Eye socket /','Eye /','Pupil /')):
+      from pidgeotto_sculpt import frame
+      p,parent=frame(p,int(sign)*math.radians(55),True),frame(parent,int(sign)*math.radians(55),True)
+     if s=='pidgeot':
+      from raptor_bird_glb import authoring_transform
+      lo,k=authoring_transform(s)
+      if n.startswith(('Mask /','Eye /','Pupil /','Glint /')):
+       a=-int(sign)*math.radians(53);c,sn=math.cos(a),math.sin(a)
+       def inspect(q):
+        q=dict(q);q['positions']=[v for x,y,z in zip(q['positions'][::3],q['positions'][1::3],q['positions'][2::3]) for v in (c*x+sn*(z-.045*k),y,-sn*x+c*(z-.045*k))];return q
+       p,parent=inspect(p),inspect(parent)
+      elif n.startswith('Wing field /'):
+       from raptor_bird_sculpt import folded_wing
+       def inspect(q):
+        q=dict(q);q['positions']=[v/k+(lo if i%3==1 else 0.) for i,v in enumerate(q['positions'])]
+        return folded_wing(q,int(n.split()[-2]),True)
+       p,parent=inspect(p),inspect(parent)
+     yield s,p,parent
  def test_fitted_faces_breasts_and_both_sides_of_pale_tips_have_mesh_support(self):
   for s,p,parent in self.pairs():
    for i in range(0,len(p['positions']),3):
@@ -131,8 +164,8 @@ class RaptorBirdTests(unittest.TestCase):
    for k in range(0,len(p['indices']),3):
     a,b,c=[p['positions'][3*i:3*i+3] for i in p['indices'][k:k+3]]
     # Only the outward front cap faces +Z; back and walls are intentional roots.
-    nx=(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
-    if nx<=1e-14:continue
+    u=[b[j]-a[j] for j in range(3)];v=[c[j]-a[j] for j in range(3)];normal=(u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0])
+    if normal[2]<=.5*math.sqrt(sum(x*x for x in normal)):continue
     for q in (tuple((a[i]+b[i]+c[i])/3 for i in range(3)),tuple((a[i]+b[i])/2 for i in range(3)),tuple((b[i]+c[i])/2 for i in range(3)),tuple((c[i]+a[i])/2 for i in range(3))):
      hits=ray_intersections(parent,q[0],q[1]);self.assertTrue(hits);self.assertGreater(q[2]-max(hits),.0001,(s,p['part'],k//3))
 

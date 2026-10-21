@@ -779,12 +779,13 @@ fn build_terrain_mesh_internal_with_background(
         authored_cells: vec![None; cell_count],
         ..Default::default()
     };
+    let mut coastal_apron = SurfaceMeshData::default();
     if background_apron && let Some(tileset) = cells.first().map(|tile| tile.source.tileset_id.as_ref()) {
         if !crate::interior::has_back_wall(tileset)
             && !crate::interior::has_room_perimeter(&frame.map_id,tileset)
             && !crate::interior_cutaway::is_cave(frame) {
-            background::append_repeating_background_apron(
-                &mut mesh, &geometry, &original_cells, &source_shapes);
+            coastal_apron = background::append_repeating_background_apron(
+                &mut mesh, &geometry, &original_cells, &source_shapes, &frame.map_id);
         }
     }
     mesh.cave_enclosure = cave_enclosure::build(frame, &geometry);
@@ -2487,7 +2488,7 @@ fn build_terrain_mesh_internal_with_background(
                 continue;
             }
             append_exposed_sides(
-                &mut mesh, &geometry, &cells, &shapes, &bank_runs, column, row,
+                &mut mesh, &frame.map_id, &geometry, &cells, &shapes, &bank_runs, column, row,
             );
         }
     }
@@ -2498,7 +2499,7 @@ fn build_terrain_mesh_internal_with_background(
     }
 
     if authored_enabled && let Some(images) = images {
-        buoy_course::append(&mut mesh,&original_cells,&geometry,images,&claimed_by_tree);
+        buoy_course::append_from_frame(&mut mesh,&original_cells,&geometry,images,&claimed_by_tree,Some(frame));
     }
 
     if authored_enabled && let Some(images) = images {
@@ -2560,8 +2561,8 @@ fn build_terrain_mesh_internal_with_background(
     // rounding must not erase the mineral cap fractures.
     {
         let _trace = crate::loading_trace::span("region.finish_rock_geometry", || serde_json::json!({}));
-        outdoor_stone::finish_rock_geometry(&mut mesh, &frame.map_id, &original_cells,
-            &source_shapes, &geometry, frame.grid_origin.to_array(),frame.terrace_datum.as_deref());
+        outdoor_stone::finish_rock_geometry_with_source_regions(&mut mesh,&frame.map_id,&original_cells,
+            &source_shapes,&geometry,frame.grid_origin.to_array(),frame.terrace_datum.as_deref(),&frame.source_regions);
     }
     if cave_crowns::enabled(frame.map_id.as_ref()) {
         let _trace = crate::loading_trace::span("region.finish_cave_crowns", || serde_json::json!({}));
@@ -2583,8 +2584,8 @@ fn build_terrain_mesh_internal_with_background(
         .cloned().collect::<Vec<_>>();
     if !jump_ledges.is_empty() || frame.terrace_datum.as_ref().is_some_and(|d|d.levels.iter().flatten().any(|&h|h>0.)) {
         let _trace = crate::loading_trace::span("region.finish_terraces", || serde_json::json!({}));
-        terraces::finish_with_datum(&mut mesh, &frame.map_id, &original_cells, &geometry,
-            frame.grid_origin.to_array(), &terrace_edges,frame.terrace_datum.as_deref());
+        terraces::finish_with_source_regions(&mut mesh,&frame.map_id,&original_cells,&geometry,
+            frame.grid_origin.to_array(),&terrace_edges,frame.terrace_datum.as_deref(),&frame.source_regions);
     } else if authored_enabled {
         terraces::close_flat_rock_contacts(&mut mesh,&frame.map_id,&original_cells,&geometry,
             frame.grid_origin.to_array(),frame.terrace_datum.as_deref());
@@ -2612,12 +2613,21 @@ fn build_terrain_mesh_internal_with_background(
     if authored_enabled {
         // Only hidden mineral backing is appended. Final source-ground support
         // must be available before a Kanto canyon's cutaway floor is projected.
-        outdoor_mountains::append_kanto_reveal_floor(&mut mesh,&frame.map_id,
-            &original_cells,&source_shapes,&geometry,frame.grid_origin.to_array());
+        outdoor_mountains::append_kanto_reveal_floor_with_source_regions(&mut mesh,&frame.map_id,
+            &original_cells,&source_shapes,&geometry,frame.grid_origin.to_array(),&frame.source_regions);
         enclosed_ponds::finish_with_datum(&mut mesh,&original_cells,&geometry,&frame.jump_ledges,frame.grid_origin.to_array(),frame.terrace_datum.as_deref());
         new_bark::ledge_finish::continue_shore_cap_ground(&mut mesh,&original_cells,&geometry,frame.grid_origin.to_array());
     }
+    background::finish_water_apron(&mut mesh, coastal_apron);
+    if authored_enabled {
+        outdoor_water::finish(&mut mesh, &frame.map_id, &original_cells, &geometry);
+        beach_banks::finish(&mut mesh, frame, &original_cells, &source_shapes, &geometry);
+        if outdoor_mountains::enabled(&frame.map_id) {
+            mineral_paint::finish(&mut mesh.solid,&geometry,frame.grid_origin.to_array(),&frame.source_regions);
+        }
+    }
     mesh.mineral_cap_ranges=None;
+    mesh.mountain_portals.clear();
     if let Some(deferred) = deferred_groves {
         deferred.terrace_datum=frame.terrace_datum.clone();
         deferred.recipes = detached_groves.into();

@@ -568,7 +568,10 @@ source and build caches and is not another cold-start proof.
 ## Natural controller movement
 
 The 3D client defaults to continuous movement for existing and new packs;
-2D and the text client retain tile controls. The optional Rust
+arrows, WASD, D-pad, and left-stick movement follow the camera in orbit and
+first person, with equal-speed keyboard diagonals. Native Q/E and controller
+shoulders rotate continuously while held. 2D and the text client retain tile
+controls. Existing Natural Movement packs need no regeneration. The optional Rust
 `pack_natural_movement` builder records that choice explicitly in an external
 pack, preserving all content and audio. See
 [the movement modpack](../modpacks/natural-movement/README.md) for controls,

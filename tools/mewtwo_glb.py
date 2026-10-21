@@ -15,12 +15,12 @@ def geometry_digest(model):
  for p in model['primitives']:
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
-REST_DIGEST='ef903cf6d3fbd2c2b7ed2d8777e1d91726c56940e30f77aaa767e5e50eceb521'
+REST_DIGEST='1413629f1544e2cffba26a0a692d20dacc0c665123899355d5416f3e3d176ee3'
 def pivot(p):return tuple((v-(LOW if i==1 else 0.))*SCALE for i,v in enumerate(p))
 BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.86,-.015)),('neck',1,(0.,1.19,.035)),('head',2,(0.,1.36,.105)),
- ('upper_left',1,(-.205,1.115,.015)),('forearm_left',4,(-.320,.920,.035)),('hand_left',5,(-.380,.790,.100)),
- ('upper_right',1,(.205,1.115,.015)),('forearm_right',7,(.320,.920,.035)),('hand_right',8,(.380,.790,.100)),
- ('hip_left',1,(-.17,.62,.005)),('knee_left',10,(-.18,.415,.015)),('hip_right',1,(.17,.62,.005)),('knee_right',12,(.18,.415,.015)),
+ ('upper_left',1,(-.177,1.115,.035)),('forearm_left',4,(-.293,.925,.100)),('hand_left',5,(-.350,.795,.180)),
+ ('upper_right',1,(.177,1.115,.035)),('forearm_right',7,(.293,.925,.100)),('hand_right',8,(.350,.795,.180)),
+ ('hip_left',1,(-.19,.62,.025)),('knee_left',10,(-.20,.415,.040)),('hip_right',1,(.19,.62,.025)),('knee_right',12,(.20,.415,.040)),
  ('tail_root',1,TAIL_POINTS[0]),('tail_curve',14,TAIL_POINTS[3]),('tail_tip',15,TAIL_POINTS[6]))
 JOINTS=tuple((n,parent,pivot(p) if parent is not None else p) for n,parent,p in BASE)
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))

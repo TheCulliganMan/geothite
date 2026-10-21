@@ -4461,6 +4461,46 @@ fn resolve_visible_object_sprite_asset_id(
 /// Preserve named NPC identities verified against the pack's dialogue and cries.
 /// Their sprite names can refer to shared icon art. Keep these exceptions at the
 /// publisher boundary: the model renderer must not guess from generic art.
+fn visible_map_object_model_source_from_data(
+    data: &crystal_assets::GameDataSet,
+    map: &str,
+    object: &crate::core::map::ObjectEvent,
+    visible_sprite: &str,
+    bitmap_source: &str,
+    variable_sprites: &BTreeMap<String, String>,
+    menu_icons: &BTreeMap<String, String>,
+) -> String {
+    let trainer_class = data.maps.get(map)
+        .and_then(|module| module.trainer_scripts.get(&object.script))
+        .map(|trainer| trainer.trainer_class.as_str());
+    if let Some(source) = shared_swimmer_model_source(object, visible_sprite,
+        bitmap_source, variable_sprites, trainer_class) {
+        return source.into();
+    }
+    visible_map_object_model_source_id(map, object, visible_sprite, bitmap_source,
+        variable_sprites, menu_icons)
+}
+
+fn shared_swimmer_model_source(
+    object: &crate::core::map::ObjectEvent,
+    visible_sprite: &str,
+    bitmap_source: &str,
+    variable_sprites: &BTreeMap<String, String>,
+    trainer_class: Option<&str>,
+) -> Option<&'static str> {
+    // The Olivine rival scene later assigns this shared token to male
+    // swimmers. A fresh location preview can still carry its initial rival
+    // bitmap. The compiled trainer header proves who occupies the water;
+    // neither the classic image nor the script's variable state is changed.
+    (trainer_class == Some("SWIMMERM")
+        && object.object_type == "OBJECTTYPE_TRAINER"
+        && object.sprite == "SPRITE_OLIVINE_RIVAL"
+        && visible_sprite == object.sprite
+        && bitmap_source == "rival"
+        && variable_sprites.get(visible_sprite).is_some_and(|s| s == "SPRITE_RIVAL"))
+        .then_some("swimmer_guy")
+}
+
 fn visible_map_object_model_source_id(
     map: &str,
     object: &crate::core::map::ObjectEvent,
@@ -5151,6 +5191,30 @@ mod named_object_species_source_tests {
             object_identifier: Some("OLIVINELIGHTHOUSE6F_MONSTER".into()),
             sightline_direction_override: None,
         }
+    }
+
+    #[test]
+    fn shared_rival_art_needs_a_compiled_male_swimmer_role_before_adaptation() {
+        let mut object=amphy();
+        object.sprite="SPRITE_OLIVINE_RIVAL".into();object.object_type="OBJECTTYPE_TRAINER".into();
+        let variables=BTreeMap::from([("SPRITE_OLIVINE_RIVAL".into(),"SPRITE_RIVAL".into())]);
+        let before=(object.clone(),variables.clone());
+        assert_eq!(shared_swimmer_model_source(&object,&object.sprite,"rival",&variables,Some("SWIMMERM")),
+            Some("swimmer_guy"));
+        for role in [None,Some("RIVAL1"),Some("SWIMMERF"),Some("LASS")] {
+            assert_eq!(shared_swimmer_model_source(&object,&object.sprite,"rival",&variables,role),None);
+        }
+        for replacement in ["SPRITE_ROCKET","SPRITE_SWIMMER_GUY"] {
+            let replaced=BTreeMap::from([("SPRITE_OLIVINE_RIVAL".into(),replacement.into())]);
+            assert_eq!(shared_swimmer_model_source(&object,&object.sprite,"rival",&replaced,Some("SWIMMERM")),None);
+        }
+        assert_eq!(shared_swimmer_model_source(&object,"SPRITE_LASS","lass",&variables,Some("SWIMMERM")),None);
+        assert_eq!(shared_swimmer_model_source(&object,&object.sprite,"swimmer_guy",&variables,Some("SWIMMERM")),None);
+        let mut other=object.clone();other.sprite="SPRITE_RIVAL".into();
+        assert_eq!(shared_swimmer_model_source(&other,&other.sprite,"rival",&variables,Some("SWIMMERM")),None);
+        other=object.clone();other.object_type="OBJECTTYPE_SCRIPT".into();
+        assert_eq!(shared_swimmer_model_source(&other,&other.sprite,"rival",&variables,Some("SWIMMERM")),None);
+        assert_eq!((object,variables),before,"model identity cannot mutate source art or variable state");
     }
 
     #[test]

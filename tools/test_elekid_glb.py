@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """Decoded Elekid skin: open contact holes, planted feet and coherent striped arms."""
-import math,unittest
+import math,os,unittest
 from pathlib import Path
 import elekid_glb as author
 import test_gengar_glb as skin
 import test_donphan_sculpt as joins
 from test_slime_sculpt import ray_intersections
 from skin_glb_test_support import IDENTITY,transform
-ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/elekid.glb'
+ROOT=Path(os.environ.get('CRYSTAL_ELECTRIC_PAIR_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))/'elekid.glb'
 class ElekidSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.blob=ROOT.read_bytes();cls.m=skin.Model(cls.blob)
  def test_canonical_anatomy_bind_and_budgets(self):
   m=self.m;self.assertEqual(self.blob,author.export_elekid(author.decode_elekid(self.blob)))
-  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(32,19466,33128,9))
+  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(33,11517,19024,9))
   self.assertLess(len(self.blob),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
   for matrix in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(matrix,IDENTITY)),1e-7)
  def test_local_normal_palette(self):
   m=self.m
   for p,n in enumerate(m.names):
-   rgb=(0,0,0) if n.startswith(('Eye socket /','Pupil /','Mouth /','Belly band /','Bolt /','Arm stripe /')) else (255,255,255) if n.startswith(('Eye /','Hand claw /')) else (255,255,41)
+   rgb=(0,0,0) if n.startswith(('Eye socket /','Pupil /','Mouth /','Belly band /','Bolt /','Arm stripe /','Leg /')) else (255,255,255) if n.startswith(('Eye /','Hand claw /')) else (255,255,41)
    color=m.doc['materials'][m.parts[p]['material']]['pbrMetallicRoughness']['baseColorFactor']
    for v,a in zip(rgb,color):
     x=v/255;expected=x/12.92 if x<=.04045 else ((x+.055)/1.055)**2.4;self.assertAlmostEqual(a,expected,places=7)
@@ -56,9 +56,9 @@ class ElekidSkinTests(unittest.TestCase):
  def test_actual_posed_plugs_arm_stripes_claws_legs_and_feet_stay_rooted(self):
   m=self.m
   def find(prefix):return next(i for i,n in enumerate(m.names) if n.startswith(prefix))
-  body=find('Body /');pairs=[(find('Belly band /'),body)]
+  body=find('Body /');pairs=[(i,body) for i,n in enumerate(m.names) if n.startswith('Belly band /')]
   for side in ('-1','1'):
-   root=find('Arm root / slim yellow baby electric connector '+side);arm=find('Arm / broad yellow baby electric forearm '+side);hand=find('Hand / broad yellow baby electric fist '+side);leg=find('Leg / rooted short yellow baby electric shin '+side)
+   root=find('Arm root / slim yellow baby electric connector '+side);arm=find('Arm / broad yellow baby electric forearm '+side);hand=find('Hand / broad yellow baby electric fist '+side);leg=find('Leg / rooted short dark baby electric shin '+side)
    pairs += [(find('Plug / rooted yellow blade with actual contact hole '+side),body),(root,body),(arm,root),(hand,arm),(leg,body),(find('Foot / grounded yellow baby electric toe '+side),leg)]
    pairs += [(find('Arm stripe / broad yellow baby electric forearm '+side+' '+str(j)),arm) for j in range(2)]+[(find('Hand claw / rooted ivory baby electric point '+side+' '+str(j)),hand) for j in range(3)]
   for clip in m.clips:
@@ -74,7 +74,7 @@ class ElekidSkinTests(unittest.TestCase):
     mats=m.matrices(clip,t);parts=[{'positions':[v for point in m.posed(p,mats) for v in point],'indices':m.indices[p]} for p in range(len(m.parts))]
     for side,owner in ((-1,3),(1,4)):
      for dx,dy in ((0.,0.),(.008,0.),(-.008,0.),(0.,.011),(0.,-.011)):
-      q=author.pivot((side*.125+dx,1.153+dy,.026));x,y,z=transform(mats[owner],q)
+      q=author.pivot((side*.125+dx,1.105+dy,.026));x,y,z=transform(mats[owner],q)
       self.assertFalse(any(ray_intersections(p,x,y) for p in parts),(clip,t,side,dx,dy))
  def test_noncanonical_data_rejected(self):
   with self.assertRaises(ValueError):author.decode_elekid(self.blob[:-1])

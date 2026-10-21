@@ -2,8 +2,9 @@
 
 The earlier baseline findings below describe the original shared recipe.
 Omanyte and Omastar now have [dedicated nautilus sculptures](nautilus-sculptures.md).
-Kabuto and Kabutops still require their individual replacement work. Consult
-the new review for current verification and remaining production checks.
+Kabuto and Kabutops now have [dedicated original skins](fossil-scythe-skins.md),
+followed by a [full-volume Kabutops/Aerodactyl revision](fossil-pair-fidelity.md).
+Consult those reviews for current verification and remaining production checks.
 
 The four canonical fossil models still use the generic `fossils()` batch
 recipe. Two paired oblique baseline renders each exited 0 at 1600×824 and

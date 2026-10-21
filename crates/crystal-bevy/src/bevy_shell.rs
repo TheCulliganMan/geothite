@@ -4655,6 +4655,8 @@ struct RenderedViewport {
     visual_world_texture: Option<Handle<Image>>,
     #[cfg(feature = "voxel-view")]
     visual_world_grid_size: UVec2,
+    #[cfg(feature = "voxel-view")]
+    visual_world_grid_origin: IVec2,
     /// Whether the retained optional-renderer data was built for an active
     /// 2.5D view. A feature-enabled binary normally runs in classic mode and
     /// must not pay to compose the 84x82 terrain source on every camera step.
@@ -6249,7 +6251,10 @@ pub fn run_bevy_shell(
     #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
     app.add_systems(
         Update,
-        apply_browser_voxel_view.before(crystal_render_api::WorldRenderSet::PresentationExtract),
+        apply_browser_voxel_view
+            .in_set(crystal_voxel_view::VoxelCameraInput)
+            .before(apply_keyboard_input)
+            .before(crystal_render_api::WorldRenderSet::PresentationExtract),
     );
     #[cfg(feature = "fullscreen-scaling")]
     app.add_systems(Startup, setup_fullscreen_scene)

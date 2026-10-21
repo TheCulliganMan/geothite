@@ -33,11 +33,11 @@ class FireDragonSkinTests(unittest.TestCase):
     owner=None
     if n.startswith(('Foot /','Foot claw /')):owner=0
     elif n.startswith(('Body /','Belly /')):owner=1
-    elif n.startswith(('Head /','Horn /','Eye socket /','Eye white /','Iris /','Pupil /','Glint /','Nostril /','Fang /')):owner=2
-    elif n.startswith(('Jaw /','Tongue /')):owner=3
+    elif n.startswith(('Head /','Horn /','Eye socket /','Eye white /','Iris /','Pupil /','Glint /','Nostril /','Fang /','Throat /')):owner=2
+    elif n.startswith(('Jaw /','Tongue /','Oral floor /')):owner=3
     elif n.startswith(('Hand /','Finger /','Hand claw /')):owner=6 if int(n.split()[-2] if n.startswith(('Finger /','Hand claw /')) else n.split()[-1])<0 else 7
     elif n.startswith('Flame /'):owner=12
-    elif n.startswith(('Wing /','Wing arm /','Wing rib /','Wing claw /')):owner=13 if int(n.split()[-2] if n.startswith('Wing rib /') else n.split()[-1])<0 else 14
+    elif n.startswith(('Wing /','Wing back /','Wing arm /','Wing rib /','Wing claw /')):owner=13 if int(n.split()[-2] if n.startswith('Wing rib /') else n.split()[-1])<0 else 14
     if owner is not None:self.assertTrue(all(js==[owner,0,0,0] for js in m.ids[i]),(s,n));self.assertTrue(all(ws==[1.,0.,0.,0.] for ws in m.weights[i]))
  def test_fixed_soles_positive_winding_strain_and_neutral_endpoints(self):
   for s,m in self.logical.items():

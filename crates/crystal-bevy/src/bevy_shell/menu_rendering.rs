@@ -4404,6 +4404,28 @@ fn visual_world_grid_dimensions(_enabled: bool) -> (i16, i16, i16) {
     )
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct VisualWorldWindow {
+    origin: IVec2,
+    size: UVec2,
+}
+
+fn visual_world_grid_window(enabled: bool, viewport_origin: IVec2) -> VisualWorldWindow {
+    let (halo, width, height) = visual_world_grid_dimensions(enabled);
+    let native = viewport_origin - IVec2::splat(i32::from(halo));
+    if cfg!(feature = "voxel-view") && enabled {
+        // A source metatile is 4x4. Retain the complete drawing at every
+        // edge; clipped crown cells otherwise survive as floating 2D shards.
+        // Fixed dimensions cover all four phases without resizing on a step.
+        VisualWorldWindow {
+            origin: IVec2::new(native.x.div_euclid(4) * 4, native.y.div_euclid(4) * 4),
+            size: UVec2::new((width as u32 + 6) / 4 * 4, (height as u32 + 6) / 4 * 4),
+        }
+    } else {
+        VisualWorldWindow { origin: native, size: UVec2::new(width as u32, height as u32) }
+    }
+}
+
 fn retained_field_dialog_structure_matches(
     text_box_background_count: usize,
     frame_tile_count: usize,
@@ -6280,8 +6302,12 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     let mut priority_viewport_tiles = Vec::with_capacity(
         usize::try_from(CLASSIC_SCROLL_TILES_X * CLASSIC_SCROLL_TILES_Y).unwrap_or_default(),
     );
-    let (visual_world_halo, visual_world_tiles_x, visual_world_tiles_y) =
-        visual_world_grid_dimensions(visual_world_enabled);
+    let visual_window = visual_world_grid_window(visual_world_enabled,
+        IVec2::new(i32::from(start_x), i32::from(start_y)));
+    let visual_world_tiles_x = visual_window.size.x as i16;
+    let visual_world_tiles_y = visual_window.size.y as i16;
+    let visual_padding_x = i32::from(start_x) - visual_window.origin.x;
+    let visual_padding_y = i32::from(start_y) - visual_window.origin.y;
     #[cfg(any(test, feature = "voxel-view"))]
     let mut visual_tiles = Vec::with_capacity(
         usize::try_from(visual_world_tiles_x * visual_world_tiles_y).unwrap_or_default(),
@@ -6300,8 +6326,8 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     }
     for visual_y in 0..visual_world_tiles_y {
         for visual_x in 0..visual_world_tiles_x {
-            let x = visual_x - visual_world_halo;
-            let y = visual_y - visual_world_halo;
+            let x = visual_x - visual_padding_x as i16;
+            let y = visual_y - visual_padding_y as i16;
             let inside_scroll_surface = x >= -CLASSIC_SCROLL_HALO_TILES
                 && y >= -CLASSIC_SCROLL_HALO_TILES
                 && x < VIEWPORT_TILES_X + CLASSIC_SCROLL_HALO_TILES
@@ -6535,6 +6561,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         }
         rendered.visual_world_grid_size =
             UVec2::new(visual_world_tiles_x as u32, visual_world_tiles_y as u32);
+        rendered.visual_world_grid_origin = visual_window.origin;
         rendered.visual_world_enabled = visual_world_enabled;
         rendered.transition_modeled = modeled_entry;
     }
@@ -6557,7 +6584,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             Ok(datum)=>datum,
             Err(error)=>{record_visible_render_error(&mut commands,&mut runtime_shell,error);return;}
         }; }
-        rendered.visual_tiles_revision = visual_tile_grid_is_complete(&visual_tiles)
+        rendered.visual_tiles_revision = visual_tile_grid_is_complete(&visual_tiles, visual_window.size)
             .then(|| visual_terrain_revision(map_visual_key, (start_x, start_y), &visual_tiles));
         rendered.visual_tiles = visual_tiles;
         rendered.visual_source_regions = visual_source_regions(&render_sources);
@@ -6803,7 +6830,8 @@ Transform::from_xyz(0.0, 0.0, 2.4),),
                 &snapshot.script_events.variable_sprites,
                 &snapshot.presentation.menu_icons,
             );
-            let model_source_id = visible_map_object_model_source_id(
+            let model_source_id = visible_map_object_model_source_from_data(
+                runtime_shell.shell.runtime().data(),
                 &snapshot.overworld.map_name,
                 object,
                 resolved_object_sprite,

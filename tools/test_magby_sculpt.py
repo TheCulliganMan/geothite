@@ -22,7 +22,7 @@ class MagbyTests(unittest.TestCase):
  def test_recipe_bounds_budget_and_distinct_anatomy(self):
   self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6);self.assertLess(sum(len(p['indices'])//3 for p in self.ps),95000)
   self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
-  for prefix,count in (('Body /',1),('Head /',1),('Collar /',1),('Crown lobe /',5),('Belly /',1),('Eye /',2),('Pupil /',2),('Arm /',2),('Hand /',2),('Hand claw /',6),('Leg /',2),('Foot /',2),('Toe claw /',4),('Tail /',1),('Bill /',1),('Mouth back /',1)):
+  for prefix,count in (('Body /',1),('Head /',1),('Collar /',1),('Crown lobe /',5),('Belly /',1),('Eye /',2),('Pupil /',2),('Arm /',2),('Hand /',2),('Hand claw /',6),('Leg /',2),('Foot /',2),('Toe claw /',6),('Tail /',1),('Bill /',1),('Mouth back /',1)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),count,prefix)
   self.assertFalse(any('flame' in p['part'].lower() for p in self.ps))
  def test_head_crown_collar_bill_and_tail_have_actual_volume_roots(self):
@@ -36,7 +36,7 @@ class MagbyTests(unittest.TestCase):
    for a,b in ((arm,self.find('Body /')),(hand,arm),(leg,self.find('Body /')),(foot,leg)):self.assertTrue(self.overlap(a,b),a['part'])
    self.assertLess(min(foot['positions'][1::3]),.002)
    for j in range(3):self.assertTrue(self.overlap(self.find('Hand claw /',f'{s} {j}'),hand))
-   for j in range(2):self.assertTrue(self.overlap(self.find('Toe claw /',f'{s} {j}'),foot))
+   for j in range(3):self.assertTrue(self.overlap(self.find('Toe claw /',f'{s} {j}'),foot))
  def pairs(self):
   for p in self.ps:
    name=p['part'];s=name.split()[-1]
@@ -48,7 +48,7 @@ class MagbyTests(unittest.TestCase):
   for p in self.ps:
    if p['part'].startswith(('Arm /','Leg /','Hand claw /','Toe claw /','Tail /','Bill /')):self.assertIsNone(crossed_faces(p),p['part'])
  def test_bill_aperture_has_unoccupied_front_and_rejects_a_fill(self):
-  bill=self.find('Bill /');scale=max(v for p in self.ps for v in p['positions'][1::3])/1.046;y=.705*scale;z=.265*scale
+  bill=self.find('Bill /');tip=max(bill['positions'][2::3]);lip=[bill['positions'][i:i+3] for i in range(0,len(bill['positions']),3) if abs(bill['positions'][i+2]-tip)<1e-7];y=sum(q[1] for q in lip)/len(lip);z=tip-.012
   def occupied(p,x,y,z):
    hits=ray_intersections(p,x,y);return any(a+.0001<z<b-.0001 for a,b in zip(hits[::2],hits[1::2]))
   for dx,dy in ((0,0),(.009,0),(-.009,0),(0,.006),(0,-.006)):

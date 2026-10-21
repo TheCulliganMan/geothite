@@ -20,7 +20,7 @@ class RhyhornTests(unittest.TestCase):
   from rhino_glb import geometry_digest
   self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture()));self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0.);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHT,places=6)
   self.assertLess(sum(len(p['indices'])//3 for p in self.ps),40000);self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}))
-  for prefix,n in (('Body /',1),('Head /',1),('Back armor /',4),('Brow armor /',1),('Horn /',1),('Ear /',2),('Eye socket /',2),('Iris /',2),('Nostril /',2),('Leg /',4),('Leg armor /',4),('Foot /',4),('Claw /',12)):
+  for prefix,n in (('Body /',1),('Head /',1),('Back armor /',4),('Brow armor /',1),('Horn /',1),('Ear /',2),('Ear inset /',2),('Mouth back /',1),('Fang /',2),('Eye socket /',2),('Iris /',2),('Nostril /',2),('Leg /',4),('Leg armor /',4),('Foot /',4),('Claw /',12)):
    self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),n)
  def test_dorsal_plates_intersect_stored_barrel(self):
   body=self.find('Body /')
@@ -50,6 +50,7 @@ class RhyhornTests(unittest.TestCase):
   for p in self.ps:
    name=p['part'];sign=name.split()[-1];parent=None
    if name.startswith(('Eye socket /','Nostril /')):parent=self.find('Head /')
+   elif name.startswith('Ear inset /'):parent=self.find('Ear / rooted pointed stone pinna '+sign)
    elif name.startswith('Eye white /'):parent=self.find('Eye socket / fitted angular black recess '+sign)
    elif name.startswith('Iris /'):parent=self.find('Eye white / narrow watchful ivory '+sign)
    elif name.startswith('Pupil /'):parent=self.find('Iris / fitted red rhino gaze '+sign)

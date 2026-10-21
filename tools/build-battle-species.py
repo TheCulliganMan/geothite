@@ -469,121 +469,13 @@ def turtle_evolutions(n):
  else:
   for s in (-1,1):leaf('Feathery fin ear',(s*.13,-.03,1.04),(s*.35,.01,1.29),.11,'lilac')
   tube('Long cloud tail',[(0,.26,.31),(0,.48,.42),(.22,.60,.58),(.39,.50,.74),(.36,.35,.81),(.20,.33,.71)],[.10,.09,.075,.055,.04,.015],'lilac')
-def papercraft_pidgeotto():
- # Original folded-paper anatomy, guided by the official #017 silhouette:
- # swept crest, dark temple stripe, broad cream flight feathers and red/tan tail.
- # Keep the production rig's 34 names and its two five-part wing groups stable.
- P.update({'pidgeotto_brown':(.64,.43,.25),'pidgeotto_cream':(.96,.86,.62),
-           'pidgeotto_ink':(.20,.13,.12),'pidgeotto_red':(.86,.31,.27),
-           'pidgeotto_red_dark':(.70,.22,.22),'pidgeotto_pink':(.82,.53,.58)})
- brown='pidgeotto_brown';cream='pidgeotto_cream';ink='pidgeotto_ink'
- red='pidgeotto_red';pink='pidgeotto_pink'
- def folded(points,depth=.018):
-  points=[Vector(p) for p in points];center=sum(points,Vector())/len(points)
-  normal=sum(((points[i]-center).cross(points[(i+1)%len(points)]-center) for i in range(len(points))),Vector()).normalized()
-  count=len(points);vs=points+[center+normal*depth,center-normal*depth];fs=[]
-  for i in range(count):fs.extend(((i,(i+1)%count,count),((i+1)%count,i,count+1)))
-  return vs,fs
- def loft(rings,segments=10):
-  vs=[]
-  for x,y,z,w,d in rings:
-   for j in range(segments):
-    angle=math.tau*j/segments;vs.append((x+w*math.cos(angle),y+d*math.sin(angle),z))
-  fs=[tuple(reversed(range(segments))),tuple((len(rings)-1)*segments+j for j in range(segments))]
-  for i in range(len(rings)-1):
-   for j in range(segments):
-    a=i*segments+j;b=i*segments+(j+1)%segments;fs.append((a,b,b+segments,a+segments))
-  return vs,fs
- def spar(a,b,r,r2,segments=6):
-  a,b=Vector(a),Vector(b);axis=(b-a).normalized();u=axis.cross(Vector((0,1,.01))).normalized();v=axis.cross(u)
-  vs=[p+radius*(u*math.cos(j*math.tau/segments)+v*math.sin(j*math.tau/segments)) for p,radius in ((a,r),(b,r2)) for j in range(segments)]
-  fs=[tuple(reversed(range(segments))),tuple(segments+j for j in range(segments))]
-  for j in range(segments):fs.append((j,(j+1)%segments,(j+1)%segments+segments,j+segments))
-  return vs,fs
- def part(name,solids,color):
-  vs=[];fs=[]
-  for vertices,faces in solids:
-   offset=len(vs);vs.extend(vertices);fs.extend(tuple(offset+i for i in face) for face in faces)
-  return poly(name,vs,fs,color)
- def feather(a,b,width,depth=.016):
-  a,b=Vector(a),Vector(b);axis=b-a;u=axis.cross(Vector((0,1,.035))).normalized()*width
-  return folded([a-u*.38,a+axis*.35-u,a+axis*.83-u*.72,b-u*.22,b+u*.22,a+axis*.83+u*.72,a+axis*.35+u,a+u*.38],depth)
- body=loft([(0,.10,.21,.075,.095),(0,.075,.30,.16,.18),(0,.035,.43,.215,.205),
-            (0,.015,.56,.205,.185),(0,-.015,.67,.155,.14),(0,-.045,.755,.11,.105)],12)
- part('Bird body',[body],brown)
- breast=[loft([(0,-.10,.22,.07,.015),(0,-.135,.30,.135,.035),(0,-.17,.43,.18,.045),
-               (0,-.153,.56,.165,.044),(0,-.122,.675,.115,.034),(0,-.135,.75,.06,.02)],10)]
- def face(side,u,z,offset=0):
-  return (side*(.08+.095*u+.8*offset),-.247+.135*u-.6*offset,z)
- for side in (-1,1):
-  breast.append(folded([face(side,u,z,-.008) for u,z in [(-.55,.811),(-.13,.853),(.53,.846),
-                       (1.04,.785),(.68,.735),(.02,.729),(-.51,.766)]],.008))
- part('Light breast',breast,cream)
- part('Bird head',[loft([(0,-.083,.68,.065,.075),(0,-.092,.735,.125,.13),
-                        (0,-.088,.805,.172,.163),(0,-.075,.876,.16,.15),
-                        (0,-.055,.922,.111,.115),(0,-.012,.937,.038,.055)],10)],brown)
- for side,suffix in ((-1,'004'),(1,'005')):
-  # Layer offset follows the cheek normal, keeping eye pieces on one plane.
-  def eye(points,offset):return folded([face(side,u,z,offset) for u,z in points],.002)
-  sclera=[(-.02,.839),(.20,.862),(.67,.88),(.57,.837),(.16,.817)]
-  part('Eye sclera.'+suffix,[eye(sclera,.016)],'white')
-  brow=[(-.25,.845),(.15,.881),(.79,.901),(.95,.87),(.65,.816),(.10,.80)]
-  temple=[(.69,.875),(1.12,.882),(1.15,.807),(.81,.743),(.58,.766),(.73,.817)]
-  pupil=[(.29,.849),(.40,.855),(.43,.837),(.36,.823),(.27,.83)]
-  part('Eye iris.'+suffix,[eye(brow,.004),eye(temple,.004),eye(pupil,.024)],ink)
-  part('Eye catchlight.'+suffix,[eye([(.28,.846),(.34,.851),(.37,.844),(.31,.839)],.030)],'white')
- part('Beak',[([(-.052,-.246,.801),(.052,-.246,.801),(-.042,-.277,.83),(.042,-.277,.83),
-               (-.024,-.331,.79),(.024,-.331,.79),(0,-.344,.754),(0,-.265,.754),
-               (0,-.257,.843),(0,-.321,.807)],
-              [(0,1,3,8,2),(2,8,9,4),(8,3,5,9),(4,9,5,6),(0,2,4,6,7),(1,7,6,5,3),(0,7,1)])],pink)
- for side in (-1,1):
-  suffix='' if side<0 else '.001';x=side*.115
-  legs=[spar((x,.026,.25),(x,-.005,.10),.032,.023),spar((x,-.005,.10),(x,-.032,.045),.025,.027)]
-  toe_ends=[]
-  for j,dx in enumerate((-.048,0,.048)):
-   end=(x+dx,-.181+(abs(j-1)*.022),.028);toe_ends.append(end)
-   legs.append(spar((x,-.032,.045),end,.021,.014))
-  legs.append(spar((x,.0,.065),(x,.085,.025),.017,.01))
-  part('Bird shin'+suffix,legs,pink)
-  for j,end in enumerate(toe_ends):
-   index=j+(0 if side<0 else 3);name='Toe'+('' if index==0 else '.'+str(index).zfill(3))
-   ex,ey,ez=end;part(name,[folded([(ex-.013,ey+.017,ez+.005),(ex+.013,ey+.017,ez+.005),
-                                (ex+.009,ey-.018,ez),(ex,ey-.038,.013),(ex-.009,ey-.018,ez)],.011)],'white')
-  wing=[(side*.16,.04,.665),(side*.32,.065,.75),(side*.59,.09,.84),(side*.85,.13,.94),
-        (side*.975,.145,.942),(side*.94,.135,.875),(side*.68,.08,.70),(side*.37,.025,.53),(side*.20,.02,.50)]
-  cover=[folded(wing,.03)]
-  for index in range(8):
-   cover.append(feather((side*(.195+.045*index),.065+.012*index,.665+.022*index),
-                        (side*(.37+.089*index),.058+.019*index,.385+.076*index),.063+.002*index,.016))
-  part('Layered wing'+suffix,cover,brown)
-  for group in range(4):
-   feathers=[]
-   for index in (group*2,group*2+1):
-    a=(side*(.195+.045*index),-.025+.012*index,.665+.022*index)
-    b=(side*(.37+.089*index),-.032+.019*index,.385+.076*index)
-    feathers.append(feather(a,b,.061+.002*index,.015))
-    # A shorter row overlaps each quill as a second cut-paper layer.
-    a2=(side*(.18+.039*index),-.048+.012*index,.679+.023*index)
-    b2=(side*(.31+.077*index),-.054+.016*index,.54+.056*index)
-    feathers.append(feather(a2,b2,.048,.012))
-   index=group+(0 if side<0 else 4);name='Flight feather'+('' if index==0 else '.'+str(index).zfill(3))
-   part(name,feathers,cream)
- part('Tail feather',[feather((-.035,.14,.32),(-.185,.64,.14),.072,.017),
-                      feather((.035,.14,.32),(.185,.64,.14),.072,.017)],red)
- part('Tail feather.001',[feather((-.018,.145,.316),(-.091,.711,.106),.06,.018),
-                          feather((.018,.145,.316),(.091,.711,.106),.06,.018)],cream)
- part('Tail feather.002',[feather((0,.14,.319),(0,.742,.082),.062,.018)],red)
- for index,side in enumerate((-1,0,1)):
-  # Three long creased blades sweep back from the forehead, never a comb.
-  x=side*.055;crest=[(x*.7,-.247,.851),(x-.037,-.157,.963),(x-.033,-.002,1.04-abs(side)*.018),
-                     (x+.008,.178,1.015-abs(side)*.022),(x+side*.037,.331,.875-abs(side)*.025),
-                     (x+.045,.146,.96-abs(side)*.02),(x+.042,-.03,.972-abs(side)*.015),(x+.019,-.181,.892)]
-  name='Head crest'+('' if index==0 else '.'+str(index).zfill(3))
-  part(name,[folded(crest,.015)],red if side==0 else 'pidgeotto_red_dark')
+@register('PIDGEY',.82)
+def small_pigeon(n):
+ raise ValueError('Pidgey uses its pure sculpture and standard skin before Blender batching')
 
 @register('PIDGEOTTO PIDGEOT FEAROW FARFETCH_D MURKROW',1.10)
 def birds(n):
- if n=='PIDGEOTTO':papercraft_pidgeotto();return
+ if n=='PIDGEOTTO':raise ValueError('Pidgeotto uses its pure sculpture and standard skin before Blender batching')
  if n in ('PIDGEOT','FEAROW'):raise ValueError('Pidgeot and Fearow use raptor_bird_glb')
  if n=='FARFETCH_D':raise RuntimeError('Farfetch_d uses its dedicated standard skin recipe before Blender batching')
  if n=='MURKROW':raise RuntimeError('Murkrow uses its dedicated pure sculpture recipe before Blender batching')
@@ -1002,17 +894,7 @@ def export(name,objects):
   from kadabra_glb import fit_tail_band
   data=fit_tail_band(data)
   prims=data['primitives']
- if name=='pidgeotto':
-  # Keep the canonical standard skin and all source-relative clips as one runtime asset.
-  sys.path.insert(0,str(Path(__file__).resolve().parent))
-  from pidgeotto_glb import export_pidgeotto
-  from pidgeotto_contours import prepare as prepare_pidgeotto_contours
-  (OUT/'pidgeotto.mesh.json').unlink(missing_ok=True)
-  blob=export_pidgeotto(prepare_pidgeotto_contours(data))
-  (OUT/'pidgeotto.glb').write_bytes(blob)
-  from pidgeotto_glb import decode_pidgeotto
-  prims=decode_pidgeotto(blob)['primitives']
- elif name=='gengar':
+ if name=='gengar':
   sys.path.insert(0,str(Path(__file__).resolve().parent))
   from gengar_glb import export_gengar
   if (OUT/'gengar.mesh.json').exists():raise ValueError('remove the reviewed obsolete Gengar JSON before exporting its canonical GLB')
@@ -1312,7 +1194,7 @@ def run():
   (OUT/'hitmonchan.glb').write_bytes(export_hitmonchan())
   (OUT/'hitmonchan.mesh.json').unlink(missing_ok=True)
   names.remove('hitmonchan')
-  print('hitmonchan: original crown-headed boxer with pleated lavender kit and red thumbed mitts',flush=True)
+  print('hitmonchan: original rounded crown skull, open pleated kit and planted boots in the local pack palette',flush=True)
  for species in ('remoraid','octillery'):
   if species in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))
@@ -1578,6 +1460,20 @@ def run():
   (OUT/'articuno.mesh.json').unlink(missing_ok=True)
   names.remove('articuno')
   print('articuno: canonical feather banks and articulated curling streamer',flush=True)
+ if 'pidgey' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from pidgey_glb import export_pidgey
+  (OUT/'pidgey.glb').write_bytes(export_pidgey())
+  (OUT/'pidgey.mesh.json').unlink(missing_ok=True)
+  names.remove('pidgey')
+  print('pidgey: original small bird with folded wings and fitted facial landmarks',flush=True)
+ if 'pidgeotto' in names:
+  sys.path.insert(0,str(Path(__file__).resolve().parent))
+  from pidgeotto_skin_glb import export_pidgeotto_skin
+  (OUT/'pidgeotto.glb').write_bytes(export_pidgeotto_skin('pidgeotto'))
+  (OUT/'pidgeotto.mesh.json').unlink(missing_ok=True)
+  names.remove('pidgeotto')
+  print('pidgeotto: original grounded folded-wing sculpture and full-body standard skin',flush=True)
  for bird in ('pidgeot','fearow'):
   if bird in names:
    sys.path.insert(0,str(Path(__file__).resolve().parent))

@@ -17,14 +17,14 @@ FILE='bayleef.glb'
 PARTS=tuple(p['part'] for p in sculpt()['primitives'])
 MAX_BYTES=512000
 JOINTS=(('root',None,(0.,0.,0.)),
-        ('pelvis',0,(0.,.259,-.141)),('chest',1,(0.,.357,.147)),
-        ('neck_base',2,(0.,.536,.171)),('head',3,(0.,.771,.231)),
-        ('foreleg_left',2,(-.178,.254,.205)),('foreleg_right',2,(.178,.254,.205)),
-        ('hindleg_left',1,(-.178,.241,-.245)),('hindleg_right',1,(.178,.241,-.245)),
-        ('tail_base',1,(0.,.336,-.313)),('tail_tip',9,(.014,.384,-.452)),
-        ('crown_petiole',4,(0.,.968,.254)),('crown_mid_fold',11,(.045,1.126,.134)),
-        ('crown_tip_fold',12,(.150,1.113,-.136)),
-        ('collar_left',3,(-.073,.554,.171)),('collar_right',3,(.073,.554,.171)))
+        ('pelvis',0,(0.,.259,-.141)),('chest',1,(0.,.357,.120)),
+        ('neck_base',2,(0.,.550,.220)),('head',3,(0.,.771,.280)),
+        ('foreleg_left',2,(-.198,.254,.230)),('foreleg_right',2,(.198,.254,.230)),
+        ('hindleg_left',1,(-.198,.241,-.290)),('hindleg_right',1,(.198,.241,-.290)),
+        ('tail_base',1,(0.,.340,-.360)),('tail_tip',9,(0.,.460,-.590)),
+        ('crown_petiole',4,(0.,.968,.254)),('crown_mid_fold',11,(.006,1.126,.134)),
+        ('crown_tip_fold',12,(.019,1.113,-.136)),
+        ('collar_left',3,(-.110,.554,.200)),('collar_right',3,(.110,.554,.200)))
 CLIPS=(('idle',3.8,73),('attack',1.,65),('hit',1.,65))
 
 
@@ -57,7 +57,7 @@ def skin_weights(part,position):
         flex=smoothstep(.078,.235,math.sqrt(x*x+(z-.171)**2))
         return [3,joint,0,0],[1.-flex,flex,0.,0.]
     if part==TAIL:
-        tip=smoothstep(-.382,-.460,z)
+        tip=smoothstep(-.470,-.610,z)
         return [9,10,0,0],[1.-tip,tip,0.,0.]
     if part==STEM:return [11,0,0,0],[1.,0.,0.,0.]
     if part==LEAF:

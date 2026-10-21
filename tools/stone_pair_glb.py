@@ -4,7 +4,7 @@ import hashlib,json,math,struct
 from functools import lru_cache
 from pathlib import Path
 from graveler_sculpt import sculpture as graveler,HEIGHT as GRAVELER_HEIGHT
-from golem_sculpt import sculpture as golem,HEIGHT as GOLEM_HEIGHT
+from golem_sculpt import sculpture as golem,HEIGHT as GOLEM_HEIGHT,head_point
 from skin_glb import Glb,COORDINATES,packed,quantized_weights,quaternion_xyz,envelope,smoothstep
 SPECIES=('graveler','golem')
 HEIGHTS={'graveler':GRAVELER_HEIGHT,'golem':GOLEM_HEIGHT}
@@ -20,7 +20,7 @@ def authoring_model(species):
  if species not in SPECIES:raise ValueError('unknown stone pair')
  return (graveler if species=='graveler' else golem)()
 
-REST_DIGESTS={'graveler': '4734b3c5b5cc465ed932c49ea3e186c7ed55e64ac8d80ccc36ab5a486ea93ea6', 'golem': '553f96c63633520a526ec732e47bce30fd56e62774bae51893be60f6134800de'}
+REST_DIGESTS={'graveler': '527c0e60cc371703e3839faf35da28b721a9b90c3af7754477d867edf74c5e8d', 'golem': '0c94d746f725a8213c1d47da802c7a5e5669942331a8320b79a307bbadadf741'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 
 @lru_cache(maxsize=2)
@@ -33,15 +33,15 @@ def normalized(species,point):
 def joints(species):
  if species=='graveler':
   raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.50,0.)),
-       ('arm_upper_left',1,(-.292,.70,0.)),('arm_upper_right',1,(.292,.70,0.)),
-       ('arm_lower_left',1,(-.28,.34,.05)),('arm_lower_right',1,(.28,.34,.05)),
-       ('wrist_upper_left',2,(-.605,.623,.115)),('wrist_upper_right',3,(.605,.623,.115)),
-       ('wrist_lower_left',4,(-.224,.246,.267)),('wrist_lower_right',5,(.224,.246,.267))]
+       ('arm_upper_left',1,(-.292,.66,0.)),('arm_upper_right',1,(.292,.66,0.)),
+       ('arm_lower_left',1,(-.28,.31,.05)),('arm_lower_right',1,(.28,.31,.05)),
+       ('wrist_upper_left',2,(-.62,.58,.14)),('wrist_upper_right',3,(.62,.58,.14)),
+       ('wrist_lower_left',4,(-.478,.265,.299)),('wrist_lower_right',5,(.478,.265,.299))]
  else:
-  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.66,-.03)),('head',1,(0.,.884,.25)),('jaw',1,(0.,.719,.30)),
-       ('arm_left',1,(-.344,.854,.145)),('arm_right',1,(.344,.854,.145)),
-       ('forearm_left',4,(-.481,.738,.246)),('forearm_right',5,(.481,.738,.246)),
-       ('wrist_left',6,(-.511,.864,.351)),('wrist_right',7,(.511,.864,.351)),
+  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.66,-.03)),('head',1,head_point((0.,.884,.25))),('jaw',1,head_point((0.,.719,.30))),
+       ('arm_left',1,(-.344,.63,.145)),('arm_right',1,(.344,.63,.145)),
+       ('forearm_left',4,(-.481,.510,.246)),('forearm_right',5,(.481,.510,.246)),
+       ('wrist_left',6,(-.520,.535,.380)),('wrist_right',7,(.520,.535,.380)),
        ('leg_left',0,(-.285,.272,.051)),('leg_right',0,(.285,.272,.051))]
  return tuple((n,p,(0.,0.,0.) if p is None else normalized(species,v)) for n,p,v in raw)
 JOINTS={s:joints(s) for s in SPECIES}

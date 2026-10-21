@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Stored green-mantis anatomy, fitted blade spines and membranes, and planted claws."""
-import copy,math,unittest
+import os,copy,math,unittest
 from pathlib import Path
 import scyther_glb as author
 import test_gengar_glb as skin
@@ -11,7 +11,7 @@ ROOT=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battl
 class ScytherTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):
-  cls.blob=(ROOT/'scyther.glb').read_bytes();cls.m=skin.Model(cls.blob);cls.parts=author.decode_scyther(cls.blob)['primitives'];cls.links={}
+  cls.blob=Path(os.environ.get('SCYTHER_GLB',str(ROOT/'scyther.glb'))).read_bytes();cls.m=skin.Model(cls.blob);cls.parts=author.decode_scyther(cls.blob)['primitives'];cls.links={}
   for i,(p,extra) in enumerate(zip(cls.m.parts,cls.m.doc['extras']['source_part_ranges'])):
    sources=extra.get('source_parts',[{'part':cls.m.names[i],'vertex_start':0,'vertex_count':len(cls.m.vertices[i])}])
    for q in sources:cls.links[q['part']]=(i,q['vertex_start'],q['vertex_start']+q['vertex_count'])
@@ -21,8 +21,18 @@ class ScytherTests(unittest.TestCase):
   for p in self.parts:
    i,a,b=self.links[p['part']];parts[p['part']]=dict(p,positions=sum(runtime[i][a:b],[]))
   return parts
+ def local_feature(self,p,side,j=None):
+  if j is None:
+   origin=author.pivot((side*.20,.81,.27));a=math.radians(20.);u=(side*math.sin(a),0.,math.cos(a));v=(0.,1.,0.);w=(-math.cos(a),0.,side*math.sin(a))
+  else:
+   root,tip=(((side*.071,.861,-.055),(side*.29,1.27,-.82)),((side*.072,.831,-.055),(side*.26,1.035,-.76)))[j]
+   origin=author.pivot(root);length=math.dist(root,tip);v=tuple((b-a)/length for a,b in zip(root,tip));seed=(0.,1.,0.);d=sum(a*b for a,b in zip(seed,v));u=tuple(a-d*b for a,b in zip(seed,v));length=math.sqrt(sum(a*a for a in u));u=tuple(a/length for a in u);w=(u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0])
+  positions=[]
+  for i in range(0,len(p['positions']),3):
+   delta=[p['positions'][i+k]-origin[k] for k in range(3)];positions.extend(sum(a*b for a,b in zip(delta,axis)) for axis in (u,v,w))
+  return dict(p,positions=positions)
  def test_schema_recoverable_anatomy_and_floor(self):
-  m=self.m;self.assertEqual(self.blob,author.export_scyther());self.assertEqual(len(self.parts),57);self.assertEqual(len(m.parts),40);self.assertEqual(len(m.joints),13);self.assertFalse((ROOT/'scyther.mesh.json').exists())
+  m=self.m;self.assertEqual(self.blob,author.export_scyther());self.assertEqual(len(self.parts),57);self.assertEqual(len(m.parts),39);self.assertEqual(len(m.joints),13);self.assertFalse((ROOT/'scyther.mesh.json').exists())
   self.assertEqual(author.geometry_digest({'primitives':self.parts}),author.REST_DIGEST);self.assertEqual(author.geometry_digest(m.neutral_model()),author.PACKED_REST_DIGEST)
   self.assertLessEqual(sum(map(len,m.vertices)),20000);self.assertLessEqual(sum(map(len,m.indices)),120000);self.assertLessEqual(len(m.doc['accessors']),256);self.assertLess(len(self.blob),1024*1024)
   points=[p for v in m.vertices for p in v];self.assertEqual(min(p[1] for p in points),0.);self.assertAlmostEqual(max(p[1] for p in points),1.18,places=6)
@@ -40,9 +50,13 @@ class ScytherTests(unittest.TestCase):
    elif n.startswith('Wing /'):
     parent=next(p for p in self.parts if p['part'].startswith('Wing case /') and p['part'].split()[-2:]==n.split()[-2:])
    else:continue
+   if n.startswith('Scythe rim /'):mark=self.local_feature(mark,int(side));parent=self.local_feature(parent,int(side))
+   elif n.startswith('Wing /'):
+    wing_side,j=map(int,n.split()[-2:]);mark=self.local_feature(mark,wing_side,j);parent=self.local_feature(parent,wing_side,j)
    for k in range(0,len(mark['indices']),3):
     a,b,c=[mark['positions'][3*j:3*j+3] for j in mark['indices'][k:k+3]]
-    if (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<=1e-14:continue
+    u=[b[j]-a[j] for j in range(3)];v=[c[j]-a[j] for j in range(3)];normal=(u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0])
+    if normal[2]<=.50*math.sqrt(sum(q*q for q in normal)):continue
     samples=[tuple((a[j]+b[j]+c[j])/3 for j in range(3)),*[tuple((u[j]+v[j])/2 for j in range(3)) for u,v in [(a,b),(b,c),(c,a)]]]
     for q in samples:
      hits=rays(parent,q[0],q[1]);self.assertTrue(hits,n);self.assertGreater(q[2]-max(hits),.00005,(n,q))
@@ -50,18 +64,19 @@ class ScytherTests(unittest.TestCase):
   from bovine_sculpt import reverse_front
   for pale in [p for p in self.parts if p['part'].startswith('Wing /')]:
    case=next(p for p in self.parts if p['part'].startswith('Wing case /') and p['part'].split()[-2:]==pale['part'].split()[-2:])
-   mark=reverse_front(pale);parent=reverse_front(case)
+   side,j=map(int,pale['part'].split()[-2:]);mark=reverse_front(self.local_feature(pale,side,j));parent=reverse_front(self.local_feature(case,side,j))
    for k in range(0,len(mark['indices']),3):
     a,b,c=[mark['positions'][3*j:3*j+3] for j in mark['indices'][k:k+3]]
-    if (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])<=1e-14:continue
+    u=[b[j]-a[j] for j in range(3)];v=[c[j]-a[j] for j in range(3)];normal=(u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0])
+    if normal[2]<=.50*math.sqrt(sum(q*q for q in normal)):continue
     samples=[tuple((a[j]+b[j]+c[j])/3 for j in range(3)),*[tuple((u[j]+v[j])/2 for j in range(3)) for u,v in [(a,b),(b,c),(c,a)]]]
     for q in samples:
      hits=rays(parent,q[0],q[1]);self.assertTrue(hits,pale['part']);self.assertGreater(q[2]-max(hits),.00005,'pale membrane must also cover the rear case')
  def test_scythe_inner_cutouts_are_unfilled(self):
   for side in (-1,1):
-   blade=self.find('Scythe /',side);x,y,z=author.pivot((side*.435,.510,.1))
-   self.assertFalse(rays(blade,x,y),'curved blade must leave the inner cutout empty')
-   x,y,z=author.pivot((side*.635,.570,.1));self.assertTrue(rays(blade,x,y),'outer cutting blade must have real volume')
+   blade=self.local_feature(self.find('Scythe /',side),side)
+   self.assertFalse(rays(blade,.15*1.75*author.SCALE,-.28*.65*author.SCALE),'actual curved blade must leave the inner cutout empty')
+   self.assertTrue(rays(blade,.35*1.75*author.SCALE,-.22*.65*author.SCALE),'outer cutting blade must have real volume')
  def test_occupied_axial_blade_leg_and_wing_roots_survive_motion(self):
   find=lambda p,s=None:self.find(p,s)['part'];pairs=[(find('Waist /'),find('Thorax /')),(find('Abdomen /'),find('Waist /')),(find('Neck /'),find('Thorax /')),(find('Head /'),find('Neck /'))]
   for crest in [p for p in self.parts if p['part'].startswith('Crest /')]:pairs.append((crest['part'],find('Head /')))
@@ -85,6 +100,7 @@ class ScytherTests(unittest.TestCase):
   # that attachment rigid throughout the wing's motion.
   for vein in [p for p in self.parts if p['part'].startswith('Wing vein /')]:
    parent=next(p for p in self.parts if p['part'].startswith('Wing /') and p['part'].split()[-2:]==vein['part'].split()[-2:])
+   side,j=map(int,vein['part'].split()[-2:]);parent=self.local_feature(parent,side,j);vein=self.local_feature(vein,side,j)
    def occupied(part):
     count=0
     for i in range(0,len(part['positions']),3):

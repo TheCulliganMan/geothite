@@ -129,8 +129,16 @@ pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bo
             let well_paint = b.source.tileset_id.as_ref() == "johto_modern"
                 && (0x5b..=0x5e).contains(&b.source.metatile_id)
                 && matches!(b.source.tile_index, 0x29 | 0x5b);
+            // The gate and threshold now bake live pigment even though their
+            // source cells remain flat. Atlas refresh alone cannot recolor them.
+            let park_paint = b.source.tileset_id.as_ref() == "park"
+                && ((matches!(b.source.metatile_id,
+                    0x28..=0x2a | 0x2c..=0x2e | 0x30..=0x32)
+                    && matches!(b.source.tile_index, 0x21 | 0x41))
+                    || (matches!(b.source.metatile_id, 0x0a | 0x0b)
+                        && b.source.tile_index == 0x4f));
             if a.texture != b.texture
-                && (well_paint || !matches!(
+                && (well_paint || park_paint || !matches!(
                     crate::profile::shape_for_source_on_map(live.map_id.as_ref(), &b.source),
                     crate::profile::CellShape::Flat
                         | crate::profile::CellShape::Water
@@ -277,6 +285,51 @@ mod tests {
             assert!(!can_reuse(&built,&live),"stale source paint for {metatile:x}/{tile:x}");
             assert_eq!(built.grid_origin,live.grid_origin);
             assert_eq!(built.tiles[400].source,live.tiles[400].source);
+        }
+    }
+
+    #[test]
+    fn park_gate_and_threshold_palette_changes_rebuild_live_paint() {
+        for map in ["NationalPark", "NationalParkBugContest"] {
+            for (block, column, row, tile) in [
+                (0x29, 1, 2, 0x21), // Gate roof pigment donor.
+                (0x2d, 1, 3, 0x41), // Gate masonry pigment donor.
+                (0x0a, 0, 2, 0x4f), // North threshold.
+                (0x0b, 2, 0, 0x4f), // East threshold.
+            ] {
+                let mut built = frame(IVec2::ZERO);
+                built.map_id = map.into();
+                built.tiles[400].source = VisualTileSource {
+                    tileset_id: "park".into(),
+                    metatile_id: block,
+                    subtile_column: column,
+                    subtile_row: row,
+                    tile_index: tile,
+                };
+                assert!(matches!(
+                    crate::profile::shape_for_source_on_map(map, &built.tiles[400].source),
+                    crate::profile::CellShape::Flat
+                ));
+                let mut live = built.clone();
+                assert!(can_reuse(&built, &live));
+                live.tiles[400].texture = Handle::Uuid(
+                    bevy::asset::uuid::Uuid::from_u128(999999),
+                    std::marker::PhantomData,
+                );
+                assert!(!can_reuse(&built, &live), "stale park paint: {map}/{block:x}");
+                assert_eq!(built.tiles[400].source, live.tiles[400].source);
+            }
+            let mut built = frame(IVec2::ZERO);
+            built.map_id = map.into();
+            built.tiles[400].source = VisualTileSource {
+                tileset_id: "park".into(), metatile_id: 1,
+                subtile_column: 0, subtile_row: 0, tile_index: 0,
+            };
+            let mut live = built.clone();
+            live.tiles[400].texture = Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(999999), std::marker::PhantomData,
+            );
+            assert!(can_reuse(&built, &live), "ordinary flat paving still uses atlas refresh");
         }
     }
 

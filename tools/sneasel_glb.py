@@ -14,13 +14,13 @@ def geometry_digest(model):
  for p in model['primitives']:
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
-REST_DIGEST='0509cb264ed9206131887afeee6bb84b852aecfbf0d0743e4c46f08652d0f19a'
+REST_DIGEST='0ba415036d10cd68cd0213d2caa73c82dedd5a8aadd8bf573f9ccdaf828b77a1'
 def pivot(p):return tuple((v-(LOW if i==1 else 0.))*SCALE for i,v in enumerate(p))
 BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.48,-.015)),('neck',1,(0.,.68,.02)),('head',2,(0.,.73,.055)),
- ('ear',3,(-.15,1.005,.012)),('plume',3,(.145,1.01,.03)),('tail',1,(0.,.32,-.08)),
- ('arm_left',1,(-.113,.665,-.005)),('wrist_left',7,(-.40,.85,.08)),
- ('arm_right',1,(.115,.644,0.)),('wrist_right',9,(.34,.57,.13)),
- ('leg_left',0,(-.16,.20,.010)),('leg_right',0,(.16,.20,.010)))
+ ('ear',3,(-.15,1.02,.005)),('plume',3,(.145,1.005,.01)),('tail',1,(0.,.35,-.08)),
+ ('arm_left',1,(-.09,.65,0.)),('wrist_left',7,(-.31,1.025,.08)),
+ ('arm_right',1,(.09,.64,0.)),('wrist_right',9,(.27,.60,.15)),
+ ('leg_left',0,(-.098,.215,-.015)),('leg_right',0,(.098,.215,-.015)))
 JOINTS=tuple((n,parent,pivot(p) if parent is not None else p) for n,parent,p in BASE)
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def skin_weights(part,point):
@@ -30,11 +30,11 @@ def skin_weights(part,point):
  if part.startswith('Leg /'):
   a=smoothstep(.095,.32,y);g=.20*smoothstep(.09,.15,y)*(1.-smoothstep(.25,.34,y))
   return [0,1,11 if part.endswith('-1') else 12,0],[(1.-a)*(1.-g),a*(1.-g),g,0.]
- if part.startswith('Ear /'):return rigid(4)
+ if part.startswith('Ear /'):return rigid(4 if part.endswith('-1') else 5)
  if part.startswith('Plume /'):return rigid(5)
  if part.startswith('Tail /'):return rigid(6)
  if part.startswith('Arm /'):
-  owner=7 if part.endswith('-1') else 9;a=smoothstep(.25,.42,-x) if owner==7 else smoothstep(.24,.36,x)
+  owner=7 if part.endswith('-1') else 9;a=smoothstep(.82,.98,y) if owner==7 else smoothstep(.15,.25,x)
   return [owner,owner+1,0,0],[1.-a,a,0.,0.]
  if part.startswith(('Hand /','Talon / hooked')):
   side=part.split()[-1] if part.startswith('Hand /') else part.split()[-2]
@@ -53,8 +53,8 @@ def pose_angles(clip,t):
  a*=strength;b*=strength;c=a*(.20 if clip=='idle' else 1.);d=b*(.20 if clip=='idle' else 1.)
  return [(0.,0.,0.),(0.,.014*a,0.),(0.,.012*a,0.),(.006*a,.020*a,0.),
   (.012*b,0.,-.020*b),(.018*b,0.,.025*b),(0.,.060*b,0.),
-  (0.,.140*c,-.025*c),(-.100*c,.020*d,-.025*c),
-  (0.,-.090*c,.020*c),(-.070*c,-.025*d,.015*c),
+  (0.,.180*c,-.025*c),(-.070*c,.020*d,-.025*c),
+  (0.,-.045*c,.010*c),(-.035*c,-.0125*d,.0075*c),
   (0.,.018*a,0.),(0.,-.018*a,0.)]
 def rotation(clip,t,joint):return quaternion_xyz(*pose_angles(clip,t)[joint])
 def export_sneasel(model=None):

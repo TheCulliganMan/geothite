@@ -6,12 +6,12 @@ use crate::new_bark_actors::character_meshes::CharacterKind;
 
 pub(crate) fn supported(kind: CharacterKind) -> bool {
     matches!(kind, CharacterKind::LinkReceptionist | CharacterKind::Fisher | CharacterKind::CooltrainerF | CharacterKind::Clerk | CharacterKind::Receptionist
-        | CharacterKind::Lass | CharacterKind::Youngster | CharacterKind::CooltrainerM | CharacterKind::SuperNerd | CharacterKind::Officer)
+        | CharacterKind::Lass | CharacterKind::Youngster | CharacterKind::CooltrainerM | CharacterKind::SuperNerd | CharacterKind::Officer | CharacterKind::KimonoGirl)
 }
 pub(crate) fn lower_follows_source(kind: CharacterKind) -> bool {
     // Lass skirts and Cooltrainer/Officer trousers use source shade two;
     // Youngster/Super Nerd trousers use the shared dark ink instead.
-    matches!(kind,CharacterKind::LinkReceptionist|CharacterKind::Receptionist|CharacterKind::Lass|CharacterKind::CooltrainerM|CharacterKind::Officer)
+    matches!(kind,CharacterKind::LinkReceptionist|CharacterKind::Receptionist|CharacterKind::Lass|CharacterKind::CooltrainerM|CharacterKind::Officer|CharacterKind::KimonoGirl)
 }
 pub(crate) fn source_color(kind: CharacterKind, image: Option<&Image>) -> Option<[u8; 3]> {
     if !supported(kind) { return None; }
@@ -30,7 +30,7 @@ pub(crate) fn source_color(kind: CharacterKind, image: Option<&Image>) -> Option
             && u16::from(p[0]) > u16::from(p[1].max(p[2])) + 24
             && u16::from(p[1]) * 5 <= u16::from(p[0]) * 2;
         let single_pigment = matches!(kind, CharacterKind::Clerk | CharacterKind::Receptionist
-            | CharacterKind::Lass | CharacterKind::Youngster | CharacterKind::CooltrainerM | CharacterKind::SuperNerd | CharacterKind::Officer);
+            | CharacterKind::Lass | CharacterKind::Youngster | CharacterKind::CooltrainerM | CharacterKind::SuperNerd | CharacterKind::Officer | CharacterKind::KimonoGirl);
         // These sprites use one clothing pigment, warm skin and dark ink.
         // Include their brown/silver/pink uniforms as well as red/blue/green.
         let pigment = p[..3].iter().copied().max().unwrap() > 64
@@ -71,7 +71,19 @@ pub(crate) fn painting_for(kind: CharacterKind, rgba: &[u8], size: (u32,u32), co
         if p[3]==0 { continue; }
         let x=(i as u32%size.0)*256/size.0;let y=(i as u32/size.0)*256/size.1;
         let lower = lower_follows_source(kind) && x>=156 && y>=192;
-        let garment = (x<155 && y>=128) || lower;
+        // This painting's robe starts at v=.47, above the usual shirt island.
+        // Include its collar-side fabric while keeping the head island intact.
+        let shirt_top = if kind == CharacterKind::KimonoGirl {120} else {128};
+        let garment = (x<155 && y>=shirt_top) || lower;
+        if kind == CharacterKind::KimonoGirl {
+            // The robe painting includes pale flowers and green stems. Only
+            // its saturated red fabric follows the source palette.
+            if garment {
+                let rgb = kimono_fabric_color([p[0], p[1], p[2]], lower, color);
+                p[..3].copy_from_slice(&rgb);
+            }
+            continue;
+        }
         let green = kind==CharacterKind::Clerk;
         let red = kind==CharacterKind::Lass;
         let shirt=garment && if green { p[1].saturating_sub(p[0].max(p[2]))>=12 }
@@ -86,6 +98,15 @@ pub(crate) fn painting_for(kind: CharacterKind, rgba: &[u8], size: (u32,u32), co
         for channel in 0..3 {p[channel]=(f32::from(color[channel])*shade).round().clamp(0.,255.)as u8;}
     }
     out
+}
+
+/// Shared by the painted sleeves and the separately fitted robe: sample the
+/// same repainted fabric, retaining its authored light/dark variation.
+pub(crate) fn kimono_fabric_color(rgb: [u8;3], lower: bool, color: [u8;3]) -> [u8;3] {
+    if u16::from(rgb[0]) <= 3 * u16::from(rgb[1].max(rgb[2])) { return rgb; }
+    let look = crate::npc_appearance::look(CharacterKind::KimonoGirl);
+    let shade = f32::from(rgb[0]) / f32::from(if lower { look.lower[0] } else { look.shirt[0] });
+    color.map(|channel| (f32::from(channel) * shade).round().clamp(0.,255.) as u8)
 }
 
 #[cfg(test)]

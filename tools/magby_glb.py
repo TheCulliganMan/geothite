@@ -2,7 +2,7 @@
 """Canonical Magby skin with planted claws, a coherent crown and an open bill."""
 import argparse,hashlib,json,math,struct
 from pathlib import Path
-from magby_sculpt import sculpture,HEIGHT
+from magby_sculpt import sculpture,HEIGHT,arm_path
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 MAX_BYTES=1024*1024
 SOURCE=sculpture();RAW=sculpture(normalize=False)
@@ -14,13 +14,13 @@ def geometry_digest(model):
  for p in model['primitives']:
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
-REST_DIGEST='aab2245cffeaa6b35e780fc79dee5fa83f7d6b482103151f3e1cfd6acec8c60b'
+REST_DIGEST='6eaa05168ad1933e63dd038d097128c6d54c1808f892243e83c9c9e5703fedd4'
 def pivot(p):return tuple((v-(LOW if i==1 else 0.))*SCALE for i,v in enumerate(p))
 BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.37,-.006)),
  ('neck',1,(0.,.53,.02)),('head',2,(0.,.60,.02)),('crown',3,(0.,.855,.02)),
- ('arm_left',1,(-.084,.504,.004)),('arm_right',1,(.084,.504,.004)),
- ('tail_base',1,(0.,.300,-.09)),('tail_tip',7,(.12,.32,-.31)),
- ('leg_left',0,(-.132,.12,.034)),('leg_right',0,(.132,.12,.034)))
+ ('arm_left',1,arm_path(-1)[0]),('arm_right',1,arm_path(1)[0]),
+ ('tail_base',1,(0.,.283,-.101)),('tail_tip',7,(.12,.29,-.34)),
+ ('leg_left',0,(-.143,.134,.014)),('leg_right',0,(.143,.134,.014)))
 JOINTS=tuple((n,parent,pivot(p) if parent is not None else p) for n,parent,p in BASE)
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def body_weights(y):
@@ -97,11 +97,11 @@ def export_magby(model=None):
    channels.append({'sampler':len(samplers),'target':{'node':joint,'path':'rotation'}})
    samplers.append({'input':times,'output':accessor(rotations,'VEC4'),'interpolation':'LINEAR'})
   g.doc['animations'].append({'name':'magby.'+clip,'channels':channels,'samplers':samplers,
-    'extras':{'loopSuggested':clip=='idle','cueRelative':clip!='idle','purpose':'planted claws; fitted bib, gaze and open bill; coherent lobed crown; raised clawed arms; bending tail; source battle cues own timing'}})
+    'extras':{'loopSuggested':clip=='idle','cueRelative':clip!='idle','purpose':'planted claws; fitted bib, gaze and open bill; coherent lobed crown; low clawed arms; bending tail; source battle cues own timing'}})
  g.doc['extras']={'coordinate_system':COORDINATES,'source_name':'magby','source_sha256':REST_DIGEST,
     'reference_span':HEIGHT,'body_reference_height':HEIGHT,'full_silhouette_height':HEIGHT,
     'geometry_source':'tools/magby_sculpt.py','geometry_preservation':'exact source f32 anatomy, normals, colours and triangle order',
-    'animation_contract':'identity root; fixed feet and toe claws; yaw-only torso; shared neck/collar and belly field; rigid fitted face and open bill; coherent lobed crown; raised clawed arms; bending tail; rotation-only source-cue clips'}
+    'animation_contract':'identity root; fixed feet and toe claws; yaw-only torso; shared neck/collar and belly field; rigid fitted face and open bill; coherent lobed crown; low clawed arms; bending tail; rotation-only source-cue clips'}
  if len(g.doc['accessors'])>256:raise ValueError('Magby exceeds existing accessor limit')
  return g.bytes()
 

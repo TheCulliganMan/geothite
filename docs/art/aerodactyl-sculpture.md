@@ -1,5 +1,9 @@
 # Aerodactyl sculpture
 
+The [October 21 full-volume revision](fossil-pair-fidelity.md) supersedes the
+initial wing planes, gape, eye placement, hind-limb posture, tail and counts
+below. The original source and skin history remain recorded here.
+
 `tools/aerodactyl_sculpt.py` replaces the shared generic dragon with an original
 lean fossil flyer. A continuous chest and slender neck support a swept wedge
 skull, backward horns and a lowered long mandible with rooted cheek hinges.

@@ -1,5 +1,14 @@
 # Charmeleon and Charizard canonical skins
 
+The later [Charizard/Dragonite fidelity revision](dragon-pair-fidelity.md)
+supersedes Charizard's shape, counts and hashes below. It adds complete game
+orbits, a forward neck, upright short ankles, raised palms, a low tail,
+orange wing backs, fitted teal fronts and a backed open mouth. Charmeleon's
+canonical bytes remain unchanged. The linked guide records current metrics
+and verification; the following sections retain the initial skin publication.
+
+## Initial skin publication
+
 Charmeleon and Charizard replace the old Blender primitive assemblies with
 original shaped fire-lizard sculptures and canonical articulated GLBs. The
 background builder, direct sculpture CLI, strict logical readers and Rust

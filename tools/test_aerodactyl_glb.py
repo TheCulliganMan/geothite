@@ -19,8 +19,8 @@ class AerodactylSkinTests(unittest.TestCase):
  def find(self,prefix):return next(i for i,n in enumerate(self.m.names) if n.startswith(prefix))
  def test_exact_source_packing_hierarchy_inverse_binds_and_limits(self):
   m=self.m;self.assertEqual(self.blob,author.export_aerodactyl());self.assertEqual(author.geometry_digest(self.model),author.REST_DIGESTS['aerodactyl']);self.assertEqual(author.geometry_digest(author.decode_aerodactyl(self.blob)),author.REST_DIGESTS['aerodactyl'])
-  self.assertEqual(len(m.names),56);self.assertEqual(len(m.joints),9);self.assertEqual(m.parents[:9],[p for n,p,v in author.JOINTS['aerodactyl']]);self.assertLessEqual(len(self.runtime.parts),64);self.assertLessEqual(len(m.doc['accessors']),256);self.assertLessEqual(len(self.blob),1024*1024)
-  self.assertEqual(sum(map(len,m.vertices)),18907);self.assertEqual(sum(len(i)//3 for i in m.indices),31516)
+  self.assertEqual(len(m.names),63);self.assertEqual(len(m.joints),9);self.assertEqual(m.parents[:9],[p for n,p,v in author.JOINTS['aerodactyl']]);self.assertLessEqual(len(self.runtime.parts),64);self.assertLessEqual(len(m.doc['accessors']),256);self.assertLessEqual(len(self.blob),1024*1024)
+  self.assertEqual(sum(map(len,m.vertices)),16822);self.assertEqual(sum(len(i)//3 for i in m.indices),25888)
   for mat in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(mat,IDENTITY)),1e-7)
  def test_closed_outward_anatomy_and_actual_corner_normals(self):assert_closed_models(self,{'aerodactyl':self.model});assert_model_shading(self,{'aerodactyl':self.model})
  def test_independent_controls_and_complete_jaw_wing_and_digit_carriers(self):
@@ -53,9 +53,9 @@ class AerodactylSkinTests(unittest.TestCase):
   for i,n in enumerate(m.names):
    side=n.split()[-2] if n.startswith(('Wing finger /','Wing claw /','Foot claw /')) else n.split()[-1]
    if n.startswith('Jaw hinge /'):pairs.extend(((i,head),(i,jaw)))
-   elif n.startswith('Skull horn /'):pairs.append((i,head))
+   elif n.startswith(('Skull horn /','Brow /')):pairs.append((i,head))
    elif n.startswith('Tooth /'):pairs.append((i,head if ' upper ' in n else jaw))
-   elif n.startswith('Wing /'):pairs.extend(((i,body),(i,self.find('Wing arm / continuous bent leading fossil arm '+side))))
+   elif n.startswith(('Wing /','Wing back /')):pairs.extend(((i,body),(i,self.find('Wing arm / continuous bent leading fossil arm '+side))))
    elif n.startswith('Wing arm /'):pairs.append((i,body))
    elif n.startswith(('Wing finger /','Wing claw /')):pairs.append((i,self.find('Wing arm / continuous bent leading fossil arm '+side)))
    elif n.startswith('Leg /'):pairs.extend(((i,body),(i,self.find('Foot / grounded narrow fossil pad '+side))))
@@ -70,7 +70,7 @@ class AerodactylSkinTests(unittest.TestCase):
   m=self.m
   for clip in m.clips:
    for t in (.18,.34,.46,.76):
-    mats=m.matrices(clip,t);helper=anatomy.AerodactylTests();helper.ps=[self.part(i,mats) for i in range(len(m.parts))];helper.test_open_jaw_is_actual_empty_space_between_stored_solids()
+    mats=m.matrices(clip,t);helper=anatomy.AerodactylTests();helper.ps=[inverse_rigid(self.part(i,mats),mats[2]) for i in range(len(m.parts))];helper.test_open_jaw_is_actual_empty_space_between_stored_solids(neutral=False)
   helper=anatomy.AerodactylTests();helper.ps=self.model['primitives'];helper.test_closed_mouth_negative_control_has_no_open_clearance()
  def test_posed_fitted_face_palate_and_tongue_keep_actual_support(self):
   m=self.m

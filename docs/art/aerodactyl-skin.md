@@ -1,5 +1,9 @@
 # Aerodactyl canonical skin
 
+The [October 21 full-volume revision](fossil-pair-fidelity.md) supersedes this
+initial geometry, its oversized jaw-gap guard, material planes and counts.
+It preserves the original loader budgets and production size.
+
 The detailed fossil flyer now uses a canonical GLB through the normal background
 builder, direct sculpture CLI, strict logical reader and Rust skin dispatch.
 Registration reaches 233 skin variants and 42 static species files. The complete

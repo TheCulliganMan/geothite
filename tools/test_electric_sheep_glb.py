@@ -13,13 +13,13 @@ class ElectricSheepSkinTests(unittest.TestCase):
  def test_canonical_anatomy_bind_and_budgets(self):
   for s,m in self.models.items():
    self.assertEqual(self.blobs[s],author.export_electric_sheep(s,author.decode_electric_sheep(self.blobs[s],s)))
-   self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),{'mareep':(26,6382,11840,13),'flaaffy':(33,10302,16636,13),'ampharos':(26,3494,5636,9)}[s])
+   self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),{'mareep':(26,6382,11840,13),'flaaffy':(33,10302,16636,13),'ampharos':(30,3806,5804,9)}[s])
    self.assertLess(len(self.blobs[s]),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
    for matrix in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(matrix,IDENTITY)),1e-7)
  def test_local_normal_palettes(self):
   for s,m in self.models.items():
    for p,n in enumerate(m.names):
-    if s=='ampharos':rgb=(0,0,0) if n.startswith(('Horn / rounded','Eye / black','Nostril /','Neck /','Muzzle /','Tail / fitted')) else (255,255,255) if n.startswith(('Belly /','Eye / catchlight','Forehead / restrained','Tail / quiet')) else (173,82,8) if n.startswith(('Forehead / inset','Tail / ruby')) else (255,255,16)
+    if s=='ampharos':rgb=(0,0,0) if n.startswith(('Horn / fitted','Eye / black','Nostril /','Neck /','Muzzle /','Tail / fitted')) else (255,255,255) if n.startswith(('Belly /','Eye / catchlight','Forehead / restrained','Tail / quiet')) else (173,82,8) if n.startswith(('Forehead / inset','Tail / ruby')) else (255,255,16)
     else:
      mid=s=='flaaffy';skin=(255,107,156) if mid else (82,41,156);wool=(255,255,255) if mid else (198,165,57);shade=(82,24,115) if mid else skin
      if n.startswith(('Ear /','Tail / curved')):rgb=(0,0,0) if int(n.split()[-1])%2==0 else skin if mid else (198,165,57)
@@ -92,7 +92,8 @@ class ElectricSheepSkinTests(unittest.TestCase):
   for clip,t in [('idle',.31),('attack',.31),('hit',.55)]:
    mats=m.matrices(clip,t)
    for p,n in enumerate(m.names):
-    if n.startswith(('Foot /','Neck /')):support=body
+    if n.startswith('Foot /'):support=next(i for i,v in enumerate(m.names) if v.startswith('Haunch /') and v.endswith(' '+n.split()[-1]))
+    elif n.startswith(('Haunch /','Neck /')):support=body
     elif n.startswith('Tail / fitted'):support=tail
     else:continue
     self.assertTrue(overlap(part(p,mats),part(support,mats)),(clip,n))

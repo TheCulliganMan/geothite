@@ -18,10 +18,17 @@ square leaf cards with closed, cupped leaves. These are three distinct source
 models, rather than scaled copies of the previous Kanto shrub. Original download
 archives and textures remain outside tracked source.
 
-The renderer chooses one of exactly three shared tree meshes from stable source
-coordinates. Per-instance height, width, quarter turns and root offsets add
-variation; scrolling and neighboring tree changes cannot switch the chosen model.
-The tree roots and connected undergrowth retain the original blocked source plots.
+The Rust renderer keeps the three branch architectures in four shared age classes
+each. Runtime shaping gives mature crowns more spread, continuous yaw and finer
+closed leaf sprays. Whole leafless terminal limbs are trimmed while the complete
+support chains beneath foliage remain. Small modeled leafy shoots graft directly
+onto exposed living boughs in mature trees; existing leaf coverage limits their
+placement and their count is bounded by the authored crown's spray budget.
+
+Stable source coordinates choose the model, age, height, width, yaw and root
+offsets; scrolling and neighboring tree changes cannot switch the chosen model.
+Root fitting uses the actual root outline. The tree roots and connected
+undergrowth retain the original blocked source plots.
 Johto pines, Ilex ancient trees, fruit/Cut trees and formal park trees keep their
 existing models.
 

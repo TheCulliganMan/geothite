@@ -36,6 +36,10 @@ mod pebbles;
 mod johto_shore;
 #[path = "mesh/shore_ecology.rs"]
 mod shore_ecology;
+mod outdoor_water;
+mod beach_banks;
+mod mountain_flanks;
+mod mineral_paint;
 
 #[path = "mesh/background.rs"]
 mod background;
@@ -118,6 +122,7 @@ mod modeled_exteriors;
 mod mountain_portals;
 #[path = "mesh/outdoor_mountains.rs"]
 mod outdoor_mountains;
+mod mineral_coords;
 #[path = "mesh/modeled_interiors.rs"]
 mod modeled_interiors;
 #[path = "mesh/radio_glazing.rs"]
@@ -193,6 +198,13 @@ pub fn jump_changes_floor_level(map: &str) -> bool {
 pub(crate) fn terrace_support_correction(frame: &VisualWorldFrame, cell: bevy::prelude::UVec2,
     foot: bevy::prelude::Vec2) -> f32 {
     terraces::support_correction(frame,cell,foot)
+}
+pub(crate) fn mountain_support_correction(frame: &VisualWorldFrame, cell: bevy::prelude::UVec2,
+    foot: bevy::prelude::Vec2, resolved_heights:&[f32]) -> f32 {
+    outdoor_mountains::support_correction(frame,cell,foot,resolved_heights)
+}
+pub(crate) fn mountain_walking_surface(frame: &VisualWorldFrame, cell: bevy::prelude::UVec2) -> bool {
+    outdoor_mountains::walking_surface(frame,cell)
 }
 /// The same native standing-water lift used by the completed terrain mesh.
 /// A positive lake datum is water, while additional deck support is land.
@@ -452,6 +464,9 @@ pub struct TerrainMeshData {
     /// Temporary authored cap ownership, retained through mineral deformation.
     /// Cleared after hidden backing is built; never uploaded to the renderer.
     mineral_cap_ranges: Option<Vec<std::ops::Range<usize>>>,
+    /// Complete cave mouths share one monotone mountain deformation.
+    /// Consumed before terrace fitting; never retained by the renderer.
+    mountain_portals:Vec<mountain_portals::Portal>,
     pub textured: SurfaceMeshData,
     pub solid: SurfaceMeshData,
     /// Rock beyond authenticated cave map bounds; separate reveal policy.
@@ -482,6 +497,8 @@ pub(crate) struct RepeatingBackground {
     pub texture: Handle<Image>,
     /// Preserve the selected ground identity even when several sources share art.
     pub source: VisualTileSource,
+    /// Actual donor in this frame; connected maps can share identical art.
+    pub source_cell: [usize; 2],
 }
 
 #[derive(Clone, Debug, Default, PartialEq)]
@@ -805,7 +822,7 @@ mod cached_grove_tests {
     fn cached_groves_keep_the_full_preparations_reveal_policy() {
         use crate::foliage::GroveFamily;
         let library=crate::forest_instances::Library::default();
-        for family in [GroveFamily::JohtoPine,GroveFamily::AncientForest,GroveFamily::KantoDeciduous] {
+        for family in [GroveFamily::JohtoPine,GroveFamily::AncientForest,GroveFamily::KantoDeciduous,GroveFamily::ParkBroadleaf] {
             for coverage_fade in [false,true] {
                 let recipe=new_bark::GroveRecipe {family,bounds:[-16.,16.,-16.,16.],
                     base_height:0.,tile_height:16.,coordinates:[4,8],neighbors:[false;4],
@@ -9312,6 +9329,7 @@ fn append_east_ramp_sidewalls(
 
 fn append_exposed_sides(
     mesh: &mut TerrainMeshData,
+    map: &str,
     geometry: &GridGeometry,
     cells: &[&VisualTile],
     shapes: &[CellShape],
@@ -9355,6 +9373,8 @@ fn append_exposed_sides(
     }
     let top = shapes[index].surface_height(geometry.tile_height);
     let (x0, x1, z0, z1) = geometry.bounds(column, row);
+    let mineral = outdoor_mountains::enabled(map)
+        && outdoor_mountains::permanent(&cells[index].source,shapes[index]);
 
     for direction in Direction::ALL {
         let (dx, dz) = direction.offset();
@@ -9371,7 +9391,11 @@ fn append_exposed_sides(
         let neighbor_column = neighbor_column as usize;
         let neighbor_row = neighbor_row as usize;
         let neighbor_index = neighbor_row * geometry.width + neighbor_column;
-        let bottom = shapes[neighbor_index].surface_height(geometry.tile_height);
+        let object_floor = if mineral {
+            outdoor_mountains::object_floor_height(&cells[neighbor_index].source,
+                shapes[neighbor_index],mesh.footing_heights.get(neighbor_index).copied(),geometry.tile_height)
+        } else {None};
+        let bottom = object_floor.unwrap_or_else(||shapes[neighbor_index].surface_height(geometry.tile_height));
         if bottom >= top {
             continue;
         }

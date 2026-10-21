@@ -28,7 +28,9 @@ struct GrassUniform {
 fn grass_position(world: vec4<f32>, uv: vec2<f32>, world_scale: f32) -> vec4<f32> {
     var point = world;
     if abs(uv.x - 84000.0) < 0.5 {
-        let scale = select(1.0, grass.height_scale.x, grass.height_scale.x > 0.0);
+        // Walking views keep the trainer's upper body clear. Retained battle
+        // scenery supplies its own source-height normalization, unchanged.
+        let scale = select(0.45, grass.height_scale.x, grass.height_scale.x > 0.0);
         let height = max(uv.y, 0.0);
         // UV.y is height above the blade root in mesh space. Floors and roots
         // retain their exact elevation; forward, depth and shadow passes agree.

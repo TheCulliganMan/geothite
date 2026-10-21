@@ -17,19 +17,16 @@ from skin_glb import (COORDINATES, Glb, envelope, packed, quantized_weights,
                       quaternion_xyz, smoothstep)
 
 FILE='chikorita.glb'
-PARTS=(BODY,
-       'Eye / left fitted tall ink','Eye / left paper-white crescent','Eye / left catchlight',
-       'Eye / right fitted tall ink','Eye / right paper-white crescent','Eye / right catchlight',
-       'Mouth / fitted subtle smiling seam')+tuple('Collar / seated bud '+str(i) for i in range(1,9))+(TAIL,STEM,LEAF)
+PARTS=tuple(p['part'] for p in sculpt()['primitives'])
 MAX_BYTES=512000
-JOINTS=(('root',None,(0.,0.,0.)),('torso',0,(0.,.170,-.020)),
+JOINTS=(('root',None,(0.,0.,0.)),('torso',0,(0.,.170,-.060)),
         ('head',1,(0.,.405,.130)),
-        ('foreleg_left',1,(-.174,.195,.174)),('foreleg_right',1,(.174,.195,.174)),
-        ('hindleg_left',1,(-.174,.185,-.224)),('hindleg_right',1,(.174,.185,-.224)),
-        ('tail_nub',1,(0.,.230,-.285)),
+        ('foreleg_left',1,(-.185,.195,.174)),('foreleg_right',1,(.185,.195,.174)),
+        ('hindleg_left',1,(-.185,.185,-.270)),('hindleg_right',1,(.185,.185,-.270)),
+        ('tail_nub',1,(0.,.260,-.350)),
         ('leaf_petiole',2,(0.,.665,.160)),
-        ('leaf_mid_fold',8,(.030,.895,.025)),
-        ('leaf_tip_fold',9,(.119,.988,-.221)))
+        ('leaf_mid_fold',8,(.009,.895,.025)),
+        ('leaf_tip_fold',9,(.029,.988,-.221)))
 CLIPS=(('idle',3.4,73),('attack',1.,65),('hit',1.,65))
 
 
@@ -47,6 +44,7 @@ def body_weights(position):
 
 
 def skin_weights(part,position):
+    if part.startswith('Claw /'):return [0,0,0,0],[1.,0.,0.,0.]
     if part==TAIL:return [7,0,0,0],[1.,0.,0.,0.]
     if part==STEM:return [8,0,0,0],[1.,0.,0.,0.]
     if part==LEAF:

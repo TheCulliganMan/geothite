@@ -13,8 +13,9 @@ fn eligible(map: &str) -> bool {
             .is_some_and(|n| !n.is_empty() && n.bytes().all(|b| b.is_ascii_digit()))
 }
 
-// A complete rocky $3d cap has outline, ochre body and lit mineral. Sampling
-// that native role avoids promoting water blue or pale neighboring ground.
+// The west, east and south edge drawings all contain outline, ochre body and
+// lit mineral. A west-facing coast or a short south bank need not contain an
+// east-facing $3d anywhere in its retained source region.
 fn palette(
     cells: &[&VisualTile],
     shapes: &[CellShape],
@@ -24,25 +25,47 @@ fn palette(
     for (i, tile) in cells.iter().enumerate() {
         if shapes[i] != CellShape::ShoreBand
             || tile.source.tileset_id.as_ref() != family
-            || tile.source.tile_index != 0x3d
+            || !matches!(tile.source.tile_index, 0x3b | 0x3d | 0x4c)
         {
             continue;
         }
         let rgba = tile_rgba(images, tile).ok()?;
-        if rgba.len() != 256 || rgba.chunks_exact(4).any(|p| p[3] != 255) {
+        if rgba.len() != 256 || rgba.as_chunks::<4>().0.iter().any(|p| p[3] != 255) {
             continue;
         }
         let colors = rgba
-            .chunks_exact(4)
+            .as_chunks::<4>()
+            .0
+            .iter()
             .map(|p| [p[0], p[1], p[2]])
             .collect::<std::collections::BTreeSet<_>>();
-        if colors.len() != 3 {
+        if !(3..=4).contains(&colors.len()) {
             continue;
         }
-        let mut colors = colors.into_iter().collect::<Vec<_>>();
-        colors.sort_by_key(|c| {
-            u32::from(c[0]) * 2126 + u32::from(c[1]) * 7152 + u32::from(c[2]) * 722
-        });
+        let sample = |pixel: usize| {
+            let i = pixel * 4;
+            [rgba[i], rgba[i + 1], rgba[i + 2]]
+        };
+        let swatches = match tile.source.tile_index {
+            // The west and south drawings include a fourth water swatch.
+            // These source-body pixels carry lit stone and its midtone,
+            // independently of the water's brightness or time-of-day hue.
+            0x3b => [sample(2), sample(4)],
+            0x4c => [sample(3), sample(0)],
+            _ => {
+                if colors.len() != 3 {
+                    continue;
+                }
+                let mut colors = colors.into_iter().collect::<Vec<_>>();
+                colors.sort_by_key(|c| {
+                    u32::from(c[0]) * 2126 + u32::from(c[1]) * 7152 + u32::from(c[2]) * 722
+                });
+                [colors[2], colors[1]]
+            }
+        };
+        if swatches[0] == swatches[1] {
+            continue;
+        }
         let linear = |c: [u8; 3]| {
             c.map(|v| {
                 let s = f32::from(v) / 255.;
@@ -53,7 +76,7 @@ fn palette(
                 }
             })
         };
-        return Some([linear(colors[2]), linear(colors[1])]);
+        return Some(swatches.map(linear));
     }
     None
 }
@@ -61,15 +84,23 @@ fn palette(
 fn water_neighbor(i: usize, shapes: &[CellShape], g: &GridGeometry, dx: isize, dz: isize) -> bool {
     let x = (i % g.width) as isize + dx;
     let z = (i / g.width) as isize + dz;
-    x >= 0 && z >= 0 && x < g.width as isize && z < g.height as isize
+    x >= 0
+        && z >= 0
+        && x < g.width as isize
+        && z < g.height as isize
         && shapes[z as usize * g.width + x as usize] == CellShape::Water
 }
 
 fn bank(i: usize, cells: &[&VisualTile], shapes: &[CellShape], g: &GridGeometry) -> bool {
     shapes[i] == CellShape::ShoreBand
         || (shapes[i] == CellShape::Flat
-            && matches!((cells[i].source.tileset_id.as_ref(), cells[i].source.tile_index),
-                ("johto" | "johto_modern", 0x05 | 0x06))
+            && matches!(
+                (
+                    cells[i].source.tileset_id.as_ref(),
+                    cells[i].source.tile_index
+                ),
+                ("johto" | "johto_modern", 0x05 | 0x06)
+            )
             && Direction::ALL.into_iter().any(|d| {
                 let (dx, dz) = d.offset();
                 water_neighbor(i, shapes, g, dx, dz)
@@ -178,68 +209,166 @@ pub(super) fn finish(
 }
 
 #[cfg(test)]
+#[path = "johto_shore_external_tests.rs"]
+mod external_tests;
+
+#[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn bare_lake_banks_share_the_cliff_face_on_all_four_edges_without_moving_water() {
         for direction in Direction::ALL {
-            let g = GridGeometry { width: 3, height: 3, tile_width: 8., tile_height: 8.,
-                origin_x: 0., origin_z: 0. };
+            let g = GridGeometry {
+                width: 3,
+                height: 3,
+                tile_width: 8.,
+                tile_height: 8.,
+                origin_x: 0.,
+                origin_z: 0.,
+            };
             let (dx, dz) = direction.offset();
             let water = ((1 + dz) * 3 + 1 + dx) as usize;
             let mut handles = bevy::prelude::Assets::<bevy::prelude::Image>::default();
             let texture = handles.add(bevy::prelude::Image::default());
             let mut images = TerrainImageSamples::default();
-            images.pixels.insert(texture.id(), TileImageSample::Rgba((0..64).flat_map(|p| {
-                [[57, 57, 57, 255], [165, 123, 24, 255], [198, 148, 57, 255]][p % 3]
-            }).collect()));
-            let tiles = (0..9).map(|i| {
-                let mut source = super::super::tests::source_with_tile(
-                    if i == 0 { 0x54 } else { 0x01 }, 0, 0,
-                    if i == 0 { 0x3d } else if i == water { 0x14 }
-                    else if i == 4 { 0x06 } else { 0x99 });
-                source.tileset_id = "johto".into();
-                VisualTile { column: (i % 3) as u32, row: (i / 3) as u32,
-                    source, texture: texture.clone(), animation_frames: None, priority: false }
-            }).collect::<Vec<_>>();
+            images.pixels.insert(
+                texture.id(),
+                TileImageSample::Rgba(
+                    (0..64)
+                        .flat_map(|p| {
+                            [[57, 57, 57, 255], [165, 123, 24, 255], [198, 148, 57, 255]][p % 3]
+                        })
+                        .collect(),
+                ),
+            );
+            let tiles = (0..9)
+                .map(|i| {
+                    let mut source = super::super::tests::source_with_tile(
+                        if i == 0 { 0x54 } else { 0x01 },
+                        0,
+                        0,
+                        if i == 0 {
+                            0x3d
+                        } else if i == water {
+                            0x14
+                        } else if i == 4 {
+                            0x06
+                        } else {
+                            0x99
+                        },
+                    );
+                    source.tileset_id = "johto".into();
+                    VisualTile {
+                        column: (i % 3) as u32,
+                        row: (i / 3) as u32,
+                        source,
+                        texture: texture.clone(),
+                        animation_frames: None,
+                        priority: false,
+                    }
+                })
+                .collect::<Vec<_>>();
             let cells = tiles.iter().collect::<Vec<_>>();
-            let shapes = cells.iter().map(|t| shape_for_source(&t.source)).collect::<Vec<_>>();
+            let shapes = cells
+                .iter()
+                .map(|t| shape_for_source(&t.source))
+                .collect::<Vec<_>>();
             let mut mesh = TerrainMeshData::default();
             mesh.authored_cells = vec![None; 9];
             mesh.footing_heights = shapes.iter().map(|s| s.surface_height(8.)).collect();
             for (i, shape) in shapes.iter().enumerate() {
-                append_top(&mut mesh.textured, g.bounds(i % 3, i / 3).into(),
-                    shape.surface_height(8.), g.uv(i % 3, i / 3));
+                append_top(
+                    &mut mesh.textured,
+                    g.bounds(i % 3, i / 3).into(),
+                    shape.surface_height(8.),
+                    g.uv(i % 3, i / 3),
+                );
             }
-            append_textured_shoreline(&mut mesh.textured, &g, 1, 1, direction,
-                [8., 16., 8., 16.], crate::profile::WATER_HEIGHT, 0.);
+            append_textured_shoreline(
+                &mut mesh.textured,
+                &g,
+                1,
+                1,
+                direction,
+                [8., 16., 8., 16.],
+                crate::profile::WATER_HEIGHT,
+                0.,
+            );
             let footing = mesh.footing_heights.clone();
             let mut new_bark = mesh.clone();
-            finish(&mut mesh, "EcruteakCity", &cells, &shapes, &g, [0, 0], &images);
-            finish(&mut new_bark, "NewBarkTown", &cells, &shapes, &g, [0, 0], &images);
-            assert_eq!(mesh.solid, new_bark.solid,
-                "New Bark must use the same natural bank on every orientation");
+            finish(
+                &mut mesh,
+                "EcruteakCity",
+                &cells,
+                &shapes,
+                &g,
+                [0, 0],
+                &images,
+            );
+            finish(
+                &mut new_bark,
+                "NewBarkTown",
+                &cells,
+                &shapes,
+                &g,
+                [0, 0],
+                &images,
+            );
+            assert_eq!(
+                mesh.solid, new_bark.solid,
+                "New Bark must use the same natural bank on every orientation"
+            );
             assert_eq!(mesh.authored_cells[4], Some(LABEL));
             assert_eq!(mesh.authored_cells[water], None);
             assert_eq!(mesh.footing_heights, footing);
             let drop = mesh.footing_heights[4] - mesh.footing_heights[water];
-            assert!(drop > 0. && drop <= g.tile_height / 16.,
-                "standing water must meet every bank orientation with a short drop: {drop}");
-            assert_eq!(mesh.authored_cells.iter().filter(|v| v.is_some()).count(), 2,
-                "unknown neighboring artwork must retain its own presentation");
+            assert!(
+                drop > 0. && drop <= g.tile_height / 16.,
+                "standing water must meet every bank orientation with a short drop: {drop}"
+            );
+            assert_eq!(
+                mesh.authored_cells.iter().filter(|v| v.is_some()).count(),
+                2,
+                "unknown neighboring artwork must retain its own presentation"
+            );
             assert_eq!(mesh.textured.quad_count(), 7);
-            assert!(mesh.textured.positions.iter().any(|p| p[1] == crate::profile::WATER_HEIGHT),
-                "the liquid surface keeps its original datum");
-            assert!(mesh.solid.positions.iter().all(|p|p[1]>=crate::profile::WATER_HEIGHT && p[1]<=0.),
-                "shore ledges use the standard cliff without a separate pebble crown");
-            let normal=Vec3::new(dx as f32,0.,dz as f32);
-            let edge=Vec3::new(if dx>0 {16.}else{8.},0.,if dz>0 {16.}else{8.});
-            assert!(mesh.solid.positions.iter().any(|&p| {
-                let p=Vec3::from_array(p);let relief=(p-edge).dot(normal);
-                p.y>crate::profile::WATER_HEIGHT && p.y<0. && relief>0.05 && relief<0.5
-                    && if dx==0 {p.x>8.&&p.x<16.} else {p.z>8.&&p.z<16.}
-            }),"all four directions keep physical cliff-wall relief below the existing cap");
+            assert!(
+                mesh.textured
+                    .positions
+                    .iter()
+                    .any(|p| p[1] == crate::profile::WATER_HEIGHT),
+                "the liquid surface keeps its original datum"
+            );
+            assert!(
+                mesh.solid
+                    .positions
+                    .iter()
+                    .all(|p| p[1] >= crate::profile::WATER_HEIGHT && p[1] <= 0.),
+                "shore ledges use the standard cliff without a separate pebble crown"
+            );
+            let normal = Vec3::new(dx as f32, 0., dz as f32);
+            let edge = Vec3::new(
+                if dx > 0 { 16. } else { 8. },
+                0.,
+                if dz > 0 { 16. } else { 8. },
+            );
+            assert!(
+                mesh.solid.positions.iter().any(|&p| {
+                    let p = Vec3::from_array(p);
+                    let relief = (p - edge).dot(normal);
+                    p.y > crate::profile::WATER_HEIGHT
+                        && p.y < 0.
+                        && relief > 0.05
+                        && relief < 0.5
+                        && if dx == 0 {
+                            p.x > 8. && p.x < 16.
+                        } else {
+                            p.z > 8. && p.z < 16.
+                        }
+                }),
+                "all four directions keep physical cliff-wall relief below the existing cap"
+            );
         }
     }
 
@@ -298,7 +427,16 @@ mod tests {
             );
         }
         for d in [Direction::East, Direction::South] {
-            append_textured_shoreline(&mut mesh.textured, &g, 0, 0, d, [0., 8., 0., 8.], crate::profile::WATER_HEIGHT, 0.);
+            append_textured_shoreline(
+                &mut mesh.textured,
+                &g,
+                0,
+                0,
+                d,
+                [0., 8., 0., 8.],
+                crate::profile::WATER_HEIGHT,
+                0.,
+            );
         }
         let cells = tiles.iter().collect::<Vec<_>>();
         let original = mesh.clone();
@@ -313,12 +451,19 @@ mod tests {
         );
         assert_eq!(mesh.footing_heights, original.footing_heights);
         assert_eq!(mesh.authored_cells, vec![Some(LABEL), None, None, None]);
-        let caps = mesh.solid.normals.iter().enumerate()
-            .filter(|(_, normal)| normal[1] > 0.99).collect::<Vec<_>>();
+        let caps = mesh
+            .solid
+            .normals
+            .iter()
+            .enumerate()
+            .filter(|(_, normal)| normal[1] > 0.99)
+            .collect::<Vec<_>>();
         assert!(!caps.is_empty());
-        assert!(caps.iter().all(|(i, _)|
-            mesh.solid.uvs[*i] == new_bark::ledge_finish::BANK_GROUND_UV),
-            "horizontal banks must inherit dry ground rather than cliff paint");
+        assert!(
+            caps.iter()
+                .all(|(i, _)| mesh.solid.uvs[*i] == new_bark::ledge_finish::BANK_GROUND_UV),
+            "horizontal banks must inherit dry ground rather than cliff paint"
+        );
         assert_eq!(
             mesh.textured.quad_count(),
             3,

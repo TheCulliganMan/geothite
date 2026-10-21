@@ -14,7 +14,7 @@ def geometry_digest(model):
  return h.hexdigest()
 @lru_cache(maxsize=2)
 def authoring_model(species):return sculpture(species)
-REST_DIGESTS={'electabuzz': 'b8587f1ad8a7c2bfcf108f28c065448958c95600f35fc98eeda1ec4b3c1da4da'}
+REST_DIGESTS={'electabuzz': '6eb9b418dfe166fceee43b1e42c57025ca13801f5a37291b37781381854effcb'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 BODY_REFERENCE_HEIGHTS=HEIGHTS.copy();MAX_BYTES=1024*1024
 @lru_cache(maxsize=2)
@@ -23,10 +23,10 @@ def authoring_transform(species):
 def normalized(species,point):
  lo,span=authoring_transform(species);return tuple((v-(lo if i==1 else 0.))*HEIGHTS[species]/span for i,v in enumerate(point))
 def joints(species='electabuzz'):
- raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.64,-.014)),('neck',1,(0.,.94,.014)),('head',2,(0.,1.02,.033))]
+ raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.62,-.014)),('neck',1,(0.,.94,.014)),('head',2,(0.,1.02,.025))]
  for side,s in (('left',-1),('right',1)):
   points,_=source.adult_arm(s);base=len(raw);raw += [('arm_'+side,1,points[0]),('elbow_'+side,base,points[1]),('wrist_'+side,base+1,points[-1])]
- raw += [('leg_left',0,(-.184,.235,.046)),('leg_right',0,(.184,.235,.046)),('antenna_left',3,(-.162,1.145,-.023)),('antenna_right',3,(.162,1.145,-.023)),('crest_left',3,(-.017,1.178,.012)),('crest_right',3,(.017,1.178,.012)),('tail_base',1,source.ADULT_TAIL_POINTS[0]),('tail_mid',16,(.12,.33,-.40)),('tail_tip',17,(.33,.48,-.52))]
+ raw += [('leg_left',0,(-.201,.236,.006)),('leg_right',0,(.201,.236,.006)),('antenna_left',3,(-.141,1.125,-.023)),('antenna_right',3,(.141,1.125,-.023)),('crest_left',3,(-.025,1.175,.012)),('crest_right',3,(.025,1.175,.012)),('tail_base',1,source.ADULT_TAIL_POINTS[0]),('tail_mid',16,(.12,.33,-.40)),('tail_tip',17,(.33,.48,-.52))]
  return tuple((n,parent,(0.,0.,0.) if parent is None else normalized(species,p)) for n,parent,p in raw)
 JOINTS={s:joints(s) for s in SPECIES};CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 @lru_cache(maxsize=3)
@@ -36,6 +36,10 @@ def path_segments(key):
  for a,b in zip(path,path[1:]):lengths.append(lengths[-1]+math.dist(a,b))
  return [(a,b,lo/lengths[-1],hi/lengths[-1]) for a,b,lo,hi in zip(path,path[1:],lengths,lengths[1:])]
 def along_path(point,key):
+ if key!='tail':
+  # A continuous field across the bent elbow also carries every fitted stripe.
+  path=source.adult_arm(-1 if key=='left' else 1)[0];a,b=path[0],path[-1];axis=[b[k]-a[k] for k in range(3)]
+  return max(0.,min(1.,sum((point[k]-a[k])*axis[k] for k in range(3))/sum(v*v for v in axis)))
  best=float('inf');parameter=0.
  for a,b,lo,hi in path_segments(key):
   d=tuple(b[i]-a[i] for i in range(3));t=max(0.,min(1.,sum((point[i]-a[i])*d[i] for i in range(3))/sum(v*v for v in d)));dist=sum((point[i]-a[i]-t*d[i])**2 for i in range(3))
@@ -87,7 +91,7 @@ def pack_parts(species,model):
    joined={'part':kind+' / complete electric assembly'+(' '+key[1] if len(key)>1 else ''),'positions':[],'normals':[],'indices':[],'base_color':part['base_color']};meta={'source_parts':[]};groups[key]=(joined,meta);parts.append((joined,meta))
   joined,meta=groups[key];assert joined['base_color']==part['base_color'];start=len(joined['positions'])//3;first=len(joined['indices']);meta['source_parts'].append({'part':name,'order':order,'vertex_start':start,'vertex_count':len(part['positions'])//3,'index_start':first,'index_count':len(part['indices'])});joined['positions']+=part['positions'];joined['normals']+=part['normals'];joined['indices'] += [i+start for i in part['indices']]
  return parts
-PACKED_REST_DIGESTS={'electabuzz': 'b043a49e3f3885b12adb6401eee1999cb9dcaa956952ca39e300cabc97bc0c34'}
+PACKED_REST_DIGESTS={'electabuzz': '39f624b2a9c8d396b06dad1492a0e2a9496451c6d8990946d379587ab1c538ab'}
 def export_electric(species,model=None):
  if species not in SPECIES:raise ValueError('unknown electric species')
  if model is None:model=authoring_model(species)

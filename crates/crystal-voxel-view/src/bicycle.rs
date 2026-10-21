@@ -2,6 +2,7 @@
 use crate::mesh::SurfaceMeshData;
 use bevy::prelude::*;
 use std::f32::consts::TAU;
+mod steering_arm_roll;
 
 // Outer tyre radius, including its tube cross-section, rests on y=0.
 const WHEEL_HEIGHT: f32 = 0.205 + 0.025;
@@ -407,6 +408,16 @@ fn solve_limb(rig: &crate::open_people::PersonRig, pose: &mut [Transform],
 /// is the production person root scale, including the player's width.
 pub(crate) fn pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transform],
     phase: f32, scale: Vec3) {
+    let strength = 1.;
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    let strength = std::env::var("CRYSTAL_PEOPLE_REVIEW_BICYCLE_ARM_UNTWIST")
+        .map(|value|value.parse().expect("bicycle arm untwist must be a number"))
+        .unwrap_or(strength);
+    pose_with_arm_roll(rig,transforms,phase,scale,strength);
+}
+
+fn pose_with_arm_roll(rig: &crate::open_people::PersonRig, transforms: &mut [Transform],
+    phase: f32, scale: Vec3, strength: f32) {
     let target = |p: Vec3| p / scale + Vec3::Y * rig.floor;
     let hips = rig.skin_nodes[rig.hips_joint];
     let desired_hips = target(Vec3::new(0., 0.540, -0.12));
@@ -470,6 +481,10 @@ pub(crate) fn pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transf
     // base around the bar axis so its tip clears the inner metal section.
     let thumb = rig.thumb_nodes[1].expect("mounted supplied rig requires a right thumb base");
     rotate_world(rig, transforms, thumb, Quat::from_rotation_x(-0.27));
+    // IK fixes the elbow and wrist positions, but retains axial roll from
+    // the imported combat Idle. Use the bind arm's swing while retaining the
+    // complete forearm/hand frame and its fitted contact with the grip.
+    steering_arm_roll::align(rig,transforms,strength);
 }
 
 /// Fit the rider's legs around a narrow back or fold them onto a broad back.
@@ -577,6 +592,44 @@ mod mounted_tests {
                     if i != rig.skin_nodes[rig.hips_joint] { assert_eq!(t.translation, before[i].translation); }
                 }
             }
+        }
+    }
+
+    #[test]
+    #[ignore = "requires supplied rider rigs in CRYSTAL_OPEN_MODEL_ROOT"]
+    fn supplied_steering_untwist_preserves_elbows_and_complete_hand_frames() {
+        let root=std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for (name,height,width) in [("human-male",1.20,1.0),("human-female",1.20,0.94),
+            ("human-male",1.38,1.22)] {
+            let rig=crate::open_people::PersonRig::parse(&std::fs::read(root.join(
+                format!("people/kenney/{name}.glb"))).unwrap()).unwrap();
+            let unit=height/rig.height;let scale=Vec3::new(unit*width,unit,unit);
+            let mut changes=0;
+            for step in 0..32 {
+                let mut before=rig.nodes.clone();
+                rig.sample("Idle",step as f32*0.17,&mut before);
+                let mut after=before.clone();let phase=step as f32/32.*TAU;
+                pose_with_arm_roll(&rig,&mut before,phase,scale,0.);
+                pose_with_arm_roll(&rig,&mut after,phase,scale,1.);
+                for side in 0..2 {
+                    let wrist=wrist_node(&rig,side);let lower=rig.parents[wrist].unwrap();
+                    let upper=rig.parents[lower].unwrap();
+                    changes+=usize::from(before[upper].rotation.dot(after[upper].rotation).abs()<0.99999);
+                    // The whole elbow/hand frame, including grip orientation
+                    // and posed fingertips, survives the upper-arm correction.
+                    for node in std::iter::once(lower).chain(rig.hand_joints[side].iter()
+                        .map(|&j|rig.skin_nodes[j])) {
+                        let a=joint_world(&rig,&before,node).to_cols_array();
+                        let b=joint_world(&rig,&after,node).to_cols_array();
+                        assert!(a.iter().zip(b).all(|(a,b)|(*a-b).abs()<0.00002),
+                            "{name} step{step} steering contact frame moved at node {node}");
+                    }
+                }
+                for (a,b) in before.iter().zip(&after) {
+                    assert_eq!(a.translation,b.translation);assert_eq!(a.scale,b.scale);
+                }
+            }
+            assert!(changes>32,"{name} retained the imported upper-arm roll");
         }
     }
 }

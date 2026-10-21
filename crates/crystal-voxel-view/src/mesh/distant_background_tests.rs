@@ -105,39 +105,44 @@ fn summit_attachment_uses_the_native_roof_center_and_preserves_its_terrace_heigh
         }),
         origin_source: bevy::math::IVec2::ZERO,
     };
-    // These are the measured source-model envelope and doorway from the
-    // actual Ecruteak headless render, including its raised terrace.
-    let mut terrain = TerrainMeshData::default();
-    terrain.solid.positions = vec![[256., 30.046732, -288.], [320., 191.64674, -160.]];
-    terrain.rigid_buildings.push(rigid_buildings::Building {
-        vertices: 0..2,
-        doorway: Vec2::new(280., -164.),
-    });
-    let (anchor, drop) =
-        tower_attachment(&source, &terrain, bevy::math::IVec2::new(37, 7)).unwrap();
-    assert_eq!(anchor, Vec2::new(608., 64.));
-    assert!(
-        (191.64674 - drop + 4.).abs() < 0.001,
-        "the exterior roof must stay below the summit"
-    );
+    // Use the actual authored tower, fitted to the measured native plot and
+    // terrace. A two-point envelope cannot identify the upper roof or cap.
+    let tower = crate::exterior_models::model(crate::exterior_models::Kind::TinTower);
+    let fixture = |scale: f32, lift: f32| {
+        let mut terrain = TerrainMeshData::default();
+        tower.append_fitted(&mut terrain.solid,
+            [256.*scale, 320.*scale, -288.*scale, -160.*scale],
+            30.046732*scale + lift, 16.*scale, Some(280.*scale));
+        terrain.rigid_buildings.push(rigid_buildings::Building {
+            vertices: 0..terrain.solid.positions.len(), doorway: Vec2::new(280., -164.)*scale,
+        });
+        terrain
+    };
+    let mut terrain = fixture(1., 0.);
+    let attachment = tower_attachment(&source.frame, &mut terrain, bevy::math::IVec2::new(37, 7)).unwrap();
+    assert!((576. ..640.).contains(&attachment.anchor.x)
+        && (0. ..128.).contains(&attachment.anchor.y),
+        "the corrected upper-roof center stays in the real tower plot");
+    assert!(attachment.span.min_element() > 20.);
+    let mut raised = fixture(1., 13.);
+    let raised = tower_attachment(&source.frame, &mut raised, bevy::math::IVec2::new(37, 7)).unwrap();
+    assert_eq!(raised.anchor, attachment.anchor);
+    assert!((raised.eave - attachment.eave - 13.).abs() < 0.001,
+        "the actual terrace lift belongs to the supporting eaves");
     let mut production_source = source.clone();
     std::sync::Arc::make_mut(&mut production_source.frame).tile_size *= 4.;
-    for p in &mut terrain.solid.positions {
-        for value in p {
-            *value *= 4.;
-        }
-    }
-    terrain.rigid_buildings[0].doorway *= 4.;
+    let mut terrain = fixture(4., 0.);
     let production =
-        tower_attachment(&production_source, &terrain, bevy::math::IVec2::new(37, 7)).unwrap();
-    assert_eq!(production.0, anchor * 4.);
+        tower_attachment(&production_source.frame, &mut terrain, bevy::math::IVec2::new(37, 7)).unwrap();
+    assert_eq!(production.anchor, attachment.anchor * 4.);
+    assert_eq!(production.span, attachment.span * 4.);
     assert!(
-        (production.1 - drop * 4.).abs() < 0.001,
+        (production.eave - attachment.eave * 4.).abs() < 0.001,
         "production tile scale must include the terrace and roof height"
     );
     terrain.rigid_buildings[0].doorway = Vec2::ZERO;
     assert!(
-        tower_attachment(&source, &terrain, bevy::math::IVec2::new(37, 7)).is_none(),
+        tower_attachment(&production_source.frame, &mut terrain, bevy::math::IVec2::new(37, 7)).is_none(),
         "an edited-away tower must not attach to a distant house"
     );
 }

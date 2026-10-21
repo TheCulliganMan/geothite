@@ -17,7 +17,7 @@ def influences(pairs):
  return [j for j,w in pairs]+[0]*(4-len(pairs)),[w for j,w in pairs]+[0.]*(4-len(pairs))
 @lru_cache(maxsize=2)
 def authoring_model(s):return sculpture(s)
-REST_DIGESTS={'kabuto': 'fcaf686170a83249dfb2edc88f529cbdcd6f8eafb731bcc617dc44f05d6c7be7', 'kabutops': '647542191c7253e934841d51db5bc9b6e60782440f1c39803be0434ee4fafe55'}
+REST_DIGESTS={'kabuto': 'fcaf686170a83249dfb2edc88f529cbdcd6f8eafb731bcc617dc44f05d6c7be7', 'kabutops': '01b54ee2a03be654b25cc97d5044ac45023997f386d3cc6fca0d6469d1864cef'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 @lru_cache(maxsize=2)
 def authoring_transform(s):
@@ -30,7 +30,7 @@ def joints(s):
   for side in (-1,1):
    for j in range(2):raw.append((f'leg_{side}_{j}',0,small_leg(side,j)[0]))
  else:
-  raw += [('head',1,(0.,.94,.04)),('arm_left',1,adult_arm(-1)[0]),('arm_right',1,adult_arm(1)[0]),('elbow_left',3,adult_arm(-1)[1]),('elbow_right',4,adult_arm(1)[1]),('blade_left',5,adult_arm(-1)[2]),('blade_right',6,adult_arm(1)[2]),('leg_left',0,(-.145,.24,-.035)),('leg_right',0,(.145,.24,-.035)),('tail_base',1,TAIL[0]),('tail_tip',11,(0.,.22,-.45))]
+  raw += [('head',1,(0.,.92,.04)),('arm_left',1,adult_arm(-1)[0]),('arm_right',1,adult_arm(1)[0]),('elbow_left',3,adult_arm(-1)[1]),('elbow_right',4,adult_arm(1)[1]),('blade_left',5,adult_arm(-1)[2]),('blade_right',6,adult_arm(1)[2]),('leg_left',0,(-.09,.44,-.04)),('leg_right',0,(.09,.44,-.04)),('tail_base',1,TAIL[0]),('tail_tip',11,TAIL[2])]
  return tuple((n,p,(0.,0.,0.) if p is None else normalized(s,v)) for n,p,v in raw)
 JOINTS={s:joints(s) for s in SPECIES};CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def skin_weights(s,n,point):
@@ -40,7 +40,7 @@ def skin_weights(s,n,point):
   if n.startswith('Leg /'):
    side,j=map(int,n.split()[-2:]);a=smoothstep(.04,.13,y);return influences(((0,1.-a),(2+(0 if side<0 else 2)+j,a)))
   return rigid(1)
- if n.startswith(('Body /','Neck /','Rib plate /','Back spur /')):return rigid(1)
+ if n.startswith(('Body /','Neck /','Breast plate /','Rib plate /','Back spur /')):return rigid(1)
  if n.startswith(('Head /','Head wing /','Eye socket /','Eye lens /','Pupil /')):return rigid(2)
  if n.startswith(('Upper arm /','Elbow /')):return rigid(3 if n.endswith('-1') else 4)
  if n.startswith('Forearm /'):return rigid(5 if n.endswith('-1') else 6)
@@ -48,7 +48,7 @@ def skin_weights(s,n,point):
  if n.startswith(('Thigh /','Shin /')):
   a=smoothstep(.045,.14,y);return influences(((0,1.-a),(9 if n.endswith('-1') else 10,a)))
  if n.startswith('Tail /'):
-  a=smoothstep(.37,.53,-point[2]/k);return influences(((11,1.-a),(12,a)))
+  a=smoothstep(.15,.22,-point[2]/k);return influences(((11,1.-a),(12,a)))
  raise ValueError('unowned fossil anatomy '+n)
 def pose_angles(s,clip,t):
  if s not in SPECIES or clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid fossil pose')

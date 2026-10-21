@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Canonical Tyranitar with coherent armor, articulated toothed jaws and a heavy ring-bound tail."""
+"""Canonical Tyranitar with paired armor, compact jaws and a low ring-bound tail."""
 import hashlib,json,math,struct
 from functools import lru_cache
 from pathlib import Path
-from tyranitar_sculpt import sculpture,HEIGHT,TAIL,TAIL_RADII,arm_path,wrist
+from tyranitar_sculpt import sculpture,HEIGHT,TAIL,TAIL_RADII,arm_path,wrist,tail_spines
 from bovine_sculpt import smooth
 from skin_glb import Glb,COORDINATES,packed,quantized_weights,quaternion_xyz,envelope,smoothstep
 SPECIES=('tyranitar',);HEIGHTS={'tyranitar':HEIGHT}
@@ -18,7 +18,7 @@ def geometry_digest(model):
 def authoring_model(species):
  if species!='tyranitar':raise ValueError('unknown armored dinosaur')
  return sculpture()
-REST_DIGESTS={'tyranitar': '498ef4bcb69caee77da98e21dd671ac5d3250750ceda5f1c397a036e7023834d'}
+REST_DIGESTS={'tyranitar': '143d10ba16eaa62f9cab0c83a4b73bd310cee49c2932f042a43a86adb076101e'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 @lru_cache(maxsize=1)
 def authoring_transform(species):
@@ -26,9 +26,9 @@ def authoring_transform(species):
 def normalized(species,point):
  lo,scale=authoring_transform(species);return tuple((v-(lo if i==1 else 0.))*scale for i,v in enumerate(point))
 def joints(species):
- raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.5,-.02)),('head',1,(0.,1.10,.015)),('jaw',2,(0.,1.07,.025)),
+ raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.55,-.02)),('head',1,(0.,1.17,.015)),('jaw',2,(0.,1.10,-.015)),
       ('arm_left',1,arm_path(-1)[0][0]),('arm_right',1,arm_path(1)[0][0]),('forearm_left',4,arm_path(-1)[0][1]),('forearm_right',5,arm_path(1)[0][1]),('wrist_left',6,wrist(-1)),('wrist_right',7,wrist(1)),
-      ('leg_left',0,(-.25,.25,.015)),('leg_right',0,(.25,.25,.015)),('tail_base',1,TAIL[0]),('tail_tip',12,TAIL[3])]
+      ('leg_left',0,(-.275,.32,-.005)),('leg_right',0,(.275,.32,-.005)),('tail_base',1,TAIL[0]),('tail_tip',12,TAIL[3])]
  return tuple((n,p,(0.,0.,0.) if p is None else normalized(species,v)) for n,p,v in raw)
 JOINTS={s:joints(s) for s in SPECIES};CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 @lru_cache(maxsize=1)
@@ -51,18 +51,20 @@ def tail_influences(species,point):
  d=tail_distance(species,point);points,radii,distance=tail_samples(species);a=smoothstep(0.,.18,d);b=smoothstep(distance[8],distance[12],d);return influences(((1,1.-a),(12,a*(1.-b)),(13,a*b)))
 def skin_weights(species,title,point):
  if title.startswith(('Foot /','Foot claw /')):return rigid(0)
- if title.startswith(('Body /','Belly /','Belly armor /','Torso vent /','Back spike /')):return rigid(1)
- if title.startswith(('Head /','Mouth back /','Eye socket /','Eye white /','Iris /','Pupil /','Glint /','Nostril /','Crown spike /','Cheek plate /','Fang /')):return rigid(2)
+ if title.startswith(('Body /','Belly /','Belly armor /','Mantle /','Torso vent /','Back armor /','Back vent /','Back spike /')):return rigid(1)
+ if title.startswith(('Head /','Brow keel /','Mouth back /','Eye socket /','Eye white /','Iris /','Pupil /','Glint /','Nostril /','Crown spike /','Cheek plate /','Fang /')):return rigid(2)
  if title.startswith(('Jaw /','Tongue /','Lower tooth /')):return rigid(3)
  if title.startswith('Arm /'):return rigid(4 if title.endswith('-1') else 5)
  if title.startswith('Forearm /'):return rigid(6 if title.endswith('-1') else 7)
  if title.startswith(('Hand /','Hand claw /')):
   side=int(title.split()[-2] if title.startswith('Hand claw /') else title.split()[-1]);return rigid(8 if side<0 else 9)
  if title.startswith(('Thigh /','Shin /','Thigh vent /')):
-  lo,scale=authoring_transform(species);a=smoothstep(.065,.20,point[1]/scale+lo);return influences(((0,1.-a),(10 if title.endswith('-1') else 11,a)))
+  side=int(title.split()[-2] if title.startswith('Thigh vent /') else title.split()[-1])
+  lo,scale=authoring_transform(species);a=smoothstep(.065,.20,point[1]/scale+lo);return influences(((0,1.-a),(10 if side<0 else 11,a)))
  if title.startswith('Tail /'):return tail_influences(species,point)
+ if title.startswith('Tail hub /'):return rigid(13)
  if title.startswith('Tail spike /'):
-  j=int(title.split()[-1]);x,y,z=TAIL[j];root=(x,y+TAIL_RADII[j]*.55,z);return tail_influences(species,normalized(species,root))
+  j=int(title.split()[-1]);root=tail_spines()[j][1];return tail_influences(species,normalized(species,root))
  raise ValueError('unowned Tyranitar anatomy: '+title)
 def pose_angles(species,clip,t):
  if species!='tyranitar' or clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid Tyranitar clip/time')
@@ -91,7 +93,7 @@ def pack_parts(model):
  result=[];groups={};species=model['name']
  for order,p in enumerate(model['primitives']):
   title=p['part'];prefix=title.split(' /')[0]
-  group='head ink' if prefix in ('Eye socket','Pupil','Nostril','Mouth back') else 'head ivory' if prefix in ('Eye white','Glint','Fang') else 'head armor' if prefix in ('Crown spike','Cheek plate') else prefix if prefix in ('Iris','Belly armor','Torso vent','Back spike','Tail spike','Hand claw','Foot claw','Lower tooth') else None
+  group='head ink' if prefix in ('Eye socket','Pupil','Nostril','Mouth back') else 'head ivory' if prefix in ('Eye white','Glint','Fang') else 'head armor' if prefix in ('Crown spike','Cheek plate') else prefix if prefix in ('Iris','Belly armor','Torso vent','Back vent','Back spike','Tail spike','Hand claw','Foot claw','Lower tooth') else None
   if group is None:result.append((p,{'source_order':order}));continue
   owner=skin_weights(species,title,(0.,0.,0.))[0][0];side=title.split()[-2] if prefix=='Foot claw' else '';key=(group,owner,side,tuple(p['base_color']))
   if key not in groups:

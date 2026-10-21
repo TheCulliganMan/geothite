@@ -1113,6 +1113,119 @@ mod tests {
     use super::*;
 
     #[test]
+    fn loaded_park_tree_roundtrip_preserves_wide_indices_and_shared_placements() {
+        use crate::foliage::{GroveFamily, instance_variation};
+        use crate::terrain_worker::blobs::{append_packet, decode_header, encode_header};
+
+        // Exercise real loaded geometry as well as the deferred map recipes.
+        // The seven-bough architecture crosses the u16 vertex limit once its
+        // leaves have undersides; neither transfer nor merging may narrow it.
+        let coordinates = (0..256)
+            .map(|x| [x * 4, 12])
+            .find(|&p| instance_variation(p).0 == 1)
+            .unwrap();
+        let library = crate::forest_instances::Library::default();
+        let mut original = library.prepare(
+            [-32., 32., -32., 32.],
+            0.,
+            16.,
+            coordinates,
+            [false; 4],
+            GroveFamily::ParkBroadleaf,
+        );
+        assert_eq!(original.len(), 1);
+        original.extend(library.prepare(
+            [80., 112., -48., -16.],
+            3.,
+            8.,
+            coordinates,
+            [false; 4],
+            GroveFamily::ParkBroadleaf,
+        ));
+        assert_eq!(original.len(), 2);
+        assert_ne!(original[0].transform, original[1].transform);
+        let assert_shared_geometry = |groups: &[PreparedGroup]| {
+            assert!(Arc::ptr_eq(&groups[0].surface, &groups[1].surface));
+            assert!(groups[0].surface.tree.get().is_none());
+            let a = groups[0]
+                .opaque_leaf
+                .as_ref()
+                .unwrap()
+                .shared
+                .as_ref()
+                .unwrap();
+            let b = groups[1]
+                .opaque_leaf
+                .as_ref()
+                .unwrap()
+                .shared
+                .as_ref()
+                .unwrap();
+            assert!(Arc::ptr_eq(a, b));
+            let shared = a.lock().unwrap();
+            let mesh = shared.mesh.as_ref().unwrap();
+            assert!(mesh.count_vertices() > u16::MAX as usize);
+            assert!(matches!(mesh.indices(), Some(bevy::mesh::Indices::U32(v))
+                if v.iter().any(|&i| i > u16::MAX as u32)));
+            for (a, b) in groups[0].leaves.iter().zip(&groups[1].leaves) {
+                assert!(Arc::ptr_eq(
+                    a.shared.as_ref().unwrap(),
+                    b.shared.as_ref().unwrap()
+                ));
+            }
+        };
+        assert_shared_geometry(&original);
+        let table = GroupTable::capture(&original).unwrap();
+        assert_eq!(table.surfaces.len(), 1);
+        assert_eq!(table.shared_leaves.len(), original[0].leaves.len() + 1);
+        let expected = bytes(&table);
+        let (header, mut session) = encode_header(37, &table).unwrap();
+        let (decoded, mut store) = decode_header::<GroupTable>(37, &header).unwrap();
+        let mut restore = decoded.begin_restore();
+        while let Some(page) = session.next_page().unwrap() {
+            let (id, offset) = append_packet(&mut store, 37, &page).unwrap();
+            session.acknowledge(37, id, offset).unwrap();
+            restore
+                .advance(
+                    &mut store,
+                    Instant::now() + std::time::Duration::from_millis(4),
+                    8192,
+                )
+                .unwrap();
+        }
+        assert!(session.finished());
+        let mut advances = 0;
+        while !restore
+            .advance(
+                &mut store,
+                Instant::now() + std::time::Duration::from_millis(4),
+                8192,
+            )
+            .unwrap()
+        {
+            advances += 1;
+            assert!(advances < 10_000, "park geometry restoration stalled");
+        }
+        assert!(store.all_consumed());
+        let restored = restore.finish().unwrap();
+        assert_eq!(bytes(&GroupTable::capture(&restored).unwrap()), expected);
+        assert_shared_geometry(&restored);
+        for (a, b, expected) in [
+            (Vec3::new(-64., 32., 0.), Vec3::new(64., 32., 0.), true),
+            (
+                Vec3::new(-64., 32., 1000.),
+                Vec3::new(64., 32., 1000.),
+                false,
+            ),
+        ] {
+            assert_eq!(original[0].surface.blocks(a, b), expected);
+            assert_eq!(restored[0].surface.blocks(a, b), expected);
+        }
+        assert!(restored[1].surface.tree.get().is_some());
+        assert!(restored[1].surface.source.lock().unwrap().is_none());
+    }
+
+    #[test]
     fn paged_group_restore_yields_inside_large_surface_and_leaf_list() {
         use crate::terrain_worker::blobs::{append_packet, decode_header, encode_header};
         let mut original = groups();

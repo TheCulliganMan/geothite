@@ -1,43 +1,58 @@
 #!/usr/bin/env python3
-"""Original headless kicking fighter with continuous ribbed spring limbs."""
+"""Original headless kicker with a broad shoulder mass and upright spring supports."""
 import argparse,json,math
 from pathlib import Path
-from sculpt_geometry import ellipsoid,loft,curved_profiles,crease_normals,tube
+from sculpt_geometry import ellipsoid,loft,curved_profiles,crease_normals,tube,translate,fitted_triangle_contour
 from bovine_sculpt import oval,curved_tube,smooth
 from lugia_sculpt import paddle
-from raptor_bird_sculpt import paint
-from nidorino_sculpt import side_patch
+from bulldog_sculpt import rounded_loft
+from cubone_sculpt import skin_shading
+from nidorino_sculpt import rig_side_patch as side_patch
 from skin_glb import COORDINATES
 HEIGHT=1.24
 TAN=(.63,.52,.44);CREAM=(.88,.85,.67);WHITE=(.98,.98,.94)
 INK=(.085,.085,.10);GOLD=(.94,.82,.34)
 
+def paint(name,color,xy,parent,th=.006,sub=2):
+ return skin_shading(crease_normals(fitted_triangle_contour(name,color,xy,parent,th),45),parent)
+
 def spring(name,points,radii,ribs):
- pp,rr=smooth(points,radii,24);rr=[r+.012*math.sin(math.pi*ribs*k/(len(pp)-1))**2 for k,r in enumerate(rr)]
+ pp,rr=smooth(points,radii,24);rr=[r+.014*math.sin(math.pi*ribs*k/(len(pp)-1))**2 for k,r in enumerate(rr)]
  return crease_normals(tube(name,CREAM,pp,rr,32),45)
+
+def arm_path(s):
+ if s==-1:
+  return [(s*.240,1.080,.004),(s*.365,.995,.025),(s*.436,.987,.115)],[(s*.422,.979,.113),(s*.430,1.085,.250),(s*.408,1.143,.306)],(s*.398,1.178,.344)
+ return [(s*.240,1.072,.004),(s*.380,.968,.001),(s*.454,.908,.090)],[(s*.449,.914,.070),(s*.435,.969,.229),(s*.400,1.023,.302)],(s*.382,1.052,.347)
 
 def limbs(p):
  for s in (-1,1):
-  hip=paddle('Hip / rooted tapered tan kicking thigh '+str(s),TAN,[(s*.085,.654,-.013),(s*.166,.567,.004),(s*.195,.512,.036)],[.081,.073,.056],[.085,.080,.062]);p.append(hip)
-  p.append(spring('Leg spring / continuous cream nine-rib shin '+str(s),[(s*.189,.550,.027),(s*.213,.313,.077),(s*.218,.058,.150)],[.061,.059,.053],9))
-  foot=ellipsoid('Foot / grounded broad tan three-toed pad '+str(s),TAN,(s*.218,.041,.170),(.107,.041,.143),36,24);p.append(foot)
-  for j,dx in enumerate((-.063,0,.063)):
-   p.append(curved_tube(f'Toe claw / three rooted ivory kicking points {s} {j}',WHITE,[(s*.218+dx*.71,.045,.264),(s*.218+dx,.031,.332),(s*.218+dx*.96,.020,.356)],[.027,.022,.003],24))
-  p.append(side_patch('Foot mark / fitted round gold sole spot '+str(s),GOLD,oval(.173,.059,.039,.014,16),foot,s))
-  arm=paddle('Arm / rooted bent tan upper forelimb '+str(s),TAN,[(s*.208,1.067,.006),(s*.350,.962,.035),(s*.414,.948,.094),(s*.432,.972,.143)],[.083,.065,.050,.043],[.086,.069,.052,.043]);p.append(arm)
-  p.append(spring('Wrist spring / continuous cream five-rib forearm '+str(s),[(s*.411,.942,.094),(s*.448,.984,.171),(s*.470,1.021,.235)],[.052,.047,.041],5))
-  palm=ellipsoid('Hand / tan three-finger martial palm '+str(s),TAN,(s*.477,1.040,.268),(.069,.057,.059),32,20);p.append(palm)
-  for j,(dx,y,z) in enumerate(((-.042,1.062,.303),(0,1.044,.323),(.044,1.015,.298))):
-   p.append(curved_tube(f'Finger / three rooted curled tan martial digits {s} {j}',TAN,[(s*(.477+dx*.5),y+.010,.271),(s*(.477+dx),y,z),(s*(.480+dx),y-.044,z+.036),(s*(.471+dx),y-.087,z+.028)],[.023,.020,.015,.009],24))
+  p.append(paddle('Hip / rooted tapered tan kicking thigh '+str(s),TAN,[(s*.139,.671,.014),(s*.195,.581,.019),(s*.220,.520,.020)],[.093,.087,.075],[.096,.089,.079],segments=24,steps=5))
+  p.append(spring('Leg spring / continuous cream nine-rib shin '+str(s),[(s*.214,.554,.020),(s*.237,.319,.020),(s*.242,.088,.020)],[.080,.078,.068],9))
+  foot=translate(rounded_loft('Foot / grounded broad tan three-toed pad '+str(s),TAN,[(0.,.126,.163,.078),(.041,.132,.170,.078),(.101,.119,.145,.070),(.145,.075,.083,.023)],28,.75),s*.242,0,0)
+  # The heel rolls off its sole as the kick begins; the mid/forefoot stays flat.
+  for i in range(0,len(foot['positions']),3):
+   x,y,z=foot['positions'][i:i+3];roll=.025*max(0.,min(1.,(.050-z)/.135))**2*(1.-max(0.,min(1.,(y-.040)/.080)));foot['positions'][i+1]=y+roll
+  p.append(crease_normals(foot,45))
+  for j,dx in enumerate((-.075,0.,.075)):
+   p.append(curved_tube(f'Toe claw / three rooted ivory kicking points {s} {j}',WHITE,[(s*.242+dx*.80,.065,.203),(s*.242+dx,.043,.285),(s*.242+dx*.98,.025,.326)],[.030,.022,.003],20))
+  p.append(side_patch('Foot mark / fitted round gold sole spot '+str(s),GOLD,oval(.095,.078,.042,.035,20),foot,s))
+  arm,wrist,center=arm_path(s)
+  p.append(paddle('Arm / rooted bent tan upper forelimb '+str(s),TAN,arm,[.087,.065,.052],[.090,.068,.055],segments=24,steps=5))
+  p.append(spring('Wrist spring / continuous cream five-rib forearm '+str(s),wrist,[.063,.057,.048],5))
+  cx,cy,cz=center;p.append(ellipsoid('Hand / tan three-finger martial palm '+str(s),TAN,center,(.078,.069,.071),28,18))
+  for j,dx in enumerate((-.048,0.,.048)):
+   path=[(cx+s*dx*.55,cy+.027,cz+.018),(cx+s*dx,cy+.045,cz+.064),(cx+s*dx,cy-.010,cz+.108),(cx+s*dx*.96,cy-.072,cz+.072)]
+   p.append(curved_tube(f'Finger / three rooted curled tan martial digits {s} {j}',TAN,path,[.025,.023,.017,.009],18))
 
 def sculpture(normalize=True):
- body=crease_normals(loft('Body / continuous headless tan kicking-fighter pear',TAN,curved_profiles(((.525,.062,.077,-.012),(.610,.128,.135,-.021),(.766,.191,.165,-.024),(1.000,.264,.191,-.014),(1.204,.244,.177,.002),(1.343,.146,.112,.022),(1.386,.033,.029,.027)),6),48),45)
+ body=crease_normals(loft('Body / continuous headless tan kicking-fighter pear',TAN,curved_profiles(((.532,.150,.110,-.012),(.627,.192,.166,-.018),(.817,.244,.218,-.018),(1.056,.301,.239,-.010),(1.234,.274,.212,.005),(1.365,.166,.130,.015),(1.406,.070,.068,.016)),5),40),45)
  p=[body]
  for s in (-1,1):
-  xy=[(s*x,y) for x,y in ((.066,1.188),(.192,1.148),(.177,1.083),(.123,1.076),(.079,1.119))]
-  eye=paint('Eye / fitted sloping black kicking-fighter lens '+str(s),INK,xy,body,.007,3);p.append(eye)
-  pupil=paint('Pupil / fitted narrow ivory fighter stare '+str(s),WHITE,oval(s*.135,1.125,.012,.023,24),eye,.004,1);p.append(pupil)
-  p.append(paint('Pupil core / tiny fitted dark fighter point '+str(s),INK,oval(s*.135,1.123,.0035,.010,20),pupil,.003,1))
+  xy=[(s*x,y) for x,y in ((.045,1.174),(.220,1.261),(.205,1.162),(.138,1.113),(.064,1.138))]
+  eye=paint('Eye / fitted sloping black kicking-fighter lens '+str(s),INK,xy,body,.006);p.append(eye)
+  pupil=paint('Pupil / fitted ivory fighter stare '+str(s),WHITE,oval(s*.138,1.180,.021,.029,24),eye,.0035);p.append(pupil)
+  p.append(paint('Pupil core / fitted dark fighter point '+str(s),INK,oval(s*.139,1.180,.006,.016,20),pupil,.002))
  limbs(p)
  lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
  from sculpt_geometry import linear
@@ -46,7 +61,7 @@ def sculpture(normalize=True):
   q['base_color']=linear(tuple(v/255 for v in rgb))
  if normalize:
   for q in p:
-   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) for v in q['normals']]
+   q['positions']=[round((v-(lo if i%3==1 else 0))*scale,7) or 0. for i,v in enumerate(q['positions'])];q['normals']=[round(v,7) or 0. for v in q['normals']]
  return {'name':'hitmonlee','version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def main():

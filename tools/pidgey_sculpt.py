@@ -1,48 +1,68 @@
 #!/usr/bin/env python3
-"""Original small Pidgey: cream breast, dark cheek wedges, folded wings and pink feet."""
-import math
-from sculpt_geometry import ellipsoid,fitted_contour,crease_normals,tube
-from goldfish_sculpt import surface
+"""Original small Pidgey: cream breast, cream brow, hooked cheek wedges and folded feather banks and pink feet."""
+import math,struct
+from sculpt_geometry import ellipsoid,loft,curved_profiles,fitted_triangle_contour,fitted_contour,crease_normals,tube
+from pidgeotto_sculpt import frame,join,vane
 from bovine_sculpt import oval
 from lugia_sculpt import paddle
-from skin_glb import COORDINATES
+from skin_glb import COORDINATES,smoothstep
+from goldfish_sculpt import surface
+from murkrow_sculpt import bill
 HEIGHT=.82
 BROWN=(.65,.43,.22);LIGHT=(.77,.56,.31);CREAM=(.97,.91,.66)
 INK=(.13,.11,.09);WHITE=(.99,.98,.92);PINK=(.77,.48,.54)
 
 
 def paint(name,color,xy,parent,th=.004,subdivisions=2):
-    return crease_normals(fitted_contour(name,color,xy,surface(parent),th,subdivisions=subdivisions),40.)
+    return fitted_triangle_contour(name,color,xy,parent,th,precision=6)
 
 
-def sculpture():
-    body=ellipsoid('Body / round ochre tiny bird torso',BROWN,(0.,.265,-.035),(.177,.190,.157),24,16)
-    head=ellipsoid('Head / small brown rounded bird head',BROWN,(0.,.482,.060),(.145,.153,.133),24,16)
+def sculpture(*,with_transform=False):
+    body=ellipsoid('Body / round ochre tiny bird torso',BROWN,(0.,.247,-.050),(.181,.190,.195),24,16)
+    # Carry the upper breast into the neck instead of ending a sphere behind
+    # a projecting cheek pad. The fitted cream field uses this same surface.
+    for i in range(0,len(body['positions']),3):
+        y,z=body['positions'][i+1:i+3]
+        body['positions'][i+2]+=.075*smoothstep(.29,.42,y)*max(0.,(z+.05)/.195)
+    head=crease_normals(loft('Head / tapered brow and forward bird skull',BROWN,curved_profiles(((.330,.055,.075,-.005),(.365,.092,.100,.010),(.420,.126,.133,.040),(.472,.136,.145,.047),(.520,.126,.120,.025),(.558,.098,.091,.000),(.581,.050,.060,-.025),(.599,.009,.020,-.040)),3),28),43)
     p=[body,head]
-    p.append(paint('Face / fitted cream throat and central muzzle',CREAM,
-        [(-.026,.546),(-.037,.493),(-.086,.455),(-.078,.395),(-.030,.347),(0.,.337),(.030,.347),(.078,.395),(.086,.455),(.037,.493),(.026,.546)],head,.006,3))
-    p.append(paint('Breast / fitted broad cream feather bib',CREAM,
-       [(-.063,.431),(-.125,.368),(-.154,.270),(-.133,.159),(-.081,.108),(0.,.094),(.081,.108),(.133,.159),(.154,.270),(.125,.368),(.063,.431),(0.,.450)],body,.015,3))
+    p.append(paint('Face / continuous cream throat',CREAM,
+        [(-.030,.492),(-.065,.487),(-.103,.476),(-.125,.448),(-.119,.393),(-.088,.333),(0.,.310),(.088,.333),(.119,.393),(.125,.448),(.103,.476),(.065,.487),(.030,.492)],head,.003))
+    p.append(paint('Breast / broad cream feather bib',CREAM,
+       [(-.063,.431),(-.144,.368),(-.185,.270),(-.155,.159),(-.081,.093),(0.,.077),(.081,.093),(.155,.159),(.185,.270),(.144,.368),(.063,.431),(0.,.450)],body,.012))
     for side in (-1,1):
+        angle=side*math.radians(25);local=frame(head,angle,True)
+        uv=lambda points:[(side*x,y) for x,y in points]
         cheek=paint('Cheek / dark angular eye wedge '+str(side),INK,
-            [(side*x,y) for x,y in ((.031,.530),(.112,.547),(.141,.493),(.103,.436),(.026,.476))],head,.004);p.append(cheek)
+            uv(((-.066,.503),(-.030,.523),(.029,.522),(.080,.504),(.091,.475),(.068,.445),(.030,.427),(.025,.459),(.046,.481),(-.043,.479))),local,.003)
         eye=paint('Eye / ivory alert eye '+str(side),WHITE,
-            [(side*x,y) for x,y in ((.037,.521),(.099,.530),(.105,.508),(.089,.491),(.048,.497))],cheek,.003);p.append(eye)
-        p.append(paint('Pupil / small dark alert gaze '+str(side),INK,oval(side*.065,.511,.010,.011,16),eye,.002))
-        p.append(paint('Brow / cream swept feather ridge '+str(side),CREAM,
-            [(side*x,y) for x,y in ((.017,.541),(.049,.570),(.112,.568),(.127,.544),(.106,.546),(.053,.541))],head,.007))
-        p.append(paddle('Crown / short pointed brown crest '+str(side),LIGHT,
-            [(side*.027,.561,.063),(side*.053,.622,.015),(side*.065,.652,-.060)],
-            [.030,.025,.002],[.048,.030,.002],segments=16,steps=4))
-        wing=paddle('Wing / folded ochre shoulder '+str(side),LIGHT,
-            [(side*.132,.360,-.019),(side*.200,.274,-.040),(side*.174,.167,-.129)],
-            [.057,.068,.016],[.078,.072,.018],segments=20,steps=5);p.append(wing)
-        for j in range(2):
-            p.append(paddle('Flight feather / cream folded wing tip '+str(side)+' '+str(j),CREAM,
-                [(side*(.179+.020*j),.255,-.078),(side*(.193+.016*j),.178,-.146),(side*(.178+.014*j),.113,-.207)],
-                [.033,.027,.0015],[.033,.027,.0015],segments=14,steps=4))
+            uv(((-.057,.507),(-.024,.522),(.023,.516),(.030,.503),(.003,.489),(-.030,.487),(-.052,.494))),cheek,.002)
+        pupil=paint('Pupil / small dark alert gaze '+str(side),INK,oval(side*-.007,.504,.012,.015,18),eye,.002)
+        p.extend(frame(q,angle) for q in (cheek,eye,pupil))
+        brow=paint('Brow / swept cream orbital feather '+str(side),CREAM,
+            [(side*x,y) for x,y in ((.012,.510),(.048,.537),(.101,.555),(.126,.551),(.116,.536),(.066,.521),(.027,.497))],head,.004)
+        z=surface(head)(.544,side*.104)
+        visor=paddle('cream brow quill',CREAM,[(side*.104,.544,z-.009),(side*.126,.546,-.018),(side*.133,.541,-.128)],[.012,.014,.0015],[.005,.005,.0015],segments=12,steps=4)
+        p.append(join(brow['part'],[brow,visor]))
+        p.append(paddle('Crown / short pointed brown crest '+str(side),BROWN,
+            [(side*.018,.548,.030),(side*.027,.587,-.040),(side*.030,.622+side*.004,-.165-side*.020)],
+            [.035,.033,.0015],[.015,.012,.0015],segments=16,steps=4))
+        if side<0:
+            p[-1]=join(p[-1]['part'],[p[-1],paddle('central crest',BROWN,
+                [(0.,.550,.090),(0.,.600,.000),(0.,.640,-.100)],
+                [.038,.034,.0015],[.020,.015,.0015],segments=16,steps=4)])
+        p.append(paddle('Wing / folded ochre shoulder '+str(side),LIGHT,
+            [(side*.132,.340,-.019),(side*.197,.281,-.074),(side*.181,.170,-.192)],
+            [.053,.060,.018],[.069,.053,.016],segments=18,steps=5))
+        for group in range(2):
+            vanes=[]
+            for j in (group*2,group*2+1):
+                root=(side*(.199+.004*j),.285-.012*j,-.040-.024*j)
+                tip=(side*(.207+.005*j),.135+.018*j,-.165-.048*j)
+                vanes.append(vane('vane',CREAM,root,tip,.035,.009))
+            p.append(join('Flight feather / cream folded wing tip '+str(side)+' '+str(group),vanes))
         p.append(tube('Leg / short pink bird shank '+str(side),PINK,
-            [(side*.077,.140,-.009),(side*.078,.072,.004),(side*.078,.033,.016)],[.017,.016,.018],12))
+            [(side*.077,.115,.016),(side*.078,.072,.016),(side*.078,.033,.016)],[.017,.016,.018],12))
         p.append(ellipsoid('Foot / planted pink bird pad '+str(side),PINK,(side*.077,.025,.025),(.043,.022,.045),16,10))
         for j,dx in enumerate((-.029,0.,.029)):
             xx=side*.077+dx;zz=.134-(.012 if j!=1 else 0.)
@@ -53,18 +73,21 @@ def sculpture():
                 [.008,.006,.001],[.009,.006,.001],segments=12,steps=3))
         p.append(tube('Rear toe / opposing pink bird digit '+str(side),PINK,
             [(side*.077,.026,.001),(side*.097,.016,-.044),(side*.101,.012,-.061)],[.012,.010,.006],12))
-    p.append(paddle('Upper beak / small hooked pink bill',PINK,
-        [(0.,.493,.165),(0.,.503,.226),(0.,.483,.270)],
-        [.039,.032,.002],[.023,.019,.002],segments=20,steps=5))
-    p.append(paddle('Lower beak / articulated pink lower bill',PINK,
-        [(0.,.478,.166),(0.,.466,.220),(0.,.479,.254)],
-        [.033,.024,.002],[.018,.014,.002],segments=18,steps=4))
+    p.append(bill('Upper beak / pointed pink maxilla',PINK,
+        [(.176,.052,.481,.514),(.212,.062,.480,.518),(.248,.045,.463,.491),(.271,.002,.453,.463)]))
+    p.append(bill('Lower beak / articulated pink mandible',PINK,
+        [(.176,.047,.445,.462),(.212,.054,.441,.457),(.246,.032,.445,.457),(.264,.002,.450,.454)]))
+    p.append(ellipsoid('Mouth / recessed dark bill lining',INK,(0.,.466,.194),(.049,.020,.025),18,12))
     for j,x in enumerate((-.048,0.,.048)):
         p.append(paddle('Tail / three short brown fan feathers '+str(j),LIGHT if j==1 else BROWN,
-            [(x*.45,.208,-.142),(x,.226,-.266),(x*1.35,.268,-.386)],
-            [.025,.036,.008],[.020,.018,.004],segments=16,steps=5))
+            [(x*.45,.208,-.142),(x,.181,-.266),(x*1.35,.148,-.386)],
+            [.025,.036,.008],[.009,.007,.003],segments=16,steps=5))
     lo=min(v for q in p for v in q['positions'][1::3]);hi=max(v for q in p for v in q['positions'][1::3]);scale=HEIGHT/(hi-lo)
     for q in p:
         q['positions']=[round((v-(lo if i%3==1 else 0.))*scale,7) for i,v in enumerate(q['positions'])]
         q['normals']=[round(v,7) for v in q['normals']]
-    return {'name':'pidgey','version':1,'coordinate_system':COORDINATES,'primitives':p}
+        q['positions']=list(struct.unpack('<'+str(len(q['positions']))+'f',struct.pack('<'+str(len(q['positions']))+'f',*q['positions'])))
+        shaded=crease_normals(q,40.);q.update(shaded)
+        q['normals']=[round(v,7) or 0. for v in q['normals']]
+    model={'name':'pidgey','version':1,'coordinate_system':COORDINATES,'primitives':p}
+    return (model,(lo,scale)) if with_transform else model

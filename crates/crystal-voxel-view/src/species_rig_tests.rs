@@ -573,24 +573,24 @@ fn assert_bits(a: impl Iterator<Item = f32>, b: impl Iterator<Item = f32>) {
 #[test]
 fn species_schema_retains_anatomy_skin_order_and_physical_size() {
     for (species, vertices, triangles, height) in [
-        (Species::Chikorita, 4989, 3220, 1.0_f32),
-        (Species::Bayleef, 5695, 3836, 1.15_f32),
-        (Species::Meganium, 6817, 4520, 1.48_f32),
-        (Species::Cyndaquil, 16314, 8138, 1.25_f32),
-        (Species::Totodile, 7531, 7078, 1.02_f32),
+        (Species::Chikorita, 5108, 3004, 1.0_f32),
+        (Species::Bayleef, 6800, 4360, 1.15_f32),
+        (Species::Meganium, 13870, 7148, 1.48_f32),
+        (Species::Cyndaquil, 16559, 8610, 1.25_f32),
+        (Species::Totodile, 5422, 10552, 1.02_f32),
         (Species::Gengar, 6952, 5560, 1.05_f32),
-        (Species::Spearow, 2139, 1929, 0.75_f32),
+        (Species::Spearow, 3703, 2848, 0.75_f32),
         (Species::Wooper, 3991, 5532, 0.70_f32),
         (Species::Gyarados, 9187, 11666, 1.40_f32),
         (Species::Sudowoodo, 9089, 11376, 1.04_f32),
         (Species::Lapras, 19313, 21968, 1.50_f32),
-        (Species::Snorlax, 13680, 21820, 1.40_f32),
+        (Species::Snorlax, 9905, 17584, 1.40_f32),
         (Species::Pikachu, 11568, 13876, 1.00_f32),
         (Species::Bulbasaur, 19587, 31896, 0.95_f32),
         (Species::Charmander, 13250, 21086, 1.00_f32),
         (Species::Squirtle, 17298, 26948, 0.96_f32),
-        (Species::Geodude, 12179, 15352, 0.76_f32),
-        (Species::Pidgey, 8404, 13064, 0.82_f32),
+        (Species::Geodude, 11598, 13932, 0.76_f32),
+        (Species::Pidgey, 8757, 12600, 0.82_f32),
         (Species::Oddish, 8845, 14620, 1.00_f32),
         (Species::Poliwag, 15265, 25532, 0.90_f32),
         (Species::Horsea, 15790, 24912, 1.07_f32),
@@ -599,21 +599,21 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Goldeen, 16748, 20668, 0.8_f32),
         (Species::Seaking, 19923, 24272, 1.0_f32),
         (Species::Magikarp, 15922, 19240, 0.9_f32),
-        (Species::Larvitar, 8328, 13104, 1.04_f32),
+        (Species::Larvitar, 7394, 10816, 1.04_f32),
         (Species::Pupitar, 4503, 5224, 1.2_f32),
-        (Species::Tyranitar, 14734, 23128, 1.4_f32),
-        (Species::Quilava, 10047, 13028, 1.2_f32),
-        (Species::Typhlosion, 12377, 17110, 1.45_f32),
+        (Species::Tyranitar, 12272, 18056, 1.4_f32),
+        (Species::Quilava, 10428, 13428, 1.2_f32),
+        (Species::Typhlosion, 11439, 15262, 1.45_f32),
         (Species::Charmeleon, 10656, 17122, 1.2_f32),
-        (Species::Charizard, 13693, 21962, 1.4_f32),
-        (Species::Graveler, 18118, 23836, 1.1_f32),
-        (Species::Golem, 19904, 33180, 1.25_f32),
+        (Species::Charizard, 17482, 26850, 1.4_f32),
+        (Species::Graveler, 8670, 7928, 1.1_f32),
+        (Species::Golem, 19722, 30140, 1.25_f32),
         (Species::Omanyte, 12587, 18848, 0.8_f32),
         (Species::Omastar, 14178, 21292, 1.08_f32),
-        (Species::Aerodactyl, 18907, 31516, 1.3_f32),
+        (Species::Aerodactyl, 16822, 25888, 1.3_f32),
         (Species::Dratini, 10976, 18524, 1.18_f32),
         (Species::Dragonair, 14274, 24676, 1.18_f32),
-        (Species::Dragonite, 19917, 31312, 1.4_f32),
+        (Species::Dragonite, 18499, 28652, 1.4_f32),
         (Species::Clefable, 15603, 27448, 1.0_f32),
         (Species::Wigglytuff, 18648, 31548, 1.0_f32),
         (Species::Sandshrew, 14089, 22600, 1.02_f32),
@@ -632,8 +632,8 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Crobat, 4653, 4116, 1.0_f32),
         (Species::Butterfree, 5428, 9420, 1.04_f32),
         (Species::Beedrill, 4304, 7304, 1.04_f32),
-        (Species::Hoothoot, 16597, 25884, 1.0_f32),
-        (Species::Sentret, 9293, 16152, 1.0_f32),
+        (Species::Hoothoot, 7029, 8684, 1.0_f32),
+        (Species::Sentret, 14430, 13752, 1.0_f32),
         (Species::Staryu, 1982, 2852, 1.0_f32),
         (Species::Voltorb, 4660, 8248, 0.82_f32),
         (Species::Bellsprout, 3001, 4728, 1.05_f32),
@@ -649,34 +649,34 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Pineco, 5418, 3900, 0.93_f32),
         (Species::Forretress, 15039, 14524, 0.93_f32),
         (Species::Kabuto, 5970, 9356, 0.60_f32),
-        (Species::Kabutops, 9130, 14756, 1.20_f32),
+        (Species::Kabutops, 8050, 12326, 1.20_f32),
         (Species::Electrode, 17210, 23480, 0.94_f32),
         (Species::Onix, 12083, 9848, 1.72_f32),
         (Species::Diglett, 10646, 14064, 0.82_f32),
         (Species::Dugtrio, 12018, 13584, 0.98_f32),
         (Species::Tentacruel, 7641, 12260, 1.13_f32),
         (Species::Tentacool, 4519, 7540, 1.13_f32),
-        (Species::Jynx, 15311, 24740, 1.28_f32),
+        (Species::Jynx, 18473, 30004, 1.28_f32),
         (Species::Primeape, 13633, 23004, 1.02_f32),
         (Species::Mankey, 11992, 19964, 1.02_f32),
         (Species::Meowth, 12615, 20788, 1.01_f32),
         (Species::Persian, 11977, 20220, 1.01_f32),
         (Species::Doduo, 11294, 18988, 1.22_f32),
         (Species::Dodrio, 19801, 33196, 1.22_f32),
-        (Species::Pidgeotto, 6293, 5776, 1.0_f32),
+        (Species::Pidgeotto, 9353, 14116, 1.0_f32),
         (Species::Exeggcute, 19868, 35472, 1.22_f32),
         (Species::Exeggutor, 19278, 30396, 1.22_f32),
         (Species::Ivysaur, 18609, 29796, 1.20_f32),
         (Species::Venusaur, 19789, 31500, 1.20_f32),
         (Species::FarfetchD, 17863, 26972, 1.10_f32),
-        (Species::Fearow, 18030, 22512, 1.23_f32),
-        (Species::Pidgeot, 18224, 23952, 1.35_f32),
+        (Species::Fearow, 13219, 16748, 1.23_f32),
+        (Species::Pidgeot, 18266, 24648, 1.35_f32),
         (Species::Slowpoke, 19574, 32984, 1.0_f32),
         (Species::Entei, 15542, 26368, 1.42_f32),
         (Species::Raikou, 18482, 28632, 1.30_f32),
         (Species::Suicune, 10500, 17216, 1.60_f32),
-        (Species::Furret, 11866, 10372, 1.20_f32),
-        (Species::Noctowl, 14815, 22660, 1.30_f32),
+        (Species::Furret, 17037, 10040, 1.20_f32),
+        (Species::Noctowl, 7706, 10076, 1.30_f32),
         (Species::Ledyba, 18127, 28940, 0.95_f32),
         (Species::Ledian, 19044, 30356, 1.05_f32),
         (Species::Ariados, 6498, 6768, 0.90_f32),
@@ -694,13 +694,13 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Teddiursa, 19943, 23880, 1.14_f32),
         (Species::Ursaring, 19016, 27116, 1.14_f32),
         (Species::Snubbull, 16555, 19516, 1.06_f32),
-        (Species::Granbull, 14140, 19048, 1.06_f32),
+        (Species::Granbull, 10841, 14536, 1.06_f32),
         (Species::Houndour, 11024, 14248, 1.20_f32),
         (Species::Houndoom, 15865, 22736, 1.20_f32),
         (Species::Miltank, 17281, 17976, 1.12_f32),
         (Species::Tauros, 14025, 16504, 1.28_f32),
         (Species::Delibird, 9916, 17808, 1.10_f32),
-        (Species::Stantler, 15993, 20548, 1.28_f32),
+        (Species::Stantler, 13113, 12428, 1.28_f32),
         (Species::Girafarig, 14025, 22432, 1.28_f32),
         (Species::Phanpy, 18472, 31284, 1.02_f32),
         (Species::Marill, 3437, 5648, 1.02_f32),
@@ -711,7 +711,7 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Octillery, 19798, 21740, 1.00_f32),
         (Species::Swinub, 7044, 8496, 0.98_f32),
         (Species::Piloswine, 5062, 9432, 0.98_f32),
-        (Species::Sneasel, 8779, 9936, 1.11_f32),
+        (Species::Sneasel, 8992, 8736, 1.11_f32),
         (Species::Skarmory, 3635, 4288, 1.21_f32),
         (Species::Smeargle, 16875, 21004, 1.14_f32),
         (Species::Moltres, 19671, 26024, 1.28_f32),
@@ -722,7 +722,7 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Heracross, 19588, 32148, 1.16_f32),
         (Species::Pinsir, 14082, 23756, 1.16_f32),
         (Species::Scizor, 18558, 27348, 1.28_f32),
-        (Species::Scyther, 19533, 30360, 1.18_f32),
+        (Species::Scyther, 13780, 21460, 1.18_f32),
         (Species::Starmie, 2966, 3344, 1.03_f32),
         (Species::Gastly, 18911, 26448, 1.05_f32),
         (Species::Haunter, 9833, 13444, 1.10_f32),
@@ -737,7 +737,7 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Kakuna, 11069, 16336, 0.80_f32),
         (Species::Caterpie, 13539, 25360, 0.95_f32),
         (Species::Weedle, 10537, 19772, 0.95_f32),
-        (Species::Rhydon, 18156, 28304, 1.4_f32),
+        (Species::Rhydon, 17699, 27280, 1.4_f32),
         (Species::Drowzee, 19170, 32056, 1.12_f32),
         (Species::Hypno, 19105, 32320, 1.12_f32),
         (Species::Abra, 7254, 12040, 1.12_f32),
@@ -747,8 +747,8 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Weezing, 16974, 28756, 1.2_f32),
         (Species::Wartortle, 19000, 30760, 1.1_f32),
         (Species::Blastoise, 19603, 32188, 1.18_f32),
-        (Species::Croconaw, 13558, 21444, 1.30_f32),
-        (Species::Feraligatr, 16776, 24448, 1.30_f32),
+        (Species::Croconaw, 14789, 23092, 1.30_f32),
+        (Species::Feraligatr, 17447, 25520, 1.30_f32),
         (Species::Cubone, 19943, 34972, 1.0_f32),
         (Species::Marowak, 19716, 32924, 1.18_f32),
         (Species::Magnemite, 5966, 9140, 0.96_f32),
@@ -757,10 +757,10 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Kangaskhan, 18743, 31108, 1.4_f32),
         (Species::Ponyta, 15002, 22280, 1.1_f32),
         (Species::Rapidash, 17555, 26744, 1.3_f32),
-        (Species::Machop, 4377, 7288, 0.85_f32),
-        (Species::Machoke, 5621, 9264, 1.15_f32),
-        (Species::Machamp, 6598, 10992, 1.45_f32),
-        (Species::Rhyhorn, 14488, 25368, 1.11_f32),
+        (Species::Machop, 11179, 16304, 0.85_f32),
+        (Species::Machoke, 14694, 21812, 1.15_f32),
+        (Species::Machamp, 16806, 24648, 1.45_f32),
+        (Species::Rhyhorn, 11214, 15636, 1.11_f32),
         (Species::Dewgong, 15206, 23740, 1.03_f32),
         (Species::Seel, 13304, 21680, 1.03_f32),
         (Species::Ditto, 9310, 13980, 0.96_f32),
@@ -786,15 +786,15 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Lanturn, 17971, 15572, 0.95_f32),
         (Species::Slugma, 2290, 4108, 0.98_f32),
         (Species::Magcargo, 5554, 10276, 0.98_f32),
-        (Species::Hitmonlee, 19747, 35276, 1.24_f32),
-        (Species::Hitmonchan, 18362, 30096, 1.30_f32),
-        (Species::Hitmontop, 17394, 29828, 1.25_f32),
-        (Species::Tyrogue, 19924, 33424, 0.86_f32),
-        (Species::Smoochum, 19907, 34392, 0.78_f32),
-        (Species::Elekid, 19466, 33128, 0.91_f32),
-        (Species::Magby, 19764, 35032, 0.77_f32),
-        (Species::Magmar, 19923, 30320, 1.30_f32),
-        (Species::Electabuzz, 19502, 33748, 1.28_f32),
+        (Species::Hitmonlee, 15445, 25744, 1.24_f32),
+        (Species::Hitmonchan, 10981, 16084, 1.30_f32),
+        (Species::Hitmontop, 10934, 17604, 1.25_f32),
+        (Species::Tyrogue, 13839, 21596, 0.86_f32),
+        (Species::Smoochum, 17939, 30344, 0.78_f32),
+        (Species::Elekid, 11517, 19024, 0.91_f32),
+        (Species::Magby, 12864, 22336, 0.77_f32),
+        (Species::Magmar, 19024, 29200, 1.30_f32),
+        (Species::Electabuzz, 19747, 33880, 1.28_f32),
         (Species::Slowking, 18831, 31512, 1.25_f32),
         (Species::Slowbro, 19322, 32532, 1.2_f32),
         (Species::Lickitung, 17028, 29256, 1.18_f32),
@@ -814,7 +814,7 @@ fn species_schema_retains_anatomy_skin_order_and_physical_size() {
         (Species::Igglybuff, 16964, 28684, 0.58_f32),
         (Species::Mareep, 6382, 11840, 0.85_f32),
         (Species::Flaaffy, 10302, 16636, 1.0_f32),
-        (Species::Ampharos, 3494, 5636, 1.35_f32),
+        (Species::Ampharos, 3806, 5804, 1.35_f32),
         (Species::Xatu, 15289, 24060, 1.04_f32),
         (Species::Azumarill, 4873, 7448, 1.02_f32),
         (Species::Donphan, 17395, 29596, 1.02_f32),
@@ -904,8 +904,8 @@ fn spearow_lookup_keeps_canonical_geometry_and_authored_clip_data() {
             rig.neutral
         );
     }
-    assert_eq!(rig.neutral_bounds.0, Vec3::new(-0.368, 0.0, -0.425));
-    assert_eq!(rig.neutral_bounds.1, Vec3::new(0.368, 0.75, 0.425));
+    assert_eq!(rig.neutral_bounds.0, Vec3::new(-0.2993245125, 0.0, -0.4881474078));
+    assert_eq!(rig.neutral_bounds.1, Vec3::new(0.2993245125, 0.75, 0.3335007131));
 
     let bytes = candidate(Species::Spearow);
     let gltf = gltf::Gltf::from_slice(&bytes).unwrap();
@@ -1186,22 +1186,73 @@ fn authored_clips_are_finite_at_30_and_60_hz_and_do_articulate() {
 #[test]
 fn idle_loop_is_closed_and_cue_clips_clamp_to_neutral() {
     for species in Species::ALL {
-        let rig = fixture(species);
-        let (mut pose, mut matrices) = storage(rig);
-        let duration = rig.clip(Clip::Idle).duration;
-        for time in [-duration, 0.0, duration, duration * 2.0] {
-            rig.sample_into(Clip::Idle, time, Playback::Loop, &mut pose)
-                .unwrap();
-            assert_eq!(pose, rig.joints.iter().map(|j| j.bind).collect::<Vec<_>>());
+        assert_idle_loop_closes(fixture(species));
+    }
+}
+
+fn assert_idle_loop_closes(rig: &SpeciesRig) {
+    let (mut pose, mut matrices) = storage(rig);
+    let duration = rig.clip(Clip::Idle).duration;
+    for time in [-duration, 0.0, duration, duration * 2.0] {
+        rig.sample_into(Clip::Idle, time, Playback::Loop, &mut pose)
+            .unwrap();
+        assert_eq!(pose, rig.joints.iter().map(|j| j.bind).collect::<Vec<_>>());
+    }
+    for time in [duration - 0.00001, duration + 0.00001] {
+        rig.sample_into(Clip::Idle, time, Playback::Loop, &mut pose)
+            .unwrap();
+        rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+        for (i, p) in rig.neutral.positions.iter().enumerate() {
+            let actual = rig.skin_point(i, &matrices);
+            let neutral = Vec3::from_array(*p);
+            assert!(
+                (actual - neutral).abs().max_element() <= 0.00001,
+                "{} idle t={time} vertex {i}: {actual:?} differs from {neutral:?}",
+                rig.species.name()
+            );
         }
-        for time in [duration - 0.00001, duration + 0.00001] {
-            rig.sample_into(Clip::Idle, time, Playback::Loop, &mut pose)
-                .unwrap();
-            rig.skin_matrices_into(&pose, &mut matrices).unwrap();
-            for (i, p) in rig.neutral.positions.iter().enumerate() {
-                assert_vec_close(rig.skin_point(i, &matrices), Vec3::from_array(*p), 0.00001);
-            }
-        }
+    }
+}
+
+#[test]
+fn dragon_pair_stored_idle_closes_at_production_time_offsets() {
+    for species in [Species::Charizard, Species::Dragonite] {
+        assert_idle_loop_closes(fixture(species));
+    }
+}
+
+#[test]
+fn pidgey_family_stored_idle_closes_at_production_time_offsets() {
+    for species in [Species::Pidgey, Species::Pidgeotto, Species::Pidgeot] {
+        assert_idle_loop_closes(fixture(species));
+    }
+}
+
+#[test]
+fn spearow_fearow_stored_idle_closes_at_production_time_offsets() {
+    for species in [Species::Spearow, Species::Fearow] {
+        assert_idle_loop_closes(fixture(species));
+    }
+}
+
+#[test]
+fn sentry_ferret_stored_idle_closes_at_production_time_offsets() {
+    for species in [Species::Sentret, Species::Furret] {
+        assert_idle_loop_closes(fixture(species));
+    }
+}
+
+#[test]
+fn owl_stored_idle_closes_at_production_time_offsets() {
+    for species in [Species::Hoothoot, Species::Noctowl] {
+        assert_idle_loop_closes(fixture(species));
+    }
+}
+
+#[test]
+fn fossil_pair_stored_idle_closes_at_production_time_offsets() {
+    for species in [Species::Aerodactyl, Species::Kabutops] {
+        assert_idle_loop_closes(fixture(species));
     }
 }
 
@@ -2952,7 +3003,7 @@ fn bulldog_family_keeps_paws_folded_ears_spots_and_tusks_coherent() {
             let owner=if ["Foot /","Toe groove /"].iter().any(|p|part.name.starts_with(p)) {Some(0)}
                 else if part.name.starts_with("Spot /") {Some(1)}
                 else if ["Head /","Jowl /","Eye /","Pupil /","Muzzle /","Nose /","Mouth /","Fang /"].iter().any(|p|part.name.starts_with(p)) {Some(2)}
-                else if ["Jaw /","Tusk /"].iter().any(|p|part.name.starts_with(p)) {Some(3)}
+                else if ["Jaw /","Tusk /","Tongue /"].iter().any(|p|part.name.starts_with(p)) {Some(3)}
                 else if part.name.starts_with("Tail /") {Some(8)}
                 else if part.name.starts_with("Ear /") || part.name.starts_with("Ear marking /") {Some(if part.name.ends_with("-1") {9} else {10})}
                 else if ["Hand /","Hand fold /","Wrist /"].iter().any(|p|part.name.starts_with(p)) {
@@ -3085,10 +3136,10 @@ fn stantler_skin_keeps_hooves_planted_and_antler_loops_coherent() {
     assert_bits(crate::battle_species_models::mesh("STANTLER").unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
     for part in &rig.anatomy {
         let owner=if ["Hoof /","Hoof groove /"].iter().any(|p|part.name.starts_with(p)) {Some(0)}
-            else if ["Head /","Eye /","Brow /","Brow spot /","Muzzle /","Nostril /","Antler"].iter().any(|p|part.name.starts_with(p)) {Some(3)}
+            else if ["Head /","Eye /","Brow /","Brow spot /","Muzzle /","Muzzle pad /","Nostril /","Antler"].iter().any(|p|part.name.starts_with(p)) {Some(3)}
             else if part.name.starts_with("Ear /") {Some(if part.name.ends_with("-1") {4} else {5})}
             else if part.name.starts_with("Tail / large") {Some(11)}
-            else if ["Body /","Spot /"].iter().any(|p|part.name.starts_with(p)) {Some(1)} else {None};
+            else if ["Body /","Spot /","Rib /"].iter().any(|p|part.name.starts_with(p)) {Some(1)} else {None};
         if let Some(owner)=owner {
             for i in part.vertices.clone() {assert_eq!(rig.joint_indices[i],[owner,0,0,0],"{}",part.name);assert_eq!(rig.joint_weights[i],[1.0,0.0,0.0,0.0]);}
         }
@@ -3412,7 +3463,7 @@ fn hitmontop_keeps_grounded_spin_point_and_raised_balance_limbs_coherent() {
         for part in &rig.anatomy {
             let n=part.name.as_str();
             let owner=if n.starts_with("Spin point /") {Some(0)}
-                else if ["Head /","Eye /","Pupil /","Helmet crease /","Mouth /"].iter().any(|p|n.starts_with(p)) {Some(1)}
+                else if ["Head /","Helmet flange /","Eye /","Pupil /","Helmet crease /","Mouth /"].iter().any(|p|n.starts_with(p)) {Some(1)}
                 else if ["Arm /","Wrist wrap /","Hand /"].iter().any(|p|n.starts_with(p)) {Some(if n.ends_with("-1") {4} else {5})}
                 else if ["Leg /","Ankle wrap /","Foot /","Foot spike /","Foot sole /"].iter().any(|p|n.starts_with(p)) {
                     let side=if n.starts_with("Foot spike /") {n.split_whitespace().nth_back(1).unwrap()} else {n.split_whitespace().next_back().unwrap()};
@@ -3624,7 +3675,7 @@ fn sneasel_keeps_toe_talons_planted_and_advances_its_hooked_claws() {
         let owner=if n.starts_with("Foot /") || n.starts_with("Talon / paired") {Some(0)}
             else if ["Head /","Eye /","Mouth /"].iter().any(|p|n.starts_with(p)) || n=="Gem / fitted gold oval forehead" {Some(3)}
             else if n=="Gem / fitted gold oval chest" {Some(1)}
-            else if n.starts_with("Ear /") {Some(4)} else if n.starts_with("Plume /") {Some(5)}
+            else if n.starts_with("Ear /") {Some(if n.ends_with("-1") {4} else {5})} else if n.starts_with("Plume /") {Some(5)}
             else if n.starts_with("Tail /") {Some(6)}
             else if n.starts_with("Hand /") || n.starts_with("Talon / hooked") {
                 let side=if n.starts_with("Hand /") {n.split_whitespace().next_back().unwrap()} else {n.split_whitespace().nth_back(1).unwrap()};Some(if side=="-1" {8} else {10})
@@ -5204,7 +5255,7 @@ fn rhinos_keep_planted_pads_and_articulate_jaws_ears_tails_and_adult_drill() {
                     if n.starts_with("Body /") || n.starts_with("Back armor /") {Some(1)}
                     else if n.starts_with("Tail /") {Some(3)}
                     else if n.starts_with("Jaw /") {Some(8)}
-                    else if n.starts_with("Ear /") {Some(if n.ends_with("-1") {9} else {10})} else {Some(2)}
+                    else if n.starts_with("Ear /") || n.starts_with("Ear inset /") {Some(if n.ends_with("-1") {9} else {10})} else {Some(2)}
                 } else {
                     if ["Body /","Belly plate /","Collar /","Back armor /"].iter().any(|p|n.starts_with(p)) {Some(1)}
                     else if n.starts_with("Jaw /") || n.starts_with("Tongue /") {Some(3)}
@@ -5531,7 +5582,7 @@ fn bone_keeper_skin_keeps_supports_fixed_and_club_with_its_gripping_wrist() {
 
 #[test]
 fn crocodile_skin_keeps_supports_fixed_and_articulates_jaw_wrists_and_tail() {
-    for (species,parts) in [(Species::Croconaw,28),(Species::Feraligatr,41)] {
+    for (species,parts) in [(Species::Croconaw,29),(Species::Feraligatr,43)] {
         let rig=fixture(species);assert_eq!(rig.joints.len(),14);assert_eq!(rig.anatomy.len(),parts);
         assert!(std::ptr::eq(super::for_species(species.name()).unwrap(),super::rig(species)));
         for part in &rig.anatomy {
@@ -5577,7 +5628,7 @@ fn turtle_skin_preserves_rigid_shells_supports_and_independent_features() {
 fn magmar_skin_keeps_open_bill_supported_claws_and_independent_flames() {
     let rig=fixture(Species::Magmar);
     assert_eq!((rig.joints.len(),rig.anatomy.len()),(17,39));
-    assert_eq!(rig.neutral.positions.len(),19923);assert_eq!(rig.neutral.indices.len(),30320*3);
+    assert_eq!(rig.neutral.positions.len(),19024);assert_eq!(rig.neutral.indices.len(),29200*3);
     assert!(std::ptr::eq(super::for_species("MAGMAR").unwrap(),super::rig(Species::Magmar)));
     for part in &rig.anatomy {
         let owner=if part.name.starts_with("Foot /") || part.name.starts_with("Toe claw /") {Some(0)} else if ["Head /","Forehead lobe /","Eye socket /","Eye /","Pupil /","Bill /","Mouth back /","Tongue /"].iter().any(|p|part.name.starts_with(p)) {Some(3)} else if part.name.starts_with("Hand /") || part.name.starts_with("Hand claw /") {Some(if part.name.ends_with("-1") {6} else {9})} else {None};
@@ -5598,7 +5649,7 @@ fn magmar_skin_keeps_open_bill_supported_claws_and_independent_flames() {
 #[test]
 fn electabuzz_skin_keeps_open_jaws_fists_and_independent_sensory_features() {
     let rig=fixture(Species::Electabuzz);
-    assert_eq!((rig.joints.len(),rig.anatomy.len(),rig.neutral.positions.len(),rig.neutral.indices.len()),(19,41,19502,33748*3));
+    assert_eq!((rig.joints.len(),rig.anatomy.len(),rig.neutral.positions.len(),rig.neutral.indices.len()),(19,41,19747,33880*3));
     assert!(std::ptr::eq(super::for_species("ELECTABUZZ").unwrap(),super::rig(Species::Electabuzz)));
     for part in &rig.anatomy {
         let owner=if part.name.starts_with("Foot /") || part.name.starts_with("Toe claw /") {Some(0)} else if ["Head /","Eye socket /","Eye /","Pupil /","Forehead /","Jaw /","Mouth back /","Tongue /","Fang /","Nostril /"].iter().any(|p|part.name.starts_with(p)) {Some(3)} else if part.name.starts_with("Hand /") || part.name.starts_with("Knuckle /") {Some(if part.name.ends_with("-1") {6} else {9})} else if part.name.starts_with("Tail tip /") {Some(18)} else {None};
@@ -5879,7 +5930,7 @@ fn dragon_family_skin_preserves_contact_roots_faces_and_independent_controls() {
     for (species, name, joints, parts, vertices, triangles) in [
         (Species::Dratini, "DRATINI", 7, 13, 10976, 18524),
         (Species::Dragonair, "DRAGONAIR", 7, 17, 14274, 24676),
-        (Species::Dragonite, "DRAGONITE", 15, 34, 19917, 31312),
+        (Species::Dragonite, "DRAGONITE", 15, 34, 18499, 28652),
     ] {
         let rig = fixture(species);
         assert_eq!((rig.joints.len(), rig.anatomy.len(), rig.neutral.positions.len(), rig.neutral.indices.len()), (joints, parts, vertices, triangles * 3));
@@ -5923,13 +5974,14 @@ fn dragon_family_skin_preserves_contact_roots_faces_and_independent_controls() {
 #[test]
 fn aerodactyl_skin_preserves_grounded_talons_jaw_and_independent_controls() {
     let rig = fixture(Species::Aerodactyl);
-    assert_eq!((rig.joints.len(), rig.anatomy.len(), rig.neutral.positions.len(), rig.neutral.indices.len()), (9, 27, 18907, 31516 * 3));
+    assert_eq!((rig.joints.len(), rig.anatomy.len(), rig.neutral.positions.len(), rig.neutral.indices.len()), (9, 32, 16822, 25888 * 3));
     assert!(std::ptr::eq(super::for_species("AERODACTYL").unwrap(), super::rig(Species::Aerodactyl)));
     let mut fixed: Vec<_> = (0..rig.neutral.positions.len()).filter(|&v| rig.neutral.positions[v][1] < 0.0000001).collect();
     assert!(!fixed.is_empty());
     for part in &rig.anatomy {
         let owner = if ["Foot /", "Foot claw /"].iter().any(|p| part.name.starts_with(p)) { fixed.extend(part.vertices.clone()); Some(0) }
-            else if ["Skull /", "Skull horn /", "Jaw hinge /", "Eye socket /", "Eye white /", "Mouth ceiling /"].iter().any(|p| part.name.starts_with(p)) { Some(2) }
+            else if ["Skull /", "Skull horn /", "Jaw hinge /", "Brow /", "Eye socket /", "Eye white /", "Iris /", "Mouth ceiling /", "Mouth back /"].iter().any(|p| part.name.starts_with(p)) { Some(2) }
+            else if ["Wing /", "Wing back /", "Wing arm /"].iter().any(|p| part.name.starts_with(p)) { Some(if part.name.ends_with("-1") { 4 } else { 5 }) }
             else if ["Jaw /", "Mouth floor /", "Tongue /"].iter().any(|p| part.name.starts_with(p)) { Some(3) } else { None };
         if let Some(owner) = owner { for v in part.vertices.clone() { assert_eq!(rig.joint_indices[v], [owner, 0, 0, 0], "{}", part.name); assert_eq!(rig.joint_weights[v], [1., 0., 0., 0.]); } }
     }
@@ -5991,8 +6043,8 @@ fn nautilus_skin_preserves_shell_eyes_grounded_tentacles_and_independent_control
 #[test]
 fn stone_pair_skin_preserves_fixed_supports_faces_shells_and_independent_controls() {
     for (species, name, joints, parts, vertices, triangles) in [
-        (Species::Graveler, "GRAVELER", 10, 22, 18118, 23836),
-        (Species::Golem, "GOLEM", 12, 29, 19904, 33180),
+        (Species::Graveler, "GRAVELER", 10, 22, 8670, 7928),
+        (Species::Golem, "GOLEM", 12, 29, 19722, 30140),
     ] {
         let rig = fixture(species);
         assert_eq!((rig.joints.len(), rig.anatomy.len(), rig.neutral.positions.len(), rig.neutral.indices.len()), (joints, parts, vertices, triangles*3));
@@ -6032,7 +6084,7 @@ fn stone_pair_skin_preserves_fixed_supports_faces_shells_and_independent_control
 fn fire_dragon_skin_preserves_fixed_supports_faces_jaws_and_independent_controls() {
     for (species, name, joints, parts, vertices, triangles) in [
         (Species::Charmeleon, "CHARMELEON", 13, 29, 10656, 17122),
-        (Species::Charizard, "CHARIZARD", 15, 38, 13693, 21962),
+        (Species::Charizard, "CHARIZARD", 15, 45, 17482, 26850),
     ] {
         let rig = fixture(species);
         assert_eq!((rig.joints.len(), rig.anatomy.len(), rig.neutral.positions.len(), rig.neutral.indices.len()), (joints, parts, vertices, triangles*3));
@@ -6042,8 +6094,9 @@ fn fire_dragon_skin_preserves_fixed_supports_faces_jaws_and_independent_controls
         for part in &rig.anatomy {
             let owner = if ["Foot /", "Foot claw /"].iter().any(|p| part.name.starts_with(p)) { Some(0) }
                 else if ["Body /", "Belly /"].iter().any(|p| part.name.starts_with(p)) { Some(1) }
-                else if ["Head /", "Horn /", "Eye socket /", "Eye white /", "Iris /", "Pupil /", "Glint /", "Nostril /", "Fang /"].iter().any(|p| part.name.starts_with(p)) { Some(2) }
-                else if ["Jaw /", "Tongue /"].iter().any(|p| part.name.starts_with(p)) { Some(3) }
+                else if ["Head /", "Horn /", "Eye socket /", "Eye white /", "Iris /", "Pupil /", "Glint /", "Nostril /", "Fang /", "Throat /"].iter().any(|p| part.name.starts_with(p)) { Some(2) }
+                else if ["Jaw /", "Tongue /", "Oral floor /"].iter().any(|p| part.name.starts_with(p)) { Some(3) }
+                else if part.name.starts_with("Wing back /") { Some(if part.name.ends_with(" -1") { 13 } else { 14 }) }
                 else if part.name.starts_with("Flame /") { Some(12) } else { None };
             if let Some(owner) = owner { for v in part.vertices.clone() { assert_eq!(rig.joint_indices[v], [owner,0,0,0], "{name} {}", part.name); assert_eq!(rig.joint_weights[v], [1.,0.,0.,0.]); } }
         }
@@ -6071,8 +6124,8 @@ fn fire_dragon_skin_preserves_fixed_supports_faces_jaws_and_independent_controls
 #[test]
 fn fire_badger_skin_preserves_ground_roots_coat_seams_jaws_and_independent_controls() {
     for (species, name, joints, parts, vertices, triangles) in [
-        (Species::Quilava, "QUILAVA", 13, 39, 10047, 13028),
-        (Species::Typhlosion, "TYPHLOSION", 17, 45, 12377, 17110),
+        (Species::Quilava, "QUILAVA", 13, 39, 10428, 13428),
+        (Species::Typhlosion, "TYPHLOSION", 17, 44, 11439, 15262),
     ] {
         let rig = fixture(species);
         assert_eq!((rig.joints.len(), rig.anatomy.len(), rig.neutral.positions.len(), rig.neutral.indices.len()), (joints, parts, vertices, triangles*3));
@@ -6081,11 +6134,15 @@ fn fire_badger_skin_preserves_ground_roots_coat_seams_jaws_and_independent_contr
         assert!(!floor.is_empty());
         for part in &rig.anatomy {
             let owner = if ["Foot /", "Toe /"].iter().any(|p| part.name.starts_with(p)) { Some(0) }
-                else if ["Body /", "Collar /"].iter().any(|p| part.name.starts_with(p)) { Some(1) }
+                else if part.name.starts_with("Body /") && species == Species::Quilava { Some(1) }
                 else if ["Head /", "Ear /", "Eye socket /", "Eye white /", "Iris /", "Pupil /", "Glint /", "Nose /", "Lip /", "Fang /"].iter().any(|p| part.name.starts_with(p)) { Some(2) }
                 else if ["Jaw /", "Tongue /"].iter().any(|p| part.name.starts_with(p)) { Some(3) }
                 else { None };
             if let Some(owner) = owner { for v in part.vertices.clone() { assert_eq!(rig.joint_indices[v], [owner,0,0,0], "{name} {}", part.name); assert_eq!(rig.joint_weights[v], [1.,0.,0.,0.]); } }
+            if species == Species::Typhlosion && part.name.starts_with("Body /") {
+                assert!(part.vertices.clone().all(|v| rig.joint_indices[v].iter().zip(rig.joint_weights[v]).all(|(&j,w)| w == 0. || j <= 1)));
+                for owner in [0,1] { assert!(part.vertices.clone().any(|v| rig.joint_indices[v] == [owner,0,0,0] && rig.joint_weights[v] == [1.,0.,0.,0.])); }
+            }
         }
         let (mut pose, mut matrices) = storage(rig);
         for clip in Clip::ALL { for step in 0..=20 {
@@ -6111,7 +6168,7 @@ fn fire_badger_skin_preserves_ground_roots_coat_seams_jaws_and_independent_contr
 #[test]
 fn tyranitar_skin_preserves_armor_jaws_grounded_claws_and_independent_controls() {
     for (species, name, joints, parts, vertices, triangles) in [
-        (Species::Tyranitar, "TYRANITAR", 14, 34, 14734, 23128),
+        (Species::Tyranitar, "TYRANITAR", 14, 41, 12272, 18056),
     ] {
         let rig = fixture(species);
         assert_eq!((rig.joints.len(), rig.anatomy.len(), rig.neutral.positions.len(), rig.neutral.indices.len()), (joints, parts, vertices, triangles*3));
@@ -6120,8 +6177,8 @@ fn tyranitar_skin_preserves_armor_jaws_grounded_claws_and_independent_controls()
         assert!(!floor.is_empty());
         for part in &rig.anatomy {
             let owner = if ["Foot /", "Foot claw /"].iter().any(|p| part.name.starts_with(p)) { Some(0) }
-                else if ["Body /", "Belly armor /", "Torso vent /", "Back spike /"].iter().any(|p| part.name.starts_with(p)) { Some(1) }
-                else if ["Head /", "Mouth back /", "Crown spike /", "Cheek plate /", "Eye socket /", "Eye white /", "Iris /", "Pupil /", "Glint /", "Nostril /", "Fang /"].iter().any(|p| part.name.starts_with(p)) { Some(2) }
+                else if ["Body /", "Belly /", "Belly armor /", "Mantle /", "Torso vent /", "Back armor /", "Back vent /", "Back spike /"].iter().any(|p| part.name.starts_with(p)) { Some(1) }
+                else if ["Head /", "Brow keel /", "Mouth back /", "Crown spike /", "Cheek plate /", "Eye socket /", "Eye white /", "Iris /", "Pupil /", "Glint /", "Nostril /", "Fang /"].iter().any(|p| part.name.starts_with(p)) { Some(2) }
                 else if ["Jaw /", "Tongue /", "Lower tooth /"].iter().any(|p| part.name.starts_with(p)) { Some(3) }
                 else { None };
             if let Some(owner) = owner { for v in part.vertices.clone() { assert_eq!(rig.joint_indices[v], [owner,0,0,0], "{name} {}", part.name); assert_eq!(rig.joint_weights[v], [1.,0.,0.,0.]); } }
@@ -6150,7 +6207,7 @@ fn tyranitar_skin_preserves_armor_jaws_grounded_claws_and_independent_controls()
 #[test]
 fn rock_pupa_skin_preserves_fitted_gaze_grounded_feet_keel_and_independent_controls() {
     for (species, name, joints, parts, vertices, triangles) in [
-        (Species::Larvitar, "LARVITAR", 11, 20, 8328, 13104),
+        (Species::Larvitar, "LARVITAR", 11, 21, 7394, 10816),
         (Species::Pupitar, "PUPITAR", 4, 9, 4503, 5224),
     ] {
         let rig = fixture(species);
@@ -6160,7 +6217,7 @@ fn rock_pupa_skin_preserves_fitted_gaze_grounded_feet_keel_and_independent_contr
         assert!(!floor.is_empty());
         for part in &rig.anatomy {
             let owner = if ["Foot /", "Toe /"].iter().any(|p| part.name.starts_with(p)) { Some(0) }
-                else if ["Belly /", "Body vent /", "Shell seam /", "Back seam /"].iter().any(|p| part.name.starts_with(p)) { Some(1) }
+                else if ["Belly /", "Body vent /", "Back vent /", "Shell seam /", "Back seam /"].iter().any(|p| part.name.starts_with(p)) { Some(1) }
                 else if ["Head /", "Eye socket /", "Eye white /", "Iris /", "Pupil /", "Glint /", "Lip /", "Cheek tear /", "Nostril /", "Horn /", "Crown spike /"].iter().any(|p| part.name.starts_with(p)) { Some(2) } else { None };
             if let Some(owner) = owner { for v in part.vertices.clone() { assert_eq!(rig.joint_indices[v], [owner,0,0,0], "{name} {}", part.name); assert_eq!(rig.joint_weights[v], [1.,0.,0.,0.]); } }
         }
@@ -6425,16 +6482,25 @@ fn pidgeotto_skin_keeps_coherent_anatomy_and_grounded_claws() {
 }
 
 #[test]
-fn raptor_bird_skin_keeps_coherent_anatomy_and_grounded_claws() {
+fn raptor_bird_skin_keeps_coherent_anatomy_and_species_specific_claws() {
     for (species,name,joints) in [(Species::Pidgeot,"PIDGEOT",20),(Species::Fearow,"FEAROW",19)] {
         let rig=fixture(species);assert_eq!(rig.joints.len(),joints);
         assert!(std::ptr::eq(super::for_species(name).unwrap(),super::rig(species)));
         assert_bits(crate::battle_species_models::mesh(name).unwrap().positions.into_iter().flatten(),rig.neutral.positions.iter().flatten().copied());
-        let toes:Vec<_>=rig.anatomy.iter().filter(|p|p.name.starts_with("Grounded digits /")).collect();assert_eq!(toes.len(),2);
+        let toes:Vec<_>=rig.anatomy.iter().filter(|p|p.name.starts_with(if species==Species::Fearow {"Airborne digits /"} else {"Grounded digits /"})).collect();assert_eq!(toes.len(),2);
         let (mut pose,mut matrices)=storage(rig);
         for clip in Clip::ALL {for step in 0..=64 {
             rig.sample_into(clip,rig.clip(clip).duration*step as f32/64.,Playback::Clamp,&mut pose).unwrap();rig.skin_matrices_into(&pose,&mut matrices).unwrap();
-            for p in &toes {for v in p.vertices.clone() {assert_vec_close(rig.skin_point(v,&matrices),Vec3::from_array(rig.neutral.positions[v]),0.000001);}}
+            for p in &toes {for v in p.vertices.clone() {
+                let rest=Vec3::from_array(rig.neutral.positions[v]);
+                let expected=if species==Species::Fearow {
+                    let leg=if rest.x<0. {15} else {16};
+                    assert_eq!(rig.joint_indices[v],[leg as u16,0,0,0]);
+                    assert_eq!(rig.joint_weights[v],[1.,0.,0.,0.]);
+                    matrices[leg].transform_point3(rest)
+                } else {rest};
+                assert_vec_close(rig.skin_point(v,&matrices),expected,0.000001);
+            }}
             for v in 0..rig.neutral.positions.len() {let p=rig.skin_point(v,&matrices);assert!(p.y>=-0.000001);assert!(p.cmpge(rig.animated_bounds.0).all()&&p.cmple(rig.animated_bounds.1).all());}
         }}
     }

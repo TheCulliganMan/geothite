@@ -1,5 +1,7 @@
 # Mewtwo genetic psychic cat and planted skin
 
+> The October 20 [reference and leg-profile revision](upright-trio-fidelity.md) supersedes the former posture, tail shape and digest below.
+
 `tools/mewtwo_sculpt.py` replaces the old all-purple, round-eyed generic cat
 with an original pale genetic body, purple pelvis and heavy curved tail,
 guided by [the official Mewtwo artwork](https://sg.portal-pokemon.com/pokedex/0150/).

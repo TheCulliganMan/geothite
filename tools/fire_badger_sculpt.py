@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Original low fire ferret and upright fire badger with shared-surface two-tone coats."""
+"""Original upright Crystal fire ferret and sloping fire badger with shared-surface coats."""
 import argparse,math
 from pathlib import Path
 from functools import lru_cache
@@ -21,14 +21,26 @@ def deduplicate(p):
   out['indices'].append(lookup[key])
  return out
 
-def coat_sweep(name,profiles,axis='z',segments=36):
+def coat_sweep(name,profiles,axis='z',segments=36,fur_hem=False,mask_edges=None):
  # Two closed half-solids meet on the exact same diameter. Exterior normals
  # come from the unsplit whole, so the color border has no raised shell or seam.
  rows=curved_profiles([(z,w,h,cy) for z,cy,w,h in profiles],3);vertices=[]
  for along,w,h,center in rows:
+  edge=0.
+  if mask_edges:
+   edge=mask_edges[0][1] if along<=mask_edges[0][0] else mask_edges[-1][1]
+   for a,b in zip(mask_edges,mask_edges[1:]):
+    if a[0]<=along<=b[0]:edge=a[1]+(b[1]-a[1])*(along-a[0])/(b[0]-a[0]);break
   for j in range(segments):
-   x=w*math.cos(math.tau*j/segments);other=h*math.sin(math.tau*j/segments)
-   vertices.append((x,along,center+other) if axis=='y' else (x,center+other,along))
+   half=segments//2
+   angle=(edge+(math.pi-2*edge)*j/half) if j<half else (math.pi-edge+(math.pi+2*edge)*(j-half)/half)
+   x=w*math.cos(angle);other=h*math.sin(angle)
+   hem=0.
+   if fur_hem:
+    fade=max(0.,1.-(along-.05)/.16)
+    hem=fade*(.04*max(0.,math.sin(angle))**2
+              -.04*max(0.,-math.sin(angle))*(1. if j%2 else .25))
+   vertices.append((x,along+hem,center+other) if axis=='y' else (x,center+other,along))
  faces=[tuple(reversed(range(segments))),tuple((len(rows)-1)*segments+j for j in range(segments))]
  for k in range(len(rows)-1):
   for j in range(segments):a=k*segments+j;b=k*segments+(j+1)%segments;faces.append((a,b,b+segments,a+segments))
@@ -49,55 +61,64 @@ def coat_sweep(name,profiles,axis='z',segments=36):
  return result,whole
 
 def arm_path(species,side,row=0):
- if species=='typhlosion':return [(side*.17,.82,.025),(side*.30,.63,.11),(side*.33,.48,.23)],[.085,.065,.046]
- z=.13 if row==0 else -.45
- return [(side*.11,.29,z-.035),(side*.17,.17,z-.015),(side*.18,.050,z+.025)],[.075,.065,.045]
+ if species=='typhlosion':return [(side*.13,.91,.09),(side*.29,.80,.15),(side*.32,.72,.24)],[.080,.060,.043]
+ if row==0:return [(side*.12,.80,.05),(side*.16,.71,.12),(side*.16,.69,.20)],[.055,.042,.027]
+ return [(side*.11,.27,-.095),(side*.14,.16,-.085),(side*.15,.052,-.08)],[.090,.070,.050]
 
 def fire_specs(species):
  if species=='quilava':
-  return tuple((f'{cluster} {j}',(side*.075,.47 if cluster=='neck' else .38,.06 if cluster=='neck' else -.47),(side*(.18 if j!=1 else .05),1.09 if cluster=='neck' else .76,-.06 if cluster=='neck' else -.69),.18,side*22.) for cluster in ('neck','rump') for j,side in enumerate((-1,0,1)))
- return tuple((f'mantle {j}',(x,.94,-.075),(x*2.15,1.34+(.14 if abs(x)<.15 else 0.),-.27-abs(x)*.25),.25,side*24.) for j,x in enumerate((-.21,-.14,-.07,0.,.07,.14,.21)) for side in ((-1 if x<0 else 1),))
+  return tuple((f'{cluster} {j}',(side*.060,.99 if cluster=='neck' else .20,.04 if cluster=='neck' else -.22),(side*(.18 if cluster=='neck' else .25),1.27 if cluster=='neck' and j==1 else (1.19 if cluster=='neck' else .16),-.20 if cluster=='neck' and j==1 else (-.35 if cluster=='neck' else -.65)),.18,side*22.) for cluster in ('neck','rump') for j,side in enumerate((-1,0,1)))
+ return tuple((f'mantle {j}',(x,.99,.015),(x*4.5,1.35+(.13 if abs(x)<.10 else 0.),-.25-abs(x)*.25),.22,side*24.) for j,x in enumerate((-.16,-.105,-.05,0.,.05,.105,.16)) for side in ((-1 if x<0 else 1),))
+
+def ear_wedge(species,side):
+ adult=species=='typhlosion'
+ triangle=[(side*.09,1.255,.14),(side*.165,1.25,.14),(side*.18,1.375,.08)] if adult else [(side*.05,1.105,.09),(side*.105,1.10,.09),(side*.13,1.20,.035)]
+ depth=.022 if adult else .017
+ vertices=[(x,y,z+d) for d in (depth,-depth) for x,y,z in triangle]
+ faces=[(0,1,2),(5,4,3),(0,3,4,1),(1,4,5,2),(2,5,3,0)]
+ if side<0:faces=[tuple(reversed(face)) for face in faces]
+ return part('Ear / short rooted triangular midnight pinna '+str(side),COAT,vertices,faces)
 
 @lru_cache(maxsize=2)
 def anatomy(species):
  if species not in SPECIES:raise ValueError('unknown fire badger')
  adult=species=='typhlosion';p=[]
- profiles=[(.14,-.025,.075,.09),(.28,-.03,.24,.23),(.48,-.02,.28,.25),(.70,0.,.245,.205),(.88,.015,.20,.16),(1.03,.035,.16,.13),(1.12,.045,.10,.09)] if adult else [(-.65,.21,.02,.04),(-.55,.24,.16,.20),(-.36,.25,.20,.225),(-.12,.28,.19,.23),(.10,.34,.155,.205),(.24,.39,.08,.13)]
- body,whole_body=coat_sweep('Body',profiles,'y' if adult else 'z');p+=body
- hp=[(-.03,1.13,.09,.11),(.08,1.17,.185,.14),(.20,1.17,.19,.13),(.31,1.13,.165,.082),(.41,1.115,.115,.052),(.46,1.11,.030,.026)] if adult else [(.10,.41,.07,.10),(.23,.47,.15,.13),(.34,.48,.16,.13),(.45,.45,.13,.085),(.52,.43,.10,.055),(.56,.43,.042,.035)]
- head,whole_head=coat_sweep('Head',hp);p+=head
+ profiles=[(.05,-.06,.32,.17),(.16,-.09,.31,.22),(.36,-.07,.27,.24),(.61,-.015,.22,.22),(.83,.055,.19,.205),(.99,.11,.20,.18),(1.12,.16,.145,.14)] if adult else [(.07,-.08,.09,.09),(.16,-.10,.21,.18),(.34,-.11,.23,.19),(.54,-.07,.19,.17),(.75,.01,.145,.14),(.93,.07,.12,.12),(1.03,.08,.08,.08)]
+ body,whole_body=coat_sweep('Body',profiles,'y',fur_hem=adult);p+=body
+ hp=[(.015,1.15,.115,.12),(.12,1.205,.20,.145),(.245,1.215,.215,.11),(.34,1.14,.14,.065),(.39,1.075,.070,.026),(.415,1.065,.012,.014)] if adult else [(-.015,.99,.07,.08),(.06,1.045,.115,.115),(.16,1.06,.14,.11),(.25,1.055,.12,.08),(.31,1.04,.085,.052),(.34,1.038,.025,.025)]
+ mask_edges=list(zip([v[0] for v in hp],[.45,.80,.85,.70,.38,.10] if adult else [.35,.70,.85,.75,.40,.10]))
+ head,whole_head=coat_sweep('Head',hp,mask_edges=mask_edges);p+=head
  if adult:
-  p.append(bill('Jaw / rooted open cream badger mandible',CREAM,[(.055,.075,1.00,1.12),(.19,.12,.965,1.025),(.33,.11,.973,1.027),(.425,.055,1.01,1.055),(.447,.010,1.04,1.06)]))
-  p.append(ellipsoid('Tongue / seated pink badger tongue',PINK,(0,1.026,.28),(.061,.012,.065),22,12))
-  p.append(ellipsoid('Collar / broad rooted midnight shoulder fire socket',COAT,(0,.94,-.025),(.275,.105,.155),32,18))
+  p.append(bill('Jaw / rooted open cream badger mandible',CREAM,[(.08,.08,1.02,1.14),(.19,.12,.975,1.055),(.29,.105,.98,1.035),(.36,.055,1.015,1.045),(.405,.010,1.04,1.055)]))
+  p.append(ellipsoid('Tongue / seated pink badger tongue',PINK,(0,1.030,.29),(.050,.007,.040),22,12))
  else:
-  p.append(fitted('Lip / small closed cream ferret smile',INK,[(-.055,.403),(0.,.394),(.055,.403),(.052,.407),(0.,.399),(-.052,.407)],whole_head,.0025))
- nose=(0,1.124,.453) if adult else (0,.44,.558)
- p.append(ellipsoid('Nose / rooted soft charcoal badger nose',INK,nose,(.027,.017,.020) if adult else (.019,.012,.014),24,14))
+  p.append(fitted('Lip / small closed cream ferret smile',INK,[(-.050,1.015),(0.,1.005),(.050,1.015),(.046,1.020),(0.,1.012),(-.046,1.020)],whole_head,.0025))
+ nose=(0,1.069,.414) if adult else (0,1.044,.341)
+ p.append(ellipsoid('Nose / rooted soft charcoal badger nose',INK,nose,(.020,.012,.016) if adult else (.015,.010,.012),24,14))
  for side in (-1,1):
-  cx=side*(.105 if adult else .085);cy=1.218 if adult else .520
-  outline=[(cx+side*dx,cy+dy) for dx,dy in ((-.034,-.012),(.030,-.020),(.030,.022),(-.028,.034))]
-  socket=fitted('Eye socket / fitted angular badger gaze '+str(side),INK,outline,head[0],.004);p.append(socket)
+  cx=side*(.145 if adult else .083);cy=1.247 if adult else 1.095
+  outline=[(cx+side*dx,cy+dy) for dx,dy in (((-.038,-.012),(.036,.003),(.033,.031),(-.031,.009)) if adult else ((-.032,-.010),(.029,.002),(.027,.027),(-.025,.009)))]
+  socket=fitted('Eye socket / fitted angular badger gaze '+str(side),INK,outline,whole_head,.004);p.append(socket)
   ex=sum(x for x,y in outline)/4;ey=sum(y for x,y in outline)/4
   eye=fitted('Eye white / fitted ivory badger glare '+str(side),WHITE,[(ex+(x-ex)*.79,ey+(y-ey)*.68) for x,y in outline],socket,.0025);p.append(eye)
-  iris=fitted('Iris / fitted red badger iris '+str(side),RED,oval(ex,ey,.007,.009,20),eye,.0018);p.append(iris)
-  pupil=fitted('Pupil / fitted charcoal badger pupil '+str(side),INK,oval(ex,ey,.003,.006,16),iris,.0015);p.append(pupil)
-  p.append(fitted('Glint / fitted ivory badger reflection '+str(side),WHITE,oval(ex-side*.0007,ey+.0017,.0013,.0021,12),pupil,.0012))
-  root=(side*.115,1.235,.055) if adult else (side*.095,.515,.18)
-  p.append(curved_tube('Ear / short rooted triangular midnight pinna '+str(side),COAT,[root,(side*(.16 if adult else .135),root[1]+.050,root[2]-.025),(side*(.18 if adult else .15),root[1]+.055,root[2]-.060)],[.045,.032,.0015],20))
+  iris=fitted('Iris / fitted red badger iris '+str(side),RED,oval(ex,ey,.005,.005,20),eye,.0018);p.append(iris)
+  pupil=fitted('Pupil / fitted charcoal badger pupil '+str(side),INK,oval(ex,ey,.002,.003,16),iris,.0015);p.append(pupil)
+  p.append(fitted('Glint / fitted ivory badger reflection '+str(side),WHITE,oval(ex-side*.0004,ey+.0009,.0008,.0012,12),pupil,.0012))
+  p.append(ear_wedge(species,side))
   if adult:
-   p.append(curved_tube('Fang / rooted ivory upper badger tooth '+str(side),WHITE,[(side*.075,1.092,.30),(side*.075,1.07,.305),(side*.074,1.046,.313)],[.012,.009,.0015],14))
-   path,radii=arm_path(species,side);p.append(curved_tube('Arm / curved complete cream badger forelimb '+str(side),CREAM,path,radii,28));hx,hy,hz=path[-1]
-   p.append(ellipsoid('Hand / rooted cream badger palm '+str(side),CREAM,(hx,hy-.012,hz+.014),(.058,.052,.061),24,16))
-   for j,dx in enumerate((-.032,0.,.032)):
-    p.append(curved_tube('Finger / complete cream badger digit '+str(side)+' '+str(j),CREAM,[(hx+dx,hy-.023,hz+.046),(hx+dx*1.08,hy-.058,hz+.065),(hx+dx*1.1,hy-.069,hz+.085)],[.017,.014,.002],14))
-   p.append(ellipsoid('Haunch / strong rooted cream badger thigh '+str(side),CREAM,(side*.19,.20,0.),(.14,.18,.16),28,18))
-  for row in ((1,) if adult else (0,1)):
-   if adult:x,y,z=side*.21,.050,.14
+   p.append(curved_tube('Fang / rooted ivory upper badger tooth '+str(side),WHITE,[(side*.070,1.13,.30),(side*.070,1.105,.305),(side*.069,1.087,.31)],[.010,.007,.0015],14))
+   p.append(ellipsoid('Haunch / strong rooted cream badger thigh '+str(side),CREAM,(side*.24,.16,-.015),(.12,.14,.13),28,18))
+  path,radii=arm_path(species,side,0);p.append(curved_tube('Arm / curved complete cream badger forelimb '+str(side),CREAM,path,radii,28));hx,hy,hz=path[-1]
+  hand_scale=.85 if adult else .60
+  p.append(ellipsoid('Hand / rooted cream badger palm '+str(side),CREAM,(hx,hy-.012*hand_scale,hz+.014*hand_scale),tuple(v*hand_scale for v in (.058,.052,.061)),24,16))
+  for j,dx in enumerate((-.032,0.,.032)):
+   p.append(curved_tube('Finger / complete cream badger digit '+str(side)+' '+str(j),CREAM,[(hx+dx*hand_scale,hy-.023*hand_scale,hz+.046*hand_scale),(hx+dx*1.08*hand_scale,hy-.058*hand_scale,hz+.065*hand_scale),(hx+dx*1.1*hand_scale,hy-.069*hand_scale,hz+.085*hand_scale)],[v*hand_scale for v in (.017,.014,.002)],14))
+  for row in (1,):
+   if adult:x,y,z=side*.26,.045,.12
    else:
-    path,radii=arm_path(species,side,row);p.append(curved_tube('Leg / short rooted cream ferret support '+str(side)+' '+str(row),CREAM,path,radii,24));x,y,z=side*.18,.032,path[-1][2]+.025
+    path,radii=arm_path(species,side,row);p.append(curved_tube('Leg / short rooted cream ferret support '+str(side)+' '+str(row),CREAM,path,radii,24));x,y,z=side*.15,.032,-.015
    label=str(side)+' '+str(row)
-   p.append(ellipsoid('Foot / planted broad cream badger pad '+label,CREAM,(x,y,z),(.10,.050,.16) if adult else (.066,.032,.10),28,16))
+   p.append(ellipsoid('Foot / planted broad cream badger pad '+label,CREAM,(x,y,z),(.10,.045,.15) if adult else (.075,.032,.12),28,16))
    for j,dx in enumerate((-.05,0.,.05) if adult else (-.035,0.,.035)):
     p.append(curved_tube('Toe / blunt rooted cream badger digit '+label+' '+str(j),CREAM,[(x+dx,y,z+(.12 if adult else .075)),(x+dx,y*.65,z+(.17 if adult else .105))],[.024,.006] if adult else [.016,.004],14))
  for label,root,tip,width,twist in fire_specs(species):

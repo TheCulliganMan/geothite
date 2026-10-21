@@ -1,5 +1,10 @@
 # Tyranitar canonical skin
 
+The [October 21 reference and posture revision](tyranitar-fidelity.md)
+supersedes the historical shape, palette and metrics below. It replaces the
+bottle torso, projecting shins, long muzzle, central spine row and high curled
+tail with the current broader armored volume and planted stance.
+
 Tyranitar replaces the 1,552-vertex primitive assembly with an original armored
 sculpture and fourteen-joint canonical GLB. The background builder, direct
 sculpture CLI, strict logical reader and Rust dispatch use identical bytes.

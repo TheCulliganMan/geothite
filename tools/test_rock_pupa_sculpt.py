@@ -21,25 +21,26 @@ class RockPupaTests(unittest.TestCase):
    self.assertEqual(geometry_digest(m),geometry_digest(sculpture(s)));ps=m['primitives'];self.assertEqual(min(v for p in ps for v in p['positions'][1::3]),0.);self.assertAlmostEqual(max(v for p in ps for v in p['positions'][1::3]),HEIGHTS[s],places=6);self.assertLessEqual(sum(len(p['positions'])//3 for p in ps),20000);self.assertLessEqual(sum(len(p['indices'])//3 for p in ps),40000)
  def test_distinct_horned_biped_and_legless_segmented_pupa_anatomy(self):
   for s,m in self.models.items():
-   counts={'Body /':1,'Head /':1,'Eye socket /':2,'Horn /':1 if s=='larvitar' else 0,'Cheek tear /':2 if s=='larvitar' else 0,'Tail prong /':3 if s=='larvitar' else 0,'Arm /':2 if s=='larvitar' else 0,'Hand /':2 if s=='larvitar' else 0,'Finger /':6 if s=='larvitar' else 0,'Foot /':2 if s=='larvitar' else 0,'Toe /':6 if s=='larvitar' else 0,'Crown spike /':3 if s=='pupitar' else 0,'Side spike /':6 if s=='pupitar' else 0,'Shell seam /':3 if s=='pupitar' else 0,'Back seam /':3 if s=='pupitar' else 0,'Tail keel /':1 if s=='pupitar' else 0,'Back spike /':0}
+   counts={'Body /':1,'Head /':1,'Eye socket /':2,'Horn /':1 if s=='larvitar' else 0,'Cheek tear /':2 if s=='larvitar' else 0,'Tail prong /':6 if s=='larvitar' else 0,'Tail hub /':1 if s=='larvitar' else 0,'Back vent /':2 if s=='larvitar' else 0,'Arm /':2 if s=='larvitar' else 0,'Hand /':0,'Finger /':0,'Foot /':2 if s=='larvitar' else 0,'Toe /':6 if s=='larvitar' else 0,'Crown spike /':3 if s=='pupitar' else 0,'Side spike /':6 if s=='pupitar' else 0,'Shell seam /':3 if s=='pupitar' else 0,'Back seam /':3 if s=='pupitar' else 0,'Tail keel /':1 if s=='pupitar' else 0,'Back spike /':0}
    for prefix,n in counts.items():self.assertEqual(sum(p['part'].startswith(prefix) for p in m['primitives']),n,(s,prefix))
  def test_skulls_and_all_crown_points_have_occupied_volume_roots(self):
   for s,m in self.models.items():
    head=self.find(s,'Head /');self.assertTrue(occupied_overlap(head,self.find(s,'Body /')),s)
    for p in m['primitives']:
     if p['part'].startswith(('Horn /','Crown spike /')):self.assertTrue(occupied_overlap(p,head),p['part'])
- def test_larva_complete_forelimbs_fingers_and_hind_supports_are_rooted(self):
+ def test_larva_tapered_forelimbs_and_hind_supports_are_rooted(self):
   if 'larvitar' not in self.models:return
   s='larvitar'
   for side in (-1,1):
-   for child,parent in [('Arm /','Body /'),('Hand /','Arm /'),('Thigh /','Body /'),('Foot /','Thigh /')]:self.assertTrue(occupied_overlap(self.find(s,child,side),self.find(s,parent,None if parent=='Body /' else side)),(child,side))
+   for child,parent in [('Arm /','Body /'),('Thigh /','Body /'),('Foot /','Thigh /')]:self.assertTrue(occupied_overlap(self.find(s,child,side),self.find(s,parent,None if parent=='Body /' else side)),(child,side))
    self.assertAlmostEqual(min(self.find(s,'Foot /',side)['positions'][1::3]),0.,places=7)
    for j in range(3):
-    for child,parent in [('Finger /','Hand /'),('Toe /','Foot /')]:self.assertTrue(occupied_overlap(self.find(s,child,f'{side} {j}'),self.find(s,parent,side)),(child,side,j))
- def test_larva_heavy_tail_and_all_three_fan_points_have_roots(self):
+    self.assertTrue(occupied_overlap(self.find(s,'Toe /',f'{side} {j}'),self.find(s,'Foot /',side)),(side,j))
+ def test_larva_short_tail_hub_and_all_six_radial_points_have_roots(self):
   if 'larvitar' not in self.models:return
   s='larvitar';tail=self.find(s,'Tail /');self.assertTrue(occupied_overlap(tail,self.find(s,'Body /')))
-  for j in range(3):self.assertTrue(occupied_overlap(self.find(s,'Tail prong /',j),tail),j)
+  hub=self.find(s,'Tail hub /');self.assertTrue(occupied_overlap(hub,tail))
+  for j in range(6):self.assertTrue(occupied_overlap(self.find(s,'Tail prong /',j),hub),j)
  def test_pupa_all_side_points_and_lower_fold_have_roots(self):
   if 'pupitar' not in self.models:return
   s='pupitar';self.assertTrue(occupied_overlap(self.find(s,'Tail keel /'),self.find(s,'Body /')))
@@ -48,7 +49,7 @@ class RockPupaTests(unittest.TestCase):
  def pairs(self,s):
   for p in self.models[s]['primitives']:
    n=p['part'];side=n.split()[-1];parent=None
-   if n.startswith('Back seam /'):yield reverse_front(p),reverse_front(self.find(s,'Body /'));continue
+   if n.startswith(('Back seam /','Back vent /')):yield reverse_front(p),reverse_front(self.find(s,'Body /'));continue
    for prefix,base in [('Belly /','Body /'),('Lip /','Head /'),('Cheek tear /','Head /'),('Nostril /','Head /'),('Body vent /','Body /'),('Shell seam /','Body /'),('Eye socket /','Head /'),('Eye white /','Eye socket /'),('Iris /','Eye white /'),('Pupil /','Iris /'),('Glint /','Pupil /')]:
     if n.startswith(prefix):parent=self.find(s,base,side if base in ('Eye socket /','Eye white /','Iris /','Pupil /') else None)
    if parent:yield p,parent

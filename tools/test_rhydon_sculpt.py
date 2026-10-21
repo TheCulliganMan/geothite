@@ -5,6 +5,7 @@ from pathlib import Path
 from rhydon_sculpt import anatomy,sculpture,HEIGHT
 from sculpt_geometry import translate
 from sculpt_test_support import assert_closed_models,assert_model_shading
+from sculpt_test_support import indexed_ray_intersections as rays
 from test_kingdra_sculpt import crossed_faces
 from test_steelix_sculpt import occupied
 from steelix_sculpt import block,INK
@@ -63,10 +64,19 @@ class RhydonTests(unittest.TestCase):
  def test_fitted_face_centers_and_edges_clear_actual_parent(self):attachments.NidorinaTests.test_fitted_face_centers_and_edges_clear_parent(self)
  def test_curved_horn_tail_and_claws_are_uncrossed(self):
   for p in self.ps:
-   if p['part'].startswith(('Horn /','Horn spiral /','Tail /','Hand claw /','Foot claw /')):self.assertIsNone(crossed_faces(p),p['part'])
+   if p['part'].startswith(('Horn /','Horn spiral /','Tail /','Hand claw /','Foot claw /','Arm /','Leg /','Cheek armor /')):self.assertIsNone(crossed_faces(p),p['part'])
  def aperture_points(self):
-  raw=anatomy();lo=min(v for p in raw for v in p['positions'][1::3]);hi=max(v for p in raw for v in p['positions'][1::3]);scale=HEIGHT/(hi-lo)
-  return [(x*scale,(y-lo)*scale,z*scale) for x in (-.04,0,.04) for y in (1.00,1.02) for z in (.43,.46)]
+  # Locate the current lips from stored vertical ray hits. Former world-space
+  # probes can test empty air when a muzzle is shortened or its jaw raised.
+  upper=self.find('Muzzle /');lower=self.find('Jaw /')
+  def vertical(p):return dict(p,positions=[v for x,y,z in zip(p['positions'][::3],p['positions'][1::3],p['positions'][2::3]) for v in (x,z,y)])
+  up,down=vertical(upper),vertical(lower);front=max(upper['positions'][2::3]);points=[]
+  for x in (-.035*HEIGHT,0.,.035*HEIGHT):
+   for z in (front*.72,front*.79):
+    a=rays(down,x,z);b=rays(up,x,z);self.assertTrue(a and b,(x,z,'missing actual lip'))
+    floor=max(a);ceiling=min(b);self.assertGreater(ceiling-floor,.006*HEIGHT)
+    points += [(x,floor+(ceiling-floor)*t,z) for t in (.65,.85)]
+  return points
  def test_open_jaw_has_an_actual_unoccupied_aperture(self):
   for point in self.aperture_points():self.assertFalse(any(occupied(p,point) for p in self.ps),point)
  def test_filled_jaw_negative_is_rejected(self):

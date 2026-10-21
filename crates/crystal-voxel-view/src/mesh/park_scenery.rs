@@ -28,7 +28,11 @@ fn applies(map: &str, object: &Object) -> bool {
             .as_ref()
             .is_none_or(|maps| maps.iter().any(|m| m == map))
 }
-pub(super) fn profile_owns_source(map: &str, s: &VisualTileSource, document: Option<&Document>) -> bool {
+pub(super) fn profile_owns_source(
+    map: &str,
+    s: &VisualTileSource,
+    document: Option<&Document>,
+) -> bool {
     document.is_some_and(|d| {
         d.objects.iter().any(|o| {
             applies(map, o)
@@ -148,22 +152,21 @@ pub(super) fn append(
         }
     };
     if pond {
-        park_fountain_basin::append(
+        park_fountain_basin::append_pond(
             &mut mesh.solid,
             [(bounds[0] + bounds[1]) * 0.5, (bounds[2] + bounds[3]) * 0.5],
             [(bounds[1] - bounds[0]) * 0.5, (bounds[3] - bounds[2]) * 0.5],
-            base, base + rise * scale, g.tile_height,
-        );
-        park_fountain_basin::append_spray(
-            &mut mesh.solid,
-            [(bounds[0] + bounds[1]) * 0.5, (bounds[2] + bounds[3]) * 0.5],
-            [(bounds[1] - bounds[0]) * 0.5, (bounds[3] - bounds[2]) * 0.5],
-            base + rise * scale - g.tile_height * 0.125,
+            base,
             g.tile_height,
         );
+    } else if p.kind == Kind::PedestalFountain {
+        park_fountain_basin::append_pedestal(&mut mesh.solid, bounds, g.tile_height);
     } else {
         crate::park_scenery_models::model(p.kind.asset_index()).append_fitted(
-            &mut mesh.solid, bounds, base, rise * scale,
+            &mut mesh.solid,
+            bounds,
+            base,
+            rise * scale,
         );
     }
     for i in p.indices(g.width) {
@@ -245,7 +248,10 @@ mod tests {
             let mut mesh = TerrainMeshData::default();
             mesh.authored_cells = vec![None; tiles.len()];
             assert!(append(&mut mesh, &cells, &g, &placements[0], &mut claimed));
-            assert_eq!(claimed.iter().filter(|&&v| v).count(), if pond { 12 } else { 4 });
+            assert_eq!(
+                claimed.iter().filter(|&&v| v).count(),
+                if pond { 12 } else { 4 }
+            );
             assert!(mesh.solid.positions.len() > 100);
             assert!(
                 mesh.solid
@@ -276,8 +282,18 @@ mod tests {
                         .into_iter()
                         .collect()
                 );
-                assert!(mesh.solid.positions.iter().any(|p| p[1] == crate::profile::WATER_HEIGHT + 6.));
-                assert!(mesh.solid.positions.iter().any(|p| p[1] == crate::profile::WATER_HEIGHT + 5.));
+                assert!(
+                    mesh.solid
+                        .positions
+                        .iter()
+                        .any(|p| p[1] == crate::profile::WATER_HEIGHT + 6.)
+                );
+                assert!(
+                    mesh.solid
+                        .positions
+                        .iter()
+                        .any(|p| p[1] == crate::profile::WATER_HEIGHT + 5.)
+                );
                 assert!(
                     resolve(
                         "SafariZoneBeta",
@@ -297,6 +313,53 @@ mod tests {
             assert_eq!(before, mesh.solid.positions.len());
         }
     }
+    #[test]
+    fn park_pool_finish_keeps_the_source_plane_and_registered_center_while_scrolling() {
+        let (tiles, mut g) = fixture(true);
+        let cells: Vec<_> = tiles.iter().collect();
+        let mut previous_uvs = None;
+        for origin in [[0., 0.], [-8., -16.]] {
+            g.origin_x = origin[0];
+            g.origin_z = origin[1];
+            let mut claimed = vec![false; tiles.len()];
+            let placements = resolve("NationalPark", &cells, &g, [0, 0], None, &claimed);
+            let mut mesh = TerrainMeshData {
+                authored_cells: vec![None; tiles.len()],
+                footing_heights: vec![crate::profile::WATER_HEIGHT; tiles.len()],
+                ..Default::default()
+            };
+            assert!(park_fountain_basin::pool_center(&cells, &g, &mesh.authored_cells).is_none());
+            assert!(append(&mut mesh, &cells, &g, &placements[0], &mut claimed));
+            for (i, cell) in cells.iter().enumerate() {
+                if cell.source.tile_index == 0x14 {
+                    append_top(
+                        &mut mesh.textured,
+                        g.bounds(i % g.width, i / g.width).into(),
+                        crate::profile::WATER_HEIGHT,
+                        g.uv(i % g.width, i / g.width),
+                    );
+                }
+            }
+            let plane = mesh.textured.positions.clone();
+            let claims = mesh.authored_cells.clone();
+            let first = mesh.solid.positions.len();
+            new_bark::polish_world_surfaces(&mut mesh, "NationalPark", &cells, &g, [0, 0]);
+            assert_eq!(&mesh.solid.positions[first..], plane);
+            assert!(mesh.textured.positions.is_empty());
+            assert_eq!(mesh.authored_cells, claims);
+            assert_eq!(
+                mesh.footing_heights,
+                vec![crate::profile::WATER_HEIGHT; tiles.len()]
+            );
+            let uvs = mesh.solid.uvs[first..].to_vec();
+            assert!(uvs.iter().all(|uv| (61900. ..62100.).contains(&uv[0])));
+            if let Some(previous) = previous_uvs {
+                assert_eq!(uvs, previous);
+            }
+            previous_uvs = Some(uvs);
+        }
+    }
+
     #[test]
     fn incomplete_custom_park_profiles_and_backing_overrides_take_priority() {
         let (tiles, g) = fixture(false);

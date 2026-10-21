@@ -253,7 +253,10 @@ joint.bind,),
             inverse_bindposes: bindposes,
             joints: joints.clone(),
         },
-        Aabb::from_min_max(rig.animated_bounds.0, rig.animated_bounds.1),
+        {
+            let (min, max) = crate::species_rig::motion::battle_bounds(rig);
+            Aabb::from_min_max(min, max)
+        },
     ));
     SkinnedActor {
         rig,

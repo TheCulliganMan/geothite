@@ -1,5 +1,8 @@
 # Geodude sculpture and skin
 
+The [October 20 reference and posture revision](crocodile-geodude-fidelity.md)
+replaces the clenched hands, neutral shape, counts and pin described below.
+
 Geodude has an original faceted rock body and eight-joint glTF skin. Its
 canonical runtime source is `crates/crystal-voxel-view/models/battle_species/geodude.glb`.
 `tools/geodude_sculpt.py` authors the geometry; `tools/geodude_glb.py` supplies

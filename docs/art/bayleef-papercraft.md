@@ -1,5 +1,9 @@
 # Bayleef papercraft sculpture and animation
 
+The [October 21 family fidelity revision](grass-starter-fidelity.md) supersedes
+the historical shape and count notes below with a fuller neck/skull, broad
+folded collar leaves, centered crown, rising tail and current verification.
+
 Bayleef replaces its separate spherical body pieces, floating face, diamond
 crown and flat collar with a connected long-neck quadruped, fitted facial
 panels, a notched folded canopy and curled collar buds. The tapered tail and

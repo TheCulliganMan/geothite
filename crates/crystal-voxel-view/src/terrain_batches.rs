@@ -647,7 +647,7 @@ pub(super) fn separate_authentic_domains(
 /// Preserve complete indexed triangles, their corner attributes and cutaway
 /// eligibility. A long triangle is assigned once and its actual full bounds
 /// participate in culling, including portions outside the nominal grid cell.
-fn partition(source: SurfaceMeshData, tile_size: Vec2) -> Vec<SurfaceMeshData> {
+pub(super) fn partition(source: SurfaceMeshData, tile_size: Vec2) -> Vec<SurfaceMeshData> {
     // Browsers retain the existing memory policy until separately measured.
     #[cfg(target_arch = "wasm32")]
     let cache_buckets = false;

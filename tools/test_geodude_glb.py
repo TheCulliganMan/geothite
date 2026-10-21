@@ -4,7 +4,7 @@ import math
 from pathlib import Path
 import unittest
 import geodude_glb as author
-from sculpt_test_support import assert_closed_models,assert_model_shading
+from sculpt_test_support import assert_closed_models,assert_model_shading,parts_overlap,indexed_ray_intersections
 from skin_glb_test_support import IDENTITY
 from test_gengar_glb import Model,winding_alignment
 ASSET=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/geodude.glb'
@@ -14,16 +14,16 @@ class GeodudeTests(unittest.TestCase):
     def setUpClass(cls):cls.blob=ASSET.read_bytes();cls.m=Model(cls.blob)
     def test_canonical_single_source_and_bounded_schema(self):
         self.assertEqual(self.blob,author.export_geodude())
-        self.assertEqual(len(self.m.parts),29)
-        self.assertEqual(sum(len(v) for v in self.m.vertices),12179)
-        self.assertEqual(sum(len(v)//3 for v in self.m.indices),15352)
+        self.assertEqual(len(self.m.parts),28)
+        self.assertEqual(sum(len(v) for v in self.m.vertices),11598)
+        self.assertEqual(sum(len(v)//3 for v in self.m.indices),13932)
         self.assertLess(len(self.blob),1024*1024)
         self.assertLessEqual(len(self.m.doc['accessors']),256)
         self.assertFalse(ASSET.with_suffix('.mesh.json').exists())
     def test_closed_outward_solids_and_smooth_normals(self):
         m=self.m.neutral_model();assert_closed_models(self,{'geodude':m});assert_model_shading(self,{'geodude':m})
     def test_anatomy_and_physical_height(self):
-        for prefix,count in [('Upper arm /',2),('Forearm /',2),('Fist /',2),('Knuckle /',8),('Thumb /',2)]:
+        for prefix,count in [('Upper arm /',2),('Forearm /',2),('Hand /',2),('Finger /',8),('Thumb /',2)]:
             self.assertEqual(sum(n.startswith(prefix) for n in self.m.names),count,prefix)
         points=[p for v in self.m.vertices for p in v]
         self.assertEqual(min(p[1] for p in points),0.)
@@ -57,13 +57,39 @@ class GeodudeTests(unittest.TestCase):
                             for a,b in zip(tri,tri[1:]+tri[:1]):
                                 ratio=math.dist(posed[a],posed[b])/math.dist(m.vertices[p][a],m.vertices[p][b])
                                 self.assertTrue(.7<ratio<1.3,(clip,step,m.names[p],ratio))
-    def test_fists_have_rigid_owners_and_delayed_response(self):
+    def test_open_hands_have_rigid_owners_and_delayed_response(self):
         m=self.m
         for p,name in enumerate(m.names):
-            if name.startswith(('Fist /','Knuckle /','Thumb /','Fist fold /')):
+            if name.startswith(('Hand /','Finger /','Thumb /')):
                 owner=4 if sum(v[0] for v in m.vertices[p])<0 else 7
                 self.assertTrue(all(ids==[owner,0,0,0] for ids in m.ids[p]))
         self.assertGreater(m.rotations('attack',.28)[4][0],m.rotations('attack',.18)[4][0])
+    def test_boulder_depth_and_carved_mouth_are_real_geometry(self):
+        body=self.m.neutral_model()['primitives'][0]
+        ext=[max(body['positions'][i::3])-min(body['positions'][i::3]) for i in range(3)]
+        self.assertGreater(ext[2]/ext[0],.84)
+        lower,upper=min(body['positions'][1::3]),max(body['positions'][1::3])
+        lip=max(indexed_ray_intersections(body,0.,lower+(upper-lower)*.325))
+        forehead=max(indexed_ray_intersections(body,0.,lower+(upper-lower)*.50))
+        self.assertGreater(forehead-lip,.050)
+    def test_fingers_splay_and_all_limb_roots_remain_occupied(self):
+        m=self.m;ps=m.neutral_model()['primitives'];pairs=[]
+        def find(prefix,side):return next(i for i,n in enumerate(m.names) if n.startswith(prefix) and n.endswith(' '+str(side)))
+        for side in (-1,1):
+            upper,forearm,hand,thumb=[find(p,side) for p in ('Upper arm /','Forearm /','Hand /','Thumb /')]
+            pairs.extend(((upper,0),(forearm,upper),(hand,forearm),(thumb,hand)))
+            fingers=[i for i,n in enumerate(m.names) if n.startswith('Finger /') and n.split()[-2]==str(side)]
+            tips=[max(p[1] for p in m.vertices[i]) for i in fingers]
+            self.assertEqual(len(fingers),4);self.assertGreater(max(tips)-min(tips),.10)
+            for i in fingers:pairs.append((i,hand))
+        boulder_top=max(p[1] for p in m.vertices[0])
+        hand_top=max(p[1] for i,n in enumerate(m.names) if n.startswith(('Hand /','Finger /','Thumb /')) for p in m.vertices[i])
+        self.assertLess(hand_top,boulder_top-.02)
+        for clip in m.clips:
+            for t in (0.,.18,.31,.67,.83):
+                mats=m.matrices(clip,t)
+                posed=[dict(p,positions=sum(m.posed(i,mats),[])) for i,p in enumerate(ps)]
+                for a,b in pairs:self.assertTrue(parts_overlap(posed[a],posed[b]),(clip,t,m.names[a],m.names[b]))
     def test_neutral_endpoints_and_early_torso_brace(self):
         m=self.m
         for clip in m.clips:

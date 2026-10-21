@@ -4,7 +4,7 @@ import argparse,hashlib,json,math,struct
 from pathlib import Path
 from functools import lru_cache
 from sheep_sculpt import sculpture as sheep_sculpture,HEIGHT as SHEEP_HEIGHTS
-from ampharos_sculpt import sculpture as ampharos_sculpture,HEIGHT as AMPHAROS_HEIGHT
+from ampharos_sculpt import sculpture as ampharos_sculpture,HEIGHT as AMPHAROS_HEIGHT,TAIL_POINTS as AMPHAROS_TAIL
 SPECIES=('mareep','flaaffy','ampharos');HEIGHTS={**SHEEP_HEIGHTS,'ampharos':AMPHAROS_HEIGHT}
 def sculpture(species,normalize=True):
  if species not in SPECIES:raise ValueError('unknown electric sheep species')
@@ -19,7 +19,7 @@ def geometry_digest(model):
 
 @lru_cache(maxsize=3)
 def authoring_model(species):return sculpture(species)
-REST_DIGESTS={'mareep': '058c61bce99e43bc24f2bf17a0cabe8bb62a0a6475fcefcd081d34cf9f580c8d', 'flaaffy': 'eaabe519c0cb6edfa85b9b9ddc5a9b1ca5f5a4fa3bbdedfe948dc57bb68bb8d6', 'ampharos': '415ea89d9f82cd86b510cb8d455cf9625022765f8475c4cea4dc76f50b0cc765'}
+REST_DIGESTS={'mareep': '058c61bce99e43bc24f2bf17a0cabe8bb62a0a6475fcefcd081d34cf9f580c8d', 'flaaffy': 'eaabe519c0cb6edfa85b9b9ddc5a9b1ca5f5a4fa3bbdedfe948dc57bb68bb8d6', 'ampharos': '13e65280ca33d0abb8b01b6783c554a9a2aa0cf3f497d5db4c0fc434bc1d9404'}
 PARTS={species:tuple(p['part'] for p in authoring_model(species)['primitives']) for species in SPECIES}
 BODY_REFERENCE_HEIGHTS=HEIGHTS.copy()
 MAX_BYTES=1024*1024
@@ -33,7 +33,7 @@ def normalized(species,point):
 
 TAILS={'mareep':((0.,.28,-.22),(0.,.30,-.39),(.055,.40,-.53),(.085,.54,-.59),(.09,.67,-.58)),
  'flaaffy':((0.,.28,-.22),(0.,.30,-.39),(.055,.40,-.53),(.085,.54,-.59),(.09,.67,-.58)),
- 'ampharos':((0.,.225,-.156),(.014,.245,-.29),(.029,.282,-.42),(.042,.35,-.52),(.052,.433,-.58),(.06,.49,-.601))}
+ 'ampharos':AMPHAROS_TAIL}
 def joints(species):
  raw=[('root',None,(0.,0.,0.)),('torso',0,(0.,.405,-.11) if species=='mareep' else (0.,.32,-.026) if species=='flaaffy' else (0.,.40,-.01)),
   ('neck',1,(0.,.45,.24) if species=='mareep' else (0.,.66,.025) if species=='flaaffy' else (0.,.71,-.01)),
@@ -41,7 +41,7 @@ def joints(species):
  if species!='ampharos':
   for side in (-1,1):raw.append(('ear_'+('left' if side<0 else 'right'),3,(side*.13,.705 if species=='mareep' else .883,.115)))
  if species!='mareep':
-  for side in (-1,1):raw.append(('arm_'+('left' if side<0 else 'right'),1,(side*.16,.55,.03) if species=='flaaffy' else (side*.18,.625,-.01)))
+  for side in (-1,1):raw.append(('arm_'+('left' if side<0 else 'right'),1,(side*.16,.55,.03) if species=='flaaffy' else (side*.18,.70,-.01)))
  path=TAILS[species];base=len(raw);raw.extend((('tail_base',1,path[0]),('tail_bend',base,path[2] if species!='ampharos' else path[3]),('tail_beacon',base+1,path[-1])))
  for side in (-1,1):
   if species=='mareep':
@@ -57,15 +57,21 @@ def path_fraction(point,path):
   delta=[y-x for x,y in zip(a,b)];t=max(0.,min(1.,sum((p-x)*d for p,x,d in zip(point,a,delta))/(length*length)))
   best=min(best,(math.dist(point,[x+t*d for x,d in zip(a,delta)]),(offset+t*length)/total));offset+=length
  return best[1]
-def body_weights(species,y):
+def body_weights(species,y,z=0.):
  if species=='mareep':a=smoothstep(.45,.48,y);b=smoothstep(.48,.53,y)
  elif species=='flaaffy':a=smoothstep(.53,.65,y);b=smoothstep(.70,.77,y)
- else:a=smoothstep(.65,.83,y);b=smoothstep(.94,1.015,y)
+ else:
+  a=smoothstep(.65,.83,y)
+  # The dropped muzzle is ahead of the neck even below its upper ring.
+  # Keep that tissue on the head while retaining the neck's own articulation.
+  b=max(smoothstep(.94,1.015,y),smoothstep(.14,.22,z)*smoothstep(.85,.90,y))
  return [1,2,3,0],[1.-a,a*(1.-b),a*b,0.]
 def skin_weights(species,part,position):
  low,span=authoring_transform(species);b=BANKS[species]
  raw=tuple(v*span/HEIGHTS[species]+(low if i==1 else 0.) for i,v in enumerate(position));x,y,z=raw
  if part.startswith(('Foot /','Toe /')):return [0,0,0,0],[1.,0.,0.,0.]
+ if species=='ampharos' and part.startswith('Haunch /'):
+  a=smoothstep(.11,.34,y);return [0,1,0,0],[1.-a,a,0.,0.]
  if part.startswith('Leg /'):
   if species=='mareep':
    side,row=part.split()[-2:];owner=b['leg_'+('left' if side=='-1' else 'right')+('_front' if row=='0' else '_rear')]
@@ -78,14 +84,14 @@ def skin_weights(species,part,position):
   side=part.split()[-3];owner=b['ear_left' if side=='-1' else 'ear_right'];a=smoothstep(.13,.26,abs(x))
   return [3,owner,0,0],[1.-a,a,0.,0.]
  if part.startswith(('Arm /','Flipper /')):
-  owner=b['arm_left' if part.endswith('-1') else 'arm_right'];a=smoothstep(.16,.32,abs(x)) if species=='flaaffy' else smoothstep(0.,1.,(.625-y)/.265)
+  owner=b['arm_left' if part.endswith('-1') else 'arm_right'];a=smoothstep(.16,.32,abs(x)) if species=='flaaffy' else smoothstep(0.,1.,(.70-y)/.235)
   return [1,owner,0,0],[1.-a,a,0.,0.]
  if part.startswith(('Tail / round','Tail / ivory','Tail / ruby','Tail / quiet')):return [b['tail_beacon'],0,0,0],[1.,0.,0.,0.]
  if part.startswith('Tail /'):
   t=path_fraction(raw,TAILS[species]);a=smoothstep(0.,.25,t);c=smoothstep(.65,.90,t);d=smoothstep(.25,.70,t)
   return [1,b['tail_base'],b['tail_bend'],b['tail_beacon']],[1.-a,a*(1.-d),a*d*(1.-c),a*d*c]
  if species=='mareep' and part.startswith('Fleece /'):return [1,0,0,0],[1.,0.,0.,0.]
- return body_weights(species,y)
+ return body_weights(species,y,z)
 def pose_angles(species,clip,t):
  if species not in SPECIES or clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid electric sheep clip/time')
  if t in (0.,1.):return [(0.,0.,0.)]*len(JOINTS[species])

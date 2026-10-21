@@ -453,7 +453,8 @@ fn field_object_prompt_label(
         &runtime_shell.asset_root, visible_sprite,
         &snapshot.script_events.variable_sprites, &snapshot.presentation.menu_icons,
     );
-    let source = visible_map_object_model_source_id(
+    let source = visible_map_object_model_source_from_data(
+        runtime_shell.shell.runtime().data(),
         &snapshot.overworld.map_name, object, visible_sprite, &bitmap,
         &snapshot.script_events.variable_sprites, &snapshot.presentation.menu_icons,
     );

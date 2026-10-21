@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Independent stored Snorlax topology and articulated anatomy checks."""
-import math
+import os,math
 from pathlib import Path
 import unittest
 import snorlax_glb as author
 from sculpt_test_support import assert_closed_models,assert_model_shading
 from skin_glb_test_support import IDENTITY
 from test_gengar_glb import Model,winding_alignment
-ASSET=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/snorlax.glb'
+ASSET=Path(os.environ.get('SNORLAX_GLB',str(Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/snorlax.glb')))
 
 class SnorlaxTests(unittest.TestCase):
     @classmethod
@@ -15,8 +15,8 @@ class SnorlaxTests(unittest.TestCase):
     def test_canonical_single_source_and_bounded_schema(self):
         self.assertEqual(self.blob,author.export_snorlax())
         self.assertEqual(len(self.m.parts),31)
-        self.assertEqual(sum(len(v) for v in self.m.vertices),13680)
-        self.assertEqual(sum(len(v)//3 for v in self.m.indices),21820)
+        self.assertEqual(sum(len(v) for v in self.m.vertices),9905)
+        self.assertEqual(sum(len(v)//3 for v in self.m.indices),17584)
         self.assertLess(len(self.blob),1024*1024)
         self.assertLessEqual(len(self.m.doc['accessors']),256)
         self.assertFalse(ASSET.with_suffix('.mesh.json').exists())
@@ -28,7 +28,8 @@ class SnorlaxTests(unittest.TestCase):
         points=[p for v in self.m.vertices for p in v]
         self.assertEqual(min(p[1] for p in points),0.)
         self.assertAlmostEqual(max(p[1] for p in points),1.40,places=6)
-        self.assertGreater(max(p[0] for p in points)-min(p[0] for p in points),1.6)
+        body=self.m.vertices[self.m.names.index('Body / continuous broad seated sleeping bear')]
+        self.assertGreater(max(p[0] for p in body)-min(p[0] for p in body),1.20)
         for i,name in enumerate(self.m.names):
             if name.startswith('Ear /'):
                 self.assertLess(max(p[1] for p in self.m.vertices[i])-min(p[1] for p in self.m.vertices[i]),.24)

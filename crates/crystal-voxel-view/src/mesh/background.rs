@@ -2,8 +2,8 @@
 //!
 //! The host publishes actual neighboring map data around the viewport. A
 //! pitched camera can still see beyond that finite grid, however. This apron
-//! repeats the dominant level-ground source underneath the real
-//! mesh. It is presentation-only: it creates no walls, footing, collision, or
+//! continues verified ground or open coastal water beneath the real mesh.
+//! It is presentation-only: it creates no walls, footing, collision, or
 //! inferred topology.
 
 use super::*;
@@ -14,31 +14,37 @@ use super::*;
 const BACKGROUND_APRON_TILES: isize = 96;
 #[cfg(test)]
 const METATILE_PERIOD: usize = 4;
-const BACKGROUND_HEIGHT: f32 = -0.04;
+pub(super) const BACKGROUND_HEIGHT: f32 = -0.04;
 
 pub(super) fn append_repeating_background_apron(
     mesh: &mut TerrainMeshData,
     geometry: &GridGeometry,
     cells: &[&VisualTile],
     shapes: &[CellShape],
-) {
+    map: &str,
+) -> SurfaceMeshData {
     // Small synthetic grids are used throughout the mesher's exact-geometry
     // tests. The real optional host frame includes its connected-map halo and
     // is at least 40x38 cells.
     if geometry.width < 40 || geometry.height < 38 {
-        return;
+        return SurfaceMeshData::default();
     }
     let width = geometry.width as isize;
     let height = geometry.height as isize;
+    let water = dominant_coastal_water_source(geometry.width, geometry.height, cells, shapes, map);
+    let edges = water.map(|p| [Some(p); 4]).unwrap_or_else(||
+        coastal_edge_water_sources(geometry.width, geometry.height, cells, shapes, map));
+    if edges.iter().any(Option::is_some) {
+        return append_coastal_background(mesh, geometry, cells, shapes, edges);
+    }
     let Some((background_column, background_row)) =
         dominant_flat_source(geometry.width, geometry.height, cells, shapes)
     else {
-        return;
+        return SurfaceMeshData::default();
     };
 
     if mesh.tree_cache.is_some() {
-        // The apron repeats one existing source tile. Four planar strips with
-        // repeat UVs preserve every texel without one quad per repeated tile.
+        // Four planar strips avoid one quad per repeated tile.
         let apron = BACKGROUND_APRON_TILES;
         let mut surface = SurfaceMeshData::default();
         for [left, right, top, bottom] in [
@@ -61,6 +67,7 @@ pub(super) fn append_repeating_background_apron(
         }
         mesh.background = Some(RepeatingBackground {
             mesh: surface,
+            source_cell: [background_column, background_row],
             source: cells[background_row * geometry.width + background_column]
                 .source
                 .clone(),
@@ -68,7 +75,7 @@ pub(super) fn append_repeating_background_apron(
                 .texture
                 .clone(),
         });
-        return;
+        return SurfaceMeshData::default();
     }
 
     for row in -BACKGROUND_APRON_TILES..height + BACKGROUND_APRON_TILES {
@@ -87,6 +94,81 @@ pub(super) fn append_repeating_background_apron(
             );
         }
     }
+    SurfaceMeshData::default()
+}
+
+fn coastal_continuation_map(map: &str) -> bool {
+    crate::environment_fx::coastal_map(map)
+        || matches!(map, "Route12" | "Route13" | "Route14" | "Route15"
+            | "CinnabarIsland" | "VermilionCity" | "PalletTown"
+            | "OlivinePort" | "VermilionPort")
+}
+
+/// A land-heavy coastal frame can still have a complete open-water edge.
+/// Keep the other edges dry; neither an inland pond nor a still drawing is
+/// evidence that the landscape beyond the source grid should become sea.
+fn coastal_edge_water_sources(width: usize, height: usize, cells: &[&VisualTile],
+    shapes: &[CellShape], map: &str) -> [Option<(usize, usize)>; 4] {
+    if !coastal_continuation_map(map) { return [None; 4]; }
+    std::array::from_fn(|side| {
+        let length = if side < 2 { width } else { height };
+        let index = |j| match side {
+            0 => j, 1 => (height-1)*width+j,
+            2 => j*width, _ => j*width+width-1,
+        };
+        let wet = |i: usize| !cells[i].priority && shapes[i] == CellShape::Water
+            && crate::cave_water::role_for_map(cells[i], map) == [255, 0];
+        if (0..length).filter(|&j| wet(index(j))).count()*2 <= length { return None; }
+        (0..length).map(index).find(|&i| wet(i)).map(|i| (i%width,i/width))
+    })
+}
+
+fn append_coastal_background(mesh: &mut TerrainMeshData, g: &GridGeometry,
+    cells: &[&VisualTile], shapes: &[CellShape], edges: [Option<(usize, usize)>; 4])
+    -> SurfaceMeshData {
+    let (width,height,apron) = (g.width as isize,g.height as isize,BACKGROUND_APRON_TILES);
+    let dry = (!edges.iter().all(Option::is_some)).then(||
+        dominant_flat_source(g.width,g.height,cells,shapes)).flatten();
+    let mut ground = SurfaceMeshData::default();
+    let mut water = SurfaceMeshData::default();
+    let mut append = |bounds: [isize;4], donor: Option<(usize,usize)>| {
+        let [left,right,top,bottom] = bounds;
+        let positions = [g.origin_x+left as f32*g.tile_width,
+            g.origin_x+right as f32*g.tile_width,g.origin_z+top as f32*g.tile_height,
+            g.origin_z+bottom as f32*g.tile_height];
+        if let Some((x,z)) = donor {
+            // Native live-water identity, continuous world-space optics.
+            let (u0,u1,v0,v1) = g.uv(x,z);
+            append_top(&mut water,positions,CellShape::Water.surface_height(g.tile_height),
+                ((u0+u1)*0.5,(u0+u1)*0.5,(v0+v1)*0.5,(v0+v1)*0.5));
+        } else if dry.is_some() {
+            append_top(&mut ground,positions,BACKGROUND_HEIGHT,
+                (left as f32,right as f32,top as f32,bottom as f32));
+        }
+    };
+    if edges.iter().all(Option::is_some) {
+        for (bounds,donor) in [([-apron,width+apron,-apron,0],edges[0]),
+            ([-apron,width+apron,height,height+apron],edges[1]),
+            ([-apron,0,0,height],edges[2]),([width,width+apron,0,height],edges[3])] {
+            append(bounds,donor);
+        }
+    } else {
+        // Eight disjoint sectors close the corners without laying a dry strip
+        // beyond a sea edge. All vertices stay outside the finite source grid.
+        let xs = [-apron,0,width,width+apron];
+        let zs = [-apron,0,height,height+apron];
+        for z in 0..3 { for x in 0..3 {
+            if x==1 && z==1 { continue; }
+            let horizontal = match z {0=>edges[0],2=>edges[1],_=>None};
+            let vertical = match x {0=>edges[2],2=>edges[3],_=>None};
+            append([xs[x],xs[x+1],zs[z],zs[z+1]],horizontal.or(vertical));
+        }}
+    }
+    if let Some((x,z)) = dry && !ground.positions.is_empty() {
+        mesh.background = Some(RepeatingBackground {mesh:ground, source_cell:[x,z],
+            source:cells[z*g.width+x].source.clone(),texture:cells[z*g.width+x].texture.clone()});
+    }
+    water
 }
 
 fn dominant_flat_source(
@@ -110,7 +192,9 @@ fn dominant_flat_source(
             let source = &cells[index].source;
             // Object masking changes its classification to Flat but retains
             // the original atlas pixels. That is never a ground sample.
-            if source.tile_index == u16::MAX || super::kanto_shore::source_bank(source) {
+            if source.tile_index == u16::MAX || super::kanto_shore::source_bank(source)
+                || !matches!(new_bark::ground_material(source), Some(new_bark::GroundMaterial::Lawn
+                    | new_bark::GroundMaterial::Path | new_bark::GroundMaterial::Pavers)) {
                 // Native shore corners are flat drawing cells, not a ground
                 // field. Repeating one stamps tiny island icons over the horizon.
                 continue;
@@ -130,6 +214,35 @@ fn dominant_flat_source(
         // Prefer the earliest source on ties, independently of HashMap order.
         .max_by_key(|(count, column, row)| (*count, std::cmp::Reverse(row * width + column)))
         .map(|(_, column, row)| (column, row))
+}
+
+fn dominant_coastal_water_source(
+    width: usize, height: usize, cells: &[&VisualTile], shapes: &[CellShape], map: &str,
+) -> Option<(usize, usize)> {
+    if !coastal_continuation_map(map) {
+        return None;
+    }
+    let wet = |i: usize| !cells[i].priority && shapes[i] == CellShape::Water
+        && crate::cave_water::role_for_map(cells[i], map) == [255, 0];
+    // An isolated pond or an unverified still drawing cannot turn the distant
+    // landscape into ocean. The frame and its outer edge must both be wet.
+    if (0..cells.len()).filter(|&i| wet(i)).count() * 2 <= cells.len() { return None; }
+    let edge = |i: usize| i < width || i >= width * (height - 1)
+        || i % width == 0 || i % width == width - 1;
+    let edge_count = 2 * width + 2 * height - 4;
+    if (0..cells.len()).filter(|&i| edge(i) && wet(i)).count() * 2 < edge_count { return None; }
+    (0..cells.len()).find(|&i| wet(i)).map(|i| (i % width, i / width))
+}
+
+/// Publish after source-cell fitting and before the shared final waterline fit.
+/// These faces never acquire support, collision or source-map ownership.
+pub(super) fn finish_water_apron(mesh: &mut TerrainMeshData, water: SurfaceMeshData) {
+    for base in (0..water.positions.len()).step_by(4) {
+        append_quad_colors(&mut mesh.textured,
+            water.positions[base..base + 4].try_into().unwrap(),
+            water.normals[base],water.uvs[base..base + 4].try_into().unwrap(),
+            water.colors[base..base + 4].try_into().unwrap());
+    }
 }
 
 #[cfg(test)]
@@ -195,6 +308,184 @@ fn repeated_edge_coordinate(coordinate: isize, length: usize) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use bevy::prelude::Vec2;
+
+    fn mixed_coast(side: usize, map: &str) -> (VisualWorldFrame, Vec<CellShape>) {
+        let mut frame = test_frame_with_grid(40,48);
+        frame.map_id = map.into();
+        let next = Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData);
+        let mut shapes = vec![CellShape::Flat;40*48];
+        for tile in &mut frame.tiles {
+            let (x,z) = (tile.column,tile.row);
+            let water = match side {0=>z<12,1=>z>=36,2=>x<12,_=>x>=28};
+            tile.source = super::super::tests::source_with_tile(if water {0x35} else {1},
+                (x%4) as u8,(z%4) as u8,if water {0x14} else {5});
+            if water {
+                shapes[z as usize*40+x as usize] = CellShape::Water;
+                tile.animation_frames = Some(vec![tile.texture.clone(),next.clone()].into());
+            }
+        }
+        (frame,shapes)
+    }
+
+    #[test]
+    fn mixed_coasts_continue_only_proven_sea_edges_and_close_their_outer_corners() {
+        for map in ["Route12","Route13","Route14","Route15"] {
+            for side in 0..4 { for scale in [1.,4.] { for instanced in [false,true] {
+                let (frame,shapes) = mixed_coast(side,map);
+                let before = frame.clone();
+                let cells = frame.tiles.iter().collect::<Vec<_>>();
+                let g = GridGeometry {width:40,height:48,tile_width:8.*scale,tile_height:8.*scale,
+                    origin_x:-160.*scale,origin_z:-192.*scale};
+                assert!(dominant_coastal_water_source(40,48,&cells,&shapes,map).is_none());
+                let edges = coastal_edge_water_sources(40,48,&cells,&shapes,map);
+                assert_eq!(edges.map(|s|s.is_some()),std::array::from_fn(|s|s==side));
+                let mut mesh = TerrainMeshData {tree_cache:instanced.then(HashMap::new),
+                    footing_heights:shapes.iter().map(|s|s.surface_height(g.tile_height)).collect(),
+                    authored_cells:vec![None;cells.len()],..Default::default()};
+                let mut control = mesh.clone();
+                let water = append_repeating_background_apron(&mut mesh,&g,&cells,&shapes,map);
+                assert_eq!(water.quad_count(),3,"sea-facing strip and its two corners");
+                let ground = &mesh.background.as_ref().unwrap().mesh;
+                assert_eq!(ground.quad_count(),5);
+                assert!(ground.positions.iter().all(|p|p[1]==BACKGROUND_HEIGHT));
+                let xs = [-96.,0.,40.,136.];
+                let zs = [-96.,0.,48.,144.];
+                for z in 0..3 { for x in 0..3 {
+                    if x==1 && z==1 {continue;}
+                    let point = [g.origin_x+(xs[x]+xs[x+1])*0.5*g.tile_width,
+                        g.origin_z+(zs[z]+zs[z+1])*0.5*g.tile_height];
+                    let covers = |s: &SurfaceMeshData| s.positions.chunks_exact(4).filter(|p| {
+                        let min = |axis| p.iter().map(|p|p[axis]).fold(f32::INFINITY,f32::min);
+                        let max = |axis| p.iter().map(|p|p[axis]).fold(f32::NEG_INFINITY,f32::max);
+                        point[0]>min(0) && point[0]<max(0) && point[1]>min(2) && point[1]<max(2)
+                    }).count();
+                    let is_sea = match side {0=>z==0,1=>z==2,2=>x==0,_=>x==2};
+                    assert_eq!(covers(&water),usize::from(is_sea));
+                    assert_eq!(covers(ground),usize::from(!is_sea));
+                }}
+                assert_eq!(mesh.footing_heights,control.footing_heights);
+                assert_eq!(mesh.authored_cells,control.authored_cells);
+                let (u0,u1,v0,v1) = g.uv(edges[side].unwrap().0,edges[side].unwrap().1);
+                assert!(water.uvs.iter().all(|uv|*uv==[(u0+u1)*0.5,(v0+v1)*0.5]));
+                finish_water_apron(&mut mesh,water);
+                super::super::outdoor_water::finish(&mut mesh,map,&cells,&g);
+                super::super::outdoor_water::finish(&mut control,map,&cells,&g);
+                assert_eq!(mesh.footing_heights,control.footing_heights);
+                assert_eq!(mesh.authored_cells,control.authored_cells);
+                assert!(mesh.textured.positions.iter().all(|p|p[1]==-g.tile_height*0.25));
+                for tri in mesh.textured.indices.chunks_exact(3) {
+                    let p = [tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.textured.positions[i as usize]));
+                    assert!((p[1]-p[0]).cross(p[2]-p[0]).y>0.);
+                }
+                let domains = crate::terrain_batches::separate_authentic_domains(mesh.textured,
+                    Some(crate::terrain_batches::AuthenticBounds {min:Vec2::new(g.origin_x,g.origin_z),
+                        max:Vec2::new(g.origin_x+40.*g.tile_width,g.origin_z+48.*g.tile_height)}));
+                assert!(!domains.is_empty());
+                assert!(domains.iter().all(|(domain,_)|
+                    *domain==crate::terrain_batches::AuthenticDomain::Outside));
+                assert_eq!(frame,before);
+            }}}}
+    }
+
+    #[test]
+    fn a_coastal_name_alone_cannot_turn_ponds_or_still_drawings_into_open_sea() {
+        let (mut frame,mut shapes) = mixed_coast(3,"Route14");
+        let select = |frame: &VisualWorldFrame,shapes: &[CellShape]| {
+            coastal_edge_water_sources(40,48,&frame.tiles.iter().collect::<Vec<_>>(),shapes,&frame.map_id)
+        };
+        frame.map_id="NationalPark".into();
+        assert_eq!(select(&frame,&shapes),[None;4]);
+        frame.map_id="Route14".into();
+        let original = frame.clone();
+        for mode in 0..3 {
+            frame=original.clone();
+            for tile in &mut frame.tiles {
+                match mode {0=>tile.animation_frames=None,1=>tile.animation_frames=Some(vec![tile.texture.clone()].into()),
+                    _=>tile.priority=true}
+            }
+            assert_eq!(select(&frame,&shapes),[None;4]);
+        }
+        frame=original;
+        for z in 0..48 {shapes[z*40+39]=CellShape::Flat;}
+        assert_eq!(select(&frame,&shapes),[None;4],"closed dry boundary retains land");
+    }
+
+    #[test]
+    fn flat_prop_art_cannot_supply_the_distant_ground() {
+        let mut frame = test_frame_with_grid(40, 40);
+        let shapes = vec![CellShape::Flat; 1600];
+        for tile in &mut frame.tiles {
+            tile.source = super::super::tests::source_with_tile(0x3a, 3, 3, 0x58);
+        }
+        assert_eq!(dominant_flat_source(40, 40,
+            &frame.tiles.iter().collect::<Vec<_>>(), &shapes), None);
+        frame.tiles[799].source = super::super::tests::source_with_tile(1, 0, 0, 6);
+        assert_eq!(dominant_flat_source(40, 40,
+            &frame.tiles.iter().collect::<Vec<_>>(), &shapes), Some((39, 19)));
+    }
+
+    #[test]
+    fn coastal_continuation_uses_live_water_without_inventing_a_bank_or_support() {
+        let mut frame = test_frame_with_grid(40, 40);
+        frame.map_id = "Route40".into();
+        let next = Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData);
+        for tile in &mut frame.tiles {
+            tile.source = super::super::tests::source_with_tile(0x35, 0, 0, 0x14);
+            tile.animation_frames = Some(vec![tile.texture.clone(), next.clone()].into());
+        }
+        let shapes = vec![CellShape::Water; 1600];
+        let cells = frame.tiles.iter().collect::<Vec<_>>();
+        let g = GridGeometry { width: 40, height: 40, tile_width: 8., tile_height: 8.,
+            origin_x: -160., origin_z: -160. };
+        // Both builder modes must carry four faces through the same material;
+        // source-cell terrain fitting must never map their outside vertices.
+        for instanced in [false, true] {
+            let mut mesh = TerrainMeshData { tree_cache: instanced.then(HashMap::new),
+                footing_heights: vec![crate::profile::WATER_HEIGHT; 1600],
+                authored_cells: vec![None; 1600], ..Default::default() };
+            let support = mesh.footing_heights.clone();
+            let water = append_repeating_background_apron(&mut mesh, &g, &cells, &shapes, &frame.map_id);
+            assert_eq!(water.quad_count(), 4);
+            new_bark::polish_world_surfaces_from_frame(&mut mesh, &frame, &cells, &g, &shapes);
+            finish_water_apron(&mut mesh, water);
+            assert!(mesh.background.is_none());
+            assert_eq!(mesh.textured.quad_count(), 4);
+            assert!(mesh.solid.positions.is_empty(), "no bank walls or land planes");
+            assert_eq!(mesh.footing_heights, support);
+            assert_eq!(mesh.authored_cells, vec![None; 1600]);
+            let (u0, u1, v0, v1) = g.uv(0, 0);
+            assert!(mesh.textured.uvs.iter().all(|uv|
+                *uv == [(u0 + u1) * 0.5, (v0 + v1) * 0.5]));
+            assert!(mesh.textured.positions.iter().all(|p|p[1] == crate::profile::WATER_HEIGHT));
+            assert!(mesh.textured.positions.iter().all(|p|
+                p[0] <= -160. || p[0] >= 160. || p[2] <= -160. || p[2] >= 160.));
+            let domains = crate::terrain_batches::separate_authentic_domains(mesh.textured,
+                Some(crate::terrain_batches::AuthenticBounds {
+                    min: Vec2::splat(-160.), max: Vec2::splat(160.),
+                }));
+            assert!(!domains.is_empty());
+            assert!(domains.iter().all(|(domain, _)|
+                *domain == crate::terrain_batches::AuthenticDomain::Outside),
+                "ocean continuation must never become an authenticated battle surface");
+        }
+        assert_eq!(dominant_coastal_water_source(40, 40, &cells, &shapes, "NationalPark"), None);
+        frame.tiles[0].animation_frames = None;
+        let cells = frame.tiles.iter().collect::<Vec<_>>();
+        assert_ne!(dominant_coastal_water_source(40, 40, &cells, &shapes, "Route40"), Some((0, 0)));
+        // Even a large enclosed basin provides no evidence of open sea beyond
+        // dry outer source cells.
+        for tile in &mut frame.tiles {
+            if tile.row == 0 || tile.row == 39 || tile.column == 0 || tile.column == 39 {
+                tile.animation_frames = None;
+            }
+        }
+        assert_eq!(dominant_coastal_water_source(40, 40,
+            &frame.tiles.iter().collect::<Vec<_>>(), &shapes, "Route40"), None);
+        for tile in &mut frame.tiles { tile.animation_frames = None; }
+        assert_eq!(dominant_coastal_water_source(40, 40,
+            &frame.tiles.iter().collect::<Vec<_>>(), &shapes, "Route40"), None);
+    }
 
     #[test]
     fn masked_tree_art_cannot_become_the_dominant_ground_tile() {
@@ -254,7 +545,7 @@ mod tests {
                 tree_cache: Some(HashMap::new()),
                 ..Default::default()
             };
-            append_repeating_background_apron(&mut mesh, &g, &cells, &shapes);
+            append_repeating_background_apron(&mut mesh, &g, &cells, &shapes, "test");
             assert_eq!(mesh.background.unwrap().source, cells[0].source);
         }
     }
@@ -301,10 +592,14 @@ mod tests {
         };
         let mut mesh = TerrainMeshData::default();
         let shapes = vec![CellShape::Flat; geometry.width * geometry.height];
-        let frame = test_frame_with_grid(geometry.width, geometry.height);
+        let mut frame = test_frame_with_grid(geometry.width, geometry.height);
+        for tile in &mut frame.tiles {
+            tile.source = super::super::tests::source_with_tile(1,
+                (tile.column % 4) as u8, (tile.row % 4) as u8, 5);
+        }
         let cells: Vec<_> = frame.tiles.iter().collect();
 
-        append_repeating_background_apron(&mut mesh, &geometry, &cells, &shapes);
+        append_repeating_background_apron(&mut mesh, &geometry, &cells, &shapes, "test");
 
         let extended_width = geometry.width + BACKGROUND_APRON_TILES as usize * 2;
         let extended_height = geometry.height + BACKGROUND_APRON_TILES as usize * 2;
@@ -321,7 +616,7 @@ mod tests {
             tree_cache: Some(HashMap::new()),
             ..Default::default()
         };
-        append_repeating_background_apron(&mut compact, &geometry, &cells, &shapes);
+        append_repeating_background_apron(&mut compact, &geometry, &cells, &shapes, "test");
         assert!(compact.textured.positions.is_empty());
         let background = compact.background.as_ref().unwrap();
         assert_eq!(background.mesh.quad_count(), 4);

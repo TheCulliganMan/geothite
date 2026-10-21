@@ -30,7 +30,7 @@ class BulldogTests(unittest.TestCase):
   for s,m in self.models.items():
    ps=m['primitives'];self.overlap(ps[0],ps[1]);self.overlap(ps[1],ps[2]);self.overlap(self.find(ps,'Tail /'),ps[0])
    for side in (-1,1):
-    leg=self.find(ps,'Leg / bent muscular supporting shin '+str(side));foot=self.find(ps,'Foot / broad grounded bulldog paw '+str(side));self.overlap(leg,ps[0]);self.overlap(leg,foot);self.assertEqual(min(foot['positions'][1::3]),0.)
+    leg=self.find(ps,('Leg / upright muscular supporting shin ' if s=='granbull' else 'Leg / bent muscular supporting shin ')+str(side));foot=self.find(ps,'Foot / broad grounded bulldog paw '+str(side));self.overlap(leg,ps[0]);self.overlap(leg,foot);self.assertEqual(min(foot['positions'][1::3]),0.)
     arm=self.find(ps,'Arm / curved reaching bulldog forelimb '+str(side));self.overlap(arm,ps[0]);self.overlap(arm,self.find(ps,'Hand / broad rounded bulldog fist '+str(side)));self.overlap(self.find(ps,'Ear / broad folded bulldog flap '+str(side)),ps[2])
     if s=='granbull':self.overlap(arm,self.find(ps,'Wrist / dark snug cuff '+str(side)))
  def test_jaws_muzzles_noses_and_canines_have_real_support(self):
@@ -41,7 +41,8 @@ class BulldogTests(unittest.TestCase):
     self.overlap(self.find(ps,'Nose /'),head)
    else:
     muzzle=self.find(ps,'Muzzle /');self.overlap(muzzle,head);self.overlap(self.find(ps,'Nose /'),muzzle)
-    for side in (-1,1):self.overlap(self.find(ps,'Tusk / enormous upward ivory lower canine '+str(side)),jaw);self.overlap(self.find(ps,'Fang / small downward upper canine '+str(side)),muzzle)
+    self.overlap(self.find(ps,'Tongue /'),jaw)
+    for side in (-1,1):self.overlap(self.find(ps,'Tusk / body-colored upward lower-jaw point '+str(side)),jaw);self.overlap(self.find(ps,'Fang / small downward upper canine '+str(side)),muzzle)
  def test_fitted_spots_eyes_and_ear_markings_follow_support(self):
   for s,m in self.models.items():
    ps=m['primitives']
@@ -60,5 +61,5 @@ class BulldogTests(unittest.TestCase):
  def test_granbull_tusks_curve_beyond_upper_muzzle(self):
   ps=self.models['granbull']['primitives'];muzzle=self.find(ps,'Muzzle /');nose=self.find(ps,'Nose /')
   for side in (-1,1):
-   tusk=self.find(ps,'Tusk / enormous upward ivory lower canine '+str(side));self.assertGreater(max(tusk['positions'][1::3]),max(muzzle['positions'][1::3])+.04);self.assertGreater(max(tusk['positions'][2::3]),min(muzzle['positions'][2::3])+.05)
+   tusk=self.find(ps,'Tusk / body-colored upward lower-jaw point '+str(side));self.assertGreater(max(tusk['positions'][1::3]),max(muzzle['positions'][1::3])+.04);self.assertGreater(max(tusk['positions'][2::3]),min(muzzle['positions'][2::3])+.05)
 if __name__=='__main__':unittest.main()

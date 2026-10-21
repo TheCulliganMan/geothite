@@ -27,7 +27,7 @@ class ElectricPairTests(unittest.TestCase):
   for n in self.each():
    self.assertEqual(geometry_digest(self.m),geometry_digest(sculpture(n)));self.assertEqual(len(self.ps),len({p['part'] for p in self.ps}));self.assertLess(sum(len(p['indices'])//3 for p in self.ps),115000)
    self.assertEqual(min(v for p in self.ps for v in p['positions'][1::3]),0);self.assertAlmostEqual(max(v for p in self.ps for v in p['positions'][1::3]),HEIGHTS[n],places=6)
-   counts=(('Head /',1),('Crest /',2),('Antenna /',2),('Antenna ball /',2),('Jaw /',2),('Fang /',2),('Knuckle /',6),('Thumb /',2),('Wrist fur /',4),('Tail tip /',1),('Arm stripe /',6),('Leg stripe /',4),('Toe claw /',6),('Back stripe /',1),('Tail /',1),('Tail stripe /',4)) if n=='electabuzz' else (('Head /',0),('Plug /',2),('Arm root /',2),('Arm stripe /',4),('Hand claw /',6),('Belly band /',1))
+   counts=(('Head /',1),('Crest /',2),('Antenna /',2),('Antenna ball /',2),('Jaw /',2),('Fang /',2),('Knuckle /',6),('Thumb /',2),('Wrist fur /',4),('Tail tip /',1),('Arm stripe /',6),('Leg stripe /',4),('Toe claw /',6),('Back stripe /',1),('Tail /',1),('Tail stripe /',4)) if n=='electabuzz' else (('Head /',0),('Plug /',2),('Arm root /',2),('Arm stripe /',4),('Hand claw /',6),('Belly band /',2))
    for prefix,num in counts+(('Body /',1),('Eye /',2),('Hand /',2),('Leg /',2),('Foot /',2),('Bolt /',1)):self.assertEqual(sum(p['part'].startswith(prefix) for p in self.ps),num,prefix)
  def test_adult_head_jaws_fangs_tongue_crest_and_antennae_are_rooted(self):
   self.m=self.models['electabuzz'];self.ps=self.m['primitives'];head=self.find('Head /');neck=self.find('Neck /');upper=self.find('Jaw / rooted yellow');lower=self.find('Jaw / rooted open')
@@ -64,7 +64,7 @@ class ElectricPairTests(unittest.TestCase):
   self.m=self.models['elekid'];self.ps=self.m['primitives']
   for s in (-1,1):
    blade=self.find('Plug /',s);self.assertTrue(self.overlap(blade,self.find('Body /')))
-   x=(min(blade['positions'][::3])+max(blade['positions'][::3]))/2;low=min(blade['positions'][1::3]);high=max(blade['positions'][1::3]);y=low+(high-low)*(1.153-.760)/(1.285-.760)
+   x=(min(blade['positions'][::3])+max(blade['positions'][::3]))/2;low=min(blade['positions'][1::3]);high=max(blade['positions'][1::3]);y=low+(high-low)*(1.105-.760)/(1.210-.760)
    for dx,dy in ((0,0),(.008,0),(-.008,0),(0,.011),(0,-.011)):
     self.assertFalse(ray_intersections(blade,x+dx,y+dy),'contact hole is capped')
     self.assertFalse(any(ray_intersections(p,x+dx,y+dy) for p in self.ps),'other anatomy blocks the contact hole')

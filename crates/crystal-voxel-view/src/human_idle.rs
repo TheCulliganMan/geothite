@@ -1,7 +1,7 @@
 //! Quiet standing poses, independent of the supplied crouched combat Idle.
 //! Only the weighted skin moves; actor position and facing remain authoritative.
 use crate::{
-    human_locomotion::{HumanLocomotion, REFERENCE_HEIGHT, rotate_world, world},
+    human_locomotion::{HumanLocomotion, REFERENCE_HEIGHT, rotate_world, stance_ankle, world},
     new_bark_actors::character_meshes::CharacterKind,
     open_people::PersonRig,
 };
@@ -15,6 +15,10 @@ struct Manner {
     lean: f32,
     glance: f32,
     arm_space: f32,
+    forearm_space: f32,
+    arm_forward: f32,
+    #[cfg(any(test, all(feature = "people-review", not(target_arch = "wasm32"))))]
+    elbow_tuck: f32,
     elbow: [f32; 2],
     stagger: f32,
 }
@@ -27,6 +31,10 @@ fn manner(kind: CharacterKind) -> Manner {
         lean: 0.015,
         glance: 0.12,
         arm_space: 0.10,
+        forearm_space: 0.018,
+        arm_forward: -0.025,
+        #[cfg(any(test, all(feature = "people-review", not(target_arch = "wasm32"))))]
+        elbow_tuck: 0.,
         elbow: [0.13, 0.18],
         stagger: 0.018,
     };
@@ -71,7 +79,7 @@ fn manner(kind: CharacterKind) -> Manner {
             m.sway = 0.012;
             m.lean = 0.035;
             m.elbow = [0.24, 0.10];
-            m.stagger = 0.045;
+            m.stagger = 0.030;
         }
         Biker | BlackBelt | Bruno | Chuck | Brock | Surge | Sailor | Captain | PokefanM
         | Outdoorsman => {
@@ -91,6 +99,24 @@ fn manner(kind: CharacterKind) -> Manner {
         Trainer | TrainerFemale | Red | Fisher | FishingGuru | Falkner | Janine | Koga | Lance
         | Misty | GymGuide | Rocket | RocketGirl | SwimmerGirl | SwimmerGuy | UnusedGuy
         | Whitney => {}
+    }
+    let look = crate::npc_appearance::look(kind);
+    if crate::garment_body::hem(look).is_some() || look.costume == "coat" {
+        // Bring the palms forward of the fabric and preserve each
+        // character's asymmetric elbow bends.
+        m.arm_space = m.arm_space.max(0.20);
+        m.forearm_space = 0.09;
+        m.arm_forward = 0.14;
+        for elbow in &mut m.elbow {
+            *elbow += 0.20;
+        }
+        // The swivel remains an offline study. A uniform correction folds
+        // wide hanging sleeves into the sash and twists the shoulder root.
+        #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+        if let Ok(value) = std::env::var("CRYSTAL_PEOPLE_REVIEW_IDLE_ELBOW_TUCK") {
+            m.elbow_tuck = value.parse().expect("idle elbow tuck must be numeric");
+            assert!(m.elbow_tuck.is_finite() && (0.0..=1.0).contains(&m.elbow_tuck));
+        }
     }
     m
 }
@@ -118,12 +144,13 @@ impl HumanIdle {
                 .iter()
                 .find(|&&n| rig.parents[n] == Some(shin))
                 .expect("human shin requires a foot");
-            let (_, rotation, mut point) = world(rig, &rest, foot).to_scale_rotation_translation();
+            let (_, rotation, _) = world(rig, &rest, foot).to_scale_rotation_translation();
             let sign = if side == 0 { 1. } else { -1. };
             // Hip-width support, with a small character-specific stagger.
-            // Preserve bind ankle height/orientation so the soles stay level.
-            point.x = hips.x + sign * 0.085 * units;
-            point.z = hips.z + sign * manner.stagger * units;
+            // Preserve the ankle's depth and height so the soles stay centered
+            // under the body, with their original level orientation.
+            let mut point = stance_ankle(rig, hips, foot, sign);
+            point.z += sign * manner.stagger * units;
             (point, rotation)
         });
         let arms = std::array::from_fn(|side| {
@@ -185,7 +212,8 @@ impl HumanIdle {
             (-0.008 + 0.0015 * breath) * units,
             0.,
         );
-        pose[hips].translation = parent.inverse().transform_point3(self.hips + offset);
+        pose[hips].translation = parent.inverse().transform_point3(
+            gait.idle_hips(self.hips + offset, &self.feet, units));
         let chest = rig.skin_nodes[rig.chest_joint];
         rotate_world(
             rig,
@@ -219,19 +247,45 @@ impl HumanIdle {
                 pose,
                 upper,
                 lower,
-                Vec3::new(sign * m.arm_space, -1., -0.025 + drift),
+                Vec3::new(sign * m.arm_space, -1., m.arm_forward + drift),
             );
             aim(
                 rig,
                 pose,
                 lower,
                 wrist,
-                Vec3::new(sign * 0.018, -1., m.elbow[side] + drift),
+                Vec3::new(sign * m.forearm_space, -1., m.elbow[side] + drift),
             );
+            #[cfg(any(test, all(feature = "people-review", not(target_arch = "wasm32"))))]
+            tuck_elbow(rig, pose, upper, lower, wrist, m.elbow_tuck);
         }
         gait.plant_idle(rig, &self.feet, pose);
         self.hands.sample(0., breath, pose);
     }
+}
+
+/// Swivel the existing elbow plane about the shoulder-to-wrist line. The
+/// wrist lies on that axis, so its position and both bone lengths stay fixed.
+/// Counter-rotation at the wrist preserves the full hand/prop frame as well.
+#[cfg(any(test, all(feature = "people-review", not(target_arch = "wasm32"))))]
+fn tuck_elbow(rig: &PersonRig, pose: &mut [Transform], upper: usize, lower: usize,
+    wrist: usize, strength: f32) {
+    if strength == 0. { return; }
+    let shoulder = world(rig, pose, upper).w_axis.truncate();
+    let elbow = world(rig, pose, lower).w_axis.truncate();
+    let (_, hand_rotation, hand) = world(rig, pose, wrist).to_scale_rotation_translation();
+    let axis = (hand - shoulder).normalize();
+    let radial = elbow - shoulder - axis * (elbow - shoulder).dot(axis);
+    let back = Vec3::NEG_Z - axis * Vec3::NEG_Z.dot(axis);
+    if radial.length_squared() < 1e-10 || back.length_squared() < 1e-10 { return; }
+    let current = radial.normalize();
+    let target = back.normalize();
+    let angle = axis.dot(current.cross(target)).atan2(current.dot(target));
+    let limit = std::f32::consts::FRAC_PI_6;
+    rotate_world(rig, pose, upper,
+        Quat::from_axis_angle(axis, angle.clamp(-limit,limit) * strength));
+    let next_hand_rotation = world(rig, pose, wrist).to_scale_rotation_translation().1;
+    rotate_world(rig, pose, wrist, hand_rotation * next_hand_rotation.inverse());
 }
 
 fn aim(rig: &PersonRig, pose: &mut [Transform], joint: usize, child: usize, direction: Vec3) {
@@ -250,8 +304,129 @@ pub(crate) mod validation {
     use super::*;
 
     pub(crate) fn validate() {
+        standing_weight_stays_over_the_middle_of_the_actual_soles();
+        #[cfg(not(target_arch = "wasm32"))]
+        tucked_elbows_keep_hands_and_prop_frames_while_preserving_the_original_bend();
         relaxed_idle_keeps_every_identity_upright_grounded_and_continuous();
         relaxed_idle_skin_and_walk_transitions_stay_above_floor_and_inside_bounds();
+    }
+
+    #[cfg_attr(test, test)]
+    #[cfg_attr(test, ignore = "requires supplied human rigs")]
+    fn standing_weight_stays_over_the_middle_of_the_actual_soles() {
+        use crate::new_bark_actors::character_meshes::SOURCE_KINDS;
+        let mut poses = 0;
+        let mut support_range = Vec2::new(f32::INFINITY, f32::NEG_INFINITY);
+        for kind in SOURCE_KINDS.iter().map(|&(_, k)| k).chain([CharacterKind::Outdoorsman]) {
+            let rig = crate::open_people::get(crate::npc_appearance::look(kind).base).unwrap();
+            let gait = HumanLocomotion::for_character(rig, kind);
+            let idle = HumanIdle::new(rig, kind);
+            let units = rig.height / REFERENCE_HEIGHT;
+            let foot_nodes = rig.leg_joints.map(|leg| {
+                let shin = rig.skin_nodes[leg[1]];
+                *rig.skin_nodes.iter().find(|&&n| rig.parents[n] == Some(shin)).unwrap()
+            });
+            let foot_joints: Vec<_> = rig.skin_nodes.iter().enumerate().filter_map(|(j, &node)| {
+                let mut ancestor = Some(node);
+                while let Some(n) = ancestor {
+                    if foot_nodes.contains(&n) { return Some(j as u16); }
+                    ancestor = rig.parents[n];
+                }
+                None
+            }).collect();
+            // Measure the actual heel-to-toe contact surface, including the
+            // toe bones. Checking ankle/hip alignment alone missed this bug.
+            let sole: Vec<_> = rig.mesh.positions.iter().enumerate().filter_map(|(i, p)| {
+                let attached: f32 = (0..4).filter(|&w| foot_joints.contains(&rig.ids[i][w]))
+                    .map(|w| rig.weights[i][w]).sum();
+                (p[1] <= rig.floor + 0.005 * units && attached > 0.999).then_some(i)
+            }).collect();
+            assert!(sole.len() >= 8, "{kind:?}: missing actual sole samples");
+            let mut pose = rig.nodes.clone();
+            for frame in 0..24 {
+                idle.sample(rig, &gait, frame as f32 * 0.83, &mut pose);
+                let inverse = world(rig, &pose, rig.mesh_node).inverse();
+                let palette: Vec<_> = rig.skin_nodes.iter().zip(&rig.inverse_binds)
+                    .map(|(&n, bind)| inverse * world(rig, &pose, n) * *bind).collect();
+                let mut rear = f32::INFINITY;
+                let mut front = f32::NEG_INFINITY;
+                for &i in &sole {
+                    let p = Vec3::from_array(rig.mesh.positions[i]);
+                    let z: f32 = (0..4).map(|w| palette[rig.ids[i][w] as usize]
+                        .transform_point3(p).z * rig.weights[i][w]).sum();
+                    rear = rear.min(z); front = front.max(z);
+                }
+                assert!(front - rear > 0.15 * units);
+                for joint in [rig.hips_joint, rig.head_joint] {
+                    let z = inverse.transform_point3(world(rig, &pose, rig.skin_nodes[joint])
+                        .w_axis.truncate()).z;
+                    let fraction = (z - rear) / (front - rear);
+                    support_range.x = support_range.x.min(fraction);
+                    support_range.y = support_range.y.max(fraction);
+                    assert!((0.30..=0.70).contains(&fraction),
+                        "{kind:?}: body rests at {fraction} of actual heel-to-toe support, frame={frame}");
+                }
+                poses += 1;
+            }
+        }
+        assert_eq!(poses, 1800);
+        eprintln!("Standing sole balance: {poses} poses across all 75 people; hip/head support range={support_range:?}");
+    }
+
+    #[cfg_attr(test, test)]
+    #[cfg_attr(test, ignore = "requires supplied human rigs")]
+    #[cfg(not(target_arch = "wasm32"))]
+    fn tucked_elbows_keep_hands_and_prop_frames_while_preserving_the_original_bend() {
+        use crate::new_bark_actors::character_meshes::SOURCE_KINDS;
+        let mut corrected = 0;
+        let mut poses = 0;
+        let mut maximum_hand_error = 0_f32;
+        for kind in SOURCE_KINDS.iter().map(|&(_,k)| k).chain([CharacterKind::Outdoorsman]) {
+            let rig = crate::open_people::get(crate::npc_appearance::look(kind).base).unwrap();
+            let gait = HumanLocomotion::new(rig);
+            let mut idle = HumanIdle::new(rig,kind);
+            let look = crate::npc_appearance::look(kind);
+            if crate::garment_body::hem(look).is_some() || look.costume == "coat" {
+                idle.manner.elbow_tuck = 0.65;
+            }
+            let mut reference = HumanIdle::new(rig,kind);
+            reference.manner.elbow_tuck = 0.;
+            let mut before = rig.nodes.clone();
+            let mut after = before.clone();
+            let changed: Vec<_> = idle.arms.iter().flat_map(|a| [a[0],a[2]]).collect();
+            for frame in 0..32 {
+                let seconds = frame as f32 * 0.43;
+                reference.sample(rig,&gait,seconds,&mut before);
+                idle.sample(rig,&gait,seconds,&mut after);
+                for i in 0..before.len() {
+                    if !changed.contains(&i) { assert_eq!(before[i],after[i],"{kind:?}: unrelated local pose changed"); }
+                    assert_eq!(before[i].translation,after[i].translation);
+                    assert_eq!(before[i].scale,after[i].scale);
+                }
+                for &[upper,lower,wrist] in &idle.arms {
+                    let s = world(rig,&before,upper).w_axis.truncate();
+                    let old = world(rig,&before,lower).w_axis.truncate();
+                    let new = world(rig,&after,lower).w_axis.truncate();
+                    assert!((new-s).x.abs() <= (old-s).x.abs()+1e-5,"{kind:?}: elbow moved farther out");
+                    if idle.manner.elbow_tuck > 0. && (new-s).x.abs()+0.0001 < (old-s).x.abs() { corrected += 1; }
+                    // The local forearm rotation is the original elbow bend.
+                    assert_eq!(before[lower].rotation,after[lower].rotation);
+                    let a = world(rig,&before,wrist).to_cols_array();
+                    let z = world(rig,&after,wrist).to_cols_array();
+                    let error = a.iter().zip(z).map(|(a,z)| (a-z).abs()).fold(0_f32,f32::max);
+                    maximum_hand_error = maximum_hand_error.max(error);
+                    assert!(error < 2e-5,"{kind:?}: wrist/prop frame drift {error}");
+                }
+                for &joint in rig.hand_joints.iter().flatten() {
+                    let node=rig.skin_nodes[joint];
+                    let a=world(rig,&before,node).to_cols_array();let z=world(rig,&after,node).to_cols_array();
+                    assert!(a.iter().zip(z).all(|(a,z)| (a-z).abs()<2e-5),"{kind:?}: finger frame changed");
+                }
+                poses += 1;
+            }
+        }
+        assert_eq!(poses,2400);assert!(corrected>100);
+        eprintln!("Idle elbow swivel: {poses} poses, {corrected} inward elbows; maximum preserved hand-frame error={maximum_hand_error}");
     }
 
     #[cfg_attr(test, test)]
@@ -319,10 +494,9 @@ pub(crate) mod validation {
                     );
                     let length =
                         point(upper).distance(point(lower)) + point(lower).distance(point(foot));
-                    assert!(
-                        (point(upper).y - point(foot).y) / length > 0.95,
-                        "{kind:?}: idle still crouches"
-                    );
+                    let extension = (point(upper).y - point(foot).y) / length;
+                    assert!(extension > 0.95,
+                        "{kind:?}: idle still crouches ({extension}), side={side} time={seconds}");
                 }
             }
             assert!(

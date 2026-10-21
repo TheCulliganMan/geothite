@@ -19,7 +19,7 @@ def geometry_digest(model):
 
 @lru_cache(maxsize=2)
 def authoring_model(species):return sculpture(species)
-REST_DIGESTS={'rhyhorn': 'e6ad87610f6a2b99b8e1780fddffabfb97166fdb1c8d50278ca6e765dcbc0188', 'rhydon': 'f65fdcc84a808bd430ba1ce4ed03602ec0301a6bb0905722850774e49f1248c9'}
+REST_DIGESTS={'rhyhorn': 'bc4995af2a77d7d299da382bff3dd3b7f05de0563c70fb128b0241ab609c67ae', 'rhydon': 'd83099e8c19e82f3cdadd99bd79bb56bad29655c8a36e12f2bea81d2e715d3b5'}
 PARTS={species:tuple(p['part'] for p in authoring_model(species)['primitives']) for species in SPECIES}
 BODY_REFERENCE_HEIGHTS=HEIGHTS.copy()
 MAX_BYTES=1024*1024
@@ -33,14 +33,15 @@ def normalized(species,point):
 
 def joints(species):
  if species=='rhyhorn':
-  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.425,-.140)),('head',1,(0.,.510,.050)),('tail',1,(0.,.430,-.500))]
-  raw += [('leg_'+str(side)+'_'+row,0,(side*.255,.230,z)) for side in (-1,1) for row,z in (('rear',-.370),('front',.130))]
-  raw += [('jaw',2,(0.,.335,.210)),('ear_left',2,(-.240,.646,.106)),('ear_right',2,(.240,.646,.106))]
+  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.385,-.230)),('head',1,(0.,.515,.050)),('tail',1,(0.,.365,-.630))]
+  raw += [('leg_'+str(side)+'_'+row,0,(side*.275,.230,z)) for side in (-1,1) for row,z in (('rear',-.445),('front',.105))]
+  raw += [('jaw',2,(0.,.350,.090)),('ear_left',2,(-.220,.622,.055)),('ear_right',2,(.220,.622,.055))]
  else:
-  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.550,-.015)),('head',1,(0.,1.180,.050)),('jaw',2,(0.,1.040,.130)),
-   ('arm_left',1,(-.286,.942,.033)),('hand_left',4,(-.550,.941,.208)),('arm_right',1,(.286,.942,.033)),('hand_right',6,(.550,.941,.208)),
-   ('leg_left',0,(-.280,.200,.080)),('leg_right',0,(.280,.200,.080)),('tail_base',1,(0.,.330,-.229)),('tail_tip',10,(.130,.250,-.829)),
-   ('ear_left',2,(-.157,1.327,.055)),('ear_right',2,(.157,1.327,.055)),('drill',2,(0.,1.208,.384))]
+  from rhydon_sculpt import arm_path,TAIL_POINTS,HORN_POINTS
+  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.550,-.015)),('head',1,(0.,1.286,.015)),('jaw',2,(0.,1.040,.130)),
+   ('arm_left',1,arm_path(-1)[0]),('hand_left',4,arm_path(-1)[-1]),('arm_right',1,arm_path(1)[0]),('hand_right',6,arm_path(1)[-1]),
+   ('leg_left',0,(-.277,.331,-.032)),('leg_right',0,(.277,.331,-.032)),('tail_base',1,TAIL_POINTS[0]),('tail_tip',10,TAIL_POINTS[2]),
+   ('ear_left',2,(-.186,1.355,.042)),('ear_right',2,(.186,1.355,.042)),('drill',2,HORN_POINTS[0])]
  return tuple((name,parent,(0.,0.,0.) if parent is None else normalized(species,pivot)) for name,parent,pivot in raw)
 JOINTS={s:joints(s) for s in SPECIES}
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
@@ -69,7 +70,7 @@ def skin_weights(species,part,position):
   if part.startswith(('Body /','Back armor /')):return rigid(1)
   if part.startswith('Tail /'):return rigid(3)
   if part.startswith('Jaw /'):return rigid(8)
-  if part.startswith('Ear /'):return rigid(9 if part.endswith('-1') else 10)
+  if part.startswith(('Ear /','Ear inset /')):return rigid(9 if part.endswith('-1') else 10)
   return rigid(2)
  if part.startswith(('Body /','Belly plate /','Collar /','Back armor /')):return rigid(1)
  if part.startswith(('Jaw /','Tongue /')):return rigid(3)
@@ -79,7 +80,10 @@ def skin_weights(species,part,position):
   side=int(part.split()[-2] if part.startswith('Hand claw /') else part.split()[-1]);arm=4 if side<0 else 6;hand=arm+1
   if part.startswith(('Hand /','Hand claw /')):return rigid(hand)
   if part.startswith('Shoulder /'):return rigid(arm)
-  a=smoothstep(.320,.405,abs(x));b=smoothstep(.480,.550,abs(x))
+  from rhydon_sculpt import arm_path
+  from bovine_sculpt import smooth
+  path=smooth(arm_path(side),(.116,.102,.084),4)[0]
+  t=path_fraction((x,y,z),path);a=smoothstep(0.,.20,t);b=smoothstep(.55,.90,t)
   return [1,arm,hand,0],[(1.-a)*(1.-b),a*(1.-b),b,0.]
  if part.startswith(('Tail /','Tail armor /')):
   t=path_fraction((x,y,z),tail_path());a=smoothstep(0.,.25,t);b=smoothstep(.50,.82,t)
@@ -121,7 +125,7 @@ def pack_parts(species,model):
   metadata['source_parts'].append({'part':name,'order':order,'vertex_start':start,'vertex_count':len(source['positions'])//3,'index_start':first,'index_count':len(source['indices'])})
   joined['positions']+=source['positions'];joined['normals']+=source['normals'];joined['indices'] += [i+start for i in source['indices']]
  return parts
-PACKED_REST_DIGESTS={'rhyhorn': 'e6ad87610f6a2b99b8e1780fddffabfb97166fdb1c8d50278ca6e765dcbc0188', 'rhydon': 'c0131e43f7235c93fc5a645ab0c3e69f63dc8c2f8d8aa36e0134cc89ab22b4f7'}
+PACKED_REST_DIGESTS={'rhyhorn': 'bc4995af2a77d7d299da382bff3dd3b7f05de0563c70fb128b0241ab609c67ae', 'rhydon': '3f9909391c0d4fbb4722e12c76dc927b2302ce579e40a5e6c9c3f6e2e20ea9cb'}
 
 def export_rhino(species,model=None):
  if species not in SPECIES:raise ValueError('unknown rhino species')

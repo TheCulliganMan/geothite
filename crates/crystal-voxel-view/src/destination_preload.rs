@@ -27,7 +27,7 @@ pub(super) struct PreparedDestination {
     builds: TerrainBuildQueue,
     ready_frames: u8,
     source_frame: Option<VisualWorldFrame>,
-    settled_key: Option<(TerrainCacheKey, VoxelCameraControls, Option<Vec3>)>,
+    settled_key: Option<(TerrainCacheKey, VoxelCameraControls, Option<Vec3>, u32)>,
 }
 
 fn roots(cache: &TerrainRevisionCache) -> impl Iterator<Item = Entity> {
@@ -122,6 +122,7 @@ pub(super) fn prepare(
     #[cfg(target_arch = "wasm32")]
     status: Res<VoxelViewStatus>,
     settings: Res<VoxelViewSettings>,
+    cameras: Query<&Projection, With<VoxelWorldCamera>>,
     profiles: Res<live_profiles::LiveProfiles>,
     sun: Query<(&DirectionalLight, &Transform), (With<VoxelSun>, Without<VoxelTerrain>, Without<VoxelActorCard>)>,
     active: Res<TerrainRevisionCache>,
@@ -160,7 +161,13 @@ pub(super) fn prepare(
     let PreparedDestination { cache, builds, ready_frames, settled_key, source_frame } = &mut *destination;
     // Only streamed groves depend on the sun's caster footprint. An indoor
     // destination must not wake up whenever the outdoor daylight moves.
-    let next = (key, settings.camera, if cache.groves.is_some() { sunlight } else { None });
+    // The classic playfield's aspect differs from a native window or
+    // capture target. Use the same actual camera projection as live streaming.
+    let aspect = cameras.iter().find_map(|projection| match projection {
+        Projection::Perspective(p) if p.aspect_ratio.is_finite() && p.aspect_ratio > 0. => Some(p.aspect_ratio),
+        _ => None,
+    }).unwrap_or(frame.viewport_size.x / frame.viewport_size.y);
+    let next = (key, settings.camera, if cache.groves.is_some() { sunlight } else { None }, aspect.to_bits());
     // A fully prepared hidden scene must stay untouched. Re-entering terrain
     // sync made its roots visible then hidden again on every indoor frame,
     // needlessly invalidating Bevy visibility and rescanning grove interest.
@@ -195,7 +202,7 @@ pub(super) fn prepare(
         Ok(TerrainSyncState::Ready) => {
             let pose = settings.camera.world_pose(frame, &cache.footing_heights);
             let projection = Mat4::perspective_rh(pose.vertical_fov_radians,
-                frame.viewport_size.x / frame.viewport_size.y, pose.near, pose.far);
+                aspect, pose.near, pose.far);
             let matrix = projection * Mat4::look_at_rh(pose.eye, pose.target, pose.up);
             if grove_stream::sync(frame, matrix, sunlight, cache, &mut commands, &mut meshes, &mut materials) {
                 *ready_frames = 0;
@@ -439,9 +446,20 @@ mod tests {
     #[test]
     fn settled_destination_does_not_mutate_hidden_roots_or_restart_builds() {
         let mut app = App::new();
+        let camera = app.world_mut().spawn((VoxelWorldCamera,
+            Projection::Perspective(PerspectiveProjection { aspect_ratio: 1., ..default() }))).id();
         let root = app.world_mut().spawn((VoxelTerrain, Visibility::Hidden, Transform::default())).id();
+        let mut images = Assets::<Image>::default();
+        let texture = images.add(Image::default());
         let frame = VisualWorldFrame { active: true, map_id: "ElmsLab".into(),
-            grid_size: UVec2::ONE, tile_size: Vec2::splat(8.), viewport_size: Vec2::splat(8.), ..default() };
+            map_texture: texture.clone(),
+            grid_size: UVec2::ONE, tile_size: Vec2::splat(8.), viewport_size: Vec2::splat(8.),
+            tiles: vec![crystal_render_api::VisualTile { column: 0, row: 0,
+                texture, priority: false, animation_frames: None,
+                source: crystal_render_api::VisualTileSource { tileset_id: "johto".into(),
+                    metatile_id: 1, tile_index: 1, subtile_column: 0, subtile_row: 0 } }], ..default() };
+        frame.validate().unwrap();
+        app.insert_resource(images);
         let sunlight = app.world_mut().spawn((VoxelSun,
             DirectionalLight { illuminance: 1000., shadow_maps_enabled: true, ..default() },
             Transform::default())).id();
@@ -458,8 +476,9 @@ mod tests {
             .init_resource::<Assets<Mesh>>()
             .init_resource::<Assets<VoxelMaterial>>()
             .insert_resource(PreparedDestination { ready_frames: 3,
-                settled_key: Some((key.clone(), settings.camera, None)),
+                settled_key: Some((key.clone(), settings.camera, None, 1_f32.to_bits())),
                 cache: TerrainRevisionCache { key: Some(key), built_frame: Some(frame),
+                    built_footing_heights: vec![0.],
                     solid_entity: Some(root), ..default() }, ..default() })
             .add_systems(Update, prepare);
         app.update();
@@ -475,6 +494,17 @@ mod tests {
         assert_eq!(destination.ready_frames, 3);
         assert_eq!(destination.builds.started, 0);
         assert_eq!(*app.world().get::<Visibility>(root).unwrap(), Visibility::Hidden);
+        // The source/settings remain identical, but a wider output changes
+        // the destination's visible grove footprint. Refresh it while hidden.
+        let Projection::Perspective(mut projection) = app.world().get::<Projection>(camera).unwrap().clone()
+            else { unreachable!() };
+        projection.aspect_ratio = 2.;
+        app.world_mut().entity_mut(camera).insert(Projection::Perspective(projection));
+        app.update();
+        assert_ne!(app.world().entity(root).get_ref::<Visibility>().unwrap().last_changed(), before,
+            "resizing the actual camera must refresh the settled hidden destination");
+        assert_eq!(*app.world().get::<Visibility>(root).unwrap(), Visibility::Hidden);
+        assert_eq!(app.world().resource::<PreparedDestination>().builds.started, 0);
     }
 
 }

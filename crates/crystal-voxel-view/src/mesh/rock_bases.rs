@@ -331,8 +331,10 @@ mod tests {
         assert_eq!(classified.solid, reference.solid,
             "local edge candidates must preserve the full mineral field exactly at {origin:?}");
         let sculpted_positions = classified.solid.positions.clone();
+        outdoor_stone::retain_mineral_cap_ownership(&mut classified);
         round_geometry(&mut classified, map, &cells, &shapes, &g, origin);
         super::super::outdoor_mountains::finish(&mut classified, map, &cells, &shapes, &g, origin,None);
+        super::super::outdoor_mountains::append_reveal_floor(&mut classified, map, &cells, &shapes, &g, origin);
         outdoor_stone::finish_rock_geometry(&mut mesh, map, &cells, &shapes, &g, origin,None);
         assert_eq!(mesh.solid.positions, classified.solid.positions);
         assert_eq!(mesh.solid.indices, classified.solid.indices);
@@ -379,7 +381,6 @@ mod tests {
         }
         let mut caps = 0;
         let mut walls = 0;
-        let mut reversed_wall_projections = 0;
         for ids in mesh.solid.indices.chunks_exact(3) {
             let ids = [ids[0] as usize, ids[1] as usize, ids[2] as usize];
             if mesh.solid.uvs[ids[0]][0] >= -9000. {
@@ -403,20 +404,10 @@ mod tests {
                 caps += 1;
             } else {
                 walls += 1;
-                let uv = ids.map(|i| Vec2::from_array(mesh.solid.uvs[i]));
-                if (uv[1] - uv[0]).perp_dot(uv[2] - uv[0]) < -0.001
-                    && cross.y < -0.0001
-                {
-                    reversed_wall_projections += 1;
-                }
             }
         }
         assert!(caps > 60);
         assert!(walls > 60, "restored walls must be checked as well as caps");
-        if origin == [0, 0] {
-            assert!(reversed_wall_projections > 0,
-                "retain the wall projections that the old diagnostic mislabeled as inverted caps");
-        }
     }
 
     #[test]

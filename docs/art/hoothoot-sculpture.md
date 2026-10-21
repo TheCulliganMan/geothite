@@ -1,5 +1,13 @@
 # Hoothoot sculpture and standard skin
 
+The [2026-10-21 owl fidelity revision](owl-fidelity.md) supersedes the shape,
+palette and measurements below. Hoothoot now has a broad pale belly, coral eyes,
+charcoal clock rings/diamond hands, short outward wings, a rooted low tail and
+one upright pink support. Its tucked second foot stays inside the body; world
+travel uses one support and a hop. The current skin has 7,029 vertices, 8,684
+triangles, 38 parts, 12 joints and 354,752 bytes. The remaining text records
+the earlier migration, including the obsolete shared-palette interpretation.
+
 Hoothoot now has one original canonical body at
 `models/battle_species/hoothoot.glb` under `crates/crystal-voxel-view`, authored
 by `tools/hoothoot_sculpt.py` and `tools/hoothoot_glb.py`. It fills a previously

@@ -1,38 +1,25 @@
 # Rhyhorn sculpture and rig
 
-`tools/rhyhorn_sculpt.py` authors the heavy gray barrel, lowered wedge muzzle,
-short rooted nasal horn, pointed ears, fitted red gaze, armored lower jaw,
-four stocky legs, knee cuffs, broad feet and twelve supported ivory claws.
-Four thick dorsal plates intersect the barrel, and the forehead crest remains
-seated in the head. No external geometry is imported.
+The current [full-turnaround fidelity review](rhino-larva-fidelity.md) replaces
+thin dorsal fins with four thick peaked shields wrapping both flanks. The
+original `tools/rhyhorn_sculpt.py` recipe authors a low tapered skull, fitted
+brow and red gaze, pointed ears with fitted openings, nasal horn, backed mouth,
+two small fangs, stocky supports, full flat feet and twelve blunt claws.
+Downloaded game meshes are viewing references only.
 
-`tools/rhino_glb.py` exports the canonical `rhyhorn.glb`: 46 parts,
-14,488 vertices, 25,368 triangles, 11 joints, 178 accessors and 520,208 bytes.
-Authoring height remains 1.11; the verified pack height is 0.9906 m.
-The neutral geometry digest is
-`e6ad87610f6a2b99b8e1780fddffabfb97166fdb1c8d50278ca6e765dcbc0188`.
+`tools/rhino_glb.py` exports 51 logical/runtime parts, 11,214 vertices,
+15,636 triangles, 11 joints, 217 accessors and 457,568 bytes. Authoring height
+remains 1.11; pack height remains 0.9906 m. The source and packed digest is
+`bc4995af2a77d7d299da382bff3dd3b7f05de0563c70fb128b0241ab609c67ae`.
 
-The skin carries the body and dorsal armor together, the head and face
-coherently, and gives the jaw, both ears and short tail independent joints.
-Four complete leg chains retain fixed floor pads and toe claws. Idle, attack
-and hit clips use the existing source-cue clocks, with neutral endpoints.
-World walking uses the four authored support chains. The dedicated builder,
-asset reader and runtime registry use the GLB; the obsolete static JSON is
-removed. The generic rock builder continues to reject both rhinoceroses.
+The body carries the shields; the skull carries its face, brow, horn, lining
+and fangs. The jaw, ears/openings and short tail have independent controls.
+Four supporting leg chains blend between body, leg and ground root. Pads and
+matching claws stay fixed in source-cue idle/action/recoil; whole named supports
+participate in world walking. All anatomical pivots follow the revised recipe.
 
-All 31 combined Python checks for Rhyhorn and Rhydon pass, including closed
-outward geometry, fitted markings, occupied attachment roots through motion,
-weights, local joint articulation, floor contact, winding and strain. Four
-focused Rust checks pass for their GPU paths at verified pack sizes, runtime
-articulation and world support chains. Front, side and rear poses of all three
-clips were inspected. Blender exports are byte-identical. Shiny checks are
-skipped at the user's request.
-
-The rebuilt native Route 29 Rhyhorn/Pidgey 3D/2D pair was inspected at identical
-state: frame 4472, checksum 3264865042, LCD frame 5203 and virtual time
-97.399773957. The complete armored silhouette, red gaze and species HUD are
-readable; all four pads meet the terrain. Normal admission at the original
-pack size passes with the existing -110-degree review angle. No shader errors
-were reported. Ignored evidence is `target/pokemon-native-review/rhyhorn-normal`.
-Both shared geometry and source-cue timing regressions pass. Grass height is
-untouched. Browser visual acceptance remains open.
+The fidelity review records the inspected game/front/back references, original
+corrections, executed checks, native coverage and remaining limits. Python
+source, skin and independent volume regressions are `test_rhyhorn_sculpt`,
+`test_rhino_glb` and `test_rhino_larva_fidelity`. The regular Blender builder
+reproduces the canonical asset exactly. No pack rebuild is needed.

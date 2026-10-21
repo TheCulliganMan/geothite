@@ -53,15 +53,39 @@ pub(crate) fn sculpt(
         p[2] = 0.025 + (p[2] - 0.025) * (1. + depth * fullness);
     }
     // Refine the coarse original arm rings into a rounded hanging surface.
-    crate::hand_surface::smooth_selection(mesh, ids, weights, &selected);
+    // The neighboring torso triangles must share the new sleeve edge points.
+    // An unsplit edge only meets them in bind pose and opens during skinning.
+    crate::hand_surface::smooth_selection_joined(mesh, ids, weights, &selected);
 }
 
-#[cfg(test)]
-mod tests {
+/// Hanging sleeves no longer have the source T-pose barrel's normals.
+/// Finish their actual refined surface across geometric texture seams.
+pub(crate) fn finish_normals(mesh: &mut SurfaceMeshData, look: Look) {
+    if !matches!(look.texture_key,"erika"|"falkner"|"kimono_girl") {return;}
+    let mut normals=std::collections::HashMap::<[i32;3],Vec3>::new();
+    for face in mesh.indices.chunks_exact(3) {
+        let p=[face[0],face[1],face[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
+        let normal=(p[1]-p[0]).cross(p[2]-p[0]).normalize_or_zero();
+        for corner in 0..3 {
+            let a=(p[(corner+1)%3]-p[corner]).normalize_or_zero();
+            let b=(p[(corner+2)%3]-p[corner]).normalize_or_zero();
+            *normals.entry(key(p[corner].to_array())).or_default()+=normal*a.dot(b).clamp(-1.,1.).acos();
+        }
+    }
+    for ((p,n),uv) in mesh.positions.iter().zip(&mut mesh.normals).zip(&mesh.uvs) {
+        if (0.25..1.34).contains(&p[0].abs())&&(1.75..2.60).contains(&p[1])
+            && uv[0]<0.625 && uv[1]>=0.475 {
+            *n=normals[&key(*p)].normalize_or_zero().to_array();
+        }
+    }
+}
+
+#[cfg(any(test, all(feature = "people-review", not(target_arch = "wasm32"))))]
+pub(crate) mod tests {
     use super::*;
-    #[test]
-    #[ignore = "requires supplied male and female rigs in CRYSTAL_OPEN_MODEL_ROOT"]
-    fn supplied_kimono_sleeves_preserve_skin_rig_and_unrelated_characters() {
+    #[cfg_attr(test, test)]
+    #[cfg_attr(test, ignore = "requires supplied male and female rigs in CRYSTAL_OPEN_MODEL_ROOT")]
+    pub(crate) fn supplied_kimono_sleeves_preserve_skin_rig_and_unrelated_characters() {
         use crate::{
             new_bark_actors::character_meshes::CharacterKind::{Erika, Falkner, KimonoGirl, Mom},
             open_people::PersonRig,
@@ -110,6 +134,19 @@ mod tests {
             }
             assert!(changed.iter().all(|&n| n > 40));
             assert!(drop > 0.18);
+            let mut edges = std::collections::HashMap::new();
+            for face in mesh.indices.chunks_exact(3) {
+                for edge in 0..3 {
+                    let a = key(mesh.positions[face[edge] as usize]);
+                    let b = key(mesh.positions[face[(edge+1)%3] as usize]);
+                    *edges.entry((a.min(b), a.max(b))).or_insert(0) += 1;
+                }
+            }
+            for ((a,b), count) in edges {
+                if [a,b].iter().all(|p| (190_000..260_000).contains(&p[1]) && p[0].abs() < 134_000) {
+                    assert_eq!(count, 2, "{} open sleeve/torso edge {a:?}/{b:?}", look.texture_key);
+                }
+            }
             for i in 0..mesh.positions.len() {
                 assert!(Vec3::from_array(mesh.positions[i]).is_finite());
                 let n = Vec3::from_array(mesh.normals[i]);

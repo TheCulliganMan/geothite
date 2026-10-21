@@ -1,25 +1,26 @@
 #!/usr/bin/env python3
 """Decoded planted talons, physical claw strike and coherent fitted features."""
-import math,unittest
+import os,math,unittest
 from pathlib import Path
 import sneasel_glb as author
 import test_gengar_glb as skin
 from skin_glb_test_support import IDENTITY
 from sculpt_test_support import parts_overlap,ray_intersections
 PATH=Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species/sneasel.glb'
+PATH=Path(os.environ.get('SNEASEL_GLB',str(PATH)))
 class SneaselSkinTests(unittest.TestCase):
  @classmethod
  def setUpClass(cls):cls.blob=PATH.read_bytes();cls.m=skin.Model(cls.blob)
  def part(self,p,mats):return {'positions':[v for point in self.m.posed(p,mats) for v in point],'indices':self.m.indices[p]}
  def test_canonical_full_geometry_neutral_bind_and_budgets(self):
   m=self.m;self.assertEqual(self.blob,author.export_sneasel(author.decode_sneasel(self.blob)))
-  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(38,8779,9936,13))
+  self.assertEqual((len(m.parts),sum(map(len,m.vertices)),sum(len(p)//3 for p in m.indices),len(m.joints)),(38,8992,8736,13))
   self.assertLess(len(self.blob),1024*1024);self.assertLessEqual(len(m.doc['accessors']),256)
   for matrix in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(matrix,IDENTITY)),1e-7)
  def test_coherent_face_palms_claws_feathers_and_fixed_feet(self):
   m=self.m
   for p,n in enumerate(m.names):
-   owner=0 if n.startswith(('Foot /','Talon / paired')) else 3 if n.startswith(('Head /','Eye /','Mouth /')) or n=='Gem / fitted gold oval forehead' else 1 if n=='Gem / fitted gold oval chest' else 4 if n.startswith('Ear /') else 5 if n.startswith('Plume /') else 6 if n.startswith('Tail /') else (8 if (n.split()[-1] if n.startswith('Hand /') else n.split()[-2])=='-1' else 10) if n.startswith(('Hand /','Talon / hooked')) else None
+   owner=0 if n.startswith(('Foot /','Talon / paired')) else 3 if n.startswith(('Head /','Eye /','Mouth /')) or n=='Gem / fitted gold oval forehead' else 1 if n=='Gem / fitted gold oval chest' else (4 if n.endswith('-1') else 5) if n.startswith('Ear /') else 5 if n.startswith('Plume /') else 6 if n.startswith('Tail /') else (8 if (n.split()[-1] if n.startswith('Hand /') else n.split()[-2])=='-1' else 10) if n.startswith(('Hand /','Talon / hooked')) else None
    if owner is not None:self.assertTrue(all(ids==[owner,0,0,0] for ids in m.ids[p]),n)
  def test_floor_contacts_neutral_endpoints_and_visible_articulation(self):
   m=self.m;moved=set()
@@ -60,7 +61,7 @@ class SneaselSkinTests(unittest.TestCase):
    if n.startswith(('Arm /','Leg /')):pairs.append((p,body))
    if n.startswith('Hand /'):pairs.append((p,m.names.index('Arm / curved reaching forelimb '+n.split()[-1])))
    if n.startswith('Talon / hooked'):pairs.append((p,m.names.index('Hand / broad claw-bearing palm '+n.split()[-2])))
-   if n.startswith('Foot /'):pairs.append((p,m.names.index('Leg / curved outward hock '+n.split()[-1])))
+   if n.startswith('Foot /'):pairs.append((p,m.names.index('Leg / upright supporting hock '+n.split()[-1])))
    if n.startswith('Talon / paired'):pairs.append((p,m.names.index('Foot / broad grounded teal pad '+n.split()[-2])))
   for clip in m.clips:
    for t in (0.,.18,.55):
@@ -78,8 +79,8 @@ class SneaselSkinTests(unittest.TestCase):
      elif n.startswith('Eye / narrow'):parent='Eye / fitted ivory angular white '+side
      elif n.startswith('Eye / vertical'):parent='Eye / narrow fitted red iris '+side
      elif n.startswith('Gem /'):parent='Head / tapered' if n.endswith('forehead') else 'Body / slim'
-     elif n.startswith('Mouth / fitted open'):parent='Head / tapered'
-     elif n.startswith(('Mouth / fitted pink','Mouth / small')):parent='Mouth / fitted open'
+     elif n.startswith('Mouth / fitted narrow'):parent='Head / tapered'
+     elif n.startswith('Mouth / small'):parent='Head / tapered'
      if parent:
       q=next(i for i,name in enumerate(m.names) if name.startswith(parent));support=self.part(q,mats)
       for x,y,z in set(map(tuple,m.posed(p,mats))):

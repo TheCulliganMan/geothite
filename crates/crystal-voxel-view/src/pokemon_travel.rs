@@ -47,18 +47,18 @@ pub(super) fn style(name: &str) -> Style {
         "poliwag" | "politoed" | "natu" | "sentret" | "kangaskhan" | "sunkern" | "cleffa"
         | "igglybuff" | "pichu" | "togepi" | "azumarill" | "marill" | "oddish" | "bellsprout"
         | "weepinbell" | "victreebel" | "pineco" | "forretress" | "kakuna" | "metapod"
-        | "pupitar" | "aipom" | "venonat" | "raticate" | "nidorina" => Hop,
+        | "pupitar" | "aipom" | "venonat" | "raticate" | "nidorina" | "hoothoot" => Hop,
         "nidoran_f" | "nidoran_m" | "nidorino" | "rattata" | "eevee" | "jolteon" | "flareon"
         | "espeon" | "umbreon" | "vulpix" | "ninetales" | "suicune" | "raikou" | "entei"
         | "arcanine" | "growlithe" | "houndour" | "houndoom" => Bound,
         "tauros" | "ponyta" | "rapidash" | "stantler" | "girafarig" | "mareep" | "vaporeon"
-        | "chikorita" | "bayleef" | "meganium" | "cyndaquil" | "quilava" => Trot,
+        | "chikorita" | "bayleef" | "meganium" => Trot,
         "meowth" | "persian" | "furret" | "swinub" | "sandshrew" | "sandslash" => Scurry,
         "snorlax" | "tyranitar" | "blastoise" | "feraligatr" | "golem" | "graveler" | "rhydon"
         | "rhyhorn" | "donphan" | "piloswine" | "ursaring" | "slowbro" | "slowking"
         | "exeggutor" | "nidoqueen" | "nidoking" | "machamp" | "ampharos" => Heavy,
         "psyduck" | "squirtle" | "wartortle" | "totodile" | "croconaw" | "wooper" | "quagsire"
-        | "slowpoke" | "miltank" | "chansey" | "blissey" | "delibird" | "hoothoot" | "xatu"
+        | "slowpoke" | "miltank" | "chansey" | "blissey" | "delibird" | "xatu"
         | "clefairy" | "clefable" | "jigglypuff" | "wigglytuff" | "gloom" | "vileplume"
         | "bellossom" | "corsola" | "wobbuffet" | "lickitung" | "teddiursa" | "phanpy"
         | "snubbull" | "flaaffy" | "tangela" => Waddle,
@@ -76,7 +76,7 @@ pub(super) fn style(name: &str) -> Style {
         | "machoke" | "machop" | "magby" | "magmar" | "mankey" | "marowak" | "mewtwo"
         | "mr__mime" | "pikachu" | "pinsir" | "poliwhirl" | "poliwrath" | "primeape" | "raichu"
         | "scizor" | "scyther" | "smeargle" | "smoochum" | "sneasel" | "sudowoodo" | "sunflora"
-        | "typhlosion" | "tyrogue" => Walk,
+        | "cyndaquil" | "quilava" | "typhlosion" | "tyrogue" => Walk,
         "unown" => Float,
         name if name.starts_with("unown_") => Float,
         _ => panic!("species lacks a reviewed travel style: {name}"),
@@ -263,7 +263,11 @@ pub(super) fn build(rig: &mut SpeciesRig) {
             }
         }
     }
-    if matches!(kind, Style::Roll | Style::Flop) || rig.ground_vertices.is_empty() {
+    if kind == Style::Spin {
+        rig.ground_vertices = (0..rig.neutral.positions.len())
+            .filter(|&v| rig.neutral.positions[v][1] <= rig.neutral_bounds.0.y + height * 0.003)
+            .collect();
+    } else if matches!(kind, Style::Roll | Style::Flop) || rig.ground_vertices.is_empty() {
         rig.ground_vertices = (0..rig.neutral.positions.len())
             .filter(|&v| {
                 matches!(kind, Style::Roll | Style::Flop)
@@ -470,9 +474,11 @@ pub(super) fn finish(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Tran
         }
     }
     if kind == Style::Spin {
-        // Turn the complete assembly after planting; solving again would
-        // cancel the spin at the feet and twist the body off its supports.
-        let pivot = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
+        // Raised legs stay on the authored spin skin. Turn around the actual
+        // crown contact rather than the center displaced by its curved tail.
+        let (lo, hi) = point_bounds(rig.ground_vertices.iter()
+            .map(|&vertex| Vec3::from_array(rig.neutral.positions[vertex])));
+        let pivot = (lo + hi) * 0.5;
         let rotation = Quat::from_rotation_y(phase);
         pose[0].rotation = rotation * pose[0].rotation;
         pose[0].translation += pivot - rotation * pivot;
@@ -836,7 +842,7 @@ mod tests {
 
     #[test]
     fn travel_hops_leave_the_floor_land_and_stop_without_residual_motion() {
-        for name in ["KANGASKHAN", "POLITOED", "NATU", "BULBASAUR", "EXEGGCUTE"] {
+        for name in ["KANGASKHAN", "POLITOED", "NATU", "BULBASAUR", "EXEGGCUTE", "HOOTHOOT"] {
             let canonical = crate::species_rig::for_species(name).unwrap();
             let rig = world_rig(canonical);
             let mut pose = vec![Transform::IDENTITY; rig.joints.len()];

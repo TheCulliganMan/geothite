@@ -3,7 +3,7 @@
 import hashlib,json,math,struct
 from functools import lru_cache
 from pathlib import Path
-from aerodactyl_sculpt import sculpture,HEIGHT
+from aerodactyl_sculpt import sculpture,HEIGHT,TAIL
 from skin_glb import Glb,COORDINATES,packed,quantized_weights,quaternion_xyz,envelope,smoothstep
 SPECIES=('aerodactyl',)
 HEIGHTS={'aerodactyl':HEIGHT}
@@ -20,7 +20,7 @@ def authoring_model(species):
  if species not in SPECIES:raise ValueError('unknown fossil flyer')
  return sculpture()
 
-REST_DIGESTS={'aerodactyl':'f49ef0e44a17c7426e61b0c429eb3215a39aa03fd15a48cf57d24a199b29aa0a'}
+REST_DIGESTS={'aerodactyl':'a8dd3fd738a67c617b2219131402810876d7f8f0b2da6ce8f9045985ea19cc17'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 
 @lru_cache(maxsize=1)
@@ -31,7 +31,7 @@ def normalized(point):
  lo,scale=authoring_transform();return tuple((v-(lo if i==1 else 0.))*scale for i,v in enumerate(point))
 
 def joints():
- raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.44,-.06)),('head',1,(0.,.985,.015)),('jaw',2,(0.,.938,.07)),('wing_left',1,(-.105,.685,-.090294375)),('wing_right',1,(.105,.685,-.090294375)),('leg_left',0,(-.11,.31,-.040)),('leg_right',0,(.11,.31,-.040)),('tail',1,(0.,.29,-.13))]
+ raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.41,-.045)),('head',1,(0.,.64,.17)),('jaw',2,(0.,.63,.21)),('wing_left',1,(-.105,.47,.03)),('wing_right',1,(.105,.47,.03)),('leg_left',0,(-.11,.28,-.10)),('leg_right',0,(.11,.28,-.10)),('tail',1,TAIL[0])]
  return tuple((n,p,(0.,0.,0.) if p is None else normalized(v)) for n,p,v in raw)
 JOINTS={'aerodactyl':joints()}
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
@@ -45,14 +45,14 @@ def influences(pairs):
 def skin_weights(species,title,point):
  lo,scale=authoring_transform();y=point[1]/scale+lo
  if title.startswith('Body /'):
-  a=smoothstep(.20,.44,y);b=smoothstep(.86,.99,y);return influences(((0,1.-a),(1,a*(1.-b)),(2,a*b)))
+  a=smoothstep(.20,.40,y);b=smoothstep(.57,.67,y);return influences(((0,1.-a),(1,a*(1.-b)),(2,a*b)))
  if title.startswith('Leg /'):
   j=6 if title.endswith('-1') else 7;a=smoothstep(.10,.22,y);return influences(((0,1.-a),(j,a)))
  if title.startswith(('Foot /','Foot claw /')):return rigid(0)
- if title.startswith(('Skull /','Skull horn /','Jaw hinge /','Eye socket /','Eye white /','Pupil /','Nostril /','Mouth ceiling /')):return rigid(2)
+ if title.startswith(('Skull /','Skull horn /','Jaw hinge /','Brow /','Eye socket /','Eye white /','Iris /','Pupil /','Nostril /','Mouth ceiling /','Mouth back /')):return rigid(2)
  if title.startswith(('Jaw /','Mouth floor /','Tongue /')):return rigid(3)
  if title.startswith('Tooth /'):return rigid(2 if ' upper ' in title else 3)
- if title.startswith(('Wing /','Wing arm /','Wing finger /','Wing claw /')):
+ if title.startswith(('Wing /','Wing back /','Wing arm /','Wing finger /','Wing claw /')):
   side=int(title.split()[-2] if title.startswith(('Wing finger /','Wing claw /')) else title.split()[-1]);return rigid(4 if side<0 else 5)
  if title.startswith(('Tail /','Tail tip /')):return rigid(8)
  raise ValueError('unowned fossil anatomy: '+title)
@@ -73,7 +73,7 @@ def pose_angles(species,clip,t):
   # gape below the reviewed source clearance. Idle retains a small jaw sway.
   elif name=='jaw':angle=(.025*b if clip=='idle' else .10*abs(b),0.,0.)
   elif name.startswith('wing_'):
-   beat=math.sin(math.tau*t*4) if clip=='idle' else a;angle=(.020*b,side*.018*b,side*(.22*beat if clip=='idle' else .18*a))
+   phase=math.tau*t*4;beat=math.sin(phase)*(1.-math.cos(phase))*.769800358919501 if clip=='idle' else a;angle=(.020*b,side*.018*b,side*(.22*beat if clip=='idle' else .18*a))
   elif name.startswith('leg_'):angle=(0.,side*.025*b,0.)
   else:angle=(0.,-.075*b,0.)
   out.append(angle)
@@ -83,7 +83,7 @@ def pack_parts(model):
  result=[];groups={}
  for order,p in enumerate(model['primitives']):
   title=p['part'];prefix=title.split(' /')[0];owner=skin_weights('aerodactyl',title,(0.,0.,0.))[0][0]
-  group=('head ink' if prefix in ('Eye socket','Pupil','Nostril') else prefix) if prefix in ('Jaw hinge','Skull horn','Eye socket','Eye white','Pupil','Nostril','Tooth','Wing finger','Wing claw','Foot claw') else None
+  group=('head ink' if prefix in ('Eye socket','Pupil','Nostril') else prefix) if prefix in ('Jaw hinge','Skull horn','Brow','Eye socket','Eye white','Iris','Pupil','Nostril','Tooth','Wing finger','Wing claw','Foot claw') else None
   if group is None:result.append((p,{'source_order':order}));continue
   key=(group,owner,tuple(p['base_color']))
   if key not in groups:

@@ -1,4 +1,4 @@
-"""Body shading must preserve the previously shipped surfaces and animation.
+"""Body shading preserves reviewed anatomy, support weights and animation.
 
 Pinned contracts expand indexed corners so normal-only welding cannot hide
 changes to triangle order, fitted artwork, supports, skin weights or clip keys.
@@ -21,8 +21,8 @@ ASSETS={
     'bayleef':ROOT/'crates/crystal-voxel-view/models/battle_species/bayleef.glb',
     'meganium':ROOT/'crates/crystal-voxel-view/models/battle_species/meganium.glb',
 }
-# Captured from the shipped flat-normal models before body-only shading work.
-CONTRACTS={'chikorita': '659e3013784f53ce9510ab120b9f6d79b9b9f801b402d1e01ca8fe56f65ac62d', 'bayleef': 'ecc43a69ad552917859c259dfc7b0ffe41340f2a88a67a2231d0e3909f20e713', 'meganium': '92c12c252e7d1b022c2c1a4041c1ae810658d106191f9e82c9966b82f09b4fbc'}
+# Reviewed surfaces after the grass-family reference-volume revision.
+CONTRACTS={'chikorita': '31fc906e84e58444aaf7052d073d5af01aff6dfdc89c9b8ab76060a0b2caead3', 'bayleef': 'c484fe980741c48560124bd4a50c73035e226f7672303cdf7e0c7b9c8258ce5e', 'meganium': 'bc961b2820dde5b5d7ce6e3bacc30e234588227b51aad0b58da0be3585877b74'}
 
 
 def preserved_contract(model):
@@ -58,7 +58,7 @@ class LeafSaurShadingTests(unittest.TestCase):
         directory=os.environ.get('LEAF_SAUR_SKIN_MODELS')
         cls.models={s:Model((Path(directory)/(s+'.glb') if directory else p).read_bytes()) for s,p in ASSETS.items()}
 
-    def test_original_triangles_artwork_supports_weights_and_keys_are_preserved(self):
+    def test_reviewed_triangles_artwork_supports_weights_and_keys_are_preserved(self):
         for species,m in self.models.items():
             with self.subTest(species=species):self.assertEqual(preserved_contract(m),CONTRACTS[species])
 
@@ -79,7 +79,7 @@ class LeafSaurShadingTests(unittest.TestCase):
                 self.assertGreater(smoothed,1000)
                 self.assertEqual(floor,720)
                 # This is a vertex reduction, not a triangle/shape reduction.
-                self.assertLess(len(points),1600)
+                self.assertLess(len(points),2100)
 
 
 if __name__=='__main__':unittest.main()

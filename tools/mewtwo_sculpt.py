@@ -13,15 +13,15 @@ from skin_glb import COORDINATES
 HEIGHT=1.45
 PALE=(.83,.81,.86);PURPLE=(.60,.38,.64);INK=(.10,.08,.13)
 WHITE=(.98,.98,.97);IRIS=(.54,.31,.62)
-TAIL_POINTS=((0.,.63,-.06),(-.05,.45,-.35),(-.33,.44,-.56),(-.63,.65,-.59),(-.70,.99,-.53),(-.55,1.13,-.45),(-.34,.99,-.39),(-.27,.80,-.38))
-TAIL_RADII=(.12,.12,.105,.090,.075,.065,.058,.035);TAIL_STEPS=8
+TAIL_POINTS=((0.,.63,-.06),(-.03,.48,-.34),(-.20,.37,-.72),(-.58,.31,-1.07),(-1.0,.36,-1.12),(-1.40,.48,-1.05),(-1.60,.66,-.90),(-1.70,.75,-.72))
+TAIL_RADII=(.15,.14,.12,.105,.095,.085,.075,.065);TAIL_STEPS=8
 BACK_POINTS=((0.,1.01,-.12),(0.,1.15,-.245),(0.,1.31,-.235),(0.,1.44,-.060))
 
 @lru_cache(maxsize=1)
 def raw_sculpture():
  body=loft('Body / tapered pale genetic torso and waist',PALE,curved_profiles(
   ((.54,.080,.085,-.020),(.68,.150,.115,-.025),(.86,.105,.090,-.015),
-   (.99,.125,.100,0.),(1.09,.220,.145,0.),(1.17,.210,.120,.025),
+   (.99,.125,.100,0.),(1.09,.185,.135,0.),(1.17,.180,.120,.025),
    (1.23,.130,.085,.035),(1.27,.070,.060,.045)),4),36)
  head=loft('Head / angular genetic cranium cheeks and long muzzle',PALE,curved_profiles(
   ((1.28,.055,.070,.170),(1.31,.095,.100,.160),(1.38,.160,.140,.105),
@@ -43,23 +43,25 @@ def raw_sculpture():
   p.append(paint('Glint / tiny ivory genetic eye spark '+str(side),WHITE,oval(x+side*.004,y+.009,.0035,.005,12),iris,.003,1))
   p.append(paint('Nostril / tiny fitted genetic muzzle slit '+str(side),INK,oval(side*.023,1.335,.003,.0025,12),head,.002,0))
   p.append(paddle('Upper arm / pale genetic shoulder and humerus '+str(side),PALE,
-   [(side*.205,1.115,.015),(side*.286,1.005,.010),(side*.320,.920,.035)],[.067,.046,.037],[.058,.044,.036],segments=20,steps=4))
+   [(side*.177,1.115,.035),(side*.265,1.025,.055),(side*.293,.925,.100)],[.064,.047,.037],[.058,.044,.036],segments=20,steps=4))
   p.append(paddle('Forearm / tapered pale genetic forearm '+str(side),PALE,
-   [(side*.320,.920,.035),(side*.351,.850,.061),(side*.380,.790,.100)],[.041,.047,.033],[.038,.042,.030],segments=20,steps=4))
-  p.append(ellipsoid('Hand / three-finger genetic palm '+str(side),PALE,(side*.393,.755,.120),(.046,.058,.039),24,14))
+   [(side*.293,.925,.100),(side*.326,.855,.135),(side*.350,.795,.180)],[.041,.047,.033],[.038,.042,.030],segments=20,steps=4))
+  p.append(ellipsoid('Hand / three-finger genetic palm '+str(side),PALE,(side*.360,.765,.200),(.052,.062,.045),24,14))
   paths=[[(.374,.750,.140),(.345,.700,.175),(.360,.670,.180)],
          [(.395,.720,.130),(.410,.650,.150),(.400,.620,.180)],
          [(.425,.750,.130),(.460,.690,.140),(.455,.650,.170)]]
   for j,path in enumerate(paths):
-   path=[(side*x,y,z) for x,y,z in path]
+   path=[(side*(x-.033),y+.010,z+.080) for x,y,z in path]
    p.append(curved_tube(f'Finger / long rounded genetic digits {side} {j}',PALE,path,[.016,.014,.013],12))
-   p.append(ellipsoid(f'Fingertip / round genetic contact pad {side} {j}',PALE,path[-1],(.020,.021,.020),16,10))
-  p.append(ellipsoid('Haunch / powerful pale genetic thigh '+str(side),PALE,(side*.170,.570,.005),(.145,.240,.150),28,20))
-  p.append(curved_tube('Shin / digitigrade pale genetic hock '+str(side),PALE,
-   [(side*.180,.415,.015),(side*.155,.280,.035),(side*.175,.095,.090)],[.075,.055,.050],20))
-  p.append(ellipsoid('Foot / broad pale genetic ankle pad '+str(side),PALE,(side*.178,.063,.130),(.090,.063,.135),24,16))
-  for j,(dx,z) in enumerate(((-.065,.235),(.065,.225),(0.,.035))):
-   p.append(ellipsoid(f'Toe / three rounded genetic foot pads {side} {j}',PALE,(side*.178+dx,.035,z),(.045,.035,.057),20,12))
+   p.append(ellipsoid(f'Fingertip / round genetic contact pad {side} {j}',PALE,path[-1],(.025,.024,.024),16,10))
+  p.append(ellipsoid('Haunch / powerful pale genetic thigh '+str(side),PALE,(side*.190,.570,.025),(.160,.230,.170),28,20))
+  # The reference's lower leg descends nearly vertically from the haunch.
+  # Keep the ankle under the knee; the long toe pads provide the forward reach.
+  p.append(curved_tube('Shin / upright pale genetic lower leg '+str(side),PALE,
+   [(side*.200,.415,.040),(side*.220,.245,.015),(side*.250,.095,0.)],[.075,.052,.049],20))
+  p.append(ellipsoid('Foot / broad pale genetic ankle pad '+str(side),PALE,(side*.250,.063,.105),(.090,.063,.135),24,16))
+  for j,(dx,z) in enumerate(((-.065,.215),(.065,.205),(0.,.005))):
+   p.append(ellipsoid(f'Toe / three rounded genetic foot pads {side} {j}',PALE,(side*.250+dx,.035,z),(.045,.035,.057),20,12))
  mouth=[]
  for i in range(19):
   x=-.055+.110*i/18;y=1.302+.003*(abs(x)/.055)**2
@@ -67,7 +69,7 @@ def raw_sculpture():
  p.append(tube('Mouth / fitted restrained genetic muzzle seam',INK,mouth,[.0013]*len(mouth),8))
  points,radii=smooth(TAIL_POINTS,TAIL_RADII,TAIL_STEPS)
  p.append(crease_normals(tube('Tail / continuous heavy purple genetic sweep',PURPLE,points,radii,24),35.))
- p.append(ellipsoid('Tail tip / rounded purple genetic terminal',PURPLE,(-.29,.840,-.38),(.065,.120,.060),24,16))
+ p.append(ellipsoid('Tail tip / rounded purple genetic terminal',PURPLE,TAIL_POINTS[-1],(.078,.080,.080),24,16))
  return {'name':'mewtwo','version':1,'coordinate_system':COORDINATES,'primitives':p}
 
 def sculpture(normalize=True):

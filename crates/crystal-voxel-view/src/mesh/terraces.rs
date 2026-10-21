@@ -30,7 +30,8 @@ pub(super) fn support_correction(
     cell: bevy::prelude::UVec2,
     foot: Vec2,
 ) -> f32 {
-    if frame.jump_ledges.is_empty() || !super::jump_changes_floor_level(&frame.map_id) {
+    if (frame.jump_ledges.is_empty() && frame.terrace_datum.is_none())
+        || !super::jump_changes_floor_level(&frame.map_id) {
         return 0.;
     }
     let g = GridGeometry {
@@ -79,6 +80,7 @@ mod town_ledge_lip;
 
 pub(super) struct Field<'a> {
     datum: Option<&'a crystal_render_api::VisualTerraceDatum>,
+    source_regions:&'a [crystal_render_api::VisualSourceRegion],
     edges: &'a [VisualJumpLedge],
     g: &'a GridGeometry,
     origin: [i32; 2],
@@ -89,6 +91,7 @@ impl<'a> Field<'a> {
     pub(super) fn new(edges: &'a [VisualJumpLedge], g: &'a GridGeometry, origin: [i32; 2]) -> Self {
         Self {
             datum: None,
+            source_regions:&[],
             edges,
             g,
             origin,
@@ -113,6 +116,9 @@ impl<'a> Field<'a> {
     }
     pub(super) fn with_datum(mut self, datum:Option<&'a crystal_render_api::VisualTerraceDatum>)->Self {
         self.datum=datum;self
+    }
+    fn with_source_regions(mut self,regions:&'a [crystal_render_api::VisualSourceRegion])->Self {
+        self.source_regions=regions;self
     }
 
     /// A finite ledge raises its entire upstream terrace. Beyond its ends,
@@ -219,6 +225,34 @@ impl<'a> Field<'a> {
                 && along <= b + 0.05
         })
     }
+
+    fn cut_at(&self, point: Vec2) -> bool {
+        let near = (point - point.round()).abs();
+        if near.min_element() > 0.0001 { return false; }
+        self.edges.iter().any(|edge| {
+            let start = edge.start.as_vec2();
+            let (along, a, b) = if edge.descent.x == 0 {
+                (point.x, start.x, edge.end.x as f32)
+            } else {
+                (point.y, start.y, edge.end.y as f32)
+            };
+            (point - start).dot(edge.descent.as_vec2()).abs() <= 0.0001
+                && along >= a - 0.0001 && along <= b + 0.0001
+        })
+    }
+
+    fn joined_mineral_height(&self, point: Vec2, cells: &[&VisualTile]) -> Option<f32> {
+        self.datum?;
+        let cell = point.floor().as_ivec2() - IVec2::from_array(self.origin);
+        if cell.x < 0 || cell.y < 0 || cell.x >= self.g.width as i32
+            || cell.y >= self.g.height as i32
+            || self.water_owned(cell.y as usize * self.g.width + cell.x as usize, cells)
+            || self.cut_at(point)
+        {
+            return None;
+        }
+        Some(self.map_height(point))
+    }
 }
 
 pub(super) fn finish(
@@ -237,6 +271,11 @@ pub(super) fn finish_on_map(mesh: &mut TerrainMeshData, map: &str,
 }
 pub(super) fn finish_with_datum(mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTile],
     g:&GridGeometry,origin:[i32;2],edges:&[VisualJumpLedge],datum:Option<&crystal_render_api::VisualTerraceDatum>) {
+    finish_with_source_regions(mesh,map,cells,g,origin,edges,datum,&[]);
+}
+pub(super) fn finish_with_source_regions(mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTile],
+    g:&GridGeometry,origin:[i32;2],edges:&[VisualJumpLedge],datum:Option<&crystal_render_api::VisualTerraceDatum>,
+    regions:&[crystal_render_api::VisualSourceRegion]) {
     // Tin Tower's one-way hops cross timber barriers on a level indoor floor.
     // They do not describe cumulative outdoor hills or changes of floor level.
     if !super::jump_changes_floor_level(map) {
@@ -245,7 +284,7 @@ pub(super) fn finish_with_datum(mesh:&mut TerrainMeshData,map:&str,cells:&[&Visu
         close_flat_rock_contacts(mesh,map,cells,g,origin,None);
         return;
     }
-    let mut field = Field::new(edges, g, origin).with_datum(datum);
+    let mut field = Field::new(edges,g,origin).with_datum(datum).with_source_regions(regions);
     if kanto_family(cells.iter().copied()) {
         field=field.with_kanto_levels();
     }
@@ -627,9 +666,8 @@ fn shape_surface_excluding_with_lips_on_map(surface: &mut SurfaceMeshData, cells
             }
         }
     }
-    let source_point = |uv: [f32; 2]| Vec2::new(
-        (-uv[0] - 10000.) / field.g.tile_width,
-        (-uv[1] - if uv[1] < -50000. {60000.} else if uv[1] < -30000. { 40000. } else { 20000. }) / field.g.tile_height);
+    let source_point=|i:usize,uv:[f32;2]|super::mineral_coords::point(old[i],uv,
+        field.g,field.origin,field.source_regions)+Vec2::new(field.origin[0] as f32,field.origin[1] as f32);
     for (number, tri) in surface.indices.chunks_exact(3).enumerate() {
         let ids = [tri[0], tri[1], tri[2]].map(|i| i as usize);
         // Native brick bevels may be clipped exactly onto a land boundary.
@@ -717,7 +755,7 @@ fn shape_surface_excluding_with_lips_on_map(surface: &mut SurfaceMeshData, cells
             .cross(Vec3::from_array(old[ids[2]]) - Vec3::from_array(old[ids[0]]))
             .normalize_or_zero();
         let mineral_cell = (mineral && field.datum.is_some()).then(|| {
-            let source=ids.map(|i|source_point(surface.uvs[i]));
+            let source=ids.map(|i|source_point(i,surface.uvs[i]));
             let mut center=source.into_iter().sum::<Vec2>()/3.;
             let lo=source.into_iter().fold(Vec2::splat(f32::INFINITY),Vec2::min);
             let hi=source.into_iter().fold(Vec2::splat(f32::NEG_INFINITY),Vec2::max);
@@ -746,7 +784,7 @@ fn shape_surface_excluding_with_lips_on_map(surface: &mut SurfaceMeshData, cells
             // cell and tilt its normal. The mineral shader's original map
             // coordinates retain the source face independently of that relief.
             let source = ids.map(|i| {
-                source_point(surface.uvs[i])
+                source_point(i,surface.uvs[i])
             });
             let extent = source.iter().copied().fold(
                 (Vec2::splat(f32::INFINITY), Vec2::splat(f32::NEG_INFINITY)),
@@ -819,15 +857,25 @@ fn shape_surface_excluding_with_lips_on_map(surface: &mut SurfaceMeshData, cells
             // Both faces of a mineral contact must remove the same legacy
             // bank rise. A zero-floor side may bury its toe, but cannot tear
             // away from the neighboring bank side above that ground contact.
-            let contact = mineral.then(|| source_point(surface.uvs[i])).and_then(|p| {
+            let contact = mineral.then(|| source_point(i,surface.uvs[i])).and_then(|p| {
                 let key = mineral_contact_cells(p)?;
                 let top = *contact_tops.entry(key).or_insert_with(|| {
                     mineral_contact_top(key, cells, field, h)
                 });
                 top.map(|top| (h, top))
             });
-            let upper = if let Some(cell)=mineral_cell.filter(|_|contact.or(mineral_wall).is_none()) {
-                let source=source_point(surface.uvs[i]).clamp(cell+Vec2::splat(0.0001),cell+Vec2::splat(0.9999));
+            let joined_height = mineral.then(|| source_point(i,surface.uvs[i]))
+                .filter(|_| contact.or(mineral_wall).is_none())
+                .and_then(|p| field.joined_mineral_height(p, cells));
+            let upper = if let Some(height) = joined_height {
+                // Rock sculpting joins these samples before terrace fitting.
+                // Both copies must read that same original map point: clamping
+                // each triangle into its own cell separates a synthetic border
+                // cap from its raised native neighbor. Real authored drops keep
+                // their owning-side sampling and existing closing faces.
+                height
+            } else if let Some(cell)=mineral_cell.filter(|_|contact.or(mineral_wall).is_none()) {
+                let source=source_point(i,surface.uvs[i]).clamp(cell+Vec2::splat(0.0001),cell+Vec2::splat(0.9999));
                 field.map_height(source)
             } else {field.height(bank_contact.map_or(position+toward,|p|p.0))};
             let y = if let Some((old_floor, old_top)) = contact.or(mineral_wall) {
@@ -871,7 +919,7 @@ fn shape_surface_excluding_with_lips_on_map(surface: &mut SurfaceMeshData, cells
         let mut groups=HashMap::<[i64;3],(f32,f32,usize,[f32;2])>::new();
         for (i,p) in old.iter().enumerate() {
             if !active[i] || surface.uvs[i][0]>=-9000. {continue;}
-            let source=source_point(surface.uvs[i]);
+            let source=source_point(i,surface.uvs[i]);
             if (source-source.round()).abs().min_element()>0.001 {continue;}
             let y=surface.positions[i][1];
             let key=p.map(|v|(v*10000.).round() as i64);
@@ -1465,6 +1513,30 @@ mod tests {
     }
 
     #[test]
+    fn a_source_datum_without_visible_jump_edges_still_fits_actor_feet_to_the_plane() {
+        let mut frame=super::super::tests::frame(1,1,
+            vec![super::super::tests::source_with_tile(1,0,0,0x05)]);
+        frame.map_id="Route44".into();
+        frame.terrace_datum=Some(std::sync::Arc::new(crystal_render_api::VisualTerraceDatum {
+            origin:IVec2::ZERO,size:bevy::prelude::UVec2::ONE,levels:vec![[0.,0.,2.,2.]].into(),
+            walkable_mineral:Default::default(),water_barriers:Default::default(),open_water:None,
+        }));
+        let g=GridGeometry {width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let cells=frame.tiles.iter().collect::<Vec<_>>();
+        let mut mesh=TerrainMeshData {footing_heights:vec![0.],..Default::default()};
+        append_top(&mut mesh.solid,[0.,8.,0.,8.],0.,(0.,1.,0.,1.));
+        finish_with_datum(&mut mesh,"Route44",&cells,&g,[0,0],&[],frame.terrace_datum.as_deref());
+        for p in &mesh.solid.positions[..4] {
+            assert!((p[1]-p[0]*1.5).abs()<0.01,"the actual ground mesh slopes from zero to twelve units: {p:?}");
+        }
+        for (u,v) in [(0.1,0.2),(0.4,0.8),(0.8,0.3)] {
+            let foot=Vec2::new(u*8.-4.,4.-v*8.);
+            let height=crate::footing::resolved_footing_height(&frame,foot,&mesh.footing_heights).unwrap();
+            assert!((height-u*12.).abs()<0.01,"feet follow the real sloped plane without visible ledges: {height}");
+        }
+    }
+
+    #[test]
     fn island_terraces_never_slope_water_or_its_surf_support() {
         for (map, tileset) in [("Route42", "johto"), ("Route22", "kanto"),
             ("TohjoFalls", "cave")] {
@@ -2017,6 +2089,46 @@ mod tests {
                 if row < 4 { 6. } else { 0. },
                 "the forest lip cannot add a second rise at source row {row}"
             );
+        }
+    }
+
+    #[test]
+    fn adjoining_mineral_caps_share_border_height_but_retain_authored_drops() {
+        let g=GridGeometry {width:2,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
+        let source=super::super::tests::source_with_tile(0x0a,1,1,0x3c);
+        let f=super::super::tests::frame(2,2,vec![source;4]);
+        let cells=f.tiles.iter().collect::<Vec<_>>();
+        for cut in [false,true] {
+            let north=if cut {2.}else{0.};
+            let south=if cut {0.}else{2.};
+            let datum=crystal_render_api::VisualTerraceDatum {
+                origin:IVec2::ZERO,size:bevy::prelude::UVec2::splat(2),
+                levels:vec![[north;4],[north;4],[south;4],[south;4]].into(),
+                walkable_mineral:Default::default(),water_barriers:Default::default(),open_water:None,
+            };
+            let edges=if cut {vec![VisualJumpLedge {start:IVec2::new(0,1),
+                end:IVec2::new(2,1),descent:IVec2::Y}]}else{vec![]};
+            let field=Field::new(&edges,&g,[0,0]).with_datum(Some(&datum));
+            let mut surface=SurfaceMeshData::default();
+            for z in [0.,8.] {
+                super::super::outdoor_stone::append_canyon(&mut surface,
+                    [[0.,16.,z],[0.,16.,z+8.],[8.,16.,z+8.],[8.,16.,z]],
+                    [0.,1.,0.],&g,[0,0]);
+            }
+            let common=surface.positions.iter().enumerate().filter_map(|(i,p)|
+                ((p[0]-4.).abs()<0.001 && (p[2]-8.).abs()<0.001).then_some(i))
+                .collect::<Vec<_>>();
+            assert!(common.len()>1);
+            shape_surface(&mut surface,&cells,&field);
+            let (low,high)=common.into_iter().map(|i|surface.positions[i][1])
+                .fold((f32::INFINITY,f32::NEG_INFINITY),|(lo,hi),y|(lo.min(y),hi.max(y)));
+            if cut {
+                assert!((low-16.).abs()<0.001 && (high-28.).abs()<0.001,
+                    "authored drops must retain their distinct source levels");
+            } else {
+                assert!((low-28.).abs()<0.001 && (high-low).abs()<0.001,
+                    "the joined border cap must share the native edge height: {low}..{high}");
+            }
         }
     }
 

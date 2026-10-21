@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Original rounded quadrupedal Cyndaquil, authored without mesh inputs.
+"""Original crouched Cyndaquil, authored without mesh inputs.
 
-The 34 named assemblies use a twelve-joint skin with four planted legs. Dimensions are
+The named assemblies use a twelve-joint skin with tucked forepaws and two rear supports. Dimensions are
 runtime units (+Y up, +Z front), retaining the 0.716729 body reference and 1.25
 full silhouette. The archived Blender sculpture remains an editable historical
 source; this compact recipe is the authoritative source of the new sculpture.
@@ -18,14 +18,14 @@ GOLD = (1., .78, .22)
 BODY_HEIGHT = .716729
 FULL_HEIGHT = 1.25
 # z, center_y, half_width, half_height; each row is an intentional fold.
-HEAD = ((-.075,.45,.20,.19),(.015,.48,.245,.23),
-        (.13,.477,.255,.231729),(.25,.43,.225,.22),
-        (.35,.355,.168,.17),(.45,.265,.095,.10),
-        (.54,.205,.035,.037),(.565,.194,.014,.016))
+HEAD = ((-.12,.47,.17,.20),(0.,.49,.24,.226729),
+        (.13,.465,.245,.225),(.25,.40,.20,.20),
+        (.34,.31,.13,.13),(.405,.24,.072,.067),
+        (.455,.205,.025,.026),(.473,.20,.009,.012))
 RING = 32
-TORSO = ((-.57,.29,.045,.06),(-.52,.32,.16,.18),
-         (-.42,.335,.235,.235),(-.28,.345,.255,.245),
-         (-.12,.36,.24,.24),(.02,.40,.19,.22),(.10,.43,.13,.17))
+TORSO = ((-.57,.205,.045,.06),(-.52,.24,.145,.17),
+         (-.42,.255,.225,.22),(-.28,.28,.26,.235),
+         (-.12,.315,.245,.22),(.015,.385,.185,.22),(.09,.43,.12,.17))
 
 
 def curved_profiles(profiles):
@@ -145,7 +145,7 @@ def face_x(z,y):
 
 def eyelid(side):
     # The long angular V is readable from the battle flank as well as 3/4.
-    line=((.09,.445,.002),(.145,.475,.005),(.205,.48,.005),(.265,.455,.002))
+    line=((.055,.48,.002),(.12,.52,.005),(.185,.515,.005),(.245,.47,.002))
     vertices=[]
     for z,y,width in line:
         for depth,dy in ((.006,width),(.006,-width),(-.003,-width),(-.003,width)):
@@ -178,6 +178,21 @@ def flame(root, tip, width, depth, twist, bend):
     return result
 
 
+def back_spot(name, parent, x, z):
+    """Fitted orange skin on the actual dorsal triangles, including the underside."""
+    from fire_dragon_sculpt import fitted
+    # A proper rotation puts dorsal +Y in the fitter's +Z direction.
+    top = dict(parent)
+    for key in ('positions', 'normals'):
+        top[key] = [v for a,b,c in zip(*[iter(parent[key])]*3) for v in (a,-c,b)]
+    outline = [(x+.050*math.cos(math.tau*i/24),
+                -(z+.065*math.sin(math.tau*i/24))) for i in range(24)]
+    result = fitted(name, EMBER, outline, top, .0025)
+    for key in ('positions', 'normals'):
+        result[key] = [v for a,b,c in zip(*[iter(result[key])]*3) for v in (a,c,-b)]
+    return result
+
+
 def sculpt():
     # Imported lazily so source generation and the skin writer remain separable.
     from cyndaquil_glb import PARTS, COORDINATES, QUILLS, source_point
@@ -187,14 +202,17 @@ def sculpt():
     legs={}
     for rear,z in ((False,.04),(True,-.36)):
         for side in (-1,1):
-            # Broad flat soles, rounded toes, a curved ankle, and a shoulder
-            # embedded in the low body. Four separate supports span its length.
-            profiles=((0.,z+.03,.060,.08),(.013,z+.045,.064,.086),
-                      (.04,z+.025,.06,.076),(.075,z-.005,.057,.062),
-                      (.13,z-.017,.075,.075),(.21,z-.02,.081,.08),
-                      (.25,z-.02,.045,.05))
-            name=('Hindleg' if rear else 'Foreleg')+' / '+('left' if side<0 else 'right')
-            legs[name]=(rounded(horizontal(curved_profiles(profiles),32,side*(.19 if rear else .16))),CREAM)
+            # Rear haunches carry the crouch. The small front limbs curl
+            # against the chest instead of becoming four generic stilts.
+            profiles = ((0.,-.375,.095,.115),(.015,-.365,.105,.13),
+                        (.055,-.38,.118,.135),(.115,-.39,.13,.14),
+                        (.19,-.385,.12,.13),(.255,-.35,.080,.095),
+                        (.285,-.33,.045,.055)) if rear else (
+                        (.18,.21,.025,.035),(.20,.225,.045,.055),
+                        (.255,.19,.060,.065),(.29,.12,.070,.070),
+                        (.34,.075,.062,.063),(.375,.055,.035,.040))
+            name=('Hindleg' if rear else 'Forearm')+' / '+('left' if side<0 else 'right')
+            legs[name]=(rounded(horizontal(curved_profiles(profiles),32,side*(.20 if rear else .17))),CREAM)
     # The dorsal coat follows the body's exact fold vertices, not coarse
     # chords across its convex panels. Its rear head plate meets the pear's
     # rear panels inside the neck, making the hood continuous in profile.
@@ -206,14 +224,22 @@ def sculpt():
     cap=shell_patch(cap_grid)
     back_grid=[[(w*math.cos(math.pi*i/16),y+h*math.sin(math.pi*i/16)+.006,z)
                 for i in range(17)] for z,y,w,h in TORSO]
-    cap=rounded(merged(cap,shell_patch(back_grid,(0.,-.008,0.))))
-    nose=rounded(loft([[(.009*math.cos(math.tau*i/16),.194+.007*math.sin(math.tau*i/16),z) for i in range(16)] for z in (.562,.574)]))
+    # Close the exposed upper semicircle of the rear end cap as well as its
+    # swept surface. Leaving it cream creates a false pointed rump marking.
+    rear_outline=back_grid[0]
+    rear_cap=loft([[(x,y,z) for x,y,_ in rear_outline] for z in (-.572,-.565)])
+    cap=rounded(merged(cap,shell_patch(back_grid,(0.,-.008,0.)),rear_cap))
+    nose=rounded(loft([[(.007*math.cos(math.tau*i/16),.20+.006*math.sin(math.tau*i/16),z) for i in range(16)] for z in (.471,.481)]))
     parts={PARTS[0]:(nose,INK),PARTS[1]:(eyelid(-1),INK),PARTS[2]:(eyelid(1),INK),
            PARTS[3]:(cap,BACK),PARTS[9]:(body_mesh,CREAM),**legs}
-    specs=(((-.28,1.12,-.35),.23,.04,-28,-.10),
-           ((.28,1.10,-.37),.24,.04,27,.12),
-           ((-.34,1.17,-.65),.24,.045,-40,-.22),
-           ((.34,1.15,-.67),.24,.045,40,.22),
+    for row,z in enumerate((-.185,-.43)):
+        for side in (-1,1):
+            name='Dorsal ignition spot / '+('left' if side<0 else 'right')+' '+str(row)
+            parts[name]=(back_spot(name,cap,side*.10,z),EMBER)
+    specs=(((-.36,1.12,-.35),.19,.04,-28,-.10),
+           ((.36,1.10,-.37),.19,.04,27,.12),
+           ((-.38,1.17,-.65),.20,.045,-40,-.22),
+           ((.38,1.15,-.67),.20,.045,40,.22),
            ((.003,1.25,-.80),.26,.045,62,-.11))
     for (name,source_root),(tip,width,depth,twist,bend) in zip(QUILLS,specs):
         root=source_point(*source_root)
@@ -221,7 +247,7 @@ def sculpt():
         for suffix,mesh in assemblies.items():
             color=EMBER if suffix=='ember silhouette' else GOLD if suffix.endswith('golden heart') else ORANGE
             parts[name+' / '+suffix]=(mesh,color)
-    # Keep the established metre datum while shortening the four supports
+    # Keep the established metre datum while shaping the two rear supports
     # relative to the deep, low belly. Fire remains independently sized.
     body_scale=BODY_HEIGHT/max(v for name,(mesh,_) in parts.items() if 'flame quill /' not in name for v in mesh['positions'][1::3])
     for name,(mesh,_) in parts.items():

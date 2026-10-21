@@ -262,8 +262,9 @@ pub(crate) fn sync(
             .built_frame
             .as_ref()
             .is_some_and(|built| built.map_id == frame.map_id);
+    let seconds = clock.as_ref().and_then(|v| v.seconds_of_day());
     let strength = if active {
-        clock.and_then(|v| v.seconds_of_day()).map_or(0., gain)
+        seconds.map_or(0., gain)
     } else {
         0.
     };
@@ -292,20 +293,31 @@ pub(crate) fn sync(
         }
     });
     let night = Vec4::new(strength, emitter_span(&positions) as f32, 0., 0.);
+    // Summit materials use the existing isolated-town lighting mode. Their
+    // authored windows still emit at night even though the foreground atlas
+    // belongs to a tower room. No rooftop-local spill rectangles belong below.
+    let panorama_night = Vec4::new(if status.active && crate::summit_vista::enabled(&frame) {
+        seconds.map_or(0., gain)
+    } else { 0. }, 0., 0., 0.);
+    let no_windows = [Vec4::ZERO; MAX_LIGHTS];
     let changed: Vec<_> = materials
         .iter()
         .filter_map(|(id, m)| {
+            let panorama = m.extension.cave_reveal.z > 1.5;
+            let (night, windows, planes) = if panorama {
+                (panorama_night, &no_windows, &no_windows)
+            } else { (night, &positions, &directions) };
             (m.extension.city_night != night
-                || m.extension.city_windows != positions
-                || m.extension.city_window_planes != directions)
-                .then_some(id)
+                || m.extension.city_windows != *windows
+                || m.extension.city_window_planes != *planes)
+                .then_some((id, panorama))
         })
         .collect();
-    for id in changed {
+    for (id, panorama) in changed {
         if let Some(mut m) = materials.get_mut(id) {
-            m.extension.city_night = night;
-            m.extension.city_windows = positions;
-            m.extension.city_window_planes = directions;
+            m.extension.city_night = if panorama { panorama_night } else { night };
+            m.extension.city_windows = if panorama { no_windows } else { positions };
+            m.extension.city_window_planes = if panorama { no_windows } else { directions };
         }
     }
 }
@@ -313,6 +325,50 @@ pub(crate) fn sync(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn summit_windows_follow_the_clock_without_foreground_light_spill_or_idle_material_churn() {
+        use bevy::asset::{AssetEvent, AssetPlugin};
+        use crystal_render_api::{VisualWorldClock, VisualWorldFrame, VisualTile, VisualTileSource};
+        let frame = VisualWorldFrame { active: true, map_id: "TinTowerRoof".into(),
+            tile_size: Vec2::splat(32.), tiles: vec![VisualTile { column: 0, row: 0,
+                texture: Handle::default(), priority: false, animation_frames: None,
+                source: VisualTileSource { tileset_id: "tower".into(), metatile_id: 2,
+                    tile_index: 2, subtile_column: 0, subtile_row: 0 } }], ..default() };
+        let mut app = App::new();
+        app.add_plugins((MinimalPlugins, AssetPlugin::default())).init_asset::<crate::VoxelMaterial>();
+        app.insert_resource(frame.clone())
+            .insert_resource(VisualWorldClock { minute_of_day: Some(22*60), second_of_minute: 0 })
+            .insert_resource(crate::VoxelViewStatus { active: true, ..default() })
+            .insert_resource(crate::TerrainRevisionCache { built_frame: Some(frame),
+                city_emitters: vec![Emitter { position: Vec4::new(1., 16., 2., 64.), direction: Vec4::Z }],
+                ..default() })
+            .init_resource::<Assets<crate::VoxelMaterial>>()
+            .add_systems(Update, sync);
+        let mut distant = crate::solid_terrain_material();
+        distant.extension.cave_reveal.z = 2.;
+        let distant = app.world_mut().resource_mut::<Assets<crate::VoxelMaterial>>().add(distant);
+        let foreground = app.world_mut().resource_mut::<Assets<crate::VoxelMaterial>>()
+            .add(crate::solid_terrain_material());
+        for (hour, expected) in [(22,1.), (5,0.5), (12,0.), (22,1.)] {
+            app.world_mut().resource_mut::<VisualWorldClock>().minute_of_day = Some(hour*60);
+            app.update();
+            let materials = app.world().resource::<Assets<crate::VoxelMaterial>>();
+            let m = materials.get(&distant).unwrap();
+            assert_eq!(m.extension.city_night, Vec4::new(expected, 0., 0., 0.));
+            assert_eq!(m.extension.city_windows, [Vec4::ZERO; MAX_LIGHTS]);
+            assert_eq!(m.extension.city_window_planes, [Vec4::ZERO; MAX_LIGHTS]);
+            assert_eq!(materials.get(&foreground).unwrap().extension.city_night, Vec4::ZERO);
+        }
+        app.world_mut().resource_mut::<Messages<AssetEvent<crate::VoxelMaterial>>>().clear();
+        app.update();
+        assert!(!app.world_mut().resource_mut::<Messages<AssetEvent<crate::VoxelMaterial>>>().drain()
+            .any(|event| matches!(event, AssetEvent::Modified { .. })));
+        app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "TinTower9F".into();
+        app.update();
+        assert_eq!(app.world().resource::<Assets<crate::VoxelMaterial>>().get(&distant).unwrap()
+            .extension.city_night, Vec4::ZERO);
+    }
     #[test]
     fn shader_emitter_span_keeps_holes_and_every_original_contributor() {
         for last in 0..MAX_LIGHTS {

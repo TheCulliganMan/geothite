@@ -84,10 +84,10 @@
     {
       "file": "actor-props-totodile-refinement.blend",
       "encoding": "gzip-blend",
-      "bytes": 1104918,
-      "sha256": "8ee26e049b3c0ccb5f54076dfb33f90bb68cfc0b13d001352237b49cccf169e4",
-      "uncompressed_bytes": 3155022,
-      "uncompressed_sha256": "f7ad5e5d12e332be8bbb8043884cf4220542485bc16b1af49ccdcd7694496ddc"
+      "bytes": 1155594,
+      "sha256": "04e7379a8992ebece9357ad97db5df39e9ebb177703214059e2ba52cd38ad256",
+      "uncompressed_bytes": 3331251,
+      "uncompressed_sha256": "dd4a1f7d184c84a3f52d3b08d56e5e11b73f181613dcaa8139ecba32ab236bd0"
     },
     {
       "file": "battle-species-01.blend",

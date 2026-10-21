@@ -217,8 +217,8 @@ pub(in crate::mesh) fn continue_shore_cap_ground(mesh:&mut TerrainMeshData,
     }
     // Two triangles share cap vertices. Keep eligibility immutable while
     // assigning their new material, so the second triangle cannot lose it.
-    let shore_vertices=mesh.solid.uvs.iter().map(|uv|
-        uv[0]>87000.&&uv[0]<90000.&&uv[1]< -65000.).collect::<Vec<_>>();
+    let shore_vertices=mesh.solid.uvs.iter().map(|uv| *uv==BANK_GROUND_UV
+        || (uv[0]>87000.&&uv[0]<90000.&&uv[1]< -65000.)).collect::<Vec<_>>();
     let mut chosen=vec![None::<Option<Floor>>;cells.len()];
     for tri in mesh.solid.indices.chunks_exact(3) {
         let ids=[tri[0]as usize,tri[1]as usize,tri[2]as usize];

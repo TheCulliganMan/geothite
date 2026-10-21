@@ -1,5 +1,10 @@
 # Quilava and Typhlosion canonical skins
 
+The [October 21 front/back and full-orbit revision](fire-starter-fidelity.md)
+supersedes the posture, geometry, metrics and verification claims below.
+In particular, the actual Crystal front animation shows upright Quilava;
+the earlier four-support decision below used incomplete back-only evidence.
+
 The fire-starter evolutions replace the old Blender primitive assemblies with
 original fire-ferret/badger sculptures and thirteen/seventeen-joint canonical
 GLBs. The normal background builder, direct sculpture CLI, strict logical

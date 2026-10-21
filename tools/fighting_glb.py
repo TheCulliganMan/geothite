@@ -3,7 +3,7 @@
 import argparse,hashlib,json,math,struct
 from pathlib import Path
 from functools import lru_cache
-from machop_sculpt import sculpture,HEIGHTS
+from machop_sculpt import sculpture,HEIGHTS,arm_paths
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 SPECIES=tuple(HEIGHTS)
 def geometry_digest(model):
@@ -13,7 +13,7 @@ def geometry_digest(model):
  return h.hexdigest()
 @lru_cache(maxsize=3)
 def authoring_model(species):return sculpture(species)
-REST_DIGESTS={'machop': '6847f6ddd211164ff5bdcffb5dc94b104dd87fdd3955610b53b611d728b5d71f', 'machoke': '4b0b6d1f8f12e160831ba3ec746729bf11fcceffffec0fa4c9ef8932bd8313ae', 'machamp': 'c70bd3ba26597bfadc1fafae6d459a9334b41bd63b22f022578d5a6db4793ca6'}
+REST_DIGESTS={'machop': '8ecc708258f7d11379cbba584594d05d59785a933c7efef426c0533c48d6c362', 'machoke': '899ca475595bcf10908fa43abaec72a3814825e5b33ac57f1821c6377f70bcb1', 'machamp': '71e409803fa06474215ea3bac8c59a53af7199737a3895d11564c03929a0df6d'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 BODY_REFERENCE_HEIGHTS=HEIGHTS.copy()
 MAX_BYTES=1024*1024
@@ -22,23 +22,14 @@ def authoring_scale(species):
  raw=sculpture(species,normalize=False);return HEIGHTS[species]/max(v for p in raw['primitives'] for v in p['positions'][1::3])
 def normalized(species,point):return tuple(v*authoring_scale(species) for v in point)
 def arms(species):
- young=species=='machop';rows=[('upper',.672 if young else .882)]
- if species=='machamp':rows.append(('lower',.704))
- out=[]
- for label,y in rows:
-  for side in (-1,1):
-   if young:points=[(side*.11,y,0.),(side*.227,y-.08,.015),(side*.273,y-.17,.105),(side*.257,y-.175,.18)]
-   elif label=='lower':points=[(side*.16,y,-.012),(side*.352,y-.083,-.038),(side*.408,y-.19,.062),(side*.404,y-.185,.15)]
-   else:points=[(side*(.20 if species=='machamp' else .18),y,-.012),(side*.342,y-.047,.005),(side*.412,y-.093,.038),(side*.452,y-.032,.090),(side*.477,y+.077,.145)]
-   out.append((label,side,points))
- return tuple(out)
+ return tuple((row,side,points) for row,side,points,radii in arm_paths(species))
 def joints(species):
- young=species=='machop';spread=.12 if young else (.194 if species=='machamp' else .164)
- raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.48 if young else .60,-.015)),('neck',1,(0.,.80 if young else .985,0.)),('head',2,(0.,.85 if young else 1.025,.028)),('leg_left',0,(-spread,.19,0.)),('leg_right',0,(spread,.19,0.))]
+ young=species=='machop';spread=.13 if young else (.22 if species=='machamp' else .205)
+ raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.48 if young else .60,-.015)),('neck',1,(0.,.79 if young else 1.0,0.)),('head',2,(0.,.84 if young else 1.035,.035)),('leg_left',0,(-spread,.205,0.)),('leg_right',0,(spread,.205,0.))]
  for label,side,points in arms(species):
   base=len(raw);suffix=label+('_left' if side<0 else '_right')
   raw += [('arm_'+suffix,1,points[0]),('elbow_'+suffix,base,points[2]),('wrist_'+suffix,base+1,points[-1])]
- if young:raw += [('tail',1,(0.,.29,-.10))]
+ if young:raw += [('tail',1,(0.,.31,-.105))]
  return tuple((name,parent,normalized(species,pivot)) for name,parent,pivot in raw)
 JOINTS={s:joints(s) for s in SPECIES}
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
@@ -56,12 +47,12 @@ def skin_weights(species,part,position):
  if part.startswith(('Eye /','Brow /','Mouth /','Crest /')):return rigid(3)
  if part.startswith('Tail /'):return rigid(12)
  if part.startswith(('Arm /','Arm marking /','Hand /','Finger /','Thumb /')):
-  label='lower' if ' / lower ' in part else 'upper';side=int(part.split()[-2] if part.startswith(('Finger /','Arm marking /')) else part.split()[-1]);idx=(2 if label=='lower' else 0)+int(side>0);base=6+3*idx
+  label='lower' if species=='machamp' and ' / lower ' in part else 'upper';side=int(part.split()[-2] if part.startswith(('Finger /','Arm marking /')) else part.split()[-1]);idx=(2 if label=='lower' else 0)+int(side>0);base=6+3*idx
   if part.startswith(('Hand /','Finger /','Thumb /')):return rigid(base+2)
   t=arm_fraction(species,idx,point);a=smoothstep(0.,.25,t);b=smoothstep(.32,.62,t);c=smoothstep(.78,1.,t)
   return [1,base,base+1,base+2],[1.-a,a*(1.-b),a*b*(1.-c),a*b*c]
  # One continuous pelvis/chest/neck surface; garment follows the same low field.
- a=smoothstep(.29 if young else .34,.44 if young else .54,y);b=smoothstep(.76 if young else .95,.82 if young else .995,y);c=smoothstep(.81 if young else .99,.865 if young else 1.035,y)
+ a=smoothstep(.29 if young else .34,.44 if young else .54,y);b=smoothstep(.76 if young else .92,.82 if young else .99,y);c=smoothstep(.81 if young else .99,.865 if young else 1.025,y)
  if b>0.:return [0,1,2,3],[1.-a,a*(1.-b),a*b*(1.-c),a*b*c]
  return [0,1,0,0],[1.-a,a,0.,0.]
 def pose_angles(species,clip,t):

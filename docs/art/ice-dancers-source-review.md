@@ -1,5 +1,9 @@
 # Jynx and Smoochum source review
 
+This is a historical front-art review. The [October 20 full-volume audit](ice-fighter-fidelity.md)
+supersedes its visual acceptance and static-asset description with inspected
+front/back sprites, both profiles, genuine game orbits and revised canonical skins.
+
 The [official Jynx](https://sg.portal-pokemon.com/pokedex/0124/) and
 [official Smoochum](https://sg.portal-pokemon.com/pokedex/0238/) pages returned
 200. Their named primary artworks were inspected in separate background

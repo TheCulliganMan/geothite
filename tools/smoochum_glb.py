@@ -16,19 +16,19 @@ def geometry_digest(model):
  for p in model['primitives']:
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
-REST_DIGEST='90026857a3c50573313f78f6fbd0fd12ed25f7cdae53bbd869a6a0f5e2c792d2'
+REST_DIGEST='a889f184acd49b5a2277db754a7452861aca2634a19629f37e777db0b0cc1b68'
 def pivot(p):return tuple((v-(LOW if i==1 else 0.))*SCALE for i,v in enumerate(p))
-BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.36,-.006)),('neck',1,(0.,.55,.034)),
- ('head',2,(0.,.66,.034)),('hair_left',3,(-.185,1.048,-.039)),('hair_right',3,(.185,1.048,-.039)),
- ('hair_tufts',3,(0.,1.18,-.015)),('arm_left',1,(-.112,.533,.017)),('arm_right',1,(.112,.533,.017)),
- ('leg_left',0,(-.112,.11,.018)),('leg_right',0,(.112,.11,.018)))
+BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.23,-.006)),('neck',1,(0.,.38,.018)),
+ ('head',2,(0.,.43,.018)),('hair_left',3,(-.219,.943,-.037)),('hair_right',3,(.219,.943,-.037)),
+ ('hair_tufts',3,(0.,1.078,-.015)),('arm_left',1,(-.127,.375,.017)),('arm_right',1,(.127,.375,.017)),
+ ('leg_left',0,(-.118,.083,-.004)),('leg_right',0,(.118,.083,-.004)))
 JOINTS=tuple((n,parent,pivot(p) if parent is not None else p) for n,parent,p in BASE)
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def skin_weights(part,point):
  x,y,z=(point[0]/SCALE,point[1]/SCALE+LOW,point[2]/SCALE)
  if part.startswith('Foot /'):return [0,0,0,0],[1.,0.,0.,0.]
  if part.startswith('Leg /'):
-  a=smoothstep(.05,.20,y);g=.30*smoothstep(.045,.085,y)*(1.-smoothstep(.16,.22,y))
+  a=smoothstep(.045,.135,y);g=.30*smoothstep(.038,.065,y)*(1.-smoothstep(.11,.15,y))
   return [0,1,9 if part.endswith('-1') else 10,0],[(1.-a)*(1.-g),a*(1.-g),g,0.]
  if part.startswith(('Arm /','Hand /','Finger /')):
   side=part.split()[-2] if part.startswith('Finger /') else part.split()[-1]
@@ -36,7 +36,7 @@ def skin_weights(part,point):
  if part.startswith('Hair side /'):return [4 if part.endswith('-1') else 5,0,0,0],[1.,0.,0.,0.]
  if part.startswith('Hair tuft /'):return [6,0,0,0],[1.,0.,0.,0.]
  if part.startswith(('Head /','Eye socket /','Eye /','Pupil /','Iris /','Glint /','Lips /','Mouth /','Hair','Bangs /')):return [3,0,0,0],[1.,0.,0.,0.]
- a=smoothstep(.50,.58,y);b=smoothstep(.60,.68,y)
+ a=smoothstep(.35,.41,y);b=smoothstep(.41,.48,y)
  return [1,2,3,0],[1.-a,a*(1.-b),a*b,0.]
 def pose_angles(clip,t):
  if clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid Smoochum clip/time')

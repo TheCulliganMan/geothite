@@ -3,7 +3,7 @@
 import json,os,unittest
 from pathlib import Path
 from crocodile_sculpt import sculpture,HEIGHT
-from sculpt_test_support import assert_closed_models,assert_model_shading
+from sculpt_test_support import assert_closed_models,assert_model_shading,indexed_ray_intersections
 from chikorita_sculpt import cross,sub,unit,dot
 ROOT=Path(os.environ.get('CRYSTAL_CROCODILE_TEST_MODELS',Path(__file__).resolve().parents[1]/'crates/crystal-voxel-view/models/battle_species'))
 
@@ -77,4 +77,28 @@ class CrocodileTests(unittest.TestCase):
                         if min(u,v,1-u-v)>=-1e-5:hits.append(u*a[2]+v*b[2]+(1-u-v)*c[2])
                     self.assertTrue(hits,(n,p['part'],i))
                     self.assertLess(abs(z-(min(hits) if back else max(hits))),.023,(n,p['part'],i))
+    def test_croconaw_hide_wraps_both_sides_and_the_rear(self):
+        hide=next(p for p in self.models['croconaw']['primitives'] if p['part']=='Belly / fitted broad pale field')
+        points=list(zip(*[iter(hide['positions'])]*3))
+        self.assertTrue(any(z<-.19 for x,y,z in points))
+        self.assertTrue(any(x<-.25 for x,y,z in points))
+        self.assertTrue(any(x>.25 for x,y,z in points))
+        rear=[y for x,y,z in points if z<-.10]
+        self.assertGreater(max(rear)-min(rear),.25)
+    def test_jaws_have_a_bowl_and_open_recessed_oral_well(self):
+        for name,model in self.models.items():
+            jaw=next(p for p in model['primitives'] if p['part']=='Jaw / fitted pale lower shell')
+            front=[(x,y,z) for x,y,z in zip(*[iter(jaw['positions'])]*3) if z>.27]
+            self.assertGreater(max(y for x,y,z in front)-min(y for x,y,z in front),.12,name)
+            well=next(p for p in model['primitives'] if p['part']=='Mouth / recessed dark interior')
+            yc=(min(well['positions'][1::3])+max(well['positions'][1::3]))/2
+            hits=indexed_ray_intersections(well,0.,yc)
+            self.assertTrue(hits,name)
+            self.assertGreater(max(well['positions'][2::3])-max(hits),.18,name)
+    def test_tail_has_a_low_deep_counterbalance_in_profile(self):
+        for name,model in self.models.items():
+            tail=next(p for p in model['primitives'] if p['part'].startswith('Tail /'))
+            rear=min(tail['positions'][2::3])
+            tip=[y for x,y,z in zip(*[iter(tail['positions'])]*3) if z<rear+.08]
+            self.assertLess(max(tip),.20,name)
 if __name__=='__main__':unittest.main()

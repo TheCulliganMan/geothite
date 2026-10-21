@@ -16,7 +16,7 @@ def geometry_digest(model):
  return h.hexdigest()
 @lru_cache(maxsize=2)
 def authoring_model(species):return sculpture(species)
-REST_DIGESTS={'magmar': 'beed80700a65f3864fa4e3facfffb0c8d6e4aab03e78ec41e1e0228f53b46d50'}
+REST_DIGESTS={'magmar': '6133e7ff64479745f7771a2dbc209d46a01e1c60a5147088889dc47bc63d3d82'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 BODY_REFERENCE_HEIGHTS=HEIGHTS.copy();MAX_BYTES=1024*1024
 @lru_cache(maxsize=2)
@@ -27,8 +27,8 @@ def normalized(species,point):
 def joints(species='magmar'):
  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.57,-.01)),('neck',1,(0.,.82,.012)),('head',2,(0.,.94,.008))]
  for side,s in (('left',-1),('right',1)):
-  base=len(raw);raw += [('arm_'+side,1,(s*.195,.795,-.015)),('elbow_'+side,base,(s*.34,.79,.015)),('wrist_'+side,base+1,(s*.485,.78,.024))]
- raw += [('leg_left',0,(-.19,.30,.02)),('leg_right',0,(.19,.30,.02)),('crown_left',3,(-.115,1.11,.016)),('crown_right',3,(.115,1.11,.016)),('tail_base',1,(0.,.372,-.104)),('tail_tip',14,(-.067,.383,-.432)),('fire_tip',15,(.012,.645,-.556))]
+  points=magmar_sculpt.arm_path(s);base=len(raw);raw += [('arm_'+side,1,points[0]),('elbow_'+side,base,points[1]),('wrist_'+side,base+1,points[-1])]
+ raw += [('leg_left',0,(-.249,.153,.004)),('leg_right',0,(.249,.153,.004)),('crown_left',3,(-.105,1.126,.006)),('crown_right',3,(.105,1.126,.006)),('tail_base',1,(0.,.372,-.104)),('tail_tip',14,(-.067,.383,-.432)),('fire_tip',15,(.025,.568,-.554))]
  return tuple((n,parent,(0.,0.,0.) if parent is None else normalized(species,p)) for n,parent,p in raw)
 JOINTS={s:joints(s) for s in SPECIES};CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
 def body_weights(y):
@@ -39,18 +39,18 @@ def skin_weights(species,part,position):
  def rigid(j):return [j,0,0,0],[1.,0.,0.,0.]
  if part.startswith(('Foot /','Toe claw /')):return rigid(0)
  if part.startswith(('Head /','Forehead lobe /','Eye socket /','Eye /','Pupil /','Bill /','Mouth back /','Tongue /')) or part.startswith('Dorsal point /') and part.endswith(' 2'):return rigid(3)
- # Thin flame banks and their fitted layers share a carrier: differential
- # skin gradients can fold narrow perimeter triangles.
+ # The full flame volumes and their fitted layers share complete carriers.
  if part.startswith(('Crown flame /','Crown glow /')):
   side=part.split()[-2] if part.startswith('Crown glow /') else part.split()[-1]
   return rigid(12 if side=='-1' else 13)
  if part.startswith(('Shoulder /','Arm /','Cuff /','Hand /','Hand claw /')):
   side=part.split()[-2] if part.startswith(('Cuff /','Hand claw /')) else part.split()[-1];base=4 if side=='-1' else 7
   if part.startswith(('Hand /','Hand claw /')):return rigid(base+2)
-  x=abs(x);upper=smoothstep(.13,.22,x);elbow=smoothstep(.25,.38,x);wrist=smoothstep(.41,.49,x)
+  path=magmar_sculpt.arm_path(int(side));a,b=path[0],path[-1];axis=[b[k]-a[k] for k in range(3)];t=sum((position-a0)*d for position,a0,d in zip((x,y,z),a,axis))/sum(v*v for v in axis)
+  upper=smoothstep(-.05,.18,t);elbow=smoothstep(.28,.60,t);wrist=smoothstep(.73,.96,t)
   return [1,base,base+1,base+2],[1.-upper,upper*(1.-elbow),upper*elbow*(1.-wrist),upper*elbow*wrist]
  if part.startswith(('Thigh /','Shin band /')):
-  a=smoothstep(.07,.32,y);b=.25*math.sin(math.pi*a)**2
+  a=smoothstep(.07,.27,y);b=.25*math.sin(math.pi*a)**2
   return [0,10 if part.endswith('-1') else 11,1,0],[(1.-a)*(1.-b),b,a*(1.-b),0.]
  if part.startswith(('Tail /','Tail flame /','Tail glow /')):
   a=smoothstep(.12,.28,-z);b=smoothstep(.35,.52,-z)
@@ -82,7 +82,7 @@ def pack_parts(species,model):
   metadata['source_parts'].append({'part':name,'order':order,'vertex_start':start,'vertex_count':len(source['positions'])//3,'index_start':first,'index_count':len(source['indices'])})
   joined['positions']+=source['positions'];joined['normals']+=source['normals'];joined['indices'] += [i+start for i in source['indices']]
  return parts
-PACKED_REST_DIGESTS={'magmar': '3463aa43d0d0b9d5d979c0a55071283a3ef1a1893d053a2ffa97e5361dd0c83d'}
+PACKED_REST_DIGESTS={'magmar': 'ae1bb9b0aaf6768366ed3276fae1e98f4d6742393f932f2f54e35444e48cc0f7'}
 def export_spitfire(species,model=None):
  if species not in SPECIES:raise ValueError('unknown spitfire species')
  if model is None:model=authoring_model(species)

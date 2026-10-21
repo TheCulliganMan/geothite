@@ -60,7 +60,7 @@ class BayleefTests(unittest.TestCase):
         self.assertEqual(author.export_bayleef(author.decode_bayleef(self.blob)),self.blob)
         self.assertLess(len(self.blob),author.MAX_BYTES)
         self.assertEqual([len(d[k]) for k in ('meshes','skins','scenes','buffers')],[1,1,1,1])
-        self.assertEqual(len(m.parts),33);self.assertEqual(len(set(m.names)),33)
+        self.assertEqual(len(m.parts),37);self.assertEqual(len(set(m.names)),37)
         self.assertLessEqual(len(d['accessors']),256)
         self.assertEqual(d['extras']['source_sha256'],author.geometry_digest(m.neutral_model()))
         self.assertFalse(d.get('extensionsRequired'));self.assertNotIn('uri',d['buffers'][0])
@@ -83,21 +83,20 @@ class BayleefTests(unittest.TestCase):
         self.assertEqual(lo[1],0.);self.assertAlmostEqual(hi[1],1.15,places=6)
         self.assertAlmostEqual(bhi[1],.982,places=6)
         self.assertAlmostEqual(blo[0],-bhi[0],places=7)
-        self.assertEqual(sum(len(i)//3 for i in m.indices),3836)
+        self.assertEqual(sum(len(i)//3 for i in m.indices),4360)
         self.assertEqual(m.doc['extras']['reference_span'],1.15)
         colors={tuple(mat['pbrMetallicRoughness']['baseColorFactor']) for mat in m.doc['materials']}
-        self.assertEqual(colors,{tuple(sculpture.linear(sculpture.PALETTE[n])) for n in ('body','leaf','ink','white')})
-        # A long, genuinely slender middle neck separates the upper muzzle
-        # from the haunch; the canonical bound never depends on a clip pose.
+        self.assertEqual(colors,{tuple(sculpture.linear(c)) for c in sculpture.PALETTE.values()})
+        # A substantial living neck separates the broad skull and the haunch.
         neck=[p for p in m.vertices[0] if .610<p[1]<.710]
         haunch=[p for p in m.vertices[0] if .270<p[1]<.400]
-        self.assertGreater(len(neck),50);self.assertLess(max(abs(p[0]) for p in neck),.115)
+        self.assertGreater(len(neck),50);self.assertTrue(.125<max(abs(p[0]) for p in neck)<.15)
         self.assertGreater(max(abs(p[0]) for p in haunch),.225)
         blade=m.vertices[m.names.index(sculpture.LEAF)]
         # Explicit independent probes of the right edge around the true notch.
-        for point in ((.241,1.0286,-.231),(.237,1.0235,-.299),(.350,.9499,-.354)):
+        for point in ((.082,1.0188,-.231),(.035,1.0235,-.299),(.158,.9275,-.354)):
             self.assertLess(min(math.dist(point,p) for p in blade),1e-6)
-        self.assertLess(.237,(.241+.350)/2-.055)
+        self.assertLess(.035,(.082+.158)/2-.055)
         self.assertGreater(max(p[2] for p in blade)-min(p[2] for p in blade),.75)
         print('\nBayleef neutral bounds:',[lo,hi],'body:',[blo,bhi])
 

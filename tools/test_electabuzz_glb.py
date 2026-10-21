@@ -15,7 +15,7 @@ class ElectabuzzSkinTests(unittest.TestCase):
  def find(self,prefix,side=None):return next(i for i,n in enumerate(self.m.names) if n.startswith(prefix) and (side is None or n.endswith(' '+str(side))))
  def test_exact_geometry_hierarchy_inverse_binds_and_budgets(self):
   m=self.m;self.assertEqual(self.blob,author.export_electabuzz());self.assertEqual(author.geometry_digest(m.neutral_model()),author.REST_DIGESTS['electabuzz']);self.assertEqual(author.geometry_digest(self.runtime.neutral_model()),author.PACKED_REST_DIGESTS['electabuzz'])
-  self.assertEqual((len(m.parts),len(self.runtime.parts),sum(map(len,m.vertices)),sum(len(i)//3 for i in m.indices),len(m.joints)),(70,41,19502,33748,19));self.assertLessEqual(len(m.doc['accessors']),256);self.assertLess(len(self.blob),1024*1024)
+  self.assertEqual((len(m.parts),len(self.runtime.parts),sum(map(len,m.vertices)),sum(len(i)//3 for i in m.indices),len(m.joints)),(70,41,19747,33880,19));self.assertLessEqual(len(m.doc['accessors']),256);self.assertLess(len(self.blob),1024*1024)
   self.assertEqual(m.parents[:19],[None,0,1,2,1,4,5,1,7,8,0,0,3,3,3,3,1,16,17])
   for mat in m.matrices():self.assertLess(max(abs(a-b) for a,b in zip(mat,IDENTITY)),1e-7)
  def test_rigid_jaws_gaze_fists_features_and_floor_owners(self):

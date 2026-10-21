@@ -18,20 +18,36 @@ def authoring_transform(s):return authoring_bundle(s)[1]
 def normalized(s,p):
  lo,k=authoring_transform(s);return tuple((v-(lo if i==1 else 0.))*k for i,v in enumerate(p))
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
-REST_DIGESTS={'pidgeot': '650e0fcd14ee08b408240ac61d1a4899e51a8af7ef1c9ddae5488f2ac81e9db8', 'fearow': '125c538daa39ea587402505d86a03354672e61acdfd6711a75128f25bc7367b1'}
+REST_DIGESTS={'pidgeot': 'f9c6d9be6d7789060f1079349ed13a4485e0533fb665ff92b363e4453dbab74a', 'fearow': '6a1f4b7a3c30abd876b8955986224d09f1c3929828520ccacd6003c3dd679dc3'}
 
 def joints(s):
  fear=s=='fearow'
  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.40,-.02)),('neck_base',1,(0.,.59,.04 if fear else .02)),('neck_tip',2,(0.,.78,.21 if fear else .02)),('head',3,(0.,.94,.358) if fear else (0.,.82,.02)),('lower_bill',4,(0.,.92,.468) if fear else (0.,.81,.16)),('wing_left',1,(-.105,.59,-.02)),('wrist_left',6,(-.50,.90,-.09)),('wing_right',1,(.105,.59,-.02)),('wrist_right',8,(.50,.90,-.09))]
- raw.extend((f'tail_{j}',1,((j-2)*.012,.355,-.145)) for j in range(5))
- raw.extend((('leg_left',0,(-.105,.156,.020)),('leg_right',0,(.105,.156,.020))))
- if fear:raw.extend((('crown',4,(0.,1.00,.403)),('mane',2,(0.,.82,.108))))
- else:raw.extend((f'crest_{j}',4,(j*.047,1.00,.12)) for j in (-1,0,1))
+ if not fear:
+  from raptor_bird_sculpt import folded_wing
+  for i in (6,7,8,9):
+   n,parent,p=raw[i];side=-1 if p[0]<0 else 1
+   q=folded_wing(dict(positions=list(p),normals=[]),side);raw[i]=(n,parent,tuple(q['positions']))
+  raw[6]=('wing_left',1,(-.180,.550,-.020));raw[8]=('wing_right',1,(.180,.550,-.020))
+  raw[2]=('neck_base',1,(0.,.58,.04));raw[3]=('neck_tip',2,(0.,.67,.06));raw[4]=('head',3,(0.,.705,.07));raw[5]=('lower_bill',4,(0.,.685,.205))
+ else:
+  from fearow_sculpt import wing_frame
+  for i in (6,7,8,9):
+   n,parent,p=raw[i];side=-1 if p[0]<0 else 1
+   q=wing_frame(dict(positions=list(p),normals=[]),side);raw[i]=(n,parent,tuple(q['positions']))
+  raw[1]=('body',0,(0.,.59,-.13));raw[2]=('neck_base',1,(0.,.73,.07));raw[3]=('neck_tip',2,(0.,.815,.285));raw[4]=('head',3,(0.,.740,.455));raw[5]=('lower_bill',4,(0.,.700,.538))
+ raw.extend((f'tail_{j}',1,((j-2)*.012,.575 if fear else .30,-.325 if fear else -.145)) for j in range(5))
+ raw.extend((('leg_left',1 if fear else 0,(-.105,.49,-.10) if fear else (-.108,.11,.02)),('leg_right',1 if fear else 0,(.105,.49,-.10) if fear else (.108,.11,.02))))
+ if fear:raw.extend((('crown',4,(0.,.783,.490)),('mane',2,(0.,.75,.075))))
+ else:raw.extend((f'crest_{j}',4,(j*.065,.805,.19)) for j in (-1,0,1))
  return tuple((n,parent,(0.,0.,0.) if parent is None else normalized(s,p)) for n,parent,p in raw)
 JOINTS={s:joints(s) for s in SPECIES}
 CLIPS=(('idle',1.6,81),('attack',1.,65),('hit',1.,65))
 def rigid(j):return [j,0,0,0],[1.,0.,0.,0.]
 def neck_weights(s,y):
+ if s=='pidgeot':
+  a=smoothstep(.555,.620,y);b=smoothstep(.640,.705,y);c=smoothstep(.700,.750,y)
+  return [1,2,3,4],[1.-a,a*(1.-b),a*b*(1.-c),a*b*c]
  a=smoothstep(.58,.69,y);b=smoothstep(.70,.82 if s=='pidgeot' else .86,y);c=smoothstep(.78 if s=='pidgeot' else .86,.85 if s=='pidgeot' else .94,y)
  return [1,2,3,4],[1.-a,a*(1.-b),a*b*(1.-c),a*b*c]
 @lru_cache(maxsize=2)
@@ -57,6 +73,16 @@ def neck_weight_surface(s):
  return at
 def skin_weights(s,n,point):
  lo,k=authoring_transform(s);x,y,z=(point[0]/k,point[1]/k+lo,point[2]/k)
+ if s=='fearow':
+  if n.startswith(('Foot /','Toe /','Talon /','Leg /')):
+   side=int(n.split()[-2] if n.startswith(('Toe / three','Talon / forward')) else n.split()[-1]);return rigid(15 if side<0 else 16)
+  if n.startswith('Neck /'):
+   a=smoothstep(.075,.175,z);b=smoothstep(.19,.34,z);c=smoothstep(.35,.445,z)
+   return [1,2,3,4],[1.-a,a*(1.-b),a*b*(1.-c),a*b*c]
+  if n.startswith('Crown /'):return rigid(17)
+  if n.startswith('Mane /'):return rigid(18)
+  if n.startswith('Tail /'):
+   a=smoothstep(.02,.15,-z-.325);return [1,10+int(n.split()[-1]),0,0],[1.-a,a,0.,0.]
  if n.startswith(('Foot /','Toe /','Talon /')):return rigid(0)
  if n.startswith('Leg /'):
   j=15 if n.endswith('-1') else 16;a=smoothstep(.045,.26,y);b=.4*smoothstep(.05,.13,y)*(1.-smoothstep(.20,.275,y));return [0,1,j,0],[(1.-a)*(1.-b),a*(1.-b),b,0.]
@@ -66,23 +92,33 @@ def skin_weights(s,n,point):
  if n.startswith(('Head /','Cheek /','Mask /','Eye /','Eye socket /','Pupil /','Glint /')):return rigid(4)
  if n.startswith('Bill /'):return rigid(5 if 'lower' in n or 'mandible' in n or 'seam' in n else 4)
  if n.startswith('Crest /'):
-  return rigid(18+int(n.split()[-1]))
+  return rigid(18+max(-1,min(1,int(n.split()[-1]))))
  if n.startswith('Crown /'):
   a=smoothstep(1.01,1.16,y);return [4,17,0,0],[1.-a,a,0.,0.]
  if n.startswith('Mane /'):
   a=.6*smoothstep(.69,.79,y)*(1.-smoothstep(.87,.97,y));return [2,18,0,0],[1.-a,a,0.,0.]
  if n.startswith('Tail /'):
-  j=10+int(n.split()[-1]);a=smoothstep(.0,.12,.355-y);return [1,j,0,0],[1.-a,a,0.,0.]
+  j=10+int(n.split()[-1]);a=smoothstep(.0,.12,.355-y) if s=='fearow' else smoothstep(.025,.23,-z-.145);return [1,j,0,0],[1.-a,a,0.,0.]
  if n.startswith(('Wing /','Wing field /','Primary /','Rear primary /','Covert /','Rear covert /','Primary tip /','Rear primary tip /')):
-  j=6 if x<0 else 8;b=smoothstep(.43,.84,abs(x));return [j,j+1,0,0],[1.-b,b,0.,0.]
+  j=6 if x<0 else 8
+  if s=='pidgeot':
+   from raptor_bird_sculpt import folded_wing
+   x=folded_wing(dict(positions=[x,y,z],normals=[]),-1 if x<0 else 1,True)['positions'][0]
+  else:
+   from fearow_sculpt import wing_frame
+   x=wing_frame(dict(positions=[x,y,z],normals=[]),-1 if x<0 else 1,True)['positions'][0]
+  b=smoothstep(.43,.84,abs(x));return [j,j+1,0,0],[1.-b,b,0.,0.]
  raise ValueError('unowned raptor anatomy '+n)
 def pose_angles(s,clip,t):
  if s not in SPECIES or clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid raptor cue/time')
  if t in (0.,1.):return [(0.,0.,0.)]*len(JOINTS[s])
- if clip=='idle':a=math.sin(math.tau*t);b=math.sin(math.tau*t-.4)+math.sin(.4);gain=1.
+ if clip=='idle':
+  a=math.sin(math.tau*t);b=math.sin(math.tau*t-.4)+math.sin(.4);gain=1.
+  a=math.sin(math.tau*t)*(1.-math.cos(math.tau*t))*.769800358919501;b=a
  else:a=envelope(t,((0.,0.),(.18,1.),(.42,.6),(.72,.06),(1.,0.)));b=envelope(t,((0.,0.),(.31,1.),(.55,.55),(.80,-.08),(1.,0.)));gain=1.5 if clip=='attack' else -1.1
  a*=gain;b*=gain
  out=[(0.,0.,0.),(0.,.008*a,0.),(.008*b,.010*a,0.),(.010*a,-.012*b,0.),(.012*b,.018*a,.005*b),(.022*max(a,0.),0.,0.),(.01*b,.01*a,-.20*a),(.008*a,0.,-.035*b),(.01*b,-.01*a,.20*a),(.008*a,0.,.035*b)]
+ if s=='pidgeot' and clip=='idle':out[6]=(.01*b,.01*a,-.025*a);out[8]=(.01*b,-.01*a,.025*a)
  out.extend((.010*b,(j-2)*.010*a,.008*(j-2)*b) for j in range(5));out.extend(((0.,.012*a,0.),(0.,-.012*a,0.)))
  if s=='pidgeot':out.extend((.010*b,.012*a*j,.012*b*j) for j in (-1,0,1))
  else:out.extend(((.014*b,.012*a,0.),(.008*a,.010*b,0.)))
@@ -94,7 +130,7 @@ def pack_parts(model):
  for order,p in enumerate(model['primitives']):
   n=p['part'];category=None;label=''
   if n.startswith(('Wing /','Wing field /','Primary /','Rear primary /','Covert /','Rear covert /','Primary tip /','Rear primary tip /')):category='Wing bank';label='left' if sum(p['positions'][::3])<0 else 'right'
-  elif n.startswith(('Foot /','Toe /','Talon /')):category='Grounded digits'
+  elif n.startswith(('Foot /','Toe /','Talon /')):category='Airborne digits' if model['name']=='fearow' else 'Grounded digits'
   elif n.startswith(('Head /','Cheek /','Mask /','Eye /','Eye socket /','Pupil /','Glint /')):category='Coherent head'
   elif n.startswith('Tail /'):category='Tail fan'
   if category is None:result.append((p,{'source_order':order}));continue
@@ -154,7 +190,7 @@ def export_raptor_bird(species, model=None):
         'source_part_ranges':[meta for p,meta in parts],'packed_sha256':geometry_digest({'primitives':[p for p,meta in parts]}),
         'reference_span':HEIGHTS[species],'body_reference_height':HEIGHTS[species],'full_silhouette_height':HEIGHTS[species],
         'geometry_source':'tools/raptor_bird_sculpt.py:sculpture(rig_ready=True)','geometry_preservation':'exact source f32 anatomy, normals, colours and triangle order',
-        'animation_contract':'rotation-only source cues; planted complete clawed feet; rooted wing and wrist banks; coherent fitted head and bill; two-stage neck; five tail feathers; swept crest or crown and mane'}
+        'animation_contract':('rotation-only source cues; airborne tucked clawed feet; rooted wing and wrist banks; coherent fitted head and bill; forward arched neck; five tail feathers; sagittal crown and back ruff' if species=='fearow' else 'rotation-only source cues; planted complete clawed feet; rooted wing and wrist banks; coherent fitted head and bill; two-stage neck; five tail feathers; swept crest or crown and mane')}
     blob = g.bytes()
     if (len(g.doc['accessors'])>256 or len(parts)>64 or len(js)>64 or len(blob)>1024*1024
         or sum(len(p['positions'])//3 for p,meta in parts)>20000 or sum(len(p['indices'])//3 for p,meta in parts)>40000):

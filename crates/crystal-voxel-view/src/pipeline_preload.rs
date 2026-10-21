@@ -276,6 +276,15 @@ fn prepare(world: &mut World) {
         let views: HashSet<_> = view_entities
             .iter()
             .filter_map(|view| cache.get(view).copied())
+            .flat_map(|view| {
+                // A hidden outdoor destination is prepared while the live
+                // camera is still indoors (and the reverse on entry). Warm
+                // both production filters without changing the current view.
+                let base = view.difference(MeshPipelineKey::SHADOW_FILTER_METHOD_RESERVED_BITS);
+                [view,
+                    base | MeshPipelineKey::SHADOW_FILTER_METHOD_HARDWARE_2X2,
+                    base | MeshPipelineKey::SHADOW_FILTER_METHOD_GAUSSIAN]
+            })
             .collect();
         let prepass_cache = world.resource::<ViewKeyPrepassCache>();
         let prepasses: HashSet<_> = view_entities
@@ -458,8 +467,9 @@ mod tests {
                     TextureFormat::Rgba8UnormSrgb,
                     None,
                 ));
-        app.world_mut().spawn((
+        let camera = app.world_mut().spawn((
             Camera3d::default(),
+            bevy::light::ShadowFilteringMethod::Gaussian,
             WarmupView,
             bevy::core_pipeline::prepass::DepthPrepass,
             bevy::core_pipeline::prepass::NormalPrepass,
@@ -470,7 +480,7 @@ mod tests {
             bevy::camera::visibility::RenderLayers::from_layers(&[0, crate::VOXEL_RENDER_LAYER]),
             RenderTarget::Image(target.into()),
             Transform::from_xyz(0., 0., 5.).looking_at(Vec3::ZERO, Vec3::Y),
-        ));
+        )).id();
         let mut source = Mesh::from(Cuboid::default());
         source.insert_attribute(
             Mesh::ATTRIBUTE_COLOR,
@@ -512,7 +522,7 @@ mod tests {
             Transform::from_xyz(2., 4., 3.).looking_at(Vec3::ZERO, Vec3::Y),
         ));
         let main: bevy::render::sync_world::MainEntity = entity.into();
-        let (signature, id, shadow_id, prepass_id) = loop {
+        let (signature, _indoor_id, shadow_id, prepass_id) = loop {
             app.update();
             let render = app.sub_app(RenderApp).world();
             let warm = render.resource::<Queue>();
@@ -550,7 +560,9 @@ mod tests {
                     Some(id)
                 });
             if let (Some((signature, id)), Some(shadow), Some(prepass)) = (ready, shadow, prepass) {
-                break (signature, id, shadow, prepass);
+                if warm.pending.is_empty() && warm.work.is_empty() {
+                    break (signature, id, shadow, prepass);
+                }
             }
             assert!(
                 std::time::Instant::now() < deadline,
@@ -580,6 +592,26 @@ mod tests {
                 .values()
                 .any(|cache| cache.contains_key(&main))
         );
+        // The hidden destination is outside, while its live warmup view is
+        // still indoors. Its first outdoor draw must reuse an already queued
+        // hardware-filter pipeline, rather than compiling at the doorway.
+        let mut signature = signature;
+        let view = signature.key.mesh_key.downcast::<MeshPipelineKey>();
+        signature.key.mesh_key = ErasedMeshPipelineKey::new(
+            view.difference(MeshPipelineKey::SHADOW_FILTER_METHOD_RESERVED_BITS)
+                | MeshPipelineKey::SHADOW_FILTER_METHOD_HARDWARE_2X2);
+        let id = app.sub_app(RenderApp).world()
+            .resource::<SpecializedMeshPipelines<MaterialPipelineSpecializer>>()
+            .get_pipeline(&signature.key, &signature.layout)
+            .expect("outdoor hardware-filter shader must be warmed while indoor view is Gaussian");
+        while app.sub_app(RenderApp).world().resource::<PipelineCache>()
+            .get_render_pipeline(id).is_none() {
+            assert!(std::time::Instant::now() < deadline, "outdoor shader did not compile while hidden");
+            app.update();
+            std::thread::yield_now();
+        }
+        app.world_mut().entity_mut(camera)
+            .insert(bevy::light::ShadowFilteringMethod::Hardware2x2);
         *app.world_mut().get_mut::<Visibility>(entity).unwrap() = Visibility::Visible;
         loop {
             app.update();
@@ -670,7 +702,10 @@ mod tests {
                 .resource::<Queue>()
                 .signatures
                 .iter()
-                .filter(|s| s.pass == Pass::Color && s.key.material_key == future_key)
+                .filter(|s| s.pass == Pass::Color && s.key.material_key == future_key
+                    && s.key.mesh_key.downcast::<MeshPipelineKey>()
+                        .intersection(MeshPipelineKey::SHADOW_FILTER_METHOD_RESERVED_BITS)
+                        == MeshPipelineKey::SHADOW_FILTER_METHOD_HARDWARE_2X2)
                 .find_map(|signature| {
                     let id = render
                         .resource::<SpecializedMeshPipelines<MaterialPipelineSpecializer>>()

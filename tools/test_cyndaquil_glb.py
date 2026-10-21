@@ -97,8 +97,8 @@ class CyndaquilTests(unittest.TestCase):
         model = self.model.neutral_model()
         self.assertEqual(author.geometry_digest(model), author.REST_DIGEST)
         self.assertEqual(self.model.names, list(author.PARTS))
-        self.assertEqual(sum(len(p) for p in self.model.vertices), 16314)
-        self.assertEqual(sum(len(p['indices'])//3 for p in model['primitives']), 8138)
+        self.assertEqual(sum(len(p) for p in self.model.vertices), 16559)
+        self.assertEqual(sum(len(p['indices'])//3 for p in model['primitives']), 8610)
         source_path = os.environ.get('CYNDAQUIL_MESH_SOURCE')
         if source_path:
             source = json.loads(Path(source_path).read_bytes())
@@ -214,15 +214,15 @@ class CyndaquilTests(unittest.TestCase):
             for a, b in zip(self.model.normals[i], self.model.posed(i, self.model.matrices(), normal=True)):
                 self.assertLess(math.dist(a, b), 3e-8)
 
-    def test_four_distinct_planted_soles_stay_fixed(self):
+    def test_two_rear_soles_stay_fixed_and_tucked_forepaws_stay_raised(self):
         contacts=[]
-        for name in ('Foreleg / left','Foreleg / right','Hindleg / left','Hindleg / right'):
+        for name in ('Hindleg / left','Hindleg / right'):
             part=self.model.names.index(name)
             sole=[p for p in self.model.vertices[part] if p[1]==0.]
             self.assertGreater(len(sole),20)
             center=[sum(p[a] for p in sole)/len(sole) for a in (0,2)]
             self.assertLess(center[0],0.) if name.endswith('left') else self.assertGreater(center[0],0.)
-            self.assertGreater(center[1],-.1) if name.startswith('Foreleg') else self.assertLess(center[1],-.27)
+            self.assertLess(center[1],-.27)
             contacts.append(center)
         self.assertTrue(all(math.dist(a,b)>.2 for i,a in enumerate(contacts) for b in contacts[i+1:]))
         probes = [(i, j) for i, points in enumerate(self.model.vertices)
@@ -237,10 +237,13 @@ class CyndaquilTests(unittest.TestCase):
                 posed = {i: self.model.posed(i, mats) for i in {i for i, _ in probes}}
                 for i, j in probes:
                     self.assertEqual(posed[i][j], self.model.vertices[i][j])
+                for name in ('Forearm / left','Forearm / right'):
+                    part=self.model.names.index(name)
+                    self.assertGreater(min(p[1] for p in self.model.posed(part,mats)),.10)
 
     def test_body_coat_share_one_field_face_is_rigid_and_forepaws_articulate(self):
         coincident = {}
-        for i in (0, 1, 2, 3, 9):
+        for i in (0, 1, 2, 3, 9, 34, 35, 36, 37):
             for p, ids, ws in zip(self.model.vertices[i], self.model.ids[i], self.model.weights[i]):
                 js, weights = author.body_weights(p)
                 qw = author.quantized_weights(weights)
@@ -255,6 +258,17 @@ class CyndaquilTests(unittest.TestCase):
         for joint, part in ((3,30),(4,31),(10,32),(11,33)):
             self.assertGreater(sum(any(j == joint and w > .75 for j, w in zip(js, ws))
                                    for js, ws in zip(self.model.ids[part], self.model.weights[part])), 30)
+
+    def test_tucked_forearms_and_broad_haunches_keep_occupied_body_roots(self):
+        from sculpt_test_support import parts_overlap
+        m=self.model;neutral=m.neutral_model()['primitives']
+        for clip in m.clips:
+            for fraction in (0.,.18,.34,.76):
+                mats=m.matrices(clip,fraction)
+                def part(i):return dict(neutral[i],positions=[v for p in m.posed(i,mats) for v in p])
+                body=part(9)
+                for i in (30,31,32,33):
+                    self.assertTrue(parts_overlap(part(i),body),(clip,fraction,m.names[i]))
 
     def test_five_folded_quills_keep_all_nested_layers_rigid(self):
         for joint, (name, _) in enumerate(author.QUILLS, 5):

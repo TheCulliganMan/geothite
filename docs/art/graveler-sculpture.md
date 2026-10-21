@@ -1,5 +1,9 @@
 # Original Graveler sculpture
 
+The current articulated GLB has a broader cragged body, separate lower-arm
+silhouettes and angular hands. See the [October 20 fidelity review](stone-pair-fidelity.md).
+The static geometry and counts below describe its historical predecessor.
+
 `tools/graveler_sculpt.py` replaces the separate toy head and humanoid rock
 torso with one broad irregular boulder bearing its actual face. A fitted
 jagged light forehead field, narrow ivory/dark gaze and curved pink grin

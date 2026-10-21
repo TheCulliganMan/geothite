@@ -1,5 +1,9 @@
 # Croconaw and Feraligatr model and rig update
 
+The [October 20 reference and posture revision](crocodile-geodude-fidelity.md)
+supersedes the neutral geometry, pose, counts and pins in the historical
+records below.
+
 Current camera/follower follow-up: The shared trainer-eye and physical following-distance change now exposes
 Feraligatr’s eyes above its jaw in the reviewed ordinary first-person view
 at the original 2.3114 m size. Broader world/scenery acceptance remains open.

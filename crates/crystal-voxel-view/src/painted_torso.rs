@@ -1,5 +1,51 @@
 //! Place front clothing paintings on the source rig's separate front island.
 use crate::{mesh::SurfaceMeshData, npc_appearance::Look};
+pub(crate) mod cuffs;
+
+pub(crate) fn has_short_sleeves(look: Look) -> bool {
+    matches!(look.texture_key, "red" | "misty" | "brock" | "pokefan_m" | "nurse")
+}
+
+#[derive(Clone, Copy)]
+struct SleevePaint {
+    u: f32,
+    z_scale: f32,
+    v: f32,
+    x_origin: f32,
+    x_scale: f32,
+    v_limits: Option<(f32, f32)>,
+}
+impl SleevePaint {
+    fn for_surface(look: Look, cloth: bool) -> Self {
+        if cloth {
+            if matches!(look.texture_key, "misty" | "pokefan_m") {
+                Self { u: 0.075, z_scale: 0.04,
+                    v: if look.texture_key == "pokefan_m" {0.68} else {0.77},
+                    x_origin: 0.4, x_scale: 0.10, v_limits: None }
+            } else {
+                Self { u: 0.3125, z_scale: 0.04, v: 0.70,
+                    x_origin: 0.4, x_scale: 0.15, v_limits: None }
+            }
+        } else if matches!(look.texture_key, "brock" | "pokefan_m") {
+            Self { u: 0.87, z_scale: 0.06, v: 0.69,
+                x_origin: 0.8, x_scale: 0.08, v_limits: Some((0.67,0.733)) }
+        } else {
+            Self { u: 0.87, z_scale: 0.06, v: 0.31,
+                x_origin: 0.8, x_scale: 0.12, v_limits: None }
+        }
+    }
+    fn sample(self, p: [f32;3]) -> [f32;2] {
+        let v = self.v + (p[0].abs()-self.x_origin)*self.x_scale;
+        [self.u+p[2]*self.z_scale,
+            self.v_limits.map_or(v, |(low,high)| v.clamp(low,high))]
+    }
+    fn position(self, uv: [f32;2]) -> [f32;3] {
+        // The cuff is inside the unclamped skin patch. Recover the original
+        // painting coordinates, including refinement before the body rounded.
+        [(uv[1]-self.v)/self.x_scale+self.x_origin, 0.,
+            (uv[0]-self.u)/self.z_scale]
+    }
+}
 
 /// These cloth rectangles have gray separator padding inside the source
 /// shirt island. Keep complete cloth faces within the painted fabric, leaving
@@ -87,8 +133,10 @@ pub(crate) fn map_front(mesh: &mut SurfaceMeshData, look: Look,
     kimono_shoulders(mesh, look, joints, weights);
 }
 
-/// Shoulder faces use a separate source island that crosses the blossom
-/// artwork. Keep complete cloth faces on plain fabric; neck UVs stay separate.
+/// Shoulder and underarm faces use a separate source island that crosses the
+/// blossom artwork. Include the sleeve root below the shoulder cap: remapping
+/// only its top left a second, torn-looking flower in the rear armpit. Keep
+/// complete cloth faces on plain fabric; neck and central front UVs stay separate.
 fn kimono_shoulders(mesh: &mut SurfaceMeshData, look: Look,
     joints: &mut Vec<[u16; 4]>, weights: &mut Vec<[f32; 4]>) {
     if look.texture_key != "kimono_girl" { return; }
@@ -96,9 +144,14 @@ fn kimono_shoulders(mesh: &mut SurfaceMeshData, look: Look,
         let ids=[face[0] as usize,face[1] as usize,face[2] as usize];
         let outer=ids.iter().map(|&i|mesh.positions[i][0].abs()).sum::<f32>()/3.0;
         let rear=ids.iter().map(|&i|mesh.positions[i][2]).sum::<f32>()/3.0;
-        if !(outer>0.18 || rear<0.03) || !ids.iter().all(|&i|
-            mesh.positions[i][1]>2.30 && mesh.uvs[i][0]<0.625
-            && mesh.uvs[i][1]>=0.475) { continue; }
+        let cap = (outer > 0.18 || rear < 0.03)
+            && ids.iter().all(|&i| mesh.positions[i][1] > 2.30);
+        let root = ids.iter().all(|&i| mesh.positions[i][0].abs() > 0.30)
+            && ids.iter().any(|&i| mesh.positions[i][0].abs() < 0.55)
+            && ids.iter().any(|&i| mesh.positions[i][0].abs() > 0.395);
+        if !(cap || root) || !ids.iter().all(|&i|
+            mesh.positions[i][1] > 1.90 && mesh.uvs[i][0] < 0.625
+            && mesh.uvs[i][1] >= 0.475) { continue; }
         for (index,&i) in face.iter_mut().zip(&ids) {
             let p=mesh.positions[i];*index=mesh.positions.len() as u32;
             mesh.positions.push(p);mesh.normals.push(mesh.normals[i]);mesh.colors.push(mesh.colors[i]);
@@ -207,19 +260,7 @@ pub(crate) fn short_sleeves(mesh: &mut SurfaceMeshData,
             mesh.positions.push(p);
             mesh.normals.push(mesh.normals[i]);
             mesh.colors.push(mesh.colors[i]);
-            mesh.uvs.push(if sleeve {
-                if matches!(look.texture_key, "misty" | "pokefan_m") {
-                    [0.075 + p[2]*0.04, (if look.texture_key == "pokefan_m" {0.68} else {0.77}) + (p[0].abs()-0.4)*0.10]
-                } else {
-                    [0.3125 + p[2]*0.04, 0.70 + (p[0].abs()-0.4)*0.15]
-                }
-            } else if matches!(look.texture_key, "brock" | "pokefan_m") {
-                // Match the warm hand skin while staying below the painted
-                // finger details and above the trouser island at v=.744.
-                [0.87 + p[2]*0.06, (0.69 + (p[0].abs()-0.8)*0.08).clamp(0.67,0.733)]
-            } else {
-                [0.87 + p[2]*0.06, 0.31 + (p[0].abs()-0.8)*0.12]
-            });
+            mesh.uvs.push(SleevePaint::for_surface(look,sleeve).sample(p));
             joints.push(joints[i]);
             weights.push(weights[i]);
         }
@@ -322,6 +363,75 @@ mod tests {
             let n=rig.mesh.positions.len();assert_eq!(&mesh.positions[..n],&rig.mesh.positions);
             assert_eq!(&mesh.uvs[..n],&rig.mesh.uvs);assert_eq!(mesh.indices.len(),rig.mesh.indices.len());
         }
+    }
+
+    #[test]
+    #[ignore = "requires supplied Kimono Girl painting and female rig"]
+    fn supplied_kimono_underarms_sample_unbroken_cloth_on_both_sides() {
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        let rig = PersonRig::parse(&std::fs::read(root.join("people/kenney/human-female.glb")).unwrap()).unwrap();
+        let painting = crate::npc_textures::decode(&std::fs::read(
+            root.join("people/npc-textures/kimono_girl.png")).unwrap()).unwrap();
+        let look = crate::npc_appearance::look(CharacterKind::KimonoGirl);
+        let crate::open_people::RefinedBody { mut mesh, mut ids, mut weights } = rig.refined_body();
+        crate::kimono_sleeves::sculpt(&mut mesh, &mut ids, &mut weights, look);
+        crate::npc_appearance::correct_body_uvs(&mut mesh, look, &mut ids, &mut weights);
+        map_back(&mut mesh, look, &mut ids, &mut weights);
+        lab_coat_collar_edges(&mut mesh, look, &mut ids, &mut weights);
+        let before = mesh.clone();
+        let before_ids = ids.clone();
+        let before_weights = weights.clone();
+        kimono_shoulders(&mut mesh, look, &mut ids, &mut weights);
+        let mut covered = [[0; 2]; 2];
+        let mut old_motif = 0;
+        let red_cloth = |uv: [f32; 2]| {
+            let x = (uv[0] * painting.size.0 as f32) as u32;
+            let y = (uv[1] * painting.size.1 as f32) as u32;
+            let rgb = &painting.rgba[((y * painting.size.0 + x) * 4) as usize..][..3];
+            rgb[0] > 100 && u16::from(rgb[0]) > 2 * u16::from(rgb[1])
+                && u16::from(rgb[0]) > 2 * u16::from(rgb[2])
+        };
+        for (old, new) in before.indices.chunks_exact(3).zip(mesh.indices.chunks_exact(3)) {
+            for (&a, &b) in old.iter().zip(new) {
+                let (a, b) = (a as usize, b as usize);
+                assert_eq!(before.positions[a], mesh.positions[b]);
+                assert_eq!(before.normals[a], mesh.normals[b]);
+                assert_eq!(before.colors[a], mesh.colors[b]);
+                assert_eq!(before_ids[a], ids[b]);
+                assert_eq!(before_weights[a], weights[b]);
+            }
+            // Sample the actual prepared recess below the shoulder cap,
+            // independently of the mapper's whole-face selection thresholds.
+            let underarm = old.iter().all(|&i| {
+                let p = before.positions[i as usize];
+                (0.36..0.49).contains(&p[0].abs()) && (2.17..2.28).contains(&p[1])
+            });
+            if underarm {
+                let p = before.positions[old[0] as usize];
+                covered[usize::from(p[0] > 0.)][usize::from(p[2] > 0.)] += 1;
+                for a in 0..=8 { for b in 0..=8-a {
+                    let bary = [a as f32/8., b as f32/8., (8-a-b) as f32/8.];
+                    let sample = |surface: &SurfaceMeshData, face: &[u32]| {
+                        std::array::from_fn(|axis| (0..3).map(|corner|
+                            surface.uvs[face[corner] as usize][axis] * bary[corner]).sum())
+                    };
+                    old_motif += usize::from(!red_cloth(sample(&before, old)));
+                    assert!(red_cloth(sample(&mesh, new)), "underarm crosses motif/separator at {p:?}");
+                }}
+            }
+            // Keep the front portrait/collar, exposed skin and lower body.
+            if old.iter().all(|&i| {
+                let p = before.positions[i as usize];
+                p[1] < 2.30 && p[0].abs() < 0.28
+            }) || old.iter().all(|&i| before.uvs[i as usize][0] >= 0.625) {
+                for (&a, &b) in old.iter().zip(new) {
+                    assert_eq!(before.uvs[a as usize], mesh.uvs[b as usize]);
+                }
+            }
+        }
+        assert!(covered.iter().flatten().all(|&n| n > 4), "missing underarm quadrants: {covered:?}");
+        assert!(old_motif > 20, "fixture must expose the old stray motif");
+        assert_eq!(before.indices.len(), mesh.indices.len());
     }
 
     #[test]
@@ -516,7 +626,7 @@ mod tests {
                     changed += 1;
                     assert!(old.uvs[a][1] > 0.47 && old.uvs[a][0] < if kind == KimonoGirl {0.625} else {0.5});
                     if kind == KimonoGirl && old.positions[a][0].abs() >= 0.4 {
-                        assert!(old.positions[a][1]>2.30 && old.uvs[a][1]>=0.475
+                        assert!(old.positions[a][1]>1.90 && old.uvs[a][1]>=0.475
                             && old.uvs[a][0]<0.625,"changed outer face outside shoulder cloth");
                     } else { assert!(old.positions[a][0].abs() < 0.4); }
                     assert!((0.0..1.0).contains(&mesh.uvs[b][0]));

@@ -15,7 +15,7 @@ def geometry_digest(model):
  return h.hexdigest()
 
 
-REST_DIGESTS={'dratini': '1ba39a11cb3500c09cdac49d48156bdaa58811b71ed00d436398137c62d68b8a', 'dragonair': 'd1025e2f13dc1785387b2f13a19ffb704a6eb3d617724aac1d49fd608f99cf3f', 'dragonite': '519e2bdb4227b1705a81f67b1a2b632d5007433449243dd69f79aee2d16eac60'}
+REST_DIGESTS={'dratini': '1ba39a11cb3500c09cdac49d48156bdaa58811b71ed00d436398137c62d68b8a', 'dragonair': 'd1025e2f13dc1785387b2f13a19ffb704a6eb3d617724aac1d49fd608f99cf3f', 'dragonite': '1700d0b56a4003c5a706796e4b93f6808702f074c4643ebf1f005091ed3b872c'}
 @lru_cache(maxsize=3)
 def authoring_model(species):return sculpture(species)
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
@@ -41,12 +41,12 @@ def joints(species):
  if species=='dragonite':
   left,_=arm_path(-1);right,_=arm_path(1)
   raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.50,0.)),('head',1,(0.,1.01,.03)),
-       ('antenna_left',2,(-.074,1.218,-.014)),('antenna_right',2,(.074,1.218,-.014)),
-       ('wing_left',1,(-.13,.73,-.11)),('wing_right',1,(.13,.73,-.11)),
+       ('antenna_left',2,(-.075,1.255,-.01)),('antenna_right',2,(.075,1.255,-.01)),
+       ('wing_left',1,(-.10,.90,-.095)),('wing_right',1,(.10,.90,-.095)),
        ('arm_left',1,left[0]),('arm_right',1,right[0]),
-       ('wrist_left',7,left[2]),('wrist_right',8,right[2]),
-       ('leg_left',0,(-.23,.20,.04)),('leg_right',0,(.23,.20,.04)),
-       ('tail_base',1,(0.,.28,-.12)),('tail_tip',13,(.38,.33,-.75))]
+       ('wrist_left',7,left[-2]),('wrist_right',8,right[-2]),
+       ('leg_left',0,(-.25,.28,.01)),('leg_right',0,(.25,.28,.01)),
+       ('tail_base',1,(0.,.36,-.12)),('tail_tip',13,(.13,.22,-1.00))]
  else:
   points,radii,distance,steps=spine_samples(species);big=species=='dragonair';start=7 if big else 6;tip=int(7.5*steps) if big else 7*steps
   raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.54,.15)),('head',1,(0.,.86,.13)),
@@ -111,7 +111,7 @@ def skin_weights(species,title,point):
   if title.startswith(('Wing /','Wing border /','Wing spar /','Wing rib /')):
    side=int(title.split()[-2] if title.startswith('Wing rib /') else title.split()[-1]);return rigid(5 if side<0 else 6)
   if title.startswith('Arm /'):
-   side=int(title.split()[-1]);points,radii,distance=forelimb_samples(side);d=ring_distance((x,y,z),points,radii,distance);amount=smoothstep(.19,.33,d);return influences(((7 if side<0 else 8,1.-amount),(9 if side<0 else 10,amount)))
+   side=int(title.split()[-1]);points,radii,distance=forelimb_samples(side);d=ring_distance((x,y,z),points,radii,distance);amount=smoothstep(.15,.37,d);return influences(((7 if side<0 else 8,1.-amount),(9 if side<0 else 10,amount)))
   if title.startswith(('Hand /','Hand claw /')):
    side=int(title.split()[-2] if title.startswith('Hand claw /') else title.split()[-1]);return rigid(9 if side<0 else 10)
   if title.startswith(('Haunch /','Leg /')):

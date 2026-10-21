@@ -18,6 +18,7 @@ pub(super) struct RenderWalk {
     player_bounds: Option<(Vec2, Vec2)>,
     player_moved: bool,
     capture_steps: bool,
+    capture_tick: usize,
     arrival_reveal_captured: bool,
     synthetic_input: bool,
     pc_input_pulse: bool,
@@ -274,6 +275,14 @@ fn walk_steps_release_after_a_warp_to_identical_coordinates() {
 }
 
 pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bool, league: bool) -> Result<()> {
+    // Short keyboard steps can settle before the usual review frame. Keep
+    // the default unchanged while allowing offscreen mid-stride inspection.
+    let capture_tick = match std::env::var("CRYSTAL_RENDER_TEST_WALK_CAPTURE_TICK") {
+        Err(std::env::VarError::NotPresent) => 12,
+        Ok(value) => value.parse::<usize>()?,
+        Err(error) => anyhow::bail!(error),
+    };
+    anyhow::ensure!(capture_tick < 32, "walk capture tick must be from 0 to 31");
     let synthetic_input = match std::env::var("CRYSTAL_RENDER_TEST_WALK_INPUT") {
         Err(std::env::VarError::NotPresent) => false,
         Ok(value) if value == "keyboard" => false,
@@ -343,6 +352,7 @@ pub(super) fn install(app: &mut App, route: &str, path: &Path, capture_steps: bo
         player_bounds: None,
         player_moved: false,
         capture_steps,
+        capture_tick,
         arrival_reveal_captured: false,
         synthetic_input,
         pc_input_pulse,
@@ -766,7 +776,7 @@ pub(super) fn drive(
             }
         }
     }
-    if walk.capture_steps && walk.tick % 32 == 12 {
+    if walk.capture_steps && walk.tick % 32 == walk.capture_tick {
         if let Ok((window, _)) = windows.single() {
             let stem = walk.path.file_stem().unwrap().to_string_lossy();
             let path = walk

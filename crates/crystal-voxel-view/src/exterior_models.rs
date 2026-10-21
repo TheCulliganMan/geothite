@@ -295,7 +295,7 @@ pub(crate) struct Model {
 /// Fair the authored closed stone volume without adding render triangles.
 /// Welding by position keeps material-band seams closed. The underside stays
 /// seated; paired positive/negative smoothing avoids shrinking the whole rock.
-fn round_boundary_stone(surface: &mut SurfaceMeshData, min: [f32; 3], max: [f32; 3], shore: bool) {
+fn round_boundary_stone(surface: &mut SurfaceMeshData, min: [f32; 3], max: [f32; 3], hand_cut: bool) {
     let mut unique = std::collections::BTreeMap::new();
     let mut points = Vec::<Vec3>::new();
     let mut remap = Vec::with_capacity(surface.positions.len());
@@ -332,15 +332,15 @@ fn round_boundary_stone(surface: &mut SurfaceMeshData, min: [f32; 3], max: [f32;
                 .clamp(Vec3::from_array(min), Vec3::from_array(max));
         }
     }
-    // Keep the planted foot, but lift the upper shoulder into a flatter
-    // hand-cut crown. The old ellipsoidal top read as a loose river boulder.
+    // The separate path drawing retains its hand-cut crown. Natural land
+    // and sea stones keep their curved shoulder for the cached stone cuts.
     let height=max[1]-min[1];
     for (i,p) in points.iter_mut().enumerate() {
         if seated[i] {continue;}
         let h=((p.y-min[1])/height).clamp(0.,1.);
-        // Offshore stones retain the authored sloping shoulders. Flattening
-        // their upper half makes the repeated sea boundary look like posts.
-        if !shore && h>0.5 {p.y=min[1]+(1.-2.*(1.-h).powi(2))*height;}
+        // Natural stones retain sloping shoulders. Only the separate path
+        // drawing keeps its hand-cut crown.
+        if hand_cut && h>0.5 {p.y=min[1]+(1.-2.*(1.-h).powi(2))*height;}
     }
     let mut normals = vec![Vec3::ZERO; points.len()];
     let mut pigments = vec![Vec3::ZERO; points.len()];
@@ -441,7 +441,7 @@ impl Model {
             export.name.as_str(),
             "kanto_boundary_land" | "kanto_boundary_shore" | "kanto_boundary_path"
         ) {
-            round_boundary_stone(&mut surface, min, max, export.name == "kanto_boundary_shore");
+            round_boundary_stone(&mut surface, min, max, export.name == "kanto_boundary_path");
         }
         if (0..3).any(|i| !min[i].is_finite() || max[i] <= min[i]) {
             return Err("empty exterior mesh".into());
@@ -917,7 +917,7 @@ pub(crate) fn model(kind: Kind) -> &'static Model {
 }
 #[path = "exterior_variants.rs"]
 mod variants;
-pub(crate) use variants::variant_model;
+pub(crate) use variants::{variant_model,shore_pose,land_pose};
 
 pub(crate) const KANTO_BOUNDARY_INSET: [f32; 2] = [0.06, 0.09];
 
@@ -925,14 +925,15 @@ pub(crate) const KANTO_BOUNDARY_INSET: [f32; 2] = [0.06, 0.09];
 /// Optical shore distance must not promote its rectangular atlas into land.
 pub(crate) fn kanto_shore_contact(at: [i32; 2]) -> Vec<[Vec2; 3]> {
     let model = variant_model(Kind::KantoBoundaryShore, at);
+    let pose=shore_pose(at);
     let inset = Vec2::from_array(KANTO_BOUNDARY_INSET);
     let min = Vec2::new(model.min[0], model.min[2]);
     let extent = Vec2::new(model.max[0], model.max[2]) - min;
     model.surface.indices.chunks_exact(3).filter_map(|tri| {
         let points = [tri[0],tri[1],tri[2]].map(|i| model.surface.positions[i as usize]);
         if points.iter().any(|p|p[1] > model.min[1]+0.00001) {return None;}
-        let projected = points.map(|p| inset + (Vec2::new(p[0],p[2])-min)/extent
-            * (Vec2::splat(2.)-inset*2.));
+        let projected = points.map(|p|pose.point(inset+(Vec2::new(p[0],p[2])-min)/extent
+            *(Vec2::splat(2.)-inset*2.)));
         ((projected[1]-projected[0]).perp_dot(projected[2]-projected[0]).abs()>0.000001)
             .then_some(projected)
     }).collect()

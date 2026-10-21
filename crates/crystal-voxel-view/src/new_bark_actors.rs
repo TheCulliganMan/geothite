@@ -59,6 +59,10 @@ impl Motion {
         }
     }
     fn advance(&mut self, foot: Vec2, facing: Option<Vec2>, scale: f32, dt: f32) {
+        self.advance_with_stride(foot, facing, scale, dt, 1.0);
+    }
+    fn advance_with_stride(&mut self, foot: Vec2, facing: Option<Vec2>, scale: f32,
+        dt: f32, stride: f32) {
         let delta = foot - self.last_world_foot;
         let distance = delta.length();
         let dt = dt.clamp(0.0, 0.25);
@@ -126,7 +130,7 @@ impl Motion {
             if moving {
                 let inverse_cycle = (1.0 / cycle_distance(previous_run)
                     + 1.0 / cycle_distance(self.run_weight))
-                    * 0.5;
+                    * 0.5 / stride;
                 self.phase = (self.phase + distance / scale * TAU * inverse_cycle).rem_euclid(TAU);
             }
             if self.walk_weight < 0.001 {
@@ -142,6 +146,65 @@ impl Motion {
             }
         }
         self.last_world_foot = foot;
+    }
+}
+
+/// Exercise the real distance publisher and posed sole contacts together. A smaller
+/// stride without the matching cadence passes pose tests but slides on ground.
+#[cfg(any(test, feature = "people-review"))]
+pub(crate) fn validate_human_cadence() {
+    use crate::human_locomotion::{HumanLocomotion, REFERENCE_HEIGHT, stride_scale};
+    use character_meshes::SOURCE_KINDS;
+    for kind in SOURCE_KINDS.iter().map(|&(_, kind)| kind).chain([CharacterKind::Outdoorsman]) {
+        let look = crate::npc_appearance::look(kind);
+        let rig = crate::open_people::get(look.base).expect("cadence check needs the supplied rig");
+        let gait = HumanLocomotion::for_character(rig, kind);
+        let mut pose = rig.nodes.clone();
+        let scale = 16.0 * look.height / REFERENCE_HEIGHT;
+        for speed in [1.5, 4.0] {
+            let mut motion = Motion::new(Vec2::ZERO, Vec2::X);
+            let mut baseline = motion;
+            let mut position = Vec2::ZERO;
+            let mut planted = [0; 2];
+            for frame in 0..420 {
+                let old_phase = motion.phase;
+                let old_run = motion.run_weight;
+                gait.sample(rig, old_phase, old_run, &mut pose);
+                let before = std::array::from_fn::<_, 2, _>(|side|
+                    gait.sole_contacts(rig, &pose, side));
+                let distance = speed / 60.0 * scale;
+                position.x += distance;
+                motion.advance_with_stride(position, Some(Vec2::X), scale, 1.0 / 60.0, stride_scale(kind));
+                baseline.advance(position, Some(Vec2::X), scale, 1.0 / 60.0);
+                assert_eq!(motion.last_world_foot, position, "{kind:?} cadence moved the actor");
+                assert_eq!(motion.run_weight, baseline.run_weight);
+                assert_eq!(motion.walk_weight, baseline.walk_weight);
+                assert_eq!(motion.yaw, baseline.yaw);
+                if frame < 240 { continue; }
+                gait.sample(rig, motion.phase, motion.run_weight, &mut pose);
+                let stance = 0.54 - 0.32 * motion.run_weight;
+                for side in 0..2 {
+                    let a = (old_phase / TAU + side as f32 * 0.5).rem_euclid(1.0);
+                    let b = (motion.phase / TAU + side as f32 * 0.5).rem_euclid(1.0);
+                    if a < 0.02 || b < a || b > stance - 0.02 { continue; }
+                    let after = gait.sole_contacts(rig, &pose, side);
+                    // A rolling ankle travels around a stationary contact.
+                    // Use the heel while either sample is heel-supported;
+                    // otherwise use the toe (also planted during flat stance).
+                    let heel = before[side][0].y < before[side][1].y - 1e-5
+                        || after[0].y < after[1].y - 1e-5;
+                    let contact = if heel { 0 } else { 1 };
+                    let drift = (after[contact].z - before[side][contact].z) * REFERENCE_HEIGHT / rig.height
+                        + distance / scale;
+                    assert!(drift.abs() < 0.0002,
+                        "{kind:?} speed={speed} planted sole {side} slides {drift} at frame {frame}");
+                    assert!((after[contact].y - before[side][contact].y).abs() < 0.0002,
+                        "{kind:?} planted sole lifts off the floor");
+                    planted[side] += 1;
+                }
+            }
+            assert!(planted.iter().all(|&count| count > 15), "{kind:?} missing stance samples {planted:?}");
+        }
     }
 }
 
@@ -1387,16 +1450,31 @@ transform,),
             commands.entity(old.entity).despawn();
         }
         let bicycle = prop_kind(actor).is_some_and(actor_props::PropKind::is_bicycle);
+        if !state.instances.contains_key(&actor.id) {
+            let _trace = crate::loading_trace::span("human.world_placement", || {
+                let cell = crate::tile_at_visual_point(&frame,
+                    actor_ground_point(&frame, actor) + Vec2::Y * 0.01);
+                let tile = cell.and_then(|cell| frame.tiles.iter()
+                    .find(|t| t.column == cell.x && t.row == cell.y));
+                serde_json::json!({"map":frame.map_id.as_ref(),"id":format!("{:?}",actor.id),
+                    "source":actor.source_id.as_ref(),"point":actor_ground_point(&frame,actor).to_array(),
+                    "support":height + swimmer_depth(&frame,actor,kind),
+                    "root":height,"immersion":swimmer_depth(&frame,actor,kind),"scale":scale,
+                    "cell":cell.map(|c|c.to_array()),"tile":tile.map(|t|format!("{:?}",t.source)),
+                    "shape":tile.map(|t|format!("{:?}",crate::shape_for_source(&t.source)))})
+            });
+        }
         let seat = if surf_seat.is_some() || bicycle { None }
             else { state.seats.iter().find_map(|seat| furniture_seat_target(&frame, *seat, actor, height)
                 .map(|offset| (offset, seat.height, seat.yaw))) };
         if let Some(instance) = state.instances.get_mut(&actor.id) {
             instance
                 .motion
-                .advance(world_foot, actor.facing,
+                .advance_with_stride(world_foot, actor.facing,
                     scale * if bicycle || surf_seat.is_some() { 1.0 }
                     else { person_height(kind) / crate::human_locomotion::REFERENCE_HEIGHT },
-                    time.delta_secs());
+                    time.delta_secs(), if bicycle || surf_seat.is_some() { 1.0 }
+                    else { crate::human_locomotion::stride_scale(kind) });
             {
                 let person = &mut instance.person;
                 person.run_blend = instance.motion.run_weight;
@@ -1793,7 +1871,7 @@ mod tests {
     #[ignore = "requires supplied character rigs and paintings"]
     fn link_uniform_changes_refresh_only_the_affected_actor_and_preserve_the_frame() {
         use bevy::{asset::RenderAssetUsages,render::render_resource::{Extent3d,TextureDimension,TextureFormat}};
-        for source in ["link_receptionist","lass","youngster","cooltrainer_m","super_nerd","officer"] {
+        for source in ["link_receptionist","lass","youngster","cooltrainer_m","super_nerd","officer","kimono_girl"] {
         let mut app=actor_test_app();let mut colors=Vec::new();
         for c in [[80,192,48,255],[48,104,224,255]] {
             colors.push(app.world_mut().resource_mut::<Assets<Image>>().add(Image::new_fill(
@@ -3321,6 +3399,11 @@ mod tests {
         frame.center += Vec2::new(11.0, -9.0);
         actor.center += Vec2::new(11.0, -9.0);
         assert_eq!(world_foot(&frame, &actor), old);
+    }
+    #[test]
+    #[ignore = "requires supplied human GLBs"]
+    fn character_cadence_keeps_native_stance_feet_planted() {
+        validate_human_cadence();
     }
     #[test]
     fn gait_does_not_pump_to_idle_between_sparse_published_positions() {

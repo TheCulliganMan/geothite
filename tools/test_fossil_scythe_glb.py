@@ -33,7 +33,7 @@ class FossilScytheSkinTests(unittest.TestCase):
     if n.startswith(('Foot /','Claw /','Toe /')):owner=0
     elif s=='kabuto' and not n.startswith('Leg /'):owner=1
     elif s=='kabutops':
-     if n.startswith(('Body /','Neck /','Rib plate /','Back spur /')):owner=1
+     if n.startswith(('Body /','Neck /','Breast plate /','Rib plate /','Back spur /')):owner=1
      elif n.startswith(('Head /','Head wing /','Eye socket /','Eye lens /','Pupil /')):owner=2
      elif n.startswith(('Upper arm /','Elbow /')):owner=3 if n.endswith('-1') else 4
      elif n.startswith('Forearm /'):owner=5 if n.endswith('-1') else 6

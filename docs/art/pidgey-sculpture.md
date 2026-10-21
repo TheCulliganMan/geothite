@@ -1,65 +1,67 @@
-# Pidgey sculpture and skin
+# Pidgey sculpture and production skin
 
-Pidgey's previously missing exact body is an original small bird sculpture
-with a ten-joint standard glTF skin. The sole canonical runtime source is
-`crates/crystal-voxel-view/models/battle_species/pidgey.glb`.
-`tools/pidgey_sculpt.py` authors its geometry; `tools/pidgey_glb.py` supplies
-weights, inverse binds and idle/attack/hit rotations. Generic closed surface
-helpers are reused; no Spearow or Pidgeotto body is relabeled. Battle and
-explicit world species identity share the same neutral asset.
+Pidgey's canonical body is an original small bird with a ten-joint standard
+glTF skin. `tools/pidgey_sculpt.py` authors the geometry and
+`tools/pidgey_glb.py` supplies the hierarchy, weights and stored clips.
+The normal background builder calls the same exporter. The current
+[family fidelity review](pidgey-family-fidelity.md) supersedes earlier visual
+acceptance, including the subsequently rejected round-headed, raised-wing draft.
+The [latest facial follow-up](pidgey-face-fidelity.md) also reopens the earlier
+folded model's face after further user feedback.
 
-The [official Pidgey artwork](https://sg.portal-pokemon.com/pokedex/0016/)
-guides its cream breast and throat, brown head and short crest, dark cheek
-wedges, ivory eyes, pink hooked bill, folded ochre wings, cream flight tips,
-three brown tail feathers and pink feet. Each foot has three front toes and
-an opposing rear toe, with ivory front claws. Initial neutral inspection
-caught breast fit gaps and a missing cream throat; denser breast fitting and
-a separate fitted throat corrected those features. Materials remain matte;
-shininess retains the existing flag and pack palette on the same skin.
+The current head has a tapered forward skull, a brown forehead framed by
+continuous diagonal cream brows, short swept crest feathers and narrow ivory
+eyes close to a broad short pink bill. Cream brow feathers sweep backward over
+the dark temple wedges. The cream throat joins the full breast. The open bill
+has a separate lower jaw, empty aperture and occupied dark lining recessed
+behind it. This corrects the previous tiny bill, far-lateral eyes and owl-like
+forehead; valid topology alone had not caught that facial layout.
+The eye pair now sits around the bill with larger pupils, a shorter brow quill
+and a smaller mouth gape. The upper breast carries the throat in profile;
+the dark lining stays above the lower bill floor. Both profiles retain the
+eyes' wrap around the skull.
 
-The GLB has 43 named closed parts, 8,404 vertices and 13,064 triangles,
-431,212 bytes, with authoring height 0.82 and floor zero. Neutral digest:
-`814a75e55669f0361edc7c35026a7a0b112085cda12d4dcc485693bfd1990fb7`.
-Pack dimensions own physical size. Pads, front/rear toes and claws stay on
-the fixed root; shanks blend into the torso. The fitted face belongs to the
-head. Lower bill, paired wings and flight tips, tail fan and crest have their
-own joints. Attack braces at 18% of the cue, with feathers and tail following
-at 28%; idle surveys and hit recoils. Source programs retain movement, audio,
-projectiles and timing ownership.
+Crystal's four front frames contain both raised and folded wing positions;
+the folded frame governs this resting pose. Brown shoulder cases cover cream
+profile vanes, and three brown tail feathers sweep low behind the body.
+Short pink shanks stand above the pads. Each foot has three forward toes,
+an opposing rear toe and ivory front talons. Toe projection is independent
+of the leg shaft, which does not slope forward.
+
+Reference volume and pigments come from the complete Battle Revolution orbit
+and the actual Home render in the [Pidgey sprite gallery](https://pokemondb.net/sprites/pidgey).
+The gallery's X/Y and Let's Go thumbnails are pixel art, not captured 3D views.
+All four supplied Crystal front frames and its back picture were inspected.
+Reference-only downloaded geometry is never an authoring input or runtime asset.
+
+The current GLB has 44 named parts, 8,757 vertices, 12,600 triangles,
+251 accessors and 440,812 bytes. Its height remains 0.82 with floor zero;
+the verified local pack supplies the production height of 0.3048 metres.
+Neutral geometry SHA256:
+`18d0a3308234b669a7e7ac0ef9763a22b17b303cfb9711c401c7d4883552ad59`.
+Canonical GLB SHA256:
+`57fbd44917fd0782b67253fabb3f31aad9f7fa846ce23c1dc52ac050aa07bf0c`.
+
+Pads, toes and talons stay on the fixed root. The face, brows and recessed
+lining move with the head; the lower bill has its own hinge. Paired wings,
+flight tips, tail and crest retain separate controls. Idle lasts 3.2 seconds;
+attack braces early and the tail follows later. Stored clips retain neutral
+endpoints and source-relative attack/hit timing. A flat-ended idle wave closes
+under the production sampler's strict absolute 10-microsecond check.
 
 ```sh
 python3 tools/pidgey_glb.py
-python3 tools/test_pidgey_glb.py
+PYTHONPATH=tools python3 -m unittest test_pidgey_glb test_pidgey_family_fidelity -v
 CARGO_TARGET_DIR=target/pokemon-models cargo test --locked -p crystal-voxel-view pidgey --lib
 ```
 
-Seven independent stored-model checks pass: exact regeneration, bounded
-schema, closed outward topology and normals, anatomy/dimensions, hierarchy
-and bind identity, normalized weights, rigid face and feather ownership,
-fixed toes/pads/claws, floor clearance and strain through all clips,
-neutral endpoints and early brace with delayed tail response. Native and
-runtime results are recorded in `docs/art/animated-models.md`. Neutral
-software review alone does not establish production animation, browser or
-world acceptance.
-Seven independent Python model checks and focused canonical routing pass.
-The native client rebuild passes; its embedded catalog reports 235 exact
-bodies of 251 packed species, leaving 16 missing.
-
-The held native pair `target/pokemon-native-review/pidgey-3d.png` /
-`pidgey-2d.png` was inspected. Receipt: `state_preserved=true`, hash
-2417923469, LCD animation frame 50, virtual time 1.190217375 seconds. Dark
-cheek wedge, cream throat/breast, short crest, pink bill and planted feet,
-folded cream wing tips and brown tail read at the tiny source size. Native
-brown is less saturated than the source sprite's ochre. The 2D reference is
-the back sprite with a raised wing; folded neutral/idle model posture does
-not reproduce that sprite pose. Native source-cue motion, browser and world
-review remain open. This is progress toward the complete appearance/rigging
-goal, not full visual acceptance.
-
-Both Pidgey Rust integration checks pass: canonical neutral sharing and fixed
-pads/toes/claws across clips, plus ten-joint GPU skin activation at source
-size (0.3048 m). The fresh compiled test executable passes all 25 active rig
-regressions (one existing audit ignored), all 21 skinning regressions and the
-235-species reusable model check. Targeted whitespace checks pass. The broader
-model/rigging goal remains active; most exact bodies still require dedicated
-rig and full production visual review.
+The nine stored-model checks pass for exact regeneration, loader budgets,
+closed actual components, shading, hierarchy/binds, anatomical ownership,
+fixed supports, floor/winding/strain through all clips and cue timing.
+Family checks additionally cover the corrected facial layout, broad short
+bill, real mouth aperture, folded feather plane and upright shanks. The four
+additional facial checks reject the actual folded model rejected by the user.
+The stored-model checks also cover fitted face cap centers/edges and the full
+buried head root through the clips. Counts and digests are
+identity checks; they do not establish resemblance. Production capture coverage
+and its limits are recorded in the family review.

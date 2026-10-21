@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Sentret standard skin with two tail chains anchored at the support curl."""
+"""Sentret standard skin with one upper tail chain above the fixed rounded terminal support."""
 import argparse,hashlib,json,math,struct
 from pathlib import Path
 from functools import lru_cache
 from sentret_sculpt import sculpture as sculpt,HEIGHT,TAIL,TAIL_KNOTS
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 SPECIES=('sentret',)
-REST_DIGESTS={'sentret':'0a15f7e364cdec1b70a33e5e68df64620b7824223129e72dc9184606b8ce4485'}
+REST_DIGESTS={'sentret':'ce94b353159bfa530c03d6a0b98c53daeb6c5db3de90602e3735f98b1b19965a'}
 PARTS={'sentret':tuple(p['part'] for p in sculpt()['primitives'])};MAX_BYTES=1024*1024
 
 def sculpture(species):
@@ -20,10 +20,10 @@ def normalized(point):
  low,span=authoring_transform('sentret');return tuple((v-(low if i==1 else 0.))*HEIGHT/span for i,v in enumerate(point))
 JOINTS={'sentret':(('root',None,(0.,0.,0.)),('tail_support',0,normalized(TAIL_KNOTS[3])),
  ('tail_middle',1,normalized(TAIL_KNOTS[2])),('tail_upper',2,normalized(TAIL_KNOTS[1])),('body',3,normalized(TAIL_KNOTS[0])),
- ('tail_curl',0,normalized(TAIL_KNOTS[3])),('tail_tip',5,normalized(TAIL_KNOTS[4])),
- ('ear_left',4,normalized((-.103,.803,-.010))),('ear_right',4,normalized((.103,.803,-.010))),
- ('arm_left',4,normalized((-.176,.636,.025))),('arm_right',4,normalized((.176,.636,.025))),
- ('leg_left',4,normalized((-.078,.365,.025))),('leg_right',4,normalized((.078,.365,.025))))}
+ ('ear_left',4,normalized((-.122,.875,-.010))),('ear_right',4,normalized((.122,.875,-.010))),
+ ('arm_left',4,normalized((-.190,.650,.012))),('arm_right',4,normalized((.190,.650,.012))),
+ ('leg_left',4,normalized((-.096,.394,.012))),('leg_right',4,normalized((.096,.394,.012))))}
+
 CLIPS=(('idle',3.4,85),('attack',1.,65),('hit',1.,65))
 
 def geometry_digest(model):
@@ -45,26 +45,26 @@ def skin_weights(species,part,position):
  x,y,z=position
  if part.startswith(('Tail /','Tail band /')):
   low,span=authoring_transform(species);raw=(x*span/HEIGHT,y*span/HEIGHT+low,z*span/HEIGHT);q=tail_parameter(raw)
-  knots=((0.,4),(.60,3),(1.45,2),(2.20,1),(2.65,0),(3.40,0),(3.85,5),(4.55,6),(5.,6))
+  knots=((0.,4),(.60,3),(1.45,2),(2.20,1),(2.70,0),(7.,0))
   for (a,j),(b,k) in zip(knots,knots[1:]):
    if a<=q<=b:
     blend=smoothstep(a,b,q);return [j,k,0,0],[1.-blend,blend,0.,0.]
-  return [6,0,0,0],[1.,0.,0.,0.]
- if part.startswith(('Ear /','Ear inset /')):return [7 if x<0 else 8,0,0,0],[1.,0.,0.,0.]
- if part.startswith(('Arm /','Hand /','Finger /')):return [9 if x<0 else 10,0,0,0],[1.,0.,0.,0.]
- if part.startswith(('Leg /','Foot /','Toe /')):return [11 if x<0 else 12,0,0,0],[1.,0.,0.,0.]
+  return [0,0,0,0],[1.,0.,0.,0.]
+ if part.startswith(('Ear /','Ear inset /')):return [5 if x<0 else 6,0,0,0],[1.,0.,0.,0.]
+ if part.startswith(('Arm /','Hand /','Finger /')):return [7 if x<0 else 8,0,0,0],[1.,0.,0.,0.]
+ if part.startswith(('Leg /','Foot /','Toe /')):return [9 if x<0 else 10,0,0,0],[1.,0.,0.,0.]
  return [4,0,0,0],[1.,0.,0.,0.]
 
 def pose_angles(species,clip,t):
  if species!='sentret' or clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid lookout clip/time')
- if t in (0.,1.):return [(0.,0.,0.)]*13
+ if t in (0.,1.):return [(0.,0.,0.)]*11
  wave=math.sin(math.tau*t);breath=.5-.5*math.cos(math.tau*t);lag=math.sin(math.tau*t-.4)+math.sin(.4)
- if clip=='idle':support=.003*breath;body=.006*breath;ear=.011*lag;arm=.010*wave;tip=.014*lag;leg=.005*wave
+ if clip=='idle':support=.003*breath;body=.006*breath;ear=.011*lag;arm=.010*wave;leg=.005*wave
  else:
   early=envelope(t,((0.,0.),(.18,1.),(.40,.7),(.67,.12),(1.,0.)));late=envelope(t,((0.,0.),(.28,1.),(.52,.65),(.79,-.10),(1.,0.)));sign=1. if clip=='attack' else -.7
-  support=sign*.007*early;body=sign*.016*early;ear=sign*.018*late;arm=sign*.031*early;tip=sign*.023*late;leg=sign*.009*late
+  support=sign*.007*early;body=sign*.016*early;ear=sign*.018*late;arm=sign*.031*early;leg=sign*.009*late
  return [(0.,0.,0.),(support,0.,0.),(support*.8,0.,0.),(support*.65,0.,0.),(body,.004*wave,0.),
-  (tip*.6,0.,0.),(tip,tip*.25,0.),(ear,0.,-ear*.3),(ear,0.,ear*.3),
+  (ear,0.,-ear*.3),(ear,0.,ear*.3),
   (arm,0.,-arm*.2),(arm,0.,arm*.2),(leg,0.,0.),(leg,0.,0.)]
 
 def export_lookout(species,model=None):
@@ -109,11 +109,11 @@ def export_lookout(species,model=None):
    channels.append({'sampler':len(samplers),'target':{'node':joint,'path':'rotation'}})
    samplers.append({'input':times,'output':g.accessor(rotations,'VEC4'),'interpolation':'LINEAR'})
   g.doc['animations'].append({'name':species+'.'+clip,'channels':channels,'samplers':samplers,
-    'extras':{'loopSuggested':clip=='idle','cueRelative':clip!='idle','purpose':'early tail-supported body brace; coherent belly annulus and striped curl; trailing ears and paws; source battle cues own timing'}})
+    'extras':{'loopSuggested':clip=='idle','cueRelative':clip!='idle','purpose':'early tail-supported body brace; coherent belly annulus and striped tail; trailing ears and paws; source battle cues own timing'}})
  g.doc['extras']={'coordinate_system':COORDINATES,'source_name':species,'source_sha256':REST_DIGESTS[species],
     'reference_span':HEIGHT,'body_reference_height':HEIGHT,'full_silhouette_height':HEIGHT,
     'geometry_source':'tools/sentret_sculpt.py','geometry_preservation':'exact source f32 anatomy, normals, colours and triangle order',
-    'animation_contract':'identity floor root; pinned support curl; body follows upper tail chain; coherent face and belly annulus; articulated ears and limbs; rotation-only source-cue clips'}
+    'animation_contract':'identity floor root; pinned broad rounded terminal support; body follows upper tail chain; coherent face and belly annulus; articulated ears and limbs; rotation-only source-cue clips'}
  if len(g.doc['accessors'])>256:raise ValueError('lookout exceeds existing accessor limit')
  return g.bytes()
 

@@ -14,13 +14,26 @@ def geometry_digest(model):
  for p in model['primitives']:
   for key,c in (('positions',5126),('normals',5126),('indices',5125),('base_color',5126)):h.update(packed(p[key],c))
  return h.hexdigest()
-REST_DIGEST='7508b413c731950b19f25b4f91fd096dedd8d449e8158fa2439e06ae8c98d843'
+REST_DIGEST='6057a007fe3b481aa54c4a074e5b324d38de52370616269aec2962f5b9ae1da3'
+def pack_parts(model):
+ """Batch flank stripes while retaining each original part and stored range."""
+ parts=[];ribs=None
+ for order,p in enumerate(model['primitives']):
+  if not p['part'].startswith('Rib /'):
+   parts.append((p,{'source_order':order}));continue
+  if ribs is None:
+   ribs=(dict(part='Rib / six fitted cream flank stripes',positions=[],normals=[],indices=[],base_color=p['base_color']),{'source_parts':[]});parts.append(ribs)
+  q,meta=ribs;start=len(q['positions'])//3
+  meta['source_parts'].append(dict(part=p['part'],order=order,vertex_start=start,vertex_count=len(p['positions'])//3,index_start=len(q['indices']),index_count=len(p['indices'])))
+  q['positions']+=p['positions'];q['normals']+=p['normals'];q['indices'] += [i+start for i in p['indices']]
+ return parts
+
 def pivot(p):return tuple((v-(LOW if i==1 else 0.))*SCALE for i,v in enumerate(p))
 BASE=(('root',None,(0.,0.,0.)),('torso',0,(0.,.55,-.07)),
  ('neck',1,(0.,.61,.20)),('head',2,(0.,.88,.265)),
  ('ear_left',3,(-.10,1.015,.245)),('ear_right',3,(.10,1.015,.245)),
- ('leg_left_front',0,(-.14,.30,.195)),('leg_left_rear',0,(-.16,.34,-.265)),
- ('leg_right_front',0,(.14,.30,.195)),('leg_right_rear',0,(.16,.34,-.265)),
+ ('leg_left_front',0,(-.125,.24,.194)),('leg_left_rear',0,(-.135,.32,-.295)),
+ ('leg_right_front',0,(.125,.24,.194)),('leg_right_rear',0,(.135,.32,-.295)),
  ('tail_base',1,(0.,.57,-.277)),('tail_curl',10,(0.,.64,-.402)))
 JOINTS=tuple((n,parent,pivot(p) if parent is not None else p) for n,parent,p in BASE)
 CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
@@ -32,7 +45,7 @@ def skin_weights(part,point):
   a=smoothstep(.08,.53,y);g=.65*smoothstep(.08,.18,y)*(1.-smoothstep(.40,.55,y))
   return [0,1,owner,0],[(1.-a)*(1.-g),a*(1.-g),g,0.]
  if part.startswith('Ear /'):return [4 if part.endswith('-1') else 5,0,0,0],[1.,0.,0.,0.]
- if part.startswith(('Head /','Eye /','Brow /','Brow spot /','Muzzle /','Nostril /','Antler')):return [3,0,0,0],[1.,0.,0.,0.]
+ if part.startswith(('Head /','Eye /','Brow /','Brow spot /','Muzzle /','Muzzle pad /','Nostril /','Antler')):return [3,0,0,0],[1.,0.,0.,0.]
  if part.startswith('Tail / large'):return [11,0,0,0],[1.,0.,0.,0.]
  if part.startswith('Tail /'):
   t=(-z-.277)/.125;a=smoothstep(0.,.55,t);b=smoothstep(.4,1.,t)
@@ -74,7 +87,8 @@ def export_stantler(model=None):
   key=(packed(values,component),kind,component,target,normalized)
   if key not in shared:shared[key]=g.accessor(values,kind,component,target,normalized=normalized)
   return shared[key]
- for part in model['primitives']:
+ parts=pack_parts(model)
+ for part,meta in parts:
   color=tuple(part['base_color'])
   if color not in colors:
    colors[color]=len(colors);g.doc['materials'].append({'name':'stantler/paper_'+str(colors[color]),
@@ -95,8 +109,9 @@ def export_stantler(model=None):
    channels.append({'sampler':len(samplers),'target':{'node':joint,'path':'rotation'}})
    samplers.append({'input':times,'output':accessor(rotations,'VEC4'),'interpolation':'LINEAR'})
   g.doc['animations'].append({'name':'stantler.'+clip,'channels':channels,'samplers':samplers,
-    'extras':{'loopSuggested':clip=='idle','cueRelative':clip!='idle','purpose':'planted cloven hooves; coherent antler loops, branches and orbs; fitted stern gaze; independent ears, leg middles and curled tail; source battle cues own timing'}})
+    'extras':{'loopSuggested':clip=='idle','cueRelative':clip!='idle','purpose':'planted cloven hooves; coherent antler loops, branches and orbs; fitted half-lidded gaze; independent ears, leg middles and curled tail; source battle cues own timing'}})
  g.doc['extras']={'coordinate_system':COORDINATES,'source_name':'stantler','source_sha256':REST_DIGEST,
+    'source_part_ranges':[meta for part,meta in parts],'packed_sha256':geometry_digest({'primitives':[part for part,meta in parts]}),
     'reference_span':HEIGHT,'body_reference_height':HEIGHT,'full_silhouette_height':HEIGHT,
     'geometry_source':'tools/hoofed_sculpt.py','geometry_preservation':'exact source f32 anatomy, normals, colours and triangle order',
     'animation_contract':'identity root; fixed cloven hooves and clefts; yaw-only torso; shared neck/bib field; coherent head, antler loops, tines and orbs; independent ears, leg middles and two-stage curled tail; rotation-only source-cue clips'}
@@ -111,11 +126,14 @@ def decode_stantler(blob):
   a=doc['accessors'][index];view=doc['bufferViews'][a['bufferView']]
   width=3 if a['type']=='VEC3' else 1;code='f' if a['componentType']==5126 else 'H'
   return list(struct.unpack_from('<'+code*(a['count']*width),binary,view.get('byteOffset',0)))
- return {'name':'stantler','version':1,'coordinate_system':COORDINATES,'primitives':[
-  {'part':p['extras']['part'],'positions':values(p['attributes']['POSITION']),
-   'normals':values(p['attributes']['NORMAL']),'indices':values(p['indices']),
-   'base_color':doc['materials'][p['material']]['pbrMetallicRoughness']['baseColorFactor']}
-  for p in doc['meshes'][0]['primitives']]}
+ stored=[]
+ for p,meta in zip(doc['meshes'][0]['primitives'],doc['extras']['source_part_ranges']):
+  pos=values(p['attributes']['POSITION']);normals=values(p['attributes']['NORMAL']);indices=values(p['indices'])
+  sources=meta.get('source_parts',[dict(part=p['extras']['part'],order=meta.get('source_order'),vertex_start=0,vertex_count=len(pos)//3,index_start=0,index_count=len(indices))])
+  for source in sources:
+   a=source['vertex_start'];b=a+source['vertex_count'];i=source['index_start'];j=i+source['index_count']
+   stored.append((source['order'],dict(part=source['part'],positions=pos[3*a:3*b],normals=normals[3*a:3*b],indices=[k-a for k in indices[i:j]],base_color=doc['materials'][p['material']]['pbrMetallicRoughness']['baseColorFactor'])))
+ return {'name':'stantler','version':1,'coordinate_system':COORDINATES,'primitives':[p for order,p in sorted(stored)]}
 
 
 def read_stantler(path):

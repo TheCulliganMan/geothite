@@ -20,6 +20,12 @@ the renderer refreshes their pixels at five-minute clock boundaries. Fixed
 interiors and dark maps do not receive outdoor environment light. These are
 sky reflections, not reflections of nearby buildings or actors.
 
+The outdoor sky supplies 600 cd/m² scaled by those sky colors so lit Pokémon
+retain readable back surfaces beside the direct sun. The painted-surface
+shader removes this physical intensity from its normalized diffuse/reflection
+samples. The [Pokémon lighting review](art/pokemon-lighting-fidelity.md) records
+matched native comparisons, night/water controls and coverage limits.
+
 Regional outdoor water uses four crossing wave slopes for reflection normals,
 blue depth absorption, pale cyan shallows, broken shoreline wash and subtle
 shallow-water caustics. A retained distance field follows the actual banks and
@@ -30,6 +36,36 @@ same finish. Cerulean Gym uses finer, calmer ripples and shallow caustics withou
 coastal foam or the outdoor cloud sheen. Its original blue pool pigment, raised
 walkways and water height are preserved. Forest pools, caves, park fountains
 and other indoor pools retain their existing surface treatment.
+
+Outdoor wave layers use independently seeded, continuous random fields to
+warp their phase and vary their envelopes. This breaks up regular rows of
+ripples without tile boundaries or frame-to-frame random flicker. Analytic
+gradients include both variations, and filtering follows each wave's locally
+warped frequency. Randomness is anchored in map coordinates, so camera motion
+and streamed grid changes do not move the pattern. The approach follows
+[GPU Gems' constrained wave variation](https://developer.nvidia.com/gpugems/gpugems/part-i-natural-effects/chapter-1-effective-water-simulation-physical-models)
+and the use of different ripple scales in
+[Unity's water samples](https://docs.unity3d.com/Packages/com.unity.shadergraph@17.4/manual/Shader-Graph-Sample-Production-Ready-Water.html).
+
+Regional outdoor water also uses a damped Rust heightfield inspired by
+[Evan Wallace's WebGL Water](https://madebyevan.com/webgl-water/). Surf restores
+the old displaced volume and depresses the new foot position; the resulting
+waves propagate, reflect at banks and decay. Small source-clocked disturbances
+seed ambient ripples. A stationary swimmer adds no further disturbance. The
+field retains heights and velocities in world coordinates across grid changes,
+and dry or unavailable cells block propagation. Work is bounded to 512×512
+samples at four samples per source cell; larger grids keep procedural waves.
+
+The existing shoreline image retains its exact RG distances and stores current
+and previous optical heights in BA. The shader interpolates those heights,
+derives reflection normals and approximates shallow light focusing from the
+same surface curvature, using
+[Wallace's refracted-area principle](https://medium.com/@evanwallace/rendering-realtime-caustics-in-webgl-2a99a29a0b2c).
+Snell refraction with water IOR 1.333 adjusts the absorption path with viewing
+angle. Focused light follows direct illumination and shadows; fine disturbances
+fade at distant zoom. Basin depth remains an optical estimate and reflections
+use the existing sky/environment. Source water animation owns the simulation
+clock, including pauses. Indoor and cave water keep their existing treatment.
 
 Wave motion advances only with authenticated source water animation and settles
 when that animation pauses. Reflections respond to the camera, wave normal and

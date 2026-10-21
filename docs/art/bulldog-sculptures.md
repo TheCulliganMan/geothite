@@ -1,5 +1,9 @@
 # Snubbull and Granbull sculptures and standard skins
 
+See the subsequent [head-volume refinement](head-volume-fidelity.md) for the current Ampharos/Granbull geometry and review.
+
+> Granbull was revised after the October 20 game-reference and leg-angle review. See the [current revision](upright-trio-fidelity.md); its former counts, digest and geometry-preservation claim below are historical. Snubbull remains unchanged by that revision.
+
 `tools/bulldog_sculpt.py` authors the distinct bulldogs; `tools/bulldog_glb.py`
 exports canonical standard skins. The species builder emits GLBs and retires
 duplicate static JSON. Production neutral mesh lookup and GPU animation use

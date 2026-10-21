@@ -3,7 +3,7 @@
 import hashlib,json,math,struct
 from functools import lru_cache
 from pathlib import Path
-from rock_pupa_sculpt import sculpture,SPECIES,HEIGHTS,arm_path,LARVA_TAIL
+from rock_pupa_sculpt import sculpture,SPECIES,HEIGHTS,arm_path,LARVA_TAIL,LARVA_FAN
 from skin_glb import Glb,COORDINATES,packed,quantized_weights,quaternion_xyz,envelope,smoothstep
 def geometry_digest(model):
  h=hashlib.sha256()
@@ -14,7 +14,7 @@ def geometry_digest(model):
 
 @lru_cache(maxsize=2)
 def authoring_model(species):return sculpture(species)
-REST_DIGESTS={'larvitar': '31356ca86c649dca327d270c28c6f8bb377c43f3d00e1855151e473f99510f7c', 'pupitar': '1905fcbbb5bdf9066860f8fb4d6b5c2a3646da2fd4098cd3fc75a43c59d1e6b7'}
+REST_DIGESTS={'larvitar': '427f80e604f64b3939804ea5f70602622dbeb7d3c322beaada67965d9d3e1111', 'pupitar': '1905fcbbb5bdf9066860f8fb4d6b5c2a3646da2fd4098cd3fc75a43c59d1e6b7'}
 PARTS={s:tuple(p['part'] for p in authoring_model(s)['primitives']) for s in SPECIES}
 @lru_cache(maxsize=2)
 def authoring_transform(species):
@@ -23,7 +23,7 @@ def normalized(species,point):
  lo,scale=authoring_transform(species);return tuple((v-(lo if i==1 else 0.))*scale for i,v in enumerate(point))
 def joints(species):
  if species=='larvitar':
-  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.36,-.02)),('head',1,(0.,.68,.02)),('arm_left',1,arm_path(-1)[0][0]),('arm_right',1,arm_path(1)[0][0]),('wrist_left',3,arm_path(-1)[0][-1]),('wrist_right',4,arm_path(1)[0][-1]),('leg_left',0,(-.14,.14,.005)),('leg_right',0,(.14,.14,.005)),('tail_base',1,LARVA_TAIL[0]),('tail_tip',9,(.08,.29,-.50))]
+  raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.36,-.015)),('head',1,(0.,.65,.020)),('arm_left',1,arm_path(-1)[0][0]),('arm_right',1,arm_path(1)[0][0]),('wrist_left',3,arm_path(-1)[0][-1]),('wrist_right',4,arm_path(1)[0][-1]),('leg_left',0,(-.15,.125,.005)),('leg_right',0,(.15,.125,.005)),('tail_base',1,LARVA_TAIL[0]),('tail_tip',9,LARVA_FAN)]
  else:raw=[('root',None,(0.,0.,0.)),('body',0,(0.,.42,-.02)),('head',1,(0.,.70,0.)),('tail_fold',0,(0.,.12,-.20))]
  return tuple((n,p,(0.,0.,0.) if p is None else normalized(species,v)) for n,p,v in raw)
 JOINTS={s:joints(s) for s in SPECIES};CLIPS=(('idle',3.2,81),('attack',1.,65),('hit',1.,65))
@@ -41,15 +41,21 @@ def skin_weights(species,title,point):
   if title.startswith('Body /'):a=smoothstep(.035,.16,y);return influences(((0,1.-a),(1,a)))
   if title.startswith('Tail keel /'):a=smoothstep(.035,.10,y);return influences(((0,1.-a),(3,a)))
  else:
-  if title.startswith(('Body /','Belly /','Body vent /')):return rigid(1)
+  if title.startswith(('Body /','Belly /','Body vent /','Back vent /')):return rigid(1)
   if title.startswith(('Foot /','Toe /')):return rigid(0)
-  if title.startswith('Arm /'):return rigid(3 if title.endswith('-1') else 4)
+  if title.startswith('Arm /'):
+   from bovine_sculpt import smooth
+   from rhino_glb import path_fraction
+   side=-1 if title.endswith('-1') else 1;lo,scale=authoring_transform(species)
+   raw=tuple(v/scale+(lo if k==1 else 0.) for k,v in enumerate(point))
+   path=smooth(*arm_path(side))[0];t=path_fraction(raw,path);blend=smoothstep(.45,.95,t)
+   return influences(((3 if side<0 else 4,1.-blend),(5 if side<0 else 6,blend)))
   if title.startswith(('Hand /','Finger /')):
    side=int(title.split()[-2] if title.startswith('Finger /') else title.split()[-1]);return rigid(5 if side<0 else 6)
   if title.startswith('Thigh /'):
    lo,scale=authoring_transform(species);a=smoothstep(.04,.14,point[1]/scale+lo);return influences(((0,1.-a),(7 if title.endswith('-1') else 8,a)))
   if title.startswith('Tail /'):return rigid(9)
-  if title.startswith('Tail prong /'):return rigid(10)
+  if title.startswith(('Tail prong /','Tail hub /')):return rigid(10)
  raise ValueError('unowned rock larva/pupa anatomy: '+title)
 def pose_angles(species,clip,t):
  if species not in SPECIES or clip not in ('idle','attack','hit') or not 0.<=t<=1.:raise ValueError('invalid rock larva/pupa clip/time')
@@ -135,7 +141,7 @@ def export_rock_pupa(species, model=None):
     g.doc['extras'] = {'coordinate_system':COORDINATES,'source_name':species,'source_sha256':REST_DIGESTS[species],
         'source_part_ranges':[meta for p,meta in parts],'packed_sha256':geometry_digest({'primitives':[p for p,meta in parts]}),
         'reference_span':HEIGHTS[species],'body_reference_height':HEIGHTS[species],'full_silhouette_height':HEIGHTS[species],
-        'geometry_source':'tools/rock_pupa_sculpt.py','animation_contract':'rotation-only source cues; fixed soles/keel; fitted rigid frontal gaze; one-horn larva with complete blunt digits and three-pronged tail; sealed pupa with restrained shell motion and coherent front/back seams'}
+        'geometry_source':'tools/rock_pupa_sculpt.py','animation_contract':('rotation-only source cues; fixed soles; coherent deep head and fitted gaze; tapered larva arms with spatial wrist blends; short thick tail with a six-point radial fan and solid hub; front and rear flank markings' if species=='larvitar' else 'rotation-only source cues; fixed soles/keel; fitted rigid frontal gaze; one-horn larva with complete blunt digits and three-pronged tail; sealed pupa with restrained shell motion and coherent front/back seams')}
     blob = g.bytes()
     if (len(g.doc['accessors'])>256 or len(parts)>64 or len(js)>64 or len(blob)>1024*1024
         or sum(len(p['positions'])//3 for p,meta in parts)>20000 or sum(len(p['indices'])//3 for p,meta in parts)>40000):

@@ -41,14 +41,14 @@ pub(crate) fn look(kind: CharacterKind) -> Look {
         Elder => Look { base: "human-male", texture_key: "elder", shirt: [201, 156, 89], lower: [76, 43, 31], hair: [173, 184, 181], hairstyle: "bald", hat: "none", costume: "robe", accessories: "beard,cane", width: 0.96, height: 1.23 },
         Elm => Look { base: "human-male", texture_key: "elm", shirt: [247, 247, 227], lower: [76, 43, 31], hair: [76, 43, 31], hairstyle: "spikes", hat: "none", costume: "coat", accessories: "glasses,tealtie,pen", width: 1.04, height: 1.38 },
         Erika => Look { base: "human-female", texture_key: "erika", shirt: [161, 59, 97], lower: [161, 59, 97], hair: [48, 33, 28], hairstyle: "bob", hat: "none", costume: "kimono", accessories: "flower,obi", width: 0.92, height: 1.38 },
-        Falkner => Look { base: "human-male", texture_key: "falkner", shirt: [71, 107, 186], lower: [71, 107, 186], hair: [43, 71, 107], hairstyle: "sidepart", hat: "none", costume: "kimono", accessories: "obi", width: 0.98, height: 1.38 },
+        Falkner => Look { base: "human-male", texture_key: "falkner", shirt: [71, 107, 186], lower: [71, 107, 186], hair: [43, 71, 107], hairstyle: "sidepart", hat: "none", costume: if crate::tailored_trousers::trial_enabled() { "hakama" } else { "kimono" }, accessories: "obi", width: 0.98, height: 1.38 },
         Fisher => Look { base: "human-male", texture_key: "fisher", shirt: [71, 107, 186], lower: [43, 71, 107], hair: [76, 43, 31], hairstyle: "short", hat: "redcap", costume: "vest", accessories: "rod", width: 1.17, height: 1.38 },
         FishingGuru => Look { base: "human-male", texture_key: "fishing_guru", shirt: [71, 107, 186], lower: [43, 71, 107], hair: [173, 184, 181], hairstyle: "short", hat: "straw", costume: "vest", accessories: "moustache,rod", width: 1.25, height: 1.38 },
         GameboyKid => Look { base: "human-male", texture_key: "gameboy_kid", shirt: [71, 107, 186], lower: [166, 166, 102], hair: [48, 33, 28], hairstyle: "short", hat: "none", costume: "tee", accessories: "shorts,handheld", width: 0.86, height: 1.05 },
         Gentleman => Look { base: "human-male", texture_key: "gentleman", shirt: [43, 71, 107], lower: [43, 71, 107], hair: [173, 184, 181], hairstyle: "short", hat: "top", costume: "suit", accessories: "moustache,cane,bowtie", width: 1.05, height: 1.38 },
         Gramps => Look { base: "human-male", texture_key: "gramps", shirt: [204, 186, 143], lower: [76, 43, 31], hair: [173, 184, 181], hairstyle: "bald", hat: "none", costume: "cardigan", accessories: "moustache,glasses", width: 1.13, height: 1.23 },
         Granny => Look { base: "human-female", texture_key: "granny", shirt: [130, 104, 80], lower: [130, 104, 80], hair: [173, 184, 181], hairstyle: "bun", hat: "none", costume: "dress", accessories: "shawl,glasses", width: 1.15, height: 1.23 },
-        GymGuide => Look { base: "human-male", texture_key: "gym_guide", shirt: [71, 107, 186], lower: [43, 71, 107], hair: [48, 33, 28], hairstyle: "short", hat: "none", costume: "suit", accessories: "tie,clipboard", width: 1.08, height: 1.38 },
+        GymGuide => Look { base: "human-male", texture_key: "gym_guide", shirt: [71, 107, 186], lower: [43, 71, 107], hair: [48, 33, 28], hairstyle: "short", hat: "none", costume: "suit", accessories: "glasses,tie,clipboard", width: 1.08, height: 1.38 },
         Janine => Look { base: "human-female", texture_key: "janine", shirt: [99, 64, 125], lower: [99, 64, 125], hair: [140, 97, 178], hairstyle: "highpony", hat: "none", costume: "ninja", accessories: "scarf,gloves", width: 0.93, height: 1.38 },
         Jasmine => Look { base: "human-female", texture_key: "jasmine", shirt: [247, 247, 227], lower: [247, 247, 227], hair: [76, 43, 31], hairstyle: "long", hat: "none", costume: "dress", accessories: "ribbon", width: 0.90, height: 1.38 },
         Karen => Look { base: "human-female", texture_key: "karen", shirt: [33, 46, 64], lower: [33, 46, 64], hair: [173, 184, 181], hairstyle: "long", hat: "none", costume: "dress", accessories: "necklace,bracelet", width: 0.93, height: 1.38 },
@@ -596,10 +596,35 @@ fn soft_box(mesh: &mut crate::mesh::SurfaceMeshData, center: bevy::prelude::Vec3
 }
 
 pub(crate) fn head_mesh(rig: &crate::open_people::PersonRig, look: Look) -> Option<crate::mesh::SurfaceMeshData> {
+    if look.texture_key == "falkner" {
+        let mut body = rig.refined_body();
+        crate::hair_shapes::sculpt(rig,&mut body.mesh,&mut body.ids,&mut body.weights,look);
+        return head_mesh_on_body(rig,look,&body.mesh);
+    }
     head_mesh_with_hat_color(rig,look,None)
+}
+
+pub(crate) fn head_mesh_on_body(rig: &crate::open_people::PersonRig, look: Look,
+    body: &crate::mesh::SurfaceMeshData) -> Option<crate::mesh::SurfaceMeshData> {
+    if look.texture_key != "falkner" { return head_mesh(rig,look); }
+    use bevy::prelude::*;
+    let mut low=Vec3::splat(f32::INFINITY); let mut high=Vec3::splat(f32::NEG_INFINITY);
+    for (i,&p) in rig.mesh.positions.iter().enumerate() {
+        let head:f32=(0..4).filter(|&s|rig.ids[i][s]as usize==rig.head_joint).map(|s|rig.weights[i][s]).sum();
+        if head>0.5 {low=low.min(Vec3::from_array(p));high=high.max(Vec3::from_array(p));}
+    }
+    let mut mesh=crate::mesh::SurfaceMeshData::default();
+    falkner_fringe(&mut mesh,body,(low+high)*0.5,(high-low)*0.5,look);
+    let bind=rig.inverse_binds[rig.head_joint];let normal=bind.inverse().transpose();
+    for(p,n)in mesh.positions.iter_mut().zip(&mut mesh.normals) {
+        *p=bind.transform_point3(Vec3::from_array(*p)).to_array();
+        *n=normal.transform_vector3(Vec3::from_array(*n)).normalize().to_array();
+    }
+    Some(mesh)
 }
 pub(crate) fn head_mesh_with_hat_color(rig: &crate::open_people::PersonRig, look: Look,
     hat_color: Option<[u8;3]>) -> Option<crate::mesh::SurfaceMeshData> {
+    if look.texture_key == "falkner" { return head_mesh(rig,look); }
     use bevy::prelude::*;
     let mut min = Vec3::splat(f32::INFINITY);
     let mut max = Vec3::splat(f32::NEG_INFINITY);
@@ -614,7 +639,9 @@ pub(crate) fn head_mesh_with_hat_color(rig: &crate::open_people::PersonRig, look
     let hair = look.hair;
     let top = max.y;
     let width = half.x;
-    if matches!(look.hairstyle, "long" | "bob") {
+    if look.hairstyle == "bob"
+        || (look.hairstyle == "long" && !crate::hair_curtain::enabled(look))
+    {
         let painted_hair = crate::npc_textures::get(look.texture_key).map(|painting| {
             let mut sum = [0_u32; 3];
             let mut count = 0;
@@ -692,6 +719,163 @@ pub(crate) fn head_mesh_with_hat_color(rig: &crate::open_people::PersonRig, look
         *n = normal.transform_vector3(Vec3::from_array(*n)).normalize().to_array();
     }
     Some(mesh)
+}
+
+/// Crystal's swept fringe falls across one side of Falkner's face. Its roots
+/// enter the crown and its depth follows the forehead through both profiles.
+fn falkner_fringe(mesh: &mut crate::mesh::SurfaceMeshData, surface: &crate::mesh::SurfaceMeshData,
+    center: bevy::prelude::Vec3, half: bevy::prelude::Vec3, look: Look) {
+    use bevy::prelude::*;
+    const SIDES: usize = 48;
+    const ROWS: usize = 28;
+    let hair = crate::npc_textures::get(look.texture_key).map(|painting| {
+        let (w,h) = painting.size; let mut sum=[0_u32;3]; let mut count=0;
+        for y in h/25..h/10 { for x in w/20..w/8 {
+            let at=((y*w+x)*4) as usize;
+            for a in 0..3 {sum[a]+=u32::from(painting.rgba[at+a]);} count+=1;
+        }}
+        sum.map(|v|(v/count) as u8)
+    }).unwrap_or(look.hair);
+    let edge = [(-0.84,0.20),(-0.73,0.08),(-0.60,-0.24),
+        (-0.34,0.10),(-0.10,0.25),(0.18,0.40),(0.45,0.46),(0.72,0.50)];
+    let tip = |x:f32| {
+        let b=edge.partition_point(|p|p.0<x).clamp(1,edge.len()-1); let a=b-1;
+        let t=((x-edge[a].0)/(edge[b].0-edge[a].0)).clamp(0.,1.);
+        edge[a].1+(edge[b].1-edge[a].1)*t*t*(3.-2.*t)
+    };
+    let mut front=Vec::new(); let mut colors=Vec::new();
+    for row in 0..=ROWS { for col in 0..=SIDES {
+        let t=row as f32/ROWS as f32; let u=col as f32/SIDES as f32;
+        let root_x=-0.72+1.34*u; let tip_x=-0.84+1.56*u;
+        let x=root_x+(tip_x-root_x)*t-0.035*(std::f32::consts::PI*t).sin()*(1.-u);
+        let root_y=0.12+0.74*(1.-root_x.powi(2)).max(0.).sqrt();
+        let y=root_y+(tip(tip_x)-root_y)*t;
+        let mut p=center+half*Vec3::new(x,y,0.);
+        let mut depth=head_front_depth(surface,p.x,p.y,center.y-half.y);
+        assert!(row!=0 || depth.is_some(), "fringe root must enter occupied scalp");
+        // The hanging temple can extend past the skin silhouette. Continue
+        // the nearest occupied depth without moving its authored outline.
+        let mut query_x=p.x;
+        for _ in 0..12 {
+            if depth.is_some() {break;}
+            query_x=query_x*0.94+center.x*0.06;
+            depth=head_front_depth(surface,query_x,p.y,center.y-half.y);
+        }
+        let depth=depth.expect("fringe must follow occupied head surface");
+        p.z=depth-0.015*(1.-t)+0.035*(std::f32::consts::FRAC_PI_2*t).sin()
+            +0.012*(std::f32::consts::PI*t).sin().powi(2);
+        front.push(p);
+        let shade=0.98+0.035*(9.*u-2.*t).sin()+0.02*(std::f32::consts::PI*t).cos();
+        colors.push(linear_color(hair.map(|v|(f32::from(v)*shade).round().clamp(0.,255.)as u8)));
+    }}
+    let first=mesh.positions.len(); let layer=front.len();
+    for inner in [false,true] {for (i,&p) in front.iter().enumerate() {
+        mesh.positions.push((p-Vec3::Z*if inner {0.035}else{0.}).to_array());
+        mesh.normals.push([0.;3]);mesh.colors.push(colors[i]);mesh.uvs.push([0.;2]);
+    }}
+    let mut faces=Vec::new();
+    for row in 0..ROWS {for col in 0..SIDES {
+        let a=first+row*(SIDES+1)+col;let b=a+SIDES+1;
+        faces.extend([[a,b,a+1],[a+1,b,b+1],
+            [a+1+layer,b+layer,a+layer],[b+1+layer,b+layer,a+1+layer]]);
+    }}
+    let mut border=Vec::new();
+    for col in 0..SIDES {border.push((first+col,first+col+1));
+        let a=first+ROWS*(SIDES+1)+col;border.push((a+1,a));}
+    for row in 0..ROWS {let a=first+row*(SIDES+1);border.push((a+SIDES+1,a));
+        let a=a+SIDES;border.push((a,a+SIDES+1));}
+    for (a,b) in border {faces.extend([[a,b,b+layer],[a,b+layer,a+layer]]);}
+    // Rebuild from the finished volume. The thin cut edge keeps a hard
+    // normal island; the broad swept face remains smooth across its grid.
+    for face in &faces {
+        let p=face.map(|i|Vec3::from_array(mesh.positions[i]));
+        let n=(p[1]-p[0]).cross(p[2]-p[0]);
+        for &i in face {mesh.normals[i]=(Vec3::from_array(mesh.normals[i])+n).to_array();}
+    }
+    for i in first..mesh.positions.len(){mesh.normals[i]=Vec3::from_array(mesh.normals[i]).normalize().to_array();}
+    for face in faces {
+        let p=face.map(|i|Vec3::from_array(mesh.positions[i]));
+        let normal=(p[1]-p[0]).cross(p[2]-p[0]).normalize();
+        for i in face {
+            if Vec3::from_array(mesh.normals[i]).dot(normal)>=0.5 {mesh.indices.push(i as u32);}
+            else {mesh.indices.push(mesh.positions.len()as u32);mesh.positions.push(mesh.positions[i]);
+                mesh.normals.push(normal.to_array());mesh.colors.push(mesh.colors[i]);mesh.uvs.push(mesh.uvs[i]);}
+        }
+    }
+}
+
+fn head_front_depth(surface: &crate::mesh::SurfaceMeshData, x: f32, y: f32, low: f32) -> Option<f32> {
+    use bevy::prelude::*;
+    let mut depth = f32::NEG_INFINITY;
+    for face in surface.indices.chunks_exact(3) {
+        let [a,b,c] = [face[0],face[1],face[2]].map(|i| Vec3::from_array(surface.positions[i as usize]));
+        if [a,b,c].iter().any(|p| p.y < low) { continue; }
+        let denominator = (b.y-c.y)*(a.x-c.x)+(c.x-b.x)*(a.y-c.y);
+        if denominator.abs() < 1e-7 { continue; }
+        let u = ((b.y-c.y)*(x-c.x)+(c.x-b.x)*(y-c.y))/denominator;
+        let v = ((c.y-a.y)*(x-c.x)+(a.x-c.x)*(y-c.y))/denominator;
+        if u >= 0. && v >= 0. && u+v <= 1. { depth = depth.max(a.z*u+b.z*v+c.z*(1.-u-v)); }
+    }
+    depth.is_finite().then_some(depth)
+}
+
+#[cfg(any(test, all(feature = "people-review", not(target_arch = "wasm32"))))]
+pub(crate) fn validate_falkner_fringe(rig: &crate::open_people::PersonRig) {
+    use bevy::prelude::*;
+    let mut low = Vec3::splat(f32::INFINITY);
+    let mut high = Vec3::splat(f32::NEG_INFINITY);
+    for (i, &p) in rig.mesh.positions.iter().enumerate() {
+        let head: f32 = (0..4).filter(|&s| rig.ids[i][s] as usize == rig.head_joint)
+            .map(|s| rig.weights[i][s]).sum();
+        if head > 0.5 { low = low.min(Vec3::from_array(p)); high = high.max(Vec3::from_array(p)); }
+    }
+    let center = (low + high) * 0.5;
+    let half = (high - low) * 0.5;
+    let look=look(crate::new_bark_actors::character_meshes::CharacterKind::Falkner);
+    let mut body=rig.refined_body();
+    let face_frame=crate::face_volume::Frame::new(rig,&body.mesh,&body.ids,&body.weights);
+    crate::hair_shapes::sculpt(rig,&mut body.mesh,&mut body.ids,&mut body.weights,look);
+    crate::face_volume::sculpt(rig,look,face_frame,&mut body.mesh,&mut body.ids,&mut body.weights);
+    let hair = head_mesh_on_body(rig,look,&body.mesh)
+        .expect("Falkner needs a modeled fringe");
+    let inverse = rig.inverse_binds[rig.head_joint].inverse();
+    let points: Vec<_> = hair.positions.iter()
+        .map(|&p| inverse.transform_point3(Vec3::from_array(p))).collect();
+    for p in &points[..49] {
+        let depth=head_front_depth(&body.mesh,p.x,p.y,low.y).expect("occupied fringe root");
+        assert!(p.z<depth-0.008, "fringe root must be buried in the finished scalp");
+    }
+    assert!(points.iter().any(|p| p.x < center.x - half.x * 0.40
+        && p.y < center.y + half.y * 0.03
+        && head_front_depth(&body.mesh,p.x,p.y,low.y).is_some_and(|z| p.z >= z-0.005)),
+        "the fringe must fall across the left eye rather than end on the crown");
+    assert!(points.iter().filter(|p| p.y < center.y + half.y * 0.20
+        && head_front_depth(&body.mesh,p.x,p.y,low.y).is_some_and(|z| p.z >= z-0.005))
+        .all(|p| p.x < center.x + half.x * 0.10),
+        "the other eye must remain clear");
+    for p in points.iter().filter(|p| p.y < center.y + half.y*0.35) {
+        if let Some(z) = head_front_depth(&body.mesh,p.x,p.y,low.y) {
+            assert!(p.z-z < 0.08, "fringe floats in front of the forehead");
+        }
+    }
+    let keys: Vec<_> = points.iter().map(|p| p.to_array().map(|v| (v * 100_000.).round() as i32)).collect();
+    let mut edges = std::collections::BTreeMap::new();
+    for face in hair.indices.chunks_exact(3) {
+        let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(hair.positions[i as usize]));
+        let normal = face.iter().map(|&i| Vec3::from_array(hair.normals[i as usize])).sum::<Vec3>();
+        assert!((p[1] - p[0]).cross(p[2] - p[0]).dot(normal) > 0., "inward fringe face");
+        for i in 0..3 {
+            let (a,b) = (keys[face[i] as usize], keys[face[(i+1)%3] as usize]);
+            let edge = edges.entry((a.min(b),a.max(b))).or_insert((0,0));
+            edge.0 += 1; edge.1 += if a < b {1} else {-1};
+        }
+    }
+    assert!(edges.values().all(|&e| e == (2,0)), "fringe must have closed ends");
+    let vertices:std::collections::BTreeSet<_>=edges.keys().flat_map(|&(a,b)|[a,b]).collect();
+    assert_eq!(vertices.len() as isize-edges.len() as isize+(hair.indices.len()/3) as isize,
+        2,"fringe must be one connected closed volume");
+    assert!(hair.normals.iter().all(|&n| { let n=Vec3::from_array(n);
+        n.is_finite() && (n.length()-1.).abs()<1e-4 }));
 }
 
 /// Hair gathers start inside the scalp and continue into one tapered surface.
@@ -838,7 +1022,8 @@ fn fitted_glasses(mesh: &mut crate::mesh::SurfaceMeshData, rig: &crate::open_peo
         if depth.is_finite() {depth} else {center.z+half.z*0.9}
     };
     let front=face_depth(center.x+half.x*0.42)+0.045;
-    let radius=half.x*0.027;
+    let guide=look.texture_key=="gym_guide";
+    let radius=half.x*if guide {0.033}else{0.027};
     let rgb=[43,39,37];
     let round=look.accessories.contains("roundglasses");
     for side in [-1.0,1.0] {
@@ -847,7 +1032,7 @@ fn fitted_glasses(mesh: &mut crate::mesh::SurfaceMeshData, rig: &crate::open_peo
             let angle=std::f32::consts::TAU*i as f32/64.0;
             let shape=|v:f32| if round {v} else {v.signum()*v.abs().powf(0.72)};
             let x=center.x+side*half.x*0.42+shape(angle.cos())*half.x*0.29;
-            let y=eye_y+shape(angle.sin())*half.y*if round {0.19} else {0.15};
+            let y=eye_y+shape(angle.sin())*half.y*if round {0.19} else if guide {0.18} else {0.15};
             rim.push(Vec3::new(x,y,front-0.035*((x-center.x)/half.x).powi(2)));
         }
         wire_frame(mesh,&rim,true,radius,rgb);
@@ -961,102 +1146,180 @@ fn fitted_beard(mesh: &mut crate::mesh::SurfaceMeshData, rig: &crate::open_peopl
 
 /// A rounded rear curtain starts inside the scalp, flows over the head and
 /// turns inward at the hem. Curved cheek openings avoid vertical side slabs.
-fn hair_curtain(mesh: &mut crate::mesh::SurfaceMeshData, center: bevy::prelude::Vec3,
-    half: bevy::prelude::Vec3, long: bool, rgb: [u8; 3],
-    painting: Option<&crate::npc_textures::Texture>) {
+fn hair_curtain(
+    mesh: &mut crate::mesh::SurfaceMeshData,
+    center: bevy::prelude::Vec3,
+    half: bevy::prelude::Vec3,
+    long: bool,
+    rgb: [u8; 3],
+    painting: Option<&crate::npc_textures::Texture>,
+) {
     use bevy::prelude::*;
     const ROWS: usize = 56;
     const SIDES: usize = 64;
-    let bottom=if long {-1.42} else {-0.76};
+    let bottom = if long { -1.42 } else { -0.76 };
     // Root radius is deliberately inside the scalp. The old exposed top rim
     // made a step in the silhouette and a light stripe across the back.
-    let profiles=[Vec3::new(0.88,0.36,0.38),Vec3::new(0.66,0.74,0.77),
-        Vec3::new(0.40,0.98,1.02),Vec3::new(0.10,1.10,1.10),
-        Vec3::new(-0.35,1.10,1.08),Vec3::new(bottom+0.17,if long {0.97} else {1.05},0.98),
-        Vec3::new(bottom+0.06,if long {0.89} else {0.99},0.91),
-        Vec3::new(bottom,if long {0.85} else {0.94},0.86)];
-    let point=|t:f32,u:f32,inner:bool| {
-        let q=t.clamp(0.0,1.0)*(profiles.len()-1) as f32;
-        let i=(q.floor() as usize).min(profiles.len()-2);let f=q-i as f32;
-        let p1=profiles[i];let p2=profiles[i+1];
-        let p0=if i==0 {p1-(p2-p1)} else {profiles[i-1]};
-        let p3=if i+2==profiles.len() {p2+(p2-p1)} else {profiles[i+2]};
+    let profiles = [
+        Vec3::new(0.88, 0.36, 0.38),
+        Vec3::new(0.66, 0.74, 0.77),
+        Vec3::new(0.40, 0.98, 1.02),
+        Vec3::new(0.10, 1.10, 1.10),
+        Vec3::new(-0.35, 1.10, 1.08),
+        Vec3::new(bottom + 0.17, if long { 0.97 } else { 1.05 }, 0.98),
+        Vec3::new(bottom + 0.06, if long { 0.89 } else { 0.99 }, 0.91),
+        Vec3::new(bottom, if long { 0.85 } else { 0.94 }, 0.86),
+    ];
+    let point = |t: f32, u: f32, inner: bool| {
+        let q = t.clamp(0.0, 1.0) * (profiles.len() - 1) as f32;
+        let i = (q.floor() as usize).min(profiles.len() - 2);
+        let f = q - i as f32;
+        let p1 = profiles[i];
+        let p2 = profiles[i + 1];
+        let p0 = if i == 0 {
+            p1 - (p2 - p1)
+        } else {
+            profiles[i - 1]
+        };
+        let p3 = if i + 2 == profiles.len() {
+            p2 + (p2 - p1)
+        } else {
+            profiles[i + 2]
+        };
         // Cubic Hermite with limited component slopes prevents overshoot at
         // the closely spaced hem rings and keeps the vertical ordering.
-        let limited=|a:f32,b:f32| if a*b<=0.0 {0.0} else {a.signum()*((a.abs()+b.abs())*0.5).min(2.0*a.abs().min(b.abs()))};
-        let slope=|a:Vec3,b:Vec3| Vec3::new(limited(a.x,b.x),limited(a.y,b.y),limited(a.z,b.z));
-        let m1=slope(p1-p0,p2-p1);let m2=slope(p2-p1,p3-p2);
-        let p=p1*(2.0*f.powi(3)-3.0*f*f+1.0)+m1*(f.powi(3)-2.0*f*f+f)
-            +p2*(-2.0*f.powi(3)+3.0*f*f)+m2*(f.powi(3)-f*f);
-        let opening=std::f32::consts::PI*(0.34+0.075*t*t*(3.0-2.0*t));
-        let angle=opening+(std::f32::consts::TAU-2.0*opening)*u;
-        let (s,c)=angle.sin_cos();
-        let gather=(std::f32::consts::PI*t).sin().powi(2);
+        let limited = |a: f32, b: f32| {
+            if a * b <= 0.0 {
+                0.0
+            } else {
+                a.signum() * ((a.abs() + b.abs()) * 0.5).min(2.0 * a.abs().min(b.abs()))
+            }
+        };
+        let slope =
+            |a: Vec3, b: Vec3| Vec3::new(limited(a.x, b.x), limited(a.y, b.y), limited(a.z, b.z));
+        let m1 = slope(p1 - p0, p2 - p1);
+        let m2 = slope(p2 - p1, p3 - p2);
+        let p = p1 * (2.0 * f.powi(3) - 3.0 * f * f + 1.0)
+            + m1 * (f.powi(3) - 2.0 * f * f + f)
+            + p2 * (-2.0 * f.powi(3) + 3.0 * f * f)
+            + m2 * (f.powi(3) - f * f);
+        let opening = std::f32::consts::PI * (0.34 + 0.075 * t * t * (3.0 - 2.0 * t));
+        let angle = opening + (std::f32::consts::TAU - 2.0 * opening) * u;
+        let (s, c) = angle.sin_cos();
+        let gather = (std::f32::consts::PI * t).sin().powi(2);
         // Broad flowing locks and a gently varied, inward-turning hem avoid
         // the old cylindrical slab with an almost perfectly horizontal end.
-        let lock=(angle*9.0+0.35*t+0.25*(angle*3.0).sin()).cos();
-        let end=t.powi(8);
-        let taper=1.0-end*(0.025+0.035*(1.0-lock)*0.5);
-        let ridge=(1.0+0.025*gather*lock)*taper;
-        let thickness=if inner {0.026} else {0.0};
-        let w=half.x*p.y*ridge-thickness;let d=half.z*p.z*ridge-thickness;
-        let tips=half.y*(if long {0.16} else {0.07})*end
-            *(0.55+0.45*(angle*7.0+0.3*(angle*3.0).sin()).cos());
-        center+Vec3::new(w*s,half.y*p.x+tips,d*c-0.025)
+        let lock = (angle * 9.0 + 0.35 * t + 0.25 * (angle * 3.0).sin()).cos();
+        let end = t.powi(8);
+        let taper = 1.0 - end * (0.025 + 0.035 * (1.0 - lock) * 0.5);
+        let ridge = (1.0 + 0.025 * gather * lock) * taper;
+        let thickness = if inner { 0.026 } else { 0.0 };
+        let w = half.x * p.y * ridge - thickness;
+        let d = half.z * p.z * ridge - thickness;
+        let tips = half.y
+            * (if long { 0.16 } else { 0.07 })
+            * end
+            * (0.55 + 0.45 * (angle * 7.0 + 0.3 * (angle * 3.0).sin()).cos());
+        center + Vec3::new(w * s, half.y * p.x + tips, d * c - 0.025)
     };
-    let first=mesh.positions.len() as u32;
-    let layer=(ROWS+1)*(SIDES+1);
-    for inner in [false,true] {for row in 0..=ROWS {for col in 0..=SIDES {
-        let t=row as f32/ROWS as f32;let u=col as f32/SIDES as f32;
-        let p=point(t,u,inner);
-        let across=point(t,(u+0.0005).min(1.0),inner)-point(t,(u-0.0005).max(0.0),inner);
-        let down=point((t+0.0005).min(1.0),u,inner)-point((t-0.0005).max(0.0),u,inner);
-        let n=down.cross(across).normalize()*if inner {-1.0} else {1.0};
-        // Match the source atlas's shaded hair rather than using the full
-        // palette color, which made the added surface a much lighter panel.
-        let strand=(u*std::f32::consts::TAU*9.0+0.8*t).cos();
-        let shade=0.68+0.08*t+0.045*strand*(std::f32::consts::PI*t).sin();
-        let color=if let Some(painting)=painting {
-            // The atlas's left hair strip stays outside the face and ear.
-            // Filter a small footprint into vertex albedo so the painted locks
-            // continue onto the separately modeled curtain, without sampling
-            // skin or applying a second dark palette tint to the painting.
-            let (w,h)=painting.size;
-            // Hold the atlas row nearly steady down the lock: traversing the
-            // painted horizontal waves vertically created stacked hair bands.
-            let bend=(std::f32::consts::PI*t).sin();
-            let x=((0.012+0.11*u+0.004*bend*(u*std::f32::consts::TAU).cos())*w as f32) as i32;
-            let y=((0.045+0.010*bend)*h as f32) as i32;
-            let mut sum=[0_u32;3];
-            for dy in -2..=2 {for dx in -2..=2 {
-                let px=(x+dx).clamp(0,w as i32-1) as u32;
-                let py=(y+dy).clamp(0,h as i32-1) as u32;
-                let at=((py*w+px)*4) as usize;
-                for a in 0..3 {sum[a]+=u32::from(painting.rgba[at+a]);}
-            }}
-            linear_color(sum.map(|s| (s as f32/25.0*0.96).round() as u8))
-        } else {
-            linear_color(rgb.map(|c| (f32::from(c)*shade).round() as u8))
+    let first = mesh.positions.len() as u32;
+    let layer = (ROWS + 1) * (SIDES + 1);
+    for inner in [false, true] {
+        for row in 0..=ROWS {
+            for col in 0..=SIDES {
+                let t = row as f32 / ROWS as f32;
+                let u = col as f32 / SIDES as f32;
+                let p = point(t, u, inner);
+                let across =
+                    point(t, (u + 0.0005).min(1.0), inner) - point(t, (u - 0.0005).max(0.0), inner);
+                let down =
+                    point((t + 0.0005).min(1.0), u, inner) - point((t - 0.0005).max(0.0), u, inner);
+                let n = down.cross(across).normalize() * if inner { -1.0 } else { 1.0 };
+                // Match the source atlas's shaded hair rather than using the full
+                // palette color, which made the added surface a much lighter panel.
+                let strand = (u * std::f32::consts::TAU * 9.0 + 0.8 * t).cos();
+                let shade = 0.68 + 0.08 * t + 0.045 * strand * (std::f32::consts::PI * t).sin();
+                let color = if let Some(painting) = painting {
+                    // The atlas's left hair strip stays outside the face and ear.
+                    // Filter a small footprint into vertex albedo so the painted locks
+                    // continue onto the separately modeled curtain, without sampling
+                    // skin or applying a second dark palette tint to the painting.
+                    let (w, h) = painting.size;
+                    // Hold the atlas row nearly steady down the lock: traversing the
+                    // painted horizontal waves vertically created stacked hair bands.
+                    let bend = (std::f32::consts::PI * t).sin();
+                    let x = ((0.012 + 0.11 * u + 0.004 * bend * (u * std::f32::consts::TAU).cos())
+                        * w as f32) as i32;
+                    let y = ((0.045 + 0.010 * bend) * h as f32) as i32;
+                    let mut sum = [0_u32; 3];
+                    for dy in -2..=2 {
+                        for dx in -2..=2 {
+                            let px = (x + dx).clamp(0, w as i32 - 1) as u32;
+                            let py = (y + dy).clamp(0, h as i32 - 1) as u32;
+                            let at = ((py * w + px) * 4) as usize;
+                            for a in 0..3 {
+                                sum[a] += u32::from(painting.rgba[at + a]);
+                            }
+                        }
+                    }
+                    linear_color(sum.map(|s| (s as f32 / 25.0 * 0.96).round() as u8))
+                } else {
+                    linear_color(rgb.map(|c| (f32::from(c) * shade).round() as u8))
+                };
+                mesh.positions.push(p.to_array());
+                mesh.normals.push(n.to_array());
+                mesh.colors.push(color);
+                mesh.uvs.push([0.0; 2]);
+            }
+        }
+    }
+    {
+        let mut quad = |a: usize, b: usize, c: usize, d: usize| {
+            mesh.indices.extend([
+                first + a as u32,
+                first + b as u32,
+                first + c as u32,
+                first + a as u32,
+                first + c as u32,
+                first + d as u32,
+            ]);
         };
-        mesh.positions.push(p.to_array());mesh.normals.push(n.to_array());
-        mesh.colors.push(color);mesh.uvs.push([0.0;2]);
-    }}}
-    let mut quad=|a:usize,b:usize,c:usize,d:usize| {
-        mesh.indices.extend([first+a as u32,first+b as u32,first+c as u32,
-            first+a as u32,first+c as u32,first+d as u32]);
+        for row in 0..ROWS {
+            for col in 0..SIDES {
+                let a = row * (SIDES + 1) + col;
+                let b = a + SIDES + 1;
+                quad(a, b, b + 1, a + 1);
+                quad(a + layer, a + layer + 1, b + layer + 1, b + layer);
+            }
+        }
+    }
+    // The closing faces run opposite the outer/inner boundary edges. Give
+    // their creases separate normals while keeping coincident positions and
+    // pigment exact; the former rims were consistently wound inward.
+    let mut quad = |a: usize, b: usize, c: usize, d: usize| {
+        let ids = [a, d, c, b].map(|i| first as usize + i);
+        let p = ids.map(|i| Vec3::from_array(mesh.positions[i]));
+        let normal = (p[1] - p[0]).cross(p[2] - p[0]).normalize().to_array();
+        let start = mesh.positions.len() as u32;
+        for i in ids {
+            mesh.positions.push(mesh.positions[i]);
+            mesh.normals.push(normal);
+            mesh.colors.push(mesh.colors[i]);
+            mesh.uvs.push(mesh.uvs[i]);
+        }
+        mesh.indices
+            .extend([start, start + 1, start + 2, start, start + 2, start + 3]);
     };
-    for row in 0..ROWS {for col in 0..SIDES {
-        let a=row*(SIDES+1)+col;let b=a+SIDES+1;
-        quad(a,b,b+1,a+1);quad(a+layer,a+layer+1,b+layer+1,b+layer);
-    }}
     for col in 0..SIDES {
-        quad(col,col+layer,col+layer+1,col+1);
-        let a=ROWS*(SIDES+1)+col;quad(a,a+1,a+layer+1,a+layer);
+        quad(col, col + layer, col + layer + 1, col + 1);
+        let a = ROWS * (SIDES + 1) + col;
+        quad(a, a + 1, a + layer + 1, a + layer);
     }
     for row in 0..ROWS {
-        let a=row*(SIDES+1);let b=a+SIDES+1;
-        quad(a,b,b+layer,a+layer);
-        quad(a+SIDES,a+SIDES+layer,b+SIDES+layer,b+SIDES);
+        let a = row * (SIDES + 1);
+        let b = a + SIDES + 1;
+        quad(a, b, b + layer, a + layer);
+        quad(a + SIDES, a + SIDES + layer, b + SIDES + layer, b + SIDES);
     }
 }
 
@@ -1159,6 +1422,14 @@ pub(crate) fn costume_mesh_with_uniform(rig: &crate::open_people::PersonRig, loo
 
 fn costume_mesh_parts(rig: &crate::open_people::PersonRig, look: Look, details: bool, uniform: Option<[u8;3]>) -> Option<CostumeMesh> {
     use bevy::prelude::*;
+    if let Some(mut trousers) = crate::tailored_trousers::build(rig, look) {
+        if details {
+            if let Some(obi) = crate::kimono_obi::build(rig, look) {
+                append_costume(&mut trousers, obi);
+            }
+        }
+        return Some(trousers);
+    }
     if let Some(cape) = crate::cape::build(rig,look) { return details.then_some(cape); }
     if let Some(uniform_mesh) = crate::uniform_details::build_with_uniform(rig,look,uniform) {return details.then_some(uniform_mesh);}
     let skirt = matches!(look.costume, "dress" | "kimono" | "robe") || look.accessories.contains("skirt");
@@ -1183,7 +1454,13 @@ fn costume_mesh_parts(rig: &crate::open_people::PersonRig, look: Look, details: 
                 let px = (x+dx).clamp(0,w as i32-1) as u32;
                 let py = (y+dy).clamp(0,h as i32-1) as u32;
                 let at = ((py*w+px)*4) as usize;
-                for a in 0..3 { sum[a] += u32::from(painting.rgba[at+a]); }
+                let mut rgb = [painting.rgba[at],painting.rgba[at+1],painting.rgba[at+2]];
+                if look.texture_key == "kimono_girl" {
+                    if let Some(uniform) = uniform {
+                        rgb = crate::npc_uniform::kimono_fabric_color(rgb, false, uniform);
+                    }
+                }
+                for a in 0..3 { sum[a] += u32::from(rgb[a]); }
             }}
             color = sum.map(|c| (c/25) as u8);
         }
@@ -1303,21 +1580,20 @@ fn costume_mesh_parts(rig: &crate::open_people::PersonRig, look: Look, details: 
         joints.push(std::array::from_fn(|i| influences[i].0 as u16));
         weights.push(std::array::from_fn(|i| influences[i].1/total));
     }
-    if details && matches!(look.texture_key, "erika" | "falkner" | "kimono_girl") {
-        if let Some(obi) = crate::kimono_obi::build(rig, look) {
-            let offset=mesh.positions.len() as u32;
-            mesh.positions.extend(obi.surface.positions);
-            mesh.normals.extend(obi.surface.normals);
-            mesh.colors.extend(obi.surface.colors);
-            mesh.uvs.extend(obi.surface.uvs);
-            mesh.indices.extend(obi.surface.indices.into_iter().map(|i|i+offset));
-            joints.extend(obi.joints);weights.extend(obi.weights);
-        }
-    }
     let mut costume = CostumeMesh { surface: mesh, joints, weights };
     if look.texture_key == "nurse" {
         crate::garment_fit::smooth_fitted_skin(&mut costume, rig.skin_nodes.len());
+    }
+    if closed {
+        // A fitted side and a flat closing rim have different normal islands.
+        // Finish the shell before appending the separately authored sash, so
+        // the sash keeps its own normals, topology and skinning.
         crate::garment_fit::finish_normals(&mut costume);
+    }
+    if details && matches!(look.texture_key, "erika" | "falkner" | "kimono_girl") {
+        if let Some(obi) = crate::kimono_obi::build(rig, look) {
+            append_costume(&mut costume, obi);
+        }
     }
     if details {
         crate::apron::append(&mut costume, look);
@@ -1326,9 +1602,75 @@ fn costume_mesh_parts(rig: &crate::open_people::PersonRig, look: Look, details: 
     Some(costume)
 }
 
+fn append_costume(out: &mut CostumeMesh, other: CostumeMesh) {
+    let offset = out.surface.positions.len() as u32;
+    out.surface.positions.extend(other.surface.positions);
+    out.surface.normals.extend(other.surface.normals);
+    out.surface.colors.extend(other.surface.colors);
+    out.surface.uvs.extend(other.surface.uvs);
+    out.surface.indices.extend(other.surface.indices.into_iter().map(|i| i + offset));
+    out.joints.extend(other.joints);
+    out.weights.extend(other.weights);
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    #[ignore = "requires supplied human rigs and paintings"]
+    fn supplied_closed_shells_keep_separate_outward_hem_normals_through_motion() {
+        use bevy::prelude::*;
+        use crate::{human_locomotion::{HumanLocomotion, world},
+            new_bark_actors::character_meshes::SOURCE_KINDS};
+        let mut checked = 0;
+        for (_, kind) in SOURCE_KINDS {
+            let look = look(kind);
+            if crate::garment_body::hem(look).is_none() { continue; }
+            let rig = crate::open_people::get(look.base).unwrap();
+            let cloth = costume_shell_mesh(rig, look).unwrap();
+            let rims: Vec<_> = cloth.surface.indices.chunks_exact(3).filter(|f| {
+                let y = [f[0], f[1], f[2]].map(|i| cloth.surface.positions[i as usize][1]);
+                (y[0] - y[1]).abs() < 1e-6 && (y[0] - y[2]).abs() < 1e-6
+            }).map(|f| [f[0] as usize, f[1] as usize, f[2] as usize]).collect();
+            assert!(rims.len() >= 80, "{} lost a closing hem", look.texture_key);
+            for face in &rims {
+                let p = face.map(|i| Vec3::from_array(cloth.surface.positions[i]));
+                let geometric = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
+                for &i in face {
+                    assert!(geometric.dot(Vec3::from_array(cloth.surface.normals[i])) > 0.9999,
+                        "{} closing rim shares its side normal", look.texture_key);
+                }
+            }
+            let gait = HumanLocomotion::for_character(rig, kind);
+            let mut pose = rig.nodes.clone();
+            for run in [0., 0.5, 1.] {
+                for step in 0..32 {
+                    gait.sample(rig, step as f32 / 32. * std::f32::consts::TAU, run, &mut pose);
+                    let inverse = world(rig, &pose, rig.mesh_node).inverse();
+                    let palette: Vec<_> = rig.skin_nodes.iter().zip(&rig.inverse_binds)
+                        .map(|(&node, bind)| inverse * world(rig, &pose, node) * *bind).collect();
+                    for face in &rims {
+                        let posed = face.map(|i| {
+                            let matrix: Mat4 = (0..4).map(|slot|
+                                palette[cloth.joints[i][slot] as usize] * cloth.weights[i][slot]).sum();
+                            (matrix.transform_point3(Vec3::from_array(cloth.surface.positions[i])),
+                                matrix.inverse().transpose().transform_vector3(
+                                    Vec3::from_array(cloth.surface.normals[i])).normalize())
+                        });
+                        let geometric = (posed[1].0 - posed[0].0).cross(posed[2].0 - posed[0].0);
+                        assert!(geometric.is_finite() && geometric.length_squared() > 1e-12);
+                        let normal = (posed[0].1 + posed[1].1 + posed[2].1).normalize();
+                        assert!(geometric.normalize().dot(normal) > 0.,
+                            "{} hem turns inward at run={run}, step={step}/32, face={face:?}",
+                            look.texture_key);
+                    }
+                }
+            }
+            checked += 1;
+        }
+        assert_eq!(checked, 25);
+    }
 
     #[test]
     #[ignore = "requires supplied male rig in CRYSTAL_OPEN_MODEL_ROOT"]
@@ -1564,7 +1906,7 @@ mod tests {
         for (_,kind) in SOURCE_KINDS {
             let look = look(kind);
             let rig = if look.base=="human-female" { &female } else { &male };
-            if !matches!(look.costume,"dress"|"kimono"|"robe"|"coat") && !look.accessories.contains("skirt") {continue;}
+            if !matches!(look.costume,"dress"|"kimono"|"robe"|"coat"|"hakama") && !look.accessories.contains("skirt") {continue;}
             let Some(cloth) = costume_mesh(rig,look) else { continue; };
             checked += 1;
             assert_eq!(cloth.surface.positions.len(),cloth.joints.len());
@@ -1658,28 +2000,58 @@ mod tests {
         use bevy::prelude::*;
         for long in [false, true] {
             let mut mesh = crate::mesh::SurfaceMeshData::default();
-            hair_curtain(&mut mesh, Vec3::new(0.0, 3.18, 0.0),
-                Vec3::new(0.44, 0.58, 0.52), long, [76, 43, 31], None);
-            assert!(mesh.positions.iter().any(|p| p[0].abs()<0.01 && p[2] < -0.5));
-            assert!(mesh.positions.iter().all(|p| p[2]<0.29));
-            assert!(mesh.positions.iter().all(|p| Vec3::from_array(*p).is_finite()));
+            hair_curtain(
+                &mut mesh,
+                Vec3::new(0.0, 3.18, 0.0),
+                Vec3::new(0.44, 0.58, 0.52),
+                long,
+                [76, 43, 31],
+                None,
+            );
+            assert!(
+                mesh.positions
+                    .iter()
+                    .any(|p| p[0].abs() < 0.01 && p[2] < -0.5)
+            );
+            assert!(mesh.positions.iter().all(|p| p[2] < 0.29));
+            assert!(
+                mesh.positions
+                    .iter()
+                    .all(|p| Vec3::from_array(*p).is_finite())
+            );
             assert!(mesh.normals.iter().all(|n| {
-                let n=Vec3::from_array(*n);n.is_finite() && (n.length()-1.0).abs()<1e-4
+                let n = Vec3::from_array(*n);
+                n.is_finite() && (n.length() - 1.0).abs() < 1e-4
             }));
-            assert!(mesh.indices.iter().all(|&i| (i as usize)<mesh.positions.len()));
-            // Main inner/outer surfaces must agree with their lighting normals.
-            for ids in mesh.indices[..56*64*12].chunks_exact(3) {
-                let p=[ids[0],ids[1],ids[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
-                let n=Vec3::from_array(mesh.normals[ids[0] as usize]);
-                assert!((p[1]-p[0]).cross(p[2]-p[0]).dot(n)>0.0);
-            }
-            let mut edges=std::collections::HashMap::new();
+            assert!(
+                mesh.indices
+                    .iter()
+                    .all(|&i| (i as usize) < mesh.positions.len())
+            );
+            // Include the closing rims, whose winding used to be inverted.
             for ids in mesh.indices.chunks_exact(3) {
-                for (a,b) in [(ids[0],ids[1]),(ids[1],ids[2]),(ids[2],ids[0])] {
-                    *edges.entry((a.min(b),a.max(b))).or_insert(0)+=1;
+                let p = [ids[0], ids[1], ids[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+                let n = Vec3::from_array(mesh.normals[ids[0] as usize]);
+                assert!((p[1] - p[0]).cross(p[2] - p[0]).dot(n) > 0.0);
+            }
+            let mut edges = std::collections::HashMap::new();
+            let keys: Vec<_> = mesh
+                .positions
+                .iter()
+                .map(|p| p.map(|v| (v * 100000.).round() as i32))
+                .collect();
+            for ids in mesh.indices.chunks_exact(3) {
+                for (a, b) in [(ids[0], ids[1]), (ids[1], ids[2]), (ids[2], ids[0])] {
+                    let (a, b) = (keys[a as usize], keys[b as usize]);
+                    let edge = edges.entry((a.min(b), a.max(b))).or_insert((0, 0));
+                    edge.0 += 1;
+                    edge.1 += if a < b { 1 } else { -1 };
                 }
             }
-            assert!(edges.values().all(|&count| count==2),"open curtain seam");
+            assert!(
+                edges.values().all(|&edge| edge == (2, 0)),
+                "open or inward curtain rim"
+            );
         }
     }
     #[test]

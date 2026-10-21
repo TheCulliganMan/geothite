@@ -64,3 +64,11 @@ the curved full bodies, raised paired tail fans and low flippers at pack size.
 No body rescaling or altered floor support was needed. The classic room view
 does not draw the added 3D companion; it establishes the matching game state,
 map position and facing, rather than a new source-sprite likeness assessment.
+
+Seel was also inspected at the production move menu in a witnessed Route 29
+encounter against Rattata. The admitted scene shows its complete curved body,
+flippers and tail at pack size, with both battlers modeled and no fallback.
+The matched 2D/3D pair reports `state_preserved=true`, core frame 957, checksum
+452911019, LCD frame 2447 and virtual time 60.095459504 seconds. The classic
+move menu covers Seel's back picture; the source-art comparison therefore
+continues to rely on the earlier pack and authoring reviews.

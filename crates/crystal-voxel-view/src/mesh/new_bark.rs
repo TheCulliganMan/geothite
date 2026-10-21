@@ -1159,7 +1159,9 @@ impl GroveRecipe {
         let [w, e, n, s] = self.bounds;
         let spacing = (e - w).min(s - n);
         let understory_margin = (self.tile_height * 0.5 - spacing * 0.2).max(0.);
-        let margin = if self.family != crate::foliage::GroveFamily::AncientForest {
+        let margin = if self.family == crate::foliage::GroveFamily::ParkBroadleaf {
+                spacing * 2.0 + self.tile_height * 0.125
+            } else if self.family != crate::foliage::GroveFamily::AncientForest {
                 // Pine generation proportionally fits every crown vertex
                 // inside a 0.75-spacing margin. Keep the understory bound
                 // and allow the bank lip's <= 0.113-tile recession as well.
@@ -2261,8 +2263,9 @@ fn surface_material(
         if positions.iter().any(|p| (p[1] - datum).abs() > epsilon) {
             // Preserve the existing visual-only background apron as well.
             return (world.is_none()
-                && matches!(material, GroundMaterial::Lawn | GroundMaterial::Path)
-                && positions.iter().all(|p| (p[1] + 0.04).abs() < epsilon))
+                && matches!(material, GroundMaterial::Lawn | GroundMaterial::Path | GroundMaterial::Pavers)
+                && positions.iter().all(|p|
+                    (p[1] - super::background::BACKGROUND_HEIGHT).abs() < epsilon))
             .then_some(material);
         }
         let world = world?;
@@ -3334,6 +3337,8 @@ fn polish_world_surfaces_from_sources(
         }
         return;
     }
+    let fountain_center =
+        super::park_fountain_basin::pool_center(cells, geometry, &mesh.authored_cells);
     let old = std::mem::take(&mut mesh.textured);
     let mut cave_faces = 0;
     let mut shallow_cave_faces = Vec::new();
@@ -3342,7 +3347,23 @@ fn polish_world_surfaces_from_sources(
         let uvs: [[f32; 2]; 4] = old.uvs[base..base + 4].try_into().unwrap();
         let normal = old.normals[base];
         let midpoint = positions.iter().map(|p|Vec3::from_array(*p)).sum::<Vec3>()/4.;
-        let (map,map_origin) = source_at(midpoint.to_array());
+        let background_floor = normal[1] > 0.999
+            && cell_at(geometry, midpoint.x, midpoint.z).is_none()
+            && positions.iter().all(|p|
+                (p[1] - super::background::BACKGROUND_HEIGHT).abs()
+                    < geometry.tile_height * 0.0001);
+        // A repeated apron has no world cell. Its sampled source identifies
+        // the real donor map; clamping to the nearest frame edge can select
+        // another connected map's palette and coordinate origin.
+        let owner_point = background_floor.then(|| sampled_cell(&uvs, geometry))
+            .flatten().map(|i| [
+                geometry.origin_x + (i % geometry.width) as f32 * geometry.tile_width
+                    + geometry.tile_width * 0.5,
+                0.,
+                geometry.origin_z + (i / geometry.width) as f32 * geometry.tile_height
+                    + geometry.tile_height * 0.5,
+            ]).unwrap_or_else(|| midpoint.to_array());
+        let (map,map_origin) = source_at(owner_point);
         if let Some(&(forest,johto))=styles.get(map) {finish.select_source_style(map,map_origin,forest,johto);}
         if let Some(i) = sampled_cell(&uvs, geometry).filter(|&i|
             lawn_water_bank(map, &positions, normal, &cells[i].source,
@@ -3494,6 +3515,25 @@ fn polish_world_surfaces_from_sources(
             })
         });
         if let Some(material) = material {
+            if material == GroundMaterial::Water
+                && normal[1] > 0.999
+                && matches!(map, "NationalPark" | "NationalParkBugContest")
+                && sampled_cell(&uvs, geometry).is_some_and(|i| {
+                    cells[i].source.tileset_id.as_ref() == "park"
+                        && cells[i].source.tile_index == 0x14
+                })
+                && let Some(center) = fountain_center
+            {
+                // Keep the exact pool plane and source clock. Only a complete
+                // authored fountain supplies its local ripple origin.
+                super::park_fountain_basin::append_pool_surface(
+                    &mut mesh.solid,
+                    positions,
+                    center,
+                    geometry.tile_height,
+                );
+                continue;
+            }
             // This native floor is buried by the proved bank cap. Finishing
             // its paint also generated loose detail which terraces lifted
             // onto that cap, creating overlapping cards and surface flicker.
@@ -3724,6 +3764,9 @@ fn polish_world_surfaces_from_sources(
                 }
                 }
             }
+            if background_floor {
+                finish.tag_floor(&mut mesh.solid, painted_start, material);
+            }
         } else {
             append_quad_colors(
                 &mut mesh.textured,
@@ -3746,18 +3789,30 @@ fn polish_world_surfaces_from_sources(
             old.positions.len() / 4
         );
     }
-    // Runtime background uses its own repeated texture. Carry those exact
-    // four strips into the same material domain, without expanding the apron.
+    // Carry the existing strips into the same finished material domain. Park
+    // masonry is known ground too; retaining its repeated native texture
+    // leaves a raw pixel band beyond an otherwise finished promenade.
     let background_material = mesh.background.as_ref().and_then(|background| {
         ground_material(&background.source)
-            .filter(|m| matches!(m, GroundMaterial::Lawn | GroundMaterial::Path))
+            .filter(|m| matches!(m, GroundMaterial::Lawn | GroundMaterial::Path | GroundMaterial::Pavers))
     });
     if let Some(material) = background_material {
         let background = mesh.background.take().unwrap();
+        let [column, row] = background.source_cell;
+        let (map, map_origin) = frame.map_or((map, map_origin), |frame| (
+            frame.scenery_map_at(column as u32, row as u32),
+            frame.scenery_grid_origin_at(column as u32, row as u32).to_array(),
+        ));
+        let tileset = background.source.tileset_id.as_ref();
+        let (forest, johto) = styles.get(map).copied().unwrap_or((
+            tileset == "forest", matches!(tileset, "johto" | "johto_modern"),
+        ));
+        finish.select_source_style(map, map_origin, forest, johto);
         for base in (0..background.mesh.positions.len()).step_by(4) {
             let positions: [[f32; 3]; 4] = background.mesh.positions[base..base + 4]
                 .try_into()
                 .unwrap();
+            let first = mesh.solid.positions.len();
             append_quad_colors(
                 &mut mesh.solid,
                 positions,
@@ -3765,9 +3820,14 @@ fn polish_world_surfaces_from_sources(
                 [[0.0; 2]; 4],
                 positions.map(|p| finish.color(material, p)),
             );
+            finish.tag_floor(&mut mesh.solid, first, material);
         }
     }
 }
+
+#[cfg(test)]
+#[path = "background_finish_tests.rs"]
+mod background_finish_tests;
 
 #[cfg(test)]
 mod tests {
@@ -4177,7 +4237,7 @@ mod tests {
                 tiles[4].source.tile_index=if known {0x01}else{0xff};
                 let cells:Vec<_>=tiles.iter().collect();
                 let mut mesh=TerrainMeshData {footing_heights:vec![0.;9],..Default::default()};
-                append_exposed_sides(&mut mesh,&g,&cells,&shapes,&vec![None;9],1,1);
+                append_exposed_sides(&mut mesh,"UnionCave1F",&g,&cells,&shapes,&vec![None;9],1,1);
                 if known && tileset!="johto" {
                     assert_eq!(mesh.textured.positions.len(),16);
                     assert!(mesh.solid.positions.is_empty());
@@ -4216,7 +4276,7 @@ mod tests {
             let mut shapes=vec![CellShape::Flat;9];
             shapes[4]=CellShape::RaisedTop {height,solid:SolidKind::Bank};
             let mut mesh=TerrainMeshData {footing_heights:vec![0.;9],..Default::default()};
-            append_exposed_sides(&mut mesh,&g,&cells,&shapes,&vec![None;9],1,1);
+            append_exposed_sides(&mut mesh,"UnionCave1F",&g,&cells,&shapes,&vec![None;9],1,1);
             assert_eq!(mesh.textured.positions.len(),16);
             assert!(mesh.solid.positions.is_empty());
             polish_world_surfaces(&mut mesh,"UnionCave1F",&cells,&g,[0,0]);

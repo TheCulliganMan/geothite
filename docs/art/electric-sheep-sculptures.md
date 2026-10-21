@@ -1,5 +1,9 @@
 # Mareep, Flaaffy and Ampharos standard skins
 
+See the subsequent [head-volume refinement](head-volume-fidelity.md) for the current Ampharos/Granbull geometry and review.
+
+> The Ampharos geometry and posture described here are historical. The October 20 [reference and leg-profile revision](upright-trio-fidelity.md) supersedes its preserved-geometry counts and stance. Mareep and Flaaffy remain unchanged by that revision.
+
 `tools/sheep_sculpt.py` and `tools/ampharos_sculpt.py` author the electric line.
 `tools/electric_sheep_glb.py` exports their canonical standard skins through the
 common production reader and GPU path. Static JSON is retired. The builder

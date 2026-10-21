@@ -113,6 +113,8 @@ pub(crate) fn prepare_surface(source: SurfaceMeshData) -> Vec<PreparedGroup> {
     }
     #[cfg(all(not(target_arch = "wasm32"), not(feature = "terrain-worker")))]
     occluder_fade::localize_opaque_triangles(&mut groups);
+    #[cfg(all(not(target_arch = "wasm32"), not(feature = "terrain-worker")))]
+    occluder_fade::localize_opaque_vertex_fetch(&mut groups);
     occluder_fade::share_groups(&mut groups);
     groups
 }

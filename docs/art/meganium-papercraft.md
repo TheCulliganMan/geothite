@@ -1,5 +1,10 @@
 # Meganium papercraft sculpture and animation
 
+The [October 21 family fidelity revision](grass-starter-fidelity.md) supersedes
+the historical shape and count notes below with a rounded skull, backward
+antennae, broad petals with pink tissue on both sides, a real mouth chamber
+and a thick rising tail. It records current geometry and verification.
+
 Meganium now has a connected mature quadruped body, a sloping two-stage neck,
 a projecting muzzle and a fitted opening lower jaw. Six folded oval petals
 form one flower around the neck. Paired curved golden antennae and a low,

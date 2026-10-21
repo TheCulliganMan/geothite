@@ -146,10 +146,14 @@ pub(super) fn append_with_datum(mesh:&mut TerrainMeshData,cells:&[&VisualTile],s
             north + g.tile_height * inset_z,
             south - g.tile_height * inset_z,
         ];
-        let m = variant_model(p.kind, [map_origin[0] + p.rect[0] as i32, map_origin[1] + p.rect[1] as i32]);
+        let coordinates=[map_origin[0]+p.rect[0]as i32,map_origin[1]+p.rect[1]as i32];
+        let m = variant_model(p.kind,coordinates);
+        let pose=if p.kind==Kind::KantoBoundaryShore {
+            crate::exterior_models::shore_pose(coordinates)
+        }else{crate::exterior_models::land_pose(coordinates)};
         // Shared, cached material meshes append to the existing single solid
         // terrain batch. No per-rock render entities, image copies or textures.
-        let rise = g.tile_height * 1.55;
+        let rise = g.tile_height * pose.rise;
         let source=(0..p.rect[3]).flat_map(|y|(0..p.rect[2]).map(move |x|
             cells[(p.rect[1]+y)*g.width+p.rect[0]+x])).collect::<Vec<_>>();
         let paint=images.and_then(|images| {
@@ -158,36 +162,46 @@ pub(super) fn append_with_datum(mesh:&mut TerrainMeshData,cells:&[&VisualTile],s
             fence_palette(images,&source)
         });
         let first = mesh.solid.positions.len();
+        let body_height=if p.kind==Kind::KantoBoundaryShore {m.max[1]-m.min[1]}
+            else {m.surface.positions.iter().map(|p|p[1]).fold(m.min[1],f32::max)-m.min[1]};
         m.append_fitted(
             &mut mesh.solid,
             fitted,
             p.base,
-            rise / (m.max[1] - m.min[1]),
+            rise / body_height,
             None,
         );
+        {
+            let normal_matrix=pose.normal_matrix(bevy::prelude::Vec2::new(g.tile_width,g.tile_height));
+            let light=Vec3::new(-0.35,0.85,0.4).normalize();
+            for i in first..mesh.solid.positions.len() {
+                let point=bevy::prelude::Vec2::new((mesh.solid.positions[i][0]-west)/g.tile_width,
+                    (mesh.solid.positions[i][2]-north)/g.tile_height);
+                let fitted=pose.point(point);
+                mesh.solid.positions[i][0]=west+fitted.x*g.tile_width;
+                mesh.solid.positions[i][2]=north+fitted.y*g.tile_height;
+                let before=Vec3::from_array(mesh.solid.normals[i]);
+                let normal=(normal_matrix*before).normalize();
+                mesh.solid.normals[i]=normal.to_array();
+                let shade=(0.62+0.38*normal.dot(light).max(0.))
+                    /(0.62+0.38*before.dot(light).max(0.));
+                for c in &mut mesh.solid.colors[i][..3] {*c*=shade;}
+            }
+        }
         if p.kind == Kind::KantoBoundaryShore {
             // Sea barriers sit in the same standing water as their native
             // underlay. An island's terrace must not lift this offshore row.
             mesh.solid.uvs[first..].fill([super::shore_ecology::ROOTED_WATER_UV, 0.]);
         }
         if let Some(paint)=paint {
-            let canonical=model(p.kind);
-            let mut crown_vertices=vec![false;m.surface.positions.len()];
-            for tri in m.surface.indices.chunks_exact(3) {
-                let role=m.vertex_material(tri[0] as usize);
-                if role.ends_with("Pale crown") || (role.ends_with("Mineral facet") && tri.iter().all(|&i|
-                    (canonical.surface.positions[i as usize][1]-canonical.min[1])/(canonical.max[1]-canonical.min[1])>0.9)) {
-                    for &i in tri {crown_vertices[i as usize]=true;}
-                }
-            }
             for i in first..mesh.solid.positions.len() {
                 let at=m.surface.positions[i-first];
                 let shore=p.kind==Kind::KantoBoundaryShore;
-                let height=((at[1]-m.min[1])/(m.max[1]-m.min[1])).clamp(0.,1.);
-                // Weathered sea rocks have a continuous mineral shoulder,
+                let height=((at[1]-m.min[1])/body_height).clamp(0.,1.);
+                // Weathered natural rocks have a continuous mineral shoulder,
                 // rather than an opaque white cap painted on a dark shaft.
                 let crown=if shore {0.08+0.28*height*height*(3.-2.*height)}
-                    else if crown_vertices[i-first] {1.}else{0.};
+                    else {0.12+0.52*height*height*(3.-2.*height)};
                 let shade=0.76+0.16*mesh.solid.normals[i][1].max(0.);
                 let pigment=std::array::from_fn::<_,3,_>(|c|
                     paint[1][c]*(1.-crown)+paint[2][c]*crown);
@@ -199,7 +213,7 @@ pub(super) fn append_with_datum(mesh:&mut TerrainMeshData,cells:&[&VisualTile],s
                 }
                 mesh.solid.uvs[i]=if p.kind==Kind::KantoBoundaryShore {
                     [super::shore_ecology::ROOTED_WATER_UV,85000.]
-                } else {crate::scenery_finish::SOURCE_PAINT_UV};
+                } else {crate::scenery_finish::SOURCE_STONE_UV};
             }
         }
         mark_authored_rect(mesh, g, p.rect, p.kind.label());
@@ -269,6 +283,53 @@ mod tests {
             Kind::KantoBoundaryLand,
             Kind::KantoBoundaryShore,
         ]
+    }
+
+    #[test]
+    fn posed_stones_keep_closed_plots_and_sea_stones_match_the_actual_optical_contact() {
+        for kind in kinds() {
+        for coordinates in [[0,0],[2,0],[6,0],[18,0],[-17,23],[30,40],[64,-32]] {
+        for (width,height) in [(8.,8.),(8.,16.),(32.,32.)] {
+            let (tiles,shapes,mut g)=fixture(kind,height);
+            g.tile_width=width;
+            let cells=tiles.iter().collect::<Vec<_>>();
+            let mut mesh=TerrainMeshData {authored_cells:vec![None;6],
+                footing_heights:vec![3.25;6],..Default::default()};
+            append(&mut mesh,&cells,&shapes,&g,&mut vec![false;6],coordinates);
+            assert_eq!(mesh.footing_heights,[3.25;6]);
+            let base=if kind==Kind::KantoBoundaryShore {
+                crate::profile::WATER_HEIGHT*height/SOURCE_TILE_HEIGHT
+            }else{0.};
+            assert!(mesh.textured.positions.iter().all(|p|p[1]==base));
+            assert!(mesh.solid.positions.iter().all(|p|
+                p[0]>=g.origin_x && p[0]<=g.origin_x+width*2.
+                    && p[2]>=g.origin_z && p[2]<=g.origin_z+height*2.
+                    && p[1]>=base));
+            assert!(mesh.solid.normals.iter().all(|&n|(Vec3::from_array(n).length()-1.).abs()<0.0001));
+            if kind==Kind::KantoBoundaryShore {
+            let contact=crate::exterior_models::kanto_shore_contact(coordinates);
+            let actual=mesh.solid.indices.chunks_exact(3).filter_map(|ids| {
+                let p=[ids[0],ids[1],ids[2]].map(|i|mesh.solid.positions[i as usize]);
+                p.iter().all(|p|(p[1]-base).abs()<0.00001).then(||p.map(|p|
+                    Vec2::new((p[0]-g.origin_x)/width,(p[2]-g.origin_z)/height)))
+            }).collect::<Vec<_>>();
+            assert_eq!(actual.len(),contact.len());
+            for (a,b) in actual.iter().zip(contact) {for i in 0..3 {
+                assert!(a[i].distance(b[i])<0.00001,
+                    "foam must follow the rendered rock base at {coordinates:?}: {:?}/{:?}",a[i],b[i]);
+            }}
+            } else {
+                let high=mesh.solid.positions.iter().map(|p|p[1]).fold(0.,f32::max);
+                assert!((high/height-crate::exterior_models::land_pose(coordinates).rise).abs()<0.00001,
+                    "land stone shoulder cuts cannot silently lower the intended height");
+            }
+            for ids in mesh.solid.indices.chunks_exact(3) {
+                let p=[ids[0],ids[1],ids[2]].map(|i|Vec3::from_array(mesh.solid.positions[i as usize]));
+                let normal=ids.iter().map(|&i|Vec3::from_array(mesh.solid.normals[i as usize])).sum::<Vec3>();
+                assert!((p[1]-p[0]).cross(p[2]-p[0]).dot(normal)>0.,
+                    "the rotated closed stone retains outward winding");
+            }
+        }}}
     }
 
     #[test]
@@ -376,40 +437,34 @@ mod tests {
             assert_eq!(day.footing_heights,original.footing_heights);
             assert_ne!(day.solid.colors,original.solid.colors);
             assert!(day.solid.colors.iter().any(|c|c[1]>c[0]*1.05),"muted native mineral highlight");
-            if kind==Kind::KantoBoundaryShore {
+            {
                 let mut pigments=std::collections::BTreeMap::new();
                 for (p,c) in day.solid.positions.iter().zip(&day.solid.colors) {
                     if let Some(previous)=pigments.insert(p.map(f32::to_bits),*c) {
-                        assert_eq!(previous,*c,"offshore pigment cannot expose triangular material seams");
+                        assert_eq!(previous,*c,"stone pigment cannot expose triangular material seams");
                     }
                 }
-                assert!(day.solid.colors.iter().all(|c|c[1]<0.5),
+                assert!(kind!=Kind::KantoBoundaryShore || day.solid.colors.iter().all(|c|c[1]<0.5),
                     "native bright ink must blend into mineral, not form a white post cap");
             }
             let high=day.solid.positions.iter().map(|p|p[1]).fold(f32::NEG_INFINITY,f32::max);
             let low=day.solid.positions.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min);
-            let mut crown_faces=0;
-            for tri in day.solid.indices.chunks_exact(3) {
-                if kind!=Kind::KantoBoundaryShore && tri.iter().all(|&i|(day.solid.positions[i as usize][1]-low)/(high-low)>0.92) {
-                    assert!(tri.iter().all(|&i|day.solid.colors[i as usize][1]>0.5),
-                        "complete crown triangles cannot contain dark mineral wedges");
-                    crown_faces+=1;
-                }
-            }
-            if kind!=Kind::KantoBoundaryShore {assert!(crown_faces>5);}
-            let canonical=model(kind);
-            for tri in canonical.surface.indices.chunks_exact(3) {
-                if kind!=Kind::KantoBoundaryShore && tri.iter().all(|&i|canonical.surface.positions[i as usize][1]
-                    >canonical.min[1]+0.9*(canonical.max[1]-canonical.min[1])) {
-                    assert!(tri.iter().all(|&i|day.solid.colors[i as usize][1]>0.5),
-                        "all cached variants must paint the same complete canonical crown");
-                }
+            if kind==Kind::KantoBoundaryLand {
+                let mean=|upper:bool| {
+                    let colors=day.solid.positions.iter().zip(&day.solid.colors).filter(|(p,_)| {
+                        let h=(p[1]-low)/(high-low);if upper {h>0.75}else{h<0.25}
+                    }).map(|(_,c)|c[1]).collect::<Vec<_>>();
+                    assert!(!colors.is_empty());colors.iter().sum::<f32>()/colors.len()as f32
+                };
+                assert!(mean(true)>mean(false)*1.15,"native light ink must still describe upper stone");
+                assert!(day.solid.colors.iter().all(|c|c[1]<0.65),
+                    "a weathered shoulder cannot retain an opaque white lid");
             }
 
 
             assert!(day.solid.uvs.iter().all(|&uv|uv==if kind==Kind::KantoBoundaryShore {
                 [super::super::shore_ecology::ROOTED_WATER_UV,85000.]
-            }else{crate::scenery_finish::SOURCE_PAINT_UV}));
+            }else{crate::scenery_finish::SOURCE_STONE_UV}));
             let mut night_images=images.clone();
             for sample in night_images.pixels.values_mut() {if let TileImageSample::Rgba(p)=sample {
                 for px in p.chunks_exact_mut(4) {px[0]/=2;px[1]/=2;}
@@ -505,7 +560,9 @@ mod tests {
                     .iter()
                     .any(|v| (v[1] - y).abs() < 0.001)
             );
-            assert!(mesh.solid.positions.iter().any(|v| v[1] > y + 10.0));
+            assert!(mesh.solid.positions.iter().any(|v|v[1]>y+if kind==Kind::KantoBoundaryShore {
+                g.tile_height*0.55
+            }else{10.}),"every seeded stone retains substantial closed volume");
             // A second append cannot double draw or double claim this rock.
             let count = mesh.solid.indices.len();
             append_props(&mut mesh, &cells, &shapes, &g, &mut claimed);

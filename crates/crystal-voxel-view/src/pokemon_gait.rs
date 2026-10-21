@@ -44,6 +44,11 @@ fn words(name: &str, keys: &[&str]) -> bool {
         .any(|w| keys.iter().any(|key| w.eq_ignore_ascii_case(key)))
 }
 
+fn non_support(name: &str) -> bool {
+    name.split(|c: char| !c.is_ascii_alphabetic())
+        .any(|word| word.eq_ignore_ascii_case("tucked") || word.eq_ignore_ascii_case("suspended"))
+}
+
 fn support_center(rig: &SpeciesRig) -> Vec3 {
     let mut center = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
     if crawl(rig.species.name()) || quadruped(rig.species.name()) {
@@ -63,6 +68,7 @@ fn support_center(rig: &SpeciesRig) -> Vec3 {
         let mut left = f32::NEG_INFINITY;
         let mut right = f32::INFINITY;
         for part in &rig.anatomy {
+            if non_support(&part.name) { continue; }
             if role(&part.name) != Role::Leg || words(&part.name, &["foot", "feet", "toe", "toes", "claw", "claws", "talon", "paw", "hoof", "proleg", "shoe", "boot", "sole", "heel"]) {
                 continue;
             }
@@ -93,11 +99,16 @@ pub(super) fn build(rig: &mut SpeciesRig) {
     let is_crawl = crawl(rig.species.name());
     let is_quad = quadruped(rig.species.name());
     let style = travel::style(rig.species.name());
+    // The inverted spinner travels on its crown point. Its raised kicking
+    // limbs retain their authored skin and must never become walking supports.
+    if style == travel::Style::Spin { return; }
     let mut groups: std::collections::BTreeMap<usize, Vec<(Range<usize>, bool)>> =
         Default::default();
     let mut seeds = Vec::new();
     // An authored leg-root is stronger evidence than the bounding box.
     for part in &rig.anatomy {
+        // A raised foot hidden in plumage is anatomy, not a walking support.
+        if non_support(&part.name) { continue; }
         if rig.joints[rig.joint_indices[part.vertices.start][0] as usize]
             .name
             .contains("/crawl_tentacle_")
@@ -170,8 +181,14 @@ pub(super) fn build(rig: &mut SpeciesRig) {
         .filter(|(_, _, _, foot)| !*foot)
         .map(|(p, k, _, _)| (*p, *k))
         .collect();
+    // A single complete leg may straddle the body's left/right axis. Its toes
+    // belong to that support even when their centers have opposite X signs.
+    let sole_support = anchors.first().map(|(_, key)| *key)
+        .filter(|key| anchors.iter().all(|(_, candidate)| candidate == key));
     for (center, key, vertices, foot) in &seeds {
-        let key = if *foot && !anchors.is_empty() {
+        let key = if *foot && sole_support.is_some() {
+            sole_support.unwrap()
+        } else if *foot && !anchors.is_empty() {
             anchors
                 .iter()
                 .filter(|(p, _)| p.x.signum() == center.x.signum())
@@ -511,7 +528,8 @@ mod support_center_tests {
     fn pokemon_motion_biped_steps_are_centered_under_hips_not_toes() {
         for name in ["PIKACHU", "RAICHU", "MACHOP", "MACHOKE", "MACHAMP",
             "CHARMANDER", "CHARMELEON", "ELECTABUZZ", "MAGMAR", "KANGASKHAN",
-            "MEOWTH", "RATICATE"] {
+            "MEOWTH", "RATICATE", "AMPHAROS", "GRANBULL", "MEWTWO", "ELEKID", "MAGBY",
+            "HITMONCHAN", "HITMONLEE", "TYROGUE", "SMOOCHUM", "RHYDON", "LARVITAR"] {
             let rig = world_rig(crate::species_rig::for_species(name).unwrap());
             assert_eq!(rig.walk_legs.len(), 2, "{name}");
             let mut pose = vec![Transform::IDENTITY; rig.joints.len()];

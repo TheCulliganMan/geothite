@@ -9,10 +9,15 @@ from sculpt_geometry import sub
 from skin_glb import COORDINATES,Glb,envelope,packed,quantized_weights,quaternion_xyz,smoothstep
 PARTS=tuple(p['part'] for p in sculpture()['primitives'])
 MAX_BYTES=1024000
-JOINTS=(('root',None,(0.,0.,0.)),('boulder',0,(0.,.38,0.)),
-        ('arm_left',1,(-.30,.43,.01)),('forearm_left',2,(-.51,.34,.07)),
-        ('fist_left',3,(-.62,.56,.15)),('arm_right',1,(.30,.43,.01)),
-        ('forearm_right',5,(.51,.34,.07)),('fist_right',6,(.62,.56,.15)))
+_raw=sculpture(False)
+_floor=min(v for p in _raw['primitives'] for v in p['positions'][1::3])
+_scale=HEIGHT/(max(v for p in _raw['primitives'] for v in p['positions'][1::3])-_floor)
+def normalized(point):return tuple((v-(_floor if i==1 else 0.))*_scale for i,v in enumerate(point))
+JOINTS=tuple((name,parent,normalized(point)) for name,parent,point in
+        (('root',None,(0.,_floor,0.)),('boulder',0,(0.,.28,-.015)),
+         ('arm_left',1,(-.258,.270,.005)),('forearm_left',2,(-.510,.166,.032)),
+         ('hand_left',3,(-.691,.222,.090)),('arm_right',1,(.258,.270,.005)),
+         ('forearm_right',5,(.510,.166,.032)),('hand_right',6,(.691,.222,.090))))
 CLIPS=(('idle',4.2,85),('attack',1.,65),('hit',1.,65))
 
 
@@ -22,17 +27,17 @@ def boulder_weights(position):
 
 
 def skin_weights(part,position):
-    x,y,z=position;left=x<0
+    x,y,z=position;left=x<0;raw_x=abs(x)/_scale
     if part.startswith(('Brow /','Eye /','Eye glint /','Pupil /','Mouth /','Lip /')):
         return [1,0,0,0],[1.,0.,0.,0.]
     if part.startswith('Upper arm /'):
-        joint=2 if left else 5;arm=smoothstep(.30,.42,abs(x))
+        joint=2 if left else 5;arm=smoothstep(.28,.38,raw_x)
         return [1,joint,0,0],[1.-arm,arm,0.,0.]
     if part.startswith('Forearm /'):
         shoulder=2 if left else 5;forearm=shoulder+1
-        bend=smoothstep(.49,.60,abs(x))
+        bend=smoothstep(.50,.64,raw_x)
         return [shoulder,forearm,0,0],[1.-bend,bend,0.,0.]
-    if part.startswith(('Fist /','Knuckle /','Thumb /','Fist fold /')):return [4 if left else 7,0,0,0],[1.,0.,0.,0.]
+    if part.startswith(('Hand /','Finger /','Thumb /')):return [4 if left else 7,0,0,0],[1.,0.,0.,0.]
     return boulder_weights(position)
 
 
@@ -110,12 +115,12 @@ def export_geodude(model=None):
             samplers.append({'input':times,'output':g.accessor(rotations,'VEC4'),'interpolation':'LINEAR'})
         g.doc['animations'].append({'name':'geodude.'+clip,'channels':channels,'samplers':samplers,
             'extras':{'loopSuggested':clip=='idle','cueRelative':clip!='idle',
-            'purpose':'rock survey; early boulder and arm brace; delayed clenched fists settle; source battle cues own timing'}})
+            'purpose':'rock survey; early boulder and arm brace; delayed open hands settle; source battle cues own timing'}})
     g.doc['extras']={'coordinate_system':COORDINATES,'source_name':'geodude',
         'source_sha256':geometry_digest(model),'reference_span':HEIGHT,
         'body_reference_height':HEIGHT,'full_silhouette_height':HEIGHT,
         'geometry_source':'tools/geodude_sculpt.py',
-        'animation_contract':'identity floor root; fixed lowest boulder contact; fitted rigid rock face; articulated boulder, shoulders, forearms and clenched fists; rotation-only cue-relative clips'}
+        'animation_contract':'identity floor root; fixed lowest boulder contact; fitted recessed rigid rock face; articulated boulder, shoulders, forearms and open hands; rotation-only cue-relative clips'}
     assert len(g.doc['accessors'])<=256
     return g.bytes()
 
