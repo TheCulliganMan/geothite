@@ -9,6 +9,7 @@ mod camera_gestures;
 mod day_cycle;
 mod city_lights;
 mod sky;
+mod regional_atmosphere;
 mod summit_vista;
 pub use summit_vista::{SummitBackdrop, SummitBackdropMap, SummitBackdropStatus, summit_preload_interior, summit_preload_foreground_ready};
 mod environment_lighting;
@@ -67,6 +68,9 @@ pub use shared_groves::configure_grove_collision_diagnostics;
 mod grove_stream;
 
 mod destination_preload;
+mod world_stream;
+mod world_stream_camera_trace;
+pub use world_stream::{WorldStreamStatus, WorldStreamTarget};
 #[cfg(not(target_arch = "wasm32"))]
 mod pipeline_preload;
 pub use destination_preload::{DestinationPreload, supported as destination_preload_supported};
@@ -186,6 +190,11 @@ mod saffron_gym;
 mod ship;
 mod sign;
 mod terrain_tracking;
+mod terrain_upload;
+mod terrain_publication;
+mod terrain_disposal;
+#[cfg(not(target_arch = "wasm32"))]
+mod gpu_retirement;
 mod terrain_animation;
 mod terrain_batches;
 mod tower;
@@ -383,8 +392,12 @@ impl Plugin for VoxelViewPlugin {
             .init_resource::<TerrainRevisionCache>()
             .init_resource::<TerrainBuildQueue>()
             .init_resource::<DestinationPreload>()
+            .init_resource::<WorldStreamStatus>()
             .init_resource::<destination_preload::PreparedDestination>()
-            .add_systems(Update, destination_preload::prepare.after(sync_voxel_view)
+            .init_resource::<destination_preload::PreparedWorld>()
+            .add_systems(Update, world_stream::update_interest.after(sync_voxel_view)
+                .in_set(WorldRenderSet::RenderSync))
+            .add_systems(Update, destination_preload::prepare.after(world_stream::update_interest)
                 .in_set(WorldRenderSet::RenderSync))
             .init_resource::<ActorIdCache>()
             .init_resource::<PlayerSilhouetteCache>()
@@ -425,6 +438,7 @@ impl Plugin for VoxelViewPlugin {
         app.add_systems(Update, flower::animate.after(sync_voxel_view)
             .in_set(WorldRenderSet::RenderSync));
         occluder_fade::register(app);
+        terrain_upload::register(app);
     }
 }
 
@@ -600,6 +614,7 @@ impl TerrainCacheKey {
 
 #[derive(Resource, Default)]
 struct TerrainRevisionCache {
+    uploads: terrain_upload::Pending,
     city_emitters: Vec<city_lights::Emitter>,
     forest_library: std::sync::Arc<forest_instances::Library>,
     groves: Option<grove_stream::Stream>,
@@ -640,6 +655,9 @@ struct TerrainRevisionCache {
 #[derive(Resource, Default)]
 struct TerrainBuildQueue {
     started: u64,
+    speculative: bool,
+    defer_to_world_preload: bool,
+    publication: Option<terrain_publication::Pending>,
     // Let asset removal/render extraction retire the previous map before a
     // synchronous browser build allocates the replacement scene.
     retirement_frames: u8,
@@ -1084,7 +1102,25 @@ Transform::from_xyz(180.0, 320.0, 220.0).looking_at(Vec3::ZERO, Vec3::Y),),
 #[allow(clippy::too_many_arguments)]
 fn sync_voxel_view(
     frame: Res<VisualWorldFrame>,
-    presentation: (Res<VoxelViewSettings>, Res<live_profiles::LiveProfiles>, Query<(&DirectionalLight, &Transform), (With<VoxelSun>, Without<VoxelWorldCamera>, Without<VoxelTerrain>, Without<VoxelActorCard>)>, ResMut<NativeHealingEffectsStatus>, Option<Res<crystal_render_api::VisualPlayerTraversal>>, Option<ResMut<DestinationPreload>>, Option<ResMut<destination_preload::PreparedDestination>>),
+    presentation: (
+        Res<VoxelViewSettings>,
+        Res<live_profiles::LiveProfiles>,
+        Query<
+            (&DirectionalLight, &Transform),
+            (
+                With<VoxelSun>,
+                Without<VoxelWorldCamera>,
+                Without<VoxelTerrain>,
+                Without<VoxelActorCard>,
+            ),
+        >,
+        ResMut<NativeHealingEffectsStatus>,
+        Option<Res<crystal_render_api::VisualPlayerTraversal>>,
+        Option<ResMut<DestinationPreload>>,
+        Option<ResMut<destination_preload::PreparedDestination>>,
+        Option<ResMut<destination_preload::PreparedWorld>>,
+        Option<ResMut<WorldStreamStatus>>,
+    ),
     mut status: ResMut<VoxelViewStatus>,
     mut last_failure: Local<Option<String>>,
     mut validated_frame_key: Local<Option<TerrainCacheKey>>,
@@ -1113,15 +1149,50 @@ fn sync_voxel_view(
         ),
     >,
 ) {
-    let (settings, profiles, sun,mut healing_status, traversal, mut preload, mut prepared_destination) = presentation;
+    let (
+        settings,
+        profiles,
+        sun,
+        mut healing_status,
+        traversal,
+        mut preload,
+        mut prepared_destination,
+        mut prepared_world,
+        mut streaming,
+    ) = presentation;
+    let previous_root = destination_preload::roots(&terrain_cache).next();
+    let previous_build_pending = terrain_builds.key.is_some();
     status.connected_terrain = false;
     if settings.enabled && frame.active {
-        if let (Some(request), Some(destination)) = (preload.as_mut(), prepared_destination.as_mut()) {
-            destination_preload::activate(&frame, &profiles, destination, request,
-                &mut terrain_cache, &mut terrain_builds, &mut commands);
+        if let (Some(world), Some(streaming)) = (prepared_world.as_mut(), streaming.as_mut()) {
+            destination_preload::activate_world(
+                &frame,
+                &profiles,
+                world,
+                streaming,
+                &mut terrain_cache,
+                &mut terrain_builds,
+                &mut commands,
+            );
+        }
+        if let (Some(request), Some(destination)) =
+            (preload.as_mut(), prepared_destination.as_mut())
+        {
+            destination_preload::activate(
+                &frame,
+                &profiles,
+                destination,
+                request,
+                &mut terrain_cache,
+                &mut terrain_builds,
+                &mut commands,
+            );
         }
     }
-    let _trace = loading_trace::span("frame.sync_3d", || serde_json::json!({"map": frame.map_id.as_ref(), "enabled": settings.enabled}));
+    let _trace = loading_trace::span(
+        "frame.sync_3d",
+        || serde_json::json!({"map": frame.map_id.as_ref(), "enabled": settings.enabled}),
+    );
     status.profiles_pending = terrain_cache
         .key
         .as_ref()
@@ -1130,6 +1201,7 @@ fn sync_voxel_view(
         status.active_frames = 0;
     }
     if status.active
+        && previous_root == destination_preload::roots(&terrain_cache).next()
         && !status.terrain_pending
         && !profiles.is_changed()
         && !status.profiles_pending
@@ -1145,8 +1217,8 @@ fn sync_voxel_view(
         status.active_frames = status.active_frames.saturating_add(1);
         return;
     }
-    healing_status.consumed=false;
-    let holding_lighthouse=retain_lighthouse_room(&frame,&terrain_cache);
+    healing_status.consumed = false;
+    let holding_lighthouse = retain_lighthouse_room(&frame, &terrain_cache);
     let failure = if !settings.enabled {
         Some("disabled")
     } else if !frame.active {
@@ -1169,18 +1241,24 @@ fn sync_voxel_view(
         // cells on every display refresh.
         *validated_frame_key = Some(TerrainCacheKey::from_frame(&frame));
     }
-    let mut pose = {
-        let _trace=loading_trace::span("frame.resolve_world_camera", || serde_json::json!({"map":frame.map_id.as_ref()}));
-        settings.camera.world_pose_with_traversal(&frame, &terrain_cache.footing_heights, traversal.as_deref())
-    };
+    // Until terrain sync aligns support to this frame, only the inactive
+    // output path may use a pose. Resolve the moving camera afterwards.
+    let mut pose = settings.camera.pose(frame.viewport_size);
     let valid = failure.is_none();
-    let output_ready = if valid&&holding_lighthouse {
-        // Hold both room coordinates and camera pose, rather than applying
-        // the destination's origin to the retained room for a loading frame.
+    let output_ready = if valid {
+        // Check ownership without publishing a pose from the previous support
+        // grid. A held lighthouse keeps its complete old room's camera active.
         scene.camera.is_some_and(|entity| {
-            cameras.get_mut(entity).is_ok_and(|(mut camera,_,_)|{camera.is_active=true;true})
+            cameras.get_mut(entity).is_ok_and(|(mut camera, _, _)| {
+                if holding_lighthouse {
+                    camera.is_active = true;
+                }
+                true
+            })
         })
-    }else{set_output_active(&scene, valid, &mut cameras, pose)};
+    } else {
+        set_output_active(&scene, false, &mut cameras, pose)
+    };
     if valid && !output_ready {
         let failure = "voxel world camera is unavailable";
         status.active = false;
@@ -1196,7 +1274,10 @@ fn sync_voxel_view(
             terrain_builds.painted.cancel();
         }
         #[cfg(target_arch = "wasm32")]
-        { terrain_builds.pending = None; terrain_builds.key = None; }
+        {
+            terrain_builds.pending = None;
+            terrain_builds.key = None;
+        }
         let failure = failure.unwrap_or("unknown reason");
         status.active = false;
         status.terrain_pending = false;
@@ -1206,6 +1287,12 @@ fn sync_voxel_view(
         return;
     }
 
+    {
+        terrain_builds.speculative = false;
+        terrain_builds.defer_to_world_preload = terrain_cache.built_frame.is_some()
+            && prepared_world.as_mut().is_some_and(|world|
+                destination_preload::pending_world_covers(&frame, &profiles, world));
+    }
     let terrain_state = match sync_terrain(
         &frame,
         &profiles,
@@ -1218,7 +1305,9 @@ fn sync_voxel_view(
         &mut terrain_entities,
     ) {
         Ok(state) => state,
-        Err(TerrainSyncError::SourceTextureUnavailable) if holding_lighthouse=>TerrainSyncState::Pending,
+        Err(TerrainSyncError::SourceTextureUnavailable) if holding_lighthouse => {
+            TerrainSyncState::Pending
+        }
         Err(error) => {
             let failure = format!("terrain sync failed: {error:?}");
             status.active = false;
@@ -1231,12 +1320,31 @@ fn sync_voxel_view(
         }
     };
     status.connected_terrain = retain_connected_terrain(&frame, &mut terrain_cache);
-    if status.connected_terrain {
-        // A connection changes the coordinate basis even before its new mesh
-        // arrives. Use the aligned retained support for the moving camera too.
-        pose = settings.camera.world_pose_with_traversal(&frame,
-            &terrain_cache.footing_heights, traversal.as_deref());
-        set_output_active(&scene, true, &mut cameras, pose);
+    if !holding_lighthouse || matches!(terrain_state, TerrainSyncState::Ready) {
+        let _trace = loading_trace::span(
+            "frame.resolve_world_camera",
+            || serde_json::json!({"map":frame.map_id.as_ref()}),
+        );
+        // Alignment also changes during same-map scrolling while a replacement
+        // is pending. Sampling the previous grid produced a one-frame height
+        // jump followed by a correction without any player movement.
+        pose = settings.camera.world_pose_with_traversal(
+            &frame,
+            &terrain_cache.footing_heights,
+            traversal.as_deref(),
+        );
+        if previous_root != destination_preload::roots(&terrain_cache).next()
+            || (previous_build_pending && terrain_builds.key.is_none())
+        {
+            let old_eye = scene.camera.and_then(|entity| {
+                cameras.get_mut(entity).ok().map(|(_, _, transform)| transform.translation)
+            });
+            world_stream_camera_trace::publish(&frame, &settings, &terrain_cache,
+                traversal.as_deref(), old_eye, pose);
+        }
+        if !holding_lighthouse {
+            set_output_active(&scene, true, &mut cameras, pose);
+        }
     }
     status.terrain_builds = terrain_builds.started;
     let applied_map = terrain_cache.key.as_ref().map(|key| key.map_id.as_ref());
@@ -1245,33 +1353,48 @@ fn sync_voxel_view(
     }
     status.terrain_pending = matches!(terrain_state, TerrainSyncState::Pending);
     if matches!(terrain_state, TerrainSyncState::Ready) {
-        // The completed build may have published new support in this call.
-        // Resolve the camera again before drawing that terrain; otherwise an
-        // idle first frame keeps the pre-build pose until the player moves.
-        pose = settings.camera.world_pose_with_traversal(&frame,
-            &terrain_cache.footing_heights, traversal.as_deref());
-        if !holding_lighthouse { set_output_active(&scene, true, &mut cameras, pose); }
-        let projection = cameras.iter().find_map(|(_, projection, _)| match projection {
-            Projection::Perspective(p) => Some(Mat4::perspective_rh(pose.vertical_fov_radians, p.aspect_ratio, pose.near, pose.far)),
-            _ => None,
-        });
+        // The pose already observes support published or aligned in this call.
+        let projection = cameras
+            .iter()
+            .find_map(|(_, projection, _)| match projection {
+                Projection::Perspective(p) => Some(Mat4::perspective_rh(
+                    pose.vertical_fov_radians,
+                    p.aspect_ratio,
+                    pose.near,
+                    pose.far,
+                )),
+                _ => None,
+            });
         if let Some(projection) = projection {
             let view_projection = projection * Mat4::look_at_rh(pose.eye, pose.target, Vec3::Y);
-            let sun = sun.iter().find_map(|(light, transform)|
-                (light.shadow_maps_enabled && light.illuminance > 0.).then(|| -transform.forward().as_vec3()));
-            status.terrain_pending |= grove_stream::sync(&frame, view_projection, sun,
-                &mut terrain_cache, &mut commands, &mut meshes, &mut materials);
+            let sun = sun.iter().find_map(|(light, transform)| {
+                (light.shadow_maps_enabled && light.illuminance > 0.)
+                    .then(|| -transform.forward().as_vec3())
+            });
+            status.terrain_pending |= grove_stream::sync(
+                &frame,
+                view_projection,
+                sun,
+                &mut terrain_cache,
+                &mut commands,
+                &mut meshes,
+                &mut materials,
+            );
         }
     }
     if status.terrain_pending {
         status.active_frames = 0;
     }
-    if retain_lighthouse_room(&frame,&terrain_cache) && status.terrain_pending {
+    if retain_lighthouse_room(&frame, &terrain_cache) && status.terrain_pending {
         // Keep the previous actors with their room until geometry, atlas and
         // support for the destination can be published together.
-        status.active=true;status.inactive_reason=None;return;
+        status.active = true;
+        status.inactive_reason = None;
+        return;
     }
-    if holding_lighthouse {set_output_active(&scene,true,&mut cameras,pose);}
+    if holding_lighthouse {
+        set_output_active(&scene, true, &mut cameras, pose);
+    }
     if must_wait_for_initial_terrain(terrain_state, &terrain_cache) {
         // Initial activation has no authored mesh to present yet. Keep the
         // manually selected 2.5D presentation inactive until the first build
@@ -1294,8 +1417,8 @@ fn sync_voxel_view(
         set_output_active(&scene, false, &mut cameras, pose);
         return;
     };
-    let healing_allowed=frame.actors.iter().any(healing_effects::is_healing)
-        &&healing_effects::profile_allows(&frame,&profiles.document);
+    let healing_allowed = frame.actors.iter().any(healing_effects::is_healing)
+        && healing_effects::profile_allows(&frame, &profiles.document);
     if let Err(error) = sync_actor_cards(
         &frame,
         &terrain_cache.footing_heights,
@@ -1318,13 +1441,16 @@ fn sync_voxel_view(
         return;
     }
     if let Some(entity) = actor_cache.entities.get(&VisualActorId::Player) {
-        commands.entity(*entity).insert(if settings.camera.first_person {
-            Visibility::Hidden
-        } else {
-            Visibility::Visible
-        });
+        commands
+            .entity(*entity)
+            .insert(if settings.camera.first_person {
+                Visibility::Hidden
+            } else {
+                Visibility::Visible
+            });
     }
-    healing_status.consumed=healing_allowed&&frame.actors.iter().any(healing_effects::is_healing);
+    healing_status.consumed =
+        healing_allowed && frame.actors.iter().any(healing_effects::is_healing);
     status.active = true;
     status.active_frames = status.active_frames.saturating_add(1);
     status.inactive_reason = None;
@@ -1509,10 +1635,13 @@ fn sync_voxel_atmosphere(
         **period == crystal_render_api::VisualWorldLighting::Dark);
     let horizon = if unlit_map { Color::BLACK }
         else { cycle.map_or_else(|| voxel_clear_color(&frame), |cycle| cycle.horizon) };
+    let regional = regional_atmosphere::sample(&frame);
     let woodland_haze = if settings.enabled && !unlit_map {
         // Routes need clear landmarks. Retain only a faint distant veil;
         // dedicated forests keep their authored atmosphere.
-        woodland.1 * if frame.map_id.starts_with("Route") { 0.12 } else { 1.0 }
+        woodland.1 * regional.map_or_else(
+            || if frame.map_id.starts_with("Route") { 0.12 } else { 1.0 },
+            |regional| regional.haze_scale)
     } else { 0.0 };
     let fog_horizon = if woodland_haze > 0.0 {
         Color::from(horizon.to_linear().mix(
@@ -1547,8 +1676,10 @@ fn sync_voxel_atmosphere(
         // Match the battle camera's distance-fog treatment: keep the player
         // and nearby scenery clear, then dissolve the finite forest edge.
         .or_else(|| (woodland_haze > 0.0).then_some(
-            if frame.map_id.starts_with("Route") { (16.0, 40.0, woodland_haze) }
-            else { (8.0, 22.0, woodland_haze) }));
+            regional.map_or_else(
+                || if frame.map_id.starts_with("Route") { (16.0, 40.0, woodland_haze) }
+                    else { (8.0, 22.0, woodland_haze) },
+                |regional| (regional.fog_start, regional.fog_end, woodland_haze))));
     let cavern_lit = cave && frame.active && settings.enabled;
     let dark = cavern_lit && frame.tiles.first().is_some_and(|tile| tile.source.tileset_id.as_ref() == "dark_cave");
     // These rooms retain their live cave palette, including Rock Tunnel's
@@ -1632,6 +1763,8 @@ fn sync_voxel_atmosphere(
             Color::srgb(0.68, 0.85, 1.0)
         } else if woodland {
             Color::srgb(1.0, 0.95, 0.82)
+        } else if let Some(regional) = regional {
+            regional.sun_tint
         } else if matches!(frame.map_id.as_ref(), "Route29" | "NewBarkTown") {
             Color::srgb(1.0, 0.94, 0.82)
         } else if environment_fx::coastal(&frame) {
@@ -1785,6 +1918,14 @@ fn sync_terrain(
         // the independent terrain task is still building its CPU geometry.
         builds.painted.start();
     }
+    if let Some(publication) = builds.publication.as_mut() {
+        if publication.matches(frame, profiles.revision) {
+            builds.key = Some(next_key.clone());
+        } else {
+            terrain_publication::discard(&mut builds.publication, commands);
+            builds.key = None;
+        }
+    }
     if builds
         .key
         .as_ref()
@@ -1800,18 +1941,40 @@ fn sync_terrain(
         }
         builds.key = None;
     }
+    // A proven connection advances the logical key while the immutable mesh
+    // keeps its original source basis. Subsequent scrolling must retain that
+    // geometry during replacement just as it does inside one authored map.
+    let retained_logical_map = cache
+        .key
+        .as_ref()
+        .is_some_and(|key| key.map_id == frame.map_id)
+        && cache
+            .built_frame
+            .as_ref()
+            .is_some_and(|built| built.connected_source_shift(frame).is_some());
     if cache
         .built_frame
         .as_ref()
         .is_some_and(|built| built.map_id != frame.map_id)
+        && !retained_logical_map
         && !retain_lighthouse_room(frame,cache)
         && !(cache.key.as_ref().is_some_and(|key| key.profiles_revision == profiles.revision)
             && retain_connected_terrain(frame, cache))
     {
         let retirement=terrain_retirement_frames(cache.built_frame.as_ref(),frame);
-        let retired = std::mem::take(cache);
-        cache.painted_stone = retired.painted_stone;
-        cache.painted_bedrock = retired.painted_bedrock;
+        let _retirement = loading_trace::span("world.window_retire", || {
+            serde_json::json!({
+                "map": frame.map_id.as_ref(), "origin": frame.grid_origin.to_array(),
+                "resident_map": cache.built_frame.as_ref().map(|old| old.map_id.as_ref()),
+                "resident_origin": cache.built_frame.as_ref().map(|old| old.grid_origin.to_array()),
+                "reason": cache.built_frame.as_ref().and_then(|old|
+                    terrain_tracking::connected_frame_shift(old, frame).err()),
+            })
+        });
+        let mut retired = std::mem::take(cache);
+        cache.uploads.require_gpu(retired.uploads.gpu_required());
+        cache.painted_stone = retired.painted_stone.take();
+        cache.painted_bedrock = retired.painted_bedrock.take();
         for entity in [
             retired.instances_root,
             retired.textured_entity,
@@ -1824,6 +1987,7 @@ fn sync_terrain(
         {
             commands.entity(entity).despawn();
         }
+        terrain_disposal::retire(retired);
         builds.retirement_frames = retirement;
     }
     if builds.retirement_frames > 0 {
@@ -1842,10 +2006,50 @@ fn sync_terrain(
     {
         cache.key = Some(next_key.clone());
     }
-    if should_start_terrain_build(cache.key.as_ref(), builds.key.as_ref(), &next_key) {
+    if !builds.defer_to_world_preload
+        && should_start_terrain_build(cache.key.as_ref(), builds.key.as_ref(), &next_key) {
+        let _coverage = loading_trace::span("world.coverage_miss", || serde_json::json!({
+            "map": frame.map_id.as_ref(),
+            "origin": frame.grid_origin.to_array(),
+            "resident_map": cache.built_frame.as_ref().map(|old| old.map_id.as_ref()),
+            "resident_origin": cache.built_frame.as_ref().map(|old| old.grid_origin.to_array()),
+            "connected_rejection": cache.built_frame.as_ref().filter(|old| old.map_id != frame.map_id)
+                .and_then(|old| terrain_tracking::connected_frame_shift(old, frame).err()),
+            "roots": ([cache.instances_root, cache.textured_entity, cache.solid_entity,
+                cache.animated_textured_entity, cache.animated_solid_entity]
+                .into_iter().flatten().map(|entity| entity.to_bits()).collect::<Vec<_>>()),
+        }));
         #[cfg(all(target_arch = "wasm32", feature = "terrain-worker-browser"))]
-        if terrain_worker::browser::availability() == terrain_worker::browser::Availability::Initializing {
-            return Ok(TerrainSyncState::Pending);
+        {
+            let availability = terrain_worker::browser::availability();
+            if availability == terrain_worker::browser::Availability::Initializing
+                || (builds.speculative
+                    && availability != terrain_worker::browser::Availability::Ready)
+            {
+                // Disabled or failed workers leave speculation deferred. Only
+                // foreground demand may recover by meshing on the frame thread.
+                return Ok(TerrainSyncState::Pending);
+            }
+        }
+        #[cfg(all(target_arch = "wasm32", feature = "terrain-worker-browser"))]
+        if terrain_worker::browser::busy() {
+            let _scheduling = loading_trace::span("worker.busy", || {
+                serde_json::json!({"map": frame.map_id.as_ref(), "speculative": builds.speculative})
+            });
+            if builds.speculative {
+                // The other preload lane owns the single worker. Defer before
+                // copying the atlas or serializing another request.
+                return Ok(TerrainSyncState::Pending);
+            }
+            // A doorway or exhausted foreground window has priority. The old
+            // ticket will observe supersession without synchronous fallback.
+            terrain_worker::browser::cancel_pending();
+            if terrain_worker::browser::busy() {
+                // A failed pool lane can reduce capacity before its old
+                // tickets have been polled. Defer instead of turning that
+                // scheduling pressure into a synchronous recovery build.
+                return Ok(TerrainSyncState::Pending);
+            }
         }
         builds.started += 1;
         let mut build_frame = frame.clone();
@@ -1897,7 +2101,14 @@ fn sync_terrain(
             let ticket = if terrain_worker::browser::availability() == terrain_worker::browser::Availability::Ready {
                 match terrain_worker::browser::submit(&build_frame, &samples, &profile_document) {
                     Ok(ticket) => Some(ticket),
-                    Err(error) => { terrain_worker::browser::fallback(&error); None }
+                    Err(error) => {
+                        terrain_worker::browser::fallback(&error);
+                        if builds.speculative {
+                            builds.key = None;
+                            return Ok(TerrainSyncState::Pending);
+                        }
+                        None
+                    }
                 }
             } else { None };
             #[cfg(feature = "terrain-worker-browser")]
@@ -1950,8 +2161,18 @@ fn sync_terrain(
                         None
                     }
                     terrain_worker::browser::Poll::Ready(terrain) => Some(pending.complete(Ok(terrain))),
+                    terrain_worker::browser::Poll::Superseded => {
+                        builds.key = None;
+                        None
+                    }
                     terrain_worker::browser::Poll::Failed(error) => {
                         terrain_worker::browser::fallback(&error);
+                        if builds.speculative {
+                            // A failed lookahead must never move meshing onto
+                            // the frame thread. Foreground recovery owns fallback.
+                            builds.key = None;
+                            return Ok(TerrainSyncState::Pending);
+                        }
                         let _trace = loading_trace::span("worker.synchronous_fallback", || serde_json::json!({"error":error}));
                         let terrain = mesh::begin_runtime_terrain_mesh_with_profiles(
                             &pending.frame, &samples, &pending.profiles)
@@ -1981,30 +2202,47 @@ fn sync_terrain(
             let water = completed.water;
             #[cfg(target_arch = "wasm32")]
             let water = None;
+            let publishing = !builds.speculative && cache.uploads.gpu_required();
+            let target = if publishing {
+                builds.publication = Some(terrain_publication::Pending::new(cache));
+                builds.key = Some(next_key.clone());
+                &mut builds.publication.as_mut().expect("new publication is present").cache
+            } else {
+                &mut *cache
+            };
             apply_built_terrain(
                 &completed.frame,
                 next_key.clone(),
                 terrain,
                 commands,
-                cache,
+                target,
                 meshes,
                 materials,
                 images,
                 water,
+                builds.speculative || publishing,
             )?;
-            cache.built_source_texture = Some(completed.source_texture);
-            cache.built_profiles = Some(completed.profiles);
-            bind_preloaded_compositor(frame, cache);
+            target.built_source_texture = Some(completed.source_texture);
+            target.built_profiles = Some(completed.profiles);
+            if !publishing { bind_preloaded_compositor(frame, cache); }
             if profile_changed {
                 println!(
                     "geometry profile mesh applied: revision {}",
                     next_key.profiles_revision
                 );
             }
+        } else {
+            terrain_disposal::retire(completed);
         }
     }
 
-    let ready = cache.key.as_ref() == Some(&next_key);
+    if terrain_publication::advance(&mut builds.publication, cache, meshes, commands) {
+        builds.key = None;
+        cache.key = Some(next_key.clone());
+        bind_preloaded_compositor(frame, cache);
+    }
+    cache.uploads.advance(meshes);
+    let ready = cache.key.as_ref() == Some(&next_key) && cache.uploads.ready();
     if ready {
         if let Some(built) = &mut cache.built_frame {
             if built.terrain_revision != frame.terrain_revision {
@@ -2081,9 +2319,14 @@ fn apply_built_terrain(
     materials: &mut Assets<VoxelMaterial>,
     images: &mut Assets<Image>,
     prepared_water: Option<water_surface::PreparedImages>,
+    staged: bool,
 ) -> Result<(), TerrainSyncError> {
     let _trace = loading_trace::span("region.publish_assets", || serde_json::json!({"map": frame.map_id.as_ref(), "origin": frame.grid_origin.to_array()}));
+    let existing_meshes = staged.then(|| meshes.ids().collect::<std::collections::HashSet<_>>());
     let publish_setup = loading_trace::span("region.publish_setup", || serde_json::json!({}));
+    let gpu_required = cache.uploads.gpu_required();
+    cache.uploads = terrain_upload::Pending::default();
+    cache.uploads.require_gpu(gpu_required);
     cache.city_emitters = terrain.city_emitters;
     cache.footing_origin = None;
     cache.footing_map = None;
@@ -2344,6 +2587,7 @@ Transform::from_translation(Vec3::from_array(origin)),),
         textured_material_handle,
         None,
         frame,
+        staged.then_some(&mut cache.uploads),
     );
     replace_static_terrain_batches(
         commands,
@@ -2353,7 +2597,14 @@ Transform::from_translation(Vec3::from_array(origin)),),
         solid_material_handle,
         Some(grass_material_handle),
         frame,
+        staged.then_some(&mut cache.uploads),
     );
+
+    if let Some(existing) = existing_meshes {
+        cache.uploads.capture_added(meshes, &existing);
+        let receipt = cache.uploads.seal();
+        commands.entity(root).insert(receipt);
+    }
 
     cache.key = Some(key);
     Ok(())
@@ -2372,6 +2623,7 @@ fn add_terrain_image(images: &mut Assets<Image>, image: Image, kind: &'static st
 /// Static roots retain the same scrolling/visibility contract as the previous
 /// combined meshes. Only their children draw. Replacing the complete hierarchy
 /// also replaces every AABB, so no bound from an earlier map/revision survives.
+#[allow(clippy::too_many_arguments)]
 fn replace_static_terrain_batches(
     commands: &mut Commands,
     meshes: &mut Assets<Mesh>,
@@ -2380,6 +2632,7 @@ fn replace_static_terrain_batches(
     material: Handle<VoxelMaterial>,
     grass_material: Option<Handle<VoxelMaterial>>,
     frame: &VisualWorldFrame,
+    mut uploads: Option<&mut terrain_upload::Pending>,
 ) {
     if let Some(root) = cached_root.take() {
         commands.entity(root).despawn();
@@ -2402,7 +2655,11 @@ terrain_transform(frame),),
     } in batches {
         let batch_material = grass_material.as_ref().filter(|_| rooted_grass)
             .unwrap_or(&material).clone();
-        let mesh = meshes.add(mesh);
+        let mesh = if let Some(uploads) = uploads.as_deref_mut() {
+            uploads.enqueue(meshes, mesh)
+        } else {
+            meshes.add(mesh)
+        };
         let mut child = commands.spawn((
             (Mesh3d(mesh.clone()),
 MeshMaterial3d(batch_material),
@@ -3277,6 +3534,8 @@ mod renderer_tests {
 
     use super::*;
 
+    include!("world_stream_camera_tests.rs");
+
     #[test]
     fn rooted_sea_stone_registration_tracks_retained_grid_without_animation_steps() {
         let built = VisualWorldFrame { active: true, map_id: "Route19".into(),
@@ -3852,6 +4111,7 @@ mod renderer_tests {
                 &mut materials,
                 &mut images,
                 None,
+                false,
             )
             .unwrap();
             for handle in [cache.textured_material.as_ref().unwrap(), cache.solid_material.as_ref().unwrap(),
@@ -3945,6 +4205,7 @@ mod renderer_tests {
                         material.clone(),
                         None,
                         &frame,
+                        None,
                     );
                     queue.apply(world);
                 });

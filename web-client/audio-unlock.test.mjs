@@ -2,6 +2,34 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mountAudioUnlock, mountGameAudio } from './audio-unlock.js';
 
+test('prepares the device during loading but resumes only from a trusted gesture', () => {
+  const calls = [];
+  const listeners = new Map();
+  const audioSession = { type: 'auto' };
+  mountAudioUnlock({
+    crystal_prepare_audio_context() { assert.equal(audioSession.type, 'playback'); calls.push('prepare'); },
+    crystal_resume_audio() { calls.push('resume'); return Promise.resolve(); },
+  }, {
+    defaultView: { navigator: { audioSession } },
+    addEventListener(type, handler) { listeners.set(type, handler); },
+  });
+  assert.deepEqual(calls, ['prepare']);
+  listeners.get('keydown')({ isTrusted: false });
+  assert.deepEqual(calls, ['prepare']);
+  listeners.get('keydown')({ isTrusted: true });
+  assert.deepEqual(calls, ['prepare', 'resume']);
+});
+
+test('a failed device preparation still permits gesture-driven recovery', () => {
+  let resumes = 0;
+  const resume = mountAudioUnlock({
+    crystal_prepare_audio_context() { throw Error('device not ready'); },
+    crystal_resume_audio() { resumes++; return Promise.resolve(); },
+  }, { addEventListener() {} });
+  resume({ isTrusted: true });
+  assert.equal(resumes, 1);
+});
+
 test('resumes synchronously in trusted gestures, including repeated iPhone touchend', () => {
   const listeners = new Map();
   let calls = 0;

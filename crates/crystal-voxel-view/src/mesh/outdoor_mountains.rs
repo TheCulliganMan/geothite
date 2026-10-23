@@ -865,14 +865,19 @@ pub(super) fn finish_with_source_regions(mesh:&mut TerrainMeshData,map:&str,
     }
     if let Some(datum) = datum {
         for (i,height) in mesh.footing_heights.iter_mut().enumerate() {
+            // Cave mouths retain their ground support even if the authored
+            // walking datum includes the surrounding mineral plot. That
+            // ground also anchors the neighboring geological surface.
+            if !permanent(&cells[i].source,shapes[i]) {continue;}
             let point = bevy::prelude::IVec2::new(origin[0]+(i%g.width) as i32,
                 origin[1]+(i/g.width) as i32);
             if datum.walkable_mineral.binary_search_by_key(&(point.y,point.x),|p|(p.y,p.x)).is_err() {continue;}
             let local = Vec2::new((i%g.width) as f32+0.5,(i/g.width) as f32+0.5);
-            let key=column_key(&columns,local);
-            if columns.get(&key).is_some_and(|c|c.cap) {
-                *height = relief.geometry_height(local.x,local.y);
-            }
+            // A walking cell need not have a mesh vertex at its center. Cap
+            // tessellation and paint registration can change that lookup
+            // across windows, leaving the old nominal height under the same
+            // geological surface. Sample its triangle field directly.
+            *height = relief.geometry_height(local.x,local.y);
         }
     }
     if map == "CinnabarIsland" {
@@ -886,6 +891,10 @@ pub(super) fn finish_with_source_regions(mesh:&mut TerrainMeshData,map:&str,
         }
     }
 }
+
+#[cfg(test)]
+#[path = "route36_mountain_tests.rs"]
+mod route36_tests;
 
 #[cfg(test)]
 mod tests {

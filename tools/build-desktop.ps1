@@ -5,7 +5,7 @@ param(
     [string]$Pack = 'content-packs/core-modular.crystalpack',
     [string]$InstallDirectory = '',
     [ValidateSet('dev', 'wasm-dev', 'release')]
-    [string]$Profile = $(if ($env:GEOTHITE_DESKTOP_PROFILE) { $env:GEOTHITE_DESKTOP_PROFILE } else { 'wasm-dev' }),
+    [string]$Profile = $(if ($env:GEOTHITE_DESKTOP_PROFILE) { $env:GEOTHITE_DESKTOP_PROFILE } else { 'release' }),
     [ValidateRange(1, 64)]
     [int]$Jobs = 2,
     [switch]$Launch,

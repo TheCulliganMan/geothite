@@ -69,6 +69,8 @@ pub fn footing_height(frame: &VisualWorldFrame, foot: Vec2) -> Option<f32> {
     )
 }
 
+/// Resolve support inside the published grid, returning `None` for missing or
+/// non-finite heights. Points outside that grid retain ordinary ground support.
 pub fn resolved_footing_height(
     frame: &VisualWorldFrame,
     foot: Vec2,
@@ -86,16 +88,23 @@ pub fn resolved_footing_height(
         .ok()?
         .checked_mul(width)?
         .checked_add(usize::try_from(coordinate.x).ok()?)?;
-    let resolved = resolved_heights.get(index).copied()?;
-    Some(resolved + crate::mesh::lighthouse_stair_support(frame,coordinate,foot,resolved_heights)
-        .map_or(0.,|height|height-resolved)
-        + crate::waterfall::support_correction(frame,coordinate,foot,resolved_heights)
-        + crate::mesh::terrace_support_correction(frame,coordinate,foot)
-        + crate::mesh::mountain_support_correction(frame,coordinate,foot,resolved_heights)
-        + crate::mesh::pond_support_correction(frame,coordinate,foot,resolved_heights)
-        + crate::mesh::league_stair_support_correction(frame,coordinate,foot,resolved_heights)
-        + crate::mesh::hall_stair_support_correction(frame,coordinate,foot,resolved_heights)
-        + crate::mesh::radio_stair_support_correction(frame,coordinate,foot,resolved_heights))
+    // Retained windows mark uncovered cells with NaN. Missing support must
+    // remain missing, rather than poisoning actor and camera transforms.
+    let resolved = resolved_heights
+        .get(index)
+        .copied()
+        .filter(|height| height.is_finite())?;
+    let height = resolved
+        + crate::mesh::lighthouse_stair_support(frame, coordinate, foot, resolved_heights)
+            .map_or(0., |height| height - resolved)
+        + crate::waterfall::support_correction(frame, coordinate, foot, resolved_heights)
+        + crate::mesh::terrace_support_correction(frame, coordinate, foot)
+        + crate::mesh::mountain_support_correction(frame, coordinate, foot, resolved_heights)
+        + crate::mesh::pond_support_correction(frame, coordinate, foot, resolved_heights)
+        + crate::mesh::league_stair_support_correction(frame, coordinate, foot, resolved_heights)
+        + crate::mesh::hall_stair_support_correction(frame, coordinate, foot, resolved_heights)
+        + crate::mesh::radio_stair_support_correction(frame, coordinate, foot, resolved_heights);
+    height.is_finite().then_some(height)
 }
 
 /// Lift only an accepted uphill step or authored ledge jump. Sampling both
@@ -155,6 +164,15 @@ mod tests {
     use crystal_render_api::{VisualActorId, VisualTile, VisualTileSource, VisualWorldFrame};
 
     use super::*;
+
+    #[test]
+    fn uncovered_retained_support_is_missing_instead_of_a_non_finite_height() {
+        let frame = frame();
+        let foot = frame.center;
+        let count = (frame.grid_size.x * frame.grid_size.y) as usize;
+        assert!(resolved_footing_height(&frame, foot, &vec![f32::NAN; count]).is_none());
+        assert!(resolved_footing_height(&frame, foot, &vec![f32::INFINITY; count]).is_none());
+    }
 
     fn source(metatile_id: u16, row: u8) -> VisualTileSource {
         VisualTileSource {

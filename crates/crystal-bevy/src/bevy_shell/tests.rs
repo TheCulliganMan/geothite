@@ -21,6 +21,7 @@ include!("tests/encounter_anchor.rs");
 include!("tests/battle_origin_fishing.rs");
 include!("tests/fishing_anchor.rs");
 include!("tests/walking_anchor.rs");
+include!("tests/continuous_encounter_witness.rs");
 include!("tests/kanto_interior_states.rs");
 include!("tests/surf_anchor.rs");
 include!("tests/walking_encounter_eligibility.rs");

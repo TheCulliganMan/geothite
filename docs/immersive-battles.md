@@ -16,6 +16,22 @@ commands and dialogue dock below the arena. Values and input semantics are not
 recreated. Stored source transforms make F3 reversible and keep full-screen
 party/item surfaces on their existing presentation path.
 
+Continuous camera-relative walking can leave the preceding player pose off the
+discrete encounter-step axis. The battle handoff authenticates that published
+position and heading, then waits for the committed step's own field frame within
+the original entry window. It does not adopt the earlier pose as battle anchors
+or repair a cold, stale, or expired witness. Three focused regressions and all
+53 encounter-anchor tests pass. A headless production-browser Route 29 Hoothoot
+encounter retains modeled battlers and map scenery, preserves battle state when
+switching between 3D and 2D, and executes a real turn: Leer PP changes from 30 to
+29 and Cyndaquil HP from 45 to 33 with the resulting dialogue still in 3D.
+Headless mobile WebKit also retains the 3D scene. After deployment, a fresh
+public-HTTPS encounter executes the selected Ember through the production
+controller: PP changes from 25 to 24, Rattata HP from 44 to 26, and Cyndaquil
+HP from 45 to 20, with the resulting dialogue still in 3D. These checks cover
+the continuous-entry regression; other locations retain separate camera review
+requirements.
+
 All 251 normal species have first-pass geometry; individual sculptures still
 need visual review. Unknown species, shiny palettes, Substitute and Minimize
 retain their actual source art where a correct modeled appearance is unavailable.

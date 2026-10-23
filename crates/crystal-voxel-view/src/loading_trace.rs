@@ -13,6 +13,11 @@ use std::sync::{
 };
 
 const CAPACITY: usize = 131_072;
+#[path = "loading_trace_filter.rs"]
+mod filter;
+#[cfg(target_arch = "wasm32")]
+#[path = "loading_world_motion.rs"]
+mod world_motion;
 #[derive(Clone, serde::Serialize)]
 struct TraceEvent {
     name: &'static str,
@@ -110,7 +115,7 @@ pub struct Span {
     event: Option<Arc<TraceEvent>>,
 }
 pub fn span(name: &'static str, args: impl FnOnce() -> Value) -> Option<Span> {
-    if !ENABLED.load(Ordering::Relaxed) {
+    if !ENABLED.load(Ordering::Relaxed) || !filter::allows(name) {
         return None;
     }
     let start = Instant::now();
@@ -339,6 +344,8 @@ fn register_post_update_boundaries(app: &mut App) {
 }
 
 pub(crate) fn register(app: &mut App) {
+    #[cfg(target_arch = "wasm32")]
+    world_motion::register(app);
     #[cfg(not(target_arch = "wasm32"))]
     if std::env::var_os("CRYSTAL_LOADING_TRACE").is_some() && capture().lock().unwrap().is_none() {
         start();
@@ -390,7 +397,7 @@ pub(crate) fn register(app: &mut App) {
         // those barriers in an ordinary untraced game. Runtime trace activation
         // still has the existing outer spans; opt in before app creation for
         // these finer graph boundaries.
-        if trace_enabled() {
+        if trace_enabled() && filter::full_graph() {
             register_graph_boundaries(render);
         }
         render.init_resource::<RenderCapture>();

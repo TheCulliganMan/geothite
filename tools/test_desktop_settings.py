@@ -1,6 +1,8 @@
 """Check settings persistence and real AppKit actions without opening a window.
 
-Run after just desktop-build; reuse its dependencies instead of rebuilding Bevy.
+Run after GEOTHITE_DESKTOP_PROFILE=wasm-dev just desktop-build.
+Reuse development dependencies: release libraries use panic=abort and cannot link
+into the standalone unit-test harness.
 """
 from pathlib import Path
 import os

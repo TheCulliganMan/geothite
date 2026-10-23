@@ -250,7 +250,7 @@ def main(argv=None):
     parser.add_argument("action", choices=["build", "install", "package", "run", "check"])
     parser.add_argument("--pack", type=Path, default=ROOT / "content-packs/core-modular.crystalpack")
     parser.add_argument("--target-dir", type=Path, default=Path(os.environ.get("CARGO_TARGET_DIR", ROOT / "target/desktop-build")))
-    parser.add_argument("--profile", choices=["dev", "wasm-dev", "release"], default=os.environ.get("GEOTHITE_DESKTOP_PROFILE", "wasm-dev"))
+    parser.add_argument("--profile", choices=["dev", "wasm-dev", "release"], default=os.environ.get("GEOTHITE_DESKTOP_PROFILE", "release"))
     parser.add_argument("--jobs", default=os.environ.get("CARGO_BUILD_JOBS", "2"))
     parser.add_argument("--skip-build", action="store_true", help="Repackage the last successful build without invoking Cargo")
     parser.add_argument("--notarize", action="store_true", help="Use configured Developer ID and notarytool keychain profile")

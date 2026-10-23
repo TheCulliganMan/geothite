@@ -17,13 +17,28 @@ use bevy::render::extract_resource::{ExtractResource, ExtractResourcePlugin};
 use bevy::render::renderer::{RenderAdapterInfo, RenderDevice};
 use bevy::render::view::screenshot::ScreenshotCaptured;
 use bevy::window::PrimaryWindow;
-use crystal_render_api::{VisualBattleFrame, WorldRenderSet};
+use crystal_render_api::{VisualBattleFrame, VisualWorldFrame, WorldRenderSet};
 use crystal_voxel_view::{BattleViewStatus, VoxelViewStatus};
 use serde::Serialize;
 
 use super::handheld_input::HandheldInput;
 use super::{BevyRuntimeShell, apply_keyboard_input, handheld_input, render_capture};
-use crate::performance_audit::{AuditExpectation, AuditRequest};
+use crate::performance_audit::{AuditExpectation, AuditFixture, AuditRequest};
+use crystal_core::models::Dv;
+
+#[path = "audit_readiness.rs"]
+mod audit_readiness;
+#[path = "audit_movement_leg.rs"]
+mod movement_leg;
+
+#[path = "audit_capture_gate.rs"]
+mod audit_capture_gate;
+
+#[path = "audit_motion.rs"]
+mod audit_motion;
+
+#[path = "audit_motion_capture.rs"]
+mod audit_motion_capture;
 
 #[path = "performance_audit_gpu.rs"]
 mod gpu;
@@ -33,9 +48,10 @@ mod gpu;
 struct FrameClock {
     id: u64,
     measured: bool,
+    capture_gpu: bool,
 }
 
-#[derive(Serialize)]
+#[derive(Default, Serialize)]
 struct FrameSample {
     id: u64,
     start_ms: f64,
@@ -47,6 +63,10 @@ struct FrameSample {
     tile: [i16; 2],
     mode: String,
     battle: bool,
+    battle_commands: bool,
+    phase: String,
+    player_hp: Option<u16>,
+    enemy_hp: Option<u16>,
     pp: u32,
     dialogue: bool,
     terrain_pending: bool,
@@ -54,6 +74,9 @@ struct FrameSample {
     visible_ready: bool,
     warp_phase: String,
     natural_offset: [f32; 2],
+    simulation_tick: u64,
+    walk_remaining: u8,
+    motion: audit_motion::MotionSample,
 }
 
 #[derive(Serialize)]
@@ -64,6 +87,7 @@ struct Checkpoint {
     latency_ms: f64,
     controller_ms: f64,
     render_settle_ms: f64,
+    renderer_waited: bool,
     frame: u64,
     map: String,
     tile: [i16; 2],
@@ -75,10 +99,10 @@ struct Audit {
     origin: Instant,
     frame_start: Instant,
     previous_start: Instant,
-    interval_ms: f64,
     frames: Vec<FrameSample>,
     checkpoints: Vec<Checkpoint>,
     preparing: bool,
+    preparation_armed: bool,
     step: usize,
     step_start: Instant,
     measurement_start: Option<Instant>,
@@ -93,10 +117,12 @@ struct Audit {
     render_diagnostics: Vec<serde_json::Value>,
     diagnostic_times: BTreeMap<String, bevy::platform::time::Instant>,
     gpu: gpu::Shared,
-    stable_ready: usize,
-    ready_signature: Option<(String, [i16; 2], bool)>,
-    ready_frame: u64,
+    readiness: audit_readiness::Readiness,
     committed_ms: Option<f64>,
+    matched_last_frame: bool,
+    capture_gate: audit_capture_gate::CaptureGate,
+    motion: audit_motion::MotionAudit,
+    motion_capture: audit_motion_capture::MotionCapture,
 }
 
 pub(super) fn install(app: &mut App, request: AuditRequest) -> Result<()> {
@@ -108,16 +134,37 @@ pub(super) fn install(app: &mut App, request: AuditRequest) -> Result<()> {
         "audit cannot write a user save"
     );
     request.scenario.validate()?;
+    let start = app
+        .world()
+        .resource::<BevyRuntimeShell>()
+        .shell
+        .presentation_snapshot()?;
+    let tile = [start.overworld.tile.x, start.overworld.tile.y];
+    anyhow::ensure!(
+        start.overworld.map_name == request.scenario.map && tile == request.scenario.tile,
+        "audit start differs from recipe: expected {} {:?}, got {} {:?}",
+        request.scenario.map,
+        request.scenario.tile,
+        start.overworld.map_name,
+        tile
+    );
+    match request.scenario.fixture {
+        AuditFixture::SurfShore => prepare_repelled_surf(app)?,
+        AuditFixture::Battle => prepare_battle_lead(app)?,
+        _ => {}
+    }
     render_capture::install_recording_target(app, request.directory.join("warmup.png"))?;
     let shared = gpu::Shared::default();
     let now = Instant::now();
+    let capture_gate = audit_capture_gate::CaptureGate::new(request.wait_for_metal_capture);
+    let motion_capture = audit_motion_capture::MotionCapture::new(&request.directory)?;
     app.insert_resource(Audit {
         preparing: !request.scenario.prepare.is_empty(),
+        preparation_armed: false,
         request,
         origin: now,
         frame_start: now,
         previous_start: now,
-        interval_ms: 0.0,
         frames: Vec::new(),
         checkpoints: Vec::new(),
         step: 0,
@@ -134,10 +181,12 @@ pub(super) fn install(app: &mut App, request: AuditRequest) -> Result<()> {
         render_diagnostics: Vec::new(),
         diagnostic_times: BTreeMap::new(),
         gpu: shared.clone(),
-        stable_ready: 0,
-        ready_signature: None,
-        ready_frame: 0,
+        readiness: Default::default(),
         committed_ms: None,
+        matched_last_frame: false,
+        capture_gate,
+        motion: Default::default(),
+        motion_capture,
     })
     .init_resource::<FrameClock>()
     .add_plugins(ExtractResourcePlugin::<FrameClock>::default())
@@ -151,20 +200,96 @@ pub(super) fn install(app: &mut App, request: AuditRequest) -> Result<()> {
     .add_systems(PostUpdate, observe.after(WorldRenderSet::RenderSync))
     .add_systems(Last, end_frame);
     let gpu_enabled = app.world().resource::<Audit>().request.gpu;
-    if gpu_enabled {
+    let metal_trace = app.world().resource::<Audit>().request.metal_trace;
+    // Native Metal supplies pass activity without Bevy's counter buffers.
+    // Redundant pass queries can exhaust MTLCounterSampleBuffer allocations.
+    if gpu_enabled && !metal_trace {
         app.add_plugins(RenderDiagnosticsPlugin);
     }
-    gpu::install(app, shared, gpu_enabled)?;
+    gpu::install(app, shared, gpu_enabled, metal_trace)?;
+    Ok(())
+}
+
+// The field is rendered before ordinary A/Yes enters the actual encounter.
+// Use a legal Cyndaquil/Swift setup. The production engine owns
+// accuracy, damage and fainting; the audit records the resulting HP and phase.
+fn prepare_battle_lead(app: &mut App) -> Result<()> {
+    let mut runtime = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    let initial = runtime.shell.snapshot()?;
+    anyhow::ensure!(
+        initial.party.slots.len() == 1 && initial.battle.is_none(),
+        "battle audit requires the checked field encounter fixture"
+    );
+    runtime.shell.add_party_pokemon(
+        "CYNDAQUIL",
+        30,
+        None,
+        None,
+        &initial.trainer.player_name,
+        initial.trainer.player_id,
+        Dv::from_non_hp(9, 9, 9, 9),
+    )?;
+    runtime.shell.add_bag_item("TM_SWIFT", 1)?;
+    let replacement =
+        (runtime.shell.snapshot()?.party.slots[1].pokemon.moves.len() == 4).then_some(0);
+    runtime
+        .shell
+        .use_bag_tmhm_on_party_pokemon("TM_SWIFT", 1, replacement)?;
+    runtime.shell.swap_party_pokemon(0, 1)?;
+    super::mark_runtime_snapshot_dirty(&mut runtime);
+    Ok(())
+}
+
+// Seed only this disposable performance fixture through validated mutations.
+// A level-100 lead plus ordinary Max Repel excludes Route44's level-20/25
+// encounters without replacing the pack's encounter table or gameplay RNG.
+fn prepare_repelled_surf(app: &mut App) -> Result<()> {
+    let mut runtime = app.world_mut().resource_mut::<BevyRuntimeShell>();
+    let initial = runtime.shell.snapshot()?;
+    anyhow::ensure!(
+        initial.party.slots.len() == 1,
+        "Surf audit requires its checked single-party shore fixture"
+    );
+    runtime.shell.add_party_pokemon(
+        "TOTODILE",
+        100,
+        None,
+        None,
+        &initial.trainer.player_name,
+        initial.trainer.player_id,
+        Dv::from_non_hp(9, 9, 9, 9),
+    )?;
+    let replacement =
+        (runtime.shell.snapshot()?.party.slots[1].pokemon.moves.len() == 4).then_some(0);
+    runtime
+        .shell
+        .use_bag_tmhm_on_party_pokemon("HM_SURF", 1, replacement)?;
+    runtime.shell.swap_party_pokemon(0, 1)?;
+    runtime.shell.add_bag_item("MAX_REPEL", 1)?;
+    runtime.shell.use_bag_repel_in_field("MAX_REPEL")?;
+    super::mark_runtime_snapshot_dirty(&mut runtime);
     Ok(())
 }
 
 fn begin_frame(mut audit: ResMut<Audit>, mut clock: ResMut<FrameClock>) {
+    // Untimed startup otherwise spins through thousands of incomplete renders
+    // while shaders compile, flooding native traces. Pace preparation/warmup at
+    // normal game cadence; measured frames and their intervals stay unthrottled.
+    if audit.measurement_start.is_none() && audit.finish_requested.is_none() {
+        let remaining =
+            Duration::from_secs_f64(1.0 / 60.0).saturating_sub(audit.previous_start.elapsed());
+        std::thread::sleep(remaining);
+    }
     let now = Instant::now();
-    audit.interval_ms = (now - audit.previous_start).as_secs_f64() * 1000.0;
+    let interval = (now - audit.previous_start).as_secs_f64() * 1000.0;
+    if let Some(frame) = audit.frames.last_mut().filter(|frame| frame.id == clock.id) {
+        frame.interval_ms = interval;
+    }
     audit.previous_start = now;
     audit.frame_start = now;
     clock.id += 1;
     clock.measured = audit.measurement_start.is_some() && audit.finish_requested.is_none();
+    clock.capture_gpu = audit.warmup >= 60 && audit.finish_requested.is_none();
     #[cfg(feature = "operation-trace")]
     let _marker = bevy::log::info_span!(
         "audit_frame_marker",
@@ -199,7 +324,7 @@ fn drive(
     };
     let desired = if audit.finish_requested.is_none()
         && audit.failure.is_none()
-        && (audit.preparing || audit.measurement_start.is_some())
+        && ((audit.preparing && audit.preparation_armed) || audit.measurement_start.is_some())
         && audit.warmup >= 90
     {
         steps
@@ -253,7 +378,10 @@ fn expectation_matches(
             .as_ref()
             .is_none_or(|mode| *mode == frame.mode)
         && expected.battle.is_none_or(|battle| battle == frame.battle)
-        && (!expected.pp_consumed || frame.pp < initial_pp)
+        && expected
+            .battle_commands
+            .is_none_or(|commands| commands == frame.battle_commands)
+        && (!expected.pp_consumed || (frame.pp < initial_pp && frame.battle && frame.dialogue))
         && elapsed >= f64::from(expected.seconds)
 }
 
@@ -263,6 +391,16 @@ struct Scene<'w, 's> {
     status: Res<'w, VoxelViewStatus>,
     battle_status: Res<'w, BattleViewStatus>,
     battle: Res<'w, VisualBattleFrame>,
+    world: Res<'w, VisualWorldFrame>,
+    cameras: bevy::ecs::system::Query<
+        'w,
+        's,
+        (
+            &'static bevy::prelude::Camera,
+            &'static bevy::prelude::Transform,
+        ),
+        bevy::ecs::query::With<bevy::prelude::Camera3d>,
+    >,
     windows: bevy::ecs::system::Query<
         'w,
         's,
@@ -273,22 +411,40 @@ struct Scene<'w, 's> {
 }
 
 fn observe(mut audit: ResMut<Audit>, clock: Res<FrameClock>, scene: Scene, mut commands: Commands) {
+    #[cfg(feature = "operation-trace")]
+    let _span = bevy::log::info_span!("performance_audit_observer").entered();
     if audit.finish_requested.is_some() {
         return;
     }
     if audit.origin.elapsed() > Duration::from_secs(300) || audit.frames.len() >= 100_000 {
-        audit.failure = Some("scenario exceeded its bounded capture limit".into());
+        audit.failure = Some(format!(
+            "scenario exceeded capture limit; world={:?}; battle={:?}",
+            scene.status.inactive_reason, scene.battle_status.map_scenery_fallback_reason
+        ));
     }
     if let Some(error) = scene.runtime.render_test_error.as_ref() {
         audit.failure = Some(format!("production controller: {error}"));
     }
-    let snapshot = match scene.runtime.shell.presentation_snapshot() {
-        Ok(snapshot) => snapshot,
-        Err(error) => {
-            audit.failure = Some(error.to_string());
-            audit.finish_requested = Some(Instant::now());
-            return;
-        }
+    // Reuse the production snapshot when its authoritative revision matches.
+    // Do not rebuild the complete presentation just to measure a frame.
+    let retained = scene
+        .runtime
+        .cached_snapshot
+        .as_ref()
+        .filter(|(revision, _)| *revision == scene.runtime.snapshot_revision);
+    let refreshed;
+    let snapshot = if let Some((_, snapshot)) = retained {
+        snapshot.as_ref()
+    } else {
+        refreshed = match scene.runtime.shell.presentation_snapshot() {
+            Ok(snapshot) => snapshot,
+            Err(error) => {
+                audit.failure = Some(error.to_string());
+                audit.finish_requested = Some(Instant::now());
+                return;
+            }
+        };
+        &refreshed
     };
     let pp = snapshot
         .party
@@ -304,8 +460,17 @@ fn observe(mut audit: ResMut<Audit>, clock: Res<FrameClock>, scene: Scene, mut c
             .map(|m| u32::from(m.current_pp))
             .sum()
     });
-    let initial_pp = *audit.initial_pp.get_or_insert(pp);
     let battle = snapshot.battle.is_some();
+    // Party totals and active-battler PP use different scopes. Entering or
+    // leaving battle cannot count as consuming a move.
+    if audit
+        .frames
+        .last()
+        .is_some_and(|frame| frame.battle != battle)
+    {
+        audit.initial_pp = Some(pp);
+    }
+    let initial_pp = *audit.initial_pp.get_or_insert(pp);
     let scene_ready = if battle {
         scene.battle.active && !scene.battle.preparing && scene.battle_status.active
     } else {
@@ -321,23 +486,19 @@ fn observe(mut audit: ResMut<Audit>, clock: Res<FrameClock>, scene: Scene, mut c
         [snapshot.overworld.tile.x, snapshot.overworld.tile.y],
         battle,
     );
-    if audit.ready_signature.as_ref() != Some(&signature) || !scene_ready {
-        audit.ready_signature = Some(signature);
-        audit.ready_frame = clock.id;
-        audit.stable_ready = 0;
-    }
-    let pipeline_ready =
-        audit.gpu.pipeline_ready() && audit.gpu.completed_frame() >= audit.ready_frame;
-    audit.stable_ready = if scene_ready && pipeline_ready {
-        audit.stable_ready + 1
-    } else {
-        0
-    };
-    let ready = audit.stable_ready >= 3;
-    let frame = FrameSample {
+    let pipelines_ready = audit.gpu.pipeline_ready();
+    let completed_frame = audit.gpu.completed_frame();
+    let mut ready = audit.readiness.observe(
+        signature,
+        scene_ready,
+        clock.id,
+        pipelines_ready,
+        completed_frame,
+    );
+    let mut frame = FrameSample {
         id: clock.id,
         start_ms: (audit.frame_start - audit.origin).as_secs_f64() * 1000.0,
-        interval_ms: audit.interval_ms,
+        interval_ms: 0.0,
         main_cpu_ms: 0.0,
         measured: clock.measured,
         stage: if audit.preparing {
@@ -352,6 +513,23 @@ fn observe(mut audit: ResMut<Audit>, clock: Res<FrameClock>, scene: Scene, mut c
         tile: [snapshot.overworld.tile.x, snapshot.overworld.tile.y],
         mode: format!("{:?}", snapshot.overworld.mode),
         battle,
+        battle_commands: scene.runtime.battle_action_cursor.is_some()
+            && scene.runtime.battle_messages.is_empty(),
+        phase: format!("{:?}", snapshot.phase),
+        player_hp: snapshot
+            .battle
+            .as_ref()
+            .and_then(|battle| {
+                snapshot
+                    .party
+                    .slots
+                    .get(battle.active_player_party_index.unwrap_or(0))
+            })
+            .map(|slot| slot.pokemon.hp),
+        enemy_hp: snapshot
+            .battle
+            .as_ref()
+            .map(|battle| battle.enemy_pokemon.hp),
         pp,
         dialogue: !scene.runtime.battle_messages.is_empty() || snapshot.ui.text_window_open,
         terrain_pending: scene.status.terrain_pending,
@@ -363,12 +541,36 @@ fn observe(mut audit: ResMut<Audit>, clock: Res<FrameClock>, scene: Scene, mut c
             .natural_movement
             .displacement(&snapshot.overworld.map_name, snapshot.overworld.tile)
             .to_array(),
+        motion: audit.motion.observe(
+            &scene.world,
+            &scene.status,
+            scene.cameras.iter().find_map(|(camera, transform)| {
+                (camera.is_active && camera.order == 0).then_some(transform)
+            }),
+        ),
+        simulation_tick: scene.runtime.shell.session().state().frame_counter,
+        walk_remaining: scene.runtime.player_walk_frame_ticks,
     };
     audit.warmup += 1;
+    if audit.preparing && !audit.preparation_armed && audit.warmup >= 120 && ready {
+        audit.preparation_armed = true;
+        audit.step_start = Instant::now();
+    }
+    if audit.measurement_start.is_none() && audit.origin.elapsed() > Duration::from_secs(90) {
+        audit.failure = Some(format!(
+            "warmup readiness timed out; map={}; battle_active={}; scenery={:?}; world={:?}",
+            frame.map,
+            scene.battle_status.active,
+            scene.battle_status.map_scenery_fallback_reason,
+            scene.status.inactive_reason
+        ));
+    }
     if audit.warmup == 90 {
         audit.step_start = Instant::now();
     }
-    if audit.warmup >= 90 && (audit.preparing || audit.measurement_start.is_some()) {
+    if audit.warmup >= 90
+        && ((audit.preparing && audit.preparation_armed) || audit.measurement_start.is_some())
+    {
         let steps = if audit.preparing {
             &audit.request.scenario.prepare
         } else {
@@ -380,27 +582,38 @@ fn observe(mut audit: ResMut<Audit>, clock: Res<FrameClock>, scene: Scene, mut c
             if matched && audit.committed_ms.is_none() {
                 audit.committed_ms = Some(elapsed * 1000.0);
             }
-            if ready && matched {
+            if matched && !audit.matched_last_frame {
+                audit.readiness.require_frame(clock.id);
+                ready = false;
+                frame.visible_ready = false;
+            }
+            audit.matched_last_frame = matched;
+            let continuous = !audit.preparing && audit.request.scenario.continuous_movement;
+            if movement_leg::ready(&frame, continuous, ready) && matched {
                 let checkpoint = Checkpoint {
                     step: audit.step,
                     preparation: audit.preparing,
                     key: step.key.clone(),
                     latency_ms: elapsed * 1000.0,
                     controller_ms: audit.committed_ms.unwrap_or(elapsed * 1000.0),
-                    render_settle_ms: elapsed * 1000.0
-                        - audit.committed_ms.unwrap_or(elapsed * 1000.0),
+                    render_settle_ms: if continuous { 0. } else {
+                        elapsed * 1000.0 - audit.committed_ms.unwrap_or(elapsed * 1000.0)
+                    },
+                    renderer_waited: !continuous,
                     frame: clock.id,
                     map: frame.map.clone(),
                     tile: frame.tile,
                 };
                 audit.checkpoints.push(checkpoint);
                 audit.step += 1;
-                audit.stable_ready = 0;
+                audit.initial_pp = Some(pp);
+                audit.readiness.restart_stability();
                 audit.committed_ms = None;
+                audit.matched_last_frame = false;
                 audit.step_start = Instant::now();
             } else if elapsed > f64::from(step.timeout_seconds) {
                 audit.failure = Some(format!(
-                    "step {} ({}) timed out at {} {:?}, mode {}, battle {}, PP {}; expected {:?}",
+                    "step {} ({}) timed out at {} {:?}, mode {}, battle {}, PP {}; expected {:?}; renderer={:?}; source_scene={}",
                     audit.step,
                     step.key,
                     frame.map,
@@ -408,7 +621,9 @@ fn observe(mut audit: ResMut<Audit>, clock: Res<FrameClock>, scene: Scene, mut c
                     frame.mode,
                     frame.battle,
                     frame.pp,
-                    step.until
+                    step.until,
+                    *scene.battle_status,
+                    scene.battle.use_source_scene,
                 ));
             }
         } else if audit.preparing {
@@ -457,8 +672,38 @@ fn observe(mut audit: ResMut<Audit>, clock: Res<FrameClock>, scene: Scene, mut c
         } else if audit.validation_accepted {
             audit.drain += 1;
             if audit.drain >= 30 {
-                audit.measurement_start = Some(Instant::now());
-                audit.step_start = Instant::now();
+                let started = audit.request.directory.join("native-start").is_file();
+                match audit.capture_gate.advance(started) {
+                    audit_capture_gate::Action::PublishReady => {
+                        if let Err(error) = std::fs::write(
+                            audit.request.directory.join("native-ready"),
+                            b"validated warmup complete",
+                        ) {
+                            audit.failure =
+                                Some(format!("native profiler handshake failed: {error}"));
+                        }
+                    }
+                    audit_capture_gate::Action::Wait => {}
+                    audit_capture_gate::Action::Measure => {
+                        audit.measurement_start = Some(Instant::now());
+                        audit.initial_pp = Some(pp);
+                        audit.step_start = Instant::now();
+                    }
+                }
+            }
+        }
+    }
+    if clock.measured && audit.motion_capture.wants_tick(frame.simulation_tick) {
+        if let Ok(window) = scene.windows.single() {
+            if let Some(screenshot) =
+                render_capture::moving_screenshot(Some(&scene.capture), window)
+            {
+                audit.motion_capture.request(
+                    clock.id,
+                    frame.simulation_tick,
+                    screenshot,
+                    &mut commands,
+                );
             }
         }
     }
@@ -504,6 +749,11 @@ fn end_frame(world: &mut World) {
             {
                 continue;
             }
+            if audit.render_diagnostics.len() >= 1_000_000 {
+                audit.failure = Some("render diagnostic limit exceeded".into());
+                audit.finish_requested = Some(Instant::now());
+                break;
+            }
             audit.diagnostic_times.insert(path.clone(), time);
             // Bevy returns delayed durations without a source frame identifier.
             // Keep receipt frame explicit; never pretend these align with it.
@@ -519,23 +769,32 @@ fn end_frame(world: &mut World) {
     if finished.elapsed() < Duration::from_millis(500) {
         return;
     }
+    if audit.motion_capture.pending() {
+        if finished.elapsed() < Duration::from_secs(10) {
+            return;
+        }
+        audit.failure = Some("motion screenshot readbacks did not drain".into());
+    }
+    if let Some(error) = audit.motion_capture.error() {
+        audit.failure = Some(format!("motion screenshot readback failed: {error}"));
+    }
     let gpu = audit.gpu.snapshot();
     let adapter = adapter.or_else(|| Some(gpu.adapter.clone()));
     let device_features = device_features.or_else(|| Some(gpu.features.clone()));
     let report = serde_json::json!({"schema":1,"success":audit.failure.is_none(),"failure":audit.failure,
         "scenario":audit.request.scenario,"adapter":adapter,"features":device_features,
         "frames":audit.frames,"checkpoints":audit.checkpoints,"gpu":gpu,
+        "motion_capture":audit.motion_capture.receipt(),
         "render_diagnostics":audit.render_diagnostics,
         "semantics":{"main_cpu_ms":"First to Last main-app wall time; includes blocking; excludes render sub-app",
-        "interval_ms":"consecutive main-app starts; offscreen throughput, not presented FPS",
-        "gpu":"timestamp envelope around render graph command buffers; independent GPU clock; source frame IDs",
+        "interval_ms":"this frame start to next main-app start; offscreen throughput, not presented FPS",
+        "gpu":"native GPU activity or encoder completion timestamps; independent GPU clock; source frame IDs",
         "render_diagnostics":"Bevy pass durations; receipt frame only; nested spans overlap"}});
     let result = std::fs::write(
         audit.request.directory.join("audit.json"),
         serde_json::to_vec(&report).expect("serialize audit"),
     );
     let failed = audit.failure.is_some() || result.is_err();
-    drop(audit);
     world.write_message(if failed {
         AppExit::error()
     } else {
@@ -560,6 +819,10 @@ mod tests {
             tile: [38, 3],
             mode: "Normal".into(),
             battle: true,
+            battle_commands: true,
+            phase: "StaticWildBattle".into(),
+            player_hp: Some(50),
+            enemy_hp: Some(50),
             pp: 30,
             dialogue: false,
             terrain_pending: false,
@@ -567,6 +830,9 @@ mod tests {
             visible_ready: true,
             warp_phase: "None".into(),
             natural_offset: [0.; 2],
+            motion: Default::default(),
+            simulation_tick: 0,
+            walk_remaining: 0,
         };
         let expected = AuditExpectation {
             tile: Some([38, 4]),
@@ -579,6 +845,8 @@ mod tests {
         frame.mode = "Surf".into();
         assert!(!expectation_matches(&expected, &frame, 30, 1.));
         frame.pp = 29;
+        assert!(!expectation_matches(&expected, &frame, 30, 1.));
+        frame.dialogue = true;
         assert!(expectation_matches(&expected, &frame, 30, 1.));
     }
 }

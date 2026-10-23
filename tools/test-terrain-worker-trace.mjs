@@ -23,3 +23,10 @@ assert.equal(actorMerged.trace.traceEvents.find(e => e.name === 'actor_worker.cp
 assert.equal(actorMerged.trace.traceEvents.at(-1).args.actorWorkerJob, 3);
 assert.ok(actorMerged.trace.traceEvents.some(e => e.tid === 2));
 console.log('actor worker trace: independent lane and equal job IDs cannot collide with terrain PASS');
+
+const parallelMain = { ...main, traceEvents: [...main.traceEvents,
+  { ...main.traceEvents[0], args: { job: 4 } }] };
+const parallel = mergeTerrainWorkerTrace(parallelMain, [job, { ...job, id: 4, worker: 1 }]);
+assert.deepEqual(parallel.trace.traceEvents.filter(e => e.name === 'worker.cpu_job').map(e => e.tid), [2, 4]);
+assert.throws(() => mergeTerrainWorkerTrace(main, [{ ...job, worker: -1 }]), /worker slot/);
+console.log('parallel terrain workers: independent overlapping lanes preserve actor lane 3 PASS');

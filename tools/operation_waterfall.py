@@ -14,6 +14,9 @@ from pathlib import Path
 import statistics
 
 
+from trace_stream import events, spans as stream_spans, span_fields, window
+
+
 def decode(events):
     stacks = defaultdict(list)
     spans, names = [], {}
@@ -34,10 +37,10 @@ def decode(events):
             if duration < 0:
                 raise ValueError('Trace has a negative span duration')
             spans.append(dict(name=start.get('name', '?'), start=start['ts'],
-                              duration=duration, thread=key, depth=depth, args=start.get('args', {})))
+                              duration=duration, thread=key, depth=depth, args=span_fields(start)))
         elif phase == 'X':
             spans.append(dict(name=event.get('name', '?'), start=event['ts'],
-                              duration=event['dur'], thread=key, depth=0, args=event.get('args', {})))
+                              duration=event['dur'], thread=key, depth=0, args=span_fields(event)))
     return spans, names, unmatched + sum(map(len, stacks.values()))
 
 
@@ -60,8 +63,14 @@ def main():
     parser.add_argument('trace', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    source = json.loads(args.trace.read_text())
-    spans, names, incomplete = decode(source if isinstance(source, list) else source['traceEvents'])
+    selected = None
+    audit_path = args.trace.with_name('audit.json')
+    if audit_path.exists():
+        audit = json.loads(audit_path.read_text())
+        selected = window(args.trace, {f['id'] for f in audit['frames'] if f['measured']})
+    names, counts = {}, {}
+    spans = list(stream_spans(events(args.trace), names, counts, selected))
+    incomplete = counts['incomplete']
     if not spans:
         raise ValueError('No completed spans in capture')
     spans.sort(key=lambda s: s['start'])

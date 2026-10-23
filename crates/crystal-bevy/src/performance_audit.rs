@@ -20,6 +20,10 @@ pub struct AuditScenario {
     pub prepare: Vec<AuditStep>,
     /// Timed inputs, each with an authoritative completion assertion.
     pub steps: Vec<AuditStep>,
+    /// Chain directional legs at their authoritative target, preserving the
+    /// production fractional position without waiting for terrain or GPU settlement.
+    #[serde(default)]
+    pub continuous_movement: bool,
     /// Minimum measured steady-state duration, excluding preparation and warmup.
     pub seconds: u32,
 }
@@ -30,10 +34,12 @@ pub struct AuditScenario {
 pub enum AuditFixture {
     /// New game at the specified tile.
     Field,
-    /// Existing production battle preview.
+    /// Controlled Route36 field fixture; preparation enters the real battle.
     Battle,
     /// Existing checked land-to-water Surf preview, before ordinary A/Yes.
     SurfShore,
+    /// Checked Route36 Weird Tree interaction, before ordinary A/Yes.
+    TreeEncounter,
 }
 
 /// A held direction or pulsed ordinary controller button.
@@ -48,7 +54,8 @@ pub struct AuditStep {
     pub timeout_seconds: u32,
 }
 
-/// Every supplied condition must hold at a visibly settled frame.
+/// Every supplied condition must hold at the requested checkpoint.
+/// Continuous movement preserves fractional position; other steps also wait for rendering.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
 pub struct AuditExpectation {
@@ -60,7 +67,9 @@ pub struct AuditExpectation {
     pub mode: Option<String>,
     /// Required production battle presence.
     pub battle: Option<bool>,
-    /// Require a move to consume PP relative to the initial battle party.
+    /// Require the production battle command chooser after its introduction.
+    pub battle_commands: Option<bool>,
+    /// Require a move to consume active-battler PP during this input step.
     #[serde(default)]
     pub pp_consumed: bool,
     /// Minimum real duration for idle or animation samples.
@@ -77,6 +86,10 @@ pub struct AuditRequest {
     pub directory: PathBuf,
     /// Whether timestamp queries and render diagnostics are enabled.
     pub gpu: bool,
+    /// Emit source-frame boundaries for an external Metal System Trace capture.
+    pub metal_trace: bool,
+    /// Wait for the runner's native-profiler start handshake after warmup.
+    pub wait_for_metal_capture: bool,
 }
 
 impl AuditScenario {
@@ -95,6 +108,24 @@ impl AuditScenario {
             self.prepare.len() + self.steps.len() <= 256,
             "too many input steps"
         );
+        if self.continuous_movement {
+            ensure!(
+                matches!(self.fixture, AuditFixture::Field | AuditFixture::SurfShore),
+                "continuous movement requires a field fixture"
+            );
+            ensure!(
+                !self.steps.is_empty()
+                    && self.steps.iter().all(|step| matches!(
+                        step.key.as_str(),
+                        "left" | "right" | "up" | "down"
+                    ) && step.until.tile.is_some()
+                        && step.until.battle == Some(false)
+                        && step.until.battle_commands.is_none()
+                        && !step.until.pp_consumed
+                        && step.until.seconds == 0),
+                "continuous movement requires directional tile assertions without battles or duration waits"
+            );
+        }
         for step in self.prepare.iter().chain(&self.steps) {
             ensure!(
                 matches!(
@@ -118,6 +149,7 @@ impl AuditScenario {
                     || expected.tile.is_some()
                     || expected.mode.is_some()
                     || expected.battle.is_some()
+                    || expected.battle_commands.is_some()
                     || expected.pp_consumed
                     || expected.seconds > 0,
                 "step needs an assertion"
@@ -130,6 +162,38 @@ impl AuditScenario {
 #[cfg(test)]
 mod tests {
     use super::AuditScenario;
+
+    #[test]
+    fn shipped_scenarios_validate() {
+        let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../tools/performance-scenarios.json");
+        let scenarios: Vec<AuditScenario> =
+            serde_json::from_str(&std::fs::read_to_string(path).expect("read suite"))
+                .expect("decode suite");
+        assert!(
+            scenarios.len() >= 10,
+            "suite must cover the gameplay matrix"
+        );
+        for scenario in scenarios {
+            scenario.validate().expect("valid shipped scenario");
+        }
+    }
+
+    #[test]
+    fn continuous_movement_requires_directional_field_tile_assertions() {
+        let input = r#"{"name":"walk","map":"NewBarkTown","tile":[13,6],"fixture":"field","prepare":[],"steps":[{"key":"left","until":{"tile":[11,6],"battle":false},"timeout_seconds":10}],"seconds":4,"continuous_movement":true}"#;
+        let valid: AuditScenario = serde_json::from_str(input).expect("continuous recipe");
+        valid.validate().expect("directional field traversal");
+        let mut button = valid.clone();
+        button.steps[0].key = "a".into();
+        assert!(button.validate().is_err());
+        let mut battle = valid.clone();
+        battle.steps[0].until.battle = Some(true);
+        assert!(battle.validate().is_err());
+        let mut duration = valid;
+        duration.steps[0].until.seconds = 1;
+        assert!(duration.validate().is_err());
+    }
 
     #[test]
     fn rejects_typo_and_unbounded_scenarios() {

@@ -276,6 +276,8 @@ async fn run_browser() -> Result<()> {
             Some("ilex" | "ilex-forest") => Some(("IlexForest", 1, 37)),
             Some("route29") => Some(("Route29", 50, 9)),
             Some("route29-border") => Some(("Route29", 58, 9)),
+            Some("world-stream") => Some(("Route28", 31, 16)),
+            Some("cherrygrove-border") => Some(("CherrygroveCity", 16, 1)),
             Some("route29-battle") => Some(("Route29", 50, 9)),
             Some("azalea-well") => Some(("AzaleaTown", 33, 9)),
             Some("falkner-battle") => Some(("VioletGym", 4, 1)),
@@ -321,7 +323,7 @@ async fn run_browser() -> Result<()> {
                         Some("union-cave") => (4, 0),
                         Some("ice-path" | "mount-silver") => (1, 0),
                         Some("whirl-islands") => (0, 0),
-                        Some("saffron") => (0, 1),
+                        Some("saffron" | "world-stream" | "cherrygrove-border") => (0, 1),
                         Some("ilex" | "ilex-forest" | "route26" | "route26-border" | "route26-canyon" | "route29" | "route29-border" | "route29-battle"
                             | "national-park" | "national-park-pool") => (0, 1),
                         _ => (0, -1),

@@ -109,21 +109,23 @@ test('touch drag orbits and zooms only in 3D and persists on release', () => {
   assert.deepEqual(ui.cameraCalls.at(-1), [2.25, 2]);
 });
 
-test('drag ignores secondary mouse buttons and stops on cancellation, blur, and mode switch', () => {
+test('right mouse drag steers and stops on cancellation, blur, and mode switch', () => {
   const ui = mount('true');
   const rightClick = new ui.dom.window.Event('pointerdown');
-  Object.assign(rightClick, { pointerId: 1, pointerType: 'mouse', button: 2 });
+  Object.assign(rightClick, { clientX: 0, clientY: 0, pointerId: 1, pointerType: 'mouse', button: 2 });
   ui.dom.window.document.querySelector('canvas').dispatchEvent(rightClick);
   ui.pointer('pointermove', 100, 0, 1, 'mouse');
-  assert.deepEqual(ui.cameraCalls.at(-1), [1, 0]);
+  assert.deepEqual(ui.cameraCalls.at(-1), [1, 2]);
+  ui.pointer('pointerup', 100, 0, 1, 'mouse');
+  const camera = ui.cameraCalls.at(-1);
   for (const stop of [() => ui.pointer('pointercancel', 0, 0),
     () => ui.dom.window.dispatchEvent(new ui.dom.window.Event('blur')),
     () => ui.click()]) {
     ui.pointer('pointerdown', 0, 0);
-    assert.deepEqual(ui.cameraCalls.at(-1), [1, 0]);
+    assert.deepEqual(ui.cameraCalls.at(-1), camera);
     stop();
     ui.pointer('pointermove', 100, 0);
-    assert.deepEqual(ui.cameraCalls.at(-1), [1, 0]);
+    assert.deepEqual(ui.cameraCalls.at(-1), camera);
   }
 });
 

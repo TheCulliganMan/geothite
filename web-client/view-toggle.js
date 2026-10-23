@@ -65,7 +65,7 @@ export function mountViewToggle(wasm, { button, canvas, storage, startIn2D = fal
       event.preventDefault();
       return;
     }
-    if ((event.pointerType !== 'touch' && event.button !== 0) || drag) return;
+    if ((event.pointerType !== 'touch' && event.button !== 0 && event.button !== 2) || drag) return;
     drag = { id: event.pointerId, x: event.clientX, y: event.clientY, touch: event.pointerType === 'touch' };
     canvas.setPointerCapture(event.pointerId);
     canvas.focus({ preventScroll: true });

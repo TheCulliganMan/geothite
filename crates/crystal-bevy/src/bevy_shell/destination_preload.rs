@@ -1,6 +1,9 @@
 //! Prepare nearby doors and outdoor connections without advancing game state.
 use super::*;
 
+#[path = "world_stream_publish.rs"]
+mod streaming;
+
 #[derive(Resource, Default)]
 pub(super) struct PublishedDestination {
     key: Option<u64>,
@@ -8,6 +11,8 @@ pub(super) struct PublishedDestination {
     anchor: Option<(String, TilePosition)>,
     snapshot: Option<Arc<RuntimeShellSnapshot>>,
     last_error: Option<String>,
+    stream_key: Option<u64>,
+    stream_target: Option<crystal_voxel_view::WorldStreamTarget>,
 }
 
 fn is_outdoors(map: &crate::RuntimeMapCatalogSnapshot) -> bool {
@@ -82,8 +87,7 @@ fn destination(snapshot: &RuntimeShellSnapshot) -> Option<(&crate::RuntimeMapCat
 
 pub(super) fn publish(
     current: Res<crystal_render_api::VisualWorldFrame>,
-    #[cfg(target_arch = "wasm32")]
-    status: Res<crystal_voxel_view::VoxelViewStatus>,
+    stream: Res<crystal_voxel_view::WorldStreamStatus>,
     runtime: Res<BevyRuntimeShell>,
     mut previous: ResMut<PublishedDestination>,
     mut cache: ResMut<RenderedTilesetArt>,
@@ -92,21 +96,45 @@ pub(super) fn publish(
 ) {
     // Native workers can prepare the known destination while the initial room
     // settles. This reads the source catalog without advancing controller input.
-    if !current.active || !crystal_voxel_view::destination_preload_supported() { return; }
-    // Keep the browser's existing initial-room memory/worker budget.
-    #[cfg(target_arch = "wasm32")]
-    if !status.active || status.profiles_pending
-        || status.terrain_map.as_deref() != Some(current.map_id.as_ref()) { return; }
-    let Some((_, snapshot)) = runtime.cached_snapshot.as_ref() else { return; };
+    if !current.active || !crystal_voxel_view::destination_preload_supported() {
+        return;
+    }
+    // Source publication must continue before the first scene and while a
+    // late resident window lacks player support. Workers need the latest
+    // coverage request to recover; visible 3D is not a prerequisite for it.
+    let Some((_, snapshot)) = runtime.cached_snapshot.as_ref() else {
+        return;
+    };
     // Animation/camera updates retain this immutable snapshot. Do not traverse
     // the map graph and hash every connected block again on display refreshes.
-    if previous.snapshot.as_ref().is_some_and(|old| Arc::ptr_eq(old, snapshot)) { return; }
+    let snapshot_changed = previous
+        .snapshot
+        .as_ref()
+        .is_none_or(|old| !Arc::ptr_eq(old, snapshot));
+    let stream_changed = previous.stream_target != stream.target;
+    if !snapshot_changed && !stream_changed {
+        return;
+    }
     previous.snapshot = Some(Arc::clone(snapshot));
-    let Some((map, mut arrival)) = destination(snapshot) else { return; };
+    previous.stream_target.clone_from(&stream.target);
+    streaming::publish(
+        snapshot,
+        &runtime,
+        stream.target.as_ref(),
+        &mut previous,
+        &mut request,
+        &mut cache,
+        &mut images,
+    );
+    let Some((map, mut arrival)) = destination(snapshot) else {
+        return;
+    };
     // Preserve in-flight work across small movements parallel to a boundary.
     if let Some((name, old)) = &previous.anchor {
-        if name == &map.map_name && (i32::from(old.x) - i32::from(arrival.x)).abs() <= 4
-            && (i32::from(old.y) - i32::from(arrival.y)).abs() <= 4 {
+        if name == &map.map_name
+            && (i32::from(old.x) - i32::from(arrival.x)).abs() <= 4
+            && (i32::from(old.y) - i32::from(arrival.y)).abs() <= 4
+        {
             arrival = *old;
         }
     }
@@ -117,27 +145,40 @@ pub(super) fn publish(
     };
     let mut hash = std::collections::hash_map::DefaultHasher::new();
     map.map_name.hash(&mut hash);
-    arrival.x.hash(&mut hash); arrival.y.hash(&mut hash);
+    arrival.x.hash(&mut hash);
+    arrival.y.hash(&mut hash);
     period.hash(&mut hash);
     snapshot.trainer.player_gender.hash(&mut hash);
     snapshot.script_events.variable_sprites.hash(&mut hash);
     // Include all contributing map writes, including a connected neighbor.
-    for (source, x, y) in connected_render_map_placements(&map.map_name, &snapshot.maps).unwrap_or_default() {
-        source.blocks.hash(&mut hash); x.hash(&mut hash); y.hash(&mut hash);
+    for (source, x, y) in
+        connected_render_map_placements(&map.map_name, &snapshot.maps).unwrap_or_default()
+    {
+        source.blocks.hash(&mut hash);
+        x.hash(&mut hash);
+        y.hash(&mut hash);
     }
     let key = hash.finish();
     if previous.key == Some(key) {
         if previous.actor_map != snapshot.overworld.map_name {
-            request.actor_sources=lookahead_actor_sources(snapshot,&runtime,map);
-            previous.actor_map=snapshot.overworld.map_name.clone();
+            request.actor_sources = lookahead_actor_sources(snapshot, &runtime, map);
+            previous.actor_map = snapshot.overworld.map_name.clone();
         }
         return;
     }
-    match source_frame(snapshot, &runtime, map, arrival, period, &mut cache, &mut images) {
+    match source_frame(
+        snapshot,
+        &runtime,
+        map,
+        arrival,
+        period,
+        &mut cache,
+        &mut images,
+    ) {
         Ok(frame) => {
             previous.last_error = None;
             request.actor_sources = lookahead_actor_sources(snapshot, &runtime, map);
-            previous.actor_map=snapshot.overworld.map_name.clone();
+            previous.actor_map = snapshot.overworld.map_name.clone();
             request.frame = Some(frame);
             previous.anchor = Some((map.map_name.clone(), arrival));
             previous.key = Some(key);
@@ -260,6 +301,7 @@ pub(super) fn source_frame(
 #[cfg(test)]
 mod tests {
     use super::*;
+    include!("world_stream_support_tests.rs");
     #[test]
     fn routes_preload_connected_arrivals_in_source_coordinates() {
         let root = AssetRoot::new(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap());
@@ -431,6 +473,7 @@ mod tests {
                     .insert_resource(crystal_voxel_view::VoxelViewStatus {
                         active:false,terrain_pending:true,..default()})
                     .init_resource::<PublishedDestination>()
+                    .init_resource::<crystal_voxel_view::WorldStreamStatus>()
                     .init_resource::<RenderedTilesetArt>()
                     .init_resource::<Assets<Image>>()
                     .init_resource::<crystal_voxel_view::DestinationPreload>()

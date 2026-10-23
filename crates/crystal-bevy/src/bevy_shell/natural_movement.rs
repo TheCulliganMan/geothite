@@ -328,19 +328,19 @@ pub(super) fn prepare(
 }
 
 pub(super) fn finish(shell: &mut BevyRuntimeShell, frame: &crystal_runtime::RuntimeOverworldFrame) {
-    if overworld_frame_reaches_presentation_boundary(frame) || frame.ledge_jump.is_some() {
-        // Talking in place freezes the continuous position. Authored arrivals
-        // and jumps retain their existing centered landing presentation.
-        if matches!(frame.movement, Some(StepOutcome::Moved { .. }))
-            || frame.warp.is_some()
-            || frame.connection.is_some()
-        {
+    if overworld_frame_interrupts_free_movement(frame) || frame.ledge_jump.is_some() {
+        // Talking in place freezes the continuous position. Warps, scripted
+        // boundaries and jumps retain their centered landing presentation.
+        if matches!(frame.movement, Some(StepOutcome::Moved { .. })) || frame.warp.is_some() {
             shell.natural_movement.position = FreeMovement::default();
             shell.natural_movement.anchor = None;
         }
         shell.natural_movement.facing = None;
     } else if matches!(frame.movement, Some(StepOutcome::Moved { .. })) {
         if let Some(direction) = shell.natural_movement.pending.take() {
+            // A connected map translates the cell basis, not the player's
+            // physical position. Carry both fractional axes and facing into
+            // the authoritative destination just like an ordinary cell entry.
             shell.natural_movement.position.crossed(direction);
             let world = shell.shell.session().overworld();
             shell.natural_movement.anchor = Some((world.map.name.clone(), world.player.tile));
@@ -351,6 +351,8 @@ pub(super) fn finish(shell: &mut BevyRuntimeShell, frame: &crystal_runtime::Runt
 #[cfg(all(test, feature = "voxel-view"))]
 mod tests {
     use super::*;
+    include!("tests/continuous_connections.rs");
+    include!("tests/mouse_movement.rs");
     fn app() -> App {
         let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("../..")

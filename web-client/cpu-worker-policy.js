@@ -4,7 +4,8 @@ export function cpuWorkerPolicy({ params, wasm, storage, embedded, workerSupport
   const preview3D = params.get('view') === '3d' || ['new-bark', 'bedroom', 'goldenrod', 'saffron', 'department-store',
     'underground', 'route26', 'route26-border', 'route26-canyon', 'route29', 'route29-border', 'route29-battle',
     'falkner-battle', 'national-park', 'national-park-pool', 'ilex', 'ilex-forest',
-    'union-cave', 'ice-path', 'whirl-islands', 'mount-silver'].includes(params.get('preview'));
+    'union-cave', 'ice-path', 'whirl-islands', 'mount-silver', 'world-stream',
+    'cherrygrove-border'].includes(params.get('preview'));
   const enabled = (flag, exported) => workerSupported && params.get(flag) !== '0'
     && typeof wasm[exported] === 'function';
   return {

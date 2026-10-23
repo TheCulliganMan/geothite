@@ -4,6 +4,9 @@ use bevy::camera::primitives::MeshAabb;
 use crate::mesh::SurfaceMeshData;
 use bevy::{prelude::*, camera::primitives::Aabb};
 
+#[path = "terrain_index_domains.rs"]
+mod index_domains;
+
 /// Authoritative source-map rectangle in the mesh's local X/Z coordinates.
 /// This is independent of the generated terrain's (possibly padded) extent.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -235,7 +238,8 @@ fn convert_spatial_batches_on_pool(batches: Vec<(AuthenticDomain, SurfaceMeshDat
 /// Split only source-map boundary crossings, then spatially batch each domain
 /// separately. All three domains still render in the overworld; battle scenery
 /// can omit proven Outside batches without mistaking Unresolved for padding.
-/// At most three domains, each with at most 16 x 16 spatial batches, are produced.
+/// At most three domains, each with at most 16 x 16 spatial buckets, are produced.
+/// Dense buckets use multiple lossless 16-bit upload domains.
 /// CPU geometry still moves into render-only assets through into_mesh().
 pub(super) fn prepare_with_authentic_bounds(
     source: SurfaceMeshData,
@@ -648,6 +652,13 @@ pub(super) fn separate_authentic_domains(
 /// eligibility. A long triangle is assigned once and its actual full bounds
 /// participate in culling, including portions outside the nominal grid cell.
 pub(super) fn partition(source: SurfaceMeshData, tile_size: Vec2) -> Vec<SurfaceMeshData> {
+    partition_spatial(source, tile_size)
+        .into_iter()
+        .flat_map(index_domains::split)
+        .collect()
+}
+
+fn partition_spatial(source: SurfaceMeshData, tile_size: Vec2) -> Vec<SurfaceMeshData> {
     // Browsers retain the existing memory policy until separately measured.
     #[cfg(target_arch = "wasm32")]
     let cache_buckets = false;

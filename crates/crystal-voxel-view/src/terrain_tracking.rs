@@ -33,13 +33,14 @@ pub fn connected_frame_shift(built: &VisualWorldFrame, live: &VisualWorldFrame) 
         let q = p - r.origin;
         q.cmpge(IVec2::ZERO).all() && q.cmplt(r.size.as_ivec2()).all()
     });
-    let levels = |frame: &VisualWorldFrame, p: IVec2| -> ([f32; 4], bool, Option<f32>) {
-        let Some(d) = frame.terrace_datum.as_deref() else { return ([0.; 4], false, None); };
+    let levels = |frame: &VisualWorldFrame, p: IVec2| -> ([f32; 4], bool, Option<f32>, bool) {
+        let Some(d) = frame.terrace_datum.as_deref() else { return ([0.; 4], false, None, false); };
         let q = p - d.origin;
         let height = if q.cmpge(IVec2::ZERO).all() && q.cmplt(d.size.as_ivec2()).all() {
             d.levels[(q.y as u32 * d.size.x + q.x as u32) as usize]
         } else { [0.; 4] };
-        (height, d.water_barrier_at(p), d.open_water_at(p))
+        (height, d.water_barrier_at(p), d.open_water_at(p),
+            d.walkable_mineral.binary_search_by_key(&(p.y, p.x), |point| (point.y, point.x)).is_ok())
     };
     let width = built.grid_size.x as i32;
     let height = built.grid_size.y as i32;
@@ -80,8 +81,10 @@ pub fn connected_frame_shift(built: &VisualWorldFrame, live: &VisualWorldFrame) 
                 return Err("connected source ownership differs");
             }
         }
-        if crate::profile::shape_for_source_on_map(&built.map_id, &previous.source)
-            != crate::profile::shape_for_source_on_map(&live.map_id, &tile.source) {
+        if crate::profile::shape_for_source_on_map(
+            built.scenery_map_at(old.x as u32, old.y as u32), &previous.source)
+            != crate::profile::shape_for_source_on_map(
+                live.scenery_map_at(tile.column, tile.row), &tile.source) {
             return Err("connected shape context differs");
         }
         if levels(built, old_point) != levels(live, new_point) {
@@ -92,8 +95,13 @@ pub fn connected_frame_shift(built: &VisualWorldFrame, live: &VisualWorldFrame) 
 }
 
 pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bool {
-    if built.map_id != live.map_id
-        || built.source_map_size_core_tiles != live.source_map_size_core_tiles
+    if built.map_id != live.map_id {
+        // Authored map ownership does not retire resident world geometry.
+        // Reuse only after proving source art, shapes, elevation and coverage
+        // in the destination's coordinate basis.
+        return connected_frame_shift(built, live).is_ok();
+    }
+    if built.source_map_size_core_tiles != live.source_map_size_core_tiles
         || built.boundary_warps != live.boundary_warps
         || built.jump_ledges != live.jump_ledges
         || built.terrace_datum != live.terrace_datum
@@ -235,6 +243,7 @@ pub(super) fn align_footings(
 mod tests {
     use super::*;
     use crystal_render_api::{VisualTile, VisualTileSource};
+    include!("connected_residency_tests.rs");
     fn frame(origin: IVec2) -> VisualWorldFrame {
         let width = 28;
         let mut frame = VisualWorldFrame {

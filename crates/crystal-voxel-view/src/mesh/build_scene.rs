@@ -2283,14 +2283,13 @@ fn build_terrain_mesh_internal_with_background(
         let joined_shapes = modeled_dungeons::joined_surface_shapes(
             &dungeon_placements, &original_cells, &source_shapes, &geometry);
         mountain_portals::append(&mut mesh, &original_cells, &joined_shapes, &geometry, &mut occupied, frame.grid_origin.to_array());
-        modeled_dungeons::append_terrain(
+        modeled_dungeons::append_terrain_from_frame(
             &mut mesh,
-            &frame.map_id,
+            frame,
             &original_cells,
             &joined_shapes,
             &geometry,
             &mut occupied,
-            frame.grid_origin.to_array(),
         );
         for (claimed, occupied) in claimed_by_tree.iter_mut().zip(occupied) {
             *claimed |= occupied;

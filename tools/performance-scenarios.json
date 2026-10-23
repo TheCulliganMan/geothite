@@ -1,13 +1,560 @@
 [
-  {"name":"outdoor-idle","map":"NewBarkTown","tile":[13,6],"fixture":"field","prepare":[],"steps":[],"seconds":4},
-  {"name":"indoor-idle","map":"PlayersHouse2F","tile":[3,3],"fixture":"field","prepare":[],"steps":[],"seconds":4},
-  {"name":"land-movement","map":"NewBarkTown","tile":[13,6],"fixture":"field","prepare":[],"steps":[{"key":"left","until":{"tile":[11,6]},"timeout_seconds":10},{"key":"right","until":{"tile":[13,6]},"timeout_seconds":10}],"seconds":4},
-  {"name":"indoor-movement","map":"PlayersHouse2F","tile":[3,3],"fixture":"field","prepare":[],"steps":[{"key":"left","until":{"tile":[1,3]},"timeout_seconds":10},{"key":"right","until":{"tile":[3,3]},"timeout_seconds":10}],"seconds":4},
-  {"name":"indoor-to-outdoor","map":"PlayersHouse1F","tile":[7,7],"fixture":"field","prepare":[],"steps":[{"key":"down","until":{"map":"NewBarkTown"},"timeout_seconds":15}],"seconds":4},
-  {"name":"outdoor-to-indoor","map":"NewBarkTown","tile":[13,7],"fixture":"field","prepare":[],"steps":[{"key":"up","until":{"map":"PlayersHouse1F"},"timeout_seconds":15}],"seconds":4},
-  {"name":"outdoor-connection","map":"Route29","tile":[1,8],"fixture":"field","prepare":[],"steps":[{"key":"left","until":{"map":"CherrygroveCity"},"timeout_seconds":15}],"seconds":4},
-  {"name":"region-boundary","map":"Route28","tile":[1,6],"fixture":"field","prepare":[],"steps":[{"key":"left","until":{"map":"SilverCaveOutside"},"timeout_seconds":15}],"seconds":4},
-  {"name":"water-movement","map":"Route44","tile":[38,3],"fixture":"surf_shore","prepare":[{"key":"a","until":{"mode":"Surf"},"timeout_seconds":20}],"steps":[{"key":"down","until":{"tile":[38,5],"mode":"Surf"},"timeout_seconds":10},{"key":"right","until":{"tile":[39,5],"mode":"Surf"},"timeout_seconds":10}],"seconds":4},
-  {"name":"battle-idle","map":"Route36","tile":[36,11],"fixture":"battle","prepare":[],"steps":[],"seconds":4},
-  {"name":"battle-turn","map":"Route36","tile":[36,11],"fixture":"battle","prepare":[],"steps":[{"key":"a","until":{"battle":true,"pp_consumed":true},"timeout_seconds":20}],"seconds":6}
+  {
+    "name": "outdoor-idle",
+    "map": "NewBarkTown",
+    "tile": [
+      13,
+      6
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [],
+    "seconds": 4
+  },
+  {
+    "name": "indoor-idle",
+    "map": "PlayersHouse2F",
+    "tile": [
+      3,
+      3
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [],
+    "seconds": 4
+  },
+  {
+    "name": "land-movement",
+    "map": "NewBarkTown",
+    "tile": [
+      13,
+      6
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "left",
+        "until": {
+          "tile": [
+            11,
+            6
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 10
+      },
+      {
+        "key": "right",
+        "until": {
+          "tile": [
+            13,
+            6
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 10
+      }
+    ],
+    "seconds": 4
+  },
+  {
+    "name": "indoor-movement",
+    "map": "PlayersHouse2F",
+    "tile": [
+      3,
+      3
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "left",
+        "until": {
+          "tile": [
+            1,
+            3
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 10
+      },
+      {
+        "key": "right",
+        "until": {
+          "tile": [
+            3,
+            3
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 10
+      }
+    ],
+    "seconds": 4
+  },
+  {
+    "name": "indoor-floor-transition",
+    "map": "PlayersHouse2F",
+    "tile": [
+      7,
+      1
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "up",
+        "until": {
+          "map": "PlayersHouse1F",
+          "battle": false
+        },
+        "timeout_seconds": 15
+      }
+    ],
+    "seconds": 4
+  },
+  {
+    "name": "indoor-to-outdoor",
+    "map": "PlayersHouse1F",
+    "tile": [
+      7,
+      6
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "down",
+        "until": {
+          "map": "NewBarkTown",
+          "battle": false
+        },
+        "timeout_seconds": 15
+      }
+    ],
+    "seconds": 4
+  },
+  {
+    "name": "outdoor-to-indoor",
+    "map": "NewBarkTown",
+    "tile": [
+      13,
+      7
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "up",
+        "until": {
+          "map": "PlayersHouse1F",
+          "battle": false
+        },
+        "timeout_seconds": 15
+      }
+    ],
+    "seconds": 4
+  },
+  {
+    "name": "outdoor-connection",
+    "map": "Route29",
+    "tile": [
+      1,
+      6
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "left",
+        "until": {
+          "map": "CherrygroveCity",
+          "battle": false
+        },
+        "timeout_seconds": 15
+      },
+      {
+        "key": "right",
+        "until": {
+          "map": "Route29",
+          "battle": false
+        },
+        "timeout_seconds": 15
+      }
+    ],
+    "seconds": 4
+  },
+  {
+    "name": "region-boundary",
+    "map": "Route28",
+    "tile": [
+      1,
+      16
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "left",
+        "until": {
+          "map": "SilverCaveOutside",
+          "battle": false
+        },
+        "timeout_seconds": 15
+      },
+      {
+        "key": "right",
+        "until": {
+          "map": "Route28",
+          "battle": false
+        },
+        "timeout_seconds": 15
+      }
+    ],
+    "seconds": 4
+  },
+  {
+    "name": "water-movement",
+    "map": "Route44",
+    "tile": [
+      38,
+      3
+    ],
+    "fixture": "surf_shore",
+    "prepare": [
+      {
+        "key": "a",
+        "until": {
+          "mode": "Surf",
+          "battle": false
+        },
+        "timeout_seconds": 20
+      }
+    ],
+    "steps": [
+      {
+        "key": "down",
+        "until": {
+          "tile": [
+            38,
+            5
+          ],
+          "mode": "Surf",
+          "battle": false
+        },
+        "timeout_seconds": 10
+      },
+      {
+        "key": "right",
+        "until": {
+          "tile": [
+            39,
+            5
+          ],
+          "mode": "Surf",
+          "battle": false
+        },
+        "timeout_seconds": 10
+      }
+    ],
+    "seconds": 4
+  },
+  {
+    "name": "land-to-water",
+    "map": "Route44",
+    "tile": [
+      38,
+      3
+    ],
+    "fixture": "surf_shore",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "a",
+        "until": {
+          "map": "Route44",
+          "tile": [
+            38,
+            4
+          ],
+          "mode": "Surf",
+          "battle": false
+        },
+        "timeout_seconds": 20
+      }
+    ],
+    "seconds": 4
+  },
+  {
+    "name": "water-to-land",
+    "map": "Route44",
+    "tile": [
+      38,
+      3
+    ],
+    "fixture": "surf_shore",
+    "prepare": [
+      {
+        "key": "a",
+        "until": {
+          "map": "Route44",
+          "tile": [
+            38,
+            4
+          ],
+          "mode": "Surf",
+          "battle": false
+        },
+        "timeout_seconds": 20
+      }
+    ],
+    "steps": [
+      {
+        "key": "up",
+        "until": {
+          "map": "Route44",
+          "tile": [
+            38,
+            3
+          ],
+          "mode": "Normal",
+          "battle": false
+        },
+        "timeout_seconds": 10
+      }
+    ],
+    "seconds": 4
+  },
+  {
+    "name": "battle-entry",
+    "map": "Route36",
+    "tile": [
+      35,
+      10
+    ],
+    "fixture": "tree_encounter",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "a",
+        "until": {
+          "battle": true,
+          "battle_commands": true
+        },
+        "timeout_seconds": 40
+      }
+    ],
+    "seconds": 6
+  },
+  {
+    "name": "battle-idle",
+    "map": "Route36",
+    "tile": [
+      35,
+      10
+    ],
+    "fixture": "battle",
+    "prepare": [
+      {
+        "key": "a",
+        "until": {
+          "battle": true,
+          "battle_commands": true
+        },
+        "timeout_seconds": 40
+      }
+    ],
+    "steps": [],
+    "seconds": 4
+  },
+  {
+    "name": "battle-turn",
+    "map": "Route36",
+    "tile": [
+      35,
+      10
+    ],
+    "fixture": "battle",
+    "prepare": [
+      {
+        "key": "a",
+        "until": {
+          "battle": true,
+          "battle_commands": true
+        },
+        "timeout_seconds": 40
+      }
+    ],
+    "steps": [
+      {
+        "key": "a",
+        "until": {
+          "battle": true,
+          "pp_consumed": true
+        },
+        "timeout_seconds": 20
+      },
+      {
+        "key": "a",
+        "until": {
+          "seconds": 5
+        },
+        "timeout_seconds": 10
+      }
+    ],
+    "seconds": 6
+  },
+  {
+    "name": "outdoor-connection-continuous",
+    "map": "Route29",
+    "tile": [
+      1,
+      6
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "left",
+        "until": {
+          "map": "CherrygroveCity",
+          "tile": [
+            36,
+            6
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 20
+      },
+      {
+        "key": "right",
+        "until": {
+          "map": "Route29",
+          "tile": [
+            3,
+            6
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 20
+      }
+    ],
+    "seconds": 4,
+    "continuous_movement": true
+  },
+  {
+    "name": "region-boundary-continuous",
+    "map": "Route28",
+    "tile": [
+      1,
+      16
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "left",
+        "until": {
+          "map": "SilverCaveOutside",
+          "tile": [
+            36,
+            34
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 20
+      },
+      {
+        "key": "right",
+        "until": {
+          "map": "Route28",
+          "tile": [
+            3,
+            16
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 20
+      }
+    ],
+    "seconds": 4,
+    "continuous_movement": true
+  },
+  {
+    "name": "north-south-connection-continuous",
+    "map": "CherrygroveCity",
+    "tile": [
+      16,
+      1
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "up",
+        "until": {
+          "map": "Route30",
+          "tile": [
+            6,
+            51
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 20
+      },
+      {
+        "key": "down",
+        "until": {
+          "map": "CherrygroveCity",
+          "tile": [
+            16,
+            2
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 20
+      }
+    ],
+    "seconds": 4,
+    "continuous_movement": true
+  },
+  {
+    "name": "world-stream-long-connection-continuous",
+    "map": "Route28",
+    "tile": [
+      31,
+      16
+    ],
+    "fixture": "field",
+    "prepare": [],
+    "steps": [
+      {
+        "key": "left",
+        "until": {
+          "map": "SilverCaveOutside",
+          "tile": [
+            20,
+            34
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 45
+      },
+      {
+        "key": "right",
+        "until": {
+          "map": "Route28",
+          "tile": [
+            31,
+            16
+          ],
+          "battle": false
+        },
+        "timeout_seconds": 45
+      }
+    ],
+    "seconds": 16,
+    "continuous_movement": true
+  }
 ]

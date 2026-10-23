@@ -1,19 +1,23 @@
 //! Inward geological slopes inside permanent native rock footprints.
-use super::*;
 use bevy::prelude::Vec2;
+use crystal_render_api::{VisualSourceRegion, VisualTile};
+
+use super::GridGeometry;
+use super::{cave_cliff, outdoor_mountains};
+use crate::profile::{CellShape, MOUNTAIN_CLIFF_HEIGHT, SOURCE_TILE_HEIGHT};
 
 pub(super) struct Field {
     corners: Vec<Vec2>,
 }
 
-fn owner_point(
+fn source_location(
     point: Vec2,
     origin: [i32; 2],
-    regions: &[crystal_render_api::VisualSourceRegion],
-) -> Vec2 {
+    regions: &[VisualSourceRegion],
+) -> (Vec2, Option<&str>) {
     let p = point + Vec2::new(origin[0] as f32, origin[1] as f32);
     let owner = regions.iter().min_by(|a, b| {
-        let distance = |r: &crystal_render_api::VisualSourceRegion| {
+        let distance = |r: &VisualSourceRegion| {
             let lo = r.origin.as_vec2();
             let hi = lo + r.size.as_vec2();
             p.distance_squared(p.clamp(lo, hi))
@@ -22,17 +26,20 @@ fn owner_point(
             .total_cmp(&distance(b))
             .then_with(|| a.map_id.cmp(&b.map_id))
     });
-    p - owner.map_or(Vec2::ZERO, |r| r.origin.as_vec2())
+    (
+        p - owner.map_or(Vec2::ZERO, |r| r.origin.as_vec2()),
+        owner.map(|region| region.map_id.as_ref()),
+    )
 }
 
 pub(super) fn height(
     point: Vec2,
     origin: [i32; 2],
-    regions: &[crystal_render_api::VisualSourceRegion],
+    regions: &[VisualSourceRegion],
     distance: f32,
     tile: f32,
 ) -> f32 {
-    let source = owner_point(point, origin, regions);
+    let (source, map) = source_location(point, origin, regions);
     let bed = cave_cliff::slab(
         source.x * 0.15 + source.y * 0.035 + 17.,
         source.y * 0.17 - source.x * 0.04 - 31.,
@@ -42,7 +49,17 @@ pub(super) fn height(
     let rise = distance * (1.40 + bed * 0.65);
     // Shape the complete body. Keeping a native two/four-tile shaft beneath
     // this field made even a low summit read as a box with a pointed lid.
-    (toe + rise.min(3.2 + ridge.abs() * 3.2 - toe)) * tile
+    let body = (toe + rise.min(3.2 + ridge.abs() * 3.2 - toe)) * tile;
+    if map == Some("Route36") {
+        // The narrow ridge lost its native two-cell body in the shared
+        // reshaping. Restore that rise inside the footprint, fading it into
+        // the seated margin rather than lifting a vertical shaft or rim.
+        let inward = (distance / 1.5).clamp(0., 1.);
+        let retained_body = MOUNTAIN_CLIFF_HEIGHT / SOURCE_TILE_HEIGHT;
+        body + retained_body * tile * inward * inward * (3. - 2. * inward)
+    } else {
+        body
+    }
 }
 
 impl Field {
@@ -51,7 +68,7 @@ impl Field {
         shapes: &[CellShape],
         g: &GridGeometry,
         origin: [i32; 2],
-        regions: &[crystal_render_api::VisualSourceRegion],
+        regions: &[VisualSourceRegion],
     ) -> Self {
         let rock = cells
             .iter()
@@ -72,7 +89,7 @@ impl Field {
                     continue;
                 }
                 let p = Vec2::new(x as f32, z as f32);
-                let source = owner_point(p, origin, regions);
+                let (source, _) = source_location(p, origin, regions);
                 // Broad linear mineral beds vary the slope along a run. The
                 // field stays inside the rock; it never bulges onto the path.
                 let width =
@@ -159,7 +176,9 @@ pub(super) fn slope(fraction: f32) -> f32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::profile::shape_for_source;
     use bevy::prelude::{IVec2, UVec2};
+    use crystal_render_api::VisualWorldFrame;
 
     fn fixture() -> (VisualWorldFrame, GridGeometry) {
         let mut source = super::super::tests::source_with_tile(0x0a, 1, 1, 0x3c);
@@ -255,6 +274,55 @@ mod tests {
                 assert_eq!(
                     height(point, [0, 0], &[], distance, 8.),
                     height(point, shift.to_array(), &regions, distance, 8.)
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn route36_retains_a_rising_ridge_through_connected_views() {
+        let shift = IVec2::new(-120, 0);
+        let regions = [
+            VisualSourceRegion {
+                map_id: "Route36".into(),
+                origin: shift,
+                size: UVec2::new(120, 36),
+            },
+            VisualSourceRegion {
+                map_id: "VioletCity".into(),
+                origin: IVec2::ZERO,
+                size: UVec2::new(80, 72),
+            },
+        ];
+        let local_region = [crystal_render_api::VisualSourceRegion {
+            origin: IVec2::ZERO,
+            ..regions[0].clone()
+        }];
+        for tile in [8., 32.] {
+            for x in 100..=116 {
+                let point = Vec2::new(x as f32, 34.);
+                let profile = [0., 0.5, 1., 2.]
+                    .map(|distance| height(point, [0, 0], &local_region, distance, tile));
+                assert!(profile[0] < tile * 0.4, "retain the low seated margin");
+                assert!(profile.windows(2).all(|p| p[1] > p[0]));
+                assert!(
+                    profile[3] > tile * 4.,
+                    "the narrow ridge needs mountain height"
+                );
+                for distance in [0., 0.5, 1., 2., 6.] {
+                    assert_eq!(
+                        height(point, [0, 0], &local_region, distance, tile),
+                        height(point, shift.to_array(), &regions, distance, tile),
+                        "Violet's connected view must retain Route 36's mountain"
+                    );
+                }
+            }
+            for distance in [0., 0.5, 1., 2., 6.] {
+                let violet = Vec2::new(8., 34.);
+                assert_eq!(
+                    height(violet, [0, 0], &regions, distance, tile),
+                    height(violet, [0, 0], &[], distance, tile),
+                    "neighboring Violet scenery keeps its existing height"
                 );
             }
         }

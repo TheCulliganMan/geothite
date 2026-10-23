@@ -30,13 +30,15 @@ and `-Launch` options remain available, with `-Action` and `-SkipBuild` added.
 All commands build for the current host OS and architecture. Windows/Linux
 runners need native verification before claiming release support there.
 
-Both use persistent `target/desktop-build` and the `wasm-dev` profile by default.
-The fast desktop build uses optimization level 1 for the large game crates and
-level 2 for engine dependencies, avoiding the expensive full game-code optimization
-passes during updates. Non-release desktop builds keep one incremental cache
-in this dedicated target directory; set `CARGO_INCREMENTAL=0` to disable it
-when disk space matters more than update time. Other build caches are unchanged. `CARGO_TARGET_DIR` selects another cache;
-`GEOTHITE_DESKTOP_PROFILE=release` selects full release optimization.
+Both use persistent `target/desktop-build` and the `release` profile by default,
+so normal builds, installs and packages use full game and engine optimization.
+`CARGO_TARGET_DIR` selects another cache. For faster development builds, select
+`GEOTHITE_DESKTOP_PROFILE=wasm-dev` (or pass the existing profile option). That
+profile uses optimization level 1 for game crates and level 2 for engine
+dependencies; it trades runtime performance for shorter compilation. Non-release
+desktop builds keep an incremental cache in this dedicated target directory;
+set `CARGO_INCREMENTAL=0` to disable it when disk space matters more than update
+time. Keep the same profile when repackaging or installing with `--skip-build`.
 The first toolchain/content/Bevy build is not a two-minute operation. Warm-cache
 updates and repackaging avoid that work; the script reports actual elapsed time.
 Each packaging run verifies the actual pack's desktop title/intro metadata.

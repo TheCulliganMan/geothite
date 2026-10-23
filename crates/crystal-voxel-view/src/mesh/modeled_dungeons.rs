@@ -1653,6 +1653,7 @@ fn neighbor_edge_heights(shape: CellShape, side: usize, scale: f32) -> [f32; 2] 
 /// Modeled elevated floor patches get exposed sides beneath their existing caps.
 /// Actor support, collision, warps and stairs are untouched. Unknown viewport
 /// continuation emits no artificial perimeter skirt.
+#[cfg(test)]
 pub(super) fn append_terrain(
     mesh: &mut TerrainMeshData,
     map: &str,
@@ -1661,6 +1662,32 @@ pub(super) fn append_terrain(
     g: &GridGeometry,
     claimed: &mut [bool],
     origin: [i32; 2],
+) {
+    append_terrain_with_source(mesh, map, cells, shapes, g, claimed, origin, None);
+}
+
+pub(super) fn append_terrain_from_frame(
+    mesh: &mut TerrainMeshData,
+    frame: &VisualWorldFrame,
+    cells: &[&VisualTile],
+    shapes: &[CellShape],
+    g: &GridGeometry,
+    claimed: &mut [bool],
+) {
+    append_terrain_with_source(mesh, &frame.map_id, cells, shapes, g, claimed,
+        frame.grid_origin.to_array(), Some(frame));
+}
+
+#[allow(clippy::too_many_arguments)]
+fn append_terrain_with_source(
+    mesh: &mut TerrainMeshData,
+    map: &str,
+    cells: &[&VisualTile],
+    shapes: &[CellShape],
+    g: &GridGeometry,
+    claimed: &mut [bool],
+    origin: [i32; 2],
+    frame: Option<&VisualWorldFrame>,
 ) {
     let mut shallow_scarps = Vec::new();
     let corners = cave_cliff::RockCorners::new_with_shapes(map,cells,shapes,g);
@@ -1689,6 +1716,12 @@ pub(super) fn append_terrain(
         for y in 0..2 {corner_edges[(p.row+y)*g.width+column][side]=Some(h);}
     }
     for (index, tile) in cells.iter().enumerate() {
+        // Active-map coordinates become negative across connected borders
+        // and can escape the mineral material's tag range. Keep the owning
+        // source map's paint phase, as the other native scenery producers do.
+        let map = frame.map_or(map, |frame| frame.scenery_map_at(tile.column, tile.row));
+        let origin = frame.map_or(origin, |frame|
+            frame.scenery_grid_origin_at(tile.column, tile.row).to_array());
         // Authored boulders and ladders already own their floor caps. Their
         // joined elevated support still needs an exposed rock side, otherwise
         // the correct cap floats above a hole beside water or lower ground.

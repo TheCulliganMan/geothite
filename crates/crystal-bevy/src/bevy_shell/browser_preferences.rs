@@ -26,6 +26,7 @@ fn autosave_browser_progress(mut runtime: ResMut<BevyRuntimeShell>, time: Res<Ti
 #[cfg(target_arch = "wasm32")]
 thread_local! {
     static BROWSER_AUDIO_CONTEXT: std::cell::RefCell<Option<web_sys::AudioContext>> = const { std::cell::RefCell::new(None) };
+    static BROWSER_PREPARED_AUDIO_CONTEXT: std::cell::RefCell<Option<web_sys::AudioContext>> = const { std::cell::RefCell::new(None) };
     static BROWSER_MUTED: std::cell::Cell<bool> = const { std::cell::Cell::new(true) };
     static BROWSER_MASTER_GAIN: std::cell::RefCell<Option<web_sys::GainNode>> = const { std::cell::RefCell::new(None) };
 }
@@ -117,6 +118,23 @@ pub fn crystal_cycle_voxel_camera() -> String {
         "pitch":camera.pitch_degrees,"firstPerson":camera.first_person}).to_string()
 }
 
+/// Prepare the browser's audio device during loading without exposing it to
+/// playback. Returns a JavaScript error if context creation is rejected.
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn crystal_prepare_audio_context() -> Result<(), wasm_bindgen::JsValue> {
+    if BROWSER_AUDIO_CONTEXT.with(|slot| slot.borrow().is_some()) {
+        return Ok(());
+    }
+    BROWSER_PREPARED_AUDIO_CONTEXT.with(|slot| {
+        let mut prepared = slot.borrow_mut();
+        if prepared.is_none() {
+            *prepared = Some(web_sys::AudioContext::new()?);
+        }
+        Ok(())
+    })
+}
+
 // Called synchronously by trusted DOM gestures, outside the ECS frame loop.
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen::prelude::wasm_bindgen]
@@ -124,7 +142,11 @@ pub fn crystal_resume_audio() -> Result<js_sys::Promise, wasm_bindgen::JsValue> 
     BROWSER_AUDIO_CONTEXT.with(|slot| {
         let mut slot = slot.borrow_mut();
         if slot.is_none() {
-            *slot = Some(web_sys::AudioContext::new()?);
+            let prepared = BROWSER_PREPARED_AUDIO_CONTEXT.with(|slot| slot.borrow_mut().take());
+            *slot = Some(match prepared {
+                Some(context) => context,
+                None => web_sys::AudioContext::new()?,
+            });
         }
         slot.as_ref().expect("browser audio context initialized").resume()
     })

@@ -1,6 +1,10 @@
-//! One bounded, hidden destination scene prepared through the production mesher.
+//! Sliding outdoor coverage and hidden destinations through the production mesher.
 //! The host supplies read-only source art; no game session is advanced here.
 use super::*;
+use std::sync::Arc;
+
+#[path = "world_stream_retention.rs"]
+mod retention;
 
 /// Speculative work must have a real CPU worker, never a frame-thread fallback.
 pub fn supported() -> bool {
@@ -15,6 +19,8 @@ pub fn supported() -> bool {
 #[derive(Resource, Default)]
 pub struct DestinationPreload {
     pub frame: Option<VisualWorldFrame>,
+    /// Sliding outdoor coverage prepared independently of doors and map edges.
+    pub stream_frame: Option<VisualWorldFrame>,
     /// Resolved presentation identities only; never live game objects.
     pub actor_sources: Vec<std::sync::Arc<str>>,
     /// Completed hidden scenes promoted to the active renderer.
@@ -26,16 +32,51 @@ pub(super) struct PreparedDestination {
     cache: TerrainRevisionCache,
     builds: TerrainBuildQueue,
     ready_frames: u8,
-    source_frame: Option<VisualWorldFrame>,
+    source_frame: Option<Arc<VisualWorldFrame>>,
+    source_compatibility: Option<(TerrainCacheKey, AssetId<Image>, bool)>,
+    live_compatibility: Option<(TerrainCacheKey, AssetId<Image>, bool)>,
     settled_key: Option<(TerrainCacheKey, VoxelCameraControls, Option<Vec3>, u32)>,
 }
 
-fn roots(cache: &TerrainRevisionCache) -> impl Iterator<Item = Entity> {
-    [cache.instances_root, cache.textured_entity, cache.solid_entity,
-        cache.animated_textured_entity, cache.animated_solid_entity].into_iter().flatten()
+#[derive(Resource, Default)]
+pub(super) struct PreparedWorld {
+    next: PreparedDestination,
+    retained: retention::RetainedWindows,
 }
 
-fn hide(cache: &TerrainRevisionCache, commands: &mut Commands) {
+pub(super) fn cached_compatible(
+    source: &VisualWorldFrame,
+    live: &VisualWorldFrame,
+    receipt: &mut Option<(TerrainCacheKey, AssetId<Image>, bool)>,
+) -> bool {
+    let key = TerrainCacheKey::from_frame(live);
+    let texture = live.map_texture.id();
+    if let Some((previous, image, result)) = receipt
+        && *previous == key
+        && *image == texture
+    {
+        return *result;
+    }
+    let result = (source.map_texture == live.map_texture
+        && TerrainCacheKey::from_frame(source) == key)
+        || compatible(source, live);
+    *receipt = Some((key, texture, result));
+    result
+}
+
+pub(super) fn roots(cache: &TerrainRevisionCache) -> impl Iterator<Item = Entity> {
+    [
+        cache.instances_root,
+        cache.textured_entity,
+        cache.solid_entity,
+        cache.animated_textured_entity,
+        cache.animated_solid_entity,
+    ]
+    .into_iter()
+    .flatten()
+}
+
+pub(super) fn hide(cache: &TerrainRevisionCache, commands: &mut Commands) {
     for root in roots(cache) {
         commands.entity(root).insert(Visibility::Hidden);
         #[cfg(not(target_arch = "wasm32"))]
@@ -45,7 +86,8 @@ fn hide(cache: &TerrainRevisionCache, commands: &mut Commands) {
 
 pub(super) fn compatible(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bool {
     if !terrain_tracking::can_reuse(built, live) { return false; }
-    let delta = live.grid_origin - built.grid_origin;
+    let delta = live.grid_origin - built.grid_origin
+        - built.connected_source_shift(live).unwrap_or(IVec2::ZERO);
     let width = built.grid_size.x as i32;
     let height = built.grid_size.y as i32;
     live.tiles.iter().all(|tile| {
@@ -67,14 +109,24 @@ pub(super) fn activate(
     commands: &mut Commands,
 ) {
     if live.built_frame.as_ref().is_some_and(|old| old.map_id == frame.map_id) { return; }
+    if live.key.as_ref().is_some_and(|key| key.profiles_revision == profiles.revision)
+        && retain_connected_terrain(frame, live)
+    {
+        // The camera is still inside resident world coverage. Crossing a
+        // logical map edge must not exchange meshes, atlases or render roots.
+        return;
+    }
     // A resident base scene is reusable even while its grove pages settle.
     // The active streamer can finish those pages without rebuilding the town.
-    let ready = destination.cache.key.as_ref().is_some_and(|key| key.profiles_revision == profiles.revision)
+    let ready = destination.cache.uploads.ready()
+        && destination.cache.key.as_ref().is_some_and(|key| key.profiles_revision == profiles.revision)
         && destination.cache.built_frame.as_ref().is_some_and(|old| compatible(old, frame));
     let in_flight = destination.builds.key.as_ref().is_some_and(|key|
         key.profiles_revision == profiles.revision && key.map_id == frame.map_id)
         && destination.source_frame.as_ref().is_some_and(|old| compatible(old, frame));
     if !ready && !in_flight { return; }
+    crate::terrain_publication::discard(&mut builds.publication, commands);
+    crate::terrain_publication::discard(&mut destination.builds.publication, commands);
     if in_flight && !ready && retain_connected_terrain(frame, live) {
         // Adopt only the work queue. The completed old scene covers the shared
         // authored acreage and keeps its immutable atlas until publication.
@@ -103,7 +155,7 @@ pub(super) fn activate(
         *builds = TerrainBuildQueue { started, ..default() };
     }
     destination.builds = TerrainBuildQueue::default();
-    destination.source_frame = destination.cache.built_frame.clone();
+    destination.source_frame = None;
     destination.ready_frames = 3;
     destination.settled_key = None;
     for root in roots(live) {
@@ -114,117 +166,399 @@ pub(super) fn activate(
     request.hits += 1;
 }
 
+pub(super) fn activate_world(
+    frame: &VisualWorldFrame,
+    profiles: &live_profiles::LiveProfiles,
+    destination: &mut PreparedWorld,
+    status: &mut crate::WorldStreamStatus,
+    live: &mut TerrainRevisionCache,
+    builds: &mut TerrainBuildQueue,
+    commands: &mut Commands,
+) {
+    let Some(resident) = live.built_frame.as_ref() else {
+        return;
+    };
+    if !crate::sky::outdoors(frame) || !world_stream::needs_refresh(resident, frame) {
+        return;
+    }
+    let retained = destination.retained.take_ready(resident, frame, profiles);
+    let from_retained = retained.is_some();
+    let mut next = if let Some(cache) = retained {
+        cache
+    } else {
+        let prepared = &mut destination.next;
+        let ready = prepared.ready_frames >= 3
+            && prepared.cache.uploads.ready()
+            && prepared
+                .cache
+                .key
+                .as_ref()
+                .is_some_and(|key| key.profiles_revision == profiles.revision)
+            && prepared.cache.built_frame.as_ref().is_some_and(|built| {
+                world_stream::advances_coverage(resident, built, frame) && compatible(built, frame)
+            });
+        if !ready {
+            return;
+        }
+        crate::terrain_publication::discard(&mut prepared.builds.publication, commands);
+        prepared.builds = TerrainBuildQueue::default();
+        prepared.source_frame = None;
+        prepared.source_compatibility = None;
+        prepared.live_compatibility = None;
+        prepared.ready_frames = 0;
+        prepared.settled_key = None;
+        std::mem::take(&mut prepared.cache)
+    };
+    let _trace = loading_trace::span("world.window_promote", || {
+        serde_json::json!({
+            "map": frame.map_id.as_ref(),
+            "resident_origin": live.built_frame.as_ref().map(|built| built.grid_origin.to_array()),
+            "next_origin": next.built_frame.as_ref().map(|built| built.grid_origin.to_array()),
+            "old_roots": roots(live).map(|entity| entity.to_bits()).collect::<Vec<_>>(),
+            "next_roots": roots(&next).map(|entity| entity.to_bits()).collect::<Vec<_>>(),
+            "retained": from_retained,
+        })
+    });
+    hide(live, commands);
+    std::mem::swap(live, &mut next);
+    bind_preloaded_compositor(frame, live);
+    destination
+        .retained
+        .remember(next, "previously_visible", commands);
+    let started = builds.started;
+    crate::terrain_publication::discard(&mut builds.publication, commands);
+    *builds = TerrainBuildQueue {
+        started,
+        ..default()
+    };
+    for root in roots(live) {
+        commands.entity(root).insert(Visibility::Visible);
+        #[cfg(not(target_arch = "wasm32"))]
+        commands
+            .entity(root)
+            .remove::<pipeline_preload::HiddenDestination>();
+    }
+    status.promotions += 1;
+}
+
 #[allow(clippy::too_many_arguments)]
 pub(super) fn prepare(
     request: Res<DestinationPreload>,
     current: Res<VisualWorldFrame>,
     battle: Option<Res<crystal_render_api::VisualBattleFrame>>,
-    #[cfg(target_arch = "wasm32")]
-    status: Res<VoxelViewStatus>,
     settings: Res<VoxelViewSettings>,
     cameras: Query<&Projection, With<VoxelWorldCamera>>,
     profiles: Res<live_profiles::LiveProfiles>,
-    sun: Query<(&DirectionalLight, &Transform), (With<VoxelSun>, Without<VoxelTerrain>, Without<VoxelActorCard>)>,
+    sun: Query<
+        (&DirectionalLight, &Transform),
+        (
+            With<VoxelSun>,
+            Without<VoxelTerrain>,
+            Without<VoxelActorCard>,
+        ),
+    >,
     active: Res<TerrainRevisionCache>,
-    #[cfg(not(target_arch = "wasm32"))]
-    active_builds: Res<TerrainBuildQueue>,
-    mut destination: ResMut<PreparedDestination>,
+    #[cfg(not(target_arch = "wasm32"))] active_builds: Res<TerrainBuildQueue>,
+    prepared: (ResMut<PreparedDestination>, Option<ResMut<PreparedWorld>>),
     mut commands: Commands,
     mut images: ResMut<Assets<Image>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<VoxelMaterial>>,
     mut entities: Query<(&mut Visibility, &mut Transform), VoxelTerrainFilter>,
 ) {
-    let Some(frame) = request.frame.as_ref() else { return; };
-    if !settings.enabled || !current.active || frame.map_id == current.map_id { return; }
+    if !settings.enabled || !current.active {
+        return;
+    }
     // Finished speculative work can wait; GPU publication must not interrupt
     // the authored field wipe or the battle's own preparation/handoff.
-    if battle.as_ref().is_some_and(|frame| frame.active || frame.preparing) { return; }
-    // Native background work may overlap the initial room. Browser workers
-    // retain their existing foreground-first scheduling and memory budget.
-    #[cfg(target_arch = "wasm32")]
-    if !status.active || status.profiles_pending
-        || status.terrain_map.as_deref() != Some(current.map_id.as_ref()) { return; }
+    if battle
+        .as_ref()
+        .is_some_and(|frame| frame.active || frame.preparing)
+    {
+        return;
+    }
+    // A second browser worker can prepare coverage while the first scene
+    // initializes, as native workers do. Waiting for visible 3D here loses
+    // the entire initial lookahead and can deadlock recovery of a late window.
     // Never run a blocking fallback mesher as speculative work on the browser
     // frame thread. A worker-capable browser uses the same paged path as play.
     #[cfg(target_arch = "wasm32")]
     {
         #[cfg(feature = "terrain-worker-browser")]
-        if terrain_worker::browser::availability() != terrain_worker::browser::Availability::Ready { return; }
+        if terrain_worker::browser::availability() != terrain_worker::browser::Availability::Ready {
+            return;
+        }
         #[cfg(not(feature = "terrain-worker-browser"))]
         return;
     }
-    let mut key = TerrainCacheKey::from_frame(frame);
-    key.profiles_revision = profiles.revision;
-    let sunlight = sun.iter().find_map(|(light, transform)|
-        (light.shadow_maps_enabled && light.illuminance > 0.).then(|| -transform.forward().as_vec3()));
-    let PreparedDestination { cache, builds, ready_frames, settled_key, source_frame } = &mut *destination;
-    // Only streamed groves depend on the sun's caster footprint. An indoor
-    // destination must not wake up whenever the outdoor daylight moves.
-    // The classic playfield's aspect differs from a native window or
-    // capture target. Use the same actual camera projection as live streaming.
-    let aspect = cameras.iter().find_map(|projection| match projection {
-        Projection::Perspective(p) if p.aspect_ratio.is_finite() && p.aspect_ratio > 0. => Some(p.aspect_ratio),
-        _ => None,
-    }).unwrap_or(frame.viewport_size.x / frame.viewport_size.y);
-    let next = (key, settings.camera, if cache.groves.is_some() { sunlight } else { None }, aspect.to_bits());
-    // A fully prepared hidden scene must stay untouched. Re-entering terrain
-    // sync made its roots visible then hidden again on every indoor frame,
-    // needlessly invalidating Bevy visibility and rescanning grove interest.
-    if *ready_frames >= 3 && settled_key.as_ref() == Some(&next) { return; }
-
-    if cache.built_frame.as_ref().is_some_and(|old|
-        old.map_id == frame.map_id && !compatible(old, frame)) {
-        for root in roots(cache) { commands.entity(root).despawn(); }
-        let stone = cache.painted_stone.clone();
-        let bedrock = cache.painted_bedrock.clone();
-        *cache = TerrainRevisionCache { painted_stone: stone, painted_bedrock: bedrock, ..default() };
-        *builds = TerrainBuildQueue::default();
-        *ready_frames = 0;
-    }
-
-    if cache.built_frame.is_none() && builds.key.is_none() {
-        cache.forest_library = active.forest_library.clone();
-        // Join the foreground's immutable image work before it has handles.
-        // Each scene still owns its independent geometry task and atlas.
-        #[cfg(not(target_arch = "wasm32"))]
-        { builds.painted = active_builds.painted.clone(); }
-    }
-    if cache.painted_stone.is_none() { cache.painted_stone = active.painted_stone.clone(); }
-    if cache.painted_bedrock.is_none() { cache.painted_bedrock = active.painted_bedrock.clone(); }
-    // The host may select the next doorway before activation runs. Keep the
-    // original in-flight source with its job, independent of that next request.
-    if cache.built_frame.is_none() && builds.key.is_none() {
-        *source_frame = Some(frame.clone());
-    }
-    match sync_terrain(frame, &profiles, &mut commands, cache, builds,
-        &mut images, &mut meshes, &mut materials, &mut entities) {
-        Ok(TerrainSyncState::Ready) => {
-            let pose = settings.camera.world_pose(frame, &cache.footing_heights);
-            let projection = Mat4::perspective_rh(pose.vertical_fov_radians,
-                aspect, pose.near, pose.far);
-            let matrix = projection * Mat4::look_at_rh(pose.eye, pose.target, pose.up);
-            if grove_stream::sync(frame, matrix, sunlight, cache, &mut commands, &mut meshes, &mut materials) {
-                *ready_frames = 0;
+    let (mut destination, mut world) = prepared;
+    let lanes = [
+        world.as_mut().map(|world| {
+            let world = &mut **world;
+            (
+                request.stream_frame.as_ref(),
+                &mut world.next,
+                Some(&mut world.retained),
+                true,
+            )
+        }),
+        Some((request.frame.as_ref(), &mut *destination, None, false)),
+    ];
+    for (requested, destination, mut retained_windows, streaming) in lanes.into_iter().flatten() {
+        let Some(requested) = requested else {
+            continue;
+        };
+        #[cfg(all(target_arch = "wasm32", feature = "terrain-worker-browser"))]
+        if destination.cache.built_frame.is_none()
+            && destination.builds.pending.is_none()
+            && (terrain_worker::browser::busy()
+                || terrain_worker::browser::availability()
+                    != terrain_worker::browser::Availability::Ready)
+        {
+            // Do not repeatedly clone a full source window while its worker
+            // is unavailable. Existing jobs still poll and ready scenes
+            // can still finish their GPU/grove publication.
+            continue;
+        }
+        if !streaming && requested.map_id == current.map_id {
+            continue;
+        }
+        #[cfg(target_arch = "wasm32")]
+        if !streaming && crate::sky::outdoors(&current) && crate::sky::outdoors(requested)
+        {
+            // Connected outdoor acreage belongs to the progressive lane,
+            // including the frame before its first request is published.
+            // Starting a second border job here occupies the worker needed
+            // for continuous coverage throughout the initial build.
+            continue;
+        }
+        // A moving camera must not cancel compatible speculative work every
+        // time its lookahead advances or the source coordinate basis changes.
+        let retained = if streaming {
+            destination.source_frame.as_ref().and_then(|old| {
+                let request_compatible =
+                    cached_compatible(old, requested, &mut destination.source_compatibility);
+                // Finish useful late work even after the lookahead has moved
+                // farther ahead. Requiring it to cover the newest future
+                // viewport cancels a moving player's work before publication.
+                let useful_now = active.built_frame.as_ref().is_some_and(|resident| {
+                    world_stream::advances_coverage(resident, old, &current)
+                        && cached_compatible(old, &current, &mut destination.live_compatibility)
+                });
+                let publishing = destination.cache.built_frame.is_some()
+                    && destination.ready_frames < 3;
+                let publication_covers_live = publishing
+                    && cached_compatible(old, &current, &mut destination.live_compatibility);
+                // Finish CPU/GPU publication before retargeting. Once ready,
+                // keep this bridge in retained coverage and start the farther
+                // request immediately, rather than waiting for promotion.
+                (((destination.builds.key.is_some() || publishing)
+                    && (request_compatible || useful_now))
+                    || publication_covers_live
+                    || (world_stream::same_window(old, requested) && request_compatible))
+                    .then(|| Arc::clone(old))
+            })
+        } else {
+            None
+        };
+        if streaming && retained.is_none()
+            && let Some(old) = destination.source_frame.as_ref()
+            && !world_stream::same_window(old, requested)
+        {
+            let _retarget = loading_trace::span("world.preload_retarget", || {
+                serde_json::json!({"map": current.map_id.as_ref(),
+                    "source_map": old.map_id.as_ref(), "source_origin": old.grid_origin.to_array(),
+                    "requested_map": requested.map_id.as_ref(), "requested_origin": requested.grid_origin.to_array(),
+                    "publishing": destination.cache.built_frame.is_some(),
+                    "live_compatible": compatible(old, &current),
+                    "connected_rejection": (old.map_id != current.map_id).then(||
+                        terrain_tracking::connected_frame_shift(old, &current).err()).flatten()})
+            });
+        }
+        let frame = retained.as_deref().unwrap_or(requested);
+        let mut key = TerrainCacheKey::from_frame(frame);
+        key.profiles_revision = profiles.revision;
+        let sunlight = sun.iter().find_map(|(light, transform)| {
+            (light.shadow_maps_enabled && light.illuminance > 0.)
+                .then(|| -transform.forward().as_vec3())
+        });
+        let PreparedDestination {
+            cache,
+            builds,
+            ready_frames,
+            settled_key,
+            source_frame,
+            source_compatibility,
+            live_compatibility,
+        } = &mut *destination;
+        // Only streamed groves depend on the sun's caster footprint. An indoor
+        // destination must not wake up whenever the outdoor daylight moves.
+        // The classic playfield's aspect differs from a native window or
+        // capture target. Use the same actual camera projection as live streaming.
+        let aspect = cameras
+            .iter()
+            .find_map(|projection| match projection {
+                Projection::Perspective(p) if p.aspect_ratio.is_finite() && p.aspect_ratio > 0. => {
+                    Some(p.aspect_ratio)
+                }
+                _ => None,
+            })
+            .unwrap_or(frame.viewport_size.x / frame.viewport_size.y);
+        let next = (
+            key,
+            settings.camera,
+            if cache.groves.is_some() {
+                sunlight
             } else {
-                *ready_frames = ready_frames.saturating_add(1);
+                None
+            },
+            aspect.to_bits(),
+        );
+        // A fully prepared hidden scene must stay untouched. Re-entering terrain
+        // sync made its roots visible then hidden again on every indoor frame,
+        // needlessly invalidating Bevy visibility and rescanning grove interest.
+        if *ready_frames >= 3 && settled_key.as_ref() == Some(&next) {
+            continue;
+        }
+
+        if cache.built_frame.as_ref().is_some_and(|old| {
+            if streaming {
+                !world_stream::same_window(old, frame) || !compatible(old, frame)
+            } else {
+                old.map_id == frame.map_id && !compatible(old, frame)
+            }
+        }) {
+            let stone = cache.painted_stone.clone();
+            let bedrock = cache.painted_bedrock.clone();
+            let previous = std::mem::replace(
+                cache,
+                TerrainRevisionCache {
+                    painted_stone: stone,
+                    painted_bedrock: bedrock,
+                    ..default()
+                },
+            );
+            if *ready_frames >= 3
+                && let Some(windows) = retained_windows.as_mut()
+            {
+                // A ready nearby window can bridge the camera to the farther
+                // lookahead. Do not throw it away before it becomes useful.
+                windows.remember(previous, "lookahead_advanced", &mut commands);
+            } else {
+                for root in roots(&previous) {
+                    commands.entity(root).despawn();
+                }
+                crate::terrain_disposal::retire(previous);
+            };
+            crate::terrain_publication::discard(&mut builds.publication, &mut commands);
+            crate::terrain_disposal::retire(std::mem::take(builds));
+            *ready_frames = 0;
+            *source_compatibility = None;
+            *live_compatibility = None;
+        }
+
+        if cache.built_frame.is_none() && builds.key.is_none() {
+            cache.forest_library = active.forest_library.clone();
+            // Join the foreground's immutable image work before it has handles.
+            // Each scene still owns its independent geometry task and atlas.
+            #[cfg(not(target_arch = "wasm32"))]
+            {
+                builds.painted = active_builds.painted.clone();
             }
         }
-        Ok(TerrainSyncState::Pending) => *ready_frames = 0,
-        Err(error) => {
-            *ready_frames = 0;
-            bevy::log::warn!("destination terrain preload failed: {error:?}");
+        if cache.painted_stone.is_none() {
+            cache.painted_stone = active.painted_stone.clone();
         }
+        if cache.painted_bedrock.is_none() {
+            cache.painted_bedrock = active.painted_bedrock.clone();
+        }
+        let previous_started = builds.started;
+        cache.uploads.require_gpu(active.uploads.gpu_required());
+        builds.speculative = true;
+        builds.defer_to_world_preload = false;
+        let terrain_state = sync_terrain(
+            frame,
+            &profiles,
+            &mut commands,
+            cache,
+            builds,
+            &mut images,
+            &mut meshes,
+            &mut materials,
+            &mut entities,
+        );
+        if builds.started != previous_started {
+            *source_frame = Some(Arc::new(frame.clone()));
+            *source_compatibility = None;
+            *live_compatibility = None;
+            let _submit = loading_trace::span("world.preload_submit", || {
+                serde_json::json!({"streaming": streaming,
+                    "current_map": current.map_id.as_ref(), "map": frame.map_id.as_ref(),
+                    "origin": frame.grid_origin.to_array()})
+            });
+        }
+        match terrain_state {
+            Ok(TerrainSyncState::Ready) => {
+                let pose = settings.camera.world_pose(frame, &cache.footing_heights);
+                let projection =
+                    Mat4::perspective_rh(pose.vertical_fov_radians, aspect, pose.near, pose.far);
+                let matrix = projection * Mat4::look_at_rh(pose.eye, pose.target, pose.up);
+                if grove_stream::sync(
+                    frame,
+                    matrix,
+                    sunlight,
+                    cache,
+                    &mut commands,
+                    &mut meshes,
+                    &mut materials,
+                ) {
+                    *ready_frames = 0;
+                } else {
+                    *ready_frames = ready_frames.saturating_add(1);
+                    if *ready_frames == 3 {
+                        let _ready = loading_trace::span("world.preload_ready", || {
+                            serde_json::json!({"streaming": streaming,
+                                "current_map": current.map_id.as_ref(), "map": frame.map_id.as_ref(),
+                                "origin": frame.grid_origin.to_array()})
+                        });
+                    }
+                }
+            }
+            Ok(TerrainSyncState::Pending) => *ready_frames = 0,
+            Err(error) => {
+                *ready_frames = 0;
+                bevy::log::warn!("destination terrain preload failed: {error:?}");
+            }
+        }
+        *settled_key = (*ready_frames >= 3).then_some(next);
+        // This is queued after sync, including for roots spawned in that call.
+        // Mesh/material asset preparation still uploads the hidden scene to GPU.
+        hide(cache, &mut commands);
     }
-    *settled_key = (*ready_frames >= 3).then_some(next);
-    // This is queued after sync, including for roots spawned in that call.
-    // Mesh/material asset preparation still uploads the hidden scene to GPU.
-    hide(cache, &mut commands);
+}
+
+// Player support can temporarily leave a late resident window. That must not
+// stop the very worker/upload publication needed to recover its coverage.
+pub(super) fn pending_world_covers(
+    frame: &VisualWorldFrame,
+    profiles: &live_profiles::LiveProfiles,
+    world: &mut PreparedWorld,
+) -> bool {
+    let next = &mut world.next;
+    let key = next.builds.key.as_ref().or(next.cache.key.as_ref());
+    let pending = next.builds.key.is_some()
+        || (next.cache.built_frame.is_some() && next.ready_frames < 3);
+    crate::sky::outdoors(frame) && pending
+        && key.is_some_and(|key| key.profiles_revision == profiles.revision)
+        && next.source_frame.as_ref().is_some_and(|source| {
+            cached_compatible(source, frame, &mut next.live_compatibility)
+        })
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    include!("world_stream_residency_tests.rs");
     #[test]
     fn destination_rejects_recolored_source_even_when_geometry_is_reusable() {
         use crystal_render_api::{VisualTile, VisualTileSource};
@@ -309,7 +643,7 @@ mod tests {
             solid_entity: Some(old_root), ..default() };
         let mut builds = TerrainBuildQueue { started: 7, ..default() };
         let mut destination = PreparedDestination {
-            source_frame: Some(frame.clone()),
+            source_frame: Some(Arc::new(frame.clone())),
             builds: TerrainBuildQueue { key: Some(TerrainCacheKey::from_frame(&frame)),
                 started: 1, ..default() }, ..default() };
         #[cfg(not(target_arch = "wasm32"))]
@@ -361,7 +695,7 @@ mod tests {
         let mut app=App::new();let root=app.world_mut().spawn(Visibility::Visible).id();
         let mut live=TerrainRevisionCache {key:Some(TerrainCacheKey::from_frame(&built)),
             built_frame:Some(built),solid_entity:Some(root),..default()};
-        let mut destination=PreparedDestination {source_frame:Some(frame.clone()),
+        let mut destination=PreparedDestination {source_frame:Some(Arc::new(frame.clone())),
             builds:TerrainBuildQueue {key:Some(TerrainCacheKey::from_frame(&frame)),..default()},..default()};
         let mut request=DestinationPreload::default();let mut builds=TerrainBuildQueue {started:7,..default()};
         let mut queue=bevy::ecs::world::CommandQueue::default();
@@ -371,13 +705,13 @@ mod tests {
                 &mut request,&mut live,&mut builds,&mut commands);
         }
         queue.apply(app.world_mut());
-        assert_eq!(request.hits,1);
+        assert_eq!(request.hits,0);
         assert_eq!(live.solid_entity,Some(root));
         assert_eq!(live.built_frame.as_ref().unwrap().map_id.as_ref(),"RouteA");
         assert_eq!(*app.world().get::<Visibility>(root).unwrap(),Visibility::Visible);
-        assert_eq!(builds.key.as_ref().unwrap().map_id.as_ref(),"RouteB");
+        assert!(builds.key.is_none());
         assert_eq!(builds.started,7);
-        assert!(destination.builds.key.is_none());
+        assert_eq!(destination.builds.key.as_ref().unwrap().map_id.as_ref(),"RouteB");
     }
 
     #[cfg(not(target_arch = "wasm32"))]

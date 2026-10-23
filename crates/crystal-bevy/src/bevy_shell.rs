@@ -4630,6 +4630,9 @@ struct RenderedViewport {
     /// Controller-owned sub-cell displacement used by the published player.
     /// This receipt validates contact against the actual retained field pose.
     visual_player_displacement: Vec2,
+    /// Controller-owned heading recorded with the same published player pose.
+    #[cfg(any(test, feature = "voxel-view"))]
+    visual_player_facing: Option<Vec2>,
     tile: Option<TilePosition>,
     map_texture: Option<Handle<Image>>,
     map_priority_texture: Option<Handle<Image>>,
@@ -5738,7 +5741,7 @@ pub fn run_bevy_shell(
     let audit_request = config.performance_audit.clone();
     #[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
     let auditing = audit_request.is_some();
-    #[cfg(not(all(feature = "performance-audit", not(target_arch = "wasm32"))))]
+    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32"), not(feature = "performance-audit")))]
     let auditing = false;
     #[cfg(feature = "voxel-view")]
     let voxel_view_enabled = config.voxel_view_enabled.unwrap_or(false);
@@ -9037,6 +9040,8 @@ mod native_window_lifetime;
 mod handheld_input;
 
 mod natural_movement;
+#[cfg(feature = "voxel-view")]
+mod mouse_movement;
 
 
 fn visible_controller_snapshot(runtime_shell: &mut BevyRuntimeShell) -> Result<RuntimeShellSnapshot> {

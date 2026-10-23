@@ -34,6 +34,7 @@ function pump() {
 self.onmessage = ({ data }) => {
   if (data.kind === 'cancel') {
     if (active?.id === data.id) dispose(); else cancelled.add(data.id);
+    self.postMessage({ kind: 'cancelled', id: data.id });
     return;
   }
   if (data.kind === 'ack') {
@@ -47,12 +48,12 @@ self.onmessage = ({ data }) => {
       await ready;
       if (cancelled.delete(data.id)) return;
       if (data.kind === 'initialize') {
-        self.postMessage({ id: data.id, kind: 'ready', workerMemory: memory() });
+        self.postMessage({ id: data.id, kind: 'ready', cancelAcknowledgements: true, workerMemory: memory() });
         return;
       }
       if (data.kind === 'scenery') {
         install_scenery_sources(data.json);
-        self.postMessage({ id: data.id, kind: 'ready', workerMemory: memory() });
+        self.postMessage({ id: data.id, kind: 'ready', cancelAcknowledgements: true, workerMemory: memory() });
         return;
       }
       if (data.kind === 'terrain-pages') {

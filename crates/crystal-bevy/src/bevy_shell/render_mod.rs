@@ -542,6 +542,10 @@ fn publish_visual_world_frame(
         }
     }
     let view_center = view_center + camera_movement;
+    let player_facing = actors
+        .iter()
+        .find(|actor| actor.id == crystal_render_api::VisualActorId::Player)
+        .and_then(|actor| actor.facing);
     if terrain_unchanged && published.center == center && published.view_center == view_center
         && published.actors == actors {
         // The optional renderer consumes change detection. Do not republish an
@@ -551,6 +555,7 @@ fn publish_visual_world_frame(
         if rendered.visual_player_displacement != camera_movement {
             rendered.visual_player_displacement = camera_movement;
         }
+        rendered.visual_player_facing = player_facing;
         return;
     }
     let tiles = if terrain_unchanged {
@@ -587,6 +592,7 @@ fn publish_visual_world_frame(
     };
     if terrain_unchanged || next.validate().is_ok() {
         *published = next;
+        rendered.visual_player_facing = player_facing;
         if rendered.visual_player_displacement != camera_movement {
             rendered.visual_player_displacement = camera_movement;
         }

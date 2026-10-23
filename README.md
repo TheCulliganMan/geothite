@@ -69,21 +69,22 @@ macOS also needs Xcode command line tools and Python 3.9+; Windows needs the Vis
 Studio C++ tools/Windows SDK; Linux needs the libraries in
 [the native runbook](docs/cold-start-3d.md). On a fresh checkout, run
 `git lfs pull` and `just desktop-content` once. Preparing source content and a cold
-Bevy build can take substantially longer than two minutes. The persistent desktop
-incremental cache and lighter game-code optimization make repeat builds faster; `desktop-repack`,
-`desktop-install` and `desktop-run` skip compilation.
+Bevy build can take substantially longer than two minutes. Desktop commands use
+fully optimized release builds by default and share a persistent build cache.
+`desktop-repack`, `desktop-install` and `desktop-run` skip compilation.
 
-Verified on Apple Silicon: a cached `just desktop-package` rebuilt the changed
-game crates and produced the DMG in **2m 13s**. `just desktop-install` took
-**52s**. The initial desktop build took substantially longer. The installed app
-was opened through Launch Services and reached the interactive New Game flow.
+Earlier Apple Silicon checks using the `wasm-dev` development profile produced
+a DMG in **2m 13s** and installed it in **52s** with a warm cache. The initial
+build took substantially longer. That installed app was opened through Launch
+Services and reached the interactive New Game flow.
 `just desktop-run` captures its launch log in `~/Library/Logs/Geothite/game.log`.
 
 `just desktop-install` installs the last build without compiling, and
 `just desktop-check` validates the last build's content/art without opening a
 window. Pass a different local pack as a recipe argument, for example
 `just desktop-package content-packs/all-pokemon.crystalpack`.
-Set `GEOTHITE_DESKTOP_PROFILE=release` for the slower ThinLTO release build.
+Use `GEOTHITE_DESKTOP_PROFILE=wasm-dev` for shorter development builds with
+lighter game-code optimization. Keep the same profile when building and installing.
 Close the installed app before updating it. All build products, copied packs,
 and distributables remain ignored; they are never source deliverables to commit.
 

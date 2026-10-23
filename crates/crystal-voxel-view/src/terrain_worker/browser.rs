@@ -2,12 +2,15 @@
 //! JavaScript owns Worker messages, transfers, and the short scheduling window.
 use super::*;
 use std::cell::RefCell;
+use std::collections::BTreeMap;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(catch, js_namespace = globalThis, js_name = __crystalTerrainWorkerReady)]
     fn js_ready(activate: bool) -> Result<u8, JsValue>;
+    #[wasm_bindgen(catch, js_namespace = globalThis, js_name = __crystalTerrainWorkerCapacity)]
+    fn js_capacity() -> Result<u32, JsValue>;
     #[wasm_bindgen(catch, js_namespace = globalThis, js_name = __crystalTerrainWorkerSubmit)]
     fn js_submit(job: u32, request: &[u8], trace: bool) -> Result<(), JsValue>;
     #[wasm_bindgen(catch, js_namespace = globalThis, js_name = __crystalTerrainWorkerCancel)]
@@ -19,7 +22,6 @@ extern "C" {
 }
 
 struct Pending {
-    id: u32,
     submitted: SubmittedRequest,
     restore: Option<PagedTerrainRestore>,
     result: Option<Result<crate::BuiltTerrain, String>>,
@@ -27,7 +29,7 @@ struct Pending {
 }
 thread_local! {
     static NEXT: std::cell::Cell<u32> = const { std::cell::Cell::new(0) };
-    static PENDING: RefCell<Option<Pending>> = const { RefCell::new(None) };
+    static PENDING: RefCell<BTreeMap<u32, Pending>> = const { RefCell::new(BTreeMap::new()) };
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) enum Availability {
@@ -62,22 +64,35 @@ pub(crate) fn scenery_sources_value(json: JsValue, bytes: usize) {
 }
 
 pub(crate) struct Ticket(u32);
-impl Drop for Ticket {
-    fn drop(&mut self) {
-        cancel(self.0);
+
+/// A busy worker is scheduling pressure, not a failed terrain implementation.
+pub(crate) fn busy() -> bool {
+    let capacity = js_capacity().unwrap_or(1).max(1) as usize;
+    PENDING.with(|cell| cell.borrow().len() >= capacity)
+}
+
+/// Foreground demand supersedes one oldest ticket if every worker is occupied.
+pub(crate) fn cancel_pending() {
+    let id = PENDING.with(|cell| cell.borrow().first_key_value().map(|(&id, _)| id));
+    if let Some(id) = id {
+        cancel(id, "foreground_priority");
     }
 }
-fn cancel(id: u32) {
+
+impl Drop for Ticket {
+    fn drop(&mut self) {
+        cancel(self.0, "owner_dropped");
+    }
+}
+fn cancel(id: u32, reason: &'static str) {
     let removed = PENDING.with(|cell| {
         let mut state = cell.borrow_mut();
-        if state.as_ref().is_some_and(|p| p.id == id) {
-            state.take();
-            true
-        } else {
-            false
-        }
+        state.remove(&id).is_some()
     });
     if removed {
+        let _trace = crate::loading_trace::span("worker.cancel_request", || {
+            serde_json::json!({"job": id, "reason": reason})
+        });
         let _ = js_cancel(id);
     }
 }
@@ -89,6 +104,9 @@ pub(crate) fn submit(
     samples: &crate::mesh::TerrainImageSamples,
     document: &crate::live_profiles::Document,
 ) -> Result<Ticket, String> {
+    if busy() {
+        return Err("terrain worker already has a pending job".into());
+    }
     let id = NEXT.with(|next| {
         let id = next.get().wrapping_add(1).max(1);
         next.set(id);
@@ -96,25 +114,28 @@ pub(crate) fn submit(
     });
     let submitted = capture_request(u64::from(id), frame, samples, document)?;
     PENDING.with(|cell| {
-        if cell.borrow().is_some() {
+        let capacity = js_capacity().unwrap_or(1).max(1) as usize;
+        if cell.borrow().len() >= capacity {
             return Err("terrain worker already has a pending job".into());
         }
-        *cell.borrow_mut() = Some(Pending {
+        cell.borrow_mut().insert(
             id,
-            submitted,
-            restore: None,
-            result: None,
-            transport_complete: false,
-        });
+            Pending {
+                submitted,
+                restore: None,
+                result: None,
+                transport_complete: false,
+            },
+        );
         Ok::<_, String>(())
     })?;
     let sent = PENDING.with(|cell| {
         let state = cell.borrow();
-        let pending = state.as_ref().unwrap();
+        let pending = state.get(&id).expect("submitted terrain ticket is present");
         js_submit(id, &pending.submitted.bytes, super::trace_enabled())
     });
     if let Err(error) = sent {
-        cancel(id);
+        cancel(id, "submit_failed");
         return Err(message(error));
     }
     Ok(Ticket(id))
@@ -122,17 +143,18 @@ pub(crate) fn submit(
 pub(crate) enum Poll {
     Pending,
     Ready(crate::BuiltTerrain),
+    Superseded,
     Failed(String),
 }
 pub(crate) fn poll(ticket: &Ticket) -> Poll {
     PENDING.with(|cell| {
         let mut state = cell.borrow_mut();
-        let Some(pending) = state.as_mut().filter(|p| p.id == ticket.0) else {
-            return Poll::Failed("terrain worker job was cancelled".into());
+        let Some(pending) = state.get_mut(&ticket.0) else {
+            return Poll::Superseded;
         };
         if pending.result.as_ref().is_some_and(Result::is_err) || pending.transport_complete {
             if let Some(result) = pending.result.take() {
-                state.take();
+                state.remove(&ticket.0);
                 return match result {
                     Ok(built) => Poll::Ready(built),
                     Err(error) => Poll::Failed(error),
@@ -149,8 +171,7 @@ fn with_pending<T>(
     PENDING.with(|cell| {
         let mut state = cell.borrow_mut();
         let pending = state
-            .as_mut()
-            .filter(|p| p.id == id)
+            .get_mut(&id)
             .ok_or_else(|| JsValue::from_str("stale terrain worker job"))?;
         operation(pending).map_err(|error| JsValue::from_str(&error))
     })

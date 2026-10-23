@@ -10,9 +10,12 @@ directions to walk diagonally at the same speed as walking straight. Held
 movement follows the current camera angle smoothly as it rotates. The left
 stick adds a radial deadzone and proportional walking speed. On native Bevy,
 hold Q/E or the controller shoulders to rotate continuously; mouse dragging
-and the right stick steer yaw and pitch. Release movement to stop between gameplay cells;
-reverse or turn without waiting for a tile animation to finish. Hold B to run
-when the pack enables running shoes. Solid terrain and NPCs block movement,
+and the right stick steer yaw and pitch. In native and browser 3D views, hold
+both left and right mouse buttons to walk forward while steering with the
+mouse, as in WoW. Release either button to stop; keyboard strafing still works.
+Release movement to stop between gameplay cells; reverse or turn without
+waiting for a tile animation to finish. Hold B to run when the pack enables
+running shoes. Solid terrain and NPCs block movement,
 with clearance at walls and corners.
 
 The visible shell owns the fractional position. Every cell crossing still

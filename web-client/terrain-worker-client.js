@@ -9,6 +9,16 @@ export function createTerrainWorkerClient(callbacks, options = {}) {
   const maxPumpBytes = options.maxPumpBytes ?? 8 * 1024 * 1024;
   let windowByteLimit = Math.min(maxPumpBytes, 2 * 1024 * 1024);
   let active = null;
+  let remoteId = null;
+  let cancelAcknowledgements = false;
+  function dispatch() {
+    if (!active?.request || (cancelAcknowledgements && remoteId != null)) return;
+    const request = active.request;
+    active.request = null;
+    remoteId = active.id;
+    worker.postMessage({ kind: options.jobKind ?? 'terrain-pages', id: active.id,
+      request: request.buffer, trace: active.trace }, [request.buffer]);
+  }
   const sceneryWaiters = new Map();
   let sceneryFailure = null;
   let scheduled = false;
@@ -65,6 +75,7 @@ export function createTerrainWorkerClient(callbacks, options = {}) {
       if (active.done && !active.restoring && !active.header && active.pages.length === 0) {
         const complete = active;
         active = null;
+        remoteId = null;
         callbacks.onComplete(complete.id, complete.done, complete.timing);
       }
     } catch (error) { fail(error); }
@@ -75,6 +86,10 @@ export function createTerrainWorkerClient(callbacks, options = {}) {
     }
   }
   worker.onmessage = ({ data }) => {
+    if (cancelAcknowledgements && data.kind === 'cancelled') {
+      if (data.id === remoteId) { remoteId = null; dispatch(); }
+      return;
+    }
     if (data.requestKind === 'scenery' || data.requestKind === 'initialize' || data.kind === 'ready') {
       const waiter = sceneryWaiters.get(data.id);
       if (!waiter) return;
@@ -83,6 +98,9 @@ export function createTerrainWorkerClient(callbacks, options = {}) {
         sceneryFailure = new Error(String(data.error));
         waiter.reject(sceneryFailure);
       } else {
+        if (data.cancelAcknowledgements === true) {
+          cancelAcknowledgements = options.cancelAcknowledgements ?? false;
+        }
         callbacks.onWorkerState?.(data);
         waiter.resolve();
       }
@@ -110,12 +128,20 @@ export function createTerrainWorkerClient(callbacks, options = {}) {
       if (sceneryFailure) throw sceneryFailure;
       if (sceneryWaiters.size) throw new Error('Terrain scenery initialization is still pending');
       this.cancel();
-      active = { id, submit: epoch(), header: null, pages: [], restoring: false, done: null, timing: null };
-      if (request.byteOffset !== 0 || request.byteLength !== request.buffer.byteLength) request = request.slice();
-      worker.postMessage({ kind: options.jobKind ?? 'terrain-pages', id, request: request.buffer, trace }, [request.buffer]);
+      // Own a deferred request before returning the borrowed Wasm view. Keep
+      // only the latest replacement until the running CPU job acknowledges
+      // cancellation; posting each replacement queues seconds of stale work.
+      if (request.byteOffset !== 0 || request.byteLength !== request.buffer.byteLength
+        || (cancelAcknowledgements && remoteId != null)) request = request.slice();
+      active = { id, submit: epoch(), header: null, pages: [], restoring: false, done: null,
+        timing: null, request, trace };
+      dispatch();
     },
     cancel() {
-      if (active) { worker.postMessage({ kind: 'cancel', id: active.id }); callbacks.onCancel?.(active.id); }
+      if (active) {
+        if (!active.request) worker.postMessage({ kind: 'cancel', id: active.id });
+        callbacks.onCancel?.(active.id);
+      }
       active = null;
     },
     initialize(id) {

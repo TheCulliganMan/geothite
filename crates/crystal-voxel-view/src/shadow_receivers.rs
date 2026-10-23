@@ -218,7 +218,16 @@ fn cascade_planes(
 }
 
 fn supported_map(map: &str) -> bool {
-    matches!(map, "NewBarkTown" | "Route29" | "CherrygroveCity")
+    matches!(
+        map,
+        "NewBarkTown"
+            | "Route29"
+            | "CherrygroveCity"
+            | "Route28"
+            | "SilverCaveOutside"
+            | "Route44"
+            | "Route36"
+    )
 }
 
 fn prune(
@@ -471,19 +480,33 @@ mod tests {
     }
 
     #[test]
-    fn cherrygrove_uses_the_same_receiver_proof_and_unsupported_maps_keep_stock_lists() {
-        for (map, pruned) in [("CherrygroveCity", true), ("PlayersHouse1F", false),
-            ("IlexForest", false), ("Route30", false)] {
+    fn audited_outdoors_use_the_same_receiver_proof_and_other_maps_keep_stock_lists() {
+        for (map, pruned) in [
+            ("CherrygroveCity", true),
+            ("Route28", true),
+            ("SilverCaveOutside", true),
+            ("Route44", true),
+            ("Route36", true),
+            ("PlayersHouse1F", false),
+            ("IlexForest", false),
+            ("Route30", false),
+        ] {
             let mut f = fixture();
             f.app.world_mut().resource_mut::<VisualWorldFrame>().map_id = map.into();
             f.app.update();
             let visible = f.app.world().get::<CascadesVisibleEntities>(f.sun).unwrap();
-            let expected = if pruned { vec![f.reachable] } else { vec![f.reachable, f.offscreen] };
+            let expected = if pruned {
+                vec![f.reachable]
+            } else {
+                vec![f.reachable, f.offscreen]
+            };
             assert_eq!(visible.entities[&f.camera][0].entities, expected, "{map}");
-            assert_eq!(visible.entities[&f.capture_camera][0].entities, [f.reachable, f.offscreen]);
+            assert_eq!(
+                visible.entities[&f.capture_camera][0].entities,
+                [f.reachable, f.offscreen]
+            );
         }
     }
-
     #[test]
     fn production_system_prunes_only_world_camera_and_preserves_capture_cascades() {
         let mut f = fixture();

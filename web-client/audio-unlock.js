@@ -1,14 +1,24 @@
 // Safari requires resume() in the DOM gesture itself, not the next game frame.
 // Keep listening so touches also recover audio after a tab/phone interruption.
 export function mountAudioUnlock(wasm, document, { onState = () => {}, control } = {}) {
+  const selectPlaybackSession = () => {
+    const session = document.defaultView?.navigator.audioSession;
+    if (session) {
+      try { session.type = 'playback'; } catch { /* Retry resume even if session changes are disallowed. */ }
+    }
+  };
+  // Opening the device can block the first movement key. Prepare it behind
+  // the loading screen; Rust keeps it separate from the playback backend
+  // until a real gesture resumes it, preserving autoplay and silent SFX timing.
+  if (typeof wasm.crystal_prepare_audio_context === 'function') {
+    selectPlaybackSession();
+    try { wasm.crystal_prepare_audio_context(); } catch { /* A trusted gesture can retry. */ }
+  }
   const resume = event => {
     if (!event.isTrusted) return;
     // The default iOS session follows the ringer switch even with a running
     // AudioContext. Select media playback before Web Audio is activated.
-    const session = document.defaultView?.navigator.audioSession;
-    if (session) {
-      try { session.type = 'playback'; } catch { /* Resume still works when the browser disallows session changes. */ }
-    }
+    selectPlaybackSession();
     try {
       wasm.crystal_resume_audio().then(() => onState('ready'), () => onState('blocked'));
     } catch {

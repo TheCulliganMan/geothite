@@ -6,6 +6,8 @@ pub(crate) mod actor_props;
 pub(crate) mod character_meshes;
 #[path = "surf_riding.rs"]
 mod surf_riding;
+#[path = "connected_actor_motion.rs"]
+mod connected_motion;
 
 use crate::{
     ActorIdCache, TerrainRevisionCache, VOXEL_RENDER_LAYER, VoxelActorCard, VoxelViewStatus,
@@ -364,6 +366,7 @@ pub(crate) struct ModeledActors {
     shadow_material: Option<Handle<StandardMaterial>>,
     instances: HashMap<VisualActorId, Instance>,
     map_id: String,
+    motion_basis: Option<connected_motion::Basis>,
     gpu_map_id: String,
     seating_key: Option<crate::TerrainCacheKey>,
     seats: Vec<crate::seating::Seat>,
@@ -1061,17 +1064,9 @@ pub(crate) fn sync(
     // instances must stay with the retained room until terrain publication.
     if status.active && crate::retain_lighthouse_room(&frame,&footing) {return;}
     let enabled = frame.active && status.active && enabled_map(&frame.map_id);
-    if !enabled || state.map_id != frame.map_id.as_ref() {
-        for (_, instance) in state.instances.drain() {
-            commands.entity(instance.entity).despawn();
-        }
-        for (_, instance) in state.props.drain() {
-            commands.entity(instance.entity).despawn();
-        }
-        state.map_id = frame.map_id.to_string();
-        if !enabled {
-            return;
-        }
+    connected_motion::handoff(&mut state, &frame, enabled, &mut commands);
+    if !enabled {
+        return;
     }
     if state.gpu_map_id != frame.map_id.as_ref() {
         // Retain common roles (especially the player) across the transition,
@@ -1664,6 +1659,7 @@ Transform::from_xyz(0.0,
 #[cfg(test)]
 mod tests {
     use super::*;
+    include!("new_bark_actors_connection_tests.rs");
     fn actor() -> VisualActor {
         VisualActor { model_palette: None,
             id: VisualActorId::Player,

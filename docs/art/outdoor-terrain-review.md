@@ -13,6 +13,39 @@ interiors and the approved colors. Avoid towering walls along ordinary routes.
 Same-state 2D references remain useful for identity and readability, but cannot
 establish 3D shape quality. Preserve gameplay and navigation throughout the work.
 
+### Route 36 mountain height — 2026-10-21
+
+The shared whole-body reshaping lowered Route 36's narrow mineral ridge too
+far. Its interior now retains an additional native two-cell body, fading
+smoothly over the first 1.5 cells inward from the existing seated margin.
+The middle rises above the outside; the change adds no geometry or perimeter
+walls. The source-owning map selects this height treatment, so a connected
+Violet City view keeps the same Route 36 ridge. Other source maps retain their
+existing profile. The mineral pigment calculation remains separate from height.
+
+The production renderer builds, and 57 distinct selected checks pass: 24 mountain,
+four flank, 26 rock-finish and two worker checks, plus the explicitly executed
+external Route 36 regression. That regression reads the completed ignored pack
+and its native border, checks the rising ridge at scales 8 and 32, and exercises
+7,700 raised cap/wall vertices at each scale. Shared vertices remain joined;
+indices, horizontal positions, source UVs, pigment, ground contacts, ownership
+and footing retain their existing values. The flank regression also checks the
+same source-owned height from Violet's connected view and unchanged Violet rock.
+Logs use the `target/route36-*-verified-tests.log` prefix; the external check is
+`target/route36-native-pack-verified-test.log`.
+
+Eight final 1280x960 native views and their same-state 2D pairs were personally
+inspected, including the close gate approach, opposite path approaches, higher
+body views, a low reverse view and 22:00 lighting. The eastern and low reverse
+views remain substantially obscured by native trees; they do not establish a
+clear view of the entire ridge. All eight receipts preserve game state. Final
+captures are in `target/route36-mountain-review/`, with the close day/night pair
+named `gate-approach` and `gate-night`. The grass, fountain and content packs are
+unchanged by this repair. Full workspace formatting still reports existing
+differences, and Clippy is blocked by the existing always-false joypad-mask
+comparison in `crystal-core/src/multiplayer/mod.rs:1332`; the changed leaf modules
+pass their scoped formatting check.
+
 ### Steep cap corner normals — 2026-10-21
 
 Shared cap corners now fall back to their angle-weighted geometric normal when

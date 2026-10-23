@@ -123,6 +123,7 @@ const SERVER_CLOCK_UNAVAILABLE: &str = "Server clock unavailable. Restore the co
 
 fn apply_keyboard_input(
     #[cfg(feature = "voxel-view")] voxel: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
+    #[cfg(feature = "voxel-view")] mut mouse_movement: mouse_movement::MouseMovement,
     time: Res<Time>,
     #[cfg(feature = "location-tester")] capture_hold: Option<Res<render_capture::PairedCaptureHold>>,
     keys: Res<ButtonInput<KeyCode>>,
@@ -180,6 +181,18 @@ fn apply_keyboard_input(
     #[cfg(not(target_arch = "wasm32"))]
     let movement_vector = handheld.as_ref().filter(|h| h.movement != Vec2::ZERO)
         .map_or(movement_vector, |h| h.movement);
+    #[cfg(feature = "voxel-view")]
+    let mouse_forward = {
+        let blocked = runtime_shell.natural_movement.enabled
+            && mouse_movement.buttons_held()
+            && (customization_is_open()
+                || save_manager_is_open()
+                || runtime_shell.title_menu.is_some()
+                || runtime_shell.intro_screen.is_some()
+                || runtime_shell.visible_catch_tutorial.is_some()
+                || has_visible_shell_direction_action(&mut runtime_shell));
+        mouse_movement.forward(runtime_shell.natural_movement.enabled, blocked)
+    };
     runtime_shell.field_text_consumed_a = false;
     runtime_shell.field_text_consumed_b = false;
     log_visible_key_presses(&mut runtime_shell, &keys);
@@ -294,6 +307,14 @@ fn apply_keyboard_input(
     let movement_vector = if elapsed_input_ticks > 0 {
         runtime_shell.natural_movement.take_input(movement_vector)
     } else { movement_vector };
+    // Sample the chord after consuming keyboard taps: releasing either mouse
+    // button stops immediately and never leaves a latched forward step.
+    #[cfg(feature = "voxel-view")]
+    let movement_vector = if mouse_forward != Vec2::ZERO {
+        Vec2::new(movement_vector.x, -1.0).clamp_length_max(1.0)
+    } else {
+        movement_vector
+    };
     #[cfg(feature = "voxel-view")]
     let movement_vector = if runtime_shell.natural_movement.enabled {
         natural_movement::camera_relative_vector(movement_vector,
@@ -2392,7 +2413,7 @@ fn apply_keyboard_input(
                 runtime_shell.player_walk_frame_ticks =
                     visible_new_step_frames_remaining(step_ticks, remaining_catch_up_ticks);
                 runtime_shell.overworld_direction_repeat_ticks = step_ticks.saturating_sub(1);
-                if natural_step && !overworld_frame_reaches_presentation_boundary(&frame) {
+                if natural_step && !overworld_frame_interrupts_free_movement(&frame) {
                     runtime_shell.player_walk_frame_ticks = 0;
                     runtime_shell.player_walk_from = None;
                     runtime_shell.overworld_direction_repeat_ticks = 0;
@@ -2487,11 +2508,19 @@ fn apply_keyboard_input(
                     .any(|pokemon| {
                         !pokemon.is_egg && pokemon.species.id != "EGG" && pokemon.hp > 0
                     });
-            let movement_is_visibly_in_flight = overworld_boundary_waits_for_visible_landing(
-                &frame,
-                runtime_shell.player_walk_frame_ticks,
-                runtime_shell.visible_ledge_jump.is_some(),
-            );
+            // A free-movement connection already crossed at the continuous
+            // foot position. Run its production arrival callbacks now rather
+            // than inserting the grid walk's centered landing and input lock.
+            let continuous_connection = natural_step
+                && frame.connection.is_some()
+                && !overworld_frame_interrupts_free_movement(&frame)
+                && frame.ledge_jump.is_none();
+            let movement_is_visibly_in_flight = !continuous_connection
+                && overworld_boundary_waits_for_visible_landing(
+                    &frame,
+                    runtime_shell.player_walk_frame_ticks,
+                    runtime_shell.visible_ledge_jump.is_some(),
+                );
             if movement_is_visibly_in_flight {
                 if frame.warp.is_some()
                     && let (Some(mut source_scene), Some(StepOutcome::Moved { from, to, .. })) =
@@ -2828,12 +2857,16 @@ fn advance_visible_music_fade(
 fn release_input_on_focus_loss(
     mut focus_events: MessageReader<WindowFocused>,
     mut keys: ResMut<ButtonInput<KeyCode>>,
+    mouse: Option<ResMut<ButtonInput<MouseButton>>>,
     mut runtime_shell: ResMut<BevyRuntimeShell>,
 ) {
     if !focus_events.read().any(|event| !event.focused) {
         return;
     }
     reset_keyboard_after_focus_loss(&mut keys);
+    if let Some(mut mouse) = mouse {
+        mouse.reset_all();
+    }
     runtime_shell.pending_overworld_direction_press = None;
     runtime_shell.pending_ui_button_presses.clear();
     let _ = runtime_shell.natural_movement.take_input(Vec2::ZERO);
@@ -2849,6 +2882,10 @@ fn reset_keyboard_after_focus_loss(keys: &mut ButtonInput<KeyCode>) {
 }
 
 fn overworld_frame_reaches_presentation_boundary(frame: &crate::RuntimeOverworldFrame) -> bool {
+    frame.connection.is_some() || overworld_frame_interrupts_free_movement(frame)
+}
+
+fn overworld_frame_interrupts_free_movement(frame: &crate::RuntimeOverworldFrame) -> bool {
     frame.step_events.as_ref().is_some_and(|events| {
         events.repel_expired.is_some() || events.egg_hatched || events.poison_result.is_some()
     }) || frame.trainer_sight.is_some()
@@ -2856,7 +2893,6 @@ fn overworld_frame_reaches_presentation_boundary(frame: &crate::RuntimeOverworld
         || frame.phone_call.is_some()
         || frame.interaction.is_some()
         || frame.warp.is_some()
-        || frame.connection.is_some()
         || frame.wild_battle.is_some()
 }
 

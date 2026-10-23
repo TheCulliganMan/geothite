@@ -155,6 +155,23 @@ fn capture_visible_fishing_source_frame(
     rendered: &RenderedViewport,
     frame: Option<&crystal_render_api::VisualWorldFrame>,
 ) -> Option<VisibleFishingSourceFrame> {
+    capture_visible_field_source_frame(
+        source,
+        map_size,
+        rendered,
+        frame,
+        visual_facing(source.facing),
+    )
+}
+
+#[cfg(any(test, feature = "voxel-view"))]
+fn capture_visible_field_source_frame(
+    source: &crate::core::world::session::OverworldSnapshot,
+    map_size: Option<UVec2>,
+    rendered: &RenderedViewport,
+    frame: Option<&crystal_render_api::VisualWorldFrame>,
+    facing: Vec2,
+) -> Option<VisibleFishingSourceFrame> {
     use crystal_render_api::{VisualActorId, VisualBattleTerrainEvidence};
     let Some(frame) = frame.filter(|frame| frame.active && frame.validate().is_ok()) else {
         return None;
@@ -233,7 +250,7 @@ fn capture_visible_fishing_source_frame(
     // same field publication. A continuous collision stop is not tile-centered.
     let source_foot = fishing_source_support(&terrain, source.tile)? + displacement;
     if (player.center - Vec2::Y * player.size.y * 0.5 - source_foot).length_squared() > 0.0001
-        || player.facing != Some(visual_facing(source.facing))
+        || player.facing != Some(facing)
     {
         source_reject!("player foot or facing differs");
         #[cfg(feature="voxel-view")]

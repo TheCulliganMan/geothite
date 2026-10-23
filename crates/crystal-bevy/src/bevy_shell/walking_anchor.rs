@@ -1,5 +1,7 @@
 // Observe one already committed ordinary land encounter step. No runtime command,
 // movement mutation, RNG/divider read, or source animation-clock change.
+include!("continuous_encounter_witness.rs");
+
 #[derive(Debug, Clone)]
 struct VisibleBoundWalkingEncounter {
     origin: Arc<BattlePresentationOrigin>,
@@ -413,7 +415,9 @@ fn freeze_visible_step_source_frame(
                 frame,
             )
         });
-        if approaching_from.is_none() {
+        if approaching_from.is_none()
+            && !continuous_encounter_frame_can_wait(source, from, map_size, rendered, frame)
+        {
             *capture_attempted = true;
         }
         return None;
