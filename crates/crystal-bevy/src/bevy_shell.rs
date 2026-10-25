@@ -8,6 +8,12 @@ mod dev_tools;
 mod render_record;
 #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
 mod render_measure_validation;
+#[cfg(all(
+    feature = "location-tester",
+    feature = "voxel-view",
+    not(target_arch = "wasm32")
+))]
+mod visibility_census;
 #[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
 mod performance_audit;
 #[cfg(feature = "location-tester")]
@@ -6310,6 +6316,12 @@ pub fn run_bevy_shell(
         Update,
         sync_manual_world_view_layers.after(crystal_render_api::WorldRenderSet::RenderSync),
     );
+    #[cfg(all(
+        feature = "location-tester",
+        feature = "voxel-view",
+        not(target_arch = "wasm32")
+    ))]
+    visibility_census::register(&mut app);
     #[cfg(all(not(target_arch = "wasm32"), feature = "voxel-view"))]
     app.add_systems(
         Update,
@@ -8008,7 +8020,9 @@ fn settle_visible_shell_controller(
                 continue;
             }
         }
-        let snapshot = runtime_shell.shell.snapshot()?;
+        // Settling only reads presentation fields. Whole-state validation and
+        // checksums remain at save, replay, and explicit integrity boundaries.
+        let snapshot = runtime_shell.shell.presentation_snapshot()?;
         // A live battle or retained terminal narration owns input. RUN and
         // final turns can end core battle before their text is revealed; keep
         // advancing that printer, then await the ordinary acknowledgement.

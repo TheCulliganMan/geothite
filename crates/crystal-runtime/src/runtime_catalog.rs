@@ -4838,6 +4838,7 @@ impl CrystalRuntime {
 
     fn build_static_catalog_cache(&self) -> RuntimeStaticCatalogCache {
         RuntimeStaticCatalogCache {
+            music_ids: self.audio.music_ids(),
             audio: Arc::new(self.audio_catalog_snapshot()),
             items: Arc::new(self.item_catalog_snapshot()),
             item_effect_plans: Arc::new(self.item_effect_plan_keys().into_iter().collect()),

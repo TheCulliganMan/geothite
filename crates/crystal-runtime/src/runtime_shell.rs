@@ -74,7 +74,7 @@ impl RuntimeGameShell {
             .start_overworld_session_from_new_game_state(
                 spawn,
                 reset_state,
-                &self.runtime.audio.music_ids(),
+                self.runtime.borrowed_music_ids(),
             )?;
         self.session = RuntimeOverworldSession {
             state,
@@ -648,7 +648,7 @@ impl RuntimeGameShell {
                         &mut self.session.overworld,
                         command.vblanks,
                         &command.normal_divider_trace,
-                        &self.runtime.audio.music_ids(),
+                        self.runtime.borrowed_music_ids(),
                         &self.runtime.audio.sound_effect_ids(),
                         &self.runtime.audio.cry_ids(),
                     )

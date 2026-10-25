@@ -6610,3 +6610,730 @@ Final v3 suite27129 terminal0:68passed/0failed/1GPUignored2.47s. Explicit offscr
 Native-frustum final release54528 terminal0 (8m02s), frozen2-file receipt verified. Immutable native-frustum-frame-client SHA0acf66213c2e78475ea2148f0b4799b77318870241e536ac26fdc9ac1c376463, receipt saved. Fullroof initial comparison80744 terminal0: candidate1046updates54.70/68.73ms median/p95, walking53.538/58.202; control660updates80.09/197.02, walking70.8005/160.533; reverse control629updates86.60/180.06, walking95.059/207.82; candidate555updates99.73/192.26, walking105.317/209.397. All256rows/fourorigins/onebuild/no pending/no pollerrors/exactfinalsameRoof8,12. Viewed first candidate/control validated warmups: roof/player/forest geometry, scale, materials and visible shadows match compositionally; not a paired-state visual acceptance yet.
 
 HOLD rather than accept/reject on this mixed quartet: strong first pair gain but reverse regression, with chronological slowdown across all four runs. Initial result receipt native-frustum-initial-comparison.json. One additional reversed counterbalanced replication28976 now live, /tmp/geothite-native-frustum-recheck.log: control/candidate/candidate/control, identical original fullroof60s settings, native-frustum-recheck-* outputs. Records deidentified host-start loadavg and aggregate CPU percentage via existing OS commands before each run, outside measured interval; no game instrumentation or defaults added. This tests unresolved order/load sensitivity; do not infer host load caused changes without evidence or accept first pair alone. No owned compiler active. Keep source/assets frozen; root/app still accepted NoCpu1f36ef18..., goal active.
+
+## Runtime input follow-up, 2026-10-24
+
+Reconciled current files with the previous continuation: native-frustum recheck
+28976 has no live handle; its saved verdict rejects the candidate after walking
+median and p95 regressions in both additional comparisons. The later hidden-leaf
+trial was also rejected. Neither change was promoted. No old capture or build
+was restarted.
+
+The runtime now shares its immutable music-ID membership set instead of
+rebuilding it for each transaction. A production `VisibleShellController`
+benchmark, sequential candidate/control/control/candidate, measured turning
+processing reductions of 2.7%/4.4% and walking reductions of 1.8%/4.3% in the
+optimized development build. Final authoritative map/tile/facing/frame and
+settled script state matched. Full measurement details, reproduction, and
+baseline-matched test failures are in [Runtime input processing](runtime-input-performance.md).
+Controller, MCP, and clean-stdio gates passed. Source changes are present in
+this checkout; the installed app was not replaced. Dense-outdoor 3D throughput
+remains unresolved, and the broader performance goal stays active.
+
+### Presentation snapshots in controller settling
+
+Replaced the per-iteration integrity snapshot with the existing presentation
+snapshot. Settling's branch decisions consume presentation fields; initial
+validation, save/replay/command checksums, explicit integrity snapshots, and the
+settle-limit diagnostic keep their existing checks. A new external-pack test
+compares every presentation field against the integrity view after movement and
+Start/B input, and proves malformed state still fails checksumming and saving
+without overwriting an existing save. It passed before and after the change.
+
+Release comparison, with music-ID caching in both binaries, ran sequentially
+baseline/candidate/candidate/baseline after all owned compilers/tests finished.
+Idle processing fell 121.461/122.290 to 14.123/14.010 microseconds/input;
+turning 148.414/149.591 to 41.689/40.661; walking 153.613/155.535 to
+46.940/47.287. Reported map/tile/facing/mode/frame matched and all script work
+settled. These are CPU controller measurements, without rendered-FPS evidence.
+Nine controller regressions, MCP tests, and clean-stdio regression passed.
+The release geothite binary also passed real MCP movement/Start/observe with
+byte-empty stderr. A fresh unchanged baseline confirmed the additional legacy
+synthetic replay probe fails identically at startup on its missing temporary
+flag declaration. No replay pass was inferred from that blocked fixture.
+Full checks and exact measurements are in runtime-input-performance.md.
+
+The optimized controller source was restored byte-for-byte after the baseline
+probe. The native 3D throughput objective remains active. The following fresh
+profile and renderer trial used this controller source; no installed app or
+content pack was changed.
+
+### Fresh native attribution and shared city-lighting trial
+
+The root-source symbolized build completed successfully using:
+
+```sh
+cargo rustc --release --locked --jobs 2 -p crystal-bevy --features location-tester \
+  --example new_bark_3d --target-dir target/desktop-release-production -- -Cstrip=none
+```
+
+Its immutable QA executable SHA-256 is
+`6ff3eb765951ae29a8084c83568d2945fc17c8114c4c9a55ba157c171a6b1e8a`.
+A fresh offscreen Tin Tower Roof profile validated the full 2560×1600 scene
+before timing, then sampled only the owned measurement-ready process. The CPU
+sample still attributes work to visibility, mesh extraction, and the city-light
+material scan. Its profiler-affected timing is diagnostic and is not compared
+with historical clients or reported as a speedup.
+
+The rejected trial moved scene-wide city-light data from every material into
+one fixed GPU uniform buffer, retaining independent object fades, the lighting
+math, and panorama emission rules. Native and WebAssembly type checks passed.
+It was not installed; the correctness checks and performance verdict follow.
+
+The trial passed all 29 city-related tests with the external pack, the
+offscreen production-material GPU regression (color/shadow/prepass), and six
+paired day/night 3D/2D captures with preserved state. Full Clippy still hits
+existing core/voxel errors; the focused all-target run completed with the
+existing approximate-constant and erasing-operation denies allowed and no
+diagnostics in the new module. Whole-workspace formatting still has existing
+differences; the new module passed its standalone formatting check.
+
+Two quiet 60-second quartets used the exact same full roof scene, High quality,
+2560×1600 image target, camera, clock, synthetic route, and immutable binaries.
+Every run retained the same final tile/origin, 256 walking rows, four origins,
+one terrain build, no pending terrain, and no GPU polling errors. No compiler
+or CPU sampler ran during these measurements.
+
+| Order | Variant | Update median / p95 (ms) | Walking median / p95 (ms) |
+| --- | --- | --- | --- |
+| ABBA 1 | baseline | 22.34 / 26.12 | 20.793 / 22.491 |
+| ABBA 2 | candidate | 27.99 / 30.59 | 27.279 / 30.542 |
+| ABBA 3 | candidate | 27.55 / 30.64 | 27.958 / 31.524 |
+| ABBA 4 | baseline | 29.75 / 35.49 | 30.278 / 37.991 |
+| BAAB 1 | candidate | 25.39 / 27.51 | 25.092 / 27.350 |
+| BAAB 2 | baseline | 30.19 / 36.27 | 28.882 / 36.657 |
+| BAAB 3 | baseline | 30.22 / 37.93 | 29.883 / 37.030 |
+| BAAB 4 | candidate | 27.87 / 30.60 | 27.951 / 31.146 |
+
+**Not accepted.** The first quartet favors the baseline on average and the
+reversed quartet favors the candidate. The baseline itself varies substantially;
+these results do not establish a stable gain or its cause. Correctness and visual
+passes do not override that uncertainty. Restored all four touched renderer files
+byte-for-byte to the original source and removed the trial module. The verified
+runtime/controller optimizations remain. No installed app or content pack changed,
+and no native FPS gain is claimed. The broader performance goal remains active.
+
+### Visibility census and panorama region-owner trial
+
+Added a native location-review census behind `CRYSTAL_VISIBILITY_CENSUS=on`.
+It inspects the scene once after 120 active 3D frames; ordinary play does not
+schedule it. The symbolized review build passed native checking and completed
+successfully. An offscreen, validated 2560×1600 High-quality roof run reported:
+
+| Category | Total entities | Already excluded from CPU culling |
+| --- | ---: | ---: |
+| 3D meshes | 196,922 | 0 |
+| Non-rendering nodes | 195,065 | 167,987 |
+| 2D meshes | 12 | 0 |
+| Other render classes | 15 | 0 |
+
+Only the layer-0 overlay and layer-31 world cameras were active. The largest
+remaining non-rendering archetype contains 25,945 unbounded owners. Component
+names are unavailable without Bevy's debug feature, so attribution uses source
+ownership and the subsequent policy/count comparison, rather than guessing from
+those placeholder names. This inspection adds frame work; its timing is not a
+performance result. Hidden-leaf and GPU-frustum trials were reviewed and are not
+being repeated.
+
+The rejected trial excluded the panorama region containers created by
+`MapPublication::advance` from CPU camera scans. They own transforms and region
+membership and have no mesh. Descendant mesh culling, layers, shadows, materials,
+geometry and gameplay retained their existing paths. A startup control selected
+both policies in one immutable executable. The exact on/off census changed only
+the non-rendering `NoCpuCulling` count: 167,987 to 193,937, a difference of 25,950
+containers. All category totals, bounds, inherited visibility and view visibility
+matched, including all 196,922 meshes and their 1,791 view-visible instances.
+
+All 13 panorama tests and 67 occluder regressions passed. A production publication
+test compared actual leaf visibility and world transforms under hidden ancestry,
+explicit child visibility and frustum rejection. The final switching regression
+and three benchmark-boundary tests passed. Native and WebAssembly checks passed.
+Full Clippy encountered the existing core bitmask, voxel approximate-constant
+and erasing-operation denies; focused all-target checks completed with those
+existing denies allowed and no new-module diagnostics. New leaves passed
+standalone rustfmt; whole-workspace formatting still has existing differences.
+
+Separate-process ABBA measurements at the same full roof, quality, camera and
+clock produced update median/p95 values of 22.58/25.50 ms (control), 30.20/31.78
+(optimized), 29.19/30.80 (optimized), and 28.94/30.39 (control). Every run retained
+the same route, four terrain origins, one build, no pending terrain, and zero
+GPU polling errors. The first control differed substantially from the last,
+so the quartet did not establish a gain.
+
+A temporary within-session benchmark then held the authoritative state, source
+actors, clock and terrain in one loaded scene. After validated GPU readback,
+drain frames and a 60-second control warmup, eight phases used three seconds of
+settling and twenty seconds of measurement each. Only intervals with both ends
+inside the same sample window were admitted. Every boundary verified the full
+state checksum, LCD frame, source actors, terrain revision, viewport and origin.
+All guards passed, owner counts stayed at 25,950, and GPU polling errors stayed
+zero. No readback occurred during measurement. Queue completions measure actual
+submissions completing; they are not elapsed GPU timestamps or displayed FPS.
+
+| Phase | Policy | Update median / p95 (ms) | Queue completions / second |
+| --- | --- | --- | ---: |
+| 0 | control | 25.199 / 27.052 | 39.715 |
+| 1 | optimized | 28.409 / 30.482 | 35.170 |
+| 2 | optimized | 30.867 / 32.628 | 32.393 |
+| 3 | control | 31.275 / 33.235 | 31.973 |
+| 4 | optimized | 30.378 / 32.282 | 32.941 |
+| 5 | control | 29.423 / 31.429 | 33.930 |
+| 6 | control | 29.161 / 31.038 | 34.347 |
+| 7 | optimized | 28.878 / 31.225 | 34.582 |
+
+**Rejected and reverted.** Paired optimized median changes were +12.74%, -1.30%,
++3.25% and -0.97%. Removing 25,950 scan entries did not produce a repeatable gain,
+even with a held scene and one process. This was a static-scene measurement,
+not a walking or whole-game result. A full paired visual acceptance was not run
+after performance failed. Restored every touched renderer file byte-for-byte
+and removed the candidate and temporary phase benchmark. The opt-in census
+remains available; ordinary play does not schedule it. Verified runtime/controller
+changes remain, and no content pack or installed app changed. The broader goal
+remains active.
+
+### Unchanged city-lighting publication trial
+
+The current native CPU profile still attributes substantial work to material
+comparisons in `city_lights::sync`. This trial caches the complete resolved
+foreground and panorama lighting output per system. It skips the material
+scan only when that exact output and Bevy's `Assets<VoxelMaterial>` change tick
+are unchanged. New assets, tracked edits, same-ID replacement and changes to
+the clock, emitter selection, terrain transform or panorama state retain the
+original full scan. GPU uniforms, shader keys, binding layouts and lighting
+math remain unchanged. This differs from the rejected per-material revision
+stamp and shared-GPU-uniform trials: there are no per-material stamps or GPU
+binding changes.
+
+A new regression replaces a live material at the same ID, edits its city data,
+and changes its foreground/panorama classification while lighting inputs stay
+fixed. Publication repairs each case before the next presentation, retains
+unrelated base color and fade, and emits no idle Modified events. All 30
+city-related tests pass. The nine lighting tests pass in both cached and forced
+scan modes. Full Clippy stops at the pre-existing core bad-bitmask deny; focused
+all-target checking completes with the existing voxel approximate-constant and
+erasing-operation denies allowed and no diagnostics in the new leaf. That leaf
+passes rustfmt; workspace-wide formatting encounters pre-existing differences
+beginning in offset-allocator. Native release, WebAssembly and actual throughput
+gates remain pending.
+
+`CRYSTAL_CITY_LIGHTING_SCAN=always` is a startup-only native comparison control
+that retains the original unconditional scan after resolving lighting inputs.
+The existing narrow loading trace can select `frame.city_lighting_materials`
+to report actual scan reachability and asset invalidations. Instrumented timings
+are diagnostic; acceptance requires quiet native comparison. No installed app
+or pack has changed and this trial is not yet accepted.
+
+
+The first native executable completed a validated full roof run and a narrow
+20-second trace. In the final ten seconds, all 378 lighting calls saw the asset
+collection marked changed; none skipped its 27,289-material scan. No throughput
+comparison was run for that version. Its 26.55/27.93 ms median/p95 is instrumented
+context, not evidence of a speedup.
+
+Source inspection found mutable deref coercions before read-only retained
+terrain, grove and actor-cache checks. A follow-up retains `ResMut` through four
+private helper signatures. Ready terrain, cached actor materials and absent
+grove work can now return before obtaining mutable asset access; later work
+retains its original mutable access. This uses ordinary Bevy change detection,
+without bypassing notifications. The borrowing regression passes: retained
+checks leave the material resource tick unchanged, while a new actor texture
+creates a material and a tracked material edit is immediately repaired. All 51
+material-related tests pass in cached and forced-scan modes (one existing GPU
+check is explicitly ignored). City tests (30), retained-terrain tests (3), grove
+stream tests (10), named world-residency tests (9), Surf default (1), and occluder
+tests (67) pass. WebAssembly and focused Clippy pass with the already documented
+baseline limitations. The second native reachability/performance gate is pending.
+The first unsuccessful executable was removed after its hash was verified;
+its measurements are not evidence for this refinement.
+
+
+The refined native release completed successfully. In its narrow roof trace,
+all 432 final-window calls skipped the unchanged 27,289-material scan; none saw
+an asset invalidation. The same executable with forced scanning made 379 calls
+in its final window. Median traced CPU-stage duration was 2,455.416 microseconds
+with forced scanning and 3.750 microseconds with the cache. This diagnoses a
+real eliminated CPU scan, not GPU elapsed time or displayed FPS. Both runs
+validated actual GPU readback before measurement and captured no images during
+timing. Quiet same-executable ABBA walking/throughput comparisons are running;
+no whole-render speedup or installation is claimed yet.
+
+
+The quiet same-executable ABBA comparison completed after every owned compiler
+was terminal. All runs validated GPU readback before timing, then used no image
+readback during the measured interval. Each completed the same 256 walking rows,
+four origins, one terrain build, no pending terrain, identical final tile/origin,
+and zero GPU polling errors.
+
+| Order | Policy | Update median / p95 (ms) | Walking median / p95 (ms) |
+| --- | --- | --- | --- |
+| 0 | forced scan | 29.33 / 30.72 | 29.116 / 31.682 |
+| 1 | cached | 29.06 / 30.48 | 29.337 / 32.505 |
+| 2 | cached | 29.01 / 30.25 | 29.249 / 32.136 |
+| 3 | forced scan | 28.93 / 30.24 | 29.182 / 31.465 |
+
+These full-frame results are essentially flat; neither pair establishes a
+render-throughput gain. Queue completion rates stayed between 34.001 and
+34.614 per second and are not displayed FPS. The narrow trace establishes
+eliminated CPU work, while the whole-render test limits its practical claim.
+This is being evaluated as an idle CPU-work reduction only. Paired 3D/2D
+visual checks and the external-pack controller/MCP/clean-stdio gates are now
+running before that change is retained. Dense-outdoor fluidity remains open.
+
+
+**Retained as a CPU-work reduction.** Six new headless 3D/2D pairs (Goldenrod
+noon/night and Tin Tower Roof night, both policies) preserved their full reported
+state. Inspection found consistent composition, character scale/readability,
+scenery silhouettes, materials, shadows and window emission between policies.
+The existing stylized scenery/roof treatment relative to source 2D is unchanged;
+this is preservation evidence, not a new claim of complete art fidelity.
+
+The external-pack authoritative battle-turn/PP regression, Mom/New Bark gate,
+stdio-MCP movement/production Start menu, and byte-clean gameplay stderr tests
+all passed. The new code keeps its proven CPU saving without claiming faster
+walking, displayed FPS or a whole-render gain. Source changes remain local and
+uncommitted; the installed application and game/audio packs were not changed.
+The broader runtime performance goal stays active.
+
+
+Next attribution lead, not implemented: `spawn_groups_impl` currently ties
+lazy blend-material creation to the presence of a combined opaque mesh. Runtime
+foliage groups with one ordinary leaf can therefore allocate a dormant blended
+material immediately, even though their initial visible leaf uses the opaque
+material. Their existing first-blend transition already has a lazy allocation
+path. The 27,289-material roof population warrants measuring this ownership
+before changing it. Any trial must retain overlays, exact first-fade rendering,
+independent opacity, hidden-destination pipeline preparation and all original
+geometry; reduced asset counts alone would not prove a rendering gain.
+
+
+### Dormant regional fade materials
+
+Regional foliage initially renders with a shared opaque material. Single-leaf
+plants and bank-conforming groves nevertheless allocated independent blend
+materials before any fade. The implementation now creates these blends on the
+existing first-fade path. Meshes, entities, transforms, reveal math, authored
+nonregional scenery and linked overlays retain their previous behavior.
+Each allocated blend remains independent, is reused and retires with its owner.
+`CRYSTAL_REGIONAL_MATERIALS=eager` selects the previous policy at native startup
+for comparisons; WebAssembly uses deferred allocation.
+
+A zero-time regression also exposed an update through the default material
+handle before its blend existed: an unrelated populated default slot changed
+fade X from 0.17 to zero. Uniform updates now require `transparent_ready`.
+The test verifies the default slot remains untouched and a later positive-time
+update allocates exactly one blend.
+
+The real full roof at noon contains 27,289 material assets under the original
+policy and 110 with deferred regional allocation, a 99.6% reduction. Its entity
+and visibility category counts match exactly, including 196,922 Mesh3d entities
+and 1,791 view-visible meshes. An initial diagnostic accidentally used orbit 7
+rather than the canonical default -1; its partial timing was stopped and is
+excluded. Corrected comparisons restore the original camera and assert the
+1,791-mesh reference before timing. Source and the executable remain frozen.
+
+Same-executable, quiet ABBA results at High, 2560x1600, TinTowerRoof (9,13),
+noon, with synthetic UUUUDDDD movement:
+
+| Policy | Updates in 60 s | Median / p95 update interval (ms) | Walking median / p95 (ms) | Queue completions/s |
+| --- | ---: | ---: | ---: | ---: |
+| Eager | 2,065 | 29.09 / 30.41 | 29.165 / 32.440 | 34.411 |
+| Deferred | 2,099 | 28.78 / 29.63 | 28.718 / 30.666 | 34.977 |
+| Deferred | 2,083 | 29.05 / 29.90 | 29.092 / 30.902 | 34.703 |
+| Eager | 2,055 | 29.21 / 30.61 | 29.464 / 32.615 | 34.235 |
+
+Both order pairs improve queue completions by 1.4–1.6%, walking medians by
+1.3–1.5% and walking p95 by 5.3–5.5%. This is a modest benchmark result;
+completion callbacks are neither GPU timestamp durations nor display FPS.
+Every run has 256 movement rows, four grid origins, one initial terrain build,
+no pending scenery or GPU polling errors, and the same final tile and origin.
+Each validates a real GPU image before timing, drains readbacks, then measures
+without image capture or tracing.
+
+A second, BAAB roof quartet retains the same route, dimensions and readiness
+checks. Its results are:
+
+| Policy | Updates in 60 s | Median / p95 update interval (ms) | Walking median / p95 (ms) | Queue completions/s |
+| --- | ---: | ---: | ---: | ---: |
+| Deferred | 2,026 | 29.36 / 31.17 | 29.475 / 32.549 | 33.755 |
+| Eager | 1,991 | 30.06 / 31.59 | 30.481 / 33.729 | 33.175 |
+| Eager | 2,051 | 29.26 / 30.63 | 29.492 / 32.447 | 34.165 |
+| Deferred | 2,072 | 29.16 / 30.21 | 29.117 / 30.889 | 34.525 |
+
+Its paired completion gains are 1.75% and 1.05%; walking medians improve
+3.30% and 1.27%, and p95 improves 3.50% and 4.80%. All four roof pairs across
+both quartets improve, supporting a small dense-scene result.
+
+A separate New Bark (13,6), 22:00, High 2560x1600, 30-second BAAB quartet
+uses synthetic LLRRLLRR movement. Results vary by order:
+
+| Policy | Updates in 30 s | Median / p95 update interval (ms) | Walking median / p95 (ms) | Queue completions/s |
+| --- | ---: | ---: | ---: | ---: |
+| Deferred | 1,948 | 15.40 / 17.19 | 15.210 / 17.982 | 64.913 |
+| Eager | 1,605 | 18.61 / 22.13 | 15.607 / 21.640 | 53.484 |
+| Eager | 1,352 | 21.80 / 26.63 | 21.792 / 28.678 | 45.036 |
+| Deferred | 1,310 | 22.94 / 26.92 | 23.347 / 30.659 | 43.656 |
+
+Completion changes are +21.37% and -3.06%; the second walking median and p95
+also worsen. These results do not support a general town speedup. Each route
+has 256 rows, two origins, one terrain-build count, ready scenery, clean GPU
+polling and identical final authoritative positions. Both late eager and
+late deferred runs contain first-move hitches (122 and 136 ms respectively);
+their cause has not been established. No thermal/performance warning was
+recorded by `pmset -g therm`; that snapshot does not establish the cause of the
+variation. Memory measurement and ordinary asynchronous arrival checks are
+separate from these quiet throughput runs.
+
+A separate same-executable memory ABBA pass samples `vmmap -summary` five
+seconds after a validated roof measurement begins. These probed runs are not
+used for timing claims:
+
+| Policy | Physical / peak footprint (rounded G) | Allocated CPU heap (rounded G) | Allocation count |
+| --- | ---: | ---: | ---: |
+| Eager | 7.3 / 7.3 | 3.1 | 5,245,261 |
+| Deferred | 6.8 / 6.8 | 2.6 | 3,911,465 |
+| Deferred | 6.8 / 6.8 | 2.6 | 3,911,854 |
+| Eager | 7.3 / 7.3 | 3.0 | 5,242,583 |
+
+Both order pairs retain about 0.5G less physical memory and 1.33 million fewer
+allocations. Rounded heap figures indicate a 0.4–0.5G reduction; they do not
+support an exact MiB claim. Geometry and the active quality setting are the
+same as in the quiet roof comparison. This is a substantial resource saving
+alongside the small roof timing gain; the mixed town result remains a limit.
+
+Verification completed for this source:
+
+- 69 occluder tests pass; the 67 original tests also pass under eager policy.
+- The lifecycle regression uses actual woodland plant geometry and checks
+  first fade, independent opacity, mesh/transform preservation, exact source
+  lighting fields, default-slot isolation, reuse and retirement.
+- The offscreen GPU regression passes for a single leaf and a combined canopy.
+  Its first allocation must immediately prepare the bind group, enter the real
+  transparent queue and reuse a ready hardware pipeline. Actual first-fade
+  RGBA bytes match an eager control exactly, including late mesh uploads.
+- The required battle/PP, Mom/gate, MCP movement/Start and clean-stdio
+  regressions pass with the external text pack. Ten grove-stream tests, three
+  retained-terrain tests, nine world-residency tests and three connected-edge
+  tests also pass. Included test files require their actual function names;
+  a zero-test module-name filter is not counted as verification.
+- Eight native paired captures preserve state: New Bark at noon and 22:00,
+  Route 30 at noon, and Tin Tower Roof at 22:00, under both allocation policies.
+  Visual inspection against each paired 2D view and eager 3D control finds no
+  new missing plants, changed silhouette, scale, material or lighting defects.
+  Existing stylistic differences from 2D remain outside this allocation change.
+- WebAssembly and focused all-target Clippy pass with the documented baseline
+  denies allowed; the new files introduce no warnings. Full Clippy still hits
+  the existing core bitmask and voxel approximate constants. Workspace format
+  checking still begins with existing offset-allocator differences; new leaves
+  pass rustfmt and the patch passes `git diff --check`.
+
+The guarded native release completed in 5m26s. Its SHA-256 is
+`621058a018cf097b4edebc8172310961eb802755ef1ae1750942b8f4e298a36f`,
+with an 11-file frozen source receipt under ignored `target/settle-speed/`.
+Both allocation policies also pass an ordinary asynchronous house exit:
+PlayersHouse1F (6,6), noon, 1280x800, DDBBBBBBBBBB, with synthetic input and
+forced synchronous terrain disabled. Each records 384 movement rows and reaches
+NewBarkTown (11,9); all 378/379 town rows have ready terrain and no pending work.
+Final paired 3D/2D captures preserve state, and final/arrival-reveal images were
+visually inspected against the eager control. Readback and per-step capture
+costs remain in these runs, so their intervals are not ordinary play latency
+or a transition-speedup claim.
+
+Retained: the asset/physical-memory reduction and small four-pair roof gain
+justify this allocation change after the fade, GPU, visual and gameplay checks.
+Night-town timing remains mixed and first-move hitches remain unresolved; no
+universal FPS or fluidity gain is claimed. All 11 source hashes still match the
+native binary receipt after verification. No pack, audio content or installed
+app changed. The broader performance goal remains active.
+
+Acceptance/cleanup receipts, validated timing/memory tables and selected images
+remain ignored under `target/settle-speed/` for the ongoing goal. Removed the
+owned comparison/capture drivers, draft GPU-test copies, restoration backup and
+superseded wrong-camera capture directories. No build artifacts or packs were
+staged.
+
+Read-only next-step audit: `NotShadowReceiver` does not justify omitting the
+panorama normal/depth prepass. Both pinned Bevy 0.20 and this repository's
+voxel shader sample screen-space ambient occlusion independently of that
+shadow-receiver flag. Removing this pass would change contact shading, so no
+such optimization was implemented. The source and current quality remain
+frozen at the accepted allocation receipt.
+
+
+### Rejected native direct-submission comparison
+
+A fresh five-second OS sample of retained `fade-material-native` completed
+only after validated full-resolution roof warmup. Sampled intervals are not
+quiet FPS evidence. Upload callers include Bevy indirect parameter metadata,
+build jobs and sparse instance updates; visibility and mesh extraction remain
+significant. The two material scans no longer dominate this sample.
+
+The trial selected supported `NoIndirectDrawing` on the native world camera
+with `CRYSTAL_NATIVE_DRAW_SUBMISSION=direct`. Its default control and WebAssembly
+were unchanged. GPU preprocessing still prepared instance uniforms; direct
+batches followed the same CPU visibility. No geometry, material, shadow,
+animation, quality or engine-source change was introduced.
+
+The four-App native GPU regression passed in 2.57 seconds. Real opaque bins
+selected each intended submission policy; both a source plant and combined
+canopy produced exactly equal opaque and first-fade RGBA images across policies.
+Late allocation also matched an eager control in its first prepared frame.
+The harness first accessed a private Bevy batch field, then incorrectly reused
+App-owned mesh handles across renderers. Both issues were corrected before the
+passing comparison, using public bins and independent identical source recipes.
+Neither invalid attempt supplies fidelity or performance evidence.
+
+The 12-file source receipt was frozen for native release QA, which completed in
+6m59s. The immutable executable SHA-256 was
+`3ac90d91e10e5a80a8e176a97a40bc70e4001c9ef552b500323134ffd5bf1589`.
+WebAssembly and focused Clippy passed for both affected crates with documented
+baseline denies allowed; the changed leaves introduced no diagnostics. Full
+Clippy hit the known core bitmask, voxel approximate constants and Bevy
+`never_loop` in untouched `title_menu.rs:8660`. Workspace formatting remained
+blocked by existing unrelated differences; changed leaves and whitespace passed.
+
+Sequential full-scene census categories matched exactly: 196,922 Mesh3d entities,
+1,791 visible meshes and zero mesh NoCpuCulling markers. The census confirmed
+the requested NoIndirectDrawing flag on only the active layer-31 camera. Initial
+full-resolution 3D roof/forest/player images visually matched. This was a
+same-binary calibration, not final paired-2D acceptance of a shipped change.
+
+Quiet High 2560x1600 roof ABBA, noon at (9,13), synthetic UUUUDDDD:
+
+| Submission | Updates in 60 s | Median / p95 interval (ms) | Walking median / p95 (ms) | Queue completions/s |
+| --- | ---: | ---: | ---: | ---: |
+| Indirect | 2,460 | 24.52 / 26.26 | 23.047 / 24.705 | 40.985 |
+| Direct | 2,121 | 28.66 / 29.15 | 27.517 / 29.137 | 35.350 |
+| Direct | 2,131 | 27.60 / 29.15 | 28.069 / 37.294 | 35.506 |
+| Indirect | 2,159 | 27.78 / 29.35 | 27.791 / 29.447 | 35.971 |
+
+All runs have 256 movement rows, four origins, one initial terrain build,
+ready scenery, no polling errors, at most two outstanding submissions and
+identical final state (roof 8,12; origin -44,-36). Warmup validates an actual
+GPU image and drains readbacks before timing. No own compiler or profiler was
+running. Completion callbacks are not display FPS or GPU timestamp durations.
+
+Rejected: direct submission lowers completions by 13.75% and 1.29%, worsens
+walking medians by 19.40% and 1.00%, and worsens walking p95 by 17.94% and 26.65%.
+Correctness alone does not justify this policy. All three changed accepted
+files were restored from hash-verified copies, and all 11 hashes match the
+retained fade-material receipt. Removed the trial module, immutable executable,
+matching provisional Cargo executable, drivers and restoration copies. Logs,
+receipts and measured evidence remain ignored for the ongoing goal. The accepted
+material/memory optimization, installed app, packs and audio remain unchanged.
+
+### Retained-source native GPU profile
+
+After restoring the accepted 11-file material receipt, recorded three seconds
+of native Metal activity from the validated, idle roof at High 2560x1600,
+noon, (9,13), with the same canonical camera. The client and recorder exited
+successfully. Filtering by the launched PID and joining GPU work to its command
+and encoder identities yields 180 complete instances of each main 3D pass.
+There are no source-frame boundary markers, so these are encoder execution
+durations, not measured frame times or display FPS.
+
+| Encoder | Median / p95 active GPU union (ms) | Median vertex / fragment activity (ms) |
+| --- | ---: | ---: |
+| Main opaque 3D | 11.812 / 12.049 | 6.823 / 4.992 |
+| Early depth/normal prepass | 7.609 / 8.115 | 4.589 / 3.027 |
+| Directional shadow cascade 1 | 3.037 / 3.489 | 0.147 / 2.887 |
+| SSAO | 2.004 / 2.042 | Compute: 2.004 |
+
+GPU stages, encoders and successive submissions can overlap. Their durations
+must not be added as frame percentages. Geometry passes dominate this profile;
+the main indirect-parameter builder accounts for only 1.518 ms of active work
+across all 180 executions. This supports investigating geometry submission and
+its duplicated prepass work before another draw-policy experiment. Omitting
+the normal/depth prepass or custom shadow sampling would change current shading
+and is not justified by this profile. The shader-profiler table contains no
+intervals, so there is no shader-instruction attribution.
+
+The target-only normalized report, source/binary receipt, validated warmup
+image and recorder log remain ignored under `target/settle-speed/`. Removed the
+owned global trace, XML exports, completed drivers and recorder kernel scratch
+after verifying the filtered report. No performance change is attributed to
+the instrumented run.
+
+### Installed accepted controller and material improvements
+
+Built and installed the accepted source, including the music membership cache,
+controller presentation snapshots, lighting publication guard and deferred
+regional fade materials. The rejected direct-submission module is absent. The
+production build uses `voxel-view,desktop-app`, without `location-tester`:
+
+```sh
+python3 tools/desktop.py build \
+  --pack content-packs/core-modular.crystalpack \
+  --target-dir target/desktop-release-production --profile release --jobs 2
+python3 tools/desktop.py install --skip-build \
+  --pack content-packs/core-modular.crystalpack \
+  --target-dir target/desktop-release-production --profile release --jobs 2
+```
+
+The build and Rust content/artwork validation completed successfully in 392.3
+seconds; installation took 30.0 seconds. The content validator confirms 388
+maps, 251 species, 251 moves and 377 audio programs. Existing compiler warnings
+remain, including voxel dead code/imports, Bevy's deprecated UI interaction
+alias and the unused native browser-save helper; no new optimization-leaf
+diagnostics were emitted.
+
+The installed `~/Applications/Geothite.app` passes strict deep signature
+verification and `--check-installation` from a temporary directory outside the
+checkout, with the artwork override removed. All file-backed Mach-O section
+payloads match the frozen production executable; ad-hoc signing changes the
+whole-file digest. Installed executable SHA-256:
+`0bec750b9df649656aada1e0f277b0673283e8f3e8d319ab3d4486f764d6fb31`.
+All 1,140 frozen source-file hashes remain unchanged. All 90 bundled artwork
+files match their source, the pack matches its pre-install hash, and both
+existing save files retain their exact hashes. No visible window was launched.
+
+Build/install logs and source, binary, resource and save-preservation receipts
+remain ignored under `target/settle-speed/`. No pack or compiled product was
+staged. This installs the verified CPU/memory work; mixed town timings and
+first-move hitches still prevent a general fluidity claim. Geometry/prepass GPU
+cost remains the next investigation, and the broader goal remains active.
+
+### First-step attribution and rejected summit mesh residency
+
+An accepted-source night-town trace repeats New Bark (13,6), 22:00,
+High 2560x1600, synthetic LLRRLLRR movement, after validated GPU warmup.
+All 256 walking rows have ready terrain and no pending work. Its first 32
+updates peak at 17.855 ms and the whole route peaks at 19.332 ms; the earlier
+122/136 ms first-step hitches do not reproduce. The bounded `frame.` trace
+contains 19,824 events with none dropped. This diagnostic run neither fixes
+those intermittent hitches nor establishes a quiet speed improvement.
+
+A separate native trial removes offscreen static summit panorama meshes from
+renderer queries while retaining their exact assets. It groups original
+placements into conservative spatial buckets, respects all matching active
+camera frusta and camera culling overrides, and handles only original
+non-shadow-casting meshes. Hidden destinations retain their initial pipeline
+discovery. No geometry, quality, draw-distance or shader change is introduced.
+`CRYSTAL_SUMMIT_MESH_RESIDENCY=on` selects the trial; the default is the control.
+
+The implementation removes `Mesh3d` and computed `ViewVisibility` together,
+preserving source `Visibility`, hierarchy and asset handles. Removing only the
+mesh leaves it in Bevy's broad visibility query. Adding `NoCpuCulling` instead
+would make the dormant entity visible to material extraction. Reinstatement
+precedes visibility checks and restores the original class list, preventing
+`Mesh3d` add hooks from accumulating duplicate classes.
+
+All 17 summit regressions pass with the trial enabled. These include camera
+and root-pose changes, near-plane/invalid-input conservatism, asset retention,
+repeated reinstatement, prewarming and publication ownership/budgets. The
+actual GPU test stages a production pine, evicts it, requests a screenshot
+before its first restored update, and requires those real pixels to equal an
+unchanged resident control exactly. Focused all-target Clippy and WebAssembly
+checks pass with the documented baseline lint allowances; the new leaves add
+no diagnostics. Full Clippy still fails on the existing core bitmask and
+three voxel approximate constants, and workspace formatting still starts
+with the unrelated offset-allocator differences.
+
+The frozen 15-file source receipt produced a native release in 4m50s, SHA-256
+`f76fb7349fbccddc42dcd3f3dfbd52e9998e53cebd9bbf427783ddd3d34c53e2`.
+Canonical noon roof calibration reduces mesh query membership from 196,922
+to 5,019 (97.45%), with exactly 1,791 visible meshes in both policies and no
+mesh `NoCpuCulling` markers. Both full-resolution 3D images were inspected:
+roof composition, player scale, forest silhouettes, materials and lighting
+remain intact. This is an initial 3D calibration, not final paired-2D or
+alternate-view acceptance of a shipped change.
+
+Quiet, same-executable ABBA at High 2560x1600, roof (9,13), noon, default
+CLI orbit -1, synthetic UUUUDDDD movement:
+
+| Residency | Updates in 60 s | Median / p95 interval (ms) | Walking median / p95 (ms) | Queue completions/s | Whole-process CPU (s) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Original | 2,782 | 21.44 / 24.56 | 19.954 / 21.123 | 46.349 | 89.762 |
+| Trial | 2,077 | 29.05 / 30.94 | 26.295 / 27.761 | 34.599 | 89.803 |
+| Trial | 2,061 | 29.08 / 30.67 | 29.251 / 32.364 | 34.345 | 103.461 |
+| Original | 2,107 | 28.46 / 29.56 | 29.079 / 30.616 | 35.113 | 127.794 |
+
+Every run validates a real GPU image, drains readback before measurement,
+records 256 movement rows/four origins/one terrain build with no pending work
+or GPU polling errors, and ends at roof (8,12), origin (-44,-36). No owned Rust
+compiler or sampling profiler runs during timing; image readback is confined
+to warmup. Queue callbacks are neither
+display FPS nor GPU timestamp durations. OS child-process CPU accounting
+includes loading and warmup as well as the timed scene; it is not per-frame
+CPU time. Machine variation remains visible, and no cause is inferred.
+
+Rejected: both order pairs reduce completions (25.35% and 2.19%), worsen
+walking medians (31.78% and 0.59%) and worsen walking p95 (31.43% and 5.71%).
+Whole-process CPU changes are mixed (+0.05% and -19.04%). Query membership
+alone does not justify this composition. Full paired visual, entry and
+gameplay promotion gates were therefore not pursued.
+
+Restored the original summit publisher and removed all three trial leaves.
+All 1,140 accepted production source hashes match the installed-build receipt
+again, and the installed executable's hash is unchanged. Removed the
+hash-verified immutable/provisional trial executables, completed driver,
+restoration copy and GPU-test draft. Rejected source, metrics, logs, receipts
+and selected calibration images remain ignored for the ongoing goal. Packs,
+audio and accepted CPU/material optimizations are unchanged; nothing is staged.
+
+Read-only GPU follow-up: pinned Bevy's stock deferred path packs unlit color
+through RGB9E5 and returns that color without this renderer's custom
+shadow/AO/daylight calculation. Switching to stock deferred rendering would
+change the current surface. Any future geometry/prepass fusion needs its own
+fidelity proof; no deferred implementation or improvement is claimed here.
+
+### Rejected UV-free normal-prepass shortcut
+
+A shader-only trial bypassed full material preparation for opaque, UV-free
+normal-prepass fragments. It retained Bevy's normal and winding calculations,
+including reflected instances and double-sided materials. Textured meshes,
+cutouts, fades, motion vectors and other passes retained the original path.
+
+An offscreen GPU regression read the actual normal attachment into an RGBA16F
+image and required byte-for-byte equality with the original material path.
+Production pine geometry, reflected/nonuniform transforms and fallback masked
+and fading boxes passed. A deliberately corrupted shortcut changed the readback,
+proving the test exercised that branch. Full-resolution roof captures were also
+inspected and preserved composition, scale, forest silhouettes and shading.
+This was initial preservation evidence, not complete visual promotion.
+
+Both shaders ran through the existing review override in the same accepted
+native executable, SHA-256
+`621058a018cf097b4edebc8172310961eb802755ef1ae1750942b8f4e298a36f`.
+Quiet ABBA used High 2560x1600, roof (9,13), noon, default orbit -1 and
+synthetic UUUUDDDD movement, with validated GPU warmup and drained readbacks:
+
+| Shader | Updates in 60 s | Median / p95 interval (ms) | Walking median / p95 (ms) | Queue completions/s |
+| --- | ---: | ---: | ---: | ---: |
+| Original | 2,871 | 21.26 / 22.62 | 19.957 / 21.150 | 47.848 |
+| Trial | 2,467 | 24.48 / 26.26 | 23.011 / 23.437 | 41.117 |
+| Trial | 2,277 | 26.20 / 27.79 | 26.261 / 27.878 | 37.942 |
+| Original | 2,286 | 26.14 / 27.69 | 26.164 / 27.750 | 38.094 |
+
+All runs have 256 ready movement rows, one terrain build, no GPU polling
+errors and the same final roof tile (8,12), origin (-44,-36). No owned compiler
+or profiler ran during timing. Queue callbacks are not display FPS or GPU
+timestamp durations; machine variation remains visible.
+
+Rejected: throughput fell 14.07% and 0.40%; walking medians worsened 15.31%
+and 0.37%, and p95 worsened 10.81% and 0.46%. Exact normals do not justify
+additional shader complexity without a repeatable speed benefit. Restored
+the original shader and voxel root, removed the trial test module and scratch
+driver, and verified all 1,140 accepted production source hashes again.
+
+### Delivered runtime improvements
+
+The retained music-membership cache, presentation-only controller settling,
+unchanged city-lighting cache and deferred regional blend materials are built
+and installed in `~/Applications/Geothite.app`. Controller walking processing
+falls about 69% in the release benchmark; this measures input CPU work, not
+movement speed or rendered FPS. Dense-roof queue throughput improves 1.05–1.75%
+across four order pairs, and measured physical memory falls from about 7.3 GB
+to 6.8 GB. Dense-outdoor GPU rendering remains a limit, with no universal
+fluidity claim.
+
+Final verification confirms the installed executable and all accepted source
+hashes, source/bundled pack hashes, two existing saves, strict code signature
+and standalone installation check. No visible window was launched. Required
+gameplay/controller, MCP, clean-stdio and material-fidelity gates passed for
+this exact source. Existing full-suite fixture failures and lint/format issues
+are documented above and in [Runtime input processing](runtime-input-performance.md).
+The final workspace format check still begins with unchanged offset-allocator
+differences. Source remains uncommitted; packs and audio are unchanged.
+Removed completed one-off comparison executables, obsolete drivers and trial
+image/CSV scratch. Persistent Cargo caches and ignored verification records
+remain; no generated content or compiled product is staged.

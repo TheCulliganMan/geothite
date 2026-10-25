@@ -156,7 +156,7 @@ pub(super) fn sync(
     cache: &mut TerrainRevisionCache,
     commands: &mut Commands,
     meshes: &mut Assets<Mesh>,
-    materials: &mut Assets<VoxelMaterial>,
+    materials: &mut ResMut<Assets<VoxelMaterial>>,
 ) -> bool {
     let (Some(built), Some(_), Some(_)) = (
         &cache.built_frame,

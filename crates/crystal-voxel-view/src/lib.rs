@@ -8,6 +8,8 @@ use bevy::camera::primitives::MeshAabb;
 mod camera_gestures;
 mod day_cycle;
 mod city_lights;
+#[cfg(test)]
+mod material_borrow_tests;
 mod sky;
 mod regional_atmosphere;
 mod summit_vista;
@@ -1905,7 +1907,8 @@ fn sync_terrain(
     builds: &mut TerrainBuildQueue,
     images: &mut Assets<Image>,
     meshes: &mut Assets<Mesh>,
-    materials: &mut Assets<VoxelMaterial>,
+    // Preserve the resource tick until this retained check actually publishes.
+    materials: &mut ResMut<Assets<VoxelMaterial>>,
     terrain_entities: &mut Query<(&mut Visibility, &mut Transform), VoxelTerrainFilter>,
 ) -> Result<TerrainSyncState, TerrainSyncError> {
     let _trace=loading_trace::span("region.sync_terrain", || serde_json::json!({"map":frame.map_id.as_ref()}));
@@ -3099,7 +3102,7 @@ fn sync_actor_cards(
     commands: &mut Commands,
     cache: &mut ActorIdCache,
     images: &Assets<Image>,
-    materials: &mut Assets<VoxelMaterial>,
+    materials: &mut ResMut<Assets<VoxelMaterial>>,
     actor_entities: &mut Query<
         (
             &mut Transform,
@@ -3348,7 +3351,7 @@ transform,),
 fn actor_material(
     actor: &VisualActor,
     cache: &mut ActorIdCache,
-    materials: &mut Assets<VoxelMaterial>,
+    materials: &mut ResMut<Assets<VoxelMaterial>>,
 ) -> Handle<VoxelMaterial> {
     let key = actor_material_key(actor);
     if let Some(assets) = cache.textures.get(&key) {

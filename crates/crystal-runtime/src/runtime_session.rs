@@ -6,7 +6,7 @@ impl RuntimeOverworldSession {
     ) -> Result<Self> {
         let (state, overworld) = runtime
             .data
-            .start_overworld_session_from_spawn(spawn, &runtime.audio.music_ids())?;
+            .start_overworld_session_from_spawn(spawn, runtime.borrowed_music_ids())?;
         Ok(Self {
             state,
             overworld,
@@ -25,7 +25,7 @@ impl RuntimeOverworldSession {
         let (state, overworld) = runtime.data.start_overworld_session_at_runtime_tile(
             map_name,
             tile,
-            &runtime.audio.music_ids(),
+            runtime.borrowed_music_ids(),
         )?;
         Ok(Self {
             state,
@@ -42,7 +42,7 @@ impl RuntimeOverworldSession {
     ) -> Result<Self> {
         let (state, overworld) = runtime
             .data
-            .resume_overworld_session_from_state(state, &runtime.audio.music_ids())?;
+            .resume_overworld_session_from_state(state, runtime.borrowed_music_ids())?;
         Ok(Self {
             joypad: JoypadState::from_previous_mask(state.joypad.h_joy_down),
             state,
@@ -66,7 +66,7 @@ impl RuntimeOverworldSession {
             &mut state,
             &mut overworld,
             buttons.clone(),
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut recording,
             continuous_step,
         )?;
@@ -107,7 +107,7 @@ impl RuntimeOverworldSession {
             &mut self.state,
             &mut self.overworld,
             buttons,
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut self.divider,
             continuous_step,
         )?;
@@ -764,7 +764,7 @@ impl RuntimeOverworldSession {
         let outcome = runtime.data.apply_random_special_routine(
             &mut state,
             routine,
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut recording,
         )?;
         let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
@@ -1003,7 +1003,7 @@ impl RuntimeOverworldSession {
             &mut state,
             routine,
             party_index,
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut recording,
         )?;
         let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
@@ -1122,7 +1122,7 @@ impl RuntimeOverworldSession {
         let outcome = runtime.data.apply_random_special_routine(
             &mut state,
             special.routine(),
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut recording,
         )?;
         let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
@@ -1164,7 +1164,7 @@ impl RuntimeOverworldSession {
         let outcome = runtime.data.apply_random_special_routine(
             &mut state,
             routine,
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut recording,
         )?;
         let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
@@ -1212,7 +1212,7 @@ impl RuntimeOverworldSession {
         let outcome = runtime.data.apply_special_routine(
             &mut state,
             "BuenasPassword",
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
         )?;
         overworld.set_time(state.time.registers.hours, state.time.time_of_day);
         overworld.sync_event_flag_memory(&state.flags);
@@ -1239,7 +1239,7 @@ impl RuntimeOverworldSession {
         let outcome = runtime.data.apply_random_special_routine(
             &mut state,
             "GiveShuckle",
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut recording,
         )?;
         let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
@@ -1269,7 +1269,7 @@ impl RuntimeOverworldSession {
         let outcome = runtime.data.apply_random_special_routine(
             &mut state,
             "GiveOddEgg",
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut recording,
         )?;
         let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
@@ -1302,7 +1302,7 @@ impl RuntimeOverworldSession {
         let outcome = runtime.data.apply_random_special_routine(
             &mut state,
             "LoadOpponentTrainerAndPokemonWithOTSprite",
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut recording,
         )?;
         let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
@@ -1370,7 +1370,7 @@ impl RuntimeOverworldSession {
         let outcome = runtime.data.apply_random_special_routine(
             &mut state,
             routine,
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut recording,
         )?;
         let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
@@ -1406,7 +1406,7 @@ impl RuntimeOverworldSession {
         let result = runtime.data.apply_random_special_routine(
             &mut state,
             "DayCareManOutside",
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut recording,
         )?;
         let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
@@ -1442,7 +1442,7 @@ impl RuntimeOverworldSession {
         let outcome = runtime.data.apply_random_special_routine(
             &mut state,
             routine,
-            &runtime.music_ids(),
+            runtime.borrowed_music_ids(),
             &mut recording,
         )?;
         let divider_trace = RuntimeDividerTrace::new(recording.samples().iter().copied());
@@ -1906,7 +1906,7 @@ impl RuntimeOverworldSession {
                 &mut self.state,
                 &mut self.overworld,
                 command,
-                &runtime.audio.music_ids(),
+                runtime.borrowed_music_ids(),
                 &runtime.audio.sound_effect_ids(),
                 &runtime.audio.cry_ids(),
             )

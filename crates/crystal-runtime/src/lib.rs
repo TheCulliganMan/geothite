@@ -5,6 +5,7 @@
 
 pub mod frontpic_animation;
 pub mod hall_of_fame;
+mod music_catalog;
 mod outdoor_mods;
 mod runtime_presentation_text;
 
@@ -374,6 +375,7 @@ impl PartialEq for RuntimeAssetMountCache {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct RuntimeStaticCatalogCache {
+    music_ids: BTreeSet<String>,
     audio: Arc<RuntimeAudioCatalogSnapshot>,
     items: Arc<Vec<RuntimeItemCatalogSnapshot>>,
     item_effect_plans: Arc<Vec<RuntimeItemEffectPlanKey>>,

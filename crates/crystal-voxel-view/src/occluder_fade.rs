@@ -15,6 +15,9 @@ use bevy::{
 };
 use std::ops::Range;
 mod ray_bounds;
+mod regional_materials;
+#[cfg(test)]
+mod material_allocation_tests;
 mod regions;
 use ray_bounds::{conservative_overlap, obstruction_ray_bounds, transformed_occluder_bounds};
 use std::sync::{Arc, Mutex, OnceLock, Weak};
@@ -1499,7 +1502,12 @@ fn spawn_groups_impl(
         // Only runtime library groups may defer entities; linked authored
         // scenery keeps its returned leaf/domain and overlay contract intact.
         let lazy = runtime_lazy_sorted && opaque_leaf.is_some() && overlay.is_none();
-        let transparent = if lazy { Handle::default() }
+        // Ordinary regional leaves already render with the opaque handle.
+        // Their independent blend can use the same first-fade allocation path
+        // without changing leaf ownership or the linked overlay contract.
+        let lazy_material =
+            lazy || (regional && overlay.is_none() && regional_materials::deferred());
+        let transparent = if lazy_material { Handle::default() }
             else { blended(materials, &opaque, coverage_fade, depth_coverage_fade) };
         let (overlay_surface, overlay_leaves, overlay_opaque) = overlay
             .map(|g| (Some(g.surface), g.leaves, g.opaque_leaf))
@@ -1535,7 +1543,7 @@ fn spawn_groups_impl(
                     world_ray_bounds: None,
                     opaque: opaque.clone(),
                     transparent,
-                    transparent_ready: !lazy,
+                    transparent_ready: !lazy_material,
                     blending: false,
                     coverage_fade,
                     depth_coverage_fade,
@@ -1976,7 +1984,11 @@ fn sync(
             let furniture_aperture=group.furniture_aperture;
             let furniture=interior_furniture && interior_npc_reveal::source_object(&group);
             let aperture=furniture_aperture.unwrap_or(uniform);
-            if let Some(mut material) = materials.get_mut(&group.transparent) {
+            // A zero-time block can stay opaque before its private blend exists.
+            // The default handle must never authorize a fallback-material write.
+            if group.transparent_ready
+                && let Some(mut material) = materials.get_mut(&group.transparent)
+            {
                 material.extension.cutaway.fade.x = 1.0 - group.fade.opacity;
                 if foliage && group.coverage_fade && material.extension.cutaway.fade.w < 0.0 {
                     material.extension.cutaway.fade.w = FOLIAGE_COVERAGE_TAG;

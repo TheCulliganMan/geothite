@@ -7,6 +7,8 @@ use crate::{
 use bevy::prelude::*;
 use std::collections::{BTreeMap, HashMap};
 
+mod material_sync;
+
 pub(crate) const MAX_LIGHTS: usize = 32;
 pub(crate) const UV_BASE: f32 = 1248.;
 pub(crate) const SOURCE_UV_BASE: f32 = 1280.;
@@ -242,6 +244,7 @@ pub(crate) fn sync(
     status: Res<crate::VoxelViewStatus>,
     cache: Res<crate::TerrainRevisionCache>,
     mut materials: ResMut<Assets<crate::VoxelMaterial>>,
+    mut previous: Local<Option<material_sync::Lighting>>,
 ) {
     if !frame.is_changed()
         && !cache.is_changed()
@@ -299,27 +302,16 @@ pub(crate) fn sync(
     let panorama_night = Vec4::new(if status.active && crate::summit_vista::enabled(&frame) {
         seconds.map_or(0., gain)
     } else { 0. }, 0., 0., 0.);
-    let no_windows = [Vec4::ZERO; MAX_LIGHTS];
-    let changed: Vec<_> = materials
-        .iter()
-        .filter_map(|(id, m)| {
-            let panorama = m.extension.cave_reveal.z > 1.5;
-            let (night, windows, planes) = if panorama {
-                (panorama_night, &no_windows, &no_windows)
-            } else { (night, &positions, &directions) };
-            (m.extension.city_night != night
-                || m.extension.city_windows != *windows
-                || m.extension.city_window_planes != *planes)
-                .then_some((id, panorama))
-        })
-        .collect();
-    for (id, panorama) in changed {
-        if let Some(mut m) = materials.get_mut(id) {
-            m.extension.city_night = if panorama { panorama_night } else { night };
-            m.extension.city_windows = if panorama { no_windows } else { positions };
-            m.extension.city_window_planes = if panorama { no_windows } else { directions };
-        }
-    }
+    material_sync::sync(
+        &mut materials,
+        &mut previous,
+        material_sync::Lighting {
+            night,
+            panorama_night,
+            positions,
+            directions,
+        },
+    );
 }
 
 #[cfg(test)]

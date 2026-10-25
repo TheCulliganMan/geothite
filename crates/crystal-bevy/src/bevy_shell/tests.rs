@@ -143,6 +143,8 @@ fn external_oracle_fixture_text(name: &str) -> String {
 }
 
 include!("tests/runtime_frontend_smoke.rs");
+#[path = "tests/controller_snapshots.rs"]
+mod controller_snapshots;
 #[cfg(feature = "voxel-view")]
 include!("tests/immersive_battle.rs");
 #[cfg(feature = "voxel-view")]

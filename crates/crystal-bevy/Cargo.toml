@@ -108,6 +108,10 @@ name = "performance_audit"
 required-features = ["performance-audit"]
 
 [[example]]
+name = "input_timing"
+required-features = ["bevy-shell"]
+
+[[example]]
 name = "render_saved_session"
 required-features = ["location-tester"]
 
