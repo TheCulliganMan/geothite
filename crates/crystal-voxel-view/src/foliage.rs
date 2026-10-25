@@ -92,6 +92,21 @@ pub(crate) fn instance_vertical_ratio(family: GroveFamily, coordinates: [i32;2],
     }
 }
 
+/// Build the cheaper pine render copy; other families retain full detail.
+pub(crate) fn append_distant_pine(
+    mesh: &mut TerrainMeshData,
+    bounds: [f32; 4],
+    base: f32,
+    tile: f32,
+    coordinates: [i32; 2],
+    neighbors: [bool; 4],
+) {
+    pine::append_distant(mesh, bounds, base, tile, coordinates, neighbors);
+    mesh.solid
+        .cutaway_ranges
+        .push(0..mesh.solid.positions.len());
+}
+
 /// Ordinary source-authenticated Johto groves use branching pines.
 pub(crate) fn append_grove_tree(mesh: &mut TerrainMeshData, bounds: [f32;4], base: f32,
     tile: f32, coordinates: [i32;2], neighbors: [bool;4]) {
@@ -177,10 +192,20 @@ pub(crate) fn leaf_pigment(point: Vec3, scale: f32) -> [f32;3] {
 
 /// Curved, tapered branch sections, continuous at their shared rings.
 fn append_branch(mesh: &mut SurfaceMeshData, root: Vec3, tip: Vec3, radius: f32) {
-    let axis=(tip-root).normalize();
-    let side=axis.cross(Vec3::Z).normalize();
-    let up=side.cross(axis).normalize();
-    let first=mesh.positions.len() as u32;
+    append_branch_with_detail(mesh, root, tip, radius, false);
+}
+
+fn append_branch_with_detail(
+    mesh: &mut SurfaceMeshData,
+    root: Vec3,
+    tip: Vec3,
+    radius: f32,
+    distant: bool,
+) {
+    let axis = (tip - root).normalize();
+    let side = axis.cross(Vec3::Z).normalize();
+    let up = side.cross(axis).normalize();
+    let first = mesh.positions.len() as u32;
     // Every row has the same ring directions and pigment. Preserve the
     // original arithmetic once per ring rather than repeating it per row.
     let rings: [(Vec3, [f32; 4]); 11] = std::array::from_fn(|ring| {
@@ -189,11 +214,13 @@ fn append_branch(mesh: &mut SurfaceMeshData, root: Vec3, tip: Vec3, radius: f32)
         let shade=0.75+0.25*normal.dot(Vec3::new(0.45,0.80,0.55).normalize()).max(0.0);
         (normal,[0.24*shade,0.15*shade,0.075*shade,1.0])
     });
-    for row in 0..=6 {
+    let step = if distant { 2 } else { 1 };
+    let stride = 10 / step + 1;
+    for row in (0..=6).step_by(step) {
         let t=row as f32/6.0;
         let center=root.lerp(tip,t)+Vec3::Y*(tip.y-root.y)*0.13*(std::f32::consts::PI*t).sin();
         let r=radius*(1.0-0.72*t);
-        for ring in 0..=10 {
+        for ring in (0..=10).step_by(step) {
             let (normal, color) = rings[ring];
             mesh.positions.push((center+normal*r).to_array());
             mesh.normals.push(normal.to_array());
@@ -201,10 +228,13 @@ fn append_branch(mesh: &mut SurfaceMeshData, root: Vec3, tip: Vec3, radius: f32)
             mesh.colors.push(color);
         }
     }
-    for row in 0..6 {for ring in 0..10 {
-        let a=first+row*11+ring;let b=a+11;
-        mesh.indices.extend([a,b,a+1,a+1,b,b+1]);
-    }}
+    for row in 0..6 / step {
+        for ring in 0..10 / step {
+            let a = first + (row * stride + ring) as u32;
+            let b = a + stride as u32;
+            mesh.indices.extend([a, b, a + 1, a + 1, b, b + 1]);
+        }
+    }
 }
 
 fn crown_color(normal: Vec3, tint: [f32; 3], variation: f32) -> [f32; 4] {

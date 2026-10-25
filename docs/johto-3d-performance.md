@@ -7337,3 +7337,131 @@ differences. Source remains uncommitted; packs and audio are unchanged.
 Removed completed one-off comparison executables, obsolete drivers and trial
 image/CSV scratch. Persistent Cargo caches and ignored verification records
 remain; no generated content or compiled product is staged.
+
+
+### Rejected read-only opaque depth trial
+
+A same-binary native trial changed only eligible static, UV-free opaque forward
+pipelines with a depth/normal prepass to `Equal` depth testing with writes disabled.
+Three focused tests passed, including byte-identical GPU pixels on production
+pine geometry and reflected/nonuniform instances; 69 existing occluder tests
+passed with one existing GPU test ignored. A narrow trace confirmed four admitted
+pipelines. Roof images at High 2560x1600 retained the expected composition.
+
+Optimized development (`wasm-dev`, not release) ABBA, roof (9,13), noon, default
+orbit -1, synthetic UUUUDDDD movement, validated warmup and no timed readbacks:
+
+| Depth | Updates / 60 s | Median / p95 interval (ms) | Walking median / p95 (ms) | Queue completions/s |
+| --- | ---: | ---: | ---: | ---: |
+| Original | 2,744 | 21.62 / 25.14 | 20.225 / 21.785 | 45.714 |
+| Read-only | 2,410 | 24.89 / 27.48 | 24.298 / 27.183 | 40.159 |
+| Read-only | 2,428 | 24.71 / 27.37 | 24.212 / 27.221 | 40.454 |
+| Original | 2,417 | 24.77 / 27.53 | 24.490 / 27.116 | 40.267 |
+
+All runs completed 256 movement rows, four origins and one build, without pending
+terrain or GPU polling errors, ending at roof (8,12), origin (-44,-36). No owned
+compiler or profiler ran during timing. The reverse pair was effectively tied,
+with mixed tails; the first original run also drifted within its minute. No cause
+is inferred. Queue completions are not display FPS or GPU timestamp durations.
+Rejected for lack of repeatable improvement; the pipeline change and its tests
+were removed. The installed app, packs and audio were unchanged.
+
+
+### Pine distance LOD
+
+Runtime pine instances now share a cheaper distant render mesh as well as their
+original full mesh. Distant crowns retain the seeded branching architecture,
+closed needle volumes, palette, placement and full culling bounds. Three needle
+pairs replace five with broader bundles; distant limbs and twigs use fewer rings.
+The 38 recipes observed in the town calibration reduce triangles by 54.96–55.26%,
+including 15,680→7,062 and 19,040→8,532. Nearby pines retain the original geometry.
+Other tree families and ground plants keep their existing detail.
+
+A pine enters the distant level below 25% of viewport height and returns to full
+above 30%. The hysteresis avoids repeated switches at the boundary. Trees within
+six tile lengths of the player's world position, and trees blocking or revealing
+the player, stay full detail. Vertical separation counts, so distant forest below
+a rooftop is eligible. Collision, source ownership and sorted reveal geometry
+always retain every original triangle. No screen-resolution change is involved.
+
+The selector reads the previous completed camera/shadow visibility before the
+next cull. Hidden pines retain the full mesh for their first visible frame. This
+limits projection tests to 542 of 56,772 loaded pines in the roof calibration;
+451 select the distant mesh. The shared mesh uploads once per recipe and later
+switches only change the mesh handle. No vertices are rebuilt during selection.
+`CRYSTAL_TREE_LOD=off` disables native selection and its components for the
+full-detail control; the `scenery-full-detail` build feature also disables it.
+
+All 123 relevant occlusion/worker-transfer, foliage, instance-placement and
+shared-geometry tests pass; one existing GPU test remains ignored. Tests cover
+hysteresis, approach/zoom restoration, hidden reentry, player reveal, nearby and
+rooftop distance, shared uploads without asset growth, and worker round trips
+retaining original collision. The WebAssembly check passes:
+
+```sh
+cargo check --locked -p crystal-voxel-view --target wasm32-unknown-unknown \
+  --features terrain-worker --profile wasm-dev --target-dir target/runtime-fps -j 2
+```
+
+Focused all-target Clippy, including `terrain-worker`, passes with the existing
+`approx_constant` and `erasing_op` allowances and no diagnostics in the new LOD
+leaf. Required full Clippy still encounters the pre-existing core bitmask and
+three voxel approximate-constant errors. Workspace formatting still starts with
+unchanged offset-allocator differences; the new leaf passes standalone rustfmt.
+
+Inspected fresh High 2560×1600 offscreen roof and town captures in both modes,
+alongside 2D views at the same player tiles and noon. Roof composition, trainer
+scale, nearby tree detail, forest silhouettes/color and building reveal remain
+readable. NPC idle poses vary between independent town captures; these are visual
+comparisons, not a byte-identical whole-frame claim.
+
+Two counterbalanced blocks use the same optimized development executable
+(`wasm-dev`, not release), High 2560×1600, TinTowerRoof (9,13), noon, default orbit
+-1 and synthetic UUUUDDDD movement. All timed runs last 60 seconds:
+
+| Block/order | Detail | Updates | Median / p95 interval (ms) | Walking median / p95 (ms) | Queue completions/s |
+| --- | --- | ---: | ---: | ---: | ---: |
+| ABBA 0 | Full | 2,862 | 21.24 / 22.46 | 19.964 / 21.122 | 47.707 |
+| ABBA 1 | LOD | 2,755 | 21.74 / 25.13 | 20.890 / 23.937 | 45.900 |
+| ABBA 2 | LOD | 2,593 | 23.19 / 25.79 | 22.634 / 25.737 | 43.216 |
+| ABBA 3 | Full | 2,306 | 26.19 / 28.10 | 25.720 / 28.331 | 38.416 |
+| BAAB 0 | LOD | 3,210 | 18.53 / 21.80 | 17.048 / 18.743 | 53.498 |
+| BAAB 1 | Full | 2,214 | 27.23 / 29.23 | 26.152 / 28.591 | 36.890 |
+| BAAB 2 | Full | 2,232 | 26.97 / 28.53 | 26.682 / 29.095 | 37.197 |
+| BAAB 3 | LOD | 2,577 | 23.34 / 25.92 | 22.868 / 26.379 | 42.933 |
+
+The first adjacent pair regresses 3.79%; the two late reverse comparisons improve
+12.49% and 15.42%. All four matching order positions across blocks favor LOD
+(11.76–24.42%). Across all four runs of each mode, mean queue completions rise
+40.053→46.387/s (+15.82%); the mean of per-run median intervals falls
+25.408→21.700 ms. Substantial run-order variation remains, with no cause inferred.
+These are headless render-throughput observations, not display FPS or GPU timestamp
+durations, and do not establish the same gain for every map or resolution.
+
+Every run validates a real GPU image before timing, drains readback, and records
+256 movement rows, four origins, one terrain build, no pending terrain or GPU
+polling errors, and the same final roof tile (8,12), origin (-44,-36). No owned
+compiler, profiler or other detected job ran during measurement. Packs and audio
+are unchanged.
+
+
+The production release completed through the normal desktop builder and passed
+its pack and artwork validation. The installed app passed strict code-signature
+verification and `--check-installation` from outside this checkout. No visible
+window was launched. The 1,869 code/artwork inputs remained unchanged during the
+build, the bundled/source pack SHA-256 remains
+`a0153af8315e37960e4fb8949a0ec47ce7163eaff6e2cf9eadbb7c8843820007`,
+and both existing save files retain their original hashes. The signed installed
+executable SHA-256 is
+`7e70b2a90ed901ea263b462fc462961b99cd88638c2cb7982befc02a0a264a69`.
+
+Verified production commands:
+
+```sh
+python3 tools/desktop.py build --target-dir target/runtime-fps --profile release --jobs 2
+python3 tools/desktop.py install --skip-build --target-dir target/runtime-fps --profile release --jobs 2
+```
+
+Completed comparison drivers and intermediate captures were removed. Persistent
+Cargo caches and ignored final verification evidence remain; no pack, generated
+asset or compiled artifact is staged or committed.

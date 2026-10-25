@@ -16,9 +16,10 @@ use bevy::{
 use std::ops::Range;
 mod ray_bounds;
 mod regional_materials;
+mod regions;
+pub(crate) mod tree_lod;
 #[cfg(test)]
 mod material_allocation_tests;
-mod regions;
 use ray_bounds::{conservative_overlap, obstruction_ray_bounds, transformed_occluder_bounds};
 use std::sync::{Arc, Mutex, OnceLock, Weak};
 
@@ -58,6 +59,7 @@ const RENDER_LEAF_TRIANGLES: usize = 2048;
 pub(super) struct FadeMeshes;
 
 pub(super) fn register(app: &mut App) {
+    tree_lod::register(app);
     app.add_systems(
         PostUpdate,
         sync.in_set(FadeMeshes).after(bevy::camera::CameraUpdateSystems)
@@ -228,6 +230,7 @@ struct PreparedLeaf {
     shared: Option<Arc<Mutex<SharedLeaf>>>,
 }
 struct SharedLeaf { mesh: Option<Mesh>, uploaded: Option<Handle<Mesh>>,
+    distant: Option<Arc<Mutex<SharedLeaf>>>,
 }
 // Instances own their shared geometry. The recipe lookup cache holds only
 // weak references, so leaving a region releases its CPU/GPU resources.
@@ -367,6 +370,7 @@ pub(crate) fn share_groups(groups: &mut [PreparedGroup]) {
             if leaf.shared.is_none() {
                 leaf.shared = Some(Arc::new(Mutex::new(SharedLeaf {
                     mesh: Some(std::mem::replace(&mut leaf.mesh, empty_mesh())), uploaded: leaf.uploaded.take(),
+                    distant: None,
                 })));
             }
         }
@@ -1592,7 +1596,11 @@ Transform::from_translation(prepared.center),),
                 if defer {
                     leaf.insert(DeferredMesh(Some(prepared)));
                 } else {
-                    leaf.insert(Mesh3d(upload_leaf(&mut prepared, meshes)));
+                    let full = upload_leaf(&mut prepared, meshes);
+                    if opaque_only {
+                        tree_lod::insert(&mut leaf, &prepared, full.clone());
+                    }
+                    leaf.insert(Mesh3d(full));
                     if let Some(shared) = prepared.shared {
                         leaf.insert(SharedGeometry(shared));
                     }
@@ -2835,9 +2843,13 @@ mod tests {
             world.init_resource::<Assets<Mesh>>();
             let source = Mesh::from(Cuboid::new(2., 5., 2.));
             let expected = source.attribute(Mesh::ATTRIBUTE_POSITION).unwrap().clone();
-            let shared_mesh = shared.then(|| Arc::new(Mutex::new(SharedLeaf {
-                mesh: Some(source.clone()), uploaded: None,
-            })));
+            let shared_mesh = shared.then(|| {
+                Arc::new(Mutex::new(SharedLeaf {
+                    mesh: Some(source.clone()),
+                    uploaded: None,
+                    distant: None,
+                }))
+            });
             let root = world.spawn_empty().id();
             let leaves: Vec<_> = (0..2).map(|_| world.spawn((
                 Visibility::Hidden,

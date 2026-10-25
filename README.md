@@ -49,6 +49,10 @@ the sound button remembers deliberate mute choices. Native developer clients,
 browser location previews (`?preview=...`), embedded training views and
 `?development=1` sessions always stay muted.
 
+The 3D view uses simpler meshes for distant pines while keeping nearby trees at
+full detail. See the [rendering performance notes](docs/johto-3d-performance.md#pine-distance-lod)
+for measurements and the full-detail comparison control.
+
 On Mac, **Settings** appears in the window title bar and the Mac menu bar.
 It controls master volume, mute, 2D/3D view, a checkable First Person toggle,
 camera presets and fullscreen. Orbit rotation follows the character, including

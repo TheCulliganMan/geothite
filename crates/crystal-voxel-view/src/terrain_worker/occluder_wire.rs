@@ -47,6 +47,7 @@ struct LeafWire {
 #[derive(Serialize, Deserialize)]
 struct SharedWire {
     mesh: MeshWire,
+    distant: Option<MeshWire>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -820,8 +821,22 @@ impl Capture {
             .ok_or("shared terrain mesh has no CPU buffers")?;
         let slot = u32::try_from(self.shared_leaves.len())
             .map_err(|_| "too many shared terrain meshes")?;
+        let distant = shared
+            .distant
+            .as_ref()
+            .map(|distant| {
+                let distant = distant.lock().map_err(|_| "poisoned distant pine mesh")?;
+                mesh_wire(
+                    distant
+                        .mesh
+                        .as_ref()
+                        .ok_or("distant mesh has no CPU buffers")?,
+                )
+            })
+            .transpose()?;
         self.shared_leaves.push(SharedWire {
             mesh: mesh_wire(mesh)?,
+            distant,
         });
         self.shared_slots.insert(key, slot);
         Ok(slot)
@@ -1020,13 +1035,29 @@ impl GroupRestore {
                 continue;
             }
             if let Some(shared) = self.shared_in.front_mut() {
-                if !shared.mesh.resolve(blobs)? {
+                let ready = shared.mesh.resolve(blobs)?;
+                let distant_ready = if let Some(distant) = &mut shared.distant {
+                    distant.resolve(blobs)?
+                } else {
+                    true
+                };
+                if !ready || !distant_ready {
                     return Ok(false);
                 }
                 let shared = self.shared_in.pop_front().unwrap();
                 self.shared.push(Arc::new(Mutex::new(SharedLeaf {
                     mesh: Some(shared.mesh.into_mesh()?),
                     uploaded: None,
+                    distant: shared
+                        .distant
+                        .map(|mesh| {
+                            Ok::<_, String>(Arc::new(Mutex::new(SharedLeaf {
+                                mesh: Some(mesh.into_mesh()?),
+                                uploaded: None,
+                                distant: None,
+                            })))
+                        })
+                        .transpose()?,
                 })));
                 continue;
             }
@@ -1111,6 +1142,60 @@ impl GroupRestore {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn pine_roundtrip_preserves_shared_distant_mesh_and_full_collision() {
+        let library = crate::forest_instances::Library::default();
+        let mut original = library.prepare(
+            [-16., 16., -16., 16.],
+            0.,
+            16.,
+            [4, 8],
+            [true; 4],
+            crate::foliage::GroveFamily::JohtoPine,
+        );
+        original.extend(original.clone());
+        let table = GroupTable::capture(&original).expect("capture pine geometry");
+        let expected = bytes(&table);
+        assert_eq!(
+            table
+                .shared_leaves
+                .iter()
+                .filter(|leaf| leaf.distant.is_some())
+                .count(),
+            1
+        );
+        let restored = table.restore().expect("restore pine geometry");
+        assert_eq!(
+            bytes(&GroupTable::capture(&restored).expect("recapture pine")),
+            expected
+        );
+        assert!(Arc::ptr_eq(&restored[0].surface, &restored[1].surface));
+        let distant = |group: &PreparedGroup| {
+            group
+                .opaque_leaf
+                .as_ref()
+                .expect("opaque pine")
+                .shared
+                .as_ref()
+                .expect("shared pine")
+                .lock()
+                .expect("geometry lock")
+                .distant
+                .clone()
+                .expect("distant render copy")
+        };
+        assert!(Arc::ptr_eq(&distant(&restored[0]), &distant(&restored[1])));
+        for (start, end) in [
+            (Vec3::new(-100., 10., 0.), Vec3::new(100., 10., 0.)),
+            (Vec3::new(-100., 10., 1000.), Vec3::new(100., 10., 1000.)),
+        ] {
+            assert_eq!(
+                original[0].surface.blocks(start, end),
+                restored[0].surface.blocks(start, end)
+            );
+        }
+    }
 
     #[test]
     fn loaded_park_tree_roundtrip_preserves_wide_indices_and_shared_placements() {

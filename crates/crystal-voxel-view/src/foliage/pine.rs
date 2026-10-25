@@ -2,6 +2,12 @@
 //! No cone shells, billboard crowns or retained broadleaf grove geometry.
 use super::*;
 
+#[derive(Clone, Copy, Default)]
+struct SprayDetail {
+    weathered: bool,
+    distant: bool,
+}
+
 struct Recipe {
     width: f32,
     height: f32,
@@ -55,6 +61,47 @@ pub(super) fn append_canopy(
     coordinates: [i32; 2],
     neighbors: [bool; 4],
 ) {
+    append_with_detail(mesh, bounds, base, tile, coordinates, neighbors, false);
+}
+
+/// Render-only distant crown. Collision and reveal keep the original canopy.
+pub(super) fn append_distant(
+    mesh: &mut TerrainMeshData,
+    bounds: [f32; 4],
+    base: f32,
+    tile: f32,
+    coordinates: [i32; 2],
+    neighbors: [bool; 4],
+) {
+    append_with_detail(mesh, bounds, base, tile, coordinates, neighbors, true);
+}
+
+fn append_with_detail(
+    mesh: &mut TerrainMeshData,
+    bounds: [f32; 4],
+    base: f32,
+    tile: f32,
+    coordinates: [i32; 2],
+    neighbors: [bool; 4],
+    distant: bool,
+) {
+    let spray = |mesh: &mut SurfaceMeshData, root, tip, width, phase, tint, weathered| {
+        spray(
+            mesh,
+            root,
+            tip,
+            width,
+            phase,
+            tint,
+            SprayDetail { weathered, distant },
+        );
+    };
+    let append_branch = |mesh: &mut SurfaceMeshData, root, tip, radius| {
+        super::append_branch_with_detail(mesh, root, tip, radius, distant);
+    };
+    let append_twig = |mesh: &mut SurfaceMeshData, root, tip, radius| {
+        append_twig(mesh, root, tip, radius, distant);
+    };
     let first = mesh.solid.positions.len();
     let v = variation(coordinates[0], coordinates[1]);
     let recipe = &RECIPES[v.index];
@@ -299,8 +346,9 @@ fn spray(
     width: f32,
     phase: f32,
     tint: [f32; 3],
-    weathered: bool,
+    detail: SprayDetail,
 ) {
+    let SprayDetail { weathered, distant } = detail;
     let axis = (tip - root).normalize();
     let side = axis
         .cross(if axis.y.abs() > 0.9 { Vec3::Z } else { Vec3::Y })
@@ -309,6 +357,12 @@ fn spray(
     // Fewer, larger fascicles read as foliage at gameplay distance instead
     // of a cloud of subpixel needles and exposed orange twigs.
     for pair in 0..5 {
+        // Keep alternating positions and their original seeded directions.
+        // Broader closed volumes replace subpixel bundles without leaf cards.
+        if distant && pair % 2 != 0 {
+            continue;
+        }
+        let thickness = if distant { 1.6 } else { 1.0 };
         let t = (pair as f32 + 0.5) / 5.;
         let p = root.lerp(tip, t);
         for sign in [-1., 1.] {
@@ -331,9 +385,12 @@ fn spray(
             let direction = (end - p).normalize();
             let across = direction.cross(needle_up).normalize();
             let mid = p.lerp(end, 0.44);
-            let points = [p, mid + across * length * 0.115
-                + needle_up * length * 0.10, end,
-                mid - across * length * 0.115 + needle_up * length * 0.10];
+            let points = [
+                p,
+                mid + across * length * 0.115 * thickness + needle_up * length * 0.10 * thickness,
+                end,
+                mid - across * length * 0.115 * thickness + needle_up * length * 0.10 * thickness,
+            ];
             let center = points.iter().copied().sum::<Vec3>() / 4.;
             let patch = leaf_pigment(center,width*5.);
             let mut normals = [Vec3::ZERO; 4];
@@ -374,7 +431,7 @@ fn spray(
 }
 
 // Thin supporting twigs need fewer rings than the visible primary limbs.
-fn append_twig(mesh: &mut SurfaceMeshData, root: Vec3, tip: Vec3, radius: f32) {
+fn append_twig(mesh: &mut SurfaceMeshData, root: Vec3, tip: Vec3, radius: f32, distant: bool) {
     let axis = (tip - root).normalize();
     let side = axis
         .cross(if axis.z.abs() > 0.9 { Vec3::Y } else { Vec3::Z })
@@ -385,9 +442,11 @@ fn append_twig(mesh: &mut SurfaceMeshData, root: Vec3, tip: Vec3, radius: f32) {
         let a = (ring % 6) as f32 * std::f32::consts::TAU / 6.;
         side * a.cos() + up * a.sin()
     });
-    for row in 0..=2 {
+    let step = if distant { 2 } else { 1 };
+    let stride = 6 / step + 1;
+    for row in (0..=2).step_by(step) {
         let t = row as f32 / 2.;
-        for ring in 0..=6 {
+        for ring in (0..=6).step_by(step) {
             let normal = rings[ring];
             mesh.positions
                 .push((root.lerp(tip, t) + normal * radius * (1. - 0.75 * t)).to_array());
@@ -396,10 +455,10 @@ fn append_twig(mesh: &mut SurfaceMeshData, root: Vec3, tip: Vec3, radius: f32) {
             mesh.colors.push([0.16, 0.11, 0.065, 1.]);
         }
     }
-    for row in 0..2 {
-        for ring in 0..6 {
-            let a = start + row * 7 + ring;
-            let b = a + 7;
+    for row in 0..2 / step {
+        for ring in 0..6 / step {
+            let a = start + (row * stride + ring) as u32;
+            let b = a + stride as u32;
             mesh.indices.extend([a, b, a + 1, a + 1, b, b + 1]);
         }
     }
@@ -456,19 +515,35 @@ mod tests {
 
     #[test]
     fn needle_sprays_occupy_every_side_of_the_twig_at_low_and_side_views() {
-        for phase in [0.,0.7,2.9] {
-            for axis in [Vec3::X,Vec3::Y,Vec3::new(1.,-0.3,0.5).normalize()] {
-                let mut mesh=SurfaceMeshData::default();
-                spray(&mut mesh,Vec3::ZERO,axis*2.,1.,phase,[1.;3],false);
-                let side=axis.cross(if axis.y.abs()>0.9 {Vec3::Z}else{Vec3::Y}).normalize();
-                let up=side.cross(axis).normalize();
-                let radial=mesh.positions.chunks_exact(4).map(|bundle| {
-                    let direction=Vec3::from_array(bundle[2])-Vec3::from_array(bundle[0]);
-                    (direction-axis*direction.dot(axis)).normalize()
-                }).collect::<Vec<_>>();
-                for view in [side,-side,up,-up] {
-                    assert!(radial.iter().any(|r|r.dot(view)>0.75),
-                        "the needle spray cannot leave a bare side around its twig: {axis:?}, {phase}, {view:?}");
+        for phase in [0., 0.7, 2.9] {
+            for axis in [Vec3::X, Vec3::Y, Vec3::new(1., -0.3, 0.5).normalize()] {
+                let mut mesh = SurfaceMeshData::default();
+                spray(
+                    &mut mesh,
+                    Vec3::ZERO,
+                    axis * 2.,
+                    1.,
+                    phase,
+                    [1.; 3],
+                    SprayDetail::default(),
+                );
+                let side = axis
+                    .cross(if axis.y.abs() > 0.9 { Vec3::Z } else { Vec3::Y })
+                    .normalize();
+                let up = side.cross(axis).normalize();
+                let radial = mesh
+                    .positions
+                    .chunks_exact(4)
+                    .map(|bundle| {
+                        let direction = Vec3::from_array(bundle[2]) - Vec3::from_array(bundle[0]);
+                        (direction - axis * direction.dot(axis)).normalize()
+                    })
+                    .collect::<Vec<_>>();
+                for view in [side, -side, up, -up] {
+                    assert!(
+                        radial.iter().any(|r| r.dot(view) > 0.75),
+                        "the needle spray cannot leave a bare side around its twig: {axis:?}, {phase}, {view:?}"
+                    );
                 }
                 for vertical_scale in [0.60,1.70] {
                     let areas=(0..16).map(|step| {
@@ -494,7 +569,15 @@ mod tests {
         for phase in [0.0, 0.7, 2.9] {
             for axis in [Vec3::X, Vec3::Y, Vec3::new(1., -0.3, 0.5)] {
                 let mut mesh = SurfaceMeshData::default();
-                spray(&mut mesh, Vec3::ZERO, axis * 2., 1., phase, [1.; 3], false);
+                spray(
+                    &mut mesh,
+                    Vec3::ZERO,
+                    axis * 2.,
+                    1.,
+                    phase,
+                    [1.; 3],
+                    SprayDetail::default(),
+                );
                 assert!(mesh.indices.len() <= 7 * 2 * 4 * 3);
                 assert!(mesh.positions.len() <= 7 * 2 * 4);
                 for (bundle, faces) in mesh.positions.chunks_exact(4)

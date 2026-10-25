@@ -1,6 +1,7 @@
 //! Runtime forest geometry is a bounded library, not a world-sized mesh cache.
-//! Full modeled prototypes share GPU handles and collision trees. Placement,
-//! height, rotation, visibility and cutaway state belong to each instance.
+//! Full modeled prototypes share GPU handles and collision trees.
+//! Pines also share a render-only distant crown; collision remains full detail.
+//! Placement, height, rotation, visibility and cutaway state belong to each instance.
 use crate::{
     foliage::{self, GroveFamily},
     mesh::TerrainMeshData,
@@ -201,7 +202,23 @@ impl Library {
                 )
             });
             let root_outline=if matches!(family,GroveFamily::KantoDeciduous|GroveFamily::ParkBroadleaf) {root_outline(&roots)} else {Vec::new()};
-            let groups=crate::shared_groves::prepare_surface(mesh.solid);
+            let full_bounds = mesh.solid.positions.iter().map(|p| Vec3::from_array(*p))
+                .fold((Vec3::splat(f32::INFINITY), Vec3::splat(f32::NEG_INFINITY)),
+                    |(low, high), p| (low.min(p), high.max(p)));
+            let full_triangles = mesh.solid.indices.len() / 3;
+            let groups = crate::shared_groves::prepare_surface(mesh.solid);
+            if family == GroveFamily::JohtoPine {
+                let mut distant = TerrainMeshData::default();
+                foliage::append_distant_pine(&mut distant, PROTOTYPE_BOUNDS, 0., PROTOTYPE_TILE,
+                    seeds(family)[key.variant as usize], neighbors);
+                crate::occluder_fade::tree_lod::fit_bounds(&mut distant.solid, full_bounds);
+                let _trace = crate::loading_trace::span("tree.lod_prototype", || serde_json::json!({
+                    "variant": key.variant, "density": key.density,
+                    "full_triangles": full_triangles, "distant_triangles": distant.solid.indices.len() / 3
+                }));
+                let distant = crate::shared_groves::prepare_surface(distant.solid);
+                crate::occluder_fade::tree_lod::link(&groups, &distant);
+            }
             Arc::new(PrototypeGeometry {groups,trunk_bounds,root_outline})
         })
         .clone()
